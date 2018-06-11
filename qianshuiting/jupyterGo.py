@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'test under py3'
+'test under py3 ok'
 
 import numpy as np
 import pandas as pd
