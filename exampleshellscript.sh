@@ -46,3 +46,12 @@ _yellow() {
 # _red "abcde"
 # _yellow $xxx
 
+# 文字颜色生成模板 http://ciembor.github.io/4bit
+# 一个颜色文字的例子
+
+red='\033[0;31m'
+green="\033[0;32m"
+plain='\033[0m'
+
+[ -z "$res" ] && ngstatus="${red}已停止${plain}" || ngstatus="${green}正在运行${plain}"
+
