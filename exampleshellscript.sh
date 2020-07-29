@@ -22,7 +22,21 @@ timeout 600s  some_command arg1 arg2
 # 连续管道时，考虑使用 tee 将中间结果落盘，以便查问题
 cmd1 | tee out1.dat | cmd2 | tee out2.dat | cmd3 > out3.dat
 
-# 字符串带颜色打印出来
+
+#
+# 文字颜色生成模板 http://ciembor.github.io/4bit
+#
+
+# 一个颜色文字的例子
+
+red='\033[0;31m'
+green="\033[0;32m"
+plain='\033[0m'
+
+[ -z "$res" ] && ngstatus="${red}已停止${plain}" || ngstatus="${green}正在运行${plain}"
+
+# 另一个颜色文字的例子
+
 _green() {
     printf '\033[1;31;32m'
     printf -- "%b" "$1"
@@ -41,17 +55,10 @@ _yellow() {
     printf '\033[0m'
 }
 
-# test:
+# 测试:
 # xxx="xyz"
 # _red "abcde"
 # _yellow $xxx
+# (_red "abcde")&&( _yellow $xxx)
 
-# 文字颜色生成模板 http://ciembor.github.io/4bit
-# 一个颜色文字的例子
-
-red='\033[0;31m'
-green="\033[0;32m"
-plain='\033[0m'
-
-[ -z "$res" ] && ngstatus="${red}已停止${plain}" || ngstatus="${green}正在运行${plain}"
 
