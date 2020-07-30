@@ -34,6 +34,7 @@ green="\033[0;32m"
 plain='\033[0m'
 
 [ -z "$res" ] && ngstatus="${red}已停止${plain}" || ngstatus="${green}正在运行${plain}"
+echo -e " nginx运行状态：${ngstatus}"
 
 # 另一个颜色文字的例子
 
@@ -61,4 +62,25 @@ _yellow() {
 # _yellow $xxx
 # (_red "abcde")&&( _yellow $xxx)
 
+#
+# python 颜色字符串
+#
+import platform
+from colorama import Fore, Back, Style
 
+text = "Ok, let's go!"
+
+def print_color(color, message=""):
+    v_system = platform.system()
+        if v_system == 'Linux':
+            print(color+message)
+            
+# 将前景设为红色，背景默认是黑色
+print(Fore.RED + text)
+# 将背景设为白色，前景沿用之前的红色，并且在显示完之后将格式复位
+print(Back.WHITE + text + Style.RESET_ALL)
+print(text)
+# 将前景设为黑色，背景设为白色
+print(Fore.BLACK + Back.WHITE + text + Style.RESET_ALL)
+print(Style.RESET_ALL)
+print('back to normal now')
