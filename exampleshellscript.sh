@@ -3,6 +3,9 @@
 # 参考:
 # https://zhuanlan.zhihu.com/p/123989641
 
+# Bach脚本测试框架 https://github.com/bach-sh/bach/blob/master/README-cn.md
+# source path/to/bach.sh
+
 # -x ： 在执行每一个命令之前把经过变量展开之后的命令打印出来。
 # -e ： 遇到一个命令失败（返回码非零）时，立即退出。
 # -u ：试图使用未定义的变量，就立即退出。
