@@ -3,8 +3,22 @@
 # 参考:
 # https://zhuanlan.zhihu.com/p/123989641
 
+
 # Bach脚本测试框架 https://github.com/bach-sh/bach/blob/master/README-cn.md
 # source path/to/bach.sh
+
+
+# vim 编辑器的颜色方案等自定义
+# 打开一个Vim窗口，输入命令:color 后回车查看当前的颜色主题。
+# 输入命令:echo $VIMRUNTIME 来查看Vim的运行目录
+#     进入vim的运行目录，查看color目录下以“.vim”为结尾的文件 
+#     这些文件即是颜色主题文件，文件名就是主题名字。
+# 输入命令"colorscheme 主题名字"，即可设置当前vim实例的颜色主题。
+# 更改默认颜色主题
+# 打开~/.vimrc文件，在其中加入一行"colorscheme 颜色主题名字"，之后保存更改即可。
+# 如： 
+#     colorscheme slate
+
 
 # -x ： 在执行每一个命令之前把经过变量展开之后的命令打印出来。
 # -e ： 遇到一个命令失败（返回码非零）时，立即退出。
