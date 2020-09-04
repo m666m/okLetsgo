@@ -18,7 +18,7 @@
 
     离线Centos7环境使用Docker部署gitlab-CICD <https://zhuanlan.zhihu.com/p/147284555>
 
-## 常见git工作日程： 集中式工作流 remote master -- local master(开发人员工作在此)
+## git工作流：类似svn的集中式工作流 remote master -- local master(开发人员工作在此)
 
 0.添加远程仓库
 
@@ -44,29 +44,41 @@
 
     git push （默认远程origin本地master）
 
-## 常见git工作日程： 功能分支工作流 master -- dev(开发人员工作在此)
+## git工作流：改良版集中式工作流 remote master -- local dev(开发人员工作在此)
 
-### git中用分支进行工作的一般步骤
+在本地新建其它分支，将项目push到新建的分支上，这种工作方式可以确保主干master的相对稳定。
 
-新建其它分支，将项目push到新建的分支上，后期再进行merge
-
-(1)新建分支
-
-    git branch 分支名
-
-(2)切换分支
-
-    git checkout 分支名
-
-(3)进行项目上传
-
-    git add .
-
-    git commit -m "提交的信息"
+(0)添加远程仓库
 
     git remote add origin 远程仓库地址
 
+(1)上班开始，先确认本地无未提交未储存等等问题，处理后再继续
+
+    git status
+
+(2)从远程仓库master同步本地仓库master，新建分支
+
+    git checkout master
+    git pull （默认远程origin本地master）
+    git branch 分支名
+
+(4)切换分支
+
+    git checkout 分支名
+
+(5)修改完成后，提交本地仓库
+
+    git add .
+    git commit -m "提交的信息"
+
+(6)上传远程仓库master
     git push -u origin 分支名
+
+## git工作流： 功能分支工作流 master -- dev(开发人员工作在此)
+
+远程和本地都有master和dev两个分支，本地只是远程的一个镜像，时刻以远程为准，所以注意工作的时候在关键tag要同步。比如dev开发一个功能点，本地天天更新，每隔几天完成一部分自测通过后，同步到远程以便别人可以拉取合并，并进行测试。
+
+这种的适合多人交互式工作的复杂项目，每天dev分支都在变动，大家做完都同步到master，主干master相对还能保持稳定，所以大家还得每日同步master内容。
 
 ### remote master上的内容merge 到自己的开发分支上 (上班第一件事)
 
@@ -137,7 +149,7 @@ PS:
 
     每个git status后，根据实际情况进行处理，然后再做下一步。
 
-## 常见git工作日程： Gitflow 工作流 master -- develop -- feature(开发人员工作在此)
+## git工作流： Gitflow 工作流 master -- develop -- feature(开发人员工作在此)
 
 这个流程适合长期稳定的商用项目。
 
