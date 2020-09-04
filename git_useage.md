@@ -4,6 +4,9 @@
 
     git官方文档  <https://git-scm.com/book/zh/v2/Git-%E5%88%86%E6%94%AF-%E5%88%86%E6%94%AF%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E6%B5%81>
 
+    git分支的使用过程 <https://zhuanlan.zhihu.com/p/22369088>
+    图解 git rebase <https://zhuanlan.zhihu.com/p/198887332>
+
     【Git】远程仓库基础教程
     <https://blog.csdn.net/weixin_31866177/article/details/107945573>
     <https://blog.csdn.net/weixin_31866177/article/details/108043965>
@@ -30,7 +33,7 @@
 
     git push -u origin 分支名
 
-## 常见git工作日程： master -- dev 两级分支管理体系
+## 常见git工作日程： 两级分支管理体系 master -- dev(开发人员工作在此)
 
 ### remote master上的内容merge 到自己的开发分支上 (上班第一件事)
 
@@ -101,4 +104,27 @@ PS:
 
     每个git status后，根据实际情况进行处理，然后再做下一步。
 
-    有的分支管理中远程master很少动，都是拉出来release分支，再拉feature分支，每个人做自己的feature分支，上面的命令中注意
+## 三级分支管理体系 master -- develop -- feature(开发人员工作在此)
+
+这个流程适合长期稳定的商用项目。
+
+master分支很少变动，head始终对应生产环境代码。由master分支拉出来develop分支（打tag），每个人在develop分支基础上做自己的feature分支，发布时由develop分支拉出release分支（打tag），大家把自己的feature分支合并入release分支（打tag），测试发布（打tag）都完成后release分支合并入develop分支（打tag）和master分支（打tag），然后可以删除相关的feature分支和release分支。
+<https://zhuanlan.zhihu.com/p/36085631>
+
+## git clone 获取指定指定分支的指定commit版本
+
+git clone 默认是取回 master 分支，可以使用 -b 参数指定的分支。 -b 参数不仅支持分支名，还支持 tag 名等。
+
+        git clone  <remote-addr:repo.git> -b <branch-or-tag-or-commit>
+
+需求是获取commit id，没直接的办法。下面提供另一个步骤：
+
+选择一个包含目标 commit id 的branch或tag，并指定depth=1以获得比较少的额外文件传输。
+
+    git clone --depth 1 <remote-addr:repo.git> -b < branch-or-tag >
+
+clone完成后，进入目录，执行
+
+    git fetch --depth < a-numer >
+
+不断增大步骤2的数字，直到找到你要的commit
