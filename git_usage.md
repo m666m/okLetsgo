@@ -48,35 +48,48 @@
 
 在本地新建其它分支，这种工作方式可以确保主干master的相对稳定。
 
-0、添加远程仓库
+0、添加远程仓库，新建dev分支
 
     git remote add origin 远程仓库地址
-
-1、从远程仓库master同步本地仓库master，新建分支
-
-    git pull （默认远程origin本地master）
     git branch 分支名
 
-2、每日工作，先确认本地无未提交未储存等等问题，处理后再继续
+1、每日工作，先确认本地无未提交未储存等等问题，处理后再继续
 
     git status
 
-3、切换分支
+2、从远程仓库master同步本地仓库master
+
+    git pull （默认远程origin本地master）
+
+3、切换本地dev分支
 
     git checkout 分支名
 
-4、修改完成后，提交本地仓库
+4、合并本地 master 到 本地dev分支
+
+本地只是远程的一个镜像，以远程为准。
+所以跨分支操作比如想合并远程master分支到远程dev分支，需要先pull远程master到本地master，再merge到本地dev，再push本地dev到远程master。
+或在本地dev分支fetch远程master一个临时分支然后diff/merge到本地dev分支... <https://www.jianshu.com/p/bfb4b0de7e03>
+
+    git merge master
+
+5、每日本地dev分支的代码改动，提交本地仓库
 
     git add .
     git commit -m "提交的信息"
 
-5、开发告一段落时，dev分支上传远程仓库master
+6、开发告一段落时，dev分支合并master再上传远程仓库
 
-    git push -u origin 分支名
+    git checkout master
+    git pull
+    git merge 分支名
+    git push -u origin master
+
+    或可直接 git push -u o/master dev ?
 
 ## git工作流： 功能分支工作流 master -- dev(开发人员工作在此)
 
-master分支保持稳定，开发工作放在dev分支，这俩都做主干分支。本地只是远程的一个镜像，以远程为准，所以注意工作的时候在关键tag两个分支要同步。CI/CD中持续集成部署在dev，持续交付部署在master。
+master分支保持稳定，开发工作放在dev分支，这俩都做主干分支。 CI/CD中持续集成部署在dev，持续交付部署在master。
 
 大家每日同步远程的dev分支即可工作：
 
