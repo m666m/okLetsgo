@@ -11,12 +11,12 @@
 # vim 编辑器的颜色方案等自定义
 # 打开一个Vim窗口，输入命令:color 后回车查看当前的颜色主题。
 # 输入命令:echo $VIMRUNTIME 来查看Vim的运行目录
-#     进入vim的运行目录，查看color目录下以“.vim”为结尾的文件 
+#     进入vim的运行目录，查看color目录下以“.vim”为结尾的文件
 #     这些文件即是颜色主题文件，文件名就是主题名字。
 # 输入命令"colorscheme 主题名字"，即可设置当前vim实例的颜色主题。
 # 更改默认颜色主题
 # 打开~/.vimrc文件，在其中加入一行"colorscheme 颜色主题名字"，之后保存更改即可。
-# 如： 
+# 如：
 #     colorscheme slate
 
 
@@ -91,7 +91,7 @@ def print_color(color, message=""):
     v_system = platform.system()
         if v_system == 'Linux':
             print(color+message)
-            
+
 # 将前景设为红色，背景默认是黑色
 print(Fore.RED + text)
 # 将背景设为白色，前景沿用之前的红色，并且在显示完之后将格式复位
