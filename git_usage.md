@@ -20,11 +20,11 @@
 
 ## git工作流：类似svn的集中式工作流 remote master -- local master(开发人员工作在此)
 
-0.添加远程仓库
+0、添加远程仓库
 
     git remote add origin 远程仓库地址
 
-1、上班开始，先确认本地无未提交未储存等等问题，处理后再继续
+1、上班后，先确认本地无未提交未储存等等问题，处理后再继续
 
     git status
 
@@ -32,15 +32,15 @@
 
     git pull （默认远程origin本地master）
 
-3、干活，自己的代码文件各种变动
+3、干活，自己的代码文件各种改动。
 
-4、下班结束，提交本地仓库
+4、下班前，提交本地仓库
 
     git add .
 
     git commit -m "提交的信息"
 
-5、提交远程仓库
+5、开发告一段落时，提交远程仓库
 
     git push （默认远程origin本地master）
 
@@ -48,116 +48,131 @@
 
 在本地新建其它分支，将项目push到新建的分支上，这种工作方式可以确保主干master的相对稳定。
 
-(0)添加远程仓库
+0、添加远程仓库
 
     git remote add origin 远程仓库地址
 
-(1)上班开始，先确认本地无未提交未储存等等问题，处理后再继续
+1、从远程仓库master同步本地仓库master，新建分支
 
-    git status
-
-(2)从远程仓库master同步本地仓库master，新建分支
-
-    git checkout master
     git pull （默认远程origin本地master）
     git branch 分支名
 
-(4)切换分支
+2、每日工作，先确认本地无未提交未储存等等问题，处理后再继续
+
+    git status
+
+3、切换分支
 
     git checkout 分支名
 
-(5)修改完成后，提交本地仓库
+4、修改完成后，提交本地仓库
 
     git add .
     git commit -m "提交的信息"
 
-(6)上传远程仓库master
+5、开发告一段落时，dev分支上传远程仓库master
+
     git push -u origin 分支名
 
 ## git工作流： 功能分支工作流 master -- dev(开发人员工作在此)
 
-远程和本地都有master和dev两个分支，本地只是远程的一个镜像，时刻以远程为准，所以注意工作的时候在关键tag要同步。比如dev开发一个功能点，本地天天更新，每隔几天完成一部分自测通过后，同步到远程以便别人可以拉取合并，并进行测试。
+master分支保持稳定，开发工作放在dev分支，这俩都做主干分支。本地只是远程的一个镜像，以远程为准，所以注意工作的时候在关键tag两个分支要同步。CI/CD中持续集成部署在dev，持续交付部署在master。
 
-这种的适合多人交互式工作的复杂项目，每天dev分支都在变动，大家做完都同步到master，主干master相对还能保持稳定，所以大家还得每日同步master内容。
+大家每日同步远程的dev分支即可工作：
 
-### remote master上的内容merge 到自己的开发分支上 (上班第一件事)
+    每人的本地dev各自开发一个功能点，每天只拉取，每隔几天完成一部分之后，上传到远程dev以便别人可以拉取，并进行测试。
 
-0.查看当前在git的哪个位置，是否有未提交未更新未暂存的，确保是干净的再继续
+这种工作流适合多人交互式工作的复杂项目，每天dev分支都在变动，大家做完一个阶段后，就同步到远程dev分支 。
 
-    git status
+下面是每人一个分支，仅master做主干的例子，对master的操作太多导致源代码状态不稳定：
 
-1.切换到local master分支，并查看状态
+    remote master上的内容merge 到自己的开发分支上 (上班第一件事)
 
-    git checkout master
-    git status
+    0、查看当前在git的哪个位置，是否有未提交未更新未暂存的，确保是干净的再继续
 
-2.将remote master同步到local master
+        git status
 
-    git pull origin master
+    1、切换到local master分支，并查看状态
 
-3.切换到的local开发分支，并查看状态
+        git checkout master
+        git status
 
-    git checkout dev_xxx
-    git status
+    2、将remote master同步到local master
 
-4.合并 local master 到 local的开发分支
+        git pull origin master
 
-    git merge master
+    3、切换到的local开发分支，并查看状态
 
-5.推送更新到gitlab，使gitlab同步更新显示
+        git checkout dev_xxx
+        git status
 
-    git push origin dev_xxx
+    4、合并 local master 到 local的开发分支
 
-### 将自己分支的内容merge到remote master上 (下班最后一件事)
+        git merge master
 
-0.查看当前在git的哪个位置，是否有未提交未更新未暂存的，确保是干净的再继续
+    5、将 local dev_xxx 推送更新到gitlab，使gitlab同步更新显示
 
-    git status
+        git push origin dev_xxx
 
-1.切换到 local 开发分支, 查看状态并提交到 local 开发分支
 
-    git checkout dev_xxx
+    将自己分支的内容merge到remote master上 (下班最后一件事)
 
-    git status
+    0、查看当前在git的哪个位置，是否有未提交未更新未暂存的，确保是干净的再继续
 
-    git add .
+        git status
 
-    git commit -m "@@@"
+    1、切换到 local 开发分支, 查看状态并提交到 local 开发分支
 
-2.切换到local master，查看状态并拉取 remote master
+        git checkout dev_xxx
 
-    git checkout master
-    git status
+        git status
 
-    git pull origin master
+        git add .
 
-3.将 local 开发分支merge到 local master
+        git commit -m "@@@"
 
-     git merge dev_xxx
+    2、切换到local master，查看状态并拉取 remote master
 
-4.将 local master 推送更新到gitlab，使gitlab同步更新显示
+        git checkout master
+        git status
 
-    git push origin master
+        git pull origin master
 
-5.将 local dev_xxx  推送更新到gitlab，使gitlab同步更新显示
+    3、将 local 开发分支merge到 local master
 
-    git checkout dev_xxx
+        git merge dev_xxx
 
-    git push origin dev_xxx
+    4、将 local master 推送更新到gitlab，使gitlab同步更新显示
 
-PS:
+        git push origin master
 
-    每个git status后，根据实际情况进行处理，然后再做下一步。
+    5、将 local dev_xxx 推送更新到gitlab，使gitlab同步更新显示
 
-## git工作流： Gitflow 工作流 master -- develop -- feature(开发人员工作在此)
+        git checkout dev_xxx
 
-这个流程适合长期稳定的商用项目。
+        git push origin dev_xxx
 
-master分支很少变动，head始终对应生产环境代码。由master分支拉出来develop分支（打tag），每个人在develop分支基础上做自己的feature分支，发布时由develop分支拉出release分支（打tag），大家把自己的feature分支合并入release分支（打tag），测试发布（打tag）都完成后release分支合并入develop分支（打tag）和master分支（打tag），然后可以删除相关的feature分支和release分支。
+    PS:
 
-<https://nvie.com/posts/a-successful-git-branching-model/>
+        每个git status后，根据实际情况进行处理，然后再做下一步。
+
+        如果master分支需要保持稳定，每日步骤中对master分支的拉取合并都省略，只在关键tag点，把dev分支合并到master分支，平时的操作仅限dev分支。
+
+## git工作流： Gitflow工作流 master -- develop -- feature(开发人员工作在此)
+
+这个流程是功能分支工作流的进一步扩展，适合长期稳定的商用项目。
+
+master分支很少变动，head始终对应生产环境代码。由master分支拉出来develop分支（打tag），每个开发组在develop分支基础上做自己的feature分支。
+
+开发状态是，每人只负责合并自己的feature分支（打tag），功能组把自己的feature分支合并入develop分支（打tag），发布时由集成组把develop分支拉出release分支（打tag），测试除虫（打tag）阶段合并入develop分支，都完成后release分支合并入develop分支（打tag）和master分支（打tag），然后可以删除相关的feature分支和release分支。这个对CI/CD的定制化要求就比较高了。
+
+hotfix需要合入master和develop两个分支。
+
+原文 <https://nvie.com/posts/a-successful-git-branching-model/>
 
     汉化 <https://zhuanlan.zhihu.com/p/38772378> <https://zhuanlan.zhihu.com/p/36085631>
+
+![Gitflow工作流](https://nvie.com/img/git-model@2x.png)
 
 ## git clone 获取指定指定分支的指定commit版本
 
