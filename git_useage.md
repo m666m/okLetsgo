@@ -2,16 +2,51 @@
 
 ## 参考文档
 
-    git官方文档  <https://git-scm.com/book/zh/v2/Git-%E5%88%86%E6%94%AF-%E5%88%86%E6%94%AF%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E6%B5%81>
+    git的几种工作流 <https://www.zhihu.com/question/20070065/answer/1174997617>
 
-    git分支的使用过程 <https://zhuanlan.zhihu.com/p/22369088>
-    图解 git rebase <https://zhuanlan.zhihu.com/p/198887332>
+    最好的git命令教程 <https://learngitbranching.js.org/?locale=zh_CN>
+
+    git官方文档  <https://git-scm.com/book/zh/v2/Git-%E5%88%86%E6%94%AF-%E5%88%86%E6%94%AF%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E6%B5%81>
 
     【Git】远程仓库基础教程
     <https://blog.csdn.net/weixin_31866177/article/details/107945573>
     <https://blog.csdn.net/weixin_31866177/article/details/108043965>
 
-## git中用分支进行工作的一般步骤
+    git使用教程 <https://zhuanlan.zhihu.com/p/158076293>
+    git分支的使用过程 <https://zhuanlan.zhihu.com/p/22369088>
+    图解 git rebase <https://zhuanlan.zhihu.com/p/198887332>
+
+    离线Centos7环境使用Docker部署gitlab-CICD <https://zhuanlan.zhihu.com/p/147284555>
+
+## 常见git工作日程： 集中式工作流 remote master -- local master(开发人员工作在此)
+
+0.添加远程仓库
+
+    git remote add origin 远程仓库地址
+
+1、上班开始，先确认本地无未提交未储存等等问题，处理后再继续
+
+    git status
+
+2、从远程仓库同步本地仓库
+
+    git pull （默认远程origin本地master）
+
+3、干活，自己的代码文件各种变动
+
+4、下班结束，提交本地仓库
+
+    git add .
+
+    git commit -m "提交的信息"
+
+5、提交远程仓库
+
+    git push （默认远程origin本地master）
+
+## 常见git工作日程： 功能分支工作流 master -- dev(开发人员工作在此)
+
+### git中用分支进行工作的一般步骤
 
 新建其它分支，将项目push到新建的分支上，后期再进行merge
 
@@ -32,8 +67,6 @@
     git remote add origin 远程仓库地址
 
     git push -u origin 分支名
-
-## 常见git工作日程： 两级分支管理体系 master -- dev(开发人员工作在此)
 
 ### remote master上的内容merge 到自己的开发分支上 (上班第一件事)
 
@@ -104,12 +137,15 @@ PS:
 
     每个git status后，根据实际情况进行处理，然后再做下一步。
 
-## 三级分支管理体系 master -- develop -- feature(开发人员工作在此)
+## 常见git工作日程： Gitflow 工作流 master -- develop -- feature(开发人员工作在此)
 
 这个流程适合长期稳定的商用项目。
 
 master分支很少变动，head始终对应生产环境代码。由master分支拉出来develop分支（打tag），每个人在develop分支基础上做自己的feature分支，发布时由develop分支拉出release分支（打tag），大家把自己的feature分支合并入release分支（打tag），测试发布（打tag）都完成后release分支合并入develop分支（打tag）和master分支（打tag），然后可以删除相关的feature分支和release分支。
-<https://zhuanlan.zhihu.com/p/36085631>
+
+<https://nvie.com/posts/a-successful-git-branching-model/>
+
+    汉化 <https://zhuanlan.zhihu.com/p/38772378> <https://zhuanlan.zhihu.com/p/36085631>
 
 ## git clone 获取指定指定分支的指定commit版本
 
