@@ -113,35 +113,6 @@
 
 这种工作流适合多人交互式工作的复杂项目，每天dev分支都在变动，大家本地dev完成一个阶段后，就同步到远程dev分支。这样在dev分支上就可以实现每日集成测试，master分支和dev分支都可以保持相对稳定。
 
-本地空目录，仅拉取指定远程分支的用法：
-
-    git clone -b dev 代码仓库地址 （dev是分支名称）
-
-    或：
-        git init
-        git remote add origin git@github.com:XXXX/nothing2.git
-        git fetch origin dev（dev即分支名）
-        git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
-        git pull origin dev(远程分支名称)
-
-三个push用法：
-
-    远程已有dev_xxx分支并且已经关联本地分支dev_xxx，本地已经切换到dev_xxx
-
-        git push
-
-    远程没有remote_branch分支，本地已经切换到dev_xxx
-
-        git push origin dev_xxx:remote_branch
-
-    远程已有dev_xxx分支但未关联本地分支dev_xxx，本地已经切换到dev_xxx
-
-        git push -u origin/dev_xxx
-
-单纯建立本地分支和远程分支serverfix的对应，本地已经切换到dev_xxx
-
-    git branch -u origin/serverfix
-
 上班第一件事：远程 dev_xxx上的内容merge 到自己的开发分支上
 
     0、查看当前在git的哪个位置，是否有未提交未更新未暂存的，确保是干净的再继续
@@ -260,11 +231,13 @@ master分支很少变动，head始终对应生产环境代码。由master分支v
 
     开始工作前，从master创建各个feature分支。
 
-    通过合并相关的feature分支，形成release分支。
+    从master创建release分支，合并相关的feature分支。
 
     发布到线上正式环境后，合并release分支到master，在master添加标签，同时删除该release分支关联的feature分支。
 
-保证master分支可用和随时可发布，其他可能都是临时分支。所以取名的时候应该是Ali-One-Flow。临时分支的组装就有很多种玩法了，需要企业根据自己的需要来定制处理。
+![AoneFlow工作流](https://pic3.zhimg.com/80/v2-583eeedc612c4e0700a4e4dc003afd5e_720w.jpg)
+
+保证master分支可用和随时可发布，其他可能都是临时分支，所以取名的时候应该是Ali-One-Flow。临时分支的组装就有很多种玩法了，需要企业根据自己的需要来定制处理。
 
 master分支上的最新版本始终与线上版本一致，如果要回溯历史版本，只需在master分支上找到相应的版本标签即可。
 
@@ -284,9 +257,38 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
     特性分支与发布分支的关联关系维护有点复杂。最好是在一个整体流程的自动化的平台下管理维护，该平台需要实现从需求提出，功能拆分，创建feature分支，组合release分支，生成部署环境，创建测试流水线，代码审查流水线，安全检查，在线部署等一系列步骤的自动化，最终实现端到端交付的研发自动化体系。
 
-有ExeFlow: Master，Develop，Local。Release/Develop/Feature分支由Master建立，需要上线的Feature分支合并Release，而Release分支只会存在2-3天的时间就合入master分支。锁定权限，开发无法提交Develop，master。
+## 用法：分支的拉取和上传
 
-## git clone 获取指定指定分支的指定commit版本
+本地空目录，仅拉取指定远程分支的用法：
+
+    git clone -b dev 代码仓库地址 （dev是分支名称）
+
+    或：
+        git init
+        git remote add origin git@github.com:XXXX/nothing2.git
+        git fetch origin dev（dev即分支名）
+        git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
+        git pull origin dev(远程分支名称)
+
+push三个用法：
+
+    远程已有dev_xxx分支并且已经关联本地分支dev_xxx，本地已经切换到dev_xxx
+
+        git push
+
+    远程没有remote_branch分支，本地已经切换到dev_xxx
+
+        git push origin dev_xxx:remote_branch
+
+    远程已有dev_xxx分支但未关联本地分支dev_xxx，本地已经切换到dev_xxx
+
+        git push -u origin/dev_xxx
+
+单纯建立本地分支和远程分支serverfix的对应，本地已经切换到dev_xxx
+
+    git branch -u origin/serverfix
+
+## 用法：git clone 获取指定指定分支的指定commit版本
 
 git clone 默认是取回 master 分支，可以使用 -b 参数指定的分支。 -b 参数不仅支持分支名，还支持 tag 名等。
 
@@ -304,7 +306,7 @@ clone完成后，进入目录，执行
 
 不断增大步骤2的数字，直到找到你要的commit
 
-## 删除分支，远程/本地
+## 用法：删除分支，远程/本地
 
 0.先看看有多少本地和远程分支
 
@@ -322,7 +324,7 @@ clone完成后，进入目录，执行
 
     git branch -d serverfix
 
-## 标签的相关应用
+## 用法：标签相关
 
 1.新增标签
 
