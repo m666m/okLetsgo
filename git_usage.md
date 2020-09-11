@@ -254,15 +254,15 @@ master分支很少变动，head始终对应生产环境代码。由master分支v
 
 ![Gitflow工作流](https://nvie.com/img/git-model@2x.png)
 
-## 阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支
+## 阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master
 
-只使用三种分支类型：主干分支master、特性分支feature、发布分支release，以及三条基本规则。
+只使用三种分支类型：主干master、特性分支feature、发布分支release，以及三条基本规则。
 
-    开始工作前，从master创建feature分支。
+    开始工作前，从master创建各个feature分支。
 
-    通过合并feature分支，形成release分支。
+    通过合并相关的feature分支，形成release分支。
 
-    发布到线上正式环境后，合并相应的release分支到master，在master添加标签，同时删除该release分支关联的feature分支。
+    发布到线上正式环境后，合并release分支到master，在master添加标签，同时删除该release分支关联的feature分支。
 
 保证master分支可用和随时可发布，其他可能都是临时分支。所以取名的时候应该是Ali-One-Flow。临时分支的组装就有很多种玩法了，需要企业根据自己的需要来定制处理。
 
@@ -280,11 +280,11 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
     按迭代演进的计划，串联多个feature分支，实现流水线组装式的release分支，CI/CD在每个阶段都能顺利做起来。
 
-有ExeFlow: Master，Develop，Local。Release/Develop/Feature分支由Master建立，需要上线的Feature分支合并Release，而Release分支只会存在2-3天的时间就合入master分支。锁定权限，开发无法提交Develop，master。
-
 缺点
 
     特性分支与发布分支的关联关系维护有点复杂。最好是在一个整体流程的自动化的平台下管理维护，该平台需要实现从需求提出，功能拆分，创建feature分支，组合release分支，生成部署环境，创建测试流水线，代码审查流水线，安全检查，在线部署等一系列步骤的自动化，最终实现端到端交付的研发自动化体系。
+
+有ExeFlow: Master，Develop，Local。Release/Develop/Feature分支由Master建立，需要上线的Feature分支合并Release，而Release分支只会存在2-3天的时间就合入master分支。锁定权限，开发无法提交Develop，master。
 
 ## git clone 获取指定指定分支的指定commit版本
 
@@ -303,3 +303,49 @@ clone完成后，进入目录，执行
     git fetch --depth < a-numer >
 
 不断增大步骤2的数字，直到找到你要的commit
+
+## 删除分支，远程/本地
+
+0.先看看有多少本地和远程分支
+
+    git branch -a
+
+1.切换到其他分支再进行操作
+
+    git checkout master
+
+2.删除远程分支的指针而不是直接删分支，方便数据恢复。
+
+    git push origin --delete serverfix
+
+3.删除本地
+
+    git branch -d serverfix
+
+## 标签的相关应用
+
+1.新增标签
+
+    git tag -a v1.1 -m "新增xxx功能"
+
+2.查看标签
+
+    git tag
+    git show v1*
+
+3.推送标签
+
+    git push origin v1.1
+    git push origin --tags (批量推送)
+
+4.新增轻量化标签
+
+    git tag v1.1-bw
+
+5.删除标签
+
+    git tag -d v1.1-bw
+
+6.从指定标签检出分支
+
+    git checkout -b fea_xxx v2.0.0
