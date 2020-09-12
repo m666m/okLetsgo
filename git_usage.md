@@ -324,7 +324,16 @@ clone完成后，进入目录，执行
 
     git branch -d serverfix
 
+## 分支权限控制
+
+Gitolite 基于ssh密钥管理的用户权限控制
+
+    <https://github.com/sitaramc/gitolite>
+    <https://gitolite.com/gitolite/basic-admin.html>
+
 ## 用法：标签相关
+
+标签总是和某个commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，那么在这两个分支上都可以看到这个标签。
 
 1.新增标签
 
@@ -351,3 +360,66 @@ clone完成后，进入目录，执行
 6.从指定标签检出分支
 
     git checkout -b fea_xxx v2.0.0
+
+## 储藏命令stash，在分支切换时不需要做commit操作
+
+当在一个分支的开发工作未完成，却又要切换到另外一个hotfix分支进行开发的时候，当前的分支不commit的话git不允许checkout到别的分支，而代码功能不完整随便commit是没有意义的。
+
+（1）git stash push -m "save message"  : 执行存储时，添加备注，方便查找。只有 git stash 也可以，但查找时不方便识别。
+
+（2）git stash list  ：查看stash了哪些存储
+
+（3）git stash show ：显示哪些文件做了改动，默认show第一个存储，如果要显示其他存贮，后面加stash@{$num}，比如第二个 git stash show stash@{1}
+
+（4）git stash show -p : 显示改动明细，默认show第一个存储，如果想显示其他存存储，命令：git stash show  stash@{$num}  -p ，比如第二个：git stash show  stash@{1}  -p
+
+（5）git stash pop ：命令恢复之前缓存的工作目录，将缓存堆栈中的对应stash删除，并将对应修改应用到当前的工作目录下,默认为第一个stash,即stash@{0}，如果要应用并删除其他stash，命令：git stash pop stash@{$num} ，比如应用并删除第二个：git stash pop stash@{1}
+
+（6）git stash apply :应用某个存储,但不会把存储从存储列表中删除，默认使用第一个存储,即stash@{0}，如果要使用其他个，git stash apply stash@{$num} ， 比如第二个：git stash apply stash@{1}
+
+（7）git stash drop stash@{$num} ：丢弃stash@{$num}存储，从列表中删除这个存储
+
+（8）git stash clear ：删除所有缓存的stash
+
+一般使用，git stash和 git stash pop这两条就够了。
+
+注意:
+
+    新增的文件，直接执行stash是不会被存储的，因为没有在git 版本控制中的文件，是不能被git stash 存起来的，所以先执行下git add 再储存就可以了。
+
+### 高级用法：找回误删的git stash 数据
+
+本想 git stash pop ，但是输入成 git stash drop
+
+1.查找所有不可访问的对象
+
+    git fsck --unreachable
+
+2.逐个确认该对象的代码详情，找到自己丢失的那个
+
+    git show a923f340ua
+
+3.恢复找到的对象
+
+    git stash apply 95ccbd927ad4cd413ee2a28014c81454f4ede82c
+
+## cherry-pick 针对master分支上修改过的bug，要在dev分支上也做一遍修复
+
+1.先确定master分支上的commit id
+
+    git log  --graph --pretty=oneline --abbrev-commit
+
+我们只需要把4c805e2 fix bug 101这个提交所做的修改“复制”到dev分支。
+
+注意：我们只想复制 4c805e2 fix bug 101这个提交所做的修改，并不是把整个master分支merge过来。
+
+为了方便操作，Git专门提供了一个cherry-pick命令，让我们能复制一个特定的提交到当前分支：
+
+    $ git branch
+    * dev
+    master
+    $ git cherry-pick 4c805e2
+    [master 1d4b803] fix bug 101
+    1 file changed, 1 insertion(+), 1 deletion(-)
+
+Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803，它并不同于master分支的 4c805e2，因为这两个commit只是改动相同，但确实是两个不同的commit。用git cherry-pick，我们就不需要在dev分支上手动再把修bug的过程重复一遍。
