@@ -33,21 +33,21 @@ cmd1 | tee out1.dat | cmd2 | tee out2.dat | cmd3 > out3.dat
 ####################################################################
 # 命令行提示符显示当前路径和git分支名
 
-black=$'\[\e[1;30m\]'
+black=$'\[\e[0;30m\]'
 
-red=$'\[\e[1;31m\]'
+red=$'\[\e[0;31m\]'
 
-green=$'\[\e[1;32m\]'
+green=$'\[\e[0;32m\]'
 
-yellow=$'\[\e[1;33m\]'
+yellow=$'\[\e[0;33m\]'
 
-blue=$'\[\e[1;34m\]'
+blue=$'\[\e[0;34m\]'
 
-magenta=$'\[\e[1;35m\]'
+magenta=$'\[\e[0;35m\]'
 
-cyan=$'\[\e[1;36m\]'
+cyan=$'\[\e[0;36m\]'
 
-white=$'\[\e[1;37m\]'
+white=$'\[\e[0;37m\]'
 
 normal=$'\[\e[m\]'
 
@@ -60,8 +60,8 @@ function git-branch-prompt {
   if [ $branch ]; then printf "(%s)" $branch; fi
 }
 
-# 命令行提示符显示当前路径和git分支名 # \W 当前路径 \w 当前路径的末位 
-PS1="$white[$magenta\u$white@$green\h$white:$cyan\W$yellow\$(git-branch-prompt)$white]\$ $normal"
+# 命令行提示符显示当前路径和git分支名 # \W 当前路径 \w 当前路径的末位
+PS1="$magenta\u$white@$green\h$white:$cyan\W$yellow\$(git-branch-prompt)$white\$ $normal"
 
 # 简单写颜色
 PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(git-branch-prompt)\[\033[0m\] \$ "

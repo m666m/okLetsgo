@@ -25,7 +25,7 @@
     在 Linux 下搭建 Git 服务器 <https://www.cnblogs.com/dee0912/p/5815267.html>
     主力开发在Github，再同步到 Gitee 做国内网络访问的镜像 <https://www.zhihu.com/question/384541326/answer/1123864925>
 
-## git工作流：类似svn的TrunkBased集中式工作流 remote master -- local master(开发人员工作在此)
+## **git工作流：类似svn的TrunkBased集中式工作流 remote master -- local master(开发人员工作在此)**
 
 主干仅master分支
 
@@ -49,7 +49,11 @@
 
 2、从远程仓库同步本地仓库，以便同步hotfix进来。
 
-    git pull （默认远程origin本地master）
+    # git pull <远程主机> <远程分支>:<本地分支>
+    git pull （默认 orgin master 合到当前分支）
+
+    # 标签也同步过来，不分叉的合并
+    # git pull --tags --rebase origin master
 
 3、干活，自己的代码文件各种改动。
 
@@ -61,7 +65,7 @@
 
 5、开发告一段落，可以发布时，提交远程仓库
 
-    git pull 先把远程的master内容同步到本地
+    git pull
     git push （默认远程origin本地master）
 
 ## git工作流：改良版集中式工作流 remote master -- local dev(开发人员工作在此)
@@ -109,7 +113,7 @@
     git merge 分支名
     git push -u origin master
 
-## git工作流： 功能分支工作流 master -- dev(开发人员工作在此)
+## **git工作流： 功能分支工作流 master -- dev(开发人员工作在此)**
 
 上面的方法基础上把本地分支推送到远程，两个分支在本地和远程都存在，master分支保持稳定，开发工作放在dev分支，这俩都做主干分支。 CI/CD中持续集成部署在dev，持续交付部署在master。hotfix合并到远程的master分支和dev分支。
 
@@ -223,14 +227,13 @@ master分支很少变动，head始终对应生产环境代码。由master分支v
 
 注意 hotfix需要合入master和develop两个分支，其他分支只要同步这俩，就要更新大版本号。
 
-原文 <https://nvie.com/posts/a-successful-git-branching-model/>
+原文 <https://nvie.com/posts/a-successful-git-branching-model/> 流程图片<https://nvie.com/img/git-model@2x.png>
 
     汉化 <https://zhuanlan.zhihu.com/p/38772378> <https://zhuanlan.zhihu.com/p/36085631>
+
     抛弃 Git Flow 的 8 大理由 <https://baijiahao.baidu.com/s?id=1661688354212771172&wfr=spider&for=pc>
 
-![Gitflow工作流](https://nvie.com/img/git-model@2x.png)
-
-## 阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master
+## **阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master**
 
 只使用三种分支类型：主干master、特性分支feature、发布分支release，以及三条基本规则。
 
@@ -262,7 +265,7 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
     特性分支与发布分支的关联关系维护有点复杂。最好是在一个整体流程的自动化的平台下管理维护，该平台实现从需求提出，功能拆分，创建feature分支，组合release分支，生成部署环境，创建测试流水线，代码审查流水线，安全检查，在线部署等一系列步骤的自动化，最终实现端到端交付的研发自动化体系。
 
-## 用法：分支的拉取和上传
+## **用法：分支的拉取和上传**
 
 本地空目录，仅拉取指定远程分支的用法：
 
@@ -289,11 +292,70 @@ push三个用法：
 
         git push -u origin/dev_xxx
 
-单纯建立本地分支和远程分支serverfix的对应，本地已经切换到dev_xxx
+## **用法：从远程空白裸仓库拉取的步骤**
 
-    git branch -u origin/serverfix
+远程仓库里有文件，随便哪个机器 git clone命令都可以正常拉取的。而刚建好的裸仓库是空白的，直接用clone拉，后面做pull和push会报错，需要先给远程仓库上传个文件。
 
-## 用法：git clone 获取指定指定分支的指定commit版本
+    git clone ssh://git@x.x.x.:12345/gitrepo/tea.git
+
+0.先保证ssh连接远程仓库的用户时可以使用本机用户的密钥文件，免密登陆
+
+    添加sshkey 略
+
+除了github这样的，私有仓库都需要用户鉴权才能读取文件。
+
+1.远程操作
+
+    git 新建远程仓库
+    git init --bare tea.git
+
+2.本地操作，新建文件夹，git初始化，添加远程仓库地址
+
+    $ mkdir tea
+
+    $ cd tea
+
+    $ git init
+    Initialized empty Git repository in C://tea/.git/
+
+    $ git remote add origin ssh://git@x.x.x.:12345/gitrepo/tea.git
+
+3.本地操作，先提交个文件，推送远程，否则直接pull会各种报错
+
+    echo '# aaa' > mmm.py
+    git add mmm.py
+    git commit -m 'a'
+    git push origin master
+
+4.本地操作，拉取文件，先绑定远程
+
+    $ git branch --set-upstream-to=origin/master master
+    Branch 'master' set up to track remote branch 'master' from 'origin'.
+
+    $ git pull
+    Already up to date.
+
+5.本地操作，正常了，看下origin设置，是不是pull和push都有配置了：
+
+    $ git remote show origin
+    * remote origin
+      Fetch URL: ssh://git@x.x.x.:12345/gitrepo/tea.git
+      Push  URL: ssh://git@x.x.x.:12345/gitrepo/tea.git
+      HEAD branch: master
+      Remote branch:
+        master tracked
+      Local branch configured for 'git pull':
+        master merges with remote master
+      Local ref configured for 'git push':
+        master pushes to master (up to date)
+
+    $ git status
+    On branch master
+    Your branch is up to date with 'origin/master'.
+
+    nothing to commit, working tree clean
+
+## **用法：git clone 获取指定分支的指定commit版本**
 
 git clone 默认是取回 master 分支，可以使用 -b 参数指定的分支。 -b 参数不仅支持分支名，还支持 tag 名等。
 
@@ -311,7 +373,7 @@ clone完成后，进入目录，执行
 
 不断增大步骤2的数字，直到找到你要的commit
 
-## 用法：删除分支，远程/本地
+## **用法：删除分支，远程/本地**
 
 0.先看看有多少本地和远程分支
 
@@ -325,18 +387,30 @@ clone完成后，进入目录，执行
 
     git push origin --delete serverfix
 
-3.删除本地
+3.其它人的机器上还有该远程分支，清理无效远程分支
+
+    git branch -a # 查看
+
+    git fetch -p  # git remote prune
+
+4.删除本地
 
     git branch -d serverfix
 
-## 分支权限控制
+## **分支权限控制 及 轻量化git服务**
 
 Gitolite 基于ssh密钥管理的用户权限控制
 
     <https://github.com/sitaramc/gitolite>
     <https://gitolite.com/gitolite/basic-admin.html>
+    <https://zhuanlan.zhihu.com/p/100834900>
 
-## 用法：标签相关
+轻量化Git服务
+
+    goso  + Jenkins <https://github.com/gogs/gogs/blob/master/README_ZH.md>
+    gitea + Jenkins <https://github.com/go-gitea/>
+
+## **用法：标签相关**
 
 标签总是和某个commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，那么在这两个分支上都可以看到这个标签。
 
@@ -349,7 +423,7 @@ Gitolite 基于ssh密钥管理的用户权限控制
     git tag
     git show v1*
 
-3.推送标签
+3.不要忘记将标签显式推送到远程
 
     git push origin v1.1
     git push origin --tags (批量推送)
@@ -364,9 +438,16 @@ Gitolite 基于ssh密钥管理的用户权限控制
 
 6.从指定标签检出分支
 
+假如某个历史版本需要重建，排除bug，从标签位置拉分支
+
+    git checkout milestone-id        # 切换到分发给客户的标签
+    git checkout -b new-branch-name  # 创建新的分支用于重现 bug
+
+或一行命令
+
     git checkout -b fea_xxx v2.0.0
 
-## 储藏命令stash，在分支切换时不需要做commit操作
+## **用法：储藏命令stash，在分支切换时不需要做commit操作**
 
 当在一个分支的开发工作未完成，却又要切换到另外一个hotfix分支进行开发的时候，当前的分支不commit的话git不允许checkout到别的分支，而代码功能不完整随便commit是没有意义的。
 
@@ -388,7 +469,7 @@ Gitolite 基于ssh密钥管理的用户权限控制
 
 一般使用，git stash和 git stash pop这两条就够了。
 
-注意:
+### **注意**
 
     新增的文件，直接执行stash是不会被存储的，因为没有在git 版本控制中的文件，是不能被git stash 存起来的，所以先执行下git add 再储存就可以了。
 
@@ -408,7 +489,9 @@ Gitolite 基于ssh密钥管理的用户权限控制
 
     git stash apply 95ccbd927ad4cd413ee2a28014c81454f4ede82c
 
-## cherry-pick 针对master分支上修改过的bug，要在dev分支上也做一遍修复
+## **用法：补丁神器cherry-pick**
+
+针对master分支上修改过的bug，要在dev分支上也做一遍修复
 
 1.先确定master分支上的commit id
 
@@ -429,7 +512,106 @@ Gitolite 基于ssh密钥管理的用户权限控制
 
 Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803，它并不同于master分支的 4c805e2，因为这两个commit只是改动相同，但确实是两个不同的commit。用git cherry-pick，我们就不需要在dev分支上手动再把修bug的过程重复一遍。
 
-## 掉电导致objects目录下的某些文件为空
+## **版本回退的操作步骤**
+
+以master分支为例，A2提交不用了，需要回退到A1
+
+    A1 - A2
+
+1.查看版本号：
+
+    git log --graph --oneline
+    或 git reflog 查看更多的操作
+
+2.将版本回退到指定的提交点：
+
+    git reset --hard 目标版本号
+
+3.更新远程仓库端的版本也进行同步的回退
+
+    git push -f
+
+如果远程仓库不允许 push -f，先使用 rebase 把多个提交合并成一个提交，再使用 revert 产生一次反提交
+
+    <https://zhuanlan.zhihu.com/p/104806087>
+    # 从master 分支建立新分支 tmp_re ，使用 git log 查询一下要回退到的 commit 版本 N
+    git log --graph --oneline
+
+    # 使用命令 git rebase -i N 将这些 commits 都合并到最旧的 commit1 上
+    git rebase -i commit1
+    # 这个时候，master 分支上的提交记录是 older, commit1, commit2, commit3, commit4，而 tmp_re 分支上的提交记录是 older, commit_rebase，二者的内容其实是一样的
+
+    # tmp_re 分支合并master分支，多了一个 commit_merge。
+    git merge master
+
+    合并前
+    master分支  older---commit1---commit2---commit3---commit4
+    tmp_re分支  older---commit_rebase
+
+    合并后：
+    tmp_re分支  older---commit_rebase---------------------commit_merge---commit_revert
+                    \                                    /
+                     commit1---commit2---commit3---commit4
+
+    # 再在 tmp_re 分支上对 commit_merge 进行一次 revert 反提交，就实现了把 commit1 到 commit4 的提交全部回退。
+
+    git log --graph --oneline # 注意merge出现分叉，回退需要指定分支，先用git log看好了
+    git revert HEAD^ -m 1  # 退有rebase提交的那一支
+
+    # 最终tmp_re分支的内容回退掉了commit1-4的内容，commit历史都在：
+
+    tmp_re分支  older---commit_rebase---------------------commit_merge---commit_revert
+                    \                                    /
+                     commit1---commit2---commit3---commit4
+
+### 远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1
+
+这种情况，操作就比较繁琐了 <https://www.cnblogs.com/Super-scarlett/p/8183348.html>
+
+先通知所有人都做回退，A2后没有提交的本地master分支就回到A1了。
+
+    git reset --hard origin/master
+
+但是B先生已经提交了B1-B2
+
+    他的本地 master 分支是 A1 - A2 - B1 - B2
+    他的本地 开发   分支是 A1 - A2 - B1 - B2 - B3
+
+只要他再次提交，A2还是会出现在远程仓库，你的回退对分布式来说无用。
+
+所以需要B先生找出新增的B1，B2，cherry-pick到 master 分支
+
+    # 切到自己的开发分支，记录下需要新增到主干的commit点，B1 B2
+    git checkout b_branch
+    git log  --graph --oneline
+    或 git reflog 查看更多的操作
+
+    # 备份开发分支 内容是 A1 - A2 - B1 - B2 - B3
+    git checkout -b b_backup
+
+    # 开发分支回滚到A1
+    git reset --hard A1
+
+    # cherry-pick到 开发分支，内容是 A1 - B1 - B2
+    git cherry-pick B1 B2
+
+    # 开发分支做冲突合并，测试正常，不受A2消失的影响等一堆工作，然后继续下面的
+
+    # 更新master分支，做回滚到 A1，然后合并开发分支
+    git checkout master
+    git reset --hard origin/master
+    git merge b_branch
+
+    # 这时B先生的 master 分支，可以推送到远程仓库了，内容是A1 – B1 - B2
+    git push
+
+    # 最后，开发分支把自己最新的B3之类部分从备份分支cherry-pick过来
+    git checkout b_branch
+    git cherry-pick B3
+
+    # 最终的开发分支内容是 A1 - B1 - B2 - B3
+
+## **掉电导致objects目录下的某些文件为空**
 
 如果保存远程gitrepo的虚拟机经常关闭或者本地机器突然掉电，会导致.git/objects目录下的某些文件为空:
 
@@ -446,35 +628,198 @@ Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803
 
     3.本地报错的，把.git删掉，重新init，但是会丢历史版本信息
 
-## 合并两个分支
+## **单分支 —— 拉取pull的常用方法 --rebase**
 
-方法1. merge
+先看看原理：
 
-    git checkout dev
-    git merge dev_f1
+    git pull          = git fetch + git merge
+    git pull --rebase = git fetch + git rebase
 
-方法2. rebase 起拉直效果
+如果多人同时操作一个分支，merge的时候会结合多个提交的最新位置新建一个提交点（不是快进合并就这样），形成了一个菱形，见下面的字符画：
 
-    # dev_f1分支在dev分支的基础上延伸拉直，这时两分支的head位置不一样
-    git checkout dev_f1
-    git rebase dev
+1.初始状态，在c点大家pull了最新代码，开始自己的编辑提交，还未push：
+
+                d---e  别人的master
+              /
+     a---b---c         远程仓库的master分支
+              \
+                f---g  你的master
+
+2.大家分别提交自己的代码，e点的先提交，他pull+push，这时候远程仓库上直接接上了
+
+    a---b---c ---d---e
+                别人的
+
+3.你的g点要提交，先pull，这是git会提示输入新建commit点的注释了。。。
+
+git pull = git fetch + git merge后的效果，看起来像个菱形，提交的人越多，这个环越多
+
+              d---e  别人的
+             /     \
+    a---b---c       new commit 由git制造
+             \     /
+              f---g  你的
+
+git pull --rebase = git fetch + git rebase 去掉多余的分叉：
+
+    a---b---c ---d---e  ---f---g
+              别人      你的
+
+通过 --rebase 方式，你的提交重新拼接在远端新增提交的最后，这样看起来更简洁，找自己的提交点也方便。
+
+虽然可能要解决一些合并冲突，但是一条直线，看起来舒服多了，最重要的是后期合并commit就方便了。
+
+对别人来说，你推送后新增的 f-g 两个提交是新增在他的 d-e 上的，他在你的 f-g 后面继续线性追加，逻辑更清晰。最终用rebase实现大家都是在线性的增长master分支，不搞分叉。
+
+    -a-b-c -d-e  -f-g  -h-i  -j-k  ...
+           别人   你的  别人  你的   ...
+
+## **两个分支 - 合并的常用方法**
+
+能做合并的基础是两个分支有相交点，如果三分支合并无直接交点需要用rebase <https://git-scm.com/docs/git-rebase>
+
+                          d---e  hotfix分支
+                         /
+    master主干  a---b---c
+                         \
+                          f---g  feature分支
+
+### **方法一. merge 默认的快进合并，需要合入分支的接续点就是分叉点**
+
+merge默认做的是快进，即不新增commit点，走一条线的效果，跟上面的单分支pull的合并思路相反：
+
+hotfix分支先合并到主干分支 master
+
+    git checkout master
+    git pull
+    git merge hotfix
+
+形成的master分支：
+
+    master分支  a---b---c ---d---e
+                          先合入的分支，直接接c点，git默认做快进，不制造新commit点
+
+    git reset HEAD^ --hard 回退是到d
+
+feature分支后合并到master分支：
+
+    git checkout master
+    git pull
+    git merge feature
+
+因为不是接续c点，所以git会制作新commit点，形成菱形分叉：
+
+                          d---e  hotfix分支
+                         /      \
+    master分支  a---b---c         new(HEAD) 由git制造
+                         \      /
+                          f---g  feature分支
+
+    git reset HEAD^ --hard 回退是到e
+
+merge 操作遇到冲突的时候，当前merge不能继续进行下去。手动修改冲突内容后，add 修改，commit 就可以了。
+
+### **方法二. 大的分支合入要保留菱形分叉，便于管理**
+
+feature 分支是用来开发特性的，上面会存在许多零碎的提交，如果出现接续分叉点合并，默认的快进式合并会把 feature 分支的提交历史混入到 master 中，搅乱 master 的提交历史，保留菱形分叉的效果更好。
+
+    git merge --no-ff
+
+                              f---g  feature分支
+                             /     \
+        master主干  a---b---c ------- new(HEAD) 由git制造
+
+    git reset HEAD^ --hard 的效果是回到c点
+
+hotfix分支再合入就在它后面又一个菱形，可考虑用rebase合入master，实现拉直（参见方法三）
+
+                              f---g  feature分支
+                             /     \
+        master主干  a---b---c ------- new ---d---e
+                                          hotfix分支用rebase合入，不制造commit点
+
+#### 压缩合并，只作为一个commit点合入
+
+用于feature 分支的commit太多了，合入主干时简单粗暴的精简处理
+
+    git checkout master
+
+    git merge --squash feature
+    git commit -m "只有我这一个提交点，原来的commit历史不要了"
+
+效果
+
+                          d---e  hotfix 分支先合并，git默认做快进
+                         /     \
+    master主干  a---b---c        new(HEAD) 由git在后合入分叉时生成
+                         \     /
+                          fgmix
+                          功能分支只有一个commit点，后合并
+
+不推荐用压缩合并
+
+    如果是最先合并，即紧接着分叉点c合入主干，有可能被快进合并，不能制造新commit点形成菱形
+
+    功能分支的commit合并应该在合入主干之前，由开发组内部自行整理，不能简单粗暴的一把压缩合并。
+
+### **方法三. 类似merge默认快进效果的rebase，不制造新commit点**
+
+初始状态是两条分叉：
+
+          A---B---C feature分支
+         /
+    D---E---F---G   master分支先合入了hotfix，默认快进合并
+        *
+        hotfix分支和feature分支的分叉点在E
+
+为了合入不制造菱形，feature 分支在 master 分支的基础上延伸拉直，这时两分支的head位置不一样
+
+    git checkout feature
+    git rebase master
 
 一条命令搞定：git rebase < basebranch > < topicbranch >
 
-    git rebase dev dev_f1
+    git rebase master feature
 
-然后dev分支（落后了）做合并，两分支的head位置一样了。（因为dev分支的head位于分叉点，实质二者在一条线上，所以merge做的是快进合并）
+rebase的拉直效果，虽然需要付出一些合并冲突解决的代价，但是清晰多了：
 
-    git checkout dev
-    git merge dev_f1
+                  A'--B'--C' feature
+                 /
+    D---E---F---G master
 
-### 注意
+然后 master 分支（落后了）做合并，两分支的head位置一样了。（因为 master 分支的head位于分叉点，实质二者在一条线上，所以merge做的是快进合并）
 
-    已经推送到远端仓库的提交，如果别人都拉取开发了，你再做rebase并再次提交，内容会乱，双方都得再拉取整合。
+    git checkout master
+    git merge feature
 
-    所以，仅在本地分支做 rebase ！
+最终效果，大家都同步到一条直线的最末端：
 
-## git rebase -i 交互式合并commit
+    D---E---F---G---A'--B'--C' master
+                               feature
+
+rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决冲突。
+解决冲突后,将修改add，执行git rebase –continue继续操作，或者git rebase –skip忽略冲突，或者git rebase --abort终止这次rebase。
+
+### **综述：合并两分支时，如何选择菱形还是拉直**
+
+    两分支合并，用merge -no-ff做菱形分叉，用rebase做拉直。
+    hotfix合入要拉直，大功能分支合入要做菱形分叉。
+    大功能分支在合并主分支之前，内部先整理合并commit，保证简洁再合入大分支。
+
+## 本地开发分支，提交比较琐碎，不要多制作commit点
+
+提交但是不制作新的commit点（上次的变一下），适合本次和上次提交内容相近的场景
+
+    git add .
+    git commit --amend  # 等价于 git rebase -i HEAD~2
+
+## **git rebase -i 交互式合并commit**
+
+### **注意【仅在本地分支 尚未推送或合并过的代码上做 合并commit 的操作】**
+
+    已经推送到远端仓库的提交，如果别人都拉取开发了，你再做rebase并再次提交，之前别人拉取的内容变了，双方都得再做拉取整合。如果时间线已经是很长的了，会导致很大的混乱。
+
+    拉取到本地的最新代码，不要对之前的内容做commit合并。不然，如果推送到服务器上，之前别人拉取的内容变了，需要再次合并你的改那块内容，又是在制造混乱。
 
 参考
 
@@ -495,7 +840,7 @@ Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803
     exec：执行shell命令（缩写:x）
     drop：我要丢弃该commit（缩写:d）
 
-示例
+### **示例**
 
     # 先做提交或储存，保证要修改的分支没有暂存内容才能继续
 
@@ -503,9 +848,9 @@ Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803
     git log --oneline
 
         112bd52 (HEAD, fea_stragy) 1
-        588e326 策略设置窗口完成组合列表控件的菜单操作
-        a5c7c9a 策略数据库使用pandas的read_pickle()以文件的方式处理
-        1ae0123 新建组合跟编辑组合统一弹出窗体
+        588e326 一般性的一些注释
+        a5c7c9a 又一些注释
+        1ae0123 最初的一些注释
 
     # 第一次用需要指定分支，因为我的fea_stragy没有远程分支
     #   git rebase ：There is no tracking information for the current branch.
@@ -514,6 +859,7 @@ Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803
 
     # 列出该点之后的所有commit，调用vi交互式进行编辑
     git rebase  -i 1ae0123
+    # 简单的话，从近20个开始看： git rebase -i HEAD~20
 
     # 编辑 112bd52 那行，把 pick 改成 s
     # 编辑完成 :wq 退出后新出现个提示窗口
@@ -521,27 +867,31 @@ Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803
     # 不改就直接 :q
 
     # 操作完看看提示，还有什么需要解决的会提示
-    [detached HEAD 9cf8ad2] 策略设置窗口完成组合列表控件的菜单操作
+    [detached HEAD 9cf8ad2] 一般性的一些注释
     Date: Wed Sep 16 13:55:16 2020 +0800
     9 files changed, 1774 insertions(+), 1752 deletions(-)
     Successfully rebased and updated refs/heads/fea_stragy.
 
     git status
 
-    # 再看当前commit，合并后出现了一个新的commit
+    # 再看当前commit，合并后出现了一个新的commit取代了压缩的那几个
     git log  --oneline
 
-        622c01c (HEAD) 策略设置窗口完成组合列表控件的菜单操作
-        a5c7c9a 策略数据库使用pandas的read_pickle()以文件的方式处理
-        1ae0123 新建组合跟编辑组合统一弹出窗体
+        9cf8ad2 (HEAD) 一般性的一些注释
+        a5c7c9a 又一些注释
+        1ae0123 最初的一些注释
 
-### 遇到问题了： 622c01c没关联到 fea_stragy 分支
+    # 最后，由于重写了分支的 Git 提交历史，必须强制更新远程分支（如果有的话）：
+
+    git push -f
+
+### 第一次做的时候遇到问题了： 622c01c没关联到 fea_stragy 分支
 
     $ git switch master
     Warning: you are leaving 1 commit behind, not connected to
     any of your branches:
 
-    622c01c 策略设置窗口完成组合列表控件的菜单操作
+    622c01c 一般性的一些注释
 
     If you want to keep it by creating a new branch, this may be a good time
     to do so with:
@@ -554,7 +904,7 @@ Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803
 
         112bd52 (HEAD -> fea_stragy) HEAD@{Wed Sep 16 15:36:19 2020 +0800}: checkout: moving from master to fea_stragy
         55d1836 (master) HEAD@{Wed Sep 16 15:35:04 2020 +0800}: checkout: moving from 622c01cf988f0af3872daa14da3b3e5d257c5772 to master
-        622c01c HEAD@{Wed Sep 16 14:54:41 2020 +0800}: rebase (squash): 策略设置窗口完成组合列表控件的菜单操作
+        622c01c HEAD@{Wed Sep 16 14:54:41 2020 +0800}: rebase (squash): 一般性的一些注释
         588e326 HEAD@{Wed Sep 16 14:54:41 2020 +0800}: rebase (start): checkout 1ae0123
         112bd52 (HEAD -> fea_stragy) HEAD@{Wed Sep 16 14:29:16 2020 +0800}: rebase (start): checkout 112bd52
         112bd52 (HEAD -> fea_stragy) HEAD@{Wed Sep 16 14:26:46 2020 +0800}: rebase (finish): returning to refs/heads/fea_stragy
@@ -581,3 +931,74 @@ Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803
 解决办法4： git merge 合并被删除的记录
 
     git merge 622c01c
+
+## **总结 rebase 变基在日常工作的用途**
+
+<https://zhuanlan.zhihu.com/p/249231960>
+
+### **一.你的功能分支拉取远程时要做变基**
+
+当你持续地开发你的功能分支时，请经常对它做 变基(rebase)：
+
+    1. 本地dev分支拉取远程dev分支的时候做rebase
+    git checkout dev_xxx
+    git pull --rebase
+
+### **二. 两分支合并，出现菱形分叉，需要拉直时，用rebase**
+
+菱形分叉会制造新的commit点，根据具体情况考虑是否需要，如果不需要，尽量变基拉直。
+
+    大版本合并，功能分支合并master分支这种，需要菱形分叉
+    hotfix在主干上的接续，一般rebase拉直
+    本地功能分支拉取同步远程代码，一般rebase拉直
+
+举例:
+
+1.本地dev分支同步master分支的时候做rebase
+
+    git checkout master
+    git pull
+
+    git checkout feature-xyz  # 假设的功能分支名称
+    git rebase master  # 可能需要解决  feature-xyz 上的合并冲突
+
+这些步骤会在你的功能分支上重写历史（这并不是件坏事）。首先，它会使你的功能分支获得 master 分支上当前的所有更新。其次，你在功能分支上的所有提交都会在该分支历史的顶部重写，因此它们会顺序地出现在日志中。你可能需要一路解决遇到的合并冲突，这也许是个挑战。但是，这是解决冲突最好的时机，因为它只影响你的功能分支。
+
+2.在解决完所有冲突并进行回归测试后，如果你准备好将功能分支合并回 master，那么就可以在再次执行上述的变基步骤几次后进行合并，这次的合并应该用菱形分叉
+
+    git checkout master
+    git pull
+    git merge feature-xyz -no-ff
+
+    git push
+
+在此期间，如果其他人也将和你有冲突的更改推送到 master，那么 Git 合并将再次发生冲突。你需要解决它们并重新进行回归测试。
+
+还有一些其他的合并哲学（例如，只使用合并而不使用变基以防止重写历史），其中一些甚至可能更简单易用。但是，master 分支的历史将穿插着所有同时开发的功能的提交，这样混乱的历史很难回顾。
+
+定期的变基是一个干净可靠的策略，因为提交历史日志将以有意义的功能序列进行排列（每个人的commit都是分段但是线性的排列）。
+
+### **三.本地功能分支在合并到别的分支前压扁提交**
+
+【注意】
+
+    仅在本地分支尚未推送或合并过的代码上做rebase合并commit 的操作
+
+当你在功能分支上开发时，即使再小的修改也可以作为一个提交。但是，如果每个功能分支都要产生五十个提交，那么随着不断地增添新功能，master 分支的提交数终将无谓地膨胀。通常来说，每个功能分支只应该往 master 中增加一个或几个提交。为此，你需要将多个提交 压扁(Squash)成一个或者几个带有更详细信息的提交中。通常使用以下命令来完成：
+
+    git rebase -i HEAD~20  # 查看可进行压扁的二十个提交
+
+当这条命令执行后，将弹出一个提交列表的编辑器，你可以通过包括 遴选(pick)或 压扁(squash)在内的数种方式编辑它。“遴选”一个提交即保留这个提交。“压扁”一个提交则是将这个提交合并到前一个之中。使用这些方法，你就可以将多个提交合并到一个提交之中，对其进行编辑和清理。这也是一个清理不重要的提交信息的机会（例如，带错字的提交）。
+
+总之，保留所有与提交相关的操作，但在合并到 master 分支前，合并并编辑相关信息以明确意图。注意，不要在变基的过程中不小心删掉提交。
+
+在执行完诸如变基之类的操作后，我会再次看看 git log 并做最终的修改：
+
+    git log --graph --oneline
+
+    # 提交但是不制作新的commit点（上次的变一下），适合本次和上次提交内容相近的场景
+    git commit --amend  # 等价于 git rebase -i HEAD~2
+
+最后，由于重写了分支的 Git 提交历史，必须强制更新远程分支：
+
+    git push -f
