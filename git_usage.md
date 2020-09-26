@@ -267,7 +267,7 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
 ## **用法：分支的拉取和上传**
 
-本地空目录，仅拉取指定远程分支的用法：
+### 本地空目录，仅拉取指定远程分支的用法：
 
     git clone -b dev 代码仓库地址 （dev是分支名称）
 
@@ -278,7 +278,7 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
         git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
         git pull origin dev(远程分支名称)
 
-push三个用法：
+### 本地非空目录，远程空的push三个用法：
 
     远程已有dev_xxx分支并且已经关联本地分支dev_xxx，本地已经切换到dev_xxx
 
@@ -291,6 +291,27 @@ push三个用法：
     远程已有dev_xxx分支但未关联本地分支dev_xxx，本地已经切换到dev_xxx
 
         git push -u origin/dev_xxx
+
+### git clone之后的第一次pull和push调试
+
+先看有几个远程
+
+    git remote show
+
+查看远程，配置，如果pull和push未关联，需要关联
+
+    $ git remote show origin
+    Warning: Permanently added the RSA host key for IP address '1xx.1xx.1xx.1xx' to the list of known hosts.
+    * remote origin
+    Fetch URL: git@github.com:m666m/okLetsgo.git
+    Push  URL: git@github.com:m666m/okLetsgo.git
+    HEAD branch: master
+    Remote branch:
+        master tracked
+    Local branch configured for 'git pull':
+        master merges with remote master
+    Local ref configured for 'git push':
+        master pushes to master (up to date)
 
 ## **用法：从远程空白裸仓库拉取的步骤**
 
