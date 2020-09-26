@@ -267,6 +267,12 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
 ## **用法：分支的拉取和上传**
 
+### 从远程git拉取指定分支
+
+    git fetch origin
+    git branch -a -v
+    git checkout -b dev_xxx origin/dev_xxx
+
 ### 本地空目录，仅拉取指定远程分支的用法：
 
     git clone -b dev 代码仓库地址 （dev是分支名称）
@@ -301,6 +307,7 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 查看远程，配置，如果pull和push未关联，需要关联
 
     $ git remote show origin
+
     Warning: Permanently added the RSA host key for IP address '1xx.1xx.1xx.1xx' to the list of known hosts.
     * remote origin
     Fetch URL: git@github.com:m666m/okLetsgo.git
@@ -312,6 +319,12 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
         master merges with remote master
     Local ref configured for 'git push':
         master pushes to master (up to date)
+
+远程仓库格式
+
+    ssh://git@xx.xx.xx.xx:12345/gitrepo/myproj.git
+    git@github.com:m666m/okLetsgo.git
+    https://github.com/m666m/myproj
 
 ## **用法：从远程空白裸仓库拉取的步骤**
 
