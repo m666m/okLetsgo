@@ -8,110 +8,18 @@
 注意：各种静态的对象满天飞的，用起来先想想这个函数用的啥对象实现的这功能，多线程躲着这块点。
 
 参考
+
     C标准库头文件 <https://zh.cppreference.com/w/c/header>
+
     日期和时间工具 <https://en.cppreference.com/w/c/chrono>
+
     time.h <https://www.tutorialspoint.com/c_standard_library/time_h.htm>
 
     你看不到我 <https://en.wikipedia.org/wiki/Unix_time>
 
-### time_t typedef
+### tm struct  及相关操作函数
 
-在 POSIX 系统上，time_t 以秒计量，自1970年1月1日0点（UTC）开始的秒数 <https://zh.cppreference.com/w/c/chrono/time_t>
-
-注意这些操作函数的入参和返回值类型，有的修改入参值，有的是返回值类型变，用法没规律，死记：
-
-time() <time.h> <https://zh.cppreference.com/w/c/chrono/time>
-    取当前时间
-
-    入参 time_t
-    返回纪元1970年1月1日0点（UTC）开始经过的当前系统日历时间。如果提供了入参，函数修改这个time_t的值。
-
-    下面的那些显示为字符串函数依赖这个值进行显示，
-    所以取系统时间并打印的过程，就是先time()一个time_t，然后调用各种字符串输出函数
-
-tzset() <https://pubs.opengroup.org/onlinepubs/9699919799/functions/tzset.html>
-
-    设置时区，读取环境变量 TZ，下面的几个字符串函数都偷偷调它一把。
-
-    <time.h>
-
-    操作了外部变量 tzname tzname[0] = "std"; tzname[1] = "dst";
-                    daylight 夏令时偏离秒数
-                    timezone 相对零时区偏离秒数
-
-    设置环境变量参见 <https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08>
-
-localtime()
-
-    将从纪元开始的时间转换成以本地时间表示的日历时间。
-
-    <time.h>
-    入参 time_t
-    返回 struct tm。
-
-    提供从 time_t 到 struct tm 的转换
-
-gmtime()
-
-    将从纪元开始的时间转换成以协调世界时（UTC）表示的日历时间。
-
-    <time.h>
-    入参 time_t
-    返回 struct tm
-
-    提供从 time_t 到 struct tm 的转换
-
-~~ctime()~~
-
-    转换从纪元起的给定时间为历法本地时间，再转换为文本表示，如同通过调用 asctime(localtime(ltime))
-
-    <time.h>
-    入参 time_t
-    返回 字符串
-
-    POSIX 标记此函数为过时并推荐 strftime() 代替。
-
-strftime() <https://zh.cppreference.com/w/c/chrono/strftime>
-
-    按照格式字符串 format ，转换来自给定的日历时间 time 的日期和时间信息
-
-    <time.h>
-    入参 struct tm
-    输出 字符串
-
-    这个字符串转换函数是推荐使用的，代替 ctime() 和 asctime()
-    format格式参见 <https://zh.cppreference.com/w/c/chrono/strftime>
-
-difftime()
-
-    以秒数计算二个作为 time_t 对象的日历时间的差（ time_end - time_beg ）。若 time_end 代表先于 time_beg 的时间点，则结果为负。
-
-    入参 time_t
-    返回 差值秒数
-
-    计算两个日期之间的差值，只能用秒数
-
-示例代码
-
-    ``` c
-
-    #include <time.h>
-    #include <stdint.h>
-    #include <stdio.h>
-
-    time_t ltime = time(NULL);
-
-    time( &ltime );
-
-    printf("%jd seconds since the epoch (UTC 1/1/70) began\n", (intmax_t)ltime);
-
-    printf("UTC:   %s", asctime(localtime(&ltime)));
-    printf("local: %s", asctime(gmtime(&ltime)));
-    printf("ctime local: %s", ctime(&ltime));
-
-    ```
-
-### tm struct 注意是系统静态对象，在 gmtime 、 localtime 及 ctime 间共享
+注意是系统静态对象，在 gmtime() 、 localtime() 及 ctime() 间共享
 
 保有拆分成其组分的日历日期和时间的结构体。<https://zh.cppreference.com/w/c/chrono/tm>
 
@@ -129,22 +37,21 @@ difftime()
 
 操作函数，注意返回值类型：
 
-mktime() <https://zh.cppreference.com/w/c/chrono/mktime>
+#### mktime()   <time.h>
 
-    重整化表示成 struct tm 的本地日历时间，并将其转化成从纪元开始经过时间的 time_t 对象格式。
+    提供从 tm 到 time_t 的转换
 
-    <time.h>
+    <https://zh.cppreference.com/w/c/chrono/mktime>
+
     入参 struct tm
     返回 time_t
 
-    提供从 tm 到 time_t 的转换，
     一般指定时间的操作都是从tm结构或者字符串来的，转成time_t后再供其它时间计算函数调用。
 
-~~asctime()~~
+#### ~~asctime()~~  <time.h>
 
-    转换日历时间 tm 为以下固定的 25 字符表示形式： Www Mmm dd hh:mm:ss yyyy\n
+    转换结构 tm 为以下固定的 25 字符表示形式： Www Mmm dd hh:mm:ss yyyy\n
 
-    <time.h>
     入参 struct tm
     返回 字符串
 
@@ -184,6 +91,106 @@ mktime() <https://zh.cppreference.com/w/c/chrono/mktime>
 
     ```
 
+### time_t typedef 及相关操作函数
+
+在 POSIX 系统上，time_t 以秒计量，自1970年1月1日0点（UTC）开始的秒数 <https://zh.cppreference.com/w/c/chrono/time_t>
+
+注意这些操作函数的入参和返回值类型，有的修改入参值，有的是返回值类型变，用法没规律，死记：
+
+#### time() <time.h>
+
+    <https://zh.cppreference.com/w/c/chrono/time>
+
+    取当前时间
+
+    入参 time_t
+    返回纪元1970年1月1日0点（UTC）开始经过的当前系统日历时间。如果提供了入参，函数修改这个time_t的值。
+
+    下面的那些显示为字符串函数依赖这个值进行显示，
+    所以取系统时间并打印的过程，就是先time()一个time_t，然后调用各种字符串输出函数
+
+#### strftime() <time.h>
+
+    <https://zh.cppreference.com/w/c/chrono/strftime>
+
+    按照格式字符串 format ，转换来自给定的日历时间 time 的日期和时间信息
+
+    入参 struct tm
+    输出 字符串日期时间
+
+    这个字符串转换函数是推荐使用的，代替 ctime() 和 asctime()
+    format格式参见 <https://zh.cppreference.com/w/c/chrono/strftime>
+
+#### gmtime() <time.h>
+
+    将从纪元开始的时间转换成以协调世界时（UTC）表示的日历时间。
+
+    入参 time_t
+    返回 struct tm
+
+    提供从 time_t 到 struct tm 的转换
+
+#### localtime()  <time.h>
+
+    将从纪元开始的时间转换成以本地时间表示的日历时间。
+
+    入参 time_t
+    返回 struct tm。
+
+    提供从 time_t 到 struct tm 的转换
+
+#### tzset()  <time.h>
+
+    <https://pubs.opengroup.org/onlinepubs/9699919799/functions/tzset.html>
+
+    设置时区，读取环境变量 TZ，下面的几个字符串函数都偷偷调它一把。
+
+    操作了外部变量 tzname tzname[0] = "std"; tzname[1] = "dst";
+                    daylight 夏令时偏离秒数
+                    timezone 相对零时区偏离秒数
+
+    设置环境变量参见 <https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08>
+
+#### difftime()  <time.h>
+
+    以秒数计算二个作为 time_t 对象的日历时间的差（ time_end - time_beg ）。若 time_end 代表先于 time_beg 的时间点，则结果为负。
+
+    入参 time_t
+    返回 差值秒数
+
+    计算两个日期之间的差值，只能用秒数
+
+#### ~~ctime()~~ <time.h>
+
+    转换从纪元起的给定时间为历法本地时间，再转换为固定格式文本表示，如同通过调用 asctime(localtime(ltime))
+
+    字符串拥有下列格式： Www Mmm dd hh:mm:ss yyyy\n
+
+    入参 time_t
+    返回 字符串
+
+    POSIX 标记此函数为过时并推荐 strftime() 代替。
+
+示例代码
+
+    ``` c
+
+    #include <time.h>
+    #include <stdint.h>
+    #include <stdio.h>
+
+    time_t ltime = time(NULL);
+
+    time( &ltime );
+
+    printf("%jd seconds since the epoch (UTC 1/1/70) began\n", (intmax_t)ltime);
+
+    printf("UTC:   %s", asctime(localtime(&ltime)));
+    printf("local: %s", asctime(gmtime(&ltime)));
+    printf("ctime local: %s", ctime(&ltime));
+
+    ```
+
 ## Python标准库
 
 库 datetime 和 库 time 处理日期时间的运算，对应的数据结构和操作方式本质是c标准库的。
@@ -212,11 +219,159 @@ mktime() <https://zh.cppreference.com/w/c/chrono/mktime>
 
     python中对于时间的运算本质上都被转成timestamp类型了，注意函数返回值类型！
 
+### 库time <https://docs.python.org/zh-cn/3/library/time.html>
+
+时间的访问和转换，依赖库datetime。
+
+注意这个库的很多对象和操作是时间转换自C标准库的。
+
+这个库的很多函数返回值是不一样的，注意区别
+
+字符串格式化为本库用的时间格式，格式跟库datetime的不同 <https://docs.python.org/zh-cn/3/library/time.html#time.strftime>
+
+术语解释
+
+    epoch 是时间开始的点，并且取决于平台。对于Unix， epoch 是1970年1月1日00:00:00（UTC）。要找出给定平台上的 epoch ，请查看 time.gmtime(0) 。
+
+    术语 Unix 纪元秒数 是指自国际标准时间 1970 年 1 月 1 日零时以来经过的总秒数，通常不包括 闰秒。 在所有符合 POSIX 标准的平台上，闰秒都会从总秒数中被扣除。
+
+    此模块中的功能可能无法处理纪元之前或将来的远期日期和时间。未来的截止点由C库决定；对于32位系统，它通常在2038年。
+
+    函数 strptime() 在接收到 %y 格式代码时可以解析 2 位数的年份。 当解析 2 位数年份时，会按照 POSIX 和 ISO C 标准进行转换：数值 69--99 映射为 1969--1999，而数值 0--68 被映射为 2000--2068。
+
+    UTC是协调世界时（以前称为格林威治标准时间，或GMT）。缩写UTC不是错误，而是英语和法语之间的妥协。
+
+    DST是夏令时，在一年中的一部分时间（通常）调整时区一小时。 DST规则很神奇（由当地法律确定），并且每年都会发生变化。 C 库有一个包含本地规则的表（通常是从系统文件中读取以获得灵活性），并且在这方面是True Wisdom的唯一来源。
+
+    各种实时函数的精度可能低于表示其值或参数的单位所建议的精度。例如，在大多数Unix系统上，时钟 "ticks" 仅为每秒50或100次。
+
+    另一方面， time() 和 sleep() 的精度优于它们的Unix等价物：时间表示为浮点数，time() 返回最准确的时间 （使用Unix gettimeofday() 如果可用），并且 sleep() 将接受非零分数的时间（Unix select() 用于实现此功能，如果可用）。
+
+    时间值由 gmtime()，localtime() 和 strptime() 返回，并被 asctime()， mktime() 和 strftime() 接受，是一个 9 个整数的序列。 gmtime()， localtime() 和 strptime() 的返回值还提供各个字段的属性名称。
+
+#### 内置数据类型
+
+添加了一点我的注解，timestamp类型是epoch点以来的秒数，很多函数返回的都是这样的秒数，如果单独说是整型或浮点型，体现不出时间意义。
+
+##### timestamp
+
+能传递给别的库如库 datatime 使用的数据结构
+
+    对于 c 标准库的 time_t
+
+##### struct_time
+
+class time.struct_time
+
+    对应 c 标准库的结构 tm
+
+    请注意，与C结构不同，月份值是 [1,12] 的范围，而不是 [0,11] 。
+
+    给函数gmtime(), localtime(), strptime()的返回值交换数据方便使用的
+
+    time.struct_time(tm_year=2019, tm_mon=12, tm_mday=2, tm_hour=17, tm_min=25, tm_sec=0, tm_wday=0, tm_yday=336, tm_isdst=0)
+
+    可访问对象参见 <https://docs.python.org/zh-cn/3/library/time.html#time.struct_time>
+
+时区常量
+
+    time.altzone
+
+        本地DST时区的偏移量，以UTC为单位的秒数，如果已定义。如果当地DST时区在UTC以东（如在西欧，包括英国），则是负数。 只有当 daylight 非零时才使用它。 见下面的注释。
+
+    time.daylight
+
+        如果定义了DST时区，则为非零。 见下面的注释。
+
+    time.timezone
+
+        本地（非DST）时区的偏移量，UTC以西的秒数（西欧大部分地区为负，美国为正，英国为零）。 见下面的注释。
+
+    time.tzname
+
+        两个字符串的元组：第一个是本地非DST时区的名称，第二个是本地DST时区的名称。 如果未定义DST时区，则不应使用第二个字符串。 见下面的注释。
+
+注解 对于上述时区常量（ altzone 、 daylight 、 timezone 和 tzname ），该值由模块加载时有效的时区规则确定，或者最后一次 tzset() 被调用时，并且在过去的时间可能不正确。建议使用来自 localtime() 结果的 tm_gmtoff 和 tm_zone 来获取时区信息。
+
+#### 内置函数，不需要实例化对象直接用
+
+##### time.time()       → timestamp
+
+    返回当前时间 timestamp
+
+    数据类型是 timestamp ，即POSIX 时间戳数据类型，以浮点数表示的从 epoch 开始的秒数的时间值。
+    不是一般的整数哦，有意义的。
+
+##### time.strftime()   struct_time → 字符串日期时间
+
+    将 struct_time 转换成字符串
+
+    格式参考 <https://docs.python.org/zh-cn/3/library/time.html#time.strftime>
+
+    入参 struct_time
+    返回 字符串日期时间
+
+    >>> from time import gmtime, strftime
+    >>> strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
+    'Thu, 28 Jun 2001 14:17:15 +0000'
+
+##### time.strptime()   字符串日期时间 → struct_time
+
+    将字符串日期转换成 struct_time
+
+    格式参考跟strftime()一样 <https://docs.python.org/zh-cn/3/library/time.html#time.strftime>
+
+    入参 字符串日期时间
+    返回 struct_time
+
+##### time.mktime()     struct_time → timestamp
+
+    同c标准库的mktime()，提供从 struct_time 到 timestamp 的转换
+
+    入参 struct_time
+    返回 timestamp
+
+##### time.gmtime()     timestamp → struct_time
+
+    同c标准库的gmtime()， UTC时间。 dst 标志始终为零。
+
+    入参 timestamp
+    返回 struct_time
+
+##### time.localtime()  timestamp → struct_time
+
+    同c标准库的localtime()，当地时间。dst标志设置为 1 。
+
+    入参 timestamp
+    返回 struct_time
+
+有个相反的函数在库calendar.timegm()
+
+##### time.sleep()
+
+    暂停执行调用线程达到给定的秒数。
+
+##### ~~time.asctime()~~
+
+    同c标准库的asctime()，转换为以下形式的字符串: 'Sun Jun 20 23:21:05 1993'。
+
+    入参 struct_time
+    返回 字符串时间
+
+##### ~~time.ctime()~~
+
+    同c标准库的ctime()，转换为以下形式的字符串: 'Sun Jun 20 23:21:05 1993'
+
+    入参 timestamp
+    返回 字符串时间
+
 ### 库datetime <https://docs.python.org/zh-cn/3/library/datetime.html>
 
-    在支持日期时间数学运算，实现的关注点更着重于如何能够更有效地解析其属性用于格式化输出和数据操作。
+在支持日期时间数学运算，实现的关注点更着重于如何能够更有效地解析其属性用于格式化输出和数据操作。
 
-    注意这个库的很多对象和操作是时间转换自C标准库的。
+注意这个库的很多对象和操作是时间转换自C标准库的。
+
+字符串格式化为本库用的时间格式，格式跟库time的不同 <https://docs.python.org/zh-cn/3/library/datetime.html#strftime-and-strptime-behavior>
 
 #### class datetime.time 对象
 
@@ -263,7 +418,11 @@ fromisoformat()
 
 实例方法：
 
-time对象没有获取当前系统时间的功能，在date对象里实现，time对象一般就是字符串操作
+time对象没有获取当前系统日期时间的功能
+
+    在datetime对象用now()实现，time对象一般就是字符串操作，date对象只有取日期的today()
+
+    在库time里用time()实现取当前时间，返回值类型是 timestamp
 
 isoformat()
 
@@ -346,20 +505,24 @@ __str__()
 
 常用实例方法：
 
-ctime()
+~~ctime()~~
 
-    返回一个表示日期的字符串
+    返回一个固定格式字符串，格式同c标准库ctime()
 
     # d.ctime() 等效于:
     time.ctime(time.mktime(d.timetuple()))
 
-strftime(format)
+    >>> from datetime import date
+    >>> date(2002, 12, 4).ctime()
+    'Wed Dec  4 00:00:00 2002'
+
+##### strftime()    date → 字符串日期时间
 
     返回一个由显式格式字符串所指明的代表日期的字符串。
 
     格式参数 <https://docs.python.org/zh-cn/3/library/datetime.html#strftime-strptime-behavior>
 
-timetuple()
+##### timetuple()   date → struct_time
 
     类型转换，把date对象，返回成库 time 用的 struct_time 结构了，方便后续运算。
 
@@ -370,28 +533,26 @@ timetuple()
     # d.timetuple() 等价于:
     time.struct_time((d.year, d.month, d.day, 0, 0, 0, d.weekday(), yday, -1))
 
-示例代码
+示例
 
-    ``` Python
-
-        >>> from datetime import date
-        >>> today = date.today()
-        >>> today
-        datetime.date(2007, 12, 5)
-        >>> today == date.fromtimestamp(time.time())
-        True
-        >>> my_birthday = date(today.year, 6, 24)
-        >>> if my_birthday < today:
-        ...     my_birthday = my_birthday.replace(year=today.year + 1)
-        >>> my_birthday
-        datetime.date(2008, 6, 24)
-        >>> time_to_birthday = abs(my_birthday - today)
-        >>> time_to_birthday.days
-        202
-
-    ```
+    >>> from datetime import date
+    >>> today = date.today()
+    >>> today
+    datetime.date(2007, 12, 5)
+    >>> today == date.fromtimestamp(time.time())
+    True
+    >>> my_birthday = date(today.year, 6, 24)
+    >>> if my_birthday < today:
+    ...     my_birthday = my_birthday.replace(year=today.year + 1)
+    >>> my_birthday
+    datetime.date(2008, 6, 24)
+    >>> time_to_birthday = abs(my_birthday - today)
+    >>> time_to_birthday.days
+    202
 
 #### class datetime.datetime 对象
+
+<https://docs.python.org/zh-cn/3/library/datetime.html#datetime-objects>
 
 包含来自 date 对象和 time 对象的所有信息的单一对象。
 
@@ -411,14 +572,14 @@ timetuple()
     import datetime
     datetime.datetime(year, month, day, hour=0, minute=0, second=0, microsecond=0)
 
-now() 等价today()
+##### now()     → datetime
 
     返回表示当前地方时的 datetime 对象
 
     # 当前 UTC 时间
     datetime.now(timezone.utc)
 
-fromtimestamp()
+##### fromtimestamp()   timestamp → datetime
 
     返回对应于 POSIX 时间戳例如 库time.time() 的返回值的本地日期和时间。
 
@@ -427,13 +588,13 @@ fromtimestamp()
     >>> datetime.fromtimestamp(time.time())
     datetime.datetime(2020, 9, 30, 18, 42, 25, 9402)
 
-combine()
+##### combine()   date + time → datetime
 
     组合date对象和time对象为datetime对象
 
     d == datetime.combine(d.date(), d.time(), d.tzinfo)
 
-fromisoformat()
+##### fromisoformat()     iso标准的日期时间字符串 → datetime
 
     目的只是作为 datetime.isoformat() 的逆操作。
     格式见 <https://docs.python.org/zh-cn/3/library/datetime.html#datetime.datetime.fromisoformat>
@@ -442,7 +603,7 @@ fromisoformat()
     >>> datetime.fromisoformat('2011-11-04')
     datetime.datetime(2011, 11, 4, 0, 0)
 
-strptime()
+##### strptime()  字符串日期时间 → datetime
 
     返回一个对应于 date_string，根据 format 进行解析得到的 datetime 对象。
 
@@ -452,23 +613,17 @@ strptime()
 
 实例方法
 
-date()
+##### strftime()    datetime → 字符串日期时间
 
-    返回库datetime的date对象
+    返回一个表示日期和时间的字符串
 
-time()
+    格式参考 <https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior>
 
-    返回库datetime的time对象，无tzinfo对象
-
-timetz()
-
-    返回库datetime的time对象，有tzinfo对象
-
-timestamp()
+##### timestamp()     datetime → timestamp
 
     类型转换，返回对应于 datetime 实例的 POSIX 时间戳，方便后续运算。
 
-timetuple()
+##### timetuple()     datetime → struct_time
 
     类型转换，把datetime对象，返回成库 time 用的 struct_time 结构了，方便后续运算。
 
@@ -481,9 +636,21 @@ timetuple()
                   d.hour, d.minute, d.second,
                   d.weekday(), yday, dst))
 
-isoformat()
+##### date()    datetime → date
 
-    回一个以 ISO 8601 格式表示的日期和时间字符串：
+    返回库datetime的date对象
+
+##### time()    datetime → time
+
+    返回库datetime的time对象，无tzinfo对象
+
+##### timetz()  datetime → time有tzinfo
+
+    返回库datetime的time对象，有tzinfo对象
+
+##### isoformat()   datetime → iso标准的日期时间字符串
+
+    返回一个以 ISO 8601 格式表示的日期和时间字符串：
 
     >>> from datetime import datetime, timezone
     >>> datetime(2019, 5, 18, 15, 17, 8, 132263).isoformat()
@@ -494,9 +661,9 @@ isoformat()
 __str__()
     同上
 
-ctime()
+~~ctime()~~
 
-    返回一个表示日期和时间的字符串
+    返回一个表示日期和时间的字符串，格式固定不够灵活
 
     >>> from datetime import datetime
     >>> datetime(2002, 12, 4, 20, 30, 40).ctime()
@@ -504,15 +671,96 @@ ctime()
 
     等价于 time.ctime(time.mktime(d.timetuple()))
 
-strftime()
-
-    返回一个表示日期和时间的字符串
-
-    格式参考 <https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior>
-
 #### class datetime.timedelta 对象
 
-    表示两个 date 对象或者 time 对象,或者 datetime 对象之间的时间间隔，精确到微秒。
+表示时间间隔，精确到微秒，两个 date 对象或者 time 对象,或者 datetime 对象之间的。
+
+    >>> delta = timedelta(
+    ...     days=50,
+    ...     seconds=27,
+    ...     microseconds=10,
+    ...     milliseconds=29000,
+    ...     minutes=5,
+    ...     hours=8,
+    ...     weeks=2
+    ... )
+    >>> # Only days, seconds, and microseconds remain
+    >>> delta
+    datetime.timedelta(days=64, seconds=29156, microseconds=10)
+    >>>
+    >>> d = timedelta(microseconds=-1)
+    >>> (d.days, d.seconds, d.microseconds)
+    (-1, 86399, 999999)
+
+支持的运算：
+
+    timedelta 对象支持与 date 和 datetime 对象进行特定的相加和相减运算
+
+    支持 timedelta 对象与另一个 timedelta 对象相整除或相除，包括求余运算和 divmod() 函数。 现在也支持 timedelta 对象加上或乘以一个 float 对象。
+
+    支持 timedelta 对象进行比较运算
+
+        == 或 != 比较 总是 返回一个 bool 对象，无论被比较的对象是什么类型
+
+        所有其他比较 (例如 < 和 >)，当一个 timedelta 对象与其他类型的对象比较时，将引发 TypeError:
+
+        布尔运算中，timedelta 对象当且仅当其不等于 timedelta(0) 时则会被视为真值。
+
+    t1 = t2 + t3    t2 和 t3 的和。 运算后 t1-t2 == t3 and t1-t3 == t2 必为真值。(1)
+
+    t1 = t2 - t3  t2 减 t3 的差。 运算后 t1 == t2 - t3 and t2 == t1 + t3 必为真值。 (1)(6)
+
+    t1 = t2 * i or t1 = i * t2 乘以一个整数。运算后假如 i != 0 则 t1 // i == t2 必为真值。 In general, t1 * i == t1 * (i-1) + t1 is true. (1)
+
+    t1 = t2 * f or t1 = f * t2  乘以一个浮点数，结果会被舍入到 timedelta 最接近的整数倍。 精度使用四舍五偶入奇不入规则。
+
+    f = t2 / t3     总时间 t2 除以间隔单位 t3 (3)。 返回一个 float 对象。
+
+    t1 = t2 / f or t1 = t2 / i  除以一个浮点数或整数。 结果会被舍入到 timedelta 最接近的整数倍。 精度使用四舍五偶入奇不入规则。
+
+    t1 = t2 // i or t1 = t2 // t3   计算底数，其余部分（如果有）将被丢弃。在第二种情况下，将返回整数。 （3）
+
+    t1 = t2 % t3 余数为一个 timedelta 对象。(3)
+
+    q, r = divmod(t1, t2) 通过 : q = t1 // t2 (3) and r = t1 % t2 计算出商和余数。q是一个整数，r是一个 timedelta 对象。
+
+    +t1 返回一个相同数值的 timedelta 对象。
+
+    -t1 等价于 timedelta(-t1.days, -t1.seconds, -t1.microseconds), 和 t1* -1. (1)(4)
+
+    abs(t) 当 t.days >= 0``时等于 +\ *t*, 当 ``t.days < 0 时 -t 。 (2)
+
+    str(t) 返回一个形如 [D day[s], ][H]H:MM:SS[.UUUUUU] 的字符串，当 t 为负数的时候， D 也为负数。 (5)
+
+    repr(t) 返回一个 timedelta 对象的字符串表示形式，作为附带正规属性值的构造器调用。
+
+实例方法
+
+total_seconds()
+
+    返回时间间隔包含了多少秒。
+
+    >>> from datetime import timedelta
+    >>> year = timedelta(days=365)
+    >>> another_year = timedelta(weeks=40, days=84, hours=23,
+    ...                          minutes=50, seconds=600)
+    >>> year == another_year
+    True
+    >>> year.total_seconds()
+    31536000.0
+
+    >>> year = timedelta(days=365)
+    >>> ten_years = 10 * year
+    >>> ten_years
+    datetime.timedelta(days=3650)
+    >>> ten_years.days // 365
+    10
+    >>> nine_years = ten_years - year
+    >>> nine_years
+    datetime.timedelta(days=3285)
+    >>> three_years = nine_years // 3
+    >>> three_years, three_years.days // 365
+    (datetime.timedelta(days=1095), 3)
 
 #### class datetime.tzinfo 对象
 
@@ -531,73 +779,44 @@ tzname(dt)
 
     一个实现了 tzinfo 抽象基类的子类，用于表示相对于 世界标准时间（UTC）的偏移量。
 
-示例代码
+    每个实例都代表一个以与 UTC 的固定时差来定义的时区
 
-    ``` Python
+### 库 calendar
 
-    import datetime
-    import time
+输出像 Unix cal 那样的日历，它还提供了其它与日历相关的实用函数。
 
-    t = time.ctime()
+<https://docs.python.org/zh-cn/3/library/calendar.html>
 
-    datetime.datetime.strptime(time.ctime(), "%a %b %d %H:%M:%S %Y")
+常用方法：
 
-    ```
+#### calendar.timegm(tuple)     struct_time → time
 
-### 库time <https://docs.python.org/zh-cn/3/library/time.html>
+    由struct_time结构的数组生成timestamp，与 time 模块time.gmtime() 是彼此相反的。
 
-时间的访问和转换，依赖库datetime。
+    入参 struct_time
+    返回 timestamp
 
-注意这个库的很多对象和操作是时间转换自C标准库的。
+#### calendar.isleap(year)      → bool
 
-这个库的很多函数返回值是不一样的，注意区别
+    如果 year 是闰年则返回 True ,否则返回 False。
 
-#### 内置数据类型
+#### calendar.weekday(year, month, day)     → int
 
-能传递给别的库如datatime使用的数据结构是 timestamp
+    返回某年（ 1970 -- ...），某月（ 1 -- 12 ），某日（ 1 -- 31 ）是星期几（ 0 是星期一）。
 
-class time.struct_time
+#### calendar.setfirstweekday(weekday)
 
-    给函数gmtime(), localtime(), strptime()的返回值交换数据方便使用的
+    设置每周的第一天为星期天
+    import calendar
+    calendar.setfirstweekday(calendar.SUNDAY)
 
-    time.struct_time(tm_year=2019, tm_mon=12, tm_mday=2, tm_hour=17, tm_min=25, tm_sec=0, tm_wday=0, tm_yday=336, tm_isdst=0)
+#### calendar.firstweekday()
 
-#### 内置函数，不需要对象直接用
+    返回当前设置的每星期的第一天的数值。 0 是星期一
 
-time.time() → float
+### 库dateutil 包
 
-    返回当前时间，POSIX 时间戳数据类型，以浮点数表示的从 epoch 开始的秒数的时间值，即 timestamp 。
-    不是一般的整数哦，有意义的。
-
-time.asctime()
-
-time.ctime()
-
-    直接调用C标准库的ctime()
-
-time.strptime()
-
-    将字符串日期转换成 struct_time
-
-    格式参考跟strftime()一样 <https://docs.python.org/zh-cn/3/library/time.html#time.strftime>
-
-time.gmtime()
-
-time.localtime()
-
-time.mktime()
-
-time.sleep()
-
-time.strftime()
-
-    将 struct_time 转换成字符串
-
-    格式参考 <https://docs.python.org/zh-cn/3/library/time.html#time.strftime>
-
-    >>> from time import gmtime, strftime
-    >>> strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
-    'Thu, 28 Jun 2001 14:17:15 +0000'
+具有扩展时区和解析支持的第三方库 <https://dateutil.readthedocs.io/en/stable/>
 
 ## Numpy的日期时间
 
