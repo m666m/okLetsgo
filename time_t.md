@@ -1,11 +1,12 @@
 # 时间计算速查——从 c 到 python 到 sql
 
-时间计算，由unix系统在70年代定义，操作系统储存的是自1970年1月1日0点（UTC）开始的秒数
+时间计算，按unix系统在70年代定义，操作系统储存的是自1970年1月1日0点（UTC）开始的秒数。
 
-## C标准库
+## C标准库 <time.h>
 
 在标准c库中使用结构 time_t 和 tm，及操作这2个结构的几个函数，提供到字符串之间的转换（cpu时间的略）。
-注意：各种静态的对象满天飞的，用起来先想想这个函数用的啥对象实现的这功能，多线程躲着这块点。
+
+注意：各种静态的对象满天飞的，先想想这个函数用的啥对象实现的这功能，牵扯到啥没有。多线程躲着这块。
 
 参考
 
@@ -37,7 +38,7 @@
 
 操作函数，注意返回值类型：
 
-#### mktime()   <time.h>
+#### mktime()   struct tm → time_t
 
     提供从 tm 到 time_t 的转换
 
@@ -48,7 +49,7 @@
 
     一般指定时间的操作都是从tm结构或者字符串来的，转成time_t后再供其它时间计算函数调用。
 
-#### ~~asctime()~~  <time.h>
+#### ~~asctime()~~
 
     转换结构 tm 为以下固定的 25 字符表示形式： Www Mmm dd hh:mm:ss yyyy\n
 
@@ -97,7 +98,7 @@
 
 注意这些操作函数的入参和返回值类型，有的修改入参值，有的是返回值类型变，用法没规律，死记：
 
-#### time() <time.h>
+#### time()     time_t → time_t
 
     <https://zh.cppreference.com/w/c/chrono/time>
 
@@ -109,7 +110,7 @@
     下面的那些显示为字符串函数依赖这个值进行显示，
     所以取系统时间并打印的过程，就是先time()一个time_t，然后调用各种字符串输出函数
 
-#### strftime() <time.h>
+#### strftime()     struct tm → 字符串日期时间
 
     <https://zh.cppreference.com/w/c/chrono/strftime>
 
@@ -121,7 +122,7 @@
     这个字符串转换函数是推荐使用的，代替 ctime() 和 asctime()
     format格式参见 <https://zh.cppreference.com/w/c/chrono/strftime>
 
-#### gmtime() <time.h>
+#### gmtime()       time_t → struct tm UTC
 
     将从纪元开始的时间转换成以协调世界时（UTC）表示的日历时间。
 
@@ -130,7 +131,7 @@
 
     提供从 time_t 到 struct tm 的转换
 
-#### localtime()  <time.h>
+#### localtime()    time_t → struct tm
 
     将从纪元开始的时间转换成以本地时间表示的日历时间。
 
@@ -139,7 +140,7 @@
 
     提供从 time_t 到 struct tm 的转换
 
-#### tzset()  <time.h>
+#### tzset()
 
     <https://pubs.opengroup.org/onlinepubs/9699919799/functions/tzset.html>
 
@@ -151,7 +152,7 @@
 
     设置环境变量参见 <https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08>
 
-#### difftime()  <time.h>
+#### difftime()  time_t, time_t → int
 
     以秒数计算二个作为 time_t 对象的日历时间的差（ time_end - time_beg ）。若 time_end 代表先于 time_beg 的时间点，则结果为负。
 
@@ -160,7 +161,7 @@
 
     计算两个日期之间的差值，只能用秒数
 
-#### ~~ctime()~~ <time.h>
+#### ~~ctime()~~
 
     转换从纪元起的给定时间为历法本地时间，再转换为固定格式文本表示，如同通过调用 asctime(localtime(ltime))
 
@@ -253,17 +254,13 @@
 
 添加了一点我的注解，timestamp类型是epoch点以来的秒数，很多函数返回的都是这样的秒数，如果单独说是整型或浮点型，体现不出时间意义。
 
-##### timestamp
+##### timestamp     对应 c 标准库的 time_t
 
 能传递给别的库如库 datatime 使用的数据结构
 
-    对于 c 标准库的 time_t
-
-##### struct_time
+##### struct_time   对应 c 标准库的struct tm
 
 class time.struct_time
-
-    对应 c 标准库的结构 tm
 
     请注意，与C结构不同，月份值是 [1,12] 的范围，而不是 [0,11] 。
 
@@ -789,7 +786,7 @@ tzname(dt)
 
 常用方法：
 
-#### calendar.timegm(tuple)     struct_time → time
+#### calendar.timegm(tuple)     struct_time → timestamp
 
     由struct_time结构的数组生成timestamp，与 time 模块time.gmtime() 是彼此相反的。
 
