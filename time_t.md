@@ -817,8 +817,176 @@ tzname(dt)
 
 ## Numpy的日期时间
 
+在NumPy 1.7版本开始，它的核心数组（ndarray）对象支持datetime相关功能，由于’datetime’这个数据类型名称已经在Python自带的datetime模块中使用了， NumPy中时间数据的类型称为’datetime64’。
+
+<https://numpy.org/doc/stable/reference/arrays.datetime.html>
+
+### numpy.datetime64 相关转换函数
+
+时间格式字符串转换为numpy的datetime对象，可使用datetime64实例化一个对象，可以指定单位datetime64[M] datetime64[ms]等
+
+#### 数组初始化时指定dtype类型  字符串日期时间 → datetime64
+
+给出字符串，指定数据类型，由系统自行转换，如果字符串时间的单位不一致，取最小的
+
+    a = np.array(['2019-01-05','2019-01-02','2019-01-03 20:01'], dtype='datetime64')
+    print(a, a.dtype)
+    # ['2019-01-05T00:00' '2019-01-02T00:00' '2019-01-03T20:01'] datetime64[m]
+
+#### np.datetime64()  字符串日期时间 → datetime64
+
+    a = np.datetime64('2019-10-01')  # dtype='datetime64[D]'
+    a = np.datetime64('2019-10-01 20:00:05')  # dtype='datetime64[s]'
+    print(type(a))  # <class 'numpy.datetime64'>
+    print(a.dtype)  # dtype='datetime64[s]'
+
+    datetime_array = np.arange('2018-01-01','2020-01-01', dtype='datetime64[Y]')
+    print(datetime_array)  # ['2018' '2019']
+
+    datetime_array = np.arange('2019-01-01','2019-10-01', dtype='datetime64[M]')
+    print(datetime_array)  # ['2019-01' '2019-02' '2019-03' '2019-04' '2019-05' '2019-06' '2019-07' '2019-08' '2019-09']
+
+    datetime_array = np.arange('2019-01-05','2019-01-10', dtype='datetime64[ms]')
+    print(datetime_array)
+    ['2019-01-05T00:00:00.000' '2019-01-05T00:00:00.001'
+     '2019-01-05T00:00:00.002' ... '2019-01-09T23:59:59.997'
+     '2019-01-09T23:59:59.998' '2019-01-09T23:59:59.999']
+
+#### np.datetime64()  datetime → datetime64
+
+    import datetime
+    import numpy as np
+
+    dt = datetime.datetime(year=2020, month=6, day=1, hour=20, minute=15, second=33)
+    dt64 = np.datetime64(dt, 's')
+    print(dt64, dt64.dtype)
+    # 2020-06-01T20:15:33 datetime64[s]
+
+#### astype()   datetime64 → datetime
+
+将numpy.datetime64转化为datetime格式，可使用astype()方法转换数据类型，如下所示：
+
+    # numpy.datetime64转化为datetime格式
+    dt64_arr = np.array(['2019-01-05','2019-01-02','2019-01-03 20:01'], dtype='datetime64')
+    dt_arr = dt64_arr.astype(datetime.datetime)  # <class 'datetime.date'>
+
+#### np.datetime_as_string()  datetime64 → 字符串日期时间
+
+    datetime_str=np.datetime_as_string(datetime_nd)  # <class 'numpy.str_'>
+
+#### 上例基础上，指定时间的起止范围     字符串日期时间 → datetime64
+
+    datetime_array = np.arange('2019-01-05','2019-01-10', dtype='datetime64')
+
+### numpy.timedelta64 时间运算对象
+
+numpy也提供了datetime.timedelta类的功能，支持两个时间对象的运算，得到一个时间单位形式的数值。datetime和timedelta结合提供了更简单的datetime计算方法。如果两个时间的单位不一致，运算后取最小单位。
+
+    # numpy.datetime64 calculations
+    _d1 = np.datetime64('2009-01-01') - np.datetime64('2008-01-01')
+    print(_d1)  # 366 days
+    print(type(_d1))  # <class 'numpy.timedelta64'>
+
+    _d2 = np.datetime64('2009') + np.timedelta64(20, 'D')
+    print(_d2)  # 2009-01-21
+
+    _d3 = np.datetime64('2011-06-15T00:00') + np.timedelta64(12, 'h')
+    print(_d3)  # 2011-06-15T12:00
+
+    _d4 = np.timedelta64(1,'W') / np.timedelta64(1,'D')
+    print(_d4)  # 7.0
+
+#### 两个日期的差值转换精度为天，用它除以一天的时间增量即可
+
+    s = _d3 - _d2  # np.timedelta64(1260720, 'ns')
+    days = s.astype('timedelta64[D]')
+    days / np.timedelta64(1, 'D')
+
+#### datetime64 → time_t timestamp
+
+    (dt64_arr - np.datetime64('1970-01-01T00:00:00Z')) / np.timedelta64(1, 's')
+
 ## Pandas的日期时间
 
-pdt = pd.to_datetime()
+### 日期时间对应的对象和操作函数
 
-pdt.dt对象可以引用各种方法了 <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.dt.day.html>
+<https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html>
+
+pandas captures 4 general time related concepts:
+
+Date times: A specific date and time with timezone support. Similar to datetime.datetime from the standard library.
+
+Time deltas: An absolute time duration. Similar to datetime.timedelta from the standard library.
+
+Time spans: A span of time defined by a point in time and its associated frequency.
+
+Date offsets: A relative time duration that respects calendar arithmetic. Similar to dateutil.relativedelta.relativedelta from the dateutil package.
+
+    Concept         Scalar Class    Array Class     pandas Data Type        Primary Creation Method
+    -------------------------------------------------------------------------------------------------
+    Date times      Timestamp       DatetimeIndex   datetime64[ns] or       to_datetime() or date_range()
+                                                    datetime64[ns, tz]
+
+    Time deltas     Timedelta       TimedeltaIndex  timedelta64[ns]         to_timedelta() or timedelta_range()
+
+    Time spans      Period          PeriodIndex     period[freq]            Period() or period_range()
+
+    Date offsets    DateOffset      None            None                    DateOffset()
+
+#### pd.to_datetime() 构造方法
+
+<https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.to_datetime.html>
+
+#### Series.dt 最常用的日期时间操作都通过它进行
+
+    .dt简介         <https://pandas.pydata.org/pandas-docs/stable/user_guide/basics.html#basics-dt-accessors>
+    .dt完整方法列表  <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.dt.day.html>
+
+    In [272]: s = pd.Series(pd.date_range('20130101 09:10:12', periods=4))
+
+    In [273]: s
+    Out[273]:
+    0   2013-01-01 09:10:12
+    1   2013-01-02 09:10:12
+    2   2013-01-03 09:10:12
+    3   2013-01-04 09:10:12
+    dtype: datetime64[ns]
+
+    In [274]: s.dt.hour
+    Out[274]:
+    0    9
+    1    9
+    2    9
+    3    9
+    dtype: int64
+
+##### .dt 取指定日期等
+
+    In [277]: s[s.dt.day == 2]
+    Out[277]:
+    1   2013-01-02 09:10:12
+    dtype: datetime64[ns]
+
+##### .dt 操作时区转换
+
+In [281]: s.dt.tz_localize('UTC').dt.tz_convert('US/Eastern')
+Out[281]:
+0   2013-01-01 04:10:12-05:00
+1   2013-01-02 04:10:12-05:00
+2   2013-01-03 04:10:12-05:00
+3   2013-01-04 04:10:12-05:00
+dtype: datetime64[ns, US/Eastern]
+
+##### .dt 转换为字符串日期时间
+
+    In [284]: s.dt.strftime('%Y/%m/%d')
+    Out[284]:
+    0    2013/01/01
+    1    2013/01/02
+    2    2013/01/03
+    3    2013/01/04
+    dtype: object
+
+### timedeltas 日期时间计算对应的对象和操作函数
+
+<https://pandas.pydata.org/pandas-docs/stable/user_guide/timedeltas.html>

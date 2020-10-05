@@ -15,7 +15,7 @@
 
     git使用教程 <https://zhuanlan.zhihu.com/p/158076293>
     git分支的使用过程 <https://zhuanlan.zhihu.com/p/22369088>
-    图解 git rebase <https://zhuanlan.zhihu.com/p/198887332>
+    Git 之 merge 与 rebase 的区别 <https://www.cnblogs.com/zhangzhang-y/p/13682281.html>
 
     离线Centos7环境使用Docker部署gitlab - CICD
     <https://zhuanlan.zhihu.com/p/147284555>
