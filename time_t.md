@@ -256,7 +256,7 @@
 
 ##### timestamp     对应 c 标准库的 time_t
 
-能传递给别的库如库 datatime 使用的数据结构
+这是个能传递给别的库如库 datatime 使用的数据结构，其实就是个秒数，主要存在价值是在各个库直接传递方便。
 
 ##### struct_time   对应 c 标准库的struct tm
 
@@ -908,6 +908,8 @@ numpy也提供了datetime.timedelta类的功能，支持两个时间对象的运
 
 ## Pandas的日期时间
 
+    操作的类型是 numpy 的 datetime64 timedelta64，python的 datetime，Timestamp
+
 ### 日期时间对应的对象和操作函数
 
 <https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html>
@@ -969,13 +971,13 @@ Date offsets: A relative time duration that respects calendar arithmetic. Simila
 
 ##### .dt 操作时区转换
 
-In [281]: s.dt.tz_localize('UTC').dt.tz_convert('US/Eastern')
-Out[281]:
-0   2013-01-01 04:10:12-05:00
-1   2013-01-02 04:10:12-05:00
-2   2013-01-03 04:10:12-05:00
-3   2013-01-04 04:10:12-05:00
-dtype: datetime64[ns, US/Eastern]
+    In [281]: s.dt.tz_localize('UTC').dt.tz_convert('US/Eastern')
+    Out[281]:
+    0   2013-01-01 04:10:12-05:00
+    1   2013-01-02 04:10:12-05:00
+    2   2013-01-03 04:10:12-05:00
+    3   2013-01-04 04:10:12-05:00
+    dtype: datetime64[ns, US/Eastern]
 
 ##### .dt 转换为字符串日期时间
 
@@ -987,6 +989,192 @@ dtype: datetime64[ns, US/Eastern]
     3    2013/01/04
     dtype: object
 
+### Timestamp 对应 python datetime.datetime
+
+#### pd.to_datetime()   → datetime DatetimeIndex
+
+#### pd.date_range()    → DatetimeIndex
+
+### Period 对应一段时间
+
+<https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Period.html>
+
+#### pd.period_range()  → PeriodIndex
+
+### Interval 对应一段间隔
+
+<https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Interval.html>
+
+#### pd.interval_range()  → IntervalIndex
+
+### DateOffset 日期的加减一段范围，有各种方法
+
+<https://pandas.pydata.org/pandas-docs/stable/reference/offset_frequency.html>
+
+    from pandas.tseries.offsets import DateOffset
+    ts = pd.Timestamp('2017-01-01 09:10:11')
+    ts + DateOffset(months=3)
+    Timestamp('2017-04-01 09:10:11')
+
 ### timedeltas 日期时间计算对应的对象和操作函数
 
 <https://pandas.pydata.org/pandas-docs/stable/user_guide/timedeltas.html>
+
+#### pd.Timedelta()  → timedelta
+
+    In [6]: pd.Timedelta(days=1, seconds=1)
+    Out[6]: Timedelta('1 days 00:00:01')
+
+    In [15]: pd.Timedelta(pd.offsets.Second(2))
+    Out[15]: Timedelta('0 days 00:00:02')
+
+#### pd.to_timedelta()  → Timedelta TimedeltaIndex
+
+    In [17]: pd.to_timedelta('1 days 06:05:01.00003')
+    Out[17]: Timedelta('1 days 06:05:01.000030')
+
+    In [18]: pd.to_timedelta('15.5us')
+    Out[18]: Timedelta('0 days 00:00:00.000015500')
+
+    In [19]: pd.to_timedelta(['1 days 06:05:01.00003', '15.5us', 'nan'])
+    Out[19]: TimedeltaIndex(['1 days 06:05:01.000030', '0 days 00:00:00.000015500', NaT], dtype='timedelta64[ns]', freq=None)
+
+#### pd.timedelta_range()  → TimedeltaIndex
+
+    In [98]: pd.TimedeltaIndex(['1 days', '1 days, 00:00:05', np.timedelta64(2, 'D'),
+    ....:                    datetime.timedelta(days=2, seconds=2)])
+    ....:
+    Out[98]:
+    TimedeltaIndex(['1 days 00:00:00', '1 days 00:00:05', '2 days 00:00:00',
+                    '2 days 00:00:02'],
+                dtype='timedelta64[ns]', freq=None)
+
+#### 访问属性 days, seconds, microseconds, nanoseconds
+
+其实是访问的datetime.timedelta，所以对Series可以直接使用.dt访问
+
+    In [95]: td.dt.components
+    Out[95]:
+    days  hours  minutes  seconds  milliseconds  microseconds  nanoseconds
+    0  31.0    0.0      0.0      0.0           0.0           0.0          0.0
+    1  31.0    0.0      0.0      0.0           0.0           0.0          0.0
+    2  31.0    0.0      5.0      3.0           0.0           0.0          0.0
+    3   NaN    NaN      NaN      NaN           NaN           NaN          NaN
+
+    In [89]: td.dt.days
+    Out[89]:
+    0    31.0
+    1    31.0
+    2    31.0
+    3     NaN
+    dtype: float64
+
+    In [90]: td.dt.seconds
+    Out[90]:
+    0      0.0
+    1      0.0
+    2    303.0
+    3      NaN
+    dtype: float64
+
+
+    In [91]: tds = pd.Timedelta('31 days 5 min 3 sec')
+
+    In [92]: tds.days
+    Out[92]: 31
+
+    In [93]: tds.seconds
+    Out[93]: 303
+
+    In [94]: (-tds).seconds
+    Out[94]: 86097
+
+#### timedelta运算 datetime64 datetime →
+
+    s = pd.Series(pd.date_range('2012-1-1', periods=3, freq='D'))  # datetime64
+    td = pd.Series([pd.Timedelta(days=i) for i in range(3)])       # timedelta64
+    df = pd.DataFrame({'A': s, 'B': td})
+    df['C'] = df['A'] + df['B']
+
+    In [30]: df.dtypes
+    Out[30]:
+    A     datetime64[ns]
+    B     timedelta64[ns]
+    C     datetime64[ns]
+    dtype: object
+
+    In [32]: s - datetime.datetime(2011, 1, 1, 3, 5)
+    Out[32]:
+    0   364 days 20:55:00
+    1   365 days 20:55:00
+    2   366 days 20:55:00
+    dtype: timedelta64[ns]
+
+    In [33]: s + datetime.timedelta(minutes=5)
+    Out[33]:
+    0   2012-01-01 00:05:00
+    1   2012-01-02 00:05:00
+    2   2012-01-03 00:05:00
+    dtype: datetime64[ns]
+
+    In [34]: s + pd.offsets.Minute(5)
+    Out[34]:
+    0   2012-01-01 00:05:00
+    1   2012-01-02 00:05:00
+    2   2012-01-03 00:05:00
+    dtype: datetime64[ns]
+
+    In [58]: y.fillna(pd.Timedelta(10, unit='s'))
+    Out[58]:
+    0   0 days 00:00:10
+    1   0 days 00:00:10
+    2   1 days 00:00:00
+    dtype: timedelta64[ns]
+
+#### 改周期
+
+    # to days
+    In [77]: td / np.timedelta64(1, 'D')
+    Out[77]:
+    0    31.000000
+    1    31.000000
+    2    31.003507
+    3          NaN
+    dtype: float64
+
+    In [78]: td.astype('timedelta64[D]')
+    Out[78]:
+    0    31.0
+    1    31.0
+    2    31.0
+    3     NaN
+    dtype: float64
+
+    In [83]: td * pd.Series([1, 2, 3, 4])
+    Out[83]:
+    0   31 days 00:00:00
+    1   62 days 00:00:00
+    2   93 days 00:15:09
+    3                NaT
+    dtype: timedelta64[ns]
+
+#### 索引使用 DatetimeIndex PeriodIndex TimedeltaIndex
+
+    In [113]: tdi = pd.TimedeltaIndex(['1 days', pd.NaT, '2 days'])
+
+    In [114]: tdi.to_list()
+    Out[114]: [Timedelta('1 days 00:00:00'), NaT, Timedelta('2 days 00:00:00')]
+
+    In [107]: s = pd.Series(np.arange(100),
+    .....:               index=pd.timedelta_range('1 days', periods=100, freq='h'))
+    .....:
+
+    In [108]: s
+    Out[108]:
+    1 days 00:00:00     0
+    1 days 01:00:00     1
+    1 days 02:00:00     2
+    ...
+    5 days 02:00:00    98
+    5 days 03:00:00    99
+    Freq: H, Length: 100, dtype: int64
