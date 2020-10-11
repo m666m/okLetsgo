@@ -991,15 +991,15 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
 举例:
 
-1.本地分支拉取远程用rebase拉直
+1.本地dev分支拉取远程dev分支用rebase拉直
 
     git checkout feature-xyz
     git pull --rebase
 
-2.本地dev分支同步master分支的时候做rebase拉直
+2.本地dev分支合并master分支的时候做rebase拉直
 
     git checkout master
-    git pull
+    git pull --rebase
 
     git checkout feature-xyz  # 假设的功能分支名称
     git rebase master  # 可能需要解决  feature-xyz 上的合并冲突
@@ -1012,10 +1012,10 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
 你可能需要一路解决遇到的合并冲突，这也许是个挑战。但是，这是解决冲突最好的时机，因为它只影响你的功能分支。
 
-3.在解决完所有冲突并进行回归测试后，如果你准备好将功能分支合并回 master，那么就可以在再次执行上述的变基步骤几次后进行合并，这次的合并应该用菱形分叉
+3.在解决完所有冲突并进行回归测试后，如果你准备好将dev分支合并回 master，那么就可以在再次执行上述的变基步骤几次后进行合并，这次的合并应该用菱形分叉
 
     git checkout master
-    git pull
+    # ... 如果改动时间长master可能有变化，需要重复上面第2步
     git merge feature-xyz -no-ff
 
     git push
