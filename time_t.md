@@ -370,7 +370,7 @@ class time.struct_time
 
 字符串格式化为本库用的时间格式，格式跟库time的不同 <https://docs.python.org/zh-cn/3/library/datetime.html#strftime-and-strptime-behavior>
 
-#### class datetime.time 对象
+#### class datetime.time 时间对象
 
 一个独立于任何特定日期的（本地）时间，它假设每一天都恰好等于 24*60*60 秒，并可通过 tzinfo 对象来调整。
 
@@ -457,7 +457,7 @@ tzname()
 
     返回当前时区名 作为字符串
 
-#### class datetime.date 对象
+#### class datetime.date 日期对象
 
 一个理想化的简单型日期，它假设当今的公历在过去和未来永远有效。时间默认是0点0分0秒。
 
@@ -547,7 +547,7 @@ __str__()
     >>> time_to_birthday.days
     202
 
-#### class datetime.datetime 对象
+#### class datetime.datetime 日期时间对象
 
 <https://docs.python.org/zh-cn/3/library/datetime.html#datetime-objects>
 
@@ -559,9 +559,12 @@ __str__()
 
 注意区别
 
-    import datetime 和 import datetime.datetime
+    import datetime
+    datetime.date.today()   # 是操作date对象，取当天日期
+    datetime.datetime.now() # 取当前时间作为datetime对象
 
-    datetime.time()用起来不一样。
+    from datetime import datetime
+    datetime.now()          # 取当前时间作为datetime对象
 
 构造方法
 
@@ -668,9 +671,12 @@ __str__()
 
     等价于 time.ctime(time.mktime(d.timetuple()))
 
-#### class datetime.timedelta 对象
+#### class datetime.timedelta 日期时间运算对象
 
 表示时间间隔，精确到微秒，两个 date 对象或者 time 对象,或者 datetime 对象之间的。
+
+    today = datetime.date.today()
+    yesterday = today - datetime.timedelta(days=1)
 
     >>> delta = timedelta(
     ...     days=50,
@@ -902,7 +908,7 @@ numpy也提供了datetime.timedelta类的功能，支持两个时间对象的运
     days = s.astype('timedelta64[D]')
     days / np.timedelta64(1, 'D')
 
-#### datetime64 → time_t timestamp
+#### datetime64 → datetime.datetime time_t timestamp
 
     (dt64_arr - np.datetime64('1970-01-01T00:00:00Z')) / np.timedelta64(1, 's')
 
@@ -943,6 +949,7 @@ Date offsets: A relative time duration that respects calendar arithmetic. Simila
 
     .dt简介         <https://pandas.pydata.org/pandas-docs/stable/user_guide/basics.html#basics-dt-accessors>
     .dt完整方法列表  <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.dt.day.html>
+
 
     In [272]: s = pd.Series(pd.date_range('20130101 09:10:12', periods=4))
 
@@ -989,11 +996,35 @@ Date offsets: A relative time duration that respects calendar arithmetic. Simila
     3    2013/01/04
     dtype: object
 
+取整为日期
+
+    s['stimeday'] = pd.to_datetime(s['stime'].dt.strftime('%Y-%m-%d'), format='%Y-%m-%d')
+
 ### Timestamp 对应 python datetime.datetime
 
 #### pd.to_datetime()   → datetime DatetimeIndex
 
 #### pd.date_range()    → DatetimeIndex
+
+实际应用中，都是转成series以方便取小时分钟啥的拆分操作
+
+    In [272]: s = pd.Series(pd.date_range('20130101 09:10:12', periods=4))
+
+    In [273]: s
+    Out[273]:
+    0   2013-01-01 09:10:12
+    1   2013-01-02 09:10:12
+    2   2013-01-03 09:10:12
+    3   2013-01-04 09:10:12
+    dtype: datetime64[ns]
+
+    In [274]: s.dt.hour
+    Out[274]:
+    0    9
+    1    9
+    2    9
+    3    9
+    dtype: int64
 
 ### Period 对应一段时间
 
