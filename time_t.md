@@ -100,9 +100,9 @@
 
 #### time()     time_t → time_t
 
-    <https://zh.cppreference.com/w/c/chrono/time>
-
     取当前时间
+
+    <https://zh.cppreference.com/w/c/chrono/time>
 
     入参 time_t
     返回纪元1970年1月1日0点（UTC）开始经过的当前系统日历时间。如果提供了入参，函数修改这个time_t的值。
@@ -112,9 +112,9 @@
 
 #### strftime()     struct tm → 字符串日期时间
 
-    <https://zh.cppreference.com/w/c/chrono/strftime>
-
     按照格式字符串 format ，转换来自给定的日历时间 time 的日期和时间信息
+
+    <https://zh.cppreference.com/w/c/chrono/strftime>
 
     入参 struct tm
     输出 字符串日期时间
@@ -142,9 +142,9 @@
 
 #### tzset()
 
-    <https://pubs.opengroup.org/onlinepubs/9699919799/functions/tzset.html>
+    设置时区，读取环境变量 TZ，时间相关的几个函数都调用它。
 
-    设置时区，读取环境变量 TZ，下面的几个字符串函数都偷偷调它一把。
+    <https://pubs.opengroup.org/onlinepubs/9699919799/functions/tzset.html>
 
     操作了外部变量 tzname tzname[0] = "std"; tzname[1] = "dst";
                     daylight 夏令时偏离秒数
@@ -941,7 +941,9 @@ Date offsets: A relative time duration that respects calendar arithmetic. Simila
 
     Date offsets    DateOffset      None            None                    DateOffset()
 
-#### pd.to_datetime() 构造方法
+#### pd.date_range()    → DatetimeIndex
+
+#### pd.to_datetime()   → datetime DatetimeIndex
 
 <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.to_datetime.html>
 
@@ -950,6 +952,7 @@ Date offsets: A relative time duration that respects calendar arithmetic. Simila
     .dt简介         <https://pandas.pydata.org/pandas-docs/stable/user_guide/basics.html#basics-dt-accessors>
     .dt完整方法列表  <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.dt.day.html>
 
+实际应用中，都是转成series以方便取小时分钟啥的拆分操作
 
     In [272]: s = pd.Series(pd.date_range('20130101 09:10:12', periods=4))
 
@@ -1001,30 +1004,6 @@ Date offsets: A relative time duration that respects calendar arithmetic. Simila
     s['stimeday'] = pd.to_datetime(s['stime'].dt.strftime('%Y-%m-%d'), format='%Y-%m-%d')
 
 ### Timestamp 对应 python datetime.datetime
-
-#### pd.to_datetime()   → datetime DatetimeIndex
-
-#### pd.date_range()    → DatetimeIndex
-
-实际应用中，都是转成series以方便取小时分钟啥的拆分操作
-
-    In [272]: s = pd.Series(pd.date_range('20130101 09:10:12', periods=4))
-
-    In [273]: s
-    Out[273]:
-    0   2013-01-01 09:10:12
-    1   2013-01-02 09:10:12
-    2   2013-01-03 09:10:12
-    3   2013-01-04 09:10:12
-    dtype: datetime64[ns]
-
-    In [274]: s.dt.hour
-    Out[274]:
-    0    9
-    1    9
-    2    9
-    3    9
-    dtype: int64
 
 ### Period 对应一段时间
 
