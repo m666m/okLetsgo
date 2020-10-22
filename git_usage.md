@@ -548,9 +548,25 @@ Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803
 
 ## **版本回退的操作步骤**
 
+如果发现最近的提交不对路，回退到上个提交，以便修改
+
+    # 先保留下现场以便反悔救命，窗口别关啊！
+    git reflog
+
+    # 差异放在工作区域，最常用
+    git reset HEAD~1
+
+    # 差异放在在储藏（stage）区域
+    git reset --soft HEAD~1
+
+    # 差异全扔，楞回到某个commit
+    git reset --hard HEAD~1
+
+### 自己的分支硬回退例子
+
 以master分支为例，A2提交不用了，需要回退到A1
 
-    A1 - A2
+    A1 -- A2
 
 1.查看版本号：
 
@@ -559,7 +575,7 @@ Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803
 
 2.将版本回退到指定的提交点：
 
-    git reset --hard 目标版本号
+    git reset --hard 指定的commitId
 
 3.更新远程仓库端的版本也进行同步的回退
 

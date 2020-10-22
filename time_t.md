@@ -1,6 +1,18 @@
 # 时间计算速查——从 c 到 python 到 pandas
 
-时间计算，按unix系统在70年代定义，操作系统储存的是自1970年1月1日0点（UTC）开始的秒数。
+## 定义术语 epoch
+
+epoch：时间点。 时间计算，按unix系统在70年代定义，操作系统储存的是自1970年1月1日0点（UTC）开始的秒数。
+
+UTC: 世界标准时间，即格林威治标准时间(GMT)。作为零时区，其它地区相对零时区加减相应的小时，然后再叠加自己的夏令时，得当地时间。
+
+Calendar Time：日历时间。“从一个标准时间点到此时的时间经过的秒数”来表示的时间。一般都是用epoch时间点，由编译系统自行决定。
+
+## timestamp 类型
+
+    文档中没有专门描述，注意这个timestamp类型就是c标准库中的time_t的一个秒数，一般是从 epoch 开始的秒数。
+
+    对于时间的运算本质上都被转成Timestamp类型了，注意函数返回值类型！
 
 ## C标准库 <time.h>
 
@@ -17,6 +29,16 @@
     time.h <https://www.tutorialspoint.com/c_standard_library/time_h.htm>
 
     你看不到我 <https://en.wikipedia.org/wiki/Unix_time>
+
+### 在标准C/C++中，最小的计时单位是一毫秒
+
+clock tick：时钟周期，是C/C++的一个基本计时单位，区别于cpu的计时周期。这是函数clock_t clock( void )使用的单位，时长转换倚赖一个常量。
+
+        在time.h文件中，常量CLOCKS_PER_SEC，它用来表示一秒钟会有多少个时钟计时单元：
+        #define CLOCKS_PER_SEC ((clock_t)1000)
+        说明每过千分之一秒（1毫秒），调用clock（）函数返回的值就加1
+
+        printf("Elapsed time:%u secs.\n",clock()/CLOCKS_PER_SEC);
 
 ### tm struct  及相关操作函数
 
@@ -213,12 +235,12 @@
 
     datetime.datetime.time.time() 你能看懂返回值类型是啥不
 
-### timestamp 术语
+### Timestamp 类型
 
-    文档中没有专门描述，注意这个timestamp类型就是类似c标准库中的time_t的一个秒数，
+    文档中没有专门描述，注意这个timestamp类型就是c标准库中的time_t的一个秒数，
     一般是从 epoch 开始的秒数。
 
-    python中对于时间的运算本质上都被转成timestamp类型了，注意函数返回值类型！
+    python中对于时间的运算本质上都被转成Timestamp类型了，注意函数返回值类型！
 
 ### 库time <https://docs.python.org/zh-cn/3/library/time.html>
 
