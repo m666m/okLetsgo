@@ -627,6 +627,8 @@ __str__()
 
 ##### strptime()  字符串日期时间 → datetime
 
+    date, datetime 和 time 对象都支持 strftime(format) 方法，最常用的是 .strftime('%Y-%m-%d %H:%M:%S')
+
     返回一个对应于 date_string，根据 format 进行解析得到的 datetime 对象。
 
     字符串格式见 <https://docs.python.org/zh-cn/3/library/datetime.html#strftime-strptime-behavior>
