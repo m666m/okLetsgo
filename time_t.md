@@ -599,6 +599,7 @@ __str__()
     返回表示当前地方时的 datetime 对象
 
     # 当前 UTC 时间
+    from datetime import timezone
     datetime.now(timezone.utc)
 
 ##### fromtimestamp()   timestamp → datetime
@@ -606,9 +607,13 @@ __str__()
     返回对应于 POSIX 时间戳例如 库time.time() 的返回值的本地日期和时间。
 
     >>> import time
+    >>> from datetime import timezone
     >>> from datetime import datetime
     >>> datetime.fromtimestamp(time.time())
     datetime.datetime(2020, 9, 30, 18, 42, 25, 9402)
+
+    >>> datetime.fromtimestamp(1571595618.0, tz=timezone.utc)
+    这样才能返回utc时间
 
 ##### combine()   date + time → datetime
 

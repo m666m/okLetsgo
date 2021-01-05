@@ -1082,3 +1082,17 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 最后，由于重写了分支的 Git 提交历史，必须强制更新远程分支：
 
     git push -f
+
+## 彻底删除git中的大文件
+
+git 如果提交一个文件，然后删除他，继续提交，那么这个文件是存在 git 中，需要使用特殊的命令才可以删除。.git主要记录每次提交变动，当我们的项目越来越大的时候，我们发现 .git文件越来越大
+
+很大的可能是因为提交了大文件，如果你提交了大文件，那么即使你在之后的版本中将其删除，但是，
+实际上，记录中的大文件仍然存在。
+
+虽然你在后面的版本中删除了大文件，但是Git是有版本倒退功能的吧，那么如果大文件不记录下来，
+git拿什么来给你回退呢？但是，.git文件越来越大导致的问题是： 每次拉项目都要耗费大量的时间，并且每个人都要花费
+那么多的时间。
+
+git给出了解决方案，使用git branch-filter来遍历git history tree, 可以永久删除history中的大文件，达到让.git文件瘦身的目的。
+<https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/removing-sensitive-data-from-a-repository>
