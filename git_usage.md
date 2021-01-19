@@ -460,7 +460,9 @@ Gitolite 基于ssh密钥管理的用户权限控制
 3.不要忘记将标签显式推送到远程
 
     git push origin v1.1
-    git push origin --tags (批量推送)
+
+    # 批量推送
+    git push origin --tags
 
 4.新增轻量化标签
 
