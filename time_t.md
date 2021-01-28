@@ -951,13 +951,13 @@ numpy也提供了datetime.timedelta类的功能，支持两个时间对象的运
 
 pandas captures 4 general time related concepts:
 
-Date times: A specific date and time with timezone support. Similar to datetime.datetime from the standard library.
+1.Date times: A specific date and time with timezone support. Similar to datetime.datetime from the standard library.
 
-Time deltas: An absolute time duration. Similar to datetime.timedelta from the standard library.
+2.Time deltas: An absolute time duration. Similar to datetime.timedelta from the standard library.
 
-Time spans: A span of time defined by a point in time and its associated frequency.
+3.Time spans: A span of time defined by a point in time and its associated frequency.
 
-Date offsets: A relative time duration that respects calendar arithmetic. Similar to dateutil.relativedelta.relativedelta from the dateutil package.
+4.Date offsets: A relative time duration that respects calendar arithmetic. Similar to dateutil.relativedelta.relativedelta from the dateutil package.
 
     Concept         Scalar Class    Array Class     pandas Data Type        Primary Creation Method
     -------------------------------------------------------------------------------------------------
@@ -976,12 +976,19 @@ Date offsets: A relative time duration that respects calendar arithmetic. Simila
 
 <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.to_datetime.html>
 
-#### Series.dt 最常用的日期时间操作都通过它进行
+#### 操作一列Timestamp，就是Series.dt，最常用的日期时间操作都通过它进行
 
     .dt简介         <https://pandas.pydata.org/pandas-docs/stable/user_guide/basics.html#basics-dt-accessors>
     .dt完整方法列表  <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.dt.day.html>
 
-实际应用中，都是转成series以方便取小时分钟啥的拆分操作
+np.datetime64 转换为字符串的pd用法很特殊，实际应用中，都是转成series以方便取小时分钟啥的拆分操作
+
+来个例子，看看别扭不:
+
+    strtime =
+        df.loc[df['name'] ==pname, 'create_time'].dt.strftime('%Y-%m-%d %H:%M:%S').to_numpy()[0]
+
+官方示例
 
     In [272]: s = pd.Series(pd.date_range('20130101 09:10:12', periods=4))
 

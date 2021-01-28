@@ -777,9 +777,9 @@ feature 分支是用来开发特性的，上面会存在许多零碎的提交，
 
     git merge --no-ff
 
-                              f---g  feature分支
-                             /     \
-        master主干  a---b---c ------- new(HEAD) 由git制造
+                              f---g---h---i  feature分支
+                             /             \
+        master主干  a---b---c -------------- new(HEAD) 由git制造
 
     git reset HEAD^ --hard 的效果是回到c点
 
