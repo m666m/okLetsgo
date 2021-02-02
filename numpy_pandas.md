@@ -201,6 +201,17 @@ Pandas详解五之下标存取
     apply()实际上只能穿过一个维度，就是说如果是Series，可以每个元素执行，但是DataFrame的话，其实是对每列执行函数。
     对于DataFrame如果想要每个元素操作的话，应该使用applymap()。
 
+### 列（Series）accessor: .cat、.dt、.str
+
+    Series对象和DataFrame的列数据提供了cat、dt、str三种属性接口（accessors），
+    分别对应分类数据、日期时间数据和字符串数据，通过这几个接口可以快速实现特定的功能，非常快捷。
+    <https://zhuanlan.zhihu.com/p/44256257>
+    其中时间类的详见<time_t.md>的章节“Pandas的日期时间”
+
+        import pandas as pd
+        pd.Series._accessors
+        [i for i in dir(pd.Series.str) if not i.startswith('_')]
+
 ### GroupBy 用法
 
     https://github.com/yanqiangmiffy/quincy-python-v2/blob/master/Python008-Pandas%20GroupBy%20%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B.ipynb

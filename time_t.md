@@ -62,7 +62,8 @@ clock tick：时钟周期，是C/C++的一个基本计时单位，区别于cpu�
 
 #### mktime()   struct tm → time_t
 
-    提供从 tm 到 time_t 的转换
+    提供从 tm 到 time_t 的转换，用的是本地时间进行的计算，不是UTC!
+    手动设置tm要注意，你输入的会被认为是本地时间进行处理。
 
     <https://zh.cppreference.com/w/c/chrono/mktime>
 
@@ -70,6 +71,22 @@ clock tick：时钟周期，是C/C++的一个基本计时单位，区别于cpu�
     返回 time_t
 
     一般指定时间的操作都是从tm结构或者字符串来的，转成time_t后再供其它时间计算函数调用。
+
+    ``` c
+    time_t t1, t3;
+    struct tm *t2;
+
+    t1 = time(NULL);
+    t2 = localtime(&t1);
+    t2 -> tm_mday += 40;
+    t2 -> tm_hour += 16;
+    t3 = mktime(t2);
+    ```
+
+    NOTE: 如果想设置标准的 UTC 1970-01-01 00:00:00 咋办呢？
+        time_t mkgmtime(struct tm* utc0date)
+        实际上这个函数在linux上是有的，windows上是用了_mkgmtime()来代替
+
 
 #### ~~asctime()~~
 
@@ -350,6 +367,33 @@ class time.struct_time
     入参 struct_time
     返回 timestamp
 
+    NOTE: mktime 输入的日期是带时区的，返回的值才是不带时区的。
+
+        time.gmtime(0)
+        >>> time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)
+
+        # 中国地区输入0会报错，因为又倒减了8个小时……
+        time.mktime(time.gmtime(0))
+            Traceback (most recent call last):
+            File "<string>", line 1, in <module>
+            OverflowError: mktime argument out of range
+
+        # 这个才是中国地区真正的0秒输入……
+        a = (1970, 1, 1, 8, 0, 0, 3, 1, 0)
+        >>> time.mktime(a)
+        0.0
+
+    NOTE: 如果想设置标准的 UTC 1970-01-01 00:00:00 咋办呢？
+
+        # 法1： timestamp → struct_time
+        time.gmtime(0)  # int秒数即可
+
+        # 法2： struct_time → timestamp
+        calendar.timegm(datetime.datetime(1970, 1, 1, 0, 0, 0).timetuple())
+
+        #验证可得 把输入的本地时间当0时区操作了
+        time.gmtime( calendar.timegm(datetime.datetime.now().timetuple()) )
+
 ##### time.gmtime()     timestamp → struct_time
 
     同c标准库的gmtime()， UTC时间。 dst 标志始终为零。
@@ -357,14 +401,14 @@ class time.struct_time
     入参 timestamp
     返回 struct_time
 
+    有个相反的函数在库calendar.timegm()
+
 ##### time.localtime()  timestamp → struct_time
 
     同c标准库的localtime()，当地时间。dst标志设置为 1 。
 
     入参 timestamp
     返回 struct_time
-
-有个相反的函数在库calendar.timegm()
 
 ##### time.sleep()
 
@@ -598,9 +642,9 @@ __str__()
 
     返回表示当前地方时的 datetime 对象
 
-    # 当前 UTC 时间
+    # 当前 UTC 时间 不要使用 utcnow() 而是传入timezone对象
     from datetime import timezone
-    datetime.now(timezone.utc)
+    datetime.now(tz=timezone.utc)
 
 ##### fromtimestamp()   timestamp → datetime
 
@@ -612,8 +656,8 @@ __str__()
     >>> datetime.fromtimestamp(time.time())
     datetime.datetime(2020, 9, 30, 18, 42, 25, 9402)
 
+    # 这样才能返回utc时间 不要使用 utcfromtimestamp() 而是传入timezone对象
     >>> datetime.fromtimestamp(1571595618.0, tz=timezone.utc)
-    这样才能返回utc时间
 
 ##### combine()   date + time → datetime
 
@@ -943,7 +987,11 @@ numpy也提供了datetime.timedelta类的功能，支持两个时间对象的运
 
 ## Pandas的日期时间
 
-    操作的类型是 numpy 的 datetime64 timedelta64，python的 datetime，Timestamp
+    操作的类型是 numpy 的 datetime64 timedelta64，python的 datetime, timestamp
+
+    Series对象和DataFrame的列数据提供了cat、dt、str三种属性接口（accessors），
+    分别对应分类数据、日期时间数据和字符串数据，通过这几个接口可以快速实现特定的功能，非常快捷。
+    <https://zhuanlan.zhihu.com/p/44256257>
 
 ### 日期时间对应的对象和操作函数
 
@@ -976,10 +1024,10 @@ pandas captures 4 general time related concepts:
 
 <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.to_datetime.html>
 
-#### 操作一列Timestamp，就是Series.dt，最常用的日期时间操作都通过它进行
+#### 用Series.dt操作DataFrame的一列Timestamp类型数据，最常用的日期时间操作都通过它进行
 
     .dt简介         <https://pandas.pydata.org/pandas-docs/stable/user_guide/basics.html#basics-dt-accessors>
-    .dt完整方法列表  <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.dt.day.html>
+    .dt完整方法列表   <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.dt.html>
 
 np.datetime64 转换为字符串的pd用法很特殊，实际应用中，都是转成series以方便取小时分钟啥的拆分操作
 
@@ -1039,7 +1087,11 @@ np.datetime64 转换为字符串的pd用法很特殊，实际应用中，都是�
 
     s['stimeday'] = pd.to_datetime(s['stime'].dt.strftime('%Y-%m-%d'), format='%Y-%m-%d')
 
-### Timestamp 对应 python datetime.datetime
+### Timestamp() 操作起来对应 python datetime.datetime
+
+#### timetuple() pd.Timestamp -> struct_time
+
+    把pandas的Timestamp转换为python的struct_time类型
 
 ### Period 对应一段时间
 
