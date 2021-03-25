@@ -1,5 +1,27 @@
 # numpy/pandas 常用方法
 
+- [numpy/pandas 常用方法](#numpypandas-常用方法)
+  - [各个库取最大最小的函数区别，以取最小min()为例](#各个库取最大最小的函数区别以取最小min为例)
+    - [python.min()    如果有None会将None作为最小值](#pythonmin----如果有none会将none作为最小值)
+    - [DataFrame.min() 默认排除 NA/null 值](#dataframemin-默认排除-nanull-值)
+    - [DataFrame.idxmin()  最小值的索引，默认排除 NA/null 值](#dataframeidxmin--最小值的索引默认排除-nanull-值)
+    - [DataFrame.sum() 求和，默认排除 NA/null 值](#dataframesum-求和默认排除-nanull-值)
+    - [numpy.amin()    数组沿给定轴传播的最小值，传播任何 NaN，给出axis会返回新数组](#numpyamin----数组沿给定轴传播的最小值传播任何-nan给出axis会返回新数组)
+    - [numpy.nanmin() 数组沿给定轴传播的最小值，忽略NaN值](#numpynanmin-数组沿给定轴传播的最小值忽略nan值)
+    - [numpy.argmin()  返回最小值的位置（索引号）](#numpyargmin--返回最小值的位置索引号)
+    - [numpy.minimum() 两数组最小值的新数组，传播NaN](#numpyminimum-两数组最小值的新数组传播nan)
+    - [numpy.fmin() 两数组最小值的新数组，忽略NaN](#numpyfmin-两数组最小值的新数组忽略nan)
+  - [空值判断](#空值判断)
+  - [判断对象相等](#判断对象相等)
+    - [python 判断对象相等](#python-判断对象相等)
+  - [pandas 使用](#pandas-使用)
+    - [apply() 和 applymap()的区别](#apply-和-applymap的区别)
+    - [列（Series）accessor: .cat、.dt、.str](#列seriesaccessor-catdtstr)
+    - [GroupBy 用法](#groupby-用法)
+      - [示例](#示例)
+  - [numpy 使用](#numpy-使用)
+    - [ufunc 用法](#ufunc-用法)
+
 ## 各个库取最大最小的函数区别，以取最小min()为例
 
 ### python.min()    如果有None会将None作为最小值

@@ -1,5 +1,101 @@
 # 时间计算速查——从 c 到 python 到 pandas
 
+- [时间计算速查——从 c 到 python 到 pandas](#时间计算速查从-c-到-python-到-pandas)
+  - [定义术语 epoch](#定义术语-epoch)
+  - [timestamp 类型](#timestamp-类型)
+  - [C标准库 <time.h>](#c标准库-timeh)
+    - [在标准C/C++中，最小的计时单位是一毫秒](#在标准cc中最小的计时单位是一毫秒)
+    - [tm struct  及相关操作函数](#tm-struct--及相关操作函数)
+      - [mktime()   struct tm → time_t](#mktime---struct-tm--time_t)
+      - [~~asctime()~~](#asctime)
+    - [time_t typedef 及相关操作函数](#time_t-typedef-及相关操作函数)
+      - [time()     time_t → time_t](#time-----time_t--time_t)
+      - [strftime()     struct tm → 字符串日期时间](#strftime-----struct-tm--字符串日期时间)
+      - [gmtime()       time_t → struct tm UTC](#gmtime-------time_t--struct-tm-utc)
+      - [localtime()    time_t → struct tm](#localtime----time_t--struct-tm)
+      - [tzset()](#tzset)
+      - [difftime()  time_t, time_t → int](#difftime--time_t-time_t--int)
+      - [~~ctime()~~](#ctime)
+  - [Python标准库](#python标准库)
+    - [Timestamp 类型](#timestamp-类型-1)
+    - [库time <https://docs.python.org/zh-cn/3/library/time.html>](#库time-httpsdocspythonorgzh-cn3librarytimehtml)
+      - [内置数据类型](#内置数据类型)
+        - [timestamp     对应 c 标准库的 time_t](#timestamp-----对应-c-标准库的-time_t)
+        - [struct_time   对应 c 标准库的struct tm](#struct_time---对应-c-标准库的struct-tm)
+      - [内置函数，不需要实例化对象直接用](#内置函数不需要实例化对象直接用)
+        - [time.time()       → timestamp](#timetime--------timestamp)
+        - [time.strftime()   struct_time → 字符串日期时间](#timestrftime---struct_time--字符串日期时间)
+        - [time.strptime()   字符串日期时间 → struct_time](#timestrptime---字符串日期时间--struct_time)
+        - [time.mktime()     struct_time → timestamp](#timemktime-----struct_time--timestamp)
+        - [time.gmtime()     timestamp → struct_time](#timegmtime-----timestamp--struct_time)
+        - [time.localtime()  timestamp → struct_time](#timelocaltime--timestamp--struct_time)
+        - [time.sleep()](#timesleep)
+        - [~~time.asctime()~~](#timeasctime)
+        - [~~time.ctime()~~](#timectime)
+    - [库datetime <https://docs.python.org/zh-cn/3/library/datetime.html>](#库datetime-httpsdocspythonorgzh-cn3librarydatetimehtml)
+      - [class datetime.time 时间对象](#class-datetimetime-时间对象)
+      - [class datetime.date 日期对象](#class-datetimedate-日期对象)
+        - [strftime()    date → 字符串日期时间](#strftime----date--字符串日期时间)
+        - [timetuple()   date → struct_time](#timetuple---date--struct_time)
+      - [class datetime.datetime 日期时间对象](#class-datetimedatetime-日期时间对象)
+        - [now()     → datetime](#now------datetime)
+        - [fromtimestamp()   timestamp → datetime](#fromtimestamp---timestamp--datetime)
+        - [combine()   date + time → datetime](#combine---date--time--datetime)
+        - [fromisoformat()     iso标准的日期时间字符串 → datetime](#fromisoformat-----iso标准的日期时间字符串--datetime)
+        - [strptime()  字符串日期时间 → datetime](#strptime--字符串日期时间--datetime)
+        - [strftime()    datetime → 字符串日期时间](#strftime----datetime--字符串日期时间)
+        - [timestamp()     datetime → timestamp](#timestamp-----datetime--timestamp)
+        - [timetuple()     datetime → struct_time](#timetuple-----datetime--struct_time)
+        - [date()    datetime → date](#date----datetime--date)
+        - [time()    datetime → time](#time----datetime--time)
+        - [timetz()  datetime → time有tzinfo](#timetz--datetime--time有tzinfo)
+        - [isoformat()   datetime → iso标准的日期时间字符串](#isoformat---datetime--iso标准的日期时间字符串)
+      - [class datetime.timedelta 日期时间运算对象](#class-datetimetimedelta-日期时间运算对象)
+      - [class datetime.tzinfo 对象](#class-datetimetzinfo-对象)
+      - [class datetime.timezone 对象](#class-datetimetimezone-对象)
+    - [库 calendar](#库-calendar)
+      - [calendar.timegm(tuple)     struct_time → timestamp](#calendartimegmtuple-----struct_time--timestamp)
+      - [calendar.isleap(year)      → bool](#calendarisleapyear-------bool)
+      - [calendar.weekday(year, month, day)     → int](#calendarweekdayyear-month-day------int)
+      - [calendar.setfirstweekday(weekday)](#calendarsetfirstweekdayweekday)
+      - [calendar.firstweekday()](#calendarfirstweekday)
+    - [库dateutil 包](#库dateutil-包)
+  - [Numpy的日期时间](#numpy的日期时间)
+    - [numpy.datetime64 相关转换函数](#numpydatetime64-相关转换函数)
+      - [数组初始化时指定dtype类型  字符串日期时间 → datetime64](#数组初始化时指定dtype类型--字符串日期时间--datetime64)
+      - [np.datetime64()  字符串日期时间 → datetime64](#npdatetime64--字符串日期时间--datetime64)
+      - [np.datetime64()  datetime → datetime64](#npdatetime64--datetime--datetime64)
+      - [astype()   datetime64 → datetime](#astype---datetime64--datetime)
+      - [np.datetime_as_string()  datetime64 → 字符串日期时间](#npdatetime_as_string--datetime64--字符串日期时间)
+      - [上例基础上，指定时间的起止范围     字符串日期时间 → datetime64](#上例基础上指定时间的起止范围-----字符串日期时间--datetime64)
+      - [datetime64 -> datetime.datetime](#datetime64---datetimedatetime)
+    - [numpy.timedelta64 时间运算对象](#numpytimedelta64-时间运算对象)
+      - [两个日期的差值转换精度为天，用它除以一天的时间增量即可](#两个日期的差值转换精度为天用它除以一天的时间增量即可)
+      - [datetime64 → datetime.datetime time_t timestamp](#datetime64--datetimedatetime-time_t-timestamp)
+  - [Pandas的日期时间](#pandas的日期时间)
+    - [日期时间对应的对象和操作函数](#日期时间对应的对象和操作函数)
+      - [pd.date_range()    → DatetimeIndex](#pddate_range-----datetimeindex)
+      - [pd.to_datetime()   → datetime DatetimeIndex](#pdto_datetime----datetime-datetimeindex)
+      - [用Series.dt操作DataFrame的一列Timestamp类型数据，最常用的日期时间操作都通过它进行](#用seriesdt操作dataframe的一列timestamp类型数据最常用的日期时间操作都通过它进行)
+        - [.dt 取指定日期等](#dt-取指定日期等)
+        - [.dt 操作时区转换](#dt-操作时区转换)
+        - [.dt 转换为字符串日期时间](#dt-转换为字符串日期时间)
+    - [Timestamp() 操作起来对应 python datetime.datetime](#timestamp-操作起来对应-python-datetimedatetime)
+      - [timetuple() pd.Timestamp -> struct_time](#timetuple-pdtimestamp---struct_time)
+    - [Period 对应一段时间](#period-对应一段时间)
+      - [pd.period_range()  → PeriodIndex](#pdperiod_range---periodindex)
+    - [Interval 对应一段间隔](#interval-对应一段间隔)
+      - [pd.interval_range()  → IntervalIndex](#pdinterval_range---intervalindex)
+    - [DateOffset 日期的加减一段范围，有各种方法](#dateoffset-日期的加减一段范围有各种方法)
+    - [timedeltas 日期时间计算对应的对象和操作函数](#timedeltas-日期时间计算对应的对象和操作函数)
+      - [pd.Timedelta()  → timedelta](#pdtimedelta---timedelta)
+      - [pd.to_timedelta()  → Timedelta TimedeltaIndex](#pdto_timedelta---timedelta-timedeltaindex)
+      - [pd.timedelta_range()  → TimedeltaIndex](#pdtimedelta_range---timedeltaindex)
+      - [访问属性 days, seconds, microseconds, nanoseconds](#访问属性-days-seconds-microseconds-nanoseconds)
+      - [timedelta运算 datetime64 datetime →](#timedelta运算-datetime64-datetime-)
+      - [改周期](#改周期)
+      - [索引使用 DatetimeIndex PeriodIndex TimedeltaIndex](#索引使用-datetimeindex-periodindex-timedeltaindex)
+
 ## 定义术语 epoch
 
 epoch：时间点。 时间计算，按unix系统在70年代定义，操作系统储存的是自1970年1月1日0点（UTC）开始的秒数。
@@ -86,7 +182,6 @@ clock tick：时钟周期，是C/C++的一个基本计时单位，区别于cpu�
     NOTE: 如果想设置标准的 UTC 1970-01-01 00:00:00 咋办呢？
         time_t mkgmtime(struct tm* utc0date)
         实际上这个函数在linux上是有的，windows上是用了_mkgmtime()来代替
-
 
 #### ~~asctime()~~
 
@@ -378,7 +473,7 @@ class time.struct_time
             File "<string>", line 1, in <module>
             OverflowError: mktime argument out of range
 
-        # 这个才是中国地区真正的0秒输入……
+        # 这个才是中国地区（东8区）真正的0秒输入……
         a = (1970, 1, 1, 8, 0, 0, 3, 1, 0)
         >>> time.mktime(a)
         0.0
@@ -394,6 +489,15 @@ class time.struct_time
         #验证可得 把输入的本地时间当0时区操作了
         time.gmtime( calendar.timegm(datetime.datetime.now().timetuple()) )
 
+        或直接置秒数：
+             if start is None:
+                start = -2208989082  # UTC 1900年1月1日 00:01:01
+            elif isinstance(start, _datetime.datetime):
+                start = int(_time.mktime(start.timetuple()))
+            else:
+                start = int(_time.mktime(
+                    _time.strptime(str(start), '%Y-%m-%d')))
+
 ##### time.gmtime()     timestamp → struct_time
 
     同c标准库的gmtime()， UTC时间。 dst 标志始终为零。
@@ -401,7 +505,7 @@ class time.struct_time
     入参 timestamp
     返回 struct_time
 
-    有个相反的函数在库calendar.timegm()
+    NOTE: 有个相反的函数在库calendar.timegm()
 
 ##### time.localtime()  timestamp → struct_time
 
@@ -643,8 +747,10 @@ __str__()
     返回表示当前地方时的 datetime 对象
 
     # 当前 UTC 时间 不要使用 utcnow() 而是传入timezone对象
+    import datetime
     from datetime import timezone
-    datetime.now(tz=timezone.utc)
+    datetime.datetime.now(tz=timezone.utc)
+    type(datetime.datetime.now())
 
 ##### fromtimestamp()   timestamp → datetime
 
@@ -956,6 +1062,11 @@ tzname(dt)
 #### 上例基础上，指定时间的起止范围     字符串日期时间 → datetime64
 
     datetime_array = np.arange('2019-01-05','2019-01-10', dtype='datetime64')
+
+#### datetime64 -> datetime.datetime
+
+    # dt64为datetime64类型的变量
+    (dt64 - np.datetime64('1970-01-01T00:00:00Z')) / np.timedelta64(1, 's')
 
 ### numpy.timedelta64 时间运算对象
 
