@@ -15,6 +15,10 @@
   - [判断对象相等](#判断对象相等)
     - [python 判断对象相等](#python-判断对象相等)
   - [pandas 使用](#pandas-使用)
+    - [移动窗口函数rolling()](#移动窗口函数rolling)
+    - [pandas 优化](#pandas-优化)
+    - [Pandas中关于reindex(), set_index()和reset_index()的用法](#pandas中关于reindex-set_index和reset_index的用法)
+    - [Pandas详解五之下标存取](#pandas详解五之下标存取)
     - [apply() 和 applymap()的区别](#apply-和-applymap的区别)
     - [列（Series）accessor: .cat、.dt、.str](#列seriesaccessor-catdtstr)
     - [GroupBy 用法](#groupby-用法)
@@ -183,65 +187,72 @@ Pandas v0.23.4手册汉化
     https://blog.csdn.net/hhtnan/article/details/80080240
     http://pandas.pydata.org/pandas-docs/stable/user_guide/computation.html
 
-移动窗口函数rolling() 使用滑窗（sliding windown）或呈指数降低的权重（exponentially decaying weights），
-扩张窗口expanding() 扩张平均的时间窗口是从时间序列开始的地方作为开始，窗口的大小会逐渐递增，直到包含整个序列
+### 移动窗口函数rolling()
 
-    http://www.sohu.com/a/341495335_809317
+使用滑窗（sliding windown）或呈指数降低的权重（exponentially decaying weights），
+扩张窗口expanding() 扩张平均的时间窗口是从时间序列开始的地方作为开始，窗口的大小会逐渐递增，直到包含整个序列.
 
-    rolling() 简单的移动窗口函数
-    rolling()后，可以接mean、count、sum、median、std等聚合函数，
-    相当于之前版本的rolling_mean()、rolling_count()、rolling_sum()、rolling_median()、rolling_std()
+http://www.sohu.com/a/341495335_809317
 
-    ewm() 指数加权的移动窗口函数
-    若根据跨度指定衰减，即α=2/(span+1)，则需要指定参数span；
-    若根据质心指定衰减，即α=1/(com+1)，则需要指定参数com；
-    若根据半衰期指定衰减，即α=1−exp(log(0.5)/halflife), for halflife>0，则需要指定参数halflife。
-    ewm()后，可以接mean、corr、std等聚合函数，相当于ewma()、ewmcorr()、ewmstd()，但count、sum等聚合函数没有对应的特定函数
+rolling() 简单的移动窗口函数
+rolling()后，可以接mean、count、sum、median、std等聚合函数，
+相当于之前版本的rolling_mean()、rolling_count()、rolling_sum()、rolling_median()、rolling_std()
 
-    对数值列转为新的指数列
-    df[retColName] = np.around(np.power(10, df[srcCloName]), decimals=2)
+ewm() 指数加权的移动窗口函数
+若根据跨度指定衰减，即α=2/(span+1)，则需要指定参数span；
+若根据质心指定衰减，即α=1/(com+1)，则需要指定参数com；
+若根据半衰期指定衰减，即α=1−exp(log(0.5)/halflife), for halflife>0，则需要指定参数halflife。
+ewm()后，可以接mean、corr、std等聚合函数，相当于ewma()、ewmcorr()、ewmstd()，但count、sum等聚合函数没有对应的特定函数
 
-    self.__df[colname] 是 Series对象，调用 .values() .to_numpy() .array()
-    得到 pandas.array:([a,d,...]) numpy.ndarray
+对数值列转为新的指数列
+df[retColName] = np.around(np.power(10, df[srcCloName]), decimals=2)
 
-pandas 优化
+self.__df[colname] 是 Series对象，调用 .values() .to_numpy() .array()
+得到 pandas.array:([a,d,...]) numpy.ndarray
+
+### pandas 优化
 
     https://blog.csdn.net/BF02jgtRS00XKtCx/article/details/90092161
     http://www.pythontip.com/blog/post/12331/
 
-Pandas中关于reindex(), set_index()和reset_index()的用法
+### Pandas中关于reindex(), set_index()和reset_index()的用法
 
     https://blog.csdn.net/qq_42874547/article/details/89052864
     https://www.cnblogs.com/ljhdo/p/11556410.html
 
-Pandas详解五之下标存取
+### Pandas详解五之下标存取
 
     https://blog.csdn.net/learnstudy2/article/details/102643779
 
 ### apply() 和 applymap()的区别
 
-    apply()实际上只能穿过一个维度，就是说如果是Series，可以每个元素执行，但是DataFrame的话，其实是对每列执行函数。
-    对于DataFrame如果想要每个元素操作的话，应该使用applymap()。
+apply()实际上只能穿过一个维度，就是说如果是Series，可以每个元素执行，但是DataFrame的话，其实是对每列执行函数。
+
+对于DataFrame如果想要每个元素操作的话，应该使用applymap()。
 
 ### 列（Series）accessor: .cat、.dt、.str
 
-    Series对象和DataFrame的列数据提供了cat、dt、str三种属性接口（accessors），
-    分别对应分类数据、日期时间数据和字符串数据，通过这几个接口可以快速实现特定的功能，非常快捷。
-    <https://zhuanlan.zhihu.com/p/44256257>
-    其中时间类的详见<time_t.md>的章节“Pandas的日期时间”
+Series对象和DataFrame的列数据提供了cat、dt、str三种属性接口（accessors），
+分别对应分类数据、日期时间数据和字符串数据，通过这几个接口可以快速实现特定的功能，非常快捷。
 
-        import pandas as pd
-        pd.Series._accessors
-        [i for i in dir(pd.Series.str) if not i.startswith('_')]
+<https://zhuanlan.zhihu.com/p/44256257>
+其中时间类的dt详见<time_t.md>的章节“Pandas的日期时间”
+
+    import pandas as pd
+    pd.Series._accessors
+    [i for i in dir(pd.Series.str) if not i.startswith('_')]
 
 ### GroupBy 用法
 
     https://github.com/yanqiangmiffy/quincy-python-v2/blob/master/Python008-Pandas%20GroupBy%20%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B.ipynb
+
     将分组后的字符拼接
         df.groupby('content_id')['tag'].apply(lambda x:','.join(x)).to_frame()
+
     分组，取每组的前几行
         grouped = df.groupby(['class']).head(2)
         df.sort_values(['stime','code'],ascending=[1,0],inplace=True)
+
     统计每个content_id有多少个不同的用户
         df.groupby("content_id")["user_id"].unique().to_frame()
 
@@ -265,27 +276,31 @@ Pandas详解五之下标存取
 
 #### 示例
 
-    # 用时间做索引，直接resample
-    df_dti = df_from_db.set_index('stime').resample(
-                    pd.Timedelta(str(to_period) + 'minutes')).agg({
-                        'open': ['first'],
-                        'high': ['max'],
-                        'low': ['min'],
-                        'close': ['last'],
-                        'volume': ['sum']
-                    })  # .ohlc()
+```python
 
-    # 不用时间做索引，则需要 groupby+rolling：df.rolling('2s').sum()
-    # https://blog.csdn.net/wj1066/article/details/78853717
-    df_from_db_grouped.groupby('stime').rolling(
-            pd.Timedelta(str(to_period) + 'minutes'),
-            min_periods=2).agg({
-                'open': ['first'],
-                'high': ['max'],
-                'low': ['min'],
-                'close': ['last'],
-                'volume': ['sum']
-            })
+# 用时间做索引，直接resample
+df_dti = df_from_db.set_index('stime').resample(
+                pd.Timedelta(str(to_period) + 'minutes')).agg({
+                    'open': ['first'],
+                    'high': ['max'],
+                    'low': ['min'],
+                    'close': ['last'],
+                    'volume': ['sum']
+                })  # .ohlc()
+
+# 不用时间做索引，则需要 groupby+rolling：df.rolling('2s').sum()
+# https://blog.csdn.net/wj1066/article/details/78853717
+df_from_db_grouped.groupby('stime').rolling(
+        pd.Timedelta(str(to_period) + 'minutes'),
+        min_periods=2).agg({
+            'open': ['first'],
+            'high': ['max'],
+            'low': ['min'],
+            'close': ['last'],
+            'volume': ['sum']
+        })
+
+```
 
 ## numpy 使用
 
@@ -314,34 +329,34 @@ Pandas详解五之下标存取
 
 ### ufunc 用法
 
-用ufunc实现向量化操作，避免遍历数组跑循环
+用ufunc实现向量化操作，避免遍历数组跑for循环
 
-    ```python
+```python
 
-    # np.vectorize()只是为了方便而不是为了性能，内部实现用的for循环
-    # https://numpy.org/doc/stable/reference/generated/numpy.vectorize.html
-    _ufc = np.vectorize(_pyf,otypes=[np.float])
-    ret = _ufc(nlist, nlist.shift(1), alpha)
+# np.vectorize()只是为了方便而不是为了性能，内部实现用的for循环
+# https://numpy.org/doc/stable/reference/generated/numpy.vectorize.html
+_ufc = np.vectorize(_pyf,otypes=[np.float])
+ret = _ufc(nlist, nlist.shift(1), alpha)
 
 
-    def _pyf(y, yp, al):
-        return al * y + (1 - al) * yp
-    _ufc = np.frompyfunc(_pyf, 3, 1)
+def _pyf(y, yp, al):
+    return al * y + (1 - al) * yp
+_ufc = np.frompyfunc(_pyf, 3, 1)
 
-    # 如果是累积求和，直接调用 np.cumsum()即可
-    #
-    # ufunc函数对象本身还有一些方法函数如accumulate，
-    #   ret = _ufc.accumulate(nlist, dtype=np.object).astype(np.float)
-    # 本来用ufunc.accumulate()是最直观的，
-    # 但是这些方法只有对两个输入、一个输出的ufunc函数有效，否则会抛出ValueError，
-    # 而且类型默认是object，这个处理起来慢于有实际类型的对象
-    # https://stackoverflow.com/questions/13828599/generalized-cumulative-functions-in-numpy-scipy
-    #    import numpy as np
-    #    uadd = np.frompyfunc(lambda x, y: x + y, 2, 1)
-    #    uadd.accumulate([1,2,3], dtype=np.object).astype(np.int)
-    #    #array([1, 3, 6])
+# 如果是累积求和，直接调用 np.cumsum()即可
+#
+# ufunc函数对象本身还有一些方法函数如accumulate，
+#   ret = _ufc.accumulate(nlist, dtype=np.object).astype(np.float)
+# 本来用ufunc.accumulate()是最直观的，
+# 但是这些方法只有对两个输入、一个输出的ufunc函数有效，否则会抛出ValueError，
+# 而且类型默认是object，这个处理起来慢于有实际类型的对象
+# https://stackoverflow.com/questions/13828599/generalized-cumulative-functions-in-numpy-scipy
+#    import numpy as np
+#    uadd = np.frompyfunc(lambda x, y: x + y, 2, 1)
+#    uadd.accumulate([1,2,3], dtype=np.object).astype(np.int)
+#    #array([1, 3, 6])
 
-    # 对于求累积，_ufc多于两个参数的调用只能用如下：
-    ret = _ufc(nlist, nlist.shift(1), alpha).astype(np.float)  # ufc返回的居然是dtype=object
+# 对于求累积，_ufc多于两个参数的调用只能用如下：
+ret = _ufc(nlist, nlist.shift(1), alpha).astype(np.float)  # ufc返回的居然是dtype=object
 
-    ```
+```
