@@ -65,83 +65,83 @@ mac os:
 
 这些命令在tmn的:命令行模式一样可以使用
 
-tmux
-    创建一个会话，并连接
+    tmux
+        创建一个会话，并连接
 
-tmux new -s roclinux
-    创建一个全新的 tmux 会话 叫作 roclinux
+    tmux new -s roclinux
+        创建一个全新的 tmux 会话 叫作 roclinux
 
-tmux ls
-    列出当前的会话（tmux session），下面表示0号有2个窗口
-        0: 2 windows (created Tue Apr 13 17:28:34 2021)
+    tmux ls
+        列出当前的会话（tmux session），下面表示0号有2个窗口
+            0: 2 windows (created Tue Apr 13 17:28:34 2021)
 
-tmux a -t 3
-    进入tmux，连接到3号会话
+    tmux a -t 3
+        进入tmux，连接到3号会话
 
-tmux a -t mydevelop
-    进入tmux，连接到会话名为 mydevelop
+    tmux a -t mydevelop
+        进入tmux，连接到会话名为 mydevelop
 
-tmux kill-session -t mydevelop
-    不用的会话可能有很多窗口，挨个退出很麻烦，直接杀掉会话，mydevelop 是要杀掉的会话名称
+    tmux kill-session -t mydevelop
+        不用的会话可能有很多窗口，挨个退出很麻烦，直接杀掉会话，mydevelop 是要杀掉的会话名称
 
-tmux rename -t old_session_name new_session_name
-    重命名会话
+    tmux rename -t old_session_name new_session_name
+        重命名会话
 
-#### 快捷键
+    #### 快捷键
 
-组合键ctrl+b 作为前导，松开后再按其它键如下
+    组合键ctrl+b 作为前导，松开后再按其它键如下
 
-?       显示所有快捷键，使用pgup和pgdown翻页，按q退出(其实是在vim里显示的，命令用vim的)
+        ?       显示所有快捷键，使用pgup和pgdown翻页，按q退出(其实是在vim里显示的，命令用vim的)
 
-:       进入命令行模式，可输入命c令如：
-            show-options -g  # 显示所有选项设置的参数，使用pgup和pgdown翻页，按q退出
-            set-option -g display-time 5000 # 提示信息的持续时间；设置足够的时间以避免看不清提示，单位为毫秒
-            # 把前导键从 ctrl+b 改成 ctrl+g， M-a是Alt+a
-            set-option -g prefix C-g unbind-key C-b bind-key C-g send-prefix
+        :       进入命令行模式，可输入命c令如：
+                    show-options -g  # 显示所有选项设置的参数，使用pgup和pgdown翻页，按q退出
+                    set-option -g display-time 5000 # 提示信息的持续时间；设置足够的时间以避免看不清提示，单位为毫秒
+                    # 把前导键从 ctrl+b 改成 ctrl+g， M-a是Alt+a
+                    set-option -g prefix C-g unbind-key C-b bind-key C-g send-prefix
 
-s       列出当前会话，
-        下面表示0号会话有2个窗口，是当前连接，1号会话有1个窗口
-            (0) + 0: 2 windows (attached)
-            (1) + 1: 1 windows
+        s       列出当前会话，
+                下面表示0号会话有2个窗口，是当前连接，1号会话有1个窗口
+                    (0) + 0: 2 windows (attached)
+                    (1) + 1: 1 windows
 
-$       重命名当前会话；这样便于识别
+        $       重命名当前会话；这样便于识别
 
-[       查看历史输出（默认只显示一屏），使用pgup和pgdown翻页，按q退出
+        [       查看历史输出（默认只显示一屏），使用pgup和pgdown翻页，按q退出
 
-窗口（Window）可以拆分为面板（pane），默认情况下在一个window中，只有一个大窗格，占满整个窗口区域。
-"       新建面板，向下拆分
-%       新建面板，向右拆分
-空格     在上述两种布局间切换
-o       选择下一面板
-方向键   在相邻两个面板中切换
-{       当前面板与上一个面板交换位置
-}       当前面板与下一个面板交换位置
-!       将当前面板拆分为一个独立窗口。
-z       当前面板全屏显示，再使用一次会变回原来大小。
-q       显示面板编号
-Ctrl+方向键     以1个单元格为单位移动边缘以调整当前面板大小
-Alt+方向键      以5个单元格为单位移动边缘以调整当前面板大小
+        窗口（Window）可以拆分为面板（pane），默认情况下在一个window中，只有一个大窗格，占满整个窗口区域。
+        "       新建面板，向下拆分
+        %       新建面板，向右拆分
+        空格     在上述两种布局间切换
+        o       选择下一面板
+        方向键   在相邻两个面板中切换
+        {       当前面板与上一个面板交换位置
+        }       当前面板与下一个面板交换位置
+        !       将当前面板拆分为一个独立窗口。
+        z       当前面板全屏显示，再使用一次会变回原来大小。
+        q       显示面板编号
+        Ctrl+方向键     以1个单元格为单位移动边缘以调整当前面板大小
+        Alt+方向键      以5个单元格为单位移动边缘以调整当前面板大小
 
-c       创建新窗口，状态栏显示窗口编号
-w       列出当前会话的所有窗口，通过上、下键切换
-数字0-9  切换到指定窗口
-n       切换到下一个窗口
-p       切换到上一个窗口
-,       重命名当前窗口；这样便于识别
-.       修改当前窗口编号；相当于窗口重新排序
+        c       创建新窗口，状态栏显示窗口编号
+        w       列出当前会话的所有窗口，通过上、下键切换
+        数字0-9  切换到指定窗口
+        n       切换到下一个窗口
+        p       切换到上一个窗口
+        ,       重命名当前窗口；这样便于识别
+        .       修改当前窗口编号；相当于窗口重新排序
 
-d       脱离当前会话返回Shell界面，tmux里面的所有session继续运行，
-        会话里面的程序不会退出在后台保持继续运行，
-        如果操作系统突然断连，也是一样的效果，
-        下次运行tmux attach 能够重新进入之前的会话
+        d       脱离当前会话返回Shell界面，tmux里面的所有session继续运行，
+                会话里面的程序不会退出在后台保持继续运行，
+                如果操作系统突然断连，也是一样的效果，
+                下次运行tmux attach 能够重新进入之前的会话
 
-最后一个窗口退出时，当前的tmux seesion就会被关闭。
-x       关闭当前面板，并自动切换到下一个，
-        操作之后会给出是否关闭的提示，按y确认即关闭。
-        等同于当前的unix shell下Ctrl+d或输入exit命令。
-&       关闭当前窗口， 并自动切换到下一个，
-        操作之后会给出是否关闭的提示，按y确认即关闭。
-        等同于当前所有面板的unix shell下Ctrl+d或输入exit命令。
+        最后一个窗口退出时，当前的tmux seesion就会被关闭。
+    x       关闭当前面板，并自动切换到下一个，
+            操作之后会给出是否关闭的提示，按y确认即关闭。
+            等同于当前的unix shell下Ctrl+d或输入exit命令。
+    &       关闭当前窗口， 并自动切换到下一个，
+            操作之后会给出是否关闭的提示，按y确认即关闭。
+            等同于当前所有面板的unix shell下Ctrl+d或输入exit命令。
 
 #### 配置文件
 
@@ -175,9 +175,10 @@ code::block / vscode
 
 <https://zhuanlan.zhihu.com/p/56572298>
 
-MingW (gcc 编译到mscrt)包含gcc和一系列工具，是windows下的gnu环境，编译linux c++代码生成的exe程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API。
-相比Cygwin体积更小，使用更方便。
-如创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：
+MingW (gcc 编译到mscrt)包含gcc和一系列工具，是windows下的gnu环境，
+编译linux c++代码生成的exe程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API，相比Cygwin体积更小，使用更方便。
+
+如 创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：
 修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的mscrt CreateProcess()形式，这就是 MingW 的做法。
 Cygwin 生成的程序依然有 fork() 这样的 Linux 系统调用，但目标库是 cygwin1.dll。
 这样看来用 MingW 编译的程序性能会高一点，而且也不用带着那个接近两兆的 cygwin1.dll 文件。
@@ -200,10 +201,7 @@ GNU、UNIX、Linux软件的c++源代码几乎不用修改就可以在Cygwin环�
 相对的 MingW 也有一个叫 MSys（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具.
 
 MSYS2 是MSYS的一个升级版,准确的说是集成了pacman和Mingw-w64的Cygwin升级版。
-把/usr/bin加进环境变量path以后，可以直接在cmd中使用Linux命令
-
-前端react/vue，接入层node / ts，服务层golang，在国内的大环境下其他的可以先不用考虑了。
-Java太重，.net略偏，rust生态不成熟，php已是明日黄花。
+把/usr/bin加进环境变量path以后，可以直接在cmd中使用Linux命令。
 
 ### Mingw
 
