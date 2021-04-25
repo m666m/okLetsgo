@@ -15,14 +15,25 @@
   - [判断对象相等](#判断对象相等)
     - [python 判断对象相等](#python-判断对象相等)
   - [pandas 使用](#pandas-使用)
-    - [移动窗口函数rolling()](#移动窗口函数rolling)
-    - [pandas 优化](#pandas-优化)
+    - [非常依赖索引的对齐](#非常依赖索引的对齐)
+      - [对df进行以下操作之后都要 reset_index()](#对df进行以下操作之后都要-reset_index)
+      - [两个长度不等的df互相赋值，需要index一致](#两个长度不等的df互相赋值需要index一致)
     - [Pandas中关于reindex(), set_index()和reset_index()的用法](#pandas中关于reindex-set_index和reset_index的用法)
     - [Pandas详解五之下标存取](#pandas详解五之下标存取)
     - [apply() 和 applymap()的区别](#apply-和-applymap的区别)
     - [列（Series）accessor: .cat、.dt、.str](#列seriesaccessor-catdtstr)
+    - [移动窗口函数rolling()](#移动窗口函数rolling)
+      - [只有一列数值列，才可以rolling()](#只有一列数值列才可以rolling)
+      - [同一列前后两行拼接字符串无法用rolling()](#同一列前后两行拼接字符串无法用rolling)
+        - [解决1 - 单列用shift()](#解决1---单列用shift)
+        - [解决2 - 多列就自定义df_roll()函数](#解决2---多列就自定义df_roll函数)
+    - [自定义pandas的roll()](#自定义pandas的roll)
     - [GroupBy 用法](#groupby-用法)
-      - [示例](#示例)
+      - [接.apply()](#接apply)
+      - [时间字段汇聚](#时间字段汇聚)
+        - [不用时间做索引 - groupby + rolling：df.rolling('2s').sum()](#不用时间做索引---groupby--rollingdfrolling2ssum)
+        - [用时间做索引 - resample + agg](#用时间做索引---resample--agg)
+    - [pandas 优化](#pandas-优化)
   - [numpy 使用](#numpy-使用)
     - [ufunc 用法](#ufunc-用法)
 
@@ -187,33 +198,45 @@ Pandas v0.23.4手册汉化
     https://blog.csdn.net/hhtnan/article/details/80080240
     http://pandas.pydata.org/pandas-docs/stable/user_guide/computation.html
 
-### 移动窗口函数rolling()
+### 非常依赖索引的对齐
 
-使用滑窗（sliding windown）或呈指数降低的权重（exponentially decaying weights），
-扩张窗口expanding() 扩张平均的时间窗口是从时间序列开始的地方作为开始，窗口的大小会逐渐递增，直到包含整个序列.
+下标的批量操作，等号两边的赋值，底层都是依赖索引的对齐。
 
-http://www.sohu.com/a/341495335_809317
+#### 对df进行以下操作之后都要 reset_index()
 
-rolling() 简单的移动窗口函数
-rolling()后，可以接mean、count、sum、median、std等聚合函数，
-相当于之前版本的rolling_mean()、rolling_count()、rolling_sum()、rolling_median()、rolling_std()
+(drop=True/False根据自己的情况决定)
 
-ewm() 指数加权的移动窗口函数
-若根据跨度指定衰减，即α=2/(span+1)，则需要指定参数span；
-若根据质心指定衰减，即α=1/(com+1)，则需要指定参数com；
-若根据半衰期指定衰减，即α=1−exp(log(0.5)/halflife), for halflife>0，则需要指定参数halflife。
-ewm()后，可以接mean、corr、std等聚合函数，相当于ewma()、ewmcorr()、ewmstd()，但count、sum等聚合函数没有对应的特定函数
+使用前要reset_index()：
 
-对数值列转为新的指数列
-df[retColName] = np.around(np.power(10, df[srcCloName]), decimals=2)
+    删除某些数据后的df，再跟其他df赋值，要注意索引对齐
+    过滤取部分数据后的df，再跟其他df赋值，要注意索引对齐
 
-self.__df[colname] 是 Series对象，调用 .values() .to_numpy() .array()
-得到 pandas.array:([a,d,...]) numpy.ndarray
+示例：df1取部分数据，用df2的某些值赋值
 
-### pandas 优化
+    ndf = df1[(df1['stime'] >= e_time)].reset_index(drop=False)
+    ndf.loc[0, 'psum'] = df2['psum'].sum()
 
-    https://blog.csdn.net/BF02jgtRS00XKtCx/article/details/90092161
-    http://www.pythontip.com/blog/post/12331/
+#### 两个长度不等的df互相赋值，需要index一致
+
+否则只有index值相等的才能赋值，但是其它原来有数据的会被置成NaN了。。。。
+
+错误：
+
+    df.loc[df['pname'] == pname, ['position', 'c_rate']] = ssdf[['position', 'c_rate']]
+
+所以如果有个df的列需要从不同的df列获取，那就得明确指定索引：
+
+    df_result = df.set_index('pname', 'stime')
+
+    df_result['position'] = ssdf.set_index('pname', 'stime')['position']
+
+    df_result['c_rate'] = ssdf.set_index('pname', 'stime')['c_rate']
+
+    df_result.reset_index(drop=False, inplace=True)  # 恢复索引列到数据列
+
+这时候用新数据替换原数据，才能只更新指定pname，而其它pname的数据实现保留的效果……
+
+    df.loc[df['pname'] ==pname, ['position', 'c_rate']] = df_result[['position', 'c_rate']]
 
 ### Pandas中关于reindex(), set_index()和reset_index()的用法
 
@@ -242,55 +265,189 @@ Series对象和DataFrame的列数据提供了cat、dt、str三种属性接口（
     pd.Series._accessors
     [i for i in dir(pd.Series.str) if not i.startswith('_')]
 
+### 移动窗口函数rolling()
+
+使用滑窗（sliding windown）或呈指数降低的权重（exponentially decaying weights），
+扩张窗口expanding() 扩张平均的时间窗口是从时间序列开始的地方作为开始，窗口的大小会逐渐递增，直到包含整个序列.
+
+<http://www.sohu.com/a/341495335_809317>
+
+rolling() 简单的移动窗口函数
+rolling()后，可以接mean、count、sum、median、std等聚合函数，
+相当于之前版本的rolling_mean()、rolling_count()、rolling_sum()、rolling_median()、rolling_std()
+
+ewm() 指数加权的移动窗口函数
+若根据跨度指定衰减，即α=2/(span+1)，则需要指定参数span；
+若根据质心指定衰减，即α=1/(com+1)，则需要指定参数com；
+若根据半衰期指定衰减，即α=1−exp(log(0.5)/halflife), for halflife>0，则需要指定参数halflife。
+ewm()后，可以接mean、corr、std等聚合函数，相当于ewma()、ewmcorr()、ewmstd()，但count、sum等聚合函数没有对应的特定函数
+
+对数值列转为新的指数列
+df[retColName] = np.around(np.power(10, df[srcCloName]), decimals=2)
+
+self.__df[colname] 是 Series对象，调用 .values() .to_numpy() .array()
+得到 pandas.array:([a,d,...]) numpy.ndarray
+
+#### 只有一列数值列，才可以rolling()
+
+两行取值整理成一个array，才能用x[1] - x[0]，
+否则只能shift(1)提上来，新建这些列，再各列做运算
+
+    sec_df['diff'] = sec_df['net_worth'].rolling(2).apply(
+        lambda x: x[1] - x[0], raw=True)
+
+#### 同一列前后两行拼接字符串无法用rolling()
+
+形如 '2018-10-1 - 2018-10-10' + 0.8 = '2018-10-1 - 2018-10-10: 0.8'
+
+前后两行取值， rolling()不会传递非数值型字段，也就没法apply()，而直接sec_df.apply()是对每一个元素进行处理，无法单独针对某一列。
+
+Wrong:
+
+    sec_df['sec_fluctuation'] = sec_df['stime'].rolling(2).apply(
+        lambda x: str(x[0]) + ' - ' + str(x[1]))
+
+    sec_df['sec_fluctuation'] = sec_df.apply(
+        lambda x: str(x['name']) + ':', axis=1)
+
+##### 解决1 - 单列用shift()
+
+    sec_df['previous_stime'] = sec_df['stime'].shift(1)
+
+    sec_df['sec_fluctuation'] = sec_df['stime'].shift(1).astype(
+        str).str.cat(sec_df['stime'].astype(str),
+                    sep=' - ').str.cat(sec_df['diff'].round(4).astype(str),
+                                        sep=': ')
+
+##### 解决2 - 多列就自定义df_roll()函数
+
+把入参作为dataframe可以实现处理指定列： 见下面章节 自定义pandas的roll()
+
+### 自定义pandas的roll()
+
+pandas 的roll()会舍弃非数值类型的字段，不支持传入完整的dataframe，而dataframe.apply()只能所有元素同一处理
+<https://stackoverflow.com/questions/38878917/how-to-invoke-pandas-rolling-apply-with-parameters-from-multiple-column>
+
+```python
+
+def df_roll(df, w, **kwargs):
+    """ 自定义pandas的roll()，实现传入完整的dataframe，方便选择指定行/列进行处理
+
+    用递次下移的固定行数的分组来解决这个问题。
+
+    如果只是操作一列的不同行之间运算，用 df['col1'] + df.shift(1)['col1'] 更简单
+
+    参数
+    ----
+    df: pd.DataFrame
+        要分组的df
+    w:  int
+        几行分一组
+
+    返回
+    ----
+    pandas.groupby
+        分组对象，内容是完整的dataframe，操作这个对象就比较方便了
+
+    示例
+    ----
+        见下面的test
+
+    说明
+    ----
+        pandas 的roll()会舍弃非数值类型的字段，不支持传入完整的dataframe，而dataframe.apply()只能所有元素同一处理
+        https://stackoverflow.com/questions/38878917/how-to-invoke-pandas-rolling-apply-with-parameters-from-multiple-column
+    """
+    v = df.values
+    d0, d1 = v.shape
+    s0, s1 = v.strides
+
+    a = stride(v, (d0 - (w - 1), w, d1), (s0, s0, s1))
+
+    rolled_df = pd.concat({
+        row: pd.DataFrame(values, columns=df.columns)
+        for row, values in zip(df.index, a)
+    })
+
+    return rolled_df.groupby(level=0, **kwargs)
+
+
+# test
+np.random.seed([3, 1415])
+df = pd.DataFrame(np.random.rand(5, 2).round(2), columns=['A', 'B'])
+print(df, '\n------\n', df_roll(df, 2).sum())
+print('\n---pipe---\n', df.pipe(df_roll, w=2).sum())
+print('\n---agg---\n', df_roll(df, 2).agg(sum))
+
+print('\n---apply1-每两行分组，两行之间操作第0列--\n',  \
+  df_roll(df, 2).apply(lambda block: block.iloc[0, 0] + block.iloc[1, 0]))  # 等效df[行号：行号]
+
+# print('\n---apply2---\n',  \
+#  df_roll(df, 2).apply(lambda block: block[0:1, 1] + block[1:2, 1]))  # df[]里如果要直接引用，只能是列名。
+
+print('\n---apply3-每两行分组，操作第0列会导致第二行丢失--\n', \
+  df_roll(df, 2).apply(lambda block: block.iloc[0, 0] + block.iloc[0, 1]))  # 不连续取值用两个方括号.iloc[[1,3]]
+```
+
 ### GroupBy 用法
 
     https://github.com/yanqiangmiffy/quincy-python-v2/blob/master/Python008-Pandas%20GroupBy%20%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B.ipynb
 
-    将分组后的字符拼接
-        df.groupby('content_id')['tag'].apply(lambda x:','.join(x)).to_frame()
+GroupBy的结果，理解成拼块，后续操作是对每个块的批量处理
 
-    分组，取每组的前几行
-        grouped = df.groupby(['class']).head(2)
-        df.sort_values(['stime','code'],ascending=[1,0],inplace=True)
+#### 接.apply()
 
-    统计每个content_id有多少个不同的用户
-        df.groupby("content_id")["user_id"].unique().to_frame()
+.apply(lambda block: block.iloc[0, 0] + block.iloc[1, 0])) 等效df[行号：行号]
 
-    分组结果排序
-        df.groupby('product')['value'].sum().to_frame().reset_index().sort_values(by='value')
+    # 数据合理性检查
+    mask = rdf.groupby('code', as_index=False).apply(
+        lambda block: True if block.iloc[-1]['volume'] < 0 else False)
 
-    按'A'列分组，给组内元素排序号(从0开始，降序)
-        df.groupby('A').cumcount(ascending=False)
+    errordf = rdf.groupby('code', as_index=False).max()[mask]
 
-    带有条件A的行，取他的id列
+将分组后的字符拼接
+
+    df.groupby('content_id')['tag'].apply(lambda x:','.join(x)).to_frame()
+
+分组，取每组的前几行
+
+    grouped = df.groupby(['class']).head(2)
+    df.sort_values(['stime','code'],ascending=[1,0],inplace=True)
+
+统计每个content_id有多少个不同的用户
+
+    df.groupby("content_id")["user_id"].unique().to_frame()
+
+分组结果排序
+
+    df.groupby('product')['value'].sum().to_frame().reset_index().sort_values(by='value')
+
+按'A'列分组，给组内元素排序号(从0开始，降序)
+
+    df.groupby('A').cumcount(ascending=False)
+
+带有条件A的行，取他的id列
+
     arr_A = df.loc[df['condition'] == 'A','id'].values
 
-    按商店和产品分组,同时对销售额进行总计和计数,同时采用评分的平均值
-        dfg = df.groupby(['store', 'product']).agg({'sales': ['sum', 'count'],
-                                                    'rating': 'mean'})
-    在每个组中保留评分最高的两个行
-        g = df_from_db.groupby(
-                        level=0,
-                        group_keys=False).apply(lambda x: x.sort_values(
-                            ('rating', 'mean'), ascending=False).head(2))
+按商店和产品分组,同时对销售额进行总计和计数,同时采用评分的平均值
 
-#### 示例
+    dfg = df.groupby(['store', 'product']).agg({'sales': ['sum', 'count'],
+                                                'rating': 'mean'})
+在每个组中保留评分最高的两个行
 
-```python
+    g = df_from_db.groupby(
+                    level=0,
+                    group_keys=False).apply(lambda x: x.sort_values(
+                        ('rating', 'mean'), ascending=False).head(2))
 
-# 用时间做索引，直接resample
-df_dti = df_from_db.set_index('stime').resample(
-                pd.Timedelta(str(to_period) + 'minutes')).agg({
-                    'open': ['first'],
-                    'high': ['max'],
-                    'low': ['min'],
-                    'close': ['last'],
-                    'volume': ['sum']
-                })  # .ohlc()
+#### 时间字段汇聚
 
-# 不用时间做索引，则需要 groupby+rolling：df.rolling('2s').sum()
-# https://blog.csdn.net/wj1066/article/details/78853717
-df_from_db_grouped.groupby('stime').rolling(
+##### 不用时间做索引 - groupby + rolling：df.rolling('2s').sum()
+
+<https://blog.csdn.net/wj1066/article/details/78853717>
+
+    df_from_db_grouped.groupby('stime').rolling(
         pd.Timedelta(str(to_period) + 'minutes'),
         min_periods=2).agg({
             'open': ['first'],
@@ -300,7 +457,52 @@ df_from_db_grouped.groupby('stime').rolling(
             'volume': ['sum']
         })
 
+<https://stackoverflow.com/questions/15297053/how-can-i-divide-single-values-of-a-dataframe-by-monthly-averages>
+<https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html#groupby-transform-window-resample>
+<https://stackoverflow.com/questions/15408156/resampling-with-custom-periods>
+
+    df.groupby(lambda x: x.strftime('%Y%m'),
+            group_keys=False).apply(to_dec1, np.mean)
+
+    df_dti = df_from_db.groupby(
+        pd.Grouper(key='stime',
+                freq=str(to_period) + 'T')).agg({
+                    'open': ['first'],
+                    'high': ['max'],
+                    'low': ['min'],
+                    'close': ['last'],
+                    'volume': ['sum']
+                })  # .ohlc()
+
+##### 用时间做索引 - resample + agg
+
+    https://stackoverflow.com/questions/14861023/resampling-minute-data
+    https://pandas.pydata.org/pandas-docs/stable/user_guide/cookbook.html?highlight=timegroup#resampling
+    http://www.cocoachina.com/articles/98719
+
+    https://blog.csdn.net/wangshuang1631/article/details/52314944
+    DataFrame.agg函数 https://www.cjavapy.com/article/282/
+      https://stackoverflow.com/questions/33637312/pandas-grouper-by-frequency-with-completeness-requirement
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.core.groupby.DataFrameGroupBy.resample.html?highlight=timegroup
+    'B': lambda x: np.std(x, ddof=1)
+
+```python
+
+# .ohlc()
+df_dti = df_from_db.set_index('stime').resample(
+    pd.Timedelta(str(to_period) + 'minutes')).agg({
+        'open': ['first'],
+        'high': ['max'],
+        'low': ['min'],
+        'close': ['last'],
+        'volume': ['sum']
+    }).reset_index(drop=False)  # 原来的index变成数据列，保留
 ```
+
+### pandas 优化
+
+    https://blog.csdn.net/BF02jgtRS00XKtCx/article/details/90092161
+    http://www.pythontip.com/blog/post/12331/
 
 ## numpy 使用
 
@@ -341,6 +543,7 @@ ret = _ufc(nlist, nlist.shift(1), alpha)
 
 def _pyf(y, yp, al):
     return al * y + (1 - al) * yp
+
 _ufc = np.frompyfunc(_pyf, 3, 1)
 
 # 如果是累积求和，直接调用 np.cumsum()即可
@@ -358,5 +561,4 @@ _ufc = np.frompyfunc(_pyf, 3, 1)
 
 # 对于求累积，_ufc多于两个参数的调用只能用如下：
 ret = _ufc(nlist, nlist.shift(1), alpha).astype(np.float)  # ufc返回的居然是dtype=object
-
 ```

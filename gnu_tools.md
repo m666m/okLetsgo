@@ -79,7 +79,7 @@ mac os:
         进入tmux，连接到3号会话
 
     tmux a -t mydevelop
-        进入tmux，连接到会话名为 mydevelop
+        进入tmux，连接到名为 mydevelop 的会话
 
     tmux kill-session -t mydevelop
         不用的会话可能有很多窗口，挨个退出很麻烦，直接杀掉会话，mydevelop 是要杀掉的会话名称
@@ -89,15 +89,13 @@ mac os:
 
 #### 快捷键
 
-组合键ctrl+b 作为前导，松开后再按其它键如下
+组合键 ctrl+b 作为前导，松开后再按其它键如下
 
     ?       显示所有快捷键，使用pgup和pgdown翻页，按q退出(其实是在vim里显示的，命令用vim的)
 
     :       进入命令行模式，可输入命c令如：
                 show-options -g  # 显示所有选项设置的参数，使用pgup和pgdown翻页，按q退出
                 set-option -g display-time 5000 # 提示信息的持续时间；设置足够的时间以避免看不清提示，单位为毫秒
-                # 把前导键从 ctrl+b 改成 ctrl+g， M-a是Alt+a
-                set-option -g prefix C-g unbind-key C-b bind-key C-g send-prefix
 
     s       列出当前会话，
             下面表示0号会话有2个窗口，是当前连接，1号会话有1个窗口
@@ -108,10 +106,10 @@ mac os:
 
     [       查看历史输出（默认只显示一屏），使用pgup和pgdown翻页，按q退出
 
-    窗口（Window）可以拆分为面板（pane），默认情况下在一个window中，只有一个大面板，占满整个窗口区域。
-    "       新建面板，向下拆分
-    %       新建面板，向右拆分
-    空格     在上述两种布局间切换
+    窗口（Window）可以拆分为面板（pane），默认情况下在一个窗口中只有一个面板，占满整个窗口区域。
+    "       在当前窗口新建面板，向下拆分
+    %       在当前窗口新建面板，向右拆分
+    空格     当前窗口的多个面板在各种布局间切换
     o       选择下一面板
     方向键   在相邻两个面板中切换
     {       当前面板与上一个面板交换位置
@@ -135,7 +133,7 @@ mac os:
             如果操作系统突然断连，也是一样的效果，
             下次运行tmux attach 能够重新进入之前的会话
 
-    最后一个窗口退出时，当前的tmux seesion就会被关闭。
+    所有窗口退出时，当前的seesion就会被关闭并退出tmux，其他session继续运行。
     x       关闭当前面板，并自动切换到下一个，
             操作之后会给出是否关闭的提示，按y确认即关闭。
             等同于当前的unix shell下Ctrl+d或输入exit命令。
@@ -150,21 +148,54 @@ mac os:
     # https://github.com/hongwenjun/tmux_for_windows
     setw -g mouse
     set-option -g history-limit 20000
-    set-option -g mouse off
+    set-option -g mouse on
+    set-window-option -g utf8 on # 开启窗口的UTF-8支持
+    # 把前导键从 ctrl+b 改成 ctrl+g， M-a是Alt+a
+    set-option -g prefix C-g unbind-key C-b bind-key C-g send-prefix
+    #
+    bind -n WheelUpPane select-pane -t= ; copy-mode -e ; send-keys -M
+    bind -n WheelDownPane select-pane -t= ; send-keys -M
 
 ### cmatrix 字符屏保
 
 <https://magiclen.org/cmatrix/>
 
-Ubuntu
-    sudo apt install cmatrix
++ Ubuntu
 
-    cmatrix -ba
+        sudo apt install cmatrix
 
-    Ctrl + c 或 q 退出
+        cmatrix -ba
 
-Centos
-    sudo yum install cmatrix
+        Ctrl + c 或 q 退出
+
++ Centos
+    <https://thornelabs.net/posts/linux-install-cmatrix-from-rpm-deb-xz-or-source.html>
+
+    下载源代码
+
+        git clone https://github.com/abishekvashok/cmatrix
+
+    安装依赖库
+
+        sudo yum install -y gcc make autoconf automake ncurses-devel
+
+    Generate aclocal.m4 man page:
+
+        aclocal
+
+    Generate configuration scripts:
+
+        autoconf
+
+    Generate Makefile.in for configure from Makefile.am:
+
+        automake -a
+
+    Configure, make, and make install the binary:
+
+        ./configure
+        make
+        sudo make install
 
 ## GNU POSIX环境开发
 
