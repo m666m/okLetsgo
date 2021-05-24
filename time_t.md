@@ -3,6 +3,7 @@
 - [时间计算速查——从 c 到 python 到 pandas](#时间计算速查从-c-到-python-到-pandas)
   - [定义术语 epoch](#定义术语-epoch)
   - [timestamp 类型](#timestamp-类型)
+  - [时区标准tzinfo](#时区标准tzinfo)
   - [C标准库 <time.h>](#c标准库-timeh)
     - [在标准C/C++中，最小的计时单位是一毫秒](#在标准cc中最小的计时单位是一毫秒)
     - [tm struct  及相关操作函数](#tm-struct--及相关操作函数)
@@ -23,7 +24,7 @@
         - [timestamp     对应 c 标准库的 time_t](#timestamp-----对应-c-标准库的-time_t)
         - [struct_time   对应 c 标准库的struct tm](#struct_time---对应-c-标准库的struct-tm)
       - [内置函数，不需要实例化对象直接用](#内置函数不需要实例化对象直接用)
-        - [time.tzname 当前时区名，中文的](#timetzname-当前时区名中文的)
+        - [time.tzname 当前时区名](#timetzname-当前时区名)
         - [time.time()       → timestamp](#timetime--------timestamp)
         - [time.strftime()   struct_time → 字符串日期时间](#timestrftime---struct_time--字符串日期时间)
         - [打印当前时区名称](#打印当前时区名称)
@@ -34,6 +35,7 @@
         - [time.sleep()](#timesleep)
         - [~~time.asctime()~~](#timeasctime)
         - [~~time.ctime()~~](#timectime)
+      - [获取当前时区的偏移](#获取当前时区的偏移)
     - [库datetime <https://docs.python.org/zh-cn/3/library/datetime.html>](#库datetime-httpsdocspythonorgzh-cn3librarydatetimehtml)
       - [class datetime.time 时间对象](#class-datetimetime-时间对象)
       - [class datetime.date 日期对象](#class-datetimedate-日期对象)
@@ -80,18 +82,19 @@
     - [日期时间对应的对象和操作函数](#日期时间对应的对象和操作函数)
       - [pd.date_range()    → DatetimeIndex](#pddate_range-----datetimeindex)
       - [pd.to_datetime() 这里搞了个3义性 !   → datetime DatetimeIndex Timestamp](#pdto_datetime-这里搞了个3义性-----datetime-datetimeindex-timestamp)
+      - [Unix时间戳 -> Timestamp np.datetime64](#unix时间戳---timestamp-npdatetime64)
       - [用Series.dt操作DataFrame的一列Timestamp类型数据，最常用的日期时间操作都通过它进行](#用seriesdt操作dataframe的一列timestamp类型数据最常用的日期时间操作都通过它进行)
         - [.dt 取指定日期等](#dt-取指定日期等)
-        - [.dt 操作时区转换](#dt-操作时区转换)
+        - [.dt 时区转换](#dt-时区转换)
         - [.dt 转换为字符串日期时间](#dt-转换为字符串日期时间)
-    - [Timestamp() 操作起来对应 python datetime.datetime](#timestamp-操作起来对应-python-datetimedatetime)
+    - [Timestamp()，对标 python datetime.datetime](#timestamp对标-python-datetimedatetime)
       - [timetuple() pd.Timestamp -> struct_time](#timetuple-pdtimestamp---struct_time)
     - [Period 对应一段时间](#period-对应一段时间)
       - [pd.period_range()  → PeriodIndex](#pdperiod_range---periodindex)
     - [Interval 对应一段间隔](#interval-对应一段间隔)
       - [pd.interval_range()  → IntervalIndex](#pdinterval_range---intervalindex)
     - [DateOffset 日期的加减一段范围，有各种方法](#dateoffset-日期的加减一段范围有各种方法)
-    - [timedeltas 日期时间计算对应的对象和操作函数](#timedeltas-日期时间计算对应的对象和操作函数)
+    - [timedeltas，对标python标准库的 datetime.timedelta](#timedeltas对标python标准库的-datetimetimedelta)
       - [pd.Timedelta()  → timedelta](#pdtimedelta---timedelta)
       - [pd.to_timedelta()  → Timedelta TimedeltaIndex](#pdto_timedelta---timedelta-timedeltaindex)
       - [pd.timedelta_range()  → TimedeltaIndex](#pdtimedelta_range---timedeltaindex)
@@ -119,6 +122,18 @@ Calendar Time：日历时间。“从一个标准时间点到此时的时间经�
     文档中没有专门描述，注意这个timestamp类型就是c标准库中的time_t的一个秒数，一般是从 epoch 开始的秒数。
 
     对于时间的运算本质上都被转成Timestamp类型了，注意函数返回值类型！
+
+## 时区标准tzinfo
+
+    时区名称 https://timezonedb.com/time-zones
+
+    世界地图时区分布
+        https://www.timeanddate.com/time/map/
+        https://greenwichmeantime.com/time-zone/
+
+    Time Zone Database
+    https://www.iana.org/time-zones
+        http://ftp.iana.org/tz/releases/
 
 ## C标准库 <time.h>
 
@@ -435,11 +450,16 @@ class time.struct_time
 
 #### 内置函数，不需要实例化对象直接用
 
-##### time.tzname 当前时区名，中文的
+##### time.tzname 当前时区名
 
     >>> import time
     >>> time.tzname
-    ('中国标准时间', '中国夏令时')
+    # 中文windows下返回的居然是中文 ('中国标准时间', '中国夏令时')
+    ('CST', 'CST')
+
+    >>> import time
+    >>> time.strftime('%Z', time.localtime())
+    'CST'
 
 ##### time.time()       → timestamp
 
@@ -551,6 +571,14 @@ class time.struct_time
 
     入参 timestamp
     返回 字符串时间
+
+#### 获取当前时区的偏移
+
+    >>> import time
+    >>> time.timezone
+    -28800
+    >>> time.timezone / 3600.0
+    -8.0
 
 ### 库datetime <https://docs.python.org/zh-cn/3/library/datetime.html>
 
@@ -1179,6 +1207,12 @@ to_datetime() Return type depends on input:
     Series: Series of datetime64 dtype
     scalar: Timestamp
 
+#### Unix时间戳 -> Timestamp np.datetime64
+
+    # unix时间戳转为 np.datetime64[ns]
+    >pd.to_datetime(df['timest'], unit='s')
+    1539561600  ->  datetime64[ns]
+
 #### 用Series.dt操作DataFrame的一列Timestamp类型数据，最常用的日期时间操作都通过它进行
 
     .dt简介         <https://pandas.pydata.org/pandas-docs/stable/user_guide/basics.html#basics-dt-accessors>
@@ -1218,7 +1252,7 @@ np.datetime64 转换为字符串的pd用法很特殊，实际应用中，都是�
     1   2013-01-02 09:10:12
     dtype: datetime64[ns]
 
-##### .dt 操作时区转换
+##### .dt 时区转换
 
     In [281]: s.dt.tz_localize('UTC').dt.tz_convert('US/Eastern')
     Out[281]:
@@ -1242,7 +1276,25 @@ np.datetime64 转换为字符串的pd用法很特殊，实际应用中，都是�
 
     s['stimeday'] = pd.to_datetime(s['stime'].dt.strftime('%Y-%m-%d'), format='%Y-%m-%d')
 
-### Timestamp() 操作起来对应 python datetime.datetime
+### Timestamp()，对标 python datetime.datetime
+
+<https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Timestamp.html>
+
+pd.Timestamp.fromtimestamp(1569081600.0)=Timestamp('2019-09-22 00:00:00')
+
+Timestamp对象常用的操作方法有：
+
+    .timestamp()：转换为一个浮点数表示的POSIX时间戳；POSIX时间戳也称Unix时间戳(Unix timestamp)，是一种时间表示方式，定义为从格林威治时间1970年01月01日00时00分00秒起至现在的总秒数。和其对应的是fromtimestamp()；如 pd.Timestamp.fromtimestamp(1569081600.0)=Timestamp('2019-09-22 00:00:00')；
+
+    .strftime()：转为特定格式的字符串；如 pd.Timestamp('2019-9-22 14:12:13').strftime('%Y/%m/%d')='2019/9/22'；
+
+    .strptime(string, format)：和strftime()相反，从特定格式字符串转时间戳， pd.Timestamp.strptime('2019-9-22 14:12:13','%Y-%m-%d %H:%M:%S')；关于各种字母代表哪个个时间元素（如m代表month而M代码minute）看datetime的文档；
+
+    .date()：把时间戳转为一个日期类型的对象，只有年月日， pd.Timestamp('2019-9-22 14:12:13').date()=datetime.date(2019,9,22)；
+
+    .combine(date, time)：把一个date类型和一个time类型合并为datetime类型；
+
+    .to_datetime64()：把时间戳转为一个numpy.datetime64类型；
 
 #### timetuple() pd.Timestamp -> struct_time
 
@@ -1269,8 +1321,9 @@ np.datetime64 转换为字符串的pd用法很特殊，实际应用中，都是�
     ts + DateOffset(months=3)
     Timestamp('2017-04-01 09:10:11')
 
-### timedeltas 日期时间计算对应的对象和操作函数
+### timedeltas，对标python标准库的 datetime.timedelta
 
+日期时间计算对应的对象和操作函数
 <https://pandas.pydata.org/pandas-docs/stable/user_guide/timedeltas.html>
 
 #### pd.Timedelta()  → timedelta
@@ -1714,18 +1767,21 @@ Pandas 时间对象默认不支持时区信息，你可以直接使用各种时�
 
 ```python
 
-def change_series_tz(dt, tz='UTC'):
+def change_series_tz(date_series, origin_tz='UTC', target_tz='UTC'):
     r""" 添加 或 变更 pandas 的 Series 的时区信息
 
     NOTE: 如果原来没有时区信息，添加时区后，原来的时间就当作你指定的时区的时间，而不是UTC时间。
 
     Parameters
     ----------
-    dt : Timestamp/DatetimeIndex
+    date_series : Timestamp/DatetimeIndex
         the date(s) to be converted
 
-    tz : str
-        'UTC', 'Europe/Berlin', 'Asia/Shanghai', 'US/Eastern'等
+    origin_tz : str
+        'UTC', 'Europe/Berlin', 'Asia/Shanghai', 'Asia/Singapore', 'US/Eastern'等
+
+    target_tz : str
+        'UTC', 'Europe/Berlin', 'Asia/Shanghai', 'Asia/Singapore', 'US/Eastern'等
 
     Returns
     -------
@@ -1734,61 +1790,50 @@ def change_series_tz(dt, tz='UTC'):
 
     参考：　lib\site-packages\empyrical\utils.py
     """
-    if tz is None:
+    if origin_tz is None:
         raise RuntimeError('没这么简单！要使用 remove_series_tz() 删除时区信息')
 
-    dt = pd.to_datetime(dt)  # 这样返回什么数据类型，其实看运气的哦
+    date_series = pd.to_datetime(date_series)  # 这样返回什么数据类型，其实看运气的哦
 
     # 为嘛这么麻烦呢：
     #   tz_localize()只能用于没有时区信息的Series，如果已经有时区信息，会抛异常
     #   tz_convert() 只能用于有时区信息的Series，如果没有时区信息，会抛异常
     try:
-        # 先尝试没有时区的情况，把当前时间作为为指定时区
-        dt = dt.tz_localize(tz)
+        # 先尝试数据没有时区的情况，把当前时间作为为指定时区
+        date_series = date_series.dt.tz_localize(origin_tz)
     except TypeError:
-        # 转换时区为目标时区
-        dt = dt.tz_convert(tz)
-    return dt
+        # 数据本身自带时区信息，先转为指定的源时区
+        date_series = date_series.dt.tz_convert(origin_tz)
 
+    date_series = date_series.dt.tz_convert(target_tz)
+    return date_series
 
-def remove_series_tz(dt, local_or_utc='UTC'):
+def remove_series_tz(date_series, remove_only=True):
     """ 去除 pandas 的 Series 的时区信息
 
     Parameters
     ----------
-    dt : Timestamp/DatetimeIndex
+    date_series : Timestamp/DatetimeIndex
         the date(s) to be converted
 
-    local_or_utc :  删除时区信息后，原时间如何转换
-        UTC 原时间根据自己的时区信息转换为UTC时间
-        xxx 仅删除时区信息，原时间保留不做转换（其实pandas自己储存的UTC时间变了）
+    remove_only :  删除时区信息后，原时间如何转换
+        True 仅删除时区信息，原时间保留不做转换（其实pandas自己储存的UTC时间变了）
+        False 原时间根据自己的时区信息转换为UTC时间
 
     Returns
     -------
     same type as input
         date(s) converted to no timezone info.
 
-    说明
-    ----
-    由上面这个change_series_tz()可知，时区信息删除得分两种情况处理
-
-    你能猜到正确结果就不需要用这个函数：
-
-    pd.to_datetime(pd.Series(['3/11/2000'])).dt.tz_localize('Europe/Berlin').dt.tz_localize(None)
-    0   2000-03-11
-    dtype: datetime64[ns]
-
-    pd.to_datetime(pd.Series(['3/11/2000'])).dt.tz_localize('Europe/Berlin').dt.tz_convert(None)
-    0   2000-03-10 23:00:00
-    dtype: datetime64[ns]
     """
-    dt = pd.to_datetime(dt)  # 这样返回什么数据类型，其实看运气的哦
+    date_series = pd.to_datetime(date_series)  # 这样返回什么数据类型，其实看运气的哦
 
-    if dt.tz is None:
-        return dt
+    if date_series.dt.tz is None:
+        return date_series
 
-    if local_or_utc == 'UTC':
-        return dt.tz_convert(None)  # None会删除时区信息，原时间恢复为UTC时间
+    if remove_only:
+        return date_series.dt.tz_localize(None)  # None 仅删除时区信息，原时间不变
     else:
-        return dt.tz_localize(None)  # None 仅删除时区信息，原时间不变
+        return date_series.dt.tz_convert(None)  # None 删除时区信息，且把原时间转换为UTC时间
+
 ```

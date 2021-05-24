@@ -71,6 +71,10 @@ mac os:
     tmux new -s roclinux
         创建一个全新的 tmux 会话 叫作 roclinux
 
+    tmux new-session -s username -d
+        创建一个全新的 tmux 会话 ，开机脚本(Service等）中调度也不会关闭
+        https://stackoverflow.com/questions/25207909/tmux-open-terminal-failed-not-a-terminal
+
     tmux ls
         列出当前的会话（tmux session），下面表示0号有2个窗口
             0: 2 windows (created Tue Apr 13 17:28:34 2021)
