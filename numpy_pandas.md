@@ -33,9 +33,9 @@
       - [时间字段汇聚](#时间字段汇聚)
         - [不用时间做索引 - groupby + rolling：df.rolling('2s').sum()](#不用时间做索引---groupby--rollingdfrolling2ssum)
         - [用时间做索引 - resample + agg](#用时间做索引---resample--agg)
-    - [pandas 优化](#pandas-优化)
+  - [pandas 优化](#pandas-优化)
   - [numpy 使用](#numpy-使用)
-    - [ufunc 用法](#ufunc-用法)
+  - [numpy ufunc 用法](#numpy-ufunc-用法)
 
 ## 各个库取最大最小的函数区别，以取最小min()为例
 
@@ -499,18 +499,22 @@ df_dti = df_from_db.set_index('stime').resample(
     }).reset_index(drop=False)  # 原来的index变成数据列，保留
 ```
 
-### pandas 优化
+## pandas 优化
+
+    https://pandas.pydata.org/pandas-docs/stable/user_guide/enhancingperf.html
+
+    Pandas进阶之提升运行效率
+        https://blog.csdn.net/yangsen99/article/details/94365243
 
     https://blog.csdn.net/BF02jgtRS00XKtCx/article/details/90092161
     http://www.pythontip.com/blog/post/12331/
 
 ## numpy 使用
 
+pandas是对numpy的封装，如果有可能，根据特点进行数据分箱，尽量直接使用nump的矢量化方法是最快的解决办法。
+
     如何有效地使用numpy处理大规模数据
         https://blog.csdn.net/u014448054/article/details/100903405
-
-    Pandas进阶之提升运行效率
-        https://blog.csdn.net/yangsen99/article/details/94365243
 
     Numpy快速处理数据--ufunc运算
         https://blog.csdn.net/kezunhai/article/details/46127845
@@ -519,6 +523,7 @@ df_dti = df_from_db.set_index('stime').resample(
     frompyfunc和vectorize之间的差异
         http://www.voidcn.com/article/p-arkwadpr-btb.html
         https://stackoverflow.com/questions/6768245/difference-between-frompyfunc-and-vectorize-in-numpy
+
     np.frompyfunc+向量法等
         https://blog.csdn.net/u012421852/article/details/80246289
 
@@ -529,7 +534,7 @@ df_dti = df_from_db.set_index('stime').resample(
             func_ = np.frompyfunc(_num2str, 1, 1)
             ret = func_(nums).tolist()  # np.ndarray
 
-### ufunc 用法
+## numpy ufunc 用法
 
 用ufunc实现向量化操作，避免遍历数组跑for循环
 

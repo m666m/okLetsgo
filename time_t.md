@@ -108,6 +108,7 @@
       - [把人搞糊涂的原因](#把人搞糊涂的原因)
       - [yfinance源代码分析](#yfinance源代码分析)
     - [pandas 时区转换](#pandas-时区转换)
+    - [最好封装时区设置函数](#最好封装时区设置函数)
 
 ## 定义术语 epoch
 
@@ -1487,7 +1488,10 @@ Timestamp对象常用的操作方法有：
 
 ### pd.to_datetime() 三义性的详细说明
 
-记住目前的pandas的时区操作必须在时间索引的dateframe或series上进行
+目前的pandas的时区操作，只能操作一列！用列的.dt方法！
+其它什么指定某个字段astype() 到datetime64啥的统统不好使！
+
+文档说的不够清楚，在时间索引的dateframe或series上进行，
 <https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#timeseries>
 
 目前找到的DataFrame去除时区的方法都是操作DatetimeIndex的，也就是说：
@@ -1589,19 +1593,20 @@ Timestamp
 
 #### 把人搞糊涂的原因
 
-pd.datetime()用数字字符串默认是本地时间无时区信息，而返回值有三义性！！！
+pd.datetime()用数字字符串默认是UTC时间无时区信息，而返回值有三义性！！！
 
 <https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#timeseries>
 根据你输入的类型不同：如果是dateframe或seris对象，只找索引去做时间转换的！！！
 
     pd.to_datetime('2010/11/12', format='%Y/%m/%d') 输入是单字符串，
-        返回的是Timestamp('2010-11-12 00:00:00') ! 这个是你的当地时间，但是无时区信息
+        返回的是Timestamp('2010-11-12 00:00:00') !
+        这个是你的当地时间，但是无时区信息，但是pd是理解为UTC时间。
 
     pd.to_datetime(['2012-11-21 10:00'])
-        返回值是 DatetimeIndex ！ 这个是你的当地时间，但是无时区信息
+        返回值是 DatetimeIndex ！ 这个是你的当地时间，但是无时区信息，但是pd是理解为UTC时间。
 
     pd.to_datetime(['2005/11/23', '2010.12.31'])
-        返回值是 DatetimeIndex ！ 这个是你的当地时间，但是无时区信息
+        返回值是 DatetimeIndex ！ 这个是你的当地时间，但是无时区信息，但是pd是理解为UTC时间。
 
     tpp = pd.to_datetime(pd.Series(['Jul 31, 2009', '2010-01-10', None]))
     # 注意：
@@ -1763,9 +1768,14 @@ Pandas 时间对象默认不支持时区信息，你可以直接使用各种时�
 
     https://www.jianshu.com/p/ab7514dc6190
 
-最好封装时区设置函数
+### 最好封装时区设置函数
 
 ```python
+
+# id列是unix时间戳，先按utc处理，然后转换为北京时间，然后去除时区
+df['stime'] = pd.to_datetime(df['id'], unit='s')  # 这个是当UTC处理了
+df['stime'] = change_series_tz(df['stime'], origin_tz='UTC', target_tz='Asia/Shanghai')
+df['stime'] = remove_series_tz(df['stime'], remove_only=True)
 
 def change_series_tz(date_series, origin_tz='UTC', target_tz='UTC'):
     r""" 添加 或 变更 pandas 的 Series 的时区信息
