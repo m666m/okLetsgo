@@ -79,6 +79,7 @@
       - [两个日期的差值转换精度为天，用它除以一天的时间增量即可](#两个日期的差值转换精度为天用它除以一天的时间增量即可)
       - [datetime64 → datetime.datetime time_t timestamp](#datetime64--datetimedatetime-time_t-timestamp)
   - [Pandas的日期时间](#pandas的日期时间)
+    - [索引很重要](#索引很重要)
     - [日期时间对应的对象和操作函数](#日期时间对应的对象和操作函数)
       - [pd.date_range()    → DatetimeIndex](#pddate_range-----datetimeindex)
       - [pd.to_datetime() 这里搞了个3义性 !   → datetime DatetimeIndex Timestamp](#pdto_datetime-这里搞了个3义性-----datetime-datetimeindex-timestamp)
@@ -1170,6 +1171,11 @@ numpy也提供了datetime.timedelta类的功能，支持两个时间对象的运
     分别对应分类数据、日期时间数据和字符串数据，通过这几个接口可以快速实现特定的功能，非常快捷。
     <https://zhuanlan.zhihu.com/p/44256257>
 
+### 索引很重要
+
+很多操作都依赖索引，比如数组的连接，默认是对索引的。
+在删除/排序等操作后，需要手动 reset_index()，不然后序操作会乱了。
+
 ### 日期时间对应的对象和操作函数
 
 <https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html>
@@ -1778,7 +1784,7 @@ df['stime'] = change_series_tz(df['stime'], origin_tz='UTC', target_tz='Asia/Sha
 df['stime'] = remove_series_tz(df['stime'], remove_only=True)
 
 def change_series_tz(date_series, origin_tz='UTC', target_tz='UTC'):
-    r""" 添加 或 变更 pandas 的 Series 的时区信息
+    r""" 把pd.series，从别的时区或UTC或没有时区，转换为指定的时区
 
     NOTE: 如果原来没有时区信息，添加时区后，原来的时间就当作你指定的时区的时间，而不是UTC时间。
 
@@ -1789,6 +1795,8 @@ def change_series_tz(date_series, origin_tz='UTC', target_tz='UTC'):
 
     origin_tz : str
         'UTC', 'Europe/Berlin', 'Asia/Shanghai', 'Asia/Singapore', 'US/Eastern'等
+        这个可以用默认值UTC，因为源数据无时区信息时就是按UTC计算，有时区信息时转成UTC计算，
+        最终结果是相同的，转到了目的时区。
 
     target_tz : str
         'UTC', 'Europe/Berlin', 'Asia/Shanghai', 'Asia/Singapore', 'US/Eastern'等
@@ -1800,8 +1808,8 @@ def change_series_tz(date_series, origin_tz='UTC', target_tz='UTC'):
 
     参考：　lib\site-packages\empyrical\utils.py
     """
-    if origin_tz is None:
-        raise RuntimeError('没这么简单！要使用 remove_series_tz() 删除时区信息')
+    if target_tz is None:
+        raise RuntimeError('没这么简单！用 remove_series_tz() 删除时区信息')
 
     date_series = pd.to_datetime(date_series)  # 这样返回什么数据类型，其实看运气的哦
 
@@ -1816,7 +1824,9 @@ def change_series_tz(date_series, origin_tz='UTC', target_tz='UTC'):
         date_series = date_series.dt.tz_convert(origin_tz)
 
     date_series = date_series.dt.tz_convert(target_tz)
+
     return date_series
+
 
 def remove_series_tz(date_series, remove_only=True):
     """ 去除 pandas 的 Series 的时区信息

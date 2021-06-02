@@ -13,6 +13,7 @@
     - [本地空目录，仅拉取指定远程分支的用法](#本地空目录仅拉取指定远程分支的用法)
     - [本地非空目录，远程空的push三个用法](#本地非空目录远程空的push三个用法)
     - [git clone之后的第一次pull和push调试](#git-clone之后的第一次pull和push调试)
+  - [**用法：添加多个远程仓库](#用法添加多个远程仓库)
   - [**用法：从远程空白裸仓库拉取的步骤**](#用法从远程空白裸仓库拉取的步骤)
   - [**用法：git clone 获取指定分支的指定commit版本**](#用法git-clone-获取指定分支的指定commit版本)
   - [**用法：删除分支，远程/本地**](#用法删除分支远程本地)
@@ -380,11 +381,38 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
     git@github.com:m666m/okLetsgo.git
     https://github.com/m666m/myproj
 
+## **用法：添加多个远程仓库
+
+方法一、推送命令只会推送到默认的origin地址，其他的各个server1，2，3得再挨个执行push命令
+
+    git remote add server1 ssh://git@x.x.x.x:12345/gitrepo/project_name.git
+    git remote add server2 ssh://git@x.x.x.x:12345/gitrepo/project_name.git
+    git remote add server3 ssh://git@x.x.x.x:12345/gitrepo/project_name.git
+
+方法二、省事的方法，给origin添加多个远程地址，默认fetch还是origin最早添加的地址，push地址变成了多个
+
+    git remote set-url --add origin ssh://git@x.x.x.x:12345/gitrepo/project_name.git
+
+这样
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: git@github.com:m666m/af_monitor.git
+    Push  URL: git@github.com:m666m/af_monitor.git
+    Push  URL: ssh://git@x.x.x.x:12345/gitrepo/af_monitor.git
+    HEAD branch: main
+    Remote branch:
+        main tracked
+    Local branch configured for 'git pull':
+        main merges with remote main
+    Local ref configured for 'git push':
+        main pushes to main (up to date)
+
 ## **用法：从远程空白裸仓库拉取的步骤**
 
 远程仓库里有文件，随便哪个机器 git clone命令都可以正常拉取的。而刚建好的裸仓库是空白的，直接用clone拉，后面做pull和push会报错，需要先给远程仓库上传个文件。
 
-    git clone ssh://git@x.x.x.:12345/gitrepo/tea.git
+    git clone ssh://git@x.x.x.x:12345/gitrepo/tea.git
 
 0.先保证ssh连接远程仓库的用户时可以使用本机用户的密钥文件，免密登陆
 
@@ -406,7 +434,7 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
     $ git init
     Initialized empty Git repository in C://tea/.git/
 
-    $ git remote add origin ssh://git@x.x.x.:12345/gitrepo/tea.git
+    $ git remote add origin ssh://git@x.x.x.x:12345/gitrepo/tea.git
 
 3.本地操作，先提交个文件，推送远程，否则直接pull会各种报错
 
@@ -427,8 +455,8 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
     $ git remote show origin
     * remote origin
-      Fetch URL: ssh://git@x.x.x.:12345/gitrepo/tea.git
-      Push  URL: ssh://git@x.x.x.:12345/gitrepo/tea.git
+      Fetch URL: ssh://git@x.x.x.x:12345/gitrepo/tea.git
+      Push  URL: ssh://git@x.x.x.x:12345/gitrepo/tea.git
       HEAD branch: master
       Remote branch:
         master tracked
