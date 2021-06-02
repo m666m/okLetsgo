@@ -393,8 +393,6 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
     git remote set-url --add origin ssh://git@x.x.x.x:12345/gitrepo/project_name.git
 
-这样
-
     $ git remote show origin
     * remote origin
     Fetch URL: git@github.com:m666m/af_monitor.git
@@ -407,6 +405,10 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
         main merges with remote main
     Local ref configured for 'git push':
         main pushes to main (up to date)
+
+如果想删除
+
+    git remote set-url --delete origin --push origin ssh://git@x.x.x.x:12345/gitrepo/project_name.git
 
 ## **用法：从远程空白裸仓库拉取的步骤**
 
