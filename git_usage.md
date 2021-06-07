@@ -12,6 +12,7 @@
     - [从远程git拉取指定分支](#从远程git拉取指定分支)
     - [本地空目录，仅拉取指定远程分支的用法](#本地空目录仅拉取指定远程分支的用法)
     - [本地非空目录，远程空的push三个用法](#本地非空目录远程空的push三个用法)
+    - [本地非空，远程是裸仓库](#本地非空远程是裸仓库)
     - [git clone之后的第一次pull和push调试](#git-clone之后的第一次pull和push调试)
   - [**用法：添加多个远程仓库](#用法添加多个远程仓库)
   - [**用法：从远程空白裸仓库拉取的步骤**](#用法从远程空白裸仓库拉取的步骤)
@@ -353,13 +354,43 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
         git push -u origin/dev_xxx
 
+### 本地非空，远程是裸仓库
+
+本地先 git init，然后
+
+    git remote add origin ssh://git@x.x.x.x:12345/uspace/gitrepo/af_monitor.git
+
+这时显示结果
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/af_monitor.git
+    Push  URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/af_monitor.git
+    HEAD branch: (unknown)
+
+把文件都push上去，会提示没有上游分支，直接推。
+
+这时显示结果，正常了
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/af_monitor.git
+    Push  URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/af_monitor.git
+    HEAD branch: master
+    Remote branch:
+        master tracked
+    Local branch configured for 'git pull':
+        master merges with remote master
+    Local ref configured for 'git push':
+        master pushes to master (up to date)
+
 ### git clone之后的第一次pull和push调试
 
 先看有几个远程
 
     git remote show
 
-查看远程，配置，如果pull和push未关联，需要关联
+查看远程，配置
 
     $ git remote show origin
 
@@ -375,6 +406,10 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
     Local ref configured for 'git push':
         master pushes to master (up to date)
 
+如果pull和push未关联，需要关联
+    # 将本地的master分支推送到origin主机，同时指定origin为默认主机
+    git push -u origin master
+
 远程仓库格式
 
     ssh://git@xx.xx.xx.xx:12345/gitrepo/myproj.git
@@ -388,6 +423,9 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
     git remote add server1 ssh://git@x.x.x.x:12345/gitrepo/project_name.git
     git remote add server2 ssh://git@x.x.x.x:12345/gitrepo/project_name.git
     git remote add server3 ssh://git@x.x.x.x:12345/gitrepo/project_name.git
+
+    git push server1 master
+    git push server1 developer
 
 方法二、省事的方法，给origin添加多个远程地址，默认fetch还是origin最早添加的地址，push地址变成了多个
 
@@ -504,6 +542,12 @@ clone完成后，进入目录，执行
 2.删除远程分支的指针而不是直接删分支，方便数据恢复。
 
     git push origin --delete fea_xxx
+
+    # 如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
+    git push origin :refs/fea_xxx
+
+    # 用本地分支fea_-2覆盖远程分支fea_-1
+    git push -f origin fea_-2:refs/fea_-1
 
 3.其它人的机器上还有该远程分支，清理无效远程分支
 
@@ -824,7 +868,7 @@ git pull --rebase = git fetch + git rebase 去掉多余的分叉：
 
 ### **方法一. merge 默认的快进合并，需要合入分支的接续点就是分叉点**
 
-merge默认做的是快进，即不新增commit点，走一条线的效果，跟上面的单分支pull的合并思路相反：
+merge默认做的是快进，即不新增commit点，走一条线的效果，跟上面的单分支拉取的合并思路相反：
 
 hotfix分支先合并到主干分支 master
 
