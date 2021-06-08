@@ -93,6 +93,9 @@ mac os:
 
 #### 快捷键
 
+会话（Session）
+tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口又可以拆分成多个面板，在窗口中各种排列。
+
 组合键 ctrl+b 作为前导，松开后再按其它键如下
 
     ?       显示所有快捷键，使用pgup和pgdown翻页，按q退出(其实是在vim里显示的，命令用vim的)
@@ -110,7 +113,27 @@ mac os:
 
     [       查看历史输出（默认只显示一屏），使用pgup和pgdown翻页，按q退出
 
-    窗口（Window）可以拆分为面板（pane），默认情况下在一个窗口中只有一个面板，占满整个窗口区域。
+    d       脱离当前会话返回Shell界面，tmux里面的所有session继续运行，
+            会话里面的程序不会退出在后台保持继续运行，
+            如果操作系统突然断连，也是一样的效果，
+            下次运行tmux attach 能够重新进入之前的会话
+
+如果在shell中执行exit，退出的顺序如下：
+    先退出当前面板，返回到当前窗口的下一个面板，
+    如果没有面板可用，则退出当前窗口，返回到当前会话的下一个窗口的某个面板，
+    所有窗口退出时，当前的seesion就会被关闭并退出tmux，其他session继续运行。
+
+    x       关闭当前面板，并自动切换到下一个，
+            操作之后会给出是否关闭的提示，按y确认即关闭。
+            等同于当前的unix shell下Ctrl+d或输入exit命令。
+
+    &       关闭当前窗口， 并自动切换到下一个，
+            操作之后会给出是否关闭的提示，按y确认即关闭。
+            等同于当前所有面板的unix shell下Ctrl+d或输入exit命令。
+
+面板（pane）
+窗口可以拆分为面板，默认情况下在一个窗口中只有一个面板，占满整个窗口区域。
+
     "       在当前窗口新建面板，向下拆分
     %       在当前窗口新建面板，向右拆分
     空格     当前窗口的多个面板在各种布局间切换
@@ -118,11 +141,13 @@ mac os:
     方向键   在相邻两个面板中切换
     {       当前面板与上一个面板交换位置
     }       当前面板与下一个面板交换位置
-    !       将当前面板拆分为一个独立窗口。
-    z       当前面板全屏显示，再使用一次会变回原来大小。
+    !       将当前面板拆分为一个独立窗口
+    z       当前面板全屏显示，再使用一次会变回原来大小
     q       显示面板编号
     Ctrl+方向键     以1个单元格为单位移动边缘以调整当前面板大小
     Alt+方向键      以5个单元格为单位移动边缘以调整当前面板大小
+
+窗口（Window）
 
     c       创建新窗口，状态栏显示窗口编号
     w       列出当前会话的所有窗口，通过上、下键切换
@@ -132,31 +157,18 @@ mac os:
     ,       重命名当前窗口；这样便于识别
     .       修改当前窗口编号；相当于窗口重新排序
 
-    d       脱离当前会话返回Shell界面，tmux里面的所有session继续运行，
-            会话里面的程序不会退出在后台保持继续运行，
-            如果操作系统突然断连，也是一样的效果，
-            下次运行tmux attach 能够重新进入之前的会话
-
-    所有窗口退出时，当前的seesion就会被关闭并退出tmux，其他session继续运行。
-    x       关闭当前面板，并自动切换到下一个，
-            操作之后会给出是否关闭的提示，按y确认即关闭。
-            等同于当前的unix shell下Ctrl+d或输入exit命令。
-    &       关闭当前窗口， 并自动切换到下一个，
-            操作之后会给出是否关闭的提示，按y确认即关闭。
-            等同于当前所有面板的unix shell下Ctrl+d或输入exit命令。
-
 #### 配置文件
 
 ~/.tmux.conf
 
-    # https://github.com/hongwenjun/tmux_for_windows
-    setw -g mouse
     set-option -g history-limit 20000
-    set-option -g mouse on
     set-window-option -g utf8 on # 开启窗口的UTF-8支持
     # 把前导键从 ctrl+b 改成 ctrl+g， M-a是Alt+a
     set-option -g prefix C-g unbind-key C-b bind-key C-g send-prefix
-    #
+
+    # https://github.com/hongwenjun/tmux_for_windows
+    setw -g mouse
+    set-option -g mouse on
     bind -n WheelUpPane select-pane -t= ; copy-mode -e ; send-keys -M
     bind -n WheelDownPane select-pane -t= ; send-keys -M
 
