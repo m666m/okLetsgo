@@ -329,8 +329,8 @@ Gitolite 基于ssh密钥管理的用户权限控制
 
 ### git fetch 和 git pull的区别
 
-git fetch是拉取分支，然后git merge 把拉取的内容合并到当前分支，
-因为这二者都是连用的，所有有个简化版就是 git pull，大多数情况下直接用 git pull就够用了，
+通常的工作流程是，先用 git fetch 拉取分支，然后用 git merge 把拉取的内容合并到当前分支，
+因为这二者都是连用的，所有有个简化版就是 git pull，大多数情况下直接用 git pull 就够用了，
 但是务必理解，正规的分支拉取是 fetch 和 merge 两个步骤完成的。
 
     $git fetch <远程主机名> <分支名> # 注意之间有空格
@@ -350,20 +350,21 @@ git fetch是拉取分支，然后git merge 把拉取的内容合并到当前分�
 
 取回更新后，会返回一个FETCH_HEAD ，指的是某个branch在服务器上的最新状态，我们可以在本地通过它查看刚取回的更新信息：
 
-    $git log -p FETCH_HEAD
+    git log -p FETCH_HEAD
 
 可以看到返回的信息包括更新的文件名，更新的作者和时间，以及更新的代码（x行红色[删除]和绿色[新增]部分）。
 我们可以通过这些信息来判断是否产生冲突，以确定是否将更新merge到当前分支。
 
 这时候我们本地相当于存储了两个代码的版本号，
 
-可以通过merge去合并这两个不同的代码版本，
-merge做的就是把拉取下来的远程最新 commit 跟本地最新 commit 合并。
+可以通过 git merge 去合并这两个不同的代码版本，
+ git merge做的就是把拉取下来的远程最新 commit 跟本地最新 commit 合并。
 
-    $git merge FETCH_HEAD
+    git merge FETCH_HEAD
 
-    $ git merge origin/master
-    # 或者
+    git merge origin/master
+
+    # 或者，不使用merge，用rebase
     $ git rebase origin/master
 
 也可以在它的基础上，使用git checkout命令创建一个新的分支。
@@ -373,11 +374,16 @@ merge做的就是把拉取下来的远程最新 commit 跟本地最新 commit �
 将远程主机的某个分支的更新取回，并与本地指定的分支合并，
 git pull把上述2个过程合并，减少了操作：
 
-    $git pull <远程主机名> <远程分支名>:<本地分支名>
+    git pull <远程主机名> <远程分支名>:<本地分支名>
+
     # 如果远程分支是与当前分支合并，则冒号后面的部分可以省略
-    $git pull origin master
+    git pull origin master
+
     # 如果远程主机名origin，分支就是当前分支，可简写
-    $git pull
+    git pull
+
+    # 拉取后，用rebase进行拉直合并
+    git pull --rebase
 
 分支的合并，如上所述的是fetch下来一份远程合并到本地，
 本地如果有两个分支，dev分支和master分支合并，也是一样。
