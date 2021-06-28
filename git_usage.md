@@ -11,6 +11,7 @@
   - [分支的拉取和上传](#分支的拉取和上传)
     - [最常用的拉取命令，含标签，变基](#最常用的拉取命令含标签变基)
     - [git fetch 和 git pull的区别](#git-fetch-和-git-pull的区别)
+    - [每日工作第一件事 git fetch + git diff](#每日工作第一件事-git-fetch--git-diff)
     - [添加多个远程仓库](#添加多个远程仓库)
     - [从远程空白裸仓库拉取的步骤](#从远程空白裸仓库拉取的步骤)
     - [拉取指定版本](#拉取指定版本)
@@ -95,7 +96,14 @@
 
     git status
 
-2、从远程仓库同步本地仓库，以便同步hotfix进来。
+2、拉取远程，先看看是不是有别人提交了远程，防止互相merge新增commit
+
+    git fetch
+    git diff ..origin/master
+
+    git status
+
+3、从远程仓库同步本地仓库，以便同步hotfix进来。
 
     # git pull <远程主机> <远程分支>:<本地分支>
     git pull （默认 orgin master 合到当前分支）
@@ -103,17 +111,17 @@
     # 标签也同步过来，不分叉的合并
     # git pull --tags --rebase origin master
 
-3、干活，自己的代码文件各种改动。
+4、干活，自己的代码文件各种改动。
 
-4、下班前，提交本地仓库
+5、下班前，提交本地仓库
 
     git add .
 
     git commit -m "提交的信息"
 
-5、开发告一段落，可以发布时，提交远程仓库
+6、开发告一段落，可以发布时，提交远程仓库
 
-    git pull
+    git pull --rebase
     git push （默认远程origin本地master）
 
 ## git工作流：改良版集中式工作流 remote master -- local dev(开发人员工作在此)
@@ -130,7 +138,6 @@
 
 1、每日工作，先确认本地无未提交未储存等等问题，处理后再继续
 
-    git checkout master
     git status
 
 2、从远程仓库master同步本地仓库master
@@ -330,6 +337,15 @@ Gitolite 基于ssh密钥管理的用户权限控制
 
 ### 最常用的拉取命令，含标签，变基
 
+先看看再拉
+
+    git status
+    git fetch origin master
+    git diff ..origin/master
+    git status
+
+无脑变基拉：指定要fetch的remote和分支名
+
     git pull --tags -r origin master
 
 ### git fetch 和 git pull的区别
@@ -338,11 +354,18 @@ Gitolite 基于ssh密钥管理的用户权限控制
 因为这二者都是连用的，所有有个简化版就是 git pull，大多数情况下直接用 git pull 就够用了，
 但是务必理解，正规的分支拉取是 fetch 和 merge 两个步骤完成的。
 
+最安全的操作，是先fetch下来然后diff看看，然后再决定是否merge或rebase，省事才pull。
+
     $git fetch <远程主机名> <分支名> # 注意之间有空格
+
     # 取回特定分支的更新
     $git fetch origin master
-    # 拉取所有分支，可简写
+
+    # 可简写，默认拉取所有分支，如果有很多分支，就比较慢了
     $git fetch
+
+    # 查看fetch下来的远程代码跟本地的区别
+    git diff ..origin/master
 
 我们本地的git文件夹里面对应也存储了git本地仓库master分支的commit ID 和 跟踪的远程分支orign/master的commit ID（可以有多个远程仓库）。那什么是跟踪的远程分支呢，打开git文件夹可以看到如下文件：
 
@@ -394,6 +417,55 @@ git pull把上述2个过程合并，减少了操作：
 本地如果有两个分支，dev分支和master分支合并，也是一样。
 
 分支合并的详细用法见下面的章节 [两个分支合并的merge常用方法]
+
+### 每日工作第一件事 git fetch + git diff
+
+先看看分支的远程库有没有别人新增，然后再git status才能看出来门道
+
+    git status
+
+    git fetch origin master
+    git diff ..origin/master
+
+    # 不fetch的话远程的变化不提示
+    git status
+
+没点，俩点，仨点的区别，慢慢研究吧
+
+<https://stackoverflow.com/questions/4944376/how-to-check-real-git-diff-before-merging-from-remote-branch>
+
+You can use various combinations of specifiers to git to see your diffs as you desire (the following examples use the local working copy as the implicit first commit):
+
+假设某人在远程存储库中进行更改，即修改了分支并提交到远程库，下述3个使用方法有不同的效果
+
+1.您在本地可能不会看到任何更改
+
+    git diff remote/origin
+
+This shows the incoming remote additions as deletions; any additions in your local
+repository are shown as additions.
+
+2.可以看到更改
+
+    git diff ..remote/origin
+
+Shows incoming remote additions as additions; the double-dot includes changes
+committed to your local repository as deletions (since they are not yet pushed).
+
+For info on ".." vs "..." see as well as the excellent documentation at [git-scm revision selection: commit ranges Briefly] <https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Commit-Ranges>, for the examples above, double-dot syntax shows all commits reachable from origin/master but not your working copy. Likewise, the triple-dot syntax shows all the commits reachable from either commit (implicit working copy, remote/origin) but not from both.git help diff
+
+例如
+
+    git fetch; git diff ..origin/master
+
+您将看到本地git存储库的内容与远程存储库中的不同之处。您将看不到本地文件系统中或索引中的任何更改。
+
+3.三点语法显示从任一提交（隐式工作副本、远程/原点）可以到达的所有提交，但不能同时来自两个提交。git help diff
+
+    git diff ...remote/origin
+
+Shows incoming remote additions as additions; the triple-dot excludes changes
+committed to your local repository.
 
 ### 添加多个远程仓库
 
