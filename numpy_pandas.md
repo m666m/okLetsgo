@@ -34,8 +34,14 @@
         - [不用时间做索引 - groupby + rolling：df.rolling('2s').sum()](#不用时间做索引---groupby--rollingdfrolling2ssum)
         - [用时间做索引 - resample + agg](#用时间做索引---resample--agg)
   - [pandas 优化](#pandas-优化)
-  - [numpy 使用](#numpy-使用)
-  - [numpy ufunc 用法](#numpy-ufunc-用法)
+    - [DataFrame 大数据量拼接用 pd.concat](#dataframe-大数据量拼接用-pdconcat)
+  - [numpy 大数据量处理使用](#numpy-大数据量处理使用)
+    - [numpy ufunc 用法](#numpy-ufunc-用法)
+  - [numpy常用](#numpy常用)
+    - [生成全为指定值或全为空的ndarray](#生成全为指定值或全为空的ndarray)
+    - [生成指定范围值的ndarray](#生成指定范围值的ndarray)
+    - [生成随机值的ndarray](#生成随机值的ndarray)
+    - [np数组拼接](#np数组拼接)
 
 ## 各个库取最大最小的函数区别，以取最小min()为例
 
@@ -509,7 +515,26 @@ df_dti = df_from_db.set_index('stime').resample(
     https://blog.csdn.net/BF02jgtRS00XKtCx/article/details/90092161
     http://www.pythontip.com/blog/post/12331/
 
-## numpy 使用
+### DataFrame 大数据量拼接用 pd.concat
+
+        # 整理批量结果
+        # for code, datadf in _datadf_dict.items():
+        #     df = pd.concat([df, datadf.df],
+        #                     ignore_index=True,
+        #                     copy=False)
+        # ignore_index = True 并不意味忽略index然后连接，而是指连接后再重新赋值index(len(index))。
+        # 如果两个df有重叠的索引还是可以自动合并的。
+        # 优化速度
+        # pd.append()说明文档 pandas\core\frame.py
+        # https://cloud.tencent.com/developer/article/1640799
+        # https://zhuanlan.zhihu.com/p/29362983
+        dfs = pd.concat([
+            pd.DataFrame(datadf.df, columns=datadf.df.columns)
+            for code, datadf in _datadf_dict.items()
+        ],
+                        ignore_index=True)
+
+## numpy 大数据量处理使用
 
 pandas是对numpy的封装，如果有可能，根据特点进行数据分箱，尽量直接使用nump的矢量化方法是最快的解决办法。
 
@@ -534,7 +559,7 @@ pandas是对numpy的封装，如果有可能，根据特点进行数据分箱，
             func_ = np.frompyfunc(_num2str, 1, 1)
             ret = func_(nums).tolist()  # np.ndarray
 
-## numpy ufunc 用法
+### numpy ufunc 用法
 
 用ufunc实现向量化操作，避免遍历数组跑for循环
 
@@ -567,3 +592,75 @@ _ufc = np.frompyfunc(_pyf, 3, 1)
 # 对于求累积，_ufc多于两个参数的调用只能用如下：
 ret = _ufc(nlist, nlist.shift(1), alpha).astype(np.float)  # ufc返回的居然是dtype=object
 ```
+
+## numpy常用
+
+基础概念
+
+    https://zhuanlan.zhihu.com/p/370945563
+
+    np.shape 数组的秩 (x, y)
+    np.s_[1:3，2:4] 截取 从1行3列开始 2行4列结束
+
+    np.flatten() 降维转一维
+
+    x.T 转置 .swapaxes .T的结果是将行变成列，列变成行
+
+    numpy.reshape(2,3) (等价于ndarray.reshape) 转秩，reshape()修改的结果没有改变数据的先后顺序
+    np.transpose()
+
+    x.flat[[1,4]] = 1  将数组重组后的一维数组小标为1,4的元素变为1
+
+    注意numpy自带方法和ndarray方法的区别：
+    >>> a=np.array([[0,1],[2,3]])
+    >>> np.resize(a,(2,3))
+    >>> b = np.array([[0, 1], [2, 3]])
+    >>> b.resize(2, 3)
+
+    设置列名
+    fws.dtype = [('第一列', 'float'), ('第二列', 'float'), ('第三列', 'float')]
+
+### 生成全为指定值或全为空的ndarray
+
+    np.ones(shape[, dtype, order]): 生成全为1的ndarray。
+    np.zeros(shape[, dtype, order]): 生成全为0的ndarray。
+    np.full((2, 3), 2)
+    np.empty((2, 3))
+
+### 生成指定范围值的ndarray
+
+    array_o = np.arange(1, 10, 2)
+    array_p = np.linspace(0, 20, 5, retstep=True)
+
+arange(start, stop, step[, dtype]): 给定起始值、结束值(不包含结束值)和步长，生成指定范围的一维数组，效果相当于Python内置函数range()。
+
+linspace(start, stop[, num, endpoint, retstep, dtype, axis]): 给定起始值、结束值，生成等间隔的一维数组。start表示数组的起始值。stop表示数组的终止值。num表示生成数组中的数据个数，默认为50。endpoint表示数组中是否包含stop值，默认为Ture。retstep表示是否返回数组的步长，默认为False。dtype表示ndarray中的数据类型。linspace()中的start或stop也可以传入形似array的数据，此时可生成二维数组。axis参数此时可以派上用场，表示将array_like的数据作为行还是作为列来生成二维数组，默认为0时作为行，如果为-1则作为列。
+
+logspace(start, stop[, num, endpoint, base, dtype, axis]): 给定起始值、结束值，生成等间隔的一维数组，数据为对数函数log的值。base表示log函数的底数，默认为10。其他参数同linspace()。
+
+### 生成随机值的ndarray
+
+    array_s = np.random.randint(1, 10, 5)
+    array_t = np.random.rand(5)
+    array_u = np.random.uniform(size=5)
+    array_v = np.random.randn(5)
+    array_w = np.random.normal(10, 1, 5)
+
+np.random.randint(low, high=None, size=None, dtype=None): 给定起始值、结束值(不包含结束值)和数据个数，从指定范围内生成指定个数(每次生成一个，共size次)的整数，组成一个一维数组。
+
+np.random.rand(): 生成一个0到1(不包含1)之间的随机数，如果传入生成的数据个数，则生成一维数组，数组中的每个值都是0到1之间的随机数。
+
+np.random.uniform(low=0.0, high=1.0, size=None): 给定起始值、结束值(不包含结束值)和数据个数，从指定范围内生成指定个数的小数，组成一维数组。默认同rand()。
+
+这三个函数在生成随机数组时，数据范围内的每个数概率相等，数据是均匀分布的。
+
+np.random.randn(): 按标准正太分布(均值为0，标准差为1)生成一个随机数。如果传入生成的数据个数，则生成一维数组。
+
+np.random.normal(loc=0.0, scale=1.0, size=None): 给定均值、标准差和数据个数，按正太分布的概率生成指定个数的数，组成一个一维数组。
+
+randn()和normal()函数生成的随机数组中，数据是正太分布的。
+
+### np数组拼接
+
+    np.hstack()
+    np.vstack()
