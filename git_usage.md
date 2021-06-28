@@ -9,6 +9,7 @@
   - [阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master](#阿里巴巴-aoneflow从master上拉出feature分支相关feature分支合并出release分支最终合入master)
   - [分支权限控制 及 轻量化git服务](#分支权限控制-及-轻量化git服务)
   - [分支的拉取和上传](#分支的拉取和上传)
+    - [最常用的拉取命令，含标签，变基](#最常用的拉取命令含标签变基)
     - [git fetch 和 git pull的区别](#git-fetch-和-git-pull的区别)
     - [添加多个远程仓库](#添加多个远程仓库)
     - [从远程空白裸仓库拉取的步骤](#从远程空白裸仓库拉取的步骤)
@@ -326,6 +327,10 @@ Gitolite 基于ssh密钥管理的用户权限控制
     gitea + Jenkins <https://github.com/go-gitea/>
 
 ## 分支的拉取和上传
+
+### 最常用的拉取命令，含标签，变基
+
+    git pull --tags -r origin master
 
 ### git fetch 和 git pull的区别
 
