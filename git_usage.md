@@ -10,8 +10,10 @@
   - [分支权限控制 及 轻量化git服务](#分支权限控制-及-轻量化git服务)
   - [分支的拉取和上传](#分支的拉取和上传)
     - [最常用的拉取命令，含标签，变基](#最常用的拉取命令含标签变基)
-    - [git fetch 和 git pull的区别](#git-fetch-和-git-pull的区别)
     - [每日工作第一件事 git fetch + git diff](#每日工作第一件事-git-fetch--git-diff)
+    - [git fetch 和 git pull的区别](#git-fetch-和-git-pull的区别)
+      - [分支在本地都有本地仓库和远程仓库两份代码](#分支在本地都有本地仓库和远程仓库两份代码)
+      - [git pull把2个过程合并，减少了操作](#git-pull把2个过程合并减少了操作)
     - [添加多个远程仓库](#添加多个远程仓库)
     - [从远程空白裸仓库拉取的步骤](#从远程空白裸仓库拉取的步骤)
     - [拉取指定版本](#拉取指定版本)
@@ -337,98 +339,29 @@ Gitolite 基于ssh密钥管理的用户权限控制
 
 ### 最常用的拉取命令，含标签，变基
 
-先看看再拉
+记得先git status看看再拉，防止有本地变更未提交等情况
 
-    git status
-    git fetch origin master
-    git diff ..origin/master
-    git status
+    git fetch origin master  # 下载到远程仓库
+    git diff ..origin/master  # 本地代码跟远程仓库代码（已下载到本地）比较差异
 
-无脑变基拉：指定要fetch的remote和分支名
+拉取合并一把搞完，连带标签，-r是rebase，否则是merge：
+
+    最好指定要fetch的remote和分支名
 
     git pull --tags -r origin master
-
-### git fetch 和 git pull的区别
-
-通常的工作流程是，先用 git fetch 拉取分支，然后用 git merge 把拉取的内容合并到当前分支，
-因为这二者都是连用的，所有有个简化版就是 git pull，大多数情况下直接用 git pull 就够用了，
-但是务必理解，正规的分支拉取是 fetch 和 merge 两个步骤完成的。
-
-最安全的操作，是先fetch下来然后diff看看，然后再决定是否merge或rebase，省事才pull。
-
-    $git fetch <远程主机名> <分支名> # 注意之间有空格
-
-    # 取回特定分支的更新
-    $git fetch origin master
-
-    # 可简写，默认拉取所有分支，如果有很多分支，就比较慢了
-    $git fetch
-
-    # 查看fetch下来的远程代码跟本地的区别
-    git diff ..origin/master
-
-我们本地的git文件夹里面对应也存储了git本地仓库master分支的commit ID 和 跟踪的远程分支orign/master的commit ID（可以有多个远程仓库）。那什么是跟踪的远程分支呢，打开git文件夹可以看到如下文件：
-
-    .git/refs/head/[本地分支]
-    .git/refs/remotes/[正在跟踪的分支]
-
-其中head就是本地分支，remotes是跟踪的远程分支，这个类型的分支在某种类型上是十分相似的，他们都是表示提交的SHA1校验和（就是commitID）。
-我们无法直接对远程跟踪分支操作，我们必须先切回本地分支然后创建一个新的commit提交。
-更改远端跟踪分支只能用git fetch，或者是git push后作为副产品（side-effect）来改变。
-
-取回更新后，会返回一个FETCH_HEAD ，指的是某个branch在服务器上的最新状态，我们可以在本地通过它查看刚取回的更新信息：
-
-    git log -p FETCH_HEAD
-
-可以看到返回的信息包括更新的文件名，更新的作者和时间，以及更新的代码（x行红色[删除]和绿色[新增]部分）。
-我们可以通过这些信息来判断是否产生冲突，以确定是否将更新merge到当前分支。
-
-这时候我们本地相当于存储了两个代码的版本号，
-
-可以通过 git merge 去合并这两个不同的代码版本，
- git merge做的就是把拉取下来的远程最新 commit 跟本地最新 commit 合并。
-
-    git merge FETCH_HEAD
-
-    git merge origin/master
-
-    # 或者，不使用merge，用rebase
-    $ git rebase origin/master
-
-也可以在它的基础上，使用git checkout命令创建一个新的分支。
-
-    git checkout -b newBrach origin/master
-
-将远程主机的某个分支的更新取回，并与本地指定的分支合并，
-git pull把上述2个过程合并，减少了操作：
-
-    git pull <远程主机名> <远程分支名>:<本地分支名>
-
-    # 如果远程分支是与当前分支合并，则冒号后面的部分可以省略
-    git pull origin master
-
-    # 如果远程主机名origin，分支就是当前分支，可简写
-    git pull
-
-    # 拉取后，用rebase进行拉直合并
-    git pull --rebase
-
-分支的合并，如上所述的是fetch下来一份远程合并到本地，
-本地如果有两个分支，dev分支和master分支合并，也是一样。
-
-分支合并的详细用法见下面的章节 [两个分支合并的merge常用方法]
 
 ### 每日工作第一件事 git fetch + git diff
 
 先看看分支的远程库有没有别人新增，然后再git status才能看出来门道
 
+    # 先看看再拉
+    # 不fetch的话，远程仓库的变化在本地diff不出来
     git status
 
     git fetch origin master
     git diff ..origin/master
 
-    # 不fetch的话远程的变化不提示
-    git status
+    git rebase/merge...
 
 没点，俩点，仨点的区别，慢慢研究吧
 
@@ -466,6 +399,76 @@ For info on ".." vs "..." see as well as the excellent documentation at [git-scm
 
 Shows incoming remote additions as additions; the triple-dot excludes changes
 committed to your local repository.
+
+### git fetch 和 git pull的区别
+
+通常的工作流程是，先用 git fetch 拉取分支，然后用 git merge 把拉取的内容合并到当前分支，
+因为这二者都是连用的，所有有个简化版就是 git pull，大多数情况下直接用 git pull 就够用了，
+但是要记住，正规的分支拉取操作是 fetch 和 merge 两个步骤完成的。
+
+最完整的操作，是先fetch下来然后diff看看，然后再决定是否merge或rebase，省事才pull。
+
+    $git fetch <远程主机名> <分支名> # 注意之间有空格
+
+    # 取回特定分支的更新
+    $git fetch origin master
+
+    # 可简写，默认拉取所有分支，如果有很多分支，就比较慢了
+    $git fetch
+
+    # 查看fetch下来的远程代码跟本地的区别
+    git diff ..origin/master
+
+#### 分支在本地都有本地仓库和远程仓库两份代码
+
+我们本地的git文件夹里面对应也存储了git本地仓库master分支的commit ID 和 跟踪的远程分支orign/master的commit ID（可以有多个远程仓库）。那什么是跟踪的远程分支呢，打开git文件夹可以看到如下文件：
+
+    .git/refs/head/[本地分支]
+    .git/refs/remotes/[正在跟踪的分支]
+
+其中head就是本地分支，remotes是跟踪的远程分支，这个类型的分支在某种类型上是十分相似的，他们都是表示提交的SHA1校验和（就是commitID）。
+我们无法直接对远程跟踪分支操作，我们必须先切回本地分支然后创建一个新的commit提交。
+更改远端跟踪分支只能用git fetch，或者是git push后作为副产品（side-effect）来改变。
+
+取回更新后，会返回一个FETCH_HEAD ，指的是某个branch在服务器上的最新状态，我们可以在本地通过它查看刚取回的更新信息：
+
+    git log -p FETCH_HEAD
+
+可以看到返回的信息包括更新的文件名，更新的作者和时间，以及更新的代码（x行红色[删除]和绿色[新增]部分）。
+我们可以通过这些信息来判断是否产生冲突，以确定是否将更新merge到当前分支。
+
+这时候我们本地相当于存储了两个代码的版本号，可以通过 git merge 去合并这两个不同的代码版本， git merge做的就是把拉取下来的远程最新 commit 跟本地最新 commit 合并。如果不用merge，用rebase也是可以的。
+
+    git merge FETCH_HEAD
+
+    git merge origin/master
+
+    # 或者，不使用merge，用rebase
+    $ git rebase origin/master
+
+也可以在它的基础上，使用git checkout命令创建一个新的分支。
+
+    git checkout -b newBrach origin/master
+
+#### git pull把2个过程合并，减少了操作
+
+将远程主机的某个分支的更新取回，并与本地指定的分支合并 ：
+
+    git pull <远程主机名> <远程分支名>:<本地分支名>
+
+    # 如果远程分支是与当前分支合并，则冒号后面的部分可以省略
+    git pull origin master
+
+    # 如果远程主机名origin，分支就是当前分支，可简写
+    git pull
+
+    # 拉取后，用rebase进行拉直合并
+    git pull --rebase
+
+分支的合并，如上所述的是fetch下来一份远程合并到本地，
+这个操作，跟本地有两个分支进行合并，没什么区别。
+
+分支合并的详细用法见下面的章节 [两个分支合并的merge常用方法]
 
 ### 添加多个远程仓库
 

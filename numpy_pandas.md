@@ -517,22 +517,26 @@ df_dti = df_from_db.set_index('stime').resample(
 
 ### DataFrame 大数据量拼接用 pd.concat
 
-        # 整理批量结果
-        # for code, datadf in _datadf_dict.items():
-        #     df = pd.concat([df, datadf.df],
-        #                     ignore_index=True,
-        #                     copy=False)
-        # ignore_index = True 并不意味忽略index然后连接，而是指连接后再重新赋值index(len(index))。
-        # 如果两个df有重叠的索引还是可以自动合并的。
-        # 优化速度
-        # pd.append()说明文档 pandas\core\frame.py
-        # https://cloud.tencent.com/developer/article/1640799
-        # https://zhuanlan.zhihu.com/p/29362983
+整理批量结果，普通的for循环速度太慢：
+
+    for code, datadf in _datadf_dict.items():
+        df = pd.concat([df, datadf.df],
+                        ignore_index=True,
+                        copy=False)
+
+优化速度，把for的那个迭代器用列表表达式放到concat()参数里，
+参见 pd.append()说明文档 pandas\core\frame.py
+<https://cloud.tencent.com/developer/article/1640799>
+<https://zhuanlan.zhihu.com/p/29362983>
+
         dfs = pd.concat([
             pd.DataFrame(datadf.df, columns=datadf.df.columns)
             for code, datadf in _datadf_dict.items()
         ],
-                        ignore_index=True)
+        ignore_index=True)
+
+ignore_index = True 并不意味忽略index然后连接，而是指连接后再重新赋值index(len(index))。
+如果两个df有重叠的索引还是可以自动合并的。
 
 ## numpy 大数据量处理使用
 
