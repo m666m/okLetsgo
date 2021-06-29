@@ -349,6 +349,9 @@ Gitolite 基于ssh密钥管理的用户权限控制
     # 本地代码跟远程仓库代码（已下载到本地）比较差异
     git diff ..origin/master
 
+    <https://www.yiibai.com/git/git_diff.html>
+    <https://www.yiibai.com/git/git_fetch.html>
+
 拉取合并一把搞完，连带标签，-r是rebase，否则是merge：
 
     最好指定要fetch的remote和分支名
