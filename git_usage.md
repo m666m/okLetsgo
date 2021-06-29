@@ -84,7 +84,7 @@
     优点：模型简单
     缺点：
 
-    线上修正：按照上图目前系统已经发布了12.1，下一个迭代也在开发中，线上发现了问题。由于Release分支是禁止修改的，而Trunk此时包含了新的特性代码无法发布，就造成了线上异常的修复需要在分离的hotfix分支上进行，变相的造成了多个master分支。
+    线上修正：假设目前系统已经发布了12.1，下一个迭代也在开发中，线上发现了问题。由于Release分支是禁止修改的，而Trunk此时包含了新的特性代码无法发布，就造成了线上异常的修复需要在分离的hotfix分支上进行，变相的造成了多个master分支。
 
     需求变更：无法支持，已经提交到Trunk的内容抽离很困难。
 
@@ -156,7 +156,7 @@
 
 本地只是远程的一个镜像，以远程为准。
 所以跨分支操作比如想合并远程master分支到远程dev分支，需要先pull远程master到本地master，再merge到本地dev，再push本地dev到远程master。
-或在本地dev分支fetch远程master一个临时分支然后diff/merge到本地dev分支... <https://www.jianshu.com/p/bfb4b0de7e03>
+或在本地dev分支fetch远程master一个临时分支然后diff/merge到本地dev分支 <https://www.jianshu.com/p/bfb4b0de7e03>
 
 5、开发告一段落，可以发布时，提交dev分支，合并到master再上传远程仓库
 
@@ -172,7 +172,7 @@
 
 ## git工作流： 功能分支工作流 master -- dev(开发人员工作在此)
 
-上面的方法基础上把本地分支推送到远程，两个分支在本地和远程都存在，master分支保持稳定，开发工作放在dev分支，这俩都做主干分支。 CI/CD中持续集成部署在dev，持续交付部署在master。hotfix合并到远程的master分支和dev分支。
+在上面的工作流基础上改良，把本地分支推送到远程，两个分支在本地和远程都存在，master分支保持稳定，开发工作放在dev分支，这俩都做主干分支。 CI/CD中持续集成部署在dev，持续交付部署在master。hotfix合并到远程的master分支和dev分支。
 
 大家每日同步远程的dev分支即可工作：
 
@@ -341,8 +341,13 @@ Gitolite 基于ssh密钥管理的用户权限控制
 
 记得先git status看看再拉，防止有本地变更未提交等情况
 
-    git fetch origin master  # 下载到远程仓库
-    git diff ..origin/master  # 本地代码跟远程仓库代码（已下载到本地）比较差异
+    # 远程仓库下载
+    git fetch origin master
+
+    # 查看简单的差异提示
+    git status
+    # 本地代码跟远程仓库代码（已下载到本地）比较差异
+    git diff ..origin/master
 
 拉取合并一把搞完，连带标签，-r是rebase，否则是merge：
 
@@ -359,9 +364,17 @@ Gitolite 基于ssh密钥管理的用户权限控制
     git status
 
     git fetch origin master
+
+    # 查看简单的差异提示
+    git status
+    # 本地代码跟远程仓库代码（已下载到本地）比较差异
     git diff ..origin/master
 
+    # 酌情合并代码
     git rebase/merge...
+
+    # 查看简单的差异提示
+    git status
 
 没点，俩点，仨点的区别，慢慢研究吧
 
