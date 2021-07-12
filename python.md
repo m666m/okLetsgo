@@ -1,5 +1,28 @@
 # python
 
+## wheels
+
+最简单的解决办法是下载好心人提供的编译好的windows二进制包 <https://www.lfd.uci.edu/~gohlke/pythonlibs/>
+
+在windows环境中，python 的 Setup 需要调用一个 vcvarsall.bat 的文件，该文件需要安装c++编程环境才会有。网上的方法有两个：一、安装MinGW；二、安装Visual Studio 。很多python包也是如此，pip提供的是代码，需要借助python环境在本地编译出二进制。
+
+python2.7用的是msvs2008编译的，所以python2.7默认只能认出msvs2008.
+python3.4用的是msvs2010编译的，所以python3.4默认只能认出msvs2010。
+python3.7使用vs2015（WIN10SDK）
+python3.8应该对应了VS2017(15.9)，用VS2019基本也可以。
+
+如果安装的是VS2014，则VERSION为13.0；
+如果安装的是VS2013，则VERSION为12.0；
+如果安装的是VS2012，则VERSION为11.0；
+如果安装的是VS2010，则VERSION为10.0；
+如果安装的是VS2008，则VERSION为9.0。
+
+如何编译python3.7/3.8
+<https://www.cnblogs.com/xiacaojun/p/9914545.html>
+<https://zhuanlan.zhihu.com/p/148348614>
+
+### Windows 7 最高只能使用 Python3.8
+
 ## conda pip
 
 首先切换到你的环境 venv/conda
@@ -17,6 +40,97 @@ pip用之前先which pip 看看位置，防止不是你的环境的pip，用了�
 The ~=5.15 specifies a release compatible with 5.15 which will be
 the latest version of pyqt5-tools built for PyQt5 5.15.
 If you are using a different PyQt5 version, specify it instead of 5.15.
+
+## Anaconda 安装和管理
+
+<https://www.jianshu.com/p/ef1ae10ba950>
+
+
+### conda配置
+
+1.查看 conda 版本
+安装完成后按Win+R打开cmd终端，输入
+
+    conda --version
+
+2.添加国内源
+查看现有源
+
+    conda config --show-sources
+
+添加国内清华源
+
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+
+删除默认源
+
+    conda config --remove channels defaults
+
+设置搜索时显示通道地址
+
+    conda config --set show_channel_urls yes
+
+3.升级 conda
+设置完国内源后，升级 conda 的速度会快很多，之后安装包时也会从国内源下载。
+
+    conda update conda
+
+### 配置python环境
+
+1. 查看 Python 版本
+python --version
+
+2. 创建环境
+上一步查到我电脑上的 Python 版本为 3.7.0 ，我想在这个版本基础上创建一个名为xiaolvshijie的虚拟环境。
+
+conda create -n xiaolvshijie python=3.7.0
+
+新的开发环境会被默认安装在你 conda 目录下的 envs 文件目录下。
+
+3.激活环境
+
+    activate xiaolvshijie
+
+4.列出所有的环境
+
+    conda info -e
+
+当前激活的环境会标*。
+
+5.切换到另一个环境
+
+    activate xiaolvshijie
+
+6.注销当前环境
+
+    deactivate
+
+7.复制环境
+
+    conda create -n xiaolv --clone xiaolvshijie
+
+8.删除环境
+
+    conda remove -n xiaolv --all
+
+### conda 包管理
+
+1. 查看已安装包
+
+    conda list
+
+2. 使用 Conda 命令安装包
+
+    conda install beautifulsoup4
+
+3. 通过 pip 命令来安装包，如果无法通过conda安装，可以用pip命令来安装包。详见下面章节[anaconda环境中使用pip]
+
+    pip install beautifulsoup4
+
+4. 移除包
+    conda remove beautifulsoup4
 
 ## anaconda环境中使用pip
 
@@ -46,3 +160,7 @@ If you are using a different PyQt5 version, specify it instead of 5.15.
 
 安装好本环境的pip之后，在本环境中使用pip install安装的包，就只在本conda中了，
 我们可以用conda list查看我们的包，同时pip安装的包，conda list结果中的build项目为pypi......
+
+## python-xy
+
+<https://python-xy.github.io/> 微软推荐的<https://devblogs.microsoft.com/python/unable-to-find-vcvarsall-bat>
