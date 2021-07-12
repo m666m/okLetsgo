@@ -9,8 +9,7 @@
   - [阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master](#阿里巴巴-aoneflow从master上拉出feature分支相关feature分支合并出release分支最终合入master)
   - [分支权限控制 及 轻量化git服务](#分支权限控制-及-轻量化git服务)
   - [分支的拉取和上传](#分支的拉取和上传)
-    - [最常用的拉取命令，含标签，变基](#最常用的拉取命令含标签变基)
-    - [每日工作第一件事 git fetch + git diff](#每日工作第一件事-git-fetch--git-diff)
+    - [每日工作第一件事 拉取命令，含标签，变基](#每日工作第一件事-拉取命令含标签变基)
     - [git fetch 和 git pull的区别](#git-fetch-和-git-pull的区别)
       - [分支在本地都有本地仓库和远程仓库两份代码](#分支在本地都有本地仓库和远程仓库两份代码)
       - [git pull把2个过程合并，减少了操作](#git-pull把2个过程合并减少了操作)
@@ -337,47 +336,39 @@ Gitolite 基于ssh密钥管理的用户权限控制
 
 ## 分支的拉取和上传
 
-### 最常用的拉取命令，含标签，变基
+### 每日工作第一件事 拉取命令，含标签，变基
 
-记得先git status看看再拉，防止有本地变更未提交等情况
+git fetch + git diff
+
+先看看分支的远程库有没有别人新增，然后再git status才能看出来门道
+
+    # 先看看
+    git status  # 如果有本地未提交的，先stash暂存才能继续下面的fetch
 
     # 远程仓库下载
+    # 下载当前分支可以简写为： git fetch
     git fetch origin master
 
-    # 查看简单的差异提示
+    # 查看本地代码跟远程仓库代码（已下载到本地）的差异
+    # 简单的：
     git status
-    # 本地代码跟远程仓库代码（已下载到本地）比较差异
+    # 详细的：
     git diff ..origin/master
 
-    <https://www.yiibai.com/git/git_diff.html>
-    <https://www.yiibai.com/git/git_fetch.html>
+    # # 酌情合并代码到本地
+    git merge 或 git rebase
+    # 解决冲突
+    git add 冲突文件
+    git rebase –continue 或 git merge
 
-拉取合并一把搞完，连带标签，-r是rebase，否则是merge：
+    # 再确认下没问题了
+    git status
+
+整合到一个命令：拉取远程加合并本地，连带标签，-r是rebase，否则是merge：
 
     最好指定要fetch的remote和分支名
 
     git pull --tags -r origin master
-
-### 每日工作第一件事 git fetch + git diff
-
-先看看分支的远程库有没有别人新增，然后再git status才能看出来门道
-
-    # 先看看再拉
-    # 不fetch的话，远程仓库的变化在本地diff不出来
-    git status
-
-    git fetch origin master
-
-    # 查看简单的差异提示
-    git status
-    # 本地代码跟远程仓库代码（已下载到本地）比较差异
-    git diff ..origin/master
-
-    # 酌情合并代码
-    git rebase/merge...
-
-    # 查看简单的差异提示
-    git status
 
 没点，俩点，仨点的区别，慢慢研究吧
 
