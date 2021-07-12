@@ -9,7 +9,8 @@
   - [阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master](#阿里巴巴-aoneflow从master上拉出feature分支相关feature分支合并出release分支最终合入master)
   - [分支权限控制 及 轻量化git服务](#分支权限控制-及-轻量化git服务)
   - [分支的拉取和上传](#分支的拉取和上传)
-    - [每日工作第一件事 拉取命令，含标签，变基](#每日工作第一件事-拉取命令含标签变基)
+    - [每日工作第一件事 拉取合并（含标签，变基）](#每日工作第一件事-拉取合并含标签变基)
+    - [远程拉取合并本地的pull用法](#远程拉取合并本地的pull用法)
     - [git fetch 和 git pull的区别](#git-fetch-和-git-pull的区别)
       - [分支在本地都有本地仓库和远程仓库两份代码](#分支在本地都有本地仓库和远程仓库两份代码)
       - [git pull把2个过程合并，减少了操作](#git-pull把2个过程合并减少了操作)
@@ -24,7 +25,6 @@
     - [本地非空，远程是裸仓库](#本地非空远程是裸仓库)
     - [git clone之后的第一次pull和push调试](#git-clone之后的第一次pull和push调试)
   - [两个分支合并的merge常用方法](#两个分支合并的merge常用方法)
-    - [拉取合并的pull用法 pull --rebase](#拉取合并的pull用法-pull---rebase)
     - [方法一. merge 默认的快进合并，需要合入分支的接续点就是分叉点](#方法一-merge-默认的快进合并需要合入分支的接续点就是分叉点)
     - [方法二. 大的分支合入要保留菱形分叉，便于管理](#方法二-大的分支合入要保留菱形分叉便于管理)
       - [压缩合并，只作为一个commit点合入](#压缩合并只作为一个commit点合入)
@@ -336,7 +336,7 @@ Gitolite 基于ssh密钥管理的用户权限控制
 
 ## 分支的拉取和上传
 
-### 每日工作第一件事 拉取命令，含标签，变基
+### 每日工作第一件事 拉取合并（含标签，变基）
 
 git fetch + git diff
 
@@ -364,7 +364,8 @@ git fetch + git diff
     # 再确认下没问题了
     git status
 
-整合到一个命令：拉取远程加合并本地，连带标签，-r是rebase，否则是merge：
+整合到一个命令：
+拉取远程加合并本地，连带标签，-r是rebase，否则是merge，详见下面章节[远程拉取合并本地的pull用法]
 
     最好指定要fetch的remote和分支名
 
@@ -406,6 +407,56 @@ For info on ".." vs "..." see as well as the excellent documentation at [git-scm
 
 Shows incoming remote additions as additions; the triple-dot excludes changes
 committed to your local repository.
+
+### 远程拉取合并本地的pull用法
+
+先看看原理：
+
+    git pull          = git fetch + git merge
+    git pull --rebase = git fetch + git rebase
+
+如果多人同时操作一个分支，merge的时候会结合多个提交的最新位置新建一个提交点（不是快进合并就这样），形成了一个菱形：
+
+1.初始状态，在c点大家pull了最新代码，开始自己的编辑提交，还未push：
+
+                d---e  别人的master
+              /
+     a---b---c  远程仓库的master分支
+              \
+                f---g  你的master
+
+2.大家分别提交自己的代码，e点的先提交，他pull+push，这时候远程仓库上直接接上了
+
+    a---b---c ---d---e
+                别人的
+
+3.你的g点要提交，先pull，这时git会提示输入新建commit点的注释了。。。
+
+git pull = git fetch + git merge后的效果，看起来像个菱形，提交的人越多，这个环越多
+
+              h--i 又一个人的。。。
+             /     \
+            ...     ...
+              d---e 别人的
+             /     \
+    a---b---c       new commit 由git制造
+             \     /
+              f---g  你的
+
+git pull --rebase = git fetch + git rebase 去掉多余的分叉：
+
+    a---b---c ---d---e  ---f---g
+              别人      你的
+
+通过 --rebase 方式，你的提交重新拼接在远端新增提交的最后，这样看起来更简洁，找自己的提交点也方便。
+
+虽然可能要解决一些合并冲突，但是一条直线，看起来舒服多了，最重要的是后期合并commit就方便了。
+
+对别人来说，你推送后新增的 f-g 两个提交是新增在他的 d-e 上的，他在你的 f-g 后面继续线性追加，逻辑更清晰。
+最终用rebase实现大家都是在线性的增长master分支，不搞分叉。
+
+    -a-b-c -d-e  -f-g  -h-i  -j-k  ...
+           别人   你的  别人  你的   ...
 
 ### git fetch 和 git pull的区别
 
@@ -732,56 +783,6 @@ clone完成后，进入目录，执行
     master主干  a---b---c
                          \
                           f---g  feature分支
-
-### 拉取合并的pull用法 pull --rebase
-
-先看看原理：
-
-    git pull          = git fetch + git merge
-    git pull --rebase = git fetch + git rebase
-
-如果多人同时操作一个分支，merge的时候会结合多个提交的最新位置新建一个提交点（不是快进合并就这样），形成了一个菱形：
-
-1.初始状态，在c点大家pull了最新代码，开始自己的编辑提交，还未push：
-
-                d---e  别人的master
-              /
-     a---b---c  远程仓库的master分支
-              \
-                f---g  你的master
-
-2.大家分别提交自己的代码，e点的先提交，他pull+push，这时候远程仓库上直接接上了
-
-    a---b---c ---d---e
-                别人的
-
-3.你的g点要提交，先pull，这时git会提示输入新建commit点的注释了。。。
-
-git pull = git fetch + git merge后的效果，看起来像个菱形，提交的人越多，这个环越多
-
-              h--i 又一个人的。。。
-             /     \
-            ...     ...
-              d---e 别人的
-             /     \
-    a---b---c       new commit 由git制造
-             \     /
-              f---g  你的
-
-git pull --rebase = git fetch + git rebase 去掉多余的分叉：
-
-    a---b---c ---d---e  ---f---g
-              别人      你的
-
-通过 --rebase 方式，你的提交重新拼接在远端新增提交的最后，这样看起来更简洁，找自己的提交点也方便。
-
-虽然可能要解决一些合并冲突，但是一条直线，看起来舒服多了，最重要的是后期合并commit就方便了。
-
-对别人来说，你推送后新增的 f-g 两个提交是新增在他的 d-e 上的，他在你的 f-g 后面继续线性追加，逻辑更清晰。
-最终用rebase实现大家都是在线性的增长master分支，不搞分叉。
-
-    -a-b-c -d-e  -f-g  -h-i  -j-k  ...
-           别人   你的  别人  你的   ...
 
 ### 方法一. merge 默认的快进合并，需要合入分支的接续点就是分叉点
 
