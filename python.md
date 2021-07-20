@@ -77,8 +77,10 @@ From PyPI:
 
     # Last released version:
     pip install pyqtgraph
+
     # Latest development version:
     pip install git+https://github.com/pyqtgraph/pyqtgraph@master
+
     # Latest development version:
     pip install git+git://github.com/pyqtgraph/pyqtgraph@master
 
@@ -87,6 +89,10 @@ From github:
     pip install git+ssh://git@github.com/seatgeek/fuzzywuzzy.git@0.17.0#egg=fuzzywuzzy
     pip install git+https://github.com/blampe/IbPy.git
     pip install https://github.com/blampe/IbPy/archive/master.zip
+
+特定版本签出：
+
+    pip install -e hg+https://foss.heptapod.net/openpyxl/openpyxl/@3.0#egg=openpyxl
 
 From txt
 
