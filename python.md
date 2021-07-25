@@ -146,6 +146,12 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 直接删除虚拟环境所在目录即可
 
+### pip在virtualenv虚拟环境下不要使用 --user 参数
+
+直接 pip install 就好了
+
+    https://stackoverflow.com/questions/30604952/pip-default-behavior-conflicts-with-virtualenv
+
 ## Anaconda 安装和管理
 
 <https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/>
