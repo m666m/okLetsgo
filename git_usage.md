@@ -671,11 +671,16 @@ clone完成后，进入目录，执行
     # 用本地分支fea_-2覆盖远程分支fea_-1
     git push -f origin fea_-2:refs/fea_-1
 
+对追踪分支，git push origin --delete 该命令也会删除本地-远程的追踪分支，等于还做了个
+
+    # 如果只删除追踪分支，则还需要 git remote prune 来删除追踪分支
+    git branch --delete --remotes <remote>/<branch>
+
 3.其它人的机器上还有该远程分支，清理无效远程分支
 
     git branch -a # 查看
 
-    git fetch -p  # git remote prune
+    git fetch origin -p  # git remote prune
 
 4.删除本地
 
