@@ -113,13 +113,15 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 创建虚拟环境
 
-1. 安装虚拟环境的第三方包 virtualenv
+1.安装虚拟环境的第三方包 virtualenv
 
     pip install virtualenv
 
-    使用清华源安装：pip install virtualenv -i https://pypi.python.org/simple/
+使用清华源安装：
 
-2. 创建虚拟环境
+    pip install virtualenv -i https://pypi.python.org/simple/
+
+2.创建虚拟环境
 
     cd 到存放虚拟环境的地址
 
@@ -130,7 +132,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
     virtualenv --system-site-packages myvenv 参数 --system-site-packages 指定创建虚拟环境时继承系统三方库
 
-3. 激活/退出虚拟环境
+3.激活/退出虚拟环境
 
     cd ~/myvenv 跳转到虚拟环境的文件夹
 
@@ -142,7 +144,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
     deactivate 退出虚拟环境
 
-4. 删除虚拟环境
+4.删除虚拟环境
 
 直接删除虚拟环境所在目录即可
 
