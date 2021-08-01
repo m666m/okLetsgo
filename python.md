@@ -152,10 +152,19 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
     https://stackoverflow.com/questions/30604952/pip-default-behavior-conflicts-with-virtualenv
 
+### vscode 使用bash适应 virtualenv
+
+    source c:/tools/pyenvs/btcgoenv/Scripts/activate
+
 ## Anaconda 安装和管理
 
 <https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/>
 <https://www.jianshu.com/p/ef1ae10ba950>
+
+### 注意windows下的Anaconda需要使用cmd环境运行而不是bash
+
+    目前版本的都是bat，在bash下运行经常报错，
+    尤其是vscode，他的开发默认都是在bash的，各种source xxx之后运行，在cmd下的命令报错概率大。
 
 ### conda pip
 
