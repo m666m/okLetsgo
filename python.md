@@ -111,6 +111,8 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 ## virtualenv 配置pip环境
 
+用于标准的python安装到windows上（用cmd做脚本环境），使用virtualenv比较合适。
+
 创建虚拟环境
 
 1.安装虚拟环境的第三方包 virtualenv
@@ -162,6 +164,8 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 <https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/>
 <https://www.jianshu.com/p/ef1ae10ba950>
+
+在windows上（用cmd做脚本环境），使用conda activate比较合适。
 
 ### 注意windows下的Anaconda需要使用cmd环境运行而不是bash
 
