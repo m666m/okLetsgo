@@ -2,6 +2,9 @@
 
 ## Windows 7 最高只能使用 Python3.8
 
+windows下的python，各种命令的脚本都是cmd下的bat，如果用bash运行这些命令，有时候会出现各种提示报错信息。
+推荐windows下的python使用cmd做命令行。
+
 ## pip
 
 ### wheels
@@ -111,13 +114,14 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 ## virtualenv 配置pip环境
 
-适合标准的python安装到windows上，有些脚本适合用cmd环境，有些脚本适合用bash做环境。
+适合标准的python安装到windows上，原始python的脚本更适合用cmd环境，而pip的有些脚本适合用bash做环境。
 激活环境：
 
     CMD: c:/Users/xxx/pyenvs/py38/Scripts/activate.bat
     bash：source c:/Users/xxx/pyenvs/py38/Scripts/activate
 
 命令行bat文件一键运行
+
     cmd /k "c:/Users/xxx/pyenvs/py38/Scripts/python.exe c:/Users/xxx/pycode/aaa.py" | CMD /k "c:/Users/xxx/pyenvs/py38/Scripts/activate.bat"
 
 创建虚拟环境
@@ -171,7 +175,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 <https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/>
 <https://www.jianshu.com/p/ef1ae10ba950>
 
-在windows上（用cmd做脚本环境），使用conda activate比较合适。
+在windows上用cmd做脚本环境，如果使用bash，自带命令会提示各种错误信息。
 
 ### 注意windows下的Anaconda需要使用cmd环境运行而不是bash
 
@@ -248,9 +252,13 @@ conda create -n xnhj python=3.7.0
 
 3.激活环境
 
-    activate xnhj
-    source activate xxx
-    conda activate xxx
+    # 原 activate xnhj
+    conda activate xnhj
+
+windows cmd下：
+
+    C:/ProgramData/Anaconda3/Scripts/activate
+    conda activate xnhj
 
 4.列出所有的环境
 
