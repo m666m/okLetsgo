@@ -1,18 +1,31 @@
 {
+    // 调试模式可以在库中加断点 在.vscode\launch.json 中添加"justMyCode": false
     "update.mode": "manual",
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
-    "editor.fontFamily": "'Fira Code', 'Cascadia Code',Consolas,'Courier New', monospace",
+    "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace", // 'Cascadia Code','JetBrains Mono','Source Code Pro',
     "editor.fontLigatures": true,
+    "editor.fontSize": 14,
+    "editor.lineHeight":24, // 从0到你的字体大小计算行高
+    //下面四行分别设置不同粗细的字体，选择一种
+    // "editor.fontWeight": "300", // Light
+    // "editor.fontWeight": "400", // Regular
+    // "editor.fontWeight": "500", // Medium
+    // "editor.fontWeight": "600", // Bold
     "editor.minimap.showSlider": "always",
     "editor.minimap.scale": 1,
+    "editor.columnSelection": false,
+    "editor.multiCursorModifier": "alt",
     "outline.showVariables": false,
     "files.exclude": {
         "**/__pycache__": true,
+        "**/.ipynb_checkpoints":true,
         "**/.pytest_cache": true,
-        "**/.vscode": true
+        "**/.vscode": true,
     },
-    "python.dataScience.exportWithOutputEnabled": true,
+    "window.newWindowDimensions": "maximized",
+    "python.languageServer": "Pylance",
+    "python.showStartPage": false,
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Args": [
@@ -24,28 +37,58 @@
         // "--sytle=yapf_style.cfg"
     ],
     "python.testing.unittestEnabled": true,
-    "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+    "diffEditor.ignoreTrimWhitespace": false,
+    "workbench.editor.wrapTabs": true,
     "workbench.colorCustomizations": {
-        "window.activeBorder": "#08ca12c5",
-        "inputOption.activeBackground": "#9b9999",  // 查找界面的高亮标识
+        "window.activeBorder": "#ff7b00c5",
         "sideBarSectionHeader.border": "#ebebeb",
+        //"inputOption.activeBackground": "#9b9999",  // 查找界面的高亮标识
         // "editor.foldBackground": "#355000",  // 折叠代码块高亮  editor.foldingHighlight
 		// "editor.foreground": "#010216",
     },
-    // 下面是各个插件的设置
-    "trailing-spaces.trimOnSave": true,
+    "git.enableSmartCommit": true,
+    "git.autofetch": true,
+    "git.confirmSync": false,
+    "remote.SSH.remotePlatform": {
+        "banwagong": "linux",
+        "banwagong-ipv6": "linux"
+    },
+    "jupyter.exportWithOutputEnabled": true,
+    "jupyter.sendSelectionToInteractiveWindow": true,
+    "jupyter.textOutputLimit": 200000,
+    //////////////////////////////////////////////////////////////////
+    // 下面是插件设置
+    // Trailing Spaces
+    // "trailing-spaces.trimOnSave": true,
+    "files.trimTrailingWhitespace": true,
+    // Python Docstring Generator
     "autoDocstring.docstringFormat": "numpy",
-    "pyqt-integration.qtdesigner.path": "C:\\tools\\pyenvs\\btcgoenv\\Lib\\site-packages\\qt5_applications\\Qt\\bin\\designer.exe",
+    // markdownlint
+    "markdownlint.config": {
+        "default": true,
+        "MD046": false
+    },
+    // PYQT Integration
+    "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\Qt\\bin\\designer.exe",
     "pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
     "pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
+    // Bracket Pair Colorizer 2
     "bracket-pair-colorizer-2.colors": [
         "rgba(213,135,32,255)",
         "rgba(62,145,222,255)",
         "rgba(18,230,155,255)"
     ],
-    // rainbowCsv https://github.com/mechatroner/vscode_rainbow_csv/blob/master/test/color_customization_example.md#colors-customization
+    // Rainbow CSV https://github.com/mechatroner/vscode_rainbow_csv/blob/master/test/color_customization_example.md#colors-customization
     "editor.tokenColorCustomizations": {
         "textMateRules": [
+            // 自定义 禁用注释文字斜体显示
+            {
+                "scope": "comment",
+                "settings": {
+                   "fontStyle": ""
+                }
+            },
+            // 下面是rainbowCsv的自定义设置
             {
                 "scope": "rainbow1",
                 "settings": {
@@ -112,60 +155,71 @@
             }
         ]
     },
-    //
+    // Todo Tree
     "todo-tree.highlights.customHighlight": {
         "TODO": {
             "icon": "tasklist",
             "iconColour": "magenta",
-            "background": "#D0FFFF",
+            "background": "#46F0F0",
             "type": "tag"
         },
         "FIXME": {
             "icon": "eye",
             "iconColour": "red",
-            "background": "#D0FFFF",
+            "background": "#FFD700",
             "type": "tag"
         },
         "XXX": {
             "icon": "beaker",
-            "iconColour": "pink",
-            "background": "#D0FFFF",
+            "iconColour": "cyan",
+            "background": "#46F0F0",
+            "gutterIcon": true,
             "type": "tag"
         },
         "NOTE": {
             "icon": "info",
-            "iconColour": "blue",
-            "background": "#D0FFFF",
+            "iconColour": "#80FF00",
+            "background": "#D8BFD8",
             "type": "tag"
-        }
+        },
+        // "[x]":{
+        //   "foreground": "#64dd17",
+        //   "background":"#008800"
+        // },
+        // "[ ]":{
+        //   "foreground": "#f44336",
+        //   "background": "#592c2c",
+        // },
     },
+    // "todo-tree.regex.regex": "((//|#|<!--|;|/\\*|^)\\s*($TAGS)|^//\\s*\\[x\\]|^//\\s*\\[ \\])",
     "todo-tree.general.tags": [
         "TODO",
         "FIXME",
         "XXX",
-        "NOTE"
+        "NOTE",
+        //"[ ]",
+        //"[x]"
     ],
     "todo-tree.general.statusBar": "tags",
-    "todo-tree.tree.grouped": true,
-    "git.enableSmartCommit": true,
-    "git.confirmSync": false,
-    "git.autofetch": true,
-    "todo-tree.tree.showScanModeButton": false,
-    "workbench.startupEditor": "welcomePage",
-    "remote.SSH.remotePlatform": {
-        "linuxPC": "linux",
-        "banwagong": "linux",
-        "banwagong-ipv6": "linux"
+    //"todo-tree.tree.showScanModeButton": false,
+    "gitlens.views.tags.branches.layout": "list",
+    //////////////////////////////////////////////////////////////////
+    // 下面是vs code自动添加的
+    "workbench.colorTheme": "MacOS Modern Light - Big Sur Xcode Default",
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
     },
-    "workbench.colorTheme": "MacOS Modern Dark - Big Sur Xcode Default",
-    "editor.multiCursorModifier": "alt",
-    "editor.columnSelection": false,
-    "python.languageServer": "Pylance",
-    "window.newWindowDimensions": "maximized",
-    // "todo-tree.regex.regex": "((//|#|<!--|;|/\\*)\\s*($TAGS)|^\\s*- \\[ \\])",
-    //
-    "markdownlint.config": {
-        "default": true,
-        "MD046": false
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
     },
+    "security.workspace.trust.emptyWindow": false,
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "terminal.integrated.profiles.windows": {
+        "C:\\Program Files\\Git\\bin\\bash.exe (migrated)": {
+            "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+            "args": []
+        }
+    },
+
 }
