@@ -111,7 +111,14 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 ## virtualenv 配置pip环境
 
-用于标准的python安装到windows上（用cmd做脚本环境），使用virtualenv比较合适。
+适合标准的python安装到windows上，有些脚本适合用cmd环境，有些脚本适合用bash做环境。
+激活环境：
+
+    CMD: c:/Users/xxx/pyenvs/py38/Scripts/activate.bat
+    bash：source c:/Users/xxx/pyenvs/py38/Scripts/activate
+
+命令行bat文件一键运行
+    cmd /k "c:/Users/xxx/pyenvs/py38/Scripts/python.exe c:/Users/xxx/pycode/aaa.py" | CMD /k "c:/Users/xxx/pyenvs/py38/Scripts/activate.bat"
 
 创建虚拟环境
 
@@ -242,7 +249,7 @@ conda create -n xnhj python=3.7.0
 
 3.激活环境
 
-    activate xnhj
+    conda activate xnhj
 
 4.列出所有的环境
 
@@ -252,11 +259,11 @@ conda create -n xnhj python=3.7.0
 
 5.切换到另一个环境
 
-    activate xnhj
+    conda activate xnhj
 
 6.注销当前环境
 
-    deactivate
+    conda deactivate
 
 7.复制环境
 
@@ -291,6 +298,7 @@ conda create -n xnhj python=3.7.0
     pip install beautifulsoup4
 
 4. 移除包
+
     conda remove beautifulsoup4
 
 ## anaconda环境中使用pip

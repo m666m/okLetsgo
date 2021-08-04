@@ -3,6 +3,7 @@
 ## 常用脚本收集
 
 ```shell
+#!/usr/bin/env python3  # 按照PATH寻找第一个python3程序来执行
 #!/bin/bash
 #
 # 参考:
