@@ -126,8 +126,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
     pip install virtualenv
 
-使用清华源安装：
-
+    # 使用清华源安装：
     pip install virtualenv -i https://pypi.python.org/simple/
 
 2.创建虚拟环境
@@ -249,7 +248,9 @@ conda create -n xnhj python=3.7.0
 
 3.激活环境
 
-    conda activate xnhj
+    activate xnhj
+    source activate xxx
+    conda activate xxx
 
 4.列出所有的环境
 
