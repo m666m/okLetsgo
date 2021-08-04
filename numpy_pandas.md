@@ -34,7 +34,7 @@
         - [不用时间做索引 - groupby + rolling：df.rolling('2s').sum()](#不用时间做索引---groupby--rollingdfrolling2ssum)
         - [用时间做索引 - resample + agg](#用时间做索引---resample--agg)
   - [pandas 优化](#pandas-优化)
-    - [DataFrame 大数据量拼接用 pd.concat](#dataframe-大数据量拼接用-pdconcat)
+    - [DataFrame 大规模的数据拼接，用迭代器传递给concat()](#dataframe-大规模的数据拼接用迭代器传递给concat)
   - [numpy 大数据量处理使用](#numpy-大数据量处理使用)
     - [numpy ufunc 用法](#numpy-ufunc-用法)
   - [numpy常用](#numpy常用)
@@ -42,6 +42,7 @@
     - [生成指定范围值的ndarray](#生成指定范围值的ndarray)
     - [生成随机值的ndarray](#生成随机值的ndarray)
     - [np数组拼接](#np数组拼接)
+      - [np大规模的数据拼接，用迭代器传递给concatenate()](#np大规模的数据拼接用迭代器传递给concatenate)
   - [numpy向量化](#numpy向量化)
     - [向量化函数](#向量化函数)
       - [自定义sinc函数](#自定义sinc函数)
@@ -523,25 +524,26 @@ df_dti = df_from_db.set_index('stime').resample(
     https://blog.csdn.net/BF02jgtRS00XKtCx/article/details/90092161
     http://www.pythontip.com/blog/post/12331/
 
-### DataFrame 大数据量拼接用 pd.concat
+### DataFrame 大规模的数据拼接，用迭代器传递给concat()
 
-整理批量结果，普通的for循环速度太慢：
+拼接整理批量结果，普通的for循环速度太慢：
 
     for code, datadf in _datadf_dict.items():
         df = pd.concat([df, datadf.df],
                         ignore_index=True,
                         copy=False)
 
-优化速度，把for的那个迭代器用列表表达式放到concat()参数里，
-参见 pd.append()说明文档 pandas\core\frame.py
-<https://cloud.tencent.com/developer/article/1640799>
-<https://zhuanlan.zhihu.com/p/29362983>
+优化速度，用迭代器生成数据传递给concat()，这样的方式速度最快。
 
-        dfs = pd.concat([
-            pd.DataFrame(datadf.df, columns=datadf.df.columns)
-            for code, datadf in _datadf_dict.items()
-        ],
-        ignore_index=True)
+    参见 pd.append()说明文档 pandas\core\frame.py
+    <https://cloud.tencent.com/developer/article/1640799>
+    <https://zhuanlan.zhihu.com/p/29362983>
+
+    dfs = pd.concat([
+        pd.DataFrame(datadf.df, columns=datadf.df.columns)
+        for code, datadf in _datadf_dict.items()
+    ],
+    ignore_index=True)
 
 ignore_index = True 并不意味忽略index然后连接，而是指连接后再重新赋值index(len(index))。
 如果两个df有重叠的索引还是可以自动合并的。
@@ -686,6 +688,12 @@ randn()和normal()函数生成的随机数组中，数据是正太分布的。
         np.vstack()
         # 2维数组沿沿着第三轴（深度方向）堆叠
         np.dstack()
+
+#### np大规模的数据拼接，用迭代器传递给concatenate()
+
+注意用迭代器生成数据传递给concatenate()，这样的方式速度最快
+
+        ret_arr = np.concatenate([agg_func(larr) for larr in narr])
 
 ## numpy向量化
 
