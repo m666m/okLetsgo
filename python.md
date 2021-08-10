@@ -112,7 +112,7 @@ To install system-wide from source distribution:
 
 To use with a specific project, simply copy the PyQtGraph subdirectory anywhere that is importable from your project.
 
-## virtualenv 配置pip环境
+## virtualenv 配置python环境
 
 适合标准的python安装到windows上，原始python的脚本更适合用cmd环境，而pip的有些脚本适合用bash做环境。
 激活环境：
