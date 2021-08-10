@@ -270,7 +270,7 @@ conda create -n xnhj python=3.7.0
 
 windows cmd下的bat文件：
 
-    @rem C:/ProgramData/Anaconda3/Scripts/activate
+    @rem C:\ProgramData\Anaconda3\Scripts\activate
     @rem conda activate xnhj
     @rem
     @rem C:\ProgramData\Anaconda3\Scripts\conda.exe activate xnhj
