@@ -172,6 +172,18 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     bind -n WheelUpPane select-pane -t= ; copy-mode -e ; send-keys -M
     bind -n WheelDownPane select-pane -t= ; send-keys -M
 
+### mintty
+
+安装git后就有了，windows下的配置文件 ~\.minttyrc
+
+    Language=zh_CN
+    Background=C:\Users\ThinkRight\Pictures\1111111111.jpg
+    Font=Consolas
+    FontHeight=11
+    ForegroundColour=255,255,255
+    Locale=zh_CN
+    Charset=GBK
+
 ### cmatrix 字符屏保
 
 <https://magiclen.org/cmatrix/>
