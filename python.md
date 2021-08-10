@@ -120,9 +120,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     CMD: c:/Users/xxx/pyenvs/py38/Scripts/activate.bat
     bash：source c:/Users/xxx/pyenvs/py38/Scripts/activate
 
-命令行bat文件一键运行
-
-    cmd /k "c:/Users/xxx/pyenvs/py38/Scripts/python.exe c:/Users/xxx/pycode/aaa.py" | CMD /k "c:/Users/xxx/pyenvs/py38/Scripts/activate.bat"
+命令行脚本（bat、sh）文件一键运行，详见下面的章节
 
 创建虚拟环境
 
@@ -172,6 +170,18 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 用bash的问题是用pip的时候，最好切换回cmd环境，因为python的windows脚本都是按兼容cmd写的……
 
     source c:/tools/pyenvs/btcgoenv/Scripts/activate
+
+windows下用mintty执行sh脚本自动执行环境和python程序
+
+    #!/bin/sh
+    # env source export 只认识linux目录结构
+    source /c/tools/pyenvs/btcgoenv/Scripts/activate
+    python /c/Users/ThinkRight/pycode/btcgo/app.py
+
+windows下用cmd执行bat脚本自动执行环境和python程序
+
+    call c:\tools\pyenvs\btcgoenv\Scripts\activate.bat
+    python C:\Users\ThinkRight\pycode\btcgoapp.py
 
 ## Anaconda 安装和管理
 
@@ -258,10 +268,14 @@ conda create -n xnhj python=3.7.0
     # 原 activate xnhj
     conda activate xnhj
 
-windows cmd下：
+windows cmd下的bat文件：
 
-    C:/ProgramData/Anaconda3/Scripts/activate
-    conda activate xnhj
+    @rem C:/ProgramData/Anaconda3/Scripts/activate
+    @rem conda activate xnhj
+    @rem
+    @rem C:\ProgramData\Anaconda3\Scripts\conda.exe activate xnhj
+    call C:\ProgramData\Anaconda3\condabin\conda.bat activate xnhj
+    python C:\Users\ThinkRight\pycode\btcgo\app.py
 
 4.列出所有的环境
 
