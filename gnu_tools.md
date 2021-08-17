@@ -182,7 +182,7 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     FontHeight=11
     ForegroundColour=255,255,255
     Locale=zh_CN
-    Charset=GBK
+    # Charset=GBK
 
 ### cmatrix 字符屏保
 
