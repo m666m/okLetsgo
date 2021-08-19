@@ -342,20 +342,20 @@ git fetch + git diff
 
 先看看分支的远程库有没有别人新增，然后再git status才能看出来门道
 
-    # 先看看
-    git status  # 如果有本地未提交的，先stash暂存才能继续下面的fetch
+    # 先看看有无未提交的，跟现有的本地远程代码比对没差别，不代表远程仓库的代码没差别，别人可能有更新
+    git status
 
-    # 远程仓库下载
+    # 从远程下载，这个不会跟本地现有文件冲突，下载的是本地的那个对应远程仓库的目录
     # 下载当前分支可以简写为： git fetch
     git fetch origin master
 
     # 查看本地代码跟远程仓库代码（已下载到本地）的差异
     # 简单的：
-    git status
+    git status  # 如果有本地未提交的，先stash暂存才能继续下面的代码合并
     # 详细的：
     git diff ..origin/master
 
-    # # 酌情合并代码到本地
+    # 酌情合并代码到本地
     git merge 或 git rebase
     # 解决冲突
     git add 冲突文件
@@ -365,9 +365,9 @@ git fetch + git diff
     git status
 
 整合到一个命令：
-拉取远程加合并本地，连带标签，-r是rebase，否则是merge，详见下面章节[远程拉取合并本地的pull用法]
 
-    最好指定要fetch的remote和分支名
+    # 拉取远程加合并本地，连带标签，-r是rebase，否则是merge，最好指定要fetch的remote和分支名。
+    # 详见下面章节[远程拉取合并本地的pull用法]
 
     git pull --tags -r origin master
 
