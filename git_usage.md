@@ -665,10 +665,12 @@ clone完成后，进入目录，执行
 
     git push origin --delete fea_xxx
 
-    # 如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
+如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
+
     git push origin :refs/fea_xxx
 
-    # 用本地分支fea_-2覆盖远程分支fea_-1
+用本地分支fea_-2覆盖远程分支fea_-1
+
     git push -f origin fea_-2:refs/fea_-1
 
 对追踪分支，git push origin --delete 该命令也会删除本地-远程的追踪分支，等于还做了个
