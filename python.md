@@ -167,9 +167,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 ### vscode 使用bash适应 virtualenv
 
 如果用cmd，则vscode使用的时候偶尔会有脚本报错……
-用bash的问题是用pip的时候，最好切换回cmd环境，因为python的windows脚本都是按兼容cmd写的……
-
-    source c:/tools/pyenvs/btcgoenv/Scripts/activate
+用bash的问题是，用pip的时候偶尔有报错，最好切换回cmd环境，因为python的windows脚本都是按兼容cmd写的……
 
 windows下用mintty执行sh脚本自动执行环境和python程序
 
