@@ -2,11 +2,11 @@
 
 - [常用git操作及参考文档](#常用git操作及参考文档)
   - [参考文档](#参考文档)
-  - [git工作流：类似svn的TrunkBased集中式工作流 remote master -- local master(开发人员工作在此)](#git工作流类似svn的trunkbased集中式工作流-remote-master----local-master开发人员工作在此)
-  - [git工作流：改良版集中式工作流 remote master -- local dev(开发人员工作在此)](#git工作流改良版集中式工作流-remote-master----local-dev开发人员工作在此)
-  - [git工作流： 功能分支工作流 master -- dev(开发人员工作在此)](#git工作流-功能分支工作流-master----dev开发人员工作在此)
-  - [git工作流： Gitflow工作流 master -- develop -- feature(开发人员工作在此)](#git工作流-gitflow工作流-master----develop----feature开发人员工作在此)
-  - [阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master](#阿里巴巴-aoneflow从master上拉出feature分支相关feature分支合并出release分支最终合入master)
+    - [git工作流：类似svn的TrunkBased集中式工作流 remote master -- local master(开发人员工作在此)](#git工作流类似svn的trunkbased集中式工作流-remote-master----local-master开发人员工作在此)
+    - [git工作流：改良版集中式工作流 remote master -- local dev(开发人员工作在此)](#git工作流改良版集中式工作流-remote-master----local-dev开发人员工作在此)
+    - [git工作流： 功能分支工作流 master -- dev(开发人员工作在此)](#git工作流-功能分支工作流-master----dev开发人员工作在此)
+    - [git工作流： Gitflow工作流 master -- develop -- feature(开发人员工作在此)](#git工作流-gitflow工作流-master----develop----feature开发人员工作在此)
+    - [阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master](#阿里巴巴-aoneflow从master上拉出feature分支相关feature分支合并出release分支最终合入master)
   - [分支权限控制 及 轻量化git服务](#分支权限控制-及-轻量化git服务)
   - [分支的拉取和上传](#分支的拉取和上传)
     - [每日工作第一件事 拉取合并（含标签，变基）](#每日工作第一件事-拉取合并含标签变基)
@@ -40,10 +40,10 @@
     - [二. 两分支合并，出现菱形分叉，需要拉直时，用rebase](#二-两分支合并出现菱形分叉需要拉直时用rebase)
     - [三.本地功能分支在合并到别的分支前压扁提交](#三本地功能分支在合并到别的分支前压扁提交)
   - [用法：标签相关](#用法标签相关)
-  - [用法：储藏命令stash，在分支切换时不需要做commit操作](#用法储藏命令stash在分支切换时不需要做commit操作)
-    - [注意](#注意)
+  - [用法：stash储藏命令](#用法stash储藏命令)
     - [高级用法：找回误删的git stash 数据](#高级用法找回误删的git-stash-数据)
   - [用法：补丁神器cherry-pick](#用法补丁神器cherry-pick)
+  - [用法：git diff的各个用法示例](#用法git-diff的各个用法示例)
   - [版本回退的操作步骤](#版本回退的操作步骤)
     - [自己的分支硬回退例子](#自己的分支硬回退例子)
     - [远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1](#远程仓库上有b先生新增提交了然后你却回退了远程仓库到a1)
@@ -75,7 +75,7 @@
     在 Linux 下搭建 Git 服务器 <https://www.cnblogs.com/dee0912/p/5815267.html>
     主力开发在Github，再同步到 Gitee 做国内网络访问的镜像 <https://www.zhihu.com/question/384541326/answer/1123864925>
 
-## git工作流：类似svn的TrunkBased集中式工作流 remote master -- local master(开发人员工作在此)
+### git工作流：类似svn的TrunkBased集中式工作流 remote master -- local master(开发人员工作在此)
 
 主干仅master分支
 
@@ -125,7 +125,7 @@
     git pull --rebase
     git push （默认远程origin本地master）
 
-## git工作流：改良版集中式工作流 remote master -- local dev(开发人员工作在此)
+### git工作流：改良版集中式工作流 remote master -- local dev(开发人员工作在此)
 
 主干仅master分支。在本地新建其它分支，每天仅拉取远程master，更新本地dev分支。这种工作方式可以确保主干master的相对稳定。
 
@@ -169,7 +169,7 @@
     git merge 分支名
     git push -u origin master
 
-## git工作流： 功能分支工作流 master -- dev(开发人员工作在此)
+### git工作流： 功能分支工作流 master -- dev(开发人员工作在此)
 
 在上面的工作流基础上改良，把本地分支推送到远程，两个分支在本地和远程都存在，master分支保持稳定，开发工作放在dev分支，这俩都做主干分支。 CI/CD中持续集成部署在dev，持续交付部署在master。hotfix合并到远程的master分支和dev分支。
 
@@ -246,7 +246,7 @@ dev代码测试完毕，合并到master，正式发布：
 
         只在关键tag点，把dev分支合并到master分支，平时的操作仅限dev分支。
 
-## git工作流： Gitflow工作流 master -- develop -- feature(开发人员工作在此)
+### git工作流： Gitflow工作流 master -- develop -- feature(开发人员工作在此)
 
 这个流程是功能分支工作流的进一步扩展，适合长期稳定的商用项目。
 
@@ -289,7 +289,7 @@ master分支很少变动，head始终对应生产环境代码。由master分支v
 
     抛弃 Git Flow 的 8 大理由 <https://baijiahao.baidu.com/s?id=1661688354212771172&wfr=spider&for=pc>
 
-## 阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master
+### 阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master
 
 只使用三种分支类型：主干master、特性分支feature、发布分支release，以及三条基本规则。
 
@@ -338,7 +338,11 @@ Gitolite 基于ssh密钥管理的用户权限控制
 
 ### 每日工作第一件事 拉取合并（含标签，变基）
 
-git fetch + git diff
+严重注意
+
+    千万别一上来就 git pull ！！！
+    用 git fetch + git status 不变动本地工作目录的内容查看远程
+    详见下面章节<git fetch 和 git pull的区别>
 
 先看看分支的远程库有没有别人新增，然后再git status才能看出来门道
 
@@ -460,11 +464,11 @@ git pull --rebase = git fetch + git rebase 去掉多余的分叉：
 
 ### git fetch 和 git pull的区别
 
-通常的工作流程是，先用 git fetch 拉取分支，然后用 git merge 把拉取的内容合并到当前分支，
+通常的工作流程是，先用 git fetch 拉取远程分支，然后用 git merge 把拉取的内容合并到本地分支，
 因为这二者都是连用的，所有有个简化版就是 git pull，大多数情况下直接用 git pull 就够用了，
 但是要记住，正规的分支拉取操作是 fetch 和 merge 两个步骤完成的。
 
-最完整的操作，是先fetch下来然后diff看看，然后再决定是否merge或rebase，省事才pull。
+最完整的操作，是先fetch下来然后diff看看，然后再决定是否merge或rebase，图省事才pull。
 
     $git fetch <远程主机名> <分支名> # 注意之间有空格
 
@@ -1239,9 +1243,19 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
     git checkout -b fea_xxx v2.0.0
 
-## 用法：储藏命令stash，在分支切换时不需要做commit操作
+## 用法：stash储藏命令
 
 当在一个分支的开发工作未完成，却又要切换到另外一个hotfix分支进行开发的时候，当前的分支不commit的话git不允许checkout到别的分支，而代码功能不完整随便commit是没有意义的。
+
+一般使用，git stash push 和 git stash pop这两条就够了。
+
+注意
+
+    新增的文件，直接执行stash是不会被存储的，
+    因为没有在git 版本控制中的文件，是不能被git stash 存起来的，
+    所以先执行下git add 再储存就可以了。
+
+详细用法
 
     （1）git stash push -m "save message"  : 执行存储时，添加备注，方便查找。只有 git stash 也可以，但查找时不方便识别。
 
@@ -1258,12 +1272,6 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
     （7）git stash drop stash@{$num} ：丢弃stash@{$num}存储，从列表中删除这个存储
 
     （8）git stash clear ：删除所有缓存的stash
-
-一般使用，git stash和 git stash pop这两条就够了。
-
-### 注意
-
-    新增的文件，直接执行stash是不会被存储的，因为没有在git 版本控制中的文件，是不能被git stash 存起来的，所以先执行下git add 再储存就可以了。
 
 ### 高级用法：找回误删的git stash 数据
 
@@ -1303,6 +1311,83 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
     1 file changed, 1 insertion(+), 1 deletion(-)
 
 Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803，它并不同于master分支的 4c805e2，因为这两个commit只是改动相同，但确实是两个不同的commit。用git cherry-pick，我们就不需要在dev分支上手动再把修bug的过程重复一遍。
+
+## 用法：git diff的各个用法示例
+
+git diff 主要的应用场景：
+
+    尚未缓存的改动：git diff
+    查看已缓存的改动： git diff --cached
+    查看已缓存的与未缓存的所有改动：git diff HEAD
+    显示摘要而非整个 diff：git diff --stat
+
+示例 -
+
+    git diff <file> # 比较当前文件和暂存区文件差异 git diff
+
+    git diff <id1><id1><id2> # 比较两次提交之间的差异
+
+    git diff <branch1> <branch2> # 在两个分支之间比较
+    git diff --staged # 比较暂存区和版本库差异
+
+    git diff --cached # 比较暂存区和版本库差异
+
+    git diff --stat # 仅仅比较统计信息
+
+·检查工作树的几种方式
+
+    git diff            #(1)
+    git diff --cached   #(2)
+    git diff HEAD       #(3)
+
+工作树中的更改尚未分段进行下一次提交。索引和最后一次提交之间的变化; 查看已经git add ，但没有git commit 的改动。自上次提交以来工作树中的更改；如果运行“git commit -a”，查看将会提交什么。
+
+·查看尚未暂存的文件更新了哪些部分，不加参数直接输入
+
+    git diff
+
+此命令比较的是工作目录(Working tree)和暂存区域快照(index)之间的差异也就是修改之后还没有暂存起来的变化内容。
+
+·查看已经暂存起来的文件(staged)和上次提交时的快照之间(HEAD)的差异
+
+    git diff --cached
+    git diff --staged
+
+显示的是下一次提交时会提交到HEAD的内容(不带-a情况下)
+
+·显示工作版本(Working tree)和HEAD的差别
+
+    git diff HEAD
+
+·直接将两个分支上最新的提交做diff
+
+    git diff topic master
+    # 或
+    git diff topic..master
+
+·输出自topic和master分别开发以来，master分支上的变更。
+
+    git diff topic...master
+
+·查看简单的diff结果，可以加上--stat参数
+
+    git diff --stat
+
+·查看当前目录和另外一个分支(test)的差别
+
+    git diff test
+
+·显示当前目录和另一个叫’test‘分支的差别
+
+    git diff HEAD -- ./lib
+
+·显示当前目录下的lib目录和上次提交之间的差别(更准确的说是在当前分支下)比较上次提交和上上次提交
+
+    git diff HEAD^ HEAD
+
+·比较两个历史版本之间的差异
+
+    git diff SHA1 SHA2
 
 ## 版本回退的操作步骤
 
