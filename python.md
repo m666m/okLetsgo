@@ -164,7 +164,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
     https://stackoverflow.com/questions/30604952/pip-default-behavior-conflicts-with-virtualenv
 
-### vscode 使用bash适应 virtualenv
+### windows下使用脚本执行virtualenv
 
 如果用cmd，则vscode使用的时候偶尔会有脚本报错……
 用bash的问题是，用pip的时候偶尔有报错，最好切换回cmd环境，因为python的windows脚本都是按兼容cmd写的……
@@ -174,12 +174,12 @@ windows下用mintty执行sh脚本自动执行环境和python程序
     #!/bin/sh
     # env source export 只认识linux目录结构
     source /c/tools/pyenvs/btcgoenv/Scripts/activate
-    python /c/Users/ThinkRight/pycode/btcgo/app.py
+    python /c/Users/xxxuser/pycode/yourproject/app.py
 
 windows下用cmd执行bat脚本自动执行环境和python程序
 
     call c:\tools\pyenvs\btcgoenv\Scripts\activate.bat
-    python C:\Users\ThinkRight\pycode\btcgoapp.py
+    python C:\Users\xxxuser\pycode\btcgoapp.py
 
 ## Anaconda 安装和管理
 
@@ -249,31 +249,33 @@ If you are using a different PyQt5 version, specify it instead of 5.15.
 
     conda update conda
 
-### 配置python环境
+### windows下使用脚本执行anaconda
 
 1. 查看 Python 版本
 python --version
 
 2. 创建环境
-上一步查到我电脑上的 Python 版本为 3.7.0 ，我想在这个版本基础上创建一个名为 xnhj 的虚拟环境。
+上一步查到我电脑上的 Python 版本为 3.7.0 ，我想在这个版本基础上创建一个名为 xdhj 的虚拟环境。
 
-conda create -n xnhj python=3.7.0
+conda create -n xdhj python=3.7.0
 
 新的开发环境会被默认安装在你 conda 目录下的 envs 文件目录下。
 
 3.激活环境
 
-    # 原 activate xnhj
-    conda activate xnhj
+    # 原 activate xdhj
+    conda activate xdhj
 
 windows cmd下的bat文件：
 
+    @rem anaconda 命令行执行
     @rem C:\ProgramData\Anaconda3\Scripts\activate
-    @rem conda activate xnhj
-    @rem
-    @rem C:\ProgramData\Anaconda3\Scripts\conda.exe activate xnhj
-    call C:\ProgramData\Anaconda3\condabin\conda.bat activate xnhj
-    python C:\Users\ThinkRight\pycode\btcgo\app.py
+    @rem conda activate xdhj
+    @rem --------------------------------------------------
+    @rem anaconda 脚本执行
+    call C:\ProgramData\Anaconda3\condabin\conda.bat activate xdhj
+    @rem --------------------------------------------------
+    python C:\Users\xxxuser\pycode\yourproject\app.py
 
 4.列出所有的环境
 
@@ -283,7 +285,7 @@ windows cmd下的bat文件：
 
 5.切换到另一个环境
 
-    conda activate xnhj
+    conda activate xdhj
 
 6.注销当前环境
 
@@ -291,7 +293,7 @@ windows cmd下的bat文件：
 
 7.复制环境
 
-    conda create -n xiaolv --clone xnhj
+    conda create -n xiaolv --clone xdhj
 
 8.删除环境
 
