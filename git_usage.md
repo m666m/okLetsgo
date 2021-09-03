@@ -25,6 +25,7 @@
     - [本地非空，远程是裸仓库](#本地非空远程是裸仓库)
     - [git clone之后的第一次pull和push调试](#git-clone之后的第一次pull和push调试)
     - [git clone支持多种协议](#git-clone支持多种协议)
+    - [git checkout 切换其他分支](#git-checkout-切换其他分支)
   - [两个分支合并的merge常用方法](#两个分支合并的merge常用方法)
     - [方法一. merge 默认的快进合并，需要合入分支的接续点就是分叉点](#方法一-merge-默认的快进合并需要合入分支的接续点就是分叉点)
     - [方法二. 大的分支合入要保留菱形分叉，便于管理](#方法二-大的分支合入要保留菱形分叉便于管理)
@@ -803,6 +804,43 @@ Git协议下载速度最快，SSH协议用于需要用户认证的场合。
     git clone file:///opt/git/project.git
     git clone ftp[s]://example.com/path/to/repo.git
     git clone rsync://example.com/path/to/repo.git
+
+### git checkout 切换其他分支
+
+1.查看远程分支
+
+    $ git branch -a
+    我在mxnet根目录下运行以上命令：
+
+    ~/mxnet$ git branch -a
+    * master
+    remotes/origin/HEAD -> origin/master
+    remotes/origin/master
+    remotes/origin/nnvm
+    remotes/origin/piiswrong-patch-1
+    remotes/origin/v0.9rc1
+    可以看到，我们现在在master分支下
+
+2.查看本地分支
+
+    ~/mxnet$ git branch
+    * master
+
+3.切换分支，注意这里是在本地新建了一个分支，对应远程的某个分支名
+
+    $ git checkout -b v0.9rc1 origin/v0.9rc1
+    Branch v0.9rc1 set up to track remote branch v0.9rc1 from origin.
+    Switched to a new branch 'v0.9rc1'
+
+    ＃已经切换到v0.9rc1分支了
+    $ git branch
+    master
+    * v0.9rc1
+
+    ＃切换回master分支
+    $ git checkout master
+    Switched to branch 'master'
+    Your branch is up-to-date with 'origin/master'.
 
 ## 两个分支合并的merge常用方法
 
