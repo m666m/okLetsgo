@@ -24,6 +24,7 @@
     - [本地非空目录，远程空的push三个用法](#本地非空目录远程空的push三个用法)
     - [本地非空，远程是裸仓库](#本地非空远程是裸仓库)
     - [git clone之后的第一次pull和push调试](#git-clone之后的第一次pull和push调试)
+    - [git clone支持多种协议](#git-clone支持多种协议)
   - [两个分支合并的merge常用方法](#两个分支合并的merge常用方法)
     - [方法一. merge 默认的快进合并，需要合入分支的接续点就是分叉点](#方法一-merge-默认的快进合并需要合入分支的接续点就是分叉点)
     - [方法二. 大的分支合入要保留菱形分叉，便于管理](#方法二-大的分支合入要保留菱形分叉便于管理)
@@ -784,6 +785,24 @@ clone完成后，进入目录，执行
     ssh://git@xx.xx.xx.xx:12345/gitrepo/myproj.git
     git@github.com:m666m/okLetsgo.git
     https://github.com/m666m/myproj
+
+### git clone支持多种协议
+
+<https://www.w3cschool.cn/git/git-uroc2pow.html>
+Git协议下载速度最快，SSH协议用于需要用户认证的场合。
+
+    git clone git://example.com/path/to/repo.git
+    git clone [user@]example.com:port/path/to/repo.git
+
+    git clone ssh://[user@]example.com/path/to/repo.git
+
+    git clone http[s]://example.com/path/to/repo.git
+    git clone http://git.oschina.net/yiibai/sample.git
+
+    git clone /opt/git/project.git
+    git clone file:///opt/git/project.git
+    git clone ftp[s]://example.com/path/to/repo.git
+    git clone rsync://example.com/path/to/repo.git
 
 ## 两个分支合并的merge常用方法
 
