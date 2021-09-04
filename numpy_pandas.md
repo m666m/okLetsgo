@@ -139,7 +139,7 @@ Series也是一样
 
 ## 空值判断
 
-pandas numpy处理缺失值，none与nan比较 <https://www.cnblogs.com/onemorepoint/p/8966791.html>
+pandas numpy处理缺失值，none与nan比较 <https://www.cnblogs.com/onemorepoint/p/8966791.html> <https://github.com/m666m/jupyter_demos/tree/master/0005_None_vs_NaN>
 
 最头疼的是，numpy的数据中含有None,会导致整个array的类型变成object，即不报错悄悄的容错了，这个后续会在别的地方计算时出错，调试困难。
 所以说，程序设计，有些容错要显式的给出提示，或有个明确的参数，或有个明确的原则，就怕不吭声的做转化。
