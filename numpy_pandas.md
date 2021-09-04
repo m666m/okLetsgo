@@ -139,7 +139,14 @@ Series也是一样
 
 ## 空值判断
 
+pandas numpy处理缺失值，none与nan比较 <https://www.cnblogs.com/onemorepoint/p/8966791.html>
+
+最头疼的是，numpy的数据中含有None,会导致整个array的类型变成object，即不报错悄悄的容错了，这个后续会在别的地方计算时出错，调试困难。
+所以说，程序设计，有些容错要显式的给出提示，或有个明确的参数，或有个明确的原则，就怕不吭声的做转化。
+
 numpy
+
+注意nan的语义：nan> 0,nan< 0和nan< nan,nan == nan都是False.
 
     np.isnan()判断NaN
 
@@ -148,6 +155,7 @@ pandas
     基于 numpy 支持 NaN，基于R语言支持 na 和 null，基于python支持 None，自己还发明了个 NaT 支持 DatetimeIndex.即pandas构建在numpy之上，而这两个函数的名称源自R的DataFrame，pandas就是试图模仿它的结构和功能。
 
     df.isna()和df.isnull()效果一样的，也可pd.isna(df)。
+    pd.isna(arr).all() 返回唯一值确定是否全是空值
     pd.isnull() 只用于标量数组
 
 python
