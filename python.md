@@ -351,7 +351,7 @@ windows cmd下的bat文件：
 在自己conda环境安装pip使用如下命令：
 
 　　　　（进入环境后）
-　　　　 conda install pip
+　　　　 conda install pip git
 
 安装好本环境的pip之后，在本环境中使用pip install安装的包，就只在本conda中了，
 我们可以用conda list查看我们的包，同时pip安装的包，conda list结果中的build项目为pypi......
