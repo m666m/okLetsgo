@@ -127,9 +127,18 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 1.安装虚拟环境的第三方包 virtualenv
 
     pip install virtualenv
+    pip install virtualenv -i https://pypi.python.org/simple/
 
     # 使用清华源安装：
-    pip install virtualenv -i https://pypi.python.org/simple/
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
+
+    # 升级 pip 到最新的版本 (>=10.0.0) 后进行配置：
+    pip install pip -U
+    # 临时使用本镜像站来升级 pip
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+
+    # 设为默认
+    pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
 2.创建虚拟环境
 
