@@ -156,7 +156,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     cd ~/myvenv 跳转到虚拟环境的文件夹
 
     source bin/activate 激活虚拟环境
-    （windows下是 .\Scripts\activate ）
+    （windows cmd 下是 .\Scripts\activate， mintty下是 ./Scripts/activate）
 
     which pip 看是否使用了当前环境目录下的pip
     pip list 查看当前虚拟环境下所安装的第三方库
