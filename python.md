@@ -5,6 +5,13 @@
 windows下的python，各种命令的脚本都是cmd下的bat，如果用bash运行这些命令，有时候会出现各种提示报错信息。
 推荐windows下的python使用cmd做命令行。
 
+## github web页面添加导航树
+
+目前各浏览器插件都有
+
+<https://github.com/ovity/octotree>
+<https://github.com/ineo6/git-master>
+
 ## pip
 
 ### wheels
@@ -182,13 +189,13 @@ windows下用mintty执行sh脚本自动执行环境和python程序
 
     #!/bin/sh
     # env source export 只认识linux目录结构
-    source /c/tools/pyenvs/btcgoenv/Scripts/activate
+    source /c/tools/pyenvs/yourenv/Scripts/activate
     python /c/Users/xxxuser/pycode/yourproject/app.py
 
 windows下用cmd执行bat脚本自动执行环境和python程序
 
-    call c:\tools\pyenvs\btcgoenv\Scripts\activate.bat
-    python C:\Users\xxxuser\pycode\btcgoapp.py
+    call c:\tools\pyenvs\yourenv\Scripts\activate.bat
+    python C:\Users\xxxuser\pycode\yourapp.py
 
 ## Anaconda 安装和管理
 
@@ -369,3 +376,797 @@ windows cmd下的bat文件：
 
 不再更新维护了，废弃
 <https://python-xy.github.io/> 微软推荐的<https://devblogs.microsoft.com/python/unable-to-find-vcvarsall-bat>
+
+
+## Linux 下安装 anaconda
+
+1.网站下载
+2. bash xxxx.sh
+3. 注意选择：添加到路径中!!! 这个跟windows下安装是不同的.
+4.安装完毕，重启Linux
+5. python 看输出信息包含 anaconda 字样
+   conda info
+   conda list
+6. 启动器终端运行：anaconda-navigator
+-搜索计算机： visual studio code 或 conda
+ 或 终端运行：spyder
+
+## windows 安装 anaconda
+
+0.如果想让vs code自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”
+
+    anaconda 设置国内源
+        https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/
+
+    2019.6 Anaconda国内镜像基本已经全部关闭，现在建议使用官方源，使用anaconda管理python环境的可以使用pip安装，并配置国内pip镜像
+
+    pypi 设置国内源
+        https://mirrors.tuna.tsinghua.edu.cn/help/pypi/
+
+1.Anaconda3-2020.02（Python3.7） 安装 yapf Flake8
+
+2.Anaconda3-2020.02（Python3.7 自动安装了PyQt5.9.2） 安装 pyqtgraph （最新0.10.0）
+
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pyqtgraph
+    PySide是一个免费的软件，与PyQt不同之处在于使用了LGPL，允许PySide免费的开发商业软件。
+
+3.pyqt5的几个工具单独拿出来了，需要单独安装
+
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5-tools==5.9.2.1.3
+
+4.如果安装anaconda时没有选择加入到环境变量. VS Code出现“在终端运行文件”菜单无运行结果，python环境选择出不来。
+    则手动添加环境变量到 系统环境变量的path下: C:\ProgramData\Anaconda3;C:\ProgramData\Anaconda3\Scripts;C:\ProgramData\Anaconda3\Library\bin;
+    或者安装插件：Code Runner
+
+5.卸载 anaconda，直接删除目录;卸载 vscode ，需要手动再做如下：
+    C:\Users\xxx\AppData\Roaming\Code 目录清空
+    C:\Users\xxx\.vscode 目录清空
+
+6.python 填坑
+
+    启动Python3.7，报如下错误
+    File "C:\Anaconda3\lib\site-packages\pyreadline\lineeditor\history.py", line 82, in read_history_file
+        for line in open(filename, 'r'):
+    UnicodeDecodeError: 'gbk' codec can't decode byte 0x80 in position 407: illegal multibyte sequence
+
+    https://github.com/pyreadline/pyreadline/issues/38
+    Open file C:\Python351\lib\site-packages\pyreadline\lineeditor\history.py.
+    Go to 82 line and edit: this - for line in open(filename, 'r'): on this -
+        for line in open(filename, 'r', encoding='utf-8'):
+
+    windows下python按[TAB]出现报错：
+    AttributeError: module 'readline' has no attribute 'redisplay'
+
+    pip install git+https://github.com/ankostis/pyreadline@redisplay
+    https://github.com/pyreadline/pyreadline/pull/56
+    https://github.com/winpython/winpython/issues/544
+
+## 想要做到 Anaconda 中不同环境互相不干涉
+
+建好了新环境，这是不够的！需要再修改各自环境中的配置文件！
+
+    <https://www.cnblogs.com/zhangxingcomeon/p/13801554.html>
+
+### 在anaconda下用pip装包的原因
+
+尽管在anaconda下我们可以很方便的使用conda install来安装我们需要的依赖，
+但是anaconda本身只提供部分包，远没有pip提供的包多，有时conda无法安装我们需要的包，我们需要用pip将其装到conda环境里。
+
+### 用pip装包时候需要哪些注意事项？
+
+首先，我们需要判断目前我们用的pip指令，会把包装到哪里。
+通常情况下，pip不像conda一样，他不知道环境！
+我们首先要确保我们用的是本环境的pip，这样pip install时，包才会创建到本环境中。
+不然包会创建到base环境，供各个不同的其他conda环境共享，此时可能会产生版本冲突问题（不同环境中可能对同一个包的版本要求不同）
+
+用下面命令查看我们此时用的pip为哪个环境：
+
+    which -a pip
+
+(如base环境的pip可能在/root/anaconda3/bin/pip,
+而其他conda环境的pip,可能在/root/anaconda3/envs/my_env/bin/pip)
+
+(经试验，anaconda4.8版本，在conda create新的环境时，已经默认在新环境装了pip，
+此时source activate进入该环境后，用pip命令安装的包，默认会装在本环境中,不必担心pip一个包后后会将其他环境的包改变版本的情况)
+
+### 我们自己创建的conda环境里，可能没有pip
+
+此时进入自己的conda环境也会默认用base环境的pip，这就需要我们自己将pip安装入本环境。
+尽量不要使用base的pip在其他环境装包，这样也会装在base里，有产生版本冲突的可能（上文已讲）。
+
+在自己conda环境安装pip使用如下命令：
+
+    （进入环境后）
+    conda install pip
+
+安装好本环境的pip之后，在本环境中使用pip install安装的包，就只在本conda中了。
+我们可以用conda list查看我们的包，同时pip安装的包，conda list结果中的build项目为pypi......
+
+### 安装特定版本的包
+
+　　　　conda用“=”，pip用“==”
+
+　　conda install numpy=1.93
+　　pip  install numpy==1.93
+
+### 确认conda环境
+
+```shell
+
+$ activate n36
+
+$ conda info
+
+     active environment : None
+       user config file : C:\Users\xxx\.condarc
+ populated config files : C:\Users\xxx\.condarc
+          conda version : 4.8.2
+    conda-build version : 3.18.11
+         python version : 3.6.6.final.0
+       virtual packages : __cuda=11.1
+       base environment : C:\ProgramData\Anaconda3  (read only)
+           channel URLs : https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/win-64
+                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/noarch
+                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/win-64
+                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/noarch
+                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2/win-64
+                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2/noarch
+          package cache : C:\ProgramData\Anaconda3\pkgs
+                          C:\Users\xxx\.conda\pkgs
+                          C:\Users\xxx\AppData\Local\conda\conda\pkgs
+       envs directories : C:\Users\xxx\.conda\envs
+                          C:\ProgramData\Anaconda3\envs
+                          C:\Users\xxx\AppData\Local\conda\conda\envs
+               platform : win-64
+             user-agent : conda/4.8.2 requests/2.22.0 CPython/3.6.6 Windows/10 Windows/10.0.14393
+          administrator : False
+             netrc file : None
+           offline mode : False
+```
+
+### 确认 conda / pip 环境
+
+    conda list
+
+    pip list
+
+### 安装一个新包
+
+    # 必须告诉conda你要安装环境的名字 -n n36
+    conda install --name n36 beautifulsoup4
+
+### Anaconda3不同环境下的pip install路径修改配置文件
+
+另一个说法
+
+    <https://blog.csdn.net/qq_37344125/article/details/104418636>
+
+假设Anaconda3安装完成后建立的默认环境[base]，python版本是3.7，
+路径 C:\ProgramData\Anaconda3 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
+
+新建个环境[n36]，python版本是3.6，
+路径 C:\Users\xxx\.conda\envs\n36 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
+
+    activate n36
+    pip install numpy  # 会装到 [base]下  ！！！
+
+环境[n36]必须改配置文件 C:\Users\xxx\.conda\envs\n36\Lib\site.py
+
+    USER_SITE = None
+    USER_BASE = None
+    # 改为
+    USER_SITE = "C:\\Users\\xxx\\.conda\\envs\\n36\\Lib\\site-packages"
+    USER_BASE = "C:\\Users\\xxx\\.conda\\envs\n36\\Scripts"
+
+## ubuntu16.04自带python
+
+既有python2.7，又有python3.5
+
+但是默认的python命令是python2.7，我要想执行python3就必须输入python3
+
+    输入命令sudo apt-get install python3.7
+
+    按Y确认
+
+    调整Python3的优先级，使得3.7优先级较高
+
+    sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.5 1
+
+    sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2
+
+    更改默认值，python默认为Python2，现在修改为Python3
+
+    sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 100
+
+    sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 150
+
+## 在ubuntu系统配置多python环境
+
+1.安装ubuntu 17.10 桌面版64位系统
+2.系统已内置安装了python2.7和python3.6版本
+    python执行路径为:/usr/bin/python2 /usr/bin/python3
+    如果没有安装对应的版本，可执行以下命令安装
+    sudo apt-get install python2.7 python2.7-dev
+    sudo apt-get install python3.6 python3.6-dev
+3.安装pip，根据不同的python版本，可以执行
+    sudo apt install python-pip
+    sudo apt install python3-pip
+4.使用对应版本的pip安装virtualenv，使用哪个版本的pip安装，则virtualenv默认环境为哪个版本
+    pip install virtualenv
+    pip3 install virtualenv
+5.创建对应版本的virtual env
+    virtualenv -p /usr/bin/python2 ~/.venv/python2
+    virtualenv -p /usr/bin/python3 ~/.venv/python3
+6.使用时，激活对应环境的activate
+    source ~/.venv/python2/bin/activate
+    source ~/.venv/python3/bin/activate
+7.退出环境，使用 deactivate
+
+## Centos 7 源码安装 python3.7+ 含 pip3 实现多版本共存 (不替换老版本新装的方法 )
+
+因为Centos 7 自带的python是2.7.5，而yum安装的python3是3.6.8，所以手动下载源代码安装python3.7为最新的3.7.5
+
+1.到官网下载源码
+
+    cd /usr/src
+    sudo wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz
+    sudo xz -d Python-3.7.3.tar.xz
+    sudo tar -xf Python-3.7.3.tar
+
+2.解决个zlib库找不到报错的问题 No module named zlib found
+
+<https://stackoverflow.com/questions/10654707/no-module-named-zlib-found>
+<https://stackoverflow.com/questions/6169522/no-module-named-zlib>
+<https://ubuntuforums.org/showthread.php?t=1976837>
+
+在python的源代码修改setup.py中查找如下代码段：
+lib_dirs = self.compiler.library_dirs + [
+'/lib64', '/usr/lib64',
+'/lib', '/usr/lib',
+]
+添加个 '/usr/lib/x86_64-linux-gnu' 或 /usr/lib/i386-linux-gnu
+
+3.运行命令：
+
+    sudo yum update -y
+
+    # 开发环境
+    sudo yum -y groupinstall "Development Tools"
+    #sudo yum  -y install gcc
+
+    # 依赖库
+    sudo yum -y install openssl-devel bzip2-devel libffi-devel
+
+    # 再加几个依赖库防止报错：
+    #    import pandas UserWarning: Could not import the lzma module. Your installed Python is incomplete
+    #       https://stackoverflow.com/questions/57743230/userwarning-could-not-import-the-lzma-module-your-installed-python-is-incomple
+    yum install -y xz-devel
+        还是不行？ 0.25.1之前的版本不行，安装最新版pandas
+            https://stackoverflow.com/questions/57113269/import-pandas-results-in-modulenotfounderror-lzma
+
+    ./configure --enable-optimizations
+    make altinstall （注意命令 make install 会替换默认的python3）
+
+4.验证：
+python --version
+python3 --version
+python3.7 --version
+
+## Ubuntu16.04 源码安装 python3.7+ 含 pip3 实现多版本共存 (不替换老版本新装的方法 )
+
+ubuntu16 上自带python2 (2.7.12)和python3 (3.5.2)，而apt-get install python 安装的是3.6，所以手动下载源代码安装python3.7为最新的3.7.5
+
+未测试：用apt-get install安装指定版本的软件
+    # 查看可用版本并安装指定版本
+    sudo apt-get update
+    aptitude versions apache2
+    sudo apt-get install apache2=2.2.20-1ubuntu1
+
+未测试：清除之前安装的python3
+    sudo apt-get purge python3
+
+1.到官网下载源码
+
+    cd /usr/src
+    sudo wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz
+    sudo xz -d Python-3.7.3.tar.xz
+    sudo tar -xf Python-3.7.3.tar
+
+2.解决个zlib库找不到报错的问题 的问题
+
+  No module named zlib found
+
+      https://stackoverflow.com/questions/10654707/no-module-named-zlib-found
+      https://stackoverflow.com/questions/6169522/no-module-named-zlib
+      https://ubuntuforums.org/showthread.php?t=1976837
+
+3.在python的源代码修改setup.py中查找如下代码段：
+
+    lib_dirs = self.compiler.library_dirs + [
+    '/lib64', '/usr/lib64',
+    '/lib', '/usr/lib',
+    ]
+    添加个 '/usr/lib/x86_64-linux-gnu' 或 /usr/lib/i386-linux-gnu
+
+或
+
+    sudo apt-get install zlib1g-dev
+    假如出现->“Ubuntu ：zlib1g-dev依赖: zlib1g (= 1:1.2.8.dfsg-2ubuntu4) 但是 1:1.2.8.dfsg-2ubuntu4.1 正要被安装” 的问题，解决办法：
+    图形界面的桌面下，点击“软件和更新”，选择选项卡“更新”，勾选前两个选项，安装重要的和可选的更新。
+    然后，sudo apt-get update
+            sudo apt-get upgrade
+            sudo apt-get install zlib1g-dev
+
+4.依赖包：
+
+    sudo apt-get install update
+    sudo apt-get install build-essential checkinstall
+    sudo apt-get install libreadline-gplv2-dev libncursesw5-dev libssl-dev \
+        libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev
+
+4.1 补充依赖包
+
+    import pandas UserWarning: Could not import the lzma module. Your installed Python is incomplete
+        https://stackoverflow.com/questions/57743230/userwarning-could-not-import-the-lzma-module-your-installed-python-is-incomple
+
+    sudo apt-get install  lzma
+    sudo apt-get install  liblzma-dev
+        还是不行？ 0.25.1之前的版本不行，安装最新版pandas
+            https://stackoverflow.com/questions/57113269/import-pandas-results-in-modulenotfounderror-lzma
+
+4.2 补充依赖包
+
+注意：  <https://stackoverflow.com/questions/12806122/missing-python-bz2-module>
+
+        linux下使用官方source release安装会出现问题 ModuleNotFoundError: No module named '_bz2'，
+            需要 sudo apt-get install libbz2-dev
+        解决 sudo apt-get install E: 无法定位软件包
+            在 etc/apt 下的sources.list添加镜像源：deb http://archive.ubuntu.com/ubuntu/ trusty main universe restricted multiverse  sudo apt-get update
+
+5.配置安装位置 配置优化：
+
+(make altinstall is used to prevent replacing the default python binary file /usr/bin/python.)
+
+6.安装，而不是替换
+
+    cd Python-3.7.3
+    sudo ./configure --prefix=/usr/local/python37 --enable-optimizations
+    sudo make altinstall  （注意命令 make install 会替换默认的python3）
+
+7.验证：
+
+    $python3.7 -V
+
+8.安装pip
+
+    sudo apt install python3-pip
+
+## Installing Pip for Python 3 on Ubuntu 18.04
+
+<https://phoenixnap.com/kb/how-to-install-pip-on-ubuntu>
+
+comes with Python 3 installed by default, but it does not come with pip.
+
+### To install pip for Python 3 on Ubuntu 18.04
+
+1.Open the terminal.
+The simplest way is to right-click on the desktop and select Open Terminal from the drop-down menu.
+
+2.Update the repository package list by running the following command in the terminal:
+
+    sudo apt update
+
+3.Install pip for Python 3 and all the dependencies for building Python modules by running the following command:
+
+    sudo apt install python3-pip
+
+4.The package installs quickly. To verify the install run the following command:
+
+    pip3 -–version
+
+The installed version might be different for you, but the general output should resemble the line below:
+
+    OUTPUT
+
+    pip 9.0.1 from /usr/lib/python3/dist-packages (python 3.6)
+
+5.To upgrade pip3 to the latest version, you would issue the --upgrade command just like for any other PyPI package:
+
+    sudo pip3 install --upgrade pip
+
+6.Install Pip for Python 2
+
+### To install pip for Python 2 on Ubuntu 18.04
+
+1.Open the terminal. The simplest way is to use the CTRL+ALT+T shortcut.
+
+2.Update the repository package list by running the following command:
+
+    sudo apt update
+
+3.Install pip for Python 2 and all the dependencies for building Python modules by running:
+
+    sudo apt install python-pip
+
+4.To verify the install run the following command:
+
+    sudo pip –version
+
+At the time of writing this article, the latest version of Pip is 9.0.1, but this may vary.
+
+    OUTPUT
+    pip 9.0.1 from /usr/lib/python2.7/dist-packages (python 2.7)
+
+5.This step is optional but highly recommended. Namely, you can install a required file that contains all the packages that can be installed with pip. To install the requirements contained in requirements.txt, run the following command:
+
+    sudo pip install -r requirements.txt
+
+6.To upgrade pip for Python 2 to the latest version, run the --upgrade command:
+
+    sudo pip install --upgrade pip
+
+## anaconda怎么同时安装2.7和3.6？
+
+前提是你的anaconda最高支持到3.7，才可以任意选择低版本的。
+
+如果你已经安装了Anaconda Python3.6版，想要再安装Python2.7环境，在命令行中输入：
+
+    conda create -n python27 python=2.7
+
+想要使用python2.7环境同样需要命令
+
+    activate python27（这里面的python27是前面create时自己定义的名字），
+
+该条命令在linux和mac环境中使用
+
+    source activate python27 。
+
+接下来看到命令行的最前端多出来(python27)，这时候已经处在python2.7的环境中了。
+
+想要退出python2.7进入python3.6，需要再次键入命令deactivate（linux和mac下用source deactivate命令）。
+
+### 最显着的区别可能是这样的
+
+pip在任何环境中安装python包;
+conda安装在conda环境中装任何包。
+
+    pip install 的各种问题  https://www.cnblogs.com/feixiablog/p/8320602.html
+
+## PyPI使用国内源
+
+通过几次 pip 的使用，对于默认的 pip 源的速度实在无法忍受，于是便搜集了一些国内的pip源，如下：
+
+清华源说明
+
+    <https://mirrors.tuna.tsinghua.edu.cn/help/pypi/>
+
+Python官方 <https://pypi.python.org/simple>
+清华大学 <https://pypi.tuna.tsinghua.edu.cn/simple/>
+阿里云 <http://mirrors.aliyun.com/pypi/simple/>
+中国科技大学 <https://pypi.mirrors.ustc.edu.cn/simple/>
+豆瓣 <http://pypi.douban.com/simple>
+v2ex <http://pypi.v2ex.com/simple>
+中国科学院 <http://pypi.mirrors.opencas.cn/simple/>
+
+### 临时使用国内镜像
+
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple flask
+
+注意，simple 不能少, 是 https 而不是 http
+
+设为默认
+
+升级 pip 到最新的版本 (>=10.0.0) 后进行配置：
+
+    sudo pip3.7 install pip -U
+    sudo pip3.7 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+如果您到 pip 默认源的网络连接较差，临时使用本镜像站来升级 pip：
+
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+
+### 在 Linux 和 macOS 中，用户配置需要写到 ~/.pip/pip.conf 中
+
+    [global]
+    index-url=http://mirrors.aliyun.com/pypi/simple/
+
+    [install]
+    trusted-host=mirrors.aliyun.com
+
+## 外网访问内网使用ssh和远程桌面
+
+<https://github.com/microsoft/vscode-docs/blob/master/remote-release-notes/v1_37.md>
+
+## VS Code 插件
+
+插件的安装位置为 C:\Users\你的用户名\.vscode\extensions
+
+### 快速解析python，代码自动完成更快
+
+pylance
+
+### 格式化 yapf
+
+    yapf 用这个，禁用 # yapf:disable 代码块  #yapf:enable 或 某行后面的注释 # yapf:disable 禁用一行
+    "python.formatting.provider": "yapf",
+    "python.formatting.yapfArgs": [
+        // "--sytle=yapf_style.cfg"
+    ],
+
+### 代码检查 flake8
+
+    flake8 用这个 可以在要忽略 flake8 检查的那一行加上 # noqa 注释即可
+    整个文件禁用的话，在文件第一行 # flake8: noqa
+
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=100",
+        // "--ignore=E501, E262",
+    ],
+
+### 代码测试 unittest
+
+    单元测试不要用pytest，老老实实用系统的unittest
+    如果用pytest ，虽然兼容unittest，不需要写子类也可以的。但是：记得在项目跟目录放个空文件 conftest.py
+    https://stackoverflow.com/questions/10253826/path-issue-with-pytest-importerror-no-module-named-yadayadayada/50610630#50610630
+
+### 高亮空格并消除
+
+    Trailing Spaces
+
+### 正则表达式预览
+
+    RegExp Preview and Editor 优选
+
+    Regex Previewer
+    RegExp Explain
+
+### 查看sqllite数据库
+
+    sqlite (alexcvzz.vscode-sqlite)
+
+    优选工具
+        DB Browser for SQLite <https://github.com/sqlitebrowser/sqlitebrowser>
+        SQLiteStudio <https://github.com/pawelsalawa/sqlitestudio>
+
+### 远程开发： Remote Development  装这一个就会自动装一堆
+
+    打开远程ssh文件夹后，各插件不可用？ 删除服务器上的 ~/.vscode-server 目录，重新安装插件
+    Extension not working on remote SSH?  Remove directory ~/.vscode-server
+    https://github.com/microsoft/vscode-remote-release/issues/1443
+
+### 不要用AI代码完成的插件
+
+全都把你的代码上传服务器了，包括Visual Studio IntelliCode // "python.jediEnabled": false,
+
+### 自动添加函数头说明 Python Docstring Generator
+
+    "autoDocstring.docstringFormat": "numpy",
+
+### 括号匹配 Bracket Pair Colorizer 2
+
+    "bracket-pair-colorizer-2.colors": [
+        "rgba(213,135,32,255)",
+        "rgba(62,145,222,255)",
+        "rgba(18,230,155,255)"
+    ],
+
+### PYQT Integration
+
+    "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\designer.exe",
+    "pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
+    "pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
+
+### GitLens
+
+### Git History
+
+### 护眼主题
+
+MacOS Modern Theme
+GitHub Theme
+Solarized Light  这个是羊皮纸底色，去蓝光了
+
+### GitHubcdn加速
+
+jsdelivr  <https://cdn.jsdelivr.net/gh/xxx>
+
+### GitHubcdn加速JScript/Json的格式化，比系统自带的好用
+
+Prettier Formatter for Visual Studio Code
+
+### pyreverse
+
+pylint里自带
+
+        pyreverse -ASmy -o png your/
+
+### Draw.io Integration
+
+### UMLet 简单好用的UML流程图
+
+Free UML Tool for Fast UML Diagrams 生成一个".uxf"文件打开即可使用
+
+### vscode-mindmap 脑图
+
+json文件格式节点图。生成一个".km"文件打开即可使用
+
+### Graphviz Dot文件查看
+
+Graphviz Interactive Preview 支持路线高亮
+    F1命令呼叫预览
+
+    https://github.com/tintinweb/vscode-interactive-graphviz
+
+Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成Html代码
+    右键菜单呼叫预览
+
+    https://github.com/joaompinto/vscode-graphviz
+
+### MarkDown
+
+    Markdown All in One 高亮，预览
+    markdownlint 语法检查
+
+### Prettify JSON
+
+    格式化json文件很好用，容错率高
+
+### shell-format
+
+    shell 脚本语法高亮
+
+### TODO TREE
+
+    "todo-tree.general.tags": [
+        "TODO",
+        "FIXME",
+        "XXX",
+        "NOTE"
+    ],
+    "todo-tree.highlights.customHighlight": {
+        "TODO": {
+            "icon": "tasklist",
+            "iconColour": "magenta",
+            "background": "#D0FFFF",
+            "type": "tag"
+        },
+        "FIXME": {
+            "icon": "eye",
+            "iconColour": "red",
+            "background": "#D0FFFF",
+            "type": "tag"
+        },
+        "XXX": {
+            "icon": "beaker",
+            "iconColour": "pink",
+            "background": "#D0FFFF",
+            "type": "tag"
+        },
+        "NOTE": {
+            "icon": "info",
+            "iconColour": "blue",
+            "background": "#D0FFFF",
+            "type": "tag"
+        }
+    },
+    "todo-tree.general.statusBar": "tags",
+    "todo-tree.tree.grouped": true,
+
+### csv文件查看
+
+    Rainbow CSV 设置颜色区分：
+    // rainbowCsv https://github.com/mechatroner/vscode_rainbow_csv/blob/master/test/color_customization_example.md#colors-customization
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "rainbow1",
+                "settings": {
+                   "foreground": "#E6194B"
+                }
+            },
+            {
+                "scope": "keyword.rainbow2",
+                "settings": {
+                   "foreground": "#3CB44B",
+                   "fontStyle": "bold"
+                }
+            },
+            {
+                "scope": "entity.name.function.rainbow3",
+                "settings": {
+                   "foreground": "#ff9b19",
+                }
+            },
+            {
+                "scope": "comment.rainbow4",
+                "settings": {
+                   "foreground": "#0082C8",
+                   "fontStyle": "underline"
+                }
+            },
+            {
+                "scope": "string.rainbow5",
+                "settings": {
+                   "foreground": "#FABEBE"
+                }
+            },
+            {
+                "scope": "variable.parameter.rainbow6",
+                "settings": {
+                   "foreground": "#46F0F0",
+                   "fontStyle": "bold"
+                }
+            },
+            {
+                "scope": "constant.numeric.rainbow7",
+                "settings": {
+                   "foreground": "#F032E6",
+                }
+            },
+            {
+                "scope": "entity.name.type.rainbow8",
+                "settings": {
+                   "foreground": "#008080",
+                   "fontStyle": "underline"
+                }
+            },
+            {
+                "scope": "markup.bold.rainbow9",
+                "settings": {
+                   "foreground": "#F58231"
+                }
+            },
+            {
+                "scope": "invalid.rainbow10",
+                "settings": {
+                   "foreground": "#bace09"
+                }
+            }
+        ]
+    },
+
+### 性能分析
+
+runsnakerun 可惜了只能在python2下面运行
+
+<http://www.vrplumber.com/programming/runsnakerun/>
+
+For Debian/Ubuntu distributions the prerequisite setup looks like this:
+
+    apt-get install python-profiler python-wxgtk2.8 python-setuptools
+
+RunSnakeRun and SquareMap will install well in a VirtualEnv
+if you would like to keep them isolated (normally you do not want to use the --no-site-packages flag if you are doing this).
+I recommend this approach rather than using easy_install directly on your Linux/OS-X host.
+
+virtualenv runsnake
+source runsnake/bin/activate
+
+### vscode python多线程调试的坑
+
+    # https://code.visualstudio.com/docs/python/debugging#_troubleshooting
+    # If you're working with a multi-threaded app that uses native thread APIs (such as the Win32 CreateThread function rather than the Python threading APIs), it's presently necessary to include the following source code at the top of whichever file you wish to debug:
+
+    # import debugpy
+    # debugpy.debug_this_thread()
+    # Next steps#
+
+    import ptvsd at the top and add this to the thread function, ptvsd.debug_this_thread()
+
+    schperplata commented on 11 Apr 2019
+    @karthiknadig Is there a plan to support such cases where the library uses native thread APIs (Kernel32!CreateThread, pthread_create, etc) instead of the python threading APIs. by default, or is this just the way it is going to be (or can't be different)?
+
+    Thanks for your solution anyway.
+
+    @karthiknadig
+    Member
+    karthiknadig commented on 11 Apr 2019
+    We have plans to support native threads. We have not gotten around to it yet :)
+    https://github.com/Microsoft/ptvsd/issues/305
+
+### windows跨平台包首选应用市场 如Graphviz等
+
+    https://chocolatey.org/install

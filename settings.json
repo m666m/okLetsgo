@@ -21,7 +21,7 @@
         "**/__pycache__": true,
         "**/.ipynb_checkpoints":true,
         "**/.pytest_cache": true,
-        "**/.vscode": true,
+        "**/.vscode": true
     },
     "window.newWindowDimensions": "maximized",
     "python.languageServer": "Pylance",
@@ -29,7 +29,7 @@
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Args": [
-        "--max-line-length=100",
+        "--max-line-length=100"
         // "--ignore=E501, E262",
     ],
     "python.formatting.provider": "yapf",
@@ -41,7 +41,7 @@
     "workbench.editor.wrapTabs": true,
     "workbench.colorCustomizations": {
         "window.activeBorder": "#ff7b00c5",
-        "sideBarSectionHeader.border": "#ebebeb",
+        "sideBarSectionHeader.border": "#ebebeb"
         //"inputOption.activeBackground": "#9b9999",  // 查找界面的高亮标识
         // "editor.foldBackground": "#355000",  // 折叠代码块高亮  editor.foldingHighlight
 		// "editor.foreground": "#010216",
@@ -50,8 +50,8 @@
     "git.autofetch": true,
     "git.confirmSync": false,
     "remote.SSH.remotePlatform": {
-        "banwagong": "linux",
-        "banwagong-ipv6": "linux"
+        "bwg": "linux",
+        "bwg-ipv6": "linux"
     },
     "jupyter.exportWithOutputEnabled": true,
     "jupyter.sendSelectionToInteractiveWindow": true,
@@ -69,7 +69,10 @@
         "MD046": false
     },
     // PYQT Integration
-    "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\Qt\\bin\\designer.exe",
+    // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\Qt\\bin\\designer.exe",
+    "pyqt-integration.qtdesigner.path": "c:\\StartHere\\tools\\pyenvs\\btcgoenv\\Lib\\site-packages\\qt5_applications\\Qt\\bin\\designer.exe",
+    "pyqt-integration.pyuic.cmd":"c:\\StartHere\\tools\\pyenvs\\btcgoenv\\Scripts\\pyuic5.exe",
+    "pyqt-integration.pyrcc.cmd":"c:\\StartHere\\tools\\pyenvs\\btcgoenv\\Scripts\\pyrcc5.exe",
     "pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
     "pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
     // Bracket Pair Colorizer 2
@@ -105,7 +108,7 @@
             {
                 "scope": "entity.name.function.rainbow3",
                 "settings": {
-                   "foreground": "#ff9b19",
+                   "foreground": "#ff9b19"
                 }
             },
             {
@@ -131,7 +134,7 @@
             {
                 "scope": "constant.numeric.rainbow7",
                 "settings": {
-                   "foreground": "#F032E6",
+                   "foreground": "#F032E6"
                 }
             },
             {
@@ -181,7 +184,7 @@
             "iconColour": "#80FF00",
             "background": "#D8BFD8",
             "type": "tag"
-        },
+        }
         // "[x]":{
         //   "foreground": "#64dd17",
         //   "background":"#008800"
@@ -196,7 +199,7 @@
         "TODO",
         "FIXME",
         "XXX",
-        "NOTE",
+        "NOTE"
         //"[ ]",
         //"[x]"
     ],
@@ -214,12 +217,11 @@
         "jupyter-notebook": "left"
     },
     "security.workspace.trust.emptyWindow": false,
-    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
     "terminal.integrated.profiles.windows": {
         "C:\\Program Files\\Git\\bin\\bash.exe (migrated)": {
             "path": "C:\\Program Files\\Git\\bin\\bash.exe",
             "args": []
         }
     },
-
 }
