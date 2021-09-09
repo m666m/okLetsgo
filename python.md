@@ -185,16 +185,20 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 如果用cmd，则vscode使用的时候偶尔会有脚本报错……
 用bash的问题是，用pip的时候偶尔有报错，最好切换回cmd环境，因为python的windows脚本都是按兼容cmd写的……
 
-windows下用mintty执行sh脚本自动执行环境和python程序
+windows下用mintty执行sh脚本自动执行环境和python程序，命令行：
+
+    "C:\Program Files\Git\git-bash.exe" --no-cd "C:\tools\pyenvs\yourprojectenv.sh"
+
+脚本yourprojectenv.sh内容
 
     #!/bin/sh
     # env source export 只认识linux目录结构
-    source /c/tools/pyenvs/yourenv/Scripts/activate
+    source /c/tools/pyenvs/yourprojectenv/Scripts/activate
     python /c/Users/xxxuser/pycode/yourproject/app.py
 
 windows下用cmd执行bat脚本自动执行环境和python程序
 
-    call c:\tools\pyenvs\yourenv\Scripts\activate.bat
+    call c:\tools\pyenvs\yourprojectenv\Scripts\activate.bat
     python C:\Users\xxxuser\pycode\yourapp.py
 
 ## Anaconda 安装和管理
