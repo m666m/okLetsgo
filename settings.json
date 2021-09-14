@@ -17,15 +17,11 @@
     "editor.columnSelection": false,
     "editor.multiCursorModifier": "alt",
     "outline.showVariables": false,
-    "files.exclude": {
-        "**/__pycache__": true,
-        "**/.ipynb_checkpoints":true,
-        "**/.pytest_cache": true,
-        "**/.vscode": true
-    },
-    "window.newWindowDimensions": "maximized",
-    "python.languageServer": "Pylance",
     "python.showStartPage": false,
+    "window.newWindowDimensions": "maximized",
+    "python.testing.unittestEnabled": true,
+    "python.analysis.autoImportCompletions": false,
+    "python.languageServer": "Pylance",
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Args": [
@@ -36,7 +32,7 @@
     "python.formatting.yapfArgs": [
         // "--sytle=yapf_style.cfg"
     ],
-    "python.testing.unittestEnabled": true,
+    "python.formatting.autopep8Args": ["--ignore","E402"],
     "diffEditor.ignoreTrimWhitespace": false,
     "workbench.editor.wrapTabs": true,
     "workbench.colorCustomizations": {
@@ -46,6 +42,9 @@
         // "editor.foldBackground": "#355000",  // 折叠代码块高亮  editor.foldingHighlight
 		// "editor.foreground": "#010216",
     },
+    "jupyter.exportWithOutputEnabled": true,
+    "jupyter.sendSelectionToInteractiveWindow": true,
+    "jupyter.textOutputLimit": 200000,
     "git.enableSmartCommit": true,
     "git.autofetch": true,
     "git.confirmSync": false,
@@ -53,9 +52,12 @@
         "bwg": "linux",
         "bwg-ipv6": "linux"
     },
-    "jupyter.exportWithOutputEnabled": true,
-    "jupyter.sendSelectionToInteractiveWindow": true,
-    "jupyter.textOutputLimit": 200000,
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.ipynb_checkpoints":true,
+        "**/.pytest_cache": true,
+        "**/.vscode": true
+    },
     //////////////////////////////////////////////////////////////////
     // 下面是插件设置
     // Trailing Spaces
