@@ -16,7 +16,7 @@
     - [每日工作第一件事 拉取合并（含标签，变基）](#每日工作第一件事-拉取合并含标签变基)
     - [远程拉取合并本地的pull用法](#远程拉取合并本地的pull用法)
     - [git fetch 和 git pull的区别](#git-fetch-和-git-pull的区别)
-      - [分支在本地都有本地仓库和远程仓库两份代码](#分支在本地都有本地仓库和远程仓库两份代码)
+      - [本地的两份代码--本地仓库和远程仓库](#本地的两份代码--本地仓库和远程仓库)
       - [git pull把2个过程合并，减少了操作](#git-pull把2个过程合并减少了操作)
     - [添加多个远程仓库](#添加多个远程仓库)
     - [从远程空白裸仓库拉取的步骤](#从远程空白裸仓库拉取的步骤)
@@ -67,7 +67,9 @@
     命令速查 <https://training.github.com/downloads/zh_CN/github-git-cheat-sheet/>
     命令参考 <https://git-scm.com/docs>
 
-    最好的git命令教程 <https://learngitbranching.js.org/?locale=zh_CN>
+    git命令教程
+        <https://learngitbranching.js.org/?locale=zh_CN>
+        <https://www.yiibai.com/git/git_branch.html>
 
     git使用教程 <https://zhuanlan.zhihu.com/p/158076293>
     git分支的使用过程 <https://zhuanlan.zhihu.com/p/22369088>
@@ -556,7 +558,7 @@ git pull --rebase = git fetch + git rebase 去掉多余的分叉：
     # 查看fetch下来的远程代码跟本地的区别
     git diff ..origin/master
 
-#### 分支在本地都有本地仓库和远程仓库两份代码
+#### 本地的两份代码--本地仓库和远程仓库
 
 我们本地的git文件夹里面对应也存储了git本地仓库master分支的commit ID 和 跟踪的远程分支orign/master的commit ID（可以有多个远程仓库）。那什么是跟踪的远程分支呢，打开git文件夹可以看到如下文件：
 
@@ -583,9 +585,11 @@ git pull --rebase = git fetch + git rebase 去掉多余的分叉：
     # 或者，不使用merge，用rebase
     $ git rebase origin/master
 
-也可以在它的基础上，使用git checkout命令创建一个新的分支。
+也可以在它的基础上，使用git checkout命令创建一个新的分支并切换过去。
 
     git checkout -b newBrach origin/master
+    # 这个不自动切换
+    git branch newBrach a9c146a09505837ec03b
 
 #### git pull把2个过程合并，减少了操作
 
