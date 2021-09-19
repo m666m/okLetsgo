@@ -1,5 +1,9 @@
 # Open-SSH 发展了好久，开源设置有各种历史遗留问题，比较没规划
 
+## 外网访问内网使用ssh和远程桌面
+
+<https://github.com/microsoft/vscode-docs/blob/master/remote-release-notes/v1_37.md>
+
 ## Ssh配置文件格式说明
 
 <http://man7.org/linux/man-pages/man5/ssh_config.5.html>

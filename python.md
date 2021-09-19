@@ -119,6 +119,76 @@ To install system-wide from source distribution:
 
 To use with a specific project, simply copy the PyQtGraph subdirectory anywhere that is importable from your project.
 
+### PyPI使用国内源
+
+通过几次 pip 的使用，对于默认的 pip 源的速度实在无法忍受，于是便搜集了一些国内的pip源，如下：
+
+清华源说明
+
+    <https://mirrors.tuna.tsinghua.edu.cn/help/pypi/>
+
+Python官方 <https://pypi.python.org/simple>
+清华大学 <https://pypi.tuna.tsinghua.edu.cn/simple/>
+阿里云 <http://mirrors.aliyun.com/pypi/simple/>
+中国科技大学 <https://pypi.mirrors.ustc.edu.cn/simple/>
+豆瓣 <http://pypi.douban.com/simple>
+v2ex <http://pypi.v2ex.com/simple>
+中国科学院 <http://pypi.mirrors.opencas.cn/simple/>
+
+#### 临时使用国内镜像
+
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple flask
+
+注意，simple 不能少, 是 https 而不是 http
+
+设为默认
+
+升级 pip 到最新的版本 (>=10.0.0) 后进行配置：
+
+    sudo pip3.7 install pip -U
+    sudo pip3.7 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+如果您到 pip 默认源的网络连接较差，临时使用本镜像站来升级 pip：
+
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+
+#### 在 Linux 和 macOS 中，用户配置需要写到 ~/.pip/pip.conf 中
+
+    [global]
+    index-url=http://mirrors.aliyun.com/pypi/simple/
+
+    [install]
+    trusted-host=mirrors.aliyun.com
+
+## anaconda环境中使用pip
+
+为什么anaconda环境中，还需要用pip安装包，此情况下用pip需要哪些注意项
+<https://www.cnblogs.com/zhangxingcomeon/p/13801554.html>
+
+1、在anaconda下用pip装包的原因：尽管在anaconda下我们可以很方便的使用conda install来安装我们需要的依赖，但是anaconda本身只提供部分包，远没有pip提供的包多，有时conda无法安装我们需要的包，我们需要用pip将其装到conda环境里。
+
+2、用pip装包时候需要哪些注意事项？
+
+首先，我们需要判断目前我们用的pip指令，会把包装到哪里，通常情况下，pip不像conda一样，他不知道环境，我们首先要确保我们用的是本环境的pip，这样pip install时，包才会创建到本环境中，不然包会创建到base环境，供各个不同的其他conda环境共享，此时可能会产生版本冲突问题（不同环境中可能对同一个包的版本要求不同）。
+
+用下面命令查看我们此时用的pip为哪个环境：
+
+    which -a pip
+
+如base环境的pip可能在/root/anaconda3/bin/pip,,,,而其他conda环境的pip,可能在/root/anaconda3/envs/my_env/bin/pip。
+
+经试验，anaconda4.8版本，在conda create新的环境时，已经默认在新环境装了pip，此时source activate进入该环境后，用pip命令安装的包，默认会装在本环境中,不必担心pip一个包后后会将其他环境的包改变版本的情况。
+
+当然我们自己创建的conda环境里，可能没有pip，此时进入自己的conda环境也会默认用base环境的pip，这就需要我们自己将pip安装入本环境，尽量不要使用base的pip在其他环境装包，这样也会装在base里，有产生版本冲突的可能（上文已讲）。
+
+在自己conda环境安装pip使用如下命令：
+
+　　　　（进入环境后）
+　　　　 conda install pip git
+
+安装好本环境的pip之后，在本环境中使用pip install安装的包，就只在本conda中了，
+我们可以用conda list查看我们的包，同时pip安装的包，conda list结果中的build项目为pypi......
+
 ## virtualenv 配置python环境
 
 适合标准的python安装到windows上，原始python的脚本更适合用cmd环境，而pip的有些脚本适合用bash做环境。
@@ -201,7 +271,77 @@ windows下用cmd执行bat脚本自动执行环境和python程序
     call c:\tools\pyenvs\yourprojectenv\Scripts\activate.bat
     python C:\Users\xxxuser\pycode\yourapp.py
 
-## Anaconda 安装和管理
+## python-xy
+
+不再更新维护了，废弃
+<https://python-xy.github.io/> 微软推荐的<https://devblogs.microsoft.com/python/unable-to-find-vcvarsall-bat>
+
+## Linux 下安装 anaconda
+
+1.网站下载
+2. bash xxxx.sh
+3. 注意选择：添加到路径中!!! 这个跟windows下安装是不同的.
+4.安装完毕，重启Linux
+5. python 看输出信息包含 anaconda 字样
+   conda info
+   conda list
+6. 启动器终端运行：anaconda-navigator
+-搜索计算机： visual studio code 或 conda
+ 或 终端运行：spyder
+
+## windows 安装 anaconda
+
+0.如果想让vs code自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”
+
+    anaconda 设置国内源
+        https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/
+
+    2019.6 Anaconda国内镜像基本已经全部关闭，现在建议使用官方源，使用anaconda管理python环境的可以使用pip安装，并配置国内pip镜像
+
+    pypi 设置国内源
+        https://mirrors.tuna.tsinghua.edu.cn/help/pypi/
+
+    conda 有很多频道，见章节 conda频道和源配置
+
+1.Anaconda3-2020.02（Python3.7） 安装 yapf Flake8
+
+2.Anaconda3-2020.02（Python3.7 自动安装了PyQt5.9.2） 安装 pyqtgraph （最新0.10.0）
+
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pyqtgraph
+    PySide是一个免费的软件，与PyQt不同之处在于使用了LGPL，允许PySide免费的开发商业软件。
+
+3.pyqt5的几个工具单独拿出来了，需要单独安装
+
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5-tools==5.9.2.1.3
+
+4.如果安装anaconda时没有选择加入到环境变量. VS Code出现“在终端运行文件”菜单无运行结果，python环境选择出不来。
+    则手动添加环境变量到 系统环境变量的path下: C:\ProgramData\Anaconda3;C:\ProgramData\Anaconda3\Scripts;C:\ProgramData\Anaconda3\Library\bin;
+    或者安装插件：Code Runner
+
+5.卸载 anaconda，直接删除目录;卸载 vscode ，需要手动再做如下：
+    C:\Users\xxx\AppData\Roaming\Code 目录清空
+    C:\Users\xxx\.vscode 目录清空
+
+6.python 填坑
+
+    启动Python3.7，报如下错误
+    File "C:\Anaconda3\lib\site-packages\pyreadline\lineeditor\history.py", line 82, in read_history_file
+        for line in open(filename, 'r'):
+    UnicodeDecodeError: 'gbk' codec can't decode byte 0x80 in position 407: illegal multibyte sequence
+
+    https://github.com/pyreadline/pyreadline/issues/38
+    Open file C:\Python351\lib\site-packages\pyreadline\lineeditor\history.py.
+    Go to 82 line and edit: this - for line in open(filename, 'r'): on this -
+        for line in open(filename, 'r', encoding='utf-8'):
+
+    windows下python按[TAB]出现报错：
+    AttributeError: module 'readline' has no attribute 'redisplay'
+
+    pip install git+https://github.com/ankostis/pyreadline@redisplay
+    https://github.com/pyreadline/pyreadline/pull/56
+    https://github.com/winpython/winpython/issues/544
+
+## Anaconda 管理
 
 <https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/>
 <https://www.jianshu.com/p/ef1ae10ba950>
@@ -347,104 +487,6 @@ windows cmd下的bat文件：
 
     conda remove beautifulsoup4
 
-## anaconda环境中使用pip
-
-为什么anaconda环境中，还需要用pip安装包，此情况下用pip需要哪些注意项
-<https://www.cnblogs.com/zhangxingcomeon/p/13801554.html>
-
-1、在anaconda下用pip装包的原因：尽管在anaconda下我们可以很方便的使用conda install来安装我们需要的依赖，但是anaconda本身只提供部分包，远没有pip提供的包多，有时conda无法安装我们需要的包，我们需要用pip将其装到conda环境里。
-
-2、用pip装包时候需要哪些注意事项？
-
-首先，我们需要判断目前我们用的pip指令，会把包装到哪里，通常情况下，pip不像conda一样，他不知道环境，我们首先要确保我们用的是本环境的pip，这样pip install时，包才会创建到本环境中，不然包会创建到base环境，供各个不同的其他conda环境共享，此时可能会产生版本冲突问题（不同环境中可能对同一个包的版本要求不同）。
-
-用下面命令查看我们此时用的pip为哪个环境：
-
-    which -a pip
-
-如base环境的pip可能在/root/anaconda3/bin/pip,,,,而其他conda环境的pip,可能在/root/anaconda3/envs/my_env/bin/pip。
-
-经试验，anaconda4.8版本，在conda create新的环境时，已经默认在新环境装了pip，此时source activate进入该环境后，用pip命令安装的包，默认会装在本环境中,不必担心pip一个包后后会将其他环境的包改变版本的情况。
-
-当然我们自己创建的conda环境里，可能没有pip，此时进入自己的conda环境也会默认用base环境的pip，这就需要我们自己将pip安装入本环境，尽量不要使用base的pip在其他环境装包，这样也会装在base里，有产生版本冲突的可能（上文已讲）。
-
-在自己conda环境安装pip使用如下命令：
-
-　　　　（进入环境后）
-　　　　 conda install pip git
-
-安装好本环境的pip之后，在本环境中使用pip install安装的包，就只在本conda中了，
-我们可以用conda list查看我们的包，同时pip安装的包，conda list结果中的build项目为pypi......
-
-## python-xy
-
-不再更新维护了，废弃
-<https://python-xy.github.io/> 微软推荐的<https://devblogs.microsoft.com/python/unable-to-find-vcvarsall-bat>
-
-
-## Linux 下安装 anaconda
-
-1.网站下载
-2. bash xxxx.sh
-3. 注意选择：添加到路径中!!! 这个跟windows下安装是不同的.
-4.安装完毕，重启Linux
-5. python 看输出信息包含 anaconda 字样
-   conda info
-   conda list
-6. 启动器终端运行：anaconda-navigator
--搜索计算机： visual studio code 或 conda
- 或 终端运行：spyder
-
-## windows 安装 anaconda
-
-0.如果想让vs code自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”
-
-    anaconda 设置国内源
-        https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/
-
-    2019.6 Anaconda国内镜像基本已经全部关闭，现在建议使用官方源，使用anaconda管理python环境的可以使用pip安装，并配置国内pip镜像
-
-    pypi 设置国内源
-        https://mirrors.tuna.tsinghua.edu.cn/help/pypi/
-
-1.Anaconda3-2020.02（Python3.7） 安装 yapf Flake8
-
-2.Anaconda3-2020.02（Python3.7 自动安装了PyQt5.9.2） 安装 pyqtgraph （最新0.10.0）
-
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pyqtgraph
-    PySide是一个免费的软件，与PyQt不同之处在于使用了LGPL，允许PySide免费的开发商业软件。
-
-3.pyqt5的几个工具单独拿出来了，需要单独安装
-
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5-tools==5.9.2.1.3
-
-4.如果安装anaconda时没有选择加入到环境变量. VS Code出现“在终端运行文件”菜单无运行结果，python环境选择出不来。
-    则手动添加环境变量到 系统环境变量的path下: C:\ProgramData\Anaconda3;C:\ProgramData\Anaconda3\Scripts;C:\ProgramData\Anaconda3\Library\bin;
-    或者安装插件：Code Runner
-
-5.卸载 anaconda，直接删除目录;卸载 vscode ，需要手动再做如下：
-    C:\Users\xxx\AppData\Roaming\Code 目录清空
-    C:\Users\xxx\.vscode 目录清空
-
-6.python 填坑
-
-    启动Python3.7，报如下错误
-    File "C:\Anaconda3\lib\site-packages\pyreadline\lineeditor\history.py", line 82, in read_history_file
-        for line in open(filename, 'r'):
-    UnicodeDecodeError: 'gbk' codec can't decode byte 0x80 in position 407: illegal multibyte sequence
-
-    https://github.com/pyreadline/pyreadline/issues/38
-    Open file C:\Python351\lib\site-packages\pyreadline\lineeditor\history.py.
-    Go to 82 line and edit: this - for line in open(filename, 'r'): on this -
-        for line in open(filename, 'r', encoding='utf-8'):
-
-    windows下python按[TAB]出现报错：
-    AttributeError: module 'readline' has no attribute 'redisplay'
-
-    pip install git+https://github.com/ankostis/pyreadline@redisplay
-    https://github.com/pyreadline/pyreadline/pull/56
-    https://github.com/winpython/winpython/issues/544
-
 ## 想要做到 Anaconda 中不同环境互相不干涉
 
 建好了新环境，这是不够的！需要再修改各自环境中的配置文件！
@@ -562,7 +604,36 @@ $ conda info
     USER_SITE = "C:\\Users\\xxx\\.conda\\envs\\n36\\Lib\\site-packages"
     USER_BASE = "C:\\Users\\xxx\\.conda\\envs\n36\\Scripts"
 
-## ubuntu16.04自带python
+## anaconda怎么同时安装2.7和3.6？
+
+前提是你的anaconda最高支持到3.7，才可以任意选择低版本的。
+
+如果你已经安装了Anaconda Python3.6版，想要再安装Python2.7环境，在命令行中输入：
+
+    conda create -n python27 python=2.7
+
+想要使用python2.7环境同样需要命令
+
+    activate python27（这里面的python27是前面create时自己定义的名字），
+
+该条命令在linux和mac环境中使用
+
+    source activate python27 。
+
+接下来看到命令行的最前端多出来(python27)，这时候已经处在python2.7的环境中了。
+
+想要退出python2.7进入python3.6，需要再次键入命令deactivate（linux和mac下用source deactivate命令）。
+
+### 最显着的区别可能是这样的
+
+pip在任何环境中安装python包;
+conda安装在conda环境中装任何包。
+
+    pip install 的各种问题  https://www.cnblogs.com/feixiablog/p/8320602.html
+
+## 在ubuntu系统配置多python环境
+
+### ubuntu16.04自带python的版本
 
 既有python2.7，又有python3.5
 
@@ -584,7 +655,7 @@ $ conda info
 
     sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 150
 
-## 在ubuntu系统配置多python环境
+### ubuntu如何安装自己版本的python
 
 1.安装ubuntu 17.10 桌面版64位系统
 2.系统已内置安装了python2.7和python3.6版本
@@ -808,74 +879,6 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 6.To upgrade pip for Python 2 to the latest version, run the --upgrade command:
 
     sudo pip install --upgrade pip
-
-## anaconda怎么同时安装2.7和3.6？
-
-前提是你的anaconda最高支持到3.7，才可以任意选择低版本的。
-
-如果你已经安装了Anaconda Python3.6版，想要再安装Python2.7环境，在命令行中输入：
-
-    conda create -n python27 python=2.7
-
-想要使用python2.7环境同样需要命令
-
-    activate python27（这里面的python27是前面create时自己定义的名字），
-
-该条命令在linux和mac环境中使用
-
-    source activate python27 。
-
-接下来看到命令行的最前端多出来(python27)，这时候已经处在python2.7的环境中了。
-
-想要退出python2.7进入python3.6，需要再次键入命令deactivate（linux和mac下用source deactivate命令）。
-
-### 最显着的区别可能是这样的
-
-pip在任何环境中安装python包;
-conda安装在conda环境中装任何包。
-
-    pip install 的各种问题  https://www.cnblogs.com/feixiablog/p/8320602.html
-
-## PyPI使用国内源
-
-通过几次 pip 的使用，对于默认的 pip 源的速度实在无法忍受，于是便搜集了一些国内的pip源，如下：
-
-清华源说明
-
-    <https://mirrors.tuna.tsinghua.edu.cn/help/pypi/>
-
-Python官方 <https://pypi.python.org/simple>
-清华大学 <https://pypi.tuna.tsinghua.edu.cn/simple/>
-阿里云 <http://mirrors.aliyun.com/pypi/simple/>
-中国科技大学 <https://pypi.mirrors.ustc.edu.cn/simple/>
-豆瓣 <http://pypi.douban.com/simple>
-v2ex <http://pypi.v2ex.com/simple>
-中国科学院 <http://pypi.mirrors.opencas.cn/simple/>
-
-### 临时使用国内镜像
-
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple flask
-
-注意，simple 不能少, 是 https 而不是 http
-
-设为默认
-
-升级 pip 到最新的版本 (>=10.0.0) 后进行配置：
-
-    sudo pip3.7 install pip -U
-    sudo pip3.7 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-
-如果您到 pip 默认源的网络连接较差，临时使用本镜像站来升级 pip：
-
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
-
-### 在 Linux 和 macOS 中，用户配置需要写到 ~/.pip/pip.conf 中
-
-    [global]
-    index-url=http://mirrors.aliyun.com/pypi/simple/
-
-    [install]
-    trusted-host=mirrors.aliyun.com
 
 ## 外网访问内网使用ssh和远程桌面
 
