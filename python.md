@@ -233,7 +233,7 @@ The ~=5.15 specifies a release compatible with 5.15 which will be
 the latest version of pyqt5-tools built for PyQt5 5.15.
 If you are using a different PyQt5 version, specify it instead of 5.15.
 
-### conda配置
+### conda频道和源配置
 
 0.不同的conda频道，看看默认软件名在自己的os下对应的版本
 
