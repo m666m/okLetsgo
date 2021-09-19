@@ -314,9 +314,14 @@ windows下用cmd执行bat脚本自动执行环境和python程序
 
     pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5-tools==5.9.2.1.3
 
-4.如果安装anaconda时没有选择加入到环境变量. VS Code出现“在终端运行文件”菜单无运行结果，python环境选择出不来。
-    则手动添加环境变量到 系统环境变量的path下: C:\ProgramData\Anaconda3;C:\ProgramData\Anaconda3\Scripts;C:\ProgramData\Anaconda3\Library\bin;
-    或者安装插件：Code Runner
+4.如果安装anaconda时没有勾选"add anaconda3 to the system PATH environment variable"加入到环境变量，会没法用！
+别看他用红字标提示不推荐吓唬你，你不勾选，其实没法玩：
+
+    新建环境，安装包时会报错"Multiple Errors Encountered"
+    VS Code出现“在终端运行文件”菜单无运行结果，python环境选择出不来。
+
+ 则手动添加环境变量到 系统环境变量的path下: C:\ProgramData\Anaconda3;C:\ProgramData\Anaconda3\Scripts;C:\ProgramData\Anaconda3\Library\bin;
+ 或者安装插件：Code Runner
 
 5.卸载 anaconda，直接删除目录;卸载 vscode ，需要手动再做如下：
     C:\Users\xxx\AppData\Roaming\Code 目录清空
@@ -350,7 +355,7 @@ windows下用cmd执行bat脚本自动执行环境和python程序
 
 ### 注意windows下的Anaconda需要使用cmd环境运行而不是bash
 
-    目前版本的都是bat，在bash下运行经常报错，
+    目前版本的各种命令执行都是bat，在bash下运行会各种报错。
     尤其是vscode，他的开发默认都是在bash的，各种source xxx之后运行，在cmd下的命令报错概率大。
 
 ### conda pip
