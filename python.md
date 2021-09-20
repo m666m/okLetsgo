@@ -162,32 +162,125 @@ v2ex <http://pypi.v2ex.com/simple>
 
 ## anaconda环境中使用pip
 
-为什么anaconda环境中，还需要用pip安装包，此情况下用pip需要哪些注意项
+### 为什么anaconda环境中，还需要用pip安装包
+
 <https://www.cnblogs.com/zhangxingcomeon/p/13801554.html>
 
-1、在anaconda下用pip装包的原因：尽管在anaconda下我们可以很方便的使用conda install来安装我们需要的依赖，但是anaconda本身只提供部分包，远没有pip提供的包多，有时conda无法安装我们需要的包，我们需要用pip将其装到conda环境里。
+尽管在anaconda下我们可以很方便的使用conda install来安装我们需要的依赖，但是anaconda本身只提供部分包，远没有pip提供的包多，有时conda无法安装我们需要的包，我们需要用pip将其装到conda环境里。
 
-2、用pip装包时候需要哪些注意事项？
+尽管在anaconda下我们可以很方便的使用conda install来安装我们需要的依赖，
+但是anaconda本身只提供部分包，远没有pip提供的包多，有时conda无法安装我们需要的包，我们需要用pip将其装到conda环境里。
 
-首先，我们需要判断目前我们用的pip指令，会把包装到哪里，通常情况下，pip不像conda一样，他不知道环境，我们首先要确保我们用的是本环境的pip，这样pip install时，包才会创建到本环境中，不然包会创建到base环境，供各个不同的其他conda环境共享，此时可能会产生版本冲突问题（不同环境中可能对同一个包的版本要求不同）。
+### 用pip装包时候需要哪些注意事项？
+
+首先，我们需要判断目前我们用的pip指令，会把包装到哪里。
+通常情况下，pip不像conda一样，他不知道环境！
+我们首先要确保我们用的是本环境的pip，这样pip install时，包才会创建到本环境中。
+不然包会创建到base环境，供各个不同的其他conda环境共享，此时可能会产生版本冲突问题（不同环境中可能对同一个包的版本要求不同）
 
 用下面命令查看我们此时用的pip为哪个环境：
 
+    # linux
     which -a pip
 
-如base环境的pip可能在/root/anaconda3/bin/pip,,,,而其他conda环境的pip,可能在/root/anaconda3/envs/my_env/bin/pip。
+    # windows
+    where pip
 
-经试验，anaconda4.8版本，在conda create新的环境时，已经默认在新环境装了pip，此时source activate进入该环境后，用pip命令安装的包，默认会装在本环境中,不必担心pip一个包后后会将其他环境的包改变版本的情况。
+(如base环境的pip可能在/root/anaconda3/bin/pip,
+而其他conda环境的pip,可能在/root/anaconda3/envs/my_env/bin/pip)
 
-当然我们自己创建的conda环境里，可能没有pip，此时进入自己的conda环境也会默认用base环境的pip，这就需要我们自己将pip安装入本环境，尽量不要使用base的pip在其他环境装包，这样也会装在base里，有产生版本冲突的可能（上文已讲）。
+### 我们自己创建的conda环境里，可能没有pip
+
+此时进入自己的conda环境也会默认用base环境的pip，这就需要我们自己将pip安装入本环境。
+尽量不要使用base的pip在其他环境装包，这样也会装在base里，有产生版本冲突的可能（上文已讲）。
 
 在自己conda环境安装pip使用如下命令：
 
-　　　　（进入环境后）
-　　　　 conda install pip git
+    （进入环境后）
+    conda install pip
 
-安装好本环境的pip之后，在本环境中使用pip install安装的包，就只在本conda中了，
+安装好本环境的pip之后，在本环境中使用pip install安装的包，就只在本conda中了。
 我们可以用conda list查看我们的包，同时pip安装的包，conda list结果中的build项目为pypi......
+
+### 安装特定版本的包
+
+　　　　conda用“=”，pip用“==”
+
+　　conda install numpy=1.93
+　　pip  install numpy==1.93
+
+### 确认conda环境
+
+```shell
+
+$ activate n36
+
+$ conda info
+
+     active environment : None
+       user config file : C:\Users\xxx\.condarc
+ populated config files : C:\Users\xxx\.condarc
+          conda version : 4.8.2
+    conda-build version : 3.18.11
+         python version : 3.6.6.final.0
+       virtual packages : __cuda=11.1
+       base environment : C:\ProgramData\Anaconda3  (read only)
+           channel URLs : https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/win-64
+                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/noarch
+                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/win-64
+                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/noarch
+                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2/win-64
+                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2/noarch
+          package cache : C:\ProgramData\Anaconda3\pkgs
+                          C:\Users\xxx\.conda\pkgs
+                          C:\Users\xxx\AppData\Local\conda\conda\pkgs
+       envs directories : C:\Users\xxx\.conda\envs
+                          C:\ProgramData\Anaconda3\envs
+                          C:\Users\xxx\AppData\Local\conda\conda\envs
+               platform : win-64
+             user-agent : conda/4.8.2 requests/2.22.0 CPython/3.6.6 Windows/10 Windows/10.0.14393
+          administrator : False
+             netrc file : None
+           offline mode : False
+```
+
+### 确认 conda / pip 环境
+
+    conda list
+
+    pip list
+
+### 安装一个新包
+
+    # 必须告诉conda你要安装环境的名字 -n n36
+    conda install --name n36 beautifulsoup4
+
+### Anaconda不同环境下的pip install路径修改配置文件
+
+想要做到 Anaconda 中不同环境互相不干涉，只建好了新环境，这是不够的！
+
+需要再修改各自环境中的配置文件！
+
+另一个说法
+
+    <https://blog.csdn.net/qq_37344125/article/details/104418636>
+
+假设Anaconda3安装完成后建立的默认环境[base]，python版本是3.7，
+路径 C:\ProgramData\Anaconda3 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
+
+新建个环境[n36]，python版本是3.6，
+路径 C:\Users\xxx\.conda\envs\n36 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
+
+    activate n36
+    pip install numpy  # 会装到 [base]下  ！！！
+
+环境[n36]必须改配置文件 C:\Users\xxx\.conda\envs\n36\Lib\site.py
+
+    USER_SITE = None
+    USER_BASE = None
+    # 改为
+    USER_SITE = "C:\\Users\\xxx\\.conda\\envs\\n36\\Lib\\site-packages"
+    USER_BASE = "C:\\Users\\xxx\\.conda\\envs\n36\\Scripts"
 
 ## virtualenv 配置python环境
 
@@ -491,123 +584,6 @@ windows cmd下的bat文件：
 4. 移除包
 
     conda remove beautifulsoup4
-
-## 想要做到 Anaconda 中不同环境互相不干涉
-
-建好了新环境，这是不够的！需要再修改各自环境中的配置文件！
-
-    <https://www.cnblogs.com/zhangxingcomeon/p/13801554.html>
-
-### 在anaconda下用pip装包的原因
-
-尽管在anaconda下我们可以很方便的使用conda install来安装我们需要的依赖，
-但是anaconda本身只提供部分包，远没有pip提供的包多，有时conda无法安装我们需要的包，我们需要用pip将其装到conda环境里。
-
-### 用pip装包时候需要哪些注意事项？
-
-首先，我们需要判断目前我们用的pip指令，会把包装到哪里。
-通常情况下，pip不像conda一样，他不知道环境！
-我们首先要确保我们用的是本环境的pip，这样pip install时，包才会创建到本环境中。
-不然包会创建到base环境，供各个不同的其他conda环境共享，此时可能会产生版本冲突问题（不同环境中可能对同一个包的版本要求不同）
-
-用下面命令查看我们此时用的pip为哪个环境：
-
-    which -a pip
-
-(如base环境的pip可能在/root/anaconda3/bin/pip,
-而其他conda环境的pip,可能在/root/anaconda3/envs/my_env/bin/pip)
-
-(经试验，anaconda4.8版本，在conda create新的环境时，已经默认在新环境装了pip，
-此时source activate进入该环境后，用pip命令安装的包，默认会装在本环境中,不必担心pip一个包后后会将其他环境的包改变版本的情况)
-
-### 我们自己创建的conda环境里，可能没有pip
-
-此时进入自己的conda环境也会默认用base环境的pip，这就需要我们自己将pip安装入本环境。
-尽量不要使用base的pip在其他环境装包，这样也会装在base里，有产生版本冲突的可能（上文已讲）。
-
-在自己conda环境安装pip使用如下命令：
-
-    （进入环境后）
-    conda install pip
-
-安装好本环境的pip之后，在本环境中使用pip install安装的包，就只在本conda中了。
-我们可以用conda list查看我们的包，同时pip安装的包，conda list结果中的build项目为pypi......
-
-### 安装特定版本的包
-
-　　　　conda用“=”，pip用“==”
-
-　　conda install numpy=1.93
-　　pip  install numpy==1.93
-
-### 确认conda环境
-
-```shell
-
-$ activate n36
-
-$ conda info
-
-     active environment : None
-       user config file : C:\Users\xxx\.condarc
- populated config files : C:\Users\xxx\.condarc
-          conda version : 4.8.2
-    conda-build version : 3.18.11
-         python version : 3.6.6.final.0
-       virtual packages : __cuda=11.1
-       base environment : C:\ProgramData\Anaconda3  (read only)
-           channel URLs : https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/win-64
-                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/noarch
-                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/win-64
-                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/noarch
-                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2/win-64
-                          https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2/noarch
-          package cache : C:\ProgramData\Anaconda3\pkgs
-                          C:\Users\xxx\.conda\pkgs
-                          C:\Users\xxx\AppData\Local\conda\conda\pkgs
-       envs directories : C:\Users\xxx\.conda\envs
-                          C:\ProgramData\Anaconda3\envs
-                          C:\Users\xxx\AppData\Local\conda\conda\envs
-               platform : win-64
-             user-agent : conda/4.8.2 requests/2.22.0 CPython/3.6.6 Windows/10 Windows/10.0.14393
-          administrator : False
-             netrc file : None
-           offline mode : False
-```
-
-### 确认 conda / pip 环境
-
-    conda list
-
-    pip list
-
-### 安装一个新包
-
-    # 必须告诉conda你要安装环境的名字 -n n36
-    conda install --name n36 beautifulsoup4
-
-### Anaconda3不同环境下的pip install路径修改配置文件
-
-另一个说法
-
-    <https://blog.csdn.net/qq_37344125/article/details/104418636>
-
-假设Anaconda3安装完成后建立的默认环境[base]，python版本是3.7，
-路径 C:\ProgramData\Anaconda3 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
-
-新建个环境[n36]，python版本是3.6，
-路径 C:\Users\xxx\.conda\envs\n36 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
-
-    activate n36
-    pip install numpy  # 会装到 [base]下  ！！！
-
-环境[n36]必须改配置文件 C:\Users\xxx\.conda\envs\n36\Lib\site.py
-
-    USER_SITE = None
-    USER_BASE = None
-    # 改为
-    USER_SITE = "C:\\Users\\xxx\\.conda\\envs\\n36\\Lib\\site-packages"
-    USER_BASE = "C:\\Users\\xxx\\.conda\\envs\n36\\Scripts"
 
 ## anaconda怎么同时安装2.7和3.6？
 
