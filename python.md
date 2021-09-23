@@ -14,6 +14,21 @@ windows下的python，各种命令的脚本都是cmd下的bat，如果用bash运
 
 ## pip
 
+### 务必搞清环境，pip安装可能把包放到的几个地方
+
+pip之前先看看到底用的哪个地方的pip，特别是当前操作系统里有多个pip：
+
+    which pip  # linux
+    where pip  # windows
+
+Pip can install software in three different ways:
+
+    At global level. 标准的python环境下，"pip install xxx"放在了python目录的site-packages里，这个影响当前操作系统的所有用户.
+    At user level. "pip install xxx --user"放在了当前操作系统用户home目录的python目录的site-packages里，这个放置的地方比较别扭。
+    At virtualenv level. virtualenv环境下，"pip install xxx"放在了virtualenv建立的环境目录的site-packages里，最好用这个。
+
+    如果当前操作系统还安装了conda，请先conda list 看看有没有pip，有可能运行的是conda环境里的pip，那就安装到了conda建立的环境目录的site-packages里
+
 ### wheels
 
 最简单的解决办法是下载好心人提供的编译好的windows二进制包 <https://www.lfd.uci.edu/~gohlke/pythonlibs/>
