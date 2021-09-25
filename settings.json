@@ -68,7 +68,8 @@
     // markdownlint
     "markdownlint.config": {
         "default": true,
-        "MD046": false
+        "MD046": false, //代码块缩进或围栏起来都可以
+        "MD024": false  //不同标题下的子标题内容可以重复
     },
     // PYQT Integration
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\Qt\\bin\\designer.exe",

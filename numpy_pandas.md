@@ -33,8 +33,26 @@
       - [时间字段汇聚](#时间字段汇聚)
         - [不用时间做索引 - groupby + rolling：df.rolling('2s').sum()](#不用时间做索引---groupby--rollingdfrolling2ssum)
         - [用时间做索引 - resample + agg](#用时间做索引---resample--agg)
+  - [pandas 的拼接](#pandas-的拼接)
+    - [1 merge方法](#1-merge方法)
+      - [1.1 内连接](#11-内连接)
+      - [1.2 外连接](#12-外连接)
+      - [1.3 左连接](#13-左连接)
+      - [1.4 右连接](#14-右连接)
+      - [1.5 基于多列的连接算法](#15-基于多列的连接算法)
+      - [1.6 基于index的连接方法](#16-基于index的连接方法)
+    - [2 join方法](#2-join方法)
+      - [2.1 index与index的连接](#21-index与index的连接)
+      - [2.2 join也可以基于列进行连接](#22-join也可以基于列进行连接)
+    - [3 concat方法](#3-concat方法)
+      - [3.1 series类型的拼接方法](#31-series类型的拼接方法)
+        - [行拼接](#行拼接)
+        - [列拼接](#列拼接)
+      - [3.2 dataframe类型的拼接方法](#32-dataframe类型的拼接方法)
+        - [行拼接](#行拼接-1)
+        - [列拼接](#列拼接-1)
+  - [DataFrame 大规模的数据拼接，用迭代器传递给concat()](#dataframe-大规模的数据拼接用迭代器传递给concat)
   - [pandas 优化](#pandas-优化)
-    - [DataFrame 大规模的数据拼接，用迭代器传递给concat()](#dataframe-大规模的数据拼接用迭代器传递给concat)
   - [numpy 大数据量处理使用](#numpy-大数据量处理使用)
     - [numpy ufunc 用法](#numpy-ufunc-用法)
   - [numpy常用](#numpy常用)
@@ -42,7 +60,7 @@
     - [生成指定范围值的ndarray](#生成指定范围值的ndarray)
     - [生成随机值的ndarray](#生成随机值的ndarray)
     - [np数组拼接](#np数组拼接)
-      - [np大规模的数据拼接，用迭代器传递给concatenate()](#np大规模的数据拼接用迭代器传递给concatenate)
+    - [np大规模的数据拼接，用迭代器传递给concatenate()](#np大规模的数据拼接用迭代器传递给concatenate)
   - [numpy向量化](#numpy向量化)
     - [向量化函数](#向量化函数)
       - [自定义sinc函数](#自定义sinc函数)
@@ -522,17 +540,307 @@ df_dti = df_from_db.set_index('stime').resample(
     }).reset_index(drop=False)  # 原来的index变成数据列，保留
 ```
 
-## pandas 优化
+## pandas 的拼接
 
-    https://pandas.pydata.org/pandas-docs/stable/user_guide/enhancingperf.html
+<https://www.cnblogs.com/keye/p/10791705.html> <https://blog.csdn.net/sc179/article/details/108169436>
 
-    Pandas进阶之提升运行效率
-        https://blog.csdn.net/yangsen99/article/details/94365243
+Pandas包的merge、join、concat方法可以完成数据的合并和拼接。
 
-    https://blog.csdn.net/BF02jgtRS00XKtCx/article/details/90092161
-    http://www.pythontip.com/blog/post/12331/
+    merge方法主要基于两个dataframe的共同列进行合并；
 
-### DataFrame 大规模的数据拼接，用迭代器传递给concat()
+    join方法主要基于两个dataframe的索引进行合并；
+
+    concat方法是对series或dataframe进行行拼接或列拼接。
+
+### 1 merge方法
+
+pandas的merge方法是基于共同列，将两个dataframe连接起来。merge方法的主要参数：
+
+#### 1.1 内连接
+
+how=‘inner’，on=设置连接的共有列名。
+
+    # 单列的内连接
+    import pandas as pd
+    import numpy as np
+    # 定义df1
+    df1 = pd.DataFrame({'alpha':['A','B','B','C','D','E'],
+                        'feature1':[1,1,2,3,3,1],
+                        'feature2':['low','medium','medium','high','low','high']})
+    # 定义df2
+    df2 = pd.DataFrame({'alpha':['A','A','B','F'],
+                        'pazham':['apple','orange','pine','pear'],
+                        'kilo':['high','low','high','medium'],
+                        'price':np.array([5,6,5,7])})
+    # 基于共同列alpha的内连接
+    df3 = pd.merge(df1,df2,how='inner',on='alpha')
+
+    print(df1)
+    print(df2)
+    print(df3)
+
+取共同列alpha值的交集进行连接。
+
+#### 1.2 外连接
+
+how=‘outer’，dataframe的链接方式为外连接，我们可以理解基于共同列的并集进行连接，参数on设置连接的共有列名。
+
+    # 单列的外连接
+    # 定义df1
+    df1 = pd.DataFrame({'alpha':['A','B','B','C','D','E'],
+                        'feature1':[1,1,2,3,3,1],
+                        'feature2':['low','medium','medium','high','low','high']})
+    # 定义df2
+    df2 = pd.DataFrame({'alpha':['A','A','B','F'],
+                        'pazham'['apple','orange','pine','pear'],
+                        'kilo':['high','low','high','medium'],
+                        'price':np.array([5,6,5,7])})
+    # 基于共同列alpha的外连接
+    df5 = pd.merge(df1,df2,how='outer',on='alpha')
+
+    print(df1)
+    print(df2)
+    print(df5)
+
+若两个dataframe间除了on设置的连接列外并无相同列，则该列的值置为NaN。
+
+#### 1.3 左连接
+
+how=‘left’，dataframe的链接方式为左连接，我们可以理解基于左边位置dataframe的列进行连接，参数on设置连接的共有列名。
+
+    # 单列的左连接
+    # 定义df1
+    df1 = pd.DataFrame({'alpha':['A','B','B','C','D','E'],
+                        'feature1':[1,1,2,3,3,1],
+                        'feature2':['low','medium','medium','high','low','high']})
+    # 定义df2
+    df2 = pd.DataFrame({'alpha':['A','A','B','F'],
+                        'pazham':['apple','orange','pine','pear'],
+                        'kilo':['high','low','high','medium'],
+                        'price':np.array([5,6,5,7])})
+    # 基于共同列alpha的左连接
+    df5 = pd.merge(df1,df2,how='left',on='alpha')
+
+    print(df1)
+    print(df2)
+    print(df5)
+
+因为df2的连接列alpha有两个’A’值，所以左连接的df5有两个’A’值，若两个dataframe间除了on设置的连接列外并无相同列，则该列的值置为NaN。
+
+#### 1.4 右连接
+
+how=‘right’，dataframe的链接方式为左连接，我们可以理解基于右边位置dataframe的列进行连接，参数on设置连接的共有列名。
+
+    # 单列的右连接
+    # 定义df1
+    df1 = pd.DataFrame({'alpha':['A','B','B','C','D','E'],
+                        'feature1':[1,1,2,3,3,1],
+                        'feature2':['low','medium','medium','high','low','high']})
+    # 定义df2
+    df2 = pd.DataFrame({'alpha':['A','A','B','F'],
+                        'pazham':['apple','orange','pine','pear'],
+                        'kilo':['high','low','high','medium'],
+                        'price':np.array([5,6,5,7])})
+    # 基于共同列alpha的右连接
+    df6 = pd.merge(df1,df2,how='right',on='alpha')
+
+    print(df1)
+    print(df2)
+    print(df6)
+
+因为df1的连接列alpha有两个’B’值，所以右连接的df6有两个’B’值。若两个dataframe间除了on设置的连接列外并无相同列，则该列的值置为NaN。
+
+#### 1.5 基于多列的连接算法
+
+多列连接的算法与单列连接一致，本节只介绍基于多列的内连接和右连接，读者可自己编码并按照本文给出的图解方式去理解外连接和左连接。
+
+多列的内连接：
+
+    # 多列的内连接
+    # 定义df1
+    df1 = pd.DataFrame({'alpha':['A','B','B','C','D','E'],
+                        'beta':['a','a','b','c','c','e'],
+                        'feature1':[1,1,2,3,3,1],
+                        'feature2':['low','medium','medium','high','low','high']})
+    # 定义df2
+    df2 = pd.DataFrame({'alpha':['A','A','B','F'],
+                        'beta':['d','d','b','f'],
+                        'pazham':['apple','orange','pine','pear'],
+                        'kilo':['high','low','high','medium'],
+                        'price':np.array([5,6,5,7])})
+    # 基于共同列alpha和beta的内连接
+    df7 = pd.merge(df1,df2,on=['alpha','beta'],how='inner')
+
+    print(df1)
+    print(df2)
+    print(df7)
+
+多列的右连接：
+
+    # 多列的右连接
+    # 定义df1
+    df1 = pd.DataFrame({'alpha':['A','B','B','C','D','E'],
+                        'beta':['a','a','b','c','c','e'],
+                        'feature1':[1,1,2,3,3,1],
+                        'feature2':['low','medium','medium','high','low','high']})
+    # 定义df2
+    df2 = pd.DataFrame({'alpha':['A','A','B','F'],
+                        'beta':['d','d','b','f'],
+                        'pazham':['apple','orange','pine','pear'],
+                        'kilo':['high','low','high','medium'],
+                        'price':np.array([5,6,5,7])})
+
+    # 基于共同列alpha和beta的右连接
+    df8 = pd.merge(df1,df2,on=['alpha','beta'],how='right')
+
+    print(df1)
+    print(df2)
+    print(df8)
+
+#### 1.6 基于index的连接方法
+
+前面介绍了基于column的连接方法，merge方法亦可基于index连接dataframe。
+
+    # 基于column和index的右连接
+    # 定义df1
+    df1 = pd.DataFrame({'alpha':['A','B','B','C','D','E'],
+                        'beta':['a','a','b','c','c','e'],
+                        'feature1':[1,1,2,3,3,1],
+                        'feature2':['low','medium','medium','high','low','high']})
+    # 定义df2
+    df2 = pd.DataFrame({'alpha':['A','A','B','F'],
+                        'pazham':['apple','orange','pine','pear'],
+                        'kilo':['high','low','high','medium'],
+                        'price':np.array([5,6,5,7])},
+                        index=['d','d','b','f'])
+
+    # 基于df1的beta列和df2的index连接
+    df9 = pd.merge(df1,df2,how='inner',left_on='beta',right_index=True)
+
+    print(df1)
+    print(df2)
+    print(df9)
+
+index和column的内连接方法：是df1列'beta'的第2个值'b'，匹配了df2的索引列第二个值'b'，则df9把这行拼接起来得到如下：
+
+        alpha_x beta feature1 feature2 alpha_y pazham kilo price
+    2         B    b        2  medium        B   pine high     5
+
+可以设置参数suffixes，修改除连接列外 相同列的后缀名。
+
+    # 基于df1的alpha列和df2的index内连接
+    df9 = pd.merge(df1,df2,how='inner',left_on='beta',right_index=True,suffixes=('_df1','_df2'))
+    print(df9)
+
+### 2 join方法
+
+join方法是基于index连接dataframe，merge方法是基于column连接，连接方法有内连接，外连接，左连接和右连接，与merge一致。
+
+#### 2.1 index与index的连接
+
+    df1 = pd.DataFrame({'key': ['K0', 'K1', 'K2', 'K3', 'K4', 'K5'],
+                        'A': ['A0', 'A1', 'A2', 'A3', 'A4', 'A5']})
+    df2 = pd.DataFrame({'key': ['K0', 'K1', 'K2'],
+                        'B': ['B0', 'B1', 'B2']})
+
+    # lsuffix和rsuffix设置连接的后缀名
+    df3 = df1.join(df2,lsuffix='_caller', rsuffix='_other',how='inner')
+
+    print(df1)
+    print(df2)
+    print(df3)
+
+#### 2.2 join也可以基于列进行连接
+
+    df1 = pd.DataFrame({'key': ['K0', 'K1', 'K2', 'K3', 'K4', 'K5'],
+                        'A': ['A0', 'A1', 'A2', 'A3', 'A4', 'A5']})
+    df2 = pd.DataFrame({'key': ['K0', 'K1', 'K2'],
+                        'B': ['B0', 'B1', 'B2']})
+
+    # 基于key列进行连接
+    df3 = df1.set_index('key').join(df2.set_index('key'),how='inner')
+
+    print(df1)
+    print(df2)
+    print(df3)
+
+### 3 concat方法
+
+concat方法是拼接函数，有行拼接和列拼接，默认是行拼接，拼接方法默认是外拼接（并集），拼接的对象是pandas数据类型。
+
+#### 3.1 series类型的拼接方法
+
+##### 行拼接
+
+    df1 = pd.Series([1.1,2.2,3.3],index=['i1','i2','i3'])
+    df2 = pd.Series([4.4,5.5,6.6],index=['i2','i3','i4'])
+    print(df1)
+    print(df2)
+
+    # 行拼接
+    df3 = pd.concat([df1,df2])
+
+    print(df1)
+    print(df2)
+    print(df3)
+
+行拼接若有相同的索引，为了区分索引，我们在最外层定义了索引的分组情况。
+
+    # 对行拼接分组
+    pd.concat([df1,df2],keys=['fea1','fea2'])
+
+##### 列拼接
+
+默认以并集的方式拼接：
+
+    # 列拼接,默认是并集
+    pd.concat([df1,df2],axis=1)
+
+以交集的方式拼接：
+
+    # 列拼接的内连接（交）
+    pd.concat([df1,df2],axis=1,join='inner')
+
+设置列拼接的列名：
+
+    # 列拼接的内连接（交）
+    pd.concat([df1,df2],axis=1,join='inner',keys=['fea1','fea2'])
+
+对指定的索引拼接：
+
+    # 指定索引[i1,i2,i3]的列拼接
+    pd.concat([df1,df2],axis=1,join_axes=[['i1','i2','i3']])
+
+#### 3.2 dataframe类型的拼接方法
+
+##### 行拼接
+
+    df1 = pd.DataFrame({'key': ['K0', 'K1', 'K2', 'K3', 'K4', 'K5'],
+                        'A': ['A0', 'A1', 'A2', 'A3', 'A4', 'A5']})
+
+    df2 = pd.DataFrame({'key': ['K0', 'K1', 'K2'],
+                        'B': ['B0', 'B1', 'B2']})
+
+    # 行拼接
+    df3 = pd.concat([df1,df2])
+
+    print(df1)
+    print(df2)
+    print(df3)
+
+##### 列拼接
+
+    # 列拼接
+    pd.concat([df1,df2], axis=1)
+
+若列拼接或行拼接有重复的列名和行名，则报错：
+
+    # 判断是否有重复的列名，若有则报错
+    pd.concat([df1,df2],axis=1,verify_integrity = True)
+
+    ValueError: Indexes have overlapping values: ['key']
+
+## DataFrame 大规模的数据拼接，用迭代器传递给concat()
 
 拼接整理批量结果，普通的for循环速度太慢：
 
@@ -555,6 +863,16 @@ df_dti = df_from_db.set_index('stime').resample(
 
 ignore_index = True 并不意味忽略index然后连接，而是指连接后再重新赋值index(len(index))。
 如果两个df有重叠的索引还是可以自动合并的。
+
+## pandas 优化
+
+    https://pandas.pydata.org/pandas-docs/stable/user_guide/enhancingperf.html
+
+    Pandas进阶之提升运行效率
+        https://blog.csdn.net/yangsen99/article/details/94365243
+
+    https://blog.csdn.net/BF02jgtRS00XKtCx/article/details/90092161
+    http://www.pythontip.com/blog/post/12331/
 
 ## numpy 大数据量处理使用
 
@@ -697,7 +1015,7 @@ randn()和normal()函数生成的随机数组中，数据是正太分布的。
         # 2维数组沿沿着第三轴（深度方向）堆叠
         np.dstack()
 
-#### np大规模的数据拼接，用迭代器传递给concatenate()
+### np大规模的数据拼接，用迭代器传递给concatenate()
 
 注意用迭代器生成数据传递给concatenate()，这样的方式速度最快
 
