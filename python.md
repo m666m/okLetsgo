@@ -950,6 +950,8 @@ pylance
 
 ### 括号匹配 Bracket Pair Colorizer 2
 
+    // vscode 1.60+ 自带了 "editor.bracketPairColorization.enabled": true,
+
     "bracket-pair-colorizer-2.colors": [
         "rgba(213,135,32,255)",
         "rgba(62,145,222,255)",
