@@ -17,11 +17,12 @@
     "editor.columnSelection": false,
     "editor.multiCursorModifier": "alt",
     "outline.showVariables": false,
-    "python.showStartPage": false,
+    "editor.bracketPairColorization.enabled": true,
     "window.newWindowDimensions": "maximized",
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
     "python.languageServer": "Pylance",
+    "python.showStartPage": false,
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Args": [
