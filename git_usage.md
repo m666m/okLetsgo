@@ -426,6 +426,7 @@ Gitolite 基于ssh密钥管理的用户权限控制
     # 先看看有无未提交的，跟现有的本地远程代码比对没差别，不代表远程仓库的代码没差别，别人可能有更新
     git status
 
+    # 本地git branch -a看不到时，一般需要在本地使用git remote update 或 git fetch --all更新
     # 从远程下载，这个不会跟本地现有文件冲突，下载的是本地的那个对应远程仓库的目录
     # 下载当前分支可以简写为： git fetch
     git fetch origin master
