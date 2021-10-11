@@ -18,6 +18,7 @@ windows下的python，各种命令的脚本都是cmd下的bat，如果用bash运
 
 pip之前先看看到底用的哪个地方的pip，特别是当前操作系统里有多个pip：
 
+    pip -V 这个会列出当前的pip的命令行位置
     which pip  # linux
     where pip  # windows
 
@@ -466,6 +467,13 @@ windows下用cmd执行bat脚本自动执行环境和python程序
     目前版本的各种命令执行都是bat，在bash下运行会各种报错。
     尤其是vscode，他的开发默认都是在bash的，各种source xxx之后运行，在cmd下的命令报错概率大。
 
+### conda 安装package的时候可以指定环境，这点比pip强
+
+    conda install --name p37 pyqt5 -y
+
+    # 如果用pip需要先看看路径对不对
+    pip -V
+
 ### conda pip
 
 首先切换到你的环境
@@ -477,7 +485,7 @@ conda 有很多频道，在网页版频道列表里有对应的版本，找合�
 
     conda install -c conda-forge pyqtgraph
 
-pip用之前先which pip 看看位置，防止不是你的环境的pip，用了就装到别的地方了
+pip用之前先 pip -V 看看位置，防止不是你的环境的pip，用了就装到别的地方了
 
     yourenv/Scripts/pip.exe install pyqt5-tools~=5.15
 
@@ -889,6 +897,9 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 pylance
 
 ### 格式化 yapf
+
+    用conda安装的这个直接带二进制包：
+    conda install --name p37 yapf -y
 
     yapf 用这个，禁用 # yapf:disable 代码块  #yapf:enable 或 某行后面的注释 # yapf:disable 禁用一行
     "python.formatting.provider": "yapf",
