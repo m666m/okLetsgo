@@ -983,15 +983,19 @@ pylance
 
 MacOS Modern Theme
 GitHub Theme
-Solarized Light  这个是羊皮纸底色，去蓝光了
+Solarized Light（自带）  这个是羊皮纸底色，去蓝光了
 
 ### GitHubcdn加速
 
 jsdelivr  <https://cdn.jsdelivr.net/gh/xxx>
 
-### GitHubcdn加速JScript/Json的格式化，比系统自带的好用
+### JScript/Json的格式化，比系统自带的好用
 
-Prettier Formatter for Visual Studio Code
+Prettier - Code formatter
+
+### Prettify JSON
+
+    格式化json文件很好用，容错率高
 
 ### pyreverse
 
@@ -1025,10 +1029,6 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 
     Markdown All in One 高亮，预览
     markdownlint 语法检查
-
-### Prettify JSON
-
-    格式化json文件很好用，容错率高
 
 ### shell-format
 
