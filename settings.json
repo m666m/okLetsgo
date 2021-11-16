@@ -35,6 +35,9 @@
     ],
     "python.formatting.autopep8Args": ["--ignore","E402"],
     "diffEditor.ignoreTrimWhitespace": false,
+    "window.autoDetectColorScheme": true,
+    "workbench.preferredDarkColorTheme": "MacOS Modern Dark - Xcode Default",
+    "workbench.preferredLightColorTheme": "MacOS Modern Light - Xcode Default",
     "workbench.editor.wrapTabs": true,
     "workbench.colorCustomizations": {
         "window.activeBorder": "#ff7b00c5",
