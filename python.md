@@ -222,11 +222,13 @@ v2ex <http://pypi.v2ex.com/simple>
     USER_SITE = "C:\\Users\\xxx\\.conda\\envs\\n36\\Lib\\site-packages"
     USER_BASE = "C:\\Users\\xxx\\.conda\\envs\n36\\Scripts"
 
-居然
+咋办啊坑这么多没法填，anaconda只能多建一个环境，这个应该是不跟其它环境混的（只跟base混）：
 
-    在anaconda.2021.5安装后，建立了一个py3.8的环境，后来建第二个py3.8的环境，
+    在anaconda.2021.5安装后，建立了一个py3.8的环境，后来建第二个py3.7的环境，
     改文件site.py时发现，居然用的是第一个的！
     我说我的anaconda建了几个版本之后的环境喜欢乱套呢，他自己就乱引用啊……
+
+    我把前两个环境删除了，关了anaconda然后打开，又建了个不同名的py3.7环境，里面的内容居然是之前的！
 
 ### 为什么anaconda环境中，还需要用pip安装包
 
