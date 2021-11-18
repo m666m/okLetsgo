@@ -51,13 +51,17 @@ python3.8应该对应了VS2017(15.9)，用VS2019基本也可以。
 <https://www.cnblogs.com/xiacaojun/p/9914545.html>
 <https://zhuanlan.zhihu.com/p/148348614>
 
-### 国内开源镜像
-
-    清华 <https://mirrors.tuna.tsinghua.edu.cn/>
+清华开源镜像 <https://mirrors.tuna.tsinghua.edu.cn/>
 
 ### pip版本更新
 
 1.pip直接更新
+
+如果您到 pip 默认源的网络连接较差，临时使用清华镜像站来升级 pip：
+
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+
+通常步骤
 
     pip install --upgrade pip
 
@@ -70,10 +74,6 @@ python3.8应该对应了VS2017(15.9)，用VS2019基本也可以。
 或强制重装：
 
     python -m pip install -U --force-reinstall pip
-
-如果您到 pip 默认源的网络连接较差，临时使用本镜像站来升级 pip：
-
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
 
 2.直接使用后面的提示命令
 
@@ -137,7 +137,10 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 ### PyPI使用国内源
 
-注意：如果是annconda内使用的pip或virtualenv使用的pip，注意先在切换到对应的环境下，pip -V看看路径，然后再更新pip
+注意：
+
+    如果是annconda内使用的pip或virtualenv使用的pip，先切换到对应的环境下，
+    pip -V 看看路径，然后再更新pip
 
 通过几次 pip 的使用，对于默认的 pip 源的速度实在无法忍受，于是便搜集了一些国内的pip源，如下：
 
@@ -179,6 +182,51 @@ v2ex <http://pypi.v2ex.com/simple>
     trusted-host=mirrors.aliyun.com
 
 ## anaconda环境中使用pip
+
+注意：
+
+    pip 可能到处都是，python版本自带，virtualenv环境自带，anaconda默认base环境自带，
+    调用起来按path里的顺序，即使切换到了自己的环境下，也要看看pip到底用的哪个
+
+下面的命令，在自己的环境里看看到底哪个pip在最前面
+
+    which pip  # linux
+    where pip  # windows
+    # 用这个命令确认pip的路径是在自己的环境下面的
+    pip -V 这个会列出当前的pip的命令行位置
+
+### 一定要做：Anaconda不同环境下的 pip install 路径修改配置文件
+
+想要做到 Anaconda 中不同环境互相不干涉，只建好了新环境，这是不够的！
+
+需要再修改各自环境中的配置文件！
+
+另一个说法
+
+    <https://blog.csdn.net/qq_37344125/article/details/104418636>
+
+假设Anaconda3安装完成后建立的默认环境[base]，python版本是3.7，
+路径 C:\ProgramData\Anaconda3 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
+
+新建个环境[n36]，python版本是3.6，
+路径 C:\Users\xxx\.conda\envs\n36 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
+
+    activate n36
+    pip install numpy  # 会装到 [base]下  ！！！
+
+环境[n36]必须改配置文件 C:\Users\xxx\.conda\envs\n36\Lib\site.py
+
+    USER_SITE = None
+    USER_BASE = None
+    # 改为
+    USER_SITE = "C:\\Users\\xxx\\.conda\\envs\\n36\\Lib\\site-packages"
+    USER_BASE = "C:\\Users\\xxx\\.conda\\envs\n36\\Scripts"
+
+居然
+
+    在anaconda.2021.5安装后，建立了一个py3.8的环境，后来建第二个py3.8的环境，
+    改文件site.py时发现，居然用的是第一个的！
+    我说我的anaconda建了几个版本之后的环境喜欢乱套呢，他自己就乱引用啊……
 
 ### 为什么anaconda环境中，还需要用pip安装包
 
@@ -272,33 +320,6 @@ $ conda info
 
     # 必须告诉conda你要安装环境的名字 -n n36
     conda install --name n36 beautifulsoup4
-
-### Anaconda不同环境下的pip install路径修改配置文件
-
-想要做到 Anaconda 中不同环境互相不干涉，只建好了新环境，这是不够的！
-
-需要再修改各自环境中的配置文件！
-
-另一个说法
-
-    <https://blog.csdn.net/qq_37344125/article/details/104418636>
-
-假设Anaconda3安装完成后建立的默认环境[base]，python版本是3.7，
-路径 C:\ProgramData\Anaconda3 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
-
-新建个环境[n36]，python版本是3.6，
-路径 C:\Users\xxx\.conda\envs\n36 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
-
-    activate n36
-    pip install numpy  # 会装到 [base]下  ！！！
-
-环境[n36]必须改配置文件 C:\Users\xxx\.conda\envs\n36\Lib\site.py
-
-    USER_SITE = None
-    USER_BASE = None
-    # 改为
-    USER_SITE = "C:\\Users\\xxx\\.conda\\envs\\n36\\Lib\\site-packages"
-    USER_BASE = "C:\\Users\\xxx\\.conda\\envs\n36\\Scripts"
 
 ## virtualenv 配置python环境
 
