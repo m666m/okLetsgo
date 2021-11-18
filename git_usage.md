@@ -335,17 +335,35 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
 需要先设置用户名和邮箱
 
-    git config user.name "tester"
-    git config user.email "gg@qq.com"
+    git config user.name "m666m"
+    git config user.email "m666m@github.com"
 
-    #  设置gpg程序的路径
+    #  设置gpg程序的路径，见下面的章节 <使用 GPG 签名 Git 提交>
     $ where gpg
         E:\Git\usr\bin\gpg.exe  # 这个是 Git for windows 自带的
         E:\GnuPG\bin\gpg.exe    # 这个才是我们要用的
     $ git config --global gpg.program "E:\GnuPG\bin\gpg.exe"
     done
 
+在用户目录的~/.ssh目录下，执行如下操作
+
+    # 设置.ssh目录权限 
+    chmod 700 -R .ssh 
+
+    # 生成ssh key文件，默认回答都是一路回车
+    ssh-keygen -t rsa
+
 ### 使用ssh验证登陆
+
+如果超时，就多试几次，国内的网络环境太差
+
+    $ ssh -T git@github.com
+    Received disconnect from 20.205.243.166 port 22:11: Bye Bye
+    Disconnected from 20.205.243.166 port 22
+
+    $ ssh -T git@github.com
+    Hi m666m! You've successfully authenticated, but GitHub does not provide shell access.
+
 
 ### 使用 GPG 签名 Git 提交
 
