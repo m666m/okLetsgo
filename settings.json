@@ -36,19 +36,22 @@
     "python.formatting.autopep8Args": ["--ignore","E402"],
     "diffEditor.ignoreTrimWhitespace": false,
     "window.autoDetectColorScheme": true,
-    "workbench.preferredDarkColorTheme": "MacOS Modern Dark - Xcode Default",
-    "workbench.preferredLightColorTheme": "MacOS Modern Light - Xcode Default",
+    "workbench.preferredDarkColorTheme": "MacOS Modern Dark - Big Sur Xcode Default",
+    "workbench.preferredLightColorTheme": "MacOS Modern Light - Big Sur Xcode Default",
     "workbench.editor.wrapTabs": true,
     "workbench.colorCustomizations": {
         "window.activeBorder": "#ff7b00c5",
-        "sideBarSectionHeader.border": "#ebebeb"
-        //"inputOption.activeBackground": "#9b9999",  // 查找界面的高亮标识
+        "sideBarSectionHeader.border": "#ebebeb",
+        "inputOption.activeBackground": "#9b9999", // 查找界面的高亮标识
+        // "input.border":"#ff0000" // vs 1.61发现没这个查找到的内容在光标位置不高亮
         // "editor.foldBackground": "#355000",  // 折叠代码块高亮  editor.foldingHighlight
 		// "editor.foreground": "#010216",
     },
     "jupyter.exportWithOutputEnabled": true,
     "jupyter.sendSelectionToInteractiveWindow": true,
     "jupyter.textOutputLimit": 200000,
+    "security.workspace.trust.emptyWindow": false,
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
     "git.enableSmartCommit": true,
     "git.autofetch": true,
     "git.confirmSync": false,
@@ -214,8 +217,9 @@
     //"todo-tree.tree.showScanModeButton": false,
     "gitlens.views.tags.branches.layout": "list",
     //////////////////////////////////////////////////////////////////
-    // 下面是vs code自动添加的
-    "workbench.colorTheme": "MacOS Modern Light - Big Sur Xcode Default",
+    //
+    // 下面这些是vscode自己加的，随时变
+    //
     "workbench.editorAssociations": {
         "*.ipynb": "jupyter-notebook"
     },
@@ -223,12 +227,11 @@
         "default": "right",
         "jupyter-notebook": "left"
     },
-    "security.workspace.trust.emptyWindow": false,
-    "terminal.integrated.defaultProfile.windows": "Git Bash",
     "terminal.integrated.profiles.windows": {
         "C:\\Program Files\\Git\\bin\\bash.exe (migrated)": {
             "path": "C:\\Program Files\\Git\\bin\\bash.exe",
             "args": []
         }
     },
+    "workbench.colorTheme": "MacOS Modern Dark - Big Sur Xcode Default",
 }

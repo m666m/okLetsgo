@@ -382,21 +382,21 @@ $ conda info
 
     https://stackoverflow.com/questions/30604952/pip-default-behavior-conflicts-with-virtualenv
 
-### windows下使用脚本执行virtualenv
+### windows下使用cmd/bash脚本执行virtualenv
 
 如果用cmd，则vscode使用的时候偶尔会有脚本报错……
 用bash的问题是，用pip的时候偶尔有报错，最好切换回cmd环境，因为python的windows脚本都是按兼容cmd写的……
 
-windows下用mintty执行sh脚本自动执行环境和python程序，命令行：
+windows下用mintty(bash)执行sh脚本自动执行环境和python程序，命令行：
 
     "C:\Program Files\Git\git-bash.exe" --no-cd "C:\tools\pyenvs\yourprojectenv.sh"
 
-脚本yourprojectenv.sh内容
+    脚本yourprojectenv.sh内容
 
-    #!/bin/sh
-    # env source export 只认识linux目录结构
-    source /c/tools/pyenvs/yourprojectenv/Scripts/activate
-    python /c/Users/xxxuser/pycode/yourproject/app.py
+        #!/bin/sh
+        # env source export 只认识linux目录结构
+        source /c/tools/pyenvs/yourprojectenv/Scripts/activate
+        python /c/Users/xxxuser/pycode/yourproject/app.py
 
 windows下用cmd执行bat脚本自动执行环境和python程序
 
@@ -489,6 +489,13 @@ windows下用cmd执行bat脚本自动执行环境和python程序
 
     目前版本的各种命令执行都是bat，在bash下运行会各种报错。
     尤其是vscode，他的开发默认都是在bash的，各种source xxx之后运行，在cmd下的命令报错概率大。
+
+怎么发现的？填坑呗！
+
+    vscode 1.61 默认用bash而不是cmd，执行anaconda.2021.05 环境py3.7，
+    偶然一打python进去发现python的提示是3.8版
+
+    原来是anaconda的bash脚本写的有问题，也不调试，直接屏蔽错误提示，导致指向py3.7环境的命令根本没成功，默认执行的base环境，找到py3.8去了，一点提示都没有！
 
 ### conda 安装package的时候可以指定环境，这点比pip强
 
