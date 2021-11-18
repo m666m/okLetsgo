@@ -137,6 +137,8 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 ### PyPI使用国内源
 
+注意：如果是annconda内使用的pip或virtualenv使用的pip，注意先在切换到对应的环境下，pip -V看看路径，然后再更新pip
+
 通过几次 pip 的使用，对于默认的 pip 源的速度实在无法忍受，于是便搜集了一些国内的pip源，如下：
 
 清华源说明
