@@ -18,7 +18,7 @@
     "editor.multiCursorModifier": "alt",
     "outline.showVariables": false,
     "editor.bracketPairColorization.enabled": true,
-    "window.newWindowDimensions": "maximized", // "inherit"
+    "window.newWindowDimensions": "maximized", // "offset"
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
     "python.languageServer": "Pylance",
