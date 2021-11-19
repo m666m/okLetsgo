@@ -347,8 +347,8 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
 在用户目录的~/.ssh目录下，执行如下操作
 
-    # 设置.ssh目录权限 
-    chmod 700 -R .ssh 
+    # 设置.ssh目录权限
+    chmod 700 -R .ssh
 
     # 生成ssh key文件，默认回答都是一路回车
     ssh-keygen -t rsa
@@ -363,7 +363,6 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
     $ ssh -T git@github.com
     Hi m666m! You've successfully authenticated, but GitHub does not provide shell access.
-
 
 ### 使用 GPG 签名 Git 提交
 
