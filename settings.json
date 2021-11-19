@@ -18,7 +18,7 @@
     "editor.multiCursorModifier": "alt",
     "outline.showVariables": false,
     "editor.bracketPairColorization.enabled": true,
-    "window.newWindowDimensions": "maximized",
+    "window.newWindowDimensions": "maximized", // "inherit"
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
     "python.languageServer": "Pylance",
@@ -42,7 +42,7 @@
     "workbench.colorCustomizations": {
         "window.activeBorder": "#ff7b00c5",
         "sideBarSectionHeader.border": "#ebebeb",
-        "inputOption.activeBackground": "#9b9999", // 查找界面的高亮标识
+        "inputOption.activeBackground": "#9b9999" // 查找界面的高亮标识
         // "input.border":"#ff0000" // vs 1.61发现没这个查找到的内容在光标位置不高亮
         // "editor.foldBackground": "#355000",  // 折叠代码块高亮  editor.foldingHighlight
 		// "editor.foreground": "#010216",
