@@ -620,13 +620,23 @@ WSL2的底层还是使用了虚拟机（Hyper-V），但是他使用的Linux完�
 2.power shell下就执行几个命令：
 
     # 安装ubuntu，已经安装过了忽略这条
+    # 详见 <https://docs.microsoft.com/windows/wsl/install>
     wsl --install -d Ubuntu
+
+    # 更新WSL内核，需要管理员权限
+    wsl --update
+
+    # 查看当前wsl安装的版本及默认linux系统
+    wsl --status
+    默认分发：Ubuntu
+    默认版本：2
 
     # 进入ubuntu系统
     wsl 或 bash
 
     # 更新下包
     sudo apt update
+    # 建议更换国内源之后再做 apt-get update | apt-get upgrade
 
     # 看看安装的什么版本的linux
     $ sudo lsb_release -a
@@ -645,7 +655,26 @@ WSL2的底层还是使用了虚拟机（Hyper-V），但是他使用的Linux完�
 
 3.Linux 下的GUI应用的安装和使用
 
-    详见<https://docs.microsoft.com/zh-cn/windows/wsl/tutorials/gui-apps>
+    详见 <https://docs.microsoft.com/zh-cn/windows/wsl/tutorials/gui-apps>
+
+4.手动下载安装linux的微软发行版
+
+    详见 <https://docs.microsoft.com/zh-cn/windows/wsl/install-manual#downloading-distributions>
+
+5.安装遇到问题
+
+遇到报错试试下面这个：
+
+    启用“适用于 Linux 的 Windows 子系统”可选功能
+        dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+
+    启用“虚拟机平台”可选功能
+        dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+    要启用 WSL，请在 PowerShell 提示符下以具有管理员权限的身份运行此命令：
+        Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+
+更多的问题，详见 <https://docs.microsoft.com/zh-cn/windows/wsl/troubleshooting>
 
 注意：
 
@@ -653,7 +682,7 @@ WSL2的底层还是使用了虚拟机（Hyper-V），但是他使用的Linux完�
 
     甚至可以在上面再运行docker，这个docker也需要是微软发布的 <https://docs.microsoft.com/zh-cn/windows/wsl/tutorials/wsl-containers> 。
 
-    这个虚拟机是放到当前用户目录下的，所以注意你的c盘空间。
+    这个虚拟机是放到当前用户目录下的，类似于：USERPROFILE%\AppData\Local\Packages\CanonicalGroupLimited...，所以注意你的c盘空间。如果需要更改存储位置，打开“设置”->“系统”-->“存储”->“更多存储设置: 更改新内容的保存位置”，选择项目“新的应用将保存到:”
 
 ### 图形化安装 - Windows Store 安装Ubuntu子系统 (WSL)
 
@@ -707,6 +736,21 @@ win10+ubuntu双系统见<https://www.cnblogs.com/masbay/p/10745170.html>
 最后要说明的一点是，这个系统是安装在C:\Users\%user_name%\AppData\Local\lxss中的，所以会占用c盘的空间，所以最好把数据之类的都保存在其他盘中，这样不至于使c盘急剧膨胀。
 
 后续关于如何更换国内源、配置ubuntu桌面并进行vnc连接，参见 <https://sspai.com/post/43813>
+
+## 使用中要注意，WSL下的Linux命令区别于某些PowerShell下的命令
+
+注意 PowerShell 对某些linux命令是使用了别名，而不是调用的真正的exe文件，有没有后缀.exe是有区别的！
+
+下面是个例子 ：
+
+    # <https://docs.microsoft.com/zh-cn/windows/wsl/install-manual#downloading-distributions>
+    使用 curl 命令行实用程序来下载 Ubuntu 20.04 ：
+
+    控制台
+
+        curl.exe -L -o ubuntu-2004.appx https://aka.ms/wsl-ubuntu-2004
+
+    在本示例中，将执行 curl.exe（而不仅仅是 curl），以确保在 PowerShell 中调用真正的 curl 可执行文件，而不是调用 Invoke WebRequest 的 PowerShell curl 别名。详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
 
 ## 常见问题
 
