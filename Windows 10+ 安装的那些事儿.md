@@ -262,7 +262,7 @@ Windows安装后，先把电源计划调整为“高性能”或“卓越性能�
 
 开始->运行：msinfo32，在“系统摘要”页面，查看状态是“关闭”的那些安全相关选项，逐个解决。
 
-如果主板BIOS设置中关于vt-d、hyper-v的设置没有打开，则可能有些依赖虚拟机的隔离浏览的选项不可用，需要去BIOS设置中打开。
+如果主板BIOS设置中关于vt-d、hyper-v的设置没有打开，则可能有些依赖虚拟机的隔离浏览的选项不可用，需要去主板BIOS设置中打开。
 
 某些windows默认没有安装的组件是增强安全功能依赖的，需要单独安装：设置->应用->应用和功能->可选功能，点击右侧的“更多windows功能”，弹出窗口选择“启用和关闭windows功能”：
 
@@ -555,22 +555,23 @@ Win+R打开运行，输入WSReset.exe回车。
 
 确保windows安全中心中的相关设置都开启，参见上面的章节[刚装完 Windows 10 后的一些设置]里的“设置windows安全中心”部分。
 
-1.浏览网页时防止网页偷偷改浏览器主页等坏行为
+### 1.浏览网页时防止网页偷偷改浏览器主页等坏行为
 
-    在edge浏览器，点击菜单，选择“应用程序防护窗口”，这样新开的一个edge窗口，是在虚拟机进程启动的，任何网页操作都不会侵入到正常使用的windows中。
+在edge浏览器，点击菜单，选择“应用程序防护窗口”，这样新开的一个edge窗口，是在虚拟机进程启动的，任何网页操作都不会侵入到正常使用的windows中。
 
-    在windows安全中心里，可以设置是否从这里复制粘贴内容到正常使用的Windows中。
+在windows安全中心里可以设置，是否从这里复制粘贴内容到正常使用的Windows中等各种功能。
 
-2.运行小工具程序等相对不靠谱的程序
+### 2.用沙盒运行小工具等相对不靠谱的程序
 
-    开始菜单，选择“windows sandbox”程序，将新开一个虚拟的windows窗口，把你觉得危险的程序复制粘贴到这个虚拟的windows系统里运行，格式化这里的硬盘都没关系，在这个系统里还可以正常上网。
+开始菜单，选择“windows sandbox”程序，将新开一个虚拟的windows窗口，把你觉得危险的程序复制粘贴到这个虚拟的windows系统里运行，格式化这里的硬盘都没关系，在这个系统里还可以正常上网。
 
-    这个虚拟的windows窗口一旦关闭，里面的任何操作都会清零，所以可以把运行结果复制粘贴到正常使用的windows中。
+这个虚拟的windows窗口一旦关闭，里面的任何操作都会清零，所以可以把运行结果复制粘贴到正常使用的windows中。
 
-    windows沙盒可以用配置文件的方式设置共享目录，并设置只读权限，方便使用。比如把c:\tools目录映射到windows沙盒里，或者d:\Games目录，试试
-    windows沙盒使用 WDAGUtilityAccount 本地帐户，所以共享文件夹也保存在这个用户目录的desktop目录下。
+windows沙盒可以用配置文件的方式设置共享目录，并设置只读权限，方便使用。比如把c:\tools目录映射到windows沙盒里运行网络下载的小程序，或者把download目录映射到沙盒的download目录以便在沙盒里浏览网页并下载程序。
 
-tools.wsb示例
+windows沙盒使用 WDAGUtilityAccount 本地帐户，所以共享文件夹也保存在这个用户目录的desktop目录下。
+
+tools.wsb示例：
 
 ```xml
 <Configuration>
@@ -608,11 +609,15 @@ windows 10+ 上的docker是通过Hyper-V实现的，之前的windows 7 上的doc
 需要注意不同映像的区别，完整windows api的是windows和windows server，其它的是仅支持 .net
 <https://docs.microsoft.com/zh-cn/virtualization/windowscontainers/manage-containers/container-base-images>
 
-### 适用于 Linux 的 Windows 子系统（WSL2）
+### 适用于 Linux 的 Windows 子系统（WSL）- 命令行安装Ubuntu
 
-WSL2的底层还是使用了虚拟机（Hyper-V），但是完全集成到了windows中，即用起来就像windows中直接运行linux程序。使用Virsual Studio Code开发程序，还支持直接打开WSL虚机，就像连接Docker虚机或远程连接SSH服务器一样简单。开发工具如git、docker、数据库、vGpu加速<https://developer.nvidia.com/cuda/wsl> 等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/windows/wsl/setup/environment>
+WSL2的底层还是使用了虚拟机（Hyper-V），但是他使用的Linux完全集成到了windows中，即使用起来就像在windows中直接运行linux程序。
 
-Linux 下的GUI应用的安装和使用详见 <https://docs.microsoft.com/zh-cn/windows/wsl/tutorials/gui-apps>，简单来说，power shell下就执行几个命令：
+开发工具可以使用Virsual Studio Code，支持直接打开WSL虚机，就像连接Docker虚机或远程连接SSH服务器一样简单。其它开发工具如git、docker、数据库、vGpu加速（<https://developer.nvidia.com/cuda/wsl> ）等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/windows/wsl/setup/environment>
+
+1.开启 WSL 功能： windows 设置->应用和功能，点击右侧的“程序和功能”，弹出窗口选择“启用或关闭windows功能”，在列表勾选“适用于Linux的Windows子系统”，确定。
+
+2.power shell下就执行几个命令：
 
     # 安装ubuntu，已经安装过了忽略这条
     wsl --install -d Ubuntu
@@ -623,15 +628,34 @@ Linux 下的GUI应用的安装和使用详见 <https://docs.microsoft.com/zh-cn/
     # 更新下包
     sudo apt update
 
+    # 看看安装的什么版本的linux
+    $ sudo lsb_release -a
+    [sudo] password for xx:
+    No LSB modules are available.
+    Distributor ID: Ubuntu
+    Description:    Ubuntu 20.04 LTS
+    Release:        20.04
+    Codename:       focal
+
     # 安装小火车
     sudo apt install sl
 
     # 出现火车，说明安装成功
     sl
 
-注意使用了WSL2就只能用微软发布的Linux版本<https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#full-linux-kernel>，但是提供了完全的二进制兼容，用户可以自行升级linux内核。甚至可以在上面再运行docker，这个docker也需要是微软发布的 <https://docs.microsoft.com/zh-cn/windows/wsl/tutorials/wsl-containers> 。这个虚拟机是放到当前用户目录下的
+3.Linux 下的GUI应用的安装和使用
 
-### Windows Store 安装Ubuntu子系统 (WSL)
+    详见<https://docs.microsoft.com/zh-cn/windows/wsl/tutorials/gui-apps>
+
+注意：
+
+    使用了WSL2就只能用微软发布的Linux版本<https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#full-linux-kernel>，但是提供了完全的二进制兼容，用户可以自行升级linux内核。
+
+    甚至可以在上面再运行docker，这个docker也需要是微软发布的 <https://docs.microsoft.com/zh-cn/windows/wsl/tutorials/wsl-containers> 。
+
+    这个虚拟机是放到当前用户目录下的，所以注意你的c盘空间。
+
+### 图形化安装 - Windows Store 安装Ubuntu子系统 (WSL)
 
 win10+ubuntu双系统见<https://www.cnblogs.com/masbay/p/10745170.html>
 
@@ -659,7 +683,7 @@ win10+ubuntu双系统见<https://www.cnblogs.com/masbay/p/10745170.html>
 
 12.大约5秒，安装完毕后需要重启电脑
 
-【废弃】13.重启电脑后并没有安装linux系统，还需要输入lxrun /install /y来进行系统的下载 （win10 2020版已经启用此命令）
+【废弃】13.重启电脑后并没有安装linux系统，还需要输入lxrun /install /y来进行系统的下载 （win10 2020版已经弃用此命令）
 
 13.在Windows搜索框中输入网址 <https://aka.ms/wslstore> ，然后回车，之后会先打开edge浏览器，然后自动跳转到win10应用商店。
 打开微软商店应用，在搜索框中输入“Linux”然后搜索，选择一个你喜欢的 Linux 发行版本然后安装。
@@ -681,6 +705,8 @@ win10+ubuntu双系统见<https://www.cnblogs.com/masbay/p/10745170.html>
 输入sl 出现火车，说明安装成功
 
 最后要说明的一点是，这个系统是安装在C:\Users\%user_name%\AppData\Local\lxss中的，所以会占用c盘的空间，所以最好把数据之类的都保存在其他盘中，这样不至于使c盘急剧膨胀。
+
+后续关于如何更换国内源、配置ubuntu桌面并进行vnc连接，参见 <https://sspai.com/post/43813>
 
 ## 常见问题
 
