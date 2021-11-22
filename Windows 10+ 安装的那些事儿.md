@@ -780,6 +780,8 @@ win10+ubuntu双系统见<https://www.cnblogs.com/masbay/p/10745170.html>
 
     在本示例中，将执行 curl.exe（而不仅仅是 curl），以确保在 PowerShell 中调用真正的 curl 可执行文件，而不是调用 Invoke WebRequest 的 PowerShell curl 别名。详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
 
+设置->应用->应用和功能，里面有个“应用执行别名”，点击进去慢慢研究吧，真烦人啊，估计整些逻辑弯弯绕。
+
 ## 常见问题
 
 ### 如何判断USB Type-C口有哪些功能
