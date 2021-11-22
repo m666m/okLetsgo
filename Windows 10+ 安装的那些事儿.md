@@ -28,6 +28,20 @@
     即使这时进入主板BIOS设置里，把存储设备改为UEFI，该MBR硬盘启动系统的时候会转主板的CMS模式下的UEFI方式，利用Windows安装时的UEFI分区引导系统，这样还是绕不开系统bios引导自检步骤的，无法实现 Windows 10 真正的UEFI方式启动系统那样秒进桌面。
     见下面章节 [技嘉主板BIOS设置 UEFI + GPT 模式启动Windows]中的踩坑经历。
 
+## 技嘉 B560M AORUS PRO 主板（BIOS版本 F7） + Intel 11600KF CPU + DDR4 3600 内存的初始BIOS设置
+
+1. HDMI口连接显示器（防止老显卡的DP口不支持默认的UEFI），开机按Del键进入主板BIOS设置。
+
+2. 装载系统默认优化设置：BOOT->Load optimized defaults，注意这之后引导操作系统默认是UEFI的，存储设备选项需要手动打开CSM后切换，详见后面的章节 [技嘉主板BIOS设置 UEFI + GPT 模式启动Windows]。
+
+3. 内存：设置选择XMP profiles，以启用3600MHz最优频率
+
+4. 风扇：按F6，对各个风扇选静音模式，或手动，先选全速看看最大转速多少，再切换手动，先拉曲线到最低转速，然后再横向找不同的温度调整风扇转速挡位。
+
+5. 虚拟化：Advanced CPU settings-> Hyper Threading 打开英特尔CPU超线程； Settings-> VT-d选项打开虚拟机。
+
+6. UEFI + GPT + Secure Boot： 先F10保存退出，重启计算机，后续再设置，详见下面相关章节
+
 ## 技嘉主板BIOS设置 UEFI + GPT 模式启动Windows
 
 1.确保存储和PCIe设备是UEFI 模式
@@ -36,7 +50,7 @@ UEFI + GPT模式一开, 都是直接厂商logo转一圈就直接进系统的，�
 
 UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→加载系统→进入系统。传统的BIOS在加载系统之前需要进行一系列的硬件检查。
 
-启动模式选项（Windows 10 Features）要选择“Windows 10”而不是“other os”，CSM模式是关闭的，UEFI硬盘和PCIe设备是UEFI模式，这样系统才能默认用Windows的UEFI模式快速启动。
+主板BIOS设置中，启动模式选项（Windows 10 Features）要选择“Windows 10”而不是“other os”，CSM模式选关闭，UEFI硬盘和PCIe设备是UEFI模式，这样系统才能默认用Windows的UEFI模式快速启动。
 
 重启开机后按 F2 进入bios，选BOOT选项卡：
 
@@ -49,17 +63,19 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
 
     CMS模式关闭后，当前系统内的PCIe设备应该是出现了一些选项可以进行设置，比如“Advanced”界面 PCI  Subsystem setting 下RX30系列显卡的支持Resize Bar等
 
-为什么要这样操作呢？ Windows 10安装的时候踩了个坑：
+为什么要CSM模式又开又关这样操作呢？ Windows 10安装的时候踩了个坑：
 
-    我在主板BIOS设置中启动模式选项（Windows 10 Features）选择“Windows 10”，“CSM Support”选项选择“Disable”后下面的三个选项自动隐藏了，我以为都是自动UEFI了，其实技嘉主板只是把选项隐藏了，硬盘模式默认不是UEFI……
+    我在主板BIOS设置中启动模式选项（Windows 10 Features）选择“Windows 10”，“CSM Support”选项选择“Disable”后下面的三个选项自动隐藏了，我以为都是自动UEFI了，其实技嘉主板只是把选项隐藏了，硬盘模式保持了上次安装windows时设置的legacy不是UEFI……
+
     这样导致我的Windows引导还是走的老模式，UEFI引导硬盘其实没用上，装完后Windows启动没有实现秒进桌面才发现的这个问题。
 
-    原因在于，Windows安装程序是根据当前BIOS设置的引导方式，来决定对硬盘格式化为哪个分区类型，只有BIOS里把“CSM Support”模式enable后出现的存储设备类型设为UEFI才会默认用GPT类型，设为legacy就会默认用MBR类型，设好后还得把“CSM Support”disable才行。
+    原因在于，Windows安装程序是根据当前BIOS设置的引导方式，来决定对硬盘格式化为哪个分区类型，只有BIOS里把“CSM Support”模式enable后出现的存储设备类型设为UEFI才会默认用GPT类型，设为legacy就会默认用MBR类型，设好后还得把“CSM Support”禁用选disable才行。
 
 总结来说，Windows 10的安装兼容各种老设备，最古老的一种是主板BIOS设置里“Windows 10 Features”选择“other os”，“CSM Support”选“Enable”，存储和PCIe设备都选择“leagcy”，也可以安装Windows 10，但是就无法享受真正UEFI引导系统的秒进桌面了。
+
 我的显卡因为用DP口不兼容，BIOS设置里“Windows 10 Features”选择“other os”，“CSM Support”选“Enable”，存储和PCIe设备都选择“UEFI”安装的Windows 10 2019 LTSC。
-后来显卡升级了BIOS，又关闭主板CMS模式装了Windows 10 21H1，在主板BIOS设置里“Windows 10 Features”选择“Windows 10”，“CSM Support”选“Disable”，但是忘记把存储设备换回UEFI类型了，导致硬盘被Windows安装程序格式化为MBR类型，
-开机启动后，估计时主板发现没有引导成功，自动转为走bios自检过程，无法秒进桌面。
+后来显卡升级了BIOS，又关闭主板CMS模式装了Windows 10 21H1，在主板BIOS设置里装载默认值“Load optimized defaults”（默认把存储设备换回了legacy），然后设置“Windows 10 Features”选择“Windows 10”，“CSM Support”选“Disable”，但是忘记把存储设备换回UEFI类型了，导致硬盘被Windows安装程序格式化为MBR类型。这样装完windows开机启动后，估计是主板尝试UEFI没有引导成功，自动转为CSM模式走bios+UEFI的过程，导致无法秒进桌面。
+
 总之，完美的做法，应该在BIOS设置中“Windows 10 Features”选择“Windows 10”，“CSM Support”选项选择“Enable”后出现的存储和PCIe设备的选项都选择“UEFI”，然后再把“CSM Support”选项选择“Disable”，使用Rufus制作安装u盘时也需要选择GPT+UEFI方式，这样u盘可以正常启动，这样安装好的windows才能实现秒进桌面。
 
 2.SATA硬盘使用“AHCI”模式
@@ -77,46 +93,6 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
 验证：启动windows后运行msinfo32，在“系统摘要”界面找“BIOS模式”选项，看到结果是“UEFI”。
 
 参考 <https://www.163.com/dy/article/FTJ5LN090531NEQA.html>
-
-## UEFI + Ultra Fast启动的操作系统中引导到UEFI固件设置（无法用键盘进入主板BIOS设置的解决办法）
-
-很多支持 Fast Boot 的主板，在主板BIOS的“Fast Boot”项设置了“Ultra Fast”之后，开机过程中不能用键盘进入BIOS了，解决办法是进入操作系统后指定下一次重启进入 BIOS。
-
-在windows 10中指定重启到UEFI固件的步骤：
-
-    点击“开始”菜单—选择“设置”
-
-    点击“更新和安全”
-
-    在“更新和安全”界面中点击左侧的“恢复”选项，再在右侧的“高级启动”中点击“立即重新启动”
-
-    Windows 10重启之后你将会看到出现一个界面提供选项，选择“疑难解答（重置你的电脑或高级选项）”
-
-    新出现的界面选择“高级选项—>UEFI固件设置”，重启之后就可以直接引导到 UEFI 了。
-
-    参考 <https://docs.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/boot-to-uefi-mode-or-legacy-bios-mode>
-
-Linux
-
-    Linux 也可以在重启时告诉系统下一次启动进入 UEFI 设置。使用 systemd 的 Linux 系统有 systemctl 工具可以设置。
-
-    可以查看帮助：systemctl --help|grep firmware-setup
-
-    --firmware-setup Tell the firmware to show the setup menu on next boot
-    直接在命令行执行下面命令即可在下一次启动后进入 UEFI 设置。
-
-    systemctl reboot --firmware-setup
-    参考资料：https://www.freedesktop.org/software/systemd/man/systemctl.html#--firmware-setup
-
-原因是UEFI启动的操作系统是跟主板设置密切结合的，“Fast Boot”分几个选项，导致了初始化部分设备的限制：
-
-    主板BIOS的“Fast Boot”项如果开启“Fast”选项，可以减少硬件自检时间，但是会存在一些功能限制，比如Fast模式下不能使用USB设备启动了，因为这个加速功能其实是在BIOS自检中禁止扫描USB设备了。
-
-    主板BIOS的“Fast Boot”项如果开启“Ultra Fast”选项，之后就不能用键盘进入BIOS了，估计跟Fast模式一样把大部分不是必须的自检过程给禁用了，所以要想进BIOS只能清空CMOS或者在操作系统里选择“重启到UEFI”。
-
-    参考说明
-        <https://www.expreview.com/22043.html>
-        <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-windows.html>
 
 ## 技嘉主板BIOS设置 Secure Boot 功能
 
@@ -219,7 +195,7 @@ WIN11除了硬件要求之外，还有2个必要条件：
 
 <https://qastack.cn/superuser/1228136/what-version-of-ms-dos-does-rufus-use-to-make-bootable-usbs>
 
-## 技嘉 B650M pro 主板BIOS打开网络唤醒功能
+## 技嘉 B560M AORUS PRO 主板BIOS打开网络唤醒功能
 
 根据产品规格指出，此产品有提供网络唤醒 (Wake On LAN) 的功能，但是找不到相关设定或是开关可以启用该选项。
 
@@ -230,7 +206,7 @@ WIN11除了硬件要求之外，还有2个必要条件：
 
 注意：确认Windows 10快速启动功能是否关闭，参见下面章节[关闭“快速启动”]  <https://www.asus.com.cn/support/FAQ/1045950>
 
-## 技嘉 B650M pro 主板开启待机状态USB口供电功能和定时自动开机功能
+## 技嘉 B560M AORUS PRO 主板开启待机状态USB口供电功能和定时自动开机功能
 
 BIOS中的“Erp”(ErP为Energy-related Products欧洲能耗有关联的产品节能要求)选项选择开启，
 
@@ -262,7 +238,7 @@ Windows安装后，先把电源计划调整为“高性能”或“卓越性能�
 
 开始->运行：msinfo32，在“系统摘要”页面，查看状态是“关闭”的那些安全相关选项，逐个解决。
 
-如果主板BIOS设置中关于vt-d、hyper-v的设置没有打开，则可能有些依赖虚拟机的隔离浏览的选项不可用，需要去主板BIOS设置中打开。
+如果主板BIOS设置中关于Intel CPU虚拟化选项如vt-d、hyper-threading的设置没有打开，则可能有些依赖虚拟机的隔离浏览的选项不可用，需要去主板BIOS设置中打开。
 
 某些windows默认没有安装的组件是增强安全功能依赖的，需要单独安装：设置->应用->应用和功能->可选功能，点击右侧的“更多windows功能”，弹出窗口选择“启用和关闭windows功能”：
 
@@ -550,6 +526,48 @@ Win+R打开运行，输入WSReset.exe回车。
 
 该脚本由abbodi1406贡献：
 <https://forums.mydigitallife.net/threads/add-store-to-Windows-10-enterprise-ltsc-LTSC.70741/page-30#post-1468779>
+
+## UEFI Fast Boot 设置为 Ultra Fast 启动的操作系统中引导到UEFI固件设置（无法用键盘进入主板BIOS设置的解决办法）
+
+很多支持 Fast Boot 的主板，在主板BIOS的“Fast Boot”项设置了“Ultra Fast”之后，开机过程中不能用键盘进入BIOS了，解决办法是进入操作系统后指定下一次重启进入 BIOS。
+
+对技嘉 B560M AORUS PRO 主板来说，可以对usb等各个细分选项分别设置是否在初始化的时候跳过，可以避免这个问题。
+
+### 在windows 10中指定重启到UEFI固件的步骤
+
+    点击“开始”菜单—选择“设置”
+
+    点击“更新和安全”
+
+    在“更新和安全”界面中点击左侧的“恢复”选项，再在右侧的“高级启动”中点击“立即重新启动”
+
+    Windows 10重启之后你将会看到出现一个界面提供选项，选择“疑难解答（重置你的电脑或高级选项）”
+
+    新出现的界面选择“高级选项—>UEFI固件设置”，重启之后就可以直接引导到 UEFI 了。
+
+    参考 <https://docs.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/boot-to-uefi-mode-or-legacy-bios-mode>
+
+### Linux 指定重启到UEFI固件的步骤
+
+    Linux 也可以在重启时告诉系统下一次启动进入 UEFI 设置。使用 systemd 的 Linux 系统有 systemctl 工具可以设置。
+
+    可以查看帮助：systemctl --help|grep firmware-setup
+
+    --firmware-setup Tell the firmware to show the setup menu on next boot
+    直接在命令行执行下面命令即可在下一次启动后进入 UEFI 设置。
+
+    systemctl reboot --firmware-setup
+    参考资料：https://www.freedesktop.org/software/systemd/man/systemctl.html#--firmware-setup
+
+原因是UEFI启动的操作系统是跟主板设置密切结合的，“Fast Boot”分几个选项，导致了初始化部分设备的限制：
+
+    主板BIOS的“Fast Boot”项如果开启“Fast”选项，可以减少硬件自检时间，但是会存在一些功能限制，比如Fast模式下不能使用USB设备启动了，因为这个加速功能其实是在BIOS自检中禁止扫描USB设备了。
+
+    主板BIOS的“Fast Boot”项如果开启“Ultra Fast”选项，之后就不能用键盘进入BIOS了，估计跟Fast模式一样把大部分不是必须的自检过程给禁用了，所以要想进BIOS只能清空CMOS或者在操作系统里选择“重启到UEFI”。
+
+    参考说明
+        <https://www.expreview.com/22043.html>
+        <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-windows.html>
 
 ## 安全的使用你的 windows 10
 
