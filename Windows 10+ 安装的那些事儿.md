@@ -32,15 +32,17 @@
 
 1. HDMI口连接显示器（防止老显卡的DP口不支持默认的UEFI），开机按Del键进入主板BIOS设置。
 
-2. 装载系统默认优化设置：BOOT->Load optimized defaults，注意这之后引导操作系统默认是UEFI的，存储设备选项需要手动打开CSM后切换，详见后面的章节 [技嘉主板BIOS设置 UEFI + GPT 模式启动Windows]。
+2. F7 装载系统默认优化设置：BOOT->Load optimized defaults，注意这之后引导操作系统默认是UEFI的，存储设备选项需要手动打开CSM后切换，详见后面的章节 [技嘉主板BIOS设置 UEFI + GPT 模式启动Windows]。
 
-3. 内存：设置选择XMP profiles，以启用3600MHz最优频率
+3. 内存：TWEAKS->Memory， 选择X.M.P profiles，以启用3600MHz最优频率，这个版本的BIOS也已经自动放开了，我的这个内存默认1.2v跑到了3900MHz。
 
-4. 风扇：按F6，对各个风扇选静音模式，或手动，先选全速看看最大转速多少，再切换手动，先拉曲线到最低转速，然后再横向找不同的温度调整风扇转速挡位。
+4. AVX512: Advanced CPU settings-> AVX settings，选custom，出现的avx512选项选择disable，关闭这个无用功能，可以降低20%的cpu整体功耗。。。电源功耗PL1/PL2不用设了，这个版本的BIOS已经全放开了。
 
-5. 虚拟化：Advanced CPU settings-> Hyper Threading 打开英特尔CPU超线程； Settings-> VT-d选项打开虚拟机。
+5. 虚拟化：Advanced CPU settings-> Hyper Threading 选项打开英特尔CPU超线程； Settings-> MISC-> VT-d 选项打开虚拟机。
 
-6. UEFI + GPT + Secure Boot： 先F10保存退出，重启计算机，后续再设置，详见下面相关章节
+6. F6 风扇设置：对各个风扇选静音模式，或手动，先选全速看看最大转速多少，再切换手动，先拉曲线到最低转速，然后再横向找不同的温度调整风扇转速挡位。
+
+7. UEFI + GPT + Secure Boot： 先F10保存退出，重启计算机，后续再设置，详见下面相关章节
 
 ## 技嘉主板BIOS设置 UEFI + GPT 模式启动Windows
 
@@ -127,6 +129,66 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
 
 不大明白为嘛技嘉没提供个详细的操作说明呢？
 
+## 用Rufus制作启动u盘安装 Windows11
+
+WIN11除了硬件要求之外，还有2个必要条件：
+
+    1.主板BIOS开启 TPM2.0
+
+    进入主板BIOS设置的“Settings”，选择“Intel Platform Trust Technology(PTT)”，选择“Enable”，下面的选项“Trusted Computing”回车，进入的设置界面，找“Security Device Support”选择“Enable”。
+
+    2.主板BIOS开启安全启动（Secure Boot）
+
+    见前面的章节[技嘉主板BIOS设置UEFI模式下Secure Boot功能]
+
+用Rufus制作启动u盘时，分区类型要选择GPT（这时目标系统类型自动选择UEFI），这样的开机过程直接可以跳过BIOS自检等一堆耗时过程，U盘启动用UEFI+GPT，秒进引导系统，也符合windows 11的启动要求（如果u盘用MBR模式启动，那主板BIOS也得设置存储设备为非UEFI，则windows 11安装程序默认的格式化硬盘就不是GPT类型了……）。
+
+特殊之处在于 Rufus 3.17版之前制作的启动u盘，初始引导启动需要临时关闭“Secure Boot”，3.17之后的版本不用了，已经取得windows的签名文件了：
+
+    一、根据Rufus的要求 <https://github.com/pbatard/Rufus/wiki/FAQ#Windows_11_and_Secure_Boot>，见下面的章节 [老显卡不支持DP口开机显示（Nvidia Geforce 1080系）]中的[凑合方案：主板BIOS设置为 CSM 方式安装 Windows 可以连接DP口]。
+
+    用Rufus制作的启动u盘（制作时的选项是“分区类型GPT+目标系统类型UEFI”）启动计算机，Windows安装程序自动启动，按提示点选下一步，注意原硬盘分区建议全删，这时Windows安装程序开始拷贝文件，并未实质进入配置计算机硬件系统的过程，这时的Windows安装过程并不要求Secure Boot。
+
+    注：觉得Secure Boot关闭就不安全了？ 不，它本来就不是什么安全措施，只是名字叫安全，其实做的工作就是数字签名验证，而且微软的密钥已经在2016年就泄露了…… 参见<https://github.com/pbatard/Rufus/wiki/FAQ#Why_do_I_need_to_disable_Secure_Boot_to_use_UEFINTFS>。至于linux，没参与微软的这个步骤的话，主板厂商不会内置它的公钥到主板中，估计安装的时候就不能开启这个选项。
+
+    二、在Windows安装程序拷贝完文件，提示进行第一次重启的时候，重新打开BIOS的“Secure Boot”选项：
+
+    重启后按 F2 进入bios设置，选BOOT选项卡，
+
+        找到“Windows 10 Features” 设置为 “Windows 10”
+
+        之后下面的选项“CSM Support”会消失，故其原来设置的 Disabled 或 Enable 没啥用了，同时下面的三个选项也会消失，都不需要了
+
+        之后下面出现的是“Secure Boot”选项，选择Enable，按 F10 保存退出，主板重启后自动引导硬盘上的Windows安装程序进行后续的安装配置工作
+
+        注意：主板BIOS的选项 Windows 10 feature 设置为“win10”后，原来用MBR方式安装的win7或win10就进不了系统了，除非还原为“other os”
+
+## 使用 Rufus 制作ghost启动盘
+
+制作时引导类型选择“FreeDos”就行了，完成后把ghost拷贝到u盘上，以后用它开机引导直接进入dos命令行方式，运行命令ghost即可。
+
+<https://qastack.cn/superuser/1228136/what-version-of-ms-dos-does-rufus-use-to-make-bootable-usbs>
+
+## 技嘉 B560M AORUS PRO 主板BIOS打开网络唤醒功能
+
+根据产品规格指出，此产品有提供网络唤醒 (Wake On LAN) 的功能，但是找不到相关设定或是开关可以启用该选项。
+
+首先，请在开机时进入 BIOS 设定程序，在电源管理选项中，请启用 PME EVENT WAKEUP 功能，然后储存设定退出程序，再重新启动进入 Windows 后，请开启设备管理器窗口，检查网络卡内容并开启唤醒功能相关设定即可。
+如果使用的网络卡上有 WOL 接头，需配合主板上 WOL 接头；如果使用的网络卡上没有 WOL 接头，且它的规格是 PCI 2.3，则依上述的方法即可。
+
+<https://www.gigabyte.cn/Motherboard/B560M-AORUS-PRO-rev-10/support#support-dl-driver>
+
+注意：确认Windows 10快速启动功能是否关闭，参见下面章节[关闭“快速启动”]  <https://www.asus.com.cn/support/FAQ/1045950>
+
+## 技嘉 B560M AORUS PRO 主板开启待机状态USB口供电功能和定时自动开机功能
+
+BIOS中的“Erp”(ErP为Energy-related Products欧洲能耗有关联的产品节能要求)选项选择开启，
+
+    usb口功能设置选择供电。
+    RTC（定时开机）设置具体时间
+
+注意：确认Windows 10快速启动功能是否关闭，参见下面章节[关闭“快速启动”]  <https://www.asus.com.cn/support/FAQ/1042220> <https://www.asus.com.cn/support/FAQ/1043640>
+
 ## 老显卡不支持DP口开机显示（Nvidia Geforce 1080系）
 
 ### 一劳永逸方案：Nvidia 显卡可以升级固件解决这个问题
@@ -158,62 +220,6 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
     之后下面出现的三项，除了网卡启动的那个选项不用管，其它两个关于存储和PCIe设备的选项要确认选的是“UEFI”，这样在“other os”模式下可以实现DP口的开机显示，要是还不行，那两个选项直接选非UEFI的选项。
 
 关于主板BIOS设置CSM模式可以启动DP口的解释 <https://nvidia.custhelp.com/app/answers/detail/a_id/3156/kw/doom/related/1>
-
-## 用Rufus制作启动u盘安装 Windows11
-
-WIN11除了硬件要求之外，还有2个必要条件：
-
-    1.主板BIOS开启 TPM2.0
-
-    进入主板BIOS设置的“Settings”，选择“Intel Platform Trust Technology(PTT)”，选择“Enable”，下面的选项“Trusted Computing”回车，进入的设置界面，找“Security Device Support”选择“Enable”
-
-    2.主板BIOS开启安全启动（Secure Boot），见前面的章节[技嘉主板BIOS设置UEFI模式下Secure Boot功能]
-
-用Rufus制作启动u盘时，分区类型要选择GPT（这时目标系统类型自动选择UEFI），这样的开机过程直接可以跳过BIOS自检等一堆耗时过程，秒进引导系统。
-
-一、根据Rufus的要求 <https://github.com/pbatard/Rufus/wiki/FAQ#Windows_11_and_Secure_Boot>，Rufus 3.17版之前制作的启动u盘，初始引导启动需要临时关闭“Secure Boot”，见上面的章节 [老显卡不支持DP口开机显示（Nvidia Geforce 1080系）]中的[凑合方案：主板BIOS设置为 CSM 方式安装 Windows 可以连接DP口]。
-
-用Rufus制作的启动u盘（制作时的选项是“分区类型GPT+目标系统类型UEFI”）启动计算机，Windows安装程序自动启动，按提示点选下一步，注意原硬盘分区建议全删，这时Windows安装程序开始拷贝文件，并未实质进入配置计算机硬件系统的过程，这时的Windows安装过程并不要求Secure Boot。
-
-注：觉得Secure Boot关闭就不安全了？ 不，它本来就不是什么安全措施，只是名字叫安全，其实做的工作就是数字签名验证，而且微软的密钥已经在2016年就泄露了…… 参见<https://github.com/pbatard/Rufus/wiki/FAQ#Why_do_I_need_to_disable_Secure_Boot_to_use_UEFINTFS>。至于linux，没参与微软的这个步骤的话，主板厂商不会内置它的公钥到主板中，估计安装的时候就不能开启这个选项。
-
-二、在Windows安装程序拷贝完文件，提示进行第一次重启的时候，重新打开BIOS的“Secure Boot”选项：
-
-重启后按 F2 进入bios设置，选BOOT选项卡，
-
-    找到“Windows 10 Features” 设置为 “Windows 10”
-
-    之后下面的选项“CSM Support”会消失，故其原来设置的 Disabled 或 Enable 没啥用了，同时下面的三个选项也会消失，都不需要了
-
-    之后下面出现的是“Secure Boot”选项，选择Enable，按 F10 保存退出，主板重启后自动引导硬盘上的Windows安装程序进行后续的安装配置工作
-
-    注意：主板BIOS的选项 Windows 10 feature 设置为“win10”后，原来用MBR方式安装的win7或win10就进不了系统了，除非还原为“other os”
-
-## 使用 Rufus 制作ghost启动盘
-
-制作时引导类型选择“FreeDos”就行了，完成后把ghost拷贝到u盘上，以后用它开机引导直接进入dos命令行方式，运行命令ghost即可。
-
-<https://qastack.cn/superuser/1228136/what-version-of-ms-dos-does-rufus-use-to-make-bootable-usbs>
-
-## 技嘉 B560M AORUS PRO 主板BIOS打开网络唤醒功能
-
-根据产品规格指出，此产品有提供网络唤醒 (Wake On LAN) 的功能，但是找不到相关设定或是开关可以启用该选项。
-
-首先，请在开机时进入 BIOS 设定程序，在电源管理选项中，请启用 PME EVENT WAKEUP 功能，然后储存设定退出程序，再重新启动进入 Windows 后，请开启设备管理器窗口，检查网络卡内容并开启唤醒功能相关设定即可。
-如果使用的网络卡上有 WOL 接头，需配合主板上 WOL 接头；如果使用的网络卡上没有 WOL 接头，且它的规格是 PCI 2.3，则依上述的方法即可。
-
-<https://www.gigabyte.cn/Motherboard/B560M-AORUS-PRO-rev-10/support#support-dl-driver>
-
-注意：确认Windows 10快速启动功能是否关闭，参见下面章节[关闭“快速启动”]  <https://www.asus.com.cn/support/FAQ/1045950>
-
-## 技嘉 B560M AORUS PRO 主板开启待机状态USB口供电功能和定时自动开机功能
-
-BIOS中的“Erp”(ErP为Energy-related Products欧洲能耗有关联的产品节能要求)选项选择开启，
-
-    usb口功能设置选择供电。
-    RTC（定时开机）设置具体时间
-
-注意：确认Windows 10快速启动功能是否关闭，参见下面章节[关闭“快速启动”]  <https://www.asus.com.cn/support/FAQ/1042220> <https://www.asus.com.cn/support/FAQ/1043640>
 
 ## 装完 Windows 10 后的一些设置
 
@@ -532,6 +538,8 @@ Win+R打开运行，输入WSReset.exe回车。
 很多支持 Fast Boot 的主板，在主板BIOS的“Fast Boot”项设置了“Ultra Fast”之后，开机过程中不能用键盘进入BIOS了，解决办法是进入操作系统后指定下一次重启进入 BIOS。
 
 对技嘉 B560M AORUS PRO 主板来说，可以对usb等各个细分选项分别设置是否在初始化的时候跳过，可以避免这个问题。
+
+实际试了一下，没感觉到 Ultra Fast 比 Fast Boot 快多少，还是不用了。
 
 ### 在windows 10中指定重启到UEFI固件的步骤
 
