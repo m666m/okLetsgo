@@ -12,6 +12,8 @@
 
 windows7本机下服务端安装，详见 GIT+SSH\OpenSSH-Win64.txt
 
+参考 <https://winscp.net/eng/docs/guide_windows_openssh_server#windows_older>
+
 下面是windonws7 下本机虚拟机作为ssh服务端的配置：
 
 1. 配置ddns和路由器端口转发用于在互联网访问内网

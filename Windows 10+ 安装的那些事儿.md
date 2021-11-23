@@ -3,30 +3,34 @@
 
 ## 关键词 UEFI/CSM、GPT/MBR
 
-目标系统类型 UEFI/CSM
+### 目标系统类型 UEFI/CSM
 
-    UEFI模式是Windows 7 之后出现的新型操作系统启动引导方式，跳过很多硬件自检，加速了开机步骤，缺点是跟Windows 7之前的系统启动过程不兼容。
+UEFI模式是Windows 7 之后出现的新型操作系统启动引导方式，跳过很多硬件自检，加速了开机步骤，缺点是跟Windows 7之前的系统启动过程不兼容。
 
-    为区别于新式的UEFI，主板BIOS设置中提供了兼容老的启动方式的选项“CSM模式”，CSM模式从BIOS引导设备，用于在引导时检查兼容性模式，适用于不兼容UEFI方式启动的老显卡等设备能正常的显示。
-    具体来说，CSM模式提供硬盘MBR引导和传统PCI opROM加载支持，后者可以让没有GOP的显卡在操作系统启动前（例如bios设置和OS引导器）可以使用并固定使用VGA分辨率。只要用到其中一个功能就需要打开CSM。
+为区别于新式的UEFI，主板BIOS设置中提供了兼容老的启动方式的选项“CSM模式”，CSM模式从BIOS引导设备，用于在引导时检查兼容性模式，适用于不兼容UEFI方式启动的老显卡等设备能正常的显示。
 
-    早期的Windows 7无法很好地支持UEFI，因此需要CSM来检测UEFI功能是否已完全启用。也就是说，主板BIOS在CSM模式下，对UEFI进行支持（甚至提供选项使用非UEFI的最古老方式），但是这跟Windows 10的那种开机后直接UEFI引导操作系统快速进入桌面有区别。
+具体来说，CSM模式提供硬盘MBR引导和传统PCI opROM加载支持，后者可以让没有GOP的显卡在操作系统启动前（例如bios设置和OS引导器）可以使用并固定使用VGA分辨率。只要用到其中一个功能就需要打开CSM。
 
-    有些如 nvidia gtx 1080 时代的显卡，用 HDMI 口可以用UEFI方式显示画面，而 DP 口则不兼容（只能通过CSM模式下的UEFI进行显示），需要根据连接该口开机后显示器是否出现画面来设置BIOS的上述选项。
+早期的Windows 7无法很好地支持UEFI，因此需要CSM来检测UEFI功能是否已完全启用。也就是说，主板BIOS在CSM模式下，对UEFI进行支持（甚至提供选项使用非UEFI的最古老方式），但是这跟Windows 10的那种开机后直接UEFI引导操作系统快速进入桌面有区别。
 
-    在Windows 10/11安装之前，如果要享受快速启动进入桌面，则需要在主板的BIOS设置中明确开启UEFI选项，在主板BIOS设置中，启动模式选项（Windows 10 Features）要选择“Windows 10”而不是“other os”，CMS模式选择“关闭”。
-    技嘉主板要注意，CMS模式开启时，关于存储和PCIe设备的选项要保证是UEFI模式，然后再关闭CSM模式。原因详见下面章节 [技嘉主板BIOS设置 UEFI + GPT 模式启动Windows]
+有些如 nvidia gtx 1080 时代的显卡，用 HDMI 口可以用UEFI方式显示画面，而 DP 口则不兼容（只能通过CSM模式下的UEFI进行显示），需要根据连接该口开机后显示器是否出现画面来设置BIOS的上述选项。
 
-硬盘分区类型 GPT/MBR:
+在Windows 10/11安装之前，如果要享受快速启动进入桌面，则需要在主板的BIOS设置中明确开启UEFI选项，在主板BIOS设置中，启动模式选项（Windows 10 Features）要选择“Windows 10”而不是“other os”，CMS模式选择“关闭”。
 
-    MBR是Windows 10/7之前老的硬盘分区方式， GPT是win7之后新的硬盘分区方式，使用不同的硬盘分区类型，Windows引导启动的方式是不同的。
-    在Windows安装时，有个步骤是划分硬盘分区，自动使用的是GPT方式，默认把启动硬盘上划分了3个分区（如果是一块新的未划分分区的硬盘），其中两个特殊的小分区在Windows安装完成后默认是隐藏看不到的，这里其实放置了存储设备的UEFI引导信息。
-    所以如果只想用一个分区，需要提前把硬盘挂到别的电脑上用Windows管理或其他软件分区，明确选择类型为MBR，或者用命令行diskpart程序。
+技嘉主板要注意，CMS模式开启时，关于存储和PCIe设备的选项要保证是UEFI模式，然后再关闭CSM模式。原因详见下面章节 [技嘉主板BIOS设置 UEFI + GPT 模式启动Windows]
 
-    目前发现 Windows 10 安装程序根据BIOS设置里把存储设备设为UEFI才会给硬盘用GPT类型分区，否则会用MBR类型分区，但是安装的时候是不给出任何提示的。
-    这样用MBR类型的硬盘安装好的Windows 10，虽然也像GPT类型的硬盘一样分成了3个区，其实只是保持在CSM模式下的UEFI方式的兼容而已，系统启动其实是走的主板CSM模式，存储设备leagcy，不会绕开bios引导自检那些耗时过程。
-    即使这时进入主板BIOS设置里，把存储设备改为UEFI，该MBR硬盘启动系统的时候会转主板的CMS模式下的UEFI方式，利用Windows安装时的UEFI分区引导系统，这样还是绕不开系统bios引导自检步骤的，无法实现 Windows 10 真正的UEFI方式启动系统那样秒进桌面。
-    见下面章节 [技嘉主板BIOS设置 UEFI + GPT 模式启动Windows]中的踩坑经历。
+### 硬盘分区类型 GPT/MBR
+
+MBR是Windows 10/7之前老的硬盘分区方式， GPT是win7之后新的硬盘分区方式，使用不同的硬盘分区类型，Windows引导启动的方式是不同的。
+
+在Windows安装时，有个步骤是划分硬盘分区，自动使用的是GPT方式，默认把启动硬盘上划分了3个分区（如果是一块新的未划分分区的硬盘），其中两个特殊的小分区在Windows安装完成后默认是隐藏看不到的，这里其实放置了存储设备的UEFI引导信息。
+所以如果只想用一个分区，需要提前把硬盘挂到别的电脑上用Windows管理或其他软件分区，明确选择类型为MBR，或者用命令行diskpart程序。
+
+目前发现 Windows 10 安装程序根据BIOS设置里把存储设备设为UEFI才会给硬盘用GPT类型分区，否则会用MBR类型分区，但是安装的时候是不给出任何提示的。
+
+这样用MBR类型的硬盘安装好的Windows 10，虽然也像GPT类型的硬盘一样分成了3个区，其实只是保持在CSM模式下的UEFI方式的兼容而已，系统启动其实是走的主板CSM模式，存储设备leagcy，不会绕开bios引导自检那些耗时过程。
+
+即使这时进入主板BIOS设置里，把存储设备改为UEFI，该MBR硬盘启动系统的时候会转主板的CMS模式下的UEFI方式，利用Windows安装时的UEFI分区引导系统，这样还是绕不开系统bios引导自检步骤的，无法实现 Windows 10 真正的UEFI方式启动系统那样秒进桌面。详见下面章节 [技嘉主板BIOS设置 UEFI + GPT 模式启动Windows]中的踩坑经历。
 
 ## 技嘉 B560M AORUS PRO 主板（BIOS版本 F7） + Intel 11600KF CPU + DDR4 3600 内存的初始BIOS设置
 
@@ -75,8 +79,9 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
 
 总结来说，Windows 10的安装兼容各种老设备，最古老的一种是主板BIOS设置里“Windows 10 Features”选择“other os”，“CSM Support”选“Enable”，存储和PCIe设备都选择“leagcy”，也可以安装Windows 10，但是就无法享受真正UEFI引导系统的秒进桌面了。
 
-我的显卡因为用DP口不兼容，BIOS设置里“Windows 10 Features”选择“other os”，“CSM Support”选“Enable”，存储和PCIe设备都选择“UEFI”安装的Windows 10 2019 LTSC。
-后来显卡升级了BIOS，又关闭主板CMS模式装了Windows 10 21H1，在主板BIOS设置里装载默认值“Load optimized defaults”（默认把存储设备换回了legacy），然后设置“Windows 10 Features”选择“Windows 10”，“CSM Support”选“Disable”，但是忘记把存储设备换回UEFI类型了，导致硬盘被Windows安装程序格式化为MBR类型。这样装完windows开机启动后，估计是主板尝试UEFI没有引导成功，自动转为CSM模式走bios+UEFI的过程，导致无法秒进桌面。
+我的显卡因为用DP口不兼容，BIOS设置里“Windows 10 Features”选择“other os”，“CSM Support”选“Enable”，存储和PCIe设备都选择“UEFI”安装了Windows 10 2019 LTSC。
+
+后来显卡升级了BIOS，又关闭主板CMS模式，重新安装了Windows 10 21H1，在主板BIOS设置里装载默认值“Load optimized defaults”（默认把存储设备换回了legacy），然后设置“Windows 10 Features”选择“Windows 10”，“CSM Support”选“Disable”，但是忘记把存储设备换回UEFI类型了，导致硬盘被Windows安装程序格式化为MBR类型。这样装完windows开机启动后，估计是主板尝试UEFI没有引导成功，自动转为CSM模式走bios+UEFI的过程，导致无法秒进桌面。
 
 总之，完美的做法，应该在BIOS设置中“Windows 10 Features”选择“Windows 10”，“CSM Support”选项选择“Enable”后出现的存储和PCIe设备的选项都选择“UEFI”，然后再把“CSM Support”选项选择“Disable”，使用Rufus制作安装u盘时也需要选择GPT+UEFI方式，这样u盘可以正常启动，这样安装好的windows才能实现秒进桌面。
 
