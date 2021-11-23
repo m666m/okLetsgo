@@ -81,6 +81,7 @@ UEFI下：
 传统的Ghost盘，都是只Clone了C盘，现在应该clone整个磁盘，这样所有的分区包括EFI系统分区都可以备份了。
 
 Ghost备份，并不能备份分区的GUID。这时候，需要用bcdedit.exe命令，或者BCDBoot.exe命令，修改BCD存储。
+
 鉴于目前的Ghost盘，很少基于DOS了，如果是基于WinPE的，bcdedit命令和bcdboot命令都是已经内置了的。
 只要制作者在批处理文件里，在Ghost之后，调用bcdedit命令改一下bcd配置就行了。
 
@@ -88,6 +89,36 @@ Ghost备份，并不能备份分区的GUID。这时候，需要用bcdedit.exe命
 同样，在WinPE下，批处理文件里，Ghost还原之后，使用BCDBoot命令生成启动文件就行了。
 
 所以，Ghost还原Windows分区之后，调用BCDBoot配置启动项即可。
+
+1.WinPe 中的 UEFI引导修复工具，点挂载，挂载后可看到 esp分区挂载为S盘
+
+2.如果没有步骤1中的PE盘，则用windows安装盘引导，在开始安装的界面按Shift+F10调出命令行，使用diskpart的”assign letter”调整各驱动器的盘符。把windows分区调整成C，保留分区调整成其他比如为S：
+
+    Diskpart
+    >list disk
+    >select disk 0
+
+    # Verify that the EFI partition (EPS) is using the FAT32 file system and assign a drive letter to it that is not already in use:
+    >list vol
+    >sel vol 1
+    >assign letter=S:
+
+    下三行不用了，分区和vol还不一样呢
+        >list partition
+        >Select Partition 1
+        >assign letter=S:
+
+    >exit
+
+    参考自 <https://zhuanlan.zhihu.com/p/149099252>
+
+3.用BCD引导修复，指定已经ghost恢复的C盘，efi分区是S盘：
+
+    bcdboot C:\Windows  /s S: /f uefi /l zh-cn
+
+如果是MBR分区的，不这么写，暂不研究了，Windows 10还是用UEFI比较好
+
+UEFI下用diskpart进行分区的详细资料见<https://docs.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/configure-uefigpt-based-hard-drive-partitions>
 
 #### 不需要第三方工具就能做UEFI下的Windows安装盘？
 
@@ -100,7 +131,13 @@ U盘，格式化成FAT32，然后把Windows安装盘的ISO里面的东西提取�
 
 事实上，MBR分区表，也能启动UEFI模式下的Windows，只是Windows安装程序提示不允许罢了。主板BIOS设置UEFI启动如果没找到GPT分区，就是自动转CSM模式，通过MBR分区表引导了UEFI模式的Windows。。。
 
-参考 <https://zhuanlan.zhihu.com/p/31365115>
+参考
+
+    本文来源 <https://zhuanlan.zhihu.com/p/31365115>
+
+    BCDBoot 命令行选项 <https://docs.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/bcdboot-command-line-options-techref-di>
+
+    BCDEdit 命令行选项 <https://docs.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/bcdedit-command-line-options>
 
 ## 技嘉 B560M AORUS PRO 主板（BIOS版本 F7） + Intel 11600KF CPU + DDR4 3600 内存的初始BIOS设置
 
@@ -167,9 +204,15 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
 
     进入磁盘管理，在磁盘0上点击右键，看看“转换到动态磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是GPT类型，而是MBR类型。
 
+    三星SSD硬盘的管理程序Samsung Magican里，暂时不要设置Over Provisioning功能。
+
 原因参见上面第一节的踩坑经历。
 
-验证：启动windows后运行msinfo32，在“系统摘要”界面找“BIOS模式”选项，看到结果是“UEFI”。
+验证：
+
+    启动windows后运行msinfo32，在“系统摘要”界面找“BIOS模式”选项，看到结果是“UEFI”。
+
+    磁盘管理，可以看到自己启动硬盘驱动器的全部分区，一般是磁盘0下面有多个分区
 
 参考 <https://www.163.com/dy/article/FTJ5LN090531NEQA.html>
 
