@@ -32,21 +32,93 @@ MBR是Windows 10/7之前老的硬盘分区方式， GPT是win7之后新的硬盘
 
 即使这时进入主板BIOS设置里，把存储设备改为UEFI，该MBR硬盘启动系统的时候会转主板的CMS模式下的UEFI方式，利用Windows安装时的UEFI分区引导系统，这样还是绕不开系统bios引导自检步骤的，无法实现 Windows 10 真正的UEFI方式启动系统那样秒进桌面。详见下面章节 [技嘉主板BIOS设置 UEFI + GPT 模式启动Windows]中的踩坑经历。
 
+### EFI 方式加载设备驱动程序
+
+BIOS启动的时候，按照CMOS设置里的顺序，挨个存储设备看：（此处不讨论PXE和光盘）
+    这个存储设备的前512字节是不是以0x55 0xAA结尾？
+    不是，那就跳过。找下一个设备。
+    是的话，嗯，这个磁盘可以启动，加载这512字节里的代码，然后执行。
+执行之后，后面的事，几乎就跟BIOS没啥关系了。
+
+UEFI启动的时候，经过一系列初始化阶段（SEC、CAR、DXE等），然后按照设置里的顺序，找启动项。
+启动项分两种，设备启动项和文件启动项：
+
+  ·文件启动项，大约记录的是某个磁盘的某个分区的某个路径下的某个文件。对于文件启动项，固件会直接加载这个EFI文件，并执行。类似于DOS下你敲了个win.com就执行了Windows 3.2/95/98的启动。文件不存在则失败。
+
+  ·设备启动项，大约记录的就是“某个U盘”、“某个硬盘”。（此处只讨论U盘、硬盘）对于设备启动项，UEFI标准规定了默认的路径“\EFI\Boot\bootX64.efi”。UEFI会加载磁盘上的这个文件。文件不存在则失败。UEFI标准2.x，推出了一个叫做SecureBoot的功能。开了SecureBoot功能之后，主板会验证即将加载的efi文件的签名，如果开发者不是受信任的开发者，就会拒绝加载。所以主板厂商需要提前在主板里内置微软的公钥，设备商想做efi文件需要去微软做认证取得签名，这样主板加载efi的时候会用内置的微软的公钥验证设备商efi文件里的签名，通过了才加载。这个过程从头到位都得微软认证，满满的对linux不友好啊。
+
+首先各种PCI-E的设备，比如显卡，比如PCI-E的NVMe固态硬盘，都有固件。其中支持UEFI的设备，比如10系列的Nvidia显卡，固件里就会有对应的UEFI的驱动。
+
+UEFI启动后，进入了DXE阶段，就开始加载设备驱动，然后UEFI就会有设备列表了。启动过程中的DXE阶段，全称叫Driver eXecution Environment，就是加载驱动用的。
+
+对于其中的磁盘，UEFI会加载对应的驱动解析其中的分区表（GPT和MBR）。
+然后UEFI就会有所有分区的列表了。然后UEFI就会用内置的文件系统驱动，解析每个分区。UEFI标准里，钦定的文件系统，FAT32.efi是每个主板都会带的。所有UEFI的主板都认识FAT32分区。这就是UEFI的Windows安装盘为啥非得是FAT32的，UEFI模式安装好的的windows操作系统，也会有个默认的FAT32格式的EFI分区，就是保存的这个信息以便主板读取加载。苹果的主板还会支持hfs分区，linux如果有专用主板，那应该会支持EXT4.efi分区。
+
+然后UEFI就会认识分区里的文件了。比如“\EFI\Boot\bootX64.efi”。UEFI规范里，在GPT分区表的基础上，规定了一个EFI系统分区（EFI System Partition，ESP），ESP要格式化成FAT32，EFI启动文件要放在“\EFI\<厂商>”文件夹下面。比如Windows的UEFI启动文件，都在“\EFI\Microsoft”下面。
+
+如同Windows可以安装驱动一样，UEFI也能在后期加载驱动。比如CloverX64.efi启动之后，会加载\EFI\Clover\drivers64UEFI下的所有驱动。包括VboxHFS.efi等各种efi。网上你也能搜到NTFS.efi。再比如，UEFIShell下，你可以手动执行命令加载驱动。
+
+根据UEFI标准里说的，你可以把启动u盘里的“\EFI\Clover”文件夹，拷贝到硬盘里的ESP对应的路径下。然后把“\EFI\Clover\CloverX64.efi”添加为UEFI的文件启动项就行了。Windows的BCD命令，其实也可以添加UEFI启动项。
+
+EFI分区中的“\EFI\Boot”这个文件夹，放谁家的程序都行。无论是“\EFI\Microsoft\Boot\Bootmgfw.efi”，还是“\EFI\Clover\CloverX64.efi”，只要放到“\EFI\Boot”下并且改名“bootX64.efi”，就能在没添加文件启动项的情况下，默认加载对应的系统。
+
+BIOS下：
+
+    BIOS加载某个磁盘MBR的启动代码，这里特指Windows的引导代码，这段代码会查找活动分区（BIOS不认识活动分区，但这段代码认识活动分区）的位置，加载并执行活动分区的PBR（另一段引导程序）。
+
+    Windows的PBR认识FAT32和NTFS两种分区，找到分区根目录的bootmgr文件，加载、执行bootmgr。
+
+    bootmgr没了MBR和PBR的大小限制，可以做更多的事。它会加载并分析BCD启动项存储。而且bootmgr可以跨越磁盘读取文件了。所以无论你有几个磁盘，你在多少块磁盘上装了Windows，一个电脑只需要一个bootmgr就行了。bootmgr会去加载某磁盘某NTFS分区的“\Windows\System32\WinLoad.exe”，后面启动Windows的事就由WinLoad.exe来完成了。
+
+UEFI下：
+
+    “UEFI下，启动盘是ESP分区，跟Windows不是同一个分区”。
+
+    主板UEFI初始化，在EFI系统分区（ESP）找到了默认启动项“Windows Boot Manager”，里面写了bootmgfw.efi的位置。固件加载bootmgfw.efi。bootmgfw.efi根据BCD启动项存储，找到装Windows的那个磁盘的具体分区，加载其中的WinLoad.efi。由WinLoad.efi完成剩下的启动工作。
+
+#### UEFI之后真的没法Ghost了么
+
+传统的Ghost盘，都是只Clone了C盘，现在应该clone整个磁盘，这样所有的分区包括EFI系统分区都可以备份了。
+
+Ghost备份，并不能备份分区的GUID。这时候，需要用bcdedit.exe命令，或者BCDBoot.exe命令，修改BCD存储。
+鉴于目前的Ghost盘，很少基于DOS了，如果是基于WinPE的，bcdedit命令和bcdboot命令都是已经内置了的。
+只要制作者在批处理文件里，在Ghost之后，调用bcdedit命令改一下bcd配置就行了。
+
+即使没Ghost备份ESP分区，你依然可以用bcdboot命令来生成ESP分区的内容。
+同样，在WinPE下，批处理文件里，Ghost还原之后，使用BCDBoot命令生成启动文件就行了。
+
+所以，Ghost还原Windows分区之后，调用BCDBoot配置启动项即可。
+
+#### 不需要第三方工具就能做UEFI下的Windows安装盘？
+
+U盘，格式化成FAT32，然后把Windows安装盘的ISO里面的东西提取到U盘就行了。（适用于Win8/8.1/10以及WinServer2012/2012R2/2016。WinVista x64/Win7x64以及WinServer2008x64/2008R2需要额外操作，WinVista x86/Win7x86/WinServer2008x86不支持UEFI）
+
+#### 电脑是UEFI的，想装Linux，但我手头没优盘，听说也能搞定
+
+硬盘搞个FAT32的分区，把Linux安装盘的iso镜像里面的文件/EFI/BOOT/下的BOOTx64.efi、grubx64.efi拷贝进去，然后在Windows下，用工具给那个分区的BOOTx64.efi，添加为UEFI文件启动项，开机时候选那个启动项，就能启动到Linux安装盘了。
+如果你要装的Linux不支持SecureBoot，记得关掉主板BIOS的SecureBoot设置。
+
+事实上，MBR分区表，也能启动UEFI模式下的Windows，只是Windows安装程序提示不允许罢了。主板BIOS设置UEFI启动如果没找到GPT分区，就是自动转CSM模式，通过MBR分区表引导了UEFI模式的Windows。。。
+
+参考 <https://zhuanlan.zhihu.com/p/31365115>
+
 ## 技嘉 B560M AORUS PRO 主板（BIOS版本 F7） + Intel 11600KF CPU + DDR4 3600 内存的初始BIOS设置
 
 1. HDMI口连接显示器（防止老显卡的DP口不支持默认的UEFI），开机按Del键进入主板BIOS设置。
 
 2. F7 装载系统默认优化设置：BOOT->Load optimized defaults，注意这之后引导操作系统默认是UEFI的，存储设备选项需要手动打开CSM后切换，详见后面的章节 [技嘉主板BIOS设置 UEFI + GPT 模式启动Windows]。
 
-3. 内存：TWEAKS->Memory， 选择X.M.P profiles，以启用3600MHz最优频率，这个版本的BIOS也已经自动放开了，我的这个内存默认1.2v跑到了3900MHz。
+3. F10 保存设置并重启计算机，让optimized defaults生效，然后再重新进入主板BIOS设置做后续设置。我一开始连续改东西，BIOS里居然都死机，估计是太乱。
 
-4. AVX512: Advanced CPU settings-> AVX settings，选custom，出现的avx512选项选择disable，关闭这个无用功能，可以降低20%的cpu整体功耗。。。电源功耗PL1/PL2不用设了，这个版本的BIOS已经全放开了。
+4. 内存：TWEAKS->Memory， 选择X.M.P profiles，以启用3600MHz最优频率，这个版本的BIOS也已经自动放开了，我的这个内存默认1.2v跑到了3900MHz。
 
-5. 虚拟化：Advanced CPU settings-> Hyper Threading 选项打开英特尔CPU超线程； Settings-> MISC-> VT-d 选项打开虚拟机。
+5. AVX512: Advanced CPU settings-> AVX settings，选custom，出现的avx512选项选择disable，关闭这个无用功能，可以降低20%的cpu整体功耗。。。电源功耗PL1/PL2不用设了，这个版本的BIOS已经全放开了。
 
-6. F6 风扇设置：对各个风扇选静音模式，或手动，先选全速看看最大转速多少，再切换手动，先拉曲线到最低转速，然后再横向找不同的温度调整风扇转速挡位。
+6. 虚拟化：Advanced CPU settings-> Hyper Threading 选项打开英特尔CPU超线程； Settings-> MISC-> VT-d 选项打开虚拟机。
 
-7. UEFI + GPT + Secure Boot： 先F10保存退出，重启计算机，后续再设置，详见下面相关章节
+7. F6 风扇设置：对各个风扇选静音模式，或手动，先选全速看看最大转速多少，再切换手动，先拉曲线到最低转速，然后再横向找不同的温度调整风扇转速挡位。
+
+8. UEFI + GPT + Secure Boot： 先F10保存设置并重启计算机，后续再设置，详见下面相关章节
 
 ## 技嘉主板BIOS设置 UEFI + GPT 模式启动Windows
 
@@ -62,14 +134,14 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
 
     启动模式选项（Windows 10 Features）要选择“Windows 10”而不是“other os”。
 
-    选项 “CSM Support”， 选“Enable”，
+    选项 “CSM Support”， 先选“Enable”，
     之后下面出现的三项，除了网卡启动的那个选项不用管，其它两个关于存储和PCIe设备的选项要确认选的是“UEFI”。
 
-    然后选项 “CSM Support”， 选“Disable”，再关闭CMS模式。
+    然后选项 “CSM Support”， 再选“Disable”，再关闭CMS模式。
 
     CMS模式关闭后，当前系统内的PCIe设备应该是出现了一些选项可以进行设置，比如“Advanced”界面 PCI  Subsystem setting 下RX30系列显卡的支持Resize Bar等
 
-为什么要CSM模式又开又关这样操作呢？ Windows 10安装的时候踩了个坑：
+为什么要CSM模式又开又关这样操作呢？ Windows 10安装的时候我踩了个坑：
 
     我在主板BIOS设置中启动模式选项（Windows 10 Features）选择“Windows 10”，“CSM Support”选项选择“Disable”后下面的三个选项自动隐藏了，我以为都是自动UEFI了，其实技嘉主板只是把选项隐藏了，硬盘模式保持了上次安装windows时设置的legacy不是UEFI……
 
@@ -245,6 +317,8 @@ Windows安装后，先把电源计划调整为“高性能”或“卓越性能�
 打开Windows store，菜单选择“settings”，把“App updates”的“Update apps automatically”选项抓紧关闭了，太烦人了！
 商店应用默认不提供卸载选项，解决办法见下面章节 [删除无关占用cpu时间的项目]
 
+如果有程序开机就启动挺烦人的，运行“msconfig”，在启动选项卡进行筛选
+
 ### 设置windows安全中心
 
 开始->运行：msinfo32，在“系统摘要”页面，查看状态是“关闭”的那些安全相关选项，逐个解决。
@@ -279,6 +353,8 @@ Windows安装后，先把电源计划调整为“高性能”或“卓越性能�
     “设备加密支持”选项，不是“失败”
 
 更多关于Windows10安全性要求的选项参见各个子目录章节 <https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-highly-secure#what-makes-a-secured-core-pc>
+
+基于虚拟化的安全Virtualization Based Security(VBS) 详细介绍 <https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/oem-vbs>
 
 整个windows安全体系，挨个看吧 <https://docs.microsoft.com/zh-cn/windows/security/>
 
@@ -769,6 +845,51 @@ win10+ubuntu双系统见<https://www.cnblogs.com/masbay/p/10745170.html>
 最后要说明的一点是，这个系统是安装在C:\Users\%user_name%\AppData\Local\lxss中的，所以会占用c盘的空间，所以最好把数据之类的都保存在其他盘中，这样不至于使c盘急剧膨胀。
 
 后续关于如何更换国内源、配置ubuntu桌面并进行vnc连接，参见 <https://sspai.com/post/43813>
+
+## 使用VM Ware、安卓模拟器等虚拟机提示需要关闭Hyper-V
+
+Vmware workstation升级到15.5.5版本后就可以兼容Hyper-V了,但有限制:必须为Windows 10 20H1(也叫2004版)或更高版本。
+
+当基于独占设计的Hyper-V启用后，会持续占用，造成其他基于同类技术的虚拟机将无法启动。且部分虚拟机产品在确认检测到相应情况后还要强行执行，就造成了windows死机蓝屏。
+
+在“启用或关闭windows功能”中卸载hyper-v功能后，依旧是提示无法安装或使用虚拟机，因为通常会启用Hyper-V的操作有如下几项：
+
+    Hyper-V平台；
+
+    Windows Defender 应用程序防护，Windows安全中心：“应用和浏览器保护”，关闭隔离浏览；
+
+    Windows 沙盒；
+
+    Windows安全中心：设备安全性模块的的内核隔离（内存完整性）；
+
+    Visual Studio内涉及到设备模拟的虚拟化方案；
+
+1. 必须确保以上列表内所有项目被正确关闭后，Hyper-V平台才能被真正关闭。
+
+   据说进入主板BIOS将 Intel VT-x 设为 Disabled 都不行
+
+2. 管理员身份运行命令提示符cmd（如果用PowerShell，符号{}会导致报错）：
+
+    bcdedit /copy {current} /d "Windows 10 without Hyper-V"
+
+    将上面命令得到的字符串替换掉下面{}中的XXX代码即可
+
+    bcdedit /set {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX} hypervisorlaunchtype OFF
+
+    提示成功后再次输入
+    bcdedit
+    查看校对"Windows启动加载器"中对应项目的 hypervisorlaunchtype 值是 Off
+
+3. 重启计算机，出现Windows 10启动选择， 就能选择是否启用 Hyper-v：
+
+    在“no Hyper-V”中，可以运行 Vmware 虚拟机，而另一个启动选项运行 Hyper-v。
+
+4. 以后想要删除可以用运行msconfig跳出图形界面来操作
+
+作者：知乎用户
+链接：<https://www.zhihu.com/question/38841757/answer/95947785>
+来源：知乎
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 ## 使用中要注意，WSL下的Linux命令区别于某些PowerShell下的命令
 
