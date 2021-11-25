@@ -1034,3 +1034,27 @@ Windows现在的偏灰, 是在输出HDR信号的情况下自动降低UI亮度的
     >convert basic
 
 注意：无法在windows里操作自己的启动盘，得启动到u盘或者别的系统里，操作这个磁盘，这个磁盘的内容是完全给清除的！
+
+
+### 乱七八糟的.NET Framework各版本安装
+
+.NET Framework 4.x号称是互相覆盖的，版本继承性可以延续。
+
+#### .NET Framework 4.5之前的4.x版本
+
+M$不支持了，自求多福吧，自己挨个版本研究去 <https://docs.microsoft.com/zh-cn/dotnet/framework/install/guide-for-developers>
+
+#### .NET Framework 4.5及之后的4.x版本
+
+从 .NET Framework 4 开始，所有 .NET Framework 版本都是就地更新的，因此，在系统中只能存在一个 4.x 版本。
+
+#### Windows 10 + 按需安装.NET Framework 3.5
+
+通过 Windows 控制面板启用 .NET Framework 3.5。 此选项需要 Internet 连接。
+
+微软自己做烂了，各个版本居然都是不兼容的 <https://docs.microsoft.com/zh-cn/dotnet/framework/install/dotnet-35-windows> 。
+
+警告
+
+    如果不依赖 Windows 更新作为源来安装 .NET Framework 3.5，则必须确保严格使用来自相同的、对应的 Windows 操作系统版本的源。
+    使用来自不同 Windows 操作系统版本的源将安装与 .NET Framework 3.5 不匹配的版本，或导致安装失败，使系统处于不受支持和无法提供服务的状态。
