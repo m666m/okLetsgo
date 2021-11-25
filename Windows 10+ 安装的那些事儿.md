@@ -612,7 +612,9 @@ edge浏览器->设置->外观->整体外观：选择“系统默认”则跟随W
 
 目前用： 设置->应用->启动，看列出的项目，取消勾选可以禁止开机启动
 
-在任务管理器中，有个应用历史记录，可以发现，比如windows photo这样的windows商店的appx应用占用cpu时间非常多，其实用户根本没用，真不知道它在后台干了些什么。不要犹豫，用不到的就删除啊。win+xn 设置->应用->应用和功能，搜索应用名称，找到后点击，展开菜单选择“卸载”即可。如果没有“卸载”选项，就得手工解决了，以删除cpu时间使用最多的windows photo为例：
+在任务管理器中，有个应用历史记录，可以发现，比如windows photo这样的windows商店的appx应用占用cpu时间非常多，其实用户根本没用，真不知道它在后台干了些什么。不要犹豫，用不到的就删除啊。win+xn 设置->应用->应用和功能，搜索应用名称，找到后点击，展开菜单选择“卸载”即可。
+
+如果没有“卸载”选项，就得手工解决了，以删除cpu时间使用最多的windows photo为例：
 
     以管理员身份运行“Windows PowerShell”
 
@@ -984,6 +986,118 @@ Vmware workstation升级到15.5.5版本后就可以兼容Hyper-V了,但有限制
 
 设置->应用->应用和功能，里面有个“应用执行别名”，点击进去慢慢研究吧，真烦人啊，估计整些逻辑弯弯绕。
 
+## 离线下载安装Microsoft Store中的应用
+
+很奇怪吧，LTSC版本号称是去掉了Windows Store的，但是实质上 UWP 程序一点不少，都在系统里运行着，后台的 AppXSVC、ClipSVC 根本不停。有些程序装完了，但是少了啥组件，这俩服务还玩命的跑，狂吃cpu……
+
+为嘛狂吃cpu呢？
+
+    UWP文件下载这个玩法，最大的问题就是商店是分区域的，而万能的墙会让非cn的下载非常不稳定，特别是你的一个uwp程序依赖比较多的包的时候，说不定有的源在其它外网服务器上，间或会下载不到。不是啥非法的玩意，甚至可能微软的更新包，挂在github上的或者啥开源服务器上的东西，都不排除掉线。这就是为嘛有时候windows更新都报告失败要多重试几次的原因。。。 好吧，程序表明上装好了，其实需要的库不全，后台AppXSVC进程就一根筋的不断重试，微软的三哥程序员估计写循环时候没加sleep(0.001)，cpu就得受点累。这个费电的过程，只能是你把那个uwp程序卸载掉，或者手动安装上缺失的库（windows没有任何提示你咋知道），才算完。
+
+我的电脑里哪些是uwp应用呢？
+
+    设置：应用和功能->应用
+
+uwp权限配置
+
+    设置：隐私->应用
+
+如果遇到不能安装的情况,需要检查一下系统设置:
+
+    右键点击开始按钮>设置>应用>选择获取应用的位置：选择“任何来源”
+
+    UWP离线安装，需要去设置中打开开发者模式
+
+### 离线下载uwp步骤
+
+    首先知道你需要的应用名称，如：Microsoft 便笺
+
+    打开 https://www.microsoft.com/zh-cn/Store 或 https://www.microsoft.com/en-us/Store，点击搜索，直接输入应用名称比如：Microsoft 便笺 或 Instagram 啥的，在弹出菜单选择对应软件。
+
+    新开的页面会显示该商品的详细信息，直接复制地址栏的地址，以Microsoft 便笺为例：https://www.microsoft.com/zh-cn/p/microsoft-sticky-notes/9nblggh4qghw?activetab=pivot:overviewtab
+
+    打开这个网站 https://store.rg-adguard.net/
+
+    将上面复制的链接粘贴到搜索栏中，左侧的搜索类型使用默认的URL(link)。
+    如果搜不到，搜索类型换成 ProductId 试试，本例中搜索url中软件名称段后面的参数“9nblggh4qghw”。
+
+    搜索到的结果通常会比较多,包含了不同的版本以及和这个应用依赖的运行环境安装包。
+
+    建议往下翻页，找到名称匹配一致的最高版本(版本数字最大)的链接，注意后缀应该是.appxbundle的链接(bundle表示包含所有相关文件)，
+    如果不选择.appxbundle，那就得挨个下载 .appx 文件逐个安装了。
+    比如这个: Microsoft.MicrosoftStickyNotes_3.7.78.0_neutral_~_8wekyb3d8bbwe.appxbundle。
+
+    后面对应的有个Expire过期时间(GMT时间)，这是由于微软服务器上每次下载的时候生成的链接都是有有效期的，所以这个链接在到期后就失效了。
+    也正是因此，才需要通过这个网站提供的搜索工具来获取最新的下载链接。
+
+    点击这个链接后将 .appxbundle 文件下载到本地。
+    如果edge浏览器禁止下载，复制下载链接到下载工具比如 motrix 里下载即可。
+
+    将下载好的 .appxbundle 文件复制到没有网络链接的电脑上,和普通的安装程序一样,正常情况下直接双击就可以打开进行安装了.
+
+    或者打开powershell，输入命令： Add-AppxPackage -Path <离线包文件路径>
+
+### 补充windows 10 LTSC 2021 版几个UWP应用缺失问题
+
+自己到 Windows Store 中搜索下载，参见上面的章节 [离线下载安装Microsoft Store中的应用]。
+
+VCLibs 库文件，修复输入法等 appx 等库关联问题
+
+    Microsoft.VCLibs.140.00_14.0.30704.0_x64__8wekyb3d8bbwe.Appx
+
+VP9 视频扩展 VP9VideoExtensions 库文件，修复设置->应用->视频播放中的预览错误
+
+    https://www.microsoft.com/zh-cn/p/vp9-%e8%a7%86%e9%a2%91%e6%89%a9%e5%b1%95/9n4d0msmp0pt#activetab=pivot:overviewtab
+
+安装下载好的离线文件，打开powershell，输入命令：
+
+    Add-AppxPackage -Path <离线包文件路径>
+
+### DCH 驱动的那些事
+
+DCH驱动号称只安装驱动，相关的控制界面应用由windows Store用UWP安装。
+也就是说，驱动inf安装之后，windows更新时才会下载对应的面板程序，这个需要厂商提前给微软对应的uwp程序。
+比如部分型号的显卡控制面板、声卡面板、雷柏鼠标面板等等。
+
+时间大概在2015年之后，Intel CPU 的i7-7700k这一代之后，硬件有uwd驱动(DCH驱动)。
+
+假如你的 nvidia 显卡安装了 dch 版驱动，是没有nvidia控制面板。
+windows更新会自动在后台搜索下载，或者用户自己到 Windows Store 中搜索下载，参见上面的章节 [离线下载安装Microsoft Store中的应用]。
+
+如果这个uwp（DCH）的面板依赖Microsoft.VCLibs，所以系统也自动装了。
+
+而没有uwd驱动(DCH驱动)的老硬件，不会自动安装uwp面板，也就没有Microsoft.VCLibs了，有可能wsappx继续cpu占用高。
+
+### good news and bad news
+
+1.good news
+
+听说过 NuGet 吗？以后会废掉这个坑爹的 uwp 玩法。
+
+Windows App SDK 提供了一套统一的 API 和工具，它们与操作系统分离并通过 NuGet 包发布给开发人员。
+Windows 10 版本1809 至 Windows 11 即支持了，并且同时提供 WinRT API 和本机 C API。
+
+主推 WinUI 3,以前的WinUI 2 和 UWP也废了 <https://docs.microsoft.com/zh-cn/windows/apps/windows-app-sdk/migrate-to-windows-app-sdk/migrate-to-windows-app-sdk-ovw#topics-in-this-section>
+
+2.bad news
+
+uwp迁移到NuGet，估计换汤不换药。
+
+以后想用个程序，你就得联网，就得登陆受管控的商店。
+
+应用的底层都给你封装了一堆依赖，美其名曰软件底层解耦、组件共享。
+
+实际用起来呢，各种墙让你下载不全，到处找加速。
+
+下载一个安装包就能让你舒舒服服用软件的日子，不会再有了。
+
+参见 <https://docs.microsoft.com/zh-cn/windows/msix/desktop/powershell-msix-cmdlets>
+     <https://docs.microsoft.com/en-us/powershell/module/appx/?view=windowsserver2019-ps>
+
+### 得认真考虑下，肉身xx的问题了，以后老死在外面，是不是可以接受？
+
+你一个搞it的，离开了联网，怎么继续下去？
+
 ## 常见问题
 
 ### 如何判断USB Type-C口有哪些功能
@@ -1035,7 +1149,6 @@ Windows现在的偏灰, 是在输出HDR信号的情况下自动降低UI亮度的
 
 注意：无法在windows里操作自己的启动盘，得启动到u盘或者别的系统里，操作这个磁盘，这个磁盘的内容是完全给清除的！
 
-
 ### 乱七八糟的.NET Framework各版本安装
 
 .NET Framework 4.x号称是互相覆盖的，版本继承性可以延续。
@@ -1051,6 +1164,7 @@ M$不支持了，自求多福吧，自己挨个版本研究去 <https://docs.mic
 #### Windows 10 + 按需安装.NET Framework 3.5
 
 通过 Windows 控制面板启用 .NET Framework 3.5。 此选项需要 Internet 连接。
+简单点办法，安装directx 9，windows自己会弹出提示要求给你安装.NET Framework 3.5。
 
 微软自己做烂了，各个版本居然都是不兼容的 <https://docs.microsoft.com/zh-cn/dotnet/framework/install/dotnet-35-windows> 。
 
@@ -1058,103 +1172,3 @@ M$不支持了，自求多福吧，自己挨个版本研究去 <https://docs.mic
 
     如果不依赖 Windows 更新作为源来安装 .NET Framework 3.5，则必须确保严格使用来自相同的、对应的 Windows 操作系统版本的源。
     使用来自不同 Windows 操作系统版本的源将安装与 .NET Framework 3.5 不匹配的版本，或导致安装失败，使系统处于不受支持和无法提供服务的状态。
-
-### 离线下载安装Microsoft Store中的应用
-
-很奇怪吧，LTSC版本号称是去掉了Windows Store的，但是实质上 UWP 程序一点不少，都在系统里运行着，后台的 AppXSVC、ClipSVC 根本不停。有些程序装完了，但是少了啥组件，这俩服务还玩命的跑，狂吃cpu……
-
-为嘛狂吃cpu呢？
-
-    UWP文件下载这个玩法，最大的问题就是商店是分区域的，而万能的墙会让非cn的下载非常不稳定，特别是你的一个uwp程序依赖比较多的包的时候，说不定有的源在其它外网服务器上，间或会下载不到。不是啥非法的玩意，甚至可能微软的更新包，挂在github上的或者啥开源服务器上的东西，都不排除掉线。这就是为嘛有时候windows更新都报告失败要多重试几次的原因。。。 好吧，程序表明上装好了，其实需要的库不全，后台AppXSVC进程就一根筋的不断重试，微软的三哥程序员估计写循环时候没加sleep(0.001)，cpu就得受点累。这个费电的过程，只能是你把那个uwp程序卸载掉，或者手动安装上缺失的库（windows没有任何提示你咋知道），才算完。
-
-离线下载步骤
-
-    首先知道你需要的应用名称，如：Microsoft 便笺
-
-    打开 https://www.microsoft.com/zh-cn/Store 或 https://www.microsoft.com/en-us/Store，点击搜索，直接输入应用名称比如：Microsoft 便笺 或 Instagram 啥的，在弹出菜单选择对应软件。
-
-    新开的页面会显示该商品的详细信息，直接复制地址栏的地址，以Microsoft 便笺为例：https://www.microsoft.com/zh-cn/p/microsoft-sticky-notes/9nblggh4qghw?activetab=pivot:overviewtab
-
-    打开这个网站 https://store.rg-adguard.net/
-
-    将上面复制的链接粘贴到搜索栏中，左侧的搜索类型使用默认的URL(link)。
-    如果搜不到，搜索类型换成 ProductId 试试，本例中搜索url中软件名称段后面的参数“9nblggh4qghw”。
-
-    搜索到的结果通常会比较多,包含了不同的版本以及和这个应用依赖的运行环境安装包。
-
-    建议往下翻页，找到名称匹配一致的最高版本(版本数字最大)的链接，注意后缀应该是.appxbundle的链接(bundle表示包含所有相关文件)，
-    如果不选择.appxbundle，那就得挨个下载 .appx 文件逐个安装了。
-    比如这个: Microsoft.MicrosoftStickyNotes_3.7.78.0_neutral_~_8wekyb3d8bbwe.appxbundle。
-
-    后面对应的有个Expire过期时间(GMT时间)，这是由于微软服务器上每次下载的时候生成的链接都是有有效期的，所以这个链接在到期后就失效了。
-    也正是因此，才需要通过这个网站提供的搜索工具来获取最新的下载链接。
-
-    点击这个链接后将 .appxbundle 文件下载到本地。
-    如果edge浏览器禁止下载，复制下载链接到下载工具比如 motrix 里下载即可。
-
-    将下载好的 .appxbundle 文件复制到没有网络链接的电脑上,和普通的安装程序一样,正常情况下直接双击就可以打开进行安装了.
-
-    或者打开powershell，输入命令： Add-AppxPackage -Path <离线包文件路径>
-
-如果遇到不能安装的情况,需要检查一下系统设置:
-
-    右键点击开始按钮>设置>应用>选择获取应用的位置：选择“任何来源”
-
-#### 补充windows 10 LTSC 2021 版几个UWP应用缺失问题
-
-自己到 Windows Store 中搜索下载，参见上面的章节 [离线下载安装Microsoft Store中的应用]。
-
-VCLibs 库文件，修复输入法等 appx 等库关联问题
-
-    Microsoft.VCLibs.140.00_14.0.30704.0_x64__8wekyb3d8bbwe.Appx
-
-VP9 视频扩展 VP9VideoExtensions 库文件，修复设置->应用->视频播放中的预览错误
-
-    https://www.microsoft.com/zh-cn/p/vp9-%e8%a7%86%e9%a2%91%e6%89%a9%e5%b1%95/9n4d0msmp0pt#activetab=pivot:overviewtab
-
-安装下载好的离线文件，打开powershell，输入命令：
-
-    Add-AppxPackage -Path <离线包文件路径>
-
-参见 <https://docs.microsoft.com/zh-cn/windows/msix/desktop/powershell-msix-cmdlets>
-     <https://docs.microsoft.com/en-us/powershell/module/appx/?view=windowsserver2019-ps>
-
-#### DCH 驱动的那些事
-
-DCH驱动号称只安装驱动，相关的控制界面应用由windows Store用UWP安装。
-也就是说，驱动inf安装之后，windows更新时才会下载对应的面板程序，这个需要厂商提前给微软对应的uwp程序。
-比如部分型号的显卡控制面板、声卡面板、雷柏鼠标面板等等。
-
-时间大概在2015年之后，Intel CPU 的i7-7700k这一代之后，硬件有uwd驱动(DCH驱动)。
-
-假如你的 nvidia 显卡安装了 dch 版驱动，是没有nvidia控制面板。
-windows更新会自动在后台搜索下载，或者用户自己到 Windows Store 中搜索下载，参见上面的章节 [离线下载安装Microsoft Store中的应用]。
-
-如果这个uwp（DCH）的面板依赖Microsoft.VCLibs，所以系统也自动装了。
-
-而没有uwd驱动(DCH驱动)的老硬件，不会自动安装uwp面板，也就没有Microsoft.VCLibs了，有可能wsappx继续cpu占用高。
-
-#### good news and bad news
-
-1.good news
-
-听说过 NuGet 吗？以后会废掉这个坑爹的 uwp 玩法。
-
-Windows App SDK 提供了一套统一的 API 和工具，它们与操作系统分离并通过 NuGet 包发布给开发人员。
-Windows 10 版本1809 至 Windows 11 即支持了，并且同时提供 WinRT API 和本机 C API。
-
-主推 WinUI 3,以前的WinUI 2 和 UWP也废了 <https://docs.microsoft.com/zh-cn/windows/apps/windows-app-sdk/migrate-to-windows-app-sdk/migrate-to-windows-app-sdk-ovw#topics-in-this-section>
-
-2.bad news
-
-uwp迁移到NuGet，估计换汤不换药。
-
-以后想用个程序，你就得联网，就得登陆受管控的商店。
-
-应用的底层都给你封装了一堆依赖，美其名曰软件底层解耦、组件共享。
-
-实际用起来呢，各种墙让你下载不全，到处找加速。
-
-下载一个安装包就能让你舒舒服服用软件的日子，不会再有了。
-
-## 得认真考虑下，肉身xx的问题了，以后老死在外面，是不是可以接受？
