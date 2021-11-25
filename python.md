@@ -964,7 +964,7 @@ pylance
 
 ### 正则表达式预览
 
-    RegExp Preview and Editor 优选
+    RegExp Preview and Editor publisher: le0zh.vscode-regexp-preivew 优选
 
     Regex Previewer
     RegExp Explain
