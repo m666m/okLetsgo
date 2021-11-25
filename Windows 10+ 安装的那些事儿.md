@@ -688,56 +688,6 @@ Win+R打开运行，输入WSReset.exe回车。
 该脚本由abbodi1406贡献：
 <https://forums.mydigitallife.net/threads/add-store-to-Windows-10-enterprise-ltsc-LTSC.70741/page-30#post-1468779>
 
-## UEFI Fast Boot 设置为 Ultra Fast 启动的操作系统中引导到UEFI固件设置（无法用键盘进入主板BIOS设置的解决办法）
-
-很多支持 Fast Boot 的主板，在主板BIOS的“Fast Boot”项设置了“Ultra Fast”之后，开机过程中不能用键盘进入BIOS了，解决办法是进入Windows指定下一次重启进入 BIOS。
-
-对技嘉 B560M AORUS PRO 主板来说，可以对usb等各个细分选项分别设置是否在初始化的时候跳过，可以避免这个问题。
-
-实际试了一下，没感觉到 Ultra Fast 比 Fast Boot 快。
-而且我的usb键盘鼠标网卡都挂在usb hub上，设备比较多，开机时UEFI加载这堆驱动没法跳过，还是不用了。
-
-### 在windows 10中指定重启到UEFI固件的步骤
-
-    点击“开始”菜单—选择“设置”
-
-    点击“更新和安全”
-
-    在“更新和安全”界面中点击左侧的“恢复”选项，再在右侧的“高级启动”中点击“立即重新启动”
-
-    Windows 10重启之后你将会看到出现一个界面提供选项，选择“疑难解答（重置你的电脑或高级选项）”
-
-    新出现的界面选择“高级选项—>UEFI固件设置”，重启之后就可以直接引导到 UEFI 了。
-
-    参考 <https://docs.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/boot-to-uefi-mode-or-legacy-bios-mode>
-
-### Linux 指定重启到UEFI固件的步骤
-
-    Linux 也可以在重启时告诉系统下一次启动进入 UEFI 设置。使用 systemd 的 Linux 系统有 systemctl 工具可以设置。
-
-    可以查看帮助：systemctl --help|grep firmware-setup
-
-    --firmware-setup Tell the firmware to show the setup menu on next boot
-    直接在命令行执行下面命令即可在下一次启动后进入 UEFI 设置。
-
-    systemctl reboot --firmware-setup
-    参考资料：https://www.freedesktop.org/software/systemd/man/systemctl.html#--firmware-setup
-
-原因是UEFI启动的操作系统是跟主板设置密切结合的，“Fast Boot”分几个选项，导致了初始化部分设备的限制：
-
-    主板BIOS的“Fast Boot”项如果开启“Fast”选项，可以减少硬件自检时间，但是会存在一些功能限制，比如Fast模式下不能使用USB设备启动了，因为这个加速功能其实是在BIOS自检中禁止扫描USB设备了。
-
-    主板BIOS的“Fast Boot”项如果开启“Ultra Fast”选项，之后就不能用键盘进入BIOS了，估计跟Fast模式一样把大部分不是必须的自检过程给禁用了，所以要想进BIOS只能清空CMOS或者在操作系统里选择“重启到UEFI”。
-
-    参考说明
-        <https://www.expreview.com/22043.html>
-        <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-windows.html>
-
-### windows电源选项中的“快速启动”
-
-这个功能是跟主板BIOS中UEFI FAST BOOT选项类似的，但是更高级，在设备休眠这一层级实现复用，也就是说，你在关机菜单选择的重新启动，windows可能只是注销并重新登陆。
-还是关了吧，这个噱头实在让人混淆太多东西了，见前面的章节 [关闭“快速启动”]
-
 ## 安全的使用你的 windows 10
 
 确保windows安全中心中的相关设置都开启，参见上面的章节[刚装完 Windows 10 后的一些设置]里的“设置windows安全中心”部分。
@@ -1068,6 +1018,8 @@ windows更新会自动在后台搜索下载，或者用户自己到 Windows Stor
 
 而没有uwd驱动(DCH驱动)的老硬件，不会自动安装uwp面板，也就没有Microsoft.VCLibs了，有可能wsappx继续cpu占用高。
 
+参考 <https://bbs.pcbeta.com/forum.php?mod=viewthread&tid=1912450>
+
 ### good news and bad news
 
 1.good news
@@ -1097,6 +1049,58 @@ uwp迁移到NuGet，估计换汤不换药。
 ### 得认真考虑下，肉身xx的问题了，以后老死在外面，是不是可以接受？
 
 你一个搞it的，离开了联网，怎么继续下去？
+
+## 主板 Ultra Fast 启动无法再用键盘进入BIOS设置
+
+在操作系统中引导到UEFI固件设置。
+
+很多支持 Fast Boot 的主板，在主板BIOS的“Fast Boot”项设置了“Ultra Fast”之后，开机过程中不能用键盘进入BIOS了，解决办法是进入Windows指定下一次重启进入 BIOS。
+
+对技嘉 B560M AORUS PRO 主板来说，可以对usb等各个细分选项分别设置是否在初始化的时候跳过，可以避免这个问题。
+
+实际试了一下，没感觉到 Ultra Fast 比 Fast Boot 快。
+而且我的usb键盘鼠标网卡都挂在usb hub上，设备比较多，开机时UEFI加载这堆驱动没法跳过，还是不用了。
+
+### 在windows 10中指定重启到UEFI固件的步骤
+
+    点击“开始”菜单—选择“设置”
+
+    点击“更新和安全”
+
+    在“更新和安全”界面中点击左侧的“恢复”选项，再在右侧的“高级启动”中点击“立即重新启动”
+
+    Windows 10重启之后你将会看到出现一个界面提供选项，选择“疑难解答（重置你的电脑或高级选项）”
+
+    新出现的界面选择“高级选项—>UEFI固件设置”，重启之后就可以直接引导到 UEFI 了。
+
+    参考 <https://docs.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/boot-to-uefi-mode-or-legacy-bios-mode>
+
+### Linux 指定重启到UEFI固件的步骤
+
+    Linux 也可以在重启时告诉系统下一次启动进入 UEFI 设置。使用 systemd 的 Linux 系统有 systemctl 工具可以设置。
+
+    可以查看帮助：systemctl --help|grep firmware-setup
+
+    --firmware-setup Tell the firmware to show the setup menu on next boot
+    直接在命令行执行下面命令即可在下一次启动后进入 UEFI 设置。
+
+    systemctl reboot --firmware-setup
+    参考资料：https://www.freedesktop.org/software/systemd/man/systemctl.html#--firmware-setup
+
+原因是UEFI启动的操作系统是跟主板设置密切结合的，“Fast Boot”分几个选项，导致了初始化部分设备的限制：
+
+    主板BIOS的“Fast Boot”项如果开启“Fast”选项，可以减少硬件自检时间，但是会存在一些功能限制，比如Fast模式下不能使用USB设备启动了，因为这个加速功能其实是在BIOS自检中禁止扫描USB设备了。
+
+    主板BIOS的“Fast Boot”项如果开启“Ultra Fast”选项，之后就不能用键盘进入BIOS了，估计跟Fast模式一样把大部分不是必须的自检过程给禁用了，所以要想进BIOS只能清空CMOS或者在操作系统里选择“重启到UEFI”。
+
+    参考说明
+        <https://www.expreview.com/22043.html>
+        <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-windows.html>
+
+### windows电源选项中的“快速启动”
+
+这个功能是跟主板BIOS中UEFI FAST BOOT选项类似的，但是更高级，在设备休眠这一层级实现复用，也就是说，你在关机菜单选择的重新启动，windows可能只是注销并重新登陆。
+还是关了吧，这个噱头实在让人混淆太多东西了，见前面的章节 [关闭“快速启动”]
 
 ## 常见问题
 
@@ -1148,6 +1152,7 @@ Windows现在的偏灰, 是在输出HDR信号的情况下自动降低UI亮度的
     >convert basic
 
 注意：无法在windows里操作自己的启动盘，得启动到u盘或者别的系统里，操作这个磁盘，这个磁盘的内容是完全给清除的！
+
 
 ### 乱七八糟的.NET Framework各版本安装
 
