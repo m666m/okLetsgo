@@ -196,8 +196,8 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
 
 #### 验证主板BIOS设置的UEFI模式：
 
-    启动windows后运行msinfo32，在“系统摘要”界面找“BIOS模式”选项，看到结果是“UEFI”。 
-    
+    启动windows后运行msinfo32，在“系统摘要”界面找“BIOS模式”选项，看到结果是“UEFI”。
+
 ### 2.SATA硬盘使用“AHCI”模式
 
     确认下主板BIOS的“settings”界面中，“SATA And RST configuration”的选项，硬盘模式为“AHCI”，这个一般主板都是默认开启的。
@@ -210,11 +210,11 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
 验证：
 
     cmd管理员模式，进入diskpart
-    
+
     >list disk
-    
+
     查看对应磁盘的Gpt那一列，是否有星号，有就是确认GPT磁盘了
-    
+
 ### 4.确保硬盘格式化为GPT类型
 
 如果你的BIOS设置已经选择了“UEFI”，但开机后不是直接秒进Windows的，那就怀疑是Windows安装的时候，没有把你的硬盘格式化为GPT模式。
@@ -225,7 +225,7 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
     三星SSD硬盘的管理程序Samsung Magican里，暂时不要设置Over Provisioning功能。
 
 原因参见上面第一节的踩坑经历。
- 
+
 参考 <https://www.163.com/dy/article/FTJ5LN090531NEQA.html>
 
 
@@ -374,6 +374,8 @@ Windows安装后，先把电源计划调整为“高性能”或“卓越性能�
 
 设置：个性化->任务栏，合并任务栏按钮，选择“任务栏已满时”，不然你多开窗口非常不方便在任务栏上选择切换。
 
+设置：轻松使用->键盘，那些“粘滞键”、“切换键”啥的热键统统关掉
+
 设置：隐私策略各种关闭，有空的时候挨个琢磨吧
 
 打开Windows store，菜单选择“settings”，把“App updates”的“Update apps automatically”选项抓紧关闭了，太烦人了！
@@ -426,7 +428,7 @@ Windows安装后，先把电源计划调整为“高性能”或“卓越性能�
 
 但是，它使BIOS里定时自动开机失效，并跟很多usb设备不兼容，导致关机下次启动以后usb设备不可用，需要重新插拔。
 而且跟主板BIOS中UEFI FAST BOOT也关联上了，二者互相起作用，目的是让你以为能快速开机，其实，很多时候是根本就转了个休眠。
- 
+
 比如我的无线网卡、我的显示器集成的hub连接的鼠标键盘等等，开机或重启后各种报错无响应……
 
 关关关：
@@ -1014,19 +1016,19 @@ Windows现在的偏灰, 是在输出HDR信号的情况下自动降低UI亮度的
 
     >list disk
     查看你要操作的那个磁盘的编号0，1，2。。。
-    
+
     >select disk <disknumber>
-    
+
     >detail disk
     挨个查看卷volume的编号,需要逐个删除
-    
+
         >select volume= <volumenumber>
         >delete volume
-    
+
     >select disk <disknumber>
     再次选择你要操作的那个磁盘的编号
-    
+
     >convert basic
-    
+
 注意：无法在windows里操作自己的启动盘，得启动到u盘或者别的系统里，操作这个磁盘，这个磁盘的内容是完全给清除的！
-    
+
