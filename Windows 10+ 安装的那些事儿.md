@@ -1004,3 +1004,29 @@ Windows现在的偏灰, 是在输出HDR信号的情况下自动降低UI亮度的
 现在的HDR标准其实是纯凑活事的, 信号输出了剩下的全看显示器, 导致HDR内容的显示没有任何标准, 大家效果千差万别. 这在真HDR显示器上也很明显, 不同品牌的FALD显示器效果也是完全不同的. 颜色亮度各种跑偏. 完全是群魔乱舞.
 
 很多游戏内置HDR选项, 让你单独调节亮度来适应屏幕就是这个原因.
+
+### 取消动态磁盘
+
+误把“动态磁盘”和“GPT磁盘”混淆了，我的硬盘不幸变成了动态磁盘，windows 不能操作他的各种分区了。
+微软自己都废弃了这个“动态磁盘” <https://docs.microsoft.com/en-us/windows-server/storage/disk-management/change-a-dynamic-disk-back-to-a-basic-disk>
+
+取消步骤，需要进入diskpart
+
+    >list disk
+    查看你要操作的那个磁盘的编号0，1，2。。。
+    
+    >select disk <disknumber>
+    
+    >detail disk
+    挨个查看卷volume的编号,需要逐个删除
+    
+        >select volume= <volumenumber>
+        >delete volume
+    
+    >select disk <disknumber>
+    再次选择你要操作的那个磁盘的编号
+    
+    >convert basic
+    
+注意：无法在windows里操作自己的启动盘，得启动到u盘或者别的系统里，操作这个磁盘，这个磁盘的内容是完全给清除的！
+    
