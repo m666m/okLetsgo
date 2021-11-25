@@ -159,7 +159,7 @@ U盘，格式化成FAT32，然后把Windows安装盘的ISO里面的东西提取�
 
 ## 技嘉主板BIOS设置 UEFI + GPT 模式启动Windows
 
-1.确保存储和PCIe设备是UEFI 模式
+### 1.确保主板BIOS设置中，关于启动的项目，存储和PCIe设备选的是UEFI 模式
 
 UEFI + GPT模式一开, 都是直接厂商logo转一圈就直接进系统的，不会再有主板启动画面和windows启动的画面。
 
@@ -178,7 +178,7 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
 
     CMS模式关闭后，当前系统内的PCIe设备应该是出现了一些选项可以进行设置，比如“Advanced”界面 PCI  Subsystem setting 下RX30系列显卡的支持Resize Bar等
 
-为什么要CSM模式又开又关这样操作呢？ Windows 10安装的时候我踩了个坑：
+#### 为什么要CSM模式又开又关这样操作呢？ Windows 10安装的时候我踩了个坑：
 
     我在主板BIOS设置中启动模式选项（Windows 10 Features）选择“Windows 10”，“CSM Support”选项选择“Disable”后下面的三个选项自动隐藏了，我以为都是自动UEFI了，其实技嘉主板只是把选项隐藏了，硬盘模式保持了上次安装windows时设置的legacy不是UEFI……
 
@@ -194,27 +194,40 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
 
 总之，完美的做法，应该在BIOS设置中“Windows 10 Features”选择“Windows 10”，“CSM Support”选项选择“Enable”后出现的存储和PCIe设备的选项都选择“UEFI”，然后再把“CSM Support”选项选择“Disable”，使用Rufus制作安装u盘时也需要选择GPT+UEFI方式，这样u盘可以正常启动，这样安装好的windows才能实现秒进桌面。
 
-2.SATA硬盘使用“AHCI”模式
+#### 验证主板BIOS设置的UEFI模式：
+
+    启动windows后运行msinfo32，在“系统摘要”界面找“BIOS模式”选项，看到结果是“UEFI”。 
+    
+### 2.SATA硬盘使用“AHCI”模式
 
     确认下主板BIOS的“settings”界面中，“SATA And RST configuration”的选项，硬盘模式为“AHCI”，这个一般主板都是默认开启的。
 
-3.确保硬盘格式化为GPT类型
+### 3.确保u盘使用UEFI模式启动计算机，然后安装windows
+
+默认的，主板BIOS启动菜单，对u盘是有两个选项，注意要选择带有UEFI字样的那个u盘启动。这样的windows程序才会认为是完全的UEFI模式，对硬盘的操作就是默认GPT类型了。
+对Rufus制作的windows安装u盘来说，制作时要选择“gpt+UEFI(非CSM)”。
+
+验证：
+
+    cmd管理员模式，进入diskpart
+    
+    >list disk
+    
+    查看对应磁盘的Gpt那一列，是否有星号，有就是确认GPT磁盘了
+    
+### 4.确保硬盘格式化为GPT类型
 
 如果你的BIOS设置已经选择了“UEFI”，但开机后不是直接秒进Windows的，那就怀疑是Windows安装的时候，没有把你的硬盘格式化为GPT模式。
 
-    进入磁盘管理，在磁盘0上点击右键，看看“转换到动态磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是GPT类型，而是MBR类型。
+    进入磁盘管理，在磁盘0上点击右键，看看“转换成GPT磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是GPT类型，而是MBR类型。
+    真正的GPT磁盘，只提供“转换成MBR磁盘”选项。
 
     三星SSD硬盘的管理程序Samsung Magican里，暂时不要设置Over Provisioning功能。
 
 原因参见上面第一节的踩坑经历。
-
-验证：
-
-    启动windows后运行msinfo32，在“系统摘要”界面找“BIOS模式”选项，看到结果是“UEFI”。
-
-    磁盘管理，可以看到自己启动硬盘驱动器的全部分区，一般是磁盘0下面有多个分区
-
+ 
 参考 <https://www.163.com/dy/article/FTJ5LN090531NEQA.html>
+
 
 ## 技嘉主板BIOS设置 Secure Boot 功能
 
@@ -288,6 +301,12 @@ WIN11除了硬件要求之外，还有2个必要条件：
 制作时引导类型选择“FreeDos”就行了，完成后把ghost拷贝到u盘上，以后用它开机引导直接进入dos命令行方式，运行命令ghost即可。
 
 <https://qastack.cn/superuser/1228136/what-version-of-ms-dos-does-rufus-use-to-make-bootable-usbs>
+
+如果引导类型选择“grub”，那你得准备menu.list文件，引导到对应的img文件上。
+
+对windows 10 + 来说，推荐u盘直接使用windows PE，在里面直接使用ghost等工具。
+
+待研究
 
 ## 技嘉 B560M AORUS PRO 主板BIOS打开网络唤醒功能
 
@@ -406,7 +425,8 @@ Windows安装后，先把电源计划调整为“高性能”或“卓越性能�
 这傻逼功能不是设置UEFI快速开机，只是windows关机后系统状态暂存挂起功能，类似休眠。
 
 但是，它使BIOS里定时自动开机失效，并跟很多usb设备不兼容，导致关机下次启动以后usb设备不可用，需要重新插拔。
-
+而且跟主板BIOS中UEFI FAST BOOT也关联上了，二者互相起作用，目的是让你以为能快速开机，其实，很多时候是根本就转了个休眠。
+ 
 比如我的无线网卡、我的显示器集成的hub连接的鼠标键盘等等，开机或重启后各种报错无响应……
 
 关关关：
@@ -417,7 +437,9 @@ Windows安装后，先把电源计划调整为“高性能”或“卓越性能�
 
     去掉勾选“启用快速启动（推荐）”，然后点击保存修改。
 
-    小技巧：点击关机按钮时按住shift，此次关机就不使用快速启动
+如果启用了快速启动，你真正需要重启计算机的时候，你是不知道windows到底选择了哪种重启方案，很多时候你选的重启，其实就是注销并重新到Windows：
+
+    点击关机按钮时按住shift，此次关机就不使用快速启动
 
 ### 默认键盘设置为英文
 
