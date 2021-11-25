@@ -683,11 +683,12 @@ Win+R打开运行，输入WSReset.exe回车。
 
 ## UEFI Fast Boot 设置为 Ultra Fast 启动的操作系统中引导到UEFI固件设置（无法用键盘进入主板BIOS设置的解决办法）
 
-很多支持 Fast Boot 的主板，在主板BIOS的“Fast Boot”项设置了“Ultra Fast”之后，开机过程中不能用键盘进入BIOS了，解决办法是进入操作系统后指定下一次重启进入 BIOS。
+很多支持 Fast Boot 的主板，在主板BIOS的“Fast Boot”项设置了“Ultra Fast”之后，开机过程中不能用键盘进入BIOS了，解决办法是进入Windows指定下一次重启进入 BIOS。
 
 对技嘉 B560M AORUS PRO 主板来说，可以对usb等各个细分选项分别设置是否在初始化的时候跳过，可以避免这个问题。
 
-实际试了一下，没感觉到 Ultra Fast 比 Fast Boot 快多少，还是不用了。
+实际试了一下，没感觉到 Ultra Fast 比 Fast Boot 快。
+而且我的usb键盘鼠标网卡都挂在usb hub上，设备比较多，开机时UEFI加载这堆驱动没法跳过，还是不用了。
 
 ### 在windows 10中指定重启到UEFI固件的步骤
 
@@ -724,6 +725,11 @@ Win+R打开运行，输入WSReset.exe回车。
     参考说明
         <https://www.expreview.com/22043.html>
         <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-windows.html>
+
+### windows电源选项中的“快速启动”
+
+这个功能是跟主板BIOS中UEFI FAST BOOT选项类似的，但是更高级，在设备休眠这一层级实现复用，也就是说，你在关机菜单选择的重新启动，windows可能只是注销并重新登陆。
+还是关了吧，这个噱头实在让人混淆太多东西了，见前面的章节 [关闭“快速启动”]
 
 ## 安全的使用你的 windows 10
 
