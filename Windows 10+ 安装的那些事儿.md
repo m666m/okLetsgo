@@ -178,7 +178,7 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
 
     CMS模式关闭后，当前系统内的PCIe设备应该是出现了一些选项可以进行设置，比如“Advanced”界面 PCI  Subsystem setting 下RX30系列显卡的支持Resize Bar等
 
-#### 为什么要CSM模式又开又关这样操作呢？ Windows 10安装的时候我踩了个坑：
+#### 为什么要CSM模式又开又关这样操作呢？ Windows 10安装的时候我踩了个坑
 
     我在主板BIOS设置中启动模式选项（Windows 10 Features）选择“Windows 10”，“CSM Support”选项选择“Disable”后下面的三个选项自动隐藏了，我以为都是自动UEFI了，其实技嘉主板只是把选项隐藏了，硬盘模式保持了上次安装windows时设置的legacy不是UEFI……
 
@@ -194,7 +194,7 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
 
 总之，完美的做法，应该在BIOS设置中“Windows 10 Features”选择“Windows 10”，“CSM Support”选项选择“Enable”后出现的存储和PCIe设备的选项都选择“UEFI”，然后再把“CSM Support”选项选择“Disable”，使用Rufus制作安装u盘时也需要选择GPT+UEFI方式，这样u盘可以正常启动，这样安装好的windows才能实现秒进桌面。
 
-#### 验证主板BIOS设置的UEFI模式：
+#### 验证主板BIOS设置的UEFI模式
 
     启动windows后运行msinfo32，在“系统摘要”界面找“BIOS模式”选项，看到结果是“UEFI”。
 
@@ -227,7 +227,6 @@ UEFI引导会直接跳过硬件检测。过程如下：引导→UEFI初始化→
 原因参见上面第一节的踩坑经历。
 
 参考 <https://www.163.com/dy/article/FTJ5LN090531NEQA.html>
-
 
 ## 技嘉主板BIOS设置 Secure Boot 功能
 
@@ -1031,4 +1030,3 @@ Windows现在的偏灰, 是在输出HDR信号的情况下自动降低UI亮度的
     >convert basic
 
 注意：无法在windows里操作自己的启动盘，得启动到u盘或者别的系统里，操作这个磁盘，这个磁盘的内容是完全给清除的！
-
