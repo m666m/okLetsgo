@@ -1,6 +1,16 @@
 
 # Windows 10+ 安装的那些事儿
 
+## 关键词 应用/APP
+
+跟以前的application区别，那个是windows桌面版的exe程序，俗称应用程序。
+
+现在的app来自于安卓的称呼，专用于手机，俗称应用。
+
+微软的windows 10+为了打通手机和桌面操作系统，把app商店这一套都移植到windows了
+（而且开发工具也在打通，一套API可以在多个os平台无缝自适应运行），
+所以现在的windows里的“应用”这个词，特指商店里安装的那些“app”。
+
 ## 关键词 UEFI/CSM、GPT/MBR
 
 ### 目标系统类型 UEFI/CSM
@@ -375,7 +385,7 @@ Windows安装后，先把电源计划调整为“高性能”或“卓越性能�
 
 设置：轻松使用->键盘，那些“粘滞键”、“切换键”啥的热键统统关掉
 
-设置：隐私策略各种关闭，有空的时候挨个琢磨吧
+设置：隐私策略各种关闭，这个大部分都是针对app商店里的应用，有空的时候挨个琢磨吧
 
 打开Windows store，菜单选择“settings”，把“App updates”的“Update apps automatically”选项抓紧关闭了，太烦人了！
 商店应用默认不提供卸载选项，解决办法见下面章节 [删除无关占用cpu时间的项目]
@@ -423,12 +433,12 @@ Windows安装后，先把电源计划调整为“高性能”或“卓越性能�
 
 ### 关闭“快速启动”
 
-这傻逼功能不是设置UEFI快速开机，只是windows关机后系统状态暂存挂起功能，类似休眠。
+这傻逼功能不是主板BIOS设置里的 UEFI Fast Boot，只是windows关机后系统状态暂存挂起功能，类似休眠。
 
 但是，它使BIOS里定时自动开机失效，并跟很多usb设备不兼容，导致关机下次启动以后usb设备不可用，需要重新插拔。
-而且跟主板BIOS中UEFI FAST BOOT也关联上了，二者互相起作用，目的是让你以为能快速开机，其实，很多时候是根本就转了个休眠。
+而且跟主板BIOS中 FAST BOOT 也关联上了，二者互相起作用，目的是让你以为能快速开机，其实，很多时候是根本就转了个休眠。
 
-比如我的无线网卡、我的显示器集成的hub连接的鼠标键盘等等，开机或重启后各种报错无响应……
+比如我的无线网卡、我的显示器集成的usb-hub连接的鼠标键盘网卡显示器等等，开机或重启后偶发报错无响应……
 
 关关关：
 
@@ -438,7 +448,8 @@ Windows安装后，先把电源计划调整为“高性能”或“卓越性能�
 
     去掉勾选“启用快速启动（推荐）”，然后点击保存修改。
 
-如果启用了快速启动，你真正需要重启计算机的时候，你是不知道windows到底选择了哪种重启方案，很多时候你选的重启，其实就是注销并重新到Windows：
+如果启用了快速启动，你真正需要重启计算机的时候，你是不知道windows到底选择了哪种重启方案，
+很多时候你选的重启，其实就是注销并重新登陆到Windows：
 
     点击关机按钮时按住shift，此次关机就不使用快速启动
 
@@ -1043,8 +1054,13 @@ uwp迁移到NuGet，估计换汤不换药。
 
 下载一个安装包就能让你舒舒服服用软件的日子，不会再有了。
 
-参见 <https://docs.microsoft.com/zh-cn/windows/msix/desktop/powershell-msix-cmdlets>
-     <https://docs.microsoft.com/en-us/powershell/module/appx/?view=windowsserver2019-ps>
+参见
+
+    <https://docs.microsoft.com/zh-cn/windows/msix/desktop/powershell-msix-cmdlets>
+
+    <https://docs.microsoft.com/en-us/powershell/module/appx/?view=windowsserver2019-ps>
+
+    <https://docs.microsoft.com/zh-cn/windows/uwp/get-started/universal-application-platform-guide#how-the-universal-windows-platform-relates-to-windows-runtime-apis>
 
 ### 得认真考虑下，肉身xx的问题了，以后老死在外面，是不是可以接受？
 
