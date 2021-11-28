@@ -34,7 +34,7 @@ UEFI模式是Windows 7 之后出现的新型操作系统启动引导方式，跳
 MBR是Windows 10/7之前老的硬盘分区方式， GPT是win7之后新的硬盘分区方式，使用不同的硬盘分区类型，Windows引导启动的方式是不同的。
 
 在Windows安装时，有个步骤是划分硬盘分区，自动使用的是GPT方式，默认把启动硬盘上划分了3个分区（如果是一块新的未划分分区的硬盘），其中两个特殊的小分区在Windows安装完成后默认是隐藏看不到的，这里其实放置了存储设备的UEFI引导信息。
-所以如果只想用一个分区，需要提前把硬盘挂到别的电脑上用Windows管理或其他软件分区，明确选择类型为MBR，或者用命令行diskpart程序。
+所以如果只想用一个分区，需要提前把硬盘挂到别的电脑上用Windows管理或其他软件分区，明确选择类型为MBR，或者按Shift+F10调出命令行，使用命令行diskpart程序。
 
 目前发现 Windows 10 安装程序根据BIOS设置里把存储设备设为UEFI才会给硬盘用GPT类型分区，否则会用MBR类型分区，但是安装的时候是不给出任何提示的。
 
@@ -381,7 +381,7 @@ Windows安装后，先把电源计划调整为“高性能”或“卓越性能�
 
 设置：系统->多任务处理，按ALT+TAB将显示“仅打开的窗口”，不然开了一堆edge窗口都给你切换上，太乱了。
 
-设置：个性化->任务栏，合并任务栏按钮，选择“任务栏已满时”，不然你多开窗口非常不方便在任务栏上选择切换。
+设置：个性化->任务栏，合并任务栏按钮，选择“任务栏已满时”，不然多开窗口非常不方便在任务栏上选择切换。
 
 设置：轻松使用->键盘，那些“粘滞键”、“切换键”啥的热键统统关掉
 
@@ -953,7 +953,7 @@ Vmware workstation升级到15.5.5版本后就可以兼容Hyper-V了,但有限制
 
 为嘛狂吃cpu呢？
 
-    UWP文件下载这个玩法，最大的问题就是商店是分区域的，而万能的墙会让非cn的下载非常不稳定，特别是你的一个uwp程序依赖比较多的包的时候，说不定有的源在其它外网服务器上，间或会下载不到。不是啥非法的玩意，甚至可能微软的更新包，挂在github上的或者啥开源服务器上的东西，都不排除掉线。这就是为嘛有时候windows更新都报告失败要多重试几次的原因。。。 好吧，程序表明上装好了，其实需要的库不全，后台AppXSVC进程就一根筋的不断重试，微软的三哥程序员估计写循环时候没加sleep(0.001)，cpu就得受点累。这个费电的过程，只能是你把那个uwp程序卸载掉，或者手动安装上缺失的库（windows没有任何提示你咋知道），才算完。
+    UWP文件下载这个玩法，最大的问题就是商店是分区域的，而万能的墙会让非cn的下载非常不稳定，特别是你的一个uwp程序依赖比较多的包的时候，说不定有的源在其它外网服务器上，间或会下载不到。不是啥非法的玩意，甚至可能微软的更新包，挂在github上的或者啥开源服务器上的东西，都不排除掉线。这就是为嘛有时候windows更新都报告失败要多重试几次的原因。。。 好吧，程序表面上装好了，其实需要的库不全，后台AppXSVC进程就一根筋的不断重试，微软的三哥程序员估计写循环时候没加sleep(0.001)，cpu就得受点累。这个费电的过程，只能是你把那个uwp程序卸载掉，或者手动安装上缺失的库（windows没有任何提示你咋知道），才算完。
 
 我的电脑里哪些是uwp应用呢？
 
@@ -1103,19 +1103,22 @@ uwp迁移到NuGet，估计换汤不换药。
     systemctl reboot --firmware-setup
     参考资料：https://www.freedesktop.org/software/systemd/man/systemctl.html#--firmware-setup
 
-原因是UEFI启动的操作系统是跟主板设置密切结合的，“Fast Boot”分几个选项，导致了初始化部分设备的限制：
+### UEFI的“Fast Boot”不给机会进主板BIOS啥意思
 
-    主板BIOS的“Fast Boot”项如果开启“Fast”选项，可以减少硬件自检时间，但是会存在一些功能限制，比如Fast模式下不能使用USB设备启动了，因为这个加速功能其实是在BIOS自检中禁止扫描USB设备了。
+UEFI启动的操作系统是跟主板BIOS设置密切结合的，UEFI的“Fast Boot”分几个选项，导致了初始化部分设备的限制：
 
-    主板BIOS的“Fast Boot”项如果开启“Ultra Fast”选项，之后就不能用键盘进入BIOS了，估计跟Fast模式一样把大部分不是必须的自检过程给禁用了，所以要想进BIOS只能清空CMOS或者在操作系统里选择“重启到UEFI”。
+    主板BIOS设置的“Fast Boot”项如果开启“Fast”选项，可以减少硬件自检时间，但是会存在一些功能限制，比如Fast模式下不能使用USB设备启动了，因为这个加速功能其实是在BIOS自检中禁止扫描USB设备了。
 
-    参考说明
-        <https://www.expreview.com/22043.html>
-        <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-windows.html>
+    主板BIOS设置的“Fast Boot”项如果开启“Ultra Fast”选项，之后就不能用键盘进入BIOS了，估计跟Fast模式一样把大部分不是必须的自检过程给禁用了，所以要想进BIOS只能清空CMOS或者在操作系统里选择“重启到UEFI”。
+
+参考说明
+    <https://www.expreview.com/22043.html>
+    <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-windows.html>
 
 ### windows电源选项中的“快速启动”
 
 这个功能是跟主板BIOS中UEFI FAST BOOT选项类似的，但是更高级，在设备休眠这一层级实现复用，也就是说，你在关机菜单选择的重新启动，windows可能只是注销并重新登陆。
+
 还是关了吧，这个噱头实在让人混淆太多东西了，见前面的章节 [关闭“快速启动”]
 
 ## 常见问题
@@ -1146,7 +1149,8 @@ Windows现在的偏灰, 是在输出HDR信号的情况下自动降低UI亮度的
 
 ### 取消动态磁盘
 
-误把“动态磁盘”和“GPT磁盘”混淆了，我的硬盘不幸变成了动态磁盘，windows 不能操作他的各种分区了。
+之前误把“动态磁盘”和“GPT磁盘”混淆了，我的硬盘不幸变成了动态磁盘，windows 不能操作他的各种分区了。
+
 微软自己都废弃了这个“动态磁盘” <https://docs.microsoft.com/en-us/windows-server/storage/disk-management/change-a-dynamic-disk-back-to-a-basic-disk>
 
 取消步骤，需要进入diskpart
@@ -1169,7 +1173,6 @@ Windows现在的偏灰, 是在输出HDR信号的情况下自动降低UI亮度的
 
 注意：无法在windows里操作自己的启动盘，得启动到u盘或者别的系统里，操作这个磁盘，这个磁盘的内容是完全给清除的！
 
-
 ### 乱七八糟的.NET Framework各版本安装
 
 .NET Framework 4.x号称是互相覆盖的，版本继承性可以延续。
@@ -1182,7 +1185,7 @@ M$不支持了，自求多福吧，自己挨个版本研究去 <https://docs.mic
 
 从 .NET Framework 4 开始，所有 .NET Framework 版本都是就地更新的，因此，在系统中只能存在一个 4.x 版本。
 
-#### Windows 10 + 按需安装.NET Framework 3.5
+#### .NET Framework 3.5 在 Windows 10 + 只能按需安装
 
 通过 Windows 控制面板启用 .NET Framework 3.5。 此选项需要 Internet 连接。
 简单点办法，安装directx 9，windows自己会弹出提示要求给你安装.NET Framework 3.5。
@@ -1193,3 +1196,5 @@ M$不支持了，自求多福吧，自己挨个版本研究去 <https://docs.mic
 
     如果不依赖 Windows 更新作为源来安装 .NET Framework 3.5，则必须确保严格使用来自相同的、对应的 Windows 操作系统版本的源。
     使用来自不同 Windows 操作系统版本的源将安装与 .NET Framework 3.5 不匹配的版本，或导致安装失败，使系统处于不受支持和无法提供服务的状态。
+
+也就是说，弄个3.5的离线安装包，在windows 10 下面可能不能用。
