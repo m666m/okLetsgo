@@ -1060,7 +1060,10 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 ### MarkDown
 
     Markdown All in One 高亮，预览
+
     markdownlint 语法检查
+
+    xlthu.pangu-markdown 中文英文之间加入空格，所谓“盘古空白”
 
 ### shell-format
 
