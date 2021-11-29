@@ -744,6 +744,10 @@ MappedFolder可以有多个，默认映射到桌面，也可以单独指定，�
 
 ## Windows 10 使用虚拟机的几个途径
 
+WSL2 内的 container 是 linux 提供的，不算 Windows 的容器。
+Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-V 隔离，process 只在 server 版提供
+<https://docs.microsoft.com/zh-cn/virtualization/windowscontainers/manage-containers/hyperv-container>
+
 ### Hyper-V
 
 这个方法就像普通虚拟机操作了，类似 VM Ware、Virtual Box
@@ -751,7 +755,7 @@ MappedFolder可以有多个，默认映射到桌面，也可以单独指定，�
 
 ### docker (Hyper-V)
 
-windows 10+ 上的docker是通过Hyper-V实现的，之前的windows 7 上的docker是安装了virtual box。
+windows 10+ 上的docker是  WSL 2 或 Hyper-V 实现的，之前的windows 7 上的docker是安装了virtual box。
 <https://docs.microsoft.com/zh-cn/virtualization/windowscontainers/about/>
 
 需要注意不同映像的区别，完整windows api的是windows和windows server，其它的是仅支持 .net
@@ -759,7 +763,7 @@ windows 10+ 上的docker是通过Hyper-V实现的，之前的windows 7 上的doc
 
 ### 适用于 Linux 的 Windows 子系统（WSL）- 命令行安装Ubuntu
 
-WSL2的底层还是使用了虚拟机（Hyper-V），但是他使用的Linux完全集成到了windows中，即使用起来就像在windows中直接运行linux程序。
+WSL 2的底层还是使用了虚拟机（Hyper-V），但是他使用的Linux完全集成到了windows中，即使用起来就像在windows中直接运行linux程序。
 
 开发工具可以使用Virsual Studio Code，支持直接打开WSL虚机，就像连接Docker虚机或远程连接SSH服务器一样简单。其它开发工具如git、docker、数据库、vGpu加速（<https://developer.nvidia.com/cuda/wsl> ）等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/windows/wsl/setup/environment>
 
