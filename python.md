@@ -964,10 +964,8 @@ pylance
 
 ### 正则表达式预览
 
-    RegExp Preview and Editor publisher: le0zh.vscode-regexp-preivew 优选
-
-    Regex Previewer
-    RegExp Explain
+    LouisWT.regexp-explain
+        RegExp Preview and Editor : le0zh.vscode-regexp-preivew （废弃了）
 
 ### 查看sqllite数据库
 
