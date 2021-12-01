@@ -416,7 +416,10 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
     ->设备安全性->内核隔离，手动开启“核心隔离”、“内存完整性”  <https://support.microsoft.com/zh-cn/Windows/afa11526-de57-b1c5-599f-3a4c6a61c5e2> <https://go.microsoft.com/fwlink/?linkid=866348>
 
     在“设备安全性”屏幕的底部，如果显示“你的设备满足增强型硬件安全性要求”，那就是基本都打开了。
-    目前发现 Windows 10 21H1 版本的“核心隔离”类别中缺少“内核 DMA 保护”、“固件保护”等选项，而 Windows 2019 LTSC 版本是有的，
+
+    如果“核心隔离”类别中缺少“内核 DMA 保护”、“固件保护”等选项，在主板BIOS (IOMMU) 中启用 Hyper-V 虚拟化，并在 Windows 功能中安装Hyper-V。
+    <https://docs.microsoft.com/en-us/windows/security/information-protection/kernel-dma-protection-for-thunderbolt#using-system-information>
+
     如果想显示“你的设备超出增强的硬件安全性要求”，需要在下面的页面慢慢研究如何开启。
     <https://docs.microsoft.com/zh-cn/windows/security/information-protection/kernel-dma-protection-for-thunderbolt>
     <https://docs.microsoft.com/zh-cn/windows/security/threat-protection/windows-defender-system-guard/system-guard-secure-launch-and-smm-protection>
@@ -1012,6 +1015,7 @@ uwp 权限配置
 VCLibs 库文件，修复输入法等 appx 等库关联问题
 
     Microsoft.VCLibs.140.00_14.0.30704.0_x64__8wekyb3d8bbwe.Appx
+    https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx https://docs.microsoft.com/en-us/troubleshoot/cpp/c-runtime-packages-desktop-bridge#how-to-install-and-update-desktop-framework-packages
 
 VP9 视频扩展 VP9VideoExtensions 库文件，修复设置->应用->视频播放中的预览错误
 
