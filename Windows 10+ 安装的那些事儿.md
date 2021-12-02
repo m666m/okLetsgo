@@ -775,13 +775,119 @@ WSL 2 的底层还是使用了虚拟机（Hyper-V），但是他使用的 Linux 
 
 开发工具可以使用 Virsual Studio Code，支持直接打开 WSL 虚机，就像连接 Docker 虚机或远程连接 SSH 服务器一样简单。其它开发工具如 git、docker、数据库、vGpu 加速（<https://developer.nvidia.com/cuda/wsl> ）等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/windows/wsl/setup/environment>
 
-1.开启 WSL 功能： Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出窗口选择“启用或关闭 Windows 功能”，在列表勾选“适用于 Linux 的 Windows 子系统”，确定。
-
-2.power shell 下就执行几个命令：
+简单使用 Ubuntu 就一条命令
 
     # 安装 ubuntu，已经安装过了忽略这条
     # 详见 <https://docs.microsoft.com/windows/wsl/install>
-    wsl --install -d Ubuntu
+    wsl --install   # -d Ubuntu 默认不需要打
+
+在 Windows 命令提示符或 PowerShell 中，可以在当前命令行中使用默认的 Linux 发行版，直接输入 bash 或 ubuntu 回车就可以了。
+
+    # 提供 Linux 系统中的日期。
+    wsl date
+
+    查看已安装的 Linux 发行版的列表
+    wsl --list 或 wsl -l -v
+
+    # 将默认发行版设置为 Debian
+    wsl --setdefault Debian 或 wsl -s Debian
+    # 在 Debian 中运行 npm init 命令
+    wsl npm init
+
+#### WSL 1 和 WSL 2 的定制安装
+
+    <https://docs.microsoft.com/zh-cn/windows/wsl/install-manual>
+
+1.Windows 10开启 WSL 功能
+
+首选：
+Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出窗口选择“启用或关闭 Windows 功能”，
+在列表勾选“适用于 Linux 的 Windows 子系统”，确定。
+
+或
+
+```power shell
+
+    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+
+```
+
+验证
+
+```power shell
+
+    Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+
+```
+
+到这里已经安装了 WSL 1，其实可以直接在 WSL 1 里安装 ubuntu 等系统了。
+下面的描述都是为了安装 WSL 2 的。
+
+2.Windows 10启用虚拟机功能
+
+```power shell
+
+    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+```
+
+3.下载 Linux 内核更新包，双击提权安装即可。
+<https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi>
+
+```power shell
+
+    wsl --update
+
+```
+
+4.将 WSL 2 设置为默认版本
+
+```power shell
+
+    wsl --set-default-version 2
+
+```
+
+5.下载 Linux 发行版并安装
+
+详见 <https://docs.microsoft.com/zh-cn/windows/wsl/install-manual#downloading-distributions>
+
+    <https://aka.ms/wslubuntu2004>
+    <https://aka.ms/wsl-ubuntu-1604>
+
+```power shell
+
+    Invoke-WebRequest -Uri https://aka.ms/wslubuntu2004 -OutFile Ubuntu.appx -UseBasicParsing
+
+```
+
+或
+
+```cmd
+
+    curl.exe -L -o ubuntu-2004.appx https://aka.ms/wsl-ubuntu-2004
+
+```
+
+安装：
+
+```power shell
+
+    Add-AppxPackage .\app_name.appx
+
+```
+
+注销并卸载 WSL 发行版：
+
+```power shell
+
+    wsl --unregister <DistributionName>
+
+```
+
+6.验证
+
+```power shell
 
     # 更新 WSL 内核，需要管理员权限
     wsl --update
@@ -793,6 +899,10 @@ WSL 2 的底层还是使用了虚拟机（Hyper-V），但是他使用的 Linux 
 
     # 进入 ubuntu 系统
     wsl 或 bash
+
+```
+
+```bash
 
     # 更新下包
     sudo apt update
@@ -812,16 +922,25 @@ WSL 2 的底层还是使用了虚拟机（Hyper-V），但是他使用的 Linux 
 
     # 出现火车，说明安装成功
     sl
+```
 
-3.Linux 下的 GUI 应用的安装和使用
+7.配置多个 linux 系统
+
+详见 <https://docs.microsoft.com/zh-cn/windows/wsl/wsl-config>
+
+8.导入任何 Linux 发行版
+
+详见 <https://docs.microsoft.com/zh-cn/windows/wsl/use-custom-distro>
+
+9.WSL 命令行参考
+
+详见 <https://docs.microsoft.com/zh-cn/windows/wsl/basic-commands>
+
+#### Linux 下的 GUI 应用的安装和使用
 
     详见 <https://docs.microsoft.com/zh-cn/windows/wsl/tutorials/gui-apps>
 
-4.手动下载安装 linux 的微软发行版
-
-    详见 <https://docs.microsoft.com/zh-cn/windows/wsl/install-manual#downloading-distributions>
-
-5.安装遇到问题
+#### 安装遇到问题
 
 遇到报错试试下面这个：
 
