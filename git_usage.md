@@ -50,6 +50,10 @@
     - [高级用法：找回误删的git stash 数据](#高级用法找回误删的git-stash-数据)
   - [用法：补丁神器cherry-pick](#用法补丁神器cherry-pick)
   - [用法：git diff的各个用法示例](#用法git-diff的各个用法示例)
+  - [常见问题](#常见问题)
+    - [Your branch and 'origin/xxx' have diverged](#your-branch-and-originxxx-have-diverged)
+      - [情况1： Git fetch 、merge以后出现分叉（或没有先git pull直接push，原创已经有人提交修改）](#情况1-git-fetch-merge以后出现分叉或没有先git-pull直接push原创已经有人提交修改)
+      - [情况2：rebase以后提示同样的错误](#情况2rebase以后提示同样的错误)
   - [版本回退的操作步骤](#版本回退的操作步骤)
     - [自己的分支硬回退例子](#自己的分支硬回退例子)
     - [远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1](#远程仓库上有b先生新增提交了然后你却回退了远程仓库到a1)
@@ -1540,6 +1544,62 @@ git diff 主要的应用场景：
 ·比较两个历史版本之间的差异
 
     git diff SHA1 SHA2
+
+## 常见问题
+
+### Your branch and 'origin/xxx' have diverged
+
+<https://blog.csdn.net/d6619309/article/details/52711035>
+
+当前工作的git仓库模型为:
+
+    upstream
+      |
+    origin
+      |
+    local copy
+
+#### 情况1： Git fetch 、merge以后出现分叉（或没有先git pull直接push，原创已经有人提交修改）
+
+git fetch upstream上游代码后执行git merge，然后git status发现Git分支出现分叉。
+
+出现分叉的原因是存在两种独立的提交(每种可能有多个提交):
+一种是来自你本地分支副本的提交，另外的提交来自远程分支副本。
+
+这种情况，通常是由于另外一个人在上游相同的分支做了提交。
+
+解决的华，在本地分支上，执行:
+
+    git fetch
+    git rebase
+
+rebase以后的git提交历史树为:
+
+    ... o ---- o ---- A ---- B  origin/branch_xxx (upstream work)
+                              \
+                               C`  branch_xxx (your work)
+
+#### 情况2：rebase以后提示同样的错误
+
+这是因为你在执行rebase之前，已经往你的origin上面push了提交。由于rebase会重写历史提交记录，因此你的本地和你的origin的历史提交状态是不同的，同样产生了分叉:
+
+rebase之前的git提交历史树:
+
+    ... o ---- o ---- A ---- B  master, origin/master
+                       \
+                        C  branch_xxx, origin/branch_xxx
+
+执行rebase之后的git提交历史树:
+
+    ... o ---- o ---- A ---------------------- B  master, origin/master
+                       \                        \
+                        C  origin/branch_xxx     C` branch_xxx
+
+这时候，你必须确定你是处于上面描述的情况，解决方案就是强制push到你的origin上游，执行下面命令可以解决:
+
+    git push origin branch_xxx -f
+
+我的想法是，不用 git push -f，用 git merge 是否可以解决？
 
 ## 版本回退的操作步骤
 
