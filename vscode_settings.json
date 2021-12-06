@@ -80,9 +80,15 @@
     },
     // PYQT Integration
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\Qt\\bin\\designer.exe",
-    "pyqt-integration.qtdesigner.path": "c:\\StartHere\\tools\\pyenvs\\btcgoenv\\Lib\\site-packages\\qt5_applications\\Qt\\bin\\designer.exe",
-    "pyqt-integration.pyuic.cmd":"c:\\StartHere\\tools\\pyenvs\\btcgoenv\\Scripts\\pyuic5.exe",
-    "pyqt-integration.pyrcc.cmd":"c:\\StartHere\\tools\\pyenvs\\btcgoenv\\Scripts\\pyrcc5.exe",
+    "pyqt-integration.qtdesigner.path": "C:\\Users\\yourusername\\.conda\\envs\\p37\\Scripts\\designer.exe",
+    //"pyqt-integration.qtdesigner.path": "c:\\StartHere\\tools\\pyenvs\\your_virtualenv\\Lib\\site-packages\\qt5_applications\\Qt\\bin\\designer.exe",
+    //
+    // "pyqt-integration.pyuic.cmd":"c:\\StartHere\\tools\\pyenvs\\your_virtualenv\\Scripts\\pyuic5.exe",
+    "pyqt-integration.pyuic.cmd":"C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\pyuic5.bat",
+    //
+    // "pyqt-integration.pyrcc.cmd":"c:\\StartHere\\tools\\pyenvs\\your_virtualenv\\Scripts\\pyrcc5.exe",
+    "pyqt-integration.pyrcc.cmd":"C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\pyrcc5.bat",
+    //
     "pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
     "pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
     // Bracket Pair Colorizer 2
