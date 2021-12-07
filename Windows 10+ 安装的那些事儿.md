@@ -1054,7 +1054,7 @@ Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但�
 
     在“no Hyper-V”中，可以运行 Vmware 虚拟机，而另一个启动选项运行 Hyper-v。
 
-4. 以后想要删除可以用运行 msconfig 跳出图形界面来操作
+4. 以后想要删除可以运行 msconfig 用图形界面来选择了
 
 作者：知乎用户
 链接：<https://www.zhihu.com/question/38841757/answer/95947785>

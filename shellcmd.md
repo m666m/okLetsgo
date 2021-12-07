@@ -135,8 +135,6 @@ print('back to normal now')
 
     nohup sleep 3600 &
 
-### tmux
-
 ### 后知后觉发现一个命令要执行很久，半路让它改成后台执行
 
 如果程序的输出无所谓，你只要程序能继续执行下去就好，
@@ -183,3 +181,7 @@ print('back to normal now')
     501 33681 30419   0  6:02PM ttys000    0:00.00 grep sleep
 
     bash-3.2$ exit
+
+### 使用 tmux
+
+tmux用一个守护进程打开多个终端窗口实现了一直在后台运行，详见 <gun_tools.md> 的 tmux 章节。

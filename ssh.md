@@ -1,5 +1,8 @@
 # Open-SSH 发展了好久，开源设置有各种历史遗留问题，比较没规划
 
+微软在 Windows 10 这一代自行编译了OpenSSH客户端，以便嵌入操作系统。
+目前Windows操作系统下使用微软编辑的版本是可以的，兼容性可以保证。
+
 ## 外网访问内网使用ssh和远程桌面
 
 <https://github.com/microsoft/vscode-docs/blob/master/remote-release-notes/v1_37.md>
