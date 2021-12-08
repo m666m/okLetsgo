@@ -80,23 +80,26 @@
     },
     // PYQT Integration
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\Qt\\bin\\designer.exe",
+    // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Library\\bin\\designer.exe",
     "pyqt-integration.qtdesigner.path": "C:\\Users\\yourusername\\.conda\\envs\\p37\\Scripts\\designer.exe",
     //"pyqt-integration.qtdesigner.path": "c:\\StartHere\\tools\\pyenvs\\your_virtualenv\\Lib\\site-packages\\qt5_applications\\Qt\\bin\\designer.exe",
     //
-    // "pyqt-integration.pyuic.cmd":"c:\\StartHere\\tools\\pyenvs\\your_virtualenv\\Scripts\\pyuic5.exe",
-    "pyqt-integration.pyuic.cmd":"C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\pyuic5.bat",
+    // "pyqt-integration.pyuic.cmd":"C:\\ProgramData\\Anaconda3\\Library\\bin\\pyuic5.bat",
+    // "pyqt-integration.pyuic.cmd":"C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\pyuic5.bat",
+    "pyqt-integration.pyuic.cmd":"c:\\StartHere\\tools\\pyenvs\\your_virtualenv\\Scripts\\pyuic5.exe",
     //
-    // "pyqt-integration.pyrcc.cmd":"c:\\StartHere\\tools\\pyenvs\\your_virtualenv\\Scripts\\pyrcc5.exe",
-    "pyqt-integration.pyrcc.cmd":"C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\pyrcc5.bat",
+    // "pyqt-integration.pyrcc.cmd":"C:\\ProgramData\\Anaconda3\\Library\\bin\\pyrcc5.bat",
+    // "pyqt-integration.pyrcc.cmd":"C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\pyrcc5.bat",
+    "pyqt-integration.pyrcc.cmd":"c:\\StartHere\\tools\\pyenvs\\your_virtualenv\\Scripts\\pyrcc5.exe",
     //
     "pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
     "pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
     // Bracket Pair Colorizer 2
-    "bracket-pair-colorizer-2.colors": [
-        "rgba(213,135,32,255)",
-        "rgba(62,145,222,255)",
-        "rgba(18,230,155,255)"
-    ],
+    // "bracket-pair-colorizer-2.colors": [
+    //     "rgba(213,135,32,255)",
+    //     "rgba(62,145,222,255)",
+    //     "rgba(18,230,155,255)"
+    // ],
     // Rainbow CSV https://github.com/mechatroner/vscode_rainbow_csv/blob/master/test/color_customization_example.md#colors-customization
     "editor.tokenColorCustomizations": {
         "textMateRules": [
