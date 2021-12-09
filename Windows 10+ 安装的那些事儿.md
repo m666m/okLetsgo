@@ -288,10 +288,24 @@ UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化�
 
 验证：启动 Windows 后运行 msinfo32，在“系统摘要”界面找“安全启动”选项，看到结果是“开启”。
 
-补充：从华为服务器的一篇说明 <https://support.huawei.com/enterprise/zh/doc/EDOC1000039566/596b9d40>中看到，
+补充：
+
+<https://www.sevecek.com/EnglishPages/Lists/Posts/Post.aspx?ID=105>
+
+    switch the Attempt Secure Boot to Enabled
+    switch the Secure Boot Mode to Customized - it enables the Key Management submenu
+    go into the Key Management sub menu
+    switch the Provision Factory Default keys to Enabled
+    go back up
+    switch the Secure Boot Mode to Standard
+    And you are all done.
+
+从华为服务器的一篇说明 <https://support.huawei.com/enterprise/zh/doc/EDOC1000039566/596b9d40>中看到，
 “Secure Boot Mode”选“custom”后，在“Key Management”界面，设置“Provision Factory Default keys”为 “Enable”，打开出厂默认密钥开关，这个不知道是否必须做，也是导入密钥的操作，
-看主板 BIOS 下面的说明是“Secure Boot Mode”改回“Standard”，也能让“Secure Boot”依然是“Active”。
-我是按这个做的，进入 BIOS 设置，把“Secure Boot Mode”改回“Standard”，这时“Secure Boot”依然是“Active”字样，说明密钥都导入成功了
+
+3.“Secure Boot Mode”导入出厂密钥后，要再改回“Standard”
+
+看主板 BIOS 下面的说明是要再该回去的。重启再次进入 BIOS 设置，把“Secure Boot Mode”改回“Standard”，这时“Secure Boot”依然是“Active”字样，说明密钥都导入成功了
 
 不大明白为嘛技嘉没提供个详细的操作说明呢？
 
