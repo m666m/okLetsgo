@@ -433,6 +433,8 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
 如果有程序开机就启动挺烦人的，运行“msconfig”，在启动选项卡进行筛选
 
+更多的定制化见 tenforums 的各种教程 <https://www.tenforums.com/tutorials/id-Customization/>
+
 ### 设置 Windows 安全中心
 
 开始->运行：msinfo32，在“系统摘要”页面，查看状态是“关闭”的那些安全相关选项，逐个解决。
@@ -797,6 +799,9 @@ Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-
 这个方法就像普通虚拟机操作了，类似 VM Ware、Virtual Box
 <https://docs.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v>
 
+如何在 Windows 10 上使用 Hypver-V
+    <https://www.tenforums.com/tutorials/2087-hyper-v-virtualization-setup-use-windows-10-a.html>
+
 ### docker (Hyper-V)
 
 Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7 上的 docker 是安装了 virtual box。
@@ -1079,7 +1084,7 @@ Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但�
 
 2. 管理员身份运行命令提示符 cmd（如果用 PowerShell，符号{}会导致报错）：
 
-    bcdedit /copy {current} /d "Windows 10 without Hyper-V"
+    bcdedit /copy {current} /d "Win10 No Hyper-V"
 
     将上面命令得到的字符串替换掉下面{}中的 XXX 代码即可
 
@@ -1091,14 +1096,17 @@ Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但�
 
 3. 重启计算机，出现 Windows 10 启动选择， 就能选择是否启用 Hyper-v：
 
-    在“no Hyper-V”中，可以运行 Vmware 虚拟机，而另一个启动选项运行 Hyper-v。
+    在“Win10 No Hyper-V”中，可以运行 Vmware 虚拟机，而另一个启动选项运行 Hyper-v。
 
-4. 以后想要删除可以运行 msconfig 用图形界面来选择了
+4. 以后想要删除，因为有了启动菜单，所以可以运行 msconfig 用图形界面来编辑选择了。
 
 作者：知乎用户
 链接：<https://www.zhihu.com/question/38841757/answer/95947785>
 来源：知乎
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+Hyper-V 其实也分1代2代，tenforums 的详细说明
+    <https://www.tenforums.com/tutorials/139405-run-hyper-v-virtualbox-vmware-same-computer.html>
 
 ## 使用中要注意，WSL 下的 Linux 命令区别于某些 PowerShell 下的命令
 
