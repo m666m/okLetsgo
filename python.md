@@ -183,6 +183,8 @@ v2ex <http://pypi.v2ex.com/simple>
 
 ## virtualenv 配置python环境
 
+    https://docs.python-guide.org/dev/virtualenvs/
+
 适合标准的python安装到windows上，原始python的脚本更适合用cmd环境，而pip的有些脚本适合用bash做环境。
 激活环境：
 
