@@ -386,7 +386,11 @@ conda 有很多频道，在网页版频道列表里有对应的版本，找合�
 
 设置完国内源后，升级 conda 的速度会快很多，之后安装包时也会从国内源下载。
 
+    # 不行呢奇怪，用下面的这个升级了
     conda update conda
+
+    # vs code 提示
+    conda update -n base -c defaults conda
 
 ### windows下使用脚本执行anaconda
 
