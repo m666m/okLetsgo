@@ -352,6 +352,15 @@ windows下用cmd执行bat脚本自动执行环境和python程序
 
     原来是anaconda的bash脚本写的有问题，也不调试，直接屏蔽错误提示，导致指向py3.7环境的命令根本没成功，默认执行的base环境，找到py3.8去了，一点提示都没有！
 
+#### 强行改变conda的shell，尚未充分测试
+
+    conda init bash
+    conda init cmd.exe
+
+详情见
+
+    conda init -h
+
 ### conda频道和源配置
 
 0.不同的conda频道，看看默认软件名在自己的os下对应的版本
