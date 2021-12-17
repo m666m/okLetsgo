@@ -30,6 +30,10 @@ Pip can install software in three different ways:
 
     如果当前操作系统还安装了conda，请先conda list 看看有没有pip，有可能运行的是conda环境里的pip，那就安装到了conda建立的环境目录的site-packages里
 
+pip用之前先 pip -V 看看位置，防止不是你的环境的pip，用了就装到别的地方了
+
+    yourenv/Scripts/pip.exe install pyqt5-tools~=5.15
+
 ### wheels
 
 最简单的解决办法是下载好心人提供的编译好的windows二进制包 <https://www.lfd.uci.edu/~gohlke/pythonlibs/>
@@ -69,7 +73,8 @@ python3.8应该对应了VS2017(15.9)，用VS2019基本也可以。
 
     python -m pip install --upgrade pip
 
-失败的话，首先查看windows下使用cmd环境，并检查下环境变量，which看下命令指向，是否有conda环境冲突了。windows下，如果是干净的python环境，不使用bash切换到cmd下，直接pip是可以的。
+失败的话，首先查看windows下使用cmd环境，并检查下环境变量，which看下命令指向，是否有conda环境冲突了。
+windows下，如果是干净的python环境，不要使用bash，在cmd命令行下，直接pip是可以的。
 
 或强制重装：
 
@@ -144,34 +149,26 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 通过几次 pip 的使用，对于默认的 pip 源的速度实在无法忍受，于是便搜集了一些国内的pip源，如下：
 
-清华源说明
+    清华源说明 <https://mirrors.tuna.tsinghua.edu.cn/help/pypi/>
 
-    <https://mirrors.tuna.tsinghua.edu.cn/help/pypi/>
+    Python官方 <https://pypi.python.org/simple>
+    清华大学 <https://pypi.tuna.tsinghua.edu.cn/simple/>
+    阿里云 <http://mirrors.aliyun.com/pypi/simple/>
+    中国科技大学 <https://pypi.mirrors.ustc.edu.cn/simple/>
+    豆瓣 <http://pypi.douban.com/simple>
+    v2ex <http://pypi.v2ex.com/simple>
+    中国科学院 <http://pypi.mirrors.opencas.cn/simple/>
 
-Python官方 <https://pypi.python.org/simple>
-清华大学 <https://pypi.tuna.tsinghua.edu.cn/simple/>
-阿里云 <http://mirrors.aliyun.com/pypi/simple/>
-中国科技大学 <https://pypi.mirrors.ustc.edu.cn/simple/>
-豆瓣 <http://pypi.douban.com/simple>
-v2ex <http://pypi.v2ex.com/simple>
-中国科学院 <http://pypi.mirrors.opencas.cn/simple/>
+cmd命令行，切换到你的环境下(conda/virtualenv等)执行
 
-#### 临时使用国内镜像
-
+    # 临时使用国内镜像
     pip install -i https://pypi.tuna.tsinghua.edu.cn/simple flask
 
-注意，simple 不能少, 是 https 而不是 http
-
-设为默认
-
-升级 pip 到最新的版本 (>=10.0.0) 后进行配置：
-
-    sudo pip3.7 install pip -U
-    sudo pip3.7 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-
-如果您到 pip 默认源的网络连接较差，临时使用本镜像站来升级 pip：
-
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+    # 设为默认
+    # 升级 pip 到最新的版本 (>=10.0.0) 后进行配置：
+    # sudo pip install pip -U
+    sudo pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+    sudo pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
 #### 在 Linux 和 macOS 中，用户配置需要写到 ~/.pip/pip.conf 中
 
@@ -342,15 +339,11 @@ windows下用cmd执行bat脚本自动执行环境和python程序
 
 ## Anaconda 管理
 
-<https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/>
-<https://www.jianshu.com/p/ef1ae10ba950>
-
-在windows上用cmd做脚本环境，如果使用bash，自带命令会提示各种错误信息。
-
 ### 注意windows下的Anaconda需要使用cmd环境运行而不是bash
 
     目前版本的各种命令执行都是bat，在bash下运行会各种报错。
-    尤其是vscode，他的开发默认都是在bash的，各种source xxx之后运行，在cmd下的命令报错概率大。
+
+    对vscode，他的开发默认都是在bash的，各种source xxx之后运行，在cmd下的命令报错概率大。
 
 怎么发现的？填坑呗！
 
@@ -359,33 +352,6 @@ windows下用cmd执行bat脚本自动执行环境和python程序
 
     原来是anaconda的bash脚本写的有问题，也不调试，直接屏蔽错误提示，导致指向py3.7环境的命令根本没成功，默认执行的base环境，找到py3.8去了，一点提示都没有！
 
-### conda 安装package的时候可以指定环境，这点比pip强
-
-    conda install --name p37 pyqt5 -y
-
-    # 如果用pip需要先看看路径对不对
-    pip -V
-
-### conda pip
-
-首先切换到你的环境
-
-    /c/ProgramData/Anaconda3/Scripts/activate venv/conda
-
-conda 有很多频道，在网页版频道列表里有对应的版本，找合适自己的安装
-注意不是名字对了就能装，版本不一定是新的！
-
-    conda install -c conda-forge pyqtgraph
-
-pip用之前先 pip -V 看看位置，防止不是你的环境的pip，用了就装到别的地方了
-
-    yourenv/Scripts/pip.exe install pyqt5-tools~=5.15
-
-<https://pypi.org/project/pyqt5-tools/>
-The ~=5.15 specifies a release compatible with 5.15 which will be
-the latest version of pyqt5-tools built for PyQt5 5.15.
-If you are using a different PyQt5 version, specify it instead of 5.15.
-
 ### conda频道和源配置
 
 0.不同的conda频道，看看默认软件名在自己的os下对应的版本
@@ -393,31 +359,31 @@ If you are using a different PyQt5 version, specify it instead of 5.15.
     <https://anaconda.org/search?q=pyqtgraph>
     <https://anaconda.org/conda-forge/pyqtgraph>
 
+conda 有很多频道，在网页版频道列表里有对应的版本，找合适自己的安装
+注意不是名字对了就能装，版本不一定是新的！
+
+    conda install -c conda-forge pyqtgraph
+
 1.查看 conda 版本
+
 安装完成后按Win+R打开cmd终端，输入
 
     conda --version
 
 2.添加国内源
-查看现有源
 
-    conda config --show-sources
+按清华源的说明操作即可
 
-添加国内清华源
+    <https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/>
 
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
-
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
-
-删除默认源
-
-    conda config --remove channels defaults
+    <https://www.jianshu.com/p/ef1ae10ba950>
 
 设置搜索时显示通道地址
 
     conda config --set show_channel_urls yes
 
 3.升级 conda
+
 设置完国内源后，升级 conda 的速度会快很多，之后安装包时也会从国内源下载。
 
     conda update conda
@@ -425,12 +391,13 @@ If you are using a different PyQt5 version, specify it instead of 5.15.
 ### windows下使用脚本执行anaconda
 
 1. 查看 Python 版本
-python --version
+
+    python --version
 
 2. 创建环境
 上一步查到我电脑上的 Python 版本为 3.7.0 ，我想在这个版本基础上创建一个名为 xdhj 的虚拟环境。
 
-conda create -n xdhj python=3.7.0
+    conda create -n xdhj python=3.7.0
 
 新的开发环境会被默认安装在你 conda 目录下的 envs 文件目录下。
 
@@ -471,6 +438,31 @@ windows cmd下的bat文件：
 8.删除环境
 
     conda remove -n xiaolv --all
+
+### conda 安装package的时候可以指定安装到哪个环境，这点比pip强
+
+    conda install --name p37 pyqt5 -y
+
+    # 如果用pip需要先看看路径对不对
+    pip -V
+
+### conda 下使用 pip
+
+1.修改配置文件
+
+   参见下面的章节 [Anaconda 环境中使用 pip] 的 [注意！Windows 下 Anaconda 用 pip 要修改配置文件]
+
+2.给 pip 换国内源
+
+    参见上面的章节 [PyPI使用国内源]
+
+切换到你的环境
+
+    # Windows下用cmd
+    conda activate p37
+
+    # Windows下不推荐用bash
+    /c/ProgramData/Anaconda3/Scripts/activate venv/conda
 
 ### 用conda复制虚拟环境到其他机器上
 
@@ -514,7 +506,7 @@ windows cmd下的bat文件：
     # 用这个命令确认pip的路径是在自己的环境下面的
     pip -V 这个会列出当前的pip的命令行位置
 
-### 一定要做：Anaconda不同环境下的 pip install 路径修改配置文件
+### 注意！Windows 下 Anaconda 用 pip 要修改配置文件
 
 想要做到 Anaconda 中不同环境互相不干涉，只建好了新环境，这是不够的！
 
@@ -527,19 +519,20 @@ windows cmd下的bat文件：
 假设Anaconda3安装完成后建立的默认环境[base]，python版本是3.7，
 路径 C:\ProgramData\Anaconda3 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
 
-新建个环境[n36]，python版本是3.6，
-路径 C:\Users\xxx\.conda\envs\n36 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
+新建个环境[p36]，python版本是3.6，
+路径 C:\Users\xxx\.conda\envs\p36 （给所有用户安装是在 C:\ProgramData\Anaconda3\envs\p36）下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
 
-    activate n36
-    pip install numpy  # 会装到 [base]下  ！！！
+    activate p36
+    # 会装到 [base]下  ！！！
+    pip install numpy
 
-环境[n36]必须改配置文件 C:\Users\xxx\.conda\envs\n36\Lib\site.py
+环境[p36]必须改配置文件 C:\Users\xxx\.conda\envs\p36\Lib\site.py
 
     USER_SITE = None
     USER_BASE = None
-    # 改为
-    USER_SITE = "C:\\Users\\xxx\\.conda\\envs\\n36\\Lib\\site-packages"
-    USER_BASE = "C:\\Users\\xxx\\.conda\\envs\n36\\Scripts"
+    # 改为  （给所有用户安装是在 C:\ProgramData\Anaconda3\envs\p36）
+    USER_SITE = "C:\\Users\\xxx\\.conda\\envs\\p36\\Lib\\site-packages"
+    USER_BASE = "C:\\Users\\xxx\\.conda\\envs\\p36\\Scripts"
 
 咋办啊坑这么多没法填，anaconda只能多建一个环境，这个应该是不跟其它环境混的（只跟base混）：
 
@@ -598,9 +591,9 @@ windows cmd下的bat文件：
 
 ### 确认conda环境
 
-```shell
+```shell bash
 
-$ activate n36
+$ activate p36
 
 $ conda info
 
@@ -639,8 +632,8 @@ $ conda info
 
 ### 安装一个新包
 
-    # 必须告诉conda你要安装环境的名字 -n n36
-    conda install --name n36 beautifulsoup4
+    # 必须告诉conda你要安装环境的名字 -n p36
+    conda install --name p36 beautifulsoup4
 
 ## anaconda怎么同时安装2.7和3.6？
 

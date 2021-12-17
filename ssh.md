@@ -149,6 +149,7 @@ ubuntu默认没有pip和pip3...先装这俩再说别的吧！
 ## ssh进行代理转发
 
 1.用软件Proxifier进行设置就完事了。
+
 2.PuTTY：Connection->SSH->Tunnels目标设置为Dynamic，添加一个端口7070，点击Add，一个动态转发端口就实现了。
 然后用相应帐号SHH登录后：除了登录的终端窗口以外，本地的7070连服务器的22端口之间就有了一个SSH加密的转发通道了。
 透明用法 plink.exe -v -C -N -D 127.0.0.1:7000 -l root -P xx 98.143.xxx.xxx 如果安全性不重要可以加上一个 -pw 参数以自动输入密码。
