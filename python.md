@@ -361,6 +361,19 @@ windows下用cmd执行bat脚本自动执行环境和python程序
 
     conda init -h
 
+#### 注意conda命令的环境依赖
+
+ssh连接该服务器使用 conda activate p36 命令激活环境后未使用 conda deactivate 退出环境就关闭终端，
+
+再次 conda activate p36 会报错。
+
+解决具体操作如下：
+
+    # 重新进入虚拟环境
+    source activate
+    # 重新退出虚拟环境
+    source deactivate
+
 ### conda频道和源配置
 
 0.不同的conda频道，看看默认软件名在自己的os下对应的版本
