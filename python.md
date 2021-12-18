@@ -245,7 +245,7 @@ cmd命令行，切换到你的环境下(conda/virtualenv等)执行
 
     https://stackoverflow.com/questions/30604952/pip-default-behavior-conflicts-with-virtualenv
 
-### windows下使用cmd/bash脚本执行virtualenv
+### windows命令行环境下使用cmd/bash脚本执行virtualenv
 
 如果用cmd，则vs code使用的时候偶尔会有脚本报错……
 
@@ -255,7 +255,7 @@ windows下用mintty(bash)执行sh脚本自动执行环境和python程序，cmd�
 
     "C:\Program Files\Git\git-bash.exe" --no-cd "C:\tools\pyenvs\yourprojectenv.sh"
 
-#### Windows 下 bash 环境的sh文件（virtualenv）
+#### Windows 命令行环境下 bash 的sh文件（virtualenv）
 
 git-bash(mintty) 下执行，Windows 下只要安装了git直接双击sh文件就关联调用了。
 
@@ -269,7 +269,7 @@ conda deactivate
 read -n1 -p "Press any key to continue..."
 ```
 
-#### Windows 下 cmd 环境的bat文件（virtualenv）
+#### Windows 命令行环境下 cmd 的bat文件（virtualenv）
 
 cmd下执行
 
@@ -454,7 +454,12 @@ conda 有很多频道，在网页版频道列表里有对应的版本，找合�
     # vs code 提示
     conda update -n base -c defaults conda
 
-### windows下使用脚本执行anaconda
+### windows下使用命令行脚本执行anaconda
+
+在windows的命令行脚本环境下，第一次运行 conda activate 是激活[base]环境，
+然后再次执行 conda activate p37 已切换到指定的环境。
+
+也就是说，确保你执行的conda命令都是在[base]环境下就不会报错找不到啥的。
 
 1. 查看 Python 版本
 
@@ -501,10 +506,11 @@ cmd下执行
 ```cmd
 @rem anaconda 命令行执行
 @rem C:\ProgramData\Anaconda3\Scripts\activate
-@rem conda activate xdhj
+@rem conda activate p37
 @rem --------------------------------------------------
 @rem anaconda 脚本执行
-call C:\ProgramData\Anaconda3\condabin\conda.bat activate xdhj
+call C:\ProgramData\Anaconda3\condabin\conda.bat activate
+conda.bat activate p37
 @rem --------------------------------------------------
 python C:\Users\xxxuser\pycode\yourproject\app.py
 
@@ -520,8 +526,11 @@ git-bash(mintty) 下执行，Windows 下只要安装了git直接双击sh文件�
 ```shell
 #!/bin/sh
 # env source export 只认识linux目录结构
-/c/ProgramData/Anaconda3/Scripts/conda.exe activate
-python /c/Users/xxxuser/pycode/yourproject/app.py
+#/c/ProgramData/Anaconda3/Scripts/conda.exe activate
+/c/ProgramData/Anaconda3/condabin/conda.bat activate
+
+conda activate p37
+python /c/Users/sweethome/pycode/btcgo/app.py
 
 conda deactivate
 read -n1 -p "Press any key to continue..."
