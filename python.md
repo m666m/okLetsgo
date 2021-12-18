@@ -245,7 +245,7 @@ cmd命令行，切换到你的环境下(conda/virtualenv等)执行
 
     https://stackoverflow.com/questions/30604952/pip-default-behavior-conflicts-with-virtualenv
 
-### windows命令行环境下使用cmd/bash脚本执行virtualenv
+### Windows 命令行环境下使用脚本执行 Virtualenv
 
 如果用cmd，则vs code使用的时候偶尔会有脚本报错……
 
@@ -454,7 +454,7 @@ conda 有很多频道，在网页版频道列表里有对应的版本，找合�
     # vs code 提示
     conda update -n base -c defaults conda
 
-### windows下使用命令行脚本执行anaconda
+### Windows 命令行环境下下使用脚本执行 Anaconda
 
 在windows的命令行脚本环境下，第一次运行 conda activate 是激活[base]环境，
 然后再次执行 conda activate p37 已切换到指定的环境。
@@ -499,25 +499,26 @@ conda 有很多频道，在网页版频道列表里有对应的版本，找合�
 
     conda remove -n xiaolv --all
 
-#### Windows 下 cmd 环境的bat文件（conda）
+#### Windows 命令行环境下 cmd 的bat文件（conda）
 
 cmd下执行
 
 ```cmd
 @rem anaconda 命令行执行
 @rem C:\ProgramData\Anaconda3\Scripts\activate
-@rem conda activate p37
+@rem conda activate xdhj
+
 @rem --------------------------------------------------
 @rem anaconda 脚本执行
-call C:\ProgramData\Anaconda3\condabin\conda.bat activate
-conda.bat activate p37
+call C:\ProgramData\Anaconda3\condabin\conda.bat activate p37
+
 @rem --------------------------------------------------
-python C:\Users\xxxuser\pycode\yourproject\app.py
+python C:\Users\sweethome\pycode\btcgo\app.py
 
 pause
 ```
 
-#### Windows 下 bash 环境的sh文件（conda）
+#### Windows 命令行环境下 bash 的sh文件（conda）
 
 Windows 下用bash执行conda脚本需要设置conda init 以支持bash，详见上面章节[可指定conda的shell用bash等].
 
@@ -526,7 +527,6 @@ git-bash(mintty) 下执行，Windows 下只要安装了git直接双击sh文件�
 ```shell
 #!/bin/sh
 # env source export 只认识linux目录结构
-#/c/ProgramData/Anaconda3/Scripts/conda.exe activate
 /c/ProgramData/Anaconda3/condabin/conda.bat activate
 
 conda activate p37
@@ -535,6 +535,8 @@ python /c/Users/sweethome/pycode/btcgo/app.py
 conda deactivate
 read -n1 -p "Press any key to continue..."
 ```
+
+如果需要显示中文需要修改配置文件 ~\.minttyrc，详见 [mintty(bash)] <gnu_tools.md>
 
 ### conda 安装package的时候可以指定安装到哪个环境，这点比pip强
 

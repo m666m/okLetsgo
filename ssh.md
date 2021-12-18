@@ -146,7 +146,7 @@ ubuntu默认没有pip和pip3...先装这俩再说别的吧！
 删除服务器上的 ~/.vscode目录，重新安装插件：RemoteDevelopment
 <https://github.com/microsoft/vscode-remote-release/issues/1443>
 
-## ssh进行代理转发
+## ssh 进行代理转发
 
 1.用软件Proxifier进行设置就完事了。
 
@@ -155,7 +155,7 @@ ubuntu默认没有pip和pip3...先装这俩再说别的吧！
 透明用法 plink.exe -v -C -N -D 127.0.0.1:7000 -l root -P xx 98.143.xxx.xxx 如果安全性不重要可以加上一个 -pw 参数以自动输入密码。
          plink –N username@remote.ssh.server -D 127.0.0.1:7070其中 -N 表示不需要shell
 
-## PuTTY使用密钥方式登录Linux服务器
+## PuTTY 使用密钥方式登录Linux服务器
 
 如果用SecureCRT，登陆一次选保存用户名密码就可以了。。。
 在服务器上用./ssh-keygen生成密钥对，将公钥 id_rsa.pub >> 部署到要登录到的服务器上：/home/username/.ssh/authorized_keys 中，

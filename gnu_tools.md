@@ -172,17 +172,19 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     bind -n WheelUpPane select-pane -t= ; copy-mode -e ; send-keys -M
     bind -n WheelDownPane select-pane -t= ; send-keys -M
 
-### mintty
+### mintty(bash)
 
 安装git后就有了，windows下的配置文件 ~\.minttyrc
 
-    Language=zh_CN
     Background=C:\Users\ThinkRight\Pictures\1111111111.jpg
     Font=Consolas
     FontHeight=11
     ForegroundColour=255,255,255
-    Locale=zh_CN
+    Language=zh_CN  # cmd 下中文
+    Locale=zh_CN  # bash 下中文
     # Charset=GBK
+
+如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"
 
 ### cmatrix 字符屏保
 
