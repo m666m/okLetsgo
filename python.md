@@ -257,7 +257,7 @@ windows下用mintty(bash)执行sh脚本自动执行环境和python程序，cmd�
 
 #### Windows 下 bash 环境的sh文件（virtualenv）
 
-git-bash 下执行，Windows 下只要安装了git直接双击sh文件就关联调用了。
+git-bash(mintty) 下执行，Windows 下只要安装了git直接双击sh文件就关联调用了。
 
 ```shell
 #!/bin/sh
@@ -515,7 +515,7 @@ pause
 
 Windows 下用bash执行conda脚本需要设置conda init 以支持bash，详见上面章节[可指定conda的shell用bash等].
 
-git-bash 下执行，Windows 下只要安装了git直接双击sh文件就关联调用了。
+git-bash(mintty) 下执行，Windows 下只要安装了git直接双击sh文件就关联调用了。
 
 ```shell
 #!/bin/sh
