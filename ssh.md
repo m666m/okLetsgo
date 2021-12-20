@@ -7,17 +7,21 @@
 
 <https://github.com/microsoft/vscode-docs/blob/master/remote-release-notes/v1_37.md>
 
-## Ssh配置文件格式说明
+## SSH 参考资料
 
-<http://man7.org/linux/man-pages/man5/ssh_config.5.html>
+    SSH 配置文件格式说明 <http://man7.org/linux/man-pages/man5/ssh_config.5.html>
+
+    Windows 版安装说明 <https://github.com/PowerShell/Win32-OpenSSH/wiki/Install-Win32-OpenSSH>
 
 ### 【服务器端】
 
 windows7本机下服务端安装，详见 GIT+SSH\OpenSSH-Win64.txt
 
-参考 <https://winscp.net/eng/docs/guide_windows_openssh_server#windows_older>
+winscp 写的 Windows 版 SFTP/SSH Server 安装说明
 
-下面是windonws7 下本机虚拟机作为ssh服务端的配置：
+        <https://winscp.net/eng/docs/guide_windows_openssh_server#windows_older>
+
+下面是 Windonws 7 下本机虚拟机作为ssh服务端的配置：
 
 1. 配置ddns和路由器端口转发用于在互联网访问内网
 
