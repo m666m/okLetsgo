@@ -520,9 +520,8 @@ pause
 
 #### Windows 命令行环境下 bash 的sh文件（conda）
 
-Windows 下用bash执行conda脚本需要设置conda init 以支持bash，详见上面章节[可指定conda的shell用bash等].
-
-git-bash(mintty) 下执行，Windows 下只要安装了git直接双击sh文件就关联调用了。
+用bash执行conda脚本需要设置conda init 以支持bash，详见上面章节[可指定conda的shell用bash等].
+只要安装了 git 直接双击sh文件就关联git-bash(mintty)调用了。
 
 ```shell
 #!/bin/sh
