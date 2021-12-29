@@ -180,9 +180,11 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     Font=Consolas
     FontHeight=11
     ForegroundColour=255,255,255
+    LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行 local -a 查看ssh所在服务器是否支持
     Language=zh_CN  # cmd 下中文
+    # bash下设置
     Locale=zh_CN  # bash 下中文
-    # Charset=GBK
+    Charset=GBK  # ls列windows目录名可以显示中文，但tail等显示中文utf-8文件需要设为UTF-8，此时中文目录名就不正常显示了，原因是中文版windows是ANSI而不是UTF
 
 如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"
 
