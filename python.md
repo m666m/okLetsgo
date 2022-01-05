@@ -513,7 +513,7 @@ cmd下执行
 call C:\ProgramData\Anaconda3\condabin\conda.bat activate p37
 
 @rem --------------------------------------------------
-python C:\Users\sweethome\pycode\btcgo\app.py
+python C:\Users\your_name\pycode\your_project\app.py
 
 pause
 ```
@@ -529,7 +529,7 @@ pause
 /c/ProgramData/Anaconda3/condabin/conda.bat activate
 
 conda activate p37
-python /c/Users/sweethome/pycode/btcgo/app.py
+python /c/Users/your_name/pycode/your_project/app.py
 
 conda deactivate
 read -n1 -p "Press any key to continue..."
