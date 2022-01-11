@@ -663,7 +663,7 @@ edge 浏览器->设置->外观->整体外观：选择“系统默认”则跟随
 
 ### 删除无关占用 cpu 时间的项目
 
-有了 Windows store 后，商店应用由单独的 wsappx.exe 运行的 UWP 运行环境，甚至 appx 的保存目录 C:\Program Files\WindowsApps 都是默认锁定的。
+有了 Windows Store 后，商店应用由单独的 wsappx.exe 运行的 UWP 运行环境，甚至 appx 的保存目录 C:\Program Files\WindowsApps 都是默认锁定的。
 
 单纯用 msinfo32 或传统的启动管理程序，只能看到本地 Windows 的程序，由 wsappx.exe 运行的那些商店应用是没法单独看到的，目前只能由 Windows 提供的开放接口查看和设置
 
@@ -744,6 +744,37 @@ Win+R 打开运行，输入 WSReset.exe 回车。
 
 该脚本由 abbodi1406 贡献：
 <https://forums.mydigitallife.net/threads/add-store-to-Windows-10-enterprise-ltsc-LTSC.70741/page-30#post-1468779>
+
+### 关闭 Windows defender杀毒软件
+
+[方法失效]
+
+Windows10系统中自带了windows defender杀毒软件，也就是Windows安全中心。
+
+虽然大家在日常使用中不太能体会到它的存在，但你准备安装一些激活软件或者没有经过微软认证的第三方软件时，就疯狂来展现它的存在感了，比如不经过你允许就直接删除你的文件是常规操作。就算你关闭它，短时间内后台也会自动开启。
+
+在键盘上按快捷键【WIN+R】 或者鼠标右击桌面左下角Windows图标，选择【运行】弹出运行窗口。
+输入【gpedit.msc】，然后点击【确定】，打开【本地组策略编辑器】
+在【本地组策略编辑器】-【计算机配置】中依次打开【管理模板】->【Windows组件】->【Microsoft Defender防病毒】
+
+    双击【关闭Microsoft Defender防病毒】，选择【已启用】，点击【应用】，然后点击【确定】
+
+    双击【允许反恶意软件服务始终保持运行状态】，选择【已禁用】，点击【应用】，然后点击【确定】。
+
+    点击打开文件夹【实时保护】，选择“关闭实时保护”，选择【已启用】，点击【应用】，然后点击【确定】。
+
+    双击【扫描所有下载文件和附件】，选择【已禁用】，点击【应用】，然后点击【确定】。
+
+点击【开始菜单】，然后点击【设置】点击【更新和安全】，打开【Windows 安全中心】
+
+    点击【病毒和威胁防护】，在【病毒和威胁防护设置】下面点击打开【管理设置】
+
+    点击关闭“实时保护”，“云提供的保护”，“自动提交样本”，这里一定要关闭，不然前面组策略里设置的没用。
+
+鼠标右击任务栏，点击【任务管理器】，点击【启动】，选中【Windows Security notification icon】，鼠标右击选择【禁用】。
+
+鼠标右击开始菜单，点击【计算机管理】，点击“服务”，选择“Windows Defender Antivirus Service”，双击打开选择“禁用”。
+如果是灰色的无法设置，则运行“msconfig.exe”，在“服务”选项卡中取消勾选该服务。
 
 ## 安全的使用你的 Windows 10
 
