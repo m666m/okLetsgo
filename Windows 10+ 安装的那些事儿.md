@@ -443,12 +443,24 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
 某些 Windows 默认没有安装的组件是增强安全功能依赖的，需要单独安装：设置->应用->应用和功能->可选功能，点击右侧的“更多 Windows 功能”，弹出窗口选择“启用和关闭 Windows 功能”：
 
-    Hyper-V
     Microsoft Defender 应用程序防护
     Windows 沙盒
-    Windows 虚拟机监控程序平台
-    适用于 Linux 的 Windows 子系统（这个是安装 Linux 用的，不是安全必备，顺手装上吧）
-    虚拟机平台
+
+    Hyper-V (Windows Hypervisor)
+    Windows 虚拟机监控程序平台 (Windows Hypervisor Platform)
+    虚拟机平台 (Virtual Machine Platform)
+    适用于 Linux 的 Windows 子系统（这个是WSL安装 Linux 用的，不是安全必备，顺手装上吧）
+
+    关于这几个功能的解释
+    https://superuser.com/questions/1510172/hyper-v-vs-virtual-machine-platform-vs-windows-hypervisor-platform-settings-in-p
+
+    https://superuser.com/questions/1556521/virtual-machine-platform-in-win-10-2004-is-hyper-v
+
+    Hyper-V: is Microsoft's Hypervisor.
+
+    Windows Hypervisor Platform - "Enables virtualization software to run on the Windows hypervisor" and at one time was required for Docker on Windows. The Hypervisor platform is an API that third-party developers can use in order to use Hyper-V. Oracle VirtualBox, Docker, and QEMU are examples of these projects.
+
+    Virtual Machine Platform - "Enables platform support for virtual machines" and is required for WSL2. Virtual Machine Platform can be used to create MSIX Application packages for an App-V or MSI.
 
 设置->更新和安全->Windows 安全中心，左侧页面点击“打开 Windows 安全中心”
 
