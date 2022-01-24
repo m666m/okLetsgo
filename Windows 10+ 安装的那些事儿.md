@@ -433,6 +433,10 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
 如果有程序开机就启动挺烦人的，运行“msconfig”，在启动选项卡进行筛选
 
+命令行查看各功能是否开启:
+
+    dism /online /get-features
+
 更多的定制化见 tenforums 的各种教程 <https://www.tenforums.com/tutorials/id-Customization/>
 
 ### 设置 Windows 安全中心
