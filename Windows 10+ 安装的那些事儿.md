@@ -448,7 +448,7 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 某些 Windows 默认没有安装的组件是增强安全功能依赖的，需要单独安装：设置->应用->应用和功能->可选功能，点击右侧的“更多 Windows 功能”，弹出窗口选择“启用和关闭 Windows 功能”：
 
     Microsoft Defender 应用程序防护
-    Windows 沙盒
+    Windows 沙盒(Windows Sandbox)
 
     Hyper-V (Windows Hypervisor)
     Windows 虚拟机监控程序平台 (Windows Hypervisor Platform)
@@ -457,7 +457,7 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
     关于这几个功能的解释
     https://superuser.com/questions/1510172/hyper-v-vs-virtual-machine-platform-vs-windows-hypervisor-platform-settings-in-p
-
+    https://zhuanlan.zhihu.com/p/381969738
     https://superuser.com/questions/1556521/virtual-machine-platform-in-win-10-2004-is-hyper-v
 
     Hyper-V: is Microsoft's Hypervisor.

@@ -50,6 +50,20 @@
     - [高级用法：找回误删的git stash 数据](#高级用法找回误删的git-stash-数据)
   - [用法：补丁神器cherry-pick](#用法补丁神器cherry-pick)
   - [用法：git diff的各个用法示例](#用法git-diff的各个用法示例)
+  - [配置Beyond Compare 4作为git mergetool来解决git merge命令导致的文件冲突](#配置beyond-compare-4作为git-mergetool来解决git-merge命令导致的文件冲突)
+    - [前言](#前言)
+    - [解决方案](#解决方案)
+      - [前提](#前提)
+      - [配置](#配置)
+    - [Beyond Compare](#beyond-compare)
+    - [文件冲突及处理](#文件冲突及处理)
+      - [产生冲突](#产生冲突)
+      - [解决冲突](#解决冲突)
+    - [工具配置的参数含义](#工具配置的参数含义)
+      - [git config](#git-config)
+      - [git mergetool](#git-mergetool)
+    - [思考](#思考)
+    - [总结](#总结)
   - [常见问题](#常见问题)
     - [Your branch and 'origin/xxx' have diverged](#your-branch-and-originxxx-have-diverged)
       - [情况1： Git fetch 、merge以后出现分叉（或没有先git pull直接push，原创已经有人提交修改）](#情况1-git-fetch-merge以后出现分叉或没有先git-pull直接push原创已经有人提交修改)
@@ -1544,6 +1558,346 @@ git diff 主要的应用场景：
 ·比较两个历史版本之间的差异
 
     git diff SHA1 SHA2
+
+## 配置Beyond Compare 4作为git mergetool来解决git merge命令导致的文件冲突
+
+<https://blog.csdn.net/albertsh/article/details/106294095>
+
+文章目录
+    前言
+    解决方案
+        前提
+        配置
+    Beyond Compare
+    文件冲突及处理
+        产生冲突
+        解决冲突
+    工具配置的参数含义
+        git config
+        git mergetool
+    思考
+    总结
+
+### 前言
+
+使用 git merge 命令合并代码的时候可能会产生文件冲突，产生这种冲突的根本原因是文件的同一处同时被多次修改，这种同时修改常体现的不同分支上，当多个分支修改了同一处代码，再合并代码的时候就会产生冲突，因为 git 程序也不知道我们想要保留哪一份修改，这时就需要我们手动修改产生冲突的文件。
+
+当冲突内容很少的时候我们可以打开文本编辑器，找到 >>>>>>>>>>>>、=========== 和 <<<<<<<<<<<< 这三行字符包裹的内容就是需要解决冲突的部分，但是当冲突内容特别多时我们还是习惯于通过可视化的工具来处理，Beyond Compare 就是这样一款工具，可以用来比较不同的文本文件、表格文件，还可以比较文件夹内容，之前用着比较习惯，所以在处理 git 冲突的时候也想使用这个工具来做，通过查找技术文档发现了下面的方法。
+
+### 解决方案
+
+鉴于大家都比较急，查找问题时想要直接找到答案，所以我这里直接说明配置步骤，送给不求甚解的小伙伴，也方便今后我可以直接找到，不过配置之前还是要先看一下前提。
+
+#### 前提
+
+在 Windows 上安装了 git 客户端，可以执行 git 命令（废话！没装 git 怎么产生冲突的）
+安装了 Beyond Compare 4 这个软件，下载链接很多，自己找一个吧，实在找不到，那就放弃吧（找我要）
+
+#### 配置
+
+首先找到 Beyond Compare 的安装路径，比如我的软件安装路径是 D:\mybc4\BComp.exe，然后在 git 命令行客户端中执行下面命令：
+
+    git config --global merge.tool bc4
+    git config --global mergetool.bc4.cmd "\"D:\\mybc4\\BComp.exe\" \"\$LOCAL\" \"\$REMOTE\" \"\$BASE\" \"\$MERGED\""
+    git config --global mergetool.bc4.trustExitCode true
+    git config --global mergetool.keepBackup false
+
+至此，git mergetool 就配置完了，当下次冲突的时候，直接使用 git mergetool 命令就可以调用 Beyond Compare 解决冲突文件了，但是你不好奇，这些设置命令都是什么意思吗？为什么执行完这些命令就能调用 Beyond Compare 4 这个软件了，如果你感兴趣可以接下往下看一看。
+
+### Beyond Compare
+
+这是一款强大的比较工具，前面提到它可以比较文本、比较表格、比较文件夹，但是它的能力不仅限于此，它甚至可以比较MP3、比较图片、比较注册表，我们的目的是调用它的比较功能，但是前提是这款软件允许你调用，如果它不给你提供接口，你就是想调用也得绕上八百个圈才可以。
+
+这一点我们可以查询文档确定，文档是安装软件时自带的，名字为 BCompare.chm，如果找不到，安利你一个叫做 Everything 的软件，装上它以后，电脑中的一切东西都能搜索找到。
+
+这个文档应该很容易找到的，与软件的可执行文件在同一目录，其实我们使用的比较工具应该是 BCompare.exe，但是为什么在配置 git mergetool 的是后用的是 BComp.exe 呢？这一点文档中有写：
+
+BCompare.exe: This is the main application. Only one copy will run at a time, regardless of how many windows you have open. If you launch a second copy it will tell the existing copy to start a comparison and exit immediately.
+BComp.exe: This is a Win32 GUI program. If launched from a version control system, it should work just fine. If launched from a console window, the console (or batch file) will not wait for it.
+
+文档是英文的，但是比较容易理解，总的来说 BCompare.exe 是主程序，BComp.exe 用在版本控制工具中更加优秀，至于文档中提到的主程序只能启动一个副本的说明，我试了一下并不是这样的，但是这不是重点，根据文档建议，我们应该调用 BComp.exe 程序。
+
+关于调用参数，文档中对于每种形式的比较也给出了说明，我们这里只列举两个文件和四个文件这两种参数，两个文件作为参数时常用来对比，我直接使用主程序对比文件就是这种形式，参数格式为 BCompare.exe "C:\Left File.ext" "C:\Right File.ext"，但是使用时我常把文件直接拖拽到软件上进行比较。四个文件作为参数时常用来处理文件冲突，参数类型为 BCompare.exe C:\Left.ext C:\Right.ext C:\Center.ext C:\Output.ext，参数中文件的名字表明处理时的位置和作用，看下面这个图就明白了。
+
+从红框圈定的位置就可以发现和文件的对应关系了，最下面是最终的输出文件，也是我们可以手动修改的文件。
+
+### 文件冲突及处理
+
+#### 产生冲突
+
+先看一下 git 仓库的原始情况
+
+    albert@home-pc MINGW64 /d/gitstart (dev)
+    $ git status
+    On branch dev
+    Your branch is up to date with 'origin/dev'.
+
+    nothing to commit, working tree clean
+
+    albert@home-pc MINGW64 /d/gitstart (dev)
+    $ ls
+    README.md
+
+    albert@home-pc MINGW64 /d/gitstart (dev)
+    $ cat README.md
+    learn git branch command
+    m2
+    test checkout
+
+在此基础上新建两个分支 dev1 和 dev2
+
+    albert@home-pc MINGW64 /d/gitstart (dev)
+    $ git checkout -b dev1
+    Switched to a new branch 'dev1'
+
+    albert@home-pc MINGW64 /d/gitstart (dev1)
+    $ git checkout -b dev2
+    Switched to a new branch 'dev2'
+
+    albert@home-pc MINGW64 /d/gitstart (dev2)
+    $ git branch | grep dev
+    dev
+    dev1
+    * dev2
+    *
+在 dev2 分支上修改 README.md 文件后提交
+
+    albert@home-pc MINGW64 /d/gitstart (dev2)
+    $ echo "this is dev2 test">>README.md
+
+    albert@home-pc MINGW64 /d/gitstart (dev2)
+    $ git add README.md
+    warning: LF will be replaced by CRLF in README.md.
+    The file will have its original line endings in your working directory
+
+    albert@home-pc MINGW64 /d/gitstart (dev2)
+    $ git commit -m"update readme at dev2"
+    [dev2 d8d80b7] update readme at dev2
+    1 file changed, 1 insertion(+)
+
+    albert@home-pc MINGW64 /d/gitstart (dev2)
+    $ cat README.md
+    learn git branch command
+    m2
+    test checkout
+    this is dev2 test
+
+切换回 dev1 分支修改 README.md 文件后提交
+
+    albert@home-pc MINGW64 /d/gitstart (dev2)
+    $ git checkout dev1
+    Switched to branch 'dev1'
+
+    albert@home-pc MINGW64 /d/gitstart (dev1)
+    $ echo "this is dev1 test">>README.md
+
+    albert@home-pc MINGW64 /d/gitstart (dev1)
+    $ git add README.md
+    warning: LF will be replaced by CRLF in README.md.
+    The file will have its original line endings in your working directory
+    git com -
+    albert@home-pc MINGW64 /d/gitstart (dev1)
+    $ git commit -m"update readme at dev1"
+    [dev1 3136341] update readme at dev1
+    1 file changed, 1 insertion(+)
+
+    albert@home-pc MINGW64 /d/gitstart (dev1)
+    $ cat README.md
+    learn git branch command
+    m2
+    test checkout
+    this is dev1 test
+
+这时在 dev1 分支上合并 dev2 分支上的修改就会产生冲突
+
+    albert@home-pc MINGW64 /d/gitstart (dev1)
+    $ git merge dev2
+    Auto-merging README.md
+    CONFLICT (content): Merge conflict in README.md
+    Automatic merge failed; fix conflicts and then commit the result.
+
+    albert@home-pc MINGW64 /d/gitstart (dev1|MERGING)
+    $ cat README.md
+    learn git branch command
+    m2
+    test checkout
+
+    <<<<<<< HEAD
+    this is dev1 test
+    =======
+    this is dev2 test
+    >>>>>>> dev2
+
+    albert@home-pc MINGW64 /d/gitstart (dev1|MERGING)
+    $ ls
+    README.md
+
+冲突产生了，文档中同一位置被两个分支修改后合并导致的，内容里出现了 <<<、===、>>>，包裹的内容被分成了两部分，上面一部分是当前分支修改的，下面一部分是从 dev2 分支合并过来的，还要注意虽然产生了产生了冲突，但是目录中并没有产生其他多余的文件。
+
+#### 解决冲突
+
+这样的冲突比较简单，我们只要使用文本工具删除不想要的内容，保存后 git add README.md，然后再 git commit 就完成了冲突的解决，但是因为配置了 git mergetool，我们可以用它来解决冲突，直接在命令行敲命令 git mergetool 就可以:
+
+    albert@home-pc MINGW64 /d/gitstart (dev1|MERGING)
+    $ git mergetool
+    Merging:
+    README.md
+
+    Normal merge conflict for 'README.md':
+    {local}: modified file
+    {remote}: modified file
+
+这时光标不会退出，一闪一闪并且打开 BComp.exe 工具，截图如下：
+
+这时如果你打开 git 库所在目录会发现除了 README.md 还多了下面4个文件：
+
+    README.md
+    README_BACKUP_584.md
+    README_BASE_584.md
+    README_LOCAL_584.md
+    README_REMOTE_584.md
+
+按照自己的实际情况修改最下面的文件，然后点击箭头所指的保存按钮，关闭 Beyond Compare，查询一下仓库状态
+
+    albert@home-pc MINGW64 /d/gitstart (dev1|MERGING)
+    $ git status
+    On branch dev1
+    All conflicts fixed but you are still merging.
+    (use "git commit" to conclude merge)
+
+    Changes to be committed:
+            modified:   README.md
+
+    albert@home-pc MINGW64 /d/gitstart (dev1|MERGING)
+    $ ls
+    README.md
+
+不但冲突文件没有了，还给我们自动执行 git add README.md 命令，我们只需要执行 git commit 就解决完了冲突。
+
+    albert@home-pc MINGW64 /d/gitstart (dev1|MERGING)
+    $ git commit
+    [dev1 b348ae6] Merge branch 'dev2' into dev1
+
+    albert@home-pc MINGW64 /d/gitstart (dev1)
+    $ git adog
+    *   b348ae6 (HEAD -> dev1) Merge branch 'dev2' into dev1
+    |\
+    | * d8d80b7 (dev2) update readme at dev2
+    * | 3136341 update readme at dev1
+    |/
+    * 5f4181e (origin/dev, dev) add comments
+
+### 工具配置的参数含义
+
+回过头来再看看 git mergetool 的4句配置到底有什么用
+
+    git config --global merge.tool bc4
+    git config --global mergetool.bc4.cmd "\"D:\\mybc4\\BComp.exe\" \"\$LOCAL\" \"\$REMOTE\" \"\$BASE\" \"\$MERGED\""
+    git config --global mergetool.bc4.trustExitCode true
+    git config --global mergetool.keepBackup false
+
+#### git config
+
+首先你需要知道 git config 的作用，就是用来配置 git 的，加上了 --global 表示调整全局 git 配置，不加的话就是调整当前库的 git 配置。windows上的全局配置一般在 C:\Users\用户名\.gitconfig，如果你之前用过 git，一般会执行过 git config --global user.name xxx 对吧，这些命令都是来调整 git 配置的，打开这个 .gitconfig 你会看到
+
+    [user]
+        name = albert
+        email = albert@163.com
+    [core]
+        autocrlf = true
+    [alias]
+        st = status
+        adog = "log --all --decorate --oneline --graph"
+    [merge]
+        tool = bc4
+    [mergetool "bc4"]
+        cmd = \"D:\\mybc4\\BComp.exe\" \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
+        trustExitCode = true
+    [mergetool]
+        keepBackup = false
+
+看看最后几行就是我们添加的4项配置，只不过到文件中变成了键值对的形式，经过测试后发现，这些属性最少两级，比如 user.name 、core.autocrlf，最多三级比如 mergetool.bc4.cmd、 mergetool.bc4.trustExitCode，如果级数再多会怎么办，你可以试试 git config --global a.b.c.d.e test，它最终也会被拆成三级如下
+
+    [a "b.c.d"]
+        e = test
+
+#### git mergetool
+
+这个需要查一下官方文档了，git mergetool --help 就能打开git官方文档，文档写得真不错，排版格式看着就很舒服。
+
+文档提到添加 --tool-help 选项可以列举可以的合并工具，展示如下
+
+    albert@home-pc MINGW64 /d/gitstart (dev1)
+    $ git mergetool --tool-help
+    'git mergetool --tool=<tool>' may be set to one of the following:
+                    vimdiff
+                    vimdiff2
+                    vimdiff3
+
+            user-defined:
+                    bc4.cmd "D:\Program Files\Beyond Compare 4\BComp.exe" "$LOCAL" "$REMOTE" "$BASE" "$MERGED"
+
+    The following tools are valid, but not currently available:
+                    araxis
+                    bc
+                    bc3
+                    codecompare
+                    deltawalker
+                    diffmerge
+                    diffuse
+                    ecmerge
+                    emerge
+                    examdiff
+                    guiffy
+                    gvimdiff
+                    gvimdiff2
+                    gvimdiff3
+                    kdiff3
+                    meld
+                    opendiff
+                    p4merge
+                    smerge
+                    tkdiff
+                    tortoisemerge
+                    winmerge
+                    xxdiff
+
+    Some of the tools listed above only work in a windowed
+    environment. If run in a terminal-only session, they will fail.
+
+这一查才发现，原来 git mergetool 支持的工具有这么多，不过下面这些我都没安装，用一下上面列举的3个，试试 git mergetool --tool=vimdiff，果然打开了一个界面如图。
+
+幸亏不如 Beyond Compare 好用，不然我不是白配置了，不过这些工具确实方便，都不需要配置，只要安装了参数中指定一下就可以用了，比如这个 bc3，我猜它是 Beyond Compare 3，只不过我安装的是 Beyond Compare 4 这个版本。
+
+这些内置工具使用的前提是已经安装了，并且安装软件的目录放在了环境变量 Path 中，如果没有放在这个变量中需要通过 mergetool.<tool>.path 参数来配置，比如我把 Beyond Compare 3 安装在了 D 盘根目录，就可以设置 git config --global mergetool.bc3.path "D:\\"。
+
+我们在可用工具中没有找到 Beyond Compare 4 为什么我们可以用呢？因为 git mergetool 命令还支持自定义合并解决冲突的工具，只要指定 mergetool.<tool>.cmd 就可以调用了，就像 git mergetool --tool-help 查询结果中提到的 user-defined: bc4.cmd "D:\Program Files\Beyond Compare 4\BComp.exe" "$LOCAL" "$REMOTE" "$BASE" "$MERGED"，git mergetool 把 bc4 作为了一个等同于内置合并工具的软件。
+
+再来看看这4句配置的含义：
+
+    git config --global merge.tool bc4
+    git config --global mergetool.bc4.cmd "\"D:\\mybc4\\BComp.exe\" \"\$LOCAL\" \"\$REMOTE\" \"\$BASE\" \"\$MERGED\""
+    git config --global mergetool.bc4.trustExitCode true
+    git config --global mergetool.keepBackup false
+
+第一句 git config --global merge.tool bc4 是说把 git mergetool 的默认工具配置成 bc4，如果不指定默认工具在使用时就需要写成 git mergetool --tool=bc4 或者 git mergetool -t bc4 了，可是 bc4 是我们自己起的名字，根本就没有这个名字啊，接着往下看。
+
+第二句 git config --global mergetool.bc4.cmd "\"D:\\mybc4\\BComp.exe\" \"\$LOCAL\" \"\$REMOTE\" \"\$BASE\" \"\$MERGED\"" 指定了工具 bc4 的调用路径和参数，后面的这4个参数都是 git mergetool 命令提供的，依次代表本地修改，被合并分支修改，两端未修改前版本文件，最终合并导出的文本文件。
+
+第三句 git config --global mergetool.bc4.trustExitCode true， 设置为 true 表示信任软件的返回码，并依据返回码确定合并是否成功，如果设置成 false 就会在合并完成后问你是否解决完冲突，设置成 true 会方便很多。
+
+第四句 git config --global mergetool.keepBackup false， 是指定在合并完成后删除备份文件 *.orig，这个文件会在调用 git mergetool 是产生 *.orig 备份文件，成功合并后自动删除就可以了。
+
+### 思考
+
+至此终于弄明白这个 git mergetool 是怎么工作的了，但是想这样一个问题，这个 <tool>.cmd 一定得调用冲突解决工具吗？如果你从头看到这里应该会明白，这里只是给用户提供了一个调用自定义工具的方式，至于你调用什么它是不关心的，你完全可以在 git mergetool 的时候让电脑关机，这些都是可以的，在你明白了原理以后，一切都变得简单了。
+
+### 总结
+
+Beyond Compare 是一款强大的比较工具，合理的使用可以有效的提升工作效率
+git mergetool 内置了很多可以使用的合并工具，并且支持调用自定义的合并工具
+git 的官方文档写得真的挺详细，有时间可以多看一看，你会发现很多有意思的功能
+急于解决问题时可以不求甚解，解决问题后最好可以明白其中的缘由，这其实就是一种进步
 
 ## 常见问题
 
