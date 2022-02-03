@@ -2,6 +2,7 @@
 
 微软在 Windows 10 这一代自行编译了OpenSSH客户端，以便嵌入操作系统。
 目前Windows操作系统下使用微软编辑的版本是可以的，兼容性可以保证。
+<https://docs.microsoft.com/zh-cn/windows-server/administration/openssh/openssh_install_firstuse>
 
 ## 外网访问内网使用ssh和远程桌面
 

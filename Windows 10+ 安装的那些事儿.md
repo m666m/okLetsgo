@@ -860,7 +860,7 @@ Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7
 需要注意不同映像的区别，完整 Windows api 的是 Windows 和 Windows server，其它的是仅支持 .net
 <https://docs.microsoft.com/zh-cn/virtualization/windowscontainers/manage-containers/container-base-images>
 
-### 适用于 Linux 的 Windows 子系统（WSL）- 命令行安装 Ubuntu
+### WSL 适用于 Linux 的 Windows 子系统 - 命令行安装 Ubuntu
 
 WSL 2 的底层还是使用了虚拟机（Hyper-V），但是他使用的 Linux 完全集成到了 Windows 中，即使用起来就像在 Windows 中直接运行 linux 程序。
 
@@ -885,6 +885,15 @@ WSL 2 的底层还是使用了虚拟机（Hyper-V），但是他使用的 Linux 
     # 在 Debian 中运行 npm init 命令
     wsl npm init
 
+#### 在 WSL 中如何访问我的 C: 驱动器
+
+系统会自动为本地计算机上的硬盘驱动器创建装入点，通过这些装入点可以轻松访问 Windows 文件系统。
+
+    /mnt/驱动器号>/
+
+示例用法：
+
+    运行 cd /mnt/c 访问 c:\
 #### WSL 1 和 WSL 2 的定制安装
 
     <https://docs.microsoft.com/zh-cn/windows/wsl/install-manual>
@@ -911,7 +920,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 ```
 
-到这里已经安装了 WSL 1，其实可以直接在 WSL 1 里安装 ubuntu 等系统了。
+到这里已经安装了 WSL 1，如果只想安装 WSL 1，现在可以重新启动计算机，然后继续执行步骤5下载安装Linux发行版了。
 下面的描述都是为了安装 WSL 2 的。
 
 2.Windows 10启用虚拟机功能
@@ -1107,7 +1116,7 @@ win10+ubuntu 双系统见<https://www.cnblogs.com/masbay/p/10745170.html>
 
 后续关于如何更换国内源、配置 ubuntu 桌面并进行 vnc 连接，参见 <https://sspai.com/post/43813>
 
-## 使用 VM Ware、安卓模拟器等虚拟机提示需要关闭 Hyper-V
+### 使用 VM Ware、安卓模拟器等虚拟机提示需要关闭 Hyper-V
 
 Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但有限制：必须为 Windows 10 20H1（也叫 2004 版）或更高版本。
 
@@ -1155,7 +1164,7 @@ Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但�
 Hyper-V 其实也分1代2代，tenforums 的详细说明
     <https://www.tenforums.com/tutorials/139405-run-hyper-v-virtualbox-vmware-same-computer.html>
 
-## 使用中要注意，WSL 下的 Linux 命令区别于某些 PowerShell 下的命令
+### 使用中要注意，WSL 下的 Linux 命令区别于某些 PowerShell 下的命令
 
 注意 PowerShell 对某些 linux 命令是使用了别名，而不是调用的真正的 exe 文件，有没有后缀。exe 是有区别的！
 
@@ -1171,6 +1180,10 @@ Hyper-V 其实也分1代2代，tenforums 的详细说明
     在本示例中，将执行 curl.exe（而不仅仅是 curl），以确保在 PowerShell 中调用真正的 curl 可执行文件，而不是调用 Invoke WebRequest 的 PowerShell curl 别名。详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
 
 设置->应用->应用和功能，里面有个“应用执行别名”，点击进去慢慢研究吧，真烦人啊，估计整些逻辑弯弯绕。
+
+### 微软提供的 Windows 11 + Visual Studio 的评估版开发环境
+
+<https://developer.microsoft.com/zh-cn/windows/downloads/virtual-machines/>
 
 ## 离线下载安装 Microsoft Store 中的应用
 
