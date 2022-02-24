@@ -376,7 +376,34 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
     usb 口功能设置选择供电。
     RTC（定时开机）设置具体时间
 
-注意：确认 Windows 10 快速启动功能是否关闭，参见下面章节 [关闭“快速启动”]  <https://www.asus.com.cn/support/FAQ/1042220> <https://www.asus.com.cn/support/FAQ/1043640>
+根据戴尔的文章进行设置 <https://www.dell.com/support/kbdoc/zh-cn/000132056/shut-down-sleep-hibernate-or-change-the-power-plan-in-windows-10>
+
+    网络唤醒唤醒计算机：
+
+        打开 设备管理器（控制面板）。
+        单击睡眠左侧的加号 (+)。
+        单击网络适配器左侧的箭头。
+        右键单击无线或以太网，然后选择属性。
+        单击电源管理选项卡，并确保未选中“允许此设备唤醒计算机”复选框。
+
+        注：为无线适配器和以太网适配器均执行此操作。
+
+    电源计划允许唤醒计时器：
+
+        打开电源和睡眠设置（系统设置）。
+        单击其他电源设置。
+        单击更改计划设置。
+        单击更改高级电源设置。
+        单击睡眠左侧的加号 (+)。
+        单击允许唤醒计时器左侧的加号 (+)
+        单击使用电池，选中下拉菜单并切换至所需设置。
+        单击接通电源，选中下拉菜单并切换至所需设置。
+
+        注：在 Windows 10 中，“仅重要的唤醒计时器”选项仅在遇到重大的 Windows 系统事件时才会唤醒计算机。请尝试将您的唤醒计时器设置为“仅重要的唤醒计时器”，以查看是否能解决问题。当计算机的唤醒频率仍超过预期时，您始终可以将唤醒计时器设置为“禁用”。
+
+确认 Windows 10 快速启动功能是否关闭，参见下面章节 [关闭“快速启动”]
+
+    <https://www.asus.com.cn/support/FAQ/1042220> <https://www.asus.com.cn/support/FAQ/1043640>
 
 ## 老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）
 
@@ -470,22 +497,22 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
     ->应用和浏览器控制，打开“隔离浏览（WDAG）” <https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/microsoft-defender-application-guard/install-md-app-guard>
 
-    ->设备安全性->内核隔离，手动开启“核心隔离”、“内存完整性”  <https://support.microsoft.com/zh-cn/Windows/afa11526-de57-b1c5-599f-3a4c6a61c5e2> <https://go.microsoft.com/fwlink/?linkid=866348>
+    ->设备安全性->内核隔离，手动开启“内存完整性”  <https://support.microsoft.com/zh-cn/Windows/afa11526-de57-b1c5-599f-3a4c6a61c5e2> <https://go.microsoft.com/fwlink/?linkid=866348>
 
     在“设备安全性”屏幕的底部，如果显示“你的设备满足增强型硬件安全性要求”，那就是基本都打开了。
 
-    如果“核心隔离”类别中缺少“内核 DMA 保护”、“固件保护”等选项，在主板BIOS (IOMMU) 中启用 Hyper-V 虚拟化，并在 Windows 功能中安装Hyper-V。
-    <https://docs.microsoft.com/en-us/windows/security/information-protection/kernel-dma-protection-for-thunderbolt#using-system-information>
+    如果“内核隔离”类别中缺少“内核 DMA 保护”、“固件保护”等选项，在主板BIOS (IOMMU) 中启用 Hyper-V 虚拟化，并在 Windows 功能中安装Hyper-V。
+    <https://docs.microsoft.com/en-us/windows/security/information-protection/kernel-dma-protection-for-thunderbolt#using-system-information> <https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/oem-kernel-dma-protection>
 
     如果想显示“你的设备超出增强的硬件安全性要求”，需要在下面的页面慢慢研究如何开启。
     <https://docs.microsoft.com/zh-cn/windows/security/information-protection/kernel-dma-protection-for-thunderbolt>
     <https://docs.microsoft.com/zh-cn/windows/security/threat-protection/windows-defender-system-guard/system-guard-secure-launch-and-smm-protection>
 
-验证：启动 Windows 后运行 msinfo32，在“系统摘要”界面查看
+验证：启动 Windows 后以管理员权限运行 msinfo32，在“系统摘要”界面查看
 
     “内核 DMA 保护”选项，“启用”
     “基于虚拟化的安全 xxx”等选项，有详细描述信息
-    “设备加密支持”选项，不是“失败”
+    “设备加密支持”选项，不是“失败”，如果提示“不允许使用的DMA设备” 参见 <https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/oem-bitlocker#un-allowed-dma-capable-busdevices-detected>
 
 更多关于 Windows10 安全性要求的选项参见各个子目录章节 <https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-highly-secure#what-makes-a-secured-core-pc>
 
@@ -495,25 +522,49 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
 ### 关闭“快速启动”
 
-这傻逼功能不是主板 BIOS 设置里的 UEFI Fast Boot，只是 Windows 关机后系统状态暂存挂起功能，类似休眠。
+这功能不是主板 BIOS 设置里的 UEFI Fast Boot，是 Windows 关机后系统状态暂存挂起功能，类似休眠。
+但他跟主板 BIOS 中 UEFI FAST BOOT 功能的确是关联的，二者互相起作用，目的是让你以为能快速开机。
 
-但是，它使 BIOS 里定时自动开机失效，并跟很多 usb 设备不兼容，导致关机下次启动以后 usb 设备不可用，需要重新插拔。
-而且跟主板 BIOS 中 FAST BOOT 也关联上了，二者互相起作用，目的是让你以为能快速开机，其实，很多时候是根本就转了个休眠。
+原理
 
+    快速启动设计初衷是，「如果用户关机只是想要电脑回到初始化状态，为什么我们不将这种状态存储到「休眠文件」中，以实现更快的开机速度呢？」
+
+    引入原来的“休眠”功能，先结束掉所有用户进程（比如你开的word，浏览器之类的），内存里保留内核及系统相关的模块，还有一部分驱动。然后把它们写到硬盘里的一个文件里，这样下次开机直接把它们加载进内存。
+
+    为了秒开，又引入原来的“睡眠”功能，计算机在操作系统把内存里的内核部分写入休眠文件后，自己又进入「混合睡眠」模式，其实是低功耗待机状态。
+
+快速启动意味着你上次的关机并不是完全关机，所以笔记本电脑用户会发现关机的电脑没几天电池就没电了；有些人的电脑开机后需要重启一次才能恢复正常，因为上一次关机并不是真正的关机，而重启时执行的关机才是真正的关机。
+
+对添加或更换硬件的计算机来说，因为 bios 和 windows 会综合判断这次开机是否可以启用上次的快速启动文件和系统状态，所以在更换硬件之前，关机后务必关闭电源拔掉电池。以防止操作系统因为不兼容这个硬件的状态判断错了，导致开机之后的 windows 不稳定或不识别你的新硬件。
+
+晕了没？
+
+验证：
+
+    打开任务管理器，查看[性能]选项卡，“正常运行时间”中显示的是你上次重启后到现在的运行时间。如果你关机时快速启动功能是打开的，这个时间就不会清零。
+    在[启动]选项卡里的“上次bios所用时间”，也会不一样，快速启动功能开启后会减小。
+
+缺陷
+
+它使 BIOS 里定时自动开机失效，并跟很多 usb 设备不兼容，导致关机下次启动以后 usb 设备不可用，需要重新插拔。
 比如我的无线网卡、我的显示器集成的 usb-hub 连接的鼠标键盘网卡显示器等等，开机或重启后偶发报错无响应……
+关机黑屏，三星手机连接显示器集成的 usb-hub，拔下来之后 windows 才继续关机。。。
 
-关关关：
+如果启用了快速启动，你真正需要重启计算机的时候，你是不知道 Windows 到底选择了哪种重启方案，很多时候你选的重启，其实就是注销并重新登陆到 Windows。
+具体说明如下：
 
-    打开设置-系统-电源和睡眠-其他电源设置（或右击开始菜单 (win+x)，选择“电源选项”，弹出窗口的右侧选择“其它电源设置”），
+    点击关机按钮，下次开机会秒开。
+    点击重启按钮，执行的是注销并登陆windows，会秒重启完。
+    按住 shift点击关机按钮时，此次关机就不使用快速启动。
+    按住 Shift 再点重启按钮，会让电脑重启进入「恢复模式」。
+
+关关关
+
+    打开 设置-系统-电源和睡眠-其他电源设置（或右击开始菜单 (win+x)，选择“电源选项”，弹出窗口的右侧选择“其它电源设置”），
 
     点击“选择电源按钮的功能”，选择“更改当前不可用的设置”，
 
     去掉勾选“启用快速启动（推荐）”，然后点击保存修改。
-
-如果启用了快速启动，你真正需要重启计算机的时候，你是不知道 Windows 到底选择了哪种重启方案，
-很多时候你选的重启，其实就是注销并重新登陆到 Windows：
-
-    点击关机按钮时按住 shift，此次关机就不使用快速启动
 
 ### 默认键盘设置为英文
 
