@@ -586,13 +586,19 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
     REAGENTC.EXE: 操作成功。
 
-对于已配置恢复环境但未能正常加载这一问题，一般只需要先将其禁用然后再重新启用即可解决。
+情况1：对于已配置恢复环境但未能正常加载这一问题，一般只需要先将其禁用然后再重新启用即可解决。
+
 依次运行以下两条命令
 
     reagentc /disable
     reagentc /enable
 
-如果存放位置处提示为空白，则需要从微软原版ISO镜像中获取WinRE.wim映像
+再次运行 reagentc /info，确认
+
+    Windows RE 状态:Enabled
+    Windows RE 位置:为所选择的目录
+
+情况2：如果Windows RE 位置处提示为空白，则需要从微软原版ISO镜像中恢复WinRE.wim映像
 
     用7z工具解压微软原版ISO镜像文件，进入sources目录
     用7z工具打开install.wim文件，找windows/system32/recovery/WinRE.wim，
@@ -606,7 +612,7 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
     reagentc /enable
 
-windows开始菜单，按住Shift键点击重启
+最后，点击Windows开始菜单，按住Shift键点击重启
 
 ### 开启或关闭“快速启动”
 
