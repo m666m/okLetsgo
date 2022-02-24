@@ -482,16 +482,17 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
     虚拟机平台 (Virtual Machine Platform)
     适用于 Linux 的 Windows 子系统（这个是WSL安装 Linux 用的，不是安全必备，顺手装上吧）
 
-    关于这几个功能的解释
-    https://superuser.com/questions/1510172/hyper-v-vs-virtual-machine-platform-vs-windows-hypervisor-platform-settings-in-p
-    https://zhuanlan.zhihu.com/p/381969738
-    https://superuser.com/questions/1556521/virtual-machine-platform-in-win-10-2004-is-hyper-v
+关于这几个功能的解释
 
     Hyper-V: is Microsoft's Hypervisor.
 
     Windows Hypervisor Platform - "Enables virtualization software to run on the Windows hypervisor" and at one time was required for Docker on Windows. The Hypervisor platform is an API that third-party developers can use in order to use Hyper-V. Oracle VirtualBox, Docker, and QEMU are examples of these projects.
 
     Virtual Machine Platform - "Enables platform support for virtual machines" and is required for WSL2. Virtual Machine Platform can be used to create MSIX Application packages for an App-V or MSI.
+
+    https://superuser.com/questions/1510172/hyper-v-vs-virtual-machine-platform-vs-windows-hypervisor-platform-settings-in-p
+    https://zhuanlan.zhihu.com/p/381969738
+    https://superuser.com/questions/1556521/virtual-machine-platform-in-win-10-2004-is-hyper-v
 
 设置->更新和安全->Windows 安全中心，左侧页面点击“打开 Windows 安全中心”
 
@@ -512,7 +513,6 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
     “内核 DMA 保护”选项，“启用”
     “基于虚拟化的安全 xxx”等选项，有详细描述信息
-    “设备加密支持”选项，不是“失败”，如果提示“不允许使用的DMA设备” 参见 <https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/oem-bitlocker#un-allowed-dma-capable-busdevices-detected>
 
 更多关于 Windows10 安全性要求的选项参见各个子目录章节 <https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-highly-secure#what-makes-a-secured-core-pc>
 
@@ -520,7 +520,95 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
 整个 Windows 安全体系，挨个看吧 <https://docs.microsoft.com/zh-cn/windows/security/>
 
-### 关闭“快速启动”
+### “设备加密支持”选项的结果不是“失败”
+
+启动 Windows 后以管理员权限运行 msinfo32，在“系统摘要”界面查看，根据具体描述进行调整
+
+#### 不允许使用的DMA设备
+
+参见 <https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/oem-bitlocker#un-allowed-dma-capable-busdevices-detected>
+
+#### 设备不是 InstaGo
+
+使用 WSL2 的虚拟化开启后，Windows10 无法睡眠，合盖后自动睡眠但无法唤醒系统，只能通过电源键强制重启来重启系统。
+
+    C:\Windows\system32>powercfg -a
+    此系统上有以下睡眠状态:
+        待机 (S3)
+        休眠
+        快速启动
+
+    此系统上没有以下睡眠状态:
+        待机 (S1)
+            系统固件不支持此待机状态。
+
+        待机 (S2)
+            系统固件不支持此待机状态。
+
+        待机(S0 低电量待机)
+            系统固件不支持此待机状态。
+
+        混合睡眠
+            虚拟机监控程序不支持此待机状态。
+
+通过命令（bcdedit /set xxxxxxxxxxx hypervisorlaunchtype off）来关闭 Hyper-V 时，电脑就可以正常睡眠。
+
+<https://support.microsoft.com/en-us/topic/connected-standby-is-not-available-when-the-hyper-v-role-is-enabled-4af35556-6065-35aa-ed01-f8aef90f2027>
+
+关于 ACPI 模式的说明
+
+    ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模式：
+
+    S0 正常。
+    S1 CPU停止工作。唤醒时间：0秒。
+    S2 CPU关闭。唤醒时间：0.1秒。
+    S3 除了内存外的部件都停止工作。唤醒时间：0.5秒。
+    S4 内存信息写入硬盘，所有部件停止工作。唤醒时间：30秒。（休眠状态）
+    S5 关闭。
+
+    <https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/modern-standby-vs-s3>
+
+#### 未配置 WinRe
+
+如果电脑配置了恢复环境，在Windows RE位置后面我们是可以看到WinRE映像存放位置的。
+
+    C:\Windows\system32>reagentc /info
+    Windows 恢复环境(Windows RE)和系统初始化配置
+    信息:
+
+        Windows RE 状态:           Enabled
+        Windows RE 位置:           \\?\GLOBALROOT\device\harddisk0\partition4\Recovery\WindowsRE
+        引导配置数据(BCD)标识符:   64511af6-4dd0-11ec-9f84-d4c2febe2930
+        恢复映像位置:
+        恢复映像索引:              0
+        自定义映像位置:
+        自定义映像索引:            0
+
+    REAGENTC.EXE: 操作成功。
+
+对于已配置恢复环境但未能正常加载这一问题，一般只需要先将其禁用然后再重新启用即可解决。
+依次运行以下两条命令
+
+    reagentc /disable
+    reagentc /enable
+
+如果存放位置处提示为空白，则需要从微软原版ISO镜像中获取WinRE.wim映像
+
+    用7z工具解压微软原版ISO镜像文件，进入sources目录
+    用7z工具打开install.wim文件，找windows/system32/recovery/WinRE.wim，
+    选中winre.wim文件，点击上方的“解压到” 将路径更改为 C:\Recovery\WindowsRE
+
+打开“命令提示符（管理员）”，输入下面的命令回车运行即可：
+
+    reagentc /setreimage /path C:\Recovery\WindowsRE
+
+设置成功后，还需将其开启
+
+    reagentc /enable
+
+windows开始菜单，按住Shift键点击重启
+
+### 开启或关闭“快速启动”
 
 这功能不是主板 BIOS 设置里的 UEFI Fast Boot，是 Windows 关机后系统状态暂存挂起功能，类似休眠。
 但他跟主板 BIOS 中 UEFI FAST BOOT 功能的确是关联的，二者互相起作用，目的是让你以为能快速开机。
@@ -558,7 +646,7 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
     按住 shift点击关机按钮时，此次关机就不使用快速启动。
     按住 Shift 再点重启按钮，会让电脑重启进入「恢复模式」。
 
-关关关
+关闭方法
 
     打开 设置-系统-电源和睡眠-其他电源设置（或右击开始菜单 (win+x)，选择“电源选项”，弹出窗口的右侧选择“其它电源设置”），
 
@@ -945,6 +1033,7 @@ WSL 2 的底层还是使用了虚拟机（Hyper-V），但是他使用的 Linux 
 示例用法：
 
     运行 cd /mnt/c 访问 c:\
+
 #### WSL 1 和 WSL 2 的定制安装
 
     <https://docs.microsoft.com/zh-cn/windows/wsl/install-manual>
@@ -1185,34 +1274,51 @@ Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但�
 
     Visual Studio 内涉及到设备模拟的虚拟化方案；
 
-1. 必须确保以上列表内所有项目被正确关闭后，Hyper-V 平台才能被真正关闭。
+所以必须确保以上列表内所有项目被正确关闭后，Hyper-V 平台才能被真正关闭。据说进入主板 BIOS 将 Intel VT-x 设为 Disabled 都不行.
 
-   据说进入主板 BIOS 将 Intel VT-x 设为 Disabled 都不行
+管理员身份运行命令提示符 cmd
 
-2. 管理员身份运行命令提示符 cmd（如果用 PowerShell，符号{}会导致报错）：
+        bcdedit
 
-    bcdedit /copy {current} /d "Win10 No Hyper-V"
+查看校对"Windows 启动加载器"中对应项目的 hypervisorlaunchtype 值
 
-    将上面命令得到的字符串替换掉下面{}中的 XXX 代码即可
+#### 没有安装 hyper-V 时执行
 
-    bcdedit /set {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX} hypervisorlaunchtype OFF
+1. 管理员身份运行命令提示符 cmd（如果用 PowerShell，符号{}会导致报错）：
 
-    提示成功后再次输入
-    bcdedit
-    查看校对"Windows 启动加载器"中对应项目的 hypervisorlaunchtype 值是 Off
+        bcdedit /copy {current} /d "Windows10 No Hyper-V"
 
-3. 重启计算机，出现 Windows 10 启动选择， 就能选择是否启用 Hyper-v：
+2. 将上面命令得到的字符串替换掉下面{}中的 XXX 代码即可
 
-    在“Win10 No Hyper-V”中，可以运行 Vmware 虚拟机，而另一个启动选项运行 Hyper-v。
+        bcdedit /set {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX} hypervisorlaunchtype OFF
 
-4. 以后想要删除，因为有了启动菜单，所以可以运行 msconfig 用图形界面来编辑选择了。
+3. 提示成功后再次输入
 
-作者：知乎用户
-链接：<https://www.zhihu.com/question/38841757/answer/95947785>
+        bcdedit
+
+   查看校对"Windows 启动加载器"中对应项目的 hypervisorlaunchtype 值是 Off
+
+4. 重启计算机，出现 Windows 10 启动选择， 就能选择是否启用 Hyper-v：
+
+    Windows10 No Hyper-V”中，可以运行 Vmware 虚拟机，而另一个启动选项运行 Hyper-v。
+
+5. 以后想要删除，因为有了启动菜单，所以可以运行 msconfig 用图形界面来编辑选择了。
+
+注意：这是在没有安装hyper-V时候执行的，{current}的hypervisorlaunchtype是off。
+
+#### 已经安装了hyper-V，或者 hypervisorlaunchtype 是 auto
+
+在复制启动项的时候要注意哪一个启动项是要开启hyper-V的，“Windows10 no hyper-V”是新启动项的描述，有没有no不要弄混了。
+在执行之后会得到新启动项的标识符，如果修改当前启动项，可以用bcdedit /set hypervisorlaunchtype off，
+如果修改非current启动项，则需要指明标识符，bcdedit /set {标识符} hypervisorlaunchtype off
+
+作者：风吹来的瓜
+链接：<https://www.zhihu.com/question/38841757/answer/294356882>
 来源：知乎
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 Hyper-V 其实也分1代2代，tenforums 的详细说明
+
     <https://www.tenforums.com/tutorials/139405-run-hyper-v-virtualbox-vmware-same-computer.html>
 
 ### 使用中要注意，WSL 下的 Linux 命令区别于某些 PowerShell 下的命令
@@ -1242,7 +1348,7 @@ Hyper-V 其实也分1代2代，tenforums 的详细说明
 
 为嘛狂吃 cpu 呢？
 
-    UWP 文件下载这个玩法，最大的问题就是商店是分区域的，而万能的墙会让非 cn 的下载非常不稳定，特别是你的一个 uwp 程序依赖比较多的包的时候，说不定有的源在其它外网服务器上，间或会下载不到。不是啥非法的玩意，甚至可能微软的更新包，挂在 github 上的或者啥开源服务器上的东西，都不排除掉线。这就是为嘛有时候 Windows 更新都报告失败要多重试几次的原因。 好吧，程序表面上装好了，其实需要的库不全，后台 AppXSVC 进程就一根筋的不断重试，微软的三哥程序员估计写循环时候没加 sleep(0.001)，cpu 就得受点累。这个费电的过程，只能是你把那个 uwp 程序卸载掉，或者手动安装上缺失的库（Windows 没有任何提示你咋知道），才算完。
+    UWP 文件下载这个玩法，最大的问题就是商店是分区域的，而万能的墙会让非 cn 的下载非常不稳定，特别是你的一个 uwp 程序依赖比较多的包的时候，说不定有的源在其它外网服务器上，间或会下载不到。不是啥非法的玩意，甚至可能微软的更新包，挂在 github 上的或者啥开源服务器上的东西，都不排除掉线。这就是为嘛有时候 Windows 更新都报告失败要多重试几次的原因。 好吧，程序表面上装好了，其实需要的库不全，后台 AppXSVC 进程就一根筋的不断重试，微软的三哥程序员估计写循环时候没加 sleep()，cpu 就得受点累。这个费电的过程，只能是你把那个 uwp 程序卸载掉，或者手动安装上缺失的库（Windows 没有任何提示你咋知道），才算完。
 
 我的电脑里哪些是 uwp 应用呢？
 
@@ -1310,7 +1416,7 @@ DCH 驱动号称只安装驱动，相关的控制界面应用由 Windows Store �
 
 时间大概在 2015 年之后，Intel CPU 的 i7-7700k 这一代之后，硬件有 uwd 驱动 (DCH 驱动）。
 
-假如你的 Nvidia 显卡安装了 dch 版驱动，是没有 Nvidia 控制面板。
+假如你的 Nvidia 显卡安装了 dch 版驱动，是没有 Nvidia 控制面板的。
 Windows 更新会自动在后台搜索下载，或者用户自己到 Windows Store 中搜索下载，参见上面的章节 [离线下载安装 Microsoft Store 中的应用]。
 
 如果这个 uwp（DCH）的面板依赖 Microsoft.VCLibs，所以系统也自动装了。
@@ -1338,7 +1444,7 @@ uwp 迁移到 NuGet，估计换汤不换药。
 
 应用的底层都给你封装了一堆依赖，美其名曰软件底层解耦、组件共享。
 
-实际用起来呢，各种墙让你下载不全，到处找加速。
+实际用起来呢，装软件完全依赖微软商店。
 
 下载一个安装包就能让你舒舒服服用软件的日子，不会再有了。
 
@@ -1350,7 +1456,7 @@ uwp 迁移到 NuGet，估计换汤不换药。
 
     <https://docs.microsoft.com/zh-cn/windows/uwp/get-started/universal-application-platform-guide#how-the-universal-windows-platform-relates-to-windows-runtime-apis>
 
-### 得认真考虑下，肉身 xx 的问题了，以后老死在外面，是不是可以接受？
+### 得认真考虑下，本体口口的问题了，以后老死在外面，是不是可以接受？
 
 你一个搞 it 的，离开了联网，怎么继续下去？
 
