@@ -520,7 +520,7 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
 整个 Windows 安全体系，挨个看吧 <https://docs.microsoft.com/zh-cn/windows/security/>
 
-### “设备加密支持”选项的结果不是“失败”
+### 系统信息中，“设备加密支持”选项的结果有“失败”字样
 
 启动 Windows 后以管理员权限运行 msinfo32，在“系统摘要”界面查看，根据具体描述进行调整
 
@@ -528,7 +528,7 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
 参见 <https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/oem-bitlocker#un-allowed-dma-capable-busdevices-detected>
 
-#### 设备不是 InstaGo
+#### 设备不是 InstantGo
 
 使用 WSL2 的虚拟化开启后，Windows10 无法睡眠，合盖后自动睡眠但无法唤醒系统，只能通过电源键强制重启来重启系统。
 
@@ -614,7 +614,9 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
 最后，点击Windows开始菜单，按住Shift键点击重启
 
-### 开启或关闭“快速启动”
+#### 开启或关闭“快速启动”
+
+“快速启动”跟上面的两个条目讨论的 InstantGo 和 WinRe 也有依赖关系，所以不单独开章节。
 
 这功能不是主板 BIOS 设置里的 UEFI Fast Boot，是 Windows 关机后系统状态暂存挂起功能，类似休眠。
 但他跟主板 BIOS 中 UEFI FAST BOOT 功能的确是关联的，二者互相起作用，目的是让你以为能快速开机。
