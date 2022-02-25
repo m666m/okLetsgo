@@ -86,7 +86,7 @@ UEFI 下：
 
 #### UEFI 之后真的没法 Ghost 了么
 
-【Windows 10 下使用“创建恢复驱动器”备份到u盘，以后可以选择重启到WinRe进行恢复，不需要用ghost了】，详见下面章节[系统映像备份]。
+【Windows 10 下使用“系统映像备份”备份到别的硬盘，以后可以选择重启到WinRe进行恢复，不需要用ghost了】，详见下面章节[系统映像备份]。
 
 传统的 Ghost 盘，都是只 Clone 了 C 盘，现在应该 clone 整个磁盘，这样所有的分区包括 EFI 系统分区都可以备份了。
 
@@ -139,11 +139,12 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 #### 电脑是 UEFI 的，想装 Linux，但我手头没优盘，听说也能搞定
 
 硬盘搞个 FAT32 的分区，把 Linux 安装盘的 iso 镜像里面的文件/EFI/BOOT/下的 BOOTx64.efi、grubx64.efi 拷贝进去，然后在 Windows 下，用工具给那个分区的 BOOTx64.efi，添加为 UEFI 文件启动项，开机时候选那个启动项，就能启动到 Linux 安装盘了。
+
 如果你要装的 Linux 不支持 SecureBoot，记得关掉主板 BIOS 的 SecureBoot 设置。
 
-事实上，MBR 分区表，也能启动 UEFI 模式下的 Windows，只是 Windows 安装程序提示不允许罢了。主板 BIOS 设置 UEFI 启动如果没找到 GPT 分区，就是自动转 CSM 模式，通过 MBR 分区表引导了 UEFI 模式的 Windows。
+事实上，MBR 分区表，也能启动 UEFI 模式下的 Windows，只是 Windows 安装程序提示不允许罢了。主板 BIOS 设置 UEFI 启动如果没找到 GPT 分区，就会自动转 CSM 模式，通过 MBR 分区表引导了 UEFI 模式的 Windows。
 
-参考
+#### 参考
 
     本文来源 <https://zhuanlan.zhihu.com/p/31365115>
 
@@ -1026,17 +1027,21 @@ Windows RE实质上是提供了一些恢复工具的Windows PE，预安装了「
 
 #### WinRe 的功能
 
+重置此电脑（初始化此电脑）
+
+    就是上面的恢复选项对应的内容。
+
 启动修复
 
     使用“启动修复”功能时，Windows RE会自动监测硬盘上安装的Windows存在什么问题，并自动予以修复。例如，如果MBR被修改，该功能可以帮助恢复MBR。
 
 系统还原
 
-    使用Windows系统的人都应该知道Windows系统还原吧，当Windows无法启动时，可以用Windows RE还原系统（当然，你要有还原点可供还原）。
+    如果已经自动创建过系统还原点，可以用Windows RE还原系统到当时的状态。
 
 系统映像还原
 
-    如果你在Windows中创建了系统映像（Windows Vista中称为Windows Complete PC备份），那么你就可以利用Windows RE进行还原。
+    对应前面章节[系统映像备份]，可以利用Windows RE进行还原。
 
 Windows内存诊断
 
@@ -1054,7 +1059,7 @@ Windows内存诊断
 
 你的电脑将重启到 Windows 恢复环境 (WinRE) 环境中。
 
-在“选择一个选项”屏幕上，依次选择“疑难解答”>“初始化此电脑”，然后在表格中选择其中一个选项。
+在“选择一个选项”屏幕上，选择“疑难解答”，然后在表格中选择其中一个选项。
 
 ## 安全的使用你的 Windows 10
 
@@ -1403,7 +1408,7 @@ Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但�
 
 管理员身份运行命令提示符 cmd
 
-        bcdedit
+        bcdedit 或 bcdedit /enum all 显示全部
 
 查看校对"Windows 启动加载器"中对应项目的 hypervisorlaunchtype 值
 
