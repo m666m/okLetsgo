@@ -521,9 +521,287 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
 整个 Windows 安全体系，挨个看吧 <https://docs.microsoft.com/zh-cn/windows/security/>
 
+### 默认键盘设置为英文
+
+中文版 Windows 10 默认唯一键盘是中文，而且中文键盘的默认输入法是微软拼音的中文状态。原 Windows 7 之前“Ctrl+空格”切换中英文的热键被微软拼音输入法使用了，而且按 shift 键就切换中英文，默认还是各个应用的窗口统一使用的。
+
+问题是 Windows 桌面/资源管理器/炒股游戏等软件的默认状态是响应英文输入，仅对文本编辑软件才应该默认用中文输入。如果只有默认的中文键盘，则微软拼音输入法按一下 shift 键，中英文状态就切换，非常容易误触。在实际使用中，各个软件窗口一变，或者输入个字母就弹出中文候选字对话框，按个 shift 键，微软拼音输入法就来回切换中英文，非常非常非常的繁琐。尤其在有些游戏中，一按 shift 就切出来中文输入法，再按 asdf 就变成打字到中文输入法的输入栏了。
+
+所以需要再添加一个“英文键盘”，使用它的英文输入法状态，并把这个键盘作为默认状态。两种键盘间切换使用热键“Win+空格”。这样做的好处是，切换键盘的同时中英文输入法也跟着切换了（不需要依赖在中文键盘下微软拼音输入法的 shift 键切换），而且不同的窗口还可以选择记住不同的输入法状态，非常方便。
+
+设置->搜索“语言”，选择"英语"，添加确认，注意取消选择“设置为默认的界面语言”。
+
+点击右侧按钮“拼写、键入和键盘设置”（设置->设备->输入），把输入提示、输入建议什么的都去掉，不然你按 Ctrl+空格的时候会给你好看。
+
+点击下面的“高级键盘设置”（设置->搜索“keyboard”，“高级键盘设置”），操作如下步骤：
+
+    替换默认输入法，选择“英语”，而不是微软拼音输入法。这样对 Windows 桌面/资源管理器/炒股/游戏等软件的默认状态是英文按键的正确状态。
+
+    勾选“允许我为每个应用窗口使用不同的输入法”，这个非常重要，可以实现有的窗口是英文键盘状态，有的编辑软件窗口保持是切换到中文键盘的微软拼音输入法状态。
+
+    注意这两种键盘的切换热键是“Win+空格”，以后中英文输入的切换就切换键盘就行了，除非中文输入状态下临时输入英文按下 shift 键切换。
+
+    取消勾选“使用桌面语言栏”，这个也很重要，某些全屏 HDR 游戏不兼容这个工具栏，一旦出来输入法条，显示器的 HDR 状态就跟着来回黑屏切换……
+
+    选择“语言栏选项”，勾选“在任务栏中显示其他语言栏图标”，方便鼠标点选切换中英文键盘。
+
+    选择“语言栏选项”，点击“高级键设置”：在“输入语言的热键”列表，点击“输入法/非输入法切换  Ctrl+空格”，点击“更改按键顺序”，取消勾选“启用按键顺序”可以禁用微软拼音输入法的中英文切换使用此按键，因为现在用 shift 键就够了。
+
+### 切换黑暗模式（夜间模式）
+
+次选：设置->系统->显示：选择打开“夜间模式”，Windows 只是把色温降成黄色，显示器亮度还是很晃眼。
+
+优选：设置->轻松使用->颜色滤镜：选择“打开颜色滤镜”，选择“灰度”按钮，显示器变成黑白效果，失去了彩色，也不舒服。
+
+最优选：设置->个性化->颜色：下面有个“更多选项”，对“选择默认应用模式”选择“暗”，整个 Windows 的配色方案都变成了暗色，各个软件窗口也跟着变了。
+这个办法最舒服，白天切换回去也很方便。写到注册表里，在桌面点击右键实现方便切换
+
+Add_App_Mode_to_desktop_context_menu.reg：
+
+```ini
+Windows Registry Editor Version 5.00
+
+; Created by: Shawn Brink
+; Created on: September 3rd 2017
+; Tutorial: https://www.tenforums.com/tutorials/92740-add-app-mode-context-menu-light-dark-theme-Windows-10-a.html
+; Tutorial: https://www.tenforums.com/tutorials/24038-change-default-app-mode-light-dark-theme-Windows-10-a.html
+
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode]
+"Icon"="themecpl.dll,-1"
+"MUIVerb"="App mode"
+"Position"="Bottom"
+"SubCommands"=""
+
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\001flyout]
+"MUIVerb"="Light theme"
+"Icon"="imageres.dll,-5411"
+
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\001flyout\command]
+@="Reg Add HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize /v AppsUseLightTheme /t REG_DWORD /d 1 /f"
+
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\002flyout]
+"Icon"="imageres.dll,-5412"
+"MUIVerb"="Dark theme"
+
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\002flyout\command]
+@="Reg Add HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f"
+```
+
+edge 浏览器->设置->外观->整体外观：选择“系统默认”则跟随 Windows 系统的主题颜色变换，缺点是仅窗口标签外观变换。如果需要对网页内容开启夜间模式，需要强制开启：
+
+    在浏览器地址栏输入 edge://flags/
+
+    在搜索栏输入“Force Dark Mode for Web Contents”
+
+    选择 enable，点击选择重启浏览器，除图片以外的所有部分进入夜间模式
+
+### 关闭附件管理器检查
+
+为什么要关闭？ 浏览器我正常下载的没签名的文件，在有些软件调用的时候就打不开，也没有任何提示，总是报错，让人抓狂。
+之前遇到过技嘉制作 u 盘启动的工具，添加了下载的 zip 文件，总是制作失败，直到把下载的文件点击右键，选择属性，勾选解除限制，才能正常读取。整个过程中没有任何提示性信息。其它还有 zip 解压文件，读取 zip 压缩包，悄悄的失败，也没有任何提示，从 Windows 7 到 Windows 11，一直如此。
+
+有两种方法： 第一种是修改组策略中的配置：
+
+“运行”中输入 gpedit.msc，然后选择“用户配置”-“管理模板”-“Windows 组件”-“附件管理器”。
+
+    1. 文件附件值中不保留区域信息，设置为“启用” （光这步就够了）
+
+    2. 文件类型的默认风险级别，设置为“启用”，“低风险”。
+    3. 低风险文件类型的包含列表，设置为“启用”，扩展名增加比如：.docx;.doc;.xls;.xlsx
+
+第二种是增加一个全局的环境变量 SEE_MASK_NOZONECHECKS，设置值为 1.
+
+    [HKEY_CURRENT_USER \Environment]
+    SEE_MASK_NOZONECHECKS = "1"
+
+### 删除无关占用 cpu 时间的项目
+
+有了 Windows Store 后，商店应用由单独的 wsappx.exe 运行的 UWP 运行环境，甚至 appx 的保存目录 C:\Program Files\WindowsApps 都是默认锁定的。
+
+单纯用 msinfo32 或传统的启动管理程序，只能看到本地 Windows 的程序，由 wsappx.exe 运行的那些商店应用是没法单独看到的，目前只能由 Windows 提供的开放接口查看和设置
+
+目前用： 设置->应用->启动，看列出的项目，取消勾选可以禁止开机启动
+
+在任务管理器中，有个应用历史记录，可以发现，比如 Windows photo 这样的 Windows 商店的 appx 应用占用 cpu 时间非常多，其实用户根本没用，真不知道它在后台干了些什么。不要犹豫，用不到的就删除啊。win+xn 设置->应用->应用和功能，搜索应用名称，找到后点击，展开菜单选择“卸载”即可。
+
+如果没有“卸载”选项，就得手工解决了，以删除 cpu 时间使用最多的 Windows photo 为例：
+
+    以管理员身份运行“Windows PowerShell”
+
+    在控制台输入命令“Get-AppxPackage”回车键
+
+    菜单项选择：编辑->查找，输入“photo”，按“查找下一个”按钮就能找到了
+
+    找对应“PackageFullName”，包的名称。把后面的名称“Microsoft.Windows.Photos_2021.21090.10008.0_x64__8wekyb3d8bbwe”复制下来。
+
+    在控制台输入命令“Remove-AppxPackage Microsoft.Windows.Photos_2021.21090.10008.0_x64__8wekyb3d8bbwe”回车键，等待片刻就卸载完了。
+
+### 打开任务栏毛玻璃效果
+
+<https://bbs.pcbeta.com/viewthread-1899753-1-1.html>
+
+高斯模糊：
+支持深、浅色模式
+支持任务栏主题色
+需重启资源管理器进程
+
+```ini
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize]
+; 开启透明效果
+"EnableTransparency"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+; 任务栏透明度
+"TaskbarAcrylicOpacity"=dword:00000005
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+"UseOLEDTaskbarTransparency"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Dwm]
+"ForceEffectMode"=-
+```
+
+恢复到系统默认：
+
+```ini
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+"TaskbarAcrylicOpacity"=-
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+"UseOLEDTaskbarTransparency"=-
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Dwm]
+"ForceEffectMode"=-
+```
+
+重启 explorer.exe
+
+### 为 Windows 10 Enterprise LTSC 增加应用商店
+
+<https://github.com/kkkgo/LTSC-Add-MicrosoftStore>
+
+要开始安装，请打包下载 LTSC-Add-MicrosoftStore-2019.zip 后用右键管理员运行 Add-Store.cmd
+
+如果您不想安装 App Installer / Purchase App / Xbox，请在运行安装之前删除对应的。appxbundle 后缀的文件。但是，如果您计划安装游戏，或带有购买选项的应用，则不要删除。
+
+如果装完之后商店仍然打不开，请先重启试试。如果仍然不行，请以管理员身份打开命令提示符并运行以下命令之后，然后再重启试试。
+PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage Microsoft.WindowsStore).InstallLocation + '\AppxManifest.xml' ; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+
+商店修复
+Win+R 打开运行，输入 WSReset.exe 回车。
+该命令会清空并重置 Windows Store 商店的所有缓存。
+
+该脚本由 abbodi1406 贡献：
+<https://forums.mydigitallife.net/threads/add-store-to-Windows-10-enterprise-ltsc-LTSC.70741/page-30#post-1468779>
+
+### 关闭 Windows 自带的压缩文件夹（zip folder）
+
+[不要使用]
+Windows 10 下发现取消这个组件，居然有 Windows 更新的安装包报错的情况，建议用开源的 7-zip 软件替换 zip 文件的打开方式，这个功能留着吧。
+
+    管理员身份运行 7-zip 软件，菜单“工具”->“选项”，弹出的窗口选择“系统”选项卡，列出的类型中，zip 选择“7-zip”
+
+废弃：
+
+    从 Windows XP 开始，之后的每一代操作系统（如 Vista、7、8、10），都有一个默认开启的功能：能将压缩文件当作普通文件夹来管理。
+
+    在资源管理器左侧的文件夹树视图中，展开一个包含压缩文件（zip 或 cab 格式）的文件夹时，就能看见这些压缩文件如同普通的子文件夹一样，可以直接展开。展开它们，就能很方便地浏览压缩文件中所有文件的信息，同时还能方便地解压。
+
+    但是一般用户通常都有自己喜爱的压缩软件，例如 WinRAR、7-Zip 等，他们往往不常使用系统自带的这个压缩文件管理方式，更倾向于使用压缩软件提供的右键菜单功能来压缩或解压文件。而且还会抱怨系统自带的压缩文件夹功 能消耗系统资源，每次打开文件夹时的延迟更让人觉得系统变得缓慢。
+
+    Windows XP 关闭 zip folder 功能
+
+        打开命令提示符窗口，输入“regsvr32 /u %windir%\system32\zipfldr.dll” （不含引号），回车后提示成功即可关闭。
+
+        开启功能：
+        打开命令提示符窗口，输入“regsvr32 %windir%\system32\zipfldr.dll”（不含引号），回车后提示成功即可打开。
+
+    提示：以上操作可能只关闭了 ZIP 文件的文件夹显示，可能 CAB 文件没有关闭。未测试。
+
+    Windows Vista、7、8、10 关闭 zip folder 功能
+
+    需要删除或更名两个注册表键：
+
+    对于 ZIP 文件：HKEY_CLASSES_ROOT\CLSID\{E88DCCE0-B7B3-11d1-A9F0-00AA0060FA31}
+
+    对于 CAB 文件：HKEY_CLASSES_ROOT\CLSID\{0CD7A5C0-9F37-11CE-AE65-08002B2E1262}
+
+    由于涉及到权限问题，无法直接删除，需按照以下步骤来操作：（注册表操作有风险，要小心谨慎，并切记要备份。）
+
+        按 Win-R，在运行窗口输入“regedit” 并回车，打开注册表编辑器。
+
+        找到要操作的第一个注册表键 HKEY_CLASSES_ROOT\CLSID\{E88DCCE0-B7B3-11d1-A9F0-00AA0060FA31}
+
+        右键单击它，从弹出菜单中单击“导出 (E)”，将该注册表键的原始信息备份到安全位置，以便遇到不测时恢复。
+
+        导出备份完成后，再右键单击该键，从弹出菜单中单击“权限 (P)...”
+
+        单击“高级 (V)”按钮
+
+        单击“所有者”选项卡
+
+        在“将所有者更改为 (O):”框中，选中你当前的用户名
+
+        勾选“替换子容器和对象的所有者 (R)”
+
+        单击“应用 (A)”按钮
+
+        单击“确定”
+
+        在“安全”选项卡下，在上框中选中你的用户名，然后 在下框中勾选“完全控制”的“允许”
+
+        单击“应用 (A)”和“确定”按钮
+
+        现在，你可以自由选择删除或重命名这个注册表键了。注意：请确定你在正确的注册表键上操作！
+
+        好，重复以上步骤来为 第二个注册表键进行重命名或删除。
+
+        重启计算机，压缩文件夹是不是都消失啦？
+
+    开启功能：
+
+    恢复的话，只需将关闭时建立的两个备份文件导入注册表，重启即可。万一备份不见了，可以从另外的电脑中导出，当然前题是操作系统的版本要一致。
+
+    权限恢复的时候，依次反向操作，注意：添加所有者要输入“NT SERVICE\TrustedInstaller”，选择“检查名称”。
+
+### 关闭 Windows defender杀毒软件
+
+[方法失效]
+
+Windows10系统中自带了windows defender杀毒软件，也就是Windows安全中心。
+
+虽然大家在日常使用中不太能体会到它的存在，但你准备安装一些激活软件或者没有经过微软认证的第三方软件时，就疯狂来展现它的存在感了，比如不经过你允许就直接删除你的文件是常规操作。就算你关闭它，短时间内后台也会自动开启。
+
+在键盘上按快捷键【WIN+R】 或者鼠标右击桌面左下角Windows图标，选择【运行】弹出运行窗口。
+输入【gpedit.msc】，然后点击【确定】，打开【本地组策略编辑器】
+在【本地组策略编辑器】-【计算机配置】中依次打开【管理模板】->【Windows组件】->【Microsoft Defender防病毒】
+
+    双击【关闭Microsoft Defender防病毒】，选择【已启用】，点击【应用】，然后点击【确定】
+
+    双击【允许反恶意软件服务始终保持运行状态】，选择【已禁用】，点击【应用】，然后点击【确定】。
+
+    点击打开文件夹【实时保护】，选择“关闭实时保护”，选择【已启用】，点击【应用】，然后点击【确定】。
+
+    双击【扫描所有下载文件和附件】，选择【已禁用】，点击【应用】，然后点击【确定】。
+
+点击【开始菜单】，然后点击【设置】点击【更新和安全】，打开【Windows 安全中心】
+
+    点击【病毒和威胁防护】，在【病毒和威胁防护设置】下面点击打开【管理设置】
+
+    点击关闭“实时保护”，“云提供的保护”，“自动提交样本”，这里一定要关闭，不然前面组策略里设置的没用。
+
+鼠标右击任务栏，点击【任务管理器】，点击【启动】，选中【Windows Security notification icon】，鼠标右击选择【禁用】。
+
+鼠标右击开始菜单，点击【计算机管理】，点击“服务”，选择“Windows Defender Antivirus Service”，双击打开选择“禁用”。
+如果是灰色的无法设置，则运行“msconfig.exe”，在“服务”选项卡中取消勾选该服务。
+
 ### 系统信息中，“设备加密支持”选项的结果有“失败”字样
 
-启动 Windows 后以管理员权限运行 msinfo32，在“系统摘要”界面查看，根据具体描述进行调整
+以管理员权限运行 msinfo32，在“系统摘要”界面查看，根据具体描述进行调整
 
 #### 不允许使用的DMA设备
 
@@ -682,283 +960,6 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
     点击“选择电源按钮的功能”，选择“更改当前不可用的设置”，
 
     去掉勾选“启用快速启动（推荐）”，然后点击保存修改。
-
-### 默认键盘设置为英文
-
-中文版 Windows 10 默认唯一键盘是中文，而且中文键盘的默认输入法是微软拼音的中文状态。原 Windows 7 之前“Ctrl+空格”切换中英文的热键被微软拼音输入法使用了，而且按 shift 键就切换中英文，默认还是各个应用的窗口统一使用的。
-
-问题是 Windows 桌面/资源管理器/炒股游戏等软件的默认状态是响应英文输入，仅对文本编辑软件才应该默认用中文输入。如果只有默认的中文键盘，则微软拼音输入法按一下 shift 键，中英文状态就切换，非常容易误触。在实际使用中，各个软件窗口一变，或者输入个字母就弹出中文候选字对话框，按个 shift 键，微软拼音输入法就来回切换中英文，非常非常非常的繁琐。尤其在有些游戏中，一按 shift 就切出来中文输入法，再按 asdf 就变成打字到中文输入法的输入栏了。
-
-所以需要再添加一个“英文键盘”，使用它的英文输入法状态，并把这个键盘作为默认状态。两种键盘间切换使用热键“Win+空格”。这样做的好处是，切换键盘的同时中英文输入法也跟着切换了（不需要依赖在中文键盘下微软拼音输入法的 shift 键切换），而且不同的窗口还可以选择记住不同的输入法状态，非常方便。
-
-设置->搜索“语言”，选择"英语"，添加确认，注意取消选择“设置为默认的界面语言”。
-
-点击右侧按钮“拼写、键入和键盘设置”（设置->设备->输入），把输入提示、输入建议什么的都去掉，不然你按 Ctrl+空格的时候会给你好看。
-
-点击下面的“高级键盘设置”（设置->搜索“keyboard”，“高级键盘设置”），操作如下步骤：
-
-    替换默认输入法，选择“英语”，而不是微软拼音输入法。这样对 Windows 桌面/资源管理器/炒股/游戏等软件的默认状态是英文按键的正确状态。
-
-    勾选“允许我为每个应用窗口使用不同的输入法”，这个非常重要，可以实现有的窗口是英文键盘状态，有的编辑软件窗口保持是切换到中文键盘的微软拼音输入法状态。
-
-    注意这两种键盘的切换热键是“Win+空格”，以后中英文输入的切换就切换键盘就行了，除非中文输入状态下临时输入英文按下 shift 键切换。
-
-    取消勾选“使用桌面语言栏”，这个也很重要，某些全屏 HDR 游戏不兼容这个工具栏，一旦出来输入法条，显示器的 HDR 状态就跟着来回黑屏切换……
-
-    选择“语言栏选项”，勾选“在任务栏中显示其他语言栏图标”，方便鼠标点选切换中英文键盘。
-
-    选择“语言栏选项”，点击“高级键设置”：在“输入语言的热键”列表，点击“输入法/非输入法切换  Ctrl+空格”，点击“更改按键顺序”，取消勾选“启用按键顺序”可以禁用微软拼音输入法的中英文切换使用此按键，因为现在用 shift 键就够了。
-
-### 关闭 Windows 自带的压缩文件夹（zip folder）
-
-Windows 10 下发现取消这个组件，居然有 Windows 更新的安装包报错的情况，建议用 用开源的 7-zip 软件替换 zip 文件的打开方式
-
-    管理员身份运行 7-zip 软件，菜单“工具”->“选项”，弹出的窗口选择“系统”选项卡，列出的类型中，zip 选择“7-zip”
-
-废弃：
-
-    从 Windows XP 开始，之后的每一代操作系统（如 Vista、7、8、10），都有一个默认开启的功能：能将压缩文件当作普通文件夹来管理。
-
-    在资源管理器左侧的文件夹树视图中，展开一个包含压缩文件（zip 或 cab 格式）的文件夹时，就能看见这些压缩文件如同普通的子文件夹一样，可以直接展开。展开它们，就能很方便地浏览压缩文件中所有文件的信息，同时还能方便地解压。
-
-    但是一般用户通常都有自己喜爱的压缩软件，例如 WinRAR、7-Zip 等，他们往往不常使用系统自带的这个压缩文件管理方式，更倾向于使用压缩软件提供的右键菜单功能来压缩或解压文件。而且还会抱怨系统自带的压缩文件夹功 能消耗系统资源，每次打开文件夹时的延迟更让人觉得系统变得缓慢。
-
-    Windows XP 关闭 zip folder 功能
-
-        打开命令提示符窗口，输入“regsvr32 /u %windir%\system32\zipfldr.dll” （不含引号），回车后提示成功即可关闭。
-
-        开启功能：
-        打开命令提示符窗口，输入“regsvr32 %windir%\system32\zipfldr.dll”（不含引号），回车后提示成功即可打开。
-
-    提示：以上操作可能只关闭了 ZIP 文件的文件夹显示，可能 CAB 文件没有关闭。未测试。
-
-    Windows Vista、7、8、10 关闭 zip folder 功能
-
-    需要删除或更名两个注册表键：
-
-    对于 ZIP 文件：HKEY_CLASSES_ROOT\CLSID\{E88DCCE0-B7B3-11d1-A9F0-00AA0060FA31}
-
-    对于 CAB 文件：HKEY_CLASSES_ROOT\CLSID\{0CD7A5C0-9F37-11CE-AE65-08002B2E1262}
-
-    由于涉及到权限问题，无法直接删除，需按照以下步骤来操作：（注册表操作有风险，要小心谨慎，并切记要备份。）
-
-        按 Win-R，在运行窗口输入“regedit” 并回车，打开注册表编辑器。
-
-        找到要操作的第一个注册表键 HKEY_CLASSES_ROOT\CLSID\{E88DCCE0-B7B3-11d1-A9F0-00AA0060FA31}
-
-        右键单击它，从弹出菜单中单击“导出 (E)”，将该注册表键的原始信息备份到安全位置，以便遇到不测时恢复。
-
-        导出备份完成后，再右键单击该键，从弹出菜单中单击“权限 (P)...”
-
-        单击“高级 (V)”按钮
-
-        单击“所有者”选项卡
-
-        在“将所有者更改为 (O):”框中，选中你当前的用户名
-
-        勾选“替换子容器和对象的所有者 (R)”
-
-        单击“应用 (A)”按钮
-
-        单击“确定”
-
-        在“安全”选项卡下，在上框中选中你的用户名，然后 在下框中勾选“完全控制”的“允许”
-
-        单击“应用 (A)”和“确定”按钮
-
-        现在，你可以自由选择删除或重命名这个注册表键了。注意：请确定你在正确的注册表键上操作！
-
-        好，重复以上步骤来为 第二个注册表键进行重命名或删除。
-
-        重启计算机，压缩文件夹是不是都消失啦？
-
-    开启功能：
-
-    恢复的话，只需将关闭时建立的两个备份文件导入注册表，重启即可。万一备份不见了，可以从另外的电脑中导出，当然前题是操作系统的版本要一致。
-
-    权限恢复的时候，依次反向操作，注意：添加所有者要输入“NT SERVICE\TrustedInstaller”，选择“检查名称”。
-
-### 切换黑暗模式（夜间模式）
-
-次选：设置->系统->显示：选择打开“夜间模式”，Windows 只是把色温降成黄色，显示器亮度还是很晃眼。
-
-优选：设置->轻松使用->颜色滤镜：选择“打开颜色滤镜”，选择“灰度”按钮，显示器变成黑白效果，失去了彩色，也不舒服。
-
-最优选：设置->个性化->颜色：下面有个“更多选项”，对“选择默认应用模式”选择“暗”，整个 Windows 的配色方案都变成了暗色，各个软件窗口也跟着变了。
-这个办法最舒服，白天切换回去也很方便。写到注册表里，在桌面点击右键实现方便切换
-
-Add_App_Mode_to_desktop_context_menu.reg：
-
-```ini
-Windows Registry Editor Version 5.00
-
-; Created by: Shawn Brink
-; Created on: September 3rd 2017
-; Tutorial: https://www.tenforums.com/tutorials/92740-add-app-mode-context-menu-light-dark-theme-Windows-10-a.html
-; Tutorial: https://www.tenforums.com/tutorials/24038-change-default-app-mode-light-dark-theme-Windows-10-a.html
-
-[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode]
-"Icon"="themecpl.dll,-1"
-"MUIVerb"="App mode"
-"Position"="Bottom"
-"SubCommands"=""
-
-[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\001flyout]
-"MUIVerb"="Light theme"
-"Icon"="imageres.dll,-5411"
-
-[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\001flyout\command]
-@="Reg Add HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize /v AppsUseLightTheme /t REG_DWORD /d 1 /f"
-
-[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\002flyout]
-"Icon"="imageres.dll,-5412"
-"MUIVerb"="Dark theme"
-
-[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\002flyout\command]
-@="Reg Add HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f"
-```
-
-edge 浏览器->设置->外观->整体外观：选择“系统默认”则跟随 Windows 系统的主题颜色变换，缺点是仅窗口标签外观变换。如果需要对网页内容开启夜间模式，需要强制开启：
-
-    在浏览器地址栏输入 edge://flags/
-
-    在搜索栏输入“Force Dark Mode for Web Contents”
-
-    选择 enable，点击选择重启浏览器，除图片以外的所有部分进入夜间模式
-
-### 关闭附件管理器检查
-
-为什么要关闭？ 浏览器我正常下载的没签名的文件，在有些软件调用的时候就打不开，也没有任何提示，总是报错，让人抓狂。
-之前遇到过技嘉制作 u 盘启动的工具，添加了下载的 zip 文件，总是制作失败，直到把下载的文件点击右键，选择属性，勾选解除限制，才能正常读取。整个过程中没有任何提示性信息。其它还有 zip 解压文件，读取 zip 压缩包，悄悄的失败，也没有任何提示，从 Windows 7 到 Windows 11，一直如此。
-
-有两种方法： 第一种是修改组策略中的配置：
-
-“运行”中输入 gpedit.msc，然后选择“用户配置”-“管理模板”-“Windows 组件”-“附件管理器”。
-
-    1. 文件附件值中不保留区域信息，设置为“启用” （光这步就够了）
-
-    2. 文件类型的默认风险级别，设置为“启用”，“低风险”。
-    3. 低风险文件类型的包含列表，设置为“启用”，扩展名增加比如：.docx;.doc;.xls;.xlsx
-
-第二种是增加一个全局的环境变量 SEE_MASK_NOZONECHECKS，设置值为 1.
-
-    [HKEY_CURRENT_USER \Environment]
-    SEE_MASK_NOZONECHECKS = "1"
-
-### 删除无关占用 cpu 时间的项目
-
-有了 Windows Store 后，商店应用由单独的 wsappx.exe 运行的 UWP 运行环境，甚至 appx 的保存目录 C:\Program Files\WindowsApps 都是默认锁定的。
-
-单纯用 msinfo32 或传统的启动管理程序，只能看到本地 Windows 的程序，由 wsappx.exe 运行的那些商店应用是没法单独看到的，目前只能由 Windows 提供的开放接口查看和设置
-
-目前用： 设置->应用->启动，看列出的项目，取消勾选可以禁止开机启动
-
-在任务管理器中，有个应用历史记录，可以发现，比如 Windows photo 这样的 Windows 商店的 appx 应用占用 cpu 时间非常多，其实用户根本没用，真不知道它在后台干了些什么。不要犹豫，用不到的就删除啊。win+xn 设置->应用->应用和功能，搜索应用名称，找到后点击，展开菜单选择“卸载”即可。
-
-如果没有“卸载”选项，就得手工解决了，以删除 cpu 时间使用最多的 Windows photo 为例：
-
-    以管理员身份运行“Windows PowerShell”
-
-    在控制台输入命令“Get-AppxPackage”回车键
-
-    菜单项选择：编辑->查找，输入“photo”，按“查找下一个”按钮就能找到了
-
-    找对应“PackageFullName”，包的名称。把后面的名称“Microsoft.Windows.Photos_2021.21090.10008.0_x64__8wekyb3d8bbwe”复制下来。
-
-    在控制台输入命令“Remove-AppxPackage Microsoft.Windows.Photos_2021.21090.10008.0_x64__8wekyb3d8bbwe”回车键，等待片刻就卸载完了。
-
-### 打开任务栏毛玻璃效果
-
-<https://bbs.pcbeta.com/viewthread-1899753-1-1.html>
-
-高斯模糊：
-支持深、浅色模式
-支持任务栏主题色
-需重启资源管理器进程
-
-```ini
-Windows Registry Editor Version 5.00
-
-[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize]
-; 开启透明效果
-"EnableTransparency"=dword:00000001
-
-[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
-; 任务栏透明度
-"TaskbarAcrylicOpacity"=dword:00000005
-
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
-"UseOLEDTaskbarTransparency"=dword:00000000
-
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Dwm]
-"ForceEffectMode"=-
-```
-
-恢复到系统默认：
-
-```ini
-Windows Registry Editor Version 5.00
-
-[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
-"TaskbarAcrylicOpacity"=-
-
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
-"UseOLEDTaskbarTransparency"=-
-
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Dwm]
-"ForceEffectMode"=-
-```
-
-重启 explorer.exe
-
-### 为 Windows 10 Enterprise LTSC 增加应用商店
-
-<https://github.com/kkkgo/LTSC-Add-MicrosoftStore>
-
-要开始安装，请打包下载 LTSC-Add-MicrosoftStore-2019.zip 后用右键管理员运行 Add-Store.cmd
-
-如果您不想安装 App Installer / Purchase App / Xbox，请在运行安装之前删除对应的。appxbundle 后缀的文件。但是，如果您计划安装游戏，或带有购买选项的应用，则不要删除。
-
-如果装完之后商店仍然打不开，请先重启试试。如果仍然不行，请以管理员身份打开命令提示符并运行以下命令之后，然后再重启试试。
-PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage Microsoft.WindowsStore).InstallLocation + '\AppxManifest.xml' ; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
-
-商店修复
-Win+R 打开运行，输入 WSReset.exe 回车。
-该命令会清空并重置 Windows Store 商店的所有缓存。
-
-该脚本由 abbodi1406 贡献：
-<https://forums.mydigitallife.net/threads/add-store-to-Windows-10-enterprise-ltsc-LTSC.70741/page-30#post-1468779>
-
-### 关闭 Windows defender杀毒软件
-
-[方法失效]
-
-Windows10系统中自带了windows defender杀毒软件，也就是Windows安全中心。
-
-虽然大家在日常使用中不太能体会到它的存在，但你准备安装一些激活软件或者没有经过微软认证的第三方软件时，就疯狂来展现它的存在感了，比如不经过你允许就直接删除你的文件是常规操作。就算你关闭它，短时间内后台也会自动开启。
-
-在键盘上按快捷键【WIN+R】 或者鼠标右击桌面左下角Windows图标，选择【运行】弹出运行窗口。
-输入【gpedit.msc】，然后点击【确定】，打开【本地组策略编辑器】
-在【本地组策略编辑器】-【计算机配置】中依次打开【管理模板】->【Windows组件】->【Microsoft Defender防病毒】
-
-    双击【关闭Microsoft Defender防病毒】，选择【已启用】，点击【应用】，然后点击【确定】
-
-    双击【允许反恶意软件服务始终保持运行状态】，选择【已禁用】，点击【应用】，然后点击【确定】。
-
-    点击打开文件夹【实时保护】，选择“关闭实时保护”，选择【已启用】，点击【应用】，然后点击【确定】。
-
-    双击【扫描所有下载文件和附件】，选择【已禁用】，点击【应用】，然后点击【确定】。
-
-点击【开始菜单】，然后点击【设置】点击【更新和安全】，打开【Windows 安全中心】
-
-    点击【病毒和威胁防护】，在【病毒和威胁防护设置】下面点击打开【管理设置】
-
-    点击关闭“实时保护”，“云提供的保护”，“自动提交样本”，这里一定要关闭，不然前面组策略里设置的没用。
-
-鼠标右击任务栏，点击【任务管理器】，点击【启动】，选中【Windows Security notification icon】，鼠标右击选择【禁用】。
-
-鼠标右击开始菜单，点击【计算机管理】，点击“服务”，选择“Windows Defender Antivirus Service”，双击打开选择“禁用”。
-如果是灰色的无法设置，则运行“msconfig.exe”，在“服务”选项卡中取消勾选该服务。
 
 ## 备份和恢复
 
@@ -1645,26 +1646,32 @@ uwp 迁移到 NuGet，估计换汤不换药。
 
 在操作系统中引导到 UEFI 固件设置。
 
-很多支持 Fast Boot 的主板，在主板 BIOS 的“Fast Boot”项设置了“Ultra Fast”之后，开机过程中不能用键盘进入 BIOS 了，解决办法是进入 Windows 指定下一次重启进入 BIOS。
+很多支持 Fast Boot 的主板，在主板 BIOS 的“Fast Boot”项设置了“Ultra Fast”之后，开机过程中不能用键盘进入 BIOS 了，解决办法是在操作系统中指定下一次重启进入 BIOS。
 
-对技嘉 B560M AORUS PRO 主板来说，可以对 usb 等各个细分选项分别设置是否在初始化的时候跳过，可以避免这个问题。
+对技嘉 B560M AORUS PRO 主板来说，实际试了一下，没感觉到 Ultra Fast 比 Fast Boot 快。
+而且我的 usb 键盘鼠标网卡都挂在显示器集成的 usb hub 上，设备比较多，开机时 UEFI 加载这堆驱动没法跳过，没什么用的感觉。
 
-实际试了一下，没感觉到 Ultra Fast 比 Fast Boot 快。
-而且我的 usb 键盘鼠标网卡都挂在 usb hub 上，设备比较多，开机时 UEFI 加载这堆驱动没法跳过，还是不用了。
+UEFI 方式启动的操作系统是跟主板 BIOS 设置密切结合的，UEFI 的“Fast Boot”分几个选项，导致了初始化部分设备的限制：
+
+    主板 BIOS 设置的“Fast Boot”项如果开启“Fast”选项，可以减少硬件自检时间，但是会存在一些功能限制，比如 Fast 模式下不能使用 USB 设备启动了，因为这个加速功能其实是在 BIOS 自检中禁止加载 USB 设备了。
+
+    主板 BIOS 设置的“Fast Boot”项如果开启“Ultra Fast”选项，之后就不能用键盘进入 BIOS 了，估计跟 Fast 模式一样把大部分不是必须的自检过程给禁用了，所以要想进 BIOS 只能清空 CMOS 或者在操作系统里选择“重启到 UEFI”。
+
+与此功能关联的是Windows 电源选项中的“快速启动” 见前面的章节 [开启或关闭“快速启动”]
+
+参考说明
+    <https://www.expreview.com/22043.html>
+    <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-windows.html>
 
 ### 在 Windows 10 中指定重启到 UEFI 固件的步骤
 
-    点击“开始”菜单—选择“设置”
+点击“开始”菜单—选择“设置”，点击“更新和安全”，在“更新和安全”界面中点击左侧的“恢复”选项，再在右侧的“高级启动”中点击“立即重新启动”。
 
-    点击“更新和安全”
+Windows 10 重启之后你将会看到出现一个界面提供选项，选择“疑难解答（重置你的电脑或高级选项）”
 
-    在“更新和安全”界面中点击左侧的“恢复”选项，再在右侧的“高级启动”中点击“立即重新启动”
+新出现的界面选择“高级选项—>UEFI 固件设置”，重启之后就可以直接引导到 UEFI 了。因为现在的BIOS都是UEFI BIOS，也就是自动进入 BIOS 设置了。
 
-    Windows 10 重启之后你将会看到出现一个界面提供选项，选择“疑难解答（重置你的电脑或高级选项）”
-
-    新出现的界面选择“高级选项—>UEFI 固件设置”，重启之后就可以直接引导到 UEFI 了。
-
-    参考 <https://docs.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/boot-to-uefi-mode-or-legacy-bios-mode>
+参考 <https://docs.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/boot-to-uefi-mode-or-legacy-bios-mode>
 
 ### Linux 指定重启到 UEFI 固件的步骤
 
@@ -1678,25 +1685,7 @@ uwp 迁移到 NuGet，估计换汤不换药。
     systemctl reboot --firmware-setup
     参考资料：https://www.freedesktop.org/software/systemd/man/systemctl.html#--firmware-setup
 
-### UEFI 的“Fast Boot”不给机会进主板 BIOS 啥意思
-
-UEFI 启动的操作系统是跟主板 BIOS 设置密切结合的，UEFI 的“Fast Boot”分几个选项，导致了初始化部分设备的限制：
-
-    主板 BIOS 设置的“Fast Boot”项如果开启“Fast”选项，可以减少硬件自检时间，但是会存在一些功能限制，比如 Fast 模式下不能使用 USB 设备启动了，因为这个加速功能其实是在 BIOS 自检中禁止扫描 USB 设备了。
-
-    主板 BIOS 设置的“Fast Boot”项如果开启“Ultra Fast”选项，之后就不能用键盘进入 BIOS 了，估计跟 Fast 模式一样把大部分不是必须的自检过程给禁用了，所以要想进 BIOS 只能清空 CMOS 或者在操作系统里选择“重启到 UEFI”。
-
-参考说明
-    <https://www.expreview.com/22043.html>
-    <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-windows.html>
-
-### Windows 电源选项中的“快速启动”
-
-这个功能是跟主板 BIOS 中 UEFI FAST BOOT 选项类似的，但是更高级，在设备休眠这一层级实现复用，也就是说，你在关机菜单选择的重新启动，Windows 可能只是注销并重新登陆。
-
-还是关了吧，这个噱头实在让人混淆太多东西了，见前面的章节 [关闭“快速启动”]
-
-## 常见问题
+## 其它常见问题
 
 ### 如何判断 USB Type-C 口有哪些功能
 
@@ -1704,20 +1693,24 @@ UEFI 启动的操作系统是跟主板 BIOS 设置密切结合的，UEFI 的“F
 
 ### 显示器在 Win10 开启 HDR 变灰泛白的原因
 
-在游戏或播放软件里单独设置 HDR 选项就可以了，Windows 系统不需要打开 HDR 选项，目前的 Windows 10 并没有很好的适配 HDR 显示器。
+在游戏或播放软件里单独设置 HDR 选项就可以了，Windows 系统不需要打开 HDR 选项，目前的 Windows 10/11 并没有很好的适配 HDR 显示器。
 
-原因很简单，你的显示器并不真正提供 HDR 显示 (OLED/FALD), 而 Windows 还没有对 Display HDR400 和 600 这两个"假 HDR"提供支持。
-Windows 现在的偏灰，是在输出 HDR 信号的情况下自动降低 UI 亮度的被 Display HDR400 误显示的结果。这些显示器的 HDR 并没有低亮度细节，所以低亮度部分就发灰了。HDR 和暗部平衡差不多，都可以把暗部系列显示出来，所以看起来就像是亮度调得很高的样子，会泛白。
-这个问题在 FALD/OLED 显示器上是不存在的。仅在 Display HDR400-600 的"假 HDR"显示器上存在。
-简单来说就是为了支持桌面 HDR 软件 App, 桌面必须声明需求显示器的完整 HDR 亮度范围。然而显然桌面 UI 本身不能闪瞎人眼，所以桌面 UI 的亮度是低亮度模式。Display HDR400-600 的显示器并不能显示完整的 HDR 内容，自然这种为真 HDR 设计的模式就会出现显示错误。
-因为其实问题是 Display HDR400-600 并不是真的支持 HDR, 亮度范围根本没那么大，现有的协议并没有体现出这一点微软也没辙，属于技术局限，只能等未来看微软打算怎么解决这个问题了。
-最好是显示器厂商单独出 HDR 配置文件，让 Windows 自动识别实际的 HDR 亮度范围，而不是接收显示器现在汇报的这个虚假的 HDR 亮度范围。
-现在的 HDR 标准其实是纯凑活事的，信号输出了剩下的全看显示器，导致 HDR 内容的显示没有任何标准，大家效果千差万别。这在真 HDR 显示器上也很明显，不同品牌的 FALD 显示器效果也是完全不同的。颜色亮度各种跑偏。完全是群魔乱舞。
+简单来说，为了支持桌面上显示 HDR 软件, 桌面必须声明需求显示器的完整 HDR 亮度范围，因为桌面 UI 本身不能闪瞎人眼，所以桌面 UI 的亮度是低亮度模式。Display HDR400-600 的显示器的 HDR 并没有低亮度细节，所以低亮度部分就发灰了。HDR 和暗部平衡差不多，都可以把暗部细节显示出来，所以看起来就像是亮度调得很高的样子，会泛白。
+
+这个现象在 FALD/OLED 显示器上是不存在的，仅在 Display HDR400-600 的"假 HDR"显示器上存在。
+
+原因在于 Display HDR400-600 并不是真的支持 HDR, 亮度范围根本没那么大，现有的 HDR 协议并没有体现出这一点。而 Windows 还没有对 Display HDR400 和 600 这两个"假 HDR"提供支持。微软也没辙，属于技术局限，只能等未来看微软打算怎么解决这个问题了。
+
+折衷的办法是，显示器厂商单独出 HDR 配置文件，让 Windows 自动识别实际的 HDR 亮度范围，而不是接收显示器现在汇报的这个虚假的 HDR 亮度范围。
+
+其实现在的 HDR 标准其实是纯凑活事，显卡信号输出了剩下的全看显示器，导致 HDR 内容的显示没有任何标准，大家效果千差万别。
+这点在真 HDR 显示器上也很明显，不同品牌的 FALD 显示器效果也是完全不同的，颜色亮度各种跑偏，完全是群魔乱舞。
+
 很多游戏内置 HDR 选项，让你单独调节亮度来适应屏幕就是这个原因。
 
 ### 取消动态磁盘
 
-之前误把“动态磁盘”和“GPT 磁盘”混淆了，我的硬盘不幸变成了动态磁盘，Windows 不能操作他的各种分区了。
+之前误把“动态磁盘”和“GPT 磁盘”混淆了，我的硬盘不幸改成了动态磁盘，Windows 不能操作他的各种分区了。
 
 微软自己都废弃了这个“动态磁盘” <https://docs.microsoft.com/en-us/windows-server/storage/disk-management/change-a-dynamic-disk-back-to-a-basic-disk>
 
@@ -1739,9 +1732,9 @@ Windows 现在的偏灰，是在输出 HDR 信号的情况下自动降低 UI 亮
 
     >convert basic
 
-注意：无法在 Windows 里操作自己的启动盘，得启动到u盘或者别的系统里操作这个磁盘，这个磁盘的内容是完全给清除的！
+注意：无法在 Windows 里操作自己的启动盘，得启动到u盘或者别的系统里操作这个磁盘，而且这个磁盘的内容会被完全清除！
 
-### 乱七八糟的。NET Framework 各版本安装
+### 乱七八糟的 .NET Framework 各版本安装
 
 .NET Framework 4.x 号称是互相覆盖的，版本继承性可以延续。
 
