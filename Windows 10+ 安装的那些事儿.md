@@ -595,47 +595,6 @@ edge 浏览器->设置->外观->整体外观：选择“系统默认”则跟随
 
     选择 enable，点击选择重启浏览器，除图片以外的所有部分进入夜间模式
 
-### 关闭附件管理器检查
-
-为什么要关闭？ 浏览器我正常下载的没签名的文件，在有些软件调用的时候就打不开，也没有任何提示，总是报错，让人抓狂。
-之前遇到过技嘉制作 u 盘启动的工具，添加了下载的 zip 文件，总是制作失败，直到把下载的文件点击右键，选择属性，勾选解除限制，才能正常读取。整个过程中没有任何提示性信息。其它还有 zip 解压文件，读取 zip 压缩包，悄悄的失败，也没有任何提示，从 Windows 7 到 Windows 11，一直如此。
-
-有两种方法： 第一种是修改组策略中的配置：
-
-“运行”中输入 gpedit.msc，然后选择“用户配置”-“管理模板”-“Windows 组件”-“附件管理器”。
-
-    1. 文件附件值中不保留区域信息，设置为“启用” （光这步就够了）
-
-    2. 文件类型的默认风险级别，设置为“启用”，“低风险”。
-    3. 低风险文件类型的包含列表，设置为“启用”，扩展名增加比如：.docx;.doc;.xls;.xlsx
-
-第二种是增加一个全局的环境变量 SEE_MASK_NOZONECHECKS，设置值为 1.
-
-    [HKEY_CURRENT_USER \Environment]
-    SEE_MASK_NOZONECHECKS = "1"
-
-### 删除无关占用 cpu 时间的项目
-
-有了 Windows Store 后，商店应用由单独的 wsappx.exe 运行的 UWP 运行环境，甚至 appx 的保存目录 C:\Program Files\WindowsApps 都是默认锁定的。
-
-单纯用 msinfo32 或传统的启动管理程序，只能看到本地 Windows 的程序，由 wsappx.exe 运行的那些商店应用是没法单独看到的，目前只能由 Windows 提供的开放接口查看和设置
-
-目前用： 设置->应用->启动，看列出的项目，取消勾选可以禁止开机启动
-
-在任务管理器中，有个应用历史记录，可以发现，比如 Windows photo 这样的 Windows 商店的 appx 应用占用 cpu 时间非常多，其实用户根本没用，真不知道它在后台干了些什么。不要犹豫，用不到的就删除啊。win+xn 设置->应用->应用和功能，搜索应用名称，找到后点击，展开菜单选择“卸载”即可。
-
-如果没有“卸载”选项，就得手工解决了，以删除 cpu 时间使用最多的 Windows photo 为例：
-
-    以管理员身份运行“Windows PowerShell”
-
-    在控制台输入命令“Get-AppxPackage”回车键
-
-    菜单项选择：编辑->查找，输入“photo”，按“查找下一个”按钮就能找到了
-
-    找对应“PackageFullName”，包的名称。把后面的名称“Microsoft.Windows.Photos_2021.21090.10008.0_x64__8wekyb3d8bbwe”复制下来。
-
-    在控制台输入命令“Remove-AppxPackage Microsoft.Windows.Photos_2021.21090.10008.0_x64__8wekyb3d8bbwe”回车键，等待片刻就卸载完了。
-
 ### 打开任务栏毛玻璃效果
 
 <https://bbs.pcbeta.com/viewthread-1899753-1-1.html>
@@ -679,6 +638,49 @@ Windows Registry Editor Version 5.00
 ```
 
 重启 explorer.exe
+
+### 关闭附件管理器检查
+
+为什么要关闭？
+
+我通过浏览器正常下载的没签名的文件，在有些软件调用的时候就打不开，也没有任何提示，总是报错，让人抓狂。
+之前遇到过技嘉制作 u 盘启动的工具，添加了下载的 zip 文件，总是制作失败，直到把下载的文件点击右键，选择属性，勾选解除限制，才能正常读取。整个过程中没有任何提示性信息。其它还有 zip 解压文件，读取 zip 压缩包，悄悄的失败，也没有任何提示，从 Windows 7 到 Windows 11，一直如此。
+
+有两种方法： 第一种是修改组策略中的配置：
+
+“运行”中输入 gpedit.msc，然后选择“用户配置”-“管理模板”-“Windows 组件”-“附件管理器”。
+
+    1. 文件附件值中不保留区域信息，设置为“启用” （光这步就够了）
+
+    2. 文件类型的默认风险级别，设置为“启用”，“低风险”。
+    3. 低风险文件类型的包含列表，设置为“启用”，扩展名增加比如：.docx;.doc;.xls;.xlsx
+
+第二种是增加一个全局的环境变量 SEE_MASK_NOZONECHECKS，设置值为 1.
+
+    [HKEY_CURRENT_USER \Environment]
+    SEE_MASK_NOZONECHECKS = "1"
+
+### 删除无关占用 cpu 时间的项目
+
+有了 Windows Store 后，商店应用由单独的 wsappx.exe 运行的 UWP 运行环境，甚至 appx 的保存目录 C:\Program Files\WindowsApps 都是默认锁定的。
+
+单纯用 msinfo32 或传统的启动管理程序，只能看到本地 Windows 的程序，由 wsappx.exe 运行的那些商店应用是没法单独看到的，目前只能由 Windows 提供的开放接口查看和设置
+
+目前用： 设置->应用->启动，看列出的项目，取消勾选可以禁止开机启动
+
+在任务管理器中，有个应用历史记录，可以发现，比如 Windows photo 这样的 Windows 商店的 appx 应用占用 cpu 时间非常多，其实用户根本没用，真不知道它在后台干了些什么。不要犹豫，用不到的就删除啊。win+xn 设置->应用->应用和功能，搜索应用名称，找到后点击，展开菜单选择“卸载”即可。
+
+如果没有“卸载”选项，就得手工解决了，以删除 cpu 时间使用最多的 Windows photo 为例：
+
+    以管理员身份运行“Windows PowerShell”
+
+    在控制台输入命令“Get-AppxPackage”回车键
+
+    菜单项选择：编辑->查找，输入“photo”，按“查找下一个”按钮就能找到了
+
+    找对应“PackageFullName”，包的名称。把后面的名称“Microsoft.Windows.Photos_2021.21090.10008.0_x64__8wekyb3d8bbwe”复制下来。
+
+    在控制台输入命令“Remove-AppxPackage Microsoft.Windows.Photos_2021.21090.10008.0_x64__8wekyb3d8bbwe”回车键，等待片刻就卸载完了。
 
 ### 为 Windows 10 Enterprise LTSC 增加应用商店
 
@@ -809,7 +811,7 @@ Windows10系统中自带了windows defender杀毒软件，也就是Windows安全
 
 #### 设备不是 InstantGo
 
-待机(S0 低电量待机)功能比较新，截至2022年仅部分笔记本电脑实现该功能了。
+待机(S0 低电量待机)功能比较新，截至2022年仅部分笔记本电脑实现该功能了，而且功能不稳定，耗电情况不如之前的睡眠模式好。
 
 S0 新式待机（Modern Standby），可实现类似手机锁屏后的秒开机。在最初，它叫做Instant-on，Windows 8上市的时候叫做Connected Standby，后改名叫做InstantGo，在Windows 10为了包容性，改名Modern Standby（现代待机），包含Connected Standby和Disconnected Standby两种模式。<https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/modern-standby-vs-s3>
 
@@ -834,7 +836,7 @@ S0 新式待机（Modern Standby），可实现类似手机锁屏后的秒开机
 
 为防止待机时有黑客手工把硬件接入计算机，connected standby这个功能需要TPM2.0的支持，并进行一系列的加密防护，所以，这些功能都跟安全加密功能有关联。
 
-如果启用内核保护的内存完整性，则它的虚拟机程序禁用混合睡眠，因为内存隔离区不允许复制。参见 <https://forums.tomshardware.com/threads/hybrid-sleep-and-windows-10-hypervisor.3699339/> 下面这个提问者直接关闭了虚拟机，其实是通过关闭内存完整性保护实现了混合睡眠，意义不大。相关的类似有
+如果在windows安全里启用了内核保护的内存完整性，则它的虚拟机程序会禁用混合睡眠，因为内存隔离区不允许复制。参见 <https://forums.tomshardware.com/threads/hybrid-sleep-and-windows-10-hypervisor.3699339/> 下面这个提问者直接关闭了虚拟机，其实是通过关闭内存完整性保护实现了混合睡眠，意义不大。相关的类似有
 使用 WSL2 的虚拟化开启后，Windows10 无法睡眠，合盖后自动睡眠但无法唤醒系统，只能通过电源键强制重启来重启系统等。<https://support.microsoft.com/en-us/topic/connected-standby-is-not-available-when-the-hyper-v-role-is-enabled-4af35556-6065-35aa-ed01-f8aef90f2027>
 
 ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模式：
@@ -902,9 +904,7 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
     reagentc /enable
 
-最后，点击Windows开始菜单，按住Shift键点击重启
-
-    shutdown /r /o
+最后，开始菜单的电源按钮，按住Shift键点击重启
 
 #### 开启或关闭“快速启动”
 
@@ -1055,11 +1055,18 @@ Windows内存诊断
 #### WinRe 的使用
 
 如果启用了“快速启动”，则在开始菜单的"电源"按钮，按住shift点击重启。
-或者在计算机开启时Windows加载界面狂按F8。
-或按Windows + L 以访问登录屏幕，然后选择屏幕右下角的"电源"按钮，按 Shift 键点击"重启"，以便重新启动电脑。
 
-你的电脑将重启到 Windows 恢复环境 (WinRE) 环境中。
+或在设置-更新和安全-恢复，选择重启。
 
+或者命令行模式执行：
+
+    shutdown /r /o  完全关闭转到WinRe高级启动选项菜单并重新启动计算机。
+
+或者在计算机开启后的Windows加载界面狂按F8。
+
+最极端的方法是：开机画面按住计算机的电源开关，直到关机，重复3次，windows引导会自动进入WinRe环境了。。。
+
+你的电脑将重启到 Windows 恢复环境 (WinRE) 环境中，
 在“选择一个选项”屏幕上，选择“疑难解答”，然后在表格中选择其中一个选项。
 
 ## 安全的使用你的 Windows 10
