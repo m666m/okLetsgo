@@ -34,13 +34,11 @@ UEFI 模式是 Windows 7 之后出现的新型操作系统启动引导方式，�
 MBR 是 Windows 10/7 之前老的硬盘分区方式， GPT 是 Win7 之后新的硬盘分区方式，使用不同的硬盘分区类型，Windows 引导启动的方式是不同的。
 
 在 Windows 安装时，有个步骤是划分硬盘分区，自动使用的是 GPT 方式，默认把启动硬盘上划分了 3 个分区（如果是一块新的未划分分区的硬盘），其中两个特殊的小分区在 Windows 安装完成后默认是隐藏看不到的，这里其实放置了存储设备的 UEFI 引导信息。
-所以如果只想用一个分区，需要提前把硬盘挂到别的电脑上用 Windows 管理或其他软件分区，明确选择类型为 MBR，或者按 Shift+F10 调出命令行，使用命令行 diskpart 程序。
+所以如果只想用一个分区，需要提前把硬盘挂到别的电脑上用 Windows 管理或其他软件分区，明确选择类型为 MBR，或者在Windows安装程序界面按 Shift+F10 调出命令行，使用命令行 diskpart 程序。
 
 目前发现 Windows 10 安装程序根据 BIOS 设置里把存储设备设为 UEFI 才会给硬盘用 GPT 类型分区，否则会用 MBR 类型分区，但是安装的时候是不给出任何提示的。
 
-这样用 MBR 类型的硬盘安装好的 Windows 10，虽然也像 GPT 类型的硬盘一样分成了 3 个区，其实只是保持在 CSM 模式下的 UEFI 方式的兼容而已，系统启动其实是走的主板 CSM 模式，存储设备 leagcy，不会绕开 bios 引导自检那些耗时过程。
-
-即使这时进入主板 BIOS 设置里，把存储设备改为 UEFI，该 MBR 硬盘启动系统的时候会转主板的 CMS 模式下的 UEFI 方式，利用 Windows 安装时的 UEFI 分区引导系统，这样还是绕不开系统 bios 引导自检步骤的，无法实现 Windows 10 真正的 UEFI 方式启动系统那样秒进桌面。详见下面章节 [技嘉主板 BIOS 设置 UEFI + GPT 模式启动 Windows] 中的踩坑经历。
+这样用 MBR 类型的硬盘安装好的 Windows 10，虽然也像 GPT 类型的硬盘一样分成了 3 个区，其实只是保持在 CSM 模式下的 UEFI 方式的兼容而已，系统启动其实是走的主板 CSM 模式，存储设备 leagcy，不会绕开 bios 引导自检那些耗时过程。即使这时进入主板 BIOS 设置里，把存储设备改为 UEFI，该 MBR 硬盘启动系统的时候会转主板的 CMS 模式下的 UEFI 方式，利用 Windows 安装时的 UEFI 分区引导系统，这样还是绕不开系统 bios 引导自检步骤的，无法实现 Windows 10 真正的 UEFI 方式启动系统那样秒进桌面。详见下面章节 [技嘉主板 BIOS 设置 UEFI + GPT 模式启动 Windows] 中的踩坑经历。
 
 ### EFI 方式加载设备驱动程序
 
@@ -87,6 +85,8 @@ UEFI 下：
     主板 UEFI 初始化，在 EFI 系统分区（ESP）找到了默认启动项“Windows Boot Manager”，里面写了 bootmgfw.efi 的位置。固件加载 bootmgfw.efi。bootmgfw.efi 根据 BCD 启动项存储，找到装 Windows 的那个磁盘的具体分区，加载其中的 WinLoad.efi。由 WinLoad.efi 完成剩下的启动工作。
 
 #### UEFI 之后真的没法 Ghost 了么
+
+【Windows 10 下使用“创建恢复驱动器”备份到u盘，以后可以选择重启到WinRe进行恢复，不需要用ghost了】，详见下面章节[系统映像备份]。
 
 传统的 Ghost 盘，都是只 Clone 了 C 盘，现在应该 clone 整个磁盘，这样所有的分区包括 EFI 系统分区都可以备份了。
 
@@ -439,21 +439,21 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
 ## 装完 Windows 10 后的一些设置
 
-先激活
+    先激活
 
-Windows 安装后，先把电源计划调整为“高性能”或“卓越性能”，省的它各种乱省电，系统反应不正常的时候你根本猜不出啥原因导致的。
+    Windows 安装后，先把电源计划调整为“高性能”或“卓越性能”，省的它各种乱省电，系统反应不正常的时候你根本猜不出啥原因导致的。
 
-关闭 Windows 搜索，这玩意非常没用，但是总是在闲时扫描硬盘，太浪费硬盘和电了。
+    关闭 Windows 搜索，这玩意非常没用，但是总是在闲时扫描硬盘，太浪费硬盘和电了。
 
-设置：设备->自动播放->关闭自动运行。
+    设置：设备->自动播放->关闭自动运行。
 
-设置：系统->多任务处理，按 ALT+TAB 将显示“仅打开的窗口”，不然开了一堆 edge 窗口都给你切换上，太乱了。
+    设置：系统->多任务处理，按 ALT+TAB 将显示“仅打开的窗口”，不然开了一堆 edge 窗口都给你切换上，太乱了。
 
-设置：个性化->任务栏，合并任务栏按钮，选择“任务栏已满时”，不然多开窗口非常不方便在任务栏上选择切换。
+    设置：个性化->任务栏，合并任务栏按钮，选择“任务栏已满时”，不然多开窗口非常不方便在任务栏上选择切换。
 
-设置：轻松使用->键盘，那些“粘滞键”、“切换键”啥的热键统统关掉
+    设置：轻松使用->键盘，那些“粘滞键”、“切换键”啥的热键统统关掉
 
-设置：隐私策略各种关闭，这个大部分都是针对 app 商店里的应用，有空的时候挨个琢磨吧
+    设置：隐私策略各种关闭，这个大部分都是针对 app 商店里的应用，有空的时候挨个琢磨吧
 
 打开 Windows store，菜单选择“settings”，把“App updates”的“Update apps automatically”选项抓紧关闭了，太烦人了！
 商店应用默认不提供卸载选项，解决办法见下面章节 [删除无关占用 cpu 时间的项目]
@@ -530,7 +530,7 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
 #### 设备不是 InstantGo
 
-使用 WSL2 的虚拟化开启后，Windows10 无法睡眠，合盖后自动睡眠但无法唤醒系统，只能通过电源键强制重启来重启系统。
+待机(S0 低电量待机)功能比较新，截至2022年仅部分笔记本电脑实现该功能了。
 
     C:\Windows\system32>powercfg -a
     此系统上有以下睡眠状态:
@@ -551,15 +551,12 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
         混合睡眠
             虚拟机监控程序不支持此待机状态。
 
-通过命令（bcdedit /set xxxxxxxxxxx hypervisorlaunchtype off）来关闭 Hyper-V 时，电脑就可以正常睡眠。
+如果启用内核保护的内存完整性，则它的虚拟机程序禁用混合睡眠，因为内存隔离区不允许复制。参见 <https://forums.tomshardware.com/threads/hybrid-sleep-and-windows-10-hypervisor.3699339/> 这个提问者直接关闭了虚拟机，其实是通过关闭内存完整性保护实现了混合睡眠，意义不大。相关的类似有
+使用 WSL2 的虚拟化开启后，Windows10 无法睡眠，合盖后自动睡眠但无法唤醒系统，只能通过电源键强制重启来重启系统等。<https://support.microsoft.com/en-us/topic/connected-standby-is-not-available-when-the-hyper-v-role-is-enabled-4af35556-6065-35aa-ed01-f8aef90f2027>
 
-<https://support.microsoft.com/en-us/topic/connected-standby-is-not-available-when-the-hyper-v-role-is-enabled-4af35556-6065-35aa-ed01-f8aef90f2027>
+ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模式：
 
-关于 ACPI 模式的说明
-
-    ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模式：
-
-    S0 正常。
+    S0 新式待机（Modern Standby），可实现类似手机锁屏后的秒开机。
     S1 CPU停止工作。唤醒时间：0秒。
     S2 CPU关闭。唤醒时间：0.1秒。
     S3 除了内存外的部件都停止工作。唤醒时间：0.5秒。
@@ -568,15 +565,20 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
     <https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/modern-standby-vs-s3>
 
+S0 新式待机（Modern Standby），可实现类似手机锁屏后的秒开机。在最初，它叫做Instant-on，Windows 8上市的时候叫做Connected Standby，后改名叫做InstantGo，在Windows 10为了包容性，改名Modern Standby（现代待机），包含Connected Standby和Disconnected Standby两种模式。
+
+为防止待机时有黑客手工把硬件接入计算机，connected standby这个功能需要TPM2.0的支持，并进行一系列的加密防护，所以，这些功能都关联起来了。
+
 #### 未配置 WinRe
 
-如果电脑配置了恢复环境，在Windows RE位置后面我们是可以看到WinRE映像存放位置的。
+如果电脑配置了恢复环境，在"Windows RE位置"后面我们是可以看到WinRE映像存放的位置。
+关于WinRe的详细解释见下面章节[Windows RE]
 
     C:\Windows\system32>reagentc /info
     Windows 恢复环境(Windows RE)和系统初始化配置
     信息:
 
-        Windows RE 状态:           Enabled
+        Windows RE 状态:           Enabled      // 不能为 Disabled
         Windows RE 位置:           \\?\GLOBALROOT\device\harddisk0\partition4\Recovery\WindowsRE
         引导配置数据(BCD)标识符:   64511af6-4dd0-11ec-9f84-d4c2febe2930
         恢复映像位置:
@@ -593,10 +595,21 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
     reagentc /disable
     reagentc /enable
 
-再次运行 reagentc /info，确认
+再次运行 reagentc /info，确认 Windows RE 状态:Enabled Windows RE 位置:为所选择的目录
 
-    Windows RE 状态:Enabled
-    Windows RE 位置:为所选择的目录
+    C:\Windows\system32>reagentc /info
+    Windows 恢复环境(Windows RE)和系统初始化配置
+    信息:
+
+        Windows RE 状态:           Enabled
+        Windows RE 位置:           \\?\GLOBALROOT\device\harddisk0\partition4\Recovery\WindowsRE
+        引导配置数据(BCD)标识符:   64511af8-4dd0-11ec-9f84-d4c2febe2930
+        恢复映像位置:
+        恢复映像索引:              0
+        自定义映像位置:
+        自定义映像索引:            0
+
+    REAGENTC.EXE: 操作成功。
 
 情况2：如果Windows RE 位置处提示为空白，则需要从微软原版ISO镜像中恢复WinRE.wim映像
 
@@ -614,11 +627,13 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
 最后，点击Windows开始菜单，按住Shift键点击重启
 
+    shutdown /r /o
+
 #### 开启或关闭“快速启动”
 
-“快速启动”跟上面的两个条目讨论的 InstantGo 和 WinRe 也有依赖关系，所以不单独开章节。
+“快速启动”跟上面的两个条目讨论的 InstantGo 和 WinRe 有依赖关系，所以不单独开章节。
 
-这功能不是主板 BIOS 设置里的 UEFI Fast Boot，是 Windows 关机后系统状态暂存挂起功能，类似休眠。
+这功能不是主板 BIOS 设置里的 UEFI Fast Boot，是 Windows 关机后操作系统暂存挂起功能，类似休眠+睡眠。
 但他跟主板 BIOS 中 UEFI FAST BOOT 功能的确是关联的，二者互相起作用，目的是让你以为能快速开机。
 
 原理
@@ -627,11 +642,11 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 
     引入原来的“休眠”功能，先结束掉所有用户进程（比如你开的word，浏览器之类的），内存里保留内核及系统相关的模块，还有一部分驱动。然后把它们写到硬盘里的一个文件里，这样下次开机直接把它们加载进内存。
 
-    为了秒开，又引入原来的“睡眠”功能，计算机在操作系统把内存里的内核部分写入休眠文件后，自己又进入「混合睡眠」模式，其实是低功耗待机状态。
+    为了秒开，又引入原来的“睡眠”功能，在操作系统把内存里的内核部分写入休眠文件后，计算机进入「混合睡眠」模式，其实是低功耗待机状态。
 
 快速启动意味着你上次的关机并不是完全关机，所以笔记本电脑用户会发现关机的电脑没几天电池就没电了；有些人的电脑开机后需要重启一次才能恢复正常，因为上一次关机并不是真正的关机，而重启时执行的关机才是真正的关机。
 
-对添加或更换硬件的计算机来说，因为 bios 和 windows 会综合判断这次开机是否可以启用上次的快速启动文件和系统状态，所以在更换硬件之前，关机后务必关闭电源拔掉电池。以防止操作系统因为不兼容这个硬件的状态判断错了，导致开机之后的 windows 不稳定或不识别你的新硬件。
+对添加或更换硬件的计算机来说，因为 bios 和 windows 会综合判断这次开机是否可以启用上次的快速启动文件和系统状态，但是不保证判断失误。所以在更换硬件之前，关机后务必关闭电源拔掉电池，以防止操作系统因为不兼容这个硬件的状态判断错了，导致开机之后的 windows 不稳定或不识别你的新硬件。
 
 晕了没？
 
@@ -646,15 +661,22 @@ Windows 安装后，先把电源计划调整为“高性能”或“卓越性能
 比如我的无线网卡、我的显示器集成的 usb-hub 连接的鼠标键盘网卡显示器等等，开机或重启后偶发报错无响应……
 关机黑屏，三星手机连接显示器集成的 usb-hub，拔下来之后 windows 才继续关机。。。
 
-如果启用了快速启动，你真正需要重启计算机的时候，你是不知道 Windows 到底选择了哪种重启方案，很多时候你选的重启，其实就是注销并重新登陆到 Windows。
-具体说明如下：
+如果启用了快速启动，你真正需要重启计算机的时候，操作不能是关机，需要热键，具体说明如下：
 
-    点击关机按钮，下次开机会秒开。
-    点击重启按钮，执行的是注销并登陆windows，会秒重启完。
-    按住 shift点击关机按钮时，此次关机就不使用快速启动。
-    按住 Shift 再点重启按钮，会让电脑重启进入「恢复模式」。
+    点关机按钮，执行的是休眠+睡眠，下次开机会秒开。
 
-关闭方法
+    点重启按钮，执行的是注销并登陆windows，会秒重启完。 注意通过这种重启你无法按F8进入「恢复模式」。
+
+    按住 Shift 点关机按钮，此次关机就不使用快速启动。
+
+    按住 Shift 点重启按钮，会让电脑重启进入「恢复模式」的WinRe。
+
+或者使用命令行关机
+
+    shutdown /r     完全关闭并重启计算机。
+    shutdown /r /o  完全关闭转到WinRe高级启动选项菜单并重新启动计算机。
+
+关闭“快速启动”
 
     打开 设置-系统-电源和睡眠-其他电源设置（或右击开始菜单 (win+x)，选择“电源选项”，弹出窗口的右侧选择“其它电源设置”），
 
@@ -938,6 +960,103 @@ Windows10系统中自带了windows defender杀毒软件，也就是Windows安全
 
 鼠标右击开始菜单，点击【计算机管理】，点击“服务”，选择“Windows Defender Antivirus Service”，双击打开选择“禁用”。
 如果是灰色的无法设置，则运行“msconfig.exe”，在“服务”选项卡中取消勾选该服务。
+
+## 备份和恢复
+
+### 系统还原
+
+设置-系统-关于：点开右上角的“系统信息”，再 系统保护-系统还原
+
+在 Windows 操作系统安装更新补丁/驱动程序/应用等对系统稳定性可能有影响的改动时，对操作系统的文件做的还原点备份，出现问题时可以通过回退解决。
+所以一般只设置操作系统所在的c盘开启这个功能，其它盘不需要。
+
+### 文件历史记录
+
+设置-更新和安全-备份：
+
+这个是按时间同步复制你的用户home文件夹到别的硬盘，因为现在有很多应用和数据是安装到用户的home文件夹的，计算机使用久了这个目录会变得巨大。
+
+### 恢复驱动器
+
+Windows 搜索 “恢复驱动器”，或选择“控制面板”>“恢复”.
+
+这个功能目前还是用的 Windows 7 的，跟用 Windows 安装u盘重装操作系统没啥大区别。
+
+恢复驱动器不是系统映像。 其中不包含你的个人文件、设置和程序。
+类似于u盘上的WinRe，只备份系统文件，个人文件和未随电脑一起提供的任何应用将不会备份。
+
+### 系统映像备份
+
+按文件备份你的C盘到别的存储，可以替代用 ghost 按硬盘扇区做系统镜像进行备份的方式。
+
+这个功能目前还是用的 Windows 7 的，设置-更新和安全-备份：点击转到“备份和还原 (Windows 7)”。
+
+或在任务栏上的搜索框中键入控制面板。 然后依次选择“控制面板”>“系统和安全”>“备份和还原 (Windows 7)”。
+
+创建系统映像
+
+    恢复 Windows 到备份时点的状态 <https://support.microsoft.com/zh-cn/windows/%E5%A4%87%E4%BB%BD%E5%92%8C%E8%BF%98%E5%8E%9Fwindows-352091d2-bb9d-3ea3-ed18-52ef2b88cbef#WindowsVersion=Windows_10>
+
+### Windows 备份和恢复
+
+详见 Windows 中的恢复选项 <https://support.microsoft.com/zh-cn/windows/windows-%E4%B8%AD%E7%9A%84%E6%81%A2%E5%A4%8D%E9%80%89%E9%A1%B9-31ce2444-7de3-818c-d626-e3b5a3024da5>
+
+#### 备份
+
+对上面的各种备份方式，在这里进行了总结式的调用跳转
+
+#### 恢复
+
+重置此电脑（初始化此电脑）
+
+    恢复Windows到刚安装完的状态，只保留你的个人文件，删除你安装的应用和驱动程序，选项“预安装的应用”指OEM厂商随机的软件是否保留。
+
+高级启动
+
+    就是不使用“快速启动”模式的关机再开机初始化的过程，开机会进入WinRe环境，可以在里面选择对前面章节中各种备份的恢复。
+
+### Windows RE
+
+注意：如果关闭xxxx，那么WinRe的文件会被删除，导致以后的WinRe无法启动计算机进入恢复模式。
+
+Windows RE(简称 WinRe)的全称为Windows Recovery Environment，即Windows 恢复环境。
+
+Windows RE实质上是提供了一些恢复工具的Windows PE，预安装了「系统还原」、「命令提示符」、「系统重置」等CMD实用工具，
+以Winre.wim镜像文件的形式，储存于操作系统安装分区的「C:\Recovery\WindowsRE」中。
+
+磁盘管理器中的c盘，默认有个恢复分区500MB是WinRE隐藏分区，另外还有个EFI启动区100MB。
+
+#### WinRe 的功能
+
+启动修复
+
+    使用“启动修复”功能时，Windows RE会自动监测硬盘上安装的Windows存在什么问题，并自动予以修复。例如，如果MBR被修改，该功能可以帮助恢复MBR。
+
+系统还原
+
+    使用Windows系统的人都应该知道Windows系统还原吧，当Windows无法启动时，可以用Windows RE还原系统（当然，你要有还原点可供还原）。
+
+系统映像还原
+
+    如果你在Windows中创建了系统映像（Windows Vista中称为Windows Complete PC备份），那么你就可以利用Windows RE进行还原。
+
+Windows内存诊断
+
+    该功能与启动Windows时在“工具”菜单中选择Windows内存诊断功能相同，可以诊断内存硬件的问题
+
+命令提示符
+
+    Windows RE命令提示符相当于正常的Windows PE命令提示符，可用于执行某些命令修复Windows。
+
+#### WinRe 的使用
+
+如果启用了“快速启动”，则在开始菜单的"电源"按钮，按住shift点击重启。
+或者在计算机开启时Windows加载界面狂按F8。
+或按Windows + L 以访问登录屏幕，然后选择屏幕右下角的"电源"按钮，按 Shift 键点击"重启"，以便重新启动电脑。
+
+你的电脑将重启到 Windows 恢复环境 (WinRE) 环境中。
+
+在“选择一个选项”屏幕上，依次选择“疑难解答”>“初始化此电脑”，然后在表格中选择其中一个选项。
 
 ## 安全的使用你的 Windows 10
 
@@ -1617,7 +1736,7 @@ Windows 现在的偏灰，是在输出 HDR 信号的情况下自动降低 UI 亮
 
     >convert basic
 
-注意：无法在 Windows 里操作自己的启动盘，得启动到 u 盘或者别的系统里，操作这个磁盘，这个磁盘的内容是完全给清除的！
+注意：无法在 Windows 里操作自己的启动盘，得启动到u盘或者别的系统里操作这个磁盘，这个磁盘的内容是完全给清除的！
 
 ### 乱七八糟的。NET Framework 各版本安装
 
