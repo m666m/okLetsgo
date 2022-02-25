@@ -532,6 +532,8 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
 待机(S0 低电量待机)功能比较新，截至2022年仅部分笔记本电脑实现该功能了。
 
+S0 新式待机（Modern Standby），可实现类似手机锁屏后的秒开机。在最初，它叫做Instant-on，Windows 8上市的时候叫做Connected Standby，后改名叫做InstantGo，在Windows 10为了包容性，改名Modern Standby（现代待机），包含Connected Standby和Disconnected Standby两种模式。<https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/modern-standby-vs-s3>
+
     C:\Windows\system32>powercfg -a
     此系统上有以下睡眠状态:
         待机 (S3)
@@ -551,7 +553,9 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
         混合睡眠
             虚拟机监控程序不支持此待机状态。
 
-如果启用内核保护的内存完整性，则它的虚拟机程序禁用混合睡眠，因为内存隔离区不允许复制。参见 <https://forums.tomshardware.com/threads/hybrid-sleep-and-windows-10-hypervisor.3699339/> 这个提问者直接关闭了虚拟机，其实是通过关闭内存完整性保护实现了混合睡眠，意义不大。相关的类似有
+为防止待机时有黑客手工把硬件接入计算机，connected standby这个功能需要TPM2.0的支持，并进行一系列的加密防护，所以，这些功能都跟安全加密功能有关联。
+
+如果启用内核保护的内存完整性，则它的虚拟机程序禁用混合睡眠，因为内存隔离区不允许复制。参见 <https://forums.tomshardware.com/threads/hybrid-sleep-and-windows-10-hypervisor.3699339/> 下面这个提问者直接关闭了虚拟机，其实是通过关闭内存完整性保护实现了混合睡眠，意义不大。相关的类似有
 使用 WSL2 的虚拟化开启后，Windows10 无法睡眠，合盖后自动睡眠但无法唤醒系统，只能通过电源键强制重启来重启系统等。<https://support.microsoft.com/en-us/topic/connected-standby-is-not-available-when-the-hyper-v-role-is-enabled-4af35556-6065-35aa-ed01-f8aef90f2027>
 
 ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模式：
@@ -562,12 +566,6 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
     S3 除了内存外的部件都停止工作。唤醒时间：0.5秒。
     S4 内存信息写入硬盘，所有部件停止工作。唤醒时间：30秒。（休眠状态）
     S5 关闭。
-
-    <https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/modern-standby-vs-s3>
-
-S0 新式待机（Modern Standby），可实现类似手机锁屏后的秒开机。在最初，它叫做Instant-on，Windows 8上市的时候叫做Connected Standby，后改名叫做InstantGo，在Windows 10为了包容性，改名Modern Standby（现代待机），包含Connected Standby和Disconnected Standby两种模式。
-
-为防止待机时有黑客手工把硬件接入计算机，connected standby这个功能需要TPM2.0的支持，并进行一系列的加密防护，所以，这些功能都关联起来了。
 
 #### 未配置 WinRe
 
