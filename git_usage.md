@@ -7,6 +7,10 @@
     - [git工作流： 功能分支工作流 master -- dev(开发人员工作在此)](#git工作流-功能分支工作流-master----dev开发人员工作在此)
     - [git工作流： Gitflow工作流 master -- develop -- feature(开发人员工作在此)](#git工作流-gitflow工作流-master----develop----feature开发人员工作在此)
     - [阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master](#阿里巴巴-aoneflow从master上拉出feature分支相关feature分支合并出release分支最终合入master)
+  - [git 安装和 github（服务器端）设置](#git-安装和-github服务器端设置)
+    - [git初次使用](#git初次使用)
+    - [使用ssh验证登陆](#使用ssh验证登陆)
+    - [使用 GPG 签名 Git 提交](#使用-gpg-签名-git-提交)
   - [分支权限控制 及 轻量化git服务](#分支权限控制-及-轻量化git服务)
   - [分支的拉取和上传](#分支的拉取和上传)
     - [每日工作第一件事 拉取合并（含标签，变基）](#每日工作第一件事-拉取合并含标签变基)
@@ -60,10 +64,6 @@
       - [git mergetool](#git-mergetool)
     - [思考](#思考)
     - [总结](#总结)
-  - [git 安装和github（服务器端）设置](#git-安装和github服务器端设置)
-    - [git初次使用](#git初次使用)
-    - [使用ssh验证登陆](#使用ssh验证登陆)
-    - [使用 GPG 签名 Git 提交](#使用-gpg-签名-git-提交)
   - [常见问题](#常见问题)
     - [Your branch and 'origin/xxx' have diverged](#your-branch-and-originxxx-have-diverged)
       - [情况1： Git fetch 、merge以后出现分叉（或没有先git pull直接push，原创已经有人提交修改）](#情况1-git-fetch-merge以后出现分叉或没有先git-pull直接push原创已经有人提交修改)
@@ -346,6 +346,92 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 缺点
 
     特性分支与发布分支的关联关系维护有点复杂。最好是在一个整体流程的自动化的平台下管理维护，该平台实现从需求提出，功能拆分，创建feature分支，组合release分支，生成部署环境，创建测试流水线，代码审查流水线，安全检查，在线部署等一系列步骤的自动化，最终实现端到端交付的研发自动化体系。
+
+## git 安装和 github（服务器端）设置
+
+### git初次使用
+
+需要先设置用户名和邮箱
+
+    git config user.name "m666m"
+    git config user.email "m666m@github.com"
+
+    #  设置gpg程序的路径，见下面的章节 <使用 GPG 签名 Git 提交>
+    $ where gpg
+        E:\Git\usr\bin\gpg.exe  # 这个是 Git for windows 自带的
+        E:\GnuPG\bin\gpg.exe    # 这个才是我们要用的
+    $ git config --global gpg.program "E:\GnuPG\bin\gpg.exe"
+    done
+
+在用户目录的~/.ssh目录下，执行如下操作
+
+    # 设置.ssh目录权限
+    chmod 700 -R .ssh
+
+    # 生成ssh key文件，默认回答都是一路回车
+    ssh-keygen -t rsa
+
+### 使用ssh验证登陆
+
+如果超时，就多试几次，国内的网络环境太差
+
+    $ ssh -T git@github.com
+    Received disconnect from 20.205.243.166 port 22:11: Bye Bye
+    Disconnected from 20.205.243.166 port 22
+
+    $ ssh -T git@github.com
+    Hi m666m! You've successfully authenticated, but GitHub does not provide shell access.
+
+### 使用 GPG 签名 Git 提交
+
+<https://cloud.tencent.com/developer/article/1656009?from=article.detail.1531457>
+
+本地控制台下执行命令，先导出该 ID 的公钥，见<gnu_tools.md>的相关章节
+
+复制公钥并将其添加到 GitLab 个人资料的设置中：
+
+   Gitlab 页面右上角，单击你的头像，Settings—> GPG keys，然后粘贴 GPG key。
+
+本地控制台下执行命令，将 GPG 密钥与 Git 关联：
+
+    git config --global user.signingkey 66DD4800155F7A2B
+    # 或者
+    git config user.signingkey 66DD4800155F7A2B
+
+签名提交
+
+Git 提交时，使用 -S 标记进行 GPG 签名：
+
+    git commit -S -m “commit message"
+
+懒得打 -S 参数，设置默认使用 GPG 签名提交：
+
+    git config --global commit.gpgsign true
+    # 或者
+    git config commit.gpgsign true
+
+在 Git 中通过命令行验证相关提交的签名
+
+    $ git log --show-signature -1
+    commit 374010d1af1de40fdf8f1f6f5cca0c0c60e4fe9d (HEAD -> master, origin/master, origin/HEAD)
+    gpg: 签名建立于 四 10/31 11:24:16 2019 CST
+    gpg:               使用 RSA 密钥 39033F321A83635ECD7FC8DA66DD4800155F7A2B
+    gpg: 完好的签名，来自于 “admin <admin@example.com>” [绝对]
+    Author: admin <admin@example.com>
+    Date:   Thu Oct 31 11:24:16 2019 +0800
+
+        update README.md
+
+在 GitLab 验证提交
+
+    1、在 GitLab 提交选项卡，签名的提交将显示包含“ Verified”或“ Unverified”的徽章，具体取决于 GPG 签名的验证状态。
+    2、通过单击 GPG 徽章，将显示签名的详细信息。
+
+撤销（revoke）或删除 GPG key
+
+    撤销密钥将取消验证已签名的提交，通过使用此密钥验证的提交将变为未验证状态。如果你的密钥已被盗用，则应使用此操作。
+
+    删除密钥不会取消验证已签名的提交。使用此密钥验证的提交将保持验证状态。
 
 ## 分支权限控制 及 轻量化git服务
 
@@ -1812,92 +1898,6 @@ Beyond Compare 是一款强大的比较工具，合理的使用可以有效的�
 git mergetool 内置了很多可以使用的合并工具，并且支持调用自定义的合并工具
 git 的官方文档写得真的挺详细，有时间可以多看一看，你会发现很多有意思的功能
 急于解决问题时可以不求甚解，解决问题后最好可以明白其中的缘由，这其实就是一种进步
-
-## git 安装和github（服务器端）设置
-
-### git初次使用
-
-需要先设置用户名和邮箱
-
-    git config user.name "m666m"
-    git config user.email "m666m@github.com"
-
-    #  设置gpg程序的路径，见下面的章节 <使用 GPG 签名 Git 提交>
-    $ where gpg
-        E:\Git\usr\bin\gpg.exe  # 这个是 Git for windows 自带的
-        E:\GnuPG\bin\gpg.exe    # 这个才是我们要用的
-    $ git config --global gpg.program "E:\GnuPG\bin\gpg.exe"
-    done
-
-在用户目录的~/.ssh目录下，执行如下操作
-
-    # 设置.ssh目录权限
-    chmod 700 -R .ssh
-
-    # 生成ssh key文件，默认回答都是一路回车
-    ssh-keygen -t rsa
-
-### 使用ssh验证登陆
-
-如果超时，就多试几次，国内的网络环境太差
-
-    $ ssh -T git@github.com
-    Received disconnect from 20.205.243.166 port 22:11: Bye Bye
-    Disconnected from 20.205.243.166 port 22
-
-    $ ssh -T git@github.com
-    Hi m666m! You've successfully authenticated, but GitHub does not provide shell access.
-
-### 使用 GPG 签名 Git 提交
-
-<https://cloud.tencent.com/developer/article/1656009?from=article.detail.1531457>
-
-本地控制台下执行命令，先导出该 ID 的公钥，见<gnu_tools.md>的相关章节
-
-复制公钥并将其添加到 GitLab 个人资料的设置中：
-
-   Gitlab 页面右上角，单击你的头像，Settings—> GPG keys，然后粘贴 GPG key。
-
-本地控制台下执行命令，将 GPG 密钥与 Git 关联：
-
-    git config --global user.signingkey 66DD4800155F7A2B
-    # 或者
-    git config user.signingkey 66DD4800155F7A2B
-
-签名提交
-
-Git 提交时，使用 -S 标记进行 GPG 签名：
-
-    git commit -S -m “commit message"
-
-懒得打 -S 参数，设置默认使用 GPG 签名提交：
-
-    git config --global commit.gpgsign true
-    # 或者
-    git config commit.gpgsign true
-
-在 Git 中通过命令行验证相关提交的签名
-
-    $ git log --show-signature -1
-    commit 374010d1af1de40fdf8f1f6f5cca0c0c60e4fe9d (HEAD -> master, origin/master, origin/HEAD)
-    gpg: 签名建立于 四 10/31 11:24:16 2019 CST
-    gpg:               使用 RSA 密钥 39033F321A83635ECD7FC8DA66DD4800155F7A2B
-    gpg: 完好的签名，来自于 “admin <admin@example.com>” [绝对]
-    Author: admin <admin@example.com>
-    Date:   Thu Oct 31 11:24:16 2019 +0800
-
-        update README.md
-
-在 GitLab 验证提交
-
-    1、在 GitLab 提交选项卡，签名的提交将显示包含“ Verified”或“ Unverified”的徽章，具体取决于 GPG 签名的验证状态。
-    2、通过单击 GPG 徽章，将显示签名的详细信息。
-
-撤销（revoke）或删除 GPG key
-
-    撤销密钥将取消验证已签名的提交，通过使用此密钥验证的提交将变为未验证状态。如果你的密钥已被盗用，则应使用此操作。
-
-    删除密钥不会取消验证已签名的提交。使用此密钥验证的提交将保持验证状态。
 
 ## 常见问题
 
