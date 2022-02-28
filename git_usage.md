@@ -1568,6 +1568,7 @@ git diff 主要的应用场景：
 ## 配置Beyond Compare 4作为git mergetool来解决git merge命令导致的文件冲突
 
 <https://blog.csdn.net/albertsh/article/details/106294095>
+<https://blog.csdn.net/LeonSUST/article/details/103565031>
 
 文章目录
     前言
