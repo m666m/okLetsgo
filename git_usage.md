@@ -77,6 +77,8 @@
 
 ## 参考文档
 
+    使用 Git hub <http://www.cnblogs.com/zhangjianbin/category/934478.html>
+
     git的几种工作流 <https://www.zhihu.com/question/20070065/answer/1174997617>
                    <https://zhuanlan.zhihu.com/p/79668697>
                    <https://www.cnblogs.com/pluto4596/p/11464819.html>
@@ -86,11 +88,14 @@
     命令速查 <https://training.github.com/downloads/zh_CN/github-git-cheat-sheet/>
     命令参考 <https://git-scm.com/docs>
 
+    git使用教程
+        <https://zhuanlan.zhihu.com/p/158076293>
+        <https://www.liaoxuefeng.com/wiki/896043488029600>
+
     git命令教程
         <https://learngitbranching.js.org/?locale=zh_CN>
         <https://www.yiibai.com/git/git_branch.html>
 
-    git使用教程 <https://zhuanlan.zhihu.com/p/158076293>
     git分支的使用过程 <https://zhuanlan.zhihu.com/p/22369088>
     Git 之 merge 与 rebase 的区别 <https://www.cnblogs.com/zhangzhang-y/p/13682281.html>
 
