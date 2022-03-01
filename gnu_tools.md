@@ -179,6 +179,9 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     Background=C:\Users\ThinkRight\Pictures\1111111111.jpg
     Font=Consolas
     FontHeight=11
+    Columns=200
+    Rows=60
+    # 如果嫌默认的白色不够纯就改
     ForegroundColour=255,255,255
     # 语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
     LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行 local -a 查看ssh所在服务器是否支持

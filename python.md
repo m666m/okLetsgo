@@ -92,17 +92,13 @@ windows下，如果是干净的python环境，不要使用bash，在cmd命令行
 
     pip3 install--index-url https://pypi.douban.com/simple xxxx
 
-这个是使用镜像来安装库，比较常用的有
-
-    清华：<https://mirrors.tuna.tsinghua.edu.cn/help/pypi/>
-
-    中国科学技术大学：<https://pypi.mirrors.ustc.edu.cn/simple>
+如果使用镜像来安装库，比较常用的有<https://mirrors.tuna.tsinghua.edu.cn/help/pypi/> <https://pypi.mirrors.ustc.edu.cn/simple> 参见下面章节[PyPi使用国内源]
 
 ### pip 升级包
 
     pip install --upgrade 要升级的包名
 
-### pip github
+### pip install 指定 github 位置
 
 From PyPI:
 
@@ -131,7 +127,7 @@ From txt
 
 From conda
 
-    Last released version: conda install -c conda-forge pyqtgraph
+    Last released version: conda install -n myenv -c conda-forge pyqtgraph
 
 To install system-wide from source distribution:
 
@@ -288,10 +284,10 @@ pause
 
 ## Linux 下安装 anaconda
 
-1.网站下载
+1. 网站下载
 2. bash xxxx.sh
 3. 注意选择：添加到路径中!!! 这个跟windows下安装是不同的.
-4.安装完毕，重启Linux
+4. 安装完毕，重启Linux
 5. python 看输出信息包含 anaconda 字样
    conda info
    conda list
@@ -299,45 +295,33 @@ pause
 -搜索计算机： visual studio code 或 conda
  或 终端运行：spyder
 
-## windows 安装 anaconda
+## Windows 安装 anaconda的初始设置
 
-0.如果想让vs code自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”
+官方介绍 <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>
 
-    anaconda 设置国内源
-        https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/
+1.如果想让vs code自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”
 
-    2019.6 Anaconda国内镜像基本已经全部关闭，现在建议使用官方源，使用anaconda管理python环境的可以使用pip安装，并配置国内pip镜像
+2.安装完毕后，先打开anaconda-navigator，切换到base环境，这货要执行一堆初始化工作，不是光setup.exe安装完了就行了。
 
-    pypi 设置国内源
-        https://mirrors.tuna.tsinghua.edu.cn/help/pypi/
+3.换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/> 参见下面章节[conda频道和源配置]
 
-    conda 有很多频道，见章节 conda频道和源配置
+conda 有很多频道，见章节[conda频道和源配置]
 
-1.Anaconda3-2020.02（Python3.7） 安装 yapf Flake8
+4.用管理员权限打开命令行工具，设置conda在哪个shell下使用（windows默认是cmd）
 
-2.Anaconda3-2020.02（Python3.7 自动安装了PyQt5.9.2） 安装 pyqtgraph （最新0.10.0）
+    # 支持bash、cmd.exe、powershell等，all是全部
+    conda init --all
 
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pyqtgraph
-    PySide是一个免费的软件，与PyQt不同之处在于使用了LGPL，允许PySide免费的开发商业软件。
+然后关闭命令行工具，以便生效。
 
-3.pyqt5的几个工具单独拿出来了，需要单独安装
+5.安装代码格式化插件
 
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5-tools==5.9.2.1.3
+    conda install yapf
+    conda install Flake8
 
-4.如果安装anaconda时没有勾选"add anaconda3 to the system PATH environment variable"加入到环境变量，会没法用！
-别看他用红字标提示不推荐吓唬你，你不勾选，其实没法玩：
+6.如果安装anaconda时没有勾选"add anaconda3 to the system PATH environment variable"加入到环境变量，vscode 无法找到python，则安装插件：Code Runner
 
-    新建环境，安装包时会报错"Multiple Errors Encountered"
-    VS Code出现“在终端运行文件”菜单无运行结果，python环境选择出不来。
-
- 则手动添加环境变量到 系统环境变量的path下: C:\ProgramData\Anaconda3;C:\ProgramData\Anaconda3\Scripts;C:\ProgramData\Anaconda3\Library\bin;
- 或者安装插件：Code Runner
-
-5.卸载 anaconda，直接删除目录;卸载 vscode ，需要手动再做如下：
-    C:\Users\xxx\AppData\Roaming\Code 目录清空
-    C:\Users\xxx\.vscode 目录清空
-
-6.python 填坑
+7.python 填坑
 
     启动Python3.7，报如下错误
     File "C:\Anaconda3\lib\site-packages\pyreadline\lineeditor\history.py", line 82, in read_history_file
@@ -356,48 +340,48 @@ pause
     https://github.com/pyreadline/pyreadline/pull/56
     https://github.com/winpython/winpython/issues/544
 
+8.卸载 anaconda
+
+<https://docs.anaconda.com/anaconda/install/uninstall/>
+
+清理并备份~/.conda目录为.anaconda_backup
+
+    conda install anaconda-clean
+    anaconda-clean --yes
+
+删除目录 envs and pkgs。
+
+执行Windows添加删除程序里的anaconda卸载程序。或者ananconda文件夹里找到uninstall annaconda.exe。
+
+9.卸载 vscode ，需要手动再做如下：
+    C:\Users\xxx\AppData\Roaming\Code 目录清空
+    C:\Users\xxx\.vscode 目录清空
+
 ## Anaconda 管理
 
-### 注意windows下的Anaconda默认使用cmd环境运行而不是bash
+注意： 见下面章节 [conda操作前务必先检查当前环境中 conda/pip/python的路径]
 
-    目前版本的各种命令执行都是bat，在bash下运行会各种报错。
+conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3，所以要用管理员权限执行annconda安装后自带的命令行工具，
+如果单独打开windows的cmd窗口（管理员权限执行），则先执行 conda activate进入[base]环境。
 
-    对vscode，他的开发默认都是在bash的，各种source xxx之后运行，在cmd下的命令报错概率大。
+注意：conda 命令在Windows下是一堆的bat文件，执行了各种变量设置和传递，在激活的base环境下执行其他命令，出现报错的概率小。
 
-怎么发现的？填坑呗！
+### 命令行工具使用conda环境
 
-    vscode 1.61 默认用bash而不是cmd，执行anaconda.2021.05 环境py3.7，
-    偶然一打python进去发现python的提示是3.8版...
+要确保在[base]环境下执行 conda 命令。
 
-    原来是anaconda的bash脚本写的有问题，也不调试，直接屏蔽错误提示，
-    导致指向py3.7环境的命令根本没成功，默认执行的base环境，找到py3.8去了，一点提示都没有！
+以前 conda 版本的 source activate 和 source deactivate 跟 virtualenv 环境的脚本经常路径冲突。conda 4.4之后激活和退出环境统一了命令用法，不用 source了，操作步骤如下：
 
-    解决见上面的章节 [注意！Windows 下 Anaconda 用 pip 要修改配置文件]
-    或考虑 conda init 命令设置支持bash（见下），尚未实验
+    # 激活[base]环境
+    conda activat
 
-#### 可指定conda的shell用bash等
+    # 切换到指定的[p37]环境
+    conda activate p37
 
-    conda init bash  # 用户Home目录下.bash_profile文件中自动激活[base]环境
-
-    conda init cmd.exe
-
-    conda init powershell
-
-详情见
-
-    conda init -h
-
-#### 注意conda命令的环境依赖
-
-conda 4.4之后激活和退出环境统一命令了，不用 source了
-
-    conda activate p36
-
+    # 退出当前环境，返回的是上一个环境。
     conda deactivate
 
-以前 conda 版本的 source activate 和 source deactivate 跟 virtualenv 环境的脚本经常路径冲突。
-
-还需要用source的案例
+仍需要用source的案例
 
     ssh连接该服务器使用 conda activate p36 命令激活环境后，
     未使用 conda deactivate 退出环境就关闭终端，
@@ -414,7 +398,108 @@ conda 4.4之后激活和退出环境统一命令了，不用 source了
         # 再正常进入conda环境
         conda activate p36
 
-### conda频道和源配置
+执行bat或sh文件，参见下面的章节 [Windows 下执行 conda 脚本]。
+
+### conda init 命令设置命令行解释工具
+
+设置conda在哪个shell下使用（windows下默认cmd.exe），这样可以使conda的各个命令脚本可以自动适应bash、cmd、powershell等。
+
+    conda init bash  # 用户Home目录下.bash_profile文件中自动激活[base]环境
+
+    conda init cmd.exe
+
+    conda init powershell
+
+    conda init --all  # 都绑定上
+
+运行后记得关闭命令行工具，以便生效。
+
+详情见
+
+    conda init -h
+
+怎么发现的？填坑呗！
+
+    vscode 1.61 默认用bash而不是cmd，执行anaconda.2021.05 环境py3.7，
+    偶然一打python进去发现python的提示是3.8版...
+
+    原来是anaconda的bash脚本写的有问题，也不调试，直接屏蔽错误提示，
+    导致指向py3.7环境的命令根本没成功，默认执行的base环境，找到py3.8去了，一点提示都没有！
+
+查找路径的解释见下面的章节 [注意！Anaconda 用 pip 要修改配置文件]
+
+### conda 包管理常用命令
+
+    # update最新版本的conda
+    conda update -n base conda
+    conda update anaconda
+    conda update anaconda-navigator
+
+    # 创建python3.7的xxxx虚拟环境，新的开发环境会被默认安装在你 conda 目录下的 envs 文件目录下。
+    conda create -n xxxx python=3.7
+
+    # 复制一个虚拟环境
+    conda create --name myclone --clone myenv
+
+    # 显示所有的虚拟环境，当前虚拟环境前面有个星号
+    conda info --envs  // 或 conda env list
+
+    # 显示当前虚拟环境下安装的包
+    conda list
+
+    # 使用相对路径，在当前目录下建立一个虚拟环境，这样做的好处是只跟项目代码目录相关
+    conda create --prefix ./condaenvs python=3.7
+    conda activate ./condaenvs
+
+    # 导出环境配置文件，便于定制
+    conda env export > environment.yml
+
+    # 根据指定的配置文件更新指定的虚拟环境
+    conda env update --prefix ./env --file environment.yml  --prune
+
+    ## 精确的可复现的安装环境
+    conda list --explicit > spec-file.txt
+    conda create --name myenv --file spec-file.txt
+    conda install --name myenv --file spec-file.txt
+
+    # 列出所有的环境，当前激活的环境会标*。
+    conda info -e
+
+    # 删除环境
+    conda remove -n xiaolv --all
+
+### 使用 conda install 要指定虚拟环境名
+
+    # 在指定的频道搜索包名
+    anaconda search -t conda tensorflow
+
+    # 必须指定目的虚拟环境的名字 p37
+    conda install -n p37 beautifulsoup4
+    # 或
+    conda install --name p37 beautifulsoup4  -y
+
+    # 移除包
+    conda remove beautifulsoup4
+
+### 用conda复制虚拟环境到其他机器上
+
+1.复制anaconda3/envs/下的某个环境的文件夹到另外一台机器上
+
+    rsync -va username@ip.add.re.ss:/home/username/anaconda3/envs/copied_env/
+
+2.用命令新建虚拟环境env2
+
+    conda create --name env2 --clone /home/username/anaconda3/envs/copied_env/
+
+### 安装特定版本的包
+
+conda用“=”，pip用“==”
+
+    conda install -n myenv  numpy=1.93
+
+    pip  install numpy==1.93  # 注意先进入虚拟环境
+
+#### conda频道和源配置
 
 0.不同的conda频道，看看默认软件名在自己的os下对应的版本
 
@@ -424,7 +509,7 @@ conda 4.4之后激活和退出环境统一命令了，不用 source了
 conda 有很多频道，在网页版频道列表里有对应的版本，找合适自己的安装
 注意不是名字对了就能装，版本不一定是新的！
 
-    conda install -c conda-forge pyqtgraph
+    conda install -n myenv -c conda-forge pyqtgraph
 
 1.查看 conda 版本
 
@@ -454,52 +539,183 @@ conda 有很多频道，在网页版频道列表里有对应的版本，找合�
     # vs code 提示
     conda update -n base -c defaults conda
 
-### Windows 命令行环境下下使用脚本执行 Anaconda
+### conda操作前务必先检查当前环境中 conda/pip/python的路径
+
+我们需要判断目前我们用的pip指令，会把包装到哪里。因为pip不像conda一样，他不知道环境！pip 在路径里可能有多个，Windows单独安装的python自带，virtualenv环境自带，anaconda默认base环境自带，调用起来按PATH搜索的顺序，即使切换到了自己的环境下，也一定要看看。如: base环境的pip可能在/root/anaconda3/bin/pip，而其他conda环境的pip,可能在/root/anaconda3/envs/my_env/bin/pip。
+
+要确保我们用的是本环境的pip，这样pip install时，包才会创建到本环境中。不然包会创建到[base]环境，供各个不同的其他conda环境共享，此时可能会产生版本冲突问题（不同环境中可能对同一个包的版本要求不同）。
+
+用下面命令查看我们此时用的pip为哪个环境：
+
+    # linux
+    which -a pip
+
+    # windows
+    where pip
+
+    # pip 自己
+    pip -V
+
+先切换到你的环境下，看看到底用的哪个 pip 和 python
+
+    which pip  # bash，在 cmd.exe 下用 where
+    pip -V  # 列出当前的pip的命令行位置，未必是在自己的环境下面的
+
+    which python  # 确认是你的虚拟环境目录下的python
+    python -V  # 版本
+    python -m site  # pip指定的脚本和安装包的基础路径
+
+#### bash 示例
+
+    $ conda activate
+    (base)
+    $ conda activate p37
+    (p37)
+
+
+    $ which pip
+    /c/Users/xxx/.conda/envs/p37/Scripts/pip
+    (p37)
+
+    $ where pip
+    C:\Users\xxx\.conda\envs\p37\Scripts\pip.exe
+    (p37)
+
+    $ pip -V
+    pip 21.2.4 from C:\Users\xxx\.conda\envs\p37\lib\site-packages\pip (python 3.7)
+    (p37)
+
+    $ which python
+    /c/Users/xxx/.conda/envs/p37/python
+
+    $ python -V
+    Python 3.7.11
+
+    $ conda info
+
+        active environment : p37
+        active env location : C:\Users\xxx\.conda\envs\p37
+                shell level : 2
+        user config file : C:\Users\xxx\.condarc
+    populated config files : C:\Users\xxx\.condarc
+            conda version : 4.11.0
+        conda-build version : 3.21.6
+            python version : 3.9.7.final.0
+        virtual packages : __cuda=11.4=0
+                            __win=0=0
+                            __archspec=1=x86_64
+        base environment : C:\ProgramData\Anaconda3  (read only)
+        conda av data dir : C:\ProgramData\Anaconda3\etc\conda
+    conda av metadata url : None
+            channel URLs : https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/win-64
+                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/noarch
+                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/win-64
+                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/noarch
+                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2/win-64
+                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2/noarch
+            package cache : C:\ProgramData\Anaconda3\pkgs
+                            C:\Users\xxx\.conda\pkgs
+                            C:\Users\xxx\AppData\Local\conda\conda\pkgs
+        envs directories : C:\Users\xxx\.conda\envs
+                            C:\ProgramData\Anaconda3\envs
+                            C:\Users\xxx\AppData\Local\conda\conda\envs
+                platform : win-64
+                user-agent : conda/4.11.0 requests/2.26.0 CPython/3.9.7 Windows/10 Windows/10.0.19044
+            administrator : False
+                netrc file : None
+            offline mode : False
+
+    $ python -m site
+
+    sys.path = [
+        'C:\\Users\\xxx',
+        'C:\\Users\\xxx\\.conda\\envs\\p37\\python37.zip',
+        'C:\\Users\\xxx\\.conda\\envs\\p37\\DLLs',
+        'C:\\Users\\xxx\\.conda\\envs\\p37\\lib',
+        'C:\\Users\\xxx\\.conda\\envs\\p37',
+        'C:\\Users\\xxx\\.conda\\envs\\p37\\lib\\site-packages',
+    ]
+    USER_BASE: 'C:\\Users\\xxx\\AppData\\Roaming\\Python' (doesn't exist)
+    USER_SITE: 'C:\\Users\\xxx\\AppData\\Roaming\\Python\\Python37\\site-packages' (doesn't exist)
+    ENABLE_USER_SITE: True
+
+#### cmd 示例
+
+    C:\>conda activate
+    (base) C:\>conda activate p37
+    (p37)C:\>
+
+    (p37) C:\>where pip
+    C:\Users\xxx\.conda\envs\p37\Scripts\pip.exe
+
+    (p37) C:\>where python
+    C:\Users\xxx\.conda\envs\p37\python.exe
+
+    (p37) C:\>python -V
+    Python 3.7.11
+
+    (p37) C:\>conda info
+
+        active environment : p37
+        active env location : C:\Users\xxx\.conda\envs\p37
+                shell level : 2
+        user config file : C:\Users\xxx\.condarc
+    populated config files : C:\Users\xxx\.condarc
+            conda version : 4.11.0
+        conda-build version : 3.21.6
+            python version : 3.9.7.final.0
+        virtual packages : __cuda=11.4=0
+                            __win=0=0
+                            __archspec=1=x86_64
+        base environment : C:\ProgramData\Anaconda3  (read only)
+        conda av data dir : C:\ProgramData\Anaconda3\etc\conda
+    conda av metadata url : None
+            channel URLs : https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/win-64
+                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/noarch
+                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/win-64
+                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/noarch
+                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2/win-64
+                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2/noarch
+            package cache : C:\ProgramData\Anaconda3\pkgs
+                            C:\Users\xxx\.conda\pkgs
+                            C:\Users\xxx\AppData\Local\conda\conda\pkgs
+        envs directories : C:\Users\xxx\.conda\envs
+                            C:\ProgramData\Anaconda3\envs
+                            C:\Users\xxx\AppData\Local\conda\conda\envs
+                platform : win-64
+                user-agent : conda/4.11.0 requests/2.26.0 CPython/3.9.7 Windows/10 Windows/10.0.19044
+            administrator : False
+                netrc file : None
+            offline mode : False
+
+    (p37) C:\>python -m site
+
+        sys.path = [
+            'C:\\Windows\\system32',
+            'C:\\Users\\xxx\\.conda\\envs\\p37\\python37.zip',
+            'C:\\Users\\xxx\\.conda\\envs\\p37\\DLLs',
+            'C:\\Users\\xxx\\.conda\\envs\\p37\\lib',
+            'C:\\Users\\xxx\\.conda\\envs\\p37',
+            'C:\\Users\\xxx\\.conda\\envs\\p37\\lib\\site-packages',
+        ]
+        USER_BASE: 'C:\\Users\\xxx\\AppData\\Roaming\\Python' (doesn't exist)
+        USER_SITE: 'C:\\Users\\xxx\\AppData\\Roaming\\Python\\Python37\\site-packages' (doesn't exist)
+        ENABLE_USER_SITE: True
+
+USER_BASE 决定了当前环境的Python的启动程序及pip等脚本的位置。
+
+USER_SITE 决定了当前环境的site-packages默认安装路径。
+
+当前环境下这俩变量位于配置文件 C:\Users\xxx\.conda\envs\p37\Lib\site.py中， 区别于是否安装了anaconda，执行的pip是否不同，而且受变量 ENABLE_USER_SITE 控制。 参见下面章节 [注意！Anaconda 用 pip 要修改默认安装依赖包路径的配置文件 ]
+
+### Windows 下执行 conda 脚本
 
 在windows的命令行脚本环境下，第一次运行 conda activate 是激活[base]环境，
-然后再次执行 conda activate p37 已切换到指定的环境。
+然后再次执行 conda activate p37 以切换到指定的环境。
 
-也就是说，确保你执行的conda命令都是在[base]环境下就不会报错找不到啥的。
+也就是说，确保你执行的conda命令都是在[base]环境下，就不会报错找不到啥的。
 
-1. 查看 Python 版本
-
-    python --version
-
-2. 创建环境
-上一步查到我电脑上的 Python 版本为 3.7 ，我想在这个版本基础上创建一个名为 xdhj 的虚拟环境。
-
-    conda create -n xdhj python=3.6
-
-新的开发环境会被默认安装在你 conda 目录下的 envs 文件目录下。
-
-3.激活环境
-
-    # 原 activate xdhj
-    conda activate xdhj
-
-4.列出所有的环境
-
-    conda info -e
-
-当前激活的环境会标*。
-
-5.切换到另一个环境
-
-    conda activate xdhj
-
-6.注销当前环境
-
-    conda deactivate
-
-7.复制环境
-
-    conda create -n xiaolv --clone xdhj
-
-8.删除环境
-
-    conda remove -n xiaolv --all
-
-#### Windows 命令行环境下 cmd 的bat文件（conda）
+#### Windows 下执行 conda 脚本的 bat 文件
 
 cmd下执行
 
@@ -518,9 +734,9 @@ python C:\Users\your_name\pycode\your_project\app.py
 pause
 ```
 
-#### Windows 命令行环境下 bash 的sh文件（conda）
+#### Windows 下执行 conda 脚本的 的 sh 文件
 
-用bash执行conda脚本需要设置conda init 以支持bash，详见上面章节[可指定conda的shell用bash等].
+用bash执行conda脚本需要设置conda init 以支持bash，详见上面章节[conda init 命令设置命令行解释工具].
 只要安装了 git 直接双击sh文件就关联git-bash(mintty)调用了。
 
 ```shell
@@ -537,75 +753,48 @@ read -n1 -p "Press any key to continue..."
 
 如果需要显示中文需要修改配置文件 ~\.minttyrc，详见 [mintty(bash)] <gnu_tools.md>
 
-### conda 安装package的时候可以指定安装到哪个环境，这点比pip强
-
-    conda install --name p37 pyqt5 -y
-
-    # 如果用pip需要先看看路径对不对
-    pip -V
-
-### conda 下使用 pip
-
-1.修改配置文件
-
-   参见下面的章节 [Anaconda 环境中使用 pip] 的 [注意！Windows 下 Anaconda 用 pip 要修改配置文件]
-
-2.给 pip 换国内源
-
-    参见上面的章节 [PyPI使用国内源]
-
-切换到你的环境
-
-    # Windows下用cmd
-    conda activate p37
-
-    # Windows下不推荐用bash
-    /c/ProgramData/Anaconda3/Scripts/activate venv/conda
-
-### 用conda复制虚拟环境到其他机器上
-
-1.复制anaconda3/envs/下的某个环境的文件夹到另外一台机器上
-
-    rsync -va username@ip.add.re.ss:/home/username/anaconda3/envs/copied_env/
-
-2.用命令新建虚拟环境env2
-
-    conda create --name env2 --clone /home/username/anaconda3/envs/copied_env/
-
-### conda 包管理
-
-1. 查看已安装包
-
-    conda list
-
-2. 使用 Conda 命令安装包
-
-    conda install beautifulsoup4
-
-3. 通过 pip 命令来安装包，如果无法通过conda安装，可以用pip命令来安装包。详见下面章节[anaconda环境中使用pip]
-
-    pip install beautifulsoup4
-
-4. 移除包
-
-    conda remove beautifulsoup4
-
 ## Anaconda 环境中使用 pip
 
-注意：
+官方介绍 <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#using-pip-in-an-environment>
 
-    pip 可能到处都是，python版本自带，virtualenv环境自带，anaconda默认base环境自带，
-    调用起来按path里的顺序，即使切换到了自己的环境下，也要看看pip到底用的哪个
+更改Python的 pip install 默认安装依赖路径方法详解 <https://blog.csdn.net/woyizhizaizhaoni/article/details/102954067>
 
-下面的命令，在自己的环境里看看到底哪个pip在最前面
+### 不要在base环境下使用pip
 
-    which pip  # linux
-    where pip  # windows
+conda默认的把这个base环境视为root的，其他环境都是在这个环境之上建立链接。如果在这里用了pip安装，环境大概率乱了。
 
-    # 用这个命令确认pip的路径是在自己的环境下面的
-    pip -V 这个会列出当前的pip的命令行位置
+### 先conda，然后pip
 
-### 注意！Windows 下 Anaconda 用 pip 要修改配置文件
+如果用过pip了，就不要再用conda，否则也是容易搞乱环境。
+如果后续又想装新的包了，就再建个环境，还是先用conda，后pip。
+
+这样说来，装完了就不要删，宁可重建，什么 conda remove/pip uninstall 都别用了。
+
+### pip install 不用使用参数 --user
+
+如果pip在安装时候提示权限不足，无法写入啥的，提示用“--user”，不要用！不然会写入到所有用户文件夹下面，即安装到公用包目录中了！原因见下面章节 [注意！Anaconda 用 pip 要修改默认安装依赖包路径的配置文件]
+
+### 为什么anaconda环境中，还需要用pip安装包
+
+<https://www.cnblogs.com/zhangxingcomeon/p/13801554.html>
+
+尽管在anaconda下我们可以很方便的使用conda install来安装我们需要的依赖包，但是anaconda本身只提供部分包，远没有pip提供的包多，有时conda无法安装我们需要的包，我们需要用pip将其装到conda环境里。
+
+另一个原因是，我们自己创建的conda环境里，可能没有pip：导致默认使用base环境的pip，有产生版本冲突的可能。
+
+安装好本环境的pip之后，在本环境中使用pip install安装的包，就只在本环境的conda中了。我们可以切换到自己的虚拟环境，然后用conda list查看包的清单。其中，使用pip安装的包，conda list结果中的build项目为pypi。
+
+在自己conda环境安装pip使用如下命令：
+
+    conda install  -n myenv pip
+    conda activate myenv
+    pip <pip_subcommand>
+
+### 注意！Anaconda 用 pip 要修改默认安装依赖包路径的配置文件
+
+    python -m site
+
+USER_BASE USER_SITE 如果不是指向你自己的环境，可以执行下列操作。
 
 想要做到 Anaconda 中不同环境互相不干涉，只建好了新环境，这是不够的！
 
@@ -640,99 +829,6 @@ read -n1 -p "Press any key to continue..."
     我说我的anaconda建了几个版本之后的环境喜欢乱套呢，他自己就乱引用啊……
 
     我把前两个环境删除了，关了anaconda然后打开，又建了个不同名的py3.7环境，里面的内容居然是之前的！
-
-### 为什么anaconda环境中，还需要用pip安装包
-
-<https://www.cnblogs.com/zhangxingcomeon/p/13801554.html>
-
-尽管在anaconda下我们可以很方便的使用conda install来安装我们需要的依赖，
-但是anaconda本身只提供部分包，远没有pip提供的包多，有时conda无法安装我们需要的包，我们需要用pip将其装到conda环境里。
-
-### 用pip装包时候需要哪些注意事项？
-
-首先，我们需要判断目前我们用的pip指令，会把包装到哪里。
-通常情况下，pip不像conda一样，他不知道环境！
-
-要确保我们用的是本环境的pip，这样pip install时，包才会创建到本环境中。
-不然包会创建到[base]环境，供各个不同的其他conda环境共享，此时可能会产生版本冲突问题（不同环境中可能对同一个包的版本要求不同）
-
-用下面命令查看我们此时用的pip为哪个环境：
-
-    # linux
-    which -a pip
-
-    # windows
-    where pip
-
-    # pip 自己
-    pip -V
-
-如: base环境的pip可能在/root/anaconda3/bin/pip,
-而其他conda环境的pip,可能在/root/anaconda3/envs/my_env/bin/pip
-
-### 我们自己创建的conda环境里，可能没有pip
-
-此时进入自己的conda环境也会默认用base环境的pip，这就需要我们自己将pip安装入本环境。
-尽量不要使用base的pip在其他环境装包，这样也会装在base里，有产生版本冲突的可能（上文已讲）。
-
-在自己conda环境安装pip使用如下命令：
-
-    （进入环境后）
-    conda install pip
-
-安装好本环境的pip之后，在本环境中使用pip install安装的包，就只在本conda中了。
-我们可以用conda list查看我们的包，同时pip安装的包，conda list结果中的build项目为pypi。
-
-### 安装特定版本的包
-
-conda用“=”，pip用“==”
-
-　　conda install numpy=1.93
-
-　　pip  install numpy==1.93
-
-### 确认conda环境
-
-    $ activate p36
-
-    $ conda info
-
-        active environment : None
-        user config file : C:\Users\xxx\.condarc
-    populated config files : C:\Users\xxx\.condarc
-            conda version : 4.8.2
-        conda-build version : 3.18.11
-            python version : 3.6.6.final.0
-        virtual packages : __cuda=11.1
-        base environment : C:\ProgramData\Anaconda3  (read only)
-            channel URLs : https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/win-64
-                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/noarch
-                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/win-64
-                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/noarch
-                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2/win-64
-                            https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2/noarch
-            package cache : C:\ProgramData\Anaconda3\pkgs
-                            C:\Users\xxx\.conda\pkgs
-                            C:\Users\xxx\AppData\Local\conda\conda\pkgs
-        envs directories : C:\Users\xxx\.conda\envs
-                            C:\ProgramData\Anaconda3\envs
-                            C:\Users\xxx\AppData\Local\conda\conda\envs
-                platform : win-64
-                user-agent : conda/4.8.2 requests/2.22.0 CPython/3.6.6 Windows/10 Windows/10.0.14393
-            administrator : False
-                netrc file : None
-            offline mode : False
-
-### 确认 conda / pip 环境
-
-    conda list
-
-    pip list
-
-### 安装一个新包
-
-    # 必须告诉conda你要安装环境的名字 -n p36
-    conda install --name p36 beautifulsoup4
 
 ## anaconda怎么同时安装2.7和3.6？
 
@@ -839,10 +935,10 @@ lib_dirs = self.compiler.library_dirs + [
     sudo yum -y groupinstall "Development Tools"
     #sudo yum  -y install gcc
 
-    # 依赖库
+    # 依赖包
     sudo yum -y install openssl-devel bzip2-devel libffi-devel
 
-    # 再加几个依赖库防止报错：
+    # 再加几个依赖包防止报错：
     #    import pandas UserWarning: Could not import the lzma module. Your installed Python is incomplete
     #       https://stackoverflow.com/questions/57743230/userwarning-could-not-import-the-lzma-module-your-installed-python-is-incomple
     yum install -y xz-devel
