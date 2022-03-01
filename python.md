@@ -539,7 +539,7 @@ conda 有很多频道，在网页版频道列表里有对应的版本，找合�
     # vs code 提示
     conda update -n base -c defaults conda
 
-### conda操作前务必先检查当前环境中 conda/pip/python的路径
+### conda 操作前，务必先检查当前环境中 conda/pip/python 的路径
 
 我们需要判断目前我们用的pip指令，会把包装到哪里。因为pip不像conda一样，他不知道环境！pip 在路径里可能有多个，Windows单独安装的python自带，virtualenv环境自带，anaconda默认base环境自带，调用起来按PATH搜索的顺序，即使切换到了自己的环境下，也一定要看看。如: base环境的pip可能在/root/anaconda3/bin/pip，而其他conda环境的pip,可能在/root/anaconda3/envs/my_env/bin/pip。
 
@@ -792,9 +792,9 @@ conda默认的把这个base环境视为root的，其他环境都是在这个环�
 
 ### 注意！Anaconda 用 pip 要修改默认安装依赖包路径的配置文件
 
-    python -m site
+执行 python -m site，（参见前面章节[conda 操作前，务必先检查当前环境中 conda/pip/python 的路径]）。
 
-USER_BASE USER_SITE 如果不是指向你自己的环境，可以执行下列操作。
+检查变量 USER_BASE、USER_SITE，如果不是指向你自己的环境，可以执行下列操作。
 
 想要做到 Anaconda 中不同环境互相不干涉，只建好了新环境，这是不够的！
 
@@ -1405,7 +1405,3 @@ source runsnake/bin/activate
     karthiknadig commented on 11 Apr 2019
     We have plans to support native threads. We have not gotten around to it yet :)
     https://github.com/Microsoft/ptvsd/issues/305
-
-### windows跨平台包首选应用市场 如Graphviz等
-
-    https://chocolatey.org/install
