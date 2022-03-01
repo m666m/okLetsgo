@@ -49,7 +49,6 @@
     },
     "jupyter.exportWithOutputEnabled": true,
     "jupyter.sendSelectionToInteractiveWindow": true,
-    "jupyter.textOutputLimit": 200000,
     "security.workspace.trust.emptyWindow": false,
     "terminal.integrated.defaultProfile.windows": "Command Prompt",
     "git.enableSmartCommit": true,
@@ -181,19 +180,19 @@
     "todo-tree.highlights.customHighlight": {
         "TODO": {
             "icon": "tasklist",
-            "iconColour": "magenta",
+            "iconColour": "#c51c8d",
             "background": "#46F0F0",
             "type": "tag"
         },
         "FIXME": {
             "icon": "eye",
-            "iconColour": "red",
+            "iconColour": "#e02828",
             "background": "#FFD700",
             "type": "tag"
         },
         "XXX": {
             "icon": "beaker",
-            "iconColour": "cyan",
+            "iconColour": "#2cbdc7",
             "background": "#46F0F0",
             "gutterIcon": true,
             "type": "tag"
@@ -229,18 +228,5 @@
     //
     // 下面这些是vscode自己加的，随时变
     //
-    "workbench.editorAssociations": {
-        "*.ipynb": "jupyter-notebook"
-    },
-    "notebook.cellToolbarLocation": {
-        "default": "right",
-        "jupyter-notebook": "left"
-    },
-    "terminal.integrated.profiles.windows": {
-        "C:\\Program Files\\Git\\bin\\bash.exe (migrated)": {
-            "path": "C:\\Program Files\\Git\\bin\\bash.exe",
-            "args": []
-        }
-    },
-    "workbench.colorTheme": "MacOS Modern Dark - Big Sur Xcode Default",
+    "workbench.colorTheme": "GitHub Dark Default",
 }
