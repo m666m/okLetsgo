@@ -836,15 +836,21 @@ conda默认的把这个base环境视为root的，其他命令的使用和环境�
 
 则可以修改到自己的虚拟环境下。
 
+#### 更改的一个示例
+
 假设Anaconda3安装完成后建立的默认环境[base]，python版本是3.9，路径 C:\ProgramData\Anaconda3 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包。
 
-新建个环境[p37]，python版本是3.7，路径 C:\Users\xxxx\.conda\envs\p37 （给所有用户安装是在 C:\ProgramData\Anaconda3\envs\p37）下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包，配置文件 C:\Users\xxxx\.conda\envs\p37\Lib\site.py
+新建个环境[p37]，python版本是3.7，路径 C:\Users\xxxx\.conda\envs\p37（anaconda安装时选择了“给所有用户安装”时在C:\ProgramData\Anaconda3\envs\p37），Scripts目录放的是pip等命令，Lib\site-packages是下载的包，配置文件在 Lib\site.py。
 
-C:\Users\xxxx\.conda\envs\p37\Lib\site.py
+先运行 python -m site -help 查看当前环境的配置文件 site.py 的位置，
+假设在 C:\Users\xxxx\.conda\envs\p37\Lib\site.py，
+编辑该配置文件
 
     USER_SITE = None
     USER_BASE = None
-    # 改为  （给所有用户安装是在 C:\ProgramData\Anaconda3\envs\p37）
+
+    # 改为（anaconda安装时选择了“给所有用户安装”时在C:\ProgramData\Anaconda3\envs\p37）
+
     USER_SITE = "C:\\Users\\xxxx\\.conda\\envs\\p37\\Lib\\site-packages"
     USER_BASE = "C:\\Users\\xxxx\\.conda\\envs\\p37\\Scripts"
 
