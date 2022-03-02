@@ -69,7 +69,7 @@ python3.8应该对应了VS2017(15.9)，用VS2019基本也可以。
 
     pip install --upgrade pip
 
-    pip3 install --user --upgrade pip
+    pip3 install --upgrade pip
 
     python -m pip install --upgrade pip
 
