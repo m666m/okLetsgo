@@ -483,6 +483,9 @@ conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3，所以
     # 或
     conda install --name p37 beautifulsoup4  -y
 
+    # 官方推荐所有的依赖包一次性install完毕，避免依赖文件重复
+    conda install -n p37 numpy pandas pyqtgraph
+
     # 移除包
     conda remove beautifulsoup4
 
