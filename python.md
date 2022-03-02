@@ -377,7 +377,13 @@ conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3（这个
 
 ### 命令行工具使用conda环境
 
-要确保在[base]环境下执行 conda 命令。
+要确保在[base]环境下执行 conda 命令，这个是特殊的root环境，可以找到conda需要的各种变量和路径设置。
+
+慎用 deactivate 命令。
+
+从当前环境用deactivate命令返回到[base]，不如重新开个shell，默认是base环境，这样更少bug。
+
+<https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#deactivating-an-environment>
 
 以前 conda 版本的 source activate 和 source deactivate 跟 virtualenv 环境的脚本经常路径冲突。conda 4.4之后激活和退出环境统一了命令用法，不用 source了，操作步骤如下：
 
@@ -387,7 +393,7 @@ conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3（这个
     # 切换到指定的[p37]环境
     conda activate p37
 
-    # 退出当前环境，返回的是上一个环境。
+    # 退出当前环境，返回的是上一个环境，不如重新开个shell再activate那个环境。
     conda deactivate
 
 仍需要用source的案例
