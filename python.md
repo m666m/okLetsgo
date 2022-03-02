@@ -282,6 +282,18 @@ pause
 不再更新维护了，废弃
 <https://python-xy.github.io/> 微软推荐的<https://devblogs.microsoft.com/python/unable-to-find-vcvarsall-bat>
 
+## 何时用 conda
+
+pip只能安装Python的包，conda可以安装一些工具软件，即使这些软件不是基于Python开发的。也就是说，pip安装的时候，可能有需要源码编译的场景，而conda把二进制代码编译好了直接发布包。
+
+conda虚拟环境是独立于操作系统解释器环境的，即无论操作系统解释器什么版本（哪怕2.7+3.2），我也可以指定虚拟环境python版本为3.9/3.8/3.7/3.6。而vtualenv依赖操作系统内安装好的python，主要解决多个项目对不同库和版本的依赖、以及间接授权等问题（也支持多个python版本，需要操作系统里先安装好）。
+
+virtualenv 创建虚拟环境的时候，会把系统Python复制一份到虚拟环境目录下，当用命令 source venv/bin/activate 进入虚拟环境时，virtualenv会修改相关环境变量，让命令python和pip均指向当前的虚拟环境。
+
+如果你的多个项目需要对应多个python版本，且无法在操作系统里安装多个python版本，或你的项目依赖的包在pip下不好找，用 conda。
+
+如果你的多个项目只是一个版本的python下对不同的库有依赖，用 virtualenv 就可以了。
+
 ## Linux 下安装 anaconda
 
 1. 网站下载
