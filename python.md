@@ -359,8 +359,7 @@ pause
 
 注意： 见下面章节 [conda/pip 操作前务必先检查当前环境中 conda/pip/python 的路径]
 
-conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3，所以要用管理员权限执行annconda安装后自带的命令行工具，
-如果单独打开windows的cmd窗口（管理员权限执行），则先执行 conda activate进入[base]环境。
+conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3（这个目录是默认的root环境，在环境列表中名叫[base]，尽量不要往base环境里添加包），所以要用管理员权限执行annconda安装后自带的命令行工具，如果单独打开windows的cmd窗口（管理员权限执行），则先执行 conda activate进入[base]环境。
 
 注意：conda 命令在Windows下是一堆的bat文件，执行了各种变量设置和传递，在激活的base环境下执行其他命令，出现报错的概率小。
 
