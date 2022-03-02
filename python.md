@@ -301,11 +301,9 @@ pause
 
 1.如果想让vs code自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”
 
-2.安装完毕后，先打开anaconda-navigator，切换到base环境，这货要执行一堆初始化工作，不是光setup.exe安装完了就行了。
+2.安装完毕后，先打开anaconda-navigator，切换到base环境，这货要执行一堆初始化工作，不是光setup.exe安装完了就行了。界面反应很慢，多等等，不要着急切换，后台脚本一直在远程下载处理。
 
 3.换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/> 参见下面章节[conda频道和源配置]
-
-conda 有很多频道，见章节[conda频道和源配置]
 
 4.用管理员权限打开命令行工具，设置conda在哪个shell下使用（windows默认是cmd）
 
@@ -404,13 +402,19 @@ conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3，所以
 
 设置conda在哪个shell下使用（windows下默认cmd.exe），这样可以使conda的各个命令脚本可以自动适应bash、cmd、powershell等。
 
-    conda init bash  # 用户Home目录下.bash_profile文件中自动激活[base]环境
+    # 操作是在 ~/.bash_profile 中添加代码，激活[base]环境
+    conda init bash
 
+    # 建议把cmd留给给本机单独安装的python环境留个virtualenv用的环境
+    # 真想用cmd可以点击开始菜单的anaconda里的那个 Anaconda Prompt (Anaconda3)快捷方式
     conda init cmd.exe
 
+    # powershell会提示：C:\Users\sweetuser\Documents\WindowsPowerShell\profile.ps1限制执行
+    # 以管理员身份打开PowerShell 输入 set-executionpolicy remotesigned，输入y
     conda init powershell
 
-    conda init --all  # 都绑定上
+    # 都绑定上，不推荐
+    conda init --all
 
 运行后记得关闭命令行工具，以便生效。
 
