@@ -231,6 +231,9 @@
     //
     "workbench.colorTheme": "GitHub Dark Default",
     "editor.unicodeHighlight.allowedCharacters": {
-        "：": true
+        "：": true,
+        "，": true,
+        "（": true,
+        "）": true
     },
 }
