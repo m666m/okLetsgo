@@ -307,8 +307,8 @@ pause
 
 4.用管理员权限打开命令行工具，设置conda在哪个shell下使用（windows默认是cmd）
 
-    # 支持bash、cmd.exe、powershell等，all是全部
-    conda init --all
+    # 要先安装 git，使用它自带的bash(mintty)
+    conda init bash
 
 然后关闭命令行工具，以便生效。
 
@@ -400,17 +400,18 @@ conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3，所以
 
 ### conda init 命令设置命令行解释工具
 
-设置conda在哪个shell下使用（windows下默认cmd.exe），这样可以使conda的各个命令脚本可以自动适应bash、cmd、powershell等。
+设置conda在哪个shell下使用，这样可以使conda的各个命令脚本可以适应bash、cmd、powershell等。
 
     # 操作是在 ~/.bash_profile 中添加代码，激活[base]环境
     conda init bash
 
-    # 建议把cmd留给给本机单独安装的python环境留个virtualenv用的环境
-    # 真想用cmd可以点击开始菜单的anaconda里的那个 Anaconda Prompt (Anaconda3)快捷方式
+    # 建议把 cmd 留给本机单独安装的python环境，用virtualenv和自带pip，这样conda不会干扰
+    # 想用 cmd 方式可以点击开始菜单，找anaconda目录里的 Anaconda Prompt (Anaconda3)快捷方式执行
     conda init cmd.exe
 
     # powershell会提示：C:\Users\sweetuser\Documents\WindowsPowerShell\profile.ps1限制执行
-    # 以管理员身份打开PowerShell 输入 set-executionpolicy remotesigned，输入y
+    # 以管理员身份打开PowerShell，输入 get-executionpolicy 查询当前策略，
+    # 输入 set-executionpolicy remotesigned，输入y 变更策略
     conda init powershell
 
     # 都绑定上，不推荐
@@ -721,6 +722,7 @@ USER_SITE 决定了当前环境的site-packages默认安装路径。
 
 #### Windows 下执行 conda 脚本的 bat 文件
 
+需要设置conda init 以支持cmd，详见上面章节[conda init 命令设置命令行解释工具].
 cmd下执行
 
 ```cmd
@@ -740,8 +742,8 @@ pause
 
 #### Windows 下执行 conda 脚本的 的 sh 文件
 
-用bash执行conda脚本需要设置conda init 以支持bash，详见上面章节[conda init 命令设置命令行解释工具].
-只要安装了 git 直接双击sh文件就关联git-bash(mintty)调用了。
+需要设置conda init 以支持bash，详见上面章节[conda init 命令设置命令行解释工具].
+只要安装了 git 直接双击sh文件就自带调用git-bash(mintty)了。
 
 ```shell
 #!/bin/sh

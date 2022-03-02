@@ -176,7 +176,7 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
 安装git后就有了，windows下的配置文件 ~\.minttyrc
 
-    Background=C:\Users\ThinkRight\Pictures\1111111111.jpg
+    Background=C:\Users\xxxx\Pictures\1111111111.jpg
     Font=Consolas
     FontHeight=11
     Columns=200
