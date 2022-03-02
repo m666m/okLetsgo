@@ -640,19 +640,21 @@ conda默认的把这个base环境视为root的，其他命令的使用和环境�
 
 要确保我们用的是本环境的pip，这样pip install时，包才有可能（anaconda、virtualenv不同）会创建到本环境中。不然包的安装默认会到[base]环境（anaconda）或python根环境（virtuanlenv），供各个不同的其他conda环境共享，此时可能会产生版本冲突问题（不同环境中可能对同一个包的版本要求不同）。
 
-#### 检查命令 python -m site
-
-输出
-
-    USER_BASE 表示我们某一个环境下python.exe、pip.exe、等脚本存放位置
-    USER_SITE 表示下载的package的存放路径，默认地址为None，也有可能为其他
-
-当前环境下这俩变量位于配置文件中，默认None，则使用base环境的设置，也就是python默认的pip根路径设置。所以，这几个变量的效果，区别于是否安装了anaconda，执行的pip是否不同，而且受变量 ENABLE_USER_SITE 控制。
-
-查看当前环境的配置文件位置
+#### 当前环境的配置文件 site.py 位置
 
     $ python -m site -help
     C:\Users\xxxx\.conda\envs\p37\lib\site.py [--user-base] [--user-site]
+
+#### 当前环境的配置文件 site.py 中下载的package的存放路径
+
+    python -m site
+
+输出
+
+    USER_BASE 表示当前环境下python.exe、pip.exe、等脚本存放位置
+    USER_SITE 表示当前环境下下载的package的存放路径，默认为None，也有可能为其他
+
+默认None，则使用base环境的设置，也就是python默认的pip根路径设置。所以，这几个变量的效果，区别于是否安装了anaconda，执行的pip是否不同，而且受变量 ENABLE_USER_SITE 控制。
 
 参见下面章节 [更改conda环境下，pip包安装默认路径]。
 
@@ -813,35 +815,31 @@ conda默认的把这个base环境视为root的，其他命令的使用和环境�
 
 执行 python -m site，参见前面章节[conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
 
-检查变量 USER_BASE、USER_SITE，如果指向你自己的python根环境如"AppData\Roaming\Python"，则需要修改到自己环境下。
+检查变量 USER_BASE、USER_SITE，如果指向你自己的python根环境
+
+    "C:\Users\xxxx\AppData\Roaming\Python"（ENABLE_USER_SITE: True）
+    或
+    "C:\ProgramData\Anaconda3\Scripts"（ENABLE_USER_SITE: False）
+
+则可以修改到自己的虚拟环境下。
+
+假设Anaconda3安装完成后建立的默认环境[base]，python版本是3.9，路径 C:\ProgramData\Anaconda3 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包。
+
+新建个环境[p37]，python版本是3.7，路径 C:\Users\xxxx\.conda\envs\p37 （给所有用户安装是在 C:\ProgramData\Anaconda3\envs\p37）下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包，配置文件 C:\Users\xxxx\.conda\envs\p37\Lib\site.py
+
+C:\Users\xxxx\.conda\envs\p37\Lib\site.py
+
+    USER_SITE = None
+    USER_BASE = None
+    # 改为  （给所有用户安装是在 C:\ProgramData\Anaconda3\envs\p37）
+    USER_SITE = "C:\\Users\\xxxx\\.conda\\envs\\p37\\Lib\\site-packages"
+    USER_BASE = "C:\\Users\\xxxx\\.conda\\envs\\p37\\Scripts"
+
+参考
 
     <https://blog.csdn.net/qq_37344125/article/details/104418636>
     <https://blog.csdn.net/tsq292978891/article/details/104655113>
     <https://blog.csdn.net/mukvintt/article/details/80908951>
-
-假设Anaconda3安装完成后建立的默认环境[base]，python版本是3.7，路径 C:\ProgramData\Anaconda3 下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
-
-新建个环境[p36]，python版本是3.6，路径 C:\Users\xxxx\.conda\envs\p36 （给所有用户安装是在 C:\ProgramData\Anaconda3\envs\p36）下面的Scripts目录是pip等命令，Lib\site-packages是安装好的包
-
-    activate p36
-    # 会装到 [base]下  ！！！
-    pip install numpy
-
-环境[p36]必须改配置文件 C:\Users\xxxx\.conda\envs\p36\Lib\site.py
-
-    USER_SITE = None
-    USER_BASE = None
-    # 改为  （给所有用户安装是在 C:\ProgramData\Anaconda3\envs\p36）
-    USER_SITE = "C:\\Users\\xxxx\\.conda\\envs\\p36\\Lib\\site-packages"
-    USER_BASE = "C:\\Users\\xxxx\\.conda\\envs\\p36\\Scripts"
-
-咋办啊坑这么多没法填，anaconda只能多建一个环境，这个应该是不跟其它环境混的（只跟base混）：
-
-    在anaconda.2021.5安装后，建立了一个py3.8的环境，后来建第二个py3.7的环境，
-    改文件site.py时发现，居然用的是第一个的！
-    我说我的anaconda建了几个版本之后的环境喜欢乱套呢，他自己就乱引用啊……
-
-    我把前两个环境删除了，关了anaconda然后打开，又建了个不同名的py3.7环境，里面的内容居然是之前的！
 
 ## anaconda怎么同时安装2.7和3.6？
 
