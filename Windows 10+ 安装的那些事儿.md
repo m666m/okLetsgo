@@ -1144,9 +1144,9 @@ Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7
 
 ### WSL 适用于 Linux 的 Windows 子系统 - 命令行安装 Ubuntu
 
-WSL 1 使用的 type1 的Hyper-V，类似于程序层面的二进制转译，没有实现完整的linux，但是实现了linux程序可以在Windows上运行，虽然有些功能做不到。可以理解成 MingW/Cygwin 的中间层思路，但不是编译时实现，而是运行时。 <https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#full-system-call-compatibility>
+WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的linux，但是实现了linux程序可以在Windows上运行，虽然有些功能做不到。可以理解成 MingW/Cygwin 的中间层思路，但不是编译时实现，而是运行时。 <https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#full-system-call-compatibility>
 
-WSL 2 使用的 type2 的Hyper-V，在底层使用虚拟机（Hyper-V）同时运行linux内核和Windows内核。而且把Linux 完全集成到了 Windows 中，即使用起来就像在 Windows 中直接运行 linux 程序。缺点是IO不如 WSL 1 快。
+WSL 2 在底层使用虚拟机（Hyper-V），同时运行linux内核和Windows内核。而且把Linux 完全集成到了 Windows 中，即使用起来就像在 Windows 中直接运行 linux 程序。缺点是IO不如 WSL 1 快。
 
 开发工具可以使用 Virsual Studio Code，支持直接打开 WSL 虚机，就像连接 Docker 虚机或远程连接 SSH 服务器一样简单。其它开发工具如 git、docker、数据库、vGpu 加速（<https://developer.nvidia.com/cuda/wsl> ）等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/windows/wsl/setup/environment>
 
