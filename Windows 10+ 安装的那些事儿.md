@@ -963,33 +963,39 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
 ## 备份和恢复
 
+Windows 10 继承和扩展了 Win7 的各种级别的备份和恢复，概念比较多，注意区别。
+
 ### 系统还原
 
-设置-系统-关于：点开右上角的“系统信息”，再 系统保护-系统还原
+设置-系统-关于：点开右上角的“系统信息”，系统保护-系统还原
 
-在 Windows 操作系统安装更新补丁/驱动程序/应用等对系统稳定性可能有影响的改动时，对操作系统的文件做的还原点备份，出现问题时可以通过回退解决。
-所以一般只设置操作系统所在的c盘开启这个功能，其它盘不需要。
+在 Windows 操作系统安装更新补丁/驱动程序/应用等对系统稳定性可能有影响的改动时，对操作系统的文件做的还原点备份，出现问题时可以通过回退解决。一般只设置操作系统所在的c盘开启这个功能，其它盘不需要。
+
+对注册表庞大系统变慢了，电脑用久了各种垃圾文件一大堆，导致的系统变慢，解决不了。
 
 ### 文件历史记录
 
 设置-更新和安全-备份：
 
-这个是按时间同步复制你的用户home文件夹到别的硬盘，因为现在有很多应用和数据是安装到用户的home文件夹的，计算机使用久了这个目录会变得巨大。
+这个是按时间同步复制你的用户home文件夹到别的硬盘，因为现在有很多应用和数据是安装到用户的home文件夹的，计算机使用久了这个目录会变得硕大无比。
+
+如果home文件夹里的内容有误删除，可以恢复。
+
+如果是装的东西太多，导致系统变慢，反安装软件后系统还是有垃圾文件，解决不了。
 
 ### 恢复驱动器
 
-Windows 搜索 “恢复驱动器”，或选择“控制面板”>“恢复”.
+Windows 搜索 “恢复驱动器”，或选择“控制面板”>“恢复”。
 
-这个功能目前还是用的 Windows 7 的，跟用 Windows 安装u盘重装操作系统没啥大区别。
+恢复驱动器不是系统映像，其中不包含你的个人文件、设置和程序。类似于u盘上的WinRe，只备份系统文件，个人文件和未随电脑一起提供的任何应用将不会备份。
 
-恢复驱动器不是系统映像。 其中不包含你的个人文件、设置和程序。
-类似于u盘上的WinRe，只备份系统文件，个人文件和未随电脑一起提供的任何应用将不会备份。
+这个功能目前还是用的 Win7 的，就是重新初始化你的Windows系统，可以选择保留你的个人文件(home目录)。
 
 ### 系统映像备份
 
 按文件备份你的C盘到别的存储，可以替代用 ghost 按硬盘扇区做系统镜像进行备份的方式。
 
-这个功能目前还是用的 Windows 7 的，设置-更新和安全-备份：点击转到“备份和还原 (Windows 7)”。
+这个功能目前还是用的 Win7 的，设置-更新和安全-备份：点击转到“备份和还原 (Windows 7)”。
 
 或在任务栏上的搜索框中键入控制面板。 然后依次选择“控制面板”>“系统和安全”>“备份和还原 (Windows 7)”。
 
@@ -1009,7 +1015,7 @@ Windows 搜索 “恢复驱动器”，或选择“控制面板”>“恢复”.
 
 重置此电脑（初始化此电脑）
 
-    恢复Windows到刚安装完的状态，只保留你的个人文件，删除你安装的应用和驱动程序，选项“预安装的应用”指OEM厂商随机的软件是否保留。
+    恢复Windows到刚安装完的状态，只保留你的个人文件(home目录)，删除你安装的应用和驱动程序，选项“预安装的应用”指OEM厂商随机的软件是否保留。 跟前面的“恢复驱动器”U盘做的事儿是一样的。
 
 高级启动
 
@@ -1017,12 +1023,9 @@ Windows 搜索 “恢复驱动器”，或选择“控制面板”>“恢复”.
 
 ### Windows RE
 
-注意：如果关闭xxxx，那么WinRe的文件会被删除，导致以后的WinRe无法启动计算机进入恢复模式。
-
 Windows RE(简称 WinRe)的全称为Windows Recovery Environment，即Windows 恢复环境。
 
-Windows RE实质上是提供了一些恢复工具的Windows PE，预安装了「系统还原」、「命令提示符」、「系统重置」等CMD实用工具，
-以Winre.wim镜像文件的形式，储存于操作系统安装分区的「C:\Recovery\WindowsRE」中。
+Windows RE实质上是提供了一些恢复工具的 Windows PE，预安装了「系统还原」、「命令提示符」、「系统重置」等CMD实用工具，以Winre.wim镜像文件的形式，储存于操作系统安装分区的「C:\Recovery\WindowsRE」中。
 
 磁盘管理器中的c盘，默认有个恢复分区500MB是WinRE隐藏分区，另外还有个EFI启动区100MB。
 
@@ -1038,7 +1041,7 @@ Windows RE实质上是提供了一些恢复工具的Windows PE，预安装了「
 
 系统还原
 
-    如果已经自动创建过系统还原点，可以用Windows RE还原系统到当时的状态。
+    对应前面章节[系统还原]。如果已经自动创建过系统还原点，可以用Windows RE还原系统到当时的状态。
 
 系统映像还原
 
@@ -1120,11 +1123,13 @@ Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-
 
 ### Hyper-V
 
-这个方法就像普通虚拟机操作了，类似 VM Ware、Virtual Box
+就像普通虚拟机操作，类似 VM Ware、Virtual Box
 <https://docs.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v>
 
 如何在 Windows 10 上使用 Hypver-V
     <https://www.tenforums.com/tutorials/2087-hyper-v-virtualization-setup-use-windows-10-a.html>
+
+如果启用了 Hyper-V，则这些对延迟敏感（小于10毫秒）的高精度应用程序也可能在主机中运行时出现问题。这是因为启用虚拟化后，主机操作系统也会在 Hyper-V 虚拟化层之上运行，就像来宾操作系统一样。但是，与来宾不同，主机操作系统的特殊之处在于它可以直接访问所有硬件，这意味着具有特殊硬件要求的应用程序仍然可以在主机操作系统中正常运行而不会出现问题。
 
 ### docker (Hyper-V)
 
@@ -1139,7 +1144,9 @@ Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7
 
 ### WSL 适用于 Linux 的 Windows 子系统 - 命令行安装 Ubuntu
 
-WSL 2 的底层还是使用了虚拟机（Hyper-V），但是他使用的 Linux 完全集成到了 Windows 中，即使用起来就像在 Windows 中直接运行 linux 程序。
+WSL 1 使用的 type1 的Hyper-V，类似于程序层面的二进制转译，没有实现完整的linux，但是实现了linux程序可以在Windows上运行，虽然有些功能做不到。可以理解成 MingW/Cygwin 的中间层思路，但不是编译时实现，而是运行时。 <https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#full-system-call-compatibility>
+
+WSL 2 使用的 type2 的Hyper-V，在底层使用虚拟机（Hyper-V）同时运行linux内核和Windows内核。而且把Linux 完全集成到了 Windows 中，即使用起来就像在 Windows 中直接运行 linux 程序。缺点是IO不如 WSL 1 快。
 
 开发工具可以使用 Virsual Studio Code，支持直接打开 WSL 虚机，就像连接 Docker 虚机或远程连接 SSH 服务器一样简单。其它开发工具如 git、docker、数据库、vGpu 加速（<https://developer.nvidia.com/cuda/wsl> ）等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/windows/wsl/setup/environment>
 

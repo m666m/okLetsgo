@@ -352,33 +352,41 @@ code::block / vscode
 
 <https://zhuanlan.zhihu.com/p/56572298>
 
-MingW (gcc 编译到mscrt)包含gcc和一系列工具，是windows下的gnu环境，
-编译linux c++代码生成的exe程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API，相比Cygwin体积更小，使用更方便。
+### MGW 和 Cygwin 的实现思路
 
-如 创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：
-修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的mscrt CreateProcess()形式，这就是 MingW 的做法。
+#### MingW 在编译时对二进制代码转译
+
+MingW (gcc 编译到mscrt)包含gcc和一系列工具，是Windows下的gnu环境。
+
+编译 linux c++ 源代码，生成 Windows 下的exe程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API，相比Cygwin体积更小，使用更方便。
+
+如 创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的mscrt CreateProcess()形式。
+
+#### Cygwin在中间加了个翻译层 cygwin1.dll
+
 Cygwin 生成的程序依然有 fork() 这样的 Linux 系统调用，但目标库是 cygwin1.dll。
-这样看来用 MingW 编译的程序性能会高一点，而且也不用带着那个接近两兆的 cygwin1.dll 文件。
+
+Cygwin（POSIX接口转换后操作windows）在Windows中增加了一个中间层——兼容POSIX的模拟层，在此基础上构建了大量Linux-like的软件工具，由此提供了一个完整的 POSIX Linux 环境（以 GNU 工具为代表），模拟层对linux c++代码的接口如同 UNIX 一样， 对Windows由 win32 的 API 实现的cygwin1.dll，这就是 Cygwin 的做法。
+
+Cygwin实现，不是虚拟机那种运行时环境，它提供的是程序编译时的模拟层环境：exe调用通过它的中间层dll转换为对windows操作系统的调用。
+
+借助它不仅可以在 Windows 平台上使用 GCC 编译器，理论上可以在编译后运行 Linux 平台上所有的程序：GNU、UNIX、Linux软件的c++源代码几乎不用修改就可以在Cygwin环境中编译构建，从而在windows环境下运行。
+
+对于Windows开发者，程序代码既可以调用Win32 API，又可以调用Cygwin API，甚至混合，借助Cygwin的交叉编译构建环境，Windows版的代码改动很少就可以编译后运行在Linux下。
+
+用 MingW 编译的程序性能会高一点，而且也不用带着那个接近两兆的 cygwin1.dll 文件。
 但 Cygwin 对 Linux 的模拟比较完整，甚至有一个 Cygwin X 的项目，可以直接用 Cygwin 跑 X。
 另外 Cygwin 可以设置 -mno-cygwin 的 flag，来使用 MingW 编译。
 
-对linux c++代码的接口如同 UNIX 一样， 对windows由 win32 的 API 实现的cygwin1.dll，这就是 Cygwin 的做法。
-Cygwin（POSIX接口转换后操作windows）在Windows中增加了一个中间层——兼容POSIX的模拟层，
-在此基础上构建了大量Linux-like的软件工具，由此提供了一个完整的 POSIX Linux 环境（以 GNU 工具为代表），
-注意不是虚拟机那种运行时环境，它提供的是程序编译时的模拟层环境，exe调用通过它的中间层dll转换为对windows操作系统的调用。
-借助它不仅可以在 Windows 平台上使用 GCC 编译器，理论上可以在编译后运行 Linux 平台上所有的程序：
-GNU、UNIX、Linux软件的c++源代码几乎不用修改就可以在Cygwin环境中编译构建，从而在windows环境下运行。
+#### 取舍
 
-对于Windows开发者，程序代码既可以调用Win32 API，又可以调用Cygwin API，甚至混合，
-借助Cygwin的交叉编译构建环境，windows版的代码改动很少就可以编译后运行在Linux下。
+如果仅需要在 Windows 平台上使用 GCC，可以使用 MinGW 或者 Cygwin。
 
-如果仅需要在 Windows 平台上使用 GCC，可以使用 MinGW 或者 Cygwin；
 如果还有更高的需求（例如运行 POSIX 应用程序），就只能选择安装 Cygwin。
 
-相对的 MingW 也有一个叫 MSys（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具.
+相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具，目前流行的MSYS2 是MSYS的一个升级版,准确的说是集成了pacman和Mingw-w64的Cygwin升级版。把/usr/bin加进环境变量path以后，可以直接在cmd中使用Linux命令。
 
-MSYS2 是MSYS的一个升级版,准确的说是集成了pacman和Mingw-w64的Cygwin升级版。
-把/usr/bin加进环境变量path以后，可以直接在cmd中使用Linux命令。
+如果你只是想在Windows下使用一些linux小工具，建议用MSYS2就可以了。
 
 ### Mingw
 
