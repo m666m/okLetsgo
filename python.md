@@ -200,10 +200,10 @@ cmd命令行，切换到你的环境下(conda/virtualenv等)执行
 激活环境命令：
 
     # CMD
-    c:/Users/xxx/pyenvs/py38/Scripts/activate.bat
+    c:/Users/xxxx/pyenvs/py38/Scripts/activate.bat
 
     # bash
-    source c:/Users/xxx/pyenvs/py38/Scripts/activate
+    source c:/Users/xxxx/pyenvs/py38/Scripts/activate
 
 命令行脚本（bat、sh）文件一键运行，详见下面的章节
 
@@ -253,6 +253,11 @@ cmd命令行，切换到你的环境下(conda/virtualenv等)执行
 直接删除虚拟环境所在目录即可
 
 ### pip install 在 virtualenv 虚拟环境下不要使用 --user 参数
+
+在自己的环境下更新pip，公用的不要去动他
+
+    source c:/Users/xxxx/pyenvs/py38/Scripts/activate
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
 
 直接 pip install 就好了，这样默认才会把下载的包放到你的环境目录下
 
@@ -835,7 +840,7 @@ pip install 默认使用全局配置文件，见上面的章节 [PyPI使用国�
 
 
     $ which -a pip
-    /c/Users/xxx/.conda/envs/p37/Scripts/pip
+    /c/Users/xxxx/.conda/envs/p37/Scripts/pip
     (p37)
 
     $ where pip
@@ -847,7 +852,7 @@ pip install 默认使用全局配置文件，见上面的章节 [PyPI使用国�
     (p37)
 
     $ which -a python
-    /c/Users/xxx/.conda/envs/p37/python
+    /c/Users/xxxx/.conda/envs/p37/python
 
     $ python -V
     Python 3.7.11
