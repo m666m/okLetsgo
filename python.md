@@ -335,7 +335,9 @@ virtualenv 创建虚拟环境的时候，会把系统Python复制一份到虚拟
 
 ### 初始化
 
-1.如果想让vs code自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”
+0.先安装git，后续使用它自带的bash、ssh比较方便，不装也行
+
+1.如果想让vs code自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”。如果你想使用自定义的虚拟环境，可以不勾选。
 
 2.选择了“给所有用户安装”时，新建环境如[p37]会保存在C:\ProgramData\Anaconda3\envs\p37，不选则保存在 C:\Users\xxxx\.conda\envs\p37，相应的python、pip位置也会跟随变化。
 
@@ -502,7 +504,7 @@ conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3（这个
 ### conda 包管理常用命令
 
     # 创建python3.7的xxxx虚拟环境，新的开发环境会被默认安装在你 conda 目录下的 envs 文件目录下。
-    conda create -n xxxx python=3.7
+    conda create -n p37 python=3.7
 
     # 复制一个虚拟环境
     conda create --name myclone --clone myenv
@@ -513,21 +515,26 @@ conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3（这个
     # 显示当前虚拟环境下安装的包
     conda list
 
+    # 显示conda的信息
+    conda info
+
     # 使用相对路径，在你的项目目录下建立虚拟环境
     cd your_project_dir
     conda create --prefix ./py37 python=3.7
     conda activate ./py37
 
     # 官方推荐所有的依赖包一次性install完毕，避免依赖文件重复
+    conda install --name p37 yapf Flake8
+    # 环境在相对路径
     conda install --prefix ./py37 yapf Flake8
 
-    # 导出环境配置文件，便于定制
+    # 导出环境配置文件，便于定制，包含pip包，推荐
     conda env export > environment.yml
 
     # 根据指定的配置文件更新指定的虚拟环境
-    conda env update --prefix ./env --file environment.yml  --prune
+    conda env update --prefix ./py37 --file environment.yml  --prune
 
-    ## 精确的可复现的安装环境
+    ## 精确的可复现的安装环境，不包含pip包，不推荐
     conda list --explicit > spec-file.txt
     conda create --name myenv --file spec-file.txt
     conda install --name myenv --file spec-file.txt
@@ -536,7 +543,7 @@ conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3（这个
     conda info -e
 
     # 删除环境
-    conda remove -n xiaolv --all
+    conda remove -n p37 --all
 
 #### 【不要在base环境下使用 conda install / pip install】
 
@@ -661,11 +668,12 @@ conda 有很多频道，在网页版频道列表里有对应的版本，找合�
 
 设置完国内源后，升级 conda 的速度会快很多，之后安装包时也会从国内源下载。
 
-    # 不行呢奇怪，用下面的这个升级了
+    # 注意先切换到base环境
+    conda activate
     conda update conda
 
     # vs code 提示
-    conda update -n base -c defaults conda
+    # conda update -n base -c defaults conda
 
 ### 用conda复制虚拟环境到其他机器上
 
