@@ -961,7 +961,7 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
     去掉勾选“启用快速启动（推荐）”，然后点击保存修改。
 
-## 备份和恢复
+## 备份和恢复选项
 
 Windows 10 继承和扩展了 Win7 的各种级别的备份和恢复，概念比较多，注意区别。
 
@@ -1003,7 +1003,7 @@ Windows 搜索 “恢复驱动器”，或选择“控制面板”>“恢复”�
 
     恢复 Windows 到备份时点的状态 <https://support.microsoft.com/zh-cn/windows/%E5%A4%87%E4%BB%BD%E5%92%8C%E8%BF%98%E5%8E%9Fwindows-352091d2-bb9d-3ea3-ed18-52ef2b88cbef#WindowsVersion=Windows_10>
 
-### Windows 备份和恢复
+### Windows 10 “设置”中的备份和恢复
 
 详见 Windows 中的恢复选项 <https://support.microsoft.com/zh-cn/windows/windows-%E4%B8%AD%E7%9A%84%E6%81%A2%E5%A4%8D%E9%80%89%E9%A1%B9-31ce2444-7de3-818c-d626-e3b5a3024da5>
 
