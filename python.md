@@ -14,9 +14,13 @@ windows下的python，各种命令的脚本都是cmd下的bat，如果用bash运
 
 ## pip
 
-### 务必搞清环境，pip安装可能把包放到的几个地方
+不要在操作系统的python环境或conda的base环境下更新pip，只更新你自己的环境(conda/virtualenv等)下的pip。
 
-pip之前先看看到底用的哪个地方的pip，特别是当前操作系统里有多个pip：
+### 务必搞清环境，pip install 可能把包放到的几个地方
+
+pip install 之前先看看到底用的哪个地方的pip，特别是当前操作系统里有多个pip：
+
+    先切换到你自己的环境(conda/virtualenv等)
 
     pip -V 这个会列出当前的pip的命令行位置
     which pip  # linux
@@ -25,82 +29,79 @@ pip之前先看看到底用的哪个地方的pip，特别是当前操作系统�
 Pip can install software in three different ways:
 
     At global level. 标准的python环境下，"pip install xxx"放在了python目录的site-packages里，这个影响当前操作系统的所有用户.
+
     At user level. "pip install xxx --user"放在了当前操作系统用户home目录的python目录的site-packages里，这个放置的地方比较别扭。
+
     At virtualenv level. virtualenv环境下，"pip install xxx"放在了virtualenv建立的环境目录的site-packages里，最好用这个。
 
-    如果当前操作系统还安装了conda，请先conda list 看看有没有pip，有可能运行的是conda环境里的pip，那就安装到了conda建立的环境目录的site-packages里
-
-pip用之前先 pip -V 看看位置，防止不是你的环境的pip，用了就装到别的地方了
-
-    yourenv/Scripts/pip.exe install pyqt5-tools~=5.15
+如果当前操作系统还安装了conda，请先conda list 看看有没有pip，有可能运行的是conda环境里的pip，那就安装到了conda建立的环境目录的site-packages里
 
 ### wheels
 
-最简单的解决办法是下载好心人提供的编译好的windows二进制包 <https://www.lfd.uci.edu/~gohlke/pythonlibs/>
-
 在windows环境中，python 的 Setup 需要调用一个 vcvarsall.bat 的文件，该文件需要安装c++编程环境才会有。网上的方法有两个：一、安装MinGW；二、安装Visual Studio 。很多python包也是如此，pip提供的是代码，需要借助python环境在本地编译出二进制。
 
-python2.7用的是msvs2008编译的，所以python2.7默认只能认出msvs2008.
-python3.4用的是msvs2010编译的，所以python3.4默认只能认出msvs2010。
-python3.7使用vs2015（WIN10SDK）
-python3.8应该对应了VS2017(15.9)，用VS2019基本也可以。
+最简单的解决办法是下载好心人提供的编译好的windows二进制包 <https://www.lfd.uci.edu/~gohlke/pythonlibs/>
 
-如果安装的是VS2014，则VERSION为13.0；
-如果安装的是VS2013，则VERSION为12.0；
-如果安装的是VS2012，则VERSION为11.0；
-如果安装的是VS2010，则VERSION为10.0；
-如果安装的是VS2008，则VERSION为9.0。
+    python2.7用的是msvs2008编译的，所以python2.7默认只能认出msvs2008.
+    python3.4用的是msvs2010编译的，所以python3.4默认只能认出msvs2010。
+    python3.7使用vs2015（WIN10SDK）
+    python3.8应该对应了VS2017(15.9)，用VS2019基本也可以。
 
-如何编译python3.7/3.8
-<https://www.cnblogs.com/xiacaojun/p/9914545.html>
+    如果安装的是VS2014，则VERSION为13.0；
+    如果安装的是VS2013，则VERSION为12.0；
+    如果安装的是VS2012，则VERSION为11.0；
+    如果安装的是VS2010，则VERSION为10.0；
+    如果安装的是VS2008，则VERSION为9.0。
+
+如何编译python3.7/3.8 <https://www.cnblogs.com/xiacaojun/p/9914545.html>
 <https://zhuanlan.zhihu.com/p/148348614>
 
 清华开源镜像 <https://mirrors.tuna.tsinghua.edu.cn/>
 
-### pip版本更新
+### pip 版本更新
 
 1.pip直接更新
 
-如果您到 pip 默认源的网络连接较差，临时使用清华镜像站来升级 pip：
+    先切换到你自己的环境(conda/virtualenv等)
 
+    # pip install --upgrade pip
+    # 如果您到 pip 默认源的网络连接较差，临时使用清华镜像站来升级 pip
     pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
 
-通常步骤
+    # pip3 install --upgrade pip
+    # python -m pip install --upgrade pip
 
-    pip install --upgrade pip
-
-    pip3 install --upgrade pip
-
-    python -m pip install --upgrade pip
-
-失败的话，首先查看windows下使用cmd环境，并检查下环境变量，which看下命令指向，是否有conda环境冲突了。
-windows下，如果是干净的python环境，不要使用bash，在cmd命令行下，直接pip是可以的。
+2.第一步报失败的话，首先查看windows下使用cmd环境，并检查下环境变量，which看下命令指向，是否有conda环境冲突了。windows下，如果是干净的python环境，不要使用bash，在cmd命令行下，直接pip是可以的。
 
 或强制重装：
 
     python -m pip install -U --force-reinstall pip
 
-2.直接使用后面的提示命令
+或直接使用后面的提示命令 --user （不推荐）。
+也就是 you should consider upgrading via the 后面的命令，不推荐。检查下你运行pip的时候，是不是没有在虚拟环境下，安装到系统默认的python目录会出现这样的报错。
 
-    也就是you should consider upgrading via the 后面的命令
+还是切换到你的环境下，再 pip install，这样才是正确的安装到你的环境下的用法。
 
-3.使用命令
+指定版本
 
-    python3 -m pipinstallpip==版本号
+    python3 -m pip install pip==版本号
 
-4.有时候有两个pip，如果是这种情况可以使用
+3.有时候有两个pip，如果是这种情况可以使用
 
     pip3 install--index-url https://pypi.douban.com/simple xxxx
 
-如果使用镜像来安装库，比较常用的有<https://mirrors.tuna.tsinghua.edu.cn/help/pypi/> <https://pypi.mirrors.ustc.edu.cn/simple> 参见下面章节[PyPi使用国内源]
+如果使用镜像来安装库，比较常用的有 <https://mirrors.tuna.tsinghua.edu.cn/help/pypi/> <https://pypi.mirrors.ustc.edu.cn/simple> 参见下面章节[PyPi使用国内源]
 
 ### pip 升级包
 
+    先切换到你自己的环境(conda/virtualenv等)
     pip install --upgrade 要升级的包名
 
 ### pip install 指定 github 位置
 
 From PyPI:
+
+    先切换到你自己的环境(conda/virtualenv等)
 
     # Last released version:
     pip install pyqtgraph
@@ -113,23 +114,33 @@ From PyPI:
 
 From github:
 
+    先切换到你自己的环境(conda/virtualenv等)
+
     pip install git+ssh://git@github.com/seatgeek/fuzzywuzzy.git@0.17.0#egg=fuzzywuzzy
     pip install git+https://github.com/blampe/IbPy.git
     pip install https://github.com/blampe/IbPy/archive/master.zip
 
 特定版本签出：
 
+    先切换到你自己的环境(conda/virtualenv等)
+
     pip install -e hg+https://foss.heptapod.net/openpyxl/openpyxl/@3.0#egg=openpyxl
 
 From txt
+
+    先切换到你自己的环境(conda/virtualenv等)
 
     pip3 install -r requirements.txt
 
 From conda
 
+    先切换到你自己的环境(conda/virtualenv等)
+
     Last released version: conda install -n myenv -c conda-forge pyqtgraph
 
 To install system-wide from source distribution:
+
+    先切换到你自己的环境(conda/virtualenv等)
 
     python setup.py install
     Many linux package repositories have release versions.
@@ -138,22 +149,28 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 ### PyPI使用国内源
 
-注意：
+任何操作，先切换到自己的环境下，然后检查pip的路径设置
 
-    # 如果是annconda内使用的pip或virtualenv使用的pip，先切换到对应的环境下，看看路径，然后再更新pip
+    # 先切换到你自己的环境(conda/virtualenv等)
     conda activate p37
+
     pip -V
 
 查看当前的配置
 
     pip config list -v
 
-如果为空，说明未配置，都是默认值，配置之后就有了。配置文件在  ~/.pip/pip.conf，Anaconda 安装的在 C:\Users\xxxx\AppData\Roaming\pip\pip.ini。
+如果为空，说明未配置，都是默认值，pip config配置之后就有了。
 
-默认的 pip 源的速度实在无法忍受，于是便搜集了一些国内的pip源，如下：
+清华源
 
-    清华源说明 <https://mirrors.tuna.tsinghua.edu.cn/help/pypi/>
+    # <https://mirrors.tuna.tsinghua.edu.cn/help/pypi/>
     pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+    pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+配置文件生成在  ~/.pip/pip.conf，Anaconda 安装的在 C:\Users\xxxx\AppData\Roaming\pip\pip.ini。
+
+其它源
 
     Python官方 <https://pypi.python.org/simple>
     清华大学 <https://pypi.tuna.tsinghua.edu.cn/simple/>
@@ -163,9 +180,13 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     v2ex <http://pypi.v2ex.com/simple>
     中国科学院 <http://pypi.mirrors.opencas.cn/simple/>
 
-cmd命令行，切换到你的环境下(conda/virtualenv等)执行
+命令行工具执行
 
-    # 临时使用国内镜像
+    # 不要在系统python环境或conda的base环境下更新
+    # 先切换到你的环境下(conda/virtualenv等)
+    conda activate p37
+
+    # 临时使用国内镜像，更新pip自身
     pip install -i https://pypi.tuna.tsinghua.edu.cn/simple flask
 
     # 设为默认
@@ -337,7 +358,7 @@ virtualenv 创建虚拟环境的时候，会把系统Python复制一份到虚拟
 
 0.先安装git，后续使用它自带的bash、ssh比较方便，不装也行
 
-1.如果想让vs code自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”。如果你想使用自定义的虚拟环境，可以不勾选。
+1.如果想让vs code自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”或“set Anaconda3 the system default python”。如果你想使用自定义的虚拟环境，可以不勾选。
 
 2.选择了“给所有用户安装”时，新建环境如[p37]会保存在C:\ProgramData\Anaconda3\envs\p37，不选则保存在 C:\Users\xxxx\.conda\envs\p37，相应的python、pip位置也会跟随变化。
 
@@ -345,9 +366,9 @@ virtualenv 创建虚拟环境的时候，会把系统Python复制一份到虚拟
 
 4.anaconda换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/> 参见下面章节[conda频道和源配置]
 
-5.更新 conda
+5.更新 conda（sof上的帖子不推荐更新conda，直接用就行，基础环境更新了反而容易乱）
 
-打开命令行工具
+管理员权限打开命令行工具
 
     conda activate
 

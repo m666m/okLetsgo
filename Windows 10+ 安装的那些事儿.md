@@ -130,7 +130,7 @@ Ghost 备份，并不能备份分区的 GUID。这时候，需要用 bcdedit.exe
 
 如果是 MBR 分区的，不这么写，暂不研究了，Windows 10 还是用 UEFI 比较好.
 
-UEFI 下用 diskpart 进行分区的详细资料见<https://docs.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/configure-uefigpt-based-hard-drive-partitions>
+UEFI 下用 diskpart 进行分区的详细资料见<https://docs.microsoft.com/zh-cn/Windows-hardware/manufacture/desktop/configure-uefigpt-based-hard-drive-partitions>
 
 #### 不需要第三方工具就能做 UEFI 下的 Windows 安装盘？
 
@@ -148,9 +148,9 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
     本文来源 <https://zhuanlan.zhihu.com/p/31365115>
 
-    BCDBoot 命令行选项 <https://docs.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/bcdboot-command-line-options-techref-di>
+    BCDBoot 命令行选项 <https://docs.microsoft.com/zh-cn/Windows-hardware/manufacture/desktop/bcdboot-command-line-options-techref-di>
 
-    BCDEdit 命令行选项 <https://docs.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/bcdedit-command-line-options>
+    BCDEdit 命令行选项 <https://docs.microsoft.com/zh-cn/Windows-hardware/manufacture/desktop/bcdedit-command-line-options>
 
 ## 技嘉 B560M AORUS PRO 主板（BIOS 版本 F7） + Intel 11600KF CPU + DDR4 3600 内存的初始 BIOS 设置
 
@@ -240,7 +240,7 @@ UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化�
 
     确认下主板 BIOS 的“settings”界面中，“SATA And RST configuration”的选项，硬盘模式为“AHCI”，这个一般主板都是默认开启的。
 
-### 3.确保 u 盘使用 UEFI 模式启动计算机，然后安装 windows
+### 3.确保 u 盘使用 UEFI 模式启动计算机，然后安装 Windows
 
 默认的，主板 BIOS 启动菜单，对 u 盘是有两个选项，注意要选择带有 UEFI 字样的那个 u 盘启动。这样的 Windows 程序才会认为是完全的 UEFI 模式，对硬盘的操作就是默认 GPT 类型了。
 对 Rufus 制作的 Windows 安装 u 盘来说，制作时要选择“gpt+UEFI（非 CSM)”。
@@ -377,7 +377,7 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
     usb 口功能设置选择供电。
     RTC（定时开机）设置具体时间
 
-根据戴尔的文章进行设置 <https://www.dell.com/support/kbdoc/zh-cn/000132056/shut-down-sleep-hibernate-or-change-the-power-plan-in-windows-10>
+根据戴尔的文章进行设置 <https://www.dell.com/support/kbdoc/zh-cn/000132056/shut-down-sleep-hibernate-or-change-the-power-plan-in-Windows-10>
 
     网络唤醒唤醒计算机：
 
@@ -491,7 +491,7 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
     Virtual Machine Platform - "Enables platform support for virtual machines" and is required for WSL2. Virtual Machine Platform can be used to create MSIX Application packages for an App-V or MSI.
 
-    https://superuser.com/questions/1510172/hyper-v-vs-virtual-machine-platform-vs-windows-hypervisor-platform-settings-in-p
+    https://superuser.com/questions/1510172/hyper-v-vs-virtual-machine-platform-vs-Windows-hypervisor-platform-settings-in-p
     https://zhuanlan.zhihu.com/p/381969738
     https://superuser.com/questions/1556521/virtual-machine-platform-in-win-10-2004-is-hyper-v
 
@@ -504,11 +504,11 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
     在“设备安全性”屏幕的底部，如果显示“你的设备满足增强型硬件安全性要求”，那就是基本都打开了。
 
     如果“内核隔离”类别中缺少“内核 DMA 保护”、“固件保护”等选项，在主板BIOS (IOMMU) 中启用 Hyper-V 虚拟化，并在 Windows 功能中安装Hyper-V。
-    <https://docs.microsoft.com/en-us/windows/security/information-protection/kernel-dma-protection-for-thunderbolt#using-system-information> <https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/oem-kernel-dma-protection>
+    <https://docs.microsoft.com/en-us/Windows/security/information-protection/kernel-dma-protection-for-thunderbolt#using-system-information> <https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-kernel-dma-protection>
 
     如果想显示“你的设备超出增强的硬件安全性要求”，需要在下面的页面慢慢研究如何开启。
-    <https://docs.microsoft.com/zh-cn/windows/security/information-protection/kernel-dma-protection-for-thunderbolt>
-    <https://docs.microsoft.com/zh-cn/windows/security/threat-protection/windows-defender-system-guard/system-guard-secure-launch-and-smm-protection>
+    <https://docs.microsoft.com/zh-cn/Windows/security/information-protection/kernel-dma-protection-for-thunderbolt>
+    <https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/Windows-defender-system-guard/system-guard-secure-launch-and-smm-protection>
 
 验证：启动 Windows 后以管理员权限运行 msinfo32，在“系统摘要”界面查看
 
@@ -517,9 +517,9 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
 更多关于 Windows10 安全性要求的选项参见各个子目录章节 <https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-highly-secure#what-makes-a-secured-core-pc>
 
-基于虚拟化的安全 Virtualization Based Security(VBS) 详细介绍 <https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/oem-vbs>
+基于虚拟化的安全 Virtualization Based Security(VBS) 详细介绍 <https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-vbs>
 
-整个 Windows 安全体系，挨个看吧 <https://docs.microsoft.com/zh-cn/windows/security/>
+整个 Windows 安全体系，挨个看吧 <https://docs.microsoft.com/zh-cn/Windows/security/>
 
 ### 默认键盘设置为英文
 
@@ -774,7 +774,7 @@ Windows 10 下发现取消这个组件，居然有 Windows 更新的安装包报
 
 [方法失效]
 
-Windows10系统中自带了windows defender杀毒软件，也就是Windows安全中心。
+Windows10系统中自带了Windows defender杀毒软件，也就是Windows安全中心。
 
 虽然大家在日常使用中不太能体会到它的存在，但你准备安装一些激活软件或者没有经过微软认证的第三方软件时，就疯狂来展现它的存在感了，比如不经过你允许就直接删除你的文件是常规操作。就算你关闭它，短时间内后台也会自动开启。
 
@@ -807,13 +807,13 @@ Windows10系统中自带了windows defender杀毒软件，也就是Windows安全
 
 #### 不允许使用的DMA设备
 
-参见 <https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/oem-bitlocker#un-allowed-dma-capable-busdevices-detected>
+参见 <https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-bitlocker#un-allowed-dma-capable-busdevices-detected>
 
 #### 设备不是 InstantGo
 
 待机(S0 低电量待机)功能比较新，截至2022年仅部分笔记本电脑实现该功能了，而且功能不稳定，耗电情况不如之前的睡眠模式好。
 
-S0 新式待机（Modern Standby），可实现类似手机锁屏后的秒开机。在最初，它叫做Instant-on，Windows 8上市的时候叫做Connected Standby，后改名叫做InstantGo，在Windows 10为了包容性，改名Modern Standby（现代待机），包含Connected Standby和Disconnected Standby两种模式。<https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/modern-standby-vs-s3>
+S0 新式待机（Modern Standby），可实现类似手机锁屏后的秒开机。在最初，它叫做Instant-on，Windows 8上市的时候叫做Connected Standby，后改名叫做InstantGo，在Windows 10为了包容性，改名Modern Standby（现代待机），包含Connected Standby和Disconnected Standby两种模式。<https://docs.microsoft.com/en-us/Windows-hardware/design/device-experiences/modern-standby-vs-s3>
 
     C:\Windows\system32>powercfg -a
     此系统上有以下睡眠状态:
@@ -836,7 +836,7 @@ S0 新式待机（Modern Standby），可实现类似手机锁屏后的秒开机
 
 为防止待机时有黑客手工把硬件接入计算机，connected standby这个功能需要TPM2.0的支持，并进行一系列的加密防护，所以，这些功能都跟安全加密功能有关联。
 
-如果在windows安全里启用了内核保护的内存完整性，则它的虚拟机程序会禁用混合睡眠，因为内存隔离区不允许复制。参见 <https://forums.tomshardware.com/threads/hybrid-sleep-and-windows-10-hypervisor.3699339/> 下面这个提问者直接关闭了虚拟机，其实是通过关闭内存完整性保护实现了混合睡眠，意义不大。相关的类似有
+如果在Windows安全里启用了内核保护的内存完整性，则它的虚拟机程序会禁用混合睡眠，因为内存隔离区不允许复制。参见 <https://forums.tomshardware.com/threads/hybrid-sleep-and-Windows-10-hypervisor.3699339/> 下面这个提问者直接关闭了虚拟机，其实是通过关闭内存完整性保护实现了混合睡眠，意义不大。相关的类似有
 使用 WSL2 的虚拟化开启后，Windows10 无法睡眠，合盖后自动睡眠但无法唤醒系统，只能通过电源键强制重启来重启系统等。<https://support.microsoft.com/en-us/topic/connected-standby-is-not-available-when-the-hyper-v-role-is-enabled-4af35556-6065-35aa-ed01-f8aef90f2027>
 
 ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模式：
@@ -893,7 +893,7 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 情况2：如果Windows RE 位置处提示为空白，则需要从微软原版ISO镜像中恢复WinRE.wim映像
 
     用7z工具解压微软原版ISO镜像文件，进入sources目录
-    用7z工具打开install.wim文件，找windows/system32/recovery/WinRE.wim，
+    用7z工具打开install.wim文件，找Windows/system32/recovery/WinRE.wim，
     选中winre.wim文件，点击上方的“解压到” 将路径更改为 C:\Recovery\WindowsRE
 
 打开“命令提示符（管理员）”，输入下面的命令回车运行即可：
@@ -923,7 +923,7 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
 快速启动意味着你上次的关机并不是完全关机，所以笔记本电脑用户会发现关机的电脑没几天电池就没电了；有些人的电脑开机后需要重启一次才能恢复正常，因为上一次关机并不是真正的关机，而重启时执行的关机才是真正的关机。
 
-对添加或更换硬件的计算机来说，因为 bios 和 windows 会综合判断这次开机是否可以启用上次的快速启动文件和系统状态，但是不保证判断失误。所以在更换硬件之前，关机后务必关闭电源拔掉电池，以防止操作系统因为不兼容这个硬件的状态判断错了，导致开机之后的 windows 不稳定或不识别你的新硬件。
+对添加或更换硬件的计算机来说，因为 bios 和 Windows 会综合判断这次开机是否可以启用上次的快速启动文件和系统状态，但是不保证判断失误。所以在更换硬件之前，关机后务必关闭电源拔掉电池，以防止操作系统因为不兼容这个硬件的状态判断错了，导致开机之后的 Windows 不稳定或不识别你的新硬件。
 
 晕了没？
 
@@ -936,13 +936,13 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
 它使 BIOS 里定时自动开机失效，并跟很多 usb 设备不兼容，导致关机下次启动以后 usb 设备不可用，需要重新插拔。
 比如我的无线网卡、我的显示器集成的 usb-hub 连接的鼠标键盘网卡显示器等等，开机或重启后偶发报错无响应……
-关机黑屏，三星手机连接显示器集成的 usb-hub，拔下来之后 windows 才继续关机。。。
+关机黑屏，三星手机连接显示器集成的 usb-hub，拔下来之后 Windows 才继续关机。。。
 
 如果启用了快速启动，你真正需要重启计算机的时候，操作不能是关机，需要热键，具体说明如下：
 
     点关机按钮，执行的是休眠+睡眠，下次开机会秒开。
 
-    点重启按钮，执行的是注销并登陆windows，会秒重启完。 注意通过这种重启你无法按F8进入「恢复模式」。
+    点重启按钮，执行的是注销并登陆Windows，会秒重启完。 注意通过这种重启你无法按F8进入「恢复模式」。
 
     按住 Shift 点关机按钮，此次关机就不使用快速启动。
 
@@ -963,9 +963,13 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
 ## 备份和恢复选项
 
+详见 Windows 中的恢复选项 <https://support.microsoft.com/zh-cn/Windows/Windows-%E4%B8%AD%E7%9A%84%E6%81%A2%E5%A4%8D%E9%80%89%E9%A1%B9-31ce2444-7de3-818c-d626-e3b5a3024da5>
+
+### 备份
+
 Windows 10 继承和扩展了 Win7 的各种级别的备份和恢复，概念比较多，注意区别。
 
-### 系统还原
+#### 系统还原
 
 设置-系统-关于：点开右上角的“系统信息”，系统保护-系统还原
 
@@ -973,7 +977,7 @@ Windows 10 继承和扩展了 Win7 的各种级别的备份和恢复，概念比
 
 对注册表庞大系统变慢了，电脑用久了各种垃圾文件一大堆，导致的系统变慢，解决不了。
 
-### 文件历史记录
+#### 文件历史记录
 
 设置-更新和安全-备份：
 
@@ -983,51 +987,43 @@ Windows 10 继承和扩展了 Win7 的各种级别的备份和恢复，概念比
 
 如果是装的东西太多，导致系统变慢，反安装软件后系统还是有垃圾文件，解决不了。
 
-### 恢复驱动器
+#### 恢复驱动器
 
 Windows 搜索 “恢复驱动器”，或选择“控制面板”>“恢复”。
 
 恢复驱动器不是系统映像，其中不包含你的个人文件(home目录)、设置和程序。
 
-类似于u盘上的WinRe，只备份系统文件（可选择不备份，则只有WinRe了），个人文件(home目录)和未随电脑一起提供的任何应用将不会备份。
+安装到u盘上的WinRe，可备份系统文件（可选择不备份，则只有WinRe了），不备份个人文件(home目录)和自行安装的应用程序。
 
 这个功能目前还是用的 Win7 的，用于无法启动计算机的时候，重新初始化你的Windows系统，可以选择保留你的个人文件(home目录)。
 
-### 系统映像备份
+#### 系统映像备份
 
 按文件备份你的C盘到别的存储，可以替代用 ghost 按硬盘扇区做系统镜像进行备份的方式。
 
-这个功能目前还是用的 Win7 的，设置-更新和安全-备份：点击转到“备份和还原 (Windows 7)”。
+这个功能目前还是用的 Win7 的，设置-更新和安全-备份：点击“转到备份和还原 (Windows 7)”。
 
 或在任务栏上的搜索框中键入控制面板。 然后依次选择“控制面板”>“系统和安全”>“备份和还原 (Windows 7)”。
 
-创建系统映像
+创建系统映像的官方文档：恢复 Windows 到备份时点的状态 <https://support.microsoft.com/zh-cn/Windows/%E5%A4%87%E4%BB%BD%E5%92%8C%E8%BF%98%E5%8E%9FWindows-352091d2-bb9d-3ea3-ed18-52ef2b88cbef#WindowsVersion=Windows_10>
 
-    恢复 Windows 到备份时点的状态 <https://support.microsoft.com/zh-cn/windows/%E5%A4%87%E4%BB%BD%E5%92%8C%E8%BF%98%E5%8E%9Fwindows-352091d2-bb9d-3ea3-ed18-52ef2b88cbef#WindowsVersion=Windows_10>
-
-### Windows 10 “设置”中的备份和恢复
-
-详见 Windows 中的恢复选项 <https://support.microsoft.com/zh-cn/windows/windows-%E4%B8%AD%E7%9A%84%E6%81%A2%E5%A4%8D%E9%80%89%E9%A1%B9-31ce2444-7de3-818c-d626-e3b5a3024da5>
-
-#### 备份
-
-对上面的各种备份方式，在这里进行了总结式的调用跳转
-
-#### 恢复
+### 恢复
 
 重置此电脑（初始化此电脑）
 
-    恢复Windows到刚安装完的状态，只保留你的个人文件(home目录)，删除你安装的应用和驱动程序，选项“预安装的应用”指OEM厂商随机的软件是否保留。 跟前面的“恢复驱动器”U盘做的事儿是一样的。
+    恢复 Windows 到刚安装完的状态，只保留你的个人文件(home目录)，删除你安装的应用和驱动程序，选项“预安装的应用”指OEM厂商随机的软件是否保留。 跟前面的“恢复驱动器”U盘做的事儿是一样的。
 
 高级启动
 
-    就是不使用“快速启动”模式的关机再开机初始化的过程，开机会进入WinRe环境，可以在里面选择对前面章节中各种备份的恢复。
+    就是不使用“快速启动”模式的关机再开机初始化的过程，下次开机会进入 WinRe 环境，在WinRe里面选择对前面章节中各种备份的恢复。
 
-这两个恢复选项，其实都是启动到你的计算机本地c盘的WinRe保留区。如果计算机彻底无法启动，则需要使用“恢复驱动器”制作的u盘来启动，使用u盘上的WinRe。
+这两个恢复选项，其实都是启动到你的计算机本地c盘的WinRe保留区。
+
+如果计算机彻底无法启动，则需要使用上面章节“恢复驱动器”制作的u盘来启动，使用u盘上的WinRe。
 
 ### Windows RE
 
-Windows RE(简称 WinRe)的全称为Windows Recovery Environment，即Windows 恢复环境。
+Windows RE(简称 WinRe)的全称为 Windows Recovery Environment，即 Windows 恢复环境。
 
 Windows RE实质上是提供了一些恢复工具的 Windows PE，预安装了「系统还原」、「命令提示符」、「系统重置」等CMD实用工具，以Winre.wim镜像文件的形式，储存于操作系统安装分区的「C:\Recovery\WindowsRE」中。
 
@@ -1041,7 +1037,7 @@ Windows RE实质上是提供了一些恢复工具的 Windows PE，预安装了�
 
 启动修复
 
-    使用“启动修复”功能时，Windows RE会自动监测硬盘上安装的Windows存在什么问题，并自动予以修复。例如，如果MBR被修改，该功能可以帮助恢复MBR。
+    使用“启动修复”功能时，Windows RE会自动监测当前操作系统存在什么问题，并自动予以修复。例如，如果MBR被修改，该功能可以帮助恢复MBR。应该是利用c盘的保留分区恢复操作系统的引导信息。
 
 系统还原
 
@@ -1049,32 +1045,33 @@ Windows RE实质上是提供了一些恢复工具的 Windows PE，预安装了�
 
 系统映像还原
 
-    对应前面章节[系统映像备份]，可以利用Windows RE进行还原。
+    对应前面章节[系统映像备份]，可以利用Windows RE恢复你的c盘到备份时的状态。
 
 Windows内存诊断
 
-    该功能与启动Windows时在“工具”菜单中选择Windows内存诊断功能相同，可以诊断内存硬件的问题
+    该功能与启动Windows时在“工具”菜单中选择Windows内存诊断功能相同，可以诊断内存硬件的问题。
 
 命令提示符
 
-    Windows RE命令提示符相当于正常的Windows PE命令提示符，可用于执行某些命令修复Windows。
+    Windows RE命令提示符相当于正常的 Windows PE 命令提示符，执行某些系统修复命令如 bcdedit 等。
 
 #### WinRe 的使用
 
-如果启用了“快速启动”，则在开始菜单的"电源"按钮，按住shift点击重启。
+进入 WinRe 的几个方法
 
-或在设置-更新和安全-恢复，选择重启。
+    在开始菜单的"电源"按钮，按住shift点击重启。
 
-或者命令行模式执行：
+    或在设置-更新和安全-恢复，选择重启。
 
-    shutdown /r /o  完全关闭转到WinRe高级启动选项菜单并重新启动计算机。
+    命令行模式执行：
 
-或者在计算机开启后的Windows加载界面狂按F8。
+        shutdown /r /o  完全关闭转到WinRe高级启动选项菜单并重新启动计算机。
 
-最极端的方法是：开机画面按住计算机的电源开关，直到关机，重复3次，windows引导会自动进入WinRe环境了。。。
+    在开启计算机电源后的Windows加载界面狂按F8。
 
-你的电脑将重启到 Windows 恢复环境 (WinRE) 环境中，
-在“选择一个选项”屏幕上，选择“疑难解答”，然后在表格中选择其中一个选项。
+    最极端的方法：在Windows开机画面按住计算机的电源开关，直到关机，重复3次，Windows 引导会自动进入WinRe环境了。。。
+
+你的电脑将重启到 Windows 恢复环境 (WinRE) 环境中，在“选择一个选项”屏幕上，选择“疑难解答”，然后在表格中选择其中一个选项。
 
 ## 安全的使用你的 Windows 10
 
@@ -1117,47 +1114,47 @@ tools.wsb 示例：
 </Configuration>
 ```
 
-MappedFolder 可以有多个，默认映射到桌面，也可以单独指定，关于 Windows 沙盒的详细介绍，参见 <https://docs.microsoft.com/zh-cn/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview>
+其中，MappedFolder 可以有多个，默认映射到桌面，也可以单独指定。关于 Windows 沙盒的详细介绍，参见 <https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/Windows-sandbox/Windows-sandbox-overview>
 
 ## Windows 10 使用虚拟机的几个途径
 
-WSL2 内的 container 是 linux 提供的，不算 Windows 的容器。
-Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-V 隔离，process 只在 server 版提供
-<https://docs.microsoft.com/zh-cn/virtualization/windowscontainers/manage-containers/hyperv-container>
+WSL2 内的 container 是 linux 提供的，不算 Windows 的容器。Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-V 隔离，process 只在 server 版提供
+<https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/hyperv-container>
 
 ### Hyper-V
 
 就像普通虚拟机操作，类似 VM Ware、Virtual Box
-<https://docs.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v>
+<https://docs.microsoft.com/zh-cn/virtualization/hyper-v-on-Windows/quick-start/enable-hyper-v>
 
 如何在 Windows 10 上使用 Hypver-V
-    <https://www.tenforums.com/tutorials/2087-hyper-v-virtualization-setup-use-windows-10-a.html>
+    <https://www.tenforums.com/tutorials/2087-hyper-v-virtualization-setup-use-Windows-10-a.html>
 
 如果启用了 Hyper-V，则这些对延迟敏感（小于10毫秒）的高精度应用程序也可能在主机中运行时出现问题。这是因为启用虚拟化后，主机操作系统也会在 Hyper-V 虚拟化层之上运行，就像来宾操作系统一样。但是，与来宾不同，主机操作系统的特殊之处在于它可以直接访问所有硬件，这意味着具有特殊硬件要求的应用程序仍然可以在主机操作系统中正常运行而不会出现问题。
 
 ### docker (Hyper-V)
 
-Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7 上的 docker 是安装了 virtual box。
+Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7 上的 docker 是安装了 virtual box 虚拟机。
 
-    https://docs.microsoft.com/zh-cn/virtualization/windowscontainers/about/
+    https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/about/
 
-    https://docs.docker.com/desktop/windows/wsl/
+    https://docs.docker.com/desktop/Windows/wsl/
 
-需要注意不同映像的区别，完整 Windows api 的是 Windows 和 Windows server，其它的是仅支持 .net
-<https://docs.microsoft.com/zh-cn/virtualization/windowscontainers/manage-containers/container-base-images>
+完整 Windows api 的是 Windows 和 Windows server，其它的是仅支持 .net，注意不同映像的区别 <https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/container-base-images>
 
 ### WSL 适用于 Linux 的 Windows 子系统 - 命令行安装 Ubuntu
 
-WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的linux，但是实现了linux程序可以在Windows上运行，虽然有些功能做不到。可以理解成 MingW/Cygwin 的中间层思路，但不是编译时实现，而是运行时。 <https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#full-system-call-compatibility>
+WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的linux，但是实现了linux程序可以在Windows上运行，但是有些功能如GUI实现的有限制。可以理解成 MingW/Cygwin 的中间层思路，但不是编译时实现，而是运行时。 <https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility>
 
-WSL 2 在底层使用虚拟机（Hyper-V），同时运行linux内核和Windows内核。而且把Linux 完全集成到了 Windows 中，即使用起来就像在 Windows 中直接运行 linux 程序。缺点是IO不如 WSL 1 快。
+WSL 2 在底层使用虚拟机（Hyper-V）同时运行linux内核和Windows内核，并且把Linux 完全集成到了 Windows 中，即使用起来就像在 Windows 中直接运行 linux 程序。
 
-开发工具可以使用 Virsual Studio Code，支持直接打开 WSL 虚机，就像连接 Docker 虚机或远程连接 SSH 服务器一样简单。其它开发工具如 git、docker、数据库、vGpu 加速（<https://developer.nvidia.com/cuda/wsl> ）等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/windows/wsl/setup/environment>
+缺点是IO不如 WSL 1 快，见下面章节[跨Windows和Linux文件系统]
+
+开发工具可以使用 Virsual Studio Code，支持直接打开 WSL 虚机，就像连接 Docker 虚机或远程连接 SSH 服务器一样简单。其它开发工具如 git、docker、数据库、vGpu 加速（<https://developer.nvidia.com/cuda/wsl> ）等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/setup/environment>
 
 简单使用 Ubuntu 就一条命令
 
     # 安装 ubuntu，已经安装过了忽略这条
-    # 详见 <https://docs.microsoft.com/windows/wsl/install>
+    # 详见 <https://docs.microsoft.com/Windows/wsl/install>
     wsl --install   # -d Ubuntu 默认不需要打
 
 在 Windows 命令提示符或 PowerShell 中，可以在当前命令行中使用默认的 Linux 发行版，直接输入 bash 或 ubuntu 回车就可以了。
@@ -1179,13 +1176,31 @@ WSL 2 在底层使用虚拟机（Hyper-V），同时运行linux内核和Windows�
 
     /mnt/驱动器号>/
 
-示例用法：
+示例：
 
     运行 cd /mnt/c 访问 c:\
 
+#### 混合使用 Windows 和 Linux 进行工作
+
+<https://docs.microsoft.com/zh-cn/windows/wsl/filesystems>
+
+借助 WSL，Windows 和 Linux 工具和命令可互换使用
+
+    从 Linux 命令行（如 Ubuntu）运行 Windows 工具（如 notepad.exe ）。
+    从 Windows 命令行（如 PowerShell）运行 Linux 工具（如 grep ）。
+    在 Windows 与 Windows 之间共享环境变量。
+
+不要跨操作系统使用文件，比如在存储 WSL 项目文件时：
+
+    使用 Linux 文件系统根目录：\\wsl$\Ubuntu-18.04\home\<user name>\Project
+
+    而不使用 Windows 文件系统根目录：/mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
+
+<https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems>
+
 #### WSL 1 和 WSL 2 的定制安装
 
-    <https://docs.microsoft.com/zh-cn/windows/wsl/install-manual>
+    <https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual>
 
 1.Windows 10开启 WSL 功能
 
@@ -1221,7 +1236,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 ```
 
 3.下载 Linux 内核更新包，双击提权安装即可。
-<https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi>
+<https://wslstorestorage.blob.core.Windows.net/wslblob/wsl_update_x64.msi>
 
 ```power shell
 
@@ -1239,7 +1254,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 5.下载 Linux 发行版并安装
 
-详见 <https://docs.microsoft.com/zh-cn/windows/wsl/install-manual#downloading-distributions>
+详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual#downloading-distributions>
 
     <https://aka.ms/wslubuntu2004>
     <https://aka.ms/wsl-ubuntu-1604>
@@ -1315,46 +1330,56 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 7.配置多个 linux 系统
 
-详见 <https://docs.microsoft.com/zh-cn/windows/wsl/wsl-config>
+详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/wsl-config>
 
 8.导入任何 Linux 发行版
 
-详见 <https://docs.microsoft.com/zh-cn/windows/wsl/use-custom-distro>
+详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/use-custom-distro>
 
 9.WSL 命令行参考
 
-详见 <https://docs.microsoft.com/zh-cn/windows/wsl/basic-commands>
+详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/basic-commands>
+
+
+#### 使用了 WSL2 就只能用微软发布的 Linux 版本
+
+<https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-linux-kernel>，它提供了完全的二进制兼容，用户可以自行升级 linux 内核。
+
+#### 可以在WSL 2的linux里再运行 docker
+
+这个 docker 也需要是微软发布的 <https://docs.microsoft.com/zh-cn/Windows/wsl/tutorials/wsl-containers> 。
+
+#### WSL 2的linux是放到当前用户目录下的，比较占用系统盘空间
+
+类似于：USERPROFILE%\AppData\Local\Packages\CanonicalGroupLimited...，所以注意你的 c 盘空间。
+
+如果需要更改存储位置，打开“设置”->“系统”-->“存储”->“更多存储设置：更改新内容的保存位置”，选择项目“新的应用将保存到”。
 
 #### Linux 下的 GUI 应用的安装和使用
 
-    详见 <https://docs.microsoft.com/zh-cn/windows/wsl/tutorials/gui-apps>
+    详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/tutorials/gui-apps>
 
 #### 安装遇到问题
 
 遇到报错试试下面这个：
 
     启用“适用于 Linux 的 Windows 子系统”可选功能
+
         dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 
     启用“虚拟机平台”可选功能
+
         dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 
     要启用 WSL，请在 PowerShell 提示符下以具有管理员权限的身份运行此命令：
+
         Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 
-更多的问题，详见 <https://docs.microsoft.com/zh-cn/windows/wsl/troubleshooting>
-
-注意：
-
-    使用了 WSL2 就只能用微软发布的 Linux 版本<https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#full-linux-kernel>，但是提供了完全的二进制兼容，用户可以自行升级 linux 内核。
-
-    甚至可以在上面再运行 docker，这个 docker 也需要是微软发布的 <https://docs.microsoft.com/zh-cn/windows/wsl/tutorials/wsl-containers> 。
-
-    这个虚拟机是放到当前用户目录下的，类似于：USERPROFILE%\AppData\Local\Packages\CanonicalGroupLimited...，所以注意你的 c 盘空间。如果需要更改存储位置，打开“设置”->“系统”-->“存储”->“更多存储设置：更改新内容的保存位置”，选择项目“新的应用将保存到：”
+更多的问题，详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/troubleshooting>
 
 ### 图形化安装 - Windows Store 安装 Ubuntu 子系统 (WSL)
 
-win10+ubuntu 双系统见<https://www.cnblogs.com/masbay/p/10745170.html>
+win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 
 1.首先点击开始，然后点击设置
 
@@ -1458,6 +1483,7 @@ Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但�
 #### 已经安装了hyper-V，或者 hypervisorlaunchtype 是 auto
 
 在复制启动项的时候要注意哪一个启动项是要开启hyper-V的，“Windows10 no hyper-V”是新启动项的描述，有没有no不要弄混了。
+
 在执行之后会得到新启动项的标识符，如果修改当前启动项，可以用bcdedit /set hypervisorlaunchtype off，
 如果修改非current启动项，则需要指明标识符，bcdedit /set {标识符} hypervisorlaunchtype off
 
@@ -1470,26 +1496,23 @@ Hyper-V 其实也分1代2代，tenforums 的详细说明
 
     <https://www.tenforums.com/tutorials/139405-run-hyper-v-virtualbox-vmware-same-computer.html>
 
-### 使用中要注意，WSL 下的 Linux 命令区别于某些 PowerShell 下的命令
+### 注意：WSL 下的 Linux 命令区别于某些 PowerShell 下的命令
 
-注意 PowerShell 对某些 linux 命令是使用了别名，而不是调用的真正的 exe 文件，有没有后缀。exe 是有区别的！
+注意 PowerShell 对某些 linux 命令是使用了别名，而不是调用的真正的 exe 文件，有没有后缀 .exe 是有区别的！
 
-下面是个例子 ：
+例如，使用 curl 命令行实用程序来下载 Ubuntu 20.04 控制台命令：
 
-    # <https://docs.microsoft.com/zh-cn/windows/wsl/install-manual#downloading-distributions>
-    使用 curl 命令行实用程序来下载 Ubuntu 20.04 ：
+    curl.exe -L -o ubuntu-2004.appx https://aka.ms/wsl-ubuntu-2004
 
-    控制台
+在本示例中，将执行 curl.exe（而不仅仅是 curl），以确保在 PowerShell 中调用真正的 curl 可执行文件，而不是调用 Invoke WebRequest 的 PowerShell curl 别名。<https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual#downloading-distributions>
 
-        curl.exe -L -o ubuntu-2004.appx https://aka.ms/wsl-ubuntu-2004
+设置->应用->应用和功能，里面有个“应用执行别名”，点击进去慢慢研究吧，微软净整些逻辑弯弯绕，真烦人啊。
 
-    在本示例中，将执行 curl.exe（而不仅仅是 curl），以确保在 PowerShell 中调用真正的 curl 可执行文件，而不是调用 Invoke WebRequest 的 PowerShell curl 别名。详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
-
-设置->应用->应用和功能，里面有个“应用执行别名”，点击进去慢慢研究吧，真烦人啊，估计整些逻辑弯弯绕。
+详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
 
 ### 微软提供的 Windows 11 + Visual Studio 的评估版开发环境
 
-<https://developer.microsoft.com/zh-cn/windows/downloads/virtual-machines/>
+<https://developer.microsoft.com/zh-cn/Windows/downloads/virtual-machines/>
 
 ## 离线下载安装 Microsoft Store 中的应用
 
@@ -1497,7 +1520,9 @@ Hyper-V 其实也分1代2代，tenforums 的详细说明
 
 为嘛狂吃 cpu 呢？
 
-    UWP 文件下载这个玩法，最大的问题就是商店是分区域的，而万能的墙会让非 cn 的下载非常不稳定，特别是你的一个 uwp 程序依赖比较多的包的时候，说不定有的源在其它外网服务器上，间或会下载不到。不是啥非法的玩意，甚至可能微软的更新包，挂在 github 上的或者啥开源服务器上的东西，都不排除掉线。这就是为嘛有时候 Windows 更新都报告失败要多重试几次的原因。 好吧，程序表面上装好了，其实需要的库不全，后台 AppXSVC 进程就一根筋的不断重试，微软的三哥程序员估计写循环时候没加 sleep()，cpu 就得受点累。这个费电的过程，只能是你把那个 uwp 程序卸载掉，或者手动安装上缺失的库（Windows 没有任何提示你咋知道），才算完。
+    UWP 文件下载这个玩法，最大的问题就是商店是分区域的，而万能的墙会让非 cn 的下载非常不稳定，特别是你的一个 uwp 程序依赖比较多的包的时候，说不定有的源在其它外网服务器上，间或会下载不到。不是啥非法的玩意，甚至可能微软的更新包，挂在 github 上的或者啥开源服务器上的东西，都不排除掉线。这就是为嘛有时候 Windows 更新都报告失败要多重试几次的原因。
+
+    好吧，程序表面上装好了，其实需要的库不全，后台 AppXSVC 进程就一根筋的不断重试，微软的三哥程序员估计写循环时候没加 sleep()，cpu 就得受点累。这个费电的过程，只能等你把那个 uwp 程序卸载掉，或者手动安装上缺失的库（Windows 没有任何提示你咋知道），才算完。
 
 我的电脑里哪些是 uwp 应用呢？
 
@@ -1508,46 +1533,45 @@ uwp 权限配置
     设置：隐私->应用
 
 如果遇到不能安装的情况，需要检查一下系统设置：
+
     右键点击开始按钮>设置>应用>选择获取应用的位置：选择“任何来源”
 
     UWP 离线安装，需要去设置中打开开发者模式
 
 ### 离线下载 uwp 步骤
 
-    首先知道你需要的应用名称，如：Microsoft 便笺
+首先知道你需要的应用名称，如：Microsoft 便笺
 
-    打开 https://www.microsoft.com/zh-cn/Store 或 https://www.microsoft.com/en-us/Store，点击搜索，直接输入应用名称比如：Microsoft 便笺 或 Instagram 啥的，在弹出菜单选择对应软件。
+打开 <https://www.microsoft.com/zh-cn/Store> 或 <https://www.microsoft.com/en-us/Store>，点击搜索，直接输入应用名称比如：Microsoft 便笺 或 Instagram 啥的，在弹出菜单选择对应软件。
 
-    新开的页面会显示该商品的详细信息，直接复制地址栏的地址，以 Microsoft 便笺为例：https://www.microsoft.com/zh-cn/p/microsoft-sticky-notes/9nblggh4qghw?activetab=pivot:overviewtab
+新开的页面会显示该商品的详细信息，直接复制地址栏的地址，以 Microsoft 便笺为例：<https://www.microsoft.com/zh-cn/p/microsoft-sticky-notes/9nblggh4qghw?activetab=pivot:overviewtab>
 
-    打开这个网站 https://store.rg-adguard.net/
+打开这个网站 <https://store.rg-adguard.net/>
 
-    将上面复制的链接粘贴到搜索栏中，左侧的搜索类型使用默认的 URL(link)。
-    如果搜不到，搜索类型换成 ProductId 试试，本例中搜索 url 中软件名称段后面的参数“9nblggh4qghw”。
+将上面复制的链接粘贴到搜索栏中，左侧的搜索类型使用默认的 URL(link)。
 
-    搜索到的结果通常会比较多，包含了不同的版本以及和这个应用依赖的运行环境安装包。
+如果搜不到，搜索类型换成 ProductId 试试，本例中搜索 url 中软件名称段后面的参数“9nblggh4qghw”。
 
-    建议往下翻页，找到名称匹配一致的最高版本（版本数字最大）的链接，注意后缀应该是 .appxbundle 的链接 (bundle 表示包含所有相关文件），
-    如果不选择 .appxbundle，那就得挨个下载 .appx 文件逐个安装了。
-    比如这个：Microsoft.MicrosoftStickyNotes_3.7.78.0_neutral_~_8wekyb3d8bbwe.appxbundle。
+搜索到的结果通常会比较多，包含了不同的版本以及和这个应用依赖的运行环境安装包。
 
-    后面对应的有个 Expire 过期时间 (GMT 时间），这是由于微软服务器上每次下载的时候生成的链接都是有有效期的，所以这个链接在到期后就失效了。
-    也正是因此，才需要通过这个网站提供的搜索工具来获取最新的下载链接。
+建议往下翻页，找到名称匹配一致的最高版本（版本数字最大）的链接，注意后缀应该是 .appxbundle 的链接 (bundle 表示包含所有相关文件），如果不选择 .appxbundle，那就得挨个下载 .appx 文件逐个安装了。
+比如这个：Microsoft.MicrosoftStickyNotes_3.7.78.0_neutral_~_8wekyb3d8bbwe.appxbundle。
 
-    点击这个链接后将 .appxbundle 文件下载到本地。
-    如果 edge 浏览器禁止下载，复制下载链接到下载工具比如 motrix 里下载即可。
+后面对应的有个 Expire 过期时间 (GMT 时间），这是由于微软服务器上每次下载的时候生成的链接都是有有效期的，所以这个链接在到期后就失效了。正是因此，才需要通过这个网站提供的搜索工具来获取最新的下载链接。
 
-    将下载好的 .appxbundle 文件复制到没有网络链接的电脑上，和普通的安装程序一样，正常情况下直接双击就可以打开进行安装了。
-    或者打开 powershell，输入命令： Add-AppxPackage -Path <离线包文件路径>
+点击这个链接后将 .appxbundle 文件下载到本地。如果 edge 浏览器禁止下载，复制下载链接到下载工具比如 motrix 里下载即可。
 
-### 补充 Windows 10 LTSC 2021 版几个 UWP 应用缺失问题
+将下载好的 .appxbundle 文件复制到没有网络链接的电脑上，和普通的安装程序一样，正常情况下直接双击就可以打开进行安装了。或者打开 powershell，输入命令： Add-AppxPackage -Path <离线包文件路径>
+
+### 示例：补充 Windows 10 LTSC 2021 版几个 UWP 应用缺失问题
 
 自己到 Windows Store 中搜索下载，参见上面的章节 [离线下载安装 Microsoft Store 中的应用]。
 
 VCLibs 库文件，修复输入法等 appx 等库关联问题
 
-    Microsoft.VCLibs.140.00_14.0.30704.0_x64__8wekyb3d8bbwe.Appx
-    https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx https://docs.microsoft.com/en-us/troubleshoot/cpp/c-runtime-packages-desktop-bridge#how-to-install-and-update-desktop-framework-packages
+    Microsoft.VCLibs.140.00_14.0.30704.0_x64__8wekyb3d8bbwe.Appx https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx
+
+    Windows Store 分发的 C++ 运行时桌面框架包 <https://docs.microsoft.com/en-us/troubleshoot/cpp/c-runtime-packages-desktop-bridge#how-to-install-and-update-desktop-framework-packages>
 
 VP9 视频扩展 VP9VideoExtensions 库文件，修复设置->应用->视频播放中的预览错误
 
@@ -1583,7 +1607,7 @@ Windows 更新会自动在后台搜索下载，或者用户自己到 Windows Sto
 Windows App SDK 提供了一套统一的 API 和工具，它们与操作系统分离并通过 NuGet 包发布给开发人员。
 Windows 10 版本 1809 至 Windows 11 即支持了，并且同时提供 WinRT API 和本机 C API。
 
-主推 WinUI 3, 以前的 WinUI 2 和 UWP 也废了 <https://docs.microsoft.com/zh-cn/windows/apps/windows-app-sdk/migrate-to-windows-app-sdk/migrate-to-windows-app-sdk-ovw#topics-in-this-section>
+主推 WinUI 3, 以前的 WinUI 2 和 UWP 也废了 <https://docs.microsoft.com/zh-cn/Windows/apps/Windows-app-sdk/migrate-to-Windows-app-sdk/migrate-to-Windows-app-sdk-ovw#topics-in-this-section>
 
 2.bad news
 
@@ -1599,11 +1623,11 @@ uwp 迁移到 NuGet，估计换汤不换药。
 
 参见
 
-    <https://docs.microsoft.com/zh-cn/windows/msix/desktop/powershell-msix-cmdlets>
+    <https://docs.microsoft.com/zh-cn/Windows/msix/desktop/powershell-msix-cmdlets>
 
-    <https://docs.microsoft.com/en-us/powershell/module/appx/?view=windowsserver2019-ps>
+    <https://docs.microsoft.com/en-us/powershell/module/appx/?view=Windowsserver2019-ps>
 
-    <https://docs.microsoft.com/zh-cn/windows/uwp/get-started/universal-application-platform-guide#how-the-universal-windows-platform-relates-to-windows-runtime-apis>
+    <https://docs.microsoft.com/zh-cn/Windows/uwp/get-started/universal-application-platform-guide#how-the-universal-Windows-platform-relates-to-Windows-runtime-apis>
 
 ### 得认真考虑下，本体口口的问题了，以后老死在外面，是不是可以接受？
 
@@ -1658,7 +1682,7 @@ uwp 迁移到 NuGet，估计换汤不换药。
 
 点击“创建下载包“，这时我们会下载一个压缩包，解压后如下图所示
 
-以管理员权限运行“aria2_download_windows.cmd “即可开始下载并创建 ISO 安装镜像，下载过程中请耐心等待，下载过程中基本可以保持满带宽下载，而且每个文件下载完成后会自动校验文件，以保证文件的完整及正确。
+以管理员权限运行“aria2_download_Windows.cmd “即可开始下载并创建 ISO 安装镜像，下载过程中请耐心等待，下载过程中基本可以保持满带宽下载，而且每个文件下载完成后会自动校验文件，以保证文件的完整及正确。
 
 ## 主板 Ultra Fast 启动无法再用键盘进入 BIOS 设置
 
@@ -1679,7 +1703,7 @@ UEFI 方式启动的操作系统是跟主板 BIOS 设置密切结合的，UEFI �
 
 参考说明
     <https://www.expreview.com/22043.html>
-    <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-windows.html>
+    <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-Windows.html>
 
 ### 在 Windows 10 中指定重启到 UEFI 固件的步骤
 
@@ -1689,7 +1713,7 @@ Windows 10 重启之后你将会看到出现一个界面提供选项，选择“
 
 新出现的界面选择“高级选项—>UEFI 固件设置”，重启之后就可以直接引导到 UEFI 了。因为现在的BIOS都是UEFI BIOS，也就是自动进入 BIOS 设置了。
 
-参考 <https://docs.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/boot-to-uefi-mode-or-legacy-bios-mode>
+参考 <https://docs.microsoft.com/zh-cn/Windows-hardware/manufacture/desktop/boot-to-uefi-mode-or-legacy-bios-mode>
 
 ### Linux 指定重启到 UEFI 固件的步骤
 
@@ -1730,7 +1754,7 @@ Windows 10 重启之后你将会看到出现一个界面提供选项，选择“
 
 之前误把“动态磁盘”和“GPT 磁盘”混淆了，我的硬盘不幸改成了动态磁盘，Windows 不能操作他的各种分区了。
 
-微软自己都废弃了这个“动态磁盘” <https://docs.microsoft.com/en-us/windows-server/storage/disk-management/change-a-dynamic-disk-back-to-a-basic-disk>
+微软自己都废弃了这个“动态磁盘” <https://docs.microsoft.com/en-us/Windows-server/storage/disk-management/change-a-dynamic-disk-back-to-a-basic-disk>
 
 取消步骤，需要进入 diskpart
 
@@ -1769,7 +1793,7 @@ M$不支持了，自求多福吧，自己挨个版本研究去 <https://docs.mic
 通过 Windows 控制面板启用 .NET Framework 3.5。 此选项需要 Internet 连接。
 简单点办法，安装 directx 9，Windows 自己会弹出提示要求给你安装。NET Framework 3.5。
 
-微软自己做烂了，各个版本居然都是不兼容的 <https://docs.microsoft.com/zh-cn/dotnet/framework/install/dotnet-35-windows> 。
+微软自己做烂了，各个版本居然都是不兼容的 <https://docs.microsoft.com/zh-cn/dotnet/framework/install/dotnet-35-Windows> 。
 
 警告
 
