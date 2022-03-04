@@ -1312,36 +1312,6 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
 pylance
 
-### 格式化 yapf
-
-    用conda安装的这个直接带二进制包：
-    conda install --name p37 yapf -y
-
-    yapf 用这个，禁用 # yapf:disable 代码块  #yapf:enable 或 某行后面的注释 # yapf:disable 禁用一行
-    "python.formatting.provider": "yapf",
-    "python.formatting.yapfArgs": [
-        // "--sytle=yapf_style.cfg"
-    ],
-
-### 代码检查 flake8
-
-    flake8 用这个 可以在要忽略 flake8 检查的那一行加上 # noqa 注释即可
-    整个文件禁用的话，在文件第一行 # flake8: noqa
-
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true,
-    "python.linting.flake8Args": [
-        "--max-line-length=100",
-        // "--ignore=E501, E262",
-    ],
-
-### 代码测试 unittest
-
-    单元测试不要用pytest，老老实实用系统的unittest
-    如果用pytest ，虽然兼容unittest，不需要写子类也可以的。但是：记得在项目跟目录放个空文件 conftest.py
-    https://stackoverflow.com/questions/10253826/path-issue-with-pytest-importerror-no-module-named-yadayadayada/50610630#50610630
-
 ### 高亮空格并消除
 
     Trailing Spaces
@@ -1373,15 +1343,17 @@ pylance
 
     "autoDocstring.docstringFormat": "numpy",
 
-### 括号匹配 Bracket Pair Colorizer 2
+### MarkDown
 
-    // vscode 1.60+ 自带了 "editor.bracketPairColorization.enabled": true,
+    Markdown All in One 高亮，预览
 
-    "bracket-pair-colorizer-2.colors": [
-        "rgba(213,135,32,255)",
-        "rgba(62,145,222,255)",
-        "rgba(18,230,155,255)"
-    ],
+    markdownlint 语法检查
+
+    xlthu.pangu-markdown 中文英文之间加入空格，所谓“盘古空白”
+
+### shell-format
+
+    shell 脚本语法高亮
 
 ### PYQT Integration
 
@@ -1399,10 +1371,6 @@ MacOS Modern Theme
 GitHub Theme
 Solarized Light（自带）  这个是羊皮纸底色，去蓝光了
 
-### GitHubcdn加速
-
-jsdelivr  <https://cdn.jsdelivr.net/gh/xxx>
-
 ### JScript/Json的格式化，比系统自带的好用
 
 Prettier - Code formatter
@@ -1410,46 +1378,6 @@ Prettier - Code formatter
 ### Prettify JSON
 
     格式化json文件很好用，容错率高
-
-### pyreverse
-
-pylint里自带
-
-        pyreverse -ASmy -o png your/
-
-### Draw.io Integration
-
-### UMLet 简单好用的UML流程图
-
-Free UML Tool for Fast UML Diagrams 生成一个".uxf"文件打开即可使用
-
-### vscode-mindmap 脑图
-
-json文件格式节点图。生成一个".km"文件打开即可使用
-
-### Graphviz Dot文件查看
-
-Graphviz Interactive Preview 支持路线高亮
-    F1命令呼叫预览
-
-    https://github.com/tintinweb/vscode-interactive-graphviz
-
-Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成Html代码
-    右键菜单呼叫预览
-
-    https://github.com/joaompinto/vscode-graphviz
-
-### MarkDown
-
-    Markdown All in One 高亮，预览
-
-    markdownlint 语法检查
-
-    xlthu.pangu-markdown 中文英文之间加入空格，所谓“盘古空白”
-
-### shell-format
-
-    shell 脚本语法高亮
 
 ### TODO TREE
 
@@ -1561,6 +1489,80 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
         ]
     },
 
+### Draw.io Integration
+
+### UMLet 简单好用的UML流程图
+
+Free UML Tool for Fast UML Diagrams 生成一个".uxf"文件打开即可使用
+
+### vscode-mindmap 脑图
+
+json文件格式节点图。生成一个".km"文件打开即可使用
+
+### Graphviz Dot文件查看
+
+Graphviz Interactive Preview 支持路线高亮
+    F1命令呼叫预览
+
+    https://github.com/tintinweb/vscode-interactive-graphviz
+
+Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成Html代码
+    右键菜单呼叫预览
+
+    https://github.com/joaompinto/vscode-graphviz
+
+### 括号匹配 Bracket Pair Colorizer 2
+
+    // vscode 1.60+ 自带了 "editor.bracketPairColorization.enabled": true,
+
+    "bracket-pair-colorizer-2.colors": [
+        "rgba(213,135,32,255)",
+        "rgba(62,145,222,255)",
+        "rgba(18,230,155,255)"
+    ],
+
+## VS Code 用的 Python 配套包
+
+### 格式化 yapf
+
+    用conda安装的这个直接带二进制包：
+    conda install --name p37 yapf -y
+
+    yapf 用这个，禁用 # yapf:disable 代码块  #yapf:enable 或 某行后面的注释 # yapf:disable 禁用一行
+    "python.formatting.provider": "yapf",
+    "python.formatting.yapfArgs": [
+        // "--sytle=yapf_style.cfg"
+    ],
+
+### 代码检查 flake8
+
+    flake8 用这个 可以在要忽略 flake8 检查的那一行加上 # noqa 注释即可
+    整个文件禁用的话，在文件第一行 # flake8: noqa
+
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=100",
+        // "--ignore=E501, E262",
+    ],
+
+### 代码测试 unittest
+
+    单元测试不要用pytest，老老实实用系统的unittest
+    如果用pytest ，虽然兼容unittest，不需要写子类也可以的。但是：记得在项目跟目录放个空文件 conftest.py
+    https://stackoverflow.com/questions/10253826/path-issue-with-pytest-importerror-no-module-named-yadayadayada/50610630#50610630
+
+### pyreverse
+
+pylint里自带
+
+        pyreverse -ASmy -o png your/
+
+### GitHubcdn加速
+
+jsdelivr  <https://cdn.jsdelivr.net/gh/xxx>
+
 ### 性能分析
 
 runsnakerun 可惜了只能在python2下面运行
@@ -1578,7 +1580,7 @@ I recommend this approach rather than using easy_install directly on your Linux/
 virtualenv runsnake
 source runsnake/bin/activate
 
-### vscode python多线程调试的坑
+### vs code python多线程调试的坑
 
     # https://code.visualstudio.com/docs/python/debugging#_troubleshooting
     # If you're working with a multi-threaded app that uses native thread APIs (such as the Win32 CreateThread function rather than the Python threading APIs), it's presently necessary to include the following source code at the top of whichever file you wish to debug:
