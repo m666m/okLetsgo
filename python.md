@@ -60,6 +60,8 @@ Pip can install software in three different ways:
 
 ### pip 版本更新
 
+如果安装了conda，需要在conda中安装或更新pip，见下面的章节 [在conda中安装/更新pip]。
+
 1.pip直接更新
 
     先切换到你自己的环境(conda/virtualenv等)
@@ -539,7 +541,7 @@ conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3（这个
     # 显示conda的信息
     conda info
 
-    # 使用相对路径，在你的项目目录下建立虚拟环境
+    # 参见章节[使用相对路径，在你的项目目录下建立虚拟环境]
     cd your_project_dir
     conda create --prefix ./py37 python=3.7
     conda activate ./py37
@@ -795,15 +797,38 @@ read -n1 -p "Press any key to continue..."
 
 如果需要显示中文需要修改配置文件 ~\.minttyrc，详见 [mintty(bash)] <gnu_tools.md>
 
-## Anaconda 环境中使用 pip
+## Anaconda环境中使用 pip
 
 python 设计之初，并没有考虑一个操作系统上有多个环境的问题，默认就是安装到当前系统里用的，后来pip包很多，版本也很多，引入了环境的概念，虚拟环境的保存目录是系统或当前用户，这个python是跟当前操作系统捆绑的。
 
 Anaconda更进一步，你的虚拟环境里的python版本可以不安装到当前操作系统，实现python版本跟操作系统的隔离。但是，你的虚拟环境里的pip是不知道这个隔离的，下载包默认还是会安装到系统或当前用户，所以需要手工修改site.py配置文件，详见下面的章节 [更改conda环境下，pip包安装默认路径]
 
-官方介绍 <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#using-pip-in-an-environment>
+官方介绍
+    <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#using-pip-in-an-environment>
+    <https://www.anaconda.com/blog/using-pip-in-a-conda-environment>
 
-### 先conda，然后pip
+### 为什么anaconda环境中，还需要用pip安装包
+
+<https://www.cnblogs.com/zhangxingcomeon/p/13801554.html>
+
+尽管在anaconda下我们可以很方便的使用conda install来安装我们需要的依赖包，但是anaconda本身只提供部分包，远没有pip提供的包多，有时conda无法安装我们需要的包，我们需要用pip将其装到conda环境里。
+
+另一个原因是，我们自己创建的conda环境里，可能没有pip。这会导致默认使用base环境的pip，有产生版本冲突的可能。
+
+安装好本环境的pip之后，在本环境中使用pip install安装的包，就只在本环境的conda中了。用conda list查看包的清单，对pip安装的包，build列显示为pypi。
+
+### 在conda中安装/更新pip
+
+    conda activate myenv
+
+    conda install -n myenv pip
+
+    conda update pip
+    # pip install --upgrade pip
+
+    pip <pip_subcommand>
+
+### 先 conda install，然后 pip install
 
 如果用过pip了，就不要再用conda，否则也是容易搞乱环境。
 
@@ -828,23 +853,6 @@ pip install 默认使用全局配置文件，见上面的章节 [PyPI使用国�
     (py37)
 
 对 conda 环境来说，需要先【更改conda环境下，pip包安装默认路径】，以后只要切换到你的环境下，再运行pip，默认会安装到你环境下的目录。否则会安装到默认的pyhon环境目录比如 C:\ProgramData\Anaconda3，详解下面的章节 [更改conda环境下，pip包安装默认路径]。
-
-### 为什么anaconda环境中，还需要用pip安装包
-
-<https://www.cnblogs.com/zhangxingcomeon/p/13801554.html>
-
-尽管在anaconda下我们可以很方便的使用conda install来安装我们需要的依赖包，但是anaconda本身只提供部分包，远没有pip提供的包多，有时conda无法安装我们需要的包，我们需要用pip将其装到conda环境里。
-
-另一个原因是，我们自己创建的conda环境里，可能没有pip：导致默认使用base环境的pip，有产生版本冲突的可能。
-
-安装好本环境的pip之后，在本环境中使用pip install安装的包，就只在本环境的conda中了。
-用conda list查看包的清单，对pip安装的包，build列显示为pypi。
-
-在自己的虚拟环境安装pip使用如下命令：
-
-    conda install -n myenv pip
-    conda activate myenv
-    pip <pip_subcommand>
 
 ### conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径
 
