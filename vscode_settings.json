@@ -16,9 +16,16 @@
     "editor.minimap.scale": 1,
     "editor.columnSelection": false,
     "editor.multiCursorModifier": "alt",
-    "outline.showVariables": false,
     "editor.bracketPairColorization.enabled": true,
+    "editor.unicodeHighlight.allowedCharacters": {
+        "：": true,
+        "，": true,
+        "（": true,
+        "）": true
+    },
+    "outline.showVariables": false,
     "window.newWindowDimensions": "maximized", // "offset"
+    "extensions.autoUpdate": false,  // 有些插件升级了反而不可用
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
     "python.languageServer": "Pylance",
@@ -230,10 +237,4 @@
     // 下面这些是vscode自己加的，随时变
     //
     "workbench.colorTheme": "GitHub Dark Default",
-    "editor.unicodeHighlight.allowedCharacters": {
-        "：": true,
-        "，": true,
-        "（": true,
-        "）": true
-    },
 }
