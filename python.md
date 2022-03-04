@@ -62,35 +62,38 @@ Pip can install software in three different ways:
 
 ### pip 版本更新
 
-如果安装了conda，需要在conda中安装或更新pip，见下面的章节 [在conda中安装/更新pip]。
+如果安装了Anaconda，需要在conda中安装或更新pip，见下面的章节 [在conda中安装/更新pip]。
 
-1.pip直接更新
+Windows下干净的python环境，命令行工具不要使用bash，在cmd下用pip没问题。因为python的windows脚本都是用bat实现的。
 
-    先切换到你自己的环境(conda/virtualenv等)
+命令行工具cmd
 
+    先切换到你自己的环境(virtualenv或操作系统自带的python)
+
+    # -U 等效 --upgrade
     # pip install --upgrade pip
     # 如果您到 pip 默认源的网络连接较差，临时使用清华镜像站来升级 pip
     pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
 
-    # pip3 install --upgrade pip
-    # python -m pip install --upgrade pip
+失败的话，应该先检查下你运行pip的时候，是不是没有在虚拟环境下。找不到下载的包文件对应位置的时候，pip安装到系统默认的python目录，才会出现这种权限不足的提示。见下面章节[conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
 
-2.第一步报失败的话，首先查看windows下使用cmd环境，并检查下环境变量，which看下命令指向，是否有conda环境冲突了。windows下，如果是干净的python环境，不要使用bash，在cmd命令行下，直接pip是可以的。
+正确的用法，是切换到你的环境下，再 pip install。
 
-或强制重装：
+像下面这样强行安装，搜索百度的大多数结果，会搞乱基础环境：
+
+    直接使用后面的提示命令 --user，也就是 you should consider upgrading via the 后面的命令。
 
     python -m pip install -U --force-reinstall pip
 
-或直接使用后面的提示命令 --user （不推荐）。
-也就是 you should consider upgrading via the 后面的命令，不推荐。检查下你运行pip的时候，是不是没有在虚拟环境下，安装到系统默认的python目录会出现这样的报错。
+    sudo -h pip install -U pip
 
-还是切换到你的环境下，再 pip install，这样才是正确的安装到你的环境下的用法。
+    管理员权限运行
 
 指定版本
 
     python3 -m pip install pip==版本号
 
-3.有时候有两个pip，如果是这种情况可以使用
+有时候有两个pip，如果是这种情况可以使用
 
     pip3 install--index-url https://pypi.douban.com/simple xxxx
 
@@ -887,6 +890,9 @@ conda安装在conda环境中装任何包，pip在任何环境中安装python包�
     # 自己环境的pip位置
     which -a pip  # bash，在 cmd.exe 下用 where pip
     pip -V  # 列出当前的pip的命令行位置，确认是在自己的环境下面的
+
+    # conda 环境的配置信息，便于对照
+    conda info
 
 #### 确认 site.py 的位置是否跟随环境
 
