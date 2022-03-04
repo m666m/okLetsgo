@@ -14,7 +14,9 @@ windows下的python，各种命令的脚本都是cmd下的bat，如果用bash运
 
 ## pip
 
-不要在操作系统的python环境或conda的base环境下更新pip，只更新你自己的环境(conda/virtualenv等)下的pip。
+pip install 的各种问题 <https://www.cnblogs.com/feixiablog/p/8320602.html>
+
+如果要在conda下使用pip，见下面章节[Anaconda环境中使用pip]
 
 ### 务必搞清环境，pip install 可能把包放到的几个地方
 
@@ -34,13 +36,13 @@ Pip can install software in three different ways:
 
     At virtualenv level. virtualenv环境下，"pip install xxx"放在了virtualenv建立的环境目录的site-packages里，最好用这个。
 
-如果当前操作系统还安装了conda，请先conda list 看看有没有pip，有可能运行的是conda环境里的pip，那就安装到了conda建立的环境目录的site-packages里
+如果当前操作系统还安装了conda，请先conda list 看看有没有pip，有可能运行的是conda环境里的pip，那就安装到了conda建立的环境目录的site-packages里。详见下面章节 [conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
 
 ### wheels
 
 在windows环境中，python 的 Setup 需要调用一个 vcvarsall.bat 的文件，该文件需要安装c++编程环境才会有。网上的方法有两个：一、安装MinGW；二、安装Visual Studio 。很多python包也是如此，pip提供的是代码，需要借助python环境在本地编译出二进制。
 
-最简单的解决办法是下载好心人提供的编译好的windows二进制包 <https://www.lfd.uci.edu/~gohlke/pythonlibs/>
+对这种情况，最简单的解决办法是下载好心人提供的编译好的windows二进制包 <https://www.lfd.uci.edu/~gohlke/pythonlibs/>
 
     python2.7用的是msvs2008编译的，所以python2.7默认只能认出msvs2008.
     python3.4用的是msvs2010编译的，所以python3.4默认只能认出msvs2010。
@@ -53,7 +55,7 @@ Pip can install software in three different ways:
     如果安装的是VS2010，则VERSION为10.0；
     如果安装的是VS2008，则VERSION为9.0。
 
-如何编译python3.7/3.8 <https://www.cnblogs.com/xiacaojun/p/9914545.html>
+如何编译 python3.7/3.8 <https://www.cnblogs.com/xiacaojun/p/9914545.html>
 <https://zhuanlan.zhihu.com/p/148348614>
 
 清华开源镜像 <https://mirrors.tuna.tsinghua.edu.cn/>
@@ -97,6 +99,7 @@ Pip can install software in three different ways:
 ### pip 升级包
 
     先切换到你自己的环境(conda/virtualenv等)
+
     pip install --upgrade 要升级的包名
 
 ### pip install 指定 github 位置
@@ -151,7 +154,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 ### PyPI使用国内源
 
-任何操作，先切换到自己的环境下，然后检查pip的路径设置
+任何操作前，先切换到自己的环境下，然后检查pip的路径设置
 
     # 先切换到你自己的环境(conda/virtualenv等)
     conda activate p37
@@ -164,11 +167,28 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 如果为空，说明未配置，都是默认值，pip config配置之后就有了。
 
-清华源
+使用清华源
 
     # <https://mirrors.tuna.tsinghua.edu.cn/help/pypi/>
+
+    # 不要在系统python环境或conda的base环境下更新
+    # 先切换到你的环境下(conda/virtualenv等)
+    conda activate p37
+
+    # 临时使用国内镜像，更新pip自身
     pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+
+    # 设为默认
     pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+确认
+
+    $ pip -v config list
+    For variant 'global', will try loading 'C:\ProgramData\pip\pip.ini'
+    For variant 'user', will try loading 'C:\Users\xxxx\pip\pip.ini'
+    For variant 'user', will try loading 'C:\Users\xxxx\AppData\Roaming\pip\pip.ini'
+    For variant 'site', will try loading 'D:\StartHere\pycode\py37\pip.ini'
+    global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
 
 配置文件生成在  ~/.pip/pip.conf，Anaconda 安装的在 C:\Users\xxxx\AppData\Roaming\pip\pip.ini。
 
@@ -181,30 +201,6 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     豆瓣 <http://pypi.douban.com/simple>
     v2ex <http://pypi.v2ex.com/simple>
     中国科学院 <http://pypi.mirrors.opencas.cn/simple/>
-
-命令行工具执行
-
-    # 不要在系统python环境或conda的base环境下更新
-    # 先切换到你的环境下(conda/virtualenv等)
-    conda activate p37
-
-    # 临时使用国内镜像，更新pip自身
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple flask
-
-    # 设为默认
-    # 升级 pip 到最新的版本 (>=10.0.0) 后进行配置：
-    # sudo pip install pip -U
-    sudo pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
-    sudo pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-
-确认
-
-    $ pip -v config list
-    For variant 'global', will try loading 'C:\ProgramData\pip\pip.ini'
-    For variant 'user', will try loading 'C:\Users\xxxx\pip\pip.ini'
-    For variant 'user', will try loading 'C:\Users\xxxx\AppData\Roaming\pip\pip.ini'
-    For variant 'site', will try loading 'D:\StartHere\pycode\py37\pip.ini'
-    global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
 
 #### 在 Linux 和 macOS 中，用户配置需要写到 ~/.pip/pip.conf 中
 
@@ -797,11 +793,11 @@ read -n1 -p "Press any key to continue..."
 
 如果需要显示中文需要修改配置文件 ~\.minttyrc，详见 [mintty(bash)] <gnu_tools.md>
 
-## Anaconda环境中使用 pip
+## Anaconda环境中使用pip
 
 python 设计之初，并没有考虑一个操作系统上有多个环境的问题，默认就是安装到当前系统里用的，后来pip包很多，版本也很多，引入了环境的概念，虚拟环境的保存目录是系统或当前用户，这个python是跟当前操作系统捆绑的。
 
-Anaconda更进一步，你的虚拟环境里的python版本可以不安装到当前操作系统，实现python版本跟操作系统的隔离。但是，你的虚拟环境里的pip是不知道这个隔离的，下载包默认还是会安装到系统或当前用户，所以需要手工修改site.py配置文件，详见下面的章节 [更改conda环境下，pip包安装默认路径]
+Anaconda更进一步，你的虚拟环境里的python版本可以不安装到当前操作系统，实现python版本跟操作系统的隔离。但是，你的虚拟环境里的pip不知道这个隔离，下载包默认还是会安装到系统或当前用户，所以需要手工修改site.py配置文件，详见下面的章节 [更改conda环境下，pip包安装默认路径]
 
 官方介绍
     <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#using-pip-in-an-environment>
@@ -828,35 +824,45 @@ Anaconda更进一步，你的虚拟环境里的python版本可以不安装到当
 
     pip <pip_subcommand>
 
-### 先 conda install，然后 pip install
+### 基本原则
 
-如果用过pip了，就不要再用conda，否则也是容易搞乱环境。
+pip不像conda一样，他不知道环境！
 
-如果后续又想装新的包了，就再建个环境，还是先用conda，后pip。
+不要在操作系统的python环境或conda的base环境下更新pip，只更新你自己的环境(conda/virtualenv等)下的pip。
 
-也就是说，装完了就不要删或update，宁可重建，什么 conda remove/pip uninstall 都别用。
+conda安装在conda环境中装任何包，pip在任何环境中安装python包。
 
-### pip install 不要使用参数 --user
+先 conda install，然后 pip install
 
-如果pip在安装时候提示权限不足，无法写入啥的，提示用“--user”，不要用！不然会写入到所有用户文件夹(ProgramData/Anaconda)下面，即安装到用户home目录的公用包目录中了！
+    如果用过pip了，就不要再用conda，否则也是容易搞乱环境。
 
-原因见下面章节 [conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
+    如果后续又想装新的包了，就再建个环境，还是先用conda，后pip。
 
-pip install 默认使用全局配置文件，见上面的章节 [PyPI使用国内源]
+    也就是说，装完了就不要删或update，宁可重建，什么 conda remove/pip uninstall 都别用。
 
-    $ pip config list -v
-    For variant 'global', will try loading 'C:\ProgramData\pip\pip.ini'
-    For variant 'user', will try loading 'C:\Users\sweetuser\pip\pip.ini'
-    For variant 'user', will try loading 'C:\Users\sweetuser\AppData\Roaming\pip\pip.ini'
-    For variant 'site', will try loading 'D:\StartHere\pycode\py37\pip.ini'
-    global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
-    (py37)
+使用 pip install 不要使用参数 --user
 
-对 conda 环境来说，需要先【更改conda环境下，pip包安装默认路径】，以后只要切换到你的环境下，再运行pip，默认会安装到你环境下的目录。否则会安装到默认的pyhon环境目录比如 C:\ProgramData\Anaconda3，详解下面的章节 [更改conda环境下，pip包安装默认路径]。
+    如果pip在安装时候提示权限不足，无法写入啥的，提示用“--user”，不要用！不然会写入到所有用户文件夹(ProgramData/Anaconda)下面，即安装到用户home目录的公用包目录中了！
+
+    原因见下面章节 [conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
+
+    pip install 默认使用全局配置文件，见上面的章节 [PyPI使用国内源]
+
+        $ pip config list -v
+        For variant 'global', will try loading 'C:\ProgramData\pip\pip.ini'
+        For variant 'user', will try loading 'C:\Users\xxxx\pip\pip.ini'
+        For variant 'user', will try loading 'C:\Users\xxxx\AppData\Roaming\pip\pip.ini'
+        For variant 'site', will try loading 'D:\StartHere\pycode\py37\pip.ini'
+        global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
+        (py37)
+
+新建立的conda环境，首选要修改pip包安装默认路径
+
+    以后只要切换到你的环境下，再运行pip，默认会安装到你环境下的目录。否则会安装到默认的pyhon环境目录比如 C:\ProgramData\Anaconda3，详解下面的章节 [更改conda环境下，pip包安装默认路径]。
 
 ### conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径
 
-我们需要判断目前我们用的pip指令，会把包装到哪里。因为pip不像conda一样，他不知道环境！pip 在路径里可能有多个，Windows单独安装的python自带，virtualenv环境自带，Anaconda 默认 base 环境自带，调用起来按PATH搜索的顺序。
+我们需要判断目前我们用的pip指令，会把包装到哪里。pip 在路径里可能有多个，Windows单独安装的python自带，virtualenv环境自带，Anaconda 默认 base 环境自带，调用起来按PATH搜索的顺序。
 
 所以，自己的环境在初次使用前，或者做了新的包安装或更新，也一定要先确认下。
 
@@ -1098,7 +1104,8 @@ pip install 默认使用全局配置文件，见上面的章节 [PyPI使用国�
 如果你的命令行工具是bash，也不需要改为 /d/pycode/your_project/py37 的形式，因为 site.py 是 python 执行，python 根据当前操作系统识别路径格式。
 
 确认
-     python -m site
+
+    python -m site
 
     # 查看后缀是否为 exists
     USER_BASE: '.....' (exists)
@@ -1118,18 +1125,11 @@ pip install 默认使用全局配置文件，见上面的章节 [PyPI使用国�
 
 该条命令在linux和mac环境中使用
 
-    source activate python27 。
+    source activate python27
 
 接下来看到命令行的最前端多出来(python27)，这时候已经处在python2.7的环境中了。
 
 想要退出python2.7进入python3.6，需要再次键入命令deactivate（linux和mac下用source deactivate命令）。
-
-### 最显着的区别可能是这样的
-
-pip在任何环境中安装python包;
-conda安装在conda环境中装任何包。
-
-    pip install 的各种问题  https://www.cnblogs.com/feixiablog/p/8320602.html
 
 ## 在ubuntu系统配置多python环境
 
