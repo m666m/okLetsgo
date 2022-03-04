@@ -582,7 +582,9 @@ conda默认的把这个base环境"/c/ProgramData/Anaconda3/"视为root的，其�
     # 环境是相对路径
     conda install --prefix ./p37 beautifulsoup4  -y
 
-#### 官方推荐所有的依赖包一次性install完毕，避免依赖文件重复
+#### 官方推荐所有的依赖包一次性install完毕
+
+这样的好处是避免依赖文件重复
 
     conda install -n p37 numpy pandas pyqtgraph
 
@@ -604,11 +606,11 @@ conda用“=”，pip用“==”
 
 ### 【使用相对路径，在你的项目目录下建立虚拟环境】
 
-这样做的好处：
-
-    你的环境只跟项目目录相关，不会干扰到别的环境。
+这样做的好处：你的环境只跟项目目录相关，独立性更强，不会干扰到别的环境。
 
 如果想使用通用的虚拟环境，把 --prefix ./py37 换成 --name p37 即可，其它的命令不变
+
+虚拟环境使用相对路径，之后所有跟环境名相关的 conda 操作都要明确指定“--prefix”，因为 conda --name 只在默认的env目录寻找你的环境名 <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#specifying-a-location-for-an-environment>
 
 1. 在你的项目目录下创建虚拟环境
 
@@ -632,28 +634,79 @@ conda用“=”，pip用“==”
 
     conda install --prefix ./py37 yapf Flake8 scipy numpy pandas matplotlib  sqlalchemy openpyxl seaborn beautifulsoup4 pyqtgraph
 
-#### 注意 conda 要明确指定 --prefix
+6. pip install 依赖包
 
-虚拟环境使用相对路径，之后所有跟环境名相关的 conda 操作都要明确指定“--prefix”，因为 conda --name 只在默认的env目录寻找你的环境名 <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#specifying-a-location-for-an-environment>
+7. 环境配置文件保留好
 
-#### 环境文件的备份和恢复
+    conda env export > environment.yml
 
+下次安装就简单了，直接恢复即可，见下面的章节 [环境文件的备份和恢复]
+
+### 环境文件的备份和恢复
+
+#### 导出环境配置文件便于定制，包含pip包，推荐
+
+    # 先切换到你的环境！
     cd your_project_dir
     conda activate ./py37
 
-    # 导出环境配置文件便于定制，包含pip包，推荐
     conda env export > environment.yml
+
+    # 利用配置文件创建目标环境
+    # 注意环境名是写在yml文件里的，酌情修改
+    # https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#create-env-file-manually
+    #
+    conda env create -f environment.yml
+    conda activate xxxx
+
+    # 验证：列出所有的环境，当前激活的环境会标*
+    conda info -e
+
     # 根据指定的配置文件更新指定的虚拟环境
     conda env update --prefix ./py37 --file environment.yml  --prune
 
-    # 精确的可复现的安装环境，不包含pip包，不推荐
+#### 带包地址的可复现的安装环境，不包含pip包，不推荐
+
+    # 先切换到你的环境！
+    cd your_project_dir
+    conda activate ./py37
+
     conda list --explicit > spec-file.txt
-    # 恢复环境
-    conda create  --prefix ./py37 --file spec-file.txt
+
+    # 恢复环境：创建新环境
+    conda create  --prefix ./pyy37 --file spec-file.txt
+    # 恢复环境：在已有环境上安装
     conda install --prefix ./py37 --file spec-file.txt
 
-    # 列出所有的环境，当前激活的环境会标*。
+    # 验证：列出所有的环境，当前激活的环境会标*
     conda info -e
+
+#### 如果有pip包未收集
+
+    # 先切换到你的环境！
+    cd your_project_dir
+    conda activate ./py37
+
+    # 导出pip包
+    pip freeze > py37.txt
+
+    # 在目标环境里导入pip包
+    pip install -r py37.txt
+
+### 复制虚拟环境
+
+#### 克隆
+
+    conda create --name new_p37 --clone p37
+
+    # 验证：列出所有的环境，当前激活的环境会标*
+    conda info --envs
+
+#### 到其他机器上
+
+复制anaconda3/envs/下的某个环境的文件夹到另外一台机器上
+
+    rsync -va username@xxx.xxx.xxx.xxx:/home/username/anaconda3/envs/p37/
 
 ### conda频道和源配置
 
@@ -695,16 +748,6 @@ conda 有很多频道，在网页版频道列表里有对应的版本，找合�
 
     # vs code 提示
     # conda update -n base -c defaults conda
-
-### 用conda复制虚拟环境到其他机器上
-
-1.复制anaconda3/envs/下的某个环境的文件夹到另外一台机器上
-
-    rsync -va username@ip.add.re.ss:/home/username/anaconda3/envs/copied_env/
-
-2.用命令新建虚拟环境env2
-
-    conda create --name env2 --clone /home/username/anaconda3/envs/copied_env/
 
 ### Windows 下执行 conda 脚本
 
