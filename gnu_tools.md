@@ -238,15 +238,17 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 <https://cloud.tencent.com/developer/article/1531457>
 <http://c.biancheng.net/view/4832.html>
 
-下载安装 GPG：访问 <http://www.gnupg.org/download>，下载适合自己操作系统平台的安装程序。这里下载的是 Windows 平台的 gpg4win-2.3.3.exe。
+简单的话，gpg随着git已经安装了。单独下载 GPG：访问 <http://www.gnupg.org/download>，下载适合自己操作系统平台的安装程序。
 
-安装完成后，打开 CMD 窗口，输入gpg --version，出现如图 1 信息表示安装成功
+安装完成后，打开 CMD 窗口，输入 gpg --version ，出现如图 1 信息表示安装成功
 
 ### 生成密钥对
 
 在使用 GPG 之前，先要准备一个密钥对，即一个私钥，一个公钥。这样才能使用私钥对文件进行签名，将公钥分发到公钥服务器供其他用户下载，其他用户就可以使用公钥对签名进行验证。
 
-在 CMD 命令行中，输入gpg --gen-key命令生成密钥对。
+在 CMD 命令行中，输入命令生成密钥对：
+
+    gpg --gen-key
 
 在 GPG 执行过程中会提示如下几个信息。
 
@@ -305,7 +307,7 @@ ssb 行描述的是密钥的子钥（可以不用关心）。
 
 打开 CMD 命令行窗口，切换到 your.file 文件所在的目录。输入：
 
-    gpg-ab your.file
+    gpg -ab your.file
 
 再输入前面生成密钥时输入的密码 12345678，会在当前目录下生成一个名叫 your.file.asc 的签名文件。
 
@@ -316,7 +318,7 @@ ssb 行描述的是密钥的子钥（可以不用关心）。
 
 打开 CMD 命令行窗口，将目录切换到公钥文件所在的目录，输入如下命令将公钥文件分发到公钥服务器。
 
-    gpg --keyserver hkp://pgp.mit.edu --send-keys DDAAB5A8
+    gpg  --send-keys DDAAB5A8 --keyserver hkp://pgp.mit.edu
 
 “hkp://pgp.mit.edu”是公钥服务器名称。DDAAB5A8 是要发布的公钥 id（前面生成的密钥对中的公钥）。
 
@@ -331,7 +333,7 @@ gpg: sending key DDAAB5A8 to hkp server pgp.mit.edu
 
 下载 DDAAB5A8 对应的公钥，在 CMD 命令行窗口中输入:
 
-    gpg--keyserver hkp://pgp.mit.edu--recv-keys DDAAB5A8
+    gpg --recv-keys DDAAB5A8 --keyserver hkp://pgp.mit.edu
 
 注：因为本地已经有这个公钥，所有下载后提示没有改变。
 
@@ -362,7 +364,7 @@ MingW (gcc 编译到mscrt)包含gcc和一系列工具，是Windows下的gnu环�
 
 如 创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的mscrt CreateProcess()形式。
 
-#### Cygwin在中间加了个翻译层 cygwin1.dll
+#### Cygwin 在编译时中间加了个翻译层 cygwin1.dll
 
 Cygwin 生成的程序依然有 fork() 这样的 Linux 系统调用，但目标库是 cygwin1.dll。
 
@@ -384,7 +386,7 @@ Cygwin实现，不是虚拟机那种运行时环境，它提供的是程序编�
 
 如果还有更高的需求（例如运行 POSIX 应用程序），就只能选择安装 Cygwin。
 
-相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具，目前流行的MSYS2 是MSYS的一个升级版,准确的说是集成了pacman和Mingw-w64的Cygwin升级版。把/usr/bin加进环境变量path以后，可以直接在cmd中使用Linux命令。
+相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具，目前流行的 MSYS2 是 MSYS 的一个升级版，准确的说是集成了 pacman 和 Mingw-w64 的 Cygwin 升级版。把 /usr/bin 加进环境变量 path 以后，可以直接在 cmd 中使用 Linux 命令。
 
 如果你只是想在Windows下使用一些linux小工具，建议用MSYS2就可以了。
 
