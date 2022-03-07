@@ -7,8 +7,8 @@
     - [git工作流： 功能分支工作流 master -- dev(开发人员工作在此)](#git工作流-功能分支工作流-master----dev开发人员工作在此)
     - [git工作流： Gitflow工作流 master -- develop -- feature(开发人员工作在此)](#git工作流-gitflow工作流-master----develop----feature开发人员工作在此)
     - [阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master](#阿里巴巴-aoneflow从master上拉出feature分支相关feature分支合并出release分支最终合入master)
-  - [git 初始设置](#git-初始设置)
-    - [git初次使用](#git初次使用)
+  - [git 客户端设置](#git-客户端设置)
+    - [git 初始设置](#git-初始设置)
     - [使用 GPG 签名 Git 提交](#使用-gpg-签名-git-提交)
       - [设置gpg程序的路径](#设置gpg程序的路径)
       - [签名提交](#签名提交)
@@ -353,9 +353,9 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
     特性分支与发布分支的关联关系维护有点复杂。最好是在一个整体流程的自动化的平台下管理维护，该平台实现从需求提出，功能拆分，创建feature分支，组合release分支，生成部署环境，创建测试流水线，代码审查流水线，安全检查，在线部署等一系列步骤的自动化，最终实现端到端交付的研发自动化体系。
 
-## git 初始设置
+## git 客户端设置
 
-### git初次使用
+### git 初始设置
 
 如果未设置过git用户名和邮箱
 
