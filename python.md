@@ -367,7 +367,7 @@ virtualenv 创建虚拟环境的时候，会把系统Python复制一份到虚拟
 
 0.先安装git，后续使用它自带的bash、ssh比较方便，不装也行
 
-1.如果想让vs code自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”或“set Anaconda3 the system default python”。如果你想使用自定义的虚拟环境，可以不勾选。
+1.如果想让vs code自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”或“set Anaconda3 the system default python”。如果你想使用相对路径的虚拟环境，可以不勾选。
 
 2.选择了“给所有用户安装”时，新建环境如[p37]会保存在C:\ProgramData\Anaconda3\envs\p37，不选则保存在 C:\Users\xxxx\.conda\envs\p37，相应的python、pip位置也会跟随变化。
 
@@ -375,25 +375,28 @@ virtualenv 创建虚拟环境的时候，会把系统Python复制一份到虚拟
 
 4.anaconda换清华源，参见下面章节[conda频道和源配置]
 
-5.更新 conda（sof上的帖子不推荐更新conda，直接用就行，基础环境更新了反而容易乱）
+x.pip更换国内源，详见上面章节 [PyPI使用国内源]
+
+x.不推荐更新 conda。如果想更新包，仅在自己的虚拟环境里更新指定的包。
 
 管理员权限打开命令行工具
 
     conda activate
 
+    # conda 默认 base 环境下自带的直接用就行，基础环境更新了容易乱。
     conda update -n base conda
     conda update anaconda
     conda update anaconda-navigator
 
-6.设置conda在哪个shell下使用（windows默认是cmd）
+x. 不推荐更新pip。仅在自己的虚拟环境里更新pip和指定的包，详见下面章节[Anaconda环境中使用pip]
 
-详见下面章节 [conda init 命令设置命令行工具]
+5.设置conda在哪个shell下使用（windows默认是cmd），详见下面章节 [conda init 命令设置命令行工具]
 
-7.pip更换国内源，base 环境下自带的 pip 不要更新，详见上面章节 [PyPI使用国内源]
+6.anaconda-navigator新建个[p37]环境，注意更改pip默认的下载包路径，详见下面章节[更改conda环境下，pip包安装默认路径]
+
+7.建立你自己的环境，见下面的章节 [使用相对路径，在你的项目目录下建立虚拟环境]
 
 8.vs code配置默认终端，选择“Git Bash”
-
-9.建立你自己的环境，见下面的章节 [使用相对路径，在你的项目目录下建立虚拟环境]
 
 ### 填坑
 
