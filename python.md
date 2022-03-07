@@ -714,9 +714,11 @@ conda用“=”，pip用“==”
 
     conda activate ./py37
 
+    # 最后手动安装yml文件中用wheel安装的包
+
 ##### 利用配置文件yml更新已有的环境
 
-    conda env update --prefix ./py37 --file environment.yml --prune
+    conda env update --prefix ./py37 --file py37_environment.yml --prune
 
     conda activate ./py37
 
@@ -724,9 +726,6 @@ conda用“=”，pip用“==”
 
     # 列出所有的环境，当前激活的环境会标*
     conda info -e
-
-    # 根据指定的配置文件更新指定的虚拟环境
-    conda env update --prefix ./py37 --file environment.yml  --prune
 
 #### 带包地址的可复现的安装环境，不包含pip包，不推荐
 
@@ -737,7 +736,7 @@ conda用“=”，pip用“==”
     conda list --explicit > py37_spec-file.txt
 
     # 恢复环境：创建新环境
-    conda create --prefix ./pyy37 --file py37_spec-file.txt
+    conda create --prefix ./py37_new --file py37_spec-file.txt
 
     # 恢复环境：在已有环境上安装
     conda install --prefix ./py37 --file py37_spec-file.txt
@@ -745,9 +744,9 @@ conda用“=”，pip用“==”
     # 验证：列出所有的环境，当前激活的环境会标*
     conda info -e
 
-pip包单独导 requirements.txt，见下面 [环境配置中pip包的导入和导出]
+pip包单独导 requirements.txt，建议根据自己的具体项目，手工一个个的写入。
 
-#### 环境配置中pip包的导入和导出
+#### 环境配置中pip包的导入和导出，混入conda包，不推荐
 
     # 先切换到你的环境！
     cd your_project_dir
