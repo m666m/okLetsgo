@@ -394,9 +394,15 @@ x. 不推荐更新pip。仅在自己的虚拟环境里更新pip和指定的包�
 
 6.vs code配置默认终端，选择“Git Bash”
 
-7.anaconda-navigator新建个[p37]环境，注意更改pip默认的下载包路径，详见下面章节[更改conda环境下，pip包安装默认路径]
+7.anaconda-navigator 逐个python版本的新建环境，作为标准环境，这些环境建了之后不要下载包，不要改动！
 
-8.建立你自己的环境，见下面的章节 [使用相对路径，在你的项目目录下建立虚拟环境]
+NOTE:这里有个耦合，后续再建立同版本的python环境都会复用这个文件！原因是Anaconda节省空间使用文件的链接，但是无法区分pip。
+
+所以，稳妥的办法是，如果你的系统里要使用多个python版本，先逐个建立该版本的环境，什么都不要改。
+然后针对你自己的项目建相对路径的虚拟环境，在这个虚拟环境里面安装pip，然后改路径。
+详见下面章节[更改conda环境下，pip包默认下载路径]
+
+8.建立你自己项目的虚拟环境，见下面的章节 [使用相对路径，在你的项目目录下建立虚拟环境]
 
 9.详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
 
@@ -447,6 +453,20 @@ windows下python按[TAB]出现报错：
     C:\Users\xxxx\.vscode 目录清空
 
 ## Anaconda 管理
+
+理解Anaconda版本管理的特殊性
+
+    当我们创建新的环境的时候，Anaconda 对相同的python版本指向为一个打包文件的链接。
+
+    所以如果你改变了第一个python版本的环境，则后续新建同版本的环境会跟着变。。。
+
+    对pip包默认下载路径，conda库更新，都会同步这个影响。
+
+所以稳妥的办法是
+
+    Anaconda 安装完毕后，先对各个版本建立虚拟环境，但是不要做操作，比如更新包、修改pip包的默认下载路径等。
+
+    有了第一个基础版本的python环境之后，再建立针对具体项目的虚拟环境，在这个虚拟环境里进行conda/pip包的安装和更新。
 
 注意： 见下面章节 [conda/pip 操作前务必先检查当前环境中 conda/pip/python 的路径]
 
@@ -643,7 +663,7 @@ conda用“=”，pip用“==”
 
 3.确认conda、python、pip都是用的你的环境的，参见下面章节 [conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
 
-4.修改你的环境pip保存下载包的位置，参见下面章节 [更改conda环境下，pip包安装默认路径]。
+4.修改你的环境pip保存下载包的位置，参见下面章节 [更改conda环境下，pip包默认下载路径]。
 
 5.官方推荐所有的依赖包一次性 conda install，避免依赖文件重复
 
@@ -661,13 +681,13 @@ conda用“=”，pip用“==”
 
 目前建议在 cmd 下执行，脚本好像有路径解析问题，在bash下总是报错
 
-#### 导出环境配置文件便于定制，包含pip包，推荐
+#### 导出环境配置文件yml便于定制，包含pip包，推荐
 
     # 先切换到你的环境！
     conda activate p37
 
     conda env export > environment.yml
-    # 这个文件需要手动转换为 UTF-8 https://github.com/conda/conda/issues/9749
+    # 注意删除yml文件中用wheel安装的包
 
 对使用相对路径的环境
 
@@ -675,7 +695,7 @@ conda用“=”，pip用“==”
 
     conda env export --prefix ./py37 > environment.yml
 
-#### 利用配置文件创建目标环境
+##### 利用配置文件yml创建目标环境
 
     # 注意环境名是写在yml文件里的，酌情修改
     # https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#create-env-file-manually
@@ -688,14 +708,17 @@ conda用“=”，pip用“==”
     # <https://stackoverflow.com/questions/35802939/install-only-available-packages-using-conda-install-yes-file-requirements-t>
     conda env create --prefix ./py37 --file py37_environment.yml
 
+    # 环境的导出配置文件中，pip没有说明版本和位置，默认用了系统的pip，这样安装的pip包可能会到比的地方去了。
+    # 目前发现是利用已有的同版本的python环境。
     # Warning: you have pip-installed dependencies in your environment file, but you do not list pip itself as one of your conda dependencies.  Conda may not use the correct pip to install your packages, and they may end up in the wrong place.  Please add an explicit pip dependency.  I'm adding one for you, but still nagging you.
-    环境的导出配置文件中，pip没有说明版本和位置，默认用了系统的pip，这样安装的pip包可能会到比的地方去了。
 
-#### 利用配置文件更新已有的环境
+    conda activate ./py37
+
+##### 利用配置文件yml更新已有的环境
 
     conda env update --prefix ./py37 --file environment.yml --prune
 
-    conda activate  --prefix ./py37
+    conda activate ./py37
 
 验证：
 
@@ -711,17 +734,18 @@ conda用“=”，pip用“==”
     cd your_project_dir
     conda activate ./py37
 
-    conda list --explicit > spec-file.txt
+    conda list --explicit > py37_spec-file.txt
 
     # 恢复环境：创建新环境
-    conda create  --prefix ./pyy37 --file spec-file.txt
+    conda create --prefix ./pyy37 --file py37_spec-file.txt
+
     # 恢复环境：在已有环境上安装
-    conda install --prefix ./py37 --file spec-file.txt
+    conda install --prefix ./py37 --file py37_spec-file.txt
 
     # 验证：列出所有的环境，当前激活的环境会标*
     conda info -e
 
-pip包单独导requirements.txt，见下面 [环境配置中pip包的导入和导出]
+pip包单独导 requirements.txt，见下面 [环境配置中pip包的导入和导出]
 
 #### 环境配置中pip包的导入和导出
 
@@ -732,10 +756,10 @@ pip包单独导requirements.txt，见下面 [环境配置中pip包的导入和�
     pip list
 
     # 导出pip包
-    pip freeze > py37.txt
+    pip freeze > py37_requirements.txt
 
     # 在目标环境里导入pip包
-    pip install -r py37.txt
+    pip install -r py37_requirements.txt
 
 ### 复制虚拟环境
 
@@ -841,9 +865,18 @@ read -n1 -p "Press any key to continue..."
 
 ## Anaconda环境中使用pip
 
-python 设计之初，并没有考虑一个操作系统上有多个环境的问题，默认就是安装到当前系统里用的，后来pip包很多，版本也很多，引入了环境的概念，虚拟环境的保存目录是系统或当前用户，这个python是跟当前操作系统捆绑的。
+python 设计之初，并没有考虑一个操作系统上有多个环境的问题，默认就是安装到当前系统里用的。
+后来pip包很多，版本也很多，引入了环境的概念，虚拟环境的保存目录是系统或当前用户，这个python是跟当前操作系统捆绑的。
 
-Anaconda更进一步，你的虚拟环境里的python版本可以不安装到当前操作系统，实现python版本跟操作系统的隔离。但是，你的虚拟环境里的pip不知道这个隔离，下载包默认还是会安装到系统或当前用户，所以需要手工修改site.py配置文件，详见下面的章节 [更改conda环境下，pip包安装默认路径]
+Anaconda更进一步，你的虚拟环境里的python版本可以不安装到当前操作系统，实现python版本跟操作系统的隔离。
+但是，你的虚拟环境里的pip不知道这个隔离，下载包默认还是会安装到系统或当前用户，
+所以需要手工修改site.py配置文件，详见下面的章节 [更改conda环境下，pip包默认下载路径]
+
+当你新建conda环境时，anaconda并没有在新建的环境中新建pip，此时只有anaconda默认的环境有pip。
+所以此时你用pip install，所安装的包和依赖包均在anaconda默认的环境中，其他环境共享这个包的使用。
+
+如果你之前建立过同版本的python环境，anaconda会节约硬盘空间，直接建立一个指向该python文件的链接。
+这样会导致，你以为你新建了个环境，但是pip的下载包还是指向你第一个同版本python的环境下的目录，乱了吧？
 
 官方介绍
     <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#using-pip-in-an-environment>
@@ -904,7 +937,7 @@ conda安装在conda环境中装任何包，pip在任何环境中安装python包�
 
 新建立的conda环境，首选要修改pip包安装默认路径
 
-    以后只要切换到你的环境下，再运行pip，默认会安装到你环境下的目录。否则会安装到默认的pyhon环境目录比如 C:\ProgramData\Anaconda3，详解下面的章节 [更改conda环境下，pip包安装默认路径]。
+    以后只要切换到你的环境下，再运行pip，默认会安装到你环境下的目录。否则会安装到默认的pyhon环境目录比如 C:\ProgramData\Anaconda3，详解下面的章节 [更改conda环境下，pip包默认下载路径]。
 
 ### conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径
 
@@ -966,7 +999,7 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
     或
     "C:\ProgramData\Anaconda3\Scripts"（ENABLE_USER_SITE: False）
 
-则可以修改到自己的虚拟环境下，参见下面章节 [更改conda环境下，pip包安装默认路径]。
+则可以修改到自己的虚拟环境下，参见下面章节 [更改conda环境下，pip包默认下载路径]。
 
 #### bash 示例
 
@@ -1105,11 +1138,21 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
         USER_SITE: 'C:\\Users\\xxxx\\AppData\\Roaming\\Python\\Python37\\site-packages' (doesn't exist)
         ENABLE_USER_SITE: True
 
-### 【更改conda环境下，pip包安装默认路径】
+### 【更改conda环境下，pip包默认下载路径】
 
 想要做到 Anaconda 中不同环境互相不干涉，不仅需要建新的conda环境，如果想pip下载包跟其它环境隔离，还需要修改配置文件。
 
-这是因为当我们创建新的环境的时候，anaconda会沿用一些base环境下的配置，特别是默认的pip下载包时的安装路径，参见前面章节[conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
+这是因为当我们创建新的环境的时候，Anaconda 对相同的python版本指向为一个打包文件的链接，导致无法区分pip。
+特别是默认的pip下载包时的安装路径，参见前面章节[conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
+
+稳妥的办法是
+
+    如果你的操作系统里要使用多个python版本，先在Ananconda里逐个建立每个版本的虚拟环境，什么都不要改。
+
+    然后再针对你具体的项目建相对路径的虚拟环境，在这个虚拟环境里改pip包默认下载路径。
+
+如果不这样做，第一个版本的python环境，会被后续的同版本pytyhon环境复用，如果该环境中pip路径变了，其它各环境也跟着变。。。。
+这样就可以理解为什么Anaconda新建环境默认不安装pip了，最好自己手动安装。
 
 参考
 
@@ -1147,12 +1190,11 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
     USER_SITE = "C:\\Users\\xxxx\\.conda\\envs\\p37\\Lib\\site-packages"
     USER_BASE = "C:\\Users\\xxxx\\.conda\\envs\\p37\\Scripts"
 
-
-    # 改为
+    # 如果env指向的 C:\ProgramData\Anaconda3\envs 改为
     USER_SITE = "C:\\ProgramData\\Anaconda3\\envs\\p37\\Lib\\site-packages"
     USER_BASE = "C:\\ProgramData\\Anaconda3\\envs\\p37\\Scripts"
 
-    # 如果你建立的环境是用的项目 D:\pycode\your_project 里的相对路径
+    # 如果你建立的相对路径环境如 D:\pycode\your_project
     # 改为
     USER_SITE = "D:\\pycode\\your_project\\py37\\Lib\\site-packages"
     USER_BASE = "D:\\pycode\\your_project\\py37\\Scripts"
