@@ -7,10 +7,10 @@
     - [git工作流： 功能分支工作流 master -- dev(开发人员工作在此)](#git工作流-功能分支工作流-master----dev开发人员工作在此)
     - [git工作流： Gitflow工作流 master -- develop -- feature(开发人员工作在此)](#git工作流-gitflow工作流-master----develop----feature开发人员工作在此)
     - [阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master](#阿里巴巴-aoneflow从master上拉出feature分支相关feature分支合并出release分支最终合入master)
-  - [git 安装和 github（服务器端）设置](#git-安装和-github服务器端设置)
+  - [git 初始设置](#git-初始设置)
     - [git初次使用](#git初次使用)
-    - [使用ssh验证登陆](#使用ssh验证登陆)
     - [使用 GPG 签名 Git 提交](#使用-gpg-签名-git-提交)
+      - [设置gpg程序的路径](#设置gpg程序的路径)
       - [签名提交](#签名提交)
   - [分支权限控制 及 轻量化git服务](#分支权限控制-及-轻量化git服务)
   - [分支的拉取和上传](#分支的拉取和上传)
@@ -353,38 +353,34 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
     特性分支与发布分支的关联关系维护有点复杂。最好是在一个整体流程的自动化的平台下管理维护，该平台实现从需求提出，功能拆分，创建feature分支，组合release分支，生成部署环境，创建测试流水线，代码审查流水线，安全检查，在线部署等一系列步骤的自动化，最终实现端到端交付的研发自动化体系。
 
-## git 安装和 github（服务器端）设置
+## git 初始设置
 
 ### git初次使用
 
-需要先设置用户名和邮箱
+如果未设置过git用户名和邮箱
 
     git config user.name "m666m"
     git config user.email "m666m@github.com"
 
-    #  设置gpg程序的路径，见下面的章节 <使用 GPG 签名 Git 提交>
-    $ where gpg
-        E:\Git\usr\bin\gpg.exe  # 这个是 Git for windows 自带的
-        E:\GnuPG\bin\gpg.exe    # 这个才是我们要用的
-    $ git config --global gpg.program "E:\GnuPG\bin\gpg.exe"
-    done
+生成 ssh key 文件，默认回答都是一路回车
 
-在用户目录的~/.ssh目录下，执行如下操作
+    ssh-keygen -t rsa
+
+回复原来备份的 ~/.ssh 目录下的配置文件，如果 ~/.ssh 目录是手工复制的，需要设置权限
+
+    cd ~
 
     # 设置.ssh目录权限
     chmod 700 -R .ssh
 
-    # 生成ssh key文件，默认回答都是一路回车
-    ssh-keygen -t rsa
+验证
 
-### 使用ssh验证登陆
-
-如果超时，就多试几次，国内的网络环境太差
-
+    # 如果超时，就多试几次，国内的网络环境太差
     $ ssh -T git@github.com
     Received disconnect from 20.205.243.166 port 22:11: Bye Bye
     Disconnected from 20.205.243.166 port 22
 
+    # 如果你在已有的github项目目录下，是这个提示
     $ ssh -T git@github.com
     Hi m666m! You've successfully authenticated, but GitHub does not provide shell access.
 
@@ -403,6 +399,15 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
     git config --global user.signingkey 66DD4800155F7A2B
     # 或者
     git config user.signingkey 66DD4800155F7A2B
+
+#### 设置gpg程序的路径
+
+    $ where gpg
+        E:\Git\usr\bin\gpg.exe  # 这个是 Git for windows 自带的
+        E:\GnuPG\bin\gpg.exe    # 这个才是我们要用的
+
+    $ git config --global gpg.program "E:\GnuPG\bin\gpg.exe"
+    done
 
 #### 签名提交
 
