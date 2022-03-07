@@ -623,54 +623,83 @@ conda用“=”，pip用“==”
 
 虚拟环境使用相对路径，之后所有跟环境名相关的 conda 操作都要明确指定“--prefix”，因为 conda --name 只在默认的env目录寻找你的环境名 <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#specifying-a-location-for-an-environment>
 
-1. 在你的项目目录下创建虚拟环境
+1.在你的项目目录下创建虚拟环境
 
     conda activate
+
     cd your_project_dir
 
+    # conda create --name p37 python=3.7
     conda create --prefix ./py37 python=3.7
 
+    # conda activate p37
     conda activate ./py37
 
-2. 相对路径太长，改为短名
+2.相对路径太长，改为短名
 
     conda config --set env_prompt '({name})'
-    退出命令行工具，再次打开生效
 
-3. 确认conda、python、pip都是用的你的环境的，参见下面章节 [conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
+退出命令行工具，再次打开生效
 
-4. 修改你的环境pip保存下载包的位置，参见下面章节 [更改conda环境下，pip包安装默认路径]。
+3.确认conda、python、pip都是用的你的环境的，参见下面章节 [conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
 
-5. 官方推荐所有的依赖包一次性install完毕，避免依赖文件重复
+4.修改你的环境pip保存下载包的位置，参见下面章节 [更改conda环境下，pip包安装默认路径]。
+
+5.官方推荐所有的依赖包一次性 conda install，避免依赖文件重复
 
     conda install --prefix ./py37 yapf Flake8 scipy numpy pandas matplotlib  sqlalchemy openpyxl seaborn beautifulsoup4 pyqtgraph
 
-6. pip install 依赖包
+6.pip install 依赖包
 
-7. 环境配置文件保留好
+7.环境配置文件保留好
 
-    conda env export > environment.yml
+    conda env export --prefix ./py37 > environment.yml
 
 下次安装就简单了，直接恢复即可，见下面的章节 [环境文件的备份和恢复]
 
 ### 环境文件的备份和恢复
 
+目前建议在 cmd 下执行，脚本好像有路径解析问题，在bash下总是报错
+
 #### 导出环境配置文件便于定制，包含pip包，推荐
 
     # 先切换到你的环境！
-    cd your_project_dir
-    conda activate ./py37
+    conda activate p37
 
     conda env export > environment.yml
+    # 这个文件需要手动转换为 UTF-8 https://github.com/conda/conda/issues/9749
 
-    # 利用配置文件创建目标环境
+对使用相对路径的环境
+
+    cd your_project_dir
+
+    conda env export --prefix ./py37 > environment.yml
+
+#### 利用配置文件创建目标环境
+
     # 注意环境名是写在yml文件里的，酌情修改
     # https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#create-env-file-manually
-    #
-    conda env create -f environment.yml
-    conda activate xxxx
+    # conda env create --name p37 -f py37_environment.yml
 
-    # 验证：列出所有的环境，当前激活的环境会标*
+    conda activate p37
+
+对使用相对路径的环境
+
+    # <https://stackoverflow.com/questions/35802939/install-only-available-packages-using-conda-install-yes-file-requirements-t>
+    conda env create --prefix ./py37 --file py37_environment.yml
+
+    # Warning: you have pip-installed dependencies in your environment file, but you do not list pip itself as one of your conda dependencies.  Conda may not use the correct pip to install your packages, and they may end up in the wrong place.  Please add an explicit pip dependency.  I'm adding one for you, but still nagging you.
+    环境的导出配置文件中，pip没有说明版本和位置，默认用了系统的pip，这样安装的pip包可能会到比的地方去了。
+
+#### 利用配置文件更新已有的环境
+
+    conda env update --prefix ./py37 --file environment.yml --prune
+
+    conda activate  --prefix ./py37
+
+验证：
+
+    # 列出所有的环境，当前激活的环境会标*
     conda info -e
 
     # 根据指定的配置文件更新指定的虚拟环境
@@ -692,11 +721,15 @@ conda用“=”，pip用“==”
     # 验证：列出所有的环境，当前激活的环境会标*
     conda info -e
 
-#### 如果有pip包未收集
+pip包单独导requirements.txt，见下面 [环境配置中pip包的导入和导出]
+
+#### 环境配置中pip包的导入和导出
 
     # 先切换到你的环境！
     cd your_project_dir
     conda activate ./py37
+
+    pip list
 
     # 导出pip包
     pip freeze > py37.txt
