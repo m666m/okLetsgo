@@ -392,11 +392,13 @@ x. 不推荐更新pip。仅在自己的虚拟环境里更新pip和指定的包�
 
 5.设置conda在哪个shell下使用（windows默认是cmd），详见下面章节 [conda init 命令设置命令行工具]
 
-6.anaconda-navigator新建个[p37]环境，注意更改pip默认的下载包路径，详见下面章节[更改conda环境下，pip包安装默认路径]
+6.vs code配置默认终端，选择“Git Bash”
 
-7.建立你自己的环境，见下面的章节 [使用相对路径，在你的项目目录下建立虚拟环境]
+7.anaconda-navigator新建个[p37]环境，注意更改pip默认的下载包路径，详见下面章节[更改conda环境下，pip包安装默认路径]
 
-8.vs code配置默认终端，选择“Git Bash”
+8.建立你自己的环境，见下面的章节 [使用相对路径，在你的项目目录下建立虚拟环境]
+
+9.详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
 
 ### 填坑
 
@@ -877,7 +879,9 @@ conda安装在conda环境中装任何包，pip在任何环境中安装python包�
 
 所以，自己的环境在初次使用前，或者做了新的包安装或更新，也一定要先确认下。
 
-如，Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存目录是 C:\ProgramData\Anaconda3\envs\p37，如果是给当前用户安装，则虚拟环境的保存目录是 C:\Users\xxxx\.conda\envs\p37 ，相应的pip位置跟随变化。
+Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存目录是 C:\ProgramData\Anaconda3\envs\p37，
+如果是给当前用户安装，则虚拟环境的保存目录是 C:\Users\xxxx\.conda\envs\p37 ，相应的pip位置跟随变化。
+详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
 
 同理，linux下，base环境的pip可能在/root/anaconda3/bin/pip，而其他conda环境的pip，可能在/root/anaconda3/envs/my_env/bin/pip。
 
@@ -1095,7 +1099,12 @@ conda安装在conda环境中装任何包，pip在任何环境中安装python包�
     $ python -m site -help
     C:\Users\xxxx\.conda\envs\p37\Lib\site.py
 
-然后编辑该配置文件，修改下面两行
+    # 如果 Anaconda 安装时选择了“给所有用户安装”，有时候是下面这个，
+    # 请根据  python -m site -help 里的env的路径决定。
+    # 详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
+    C:\ProgramData\Anaconda3\envs\p37\Lib\site.py
+
+编辑该配置文件，修改下面两行
 
     USER_SITE = None
     USER_BASE = None
@@ -1105,7 +1114,7 @@ conda安装在conda环境中装任何包，pip在任何环境中安装python包�
     USER_SITE = "C:\\Users\\xxxx\\.conda\\envs\\p37\\Lib\\site-packages"
     USER_BASE = "C:\\Users\\xxxx\\.conda\\envs\\p37\\Scripts"
 
-    # 如果 Anaconda 安装时选择了“给所有用户安装”时
+
     # 改为
     USER_SITE = "C:\\ProgramData\\Anaconda3\\envs\\p37\\Lib\\site-packages"
     USER_BASE = "C:\\ProgramData\\Anaconda3\\envs\\p37\\Scripts"
