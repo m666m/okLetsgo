@@ -159,34 +159,42 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 任何操作前，先切换到自己的环境下，然后检查pip的路径设置
 
-    # 先切换到你自己的环境(conda/virtualenv等)
+    # 切换到base环境(conda/virtualenv等)
+    conda activate
+
+    pip -V
+
+    pip config list -v
+
+    # 切换到你自己的环境(conda/virtualenv等)
     conda activate p37
 
     pip -V
 
-查看当前的配置
-
     pip config list -v
 
-如果为空，说明未配置，都是默认值，pip config配置之后就有了。
+如果为空，说明未配置，都是默认值，pip config 配置之后就有了。
 
-使用清华源
+全局使用清华源
 
     # <https://mirrors.tuna.tsinghua.edu.cn/help/pypi/>
 
-    # 不要在系统python环境或conda的base环境下更新
-    # 先切换到你的环境下(conda/virtualenv等)
-    conda activate p37
+    # 切换到base环境(conda/virtualenv等)
+    conda activate
 
+    # base 环境下自带的 pip 不要更新
     # 临时使用国内镜像，更新pip自身
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+    # pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
 
-    # 设为默认
+    # 设为全局默认
     pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
 确认
 
-    $ pip -v config list
+    (base)$ pip config list -v
+    global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
+
+    (p37)$ pip config list -v
     For variant 'global', will try loading 'C:\ProgramData\pip\pip.ini'
     For variant 'user', will try loading 'C:\Users\xxxx\pip\pip.ini'
     For variant 'user', will try loading 'C:\Users\xxxx\AppData\Roaming\pip\pip.ini'
@@ -365,7 +373,7 @@ virtualenv 创建虚拟环境的时候，会把系统Python复制一份到虚拟
 
 3.安装完毕后，先打开anaconda-navigator，切换到base环境，界面反应很慢，多等等，不要着急切换。后台脚本一直在远程下载处理，要执行一堆初始化工作，不是光setup.exe安装完了就可以了。。。
 
-4.anaconda换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/> 参见下面章节[conda频道和源配置]
+4.anaconda换清华源，参见下面章节[conda频道和源配置]
 
 5.更新 conda（sof上的帖子不推荐更新conda，直接用就行，基础环境更新了反而容易乱）
 
@@ -381,7 +389,7 @@ virtualenv 创建虚拟环境的时候，会把系统Python复制一份到虚拟
 
 详见下面章节 [conda init 命令设置命令行工具]
 
-7.pip更换国内源，详解上面章节 [PyPI使用国内源]
+7.pip更换国内源，base 环境下自带的 pip 不要更新，详见上面章节 [PyPI使用国内源]
 
 8.vs code配置默认终端，选择“Git Bash”
 
