@@ -718,8 +718,8 @@ conda虚拟环境
     # <https://stackoverflow.com/questions/35802939/install-only-available-packages-using-conda-install-yes-file-requirements-t>
     conda env create --prefix ./py37 --file py37_environment.yml
 
-    # 环境的导出配置文件中，pip没有说明版本和位置，默认用了系统的pip，这样安装的pip包可能会到比的地方去了。
-    # 目前发现是利用已有的同版本的python环境。
+    # 环境导出文件中，如果发现已经更新了pip，不是原装的，会给个提示，问题不大。
+    # 解决：新建个同版本的python环境，把之前的那个base环境删除，然后再次做导出。
     # Warning: you have pip-installed dependencies in your environment file, but you do not list pip itself as one of your conda dependencies.  Conda may not use the correct pip to install your packages, and they may end up in the wrong place.  Please add an explicit pip dependency.  I'm adding one for you, but still nagging you.
 
     conda activate ./py37
@@ -1216,7 +1216,7 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
 
 如果你的命令行工具是bash，也不需要改为 /d/pycode/your_project/py37 的形式，因为 site.py 是 python 执行，python 根据当前操作系统识别路径格式。
 
-确认
+验证
 
     python -m site
 
