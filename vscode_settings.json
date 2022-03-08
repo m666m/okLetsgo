@@ -1,5 +1,6 @@
 {
     // 调试模式可以在库中加断点 在.vscode\launch.json 中添加"justMyCode": false
+    // F1: open defualt setting 打开各选项详尽说明
     "update.mode": "manual",
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
@@ -23,9 +24,9 @@
         "（": true,
         "）": true
     },
+    "window.newWindowDimensions": "offset", // "offset" maximized
+    "extensions.autoUpdate": false,  // 如果有插件升级后出问题，阻止自动升级
     "outline.showVariables": false,
-    "window.newWindowDimensions": "maximized", // "offset"
-    "extensions.autoUpdate": false,  // 有些插件升级了反而不可用
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
     "python.languageServer": "Pylance",
