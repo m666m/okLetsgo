@@ -748,13 +748,13 @@ conda虚拟环境
     cd your_project_dir
     conda activate ./py37
 
-    conda list --explicit > py37_spec-file.txt
+    conda list --explicit > py37_conda_spec-file.txt
 
     # 恢复环境：创建新环境
-    conda create --prefix ./py37_new --file py37_spec-file.txt
+    conda create --prefix ./py37_new --file py37_conda_spec-file.txt
 
     # 恢复环境：在已有环境上安装
-    conda install --prefix ./py37 --file py37_spec-file.txt
+    conda install --prefix ./py37 --file py37_conda_spec-file.txt
 
     # 验证：列出所有的环境，当前激活的环境会标*
     conda info -e
