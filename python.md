@@ -750,16 +750,26 @@ conda虚拟环境
 
     conda list --explicit > py37_conda_spec-file.txt
 
+pip包单独处理，建议根据自己的具体项目，手工一个个的写入requirements.txt。
+
+##### 恢复环境
+
+    cd your_project_dir
+    conda activate
+
     # 恢复环境：创建新环境
     conda create --prefix ./py37_new --file py37_conda_spec-file.txt
 
     # 恢复环境：在已有环境上安装
-    conda install --prefix ./py37 --file py37_conda_spec-file.txt
+    conda install --prefix ./py37_exist --file py37_conda_spec-file.txt
 
     # 验证：列出所有的环境，当前激活的环境会标*
     conda info -e
 
-pip包单独导 requirements.txt，建议根据自己的具体项目，手工一个个的写入。
+    # 先修改pip包默认下载路径，见章节 [更改conda环境下，pip包默认下载路径]
+
+    conda activate ./py37
+    pip install -r requirements.txt
 
 #### 环境配置中pip包的导入和导出，混入conda包，不推荐
 
