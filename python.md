@@ -461,6 +461,8 @@ windows下python按[TAB]出现报错：
 
     对pip包默认下载路径，conda库更新，都会同步这个影响。
 
+    <https://www.anaconda.com/blog/using-pip-in-a-conda-environment>
+
 所以稳妥的办法是
 
     Anaconda 安装完毕后，先对各个版本建立虚拟环境，但是不要做操作，比如更新包、修改pip包的默认下载路径等。
@@ -469,9 +471,11 @@ windows下python按[TAB]出现报错：
 
 注意： 见下面章节 [conda/pip 操作前务必先检查当前环境中 conda/pip/python 的路径]
 
-conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3（这个目录是默认的root环境，在环境列表中名叫[base]，尽量不要往base环境里添加包），所以要用管理员权限执行annconda安装后自带的命令行工具，如果单独打开windows的cmd窗口（管理员权限执行），则先执行 conda activate进入[base]环境。
+conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3（这个目录是默认的root环境，在环境列表中名叫[base]，尽量不要往base环境里添加包），所以要用管理员权限执行annconda安装后自带的命令行工具。如果单独打开windows的cmd窗口（管理员权限执行），则先执行 conda activate进入[base]环境。
 
-注意：conda 命令在Windows下是一堆的bat文件，执行了各种变量设置和传递，在激活的base环境下执行其他命令，出现报错的概率小。
+注意
+
+    conda 命令在Windows下是一堆的bat文件，执行了各种变量设置和传递，应该cmd窗口在base环境下执行conda命令。
 
 ### 命令行工具使用conda环境
 
@@ -696,13 +700,20 @@ conda用“=”，pip用“==”
 
 ##### 利用配置文件yml创建目标环境
 
+conda虚拟环境
+
+    conda activate
+
     # 注意环境名是写在yml文件里的，酌情修改
     # https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#create-env-file-manually
-    # conda env create --name p37 -f py37_environment.yml
+    conda env create --name p37 -f py37_environment.yml
 
     conda activate p37
 
-对使用相对路径的环境
+使用相对路径的虚拟环境
+
+    conda activate
+    cd your_project_dir
 
     # <https://stackoverflow.com/questions/35802939/install-only-available-packages-using-conda-install-yes-file-requirements-t>
     conda env create --prefix ./py37 --file py37_environment.yml
@@ -712,6 +723,11 @@ conda用“=”，pip用“==”
     # Warning: you have pip-installed dependencies in your environment file, but you do not list pip itself as one of your conda dependencies.  Conda may not use the correct pip to install your packages, and they may end up in the wrong place.  Please add an explicit pip dependency.  I'm adding one for you, but still nagging you.
 
     conda activate ./py37
+
+    # 相对路径太长，改为短名
+    conda config --set env_prompt '({name})'
+
+    # 执行章节 【更改conda环境下，pip包默认下载路径】
 
     # 最后手动安装yml文件中用wheel安装的包
 
@@ -759,19 +775,15 @@ pip包单独导 requirements.txt，建议根据自己的具体项目，手工一
     # 在目标环境里导入pip包
     pip install -r py37_requirements.txt
 
-### 复制虚拟环境
+#### 复制虚拟环境
 
-#### 克隆
-
+    # 克隆
     conda create --name new_p37 --clone p37
 
     # 验证：列出所有的环境，当前激活的环境会标*
     conda info --envs
 
-#### 到其他机器上
-
-复制anaconda3/envs/下的某个环境的文件夹到另外一台机器上
-
+    # 复制anaconda3/envs/下的某个环境的文件夹到另外一台机器上
     rsync -va username@xxx.xxx.xxx.xxx:/home/username/anaconda3/envs/p37/
 
 ### conda频道和源配置
