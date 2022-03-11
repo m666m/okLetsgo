@@ -8,6 +8,7 @@
     - [git工作流： Gitflow工作流 master -- develop -- feature(开发人员工作在此)](#git工作流-gitflow工作流-master----develop----feature开发人员工作在此)
     - [阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master](#阿里巴巴-aoneflow从master上拉出feature分支相关feature分支合并出release分支最终合入master)
   - [git 客户端设置](#git-客户端设置)
+    - [ssh连接github的设置](#ssh连接github的设置)
     - [git 初始设置](#git-初始设置)
     - [使用 GPG 签名 Git 提交](#使用-gpg-签名-git-提交)
       - [设置gpg程序的路径](#设置gpg程序的路径)
@@ -51,29 +52,28 @@
     - [高级用法：找回误删的git stash 数据](#高级用法找回误删的git-stash-数据)
   - [用法：补丁神器cherry-pick](#用法补丁神器cherry-pick)
   - [用法：git diff的各个用法示例](#用法git-diff的各个用法示例)
+    - [没点，俩点，仨点的区别](#没点俩点仨点的区别)
+  - [git HEAD / HEAD^ / HEAD~ 的含义](#git-head--head--head-的含义)
+    - [HEAD](#head)
+    - [HEAD~{n}](#headn)
+    - [HEAD^n](#headn-1)
   - [配置Beyond Compare 4作为git mergetool来解决git merge命令导致的文件冲突](#配置beyond-compare-4作为git-mergetool来解决git-merge命令导致的文件冲突)
-    - [前言](#前言)
-    - [解决方案](#解决方案)
-      - [前提](#前提)
-      - [配置](#配置)
-    - [Beyond Compare](#beyond-compare)
-    - [文件冲突及处理](#文件冲突及处理)
-      - [产生冲突](#产生冲突)
-      - [解决冲突](#解决冲突)
-    - [工具配置的参数含义](#工具配置的参数含义)
-      - [git config](#git-config)
-      - [git mergetool](#git-mergetool)
-    - [思考](#思考)
-    - [总结](#总结)
   - [常见问题](#常见问题)
     - [Your branch and 'origin/xxx' have diverged](#your-branch-and-originxxx-have-diverged)
       - [情况1： Git fetch 、merge以后出现分叉（或没有先git pull直接push，原创已经有人提交修改）](#情况1-git-fetch-merge以后出现分叉或没有先git-pull直接push原创已经有人提交修改)
       - [情况2：rebase以后提示同样的错误](#情况2rebase以后提示同样的错误)
-  - [版本回退的操作步骤](#版本回退的操作步骤)
+  - [版本回退](#版本回退)
     - [自己的分支硬回退例子](#自己的分支硬回退例子)
     - [远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1](#远程仓库上有b先生新增提交了然后你却回退了远程仓库到a1)
   - [彻底删除git中的大文件](#彻底删除git中的大文件)
   - [掉电导致objects目录下的某些文件为空](#掉电导致objects目录下的某些文件为空)
+  - [Github 创建 Pull Request](#github-创建-pull-request)
+    - [Pull Request是如何工作的](#pull-request是如何工作的)
+    - [例子](#例子)
+      - [Mary创建了一个Pull Request](#mary创建了一个pull-request)
+      - [John审查了这个Pull Request](#john审查了这个pull-request)
+      - [John 接受了 Pull Request](#john-接受了-pull-request)
+  - [日常使用 Git 的 19 个建议](#日常使用-git-的-19-个建议)
 
 ## 参考文档
 
@@ -355,6 +355,34 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
 ## git 客户端设置
 
+### ssh连接github的设置
+
+配置邮箱
+
+    # 查看 git config –global list
+    $ git config --global user.name "m666m"
+    $ git config --global user.email "m666m@github.com"
+
+登陆你的github帐户。点击你的头像，然后 Settings -> 左栏点击 SSH and GPG keys -> 点击 New SSH key
+
+在你本地机器登陆账户的主目录下的 ~/.ssh 目录，复制下面的文件内容粘贴进去
+
+    cat ~/.ssh/id_rsa.pub
+
+git colne一个项目，然后查看是否此项目是使用https协议
+
+    git remote -v
+
+    # 改为git协议
+    git remote set-url origin git@github.com:youraccount/yourproject.git
+
+验证：
+
+    ssh -T git@github.com
+
+    # 登陆问题排查
+    ssh -v git@github.com
+
 ### git 初始设置
 
 如果未设置过git用户名和邮箱
@@ -499,43 +527,6 @@ Gitolite 基于ssh密钥管理的用户权限控制
 
     git pull --tags -r origin master
 
-没点，俩点，仨点的区别，慢慢研究吧
-
-<https://stackoverflow.com/questions/4944376/how-to-check-real-git-diff-before-merging-from-remote-branch>
-
-You can use various combinations of specifiers to git to see your diffs as you desire (the following examples use the local working copy as the implicit first commit):
-
-假设某人在远程存储库中进行更改，即修改了分支并提交到远程库，下述3个使用方法有不同的效果
-
-1.您在本地可能不会看到任何更改
-
-    git diff remote/origin
-
-This shows the incoming remote additions as deletions; any additions in your local
-repository are shown as additions.
-
-2.可以看到更改
-
-    git diff ..remote/origin
-
-Shows incoming remote additions as additions; the double-dot includes changes
-committed to your local repository as deletions (since they are not yet pushed).
-
-For info on ".." vs "..." see as well as the excellent documentation at [git-scm revision selection: commit ranges Briefly] <https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Commit-Ranges>, for the examples above, double-dot syntax shows all commits reachable from origin/master but not your working copy. Likewise, the triple-dot syntax shows all the commits reachable from either commit (implicit working copy, remote/origin) but not from both.git help diff
-
-例如
-
-    git fetch; git diff ..origin/master
-
-您将看到本地git存储库的内容与远程存储库中的不同之处。您将看不到本地文件系统中或索引中的任何更改。
-
-3.三点语法显示从任一提交（隐式工作副本、远程/原点）可以到达的所有提交，但不能同时来自两个提交。git help diff
-
-    git diff ...remote/origin
-
-Shows incoming remote additions as additions; the triple-dot excludes changes
-committed to your local repository.
-
 ### 远程拉取合并本地的pull用法
 
 先看看原理：
@@ -588,7 +579,19 @@ git pull --rebase = git fetch + git rebase 去掉多余的分叉：
 
 ### git fetch 和 git pull的区别
 
-通常的工作流程是，先用 git fetch 拉取远程分支，然后用 git merge 把拉取的内容合并到本地分支，
+git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相应分支最新的状态。
+
+git fetch 并不会改变你本地仓库的状态。它不会更新你的 master 分支，也不会修改你磁盘上的文件。
+
+所以 git fetch 是十分安全的，你不用担心这个命令破坏你的工作区或暂存区，它下载的远程分支到本地，但是并不做任何的合并工作，然后可以执行以下命令合并到本地仓库
+
+    git diff  # 对比下本地的远程分支和本地的本地分支的差异
+    git merge o/master
+    git rebase o/master
+    git cherry-pick o/master
+
+通常的工作流程是，先用 git fetch 拉取远程分支，然后用 git merge 把拉取的内容合并到本地分支。
+
 因为这二者都是连用的，所有有个简化版就是 git pull，大多数情况下直接用 git pull 就够用了，
 但是要记住，正规的分支拉取操作是 fetch 和 merge 两个步骤完成的。
 
@@ -640,6 +643,8 @@ git pull --rebase = git fetch + git rebase 去掉多余的分叉：
 
 #### git pull把2个过程合并，减少了操作
 
+默认是fetch+merge，可以设置成fetch+rebase。
+
 将远程主机的某个分支的更新取回，并与本地指定的分支合并 ：
 
     git pull <远程主机名> <远程分支名>:<本地分支名>
@@ -675,9 +680,9 @@ git pull --rebase = git fetch + git rebase 去掉多余的分叉：
 
     $ git remote show origin
     * remote origin
-    Fetch URL: git@github.com:m666m/af_monitor.git
-    Push  URL: git@github.com:m666m/af_monitor.git
-    Push  URL: ssh://git@x.x.x.x:12345/gitrepo/af_monitor.git
+    Fetch URL: git@github.com:m666m/project_name.git
+    Push  URL: git@github.com:m666m/project_name.git
+    Push  URL: ssh://git@x.x.x.x:12345/gitrepo/project_name.git
     HEAD branch: main
     Remote branch:
         main tracked
@@ -685,6 +690,14 @@ git pull --rebase = git fetch + git rebase 去掉多余的分叉：
         main merges with remote main
     Local ref configured for 'git push':
         main pushes to main (up to date)
+
+添加后，本地项目中的.git/config 增加内容如下
+
+    [remote "origin"]
+        url = git@github.com:m666m/project_name.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
+        # url = https://github.com/m666m/project_name.git
+        url = ssh://git@x.x.x.x:12345/gitrepo/project_name.git
 
 如果想删除
 
@@ -853,14 +866,14 @@ clone完成后，进入目录，执行
 
 本地先 git init，然后
 
-    git remote add origin ssh://git@x.x.x.x:12345/uspace/gitrepo/af_monitor.git
+    git remote add origin ssh://git@x.x.x.x:12345/uspace/gitrepo/okletgo.git
 
 这时显示结果
 
     $ git remote show origin
     * remote origin
-    Fetch URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/af_monitor.git
-    Push  URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/af_monitor.git
+    Fetch URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/okletgo.git
+    Push  URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/okletgo.git
     HEAD branch: (unknown)
 
 把文件都push上去，会提示没有上游分支，直接推。
@@ -869,8 +882,8 @@ clone完成后，进入目录，执行
 
     $ git remote show origin
     * remote origin
-    Fetch URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/af_monitor.git
-    Push  URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/af_monitor.git
+    Fetch URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/okletgo.git
+    Push  URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/okletgo.git
     HEAD branch: master
     Remote branch:
         master tracked
@@ -1487,6 +1500,7 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
     $ git branch
     * dev
     master
+
     $ git cherry-pick 4c805e2
     [master 1d4b803] fix bug 101
     1 file changed, 1 insertion(+), 1 deletion(-)
@@ -1570,346 +1584,146 @@ git diff 主要的应用场景：
 
     git diff SHA1 SHA2
 
+### 没点，俩点，仨点的区别
+
+<https://stackoverflow.com/questions/4944376/how-to-check-real-git-diff-before-merging-from-remote-branch>
+
+You can use various combinations of specifiers to git to see your diffs as you desire (the following examples use the local working copy as the implicit first commit):
+
+假设某人在远程存储库中进行更改，即修改了分支并提交到远程库，下述3个使用方法有不同的效果
+
+1.您在本地可能不会看到任何更改
+
+    git diff remote/origin
+
+This shows the incoming remote additions as deletions; any additions in your local
+repository are shown as additions.
+
+2.可以看到更改
+
+    git diff ..remote/origin
+
+Shows incoming remote additions as additions; the double-dot includes changes
+committed to your local repository as deletions (since they are not yet pushed).
+
+For info on ".." vs "..." see as well as the excellent documentation at [git-scm revision selection: commit ranges Briefly] <https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Commit-Ranges>, for the examples above, double-dot syntax shows all commits reachable from origin/master but not your working copy. Likewise, the triple-dot syntax shows all the commits reachable from either commit (implicit working copy, remote/origin) but not from both.git help diff
+
+例如
+
+    git fetch; git diff ..origin/master
+
+您将看到本地git存储库的内容与远程存储库中的不同之处。您将看不到本地文件系统中或索引中的任何更改。
+
+3.三点语法显示从任一提交（隐式工作副本、远程/原点）可以到达的所有提交，但不能同时来自两个提交。git help diff
+
+    git diff ...remote/origin
+
+Shows incoming remote additions as additions; the triple-dot excludes changes
+committed to your local repository.
+
+## git HEAD / HEAD^ / HEAD~ 的含义
+
+### HEAD
+
+HEAD 指向当前所在分支提交至仓库的最新一次的 commit
+
+    # 使用最新一次提交重制暂存区
+    git reset HEAD -- filename
+
+    # 使用最新一次提交重制暂存区和工作区
+    git reset --hard HEAD
+
+    # 将 commit log 回滚一次 暂存区和工作区代码不变
+    git reset --soft HEAD~1
+
+### HEAD~{n}
+
+~ 是用来在当前提交路径上回溯的修饰符.
+
+HEAD~{n} 表示当前所在的提交路径上的前 n 个提交（n >= 0）：
+
+    HEAD = HEAD~0
+    HEAD~ = HEAD~1
+    HEAD~~ = HEAD~2
+    HEAD{n个~} = HEAD~n
+
+### HEAD^n
+
+^ 是用来切换父级提交路径的修饰符。当我们始终在一个分支比如 dev 开发/提交代码时，每个 commit 都只会有一个父级提交，就是上一次提交，但当并行多个分支开发，feat1, feat2, feat3，完成后 merge feat1 feat2 feat3 回 dev 分支后，此次的 merge commit 就会有多个父级提交。
+
+父级 一词本身就代表回溯了 1 次
+
+HEAD 的 第一个父级
+
+    # 第一个父级提交 即 feat1 的最近第1次的提交
+    $ git show HEAD^
+    feat1 3 foo_feat1
+
+    # 第一个父级提交的上1次提交 即 feat1 的最近第2次的提交
+    $ git show HEAD^~1 / git show HEAD^^
+    feat1 2 foo_feat1
+
+    # 第一个父级提交的上2次提交 即 feat1 的最近第3次的提交
+    $ git show HEAD^~2 / git show HEAD^^^
+    feat1 1 foo_feat1
+
+HEAD 的 第二个父级
+
+    # 第二个父级提交 即 feat2 的最近第1次的提交
+    $ git show HEAD^2
+    feat2 2 foo_feat2
+
+    # 第二个父级提交的上1次提交 即 feat2 的最近第2次的提交
+    $ git show HEAD^2~1 / git show HEAD^2^
+    feat2 1 foo_feat2
+
+    # 第二个父级提交的上2次提交 即 feat2 的最近第3次的提交
+    $ git show HEAD^2~2 / git show HEAD^2^^
+    feat2 add foo_feat2
+
+HEAD 的 第三个父级
+
+    # 第三个父级提交 即 feat3 的最近第1次的提交
+    $ git show HEAD^3
+    feat3 2 foo_feat3
+
+    # 第三个父级提交的上1次提交 即 feat3 的最近第2次的提交
+    $ git show HEAD^3~1 / git show HEAD^3^
+    feat3 1 foo_feat3
+
+    # 第三个父级提交的上2次提交 feat3 的最近第3次的提交回归到了主线上
+    $ git show HEAD^3~2 / git show HEAD^3^^
+    master foo 2
+
+示例
+
+    # 当前提交
+    HEAD = HEAD~0 = HEAD^0
+
+    # 主线回溯
+    HEAD~1 = HEAD^ 主线的上一次提交
+    HEAD~2 = HEAD^^ 主线的上二次提交
+    HEAD~3 = HEAD^^^ 主线的上三次提交
+
+    # 如果某个节点有其他分支并入
+    HEAD^1 主线提交（第一个父提交）
+    HEAD^2 切换到了第2个并入的分支并得到最近一次的提交
+    HEAD^2~3 切换到了第2个并入的分支并得到最近第 4 次的提交
+    HEAD^3~2 切换到了第3个并入的分支并得到最近第 3 次的提交
+
+    # ^{n} 和 ^ 重复 n 次的区别
+    HEAD~1 = HEAD^
+    HEAD~2 = HEAD^^
+    HEAD~3 = HEAD^^^
+    # 切换父级
+    HEAD^1~3 = HEAD~4
+    HEAD^2~3 = HEAD^2^^^
+    HEAD^3~3 = HEAD^3^^^
+
 ## 配置Beyond Compare 4作为git mergetool来解决git merge命令导致的文件冲突
 
 <https://blog.csdn.net/albertsh/article/details/106294095>
 <https://blog.csdn.net/LeonSUST/article/details/103565031>
-
-文章目录
-    前言
-    解决方案
-        前提
-        配置
-    Beyond Compare
-    文件冲突及处理
-        产生冲突
-        解决冲突
-    工具配置的参数含义
-        git config
-        git mergetool
-    思考
-    总结
-
-### 前言
-
-使用 git merge 命令合并代码的时候可能会产生文件冲突，产生这种冲突的根本原因是文件的同一处同时被多次修改，这种同时修改常体现的不同分支上，当多个分支修改了同一处代码，再合并代码的时候就会产生冲突，因为 git 程序也不知道我们想要保留哪一份修改，这时就需要我们手动修改产生冲突的文件。
-
-当冲突内容很少的时候我们可以打开文本编辑器，找到 >>>>>>>>>>>>、=========== 和 <<<<<<<<<<<< 这三行字符包裹的内容就是需要解决冲突的部分，但是当冲突内容特别多时我们还是习惯于通过可视化的工具来处理，Beyond Compare 就是这样一款工具，可以用来比较不同的文本文件、表格文件，还可以比较文件夹内容，之前用着比较习惯，所以在处理 git 冲突的时候也想使用这个工具来做，通过查找技术文档发现了下面的方法。
-
-### 解决方案
-
-鉴于大家都比较急，查找问题时想要直接找到答案，所以我这里直接说明配置步骤，送给不求甚解的小伙伴，也方便今后我可以直接找到，不过配置之前还是要先看一下前提。
-
-#### 前提
-
-在 Windows 上安装了 git 客户端，可以执行 git 命令（废话！没装 git 怎么产生冲突的）
-安装了 Beyond Compare 4 这个软件，下载链接很多，自己找一个吧，实在找不到，那就放弃吧（找我要）
-
-#### 配置
-
-首先找到 Beyond Compare 的安装路径，比如我的软件安装路径是 D:\mybc4\BComp.exe，然后在 git 命令行客户端中执行下面命令：
-
-    git config --global merge.tool bc4
-    git config --global mergetool.bc4.cmd "\"D:\\mybc4\\BComp.exe\" \"\$LOCAL\" \"\$REMOTE\" \"\$BASE\" \"\$MERGED\""
-    git config --global mergetool.bc4.trustExitCode true
-    git config --global mergetool.keepBackup false
-
-至此，git mergetool 就配置完了，当下次冲突的时候，直接使用 git mergetool 命令就可以调用 Beyond Compare 解决冲突文件了，但是你不好奇，这些设置命令都是什么意思吗？为什么执行完这些命令就能调用 Beyond Compare 4 这个软件了，如果你感兴趣可以接下往下看一看。
-
-### Beyond Compare
-
-这是一款强大的比较工具，前面提到它可以比较文本、比较表格、比较文件夹，但是它的能力不仅限于此，它甚至可以比较MP3、比较图片、比较注册表，我们的目的是调用它的比较功能，但是前提是这款软件允许你调用，如果它不给你提供接口，你就是想调用也得绕上八百个圈才可以。
-
-这一点我们可以查询文档确定，文档是安装软件时自带的，名字为 BCompare.chm，如果找不到，安利你一个叫做 Everything 的软件，装上它以后，电脑中的一切东西都能搜索找到。
-
-这个文档应该很容易找到的，与软件的可执行文件在同一目录，其实我们使用的比较工具应该是 BCompare.exe，但是为什么在配置 git mergetool 的是后用的是 BComp.exe 呢？这一点文档中有写：
-
-BCompare.exe: This is the main application. Only one copy will run at a time, regardless of how many windows you have open. If you launch a second copy it will tell the existing copy to start a comparison and exit immediately.
-BComp.exe: This is a Win32 GUI program. If launched from a version control system, it should work just fine. If launched from a console window, the console (or batch file) will not wait for it.
-
-文档是英文的，但是比较容易理解，总的来说 BCompare.exe 是主程序，BComp.exe 用在版本控制工具中更加优秀，至于文档中提到的主程序只能启动一个副本的说明，我试了一下并不是这样的，但是这不是重点，根据文档建议，我们应该调用 BComp.exe 程序。
-
-关于调用参数，文档中对于每种形式的比较也给出了说明，我们这里只列举两个文件和四个文件这两种参数，两个文件作为参数时常用来对比，我直接使用主程序对比文件就是这种形式，参数格式为 BCompare.exe "C:\Left File.ext" "C:\Right File.ext"，但是使用时我常把文件直接拖拽到软件上进行比较。四个文件作为参数时常用来处理文件冲突，参数类型为 BCompare.exe C:\Left.ext C:\Right.ext C:\Center.ext C:\Output.ext，参数中文件的名字表明处理时的位置和作用，看下面这个图就明白了。
-
-从红框圈定的位置就可以发现和文件的对应关系了，最下面是最终的输出文件，也是我们可以手动修改的文件。
-
-### 文件冲突及处理
-
-#### 产生冲突
-
-先看一下 git 仓库的原始情况
-
-    albert@home-pc MINGW64 /d/gitstart (dev)
-    $ git status
-    On branch dev
-    Your branch is up to date with 'origin/dev'.
-
-    nothing to commit, working tree clean
-
-    albert@home-pc MINGW64 /d/gitstart (dev)
-    $ ls
-    README.md
-
-    albert@home-pc MINGW64 /d/gitstart (dev)
-    $ cat README.md
-    learn git branch command
-    m2
-    test checkout
-
-在此基础上新建两个分支 dev1 和 dev2
-
-    albert@home-pc MINGW64 /d/gitstart (dev)
-    $ git checkout -b dev1
-    Switched to a new branch 'dev1'
-
-    albert@home-pc MINGW64 /d/gitstart (dev1)
-    $ git checkout -b dev2
-    Switched to a new branch 'dev2'
-
-    albert@home-pc MINGW64 /d/gitstart (dev2)
-    $ git branch | grep dev
-    dev
-    dev1
-    * dev2
-    *
-在 dev2 分支上修改 README.md 文件后提交
-
-    albert@home-pc MINGW64 /d/gitstart (dev2)
-    $ echo "this is dev2 test">>README.md
-
-    albert@home-pc MINGW64 /d/gitstart (dev2)
-    $ git add README.md
-    warning: LF will be replaced by CRLF in README.md.
-    The file will have its original line endings in your working directory
-
-    albert@home-pc MINGW64 /d/gitstart (dev2)
-    $ git commit -m"update readme at dev2"
-    [dev2 d8d80b7] update readme at dev2
-    1 file changed, 1 insertion(+)
-
-    albert@home-pc MINGW64 /d/gitstart (dev2)
-    $ cat README.md
-    learn git branch command
-    m2
-    test checkout
-    this is dev2 test
-
-切换回 dev1 分支修改 README.md 文件后提交
-
-    albert@home-pc MINGW64 /d/gitstart (dev2)
-    $ git checkout dev1
-    Switched to branch 'dev1'
-
-    albert@home-pc MINGW64 /d/gitstart (dev1)
-    $ echo "this is dev1 test">>README.md
-
-    albert@home-pc MINGW64 /d/gitstart (dev1)
-    $ git add README.md
-    warning: LF will be replaced by CRLF in README.md.
-    The file will have its original line endings in your working directory
-    git com -
-    albert@home-pc MINGW64 /d/gitstart (dev1)
-    $ git commit -m"update readme at dev1"
-    [dev1 3136341] update readme at dev1
-    1 file changed, 1 insertion(+)
-
-    albert@home-pc MINGW64 /d/gitstart (dev1)
-    $ cat README.md
-    learn git branch command
-    m2
-    test checkout
-    this is dev1 test
-
-这时在 dev1 分支上合并 dev2 分支上的修改就会产生冲突
-
-    albert@home-pc MINGW64 /d/gitstart (dev1)
-    $ git merge dev2
-    Auto-merging README.md
-    CONFLICT (content): Merge conflict in README.md
-    Automatic merge failed; fix conflicts and then commit the result.
-
-    albert@home-pc MINGW64 /d/gitstart (dev1|MERGING)
-    $ cat README.md
-    learn git branch command
-    m2
-    test checkout
-
-    <<<<<<< HEAD
-    this is dev1 test
-    =======
-    this is dev2 test
-    >>>>>>> dev2
-
-    albert@home-pc MINGW64 /d/gitstart (dev1|MERGING)
-    $ ls
-    README.md
-
-冲突产生了，文档中同一位置被两个分支修改后合并导致的，内容里出现了 <<<、===、>>>，包裹的内容被分成了两部分，上面一部分是当前分支修改的，下面一部分是从 dev2 分支合并过来的，还要注意虽然产生了产生了冲突，但是目录中并没有产生其他多余的文件。
-
-#### 解决冲突
-
-这样的冲突比较简单，我们只要使用文本工具删除不想要的内容，保存后 git add README.md，然后再 git commit 就完成了冲突的解决，但是因为配置了 git mergetool，我们可以用它来解决冲突，直接在命令行敲命令 git mergetool 就可以:
-
-    albert@home-pc MINGW64 /d/gitstart (dev1|MERGING)
-    $ git mergetool
-    Merging:
-    README.md
-
-    Normal merge conflict for 'README.md':
-    {local}: modified file
-    {remote}: modified file
-
-这时光标不会退出，一闪一闪并且打开 BComp.exe 工具，截图如下：
-
-这时如果你打开 git 库所在目录会发现除了 README.md 还多了下面4个文件：
-
-    README.md
-    README_BACKUP_584.md
-    README_BASE_584.md
-    README_LOCAL_584.md
-    README_REMOTE_584.md
-
-按照自己的实际情况修改最下面的文件，然后点击箭头所指的保存按钮，关闭 Beyond Compare，查询一下仓库状态
-
-    albert@home-pc MINGW64 /d/gitstart (dev1|MERGING)
-    $ git status
-    On branch dev1
-    All conflicts fixed but you are still merging.
-    (use "git commit" to conclude merge)
-
-    Changes to be committed:
-            modified:   README.md
-
-    albert@home-pc MINGW64 /d/gitstart (dev1|MERGING)
-    $ ls
-    README.md
-
-不但冲突文件没有了，还给我们自动执行 git add README.md 命令，我们只需要执行 git commit 就解决完了冲突。
-
-    albert@home-pc MINGW64 /d/gitstart (dev1|MERGING)
-    $ git commit
-    [dev1 b348ae6] Merge branch 'dev2' into dev1
-
-    albert@home-pc MINGW64 /d/gitstart (dev1)
-    $ git adog
-    *   b348ae6 (HEAD -> dev1) Merge branch 'dev2' into dev1
-    |\
-    | * d8d80b7 (dev2) update readme at dev2
-    * | 3136341 update readme at dev1
-    |/
-    * 5f4181e (origin/dev, dev) add comments
-
-### 工具配置的参数含义
-
-回过头来再看看 git mergetool 的4句配置到底有什么用
-
-    git config --global merge.tool bc4
-    git config --global mergetool.bc4.cmd "\"D:\\mybc4\\BComp.exe\" \"\$LOCAL\" \"\$REMOTE\" \"\$BASE\" \"\$MERGED\""
-    git config --global mergetool.bc4.trustExitCode true
-    git config --global mergetool.keepBackup false
-
-#### git config
-
-首先你需要知道 git config 的作用，就是用来配置 git 的，加上了 --global 表示调整全局 git 配置，不加的话就是调整当前库的 git 配置。windows上的全局配置一般在 C:\Users\用户名\.gitconfig，如果你之前用过 git，一般会执行过 git config --global user.name xxx 对吧，这些命令都是来调整 git 配置的，打开这个 .gitconfig 你会看到
-
-    [user]
-        name = albert
-        email = albert@163.com
-    [core]
-        autocrlf = true
-    [alias]
-        st = status
-        adog = "log --all --decorate --oneline --graph"
-    [merge]
-        tool = bc4
-    [mergetool "bc4"]
-        cmd = \"D:\\mybc4\\BComp.exe\" \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
-        trustExitCode = true
-    [mergetool]
-        keepBackup = false
-
-看看最后几行就是我们添加的4项配置，只不过到文件中变成了键值对的形式，经过测试后发现，这些属性最少两级，比如 user.name 、core.autocrlf，最多三级比如 mergetool.bc4.cmd、 mergetool.bc4.trustExitCode，如果级数再多会怎么办，你可以试试 git config --global a.b.c.d.e test，它最终也会被拆成三级如下
-
-    [a "b.c.d"]
-        e = test
-
-#### git mergetool
-
-这个需要查一下官方文档了，git mergetool --help 就能打开git官方文档，文档写得真不错，排版格式看着就很舒服。
-
-文档提到添加 --tool-help 选项可以列举可以的合并工具，展示如下
-
-    albert@home-pc MINGW64 /d/gitstart (dev1)
-    $ git mergetool --tool-help
-    'git mergetool --tool=<tool>' may be set to one of the following:
-                    vimdiff
-                    vimdiff2
-                    vimdiff3
-
-            user-defined:
-                    bc4.cmd "D:\Program Files\Beyond Compare 4\BComp.exe" "$LOCAL" "$REMOTE" "$BASE" "$MERGED"
-
-    The following tools are valid, but not currently available:
-                    araxis
-                    bc
-                    bc3
-                    codecompare
-                    deltawalker
-                    diffmerge
-                    diffuse
-                    ecmerge
-                    emerge
-                    examdiff
-                    guiffy
-                    gvimdiff
-                    gvimdiff2
-                    gvimdiff3
-                    kdiff3
-                    meld
-                    opendiff
-                    p4merge
-                    smerge
-                    tkdiff
-                    tortoisemerge
-                    winmerge
-                    xxdiff
-
-    Some of the tools listed above only work in a windowed
-    environment. If run in a terminal-only session, they will fail.
-
-这一查才发现，原来 git mergetool 支持的工具有这么多，不过下面这些我都没安装，用一下上面列举的3个，试试 git mergetool --tool=vimdiff，果然打开了一个界面如图。
-
-幸亏不如 Beyond Compare 好用，不然我不是白配置了，不过这些工具确实方便，都不需要配置，只要安装了参数中指定一下就可以用了，比如这个 bc3，我猜它是 Beyond Compare 3，只不过我安装的是 Beyond Compare 4 这个版本。
-
-这些内置工具使用的前提是已经安装了，并且安装软件的目录放在了环境变量 Path 中，如果没有放在这个变量中需要通过 mergetool.xxx.path 参数来配置，比如我把 Beyond Compare 3 安装在了 D 盘根目录，就可以设置 git config --global mergetool.bc3.path "D:\\"。
-
-我们在可用工具中没有找到 Beyond Compare 4 为什么我们可以用呢？因为 git mergetool 命令还支持自定义合并解决冲突的工具，只要指定 mergetool.xxx.cmd 就可以调用了，就像 git mergetool --tool-help 查询结果中提到的 user-defined: bc4.cmd "D:\Program Files\Beyond Compare 4\BComp.exe" "$LOCAL" "$REMOTE" "$BASE" "$MERGED"，git mergetool 把 bc4 作为了一个等同于内置合并工具的软件。
-
-再来看看这4句配置的含义：
-
-    git config --global merge.tool bc4
-    git config --global mergetool.bc4.cmd "\"D:\\mybc4\\BComp.exe\" \"\$LOCAL\" \"\$REMOTE\" \"\$BASE\" \"\$MERGED\""
-    git config --global mergetool.bc4.trustExitCode true
-    git config --global mergetool.keepBackup false
-
-第一句 git config --global merge.tool bc4 是说把 git mergetool 的默认工具配置成 bc4，如果不指定默认工具在使用时就需要写成 git mergetool --tool=bc4 或者 git mergetool -t bc4 了，可是 bc4 是我们自己起的名字，根本就没有这个名字啊，接着往下看。
-
-第二句 git config --global mergetool.bc4.cmd "\"D:\\mybc4\\BComp.exe\" \"\$LOCAL\" \"\$REMOTE\" \"\$BASE\" \"\$MERGED\"" 指定了工具 bc4 的调用路径和参数，后面的这4个参数都是 git mergetool 命令提供的，依次代表本地修改，被合并分支修改，两端未修改前版本文件，最终合并导出的文本文件。
-
-第三句 git config --global mergetool.bc4.trustExitCode true， 设置为 true 表示信任软件的返回码，并依据返回码确定合并是否成功，如果设置成 false 就会在合并完成后问你是否解决完冲突，设置成 true 会方便很多。
-
-第四句 git config --global mergetool.keepBackup false， 是指定在合并完成后删除备份文件*.orig，这个文件会在调用 git mergetool 是产生*.orig 备份文件，成功合并后自动删除就可以了。
-
-### 思考
-
-至此终于弄明白这个 git mergetool 是怎么工作的了，但是想这样一个问题，这个 mergetool.xxx.cmd 一定得调用冲突解决工具吗？如果你从头看到这里应该会明白，这里只是给用户提供了一个调用自定义工具的方式，至于你调用什么它是不关心的，你完全可以在 git mergetool 的时候让电脑关机，这些都是可以的，在你明白了原理以后，一切都变得简单了。
-
-### 总结
-
-Beyond Compare 是一款强大的比较工具，合理的使用可以有效的提升工作效率
-git mergetool 内置了很多可以使用的合并工具，并且支持调用自定义的合并工具
-git 的官方文档写得真的挺详细，有时间可以多看一看，你会发现很多有意思的功能
-急于解决问题时可以不求甚解，解决问题后最好可以明白其中的缘由，这其实就是一种进步
 
 ## 常见问题
 
@@ -1967,7 +1781,29 @@ rebase之前的git提交历史树:
 
 我的想法是，不用 git push -f，用 git merge 是否可以解决？
 
-## 版本回退的操作步骤
+## 版本回退
+
+先保留下现场以便反悔救命，窗口千万别关啊！
+
+    git log --graph --oneline
+
+恢复修改的文件，就是将文件从仓库中拉到本地工作区，即 仓库区 ----> 暂存区 ----> 工作区
+
+1. 修改了文件，没有任何 git 操作
+
+    git checkout -- aaa.txt
+
+2. 修改了文件，已经 git add 提交到暂存区了
+
+    git reset HEAD
+
+    git checkout -- aaa.txt
+
+3. 修改了文件，并 git add + git commit 提交到仓库区了
+
+    git reset HEAD^
+
+    git checkout -- aaa.txt
 
 如果发现最近的提交不对路，回退到上个提交，以便修改
 
@@ -1980,7 +1816,7 @@ rebase之前的git提交历史树:
     # 差异放在在储藏（stage）区域
     git reset --soft HEAD~1
 
-    # 差异全扔，楞回到某个commit
+    # 差异全扔，楞回到某个commit，祈祷你没push过吧！
     git reset --hard HEAD~1
 
 ### 自己的分支硬回退例子
@@ -2096,17 +1932,529 @@ git给出了解决方案，使用git branch-filter来遍历git history tree, 可
 
 ## 掉电导致objects目录下的某些文件为空
 
-如果保存远程gitrepo的虚拟机经常关闭或者本地机器突然掉电，会导致.git/objects目录下的某些文件为空:
+如果保存远程gitrepo的虚拟机经常关闭或者本地机器突然掉电，会导致.git/objects目录下的某些文件为空的报错:
 
-    git fsck --fule, 删空文件, head重新指向上一条不空的object
+    error: object file .git/objects/31/65329bb680e30595f242b7c4d8406ca63eeab0 is empty
+fatal: loose object 3165329bb680e30595f242b7c4d8406ca63eeab0 (stored in .git/objects/31/65329bb680e30595f242b7c4d8406ca63eeab0) is corrupt
 
     <https://segmentfault.com/a/1190000008734662>
     <https://stackoverflow.com/questions/11706215/how-to-fix-git-error-object-file-is-empty>
 
-  简单的应对，找个本地文件不含空文件的：
+最优解决方案是删除空文件，然后想办法把head重新指向上一条不空的object，操作步骤如下
+
+    git fsck --full
+
+    cd .git; find . -type f -empty -delete -print
+
+    再次运行 git fsck --full，还有就再删
+
+所有空文件删除完毕，再运行 git fsck --full，还是有错，head指向元素不存在，是之前的一个空文件，我们已经删了
+
+    $ git fsck --full
+    Checking object directories: 100% (256/256), done.
+    Checking objects: 100% (103719/103719), done.
+    error: HEAD: invalid sha1 pointer c6492f7ad72197e2fb247dcb7d9215035acdca7f
+    error: refs/heads/ia does not point to a valid object!
+
+手动获得最后两条reflog
+
+    $ tail -n 2 .git/logs/refs/heads/master
+    3a0ecb6511eb0815eb49a0939073ee8ac8674f8a
+    99cb711e331e1a2f9b0d2b1d27b3cdff8bbe0ba5 xxx <aaa@bbb.com> 1477039998 +0800    commit: nested into app
+
+head当前是指向最新的那一条记录，所以我们看一下parent commit 即倒数第二条提交
+
+    $ git show 99cb711e331e1a2f9b0d2b1d27b3cdff8bbe0ba5
+    Date:   Fri Oct 21 16:53:18 2016 +0800
+
+        nested into app
+
+    diff --git a/pzbm/templates/pzbm/base.html b/pzbm/templates/pzbm/base.html
+    index 70331c5..c96d12c 100644
+    --- a/pzbm/templates/pzbm/base.html
+    +++ b/pzbm/templates/pzbm/base.html
+    @@ -6,7 +6,7 @@
+
+可以看到内容，是好的，就把HEAD指向这个。
+
+    git update-ref HEAD 99cb711e331e1a2f9b0d2b1d27b3cdff8bbe0ba5
+
+    git commit
+
+简单的应对，找个本地文件不含空文件的：
 
     1.远程报错的，从本地拷贝远程为空的文件过去，但是如果有多个来源提交到服务器文件的话可能会出现不一致的情况。
 
     2.远程报错的，本地直接git clone --bare 重新搞上去得了，但是会丢历史版本信息
 
     3.本地报错的，把.git删掉，重新init，但是会丢历史版本信息
+
+## Github 创建 Pull Request
+
+Pull Request 是开发者使用 GitHub 进行协作的利器。这个功能为用户提供了友好的页面，让提议的更改在并入官方项目之前，可以得到充分的讨论。
+
+最简单地来说，Pull Request 是一种机制，让开发者告诉项目成员一个功能已经完成。一旦 feature 分支开发完毕，
+开发者使用 GitHub 账号提交一个 Pull Request。它告诉所有参与者，他们需要审查代码，并将代码并入 master 分支。
+
+Pull Request 不只是一个通知，还是一个专注于某个提议功能的讨论版
+
+### Pull Request是如何工作的
+
+Pull Request 需要两个不同的分支或是两个不同的仓库,
+
+    1.开发者在他们的本地仓库中为某个功能创建一个专门的分支。
+    2.开发者将分支推送到公共的 GitHub 仓库。
+    3.开发者用 GitHub 发起一个 Pull Request。
+    4.其余的团队成员审查代码，讨论并且做出修改。
+    5.项目维护者将这个功能并入官方的仓库，然后关闭这个 Pull Request。
+
+### 例子
+
+如何将 Pull Request 用在 Fork 工作流中。小团队中的开发和向一个开源项目贡献代码都可以这样做。
+
+Mary 是一位开发者，John 是项目的维护者。他们都有自己公开的 GitHub 仓库，John 的仓库之一便是下面的官方项目。
+
+为了参与这个项目，Mary 首先要做的是 fork 属于 John 的 GitHub 仓库。她需要注册登录 GitHub，找到 John 的仓库，点击 Fork 按钮。
+
+选好 fork 的目标位置之后，她在服务端就有了一个项目的副本.
+
+接下来，Mary 需要将她刚刚 fork 的 GitHub 仓库克隆下来.她在本地会有一份项目的副本。她需要运行下面这个命令：
+
+    git clone https://github.com/user/repo.git
+
+请记住，git clone 自动创建了一个名为 origin 的远端连接，指向 Mary 所 fork 的仓库。
+
+在她写任何代码之前，Mary 需要为这个功能创建一个新的分支。这个分支将是她随后发起 Pull Request 时要用到的源分支。
+
+    # 创建新分支
+    git checkout -b some-feature
+    # 编辑一些代码
+    git commit -a -m "新功能的一些草稿"
+
+为了完成这个新功能，Mary 想创建多少个提交都可以。如果 feature 分支的历史有些乱，她可以使用交互式的 rebase 来移除或者拼接不必要的提交。对于大项目来说，清理 feature 的项目历史使得项目维护者更容易看清楚 Pull Request 的所处的进展。
+
+在功能完成后，Mary 使用简单的 git push 将 feature 分支推送到了她自己的 GitHub 仓库上（不是官方的仓库）：
+
+    git push origin some-branch
+
+这样她的更改就可以被项目维护者看到了（或者任何有权限的协作者）。
+
+#### Mary创建了一个Pull Request
+
+GitHub 上已经有了她的 feature 分支之后，Mary 可以找到被她 fork 的仓库，点击项目简介下的 New Pull Request 按钮，用她的 GitHub 账号创建一个 Pull Request。Mary 的仓库会被默认设置为源仓库（head fork），询问她指定源分支（compare）、目标仓库（base fork）和目标分支（base）。
+
+Mary 想要将她的功能并入主代码库，所以源分支就是她的 feature 分支，目标仓库就是 John 的公开仓库，目标分支为 master。她还需要提供一个 Pull Request 的标题和简介。
+
+在她创建了 Pull Request 之后，GitHub 会给 John 发送一条通知。
+
+#### John审查了这个Pull Request
+
+John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到所有的 Pull Request。点击 Mary 的 Pull Request 会显示这个 Pull Request 的简介、feature 分支的提交历史，以及包含的更改。
+
+如果他认为 feature 分支已经可以合并了，他只需点击 Merge Pull Request 按钮来通过这个 Pull Request，将 Mary 的 feature分支并入他的 master 分支.
+
+但是，在这里例子中，假设 John 发现了 Mary 代码中的一个小 bug，需要她在合并前修复。他可以评论整个 Pull Request，也可以评论 feature 分支中某个特定的提交。
+
+为了修复错误，Mary 在她的 feature 分支后面添加了另一个提交，并将它推送到了她的 GitHub 仓库，就像她之前做的一样。这个提交被自动添加到原来的 Pull Request 后面，John 可以在他的评论下方再次审查这些修改。
+
+#### John 接受了 Pull Request
+
+最后，John 接受了这些修改，将 feature 分支并入了 master 分支，关闭了这个 Pull Request。功能现在已经整合到了项目中，其他在 master 分支上工作的开发者可以使用标准的 git pull 命令将这些修改拉取到自己的本地仓库。
+
+## 日常使用 Git 的 19 个建议
+
+如果你对git一无所知，那么我建议先去读一下Git 常用命令速查。本篇文章主要适合有一定 git 使用基础的人群。
+
+1.日志输出参数
+
+命令示例：
+
+    git log --oneline --graph
+
+也许你用过git log。它支持很多命令行参数，将这些参数结合起来使用，功能尤为强大。下面是我经常使用的一些参数：
+
+    –author=“Alex Kras” ——只显示某个用户的提交任务
+    –name-only ——只显示变更文件的名称
+    –oneline——将提交信息压缩到一行显示
+    –graph ——显示所有提交的依赖树
+    –reverse ——按照逆序显示提交记录（最先提交的在最前面）
+    –after ——显示某个日期之后发生的提交
+    –before ——显示发生某个日期之前的提交
+
+例如，曾经有位主管要求在每周五提交周报。所以我每周五都运行一下这个指令： git log --author="Alex Kras" --after="1 week ago" --oneline，然后将输出结果编辑一下，发送给主管审核。
+
+Git有很多命令行参数，使用起来非常方便。运行 man git log ，来看一下这些参数的作用。
+
+如果这些都不好用，git还有一个 --pretty 参数，可以用来创建高级自定义输出。
+
+2.查看文件的详细变更
+
+命令示例：
+
+    git -log -p filename
+
+git log -p 或者 git log -p filename 不仅显示提交说明、提交者以及提交日期，还会显示这每次提交实际修改的内容。
+
+然后你就可以使用 less 中常用的检索命令即“斜杠”后面加检索词/{{在此处添加你的检索词}}），在变更内容日志中检索指定的关键词（使用小写的n跳到下一条检索结果，大写的N跳到上一条检索结果）。
+
+3.查看文件中指定位置的变更
+
+命令示例：
+
+    git log -L 1,1:some-file.txt
+
+你可以使用 git blame filename 追查出文件中每一行是由谁变更的。
+
+git blame 是一个非常强大的工具，但是又是无法提供足够的信息。
+
+git log 提供了一个 -L 的选项。这个选项允许指定文件中的某些行。Git只会输出与这些行的变更日志。这有点像带焦点的 git log -p 。
+
+git log -L 1,1:some-file.txt
+
+4.查看尚未合并的变更
+
+命令示例：
+
+    git log --no-merges master..
+
+如果你曾经与很多小伙伴工作在同一个持久分支上，也许会有这样的经历，父分支（例如：master）上的大量合并同步到你当前的分支。这使得我们很难分辨哪些变更时发生主分支，哪些变更发生在当前分支，尚未合并到master分支。
+
+git log --no-merges master..可以解决这个问题。注意--no-merges 标志意味着只显示没有合并到任何分支的变更，master..选项，意思是指显示没有合并到master分支的变更（在master后面必须有..）。
+
+你也可以运行 git show --no-merges master.. 或者 git log -p --no-merges master.. 命令（输出结果相同）来查看一下尚未合并的文件变更。
+
+5. 查看其他分支中的文件
+
+示例：
+
+git show some-branch:some-file.js
+
+用这个命令可以很方便地查看其他分支上的文件而无需切换到那个分支。
+
+当然你也可以通过 git show some-branch-name:some-file-name.js 命令在终端中显示指定的文件.
+
+你还可以将输出重定向到一个临时文件，这样你就可以再指定的编辑器中，以并排视图来查看它了。
+
+git show some-branch-name:some-file-name.js > deleteme.js
+
+如果你想查看另一个分支上文件与当前分支上文件的差异，只要运行下面的命令就可以了：
+
+git diff some-branch some-filename.js
+
+6.关于变更基线的几点说明
+
+示例：
+
+git pull --rebase
+
+之前我们说过在远程分支上工作会有大量的合并提交。使用 git rebase 可以避免这些提交。
+
+总的来说我认为变更基线是高级特征，最好是留到另一篇文章中详细介绍。
+
+甚至在git book中也有这样的论述：
+
+但是，令人狂喜的变更基线并不是任何情况下都适用，一言以蔽之：
+
+若是工作区中存在尚未提交到仓库的变更，请不要使用变更基线。
+
+如果遵照这条指南，不会有什么问题。不然，你可能会招致厌恶与谩骂。
+
+https://git-scm.com/book/en/v2/Git-Branching-Rebasing#The-Perils-of-Rebasing
+
+也就是说，变更基线本身并不可怕，关键在于使用方式。
+
+或许，最好的方法是使用交互式变更基线，调用命令为 git rebase -i {{某个提交序列号}}。运行这条命令，会打开一个带有自解释指令的编辑器。由于变更基线不在本文的叙述范围之内，我们就此而止，不再深究。
+
+
+
+变更基线一个非常有用的特殊用法 git pull –rebase。
+
+举个例子，假设你正在master分支的一个本地版本上工作，你已经向仓库提交了一小部分变更。与此同时，也有人向master分支提交了他一周的工作成果。当你尝试推送本地变更时，git提示你需要先运行一下 git pull ， 来解决冲突。作为一个称职的工程师，你运行了一下 git pull ，并且git自动生成了如下的提交信息。
+
+Merge remote-tracking branch ‘origin/master’
+
+尽管这不是什么大问题，也完全安全，但是不太有利于历史记录的聚合。
+
+这种情况下，git pull --rebase 是一个不错的选择。
+
+这个命令会迫使git将远程分支上的变更同步到本地，然后将尚未推送的提交重新应用到这个最新版本，就好象它们刚刚发生一样。这样就可以避免合并以及随之而来的丑陋的合并信息了。
+
+7. 本地合并之后保留分支结构
+
+示例：
+
+git merge --no-ff
+
+我喜欢为每一个bug或者特征创建一个新的分支。最大的好处就是，可以清楚地知道一系列的提交与某个任务的关系。如果你曾经合并过github 或者类似工具上的同步请求，那么可以通过运行 git log --oneline --graph 显示的视图，清楚地看到合并分支的历史。
+
+如果你试图合并一个本地分支到另一个本地分支，也许会注意到git将两个分支平滑地衔接在一起，在git历史中看到的是一条直线。。
+
+如果你想强迫git保存分支的历史，与合并同步请求的状况类似，你可以加一个 --no-ff 标志, 最后可以看到非常清楚的提交历史树。
+
+git merge –no-ff some-branch-name
+
+
+
+8. 修复而非新建提交
+
+示例：
+
+git commit --amend
+
+这个指令顾名思义。
+
+假设提交之后，你意识到自己犯了一个拼写错误。你可以重新提交一次，并附上描述你的错误的提交信息。但是，还有一个更好的方法：
+
+如果提交尚未推送到远程分支，那么按照下面步骤简单操作一下就可以了：
+
+1.	修复你的拼写错误
+2.	将修正过的文件暂存，通过git add some-fixed-file.js
+3.	运行 git commit –amend 命令，将会把最近一次的变更追加到你最新的提交。同时也会给你一个编辑提交信息的机会。
+4.	准备好之后，将干净的分支推送到远程分支。
+
+
+
+如果你工作在自己的分支，甚至可以在已经推送之后修正提交，你需要使用 git push -f （-f 代表强制执行），这条指令可以重写历史。但是，不要试图在一个很多人共同工作的分支（正如我们在变更基线那一部分讨论的分支）上这样做。此时，新建一次提交，在提交信息中描述错误，应该是最好的补救措施。
+
+9. Git 中的三种状态以及它们之间的转换
+
+示例：
+
+git reset --hard HEAD 与 git status -s
+
+目前你或许已经了解，git中的文件可以有三种不同的状态：
+
+1.	没有暂存
+2.	暂存并准备提交
+3.	已经提交
+
+通过运行 git status可以看到关于文件的描述以及文件的状态。 运行 git add filename.js 命令可以将文件从未暂存状态移动到暂存并准备提交的状态， 或者使用 git add . 命令一次性暂存所有的文件。
+
+通过运行 git status -s 命令可以看到状态图，其中 -s 是简短（short）的意思（个人认为），最终输出结果如图所示：
+
+
+
+显然，git status 不显示已经提交了的文件，你可以使用 git log 命令来查看。
+
+若要将文件在不同阶段之间转换，有很多可以用的命令供你选择。
+
+重置文件
+
+在git中，有3种类型的重置。重置是让文件回到git历史中的一个特定版本。
+
+1.	git reset –hard {{some-commit-hash}} —— 回退到一个特定的历史版本。丢弃这次提交之后的所有变更。
+2.	git reset {{some-commit-hash}}—— 回滚到一个特定的历史版本。将这个版本之后的所有变更移动到“未暂存”的阶段。这也就意味着你需要运行 git add . 和 git commit 才能把这些变更提交到仓库.
+3.	git reset –soft {{some-commit-hash}} ——回滚到一个特定的历史版本。将这次提交之后所有的变更移动到暂存并准备提交阶段。意味着你只需要运行 git commit 就可以把这些变更提交到仓库。
+
+这些命令似乎并没有什么用处，但当你尝试着将文件在不同版本间移动时，使用它们会非常方便。
+
+我平时使用重置的一些用例如下：
+
+1.	如果想清除变更记录，可以使用清理命令——git reset –hard HEAD （最常用）
+2.	如果想编辑，以不同的顺序，重新暂存，重新提交文件—— git reset {{some-start-point-hash}}
+3.	git reset –soft {{some-start-point-hash}}如果想把之前3次的提交，作为一次提交 git reset –soft {{some-start-point-hash}}
+
+签出部分文件
+
+如果你想取消某些文件在本地的变更，而同时保留另外一些文件在本地的变更，一个比较简单的方法是通过 git checkout forget-my-changes.js签出那些你想取消本地的变更的文件。
+
+正如前面提到的那样，你也可以从其他分支或者之前的提交中签出文件的不同版本。
+
+git checkout some-branch-name file-name.js 和 git checkout {{some-commit-hash}} file-name.js
+
+你应该注意到了签出的文件处于“暂存并准备提交”的状态。如果想回到未暂存的状态，需要执行一下 git reset HEAD file-name.js。然后再次执行 git checkout file-name.js,文件回到了初始状态。
+
+注意，运行 git reset –hard HEAD file-name.js 不起作用。总而言之，在git的不同阶段之间移动有点复杂，没有一个清晰的模式，我希望能通过这一部分有所改观。
+
+10. 撤销而不产生提交信息
+
+示例：
+
+git revert -n
+
+如果打算撤销之前一次或者两次的提交，查看这些提交都做了哪些变更，哪些变更又有可能引发问题，这个命令非常方便。
+
+通常，git revert 会自动将回退的文件提交到仓库，需要你写一个新的提交信息。-n 标志告诉git先别急着提交，因为我只是想看一眼罢了。
+
+11.用第三方差异工具查看整个工程而非单个目录的差异
+
+示例：
+
+git difftool -d
+
+我最喜欢的差异工具是Meld。我在使用Linux的时候就开始使用它，并且一直持续到现在。
+
+我并不是要推销Meld。假设你已经选好了比较工具，并且git能够将它作为一个合并和差异工具使用。接下来需要运行一下下面的命令，注意用你选择的差异工具的名字代替Meld：
+
+git config --global diff.tool.meld
+git config --global merge.tool meld
+
+之后你就可以运行s run git difftool some-file.js 来查看文件的差异了。
+
+但是，有些比较工具（例如meld）支持全路径比较。
+
+如果你调用 git difftool 时加 -d 标志，将会对整个文件夹进行比较。有时会非常有用。
+
+git difftool -d
+
+
+
+12. 忽略空格变更
+
+示例：
+
+git diff -w 或者 git blame -w
+
+你是否遇到这样的情况：直到git blame 显示你应该为文件中的一切负责时才意识到自己重新调整了文件的缩进或者格式？
+
+结果证明，git足够聪明来分辨文件中不同类型的变更。你可以调用许多命令（例如:：git diff, git blame），加一个-w 标志，git将会忽略空白的变更。
+
+13. 追加文件中的部分变更
+
+示例：
+
+git add -p
+
+
+
+14. 发现并清理无用分支
+
+示例：
+
+git branch -a
+
+仓库中存在大量远程分支的现象非常常见，甚至其中某些分支已经被合并到了master分支。如果你跟我一样有洁癖（至少有代码洁癖），这些分支可能会令你难以忍受。
+
+你可以通过运行git branch查看所有的远程分支，还可以带有 -a 标志（显示所有的分支），或者带上 –merged标志 只显示那些完全合并到master分支的分支。
+
+你或许首先想到的是运行git fetch -p （获取和清除旧数据），来确保你的数据是最新的。
+
+
+
+如果你要获取真正的fancy，你可以得到一个所有远程分支的列表，以及这些分支最后一次提交的列表，通过运行：
+
+git for-each-ref –sort=committerdate –format=’%(refname:short) * %(authorname) * %(committerdate:relative)’ refs/remotes/ | column -t -s ‘*’.
+
+
+
+不幸地是，没有简单的方法（至少我不知道）可能只显示合并过的分支。所以你可能不得不比较两个输出或者写一个脚本来做这些事情。
+
+15. 暂存部分文件
+
+示例：
+
+git stash --keep-index 或者 git stash -p
+
+如果你还不了解 git stash 的功能，只是把当前工作区中的变更保存到一个有序的“git stack”。之后你可以用 git stash pop ，恢复你的变更。你也可以使用 git stash list 查看git栈里面你做的所有备份。通过 man git stash 查看更多可以用的选项。
+
+常规 git stash 的一个限制是它会一下暂存所有的文件。有时，只备份某些文件更为方便，让另外一些与代码库保持一致。
+
+还记得神奇的 -p命令吗？是的，它与 git stash 一起用会非常方便。你现在或许已经猜到了，它会询问你想备份哪些文件的变更。
+
+为了确认一下，点击 ? 你可以看到所有可用的选项。
+
+
+
+另一个非常有用的技巧，用来备份部分文件：
+
+1.	add 那些你不想备份的文件（例如： git add file1.js, file2.js）
+2.	调用 git stash –keep-index。只会备份那些没有被add的文件。
+3.	调用 git reset 取消已经add的文件的备份，继续自己的工作。
+
+16. 写好提交信息
+
+刚刚读过一篇很好的文章，关于如何写好提交信息，点击这个链接阅读：How to Write a Git Commit Message
+
+有一个规则真的是为我量身订做的：“每一个好的提交应该能完善下面的这个句子”
+
+应用到实际中，提交信息应该是这样的：{{你的提交信息}}
+
+例如：
+
+—应用这次提交，可以更新**README文件**
+
+—应用这次提交:为调用GET/user/:id API追加确认
+
+—应用这次提交：会回退到**12345版本**
+
+17. Git 自动补全
+
+某些操作系统（例如：Ubuntu）的git包自带并且默认开启自动补全。如果你的操作系统没有这个功能（Mac就没有），你可以按照下面的指南为自己添加。
+
+https://git-scm.com/book/en/v1/Git-Basics-Tips-and-Tricks#Auto-Completion
+
+18. 创建常用命令的别名
+
+常用的较长的git命令应该使用git或者bash别名
+
+使用Git最好的方式是通过命令行，学习命令行的最好方式就是先用最困难的方法做每一件事。（把一切都打印出来）。
+
+然而，一段时间之后，最好将你常用的命令总结出来，为它们创建一个简单的别名。
+
+Git 支持别名，例如，你可以运行一下下面的命令：
+
+git config --global alias.l "log --oneline --graph"
+
+这个命令行会创建一个新的git别名l，你可以使用：
+
+git l 代替 git log –oneline –graph。
+
+注意你可以在alias后面附加其他的参数（例如：git l –author =“Alex”）
+
+其他的选项，是好的就得Bash别名
+
+例如，在我的.bashrc文件中有下面的词条：
+
+Alias gil=”git log –oneline -graph”，允许我使用gil代替长命令，甚至比git l还要少两个字母
+
+19. 快速定位故障版本
+
+示例：
+
+git bisect
+
+git bisect 使用分治算法查找出错版本号。
+
+假设休假一周回来，你看了一下最新代码，发现走之前完全正常的代码现在出问题了。
+
+你查看了一下休假之前最后一次提交的代码，功能尚且正常。不幸的是，你离开的这段时间，已经有上百次提交记录，你无法找到那一次提交导致了这个问题。
+
+
+
+这时你或许想找到破坏功能的bug，然后对该文件使用git blame 命令，找出并指责破坏者。
+
+如果bug很难定位，那么或许你可以去看一下提交历史，试一下看能不能找到出问题的版本。
+
+另一种快捷的方式则是使用git bisect，可以快速找到出问题的版本。
+
+那么git bitsect是如何做的呢？
+
+指定了已知的正常版本和问题版本之后，git bisectit bisect会把指定范围内的提交信息从中间一分为二，并会根据最中间的提交信息创建一个新的分支， 你可以检查这个版本是否有问题。
+
+假设这个中间版本依然可以正常运行。你可以通过git bisect good命令告诉git。然后，你就只有剩下的一半的版本需要测试。
+
+Git会继续分割剩下的版本，将中间版本再次到处让你测试。
+
+Git bisect会继续用相似的方式缩小版本查找范围，直到第一个出问题的版本被找到。
+
+因为你每次将版本分为两半，所以可以用log(n)次查找到问题版本（时间复杂度为“big O”，非常快）。
+
+运行整个git bisect的过程中你会用到的所有命令如下：
+
+1.	git bisect start ——通知git你开始二分查找。
+2.	git bisect good {{some-commit-hash}} ——反馈给git 这个版本是没有问题的（例如：你休假之前的最后一个版本）。
+3.	git bisect bad {{some-commit-hash}} ——告诉git 已知的有问题的版本（例如master分支中的HEAD）。git bisect bad HEAD （HEAD 代表最新版本）。
+4.	这时git 会签出中间版本，并告诉你去测试这个版本。
+5.	git bisect bad ——通知git当前版本是问题版本。
+6.	git bisect good ——通知git当前签出的版本没有问题。
+7.	当找到第一个问题版本后，git会告诉你。这时， git bisect 结束了。
+8.	git bisect reset——返回到 git bisect进程的初始状态（例如，master分支的HEAD版本）。
+9.	git bisect log ——显示最后一次完全成功的 git bisect日志。
+
+你也可以给git bisect提供一个脚本，自动执行这一过程。详细内容请点击： http://git-scm.com/docs/git-bisect#_bisect_run
+从远程库删除某些文件但保留本地的文件
+有时我们会误把一些不必要的文件（如目标文件、log 日志等）提交并推送到了远程库，现在希望从远程库删除这些文件但保留本地的文件，可以像这样 执行：
+git rm -r --cached dir1
+git rm --cached dir2/*.pyc
+git commit -m "remove irrelated files"
+git push origin branch1
