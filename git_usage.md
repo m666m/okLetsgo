@@ -709,9 +709,9 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
 
     git clone ssh://git@x.x.x.x:12345/gitrepo/tea.git
 
-0.先保证ssh连接远程仓库的用户时可以使用本机用户的密钥文件，免密登陆
+0.先添加本机用户的公钥到远程仓库的认证密钥文件中，以便免密登陆
 
-    添加sshkey 略
+    ssh-copy-id -i ~/.ssh/rsa_compA.pub -p 12345 git@x.x.x.x
 
 除了github这样的，私有仓库都需要用户鉴权才能读取文件。
 
