@@ -24,7 +24,6 @@
     - [从远程空白裸仓库拉取的步骤](#从远程空白裸仓库拉取的步骤)
     - [拉取指定版本](#拉取指定版本)
     - [git clone 获取指定分支的指定commit版本](#git-clone-获取指定分支的指定commit版本)
-    - [删除分支，远程/本地](#删除分支远程本地)
     - [从远程git拉取指定分支](#从远程git拉取指定分支)
     - [本地空目录，仅拉取指定远程分支的用法](#本地空目录仅拉取指定远程分支的用法)
     - [本地非空目录，远程空的push三个用法](#本地非空目录远程空的push三个用法)
@@ -32,6 +31,7 @@
     - [git clone之后的第一次pull和push调试](#git-clone之后的第一次pull和push调试)
     - [git clone支持多种协议](#git-clone支持多种协议)
     - [git checkout 切换其他分支](#git-checkout-切换其他分支)
+    - [删除分支，远程/本地](#删除分支远程本地)
   - [两个分支合并的merge常用方法](#两个分支合并的merge常用方法)
     - [方法一. merge 默认的快进合并，需要合入分支的接续点就是分叉点](#方法一-merge-默认的快进合并需要合入分支的接续点就是分叉点)
     - [方法二. 大的分支合入要保留菱形分叉，便于管理](#方法二-大的分支合入要保留菱形分叉便于管理)
@@ -705,22 +705,29 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
 
 ### 从远程空白裸仓库拉取的步骤
 
-远程仓库里有文件，随便哪个机器 git clone命令都可以正常拉取的。而刚建好的裸仓库是空白的，直接用clone拉，后面做pull和push会报错，需要先给远程仓库上传个文件。
-
-    git clone ssh://git@x.x.x.x:12345/gitrepo/tea.git
-
-0.先添加本机用户的公钥到远程仓库的认证密钥文件中，以便免密登陆
+记得先添加本机用户的公钥到远程仓库的认证密钥文件中，以便免密登陆
 
     ssh-copy-id -i ~/.ssh/rsa_compA.pub -p 12345 git@x.x.x.x
 
 除了github这样的，私有仓库都需要用户鉴权才能读取文件。
 
-1.远程操作
+如果远程仓库里有文件，随便哪个机器 git clone 命令都可以正常拉取的。
 
-    git 新建远程仓库
-    git init --bare tea.git
+    git clone ssh://git@x.x.x.x:12345/gitrepo/tea.git
 
-2.本地操作，新建文件夹，git初始化，添加远程仓库地址
+    # Ipv6 用标准的中括号方式：
+    #
+    $ git clone ssh://git@[2999:470:c:89a::2]:26179/uspace/gitrepo/tea.git
+    Cloning into okletsgo...
+    warning: You appear to have cloned an empty repository.
+
+这样本地目录里就会多了个okletsgo的目录，这个目录已经是git管理的仓库了，远端服务器的信息都已经配置了。
+
+而刚建好的裸仓库是空白的，直接用clone拉是可以的，但是后续做pull和push会报错，需要先给远程仓库上传个文件，下面详细说下过程。
+
+0.远程服务器建立裸仓库，略
+
+1.本地操作，新建文件夹，git初始化，添加远程仓库地址
 
     $ mkdir tea
 
@@ -733,12 +740,15 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
 
 3.本地操作，先提交个文件，推送远程，否则直接pull会各种报错
 
-    echo '# aaa' > mmm.py
+    echo 'init bare git repo, add a file' > readme.md
     git add mmm.py
-    git commit -m 'a'
+    git commit -m 'init bare git repo'
+
     git push origin master
 
 4.本地操作，拉取文件，先绑定远程
+
+    # git pull --rebase origin master
 
     $ git branch --set-upstream-to=origin/master master
     Branch 'master' set up to track remote branch 'master' from 'origin'.
@@ -774,7 +784,7 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
 
     git checkout　+某版本号　
 
-你当前文件夹下的源码会变成这个版本号的源码．比起一个个下，这种切换比较方便
+你当前文件夹下的源码会变成这个版本号的源码，比起一个个下，这种切换比较方便。
 
 ### git clone 获取指定分支的指定commit版本
 
@@ -793,43 +803,6 @@ clone完成后，进入目录，执行
     git fetch --depth < a-numer >
 
 不断增大步骤2的数字，直到找到你要的commit
-
-### 删除分支，远程/本地
-
-0.先看看有多少本地和远程分支
-
-    git branch -a
-
-1.切换到其他分支再进行操作
-
-    git checkout master
-
-2.删除远程分支的指针而不是直接删分支，方便数据恢复。
-
-    git push origin --delete fea_xxx
-
-如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
-
-    git push origin :refs/fea_xxx
-
-用本地分支fea_-2覆盖远程分支fea_-1
-
-    git push -f origin fea_-2:refs/fea_-1
-
-对追踪分支，git push origin --delete 该命令也会删除本地-远程的追踪分支，等于还做了个
-
-    # 如果只删除追踪分支，则还需要 git remote prune 来删除追踪分支
-    git branch --delete --remotes <remote>/<branch>
-
-3.其它人的机器上还有该远程分支，清理无效远程分支
-
-    git branch -a # 查看
-
-    git fetch origin -p  # git remote prune
-
-4.删除本地
-
-    git branch -d fea_xxx
 
 ### 从远程git拉取指定分支
 
@@ -932,7 +905,7 @@ Git协议下载速度最快，SSH协议用于需要用户认证的场合。
     git clone git://example.com/path/to/repo.git
     git clone [user@]example.com:port/path/to/repo.git
 
-    git clone ssh://[user@]example.com/path/to/repo.git
+    git clone ssh://[user@]example.com:port/path/to/repo.git
 
     git clone http[s]://example.com/path/to/repo.git
     git clone http://git.oschina.net/yiibai/sample.git
@@ -978,6 +951,43 @@ Git协议下载速度最快，SSH协议用于需要用户认证的场合。
     $ git checkout master
     Switched to branch 'master'
     Your branch is up-to-date with 'origin/master'.
+
+### 删除分支，远程/本地
+
+0.先看看有多少本地和远程分支
+
+    git branch -a
+
+1.切换到其他分支再进行操作
+
+    git checkout master
+
+2.删除远程分支的指针而不是直接删分支，方便数据恢复。
+
+    git push origin --delete fea_xxx
+
+如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
+
+    git push origin :refs/fea_xxx
+
+用本地分支fea_-2覆盖远程分支fea_-1
+
+    git push -f origin fea_-2:refs/fea_-1
+
+对追踪分支，git push origin --delete 该命令也会删除本地-远程的追踪分支，等于还做了个
+
+    # 如果只删除追踪分支，则还需要 git remote prune 来删除追踪分支
+    git branch --delete --remotes <remote>/<branch>
+
+3.其它人的机器上还有该远程分支，清理无效远程分支
+
+    git branch -a # 查看
+
+    git fetch origin -p  # git remote prune
+
+4.删除本地
+
+    git branch -d fea_xxx
 
 ## 两个分支合并的merge常用方法
 
