@@ -1,7 +1,9 @@
 
 # Windows 10+ 安装的那些事儿
 
-## 关键词 应用/APP
+## 必须了解的关键概念
+
+### 应用/APP
 
 跟以前的 application 区别，那个是 Windows 桌面版的 exe 程序，俗称应用程序。
 
@@ -10,8 +12,6 @@
 微软的 Windows 10+为了打通手机和桌面操作系统，把 app 商店这一套都移植到 Windows 了
 （而且开发工具也在打通，一套 API 可以在多个 os 平台无缝自适应运行），
 所以现在的 Windows 里的“应用”这个词，特指商店里安装的那些“app”。
-
-## 关键词 UEFI/CSM、GPT/MBR
 
 ### 目标系统类型 UEFI/CSM
 
@@ -53,7 +53,7 @@ UEFI 启动的时候，经过一系列初始化阶段（SEC、CAR、DXE 等）�
 
   ·文件启动项，大约记录的是某个磁盘的某个分区的某个路径下的某个文件。对于文件启动项，固件会直接加载这个 EFI 文件，并执行。类似于 DOS 下你敲了个 win.com 就执行了 Windows 3.2/95/98 的启动。文件不存在则失败。
 
-  ·设备启动项，大约记录的就是“某个 U 盘”、“某个硬盘”。（此处只讨论 U 盘、硬盘）对于设备启动项，UEFI 标准规定了默认的路径“\EFI\Boot\bootX64.efi”。UEFI 会加载磁盘上的这个文件。文件不存在则失败。UEFI 标准 2.x，推出了一个叫做 SecureBoot 的功能。开了 SecureBoot 功能之后，主板会验证即将加载的 efi 文件的签名，如果开发者不是受信任的开发者，就会拒绝加载。所以主板厂商需要提前在主板里内置微软的公钥，设备商想做 efi 文件需要去微软做认证取得签名，这样主板加载 efi 的时候会用内置的微软的公钥验证设备商 efi 文件里的签名，通过了才加载。这个过程从头到位都得微软认证，满满的对 linux 不友好啊。
+  ·设备启动项，大约记录的就是“某个u盘”、“某个硬盘”。（此处只讨论u盘、硬盘）对于设备启动项，UEFI 标准规定了默认的路径“\EFI\Boot\bootX64.efi”。UEFI 会加载磁盘上的这个文件。文件不存在则失败。UEFI 标准 2.x，推出了一个叫做 SecureBoot 的功能。开了 SecureBoot 功能之后，主板会验证即将加载的 efi 文件的签名，如果开发者不是受信任的开发者，就会拒绝加载。所以主板厂商需要提前在主板里内置微软的公钥，设备商想做 efi 文件需要去微软做认证取得签名，这样主板加载 efi 的时候会用内置的微软的公钥验证设备商 efi 文件里的签名，通过了才加载。这个过程从头到位都得微软认证，满满的对 linux 不友好啊。
 
 首先各种 PCI-E 的设备，比如显卡，比如 PCI-E 的 NVMe 固态硬盘，都有固件。其中支持 UEFI 的设备，比如 10 系列的 Nvidia 显卡，固件里就会有对应的 UEFI 的驱动。
 
@@ -66,7 +66,7 @@ UEFI 启动后，进入了 DXE 阶段，就开始加载设备驱动，然后 UEF
 
 如同 Windows 可以安装驱动一样，UEFI 也能在后期加载驱动。比如 CloverX64.efi 启动之后，会加载、EFI\Clover\drivers64UEFI 下的所有驱动。包括 VboxHFS.efi 等各种 efi。网上你也能搜到 NTFS.efi。再比如，UEFIShell 下，你可以手动执行命令加载驱动。
 
-根据 UEFI 标准里说的，你可以把启动 u 盘里的“\EFI\Clover”文件夹，拷贝到硬盘里的 ESP 对应的路径下。然后把“\EFI\Clover\CloverX64.efi”添加为 UEFI 的文件启动项就行了。Windows 的 BCD 命令，其实也可以添加 UEFI 启动项。
+根据 UEFI 标准里说的，你可以把启动u盘里的“\EFI\Clover”文件夹，拷贝到硬盘里的 ESP 对应的路径下。然后把“\EFI\Clover\CloverX64.efi”添加为 UEFI 的文件启动项就行了。Windows 的 BCD 命令，其实也可以添加 UEFI 启动项。
 
 EFI 分区中的“\EFI\Boot”这个文件夹，放谁家的程序都行。无论是“\EFI\Microsoft\Boot\Bootmgfw.efi”，还是“\EFI\Clover\CloverX64.efi”，只要放到“\EFI\Boot”下并且改名“bootX64.efi”，就能在没添加文件启动项的情况下，默认加载对应的系统。
 
@@ -134,7 +134,7 @@ UEFI 下用 diskpart 进行分区的详细资料见<https://docs.microsoft.com/z
 
 #### 不需要第三方工具就能做 UEFI 下的 Windows 安装盘？
 
-U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西提取到 U 盘就行了。（适用于 Win8/8.1/10 以及 WinServer2012/2012R2/2016。WinVista x64/Win7x64 以及 WinServer2008x64/2008R2 需要额外操作，WinVista x86/Win7x86/WinServer2008x86 不支持 UEFI）
+U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西提取到u盘就行了。（适用于 Win8/8.1/10 以及 WinServer2012/2012R2/2016。WinVista x64/Win7x64 以及 WinServer2008x64/2008R2 需要额外操作，WinVista x86/Win7x86/WinServer2008x86 不支持 UEFI）
 
 #### 电脑是 UEFI 的，想装 Linux，但我手头没优盘，听说也能搞定
 
@@ -194,30 +194,33 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 3200MHz、3600MHz频率内存最适合于B560主板+11代酷睿平台。这样的频率下并没有分频。当超频至4000MHz时，虽然内存带宽有所增加，但是延迟却比3600MHz高出不少，这是Gear2分频模式下带来的弊端。除非将内存超至4400MHz或以上高频，同时保持较好的时序。那内存带宽提升的同时，延迟也会降下来。
 
-## 技嘉主板 BIOS 设置 UEFI + GPT 模式启动 Windows
+## Windows 启用 Secure Boot 功能
 
-这是安装 Windows 启用 Secure Boot 的前提。
+下面两点，是 Windows 安装后可以启用 Secure Boot 功能的前提。如果不设置这个模式，Windows 的安装程序可能自动换用兼容的CSM模式进行安装而不提示，导致安装后发现，操作系统无法启用 Secure Boot 功能。
 
-### 1. 确保主板 BIOS 设置中，关于启动的项目，存储和 PCIe 设备选的是 UEFI 模式
+### 一、启动 Windows安装程序前，把主板 BIOS 设置 UEFI + GPT 模式
 
 “UEFI + GPT”模式结合“快速启动（Fast Boot）”功能打开后，关机之后的开机，都是直接厂商 logo 转一圈就直接进系统的，不会再有主板自检启动画面和 Windows 启动的画面。
 
 UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化→加载系统→进入系统。传统的 BIOS 在加载系统之前需要进行一系列的硬件检查。
 
-主板 BIOS 设置中，启动模式选项（Windows 10 Features）要选择“Windows 10”而不是“other os”，CSM 模式选关闭，UEFI 硬盘和 PCIe 设备是 UEFI 模式，这样系统才能默认用 Windows 的 UEFI 模式快速启动。
+#### 1. 确保主板 BIOS 设置中，关于启动的项目，存储和 PCIe 设备选的是 UEFI 模式
 
 重启开机后按 F2 进入 bios，选 BOOT 选项卡：
 
     启动模式选项（Windows 10 Features）要选择“Windows 10”而不是“other os”。
 
-    选项 “CSM Support”， 先选“Enable”，
-    之后下面出现的三项，除了网卡启动的那个选项不用管，其它两个关于存储和 PCIe 设备的选项要确认选的是“UEFI”。
+    选项 “CSM Support”， 先选“Enable”，之后下面出现的三项，除了网卡启动的那个选项不用管，其它两个关于“存储”和“PCIe 设备”的选项要确认选的是“UEFI”。
 
     然后选项 “CSM Support”， 再选“Disable”，再关闭 CMS 模式。
 
     CMS 模式关闭后，当前系统内的 PCIe 设备应该是出现了一些选项可以进行设置，比如“Advanced”界面 PCI  Subsystem setting 下 RX30 系列显卡的支持 Resize Bar 等
 
-#### 为什么要 CSM 模式又开又关这样操作呢？ Windows 10 安装的时候我踩了个坑
+这样系统才能默认用 Windows 的 UEFI 模式快速启动。
+
+##### 为什么要 CSM 模式又开又关这样操作呢？
+
+Windows 10 安装的时候我踩了个坑
 
     我在主板 BIOS 设置中启动模式选项（Windows 10 Features）选择“Windows 10”，“CSM Support”选项选择“Disable”后下面的三个选项自动隐藏了，我以为都是自动 UEFI 了，其实技嘉主板只是把选项隐藏了，硬盘模式保持了上次安装 Windows 时设置的 legacy 不是 UEFI……
 
@@ -225,52 +228,27 @@ UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化�
 
     原因在于，Windows 安装程序是根据当前 BIOS 设置的引导方式，来决定对硬盘格式化为哪个分区类型，只有 BIOS 里把“CSM Support”模式 enable 后出现的存储设备类型设为 UEFI 才会默认用 GPT 类型，设为 legacy 就会默认用 MBR 类型，设好后还得把“CSM Support”禁用选 disable 才行。
 
-总结来说，Windows 10 的安装兼容各种老设备，最古老的一种是主板 BIOS 设置里“Windows 10 Features”选择“other os”，“CSM Support”选“Enable”，存储和 PCIe 设备都选择“leagcy”，也可以安装 Windows 10，但是就无法享受真正 UEFI 引导系统的秒进桌面了。
+总结来说，Windows 10 的安装兼容各种老设备，最古老的一种是主板 BIOS 设置里“Windows 10 Features”选择“other os”，“CSM Support”选“Enable”，存储和 PCIe 设备都选择“leagcy”，也可以安装 Windows 10，但是就无法享受真正 UEFI FAST BOOT 引导系统的秒进桌面了。
 
 我的显卡因为用 DP 口不兼容，BIOS 设置里“Windows 10 Features”选择“other os”，“CSM Support”选“Enable”，存储和 PCIe 设备都选择“UEFI”安装了 Windows 10 2019 LTSC。
 
-后来显卡升级了 BIOS，又关闭主板 CMS 模式，重新安装了 Windows 10 21H1，在主板 BIOS 设置里装载默认值“Load optimized defaults”（默认把存储设备换回了 legacy），然后设置“Windows 10 Features”选择“Windows 10”，“CSM Support”选“Disable”，但是忘记把存储设备换回 UEFI 类型了，导致硬盘被 Windows 安装程序格式化为 MBR 类型。这样装完 Windows 开机启动后，估计是主板尝试 UEFI 没有引导成功，自动转为 CSM 模式走 bios+UEFI 的过程，导致无法秒进桌面。
+后来显卡升级了 BIOS，又关闭主板 CMS 模式，重新安装了 Windows 10 21H1，在主板 BIOS 设置里装载默认值“Load optimized defaults”（默认把存储设备换回了 legacy），然后设置“Windows 10 Features”选择“Windows 10”，“CSM Support”选“Disable”，但是忘记把存储设备换回 UEFI 类型了，导致硬盘被 Windows 安装程序格式化为 MBR 类型。这样装完 Windows 开机启动后，估计是主板尝试 UEFI 没有引导成功，自动转为 CSM 模式走 bios+UEFI 的过程，导致Windows下无法开启Secure Boot功能。
 
-总之，完美的做法，应该在 BIOS 设置中“Windows 10 Features”选择“Windows 10”，“CSM Support”选项选择“Enable”后出现的存储和 PCIe 设备的选项都选择“UEFI”，然后再把“CSM Support”选项选择“Disable”，使用 Rufus 制作安装 u 盘时也需要选择 GPT+UEFI 方式，这样 u 盘可以正常启动，这样安装好的 Windows 才能实现秒进桌面。
+总之，完美的做法，应该在 BIOS 设置中“Windows 10 Features”选择“Windows 10”，“CSM Support”选项选择“Enable”后出现的存储和 PCIe 设备的选项都选择“UEFI”，然后再把“CSM Support”选项选择“Disable”。在使用 Rufus 制作安装u盘时也要选择“GPT+UEFI”方式，再用这样的u盘启动计算机安装Windows。这样安装后的 Windows 才能实现UEFI的秒进桌面。
 
-#### 验证主板 BIOS 设置的 UEFI 模式
+##### 验证主板 BIOS 设置的 UEFI 模式
 
     启动 Windows 后运行 msinfo32，在“系统摘要”界面找“BIOS 模式”选项，看到结果是“UEFI”。
 
-    UEFI 模式刚开机时，屏幕自动使用显示器的物理分辨率，出现的主板厂商 logo 画面应该是比较小的原始图片尺寸，没有经过拉伸等分辨率调整。
-    我的 Nvidia 显卡目前只能在 HDMI 口连接时实现这个效果，DP 口连接时主板厂商 logo 画面被自动拉伸了，暂无法确定是否在显示器的物理分辨率下。
+UEFI 模式刚开机时，屏幕自动使用显示器的物理分辨率，出现的主板厂商 logo 画面应该是比较小的原始图片尺寸，没有经过拉伸等分辨率调整。
 
-### 2.SATA 硬盘使用“AHCI”模式
+我的 Nvidia 1080 显卡目前只能在 HDMI 口连接时实现这个效果，DP 口连接时主板厂商 logo 画面被自动拉伸了，暂无法确定是否在显示器的物理分辨率下。
 
-    确认下主板 BIOS 的“settings”界面中，“SATA And RST configuration”的选项，硬盘模式为“AHCI”，这个一般主板都是默认开启的。
+#### 2.SATA 硬盘使用“AHCI”模式
 
-### 3.确保 u 盘使用 UEFI 模式启动计算机，然后安装 Windows
+确认下主板 BIOS 的“settings”界面中，“SATA And RST configuration”的选项，硬盘模式为“AHCI”，这个一般主板都是默认开启的。
 
-默认的，主板 BIOS 启动菜单，对 u 盘是有两个选项，注意要选择带有 UEFI 字样的那个 u 盘启动。这样的 Windows 程序才会认为是完全的 UEFI 模式，对硬盘的操作就是默认 GPT 类型了。
-对 Rufus 制作的 Windows 安装 u 盘来说，制作时要选择“gpt+UEFI（非 CSM)”。
-
-验证：
-
-    cmd 管理员模式，进入 diskpart
-
-    >list disk
-
-    查看对应磁盘的 Gpt 那一列，是否有星号，有就是确认 GPT 磁盘了
-
-### 4.确保硬盘格式化为 GPT 类型
-
-如果你的 BIOS 设置已经选择了“UEFI”，但开机后不是直接秒进 Windows 的，那就怀疑是 Windows 安装的时候，没有把你的硬盘格式化为 GPT 模式。
-
-    进入磁盘管理，在磁盘 0 上点击右键，看看“转换成 GPT 磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是 GPT 类型，而是 MBR 类型。
-    真正的 GPT 磁盘，只提供“转换成 MBR 磁盘”选项。
-
-    三星 SSD 硬盘的管理程序 Samsung Magican 里，暂时不要设置 Over Provisioning 功能。
-
-原因参见上面第一节的踩坑经历。
-
-参考 <https://www.163.com/dy/article/FTJ5LN090531NEQA.html>
-
-## 技嘉主板 BIOS 开启 Secure Boot 功能
+### 二、主板 BIOS 开启 Secure Boot 功能
 
 其实 secure boot 是 uefi 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用体现在主板上只能加载经过认证过的操作系统或者硬件驱动程序，从而防止恶意软件侵入。
 
@@ -317,9 +295,37 @@ UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化�
 
 不大明白为嘛技嘉没提供个详细的操作说明呢？
 
-## 用 Rufus 制作启动 u 盘安装 Windows11
+### 三、Windows安装u盘使用 UEFI 模式启动计算机
 
-WIN11 除了硬件要求之外，还有 2 个必要条件：
+对 Rufus 制作的 Windows 安装u盘来说，制作时要选择“gpt+UEFI（非 CSM)”。
+
+主板 BIOS 在启动选择菜单，对u盘有两个选项，注意要选择带有“UEFI”字样的那个u盘启动。
+
+这样的 Windows 安装程序才会认为计算机是完全的 UEFI 模式，对硬盘的操作默认采用 GPT 类型。
+
+验证：
+
+    cmd 管理员模式，进入 diskpart
+
+    >list disk
+
+    查看对应磁盘的 Gpt 那一列，是否有星号，有就是确认 GPT 磁盘了
+
+### 四、确保硬盘格式化为 GPT 类型
+
+因为 Windows 安装程序动不动就默默的转为CSM模式安装，所以不管新老硬盘，都建议把硬盘分区全删后新建安装。
+
+验证
+
+    在控制面板进入磁盘管理，在磁盘 0 上点击右键，看看“转换成 GPT 磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是 GPT 类型，大概率是 MBR 类型。真正的 GPT 磁盘，只提供“转换成 MBR 磁盘”选项。
+
+参考 <https://www.163.com/dy/article/FTJ5LN090531NEQA.html>
+
+另外：三星 SSD 硬盘的管理程序 Samsung Magican 里，不要设置 Over Provisioning 功能。原因参见上面第一节的踩坑经历。
+
+## 用 Rufus 制作启动u盘安装 Windows11
+
+安装 Windows11 除了硬件要求之外，还有 2 个必要条件：
 
 1.主板 BIOS 开启 TPM2.0
 
@@ -327,15 +333,15 @@ WIN11 除了硬件要求之外，还有 2 个必要条件：
 
 2.主板 BIOS 开启安全启动（Secure Boot）
 
-    见前面的章节 [技嘉主板 BIOS 开启 Secure Boot 功能]
+    见前面的章节 [主板 BIOS 开启 Secure Boot 功能]
 
-用 Rufus 制作启动 u 盘时，分区类型要选择 GPT（这时目标系统类型自动选择 UEFI），这样的开机过程直接可以跳过 BIOS 自检等一堆耗时过程，U 盘启动用 UEFI+GPT，秒进引导系统，也符合 Windows 11 的启动要求（如果 u 盘用 MBR 模式启动，那主板 BIOS 也得设置存储设备为非 UEFI，则 Windows 11 安装程序默认的格式化硬盘就不是 GPT 类型了……）。
+用 Rufus 制作启动u盘时，分区类型要选择 GPT（这时目标系统类型自动选择 UEFI），这样的开机过程直接可以跳过 BIOS 自检等一堆耗时过程，U 盘启动用 UEFI+GPT，秒进引导系统，也符合 Windows 11 的启动要求（如果u盘用 MBR 模式启动，那主板 BIOS 也得设置存储设备为非 UEFI，则 Windows 11 安装程序默认的格式化硬盘就不是 GPT 类型了……）。
 
-特殊之处在于 Rufus 3.17 版之前制作的启动 u 盘，初始引导启动需要临时关闭“Secure Boot”（3.17 之后的版本不用了，已经取得 Windows 的签名了）：
+特殊之处在于 Rufus 3.17 版之前制作的启动u盘，初始引导启动需要临时关闭“Secure Boot”（3.17 之后的版本不用了，已经取得 Windows 的签名了）：
 
     一、根据 Rufus 的要求 <https://github.com/pbatard/Rufus/wiki/FAQ#Windows_11_and_Secure_Boot>，见下面的章节 [老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）] 中的 [凑合方案：主板 BIOS 设置为 CSM 方式安装 Windows 可以连接 DP 口]。
 
-    用 Rufus 制作的启动 u 盘（制作时的选项是“分区类型 GPT+目标系统类型 UEFI”）启动计算机，Windows 安装程序自动启动，按提示点选下一步，注意原硬盘分区建议全删，这时 Windows 安装程序开始拷贝文件，并未实质进入配置计算机硬件系统的过程，这时的 Windows 安装过程并不要求 Secure Boot。
+    用 Rufus 制作的启动u盘（制作时的选项是“分区类型 GPT+目标系统类型 UEFI”）启动计算机，Windows 安装程序自动启动，按提示点选下一步，注意原硬盘分区建议全删，这时 Windows 安装程序开始拷贝文件，并未实质进入配置计算机硬件系统的过程，这时的 Windows 安装过程并不要求 Secure Boot。
 
     注：觉得 Secure Boot 关闭就不安全了？ 不，它本来就不是什么安全措施，只是名字叫安全，其实做的工作就是数字签名验证，而且微软的密钥已经在 2016 年就泄露了…… 参见<https://github.com/pbatard/Rufus/wiki/FAQ#Why_do_I_need_to_disable_Secure_Boot_to_use_UEFINTFS>。至于 linux，没参与微软的这个步骤的话，主板厂商不会内置它的公钥到主板中，估计安装的时候就不能开启这个选项。
 
@@ -353,13 +359,13 @@ WIN11 除了硬件要求之外，还有 2 个必要条件：
 
 ## 使用 Rufus 制作 ghost 启动盘
 
-制作时引导类型选择“FreeDos”就行了，完成后把 ghost 拷贝到 u 盘上，以后用它开机引导直接进入 dos 命令行方式，运行命令 ghost 即可。
+制作时引导类型选择“FreeDos”就行了，完成后把 ghost 拷贝到u盘上，以后用它开机引导直接进入 dos 命令行方式，运行命令 ghost 即可。
 
 <https://qastack.cn/superuser/1228136/what-version-of-ms-dos-does-rufus-use-to-make-bootable-usbs>
 
 如果引导类型选择“grub”，那你得准备 menu.list 文件，引导到对应的 img 文件上。
 
-对 Windows 10 + 来说，推荐直接使用 Windows PE 的 u 盘，在 Windows PE 里直接使用 ghost 等工具。
+对 Windows 10 + 来说，推荐直接使用 Windows PE 的u盘，在 Windows PE 里直接使用 ghost 等工具。
 
 待研究
 
@@ -416,11 +422,11 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
 主板 BIOS 设置为 GPT + UEFI 的情况下只能连接 HDMI 口安装系统。
 
-新出技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动 u 盘注意选择对应模式才能顺利启动，而且这样的 BIOS 设置才符合 Windows 11 的安装要求。
+新出技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动u盘注意选择对应模式才能顺利启动，而且这样的 BIOS 设置才符合 Windows 11 的安装要求。
 
-用 Rufus 制作 Windows 10 安装 u 盘，选择分区类型是 GPT（右侧的选项自动选择“UEFI（非 CSM)”）而不能是 MBR，这样的启动 u 盘才能顺利启动。
+用 Rufus 制作 Windows 10 安装u盘，选择分区类型是 GPT（右侧的选项自动选择“UEFI（非 CSM)”）而不能是 MBR，这样的启动u盘才能顺利启动。
 
-有些如 Nvidia gtx 1080 时代的显卡，连接 HDMI 口可以兼容 UEFI 方式，而 DP 口则不兼容，应该是主板的UEFI兼容CSM模式。这样制作的安装 u 盘可以启动系统，但是 DP 口在开机的时候不显示，只能连接 HDMI 口安装系统。这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。
+有些如 Nvidia gtx 1080 时代的显卡，连接 HDMI 口可以兼容 UEFI 方式，而 DP 口则不兼容，应该是主板的UEFI兼容CSM模式。这样制作的安装u盘可以启动系统，但是 DP 口在开机的时候不显示，只能连接 HDMI 口安装系统。这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。
 
 ### 一劳永逸方案：Nvidia 显卡可以升级固件解决这个问题
 
@@ -433,7 +439,7 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
 ### 凑合方案：主板 BIOS 设置为 CSM 方式安装 Windows 可以连接 DP 口
 
-用 Rufus 制作 Windows 10 安装 u 盘，如果分区类型选择 MBR（右侧选项自动选择“BIOS+UEFI(CSM)”），则也只能连接 HDMI 口安装系统。
+用 Rufus 制作 Windows 10 安装u盘，如果分区类型选择 MBR（右侧选项自动选择“BIOS+UEFI(CSM)”），则也只能连接 HDMI 口安装系统。
 
 这时如果想使用 DP 口开机显示，则主板 BIOS 要更改设置，CSM Support（Windows 10 之前 Windows 版本安装的兼容模式，事关识别 usb 键盘鼠标和 UEFI 显卡）要选“Enable”，并设置兼容模式：
 
@@ -652,7 +658,7 @@ Windows Registry Editor Version 5.00
 为什么要关闭？
 
 我通过浏览器正常下载的没签名的文件，在有些软件调用的时候就打不开，也没有任何提示，总是报错，让人抓狂。
-之前遇到过技嘉制作 u 盘启动的工具，添加了下载的 zip 文件，总是制作失败，直到把下载的文件点击右键，选择属性，勾选解除限制，才能正常读取。整个过程中没有任何提示性信息。其它还有 zip 解压文件，读取 zip 压缩包，悄悄的失败，也没有任何提示，从 Windows 7 到 Windows 11，一直如此。
+之前遇到过技嘉制作u盘启动的工具，添加了下载的 zip 文件，总是制作失败，直到把下载的文件点击右键，选择属性，勾选解除限制，才能正常读取。整个过程中没有任何提示性信息。其它还有 zip 解压文件，读取 zip 压缩包，悄悄的失败，也没有任何提示，从 Windows 7 到 Windows 11，一直如此。
 
 有两种方法： 第一种是修改组策略中的配置：
 
