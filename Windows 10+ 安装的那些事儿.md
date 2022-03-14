@@ -168,7 +168,9 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 7. F6 风扇设置：对各个风扇选静音模式，或手动，先选全速看看最大转速多少，再切换手动，先拉曲线到最低转速，然后再横向找不同的温度调整风扇转速挡位。
 
-8. UEFI + GPT + Secure Boot： 先 F10 保存设置并重启计算机，后续再设置，详见下面相关章节
+8. 开启UEFI + GPT 和 Secure Boot： 先 F10 保存设置并重启计算机，然后再进行设置，详见下面相关章节
+
+9. 开启“UEFI Fast Boot”，这样关机后的再次开机很快。参见下面章节 [开启或关闭“快速启动”]
 
 ### 电源功耗 PL1/PL2
 
@@ -194,9 +196,11 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 ## 技嘉主板 BIOS 设置 UEFI + GPT 模式启动 Windows
 
+这是安装 Windows 启用 Secure Boot 的前提。
+
 ### 1. 确保主板 BIOS 设置中，关于启动的项目，存储和 PCIe 设备选的是 UEFI 模式
 
-UEFI + GPT 模式一开，都是直接厂商 logo 转一圈就直接进系统的，不会再有主板启动画面和 Windows 启动的画面。
+“UEFI + GPT”模式结合“快速启动（Fast Boot）”功能打开后，关机之后的开机，都是直接厂商 logo 转一圈就直接进系统的，不会再有主板自检启动画面和 Windows 启动的画面。
 
 UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化→加载系统→进入系统。传统的 BIOS 在加载系统之前需要进行一系列的硬件检查。
 
@@ -266,7 +270,7 @@ UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化�
 
 参考 <https://www.163.com/dy/article/FTJ5LN090531NEQA.html>
 
-## 技嘉主板 BIOS 设置 Secure Boot 功能
+## 技嘉主板 BIOS 开启 Secure Boot 功能
 
 其实 secure boot 是 uefi 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用体现在主板上只能加载经过认证过的操作系统或者硬件驱动程序，从而防止恶意软件侵入。
 
@@ -317,13 +321,13 @@ UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化�
 
 WIN11 除了硬件要求之外，还有 2 个必要条件：
 
-    1.主板 BIOS 开启 TPM2.0
+1.主板 BIOS 开启 TPM2.0
 
     进入主板 BIOS 设置的“Settings”，选择“Intel Platform Trust Technology(PTT)”，选择“Enable”，下面的选项“Trusted Computing”回车，进入的设置界面，找“Security Device Support”选择“Enable”。
 
-    2.主板 BIOS 开启安全启动（Secure Boot）
+2.主板 BIOS 开启安全启动（Secure Boot）
 
-    见前面的章节 [技嘉主板 BIOS 设置 UEFI 模式下 Secure Boot 功能]
+    见前面的章节 [技嘉主板 BIOS 开启 Secure Boot 功能]
 
 用 Rufus 制作启动 u 盘时，分区类型要选择 GPT（这时目标系统类型自动选择 UEFI），这样的开机过程直接可以跳过 BIOS 自检等一堆耗时过程，U 盘启动用 UEFI+GPT，秒进引导系统，也符合 Windows 11 的启动要求（如果 u 盘用 MBR 模式启动，那主板 BIOS 也得设置存储设备为非 UEFI，则 Windows 11 安装程序默认的格式化硬盘就不是 GPT 类型了……）。
 
@@ -368,7 +372,7 @@ WIN11 除了硬件要求之外，还有 2 个必要条件：
 
 <https://www.gigabyte.cn/Motherboard/B560M-AORUS-PRO-rev-10/support#support-dl-driver>
 
-注意：确认 Windows 10 快速启动功能是否关闭，参见下面章节 [关闭“快速启动”]  <https://www.asus.com.cn/support/FAQ/1045950>
+注意：确认 Windows 10 快速启动功能是否关闭，参见下面章节 [开启或关闭“快速启动”]  <https://www.asus.com.cn/support/FAQ/1045950>
 
 ## 技嘉 B560M AORUS PRO 主板开启待机状态 USB 口供电功能和定时自动开机功能
 
@@ -408,6 +412,16 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
 ## 老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）
 
+### 简单方案：连接 HDMI 口安装 Windows
+
+主板 BIOS 设置为 GPT + UEFI 的情况下只能连接 HDMI 口安装系统。
+
+新出技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动 u 盘注意选择对应模式才能顺利启动，而且这样的 BIOS 设置才符合 Windows 11 的安装要求。
+
+用 Rufus 制作 Windows 10 安装 u 盘，选择分区类型是 GPT（右侧的选项自动选择“UEFI（非 CSM)”）而不能是 MBR，这样的启动 u 盘才能顺利启动。
+
+有些如 Nvidia gtx 1080 时代的显卡，连接 HDMI 口可以兼容 UEFI 方式，而 DP 口则不兼容，应该是主板的UEFI兼容CSM模式。这样制作的安装 u 盘可以启动系统，但是 DP 口在开机的时候不显示，只能连接 HDMI 口安装系统。这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。
+
 ### 一劳永逸方案：Nvidia 显卡可以升级固件解决这个问题
 
 先把显卡挂到别的能显示的机器上（或先连接 HDMI 口安装 Windows 能进入系统后），升级下固件，以后就可以实现连接 DP 口安装 Windows 10 了
@@ -417,24 +431,18 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
             Geforce 1080 系 <https://www.nvidia.com/en-us/drivers/nv-uefi-update-x64/>
             Geforce 3080 系 <https://nvidia.custhelp.com/app/answers/detail/a_id/5233/>
 
-### 简单方案：连接 HDMI 口安装 Windows 就行了
-
-主板 BIOS 设置为 GPT + UEFI 的情况下只能连接 HDMI 口安装系统
-
-新出技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动 u 盘注意选择对应模式才能顺利启动，而且这样的 BIOS 设置才符合 Windows 11 的安装要求。
-
-用 Rufus 制作 Windows 10 安装 u 盘，选择分区类型是 GPT（右侧的选项自动选择“UEFI（非 CSM)”，估计是 UEFI 也有版本更替）而不能是 MBR，这样的启动 u 盘才能顺利启动。
-有些如 Nvidia gtx 1080 时代的显卡，连接 HDMI 口可以兼容 UEFI 方式，而 DP 口则不兼容，这样制作的安装 u 盘可以启动系统但是 DP 口在开机的时候不显示，只能连接 HDMI 口安装系统。
-
 ### 凑合方案：主板 BIOS 设置为 CSM 方式安装 Windows 可以连接 DP 口
 
 用 Rufus 制作 Windows 10 安装 u 盘，如果分区类型选择 MBR（右侧选项自动选择“BIOS+UEFI(CSM)”），则也只能连接 HDMI 口安装系统。
+
 这时如果想使用 DP 口开机显示，则主板 BIOS 要更改设置，CSM Support（Windows 10 之前 Windows 版本安装的兼容模式，事关识别 usb 键盘鼠标和 UEFI 显卡）要选“Enable”，并设置兼容模式：
 
     重启开机后按 F2 进入 bios，选 BOOT 选项卡，找到 Window 10 Features，选“other os”
 
     之后下面出现了 CSM Support， 选“Enable”，
     之后下面出现的三项，除了网卡启动的那个选项不用管，其它两个关于存储和 PCIe 设备的选项要确认选的是“UEFI”，这样在“other os”模式下可以实现 DP 口的开机显示，要是还不行，那两个选项直接选非 UEFI 的选项。
+
+这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。
 
 关于主板 BIOS 设置 CSM 模式可以启动 DP 口的解释 <https://nvidia.custhelp.com/app/answers/detail/a_id/3156/kw/doom/related/1>
 
@@ -910,8 +918,7 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
 “快速启动”跟上面的两个条目讨论的 InstantGo 和 WinRe 有依赖关系，所以不单独开章节。
 
-这功能不是主板 BIOS 设置里的 UEFI Fast Boot，是 Windows 关机后操作系统暂存挂起功能，类似休眠+睡眠。
-但他跟主板 BIOS 中 UEFI FAST BOOT 功能的确是关联的，二者互相起作用，目的是让你以为能快速开机。
+这功能是 Windows 关机后操作系统暂存挂起功能，类似休眠+睡眠，而且他跟主板 BIOS 设置中的 UEFI Fast Boot 功能关联，二者互相起作用，实现关机后的再次开机非常快。
 
 原理
 
@@ -935,6 +942,7 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 缺陷
 
 它使 BIOS 里定时自动开机失效，并跟很多 usb 设备不兼容，导致关机下次启动以后 usb 设备不可用，需要重新插拔。
+
 比如我的无线网卡、我的显示器集成的 usb-hub 连接的鼠标键盘网卡显示器等等，开机或重启后偶发报错无响应……
 关机黑屏，三星手机连接显示器集成的 usb-hub，拔下来之后 Windows 才继续关机。。。
 
@@ -944,7 +952,7 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
     点重启按钮，执行的是注销并登陆Windows，会秒重启完。 注意通过这种重启你无法按F8进入「恢复模式」。
 
-    按住 Shift 点关机按钮，此次关机就不使用快速启动。
+    按住 Shift 点关机按钮，此次关机后的再次开机将不使用快速启动。
 
     按住 Shift 点重启按钮，会让电脑重启进入「恢复模式」的WinRe。
 
