@@ -1344,7 +1344,6 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/basic-commands>
 
-
 #### 使用了 WSL2 就只能用微软发布的 Linux 版本
 
 <https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-linux-kernel>，它提供了完全的二进制兼容，用户可以自行升级 linux 内核。
@@ -1514,180 +1513,6 @@ Hyper-V 其实也分1代2代，tenforums 的详细说明
 
 详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
 
-### 微软提供的 Windows 11 + Visual Studio 的评估版开发环境
-
-<https://developer.microsoft.com/zh-cn/Windows/downloads/virtual-machines/>
-
-## 离线下载安装 Microsoft Store 中的应用
-
-很奇怪吧，LTSC 版本号称是去掉了 Windows Store 的，但是实质上 UWP 程序一点不少，都在系统里运行着，后台的 AppXSVC、ClipSVC 根本不停。有些程序装完了，但是少了啥组件，这俩服务还玩命的跑，狂吃 cpu……
-
-为嘛狂吃 cpu 呢？
-
-    UWP 文件下载这个玩法，最大的问题就是商店是分区域的，而万能的墙会让非 cn 的下载非常不稳定，特别是你的一个 uwp 程序依赖比较多的包的时候，说不定有的源在其它外网服务器上，间或会下载不到。不是啥非法的玩意，甚至可能微软的更新包，挂在 github 上的或者啥开源服务器上的东西，都不排除掉线。这就是为嘛有时候 Windows 更新都报告失败要多重试几次的原因。
-
-    好吧，程序表面上装好了，其实需要的库不全，后台 AppXSVC 进程就一根筋的不断重试，微软的三哥程序员估计写循环时候没加 sleep()，cpu 就得受点累。这个费电的过程，只能等你把那个 uwp 程序卸载掉，或者手动安装上缺失的库（Windows 没有任何提示你咋知道），才算完。
-
-我的电脑里哪些是 uwp 应用呢？
-
-    设置：应用和功能->应用
-
-uwp 权限配置
-
-    设置：隐私->应用
-
-如果遇到不能安装的情况，需要检查一下系统设置：
-
-    右键点击开始按钮>设置>应用>选择获取应用的位置：选择“任何来源”
-
-    UWP 离线安装，需要去设置中打开开发者模式
-
-### 离线下载 uwp 步骤
-
-首先知道你需要的应用名称，如：Microsoft 便笺
-
-打开 <https://www.microsoft.com/zh-cn/Store> 或 <https://www.microsoft.com/en-us/Store>，点击搜索，直接输入应用名称比如：Microsoft 便笺 或 Instagram 啥的，在弹出菜单选择对应软件。
-
-新开的页面会显示该商品的详细信息，直接复制地址栏的地址，以 Microsoft 便笺为例：<https://www.microsoft.com/zh-cn/p/microsoft-sticky-notes/9nblggh4qghw?activetab=pivot:overviewtab>
-
-打开这个网站 <https://store.rg-adguard.net/>
-
-将上面复制的链接粘贴到搜索栏中，左侧的搜索类型使用默认的 URL(link)。
-
-如果搜不到，搜索类型换成 ProductId 试试，本例中搜索 url 中软件名称段后面的参数“9nblggh4qghw”。
-
-搜索到的结果通常会比较多，包含了不同的版本以及和这个应用依赖的运行环境安装包。
-
-建议往下翻页，找到名称匹配一致的最高版本（版本数字最大）的链接，注意后缀应该是 .appxbundle 的链接 (bundle 表示包含所有相关文件），如果不选择 .appxbundle，那就得挨个下载 .appx 文件逐个安装了。
-比如这个：Microsoft.MicrosoftStickyNotes_3.7.78.0_neutral_~_8wekyb3d8bbwe.appxbundle。
-
-后面对应的有个 Expire 过期时间 (GMT 时间），这是由于微软服务器上每次下载的时候生成的链接都是有有效期的，所以这个链接在到期后就失效了。正是因此，才需要通过这个网站提供的搜索工具来获取最新的下载链接。
-
-点击这个链接后将 .appxbundle 文件下载到本地。如果 edge 浏览器禁止下载，复制下载链接到下载工具比如 motrix 里下载即可。
-
-将下载好的 .appxbundle 文件复制到没有网络链接的电脑上，和普通的安装程序一样，正常情况下直接双击就可以打开进行安装了。或者打开 powershell，输入命令： Add-AppxPackage -Path <离线包文件路径>
-
-### 示例：补充 Windows 10 LTSC 2021 版几个 UWP 应用缺失问题
-
-自己到 Windows Store 中搜索下载，参见上面的章节 [离线下载安装 Microsoft Store 中的应用]。
-
-VCLibs 库文件，修复输入法等 appx 等库关联问题
-
-    Microsoft.VCLibs.140.00_14.0.30704.0_x64__8wekyb3d8bbwe.Appx https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx
-
-    Windows Store 分发的 C++ 运行时桌面框架包 <https://docs.microsoft.com/en-us/troubleshoot/cpp/c-runtime-packages-desktop-bridge#how-to-install-and-update-desktop-framework-packages>
-
-VP9 视频扩展 VP9VideoExtensions 库文件，修复设置->应用->视频播放中的预览错误
-
-    https://www.microsoft.com/zh-cn/p/vp9-%e8%a7%86%e9%a2%91%e6%89%a9%e5%b1%95/9n4d0msmp0pt#activetab=pivot:overviewtab
-
-安装下载好的离线文件，打开 powershell，输入命令：
-
-    Add-AppxPackage -Path <离线包文件路径>
-
-### DCH 驱动的那些事
-
-DCH 驱动号称只安装驱动，相关的控制界面应用由 Windows Store 用 UWP 安装。
-也就是说，驱动 inf 安装之后，Windows 更新时才会下载对应的面板程序，这个需要厂商提前给微软对应的 uwp 程序。
-比如部分型号的显卡控制面板、声卡面板、雷柏鼠标面板等等。
-
-时间大概在 2015 年之后，Intel CPU 的 i7-7700k 这一代之后，硬件有 uwd 驱动 (DCH 驱动）。
-
-假如你的 Nvidia 显卡安装了 dch 版驱动，是没有 Nvidia 控制面板的。
-Windows 更新会自动在后台搜索下载，或者用户自己到 Windows Store 中搜索下载，参见上面的章节 [离线下载安装 Microsoft Store 中的应用]。
-
-如果这个 uwp（DCH）的面板依赖 Microsoft.VCLibs，所以系统也自动装了。
-
-而没有 uwd 驱动 (DCH 驱动）的老硬件，不会自动安装 uwp 面板，也就没有 Microsoft.VCLibs 了，有可能 wsappx 继续 cpu 占用高。
-
-参考 <https://bbs.pcbeta.com/forum.php?mod=viewthread&tid=1912450>
-
-### good news and bad news
-
-1.good news
-
-听说过 NuGet 吗？以后会废掉这个坑爹的 uwp 玩法。
-
-Windows App SDK 提供了一套统一的 API 和工具，它们与操作系统分离并通过 NuGet 包发布给开发人员。
-Windows 10 版本 1809 至 Windows 11 即支持了，并且同时提供 WinRT API 和本机 C API。
-
-主推 WinUI 3, 以前的 WinUI 2 和 UWP 也废了 <https://docs.microsoft.com/zh-cn/Windows/apps/Windows-app-sdk/migrate-to-Windows-app-sdk/migrate-to-Windows-app-sdk-ovw#topics-in-this-section>
-
-2.bad news
-
-uwp 迁移到 NuGet，估计换汤不换药。
-
-以后想用个程序，你就得联网，就得登陆受管控的商店。
-
-应用的底层都给你封装了一堆依赖，美其名曰软件底层解耦、组件共享。
-
-实际用起来呢，装软件完全依赖微软商店。
-
-下载一个安装包就能让你舒舒服服用软件的日子，不会再有了。
-
-参见
-
-    <https://docs.microsoft.com/zh-cn/Windows/msix/desktop/powershell-msix-cmdlets>
-
-    <https://docs.microsoft.com/en-us/powershell/module/appx/?view=Windowsserver2019-ps>
-
-    <https://docs.microsoft.com/zh-cn/Windows/uwp/get-started/universal-application-platform-guide#how-the-universal-Windows-platform-relates-to-Windows-runtime-apis>
-
-### 得认真考虑下，本体口口的问题了，以后老死在外面，是不是可以接受？
-
-你一个搞 it 的，离开了联网，怎么继续下去？
-
-## 手动下载 Windows 更新包
-
-    参考 https://zhuanlan.zhihu.com/p/104547677
-
-脚本获取网站 UUPdump 网址：<http://uupdump.ml/>
-
-在搜索框中输入所需版本号并搜索
-
-相对于微软官网下载的优势：
-
-    自由选择版本
-    多线程下载速度更快
-
-相对于 MSDN I Tell You 的优势：
-
-    下载源稳定（从微软官方服务器下载而非 P2P 网络）
-    可设置为 esd 格式压缩，单个文件均不超过 4G，对于 UEFI 启动的主板可以直接将安装文件复制到 FAT32 格式 U 盘作为启动盘。
-
-分类中的信息，其中：
-
-    Fast 为快速预览通道中最新版本对应的版本号
-    Slow 为慢速预览通道中最新版本对应的版本号
-    Preview 为最新的预览对应版的版本号
-    Targeted 为 Windows 更新设置中半年频道（定向）中最新版本对应的版本号，
-    Board 为 Windows 更新设置中半年频道中最新版本对应的版本号
-    LTSC 为长期支持的企业版的最新版本对应的版本号
-
-各个版本说明
-
-    Cumulative Update 为累积更新版本，是将补丁直接集成到系统中
-    Feture Update 为功能更新，是正式发布的大版本+补丁的模式，在安装之后自动打补丁至最新版本
-
-选择基准版本所需的基准版本
-
-选择了所需要的版本后，点击下一步（以“全部版本”为例）创建下载包
-
-在此页面我们有以下几点需要注意：
-
-1）选择“使用 aria2 下载并转换”时，生成的安装镜像在全新安装时只能选择其中包含的基准版本，其对应关系为：
-
-基准版本为“全部版本”可选专业版，家庭版，中文家庭版
-基准版本为“Windows 10 Home”可选家庭版
-基准版本为“Windows 10 Home China”可选家庭中文版
-基准版本为“Windows 10 Pro”可选专业版
-
-2）若需要刻录至 U 盘进行安装，请勾选上“使用 install.esd 而非 install.wim 创建 ISO”，否则会因单个文件大于 4G 而无法使用 FAT32 格式。
-
-点击“创建下载包“，这时我们会下载一个压缩包，解压后如下图所示
-
-以管理员权限运行“aria2_download_Windows.cmd “即可开始下载并创建 ISO 安装镜像，下载过程中请耐心等待，下载过程中基本可以保持满带宽下载，而且每个文件下载完成后会自动校验文件，以保证文件的完整及正确。
-
 ## 主板 Ultra Fast 启动无法再用键盘进入 BIOS 设置
 
 在操作系统中引导到 UEFI 固件设置。
@@ -1706,6 +1531,7 @@ UEFI 方式启动的操作系统是跟主板 BIOS 设置密切结合的，UEFI �
 与此功能关联的是Windows 电源选项中的“快速启动” 见前面的章节 [开启或关闭“快速启动”]
 
 参考说明
+
     <https://www.expreview.com/22043.html>
     <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-Windows.html>
 
