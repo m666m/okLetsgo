@@ -302,7 +302,12 @@ Termux 初步使用和设置
 
 Termux支持pkg、apt管理软件包
 
-    # apt install
+    # pkg的底层就是apt，只是运行前会执行一次apt update，保证安装的是最新版本。
+
+    pkg install sl
+    # 测试包sl 小火车
+    sl
+
     pkg install vim curl wget git tree unzip tmux fish -y
 
     # Python3
@@ -312,7 +317,7 @@ Termux支持pkg、apt管理软件包
     pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
     # c/c++
-    apt install clang
+    pkg install clang
 
     # 取得sd卡权限，需授权
     pkg install termux-tools
@@ -396,7 +401,7 @@ chroot 的作用就是切换系统的根位置，而这个作用最为明显的�
 
 安装完Termux:API App之后，还需要在terminal里安装termux-api:
 
-    apt install termux-api
+    pkg install termux-api
 
 之后就可以在terminal中操控手机硬件，这样一来我们可以以编程的方式来控制手机
 
