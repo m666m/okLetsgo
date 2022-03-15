@@ -21,17 +21,19 @@
       - [本地的两份代码--本地仓库和远程仓库](#本地的两份代码--本地仓库和远程仓库)
       - [git pull把2个过程合并，减少了操作](#git-pull把2个过程合并减少了操作)
     - [添加多个远程仓库](#添加多个远程仓库)
-    - [从远程空白裸仓库拉取的步骤](#从远程空白裸仓库拉取的步骤)
     - [拉取指定版本](#拉取指定版本)
     - [git clone 获取指定分支的指定commit版本](#git-clone-获取指定分支的指定commit版本)
-    - [从远程git拉取指定分支](#从远程git拉取指定分支)
-    - [本地空目录，仅拉取指定远程分支的用法](#本地空目录仅拉取指定远程分支的用法)
-    - [本地非空目录，远程空的push三个用法](#本地非空目录远程空的push三个用法)
-    - [本地非空，远程是裸仓库](#本地非空远程是裸仓库)
-    - [git clone之后的第一次pull和push调试](#git-clone之后的第一次pull和push调试)
     - [git clone支持多种协议](#git-clone支持多种协议)
     - [git checkout 切换其他分支](#git-checkout-切换其他分支)
     - [删除分支，远程/本地](#删除分支远程本地)
+    - [从远程git拉取指定分支](#从远程git拉取指定分支)
+    - [本地空目录，仅拉取指定远程分支的用法](#本地空目录仅拉取指定远程分支的用法)
+    - [本地非空目录，远程空的push三个用法](#本地非空目录远程空的push三个用法)
+    - [？重复？本地非空，远程是裸仓库](#重复本地非空远程是裸仓库)
+    - [？重复？git clone之后的第一次pull和push调试](#重复git-clone之后的第一次pull和push调试)
+    - [？重复？从远程空白裸仓库拉取的步骤](#重复从远程空白裸仓库拉取的步骤)
+      - [如果远程仓库里有文件，随便哪个机器 git clone 命令都可以正常拉取](#如果远程仓库里有文件随便哪个机器-git-clone-命令都可以正常拉取)
+        - [刚建好的裸仓库是空白的，直接用clone拉是可以的，但是后续做pull和push会报错](#刚建好的裸仓库是空白的直接用clone拉是可以的但是后续做pull和push会报错)
   - [两个分支合并的 上merge/rebase 选择](#两个分支合并的-上mergerebase-选择)
     - [方法一. merge 默认的快进合并，需要合入分支的接续点就是分叉点](#方法一-merge-默认的快进合并需要合入分支的接续点就是分叉点)
     - [方法二. 大的分支合入要保留菱形分叉，便于管理](#方法二-大的分支合入要保留菱形分叉便于管理)
@@ -361,7 +363,7 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
 ## git 客户端初始化
 
-git通过ssh客户端连接github。
+git通过ssh客户端连接github。除了github这样的，私有仓库都需要用户鉴权才能读取文件。
 
 ### 1.ssh客户端的设置
 
@@ -369,12 +371,16 @@ git通过ssh客户端连接github。
 
     ssh-keygen -t rsa
 
-回复原来备份的 ~/.ssh 目录下的配置文件，如果 ~/.ssh 目录是手工复制的，需要设置权限
+如果 ~/.ssh 目录是手工复制的，需要设置权限
 
     cd ~
 
     # 设置.ssh目录权限
     chmod 700 -R .ssh
+
+添加本机用户的公钥到远程仓库git用户的认证密钥文件中，以便后续ssh免密登陆
+
+    ssh-copy-id -i ~/.ssh/id_rsa.pub -p 2345 git@x.x.x.x
 
 ### 2.设置 gitub
 
@@ -668,22 +674,22 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
 
 方法一、推送命令只会推送到默认的origin地址，其他的各个server1，2，3得再挨个执行push命令
 
-    git remote add server1 ssh://git@x.x.x.x:12345/gitrepo/project_name.git
-    git remote add server2 ssh://git@x.x.x.x:12345/gitrepo/project_name.git
-    git remote add server3 ssh://git@x.x.x.x:12345/gitrepo/project_name.git
+    git remote add server1 ssh://git@x.x.x.x:2345/gitrepo/project_name.git
+    git remote add server2 ssh://git@x.x.x.x:2345/gitrepo/project_name.git
+    git remote add server3 ssh://git@x.x.x.x:2345/gitrepo/project_name.git
 
     git push server1 master
     git push server1 developer
 
 方法二、省事的方法，给origin添加多个远程地址，默认fetch还是origin最早添加的地址，push地址变成了多个
 
-    git remote set-url --add origin ssh://git@x.x.x.x:12345/gitrepo/project_name.git
+    git remote set-url --add origin ssh://git@x.x.x.x:2345/gitrepo/project_name.git
 
     $ git remote show origin
     * remote origin
     Fetch URL: git@github.com:m666m/project_name.git
     Push  URL: git@github.com:m666m/project_name.git
-    Push  URL: ssh://git@x.x.x.x:12345/gitrepo/project_name.git
+    Push  URL: ssh://git@x.x.x.x:2345/gitrepo/project_name.git
     HEAD branch: main
     Remote branch:
         main tracked
@@ -698,84 +704,11 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
         url = git@github.com:m666m/project_name.git
         fetch = +refs/heads/*:refs/remotes/origin/*
         # url = https://github.com/m666m/project_name.git
-        url = ssh://git@x.x.x.x:12345/gitrepo/project_name.git
+        url = ssh://git@x.x.x.x:2345/gitrepo/project_name.git
 
 如果想删除
 
-    git remote set-url --delete origin --push origin ssh://git@x.x.x.x:12345/gitrepo/project_name.git
-
-### 从远程空白裸仓库拉取的步骤
-
-记得先添加本机用户的公钥到远程仓库的认证密钥文件中，以便免密登陆
-
-    ssh-copy-id -i ~/.ssh/rsa_compA.pub -p 12345 git@x.x.x.x
-
-除了github这样的，私有仓库都需要用户鉴权才能读取文件。
-
-如果远程仓库里有文件，随便哪个机器 git clone 命令都可以正常拉取的。
-
-    git clone ssh://git@x.x.x.x:12345/gitrepo/tea.git
-
-    # Ipv6 用标准的中括号方式：
-    #
-    $ git clone ssh://git@[2999:470:c:89a::2]:26179/uspace/gitrepo/tea.git
-    Cloning into okletsgo...
-    warning: You appear to have cloned an empty repository.
-
-这样本地目录里就会多了个okletsgo的目录，这个目录已经是git管理的仓库了，远端服务器的信息都已经配置了。
-
-而刚建好的裸仓库是空白的，直接用clone拉是可以的，但是后续做pull和push会报错，需要先给远程仓库上传个文件，下面详细说下过程。
-
-0.远程服务器建立裸仓库，略
-
-1.本地操作，新建文件夹，git初始化，添加远程仓库地址
-
-    $ mkdir tea
-
-    $ cd tea
-
-    $ git init
-    Initialized empty Git repository in C://tea/.git/
-
-    $ git remote add origin ssh://git@x.x.x.x:12345/gitrepo/tea.git
-
-3.本地操作，先提交个文件，推送远程，否则直接pull会各种报错
-
-    echo 'init bare git repo, add a file' > readme.md
-    git add mmm.py
-    git commit -m 'init bare git repo'
-
-    git push origin master
-
-4.本地操作，拉取文件，先绑定远程
-
-    # git pull --rebase origin master
-
-    $ git branch --set-upstream-to=origin/master master
-    Branch 'master' set up to track remote branch 'master' from 'origin'.
-
-    $ git pull
-    Already up to date.
-
-5.本地操作，正常了，看下origin设置，是不是pull和push都有配置了：
-
-    $ git remote show origin
-    * remote origin
-      Fetch URL: ssh://git@x.x.x.x:12345/gitrepo/tea.git
-      Push  URL: ssh://git@x.x.x.x:12345/gitrepo/tea.git
-      HEAD branch: master
-      Remote branch:
-        master tracked
-      Local branch configured for 'git pull':
-        master merges with remote master
-      Local ref configured for 'git push':
-        master pushes to master (up to date)
-
-    $ git status
-    On branch master
-    Your branch is up to date with 'origin/master'.
-
-    nothing to commit, working tree clean
+    git remote set-url --delete origin --push origin ssh://git@x.x.x.x:2345/gitrepo/project_name.git
 
 ### 拉取指定版本
 
@@ -804,99 +737,6 @@ clone完成后，进入目录，执行
     git fetch --depth < a-numer >
 
 不断增大步骤2的数字，直到找到你要的commit
-
-### 从远程git拉取指定分支
-
-    git fetch origin dev_xxx
-    git branch -a -v
-    git checkout -b newBranch origin/dev_xxx
-
-### 本地空目录，仅拉取指定远程分支的用法
-
-    git clone -b dev 代码仓库地址 （dev是分支名称）
-
-    或：
-        git init
-        git remote add origin git@github.com:XXXX/nothing2.git
-        git fetch origin dev（dev即分支名）
-        git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
-        git pull origin dev(远程分支名称)
-
-### 本地非空目录，远程空的push三个用法
-
-    远程已有dev_xxx分支并且已经关联本地分支dev_xxx，本地已经切换到dev_xxx
-
-        git push
-
-    远程没有remote_branch分支，本地已经切换到dev_xxx
-
-        git push origin dev_xxx:remote_branch
-
-    远程已有dev_xxx分支但未关联本地分支dev_xxx，本地已经切换到dev_xxx
-
-        git push -u origin/dev_xxx
-
-### 本地非空，远程是裸仓库
-
-本地先 git init，然后
-
-    git remote add origin ssh://git@x.x.x.x:12345/uspace/gitrepo/okletgo.git
-
-这时显示结果
-
-    $ git remote show origin
-    * remote origin
-    Fetch URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/okletgo.git
-    Push  URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/okletgo.git
-    HEAD branch: (unknown)
-
-把文件都push上去，会提示没有上游分支，直接推。
-
-这时显示结果，正常了
-
-    $ git remote show origin
-    * remote origin
-    Fetch URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/okletgo.git
-    Push  URL: ssh://git@x.x.x.x:12345/uspace/gitrepo/okletgo.git
-    HEAD branch: master
-    Remote branch:
-        master tracked
-    Local branch configured for 'git pull':
-        master merges with remote master
-    Local ref configured for 'git push':
-        master pushes to master (up to date)
-
-### git clone之后的第一次pull和push调试
-
-先看有几个远程
-
-    git remote show
-
-查看远程，配置
-
-    $ git remote show origin
-
-    Warning: Permanently added the RSA host key for IP address '1xx.1xx.1xx.1xx' to the list of known hosts.
-    * remote origin
-    Fetch URL: git@github.com:m666m/okLetsgo.git
-    Push  URL: git@github.com:m666m/okLetsgo.git
-    HEAD branch: master
-    Remote branch:
-        master tracked
-    Local branch configured for 'git pull':
-        master merges with remote master
-    Local ref configured for 'git push':
-        master pushes to master (up to date)
-
-如果pull和push未关联，需要关联
-    # 将本地的master分支推送到origin主机，同时指定origin为默认主机
-    git push -u origin master
-
-远程仓库格式
-
-    ssh://git@xx.xx.xx.xx:12345/gitrepo/myproj.git
-    git@github.com:m666m/okLetsgo.git
-    https://github.com/m666m/myproj
 
 ### git clone支持多种协议
 
@@ -989,6 +829,168 @@ Git协议下载速度最快，SSH协议用于需要用户认证的场合。
 4.删除本地
 
     git branch -d fea_xxx
+
+### 从远程git拉取指定分支
+
+    git fetch origin dev_xxx
+    git branch -a -v
+    git checkout -b newBranch origin/dev_xxx
+
+### 本地空目录，仅拉取指定远程分支的用法
+
+    git clone -b dev 代码仓库地址 （dev是分支名称）
+
+    或：
+        git init
+        git remote add origin git@github.com:XXXX/nothing2.git
+        git fetch origin dev（dev即分支名）
+        git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
+        git pull origin dev(远程分支名称)
+
+### 本地非空目录，远程空的push三个用法
+
+    远程已有dev_xxx分支并且已经关联本地分支dev_xxx，本地已经切换到dev_xxx
+
+        git push
+
+    远程没有remote_branch分支，本地已经切换到dev_xxx
+
+        git push origin dev_xxx:remote_branch
+
+    远程已有dev_xxx分支但未关联本地分支dev_xxx，本地已经切换到dev_xxx
+
+        git push -u origin/dev_xxx
+
+### ？重复？本地非空，远程是裸仓库
+
+本地先 git init，然后
+
+    git remote add origin ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
+
+这时显示结果
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
+    Push  URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
+    HEAD branch: (unknown)
+
+把文件都push上去，会提示没有上游分支，直接推。
+
+这时显示结果，正常了
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
+    Push  URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
+    HEAD branch: master
+    Remote branch:
+        master tracked
+    Local branch configured for 'git pull':
+        master merges with remote master
+    Local ref configured for 'git push':
+        master pushes to master (up to date)
+
+### ？重复？git clone之后的第一次pull和push调试
+
+先看有几个远程
+
+    git remote show
+
+查看远程，配置
+
+    $ git remote show origin
+
+    Warning: Permanently added the RSA host key for IP address '1xx.1xx.1xx.1xx' to the list of known hosts.
+    * remote origin
+    Fetch URL: git@github.com:m666m/okLetsgo.git
+    Push  URL: git@github.com:m666m/okLetsgo.git
+    HEAD branch: master
+    Remote branch:
+        master tracked
+    Local branch configured for 'git pull':
+        master merges with remote master
+    Local ref configured for 'git push':
+        master pushes to master (up to date)
+
+如果pull和push未关联，需要关联
+    # 将本地的master分支推送到origin主机，同时指定origin为默认主机
+    git push -u origin master
+
+远程仓库格式
+
+    ssh://git@xx.xx.xx.xx:2345/gitrepo/myproj.git
+    git@github.com:m666m/okLetsgo.git
+    https://github.com/m666m/myproj
+
+### ？重复？从远程空白裸仓库拉取的步骤
+
+#### 如果远程仓库里有文件，随便哪个机器 git clone 命令都可以正常拉取
+
+    git clone ssh://git@x.x.x.x:2345/gitrepo/tea.git
+
+    # Ipv6 用标准的中括号方式：
+    #
+    $ git clone ssh://git@[299:4c:c:8da::2]:2345/uspace/gitrepo/tea.git
+    Cloning into tea...
+    warning: You appear to have cloned an empty repository.
+
+这样本地目录里就会多了个tea的目录，这个目录已经是git管理的仓库了，远端服务器的信息都已经配置了。
+
+##### 刚建好的裸仓库是空白的，直接用clone拉是可以的，但是后续做pull和push会报错
+
+解决办法是，先在本地目录 git init，设置远程推送地址，给远程仓库上传个文件，然后再拉取。
+
+0.远程服务器建立裸仓库，略
+
+1.本地操作，新建文件夹，git初始化，添加远程仓库地址
+
+    $ mkdir tea
+
+    $ cd tea
+
+    $ git init
+    Initialized empty Git repository in C://tea/.git/
+
+    $ git remote add origin ssh://git@x.x.x.x:2345/gitrepo/tea.git
+
+3.本地操作，先提交个文件，推送远程，否则直接pull会各种报错
+
+    echo 'init bare git repo, add a file' > readme.md
+    git add readme.md
+    git commit -m 'init bare git repo'
+
+    git push origin master
+
+4.本地操作，拉取文件，先绑定远程
+
+    # git pull --rebase origin master
+
+    $ git branch --set-upstream-to=origin/master master
+    Branch 'master' set up to track remote branch 'master' from 'origin'.
+
+    $ git pull
+    Already up to date.
+
+5.本地操作，正常了，看下origin设置，是不是pull和push都有配置了：
+
+    $ git remote show origin
+    * remote origin
+      Fetch URL: ssh://git@x.x.x.x:2345/gitrepo/tea.git
+      Push  URL: ssh://git@x.x.x.x:2345/gitrepo/tea.git
+      HEAD branch: master
+      Remote branch:
+        master tracked
+      Local branch configured for 'git pull':
+        master merges with remote master
+      Local ref configured for 'git push':
+        master pushes to master (up to date)
+
+    $ git status
+    On branch master
+    Your branch is up to date with 'origin/master'.
+
+    nothing to commit, working tree clean
 
 ## 两个分支合并的 上merge/rebase 选择
 
