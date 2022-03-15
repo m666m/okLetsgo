@@ -232,7 +232,7 @@ private void getPackageList(Context ctx) {
 
 ## 安卓神器 Termux -- 运行在 Android 上的开源linux模拟器
 
-Termux（一个Android App,仅支持Android 5.0及以上版本 ，可以在Google Play和F-Droid上下载）是一款开源且不需要root，运行在Android上极其强大的linux模拟器，支持apt管理软件包，支持python,ruby,go,nodejs…甚至可以手机作为反向代理、或Web服务器。
+开源且不需要root，基于chroot技术的运行在android上的容器，内部是linux，内核一部分被砍了，不能安装docker。支持apt管理软件包，支持python,ruby,go,nodejs…甚至可以手机作为反向代理、或Web服务器。
 
     https://wiki.termux.com/wiki/Main_Page
     https://github.com/termux/termux-app#github
@@ -289,20 +289,17 @@ Termux 初步使用和设置
 
 Termux支持pkg、apt管理软件包
 
-    pkg install vim curl wget git unzip unrar
+    # apt install
+    pkg install vim curl wget git unzip tmux fish
 
-    apt install tmux fish
+    apt install python
+    apt install clang
 
-    # 取得sd卡权限
+    # 取得sd卡权限，需授权
     pkg install termux-tools
-    termux-set-storage
-
-    # 安装 ssh
-    pkg install openssh
-
-    # 开启 sshd 服务
-    # 默认打开的端口是8022，-p指定了新的端口9000
-    sshd -p 9000
+    termux-setup-storage
+    # 当前目录下出现了storage这个目录，下面在子目录分别对应了手机当中的部分目录
+    # 子目录shared，共享了手机中的内部存储
 
     # 设置密码
     passwd
@@ -319,6 +316,26 @@ Termux支持pkg、apt管理软件包
     # 电脑端ssh连接手机端termux
     # 假定用户名为u0_a123（whoami查询可得），ip为192.168.0.1（ifconfig查询可得）
     ssh u0_a123@192.168.0.1 -p 8022
+
+Aria2+Transdroid完全能够代替其他手机版下载软件，并且表现完美。唯一的问题是aria2依托于Termux终端环境，终端关闭，Aria2下载服务也就关闭了。
+
+#### 安装 Open-SSH
+
+安装的 ssh ，包括客户端 ssh 和服务端 sshd，我们既可以使用ssh访问远程设备，也可以在本机上开启ssh服务以方便其他设备远程访问本机。默认情况下，安装openssh不开启服务端，需要手工开启。
+
+    # 安装 ssh ，包括客户端 ssh 和服务端 sshd
+    pkg install openssh
+
+    # 开启 sshd 服务，默认打开的端口是8022，-p 指定了新的端口9000
+    sshd -p 9000
+
+Termux终端中使用ssh访问远程服务器与Linux终端中使用ssh别无二致。但要使用ssh访问Android设备就不同了，Termux终端中sshd服务不支持密码验证，也就是说用户不能期望通过 ssh user@server 然后输入用户密码的方式从别的终端访问Android设备。Termux终端中sshd只支持密钥验证。
+
+ssh服务的配置文件默认在 $PREFIX/etc/ssh/sshd_config 中。
+
+客户端公钥需要手工传递到手机输入
+
+    cat id_rsa.pub >> $HOME/.ssh/authorized_keys
 
 #### 公网访问手机
 
@@ -392,3 +409,12 @@ Termux 除了支持 apt 命令外，还在此基础上封装了pkg命令，pkg �
     pkg files <package>             # 显示某个包的相关文件夹路径
 
 国光建议大家使用 pkg 命令，因为 pkg 命令每次安装的时候自动执行 apt update 命令，还是比较方便的。
+
+## BusyBox
+
+    <https://busybox.net/>
+
+需要root手机，优点是安装到安卓的linux系统里了，给系统增强了非常多的linux命令。一个集成了三百多个最常用Linux命令和工具的软件。BusyBox 包含了一些简单的工具，例如ls、cat和echo等等，还包含了一些更大、更复杂的工具，例grep、find、mount以及telnet。有些人将 BusyBox 称为 Linux 工具里的瑞士军刀。简单的说BusyBox就好像是个大工具箱，它集成压缩了 Linux 的许多工具和命令，也包含了 Android 系统的自带的shell。
+
+    <https://www.cnblogs.com/xiaowenji/archive/2011/03/12/1982309.html>
+    <https://www.zhihu.com/question/26190694>
