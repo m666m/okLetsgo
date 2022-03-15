@@ -230,6 +230,19 @@ private void getPackageList(Context ctx) {
 
     手机下载联通营业厅app，在“我的业务“里面找到视频彩铃，选择关闭。
 
+## BusyBox
+
+    <https://busybox.net/>
+
+一个集成了三百多个最常用Linux命令和工具的软件。
+
+感觉这个适合改造老久手机替代树莓派，性价比超级高。缺点是需要root手机，优点是安装到安卓的linux系统里了，给系统增强了非常多的linux命令。
+
+BusyBox 包含了一些简单的工具，例如 ls、cat 和 echo 等等，还包含了一些更大、更复杂的工具，例 grep、find、mount 以及 telnet。有些人将 BusyBox 称为 Linux 工具里的瑞士军刀。简单的说 BusyBox 就好像是个大工具箱，它集成压缩了 Linux 的许多工具和命令，也包含了 Android 系统的自带的 shell。
+
+    <https://www.cnblogs.com/xiaowenji/archive/2011/03/12/1982309.html>
+    <https://www.zhihu.com/question/26190694>
+
 ## 安卓神器 Termux -- 运行在 Android 上的开源linux模拟器
 
 开源且不需要root，基于chroot技术的运行在android上的容器，内部是linux，内核一部分被砍了，不能安装docker。支持apt管理软件包，支持python,ruby,go,nodejs…甚至可以手机作为反向代理、或Web服务器。
@@ -272,7 +285,7 @@ busybox跟它比，简直就是小弟 <https://stackoverflow.com/questions/40140
 
 最后更新包信息及升级已安装的包
 
-    apt update && apt upgrade -y
+    apt update # && apt upgrade -y
 
 清华镜像站还提供了如下社区维护的源，如需使用请自行添加：
 
@@ -290,9 +303,15 @@ Termux 初步使用和设置
 Termux支持pkg、apt管理软件包
 
     # apt install
-    pkg install vim curl wget git unzip tmux fish
+    pkg install vim curl wget git tree unzip tmux fish -y
 
-    apt install python
+    # Python3
+    pkg install python -y
+    # pip 换清华源
+    python -m pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple
+    pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+    # c/c++
     apt install clang
 
     # 取得sd卡权限，需授权
@@ -389,13 +408,15 @@ chroot 的作用就是切换系统的根位置，而这个作用最为明显的�
 
 python包装了一下termux:api: <https://github.com/wwj718/termux_python>
 
-### Termux 高级终端安装使用配置教程
+## Termux 高级终端安装使用配置教程
 
-    <https://www.sqlsec.com/2018/05/termux.html>
+转自 <https://www.sqlsec.com/2018/05/termux.html>，感谢作者的持续付出。
 
 基本命令
 
-Termux 除了支持 apt 命令外，还在此基础上封装了pkg命令，pkg 命令向下兼容 apt 命令。apt命令大家应该都比较熟悉了，这里直接简单的介绍下pkg命令:
+Termux 除了支持 apt 命令外，还在此基础上封装了pkg命令，pkg 命令向下兼容 apt 命令。
+
+apt命令大家应该都比较熟悉了，这里直接简单的介绍下pkg命令:
 
     pkg search <query>              # 搜索包
     pkg install <package>           # 安装包
@@ -410,11 +431,28 @@ Termux 除了支持 apt 命令外，还在此基础上封装了pkg命令，pkg �
 
 国光建议大家使用 pkg 命令，因为 pkg 命令每次安装的时候自动执行 apt update 命令，还是比较方便的。
 
-## BusyBox
+软件安装
 
-    <https://busybox.net/>
+除了通过上述的 pkg 命令安装软件以外，如果我们有 .deb 软件包文件，也可以使用 dpkg 进行安装。
 
-需要root手机，优点是安装到安卓的linux系统里了，给系统增强了非常多的linux命令。一个集成了三百多个最常用Linux命令和工具的软件。BusyBox 包含了一些简单的工具，例如ls、cat和echo等等，还包含了一些更大、更复杂的工具，例grep、find、mount以及telnet。有些人将 BusyBox 称为 Linux 工具里的瑞士军刀。简单的说BusyBox就好像是个大工具箱，它集成压缩了 Linux 的许多工具和命令，也包含了 Android 系统的自带的shell。
+    bash
+    dpkg -i ./package.de         # 安装 deb 包
+    dpkg --remove [package name] # 卸载软件包
+    dpkg -l                      # 查看已安装的包
+    man dpkg                     # 查看详细文档
 
-    <https://www.cnblogs.com/xiaowenji/archive/2011/03/12/1982309.html>
-    <https://www.zhihu.com/question/26190694>
+目录结构
+
+    bash
+    echo $HOME
+    /data/data/com.termux/files/home
+
+    echo $PREFIX
+    /data/data/com.termux/files/usr
+
+    echo $TMPPREFIX
+    /data/data/com.termux/files/usr/tmp/zsh
+
+长期使用 Linux 的朋友可能会发现，这个 HOME 路径看上去和我们电脑端的不太一样，这是为了方便 Termux 提供的特殊的环境变量。
+
+### Termux:API

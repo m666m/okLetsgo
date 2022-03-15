@@ -192,6 +192,23 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
 如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"
 
+### 解决 Vim 汉字乱码
+
+如果你的 Vim 打开汉字出现乱码的话，那么在家目录(~)下，新建.vimrc文件
+
+    vim ~/.vimrc
+
+添加内容如下：
+
+    ini
+    set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
+    set enc=utf8
+    set fencs=utf8,gbk,gb2312,gb18030
+
+保存退出后执行下环境变量
+
+    source .vimrc
+
 ### cmatrix 字符屏保
 
 <https://magiclen.org/cmatrix/>
