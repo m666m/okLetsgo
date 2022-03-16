@@ -248,7 +248,7 @@ UEFI 模式刚开机时，屏幕自动使用显示器的物理分辨率，出现
 
 ### 二、主板 BIOS 开启 Secure Boot 功能
 
-其实 Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用体是主板UEFI启动时只加载经过认证的操作系统或者硬件驱动程序，从而防止恶意软件侵入。
+其实 Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用是主板UEFI启动时只加载经过认证的操作系统或者硬件驱动程序，从而防止恶意软件侵入。
 
 1.先开启 UEFI 功能
 
@@ -256,7 +256,7 @@ UEFI 模式刚开机时，屏幕自动使用显示器的物理分辨率，出现
 
 2.设置“Secure Boot”为“Enable”并导入设备商出厂密钥
 
-在 BIOS 中，仅仅设置“Secure Boot”项为“Enable”还不够。
+在 BIOS 中，仅仅设置“Secure Boot”项为“Enable”还不够，这个只是开启，并没有激活。
 
 选择进入“Secure Boot”界面，这时可以看到，“Secure Boot”为“Enable”，但是出现“Not Active”字样。
 
@@ -270,11 +270,13 @@ UEFI 模式刚开机时，屏幕自动使用显示器的物理分辨率，出现
 
     F10 储存并退出重启系统。
 
-确认下“Settings”界面中的“IO Ports”选项里，查看对应的 PCIe 设备，比如网卡等能正确显示名称，可以点击进去设置或查看信息。这表示 PCIe 卡中有带数字签名的 UEFI 驱动，已经被BIOS正确加载了。
+确认
 
-补充：
+    在“Settings”界面中的“IO Ports”选项里，查看对应的 PCIe 设备，比如网卡、nvme硬盘等。能正确显示设备名称，可以选择查看信息或设置选项。这表示 PCIe 设备的带数字签名的 UEFI 驱动，已经被BIOS正确加载了。
 
-<https://www.sevecek.com/EnglishPages/Lists/Posts/Post.aspx?ID=105>
+参考1
+
+    <https://www.sevecek.com/EnglishPages/Lists/Posts/Post.aspx?ID=105>
 
     switch the Attempt Secure Boot to Enabled
     switch the Secure Boot Mode to Customized - it enables the Key Management submenu
@@ -284,11 +286,13 @@ UEFI 模式刚开机时，屏幕自动使用显示器的物理分辨率，出现
     switch the Secure Boot Mode to Standard
     And you are all done.
 
-从华为服务器的一篇说明 <https://support.huawei.com/enterprise/zh/doc/EDOC1000039566/596b9d40>中看到，“Secure Boot Mode”选“custom”后，在“Key Management”界面，设置“Provision Factory Default keys”为 “Enable”，打开出厂默认密钥开关，这个不知道是否必须做，也是导入密钥的操作，
+参考2
+
+    从华为服务器的一篇说明 <https://support.huawei.com/enterprise/zh/doc/EDOC1000039566/596b9d40>中看到，“Secure Boot Mode”选“custom”后，在“Key Management”界面，设置“Provision Factory Default keys”为 “Enable”，打开出厂默认密钥开关，这个不知道是否必须做，也是导入密钥的操作，
 
 3.“Secure Boot Mode”导入出厂密钥后，要再改回“Standard”
 
-看主板 BIOS 下面的说明是要再改回“Standard”。
+在主板 BIOS 底部显示的操作提示是再改回“Standard”。
 
 F10保存重启计算机，再次进入 BIOS 设置，把“Secure Boot Mode”改回“Standard”，这时“Secure Boot”依然是“Active”字样，说明密钥都导入成功了。
 
