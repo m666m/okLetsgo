@@ -156,9 +156,9 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 1. HDMI 口连接显示器（防止老显卡的 DP 口不支持默认的 UEFI），开机按 Del 键进入主板 BIOS 设置。
 
-2. F7 装载系统默认优化设置：BOOT->Load optimized defaults，注意这之后引导操作系统默认是 UEFI 的，存储设备选项需要手动打开 CSM 后切换，详见后面的章节 [技嘉主板 BIOS 设置 UEFI + GPT 模式启动 Windows]。
+2. F7 装载系统默认优化设置：BOOT->Load optimized defaults，F10 保存设置并立刻重启计算机。然后再重新进入主板 BIOS 设置做进一步设置。如果连续改一堆设置，在BIOS里就死机，估计是bios系统没初始化好。改的太多它自己就乱了或bios电池没激活导致的。所以如果有很多功能要调整，别连续改，改一个系列的就保存设置重启计算机一次。
 
-3. F10 保存设置并重启计算机，让 optimized defaults 生效，然后再重新进入主板 BIOS 设置做后续设置。我一开始连续改东西，BIOS 里居然都死机，估计是太乱。
+3. 注意这之后引导操作系统默认是 UEFI 的，存储设备选项需要手动打开 CSM 后切换，详见后面的章节 [技嘉主板 BIOS 设置 UEFI + GPT 模式启动 Windows]。
 
 4. 内存：TWEAKS->Memory， 选择 X.M.P profiles，以启用 3600MHz 最优频率，这个版本的 BIOS 也已经自动放开了，我的这个内存默认 1.2v 跑到了 3900MHz。
 
@@ -168,7 +168,7 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 7. F6 风扇设置：对各个风扇选静音模式，或手动，先选全速看看最大转速多少，再切换手动，先拉曲线到最低转速，然后再横向找不同的温度调整风扇转速挡位。
 
-8. 开启UEFI + GPT 和 Secure Boot： 先 F10 保存设置并重启计算机，然后再进行设置，详见下面相关章节
+8. BIOS开启UEFI + GPT 和 Secure Boot： 先 F10 保存设置并重启计算机，然后再进行设置，详见下面相关章节[Windows 启用 Secure Boot 功能]
 
 9. 开启“UEFI Fast Boot”，这样关机后的再次开机很快。参见下面章节 [开启或关闭“快速启动”]
 
@@ -196,15 +196,15 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 ## Windows 启用 Secure Boot 功能
 
-下面两点，是 Windows 安装后可以启用 Secure Boot 功能的前提。如果不设置这个模式，Windows 的安装程序可能自动换用兼容的CSM模式进行安装而不提示，导致安装后发现，操作系统无法启用 Secure Boot 功能。
+下面几点，是 Windows 的安装程序确认可以启用 Secure Boot 功能的前提。如果设置不正确，它不会给出提示，只是默默的换用兼容的CSM模式进行安装。在Windows安装完才能验证是否启用了 Secure Boot 功能。
 
-### 一、启动 Windows安装程序前，把主板 BIOS 设置 UEFI + GPT 模式
+### 一、启动 Windows安装程序前，主板 BIOS 设置 UEFI + GPT 模式
 
 “UEFI + GPT”模式结合“快速启动（Fast Boot）”功能打开后，关机之后的开机，都是直接厂商 logo 转一圈就直接进系统的，不会再有主板自检启动画面和 Windows 启动的画面。
 
 UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化→加载系统→进入系统。传统的 BIOS 在加载系统之前需要进行一系列的硬件检查。
 
-#### 1. 确保主板 BIOS 设置中，关于启动的项目，存储和 PCIe 设备选的是 UEFI 模式
+#### 1. 确保“启动模式”、“存储”和 “PCIe 设备” 都是 UEFI 模式
 
 重启开机后按 F2 进入 bios，选 BOOT 选项卡：
 
@@ -212,15 +212,13 @@ UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化�
 
     选项 “CSM Support”， 先选“Enable”，之后下面出现的三项，除了网卡启动的那个选项不用管，其它两个关于“存储”和“PCIe 设备”的选项要确认选的是“UEFI”。
 
-    然后选项 “CSM Support”， 再选“Disable”，再关闭 CMS 模式。
+    然后选项 “CSM Support”， 再选“Disable”关闭 CMS 模式。
 
     CMS 模式关闭后，当前系统内的 PCIe 设备应该是出现了一些选项可以进行设置，比如“Advanced”界面 PCI  Subsystem setting 下 RX30 系列显卡的支持 Resize Bar 等
 
 这样系统才能默认用 Windows 的 UEFI 模式快速启动。
 
-##### 为什么要 CSM 模式又开又关这样操作呢？
-
-Windows 10 安装的时候我踩了个坑
+为什么要 CSM 模式又开又关这样操作呢？Windows 10 安装的时候我踩了个坑
 
     我在主板 BIOS 设置中启动模式选项（Windows 10 Features）选择“Windows 10”，“CSM Support”选项选择“Disable”后下面的三个选项自动隐藏了，我以为都是自动 UEFI 了，其实技嘉主板只是把选项隐藏了，硬盘模式保持了上次安装 Windows 时设置的 legacy 不是 UEFI……
 
@@ -236,31 +234,33 @@ Windows 10 安装的时候我踩了个坑
 
 总之，完美的做法，应该在 BIOS 设置中“Windows 10 Features”选择“Windows 10”，“CSM Support”选项选择“Enable”后出现的存储和 PCIe 设备的选项都选择“UEFI”，然后再把“CSM Support”选项选择“Disable”。在使用 Rufus 制作安装u盘时也要选择“GPT+UEFI”方式，再用这样的u盘启动计算机安装Windows。这样安装后的 Windows 才能实现UEFI的秒进桌面。
 
-##### 验证主板 BIOS 设置的 UEFI 模式
-
-    启动 Windows 后运行 msinfo32，在“系统摘要”界面找“BIOS 模式”选项，看到结果是“UEFI”。
-
 UEFI 模式刚开机时，屏幕自动使用显示器的物理分辨率，出现的主板厂商 logo 画面应该是比较小的原始图片尺寸，没有经过拉伸等分辨率调整。
 
 我的 Nvidia 1080 显卡目前只能在 HDMI 口连接时实现这个效果，DP 口连接时主板厂商 logo 画面被自动拉伸了，暂无法确定是否在显示器的物理分辨率下。
 
 #### 2.SATA 硬盘使用“AHCI”模式
 
-确认下主板 BIOS 的“settings”界面中，“SATA And RST configuration”的选项，硬盘模式为“AHCI”，这个一般主板都是默认开启的。
+确认下主板 BIOS 的“settings”界面中，“SATA And RST configuration”的选项，硬盘模式为“AHCI”，这个一般主板都是默认开启的。如果硬盘不是这个模式，后续的 Windows 安装程序会默认把Windows的启动模式转为CSM模式。。。
+
+#### 验证
+
+启动 Windows 后运行 msinfo32，在“系统摘要”界面找“BIOS 模式”选项，看到结果是“UEFI”。
 
 ### 二、主板 BIOS 开启 Secure Boot 功能
 
-其实 secure boot 是 uefi 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用体现在主板上只能加载经过认证过的操作系统或者硬件驱动程序，从而防止恶意软件侵入。
+其实 Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用体是主板UEFI启动时只加载经过认证的操作系统或者硬件驱动程序，从而防止恶意软件侵入。
 
-1. 开启 UEFI 功能
+1.先开启 UEFI 功能
 
-    见前面的章节 [技嘉主板 BIOS 设置 UEFI + GPT 模式启动 Windows] 中的第一项“确保存储和 PCIe 设备是 UEFI 模式”
+    见前面的章节 [确保“启动模式”、“存储”和 “PCIe 设备” 都是 UEFI 模式]
 
 2.设置“Secure Boot”为“Enable”并导入设备商出厂密钥
 
-在 BIOS 中，仅仅设置“Secure Boot”为“Enable”还不够，选择进入“Secure Boot”界面，这时可以看到，“Secure Boot”为“Enable”，但是出现“Not Active”字样。
+在 BIOS 中，仅仅设置“Secure Boot”项为“Enable”还不够。
 
-如果是，则需要导入出厂密钥：
+选择进入“Secure Boot”界面，这时可以看到，“Secure Boot”为“Enable”，但是出现“Not Active”字样。
+
+如果是“Not Active”，则需要导入出厂密钥：
 
     选择“Secure Boot Mode”为“custom”，打开用户模式
 
@@ -270,9 +270,7 @@ UEFI 模式刚开机时，屏幕自动使用显示器的物理分辨率，出现
 
     F10 储存并退出重启系统。
 
-注意要确认下“Settings”界面中的“IO Ports”选项里，查看对应的 PCIe 设备，比如网卡等能正确显示名称可以点击进去设置或查看信息，这表示 PCIe 卡中有带数字签名的 UEFI 驱动，否则不会被加载。
-
-验证：启动 Windows 后运行 msinfo32，在“系统摘要”界面找“安全启动”选项，看到结果是“开启”。
+确认下“Settings”界面中的“IO Ports”选项里，查看对应的 PCIe 设备，比如网卡等能正确显示名称，可以点击进去设置或查看信息。这表示 PCIe 卡中有带数字签名的 UEFI 驱动，已经被BIOS正确加载了。
 
 补充：
 
@@ -286,12 +284,13 @@ UEFI 模式刚开机时，屏幕自动使用显示器的物理分辨率，出现
     switch the Secure Boot Mode to Standard
     And you are all done.
 
-从华为服务器的一篇说明 <https://support.huawei.com/enterprise/zh/doc/EDOC1000039566/596b9d40>中看到，
-“Secure Boot Mode”选“custom”后，在“Key Management”界面，设置“Provision Factory Default keys”为 “Enable”，打开出厂默认密钥开关，这个不知道是否必须做，也是导入密钥的操作，
+从华为服务器的一篇说明 <https://support.huawei.com/enterprise/zh/doc/EDOC1000039566/596b9d40>中看到，“Secure Boot Mode”选“custom”后，在“Key Management”界面，设置“Provision Factory Default keys”为 “Enable”，打开出厂默认密钥开关，这个不知道是否必须做，也是导入密钥的操作，
 
 3.“Secure Boot Mode”导入出厂密钥后，要再改回“Standard”
 
-看主板 BIOS 下面的说明是要再该回去的。重启再次进入 BIOS 设置，把“Secure Boot Mode”改回“Standard”，这时“Secure Boot”依然是“Active”字样，说明密钥都导入成功了
+看主板 BIOS 下面的说明是要再改回“Standard”。
+
+F10保存重启计算机，再次进入 BIOS 设置，把“Secure Boot Mode”改回“Standard”，这时“Secure Boot”依然是“Active”字样，说明密钥都导入成功了。
 
 不大明白为嘛技嘉没提供个详细的操作说明呢？
 
@@ -301,7 +300,7 @@ UEFI 模式刚开机时，屏幕自动使用显示器的物理分辨率，出现
 
 主板 BIOS 在启动选择菜单，对u盘有两个选项，注意要选择带有“UEFI”字样的那个u盘启动。
 
-这样的 Windows 安装程序才会认为计算机是完全的 UEFI 模式，对硬盘的操作默认采用 GPT 类型。
+这两样都符合了，Windows 安装程序才会认为计算机是完全的 UEFI 模式，对硬盘的操作默认采用 GPT 类型。
 
 验证：
 
@@ -313,15 +312,19 @@ UEFI 模式刚开机时，屏幕自动使用显示器的物理分辨率，出现
 
 ### 四、确保硬盘格式化为 GPT 类型
 
-因为 Windows 安装程序动不动就默默的转为CSM模式安装，所以不管新老硬盘，都建议把硬盘分区全删后新建安装。
+因为 Windows 安装程序遇到不满足条件就会无提示转为CSM模式安装，所以不管新老硬盘，都建议把硬盘分区全删后新建安装。
 
 验证
 
-    在控制面板进入磁盘管理，在磁盘 0 上点击右键，看看“转换成 GPT 磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是 GPT 类型，大概率是 MBR 类型。真正的 GPT 磁盘，只提供“转换成 MBR 磁盘”选项。
+    Windows安装后，在控制面板进入磁盘管理，在磁盘 0 上点击右键，看看“转换成 GPT 磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是 GPT 类型，大概率是 MBR 类型。真正的 GPT 磁盘，只提供“转换成 MBR 磁盘”选项。
 
 参考 <https://www.163.com/dy/article/FTJ5LN090531NEQA.html>
 
 另外：三星 SSD 硬盘的管理程序 Samsung Magican 里，不要设置 Over Provisioning 功能。原因参见上面第一节的踩坑经历。
+
+### 验证
+
+ 启动 Windows 后运行 msinfo32，在“系统摘要”界面找“安全启动”选项，看到结果是“开启”。
 
 ## 用 Rufus 制作启动u盘安装 Windows11
 
@@ -422,7 +425,7 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
 主板 BIOS 设置为 GPT + UEFI 的情况下只能连接 HDMI 口安装系统。
 
-新出技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动u盘注意选择对应模式才能顺利启动，而且这样的 BIOS 设置才符合 Windows 11 的安装要求。
+新出技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动u盘制作时也要选择一致的模式，这样才符合 Windows 11 的安装要求。
 
 用 Rufus 制作 Windows 10 安装u盘，选择分区类型是 GPT（右侧的选项自动选择“UEFI（非 CSM)”）而不能是 MBR，这样的启动u盘才能顺利启动。
 
