@@ -423,42 +423,6 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
     <https://www.asus.com.cn/support/FAQ/1042220> <https://www.asus.com.cn/support/FAQ/1043640>
 
-## 老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）
-
-### 简单方案：连接 HDMI 口安装 Windows
-
-主板 BIOS 设置为 GPT + UEFI 的情况下只能连接 HDMI 口安装系统。
-
-新出技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动u盘制作时也要选择一致的模式，这样才符合 Windows 11 的安装要求。
-
-用 Rufus 制作 Windows 10 安装u盘，选择分区类型是 GPT（右侧的选项自动选择“UEFI（非 CSM)”）而不能是 MBR，这样的启动u盘才能顺利启动。
-
-有些如 Nvidia gtx 1080 时代的显卡，连接 HDMI 口可以兼容 UEFI 方式，而 DP 口则不兼容，应该是主板的UEFI兼容CSM模式。这样制作的安装u盘可以启动系统，但是 DP 口在开机的时候不显示，只能连接 HDMI 口安装系统。这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。
-
-### 一劳永逸方案：Nvidia 显卡可以升级固件解决这个问题
-
-先把显卡挂到别的能显示的机器上（或先连接 HDMI 口安装 Windows 能进入系统后），升级下固件，以后就可以实现连接 DP 口安装 Windows 10 了
-
-    <https://www.tenforums.com/graphic-cards/144258-latest-nvidia-geforce-graphics-drivers-Windows-10-2-a.html>
-        <https://www.tenforums.com/Windows-10-news/111671-nvidia-graphics-firmware-update-tool-displayport-1-3-1-4-a.html>
-            Geforce 1080 系 <https://www.nvidia.com/en-us/drivers/nv-uefi-update-x64/>
-            Geforce 3080 系 <https://nvidia.custhelp.com/app/answers/detail/a_id/5233/>
-
-### 凑合方案：主板 BIOS 设置为 CSM 方式安装 Windows 可以连接 DP 口
-
-用 Rufus 制作 Windows 10 安装u盘，如果分区类型选择 MBR（右侧选项自动选择“BIOS+UEFI(CSM)”），则也只能连接 HDMI 口安装系统。
-
-这时如果想使用 DP 口开机显示，则主板 BIOS 要更改设置，CSM Support（Windows 10 之前 Windows 版本安装的兼容模式，事关识别 usb 键盘鼠标和 UEFI 显卡）要选“Enable”，并设置兼容模式：
-
-    重启开机后按 F2 进入 bios，选 BOOT 选项卡，找到 Window 10 Features，选“other os”
-
-    之后下面出现了 CSM Support， 选“Enable”，
-    之后下面出现的三项，除了网卡启动的那个选项不用管，其它两个关于存储和 PCIe 设备的选项要确认选的是“UEFI”，这样在“other os”模式下可以实现 DP 口的开机显示，要是还不行，那两个选项直接选非 UEFI 的选项。
-
-这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。
-
-关于主板 BIOS 设置 CSM 模式可以启动 DP 口的解释 <https://nvidia.custhelp.com/app/answers/detail/a_id/3156/kw/doom/related/1>
-
 ## 装完 Windows 10 后的一些设置
 
     先激活
@@ -1534,7 +1498,45 @@ Hyper-V 其实也分1代2代，tenforums 的详细说明
 
 详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
 
-## 主板 Ultra Fast 启动无法再用键盘进入 BIOS 设置
+## 其它常见问题
+
+### 老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）
+
+#### 简单方案：连接 HDMI 口安装 Windows
+
+主板 BIOS 设置为 GPT + UEFI 的情况下只能连接 HDMI 口安装系统。
+
+新出技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动u盘制作时也要选择一致的模式，这样才符合 Windows 11 的安装要求。
+
+用 Rufus 制作 Windows 10 安装u盘，选择分区类型是 GPT（右侧的选项自动选择“UEFI（非 CSM)”）而不能是 MBR，这样的启动u盘才能顺利启动。
+
+有些如 Nvidia gtx 1080 时代的显卡，连接 HDMI 口可以兼容 UEFI 方式，而 DP 口则不兼容，应该是主板的UEFI兼容CSM模式。这样制作的安装u盘可以启动系统，但是 DP 口在开机的时候不显示，只能连接 HDMI 口安装系统。这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。
+
+#### 一劳永逸方案：Nvidia 显卡可以升级固件解决这个问题
+
+先把显卡挂到别的能显示的机器上（或先连接 HDMI 口安装 Windows 能进入系统后），升级下固件，以后就可以实现连接 DP 口安装 Windows 10 了
+
+    <https://www.tenforums.com/graphic-cards/144258-latest-nvidia-geforce-graphics-drivers-Windows-10-2-a.html>
+        <https://www.tenforums.com/Windows-10-news/111671-nvidia-graphics-firmware-update-tool-displayport-1-3-1-4-a.html>
+            Geforce 1080 系 <https://www.nvidia.com/en-us/drivers/nv-uefi-update-x64/>
+            Geforce 3080 系 <https://nvidia.custhelp.com/app/answers/detail/a_id/5233/>
+
+#### 凑合方案：主板 BIOS 设置为 CSM 方式安装 Windows 可以连接 DP 口
+
+用 Rufus 制作 Windows 10 安装u盘，如果分区类型选择 MBR（右侧选项自动选择“BIOS+UEFI(CSM)”），则也只能连接 HDMI 口安装系统。
+
+这时如果想使用 DP 口开机显示，则主板 BIOS 要更改设置，CSM Support（Windows 10 之前 Windows 版本安装的兼容模式，事关识别 usb 键盘鼠标和 UEFI 显卡）要选“Enable”，并设置兼容模式：
+
+    重启开机后按 F2 进入 bios，选 BOOT 选项卡，找到 Window 10 Features，选“other os”
+
+    之后下面出现了 CSM Support， 选“Enable”，
+    之后下面出现的三项，除了网卡启动的那个选项不用管，其它两个关于存储和 PCIe 设备的选项要确认选的是“UEFI”，这样在“other os”模式下可以实现 DP 口的开机显示，要是还不行，那两个选项直接选非 UEFI 的选项。
+
+这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。
+
+关于主板 BIOS 设置 CSM 模式可以启动 DP 口的解释 <https://nvidia.custhelp.com/app/answers/detail/a_id/3156/kw/doom/related/1>
+
+### 主板 Ultra Fast 启动无法再用键盘进入 BIOS 设置
 
 在操作系统中引导到 UEFI 固件设置。
 
@@ -1556,7 +1558,7 @@ UEFI 方式启动的操作系统是跟主板 BIOS 设置密切结合的，UEFI �
     <https://www.expreview.com/22043.html>
     <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-Windows.html>
 
-### 在 Windows 10 中指定重启到 UEFI 固件的步骤
+#### 在 Windows 10 中指定重启到 UEFI 固件的步骤
 
 点击“开始”菜单—选择“设置”，点击“更新和安全”，在“更新和安全”界面中点击左侧的“恢复”选项，再在右侧的“高级启动”中点击“立即重新启动”。
 
@@ -1566,7 +1568,7 @@ Windows 10 重启之后你将会看到出现一个界面提供选项，选择“
 
 参考 <https://docs.microsoft.com/zh-cn/Windows-hardware/manufacture/desktop/boot-to-uefi-mode-or-legacy-bios-mode>
 
-### Linux 指定重启到 UEFI 固件的步骤
+#### Linux 指定重启到 UEFI 固件的步骤
 
     Linux 也可以在重启时告诉系统下一次启动进入 UEFI 设置。使用 systemd 的 Linux 系统有 systemctl 工具可以设置。
 
@@ -1578,15 +1580,9 @@ Windows 10 重启之后你将会看到出现一个界面提供选项，选择“
     systemctl reboot --firmware-setup
     参考资料：https://www.freedesktop.org/software/systemd/man/systemctl.html#--firmware-setup
 
-## 其它常见问题
-
-### 如何判断 USB Type-C 口有哪些功能
-
-    <https://www.asus.com.cn/support/FAQ/1042843>
-
 ### 显示器在 Win10 开启 HDR 变灰泛白的原因
 
-在游戏或播放软件里单独设置 HDR 选项就可以了，Windows 系统不需要打开 HDR 选项，目前的 Windows 10/11 并没有很好的适配 HDR 显示器。
+在游戏或播放软件里单独设置 HDR 选项就可以了，Windows 操作系统不需要打开 HDR 选项，目前的 Windows 10/11 的桌面并没有很好的适配 HDR 显示器。
 
 简单来说，为了支持桌面上显示 HDR 软件, 桌面必须声明需求显示器的完整 HDR 亮度范围，因为桌面 UI 本身不能闪瞎人眼，所以桌面 UI 的亮度是低亮度模式。Display HDR400-600 的显示器的 HDR 并没有低亮度细节，所以低亮度部分就发灰了。HDR 和暗部平衡差不多，都可以把暗部细节显示出来，所以看起来就像是亮度调得很高的样子，会泛白。
 
@@ -1652,3 +1648,7 @@ M$不支持了，自求多福吧，自己挨个版本研究去 <https://docs.mic
     使用来自不同 Windows 操作系统版本的源将安装与 .NET Framework 3.5 不匹配的版本，或导致安装失败，使系统处于不受支持和无法提供服务的状态。
 
 也就是说，弄个 3.5 的离线安装包，在 Windows 10 下面可能不能用。
+
+### 如何判断 USB Type-C 口有哪些功能
+
+    <https://www.asus.com.cn/support/FAQ/1042843>
