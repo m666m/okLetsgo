@@ -107,14 +107,6 @@
     git分支的使用过程 <https://zhuanlan.zhihu.com/p/22369088>
     Git 之 merge 与 rebase 的区别 <https://www.cnblogs.com/zhangzhang-y/p/13682281.html>
 
-    离线Centos7环境使用Docker部署gitlab - CICD
-    <https://zhuanlan.zhihu.com/p/147284555>
-    <https://docs.gitlab.com/omnibus/docker/README.html>
-    <https://blog.csdn.net/weixin_40816738/article/details/90052533>
-
-    在 Linux 下搭建 Git 服务器 <https://www.cnblogs.com/dee0912/p/5815267.html>
-    主力开发在Github，再同步到 Gitee 做国内网络访问的镜像 <https://www.zhihu.com/question/384541326/answer/1123864925>
-
 ### git工作流：类似svn的TrunkBased集中式工作流 remote master -- local master(开发人员工作在此)
 
 主干仅master分支
@@ -364,6 +356,9 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 ## git 客户端初始化
 
 git通过ssh客户端连接github。除了github这样的，私有仓库都需要用户鉴权才能读取文件。
+
+    https://git-scm.com/download/win
+        https://github.com/git-for-windows/git/
 
 ### 1.ssh客户端的设置
 
