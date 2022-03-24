@@ -357,7 +357,7 @@ ssh服务的配置文件默认在 $PREFIX/etc/ssh/sshd_config 中。
 
 客户端公钥需要手工传递到手机输入
 
-    cat id_rsa.pub >> $HOME/.ssh/authorized_keys
+    cat id_ed25519.pub >> $HOME/.ssh/authorized_keys
 
 #### 公网访问手机
 
