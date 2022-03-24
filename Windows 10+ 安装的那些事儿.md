@@ -1111,6 +1111,32 @@ tools.wsb 示例：
 
 QQ、微信、钉钉、360啥的很多zh软件很多都加系统级驱动，在这种沙盒里防不住，老老实实的用虚拟机吧。
 
+### 4. Windows 应用(APP)
+
+1、Windows 桌面应用程序（desktop applications）
+
+从 Windows 95 以来这几十年发展的*.exe，对操作系统底层调用 Win32 API。后来引入的VC/MFC等框架，底层都依赖Win32 API。具备对 Windows 和硬件的直接访问权限，此应用类型是需要最高级别性能和直接访问系统硬件的应用程序的理想选择。这种程序对操作系统各组件的访问，在区分用户这个级别是可以用system权限超越的，基本不受控。
+
+2、WPF/.Net/Windows Form等新的框架
+
+各种新的API框架，意图是统一不同硬件的操作系统，流行程度都不如 Win32 API。后来这些打包搞了个托管运行时环境(WinRT)。这种软件想流氓起来，也不受控制。
+
+3、通用 Windows 平台 (UWP) 应用
+
+类似手机的方式，在 Windows 商店下载的应用(APP)，使用 UWP 组件的方式，在应用容器内部运行。
+
+UWP 应用在其清单中声明所需的设备能力，如访问麦克风、位置、网络摄像头、USB 设备、文件等，在应用被授予能力前，由用户确认并授权该访问。UWP 核心 API 在所有 Windows 设备上是相同的。
+
+UWP 应用可以是本机应用，也可以是托管应用。使用 C++/WinRT 编写的 UWP 应用可以访问属于 UWP 的 Win32 API。 所有 Windows 设备都实现这些 Win32 API。<https://docs.microsoft.com/zh-CN/windows/uwp/get-started/universal-application-platform-guide>
+
+4、合订本 - Windows应用程序(Widnows App)
+
+<https://docs.microsoft.com/zh-cn/windows/apps/get-started/?tabs=cpp-win32#other-app-types>
+
+Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这次好像是想搞个大一统的开发平台：原来的 Win32 API 升级成 WinRT API，对应的称呼就是  变成了 应用（APP）；原来的 wpf、.net、uwp 也都被大一统了。 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/>。UWP 也要迁移到 Widnows App，理论上还是容器化运行。<https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/desktop-to-uwp-extend>。
+
+总之，依赖在操作系统这个层面对应用程序的权限进行控制，一直做不到。目前最好的办法，只能是把操作系统包起来运行的虚拟机方式，才能完全彻底的隔离流氓软件对用户信息的侵害。也就是说，在你的 Windows 操作系统安装完毕之后，基本的用户信息都具备了，可信赖的大公司的软件都安装了，其他zh软件，统统安装到一个虚拟机里使用，不要安装到实机里。至于是使用沙盒还是hyper-v，酌情决定。
+
 ## Windows 10 使用虚拟机的几个途径
 
 WSL2 内的 container 是 linux 提供的，不算 Windows 的容器。Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-V 隔离，process 只在 server 版提供
