@@ -1105,6 +1105,12 @@ tools.wsb 示例：
 
 其中，MappedFolder 可以有多个，默认映射到桌面，也可以单独指定。关于 Windows 沙盒的详细介绍，参见 <https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/Windows-sandbox/Windows-sandbox-overview>
 
+### 3. 开源的轻量化沙盒工具
+
+    https://github.com/sandboxie-plus/Sandboxie
+
+QQ、微信、钉钉、360啥的很多zh软件很多都加系统级驱动，在这种沙盒里防不住，老老实实的用虚拟机吧。
+
 ## Windows 10 使用虚拟机的几个途径
 
 WSL2 内的 container 是 linux 提供的，不算 Windows 的容器。Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-V 隔离，process 只在 server 版提供
