@@ -393,13 +393,11 @@ git通过ssh客户端连接github。除了github这样的，私有仓库都需�
 
 ### 2.设置 gitub
 
-如果未设置过git用户名和邮箱
+登陆你的github帐户，点击你的头像，然后 Settings。
 
-    # 查看 git config –global list
-    git config --global user.name "m666m"
-    git config --global user.email "m666m@github.com"
+-> 左栏点击 Emails -> 右侧页面勾选 “Keep my email addresses private”、 “Block command line pushes that expose my email”、“Only receive account related emails, and those I subscribe to.”。 复制页面中提示的 noreply 电邮地址，后面要用。
 
-登陆你的github帐户。点击你的头像，然后 Settings -> 左栏点击 SSH and GPG keys -> 点击 New SSH key
+-> 左栏点击 SSH and GPG keys -> 点击 New SSH key
 
 在你本地机器登陆账户的主目录下的 ~/.ssh 目录，复制下面的文件内容粘贴进去
 
@@ -410,7 +408,7 @@ git colne一个项目，然后查看是否此项目是使用https协议
     git remote -v
 
     # 改为 git 协议
-    git remote set-url origin git@github.com:youraccount/yourproject.git
+    git remote set-url origin git@github.com:m666m/yourproject.git
 
 验证：
 
@@ -426,9 +424,17 @@ git colne一个项目，然后查看是否此项目是使用https协议
     # 登陆问题排查
     ssh -v git@github.com
 
+如果未设置过git用户名和邮箱，注意填写前面复制的 noreply 电邮地址
+
+    # 查看 git config –global list
+    git config --global user.name "m666m"
+    git config --global user.email "31643783+m666m@users.noreply.github.com"
+
 ### 使用 GPG 签名 Git 提交
 
 <https://cloud.tencent.com/developer/article/1656009?from=article.detail.1531457>
+
+<https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>
 
 本地控制台下执行命令，先导出该 ID 的公钥，见<gnu_tools.md>的相关章节
 
@@ -851,7 +857,7 @@ Git协议下载速度最快，SSH协议用于需要用户认证的场合。
 
     或：
         git init
-        git remote add origin git@github.com:XXXX/nothing2.git
+        git remote add origin git@github.com:m666m/nothing2.git
         git fetch origin dev（dev即分支名）
         git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
         git pull origin dev(远程分支名称)
