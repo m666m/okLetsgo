@@ -11,7 +11,7 @@
   - [git 客户端初始化](#git-客户端初始化)
     - [1.ssh客户端的设置](#1ssh客户端的设置)
     - [2.设置 gitub](#2设置-gitub)
-    - [使用 GPG 签名 Git 提交](#使用-gpg-签名-git-提交)
+    - [使用 GPG 签名 Github 提交](#使用-gpg-签名-github-提交)
       - [设置gpg程序的路径](#设置gpg程序的路径)
       - [签名提交](#签名提交)
   - [分支权限控制 及 轻量化git服务](#分支权限控制-及-轻量化git服务)
@@ -424,19 +424,19 @@ git colne一个项目，然后查看是否此项目是使用https协议
     # 登陆问题排查
     ssh -v git@github.com
 
-如果未设置过git用户名和邮箱，注意填写前面复制的 noreply 电邮地址
+如果未设置过git用户名和邮箱，注意填写前面复制的 github 的 noreply 电邮地址。
 
     # 查看 git config –global list
     git config --global user.name "m666m"
     git config --global user.email "31643783+m666m@users.noreply.github.com"
 
-### 使用 GPG 签名 Git 提交
+### 使用 GPG 签名 Github 提交
 
 <https://cloud.tencent.com/developer/article/1656009?from=article.detail.1531457>
 
 <https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>
 
-本地控制台下执行命令，先导出该 ID 的公钥，见<gnu_tools.md>的相关章节
+本地控制台下执行命令，先导出该 ID 的公钥(github要求电邮地址使用github的 <https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>)，如何制作密钥见<gnu_tools.md>的相关章节。
 
 复制公钥并将其添加到 GitLab 个人资料的设置中：
 
@@ -444,9 +444,10 @@ git colne一个项目，然后查看是否此项目是使用https协议
 
 本地控制台下执行命令，将 GPG 密钥与 Git 关联：
 
-    git config --global user.signingkey 66DD4800155F7A2B
+    # FBB74XXXXXXXAE51 是之前gpg生成的uid的密钥指纹，也可以直接写uid如'm666m'
+    git config --global user.signingkey FBB74XXXXXXXAE51
     # 或者
-    git config user.signingkey 66DD4800155F7A2B
+    git config user.signingkey FBB74XXXXXXXAE51
 
 #### 设置gpg程序的路径
 
