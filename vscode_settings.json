@@ -18,12 +18,7 @@
     "editor.columnSelection": false,
     "editor.multiCursorModifier": "alt",
     "editor.bracketPairColorization.enabled": true,
-    "editor.unicodeHighlight.allowedCharacters": {
-        "：": true,
-        "，": true,
-        "（": true,
-        "）": true
-    },
+    "editor.unicodeHighlight.includeStrings": false,
     "window.newWindowDimensions": "offset", // "offset" maximized
     "outline.showVariables": false,
     "extensions.autoUpdate": false,  // 如果有插件升级后出问题，阻止自动升级
@@ -38,11 +33,11 @@
         "--max-line-length=100"
         // "--ignore=E501, E262",
     ],
+    "python.formatting.autopep8Args": ["--ignore","E402"],
     "python.formatting.provider": "yapf",
     "python.formatting.yapfArgs": [
         // "--sytle=yapf_style.cfg"
     ],
-    "python.formatting.autopep8Args": ["--ignore","E402"],
     "diffEditor.ignoreTrimWhitespace": false,
     "window.autoDetectColorScheme": true,
     "workbench.preferredDarkColorTheme": "MacOS Modern Dark - Big Sur Xcode Default",
@@ -103,12 +98,6 @@
     //
     "pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
     "pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
-    // Bracket Pair Colorizer 2
-    // "bracket-pair-colorizer-2.colors": [
-    //     "rgba(213,135,32,255)",
-    //     "rgba(62,145,222,255)",
-    //     "rgba(18,230,155,255)"
-    // ],
     // Rainbow CSV https://github.com/mechatroner/vscode_rainbow_csv/blob/master/test/color_customization_example.md#colors-customization
     "editor.tokenColorCustomizations": {
         "textMateRules": [
@@ -190,29 +179,32 @@
     "todo-tree.highlights.customHighlight": {
         "TODO": {
             "icon": "tasklist",
-            "iconColour": "#c51c8d",
-            "background": "#46F0F0",
+            "iconColour": "#166d6d",
+            "foreground": "#166d6d",
+            "background": "#D0FFFF",
             "type": "tag"
         },
         "FIXME": {
             "icon": "eye",
-            "iconColour": "#e02828",
-            "background": "#FFD700",
+            "iconColour": "#fc0707",
+            "foreground": "#fc0707",
+            "background": "#D0FFFF",
             "type": "tag"
         },
         "XXX": {
             "icon": "beaker",
-            "iconColour": "#2cbdc7",
-            "background": "#46F0F0",
-            "gutterIcon": true,
+            "iconColour": "#df5577",
+            "foreground": "#df5577",
+            "background": "#D0FFFF",
             "type": "tag"
         },
         "NOTE": {
             "icon": "info",
-            "iconColour": "#80FF00",
-            "background": "#D8BFD8",
+            "iconColour": "#4f28bb",
+            "foreground": "#4217dd",
+            "background": "#D0FFFF",
             "type": "tag"
-        }
+        },
         // "[x]":{
         //   "foreground": "#64dd17",
         //   "background":"#008800"
