@@ -26,7 +26,6 @@
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
     "python.languageServer": "Pylance",
-    "python.showStartPage": false,
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Args": [
@@ -179,8 +178,8 @@
     "todo-tree.highlights.customHighlight": {
         "TODO": {
             "icon": "tasklist",
-            "iconColour": "#166d6d",
-            "foreground": "#166d6d",
+            "iconColour": "#37aaaa",
+            "foreground": "#127272",
             "background": "#D0FFFF",
             "type": "tag"
         },
@@ -200,11 +199,11 @@
         },
         "NOTE": {
             "icon": "info",
-            "iconColour": "#4f28bb",
+            "iconColour": "#3e58a0",
             "foreground": "#4217dd",
             "background": "#D0FFFF",
             "type": "tag"
-        },
+        }
         // "[x]":{
         //   "foreground": "#64dd17",
         //   "background":"#008800"
