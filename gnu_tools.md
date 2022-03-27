@@ -250,6 +250,41 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
         make
         sudo make install
 
+## sha256文件完整性校验
+
+Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令行
+
+    certutil -hashfile  <文件名>  <hash类型>
+
+如
+
+    certutil -hashfile cn_windows_7.iso MD5
+    certutil -hashfile cn_windows_7.iso SHA1
+    certutil -hashfile cn_windows_7.iso SHA256
+
+Linux
+
+每个算法都是单独的程序 md5sum sha1sum sha256sum.exe sha512sum，直接带文件名操作即可。
+
+    # 生成sha256校验文件
+    $ sha256sum file > file.sha256
+
+    # 校验同名文件
+    $ sha256sum -c file.sha256
+
+    # 同时校验多个文件
+    $ echo aaa > a
+    $ echo bbb > b
+    $ sha256sum a b > c.sha256
+
+    $ more c.sha256
+    17e682f060b5f8e47ea04c5c4855908b0a5ad612022260fe50e11ecb0cc0ab76  a
+    3cf9a1a81f6bdeaf08a343c1e1c73e89cf44c06ac2427a892382cae825e7c9c1  b
+
+    $ sha256sum -c c.sha256
+    a: OK
+    b: OK
+
 ## 使用 GPG 验证asc文件
 
 <https://cloud.tencent.com/developer/article/1531457>
