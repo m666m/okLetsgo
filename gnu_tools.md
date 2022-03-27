@@ -264,12 +264,12 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 Linux
 
-每个算法都是单独的程序 md5sum sha1sum sha256sum.exe sha512sum，直接带文件名操作即可。
+每个算法都是单独的程序 md5sum sha1sum sha256sum sha512sum，直接带文件名操作即可。
 
     # 生成sha256校验文件
     $ sha256sum file > file.sha256
 
-    # 校验同名文件
+    # 根据校验和文件进行校验
     $ sha256sum -c file.sha256
 
     # 同时校验多个文件
@@ -346,6 +346,78 @@ gpg: sending key DDAAB5A8 to hkp server pgp.mit.edu
     gpg --verify your.file.asc
 
 到现在为止，已经完成了 GPG 的安装、签名、分发和验证的流程。
+
+### 示例：验证ubuntu服务器上下载的iso安装包文件
+
+<https://developer.aliyun.com/article/85793>
+
+登陆 <http://releases.ubuntu.com/20.04/> 下载2个文件，分别是 SHA256SUMS.txt 和 SHA256SUMS.gpg。
+
+第一个文件是 ISO 镜像的 SHA256 验校文件，而第二个文件（*.gpg）是验校文件的签名。第二个文件的目的是验证验校文件本身的有效性。只有这两个文件保真，后续对下载的iso文件进行完整性验证才能保证准确性。
+
+#### 1、验证SHA256SUMS.txt
+
+运行命令
+
+    $ gpg --verify SHA256SUMS.gpg SHA256SUMS.txt
+    gpg: Signature made 2022年02月25日  4:36:20
+    gpg:                using RSA key 843938DF228D22F7B3742BC0D94AA3F0EFE21092
+    gpg: Can't check signature: No public key
+
+如果你得到上面的错误信息，是因为你还没有导入生成这个签名的公共密钥。因此我们现在导入需要的公钥。
+
+#### 2、导入需要的公钥
+
+这样做之前，你需要知道公共密钥的 “key ID”，而这在上面的 gpg 命令的输出中有显示。在这个例子中，密钥 ID 时 “843938DF228D22F7B3742BC0D94AA3F0EFE21092”。
+
+运行下面的命令来从官方 Ubuntu 密钥服务器导入公共密钥。
+
+    $ gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 843938DF228D22F7B3742BC0D94AA3F0EFE21092
+    gpg: key D94AA3F0EFE21092: public key "Ubuntu CD Image Automatic Signing Key (2012) <cdimage@ubuntu.com>" imported
+    gpg: Total number processed: 1
+    gpg:               imported: 1
+
+#### 3、验证指纹
+
+导入后会给一个key ID，验证下指纹，需要跟网站上发布的（如果有）比对完全一致才可以。
+
+    $ gpg --fingerprint D94AA3F0EFE21092
+    pub   rsa4096 2012-05-11 [SC]
+        8439 38DF 228D 22F7 B374  2BC0 D94A A3F0 EFE2 1092
+    uid           [ unknown] Ubuntu CD Image Automatic Signing Key (2012) <cdimage@ubuntu.com>
+
+#### 4、再次验证SHA256SUMS.txt
+
+既然公共密钥已经被导入，我们可以继续并重新运行之前的命令来验证签名。
+
+    $ gpg --verify SHA256SUMS.gpg SHA256SUMS.txt
+    gpg: Signature made 2022年02月25日  4:36:20
+    gpg:                using RSA key 843938DF228D22F7B3742BC0D94AA3F0EFE21092
+    gpg: Good signature from "Ubuntu CD Image Automatic Signing Key (2012) <cdimage@ubuntu.com>" [unknown]
+    gpg: WARNING: This key is not certified with a trusted signature!
+    gpg:          There is no indication that the signature belongs to the owner.
+    Primary key fingerprint: 8439 38DF 228D 22F7 B374  2BC0 D94A A3F0 EFE2 1092
+
+这次你没有看到 “public key not found” 的错误信息。如果 SHA256SUMS.txt 文件是有效的，你会看到 “Good signature from ” 的信息。如果错误，需要检查你的网络下载的为何不能保真，是否网络错误过多，或登陆了仿造网站。
+
+注意到警告信息“This key is not certified with a trusted signature” 。基本上这个警告信息是告诉你对导入的公共密钥没有明确信任。只有指定完全信任导入的公共密钥才不会出这个警告。一般使用中，我们不会对外来的公钥选择完全信任，所以忽略这个警告即可。
+
+#### 5、验证下载iso文件完整性
+
+在验证了 SHA256SUMS.txt 文件的完整性后，最后一个步骤是校验和比对，生成 iso 文件的 SHA256 验校和，跟SHA256SUMS.txt 文件中保存的该文件的验校和进行比对，如果完全一致，则认为该iso文件是完整的。 先下载 <http://releases.ubuntu.com/20.04/ubuntu-20.04.4-desktop-amd64.iso>，然后在该iso文件的目录下，用命令行执行：
+
+你可以使用 sha256sum 命令行工具
+
+    sha256sum ubuntu-20.04.4-desktop-amd64.iso
+
+肉眼查看输出结果是否与 SHA256SUMS.txt 文件中的内容一致。
+
+为方便起见，下面一行命令比较 SHA256 验校和并报告结果。
+
+    $ sha256sum -c <(grep ubuntu-20.04.4-desktop-amd64.iso SHA256SUMS.txt)
+    ubuntu-14.10-desktop-amd64.iso: OK
+
+如果你看到了上面的输出信息，这表明两个验校值相匹配。这样已下载 ISO 镜像的完整性就被成功的验证了。
 
 ## GNU POSIX环境开发
 
