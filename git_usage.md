@@ -12,8 +12,11 @@
     - [1.ssh客户端的设置](#1ssh客户端的设置)
     - [2.设置 gitub](#2设置-gitub)
     - [使用 GPG 签名 Github 提交](#使用-gpg-签名-github-提交)
-      - [设置gpg程序的路径](#设置gpg程序的路径)
-      - [签名提交](#签名提交)
+      - [1.github网页端添加gpg公钥](#1github网页端添加gpg公钥)
+      - [2.将 GPG 密钥与 Git 关联](#2将-gpg-密钥与-git-关联)
+      - [3.设置gpg程序的路径](#3设置gpg程序的路径)
+      - [4.签名提交](#4签名提交)
+      - [5.可选步骤：给Github的GPG公钥签名](#5可选步骤给github的gpg公钥签名)
   - [分支权限控制 及 轻量化git服务](#分支权限控制-及-轻量化git服务)
   - [分支的拉取和上传](#分支的拉取和上传)
     - [每日工作第一件事 拉取合并（含标签，变基）](#每日工作第一件事-拉取合并含标签变基)
@@ -436,20 +439,31 @@ git colne一个项目，然后查看是否此项目是使用https协议
 
 <https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>
 
-本地控制台下执行命令，先导出该 ID 的公钥(github要求电邮地址使用github的 <https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>)，如何制作密钥见<gnu_tools.md>的相关章节。
+<https://zhuanlan.zhihu.com/p/76861431>
 
-复制公钥并将其添加到 GitLab 个人资料的设置中：
+#### 1.github网页端添加gpg公钥
 
-   Gitlab 页面右上角，单击你的头像，Settings—> GPG keys，然后粘贴 GPG key。
+github要求gpg密钥的电邮地址使用github的 <https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>，所以单独给这个电邮地址新建个github专用的gpg密钥即可，uid设为github用户名'm666m'。
 
-本地控制台下执行命令，将 GPG 密钥与 Git 关联：
+显示当前的gpg公钥，本地控制台下执行命令
+
+    # FBB74XXXXXXXAE51 是之前gpg生成的uid的密钥指纹，也可以直接写uid如'm666m'
+    gpg --armor --export FBB74XXXXXXXAE51
+
+找到你的电邮地址对应的那个公钥，复制将其添加到 github 个人资料的设置中：
+
+   github 页面右上角，单击你的头像，Settings—> GPG keys，然后粘贴 GPG key。
+
+#### 2.将 GPG 密钥与 Git 关联
+
+本地控制台下执行命令
 
     # FBB74XXXXXXXAE51 是之前gpg生成的uid的密钥指纹，也可以直接写uid如'm666m'
     git config --global user.signingkey FBB74XXXXXXXAE51
     # 或者
     git config user.signingkey FBB74XXXXXXXAE51
 
-#### 设置gpg程序的路径
+#### 3.设置gpg程序的路径
 
     $ where gpg
         E:\Git\usr\bin\gpg.exe  # 这个是 Git for windows 自带的
@@ -458,7 +472,7 @@ git colne一个项目，然后查看是否此项目是使用https协议
     $ git config --global gpg.program "E:\GnuPG\bin\gpg.exe"
     done
 
-#### 签名提交
+#### 4.签名提交
 
 Git 提交时，使用 -S 标记进行 GPG 签名：
 
@@ -487,11 +501,119 @@ Git 提交时，使用 -S 标记进行 GPG 签名：
     1、在 GitLab 提交选项卡，签名的提交将显示包含“ Verified”或“ Unverified”的徽章，具体取决于 GPG 签名的验证状态。
     2、通过单击 GPG 徽章，将显示签名的详细信息。
 
-撤销（revoke）或删除 GPG key
+吊销（revoke）或删除 GPG key
 
-    撤销密钥将取消验证已签名的提交，通过使用此密钥验证的提交将变为未验证状态。如果你的密钥已被盗用，则应使用此操作。
+    吊销密钥将取消验证已签名的提交，通过使用此密钥验证的提交将变为未验证状态。如果你的密钥已被盗用，则应使用此操作。
 
     删除密钥不会取消验证已签名的提交。使用此密钥验证的提交将保持验证状态。
+
+#### 5.可选步骤：给Github的GPG公钥签名
+
+在Github网页端进行的操作，比如创建仓库。这些commit是由Github代为签名的。
+
+    $ git log --show-signature
+    # some output is omitted
+    commit ec37d4af120a69dafa077052cfdf4f5e33fa1ef3 (HEAD -> master)
+    gpg: Signature made 2019年08月 4日 12:52:29
+    gpg:                using RSA key 1BA074F113915706D141348CDC3DB5873563E6B2
+    gpg: Good signature from "fortest <test@test.com>" [ultimate]
+    Author: keithnull <keith1126@126.com>
+    Date:   Sun Aug 4 12:52:29 2019 +0800
+
+        test GPG
+
+    commit 6937d638d950362f73bfbf28bc4a39d1700bf26b
+    gpg: Signature made 2019年07月24日 15:58:46
+    gpg:                using RSA key 4AEE18F83AFDEB23
+    gpg: Can't check signature: No public key
+    Author: Keith Null <20233656+keithnull@users.noreply.github.com>
+    Date:   Wed Jul 24 15:58:46 2019 +0800
+
+        Initial commit
+
+注意网页端的提交导致“gpg: Can't check signature: No public key”。
+
+为了解决这个问题，我们需要导入并对Github所用的GPG密钥进行签名。
+
+先是导入：
+
+    $ curl https://github.com/web-flow.gpg | gpg --import
+    # curl's output is omitted
+    gpg: key 4AEE18F83AFDEB23: public key "GitHub (web-flow commit signing) <noreply@github.com>" imported
+    gpg: Total number processed: 1
+    gpg:               imported: 1
+
+查看刚导入后的有效性是  [ unknown]
+
+    $ gpg -k
+    /c/Users/XXXXX/.gnupg/pubring.kbx
+    -------------------------------------
+    pub   rsa2048 2017-08-16 [SC]
+        5DE3E0509C47EA3CF04A42D34AEE18F83AFDEB23
+    uid           [ unknown] GitHub (web-flow commit signing) <noreply@github.com>
+
+用自己的密钥为其签名
+
+   $ gpg --sign-key 4AEE18F83AFDEB23
+
+    pub  rsa2048/4AEE18F83AFDEB23
+        created: 2017-08-16  expires: never       usage: SC
+        trust: unknown       validity: unknown
+    [ unknown] (1). GitHub (web-flow commit signing) <noreply@github.com>
+
+
+    pub  rsa2048/4AEE18F83AFDEB23
+        created: 2017-08-16  expires: never       usage: SC
+        trust: unknown       validity: unknown
+    Primary key fingerprint: 5DE3 E050 9C47 EA3C F04A  42D3 4AEE 18F8 3AFD EB23
+
+        GitHub (web-flow commit signing) <noreply@github.com>
+
+    Are you sure that you want to sign this key with your
+    key "m666m (for github use) <31643783+m666m@users.noreply.github.com>" (FBB74XXXXXXXAE51)
+
+    Really sign? (y/N) y
+
+确认签名生效，有效性validity变为 full了
+
+    $ gpg --edit-key 4AEE18F83AFDEB23
+    gpg (GnuPG) 2.2.29-unknown; Copyright (C) 2021 Free Software Foundation, Inc.
+    This is free software: you are free to change and redistribute it.
+    There is NO WARRANTY, to the extent permitted by law.
+
+
+    gpg: checking the trustdb
+    gpg: marginals needed: 3  completes needed: 1  trust model: pgp
+    gpg: depth: 0  valid:   1  signed:   1  trust: 0-, 0q, 0n, 0m, 0f, 1u
+    gpg: depth: 1  valid:   1  signed:   0  trust: 1-, 0q, 0n, 0m, 0f, 0u
+    pub  rsa2048/4AEE18F83AFDEB23
+        created: 2017-08-16  expires: never       usage: SC
+        trust: unknown       validity: full
+    [  full  ] (1). GitHub (web-flow commit signing) <noreply@github.com>
+
+    gpg> quit
+
+查看现在的有效性是  [ full]
+
+    $ gpg -k
+    /c/Users/XXXXX/.gnupg/pubring.kbx
+    -------------------------------------
+    pub   rsa2048 2017-08-16 [SC]
+        5DE3E0509C47EA3CF04A42D34AEE18F83AFDEB23
+    uid           [  full  ] GitHub (web-flow commit signing) <noreply@github.com>
+
+至此，再尝试查看本地仓库的commit签名信息，则会发现所有的commit签名都已得到验证：
+
+    $ git log --show-signature
+    # some output is omitted
+    commit 6937d638d950362f73bfbf28bc4a39d1700bf26b
+    gpg: Signature made 2019年07月24日 15:58:46
+    gpg:                using RSA key 4AEE18F83AFDEB23
+    gpg: Good signature from "GitHub (web-flow commit signing) <noreply@github.com>" [full]
+    Author: Keith Null <20233656+keithnull@users.noreply.github.com>
+    Date:   Wed Jul 24 15:58:46 2019 +0800
+
+        Initial commit
 
 ## 分支权限控制 及 轻量化git服务
 
