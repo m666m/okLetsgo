@@ -1119,7 +1119,7 @@ QQ、微信、钉钉、360啥的很多zh软件很多都加系统级驱动，在�
 
 2、WPF/.Net/Windows Form等新的框架
 
-各种新的API框架，意图是统一不同硬件的操作系统，流行程度都不如 Win32 API。后来这些打包搞了个托管运行时环境(WinRT)。这种软件想流氓起来，也不受控制。
+各种新的API框架，意图是统一不同硬件的操作系统，流行程度都不如 Win32 API。后来这些打包搞了个托管运行时环境(WinRT)。这种软件想流氓起来，运行时环境也控制不了。
 
 3、通用 Windows 平台 (UWP) 应用
 
@@ -1133,9 +1133,9 @@ UWP 应用可以是本机应用，也可以是托管应用。使用 C++/WinRT �
 
 <https://docs.microsoft.com/zh-cn/windows/apps/get-started/?tabs=cpp-win32#other-app-types>
 
-Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这次好像是想搞个大一统的开发平台：原来的 Win32 API 升级成 WinRT API，对应的称呼就是  变成了 应用（APP）；原来的 wpf、.net、uwp 也都被大一统了。 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/>。UWP 也要迁移到 Widnows App，理论上还是容器化运行。<https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/desktop-to-uwp-extend>。
+Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这次好像是想搞个大一统的开发平台：原来的 Win32 API 升级成 WinRT API，对应的称呼就是变成了应用（APP）；原来的 wpf、.net、uwp 也都被大一统了。 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/>；UWP 也要迁移到 Widnows App，理论上还是容器化运行。<https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/desktop-to-uwp-extend>；安卓应用现在也可以在Windows上容器化运行。开发平台打包统一了，能再卖一波 Visual Studio，但是各类应用还是各搞各的，桌面应用的通用化没啥指望，后续看谁能流行起来再说吧。
 
-总之，依赖在操作系统这个层面对应用程序的权限进行控制，一直做不到。目前最好的办法，只能是把操作系统包起来运行的虚拟机方式，才能完全彻底的隔离流氓软件对用户信息的侵害。也就是说，在你的 Windows 操作系统安装完毕之后，基本的用户信息都具备了，可信赖的大公司的软件都安装了，其他zh软件，统统安装到一个虚拟机里使用，不要安装到实机里。至于是使用沙盒还是hyper-v，酌情决定。
+总之，依赖在操作系统这个层面对应用程序的权限进行控制，一直做不到。目前最好的办法，只能是把操作系统包起来运行的虚拟机方式，才能完全彻底的隔离流氓软件对用户信息的侵害。也就是说，在你的 Windows 操作系统安装完毕之后，基本的用户信息都具备了，可信赖的大公司的软件都安装了，其他zh软件，统统安装到一个虚拟机里使用，不要安装到实机里。至于是使用沙盒还是hyper-v虚机，酌情决定。
 
 ## Windows 10 使用虚拟机的几个途径
 
