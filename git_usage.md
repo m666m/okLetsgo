@@ -16,7 +16,9 @@
       - [2.将 GPG 密钥与 Git 关联](#2将-gpg-密钥与-git-关联)
       - [3.设置gpg程序的路径](#3设置gpg程序的路径)
       - [4.签名提交](#4签名提交)
-      - [5.可选步骤：给Github的GPG公钥签名](#5可选步骤给github的gpg公钥签名)
+      - [5. 给标签签名](#5-给标签签名)
+      - [6.合并时强制进行签名检查](#6合并时强制进行签名检查)
+      - [6.可选步骤：给Github的GPG公钥签名](#6可选步骤给github的gpg公钥签名)
   - [分支权限控制 及 轻量化git服务](#分支权限控制-及-轻量化git服务)
   - [分支的拉取和上传](#分支的拉取和上传)
     - [每日工作第一件事 拉取合并（含标签，变基）](#每日工作第一件事-拉取合并含标签变基)
@@ -443,7 +445,7 @@ git colne一个项目，然后查看是否此项目是使用https协议
 
 #### 1.github网页端添加gpg公钥
 
-github要求gpg密钥的电邮地址使用github的 <https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>，所以单独给这个电邮地址新建个github专用的gpg密钥即可，uid设为github用户名'm666m'。
+github要求gpg密钥的电邮地址使用github页面提示给出的（对于隐藏自己邮件地址） <https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>，所以单独给这个电邮地址新建个github专用的gpg密钥即可，uid设为github用户名'm666m'。
 
 显示当前的gpg公钥，本地控制台下执行命令
 
@@ -474,15 +476,20 @@ github要求gpg密钥的电邮地址使用github的 <https://docs.github.com/cn/
 
 #### 4.签名提交
 
-Git 提交时，使用 -S 标记进行 GPG 签名：
+建议始终使用签名提交，使用 -S 标记进行 GPG 签名：
 
+    # 你每次都记得给 git commit 操作传递一个 -S 标志（包括 —amend）。
     git commit -S -m “commit message"
 
-懒得打 -S 参数，设置默认使用 GPG 签名提交：
+懒得每次都打 -S 参数，设置默认使用 GPG 签名提交：
 
     git config --global commit.gpgsign true
     # 或者
     git config commit.gpgsign true
+
+验证签名的提交
+
+    git verify-commit [hash]
 
 在 Git 中通过命令行验证相关提交的签名
 
@@ -507,7 +514,33 @@ Git 提交时，使用 -S 标记进行 GPG 签名：
 
     删除密钥不会取消验证已签名的提交。使用此密钥验证的提交将保持验证状态。
 
-#### 5.可选步骤：给Github的GPG公钥签名
+#### 5. 给标签签名
+
+建议始终对 git 标签签名，tag命令后跟 -s 参数即可
+
+    git tag -s [tagname]
+
+强制 git 始终签名带注释的标签
+
+    git config --global tag.forceSignAnnotated true
+
+或对带注释的标签，每次都传递一个 -s 开关：
+
+    git tag -asm "Tag message" tagname
+
+验证一个签名的标签
+
+    git verify-tag [tagname]
+
+如果你要验证其他人的 git 标签，需要你导入他的 PGP 公钥。
+
+#### 6.合并时强制进行签名检查
+
+需要项目的所有成员都签名了他们的提交，，如果有一个提交没有签名或验证失败，将导致合并操作失败。
+
+    git merge --verify-signatures -S merged-branch
+
+#### 6.可选步骤：给Github的GPG公钥签名
 
 在Github网页端进行的操作，比如创建仓库。这些commit是由Github代为签名的。
 
