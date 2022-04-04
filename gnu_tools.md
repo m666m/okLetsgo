@@ -269,21 +269,19 @@ Linux
     # 生成sha256校验文件
     $ sha256sum file > file.sha256
 
+    # 生成多个文件的sha256校验
+    $ sha256sum a.txt b.txt > checksums.sha256
+    $ more checksums.sha256
+    17e682f060b5f8e47ea04c5c4855908b0a5ad612022260fe50e11ecb0cc0ab76  a.txt
+    3cf9a1a81f6bdeaf08a343c1e1c73e89cf44c06ac2427a892382cae825e7c9c1  b.txt
+
     # 根据校验和文件进行校验
-    $ sha256sum -c file.sha256
+    $ sha256sum -c checksums.sha256
+    a.txt: OK
+    b.txt: OK
 
-    # 同时校验多个文件
-    $ echo aaa > a
-    $ echo bbb > b
-    $ sha256sum a b > c.sha256
-
-    $ more c.sha256
-    17e682f060b5f8e47ea04c5c4855908b0a5ad612022260fe50e11ecb0cc0ab76  a
-    3cf9a1a81f6bdeaf08a343c1e1c73e89cf44c06ac2427a892382cae825e7c9c1  b
-
-    $ sha256sum -c c.sha256
-    a: OK
-    b: OK
+    # 抽出单个文件进行校验
+    sha256sum -c <(grep ubuntu-20.04.4-desktop-amd64.iso SHA256SUMS.txt)
 
 ## GNU POSIX环境开发
 
