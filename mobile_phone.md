@@ -228,6 +228,46 @@ private void getPackageList(Context ctx) {
 
     手机下载联通营业厅app，在“我的业务“里面找到视频彩铃，选择关闭。
 
+## 安卓的开源软件商店F-Droid
+
+    https://f-droid.org/
+        https://f-droid.org/zh_Hans/contribute/
+            https://gitlab.com/fdroid/fdroidclient
+        https://f-droid.org/zh_Hans/docs/
+
+优点一、
+
+应用源代码看得见，用户自己可以审核。大家从可靠的 repositories 下载软件，这些repositories由长期帮助我们编译源代码的热心人士共享。至于哪些 repositories 是可信任的？没有人帮你决定，你有权利也有义务自己判断。
+
+优点二、
+商店接受应用上架时的审查原则：[Anti-Features（负特征）](https://f-droid.org/zh_Hans/docs/Inclusion_Policy)。
+
+F-Droid 首先会从用户的角度出发，基于自由软件和用户控制原则的严格的收录标准。 应用的某些内容可能不会阻止它被收录，但许多用户也许不想接受它们。 为了处理这类情况，F-Droid制定了一系列明确的负特征来标记应用，以便用户选择是否仍要接受该应用。如应用调用的第三方库有可疑之处，如广告、跟踪用户行为的活动等。
+
+F-Droid 是一个免费和开源应用的下载平台，类似谷歌的 Play 商店，不过 F-Droid 针对的是自由开源的应用软件. 而且你可以打造自己的“店铺”——通过 Repomaker，可创建包含应用、音乐、视频或书籍的资源库。
+
+安卓哥说：F-Droid最大的特点在与其与Linux软件包管理高度吻合，采用的是源安装，即有源有软件，无源无软件，和linux必须添加软件源是一个道理。
+
+F-Droid的软件虽然不多，但是很实用。就举这么些个例子。大家有兴趣，自行探索。这些 repositories 源，类似于我们在 Linux 平台上在 /etc/apt/sources.list.d/（Debian 或 Ubuntu 系）或 /etc/yum.repos.d/（Fedora 系）放入源一样， 表示从此信任这个来源/市集/repository 里面的软件。
+
+F-Droid 会把这些 repositories 所提供的软体信息存储一份清单在手机里。这个清单需要不时更新。当我们发现有些 App 或某些版本看得见却无法安装的时候，很可能就是因为我们手机上的清单过时了，需要更新，这跟 Debian 的 apt-get update 或 Fedora 的 yum update 意思一样。当然，我们也可以在手机客户端中设置 automatic update interval（自动更新间隔）。
+
+### F-Droid添加清华源
+
+    https://mirrors.tuna.tsinghua.edu.cn/help/fdroid/
+
+用 F-Droid 客户端打开此链接：
+
+    https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/?fingerprint=43238D512C1E5EB2D6569F4A3AFBF5523418B82E0A3ED1552770ABB9A9C9CCAB
+
+使用 F-Droid 打开第一行的长链接，在弹出界面中点击添加镜像。也可以复制长链接，在应用⚙设置 - 存储库中，点击右上角的加号手动添加。添加完成后，还需要选择存储库中的第二个 F-Droid 库，只保留刚才添加的用户镜像，其他镜像悉数关闭，保证软件只从国内镜像站获取更新。
+
+如果需要添加 Archive 库，可以使用如下链接：
+
+    https://mirrors.tuna.tsinghua.edu.cn/fdroid/archive?fingerprint=43238D512C1E5EB2D6569F4A3AFBF5523418B82E0A3ED1552770ABB9A9C9CCAB
+
+其它的源速度很慢，不加也罢。
+
 ## BusyBox
 
     <https://busybox.net/>
@@ -459,3 +499,25 @@ apt命令大家应该都比较熟悉了，这里直接简单的介绍下pkg命�
 长期使用 Linux 的朋友可能会发现，这个 HOME 路径看上去和我们电脑端的不太一样，这是为了方便 Termux 提供的特殊的环境变量。
 
 ### Termux:API
+
+## 简易点对点DHT网络通信 Jami
+
+前身是SFLphone，然后被命名为GNU Ring，属于GNU项目。
+
+    https://jami.net/
+        https://git.jami.net/savoirfairelinux/jami-project
+
+简单的就像自己写的，支持家里局域网设备之间互相识别和发送消息，使用GPG加密，更新较快。
+
+支持[群聊](https://jami.net/swarm-introducing-a-new-generation-of-group-conversations/)。
+
+可以开[视频会议](https://jami.net/help/#answer14/)。
+    更多开源视频会议系统 <https://zhuanlan.zhihu.com/p/163759271>
+
+支持一个账户多个设备运行，可以[绑定到多个设备](https://jami.net/help/#answer7)，消息记录互相同步。
+
+## 简易点对点DHT网络通信 Tox
+
+    https://wiki.tox.chat/clients
+
+DHT网络路由搞得有点过于复杂，无法在家庭内网独立运行，客户端不好用，特别是在手机端。
