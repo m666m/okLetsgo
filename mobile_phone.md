@@ -283,6 +283,14 @@ F-Droid 会把这些 repositories 所提供的软体信息存储一份清单在�
 
 DHT网络路由搞得有点过于复杂，无法在家庭内网独立运行，客户端功能比较简单，特别是在手机端。
 
+## 支持 gpg 用于邮件签名和加解密的开源应用
+
+[OpenKeychain](https://www.openkeychain.org)主要与[K-9 Mail](https://github.com/k9mail/k-9)集成。
+
+如果你在电脑上经常用邮件客户端的话你可以使用 Thunderbird。在电脑上生成好的子密钥，导出子私钥到文件，然后导入到 OpenKeychain 就好了。
+
+如果你用 Android 收发邮件比较多的话，建议你直接用 OpenKeychain 生成密钥对然后发布公钥就好了。
+
 ## BusyBox
 
     <https://busybox.net/>
