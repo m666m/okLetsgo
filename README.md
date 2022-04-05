@@ -1,9 +1,11 @@
 # 常用内容收集整理，放在github上方便随时查阅
 
-所谓“工程师文化”，就是充分尊重工程的特点与规律，尊重工程师的创新性劳动和协同合作，
-崇尚解决重大工程问题的科学性与严谨性，重视工程技术应用的集成、优化与权衡。
+## 做技术的态度
 
-分析设计方向的选择
+所谓“工程师文化”，就是充分尊重工程的特点与规律，尊重工程师的创新性劳动和协同合作，
+崇尚解决重大工程问题的科学性与严谨性，重视工程技术应用的集成、优化与权衡。--波音飞机公司
+
+## 分析设计方向的选择
 
 OOP的思维模式，是大一统的；C的思维模式，是分离的。前者方便但容易造成高耦合，后者灵活但开发开发太累。用 C开发，应该刻意强调 “简单” 和 “可拆分”。一个个象搭积木一样的把基础系统搭建出来，哪个模块出问题，局部替换即可。
 
@@ -23,23 +25,14 @@ OOP的思维模式，是大一统的；C的思维模式，是分离的。前者�
 来源：知乎
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
-## 别人的速查手册
-
-python
-
-    <https://gto76.github.io/python-cheatsheet/>
-        <https://github.com/gto76/python-cheatsheet>
-
-<https://www.technologyreview.com/>
-<https://www.forbes.com/science/?sh=1b6787035738>
-
-怎样用通俗的语言解释REST，以及RESTful？
+## 怎样用通俗的语言解释REST，以及RESTful
 
     看Url就知道要什么
     看http method就知道干什么
     看http status code就知道结果如何
 
-公司c位程序员不愿使用git,怎么办？
+## 公司c位程序员不愿使用git,怎么办
+
 程墨Morgan 给题主一些建议：
 
     不光要只说svn的问题，要说git能够解决svn的问题
@@ -51,3 +44,13 @@ python
     如果你只知道提出问题却提不出解法，你自己就已经成为了问题
 
 Mkdocs 配置和使用 <https://www.xncoding.com/2020/03/01/tool/mkdocs.html>
+
+## 别人的速查手册
+
+python
+
+    <https://gto76.github.io/python-cheatsheet/>
+        <https://github.com/gto76/python-cheatsheet>
+
+<https://www.technologyreview.com/>
+<https://www.forbes.com/science/?sh=1b6787035738>
