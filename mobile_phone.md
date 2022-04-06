@@ -235,6 +235,8 @@ private void getPackageList(Context ctx) {
             https://gitlab.com/fdroid/fdroidclient
         https://f-droid.org/zh_Hans/docs/
 
+F-Droid的软件虽然不多，但是很实用。
+
 优点一、
 
 应用源代码看得见，用户自己可以审核。大家从可靠的 repositories 下载软件，这些repositories由长期帮助人类编译源代码的热心人士共享。至于哪些 repositories 是可信任的？没有人帮你决定，你有权利也有义务自己判断。
@@ -246,9 +248,7 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
 F-Droid 是一个免费和开源应用的下载平台，类似谷歌的 Play 商店，不过 F-Droid 针对的是开源的应用软件. 而且你可以打造自己的“店铺”——通过 Repomaker，可创建包含应用、音乐、视频或书籍的资源库。
 
-F-Droid最大的特点在与其与Linux软件包管理高度吻合，采用的是源安装，即有源有软件，无源无软件，和linux必须添加软件源是一个道理。
-
-F-Droid的软件虽然不多，但是很实用。就举这么些个例子。大家有兴趣，自行探索。这些 repositories 源，类似于我们在 Linux 平台上在 /etc/apt/sources.list.d/（Debian 或 Ubuntu 系）或 /etc/yum.repos.d/（Fedora 系）放入源一样， 表示从此信任这个来源/市集/repository 里面的软件。
+F-Droid最大的特点在与其与Linux软件包管理高度吻合，采用的是源安装，即有源有软件，无源无软件，和linux必须添加软件源是一个道理。这些 repositories 源，类似于我们在 Linux 平台上在 /etc/apt/sources.list.d/（Debian 或 Ubuntu 系）或 /etc/yum.repos.d/（Fedora 系）放入源一样， 表示从此信任这个来源/市集/repository 里面的软件。
 
 F-Droid 会把这些 repositories 所提供的软体信息存储一份清单在手机里。这个清单需要不时更新。当我们发现有些 App 或某些版本看得见却无法安装的时候，很可能就是因为我们手机上的清单过时了，需要更新，这跟 Debian 的 apt-get update 或 Fedora 的 yum update 意思一样。当然，我们也可以在手机客户端中设置 automatic update interval（自动更新间隔）。
 
