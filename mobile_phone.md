@@ -268,6 +268,12 @@ F-Droid 会把这些 repositories 所提供的软体信息存储一份清单在�
 
 其它的源速度很慢，不加也罢。
 
+## 简易点对点DHT网络通信 Tox
+
+    https://wiki.tox.chat/clients
+
+无法在家庭内网独立运行，客户端功能简单，特别是在手机端。
+
 ## 简易点对点DHT网络通信 Jami
 
 前身是SFLphone，然后被命名为GNU Ring，属于GNU项目。
@@ -277,11 +283,7 @@ F-Droid 会把这些 repositories 所提供的软体信息存储一份清单在�
     https://jami.net/
         https://git.jami.net/savoirfairelinux/jami-project
 
-## 简易点对点DHT网络通信 Tox
-
-    https://wiki.tox.chat/clients
-
-DHT网络路由搞得有点过于复杂，无法在家庭内网独立运行，客户端功能比较简单，特别是在手机端。
+实际使用发现登陆、添加联系人等特别慢，严重依赖中心化服务器，可用性基本为0.1。
 
 ## 支持 gpg 用于邮件签名和加解密的开源应用
 
