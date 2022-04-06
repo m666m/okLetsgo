@@ -33,6 +33,17 @@ You can install the whole distribution of the tools from <https://www.msys2.org/
     licenses\tmux
     man\man1\tmux.1.gz
 
+## 网络故障排查
+
+    # 端口是否可用
+    telnet 192.168.0.1:3389
+
+    netstat -an
+
+    ping -t 192.168.0.1
+
+    tracert www.bing.com
+
 ## Linux下常用工具
 
 ### tmux
