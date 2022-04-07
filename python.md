@@ -1511,20 +1511,20 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
 <https://github.com/microsoft/vscode-docs/blob/master/remote-release-notes/v1_37.md>
 
-## Windows下 vs code 安装了 git bash 后 ssh 的密钥有密码
+## vs code 在 Windows 下 ssh 的密钥有密码总是提示输入
 
     https://stackoverflow.com/questions/42707896/vscode-keep-asking-for-passphrase-of-ssh-key
 
-在vs code 里每次从git服务器pull代码或fetch代码，都会提问密钥的保护密码。
+vs code + Git for Windows 使用ssh登陆git的服务器，每次pull代码或fetch代码，都会提问ssh密钥的保护密码。
 特别是如果设置了选项 自动同步（"git.autofetch": true），会频繁提示输入密钥的保护密码，即使你已经
 
-    在 git bash 里设置了 ssh-agent 的运行进程
+    在 git bash 里设置了 ssh-agent 的运行进程并且已经 ssh-add 添加了密钥（bash里ssh登陆不需要输入密码了）
 
-    并且已经 ssh-add 添加了密钥
+    或在 cmd 里运行过 start-ssh-agent.cmd 并且已经添加了密钥
 
 解决办法
 
-法一： 在git bash 里运行命令 code 打开 vs code，以便code能读取到 ssh-agent 的环境变量 SSH_AUTH_SOCK 的进程号，就不会问密码了。
+法一： 在 git bash  里运行命令 code 打开 vs code，以便code能读取到 ssh-agent 的环境变量 SSH_AUTH_SOCK 的进程号，就不会问密码了（如果是cmd那个执行start-ssh-agent.cmd的窗口不能关）。
 
 法二： 使用 Windows 10 自带的 OpenSSH，打开服务 SSH-AGENT 的自动运行，每次开机后在命令行提示窗口执行 ssh-add 添加你的密钥。
 
