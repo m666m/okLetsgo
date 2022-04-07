@@ -431,7 +431,7 @@ git colne一个项目，然后查看是否此项目是使用https协议
 
 如果未设置过git用户名和邮箱，注意填写前面复制的 github 的 noreply 电邮地址。
 
-    # 查看 git config –global list
+    # 查看 git config --global --list
     git config --global user.name "m666m"
     git config --global user.email "31643783+m666m@users.noreply.github.com"
 
