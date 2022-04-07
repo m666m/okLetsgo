@@ -1511,7 +1511,26 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
 <https://github.com/microsoft/vscode-docs/blob/master/remote-release-notes/v1_37.md>
 
-## VS Code 插件
+## Windows下 vs code 安装了 git bash 后 ssh 的密钥有密码
+
+    https://stackoverflow.com/questions/42707896/vscode-keep-asking-for-passphrase-of-ssh-key
+
+在vs code 里每次从git服务器pull代码或fetch代码，都会提问密钥的保护密码。
+特别是如果设置了选项 自动同步（"git.autofetch": true），会频繁提示输入密钥的保护密码，即使你已经
+
+    在 git bash 里设置了 ssh-agent 的运行进程
+
+    并且已经 ssh-add 添加了密钥
+
+解决办法
+
+法一： 在git bash 里运行命令 code 打开 vs code，以便code能读取到 ssh-agent 的环境变量 SSH_AUTH_SOCK 的进程号，就不会问密码了。
+
+法二： 使用 Windows 10 自带的 OpenSSH，打开服务 SSH-AGENT 的自动运行，每次开机后在命令行提示窗口执行 ssh-add 添加你的密钥。
+
+法三：取消密钥的保护密码。执行命令 ssh-keygen -p 提示新密码时直接回车即可。
+
+## vs code 插件
 
 插件的安装位置为 C:\Users\你的用户名\.vscode\extensions
 
