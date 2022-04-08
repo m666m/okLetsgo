@@ -585,6 +585,12 @@ github要求gpg密钥的电邮地址使用github页面提示给出的（对于�
         5DE3E0509C47EA3CF04A42D34AEE18F83AFDEB23
     uid           [ unknown] GitHub (web-flow commit signing) <noreply@github.com>
 
+导入后不签名，git log显示签名时gpg验证提示会有警告性信息
+
+    gpg: Good signature from "..." [unknown]
+    gpg: WARNING: This key is not certified with a trusted signature!
+    gpg:          There is no indication that the signature belongs to the owner.
+
 用自己的密钥为其签名
 
    $ gpg --sign-key 4AEE18F83AFDEB23
