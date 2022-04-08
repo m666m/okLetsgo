@@ -27,19 +27,19 @@
       - [本地的两份代码--本地仓库和远程仓库](#本地的两份代码--本地仓库和远程仓库)
       - [git pull把2个过程合并，减少了操作](#git-pull把2个过程合并减少了操作)
     - [添加多个远程仓库](#添加多个远程仓库)
-    - [拉取指定版本](#拉取指定版本)
-    - [git clone 获取指定分支的指定commit版本](#git-clone-获取指定分支的指定commit版本)
     - [git clone支持多种协议](#git-clone支持多种协议)
-    - [git checkout 切换其他分支](#git-checkout-切换其他分支)
-    - [删除分支，远程/本地](#删除分支远程本地)
-    - [从远程git拉取指定分支](#从远程git拉取指定分支)
-    - [本地空目录，仅拉取指定远程分支的用法](#本地空目录仅拉取指定远程分支的用法)
-    - [本地非空目录，远程空的push三个用法](#本地非空目录远程空的push三个用法)
-    - [？重复？本地非空，远程是裸仓库](#重复本地非空远程是裸仓库)
-    - [？重复？git clone之后的第一次pull和push调试](#重复git-clone之后的第一次pull和push调试)
-    - [？重复？从远程空白裸仓库拉取的步骤](#重复从远程空白裸仓库拉取的步骤)
-      - [如果远程仓库里有文件， git clone 命令都可以正常拉取](#如果远程仓库里有文件-git-clone-命令都可以正常拉取)
-        - [刚建好的裸仓库是空白的，直接用clone拉是可以的，但是后续做pull和push会报错](#刚建好的裸仓库是空白的直接用clone拉是可以的但是后续做pull和push会报错)
+    - [拉取指定版本](#拉取指定版本)
+      - [拉取指定分支的指定commit版本](#拉取指定分支的指定commit版本)
+    - [远程仓库拉取和推送的各种情况](#远程仓库拉取和推送的各种情况)
+      - [git clone之后的第一次pull和push](#git-clone之后的第一次pull和push)
+      - [本地空目录，远程裸仓库里有文件](#本地空目录远程裸仓库里有文件)
+      - [本地空目录，拉取远程刚建好的空白裸仓库](#本地空目录拉取远程刚建好的空白裸仓库)
+      - [本地空目录，仅拉取指定远程分支的用法](#本地空目录仅拉取指定远程分支的用法)
+      - [本地非空目录，拉取远程非空裸仓库](#本地非空目录拉取远程非空裸仓库)
+      - [本地非空目录，远程仓库无本地分支的push用法](#本地非空目录远程仓库无本地分支的push用法)
+    - [其它分支管理](#其它分支管理)
+      - [git checkout 切换其他分支](#git-checkout-切换其他分支)
+      - [删除分支，远程/本地](#删除分支远程本地)
   - [两个分支合并的 merge/rebase 效果](#两个分支合并的-mergerebase-效果)
     - [方法一. merge 默认的快进合并，需要合入分支的接续点就是分叉点](#方法一-merge-默认的快进合并需要合入分支的接续点就是分叉点)
     - [方法二. 大的分支合入用 merge --no-ff 强行保留菱形分叉，便于管理](#方法二-大的分支合入用-merge---no-ff-强行保留菱形分叉便于管理)
@@ -849,6 +849,14 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
 
 ### 添加多个远程仓库
 
+远程仓库格式
+
+    ssh://git@xx.xx.xx.xx:2345/gitrepo/myproj.git
+
+    git@github.com:m666m/okLetsgo.git
+
+    https://github.com/m666m/myproj
+
 方法一、推送命令只会推送到默认的origin地址，其他的各个server1，2，3得再挨个执行push命令
 
     git remote add server1 ssh://git@x.x.x.x:2345/gitrepo/project_name.git
@@ -887,34 +895,6 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
 
     git remote set-url --delete origin --push origin ssh://git@x.x.x.x:2345/gitrepo/project_name.git
 
-### 拉取指定版本
-
-    git clone 下载源码
-
-    git tag　列出所有版本号
-
-    git checkout　+某版本号　
-
-你当前文件夹下的源码会变成这个版本号的源码，比起一个个下，这种切换比较方便。
-
-### git clone 获取指定分支的指定commit版本
-
-git clone 默认是取回 master 分支，可以使用 -b 参数指定的分支。 -b 参数不仅支持分支名，还支持 tag 名等。
-
-        git clone  <remote-addr:repo.git> -b <branch-or-tag-or-commit>
-
-需求是获取commit id，没直接的办法。下面提供另一个步骤：
-
-选择一个包含目标 commit id 的branch或tag，并指定depth=1以获得比较少的额外文件传输。
-
-    git clone --depth 1 <remote-addr:repo.git> -b < branch-or-tag >
-
-clone完成后，进入目录，执行
-
-    git fetch --depth < a-numer >
-
-不断增大步骤2的数字，直到找到你要的commit
-
 ### git clone支持多种协议
 
 <https://www.w3cschool.cn/git/git-uroc2pow.html>
@@ -933,142 +913,37 @@ Git协议下载速度最快，SSH协议用于需要用户认证的场合。
     git clone ftp[s]://example.com/path/to/repo.git
     git clone rsync://example.com/path/to/repo.git
 
-### git checkout 切换其他分支
+### 拉取指定版本
 
-1.查看远程分支
+    git clone 下载源码
 
-    $ git branch -a
-    我在mxnet根目录下运行以上命令：
+    git tag　列出所有版本号
 
-    ~/mxnet$ git branch -a
-    * master
-    remotes/origin/HEAD -> origin/master
-    remotes/origin/master
-    remotes/origin/nnvm
-    remotes/origin/piiswrong-patch-1
-    remotes/origin/v0.9rc1
-    可以看到，我们现在在master分支下
+    git checkout　+某版本号　
 
-2.查看本地分支
+你当前文件夹下的源码会变成这个版本号的源码，比起一个个下，这种切换比较方便。
 
-    ~/mxnet$ git branch
-    * master
+#### 拉取指定分支的指定commit版本
 
-3.切换分支，注意这里是在本地新建了一个分支，对应远程的某个分支名
+git clone 默认是取回 master 分支，可以使用 -b 参数指定的分支。 -b 参数不仅支持分支名，还支持 tag 名等。
 
-    $ git checkout -b v0.9rc1 origin/v0.9rc1
-    Branch v0.9rc1 set up to track remote branch v0.9rc1 from origin.
-    Switched to a new branch 'v0.9rc1'
+        git clone  <remote-addr:repo.git> -b <branch-or-tag-or-commit>
 
-    ＃已经切换到v0.9rc1分支了
-    $ git branch
-    master
-    * v0.9rc1
+需求是获取commit id，没直接的办法。下面提供另一个步骤：
 
-    ＃切换回master分支
-    $ git checkout master
-    Switched to branch 'master'
-    Your branch is up-to-date with 'origin/master'.
+选择一个包含目标 commit id 的branch或tag，并指定depth=1以获得比较少的额外文件传输。
 
-### 删除分支，远程/本地
+    git clone --depth 1 <remote-addr:repo.git> -b < branch-or-tag >
 
-0.先看看有多少本地和远程分支
+clone完成后，进入目录，执行
 
-    git branch -a
+    git fetch --depth < a-numer >
 
-1.切换到其他分支再进行操作
+不断增大步骤2的数字，直到找到你要的commit
 
-    git checkout master
+### 远程仓库拉取和推送的各种情况
 
-2.删除远程分支的指针而不是直接删分支，方便数据恢复。
-
-    git push origin --delete fea_xxx
-
-如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
-
-    git push origin :refs/fea_xxx
-
-用本地分支fea_-2覆盖远程分支fea_-1
-
-    git push -f origin fea_-2:refs/fea_-1
-
-对追踪分支，git push origin --delete 该命令也会删除本地-远程的追踪分支，等于还做了个
-
-    # 如果只删除追踪分支，则还需要 git remote prune 来删除追踪分支
-    git branch --delete --remotes <remote>/<branch>
-
-3.其它人的机器上还有该远程分支，清理无效远程分支
-
-    git branch -a # 查看
-
-    git fetch origin -p  # git remote prune
-
-4.删除本地
-
-    git branch -d fea_xxx
-
-### 从远程git拉取指定分支
-
-    git fetch origin dev_xxx
-    git branch -a -v
-    git checkout -b newBranch origin/dev_xxx
-
-### 本地空目录，仅拉取指定远程分支的用法
-
-    git clone -b dev 代码仓库地址 （dev是分支名称）
-
-    或：
-        git init
-        git remote add origin git@github.com:m666m/nothing2.git
-        git fetch origin dev（dev即分支名）
-        git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
-        git pull origin dev(远程分支名称)
-
-### 本地非空目录，远程空的push三个用法
-
-    远程已有dev_xxx分支并且已经关联本地分支dev_xxx，本地已经切换到dev_xxx
-
-        git push
-
-    远程没有remote_branch分支，本地已经切换到dev_xxx
-
-        git push origin dev_xxx:remote_branch
-
-    远程已有dev_xxx分支但未关联本地分支dev_xxx，本地已经切换到dev_xxx
-
-        git push -u origin/dev_xxx
-
-### ？重复？本地非空，远程是裸仓库
-
-本地先 git init，然后
-
-    git remote add origin ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
-
-这时显示结果
-
-    $ git remote show origin
-    * remote origin
-    Fetch URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
-    Push  URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
-    HEAD branch: (unknown)
-
-把文件都push上去，会提示没有上游分支，直接推。
-
-这时显示结果，正常了
-
-    $ git remote show origin
-    * remote origin
-    Fetch URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
-    Push  URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
-    HEAD branch: master
-    Remote branch:
-        master tracked
-    Local branch configured for 'git pull':
-        master merges with remote master
-    Local ref configured for 'git push':
-        master pushes to master (up to date)
-
-### ？重复？git clone之后的第一次pull和push调试
+#### git clone之后的第一次pull和push
 
 先看有几个远程
 
@@ -1091,18 +966,13 @@ Git协议下载速度最快，SSH协议用于需要用户认证的场合。
         master pushes to master (up to date)
 
 如果pull和push未关联，需要关联
+
     # 将本地的master分支推送到origin主机，同时指定origin为默认主机
     git push -u origin master
 
-远程仓库格式
+#### 本地空目录，远程裸仓库里有文件
 
-    ssh://git@xx.xx.xx.xx:2345/gitrepo/myproj.git
-    git@github.com:m666m/okLetsgo.git
-    https://github.com/m666m/myproj
-
-### ？重复？从远程空白裸仓库拉取的步骤
-
-#### 如果远程仓库里有文件， git clone 命令都可以正常拉取
+git clone 命令正常拉取
 
     git clone ssh://git@x.x.x.x:2345/gitrepo/tea.git
 
@@ -1114,7 +984,9 @@ Git协议下载速度最快，SSH协议用于需要用户认证的场合。
 
 这样本地目录里就会多了个tea的目录，这个目录已经是git管理的仓库了，远端服务器的信息都已经配置了。
 
-##### 刚建好的裸仓库是空白的，直接用clone拉是可以的，但是后续做pull和push会报错
+#### 本地空目录，拉取远程刚建好的空白裸仓库
+
+刚建好的裸仓库无内容，直接用clone拉是可以的，但是后续做pull和push会报错
 
 解决办法是，先在本地目录 git init，设置远程推送地址，给远程仓库上传个文件，然后再拉取。
 
@@ -1168,6 +1040,141 @@ Git协议下载速度最快，SSH协议用于需要用户认证的场合。
     Your branch is up to date with 'origin/master'.
 
     nothing to commit, working tree clean
+
+#### 本地空目录，仅拉取指定远程分支的用法
+
+    git clone -b dev 代码仓库地址 （dev是分支名称）
+
+或fetch下来再建个本地分支
+
+    git init
+    git remote add origin git@github.com:m666m/nothing2.git
+
+    git fetch origin dev（dev即分支名）
+    git branch -a -v
+
+    git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
+    git pull origin dev(远程分支名称)
+
+#### 本地非空目录，拉取远程非空裸仓库
+
+本地先 git init，然后
+
+    git remote add origin ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
+
+这时显示结果
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
+    Push  URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
+    HEAD branch: (unknown)
+
+把文件都push上去，会提示没有上游分支，直接推。
+
+这时显示结果，正常了
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
+    Push  URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
+    HEAD branch: master
+    Remote branch:
+        master tracked
+    Local branch configured for 'git pull':
+        master merges with remote master
+    Local ref configured for 'git push':
+        master pushes to master (up to date)
+
+#### 本地非空目录，远程仓库无本地分支的push用法
+
+    远程没有remote_branch分支，本地已经切换到dev_xxx
+
+        git push origin dev_xxx:remote_branch
+
+    远程已有dev_xxx分支但未关联本地分支dev_xxx，本地已经切换到dev_xxx
+
+        git push -u origin/dev_xxx
+
+    远程已有dev_xxx分支并且已经关联本地分支dev_xxx，本地已经切换到dev_xxx
+
+        git push
+
+### 其它分支管理
+
+#### git checkout 切换其他分支
+
+1.查看远程分支
+
+    $ git branch -a
+    我在mxnet根目录下运行以上命令：
+
+    ~/mxnet$ git branch -a
+    * master
+    remotes/origin/HEAD -> origin/master
+    remotes/origin/master
+    remotes/origin/nnvm
+    remotes/origin/piiswrong-patch-1
+    remotes/origin/v0.9rc1
+    可以看到，我们现在在master分支下
+
+2.查看本地分支
+
+    ~/mxnet$ git branch
+    * master
+
+3.切换分支，注意这里是在本地新建了一个分支，对应远程的某个分支名
+
+    $ git checkout -b v0.9rc1 origin/v0.9rc1
+    Branch v0.9rc1 set up to track remote branch v0.9rc1 from origin.
+    Switched to a new branch 'v0.9rc1'
+
+    ＃已经切换到v0.9rc1分支了
+    $ git branch
+    master
+    * v0.9rc1
+
+    ＃切换回master分支
+    $ git checkout master
+    Switched to branch 'master'
+    Your branch is up-to-date with 'origin/master'.
+
+#### 删除分支，远程/本地
+
+0.先看看有多少本地和远程分支
+
+    git branch -a
+
+1.切换到其他分支再进行操作
+
+    git checkout master
+
+2.删除远程分支的指针而不是直接删分支，方便数据恢复。
+
+    git push origin --delete fea_xxx
+
+如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
+
+    git push origin :refs/fea_xxx
+
+用本地分支fea_-2覆盖远程分支fea_-1
+
+    git push -f origin fea_-2:refs/fea_-1
+
+对追踪分支，git push origin --delete 该命令也会删除本地-远程的追踪分支，等于还做了个
+
+    # 如果只删除追踪分支，则还需要 git remote prune 来删除追踪分支
+    git branch --delete --remotes <remote>/<branch>
+
+3.其它人的机器上还有该远程分支，清理无效远程分支
+
+    git branch -a # 查看
+
+    git fetch origin -p  # git remote prune
+
+4.删除本地
+
+    git branch -d fea_xxx
 
 ## 两个分支合并的 merge/rebase 效果
 
