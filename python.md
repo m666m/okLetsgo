@@ -295,7 +295,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 ### Windows 命令行环境下使用脚本执行 Virtualenv 环境
 
-如果用cmd，则vs code使用的时候偶尔会有脚本报错……
+如果用cmd，则vscode使用的时候偶尔会有脚本报错……
 
 用bash的问题是，用pip的时候偶尔有报错，最好切换回cmd环境，因为python的windows脚本都是按cmd环境开发的
 
@@ -367,7 +367,7 @@ virtualenv 创建虚拟环境的时候，会把系统Python复制一份到虚拟
 
 0.先安装git，后续使用它自带的bash、ssh比较方便，不装也行
 
-1.如果想让vs code自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”或“set Anaconda3 the system default python”。如果你想使用相对路径的虚拟环境，可以不勾选。
+1.如果想让vscode自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”或“set Anaconda3 the system default python”。如果你想使用相对路径的虚拟环境，可以不勾选。
 
 2.选择了“给所有用户安装”时，新建环境如[p37]会保存在C:\ProgramData\Anaconda3\envs\p37，不选则保存在 C:\Users\xxxx\.conda\envs\p37，相应的python、pip位置也会跟随变化。
 
@@ -392,7 +392,7 @@ x. 不推荐更新pip。仅在自己的虚拟环境里更新pip和指定的包�
 
 6.设置conda在哪个shell下使用（windows默认是cmd），详见下面章节 [conda init 命令设置命令行工具]
 
-7.vs code配置默认终端，选择“Git Bash”
+7.vscode配置默认终端，选择“Git Bash”
 
 8.anaconda-navigator 逐个python版本的新建环境，作为标准环境，这些环境建了之后不要更新、下载包，不要做任何改动！
 
@@ -838,7 +838,7 @@ conda 有很多频道，在网页版频道列表里有对应的版本，找合�
     conda activate
     conda update conda
 
-    # vs code 提示
+    # vscode 提示
     # conda update -n base -c defaults conda
 
 ### Windows 下执行 conda 脚本
@@ -1507,11 +1507,11 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
     sudo pip install --upgrade pip
 
-## 外网访问内网使用ssh和远程桌面
+## vscode 外网访问内网使用ssh和远程桌面
 
 <https://github.com/microsoft/vscode-docs/blob/master/remote-release-notes/v1_37.md>
 
-## vs code 在 Windows 下 ssh 的密钥有密码总是提示输入
+## vscode 在 Windows 下 ssh 的密钥有密码总是提示输入
 
     https://stackoverflow.com/questions/42707896/vscode-keep-asking-for-passphrase-of-ssh-key
 
@@ -1523,19 +1523,19 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
 问题现象
 
-    vs code + Git for Windows 使用ssh登陆git的服务器，每次pull代码或fetch代码，都会提问ssh密钥的保护密码。特别是如果设置了选项 自动同步（"git.autofetch": true），会频繁提示输入密钥的保护密码。
+    vscode + Git for Windows 使用ssh登陆git的服务器，每次pull代码或fetch代码，都会提问ssh密钥的保护密码。特别是如果设置了选项 自动同步（"git.autofetch": true），会频繁提示输入密钥的保护密码。
 
-    点击 vs code 提供的同步功能github会报错密钥验证失败，而你单独打开bash终端窗口运行push、pull成功。
+    点击 vscode 的git代码同步功能的按钮会报错ssh密钥验证失败，而你单独打开bash终端窗口运行push、pull都成功。
 
 解决办法
 
-法一： 在 git bash  里运行命令 code 打开 vs code，以便code能读取到 ssh-agent 的环境变量 SSH_AUTH_SOCK 的进程号，就不会问密码了（如果是cmd执行 start-ssh-agent.cmd 的窗口不能关）。如果需要打开多个 vs code 实例，在任务栏的 vs code 图标右键选择“新窗口”。git bash也可以打开多个，但是如果退出git bash的最后一个实例，记得要关闭code，否则再重新运行git bash时会报错打不开。
+法一： 在 git bash  里运行命令 code 打开 vscode，这样会继承环境变量 SSH_AUTH_SOCK，vscode 就不会问密码了（如果是cmd执行 start-ssh-agent.cmd 的窗口不能关）。如果需要打开多个 vscode 实例，在任务栏的 vscode 图标右键选择“新窗口”。git bash也可以打开多个，但是如果退出git bash的最后一个实例，记得要关闭code，否则再重新运行git bash时会报错打不开。
 
-法二： 使用 Windows 10 自带的 OpenSSH，打开服务 SSH-AGENT 的自动运行，每次开机后在 power shell 提示窗口执行 ssh-add 添加你的密钥。
+法二： 使用 Windows 10 自带的 OpenSSH，打开服务 SSH-AGENT 的自动运行，每次开机后在 power shell 提示窗口执行 ssh-add 添加你的密钥，并设置 vscode 也使用 Windows 10 自带的 OpenSSH，而不要用自行安装的ssh。
 
-法三：取消密钥的保护密码。执行命令 ssh-keygen -p 提示新密码时直接回车即可。
+法三：取消ssh密钥的保护密码，执行命令 ssh-keygen -p 提示新密码时直接回车。
 
-## vs code 插件
+## vscode 插件
 
 插件的安装位置为 C:\Users\你的用户名\.vscode\extensions
 
@@ -1752,7 +1752,7 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
         "rgba(18,230,155,255)"
     ],
 
-## VS Code 用的 Python 配套包
+## vscode 用的 Python 配套包
 
 ### 格式化 yapf
 
@@ -1811,7 +1811,7 @@ I recommend this approach rather than using easy_install directly on your Linux/
 virtualenv runsnake
 source runsnake/bin/activate
 
-### vs code python多线程调试的坑
+### vscode python多线程调试的坑
 
     # https://code.visualstudio.com/docs/python/debugging#_troubleshooting
     # If you're working with a multi-threaded app that uses native thread APIs (such as the Win32 CreateThread function rather than the Python threading APIs), it's presently necessary to include the following source code at the top of whichever file you wish to debug:
