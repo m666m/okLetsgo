@@ -8,10 +8,10 @@
     - [git工作流： Gitflow工作流 master -- develop -- feature(开发人员工作在此)](#git工作流-gitflow工作流-master----develop----feature开发人员工作在此)
     - [阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master](#阿里巴巴-aoneflow从master上拉出feature分支相关feature分支合并出release分支最终合入master)
   - [何时使用git而不是svn](#何时使用git而不是svn)
+    - [git分支权限控制、轻量化git服务](#git分支权限控制轻量化git服务)
   - [git 客户端初始化](#git-客户端初始化)
     - [1.ssh客户端的设置](#1ssh客户端的设置)
     - [2.设置 gitub](#2设置-gitub)
-  - [分支权限控制 及 轻量化git服务](#分支权限控制-及-轻量化git服务)
   - [分支的拉取和上传](#分支的拉取和上传)
     - [每日工作第一件事 拉取合并（含标签，变基）](#每日工作第一件事-拉取合并含标签变基)
     - [远程拉取合并本地的pull用法](#远程拉取合并本地的pull用法)
@@ -372,6 +372,19 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
     如果是一个较大的项目，目录众多，管理权限设置分门别类，人员权限各有不同，用svn。
 
+### git分支权限控制、轻量化git服务
+
+Gitolite 基于ssh密钥管理的用户权限控制
+
+    <https://github.com/sitaramc/gitolite>
+    <https://gitolite.com/gitolite/basic-admin.html>
+    <https://zhuanlan.zhihu.com/p/100834900>
+
+轻量化Git服务
+
+    goso  + Jenkins <https://github.com/gogs/gogs/blob/master/README_ZH.md>
+    gitea + Jenkins <https://github.com/go-gitea/>
+
 ## git 客户端初始化
 
 git通过ssh客户端连接github。除了github这样的，私有仓库都需要用户鉴权才能读取文件。
@@ -434,20 +447,6 @@ git colne一个项目，然后查看是否此项目是使用https协议
     # 查看 git config --global --list
     git config --global user.name "m666m"
     git config --global user.email "31643783+m666m@users.noreply.github.com"
-
-
-## 分支权限控制 及 轻量化git服务
-
-Gitolite 基于ssh密钥管理的用户权限控制
-
-    <https://github.com/sitaramc/gitolite>
-    <https://gitolite.com/gitolite/basic-admin.html>
-    <https://zhuanlan.zhihu.com/p/100834900>
-
-轻量化Git服务
-
-    goso  + Jenkins <https://github.com/gogs/gogs/blob/master/README_ZH.md>
-    gitea + Jenkins <https://github.com/go-gitea/>
 
 ## 分支的拉取和上传
 
