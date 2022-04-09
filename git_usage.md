@@ -11,7 +11,7 @@
     - [git分支权限控制、轻量化git服务](#git分支权限控制轻量化git服务)
   - [git 客户端初始化](#git-客户端初始化)
     - [1.ssh客户端的设置](#1ssh客户端的设置)
-    - [2.设置 gitub](#2设置-gitub)
+    - [2.设置 gitub 使用 ssh 密钥方式管理代码库](#2设置-gitub-使用-ssh-密钥方式管理代码库)
   - [分支的拉取和上传](#分支的拉取和上传)
     - [每日工作第一件事 拉取合并（含标签，变基）](#每日工作第一件事-拉取合并含标签变基)
     - [远程拉取合并本地的pull用法](#远程拉取合并本地的pull用法)
@@ -78,13 +78,13 @@
       - [情况2：rebase以后提示同样的错误](#情况2rebase以后提示同样的错误)
     - [掉电导致objects目录下的某些文件为空](#掉电导致objects目录下的某些文件为空)
   - [使用 GPG 签名 Github 提交](#使用-gpg-签名-github-提交)
-      - [1.github网页端添加gpg公钥](#1github网页端添加gpg公钥)
-      - [2.将 GPG 密钥与 Git 关联](#2将-gpg-密钥与-git-关联)
-      - [3.设置gpg程序的路径](#3设置gpg程序的路径)
-      - [4.签名提交](#4签名提交)
-      - [5. 给标签签名](#5-给标签签名)
-      - [6.合并时强制进行签名检查](#6合并时强制进行签名检查)
-      - [6.可选步骤：给Github的GPG公钥签名](#6可选步骤给github的gpg公钥签名)
+    - [1.github网页端添加gpg公钥](#1github网页端添加gpg公钥)
+    - [2.将 GPG 密钥与 Git 关联](#2将-gpg-密钥与-git-关联)
+    - [3.设置gpg程序的路径](#3设置gpg程序的路径)
+    - [4.签名提交](#4签名提交)
+    - [5. 给标签签名](#5-给标签签名)
+    - [6.合并时强制进行签名检查](#6合并时强制进行签名检查)
+    - [7.可选步骤：给Github的GPG公钥签名](#7可选步骤给github的gpg公钥签名)
   - [Github 创建 Pull Request](#github-创建-pull-request)
     - [Pull Request是如何工作的](#pull-request是如何工作的)
     - [例子](#例子)
@@ -409,7 +409,7 @@ git通过ssh客户端连接github。除了github这样的，私有仓库都需�
 
     ssh-copy-id -i ~/.ssh/id_ed25519.pub -p 2345 git@x.x.x.x
 
-### 2.设置 gitub
+### 2.设置 gitub 使用 ssh 密钥方式管理代码库
 
 登陆你的github帐户，点击你的头像，然后 Settings。
 
@@ -1051,7 +1051,6 @@ git clone 命令正常拉取
         git push
 
 11.新的功能分支，从[远程]的主分支拉取建立，开始新的一轮循环。
-
 
 ## 两个分支合并的 merge/rebase 效果
 
@@ -2124,7 +2123,7 @@ head当前是指向最新的那一条记录，所以我们看一下parent commit
 
 <https://zhuanlan.zhihu.com/p/76861431>
 
-#### 1.github网页端添加gpg公钥
+### 1.github网页端添加gpg公钥
 
 github要求gpg密钥的电邮地址使用github页面提示给出的（对于隐藏自己邮件地址） <https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>，所以单独给这个电邮地址新建个github专用的gpg密钥即可，uid设为github用户名'm666m'。
 
@@ -2137,7 +2136,7 @@ github要求gpg密钥的电邮地址使用github页面提示给出的（对于�
 
    github 页面右上角，单击你的头像，Settings—> GPG keys，然后粘贴 GPG key。
 
-#### 2.将 GPG 密钥与 Git 关联
+### 2.将 GPG 密钥与 Git 关联
 
 本地控制台下执行命令
 
@@ -2146,7 +2145,7 @@ github要求gpg密钥的电邮地址使用github页面提示给出的（对于�
     # 或者
     git config user.signingkey FBB74XXXXXXXAE51
 
-#### 3.设置gpg程序的路径
+### 3.设置gpg程序的路径
 
     $ where gpg
         E:\Git\usr\bin\gpg.exe  # 这个是 Git for windows 自带的
@@ -2155,7 +2154,7 @@ github要求gpg密钥的电邮地址使用github页面提示给出的（对于�
     $ git config --global gpg.program "E:\GnuPG\bin\gpg.exe"
     done
 
-#### 4.签名提交
+### 4.签名提交
 
 git commit 使用 -S 参数进行 GPG 签名：
 
@@ -2195,7 +2194,7 @@ git commit 使用 -S 参数进行 GPG 签名：
 
     删除密钥不会取消验证已签名的提交。使用此密钥验证的提交将保持验证状态。
 
-#### 5. 给标签签名
+### 5. 给标签签名
 
 tag命令后跟 -s 参数即可
 
@@ -2215,13 +2214,13 @@ tag命令后跟 -s 参数即可
 
 如果你要验证其他人的 git 标签，需要你导入他的 gpg 公钥。
 
-#### 6.合并时强制进行签名检查
+### 6.合并时强制进行签名检查
 
 需要项目的所有成员都签名了他们的提交，否则只要有一个提交没有签名或验证失败，都会导致合并操作失败。
 
     git merge --verify-signatures -S merged-branch
 
-#### 6.可选步骤：给Github的GPG公钥签名
+### 7.可选步骤：给Github的GPG公钥签名
 
 在Github网页端进行的操作，比如创建仓库。这些commit是由Github代为签名的。
 
@@ -2334,6 +2333,7 @@ tag命令后跟 -s 参数即可
     Date:   Wed Jul 24 15:58:46 2019 +0800
 
         Initial commit
+
 ## Github 创建 Pull Request
 
 Pull Request 是开发者使用 GitHub 进行协作的利器。这个功能为用户提供了友好的页面，让提议的更改在并入官方项目之前，可以得到充分的讨论。
