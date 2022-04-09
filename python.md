@@ -1524,7 +1524,7 @@ vs code + Git for Windows 使用ssh登陆git的服务器，每次pull代码或fe
 
 解决办法
 
-法一： 在 git bash  里运行命令 code 打开 vs code，以便code能读取到 ssh-agent 的环境变量 SSH_AUTH_SOCK 的进程号，就不会问密码了（如果是cmd那个执行start-ssh-agent.cmd的窗口不能关）。
+法一： 在 git bash  里运行命令 code 打开 vs code，以便code能读取到 ssh-agent 的环境变量 SSH_AUTH_SOCK 的进程号，就不会问密码了（如果是cmd执行 start-ssh-agent.cmd 的窗口不能关）。如果需要打开多个 vs code 实例，在任务栏的 vs code 图标右键选择“新窗口”。git bash也可以打开多个，但是如果退出git bash的最后一个实例，记得要关闭code，否则再重新运行git bash时会报错打不开。
 
 法二： 使用 Windows 10 自带的 OpenSSH，打开服务 SSH-AGENT 的自动运行，每次开机后在命令行提示窗口执行 ssh-add 添加你的密钥。
 
