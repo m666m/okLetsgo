@@ -1515,18 +1515,23 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
     https://stackoverflow.com/questions/42707896/vscode-keep-asking-for-passphrase-of-ssh-key
 
-vs code + Git for Windows 使用ssh登陆git的服务器，每次pull代码或fetch代码，都会提问ssh密钥的保护密码。
-特别是如果设置了选项 自动同步（"git.autofetch": true），会频繁提示输入密钥的保护密码，即使你已经
+你已经设置过ssh-agent缓存密钥的密码
 
-    在 git bash 里设置了 ssh-agent 的运行进程并且已经 ssh-add 添加了密钥（bash里ssh登陆不需要输入密码了）
+    在 git bash 窗口里设置了 ssh-agent 的运行进程并且已经 ssh-add 添加了密钥，打开多个bash窗口ssh连接网站时，已经不需要再输入ssh密钥的保护密码了。
 
-    或在 cmd 里运行过 start-ssh-agent.cmd 并且已经添加了密钥
+    或在 cmd 窗口里运行过 start-ssh-agent.cmd 并且已经添加了密钥，在cmd窗口ssh也不需要输入密码了。
+
+问题现象
+
+    vs code + Git for Windows 使用ssh登陆git的服务器，每次pull代码或fetch代码，都会提问ssh密钥的保护密码。特别是如果设置了选项 自动同步（"git.autofetch": true），会频繁提示输入密钥的保护密码。
+
+    点击 vs code 提供的同步功能github会报错密钥验证失败，而你单独打开bash终端窗口运行push、pull成功。
 
 解决办法
 
 法一： 在 git bash  里运行命令 code 打开 vs code，以便code能读取到 ssh-agent 的环境变量 SSH_AUTH_SOCK 的进程号，就不会问密码了（如果是cmd执行 start-ssh-agent.cmd 的窗口不能关）。如果需要打开多个 vs code 实例，在任务栏的 vs code 图标右键选择“新窗口”。git bash也可以打开多个，但是如果退出git bash的最后一个实例，记得要关闭code，否则再重新运行git bash时会报错打不开。
 
-法二： 使用 Windows 10 自带的 OpenSSH，打开服务 SSH-AGENT 的自动运行，每次开机后在命令行提示窗口执行 ssh-add 添加你的密钥。
+法二： 使用 Windows 10 自带的 OpenSSH，打开服务 SSH-AGENT 的自动运行，每次开机后在 power shell 提示窗口执行 ssh-add 添加你的密钥。
 
 法三：取消密钥的保护密码。执行命令 ssh-keygen -p 提示新密码时直接回车即可。
 
