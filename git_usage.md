@@ -2138,8 +2138,6 @@ github要求gpg密钥的电邮地址使用github页面提示给出的（对于�
 
 ### 2.将 GPG 密钥与 Git 关联
 
-本地控制台下执行命令
-
     # FBB74XXXXXXXAE51 是之前gpg生成的uid的密钥指纹，也可以直接写uid如'm666m'
     git config --global user.signingkey FBB74XXXXXXXAE51
     # 或者
