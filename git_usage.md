@@ -2117,11 +2117,11 @@ head当前是指向最新的那一条记录，所以我们看一下parent commit
 
 ## 使用 GPG 签名 Github 提交
 
-<https://cloud.tencent.com/developer/article/1656009?from=article.detail.1531457>
+    https://www.zackwu.com/posts/2019-08-04-how-to-use-gpg-on-github/
 
-<https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>
+    https://cloud.tencent.com/developer/article/1656009?from=article.detail.1531457
 
-<https://zhuanlan.zhihu.com/p/76861431>
+    https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key
 
 ### 1.github网页端添加gpg公钥
 
