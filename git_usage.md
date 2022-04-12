@@ -2149,7 +2149,7 @@ github要求gpg密钥的电邮地址使用github页面提示给出的（对于�
 
     $ where gpg
         E:\Git\usr\bin\gpg.exe  # 这个是 Git for windows 自带的
-        E:\GnuPG\bin\gpg.exe    # 这个是Gnu4Win安装的
+        E:\GnuPG\bin\gpg.exe    # 这个是Gpg4Win安装的
 
     $ git config --global gpg.program "E:\GnuPG\bin\gpg.exe"
     done
