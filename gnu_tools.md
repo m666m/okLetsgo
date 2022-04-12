@@ -183,7 +183,7 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     bind -n WheelUpPane select-pane -t= ; copy-mode -e ; send-keys -M
     bind -n WheelDownPane select-pane -t= ; send-keys -M
 
-### mintty(bash)
+### Windows下 的 bash -- mintty
 
 安装git后就有了，windows下的配置文件 ~\.minttyrc
 
@@ -205,6 +205,10 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
 
 如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"
+
+退出bash时，最好不要直接关闭窗口，使用命令exit或^D。
+
+putty的退出也是同样的建议。
 
 ### 解决 Vim 汉字乱码
 
