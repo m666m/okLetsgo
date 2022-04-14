@@ -204,7 +204,9 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     # LANG 只影响字符的显示语言
     LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
 
-如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"
+如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"。
+
+mintty 下的 /tmp 目录位于 C:\Users\ThinkRight\AppData\Local\Temp。
 
 退出bash时，最好不要直接关闭窗口，使用命令exit或^D。
 
