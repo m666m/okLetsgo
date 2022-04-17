@@ -1177,7 +1177,7 @@ Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7
 
 ### WSL 适用于 Linux 的 Windows 子系统 - 命令行安装 Ubuntu
 
-WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的linux，但是实现了linux程序可以在Windows上运行，但是有些功能如GUI实现的有限制。可以理解成 MingW/Cygwin 的中间层思路，但不是编译时实现，而是运行时。 <https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility>
+WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的linux，但是实现了linux程序可以在Windows上运行，但是有些功能如GUI实现的有限制。可以理解成 MingW/Cygwin 的中间层思路，但不是编译时实现，而是运行时转码这种QEMU的实现思路。 <https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility>
 
 WSL 2 在底层使用虚拟机（Hyper-V）同时运行linux内核和Windows内核，并且把Linux 完全集成到了 Windows 中，即使用起来就像在 Windows 中直接运行 linux 程序。
 
@@ -1627,9 +1627,9 @@ Windows 10 重启之后你将会看到出现一个界面提供选项，选择“
 
 ### 显示器在 Win10 开启 HDR 变灰泛白的原因
 
-在游戏或播放软件里单独设置 HDR 选项就可以了，Windows 操作系统不需要打开 HDR 选项，目前的 Windows 10/11 的桌面并没有很好的适配 HDR 显示器。
+在游戏或播放软件里单独设置 HDR 选项就可以了，Windows 操作系统不需要打开 HDR 选项，目前的 Windows 10/11 的桌面并没有很好的适配当前的 HDR 显示器。
 
-简单来说，为了支持桌面上显示 HDR 软件, 桌面必须声明需求显示器的完整 HDR 亮度范围，因为桌面 UI 本身不能闪瞎人眼，所以桌面 UI 的亮度是低亮度模式。Display HDR400-600 的显示器的 HDR 并没有低亮度细节，所以低亮度部分就发灰了。HDR 和暗部平衡差不多，都可以把暗部细节显示出来，所以看起来就像是亮度调得很高的样子，会泛白。
+简单来说，为了支持桌面上显示 HDR 软件, 桌面必须声明需求显示器的完整 HDR 亮度范围，因为桌面 UI 本身不能闪瞎人眼，所以桌面 UI 的亮度是低亮度模式。而 Display HDR400-600 的显示器的 HDR 并没有低亮度细节，所以低亮度部分就发灰了。HDR 和暗部平衡差不多，都可以把暗部细节显示出来，所以看起来就像是亮度调得很高的样子，会泛白。
 
 这个现象在 FALD/OLED 显示器上是不存在的，仅在 Display HDR400-600 的"假 HDR"显示器上存在。
 

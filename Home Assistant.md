@@ -114,7 +114,7 @@ docker logs 命令用法：<https://docs.docker.com/engine/reference/commandline
 
 门开关感应器：门的打开可以作为触发信号，可以实现主人回家开门则客厅的灯打开、假期出去玩门被打开则自动报警等类似自动化流程。
 
-## QEUM
+## QEMU
 
 [QEMU](https://www.qemu.org/download/)是一种通用的开源计算机仿真器和虚拟器。QEMU共有两种操作模式
 
