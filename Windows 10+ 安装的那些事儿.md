@@ -678,7 +678,8 @@ Windows Registry Editor Version 5.00
 
 ### 为 Windows 10 Enterprise LTSC 增加应用商店
 
-<https://github.com/kkkgo/LTSC-Add-MicrosoftStore>
+    只有2019版 https://github.com/kkkgo/LTSC-Add-MicrosoftStore
+        这个已经更新到2021LTSC版了 https://github.com/GFOXSH/LTSC-Add-MicrosoftStore
 
 要开始安装，请打包下载 LTSC-Add-MicrosoftStore-2019.zip 后用右键管理员运行 Add-Store.cmd
 
@@ -957,7 +958,6 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
     去掉勾选“启用快速启动（推荐）”，然后点击保存修改。
 
     主板BIOS中的FAST BOOT选项也要关闭。
-
 
 ## 备份和恢复选项
 
