@@ -1511,15 +1511,19 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
 <https://github.com/microsoft/vscode-docs/blob/master/remote-release-notes/v1_37.md>
 
-## vscode 在 Windows 下 ssh 的密钥有密码总是提示输入
+## vscode 在 Windows 下 ssh 的密钥一直提示输入保护密码
 
     https://stackoverflow.com/questions/42707896/vscode-keep-asking-for-passphrase-of-ssh-key
 
-你已经设置过ssh-agent缓存密钥的密码
+你已经设置过ssh代理进程缓存密钥的保护密码
 
-    在 git bash 窗口里设置了 ssh-agent 的运行进程并且已经 ssh-add 添加了密钥，打开多个bash窗口ssh连接网站时，已经不需要再输入ssh密钥的保护密码了。
+    在 bash 窗口运行过 ssh-agent 并且已经添加了密钥，ssh连接网站时，已经不需要再输入ssh密钥的保护密码了。
 
-    或在 cmd 窗口里运行过 start-ssh-agent.cmd 并且已经添加了密钥，在cmd窗口ssh也不需要输入密码了。
+    或在 cmd 窗口里运行过 start-ssh-agent.cmd 并且已经添加了密钥，在ssh连接网站也不需要输入ssh密钥的保护密码了。
+
+    或 在 bash 窗口已经运行过 ssh-pageant 代理进程，共享使用了putty pageant的ssh代理功能，在 bash 或 putty 中ssh连接网站都不需要输入ssh密钥的保护密码了。
+
+    或在 cmd 窗口里运行过 start-ssh-pageant.cmd，共享使用了putty pageant的ssh代理功能，在cmd窗口ssh也不需要输入ssh密钥的保护密码了。
 
 问题现象
 
@@ -1529,7 +1533,7 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
 解决办法
 
-法一： 在 git bash  里运行命令 code 打开 vscode，这样会继承环境变量 SSH_AUTH_SOCK，vscode 就不会问密码了（如果是cmd执行 start-ssh-agent.cmd 的窗口不能关）。如果需要打开多个 vscode 实例，在任务栏的 vscode 图标右键选择“新窗口”。git bash也可以打开多个，但是如果退出git bash的最后一个实例，记得要关闭code，否则再重新运行git bash时会报错打不开。
+法一： 在 git bash  里运行命令 code 打开 vscode，这样会继承ssh代理进程设置的环境变量 SSH_AUTH_SOCK，vscode 就不会问密码了（如果是cmd执行 start-ssh-agent.cmd 的窗口不能关）。如果需要打开多个 vscode 实例，在任务栏的 vscode 图标右键选择“新窗口”。git bash也可以打开多个，但是如果退出git bash的最后一个实例，记得要关闭code，否则再重新运行git bash时会报错打不开。
 
 法二： 使用 Windows 10 自带的 OpenSSH，打开服务 SSH-AGENT 的自动运行，每次开机后在 power shell 提示窗口执行 ssh-add 添加你的密钥，并设置 vscode 也使用 Windows 10 自带的 OpenSSH，而不要用自行安装的ssh。
 
