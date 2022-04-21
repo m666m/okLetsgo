@@ -120,15 +120,32 @@ git colne一个项目，然后查看是否此项目是使用https协议
 
     git add .
 
+引入暂存区的目的，是你的修改方便使用 git diff 查看跟之前提交的对比，检验是否正确修改了，而且便于修改回退。
+
+    # 回退暂存区的修改
+    git reset HEAD
+
+    # 从暂存区删除
+    git rm --cached <file>
+
+    # 从暂存区覆盖到工作区
+    git checkout .
+
+    # 从版本库HEAD指向的那个提交，覆盖到暂存区和工作区
+    git checkout HEAD .
+
+    # 回退版本库，详见下面章节
+    git reset xxxxx
+
 git做操作之前或操作之后，查看当前的git状态
 
     git status
 
-提交到版本库
+确认所有的修改都正确之后，提交到版本库
 
     git commit -m '初始化提交'
 
-推送远程仓库见章节 [远程仓库拉取和推送的各种情况]
+版本库推送远程仓库见章节 [远程仓库拉取和推送的各种情况]
 
 ### 从本地仓库推送远程仓库
 
@@ -1359,97 +1376,7 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
 ## git 常用法
 
-### 创建常用命令的别名
-
-常用的较长的git命令应该使用git或者bash别名
-
-例如，在我的.bashrc文件中有下面的词条：
-
-Alias glog=”git log –oneline -graph”，允许我使用glog代替长命令
-
-### 查看尚未合并的变更
-
-如果你曾经与很多小伙伴工作在同一个持久分支上，也许会有这样的经历，父分支（例如：master）上的大量合并同步到你当前的分支。这使得我们很难分辨哪些变更时发生主分支，哪些变更发生在当前分支，尚未合并到master分支。
-
-    git log --no-merges master..
-
---no-merges 标志意味着只显示没有合并到任何分支的变更，
-master..选项，意思是指显示没有合并到master分支的变更（在master后面必须有..）。
-
-查看一下尚未合并的文件变更
-
-    git show --no-merges master..
-    # 输出结果相同
-    git log -p --no-merges master..
-
-### 快速定位故障版本
-
-git bisect 使用分治算法查找出错版本号。
-
-假设休假一周回来，你看了一下最新代码，发现走之前完全正常的代码现在出问题了。
-
-你查看了一下休假之前最后一次提交的代码，功能尚且正常。不幸的是，你离开的这段时间，已经有上百次提交记录，你无法找到那一次提交导致了这个问题。
-
-这时你或许想找到破坏功能的bug，然后对该文件使用git blame 命令，找出并指责破坏者。
-
-如果bug很难定位，那么或许你可以去看一下提交历史，试一下看能不能找到出问题的版本。
-
-另一种快捷的方式则是使用git bisect，可以快速找到出问题的版本。
-
-那么git bitsect是如何做的呢？
-
-指定了已知的正常版本和问题版本之后，git bisectit bisect会把指定范围内的提交信息从中间一分为二，并会根据最中间的提交信息创建一个新的分支， 你可以检查这个版本是否有问题。
-
-假设这个中间版本依然可以正常运行。你可以通过git bisect good命令告诉git。然后，你就只有剩下的一半的版本需要测试。
-
-Git会继续分割剩下的版本，将中间版本再次到处让你测试。
-
-Git bisect会继续用相似的方式缩小版本查找范围，直到第一个出问题的版本被找到。
-
-因为你每次将版本分为两半，所以可以用log(n)次查找到问题版本（时间复杂度为“big O”，非常快）。
-
-运行整个git bisect的过程中你会用到的所有命令如下：
-
- 1. git bisect start ——通知git你开始二分查找。
- 2. git bisect good {{some-commit-hash}} ——反馈给git 这个版本是没有问题的（例如：你休假之前的最后一个版本）。
- 3. git bisect bad {{some-commit-hash}} ——告诉git 已知的有问题的版本（例如master分支中的HEAD）。git bisect bad HEAD （HEAD 代表最新版本）。
- 4. 这时git 会签出中间版本，并告诉你去测试这个版本。
- 5. git bisect bad ——通知git当前版本是问题版本。
- 6. git bisect good ——通知git当前签出的版本没有问题。
- 7. 当找到第一个问题版本后，git会告诉你。这时， git bisect 结束了。
- 8. git bisect reset——返回到 git bisect进程的初始状态（例如，master分支的HEAD版本）。
- 9. git bisect log ——显示最后一次完全成功的 git bisect日志。
-
-你也可以给git bisect提供一个脚本，自动执行这一过程 <http://git-scm.com/docs/git-bisect#_bisect_run>
-
-### 从远程库删除某些文件但保留本地的文件
-
-有时我们会误把一些不必要的文件（如目标文件、log 日志等）提交并推送到了远程库，现在希望从远程库删除这些文件但保留本地的文件，可以像这样 执行：
-
-    git rm -r --cached dir1
-    git rm --cached dir2/*.pyc
-
-    git commit -m "remove irrelated files"
-    git push origin branch1
-
-### 彻底删除git中的大文件
-
-git 如果提交一个文件，然后删除他，继续提交，那么这个文件是存在 git 中，需要使用特殊的命令才可以删除。.git主要记录每次提交变动，当我们的项目越来越大的时候，我们发现 .git文件越来越大
-
-很大的可能是因为提交了大文件，如果你提交了大文件，那么即使你在之后的版本中将其删除，但是，
-实际上，记录中的大文件仍然存在。
-
-虽然你在后面的版本中删除了大文件，但是Git是有版本倒退功能的吧，那么如果大文件不记录下来，git拿什么来给你回退呢？但是，.git文件越来越大导致的问题是： 每次拉项目都要耗费大量的时间，并且每个人都要花费
-那么多的时间。
-
-git给出了解决方案，使用git branch-filter来遍历git history tree, 可以永久删除history中的大文件，达到让.git文件瘦身的目的。 <https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/removing-sensitive-data-from-a-repository>
-
-### 配置Beyond Compare 4作为git mergetool
-
-<https://blog.csdn.net/albertsh/article/details/106294095>
-<https://blog.csdn.net/LeonSUST/article/details/103565031>
-
-### 如何使用标签 tag
+### 使用标签 tag
 
 标签总是和某个commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，那么在这两个分支上都可以看到这个标签。
 
@@ -1489,7 +1416,7 @@ git给出了解决方案，使用git branch-filter来遍历git history tree, 可
 
     git checkout -b fea_xxx v2.0.0
 
-### 如何使用储藏 stash
+### 使用储藏 stash
 
 当在一个分支的开发工作未完成，却又要切换到另外一个hotfix分支进行开发的时候，当前的分支不commit的话git不允许checkout到别的分支，而代码功能不完整随便commit是没有意义的。
 
@@ -1836,6 +1763,96 @@ committed to your local repository.
     git cherry-pick B3
 
     # 最终的开发分支内容是 A1 - B1 - B2 - B3
+
+### 创建常用命令的别名
+
+常用的较长的git命令应该使用git或者bash别名
+
+例如，在我的.bashrc文件中有下面的词条：
+
+Alias glog=”git log –oneline -graph”，允许我使用glog代替长命令
+
+### 查看尚未合并的变更
+
+如果你曾经与很多小伙伴工作在同一个持久分支上，也许会有这样的经历，父分支（例如：master）上的大量合并同步到你当前的分支。这使得我们很难分辨哪些变更时发生主分支，哪些变更发生在当前分支，尚未合并到master分支。
+
+    git log --no-merges master..
+
+--no-merges 标志意味着只显示没有合并到任何分支的变更，
+master..选项，意思是指显示没有合并到master分支的变更（在master后面必须有..）。
+
+查看一下尚未合并的文件变更
+
+    git show --no-merges master..
+    # 输出结果相同
+    git log -p --no-merges master..
+
+### 快速定位故障版本
+
+git bisect 使用分治算法查找出错版本号。
+
+假设休假一周回来，你看了一下最新代码，发现走之前完全正常的代码现在出问题了。
+
+你查看了一下休假之前最后一次提交的代码，功能尚且正常。不幸的是，你离开的这段时间，已经有上百次提交记录，你无法找到那一次提交导致了这个问题。
+
+这时你或许想找到破坏功能的bug，然后对该文件使用git blame 命令，找出并指责破坏者。
+
+如果bug很难定位，那么或许你可以去看一下提交历史，试一下看能不能找到出问题的版本。
+
+另一种快捷的方式则是使用git bisect，可以快速找到出问题的版本。
+
+那么git bitsect是如何做的呢？
+
+指定了已知的正常版本和问题版本之后，git bisectit bisect会把指定范围内的提交信息从中间一分为二，并会根据最中间的提交信息创建一个新的分支， 你可以检查这个版本是否有问题。
+
+假设这个中间版本依然可以正常运行。你可以通过git bisect good命令告诉git。然后，你就只有剩下的一半的版本需要测试。
+
+Git会继续分割剩下的版本，将中间版本再次到处让你测试。
+
+Git bisect会继续用相似的方式缩小版本查找范围，直到第一个出问题的版本被找到。
+
+因为你每次将版本分为两半，所以可以用log(n)次查找到问题版本（时间复杂度为“big O”，非常快）。
+
+运行整个git bisect的过程中你会用到的所有命令如下：
+
+ 1. git bisect start ——通知git你开始二分查找。
+ 2. git bisect good {{some-commit-hash}} ——反馈给git 这个版本是没有问题的（例如：你休假之前的最后一个版本）。
+ 3. git bisect bad {{some-commit-hash}} ——告诉git 已知的有问题的版本（例如master分支中的HEAD）。git bisect bad HEAD （HEAD 代表最新版本）。
+ 4. 这时git 会签出中间版本，并告诉你去测试这个版本。
+ 5. git bisect bad ——通知git当前版本是问题版本。
+ 6. git bisect good ——通知git当前签出的版本没有问题。
+ 7. 当找到第一个问题版本后，git会告诉你。这时， git bisect 结束了。
+ 8. git bisect reset——返回到 git bisect进程的初始状态（例如，master分支的HEAD版本）。
+ 9. git bisect log ——显示最后一次完全成功的 git bisect日志。
+
+你也可以给git bisect提供一个脚本，自动执行这一过程 <http://git-scm.com/docs/git-bisect#_bisect_run>
+
+### 从远程库删除某些文件但保留本地的文件
+
+有时我们会误把一些不必要的文件（如目标文件、log 日志等）提交并推送到了远程库，现在希望从远程库删除这些文件但保留本地的文件，可以像这样 执行：
+
+    git rm -r --cached dir1
+    git rm --cached dir2/*.pyc
+
+    git commit -m "remove irrelated files"
+    git push origin branch1
+
+### 彻底删除git中的大文件
+
+git 如果提交一个文件，然后删除他，继续提交，那么这个文件是存在 git 中，需要使用特殊的命令才可以删除。.git主要记录每次提交变动，当我们的项目越来越大的时候，我们发现 .git文件越来越大
+
+很大的可能是因为提交了大文件，如果你提交了大文件，那么即使你在之后的版本中将其删除，但是，
+实际上，记录中的大文件仍然存在。
+
+虽然你在后面的版本中删除了大文件，但是Git是有版本倒退功能的吧，那么如果大文件不记录下来，git拿什么来给你回退呢？但是，.git文件越来越大导致的问题是： 每次拉项目都要耗费大量的时间，并且每个人都要花费
+那么多的时间。
+
+git给出了解决方案，使用git branch-filter来遍历git history tree, 可以永久删除history中的大文件，达到让.git文件瘦身的目的。 <https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/removing-sensitive-data-from-a-repository>
+
+### 配置Beyond Compare 4作为git mergetool
+
+<https://blog.csdn.net/albertsh/article/details/106294095>
+<https://blog.csdn.net/LeonSUST/article/details/103565031>
 
 ## git HEAD / HEAD^ / HEAD~ 的含义
 
