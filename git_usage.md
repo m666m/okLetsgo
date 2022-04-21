@@ -1,97 +1,4 @@
-# 常用git操作及参考文档
-
-- [常用git操作及参考文档](#常用git操作及参考文档)
-  - [参考文档](#参考文档)
-    - [git工作流：类似svn的TrunkBased集中式工作流 remote master -- local master(开发人员工作在此)](#git工作流类似svn的trunkbased集中式工作流-remote-master----local-master开发人员工作在此)
-    - [git工作流：改良版集中式工作流 remote master -- local dev(开发人员工作在此)](#git工作流改良版集中式工作流-remote-master----local-dev开发人员工作在此)
-    - [git工作流： 功能分支工作流 master -- dev(开发人员工作在此)](#git工作流-功能分支工作流-master----dev开发人员工作在此)
-    - [git工作流： Gitflow工作流 master -- develop -- feature(开发人员工作在此)](#git工作流-gitflow工作流-master----develop----feature开发人员工作在此)
-    - [阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master](#阿里巴巴-aoneflow从master上拉出feature分支相关feature分支合并出release分支最终合入master)
-  - [何时使用git而不是svn](#何时使用git而不是svn)
-    - [git分支权限控制、轻量化git服务](#git分支权限控制轻量化git服务)
-  - [git 客户端初始化](#git-客户端初始化)
-    - [1.ssh客户端的设置](#1ssh客户端的设置)
-    - [2.设置 gitub 使用 ssh 密钥方式管理代码库](#2设置-gitub-使用-ssh-密钥方式管理代码库)
-  - [分支的拉取和上传](#分支的拉取和上传)
-    - [每日工作第一件事 拉取合并（含标签，变基）](#每日工作第一件事-拉取合并含标签变基)
-    - [远程拉取合并本地的pull用法](#远程拉取合并本地的pull用法)
-    - [git fetch 和 git pull的区别](#git-fetch-和-git-pull的区别)
-      - [本地的两份代码--本地仓库和远程仓库](#本地的两份代码--本地仓库和远程仓库)
-      - [git pull把2个过程合并，减少了操作](#git-pull把2个过程合并减少了操作)
-    - [添加多个远程仓库](#添加多个远程仓库)
-    - [git clone支持多种协议](#git-clone支持多种协议)
-    - [拉取指定版本](#拉取指定版本)
-      - [拉取指定分支的指定commit版本](#拉取指定分支的指定commit版本)
-    - [远程仓库拉取和推送的各种情况](#远程仓库拉取和推送的各种情况)
-      - [git clone之后的第一次pull和push](#git-clone之后的第一次pull和push)
-      - [本地空目录，远程裸仓库里有文件](#本地空目录远程裸仓库里有文件)
-      - [本地空目录，拉取远程刚建好的空白裸仓库](#本地空目录拉取远程刚建好的空白裸仓库)
-      - [本地空目录，仅拉取指定远程分支的用法](#本地空目录仅拉取指定远程分支的用法)
-      - [本地非空目录，拉取远程非空裸仓库](#本地非空目录拉取远程非空裸仓库)
-      - [本地非空目录，远程仓库无本地分支的push用法](#本地非空目录远程仓库无本地分支的push用法)
-    - [其它分支管理](#其它分支管理)
-      - [git checkout 切换其他分支](#git-checkout-切换其他分支)
-      - [删除分支，远程/本地](#删除分支远程本地)
-  - [合并两分支时该如何选择菱形还是拉直](#合并两分支时该如何选择菱形还是拉直)
-    - [原则](#原则)
-    - [方法](#方法)
-    - [示例](#示例)
-  - [两个分支合并的 merge/rebase 效果](#两个分支合并的-mergerebase-效果)
-    - [merge 默认做快进合并](#merge-默认做快进合并)
-    - [merge --no-ff 强行保留菱形分叉](#merge---no-ff-强行保留菱形分叉)
-    - [merge --squash压缩为一个commit点合并](#merge---squash压缩为一个commit点合并)
-    - [分叉的强行拉直用变基 rebase，不制造新commit点](#分叉的强行拉直用变基-rebase不制造新commit点)
-    - [rebase 变基在日常工作的用途](#rebase-变基在日常工作的用途)
-      - [一.你的功能分支拉取远程时要做变基](#一你的功能分支拉取远程时要做变基)
-      - [二. 两分支合并，出现菱形分叉，需要拉直时，用rebase](#二-两分支合并出现菱形分叉需要拉直时用rebase)
-      - [三.本地功能分支在合并到别的分支前压扁提交](#三本地功能分支在合并到别的分支前压扁提交)
-  - [开发分支不要多制作commit点，用 commit --amend 压缩](#开发分支不要多制作commit点用-commit---amend-压缩)
-  - [git rebase -i 交互式合并commit](#git-rebase--i-交互式合并commit)
-    - [注意【仅在本地分支 尚未推送或合并过的代码上做 合并commit 的操作】](#注意仅在本地分支-尚未推送或合并过的代码上做-合并commit-的操作)
-    - [示例](#示例-1)
-    - [第一次做的时候遇到问题了： 622c01c没关联到 fea_stragy 分支](#第一次做的时候遇到问题了-622c01c没关联到-fea_stragy-分支)
-  - [git 常用法](#git-常用法)
-    - [创建常用命令的别名](#创建常用命令的别名)
-    - [查看尚未合并的变更](#查看尚未合并的变更)
-    - [快速定位故障版本](#快速定位故障版本)
-    - [从远程库删除某些文件但保留本地的文件](#从远程库删除某些文件但保留本地的文件)
-    - [彻底删除git中的大文件](#彻底删除git中的大文件)
-    - [配置Beyond Compare 4作为git mergetool](#配置beyond-compare-4作为git-mergetool)
-    - [如何使用标签 tag](#如何使用标签-tag)
-    - [如何使用储藏 stash](#如何使用储藏-stash)
-      - [找回误删的 stash 数据](#找回误删的-stash-数据)
-    - [补丁神器 cherry-pick](#补丁神器-cherry-pick)
-    - [git diff 的多种用法](#git-diff-的多种用法)
-      - [没点，俩点，仨点的区别](#没点俩点仨点的区别)
-    - [如何回退版本](#如何回退版本)
-      - [发现最近的提交不对路，回退到上个提交，以便修改](#发现最近的提交不对路回退到上个提交以便修改)
-      - [签出指定文件](#签出指定文件)
-      - [自己的分支硬回退例子](#自己的分支硬回退例子)
-      - [远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1](#远程仓库上有b先生新增提交了然后你却回退了远程仓库到a1)
-  - [git HEAD / HEAD^ / HEAD~ 的含义](#git-head--head--head-的含义)
-    - [HEAD](#head)
-    - [HEAD~{n}](#headn)
-    - [HEAD^n](#headn-1)
-  - [常见问题](#常见问题)
-    - [Your branch and 'origin/xxx' have diverged](#your-branch-and-originxxx-have-diverged)
-      - [情况1： Git fetch 、merge以后出现分叉](#情况1-git-fetch-merge以后出现分叉)
-      - [情况2：rebase以后提示同样的错误](#情况2rebase以后提示同样的错误)
-    - [掉电导致objects目录下的某些文件为空](#掉电导致objects目录下的某些文件为空)
-  - [使用 GPG 签名 Github 提交](#使用-gpg-签名-github-提交)
-    - [1.github网页端添加gpg公钥](#1github网页端添加gpg公钥)
-      - [github不发布公钥](#github不发布公钥)
-    - [2.将 GPG 密钥与 Git 关联](#2将-gpg-密钥与-git-关联)
-    - [3.设置gpg程序的路径](#3设置gpg程序的路径)
-    - [4.签名提交](#4签名提交)
-    - [5. 给标签签名](#5-给标签签名)
-    - [6.合并时强制进行签名检查](#6合并时强制进行签名检查)
-    - [7.可选步骤：给Github的GPG公钥签名](#7可选步骤给github的gpg公钥签名)
-  - [Github 创建 Pull Request](#github-创建-pull-request)
-    - [Pull Request是如何工作的](#pull-request是如何工作的)
-    - [例子](#例子)
-      - [Mary创建了一个Pull Request](#mary创建了一个pull-request)
-      - [John审查了这个Pull Request](#john审查了这个pull-request)
-      - [John 接受了 Pull Request](#john-接受了-pull-request)
+# git 源代码分支管理
 
 ## 参考文档
 
@@ -116,6 +23,97 @@
 
     git分支的使用过程 <https://zhuanlan.zhihu.com/p/22369088>
     Git 之 merge 与 rebase 的区别 <https://www.cnblogs.com/zhangzhang-y/p/13682281.html>
+
+## 何时使用git而不是svn
+
+因为git就是给开源准备的，适合开源方式开发的就适合用git。
+
+    源代码、配置文件等文本文件占比大的项目，用git，少量的二进制文件可以用 git-lfs 管理。
+
+    二进制文件较多的项目，比如游戏、艺术、摄影等，用svn更合适。
+
+    如果是一个较大的项目，目录众多，管理权限设置分门别类，人员权限各有不同，用svn。
+
+## 基本概念
+
+程序开发，大部分都是在处理源代码这种文本文档，期间会对同一文件反复修改，为记录变更，便于回溯，版本控制软件专门处理这种工作。
+
+### git 分支管理
+
+### Git 工作区、暂存区和版本库
+
+我们先来理解下Git 工作区、暂存区和版本库概念
+
+工作区：就是你在电脑里能看到的目录。
+暂存区：英文叫stage, 或index。一般存放在"git目录"下的index文件（.git/index）中，所以我们把暂存区有时也叫作索引（index）。
+版本库：工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库。
+
+## git 客户端初始化
+
+git通过ssh客户端连接github。除了github这样的，私有仓库都需要用户鉴权才能读取文件。
+
+    https://git-scm.com/download/win
+        https://github.com/git-for-windows/git/
+
+### 1.ssh客户端的设置
+
+生成 ssh key 文件，默认回答都是一路回车
+
+    ssh-keygen -t ed25519
+
+如果 ~/.ssh 目录是手工复制的，需要设置权限
+
+    cd ~
+
+    # 设置.ssh目录权限
+    chmod 700 -R .ssh
+
+添加本机用户的公钥到远程仓库git用户的认证密钥文件中，以便后续ssh免密登陆
+
+    ssh-copy-id -i ~/.ssh/id_ed25519.pub -p 2345 git@x.x.x.x
+
+### 2.设置 gitub 使用 ssh 密钥方式管理代码库
+
+登陆你的github帐户，点击你的头像，然后 Settings。
+
+-> 左栏点击 Emails -> 右侧页面勾选 “Keep my email addresses private”、 “Block command line pushes that expose my email”、“Only receive account related emails, and those I subscribe to.”。 复制页面中提示的 noreply 电邮地址，后面要用。
+
+-> 左栏点击 SSH and GPG keys -> 点击 New SSH key
+
+在你本地机器登陆账户的主目录下的 ~/.ssh 目录，复制下面的文件内容粘贴进去
+
+    cat ~/.ssh/id_ed25519.pub
+
+git colne一个项目，然后查看是否此项目是使用https协议
+
+    git remote -v
+
+    # 改为 git 协议
+    git remote set-url origin git@github.com:m666m/yourproject.git
+
+验证：
+
+    # 如果超时，就多试几次，国内的网络环境太差
+    $ ssh -T git@github.com
+    Received disconnect from 20.205.243.166 port 22:11: Bye Bye
+    Disconnected from 20.205.243.166 port 22
+
+    # 如果你在已有的github项目目录下，是这个提示
+    $ ssh -T git@github.com
+    Hi m666m! You've successfully authenticated, but GitHub does not provide shell access.
+
+    # 登陆问题排查
+    ssh -v git@github.com
+
+如果未设置过git用户名和邮箱，注意填写前面复制的 github 的 noreply 电邮地址。
+
+    # 查看 git config --global --list
+    git config --global user.name "m666m"
+    git config --global user.email "31643783+m666m@users.noreply.github.com"
+
+## 使用git的各种工作流程方案
+
+思路太灵活了，大家根据自己实际情况，用法各有不同。
 
 ### git工作流：类似svn的TrunkBased集中式工作流 remote master -- local master(开发人员工作在此)
 
@@ -363,92 +361,6 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
     特性分支与发布分支的关联关系维护有点复杂。最好是在一个整体流程的自动化的平台下管理维护，该平台实现从需求提出，功能拆分，创建feature分支，组合release分支，生成部署环境，创建测试流水线，代码审查流水线，安全检查，在线部署等一系列步骤的自动化，最终实现端到端交付的研发自动化体系。
 
-## 何时使用git而不是svn
-
-因为git就是给开源准备的，适合开源方式开发的就适合用git。
-
-    源代码、配置文件等文本文件占比大的项目，用git，少量的二进制文件可以用 git-lfs 管理。
-
-    二进制文件较多的项目，比如游戏、艺术、摄影等，用svn更合适。
-
-    如果是一个较大的项目，目录众多，管理权限设置分门别类，人员权限各有不同，用svn。
-
-### git分支权限控制、轻量化git服务
-
-Gitolite 基于ssh密钥管理的用户权限控制
-
-    <https://github.com/sitaramc/gitolite>
-    <https://gitolite.com/gitolite/basic-admin.html>
-    <https://zhuanlan.zhihu.com/p/100834900>
-
-轻量化Git服务
-
-    goso  + Jenkins <https://github.com/gogs/gogs/blob/master/README_ZH.md>
-    gitea + Jenkins <https://github.com/go-gitea/>
-
-## git 客户端初始化
-
-git通过ssh客户端连接github。除了github这样的，私有仓库都需要用户鉴权才能读取文件。
-
-    https://git-scm.com/download/win
-        https://github.com/git-for-windows/git/
-
-### 1.ssh客户端的设置
-
-生成 ssh key 文件，默认回答都是一路回车
-
-    ssh-keygen -t ed25519
-
-如果 ~/.ssh 目录是手工复制的，需要设置权限
-
-    cd ~
-
-    # 设置.ssh目录权限
-    chmod 700 -R .ssh
-
-添加本机用户的公钥到远程仓库git用户的认证密钥文件中，以便后续ssh免密登陆
-
-    ssh-copy-id -i ~/.ssh/id_ed25519.pub -p 2345 git@x.x.x.x
-
-### 2.设置 gitub 使用 ssh 密钥方式管理代码库
-
-登陆你的github帐户，点击你的头像，然后 Settings。
-
--> 左栏点击 Emails -> 右侧页面勾选 “Keep my email addresses private”、 “Block command line pushes that expose my email”、“Only receive account related emails, and those I subscribe to.”。 复制页面中提示的 noreply 电邮地址，后面要用。
-
--> 左栏点击 SSH and GPG keys -> 点击 New SSH key
-
-在你本地机器登陆账户的主目录下的 ~/.ssh 目录，复制下面的文件内容粘贴进去
-
-    cat ~/.ssh/id_ed25519.pub
-
-git colne一个项目，然后查看是否此项目是使用https协议
-
-    git remote -v
-
-    # 改为 git 协议
-    git remote set-url origin git@github.com:m666m/yourproject.git
-
-验证：
-
-    # 如果超时，就多试几次，国内的网络环境太差
-    $ ssh -T git@github.com
-    Received disconnect from 20.205.243.166 port 22:11: Bye Bye
-    Disconnected from 20.205.243.166 port 22
-
-    # 如果你在已有的github项目目录下，是这个提示
-    $ ssh -T git@github.com
-    Hi m666m! You've successfully authenticated, but GitHub does not provide shell access.
-
-    # 登陆问题排查
-    ssh -v git@github.com
-
-如果未设置过git用户名和邮箱，注意填写前面复制的 github 的 noreply 电邮地址。
-
-    # 查看 git config --global --list
-    git config --global user.name "m666m"
-    git config --global user.email "31643783+m666m@users.noreply.github.com"
-
 ## 分支的拉取和上传
 
 ### 每日工作第一件事 拉取合并（含标签，变基）
@@ -682,16 +594,17 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
 <https://www.w3cschool.cn/git/git-uroc2pow.html>
 Git协议下载速度最快，SSH协议用于需要用户认证的场合。
 
-    git clone git://example.com/path/to/repo.git
-    git clone [user@]example.com:port/path/to/repo.git
+    git clone git://example.com/path/to/repo.git [默认当前目录]
 
     git clone ssh://[user@]example.com:port/path/to/repo.git
+    git clone [user@]example.com:port/path/to/repo.git
 
     git clone http[s]://example.com/path/to/repo.git
     git clone http://git.oschina.net/yiibai/sample.git
 
     git clone /opt/git/project.git
     git clone file:///opt/git/project.git
+
     git clone ftp[s]://example.com/path/to/repo.git
     git clone rsync://example.com/path/to/repo.git
 
