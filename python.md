@@ -1003,6 +1003,15 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
     # conda 环境的配置信息，便于对照
     conda info
 
+    # 查看当前环境的变量指向配置文件
+    (base) C:\Users\xxxx>pip config list -v
+    For variant 'global', will try loading 'C:\ProgramData\pip\pip.ini'
+    For variant 'user', will try loading 'C:\Users\xxxx\pip\pip.ini'
+    For variant 'user', will try loading 'C:\Users\xxxx\AppData\Roaming\pip\pip
+    .ini'
+    For variant 'site', will try loading 'C:\ProgramData\Anaconda3\pip.ini'
+    global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
+
 #### 确认 site.py 的位置是否跟随环境
 
     # 配置文件位置
