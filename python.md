@@ -182,7 +182,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     # 切换到base环境(conda/virtualenv等)
     conda activate
 
-    # base 环境下自带的 pip 不要更新
+    # NOTE: base 环境下自带的 pip 不要更新
     # 临时使用国内镜像，更新pip自身
     # pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
 
@@ -371,11 +371,15 @@ virtualenv 创建虚拟环境的时候，会把系统Python复制一份到虚拟
 
 2.选择了“给所有用户安装”时，新建环境如[p37]会保存在C:\ProgramData\Anaconda3\envs\p37，不选则保存在 C:\Users\xxxx\.conda\envs\p37，相应的python、pip位置也会跟随变化。
 
-3.安装完毕后，先打开anaconda-navigator，切换到base环境，界面反应很慢，多等等，不要着急切换。后台脚本一直在远程下载处理，要执行一堆初始化工作，不是光setup.exe安装完了就可以了。。。
+3.安装完毕后，换清华源，参见下面章节[conda频道和源配置]，然后打开anaconda-navigator，切换到base环境，界面反应很慢，多等等，不要着急切换。后台脚本一直在远程下载处理，要执行一堆初始化工作，不是光setup.exe安装完了就可以了。。。
 
-4.anaconda换清华源，参见下面章节[conda频道和源配置]
+4.初始化conda的那些管理类命令，要使用cmd窗口执行
 
-5.pip更换国内源，详见上面章节 [PyPI使用国内源]
+初始化conda的的操作修改变量等，实质执行的 conda 命令在Windows下是各种bat文件，所以应该在cmd窗口里，在base环境下执行初始化的相关命令。
+
+如果在安装时选择了给所有用户安装，则要操作的默认根环境在C:\ProgramData\Anaconda3这个目录，在环境列表中名叫[base]（不要往base环境里添加包），所以要用管理员权限执行Anaconda在开始菜单的快捷方式'Anaconda Prompt'的cmd窗口。如果单独打开windows的cmd窗口，也要用管理员权限执行，进入cmd窗口后，还要先执行`conda activate`进入[base]环境，然后执行那些 conda 初始化相关的命令。
+
+5.pip更换国内源，详见上面章节 [PyPI使用国内源]。
 
 x.不推荐更新 conda。如果想更新包，仅在自己的虚拟环境里更新指定的包。
 
@@ -463,19 +467,13 @@ windows下python按[TAB]出现报错：
 
     <https://www.anaconda.com/blog/using-pip-in-a-conda-environment>
 
-所以稳妥的办法是
+### Anaconda多环境最佳方案
 
-    Anaconda 安装完毕后，先对各个版本建立虚拟环境，但是不要做操作，比如更新包、修改pip包的默认下载路径等。
+Anaconda 安装完毕后，先对各个版本建立虚拟环境如b37、b38，但是不要做操作，比如更新包、修改pip包的默认下载路径等。
 
-    有了第一个基础版本的python环境之后，再建立针对具体项目的虚拟环境，在这个虚拟环境里进行conda/pip包的安装和更新。
+有了第一个基础版本的python环境之后，再建立针对具体项目的虚拟环境如p37、p38，在这个虚拟环境里修改pip包的默认下载路径、进行conda/pip包的安装和更新等操作。
 
 注意： 见下面章节 [conda/pip 操作前务必先检查当前环境中 conda/pip/python 的路径]
-
-conda的环境操作类设置，因为要操作C:\ProgramData\Anaconda3（这个目录是默认的root环境，在环境列表中名叫[base]，尽量不要往base环境里添加包），所以要用管理员权限执行annconda安装后自带的命令行工具。如果单独打开windows的cmd窗口（管理员权限执行），则先执行 conda activate进入[base]环境。
-
-注意
-
-    conda 命令在Windows下是一堆的bat文件，执行了各种变量设置和传递，应该cmd窗口在base环境下执行conda命令。
 
 ### 命令行工具使用conda环境
 
