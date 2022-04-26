@@ -1668,6 +1668,10 @@ Windows 10 重启之后你将会看到出现一个界面提供选项，选择“
 
 注意：无法在 Windows 里操作自己的启动盘，得启动到u盘或者别的系统里操作这个磁盘，而且这个磁盘的内容会被完全清除！
 
+### 如何判断 USB Type-C 口有哪些功能
+
+    <https://www.asus.com.cn/support/FAQ/1042843>
+
 ### Windows 7/10 远程桌面报错的解决办法
 
 windows 7 之后微软把远程桌面做了比较大的变动
@@ -1722,6 +1726,16 @@ Windows Registry Editor Version 5.00
 "AllowEncryptionOracle"=dword:00000002
 ```
 
+#### 远程桌面的开始菜单没有关机键
+
+cmd窗口执行命令
+
+    # 立刻关机
+    shutdown -s -t 0
+
+    # 立刻重启
+    shutdown -r -t 0
+
 ### 乱七八糟的 .NET Framework 各版本安装
 
 .NET Framework 4.x 号称是互相覆盖的，版本继承性可以延续。
@@ -1747,7 +1761,3 @@ M$不支持了，自求多福吧，自己挨个版本研究去 <https://docs.mic
     使用来自不同 Windows 操作系统版本的源将安装与 .NET Framework 3.5 不匹配的版本，或导致安装失败，使系统处于不受支持和无法提供服务的状态。
 
 也就是说，弄个 3.5 的离线安装包，在 Windows 10 下面可能不能用。
-
-### 如何判断 USB Type-C 口有哪些功能
-
-    <https://www.asus.com.cn/support/FAQ/1042843>
