@@ -1708,15 +1708,19 @@ KB4103718 如果运行时报告无法安装，先运行自带的那个 pciclears
 
 修改以后在运行里面输入gpupdate更新策略。
 
-如果客户端是 Windows 7，组策略里没有 【加密 Oracle 修正】 选项：
+如果客户端是 Windows 7，组策略里没有 【加密 Oracle 修正】 选项，先确认方法一的两个补丁是否没装全。
 
-请先创建一个add.txt文件,将如下代码添加到文件保存,保存后将txt后缀更改为reg,然后双击add.reg导入到注册表重启电脑即可
+如果都安装了还是没显示该选项，做如下操作：
 
+请先创建一个add.txt文件,将如下代码添加到文件保存,保存后将txt后缀更改为reg,然后双击add.reg导入到注册表重启电脑即可。
+
+```regedit
 Windows Registry Editor Version 5.00
 
 [HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\CredSSP\Parameters]
 
 "AllowEncryptionOracle"=dword:00000002
+```
 
 ### 乱七八糟的 .NET Framework 各版本安装
 
