@@ -1674,9 +1674,9 @@ Windows 10 重启之后你将会看到出现一个界面提供选项，选择“
 
 ### Windows 7/10 远程桌面报错的解决办法
 
-windows 7 之后微软把远程桌面做了比较大的变动
+Windows 7 之后微软把远程桌面做了比较大的变动
 
-因为windows更新自动升级，有几个补丁包不是必需安装，导致远程桌面报错无法使用，用户摸不到头脑，其实是微软没有明确告知这个变动导致的混淆。
+因为Windows更新自动升级，有几个补丁包不是必需安装，导致远程桌面报错无法使用，用户摸不到头脑，其实是微软没有明确告知这个变动导致的混淆。
 
 #### 报错：无法连接
 
@@ -1694,7 +1694,7 @@ windows 7 之后微软把远程桌面做了比较大的变动
 
 #### “身份验证错误，要求的函数不受支持”
 
-这是由于本地客户端或远程服务器端只有一方更新了CVE-2018-0886 的 CredSSP 补丁 KB4103718、KB4103712 ，而另外一方未安装更新的原因导致的，详见：<https://msrc.microsoft.com/update-guide/zh-cn/vulnerability/CVE-2018-0886>
+这是由于本地客户端或远程服务器端只有一方更新了CVE-2018-0886 的 CredSSP 补丁 KB4103718、KB4103712 ，而另外一方未安装更新的原因导致的，详见：<https://msrc.microsoft.com/update-guide/zh-cn/vulnerability/CVE-2018-0886>，其它受影响的 Windows 版本详见<https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/credssp-encryption-oracle-remediation>。
 
 方法一（强烈推荐）：
 
@@ -1718,13 +1718,11 @@ KB4103718 如果运行时报告无法安装，先运行自带的那个 pciclears
 
 请先创建一个add.txt文件,将如下代码添加到文件保存,保存后将txt后缀更改为reg,然后双击add.reg导入到注册表重启电脑即可。
 
-```regedit
 Windows Registry Editor Version 5.00
 
 [HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\CredSSP\Parameters]
 
 "AllowEncryptionOracle"=dword:00000002
-```
 
 #### 远程桌面的开始菜单没有关机键
 
