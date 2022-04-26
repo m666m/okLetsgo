@@ -1553,7 +1553,7 @@ Hyper-V 其实也分1代2代，tenforums 的详细说明
 
 新出技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动u盘制作时也要选择一致的模式，这样才符合 Windows 11 的安装要求。
 
-用 Rufus 制作 Windows 10 安装u盘，选择分区类型是 GPT（右侧的选项自动选择“UEFI（非 CSM)”）而不能是 MBR，这样的启动u盘才能顺利启动。
+用 Rufus 制作 Windows 10 安装u盘，选择分区类型是 GPT（右侧的选项自动选择“UEFI(非CSM)”）而不能是 MBR，这样的启动u盘才能顺利启动。
 
 有些如 Nvidia gtx 1080 时代的显卡，连接 HDMI 口可以兼容 UEFI 方式，而 DP 口则不兼容，应该是主板的UEFI兼容CSM模式。这样制作的安装u盘可以启动系统，但是 DP 口在开机的时候不显示，只能连接 HDMI 口安装系统。这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。
 
@@ -1667,6 +1667,52 @@ Windows 10 重启之后你将会看到出现一个界面提供选项，选择“
     >convert basic
 
 注意：无法在 Windows 里操作自己的启动盘，得启动到u盘或者别的系统里操作这个磁盘，而且这个磁盘的内容会被完全清除！
+
+### 远程桌面报错的解决办法
+
+windows 7 之后微软把远程桌面做了比较大的变动
+
+因为windows更新自动升级，有几个补丁包不是必需安装，导致远程桌面报错无法使用，用户摸不到头脑，其实是微软没有明确告知这个变动导致的混淆。
+
+#### 报错：无法连接
+
+远程服务端升级到 rdp8.0 以上版本，建议客户端也升级到这个版本。
+
+    1.Windows6.1-KB2574819-v2-x64.msu
+
+    2.Windows6.1-KB2857650-x64.msu
+
+    3.Windows6.1-KB2830477-x64.msu
+
+    4.Windows6.1-KB2592687-x64.msu
+
+远程服务端的远程桌面设置，系统属性->允许远程桌面：勾选“仅允许使用网络级别身份验证的远程桌面计算机连接（更安全）”。
+
+#### “身份验证错误，要求的函数不受支持”
+
+这是由于本地客户端或者远程服务器端一方更新了CVE-2018-0886 的 CredSSP 补丁 KB4103718、4103712 ，而另外一方未安装更新的原因导致的，详见：<https://msrc.microsoft.com/update-guide/zh-cn/vulnerability/CVE-2018-0886>
+
+方法一（强烈推荐）：
+
+本地客户端或者远程服务器端都同时安装更新补丁，更新以后重启计算机。
+
+方法二：
+
+强烈建议按方法一对本地客户端和远程服务器安装补丁，如果某些特殊情况远程服务器不能更新最新补丁，可按照以下方法设置本地电脑之后远程登录：
+
+在运行里面输入gpedit.msc打开组策略，找到该路径：“计算机配置”->“管理模板”->“系统”->“凭据分配” 在右边设置名称找到 “加密 Oracle 修正”，将保护级别更改为“易受攻击”。
+
+修改以后在运行里面输入gpupdate更新策略。
+
+如果客户端是 Windows 7，组策略里没有 【加密 Oracle 修正】 选项：
+
+请先创建一个add.txt文件,将如下代码添加到文件保存,保存后将txt后缀更改为reg,然后双击add.reg导入到注册表重启电脑即可
+
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\CredSSP\Parameters]
+
+"AllowEncryptionOracle"=dword:00000002
 
 ### 乱七八糟的 .NET Framework 各版本安装
 
