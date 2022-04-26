@@ -698,6 +698,8 @@ conda用“=”，pip用“==”
 
 ##### 利用配置文件yml创建目标环境
 
+这种方式最大的优点是pip包也是自动安装在你的指定环境目录里的，不是安装到系统默认的用户目录下，参见章节[确认pip下载的包的保存位置]。
+
 Anaconda 系统虚拟环境
 
     conda activate
@@ -965,7 +967,7 @@ conda安装在conda环境中装任何包，pip在任何环境中安装python包�
 
 新建立的conda环境，首选要修改pip包安装默认路径
 
-    以后只要切换到你的环境下，再运行pip，默认会安装到你环境下的目录。否则会安装到默认的pyhon环境目录比如 C:\ProgramData\Anaconda3，详解下面的章节 [更改conda环境下，pip包默认下载路径]。
+    以后只要切换到你的环境下，再运行pip，默认会安装到你环境下的目录。否则会安装到默认的pyhon环境目录比如 C:\ProgramData\Anaconda3，详见章节 [更改conda环境下，pip包默认下载路径]。
 
 ### conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径
 
