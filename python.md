@@ -40,9 +40,12 @@ Pip can install software in three different ways:
 
 ### wheels
 
-在windows环境中，python 的 Setup 需要调用一个 vcvarsall.bat 的文件，该文件需要安装c++编程环境才会有。网上的方法有两个：一、安装MinGW；二、安装Visual Studio 。很多python包也是如此，pip提供的是代码，需要借助python环境在本地编译出二进制。
+    https://devblogs.microsoft.com/python/unable-to-find-vcvarsall-bat/
+    https://www.lfd.uci.edu/~gohlke/pythonlibs/
 
-对这种情况，最简单的解决办法是下载好心人提供的编译好的windows二进制包 <https://www.lfd.uci.edu/~gohlke/pythonlibs/>
+在windows环境中，python 的 Setup 需要调用一个 vcvarsall.bat 的文件，该文件需要安装c++编程环境才会有。网上的方法有两个：一、安装MinGW；二、安装Visual Studio 。很多python包也是如此，pip提供的是.pyd文件，需要借助python环境在本地编译出二进制。
+
+对这种情况，最简单的解决办法是下载好心人提供的编译好的whell文件 <https://www.lfd.uci.edu/~gohlke/pythonlibs/>。
 
     python2.7用的是msvs2008编译的，所以python2.7默认只能认出msvs2008.
     python3.4用的是msvs2010编译的，所以python3.4默认只能认出msvs2010。
@@ -284,14 +287,12 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 ### pip install 在 virtualenv 虚拟环境下不要使用 --user 参数
 
-在自己的环境下更新pip，公用的不要去动他
+在自己的环境下更新pip，当前用户目录是公用的不要去动他
 
     source c:/Users/xxxx/pyenvs/py38/Scripts/activate
     pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
 
-直接 pip install 就好了，这样默认才会把下载的包放到你的环境目录下
-
-    https://stackoverflow.com/questions/30604952/pip-default-behavior-conflicts-with-virtualenv
+直接 pip install 就好了，这样默认才会把下载的包放到你的环境目录下<https://stackoverflow.com/questions/30604952/pip-default-behavior-conflicts-with-virtualenv>。
 
 ### Windows 命令行环境下使用脚本执行 Virtualenv 环境
 
@@ -367,7 +368,7 @@ virtualenv 创建虚拟环境的时候，会把系统Python复制一份到虚拟
 
 0.先安装git，后续使用它自带的bash、ssh比较方便，不装也行
 
-1.如果想让vscode自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”或“set Anaconda3 the system default python”。如果你想使用相对路径的虚拟环境，可以不勾选。
+1.如果想让vscode自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”或“set Anaconda3 the system default python”。如果你想使用路径名的虚拟环境，可以不勾选。
 
 2.选择了“给所有用户安装”时，新建环境如[p37]会保存在C:\ProgramData\Anaconda3\envs\p37，不选则保存在 C:\Users\xxxx\.conda\envs\p37，相应的python、pip位置也会跟随变化。
 
@@ -403,9 +404,9 @@ x. 不推荐更新pip。仅在自己的虚拟环境里更新pip和指定的包�
 NOTE:这里有个耦合，后续建立的同版本的python环境都会复用最早建立的那个环境！原因是Anaconda节省空间使用文件的链接，但是无法区分pip。
 
 所以，稳妥的办法是，如果你的系统里要使用多个python版本，先逐个建立各个版本的环境，什么都不要改。
-然后针对具体的项目建相对路径的虚拟环境，在这个虚拟环境里面安装pip，然后改路径。
+然后针对具体的项目建路径名的虚拟环境，在这个虚拟环境里面安装pip，然后改路径。
 
-9.建立你自己项目的虚拟环境（见下面的章节 [使用相对路径，在你的项目目录下建立虚拟环境]），在这个虚拟环境里面安装pip，然后改路径（详见下面章节[更改conda环境下，pip包默认下载路径]）。
+9.建立你自己项目的虚拟环境（见下面的章节 [使用路径名，在你的项目目录下建立虚拟环境]），在这个虚拟环境里面安装pip，然后改路径（详见下面章节[更改conda环境下，pip包默认下载路径]）。
 
 10.详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
 
@@ -457,6 +458,10 @@ windows下python按[TAB]出现报错：
 
 ## Anaconda 管理
 
+    命令速查 https://docs.conda.io/projects/conda/en/latest/commands/remove.html
+
+    用户指南 https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#
+
 理解Anaconda版本管理的特殊性
 
     当我们创建新的环境的时候，Anaconda 对相同的python版本指向为一个打包文件的链接。
@@ -491,7 +496,7 @@ Anaconda 安装完毕后，先对各个版本建立虚拟环境如b37、b38，�
     # 切换到指定的[p37]环境
     conda activate p37
 
-    # 退出当前环境，返回的是上一个环境，不如重新开个shell再activate那个环境。
+    # 退出当前环境，返回的是上一个环境，官方建议是重新开个shell再activate别的环境。
     conda deactivate
 
 仍需要用source的案例
@@ -571,14 +576,14 @@ Anaconda 安装完毕后，先对各个版本建立虚拟环境如b37、b38，�
     # 显示conda的信息
     conda info
 
-    # 参见章节[使用相对路径，在你的项目目录下建立虚拟环境]
+    # 参见章节[使用路径名，在你的项目目录下建立虚拟环境]
     cd your_project_dir
     conda create --prefix ./py37 python=3.7
     conda activate ./py37
 
     # 官方推荐所有的依赖包一次性install完毕，避免依赖文件重复
     conda install --name p37 yapf Flake8
-    # 环境在相对路径
+    # 环境在路径名
     conda install --prefix ./py37 yapf Flake8
 
     # 导出环境配置文件，便于定制，包含pip包，推荐
@@ -611,7 +616,7 @@ conda默认的把这个base环境"/c/ProgramData/Anaconda3/"视为root的，其�
     # 或
     conda install --name p37 beautifulsoup4  -y
 
-    # 环境是相对路径
+    # 环境是路径名
     conda install --prefix ./p37 beautifulsoup4  -y
 
 #### 官方推荐所有的依赖包一次性install完毕
@@ -636,13 +641,16 @@ conda用“=”，pip用“==”
 
     pip  install numpy==1.93
 
-### 【使用相对路径，在你的项目目录下建立虚拟环境】
+### 【使用路径名，在你的项目目录下建立虚拟环境】
+
+    参数 -n, --name 使用环境名
+    参数 -p, --prefix 使用路径名
 
 这样做的好处：你的环境只跟项目目录相关，独立性更强，不会干扰到别的环境。
 
-如果想使用通用的虚拟环境，把 --prefix ./py37 换成 --name p37 即可，其它的命令不变
+如果想使用通用的虚拟环境，把 --prefix ./py37 换成 --name p37 即可，其它的命令不变。
 
-虚拟环境使用相对路径，之后所有跟环境名相关的 conda 操作都要明确指定“--prefix”，因为 conda --name 只在默认的env目录寻找你的环境名 <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#specifying-a-location-for-an-environment>
+虚拟环境使用路径名，之后所有跟环境名相关的 conda 操作都要明确指定“--prefix”，因为 conda --name 只在conda默认的env目录寻找你的环境名 <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#specifying-a-location-for-an-environment>
 
 1.在你的项目目录下创建虚拟环境
 
@@ -656,7 +664,7 @@ conda用“=”，pip用“==”
     # conda activate p37
     conda activate ./py37
 
-2.相对路径太长，改为短名
+2.路径名太长，改为短名
 
     conda config --set env_prompt '({name})'
 
@@ -678,31 +686,39 @@ conda用“=”，pip用“==”
 
 下次安装就简单了，直接恢复即可，见下面的章节 [环境文件的备份和恢复]
 
-### 环境文件的备份和恢复
+### conda 虚拟环境的备份和恢复
 
 目前建议在 cmd 下执行，脚本好像有路径解析问题，在bash下总是报错
 
-#### 导出环境配置文件yml便于定制，包含pip包，推荐
+#### 方法一：导出环境配置文件yml
+
+    https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#exporting-an-environment-file-across-platforms
+
+便于定制，包含pip包，推荐使用这个用法。
+
+方法一 导出虚拟环境配置文件yml
 
     # 先切换到你的环境！
     conda activate p37
 
-    conda env export > environment.yml
-    # 注意删除yml文件中用wheel安装的包
+    # 注意手工编辑yml文件删除你后来用wheel安装的包。参数 --from-history 不导出依赖包。
+    conda env export > py37_environment.yml
 
-对使用相对路径的环境
+方法二 导出路径名的虚拟环境配置文件yml
 
+    conda activate
     cd your_project_dir
 
-    conda env export --prefix ./py37 > environment.yml
+    conda env export --prefix ./py37 > py37_environment.yml
 
-##### 利用配置文件yml创建目标环境
+##### 恢复环境
 
 这种方式最大的优点是pip包也是自动安装在你的指定环境目录里的，不是安装到系统默认的用户目录下，参见章节[确认pip下载的包的保存位置]。
 
-Anaconda 系统虚拟环境
+方法一 创建虚拟环境
 
     conda activate
+    cd your_project_dir
 
     # 注意环境名是写在yml文件里的，酌情修改
     # https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#create-env-file-manually
@@ -710,28 +726,42 @@ Anaconda 系统虚拟环境
 
     conda activate p37
 
-使用相对路径的虚拟环境
+方法二 创建路径名的虚拟环境
 
     conda activate
     cd your_project_dir
 
+    # 注意环境名是写在yml文件里的，酌情修改
+    # yml文件中的环境名name和路径名prefix一定要一致都是全路径，否则会放到conda系统env目录中
+    (base) C:\Users\user_name\your_project>type py37_environment.yml
+    name: C:\Users\user_name\your_project\py37env
+    channels:
+    - defaults
+    dependencies:
+      - beautifulsoup4=4.10.0=pyh06a4308_0
+      - ...
+      - pip:
+        - websocket-client==1.3.1
+        - ...
+    prefix: C:\Users\user_name\your_project\py37env
+
     # <https://stackoverflow.com/questions/35802939/install-only-available-packages-using-conda-install-yes-file-requirements-t>
     conda env create --prefix ./py37 --file py37_environment.yml
 
-    # 环境导出文件中，如果发现已经更新了pip，不是原装的，会给个提示，问题不大。
+    # yml文件中，如果发现已经更新了pip，不是原装的，会给个提示，问题不大。
     # 解决：新建个同版本的python环境，把之前的那个base环境删除，然后再次做导出。
     # Warning: you have pip-installed dependencies in your environment file, but you do not list pip itself as one of your conda dependencies.  Conda may not use the correct pip to install your packages, and they may end up in the wrong place.  Please add an explicit pip dependency.  I'm adding one for you, but still nagging you.
 
-    conda activate ./py37
+    conda activate ./py37env
 
-    # 相对路径太长，改为短名
+    # 路径名太长，改为短名
     conda config --set env_prompt '({name})'
 
     # 执行章节 【更改conda环境下，pip包默认下载路径】
 
     # 最后手动安装yml文件中用wheel安装的包
 
-##### 利用配置文件yml更新已有的环境
+还可以利用配置文件yml更新已有的环境
 
     conda env update --prefix ./py37 --file py37_environment.yml --prune
 
@@ -742,13 +772,15 @@ Anaconda 系统虚拟环境
     # 列出所有的环境，当前激活的环境会标*
     conda info -e
 
-#### 带包地址的可复现的安装环境，不包含pip包，不推荐
+#### 方法二：带conda包地址的配置文件
+
+也可复现虚拟环境，但不包含pip包，需要手工编辑，不推荐。
 
 导出conda包信息
 
     # 先切换到你的环境！
     cd your_project_dir
-    conda activate ./py37
+    conda activate ./py37env
 
     conda list --explicit > py37_conda_spec-file.txt
 
@@ -770,16 +802,17 @@ Anaconda 系统虚拟环境
     # 验证：列出所有的环境，当前激活的环境会标*
     conda info -e
 
-    # 先修改pip包默认下载路径，见章节 [更改conda环境下，pip包默认下载路径]
-
-    conda activate ./py37
+    # 需要先修改pip包默认下载路径，见章节 [更改conda环境下，pip包默认下载路径]
+    conda activate ./py37_new
     pip install -r requirements.txt
 
-#### 当前环境pip包的导入和导出，混入conda包和各包的依赖，不推荐
+#### 方法三：混入pip、conda包信息
+
+这样的虚拟环境混入pip、conda包和各包的依赖包，不推荐。
 
     # 先切换到你的环境！
     cd your_project_dir
-    conda activate ./py37
+    conda activate ./py37env
 
     pip list
 
@@ -789,7 +822,7 @@ Anaconda 系统虚拟环境
     # 在目标环境里导入pip包
     pip install -r py37_requirements.txt
 
-#### 复制conda虚拟环境
+#### 复制虚拟环境
 
     # 克隆
     conda create --name new_p37 --clone p37
@@ -800,12 +833,25 @@ Anaconda 系统虚拟环境
     # 复制anaconda3/envs/下的某个环境的文件夹到另外一台机器上
     rsync -va username@xxx.xxx.xxx.xxx:/home/username/anaconda3/envs/p37/
 
+#### 删除虚拟环境
+
+    # 先切换到base环境，再删除你的其它环境
+
+    conda remove --name myenv --all
+    或
+    conda env remove --name myenv
+
+    # 使用路径名
+    conda env remove --prefix myenv
+
 ### conda频道和源配置
+
+    https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-channels.html
 
 0.不同的conda频道，看看默认软件名在自己的os下对应的版本
 
-    <https://anaconda.org/search?q=pyqtgraph>
-    <https://anaconda.org/conda-forge/pyqtgraph>
+    https://anaconda.org/search?q=pyqtgraph
+    https://anaconda.org/conda-forge/pyqtgraph
 
 conda 有很多频道，在网页版频道列表里有对应的版本，找合适自己的安装
 注意不是名字对了就能装，版本不一定是新的！
@@ -951,7 +997,7 @@ conda安装在conda环境中装任何包，pip在任何环境中安装python包�
 
 使用 pip install 不要使用参数 --user
 
-    如果pip在安装时候提示权限不足，无法写入啥的，提示用“--user”，不要用！不然会写入到所有用户文件夹(ProgramData/Anaconda)下面，即安装到用户home目录的公用包目录中了！
+    如果pip在安装时候提示权限不足，无法写入啥的，提示用“--user”，不要用！不然会写入到公用包目录中：如果是base环境下，是所有用户文件夹(ProgramData/Anaconda)下面，如果是其它环境，则安装到用户home目录下的公用目录了！
 
     原因见下面章节 [conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
 
@@ -1188,7 +1234,7 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
 
     如果你的操作系统里要使用多个python版本，先在Ananconda里逐个建立每个版本的虚拟环境，什么都不要改。
 
-    然后再针对你具体的项目建相对路径的虚拟环境，在这个虚拟环境里改pip包默认下载路径。
+    然后再针对你具体的项目建路径名的虚拟环境，在这个虚拟环境里改pip包默认下载路径。
 
 如果不这样做，第一个版本的python环境，会被后续的同版本pytyhon环境复用，如果该环境中pip路径变了，其它各环境也跟着变。。。。这样就可以理解为什么Anaconda新建环境默认不安装pip了，最好自己手动安装。
 
@@ -1232,10 +1278,10 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
     USER_SITE = "C:\\ProgramData\\Anaconda3\\envs\\p37\\Lib\\site-packages"
     USER_BASE = "C:\\ProgramData\\Anaconda3\\envs\\p37\\Scripts"
 
-    # 如果你建立的相对路径环境如 D:\pycode\your_project
+    # 如果你建立的路径名环境在项目目录下，如 D:\pycode\your_project
     # 改为
-    USER_SITE = "D:\\pycode\\your_project\\py37\\Lib\\site-packages"
-    USER_BASE = "D:\\pycode\\your_project\\py37\\Scripts"
+    USER_SITE = "D:\\pycode\\your_project\\env\\py37\\Lib\\site-packages"
+    USER_BASE = "D:\\pycode\\your_project\\env\\py37\\Scripts"
 
 如果你的命令行工具是bash，也不需要改为 /d/pycode/your_project/py37 的形式，因为 site.py 是 python 执行，python 根据当前操作系统识别路径格式。
 
@@ -1515,6 +1561,10 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 6.To upgrade pip for Python 2 to the latest version, run the --upgrade command:
 
     sudo pip install --upgrade pip
+
+## Visual Sutdio 2022 中使用 python 虚拟环境
+
+<https://docs.microsoft.com/zh-cn/visualstudio/python/managing-python-environments-in-visual-studio?view=vs-2022>
 
 ## vscode 外网访问内网使用ssh和远程桌面
 
