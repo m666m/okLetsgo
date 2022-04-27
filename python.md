@@ -14,7 +14,9 @@ windows下的python，各种命令的脚本都是cmd下的bat，如果用bash运
 
 ## pip
 
-pip install 的各种问题 <https://www.cnblogs.com/feixiablog/p/8320602.html>
+pip不像conda/virtualenv一样，他不知道环境！pip install 就扔到 python 的基础环境下，后来弄了个 --user 扔当前用户的目录下，所以在conda/virtualenv下使用pip需要调整参数，参见章节[确认pip下载的包的保存位置]。
+
+pip install 的各种问题 <https://www.cnblogs.com/feixiablog/p/8320602.html>。
 
 如果要在conda下使用pip，见下面章节[Anaconda环境中使用pip]
 
@@ -32,7 +34,7 @@ Pip can install software in three different ways:
 
     At global level. 标准的python环境下，"pip install xxx"放在了python目录的site-packages里，这个影响当前操作系统的所有用户.
 
-    At user level. "pip install xxx --user"放在了当前操作系统用户home目录的python目录的site-packages里，这个放置的地方比较别扭。
+    At user level. "pip install xxx --user"放在了当前操作系统用户home目录的python目录的site-packages里，这个放置的地方比较别扭。使用命令 `python -m site` 中的变量 USER_SITE。
 
     At virtualenv level. virtualenv环境下，"pip install xxx"放在了virtualenv建立的环境目录的site-packages里，最好用这个。
 
@@ -1073,8 +1075,11 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
 
 输出
 
-    USER_BASE 表示当前环境下python.exe、pip.exe、等脚本存放位置
-    USER_SITE 表示当前环境下下载的package的存放路径，默认为None，也有可能为其他
+    # https://docs.python.org/3/install/index.html#alternate-installation-windows-the-prefix-scheme
+    USER_BASE 表示当前环境下python.exe、pip.exe的位置。
+    USER_SITE 表示当前环境下下载的package的存放路径，默认为None，也有可能为其他。pip install 使用参数 --user 就是使用的这个变量找保存位置 site.USER_SITE <https://docs.python.org/3/install/index.html#inst-alt-install-user>。
+
+    比如Windows下 USER_BASE=...\envs\py37env\，USER_SITE=...\envs\py37env\lib\site-packages 。
 
 默认None，则使用base环境的设置，也就是python默认的pip根路径设置。所以，这几个变量的效果，区别于是否安装了anaconda，执行的pip是否不同，而且受变量 ENABLE_USER_SITE 控制。
 
@@ -1260,7 +1265,7 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
     C:\Users\xxxx\.conda\envs\p37\Lib\site.py
 
     # 如果 Anaconda 安装时选择了“给所有用户安装”，有时候是下面这个，
-    # 请根据  python -m site -help 里的env的路径决定。
+    # 请根据  python -m site -help 里的路径决定。
     # 详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
     C:\ProgramData\Anaconda3\envs\p37\Lib\site.py
 
