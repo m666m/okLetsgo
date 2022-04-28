@@ -962,7 +962,7 @@ clone完成后，进入目录，执行
 
 1.[本地]master分支拉取[远程]
 
-要保证[本地]master分支在合并之前是最新的
+保证[本地]master分支在合并之前是最新的
 
     git checkout master
     git pull --rebase  # 不制造环形
@@ -978,7 +978,7 @@ clone完成后，进入目录，执行
 
 3.[本地]fea分支合并master分支
 
-这里需要拉直合入，防止别的开发组的功能分支或hotfix已经合入master分支，fea分支初创时的主干内容已经变化了
+这里需要拉直合入，防止别的开发组的功能分支或hotfix已经合入master分支，即fea分支初创时引用的主干内容已经更新了
 
     git checkout fea
     git rebase master  # 不制造环形
@@ -1013,11 +1013,11 @@ clone完成后，进入目录，执行
 
 直到所有的整合工作全部完成，确认可以合入主干分支后，再继续下面的步骤。
 
-8.合入前的刷新：[本地]各分支拉取[远程]
+8.合入前的同步：[本地]各分支拉取[远程]
 
 [远程]master分支、[远程]合并专用分支都锁定，开始版本合并的步骤。
 
-要保证[本地]master分支在合并之前是最新的
+保证[本地]master分支在合并之前是最新的
 
     git checkout master
     git pull --rebase  # 不制造环形
@@ -1057,6 +1057,8 @@ clone完成后，进入目录，执行
 
         git checkout fea
         git pull --rebase  # 不制造环形
+
+        # 至少会合入主干分支上的刚生成的那个合并点
         git rebase master  # 不制造环形
 
         git push
@@ -1209,7 +1211,7 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
     https://opensource.com/article/20/7/git-best-practices
 
-#### 一.你的功能分支拉取远程仓库时要做rebase
+#### 一.本地分支拉取远程仓库时要做rebase
 
     # 本地dev分支拉取远程dev分支的时候做rebase
     git checkout dev_xxx
@@ -1220,7 +1222,7 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
 菱形分叉会制造新的commit点，根据具体情况考虑是否需要，如果不需要，尽量 rebase 拉直
 
-    大版本合并，功能分支合并master分支这种，需要merge菱形分叉(功能分支合入master时用rebase，master分支合入功能分支时用merge)
+    大版本合并，功能分支合并到主干分支，需要用merge做菱形分叉(功能分支合入主干分支时用rebase，主干分支分支合入功能分支时用merge no-ff)
 
     hotfix在主干上的接续，一般 rebase 拉直
 
