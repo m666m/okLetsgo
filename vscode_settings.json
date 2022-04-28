@@ -22,7 +22,7 @@
     "window.newWindowDimensions": "offset", // "offset" maximized
     "outline.showVariables": false,
     "extensions.autoUpdate": false,  // 如果有插件升级后出问题，阻止自动升级
-    "python.terminal.activateEnvironment": false,  // 打开终端自动执行切换到指定环境的命令
+    "python.terminal.activateEnvironment": false,  // 打开终端自动执行切换到指定环境，在cmd下使用conda可以设为True，如果在bash下使用conda会报错windows路径
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
     "python.languageServer": "Pylance",
