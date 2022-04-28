@@ -146,9 +146,9 @@ git做操作之前或操作之后，查看当前的git状态
 
 版本库推送远程仓库见章节 [远程仓库拉取和推送的各种情况]
 
-### 从本地仓库推送远程仓库
+### 从本地仓库推送多个远程仓库
 
-可配置添加多个远程仓库地址。
+1、一般使用中，可以默认fetch/push一个远程仓库，添加多个push远程仓库地址，这样可以实现代码的多处备份，而且默认的origin还存在。
 
 远程仓库地址格式
 
@@ -198,6 +198,24 @@ git做操作之前或操作之后，查看当前的git状态
 如果想删除
 
     git remote set-url --delete origin --push origin ssh://git@x.x.x.x:2345/gitrepo/project_name.git
+
+2、一个本地库同步到另外两个远程库，不使用origin
+
+    https://www.runoob.com/git/git-gitee.html
+
+真正的多套远程地址
+
+    git remote rm origin
+
+    # 远程库的名称叫 gitee 和 github，没有 origin 了。
+    git remote add github git@github.com:tianqixin/runoob-git-test.git
+    git remote add gitee git@gitee.com:imnoob/runoob-test.git
+
+使用起来比较麻烦，fetch/push需要多次操作，需要支持远程仓库的名称和分支名称
+
+    git push github master
+
+    git push gitee master
 
 ### 从远程仓库下载到本地仓库 git clone
 
