@@ -285,9 +285,9 @@ F-Droid 会把这些 repositories 所提供的软体信息存储一份清单在�
 
 [OpenKeychain](https://www.openkeychain.org)主要与[K-9 Mail](https://github.com/k9mail/k-9)集成。
 
-如果你在电脑上经常用邮件客户端的话你可以使用 Thunderbird。在电脑上生成好的子密钥，导出子私钥到文件，然后导入到 OpenKeychain 就好了。
+如果你在电脑上经常用邮件客户端的话你可以使用 [Thunderbird](https://www.thunderbird.net/en-US/)。在电脑上生成好的加密E和签名S功能的子密钥，导出子私钥到文件，然后导入到 OpenKeychain，这样 K-9 Mail 就可以调用了。
 
-如果你用 Android 收发邮件比较多的话，建议你直接用 OpenKeychain 生成密钥对然后发布公钥就好了。
+如果你用 Android 收发邮件比较多的话，建议你直接用 OpenKeychain 生成密钥对然后发布公钥，使用 K-9 Mail 就好了，电脑端如果需要使用，可以从OpenKeychain导出私钥到电脑端，给Thunderbird使用。
 
 ## BusyBox
 
