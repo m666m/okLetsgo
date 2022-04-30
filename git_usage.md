@@ -738,7 +738,7 @@ git pull --rebase = git fetch + git rebase 去掉多余的分叉：
     -a-b-c -d-e  -f-g  -h-i  -j-k  ...
            别人   你的  别人  你的   ...
 
-### git fetch 和 git pull的区别
+### fetch 和 pull 的区别
 
 git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相应分支最新的状态。
 
@@ -769,7 +769,7 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
     # 查看fetch下来的远程代码跟本地的区别
     git diff ..origin/master
 
-#### 本地的两份代码--本地仓库和远程仓库
+#### 本地有两份代码--本地仓库和远程仓库
 
 我们本地的git文件夹里面对应也存储了git本地仓库master分支的commit ID 和 跟踪的远程分支orign/master的commit ID（可以有多个远程仓库）。那什么是跟踪的远程分支呢，打开git文件夹可以看到如下文件：
 
@@ -802,9 +802,9 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
     # 这个不自动切换
     git branch newBrach a9c146a09505837ec03b
 
-#### git pull把2个过程合并，减少了操作
+#### git pull 把2个过程合并，减少了操作
 
-默认是fetch+merge，可以设置成fetch+rebase。
+默认是 fetch + merge，可以设置成 fetch + rebase。
 
 将远程主机的某个分支的更新取回，并与本地指定的分支合并 ：
 
@@ -852,217 +852,6 @@ clone完成后，进入目录，执行
 
 不断增大步骤2的数字，直到找到你要的commit
 
-### 其它分支管理
-
-#### git checkout 切换其他分支
-
-1.查看远程分支
-
-    $ git branch -a
-    我在mxnet根目录下运行以上命令：
-
-    ~/mxnet$ git branch -a
-    * master
-    remotes/origin/HEAD -> origin/master
-    remotes/origin/master
-    remotes/origin/nnvm
-    remotes/origin/piiswrong-patch-1
-    remotes/origin/v0.9rc1
-    可以看到，我们现在在master分支下
-
-2.查看本地分支
-
-    ~/mxnet$ git branch
-    * master
-
-3.切换分支，注意这里是在本地新建了一个分支，对应远程的某个分支名
-
-    $ git checkout -b v0.9rc1 origin/v0.9rc1
-    Branch v0.9rc1 set up to track remote branch v0.9rc1 from origin.
-    Switched to a new branch 'v0.9rc1'
-
-    ＃已经切换到v0.9rc1分支了
-    $ git branch
-    master
-    * v0.9rc1
-
-    ＃切换回master分支
-    $ git checkout master
-    Switched to branch 'master'
-    Your branch is up-to-date with 'origin/master'.
-
-#### 删除分支，远程/本地
-
-0.先看看有多少本地和远程分支
-
-    git branch -a
-
-1.切换到其他分支再进行操作
-
-    git checkout master
-
-2.删除远程分支的指针而不是直接删分支，方便数据恢复。
-
-    git push origin --delete fea_xxx
-
-如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
-
-    git push origin :refs/fea_xxx
-
-用本地分支fea_-2覆盖远程分支fea_-1
-
-    git push -f origin fea_-2:refs/fea_-1
-
-对追踪分支，git push origin --delete 该命令也会删除本地-远程的追踪分支，等于还做了个
-
-    # 如果只删除追踪分支，则还需要 git remote prune 来删除追踪分支
-    git branch --delete --remotes <remote>/<branch>
-
-3.其它人的机器上还有该远程分支，清理无效远程分支
-
-    git branch -a # 查看
-
-    git fetch origin -p  # git remote prune
-
-4.删除本地
-
-    git branch -d fea_xxx
-
-## 合并两分支时该如何选择菱形还是拉直
-
-### 原则
-
-何时采用分叉或拉直的形态，以能清晰区分各新增功能为目的
-
-    本地主干分支master，拉取远程主干分支master，做拉直
-
-    本地主干分支master合入hotfix， 做拉直，然后可以推送远程
-
-    本地功能分支dev，拉取远程功能分支dev，做拉直
-
-    本地主干分支master，合并本地功能分支dev，做菱形分叉
-
-### 方法
-
-两分支合并
-
-    git merge -no-ff 做菱形分叉
-
-    git rebase 做拉直
-
-### 示例：功能分支合并到主干分支
-
-以开发人员做版本发布的角色，把功能分支 fea 合并到主干分支 master （对主从分支开发模式来说，fea分支就是从分支）：
-
-0.通知开发人员fea分支版本锁定，不要再推送远程了。
-
-锁定远程fea分支的写入，防止开发人员继续提交。
-
-或在远程打标签，便于确定锁定的位置，后续fea分支仅获取到这里，再有谁推送需要单独cherrypick，或后续测试版本期间走bug单自行合入。
-
-1.[本地]fea分支、master分支拉取[远程]
-
-保证[本地]master分支在合并之前是最新的
-
-    git checkout master
-    git pull --rebase  # 不制造环形
-
-[本地]fea分支在合入[本地]master分支之前，要保证是最新的
-
-    git checkout fea
-    git pull --rebase  # 不制造环形
-
-注意：远程的fea分支必须是可以通过测试的，不然后续合并代码后，问题更不好界定。
-
-2.[本地]fea分支合并master分支
-
-这里需要拉直合入，防止别的开发组的功能分支或hotfix已经合入master分支，即fea分支初创时引用的主干内容已经更新了
-
-    git checkout fea
-    git rebase master  # 不制造环形
-
-这时本地fea分支应该是最新的了。如果master分支一直没改动过，这个步骤可以省掉。
-
-3.这个步骤可以省略：[本地]fea分支整理合并commit
-
-[本地]fea分支在合入[本地]master分支之前，保证一定的简洁，然后再合入master分支。
-
-    git checkout fea
-    git rebase -i HEAD~50
-
-合并commit的原则是便于区分查找功能点、cherrypick提交点，不要过分宽范围的合并，这样就没有意义了。这一步建议各个开发人员在合入fea分支之前就做好，让fea分支本身就是清爽的。
-
-4.这个步骤可以省略：在[本地]建立合并专用分支 meg_for_v1，名称要体现出版本计划
-
-    git checkout fea  # 基于fea分支
-    git checkout -b meg_for_v1
-
-上面整理过的[本地]fea分支，压缩合并的内容只是合入master分支用的，所以不要推送[远程]。
-
-5.把[本地]合并专用分支 meg_for_v1 分支推送[远程]。
-
-    git push
-
-如果忽略了第 3、4步，压缩合并等工作，那么这个合并专用分支就是fea分支，直接使用即可。
-
-6.基于合并专用分支走集成测试流程
-
-之后的一段时间，开发人员拉取该合并专用分支，验证新功能、修改冲突、解决bug等。
-
-直到所有的整合工作全部完成，确认可以合入主干分支后，再继续下面的步骤。
-
-8.合入前的同步：[本地]各分支拉取[远程]
-
-[远程]master分支、[远程]合并专用分支都锁定（server端仓库做git hook脚本），开始版本合并的步骤。
-
-保证[本地]master分支在合并之前是最新的
-
-    git checkout master
-    git pull --rebase  # 不制造环形
-
-[本地]合并专用分支在合入[本地]master分支之前，要保证是最新的
-
-    git checkout meg_for_v1
-    git pull --rebase  # 不制造环形
-
-9.[本地]master分支合入合并专用分支，制造环形
-
-    git checkout master
-
-    git merge meg_for_v1 --no-ff -m"版本v1，新增xxx功能"
-
-注意：制造环形后，master分支多出来一个commit点。要在这里做标记，打版本标签，便于各版本切换
-
-10.[本地]master分支推送[远程]
-
-    git push
-
-11.[本地]master分支打标签，并推送远程
-
-    git tag -a v1.1 -m"版本v1，新增xxx功能"
-    git push origin v1.1
-
-[远程]master分支可以解锁，版本合并工作结束。
-
-10.收尾工作，分两种。
-
-如果做了第 3、4 步，则可以删除fea分支，删除meg_for_v1分支，这俩已经完成历史使命了。具体操作见前面的[删除分支，远程/本地]章节
-
-如果忽略了第 3、4 步，持续使用fea分支，则fea分支需要从远程master分支拉取合并代码，并解决合并冲突：
-
-        git checkout master
-        git pull --rebase  # 不制造环形
-
-        git checkout fea
-        git pull --rebase  # 不制造环形
-
-        # 至少会合入主干分支上的刚生成的那个合并点
-        git rebase master  # 不制造环形
-
-        git push
-
-11.新的功能分支，从[远程]的主分支拉取建立，开始新的一轮循环。
-
 ## 两个分支合并的 merge/rebase 效果
 
 能做合并的基础是两个分支有相交点，如果三分支合并无直接交点需要用rebase <https://git-scm.com/docs/git-rebase>
@@ -1075,15 +864,15 @@ clone完成后，进入目录，执行
                          \
                           f---g---h---i  feature分支
 
-### merge 默认做快进合并
+### merge 合并默认做快进（Fast Forward） 取拉直效果
 
 需要合入分支的接续点就是分叉点。
 
-merge默认做的是快进，即不新增commit点，走一条线的效果，用git status 的时候会提示可以做快进。
+merge默认做的是快进，即不新增commit点，走一条线的效果，执行 git status 会提示可以做快进。
 
-注意：如果merge不能做快进，就会分叉制作菱形，使用前并无提示，这个地方最容易让人糊涂。
+NOTE: 如果merge不能做快进，就会分叉制作菱形，但并无提示，这个地方最容易让人糊涂。
 
-所以最保险的方法是，merge之前，先git status看看merge会采取哪种策略。
+所以最保险的方法是，git merge之前，先git status 看看 git merge 是否会提示快进。
 
 1.hotfix分支先合并到主干分支 master
 
@@ -1203,73 +992,182 @@ rebase的拉直效果，虽然需要付出一些合并冲突解决的代价，�
 rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决冲突。
 解决冲突后,将修改add，执行git rebase –continue继续操作，或者git rebase –skip忽略冲突，或者git rebase --abort终止这次rebase。
 
-### rebase 变基在日常工作的用途
+### 在一个分支上做变基 rebase 的日常用途
 
     https://zhuanlan.zhihu.com/p/249231960
 
     https://opensource.com/article/20/7/git-best-practices
 
-#### 一.本地分支拉取远程仓库时要做rebase
+#### 一个本地分支拉取远程时做变基
 
     # 本地dev分支拉取远程dev分支的时候做rebase
     git checkout dev_xxx
 
+    # 实质是 fetch + rebase
     git pull --rebase
 
-#### 二. 两分支合并，出现菱形分叉，需要拉直时，用rebase
+fetch远程仓库，然后跟本地做rebase，详见章节 [git pull 把2个过程合并，减少了操作]
 
-菱形分叉会制造新的commit点，根据具体情况考虑是否需要，如果不需要，尽量 rebase 拉直
+#### 对一个分支做变基以压缩提交
 
-    大版本合并，功能分支合并到主干分支，需要用merge做菱形分叉(功能分支合入主干分支时用rebase，主干分支分支合入功能分支时用merge no-ff)
+参见章节[一个分支的变基操作：交互式合并提交点]。
 
-    hotfix在主干上的接续，一般 rebase 拉直
+## 合并两分支的原则：merge菱形还是rebase拉直
 
-    本地功能分支拉取同步远程功能分支，一般 rebase 拉直
+merge菱形分叉会制造新的commit点，根据具体情况考虑是否需要，一般情况下尽量用变基拉直。
 
-举例:
+对一个分支定期的变基是一个干净可靠的策略，因为提交历史日志将以有意义的功能序列进行排列（每个人的commit都是分段但是线性的排列）。
 
-1.本地dev分支拉取远程dev分支用 rebase 拉直
+还有一些其他的合并哲学（例如，只使用合并而不使用变基以防止重写历史），其中一些甚至可能更简单易用。
 
-    git checkout feature-xyz
-    git pull --rebase
+但是，master 分支的历史将穿插着所有同时开发的功能的提交，这样混乱的历史很难回顾。
 
-2.本地dev分支合并master分支的时候做rebase拉直
+### 原则
+
+何时采用分叉或拉直的形态，以能清晰区分各新增功能为目的
+
+    本地主干分支master，拉取同步远程，做拉直
+
+    本地功能分支dev，拉取同步远程，做拉直
+
+    主干分支master合入hotfix， 应该是在主干分支上的接续，做拉直
+
+    功能分支dev合入主干分支master，做拉直
+
+    主干分支master合入功能分支dev，做菱形分叉
+
+### 方法
+
+两分支合并
+
+    git merge -no-ff 做菱形分叉
+
+    git rebase 做拉直
+
+### 步骤示例：功能分支合并到主干分支
+
+以开发人员做版本发布的角色，把功能分支 fea 合并到主干分支 master （对主从分支开发模式来说，fea分支就是从分支）：
+
+0.通知开发人员fea分支版本锁定，不要再推送远程了。
+
+锁定远程fea分支的写入，防止开发人员继续提交。
+
+或在远程打标签，便于确定锁定的位置，后续fea分支仅获取到这里，再有谁推送需要单独cherrypick，或后续测试版本期间走bug单自行合入。
+
+1.[本地]fea分支、master分支拉取[远程]
+
+保证[本地]master分支在合并之前是最新的
 
     git checkout master
-    git pull --rebase
+    git pull --rebase  # 不制造菱形分叉
 
-    git checkout feature-xyz  # 假设的功能分支名称
-    git rebase master  # 可能需要解决  feature-xyz 上的合并冲突
+[本地]fea分支在合入[本地]master分支之前，要保证是最新的
 
-这些步骤会在你的功能分支上重写历史（这并不是件坏事）。
+    git checkout fea
+    git pull --rebase  # 不制造菱形分叉
 
-首先，它会使你的功能分支获得 master 分支上当前的所有更新。
+注意：远程的fea分支必须是可以通过测试的，不然后续合并代码后，问题更不好界定。
+
+2.[本地]fea分支合并master分支
+
+这里需要拉直合入，防止别的开发组的功能分支或hotfix已经合入master分支，即fea分支初创时引用的主干内容已经更新了
+
+    git checkout fea
+    git rebase master  # 不制造菱形分叉
+
+这时本地fea分支应该是最新的了。如果master分支一直没改动过，这个步骤可以省掉。
+
+第1、2步会在你的功能分支上重写历史（这并不是件坏事）。
+
+首先，它会使你的功能分支获得主干分支上当前的所有更新。
 
 其次，你在功能分支上的所有提交都会在该分支历史的顶部重写，因此它们会顺序地出现在日志中。
 
 你可能需要一路解决遇到的合并冲突，这也许是个挑战。但是，这是解决冲突最好的时机，因为它只影响你的功能分支。
 
-3.在解决完所有冲突并进行回归测试后，如果你准备好将dev分支合并回 master，那么就可以在再次执行上述的变基步骤几次后进行合并，这次的合并应该用菱形分叉
+3.这个步骤可以省略：[本地]fea分支整理合并commit
 
-    git checkout master
-    # ... 如果改动时间长master可能有变化，需要重复上面第2步
-    git merge feature-xyz -no-ff
+[本地]fea分支在合入[本地]master分支之前，保证一定的简洁，然后再合入master分支。
+
+    git checkout fea
+    git rebase -i HEAD~50
+
+合并commit的原则是便于区分查找功能点、cherrypick提交点，不要过分宽范围的合并，这样就没有意义了。这一步建议各个开发人员在合入fea分支之前就做好，让fea分支本身就是清爽的。
+
+4.这个步骤可以省略：在[本地]建立合并专用分支 meg_for_v1，名称要体现出版本计划
+
+    git checkout fea  # 基于fea分支
+    git checkout -b meg_for_v1
+
+上面整理过的[本地]fea分支，压缩合并的内容只是合入master分支用的，所以不要推送[远程]。
+
+5.把[本地]合并专用分支 meg_for_v1 分支推送[远程]。
 
     git push
 
+如果忽略了第 3、4步，压缩合并等工作，那么这个合并专用分支就是fea分支，直接使用即可。
+
+6.基于合并专用分支走集成测试流程
+
+之后的一段时间，开发人员拉取该合并专用分支，验证功能、修改冲突、解决bug等。
+
+直到所有的整合工作全部完成并进行回归测试后，确认可以合入主干分支后，再继续下面的步骤。
+
+8.合入前的同步：[本地]各分支拉取[远程]
+
+[远程]master分支、[远程]合并专用分支都锁定（server端仓库做git hook脚本），开始版本合并的步骤。
+
+保证[本地]master分支在合并之前是最新的，以防改动时间长master分支有变化如hotfix等新增合入
+
+    git checkout master
+    git pull --rebase  # 不制造菱形分叉
+
 在此期间，如果其他人也将和你有冲突的更改推送到 master，那么 Git 合并将再次发生冲突。你需要解决它们并重新进行回归测试。
 
-还有一些其他的合并哲学（例如，只使用合并而不使用变基以防止重写历史），其中一些甚至可能更简单易用。但是，master 分支的历史将穿插着所有同时开发的功能的提交，这样混乱的历史很难回顾。
+[本地]合并专用分支在合入[本地]master分支之前，要保证是最新的
 
-定期的变基是一个干净可靠的策略，因为提交历史日志将以有意义的功能序列进行排列（每个人的commit都是分段但是线性的排列）。
+    git checkout meg_for_v1
+    git pull --rebase  # 不制造菱形分叉
 
-#### 三.本地功能分支在合并到别的分支前压扁提交
+9.[本地]master分支合入合并专用分支，这次要制造菱形分叉
 
-参见章节[rebase -i 交互式合并commit]。
+    git checkout master
 
-【注意】
+    git merge meg_for_v1 --no-ff -m"版本v1，新增xxx功能"
 
-    仅在本地分支尚未推送或合并过的代码上做rebase合并commit 的操作
+注意：制造菱形分叉后，master分支多出来一个commit点。要在这里做标记，打版本标签，便于各版本切换
+
+10.[本地]master分支推送[远程]
+
+    git push
+
+11.[本地]master分支打标签，并推送远程
+
+    git tag -a v1.1 -m"版本v1，新增xxx功能"
+    git push origin v1.1
+
+[远程]master分支可以解锁，版本合并工作结束。
+
+10.收尾工作，分两种。
+
+如果做了第 3、4 步，则可以删除fea分支，删除meg_for_v1分支，这俩已经完成历史使命了。具体操作见前面的[删除分支，远程/本地]章节
+
+如果忽略了第 3、4 步，持续使用fea分支，则fea分支需要从远程master分支拉取合并代码，如果有合并冲突就解决掉：
+
+        git checkout master
+        git pull --rebase  # 不制造菱形分叉
+
+        git checkout fea
+        git pull --rebase  # 不制造菱形分叉
+
+        # 至少会合入主干分支上的刚生成的那个合并点
+        git rebase master  # 不制造菱形分叉
+
+        git push
+
+11.新的功能分支，从[远程]的主分支拉取建立，开始新的一轮循环。
+
+## 一个分支的变基操作：交互式压缩提交点
 
 当你在功能分支上开发时，即使再小的修改也可以作为一个提交。
 
@@ -1277,11 +1175,15 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
 通常来说，每个功能分支只应该往 master 中增加一个或几个提交。
 
-为此，你需要将多个提交 压扁(Squash)成一个或者几个带有更详细信息的提交中。
+为此，你需要将多个提交压扁(Squash)成一个或者几个带有更详细信息的提交，然后才可以推送远程，或合并到master分支。
+
+本地的commit合并，不要把所有的commit合并成一个，酌情适量的原则：
+
+    合并后，可以单独查找某个功能点或便于cherrypick某功能点
 
 通常使用以下命令来完成：
 
-    git rebase -i HEAD~20  # 查看可进行压扁的二十个提交
+    git rebase -i HEAD~20  # 查看最近二十个提交
 
 当这条命令执行后，将弹出一个提交列表的编辑器，你可以通过包括 遴选(pick)或 压扁(squash)在内的数种方式编辑它。
 
@@ -1293,7 +1195,7 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
 总之，保留所有与提交相关的操作，但在合并到 master 分支前，合并并编辑相关信息以明确意图。
 
-注意，不要在变基的过程中不小心删掉提交。
+注意：不要在变基的过程中不小心删掉提交。
 
 在执行完诸如变基之类的操作后，我会再次看看 git log 并做最终的修改：
 
@@ -1301,27 +1203,6 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
     # 提交但是不制作新的commit点（上次的变一下），适合本次和上次提交内容相近的场景
     git commit --amend  # 等价于 git rebase -i HEAD~2
-
-最后，由于重写了分支的 Git 提交历史，必须强制更新远程分支：
-
-    git push -f
-
-## 开发分支不要多制作commit点，用 commit --amend 压缩
-
-提交但是不制作新的commit点（上次的变一下），适合本次和上次提交内容相近的场景
-
-    git add .
-    git commit --amend  # 等价于 git rebase -i HEAD~2
-
-## git rebase -i 交互式合并commit
-
-### 注意【仅在本地分支 尚未推送或合并过的代码上做 合并commit 的操作】
-
-    已经推送到远端仓库的提交，如果别人都拉取开发了，你再做rebase并再次提交，之前别人拉取的内容变了，双方都得再做拉取整合。如果时间线已经是很长的了，会导致很大的混乱。
-
-    拉取到本地的最新代码，不要对之前的内容做commit合并。不然，如果推送到服务器上，之前别人拉取的内容变了，需要再次合并你的改那块内容，又是在制造混乱。
-
-    本地的commit合并，酌情适量的原则是，可以在合并后，需要某case的单独查找或cherrypick某功能点，而不要无脑全合成一个。
 
 参考
 
@@ -1335,12 +1216,28 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 进入vi后的命令：
 
     pick：保留该commit（缩写:p）
+
     reword：保留该commit，但我需要修改该commit的注释（缩写:r）
+
     edit：保留该commit, 但我要停下来修改该提交(不仅仅修改注释)（缩写:e）
+
     squash：将该commit和前一个commit合并（缩写:s）
+
     fixup：将该commit和前一个commit合并，但我不要保留该提交的注释信息（缩写:f）
+
     exec：执行shell命令（缩写:x）
+
     drop：我要丢弃该commit（缩写:d）
+
+### 对自身做变基的限制
+
+    在本地分支未推送远程仓库之前才能做
+
+    在合并到别的分支前才能做
+
+    别处合并过来的commit不要做变基
+
+参见章节[重要：git推送远程时的大忌]。
 
 ### 示例
 
@@ -1434,7 +1331,130 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
     git merge 622c01c
 
+## 重要：git推送远程时的大忌
+
+无论是代码回退，还是对分支变基，牢记一个原则：**不要变更远程仓库已存在的 commit；分支合并过来的远程其它分支的commit也不要变更**
+
+宁可新增修改也不回退或变基，如果rebase或回退了已经在远程存在的commit
+
+    如果别人拉取并基于此开发，你再做rebase并再次提交，之前别人拉取的内容变了，双方都得再做拉取整合。如果时间线已经是很长的了，会导致很大的混乱。
+
+    你拉取到本地的最新代码，不要对之前的内容做变基合并commit或回退。不然，如果推送到服务器上，之前别人拉取的内容变了，需要再次合并你改的那块内容，又是在制造混乱。
+
+如果你真的重写了分支的 Git 提交历史，推送远程会失败，只能强制更新远程分支：`git push -f`，所有之前拉取过相关代码的人员，你需要挨个通知重新拉取合并。。。
+
+更糟糕的是，如果你发现自己重写了git提交历史并推送到了远程，回退解决并再次推送远程，你以为成功解决了失误：
+
+    如果有别人已经从远程仓库拉取了最新变化，分布式存储了你的修改，你怎么回退都没用了，只要他执行push，你的变更就改回去了。这种混乱，如果项目组人数多，那是鸡飞狗跳。解决方案很复杂，见下面章节[远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1]。
+
+如果幸运，没有人新增提交，把自己的代码手工修改为最终正确的结果，作为一个新的commit再次push上去，你就装作啥也没发生。如果有人已经在你的提交基础上新增了提交，工作已经展开了，挨个给受你影响的人打电话道歉，然后通知大家再次根据你的最新代码合并分支，如果大家因此集体加班，你请大家喝咖啡，如果项目因此延期，及时通知项目经理报备。
+
+如何尽量缩小这种情况的影响范围
+
+    在管理层级上，把代码变化限制在个人和开发组的的范围。
+
+    开发组内部的版本锁定后，不回退只改bug。
+
+    开发组集成测试的各个功能点只要能通过，就锁定版本，推送上层主干分支。
+
+    如果已经推送了又想回退，分析具体问题，可以重新做新的提交再次推送，或者把问题列入版本引入bug，等下个版本再改。
+
+### 遇到提示 push -f 的时候多想想
+
+    https://www.jianshu.com/p/b03bb5f75250
+
+在推送时，尽量避免git push -f的操作，或者说git push -f是一个需要谨慎的操作，它是将本地历史覆盖到远端仓库的行为。
+
+刚才的测试中，b开发者在a进行git push -f前已经进行git pull操作，所以历史上的commit2是可以查找到，但是如果没有任何其他开发者进行pull，a再改变历史并强制推送，这部分数据就会丢失。
+
+当然也并非禁止，有时，如果代码组内review后，确认代码正确无误，保证大家未pull的情况下，强制推送后，可以保持目录树清洁。
+
+只有自己一个人使用的分支，可以自由 git push -f
+
 ## git 常用法
+
+### 切换分支checkout
+
+1.查看远程分支
+
+    $ git branch -a
+    我在mxnet根目录下运行以上命令：
+
+    ~/mxnet$ git branch -a
+    * master
+    remotes/origin/HEAD -> origin/master
+    remotes/origin/master
+    remotes/origin/nnvm
+    remotes/origin/piiswrong-patch-1
+    remotes/origin/v0.9rc1
+    可以看到，我们现在在master分支下
+
+2.查看本地分支
+
+    ~/mxnet$ git branch
+    * master
+
+3.切换分支，注意这里是在本地新建了一个分支，对应远程的某个分支名
+
+    $ git checkout -b v0.9rc1 origin/v0.9rc1
+    Branch v0.9rc1 set up to track remote branch v0.9rc1 from origin.
+    Switched to a new branch 'v0.9rc1'
+
+    ＃已经切换到v0.9rc1分支了
+    $ git branch
+    master
+    * v0.9rc1
+
+    ＃切换回master分支
+    $ git checkout master
+    Switched to branch 'master'
+    Your branch is up-to-date with 'origin/master'.
+
+### 删除分支，远程/本地
+
+0.先看看有多少本地和远程分支
+
+    git branch -a
+
+1.切换到其他分支再进行操作
+
+    git checkout master
+
+2.删除远程分支的指针而不是直接删分支，方便数据恢复。
+
+    git push origin --delete fea_xxx
+
+如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
+
+    git push origin :refs/fea_xxx
+
+用本地分支fea_-2覆盖远程分支fea_-1
+
+    git push -f origin fea_-2:refs/fea_-1
+
+对追踪分支，git push origin --delete 该命令也会删除本地-远程的追踪分支，等于还做了个
+
+    # 如果只删除追踪分支，则还需要 git remote prune 来删除追踪分支
+    git branch --delete --remotes <remote>/<branch>
+
+3.其它人的机器上还有该远程分支，清理无效远程分支
+
+    git branch -a # 查看
+
+    git fetch origin -p  # git remote prune
+
+4.删除本地
+
+    git branch -d fea_xxx
+
+### 开发分支常用 commit --amend 压缩多余的提交点
+
+注意这个要在 git push 推送远程之前做，已经推送远程的就不要改了！
+
+提交但是不制作新的commit点（上次的变一下），适合本次和上次提交内容相近的场景
+
+    git add .
+    git commit --amend  # 等价于 git rebase -i HEAD~2
 
 ### 使用标签 tag
 
@@ -1546,7 +1566,7 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
 Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803，它并不同于master分支的 4c805e2，因为这两个commit只是改动相同，但确实是两个不同的commit。用git cherry-pick，我们就不需要在dev分支上手动再把修bug的过程重复一遍。
 
-### git diff 的多种用法
+### 变更比对 diff 的多种用法
 
 git diff 主要的应用场景：
 
@@ -1727,13 +1747,7 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 情况4.不仅提交到仓库区了，还 git push 到远程仓库了
 
-不要直接回退！
-
-    如果有别人已经从远程仓库拉取了最新变化，分布式存储了你的修改，你怎么回退都没用了，只要他执行push，你的变更就改回去了。
-
-如果幸运没有人新增提交，把自己的代码手工修改为最终正确的样子，作为一个新的commit再次push上去，你就装作啥也没发生的样子。如果有人已经在你的提交基础上新增了提交，工作已经展开了，挨个给受你影响的人打电话道歉，然后通知大家再次根据你的最新代码合并分支，如果大家因此集体加班，你请大家喝咖啡，如果项目因此延期，及时通知项目经理报备。
-
-这种情况的影响范围尽量缩小，需要在管理层级上，把代码变化限制在个人和开发组的的范围，开发组内部的版本锁定后不回退只改bug。开发组集成测试的各个功能点只要能通过，就锁定版本，推送上层主干分支。如果已经推送主干又想回退，分析具体问题，把问题列入版本引入bug，下个版本再改。
+不要直接回退！参见章节[重要：git推送远程时的大忌]
 
 #### 签出指定文件
 
