@@ -1088,21 +1088,51 @@ Windows内存诊断
 
 ## 安全的使用你的 Windows 10
 
-某些信息审查工具已经渗透到了驱动程序、操作系统组件、根证书级别
+信息盗窃已经渗透到了驱动程序、操作系统组件、根证书级别
 
-    制作安装u盘时，Windows iso选择英文版，安装时区域选择“新加坡”，然后系统语言切换为简体中文，或英文版区域选美国安装后添加中文语言包再更改界面提示语言为简体中文，原因不解释。
+> 制作安装u盘时，Windows iso选择英文版，安装时区域选择“新加坡”，然后系统语言切换为简体中文，或英文版区域选美国安装后添加中文语言包再更改界面提示语言为简体中文，原因不解释。
+>
+> 实机只安装开源的应用程序。
+>
+> 淘宝等杂货铺来源的外接设备，提供的各种国内国外小公司的驱动程序，安装后**务必检查当前操作系统的信用证书，预期目的是<所有>**。
+>
+> cn程序特别是 QQ、微信、钉钉、360 等驱动程序级监控系统，或支付宝、银行、12306这样安装好几个不相关的根证书且预期目的是“所有”的，统统在虚机里安装运行。
+>
+> 如果有浏览器下载的不明来源程序，虚机里都不要用，防止它偷qq密码等，这种程序只能放在Windows沙盒里运行。
+>
+> 迷惑性比较强的国外大公司出品的cn本地化版本，比如微软cn这样合作开发出来的软件，也不要在实机里运行。
+>
+> Flash已转让给cn私企，禁用或Windows沙盒使用！
+> 中文版的FireFox等浏览器由cn公司开发，慎用！
+> 微软cn研究院出品的cn特供版的应用，比如打着edge工具的名号等，慎用！
 
-    实机只安装开源的应用程序，其它cn程序特别是 QQ、微信、钉钉、360 等驱动程序级监控系统的，统统在虚机里安装运行。
+确保 Windows 安全中心的相关设置都开启，参见上面的章节 [刚装完 Windows 10 后的一些设置] 里的“设置 Windows 安全中心”部分。
 
-    如果有浏览器下载的不明来源程序，虚机里都不要用，防止它偷qq密码等，这种程序只能放在Windows沙盒里运行。
+### 务必检查当前操作系统的信用证书
 
-    务必检查当前操作系统的信用证书，迷惑性比较强的国外大公司出品的cn本地化版本，比如微软cn这样合作开发出来的软件，务必运行：certmgr.msc，逐个检查“受信任的根证书颁发机构”，删除所有疑似跟cn相关的证书，即使来源注明是美国注册的公司，但是只要有大陆投资的，统统删除。
+运行：certmgr.msc，逐个检查“受信任的根证书颁发机构”目录，重点看**预期目的是<所有 ALL>的**。
 
-    Flash已转让给cn私企，禁用或Windows沙盒使用！
-    中文版的FireFox等浏览器由cn公司开发，慎用！
-    微软cn研究院出品的cn特供版的应用，比如打着edge工具的名号等，慎用！
+    不明来源、声誉不好的公司出品的软件，尽量在虚拟机安装使用。
 
-确保 Windows 安全中心中的相关设置都开启，参见上面的章节 [刚装完 Windows 10 后的一些设置] 里的“设置 Windows 安全中心”部分。
+    删除所有疑似跟cn相关的证书，即使来源注明是美国注册的公司，但是只要有cn投资的，统统删除，这个之前出过几次丑闻了，搜“Firefox CNNIC MCS wosign starcom OSCCA 证书” <https://zhuanlan.zhihu.com/p/34391770> <https://www.zhihu.com/question/49291684> <https://www.landian.vip/archives/15656.html>。
+
+    Mozilla Firefox 自己维护一套可信任的 CA 证书列表；而 Chrome 使用操作系统厂商维护的可信任 CA 证书列表。Firefox Fusion 甚至用洋葱，但是，Mozilla 的 CA 认证出事不止一次了（搜“Firefox 证书” <https://wiki.mozilla.org/CA%3AWoSign_Issues>），证书有问题，通信加密是完全没有作用的。
+
+根证书预期目的是“所有”的危险性，比如假造Windows系统程序，签名是微软公司官方，Windows操作系统会认可。<https://www.zhihu.com/question/50919835>。
+
+Windows 10的1607版本之后，内核模式代码似乎使用了独立的信任证书库，可防止第三方的驱动程序只要有自签名就可以加载到操作系统<https://github.com/HyperSine/Windows10-CustomKernelSigners/blob/master/README.zh-CN.md>。
+
+Windows证书的使用说明 <https://docs.microsoft.com/zh-cn/windows-hardware/drivers/install/local-machine-and-current-user-certificate-stores>
+
+微软官方操作系统根证书列表 <https://docs.microsoft.com/zh-cn/troubleshoot/windows-server/identity/trusted-root-certificates-are-required>
+
+Apple 操作系统中可用的受信任根证书 <https://support.apple.com/zh-cn/HT209143> <https://support.apple.com/en-us/HT209143>
+
+Mozilla浏览器的信任列表 <https://ccadb-public.secure.force.com/mozilla/IncludedCACertificateReport>
+
+验证
+
+    打开地址 https://www1.cnnic.cn/，如果浏览器提示不是安全连接，则你的浏览器没有使用cnnic伪造的证书或操作系统中没有该证书。
 
 ### 1. 浏览网页时防止网页偷偷改浏览器主页等坏行为
 
