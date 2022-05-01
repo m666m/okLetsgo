@@ -3,7 +3,8 @@
 ## Windows 7 最高只能使用 Python3.8
 
 windows下的python，各种命令的脚本都是cmd下的bat，如果用bash运行这些命令，有时候会出现各种提示报错信息。
-推荐windows下的python使用cmd做命令行。
+
+推荐windows下使用 cmd 命令行执行纯python操作。
 
 ## github web页面添加导航树
 
