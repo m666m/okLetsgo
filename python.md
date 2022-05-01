@@ -6,13 +6,6 @@ windows下的python，各种命令的脚本都是cmd下的bat，如果用bash运
 
 推荐windows下使用 cmd 命令行执行纯python操作。
 
-## github web页面添加导航树
-
-目前各浏览器插件都有
-
-<https://github.com/ovity/octotree>
-<https://github.com/ineo6/git-master>
-
 ## pip
 
 pip不像conda/virtualenv一样，他不知道环境！pip install 就扔到 python 的基础环境下，后来弄了个 --user 扔当前用户的目录下，所以在conda/virtualenv下使用pip需要调整参数，参见章节[确认pip下载的包的保存位置]。
