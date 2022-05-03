@@ -834,6 +834,24 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
 
 你当前文件夹下的源码会变成这个版本号的源码，比起一个个下，这种切换比较方便。
 
+### 切换到指定的提交点
+
+    # 先下载完整的git代码
+    git clone xxxx
+
+    # 查看当前有多少分支
+    git branch -a
+
+    # 切换到master分支
+    git checkout master
+
+    # 查找指定的commit点的hash值并复制
+    git log --oneline
+
+    # 从当前分支直接切换到指定的commit点
+    git reset --hard 93890e9
+
+
 #### 拉取指定分支的指定commit版本
 
 git clone 默认是取回 master 分支，可以使用 -b 参数指定的分支。 -b 参数不仅支持分支名，还支持 tag 名等。
@@ -1803,7 +1821,7 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 撤销所有修改
 
     # git checkout HEAD .
-    git chekcout .
+    git checkout .
 
 从暂存区删除指定文件，跟git add对应
 
