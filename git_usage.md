@@ -851,7 +851,6 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
     # 从当前分支直接切换到指定的commit点
     git reset --hard 93890e9
 
-
 #### 拉取指定分支的指定commit版本
 
 git clone 默认是取回 master 分支，可以使用 -b 参数指定的分支。 -b 参数不仅支持分支名，还支持 tag 名等。
