@@ -753,7 +753,8 @@ conda用“=”，pip用“==”
     # 路径名太长，改为短名
     conda config --set env_prompt '({name})'
 
-    # 执行章节 【更改conda环境下，pip包默认下载路径】
+    # 重要，一定要执行章节 【更改conda环境下，pip包默认下载路径】
+    vi site.py
 
     # 最后手动安装yml文件中用wheel安装的包
 
