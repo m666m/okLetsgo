@@ -1667,6 +1667,8 @@ git diff 主要的应用场景：
 
 <https://stackoverflow.com/questions/4944376/how-to-check-real-git-diff-before-merging-from-remote-branch>
 
+<https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E9%80%89%E6%8B%A9%E4%BF%AE%E8%AE%A2%E7%89%88%E6%9C%AC>
+
 You can use various combinations of specifiers to git to see your diffs as you desire (the following examples use the local working copy as the implicit first commit):
 
 假设某人在远程存储库中进行更改，即修改了分支并提交到远程库，下述3个使用方法有不同的效果
