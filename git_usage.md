@@ -1801,6 +1801,8 @@ HEAD 的 第三个父级
 
 ### 如何回退
 
+    https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E9%87%8D%E7%BD%AE%E6%8F%AD%E5%AF%86
+
 用户修改文件，文件的变更路径是
 
     工作区 ----> 暂存区 ----> 仓库区
@@ -1810,6 +1812,18 @@ HEAD 的 第三个父级
     仓库区 ----> 暂存区 ----> 工作区
 
 git的实际工作，修改的文件进入每个区域，都需要专门的命令
+
+                              HEAD    Index    Workdir    WD Safe?
+
+    Commit Level
+    reset --soft [commit]     REF    NO    NO    YES
+    reset [commit]    REF     YES    NO    YES
+    reset --hard [commit]     REF    YES    YES    NO
+    checkout <commit>         HEAD    YES    YES    YES
+
+    File Level
+    reset [commit] <paths>     NO    YES    NO    YES
+    checkout [commit] <paths>  NO    YES    YES    NO
 
 情况1.修改了工作区文件，没有任何 git 操作，需要从版本库HEAD指向的那个提交覆盖到工作区
 
