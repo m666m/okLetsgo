@@ -1,5 +1,7 @@
 # unix/linux 常用法
 
+    Advanced Bash-Scripting Guide https://tldp.org/LDP/abs/html/index.html
+
 ## 常用脚本收集
 
 ```shell
