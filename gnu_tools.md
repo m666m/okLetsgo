@@ -348,9 +348,11 @@ Cygwin实现，不是虚拟机那种运行时环境，它提供的是程序编�
 
 如果你只是想在Windows下使用一些linux小工具，建议用MSYS2就可以了。
 
-### Mingw
+### MinGW
 
-简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了mingw。
+此项目已停止维护。
+
+简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了Mingw。
 比如 CodeLite，CodeBlocks，Eclipse CDT，Apache NetBeans（JDK 8）。
 收费的有JetBrains Clion，AppCode （mac）。
 
@@ -385,8 +387,95 @@ paste it at the very start of the Variable Value text entry.
 
 Click OK (3 times).
 
-### Mingw-w64
+### MinGW64
 
 MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接口协议是 win32，异常处理模型是 seh，Build revision 是 1 。
 
 ### Cygwin Msys Msys2
+
+如果只需要一个编译器的话，可以用MinGW64。不过总体来说还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman作为包管理器。
+
+下载 <https://www.msys2.org/>
+
+安装后先pacman更换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，在windows下是msys的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
+
+依次添加
+
+    编辑 /etc/pacman.d/mirrorlist.msys ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/msys/$arch/
+        Server = http://mirrors.ustc.edu.cn/msys2/msys/$arch/
+
+    编辑 /etc/pacman.d/mirrorlist.mingw32 ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/i686/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/i686/
+
+    编辑 /etc/pacman.d/mirrorlist.mingw64 ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/x86_64/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/x86_64/
+
+    编辑 /etc/pacman.d/mirrorlist.ucrt64 ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/ucrt64/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/ucrt64/
+
+    编辑 /etc/pacman.d/mirrorlist.clang64 ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/clang64/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/clang64/
+
+然后Windows执行开始菜单的快捷方式 MSYS2 MSYS 以打开命令行，更新软件包数据（以后可以使用 MSYS2 MinGW X64）
+
+    # pacman -Sy
+    :: Synchronizing package databases...
+    mingw32              1594.6 KiB   729 KiB/s 00:02 [#####################] 100%
+    mingw64              1604.5 KiB   494 KiB/s 00:03 [#####################] 100%
+    ucrt64               1663.1 KiB   985 KiB/s 00:02 [#####################] 100%
+    clang32              1556.7 KiB   400 KiB/s 00:04 [#####################] 100%
+    clang64              1587.3 KiB   532 KiB/s 00:03 [#####################] 100%
+    msys                  384.9 KiB   293 KiB/s 00:01 [#####################] 100%
+
+    # 更新核心软件包
+    # pacman -Su
+
+该软件安装后，根目录位于msys2的安装目录 msys64\，默认的home目录位于下的 msys64\home\%USERNAME% 下，不会干扰当前操作系统用户目录下的配置文件。安装时的提示
+
+    './.bashrc' -> '/home/sweethome/.bashrc'
+    './.bash_logout' -> '/home/sweethome/.bash_logout'
+    './.bash_profile' -> '/home/sweethome/.bash_profile'
+    './.inputrc' -> '/home/sweethome/.inputrc'
+    './.profile' -> '/home/sweethome/.profile'
+    'C:\Windows\system32\drivers\etc\hosts' -> '/etc/hosts'
+    'C:\Windows\system32\drivers\etc\protocol' -> '/etc/protocols'
+    'C:\Windows\system32\drivers\etc\services' -> '/etc/services'
+    'C:\Windows\system32\drivers\etc\networks' -> '/etc/networks'
+
+msys2在开始菜单下的好几个版本是因为编译器和链接的windows的c库不同
+
+    官方解释 <https://www.msys2.org/docs/environments/>
+
+    clang 和 mingw(gcc) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个用的话就 mingw64 就没问题。
+
+    具体区别是：mingw64 与 ucrt64 都是用 mingw64 编译器编译的 Windows 64位程序，只不过它们链接到的 crt（C runtime）不同， mingw64 是链接到了 msvcrt ，而 ucrt64 则是链接到了 Windows 10+ 上新的 ucrt 上。而 clang64 很好理解，就是用 clang 而非 mingw 来编译各种库，另外它也是链接到了 ucrt 而非 msvcrt。
+
+    引自 <https://www.zhihu.com/question/463666011/answer/1927907983>
+
+基于 Arch Linux 的 pacman 提供软件仓库，采用滚动升级模式，初始安装仅提供命令行环境：用户不需要删除大量不需要的软件包，而是可以从官方软件仓库成千上万的高质量软件包中进行选择，搭建自己的系统。
+
+pacman命令较多，作为新手，将个人最常用的命令总结如下：
+
+    pacman -Sy :更新软件包数据
+    pacman -Su :更新核心软件包
+    # pacman -Syu: 升级系统及所有已经安装的软件。
+    pacman -S 软件名: 安装软件。也可以同时安装多个包，只需以空格分隔包名即可。
+    pacman -Rs 软件名: 删除软件，同时删除本机上只有该软件依赖的软件。
+    pacman -Ru 软件名: 删除软件，同时删除不再被任何软件所需要的依赖。
+    pacman -Ssq 关键字: 在仓库中搜索含关键字的软件包，并用简洁方式显示。
+    pacman -Qs 关键字: 搜索已安装的软件包。
+    pacman -Qi 软件名: 查看某个软件包信息，显示软件简介,构架,依赖,大小等详细信息。
+    pacman -Sg: 列出软件仓库上所有的软件包组。
+    pacman -Sg 软件包组: 查看某软件包组所包含的所有软件包。
+    pacman -Sc：清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
+    pacman -Scc：清理所有的缓存文件。
