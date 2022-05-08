@@ -1250,9 +1250,9 @@ WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的li
 
 WSL 2 在底层使用虚拟机（Hyper-V）同时运行linux内核和Windows内核，并且把Linux 完全集成到了 Windows 中，即使用起来就像在 Windows 中直接运行 linux 程序。
 
-缺点是IO不如 WSL 1 快，见下面章节[跨Windows和Linux文件系统]
+缺点是IO不如 WSL 1 快，见下面章节[混合使用 Windows 和 Linux 进行工作]。
 
-开发工具可以使用 Virsual Studio Code，支持直接打开 WSL 虚机，就像连接 Docker 虚机或远程连接 SSH 服务器一样简单。其它开发工具如 git、docker、数据库、vGpu 加速（<https://developer.nvidia.com/cuda/wsl> ）等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/setup/environment>
+开发工具可以使用 Virsual Studio Code，支持直接打开 WSL 虚机，就像连接 Docker 虚机或远程连接 SSH 服务器一样简单。其它开发工具如 git、docker、数据库、vGpu 加速（<https://developer.nvidia.com/cuda/wsl> ）等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/setup/environment>。
 
 简单使用 Ubuntu 就一条命令
 
