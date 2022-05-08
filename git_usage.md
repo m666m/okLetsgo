@@ -58,7 +58,7 @@ git通过ssh客户端连接github。除了github这样的，私有仓库都需�
 
 添加本机用户的公钥到远程仓库git用户的认证密钥文件中，以便后续ssh免密登陆
 
-    ssh-copy-id -i ~/.ssh/id_ed25519.pub -p 2345 git@x.x.x.x
+    ssh-copy-id -i ~/.ssh/id_ed25519.pub -p 2345 git@xx.xx.xx.xx
 
 ### 2.设置 gitub 使用 ssh 密钥方式管理代码库
 
@@ -160,25 +160,25 @@ git做操作之前或操作之后，查看当前的git状态
 
 方法一、推送命令只会推送到默认的origin地址，其他的各个server1，2，3得再挨个执行push命令
 
-    git remote add server1 ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
+    git remote add server1 ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
 
-    git remote add server2 ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
+    git remote add server2 ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
 
-    git remote add server3 ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
+    git remote add server3 ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
 
     git push server1 master
 
     git push server1 developer
 
-方法二、省事的方法，给origin添加多个远程地址，默认fetch还是origin最早添加的地址，但是push地址变成了多个
+方法二、省事的方法，给origin添加多个push远程地址(upstream)，默认fetch还是origin最早添加的地址
 
-    git remote set-url --add origin ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
+    git remote set-url --add origin ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
 
     $ git remote show origin
     * remote origin
     Fetch URL: git@github.com:m666m/project_name.git
     Push  URL: git@github.com:m666m/project_name.git
-    Push  URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
+    Push  URL: ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
     HEAD branch: main
     Remote branch:
         main tracked
@@ -188,9 +188,9 @@ git做操作之前或操作之后，查看当前的git状态
         main pushes to main (up to date)
 
     $ git remote -v
-    origin  ssh://git@a.a.a.a:22/uspace/gitrepo/project_name.git (fetch)
-    origin  ssh://git@a.a.a.a:22/uspace/gitrepo/project_name.git (push)
-    origin  ssh://git@b.b.b.b:22/uspace/gitrepo/project_name.git (push)
+    origin  git@github.com:m666m//project_name.git (fetch)
+    origin  git@github.com:m666m//project_name.git (push)
+    origin  ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git (push)
 
 添加后，本地项目中的.git/config 对应内容如下
 
@@ -198,11 +198,11 @@ git做操作之前或操作之后，查看当前的git状态
         url = git@github.com:m666m/project_name.git
         fetch = +refs/heads/*:refs/remotes/origin/*
         # url = https://github.com/m666m/project_name.git
-        url = ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
+        url = ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
 
 如果想删除
 
-    git remote set-url --delete origin ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
+    git remote set-url --delete origin ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
 
 2、一个本地库同步到另外两个远程库，不使用origin
 
@@ -273,7 +273,7 @@ git做操作之前或操作之后，查看当前的git状态
 
 git clone 命令正常拉取
 
-    git clone ssh://git@x.x.x.x:2345/gitrepo/tea.git
+    git clone ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
 
     # Ipv6 用标准的中括号方式：
     #
@@ -300,7 +300,7 @@ git clone 命令正常拉取
     $ git init
     Initialized empty Git repository in C://tea/.git/
 
-    $ git remote add origin ssh://git@x.x.x.x:2345/gitrepo/tea.git
+    $ git remote add origin ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
 
 3.本地操作，先提交个文件，推送远程，否则直接pull会各种报错
 
@@ -324,8 +324,8 @@ git clone 命令正常拉取
 
     $ git remote show origin
     * remote origin
-      Fetch URL: ssh://git@x.x.x.x:2345/gitrepo/tea.git
-      Push  URL: ssh://git@x.x.x.x:2345/gitrepo/tea.git
+      Fetch URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
+      Push  URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
       HEAD branch: master
       Remote branch:
         master tracked
@@ -359,14 +359,14 @@ git clone 命令正常拉取
 
 本地先 git init，然后
 
-    git remote add origin ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
+    git remote add origin ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/okletgo.git
 
 这时显示结果
 
     $ git remote show origin
     * remote origin
-    Fetch URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
-    Push  URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
+    Fetch URL: ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/okletgo.git
+    Push  URL: ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/okletgo.git
     HEAD branch: (unknown)
 
 把文件都push上去，会提示没有上游分支，直接推。
@@ -375,8 +375,8 @@ git clone 命令正常拉取
 
     $ git remote show origin
     * remote origin
-    Fetch URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
-    Push  URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/okletgo.git
+    Fetch URL: ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/okletgo.git
+    Push  URL: ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/okletgo.git
     HEAD branch: master
     Remote branch:
         master tracked
