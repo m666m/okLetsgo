@@ -152,7 +152,7 @@ git做操作之前或操作之后，查看当前的git状态
 
 远程仓库地址格式
 
-    ssh://git@xx.xx.xx.xx:2345/gitrepo/myproj.git
+    ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/myproj.git
 
     git@github.com:m666m/okLetsgo.git
 
@@ -160,25 +160,25 @@ git做操作之前或操作之后，查看当前的git状态
 
 方法一、推送命令只会推送到默认的origin地址，其他的各个server1，2，3得再挨个执行push命令
 
-    git remote add server1 ssh://git@x.x.x.x:2345/gitrepo/project_name.git
+    git remote add server1 ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
 
-    git remote add server2 ssh://git@x.x.x.x:2345/gitrepo/project_name.git
+    git remote add server2 ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
 
-    git remote add server3 ssh://git@x.x.x.x:2345/gitrepo/project_name.git
+    git remote add server3 ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
 
     git push server1 master
 
     git push server1 developer
 
-方法二、省事的方法，给origin添加多个远程地址，默认fetch还是origin最早添加的地址，push地址变成了多个
+方法二、省事的方法，给origin添加多个远程地址，默认fetch还是origin最早添加的地址，但是push地址变成了多个
 
-    git remote set-url --add origin ssh://git@x.x.x.x:2345/gitrepo/project_name.git
+    git remote set-url --add origin ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
 
     $ git remote show origin
     * remote origin
     Fetch URL: git@github.com:m666m/project_name.git
     Push  URL: git@github.com:m666m/project_name.git
-    Push  URL: ssh://git@x.x.x.x:2345/gitrepo/project_name.git
+    Push  URL: ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
     HEAD branch: main
     Remote branch:
         main tracked
@@ -187,17 +187,22 @@ git做操作之前或操作之后，查看当前的git状态
     Local ref configured for 'git push':
         main pushes to main (up to date)
 
+    $ git remote -v
+    origin  ssh://git@a.a.a.a:22/uspace/gitrepo/project_name.git (fetch)
+    origin  ssh://git@a.a.a.a:22/uspace/gitrepo/project_name.git (push)
+    origin  ssh://git@b.b.b.b:22/uspace/gitrepo/project_name.git (push)
+
 添加后，本地项目中的.git/config 对应内容如下
 
     [remote "origin"]
         url = git@github.com:m666m/project_name.git
         fetch = +refs/heads/*:refs/remotes/origin/*
         # url = https://github.com/m666m/project_name.git
-        url = ssh://git@x.x.x.x:2345/gitrepo/project_name.git
+        url = ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
 
 如果想删除
 
-    git remote set-url --delete origin --push origin ssh://git@x.x.x.x:2345/gitrepo/project_name.git
+    git remote set-url --delete origin ssh://git@x.x.x.x:2345/uspace/gitrepo/project_name.git
 
 2、一个本地库同步到另外两个远程库，不使用origin
 
