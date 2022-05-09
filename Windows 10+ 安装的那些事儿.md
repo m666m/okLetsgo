@@ -640,13 +640,15 @@ Windows Registry Editor Version 5.00
 
     最终启用右键单击：“读取和更改站点数据”配置为“单击扩展时”
 
-    Git Master 在 github web页面添加导航树：“读取和更改站点数据”配置仅读取 github、gitee、gitlab站点
-    <https://github.com/ineo6/git-master>
-    <https://github.com/ovity/octotree>
+    Git Master 在 github web页面添加导航树：“读取和更改站点数据”配置仅读取 github、gitee、gitlab 站点
+        https://github.com/ineo6/git-master
+    同类还有 https://github.com/ovity/octotree
 
     smartUp 手势：配置中增加“摇杆手势”
+        https://github.com/zimocode/smartup
+    同类有个 clean crxMouse Gestures 但是没有开源且不更新了。
 
-    Aria2 for Edge：“读取和更改站点数据”配置为“单击扩展时”，配合开源的使用aria2的下载程序[Motrix](https://github.com/agalwood/)，打开rpc，端口统一16800，设置相同的api key。
+    Aria2 for Edge：“读取和更改站点数据”配置为“单击扩展时”，配合开源的使用aria2的下载程序[Motrix](https://github.com/agalwood/Motrix/)，打开rpc，端口统一16800，设置相同的api key。
 
 ### 关闭附件管理器检查
 

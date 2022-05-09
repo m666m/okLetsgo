@@ -46,6 +46,12 @@ You can install the whole distribution of the tools from <https://www.msys2.org/
 
 ## Linux下常用工具
 
+### Aria2 下载工具
+
+命令行传输各种参数，设置复杂，Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳dht站点清单。
+
+    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\ThinkRight\AppData\Roaming\Motrix\download.session --input-file=C:\Users\ThinkRight\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce,udp://45.154.253.8:6969/announce,http://45.154.253.8:80/announce,udp://51.81.46.170:6969/announce,udp://91.216.110.52:451/announce,udp://185.181.60.155:80/announce,udp://208.83.20.20:6969/announce,udp://149.202.88.193:80/announce,udp://5.79.251.251:6969/announce,udp://5.161.62.40:6969/announce,udp://217.30.10.52:6969/announce,udp://149.28.47.87:1738/announce,udp://163.172.209.40:80/announce,udp://156.234.201.18:80/announce,udp://62.210.217.207:1337/announce,udp://209.141.59.16:6969/announce,udp://106.14.254.164:6969/announce,udp://tracker.opentrackr.org:1337/announce,udp://9.rarbg.com:2810/announce,udp://tracker.openbittorrent.com:6969/announce,http://tracker.openbittorrent.com:80/announce,udp://opentracker.i2p.rocks:6969/announce,https://opentracker.i2p.rocks:443/announce,udp://www.torrent.eu.org:451/announce,udp://tracker.torrent.eu.org:451/announce,udp://open.stealth.si:80/announce,udp://exodus.desync.com:6969/announce,udp://ipv4.tracker.harry.lu:80/announce,udp://tracker.tiny-vps.com:6969/announce,udp://tracker.moeking.me:6969/announce,udp://tracker.dler.org:6969/announce,udp://vibe.sleepyinternetfun.xyz:1738/announce,udp://tracker2.dler.org:80/announce,udp://tracker1.bt.moack.co.kr:80/announce,udp://tracker.zerobytes.xyz:1337/announce,udp://tracker.theoks.net:6969/announce,udp://tracker.skyts.net:6969/announce --continue=true --dht-file-path=C:\Users\ThinkRight\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\ThinkRight\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\ThinkRight\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiORlwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+
 ### tmux
 
 开启tmux后，一个session管理多个window，每个window都有一个shell。
