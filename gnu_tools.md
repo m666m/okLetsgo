@@ -328,7 +328,7 @@ Cygwin 生成的程序依然有 fork() 这样的 Linux 系统调用，但目标�
 
 Cygwin（POSIX接口转换后操作windows）在Windows中增加了一个中间层——兼容POSIX的模拟层，在此基础上构建了大量Linux-like的软件工具，由此提供了一个完整的 POSIX Linux 环境（以 GNU 工具为代表），模拟层对linux c++代码的接口如同 UNIX 一样， 对Windows由 win32 的 API 实现的cygwin1.dll，这就是 Cygwin 的做法。
 
-Cygwin实现，不是虚拟机那种运行时环境，它提供的是程序编译时的模拟层环境：exe调用通过它的中间层dll转换为对windows操作系统的调用。
+Cygwin实现，不是 kvm 虚拟机环境，也不是 QEMU 那种运行时模拟，它提供的是程序编译时的模拟层环境：exe调用通过它的中间层dll转换为对windows操作系统的调用。
 
 借助它不仅可以在 Windows 平台上使用 GCC 编译器，理论上可以在编译后运行 Linux 平台上所有的程序：GNU、UNIX、Linux软件的c++源代码几乎不用修改就可以在Cygwin环境中编译构建，从而在windows环境下运行。
 
@@ -336,9 +336,10 @@ Cygwin实现，不是虚拟机那种运行时环境，它提供的是程序编�
 
 用 MingW 编译的程序性能会高一点，而且也不用带着那个接近两兆的 cygwin1.dll 文件。
 但 Cygwin 对 Linux 的模拟比较完整，甚至有一个 Cygwin X 的项目，可以直接用 Cygwin 跑 X。
+
 另外 Cygwin 可以设置 -mno-cygwin 的 flag，来使用 MingW 编译。
 
-#### 取舍
+#### 取舍：选 MSYS2
 
 如果仅需要在 Windows 平台上使用 GCC，可以使用 MinGW 或者 Cygwin。
 
@@ -346,15 +347,11 @@ Cygwin实现，不是虚拟机那种运行时环境，它提供的是程序编�
 
 相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具，目前流行的 MSYS2 是 MSYS 的一个升级版，准确的说是集成了 pacman 和 Mingw-w64 的 Cygwin 升级版。把 /usr/bin 加进环境变量 path 以后，可以直接在 cmd 中使用 Linux 命令。
 
-如果你只是想在Windows下使用一些linux小工具，建议用MSYS2就可以了。
+如果你只是想在Windows下使用一些linux小工具，建议用 MSYS2 就可以了。
 
 ### MinGW
 
 此项目已停止维护。
-
-简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了Mingw。
-比如 CodeLite，CodeBlocks，Eclipse CDT，Apache NetBeans（JDK 8）。
-收费的有JetBrains Clion，AppCode （mac）。
 
 <https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html>
 
@@ -391,9 +388,13 @@ Click OK (3 times).
 
 MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接口协议是 win32，异常处理模型是 seh，Build revision 是 1 。
 
-### Cygwin Msys Msys2
+简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了Mingw。
+比如 CodeLite，CodeBlocks，Eclipse CDT，Apache NetBeans（JDK 8）。
+收费的有JetBrains Clion，AppCode （mac）。
 
-如果只需要一个编译器的话，可以用MinGW64。不过总体来说还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman作为包管理器。
+### MSYS2(Cygwin Msys)
+
+如果只是需要一个编译器的话，可以用MinGW64。不过总体来说还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman (ArcLinux)作为包管理器。
 
 下载 <https://www.msys2.org/>
 
@@ -426,7 +427,7 @@ MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接�
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/clang64/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/clang64/
 
-然后Windows执行开始菜单的快捷方式 MSYS2 MSYS 以打开命令行，更新软件包数据（以后可以使用 MSYS2 MinGW X64）
+然后Windows执行开始菜单的快捷方式 MSYS2 MSYS 以打开命令行，更新软件包数据（之后可以使用 MSYS2 MinGW X64）
 
     # pacman -Sy
     :: Synchronizing package databases...
@@ -440,13 +441,23 @@ MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接�
     # 更新核心软件包
     # pacman -Su
 
-该软件安装后，根目录位于msys2的安装目录 msys64\，默认的home目录位于下的 msys64\home\%USERNAME% 下，不会干扰当前操作系统用户目录下的配置文件。安装时的提示
+该软件安装后，使用的Linux目录结构跟Windows目录的对应关系
 
-    './.bashrc' -> '/home/sweethome/.bashrc'
-    './.bash_logout' -> '/home/sweethome/.bash_logout'
-    './.bash_profile' -> '/home/sweethome/.bash_profile'
-    './.inputrc' -> '/home/sweethome/.inputrc'
-    './.profile' -> '/home/sweethome/.profile'
+    / 目录位于msys2的安装目录 msys64\
+    /home 目录对应 msys64\home\%USERNAME%
+    /tmp 目录对应 C:\Users\%USERNAME%\AppData\Local\Temp
+
+环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件。
+
+如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的bash、mintty等配置文件，注意区分。
+
+安装时的提示
+
+    './.bashrc' -> '/home/%USERNAME%/.bashrc'
+    './.bash_logout' -> '/home/%USERNAME%/.bash_logout'
+    './.bash_profile' -> '/home/%USERNAME%/.bash_profile'
+    './.inputrc' -> '/home/%USERNAME%/.inputrc'
+    './.profile' -> '/home/%USERNAME%/.profile'
     'C:\Windows\system32\drivers\etc\hosts' -> '/etc/hosts'
     'C:\Windows\system32\drivers\etc\protocol' -> '/etc/protocols'
     'C:\Windows\system32\drivers\etc\services' -> '/etc/services'
