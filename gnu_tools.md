@@ -303,6 +303,16 @@ Linux
     # 抽出单个文件进行校验
     sha256sum -c <(grep ubuntu-20.04.4-desktop-amd64.iso SHA256SUMS.txt)
 
+使用 OpenSSL 验证
+
+    # 主要用于数据摘要，可指定各种算法查看 openssl dgst -list
+    $ openssl dgst -sha256 Release.unsigned
+    SHA256(Release.unsigned)= f6edd059408744b50edc911111111113eeef30dc5fea0
+
+    # 跟校验和文件比对数值
+    $ grep f6edd059408744b50edc911111111113eeef30dc5fea0 *dgst
+    SHA256= f6edd059408744b50edc911111111113eeef30dc5fea0
+
 ## GNU POSIX环境开发
 
 windows c++环境配置：
