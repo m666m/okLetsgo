@@ -63,7 +63,7 @@ cron中的环境变量很多都和系统环境变量不一样（cron会忽略/et
 
     aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\ThinkRight\AppData\Roaming\Motrix\download.session --input-file=C:\Users\ThinkRight\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce,udp://45.154.253.8:6969/announce,http://45.154.253.8:80/announce,udp://51.81.46.170:6969/announce,udp://91.216.110.52:451/announce,udp://185.181.60.155:80/announce,udp://208.83.20.20:6969/announce,udp://149.202.88.193:80/announce,udp://5.79.251.251:6969/announce,udp://5.161.62.40:6969/announce,udp://217.30.10.52:6969/announce,udp://149.28.47.87:1738/announce,udp://163.172.209.40:80/announce,udp://156.234.201.18:80/announce,udp://62.210.217.207:1337/announce,udp://209.141.59.16:6969/announce,udp://106.14.254.164:6969/announce,udp://tracker.opentrackr.org:1337/announce,udp://9.rarbg.com:2810/announce,udp://tracker.openbittorrent.com:6969/announce,http://tracker.openbittorrent.com:80/announce,udp://opentracker.i2p.rocks:6969/announce,https://opentracker.i2p.rocks:443/announce,udp://www.torrent.eu.org:451/announce,udp://tracker.torrent.eu.org:451/announce,udp://open.stealth.si:80/announce,udp://exodus.desync.com:6969/announce,udp://ipv4.tracker.harry.lu:80/announce,udp://tracker.tiny-vps.com:6969/announce,udp://tracker.moeking.me:6969/announce,udp://tracker.dler.org:6969/announce,udp://vibe.sleepyinternetfun.xyz:1738/announce,udp://tracker2.dler.org:80/announce,udp://tracker1.bt.moack.co.kr:80/announce,udp://tracker.zerobytes.xyz:1337/announce,udp://tracker.theoks.net:6969/announce,udp://tracker.skyts.net:6969/announce --continue=true --dht-file-path=C:\Users\ThinkRight\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\ThinkRight\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\ThinkRight\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiORlwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
-### tmux
+### tmux 不怕断连的多窗口命令行
 
 开启tmux后，一个session管理多个window，每个window都有一个shell。
 任意的非tmux shell可以attach到你的session。
@@ -202,7 +202,9 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
 ### Windows下 的 bash -- mintty
 
-安装git后就有了，windows下的配置文件 ~\.minttyrc
+    http://mintty.github.io/
+
+安装 git for Windows 或 MSYS2 后就有了，git for Windows下的配置文件在 ~\.minttyrc，MSYS2的见下面章节[MSYS2(Cygwin Msys)]。
 
     Background=C:\Users\xxxx\Pictures\1111111111.jpg
     Font=Consolas
@@ -248,9 +250,10 @@ putty的退出也是同样的建议。
 
 ### cmatrix 字符屏保
 
-<https://magiclen.org/cmatrix/>
+    https://magiclen.org/cmatrix/
+        https://github.com/abishekvashok/cmatrix
 
-+ Ubuntu
++ Debian / Ubuntu
 
         sudo apt install cmatrix
 
