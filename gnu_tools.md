@@ -44,6 +44,17 @@ You can install the whole distribution of the tools from <https://www.msys2.org/
 
     tracert www.bing.com
 
+## crontab
+
+    https://www.cnblogs.com/pengdonglin137/p/3625018.html
+    https://www.cnblogs.com/utopia68/p/12221769.html
+    https://blog.csdn.net/zhubin215130/article/details/43271835
+    https://segmentfault.com/a/1190000020850932
+
+坑一：环境变量是单独的
+
+cron中的环境变量很多都和系统环境变量不一样（cron会忽略/etc/environment文件），尤其是PATH，只有/usr/bin:/bin，也就是说在cron中运行shell命令，如果不是全路径，只能运行/usr/bin或/bin这两个目录中的标准命令，而像/usr/sbin、/usr/local/bin等目录中的非标准命令是不能运行的。
+
 ## Linux下常用工具
 
 ### Aria2 下载工具
