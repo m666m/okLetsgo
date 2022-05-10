@@ -4,6 +4,8 @@
 
 ## 常用脚本收集
 
+目录 shell_script 下是写的不错的脚本示例。
+
 ```shell
 #!/usr/bin/env python3  # 按照PATH寻找第一个python3程序来执行
 #!/bin/bash
