@@ -4,7 +4,10 @@
 
 ## 常用脚本收集
 
-目录 shell_script 下是写的不错的脚本示例。
+目录 shell_script 下是写的不错的脚本示例
+
+    https://github.com/jacyl4/de_GWD
+    https://github.com/acmesh-official/acme.sh
 
 ```shell
 #!/usr/bin/env python3  # 按照PATH寻找第一个python3程序来执行
