@@ -1,15 +1,18 @@
-# 常用GNU环境的使用
+# Windows GNU/POSIX 环境
 
-## Windows 10+ 下开发 GNU 环境设置
+## 多种环境方案
+
+Windows 10+ 下开发 GNU 环境设置
 
     https://github.com/hsab/WSL-config
 
-## GNU POSIX环境开发
+Windows c++ 开发环境配置
 
-windows c++环境配置：
-g++7.0 + git + cmake
-code::block / vscode
-库 toft + chrome + leveldb + folly + zeromq
+    g++7.0 + git + cmake
+
+    code::block / vscode
+
+    库 toft + chrome + leveldb + folly + zeromq
 
 <https://zhuanlan.zhihu.com/p/56572298>
 
@@ -97,15 +100,19 @@ MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接�
 
 MinGW 仅仅是工具链，Windows 下的 cmd 使用起来不够方便，MSYS 是用于辅助 Windows 版 MinGW 进行命令行开发的配套软件包：提供了部分 Unix 工具以使得 MinGW 的工具使用起来方便一些。相比基于庞大的 Cygwin 下的 MinGW 会轻巧不少。
 
-### MSYS2(Cygwin Msys)
+### 【推荐】MSYS2(Cygwin/Msys)
+
+    Windows上msys2配置及填坑 https://hustlei.github.io/2018/11/msys2-for-win.html
 
 MSYS2，MSYS 的第二代，有大量预编译的软件包，并且具有包管理器 pacman (ArchLinux)。
 
-目前2022年在windows上使用Linux程序
+目前在windows上使用Linux程序
 
-如果只是需要一个编译器的话，可以用MinGW64。
+    如果只是需要一个编译器的话，可以用MinGW64。
 
-如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman (ArcLinux)作为包管理器。
+    如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman (ArcLinux)作为包管理器。
+
+    Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发使用 WSL2 也可以。
 
 下载 <https://www.msys2.org/>
 
@@ -152,17 +159,7 @@ MSYS2，MSYS 的第二代，有大量预编译的软件包，并且具有包管�
     # 更新核心软件包
     # pacman -Su
 
-该软件安装后，使用的Linux目录结构跟Windows目录的对应关系
-
-    / 目录位于msys2的安装目录 msys64\
-    /home 目录对应 msys64\home\%USERNAME%
-    /tmp 目录对应 C:\Users\%USERNAME%\AppData\Local\Temp
-
-环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件。
-
-如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的bash、mintty等配置文件，注意区分。
-
-安装时的提示
+安装时对一些文件链接的提示
 
     './.bashrc' -> '/home/%USERNAME%/.bashrc'
     './.bash_logout' -> '/home/%USERNAME%/.bash_logout'
@@ -174,6 +171,16 @@ MSYS2，MSYS 的第二代，有大量预编译的软件包，并且具有包管�
     'C:\Windows\system32\drivers\etc\services' -> '/etc/services'
     'C:\Windows\system32\drivers\etc\networks' -> '/etc/networks'
 
+该软件安装后，使用的Linux目录结构跟Windows目录的对应关系
+
+    / 目录          位于msys2的安装目录 msys64\
+    /home 目录      对应 msys64\home\%USERNAME%
+    /tmp 目录       对应 C:\Users\%USERNAME%\AppData\Local\Temp
+
+环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件。
+
+如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的bash、mintty等配置文件，注意区分。
+
 msys2在开始菜单下的好几个版本是因为编译器和链接的windows的c库不同
 
     官方解释 <https://www.msys2.org/docs/environments/>
@@ -183,6 +190,30 @@ msys2在开始菜单下的好几个版本是因为编译器和链接的windows�
     具体区别是：mingw64 与 ucrt64 都是用 mingw64 编译器编译的 Windows 64位程序，只不过它们链接到的 crt（C runtime）不同， mingw64 是链接到了 msvcrt ，而 ucrt64 则是链接到了 Windows 10+ 上新的 ucrt 上。而 clang64 很好理解，就是用 clang 而非 mingw 来编译各种库，另外它也是链接到了 ucrt 而非 msvcrt。
 
     引自 <https://www.zhihu.com/question/463666011/answer/1927907983>
+
+msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递了变量 set MSYSTEM=xxxx，msys2_shell.cmd启动时，都默认使用mintty虚拟终端。
+
+    # c:\msys64为msys2安装目录，bash为默认shell，可以用zsh,csh等替换
+    set MSYSTEM=MINGW64
+    "c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
+
+自己运行Msys2时可以不使用mintty虚拟终端。直接运行如下命令就OK：
+
+```bat
+    rem 启动MSYS2 MSYS2
+    set MSYSTEM=MSYS
+    "c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
+
+    rem 启动MSYS2 MINGW32
+    set MSYSTEM=MINGW32
+    "c:\msys64\usr\bin\bash" --login
+
+    rem 启动MSYS2 MINGW64
+    set MSYSTEM=MINGW64
+    "c:\msys64\usr\bin\bash" --login
+```
+
+#### 软件仓库 pacman
 
 基于 Arch Linux 的 pacman 提供软件仓库，采用滚动升级模式，初始安装仅提供命令行环境：用户不需要删除大量不需要的软件包，而是可以从官方软件仓库成千上万的高质量软件包中进行选择，搭建自己的系统。
 
@@ -201,6 +232,52 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     pacman -Sg 软件包组: 查看某软件包组所包含的所有软件包。
     pacman -Sc：清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
     pacman -Scc：清理所有的缓存文件。
+
+### 使用 zsh + ohmyzsh
+
+    https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
+
+切换zsh： chsh -s /bin/zsh
+
+在MSYS2下简单使用： `exec zsh`
+
+如果是初次运行zsh，有个引导程序设置zsh读取的配置文 ~/.zshrc 文件，也可以手动调用
+
+    autoload -Uz zsh-newuser-install
+
+    zsh-newuser-install -f
+
+如果之前使用bash，在 ~/.zshrc 文件中加上`source ~/.bash_profile`，可以继承 bash的配置文件 ~/.bash_profile 内容。
+
+超多插件和主题的 ohmyzsh
+
+    https://github.com/ohmyzsh/ohmyzsh/wiki/Customization#overriding-and-adding-themes
+
+    内置主题 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+    更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
+                https://github.com/unixorn/awesome-zsh-plugins
+
+    https://github.com/hsab/WSL-config/mintty/themes
+
+<https://github.com/caiogondim/bullet-train.zsh>
+![Bullet train](https://camo.githubusercontent.com/3ce1f2e157549ff5ce549af57e3e635b4b85c5919c48223d7e963e98c2613e2e/687474703a2f2f7261772e6769746875622e636f6d2f6361696f676f6e64696d2f62756c6c65742d747261696e2d6f682d6d792d7a73682d7468656d652f6d61737465722f696d672f707265766965772e676966)
+
+安装依赖
+
+    有些插件和主题依赖 python
+
+    # https://github.com/zsh-users/antigen/wiki/Installation
+    sudo apt install zsh-antigen
+
+    # https://github.com/caiogondim/bullet-train.zsh
+    # BULLETTRAIN_CONTEXT_BG=yellow
+    sudo apt install ttf-ancient-fonts
+
+定制主题文件位置
+
+    $ZSH_CUSTOM
+    └── themes
+        └── my_awesome_theme.zsh-theme
 
 ## Windows下配置GNU环境
 
@@ -251,14 +328,12 @@ You can install the whole distribution of the tools from <https://www.msys2.org/
 
 如果在安装 MSYS2 之前已经安装 git for windows 需要使用将之前的 ssh 和 git 的配置拷贝到 MSYS2 的 home 目录下。
 
-## Linux下常用工具
-
 ### Windows下 的 bash -- mintty
 
     http://mintty.github.io/
     https://github.com/mintty/mintty/wiki/Tips
 
-安装 git for Windows 或 MSYS2 后就有了，git for Windows下的配置文件在 ~\.minttyrc，MSYS2的见下面章节[MSYS2(Cygwin Msys)]。
+安装 git for Windows 或 MSYS2 后就有了，git for Windows下的配置文件在 ~\.minttyrc，MSYS2的见章节[MSYS2(Cygwin/Msys)]。
 
     Background=C:\Users\xxxx\Pictures\1111111111.jpg
     Font=Consolas
@@ -321,47 +396,37 @@ mintty 美化
     White=171,178,191
     BoldAsFont=yes
 
-#### 使用 zsh + ohmyzsh
+#### 多终端工具 ConEmu/SuperPutty
 
-    https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
+SuperPutty 支持putty、mintty、cmd、powershell等多种终端嵌入显示，可导入putty站点，可设置站点关联WinScp/FileZilla等软件的快捷调用，使用简单方便。
 
-切换zsh： chsh -s /bin/zsh
+ConEmu是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2 bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
 
-bash读取的配置文件：~/.bash_profile文件
+    ConEmu配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
+    msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
 
-zsh读取的配置文件：~/.zshrc文件，在.zshrc文件中加上source ~/.bash_profile，从而直接从.bash_profile文件读取配置
+conemu中设置MSYS2
 
-超多插件和主题的 ohmyzsh
+以MSYS2 MingGW64为例：
 
-    https://github.com/ohmyzsh/ohmyzsh/wiki/Customization#overriding-and-adding-themes
+打开conemu的settings对话框
+选择Startup>>Tasks选项
+点击+号，新建一个Task
+修改Task名字为Msys2::MingGW64
+在commands下文本框内输入如下代码：
+set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
+1
+MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。
 
-    内置主题 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-    更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
-                https://github.com/unixorn/awesome-zsh-plugins
+如果安装了zsh并想默认使用zsh可以，把代码里的bash改为zsh
 
-    https://github.com/hsab/WSL-config/mintty/themes
+打开后会自动把工作目录设置为msys64/home/%user%下
 
-<https://github.com/caiogondim/bullet-train.zsh>
-![Bullet train](https://camo.githubusercontent.com/3ce1f2e157549ff5ce549af57e3e635b4b85c5919c48223d7e963e98c2613e2e/687474703a2f2f7261772e6769746875622e636f6d2f6361696f676f6e64696d2f62756c6c65742d747261696e2d6f682d6d792d7a73682d7468656d652f6d61737465722f696d672f707265766965772e676966)
+注意修改D变量值到msys2的安装目录
 
-安装依赖
+## Linux下常用工具
 
-    有些插件和主题依赖 python
-
-    # https://github.com/zsh-users/antigen/wiki/Installation
-    sudo apt install zsh-antigen
-
-    # https://github.com/caiogondim/bullet-train.zsh
-    # BULLETTRAIN_CONTEXT_BG=yellow
-    sudo apt install ttf-ancient-fonts
-
-定制主题文件位置
-
-    $ZSH_CUSTOM
-    └── themes
-        └── my_awesome_theme.zsh-theme
-
-#### vim powerline
+### vim powerline
 
 安装说明
 
@@ -600,17 +665,7 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
         make
         sudo make install
 
-## sha256文件完整性校验
-
-Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令行
-
-    certutil -hashfile  <文件名>  <hash类型>
-
-如
-
-    certutil -hashfile cn_windows_7.iso MD5
-    certutil -hashfile cn_windows_7.iso SHA1
-    certutil -hashfile cn_windows_7.iso SHA256
+### sha256文件完整性校验
 
 Linux
 
@@ -642,6 +697,16 @@ Linux
     # 跟校验和文件比对数值
     $ grep f6edd059408744b50edc911111111113eeef30dc5fea0 *dgst
     SHA256= f6edd059408744b50edc911111111113eeef30dc5fea0
+
+Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令行
+
+    certutil -hashfile  <文件名>  <hash类型>
+
+如
+
+    certutil -hashfile cn_windows_7.iso MD5
+    certutil -hashfile cn_windows_7.iso SHA1
+    certutil -hashfile cn_windows_7.iso SHA256
 
 ## 网络故障排查
 
