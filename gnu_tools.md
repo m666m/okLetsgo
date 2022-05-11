@@ -362,7 +362,7 @@ putty的退出也是同样的建议。
 
 mintty 美化
 
-可以在<https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，这样就能通过右键 mintty 窗口标题栏的 option 进行选择。
+可以在<https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
 
 一个基于 onedark 主题和 DejaVu 字体（支持 Powerline) 的配置，修改 ~/.minttyrc 为下面的内容
 
@@ -409,20 +409,21 @@ conemu中设置MSYS2
 
 以MSYS2 MingGW64为例：
 
-打开conemu的settings对话框
-选择Startup>>Tasks选项
-点击+号，新建一个Task
-修改Task名字为Msys2::MingGW64
-在commands下文本框内输入如下代码：
-set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
-1
-MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。
+> 打开conemu的settings对话框
+> 选择Startup>>Tasks选项
+> 点击+号，新建一个Task
+> 修改Task名字为Msys2::MingGW64
+>
+> 在commands下文本框内输入如下代码：
+>
+>     set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
+>
 
-如果安装了zsh并想默认使用zsh可以，把代码里的bash改为zsh
+MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变量值`D=`为你的msys2的安装目录。
 
-打开后会自动把工作目录设置为msys64/home/%user%下
+如果安装了zsh并想默认使用zsh，可以把代码里的bash改为zsh。
 
-注意修改D变量值到msys2的安装目录
+打开后会自动把工作目录设置为msys64/home/%user%下。
 
 ## Linux下常用工具
 
