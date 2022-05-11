@@ -352,6 +352,7 @@ zsh读取的配置文件：~/.zshrc文件，在.zshrc文件中加上source ~/.ba
     sudo apt install zsh-antigen
 
     # https://github.com/caiogondim/bullet-train.zsh
+    # BULLETTRAIN_CONTEXT_BG=yellow
     sudo apt install ttf-ancient-fonts
 
 定制主题文件位置
