@@ -1,21 +1,231 @@
 # 常用GNU环境的使用
 
-## windows下配置GNU环境
+## Windows 10+ 下开发 GNU 环境设置
 
-### 1.安装 Git for Windows
+    https://github.com/hsab/WSL-config
 
-GIT Bash 使用了GNU tools 的 MINGW，但是工具只选择了它自己需要的几个。
-我们主要使用他的 mintty.exe 命令行终端程序和 ssh.exe 工具
+## GNU POSIX环境开发
+
+windows c++环境配置：
+g++7.0 + git + cmake
+code::block / vscode
+库 toft + chrome + leveldb + folly + zeromq
+
+<https://zhuanlan.zhihu.com/p/56572298>
+
+### MGW 和 Cygwin 的实现思路
+
+#### MingW 在编译时对二进制代码转译
+
+MingW (gcc 编译到mscrt)包含gcc和一系列工具，是Windows下的gnu环境。
+
+编译 linux c++ 源代码，生成 Windows 下的exe程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API，相比Cygwin体积更小，使用更方便。
+
+如 创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的mscrt CreateProcess()形式。
+
+#### Cygwin 在编译时中间加了个翻译层 cygwin1.dll
+
+Cygwin 生成的程序依然有 fork() 这样的 Linux 系统调用，但目标库是 cygwin1.dll。
+
+Cygwin（POSIX接口转换后操作windows）在Windows中增加了一个中间层——兼容POSIX的模拟层，在此基础上构建了大量Linux-like的软件工具，由此提供了一个完整的 POSIX Linux 环境（以 GNU 工具为代表），模拟层对linux c++代码的接口如同 UNIX 一样， 对Windows由 win32 的 API 实现的cygwin1.dll，这就是 Cygwin 的做法。
+
+Cygwin实现，不是 kvm 虚拟机环境，也不是 QEMU 那种运行时模拟，它提供的是程序编译时的模拟层环境：exe调用通过它的中间层dll转换为对windows操作系统的调用。
+
+借助它不仅可以在 Windows 平台上使用 GCC 编译器，理论上可以在编译后运行 Linux 平台上所有的程序：GNU、UNIX、Linux软件的c++源代码几乎不用修改就可以在Cygwin环境中编译构建，从而在windows环境下运行。
+
+对于Windows开发者，程序代码既可以调用Win32 API，又可以调用Cygwin API，甚至混合，借助Cygwin的交叉编译构建环境，Windows版的代码改动很少就可以编译后运行在Linux下。
+
+用 MingW 编译的程序性能会高一点，而且也不用带着那个接近两兆的 cygwin1.dll 文件。
+但 Cygwin 对 Linux 的模拟比较完整，甚至有一个 Cygwin X 的项目，可以直接用 Cygwin 跑 X。
+
+另外 Cygwin 可以设置 -mno-cygwin 的 flag，来使用 MingW 编译。
+
+#### 取舍：选 MSYS2
+
+如果仅需要在 Windows 平台上使用 GCC，可以使用 MinGW 或者 Cygwin。
+
+如果还有更高的需求（例如运行 POSIX 应用程序），就只能选择安装 Cygwin。
+
+相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具，目前流行的 MSYS2 是 MSYS 的一个升级版，准确的说是集成了 pacman 和 Mingw-w64 的 Cygwin 升级版。把 /usr/bin 加进环境变量 path 以后，可以直接在 cmd 中使用 Linux 命令。
+
+如果你只是想在Windows下使用一些linux小工具，建议用 MSYS2 就可以了。
+
+### MinGW
+
+此项目已停止维护。
+
+<https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html>
+
+1.run setup.exe
+Ensure on the left that Basic Setup is highlighted. Click the three boxes indicated below:
+
+    mingw32-base,
+    mingw32-gcc=g++,
+    msys-base.
+
+After clicking each, select Mark for selection.
+
+Terminate (click X on) the MinGW Installation Manager (I know this is weird).
+
+2.The following pop-up window should appear,Click Review Change
+
+3.The following pop-up window should appear,Click Apply.
+
+4.The following pop-up window will appear, showing the downloading progress.
+ After a while (a few minutes to an hour, depending on your download speed), it should start extracting the donwloaded files.
+
+5.A few minutes after that, the following pop-up window should appear,Click Close.
+
+6.Edit Path
+Enviroment Variables...In the System variables (lower) part, scroll to line starting with Path and click that line.
+
+    C:\MinGW\bin;C:\MinGW\msys\1.0\bin;
+
+paste it at the very start of the Variable Value text entry.
+
+Click OK (3 times).
+
+### MinGW64
+
+MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接口协议是 win32，异常处理模型是 seh，Build revision 是 1 。
+
+简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了Mingw。
+比如 CodeLite，CodeBlocks，Eclipse CDT，Apache NetBeans（JDK 8）。
+收费的有JetBrains Clion，AppCode （mac）。
+
+### MSys
+
+MinGW 仅仅是工具链，Windows 下的 cmd 使用起来不够方便，MSYS 是用于辅助 Windows 版 MinGW 进行命令行开发的配套软件包：提供了部分 Unix 工具以使得 MinGW 的工具使用起来方便一些。相比基于庞大的 Cygwin 下的 MinGW 会轻巧不少。
+
+### MSYS2(Cygwin Msys)
+
+MSYS2，MSYS 的第二代，有大量预编译的软件包，并且具有包管理器 pacman (ArchLinux)。
+
+目前2022年在windows上使用Linux程序
+
+如果只是需要一个编译器的话，可以用MinGW64。
+
+如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman (ArcLinux)作为包管理器。
+
+下载 <https://www.msys2.org/>
+
+安装后先pacman更换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，在windows下是msys的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
+
+依次添加
+
+    编辑 /etc/pacman.d/mirrorlist.msys ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/msys/$arch/
+        Server = http://mirrors.ustc.edu.cn/msys2/msys/$arch/
+
+    编辑 /etc/pacman.d/mirrorlist.mingw32 ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/i686/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/i686/
+
+    编辑 /etc/pacman.d/mirrorlist.mingw64 ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/x86_64/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/x86_64/
+
+    编辑 /etc/pacman.d/mirrorlist.ucrt64 ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/ucrt64/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/ucrt64/
+
+    编辑 /etc/pacman.d/mirrorlist.clang64 ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/clang64/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/clang64/
+
+然后Windows执行开始菜单的快捷方式 MSYS2 MSYS 以打开命令行，更新软件包数据（之后可以使用 MSYS2 MinGW X64）
+
+    # pacman -Sy
+    :: Synchronizing package databases...
+    mingw32              1594.6 KiB   729 KiB/s 00:02 [#####################] 100%
+    mingw64              1604.5 KiB   494 KiB/s 00:03 [#####################] 100%
+    ucrt64               1663.1 KiB   985 KiB/s 00:02 [#####################] 100%
+    clang32              1556.7 KiB   400 KiB/s 00:04 [#####################] 100%
+    clang64              1587.3 KiB   532 KiB/s 00:03 [#####################] 100%
+    msys                  384.9 KiB   293 KiB/s 00:01 [#####################] 100%
+
+    # 更新核心软件包
+    # pacman -Su
+
+该软件安装后，使用的Linux目录结构跟Windows目录的对应关系
+
+    / 目录位于msys2的安装目录 msys64\
+    /home 目录对应 msys64\home\%USERNAME%
+    /tmp 目录对应 C:\Users\%USERNAME%\AppData\Local\Temp
+
+环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件。
+
+如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的bash、mintty等配置文件，注意区分。
+
+安装时的提示
+
+    './.bashrc' -> '/home/%USERNAME%/.bashrc'
+    './.bash_logout' -> '/home/%USERNAME%/.bash_logout'
+    './.bash_profile' -> '/home/%USERNAME%/.bash_profile'
+    './.inputrc' -> '/home/%USERNAME%/.inputrc'
+    './.profile' -> '/home/%USERNAME%/.profile'
+    'C:\Windows\system32\drivers\etc\hosts' -> '/etc/hosts'
+    'C:\Windows\system32\drivers\etc\protocol' -> '/etc/protocols'
+    'C:\Windows\system32\drivers\etc\services' -> '/etc/services'
+    'C:\Windows\system32\drivers\etc\networks' -> '/etc/networks'
+
+msys2在开始菜单下的好几个版本是因为编译器和链接的windows的c库不同
+
+    官方解释 <https://www.msys2.org/docs/environments/>
+
+    clang 和 mingw(gcc) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个用的话就 mingw64 就没问题。
+
+    具体区别是：mingw64 与 ucrt64 都是用 mingw64 编译器编译的 Windows 64位程序，只不过它们链接到的 crt（C runtime）不同， mingw64 是链接到了 msvcrt ，而 ucrt64 则是链接到了 Windows 10+ 上新的 ucrt 上。而 clang64 很好理解，就是用 clang 而非 mingw 来编译各种库，另外它也是链接到了 ucrt 而非 msvcrt。
+
+    引自 <https://www.zhihu.com/question/463666011/answer/1927907983>
+
+基于 Arch Linux 的 pacman 提供软件仓库，采用滚动升级模式，初始安装仅提供命令行环境：用户不需要删除大量不需要的软件包，而是可以从官方软件仓库成千上万的高质量软件包中进行选择，搭建自己的系统。
+
+pacman命令较多，作为新手，将个人最常用的命令总结如下：
+
+    pacman -Sy :更新软件包数据
+    pacman -Su :更新核心软件包
+    # pacman -Syu: 升级系统及所有已经安装的软件。
+    pacman -S 软件名: 安装软件。也可以同时安装多个包，只需以空格分隔包名即可。
+    pacman -Rs 软件名: 删除软件，同时删除本机上只有该软件依赖的软件。
+    pacman -Ru 软件名: 删除软件，同时删除不再被任何软件所需要的依赖。
+    pacman -Ssq 关键字: 在仓库中搜索含关键字的软件包，并用简洁方式显示。
+    pacman -Qs 关键字: 搜索已安装的软件包。
+    pacman -Qi 软件名: 查看某个软件包信息，显示软件简介,构架,依赖,大小等详细信息。
+    pacman -Sg: 列出软件仓库上所有的软件包组。
+    pacman -Sg 软件包组: 查看某软件包组所包含的所有软件包。
+    pacman -Sc：清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
+    pacman -Scc：清理所有的缓存文件。
+
+## Windows下配置GNU环境
+
+    https://github.com/hsab/WSL-config
+
+    https://creaink.github.io/post/Computer/Windows/win-msys2/
+
+### 简单使用：安装 Git for Windows
+
+GIT Bash 使用了GNU tools 的 MINGW，但是工具只选择了它自己需要的部分进行了集成，
+我们主要使用他的 mintty.exe 命令行终端程序和 ssh.exe 工具。
 
 下载地址 <https://git-scm.com/download/win>
 
-### 2.安装 msys2，安装它下面的工具
+### 全套使用：安装 MSYS2
+
+安装它下面的工具
 
 You can install the whole distribution of the tools from <https://www.msys2.org/>
-安装好后，选择安装需要的工具，如tmux：
-    pacman -S tmux
 
-### 3.拷贝 msys2 下面的工具到 git 下
+安装好后，选择安装需要的工具，如tmux：
+
+    pacman -S tmux zsh git
+
+### 折衷使用：拷贝 MSYS2 的工具到 git 里
 
 假设git的安装目录在 D:\Git，可执行文件放在 D:\Git\usr\bin\ 下：
 
@@ -33,35 +243,159 @@ You can install the whole distribution of the tools from <https://www.msys2.org/
     licenses\tmux
     man\man1\tmux.1.gz
 
-## 网络故障排查
+### 组合使用：git 和 MSYS2 共享一套Home目录
 
-    # 端口是否可用
-    telnet 192.168.0.1:3389
+在 Windows 上配置环境变量 HOME 为 C:\you-path\msys64\home\your-name，增加这个环境变量的目的是为了让 git for windows 的 home 目录指向 MSYS2 的 home 目录。
 
-    netstat -an
+如果安装了 git for windows ，其 home 目录默认为 %USERPROFILE%，导致 git for windows 和 MSYS2 的 git 配置和 vim 等配置不能共享。
 
-    ping -t 192.168.0.1
-
-    tracert www.bing.com
-
-## crontab
-
-    https://www.cnblogs.com/pengdonglin137/p/3625018.html
-    https://www.cnblogs.com/utopia68/p/12221769.html
-    https://blog.csdn.net/zhubin215130/article/details/43271835
-    https://segmentfault.com/a/1190000020850932
-
-坑一：环境变量是单独的
-
-cron中的环境变量很多都和系统环境变量不一样（cron会忽略/etc/environment文件），尤其是PATH，只有/usr/bin:/bin，也就是说在cron中运行shell命令，如果不是全路径，只能运行/usr/bin或/bin这两个目录中的标准命令，而像/usr/sbin、/usr/local/bin等目录中的非标准命令是不能运行的。
+如果在安装 MSYS2 之前已经安装 git for windows 需要使用将之前的 ssh 和 git 的配置拷贝到 MSYS2 的 home 目录下。
 
 ## Linux下常用工具
 
-### Aria2 下载工具
+### Windows下 的 bash -- mintty
 
-命令行传输各种参数，设置复杂，Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳dht站点清单。
+    http://mintty.github.io/
+    https://github.com/mintty/mintty/wiki/Tips
 
-    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\ThinkRight\AppData\Roaming\Motrix\download.session --input-file=C:\Users\ThinkRight\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce,udp://45.154.253.8:6969/announce,http://45.154.253.8:80/announce,udp://51.81.46.170:6969/announce,udp://91.216.110.52:451/announce,udp://185.181.60.155:80/announce,udp://208.83.20.20:6969/announce,udp://149.202.88.193:80/announce,udp://5.79.251.251:6969/announce,udp://5.161.62.40:6969/announce,udp://217.30.10.52:6969/announce,udp://149.28.47.87:1738/announce,udp://163.172.209.40:80/announce,udp://156.234.201.18:80/announce,udp://62.210.217.207:1337/announce,udp://209.141.59.16:6969/announce,udp://106.14.254.164:6969/announce,udp://tracker.opentrackr.org:1337/announce,udp://9.rarbg.com:2810/announce,udp://tracker.openbittorrent.com:6969/announce,http://tracker.openbittorrent.com:80/announce,udp://opentracker.i2p.rocks:6969/announce,https://opentracker.i2p.rocks:443/announce,udp://www.torrent.eu.org:451/announce,udp://tracker.torrent.eu.org:451/announce,udp://open.stealth.si:80/announce,udp://exodus.desync.com:6969/announce,udp://ipv4.tracker.harry.lu:80/announce,udp://tracker.tiny-vps.com:6969/announce,udp://tracker.moeking.me:6969/announce,udp://tracker.dler.org:6969/announce,udp://vibe.sleepyinternetfun.xyz:1738/announce,udp://tracker2.dler.org:80/announce,udp://tracker1.bt.moack.co.kr:80/announce,udp://tracker.zerobytes.xyz:1337/announce,udp://tracker.theoks.net:6969/announce,udp://tracker.skyts.net:6969/announce --continue=true --dht-file-path=C:\Users\ThinkRight\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\ThinkRight\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\ThinkRight\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiORlwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+安装 git for Windows 或 MSYS2 后就有了，git for Windows下的配置文件在 ~\.minttyrc，MSYS2的见下面章节[MSYS2(Cygwin Msys)]。
+
+    Background=C:\Users\xxxx\Pictures\1111111111.jpg
+    Font=Consolas
+    FontHeight=11
+    Columns=200
+    Rows=60
+    # 如果嫌默认的白色不够纯就改
+    ForegroundColour=255,255,255
+    # mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
+    Language=@
+    # 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
+    # https://www.cnblogs.com/LCcnblogs/p/6208110.html
+    # bash下设置，这个变量设置区域，影响语言、词汇、日期格式等
+    Locale=zh_CN  # bash 下显示中文
+    Charset=GBK  # ls列windows目录名可以显示中文，但tail等命令显示中文utf-8文件需要设为UTF-8，此时中文目录名就不正常显示了，原因是中文版windows是ANSI而不是UTF
+    # LANG 只影响字符的显示语言
+    LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
+
+如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"。
+
+mintty 下的 /tmp 目录位于 C:\Users\ThinkRight\AppData\Local\Temp。
+
+退出bash时，最好不要直接关闭窗口，使用命令exit或^D。
+
+putty的退出也是同样的建议。
+
+mintty 美化
+
+可以在<https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，这样就能通过右键 mintty 窗口标题栏的 option 进行选择。
+
+一个基于 onedark 主题和 DejaVu 字体（支持 Powerline) 的配置，修改 ~/.minttyrc 为下面的内容
+
+    Font=DejaVuSansMono NF
+    Transparency=low
+    FontHeight=10
+    Term=xterm-256color
+    Columns=110
+    Rows=35
+    Scrollbar=none
+    AllowBlinking=yes
+
+    ForegroundColour=171,178,191
+    BackgroundColour=30,33,39
+    CursorColour=97,175,239
+    BoldBlack=92,99,112
+    Black=92,99,112
+    BoldRed=224,108,117
+    Red=224,108,117
+    BoldGreen=152,195,121
+    Green=152,195,121
+    BoldYellow=209,154,102
+    Yellow=209,154,102
+    BoldBlue=97,175,239
+    Blue=97,175,239
+    BoldMagenta=198,120,221
+    Magenta=198,120,221
+    BoldCyan=86,182,194
+    Cyan=86,182,194
+    BoldWhite=171,178,191
+    White=171,178,191
+    BoldAsFont=yes
+
+#### 使用 zsh + ohmyzsh
+
+    https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
+
+切换zsh： chsh -s /bin/zsh
+
+bash读取的配置文件：~/.bash_profile文件
+
+zsh读取的配置文件：~/.zshrc文件，在.zshrc文件中加上source ~/.bash_profile，从而直接从.bash_profile文件读取配置
+
+超多插件和主题的 ohmyzsh
+
+    https://github.com/ohmyzsh/ohmyzsh/wiki/Customization#overriding-and-adding-themes
+
+    内置主题 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+    更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
+                https://github.com/unixorn/awesome-zsh-plugins
+
+    https://github.com/hsab/WSL-config/mintty/themes
+
+<https://github.com/caiogondim/bullet-train.zsh>
+![Bullet train](https://camo.githubusercontent.com/3ce1f2e157549ff5ce549af57e3e635b4b85c5919c48223d7e963e98c2613e2e/687474703a2f2f7261772e6769746875622e636f6d2f6361696f676f6e64696d2f62756c6c65742d747261696e2d6f682d6d792d7a73682d7468656d652f6d61737465722f696d672f707265766965772e676966)
+
+安装依赖
+
+    有些插件和主题依赖 python
+
+    # https://github.com/zsh-users/antigen/wiki/Installation
+    sudo apt install zsh-antigen
+
+    # https://github.com/caiogondim/bullet-train.zsh
+    sudo apt install ttf-ancient-fonts
+
+定制主题文件位置
+
+    $ZSH_CUSTOM
+    └── themes
+        └── my_awesome_theme.zsh-theme
+
+#### vim powerline
+
+安装说明
+
+    https://askubuntu.com/questions/283908/how-can-i-install-and-use-powerline-plugin
+
+    https://powerline.readthedocs.io/en/latest/installation.html
+
+命令行安装
+
+    # https://powerline.readthedocs.io/en/latest/installation.html
+    # pip install powerline-status 这个是python2的一堆坑
+    # pip3 install --user git+https://github.com/powerline/powerline
+    # 这个最方便，自带的安装到 /usr/share/powerline/
+    sudo apt install powerline
+
+还得弄个自定义路径
+
+    # Add ~/.local/bin to $PATH by modifying ~/.profile
+    if [ -d "$HOME/.local/bin" ]; then
+        PATH="$HOME/.local/bin:$PATH"
+    fi
+
+绑定各软件
+
+先查看你安装的位置，找到bindings目录，用apt 安装的在 /usr/share/powerline/bindings/
+
+~/.vimrc or /etc/vim/vimrc
+
+    set rtp+=/usr/share/powerline/bindings/vim/
+
+    " Always show statusline
+    set laststatus=2
+
+    " Use 256 colours (Use this setting only if your terminal supports 256 colours)
+    set t_Co=256
 
 ### tmux 不怕断连的多窗口命令行
 
@@ -200,36 +534,11 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     bind -n WheelUpPane select-pane -t= ; copy-mode -e ; send-keys -M
     bind -n WheelDownPane select-pane -t= ; send-keys -M
 
-### Windows下 的 bash -- mintty
+### Aria2 下载工具
 
-    http://mintty.github.io/
+命令行传输各种参数，设置复杂，Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳dht站点清单。
 
-安装 git for Windows 或 MSYS2 后就有了，git for Windows下的配置文件在 ~\.minttyrc，MSYS2的见下面章节[MSYS2(Cygwin Msys)]。
-
-    Background=C:\Users\xxxx\Pictures\1111111111.jpg
-    Font=Consolas
-    FontHeight=11
-    Columns=200
-    Rows=60
-    # 如果嫌默认的白色不够纯就改
-    ForegroundColour=255,255,255
-    # mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
-    Language=@
-    # 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
-    # https://www.cnblogs.com/LCcnblogs/p/6208110.html
-    # bash下设置，这个变量设置区域，影响语言、词汇、日期格式等
-    Locale=zh_CN  # bash 下显示中文
-    Charset=GBK  # ls列windows目录名可以显示中文，但tail等命令显示中文utf-8文件需要设为UTF-8，此时中文目录名就不正常显示了，原因是中文版windows是ANSI而不是UTF
-    # LANG 只影响字符的显示语言
-    LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
-
-如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"。
-
-mintty 下的 /tmp 目录位于 C:\Users\ThinkRight\AppData\Local\Temp。
-
-退出bash时，最好不要直接关闭窗口，使用命令exit或^D。
-
-putty的退出也是同样的建议。
+    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\ThinkRight\AppData\Roaming\Motrix\download.session --input-file=C:\Users\ThinkRight\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce,udp://45.154.253.8:6969/announce,http://45.154.253.8:80/announce,udp://51.81.46.170:6969/announce,udp://91.216.110.52:451/announce,udp://185.181.60.155:80/announce,udp://208.83.20.20:6969/announce,udp://149.202.88.193:80/announce,udp://5.79.251.251:6969/announce,udp://5.161.62.40:6969/announce,udp://217.30.10.52:6969/announce,udp://149.28.47.87:1738/announce,udp://163.172.209.40:80/announce,udp://156.234.201.18:80/announce,udp://62.210.217.207:1337/announce,udp://209.141.59.16:6969/announce,udp://106.14.254.164:6969/announce,udp://tracker.opentrackr.org:1337/announce,udp://9.rarbg.com:2810/announce,udp://tracker.openbittorrent.com:6969/announce,http://tracker.openbittorrent.com:80/announce,udp://opentracker.i2p.rocks:6969/announce,https://opentracker.i2p.rocks:443/announce,udp://www.torrent.eu.org:451/announce,udp://tracker.torrent.eu.org:451/announce,udp://open.stealth.si:80/announce,udp://exodus.desync.com:6969/announce,udp://ipv4.tracker.harry.lu:80/announce,udp://tracker.tiny-vps.com:6969/announce,udp://tracker.moeking.me:6969/announce,udp://tracker.dler.org:6969/announce,udp://vibe.sleepyinternetfun.xyz:1738/announce,udp://tracker2.dler.org:80/announce,udp://tracker1.bt.moack.co.kr:80/announce,udp://tracker.zerobytes.xyz:1337/announce,udp://tracker.theoks.net:6969/announce,udp://tracker.skyts.net:6969/announce --continue=true --dht-file-path=C:\Users\ThinkRight\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\ThinkRight\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\ThinkRight\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiORlwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
 ### 解决 Vim 汉字乱码
 
@@ -333,190 +642,24 @@ Linux
     $ grep f6edd059408744b50edc911111111113eeef30dc5fea0 *dgst
     SHA256= f6edd059408744b50edc911111111113eeef30dc5fea0
 
-## GNU POSIX环境开发
+## 网络故障排查
 
-windows c++环境配置：
-g++7.0 + git + cmake
-code::block / vscode
-库 toft + chrome + leveldb + folly + zeromq
+    # 端口是否可用
+    telnet 192.168.0.1:3389
 
-<https://zhuanlan.zhihu.com/p/56572298>
+    netstat -an
 
-### MGW 和 Cygwin 的实现思路
+    ping -t 192.168.0.1
 
-#### MingW 在编译时对二进制代码转译
+    tracert www.bing.com
 
-MingW (gcc 编译到mscrt)包含gcc和一系列工具，是Windows下的gnu环境。
+## crontab 定时任务
 
-编译 linux c++ 源代码，生成 Windows 下的exe程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API，相比Cygwin体积更小，使用更方便。
+    https://www.cnblogs.com/pengdonglin137/p/3625018.html
+    https://www.cnblogs.com/utopia68/p/12221769.html
+    https://blog.csdn.net/zhubin215130/article/details/43271835
+    https://segmentfault.com/a/1190000020850932
 
-如 创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的mscrt CreateProcess()形式。
+坑一：环境变量是单独的
 
-#### Cygwin 在编译时中间加了个翻译层 cygwin1.dll
-
-Cygwin 生成的程序依然有 fork() 这样的 Linux 系统调用，但目标库是 cygwin1.dll。
-
-Cygwin（POSIX接口转换后操作windows）在Windows中增加了一个中间层——兼容POSIX的模拟层，在此基础上构建了大量Linux-like的软件工具，由此提供了一个完整的 POSIX Linux 环境（以 GNU 工具为代表），模拟层对linux c++代码的接口如同 UNIX 一样， 对Windows由 win32 的 API 实现的cygwin1.dll，这就是 Cygwin 的做法。
-
-Cygwin实现，不是 kvm 虚拟机环境，也不是 QEMU 那种运行时模拟，它提供的是程序编译时的模拟层环境：exe调用通过它的中间层dll转换为对windows操作系统的调用。
-
-借助它不仅可以在 Windows 平台上使用 GCC 编译器，理论上可以在编译后运行 Linux 平台上所有的程序：GNU、UNIX、Linux软件的c++源代码几乎不用修改就可以在Cygwin环境中编译构建，从而在windows环境下运行。
-
-对于Windows开发者，程序代码既可以调用Win32 API，又可以调用Cygwin API，甚至混合，借助Cygwin的交叉编译构建环境，Windows版的代码改动很少就可以编译后运行在Linux下。
-
-用 MingW 编译的程序性能会高一点，而且也不用带着那个接近两兆的 cygwin1.dll 文件。
-但 Cygwin 对 Linux 的模拟比较完整，甚至有一个 Cygwin X 的项目，可以直接用 Cygwin 跑 X。
-
-另外 Cygwin 可以设置 -mno-cygwin 的 flag，来使用 MingW 编译。
-
-#### 取舍：选 MSYS2
-
-如果仅需要在 Windows 平台上使用 GCC，可以使用 MinGW 或者 Cygwin。
-
-如果还有更高的需求（例如运行 POSIX 应用程序），就只能选择安装 Cygwin。
-
-相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具，目前流行的 MSYS2 是 MSYS 的一个升级版，准确的说是集成了 pacman 和 Mingw-w64 的 Cygwin 升级版。把 /usr/bin 加进环境变量 path 以后，可以直接在 cmd 中使用 Linux 命令。
-
-如果你只是想在Windows下使用一些linux小工具，建议用 MSYS2 就可以了。
-
-### MinGW
-
-此项目已停止维护。
-
-<https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html>
-
-1.run setup.exe
-Ensure on the left that Basic Setup is highlighted. Click the three boxes indicated below:
-
-    mingw32-base,
-    mingw32-gcc=g++,
-    msys-base.
-
-After clicking each, select Mark for selection.
-
-Terminate (click X on) the MinGW Installation Manager (I know this is weird).
-
-2.The following pop-up window should appear,Click Review Change
-
-3.The following pop-up window should appear,Click Apply.
-
-4.The following pop-up window will appear, showing the downloading progress.
- After a while (a few minutes to an hour, depending on your download speed), it should start extracting the donwloaded files.
-
-5.A few minutes after that, the following pop-up window should appear,Click Close.
-
-6.Edit Path
-Enviroment Variables...In the System variables (lower) part, scroll to line starting with Path and click that line.
-
-    C:\MinGW\bin;C:\MinGW\msys\1.0\bin;
-
-paste it at the very start of the Variable Value text entry.
-
-Click OK (3 times).
-
-### MinGW64
-
-MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接口协议是 win32，异常处理模型是 seh，Build revision 是 1 。
-
-简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了Mingw。
-比如 CodeLite，CodeBlocks，Eclipse CDT，Apache NetBeans（JDK 8）。
-收费的有JetBrains Clion，AppCode （mac）。
-
-### MSYS2(Cygwin Msys)
-
-如果只是需要一个编译器的话，可以用MinGW64。不过总体来说还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman (ArcLinux)作为包管理器。
-
-下载 <https://www.msys2.org/>
-
-安装后先pacman更换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，在windows下是msys的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
-
-依次添加
-
-    编辑 /etc/pacman.d/mirrorlist.msys ，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/msys/$arch/
-        Server = http://mirrors.ustc.edu.cn/msys2/msys/$arch/
-
-    编辑 /etc/pacman.d/mirrorlist.mingw32 ，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/i686/
-        Server = http://mirrors.ustc.edu.cn/msys2/mingw/i686/
-
-    编辑 /etc/pacman.d/mirrorlist.mingw64 ，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/x86_64/
-        Server = http://mirrors.ustc.edu.cn/msys2/mingw/x86_64/
-
-    编辑 /etc/pacman.d/mirrorlist.ucrt64 ，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/ucrt64/
-        Server = http://mirrors.ustc.edu.cn/msys2/mingw/ucrt64/
-
-    编辑 /etc/pacman.d/mirrorlist.clang64 ，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/clang64/
-        Server = http://mirrors.ustc.edu.cn/msys2/mingw/clang64/
-
-然后Windows执行开始菜单的快捷方式 MSYS2 MSYS 以打开命令行，更新软件包数据（之后可以使用 MSYS2 MinGW X64）
-
-    # pacman -Sy
-    :: Synchronizing package databases...
-    mingw32              1594.6 KiB   729 KiB/s 00:02 [#####################] 100%
-    mingw64              1604.5 KiB   494 KiB/s 00:03 [#####################] 100%
-    ucrt64               1663.1 KiB   985 KiB/s 00:02 [#####################] 100%
-    clang32              1556.7 KiB   400 KiB/s 00:04 [#####################] 100%
-    clang64              1587.3 KiB   532 KiB/s 00:03 [#####################] 100%
-    msys                  384.9 KiB   293 KiB/s 00:01 [#####################] 100%
-
-    # 更新核心软件包
-    # pacman -Su
-
-该软件安装后，使用的Linux目录结构跟Windows目录的对应关系
-
-    / 目录位于msys2的安装目录 msys64\
-    /home 目录对应 msys64\home\%USERNAME%
-    /tmp 目录对应 C:\Users\%USERNAME%\AppData\Local\Temp
-
-环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件。
-
-如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的bash、mintty等配置文件，注意区分。
-
-安装时的提示
-
-    './.bashrc' -> '/home/%USERNAME%/.bashrc'
-    './.bash_logout' -> '/home/%USERNAME%/.bash_logout'
-    './.bash_profile' -> '/home/%USERNAME%/.bash_profile'
-    './.inputrc' -> '/home/%USERNAME%/.inputrc'
-    './.profile' -> '/home/%USERNAME%/.profile'
-    'C:\Windows\system32\drivers\etc\hosts' -> '/etc/hosts'
-    'C:\Windows\system32\drivers\etc\protocol' -> '/etc/protocols'
-    'C:\Windows\system32\drivers\etc\services' -> '/etc/services'
-    'C:\Windows\system32\drivers\etc\networks' -> '/etc/networks'
-
-msys2在开始菜单下的好几个版本是因为编译器和链接的windows的c库不同
-
-    官方解释 <https://www.msys2.org/docs/environments/>
-
-    clang 和 mingw(gcc) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个用的话就 mingw64 就没问题。
-
-    具体区别是：mingw64 与 ucrt64 都是用 mingw64 编译器编译的 Windows 64位程序，只不过它们链接到的 crt（C runtime）不同， mingw64 是链接到了 msvcrt ，而 ucrt64 则是链接到了 Windows 10+ 上新的 ucrt 上。而 clang64 很好理解，就是用 clang 而非 mingw 来编译各种库，另外它也是链接到了 ucrt 而非 msvcrt。
-
-    引自 <https://www.zhihu.com/question/463666011/answer/1927907983>
-
-基于 Arch Linux 的 pacman 提供软件仓库，采用滚动升级模式，初始安装仅提供命令行环境：用户不需要删除大量不需要的软件包，而是可以从官方软件仓库成千上万的高质量软件包中进行选择，搭建自己的系统。
-
-pacman命令较多，作为新手，将个人最常用的命令总结如下：
-
-    pacman -Sy :更新软件包数据
-    pacman -Su :更新核心软件包
-    # pacman -Syu: 升级系统及所有已经安装的软件。
-    pacman -S 软件名: 安装软件。也可以同时安装多个包，只需以空格分隔包名即可。
-    pacman -Rs 软件名: 删除软件，同时删除本机上只有该软件依赖的软件。
-    pacman -Ru 软件名: 删除软件，同时删除不再被任何软件所需要的依赖。
-    pacman -Ssq 关键字: 在仓库中搜索含关键字的软件包，并用简洁方式显示。
-    pacman -Qs 关键字: 搜索已安装的软件包。
-    pacman -Qi 软件名: 查看某个软件包信息，显示软件简介,构架,依赖,大小等详细信息。
-    pacman -Sg: 列出软件仓库上所有的软件包组。
-    pacman -Sg 软件包组: 查看某软件包组所包含的所有软件包。
-    pacman -Sc：清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
-    pacman -Scc：清理所有的缓存文件。
+cron中的环境变量很多都和系统环境变量不一样（cron会忽略/etc/environment文件），尤其是PATH，只有/usr/bin:/bin，也就是说在cron中运行shell命令，如果不是全路径，只能运行/usr/bin或/bin这两个目录中的标准命令，而像/usr/sbin、/usr/local/bin等目录中的非标准命令是不能运行的。
