@@ -237,9 +237,11 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
     https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
 
-切换zsh： chsh -s /bin/zsh
+切换zsh
+    sudo chsh -s /bin/zsh
+    sudo usermod -s /bin/zsh username
 
-在MSYS2下简单使用： `exec zsh`
+在MSYS2下简单使用： `zsh`
 
 如果是初次运行zsh，有个引导程序设置zsh读取的配置文 ~/.zshrc 文件，也可以手动调用
 
@@ -258,6 +260,9 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
                 https://github.com/unixorn/awesome-zsh-plugins
 
     https://github.com/hsab/WSL-config/mintty/themes
+
+内置主题bira，添加时间修改`RPROMPT="[%*]%B${return_code}%b"`
+![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
 
 <https://github.com/caiogondim/bullet-train.zsh>
 ![Bullet train](https://camo.githubusercontent.com/3ce1f2e157549ff5ce549af57e3e635b4b85c5919c48223d7e963e98c2613e2e/687474703a2f2f7261772e6769746875622e636f6d2f6361696f676f6e64696d2f62756c6c65742d747261696e2d6f682d6d792d7a73682d7468656d652f6d61737465722f696d672f707265766965772e676966)
