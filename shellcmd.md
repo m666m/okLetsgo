@@ -42,7 +42,6 @@ timeout 600s  some_command arg1 arg2
 # 连续管道时，考虑使用 tee 将中间结果落盘，以便查问题
 cmd1 | tee out1.dat | cmd2 | tee out2.dat | cmd3 > out3.dat
 
-
 ####################################################################
 # 命令行提示符显示当前路径和git分支，放入任一 .profile 或 .bashrc 或 .bash_profile 内
 

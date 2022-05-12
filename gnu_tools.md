@@ -375,9 +375,8 @@ putty的退出也是同样的建议。
 
 如果是git for Windows 的mintty，修改 ~/.minttyrc 为下面的内容
 
-    Background=C:\Users\xxxx\Pictures\1111111111.jpg
     Font=Consolas
-    FontHeight=10
+    FontHeight=11
     Columns=140
     Rows=40
     AllowBlinking=yes
@@ -387,7 +386,6 @@ putty的退出也是同样的建议。
     Language=zh_CN
     # Locale=zh_CN
     # Charset=GBK
-    Locale=zh_CN
     Charset=UTF-8
 
     # 窗体透明效果，不适用于嵌入多窗口终端工具
@@ -396,26 +394,30 @@ putty的退出也是同样的建议。
     # 为了使用花哨颜色，确保终端设置恰当
     Term=xterm-256color
 
-    # 自定义颜色方案，比mintty默认的浅一些
-    BackgroundColour=13,25,38
-    ForegroundColour=217,230,242
+    # 自定义颜色方案，跟深色背景搭配，比mintty默认的浅一些
+    Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
+    BackgroundColour=170,125,43
+    ForegroundColour=228,228,228
     CursorColour=217,230,242
     Black=0,0,0
     BoldBlack=36,36,36
-    Red=243,141,63
-    BoldRed=249,198,159
+    Red=255,0,0
+    BoldRed=255,0,128
     Green=51,242,133
     BoldGreen=22,184,74
     Yellow=249,237,134
     BoldYellow=240,197,47
     Blue=198,159,249
     BoldBlue=84,71,243
-    Magenta=243,63,165
+    Magenta=172,53,101
     BoldMagenta=249,159,210
     Cyan=63,165,243
     BoldCyan=159,210,249
     White=217,217,217
     BoldWhite=255,255,255
+
+    # TODO:自定义颜色方案，跟浅色背景搭配
+    # Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
 
     # 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
     # ThemeFile=mintty
