@@ -44,7 +44,7 @@ cmd1 | tee out1.dat | cmd2 | tee out2.dat | cmd3 > out3.dat
 
 
 ####################################################################
-# 命令行提示符显示当前路径和git分支名，放入任一 .profile / .bashrc / .bash_profile 内
+# 命令行提示符显示当前路径和git分支，放入任一 .profile 或 .bashrc 或 .bash_profile 内
 
 black=$'\[\e[0;30m\]'
 
@@ -70,13 +70,21 @@ function git-branch-name {
 
 function git-branch-prompt {
   local branch=`git-branch-name`
-  if [ $branch ]; then printf "(%s)" $branch; fi
+  if [ $branch ]; then
+    git_modify=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
+    printf "(%s)" $branch$git_modify;
+  fi
 }
 
-# 命令行提示符显示当前路径和git分支名 # \W 当前路径 \w 当前路径的末位
-PS1="$magenta\u$white@$green\h$white:$cyan\W$yellow\$(git-branch-prompt)$white\r\n\$ $normal"
+function exit-code {
+    local exitcode=$?
+    if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" '-'$exitcode' '; fi
+}
 
-# 简单写颜色
+# 命令行提示符显示 \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
+PS1="$magenta┌─$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$red\$(exit-code)$yellow\$(git-branch-prompt)\r\n$magenta└─$white\$ $normal"
+
+# 直接写颜色
 PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(git-branch-prompt)\[\033[0m\]\r\n\$ "
 
 
