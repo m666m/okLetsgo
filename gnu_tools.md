@@ -264,8 +264,10 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 内置主题bira，添加时间字段修改`RPROMPT="[%*]%B${return_code}%b"`
 ![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
 
-额外主题[Bullet train](https://github.com/caiogondim/bullet-train.zsh)，修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta`
+额外主题 [Bullet train](https://github.com/caiogondim/bullet-train.zsh)，修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta`
 ![Bullet train](https://camo.githubusercontent.com/3ce1f2e157549ff5ce549af57e3e635b4b85c5919c48223d7e963e98c2613e2e/687474703a2f2f7261772e6769746875622e636f6d2f6361696f676f6e64696d2f62756c6c65742d747261696e2d6f682d6d792d7a73682d7468656d652f6d61737465722f696d672f707265766965772e676966)
+
+额外主题 [powerlevel10k](https://github.com/romkatv/powerlevel10k)，可以运行`p10k configure`设置使用习惯，![powerlevel10k](https://camo.githubusercontent.com/80ec23fda88d2f445906a3502690f22827336736/687474703a2f2f692e696d6775722e636f6d2f777942565a51792e676966)
 
 安装依赖
 
