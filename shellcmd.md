@@ -74,10 +74,10 @@ function git-branch-prompt {
 }
 
 # 命令行提示符显示当前路径和git分支名 # \W 当前路径 \w 当前路径的末位
-PS1="$magenta\u$white@$green\h$white:$cyan\W$yellow\$(git-branch-prompt)$white\$ $normal"
+PS1="$magenta\u$white@$green\h$white:$cyan\W$yellow\$(git-branch-prompt)$white\r\n\$ $normal"
 
 # 简单写颜色
-PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(git-branch-prompt)\[\033[0m\] \$ "
+PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(git-branch-prompt)\[\033[0m\]\r\n\$ "
 
 
 ####################################################################

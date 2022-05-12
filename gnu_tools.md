@@ -354,53 +354,72 @@ You can install the whole distribution of the tools from <https://www.msys2.org/
 
 如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"。
 
-mintty 下的 /tmp 目录位于 C:\Users\ThinkRight\AppData\Local\Temp。
+git for windows 的 mintty 目录
+
+    / 目录          位于git安装目录下的 C:\Program Files\Git\ 目录下
+    /usr 目录       同上
+    /tmp 目录       位于 C:\Users\XXXX\AppData\Local\Temp\  目录下
 
 退出bash时，最好不要直接关闭窗口，使用命令exit或^D。
 
 putty的退出也是同样的建议。
 
-mintty 美化
+#### mintty 美化
 
-可以在<https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
+如果是git for Windows 的mintty，修改 ~/.minttyrc 为下面的内容
 
-一个基于 onedark 主题和 DejaVu 字体（支持 Powerline) 的配置，修改 ~/.minttyrc 为下面的内容
-
-    Font=DejaVuSansMono NF
-    Transparency=low
+    Background=C:\Users\xxxx\Pictures\1111111111.jpg
+    Font=Consolas
     FontHeight=10
-    Term=xterm-256color
-    Columns=110
-    Rows=35
-    Scrollbar=none
+    Columns=140
+    Rows=40
     AllowBlinking=yes
+    # Scrollbar=none
 
-    ForegroundColour=171,178,191
-    BackgroundColour=30,33,39
-    CursorColour=97,175,239
-    BoldBlack=92,99,112
-    Black=92,99,112
-    BoldRed=224,108,117
-    Red=224,108,117
-    BoldGreen=152,195,121
-    Green=152,195,121
-    BoldYellow=209,154,102
-    Yellow=209,154,102
-    BoldBlue=97,175,239
-    Blue=97,175,239
-    BoldMagenta=198,120,221
-    Magenta=198,120,221
-    BoldCyan=86,182,194
-    Cyan=86,182,194
-    BoldWhite=171,178,191
-    White=171,178,191
-    BoldAsFont=yes
+    # 语言设置
+    Language=zh_CN
+    # Locale=zh_CN
+    # Charset=GBK
+    Locale=zh_CN
+    Charset=UTF-8
+
+    # 窗体透明效果，不适用于嵌入多窗口终端工具
+    # Transparency=low
+
+    # 为了使用花哨颜色，确保终端设置恰当
+    Term=xterm-256color
+
+    # 自定义颜色方案，比mintty默认的浅一些
+    BackgroundColour=13,25,38
+    ForegroundColour=217,230,242
+    CursorColour=217,230,242
+    Black=0,0,0
+    BoldBlack=36,36,36
+    Red=243,141,63
+    BoldRed=249,198,159
+    Green=51,242,133
+    BoldGreen=22,184,74
+    Yellow=249,237,134
+    BoldYellow=240,197,47
+    Blue=198,159,249
+    BoldBlue=84,71,243
+    Magenta=243,63,165
+    BoldMagenta=249,159,210
+    Cyan=63,165,243
+    BoldCyan=159,210,249
+    White=217,217,217
+    BoldWhite=255,255,255
+
+    # 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
+    # ThemeFile=mintty
+
+如果是 MSYS2 的 mintty，可以在<https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
 
 #### 多终端工具 ConEmu/SuperPutty
 
 SuperPutty 支持putty、mintty、cmd、powershell等多种终端嵌入显示，可导入putty站点，可设置站点关联WinScp/FileZilla等软件的快捷调用，使用简单方便。
 
-ConEmu是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2 bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
+ConEmu是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2，bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
 
     ConEmu配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
     msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
@@ -605,7 +624,7 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
 命令行传输各种参数，设置复杂，Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳dht站点清单。
 
-    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\ThinkRight\AppData\Roaming\Motrix\download.session --input-file=C:\Users\ThinkRight\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce,udp://45.154.253.8:6969/announce,http://45.154.253.8:80/announce,udp://51.81.46.170:6969/announce,udp://91.216.110.52:451/announce,udp://185.181.60.155:80/announce,udp://208.83.20.20:6969/announce,udp://149.202.88.193:80/announce,udp://5.79.251.251:6969/announce,udp://5.161.62.40:6969/announce,udp://217.30.10.52:6969/announce,udp://149.28.47.87:1738/announce,udp://163.172.209.40:80/announce,udp://156.234.201.18:80/announce,udp://62.210.217.207:1337/announce,udp://209.141.59.16:6969/announce,udp://106.14.254.164:6969/announce,udp://tracker.opentrackr.org:1337/announce,udp://9.rarbg.com:2810/announce,udp://tracker.openbittorrent.com:6969/announce,http://tracker.openbittorrent.com:80/announce,udp://opentracker.i2p.rocks:6969/announce,https://opentracker.i2p.rocks:443/announce,udp://www.torrent.eu.org:451/announce,udp://tracker.torrent.eu.org:451/announce,udp://open.stealth.si:80/announce,udp://exodus.desync.com:6969/announce,udp://ipv4.tracker.harry.lu:80/announce,udp://tracker.tiny-vps.com:6969/announce,udp://tracker.moeking.me:6969/announce,udp://tracker.dler.org:6969/announce,udp://vibe.sleepyinternetfun.xyz:1738/announce,udp://tracker2.dler.org:80/announce,udp://tracker1.bt.moack.co.kr:80/announce,udp://tracker.zerobytes.xyz:1337/announce,udp://tracker.theoks.net:6969/announce,udp://tracker.skyts.net:6969/announce --continue=true --dht-file-path=C:\Users\ThinkRight\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\ThinkRight\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\ThinkRight\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiORlwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce,udp://45.154.253.8:6969/announce,http://45.154.253.8:80/announce,udp://51.81.46.170:6969/announce,udp://91.216.110.52:451/announce,udp://185.181.60.155:80/announce,udp://208.83.20.20:6969/announce,udp://149.202.88.193:80/announce,udp://5.79.251.251:6969/announce,udp://5.161.62.40:6969/announce,udp://217.30.10.52:6969/announce,udp://149.28.47.87:1738/announce,udp://163.172.209.40:80/announce,udp://156.234.201.18:80/announce,udp://62.210.217.207:1337/announce,udp://209.141.59.16:6969/announce,udp://106.14.254.164:6969/announce,udp://tracker.opentrackr.org:1337/announce,udp://9.rarbg.com:2810/announce,udp://tracker.openbittorrent.com:6969/announce,http://tracker.openbittorrent.com:80/announce,udp://opentracker.i2p.rocks:6969/announce,https://opentracker.i2p.rocks:443/announce,udp://www.torrent.eu.org:451/announce,udp://tracker.torrent.eu.org:451/announce,udp://open.stealth.si:80/announce,udp://exodus.desync.com:6969/announce,udp://ipv4.tracker.harry.lu:80/announce,udp://tracker.tiny-vps.com:6969/announce,udp://tracker.moeking.me:6969/announce,udp://tracker.dler.org:6969/announce,udp://vibe.sleepyinternetfun.xyz:1738/announce,udp://tracker2.dler.org:80/announce,udp://tracker1.bt.moack.co.kr:80/announce,udp://tracker.zerobytes.xyz:1337/announce,udp://tracker.theoks.net:6969/announce,udp://tracker.skyts.net:6969/announce --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiORlwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
 ### 解决 Vim 汉字乱码
 
