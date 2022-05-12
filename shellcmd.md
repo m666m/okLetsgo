@@ -82,11 +82,11 @@ function PS1git-branch-prompt {
   fi
 }
 
-# 命令行提示符显示 \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
-PS1="$magenta┌─$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1exit-code)$yellow\$(PS1git-branch-prompt)\r\n$magenta└─$white\$ $normal"
+# bash 命令行提示符显示 \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
+PS1="\n$magenta┌─$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1exit-code)$yellow\$(PS1git-branch-prompt)\n$magenta└─$white\$ $normal"
 
-# 直接写颜色
-PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(PS1git-branch-prompt)\[\033[0m\]\r\n\$ "
+# git bash 的 PS1 不支持运行自定义函数，拼接吧，凑合用
+PS1="\n$magenta┌───────────$white\t ""$PS1""$magenta──────────┘$white\$ $normal"
 
 
 ####################################################################
