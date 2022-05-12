@@ -63,28 +63,30 @@ white=$'\[\e[0;37m\]'
 
 normal=$'\[\e[m\]'
 
-function git-branch-name {
+# 使用奇怪点的函数名，防止污染shell的脚本命名空间
+
+function PS1exit-code {
+    local exitcode=$?
+    if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" '-'$exitcode' '; fi
+}
+
+function PS1git-branch-name {
   git symbolic-ref --short -q HEAD 2>/dev/null
 }
 
-function git-branch-prompt {
-  local branch=`git-branch-name`
+function PS1git-branch-prompt {
+  local branch=`PS1git-branch-name`
   if [ $branch ]; then
     git_modify=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
     printf "(%s)" $branch$git_modify;
   fi
 }
 
-function exit-code {
-    local exitcode=$?
-    if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" '-'$exitcode' '; fi
-}
-
 # 命令行提示符显示 \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
-PS1="$magenta┌─$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$red\$(exit-code)$yellow\$(git-branch-prompt)\r\n$magenta└─$white\$ $normal"
+PS1="$magenta┌─$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1exit-code)$yellow\$(PS1git-branch-prompt)\r\n$magenta└─$white\$ $normal"
 
 # 直接写颜色
-PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(git-branch-prompt)\[\033[0m\]\r\n\$ "
+PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(PS1git-branch-prompt)\[\033[0m\]\r\n\$ "
 
 
 ####################################################################
