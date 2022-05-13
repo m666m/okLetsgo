@@ -197,7 +197,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     For variant 'global', will try loading 'C:\ProgramData\pip\pip.ini'
     For variant 'user', will try loading 'C:\Users\xxxx\pip\pip.ini'
     For variant 'user', will try loading 'C:\Users\xxxx\AppData\Roaming\pip\pip.ini'
-    For variant 'site', will try loading 'D:\StartHere\pycode\py37\pip.ini'
+    For variant 'site', will try loading 'D:\pycode\py37\pip.ini'
     global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
 
 配置文件生成在  ~/.pip/pip.conf，Anaconda 安装的在 C:\Users\xxxx\AppData\Roaming\pip\pip.ini。
@@ -1004,7 +1004,7 @@ conda安装在conda环境中装任何包，pip在任何环境中安装python包�
         For variant 'global', will try loading 'C:\ProgramData\pip\pip.ini'
         For variant 'user', will try loading 'C:\Users\xxxx\pip\pip.ini'
         For variant 'user', will try loading 'C:\Users\xxxx\AppData\Roaming\pip\pip.ini'
-        For variant 'site', will try loading 'D:\StartHere\pycode\py37\pip.ini'
+        For variant 'site', will try loading 'D:\pycode\py37\pip.ini'
         global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
         (py37)
 

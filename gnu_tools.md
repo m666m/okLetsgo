@@ -453,7 +453,7 @@ putty的退出也是同样的建议。
     Term=xterm-256color
 
     # 自定义颜色方案，跟深色背景搭配，比mintty默认的浅一些
-    Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
+    Background=C:\tools\SuperPuTTY\111dark.jpg
     BackgroundColour=185,136,55
     ForegroundColour=228,228,228
     CursorColour=217,230,242
@@ -474,10 +474,10 @@ putty的退出也是同样的建议。
     White=217,217,217
     BoldWhite=255,255,255
 
-    # TODO:自定义颜色方案，跟浅色背景搭配
-    # Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
+    # 自定义颜色方案，跟浅色背景搭配
+    Background=C:\tools\SuperPuTTY\222yellow.jpg
     BackgroundColour=251,251,206
-    ForegroundColour=0,0,0
+    ForegroundColour=47,47,47
     CursorColour=217,230,242
     Black=0,0,0
     BoldBlack=38,38,38
@@ -493,7 +493,7 @@ putty的退出也是同样的建议。
     BoldMagenta=255,147,250
     Cyan=32,138,115
     BoldCyan=43,189,156
-    White=141,140,137
+    White=117,117,117
     BoldWhite=255,255,255
 
     # 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置

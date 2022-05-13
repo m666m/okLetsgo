@@ -1172,7 +1172,7 @@ tools.wsb 示例：
 <Configuration>
   <MappedFolders>
     <MappedFolder>
-      <HostFolder>C:\StartHere\tools</HostFolder>
+      <HostFolder>C:\tools</HostFolder>
       <ReadOnly>true</ReadOnly>
     </MappedFolder>
     <MappedFolder>
