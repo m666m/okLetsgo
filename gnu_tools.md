@@ -340,7 +340,7 @@ function PS1git-branch-prompt {
 PS1="\n$magenta┌─$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1exit-code)$yellow\$(PS1git-branch-prompt)\n$magenta└─$white\$ $normal"
 
 # git bash 的 PS1 不支持运行自定义函数，拼接吧，凑合用
-PS1="\n$magenta┌───────────$white\t ""$PS1""$magenta──────────┘$white\$ $normal"
+PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘$white $normal"
 
 ```
 
@@ -454,7 +454,7 @@ putty的退出也是同样的建议。
 
     # 自定义颜色方案，跟深色背景搭配，比mintty默认的浅一些
     Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
-    BackgroundColour=170,125,43
+    BackgroundColour=185,136,55
     ForegroundColour=228,228,228
     CursorColour=217,230,242
     Black=0,0,0
@@ -475,7 +475,26 @@ putty的退出也是同样的建议。
     BoldWhite=255,255,255
 
     # TODO:自定义颜色方案，跟浅色背景搭配
-    # Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
+    # Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
+    BackgroundColour=251,251,206
+    ForegroundColour=0,0,0
+    CursorColour=217,230,242
+    Black=0,0,0
+    BoldBlack=38,38,38
+    Red=255,30,18
+    BoldRed=255,153,147
+    Green=60,198,63
+    BoldGreen=120,216,122
+    Yellow=193,117,40
+    BoldYellow=213,179,60
+    Blue=35,13,138
+    BoldBlue=30,18,255
+    Magenta=255,18,243
+    BoldMagenta=255,147,250
+    Cyan=32,138,115
+    BoldCyan=43,189,156
+    White=141,140,137
+    BoldWhite=255,255,255
 
     # 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
     # ThemeFile=mintty
