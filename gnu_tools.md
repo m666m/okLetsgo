@@ -340,7 +340,7 @@ function PS1git-branch-prompt {
 PS1="\n$magenta┌─$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1exit-code)$yellow\$(PS1git-branch-prompt)\n$magenta└─$white\$ $normal"
 
 # git bash 的 PS1 不支持运行自定义函数，拼接吧，凑合用
-PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘$white $normal"
+PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
 
 ```
 
