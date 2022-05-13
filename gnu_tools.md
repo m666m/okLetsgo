@@ -241,7 +241,11 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     sudo chsh -s /bin/zsh
     sudo usermod -s /bin/zsh username
 
-在MSYS2下简单使用： `zsh`
+进入终端界面后也可以运行：
+
+    if [ -t 1 ]; then
+    exec zsh
+    fi
 
 如果是初次运行zsh，有个引导程序设置zsh读取的配置文 ~/.zshrc 文件，也可以手动调用
 
@@ -259,8 +263,6 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
                 https://github.com/unixorn/awesome-zsh-plugins
 
-    https://github.com/hsab/WSL-config/mintty/themes
-
 内置主题bira，添加时间字段修改`RPROMPT="[%*]%B${return_code}%b"`
 ![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
 
@@ -269,9 +271,14 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
 额外主题 [powerlevel10k](https://github.com/romkatv/powerlevel10k)，可以运行`p10k configure`设置使用习惯，![powerlevel10k](https://camo.githubusercontent.com/80ec23fda88d2f445906a3502690f22827336736/687474703a2f2f692e696d6775722e636f6d2f777942565a51792e676966)
 
+安装目前是从github下载
+
+    # sh -c "$(curl -fsSL
+    sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
 安装依赖
 
-    有些插件和主题依赖 python
+    # 有些插件和主题依赖 python 和 git
 
     # https://github.com/zsh-users/antigen/wiki/Installation
     sudo apt install zsh-antigen
@@ -285,6 +292,57 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     $ZSH_CUSTOM
     └── themes
         └── my_awesome_theme.zsh-theme
+
+#### 命令提示符美化
+
+```shell
+####################################################################
+# 命令行提示符显示当前路径和git分支，放入任一 .profile 或 .bashrc 或 .bash_profile 内
+
+black=$'\[\e[0;30m\]'
+
+red=$'\[\e[0;31m\]'
+
+green=$'\[\e[0;32m\]'
+
+yellow=$'\[\e[0;33m\]'
+
+blue=$'\[\e[0;34m\]'
+
+magenta=$'\[\e[0;35m\]'
+
+cyan=$'\[\e[0;36m\]'
+
+white=$'\[\e[0;37m\]'
+
+normal=$'\[\e[m\]'
+
+# 使用奇怪点的函数名，防止污染shell的脚本命名空间
+
+function PS1exit-code {
+    local exitcode=$?
+    if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" '-'$exitcode' '; fi
+}
+
+function PS1git-branch-name {
+  git symbolic-ref --short -q HEAD 2>/dev/null
+}
+
+function PS1git-branch-prompt {
+  local branch=`PS1git-branch-name`
+  if [ $branch ]; then
+    git_modify=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
+    printf "(%s)" $branch$git_modify;
+  fi
+}
+
+# bash 命令行提示符显示 \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
+PS1="\n$magenta┌─$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1exit-code)$yellow\$(PS1git-branch-prompt)\n$magenta└─$white\$ $normal"
+
+# git bash 的 PS1 不支持运行自定义函数，拼接吧，凑合用
+PS1="\n$magenta┌───────────$white\t ""$PS1""$magenta──────────┘$white\$ $normal"
+
+```
 
 ## Windows下配置GNU环境
 

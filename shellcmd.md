@@ -43,53 +43,6 @@ timeout 600s  some_command arg1 arg2
 cmd1 | tee out1.dat | cmd2 | tee out2.dat | cmd3 > out3.dat
 
 ####################################################################
-# 命令行提示符显示当前路径和git分支，放入任一 .profile 或 .bashrc 或 .bash_profile 内
-
-black=$'\[\e[0;30m\]'
-
-red=$'\[\e[0;31m\]'
-
-green=$'\[\e[0;32m\]'
-
-yellow=$'\[\e[0;33m\]'
-
-blue=$'\[\e[0;34m\]'
-
-magenta=$'\[\e[0;35m\]'
-
-cyan=$'\[\e[0;36m\]'
-
-white=$'\[\e[0;37m\]'
-
-normal=$'\[\e[m\]'
-
-# 使用奇怪点的函数名，防止污染shell的脚本命名空间
-
-function PS1exit-code {
-    local exitcode=$?
-    if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" '-'$exitcode' '; fi
-}
-
-function PS1git-branch-name {
-  git symbolic-ref --short -q HEAD 2>/dev/null
-}
-
-function PS1git-branch-prompt {
-  local branch=`PS1git-branch-name`
-  if [ $branch ]; then
-    git_modify=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
-    printf "(%s)" $branch$git_modify;
-  fi
-}
-
-# bash 命令行提示符显示 \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
-PS1="\n$magenta┌─$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1exit-code)$yellow\$(PS1git-branch-prompt)\n$magenta└─$white\$ $normal"
-
-# git bash 的 PS1 不支持运行自定义函数，拼接吧，凑合用
-PS1="\n$magenta┌───────────$white\t ""$PS1""$magenta──────────┘$white\$ $normal"
-
-
-####################################################################
 #
 # 文字颜色生成模板 http://ciembor.github.io/4bit
 #
