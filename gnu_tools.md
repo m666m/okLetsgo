@@ -297,7 +297,7 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
 ```shell
 ####################################################################
-# 命令行提示符显示当前路径和git分支，放入任一 .profile 或 .bashrc 或 .bash_profile 内
+# 命令行提示符显示当前路径和git分支等，放入任一 .profile 或 .bashrc 或 .bash_profile 内
 
 black=$'\[\e[0;30m\]'
 
@@ -336,12 +336,16 @@ function PS1git-branch-prompt {
   fi
 }
 
-# bash 命令行提示符显示 \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
-PS1="\n$magenta┌─$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1exit-code)$yellow\$(PS1git-branch-prompt)\n$magenta└─$white\$ $normal"
+# bash 命令行提示符显示： \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
+PS1="\n$magenta┌─ $white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1exit-code)$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
-# git bash 的 PS1 在\$(函数名)后用换行\n就冲突，不支持$?检查退出码，或者拼接凑合用，或者把换行\n放在引用函数前面
-PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
-#PS1="\n$magenta┌──$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta└─$white\$ $normal"
+function PS1new_line {
+    printf "\n└"
+}
+
+# git bash 命令行提示符显示： 在\$(函数名)后直接用换行\n就冲突，不支持$?检查退出码，或者拼接凑合用，或者把换行\n放在引用函数前面，目前用子函数new_line解决
+#PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
+PS1="\n$magenta┌─ $white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta$(PS1new_line)──$white\$ $normal"
 
 ```
 
