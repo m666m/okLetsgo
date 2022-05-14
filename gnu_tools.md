@@ -318,10 +318,11 @@ white=$'\[\e[0;37m\]'
 normal=$'\[\e[m\]'
 
 # 使用奇怪点的函数名，防止污染shell的脚本命名空间
+# 注意判断退出码的函数前面不能执行函数
 
 function PS1exit-code {
     local exitcode=$?
-    if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" '-'$exitcode' '; fi
+    if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
 }
 
 function PS1git-branch-name {
@@ -331,21 +332,27 @@ function PS1git-branch-name {
 function PS1git-branch-prompt {
   local branch=`PS1git-branch-name`
   if [ $branch ]; then
-    git_modify=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
+    local git_modify=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
     printf "(%s)" $branch$git_modify;
   fi
 }
 
 # bash 命令行提示符显示： \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
-PS1="\n$magenta┌─ $white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1exit-code)$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
+PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
-function PS1new_line {
+# git bash 命令行提示符显示： 在\$(函数名)后直接用换行\n就冲突，不支持$?检查退出码，或者把换行\n放在引用函数前面，或者拼接凑合用
+#PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
+# 目前完美解决办法是新增子函数PS1new-line和PS1exitcode实现跟上面完全一致的美化效果。
+function PS1new-line {
     printf "\n└"
 }
 
-# git bash 命令行提示符显示： 在\$(函数名)后直接用换行\n就冲突，不支持$?检查退出码，或者拼接凑合用，或者把换行\n放在引用函数前面，目前用子函数new_line解决
-#PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
-PS1="\n$magenta┌─ $white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta$(PS1new_line)──$white\$ $normal"
+function PS1exitcode {
+    local exitcode=$(printf "$?")
+    (($exitcode != '0')) && printf "%s" ' -'$exitcode' '
+}
+
+PS1="\n$magenta┌─$red\$(PS1exitcode)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta$(PS1new-line)──$white\$ $normal"
 
 ```
 
