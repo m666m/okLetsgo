@@ -341,7 +341,7 @@ PS1="\n$magenta┌─$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$mag
 
 # git bash 的 PS1 在\$(函数名)后用换行\n就冲突，不支持$?检查退出码，或者拼接凑合用，或者把换行\n放在引用函数前面
 PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
-# PS1="\n$magenta┌──$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta└─$white\$ $normal"
+#PS1="\n$magenta┌──$white\t $magenta[$green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta└─$white\$ $normal"
 
 ```
 
@@ -455,7 +455,7 @@ putty的退出也是同样的建议。
 
     # 自定义颜色方案，跟深色背景搭配，比mintty默认的浅一些
     Background=C:\tools\SuperPuTTY\111dark.jpg
-    BackgroundColour=185,136,55
+    BackgroundColour=109,69,35
     ForegroundColour=228,228,228
     CursorColour=217,230,242
     Black=0,0,0
@@ -467,7 +467,7 @@ putty的退出也是同样的建议。
     Yellow=249,237,134
     BoldYellow=240,197,47
     Blue=198,159,249
-    BoldBlue=84,71,243
+    BoldBlue=57,124,249
     Magenta=172,53,101
     BoldMagenta=249,159,210
     Cyan=63,165,243
