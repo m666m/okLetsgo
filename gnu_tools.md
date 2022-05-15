@@ -507,11 +507,11 @@ putty的退出也是同样的建议。
     Yellow=193,117,40
     BoldYellow=166,150,36
     Blue=11,80,155
-    BoldBlue=17,120,234
+    BoldBlue=9,58,113
     Magenta=255,18,243
     BoldMagenta=255,147,250
-    Cyan=32,138,115
-    BoldCyan=36,162,133
+    Cyan=3,218,175
+    BoldCyan=91,219,190
     White=128,128,192
     BoldWhite=180,180,180
 
