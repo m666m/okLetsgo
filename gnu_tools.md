@@ -296,6 +296,7 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 #### 命令提示符美化
 
 ```shell
+
 ####################################################################
 # 命令行提示符显示当前路径和git分支等，放入任一 .profile 或 .bashrc 或 .bash_profile 内
 
@@ -323,6 +324,12 @@ normal=$'\[\e[m\]'
 function PS1exit-code {
     local exitcode=$?
     if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
+}
+
+function PS1conda-env-name {
+    # 暂未调试成功
+    local envname=$(if [ "$(which conda >/dev/null 2>&1)" = "0" ]; then printf "%s" $(conda env list); fi)
+    ((! -z $envname)) && printf " conda:%s" $envname;
 }
 
 function PS1git-branch-name {
