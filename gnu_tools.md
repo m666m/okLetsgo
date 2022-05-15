@@ -493,8 +493,8 @@ putty的退出也是同样的建议。
     White=217,217,217
     BoldWhite=255,255,255
 
-    # 自定义颜色方案，跟浅色背景搭配
-    Background=C:\tools\SuperPuTTY\222yellow.jpg
+    # 自定义颜色方案，跟浅色黄色背景搭配
+    Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
     BackgroundColour=250,234,182
     ForegroundColour=47,47,47
     CursorColour=217,230,242
@@ -514,6 +514,12 @@ putty的退出也是同样的建议。
     BoldCyan=36,162,133
     White=242,242,242
     BoldWhite=255,255,255
+
+    # TODO:自定义颜色方案
+    # 自定义颜色方案，跟浅色绿色背景搭配
+    Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
+    # 自定义颜色方案，跟浅色绿色背景搭配
+    Background=C:\StartHere\tools\SuperPuTTY\444blue.jpg
 
     # 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
     # ThemeFile=mintty
