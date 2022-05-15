@@ -496,24 +496,24 @@ putty的退出也是同样的建议。
     # 自定义颜色方案，跟浅色黄色背景搭配
     Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
     BackgroundColour=250,234,182
-    ForegroundColour=47,47,47
+    ForegroundColour=128,0,64
     CursorColour=217,230,242
     Black=0,0,0
-    BoldBlack=38,38,38
+    BoldBlack=72,72,72
     Red=255,30,18
-    BoldRed=255,153,147
+    BoldRed=255,84,74
     Green=82,173,58
     BoldGreen=65,136,47
     Yellow=193,117,40
-    BoldYellow=213,179,60
+    BoldYellow=166,150,36
     Blue=11,80,155
     BoldBlue=17,120,234
     Magenta=255,18,243
     BoldMagenta=255,147,250
     Cyan=32,138,115
     BoldCyan=36,162,133
-    White=242,242,242
-    BoldWhite=255,255,255
+    White=128,128,192
+    BoldWhite=180,180,180
 
     # TODO:自定义颜色方案
     # 自定义颜色方案，跟浅色绿色背景搭配
