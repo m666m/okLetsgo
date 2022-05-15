@@ -485,33 +485,33 @@ putty的退出也是同样的建议。
     Yellow=249,237,134
     BoldYellow=240,197,47
     Blue=198,159,249
-    BoldBlue=84,71,243
+    BoldBlue=15,118,232
     Magenta=172,53,101
     BoldMagenta=249,159,210
-    Cyan=63,165,243
-    BoldCyan=159,210,249
+    Cyan=7,254,254
+    BoldCyan=1,220,220
     White=217,217,217
     BoldWhite=255,255,255
 
     # 自定义颜色方案，跟浅色背景搭配
     Background=C:\tools\SuperPuTTY\222yellow.jpg
-    BackgroundColour=251,251,206
+    BackgroundColour=250,234,182
     ForegroundColour=47,47,47
     CursorColour=217,230,242
     Black=0,0,0
     BoldBlack=38,38,38
     Red=255,30,18
     BoldRed=255,153,147
-    Green=60,198,63
-    BoldGreen=120,216,122
+    Green=82,173,58
+    BoldGreen=65,136,47
     Yellow=193,117,40
     BoldYellow=213,179,60
-    Blue=35,13,138
-    BoldBlue=30,18,255
+    Blue=11,80,155
+    BoldBlue=17,120,234
     Magenta=255,18,243
     BoldMagenta=255,147,250
     Cyan=32,138,115
-    BoldCyan=43,189,156
+    BoldCyan=36,162,133
     White=117,117,117
     BoldWhite=255,255,255
 
