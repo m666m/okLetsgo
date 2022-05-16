@@ -589,6 +589,7 @@ PS1="\n$magenta┌─$red\$(PS1exitcode)$magenta[$white\t $green\u$white@$green\
 安装依赖
 
     # 有些插件和主题依赖 python 和 git
+    # 详见章节 [Debian/Ubuntu 如何安装自己版本的python和pip] <python.md>
 
     # https://github.com/zsh-users/antigen/wiki/Installation
     sudo apt install zsh-antigen

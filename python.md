@@ -14,6 +14,10 @@ pip install 的各种问题 <https://www.cnblogs.com/feixiablog/p/8320602.html>�
 
 如果要在conda下使用pip，见下面章节[Anaconda环境中使用pip]
 
+Debian/Ubuntu 下默认安装python 2和3，pip命令是python2的pip, pip3命令才是python3的pip
+
+    pip3 install --upgrade pip
+
 ### 务必搞清环境，pip install 可能把包放到的几个地方
 
 pip install 之前先看看到底用的哪个地方的pip，特别是当前操作系统里有多个pip：
@@ -92,8 +96,9 @@ Windows下干净的python环境，命令行工具不要使用bash，在cmd下用
 
     python3 -m pip install pip==版本号
 
-有时候有两个pip，如果是这种情况可以使用
+Debian/Ubuntu 下有两个pip，如果是这种情况可以使用
 
+    # python3 的版本
     pip3 install--index-url https://pypi.douban.com/simple xxxx
 
 如果使用镜像来安装库，比较常用的有 <https://mirrors.tuna.tsinghua.edu.cn/help/pypi/> <https://pypi.mirrors.ustc.edu.cn/simple> 参见下面章节[PyPi使用国内源]
@@ -1317,7 +1322,7 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
 
 ### ubuntu16.04自带python的版本
 
-既有python2.7，又有python3.5
+Debian/Ubuntu 下同时安装了python2和python3，既有python2.7，又有python3.5
 
 但是默认的python命令是python2.7，我要想执行python3就必须输入python3
 
@@ -1337,26 +1342,39 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
 
     sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 150
 
-### ubuntu如何安装自己版本的python
+### Debian/Ubuntu 如何安装自己版本的python和pip
+
+Debian/Ubuntu 下同时安装了python2和python3，对应的pip也是两个：pip 和 pip3，注意区别。特别是有些脚本不考虑多版本python共存，默认的命令就是pip，在Debian/Ubuntu 下会执行到python2里去了，注意给pip3建立个链接文件，方便使用。
 
 1.安装ubuntu 17.10 桌面版64位系统
+
 2.系统已内置安装了python2.7和python3.6版本
+
     python执行路径为:/usr/bin/python2 /usr/bin/python3
     如果没有安装对应的版本，可执行以下命令安装
     sudo apt-get install python2.7 python2.7-dev
     sudo apt-get install python3.6 python3.6-dev
+
 3.安装pip，根据不同的python版本，可以执行
+
     sudo apt install python-pip
     sudo apt install python3-pip
+
 4.使用对应版本的pip安装virtualenv，使用哪个版本的pip安装，则virtualenv默认环境为哪个版本
+
     pip install virtualenv
     pip3 install virtualenv
+
 5.创建对应版本的virtual env
+
     virtualenv -p /usr/bin/python2 ~/.venv/python2
     virtualenv -p /usr/bin/python3 ~/.venv/python3
+
 6.使用时，激活对应环境的activate
+
     source ~/.venv/python2/bin/activate
     source ~/.venv/python3/bin/activate
+
 7.退出环境，使用 deactivate
 
 ## Centos 7 源码安装 python3.7+ 含 pip3 实现多版本共存 (不替换老版本新装的方法 )
