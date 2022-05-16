@@ -1,12 +1,12 @@
-# Windows GNU/POSIX 环境
+# Windows 下的 GNU/POSIX 环境
 
-## 环境方案
+## 环境方案选择
 
-Windows 10+ 下开发 GNU 环境设置
+Windows 10+ 下使用 WSL 开发 GNU 环境设置
 
     https://github.com/hsab/WSL-config
 
-Windows c++ 开发环境配置
+Windows C++ 开发环境配置
 
     g++7.0 + git + cmake
 
@@ -89,8 +89,7 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
 ### 简单使用：安装 Git for Windows
 
-GIT Bash 使用了GNU tools 的 MINGW，但是工具只选择了它自己需要的部分进行了集成，
-我们主要使用他的 mintty.exe 命令行终端程序和 ssh.exe 工具。
+GIT Bash 使用了 GNU tools 的 MINGW，但是工具只选择了它自己需要的部分进行了集成，我们主要使用他的 mintty 命令行终端程序和 ssh、gpg 等工具。
 
 下载地址 <https://git-scm.com/download/win>
 
@@ -99,7 +98,9 @@ GIT Bash 使用了GNU tools 的 MINGW，但是工具只选择了它自己需要�
     http://mintty.github.io/
     https://github.com/mintty/mintty/wiki/Tips
 
-安装 git for Windows 或 MSYS2 后就有了，git for Windows下的配置文件在 ~\.minttyrc，MSYS2的见章节[全套使用：安装 MSYS2(Cygwin/Msys)]。
+安装 git for Windows 或 MSYS2 后就有了，git for Windows下的配置文件在 ~\.minttyrc。
+
+如果安装 MSYS2，则配置文件不同，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]。
 
     Background=C:\Users\xxxx\Pictures\1111111111.jpg
     Font=Consolas
@@ -237,7 +238,7 @@ MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变�
 
 打开后会自动把工作目录设置为msys64/home/%user%下。
 
-### 组合使用：git for windows 和 MSYS2
+### 组合使用：git for Windows + MSYS2
 
 #### 拷贝 MSYS2 的工具到 git 里，这样只使用 git bash(mintty) 就可以了
 
