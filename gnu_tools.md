@@ -1,6 +1,6 @@
 # Windows GNU/POSIX 环境
 
-## 多种环境方案
+## 环境方案
 
 Windows 10+ 下开发 GNU 环境设置
 
@@ -59,52 +59,19 @@ Cygwin实现，不是 kvm 虚拟机环境，也不是 QEMU 那种运行时模拟
 
 <https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html>
 
-1.run setup.exe
-Ensure on the left that Basic Setup is highlighted. Click the three boxes indicated below:
-
-    mingw32-base,
-    mingw32-gcc=g++,
-    msys-base.
-
-After clicking each, select Mark for selection.
-
-Terminate (click X on) the MinGW Installation Manager (I know this is weird).
-
-2.The following pop-up window should appear,Click Review Change
-
-3.The following pop-up window should appear,Click Apply.
-
-4.The following pop-up window will appear, showing the downloading progress.
- After a while (a few minutes to an hour, depending on your download speed), it should start extracting the donwloaded files.
-
-5.A few minutes after that, the following pop-up window should appear,Click Close.
-
-6.Edit Path
-Enviroment Variables...In the System variables (lower) part, scroll to line starting with Path and click that line.
-
-    C:\MinGW\bin;C:\MinGW\msys\1.0\bin;
-
-paste it at the very start of the Variable Value text entry.
-
-Click OK (3 times).
-
 ### MinGW64
 
 MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接口协议是 win32，异常处理模型是 seh，Build revision 是 1 。
 
-简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了Mingw。
+简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了Mingw64。
 比如 CodeLite，CodeBlocks，Eclipse CDT，Apache NetBeans（JDK 8）。
 收费的有JetBrains Clion，AppCode （mac）。
 
-### MSys
+### MSYS、MSYS2
 
 MinGW 仅仅是工具链，Windows 下的 cmd 使用起来不够方便，MSYS 是用于辅助 Windows 版 MinGW 进行命令行开发的配套软件包：提供了部分 Unix 工具以使得 MinGW 的工具使用起来方便一些。相比基于庞大的 Cygwin 下的 MinGW 会轻巧不少。
 
-### 【推荐】MSYS2(Cygwin/Msys)
-
-    Windows上msys2配置及填坑 https://hustlei.github.io/2018/11/msys2-for-win.html
-
-MSYS2，MSYS 的第二代，有大量预编译的软件包，并且具有包管理器 pacman (ArchLinux)。
+MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包管理器 pacman (ArchLinux)。
 
 目前在windows上使用Linux程序
 
@@ -113,6 +80,209 @@ MSYS2，MSYS 的第二代，有大量预编译的软件包，并且具有包管�
     如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman (ArcLinux)作为包管理器。
 
     Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发使用 WSL2 也可以。
+
+### Windows 10+ 下的 WSL 混合环境
+
+    https://github.com/hsab/WSL-config
+
+## 环境配置
+
+### 简单使用：安装 Git for Windows
+
+GIT Bash 使用了GNU tools 的 MINGW，但是工具只选择了它自己需要的部分进行了集成，
+我们主要使用他的 mintty.exe 命令行终端程序和 ssh.exe 工具。
+
+下载地址 <https://git-scm.com/download/win>
+
+#### Windows下 的 bash -- mintty
+
+    http://mintty.github.io/
+    https://github.com/mintty/mintty/wiki/Tips
+
+安装 git for Windows 或 MSYS2 后就有了，git for Windows下的配置文件在 ~\.minttyrc，MSYS2的见章节[全套使用：安装 MSYS2(Cygwin/Msys)]。
+
+    Background=C:\Users\xxxx\Pictures\1111111111.jpg
+    Font=Consolas
+    FontHeight=11
+    Columns=200
+    Rows=60
+    # 如果嫌默认的白色不够纯就改
+    ForegroundColour=255,255,255
+    # mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
+    Language=@
+    # 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
+    # https://www.cnblogs.com/LCcnblogs/p/6208110.html
+    # bash下设置，这个变量设置区域，影响语言、词汇、日期格式等
+    Locale=zh_CN  # bash 下显示中文
+    Charset=GBK  # ls列windows目录名可以显示中文，但tail等命令显示中文utf-8文件需要设为UTF-8，此时中文目录名就不正常显示了，原因是中文版windows是ANSI而不是UTF
+    # LANG 只影响字符的显示语言
+    LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
+
+如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"。
+
+git for windows 的 mintty 目录
+
+    / 目录          位于git安装目录下的 C:\Program Files\Git\ 目录下
+    /usr 目录       同上
+    /tmp 目录       位于 C:\Users\XXXX\AppData\Local\Temp\  目录下
+
+退出bash时，最好不要直接关闭窗口，使用命令exit或^D。
+
+putty的退出也是同样的建议。
+
+##### mintty 美化
+
+如果是git for Windows 的mintty，修改 ~/.minttyrc 为下面的内容
+
+    Font=Consolas
+    FontHeight=11
+    Columns=140
+    Rows=40
+    AllowBlinking=yes
+    # Scrollbar=none
+
+    # 语言设置
+    Language=zh_CN
+    # Locale=zh_CN
+    # Charset=GBK
+    Charset=UTF-8
+
+    # 窗体透明效果，不适用于嵌入多窗口终端工具
+    # Transparency=low
+
+    # 为了使用花哨颜色，确保终端设置恰当
+    Term=xterm-256color
+
+    # 自定义颜色方案，跟深色背景搭配，比mintty默认的浅一些
+    Background=C:\tools\SuperPuTTY\111dark.jpg
+    BackgroundColour=109,69,35
+    ForegroundColour=228,228,228
+    CursorColour=217,230,242
+    Black=0,0,0
+    BoldBlack=36,36,36
+    Red=255,0,0
+    BoldRed=255,0,128
+    Green=51,242,133
+    BoldGreen=22,184,74
+    Yellow=249,237,134
+    BoldYellow=240,197,47
+    Blue=198,159,249
+    BoldBlue=15,118,232
+    Magenta=172,53,101
+    BoldMagenta=249,159,210
+    Cyan=7,254,254
+    BoldCyan=1,220,220
+    White=217,217,217
+    BoldWhite=255,255,255
+
+    # 自定义颜色方案，跟浅色黄色背景搭配
+    Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
+    BackgroundColour=250,234,182
+    ForegroundColour=128,0,64
+    CursorColour=217,230,242
+    Black=0,0,0
+    BoldBlack=72,72,72
+    Red=255,30,18
+    BoldRed=255,84,74
+    Green=82,173,58
+    BoldGreen=65,136,47
+    Yellow=193,117,40
+    BoldYellow=166,150,36
+    Blue=11,80,155
+    BoldBlue=9,58,113
+    Magenta=255,18,243
+    BoldMagenta=255,147,250
+    Cyan=3,218,175
+    BoldCyan=91,219,190
+    White=128,128,192
+    BoldWhite=180,180,180
+
+    # TODO:自定义颜色方案
+    # 自定义颜色方案，跟浅色绿色背景搭配
+    Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
+    # 自定义颜色方案，跟浅色绿色背景搭配
+    Background=C:\StartHere\tools\SuperPuTTY\444blue.jpg
+
+    # 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
+    # ThemeFile=mintty
+
+如果是 MSYS2 的 mintty，可以在<https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
+
+##### 多终端工具 ConEmu/SuperPutty
+
+SuperPutty 支持putty、mintty、cmd、powershell等多种终端嵌入显示，可导入putty站点，可设置站点关联WinScp/FileZilla等软件的快捷调用，使用简单方便。
+
+ConEmu是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2，bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
+
+    ConEmu配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
+    msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
+
+conemu中设置MSYS2
+
+以MSYS2 MingGW64为例：
+
+> 打开conemu的settings对话框
+> 选择Startup>>Tasks选项
+> 点击+号，新建一个Task
+> 修改Task名字为Msys2::MingGW64
+>
+> 在commands下文本框内输入如下代码：
+>
+>     set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
+>
+
+MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变量值`D=`为你的msys2的安装目录。
+
+如果安装了zsh并想默认使用zsh，可以把代码里的bash改为zsh。
+
+打开后会自动把工作目录设置为msys64/home/%user%下。
+
+### 组合使用：git for windows 和 MSYS2
+
+#### 拷贝 MSYS2 的工具到 git 里，这样只使用 git bash(mintty) 就可以了
+
+假设git的安装目录在 D:\Git，可执行文件在 D:\Git\usr\bin\ 目录：
+
+以迁移 tmux.exe 为例，可执行文件放在 D:\Git\usr\bin\：
+
+    tmux.exe
+    event_rpcgen.py
+    msys-event-2-1-7.dll
+    msys-event_core-2-1-7.dll
+    msys-event_extra-2-1-7.dll
+    msys-event_openssl-2-1-7.dll
+    msys-event_pthreads-2-1-7.dll
+
+其它放在 D:\Git\usr\share\ 下：
+
+    licenses\libevent
+    licenses\tmux
+    man\man1\tmux.1.gz
+
+#### 共享一套 Home 目录
+
+如果安装了 git for windows ，其 home 目录默认为 %USERPROFILE%，导致 git for windows 和 MSYS2 的 git 配置和 vim 等配置不能共享。
+
+如果在安装 MSYS2 之前已经安装 git for windows 需要使用将之前的 ssh 和 git 的配置拷贝到 MSYS2 的 home 目录下。
+
+在 Windows 上配置环境变量 HOME 为 C:\you-path\msys64\home\your-name，增加这个环境变量的目的是为了让 git for windows 的 home 目录指向 MSYS2 的 home 目录。
+
+### 全套使用：安装 MSYS2(Cygwin/Msys)
+
+下载安装 MSYS2
+
+    https://www.msys2.org/
+
+使用pacman安装各种包：
+
+    pacman -S tmux zsh git
+
+参考文章
+
+    MSYS2 和 mintty 打造 Windows 下 Linux 工具体验
+        https://creaink.github.io/post/Computer/Windows/win-msys2/
+
+    Windows 下 MSYS2 配置及填坑 https://hustlei.github.io/2018/11/msys2-for-win.html
 
 下载 <https://www.msys2.org/>
 
@@ -232,6 +402,10 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     pacman -Sg 软件包组: 查看某软件包组所包含的所有软件包。
     pacman -Sc：清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
     pacman -Scc：清理所有的缓存文件。
+
+## Windows下配置GNU环境
+
+## Linux下常用工具
 
 ### 使用 zsh + ohmyzsh
 
@@ -363,201 +537,7 @@ PS1="\n$magenta┌─$red\$(PS1exitcode)$magenta[$white\t $green\u$white@$green\
 
 ```
 
-## Windows下配置GNU环境
-
-    https://github.com/hsab/WSL-config
-
-    https://creaink.github.io/post/Computer/Windows/win-msys2/
-
-### 简单使用：安装 Git for Windows
-
-GIT Bash 使用了GNU tools 的 MINGW，但是工具只选择了它自己需要的部分进行了集成，
-我们主要使用他的 mintty.exe 命令行终端程序和 ssh.exe 工具。
-
-下载地址 <https://git-scm.com/download/win>
-
-### 全套使用：安装 MSYS2
-
-安装它下面的工具
-
-You can install the whole distribution of the tools from <https://www.msys2.org/>
-
-安装好后，选择安装需要的工具，如tmux：
-
-    pacman -S tmux zsh git
-
-### 折衷使用：拷贝 MSYS2 的工具到 git 里
-
-假设git的安装目录在 D:\Git，可执行文件放在 D:\Git\usr\bin\ 下：
-
-以tmux.exe为例：
-    tmux.exe
-    event_rpcgen.py
-    msys-event-2-1-7.dll
-    msys-event_core-2-1-7.dll
-    msys-event_extra-2-1-7.dll
-    msys-event_openssl-2-1-7.dll
-    msys-event_pthreads-2-1-7.dll
-
-其它放在 D:\Git\usr\share\ 下：
-    licenses\libevent
-    licenses\tmux
-    man\man1\tmux.1.gz
-
-### 组合使用：git 和 MSYS2 共享一套Home目录
-
-在 Windows 上配置环境变量 HOME 为 C:\you-path\msys64\home\your-name，增加这个环境变量的目的是为了让 git for windows 的 home 目录指向 MSYS2 的 home 目录。
-
-如果安装了 git for windows ，其 home 目录默认为 %USERPROFILE%，导致 git for windows 和 MSYS2 的 git 配置和 vim 等配置不能共享。
-
-如果在安装 MSYS2 之前已经安装 git for windows 需要使用将之前的 ssh 和 git 的配置拷贝到 MSYS2 的 home 目录下。
-
-### Windows下 的 bash -- mintty
-
-    http://mintty.github.io/
-    https://github.com/mintty/mintty/wiki/Tips
-
-安装 git for Windows 或 MSYS2 后就有了，git for Windows下的配置文件在 ~\.minttyrc，MSYS2的见章节[MSYS2(Cygwin/Msys)]。
-
-    Background=C:\Users\xxxx\Pictures\1111111111.jpg
-    Font=Consolas
-    FontHeight=11
-    Columns=200
-    Rows=60
-    # 如果嫌默认的白色不够纯就改
-    ForegroundColour=255,255,255
-    # mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
-    Language=@
-    # 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
-    # https://www.cnblogs.com/LCcnblogs/p/6208110.html
-    # bash下设置，这个变量设置区域，影响语言、词汇、日期格式等
-    Locale=zh_CN  # bash 下显示中文
-    Charset=GBK  # ls列windows目录名可以显示中文，但tail等命令显示中文utf-8文件需要设为UTF-8，此时中文目录名就不正常显示了，原因是中文版windows是ANSI而不是UTF
-    # LANG 只影响字符的显示语言
-    LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
-
-如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"。
-
-git for windows 的 mintty 目录
-
-    / 目录          位于git安装目录下的 C:\Program Files\Git\ 目录下
-    /usr 目录       同上
-    /tmp 目录       位于 C:\Users\XXXX\AppData\Local\Temp\  目录下
-
-退出bash时，最好不要直接关闭窗口，使用命令exit或^D。
-
-putty的退出也是同样的建议。
-
-#### mintty 美化
-
-如果是git for Windows 的mintty，修改 ~/.minttyrc 为下面的内容
-
-    Font=Consolas
-    FontHeight=11
-    Columns=140
-    Rows=40
-    AllowBlinking=yes
-    # Scrollbar=none
-
-    # 语言设置
-    Language=zh_CN
-    # Locale=zh_CN
-    # Charset=GBK
-    Charset=UTF-8
-
-    # 窗体透明效果，不适用于嵌入多窗口终端工具
-    # Transparency=low
-
-    # 为了使用花哨颜色，确保终端设置恰当
-    Term=xterm-256color
-
-    # 自定义颜色方案，跟深色背景搭配，比mintty默认的浅一些
-    Background=C:\tools\SuperPuTTY\111dark.jpg
-    BackgroundColour=109,69,35
-    ForegroundColour=228,228,228
-    CursorColour=217,230,242
-    Black=0,0,0
-    BoldBlack=36,36,36
-    Red=255,0,0
-    BoldRed=255,0,128
-    Green=51,242,133
-    BoldGreen=22,184,74
-    Yellow=249,237,134
-    BoldYellow=240,197,47
-    Blue=198,159,249
-    BoldBlue=15,118,232
-    Magenta=172,53,101
-    BoldMagenta=249,159,210
-    Cyan=7,254,254
-    BoldCyan=1,220,220
-    White=217,217,217
-    BoldWhite=255,255,255
-
-    # 自定义颜色方案，跟浅色黄色背景搭配
-    Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
-    BackgroundColour=250,234,182
-    ForegroundColour=128,0,64
-    CursorColour=217,230,242
-    Black=0,0,0
-    BoldBlack=72,72,72
-    Red=255,30,18
-    BoldRed=255,84,74
-    Green=82,173,58
-    BoldGreen=65,136,47
-    Yellow=193,117,40
-    BoldYellow=166,150,36
-    Blue=11,80,155
-    BoldBlue=9,58,113
-    Magenta=255,18,243
-    BoldMagenta=255,147,250
-    Cyan=3,218,175
-    BoldCyan=91,219,190
-    White=128,128,192
-    BoldWhite=180,180,180
-
-    # TODO:自定义颜色方案
-    # 自定义颜色方案，跟浅色绿色背景搭配
-    Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
-    # 自定义颜色方案，跟浅色绿色背景搭配
-    Background=C:\StartHere\tools\SuperPuTTY\444blue.jpg
-
-    # 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
-    # ThemeFile=mintty
-
-如果是 MSYS2 的 mintty，可以在<https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
-
-#### 多终端工具 ConEmu/SuperPutty
-
-SuperPutty 支持putty、mintty、cmd、powershell等多种终端嵌入显示，可导入putty站点，可设置站点关联WinScp/FileZilla等软件的快捷调用，使用简单方便。
-
-ConEmu是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2，bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
-
-    ConEmu配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
-    msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
-
-conemu中设置MSYS2
-
-以MSYS2 MingGW64为例：
-
-> 打开conemu的settings对话框
-> 选择Startup>>Tasks选项
-> 点击+号，新建一个Task
-> 修改Task名字为Msys2::MingGW64
->
-> 在commands下文本框内输入如下代码：
->
->     set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
->
-
-MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变量值`D=`为你的msys2的安装目录。
-
-如果安装了zsh并想默认使用zsh，可以把代码里的bash改为zsh。
-
-打开后会自动把工作目录设置为msys64/home/%user%下。
-
-## Linux下常用工具
-
-### vim powerline
+### Vim powerline
 
 安装说明
 
@@ -593,6 +573,23 @@ MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变�
 
     " Use 256 colours (Use this setting only if your terminal supports 256 colours)
     set t_Co=256
+
+### Vim 解决汉字乱码
+
+如果你的 Vim 打开汉字出现乱码的话，那么在家目录(~)下，新建.vimrc文件
+
+    vim ~/.vimrc
+
+添加内容如下：
+
+    ini
+    set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
+    set enc=utf8
+    set fencs=utf8,gbk,gb2312,gb18030
+
+保存退出后执行下环境变量
+
+    source .vimrc
 
 ### tmux 不怕断连的多窗口命令行
 
@@ -737,23 +734,6 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
     aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce,udp://45.154.253.8:6969/announce,http://45.154.253.8:80/announce,udp://51.81.46.170:6969/announce,udp://91.216.110.52:451/announce,udp://185.181.60.155:80/announce,udp://208.83.20.20:6969/announce,udp://149.202.88.193:80/announce,udp://5.79.251.251:6969/announce,udp://5.161.62.40:6969/announce,udp://217.30.10.52:6969/announce,udp://149.28.47.87:1738/announce,udp://163.172.209.40:80/announce,udp://156.234.201.18:80/announce,udp://62.210.217.207:1337/announce,udp://209.141.59.16:6969/announce,udp://106.14.254.164:6969/announce,udp://tracker.opentrackr.org:1337/announce,udp://9.rarbg.com:2810/announce,udp://tracker.openbittorrent.com:6969/announce,http://tracker.openbittorrent.com:80/announce,udp://opentracker.i2p.rocks:6969/announce,https://opentracker.i2p.rocks:443/announce,udp://www.torrent.eu.org:451/announce,udp://tracker.torrent.eu.org:451/announce,udp://open.stealth.si:80/announce,udp://exodus.desync.com:6969/announce,udp://ipv4.tracker.harry.lu:80/announce,udp://tracker.tiny-vps.com:6969/announce,udp://tracker.moeking.me:6969/announce,udp://tracker.dler.org:6969/announce,udp://vibe.sleepyinternetfun.xyz:1738/announce,udp://tracker2.dler.org:80/announce,udp://tracker1.bt.moack.co.kr:80/announce,udp://tracker.zerobytes.xyz:1337/announce,udp://tracker.theoks.net:6969/announce,udp://tracker.skyts.net:6969/announce --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiORlwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
-### 解决 Vim 汉字乱码
-
-如果你的 Vim 打开汉字出现乱码的话，那么在家目录(~)下，新建.vimrc文件
-
-    vim ~/.vimrc
-
-添加内容如下：
-
-    ini
-    set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
-    set enc=utf8
-    set fencs=utf8,gbk,gb2312,gb18030
-
-保存退出后执行下环境变量
-
-    source .vimrc
-
 ### cmatrix 字符屏保
 
     https://magiclen.org/cmatrix/
@@ -850,20 +830,17 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
     tracert www.bing.com
 
+    traceroute
+
+    nslookup
+
+    whois
+
 ## rsync 文件同步
 
     http://c.biancheng.net/view/6121.html
 
 rsync 有 5 种不同的工作模式：
-
-第一种用于仅在本地备份数据；
-
-第二种用于将本地数据备份到远程机器上；
-
-第三种用于将远程机器上的数据备份到本地机器上；
-
-第四种和第三种是相对的，同样第五种和第二种是相对的，它们各自之间的区别在于登陆认证时使用的验证方式不同。
-在 rsync 命令中，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议。ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量，但优势是更加安全；反之，ssh 协议使用方便，无需进行配置，但有泄漏服务器密码的风险。
 
     rsync [OPTION] SRC DEST
 
@@ -874,6 +851,15 @@ rsync 有 5 种不同的工作模式：
     rsync [OPTION] [USER@]HOST::SRC DEST
 
     rsync [OPTION] SRC [USER@]HOST::DEST
+
+第一种用于仅在本地备份数据；
+
+第二种用于将本地数据备份到远程机器上；
+
+第三种用于将远程机器上的数据备份到本地机器上；
+
+第四种和第三种是相对的，同样第五种和第二种是相对的，它们各自之间的区别在于登陆认证时使用的验证方式不同。
+在 rsync 命令中，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议。ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量，但优势是更加安全；反之，ssh 协议使用方便，无需进行配置，但有泄漏服务器密码的风险。
 
 rsync 命令提供使用的 OPTION 及功能
 
