@@ -49,9 +49,11 @@ Cygwin实现，不是 kvm 虚拟机环境，也不是 QEMU 那种运行时模拟
 
 如果还有更高的需求（例如运行 POSIX 应用程序），就只能选择安装 Cygwin。
 
-相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具，目前流行的 MSYS2 是 MSYS 的一个升级版，准确的说是集成了 pacman 和 Mingw-w64 的 Cygwin 升级版。把 /usr/bin 加进环境变量 path 以后，可以直接在 cmd 中使用 Linux 命令。
+相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具。
 
-如果你只是想在Windows下使用一些linux小工具，建议用 MSYS2 就可以了。
+目前流行的 MSYS2 是 MSYS 的一个升级版，准确的说是集成了 pacman 和 Mingw-w64 的 Cygwin 升级版。
+
+如果你只是想在Windows下使用一些linux小工具，建议用 MSYS2，把 /usr/bin 加进环境变量 path 以后，可以直接在 命令行终端中使用 Linux 命令。
 
 ### MinGW
 
@@ -68,6 +70,9 @@ MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接�
 收费的有JetBrains Clion，AppCode （mac）。
 
 ### MSYS、MSYS2
+
+    https://www.msys2.org/
+    https://msys2.github.io/
 
 MinGW 仅仅是工具链，Windows 下的 cmd 使用起来不够方便，MSYS 是用于辅助 Windows 版 MinGW 进行命令行开发的配套软件包：提供了部分 Unix 工具以使得 MinGW 的工具使用起来方便一些。相比基于庞大的 Cygwin 下的 MinGW 会轻巧不少。
 
@@ -125,7 +130,7 @@ git for windows 的 mintty 目录
 
     / 目录          位于git安装目录下的 C:\Program Files\Git\ 目录下
     /usr 目录       同上
-    /tmp 目录       位于 C:\Users\XXXX\AppData\Local\Temp\  目录下
+    /tmp 目录       位于 C:\Users\%USERNAME%\AppData\Local\Temp\  目录下
 
 退出bash时，最好不要直接关闭窗口，使用命令exit或^D。
 
@@ -133,7 +138,7 @@ putty的退出也是同样的建议。
 
 ##### mintty 美化
 
-如果是git for Windows 的mintty，修改 ~/.minttyrc 为下面的内容
+如果是 git for Windows 的mintty，修改 ~/.minttyrc 为下面的内容
 
     Font=Consolas
     FontHeight=11
@@ -270,14 +275,6 @@ MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变�
 
 ### 全套使用：安装 MSYS2(Cygwin/Msys)
 
-下载安装 MSYS2
-
-    https://www.msys2.org/
-
-使用pacman安装各种包：
-
-    pacman -S tmux zsh git
-
 参考文章
 
     MSYS2 和 mintty 打造 Windows 下 Linux 工具体验
@@ -285,38 +282,45 @@ MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变�
 
     Windows 下 MSYS2 配置及填坑 https://hustlei.github.io/2018/11/msys2-for-win.html
 
-下载 <https://www.msys2.org/>
+下载安装 MSYS2
+
+    https://www.msys2.org/
+    https://msys2.github.io/
+
+使用pacman安装各种包：
+
+    pacman -S vim openssh git
 
 安装后先pacman更换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，在windows下是msys的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
 
 依次添加
 
-    编辑 /etc/pacman.d/mirrorlist.msys ，在文件开头添加：
+    nano 编辑 /etc/pacman.d/mirrorlist.msys ，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/msys/$arch/
         Server = http://mirrors.ustc.edu.cn/msys2/msys/$arch/
 
-    编辑 /etc/pacman.d/mirrorlist.mingw32 ，在文件开头添加：
+    nano 编辑 /etc/pacman.d/mirrorlist.mingw32 ，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/i686/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/i686/
 
-    编辑 /etc/pacman.d/mirrorlist.mingw64 ，在文件开头添加：
+    nano 编辑 /etc/pacman.d/mirrorlist.mingw64 ，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/x86_64/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/x86_64/
 
-    编辑 /etc/pacman.d/mirrorlist.ucrt64 ，在文件开头添加：
+    nano 编辑 /etc/pacman.d/mirrorlist.ucrt64 ，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/ucrt64/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/ucrt64/
 
-    编辑 /etc/pacman.d/mirrorlist.clang64 ，在文件开头添加：
+    nano 编辑 /etc/pacman.d/mirrorlist.clang64 ，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/clang64/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/clang64/
 
-然后Windows执行开始菜单的快捷方式 MSYS2 MSYS 以打开命令行，更新软件包数据（之后可以使用 MSYS2 MinGW X64）
+然后Windows执行开始菜单的快捷方式 "MSYS2 MSYS" 以打开命令行，更新软件包数据，之后可以使用 "MSYS2 MinGW X64"，
 
     # pacman -Sy
     :: Synchronizing package databases...
@@ -330,7 +334,7 @@ MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变�
     # 更新核心软件包
     # pacman -Su
 
-安装时对一些文件链接的提示
+安装时给出了一些文件链接的提示
 
     './.bashrc' -> '/home/%USERNAME%/.bashrc'
     './.bash_logout' -> '/home/%USERNAME%/.bash_logout'
@@ -344,23 +348,24 @@ MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变�
 
 该软件安装后，使用的Linux目录结构跟Windows目录的对应关系
 
-    / 目录          位于msys2的安装目录 msys64\
-    /home 目录      对应 msys64\home\%USERNAME%
-    /tmp 目录       对应 C:\Users\%USERNAME%\AppData\Local\Temp
+    / 目录          位于msys2的安装目录 msys64\ 下
+    /usr 目录       同上
+    /tmp 目录       同上
+    /home 目录      位于msys2的安装目录 msys64\ 下的 home\%USERNAME%
 
 环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件。
 
-如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的bash、mintty等配置文件，注意区分。
+NOTE: 如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的bash、mintty等配置文件，注意区分。
 
 msys2在开始菜单下的好几个版本是因为编译器和链接的windows的c库不同
 
-    官方解释 <https://www.msys2.org/docs/environments/>
-
-    clang 和 mingw(gcc) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个用的话就 mingw64 就没问题。
+    LLVM/Clang 和 MINGW(GCC) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个用的话就 mingw64 就没问题。
 
     具体区别是：mingw64 与 ucrt64 都是用 mingw64 编译器编译的 Windows 64位程序，只不过它们链接到的 crt（C runtime）不同， mingw64 是链接到了 msvcrt ，而 ucrt64 则是链接到了 Windows 10+ 上新的 ucrt 上。而 clang64 很好理解，就是用 clang 而非 mingw 来编译各种库，另外它也是链接到了 ucrt 而非 msvcrt。
 
     引自 <https://www.zhihu.com/question/463666011/answer/1927907983>
+
+    官方解释 <https://www.msys2.org/docs/environments/>
 
 msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递了变量 set MSYSTEM=xxxx，msys2_shell.cmd启动时，都默认使用mintty虚拟终端。
 
@@ -371,7 +376,7 @@ msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递�
 自己运行Msys2时可以不使用mintty虚拟终端。直接运行如下命令就OK：
 
 ```bat
-    rem 启动MSYS2 MSYS2
+    rem 启动MSYS2 MSYS
     set MSYSTEM=MSYS
     "c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
 
@@ -408,69 +413,16 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
 ## Linux下常用工具
 
-### 使用 zsh + ohmyzsh
-
-    https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
-
-切换zsh
-    sudo chsh -s /bin/zsh
-    sudo usermod -s /bin/zsh username
-
-进入终端界面后也可以运行：
-
-    if [ -t 1 ]; then
-    exec zsh
-    fi
-
-如果是初次运行zsh，有个引导程序设置zsh读取的配置文 ~/.zshrc 文件，也可以手动调用
-
-    autoload -Uz zsh-newuser-install
-
-    zsh-newuser-install -f
-
-如果之前使用bash，在 ~/.zshrc 文件中加上`source ~/.bash_profile`，可以继承 bash的配置文件 ~/.bash_profile 内容。
-
-#### 超多插件和主题的 ohmyzsh
-
-    https://github.com/ohmyzsh/ohmyzsh/wiki/Customization#overriding-and-adding-themes
-
-    内置主题 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-    更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
-                https://github.com/unixorn/awesome-zsh-plugins
-
-内置主题bira，添加时间字段修改`RPROMPT="[%*]%B${return_code}%b"`
-![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
-
-额外主题 [Bullet train](https://github.com/caiogondim/bullet-train.zsh)，修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta`
-![Bullet train](https://camo.githubusercontent.com/3ce1f2e157549ff5ce549af57e3e635b4b85c5919c48223d7e963e98c2613e2e/687474703a2f2f7261772e6769746875622e636f6d2f6361696f676f6e64696d2f62756c6c65742d747261696e2d6f682d6d792d7a73682d7468656d652f6d61737465722f696d672f707265766965772e676966)
-
-额外主题 [powerlevel10k](https://github.com/romkatv/powerlevel10k)，可以运行`p10k configure`设置使用习惯，![powerlevel10k](https://camo.githubusercontent.com/80ec23fda88d2f445906a3502690f22827336736/687474703a2f2f692e696d6775722e636f6d2f777942565a51792e676966)
-
-安装目前是从github下载
-
-    # sh -c "$(curl -fsSL
-    sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-安装依赖
-
-    # 有些插件和主题依赖 python 和 git
-
-    # https://github.com/zsh-users/antigen/wiki/Installation
-    sudo apt install zsh-antigen
-
-    # https://github.com/caiogondim/bullet-train.zsh
-    sudo apt install fonts-powerline
-    sudo apt install ttf-ancient-fonts
-
-定制主题文件位置
-
-    $ZSH_CUSTOM
-    └── themes
-        └── my_awesome_theme.zsh-theme
-
-#### 命令提示符美化
+### bash命令提示符美化
 
 ```shell
+
+# 用于 .bash_profile先加载初始设置
+test -f ~/.profile && . ~/.profile
+test -f ~/.bashrc && . ~/.bashrc
+
+# Bash开启vi-mode模式
+set -o vi
 
 ####################################################################
 # 命令行提示符显示当前路径和git分支等，放入任一 .profile 或 .bashrc 或 .bash_profile 内
@@ -537,6 +489,66 @@ function PS1exitcode {
 PS1="\n$magenta┌─$red\$(PS1exitcode)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta$(PS1new-line)──$white\$ $normal"
 
 ```
+
+### 使用 zsh + ohmyzsh
+
+    https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
+
+切换zsh
+    sudo chsh -s /bin/zsh
+    sudo usermod -s /bin/zsh username
+
+进入终端界面后也可以运行：
+
+    if [ -t 1 ]; then
+    exec zsh
+    fi
+
+如果是初次运行zsh，有个引导程序设置zsh读取的配置文 ~/.zshrc 文件，也可以手动调用
+
+    autoload -Uz zsh-newuser-install
+
+    zsh-newuser-install -f
+
+如果之前使用bash，在 ~/.zshrc 文件中加上`source ~/.bash_profile`，可以继承 bash的配置文件 ~/.bash_profile 内容。
+
+#### 超多插件和主题的 ohmyzsh
+
+    https://github.com/ohmyzsh/ohmyzsh/wiki/Customization#overriding-and-adding-themes
+
+    内置主题 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+    更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
+                https://github.com/unixorn/awesome-zsh-plugins
+
+内置主题bira，添加时间字段修改`RPROMPT="[%*]%B${return_code}%b"`
+![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
+
+额外主题 [Bullet train](https://github.com/caiogondim/bullet-train.zsh)，修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta`
+![Bullet train](https://camo.githubusercontent.com/3ce1f2e157549ff5ce549af57e3e635b4b85c5919c48223d7e963e98c2613e2e/687474703a2f2f7261772e6769746875622e636f6d2f6361696f676f6e64696d2f62756c6c65742d747261696e2d6f682d6d792d7a73682d7468656d652f6d61737465722f696d672f707265766965772e676966)
+
+额外主题 [powerlevel10k](https://github.com/romkatv/powerlevel10k)，可以运行`p10k configure`设置使用习惯，![powerlevel10k](https://camo.githubusercontent.com/80ec23fda88d2f445906a3502690f22827336736/687474703a2f2f692e696d6775722e636f6d2f777942565a51792e676966)
+
+安装目前是从github下载
+
+    # sh -c "$(curl -fsSL
+    sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+安装依赖
+
+    # 有些插件和主题依赖 python 和 git
+
+    # https://github.com/zsh-users/antigen/wiki/Installation
+    sudo apt install zsh-antigen
+
+    # https://github.com/caiogondim/bullet-train.zsh
+    sudo apt install fonts-powerline
+    sudo apt install ttf-ancient-fonts
+
+定制主题文件位置
+
+    $ZSH_CUSTOM
+    └── themes
+        └── my_awesome_theme.zsh-theme
 
 ### Vim powerline
 
