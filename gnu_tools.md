@@ -145,6 +145,7 @@ putty的退出也是同样的建议。
     Columns=140
     Rows=40
     AllowBlinking=yes
+    #CursorType=underscore
     # Scrollbar=none
 
     # 语言设置
@@ -159,55 +160,104 @@ putty的退出也是同样的建议。
     # 为了使用花哨颜色，确保终端设置恰当
     Term=xterm-256color
 
-    # 自定义颜色方案，跟深色背景搭配，比mintty默认的浅一些
-    Background=C:\tools\SuperPuTTY\111dark.jpg
-    BackgroundColour=109,69,35
-    ForegroundColour=228,228,228
-    CursorColour=217,230,242
-    Black=0,0,0
-    BoldBlack=36,36,36
-    Red=255,0,0
-    BoldRed=255,0,128
-    Green=51,242,133
-    BoldGreen=22,184,74
-    Yellow=249,237,134
-    BoldYellow=240,197,47
-    Blue=198,159,249
-    BoldBlue=15,118,232
-    Magenta=172,53,101
-    BoldMagenta=249,159,210
-    Cyan=7,254,254
-    BoldCyan=1,220,220
-    White=217,217,217
-    BoldWhite=255,255,255
+    FontSmoothing=full
+    # FontWeight=700
+    # BoldAsColor=yes
+    # BoldAsFont=-1
+    # FontIsBold=yes
+
+    # 自定义颜色方案，跟深色背景搭配
+    # Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
+    #BackgroundColour=109,69,35
+    #ForegroundColour=228,228,228
+    #CursorColour=217,230,242
+    #
+    #Black=0,0,0
+    #BoldBlack=36,36,36
+    #Red=255,0,0
+    #BoldRed=255,0,128
+    #Green=51,242,133
+    #BoldGreen=22,184,74
+    #Yellow=249,237,134
+    #BoldYellow=240,197,47
+    #Blue=198,159,249
+    #BoldBlue=15,118,232
+    #Magenta=172,53,101
+    #BoldMagenta=249,159,210
+    #Cyan=7,254,254
+    #BoldCyan=1,220,220
+    #White=217,217,217
+    #BoldWhite=255,255,255
 
     # 自定义颜色方案，跟浅色黄色背景搭配
-    Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
-    BackgroundColour=250,234,182
-    ForegroundColour=128,0,64
-    CursorColour=217,230,242
-    Black=0,0,0
-    BoldBlack=72,72,72
-    Red=255,30,18
-    BoldRed=255,84,74
-    Green=82,173,58
-    BoldGreen=65,136,47
-    Yellow=193,117,40
-    BoldYellow=166,150,36
-    Blue=11,80,155
-    BoldBlue=9,58,113
-    Magenta=255,18,243
-    BoldMagenta=255,147,250
-    Cyan=3,218,175
-    BoldCyan=91,219,190
-    White=128,128,192
-    BoldWhite=180,180,180
+    # Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
+    #BackgroundColour=250,234,182
+    #ForegroundColour=128,0,64
+    #CursorColour=217,230,242
+    #
+    #Black=0,0,0
+    #BoldBlack=72,72,72
+    #Red=255,30,18
+    #BoldRed=255,84,74
+    #Green=82,173,58
+    #BoldGreen=65,136,47
+    #Yellow=193,117,40
+    #BoldYellow=166,150,36
+    #Blue=11,80,155
+    #BoldBlue=9,58,113
+    #Magenta=255,18,243
+    #BoldMagenta=255,147,250
+    #Cyan=3,218,175
+    #BoldCyan=91,219,190
+    #White=128,128,192
+    #BoldWhite=180,180,180
 
-    # TODO:自定义颜色方案
-    # 自定义颜色方案，跟浅色绿色背景搭配
-    Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
-    # 自定义颜色方案，跟浅色绿色背景搭配
-    Background=C:\StartHere\tools\SuperPuTTY\444blue.jpg
+    # TODO:自定义颜色方案，跟浅色绿色背景搭配
+    # Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
+
+    # https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.light
+    #ForegroundColour=101, 123, 131
+    #BackgroundColour=253, 246, 227
+    #CursorColour=    220,  50,  47
+    #
+    #Black=             7,  54,  66
+    #BoldBlack=         0,  43,  54
+    #Red=             220,  50,  47
+    #BoldRed=         203,  75,  22
+    #Green=           133, 153,   0
+    #BoldGreen=        88, 110, 117
+    #Yellow=          181, 137,   0
+    #BoldYellow=      101, 123, 131
+    #Blue=             38, 139, 210
+    #BoldBlue=        131, 148, 150
+    #Magenta=         211,  54, 130
+    #BoldMagenta=     108, 113, 196
+    #Cyan=             42, 161, 152
+    #BoldCyan=        147, 161, 161
+    #White=           238, 232, 213
+    #BoldWhite=       253, 246, 227
+
+    # https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.dark
+    ForegroundColour=131, 148, 150
+    BackgroundColour=  0,  43,  54
+    CursorColour=    220,  50,  47
+
+    Black=             7,  54,  66
+    BoldBlack=         0,  43,  54
+    Red=             220,  50,  47
+    BoldRed=         203,  75,  22
+    Green=           133, 153,   0
+    BoldGreen=        88, 110, 117
+    Yellow=          181, 137,   0
+    BoldYellow=      101, 123, 131
+    Blue=             38, 139, 210
+    BoldBlue=        131, 148, 150
+    Magenta=         211,  54, 130
+    BoldMagenta=     108, 113, 196
+    Cyan=             42, 161, 152
+    BoldCyan=        147, 161, 161
+    White=           238, 232, 213
+    BoldWhite=       253, 246, 227
 
     # 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
     # ThemeFile=mintty
@@ -216,9 +266,12 @@ putty的退出也是同样的建议。
 
 ##### 多终端工具 ConEmu/SuperPutty
 
-SuperPutty 支持putty、mintty、cmd、powershell等多种终端嵌入显示，可导入putty站点，可设置站点关联WinScp/FileZilla等软件的快捷调用，使用简单方便。
+SuperPutty 支持putty、mintty、cmd、powershell等多种终端嵌入显示，可导入putty站点，可设置站点关联WinScp/FileZilla等软件的快捷调用，使用简单方便，只要安装了 git for Windows 和 putty 等软件即可直接使用，不需要做复杂的设置。
 
 ConEmu是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2，bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
+
+    https://zhuanlan.zhihu.com/p/99963508
+        https://conemu.github.io/
 
     ConEmu配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
     msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
