@@ -140,13 +140,13 @@ putty的退出也是同样的建议。
 
 如果是 git for Windows 的mintty，修改 ~/.minttyrc 为下面的内容
 
+    # https://mintty.github.io/mintty.1.html
+    # https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
     Font=Consolas
     FontHeight=11
     Columns=140
     Rows=40
     AllowBlinking=yes
-    #CursorType=underscore
-    # Scrollbar=none
 
     # 语言设置
     Language=zh_CN
@@ -162,8 +162,6 @@ putty的退出也是同样的建议。
 
     FontSmoothing=full
     # FontWeight=700
-    # BoldAsColor=yes
-    # BoldAsFont=-1
     # FontIsBold=yes
 
     # 自定义颜色方案，跟深色背景搭配
@@ -462,9 +460,42 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     pacman -Sc：清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
     pacman -Scc：清理所有的缓存文件。
 
-## Windows下配置GNU环境
-
 ## Linux下常用工具
+
+### 终端字符编码
+
+变量依赖从大到小的顺序是：LC_ALL, LC_CTYPE, LANG
+
+    LANG=en_US.UTF-8
+    LANGUAGE=en_US.UTF-8
+    LC_CTYPE="en_US.UTF-8"
+    LC_NUMERIC="en_US.UTF-8"
+    LC_TIME="en_US.UTF-8"
+    LC_COLLATE="en_US.UTF-8"
+    LC_MONETARY="en_US.UTF-8"
+    LC_MESSAGES="en_US.UTF-8"
+    LC_PAPER="en_US.UTF-8"
+    LC_NAME="en_US.UTF-8"
+    LC_ADDRESS="en_US.UTF-8"
+    LC_TELEPHONE="en_US.UTF-8"
+    LC_MEASUREMENT="en_US.UTF-8"
+    LC_IDENTIFICATION="en_US.UTF-8"
+    LC_ALL=en_US.UTF-8
+
+在env设置，如
+
+    LC_CTYPE=zh_CN.gbk; export LC_CTYPE
+
+中文Windows使用ansi gbk编码，设置变量：Locale 、 Charset
+
+    Locale=zh_CN
+    Charset=GB18030
+
+### emoji
+
+    字符式输入 https://www.webfx.com/tools/emoji-cheat-sheet/
+
+    unicode编码 http://www.unicode.org/emoji/charts/full-emoji-list.html
 
 ### bash命令提示符美化
 
