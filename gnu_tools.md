@@ -187,10 +187,10 @@ putty的退出也是同样的建议。
     #White=217,217,217
     #BoldWhite=255,255,255
 
-    # 自定义颜色方案，跟浅色黄色背景搭配
+    # 自定义颜色方案，跟浅色背景搭配-黄色
     # Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
     #BackgroundColour=250,234,182
-    #ForegroundColour=128,0,64
+    #ForegroundColour=0,61,121
     #CursorColour=217,230,242
     #
     #Black=0,0,0
@@ -199,19 +199,20 @@ putty的退出也是同样的建议。
     #BoldRed=255,84,74
     #Green=82,173,58
     #BoldGreen=65,136,47
-    #Yellow=193,117,40
+    #Yellow=192,175,56
     #BoldYellow=166,150,36
     #Blue=11,80,155
     #BoldBlue=9,58,113
     #Magenta=255,18,243
     #BoldMagenta=255,147,250
-    #Cyan=3,218,175
-    #BoldCyan=91,219,190
-    #White=128,128,192
+    #Cyan=3,201,162
+    #BoldCyan=67,214,181
+    #White=107,165,186
     #BoldWhite=180,180,180
 
-    # TODO:自定义颜色方案，跟浅色绿色背景搭配
+    # TODO:自定义颜色方案，跟浅色背景搭配-绿色
     # Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
+    # Background=C:\StartHere\tools\SuperPuTTY\444blue.jpg
 
     # https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.light
     #ForegroundColour=101, 123, 131
