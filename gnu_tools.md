@@ -931,7 +931,15 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
     traceroute
 
-    nslookup
+    $ nslookup baidu.com
+    Non-authoritative answer:
+    Server:  192.168.0.1
+    Address:  192.168.0.1
+
+    Name:    baidu.com
+    Addresses:  220.181.38.148
+            220.181.38.251
+
 
     whois
 
@@ -1005,3 +1013,303 @@ rsync 命令提供使用的 OPTION 及功能
 坑一：环境变量是单独的
 
 cron中的环境变量很多都和系统环境变量不一样（cron会忽略/etc/environment文件），尤其是PATH，只有/usr/bin:/bin，也就是说在cron中运行shell命令，如果不是全路径，只能运行/usr/bin或/bin这两个目录中的标准命令，而像/usr/sbin、/usr/local/bin等目录中的非标准命令是不能运行的。
+
+## acme.sh 自动申请免费ssl证书
+
+    https://blog.csdn.net/dancen/article/details/121044863
+
+官网：
+
+    Github: https://github.com/acmesh-official/acme.sh
+
+    Wiki: https://github.com/acmesh-official/acme.sh/wiki
+
+acme.sh用于生成免费的ssl证书，其完整实现了acme协议，并且由纯Shell脚本语言编写，没有过多的依赖项，安装和使用都非常方便。
+
+1.支持的CA
+
+    ZeroSSL.com CA(default)：90天 默认，切换别的见[切换CA]
+    Letsencrypt.org CA：90天
+    BuyPass.com CA：180天
+    SSL.com CA
+    Pebble strict Mode
+    Any other RFC8555-compliant CA
+
+2.支持的运行模式
+
+    Webroot mode
+    Standalone mode
+    Standalone tls-alpn mode
+    Apache mode
+    Nginx mode
+    DNS mode
+    DNS alias mode
+    Stateless mode
+
+### 一. 安装
+
+1.在线安装
+
+直接通过curl下载安装脚本并自动执行：
+
+    curl https://get.acme.sh | sh -s email=my@example.com
+
+或者使用wget：
+
+    wget -O -  https://get.acme.sh | sh -s email=my@example.com
+
+如果acme.sh使用zeroSSL CA，则这里的-s参数指定的邮箱可以关联到已有的zeroSSL账号。关联成功后，通过acme.sh生成的zeroSSL证书会在zeroSSL网站的控制面板上显示
+
+2.或者通过git安装
+
+    git clone https://github.com/acmesh-official/acme.sh.git
+
+    cd ./acme.sh
+
+    ./acme.sh --install -m my@example.com
+
+3.安装操作做了哪些修改
+
+    a. 部署acme.sh程序到用户文件夹 ($HOME): ~/.acme.sh/ 目录下，root用户是 /root/.acme.sh/  目录下
+
+    其核心脚本文件为：($HOME): ~/.acme.sh/acme.sh。
+
+    b. 为脚本执行文件创建别名 acme.sh=~/.acme.sh/acme.sh
+
+    注意，别名需要重启终端后才能生效。
+
+    c. 创建一个每日执行的cron任务，用于自动更新即将过期的证书。
+
+    示例，通过crontab -l命令查看证书更新任务计划：
+
+        0 0 * * * "/home/user/.acme.sh"/acme.sh --cron --home "/home/user/.acme.sh" > /dev/null
+
+    如果是root用户：
+
+        40 0 * * * "/root/.acme.sh"/acme.sh --cron --home "/root/.acme.sh" > /dev/null
+
+    在该计划任务下，当证书剩余有效期不足30天时，证书将会被自动更新。
+
+    更高级的安装选项请参考: <https://github.com/Neilpang/acme.sh/wiki/How-to-install>
+
+    安装过程不会污染已有的系统任何功能和文件, 所有的修改都限制在安装目录中: ~/.acme.sh/
+
+    4.查看帮助信息 `acme.sh -h`
+
+    5.卸载后，cron计划任务也会被移除：`acme.sh --uninstall`
+
+### 二. 生成证书
+
+以域名example.com为例，生成的证书将放置在以下目录：~/.acme.sh/example.com/
+
+该目录之下是证书、私钥等文件以及一些其它配置文件：
+
+    证书文件: example.com.cer
+
+    私钥: example.com.key
+
+    中间证书: ca.cer
+
+    证书链:fullchain.cer
+
+1.切换CA
+
+当前acme.sh使用的默认CA机构为zeroSSL，通过--set-default-ca命令，可以修改默认的CA机构，该命令使用--server参数来指定CA机构名称。
+
+切换默认CA为Let's Encrypt：
+
+    acme.sh --set-default-ca --server letsencrypt
+
+更换默认CA为ZeroSSL：
+
+    acme.sh --set-default-ca --server zerossl
+
+2.webroot模式
+
+webroot模式要求在服务器上已经运行了http服务，并且可以通过公网访问，该模式的好处是，你无需在申请证书的过程中停止web服务，因此，该模式也是推荐使用的模式。
+
+使用webroot模式申请证书时，acme.sh会在网站对应域名的webroot目录下生成域名验证文件, 然后通过公网访问之，以验证对域名的所有权。验证完毕后，acme.sh会清除这些临时生成的文件。
+
+申请证书使用--issue命令：
+
+    acme.sh --issue -d example.com -d test.com -w /home/webroot
+
+略
+
+3.nginx webroot模式
+
+如果服务器上运行的http服务为nginx，并且当前系统用户具有修改nginx配置的权限，则可以通过nginx模式生成证书。
+
+通过--nginx参数使用nginx模式：
+
+    acme.sh --issue --nginx -d example.com -d www.example.com
+
+该命令相比于webroot模式增加了--nginx参数，同时省略了-w参数。该命令会自动修改nginx配置并重新加载之以适配域名的验证要求，所以无需-w参数。另外，acme.sh会在域名验证完毕后自动将nginx配置还原，因此，nginx配置最终并没有被修改。
+
+特殊的情况是acme.sh可能无法识别nginx配置文件所在位置，此时，可以明确指定：
+
+    acme.sh --issue -d example.com --nginx /etc/nginx/nginx.conf
+
+4.standalone模式
+
+如果服务器的tcp 80端口空闲可用，则可通过standalone模式生成证书。该模式下，acme.sh 自己运行一个webserver, 临时监听在80 端口, 完成验证：
+
+    acme.sh --issue --standalone -d example.com -d www.example.com
+
+如果服务器已经占用了80端口，可以通过--httpport参数使用80以外的端口：
+
+    acme.sh --issue --standalone -d example.com -d www.example.com --httpport 88
+
+需要指出的是，standalone模式下，acme.sh会自己运行一个webserver，依赖的是socat，需要提前安装：
+
+    yum install socat
+
+5.standalone ssl模式
+
+这是另一个standalone模式，使用了ssl，要求服务器的tcp 443端口空闲可用：
+
+    acme.sh --issue --alpn -d example.com -d www.example.com
+
+可以通过--tlsport参数使用443以外的端口：
+
+    acme.sh --issue --alpn -d example.com -d www.example.com --tlsport 8443
+
+6.DNS手动模式
+
+webroot模式和standalone模式可以统称为http模式，即证书验证服务器通过http协议下载acme.sh客户端在域名指向的服务器上生成的验证文件来验证域名所有权。
+
+在某些情况下，我们可能无法使用http模式，例如：
+
+    没有域名所指向的服务器的管理权限。
+
+    域名使用了CDN并设置了多个源站：由于验证文件只会在其中一个源站上生成，验证服务器将不能确保能够下载到验证文件。
+
+此时，我们可以使用更加传统的DNS模式来生成证书，DNS模式要求用户在指定域名上设置指定的TXT记录值，已验证其对域名的所有权。
+
+略
+
+7.DNS自动模式
+
+DNS自动模式可以使用域名解析商提供的api自动为域名添加txt记录以完成域名所有权验证，不同于DNS手动模式，DNS自动模式支持自动更新证书。
+
+acme.sh目前支持cloudflare，dnspod，aliyun，cloudxns，godaddy以及ovh等数十种解析商的自动集成。
+
+8.生成ECC证书
+
+目前大部分的证书都是使用RSA非对称加密算法，但一些CA，例如letsencryption、zerossl等，已经支持颁发性能更加优良的ECC非对称加密算法证书。
+
+通过—keylength参数申请ECC证书：
+
+    acme.sh --issue -w /home/webroot -d example.com -d example1.com --keylength ec-256
+
+--keylength参数指定算法，ec-256表示256位的ecc非对称加密算法，可选的值有：
+
+    ec-256 (prime256v1, "ECDSA P-256")
+
+    ec-384 (secp384r1, "ECDSA P-384")
+
+    ec-521 (secp521r1, "ECDSA P-521", which is not supported by Let's Encrypt yet.)
+
+9.生成泛域名证书
+
+泛域名证书的生成只适用于DNS验证的方式：
+
+    acme.sh --issue -d example.com -d '*.example.com' --dns dns_cf
+
+10.强制生成证书
+
+如果想在当前证书剩余有效期在30天以上时重新生成证书，需要使用--force参数。
+
+    acme.sh --issue --nginx -d example.com -d www.example.com --force
+
+### 三. 更新证书
+
+默认情况下acme.sh会自动更新即将过期的证书，手动执行更新的方式如下：
+
+    acme.sh --renew -d example.com
+
+如果是ecc证书：
+
+    acme.sh --renew -d example.com --ecc
+
+    acme.sh只会更新有效期不足30天的证书，如果想强制更新，则增加—force参数：
+
+    acme.sh --renew -d example.com --force --ecc
+
+停止更新证书：
+
+    acme.sh --remove -d example.com [--ecc]
+
+该命令执行之后，指定的证书不会再自动更新，但对应的证书文件并不会被从硬盘上删除。
+
+### 四. 部署证书
+
+当acme.sh生成证书后，不宜直接将web服务器的证书路径指向证书的生成路径：
+
+    ~/.acme.sh/[domain]
+
+因为该目录仅供acme.sh内部使用，有可能被修改。正确的做法是将证书文件拷贝至另外的目录。
+
+1.直接拷贝
+
+可以直接通过拷贝命令直接拷贝证书文件，对应修改web服务器配置即可。
+
+2.也可以通过--install-cert命令部署
+
+通过acme.sh的--install-cert命令来拷贝证书，并令web服务重新加载配置，需要注意的是，--install-cert命令并不会去修改web服务器的配置，因此，需要提前修改web服务器配置，将证书以及私钥路径指向部署路径，以nginx为例：
+
+    acme.sh --install-cert -d example.com \
+    --key-file       /path/to/keyfile/in/nginx/key.pem  \
+    --fullchain-file /path/to/fullchain/nginx/cert.pem \
+    --reloadcmd     "service nginx force-reload"
+
+--reloadcmd参数用于重新加载nginx配置。一个小提醒，这里用的是service nginx force-reload，不是service nginx reload。据测试，nginx的reload信号能够重新加载配置，但并不会重新加载证书，所以需要使用force-reload。nginx实际上没有force-reload这一信号，force-reload的实质为stop，然后start，即重启nginx。
+
+示例：
+
+    acme.sh --install-cert -d example.com \
+    --key-file /etc/nginx/ssl/example.com.key \
+    --fullchain-file /etc/nginx/ssl/example.com.fullchain.cer \
+    --reloadcmd  "/usr/sbin/nginx -s stop && /usr/sbin/nginx"
+
+在示例中，由于nginx没有注册为service，因此直接使用了nginx的停止和启动命令来重启nginx。
+
+需要补充的是，这里指定的参数，包括证书拷贝的目的地，web服务器的重启命令等，都会被acme.sh自动记录下来，存储到对应证书的配置文件中。以证书example.com为例，存储路径为： ~/.acme.sh/example.com/example.com.conf 并且，在将来证书自动更新以后, --install-cert命令将被再次自动调用，以免去手动拷贝证书，以及重导web服务器配置的操作。
+
+### 五. 查看证书列表
+
+查看已经生成的证书：
+
+    acme.sh --list
+
+### 六. 更新acme.sh
+
+手动更新：
+
+    acme.sh --upgrade
+
+开启自动更新：
+
+    acme.sh --upgrade --auto-upgrade
+
+关闭自动更新：
+
+    acme.sh --upgrade --auto-upgrade 0
+
+### 七. 查看acme.sh报错
+
+如果运行acme.sh出错，可开启debug或者log。
+
+查看debug：
+
+    acme.sh  --issue  .....  --debug
+
+查看error：
+
+    acme.sh  --issue  .....  --debug  2
+
+生成日志：
+
+    acme.sh  --issue  .....  --log
+
+日志文件路径为：~/.acme.sh/acme.sh.log
