@@ -17,7 +17,7 @@
     "editor.minimap.scale": 1,
     "editor.columnSelection": false,
     "editor.multiCursorModifier": "alt",
-    "editor.bracketPairColorization.enabled": true,
+    // "editor.bracketPairColorization.enabled": true,
     "editor.unicodeHighlight.includeStrings": false,
     "editor.unicodeHighlight.includeComments": false,
     "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize自动判断
