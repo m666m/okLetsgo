@@ -994,6 +994,8 @@ rsync 命令提供使用的 OPTION 及功能
 
     -L    像对待常规文件一样处理软链接。如果是 SRC 中有软链接文件，则加上该选项后，将会把软链接指向的目标文件复制到 DEST，默认不处理软链接文件。
 
+    -H    保留硬链信息
+
     -p    保持文件权限。
 
     -o    保持文件属主信息。
@@ -1020,6 +1022,19 @@ rsync 命令提供使用的 OPTION 及功能
     --size-only     只同步大小有变化的文件，不考虑文件修改时间的差异。
 
 以上也仅是列出了 async 命令常用的一些选项，对于初学者来说，记住最常用的几个即可，比如 -a、-v、-z、--delete 和 --exclude。
+
+### 远程操作的rsync协议
+
+rsync://协议（默认端口873）进行传输。具体写法是服务器与目标目录之间使用双冒号分隔`::`。
+
+    # module并不是实际路径名，而是 rsync 守护程序指定的一个资源名，由管理员分配
+    rsync -av source/ 192.168.122.32::module/destination
+
+    # rsync 守护程序分配的所有 module 列表
+    rsync rsync://192.168.122.32
+
+    # 除了使用双冒号，也可以直接用rsync://
+    rsync -av source/ rsync://192.168.122.32/module/destination
 
 ### 使用示例
 
@@ -1062,6 +1077,9 @@ rsync 命令提供使用的 OPTION 及功能
     # 如果 ssh 命令有附加的参数，则必须使用-e参数指定所要执行的 SSH 命令
     rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
 
+    # 目录内的链接文件拷贝到远程
+    rsync -avL /etc/letsencrypt/live/daoisdao.com root@hostwind:/etc/letsencrypt/live
+
 ### 示例脚本：备份用户的主目录
 
 ```shell
@@ -1090,19 +1108,6 @@ rsync -av --delete \
 rm -rf "${LATEST_LINK}"
 ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 ```
-
-### 远程操作的rsync协议
-
-rsync://协议（默认端口873）进行传输。具体写法是服务器与目标目录之间使用双冒号分隔::。
-
-    # module并不是实际路径名，而是 rsync 守护程序指定的一个资源名，由管理员分配
-    rsync -av source/ 192.168.122.32::module/destination
-
-    # rsync 守护程序分配的所有 module 列表
-    rsync rsync://192.168.122.32
-
-    # 除了使用双冒号，也可以直接用rsync://
-    rsync -av source/ rsync://192.168.122.32/module/destination
 
 ## crontab 定时任务
 
