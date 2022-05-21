@@ -1078,7 +1078,15 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
     rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
 
     # 目录内的链接文件拷贝到远程
-    rsync -avL /etc/letsencrypt/live/daoisdao.com root@hostwind:/etc/letsencrypt/live
+    rsync -av /etc/letsencrypt/live/daoisdao.com root@hostwind:/etc/letsencrypt/live
+
+### 软硬链接文件的处理区别
+
+    https://zhuanlan.zhihu.com/p/365239653
+
+如果是单独拷贝文件，软链接只是个引用，硬链接是文件实体
+
+如果是拷贝一个目录结构，应该保持软连接的引用，而不是拷贝文件实体
 
 ### 示例脚本：备份用户的主目录
 
