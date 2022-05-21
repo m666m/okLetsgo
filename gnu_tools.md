@@ -168,27 +168,27 @@ putty的退出也是同样的建议。
     # FontIsBold=yes
 
     # 自定义颜色方案，跟深色背景搭配
-    # Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
-    #BackgroundColour=109,69,35
-    #ForegroundColour=228,228,228
-    #CursorColour=217,230,242
-    #
-    #Black=0,0,0
-    #BoldBlack=36,36,36
-    #Red=255,0,0
-    #BoldRed=255,0,128
-    #Green=51,242,133
-    #BoldGreen=22,184,74
-    #Yellow=249,237,134
-    #BoldYellow=240,197,47
-    #Blue=198,159,249
-    #BoldBlue=15,118,232
-    #Magenta=172,53,101
-    #BoldMagenta=249,159,210
-    #Cyan=7,254,254
-    #BoldCyan=1,220,220
-    #White=217,217,217
-    #BoldWhite=255,255,255
+    Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
+    BackgroundColour=109,69,35
+    ForegroundColour=228,228,228
+    CursorColour=217,230,242
+
+    Black=0,0,0
+    BoldBlack=36,36,36
+    Red=255,0,0
+    BoldRed=255,0,128
+    Green=51,242,133
+    BoldGreen=22,184,74
+    Yellow=249,237,134
+    BoldYellow=240,197,47
+    Blue=97,197,239
+    BoldBlue=157,202,225
+    Magenta=172,53,101
+    BoldMagenta=249,159,210
+    Cyan=7,254,254
+    BoldCyan=1,220,220
+    White=217,217,217
+    BoldWhite=255,255,255
 
     # 自定义颜色方案，跟浅色背景搭配-黄色
     # Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
@@ -240,26 +240,26 @@ putty的退出也是同样的建议。
     #BoldWhite=       253, 246, 227
 
     # https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.dark
-    ForegroundColour=131, 148, 150
-    BackgroundColour=  0,  43,  54
-    CursorColour=    220,  50,  47
-
-    Black=             7,  54,  66
-    BoldBlack=         0,  43,  54
-    Red=             220,  50,  47
-    BoldRed=         203,  75,  22
-    Green=           133, 153,   0
-    BoldGreen=        88, 110, 117
-    Yellow=          181, 137,   0
-    BoldYellow=      101, 123, 131
-    Blue=             38, 139, 210
-    BoldBlue=        131, 148, 150
-    Magenta=         211,  54, 130
-    BoldMagenta=     108, 113, 196
-    Cyan=             42, 161, 152
-    BoldCyan=        147, 161, 161
-    White=           238, 232, 213
-    BoldWhite=       253, 246, 227
+    #ForegroundColour=131, 148, 150
+    #BackgroundColour=  0,  43,  54
+    #CursorColour=    220,  50,  47
+    #
+    #Black=             7,  54,  66
+    #BoldBlack=         0,  43,  54
+    #Red=             220,  50,  47
+    #BoldRed=         203,  75,  22
+    #Green=           133, 153,   0
+    #BoldGreen=        88, 110, 117
+    #Yellow=          181, 137,   0
+    #BoldYellow=      101, 123, 131
+    #Blue=             38, 139, 210
+    #BoldBlue=        131, 148, 150
+    #Magenta=         211,  54, 130
+    #BoldMagenta=     108, 113, 196
+    #Cyan=             42, 161, 152
+    #BoldCyan=        147, 161, 161
+    #White=           238, 232, 213
+    #BoldWhite=       253, 246, 227
 
     # 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
     # ThemeFile=mintty
