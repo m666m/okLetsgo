@@ -948,9 +948,13 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 ## rsync 文件同步
 
-用于备份，重复的同步文件或目录，支持远程机器。
-
     http://c.biancheng.net/view/6121.html
+
+    https://www.ruanyifeng.com/blog/2020/08/rsync.html
+
+用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器。
+
+默认使用文件大小和修改时间决定文件是否需要更新。
 
 rsync 有 5 种不同的工作模式：
 
@@ -971,7 +975,8 @@ rsync 有 5 种不同的工作模式：
 第三种用于将远程机器上的数据备份到本地机器上；
 
 第四种和第三种是相对的，同样第五种和第二种是相对的，它们各自之间的区别在于登陆认证时使用的验证方式不同。
-在 rsync 命令中，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议。ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量，但优势是更加安全；反之，ssh 协议使用方便，无需进行配置，但有泄漏服务器密码的风险。
+
+在 rsync 命令中的远程操作，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议。ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量，但优势是更加安全；反之，ssh 协议使用方便，无需进行配置，但有泄漏服务器密码的风险。
 
 rsync 命令提供使用的 OPTION 及功能
 
@@ -979,42 +984,125 @@ rsync 命令提供使用的 OPTION 及功能
 
     -a    这是归档模式，表示以递归方式传输文件，并保持所有属性，它等同于-r、-l、-p、-t、-g、-o、-D 选项。-a 选项后面可以跟一个 --no-OPTION，表示关闭 -r、-l、-p、-t、-g、-o、-D 中的某一个，比如-a --no-l 等同于 -r、-p、-t、-g、-o、-D 选项。
 
-    -r    表示以递归模式处理子目录，它主要是针对目录来说的，如果单独传一个文件不需要加 -r 选项，但是传输目录时必须加。
+    -r    以递归模式处理子目录，它主要是针对目录来说的，如果单独传一个文件不需要加 -r 选项，但是传输目录时必须加。
 
-    -v    表示打印一些信息，比如文件列表、文件数量等。
+    -v    打印一些信息，比如文件列表、文件数量等。
 
-    -l    表示保留软链接，默认不处理软链接文件。
+    -n    模拟命令执行的结果，并不真的执行命令(--dry-run) 。
 
-    -L    表示像对待常规文件一样处理软链接。如果是 SRC 中有软链接文件，则加上该选项后，将会把软链接指向的目标文件复制到 DEST，默认不处理软链接文件。
+    -l    保留软链接，默认不处理软链接文件。
 
-    -p    表示保持文件权限。
+    -L    像对待常规文件一样处理软链接。如果是 SRC 中有软链接文件，则加上该选项后，将会把软链接指向的目标文件复制到 DEST，默认不处理软链接文件。
 
-    -o    表示保持文件属主信息。
+    -p    保持文件权限。
 
-    -g    表示保持文件属组信息。
+    -o    保持文件属主信息。
 
-    -D    表示保持设备文件信息。
+    -g    保持文件属组信息。
 
-    -t    表示保持文件时间信息。
+    -D    保持设备文件信息。
 
-    --delete    表示删除 DEST 中 SRC 没有的文件，即多次备份时会删除源中已经删除的文件，默认会保留。
+    -t    保持文件时间信息。
 
-    --exclude=PATTERN    表示指定排除不需要传输的文件，等号后面跟文件名，可以是通配符模式（如 *.txt）。
+    --delete  多次备份时源目录中已经删除的文件也会在目标目录中删除，默认会保留。默认情况下，rsync 只确保源目录的所有内容（明确排除的文件除外）都复制到目标目录，它不会使两个目录保持相同，并且不会删除文件。如果要使得目标目录成为源目录的镜像副本，则必须使用--delete参数，这将删除只存在于目标目录、不存在于源目录的文件。
 
-    --progress    表示在同步的过程中可以看到同步的过程状态，比如统计要同步的文件数量、 同步的文件传输速度等。
+    --exclude=PATTERN    指定排除不需要传输的文件，等号后面跟文件名，可以是通配符模式（如 *.txt）。
 
-    -u    表示把 DEST 中比 SRC 还新的文件排除掉，不会覆盖。
+    --progress    在同步的过程中可以看到同步的过程状态，比如统计要同步的文件数量、 同步的文件传输速度等。
+
+    -u    把 DEST 中比 SRC 还新的文件排除掉，不会覆盖。
     -z    加上该选项，将会在传输过程中压缩。
+
+    --append-verify 指定文件接着上次中断的地方，继续传输。对传输完成后的文件进行一次校验。如果校验失败，将重新发送整个文件。
+
+    --checksum      使用校验和判断文件变更，等同参数 -c
+
+    --size-only     只同步大小有变化的文件，不考虑文件修改时间的差异。
 
 以上也仅是列出了 async 命令常用的一些选项，对于初学者来说，记住最常用的几个即可，比如 -a、-v、-z、--delete 和 --exclude。
 
-使用示例
+### 使用示例
 
-    # 把 test1 目录中的内容直接放到 test2 目录中
-    rsync -v -a test1/ test2/
+    # 源目录 source 中的内容复制到了目标目录 destination 中，不建立子目录的方式
+    rsync -v -a source/ destination
 
-    # 把 test1目录拷贝到到新建的 test2 目录中
-    rsync -v -a test1 test2
+    # 源目录 source 被完整地复制到了目标目录 destination 下面成为子目录
+    rsync -v -a source  destination
+
+    # 如果不确定 rsync 执行后会产生什么结果，先模拟跑下看看输出
+    rsync -anv source/ destination
+
+    # 同步时排除某些文件或目录，可以用多个--exclude
+    rsync -av --exclude='*.txt' source/ destination
+
+    # rsync 会同步以"点"开头的隐藏文件，如果要排除隐藏文件
+    rsync -av --exclude=".*" source/ destination
+
+    # 排除某个目录里面的所有文件，但不希望排除目录本身
+    rsync -av --exclude 'dir1/*' source/ destination
+
+    # 排除一个文件列表里的内容，每个模式一行
+    rsync -av --exclude-from='exclude-file.txt' source/ destination
+
+    # 同步时，排除所有文件，但是会包括 TXT 文件
+    rsync -av --include="*.txt" --exclude='*' source/ destination
+
+    # 使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录。
+    # 目标目录中，也是包含所有文件，只有那些变动过的文件是存在于该目录，其他没有变动的文件都是指向基准目录文件的硬链接。
+    rsync -a --delete --link-dest /compare/path /source/path /target/path
+
+默认使用 SSH 进行远程登录和数据传输
+
+    # 将本地内容，同步到远程服务器
+    rsync -av source/ username@remote_host:destination
+
+    # 将远程内容同步到本地
+    rsync -av username@remote_host:source/ destination
+
+    # 如果 ssh 命令有附加的参数，则必须使用-e参数指定所要执行的 SSH 命令
+    rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
+
+### 示例脚本：备份用户的主目录
+
+```shell
+#!/bin/bash
+
+# A script to perform incremental backups using rsync
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+readonly SOURCE_DIR="${HOME}"
+readonly BACKUP_DIR="/mnt/data/backups"
+readonly DATETIME="$(date '+%Y-%m-%d_%H:%M:%S')"
+readonly BACKUP_PATH="${BACKUP_DIR}/${DATETIME}"
+readonly LATEST_LINK="${BACKUP_DIR}/latest"
+
+mkdir -p "${BACKUP_DIR}"
+
+rsync -av --delete \
+  "${SOURCE_DIR}/" \
+  --link-dest "${LATEST_LINK}" \
+  --exclude=".cache" \
+  "${BACKUP_PATH}"
+
+rm -rf "${LATEST_LINK}"
+ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
+```
+
+### 远程操作的rsync协议
+
+rsync://协议（默认端口873）进行传输。具体写法是服务器与目标目录之间使用双冒号分隔::。
+
+    # module并不是实际路径名，而是 rsync 守护程序指定的一个资源名，由管理员分配
+    rsync -av source/ 192.168.122.32::module/destination
+
+    # rsync 守护程序分配的所有 module 列表
+    rsync rsync://192.168.122.32
+
+    # 除了使用双冒号，也可以直接用rsync://
+    rsync -av source/ rsync://192.168.122.32/module/destination
 
 ## crontab 定时任务
 
