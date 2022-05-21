@@ -146,7 +146,10 @@ putty的退出也是同样的建议。
     FontHeight=11
     Columns=140
     Rows=40
+
     AllowBlinking=yes
+    CursorType=block
+    CursorBlinks=no
 
     # 语言设置
     Language=zh_CN
