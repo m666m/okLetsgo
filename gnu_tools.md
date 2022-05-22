@@ -1096,7 +1096,7 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
 
     # 如果 your_dir_or_file 是个文件，会拷贝到目标目录下
     # 如果 your_dir_or_file 是个目录，会在目标目录下建立子目录，内容拷贝过去
-    rsync -av /etc/letsencrypt/live/your_dir_or_file root@hostwind:/etc/letsencrypt/live
+    rsync -av /etc/letsencrypt/live/your_dir_or_file root@remote:/etc/letsencrypt/live
 
 使用原则
 
@@ -1110,10 +1110,11 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
 
     # -r 参数 在目的目录内递归的生成源目录结构的子目录，目的目录需要提前建好（`mkdir -p /etc/letsencrypt/live`），否则会报错
     # -L 参数 拷贝软链接对应的实体文件
-    rsync -avrL /etc/letsencrypt/live/your_dir_or_file root@hostwind:/etc/letsencrypt/live
+    rsync -avrL /etc/letsencrypt/live/your_dir_or_file   root@remote:/etc/letsencrypt/live
+    # 等效-avrL .................live/your_dir_or_file/  remote.......................live/your_dir_or_file
 
     # 2.拷贝一个软链接文件处理为实体文件
-    rsync -avL /etc/letsencrypt/live/your_dir_or_file/cert.pem root@hostwind:/etc/letsencrypt/live/your_dir_or_file
+    rsync -avL /etc/letsencrypt/live/your_dir_or_file/cert.pem root@remote:/etc/letsencrypt/live/your_dir_or_file
 
 ### 示例脚本：备份用户的主目录
 
