@@ -956,35 +956,13 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 默认使用文件大小和修改时间决定文件是否需要更新。
 
-rsync 有 5 种不同的工作模式：
-
-    rsync [OPTION] SRC DEST
-
-    rsync [OPTION] SRC [USER@]HOST:DEST
-
-    rsync [OPTION] [USER@]HOST:SRC DEST
-
-    rsync [OPTION] [USER@]HOST::SRC DEST
-
-    rsync [OPTION] SRC [USER@]HOST::DEST
-
-第一种用于仅在本地备份数据；
-
-第二种用于将本地数据备份到远程机器上；
-
-第三种用于将远程机器上的数据备份到本地机器上；
-
-第四种和第三种是相对的，同样第五种和第二种是相对的，它们各自之间的区别在于登陆认证时使用的验证方式不同。
-
-在 rsync 命令中的远程操作，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议。ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量，但优势是更加安全；反之，ssh 协议使用方便，无需进行配置，但有泄漏服务器密码的风险。
-
 rsync 命令提供使用的 OPTION 及功能
 
     OPTION选项    功能
 
     -a    这是归档模式，表示以递归方式传输文件，并保持所有属性，它等同于-r、-l、-p、-t、-g、-o、-D 选项。-a 选项后面可以跟一个 --no-OPTION，表示关闭 -r、-l、-p、-t、-g、-o、-D 中的某一个，比如-a --no-l 等同于 -r、-p、-t、-g、-o、-D 选项。
 
-    -r    以递归模式处理子目录，它主要是针对目录来说的，如果单独传一个文件不需要加 -r 选项，但是传输目录时必须加。
+    -r    以递归模式处理子目录，它主要是针对同步目录来说的，如果单独传一个文件不需要加 -r 选项，但是传输目录时必须加。 --relative /var/www/uploads/abcd
 
     -v    打印一些信息，比如文件列表、文件数量等。
 
@@ -1023,7 +1001,29 @@ rsync 命令提供使用的 OPTION 及功能
 
 以上也仅是列出了 async 命令常用的一些选项，对于初学者来说，记住最常用的几个即可，比如 -a、-v、-z、--delete 和 --exclude。
 
-### 远程操作的rsync协议
+rsync 有 5 种不同的工作模式：
+
+    rsync [OPTION] SRC DEST
+
+    rsync [OPTION] SRC [USER@]HOST:DEST
+
+    rsync [OPTION] [USER@]HOST:SRC DEST
+
+    rsync [OPTION] [USER@]HOST::SRC DEST
+
+    rsync [OPTION] SRC [USER@]HOST::DEST
+
+第一种用于仅在本地备份数据；
+
+第二种用于将本地数据备份到远程机器上；
+
+第三种用于将远程机器上的数据备份到本地机器上；
+
+第四种和第三种是相对的，同样第五种和第二种是相对的，它们各自之间的区别在于登陆认证时使用的验证方式不同。
+
+在 rsync 命令中的远程操作，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议。ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量，但优势是更加安全；反之，ssh 协议使用方便，无需进行配置，但有泄漏服务器密码的风险。
+
+远程操作的rsync协议
 
 rsync://协议（默认端口873）进行传输。具体写法是服务器与目标目录之间使用双冒号分隔`::`。
 
@@ -1036,15 +1036,21 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
     # 除了使用双冒号，也可以直接用rsync://
     rsync -av source/ rsync://192.168.122.32/module/destination
 
-### 使用示例
+### 示例
 
-    # 源目录 source 中的内容复制到了目标目录 destination 中，不建立子目录的方式
-    rsync -v -a source/ destination
+一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`。
 
-    # 源目录 source 被完整地复制到了目标目录 destination 下面成为子目录
-    rsync -v -a source  destination
+注意区分：源目录是否写'/'处理方式的不同
 
-    # 如果不确定 rsync 执行后会产生什么结果，先模拟跑下看看输出
+    # 源目录 source 中的内容复制到了目标目录 destination 中，不建立source子目录的方式
+
+    rsync -av  source/ destination
+
+    # 源目录 source 被完整地复制到了目标目录 destination 下面，source成为子目录
+    rsync -av source  destination
+
+如果不确定 rsync 执行后会产生什么结果，先模拟跑下看看输出
+
     rsync -anv source/ destination
 
     # 同步时排除某些文件或目录，可以用多个--exclude
@@ -1077,16 +1083,34 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
     # 如果 ssh 命令有附加的参数，则必须使用-e参数指定所要执行的 SSH 命令
     rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
 
-    # 目录内的链接文件拷贝到远程
-    rsync -av /etc/letsencrypt/live/daoisdao.com root@hostwind:/etc/letsencrypt/live
-
 ### 软硬链接文件的处理区别
+
+默认是保留软链接。
 
     https://zhuanlan.zhihu.com/p/365239653
 
-如果是单独拷贝文件，软链接只是个引用，硬链接是文件实体
+普通的操作中，软链接不做处理直接拷贝
 
-如果是拷贝一个目录结构，应该保持软连接的引用，而不是拷贝文件实体
+    # 如果 daoisdao.com 是个文件，会拷贝到目标目录下
+    # 如果 daoisdao.com 是个目录，会在目标目录下建立子目录，内容拷贝过去
+    rsync -av /etc/letsencrypt/live/daoisdao.com root@hostwind:/etc/letsencrypt/live
+
+用 -L 参数处理软链接文件，找到对应的实体文件拷贝过去
+
+使用原则
+
+    如果是单独拷贝文件，软链接只是个引用，硬链接是文件实体，参数有区别。
+
+    如果是拷贝一个目录结构，内部的软链接指向目录内的文件实体，则应该保持软链接拷贝文件实体，如果内部的软链接指向外部目录的文件实体，应该拷贝文件实体，参数有区别。
+
+示例
+
+拷贝一个目录结构，目录内的软链接文件处理为实体文件，拷贝到远程
+
+    # 注意给出的目的目录需要提前建好`mkdir -p /etc/letsencrypt/live`，否则会报错
+    # -r 参数只在该目录内自动递归建立子目录
+    # -L 参数可以把软链接对应的实体文件拷贝到目的目录
+    rsync -avrL /etc/letsencrypt/live/daoisdao.com root@hostwind:/etc/letsencrypt/live
 
 ### 示例脚本：备份用户的主目录
 
