@@ -1047,11 +1047,13 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
     rsync -av  source/ destination
 
     # 源目录 source 被完整地复制到了目标目录 destination 下面，source成为子目录
-    rsync -av source  destination
+    rsync -av source destination
 
 如果不确定 rsync 执行后会产生什么结果，先模拟跑下看看输出
 
     rsync -anv source/ destination
+
+其它多个用法
 
     # 同步时排除某些文件或目录，可以用多个--exclude
     rsync -av --exclude='*.txt' source/ destination
@@ -1065,10 +1067,11 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
     # 排除一个文件列表里的内容，每个模式一行
     rsync -av --exclude-from='exclude-file.txt' source/ destination
 
-    # 同步时，排除所有文件，但是会包括 TXT 文件
+    # 同步时，排除所有文件，但是不排除 txt 文件
     rsync -av --include="*.txt" --exclude='*' source/ destination
 
-    # 使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录。
+使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录，注意这个是三方。
+
     # 目标目录中，也是包含所有文件，只有那些变动过的文件是存在于该目录，其他没有变动的文件都是指向基准目录文件的硬链接。
     rsync -a --delete --link-dest /compare/path /source/path /target/path
 
@@ -1089,13 +1092,11 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
 
     https://zhuanlan.zhihu.com/p/365239653
 
-普通的操作中，软链接不做处理直接拷贝
+普通的操作中，软链接不做处理
 
     # 如果 daoisdao.com 是个文件，会拷贝到目标目录下
     # 如果 daoisdao.com 是个目录，会在目标目录下建立子目录，内容拷贝过去
     rsync -av /etc/letsencrypt/live/daoisdao.com root@hostwind:/etc/letsencrypt/live
-
-用 -L 参数处理软链接文件，找到对应的实体文件拷贝过去
 
 使用原则
 
@@ -1103,14 +1104,16 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
 
     如果是拷贝一个目录结构，内部的软链接指向目录内的文件实体，则应该保持软链接拷贝文件实体，如果内部的软链接指向外部目录的文件实体，应该拷贝文件实体，参数有区别。
 
-示例
+如果需要拷贝软链接对应的实体文件，用参数 -L 。
 
-拷贝一个目录结构，目录内的软链接文件处理为实体文件，拷贝到远程
+示例：拷贝一个目录结构，目录内的软链接文件处理为实体文件，拷贝到远程
 
-    # 注意给出的目的目录需要提前建好`mkdir -p /etc/letsencrypt/live`，否则会报错
-    # -r 参数只在该目录内自动递归建立子目录
-    # -L 参数可以把软链接对应的实体文件拷贝到目的目录
+    # -r 参数 在目的目录内递归的生成源目录结构的子目录，目的目录需要提前建好（`mkdir -p /etc/letsencrypt/live`），否则会报错
+    # -L 参数 拷贝软链接对应的实体文件
     rsync -avrL /etc/letsencrypt/live/daoisdao.com root@hostwind:/etc/letsencrypt/live
+
+    # 2.拷贝一个软链接文件处理为实体文件
+    rsync -avL /etc/letsencrypt/live/daoisdao.com/cert.pem root@hostwind:/etc/letsencrypt/live/daoisdao.com
 
 ### 示例脚本：备份用户的主目录
 
