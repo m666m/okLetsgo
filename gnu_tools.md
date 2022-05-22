@@ -280,17 +280,19 @@ ConEmu是一个非常好用的终端，支持标签切换功能，可以在conem
 
 conemu中设置MSYS2
 
-以MSYS2 MingGW64为例：
++ 以MSYS2 MingGW64为例：
 
-> 打开conemu的settings对话框
-> 选择Startup>>Tasks选项
-> 点击+号，新建一个Task
-> 修改Task名字为Msys2::MingGW64
->
-> 在commands下文本框内输入如下代码：
->
->     set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
->
+    打开conemu的settings对话框
+
+    选择Startup>>Tasks选项
+
+    点击+号，新建一个Task
+
+    修改Task名字为Msys2::MingGW64
+
+    在commands下文本框内输入如下代码：
+
+        set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
 
 MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变量值`D=`为你的msys2的安装目录。
 

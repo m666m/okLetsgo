@@ -551,7 +551,7 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
 Add_App_Mode_to_desktop_context_menu.reg：
 
-```reg
+```ini
 Windows Registry Editor Version 5.00
 
 ; Created by: Shawn Brink
@@ -1094,25 +1094,27 @@ Windows内存诊断
 
 ## 安全的使用你的 Windows 10
 
-信息盗窃已经渗透到了驱动程序、操作系统组件、根证书级别
++ 信息盗窃已经渗透到了驱动程序、操作系统组件、根证书级别
 
-> 制作安装u盘时，Windows iso选择英文版，安装时区域选择“新加坡”，然后系统语言切换为简体中文，或英文版区域选美国安装后添加中文语言包再更改界面提示语言为简体中文，原因不解释。
->
-> 实机只安装开源的应用程序。
->
-> 淘宝等杂货铺来源的外接设备，提供的各种国内国外小公司的驱动程序，安装后**务必检查当前操作系统的证书，预期目的是<所有>**。
->
-> cn程序特别是 QQ、微信、钉钉、360、网络游戏等安装操作系统级别的驱动程序，或支付宝、银行、12306这样安装好几个不相关的根证书，而且证书的预期目的是“所有”的，统统在虚机里安装运行。
->
-> 如果有浏览器下载的不明来源程序，虚机里都不要用，防止它偷qq密码等，这种程序只能放在Windows沙盒里运行。
->
-> 迷惑性比较强的国外大公司出品的cn本地化版本，比如微软cn这样合作开发出来的软件，也不要在实机里运行。
->
-> Flash已转让给cn私企，禁用或Windows沙盒使用！
-> 中文版的FireFox等浏览器由cn公司开发，慎用！
-> 微软cn研究院出品的cn特供版的应用，比如打着edge工具的名号等，慎用！
+    制作安装u盘时，Windows iso的版本选择英文版，安装时区域选择“新加坡”，然后系统语言切换为简体中文，或英文版区域选美国安装后添加中文语言包再更改界面提示语言为简体中文，原因不解释。
 
-确保 Windows 安全中心的相关设置都开启，参见上面的章节 [刚装完 Windows 10 后的一些设置] 里的“设置 Windows 安全中心”部分。
+    实机只安装开源的应用程序。
+
+    淘宝等杂货铺来源的外接设备，提供的各种国内国外小公司的驱动程序，安装后**务必检查当前操作系统的证书，预期目的是<所有>**。
+
+    cn程序特别是 QQ、微信、钉钉、360、网络游戏等安装操作系统级别的驱动程序，或支付宝、银行、12306这样安装好几个不相关的根证书，而且证书的预期目的是“所有”的，统统在虚机里安装运行。
+
+    如果有浏览器下载的不明来源程序，虚机里都不要用，防止它偷qq密码等，这种程序只能放在Windows沙盒里运行。
+
+    迷惑性比较强的国外大公司出品的cn本地化版本，比如微软cn这样合作开发出来的软件，也不要在实机里运行。
+
+    Flash已转让给cn私企，禁用或Windows沙盒使用！
+
+    中文版的FireFox等浏览器由cn公司开发，慎用！
+
+    微软cn研究院出品的cn特供版的应用，比如打着edge工具的名号等，慎用！
+
++ 确保 Windows 安全中心的相关设置都开启，参见上面的章节 [刚装完 Windows 10 后的一些设置] 里的“设置 Windows 安全中心”部分。
 
 ### 务必检查当前操作系统的证书
 
@@ -1315,7 +1317,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 或
 
-```power shell
+```powershell
 
     dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 
@@ -1323,7 +1325,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 验证
 
-```power shell
+```powershell
 
     Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 
@@ -1334,7 +1336,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 2.Windows 10启用虚拟机功能
 
-```power shell
+```powershell
 
     dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 
@@ -1343,7 +1345,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 3.下载 Linux 内核更新包，双击提权安装即可。
 <https://wslstorestorage.blob.core.Windows.net/wslblob/wsl_update_x64.msi>
 
-```power shell
+```powershell
 
     wsl --update
 
@@ -1351,7 +1353,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 4.将 WSL 2 设置为默认版本
 
-```power shell
+```powershell
 
     wsl --set-default-version 2
 
@@ -1364,7 +1366,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
     <https://aka.ms/wslubuntu2004>
     <https://aka.ms/wsl-ubuntu-1604>
 
-```power shell
+```powershell
 
     Invoke-WebRequest -Uri https://aka.ms/wslubuntu2004 -OutFile Ubuntu.appx -UseBasicParsing
 
@@ -1380,7 +1382,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 安装：
 
-```power shell
+```powershell
 
     Add-AppxPackage .\app_name.appx
 
@@ -1388,7 +1390,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 注销并卸载 WSL 发行版：
 
-```power shell
+```powershell
 
     wsl --unregister <DistributionName>
 
@@ -1396,7 +1398,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 6.验证
 
-```power shell
+```powershell
 
     # 更新 WSL 内核，需要管理员权限
     wsl --update
@@ -1411,7 +1413,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 ```
 
-```bash
+```shell
 
     # 更新下包
     sudo apt update
@@ -1789,11 +1791,11 @@ KB4103718 如果运行时报告无法安装，先运行自带的那个 pciclears
 
 请先创建一个add.txt文件,将如下代码添加到文件保存,保存后将txt后缀更改为reg,然后双击add.reg导入到注册表重启电脑即可。
 
-Windows Registry Editor Version 5.00
+    Windows Registry Editor Version 5.00
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\CredSSP\Parameters]
+    [HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\CredSSP\Parameters]
 
-"AllowEncryptionOracle"=dword:00000002
+    "AllowEncryptionOracle"=dword:00000002
 
 #### 远程桌面的开始菜单没有关机键
 
