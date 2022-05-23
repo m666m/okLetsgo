@@ -1110,14 +1110,18 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
 
 如果需要拷贝软链接对应的实体文件，用参数 -L 。
 
-示例：拷贝一个目录结构，目录内的软链接文件处理为实体文件，拷贝到远程
+示例：
+
+拷贝一个目录结构，目录内的软链接文件处理为实体文件，拷贝到远程
 
     # -r 参数 在目的目录内递归的生成源目录结构的子目录，目的目录需要提前建好（`mkdir -p /etc/letsencrypt/live`），否则会报错
     # -L 参数 拷贝软链接对应的实体文件
     rsync -avrL /etc/letsencrypt/live/your_dir_or_file   root@remote:/etc/letsencrypt/live
     # 等效-avrL .................live/your_dir_or_file/  remote.......................live/your_dir_or_file
 
-    # 2.拷贝一个软链接文件处理为实体文件
+拷贝一个软链接文件处理为实体文件
+
+    # 只是普通的文件去掉 -L 参数即可
     rsync -avL /etc/letsencrypt/live/your_dir_or_file/cert.pem root@remote:/etc/letsencrypt/live/your_dir_or_file
 
 ### 示例脚本：备份用户的主目录
