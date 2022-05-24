@@ -928,7 +928,8 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 ## 网络故障排查
 
     # 端口是否可用
-    telnet 192.168.0.1:3389
+    telnet 127.0.0.1 443
+    wget 127.0.0.1:443
 
     netstat -an
 
