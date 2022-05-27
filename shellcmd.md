@@ -55,6 +55,14 @@ plain='\033[0m'
 [ -z "$res" ] && ngstatus="${red}已停止${plain}" || ngstatus="${green}正在运行${plain}"
 echo -e " nginx运行状态：${ngstatus}"
 
+RED="31m"      # Error message
+YELLOW="33m"   # Warning message
+colorEcho(){
+    echo -e "\033[${1}${@:2}\033[0m" 1>& 2
+}
+colorEcho ${RED} "ERROR: This script has been DISCARDED"
+colorEcho ${YELLOW} "USE: https://github.com/"
+
 
 ####################################################################
 # 自定义 vim 编辑器的颜色方案等

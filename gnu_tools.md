@@ -641,7 +641,34 @@ PS1="\n$magenta┌─$red\$(PS1exitcode)$magenta[$white\t $green\u$white@$green\
     └── themes
         └── my_awesome_theme.zsh-theme
 
-### Vim powerline
+### Vim
+
+Vim 使用鼠标
+
+    :set mouse=a
+
+Vim 关闭鼠标功能
+
+    :set mouse-=a
+
+Vim 解决汉字乱码
+
+如果你的 Vim 打开汉字出现乱码的话，那么在home目录(~)下，新建.vimrc文件
+
+    nano ~/.vimrc
+
+添加内容如下：
+
+    ini
+    set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
+    set enc=utf8
+    set fencs=utf8,gbk,gb2312,gb18030
+
+保存退出后执行下环境变量
+
+    source .vimrc
+
+#### Vim powerline
 
 安装说明
 
@@ -677,23 +704,6 @@ PS1="\n$magenta┌─$red\$(PS1exitcode)$magenta[$white\t $green\u$white@$green\
 
     " Use 256 colours (Use this setting only if your terminal supports 256 colours)
     set t_Co=256
-
-### Vim 解决汉字乱码
-
-如果你的 Vim 打开汉字出现乱码的话，那么在家目录(~)下，新建.vimrc文件
-
-    vim ~/.vimrc
-
-添加内容如下：
-
-    ini
-    set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
-    set enc=utf8
-    set fencs=utf8,gbk,gb2312,gb18030
-
-保存退出后执行下环境变量
-
-    source .vimrc
 
 ### tmux 不怕断连的多窗口命令行
 
