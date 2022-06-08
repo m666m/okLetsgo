@@ -461,16 +461,13 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
 更多的定制化见 tenforums 的各种教程 <https://www.tenforums.com/tutorials/id-Customization/>
 
-### 设置 Windows 安全中心
+### 选择开启虚拟化功能
 
-开始->运行：msinfo32，在“系统摘要”页面，查看状态是“关闭”的那些安全相关选项，逐个解决。
+Windows 10 系统安全的基础目前有向虚拟化方面加强的趋势，所以本章节跟下面的‘设置Windows安全中心’并列。
 
 如果主板 BIOS 设置中关于 Intel CPU 虚拟化选项如 vt-d、hyper-threading 的设置没有打开，则可能有些依赖虚拟机的隔离浏览的选项不可用，需要去主板 BIOS 设置中打开。
 
-某些 Windows 默认没有安装的组件是增强安全功能依赖的，需要单独安装：设置->应用->应用和功能->可选功能，点击右侧的“更多 Windows 功能”，弹出窗口选择“启用和关闭 Windows 功能”：
-
-    Microsoft Defender 应用程序防护
-    Windows 沙盒(Windows Sandbox)
+Windows 10 默认的虚拟化功能开放的较少，增强功能需要手动安装：设置->应用->应用和功能->可选功能，点击右侧的“更多 Windows 功能”，弹出窗口选择“启用和关闭 Windows 功能”：
 
     Hyper-V (Windows Hypervisor)
     Windows 虚拟机监控程序平台 (Windows Hypervisor Platform)
@@ -489,20 +486,42 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
     https://zhuanlan.zhihu.com/p/381969738
     https://superuser.com/questions/1556521/virtual-machine-platform-in-win-10-2004-is-hyper-v
 
-设置->更新和安全->Windows 安全中心，左侧页面点击“打开 Windows 安全中心”
+### 设置 Windows 安全中心
 
-    ->应用和浏览器控制，打开“隔离浏览（WDAG）” <https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/microsoft-defender-application-guard/install-md-app-guard>
+开始->运行：msinfo32，在“系统摘要”页面，查看状态是“关闭”的那些安全相关选项，逐个解决。
 
-    ->设备安全性->内核隔离，手动开启“内存完整性”  <https://support.microsoft.com/zh-cn/Windows/afa11526-de57-b1c5-599f-3a4c6a61c5e2> <https://go.microsoft.com/fwlink/?linkid=866348>
+Windows 10 默认没有安装的某些增强性安全功能组件是依赖虚拟化的，需要先手动安装虚拟化功能，见章节[选择开启虚拟化功能]。
+
++ 手动安装单独的安全组件：
+
+    设置->应用->应用和功能->可选功能，点击右侧的“更多 Windows 功能”，弹出窗口选择“启用和关闭 Windows 功能”：
+
+        Microsoft Defender 应用程序防护
+        Windows 沙盒(Windows Sandbox)
+
++ 设置 Windows安全中心
+
+  设置->更新和安全->Windows 安全中心，左侧页面点击“打开 Windows 安全中心”
+
+    ->应用和浏览器控制，打开“隔离浏览（WDAG）”
+        <https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/microsoft-defender-application-guard/install-md-app-guard>
+
+    ->设备安全性->内核隔离，手动开启“内存完整性”
+        <https://support.microsoft.com/zh-cn/Windows/afa11526-de57-b1c5-599f-3a4c6a61c5e2>
+
+        <https://go.microsoft.com/fwlink/?linkid=866348>
 
     在“设备安全性”屏幕的底部，如果显示“你的设备满足增强型硬件安全性要求”，那就是基本都打开了。
 
     如果“内核隔离”类别中缺少“内核 DMA 保护”、“固件保护”等选项，在主板BIOS (IOMMU) 中启用 Hyper-V 虚拟化，并在 Windows 功能中安装Hyper-V。
-    <https://docs.microsoft.com/en-us/Windows/security/information-protection/kernel-dma-protection-for-thunderbolt#using-system-information> <https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-kernel-dma-protection>
+        <https://docs.microsoft.com/en-us/Windows/security/information-protection/kernel-dma-protection-for-thunderbolt#using-system-information>
+
+        <https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-kernel-dma-protection>
 
     如果想显示“你的设备超出增强的硬件安全性要求”，需要在下面的页面慢慢研究如何开启。
-    <https://docs.microsoft.com/zh-cn/Windows/security/information-protection/kernel-dma-protection-for-thunderbolt>
-    <https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/Windows-defender-system-guard/system-guard-secure-launch-and-smm-protection>
+        <https://docs.microsoft.com/zh-cn/Windows/security/information-protection/kernel-dma-protection-for-thunderbolt>
+
+        <https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/Windows-defender-system-guard/system-guard-secure-launch-and-smm-protection>
 
 验证：启动 Windows 后以管理员权限运行 msinfo32，在“系统摘要”界面查看
 
@@ -519,7 +538,7 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
 中文版 Windows 10 默认唯一键盘是中文，而且中文键盘的默认输入法是微软拼音的中文状态。原 Windows 7 之前“Ctrl+空格”切换中英文的热键被微软拼音输入法使用了，而且按 shift 键就切换中英文，默认还是各个应用的窗口统一使用的。
 
-问题是 Windows 桌面/资源管理器/炒股游戏等软件的默认状态是响应英文输入，仅对文本编辑软件才应该默认用中文输入。如果只有默认的中文键盘，则微软拼音输入法按一下 shift 键，中英文状态就切换，非常容易误触。在实际使用中，各个软件窗口一变，或者输入个字母就弹出中文候选字对话框，按个 shift 键，微软拼音输入法就来回切换中英文，非常非常非常的繁琐。尤其在有些游戏中，一按 shift 就切出来中文输入法，再按 asdf 就变成打字到中文输入法的输入栏了。
+问题是 桌面/资源管理器/炒股/游戏/网页浏览器 等软件的默认状态是响应英文输入，应该仅对文本编辑软件启用中文输入。在实际使用中，各个软件只要切换窗口，或者输入个字母就弹出中文候选字对话框，按个 shift 键就来回切换中英文，非常非常非常的繁琐。尤其在有些游戏中，一按 shift 就切出来中文输入法，再按 asdw 就变成打字到中文输入法的输入栏了。
 
 所以需要再添加一个“英文键盘”，使用它的英文输入法状态，并把这个键盘作为默认状态。两种键盘间切换使用热键“Win+空格”。这样做的好处是，切换键盘的同时中英文输入法也跟着切换了（不需要依赖在中文键盘下微软拼音输入法的 shift 键切换），而且不同的窗口还可以选择记住不同的输入法状态，非常方便。
 
@@ -588,50 +607,6 @@ edge 浏览器->设置->外观->整体外观：选择“系统默认”则跟随
 
     选择 enable，点击选择重启浏览器，除图片以外的所有部分进入夜间模式
 
-### 打开任务栏毛玻璃效果
-
-<https://bbs.pcbeta.com/viewthread-1899753-1-1.html>
-
-高斯模糊：
-支持深、浅色模式
-支持任务栏主题色
-需重启资源管理器进程
-
-```ini
-Windows Registry Editor Version 5.00
-
-[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize]
-; 开启透明效果
-"EnableTransparency"=dword:00000001
-
-[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
-; 任务栏透明度
-"TaskbarAcrylicOpacity"=dword:00000005
-
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
-"UseOLEDTaskbarTransparency"=dword:00000000
-
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Dwm]
-"ForceEffectMode"=-
-```
-
-恢复到系统默认：
-
-```ini
-Windows Registry Editor Version 5.00
-
-[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
-"TaskbarAcrylicOpacity"=-
-
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
-"UseOLEDTaskbarTransparency"=-
-
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Dwm]
-"ForceEffectMode"=-
-```
-
-重启 explorer.exe
-
 ### 安装 Microsoft Edge 浏览器插件
 
 注意设置右键插件图标，选择扩展在哪些网站生效，尽量缩小插件的生效范围。
@@ -693,6 +668,52 @@ Windows Registry Editor Version 5.00
 
     在控制台输入命令“Remove-AppxPackage Microsoft.Windows.Photos_2021.21090.10008.0_x64__8wekyb3d8bbwe”回车键，等待片刻就卸载完了。
 
+### 打开任务栏毛玻璃效果
+
+2022年的 Windows 10 已经默认打开了。
+
+<https://bbs.pcbeta.com/viewthread-1899753-1-1.html>
+
+高斯模糊：
+支持深、浅色模式
+支持任务栏主题色
+需重启资源管理器进程
+
+```ini
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize]
+; 开启透明效果
+"EnableTransparency"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+; 任务栏透明度
+"TaskbarAcrylicOpacity"=dword:00000005
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+"UseOLEDTaskbarTransparency"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Dwm]
+"ForceEffectMode"=-
+```
+
+恢复到系统默认：
+
+```ini
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+"TaskbarAcrylicOpacity"=-
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+"UseOLEDTaskbarTransparency"=-
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Dwm]
+"ForceEffectMode"=-
+```
+
+重启 explorer.exe
+
 ### 为 Windows 10 Enterprise LTSC 增加应用商店
 
     只有2019版 https://github.com/kkkgo/LTSC-Add-MicrosoftStore
@@ -714,73 +735,9 @@ Win+R 打开运行，输入 WSReset.exe 回车。
 
 ### 关闭 Windows 自带的压缩文件夹（zip folder）
 
-[不要使用]
-Windows 10 下发现取消这个组件，居然有 Windows 更新的安装包报错的情况，建议用开源的 7-zip 软件替换 zip 文件的打开方式，这个功能留着吧。
+Windows 10 下发现取消这个组件，居然有 Windows 更新的安装包报错的情况，建议用开源的 7-zip 软件替换 zip 文件的打开方式，不要取消Windows的zip组件。
 
     管理员身份运行 7-zip 软件，菜单“工具”->“选项”，弹出的窗口选择“系统”选项卡，列出的类型中，zip 选择“7-zip”
-
-废弃：
-
-    从 Windows XP 开始，之后的每一代操作系统（如 Vista、7、8、10），都有一个默认开启的功能：能将压缩文件当作普通文件夹来管理。
-
-    在资源管理器左侧的文件夹树视图中，展开一个包含压缩文件（zip 或 cab 格式）的文件夹时，就能看见这些压缩文件如同普通的子文件夹一样，可以直接展开。展开它们，就能很方便地浏览压缩文件中所有文件的信息，同时还能方便地解压。
-
-    但是一般用户通常都有自己喜爱的压缩软件，例如 WinRAR、7-Zip 等，他们往往不常使用系统自带的这个压缩文件管理方式，更倾向于使用压缩软件提供的右键菜单功能来压缩或解压文件。而且还会抱怨系统自带的压缩文件夹功 能消耗系统资源，每次打开文件夹时的延迟更让人觉得系统变得缓慢。
-
-    Windows XP 关闭 zip folder 功能
-
-        打开命令提示符窗口，输入“regsvr32 /u %windir%\system32\zipfldr.dll” （不含引号），回车后提示成功即可关闭。
-
-        开启功能：
-        打开命令提示符窗口，输入“regsvr32 %windir%\system32\zipfldr.dll”（不含引号），回车后提示成功即可打开。
-
-    提示：以上操作可能只关闭了 ZIP 文件的文件夹显示，可能 CAB 文件没有关闭。未测试。
-
-    Windows Vista、7、8、10 关闭 zip folder 功能
-
-    需要删除或更名两个注册表键：
-
-    对于 ZIP 文件：HKEY_CLASSES_ROOT\CLSID\{E88DCCE0-B7B3-11d1-A9F0-00AA0060FA31}
-
-    对于 CAB 文件：HKEY_CLASSES_ROOT\CLSID\{0CD7A5C0-9F37-11CE-AE65-08002B2E1262}
-
-    由于涉及到权限问题，无法直接删除，需按照以下步骤来操作：（注册表操作有风险，要小心谨慎，并切记要备份。）
-
-        按 Win-R，在运行窗口输入“regedit” 并回车，打开注册表编辑器。
-
-        找到要操作的第一个注册表键 HKEY_CLASSES_ROOT\CLSID\{E88DCCE0-B7B3-11d1-A9F0-00AA0060FA31}
-
-        右键单击它，从弹出菜单中单击“导出 (E)”，将该注册表键的原始信息备份到安全位置，以便遇到不测时恢复。
-
-        导出备份完成后，再右键单击该键，从弹出菜单中单击“权限 (P)...”
-
-        单击“高级 (V)”按钮
-
-        单击“所有者”选项卡
-
-        在“将所有者更改为 (O):”框中，选中你当前的用户名
-
-        勾选“替换子容器和对象的所有者 (R)”
-
-        单击“应用 (A)”按钮
-
-        单击“确定”
-
-        在“安全”选项卡下，在上框中选中你的用户名，然后 在下框中勾选“完全控制”的“允许”
-
-        单击“应用 (A)”和“确定”按钮
-
-        现在，你可以自由选择删除或重命名这个注册表键了。注意：请确定你在正确的注册表键上操作！
-
-        好，重复以上步骤来为 第二个注册表键进行重命名或删除。
-
-        重启计算机，压缩文件夹是不是都消失啦？
-
-    开启功能：
-
-    恢复的话，只需将关闭时建立的两个备份文件导入注册表，重启即可。万一备份不见了，可以从另外的电脑中导出，当然前题是操作系统的版本要一致。
-
-    权限恢复的时候，依次反向操作，注意：添加所有者要输入“NT SERVICE\TrustedInstaller”，选择“检查名称”。
 
 ### 关闭 Windows defender杀毒软件
 
@@ -1106,15 +1063,15 @@ Windows内存诊断
 
     如果有浏览器下载的不明来源程序，虚机里都不要用，防止它偷qq密码等，这种程序只能放在Windows沙盒里运行。
 
-    迷惑性比较强的国外大公司出品的cn本地化版本，比如微软cn这样合作开发出来的软件，也不要在实机里运行。
+    迷惑性比较强的是国外大公司出品的cn本地化版本，其实是跟cn公司合作开发出来的软件，也不要在实机里运行。
+
+    微软中国研究院出品的cn特供版的应用，比如打着edge工具的名号等，慎用！
 
     Flash已转让给cn私企，禁用或Windows沙盒使用！
 
-    中文版的FireFox等浏览器由cn公司开发，慎用！
+    中文版的FireFox等浏览器由cn公司开发，禁用！只在mozila网站下载英文版使用！
 
-    微软cn研究院出品的cn特供版的应用，比如打着edge工具的名号等，慎用！
-
-+ 确保 Windows 安全中心的相关设置都开启，参见上面的章节 [刚装完 Windows 10 后的一些设置] 里的“设置 Windows 安全中心”部分。
+确保 Windows 安全中心的相关设置都开启，参见上面的章节 [装完Windows10后的一些设置] 里的“设置 Windows 安全中心”部分。
 
 ### 务必检查当前操作系统的证书
 

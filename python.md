@@ -43,14 +43,14 @@ Pip can install software in three different ways:
     https://devblogs.microsoft.com/python/unable-to-find-vcvarsall-bat/
     https://www.lfd.uci.edu/~gohlke/pythonlibs/
 
-在windows环境中，python 的 Setup 需要调用一个 vcvarsall.bat 的文件，该文件需要安装c++编程环境才会有。网上的方法有两个：一、安装MinGW；二、安装Visual Studio 。很多python包也是如此，pip提供的是.pyd文件，需要借助python环境在本地编译出二进制。
+pip安装某些python包需要c++编译环境（pip提供的是.pyd文件，需要借助python环境在本地编译出二进制。），在Windows下需要手动安装，方法有两个：一、安装 MinGW；二、安装 Visual Studio 社区版。python安装的setup也是如此，都依赖c++编译环境。
 
-对这种情况，最简单的解决办法是下载好心人提供的编译好的whell文件 <https://www.lfd.uci.edu/~gohlke/pythonlibs/>。
+不想安装编译环境，最简单的解决办法是下载好心人提供的编译好的whell文件 <https://www.lfd.uci.edu/~gohlke/pythonlibs/>
 
     python2.7用的是msvs2008编译的，所以python2.7默认只能认出msvs2008.
     python3.4用的是msvs2010编译的，所以python3.4默认只能认出msvs2010。
     python3.7使用vs2015（WIN10SDK）
-    python3.8应该对应了VS2017(15.9)，用VS2019基本也可以。
+    python3.8应该对应了VS2017(15.9)，用VS2019基本也可以。 这是支持 Windows 7 的最后一个版本了。
 
     如果安装的是VS2014，则VERSION为13.0；
     如果安装的是VS2013，则VERSION为12.0；
@@ -61,7 +61,7 @@ Pip can install software in three different ways:
 如何编译 python3.7/3.8 <https://www.cnblogs.com/xiacaojun/p/9914545.html>
 <https://zhuanlan.zhihu.com/p/148348614>
 
-清华开源镜像 <https://mirrors.tuna.tsinghua.edu.cn/>
+清华开源镜像 <https://mirrors.tuna.tsinghua.edu.cn/> 只保留最近的新版本，老的都清理。
 
 ### pip 版本更新
 
@@ -166,9 +166,14 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     # 切换到base环境(conda/virtualenv等)
     conda activate
 
-    pip -V
+    $ pip -V
+    pip 21.0.1 from C:\ProgramData\Anaconda3\lib\site-packages\pip (python 3.8)
 
-    pip config list -v
+    $ pip config list -v
+    For variant 'global', will try loading 'C:\ProgramData\pip\pip.ini'
+    For variant 'user', will try loading 'C:\Users\username\pip\pip.ini'
+    For variant 'user', will try loading 'C:\Users\username\AppData\Roaming\pip\pip.ini'
+    For variant 'site', will try loading 'C:\ProgramData\Anaconda3\pip.ini'
 
     # 切换到你自己的环境(conda/virtualenv等)
     conda activate p37
@@ -186,26 +191,29 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     # 切换到base环境(conda/virtualenv等)
     conda activate
 
-    # NOTE: base 环境下自带的 pip 不要更新
+    # NOTE: 在Anancoda下的[base]环境，不要更新pip，不然其它conda环境默认共用这个pip！只在自己的conda环境下更新pip！
     # 临时使用国内镜像，更新pip自身
     # pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
 
     # 设为全局默认
     pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
-确认
+验证
+
+    conda activate
 
     (base)$ pip config list -v
-    global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
-
-    (p37)$ pip config list -v
     For variant 'global', will try loading 'C:\ProgramData\pip\pip.ini'
-    For variant 'user', will try loading 'C:\Users\xxxx\pip\pip.ini'
-    For variant 'user', will try loading 'C:\Users\xxxx\AppData\Roaming\pip\pip.ini'
+    For variant 'user', will try loading 'C:\Users\username\pip\pip.ini'
+    For variant 'user', will try loading 'C:\Users\username\AppData\Roaming\pip\pip.ini'
     For variant 'site', will try loading 'D:\pycode\py37\pip.ini'
     global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
+    conda activate p37
 
-配置文件生成在  ~/.pip/pip.conf，Anaconda 安装的在 C:\Users\xxxx\AppData\Roaming\pip\pip.ini。
+    (p37)$ pip config list -v
+    global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
+
+配置文件生成在  ~/.pip/pip.conf，Anaconda 安装的在 C:\Users\username\AppData\Roaming\pip\pip.ini。
 
 其它源
 
@@ -407,7 +415,7 @@ NOTE:这里有个耦合，后续建立的同版本的python环境都会复用最
 所以，稳妥的办法是，如果你的系统里要使用多个python版本，先逐个建立各个版本的环境，什么都不要改。
 然后针对具体的项目建路径名的虚拟环境，在这个虚拟环境里面安装pip，然后改路径。
 
-9.建立你自己项目的虚拟环境（见下面的章节 [使用路径名，在你的项目目录下建立虚拟环境]），在这个虚拟环境里面安装pip，然后改路径（详见下面章节[更改conda环境下，pip包默认下载路径]）。
+9.建立你自己项目的虚拟环境（见下面的章节 [使用路径名，在你的项目目录下建立虚拟环境]），在这个虚拟环境里面安装pip，然后改路径（详见下面章节[更改conda环境下pip包默认下载路径]）。
 
 10.详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
 
@@ -475,7 +483,7 @@ windows下python按[TAB]出现报错：
 
 ### Anaconda多环境最佳方案
 
-Anaconda 安装完毕后，先对各个版本建立虚拟环境如b37、b38，但是不要做操作，比如更新包、修改pip包的默认下载路径等。
+Anaconda 安装完毕后，先对各个版本建立基础的虚拟环境如b37、b38，但是不要做pip变动，比如pip安装更新包、修改pip包的默认下载路径等。原因是Ananconda为了节约硬盘空间，多个相同python版本的环境内容通过链接的方式使用第一个环境，而conda是不管pip的，导致pip配置类的文件是直接引用的，你要是在基础环境更新了pip，所有其他同版本的pip也都升级了，要是修改了路径，其它版本的也跟着变了，搞得非常乱。例外：可以变更pip源到国内源，在bash环境下做这个变动影响全局没问题，除非你有个环境非得要国外源，那就在那个环境里手动改pip源即可。
 
 有了第一个基础版本的python环境之后，再建立针对具体项目的虚拟环境如p37、p38，在这个虚拟环境里修改pip包的默认下载路径、进行conda/pip包的安装和更新等操作。
 
@@ -673,7 +681,7 @@ conda用“=”，pip用“==”
 
 3.确认conda、python、pip都是用的你的环境的，参见下面章节 [conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
 
-4.修改你的环境pip保存下载包的位置，参见下面章节 [更改conda环境下，pip包默认下载路径]。
+4.修改你的环境pip保存下载包的位置，参见下面章节 [更改conda环境下pip包默认下载路径]。
 
 5.官方推荐所有的依赖包一次性 conda install，避免依赖文件重复
 
@@ -758,7 +766,7 @@ conda用“=”，pip用“==”
     # 路径名太长，改为短名
     conda config --set env_prompt '({name})'
 
-    # 重要，一定要执行章节 【更改conda环境下，pip包默认下载路径】
+    # 重要，一定要执行章节 【更改conda环境下pip包默认下载路径】
     vi site.py
 
     # 最后手动安装yml文件中用wheel安装的包
@@ -804,7 +812,7 @@ conda用“=”，pip用“==”
     # 验证：列出所有的环境，当前激活的环境会标*
     conda info -e
 
-    # 需要先修改pip包默认下载路径，见章节 [更改conda环境下，pip包默认下载路径]
+    # 需要先修改pip包默认下载路径，见章节 [更改conda环境下pip包默认下载路径]
     conda activate ./py37_new
     pip install -r requirements.txt
 
@@ -942,7 +950,7 @@ python 设计之初，并没有考虑一个操作系统上有多个环境的问�
 
 Anaconda更进一步，你的虚拟环境里的python版本可以不安装到当前操作系统，实现python版本跟操作系统的隔离。
 但是，你的虚拟环境里的pip不知道这个隔离，下载包默认还是会安装到系统或当前用户，
-所以需要手工修改site.py配置文件，详见下面的章节 [更改conda环境下，pip包默认下载路径]
+所以需要手工修改site.py配置文件，详见下面的章节 [更改conda环境下pip包默认下载路径]
 
 当你新建conda环境时，anaconda并没有在新建的环境中新建pip，此时只有anaconda默认的环境有pip。
 所以此时你用pip install，所安装的包和依赖包均在anaconda默认的环境中，其他环境共享这个包的使用。
@@ -1005,17 +1013,16 @@ conda安装在conda环境中装任何包，pip在任何环境中安装python包�
 
     pip install 默认使用全局配置文件，见上面的章节 [PyPI使用国内源]
 
-        $ pip config list -v
+        (py37)$ pip config list -v
         For variant 'global', will try loading 'C:\ProgramData\pip\pip.ini'
         For variant 'user', will try loading 'C:\Users\xxxx\pip\pip.ini'
         For variant 'user', will try loading 'C:\Users\xxxx\AppData\Roaming\pip\pip.ini'
         For variant 'site', will try loading 'D:\pycode\py37\pip.ini'
         global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
-        (py37)
 
 新建立的conda环境，首选要修改pip包安装默认路径
 
-    以后只要切换到你的环境下，再运行pip，默认会安装到你环境下的目录。否则会安装到默认的pyhon环境目录比如 C:\ProgramData\Anaconda3，详见章节 [更改conda环境下，pip包默认下载路径]。
+    以后只要切换到你的环境下，再运行pip，默认会安装到你环境下的目录。否则会安装到默认的pyhon环境目录比如 C:\ProgramData\Anaconda3，详见章节 [更改conda环境下pip包默认下载路径]。
 
 ### conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径
 
@@ -1089,7 +1096,7 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
     或
     "C:\ProgramData\Anaconda3\Scripts"（ENABLE_USER_SITE: False）
 
-则可以修改到自己的虚拟环境下，参见下面章节 [更改conda环境下，pip包默认下载路径]。
+则可以修改到自己的虚拟环境下，参见下面章节 [更改conda环境下pip包默认下载路径]。
 
 #### bash 示例
 
@@ -1228,7 +1235,7 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
         USER_SITE: 'C:\\Users\\xxxx\\AppData\\Roaming\\Python\\Python37\\site-packages' (doesn't exist)
         ENABLE_USER_SITE: True
 
-### 【更改conda环境下，pip包默认下载路径】
+### 【更改conda环境下pip包默认下载路径】
 
 想要做到 Anaconda 中不同环境互相不干涉，不仅需要建新的conda环境，如果想pip下载包跟其它环境隔离，还需要修改配置文件。
 
@@ -1237,7 +1244,7 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
 
 稳妥的办法是
 
-    如果你的操作系统里要使用多个python版本，先在Ananconda里逐个建立每个版本的虚拟环境，什么都不要改。
+    如果你的操作系统里要使用多个python版本，先在Ananconda里逐个建立每个版本的基础虚拟环境，什么都不要改。
 
     然后再针对你具体的项目建路径名的虚拟环境，在这个虚拟环境里改pip包默认下载路径。
 
@@ -1249,7 +1256,7 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
     <https://blog.csdn.net/tsq292978891/article/details/104655113>
     <https://blog.csdn.net/mukvintt/article/details/80908951>
 
-#### 示例
+#### 操作示例
 
 假设Anaconda3安装完成后建立的默认root环境[base]，python版本是3.9，路径在 C:\ProgramData\Anaconda3 ，下面的Scripts目录是pip等命令，Lib\site-packages保存下载包，配置文件在 Lib\site.py。
 
@@ -1264,10 +1271,11 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
     $ python -m site -help
     C:\Users\xxxx\.conda\envs\p37\Lib\site.py
 
-    # 如果 Anaconda 安装时选择了“给所有用户安装”，有时候是下面这个，
+    # 如果 Anaconda 安装时选择了“给所有用户安装”，有时候是下面这个
+    C:\ProgramData\Anaconda3\envs\p37\Lib\site.py
+
     # 请根据  python -m site -help 里的路径决定。
     # 详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
-    C:\ProgramData\Anaconda3\envs\p37\Lib\site.py
 
 编辑该配置文件，修改下面两行
 
