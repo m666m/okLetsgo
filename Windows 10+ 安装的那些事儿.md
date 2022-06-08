@@ -203,6 +203,9 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 ## Windows 启用 Secure Boot 功能
 
+    https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot
+    https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/oem-secure-boot
+
 下面几点，是 Windows 的安装程序确认可以启用 Secure Boot 功能的前提。如果设置不正确，它不会给出提示，只是默默的换用兼容的CSM模式进行安装。在Windows安装完才能验证是否启用了 Secure Boot 功能。
 
 ### 一、启动 Windows安装程序前，主板 BIOS 设置 UEFI + GPT 模式
