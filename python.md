@@ -2,9 +2,15 @@
 
 ## Windows 7 最高只能使用 Python3.8
 
-windows下的python，各种命令的脚本都是cmd下的bat，如果用bash运行这些命令，有时候会出现各种提示报错信息。
+Windows下的python，各种命令的脚本都是cmd下的bat，如果用bash运行这些命令，有时候会出现各种提示报错信息。
 
-推荐windows下使用 cmd 命令行执行纯python操作。
+Windows下推荐使用 cmd 命令行执行纯python操作。
+
+Windows下推荐使用 cmd 命令行执行conda操作。
+
+例外情况是，你的命令脚本不是sh，其实执行的是.py，则配置路径类参数的格式需要根据操作系统的类型写，由python自行解析。
+
+总之，python环境的发展众多，用conda或者pip或者virtualenv都可以，但是很多命令是 .sh .bat .py 三者混杂的，使用的时候最好先研究下到底执行的是哪个命令，多用 `which`或`where`查看。
 
 ## pip
 
@@ -1256,7 +1262,7 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
     <https://blog.csdn.net/tsq292978891/article/details/104655113>
     <https://blog.csdn.net/mukvintt/article/details/80908951>
 
-#### 操作示例
+#### 操作步骤
 
 假设Anaconda3安装完成后建立的默认root环境[base]，python版本是3.9，路径在 C:\ProgramData\Anaconda3 ，下面的Scripts目录是pip等命令，Lib\site-packages保存下载包，配置文件在 Lib\site.py。
 
@@ -1284,19 +1290,25 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
 
 改为
 
+    # 注意 USER_BASE 在Windows下的目录结构跟Linux不同
+    # 参考
+    #       https://docs.python.org/3/library/site.html#site.USER_BASE
+    #           https://docs.python.org/3/install/index.html#inst-alt-install-user
+    #           https://peps.python.org/pep-0370/
+
     USER_SITE = "C:\\Users\\xxxx\\.conda\\envs\\p37\\Lib\\site-packages"
-    USER_BASE = "C:\\Users\\xxxx\\.conda\\envs\\p37\\Scripts"
+    USER_BASE = "C:\\Users\\xxxx\\.conda\\envs\\p37"
 
     # 如果env指向的 C:\ProgramData\Anaconda3\envs 改为
     USER_SITE = "C:\\ProgramData\\Anaconda3\\envs\\p37\\Lib\\site-packages"
-    USER_BASE = "C:\\ProgramData\\Anaconda3\\envs\\p37\\Scripts"
+    USER_BASE = "C:\\ProgramData\\Anaconda3\\envs\\p37"
 
     # 如果你建立的路径名环境在项目目录下，如 D:\pycode\your_project
     # 改为
     USER_SITE = "D:\\pycode\\your_project\\env\\py37\\Lib\\site-packages"
-    USER_BASE = "D:\\pycode\\your_project\\env\\py37\\Scripts"
+    USER_BASE = "D:\\pycode\\your_project\\env\\py37"
 
-如果你的命令行工具是bash，也不需要改为 /d/pycode/your_project/py37 的形式，因为 site.py 是 python 执行，python 根据当前操作系统识别路径格式。
+如果你使用的命令行工具是bash，也不需要改为 /d/pycode/your_project/py37 的形式，因为 site.py 是 python 执行，python 根据当前操作系统识别路径格式。
 
 验证
 
