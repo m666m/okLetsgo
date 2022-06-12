@@ -1175,6 +1175,67 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 cron中的环境变量很多都和系统环境变量不一样（cron会忽略/etc/environment文件），尤其是PATH，只有/usr/bin:/bin，也就是说在cron中运行shell命令，如果不是全路径，只能运行/usr/bin或/bin这两个目录中的标准命令，而像/usr/sbin、/usr/local/bin等目录中的非标准命令是不能运行的。
 
+### 区分crontab命令和crontab文件
+
+用crontab命令配置是针对当前用户的定时任务，而编辑/etc/crontab文件是针对系统的任务。cron服务每分钟不仅要读一次 /var/spool/cron 内的所有文件，还需要读一次 /etc/crontab文件。
+
+使用下面的命令，会在vi 里打开crontab的内容以供编辑：
+
+    crontab -e
+
+如果你只想看看，不需要编辑，可以使用以下的命令
+
+    crontab -l
+
+要删除crontab的内容，就是删除所有的计划任务，可以这样：
+
+    crontab -r
+
+[root@kind-codes-1 /etc]# cat /etc/crontab
+
+```shell
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名文件中
+
+# For details see man 4 crontabs
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+0 3 1 */2 0 root systemctl stop nginx; /usr/local/bin/certbot renew; systemctl restart nginx
+```
+
+星号  如果某个部分出现的是星号而不是数字，就是说明这个部分表示的时间全部会执行。
+
+    1.分钟（0-59）
+    2.小时（0-23）
+    3.一个月的哪一天（1-31）
+    4.一年中的哪个月（1-12）
+    5.星期几（0是星期天）
+
+每小时运行3次，在0分，10分，和20分时
+
+    0,10,20 * * * * user-name  command
+
+每5分钟运行一次
+
+    */5 * * * * user-name  command
+
+每2小时的零分运行一次
+
+    00 */2 * * * user-name  command
+
+5到10点的每个整点运行一次
+
+    0 5-10 * * * user-name  command
+
+
 ## acme.sh 自动申请免费ssl证书
 
     https://blog.csdn.net/dancen/article/details/121044863
