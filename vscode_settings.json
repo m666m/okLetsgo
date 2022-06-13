@@ -20,7 +20,7 @@
     // "editor.bracketPairColorization.enabled": true,
     "editor.unicodeHighlight.includeStrings": false,
     "editor.unicodeHighlight.includeComments": false,
-    "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize自动判断
+    "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize宽度而自动判断
     "window.newWindowDimensions": "offset", // "offset" maximized
     "outline.showVariables": false,
     "extensions.autoUpdate": false,  // 如果有插件升级后出问题，阻止自动升级
