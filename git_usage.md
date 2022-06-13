@@ -99,6 +99,12 @@ git colne一个项目，然后查看是否此项目是使用https协议
     git config --global user.name "m666m"
     git config --global user.email "31643783+m666m@users.noreply.github.com"
 
+如果是在已有的项目文件夹里，注意检查是否需要更新用户名和电邮地址
+
+    git config user.name
+
+    git config  user.email
+
 ## git仓库初始设置
 
 ### 建立本地仓库：Git 工作区、暂存区和版本库
@@ -2259,9 +2265,16 @@ GitHub 是不会去查找其他 Pubkey Server 的，它只关心用户自行上�
 ### 2.将 GPG 密钥与 Git 关联
 
     # FBB74XXXXXXXAE51 是之前gpg生成的uid的密钥指纹，也可以直接写uid如'm666m'
+    # 如果有签名功能的子密钥，设置为该子密钥的keyid即可。
     git config --global user.signingkey FBB74XXXXXXXAE51
     # 或者
     git config user.signingkey FBB74XXXXXXXAE51
+
+如果是在已有的项目文件夹里，注意检查是否需要更新用户名和电邮地址
+
+    git config user.name
+
+    git config  user.email
 
 ### 3.设置gpg程序的路径
 
