@@ -83,7 +83,7 @@
         "MD046": false, //代码块缩进或围栏起来都可以
         "MD024": false  //不同标题下的子标题内容可以重复
     },
-    // PYQT Integration
+    // PYQT Integration 根据你的python、conda、virtunalenv的不同，自行调整
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\Qt\\bin\\designer.exe",
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Library\\bin\\designer.exe",
     "pyqt-integration.qtdesigner.path": "C:\\Users\\yourusername\\.conda\\envs\\p37\\Scripts\\designer.exe",
