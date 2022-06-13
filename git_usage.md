@@ -2243,7 +2243,7 @@ head当前是指向最新的那一条记录，所以我们看一下parent commit
 
 ### 1.github网页端添加gpg公钥
 
-github要求gpg密钥的电邮地址使用github页面提示给出的（对于隐藏自己邮件地址） <https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>，所以单独给这个电邮地址新建个github专用的gpg密钥即可，uid设为github用户名'm666m'。为提高使用安全性，新建个有签名功能的子密钥使用，提交到github和本地git存储的设置中使用。
+github要求，gpg密钥的电邮地址应该使用github页面提示给出的（对于隐藏自己邮件地址）对外电邮。查看该电邮地址，登陆github，菜单“settings-emails：Primary email address的说明文字里有对外电邮地址”，操作说明见<https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>，所以单独给这个电邮地址新建个github专用的gpg密钥即可，uid设为github用户名'm666m'。为提高使用安全性，新建个有签名功能的子密钥使用，提交到github和本地git存储的设置中使用。
 
 显示当前的gpg公钥，本地控制台下执行命令
 
