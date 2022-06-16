@@ -226,11 +226,17 @@ UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化�
 
     CMS 模式关闭后，当前系统内的 PCIe 设备应该是出现了一些选项可以进行设置，比如“Advanced”界面 PCI  Subsystem setting 下 RX30 系列显卡的支持 Resize Bar 等
 
-这样系统才能默认用 Windows 的 UEFI 模式快速启动。
+这样系统才能默认用 Windows 的 UEFI 模式快速启动（HDMI线安装无视CSM模式开启，好神奇），安装后的 Windows 会开启Secure Boot功能。
 
 为什么要 CSM 模式又开又关这样操作呢？Windows 10 安装的时候我踩了个坑
 
-    我在主板 BIOS 设置中启动模式选项（Windows 10 Features）选择“Windows 10”，“CSM Support”选项选择“Disable”后下面的三个选项自动隐藏了，我以为都是自动 UEFI 了，其实技嘉主板只是把选项隐藏了，硬盘模式保持了上次安装 Windows 时设置的 legacy 不是 UEFI……
+因为我的老显卡不支持UEFI下DP口开机显示，初次安装用了HDMI线，而且为了兼容使用了CSM模式安装的：BIOS 设置里“Windows 10 Features”选择“other os”，“CSM Support”选“Enable”，存储和 PCIe 设备都选择“UEFI” 安装了 Windows 10。而且，用HDMI线安装 Windows 10 即使是CSM模式，也能开机秒进桌面，应该是Windows默认开启了FAST BOOT。见章节[老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）]。
+
+后来显卡升级了 BIOS，又关闭主板 CMS 模式，重新安装了 Windows 10 21H1，在主板 BIOS 设置里装载默认值“Load optimized defaults”（默认把存储设备换回了 legacy），然后设置“Windows 10 Features”选择“Windows 10”，“CSM Support”选“Disable”，但是忘记把存储设备换回 UEFI 类型了，Windows 安装程序自动把硬盘格式化为 MBR 类型了。
+
+这样装完 Windows 开机启动后，估计是主板尝试 UEFI 没有引导成功，自动转为 CSM 模式走 bios+UEFI 的过程，导致Windows下无法开启Secure Boot功能。
+
+    后来升级了显卡bios支持UEFI下的DP口显示后，我重装了Windows，在主板 BIOS 设置中启动模式选项（Windows 10 Features）选择“Windows 10”，“CSM Support”选项选择“Disable”后下面的三个选项自动隐藏了，我以为都是自动 UEFI 了，其实技嘉主板只是把选项隐藏了，硬盘模式保持了上次安装 Windows 时设置的 legacy 不是 UEFI……
 
     这样导致我的 Windows 引导还是走的老模式，UEFI 引导硬盘其实没用上，装完后 Windows 启动没有实现秒进桌面才发现的这个问题。
 
@@ -238,13 +244,9 @@ UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化�
 
 总结来说，Windows 10 的安装兼容各种老设备，最古老的一种是主板 BIOS 设置里“Windows 10 Features”选择“other os”，“CSM Support”选“Enable”，存储和 PCIe 设备都选择“leagcy”，也可以安装 Windows 10，但是就无法享受真正 UEFI FAST BOOT 引导系统的秒进桌面了。
 
-我的显卡因为用 DP 口不兼容，BIOS 设置里“Windows 10 Features”选择“other os”，“CSM Support”选“Enable”，存储和 PCIe 设备都选择“UEFI”安装了 Windows 10 2019 LTSC。
+总之，完美的做法，应该在 BIOS 设置中“Windows 10 Features”选择“Windows 10”，“CSM Support”选项选择“Enable”后出现的存储和 PCIe 设备的选项都选择“UEFI”，然后再把“CSM Support”选项选择“Disable”。在使用 Rufus 制作安装u盘时也要选择“GPT+UEFI”方式，再用这样的u盘启动计算机安装Windows。这样安装后的 Windows 才能实现开启Secure Boot功能。
 
-后来显卡升级了 BIOS，又关闭主板 CMS 模式，重新安装了 Windows 10 21H1，在主板 BIOS 设置里装载默认值“Load optimized defaults”（默认把存储设备换回了 legacy），然后设置“Windows 10 Features”选择“Windows 10”，“CSM Support”选“Disable”，但是忘记把存储设备换回 UEFI 类型了，导致硬盘被 Windows 安装程序格式化为 MBR 类型。这样装完 Windows 开机启动后，估计是主板尝试 UEFI 没有引导成功，自动转为 CSM 模式走 bios+UEFI 的过程，导致Windows下无法开启Secure Boot功能。
-
-总之，完美的做法，应该在 BIOS 设置中“Windows 10 Features”选择“Windows 10”，“CSM Support”选项选择“Enable”后出现的存储和 PCIe 设备的选项都选择“UEFI”，然后再把“CSM Support”选项选择“Disable”。在使用 Rufus 制作安装u盘时也要选择“GPT+UEFI”方式，再用这样的u盘启动计算机安装Windows。这样安装后的 Windows 才能实现UEFI的秒进桌面。
-
-UEFI 模式刚开机时，屏幕自动使用显示器的物理分辨率，出现的主板厂商 logo 画面应该是比较小的原始图片尺寸，没有经过拉伸等分辨率调整。
+UEFI 模式DP口刚开机时，屏幕自动使用显示器的物理分辨率，出现的主板厂商 logo 画面应该是比较小的原始图片尺寸，没有经过拉伸等分辨率调整。
 
 我的 Nvidia 1080 显卡目前只能在 HDMI 口连接时实现这个效果，DP 口连接时主板厂商 logo 画面被自动拉伸了，暂无法确定是否在显示器的物理分辨率下。
 
