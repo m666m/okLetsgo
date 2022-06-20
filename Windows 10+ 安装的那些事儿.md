@@ -1430,7 +1430,21 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 更多的问题，详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/troubleshooting>
 
-### 图形化安装 - Windows Store 安装 Ubuntu 子系统 (WSL)
+#### 注意：WSL 下的 Linux 命令区别于某些 PowerShell 下的命令
+
+注意 PowerShell 对某些 linux 命令是使用了别名，而不是调用的真正的 exe 文件，有没有后缀 .exe 是有区别的！
+
+例如，使用 curl 命令行实用程序来下载 Ubuntu 20.04 控制台命令：
+
+    curl.exe -L -o ubuntu-2004.appx https://aka.ms/wsl-ubuntu-2004
+
+在本示例中，将执行 curl.exe（而不仅仅是 curl），以确保在 PowerShell 中调用真正的 curl 可执行文件，而不是调用 Invoke WebRequest 的 PowerShell curl 别名。<https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual#downloading-distributions>
+
+设置->应用->应用和功能，里面有个“应用执行别名”，点击进去慢慢研究吧，微软净整些逻辑弯弯绕，真烦人啊。
+
+详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
+
+#### Windows Store 图形化安装 Ubuntu 子系统 (WSL)
 
 win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 
@@ -1549,19 +1563,14 @@ Hyper-V 其实也分1代2代，tenforums 的详细说明
 
     <https://www.tenforums.com/tutorials/139405-run-hyper-v-virtualbox-vmware-same-computer.html>
 
-### 注意：WSL 下的 Linux 命令区别于某些 PowerShell 下的命令
+### Windows安卓子系统WSA
 
-注意 PowerShell 对某些 linux 命令是使用了别名，而不是调用的真正的 exe 文件，有没有后缀 .exe 是有区别的！
+Windows Subsystem for Android 在Windows Store[安装apk时默认安装](https://docs.microsoft.com/en-us/windows/android/wsa/)，Windows 11自带，目前Windows 10无法正常运行。
 
-例如，使用 curl 命令行实用程序来下载 Ubuntu 20.04 控制台命令：
+免美区免亚马逊安装 Windows Subsystem for Android
 
-    curl.exe -L -o ubuntu-2004.appx https://aka.ms/wsl-ubuntu-2004
-
-在本示例中，将执行 curl.exe（而不仅仅是 curl），以确保在 PowerShell 中调用真正的 curl 可执行文件，而不是调用 Invoke WebRequest 的 PowerShell curl 别名。<https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual#downloading-distributions>
-
-设置->应用->应用和功能，里面有个“应用执行别名”，点击进去慢慢研究吧，微软净整些逻辑弯弯绕，真烦人啊。
-
-详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
+    https://cloud.tencent.com/developer/article/1987523
+    https://zhuanlan.zhihu.com/p/437231485
 
 ## 其它常见问题
 
