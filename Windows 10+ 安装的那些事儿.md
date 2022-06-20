@@ -1170,6 +1170,16 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
 总之，依赖在操作系统这个层面对应用程序的权限进行控制，一直做不到。目前最好的办法，只能是把操作系统包起来运行的虚拟机方式，才能完全彻底的隔离流氓软件对用户信息的侵害。也就是说，在你的 Windows 操作系统安装完毕之后，基本的用户信息都具备了，可信赖的大公司的软件都安装了，其他zh软件，统统安装到一个虚拟机里使用，不要安装到实机里。至于是使用沙盒还是hyper-v虚机，酌情决定。
 
+### Windows S Mode
+
+只能在设备上使用 Microsoft Store 中的应用
+
+    https://support.microsoft.com/en-us/windows/windows-10-and-windows-11-in-s-mode-faq-851057d6-1ee9-b9e5-c30b-93baebeebc85
+
+将应用程序二进制文件打包为 MSIX 程序包，然后通过 Microsoft Store 分发应用
+
+    https://docs.microsoft.com/zh-cn/windows/deployment/s-mode#%E4%BF%9D%E6%8C%81%E4%B8%9A%E5%8A%A1%E7%BA%BF%E5%BA%94%E7%94%A8%E4%B8%8E%E6%A1%8C%E9%9D%A2%E6%A1%A5%E4%B8%80%E8%B5%B7%E8%BF%90%E8%A1%8C
+
 ## Windows 10 使用虚拟机的几个途径
 
 WSL2 内的 container 是 linux 提供的，不算 Windows 的容器。Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-V 隔离，process 只在 server 版提供
