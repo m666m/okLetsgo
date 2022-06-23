@@ -1855,6 +1855,8 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 
 ## vscode 用的 Python 配套包
 
+注意这些包被 vscode 默认安装到了你的基础环境中，conda[base] 或 virtualenv 不同。
+
 ### 格式化 yapf
 
     用conda安装的这个直接带二进制包：
@@ -1933,3 +1935,87 @@ source runsnake/bin/activate
     karthiknadig commented on 11 Apr 2019
     We have plans to support native threads. We have not gotten around to it yet :)
     https://github.com/Microsoft/ptvsd/issues/305
+
+## 著名的python字符串编码问题解释
+
+    https://www.cnblogs.com/chenpython123/p/10965382.html
+
+python出来的时间太早了，80年代的操作系统只支持英文，所以很多软件也只支持英文编码 ANSI。
+
+90年代，微软 Windows 生意做到了全球，所以推出了各种本地化版本，比如中国版的 Windows 95，使用 GB-2132 编码，该标准兼容英文的ANSI，操作系统内置的中文字体支持正常显示中文字符，而要查看来自日本、韩国、港台等使用其它编码规则字符的文件，需要安装个转码软件，才能正常的显示字符，有时候还需要安装对应的字体文件。
+
+2000年代，全球的语言编码太多了，各种本地化版本操作系统下生成的文本文件，在别人的系统上经常出现不支持正常显示字符的问题，如果不知道文件来源，大家还没法手动设置转码软件如何处理这些字符。所以，国际化统一标准来了，通用编码规则UTF，目的是分区域的把全人类用的字符都装里面，一般使用的是 UTF-8，使用UTF编码是大势所趋。
+
+这时候微软的 Windows、Office 的各个本地版本就尴尬了，比如中文版 Windows，即便到了2010年代的版本，默认的文本格式还是使用 GBK 编码，你打开个utf-8编码的文本文件都无法正常显示。如果你改设置为默认编码UTF-8， Windows、Office正常显示了。可是原来的很多软件都是用 GBK 编码字符的，他们还是会无法正确识别你的UTF-8字符。比如 CMD 命令行窗口，执行命令：dir，如果操作系统使用UTF-8编码，CMD命令行会报错不认识这个命令了。。。对微软来说，光是把所有的windows系统内置的程序都切换到支持UTF-8编码，都是一件很头疼的事，何况全球所有软件都要切换呢。
+
+    如果你换用支持utf-8的命令行环境比如mintty，执行命令ls，好，正常显示了，执行下dir命令，如果该命令内置的字符串处理不支持UTF编码规则，那显示出来还会是乱码，即使你设置的系统环境已经是UTF-8了。
+
+    CMD 命令 chcp 可手动设置当前会话的代码页
+
+        代码页          描述
+        65001       UTF-8代码页
+        950         繁体中文
+        936         简体中文默认的GBK
+        437         MS-DOS 美国英语
+
+因为各个软件切换使用UTF编码不够统一，为保持兼容性，直到2010年代的 Windows 和 Office 才慢慢的切换到默认使用UTF编码，如果你的文件使用了GBK编码方式（比如老的记事本编辑的文本文件），会自动判断并转换为对应的UTF-8中的编码进行显示，这时你的使用体验是无感的。但是对编程来说，单个或几个字符的字符串，就不大好猜了，需要程序员明确指定编码方式。
+
+### python的字符编码问题
+
+    对python来说，.py文件的编码和.py文件中代码的字符串编码，处理逻辑是分离的
+
+python 1 只支持 ansi 编码方式，这个是很久远的历史了，那个时候绝大多数的计算机都使用ansi代码页。
+
+python 2 的问题，在于支持全球的本地化代码页的解释方式。
+
+你在中文版Windows下建立的.py文件，有些编辑器（比如记事本）使用的文本编码是GBK，有些编辑器使用UTF-8，还有些编辑器自动判断转换，来源由程序自动控制。用中文Windows自带的记事本，保存如下代码内容到一个.py文件，你会发现是GBK编码。
+
+而 python 2 对.py文件的读取，默认使用 ANSI 编码，这样它会对GBK中文字符报错。
+
+```python2
+
+print 'abcdefg'
+
+# 中文注释行都报错
+```
+
+所以统一了一个由人手动控制的规则，在.py文件的第一行写“# coding：utf-8”，明确告知python 2这个文件的编码使用UTF-8。当然，这样要求你使用的编辑器，在保存的文件时，必须指定UTF-8编码方式。
+
+```python2
+# coding：utf-8
+
+print 'abcdefg'
+
+# 中文注释行不报错了
+print '这行用中文报错不？'
+```
+
+.py文件使用UTF-8编码就没问题了？不是！
+
+    python 2 对代码中字符串的处理，与对.py文件的解释是分离的，你光设置了.py文件使用UTF-8编码是不够的。
+
+python 2 对代码中的字符串，默认使用 ANSI 编码进行解释，即使你使用UTF-8编码了.py文件，python 2遇到字符串里的中文字符还会报错：“UnicodeDecodeError: 'ascii' codec can't decode byte ......”
+
+所以对中文字符串，还得加个前缀u表示该字符串使用unicode编码
+
+```python2
+# coding：utf-8
+
+print 'abcdefg'
+print u'abcdefg'
+
+print u'see see 这里的中文报错不'
+print 'see see 这里的中文报错不'
+```
+
+在python 2 中使用的各个包，都是全球网友自制的，使用的各种字符编码方式都有，所以很多时候你加载别的包，用它的函数处理字符串的时候，如果遇到报错，还是得指定编码方式，如
+
+    my_str = received_from_other_pkg_string.decode('UTF-8')
+
+    other_pkg_function(hell_str.encode('UTF-8'))
+
+简单来说，所有的包、所有的文件、所有的字符串默认都用UTF-8编码是最好的了。
+
+这就得等到 python 3 才统一。
+
+但是你在python 3里用到个谁写的偏门包不处理字符串编码也不是没有可能，比如，python 3 内置的open()函数，必须指定解码方式 encoding='UTF-8'，否则默认使用当前操作系统的代码页，在中文Widnows下是GBK。pip install 命令使用这个函数打开文件是不带encoding参数的，对 requirements.txt 文件，如果里面有中文注释，在中文Windows下该文件必须编码为GBK，否则报错 UnicodeDecodeError: 'gbk' codec can't decode byte...。或者你去修改 pip 命令的.py文件，加上encoding参数。
