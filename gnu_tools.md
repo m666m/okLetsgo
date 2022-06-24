@@ -87,6 +87,7 @@ function PS1git-branch-name {
     git symbolic-ref --short -q HEAD >/dev/null 2>&1
     local exitcode=$?
 
+    # 优先显示当前head指向的分支名
     if [ $exitcode -eq 0 ]; then
         local result="$(git symbolic-ref --short -q HEAD 2>/dev/null)"
         printf "%s" $result
@@ -99,7 +100,7 @@ function PS1git-branch-name {
         # detached HEAD
         else
             local commit="$(git rev-parse HEAD)"
-            local tagname="$(git for-each-ref --sort='-committerdate' --format='%(objectname) %(*objectname) %(refname)' |grep $commit|awk '{print$3}'|awk -F'/' '{print$3}')"
+            local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $commit |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
 
             # 有标签名就显示标签否则显示commit id
             if [[ -n $tagname ]]; then
