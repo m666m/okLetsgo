@@ -402,6 +402,35 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     bind -n WheelUpPane select-pane -t= ; copy-mode -e ; send-keys -M
     bind -n WheelDownPane select-pane -t= ; send-keys -M
 
+#### 类似的screen命令
+
+    apt install screen
+
+创建一个名字为lamp的会话
+
+    screen -S lamp
+
+创建完lamp的会话以后就可以执行操作了，在此期间，可以随时关闭SSH,或自己的电脑，会话中的程序不会关闭，仍在运行。
+
+当需要退出当前的screen界面回到初始的shell，可以用快捷键Ctrl+a d(即按住Ctrl，依次再按a,d)，会话中的程序不会关闭，仍在运行。
+
+会列出当前存在的会话列表
+
+    screen -ls screen
+
+关闭screen的会话
+
+    # 在screen会话里的shell执行
+    exit
+
+常用快捷键
+
+    Ctrl+a c ：在当前screen会话中创建窗口
+    Ctrl+a w ：窗口列表
+    Ctrl+a n ：下一个窗口
+    Ctrl+a p ：上一个窗口
+    Ctrl+a 0-9 ：在第0个窗口和第9个窗口之间切换
+
 ### Aria2 下载工具
 
 命令行传输各种参数，设置复杂，Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳dht站点清单。
