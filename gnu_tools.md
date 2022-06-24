@@ -84,7 +84,32 @@ function PS1conda-env-name {
 }
 
 function PS1git-branch-name {
-  git symbolic-ref --short -q HEAD 2>/dev/null
+    git symbolic-ref --short -q HEAD >/dev/null 2>&1
+    local exitcode=$?
+
+    if [ $exitcode -eq 0 ]; then
+        local result="$(git symbolic-ref --short -q HEAD 2>/dev/null)"
+        printf "%s" $result
+
+    else
+        # 不是git环境
+        if [ $exitcode -gt 1 ]; then
+            printf "%s" ""
+
+        # detached HEAD
+        else
+            local commit="$(git rev-parse HEAD)"
+            local tagname="$(git for-each-ref --sort -committerdate |grep $commit|awk '{print$3}'|awk -F'/' '{print$3}')"
+
+            # 有标签名就显示标签否则显示commit id
+            if [[ -n $tagname ]]; then
+                printf "tag:%s" "$tagname"
+
+            else
+                printf "hash:%s" "$commit"
+            fi
+        fi
+    fi
 }
 
 function PS1git-branch-prompt {
