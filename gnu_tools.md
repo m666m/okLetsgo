@@ -99,7 +99,7 @@ function PS1git-branch-name {
         # detached HEAD
         else
             local commit="$(git rev-parse HEAD)"
-            local tagname="$(git for-each-ref --sort -committerdate |grep $commit|awk '{print$3}'|awk -F'/' '{print$3}')"
+            local tagname="$(git for-each-ref --sort='-committerdate' --format='%(objectname) %(*objectname) %(refname)' |grep $commit|awk '{print$3}'|awk -F'/' '{print$3}')"
 
             # 有标签名就显示标签否则显示commit id
             if [[ -n $tagname ]]; then
