@@ -201,7 +201,7 @@ PS1="\n$magenta┌─$red\$(PS1exitcode)$magenta[$white\t $green\u$white@$green\
     └── themes
         └── my_awesome_theme.zsh-theme
 
-### Vim
+### Vim 和 nano
 
 Vim 使用鼠标
 
@@ -227,6 +227,39 @@ Vim 解决汉字乱码
 保存退出后执行下环境变量
 
     source .vimrc
+
+#### nano 用法
+
+用法
+光标控制
+
+移动光标：使用用方向键移动。
+选择文字：按住鼠标左键拖到。
+复制、剪贴和粘贴
+
+复制一整行：Alt+6
+剪贴一整行：Ctrl+K
+粘贴：Ctrl+U
+
+如果需要复制／剪贴多行或者一行中的一部分，先将光标移动到需要复制／剪贴的文本的开头，按Ctrl+6（或者Alt+A）做标记，然后移动光标到 待复制／剪贴的文本末尾。这时选定的文本会反白，用Alt+6来复制，Ctrl+K来剪贴。若在选择文本过程中要取消，只需要再按一次Ctrl+6。
+
+搜索
+
+按Ctrl+W，然后输入你要搜索的关键字，回车确定。这将会定位到第一个匹配的文本，接着可以用Alt+W来定位到下一个匹配的文本。
+
+翻页
+
+Ctrl+Y到上一页
+Ctrl+V到下一页
+保存
+
+使用Ctrl+O来保存所做的修改
+
+退出
+
+按Ctrl+X
+
+如果你修改了文件，下面会询问你是否需要保存修改。输入Y确认保存，输入N不保存，按Ctrl+C取消返回。如果输入了Y，下一步会让你输入想要保存的文件名。如果不需要修改文件名直接回车就行；若想要保存成别的名字（也就是另存为）则输入新名称然后确 定。这个时候也可用Ctrl+C来取消返回。
 
 #### Vim powerline
 
@@ -524,34 +557,7 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     certutil -hashfile cn_windows_7.iso SHA1
     certutil -hashfile cn_windows_7.iso SHA256
 
-## 网络故障排查
-
-不建议使用ifconfig，而推荐使用新的 ip 命令，未来net-tools会被完全废弃，建议使用 ip 命令，而不是ifconfig命令 <https://blog.csdn.net/oMcLin/article/details/108936500>。
-
-    # 端口是否可用
-    telnet 127.0.0.1 443
-    wget 127.0.0.1:443
-
-    netstat -an
-
-    ping -t 192.168.0.1
-
-    tracert www.bing.com
-
-    traceroute
-
-    $ nslookup baidu.com
-    Non-authoritative answer:
-    Server:  192.168.0.1
-    Address:  192.168.0.1
-
-    Name:    baidu.com
-    Addresses:  220.181.38.148
-            220.181.38.251
-
-    whois
-
-## rsync 文件同步
+### rsync 文件同步
 
     http://c.biancheng.net/view/6121.html
 
@@ -641,7 +647,7 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
     # 除了使用双冒号，也可以直接用rsync://
     rsync -av source/ rsync://192.168.122.32/module/destination
 
-### 示例
+#### 示例
 
 一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`。
 
@@ -691,7 +697,7 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
     # 如果 ssh 命令有附加的参数，则必须使用-e参数指定所要执行的 SSH 命令
     rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
 
-### 软硬链接文件的处理区别
+#### 软硬链接文件的处理区别
 
 默认是保留软链接。
 
@@ -725,7 +731,7 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
     # 只是普通的文件去掉 -L 参数即可
     rsync -avL /etc/letsencrypt/live/your_dir_or_file/cert.pem root@remote:/etc/letsencrypt/live/your_dir_or_file
 
-### 示例脚本：备份用户的主目录
+#### 示例脚本：备份用户的主目录
 
 ```shell
 #!/bin/bash
@@ -754,7 +760,7 @@ rm -rf "${LATEST_LINK}"
 ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 ```
 
-## crontab 定时任务
+### crontab 定时任务
 
     https://www.cnblogs.com/pengdonglin137/p/3625018.html
     https://www.cnblogs.com/utopia68/p/12221769.html
@@ -765,7 +771,7 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 cron中的环境变量很多都和系统环境变量不一样（cron会忽略/etc/environment文件），尤其是PATH，只有/usr/bin:/bin，也就是说在cron中运行shell命令，如果不是全路径，只能运行/usr/bin或/bin这两个目录中的标准命令，而像/usr/sbin、/usr/local/bin等目录中的非标准命令是不能运行的。
 
-### 区分crontab命令和crontab文件
+#### 区分crontab命令和crontab文件
 
 用crontab命令配置是针对当前用户的定时任务，而编辑/etc/crontab文件是针对系统的任务。cron服务每分钟不仅要读一次 /var/spool/cron 内的所有文件，还需要读一次 /etc/crontab文件。
 
@@ -824,6 +830,33 @@ MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名�
 5到10点的每个整点运行一次
 
     0 5-10 * * * user-name  command
+
+## 网络故障排查
+
+不建议使用ifconfig，而推荐使用新的 ip 命令，未来net-tools会被完全废弃，建议使用 ip 命令，而不是ifconfig命令 <https://blog.csdn.net/oMcLin/article/details/108936500>。
+
+    # 端口是否可用
+    telnet 127.0.0.1 443
+    wget 127.0.0.1:443
+
+    netstat -an
+
+    ping -t 192.168.0.1
+
+    tracert www.bing.com
+
+    traceroute
+
+    $ nslookup baidu.com
+    Non-authoritative answer:
+    Server:  192.168.0.1
+    Address:  192.168.0.1
+
+    Name:    baidu.com
+    Addresses:  220.181.38.148
+            220.181.38.251
+
+    whois
 
 ## Windows 下的 GNU/POSIX 环境
 
