@@ -121,22 +121,22 @@ function PS1git-branch-prompt {
   fi
 }
 
-# bash 命令行提示符显示： \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
+# linux bash 命令行提示符显示： \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
 PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
 # git bash 命令行提示符显示： 在\$(函数名)后直接用换行\n就冲突，不支持$?检查退出码，或者把换行\n放在引用函数前面，或者拼接凑合用
 #PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
-# 目前完美解决办法是新增子函数PS1new-line和PS1exitcode实现跟上面完全一致的美化效果。
-function PS1new-line {
+# 目前完美解决办法是新增子函数PS1git-bash-new-line和PS1git-bash-exitcode实现跟上面完全一致的美化效果。
+function PS1git-bash-new-line {
     printf "\n└"
 }
 
-function PS1exitcode {
+function PS1git-bash-exitcode {
     local exitcode=$(printf "$?")
     (($exitcode != '0')) && printf "%s" ' -'$exitcode' '
 }
 
-PS1="\n$magenta┌─$red\$(PS1exitcode)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta$(PS1new-line)──$white\$ $normal"
+PS1="\n$magenta┌─$red\$(PS1git-bash-exitcode)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta$(PS1git-bash-new-line)──$white\$ $normal"
 
 ```
 
