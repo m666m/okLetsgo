@@ -833,7 +833,10 @@ MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名�
 
 ## 网络故障排查
 
-不建议使用ifconfig，而推荐使用新的 ip 命令，未来net-tools会被完全废弃，建议使用 ip 命令，而不是ifconfig命令 <https://blog.csdn.net/oMcLin/article/details/108936500>。
+不建议使用ifconfig，而推荐使用新的 ip 命令，未来net-tools套件会被完全废弃，功能上被iproute2套件取代，见[二者命令详细对比](https://linux.cn/article-4326-1.html)。
+
+    # apt install net-tools
+    ifconfig
 
     # 端口是否可用
     telnet 127.0.0.1 443
@@ -847,6 +850,10 @@ MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名�
 
     traceroute
 
+    # apt install dnsutils
+    whois
+    dig/nslookup
+
     $ nslookup baidu.com
     Non-authoritative answer:
     Server:  192.168.0.1
@@ -855,8 +862,6 @@ MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名�
     Name:    baidu.com
     Addresses:  220.181.38.148
             220.181.38.251
-
-    whois
 
 ## Windows 下的 GNU/POSIX 环境
 
