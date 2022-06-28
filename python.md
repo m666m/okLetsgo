@@ -41,7 +41,8 @@ Debian/Ubuntu 下默认安装python 2和3，pip命令是python2的pip, pip3命�
 
 如果一定要在操作系统发行版的基础环境里使用pip
 
-    优先使用系统pip包安装，使用`python3 -m pip install xxxx`， 不要用 `pip3 install`
+    # https://snarky.ca/why-you-should-use-python-m-pip/
+    优先使用`python3 -m pip install xxxx`， 不要用 `pip3 install`，因为你用`python -m pip`运行pip时环境是确定的。
 
     不要根据pip的提示使用 sudo 执行 或 --user 参数，因为pip命令不像conda/virtualenv一样，他不知道环境。
 
