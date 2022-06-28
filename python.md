@@ -26,6 +26,8 @@ Debian/Ubuntu 下默认安装python 2和3，pip命令是python2的pip, pip3命�
 
 ### 操作系统发行版的基础python环境不要变更
 
+仅在虚拟环境中使用pip
+
     https://github.com/pypa/pip/issues/5599
         https://blog.csdn.net/cangye0504/article/details/104905616
 
