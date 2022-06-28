@@ -106,7 +106,7 @@ Pip can install software in three different ways:
 
     At virtualenv level. virtualenv环境下，"pip install xxx"放在了virtualenv建立的环境目录的site-packages里，最好用这个。
 
-如果当前操作系统还安装了conda，请先conda list 看看有没有pip，有可能运行的是conda环境里的pip，那就安装到了conda建立的环境目录的site-packages里。详见章节 [conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
+如果当前操作系统还安装了conda，请先conda list 看看有没有pip，有可能运行的是conda环境里的pip，那就安装到了conda建立的环境目录的site-packages里。详见章节 [conda/pip操作前务必先检查当前环境中conda/pip/python的路径]。
 
 ### wheels
 
@@ -148,7 +148,7 @@ Windows下干净的python环境，命令行工具不要使用bash，在cmd下用
     # 如果您到 pip 默认源的网络连接较差，临时使用清华镜像站来升级 pip
     pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
 
-失败的话，应该先检查下你运行pip的时候，是不是没有在虚拟环境下。找不到下载的包文件对应位置的时候，pip安装到系统默认的python目录，才会出现这种权限不足的提示。详见章节[conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
+失败的话，应该先检查下你运行pip的时候，是不是没有在虚拟环境下。找不到下载的包文件对应位置的时候，pip安装到系统默认的python目录，才会出现这种权限不足的提示。详见章节[conda/pip操作前务必先检查当前环境中conda/pip/python的路径]。
 
 正确的用法，是切换到你的环境下，再 pip install。
 
@@ -557,7 +557,7 @@ Anaconda 安装完毕后，先对各个版本建立基础的虚拟环境如b37�
 
 有了第一个基础版本的python环境之后，再建立针对具体项目的虚拟环境如p37、p38，在这个虚拟环境里修改pip包的默认下载路径、进行conda/pip包的安装和更新等操作。
 
-详见章节 [conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]
+详见章节 [conda/pip操作前务必先检查当前环境中conda/pip/python的路径]
 
 ### 命令行工具使用conda环境
 
@@ -607,7 +607,7 @@ Anaconda 安装完毕后，先对各个版本建立基础的虚拟环境如b37�
 
     conda init -h
 
-查找路径的解释见章节 [conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]
+查找路径的解释见章节 [conda/pip操作前务必先检查当前环境中conda/pip/python的路径]
 
 用管理员权限打开cmd命令行工具
 
@@ -749,7 +749,7 @@ conda用“=”，pip用“==”
 
 退出命令行工具，再次打开生效
 
-3.确认conda、python、pip都是用的你的环境的，参见章节 [conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
+3.确认conda、python、pip都是用的你的环境的，参见章节 [conda/pip操作前务必先检查当前环境中conda/pip/python的路径]。
 
 4.修改你的环境pip保存下载包的位置，参见章节 [更改conda环境下pip包默认下载路径]。
 
@@ -1075,11 +1075,11 @@ conda安装在conda环境中装任何包，pip在任何环境中安装python包�
 
     也就是说，装完了就不要删或update，宁可重建，什么 conda remove/pip uninstall 都别用。
 
-使用 pip install 不要使用参数 --user
++ 使用 pip install 不要使用参数 --user
 
     如果pip在安装时候提示权限不足，无法写入啥的，提示用“--user”，不要用！不然会写入到公用包目录中：如果是base环境下，是所有用户文件夹(ProgramData/Anaconda)下面，如果是其它环境，则安装到用户home目录下的公用目录了！
 
-    原因见章节 [conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
+    原因见章节 [conda/pip操作前务必先检查当前环境中conda/pip/python的路径]。
 
     pip install 默认使用全局配置文件，见上面的章节 [PyPI使用国内源]
 
@@ -1094,7 +1094,7 @@ conda安装在conda环境中装任何包，pip在任何环境中安装python包�
 
     以后只要切换到你的环境下，再运行pip，默认会安装到你环境下的目录。否则会安装到默认的pyhon环境目录比如 C:\ProgramData\Anaconda3，详见章节 [更改conda环境下pip包默认下载路径]。
 
-### conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径
+### conda/pip操作前务必先检查当前环境中conda/pip/python的路径
 
 我们需要判断目前我们用的pip指令，会把包装到哪里。pip 在路径里可能有多个，Windows单独安装的python自带，virtualenv环境自带，Anaconda 默认 base 环境自带，调用起来按PATH搜索的顺序。
 
@@ -1310,7 +1310,7 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
 想要做到 Anaconda 中不同环境互相不干涉，不仅需要建新的conda环境，如果想pip下载包跟其它环境隔离，还需要修改配置文件。
 
 这是因为当我们创建新的环境的时候，Anaconda 对相同的python版本指向为一个打包文件的链接，导致无法区分pip。
-特别是默认的pip下载包时的安装路径，参见章节[conda/pip 操作前，务必先检查当前环境中 conda/pip/python 的路径]。
+特别是默认的pip下载包时的安装路径，参见章节[conda/pip操作前务必先检查当前环境中conda/pip/python的路径]。
 
 稳妥的办法是
 
