@@ -18,11 +18,72 @@ pip不像conda/virtualenv一样，他不知道环境！pip install 就扔到 pyt
 
 pip install 的各种问题 <https://www.cnblogs.com/feixiablog/p/8320602.html>。
 
-如果要在conda下使用pip，见下面章节[Anaconda环境中使用pip]
+如果要在conda下使用pip，见下面章节[Anaconda环境中使用pip]。
 
-Debian/Ubuntu 下默认安装python 2和3，pip命令是python2的pip, pip3命令才是python3的pip
+Debian/Ubuntu 下默认安装python 2和3，pip命令是python2的pip, pip3命令才是python3的pip，但是调用python3 -m 时用pip 如 `python3 -m pip install xxx`
 
-    pip3 install --upgrade pip
+    sudo apt install python3-pip
+
+### 操作系统发行版的基础python环境不要变更
+
+    https://github.com/pypa/pip/issues/5599
+        https://blog.csdn.net/cangye0504/article/details/104905616
+
+只用系统管理包去升级操作系统的pip，系统的包是发行版，自行升级pip或pip install各种包就会出现各种奇怪的问题。
+
+在操作系统发行版的基础环境里，不要更新pip `pip install --upgrade pip`
+
+如果实在需要升级pip
+
+    使用 virtualenv 等建立虚拟环境，在虚拟环境里可自由升级pip，执行 pip install 等
+
+如果一定要在操作系统发行版的基础环境里使用pip
+
+    优先使用系统pip包安装，使用`python3 -m pip install xxxx`， 不要用 `pip3 install`
+
+    不要根据pip的提示使用 sudo 执行 或 --user 参数，因为pip命令不像conda/virtualenv一样，他不知道环境。
+
+在操作系统发行版的基础环境中，即使某些工具可以用pip安装新版，也要优先安装系统发行版
+
+    # 不要 pip3 install yapf
+    sudo apt install yapf
+
+验证pip环境路径，在操作系统发行版的基础环境里也不要改动
+
+    $ python -m site
+    sys.path = [
+        '/home/pi/.local/bin',
+        '/usr/lib/python2.7',
+        '/usr/lib/python2.7/plat-arm-linux-gnueabihf',
+        '/usr/lib/python2.7/lib-tk',
+        '/usr/lib/python2.7/lib-old',
+        '/usr/lib/python2.7/lib-dynload',
+        '/usr/local/lib/python2.7/dist-packages',
+        '/usr/lib/python2.7/dist-packages',
+    ]
+    USER_BASE: '/home/pi/.local' (exists)
+    USER_SITE: '/home/pi/.local/lib/python2.7/site-packages' (doesn't exist)
+    ENABLE_USER_SITE: True
+
+    $ python3 -m site
+    sys.path = [
+        '/home/pi/.local/bin',
+        '/usr/lib/python37.zip',
+        '/usr/lib/python3.7',
+        '/usr/lib/python3.7/lib-dynload',
+        '/home/pi/.local/lib/python3.7/site-packages',
+        '/usr/local/lib/python3.7/dist-packages',
+        '/usr/lib/python3/dist-packages',
+    ]
+    USER_BASE: '/home/pi/.local' (exists)
+    USER_SITE: '/home/pi/.local/lib/python3.7/site-packages' (doesn't exists)
+    ENABLE_USER_SITE: True
+
+pip的国内镜像清华源提供的更新方法在操作系统发行版的基础环境里慎用，仅在虚拟环境里升级pip，安装各种包
+
+    # pip修复回发行版
+    python3 -m pip uninstall pip setuptools wheel
+    sudo apt --reinstall install  python3-setuptools python3-wheel python3-pip
 
 ### 务必搞清环境，pip install 可能把包放到的几个地方
 
