@@ -346,6 +346,9 @@ mac os:
         列出当前的会话（tmux session），下面表示0号有2个窗口
             0: 2 windows (created Tue Apr 13 17:28:34 2021)
 
+    tmux a
+        进入tmux，回到上次退出前的那个会话的那个窗口的那个分屏
+
     tmux a -t 3
         进入tmux，连接到3号会话
 
