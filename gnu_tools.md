@@ -2,7 +2,7 @@
 
 ## Linux下常用工具
 
-### 终端字符编码
+### 终端字符的区域、编码、语言
 
 变量依赖从大到小的顺序是：LC_ALL, LC_CTYPE, LANG
 
@@ -36,6 +36,10 @@
     字符式输入 https://www.webfx.com/tools/emoji-cheat-sheet/
 
     unicode编码 http://www.unicode.org/emoji/charts/full-emoji-list.html
+
+figlet实现字符画钟表，在tmux里开一个正合适
+
+    watch -n1 "date '+%D%n%T'|figlet -k"
 
 ### bash命令提示符美化
 
