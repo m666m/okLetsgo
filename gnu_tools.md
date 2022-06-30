@@ -564,6 +564,42 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     certutil -hashfile cn_windows_7.iso SHA1
     certutil -hashfile cn_windows_7.iso SHA256
 
+### scp 跨机远程拷贝
+
+前提条件
+
+    可以ssh登陆才能scp文件
+
+基本用法
+
+    后缀有没有目录标识‘/’导致拷贝为目录下或目录名
+
+远程文件复制到本地：
+
+    scp root@www.test.com:/val/test/test.tar.gz /val/test/test.tar.gz
+
+远程文件复制到本地指定目录下：
+
+    scp root@www.test.com:/val/test/test.tar.gz /val/test/
+
+本地文件复制到远程：
+
+    scp /val/test.tar.gz root@www.test.com:/val/test.tar.gz
+
+本地文件复制到远程指定目录下：
+
+    scp /val/test.tar.gz root@www.test.com:/val/
+
+远程目录复制到本地：
+
+    scp -r root@www.test.com:/val/test/ /val/test/
+
+本地目录复制到远程：
+
+    scp -r ./ubuntu_env/ root@192.168.0.111:/home/pipipika
+
+    scp -r SocialNetworks/ piting@192.168.0.172:/media/data/pipi/datasets/
+
 ### rsync 文件同步
 
     http://c.biancheng.net/view/6121.html
