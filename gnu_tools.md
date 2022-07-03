@@ -207,17 +207,19 @@ PS1="\n$magenta┌─$red\$(PS1git-bash-exitcode)$magenta[$white\t $green\u$whit
 
 ### Vim 和 nano
 
-Vim 使用鼠标
+在vim中输入的命令，只在当前文件中有效，可编辑 ~/.vimrc 文件配置。
 
-    :set mouse=a
+vim 关闭语法高亮
+
+     :syntax clear
 
 Vim 关闭鼠标功能
 
     :set mouse-=a
 
-vim 关闭语法高亮
+Vim 使用鼠标
 
-     :syntax clear 命令关闭此功能，只在当前文件中有效。
+    :set mouse=a
 
 Vim 解决汉字乱码
 
