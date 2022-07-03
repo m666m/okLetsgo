@@ -907,14 +907,24 @@ MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名�
     # apt install net-tools
     ifconfig
 
-    # 端口是否可用
+端口是否可用
     telnet 127.0.0.1 443
     wget 127.0.0.1:443
 
-    # 当前对外开放的监听端口
+当前对外开放的监听端口
     # 127.0.0.1 只对本机开放
     # 0.0.0.0   外来连接也开放
     netstat -ant
+
+监听端口的简单通信
+
+    sudo apt update && sudo apt -y install ncat
+
+    nc -l 端口
+
+    nc 192.168.200.27 端口 后直接输入文字即可
+
+icmp测试网络连通情况
 
     ping -t 192.168.0.1
 
