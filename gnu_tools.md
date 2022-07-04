@@ -31,15 +31,64 @@
     Locale=zh_CN
     Charset=GB18030
 
-### emoji
+### 字符界面的一些小玩具如emoji等
 
     字符式输入 https://www.webfx.com/tools/emoji-cheat-sheet/
 
     unicode编码 http://www.unicode.org/emoji/charts/full-emoji-list.html
 
+小火车sl
+
+    sudo apt install sl
+
 figlet实现字符画钟表，在tmux里开一个正合适
 
     watch -n1 "date '+%D%n%T'|figlet -k"
+
++ cmatrix 字符屏保
+
+    参考
+
+        https://magiclen.org/cmatrix/
+            https://github.com/abishekvashok/cmatrix
+
+    Debian / Ubuntu
+
+            sudo apt install cmatrix
+
+            cmatrix -ba
+
+            Ctrl + c 或 q 退出
+
+    Centos
+
+        <https://thornelabs.net/posts/linux-install-cmatrix-from-rpm-deb-xz-or-source.html>
+
+        下载源代码
+
+            git clone https://github.com/abishekvashok/cmatrix
+
+        安装依赖库
+
+            sudo yum install -y gcc make autoconf automake ncurses-devel
+
+        Generate aclocal.m4 man page:
+
+            aclocal
+
+        Generate configuration scripts:
+
+            autoconf
+
+        Generate Makefile.in for configure from Makefile.am:
+
+            automake -a
+
+        Configure, make, and make install the binary:
+
+            ./configure
+            make
+            sudo make install
 
 ### bash命令提示符美化
 
@@ -504,48 +553,6 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce  --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
 浏览器搜索插件：aria2 相关，安装后设置aip-key，可在浏览器中直接调用Motrix运行的aria2进程。
-
-### cmatrix 字符屏保
-
-    https://magiclen.org/cmatrix/
-        https://github.com/abishekvashok/cmatrix
-
-+ Debian / Ubuntu
-
-        sudo apt install cmatrix
-
-        cmatrix -ba
-
-        Ctrl + c 或 q 退出
-
-+ Centos
-    <https://thornelabs.net/posts/linux-install-cmatrix-from-rpm-deb-xz-or-source.html>
-
-    下载源代码
-
-        git clone https://github.com/abishekvashok/cmatrix
-
-    安装依赖库
-
-        sudo yum install -y gcc make autoconf automake ncurses-devel
-
-    Generate aclocal.m4 man page:
-
-        aclocal
-
-    Generate configuration scripts:
-
-        autoconf
-
-    Generate Makefile.in for configure from Makefile.am:
-
-        automake -a
-
-    Configure, make, and make install the binary:
-
-        ./configure
-        make
-        sudo make install
 
 ### sha256文件完整性校验
 
