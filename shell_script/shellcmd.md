@@ -162,6 +162,132 @@ print('back to normal now')
         PATH="$HOME/.local/bin:$PATH"
     fi
 
+## 当前shell
+
+查看当前所使用的shell程序
+
+    $ echo $0
+    -bash
+
+不要被一个叫做 $SHELL 的单独的环境变量所迷惑，它被设置为你的默认 shell 的完整路径。因此，这个变量并不一定指向你当前使用的 shell。例如，即使你在终端中调用不同的 shell，$SHELL 也保持不变。
+
+    $ echo $SHELL
+    /bin/bash
+
+当前shell的嵌套层数
+
+    $ echo $SHLVL
+    1
+
+    $ bash
+
+    $ echo $SHLVL
+    2
+
+    $ exit
+    exit
+
+    echo $SHLVL
+    1
+
+组命令、管道、命令替换这几种写法都会进入子 Shell
+
+    $ echo "$SHLVL  $BASH_SUBSHELL"
+    1  0
+
+    $ (echo "$SHLVL  $BASH_SUBSHELL") # 组命令
+    1  1
+
+    $ echo "hello" | { echo "$SHLVL  $BASH_SUBSHELL"; }  # 管道
+    1  1
+
+    $ var=$(echo "$SHLVL  $BASH_SUBSHELL");echo $var  #命令替换
+    1 1
+
+    $ ( ( ( (echo "$SHLVL  $BASH_SUBSHELL") ) ) )  #四层组命令
+    1  4
+
+## 进程查看
+
+当前系统进程树，带命令行显示
+
+    $ pstree -a
+    systemd
+    ├─agetty -o -p -- \\u --keep-baud 115200,38400,9600 ttyS0 vt220
+    ├─agetty -o -p -- \\u --noclear tty1 linux
+    ├─alsactl -E HOME=/run/alsa -s -n 19 -c rdaemon
+    ├─avahi-daemon
+    │   └─avahi-daemon
+    ├─bluetoothd
+    ├─cron -f
+    ├─tmux: server
+    │   ├─bash
+    │   │   └─cmatrix -ba
+    │   ├─bash
+    │   │   └─watch -n1 date '+%D%n%T'|figlet -k
+    │   ├─bash
+    │   ├─bash
+    │   │   └─top
+    │   ├─bash
+    │   │   └─bash
+    │   │       ├─autossh -M ...
+    │   │       │   └─ssh -L ...
+    │   │       └─ssh-agent /bin/bash
+    │   └─bash
+    ├─wpa_supplicant -u -s -O /run/wpa_supplicant
+    └─wpa_supplicant -B -c/etc/wpa_supplicant/wpa_supplicant.conf -iwlan0 -Dnl80211,wext
+
+展示指定用户的进程树
+
+    $ pstree pi
+    sshd───bash───pstree
+
+    systemd───(sd-pam)
+
+    tmux: server─┬─bash───cmatrix
+                ├─bash───watch
+                ├─2*[bash]
+                ├─bash───top
+                └─bash───bash─┬─autossh───ssh
+                            └─ssh-agent
+
+进程信息，用x显示归属
+
+    $ ps -efx
+    PID TTY      STAT   TIME COMMAND
+    26577 ?        S      0:06 sshd: pi@pts/0
+    26578 pts/0    Ss     0:00  \_ -bash USER=pi LOGNAME=pi HOME=/home/pi PATH=/usr/local/bin:/usr/bin:/bin:/usr/games MAIL=/var/mail/pi SHE
+    12445 pts/0    R+     0:00      \_ ps -efx SHELL=/bin/bash NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi XDG_SESSION_TYPE=tty HOME=/home/pi LAN
+    10615 ?        Ss    89:40 tmux SHELL=/bin/bash NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi XDG_SESSION_TYPE=tty HOME=/home/pi LANG=en_GB.UTF
+    10616 pts/1    Ss     0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
+    10759 pts/1    S+    73:00  |   \_ cmatrix -ba SHELL=/bin/bash TMUX=/tmp/tmux-1000/default,10615,0 NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=p
+    10660 pts/2    Ss     0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
+    10837 pts/2    S+     4:47  |   \_ watch -n1 date '+%D%n%T'|figlet -k SHELL=/bin/bash TMUX=/tmp/tmux-1000/default,10615,1 NO_AT_BRIDGE=1
+    10741 pts/6    Ss+    0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
+    10781 pts/7    Ss     0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
+    21814 pts/7    S+     7:21  |   \_ top SHELL=/bin/bash TMUX=/tmp/tmux-1000/default,10615,0 NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi XDG_SE
+    10819 pts/8    Ss     0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
+    26848 pts/8    S      0:00  |   \_ /bin/bash SHELL=/bin/bash TMUX=/tmp/tmux-1000/default,10615,1 NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi
+    26849 ?        Ss     0:00  |       \_ ssh-agent /bin/bash
+    26974 pts/8    S+     0:00  |       \_ /usr/lib/autossh/autossh -M ...
+    26977 pts/8    S+     0:00  |           \_ /usr/bin/ssh -L ...
+    21772 pts/3    Ss+    0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
+    9901 ?        Ss     0:00 /lib/systemd/systemd --user LANG=en_GB.UTF-8 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bi
+    9902 ?        S      0:00  \_ (sd-pam)
+
+显示cpu占用情况
+
+    top
+
+按键切换不同的显示，c显示命令行，1显示每个cpu占用，h显示帮助信息
+
+## 文件信息
+
+    $ file .profile
+    .profile: UTF-8 Unicode text
+
+    $ file .
+    .: directory
 
 ## 后台执行
 

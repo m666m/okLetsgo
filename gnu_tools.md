@@ -415,10 +415,10 @@ mac os:
         创建一个会话，并连接
 
     tmux new -s roclinux
-        创建一个全新的 tmux 会话 叫作 roclinux
+        创建一个新会话名为 roclinux，并连接
 
     tmux new-session -s username -d
-        创建一个全新的 tmux 会话 ，开机脚本(Service等）中调度也不会关闭
+        创建一个全新的 tmux 会话 ，在开机脚本(Service等）中调度也不会关闭
         https://stackoverflow.com/questions/25207909/tmux-open-terminal-failed-not-a-terminal
 
     tmux ls
