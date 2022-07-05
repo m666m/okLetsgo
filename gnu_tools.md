@@ -37,7 +37,9 @@
 
     unicode编码 http://www.unicode.org/emoji/charts/full-emoji-list.html
 
-    git emoji https://github.com/tony-yin/git-emoji
+    emoji 大全 https://emojipedia.org/
+        unicode emoji https://unicode.org/emoji/charts/full-emoji-list.html
+        git emoji https://blog.csdn.net/li1669852599/article/details/113336076
 
 小火车sl
 
@@ -848,14 +850,15 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
     https://www.cnblogs.com/pengdonglin137/p/3625018.html
     https://www.cnblogs.com/utopia68/p/12221769.html
     https://blog.csdn.net/zhubin215130/article/details/43271835
+    https://developer.aliyun.com/article/541971
 
-1、crontab与anacron
+#### 1、crontab与anacron
 
     crontab：crontab命令被用来提交和管理用户的需要周期性执行的任务，与windows下的计划任务类似，当安装完成操作系统后，默认会安装此服务工具，并且会自动启动crond服务，crond进程每分钟会定期检查是否有要执行的任务，如果有，则自动执行该任务。依赖于crond服务
 
     anacron：cron的补充，能够实现让cron因为各种原因在过去的时间该执行而未执行的任务在恢复正常执行一次。依赖于nancron服务
 
-2、Crontab任务种类及格式定义
+#### 2、Crontab任务种类及格式定义
 
 cron分为系统cron和用户cron，用户cron指/var/spool/cron/username或/var/spool/crontabs/crontabs/username，系统cron指
 /etc/crontab以及/etc/crontab，这两者是存在部分差异的。
@@ -864,7 +867,7 @@ cron分为系统cron和用户cron，用户cron指/var/spool/cron/username或/var
 
 (1)、系统cron任务：/etc/crontab文件
 
-一般配置系统级任务，开机即可启动。
+一般配置系统级任务，开机即可启动，注意格式比用户级多了个执行的user。
 
     cd /etc
 
@@ -923,19 +926,27 @@ run-parts 参数运行指定目录中的所有脚本。
 
 (3)、anacron：/etc/anacrontab 检查频率 分钟 任务注释信息 运行的任务
 
-3、时间的有效取值
+#### 3、时间的有效取值
 
-    分钟：0-59
+    代表意义    分钟    小时    日    月    周    命令
+    ------------------------------------------------
+    数字范围    0~59    0~23    1~31    1~12    0~7    就命令啊
 
-    小时：0-23
+    周的数字为0或7时，都代表“星期天”的意思。另外，还有一些辅助的字符，大概有下面这些：
 
-    天：1-31
+    特殊字符      代表意义
+    ------------------------
+    *(星号)    代表任何时刻都接受的意思。举例来说，范例一内那个日、月、周都是*，就代表着不论何月、何日的礼拜几的12：00都执行后续命令的意思。
 
-    月：1-12
+    ,(逗号)    代表都使用的时段。举例来说，如果要执行的工作是3：00与6：00时： 0 3,6 * * * command
 
-    周：0-7，0和7都表示周日
+    -(减号)    代表一段时间范围内，举例来说，8点到12点之间的每小时的20分都进行一项工作：20 8-12 * * * command
 
-4、时间通配表示
+    /n(斜线)   n代表数字，即是每隔n单位间隔的意思，例如每五分钟进行一次，则： */5 * * * * command
+
+    用*与/5来搭配，也可以写成0-59/5，意思相同
+
+#### 4、时间通配表示
 
 1)对应时间的所有有效取值
 
@@ -965,11 +976,11 @@ run-parts 参数运行指定目录中的所有脚本。
 
     10 04 */2 * *                 # 每两天执行一次
 
-5、cron的环境变量
+#### 5、cron的环境变量
 
-cron默认PATH  /bin:/sbin:/usr/bin:/usr/sbin，cron执行所有命令都去PATH环境变量指定的路径下去找
+cron在crontab文件中的默认PATH  /bin:/sbin:/usr/bin:/usr/sbin，cron执行所有命令都用该PATH环境变量指定的路径下去找
 
-6、执行结果将以邮件形式发送
+#### 6、执行结果将以邮件形式发送
 
     */3 * * * * /bin/cat /etc/fstab > /dev/null         # 错误信息仍然发送给管理员
 
@@ -977,7 +988,9 @@ cron默认PATH  /bin:/sbin:/usr/bin:/usr/sbin，cron执行所有命令都去PATH
 
 在 /var/mail 目录下查看邮件
 
-在 /var/log/syslog 查看日志
+在 /var/log/syslog 查看日志，debian默认的rsyslog不记录cron日志，需要手动开启
+
+注意 /var 的空间不要被填满了
 
 #### 坑：区分crontab命令和crontab文件
 
@@ -1039,7 +1052,7 @@ MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名�
 
     0 5-10 * * * user-name  command
 
-#### 坑一：环境变量是单独的跟用户登陆后的环境变量不一样
+#### 坑：环境变量是单独的跟用户登陆后的环境变量不一样
 
 调测：将cron中的环境变量打印出来：
 
@@ -1111,6 +1124,12 @@ cron中的环境变量很多都和用户登陆系统后的env环境变量不一�
 
     # signal crond to reload the file
     sudo touch /var/spool/cron/crontabs
+
+#### 坑：防止屏幕打印
+
+把脚本的输出和报错信息都打印到空
+
+    xxx.sh >/dev/null 2>&1
 
 #### 坑：定时时间的书写格式不统一
 
