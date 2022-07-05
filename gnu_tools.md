@@ -37,6 +37,8 @@
 
     unicode编码 http://www.unicode.org/emoji/charts/full-emoji-list.html
 
+    git emoji https://github.com/tony-yin/git-emoji
+
 小火车sl
 
     sudo apt install sl
@@ -838,18 +840,148 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 ### crontab 定时任务
 
+    https://www.cnblogs.com/GavinSimons/p/9132966.html
+
+    各种不能执行的原因 https://segmentfault.com/a/1190000020850932
+                        https://github.com/tony-yin/Why-Cronjob-Not-Work
+
     https://www.cnblogs.com/pengdonglin137/p/3625018.html
     https://www.cnblogs.com/utopia68/p/12221769.html
     https://blog.csdn.net/zhubin215130/article/details/43271835
-    https://segmentfault.com/a/1190000020850932
 
-坑一：环境变量是单独的
+1、crontab与anacron
 
-cron中的环境变量很多都和系统环境变量不一样（cron会忽略/etc/environment文件），尤其是PATH，只有/usr/bin:/bin，也就是说在cron中运行shell命令，如果不是全路径，只能运行/usr/bin或/bin这两个目录中的标准命令，而像/usr/sbin、/usr/local/bin等目录中的非标准命令是不能运行的。
+    crontab：crontab命令被用来提交和管理用户的需要周期性执行的任务，与windows下的计划任务类似，当安装完成操作系统后，默认会安装此服务工具，并且会自动启动crond服务，crond进程每分钟会定期检查是否有要执行的任务，如果有，则自动执行该任务。依赖于crond服务
 
-#### 区分crontab命令和crontab文件
+    anacron：cron的补充，能够实现让cron因为各种原因在过去的时间该执行而未执行的任务在恢复正常执行一次。依赖于nancron服务
 
-用crontab命令配置是针对当前用户的定时任务，而编辑/etc/crontab文件是针对系统的任务。cron服务每分钟不仅要读一次 /var/spool/cron 内的所有文件，还需要读一次 /etc/crontab文件。
+2、Crontab任务种类及格式定义
+
+cron分为系统cron和用户cron，用户cron指/var/spool/cron/username或/var/spool/crontabs/crontabs/username，系统cron指
+/etc/crontab以及/etc/crontab，这两者是存在部分差异的。
+
+系统crontab在命令行运行之前有一个额外的字段user。
+
+(1)、系统cron任务：/etc/crontab文件
+
+一般配置系统级任务，开机即可启动。
+
+    cd /etc
+
+    $ ls -l|grep cron
+    drwxr-xr-x 2 root root    4096 May 13 17:28 cron.d
+    drwxr-xr-x 2 root root    4096 May 27 06:49 cron.daily
+    drwxr-xr-x 2 root root    4096 Jul 12  2021 cron.hourly
+    drwxr-xr-x 2 root root    4096 Jul 12  2021 cron.monthly
+    drwxr-xr-x 2 root root    4096 Jul 12  2021 cron.weekly
+    -rw-r--r-- 1 root root    1042 Oct 11  2019 crontab
+
+    $ cat crontab
+    # /etc/crontab: system-wide crontab
+    # Unlike any other crontab you don't have to run the `crontab'
+    # command to install the new version when you edit this file
+    # and files in /etc/cron.d. These files also have username fields,
+    # that none of the other crontabs do.
+
+    SHELL=/bin/sh
+    PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+    # Example of job definition:
+    # .---------------- minute (0 - 59)
+    # |  .------------- hour (0 - 23)
+    # |  |  .---------- day of month (1 - 31)
+    # |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+    # |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+    # |  |  |  |  |
+    # *  *  *  *  * user-name command to be executed
+    17 *    * * *   root    cd / && run-parts --report /etc/cron.hourly
+    25 6    * * *   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+    47 6    * * 7   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+    52 6    1 * *   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
+    # 分钟 小时 天 月 周 用户 任务
+
+run-parts 参数运行指定目录中的所有脚本。
+
+(2)、用户cron任务：/var/spool/cron/USERNAME文件
+
+编辑指定用户的crontab设置
+
+    # 显示当前用户的定时任务
+    $ crontab -l
+    no crontab for uu
+
+    # 显示指定用户的定时任务
+    $ sudo crontab -u root -l
+    no crontab for root
+
+    # 编辑指定用户的定时任务
+    sudo crontab -u root -e
+
+命令行格式
+
+    # 分钟 小时 天 月 周 任务
+
+(3)、anacron：/etc/anacrontab 检查频率 分钟 任务注释信息 运行的任务
+
+3、时间的有效取值
+
+    分钟：0-59
+
+    小时：0-23
+
+    天：1-31
+
+    月：1-12
+
+    周：0-7，0和7都表示周日
+
+4、时间通配表示
+
+1)对应时间的所有有效取值
+
+    3 * * * *         # 每天每小时的第三分钟执行一次
+
+    3 * * * 7         # 每周日每小时的第三分钟执行一次
+
+    13 12 6 7 *        # 每年的7月6日12点13分执行一次
+
+2)离散时间点：
+
+    10,40 02 * * 2,5            # 每周二和周五的凌晨2点10分和40分执行一次
+
+3)连续时间点：
+
+    10 02 * * 1-5                # 周一至周五的凌晨2点10分执行一次
+
+4)对应取值范围内每多久一次
+
+    */3 * * * *                   # 每三分钟执行一次
+
+注意：比所要求小的时间单位必须要给定时间点(每天执行 那么分钟 小时都要给定时间 不能用*)
+
+如：
+
+    08 */2 * * *                  # 每两小时执行一次
+
+    10 04 */2 * *                 # 每两天执行一次
+
+5、cron的环境变量
+
+cron默认PATH  /bin:/sbin:/usr/bin:/usr/sbin，cron执行所有命令都去PATH环境变量指定的路径下去找
+
+6、执行结果将以邮件形式发送
+
+    */3 * * * * /bin/cat /etc/fstab > /dev/null         # 错误信息仍然发送给管理员
+
+    */3 * * * * /bin/cat /etc/fstab &> /dev/null         # 所有信息都不发送给管理员，无论是否正确执行
+
+在 /var/mail 目录下查看邮件
+
+在 /var/log/syslog 查看日志
+
+#### 坑：区分crontab命令和crontab文件
+
+用crontab -e命令配置是针对当前用户的定时任务，而编辑/etc/crontab文件是针对系统的任务。cron服务每分钟不仅要读一次 /var/spool/cron 内的所有文件，还需要读一次 /etc/crontab 文件。
 
 使用下面的命令，会在vi 里打开crontab的内容以供编辑：
 
@@ -906,6 +1038,185 @@ MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名�
 5到10点的每个整点运行一次
 
     0 5-10 * * * user-name  command
+
+#### 坑一：环境变量是单独的跟用户登陆后的环境变量不一样
+
+调测：将cron中的环境变量打印出来：
+
+    * * * * * env > /tmp/env.output
+
+一分钟后查看
+
+    $ cat /tmp/env.output
+    HOME=/root
+    LOGNAME=root
+    PATH=/usr/bin:/bin
+    LANG=C.UTF-8
+    SHELL=/bin/sh
+    LC_ALL=C.UTF-8
+    PWD=/root
+
+cron中的环境变量很多都和用户登陆系统后的env环境变量不一样（cron会忽略/etc/environment文件），尤其是PATH，只有/usr/bin:/bin，也就是说在cron中运行shell命令，如果不是全路径，只能运行/usr/bin或/bin这两个目录中的标准命令，而像/usr/sbin、/usr/local/bin等目录中的非标准命令是不能运行的。详见章节 [环境变量文件的说明] <shellcmd.md>。
+
+所以定时任务的命令行一般都要先执行下 profile、bash_profile等用户环境的变量文件，然后才能执行用户脚本。或者在cron脚本文件头部声明PATH，
+或者在用户脚本中执行环境变量文件
+
+    . /etc/profile
+
+配置定时任务的格式
+
+    01 03    * * * . /etc/profile; /bin/bash /usapce/code/test1.sh
+
++ 否则你就会遇到一个经典问题：
+
+    手动输入：
+
+        /bin/bash /usapce/code/test1.sh
+
+    可以执行，但放在crontab里就总是不起作用。
+
+#### 坑：命令解释器默认是sh而不是bash
+
+从坑一的变量 SHELL=/bin/sh 可以看到默认的解释器不是bash，而大多数命令脚本都是用bash来解释执行的。所以配置定时任务时，要明确的指定执行命令的解释器
+
+    bash -c "mybashcommand"
+
+    或
+    /bin/bash /usapce/code/test1.sh
+
+或在脚本内的第一行指定：
+
+    #!/bin/bash
+
+#### 坑：换行符
+
+这也算通病了，很多linux命令的执行都以行结束为标志，从文件中读取的最后一行如果直接结束时没有换行符的，导致永远无法执行。。。
+
+所以，确保您的crontab文件在末尾有一个空白行。
+
+最好养成习惯，给crontab文件的中每个条目下面添加一个空行，文件的最后一行多敲一个回车再保存。
+
+另外文件格式注意不能时Windows的^M、mac的\r等，必须是unix格式，这样的换行符才是 \n。
+
+很多编辑软件编辑ftp上的文件，或上传到ftp时，默认都做格式转换，其实容易混淆，还不如直接设置，保留原文件格式，不要自动转换。这样查看文件的时候非常方便，一目了然，unix下的vi显示Windows文件会出现很多乱码。在Windows下编辑unix文件，现在流行的编辑软件也都支持正确显示这个格式了，不要让他来回的转。
+
+#### 坑：需要执行权限
+
+如果采用非root用户的定时任务，需要注意很多权限问题，比如该用户对操作的文件或目录是否存在权限等。
+
+解决方案
+
+    # correct permission
+    sudo chmod 600 /var/spool/cron/crontabs/user
+
+    # signal crond to reload the file
+    sudo touch /var/spool/cron/crontabs
+
+#### 坑：定时时间的书写格式不统一
+
+一些特殊选项各个平台支持不一样，有的支持，有的不支持，例如2/3、1-5、1,3,5
+
+这个只能试一下才知道。
+
+#### 坑：corn服务默认不启动
+
+查看当前系统是否有进程
+
+    $ ps -ef|grep cron
+    root       398     1  0 May08 ?        00:00:07 /usr/sbin/cron -f
+
+查看系统服务cron的状态
+
+    $ sudo systemctl status cron
+    ● cron.service - Regular background program processing daemon
+    Loaded: loaded (/lib/systemd/system/cron.service; enabled; vendor preset: enabled)
+    Active: active (running) since Sun 2022-05-08 09:10:43 UTC; 1 months 27 days ago
+        Docs: man:cron(8)
+    Main PID: 398 (cron)
+        Tasks: 1 (limit: 1148)
+    Memory: 2.3M
+    CGroup: /system.slice/cron.service
+            └─398 /usr/sbin/cron -f
+
+#### 坑：百分号需要转义字符
+
+    https://unix.stackexchange.com/questions/29578/how-can-i-execute-date-inside-of-a-cron-tab-job
+
+当cron定时执行命令中，有百分号并且没有转义的时候，cron执行会出错，比如执行以下cron：
+
+    0 * * * * echo hello >> ~/cron-logs/hourly/test`date "+%d"`.log
+
+会有如下报错：
+
+    /bin/sh: -c: line 0: unexpected EOF while looking for matching ``'
+    /bin/sh: -c: line 1: syntax error: unexpected end of file
+
+即cron中换行符或%前的命令会被shell解释器执行，但是%会被认为新一行的字符，并且%后所有的数据都会以标准输出的形式发送给命令。
+
+解决方案：为百分号做转义，即在%前添加反斜杠\
+
+    0 * * * * echo hello >> ~/cron-logs/hourly/test`date "+\%d"`.log
+
+#### 坑：crontab文件里的变量使用有限制
+
+因为在crontable里面只能声明变量，不能对变量进行操作或者执行其他任何shell命令的，所以下述的shell字符串拼接是不会成功的，所以只能声明变量，然后在命令中引用变量。
+
+    SOME_DIR=/var/log
+    MY_LOG_FILE=${SOME_LOG}/some_file.log
+
+    BIN_DIR=/usr/local/bin
+    MY_EXE=${BIN_DIR}/some_executable_file
+
+    0 10 * * * ${MY_EXE} some_param >> ${MY_LOG_FILE}
+
+解决方案：
+
+方案1： 直接声明变量
+
+    SOME_DIR=/var/log
+    MY_LOG_FILE=/var/log/some_file.log
+
+    BIN_DIR=/usr/local/bin
+    MY_EXE=/usr/local/bin/some_executable_file
+
+    0 10 * * * ${MY_EXE} some_param >> ${MY_LOG_FILE}
+
+方案2： 声明多个变量，在命令中引用拼接
+
+    SOME_DIR=/var/log
+    MY_LOG_FILE=some_file.log
+
+    BIN_DIR=/usr/local/bin
+    MY_EXE=some_executable_file
+
+    0 10 * * * ${BIN_DIR}/${MY_EXE} some_param >> ${SOME_DIR}/${MY_LOG_FILE}
+
+#### 坑：用户密码过期也不会启动定时任务
+
+当用户密码过期也会导致cron脚本执行失败。
+
+Linux下新建用户密码过期时间是从/etc/login.defs文件中PASS_MAX_DAYS提取的，普通系统默认就是99999，而有些安全操作系统是90天，这个参数只影响新建用户的密码过期时效，如果之前该用户已经密码过期了，该这个参数没用。
+
+将用户密码有效期设置成永久有效期或者延长有效期
+
+    chage -M <expire> <username>
+
+    或
+    passwd -x -1 <username>
+
+#### 坑：切换时区后要重启cron服务
+
+当修改系统时区后，无论是之前已经存在的cron还是之后新创建的cron，脚本中设置的定时时间都以旧时区为准，比如原来时区是Asia/Shanghai，时间为10:00，然后修改时区为Europe/Paris，时间变为3:00，此时你设置11:00的定时时间，cron会在Asia/Shanghai时区的11:00执行。
+
+解决方案1：
+
+重启crond服务
+
+    sudo systemctl restart cron
+
+解决方案2：
+
+    kill cron进程，因为cron进程是自动重生的
 
 ## 网络故障排查
 
