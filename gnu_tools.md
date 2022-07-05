@@ -49,7 +49,7 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
     watch -n1 "date '+%D%n%T'|figlet -k"
 
-+ cmatrix 字符屏保
++ matrix 字符屏保
 
     参考
 
