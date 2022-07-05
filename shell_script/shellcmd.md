@@ -1,4 +1,4 @@
-# unix/linux 常用法
+# unix/linux 常用shell操作
 
     Advanced Bash-Scripting Guide https://tldp.org/LDP/abs/html/index.html
 
@@ -282,6 +282,8 @@ print('back to normal now')
 按键切换不同的显示，c显示命令行，1显示每个cpu占用，h显示帮助信息
 
 ## 文件信息
+
+可以看文件是shell类型、二进制类型，文本类型等
 
     $ file .profile
     .profile: UTF-8 Unicode text

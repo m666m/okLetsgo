@@ -1,4 +1,4 @@
-# GNU 工具使用指南
+# GNU/Linux 常用工具
 
 ## Linux下常用工具
 
@@ -1243,6 +1243,12 @@ Linux下新建用户密码过期时间是从/etc/login.defs文件中PASS_MAX_DAY
 
     # apt install net-tools
     ifconfig
+
+列出登入系统失败的用户相关信息，安全性检查，经常看看，如果太多必须考虑ssh的安全性
+
+    lastb|less
+
+    lastb|awk '{print $1}'|sort|uniq
 
 端口是否可用
     telnet 127.0.0.1 443
