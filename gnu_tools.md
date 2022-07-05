@@ -601,6 +601,26 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     certutil -hashfile cn_windows_7.iso SHA1
     certutil -hashfile cn_windows_7.iso SHA256
 
+### 生成随机数
+
+在 Linux 中，有两类用于生成随机数的设备，分别是 /dev/random 以及 /dev/urandom ，其中前者可能会导致阻塞，而读取 /dev/urandom 不会堵塞，不过此时 urandom 的随机性弱于 random 。 urandom 是 unblocked random 的简称，会重用内部池中的数据以产生伪随机数据，可用于安全性较低的应用。
+
+    cat /dev/random
+
+    cat /dev/urandom
+
+补充熵池
+
+服务器在运行时，既没有键盘事件，也没有鼠标事件，那么就会导致噪声源减少。在很多发行版本中存在一个 rngd 程序，用来增加熵池。在 debian，该工具包含在 rng-tools 工具中。
+
+可以通过如下命令查看
+
+    # 监视当前熵池的大小
+    watch cat /proc/sys/kernel/random/entropy_avail
+
+    # 从另外一个终端窗口启动服务
+    sudo rngd -r /dev/urandom -o /dev/random -f -t 1
+
 ### scp 跨机远程拷贝
 
 前提条件
