@@ -605,9 +605,11 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 在 Linux 中，有两类用于生成随机数的设备，分别是 /dev/random 以及 /dev/urandom ，其中前者可能会导致阻塞，而读取 /dev/urandom 不会堵塞，不过此时 urandom 的随机性弱于 random 。 urandom 是 unblocked random 的简称，会重用内部池中的数据以产生伪随机数据，可用于安全性较低的应用。
 
-    cat /dev/random
+    head /dev/random | cksum
 
-    cat /dev/urandom
+    head /dev/urandom | cksum
+
+    cat /proc/sys/kernel/random/uuid
 
 补充熵池
 
