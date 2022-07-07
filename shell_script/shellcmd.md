@@ -166,13 +166,24 @@ print('back to normal now')
 
 linux的目录，有几个固定用途的，有些是文件系统挂载在这个目录上
 
-/opt 目录
+    $ df -h
+    Filesystem      Size  Used Avail Use% Mounted on
+    /dev/root        29G  1.6G   26G   6% /
+    devtmpfs        1.8G     0  1.8G   0% /dev
+    tmpfs           1.9G     0  1.9G   0% /dev/shm
+    tmpfs           1.9G  8.5M  1.9G   1% /run
+    tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+    tmpfs           1.9G     0  1.9G   0% /sys/fs/cgroup
+    /dev/mmcblk0p1  253M   49M  204M  20% /boot
+    tmpfs           384M     0  384M   0% /run/user/1000
 
-    用来安装附加软件包，是用户级的程序目录，可以理解为 D:/Software。安装到 /opt 目录下的程序，它所有的数据、库文件等等都是放在同个目录下面。opt 有可选的意思，这里可以用于放置第三方大型软件（或游戏），当你不需要时，直接 rm -rf掉即可。在硬盘容量不够时，也可将 /opt 单独挂载到其他磁盘上使用。
+/ 根文件系统
+
+/etc : 系统级配置文件
 
 /bin：软链接到 /usr/bin。
 
-/usr：文件系统挂载目录，发行版的内容基本都在这里，可以理解为 C:/Windows/。
+/usr：发行版的内容基本都在这里，可以理解为 C:/Windows/。
 
     /usr/bin：各种可执行程序在这里，安装到各种路径下的软件，一般把启动引导命令行程序放置在这里，只要PATH变量有这个路径，用户使用该命令时就很方便，不需要指明程序的安装路径。有些命令在/bin 或/usr/local/bin 中，也在这里做个软链接。
 
@@ -184,15 +195,24 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
 
     /usr/lib：理解为 C:/Windows/System32。编程的原始库存在/usr/lib 里，所谓库(library) 。程序或子系统的不变的数据文件，包括一些site-wide配置文件。
 
-    /usr/local：用户级的程序目录，可以理解为 C:/Progrem Files/。用户自己编译的软件默认会安装到这个目录下。
+    /usr/local：用户级的程序目录，可以理解为 C:/Progrem Files/。用户自己编译的软件默认会安装到这个目录下。这里主要存放那些手动安装的软件，即不是通过“新立得”或 apt 安装的软件。它和 /usr 目录具有相类似的目录结构。让软件包管理器来管理 /usr 目录，而把自定义的脚本(scripts)放到 /usr/local 目录下面。
+        /usr/local/bin：自编译安装的软件的可执行部分在这里
 
-        这里主要存放那些手动安装的软件，即不是通过“新立得”或 apt 安装的软件。
+    /usr/share：一些共享数据，
+        /usr/share/man：联机帮助文件
+        /usr/share/doc：软件杂项的文件说明
+        /usr/share/zoneinfo：与时区有关的时区档案
 
-        它和 /usr 目录具有相类似的目录结构。让软件包管理器来管理 /usr 目录，而把自定义的脚本(scripts)放到 /usr/local 目录下面。
+/var 系统一般运行时要改变的数据.每个系统是特定的，即不通过网络与其他计算机共享.
 
-/var文件系统
+    /var/log
+    各种程序的Log文件，特别是login  (/var/log/wtmp log所有到系统的登录和注销) 和syslog (/var/log/messages 里存储所有核心和系统程序信息. /var/log 里的文件经常不确定地增长，应该定期清除.
 
-    /var 包括系统一般运行时要改变的数据.每个系统是特定的，即不通过网络与其他计算机共享.
+    /var/spool
+    mail, news, 打印队列和其他队列工作的目录.每个不同的spool在/var/spool 下有自己的子目录，例如，用户的邮箱在/var/spool/mail 中.
+
+    /var/tmp
+    比/tmp 允许的大或需要存在较长时间的临时文件. (虽然系统管理员可能不允许/var/tmp 有很旧的文件.)
 
     /var/catman
     当要求格式化时的man页的cache.man页的源文件一般存在/usr/man/man* 中；有些man页可能有预格式化的版本，存在/usr/man/cat* 中.而其他的man页在第一次看时需要格式化，格式化完的版本存在/var/man 中，这样其他人再看相同的页时就无须等待格式化了. (/var/catman 经常被清除，就象清除临时目录一样.)
@@ -206,19 +226,14 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
     /var/lock
     锁定文件.许多程序遵循在/var/lock 中产生一个锁定文件的约定，以支持他们正在使用某个特定的设备或文件.其他程序注意到这个锁定文件，将不试图使用这个设备或文件.
 
-    /var/log
-    各种程序的Log文件，特别是login  (/var/log/wtmp log所有到系统的登录和注销) 和syslog (/var/log/messages 里存储所有核心和系统程序信息. /var/log 里的文件经常不确定地增长，应该定期清除.
-
     /var/run
     保存到下次引导前有效的关于系统的信息文件.例如， /var/run/utmp 包含当前登录的用户的信息.
 
-    /var/spool
-    mail, news, 打印队列和其他队列工作的目录.每个不同的spool在/var/spool 下有自己的子目录，例如，用户的邮箱在/var/spool/mail 中.
+/opt 目录
 
-    /var/tmp
-    比/tmp 允许的大或需要存在较长时间的临时文件. (虽然系统管理员可能不允许/var/tmp 有很旧的文件.)
+    用来安装附加软件包，是用户级的程序目录，可以理解为 D:/Software。安装到 /opt 目录下的程序，它所有的数据、库文件等等都是放在同个目录下面。opt 有可选的意思，这里可以用于放置第三方大型软件（或游戏），当你不需要时，直接 rm -rf掉即可。在硬盘容量不够时，也可将 /opt 单独挂载到其他磁盘上使用。
 
-显示目录结构
+查看目录结构
 
     $ tree /opt
     /opt
@@ -262,7 +277,7 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
     $ echo $0
     -bash
 
-不要被一个叫做 $SHELL 的单独的环境变量所迷惑，它被设置为你的默认 shell 的完整路径。因此，这个变量并不一定指向你当前使用的 shell。例如，即使你在终端中调用不同的 shell，$SHELL 也保持不变。
+不要被一个叫做 $SHELL 的单独的环境变量所迷惑，它被设置为你的默认 shell 的完整路径。因此，这个变量并不一定指向你当前使用的 shell。你在终端中调用不同的 shell，$SHELL 是保持不变的。
 
     $ echo $SHELL
     /bin/bash

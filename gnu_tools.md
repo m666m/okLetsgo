@@ -1,5 +1,12 @@
 # GNU/Linux 常用工具
 
+    各种linux帮助手册速查 https://manned.org/
+
+    Linux 命令速查 https://linux.die.net/man/
+
+    Bash脚本指南 https://linux.die.net/abs-guide/
+                    https://linux.die.net/
+
 ## Linux下常用工具
 
 ### 终端字符的区域、编码、语言
