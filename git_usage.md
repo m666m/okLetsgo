@@ -152,6 +152,20 @@ git做操作之前或操作之后，查看当前的git状态
 
 版本库推送远程仓库见章节 [远程仓库拉取和推送的各种情况]
 
+### 修改本地仓库的远程仓库地址
+
+github.com获取仓库默认给的是https地址，但是在国内的网络下经常连接超时，使用不变，改成git协议或ssh协议的地址格式相对好些
+
+    # 删除远程origin
+    git remote rm origin
+
+    # 重新添加远程origin
+    # git remote add origin sqt@180.169.33.117:repositores/ZSKPad.git
+    git remote add origin git@github.com:m666m/raspi-info.git
+
+    # 第一次push的时候要 -u
+    git push -u origin master
+
 ### 从本地仓库推送多个远程仓库
 
 1、一般使用中，可以默认fetch/push一个远程仓库，添加多个push远程仓库地址，这样可以实现代码的多处备份，而且默认的origin还存在。
