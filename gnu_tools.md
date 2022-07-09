@@ -657,15 +657,25 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 在 Linux 中，有两类用于生成随机数的设备，分别是 /dev/random 以及 /dev/urandom ，其中前者可能会导致阻塞，而读取 /dev/urandom 不会堵塞，不过此时 urandom 的随机性弱于 random 。 urandom 是 unblocked random 的简称，会重用内部池中的数据以产生伪随机数据，可用于安全性较低的应用。
 
+    # sha256sum md5sum
     head /dev/random | cksum
 
-    head /dev/urandom | cksum
+    $ cat /dev/urandom | od -x  | head -n 1
+    0000000 0637 34d5 16f5 f393 250e a2eb aac0 27c3
+
+    cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 14
 
     cat /proc/sys/kernel/random/uuid
 
+    openssl rand -base64 14
+
+    openssl rand -hex 20
+
+    gpg --gen-random --armor 1 14
+
 补充熵池
 
-服务器在运行时，既没有键盘事件，也没有鼠标事件，那么就会导致噪声源减少。在很多发行版本中存在一个 rngd 程序，用来增加熵池。在 debian，该工具包含在 rng-tools 工具中。
+随机数生成的这些工具，通过 /dev/random 依赖系统的熵池，而服务器在运行时，既没有键盘事件，也没有鼠标事件，那么就会导致噪声源减少。在很多发行版本中存在一个 rngd 程序，用来增加系统的熵池（用 urandom 给 random 灌数据）。在 debian，该工具包含在 rng-tools 工具中。
 
 可以通过如下命令查看
 
