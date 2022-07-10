@@ -293,7 +293,7 @@ github.com获取仓库默认给的是https地址，但是在国内的网络下�
 
 git clone 命令正常拉取
 
-    git clone ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
+    git clone ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git [新目录名字]
 
     # Ipv6 用标准的中括号方式：
     #
