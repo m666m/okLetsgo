@@ -685,6 +685,75 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     # 从另外一个终端窗口启动服务
     sudo rngd -r /dev/urandom -o /dev/random -f -t 1
 
+### od 按数制显示内容
+
+    od [-A<字码基数> ] [-t[TYPE][SIZE] ] 文件名
+
+-A<字码基数>  左侧显示的地址使用何种基数
+
+    o：八进制（系统默认值）
+    d：十进制
+    x：十六进制
+    n：不打印位移值
+
+主要关心输出格式-t
+
+-t[TYPE] 指定数据的显示格式的主要参数有：
+
+    a[SIZE]: ASCII字符，回车用字母
+    c[SIZE]：ASCII字符，回车用反斜杠序列(如\n)
+    d[SIZE]：有符号十进制数
+    f[SIZE]：浮点数
+    o[SIZE]：八进制（系统默认值）
+    u[SIZE]：无符号十进制数
+    x[SIZE]：十六进制数 默认以四字节为一组（一列）显示。
+
+    [SIZE]：每列输出几个字节。
+    SIZE may also be
+        C for sizeof(char),
+        S for sizeof(short),
+        I for sizeof(int) or
+        L for sizeof(long).
+        If TYPE is f, SIZE may also be
+            F for sizeof(float),
+            D for sizeof(double) or
+            L for sizeof(long double)
+
+如果-t后面跟随两个小写字母，表示同时使用两个显示格式。
+
+快速参数
+
+    -a     same as -t a,  select named characters, ignoring high-order bit
+
+    -b     same as -t o1, select octal bytes
+
+    -c     same as -t c,  select printable characters or backslash escapes
+
+    -d     same as -t u2, select unsigned decimal 2-byte units
+
+    -f     same as -t fF, select floats
+
+    -i     same as -t dI, select decimal ints
+
+    -l     same as -t dL, select decimal longs
+
+    -o     same as -t o2, select octal 2-byte units
+
+    -s     same as -t d2, select decimal 2-byte units
+
+    -x     same as -t x2, select hexadecimal 2-byte units
+
+示例
+
+    # 以 ASCII 码的形式显示文件aa.txt内容
+    od -tc aa.txt
+
+    # 以 ASCII 码 和 16 进制的形式显示文件aa.txt内容
+    od -tcx aa.txt
+
+    # 以 ASCII 码的形式显示文件aa.txt内容的，等效 -ta
+    od -a aa.txt
+
 ### scp 跨机远程拷贝
 
 前提条件
