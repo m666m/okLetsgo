@@ -798,6 +798,10 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
     scp -r SocialNetworks/ piting@192.168.0.172:/media/data/pipi/datasets/
 
+### 使用 timedatectl 命令操作时间时区
+
+    https://www.cnblogs.com/zhi-leaf/p/6282301.html
+
 ### rsync 文件同步
 
     http://c.biancheng.net/view/6121.html
