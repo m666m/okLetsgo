@@ -976,26 +976,41 @@ your_cmd_here
 exit 0
 ```
 
+Provides 的名字是唯一的，也就是在所有的开机启动项中，Provides不能有任何同名冲突。
+
+需要执行的命令，按照正常的Bash Shell书写方式书写即可。
+
+需要后台静默运行的程序，请使用 `nohup [需要执行的命令] >/dev/null 2>&1 &` 方式来启动！
+
 2、给shell脚本test.sh添加执行权限
 
-3、添加自启动命令 update-rc.d test.sh defaults
+    chmod 755 test.sh
 
-4、删除自启动的命令 update-rc.d -f test.sh remove
+3、添加自启动命令
 
-或直接修改/etc/rc.local文件，在exit 0之前增加需要运行的脚本
+    update-rc.d test.sh defaults
+
+4、删除自启动的命令
+
+    update-rc.d -f test.sh remove
+
+或者，简单的命令脚本调用，可以直接修改/etc/rc.local文件，在exit 0之前增加需要运行的脚本
 
     1.vi /etc/rc.local
 
         #!/bin/sh -e
-        nohup  /opt/your_shell.sh  &
+
+        nohup /usr/local/bin/your_shell_script.sh >/dev/null 2>&1 &
 
         exit 0
 
     2、给文件添加执行权限
 
-        chmod 755 rc.local
+        sudo chmod 755 rc.local
 
-    重启电脑后，程序会被root用户调用起来。
+        chmod 755 /usr/local/bin/your_shell_script.sh
+
+    3、重启计算机，程序会被root用户调用起来。
 
 #### systemd
 
