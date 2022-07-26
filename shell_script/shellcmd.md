@@ -321,6 +321,25 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
 
 当前系统进程树，带命令行显示
 
+    $ ps axjf
+    PPID   PID  PGID   SID TTY      TPGID STAT   UID   TIME COMMAND
+        0     2     0     0 ?           -1 S        0   0:00 [kthreadd]
+        2     3     0     0 ?           -1 I<       0   0:00  \_ [rcu_gp]
+        2     4     0     0 ?           -1 I<       0   0:00  \_ [rcu_par_gp]
+        2     8     0     0 ?           -1 I<       0   0:00  \_ [mm_percpu_wq]
+        2     9     0     0 ?           -1 S        0   0:00  \_ [rcu_tasks_rude_]
+        2    10     0     0 ?           -1 S        0   0:00  \_ [rcu_tasks_trace]
+        1  1033  1033  1033 ?           -1 Ss    1000   0:45 tmux
+    1033  1034  1034  1034 pts/1    27015 Ss    1000   0:00  \_ -bash
+    1034 27015 27015  1034 pts/1    27015 S+    1000   1:27  |   \_ watch -n1 (date '+%T'; vcgencmd measure_temp) |tr '\n' ' ' |figlet -f future.tlf -w 80
+    1033  1054  1054  1054 pts/2    28982 Ss    1000   0:00  \_ -bash
+    1054 23597 23597  1054 pts/2    28982 S     1000   0:00  |   \_ /bin/bash
+    23597 23598 23598 23598 ?           -1 Ss    1000   0:00  |       \_ ssh-agent /bin/bash
+    23597 28982 28982  1054 pts/2    28982 S+       0   0:00  |       \_ sudo rngd -r /dev/urandom -o /dev/random -f -t 1
+    28982 28983 28982  1054 pts/2    28982 SLl+     0   0:02  |           \_ rngd -r /dev/urandom -o /dev/random -f -t 1
+
+或安装 pstree 工具
+
     $ pstree -a
     systemd
     ├─agetty -o -p -- \\u --keep-baud 115200,38400,9600 ttyS0 vt220
