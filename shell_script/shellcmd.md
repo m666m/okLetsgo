@@ -319,8 +319,18 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
 
 ## 进程查看
 
+显示cpu占用情况
+
+    top 按 1 显示各个核的占用，按 A 按资源使用情况排序
+
+    uptime 开机以来的平均负载统计
+
+    w 显示用户名下的进程
+
 当前系统进程树，带命令行显示
 
+    # ps -ef 和 ps aux 类似
+    # ps axuf 显示cpu和内存占用
     $ ps axjf
     PPID   PID  PGID   SID TTY      TPGID STAT   UID   TIME COMMAND
         0     2     0     0 ?           -1 S        0   0:00 [kthreadd]
@@ -404,11 +414,242 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
     9901 ?        Ss     0:00 /lib/systemd/systemd --user LANG=en_GB.UTF-8 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bi
     9902 ?        S      0:00  \_ (sd-pam)
 
-显示cpu占用情况
+## 查看io情况
 
-    top
+top 命令
 
-按键切换不同的显示，c显示命令行，1显示每个cpu占用，h显示帮助信息
+    看 wa 字段，值是cpu等待io的百分比。
+
+vmstat 命令 提供当前CPU、IO、进程和内存使用率的快照
+
+    $ vmstat 3
+    procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+    r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+    1  0      0 3554964  24828 247788    0    0     0     0  155  177  1  1 98  0  0
+    0  0      0 3554980  24828 247788    0    0     0     0  138  137  0  1 99  0  0
+    0  0      0 3555256  24828 247788    0    0     0     0  167  163  0  1 98  0  0
+
+free 命令 显示主内存和交换空间的内存统计数据，默认情况下是以KB为单位的
+
+    $ free -s 5
+                total        used        free      shared  buff/cache   available
+    Mem:        3930868      103812     3554440        8660      272616     3688032
+    Swap:        102396           0      102396
+
+                total        used        free      shared  buff/cache   available
+    Mem:        3930868      103584     3554652        8660      272632     3688260
+    Swap:        102396           0      102396
+
+### 使用 sysstat 工具包
+
+    https://github.com/sysstat/sysstat
+
+安装及启用
+
+    sudo apt install sysstat
+
+    # 启用数据收集功能
+    sudo vi /etc/default/sysstat　　# 把false修改为true
+
+    # 重新启动 sysstat 服务
+    sudo systemctl restart sysstat
+
+sysstat 包含了许多商用 Unix 通用的各种工具，用于监视系统性能和活动情况：
+
+    iostat，统计设备和分区的CPU信息以及IO信息
+
+    mpstat，统计处理器相关的信息
+
+    pidstat，统计Linux进程的相关信息：IO、CPU、内存等
+
+    tapstat，统计磁盘驱动器的相关信息
+
+    cifsiostat，统计CIFS信息
+
+    sysstat 还包含使用 cron 或 systemd 执行定时任务的工具（默认的采样时间是10分钟，可以修改。），用来收集历史性能和活动数据：
+
+    sar，统计并保存系统活动信息
+
+    sadc，sar 的后端，是系统活动数据的收集齐
+
+    sa1，收集二进制数据并将其村粗在系统活动每日数据文件中，是使用 cron或 systemd 运行的 sar 前端
+
+    sa2，汇总日常系统活动，是使用 cron 或 systemd 运行的 sar 前端
+
+    sadf，以多种格式显示 sar 收集的数据，如CSV、XML、JSON等，并可以用来与其他程序进行数据交换。
+
+其中的 sar 收集的系统统计信息包括：
+
+    输入/输出和传输速率统计信息
+
+    CPU统计信息，包括对虚拟化体系结构的支持
+
+    内存、交换空间利用率的统计信息
+
+    虚拟内存、分页和故障统计
+
+    进程创建活动信息
+
+    中断信息统计，包括APIC中断，硬件中断，软件中断
+
+    网络统计信息，包括网络接口活动，网络设备故障，IP、TCP、UDP、ICMP协议的流量统计，支持IPv6
+
+    光纤通道流量统计
+
+    基于软件的网络统计信息
+
+    NFS服务器和客户端活动
+
+    套接字统计
+
+    运行队列和系统负载统计
+
+    内核利用率统计信息
+
+    交换统计
+
+    TTY设备活动
+
+    电源管理统计信息
+
+    USB设备事件
+
+    文件系统利用率（节点和块）
+
+    失速信息统计
+
+#### 先找 sys 或 iowait 字段的值高的
+
+    $ mpstat -P ALL 5 1
+    Linux 5.10.103-v7l+ (your_host)     27/07/22        _armv7l_        (4 CPU)
+
+    18:28:58     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+    18:29:03     all    0.40    0.00    1.35    0.00    0.00    0.00    0.00    0.00    0.00   98.25
+    18:29:03       0    0.40    0.00    1.40    0.00    0.00    0.00    0.00    0.00    0.00   98.20
+    18:29:03       1    0.40    0.00    1.20    0.00    0.00    0.00    0.00    0.00    0.00   98.40
+    18:29:03       2    0.60    0.00    1.81    0.00    0.00    0.00    0.00    0.00    0.00   97.59
+    18:29:03       3    0.20    0.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00   98.80
+
+    $ pidstat -u 5 1
+    Linux 5.10.103-v7l+ (your_host)     27/07/22        _armv7l_        (4 CPU)
+
+    18:29:59      UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+    18:30:04     1000      1033    0.20    0.20    0.00    0.00    0.40     2  tmux: server
+    18:30:04        0      6738    0.00    0.20    0.00    0.00    0.20     3  kworker/3:2-events
+    18:30:04        0      9559    0.00    0.20    0.00    0.00    0.20     1  kworker/1:2-events
+    18:30:04        0     17923    0.20    0.00    0.00    0.00    0.20     0  kworker/0:1-mm_percpu_wq
+    18:30:04        0     18227    0.00    0.20    0.00    0.20    0.20     2  kworker/2:3-events
+    18:30:04     1000     21584    0.59    0.79    0.00    0.00    1.39     2  pidstat
+    18:30:04     1000     27015    0.20    0.20    0.00    0.00    0.40     1  watch
+    18:30:04     1000     27157    0.00    0.40    0.00    0.00    0.40     2  top
+    18:30:04     1000     29113    0.59    0.20    0.00    0.00    0.79     2  watch
+
+    $ sar -P ALL 4 5
+    Linux 5.10.103-v7l+ (jn-zh)     27/07/22        _armv7l_        (4 CPU)
+
+    18:47:10        CPU     %user     %nice   %system   %iowait    %steal     %idle
+    18:47:14        all      0.25      0.00      1.31      0.00      0.00     98.44
+    18:47:14          0      0.75      0.00      0.75      0.00      0.00     98.49
+    18:47:14          1      0.00      0.00      1.99      0.00      0.00     98.01
+    18:47:14          2      0.00      0.00      1.26      0.00      0.00     98.74
+    18:47:14          3      0.25      0.00      1.25      0.00      0.00     98.50
+
+    18:47:14        CPU     %user     %nice   %system   %iowait    %steal     %idle
+    18:47:18        all      0.38      0.00      1.25      0.00      0.00     98.37
+    18:47:18          0      0.75      0.00      2.00      0.00      0.00     97.25
+    18:47:18          1      0.75      0.00      1.00      0.00      0.00     98.25
+    18:47:18          2      0.00      0.00      0.75      0.00      0.00     99.25
+    18:47:18          3      0.00      0.00      1.25      0.00      0.00     98.75
+
+    Average:        CPU     %user     %nice   %system   %iowait    %steal     %idle
+    Average:        all      0.30      0.00      1.10      0.00      0.00     98.60
+    Average:          0      0.00      0.00      1.01      0.00      0.00     98.99
+    Average:          1      0.20      0.00      1.20      0.00      0.00     98.60
+    Average:          2      0.60      0.00      1.00      0.00      0.00     98.40
+    Average:          3      0.40      0.00      1.20      0.00      0.00     98.40
+
+#### 再找io流量高的
+
+示例
+
+    $ sar -d 5 1
+    Linux 5.10.103-v7l+ (jn-zh)     27/07/22        _armv7l_        (4 CPU)
+
+    18:35:14          DEV       tps     rkB/s     wkB/s   areq-sz    aqu-sz     await     svctm     %util
+    18:35:19     dev179-0      0.20      0.00      0.80      4.00      0.00      3.00     10.00      0.20
+    Average:     dev179-0      0.20      0.00      0.80      4.00      0.00      3.00     10.00      0.20
+
+    $ iostat -d 2
+    Linux 5.10.103-v7l+ (jn-zh)     27/07/22        _armv7l_        (4 CPU)
+
+    Device             tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
+    mmcblk0           0.11         3.15         0.76     291600      70233
+
+    Device             tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
+    mmcblk0           0.00         0.00         0.00          0          0
+
+    Device             tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
+    mmcblk0           0.00         0.00         0.00          0          0
+
+#### 可显示指定日期指定项目的信息
+
+    # 网络
+    sar -n DEV -f /var/log/sysstat/sa27 | less
+
+#### 看内存占用
+
+    $ pmap -d 1033
+    1033:   tmux
+    Address   Kbytes Mode  Offset           Device    Mapping
+    00010000     416 r-x-- 0000000000000000 0b3:00002 tmux
+    00087000       4 r---- 0000000000067000 0b3:00002 tmux
+    00088000       4 rw--- 0000000000068000 0b3:00002 tmux
+    00089000      16 rw--- 0000000000000000 000:00000   [ anon ]
+    01a8a000     132 rw--- 0000000000000000 000:00000   [ anon ]
+    01aab000     904 rw--- 0000000000000000 000:00000   [ anon ]
+    b67d5000      36 r-x-- 0000000000000000 0b3:00002 libnss_files-2.28.so
+    b67de000      64 ----- 0000000000009000 0b3:00002 libnss_files-2.28.so
+    b67ee000       4 r---- 0000000000009000 0b3:00002 libnss_files-2.28.so
+    b67ef000       4 rw--- 000000000000a000 0b3:00002 libnss_files-2.28.so
+    ffff0000       4 r-x-- 0000000000000000 000:00000   [ anon ]
+    mapped: 9160K    writeable/private: 1296K    shared: 28K
+
+最后一行非常重要：
+
+    mapped: 9160K 映射到文件的内存量
+    writeable/private: 1296K 私有地址空间
+    shared: 28K 此进程与其他进程共享的地址空间
+
+## 查看端口占用
+
+使用 ss 命令，比 netstat 命令看的信息更多
+
+    # ss -aw 查看raw端口
+    # ss -au 查看udp端口
+    # 查看tcp端口
+    ss -at
+
+    # 已经建立连接的http端口
+    ss -o state established '( dport = :http or sport = :http )'
+
+state FILTER-NAME-HERE, Where FILTER-NAME-HERE can be any one of the following
+
+    established
+    syn-sent
+    syn-recv
+    fin-wait-1
+    fin-wait-2
+    time-wait
+    closed
+    close-wait
+    last-ack
+    listen
+    closing
+    all : All of the above states
+    connected : All the states except for listen and closed
+    synchronized : All the connected states except for syn-sent
+    bucket : Show states, which are maintained as minisockets, i.e. time-wait and syn-recv.
+    big : Opposite to bucket state.
 
 ## 文件信息
 
