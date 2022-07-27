@@ -320,32 +320,42 @@ mac os:
 这些命令在tmn的:命令行模式一样可以使用
 
     tmux
-        创建一个会话，并连接
 
-    tmux new -s roclinux
-        创建一个新会话名为 roclinux，并连接
-
-    tmux new-session -s username -d
-        创建一个全新的 tmux 会话 ，在开机脚本(Service等）中调度也不会关闭
-        https://stackoverflow.com/questions/25207909/tmux-open-terminal-failed-not-a-terminal
+        新建一个会话，并连接
 
     tmux ls
+
         列出当前的会话（tmux session），下面表示0号有2个窗口
             0: 2 windows (created Tue Apr 13 17:28:34 2021)
 
     tmux a
-        进入tmux，回到上次退出前的那个会话的那个窗口的那个分屏
+
+        进入tmux，直接回到上次退出前的那个会话的那个窗口的那个分屏
+
+    tmux new -s roclinux
+
+        创建一个新会话名为 roclinux，并连接
+
+    #  ssh -t localhost tmux  a
+    tmux new-session -s username -d
+
+        创建一个全新的 tmux 会话 ，在开机脚本(Service等）中调度也不会关闭
+        https://stackoverflow.com/questions/25207909/tmux-open-terminal-failed-not-a-terminal
 
     tmux a -t 3
+
         进入tmux，连接到3号会话
 
     tmux a -t mydevelop
+
         进入tmux，连接到名为 mydevelop 的会话
 
     tmux kill-session -t mydevelop
+
         不用的会话可能有很多窗口，挨个退出很麻烦，直接杀掉会话，mydevelop 是要杀掉的会话名称
 
     tmux rename -t old_session_name new_session_name
+
         重命名会话
 
 #### 快捷键
@@ -361,24 +371,28 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
                 show-options -g  # 显示所有选项设置的参数，使用pgup和pgdown翻页，按q退出
                 set-option -g display-time 5000 # 提示信息的持续时间；设置足够的时间以避免看不清提示，单位为毫秒
 
-    s       列出当前会话，
+    s       列出当前会话
             下面表示0号会话有2个窗口，是当前连接，1号会话有1个窗口
                 (0) + 0: 2 windows (attached)
                 (1) + 1: 1 windows
+
+    w       列出当前会话的所有窗口，通过上、下键切换，
+            新版的按树图列出所有会话的所有窗口，切换更方便，不需要s键了。
 
     $       重命名当前会话；这样便于识别
 
     [       查看历史输出（默认只显示一屏），使用pgup和pgdown翻页，按q退出
 
-    d       脱离当前会话返回Shell界面，tmux里面的所有session继续运行，
+    d       脱离当前会话返回Shell界面，tmux里面的所有会话继续运行，
             会话里面的程序不会退出在后台保持继续运行，
             如果操作系统突然断连，也是一样的效果，
-            下次运行tmux attach 能够重新进入之前的会话
+            下次在命令行运行`tmux a`能够重新进入之前的会话
 
 如果在shell中执行exit，退出的顺序如下：
-    先退出当前面板，返回到当前窗口的下一个面板，
-    如果没有面板可用，则退出当前窗口，返回到当前会话的下一个窗口的某个面板，
-    所有窗口退出时，当前的seesion就会被关闭并退出tmux，其他session继续运行。
+
+    先退出当前面板，返回到当前窗口的上一个面板，
+    如果没有面板可用，则退出当前窗口，返回到当前会话的上一个窗口的某个面板，
+    所有窗口退出时，当前的会话就会被关闭并退出tmux，其他会话继续运行。
 
     x       关闭当前面板，并自动切换到下一个，
             操作之后会给出是否关闭的提示，按y确认即关闭。
@@ -393,13 +407,17 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
     "       在当前窗口新建面板，向下拆分
     %       在当前窗口新建面板，向右拆分
+
     空格     当前窗口的多个面板在各种布局间切换
     o       选择下一面板
     方向键   在相邻两个面板中切换
+
     {       当前面板与上一个面板交换位置
     }       当前面板与下一个面板交换位置
+
     !       将当前面板拆分为一个独立窗口
     z       当前面板全屏显示，再使用一次会变回原来大小
+
     q       显示面板编号
     Ctrl+方向键     以1个单元格为单位移动边缘以调整当前面板大小
     Alt+方向键      以5个单元格为单位移动边缘以调整当前面板大小
@@ -425,9 +443,11 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
     # https://github.com/hongwenjun/tmux_for_windows
     setw -g mouse
-    set-option -g mouse on
+    set-option -g mouse on  # v2.1 之前的老版本 set-option -g mode-mouse on
     bind -n WheelUpPane select-pane -t= ; copy-mode -e ; send-keys -M
     bind -n WheelDownPane select-pane -t= ; send-keys -M
+
+如果开启了鼠标滚屏，在tmux中用鼠标右键粘贴等就不能用了，用ctrl+shift+c/v，或shift+ins。
 
 #### 类似的工具 screen
 
