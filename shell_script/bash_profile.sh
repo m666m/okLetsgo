@@ -79,8 +79,35 @@ function PS1git-branch-prompt {
   fi
 }
 
+function PS1raspi-warning-info {
+    local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
+
+    if [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "75000" ]; then
+            local CPUTEMP_WARN="CPU `vcgencmd measure_temp` ！HIGH TEMPERATURE!"
+    elif [ "$CPUTEMP" -gt  "75000" ];  then
+            local CPUTEMP_WARN="CPU `vcgencmd measure_temp` ！PLEASE SHUTDOWN RASPBERRYPI: TEMPERATURE IS VERY HIGH!"
+    fi
+
+    local THROTT=`vcgencmd get_throttled| tr -d "throttled="`
+    if [ "$THROTT" != "0x0" ];  then
+        local THROTT_WARN="System throttled $THROTT ！PLEASE check RASPBERRYPI:https://www.raspberrypi.com/documentation/computers/os.html#get_throttled"
+    fi
+
+    printf "%s%s" "$CPUTEMP_WARN""$THROTT_WARN"
+}
+
+function PS1raspi-warning-prompt {
+    local raspi_warning=`PS1raspi-warning-info`
+    if [ -n "$raspi_warning" ]; then
+        printf "===============%s================" "$raspi_warning"
+    fi
+}
+
 # linux bash 命令行提示符显示： \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
 PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
+
+# 在上面的基础上增加个raspberry pi的状态检测
+PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1raspi-warning-prompt)$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
 #################################
 # Windows git bash 命令行提示符显示：
