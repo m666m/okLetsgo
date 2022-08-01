@@ -38,7 +38,7 @@ function PS1exit-code {
 function PS1conda-env-name {
     # 暂未调试成功
     local envname=$(if [ "$(which conda >/dev/null 2>&1)" = "0" ]; then printf "%s" $(conda env list); fi)
-    ((! -z $envname)) && printf " conda:%s" $envname;
+    [[ ! -z $envname ]] && printf " conda:%s" $envname
 }
 
 function PS1git-branch-name {
@@ -130,7 +130,6 @@ PS1="\n$magenta┌─$red\$(PS1git-bash-exitcode)$magenta[$white\t $green\u$whit
 
 ####################################################################
 # 来自章节 [多会话复用 ssh-agent 进程] <ssh.md>
-# TODO: 待叠加章节 [ssh-aget免除输入密钥的保护密码] <ssh.md>
 # git bash auto ssh-agent
 # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
 #
