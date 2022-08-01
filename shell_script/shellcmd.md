@@ -12,6 +12,9 @@
 unset variable_name
 或在函数中使用 local var="hell"来定义局部变量
 
+把语句放到()中包围可以减小变量影响范围：
+(umask 077; ssh-agent >| "$env")
+
 单引号包围不解释变量，双引号包围的解释变量
 var="hello"
 var1='say $var'
