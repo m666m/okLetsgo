@@ -407,7 +407,7 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
         ├── include
         |
 
-## 当前shell
+## 当前shell和嵌套层数
 
 查看当前所使用的shell程序
 
@@ -811,7 +811,7 @@ sar命令选项    功能
 看网络，按设备
 
     $ sar -n DEV 5 3
-    Linux 5.10.103-v7l+ (jn-zh)     31/07/22        _armv7l_        (4 CPU)
+    Linux 5.10.103-v7l+ (your_host)     31/07/22        _armv7l_        (4 CPU)
 
     15:00:42        IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil
     15:00:47           lo      0.40      0.40      0.05      0.05      0.00      0.00      0.00      0.00
@@ -981,3 +981,35 @@ state FILTER-NAME-HERE, Where FILTER-NAME-HERE can be any one of the following
 ### 使用 tmux
 
 tmux用一个守护进程打开多个终端窗口实现了一直在后台运行，详见 <gun_tools.md> 的 tmux 章节。
+
+### sudo、su和su -
+
+    https://blog.csdn.net/mutou990/article/details/107724302
+
+su 为switch user，即切换用户的简写，需要输入密码。一般使用 `su - username`，不使用`su username`，区别如下：
+
+    su - username 切换用户后，同时切换到新用户的工作环境中，同时变更工作目录，以及HOME，SHELL，USER，LOGNAME，也会变更PATH变量。比如从普通用户切换到数据库用户，使用数据库管理工具等。如果 `su -` 不指定用户，则默认转换到 root 用户。
+
+    su   username 切换用户后，不改变原用户的工作目录，及其他环境变量目录。这样导致在现在用户目录下未必有权限。这个命令的使用场景一般是数据库用户使用中需要修改系统配置，提权到 root 用户，但是保留数据库用户的环境，即Shell环境仍然是普通用户的Shell，方便使用数据库工具等。
+
+sudo 是一种权限管理机制，依赖于/etc/sudoers，其定义了授权给哪个用户可以以管理员的身份能够执行什么样的管理命令。
+
+`sudo -i` 有sudo权限的用户，临时提权到 root 用户，用于为了频繁的执行某些只有超级用户才能执行的权限，而不用每次输入密码。执行该命令后提示符变为“#”而不是“$”。想退回普通账户时可以执行“exit”或“logout” 。运行结果 PWD=/root
+
+`sudo su`表示前用户暂时申请root权限，所以输入的不是root用户密码，而是当前用户的密码。sudo是用户申请管理员权限执行一个操作，而此处的操作就是变成管理员。运行结果 PWD=/home/用户名（当前用户主目录） 。
+
+`sudo su` 切换root身份，不携带当前用户环境变量。
+`sudo su -` 切换root身份，携带当前用户环境变量。效果类似于`sudo -i`
+
+    $ sudo su
+    root@your_host:/home/some_user# echo $PATH
+    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+    $  sudo su -
+    root@your_host:~# echo $PATH
+    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+    $ sudo -i
+    root@your_host:~# echo $PATH
+    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    root@your_host:~#
