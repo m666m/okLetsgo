@@ -76,7 +76,7 @@ fi
     # 把 /home 目录压缩，输出到标准输入流，管道后面的命令是从标准输出流读取数据解压
     tar -cvf - /home | tar -xvf -
 
-## Bash Shell 内建命令
+## Bash内建命令
 
     命令            说明
 
@@ -138,6 +138,8 @@ fi
     unalias     刪除指定的别名
     unset       刪除指定的环境变量或 shell 属性
     wait        等待指定的进程完成，并返回退出状态码
+
+令参见章节 [查看操作系统信息]
 
 ## 常用脚本收集
 
@@ -476,7 +478,7 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
     $ cat /etc/redhat-release
     CentOS Linux release 7.8.2003 (Core)
 
-查看系统信息命令
+查看系统信息命令，另参见章节 [Bash内建命令]
 
     https://blog.csdn.net/qq_31278903/article/details/83146031
 
