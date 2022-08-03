@@ -928,6 +928,8 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 ### 开机启动 SystemV(init) 和 systemd
 
+    https://www.debian.org/doc/manuals/debian-handbook/unix-services.zh-cn.html#sect.systemd
+
     https://zhuanlan.zhihu.com/p/140273445
 
     http://ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
@@ -1545,6 +1547,10 @@ journalctl 功能强大，用法非常多
 
 ### crontab 定时任务
 
+    https://www.debian.org/doc/manuals/debian-handbook/sect.task-scheduling-cron-atd.zh-cn.html
+
+    http://c.biancheng.net/view/1092.html
+
     https://www.cnblogs.com/GavinSimons/p/9132966.html
 
     各种不能执行的原因 https://segmentfault.com/a/1190000020850932
@@ -1555,20 +1561,22 @@ journalctl 功能强大，用法非常多
     https://blog.csdn.net/zhubin215130/article/details/43271835
     https://developer.aliyun.com/article/541971
 
-#### 1、crontab与anacron
+#### 1、crontab 与 anacron
 
     crontab：crontab命令被用来提交和管理用户的需要周期性执行的任务，与windows下的计划任务类似，当安装完成操作系统后，默认会安装此服务工具，并且会自动启动crond服务，crond进程每分钟会定期检查是否有要执行的任务，如果有，则自动执行该任务。依赖于crond服务
 
     anacron：cron的补充，能够实现让cron因为各种原因在过去的时间该执行而未执行的任务在恢复正常执行一次。依赖于nancron服务
 
+    debian 中安装 anacron 软件包会禁用 cron 在/etc/cron.{daily，weekly，monthly} 目录中的脚本，仅由 anacron 调用，以避免 anacron 和 cron 重复运行这些脚本。 cron 命令仍然可用并处理其他计划任务（特别是用户安排的计划任务）。
+
 #### 2、Crontab任务种类及格式定义
 
-cron分为系统cron和用户cron，用户cron指/var/spool/cron/username或/var/spool/crontabs/crontabs/username，系统cron指
-/etc/crontab以及/etc/crontab，这两者是存在部分差异的。
+cron分为系统cron和用户cron，用户cron指 /var/spool/cron/crontabs/$USER 文件，系统cron指
+/etc/crontab 文件 以及 /etc/cron.{daily，weekly，monthly}/ 目录 ，这两者是存在部分差异的。
 
-系统crontab在命令行运行之前有一个额外的字段user。
+系统cron 在命令行运行之前有一个额外的字段user。
 
-(1)、系统cron任务：/etc/crontab文件
+(1)、系统cron任务：/etc/crontab 文件
 
 一般配置系统级任务，开机即可启动，注意格式比用户级多了个执行的user。
 
@@ -1608,7 +1616,7 @@ cron分为系统cron和用户cron，用户cron指/var/spool/cron/username或/var
 
 run-parts 参数运行指定目录中的所有脚本。
 
-(2)、用户cron任务：/var/spool/cron/USERNAME文件
+(2)、用户cron任务：/var/spool/cron/$USER 文件
 
 编辑指定用户的crontab设置
 
@@ -1628,6 +1636,10 @@ run-parts 参数运行指定目录中的所有脚本。
     # 分钟 小时 天 月 周 任务
 
 (3)、anacron：/etc/anacrontab 检查频率 分钟 任务注释信息 运行的任务
+
+(4)、在启动时运行命令
+
+只是在系统启动后，单次执行一个命令，可以使用 @reboot 宏（仅仅重启 cron 命令不会触发使用@reboot调度的命令）。该宏表示了 crontab条目的前五个区段。
 
 #### 3、时间的有效取值
 
@@ -1681,7 +1693,11 @@ run-parts 参数运行指定目录中的所有脚本。
 
 #### 5、cron的环境变量
 
-cron在crontab文件中的默认PATH  /bin:/sbin:/usr/bin:/usr/sbin，cron执行所有命令都用该PATH环境变量指定的路径下去找
+cron 启动任务时，环境变量非常少，即使是用户级任务，也不会执行用户的 .profile 文件，所以，如果需要操作数据库等跟用户相关的脚本或命令，一般采用在用户脚本中执行环境变量文件，然后再执行相关操作。
+
+cron在crontab文件中的默认 PATH=/usr/bin:/bin，cron执行所有命令都用该PATH环境变量指定的路径下去找。
+
+详见章节 [坑：环境变量是单独的跟用户登陆后的环境变量不一样]
 
 #### 6、执行结果将以邮件形式发送
 
@@ -1755,7 +1771,42 @@ MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名�
 
     0 5-10 * * * user-name  command
 
+#### 坑：crontab文件最后要有个空行
+
+    crontab要求cron中的每个条目都要以换行符结尾
+
+对crontab文件的最后一行任务设置来说，如果后面没有一个空白行，那说明它没有换行符，不会被crotnab执行。。。
+
+解决方案
+
+    养成给cron中每个条目后面都添加一个空行的习惯
+
+如果你用Windows编辑的crontab文件，注意必须改为 unix格式保存。
+
+#### 坑：修改 /etc/crontab 文件后要加载到cron服务
+
+命令和文件名相同，注意区分
+
+    crontab /etc/crontab
+
+debian 不需要这么做了
+
+    $ cat /etc/crontab
+    # /etc/crontab: system-wide crontab
+    # Unlike any other crontab you don't have to run the `crontab'
+    # command to install the new version when you edit this file
+    # and files in /etc/cron.d. These files also have username fields,
+    # that none of the other crontabs do.
+
 #### 坑：环境变量是单独的跟用户登陆后的环境变量不一样
+
+root用户登陆后的PATH
+
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+普通用户登陆后的PATH
+
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
 
 调测：将cron中的环境变量打印出来：
 
@@ -1772,10 +1823,9 @@ MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名�
     LC_ALL=C.UTF-8
     PWD=/root
 
-cron中的环境变量很多都和用户登陆系统后的env环境变量不一样（cron会忽略/etc/environment文件），尤其是PATH，只有/usr/bin:/bin，也就是说在cron中运行shell命令，如果不是全路径，只能运行/usr/bin或/bin这两个目录中的标准命令，而像/usr/sbin、/usr/local/bin等目录中的非标准命令是不能运行的。详见章节 [环境变量文件的说明] <shellcmd.md>。
+cron中的环境变量与用户登陆系统后的env环境变量不一样（cron会忽略 /etc/environment 文件），尤其是PATH，只有/usr/bin:/bin，也就是说在cron中运行shell命令，如果不是全路径，只能运行/usr/bin或/bin这两个目录中的标准命令，而像/usr/sbin、/usr/local/bin等目录中的非标准命令是不能运行的。详见章节 [环境变量文件的说明] <shellcmd.md>。
 
-所以定时任务的命令行一般都要先执行下 profile、bash_profile等用户环境的变量文件，然后才能执行用户脚本。或者在cron脚本文件头部声明PATH，
-或者在用户脚本中执行环境变量文件
+所以定时任务的命令行一般都要先执行下 profile、bash_profile等用户环境的变量文件，然后才能执行用户脚本。或者在cron脚本文件头部声明PATH，或者在用户脚本中执行环境变量文件
 
     . /etc/profile
 
@@ -1818,7 +1868,7 @@ cron中的环境变量很多都和用户登陆系统后的env环境变量不一�
 
 #### 坑：需要执行权限
 
-如果采用非root用户的定时任务，需要注意很多权限问题，比如该用户对操作的文件或目录是否存在权限等。
+如果设置了非root用户的定时任务，需要注意很多权限问题，比如该用户对操作的文件或目录是否存在权限等。
 
 解决方案
 
