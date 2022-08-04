@@ -115,15 +115,17 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
 设置当前用户使用 zsh
 
+    # 用户修改自己的登陆shell
     sudo chsh -s /bin/zsh
 
-    # 修改用户登入后所使用的shell
+    # 修改指定用户的登陆shell
     sudo usermod -s /bin/zsh username
 
-进入终端界面后也可以运行：
+插件和主题太多了容易搞乱环境，保守点的用法是登陆shell默认还是用 bash，登陆后再手动执行 `exec zsh` 切换到zsh。
 
+    # 如果在 .bash_profile 中，需要判断下是否在终端打开的（程序登陆时并不需要执行shell）
     if [ -t 1 ]; then
-    exec zsh
+        exec zsh
     fi
 
 如果是初次运行zsh，有个引导程序设置zsh读取的配置文 ~/.zshrc 文件，也可以手动调用
@@ -138,16 +140,25 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
     https://ohmyz.sh/
 
-ohmyzsh安装目前是从github下载
+ohmyzsh 安装目前是从github下载
 
     # wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh
     sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 
     # 或 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
+很多主题的依赖字体
+
+    https://github.com/ryanoasis/nerd-fonts
+        ssh窗口程序推荐 https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S/Regular/complete
+
+        程序编辑推荐 https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
+
+    https://github.com/powerline/fonts
+
 有些插件和主题依赖 python 和 git
 
-    # https://github.com/zsh-users/antigen/wiki/Installation
+    # 插件管理器 https://github.com/zsh-users/antigen/wiki/Installation
     sudo apt install zsh-antigen
 
     # https://github.com/caiogondim/bullet-train.zsh
