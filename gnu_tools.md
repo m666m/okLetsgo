@@ -177,11 +177,11 @@ ohmyzsh安装目前是从github下载
 
 + 推荐安装主题 [powerlevel10k](https://github.com/romkatv/powerlevel10k)
 
+    参考图片![powerlevel10k](https://camo.githubusercontent.com/80ec23fda88d2f445906a3502690f22827336736/687474703a2f2f692e696d6775722e636f6d2f777942565a51792e676966)
+
     安装 MesloLGS NF 字体后显示效果起飞 <https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k>
 
     运行 `p10k configure` 设置使用习惯
-
-    参考图片![powerlevel10k](https://camo.githubusercontent.com/80ec23fda88d2f445906a3502690f22827336736/687474703a2f2f692e696d6775722e636f6d2f777942565a51792e676966)
 
     可先在docker中试用下
 
