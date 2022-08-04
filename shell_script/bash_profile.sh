@@ -3,6 +3,9 @@
 test -f ~/.profile && . ~/.profile
 test -f ~/.bashrc && . ~/.bashrc
 
+# exit for non-interactive shell
+[[ ! -t 1 ]] && return
+
 # Bash开启vi-mode模式
 set -o vi
 

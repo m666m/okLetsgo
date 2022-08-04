@@ -77,7 +77,7 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
         下载源代码
 
-            git clone https://github.com/abishekvashok/cmatrix
+            git clone --depth=1 https://github.com/abishekvashok/cmatrix
 
         安装依赖库
 
@@ -105,9 +105,17 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
 见章节  [bash_profile.sh] <shell_script okletsgo>
 
-### 使用 zsh + ohmyzsh
+### 使用 zsh
 
     https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
+
+    https://www.zhihu.com/question/21418449/answer/300879747
+
+从语法上来说，zsh和bash是不兼容的；但是zsh有一个仿真模式，可以支持对bash/sh语法的仿真（也有对csh的仿真，但是支持不完善，不建议使用）：
+
+    $ emulate bash
+    # or
+    $ emulate sh
 
 安装
 
@@ -123,7 +131,7 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
 插件和主题太多了容易搞乱环境，保守点的用法是登陆shell默认还是用 bash，登陆后再手动执行 `exec zsh` 切换到zsh。如果执行 `zsh`，退出时会发现先退出到bash，然后再次退出才是断开连接。
 
-    # 如果在 .bash_profile 中，需要判断下是否在终端打开的（程序登陆时并不需要执行shell）
+    # 如果在 .bash_profile 中，需要判断下是否在终端打开的（程序登陆时不是交互式shell）
     if [ -t 1 ]; then
         exec zsh
     fi
@@ -136,13 +144,120 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
 如果之前使用bash，在 ~/.zshrc 文件中加上`source ~/.bash_profile`，可以继承 bash 的配置文件 ~/.bash_profile 内容。
 
+有些插件和主题依赖 python 和 git，注意提前安装好。
+
 推荐个简洁的zsh提示符主题
 
     https://github.com/sindresorhus/pure
 
+最常用的插件功能
+
+    色彩高亮：判断你输入的是啥的色彩高亮，比如输入date查看时间，错为data，字体的颜色会跟随你的输入一个字母一个字母的变化，错误会直接变轰。
+
+    命令提示：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。
+
+    智能补全：频繁的切换路径或输入长命令，输入开头字母后连续敲击两次 TAB 键 zsh 给你一个可能的列表，用tab或方向键选择，回车确认。比如已经输入了 svn commit，但是有一个 commit 的参数我忘记了，我只记得两个减号开头的，在svn commit -- 后面按两次TAB，会列出所有命令。
+
+    快速跳转：输入 cd - 按TAB，会列出历史路径清单供选择。
+
+启用插件，编辑 ~/.zshrc 文件，空格分隔
+
+    plugins=(git conda)
+
+#### zsh插件管理器antigen
+
+    <https://github.com/zsh-users/antigen>
+
+我在 Debian 10 buster 下面就没整利索过这货，不用了
+
+    # https://github.com/zsh-users/antigen/wiki/Installation
+    sudo apt install zsh-antigen
+
+antigen用法：快速配置
+
+假如你之前使用了oh-my-zsh，在这里可以先把原来的oh-my-zsh和zshrc文件删掉，然后创建一个新的.zshrc文件，内容如下
+
+    source /path-to-antigen/antigen.zsh
+
+    # 加载oh-my-zsh库
+
+    antigen use oh-my-zsh
+
+    # 加载原版oh-my-zsh中的功能(robbyrussell's oh-my-zsh).
+
+    antigen bundle git
+
+    antigen bundle heroku
+
+    antigen bundle pip
+
+    antigen bundle lein
+
+    antigen bundle command-not-found
+
+    # 语法高亮功能
+
+    antigen bundle zsh-users/zsh-syntax-highlighting
+
+    # 代码提示功能
+
+    antigen bundle zsh-users/zsh-autosuggestions
+
+    # 自动补全功能
+
+    antigen bundle zsh-users/zsh-completions
+
+    # 加载主题
+
+    antigen theme robbyrussell
+
+    # 保存更改
+
+    antigen apply
+
+#### 不依赖 oh-my-zsh 配置 zsh
+
+如果嫌 ohmyzsh 太慢，可以精简下功能的话，直接用 zsh 配置插件来实现几个常用功能。
+
+    https://zhuanlan.zhihu.com/p/347772529
+
+考虑到 oh-my-zsh 本质上也只是调用 zsh 的功能来实现配置。所以找了点时间琢磨了下如何直接配置 zsh。
+
+实现的配置项
+
+    命令自动补全
+    语法高亮
+    替换为彩色提示符
+
+拉取插件代码
+
+    # 自动补全
+    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
+
+    # 语法高亮
+    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zsh-syntax-highlighting
+
+使用以下内容替换用户目录下的 .zshrc 文件
+
+    # 启用插件
+    source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+    source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+    # 启用彩色提示符
+    autoload -U colors && colors
+
+    # 每次刷新提示符
+    setopt prompt_subst
+
+    # 设置提示符
+    PROMPT='❰%{$fg[green]%}%n%{$reset_color%}|%{$fg[yellow]%}%1~%{$reset_color%}%{$fg[blue]%}$(git branch --show-current 2&> /dev/null | xargs -I branch echo "(branch)")%{$reset_color%}❱ '
+
 #### 超多插件和主题的 ohmyzsh
 
+ohmyzsh 是在 zsh 的基础上增加了更多的花样的shell包装
+
     https://ohmyz.sh/
+        https://github.com/ohmyzsh/ohmyzsh
 
 ohmyzsh 安装目前是从github下载
 
@@ -154,22 +269,17 @@ ohmyzsh 安装目前是从github下载
 很多主题的依赖字体
 
     https://github.com/ryanoasis/nerd-fonts
-        ssh窗口程序推荐 https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S/Regular/complete
+        命令行窗口用 https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S/Regular/complete
 
-        程序编辑推荐 https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
+        代码编辑器用 https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
 
     https://github.com/powerline/fonts
-
-有些插件和主题依赖 python 和 git
-
-    # 插件管理器 https://github.com/zsh-users/antigen/wiki/Installation
-    sudo apt install zsh-antigen
 
     # https://github.com/caiogondim/bullet-train.zsh
     sudo apt install fonts-powerline
     sudo apt install ttf-ancient-fonts
 
-在 ~/.zshrc 里找到ZSH_THEME，就可以设置主题了，默认主题是：
+在 ~/.zshrc 里设置主题
 
     ZSH_THEME=”robbyrussell”
 
@@ -366,7 +476,7 @@ mac os:
 
 2.源代码编译安装
 
-    git clone https://github.com/tmux/tmux.git
+    git clone --depth=1 https://github.com/tmux/tmux.git
     cd tmux
     sh autogen.sh
     ./configure && make
