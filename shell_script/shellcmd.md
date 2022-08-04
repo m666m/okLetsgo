@@ -148,6 +148,22 @@ fi
     https://github.com/jacyl4/de_GWD
     https://github.com/acmesh-official/acme.sh
 
+当前shell脚本解释器
+
+    $  cat /etc/shells
+    # /etc/shells: valid login shells
+    /bin/sh
+    /bin/bash
+    /usr/bin/bash
+    /bin/rbash
+    /usr/bin/rbash
+    /bin/dash
+    /usr/bin/dash
+    /usr/bin/tmux
+    /usr/bin/screen
+
+系统级默认/bin/sh，用户登陆默认/bin/bash，一般写脚本文件应该明确用哪个解释器执行，在第一行： #!/bin/bash 。
+
 ```shell
 #!/usr/bin/env python3  # 按照PATH寻找第一个python3程序来执行
 #!/bin/bash
@@ -874,7 +890,7 @@ sysstat 还包含使用 cron 或 systemd 执行定时任务的工具，用来收
 
     失速信息统计
 
-sar命令选项    功能
+sar 命令选项    功能
 
     -A    显示系统所有资源设备（CPU、内存、磁盘）的运行状况。
 
@@ -899,6 +915,11 @@ sar命令选项    功能
     -y    显示终端设备在采样时间的活动情况。
 
     -w    显示系统交换活动在采样时间内的状态。
+
+用法: sar [ 选项 ] [ <时间间隔> [ <次数> ] ]
+
+    # 统计5秒间隔的所有信息，执行1次
+    sar -A 5 1
 
 #### 先找 sys 或 iowait 字段的值高的
 

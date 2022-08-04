@@ -109,8 +109,15 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
     https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
 
-切换zsh
+安装
+
+    sudo apt install zsh
+
+设置当前用户使用 zsh
+
     sudo chsh -s /bin/zsh
+
+    # 修改用户登入后所使用的shell
     sudo usermod -s /bin/zsh username
 
 进入终端界面后也可以运行：
@@ -129,29 +136,16 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
 #### 超多插件和主题的 ohmyzsh
 
-    https://github.com/ohmyzsh/ohmyzsh/wiki/Customization#overriding-and-adding-themes
+    https://ohmyz.sh/
 
-    内置主题 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-    更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
-                https://github.com/unixorn/awesome-zsh-plugins
+ohmyzsh安装目前是从github下载
 
-内置主题bira，添加时间字段修改`RPROMPT="[%*]%B${return_code}%b"`
-![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
+    # wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh
+    sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 
-额外主题 [Bullet train](https://github.com/caiogondim/bullet-train.zsh)，修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta`
-![Bullet train](https://camo.githubusercontent.com/3ce1f2e157549ff5ce549af57e3e635b4b85c5919c48223d7e963e98c2613e2e/687474703a2f2f7261772e6769746875622e636f6d2f6361696f676f6e64696d2f62756c6c65742d747261696e2d6f682d6d792d7a73682d7468656d652f6d61737465722f696d672f707265766965772e676966)
+    # 或 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-额外主题 [powerlevel10k](https://github.com/romkatv/powerlevel10k)，可以运行`p10k configure`设置使用习惯，![powerlevel10k](https://camo.githubusercontent.com/80ec23fda88d2f445906a3502690f22827336736/687474703a2f2f692e696d6775722e636f6d2f777942565a51792e676966)
-
-安装目前是从github下载
-
-    # sh -c "$(curl -fsSL
-    sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-安装依赖
-
-    # 有些插件和主题依赖 python 和 git
-    # 详见章节 [Debian/Ubuntu 如何安装自己版本的python和pip] <python.md>
+有些插件和主题依赖 python 和 git
 
     # https://github.com/zsh-users/antigen/wiki/Installation
     sudo apt install zsh-antigen
@@ -160,11 +154,45 @@ figlet实现字符画钟表，在tmux里开一个正合适
     sudo apt install fonts-powerline
     sudo apt install ttf-ancient-fonts
 
+在 ~/.zshrc 里找到ZSH_THEME，就可以设置主题了，默认主题是：
+
+    ZSH_THEME=”robbyrussell”
+
 定制主题文件位置
 
     $ZSH_CUSTOM
     └── themes
         └── my_awesome_theme.zsh-theme
+
+下载主题
+
+    https://github.com/ohmyzsh/ohmyzsh/wiki/Customization#overriding-and-adding-themes
+
+    内置主题 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+    更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
+                https://github.com/unixorn/awesome-zsh-plugins
+
+内置主题bira比较简洁，可手工修改添加时间提示`RPROMPT="[%*]%B${return_code}%b"`
+![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
+
++ 推荐安装主题 [powerlevel10k](https://github.com/romkatv/powerlevel10k)
+
+    安装 MesloLGS NF 字体后显示效果起飞 <https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k>
+
+    运行 `p10k configure` 设置使用习惯
+
+    参考图片![powerlevel10k](https://camo.githubusercontent.com/80ec23fda88d2f445906a3502690f22827336736/687474703a2f2f692e696d6775722e636f6d2f777942565a51792e676966)
+
+    可先在docker中试用下
+
+        docker run -e TERM -e COLORTERM -e LC_ALL=C.UTF-8 -it --rm alpine sh -uec '
+        apk add git zsh nano vim
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+        echo "source ~/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
+        cd ~/powerlevel10k
+        exec zsh'
+
+额外主题 [Bullet train](https://github.com/caiogondim/bullet-train.zsh)，可手工修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta`，目前还没找到合适的字体显示各种图标，安装了 Powerline Vim plugin 没见效果。
 
 ### Vim 和 nano
 
@@ -682,6 +710,25 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
     # 以 ASCII 码的形式显示文件aa.txt内容的，等效 -ta
     od -a aa.txt
+
+### 字符串处理awk/sed/cut/tr
+
+删除字符，主要用于截取字符串
+
+    $ echo "throttled=50.0"| tr -d "throttled="
+    50.0
+
+按分隔符打印指定的字段
+
+    $ cat /etc/passwd| cut -d ':' -f7
+    /bin/bash
+    /usr/sbin/nologin
+    /bin/sync
+    /usr/sbin/nologin
+
+awk 指定分隔符，可以用简单的语句组合字段
+
+sed 删除、替换文件中的字符串
 
 ### scp 跨机远程拷贝
 
