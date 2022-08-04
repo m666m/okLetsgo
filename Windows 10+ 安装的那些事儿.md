@@ -1266,7 +1266,7 @@ WSL 2 在底层使用虚拟机（Hyper-V）同时运行linux内核和Windows内�
 
     <https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual>
 
-1.Windows 10开启 WSL 功能
+1、开启功能： WSL
 
 首选：
 Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出窗口选择“启用或关闭 Windows 功能”，
@@ -1291,7 +1291,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 到这里已经安装了 WSL 1，如果只想安装 WSL 1，现在可以重新启动计算机，然后继续执行步骤5下载安装Linux发行版了。
 下面的描述都是为了安装 WSL 2 的。
 
-2.Windows 10启用虚拟机功能
+2、开启功能： 虚拟机平台
 
 ```powershell
 
@@ -1299,7 +1299,8 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 ```
 
-3.下载 Linux 内核更新包，双击提权安装即可。
+3、下载 Linux 内核更新包，双击提权安装即可。
+
 <https://wslstorestorage.blob.core.Windows.net/wslblob/wsl_update_x64.msi>
 
 ```powershell
@@ -1508,6 +1509,8 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 后续关于如何更换国内源、配置 ubuntu 桌面并进行 vnc 连接，参见 <https://sspai.com/post/43813>
 
 ### 使用 VM Ware、安卓模拟器等虚拟机提示需要关闭 Hyper-V
+
+    貌似该问题已经在2022版的 Windows 10 中解决了，开启功能：虚拟机平台VirtualMachinePlatform
 
 Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但有限制：必须为 Windows 10 20H1（也叫 2004 版）或更高版本。
 
