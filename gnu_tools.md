@@ -121,7 +121,7 @@ figlet实现字符画钟表，在tmux里开一个正合适
     # 修改指定用户的登陆shell
     sudo usermod -s /bin/zsh username
 
-插件和主题太多了容易搞乱环境，保守点的用法是登陆shell默认还是用 bash，登陆后再手动执行 `exec zsh` 切换到zsh。
+插件和主题太多了容易搞乱环境，保守点的用法是登陆shell默认还是用 bash，登陆后再手动执行 `exec zsh` 切换到zsh。如果执行 `zsh`，退出时会发现先退出到bash，然后再次退出才是断开连接。
 
     # 如果在 .bash_profile 中，需要判断下是否在终端打开的（程序登陆时并不需要执行shell）
     if [ -t 1 ]; then
@@ -134,7 +134,11 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
     zsh-newuser-install -f
 
-如果之前使用bash，在 ~/.zshrc 文件中加上`source ~/.bash_profile`，可以继承 bash的配置文件 ~/.bash_profile 内容。
+如果之前使用bash，在 ~/.zshrc 文件中加上`source ~/.bash_profile`，可以继承 bash 的配置文件 ~/.bash_profile 内容。
+
+推荐个简洁的zsh提示符主题
+
+    https://github.com/sindresorhus/pure
 
 #### 超多插件和主题的 ohmyzsh
 
@@ -186,22 +190,35 @@ ohmyzsh 安装目前是从github下载
 内置主题bira比较简洁，可手工修改添加时间提示`RPROMPT="[%*]%B${return_code}%b"`
 ![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
 
-+ 推荐安装主题 [powerlevel10k](https://github.com/romkatv/powerlevel10k)
+##### 推荐安装主题powerlevel10k
 
-    参考图片![powerlevel10k](https://camo.githubusercontent.com/80ec23fda88d2f445906a3502690f22827336736/687474703a2f2f692e696d6775722e636f6d2f777942565a51792e676966)
+    https://github.com/romkatv/powerlevel10k
 
-    安装 MesloLGS NF 字体后显示效果起飞 <https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k>
+目前从github安装
 
-    运行 `p10k configure` 设置使用习惯
+    # https://github.com/romkatv/powerlevel10k#manual
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
 
-    可先在docker中试用下
+    echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
 
-        docker run -e TERM -e COLORTERM -e LC_ALL=C.UTF-8 -it --rm alpine sh -uec '
-        apk add git zsh nano vim
-        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
-        echo "source ~/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
-        cd ~/powerlevel10k
-        exec zsh'
+然后安装 MesloLGS NF 字体，设置ssh命令行窗口使用，如果支持透明效果，显示效果直接起飞
+
+参考图片![powerlevel10k](https://camo.githubusercontent.com/80ec23fda88d2f445906a3502690f22827336736/687474703a2f2f692e696d6775722e636f6d2f777942565a51792e676966)
+
+字体下载的快速地址，其实 ohmyzsh 章节已经提到过 nerd-fonts 字体
+
+    https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k
+
+运行 `p10k configure` 设置使用习惯
+
+可先在docker中试用下
+
+    docker run -e TERM -e COLORTERM -e LC_ALL=C.UTF-8 -it --rm alpine sh -uec '
+    apk add git zsh nano vim
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+    echo "source ~/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
+    cd ~/powerlevel10k
+    exec zsh'
 
 额外主题 [Bullet train](https://github.com/caiogondim/bullet-train.zsh)，可手工修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta`，目前还没找到合适的字体显示各种图标，安装了 Powerline Vim plugin 没见效果。
 
