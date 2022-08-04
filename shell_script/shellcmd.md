@@ -456,17 +456,55 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
 
 ## 查看操作系统信息
 
-    # 内核信息
+hostnamectl 查看主机名及操作系统信息 (依赖安装了 systemd)
+
+    $ hostnamectl
+    Static hostname: vmsos-1.localdomain
+            Icon name: computer-vm
+            Chassis: vm
+            Machine ID: xxxxxxxxx
+            Boot ID: xxxxxxxxx
+        Virtualization: kvm
+    Operating System: CentOS Linux 7 (Core)
+        CPE OS Name: cpe:/o:centos:centos:7
+                Kernel: Linux 5.6.11-1.el7.elrepo.x86_64
+        Architecture: x86-64
+
+    $ hostnamectl
+    Static hostname: hxxxxcom
+            Icon name: computer-vm
+            Chassis: vm
+            Machine ID: xxxxxxxxx
+            Boot ID: xxxxxxxxx
+        Virtualization: kvm
+    Operating System: Debian GNU/Linux 10 (buster)
+                Kernel: Linux 4.19.0-20-amd64
+        Architecture: x86-64
+
+    $ hostnamectl
+    Static hostname: yourpi
+            Icon name: computer
+            Machine ID: xxxxxxxxx
+            Boot ID: xxxxxxxxx
+    Operating System: Raspbian GNU/Linux 10 (buster)
+                Kernel: Linux 5.10.103-v7l+
+        Architecture: arm
+
+内核信息
+
     $ cat /proc/version
     Linux version 5.6.11-1.el7.elrepo.x86_64 (mockbuild@Build64R7) (gcc version 4.8.5 20150623 (Red Hat 4.8.5-39) (GCC)) #1 SMP Mon May 4 19:40:21 EDT 2020
 
-    # 仅基本的cpu和内核信息
+仅基本的cpu和内核信息
+
     $ uname -a
     Linux yourhostname 5.6.11-1.el7.elrepo.x86_64 #1 SMP Mon May 4 19:40:21 EDT 2020 x86_64 x86_64 x86_64 GNU/Linux
 
-    # 发行版信息：仅 debian 系
+发行版信息：仅 debian 系
+
     $ cat /etc/issue
-    Raspbian GNU/Linux 10 \n \l
+    Debian GNU/Linux 10 \n \l
+
     $ lsb_release -a
     No LSB modules are available.
     Distributor ID: Debian
@@ -474,7 +512,8 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
     Release:        10
     Codename:       buster
 
-    # 发行版信息：仅 RedHat 系
+发行版信息：仅 RedHat 系
+
     $ cat /etc/redhat-release
     CentOS Linux release 7.8.2003 (Core)
 
