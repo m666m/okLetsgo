@@ -160,39 +160,31 @@ zsh自带功能
 
 最常用的插件功能
 
-    命令提示：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。快速完成直接按右方向键即可。
+    命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按TAB键快速进入下一级，完成直接按右方向键即可。
 
         zsh
         sudo apt install zsh-autosuggestions
 
-    色彩高亮：判断你输入的是啥的色彩高亮，比如输入date查看时间，错为data，字体的颜色会跟随你的输入一个字母一个字母的变化，错误会直接变红。
+    命令语法高亮：根据你输入的命令是否正确的色彩高亮，比如输入date查看时间，错为data，字体的颜色会跟随你的输入一个字母一个字母的变化，错误会直接变红。
 
         zsh
         sudo apt install zsh-syntax-highlighting
 
 启用插件，编辑 ~/.zshrc 文件
 
-    如果是用 apt install 安装的发行版，位置在 /usr/share/ 下面
+    # 如果是用 apt install 安装的发行版，位置在 /usr/share/ 目录
+    # 手动安装的位置在 ~/.zsh/plugins/ 目录
 
-        source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+    # source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+    source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-        # 官网提示要在文件的最后一行
-        source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    # 官网提示要在文件的最后一行
+    # source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-    如果是手动安装的插件
-
-        plugins=(git
-            conda
-            # other plugins...
-            zsh-autosuggestions
-            # 官网介绍要放到最后
-            zsh-syntax-highlighting
-        )
-
-命令提示的颜色太暗，可以在 ~/.zshrc 文件中 设置变量
-
+    # 命令自动完成的颜色太暗  # ,bg=cyan
     # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
-    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"  # ,bg=cyan
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
 #### zsh插件管理器antigen
 
@@ -208,6 +200,9 @@ zsh自带功能
 antigen用法：快速配置
 
 假如你之前使用了oh-my-zsh，在这里可以先把原来的oh-my-zsh和.zshrc文件删掉，然后创建一个新的 ~/.zshrc 文件，内容如下
+
+    # 格式：antigen bundle <内置的插件名>
+    # 格式：antigen bundle <github_user/repo_name>
 
     source /path-to-antigen/antigen.zsh
 
@@ -242,6 +237,10 @@ antigen用法：快速配置
     # 保存更改
 
     antigen apply
+
+    # 退出重启shell
+    exit
+    zsh
 
 #### 不依赖 oh-my-zsh 配置 zsh
 
@@ -280,7 +279,7 @@ antigen用法：快速配置
     # 设置提示符
     PROMPT='❰%{$fg[green]%}%n%{$reset_color%}|%{$fg[yellow]%}%1~%{$reset_color%}%{$fg[blue]%}$(git branch --show-current 2&> /dev/null | xargs -I branch echo "(branch)")%{$reset_color%}❱ '
 
-#### 超多插件和主题的 ohmyzsh
+#### 内置超多插件和主题的 ohmyzsh
 
 ohmyzsh 是在 zsh 的基础上增加了更多的花样的shell包装
 
@@ -297,7 +296,7 @@ ohmyzsh 安装目前是从github下载
 主题的依赖字体，要安装到你当前操作系统中，设置命令行窗口或编辑器使用，这样才能正确显示
 
     https://github.com/ryanoasis/nerd-fonts
-        命令行窗口用 https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S/Regular/complete
+        命令行窗口用直接起飞 https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S/Regular/complete
 
         代码编辑器用 https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
 
@@ -311,17 +310,19 @@ ohmyzsh 安装目前是从github下载
 
     ZSH_THEME=”robbyrussell”
 
-定制主题文件位置
+ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的位置 ~/.oh-my-zsh/custom
 
     $ZSH_CUSTOM
     └── themes
         └── my_awesome_theme.zsh-theme
+    └── plugins
 
 下载主题
 
     https://github.com/ohmyzsh/ohmyzsh/wiki/Customization#overriding-and-adding-themes
 
     内置主题 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+
     更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
                 https://github.com/unixorn/awesome-zsh-plugins
 
@@ -357,7 +358,7 @@ ohmyzsh 安装目前是从github下载
 
     echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
 
-然后安装 MesloLGS NF 字体，设置ssh命令行窗口使用，如果支持透明效果，显示效果直接起飞
+然后安装 MesloLGS NF 字体，设置ssh命令行窗口使用，如果窗口支持透明效果（如mintty），显示效果直接起飞 <https://github.com/romkatv/powerlevel10k#fonts>。
 
 参考图片![powerlevel10k](https://camo.githubusercontent.com/80ec23fda88d2f445906a3502690f22827336736/687474703a2f2f692e696d6775722e636f6d2f777942565a51792e676966)
 
