@@ -310,7 +310,7 @@ ohmyzsh 安装目前是从github下载
 
     ZSH_THEME=”robbyrussell”
 
-ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的位置 ~/.oh-my-zsh/custom
+ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的位置 $ZSH_CUSTOM 目录下（默认 ~/.oh-my-zsh/custom）
 
     $ZSH_CUSTOM
     └── themes
@@ -329,9 +329,9 @@ ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的�
 内置主题bira比较简洁，可手工修改添加时间提示`RPROMPT="[%*]%B${return_code}%b"`
 ![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
 
-插件在 $ZSH/plugins/ 目录下（默认~/.oh-my-zsh/plugins/），兼容zsh插件。
+内置插件在 $ZSH/plugins/ 目录下（默认 ~/.oh-my-zsh/plugins/），兼容zsh插件。
 
-自定义插件位于 $ZSH_CUSTOM/plugins/ 目录下（默认~/.oh-my-zsh/custom/plugins/）。
+自定义插件位于 $ZSH_CUSTOM/plugins/ 目录下（默认~/.oh-my-zsh/custom/plugins/），用户从github下载到此即可。
 
     git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
@@ -346,6 +346,8 @@ ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的�
         # 官网介绍要放到最后
         zsh-syntax-highlighting
     )
+
+ohmyzsh的插件管理机制更智能，还会提示更新，建议用这种方式配置，不再用 ~/.zshrc 文件里一个个的source xxxx的方式。
 
 ##### 推荐安装主题powerlevel10k
 
