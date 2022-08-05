@@ -150,19 +150,30 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
     https://github.com/sindresorhus/pure
 
-最常用的插件功能
-
-    色彩高亮：判断你输入的是啥的色彩高亮，比如输入date查看时间，错为data，字体的颜色会跟随你的输入一个字母一个字母的变化，错误会直接变轰。
-
-    命令提示：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。
+zsh自带功能
 
     智能补全：频繁的切换路径或输入长命令，输入开头字母后连续敲击两次 TAB 键 zsh 给你一个可能的列表，用tab或方向键选择，回车确认。比如已经输入了 svn commit，但是有一个 commit 的参数我忘记了，我只记得两个减号开头的，在svn commit -- 后面按两次TAB，会列出所有命令。
 
     快速跳转：输入 cd - 按TAB，会列出历史路径清单供选择。
 
-启用插件，编辑 ~/.zshrc 文件，空格分隔
+最常用的插件功能
 
-    plugins=(git conda)
+    色彩高亮：判断你输入的是啥的色彩高亮，比如输入date查看时间，错为data，字体的颜色会跟随你的输入一个字母一个字母的变化，错误会直接变轰。
+
+        zsh
+        sudo apt install zsh-syntax-highlighting
+
+    命令提示：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。
+
+        zsh
+        sudo apt install zsh-autosuggestions
+
+启用插件，编辑 ~/.zshrc 文件
+
+    source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+    # 官网提示要在文件的最后一行
+    source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 #### zsh插件管理器antigen
 
@@ -175,7 +186,7 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
 antigen用法：快速配置
 
-假如你之前使用了oh-my-zsh，在这里可以先把原来的oh-my-zsh和zshrc文件删掉，然后创建一个新的.zshrc文件，内容如下
+假如你之前使用了oh-my-zsh，在这里可以先把原来的oh-my-zsh和.zshrc文件删掉，然后创建一个新的 ~/.zshrc 文件，内容如下
 
     source /path-to-antigen/antigen.zsh
 
@@ -187,11 +198,7 @@ antigen用法：快速配置
 
     antigen bundle git
 
-    antigen bundle heroku
-
     antigen bundle pip
-
-    antigen bundle lein
 
     antigen bundle command-not-found
 
@@ -266,7 +273,7 @@ ohmyzsh 安装目前是从github下载
 
     # 或 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-很多主题的依赖字体
+主题的依赖字体，要安装到你当前操作系统中，设置命令行窗口或编辑器使用，这样才能正确显示
 
     https://github.com/ryanoasis/nerd-fonts
         命令行窗口用 https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S/Regular/complete
@@ -299,6 +306,24 @@ ohmyzsh 安装目前是从github下载
 
 内置主题bira比较简洁，可手工修改添加时间提示`RPROMPT="[%*]%B${return_code}%b"`
 ![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
+
+插件在 $ZSH/plugins/ 目录下（默认~/.oh-my-zsh/plugins/），兼容zsh插件。
+
+自定义插件位于 $ZSH_CUSTOM/plugins/ 目录下（默认~/.oh-my-zsh/custom/plugins/）。
+
+    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+启用插件，编辑 ~/.zshrc 文件，空格分隔
+
+    plugins=(git
+        conda
+        # other plugins...
+        zsh-autosuggestions
+        # 官网介绍要放到最后
+        zsh-syntax-highlighting
+    )
 
 ##### 推荐安装主题powerlevel10k
 
