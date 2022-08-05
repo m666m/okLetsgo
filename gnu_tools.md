@@ -347,6 +347,10 @@ ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的�
         zsh-syntax-highlighting
     )
 
+也就是说，上一步的 ~/.zshrc 文件已经被 ohmyzsh 替换了，不需要专门source那2个发行版的插件了，改为 plugins=(...) 的形式。
+
+如果你只想用发行版的插件，那就在这个新的 ~/.zshrc 文件里再补上之前的语句：source xxx 。
+
 ohmyzsh的插件管理机制更智能，还会提示更新，建议用这种方式配置，不再用 ~/.zshrc 文件里一个个的source xxxx的方式。
 
 ##### 推荐安装主题powerlevel10k
