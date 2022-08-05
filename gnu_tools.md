@@ -121,6 +121,8 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
     sudo apt install zsh
 
+如果是用 apt install 安装的发行版，位置在 /usr/share/ 下面
+
 设置当前用户使用 zsh
 
     # 用户修改自己的登陆shell
@@ -170,6 +172,8 @@ zsh自带功能
 
 启用插件，编辑 ~/.zshrc 文件
 
+    # 如果是用 apt install 安装的发行版，位置在 /usr/share/ 下面
+
     source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
     # 官网提示要在文件的最后一行
@@ -183,6 +187,8 @@ zsh自带功能
 
     # https://github.com/zsh-users/antigen/wiki/Installation
     sudo apt install zsh-antigen
+
+如果是用 apt install 安装的发行版，位置在 /usr/share/ 下面
 
 antigen用法：快速配置
 
