@@ -160,24 +160,39 @@ zsh自带功能
 
 最常用的插件功能
 
-    色彩高亮：判断你输入的是啥的色彩高亮，比如输入date查看时间，错为data，字体的颜色会跟随你的输入一个字母一个字母的变化，错误会直接变轰。
-
-        zsh
-        sudo apt install zsh-syntax-highlighting
-
-    命令提示：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。
+    命令提示：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。快速完成直接按右方向键即可。
 
         zsh
         sudo apt install zsh-autosuggestions
 
+    色彩高亮：判断你输入的是啥的色彩高亮，比如输入date查看时间，错为data，字体的颜色会跟随你的输入一个字母一个字母的变化，错误会直接变红。
+
+        zsh
+        sudo apt install zsh-syntax-highlighting
+
 启用插件，编辑 ~/.zshrc 文件
 
-    # 如果是用 apt install 安装的发行版，位置在 /usr/share/ 下面
+    如果是用 apt install 安装的发行版，位置在 /usr/share/ 下面
 
-    source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+        source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-    # 官网提示要在文件的最后一行
-    source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+        # 官网提示要在文件的最后一行
+        source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+    如果是手动安装的插件
+
+        plugins=(git
+            conda
+            # other plugins...
+            zsh-autosuggestions
+            # 官网介绍要放到最后
+            zsh-syntax-highlighting
+        )
+
+命令提示的颜色太暗，可以在 ~/.zshrc 文件中 设置变量
+
+    # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"  # ,bg=cyan
 
 #### zsh插件管理器antigen
 
