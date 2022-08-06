@@ -759,12 +759,17 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
 .tar.gz 文件
 
-    tar -czf arc.tar.gz file1 file2
+    # 打包并压缩
+    tar -czvf arc.tar.gz file1 file2
 
-    tar -xvf arc.tar.gz
+    # 解包并解压缩
+    tar -xzvf arc.tar.gz
+
+    tar -jxvf xx.tar.bz2
 
 zip
 
+    # 默认只有解压缩zip
     unzip arc.zip -d your_unzip_dir
 
     # 只查看文件列表
