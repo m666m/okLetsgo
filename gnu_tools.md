@@ -160,7 +160,7 @@ zsh自带功能
 
 最常用的插件功能
 
-    命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按TAB键快速进入下一级，完成直接按右方向键即可。
+    命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按TAB键快速进入下一级，或直接按右方向键确认该提示。
 
         zsh
         sudo apt install zsh-autosuggestions
@@ -933,7 +933,13 @@ sed 删除、替换文件中的字符串
 
 远程文件复制到本地：
 
-    scp root@www.test.com:/val/test/test.tar.gz /val/test/test.tar.gz
+    # 指定端口用 -P
+    scp -P 16022 root@www.test.com:/val/test/test.tar.gz /val/test/test.tar.gz
+
+从远程主机复制多个文件到当前目录
+
+    cd /val/
+    scp root@192.168.1.104:/usr/local/nginx/html/webs/\{index.css,json.js\} .
 
 远程文件复制到本地指定目录下：
 
@@ -942,6 +948,11 @@ sed 删除、替换文件中的字符串
 本地文件复制到远程：
 
     scp /val/test.tar.gz root@www.test.com:/val/test.tar.gz
+
+从本地文件复制多个文件到远程主机（多个文件使用空格分隔开）
+
+    cd /val/
+    scp index.css json.js root@192.168.1.104:/usr/local/nginx/html/webs/
 
 本地文件复制到远程指定目录下：
 
@@ -956,6 +967,10 @@ sed 删除、替换文件中的字符串
     scp -r ./ubuntu_env/ root@192.168.0.111:/home/pipipika
 
     scp -r SocialNetworks/ piting@192.168.0.172:/media/data/pipi/datasets/
+
+把文件从一个远程主机复制到另一个远程主机上
+
+    scp root@192.168.1.104:/usr/local/xx.txt root@192.168.1.105:/usr/local/webs/
 
 ### 使用 timedatectl 命令操作时间时区
 
