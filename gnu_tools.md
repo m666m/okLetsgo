@@ -347,6 +347,11 @@ ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的�
         zsh-syntax-highlighting
     )
 
+编辑 ~/.zshrc 文件
+
+    # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
+    set -o vi
+
 也就是说，上一步的 ~/.zshrc 文件已经被 ohmyzsh 替换了，不需要专门source那2个发行版的插件了，改为 plugins=(...) 的形式。
 
 如果你只想用发行版的插件，那就在这个新的 ~/.zshrc 文件里再补上之前的语句：source xxx 。

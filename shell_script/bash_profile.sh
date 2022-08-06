@@ -6,7 +6,7 @@ test -f ~/.bashrc && . ~/.bashrc
 # exit for non-interactive shell
 [[ ! -t 1 ]] && return
 
-# Bash开启vi-mode模式
+# 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
 set -o vi
 
 ####################################################################
