@@ -747,6 +747,28 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
 这个命令会将你朋友的终端Attach到你的Screen会话上，并且你的终端不会被Detach。这样你就可以和朋友共享同一个会话了，如果你们当前又处于同一个窗口，那就相当于坐在同一个显示器前面，你的操作会同步演示给你朋友，你朋友的操作也会同步演示给你。当然，如果你们切换到这个会话的不同窗口中去，那还是可以分别进行不同的操作的。
 
+### find + grep + xargs 组合查找文件内容
+
+查找指定文件
+
+    find ./ -name 2.sql
+
+组合查找文件内容
+
+显示内容，但是带目录了
+
+    find ./ -name "*" -exec grep "gitee" {} \;
+
+显示内容，排除目录
+
+    find ./ -name "*" -type f -exec grep -in "gitee" {} \;
+
+显示内容，显示文件名和行号，排除目录
+
+    find ./ -name "*" -type f | xargs grep -in 'gitee'
+
+xargs命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说find的结果经过xargs后，其实将find找出来的文件名逐个作为了grep的参数。grep再在这些文件内容中查找关键字test。
+
 ### Aria2 下载工具
 
 命令行传输各种参数，设置复杂，Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳dht站点清单。
@@ -2490,25 +2512,24 @@ putty的退出也是同样的建议。
 
     # 自定义颜色方案，跟深色背景搭配
     Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
-    BackgroundColour=109,69,35
-    ForegroundColour=228,228,228
+    BackgroundColour=13,25,38
+    ForegroundColour=217,230,242
     CursorColour=217,230,242
-
-    Black=0,0,0
-    BoldBlack=36,36,36
-    Red=255,0,0
-    BoldRed=255,0,128
-    Green=51,242,133
-    BoldGreen=22,184,74
-    Yellow=249,237,134
-    BoldYellow=240,197,47
-    Blue=97,197,239
-    BoldBlue=157,202,225
-    Magenta=172,53,101
-    BoldMagenta=249,159,210
-    Cyan=7,254,254
-    BoldCyan=1,220,220
-    White=217,217,217
+    Black=53,53,53
+    BoldBlack=92,92,92
+    Red=207,116,133
+    BoldRed=232,190,198
+    Green=133,207,116
+    BoldGreen=198,232,190
+    Yellow=207,190,116
+    BoldYellow=232,225,190
+    Blue=116,133,207
+    BoldBlue=190,198,232
+    Magenta=190,116,207
+    BoldMagenta=225,190,232
+    Cyan=116,207,190
+    BoldCyan=190,232,225
+    White=209,209,209
     BoldWhite=255,255,255
 
     # 自定义颜色方案，跟浅色背景搭配-黄色
