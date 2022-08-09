@@ -2013,7 +2013,9 @@ cron在crontab文件中的默认 PATH=/usr/bin:/bin，cron执行所有命令都�
 
 #### 坑：区分crontab命令和crontab文件
 
-用crontab -e命令配置是针对当前用户的定时任务，而编辑/etc/crontab文件是针对系统的任务。cron服务每分钟不仅要读一次 /var/spool/cron 内的所有文件，还需要读一次 /etc/crontab 文件。
+用 crontab -e 命令配置是针对当前用户的定时任务，而编辑 /etc/crontab 文件是针对系统的任务。
+
+cron服务每分钟不仅要读一次 /var/spool/cron/crontabs/ 内的所有文件，还读一次 /etc/crontab 文件。
 
 使用下面的命令，会在vi 里打开crontab的内容以供编辑：
 
