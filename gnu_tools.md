@@ -1364,7 +1364,7 @@ systemd并不是一个命令，而是一组命令，涉及到系统管理的方�
 
     systemd 定时器提供类似 cron 的高级功能，包括在相对于系统启动、systemd 启动时间、定时器上次启动时间的某个时间点运行脚本。它提供了一个工具来分析定时器规范中使用的日期和时间。
 
-#### systemd 基本管理命令
+#### 基本管理命令
 
 systemctl 是 Systemd 的主命令，用于管理系统
 
@@ -1380,7 +1380,7 @@ systemctl 是 Systemd 的主命令，用于管理系统
     # 暂停系统
     $ sudo systemctl suspend
 
-    # 让系统进入冬眠状态
+    # 让系统进入休眠状态
     $ sudo systemctl hibernate
 
     # 让系统进入交互式休眠状态
@@ -1389,7 +1389,7 @@ systemctl 是 Systemd 的主命令，用于管理系统
     # 启动进入救援状态（单用户状态）
     $ sudo systemctl rescue
 
-systemd-analyze命令用于查看启动耗时
+systemd-analyze 命令用于查看启动耗时
 
     # 查看启动耗时
     $ systemd-analyze
@@ -1403,7 +1403,7 @@ systemd-analyze命令用于查看启动耗时
     # 显示指定服务的启动流
     $ systemd-analyze critical-chain atd.service
 
-hostnamectl命令用于查看当前主机的信息
+hostnamectl 命令用于查看当前主机的信息
 
     # 显示当前主机的信息
     $ hostnamectl
@@ -1411,7 +1411,7 @@ hostnamectl命令用于查看当前主机的信息
     # 设置主机名。
     $ sudo hostnamectl set-hostname rhel7
 
-localectl命令用于查看本地化设置
+localectl 命令用于查看本地化设置
 
     # 查看本地化设置
     $ localectl
@@ -1420,7 +1420,7 @@ localectl命令用于查看本地化设置
     $ sudo localectl set-locale LANG=en_GB.utf8
     $ sudo localectl set-keymap en_GB
 
-timedatectl命令用于查看当前时区设置
+timedatectl 命令用于查看当前时区设置
 
     # 查看当前时区设置
     $ timedatectl
@@ -1433,7 +1433,7 @@ timedatectl命令用于查看当前时区设置
     $ sudo timedatectl set-time YYYY-MM-DD
     $ sudo timedatectl set-time HH:MM:SS
 
-loginctl命令用于查看当前登录的用户
+loginctl 命令用于查看当前登录的用户
 
     # 列出当前session
     $ loginctl list-sessions
@@ -1444,7 +1444,7 @@ loginctl命令用于查看当前登录的用户
     # 列出显示指定用户的信息
     $ loginctl show-user ruanyf
 
-#### systemd 系统资源管理命令 systemctl
+#### 系统资源管理命令 systemctl
 
 Systemd 可以管理所有系统资源。不同的资源统称为 Unit（单位）。
 
@@ -1463,7 +1463,7 @@ Unit 一共分成12种
     Swap Unit：swap 文件
     Timer Unit：定时器
 
-systemctl list-units命令可以查看当前系统的所有 Unit
+systemctl list-units 命令可以查看当前系统的所有 Unit
 
     # 列出正在运行的 Unit
     $ systemctl list-units
@@ -1480,7 +1480,7 @@ systemctl list-units命令可以查看当前系统的所有 Unit
     # 列出所有正在运行的、类型为 service 的 Unit
     $ systemctl list-units --type=service
 
-systemctl status命令用于查看系统状态和单个 Unit 的状态
+systemctl status 命令用于查看系统状态和单个 Unit 的状态
 
     # 显示系统状态
     $ systemctl status
@@ -1531,7 +1531,7 @@ systemctl status命令用于查看系统状态和单个 Unit 的状态
     # 设置某个 Unit 的指定属性
     $ sudo systemctl set-property httpd.service CPUShares=500
 
-systemctl list-dependencies命令列出一个 Unit 的所有依赖
+systemctl list-dependencies 命令列出一个 Unit 的所有依赖
 
     $ systemctl list-dependencies nginx.service
     nginx.service
@@ -1574,13 +1574,102 @@ systemctl list-dependencies命令列出一个 Unit 的所有依赖
 
     systemctl list-dependencies --all nginx.service
 
-#### systemd 系统资源配置文件
+#### 日志管理命令 journalctl
+
+Systemd 统一管理所有 Unit 的日志，可以只用 journalctl 一个命令，查看所有日志（内核日志和应用日志）。
+
+日志的配置文件是/etc/systemd/journald.conf。
+
+journalctl 功能强大，用法非常多
+
+    # 查看所有日志（默认情况下 ，只保存本次启动以来的日志）
+    $ journalctl
+
+    # 实时滚动显示最新日志
+    $ journalctl -f
+
+    # 查看某个 Unit 的日志
+    $ journalctl -u nginx.service
+    $ journalctl -u nginx.service --since today
+
+    # 实时滚动显示某个 Unit 的最新日志
+    $ journalctl -u nginx.service -f
+
+    # 合并显示多个 Unit 的日志
+    $ journalctl -u nginx.service -u php-fpm.service --since today
+
+    # 查看内核日志（不显示应用日志）
+    $ journalctl -k
+
+    # 查看系统本次启动的日志
+    $ journalctl -b
+    $ journalctl -b -0
+
+    # 查看上一次启动的日志（需更改设置）
+    $ journalctl -b -1
+
+    # 查看指定时间的日志
+    $ journalctl --since="2012-10-30 18:17:16"
+    $ journalctl --since "20 min ago"
+    $ journalctl --since yesterday
+    $ journalctl --since "2015-01-10" --until "2015-01-11 03:00"
+    $ journalctl --since 09:00 --until "1 hour ago"
+
+    # 显示尾部的最新10行日志
+    $ journalctl -n
+
+    # 显示尾部指定行数的日志
+    $ journalctl -n 20
+
+    # 查看指定服务的日志
+    $ journalctl /usr/lib/systemd/systemd
+
+    # 查看指定进程的日志
+    $ journalctl _PID=1
+
+    # 查看某个路径的脚本的日志
+    $ journalctl /usr/bin/bash
+
+    # 查看指定用户的日志
+    $ journalctl _UID=33 --since today
+
+    # 查看指定优先级（及其以上级别）的日志，共有8级
+    # 0: emerg
+    # 1: alert
+    # 2: crit
+    # 3: err
+    # 4: warning
+    # 5: notice
+    # 6: info
+    # 7: debug
+    $ journalctl -p err -b
+
+    # 日志默认分页输出，--no-pager 改为正常的标准输出
+    $ journalctl --no-pager
+
+    # 以 JSON 格式（单行）输出
+    $ journalctl -b -u nginx.service -o json
+
+    # 以 JSON 格式（多行）输出，可读性更好
+    $ journalctl -b -u nginx.serviceqq
+    -o json-pretty
+
+    # 显示日志占据的硬盘空间
+    $ journalctl --disk-usage
+
+    # 指定日志文件占据的最大空间
+    $ journalctl --vacuum-size=1G
+
+    # 指定日志文件保存多久
+    $ journalctl --vacuum-time=1years
+
+#### 系统资源配置文件
 
 每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit 。
 
 Systemd 默认从目录 /etc/systemd/system/ 读取配置文件。但是，里面存放的大部分文件都是符号链接，指向目录/usr/lib/systemd/system/，真正的配置文件存放在那个目录。
 
-systemctl enable命令用于在上面两个目录之间，建立符号链接关系
+systemctl enable 命令用于在上面两个目录之间，建立符号链接关系
 
     $ sudo systemctl enable clamd@scan.service
     # 等同于
@@ -1588,13 +1677,13 @@ systemctl enable命令用于在上面两个目录之间，建立符号链接关�
 
 如果配置文件里面设置了开机启动，systemctl enable 命令相当于激活指定服务的开机启动。
 
-与之对应的，systemctl disable命令用于在两个目录之间，撤销符号链接关系，相当于撤销指定服务的开机启动
+与之对应的，systemctl disable 命令用于在两个目录之间，撤销符号链接关系，相当于撤销指定服务的开机启动
 
     sudo systemctl disable clamd@scan.service
 
 配置文件的后缀名，就是该 Unit 的种类，比如sshd.socket。如果省略，Systemd 默认后缀名为.service，所以sshd会被理解成sshd.service。
 
-systemctl list-unit-files命令用于列出所有配置文件
+systemctl list-unit-files 命令用于列出所有配置文件
 
     # 列出所有配置文件
     $ systemctl list-unit-files
@@ -1609,7 +1698,7 @@ systemctl list-unit-files命令用于列出所有配置文件
     static：该配置文件没有[Install]部分（无法执行），只能作为其他配置文件的依赖
     masked：该配置文件被禁止建立启动链接
 
-从配置文件的状态无法看出，该 Unit 是否正在运行。这必须执行前面提到的systemctl status命令。
+从配置文件的状态无法看出，该 Unit 是否正在运行。这必须执行前面提到的 systemctl status 命令。
 
 一旦修改配置文件，就要让 SystemD 重新加载配置文件，然后重新启动，否则修改不会生效
 
@@ -1618,7 +1707,7 @@ systemctl list-unit-files命令用于列出所有配置文件
 
 配置文件就是普通的文本文件，可以用文本编辑器打开。
 
-systemctl cat命令可以查看配置文件的内容
+systemctl cat 命令可以查看配置文件的内容
 
     $ systemctl cat sshd
     # /lib/systemd/system/ssh.service
@@ -1736,94 +1825,11 @@ Target 与 传统 RunLevel 的对应关系如下
 
 （3）配置文件的位置，以前init进程的配置文件是/etc/inittab，各种服务的配置文件存放在/etc/sysconfig目录。现在的配置文件主要存放在/lib/systemd目录，在/etc/systemd目录里面的修改可以覆盖原始设置。
 
-#### Systemd 统一管理所有 Unit 的启动日志 journalctl
+#### 设置 systemd 开机自启动脚本
 
-带来的好处就是，可以只用 journalctl 一个命令，查看所有日志（内核日志和应用日志）。日志的配置文件是/etc/systemd/journald.conf。
+示例一：
 
-journalctl 功能强大，用法非常多
-
-    # 查看所有日志（默认情况下 ，只保存本次启动的日志）
-    $ sudo journalctl
-
-    # 查看内核日志（不显示应用日志）
-    $ sudo journalctl -k
-
-    # 查看系统本次启动的日志
-    $ sudo journalctl -b
-    $ sudo journalctl -b -0
-
-    # 查看上一次启动的日志（需更改设置）
-    $ sudo journalctl -b -1
-
-    # 查看指定时间的日志
-    $ sudo journalctl --since="2012-10-30 18:17:16"
-    $ sudo journalctl --since "20 min ago"
-    $ sudo journalctl --since yesterday
-    $ sudo journalctl --since "2015-01-10" --until "2015-01-11 03:00"
-    $ sudo journalctl --since 09:00 --until "1 hour ago"
-
-    # 显示尾部的最新10行日志
-    $ sudo journalctl -n
-
-    # 显示尾部指定行数的日志
-    $ sudo journalctl -n 20
-
-    # 实时滚动显示最新日志
-    $ sudo journalctl -f
-
-    # 查看指定服务的日志
-    $ sudo journalctl /usr/lib/systemd/systemd
-
-    # 查看指定进程的日志
-    $ sudo journalctl _PID=1
-
-    # 查看某个路径的脚本的日志
-    $ sudo journalctl /usr/bin/bash
-
-    # 查看指定用户的日志
-    $ sudo journalctl _UID=33 --since today
-
-    # 查看某个 Unit 的日志
-    $ sudo journalctl -u nginx.service
-    $ sudo journalctl -u nginx.service --since today
-
-    # 实时滚动显示某个 Unit 的最新日志
-    $ sudo journalctl -u nginx.service -f
-
-    # 合并显示多个 Unit 的日志
-    $ journalctl -u nginx.service -u php-fpm.service --since today
-
-    # 查看指定优先级（及其以上级别）的日志，共有8级
-    # 0: emerg
-    # 1: alert
-    # 2: crit
-    # 3: err
-    # 4: warning
-    # 5: notice
-    # 6: info
-    # 7: debug
-    $ sudo journalctl -p err -b
-
-    # 日志默认分页输出，--no-pager 改为正常的标准输出
-    $ sudo journalctl --no-pager
-
-    # 以 JSON 格式（单行）输出
-    $ sudo journalctl -b -u nginx.service -o json
-
-    # 以 JSON 格式（多行）输出，可读性更好
-    $ sudo journalctl -b -u nginx.serviceqq
-    -o json-pretty
-
-    # 显示日志占据的硬盘空间
-    $ sudo journalctl --disk-usage
-
-    # 指定日志文件占据的最大空间
-    $ sudo journalctl --vacuum-size=1G
-
-    # 指定日志文件保存多久
-    $ sudo journalctl --vacuum-time=1years
-
-#### systemd 设置开机自启动脚本
+自制的shell脚本，想让systemd进行启动管理。
 
 确认 systemd 已经开启了 systemV 启动脚本 rc.local 的兼容服务
 
@@ -1844,6 +1850,37 @@ journalctl 功能强大，用法非常多
     GuessMainPID=no
 
 然后执行章节 [SystemV设置开机自启动]。
+
+示例二：
+
+自制一个 systemd 服务，使用systemd的格式要求。
+
+创建 /etc/systemd/system/tproxyrule.service 文件
+
+    [Unit]
+    Description=Tproxy rule
+    After=network.target
+    Wants=network.target
+
+    [Service]
+
+    Type=oneshot
+    RemainAfterExit=yes
+
+    # 注意分号前后要有空格
+    ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/iptables-restore /etc/iptables/rules.v4
+    ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0/0 dev lo table 100 ; /sbin/iptables -t mangle -F
+
+    # 如果是 nftables，则改为以下命令
+    # ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/nft -f /etc/nftables/rules.v4
+    # ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0/0 dev lo table 100 ; /sbin/nft flush ruleset
+
+    [Install]
+    WantedBy=multi-user.target
+
+执行下面的命令使 tproxyrule.service 可以开机自动运行
+
+    systemctl enable tproxyrule
 
 ### crontab 定时任务
 
