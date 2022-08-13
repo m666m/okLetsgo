@@ -2558,8 +2558,8 @@ putty的退出也是同样的建议。
     BoldBlack=92,92,92
     Red=207,116,133
     BoldRed=232,190,198
-    Green=133,207,116
-    BoldGreen=198,232,190
+    Green=39,205,48
+    BoldGreen=143,218,149
     Yellow=207,190,116
     BoldYellow=232,225,190
     Blue=116,133,207
