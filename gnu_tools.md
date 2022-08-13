@@ -2331,6 +2331,8 @@ Linux下新建用户密码过期时间是从/etc/login.defs文件中PASS_MAX_DAY
 
 ## 网络故障排查
 
+    https://www.debian.org/doc/manuals/debian-reference/ch05.zh-cn.html
+
 不建议使用ifconfig，而推荐使用新的 ip 命令，未来net-tools套件会被完全废弃，功能上被iproute2套件取代，见[二者命令详细对比](https://linux.cn/article-4326-1.html)。
 
     # apt install net-tools
