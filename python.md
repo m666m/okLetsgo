@@ -1771,8 +1771,24 @@ pylance
 
 ### 护眼主题
 
-MacOS Modern Theme
-GitHub Theme
+MacOS Modern Theme 黑白主题都好
+
+    davidbwaters.macos-modern-theme
+
+Night Owl 黑白主题都好
+
+    sdras.night-owl
+
+Slack Theme 浅色Hoth主题很好
+
+    felipe-mendes.slack-theme
+
+北极 Nord 夏夜使用，凉爽的感觉
+
+    arcticicestudio.nord-visual-studio-code
+
+    还有其它各种软件的导出，比如 mintty/putty/vim等 https://www.nordtheme.com/ports
+
 Solarized Light（自带）  这个是羊皮纸底色，去蓝光了
 
 ### JScript/Json的格式化，比系统自带的好用

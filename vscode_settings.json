@@ -34,16 +34,17 @@
         "--max-line-length=100"
         // "--ignore=E501, E262",
     ],
-    "python.formatting.autopep8Args": ["--ignore","E402"],
     "python.formatting.provider": "yapf",
     "python.formatting.yapfArgs": [
         // "--sytle=yapf_style.cfg"
     ],
+    "python.formatting.autopep8Args": ["--ignore","E402"],
     "diffEditor.ignoreTrimWhitespace": false,
     "window.autoDetectColorScheme": true,
     "workbench.preferredDarkColorTheme": "MacOS Modern Dark - Big Sur Xcode Default",
     "workbench.preferredLightColorTheme": "MacOS Modern Light - Big Sur Xcode Default",
     "workbench.editor.wrapTabs": true,
+    // https://code.visualstudio.com/api/references/theme-color
     "workbench.colorCustomizations": {
         "window.activeBorder": "#ff7b00c5",
         "sideBarSectionHeader.border": "#ebebeb",
@@ -55,14 +56,16 @@
     "jupyter.exportWithOutputEnabled": true,
     "jupyter.sendSelectionToInteractiveWindow": true,
     "security.workspace.trust.emptyWindow": false,
+    "security.workspace.trust.untrustedFiles": "open",
     "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "git.enableCommitSigning": true,
     "git.enableSmartCommit": true,
     "git.autofetch": true,
     "git.confirmSync": false,
     "git.rebaseWhenSync": true,  // 远程拉到本地用变基，注意合并主干的时候别用这个，git bash下手动
     "remote.SSH.remotePlatform": {
-        "bwg": "linux",
-        "bwg-ipv6": "linux"
+        "hostwind": "linux",
+        "banwagong": "linux"
     },
     "files.exclude": {
         "**/__pycache__": true,
