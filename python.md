@@ -1771,27 +1771,27 @@ pylance
 
 ### 护眼主题
 
-MacOS Modern Theme 黑白主题都好
+MacOS Modern Theme 深浅主题都好
 
     davidbwaters.macos-modern-theme
 
-Night Owl 黑白主题都好
+凛冬来临 Winter is coming。深浅主题都不刺眼，非常清晰，推荐用深色 dark blue。
+
+    johnpapa.winteriscoming
+
+Night Owl。夜猫子在晚上稍有刺眼，浅色更好
 
     sdras.night-owl
 
-Slack Theme 浅色Hoth主题很好
-
-    felipe-mendes.slack-theme
-
-北极 Nord 夏夜使用，凉爽的感觉
+北极 Nord。夏夜使用，凉爽的感觉
 
     arcticicestudio.nord-visual-studio-code
 
     还有其它各种软件的导出，比如 mintty/putty/vim等 https://www.nordtheme.com/ports
 
-凛冬来临 黑白主题都不刺眼，非常清晰
+Slack Theme 浅色Hoth主题很好
 
-    johnpapa.winteriscoming
+    felipe-mendes.slack-theme
 
 Solarized Light（自带）  这个是羊皮纸底色，去蓝光了
 
