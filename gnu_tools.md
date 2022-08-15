@@ -103,13 +103,20 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
 ### bash命令提示符美化
 
-见章节  [bash_profile.sh] <shell_script okletsgo>
+简单的双行状态栏 见章节  [bash_profile.sh] <shell_script okletsgo>
+
+或者在已经安装了 powerline（参见章节[状态栏工具 powerline]）的情况下
+
+    # 如果是pip安装的查看路径用 pip show powerline-status
+    source /usr/share/powerline/bindings/bash/powerline.sh
 
 ### 状态栏工具 powerline
 
 vim、tmux 等众多工具的插件，大部分都依赖 powerline 进行状态栏显示。
 
     https://github.com/powerline/powerline/
+
+    配置说明 https://powerline.readthedocs.io/en/master/configuration/reference.html
 
 powerline最大的优点是它的各种符号字体可以图形化的显示文件夹、电池、git状态、进度等。
 
@@ -125,7 +132,7 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
     # pip install powerline-status 这个是python2的一堆坑
     # python3 -m pip install --user git+https://github.com/powerline/powerline
 
-    # 最好用发行版自带的，默认的安装到 /usr/share/powerline/ 目录下了
+    # 最好用发行版自带的，一步到位，默认的安装到 /usr/share/powerline/ 目录下了
     sudo apt install powerline
 
 字体安装推荐 MesloLGS NF，详见下面章节[状态栏字体]。
@@ -177,6 +184,17 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
     └── zsh
 
 然后在各软件的配置文件中设置插件，指向这个bindings目录下的脚本即可，详见各软件的说明。
+
+定制状态栏显示的段Segment
+
+编辑文件
+
+    # 如果是pip安装的查看路径用 pip show powerline-status
+    /usr/share/powerline/config_files/themes/相关软件名/xxx.json
+
+替换自己喜欢的函数即可
+
+    官方函数说明 https://powerline.readthedocs.io/en/master/configuration/segments.html
 
 ### 状态栏字体
 
@@ -740,11 +758,6 @@ antigen用法：快速配置
 
 #### 不依赖 oh-my-zsh 配置 zsh
 
-配置 zsh 使用 powerline，不知道该咋弄了，建议直接用 zsh 的主题得了。
-
-    $ powerline-config shell -s zsh command
-    powerline
-
 如果嫌 ohmyzsh 太慢，可以精简下功能的话，直接用 zsh 配置插件来实现几个常用功能。
 
     https://zhuanlan.zhihu.com/p/347772529
@@ -779,6 +792,13 @@ antigen用法：快速配置
 
     # 设置提示符
     PROMPT='❰%{$fg[green]%}%n%{$reset_color%}|%{$fg[yellow]%}%1~%{$reset_color%}%{$fg[blue]%}$(git branch --show-current 2&> /dev/null | xargs -I branch echo "(branch)")%{$reset_color%}❱ '
+
+配置 zsh 使用 powerline，建议直接用支持 zsh 的主题如 powerlevel10k。
+
+    # 不知道这个命令怎么用 powerline-config shell -s zsh command
+
+    # 如果是pip安装的查看路径用 pip show powerline-status
+    source /usr/share/powerline/bindings/zsh/powerline.zsh
 
 #### 强烈推荐主题 powerlevel10k
 
@@ -1024,171 +1044,177 @@ putty的退出也是同样的建议。
 
 如果是 git for Windows 的mintty，编辑 ~/.minttyrc 文件为下面的内容
 
-    # https://mintty.github.io/mintty.1.html
-    # https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
-    Font=MesloLGS NF
-    FontHeight=11
-    Columns=130
-    Rows=40
-    CursorType=block
-    AllowBlinking=yes
-    ScrollbackLines=12000
-    CursorBlinks=no
+```config
+# https://mintty.github.io/mintty.1.html
+# https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
+Font=MesloLGS NF
+FontHeight=11
+Columns=130
+Rows=40
+CursorType=block
+AllowBlinking=yes
+ScrollbackLines=12000
+CursorBlinks=no
 
-    # 语言设置
-    Language=zh_CN
-    # Locale=zh_CN
-    # Charset=GBK
-    Charset=UTF-8
+# 语言设置
+Language=zh_CN
+# Locale=zh_CN
+# Charset=GBK
+Charset=UTF-8
 
-    # 窗体透明效果，不适用于嵌入多窗口终端工具
-    # Transparency=low
+# 窗体透明效果，不适用于嵌入多窗口终端工具
+# Transparency=low
 
-    # 为了使用花哨颜色，确保终端设置恰当
-    Term=xterm-256color
+# 为了使用花哨颜色，确保终端设置恰当
+Term=xterm-256color
 
-    FontSmoothing=full
-    # FontWeight=700
-    # FontIsBold=yes
+FontSmoothing=full
+# FontWeight=700
+# FontIsBold=yes
 
-    # 自定义颜色方案，跟深色背景搭配
-    #Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
-    #BackgroundColour=13,25,38
-    #ForegroundColour=217,230,242
-    #CursorColour=217,230,242
-    #Black=53,53,53
-    #BoldBlack=92,92,92
-    #Red=207,116,133
-    #BoldRed=232,190,198
-    #Green=73,220,81
-    #BoldGreen=143,218,149
-    #Yellow=207,190,116
-    #BoldYellow=232,225,190
-    #Blue=116,133,207
-    #BoldBlue=190,198,232
-    #Magenta=190,116,207
-    #BoldMagenta=225,190,232
-    #Cyan=116,207,190
-    #BoldCyan=190,232,225
-    #White=209,209,209
-    #BoldWhite=255,255,255
+# 自定义颜色方案，跟深色背景搭配
+# https://github.com/itchyny/lightline.vim/blob/master/autoload/lightline/colorscheme/PaperColor_light.vim
+Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
+BackgroundColour=13,25,38
+ForegroundColour=217,230,242
+CursorColour=217,230,242
+Black=53,53,53
+BoldBlack=92,92,92
+Red=207,116,133
+BoldRed=232,190,198
+Green=0,135,0
+BoldGreen=143,218,149
+Yellow=207,190,116
+BoldYellow=232,225,190
+Blue=88,133,192
+BoldBlue=66,113,174
+Magenta=190,116,207
+BoldMagenta=225,190,232
+Cyan=116,207,190
+BoldCyan=190,232,225
+White=209,209,209
+BoldWhite=255,255,255
 
-    # 自定义颜色方案，跟深色背景搭配
-    # https://github.com/arcticicestudio/nord-mintty
-    Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
-    BackgroundColour=46,52,64
-    ForegroundColour=216,222,233
-    CursorColour=216,222,233
-    Black=59,66,82
-    BoldBlack=76,86,106
-    Red=191,97,106
-    BoldRed=191,97,106
-    Green=163,190,140
-    BoldGreen=163,190,140
-    Yellow=235,203,139
-    BoldYellow=235,203,139
-    Blue=129,161,193
-    BoldBlue=129,161,193
-    Magenta=180,142,173
-    BoldMagenta=180,142,173
-    Cyan=136,192,208
-    BoldCyan=143,188,187
-    White=229,233,240
-    BoldWhite=236,239,244
+# 自定义颜色方案，跟深色背景搭配
+# https://github.com/arcticicestudio/nord-mintty
+#Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
+#BackgroundColour=46,52,64
+#ForegroundColour=216,222,233
+#CursorColour=216,222,233
+#Black=59,66,82
+#BoldBlack=76,86,106
+#Red=191,97,106
+#BoldRed=191,97,106
+#Green=163,190,140
+#BoldGreen=163,190,140
+#Yellow=235,203,139
+#BoldYellow=235,203,139
+#Blue=129,161,193
+#BoldBlue=129,161,193
+#Magenta=180,142,173
+#BoldMagenta=180,142,173
+#Cyan=136,192,208
+#BoldCyan=143,188,187
+#White=229,233,240
+#BoldWhite=236,239,244
 
-    # 自定义颜色方案，跟浅色背景搭配-黄色
-    #Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
-    #BackgroundColour=250,234,182
-    #ForegroundColour=0,61,121
-    #CursorColour=217,230,242
-    #
-    #Black=0,0,0
-    #BoldBlack=72,72,72
-    #Red=255,30,18
-    #BoldRed=255,84,74
-    #Green=82,173,58
-    #BoldGreen=65,136,47
-    #Yellow=192,175,56
-    #BoldYellow=166,150,36
-    #Blue=11,80,155
-    #BoldBlue=9,58,113
-    #Magenta=255,18,243
-    #BoldMagenta=255,147,250
-    #Cyan=3,201,162
-    #BoldCyan=67,214,181
-    ##218,232,237
-    #White=107,165,186
-    #BoldWhite=180,180,180
+# 自定义颜色方案，跟浅色背景搭配-黄色
+#Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
+#BackgroundColour=250,234,182
+#ForegroundColour=0,61,121
+#CursorColour=217,230,242
+#
+#Black=0,0,0
+#BoldBlack=72,72,72
+#Red=255,30,18
+#BoldRed=255,84,74
+#Green=82,173,58
+#BoldGreen=65,136,47
+#Yellow=192,175,56
+#BoldYellow=166,150,36
+#Blue=11,80,155
+#BoldBlue=9,58,113
+#Magenta=255,18,243
+#BoldMagenta=255,147,250
+#Cyan=3,201,162
+#BoldCyan=67,214,181
+##218,232,237
+#White=107,165,186
+#BoldWhite=180,180,180
 
-    # 自定义颜色方案，跟浅色背景搭配-绿色
-    #Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
-    #BackgroundColour=250,234,182
-    #ForegroundColour=47,47,47
-    #CursorColour=217,230,242
-    #
-    #Black=0,0,0
-    #BoldBlack=38,38,38
-    #Red=255,30,18
-    #BoldRed=255,153,147
-    #Green=82,173,58
-    #BoldGreen=65,136,47
-    #Yellow=193,117,40
-    #BoldYellow=213,179,60
-    #Blue=11,80,155
-    #BoldBlue=17,120,234
-    #Magenta=255,18,243
-    #BoldMagenta=255,147,250
-    #Cyan=32,138,115
-    #BoldCyan=36,162,133
-    #White=235,235,235
-    #BoldWhite=255,255,255
+# 自定义颜色方案，跟浅色背景搭配-绿色
+#Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
+#BackgroundColour=250,234,182
+#ForegroundColour=47,47,47
+#CursorColour=217,230,242
+#
+#Black=0,0,0
+#BoldBlack=38,38,38
+#Red=255,30,18
+#BoldRed=255,153,147
+#Green=82,173,58
+#BoldGreen=65,136,47
+#Yellow=193,117,40
+#BoldYellow=213,179,60
+#Blue=11,80,155
+#BoldBlue=17,120,234
+#Magenta=255,18,243
+#BoldMagenta=255,147,250
+#Cyan=32,138,115
+#BoldCyan=36,162,133
+#White=235,235,235
+#BoldWhite=255,255,255
 
-    # https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.light
-    #ForegroundColour=101, 123, 131
-    #BackgroundColour=252, 241, 209
-    #CursorColour=    220,  50,  47
-    #
-    #Black=             7,  54,  66
-    #BoldBlack=         0,  43,  54
-    #Red=             220,  50,  47
-    #BoldRed=         203,  75,  22
-    #Green=           133, 153,   0
-    #BoldGreen=        88, 110, 117
-    #Yellow=          181, 137,   0
-    #BoldYellow=      101, 123, 131
-    #Blue=             38, 139, 210
-    #BoldBlue=        131, 148, 150
-    #Magenta=         211,  54, 130
-    #BoldMagenta=     108, 113, 196
-    #Cyan=             42, 161, 152
-    #BoldCyan=        147, 161, 161
-    #White=           238, 232, 213
-    #BoldWhite=       253, 246, 227
+# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.light
+#ForegroundColour=101, 123, 131
+#BackgroundColour=252, 241, 209
+#CursorColour=    220,  50,  47
+#
+#Black=             7,  54,  66
+#BoldBlack=         0,  43,  54
+#Red=             220,  50,  47
+#BoldRed=         203,  75,  22
+#Green=           133, 153,   0
+#BoldGreen=        88, 110, 117
+#Yellow=          181, 137,   0
+#BoldYellow=      101, 123, 131
+#Blue=             38, 139, 210
+#BoldBlue=        131, 148, 150
+#Magenta=         211,  54, 130
+#BoldMagenta=     108, 113, 196
+#Cyan=             42, 161, 152
+#BoldCyan=        147, 161, 161
+#White=           238, 232, 213
+#BoldWhite=       253, 246, 227
 
-    # https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.dark
-    #ForegroundColour=131,148,150
-    #BackgroundColour=0,43,54
-    #CursorColour=220,50,47
-    #
-    #Black=7,54,66
-    #BoldBlack=0,43,54
-    #Red=220,50,47
-    #BoldRed=203,75,22
-    #Green=133,153,0
-    #BoldGreen=88,110,117
-    #Yellow=181,137,0
-    #BoldYellow=101,123,131
-    #Blue=38,139,210
-    #BoldBlue=131,148,150
-    #Magenta=211,54,130
-    #BoldMagenta=108,113,196
-    #Cyan=42,161,152
-    #BoldCyan=147,161,161
-    #White=238,232,213
-    #BoldWhite=253,246,227
+# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.dark
+#ForegroundColour=131,148,150
+#BackgroundColour=0,43,54
+#CursorColour=220,50,47
+#
+#Black=7,54,66
+#BoldBlack=0,43,54
+#Red=220,50,47
+#BoldRed=203,75,22
+#Green=133,153,0
+#BoldGreen=88,110,117
+#Yellow=181,137,0
+#BoldYellow=101,123,131
+#Blue=38,139,210
+#BoldBlue=131,148,150
+#Magenta=211,54,130
+#BoldMagenta=108,113,196
+#Cyan=42,161,152
+#BoldCyan=147,161,161
+#White=238,232,213
+#BoldWhite=253,246,227
 
-    # 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
-    # ThemeFile=mintty
+# 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
+# ThemeFile=mintty
+Locale=zh_CN
+ScrollbackLines=12000
+CursorBlinks=no
+```
 
 如果是 MSYS2 的 mintty，可以在<https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
 
@@ -1482,7 +1508,7 @@ Ctrl+V到下一页
 
 #### vim 扩展插件
 
-配置文件 ~/.vimrc 或 /etc/vim/vimrc
+配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
 先决条件
 
@@ -1521,7 +1547,7 @@ Ctrl+V到下一页
     apt install vim-airline
     apt install vim-airline-themes
 
-省事了，除了状态栏工具，自带很多常用插件如目录树语法高亮色彩主题啥的都有，普通字体也可以正常显示，开箱即用。
+省事了，不仅是状态栏工具，自带很多常用插件如目录树语法高亮色彩主题啥的都有，普通字体也可以正常显示，开箱即用。
 
 最重要的是，它没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
@@ -1553,7 +1579,7 @@ Ctrl+V到下一页
             " Use 256 colours (Use this setting only if your terminal supports 256 colours)
             set t_Co=256
 
-在 vim 下 powerline 的简洁替代品：
+或者用 vim powerline 的替代品：
 
 状态栏工具 lightline.vim
 
@@ -1615,7 +1641,9 @@ powerline安装见章节 [状态栏工具powerline]。
 
     run-shell 'powerline-config tmux setup'
 
-然后就可以自由发挥了
+然后就可以自由发挥了。
+
+如果不想使用 powerline，可以安装原装的 <https://github.com/erikw/tmux-powerline>，这个只使用bash脚本，更简洁。
 
 二、插件管理
 
@@ -1644,6 +1672,48 @@ powerline安装见章节 [状态栏工具powerline]。
 重新加载配置文件
 
     tmux source-file ~/.tmux.conf
+
+定制状态栏显示的段Segment
+
+编辑文件
+
+    # 如果是pip安装的查看路径用 pip show powerline-status
+    /usr/share/powerline/config_files/themes/tmux/default.json
+
+替换自己喜欢的函数即可
+
+    官方函数说明 https://powerline.readthedocs.io/en/master/configuration/segments.html
+
+```json
+{
+        "segments": {
+                "right": [
+                        {
+                                "function": "powerline.segments.common.sys.uptime",
+                                "priority": 50
+                        },
+                        {
+                                "function": "powerline.segments.common.sys.system_load",
+                                "priority": 50
+                        },
+                        {
+                                "function": "powerline.segments.common.time.date"
+                        },
+                        {
+                                "function": "powerline.segments.common.time.date",
+                                "name": "time",
+                                "args": {
+                                        "format": "%H:%M",
+                                        "istime": true
+                                }
+                        },
+                        {
+                                "function": "powerline.segments.common.net.hostname"
+                        }
+                ]
+        }
+}
+```
 
 #### 常用命令
 
