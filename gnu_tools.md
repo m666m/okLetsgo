@@ -105,6 +105,93 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
 见章节  [bash_profile.sh] <shell_script okletsgo>
 
+### 状态栏工具 powerline
+
+vim、tmux 等众多工具的插件，大部分都依赖 powerline 进行状态栏显示。
+
+    https://github.com/powerline/powerline/
+
+powerline最大的优点是它的各种符号字体可以图形化的显示文件夹、电池、git状态、进度等。
+
+缺点是它的代码python2、3混杂，安装和使用都很难配置，所以现在有些插件都不使用它了。
+
+基础安装
+
+    # https://askubuntu.com/questions/283908/how-can-i-install-and-use-powerline-plugin
+    # https://powerline.readthedocs.io/en/latest/installation.html
+
+    # 最好别用pip安装，我弄了一上午都搞不定最终起效的设置
+    # https://powerline.readthedocs.io/en/latest/installation.html
+    # pip install powerline-status 这个是python2的一堆坑
+    # python3 -m pip install --user git+https://github.com/powerline/powerline
+
+    # 最好用发行版自带的，默认的安装到 /usr/share/powerline/ 目录下了
+    sudo apt install powerline
+
+字体安装
+
+    # https://github.com/powerline/fonts
+    # https://github.com/caiogondim/bullet-train.zsh
+    sudo apt install fonts-powerline
+    sudo apt install ttf-ancient-fonts
+
+注意字体要安装到你使用终端窗口工具的计算机上
+
+    你在 Windows 下使用 putty 或 mintty 等终端窗口工具连接到服务器，则字体要安装到你的 Windows 系统中。
+
+    你在 MacOS 下使用 iTerm2 终端窗口工具连接服务器，则要在你的苹果电脑上安装这些字体。
+
+然后设置在终端窗口工具或编辑器使用该字体，这样才能正确显示。
+
+推荐安装使用目前最棒的字体 MesloLGS NF <https://github.com/romkatv/powerlevel10k#fonts>。
+
+还得弄个自定义路径
+
+    # Add ~/.local/bin to $PATH by modifying ~/.profile
+    if [ -d "$HOME/.local/bin" ]; then
+        PATH="$HOME/.local/bin:$PATH"
+    fi
+
+绑定到各软件：命令行方式配置
+
+    $ powerline-config -h
+    usage: powerline-config [-h] [-p PATH] {tmux,shell} ...
+
+    Script used to obtain powerline configuration.
+
+    positional arguments:
+    {tmux,shell}
+        tmux                Tmux-specific commands
+        shell               Shell-specific commands
+
+绑定到各软件：手工配置
+
+先查看你安装的位置，找到bindings目录
+
+如果是用 pip 安装的 powerline，就是如下这种的路径
+
+    . /usr/lib/python3.7/site-packages/powerline/bindings/bash/powerline.sh
+
+如果是用 apt 安装的powerline在，就是这种路径 /usr/share/powerline/bindings/
+
+    $ tree -L 1 /usr/share/powerline/bindings
+    /usr/share/powerline/bindings
+    ├── awesome
+    ├── bar
+    ├── bash
+    ├── fish
+    ├── i3
+    ├── lemonbar
+    ├── qtile
+    ├── rc
+    ├── shell
+    ├── tcsh
+    ├── tmux
+    └── vim
+    └── zsh
+
+然后在各软件的配置文件中设置插件，指向这个bindings目录下的脚本即可，详见各软件的说明。
+
 ### 使用 zsh
 
     https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
@@ -186,6 +273,359 @@ zsh自带功能
     # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
+配置zsh，有空慢慢研究吧
+
+    https://linux.zone/1306
+
+```shell
+#color{{{
+autoload colors
+colors
+
+for color in RED GREEN YELLOW BLUE MAGENTA CYAN WHITE; do
+eval _$color='%{$terminfo[bold]$fg[${(L)color}]%}'
+eval $color='%{$fg[${(L)color}]%}'
+(( count = $count + 1 ))
+done
+FINISH="%{$terminfo[sgr0]%}"
+#}}}
+
+#命令提示符
+RPROMPT=$(echo "$RED%D %T$FINISH")
+PROMPT=$(echo "$CYAN%n@$YELLOW%M:$GREEN%/$_YELLOW>$FINISH ")
+
+#PROMPT=$(echo "$BLUE%M$GREEN%/
+#$CYAN%n@$BLUE%M:$GREEN%/$_YELLOW>>>$FINISH ")
+#标题栏、任务栏样式{{{
+case $TERM in (*xterm*|*rxvt*|(dt|k|E)term)
+precmd () { print -Pn "\e]0;%n@%M//%/\a" }
+preexec () { print -Pn "\e]0;%n@%M//%/\ $1\a" }
+;;
+esac
+#}}}
+
+#关于历史纪录的配置 {{{
+#历史纪录条目数量
+export HISTSIZE=10000
+#注销后保存的历史纪录条目数量
+export SAVEHIST=10000
+#历史纪录文件
+export HISTFILE=~/.zhistory
+#以附加的方式写入历史纪录
+setopt INC_APPEND_HISTORY
+#如果连续输入的命令相同，历史纪录中只保留一个
+setopt HIST_IGNORE_DUPS
+#为历史纪录中的命令添加时间戳
+setopt EXTENDED_HISTORY
+
+#启用 cd 命令的历史纪录，cd -[TAB]进入历史路径
+setopt AUTO_PUSHD
+#相同的历史路径只保留一个
+setopt PUSHD_IGNORE_DUPS
+
+#在命令前添加空格，不将此命令添加到纪录文件中
+#setopt HIST_IGNORE_SPACE
+#}}}
+
+#每个目录使用独立的历史纪录{{{
+cd() {
+builtin cd "$@"                             # do actual cd
+fc -W                                       # write current history  file
+local HISTDIR="$HOME/.zsh_history$PWD"      # use nested folders for history
+if  [ ! -d "$HISTDIR" ] ; then          # create folder if needed
+mkdir -p "$HISTDIR"
+fi
+export HISTFILE="$HISTDIR/zhistory"     # set new history file
+touch $HISTFILE
+local ohistsize=$HISTSIZE
+HISTSIZE=0                              # Discard previous dir's history
+HISTSIZE=$ohistsize                     # Prepare for new dir's history
+fc -R                                       #read from current histfile
+}
+mkdir -p $HOME/.zsh_history$PWD
+export HISTFILE="$HOME/.zsh_history$PWD/zhistory"
+
+function allhistory { cat $(find $HOME/.zsh_history -name zhistory) }
+function convhistory {
+sort $1 | uniq |
+sed 's/^:\([ 0-9]*\):[0-9]*;\(.*\)/\1::::::\2/' |
+awk -F"::::::" '{ $1=strftime("%Y-%m-%d %T",$1) "|"; print }'
+}
+#使用 histall 命令查看全部历史纪录
+function histall { convhistory =(allhistory) |
+sed '/^.\{20\} *cd/i\\' }
+#使用 hist 查看当前目录历史纪录
+function hist { convhistory $HISTFILE }
+
+#全部历史纪录 top50
+function top50 { allhistory | awk -F':[ 0-9]*:[0-9]*;' '{ $1="" ; print }' | sed 's/ /\n/g' | sed '/^$/d' | sort | uniq -c | sort -nr | head -n 50 }
+
+#}}}
+
+#杂项 {{{
+#允许在交互模式中使用注释  例如：
+#cmd #这是注释
+setopt INTERACTIVE_COMMENTS
+
+#启用自动 cd，输入目录名回车进入目录
+#稍微有点混乱，不如 cd 补全实用
+setopt AUTO_CD
+
+#扩展路径
+#/v/c/p/p => /var/cache/pacman/pkg
+setopt complete_in_word
+
+#禁用 core dumps
+limit coredumpsize 0
+
+#Emacs风格 键绑定
+bindkey -e
+#bindkey -v
+#设置 [DEL]键 为向后删除
+#bindkey "\e[3~" delete-char
+
+#以下字符视为单词的一部分
+WORDCHARS='*?_-[]~=&;!#$%^(){}<>'
+#}}}
+
+#自动补全功能 {{{
+setopt AUTO_LIST
+setopt AUTO_MENU
+#开启此选项，补全时会直接选中菜单项
+#setopt MENU_COMPLETE
+
+autoload -U compinit
+compinit
+
+#自动补全缓存
+#zstyle ':completion::complete:*' use-cache on
+#zstyle ':completion::complete:*' cache-path .zcache
+#zstyle ':completion:*:cd:*' ignore-parents parent pwd
+
+#自动补全选项
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*' menu select
+zstyle ':completion:*:*:default' force-list always
+zstyle ':completion:*' select-prompt '%SSelect:  lines: %L  matches: %M  [%p]'
+
+zstyle ':completion:*:match:*' original only
+zstyle ':completion::prefix-1:*' completer _complete
+zstyle ':completion:predict:*' completer _complete
+zstyle ':completion:incremental:*' completer _complete _correct
+zstyle ':completion:*' completer _complete _prefix _correct _prefix _match _approximate
+
+#路径补全
+zstyle ':completion:*' expand 'yes'
+zstyle ':completion:*' squeeze-shlashes 'yes'
+zstyle ':completion::complete:*' '\\'
+
+#彩色补全菜单
+eval $(dircolors -b)
+export ZLSCOLORS="${LS_COLORS}"
+zmodload zsh/complist
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+
+#修正大小写
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+#错误校正
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
+
+#kill 命令补全
+compdef pkill=kill
+compdef pkill=killall
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:*:*:*:processes' force-list always
+zstyle ':completion:*:processes' command 'ps -au$USER'
+
+#补全类型提示分组
+zstyle ':completion:*:matches' group 'yes'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*:options' auto-description '%d'
+zstyle ':completion:*:descriptions' format $'\e[01;33m -- %d --\e[0m'
+zstyle ':completion:*:messages' format $'\e[01;35m -- %d --\e[0m'
+zstyle ':completion:*:warnings' format $'\e[01;31m -- No Matches Found --\e[0m'
+zstyle ':completion:*:corrections' format $'\e[01;32m -- %d (errors: %e) --\e[0m'
+
+# cd ~ 补全顺序
+zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
+#}}}
+
+##行编辑高亮模式 {{{
+# Ctrl+@ 设置标记，标记和光标点之间为 region
+zle_highlight=(region:bg=magenta #选中区域
+special:bold      #特殊字符
+isearch:underline)#搜索时使用的关键字
+#}}}
+
+##空行(光标在行首)补全 "cd " {{{
+user-complete(){
+case $BUFFER in
+"" )                       # 空行填入 "cd "
+BUFFER="cd "
+zle end-of-line
+zle expand-or-complete
+;;
+"cd --" )                  # "cd --" 替换为 "cd +"
+BUFFER="cd +"
+zle end-of-line
+zle expand-or-complete
+;;
+"cd +-" )                  # "cd +-" 替换为 "cd -"
+BUFFER="cd -"
+zle end-of-line
+zle expand-or-complete
+;;
+* )
+zle expand-or-complete
+;;
+esac
+}
+zle -N user-complete
+bindkey "\t" user-complete
+#}}}
+
+##在命令前插入 sudo {{{
+#定义功能
+sudo-command-line() {
+[[ -z $BUFFER ]] && zle up-history
+[[ $BUFFER != sudo\ * ]] && BUFFER="sudo $BUFFER"
+zle end-of-line                 #光标移动到行末
+}
+zle -N sudo-command-line
+#定义快捷键为： [Esc] [Esc]
+bindkey "\e\e" sudo-command-line
+#}}}
+
+#命令别名 {{{
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
+alias ls='ls -F --color=auto'
+alias ll='ls -al'
+alias grep='grep --color=auto'
+alias la='ls -a'
+alias pacman='sudo pacman-color'
+alias p='sudo pacman-color'
+alias y='yaourt'
+alias h='htop'
+alias vim='sudo vim'
+
+#[Esc][h] man 当前命令时，显示简短说明
+alias run-help >&/dev/null && unalias run-help
+autoload run-help
+
+#历史命令 top10
+alias top10='print -l  ${(o)history%% *} | uniq -c | sort -nr | head -n 10'
+#}}}
+
+#路径别名 {{{
+#进入相应的路径时只要 cd ~xxx
+hash -d A="/media/ayu/dearest"
+hash -d H="/media/data/backup/ayu"
+hash -d E="/etc/"
+hash -d D="/home/ayumi/Documents"
+#}}}
+
+##for Emacs {{{
+#在 Emacs终端 中使用 Zsh 的一些设置 不推荐在 Emacs 中使用它
+#if [[ "$TERM" == "dumb" ]]; then
+#setopt No_zle
+#PROMPT='%n@%M %/
+#>>'
+#alias ls='ls -F'
+#fi
+#}}}
+
+#{{{自定义补全
+#补全 ping
+zstyle ':completion:*:ping:*' hosts 192.168.1.{1,50,51,100,101} www.google.com
+
+#补全 ssh scp sftp 等
+#zstyle -e ':completion::*:*:*:hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
+#}}}
+
+#{{{ F1 计算器
+arith-eval-echo() {
+LBUFFER="${LBUFFER}echo \$(( "
+RBUFFER=" ))$RBUFFER"
+}
+zle -N arith-eval-echo
+bindkey "^[[11~" arith-eval-echo
+#}}}
+
+####{{{
+function timeconv { date -d @$1 +"%Y-%m-%d %T" }
+
+# }}}
+
+zmodload zsh/mathfunc
+autoload -U zsh-mime-setup
+zsh-mime-setup
+setopt EXTENDED_GLOB
+#autoload -U promptinit
+#promptinit
+#prompt redhat
+
+setopt correctall
+autoload compinstall
+
+#漂亮又实用的命令高亮界面
+setopt extended_glob
+TOKENS_FOLLOWED_BY_COMMANDS=('|' '||' ';' '&' '&&' 'sudo' 'do' 'time' 'strace')
+
+recolor-cmd() {
+region_highlight=()
+colorize=true
+start_pos=0
+for arg in ${(z)BUFFER}; do
+((start_pos+=${#BUFFER[$start_pos+1,-1]}-${#${BUFFER[$start_pos+1,-1]## #}}))
+((end_pos=$start_pos+${#arg}))
+if $colorize; then
+colorize=false
+res=$(LC_ALL=C builtin type $arg 2>/dev/null)
+case $res in
+*'reserved word'*)   style="fg=magenta,bold";;
+*'alias for'*)       style="fg=cyan,bold";;
+*'shell builtin'*)   style="fg=yellow,bold";;
+*'shell function'*)  style='fg=green,bold';;
+*"$arg is"*)
+[[ $arg = 'sudo' ]] && style="fg=red,bold" || style="fg=blue,bold";;
+*)                   style='none,bold';;
+esac
+region_highlight+=("$start_pos $end_pos $style")
+fi
+[[ ${${TOKENS_FOLLOWED_BY_COMMANDS[(r)${arg//|/\|}]}:+yes} = 'yes' ]] && colorize=true
+start_pos=$end_pos
+done
+}
+check-cmd-self-insert() { zle .self-insert && recolor-cmd }
+check-cmd-backward-delete-char() { zle .backward-delete-char && recolor-cmd }
+
+zle -N self-insert check-cmd-self-insert
+zle -N backward-delete-char check-cmd-backward-delete-char
+
+function powerline_precmd() {
+PS1="$(~/MyGit/powerline-shell/powerline-shell.py $? --shell zsh 2> /dev/null)"
+}
+
+function install_powerline_precmd() {
+for s in "${precmd_functions[@]}"; do
+if [ "$s" = "powerline_precmd" ]; then
+return
+fi
+done
+precmd_functions+=(powerline_precmd)
+}
+
+if [ "$TERM" != "linux" ]; then
+install_powerline_precmd
+fi
+```
+
 #### zsh插件管理器 antigen
 
     <https://github.com/zsh-users/antigen>
@@ -244,6 +684,10 @@ antigen用法：快速配置
 
 #### 不依赖 oh-my-zsh 配置 zsh
 
+配置zsh使用powerline
+
+    powerline-config shell -s zsh
+
 如果嫌 ohmyzsh 太慢，可以精简下功能的话，直接用 zsh 配置插件来实现几个常用功能。
 
     https://zhuanlan.zhihu.com/p/347772529
@@ -283,7 +727,9 @@ antigen用法：快速配置
 
     https://github.com/romkatv/powerlevel10k
 
-可先在docker中试用下
+参考图片![powerlevel10k](https://raw.githubusercontent.com/romkatv/powerlevel10k-media/master/prompt-styles-high-contrast.png)
+
+可先在docker中试用下，注意如果你的终端窗口工具不支持透明效果，且未使用MesloLGS NF 字体的话，显示效果会不一样
 
     docker run -e TERM -e COLORTERM -e LC_ALL=C.UTF-8 -it --rm alpine sh -uec '
         apk add git zsh nano vim
@@ -292,17 +738,19 @@ antigen用法：快速配置
         cd ~/powerlevel10k
         exec zsh'
 
-+ 先安装字体
++ 先安装字体，重要
 
-    在你使用终端窗口工具的计算机上，安装 MesloLGS NF 字体，设置终端窗口工具使用该字体，如果窗口支持透明效果（如mintty），显示效果直接起飞 <https://github.com/romkatv/powerlevel10k#fonts>。
-
-    参考图片![powerlevel10k](https://camo.githubusercontent.com/80ec23fda88d2f445906a3502690f22827336736/687474703a2f2f692e696d6775722e636f6d2f777942565a51792e676966)
-
-    字体下载的快速地址，其实 ohmyzsh 章节已经提到过 nerd-fonts 字体
+    在你使用终端窗口工具的计算机上，安装 MesloLGS NF 字体，设置终端窗口工具使用该字体，如果窗口支持透明效果（如mintty），显示效果直接起飞 <https://github.com/romkatv/powerlevel10k#fonts>。MesloLGS NF字体下载的快速地址
 
         https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k
 
-然后从github安装
+    注意字体要安装到你使用终端窗口工具的计算机上
+
+        你在 Windows 下使用 putty 或 mintty 等终端窗口工具连接到服务器，则字体要安装到你的 Windows 系统中。
+
+        你在 MacOS 下使用 iTerm2 终端窗口工具连接服务器，则要在你的苹果电脑上安装这些字体。
+
+从github安装
 
     # https://github.com/romkatv/powerlevel10k#manual
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
@@ -388,43 +836,6 @@ ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的�
 如果你只想用发行版的插件，那就在这个新的 ~/.zshrc 文件里再补上之前的语句：source xxx 。
 
 ohmyzsh的插件管理机制更智能，还会提示更新，建议用这种方式配置，不再用 ~/.zshrc 文件里逐个 source xxxx 的方式。
-
-### 状态栏工具 powerline
-
-vim、tmux 等众多工具的插件，大部分都依赖 powerline 进行状态栏显示。
-
-基础安装
-
-    sudo apt install powerline
-
-字体安装
-
-    # https://github.com/powerline/fonts
-    # https://github.com/caiogondim/bullet-train.zsh
-    sudo apt install fonts-powerline
-    sudo apt install ttf-ancient-fonts
-
-注意字体要安装到你使用终端窗口工具的计算机上
-
-    你在 Windows 下使用 putty 或 mintty 等终端窗口工具连接到服务器，则字体要安装到你的 Windows 系统中。
-
-    你在 MacOS 下使用终端连接服务器，则要在你的苹果电脑上安装这些字体。
-
-然后设置在终端窗口工具或编辑器使用该字体，这样才能正确显示。
-
-推荐安装使用目前最棒的字体 MesloLGS NF <https://github.com/romkatv/powerlevel10k#fonts>。
-
-配置使用
-
-    $ powerline-config -h
-    usage: powerline-config [-h] [-p PATH] {tmux,shell} ...
-
-    Script used to obtain powerline configuration.
-
-    positional arguments:
-    {tmux,shell}
-        tmux                Tmux-specific commands
-        shell               Shell-specific commands
 
 ## Windows 下的 GNU/POSIX 环境
 
@@ -1028,9 +1439,9 @@ Ctrl+V到下一页
 
 如果你修改了文件，下面会询问你是否需要保存修改。输入Y确认保存，输入N不保存，按Ctrl+C取消返回。如果输入了Y，下一步会让你输入想要保存的文件名。如果不需要修改文件名直接回车就行；若想要保存成别的名字（也就是另存为）则输入新名称然后确 定。这个时候也可用Ctrl+C来取消返回。
 
-#### vim扩展 powerline / lightline.vim / vim-airline
+#### vim扩展
 
-配置文件 ~/.vimrc or /etc/vim/vimrc
+配置文件 ~/.vimrc 或 /etc/vim/vimrc
 
 先决条件
 
@@ -1056,20 +1467,44 @@ Ctrl+V到下一页
 
     https://github.com/tpope/vim-pathogen
 
-色彩方案
+颜色方案
 
-    https://github.com/sdras/night-owl-vscode-theme
+    夜猫子 https://github.com/sdras/night-owl-vscode-theme
 
-    https://www.nordtheme.com/ports
+    北极 https://www.nordtheme.com/ports
 
-状态栏工具 vim-airline
+推荐安装 vim-airline
 
     https://github.com/vim-airline/vim-airline
 
     apt install vim-airline
     apt install vim-airline-themes
 
-省事了，自带很多常用插件如目录树语法高亮色彩主题啥的都有，普通字体也可以正常显示，开箱即用。
+省事了，除了状态栏工具，自带很多常用插件如目录树语法高亮色彩主题啥的都有，普通字体也可以正常显示，开箱即用。
+
+而且没用python代码，都用 vim script 写的，速度和兼容性都有保证。
+
++ 状态栏工具使用 powerline
+
+    先查看你安装 powerline 的位置，找到bindings目录
+
+        如果是用 pip 安装的 powerline，就是如下这种的路径
+
+            . /usr/lib/python3.7/site-packages/powerline/bindings/bash/powerline.sh
+
+        如果是用 apt 安装的powerline在，就是这种路径 /usr/share/powerline/bindings/
+
+    配置文件 ~/.vimrc or /etc/vim/vimrc
+
+        set rtp+=/usr/share/powerline/bindings/vim/
+
+        " Always show statusline
+        set laststatus=2
+
+        " Use 256 colours (Use this setting only if your terminal supports 256 colours)
+        set t_Co=256
+
+在 vim 下 powerline 的替代品：
 
 状态栏工具 lightline.vim
 
@@ -1077,60 +1512,13 @@ Ctrl+V到下一页
 
 Why yet another clone of powerline?
 
-    vim-powerline is a nice plugin, but deprecated.
+    [vim-powerline](https://github.com/Lokaltog/vim-powerline)  is a nice plugin, but deprecated.
 
     powerline is a nice plugin, but difficult to configure.
 
     vim-airline is a nice plugin, but it uses too many functions of other plugins, which should be done by users in .vimrc.
 
-这个更简洁，就是个状态栏工具和颜色方案，其它的插件自己决定要不要安装。
-
-状态栏工具 Vim-powerline
-
-    原作者废弃了 https://github.com/Lokaltog/vim-powerline
-
-状态栏工具 powerline
-
-    https://github.com/powerline/powerline/
-
-最大的优点是它的各种符号字体。
-
-安装和使用都很难配置，配置了也未必能生效（python2、3代码混杂），研究了一上午居然搞不定，算了，不玩这个。
-
-powerline 安装说明
-
-    https://askubuntu.com/questions/283908/how-can-i-install-and-use-powerline-plugin
-
-    https://powerline.readthedocs.io/en/latest/installation.html
-
-命令行安装
-
-    # https://powerline.readthedocs.io/en/latest/installation.html
-    # pip install powerline-status 这个是python2的一堆坑
-    # pip3 install --user git+https://github.com/powerline/powerline
-    # 这个最方便，自带的安装到 /usr/share/powerline/
-    sudo apt install powerline
-
-还得弄个自定义路径
-
-    # Add ~/.local/bin to $PATH by modifying ~/.profile
-    if [ -d "$HOME/.local/bin" ]; then
-        PATH="$HOME/.local/bin:$PATH"
-    fi
-
-绑定各软件
-
-先查看你安装的位置，找到bindings目录，用apt 安装的在 /usr/share/powerline/bindings/
-
-配置文件 ~/.vimrc or /etc/vim/vimrc
-
-    set rtp+=/usr/share/powerline/bindings/vim/
-
-    " Always show statusline
-    set laststatus=2
-
-    " Use 256 colours (Use this setting only if your terminal supports 256 colours)
-    set t_Co=256
+这个比较简洁，默认是状态栏工具和颜色方案。优点是没用python代码，都用 vim script 写的，速度和兼容性都有保证。
 
 ### tmux 不怕断连的多窗口命令行
 
