@@ -1480,7 +1480,7 @@ Ctrl+V到下一页
 
 如果你修改了文件，下面会询问你是否需要保存修改。输入Y确认保存，输入N不保存，按Ctrl+C取消返回。如果输入了Y，下一步会让你输入想要保存的文件名。如果不需要修改文件名直接回车就行；若想要保存成别的名字（也就是另存为）则输入新名称然后确 定。这个时候也可用Ctrl+C来取消返回。
 
-#### vim扩展
+#### vim 扩展插件
 
 配置文件 ~/.vimrc 或 /etc/vim/vimrc
 
@@ -1601,7 +1601,9 @@ mac os:
     sh autogen.sh
     ./configure && make
 
-##### 状态栏显示 powerline
+##### tmux 扩展插件
+
+状态栏显示 powerline
 
     https://bobbyhadz.com/blog/tmux-powerline-ubuntu
 
