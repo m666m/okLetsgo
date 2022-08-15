@@ -1789,6 +1789,10 @@ Slack Theme 浅色Hoth主题很好
 
     还有其它各种软件的导出，比如 mintty/putty/vim等 https://www.nordtheme.com/ports
 
+凛冬来临 黑白主题都不刺眼，非常清晰
+
+    johnpapa.winteriscoming
+
 Solarized Light（自带）  这个是羊皮纸底色，去蓝光了
 
 ### JScript/Json的格式化，比系统自带的好用
