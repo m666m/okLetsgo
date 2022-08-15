@@ -673,6 +673,8 @@ Linux 内核提供了一种通过 /proc 文件系统，在运行时访问内核�
 
     top 按 1 显示各个核的占用，按 A 按资源使用情况排序
 
+    安装 htop 图形化查看cpu占用
+
     uptime 开机以来的平均负载统计
 
     w 显示用户名下的进程
@@ -719,9 +721,9 @@ cpu属性值说明：
     1034 27015 27015  1034 pts/1    27015 S+    1000   1:27  |   \_ watch -n1 (date '+%T'; vcgencmd measure_temp) |tr '\n' ' ' |figlet -f future.tlf -w 80
     1033  1054  1054  1054 pts/2    28982 Ss    1000   0:00  \_ -bash
     1054 23597 23597  1054 pts/2    28982 S     1000   0:00  |   \_ /bin/bash
-    23597 23598 23598 23598 ?           -1 Ss    1000   0:00  |       \_ ssh-agent /bin/bash
-    23597 28982 28982  1054 pts/2    28982 S+       0   0:00  |       \_ sudo rngd -r /dev/urandom -o /dev/random -f -t 1
-    28982 28983 28982  1054 pts/2    28982 SLl+     0   0:02  |           \_ rngd -r /dev/urandom -o /dev/random -f -t 1
+    23597 23598 23598 23598 ?           -1 Ss    1000   0:00 |       \_ ssh-agent /bin/bash
+    23597 28982 28982  1054 pts/2    28982 S+       0   0:00 |       \_ sudo rngd -r /dev/urandom -o /dev/random -f -t 1
+    28982 28983 28982  1054 pts/2    28982 SLl+     0   0:02 |           \_ rngd -r /dev/urandom -o /dev/random -f -t 1
 
 或安装 pstree 工具
 
