@@ -137,13 +137,6 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
 
 字体安装推荐 MesloLGS NF，详见下面章节[状态栏字体]。
 
-还得弄个自定义路径
-
-    # Add ~/.local/bin to $PATH by modifying ~/.profile
-    if [ -d "$HOME/.local/bin" ]; then
-        PATH="$HOME/.local/bin:$PATH"
-    fi
-
 绑定到各软件：命令行方式配置
 
     $ powerline-config -h
@@ -793,12 +786,14 @@ antigen用法：快速配置
     # 设置提示符
     PROMPT='❰%{$fg[green]%}%n%{$reset_color%}|%{$fg[yellow]%}%1~%{$reset_color%}%{$fg[blue]%}$(git branch --show-current 2&> /dev/null | xargs -I branch echo "(branch)")%{$reset_color%}❱ '
 
-配置 zsh 使用 powerline，建议直接用支持 zsh 的主题如 powerlevel10k。
+配置 zsh 使用 powerline，直接在zsh下执行即可
 
     # 不知道这个命令怎么用 powerline-config shell -s zsh command
 
     # 如果是pip安装的查看路径用 pip show powerline-status
     source /usr/share/powerline/bindings/zsh/powerline.zsh
+
+建议直接用支持 zsh 的主题如 powerlevel10k。
 
 #### 强烈推荐主题 powerlevel10k
 
@@ -824,9 +819,9 @@ antigen用法：快速配置
 
     echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
 
-再次进入`zsh`就可以起飞了。
+再次进入 `zsh` 就可以起飞了。
 
-初次进入会自动提示设置使用习惯，日后可以执行命令 `p10k configure` 再次设置。
+初次进入zsh后会自动提示设置使用习惯，日后可以执行命令 `p10k configure` 再次设置。
 
 #### 内置超多插件和主题的 ohmyzsh
 
