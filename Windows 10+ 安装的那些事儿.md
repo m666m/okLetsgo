@@ -143,21 +143,25 @@ UEFI 下用 diskpart 进行分区的详细资料见<https://docs.microsoft.com/z
 
 U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西提取到u盘就行了。（适用于 Win8/8.1/10 以及 WinServer2012/2012R2/2016。WinVista x64/Win7x64 以及 WinServer2008x64/2008R2 需要额外操作，WinVista x86/Win7x86/WinServer2008x86 不支持 UEFI）
 
-#### 电脑是 UEFI 的，想装 Linux，但我手头没优盘，听说也能搞定
+#### 电脑是 UEFI 的，想装 Linux，但我手头没u盘，听说也能搞定
 
-硬盘搞个 FAT32 的分区，把 Linux 安装盘的 iso 镜像里面的文件/EFI/BOOT/下的 BOOTx64.efi、grubx64.efi 拷贝进去，然后在 Windows 下，用工具给那个分区的 BOOTx64.efi，添加为 UEFI 文件启动项，开机时候选那个启动项，就能启动到 Linux 安装盘了。
+硬盘搞个 FAT32 的分区，把 Linux 安装盘的 iso 镜像里面的文件 /EFI/BOOT/ 下的 BOOTx64.efi、grubx64.efi 拷贝进去，然后在 Windows 下，用工具给那个分区的 BOOTx64.efi，添加为 UEFI 文件启动项，开机时候选那个启动项，就能启动到 Linux 安装盘了。
 
 如果你要装的 Linux 不支持 SecureBoot，记得关掉主板 BIOS 的 SecureBoot 设置。
 
-事实上，MBR 分区表，也能启动 UEFI 模式下的 Windows，只是 Windows 安装程序提示不允许罢了。主板 BIOS 设置 UEFI 启动如果没找到 GPT 分区，就会自动转 CSM 模式，通过 MBR 分区表引导了 UEFI 模式的 Windows。
+#### MBR 分区表，也能启动 UEFI 模式下的 Windows
+
+只是 Windows 安装程序提示不允许罢了。
+
+主板 BIOS 设置 UEFI 启动如果没找到 GPT 分区，就会自动转 CSM 模式，通过 MBR 分区表引导 UEFI 模式的 Windows 进行启动。
 
 #### 参考
 
-    本文来源 <https://zhuanlan.zhihu.com/p/31365115>
+    本文来源 https://zhuanlan.zhihu.com/p/31365115
 
-    BCDBoot 命令行选项 <https://docs.microsoft.com/zh-cn/Windows-hardware/manufacture/desktop/bcdboot-command-line-options-techref-di>
+    BCDBoot 命令行选项 https://docs.microsoft.com/zh-cn/Windows-hardware/manufacture/desktop/bcdboot-command-line-options-techref-di
 
-    BCDEdit 命令行选项 <https://docs.microsoft.com/zh-cn/Windows-hardware/manufacture/desktop/bcdedit-command-line-options>
+    BCDEdit 命令行选项 https://docs.microsoft.com/zh-cn/Windows-hardware/manufacture/desktop/bcdedit-command-line-options
 
 ## 技嘉 B560M AORUS PRO 主板（BIOS 版本 F7） + Intel 11600KF CPU + DDR4 3600 内存的初始 BIOS 设置
 

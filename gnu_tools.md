@@ -128,22 +128,7 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
     # 最好用发行版自带的，默认的安装到 /usr/share/powerline/ 目录下了
     sudo apt install powerline
 
-字体安装
-
-    # https://github.com/powerline/fonts
-    # https://github.com/caiogondim/bullet-train.zsh
-    sudo apt install fonts-powerline
-    sudo apt install ttf-ancient-fonts
-
-注意字体要安装到你使用终端窗口工具的计算机上
-
-    你在 Windows 下使用 putty 或 mintty 等终端窗口工具连接到服务器，则字体要安装到你的 Windows 系统中。
-
-    你在 MacOS 下使用 iTerm2 终端窗口工具连接服务器，则要在你的苹果电脑上安装这些字体。
-
-然后设置在终端窗口工具或编辑器使用该字体，这样才能正确显示。
-
-推荐安装使用目前最棒的字体 MesloLGS NF <https://github.com/romkatv/powerlevel10k#fonts>。
+字体安装推荐 MesloLGS NF，详见下面章节[状态栏字体]。
 
 还得弄个自定义路径
 
@@ -170,6 +155,7 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
 
 如果是用 pip 安装的 powerline，就是如下这种的路径
 
+    # pip show powerline-status
     . /usr/lib/python3.7/site-packages/powerline/bindings/bash/powerline.sh
 
 如果是用 apt 安装的powerline在，就是这种路径 /usr/share/powerline/bindings/
@@ -191,6 +177,74 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
     └── zsh
 
 然后在各软件的配置文件中设置插件，指向这个bindings目录下的脚本即可，详见各软件的说明。
+
+### 状态栏字体
+
+    https://juejin.cn/post/6844904054322102285
+
+作为程序员，和命令行打交道很频繁，设置一个赏心悦目的命行行 prompt 或者 Vim 的 status line 主题就很有必要了，不过一般这些漂亮的主题都会用到一些 icon 字符，这些 icon 字符一般的字体里是没有的。
+
+如果使用的是没有打 patch 的字体，可以看到很多特殊字符都会显示不正确，这也是很多爱好者安装一些主题后，显示效果不理想的原因。
+
+Powerline fonts 或者 Nerd fonts 这些字体集，他们对已有的一些 (编程) 字体打了 patch，新增一些 icon 字符。
+
+字体要安装到你使用终端窗口工具的计算机上
+
+    你在 Windows 下使用 putty 或 mintty 等终端窗口工具连接到服务器，则字体要安装到你的 Windows 系统中。
+
+    你在 MacOS 下使用 iTerm2 终端窗口工具连接服务器，则要在你的苹果电脑上安装这些字体。
+
+如果你使用的是linux终端就比较省事了，直接安装到本机，Debian 发行版自带 powline 字体
+
+    # https://github.com/caiogondim/bullet-train.zsh
+    sudo apt install fonts-powerline
+    sudo apt install ttf-ancient-fonts
+
+然后设置在终端窗口工具或编辑器使用该字体，这样才能正确显示。
+
+#### Powerline fonts
+
+Nerd fonts 是 Powerline fonts 的超集，建议直接使用 Nerd font 就好了。
+
+    https://github.com/powerline/fonts
+
+Powerline 是一款 Vim statusline 的插件，它用到了很多特殊的 icon 字符。
+
+powerline fonts 是一个字体集，本质是对一些现有的字体打 patch，把 powerline icon 字符添加到这些现有的字体里去，目前对非常多的编程字体打了 patch。Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 for Powerline 的后缀，比如 Source Code Pro 打完 patch 后名字改为了 Source Code Pro for Powerline。
+
+很多状态栏插件工具等，即使不支持 powerline，也会支持 powerline fonts 的字体。
+
+    # clone
+    git clone --depth=1 https://github.com/powerline/fonts.git
+
+    # install
+    cd fonts
+    ./install.sh
+
+    cd ..
+    rm -rf fonts/
+
+#### Nerd font
+
+    https://github.com/ryanoasis/nerd-fonts
+
+原理和 Powerline fonts 是一样的，也是针对已有的字体打 patch，把一些 icon 字符插入进去。不过 Nerd font 就比较厉害了，是一个“集大成者”，他几乎把目前市面上主流的 icon 字符全打进去了，包括上面刚刚提到的 powerline icon 字符以及 Font Awesome 等几千个 icon 字符。
+
+和 Powerline fonts 类似，也会在 patch 后，对名字做一下修改，比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)
+
+终端窗口工具推荐安装 MesloLGS NF 字体，如果窗口支持透明效果（如mintty），显示效果直接起飞 <https://github.com/romkatv/powerlevel10k#fonts>。
+
+    快速下载地址
+
+    https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k
+
+    原始地址，Windows 用户找带 Windows 字样的下载即可
+
+        https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S/Regular/complete
+
+代码编辑器用 FiraCode 字体，Windows 用户找带 Windows 字样的下载即可
+
+    https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
 
 ### 使用 zsh
 
@@ -273,7 +327,9 @@ zsh自带功能
     # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
-配置zsh，有空慢慢研究吧
+#### zsh配置文件样例
+
+有空慢慢研究吧
 
     https://linux.zone/1306
 
@@ -684,9 +740,10 @@ antigen用法：快速配置
 
 #### 不依赖 oh-my-zsh 配置 zsh
 
-配置zsh使用powerline
+配置 zsh 使用 powerline，不知道该咋弄了，建议直接用 zsh 的主题得了。
 
-    powerline-config shell -s zsh
+    $ powerline-config shell -s zsh command
+    powerline
 
 如果嫌 ohmyzsh 太慢，可以精简下功能的话，直接用 zsh 配置插件来实现几个常用功能。
 
@@ -729,7 +786,7 @@ antigen用法：快速配置
 
 参考图片![powerlevel10k](https://raw.githubusercontent.com/romkatv/powerlevel10k-media/master/prompt-styles-high-contrast.png)
 
-可先在docker中试用下，注意如果你的终端窗口工具不支持透明效果，且未使用MesloLGS NF 字体的话，显示效果会不一样
+可先在docker中试用下，注意如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示效果会不一样
 
     docker run -e TERM -e COLORTERM -e LC_ALL=C.UTF-8 -it --rm alpine sh -uec '
         apk add git zsh nano vim
@@ -738,19 +795,9 @@ antigen用法：快速配置
         cd ~/powerlevel10k
         exec zsh'
 
-+ 先安装字体，重要
+先在你使用终端窗口工具的计算机上安装 MesloLGS NF 字体，详见章节[状态栏字体]。
 
-    在你使用终端窗口工具的计算机上，安装 MesloLGS NF 字体，设置终端窗口工具使用该字体，如果窗口支持透明效果（如mintty），显示效果直接起飞 <https://github.com/romkatv/powerlevel10k#fonts>。MesloLGS NF字体下载的快速地址
-
-        https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k
-
-    注意字体要安装到你使用终端窗口工具的计算机上
-
-        你在 Windows 下使用 putty 或 mintty 等终端窗口工具连接到服务器，则字体要安装到你的 Windows 系统中。
-
-        你在 MacOS 下使用 iTerm2 终端窗口工具连接服务器，则要在你的苹果电脑上安装这些字体。
-
-从github安装
+然后从github安装powerlevel10k
 
     # https://github.com/romkatv/powerlevel10k#manual
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
@@ -768,20 +815,14 @@ ohmyzsh 是在 zsh 的基础上增加了更多的花样的shell包装
     https://ohmyz.sh/
         https://github.com/ohmyzsh/ohmyzsh
 
-ohmyzsh 安装目前是从github下载
+先在你使用终端窗口工具的计算机上安装 MesloLGS NF 字体，详见章节[状态栏字体]。
+
+ohmyzsh 目前是从 github 安装
 
     # wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh
     sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 
     # 或 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-主题的依赖字体，要安装到你使用终端窗口工具的计算机上，然后在终端窗口工具或编辑器中设置使用该字体，这样才能正确显示
-
-    https://github.com/ryanoasis/nerd-fonts
-
-        支持透明效果的终端窗口使用直接起飞 https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S/Regular/complete ，Windows用户找带Windows字样的下载即可。
-
-        代码编辑器用 https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
 
 在 ~/.zshrc 里设置主题，默认 robbyrussell
 
@@ -1482,29 +1523,37 @@ Ctrl+V到下一页
 
 省事了，除了状态栏工具，自带很多常用插件如目录树语法高亮色彩主题啥的都有，普通字体也可以正常显示，开箱即用。
 
-而且没用python代码，都用 vim script 写的，速度和兼容性都有保证。
+最重要的是，它没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
 + 状态栏工具使用 powerline
 
-    先查看你安装 powerline 的位置，找到bindings目录
+    powerline 要求 Vim 在编译时添加 python 支持，我也不知道vim的哪个版本支持。
+    在自己编译 vim 前想清楚，你的 python 环境是什么，在 virtualenv 下如何使用vim？
 
-        如果是用 pip 安装的 powerline，就是如下这种的路径
+    所以建议别走自行编译这条路！用 vim-airline 就万事大吉。
 
-            . /usr/lib/python3.7/site-packages/powerline/bindings/bash/powerline.sh
+    如果确定你的 vim 是有 python 支持的，那么可以使用 powerline ，做如下设置：
 
-        如果是用 apt 安装的powerline在，就是这种路径 /usr/share/powerline/bindings/
+        先查看你安装 powerline 的位置，找到bindings目录
 
-    配置文件 ~/.vimrc or /etc/vim/vimrc
+            如果是用 pip 安装的 powerline，就是如下这种的路径
 
-        set rtp+=/usr/share/powerline/bindings/vim/
+                # pip show powerline-status
+                . /usr/lib/python3.7/site-packages/powerline/bindings/bash/powerline.sh
 
-        " Always show statusline
-        set laststatus=2
+            如果是用 apt 安装的powerline在，就是这种路径 /usr/share/powerline/bindings/
 
-        " Use 256 colours (Use this setting only if your terminal supports 256 colours)
-        set t_Co=256
+        配置文件 ~/.vimrc or /etc/vim/vimrc
 
-在 vim 下 powerline 的替代品：
+            set rtp+=/usr/share/powerline/bindings/vim/
+
+            " Always show statusline
+            set laststatus=2
+
+            " Use 256 colours (Use this setting only if your terminal supports 256 colours)
+            set t_Co=256
+
+在 vim 下 powerline 的简洁替代品：
 
 状态栏工具 lightline.vim
 
@@ -1518,7 +1567,7 @@ Why yet another clone of powerline?
 
     vim-airline is a nice plugin, but it uses too many functions of other plugins, which should be done by users in .vimrc.
 
-这个比较简洁，默认是状态栏工具和颜色方案。优点是没用python代码，都用 vim script 写的，速度和兼容性都有保证。
+这个比较简洁，默认是状态栏工具和颜色方案。优点是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
 ### tmux 不怕断连的多窗口命令行
 
