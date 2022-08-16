@@ -2418,6 +2418,44 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     update-alternatives --config vi
 
+### 压力测试
+
+cpu 压力测试，入参是cpu的核心数
+
+```shell
+#!/bin/bash
+# Destription: testing cpu usage performance
+# Example    : sh cpu_usage.sh 12
+# Remark     : cat /proc/cpuinfo | grep "processor"|wc -l    #12==>Get the number of processor
+# Date       : 2015-1-12
+# update     : 2015-1-12
+
+endless_loop()
+{
+  echo -ne "i=0;
+
+  while true
+  do
+    i=i+100;
+    i=100
+  done" | /bin/bash &
+}
+
+if [ $# != 1 ] ; then
+  echo "USAGE: $0 <CPUs>"
+  exit 1;
+fi
+for i in `seq $1`
+do
+  endless_loop
+  pid_array[$i]=$! ;
+done
+
+for i in "${pid_array[@]}"; do
+  echo 'kill ' $i ';';
+done
+```
+
 ### 开机启动 SystemV(init) 和 systemd
 
     https://www.debian.org/doc/manuals/debian-handbook/unix-services.zh-cn.html#sect.systemd
