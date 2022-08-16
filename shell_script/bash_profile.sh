@@ -119,7 +119,7 @@ function PS1raspi-warning-info {
     local LOAD_AVG_THLOD=`echo | awk -v avg="$LOAD_AVG_5" -v cap="$LOAD_AVG_CAP" '{if (avg>cap) {print "1"} else {print "0"}}'`
     (($LOAD_AVG_THLOD > 0)) && local LOAD_AVG_WARN="= cpu_avg_load 5min: $LOAD_AVG_5 ="
 
-    printf "%s%s%s" "$CPUTEMP_WARN""$THROTT_WARN""$LOAD_AVG_WARN"
+    printf "%s%s%s" "$CPUTEMP_WARN" "$THROTT_WARN" "$LOAD_AVG_WARN"
 }
 
 function PS1raspi-warning-prompt {
