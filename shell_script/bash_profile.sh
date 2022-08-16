@@ -94,21 +94,21 @@ function PS1raspi-warning-info {
     local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
     if [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "75000" ]; then
-            local CPUTEMP_WARN="CPU `vcgencmd measure_temp` ！HIGH TEMPERATURE!"
+            local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ！HIGH TEMPERATURE! ="
     elif [ "$CPUTEMP" -gt  "75000" ];  then
-            local CPUTEMP_WARN="=CPU `vcgencmd measure_temp` ！PLEASE SHUTDOWN RASPBERRYPI: TEMPERATURE IS VERY HIGH! ="
+            local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ！PLEASE SHUTDOWN RASPBERRYPI: TEMPERATURE IS VERY HIGH! ="
     fi
 
     local THROTT=`vcgencmd get_throttled| tr -d "throttled="`
     if [ "$THROTT" != "0x0" ];  then
-        local THROTT_WARN="=System throttled $THROTT ！PLEASE check RASPBERRYPI:https://www.raspberrypi.com/documentation/computers/os.html#get_throttled ="
+        local THROTT_WARN="= System throttled $THROTT ！PLEASE check RASPBERRYPI:https://www.raspberrypi.com/documentation/computers/os.html#get_throttled ="
     fi
 
     local CPU_CORES=`grep 'model name' /proc/cpuinfo | wc -l`
     local LOAD_AVG_CAP=`echo | awk -v cores="$CPU_CORES" '{printf("%.2f",cores*0.7)}'`
     local LOAD_AVG_5=`cat /proc/loadavg|cut -d' ' -f 2`
     local LOAD_AVG_THLOD=`echo | awk -v avg="$LOAD_AVG_5" -v cap="$LOAD_AVG_CAP" '{if (avg>cap) {print "1"} else {print "0"}}'`
-    (($LOAD_AVG_THLOD > 0)) && local LOAD_AVG_WARN="=cpu_avg_load 5min: $LOAD_AVG_5 ="
+    (($LOAD_AVG_THLOD > 0)) && local LOAD_AVG_WARN="= cpu_avg_load 5min: $LOAD_AVG_5 ="
 
     printf "%s%s%s" "$CPUTEMP_WARN""$THROTT_WARN""$LOAD_AVG_WARN"
 }
