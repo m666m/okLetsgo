@@ -203,7 +203,7 @@ unset env
 
 ####################################################################
 # Windows git bash(mintty)
-# : 多会话复用 ssh-pageant，代替上面多会话复用 ssh-agent 的段落
+# : 多会话复用 ssh-pageant，用它连接 putty 的 pagent.exe，代替上面多会话复用 ssh-agent 的段落
 # : 运行gpg钥匙圈更新
 
 # 利用检查 ssh-pageant 进程是否存在，
@@ -224,7 +224,7 @@ fi
 
 echo ''
 echo '用 ssh-pageant 连接 putty pageant，复用已加载的ssh密钥'
-# ssh-pageant 会自行判断是否已经运行，不会多次运行自己
+# ssh-pageant 使用以下参数来判断是否有已经运行的进程，不会多次运行自己
 eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
 ssh-add -l
 
