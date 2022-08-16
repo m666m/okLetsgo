@@ -2420,6 +2420,12 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
 ### 压力测试
 
+    sudo apt install stress-ng
+
+    stress-ng -c 2 --cpu-method pi --timeout 60
+    stress-ng -i 1 --timeout 60
+    stress-ng -m 1 --timeout 60
+
 cpu 压力测试，入参是cpu的核心数
 
 ```shell
