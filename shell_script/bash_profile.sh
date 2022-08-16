@@ -10,7 +10,8 @@ test -f ~/.bashrc && . ~/.bashrc
 set -o vi
 
 ####################################################################
-# 命令行提示符显示当前路径和git分支等，放入任一 .profile 或 .bashrc 或 .bash_profile 内
+# Linux bash / Windows git bash(mintty)
+# : 命令行提示符显示当前路径和git分支等，放入任一 .profile 或 .bashrc 或 .bash_profile 内
 
 black=$'\[\e[0;30m\]'
 
@@ -88,7 +89,8 @@ function PS1git-branch-prompt {
 PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
 #################################
-# : 在上面的基础上增加个raspberry pi的状态检测
+# Linux bash
+# : 在上面的基础上增加 raspberry pi 的状态检测
 # 告警条件：
 #   CPU 温度的单位是千分位提权1000
 #   系统throttled不是零
@@ -109,7 +111,7 @@ function PS1raspi-warning-info {
 
     local CPU_CORES=`grep 'model name' /proc/cpuinfo | wc -l`
     local LOAD_AVG_CAP=`echo | awk -v cores="$CPU_CORES" '{printf("%.2f",cores*0.7)}'`
-    local LOAD_AVG_5=`cat /proc/loadavg|cut -d' ' -f 2`
+    local LOAD_AVG_5=`cat /proc/loadavg | cut -d' ' -f 2`
     local LOAD_AVG_THLOD=`echo | awk -v avg="$LOAD_AVG_5" -v cap="$LOAD_AVG_CAP" '{if (avg>cap) {print "1"} else {print "0"}}'`
     (($LOAD_AVG_THLOD > 0)) && local LOAD_AVG_WARN="= cpu_avg_load 5min: $LOAD_AVG_5 ="
 
@@ -127,7 +129,7 @@ PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green
 
 #################################
 # Windows git bash(mintty)
-# : 命令行提示符显示： 可以部分复用上面的函数
+# : 命令行提示符显示： 部分复用了上面的函数
 #
 # 在\$(函数名)后直接用换行\n就冲突，不支持$?检查退出码，或者把换行\n放在引用函数前面，或者拼接凑合用
 #PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
@@ -146,7 +148,7 @@ PS1="\n$magenta┌─$red\$(PS1git-bash-exitcode)$magenta[$white\t $green\u$whit
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
-# : 加载 ssh-agent 并且多会话复用
+# : 多会话复用 ssh-agent
 #
 # 来自章节 [多会话复用 ssh-agent 进程] <ssh.md>
 # git bash auto ssh-agent
@@ -197,7 +199,7 @@ unset env
 
 ####################################################################
 # Windows git bash(mintty)
-# : 加载 ssh-pageant 并且多会话复用，代替上面加载 ssh-agent 并且多会话复用的段落
+# : 多会话复用 ssh-pageant，代替上面多会话复用 ssh-agent 的段落
 # : 运行gpg钥匙圈更新
 
 # 利用检查 ssh-pageant 进程是否存在，
