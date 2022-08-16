@@ -81,7 +81,11 @@ function PS1git-branch-prompt {
   local branch=`PS1git-branch-name`
   if [ $branch ]; then
     local git_modify=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
-    printf " git:(%s)" $branch$git_modify;
+    if [ -n "$git_modify" ]; then
+	    printf " git:%s(%s)" $git_modify $branch
+    else
+	    printf " git:(%s)" $branch
+    fi
   fi
 }
 
