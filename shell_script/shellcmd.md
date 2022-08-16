@@ -725,7 +725,7 @@ cpu属性值说明：
     23597 28982 28982  1054 pts/2    28982 S+       0   0:00 |       \_ sudo rngd -r /dev/urandom -o /dev/random -f -t 1
     28982 28983 28982  1054 pts/2    28982 SLl+     0   0:02 |           \_ rngd -r /dev/urandom -o /dev/random -f -t 1
 
-或安装 pstree 工具
+或安装 pstree 工具(sudo apt install psmisc)
 
     $ pstree -a
     systemd
@@ -1100,9 +1100,39 @@ sar 命令选项    功能
     writeable/private: 1296K 私有地址空间
     shared: 28K 此进程与其他进程共享的地址空间
 
+## 查看文件占用（含端口哦）
+
+无论设备、端口、内存句柄等等，一切皆文件。
+
+lsof 查看进程打开的文件（sudo apt install lsof）
+
+    $ sudo lsof -p 28987
+    COMMAND   PID USER   FD   TYPE     DEVICE SIZE/OFF    NODE NAME
+    nginx   28987 root  cwd    DIR      179,2     4096       2 /
+    nginx   28987 root  rtd    DIR      179,2     4096       2 /
+    nginx   28987 root  txt    REG      179,2   931072   46275 /usr/sbin/nginx
+    nginx   28987 root  mem    REG      179,2   130696  129293 /usr/lib/nginx/modules/ngx_stream_module.so
+    nginx   28987 root  mem    REG      179,2    82872  129283 /usr/lib/nginx/modules/ngx_mail_module.so
+    ...
+    nginx   28987 root  DEL    REG        0,1             3073 /dev/zero
+    nginx   28987 root    0u   CHR        1,3      0t0       5 /dev/null
+    nginx   28987 root    1u   CHR        1,3      0t0       5 /dev/null
+    nginx   28987 root    2w   REG      179,2        0  130189 /var/log/nginx/error.log
+    nginx   28987 root    3u  unix 0xf367c717      0t0 1888607 type=STREAM
+    nginx   28987 root    4w   REG      179,2        0  125086 /var/log/nginx/access.log
+    nginx   28987 root    5w   REG      179,2        0  130189 /var/log/nginx/error.log
+    nginx   28987 root    6u  IPv4    1891872      0t0     TCP *:http (LISTEN)
+    nginx   28987 root    7u  IPv6    1891873      0t0     TCP *:http (LISTEN)
+    nginx   28987 root    8u  unix 0x0967072f      0t0 1888608 type=STREAM
+
+fuser 查看占用文件的进程号（sudo apt install psmisc）
+
+    $ sudo fuser /usr/lib/nginx/modules/ngx_mail_module.so
+    /usr/lib/nginx/modules/ngx_mail_module.so: 28987m 28988m 28989m 28990m 28991m
+
 ## 查看端口占用
 
-使用 ss 命令，比 netstat 命令看的信息更多
+使用 ss 命令（iproute2 套件由操作系统默认安装了），比 netstat 命令看的信息更多
 
     # ss -aw 查看raw端口
     # ss -au 查看udp端口
@@ -1112,7 +1142,7 @@ sar 命令选项    功能
     # 已经建立连接的http端口
     ss -o state established '( dport = :http or sport = :http )'
 
-state FILTER-NAME-HERE, Where FILTER-NAME-HERE can be any one of the following
+    state FILTER-NAME-HERE, Where FILTER-NAME-HERE can be any one of the following
 
     established
     syn-sent
@@ -1130,6 +1160,29 @@ state FILTER-NAME-HERE, Where FILTER-NAME-HERE can be any one of the following
     synchronized : All the connected states except for syn-sent
     bucket : Show states, which are maintained as minisockets, i.e. time-wait and syn-recv.
     big : Opposite to bucket state.
+
+lsof列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof）
+
+    $ sudo lsof -i
+    COMMAND     PID     USER   FD   TYPE  DEVICE SIZE/OFF NODE NAME
+    avahi-dae   371    avahi   12u  IPv4   13904      0t0  UDP *:mdns
+    avahi-dae   371    avahi   13u  IPv6   13905      0t0  UDP *:mdns
+    avahi-dae   371    avahi   14u  IPv4   13906      0t0  UDP *:57630
+    avahi-dae   371    avahi   15u  IPv6   13907      0t0  UDP *:47663
+    dhcpcd      556     root   10u  IPv4   13950      0t0  UDP *:bootpc
+    dhcpcd      556     root   15u  IPv6 1702269      0t0  UDP *:dhcpv6-client
+    sshd        566     root    3u  IPv4   17230      0t0  TCP *:ssh (LISTEN)
+    sshd        566     root    4u  IPv6   17240      0t0  TCP *:ssh (LISTEN)
+    nginx     28987     root    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
+    nginx     28987     root    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
+    nginx     28988 www-data    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
+    nginx     28988 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
+    nginx     28989 www-data    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
+    nginx     28989 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
+    nginx     28990 www-data    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
+    nginx     28990 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
+    nginx     28991 www-data    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
+    nginx     28991 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
 
 ## 文件信息
 
