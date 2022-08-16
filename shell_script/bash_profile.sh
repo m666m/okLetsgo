@@ -1,5 +1,5 @@
 
-# 用于 .bash_profile先加载初始设置
+# 兼容性设置，用于 .bash_profile 加载多种linux的配置文件
 test -f ~/.profile && . ~/.profile
 test -f ~/.bashrc && . ~/.bashrc
 
@@ -30,8 +30,9 @@ white=$'\[\e[0;37m\]'
 
 normal=$'\[\e[m\]'
 
-# 使用奇怪点的函数名，防止污染shell的脚本命名空间
-# 注意判断退出码的函数前面不能执行函数
+# 为防止函数名污染命令行环境，尽量使用奇怪点的函数名
+# 注意：在执行判断退出码的函数前面不能执行函数，
+#      所以 PS1exit-code 要放在最前面执行
 
 function PS1exit-code {
     local exitcode=$?
@@ -57,6 +58,7 @@ function PS1git-branch-name {
         # 不是git环境
         if [ $exitcode -gt 1 ]; then
             printf "%s" ""
+            return
 
         # detached HEAD
         else
@@ -86,10 +88,11 @@ function PS1git-branch-prompt {
 PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
 #################################
-# 在上面的基础上增加个raspberry pi的状态检测，警告条件：
-# CPU 温度的单位是千分位提权1000
-# 系统throttled不是零
-# CPU Load Average的值应该小于CPU核数X0.7，取5分钟平均负载
+# : 在上面的基础上增加个raspberry pi的状态检测
+# 告警条件：
+#   CPU 温度的单位是千分位提权1000
+#   系统throttled不是零
+#   CPU Load Average的值应该小于CPU核数X0.7，取5分钟平均负载
 function PS1raspi-warning-info {
     local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
@@ -122,8 +125,10 @@ function PS1raspi-warning-prompt {
 
 PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1raspi-warning-prompt)$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
-#################################
-# Windows git bash 命令行提示符显示：
+####################################################################
+# Windows git bash(mintty)
+# : 命令行提示符显示： 可以部分复用上面的函数
+#
 # 在\$(函数名)后直接用换行\n就冲突，不支持$?检查退出码，或者把换行\n放在引用函数前面，或者拼接凑合用
 #PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
 # 目前完美解决办法是新增子函数PS1git-bash-new-line和PS1git-bash-exitcode实现跟上面完全一致的美化效果。
@@ -140,6 +145,9 @@ function PS1git-bash-exitcode {
 PS1="\n$magenta┌─$red\$(PS1git-bash-exitcode)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta$(PS1git-bash-new-line)──$white\$ $normal"
 
 ####################################################################
+# Windows git bash(mintty)
+# : 加载 ssh-agent
+#
 # 来自章节 [多会话复用 ssh-agent 进程] <ssh.md>
 # git bash auto ssh-agent
 # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
@@ -160,11 +168,18 @@ agent_start () {
 
 agent_load_env
 
-# 密钥的密码无法用 sshpass，这个是给 ssh 用的，ssh -add 没法用
-# agent_run_state: 0=agent running w/ key; 1=agent w/o key; 2=agent not running
+##########
+# 加载 ssh-agent，需要用户手工输入密钥的保护密码
+# 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
+
+# agent_run_state:
+#   0=agent running w/ key;
+#   1=agent w/o key;
+#   2=agent not running
 agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
 
 if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
+    # 开机后第一次打开bash会话
     echo "正在启动ssh-agent..."
     agent_start
 
@@ -173,16 +188,20 @@ if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
     ssh-add
 
 elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
-    echo "加载ssh密钥，注意根据提示输入保护密码"
+    # ssh-agent正在运行，但是没有加载过密钥
+    echo "加载ssh密钥,注意根据提示输入保护密码"
     ssh-add
 fi
 
 unset env
 
-#################################
-# Windows git bash
-# 利用检查 ssh-pageant 进程判断是否第一次打开bash会话，运行gpg钥匙圈更新
-#
+####################################################################
+# Windows git bash(mintty)
+# : 加载 ssh-pageant，代替上面的使用 ssh-agent 加载ssh密钥的段落
+# : 运行gpg钥匙圈更新
+
+# 利用检查 ssh-pageant 进程是否存在，
+# 判断是否开机后第一次打开bash会话，则运行gpg钥匙圈更新
 if ! $(ps -s|grep ssh-pageant>/dev/null) ;then
     echo ''
     # echo "更新gpg钥匙圈需要点时间，请稍等..."
@@ -198,8 +217,8 @@ if ! $(ps -s|grep ssh-pageant>/dev/null) ;then
 fi
 
 echo ''
-echo '用 ssh-pageant 代替 ssh-agent，使 ssh 鉴权调用putty pageant'
+echo '用 ssh-pageant 连接 putty pageant，复用已加载的ssh密钥'
 eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
 ssh-add -l
 
-#################################
+####################################################################

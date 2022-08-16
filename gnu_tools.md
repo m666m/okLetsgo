@@ -310,7 +310,9 @@ zsh自带功能
 
     快速跳转：输入 cd - 按TAB，会列出历史路径清单供选择。
 
-最常用的插件功能
+安装最常用的插件功能
+
+    powerline：见章节[状态栏工具 powerline]
 
     命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按TAB键快速进入下一级，或直接按右方向键确认该提示。
 
@@ -327,9 +329,15 @@ zsh自带功能
     # 如果是用 apt install 安装的发行版，位置在 /usr/share/ 目录
     # 手动安装的位置在 ~/.zsh/plugins/ 目录
 
+    # 启用插件：powerline
+    # 如果是pip安装的查看路径用 pip show powerline-status
+    source /usr/share/powerline/bindings/zsh/powerline.zsh
+
+    # 启用插件：命令自动完成
     # source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
     source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
+    # 启用插件：命令语法高亮
     # 官网提示要在文件的最后一行
     # source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
     source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -762,6 +770,7 @@ antigen用法：快速配置
     命令自动补全
     语法高亮
     替换为彩色提示符
+    powerline
 
 拉取插件代码
 
@@ -771,29 +780,32 @@ antigen用法：快速配置
     # 语法高亮
     git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zsh-syntax-highlighting
 
-使用以下内容替换用户目录下的 .zshrc 文件
-
-    # 启用插件
-    source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-    source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-    # 启用彩色提示符
-    autoload -U colors && colors
-
-    # 每次刷新提示符
-    setopt prompt_subst
-
-    # 设置提示符
-    PROMPT='❰%{$fg[green]%}%n%{$reset_color%}|%{$fg[yellow]%}%1~%{$reset_color%}%{$fg[blue]%}$(git branch --show-current 2&> /dev/null | xargs -I branch echo "(branch)")%{$reset_color%}❱ '
-
 配置 zsh 使用 powerline，直接在zsh下执行即可
 
     # 不知道这个命令怎么用 powerline-config shell -s zsh command
 
+使用以下内容替换用户目录下的 .zshrc 文件
+
+    # 启用彩色提示符
+    autoload -U colors && colors
+
+    # 每次命令行刷新提示符
+    setopt prompt_subst
+
+    # 设置命令行提示符
+    PROMPT='❰%{$fg[green]%}%n%{$reset_color%}|%{$fg[yellow]%}%1~%{$reset_color%}%{$fg[blue]%}$(git branch --show-current 2&> /dev/null | xargs -I branch echo "(branch)")%{$reset_color%}❱ '
+
+    # 启用插件: powerline
     # 如果是pip安装的查看路径用 pip show powerline-status
     source /usr/share/powerline/bindings/zsh/powerline.zsh
 
-建议直接用支持 zsh 的主题如 powerlevel10k。
+    # 启用插件: zsh-autosuggestions
+    source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+    # 启用插件: zsh-syntax-highlighting
+    source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+如果嫌设置这几个插件太麻烦，直接安装使用支持 zsh 的主题 powerlevel10k，全都有了。
 
 #### 强烈推荐主题 powerlevel10k
 
@@ -801,7 +813,7 @@ antigen用法：快速配置
 
 参考图片![powerlevel10k](https://raw.githubusercontent.com/romkatv/powerlevel10k-media/master/prompt-styles-high-contrast.png)
 
-可先在docker中试用下，注意如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示效果会不一样
+可先在docker中试用下
 
     docker run -e TERM -e COLORTERM -e LC_ALL=C.UTF-8 -it --rm alpine sh -uec '
         apk add git zsh nano vim
@@ -811,6 +823,8 @@ antigen用法：快速配置
         exec zsh'
 
 先在你使用终端窗口工具的计算机上安装 MesloLGS NF 字体，详见章节[状态栏字体]。
+
+如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示效果会有差别，这是设计者做了考虑，已防止出现不正常的显示。
 
 然后从github安装powerlevel10k
 
@@ -1023,11 +1037,19 @@ GIT Bash 使用了 GNU tools 的 MINGW，但是工具只选择了它自己需要
 
 git for windows 的 mintty 目录
 
-    / 目录          位于git安装目录下的 C:\Program Files\Git\ 目录下
-    /usr 目录       同上
+    / 目录          位于git安装目录下的 C:\Program Files\Git\ 目录
+    /usr 目录       C:\Program Files\Git\ 目录下
+    /bin 目录       C:\Program Files\Git\ 目录下
+    /dev 目录       C:\Program Files\Git\ 目录下
+    /etc 目录       C:\Program Files\Git\ 目录下
+
     /tmp 目录       位于 C:\Users\%USERNAME%\AppData\Local\Temp\  目录下
 
-退出bash时，最好不要直接关闭窗口，使用命令exit或^D。
+    /proc 目录      这个是 git 自己虚出来的，只能在 git bash(mintty) 下看到
+
+    /cmd 目录       C:\Program Files\Git\ 目录下，给在 Windows cmd 命令行窗口下运行 git 和 ssh 用的脚本
+
+退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不如会提示有进程未关闭。
 
 putty的退出也是同样的建议。
 
