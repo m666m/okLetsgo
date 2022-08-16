@@ -125,7 +125,7 @@ function PS1raspi-warning-prompt {
 
 PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1raspi-warning-prompt)$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
-####################################################################
+#################################
 # Windows git bash(mintty)
 # : 命令行提示符显示： 可以部分复用上面的函数
 #
@@ -145,8 +145,8 @@ function PS1git-bash-exitcode {
 PS1="\n$magenta┌─$red\$(PS1git-bash-exitcode)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta$(PS1git-bash-new-line)──$white\$ $normal"
 
 ####################################################################
-# Windows git bash(mintty)
-# : 加载 ssh-agent
+# Linux bash / Windows git bash(mintty)
+# : 加载 ssh-agent 并且多会话复用
 #
 # 来自章节 [多会话复用 ssh-agent 进程] <ssh.md>
 # git bash auto ssh-agent
@@ -169,7 +169,7 @@ agent_start () {
 agent_load_env
 
 ##########
-# 加载 ssh-agent，需要用户手工输入密钥的保护密码
+# 加载 ssh-agent 需要用户手工输入密钥的保护密码
 # 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
 
 # agent_run_state:
@@ -197,7 +197,7 @@ unset env
 
 ####################################################################
 # Windows git bash(mintty)
-# : 加载 ssh-pageant，代替上面的使用 ssh-agent 加载ssh密钥的段落
+# : 加载 ssh-pageant 并且多会话复用，代替上面加载 ssh-agent 并且多会话复用的段落
 # : 运行gpg钥匙圈更新
 
 # 利用检查 ssh-pageant 进程是否存在，
@@ -218,6 +218,7 @@ fi
 
 echo ''
 echo '用 ssh-pageant 连接 putty pageant，复用已加载的ssh密钥'
+# ssh-pageant 会自行判断是否已经运行，不会多次运行自己
 eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
 ssh-add -l
 
