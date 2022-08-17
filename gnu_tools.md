@@ -364,7 +364,7 @@ zsh自带功能
     # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
-嫌这些配置麻烦，有个适合大家常用功能的打包 -- zsh4humans
+嫌这些配置麻烦，有个适合大家常用功能的打包,速度还优化了 -- zsh4humans
 
     https://github.com/romkatv/zsh4humans
 
@@ -377,13 +377,19 @@ zsh自带功能
 
 而且能跨主机记忆命令历史，比如你在本机ssh某个主机后执行的操作，在本机或另一个ssh主机上都可以被回忆到，方便！
 
-如果想研究哪个插件过慢导致命令行反应让人不爽，有专门搞测量的 zsh-bench
+如果想研究哪个插件过慢导致命令行反应让人不爽，有专门搞测量的 zsh-bench，它的建议是
 
-    https://github.com/romkatv/zsh-bench
+    https://github.com/romkatv/zsh-bench#conclusions
+
+    状态栏工具使用主题 powerlevle10k，
+
+    如果还需要自动完成啥的几个插件，那就直接安装 zsh4humans，这个就优化的这几个功能。
 
 #### 不依赖 oh-my-zsh 配置 zsh
 
-如果嫌 ohmyzsh 太慢，可以精简下功能的话，直接用 zsh 配置插件来实现几个常用功能。
+看上面章节 zsh-bench 的测试，不如直接安装 zsh4humans，这个的速度还有优化。
+
+如果嫌 ohmyzsh 太慢，直接用 zsh 配置插件来实现几个常用功能，就好了。
 
     https://zhuanlan.zhihu.com/p/347772529
 
@@ -460,6 +466,16 @@ zsh自带功能
 再次进入 `zsh` 就可以起飞了。
 
 初次进入zsh后会自动提示设置使用习惯，日后可以执行命令 `p10k configure` 再次设置。
+
+如果担心 instant-prompt 功能会在出现 y/n 提示的时候提前输入y，酌情关掉这个功能
+
+    vi ~/.zshrc
+
+注释掉最前面的几行
+
+    if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+        source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+    fi
 
 #### 内置超多插件和主题的 ohmyzsh
 
@@ -1035,6 +1051,10 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
     https://github.com/hsab/WSL-config
 
 ### 字符终端
+
+#### 居然有给cmd做美化的
+
+    https://github.com/starship/starship
 
 #### 简单使用：安装 Git for Windows
 
