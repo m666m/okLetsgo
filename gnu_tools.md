@@ -135,6 +135,10 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
     # 最好用发行版自带的，一步到位，默认的安装到 /usr/share/powerline/ 目录下了
     sudo apt install powerline
 
+终端工具最好明确设置变量，这样各个插件会自动使用更丰富的颜色
+
+    Term=xterm-256color
+
 字体安装推荐 MesloLGS NF，详见下面章节[状态栏字体]。
 
 绑定到各软件：命令行方式配置
@@ -189,6 +193,10 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
 
     官方函数说明 https://powerline.readthedocs.io/en/master/configuration/segments.html
 
+想自己做个状态栏工具，参考下这个
+
+    https://github.com/agnoster/agnoster-zsh-theme
+
 ### 状态栏字体
 
     https://juejin.cn/post/6844904054322102285
@@ -212,6 +220,11 @@ Powerline fonts 或者 Nerd fonts 这些字体集，他们对已有的一些 (�
     sudo apt install ttf-ancient-fonts
 
 然后设置在终端窗口工具或编辑器使用该字体，这样才能正确显示。
+
+简单测试几个unicode字符
+
+    $ echo -e  "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699"
+     ±  ➦ ✘ ⚡ ⚙
 
 #### Powerline fonts
 
@@ -324,6 +337,11 @@ zsh自带功能
         zsh
         sudo apt install zsh-syntax-highlighting
 
+    命令模糊查找：输入错的也没关系，给你候选命令的提示，vi模式改良为按上下键进入搜索，直接输入关键字即可
+
+        # https://github.com/junegunn/fzf#fuzzy-completion-for-bash-and-zsh
+        sudo apt install fzf
+
 启用插件，编辑 ~/.zshrc 文件
 
     # 如果是用 apt install 安装的发行版，位置在 /usr/share/ 目录
@@ -345,6 +363,229 @@ zsh自带功能
     # 命令自动完成的颜色太暗  # ,bg=cyan
     # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
+
+嫌这些配置麻烦，有个适合大家常用功能的打包 -- zsh4humans
+
+    https://github.com/romkatv/zsh4humans
+
+无脑安装就完事了，最常用的几个插件都给你配置好了：命令行提示栏、自动完成、语法高亮、命令模糊查找
+
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    fzf
+    powerlevel10k
+
+而且能跨主机记忆命令历史，比如你在本机ssh某个主机后执行的操作，在本机或另一个ssh主机上都可以被回忆到，方便！
+
+如果想研究哪个插件过慢导致命令行反应让人不爽，有专门搞测量的 zsh-bench
+
+    https://github.com/romkatv/zsh-bench
+
+#### 不依赖 oh-my-zsh 配置 zsh
+
+如果嫌 ohmyzsh 太慢，可以精简下功能的话，直接用 zsh 配置插件来实现几个常用功能。
+
+    https://zhuanlan.zhihu.com/p/347772529
+
+考虑到 oh-my-zsh 本质上也只是调用 zsh 的功能来实现配置。所以找了点时间琢磨了下如何直接配置 zsh。
+
+实现的配置项
+
+    命令自动补全
+    语法高亮
+    替换为彩色提示符
+    powerline
+
+拉取插件代码
+
+    # 自动补全
+    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
+
+    # 语法高亮
+    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zsh-syntax-highlighting
+
+配置 zsh 使用 powerline，直接在zsh下执行即可
+
+    # 不知道这个命令怎么用 powerline-config shell -s zsh command
+
+使用以下内容替换用户目录下的 .zshrc 文件
+
+    # 启用彩色提示符
+    autoload -U colors && colors
+
+    # 每次命令行刷新提示符
+    setopt prompt_subst
+
+    # 设置命令行提示符
+    PROMPT='❰%{$fg[green]%}%n%{$reset_color%}|%{$fg[yellow]%}%1~%{$reset_color%}%{$fg[blue]%}$(git branch --show-current 2&> /dev/null | xargs -I branch echo "(branch)")%{$reset_color%}❱ '
+
+    # 启用插件: powerline
+    # 如果是pip安装的查看路径用 pip show powerline-status
+    source /usr/share/powerline/bindings/zsh/powerline.zsh
+
+    # 启用插件: zsh-autosuggestions
+    source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+    # 启用插件: zsh-syntax-highlighting
+    source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+#### 强烈推荐主题 powerlevel10k
+
+这个主题可以完全替代状态栏工具 powerline 在命令行提示符的作用，而且更好看
+
+    https://github.com/romkatv/powerlevel10k
+
+参考图片![powerlevel10k](https://raw.githubusercontent.com/romkatv/powerlevel10k-media/master/prompt-styles-high-contrast.png)
+
+可先在docker中试用下
+
+    docker run -e TERM -e COLORTERM -e LC_ALL=C.UTF-8 -it --rm alpine sh -uec '
+        apk add git zsh nano vim
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+        echo "source ~/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
+        cd ~/powerlevel10k
+        exec zsh'
+
+先在你使用终端窗口工具的计算机上安装 MesloLGS NF 字体，详见章节[状态栏字体]。
+
+如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示效果会有差别，这是设计者做了考虑，已防止出现不正常的显示。
+
+然后从github安装powerlevel10k
+
+    # https://github.com/romkatv/powerlevel10k#manual
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+
+    echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
+
+再次进入 `zsh` 就可以起飞了。
+
+初次进入zsh后会自动提示设置使用习惯，日后可以执行命令 `p10k configure` 再次设置。
+
+#### 内置超多插件和主题的 ohmyzsh
+
+ohmyzsh 是在 zsh 的基础上增加了更多的花样的shell包装
+
+    https://ohmyz.sh/
+        https://github.com/ohmyzsh/ohmyzsh
+
+先在你使用终端窗口工具的计算机上安装 MesloLGS NF 字体，详见章节[状态栏字体]。
+
+ohmyzsh 目前是从 github 安装
+
+    # wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh
+    sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+
+    # 或 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+在 ~/.zshrc 里设置主题，默认 robbyrussell
+
+    ZSH_THEME=”robbyrussell”
+
+ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的位置 $ZSH_CUSTOM 目录下（默认 ~/.oh-my-zsh/custom）
+
+    $ZSH_CUSTOM
+    └── themes
+        └── my_awesome_theme.zsh-theme
+    └── plugins
+
+下载主题
+
+    https://github.com/ohmyzsh/ohmyzsh/wiki/Customization#overriding-and-adding-themes
+
+    内置主题 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+
+    更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
+                https://github.com/unixorn/awesome-zsh-plugins
+
+内置主题bira比较简洁，可手工修改添加时间提示`RPROMPT="[%*]%B${return_code}%b"`
+![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
+
+额外主题 [Bullet train](https://github.com/caiogondim/bullet-train.zsh)，可手工修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta`，目前还没找到合适的字体显示各种图标，安装了 Powerline Vim plugin 没见效果。
+
+内置插件在 $ZSH/plugins/ 目录下（默认 ~/.oh-my-zsh/plugins/），兼容zsh插件。
+
+自定义插件位于 $ZSH_CUSTOM/plugins/ 目录下（默认~/.oh-my-zsh/custom/plugins/），用户从github下载到此即可。
+
+    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+启用插件，编辑 ~/.zshrc 文件，空格分隔
+
+    plugins=(git
+        conda
+        # other plugins...
+        zsh-autosuggestions
+        # 官网介绍要放到最后
+        zsh-syntax-highlighting
+    )
+
+编辑 ~/.zshrc 文件
+
+    # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
+    set -o vi
+
+也就是说，上一步的 ~/.zshrc 文件已经被 ohmyzsh 替换了，不需要专门source那2个发行版的插件了，改为 plugins=(...) 的形式。
+
+如果你只想用发行版的插件，那就在这个新的 ~/.zshrc 文件里再补上之前的语句：source xxx 。
+
+ohmyzsh的插件管理机制更智能，还会提示更新，建议用这种方式配置，不再用 ~/.zshrc 文件里逐个 source xxxx 的方式。
+
+#### zsh插件管理器 antigen
+
+    <https://github.com/zsh-users/antigen>
+
+我在 Debian 10 buster 下面就没整利索过这货，不用了
+
+    # https://github.com/zsh-users/antigen/wiki/Installation
+    sudo apt install zsh-antigen
+
+如果是用 apt install 安装的发行版，位置在 /usr/share/ 下面
+
+antigen用法：快速配置
+
+假如你之前使用了oh-my-zsh，在这里可以先把原来的oh-my-zsh和.zshrc文件删掉，然后创建一个新的 ~/.zshrc 文件，内容如下
+
+    # 格式：antigen bundle <内置的插件名>
+    # 格式：antigen bundle <github_user/repo_name>
+
+    source /path-to-antigen/antigen.zsh
+
+    # 加载oh-my-zsh库
+
+    antigen use oh-my-zsh
+
+    # 加载原版oh-my-zsh中的功能(robbyrussell's oh-my-zsh).
+
+    antigen bundle git
+
+    antigen bundle pip
+
+    antigen bundle command-not-found
+
+    # 语法高亮功能
+
+    antigen bundle zsh-users/zsh-syntax-highlighting
+
+    # 代码提示功能
+
+    antigen bundle zsh-users/zsh-autosuggestions
+
+    # 自动补全功能
+
+    antigen bundle zsh-users/zsh-completions
+
+    # 加载主题
+
+    antigen theme robbyrussell
+
+    # 保存更改
+
+    antigen apply
+
+    # 退出重启shell
+    exit
+    zsh
 
 #### zsh配置文件样例
 
@@ -700,212 +941,6 @@ if [ "$TERM" != "linux" ]; then
 install_powerline_precmd
 fi
 ```
-
-#### zsh插件管理器 antigen
-
-    <https://github.com/zsh-users/antigen>
-
-我在 Debian 10 buster 下面就没整利索过这货，不用了
-
-    # https://github.com/zsh-users/antigen/wiki/Installation
-    sudo apt install zsh-antigen
-
-如果是用 apt install 安装的发行版，位置在 /usr/share/ 下面
-
-antigen用法：快速配置
-
-假如你之前使用了oh-my-zsh，在这里可以先把原来的oh-my-zsh和.zshrc文件删掉，然后创建一个新的 ~/.zshrc 文件，内容如下
-
-    # 格式：antigen bundle <内置的插件名>
-    # 格式：antigen bundle <github_user/repo_name>
-
-    source /path-to-antigen/antigen.zsh
-
-    # 加载oh-my-zsh库
-
-    antigen use oh-my-zsh
-
-    # 加载原版oh-my-zsh中的功能(robbyrussell's oh-my-zsh).
-
-    antigen bundle git
-
-    antigen bundle pip
-
-    antigen bundle command-not-found
-
-    # 语法高亮功能
-
-    antigen bundle zsh-users/zsh-syntax-highlighting
-
-    # 代码提示功能
-
-    antigen bundle zsh-users/zsh-autosuggestions
-
-    # 自动补全功能
-
-    antigen bundle zsh-users/zsh-completions
-
-    # 加载主题
-
-    antigen theme robbyrussell
-
-    # 保存更改
-
-    antigen apply
-
-    # 退出重启shell
-    exit
-    zsh
-
-#### 不依赖 oh-my-zsh 配置 zsh
-
-如果嫌 ohmyzsh 太慢，可以精简下功能的话，直接用 zsh 配置插件来实现几个常用功能。
-
-    https://zhuanlan.zhihu.com/p/347772529
-
-考虑到 oh-my-zsh 本质上也只是调用 zsh 的功能来实现配置。所以找了点时间琢磨了下如何直接配置 zsh。
-
-实现的配置项
-
-    命令自动补全
-    语法高亮
-    替换为彩色提示符
-    powerline
-
-拉取插件代码
-
-    # 自动补全
-    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
-
-    # 语法高亮
-    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zsh-syntax-highlighting
-
-配置 zsh 使用 powerline，直接在zsh下执行即可
-
-    # 不知道这个命令怎么用 powerline-config shell -s zsh command
-
-使用以下内容替换用户目录下的 .zshrc 文件
-
-    # 启用彩色提示符
-    autoload -U colors && colors
-
-    # 每次命令行刷新提示符
-    setopt prompt_subst
-
-    # 设置命令行提示符
-    PROMPT='❰%{$fg[green]%}%n%{$reset_color%}|%{$fg[yellow]%}%1~%{$reset_color%}%{$fg[blue]%}$(git branch --show-current 2&> /dev/null | xargs -I branch echo "(branch)")%{$reset_color%}❱ '
-
-    # 启用插件: powerline
-    # 如果是pip安装的查看路径用 pip show powerline-status
-    source /usr/share/powerline/bindings/zsh/powerline.zsh
-
-    # 启用插件: zsh-autosuggestions
-    source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-    # 启用插件: zsh-syntax-highlighting
-    source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-如果嫌设置这几个插件太麻烦，直接安装使用支持 zsh 的主题 powerlevel10k，全都有了。
-
-#### 强烈推荐主题 powerlevel10k
-
-    https://github.com/romkatv/powerlevel10k
-
-参考图片![powerlevel10k](https://raw.githubusercontent.com/romkatv/powerlevel10k-media/master/prompt-styles-high-contrast.png)
-
-可先在docker中试用下
-
-    docker run -e TERM -e COLORTERM -e LC_ALL=C.UTF-8 -it --rm alpine sh -uec '
-        apk add git zsh nano vim
-        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
-        echo "source ~/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
-        cd ~/powerlevel10k
-        exec zsh'
-
-先在你使用终端窗口工具的计算机上安装 MesloLGS NF 字体，详见章节[状态栏字体]。
-
-如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示效果会有差别，这是设计者做了考虑，已防止出现不正常的显示。
-
-然后从github安装powerlevel10k
-
-    # https://github.com/romkatv/powerlevel10k#manual
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
-
-    echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
-
-再次进入 `zsh` 就可以起飞了。
-
-初次进入zsh后会自动提示设置使用习惯，日后可以执行命令 `p10k configure` 再次设置。
-
-#### 内置超多插件和主题的 ohmyzsh
-
-ohmyzsh 是在 zsh 的基础上增加了更多的花样的shell包装
-
-    https://ohmyz.sh/
-        https://github.com/ohmyzsh/ohmyzsh
-
-先在你使用终端窗口工具的计算机上安装 MesloLGS NF 字体，详见章节[状态栏字体]。
-
-ohmyzsh 目前是从 github 安装
-
-    # wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh
-    sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
-
-    # 或 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-在 ~/.zshrc 里设置主题，默认 robbyrussell
-
-    ZSH_THEME=”robbyrussell”
-
-ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的位置 $ZSH_CUSTOM 目录下（默认 ~/.oh-my-zsh/custom）
-
-    $ZSH_CUSTOM
-    └── themes
-        └── my_awesome_theme.zsh-theme
-    └── plugins
-
-下载主题
-
-    https://github.com/ohmyzsh/ohmyzsh/wiki/Customization#overriding-and-adding-themes
-
-    内置主题 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-
-    更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
-                https://github.com/unixorn/awesome-zsh-plugins
-
-内置主题bira比较简洁，可手工修改添加时间提示`RPROMPT="[%*]%B${return_code}%b"`
-![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
-
-额外主题 [Bullet train](https://github.com/caiogondim/bullet-train.zsh)，可手工修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta`，目前还没找到合适的字体显示各种图标，安装了 Powerline Vim plugin 没见效果。
-
-内置插件在 $ZSH/plugins/ 目录下（默认 ~/.oh-my-zsh/plugins/），兼容zsh插件。
-
-自定义插件位于 $ZSH_CUSTOM/plugins/ 目录下（默认~/.oh-my-zsh/custom/plugins/），用户从github下载到此即可。
-
-    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-
-    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-
-启用插件，编辑 ~/.zshrc 文件，空格分隔
-
-    plugins=(git
-        conda
-        # other plugins...
-        zsh-autosuggestions
-        # 官网介绍要放到最后
-        zsh-syntax-highlighting
-    )
-
-编辑 ~/.zshrc 文件
-
-    # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
-    set -o vi
-
-也就是说，上一步的 ~/.zshrc 文件已经被 ohmyzsh 替换了，不需要专门source那2个发行版的插件了，改为 plugins=(...) 的形式。
-
-如果你只想用发行版的插件，那就在这个新的 ~/.zshrc 文件里再补上之前的语句：source xxx 。
-
-ohmyzsh的插件管理机制更智能，还会提示更新，建议用这种方式配置，不再用 ~/.zshrc 文件里逐个 source xxxx 的方式。
 
 ## Windows 下的 GNU/POSIX 环境
 
@@ -1656,6 +1691,9 @@ powerline安装见章节 [状态栏工具powerline]。
 
 编辑 ~/.tmux.conf 文件，添加如下行
 
+    # 如果终端工具已经设置了变量 Term=xterm-256color，那么这个参数可有可无
+    set -g default-terminal screen-256color
+
     run-shell 'powerline-config tmux setup'
 
 然后就可以自由发挥了。
@@ -1690,16 +1728,12 @@ powerline安装见章节 [状态栏工具powerline]。
 
     tmux source-file ~/.tmux.conf
 
-定制状态栏显示的段Segment
+定制状态栏显示的段Segment：
 
 编辑文件
 
     # 如果是pip安装的查看路径用 pip show powerline-status
     /usr/share/powerline/config_files/themes/tmux/default.json
-
-替换自己喜欢的函数即可
-
-    官方函数说明 https://powerline.readthedocs.io/en/master/configuration/segments.html
 
 ```json
 {
@@ -1731,6 +1765,10 @@ powerline安装见章节 [状态栏工具powerline]。
         }
 }
 ```
+
+替换自己喜欢的函数即可
+
+    官方函数说明 https://powerline.readthedocs.io/en/master/configuration/segments.html
 
 #### 常用命令
 

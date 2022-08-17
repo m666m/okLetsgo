@@ -13,6 +13,9 @@ set -o vi
 # Linux bash / Windows git bash(mintty)
 # : 命令行提示符显示当前路径和git分支等，放入任一 .profile 或 .bashrc 或 .bash_profile 内
 
+# 这个参数最好在你的终端工具上设置，能开启透明效果更好
+TERM=xterm-256color
+
 black=$'\[\e[0;30m\]'
 
 red=$'\[\e[0;31m\]'
