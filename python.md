@@ -1791,7 +1791,6 @@ pylance
 |   Nord                               |                               |
 |   Slack Theme：Dark Mode              |                               |
 |   Winter is coming：Dark Blue         | Winter is coming：Dark Black  |
-|   Night Owl                           |                               |
 
 MacOS Modern Theme 深色浅色都好
 
@@ -1827,8 +1826,9 @@ Prettier - Code formatter
 
 ### TODO TREE
 
+```json
     "todo-tree.general.tags": [
-        "TODO",
+        "TODO:",
         "FIXME",
         "XXX",
         "NOTE"
@@ -1861,9 +1861,11 @@ Prettier - Code formatter
     },
     "todo-tree.general.statusBar": "tags",
     "todo-tree.tree.grouped": true,
+```
 
 ### csv文件查看
 
+```json
     Rainbow CSV 设置颜色区分：
     // rainbowCsv https://github.com/mechatroner/vscode_rainbow_csv/blob/master/test/color_customization_example.md#colors-customization
     "editor.tokenColorCustomizations": {
@@ -1934,6 +1936,7 @@ Prettier - Code formatter
             }
         ]
     },
+```
 
 ### Draw.io Integration
 
@@ -1959,6 +1962,7 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 
 ### 括号匹配 Bracket Pair Colorizer 2
 
+```json
     // vscode 1.60+ 自带了 "editor.bracketPairColorization.enabled": true,
 
     "bracket-pair-colorizer-2.colors": [
@@ -1966,6 +1970,7 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
         "rgba(62,145,222,255)",
         "rgba(18,230,155,255)"
     ],
+```
 
 ## vscode 用的 Python 配套包
 
@@ -1973,20 +1978,36 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 
 ### 格式化 yapf
 
-    用conda安装的这个直接带二进制包：
+用conda在指定环境中安装，这个直接带二进制包：
+
     conda install --name p37 yapf -y
 
-    yapf 用这个，禁用 # yapf:disable 代码块  #yapf:enable 或 某行后面的注释 # yapf:disable 禁用一行
+禁用代码块
+
+    # yapf:disable
+    代码块
+    #yapf:enable
+
+禁用一行
+
+    某行后面的注释 # yapf:disable
+
+```json
     "python.formatting.provider": "yapf",
     "python.formatting.yapfArgs": [
         // "--sytle=yapf_style.cfg"
     ],
+```
 
 ### 代码检查 flake8
 
-    flake8 用这个 可以在要忽略 flake8 检查的那一行加上 # noqa 注释即可
-    整个文件禁用的话，在文件第一行 # flake8: noqa
+在要忽略 flake8 检查的那一行加上 # noqa 注释即可
 
+整个文件禁用的话，在文件第一行
+
+    # flake8: noqa
+
+```json
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
@@ -1994,11 +2015,14 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
         "--max-line-length=100",
         // "--ignore=E501, E262",
     ],
+```
 
 ### 代码测试 unittest
 
-    单元测试不要用pytest，老老实实用系统的unittest
-    如果用pytest ，虽然兼容unittest，不需要写子类也可以的。但是：记得在项目跟目录放个空文件 conftest.py
+单元测试不要用pytest，老老实实用系统的unittest.
+
+如果用pytest ，虽然兼容unittest，不需要写子类也可以的。但是：记得在项目跟目录放个空文件 conftest.py
+
     https://stackoverflow.com/questions/10253826/path-issue-with-pytest-importerror-no-module-named-yadayadayada/50610630#50610630
 
 ### pyreverse
@@ -2054,27 +2078,33 @@ source runsnake/bin/activate
 
     https://www.cnblogs.com/chenpython123/p/10965382.html
 
-python出来的时间太早了，80年代的操作系统只支持英文，所以很多软件也只支持英文编码 ANSI。
+python出来的时间太早了，80年代的操作系统只支持英文，所以绝大多数软件也只支持英文编码 ANSI。
 
-90年代，微软 Windows 生意做到了全球，所以推出了各种本地化版本，比如中国大陆版的中文 Windows 95，使用 GB-2132 编码，该标准兼容英文的ANSI，操作系统内置的中文字体支持正常显示中文字符，而要查看来自日本、韩国、港台等使用其它编码规则字符的文件，需要安装个转码软件，才能正常的显示字符，有时候还需要安装对应的字体文件。
+90年代，微软 Windows 生意做到了全球，所以推出了各种本地化版本，比如中国大陆版的中文 Windows 95，使用 GB-2132 编码，该标准兼容英文的ANSI，操作系统内置的中文字体支持正常显示中文字符，而要查看来自日本、韩国、港台等使用其它编码规则字符的文件，需要安装个转码软件，才能正常的显示字符，有时候还需要安装对应的字体文件。后来标准扩展了叫 gbk，也称 cp-936.
 
-2000年代，全球的语言编码太多了，各种本地化版本操作系统下生成的文本文件，在别人的系统上经常出现不支持正常显示字符的问题，如果不知道文件来源，接收方甚至没法手动指定转码软件使用何种规则解码。
+2000年代，全球的语言编码太多了，各种本地化版本操作系统下生成的文本文件，在别人的系统上经常出现不支持正常显示字符的问题，如果不知道文件来源，接收方甚至无法手动指定转码软件使用何种规则解码。
 
 所以，国际化统一标准来了，通用编码规则 UTF，目的是分区域的把全人类用的字符都装里面叫 unicode ，一般使用的是 UTF-8 编码规则，使用UTF规则进行编码是大势所趋。
 
 这时候微软的 Windows、Office 的各种本地化版本就尴尬了，比如中文版 Windows，即便到了2010年代的版本，操作系统的代码页还是GBK，一般编辑软件都是跟随当前操作系统代码页的设置，导致你打开个utf-8编码的文本文件都无法正常显示，需要手动选择切换编码方式。
 
-如果你修改了操作系统的代码页设置为默认编码UTF-8， Windows、Office正常显示UTF-8文件了，则gbk文件的正确显示还是需要手动指定编码规则。全球来说，所有的软件都是用本地的规则编码字符的，他们还是会无法正确识别你的UTF-8字符。比如 CMD 命令行窗口，执行命令：dir c:\，如果操作系统使用UTF-8编码，会报错不认识... 对微软来说，光是把所有的Windows系统内置的程序都切换到支持UTF-8编码，都是一件很头疼的事，何况全球所有软件都要切换呢。
+全球大多数软件都是用本地的规则编码字符的，即读取操作系统的区域语言设置。如果操作系统设置为是gbk，这些软件都会无法正确显示你的UTF-8字符。
 
-    如果你切换命令行环境mintty的代码页为gbk，执行命令ls，好，正常显示了。执行下tail命令打开个utf-8文件，显示出来还会是乱码，因为这个命令没去适配当前代码页...
+如果你修改了操作系统的代码页设置为默认编码UTF-8， Windows、Office 可以正常显示UTF-8文件了，打开gbk文件又乱码了。。。想正确显示还是得手动指定编码规则。
 
-    CMD 命令 chcp 可手动设置当前会话的代码页
+有些老程序没做操作系统代码页适配就玩不转了，比如 CMD 命令行窗口，执行命令：dir c:\，如果操作系统使用UTF-8编码，会报错不认识这些字，需要手动设置cmd的参数，设置代码页。为嘛这么麻烦呢？ cmd 这货来自dos，当年dos操作系统就需要用户手动设置代码页，为保持对老系统的使用习惯兼容，这没法改。所以后来微软搞了 power shell，想抛弃 cmd，这也是一个原因。仅对微软来说，光是让 Windows 操作系统内置的程序都可以默认使用操作系统代码页都是一件很头疼的事，何况全球范围的各大软件呢。
 
-        代码页          描述
-        65001       UTF-8代码页
-        950         繁体中文
-        936         简体中文默认的GBK
-        437         MS-DOS 美国英语
+    CMD 命令 chcp 手动设置当前会话的代码页
+
+    代码页          描述
+    65001       UTF-8代码页
+    950         繁体中文
+    936         简体中文默认的GBK
+    437         MS-DOS 美国英语
+
+如果你切换命令行环境 mintty 的代码页为 gbk，执行命令 ls，好，正常显示列表的文件名了，。执行下 tail 命令打开个 utf-8 的日志文件，显示出来还会是乱码，因为它使用的打开文件的函数，默认去适配当前操作系统代码页读取文件。这一切的混乱来自于，你还在使用Windows 7 gbk...
+
+Windows 下 python 代码，有个非常常见的运行时报错：只要该代码使用函数 open() 打开文件，大多数都使用默认的设置即操作系统代码页，导致打开现在流行的 utf8 编码的文本文件都报错。。。为嘛？ 因为 Windows 7 到2020年代还在广泛使用，默认代码页是 gbk 啊。。。
 
 所以，各个软件切换使用UTF编码不够统一，使用上总是有一定的混乱。而为保持兼容性，直到2010年代后的 Windows 和 Office 才开始慢慢的切换为默认使用UTF编码，对于你原来使用了GBK编码的文件，会自动判断并转换为UTF-8编码进行显示，这时你的使用体验是无感的。但是对编程来说，单个或几个字符的字符串，就不大好猜了，需要明确指定编码方式。
 
