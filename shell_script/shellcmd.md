@@ -543,7 +543,9 @@ hostnamectl 查看主机名及操作系统信息 (依赖安装了 systemd)
     https://blog.csdn.net/qq_31278903/article/details/83146031
 
     uptime                          查看系统运行时间、用户数、负载
+
     cat /proc/uptime| awk -F. '{run_days=$1 / 86400;run_hour=($1 % 86400)/3600;run_minute=($1 % 3600)/60;run_second=$1 % 60;printf("系统已运行：%d天%d时%d分%d秒",run_days,run_hour,run_minute,run_second)}' 中文显示运行时间
+
     date -d "$(awk -F. '{print $1}' /proc/uptime) second ago" +"%Y-%m-%d %H:%M:%S"  反算开机时间点
 
     uname -a                        查看内核/操作系统/CPU信息
@@ -569,7 +571,7 @@ hostnamectl 查看主机名及操作系统信息 (依赖安装了 systemd)
     grep MemFree /proc/meminfo      查看空闲内存量
 
     df -h                           查看各硬盘分区使用情况
-    du -sh <目录名>                 查看指定目录的大小
+    du -sh <目录名>                  查看指定目录的大小
     cat /proc/loadavg               查看系统负载磁盘和分区
     mount | column -t               查看挂接的分区状态
     fdisk -l                        查看所有分区
@@ -589,7 +591,7 @@ hostnamectl 查看主机名及操作系统信息 (依赖安装了 systemd)
     top                             实时显示进程状态用户
 
     w                               查看活动用户
-    id <用户名>                     查看指定用户信息
+    id <用户名>                      查看指定用户信息
     last                            查看用户登录日志
     lastb                           查看用户登录失败日志
     cut -d: -f1 /etc/passwd         查看系统所有用户
@@ -761,11 +763,11 @@ cpu属性值说明：
     systemd───(sd-pam)
 
     tmux: server─┬─bash───cmatrix
-                ├─bash───watch
-                ├─2*[bash]
-                ├─bash───top
-                └─bash───bash─┬─autossh───ssh
-                            └─ssh-agent
+                 ├─bash───watch
+                 ├─2*[bash]
+                 ├─bash───top
+                 └─bash───bash─┬─autossh───ssh
+                               └─ssh-agent
 
 进程信息，用x显示归属
 
@@ -775,21 +777,14 @@ cpu属性值说明：
     26578 pts/0    Ss     0:00  \_ -bash USER=pi LOGNAME=pi HOME=/home/pi PATH=/usr/local/bin:/usr/bin:/bin:/usr/games MAIL=/var/mail/pi SHE
     12445 pts/0    R+     0:00      \_ ps -efx SHELL=/bin/bash NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi XDG_SESSION_TYPE=tty HOME=/home/pi LAN
     10615 ?        Ss    89:40 tmux SHELL=/bin/bash NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi XDG_SESSION_TYPE=tty HOME=/home/pi LANG=en_GB.UTF
-    10616 pts/1    Ss     0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
-    10759 pts/1    S+    73:00  |   \_ cmatrix -ba SHELL=/bin/bash TMUX=/tmp/tmux-1000/default,10615,0 NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=p
-    10660 pts/2    Ss     0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
-    10837 pts/2    S+     4:47  |   \_ watch -n1 date '+%D%n%T'|figlet -k SHELL=/bin/bash TMUX=/tmp/tmux-1000/default,10615,1 NO_AT_BRIDGE=1
-    10741 pts/6    Ss+    0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
-    10781 pts/7    Ss     0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
-    21814 pts/7    S+     7:21  |   \_ top SHELL=/bin/bash TMUX=/tmp/tmux-1000/default,10615,0 NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi XDG_SE
     10819 pts/8    Ss     0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
     26848 pts/8    S      0:00  |   \_ /bin/bash SHELL=/bin/bash TMUX=/tmp/tmux-1000/default,10615,1 NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi
     26849 ?        Ss     0:00  |       \_ ssh-agent /bin/bash
     26974 pts/8    S+     0:00  |       \_ /usr/lib/autossh/autossh -M ...
     26977 pts/8    S+     0:00  |           \_ /usr/bin/ssh -L ...
     21772 pts/3    Ss+    0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
-    9901 ?        Ss     0:00 /lib/systemd/systemd --user LANG=en_GB.UTF-8 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bi
-    9902 ?        S      0:00  \_ (sd-pam)
+    9901 ?        Ss      0:00 /lib/systemd/systemd --user LANG=en_GB.UTF-8 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bi
+    9902 ?        S       0:00  \_ (sd-pam)
 
 ## 查看io情况
 

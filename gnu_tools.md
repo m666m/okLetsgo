@@ -223,7 +223,7 @@ Powerline fonts 或者 Nerd fonts 这些字体集，他们对已有的一些 (�
 
 简单测试几个unicode字符
 
-    $ echo -e  "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699"
+    $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699"
      ±  ➦ ✘ ⚡ ⚙
 
 #### Powerline fonts
@@ -270,9 +270,9 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 
     https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
 
-简单测试几个unicode 扩展NF 字符
+简单测试几个 unicode 扩展 NF 字符
 
-    $ echo -e  "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \ue20a \ue350  \uf2c8 \uf2c7"
+    $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \ue20a \ue350  \uf2c8 \uf2c7"
      ±  ➦ ✘ ⚡ ⚙ ❃     
 
 ### 使用 zsh
@@ -502,7 +502,6 @@ function prompt_raspi_temp_warn() {
   fi
 }
 ```
-
 
 如果担心 instant-prompt 功能会在出现 y/n 提示的时候提前输入y，酌情关掉这个功能
 
