@@ -1771,11 +1771,33 @@ pylance
 
 ### 护眼主题
 
-MacOS Modern Theme 深浅主题都好
+看代码和看md文字有些区别，一切以字体清晰可辨，眼睛不费力为原则。
+
+浅色
+
+|            看代码                              |          看文字            |
+|-----------------------------------------------|---------------------------|
+|   MacOS Modern Theme：Big Sur Xcode Default   |                           |
+|   Night Owl：Light                            |   Night Owl：Light         |
+|   Slack Theme: Hoth                           |                           |
+|   Winter is coming：Light                     |   Winter is coming：Light  |
+|   Solarized Light                             |                           |
+
+深色
+
+|            看代码                      |           看文字              |
+|---------------------------------------|------------------------------|
+|   MacOS Modern Theme：Xcode Catalina  |                               |
+|   Nord                               |                               |
+|   Slack Theme：Dark Mode              |                               |
+|   Winter is coming：Dark Blue         | Winter is coming：Dark Black  |
+|   Night Owl                           |                               |
+
+MacOS Modern Theme 深色浅色都好
 
     davidbwaters.macos-modern-theme
 
-凛冬来临 Winter is coming。深浅主题都不刺眼，非常清晰，推荐用深色 dark blue。
+凛冬来临 Winter is coming。深浅主题都不刺眼，非常清晰，深色 dark blue。
 
     johnpapa.winteriscoming
 
@@ -1793,7 +1815,7 @@ Slack Theme 浅色Hoth主题很好
 
     felipe-mendes.slack-theme
 
-Solarized Light（自带）  这个是羊皮纸底色，去蓝光了
+Solarized Light（自带）  这个是羊皮纸底色，去蓝光了，但是如果你看起来感觉费眼就别用了。。。
 
 ### JScript/Json的格式化，比系统自带的好用
 
