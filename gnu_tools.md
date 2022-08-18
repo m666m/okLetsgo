@@ -266,9 +266,14 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 
         https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S/Regular/complete
 
-代码编辑器用 FiraCode 字体，Windows 用户找带 Windows 字样的下载即可
+代码编辑器用 FiraCode NF 字体，Windows 用户找带 Windows 字样的下载即可
 
     https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
+
+简单测试几个unicode 扩展NF 字符
+
+    $ echo -e  "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \ue20a \ue350  \uf2c8 \uf2c7"
+     ±  ➦ ✘ ⚡ ⚙ ❃     
 
 ### 使用 zsh
 
@@ -319,7 +324,7 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 
 zsh自带功能
 
-    智能补全：频繁的切换路径或输入长命令，输入开头字母后连续敲击两次 TAB 键 zsh 给你一个可能的列表，用tab或方向键选择，回车确认。比如已经输入了 svn commit，但是有一个 commit 的参数我忘记了，我只记得两个减号开头的，在svn commit -- 后面按两次TAB，会列出所有命令。
+    智能补全：输入长命令，输入开头字母后连续敲击两次 TAB 键 zsh 给你一个可能的列表，用tab或方向键选择，回车确认。比如已经输入了 svn commit，但是有一个 commit 的参数我忘记了，我只记得两个减号开头的，在svn commit -- 后面按两次TAB，会列出所有命令。相对于bash只能提示目录，这是个大进步。
 
     快速跳转：输入 cd - 按TAB，会列出历史路径清单供选择。
 
@@ -377,17 +382,15 @@ zsh自带功能
 
 而且能跨主机记忆命令历史，比如你在本机ssh某个主机后执行的操作，在本机或另一个ssh主机上都可以被回忆到，方便！
 
-如果想研究哪个插件过慢导致命令行反应让人不爽，有专门搞测量的 zsh-bench，它的建议是
+如果想研究哪个插件过慢导致命令行反应让人不爽，有专门搞测量的 zsh-bench
 
     https://github.com/romkatv/zsh-bench#conclusions
 
-    状态栏工具使用主题 powerlevle10k，
-
-    如果还需要自动完成啥的几个插件，那就直接安装 zsh4humans，这个就优化的这几个功能。
+它的建议是状态栏工具使用主题 powerlevle10k，如果还需要自动完成啥的几个插件，那就直接安装 zsh4humans，这些都有而且优化了。
 
 #### 不依赖 oh-my-zsh 配置 zsh
 
-看上面章节 zsh-bench 的测试，不如直接安装 zsh4humans，这个的速度还有优化。
+看上面章节 zsh-bench 的测试，直接安装 zsh4humans，这个的速度比自己在zsh里挨个装插件还有优化。
 
 如果嫌 ohmyzsh 太慢，直接用 zsh 配置插件来实现几个常用功能，就好了。
 
@@ -467,11 +470,43 @@ zsh自带功能
 
 初次进入zsh后会自动提示设置使用习惯，日后可以执行命令 `p10k configure` 再次设置。
 
+这个主题自带一堆状态插件包括git、virtualenv等等，如果之前在zsh的plugin里启用了git，可以删除。
+
+自定义启用它自带的哪些插件，编辑 ~/.p10k.zsh 文件，搜索 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS= 即可。
+
+自定义状态栏提示段，编辑 ~/.p10k.zsh 文件，搜索 prompt_example，看说明文字
+
+    p10k help segment
+
+```shell
+
+typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
+    # =========================[ Line #1 ]=========================
+    raspi_temp_warn         # raspberry pi cpu temperature
+    ...
+)
+
+function prompt_raspi_temp_warn() {
+  local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
+
+  if [ "$CPUTEMP" -gt  "60000" ] && [ "$CPUTEMP" -lt  "65000" ]; then
+          p10k segment -b yellow -f blue -i ''
+
+  elif [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "75000" ]; then
+          local CPUTEMP_WARN="CPU `vcgencmd measure_temp`!"
+          p10k segment -b yellow -f blue -i '' -t "$CPUTEMP_WARN"
+
+  elif [ "$CPUTEMP" -gt  "75000" ];  then
+          local CPUTEMP_WARN="CPU TEMPERATURE IS VERY HIGH!`vcgencmd measure_temp`"
+          p10k segment -b red -f black -i '' -t "$CPUTEMP_WARN"
+  fi
+}
+```
+
+
 如果担心 instant-prompt 功能会在出现 y/n 提示的时候提前输入y，酌情关掉这个功能
 
-    vi ~/.zshrc
-
-注释掉最前面的几行
+    编辑 ~/.zshrc 注释掉该文件最前面的几行
 
     if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
         source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -497,12 +532,15 @@ ohmyzsh 目前是从 github 安装
 
     ZSH_THEME=”robbyrussell”
 
-ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的位置 $ZSH_CUSTOM 目录下（默认 ~/.oh-my-zsh/custom）
+启用插件，编辑 ~/.zshrc 文件，空格分隔
 
-    $ZSH_CUSTOM
-    └── themes
-        └── my_awesome_theme.zsh-theme
-    └── plugins
+    plugins=(git
+        conda
+        # other plugins...
+        zsh-autosuggestions
+        # 官网介绍要放到最后
+        zsh-syntax-highlighting
+    )
 
 下载主题
 
@@ -520,32 +558,27 @@ ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的�
 
 内置插件在 $ZSH/plugins/ 目录下（默认 ~/.oh-my-zsh/plugins/），兼容zsh插件。
 
-自定义插件位于 $ZSH_CUSTOM/plugins/ 目录下（默认~/.oh-my-zsh/custom/plugins/），用户从github下载到此即可。
+ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的位置 $ZSH_CUSTOM 目录下（默认 ~/.oh-my-zsh/custom）
+
+    $ZSH_CUSTOM
+    ├── plugins
+    └── themes
+        └── my_awesome_theme.zsh-theme
+
+ ~/.zshrc 文件已经被 ohmyzsh 接管了，不需要专门 source 那2个发行版的插件了，改为 plugins=(...) 的形式。
 
     git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
     git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
-启用插件，编辑 ~/.zshrc 文件，空格分隔
-
-    plugins=(git
-        conda
-        # other plugins...
-        zsh-autosuggestions
-        # 官网介绍要放到最后
-        zsh-syntax-highlighting
-    )
-
-编辑 ~/.zshrc 文件
-
-    # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
-    set -o vi
-
-也就是说，上一步的 ~/.zshrc 文件已经被 ohmyzsh 替换了，不需要专门source那2个发行版的插件了，改为 plugins=(...) 的形式。
-
 如果你只想用发行版的插件，那就在这个新的 ~/.zshrc 文件里再补上之前的语句：source xxx 。
 
 ohmyzsh的插件管理机制更智能，还会提示更新，建议用这种方式配置，不再用 ~/.zshrc 文件里逐个 source xxxx 的方式。
+
+zsh 未提供命令行的 vi 模式，手工编辑 ~/.zshrc 文件
+
+    # 命令行开启vi-mode模式，按esc后用vi中的上下键选择历史命令
+    set -o vi
 
 #### zsh插件管理器 antigen
 
@@ -1370,7 +1403,7 @@ MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变�
 
 使用pacman安装各种包：
 
-    pacman -S vim openssh git
+    pacman -S vim openssh opengpg git
 
 安装后先pacman更换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，在windows下是msys的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
 
