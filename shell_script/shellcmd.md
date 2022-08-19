@@ -7,6 +7,7 @@
 ## 常见符号用法
 
     http://c.biancheng.net/view/743.html
+    https://www.jb51.net/article/123081.htm
 
 用完后记得清除变量，防止大规模脚本使用容易发生的变量名污染
 unset variable_name
@@ -53,12 +54,14 @@ let 命令以空格来分隔多个表达式；
 (( )) 以逗号,来分隔多个表达式。
 
 test支持3类检测：文件、数值、字符串.
+判断 expression 成立时，退出状态为 0，否则为非 0 值。
 当你在 test 命令中使用变量时，强烈建议将变量用双引号""包围起来，这样能避免变量为空值时导致的很多奇葩问题。
 
 test 和 [] 是等价的，[] 注意两边留空格
 [ -z "$str1" -o -z "$str2" ]
 [ -z "$str1" ] || [ -z "$str2" ]
 
+[[ ]] 是 test 的升级版
 [[ ]] 注意两边留空格
 if [[ -z $str1 ]] || [[ -z $str2 ]]  #不需要对变量名加双引号
 then
@@ -73,6 +76,9 @@ fi
 如果条件成立则执行，否则不执行的一个流行写法：
 [[ -n $envname ]] && printf "conda:%s" $envname
 
+如果执行命令的结果是失败，则打印。。。
+if ! $(which vcgencmd >/dev/null) ; then printf "%s" 'error cmd'; fi
+
 使用逻辑运算符将多个 [[ ]] 连接起来依然是可以的，因为这是 Shell 本身提供的功能，跟 [[ ]] 或者 test 没有关系，如下所示：
 [[ -z $str1 ]] || [[ -z $str2 ]]
 
@@ -80,6 +86,17 @@ fi
 
     # 把 /home 目录压缩，输出到标准输入流，管道后面的命令是从标准输出流读取数据解压
     tar -cvf - /home | tar -xvf -
+
+大括号拓展
+
+    $ ls {ex1,ex2}.sh
+    ex1.sh ex2.sh
+
+    $ ls {ex{1..3},ex4}.sh
+    ex1.sh ex2.sh ex3.sh ex4.sh
+
+    $ ls {ex[1-3],ex4}.sh
+    ex1.sh ex2.sh ex3.sh ex4.sh
 
 ## Bash内建命令
 
