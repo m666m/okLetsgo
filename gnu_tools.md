@@ -388,6 +388,21 @@ zsh自带功能
 
 它的建议是状态栏工具使用主题 powerlevle10k，如果还需要自动完成啥的几个插件，那就直接安装 zsh4humans，这些都有而且优化了。
 
+自己简单测试下加载zsh的速度
+
+    $  for i in $(seq 1 5); do /usr/bin/time /bin/zsh -i -c exit; done
+
+    0.23user 0.14system 0:00.33elapsed 114%CPU (0avgtext+0avgdata 6044maxresident)k
+    0inputs+0outputs (0major+4998minor)pagefaults 0swaps
+    0.25user 0.09system 0:00.30elapsed 113%CPU (0avgtext+0avgdata 5912maxresident)k
+    0inputs+0outputs (0major+5016minor)pagefaults 0swaps
+    0.21user 0.18system 0:00.33elapsed 118%CPU (0avgtext+0avgdata 5916maxresident)k
+    0inputs+0outputs (0major+5012minor)pagefaults 0swaps
+    0.19user 0.15system 0:00.30elapsed 111%CPU (0avgtext+0avgdata 5980maxresident)k
+    0inputs+0outputs (0major+4998minor)pagefaults 0swaps
+    0.20user 0.13system 0:00.30elapsed 114%CPU (0avgtext+0avgdata 5904maxresident)k
+    0inputs+0outputs (0major+4995minor)pagefaults 0swaps
+
 #### 不依赖 oh-my-zsh 配置 zsh
 
 看上面章节 zsh-bench 的测试，直接安装 zsh4humans，这个的速度比自己在zsh里挨个装插件还有优化。
