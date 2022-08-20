@@ -2002,32 +2002,32 @@ powerline安装见章节 [状态栏工具powerline]。
 
 ```json
 {
-        "segments": {
-                "right": [
-                        {
-                                "function": "powerline.segments.common.sys.uptime",
-                                "priority": 50
-                        },
-                        {
-                                "function": "powerline.segments.common.sys.system_load",
-                                "priority": 50
-                        },
-                        {
-                                "function": "powerline.segments.common.time.date"
-                        },
-                        {
-                                "function": "powerline.segments.common.time.date",
-                                "name": "time",
-                                "args": {
-                                        "format": "%H:%M",
-                                        "istime": true
-                                }
-                        },
-                        {
-                                "function": "powerline.segments.common.net.hostname"
-                        }
-                ]
-        }
+    "segments": {
+        "right": [
+            {
+                    "function": "powerline.segments.common.sys.uptime",
+                    "priority": 50
+            },
+            {
+                    "function": "powerline.segments.common.sys.system_load",
+                    "priority": 50
+            },
+            {
+                    "function": "powerline.segments.common.time.date"
+            },
+            {
+                    "function": "powerline.segments.common.time.date",
+                    "name": "time",
+                    "args": {
+                            "format": "%H:%M",
+                            "istime": true
+                    }
+            },
+            {
+                    "function": "powerline.segments.common.net.hostname"
+            }
+        ]
+    }
 }
 ```
 
