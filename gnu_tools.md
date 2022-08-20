@@ -2228,28 +2228,6 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
 这个命令会将你朋友的终端Attach到你的Screen会话上，并且你的终端不会被Detach。这样你就可以和朋友共享同一个会话了，如果你们当前又处于同一个窗口，那就相当于坐在同一个显示器前面，你的操作会同步演示给你朋友，你朋友的操作也会同步演示给你。当然，如果你们切换到这个会话的不同窗口中去，那还是可以分别进行不同的操作的。
 
-### find + grep + xargs 组合查找文件内容
-
-查找指定文件
-
-    find ./ -name 2.sql
-
-组合查找文件内容
-
-显示内容，但是带目录了
-
-    find ./ -name "*" -exec grep "gitee" {} \;
-
-显示内容，排除目录
-
-    find ./ -name "*" -type f -exec grep -in "gitee" {} \;
-
-显示内容，显示文件名和行号，排除目录
-
-    find ./ -name "*" -type f | xargs grep -in 'gitee'
-
-xargs命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说find的结果经过xargs后，其实将find找出来的文件名逐个作为了grep的参数。grep再在这些文件内容中查找关键字test。
-
 ### Aria2 下载工具
 
 命令行传输各种参数，设置复杂，Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳dht站点清单。
@@ -2430,7 +2408,29 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     # 以 ASCII 码的形式显示文件aa.txt内容的，等效 -ta
     od -a aa.txt
 
-### 字符串处理awk/sed/cut/tr
+### find + grep + xargs 组合查找文件内容
+
+查找指定文件
+
+    find ./ -name 2.sql
+
+组合查找文件内容
+
+显示内容，但是带目录了
+
+    find ./ -name "*" -exec grep "gitee" {} \;
+
+显示内容，排除目录
+
+    find ./ -name "*" -type f -exec grep -in "gitee" {} \;
+
+显示内容，显示文件名和行号，排除目录
+
+    find ./ -name "*" -type f | xargs grep -in 'gitee'
+
+xargs命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说find的结果经过xargs后，其实将find找出来的文件名逐个作为了grep的参数。grep再在这些文件内容中查找关键字test。
+
+### 字符串处理 awk sed cut tr wc
 
 删除字符，主要用于截取字符串
 
@@ -2448,6 +2448,15 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 awk 指定分隔符，可以用简单的语句组合字段
 
 sed 删除、替换文件中的字符串
+
+计算文本文件的行数，用于 vi 打开大文件之前先评估
+
+    wc -l README.rst
+
+要找的字符串所在的行号，便于 vi 打开文件后直接定位
+
+    $ grep -in 'apt-get' README.rst
+    20:     sudo apt-get install fonts-powerline
 
 ### scp 跨机远程拷贝
 
@@ -2703,11 +2712,11 @@ rm -rf "${LATEST_LINK}"
 ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 ```
 
-### 使用 timedatectl 命令操作时间时区
+### 操作时间时区 timedatectl
 
     https://www.cnblogs.com/zhi-leaf/p/6282301.html
 
-### 使用 update-alternatives 设置替换命令
+### 设置替换命令 update-alternatives
 
 linux 版本历经多年的使用，有些命令会出现各种变体，为保持通用，用符号链接的方式统一进行管理
 
