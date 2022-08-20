@@ -10,27 +10,35 @@
     https://www.jb51.net/article/123081.htm
 
 用完后记得清除变量，防止大规模脚本使用容易发生的变量名污染
-unset variable_name
+
+    unset variable_name
+
 或在函数中使用 local var="hell"来定义局部变量
 
 把语句放到()中包围可以减小变量影响范围：
-(umask 077; ssh-agent >| "$env")
+
+    (umask 077; ssh-agent >| "$env")
 
 单引号包围不解释变量，双引号包围的解释变量
-var="hello"
-var1='say $var'
-var2="say $var"
+
+    var="hello"
+    var1='say $var'
+    var2="say $var"
 
 反引号和$()的作用相同，用于命令替换(command substitution)，即完成引用的命令的执行，将其结果替换出来
-echo `date '--date=1 hour ago' +%Y-%m-%d-%H`
-echo $(date '--date=1 hour ago' +%Y-%m-%d-%H)
-$()中只需要使用一个反斜杠进行转义，下列语句表示给var变量赋值，字符串$HOME，只是字符串，不是变量HOME的值
-var2=`echo \\$HOME`
-var3=$(echo \$HOME)
 
-${}用于明确界定变量，与$var并没有区别，但是界定更清晰。
-A="to"
-echo $AB 不如 echo ${A}B
+    echo `date '--date=1 hour ago' +%Y-%m-%d-%H`
+    echo $(date '--date=1 hour ago' +%Y-%m-%d-%H)
+
+$()中只需要使用一个反斜杠进行转义，下列语句表示给var变量赋值，字符串$HOME，只是字符串，不是变量HOME的值
+
+    var2=`echo \\$HOME`
+    var3=$(echo \$HOME)
+
+${}用于明确界定变量，与$var并没有区别，但是界定更清晰
+
+    A="to"
+    echo $AB 不如 echo ${A}B
 
 变量 ZSH_CUSTOM 有值就用，没有就用后面的，这个用法比较独特
 
@@ -38,16 +46,22 @@ echo $AB 不如 echo ${A}B
     echo ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
 字符串截取
-url="abcdefgh"
-echo ${url: 2: 5}
-显示 cdefg
+
+    url="abcdefgh"
+    echo ${url: 2: 5}
+
+    显示 cdefg
 
 将整数运算表达式放在((和))之间，在 (( )) 中使用变量无需加$前缀
-((b=a-15)) 将 a-15 的运算结果赋值给变量 b。
-c=$((a+b)) 需要输出表达式的运算结果时，需在 (( )) 前面加$符号
-echo $((a+b))
-((a>7 && b==c)) 也可以做逻辑运算
-((a=3+5, b=a+10)) 以最后一个表达式的值作为整个 (( )) 命令的执行结果
+
+    ((b=a-15))  # 将 a-15 的运算结果赋值给变量 b
+
+需要输出表达式的运算结果时，需在 (( )) 前面加$符号
+
+    c=$((a+b))
+    echo $((a+b))
+    ((a>7 && b==c))  # 也可以做逻辑运算
+    ((a=3+5, b=a+10))  # 以最后一个表达式的值作为整个 (( )) 命令的执行结果
 
 let 命令和双小括号 (( )) 的用法是类似的，对于多个表达式之间的分隔符，let 和 (( )) 是有区别的：
 let 命令以空格来分隔多个表达式；
@@ -58,29 +72,57 @@ test支持3类检测：文件、数值、字符串.
 当你在 test 命令中使用变量时，强烈建议将变量用双引号""包围起来，这样能避免变量为空值时导致的很多奇葩问题。
 
 test 和 [] 是等价的，[] 注意两边留空格
-[ -z "$str1" -o -z "$str2" ]
-[ -z "$str1" ] || [ -z "$str2" ]
+
+    [ -z "$str1" -o -z "$str2" ]
+
+    [ -z "$str1" ] || [ -z "$str2" ]
+
+能做字符串比较的时候，不要用数值比较。
+
+    不好 [ "$a" -eq 7 ] 如果变量a为空则语句执行会报错
+    好   [ "$a" = "7" ]
+
+    最安全：当变量可能为空的时候，强烈建议在变量的基础上加上其他辅助字符串，参见 /etc/init.d/ 下的脚本
+    [ "a$a" = "a7" ]   # 判断a是否为7
+    [ "a$a" = "a" ]    # 判断a是否为空
+    [ ! -z "$a" -a "a$a" = "a7" ]  # a不为空且a=7时才为真
 
 [[ ]] 是 test 的升级版
 [[ ]] 注意两边留空格
-if [[ -z $str1 ]] || [[ -z $str2 ]]  #不需要对变量名加双引号
-then
-    echo "字符串不能为空"
-elif [[ $str1 < $str2 ]]  #不需要也不能对 < 进行转义
-then
-    echo "str1 < str2"
-else
-    echo "str1 >= str2"
-fi
 
-如果条件成立则执行，否则不执行的一个流行写法：
-[[ -n $envname ]] && printf "conda:%s" $envname
+    if [[ -z $str1 ]] || [[ -z $str2 ]]  #不需要对变量名加双引号
+    then
+        echo "字符串不能为空"
+    elif [[ $str1 < $str2 ]]  #不需要也不能对 < 进行转义
+    then
+        echo "str1 < str2"
+    else
+        echo "str1 >= str2"
+    fi
 
-如果执行命令的结果是失败，则打印。。。
-if ! $(which vcgencmd >/dev/null) ; then printf "%s" 'error cmd'; fi
+如果变量存在则执行，否则不执行
+
+    [[ -n $conda_env_exist ]] && printf "conda:%s" $envname
+
+如果条件测试成功则执行，否则不执行
+
+    [ -r /etc/default/cron ] && . /etc/default/cron
+
+如果条件测试失败则执行，否则不执行
+
+    test -f $DAEMON || exit 0
+
+从本质上讲，if 检测的是命令的退出状态，下面的判断跳转就不能使用 test 命令
+
+    # 如果命令存在则执行
+    if $(which vcgencmd >/dev/null) ; then vcgencmd measure_temp; fi
+
+    # 如果执行命令的结果是失败，则打印
+    if ! $(which vcgencmd >/dev/null) ; then printf "%s" 'error cmd'; fi
 
 使用逻辑运算符将多个 [[ ]] 连接起来依然是可以的，因为这是 Shell 本身提供的功能，跟 [[ ]] 或者 test 没有关系，如下所示：
-[[ -z $str1 ]] || [[ -z $str2 ]]
+
+    [[ -z $str1 ]] || [[ -z $str2 ]]
 
  -（减号） 的作用是代表标准输出/标准输入, 视命令而定
 

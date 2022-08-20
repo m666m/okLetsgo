@@ -487,7 +487,7 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 )
 
 function prompt_raspi_temp_warn() {
-  if ! $(which vcgencmd >/dev/null) ;  then return 0; fi
+  if ! $(which vcgencmd >/dev/null) ; then return 0; fi
 
   local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
