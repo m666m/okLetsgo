@@ -1710,24 +1710,29 @@ Ctrl+V到下一页
 
 Airline自己管理插件，在 ~/.vimrc 中配置
 
-    " 安装时自动屏蔽原配置的 powerline，并安装 Vundle 插件管理器
+    " 安装时自动屏蔽原配置的 powerline，并安装了 Vundle 插件管理器
 
-    " 启用插件：标签式显示多个打开的文件
+    " 建议使用主题 nord，不止修改了状态栏，还自带了语法高亮的方案，方便
+    Plugin 'arcticicestudio/nord-vim'
+    colorscheme nord
+
+    " 启用内置插件：标签式显示多个打开的文件
     let g:airline#extensions#tabline#enabled = 1
 
-    " 启用插件：左侧显示文件树内容
+    " 启用内置插件：左侧显示文件树内容
 
 AirlineTheme自己管理主题，在 ~/.vimrc 中配置
 
     " 启用 powerline 的字体才能起飞
     let g:airline_powerline_fonts = 1
 
+    " 这个主题好像都只是状态栏的，没有同步设置语法高亮呢？
     " https://github.com/vim-airline/vim-airline-themes/tree/master/autoload/airline/themes
     " 列表见 https://github.com/vim-airline/vim-airline/wiki/Screenshots
     " 保存在 ~/.vim/bundle/vim-airline-themes/autoload/airline/themes
     " 使用说明 ~/.vim/bundle/vim-airline-themes/README.md
     " 在vi中切换主题 :AirlineTheme night_owl
-    let g:airline_theme='papercolor'
+    let g:airline_theme='papercolor'  " 建议使用插件里的 nord ，比这个好
 
 + 状态栏工具使用 powerline
 
