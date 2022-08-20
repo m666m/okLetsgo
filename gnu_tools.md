@@ -1530,6 +1530,10 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
 在vim中输入的命令，只在当前文件中有效，可编辑 ~/.vimrc 文件配置。
 
+vim 启用语法高亮
+
+    :syntax enable
+
 vim 关闭语法高亮
 
      :syntax clear
@@ -1636,9 +1640,9 @@ Ctrl+V到下一页
 
     https://github.com/junegunn/vim-plug
 
-    https://github.com/VundleVim/Vundle.vim
+    https://github.com/VundleVim/Vundle.vim 2019年之后不更新了。。。
 
-    https://github.com/tpope/vim-pathogen
+    插件大全列表 https://vimawesome.com/
 
 颜色方案
 
@@ -1646,7 +1650,70 @@ Ctrl+V到下一页
 
     北极 https://www.nordtheme.com/ports
 
-推荐安装 vim-airline
+##### 使用 Vundle 插件管理器
+
+安装了 vim-airline 自带这个
+
+    https://github.com/VundleVim/
+
+配置插件，编辑 ~/.vimrc
+
+    call vundle#begin()
+    "...
+    Plugin 'VundleVim/Vundle.vim'
+
+    "插件在Github仓库中
+    "Plugin 'scrooloose/nerdtree'
+    "插件在 https://github.com/vim-scripts 用户仓库中
+    "Plugin 'YankRing.vim'
+    "插件在非Github的Git仓库中
+    "Plugin 'git://git.wincent.com/command-t.git'
+    "插件在本地Git仓库中
+    "Plugin 'file:///home/gmarik/path/to/plugin'
+
+    Plugin 'vim-airline/vim-airline'
+    Plugin 'vim-airline/vim-airline-themes'
+
+    Plugin 'arcticicestudio/nord-vim'
+    Plugin 'scrooloose/nerdtree'
+    "...
+    call vundle#end()
+
+    在文件最后增加自己的参数设置
+
+    syntax enable  " 启用语法高亮
+
+    colorscheme nord  "启用 nord 主题，语法高亮的配色也变了
+
+    " NERDTree
+    map <C-n> :NERDTreeToggle<CR>
+    let NERDTreeShowHidden=1 "在打开时默认显示隐藏文件
+    " map 是快捷键映射命令
+    " <C-n> 定义了快捷键，表示 Ctrl-n
+    " 后面是对应的命令以及回车键 <CR>
+
+配置后运行命令安装插件
+
+    :PluginInstall
+
+卸载插件只需在.vimrc配置文件中删除欲卸载插件的插件地址配置，保存退出配置文件 .vimrc 后
+然后在Vim中执行下述命令即可完成卸载
+
+    :PluginClean
+
+更新插件
+
+    :PluginUpdate
+
+列出当前插件
+
+    :PluginList
+
+搜索插件，选择一个你想要安装的插件，并敲击键盘 i 来安装这个插件，完成后选中这个插件的名称，并粘贴到 .vimrc 文件中去
+
+    :PluginSearch colorscheme
+
+##### 推荐安装 vim-airline
 
     https://github.com/vim-airline/vim-airline
 
@@ -1654,8 +1721,32 @@ Ctrl+V到下一页
     apt install vim-airline-themes
 
 省事了，不仅是状态栏工具，自带很多常用插件如目录树语法高亮色彩主题啥的都有，普通字体也可以正常显示，开箱即用。
-
 最重要的是，它没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
+
+查看帮助
+
+    :help airline
+
+Airline自己管理插件，在 ~/.vimrc 中配置
+
+    " 安装时自动屏蔽原配置的 powerline，并安装 Vundle 插件管理器
+
+    " 启用插件：标签式显示多个打开的文件
+    let g:airline#extensions#tabline#enabled = 1
+
+    " 启用插件：左侧显示文件树内容
+
+AirlineTheme自己管理主题，在 ~/.vimrc 中配置
+
+    " 启用 powerline 的字体才能起飞
+    let g:airline_powerline_fonts = 1
+
+    " https://github.com/vim-airline/vim-airline-themes/tree/master/autoload/airline/themes
+    " 列表见 https://github.com/vim-airline/vim-airline/wiki/Screenshots
+    " 保存在 ~/.vim/bundle/vim-airline-themes/autoload/airline/themes
+    " 使用说明 ~/.vim/bundle/vim-airline-themes/README.md
+    " 在vi中切换主题 :AirlineTheme night_owl
+    let g:airline_theme='papercolor'
 
 + 状态栏工具使用 powerline
 
