@@ -153,6 +153,10 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
         tmux                Tmux-specific commands
         shell               Shell-specific commands
 
+    powerline-config tmux 好用，直接配置到 tmux 里了。
+
+    这个不行 powerline-config shell -s zsh command，到zsh得source的方式
+
 绑定到各软件：手工配置
 
 先查看你安装的位置，找到bindings目录
@@ -334,13 +338,17 @@ zsh自带功能
 
     命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按TAB键快速进入下一级，或直接按右方向键确认该提示。
 
+        # git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
         zsh
         sudo apt install zsh-autosuggestions
 
     命令语法高亮：根据你输入的命令是否正确的色彩高亮，比如输入date查看时间，错为data，字体的颜色会跟随你的输入一个字母一个字母的变化，错误会直接变红。
 
+        # git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zsh-syntax-highlighting
         zsh
         sudo apt install zsh-syntax-highlighting
+
+        # 发现个替代品 https://github.com/zdharma-continuum/fast-syntax-highlighting
 
     命令模糊查找：输入错的也没关系，给你候选命令的提示，vi模式改良为按上下键进入搜索，直接输入关键字即可
 
@@ -349,10 +357,16 @@ zsh自带功能
 
 启用插件，编辑 ~/.zshrc 文件
 
+    # 有插件管理这俩设置不需要
+    # 启用彩色提示符
+    # autoload -U colors && colors
+    # 每次命令行刷新提示符
+    # setopt prompt_subst
+
     # 如果是用 apt install 安装的发行版，位置在 /usr/share/ 目录
     # 手动安装的位置在 ~/.zsh/plugins/ 目录
 
-    # 启用插件：powerline
+    # 启用插件：状态栏工具
     # 如果是pip安装的查看路径用 pip show powerline-status
     source /usr/share/powerline/bindings/zsh/powerline.zsh
 
@@ -361,7 +375,7 @@ zsh自带功能
     source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
     # 启用插件：命令语法高亮
-    # 官网提示要在文件的最后一行
+    # 官网提示要在配置文件的最后一行
     # source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
     source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
@@ -369,16 +383,18 @@ zsh自带功能
     # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
-嫌这些配置麻烦，有个适合大家常用功能的打包,速度还优化了 -- zsh4humans
+#### 推荐安装 -- zsh4humans
+
+嫌上面逐个配置太麻烦就用打包的，它还优化了速度，比自己手工在zsh里挨个装插件还有优化。
 
     https://github.com/romkatv/zsh4humans
 
-无脑安装就完事了，最常用的几个插件都给你配置好了：命令行提示栏、自动完成、语法高亮、命令模糊查找
+无脑安装就完事了，最常用的几个插件都给你配置好了：状态栏工具、自动完成、语法高亮、命令模糊查找
 
+    powerlevel10k
     zsh-autosuggestions
     zsh-syntax-highlighting
     fzf
-    powerlevel10k
 
 而且能跨主机记忆命令历史，比如你在本机ssh某个主机后执行的操作，在本机或另一个ssh主机上都可以被回忆到，方便！
 
@@ -402,56 +418,6 @@ zsh自带功能
     0inputs+0outputs (0major+4998minor)pagefaults 0swaps
     0.20user 0.13system 0:00.30elapsed 114%CPU (0avgtext+0avgdata 5904maxresident)k
     0inputs+0outputs (0major+4995minor)pagefaults 0swaps
-
-#### 不依赖 oh-my-zsh 配置 zsh
-
-看上面章节 zsh-bench 的测试，直接安装 zsh4humans，这个的速度比自己在zsh里挨个装插件还有优化。
-
-如果嫌 ohmyzsh 太慢，直接用 zsh 配置插件来实现几个常用功能，就好了。
-
-    https://zhuanlan.zhihu.com/p/347772529
-
-考虑到 oh-my-zsh 本质上也只是调用 zsh 的功能来实现配置。所以找了点时间琢磨了下如何直接配置 zsh。
-
-实现的配置项
-
-    命令自动补全
-    语法高亮
-    替换为彩色提示符
-    powerline
-
-拉取插件代码
-
-    # 自动补全
-    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
-
-    # 语法高亮
-    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zsh-syntax-highlighting
-
-配置 zsh 使用 powerline，直接在zsh下执行即可
-
-    # 不知道这个命令怎么用 powerline-config shell -s zsh command
-
-使用以下内容替换用户目录下的 .zshrc 文件
-
-    # 启用彩色提示符
-    autoload -U colors && colors
-
-    # 每次命令行刷新提示符
-    setopt prompt_subst
-
-    # 设置命令行提示符
-    PROMPT='❰%{$fg[green]%}%n%{$reset_color%}|%{$fg[yellow]%}%1~%{$reset_color%}%{$fg[blue]%}$(git branch --show-current 2&> /dev/null | xargs -I branch echo "(branch)")%{$reset_color%}❱ '
-
-    # 启用插件: powerline
-    # 如果是pip安装的查看路径用 pip show powerline-status
-    source /usr/share/powerline/bindings/zsh/powerline.zsh
-
-    # 启用插件: zsh-autosuggestions
-    source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-    # 启用插件: zsh-syntax-highlighting
-    source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 #### 强烈推荐主题 powerlevel10k
 
