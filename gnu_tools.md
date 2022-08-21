@@ -1631,9 +1631,9 @@ Ctrl+V到下一页
 
     北极 https://www.nordtheme.com/ports
 
-##### 使用 Vundle 插件管理器
+##### 插件管理器 Vundle
 
-安装了 vim-airline 自带这个
+安装了 vim-airline 就自带这个，优点是只修改 ~/.vimrc，便于用户自定义
 
     https://github.com/VundleVim/
 
@@ -1716,6 +1716,16 @@ Airline自己管理插件，在 ~/.vimrc 中配置
     Plugin 'arcticicestudio/nord-vim'
     colorscheme nord
 
+    " 内置插件的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
+    " 内置插件保存在 /.vim/bundle/vim-airline/autoload/airline/extensions/ 下
+    " 命令 :AirlineExtensions 查看当前自动启用的内置插件
+
+    " an empty list disables all extensions
+    let g:airline_extensions = []
+
+    " or only load what you want
+    let g:airline_extensions = ['branch', 'tabline']
+
     " 启用内置插件：标签式显示多个打开的文件
     let g:airline#extensions#tabline#enabled = 1
 
@@ -1723,7 +1733,7 @@ Airline自己管理插件，在 ~/.vimrc 中配置
 
 AirlineTheme自己管理主题，在 ~/.vimrc 中配置
 
-    " 启用 powerline 的字体才能起飞
+    " AirlineTheme 需要启用 powerline 的字体才能起飞
     let g:airline_powerline_fonts = 1
 
     " 这个主题好像都只是状态栏的，没有同步设置语法高亮呢？
@@ -1734,7 +1744,97 @@ AirlineTheme自己管理主题，在 ~/.vimrc 中配置
     " 在vi中切换主题 :AirlineTheme night_owl
     let g:airline_theme='papercolor'  " 建议使用插件里的 nord ，比这个好
 
-+ 状态栏工具使用 powerline
+###### 示例 .vimrc 文件
+
+结合我自己使用的插件和 airline 的配置
+
+```shell
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" airline 安装时自动屏蔽原配置的 powerline，并安装了 Vundle 插件管理器
+
+set nocompatible              " be iMproved, required
+filetype off                  " required
+" set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+" 自己要添加的插件在这里配置
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'arcticicestudio/nord-vim'
+Plugin 'scrooloose/nerdtree'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim 的一些默认设置
+set laststatus=2  " 始终显示状态栏
+set showtabline=2  " 始终显示标签页
+
+" https://www.codenong.com/15375992/
+" 如果终端工具已经设置了变量 Term=xterm-256color，那么这个参数可有可无
+if &term =="screen"
+    set t_Co=256
+endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" airline 内置插件设置
+"
+" airline 内置插件的逐个说明在 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
+" airline 内置插件保存在 /.vim/bundle/vim-airline/autoload/airline/extensions/ 下
+" 命令 :help airline 查看 airline 说明
+" 命令 :AirlineExtensions 查看当前自动启用的内置插件
+
+" 需要启用 powerline 的字体，状态栏显示的效果才能起飞
+let g:airline_powerline_fonts = 1
+
+" 如果使用了主题 nord 就不需要开启 airline 内置状态栏工具了
+"let g:airline_theme='papercolor'
+
+" 启用 airline 内置插件：标签式显示多个打开的文件的状态栏效果
+" 在说明文件中搜 airline-tabline
+let g:airline#extensions#tabline#enabled = 1
+
+" 启用 airline 内置插件：左侧显示文件树内容的状态栏效果
+let g:airline#extensions#nerdtree_statusline = 1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 使用下载的插件：主题 nord，不止修改了状态栏，还自带了语法高亮的方案，方便
+colorscheme nord
+syntax enable
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 使用下载的插件：NERDTree
+
+let NERDTreeShowHidden=1 " 在打开时默认显示隐藏文件
+
+" map 是快捷键映射命令
+" <C-n> 定义了快捷键，表示 Ctrl-n
+" 后面是对应的命令以及回车键 <CR>
+map <C-n> :NERDTreeToggle<CR>
+
+```
+
+nerdtree 的热键
+
+    前面在配置文件中重新定义了 Ctrl-n 为切换目录树显示
+
+    前导 ctrl + w ，然后 h    光标跳到左侧树形目录
+    前导 ctrl + w ，然后 l    光标跳到右侧文件显示窗口
+
+    在左侧树形目录中的热键
+
+    t       在新 Tab 中打开选中文件/书签，并跳到新 Tab
+    T       在新 Tab 中打开选中文件/书签，但不跳到新 Tab
+
+##### 状态栏工具使用 powerline
 
     powerline 要求 Vim 在编译时添加 python 支持，我也不知道vim的哪个版本支持。
     在自己编译 vim 前想清楚，你的 python 环境是什么，在 virtualenv 下如何使用vim？
@@ -1762,11 +1862,13 @@ AirlineTheme自己管理主题，在 ~/.vimrc 中配置
             " Use 256 colours (Use this setting only if your terminal supports 256 colours)
             set t_Co=256
 
-或者用 vim powerline 的替代品：
+或者用 vim powerline 的另一个替代品：
 
 状态栏工具 lightline.vim
 
     https://github.com/itchyny/lightline.vim
+
+如果你想只安装个干净的工具栏的话，其它插件自己配置自己玩的话，状态栏工具用这个 lightline.vim 就足够了。
 
 Why yet another clone of powerline?
 
@@ -1776,7 +1878,7 @@ Why yet another clone of powerline?
 
     vim-airline is a nice plugin, but it uses too many functions of other plugins, which should be done by users in .vimrc.
 
-这个比较简洁，默认是状态栏工具和颜色方案。优点是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
+这个比较简洁，只有状态栏工具和颜色方案。最大的优点是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
 #### vim 快捷键
 
@@ -1785,24 +1887,30 @@ Why yet another clone of powerline?
 移动光标
 
     h,j,k,l 上，下，左，右
-    ctrl-e 移动页面
-    ctrl-f 上翻一页
-    ctrl-b 下翻一页
-    ctrl-u 上翻半页
-    ctrl-d 下翻半页
-    w 跳到下一个字首，按标点或单词分割
-    W 跳到下一个字首，长跳，如end-of-line被认为是一个字
-    e 跳到下一个字尾
-    E 跳到下一个字尾，长跳
-    b 跳到上一个字
-    B 跳到上一个字，长跳
-    0 跳至行首，不管有无缩进，就是跳到第0个字符
-    ^ 跳至行首的第一个字符
-    $ 跳至行尾
-    gg 跳至文首
-    G 调至文尾
-    5gg/5G 调至第5行
-    gd 跳至当前光标所在的变量的声明处
+
+    ctrl-e  移动页面
+    ctrl-f  上翻一页
+    ctrl-b  下翻一页
+    ctrl-u  上翻半页
+    ctrl-d  下翻半页
+
+    w       跳到下一个字首，按标点或单词分割
+    W       跳到下一个字首，长跳，如end-of-line被认为是一个字
+    e       跳到下一个字尾
+    E       跳到下一个字尾，长跳
+    b       跳到上一个字
+    B       跳到上一个字，长跳
+    0       跳至行首，不管有无缩进，就是跳到第0个字符
+    ^       跳至行首的第一个字符
+    $       跳至行尾
+
+    gg      跳至文首
+    G       跳至文尾
+    5gg/5G  跳至第5行
+    gd      跳至当前光标所在的变量的声明处
+    gt      跳至下一个标签页
+    gT      跳至前一个标签页
+
     fx 在当前行中找x字符，找到了就跳转至
     ; 重复上一个f命令，而不用重复的输入fx
 
@@ -1882,6 +1990,24 @@ Why yet another clone of powerline?
     2.CTRL+v 进入“可视 块”模式，选取这一列操作多少行。
     3.SHIFT+i(I) 输入要插入的内容。
     4.ESC 按两次，会在每行的选定的区域出现插入的内容
+
+标签页
+
+    :help tab-page-intro 标签页使用的帮助信息
+
+    :tabnew     新建标签页
+    :tabe filename 用标签页打开文件
+    :tabnew filename 用标签页打开文件
+
+    :tabs       显示已打开标签页的列表
+    :tabc       关闭当前标签页，功能等同于:q
+    :tabo       关闭所有标签页
+    :tabm 0/1/2 将当前标签页移动到第1/2/3个页面位置
+
+    :tabn       移动到下一个标签页 或 命令模式直接输入 gt
+    :tabp       移动到上一个标签页 或 命令模式直接输入 gT
+    :tabfirst   移动到第一个标签页
+    :tablast    移动到最后一个标签页
 
 退出编辑器
 

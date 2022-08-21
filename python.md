@@ -1438,6 +1438,12 @@ Debian/Ubuntu 下同时安装了python2和python3，既有python2.7，又有pyth
 
 Debian/Ubuntu 下同时安装了python2和python3，对应的pip也是两个：pip 和 pip3，注意区别。特别是有些脚本不考虑多版本python共存，默认的命令就是pip，在Debian/Ubuntu 下会执行到python2里去了，注意给pip3建立个链接文件，方便使用。
 
+其实用python执行自带的pip即可对应各自版本，这样先指定指定的python会安装到对应的site-package目录，因为pip不区分环境
+
+    python -m pip install xxx
+
+    python3 -m pip install xxx
+
 1.安装ubuntu 17.10 桌面版64位系统
 
 2.系统已内置安装了python2.7和python3.6版本
@@ -1515,9 +1521,12 @@ lib_dirs = self.compiler.library_dirs + [
     make altinstall （注意命令 make install 会替换默认的python3）
 
 4.验证：
-python --version
-python3 --version
-python3.7 --version
+
+    python --version
+
+    python3 --version
+
+    python3.7 --version
 
 ## Ubuntu16.04 源码安装 python3.7+ 含 pip3 实现多版本共存 (不替换老版本新装的方法 )
 
