@@ -1873,7 +1873,9 @@ powerline安装见章节 [状态栏工具 powerline]。
 
         高亮关键字 https://github.com/tmux-plugins/tmux-prefix-highlight
 
-三、安装nord主题
+三、安装nord主题，替换 powerline 状态栏显示
+
+使用这个主题的好处是它支持上面的官方插件，在状态栏显示各种字符，启动速度也比 powerline 快。
 
     https://www.nordtheme.com/ports/tmux
         https://github.com/arcticicestudio/nord-tmux
@@ -1885,17 +1887,18 @@ powerline安装见章节 [状态栏工具 powerline]。
     mkdir -p ~/.tmux/themes/nord-tmux
     cd ~/.tmux/themes/nord-tmux
 
-    git clone --depth=1 https://github.com/arcticicestudio/nord-tmux
+    git clone --depth=1 https://github.com/arcticicestudio/nord-tmux ~/.tmux/themes/nord-tmux
 
 编辑 ~/.tmux.conf 文件，添加如下行
 
+    # 可注释掉原 powerline 那行
     run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 重新加载配置文件
 
     tmux source-file ~/.tmux.conf
 
-定制状态栏显示的段Segment：
+powerline 定制状态栏显示的段Segment：
 
 编辑文件
 
