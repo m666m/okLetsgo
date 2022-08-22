@@ -1222,11 +1222,9 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
     更改默认颜色主题
 
-    打开~/.vimrc文件，在其中加入一行"colorscheme 颜色主题名字"，之后保存更改即可。
+        打开~/.vimrc文件，在其中加入一行"colorscheme 颜色主题名字"，之后保存更改即可。
 
-    如：
-
-        colorscheme slate
+            colorscheme slate
 
 + Vim 解决汉字乱码
 
