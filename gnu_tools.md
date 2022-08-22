@@ -496,21 +496,19 @@ function prompt_raspi_temp_warn() {
 
 #### .zshrc 配置文件样例
 
-结合我自己使用的插件和 powerlevle10k 的配置
+安装 powerlevle10k 后，新增自己使用的插件配置
 
 ```zsh
 
-############################################################
-# 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
-# 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
-
-# 启用插件：状态栏工具 powerlevle10k，替换掉 powerline
-# powerlevle10k 安装程序自动修改
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-############ 下手动配置插件
-#
+############ 状态栏工具 powerlevle10k 安装程序自动修改 后的最后一行 ############
+
+############ 下为手动配置插件
+# 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
+# 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
+
 # 启用插件：状态栏工具 powerline
 # 如果是pip安装的查看路径用 pip show powerline-status
 # source /usr/share/powerline/bindings/zsh/powerline.zsh
@@ -1267,16 +1265,18 @@ Ctrl+V到下一页
 
 先决条件
 
-先检查vim的版本，进入vim执行命令 :version
+    终端工具支持透明效果。
 
-    Small version without GUI.
+    检查vim的版本，进入vim执行命令 :version
 
-如果出现上述字样，需要先安装更多的vim组件
+        Small version without GUI.
 
-    # https://askubuntu.com/questions/284957/vi-getting-multiple-sorry-the-command-is-not-available-in-this-version-af
-    sudo apt install vim-gui-common
+    如果出现上述字样，需要先安装更多的vim组件
 
-    sudo apt install vim-runtime
+        # https://askubuntu.com/questions/284957/vi-getting-multiple-sorry-the-command-is-not-available-in-this-version-af
+        sudo apt install vim-gui-common
+
+        sudo apt install vim-runtime
 
 插件管理器
 
