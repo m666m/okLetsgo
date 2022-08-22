@@ -135,11 +135,11 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
     # 最好用发行版自带的，一步到位，默认的安装到 /usr/share/powerline/ 目录下了
     sudo apt install powerline
 
-终端工具最好明确设置变量，这样各个插件会自动使用更丰富的颜色
+终端工具最好明确设置变量Term，这样各个插件会自动使用更丰富的颜色
 
     Term=xterm-256color
 
-字体安装推荐 MesloLGS NF，详见下面章节[状态栏字体]。
+终端工具字体推荐 MesloLGS NF，详见下面章节[状态栏字体]。
 
 绑定到各软件：命令行方式配置
 
@@ -618,360 +618,7 @@ antigen用法：快速配置
     exit
     zsh
 
-#### zsh配置文件样例
-
-有空慢慢研究吧
-
-    https://linux.zone/1306
-
-```shell
-#color{{{
-autoload colors
-colors
-
-for color in RED GREEN YELLOW BLUE MAGENTA CYAN WHITE; do
-eval _$color='%{$terminfo[bold]$fg[${(L)color}]%}'
-eval $color='%{$fg[${(L)color}]%}'
-(( count = $count + 1 ))
-done
-FINISH="%{$terminfo[sgr0]%}"
-#}}}
-
-#命令提示符
-RPROMPT=$(echo "$RED%D %T$FINISH")
-PROMPT=$(echo "$CYAN%n@$YELLOW%M:$GREEN%/$_YELLOW>$FINISH ")
-
-#PROMPT=$(echo "$BLUE%M$GREEN%/
-#$CYAN%n@$BLUE%M:$GREEN%/$_YELLOW>>>$FINISH ")
-#标题栏、任务栏样式{{{
-case $TERM in (*xterm*|*rxvt*|(dt|k|E)term)
-precmd () { print -Pn "\e]0;%n@%M//%/\a" }
-preexec () { print -Pn "\e]0;%n@%M//%/\ $1\a" }
-;;
-esac
-#}}}
-
-#关于历史纪录的配置 {{{
-#历史纪录条目数量
-export HISTSIZE=10000
-#注销后保存的历史纪录条目数量
-export SAVEHIST=10000
-#历史纪录文件
-export HISTFILE=~/.zhistory
-#以附加的方式写入历史纪录
-setopt INC_APPEND_HISTORY
-#如果连续输入的命令相同，历史纪录中只保留一个
-setopt HIST_IGNORE_DUPS
-#为历史纪录中的命令添加时间戳
-setopt EXTENDED_HISTORY
-
-#启用 cd 命令的历史纪录，cd -[TAB]进入历史路径
-setopt AUTO_PUSHD
-#相同的历史路径只保留一个
-setopt PUSHD_IGNORE_DUPS
-
-#在命令前添加空格，不将此命令添加到纪录文件中
-#setopt HIST_IGNORE_SPACE
-#}}}
-
-#每个目录使用独立的历史纪录{{{
-cd() {
-builtin cd "$@"                             # do actual cd
-fc -W                                       # write current history  file
-local HISTDIR="$HOME/.zsh_history$PWD"      # use nested folders for history
-if  [ ! -d "$HISTDIR" ] ; then          # create folder if needed
-mkdir -p "$HISTDIR"
-fi
-export HISTFILE="$HISTDIR/zhistory"     # set new history file
-touch $HISTFILE
-local ohistsize=$HISTSIZE
-HISTSIZE=0                              # Discard previous dir's history
-HISTSIZE=$ohistsize                     # Prepare for new dir's history
-fc -R                                       #read from current histfile
-}
-mkdir -p $HOME/.zsh_history$PWD
-export HISTFILE="$HOME/.zsh_history$PWD/zhistory"
-
-function allhistory { cat $(find $HOME/.zsh_history -name zhistory) }
-function convhistory {
-sort $1 | uniq |
-sed 's/^:\([ 0-9]*\):[0-9]*;\(.*\)/\1::::::\2/' |
-awk -F"::::::" '{ $1=strftime("%Y-%m-%d %T",$1) "|"; print }'
-}
-#使用 histall 命令查看全部历史纪录
-function histall { convhistory =(allhistory) |
-sed '/^.\{20\} *cd/i\\' }
-#使用 hist 查看当前目录历史纪录
-function hist { convhistory $HISTFILE }
-
-#全部历史纪录 top50
-function top50 { allhistory | awk -F':[ 0-9]*:[0-9]*;' '{ $1="" ; print }' | sed 's/ /\n/g' | sed '/^$/d' | sort | uniq -c | sort -nr | head -n 50 }
-
-#}}}
-
-#杂项 {{{
-#允许在交互模式中使用注释  例如：
-#cmd #这是注释
-setopt INTERACTIVE_COMMENTS
-
-#启用自动 cd，输入目录名回车进入目录
-#稍微有点混乱，不如 cd 补全实用
-setopt AUTO_CD
-
-#扩展路径
-#/v/c/p/p => /var/cache/pacman/pkg
-setopt complete_in_word
-
-#禁用 core dumps
-limit coredumpsize 0
-
-#Emacs风格 键绑定
-bindkey -e
-#bindkey -v
-#设置 [DEL]键 为向后删除
-#bindkey "\e[3~" delete-char
-
-#以下字符视为单词的一部分
-WORDCHARS='*?_-[]~=&;!#$%^(){}<>'
-#}}}
-
-#自动补全功能 {{{
-setopt AUTO_LIST
-setopt AUTO_MENU
-#开启此选项，补全时会直接选中菜单项
-#setopt MENU_COMPLETE
-
-autoload -U compinit
-compinit
-
-#自动补全缓存
-#zstyle ':completion::complete:*' use-cache on
-#zstyle ':completion::complete:*' cache-path .zcache
-#zstyle ':completion:*:cd:*' ignore-parents parent pwd
-
-#自动补全选项
-zstyle ':completion:*' verbose yes
-zstyle ':completion:*' menu select
-zstyle ':completion:*:*:default' force-list always
-zstyle ':completion:*' select-prompt '%SSelect:  lines: %L  matches: %M  [%p]'
-
-zstyle ':completion:*:match:*' original only
-zstyle ':completion::prefix-1:*' completer _complete
-zstyle ':completion:predict:*' completer _complete
-zstyle ':completion:incremental:*' completer _complete _correct
-zstyle ':completion:*' completer _complete _prefix _correct _prefix _match _approximate
-
-#路径补全
-zstyle ':completion:*' expand 'yes'
-zstyle ':completion:*' squeeze-shlashes 'yes'
-zstyle ':completion::complete:*' '\\'
-
-#彩色补全菜单
-eval $(dircolors -b)
-export ZLSCOLORS="${LS_COLORS}"
-zmodload zsh/complist
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
-
-#修正大小写
-zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
-#错误校正
-zstyle ':completion:*' completer _complete _match _approximate
-zstyle ':completion:*:match:*' original only
-zstyle ':completion:*:approximate:*' max-errors 1 numeric
-
-#kill 命令补全
-compdef pkill=kill
-compdef pkill=killall
-zstyle ':completion:*:*:kill:*' menu yes select
-zstyle ':completion:*:*:*:*:processes' force-list always
-zstyle ':completion:*:processes' command 'ps -au$USER'
-
-#补全类型提示分组
-zstyle ':completion:*:matches' group 'yes'
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*:options' description 'yes'
-zstyle ':completion:*:options' auto-description '%d'
-zstyle ':completion:*:descriptions' format $'\e[01;33m -- %d --\e[0m'
-zstyle ':completion:*:messages' format $'\e[01;35m -- %d --\e[0m'
-zstyle ':completion:*:warnings' format $'\e[01;31m -- No Matches Found --\e[0m'
-zstyle ':completion:*:corrections' format $'\e[01;32m -- %d (errors: %e) --\e[0m'
-
-# cd ~ 补全顺序
-zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
-#}}}
-
-##行编辑高亮模式 {{{
-# Ctrl+@ 设置标记，标记和光标点之间为 region
-zle_highlight=(region:bg=magenta #选中区域
-special:bold      #特殊字符
-isearch:underline)#搜索时使用的关键字
-#}}}
-
-##空行(光标在行首)补全 "cd " {{{
-user-complete(){
-case $BUFFER in
-"" )                       # 空行填入 "cd "
-BUFFER="cd "
-zle end-of-line
-zle expand-or-complete
-;;
-"cd --" )                  # "cd --" 替换为 "cd +"
-BUFFER="cd +"
-zle end-of-line
-zle expand-or-complete
-;;
-"cd +-" )                  # "cd +-" 替换为 "cd -"
-BUFFER="cd -"
-zle end-of-line
-zle expand-or-complete
-;;
-* )
-zle expand-or-complete
-;;
-esac
-}
-zle -N user-complete
-bindkey "\t" user-complete
-#}}}
-
-##在命令前插入 sudo {{{
-#定义功能
-sudo-command-line() {
-[[ -z $BUFFER ]] && zle up-history
-[[ $BUFFER != sudo\ * ]] && BUFFER="sudo $BUFFER"
-zle end-of-line                 #光标移动到行末
-}
-zle -N sudo-command-line
-#定义快捷键为： [Esc] [Esc]
-bindkey "\e\e" sudo-command-line
-#}}}
-
-#命令别名 {{{
-alias cp='cp -i'
-alias mv='mv -i'
-alias rm='rm -i'
-alias ls='ls -F --color=auto'
-alias ll='ls -al'
-alias grep='grep --color=auto'
-alias la='ls -a'
-alias pacman='sudo pacman-color'
-alias p='sudo pacman-color'
-alias y='yaourt'
-alias h='htop'
-alias vim='sudo vim'
-
-#[Esc][h] man 当前命令时，显示简短说明
-alias run-help >&/dev/null && unalias run-help
-autoload run-help
-
-#历史命令 top10
-alias top10='print -l  ${(o)history%% *} | uniq -c | sort -nr | head -n 10'
-#}}}
-
-#路径别名 {{{
-#进入相应的路径时只要 cd ~xxx
-hash -d A="/media/ayu/dearest"
-hash -d H="/media/data/backup/ayu"
-hash -d E="/etc/"
-hash -d D="/home/ayumi/Documents"
-#}}}
-
-##for Emacs {{{
-#在 Emacs终端 中使用 Zsh 的一些设置 不推荐在 Emacs 中使用它
-#if [[ "$TERM" == "dumb" ]]; then
-#setopt No_zle
-#PROMPT='%n@%M %/
-#>>'
-#alias ls='ls -F'
-#fi
-#}}}
-
-#{{{自定义补全
-#补全 ping
-zstyle ':completion:*:ping:*' hosts 192.168.1.{1,50,51,100,101} www.google.com
-
-#补全 ssh scp sftp 等
-#zstyle -e ':completion::*:*:*:hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
-#}}}
-
-#{{{ F1 计算器
-arith-eval-echo() {
-LBUFFER="${LBUFFER}echo \$(( "
-RBUFFER=" ))$RBUFFER"
-}
-zle -N arith-eval-echo
-bindkey "^[[11~" arith-eval-echo
-#}}}
-
-####{{{
-function timeconv { date -d @$1 +"%Y-%m-%d %T" }
-
-# }}}
-
-zmodload zsh/mathfunc
-autoload -U zsh-mime-setup
-zsh-mime-setup
-setopt EXTENDED_GLOB
-#autoload -U promptinit
-#promptinit
-#prompt redhat
-
-setopt correctall
-autoload compinstall
-
-#漂亮又实用的命令高亮界面
-setopt extended_glob
-TOKENS_FOLLOWED_BY_COMMANDS=('|' '||' ';' '&' '&&' 'sudo' 'do' 'time' 'strace')
-
-recolor-cmd() {
-region_highlight=()
-colorize=true
-start_pos=0
-for arg in ${(z)BUFFER}; do
-((start_pos+=${#BUFFER[$start_pos+1,-1]}-${#${BUFFER[$start_pos+1,-1]## #}}))
-((end_pos=$start_pos+${#arg}))
-if $colorize; then
-colorize=false
-res=$(LC_ALL=C builtin type $arg 2>/dev/null)
-case $res in
-*'reserved word'*)   style="fg=magenta,bold";;
-*'alias for'*)       style="fg=cyan,bold";;
-*'shell builtin'*)   style="fg=yellow,bold";;
-*'shell function'*)  style='fg=green,bold';;
-*"$arg is"*)
-[[ $arg = 'sudo' ]] && style="fg=red,bold" || style="fg=blue,bold";;
-*)                   style='none,bold';;
-esac
-region_highlight+=("$start_pos $end_pos $style")
-fi
-[[ ${${TOKENS_FOLLOWED_BY_COMMANDS[(r)${arg//|/\|}]}:+yes} = 'yes' ]] && colorize=true
-start_pos=$end_pos
-done
-}
-check-cmd-self-insert() { zle .self-insert && recolor-cmd }
-check-cmd-backward-delete-char() { zle .backward-delete-char && recolor-cmd }
-
-zle -N self-insert check-cmd-self-insert
-zle -N backward-delete-char check-cmd-backward-delete-char
-
-function powerline_precmd() {
-PS1="$(~/MyGit/powerline-shell/powerline-shell.py $? --shell zsh 2> /dev/null)"
-}
-
-function install_powerline_precmd() {
-for s in "${precmd_functions[@]}"; do
-if [ "$s" = "powerline_precmd" ]; then
-return
-fi
-done
-precmd_functions+=(powerline_precmd)
-}
-
-if [ "$TERM" != "linux" ]; then
-install_powerline_precmd
-fi
-```
+zsh配置文件样例，有空慢慢研究吧 <https://linux.zone/1306>。
 
 ## Windows 下的 GNU/POSIX 环境
 
@@ -1509,24 +1156,6 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
 ### Vim 和 nano
 
-在vim中输入的命令，只在当前文件中有效，可编辑 ~/.vimrc 文件配置。
-
-vim 启用语法高亮
-
-    :syntax enable
-
-vim 关闭语法高亮
-
-     :syntax clear
-
-Vim 关闭鼠标功能
-
-    :set mouse-=a
-
-Vim 使用鼠标
-
-    :set mouse=a
-
 Vim 解决汉字乱码
 
 如果你的 Vim 打开汉字出现乱码的话，那么在home目录(~)下，新建.vimrc文件
@@ -1535,14 +1164,13 @@ Vim 解决汉字乱码
 
 添加内容如下：
 
-    ini
     set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
     set enc=utf8
     set fencs=utf8,gbk,gb2312,gb18030
 
 保存退出后执行下环境变量
 
-    source .vimrc
+    source ~/.vimrc
 
  自定义 vim 编辑器的颜色方案
 
@@ -1629,7 +1257,7 @@ Ctrl+V到下一页
 
     夜猫子 https://github.com/sdras/night-owl-vscode-theme
 
-    北极 https://www.nordtheme.com/ports
+    北极 https://www.nordtheme.com/ports/vim
 
 ##### 插件管理器 Vundle
 
@@ -1694,15 +1322,15 @@ Ctrl+V到下一页
 
     :PluginSearch colorscheme
 
-##### 推荐安装 vim-airline
+##### 推荐安装插件 vim-airline
 
     https://github.com/vim-airline/vim-airline
 
-    apt install vim-airline
-    apt install vim-airline-themes
-
 省事了，不仅是状态栏工具，自带很多常用插件如目录树语法高亮色彩主题啥的都有，普通字体也可以正常显示，开箱即用。
 最重要的是，它没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
+
+    apt install vim-airline
+    apt install vim-airline-themes
 
 查看帮助
 
@@ -1726,10 +1354,12 @@ Airline自己管理插件，在 ~/.vimrc 中配置
     " or only load what you want
     let g:airline_extensions = ['branch', 'tabline']
 
-    " 启用内置插件：标签式显示多个打开的文件
+    " 启用 airline 内置插件：标签式显示多个打开的文件的状态栏效果
+    " 在说明文件中搜 airline-tabline
     let g:airline#extensions#tabline#enabled = 1
 
-    " 启用内置插件：左侧显示文件树内容
+    " 启用 airline 内置插件：nerdtree左侧显示文件树内容的状态栏效果
+    let g:airline#extensions#nerdtree_statusline = 1
 
 AirlineTheme自己管理主题，在 ~/.vimrc 中配置
 
@@ -1744,7 +1374,47 @@ AirlineTheme自己管理主题，在 ~/.vimrc 中配置
     " 在vi中切换主题 :AirlineTheme night_owl
     let g:airline_theme='papercolor'  " 建议使用插件里的 nord ，比这个好
 
-###### 示例 .vimrc 文件
+##### 插件 nerdtree 的热键
+
+切换目录树显示，在 ~/.vimrc 配置文件中定义为 Ctrl-n
+
+        " NERDTree
+        map <C-n> :NERDTreeToggle<CR>
+        let NERDTreeShowHidden=1 "在打开时默认显示隐藏文件
+        " map 是快捷键映射命令
+        " <C-n> 定义了快捷键，表示 Ctrl-n
+        " 后面是对应的命令以及回车键 <CR>
+
+目录树和文件显示窗格间切换使用 vim 的窗格切换热键
+
+    前导 ctrl + w ，然后方向键左或 h 光标跳到左侧树形目录
+    前导 ctrl + w ，然后方向键右或 l 光标跳到右侧文件显示窗格
+
+在左侧树形目录中的热键
+
+    回车    打开的的文件默认是vim的多个文件模式，即添加到缓冲中了，需要用命令 :ls 来显示， :b 2 切换
+            注意缓冲中的编号不是1，2，3的顺序分布
+
+    ?   切换是否显示 nerdtree 的快捷帮助
+
+    e   在目录树上按e，则在右侧窗格显示目录内容，光标键进行选择操作即可，再次按e退出
+
+    K   跳到当前目录下同级的第一个结点
+    J   跳到当前目录下同级的最后一个结点
+
+    t   在新 Tab 中打开选中文件/书签，并跳到新 Tab，或命令 :NERDTree-t
+    T   在新 Tab 中打开选中文件/书签，但不跳到新 Tab，或命令 :NERDTree-T
+
+    o   在已有窗格中打开文件、目录或书签，并跳到该窗口，或命令 :NERDTree-o
+    go  在已有窗格中打开文件、目录或书签，但不跳到该窗口，或命令 :NERDTree-go
+
+    i   切割一个新窗格打开选中文件，并跳到该窗口，或命令 :NERDTree-i
+    gi  split一个新窗格打开选中文件，但不跳到该窗口，或命令 :NERDTree-gi
+    s   vsp一个新窗格打开选中文件，并跳到该窗口，或命令 :NERDTree-s
+    gs  vsp一个新窗格打开选中文件，但不跳到该窗口，或命令 :NERDTree-gs
+    !   执行当前文件，或命令 :NERDTree-!
+
+##### .vimrc 配置文件样例
 
 结合我自己使用的插件和 airline 的配置
 
@@ -1766,8 +1436,9 @@ Plugin 'VundleVim/Vundle.vim'
 " 自己要添加的插件在这里配置
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'arcticicestudio/nord-vim'
 Plugin 'scrooloose/nerdtree'
+" https://www.nordtheme.com/ports/vim
+Plugin 'arcticicestudio/nord-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -1795,72 +1466,68 @@ endif
 " 需要启用 powerline 的字体，状态栏显示的效果才能起飞
 let g:airline_powerline_fonts = 1
 
-" 如果使用了主题 nord 就不需要开启 airline 内置状态栏工具了
-"let g:airline_theme='papercolor'
-
-" 启用 airline 内置插件：标签式显示多个打开的文件的状态栏效果
+" 启用 airline 内置插件：标签式显示多个打开的或缓冲中的文件的状态栏效果
 " 在说明文件中搜 airline-tabline
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#tab_nr_type = 2
+"let g:airline#extensions#tabline#buffer_idx_mode = 1
 
 " 启用 airline 内置插件：左侧显示文件树内容的状态栏效果
 let g:airline#extensions#nerdtree_statusline = 1
 
+" 启用 airline 内置主题：如果使用了下载的主题，可以关闭
+let g:airline_theme='papercolor'
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" 使用下载的插件：主题 nord，不止修改了状态栏，还自带了语法高亮的方案，方便
+" 使用下载的插件：主题 nord，不止设置了状态栏颜色，还自带了语法高亮的方案
+syntax enable  " 防止某次关闭了语法高亮，下次打开vi则自动再打开
 colorscheme nord
-syntax enable
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " 使用下载的插件：NERDTree
 
 let NERDTreeShowHidden=1 " 在打开时默认显示隐藏文件
 
-" map 是快捷键映射命令
+" 切换目录树显示的热键定义为 Ctrl-n
+" map 是 vim 的快捷键映射命令
 " <C-n> 定义了快捷键，表示 Ctrl-n
 " 后面是对应的命令以及回车键 <CR>
 map <C-n> :NERDTreeToggle<CR>
 
 ```
 
-nerdtree 的热键
+##### 不推荐 vim 状态栏工具使用 powerline
 
-    前面在配置文件中重新定义了 Ctrl-n 为切换目录树显示
+参见章节 [状态栏工具 powerline]。
 
-    前导 ctrl + w ，然后 h    光标跳到左侧树形目录
-    前导 ctrl + w ，然后 l    光标跳到右侧文件显示窗口
+powerline 要求 Vim 在编译时添加 python 支持，我也不知道vim的哪个版本支持。
 
-    在左侧树形目录中的热键
-
-    t       在新 Tab 中打开选中文件/书签，并跳到新 Tab
-    T       在新 Tab 中打开选中文件/书签，但不跳到新 Tab
-
-##### 状态栏工具使用 powerline
-
-    powerline 要求 Vim 在编译时添加 python 支持，我也不知道vim的哪个版本支持。
     在自己编译 vim 前想清楚，你的 python 环境是什么，在 virtualenv 下如何使用vim？
 
-    所以建议别走自行编译这条路！用 vim-airline 就万事大吉。
+    建议别走自行编译 vim 这条路！可以安装 debian 发行版自带的 powerline，或者使用替代品 vim-airline 就万事大吉。
 
-    如果确定你的 vim 是有 python 支持的，那么可以使用 powerline ，做如下设置：
+如果确定你的 vim 是有 python 支持的，那么可以使用 powerline ，做如下设置：
 
-        先查看你安装 powerline 的位置，找到bindings目录
+    先查看你安装 powerline 的位置，找到bindings目录
 
-            如果是用 pip 安装的 powerline，就是如下这种的路径
+        如果是用 pip 安装的 powerline，就是如下这种的路径
 
-                # pip show powerline-status
-                . /usr/lib/python3.7/site-packages/powerline/bindings/bash/powerline.sh
+            # pip show powerline-status
+            /usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
 
-            如果是用 apt 安装的powerline在，就是这种路径 /usr/share/powerline/bindings/
+        如果是用 apt 安装的 powerline ，就是这种路径
 
-        配置文件 ~/.vimrc or /etc/vim/vimrc
+            /usr/share/powerline/bindings/vim/
 
-            set rtp+=/usr/share/powerline/bindings/vim/
+    添加到配置文件 ~/.vimrc 或 /etc/vim/vimrc 中
 
-            " Always show statusline
-            set laststatus=2
+        set rtp+=/usr/share/powerline/bindings/vim/
 
-            " Use 256 colours (Use this setting only if your terminal supports 256 colours)
-            set t_Co=256
+        " Always show statusline
+        set laststatus=2
+
+        " Use 256 colours (Use this setting only if your terminal supports 256 colours)
+        set t_Co=256
 
 或者用 vim powerline 的另一个替代品：
 
@@ -1868,7 +1535,7 @@ nerdtree 的热键
 
     https://github.com/itchyny/lightline.vim
 
-如果你想只安装个干净的工具栏的话，其它插件自己配置自己玩的话，状态栏工具用这个 lightline.vim 就足够了。
+如果你想只安装个干净的工具栏，其它插件自己配置自己玩的话，状态栏工具用这个 lightline.vim 就足够了。
 
 Why yet another clone of powerline?
 
@@ -1883,6 +1550,18 @@ Why yet another clone of powerline?
 #### vim 快捷键
 
     Esc 退出编辑模式，或终止当前命令
+
+重新定义快捷键，放到 ~/.vimrc 文件中即可：
+
+```shell
+    " 切换目录树显示的热键定义为 Ctrl-n
+    " map 是 vim 的快捷键映射命令
+    " <C-n> 定义了快捷键，表示 Ctrl-n
+    " 后面是对应的命令以及回车键 <CR>
+    map <C-n> :NERDTreeToggle<CR>
+```
+
+##### 命令行模式
 
 移动光标
 
@@ -1980,18 +1659,75 @@ Why yet another clone of powerline?
 
     删除列
 
-    1.光标定位到要操作的地方。
-    2.CTRL+v 进入“可视 块”模式，选取这一列操作多少行。
-    3.d 删除。
+        1.光标定位到要操作的地方。
+        2.CTRL+v 进入“可视 块”模式，选取这一列操作多少行。
+        3.d 删除。
 
     插入列
 
-    1.光标定位到要操作的地方。
-    2.CTRL+v 进入“可视 块”模式，选取这一列操作多少行。
-    3.SHIFT+i(I) 输入要插入的内容。
-    4.ESC 按两次，会在每行的选定的区域出现插入的内容
+        1.光标定位到要操作的地方。
+        2.CTRL+v 进入“可视 块”模式，选取这一列操作多少行。
+        3.SHIFT+i(I) 输入要插入的内容。
+        4.ESC 按两次，会在每行的选定的区域出现插入的内容
 
-标签页
+##### 末行模式
+
+    在命令模式下，用户按:键即可进入末行模式下，此时 vi 会在显示窗口的最后一行（通常也是屏幕的最后一行）显示一个:作为末行模式的说明符，等待用户输入命令。多数文件管理命令都是在此模式下执行的（如把编辑缓冲区的内容写到文件中等）。
+
+    末行命令执行完后，vi 自动回到命令模式。
+
+    在vim中输入的命令，也可编辑 ~/.vimrc 文件配置。
+
+常用
+
+    :syntax enable      启用语法高亮
+
+    :syntax clear       关闭语法高亮
+
+    :set mouse=a        使用鼠标
+
+    :set mouse-=a       禁用鼠标
+
+退出编辑器
+
+    即使缓冲区打开了多个文件，一次q就会全部退出，不需要挨个退出。
+
+    如果有多个标签页或窗格，需要挨个执行q退出。
+
+    :w 将缓冲区写入文件，即保存修改
+    :wq 保存修改并退出
+    :x 保存修改并退出
+    :q 退出，如果对缓冲区进行过修改，则会提示
+    :q! 强制退出，放弃修改
+
+执行shell命令
+
+    1、在命令模式下输入 ":sh"，可以运行一个shell，想回到vim编辑器中用`exit`或`ctrl+D`返回vim编辑器
+    2、在命令模式下输入 ":!xxx"，在当前目录下运行指定的命令xxx，运行结束后自动回到 vim 编辑器中
+    3、用 "Ctrl+Z" 回到shell，用 `fg` 返回编辑
+
+多文件操作（缓冲 buffer）
+
+    vim 其实打开的是多个文件，在当前窗口默认只显示当前的这一个
+
+    :e xxxx     在当前窗口打开文件
+
+    Ctrl+6      切换到下一个文件
+
+    :ls         显示缓冲，即已经打开的文件列表
+    :b num      切换文件（其中num为buffer list中的编号）
+    :bn         切换到下一个文件
+    :bp         切换到上一个文件
+
+    对于用(v)split在多个窗格中打开的文件，这种方法只会在当前窗格中切换不同的文件。
+
+多标签页操作
+
+    :tabn       移动到下一个标签页 或 命令模式直接输入 gt
+    :tabp       移动到上一个标签页 或 命令模式直接输入 gT
+
+    :tabfirst   移动到第一个标签页
+    :tablast    移动到最后一个标签页
 
     :help tab-page-intro 标签页使用的帮助信息
 
@@ -2004,25 +1740,24 @@ Why yet another clone of powerline?
     :tabo       关闭所有标签页
     :tabm 0/1/2 将当前标签页移动到第1/2/3个页面位置
 
-    :tabn       移动到下一个标签页 或 命令模式直接输入 gt
-    :tabp       移动到上一个标签页 或 命令模式直接输入 gT
-    :tabfirst   移动到第一个标签页
-    :tablast    移动到最后一个标签页
+多窗格操作
 
-退出编辑器
+    :split      当前窗口垂直切分为两个窗格，简写  :sp
+    :vsplit     当前窗口垂直切分为两个窗格，简写  :vsp
 
-    :w 将缓冲区写入文件，即保存修改
-    :wq 保存修改并退出
-    :x 保存修改并退出
-    :q 退出，如果对缓冲区进行过修改，则会提示
-    :q! 强制退出，放弃修改
+    Ctrl+w+方向键       切换到前／下／上／后一个窗格
+    Ctrl+w+h/j/k/l     同上
+    Ctrl+ww            依次向后切换到下一个窗格中
 
-执行shell命令
+##### 文本输入模式（编辑模式）
 
-    1、在命令模式下输入":sh"，可以运行相当于在字符模式下，到输入结束想回到VIM编辑器中用exit，ctrl+D返回VIM编辑器
-    2、可以"!command"，运行结束后自动回到VIM编辑器中
-    3、用“Ctrl+Z“回到shell，用fg返回编辑
-    4、:!make -> 直接在当前目录下运行make指令
+在命令模式下输入插入命令i、附加命令a、打开命令o、修改命令c、取代命令r或替换命令s都可以进入文本输入模式。
+
+在该模式下，用户输入的任何字符都被 vi 当做文件内容保存起来，并将其显示在屏幕上。
+
+在文本输入过程中，若想回到命令模式下，按下Esc键即可。
+
+在命令模式下输入:即可切换到末行模式，然后输入命令后回车。
 
 ### tmux 不怕断连的多窗口命令行
 
@@ -2058,13 +1793,11 @@ mac os:
 
 ##### tmux 扩展插件
 
-状态栏显示 powerline
-
     https://bobbyhadz.com/blog/tmux-powerline-ubuntu
 
-一、配置 powerline
+一、状态栏显示使用 powerline
 
-powerline安装见章节 [状态栏工具powerline]。
+powerline安装见章节 [状态栏工具 powerline]。
 
 编辑 ~/.tmux.conf 文件，添加如下行
 
@@ -2078,6 +1811,8 @@ powerline安装见章节 [状态栏工具powerline]。
 如果不想使用 powerline，可以安装原装的 <https://github.com/erikw/tmux-powerline>，这个只使用bash脚本，更简洁。
 
 二、插件管理
+
+感觉这个就别折腾各种插件了。。。
 
     https://github.com/tmux-plugins/tpm
 

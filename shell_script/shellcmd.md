@@ -4,7 +4,7 @@
 
     非常好用的shell语句分析解释 https://explainshell.com/explain?cmd=join+-1+1+-2+5++%3C%28file+*+%7C+sed+%27s%2F%5B%3A%2C%5D%2F%2Fg%27%29+%3C%28ls+--full-time+-h+%7C+awk+%27%7Bprint+%245%22+%22%246%22+%22%247%22+%22%248%22+%22%249%7D%27%29+%7C+column+-t
 
-## 常见符号用法
+## bash 常见符号用法
 
     http://c.biancheng.net/view/743.html
     https://www.jb51.net/article/123081.htm
@@ -111,11 +111,14 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     [ -r /etc/default/cron ] && . /etc/default/cron
 
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+
 如果条件测试失败则执行，否则不执行
 
     test -f $DAEMON || exit 0
 
-从本质上讲，if 检测的是命令的退出状态，下面的判断跳转就不能使用 test 命令
+从本质上讲，if 检测的是命令的退出状态，下面的判断跳转就无法使用 test 命令，或许 zsh 支持
 
     # 如果命令存在则执行
     if $(which vcgencmd >/dev/null) ; then vcgencmd measure_temp; fi
