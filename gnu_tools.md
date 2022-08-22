@@ -1290,12 +1290,45 @@ Ctrl+V到下一页
 
         Small version without GUI.
 
-    如果出现上述字样，需要先安装更多的vim组件
+    如果出现上述字样，说明当前系统只安装了兼容vi模式的精简版 vim.tiny，不支持语法高亮、切分窗格等
+
+        $ apt show vim.tiny
+        Package: vim-tiny
+        Version: 2:8.1.0875-5+deb10u2
+        Priority: important
+        Description: Vi IMproved - enhanced vi editor - compact version
+        Vim is an almost compatible version of the UNIX editor Vi.
+        .
+        This package contains a minimal version of Vim compiled with no GUI and
+        a small subset of features. This package's sole purpose is to provide
+        the vi binary for base installations.
+        .
+        If a vim binary is wanted, try one of the following more featureful
+        packages: vim, vim-nox, vim-athena, vim-gtk, or vim-gtk3.
+
+        $ vi --version
+        VIM - Vi IMproved 8.1 (2018 May 18, compiled Dec 25 2021 15:48:51)
+        Included patches: 1-875, 878, 881, 883-884, 936, 948, 1046, 1365-1368, 1382, 1401
+        Extra patches: 8.2.3402, 8.2.3403, 8.2.3409, 8.2.3428
+        Modified by team+vim@tracker.debian.org
+        Compiled by team+vim@tracker.debian.org
+        Small version without GUI.  Features included (+) or not (-):
+        +acl               -extra_search      -mouse_sgr         -tcl
+        -arabic            -farsi             -mouse_sysmouse    -termguicolors
+        +autocmd           -file_in_path      -mouse_urxvt       -terminal
+
+    先删除
+
+        sudo atp remove vim-common
+
+    需要先安装更多的vim的增强版
 
         # https://askubuntu.com/questions/284957/vi-getting-multiple-sorry-the-command-is-not-available-in-this-version-af
-        sudo apt install vim-gui-common
+        # sudo apt install vim-runtime
+        # sudo apt install vim-gui-common
+        sudo apt install vim
 
-        sudo apt install vim-runtime
+        装完后 vim 中运行命令 :version 会显示 Huge version without GUI.
 
 插件管理器
 
@@ -1478,7 +1511,7 @@ AirlineTheme自己管理主题，在 ~/.vimrc 中配置
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " airline 安装时自动屏蔽原配置的 powerline，并安装了 Vundle 插件管理器
 
-set nocompatible              " be iMproved, required
+set nocompatible              " be iMproved, required，这个应该是关闭兼容vi模式，就用vim
 filetype off                  " required
 " set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
 " set the runtime path to include Vundle and initialize
