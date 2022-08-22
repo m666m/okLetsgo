@@ -103,6 +103,11 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
 ### bash命令提示符美化
 
+终端工具应该开启透明效果，或在登陆脚本中设置环境变量开启256color显示
+
+    # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
+    export TERM=xterm-256color
+
 简单的双行状态栏 见章节  [bash_profile.sh] <shell_script okletsgo>
 
 或者在已经安装了 powerline（参见章节[状态栏工具 powerline]）的情况下
@@ -137,7 +142,8 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
 
 终端工具最好明确设置变量Term，这样各个插件会自动使用更丰富的颜色
 
-    Term=xterm-256color
+    # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
+    export TERM=xterm-256color
 
 终端工具字体推荐 MesloLGS NF，详见下面章节[状态栏字体]。
 
@@ -357,6 +363,9 @@ zsh自带功能
 
 启用插件，编辑 ~/.zshrc 文件
 
+    # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
+    export TERM=xterm-256color
+
     # 有插件管理这俩设置不需要
     # 启用彩色提示符
     # autoload -U colors && colors
@@ -438,6 +447,11 @@ zsh自带功能
 
 先在你使用终端窗口工具的计算机上安装 MesloLGS NF 字体，详见章节[状态栏字体]。
 
+终端工具最好明确设置变量Term，这样各个插件会自动使用更丰富的颜色
+
+    # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
+    export TERM=xterm-256color
+
 如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示效果会有差别，这是设计者做了考虑，已防止出现不正常的显示。
 
 然后从github安装powerlevel10k
@@ -506,6 +520,10 @@ function prompt_raspi_temp_warn() {
 ############ 状态栏工具 powerlevle10k 安装程序自动修改 后的最后一行 ############
 
 ############ 下为手动配置插件
+
+# 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
+export TERM=xterm-256color
+
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
 # 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
 
@@ -1265,7 +1283,10 @@ Ctrl+V到下一页
 
 先决条件
 
-    终端工具支持透明效果。
+    终端工具最好支持透明效果，或者启用256color
+
+        # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
+        export TERM=xterm-256color
 
     检查vim的版本，进入vim执行命令 :version
 
@@ -1486,7 +1507,7 @@ set laststatus=2  " 始终显示状态栏
 set showtabline=2  " 始终显示标签页
 
 " https://www.codenong.com/15375992/
-" 如果终端工具已经设置了变量 Term=xterm-256color，那么这个参数可有可无
+" 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
 if &term =="screen"
     set t_Co=256
 endif
@@ -1837,7 +1858,7 @@ powerline安装见章节 [状态栏工具 powerline]。
 
 编辑 ~/.tmux.conf 文件，添加如下行
 
-    # 如果终端工具已经设置了变量 Term=xterm-256color，那么这个参数可有可无
+    # 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
     set -g default-terminal screen-256color
 
     run-shell 'powerline-config tmux setup'
