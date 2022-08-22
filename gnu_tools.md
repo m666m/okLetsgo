@@ -1850,14 +1850,16 @@ mac os:
 
     https://bobbyhadz.com/blog/tmux-powerline-ubuntu
 
-一、状态栏显示使用 powerline
-
-powerline安装见章节 [状态栏工具 powerline]。
-
-编辑 ~/.tmux.conf 文件，添加如下行
+要设置状态栏彩色，需要编辑 ~/.tmux.conf 文件，添加如下行
 
     # 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
     set -g default-terminal screen-256color
+
+一、状态栏显示使用 powerline
+
+先安装powerline，见章节 [状态栏工具 powerline]。
+
+tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
 
     run-shell 'powerline-config tmux setup'
 
@@ -1884,14 +1886,15 @@ powerline安装见章节 [状态栏工具 powerline]。
 
 先从github下载
 
-    mkdir -p ~/.tmux/themes/nord-tmux
-    cd ~/.tmux/themes/nord-tmux
-
     git clone --depth=1 https://github.com/arcticicestudio/nord-tmux ~/.tmux/themes/nord-tmux
 
-编辑 ~/.tmux.conf 文件，添加如下行
+编辑 ~/.tmux.conf 文件，最终
+
+    # 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
+    set -g default-terminal screen-256color
 
     # 可注释掉原 powerline 那行
+    # run-shell 'powerline-config tmux setup'
     run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 重新加载配置文件
