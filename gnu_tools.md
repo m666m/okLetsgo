@@ -1208,41 +1208,41 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
 ### Vim 和 nano
 
-Vim 解决汉字乱码
++ 自定义 vim 编辑器的颜色方案
 
-如果你的 Vim 打开汉字出现乱码的话，那么在home目录(~)下，新建.vimrc文件
+    打开一个Vim窗口
 
-    nano ~/.vimrc
+        输入命令:color 后回车查看当前的颜色主题。
 
-添加内容如下：
+        输入命令:echo $VIMRUNTIME 来查看Vim的运行目录
+            进入vim的运行目录，查看color目录下以“.vim”为结尾的文件
+            这些文件即是颜色主题文件，文件名就是主题名字。
 
-    set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
-    set enc=utf8
-    set fencs=utf8,gbk,gb2312,gb18030
+        输入命令":colorscheme 主题名字"，即可设置当前vim实例的颜色主题。
 
-保存退出后执行下环境变量
+    更改默认颜色主题
 
-    source ~/.vimrc
+    打开~/.vimrc文件，在其中加入一行"colorscheme 颜色主题名字"，之后保存更改即可。
 
- 自定义 vim 编辑器的颜色方案
+    如：
 
- 打开一个Vim窗口
+        colorscheme slate
 
-    输入命令:color 后回车查看当前的颜色主题。
++ Vim 解决汉字乱码
 
-    输入命令:echo $VIMRUNTIME 来查看Vim的运行目录
-        进入vim的运行目录，查看color目录下以“.vim”为结尾的文件
-        这些文件即是颜色主题文件，文件名就是主题名字。
+    如果你的 Vim 打开汉字出现乱码的话，那么在home目录(~)下，新建.vimrc文件
 
-    输入命令":colorscheme 主题名字"，即可设置当前vim实例的颜色主题。
+        nano ~/.vimrc
 
- 更改默认颜色主题
+    添加内容如下：
 
- 打开~/.vimrc文件，在其中加入一行"colorscheme 颜色主题名字"，之后保存更改即可。
+        set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
+        set enc=utf8
+        set fencs=utf8,gbk,gb2312,gb18030
 
- 如：
+    保存退出后执行下环境变量
 
-    colorscheme slate
+        source ~/.vimrc
 
 #### nano 用法
 
