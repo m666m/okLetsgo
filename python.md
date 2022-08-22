@@ -1788,42 +1788,37 @@ pylance
 |-----------------------------------------------|---------------------------|
 |   MacOS Modern Theme：Big Sur Xcode Default   |                           |
 |   Night Owl：Light                            |   Night Owl：Light         |
-|   Slack Theme: Hoth                           |                           |
 |   Winter is coming：Light                     |   Winter is coming：Light  |
 |   Solarized Light                             |                           |
 
 深色
 
 |            看代码                      |           看文字              |
-|---------------------------------------|------------------------------|
-|   MacOS Modern Theme：Xcode Catalina  |                               |
-|   Nord                               |                               |
-|   Slack Theme：Dark Mode              |                               |
-|   Winter is coming：Dark Blue         | Winter is coming：Dark Black  |
+|----------------------------------------|------------------------------|
+|   MacOS Modern Theme：Xcode Catalina   |                               |
+|   Nord                                 |                               |
+|   Winter is coming：Dark Blue          | Winter is coming：Dark Black   |
+|   Night Owl                            |   Night Owl                   |
 
 MacOS Modern Theme 深色浅色都好
 
     davidbwaters.macos-modern-theme
 
-凛冬来临 Winter is coming。深浅主题都不刺眼，非常清晰，深色 dark blue。
+凛冬来临 Winter is coming。深浅主题都不刺眼，非常清晰。
 
     johnpapa.winteriscoming
-
-Night Owl。夜猫子在晚上稍有刺眼，浅色更好
-
-    sdras.night-owl
 
 北极 Nord。夏夜使用，凉爽的感觉
 
     arcticicestudio.nord-visual-studio-code
 
-    还有其它各种软件的导出，比如 mintty/putty/vim等 https://www.nordtheme.com/ports
+    还有其它各种软件颜色方案的导出，比如 mintty/putty/vim 等 https://www.nordtheme.com/ports
 
-Slack Theme 浅色Hoth主题很好
+Night Owl。夜猫子在晚上稍有刺眼，浅色更好
 
-    felipe-mendes.slack-theme
+    sdras.night-owl
 
-Solarized Light（自带）  这个是羊皮纸底色，去蓝光了，但是如果你看起来感觉费眼就别用了。。。
+Solarized Light（vscode 自带）  这个是羊皮纸底色，去蓝光了，但是如果你看起来感觉累眼就别用了。。。
 
 ### JScript/Json的格式化，比系统自带的好用
 
