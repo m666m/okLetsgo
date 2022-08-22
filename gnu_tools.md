@@ -363,8 +363,8 @@ zsh自带功能
     # 每次命令行刷新提示符
     # setopt prompt_subst
 
-    # 如果是用 apt install 安装的发行版，位置在 /usr/share/ 目录
-    # 手动安装的位置在 ~/.zsh/plugins/ 目录
+    # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
+    # 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
 
     # 启用插件：状态栏工具
     # 如果是pip安装的查看路径用 pip show powerline-status
@@ -493,6 +493,42 @@ function prompt_raspi_temp_warn() {
     if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
         source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
     fi
+
+#### .zshrc 配置文件样例
+
+结合我自己使用的插件和 powerlevle10k 的配置
+
+```zsh
+
+############################################################
+# 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
+# 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
+
+# 启用插件：状态栏工具 powerlevle10k，替换掉 powerline
+# powerlevle10k 安装程序自动修改
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+############ 下手动配置插件
+#
+# 启用插件：状态栏工具 powerline
+# 如果是pip安装的查看路径用 pip show powerline-status
+# source /usr/share/powerline/bindings/zsh/powerline.zsh
+
+# 启用插件：命令自动完成
+# source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# 启用插件：命令语法高亮
+# 官网提示要在配置文件的最后一行
+# source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# 命令自动完成的颜色太暗  # ,bg=cyan
+# https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
+
+```
 
 #### 内置超多插件和主题的 ohmyzsh
 
