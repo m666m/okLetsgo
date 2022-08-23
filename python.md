@@ -1750,7 +1750,21 @@ pylance
 
 ### 不要用AI代码完成的插件
 
-全都把你的代码上传服务器了，包括Visual Studio IntelliCode // "python.jediEnabled": false,
+全都把你的代码上传服务器了，包括 kate、Visual Studio IntelliCode  <https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.vscodeintellicode> 等。
+
+原
+
+    "python.jediEnabled": True, // Falses
+
+现
+
+    https://docs.microsoft.com/zh-cn/visualstudio/intellicode/intellicode-visual-studio-code
+
+    "python.languageServer": "Jedi" // "Pylance"
+
+java 套件安装及默认安装 IntelliCode，注意禁用。
+
+python 套件为兼容老版本不用 pylance 的习惯，所以默认不安装 IntelliCode，不代表以后不装。
 
 ### 自动添加函数头说明 Python Docstring Generator
 
