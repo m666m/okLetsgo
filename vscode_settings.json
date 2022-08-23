@@ -45,6 +45,8 @@
     "workbench.preferredLightColorTheme": "MacOS Modern Light - Big Sur Xcode Default",
     "workbench.editor.wrapTabs": true,
     // https://code.visualstudio.com/api/references/theme-color
+    // http://www.apeth.com/nonblog/stories/textmatebundle.html
+    // 在线编辑 https://tmtheme-editor.herokuapp.com/#!/editor/theme/Monokai
     "workbench.colorCustomizations": {
         "window.activeBorder": "#ff7b00c5",
         "sideBarSectionHeader.border": "#ebebeb",
