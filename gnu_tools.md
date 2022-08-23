@@ -282,8 +282,8 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 
 简单测试几个 unicode 扩展 NF 字符
 
-    $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \ue20a \ue350  \uf2c8 \uf2c7"
-     ±  ➦ ✘ ⚡ ⚙ ❃     
+    $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \uf70f \ue20a \ue350 \uf2c8 \uf2c7"
+     ±  ➦ ✘ ⚡ ⚙ ❃      
 
 ### 使用 zsh
 
@@ -430,7 +430,7 @@ zsh自带功能
 
 #### 强烈推荐主题 powerlevel10k
 
-这个主题可以完全替代状态栏工具 powerline 在命令行提示符的作用，而且更好看
+这个主题可以完全替代状态栏工具 powerline 在zsh命令行提示符的作用，而且更好看
 
     https://github.com/romkatv/powerlevel10k
 

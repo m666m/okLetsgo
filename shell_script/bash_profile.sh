@@ -106,9 +106,9 @@ function PS1raspi-warning-info {
     local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
     if [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "75000" ]; then
-            local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ！HIGH TEMPERATURE! ="
+            local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ！HIGH TEMPERATURE! ="
     elif [ "$CPUTEMP" -gt  "75000" ];  then
-            local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` IS VERY HIGH!！PLEASE SHUTDOWN ="
+            local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` IS VERY HIGH! PLEASE SHUTDOWN! ="
     fi
 
     local THROTT=`vcgencmd get_throttled| tr -d "throttled="`
