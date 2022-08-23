@@ -4,7 +4,7 @@
     "update.mode": "manual",
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
-    "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace", // 'Cascadia Code','JetBrains Mono','Source Code Pro',
+    "editor.fontFamily": "'MesloLGS NF', 'FiraCode ', Consolas, 'Courier New', monospace", // 'Cascadia Code','JetBrains Mono','Source Code Pro',
     "editor.fontLigatures": true,
     "editor.fontSize": 14,
     "editor.lineHeight":24, // 从0到你的字体大小计算行高
