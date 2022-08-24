@@ -56,7 +56,7 @@ function PS1git-branch-name {
     # 优先显示当前head指向的分支名
     if [ $exitcode -eq 0 ]; then
         local result="$(git symbolic-ref --short -q HEAD 2>/dev/null)"
-        printf "%s" $result
+        printf "(%s)" $result
 
     else
         # 不是git环境
@@ -71,10 +71,10 @@ function PS1git-branch-name {
 
             # 有标签名就显示标签否则显示commit id
             if [[ -n $tagname ]]; then
-                printf "tag:%s" "$tagname"
+                printf "tag(%s)" "$tagname"
 
             else
-                printf "hash:%s" "$commit"
+                printf "hash(%s)" "$commit"
             fi
         fi
     fi
@@ -85,9 +85,9 @@ function PS1git-branch-prompt {
   if [ $branch ]; then
     local git_modify=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
     if [ -n "$git_modify" ]; then
-	    printf " git:%s(%s)" $git_modify $branch
+	    printf " git:%s%s" $git_modify $branch
     else
-	    printf " git:(%s)" $branch
+	    printf " git:%s" $branch
     fi
   fi
 }
