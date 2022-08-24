@@ -441,6 +441,86 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
     <https://www.asus.com.cn/support/FAQ/1042220> <https://www.asus.com.cn/support/FAQ/1043640>
 
+## 设置带集成 usb-hub 拓展坞的显示器
+
+    https://www.philips.com.cn/c-p/346P1CRH_93/brilliance-curved-ultrawide-lcd-monitor-with-usb-c
+
+    https://zhuanlan.zhihu.com/p/368732076
+
+    https://zhuanlan.zhihu.com/p/405582769
+
+Philips 346P1CRH 基本参数
+
+    VA带鱼屏，分辨率为 3440X1440（21:9）
+
+    刷新率 100hz，支持 HDR400
+
+    最高亮度有 500nit，日常使用建议调到20%-25%亮度
+
+    灰阶响应时间 9.0ms
+
+    最大色深 8bit
+
+    PowerSensor 睿动光感，屏幕前检测不到人时调低背光板亮度。
+
+    环境光，夜间使用会自动调低显示器亮度，强光环境下会自动调高显示器亮度，类似手机、笔记本电脑屏幕的功能。
+
+    自带 windows hello 摄像头，为了保证隐私安全，在摄像头工作的时候，旁边会亮起白色的LED灯。
+
+    自带的两个 5W 的音响
+
+    拓展坞带 1Ghz 网卡接口
+
+    OSD按键具有独立的信号源切换按键、独立的SmartImage按键、独立的自定义按键，你可以将这个自定义按键设置成切换音源、调出音量菜单、调节睿动光感灵敏度、调出亮度条、选择PIP/PBP模式、选择KVM设备。简直是效率神器，不用再OSD菜单里慢慢找了，一个按键就能完事。
+
+以下功能，都需要连接到集成 usb-hub
+
+90W typeC
+
+    笔记本电脑连接只需要一根线，同时提供图像显示和供电。
+
+USB 3.2
+
+    显示器画面可以输出3440*1440@60Hz 8bit、3440*1440@100Hz 6bit
+
+USB 2.0
+
+    显示器画面才能达到满血的3440*1440@100Hz 8bit。如果你不外挂硬盘的话，那么这也不会成为缺点。
+
+PBP分屏
+
+    usb-tpyec 的线连接笔记本电脑后，可以分隔一半屏幕显示笔记本电脑的桌面内容
+
+    配合 sumsung dex 外接三星Galaxy手机，windows10下装好驱动，可以显示手机桌面
+
+    显示器设置 kvm usb up，开启 基础的usb-hub。
+
+PIP功能
+
+    画中画，另一个设备的桌面用小窗显示
+
+KVM功能
+
+    显示器可以根据信号源自动调整KVM，信号源切换到笔记本，HUB上的设备也都全部切到PS5上。信号源切回电脑，HUB上的设备自然也就全部切回电脑。这个功能真的非常棒，直接将有线键鼠当成多模键鼠使用。
+
+    也可设置在OSD中切换，一套鼠标键盘，操作笔记本和台式机，适用于PBP分屏功能
+
+PBP分屏注意
+
+     关机黑屏，三星 Galaxy 手机 DEX 连接显示器集成的 usb-hub
+
+    拔下来之后 Windows 才能继续关机。。。
+
+在 Windows 下不要开启 HDR 效果，只在相关软件和游戏内设置开启HDR，参见章节 [显示器在 Win10 开启 HDR 变灰泛白的原因]。
+
+### 开启 HDR 玩 Doom
+
+显示器分辨率切换到 60hz，全屏使用最佳，不然游戏容易死机。
+
+开启HDR时，显示器的睿动光感、环境光、低蓝光模式、SmartImage等等功能均不可用
+
+    如果游戏设置了开启 HDR，在进入游戏时显示器会自动切换到标准模式，打完游戏需要手工调整，切换回节能模式。
+
 ## 装完 Windows 10 后的一些设置
 
     先激活
@@ -898,7 +978,7 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
 它使 BIOS 里定时自动开机失效，并跟很多 usb 设备不兼容，导致关机下次启动以后 usb 设备不可用，需要重新插拔。
 
-比如我的无线网卡、我的显示器集成的 usb-hub 连接的鼠标键盘网卡显示器等等，开机或重启后偶发无响应需要重新插拔…… 关机黑屏，三星手机DEX连接显示器集成的 usb-hub，拔下来之后 Windows 才继续关机。。。
+比如我的无线网卡、我的显示器集成的 usb-hub 连接的鼠标键盘网卡显示器等等，开机或重启后偶发无响应需要重新插拔……
 
 影响linux双引导：<https://www.debian.org/releases/stable/amd64/ch03s06.zh-cn.html#disable-fast-boot>
 
