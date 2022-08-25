@@ -50,6 +50,8 @@ function PS1conda-env-name {
 }
 
 function PS1git-branch-name {
+
+    # 这个命令在裸仓库或.git目录中运行不报错，一样可以打印当前分支名
     git symbolic-ref --short -q HEAD >/dev/null 2>&1
     local exitcode=$?
 
@@ -71,10 +73,10 @@ function PS1git-branch-name {
 
             # 有标签名就显示标签否则显示commit id
             if [[ -n $tagname ]]; then
-                printf "tag(%s)" "$tagname"
+                printf "@(%s)" "$tagname"
 
             else
-                printf "hash(%s)" "$commit"
+                printf "#(%s)" "$commit"
             fi
         fi
     fi
@@ -82,13 +84,22 @@ function PS1git-branch-name {
 
 function PS1git-branch-prompt {
   local branch=`PS1git-branch-name`
+
   if [ $branch ]; then
-    local git_modify=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
+
+    # 在裸仓库或.git目录中，运行 git status 会报错
+    if ! $(git status >/dev/null 2>&1) ; then
+        local git_modify='raw!'
+    else
+        local git_modify=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
+    fi
+
     if [ -n "$git_modify" ]; then
 	    printf " git:%s%s" $git_modify $branch
     else
 	    printf " git:%s" $branch
     fi
+
   fi
 }
 
@@ -177,10 +188,9 @@ agent_start () {
 
 agent_load_env
 
-##########
 # 加载 ssh-agent 需要用户手工输入密钥的保护密码
 # 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
-
+#
 # agent_run_state:
 #   0=agent running w/ key;
 #   1=agent w/o key;
