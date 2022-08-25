@@ -57,8 +57,8 @@ function PS1git-branch-name {
 
     # 优先显示当前head指向的分支名
     if [ $exitcode -eq 0 ]; then
-        local result="$(git symbolic-ref --short -q HEAD 2>/dev/null)"
-        printf "(%s)" $result
+        local branch_name="$(git symbolic-ref --short -q HEAD 2>/dev/null)"
+        printf "(%s)" $branch_name
 
     else
         # 不是git环境
@@ -68,15 +68,15 @@ function PS1git-branch-name {
 
         # detached HEAD
         else
-            local commit="$(git rev-parse HEAD)"
-            local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $commit |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
+            local headhash="$(git rev-parse HEAD)"
+            local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
 
             # 有标签名就显示标签否则显示commit id
             if [[ -n $tagname ]]; then
-                printf "@(%s)" "$tagname"
+                printf "#(%s)" "$tagname"
 
             else
-                printf "#(%s)" "$commit"
+                printf "@(%s)" "$headhash"
             fi
         fi
     fi
@@ -89,13 +89,13 @@ function PS1git-branch-prompt {
 
     # 在裸仓库或.git目录中，运行 git status 会报错
     if ! $(git status >/dev/null 2>&1) ; then
-        local git_modify='raw!'
+        local is_modified='raw!'
     else
-        local git_modify=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
+        local is_modified=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
     fi
 
-    if [ -n "$git_modify" ]; then
-	    printf " git:%s%s" $git_modify $branch
+    if [ -n "$is_modified" ]; then
+	    printf " git:%s%s" $is_modified $branch
     else
 	    printf " git:%s" $branch
     fi
