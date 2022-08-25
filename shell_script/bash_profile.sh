@@ -60,25 +60,22 @@ function PS1git-branch-name {
     local branch_name="$(git symbolic-ref --short -q HEAD)"
     printf "(%s)" $branch_name
 
-  else
-
-    # detached HEAD
-    if [ $exitcode -eq 1 ]; then
+  # detached HEAD
+  elif [ $exitcode -eq 1 ]; then
 
       local headhash="$(git rev-parse HEAD)"
       local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
 
-      # 有标签名就显示标签否则显示commit id
+      # 有标签名就显示标签否则显示 commit id
       if [[ -n $tagname ]]; then
         printf "#(%s)" "$tagname"
       else
         printf "@(%s)" "$headhash"
       fi
 
-    # 不是git环境
-    else
-      printf "%s" ""
-    fi
+  # 不是git环境
+  else
+    printf "%s" ""
 
   fi
 }
@@ -89,24 +86,20 @@ function PS1git-branch-prompt {
   # 有branch名说明是在git环境中
   if [ $branch ]; then
 
-    # 在裸仓库或.git目录中，运行 git status 会报错
+    # 在裸仓库或.git目录中，运行 git status 会报错，所以这里先走个判断
     if ! $(git status >/dev/null 2>&1) ; then
       local is_raw='raw!'
 
     else
-      local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
+      # git status有值得输出的就显示，否则是空串
+      local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<?>'; else printf "%s" ''; fi)
     fi
 
     # 如果在裸仓库或的.git目录，则不打印分支名，以提醒使用者
     if [ -n "$is_raw" ]; then
 	  printf " git:%s" $is_raw
-
-    # git status有值得输出的
-    elif [ -n "$notify_flag" ]; then
-	  printf " git:%s%s" $notify_flag $branch
-
     else
-	  printf " git:%s" $branch
+	  printf " git:%s%s" $notify_flag $branch
     fi
 
   fi
