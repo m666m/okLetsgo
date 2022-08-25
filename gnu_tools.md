@@ -843,8 +843,9 @@ ScrollbackLines=12000
 CursorBlinks=no
 
 # 语言设置
-Language=zh_CN
-Locale=zh_CN
+Language=@
+# Locale=zh_CN
+Locale=zh_SG
 # Charset=GBK
 Charset=UTF-8
 
