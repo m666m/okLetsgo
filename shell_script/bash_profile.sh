@@ -39,66 +39,67 @@ normal=$'\[\e[m\]'
 #      所以 PS1exit-code 要放在最前面执行
 
 function PS1exit-code {
-    local exitcode=$?
-    if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
+  local exitcode=$?
+  if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
 }
 
 function PS1conda-env-name {
-    # 暂未调试成功
-    local envname=$(if [ "$(which conda >/dev/null 2>&1)" = "0" ]; then printf "%s" $(conda env list); fi)
-    [[ ! -z $envname ]] && printf " conda:%s" $envname
+  # 暂未调试成功
+  local envname=$(if [ "$(which conda >/dev/null 2>&1)" = "0" ]; then printf "%s" $(conda env list); fi)
+  [[ ! -z $envname ]] && printf " conda:%s" $envname
 }
 
 function PS1git-branch-name {
 
-    # 这个命令在裸仓库或.git目录中运行不报错，一样可以打印当前分支名
-    git symbolic-ref --short -q HEAD >/dev/null 2>&1
-    local exitcode=$?
+  # 这个命令在裸仓库或.git目录中运行不报错，一样可以打印当前分支名
+  git symbolic-ref --short -q HEAD >/dev/null 2>&1
+  local exitcode=$?
 
-    # 优先显示当前head指向的分支名
-    if [ $exitcode -eq 0 ]; then
-        local branch_name="$(git symbolic-ref --short -q HEAD)"
-        printf "(%s)" $branch_name
+  # 优先显示当前head指向的分支名
+  if [ $exitcode -eq 0 ]; then
+    local branch_name="$(git symbolic-ref --short -q HEAD)"
+    printf "(%s)" $branch_name
 
+  else
+
+    # detached HEAD
+    if [ $exitcode -eq 1 ]; then
+
+      local headhash="$(git rev-parse HEAD)"
+      local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
+
+      # 有标签名就显示标签否则显示commit id
+      if [[ -n $tagname ]]; then
+        printf "#(%s)" "$tagname"
+      else
+        printf "@(%s)" "$headhash"
+      fi
+
+    # 不是git环境
     else
-
-        # detached HEAD
-        if [ $exitcode -eq 1 ]; then
-
-            local headhash="$(git rev-parse HEAD)"
-            local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
-
-            # 有标签名就显示标签否则显示commit id
-            if [[ -n $tagname ]]; then
-                printf "#(%s)" "$tagname"
-            else
-                printf "@(%s)" "$headhash"
-            fi
-
-        # 不是git环境
-        else
-            printf "%s" ""
-        fi
-
+      printf "%s" ""
     fi
+
+  fi
 }
 
 function PS1git-branch-prompt {
   local branch=`PS1git-branch-name`
 
+  # 有branch名说明是在git环境中
   if [ $branch ]; then
 
     # 在裸仓库或.git目录中，运行 git status 会报错
     if ! $(git status >/dev/null 2>&1) ; then
-        local is_modified='raw!'
+      local is_modified='raw!'
     else
-        local is_modified=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
+      local is_modified=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
     fi
 
     if [ -n "$is_modified" ]; then
-	    printf " git:%s%s" $is_modified $branch
+	  printf " git:%s%s" $is_modified $branch
     else
-	    printf " git:%s" $branch
+	  printf " git:%s" $branch
     fi
 
   fi
@@ -115,33 +116,33 @@ PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green
 #   系统throttled不是零
 #   CPU Load Average的值应该小于CPU核数X0.7，取5分钟平均负载
 function PS1raspi-warning-info {
-    local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
+  local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
-    if [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "75000" ]; then
-            local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ！HIGH TEMPERATURE! ="
-    elif [ "$CPUTEMP" -gt  "75000" ];  then
-            local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` IS VERY HIGH! PLEASE SHUTDOWN! ="
-    fi
+  if [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "75000" ]; then
+    local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ！HIGH TEMPERATURE! ="
+  elif [ "$CPUTEMP" -gt  "75000" ];  then
+     local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` IS VERY HIGH! PLEASE SHUTDOWN! ="
+  fi
 
-    local THROTT=`vcgencmd get_throttled| tr -d "throttled="`
-    if [ "$THROTT" != "0x0" ];  then
-        local THROTT_WARN="= System throttled $THROTT ！PLEASE check RASPBERRYPI:https://www.raspberrypi.com/documentation/computers/os.html#get_throttled ="
-    fi
+  local THROTT=`vcgencmd get_throttled| tr -d "throttled="`
+  if [ "$THROTT" != "0x0" ];  then
+    local THROTT_WARN="= System throttled $THROTT ！PLEASE check RASPBERRYPI:https://www.raspberrypi.com/documentation/computers/os.html#get_throttled ="
+  fi
 
-    local CPU_CORES=`grep 'model name' /proc/cpuinfo | wc -l`
-    local LOAD_AVG_CAP=`echo | awk -v cores="$CPU_CORES" '{printf("%.2f",cores*0.7)}'`
-    local LOAD_AVG_5=`cat /proc/loadavg | cut -d' ' -f 2`
-    local LOAD_AVG_THLOD=`echo | awk -v avg="$LOAD_AVG_5" -v cap="$LOAD_AVG_CAP" '{if (avg>cap) {print "1"} else {print "0"}}'`
-    (($LOAD_AVG_THLOD > 0)) && local LOAD_AVG_WARN="= AVG_LOAD 5min: $LOAD_AVG_5 ="
+  local CPU_CORES=`grep 'model name' /proc/cpuinfo | wc -l`
+  local LOAD_AVG_CAP=`echo | awk -v cores="$CPU_CORES" '{printf("%.2f",cores*0.7)}'`
+  local LOAD_AVG_5=`cat /proc/loadavg | cut -d' ' -f 2`
+  local LOAD_AVG_THLOD=`echo | awk -v avg="$LOAD_AVG_5" -v cap="$LOAD_AVG_CAP" '{if (avg>cap) {print "1"} else {print "0"}}'`
+  (($LOAD_AVG_THLOD > 0)) && local LOAD_AVG_WARN="= AVG_LOAD 5min: $LOAD_AVG_5 ="
 
-    printf "%s%s%s" "$CPUTEMP_WARN" "$THROTT_WARN" "$LOAD_AVG_WARN"
+  printf "%s%s%s" "$CPUTEMP_WARN" "$THROTT_WARN" "$LOAD_AVG_WARN"
 }
 
 function PS1raspi-warning-prompt {
-    local raspi_warning=`PS1raspi-warning-info`
-    if [ -n "$raspi_warning" ]; then
-        printf "====%s====" "$raspi_warning"
-    fi
+  local raspi_warning=`PS1raspi-warning-info`
+  if [ -n "$raspi_warning" ]; then
+    printf "====%s====" "$raspi_warning"
+  fi
 }
 
 PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1raspi-warning-prompt)$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
