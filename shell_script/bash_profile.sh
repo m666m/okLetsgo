@@ -91,13 +91,20 @@ function PS1git-branch-prompt {
 
     # 在裸仓库或.git目录中，运行 git status 会报错
     if ! $(git status >/dev/null 2>&1) ; then
-      local is_modified='raw!'
+      local is_raw='raw!'
+
     else
-      local is_modified=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
+      local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<!>'; else printf "%s" ''; fi)
     fi
 
-    if [ -n "$is_modified" ]; then
-	  printf " git:%s%s" $is_modified $branch
+    # 如果在裸仓库或的.git目录，则不打印分支名，以提醒使用者
+    if [ -n "$is_raw" ]; then
+	  printf " git:%s" $is_raw
+
+    # git status有值得输出的
+    elif [ -n "$notify_flag" ]; then
+	  printf " git:%s%s" $notify_flag $branch
+
     else
 	  printf " git:%s" $branch
     fi
