@@ -57,28 +57,29 @@ function PS1git-branch-name {
 
     # 优先显示当前head指向的分支名
     if [ $exitcode -eq 0 ]; then
-        local branch_name="$(git symbolic-ref --short -q HEAD 2>/dev/null)"
+        local branch_name="$(git symbolic-ref --short -q HEAD)"
         printf "(%s)" $branch_name
 
     else
-        # 不是git环境
-        if [ $exitcode -gt 1 ]; then
-            printf "%s" ""
-            return
 
         # detached HEAD
-        else
+        if [ $exitcode -eq 1 ]; then
+
             local headhash="$(git rev-parse HEAD)"
             local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
 
             # 有标签名就显示标签否则显示commit id
             if [[ -n $tagname ]]; then
                 printf "#(%s)" "$tagname"
-
             else
                 printf "@(%s)" "$headhash"
             fi
+
+        # 不是git环境
+        else
+            printf "%s" ""
         fi
+
     fi
 }
 
