@@ -844,7 +844,7 @@ CursorBlinks=no
 
 # 语言设置
 Language=zh_CN
-# Locale=zh_CN
+Locale=zh_CN
 # Charset=GBK
 Charset=UTF-8
 
@@ -997,9 +997,6 @@ BoldWhite=255,255,255
 
 # 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
 # ThemeFile=mintty
-Locale=zh_CN
-ScrollbackLines=12000
-CursorBlinks=no
 ```
 
 如果是 MSYS2 的 mintty，可以在<https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
