@@ -1286,17 +1286,21 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
     https://vimhelp.org/options.txt.html#%27runtimepath%27
 
-    如果是 `apt install xxx` 安装的
+    如果是 `apt install xxx` 安装的一般在 /usr/share/vim/ 下
 
-        自定义插件      /usr/share/vim/addons/plugin
+        自定义插件  /usr/share/vim/addons/plugin/
+        使用时加载  /usr/share/vim/addons/autoload/
 
-        vim 自带插件    /usr/share/vim/vim81/plugin
+        vim 自带插件        /usr/share/vim/vim81/plugin/
+        vim 自带使用时加载   /usr/share/vim/vim81/autoload/
 
-    其它安装方式的一般 ~/.vim/ 下
+    其它安装方式的一般在 ~/.vim/ 下
 
-        自定义插件  ~/.vim/bundle/
+        自定义插件  ~/.vim/bundle/对应的插件/
+        使用时加载  ~/.vim/bundle/对应的插件/autoload/
 
-        自带插件    ~/.vim/...
+        vim 自带插件        ~/.vim/plugin/
+        vim 自带使用时加载   ~/.vim/autoload/
 
 进入 vim 后使用命令 :set rtp 查看
 
@@ -1434,10 +1438,10 @@ powerline 为保证多样性，使用python
 先git安装 (会在子目录 autoload、ftplugin等增加内容)
 
     # apt install vim 的路径
-    git clone https://github.com/VundleVim/Vundle.vim.git /usr/share/vim/addons/Vundle.vim
+    git clone --depth=1 https://github.com/VundleVim/Vundle.vim.git /usr/share/vim/addons/Vundle.vim
 
     # 自行安装 vim 的路径
-    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+    git clone --depth=1 https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
 然后修改  ~/.vimrc 如下
 
