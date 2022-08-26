@@ -140,6 +140,9 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
     # 最好用发行版自带的，一步到位，默认的安装到 /usr/share/powerline/ 目录下了
     sudo apt install powerline
 
+    $ ps -ef|grep powerline
+    00:00:00 /usr/bin/python3 /usr/bin/powerline-daemon --foreground
+
 终端工具最好明确设置变量Term，这样各个插件会自动使用更丰富的颜色
 
     # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
@@ -1206,7 +1209,7 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
 ### Vim 和 nano
 
-+ 自定义 vim 编辑器的颜色方案
++ 自定义 vim 编辑器的颜色方案(vim tinny 版本不支持)
 
     打开一个Vim窗口
 
@@ -1275,13 +1278,36 @@ Ctrl+V到下一页
 
 #### vim 扩展插件
 
-配置文件在 ~/.vimrc 或 /etc/vim/vimrc
+    https://vimhelp.org/starting.txt.html#vimrc
+
+vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
+
+扩展的目录
+
+    https://vimhelp.org/options.txt.html#%27runtimepath%27
+
+    如果是 `apt install xxx` 安装的
+
+        自定义插件      /usr/share/vim/addons/plugin
+
+        vim 自带插件    /usr/share/vim/vim81/plugin
+
+    其它安装方式的一般 ~/.vim/ 下
+
+        自定义插件  ~/.vim/bundle/
+
+        自带插件    ~/.vim/...
+
+进入 vim 后使用命令 :set rtp 查看
+
+    runtimepath=~/.vim,/var/lib/vim/addons,/usr/share/vim/vimfiles,/usr/share/vim/vim81,/usr/share/vim/vimfiles/after,/var/lib/vim/addons/after,~/.vim/after
 
 先决条件
 
-    终端工具最好支持透明效果，或者启用256color
+    终端工具启用256color，最好支持透明效果
 
-        # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
+        # 在 .bash_profile 中显式设置终端启用256color，防止终端工具未设置
+        # 如果终端工具能开启透明选项，则显示的效果更好
         export TERM=xterm-256color
 
     检查vim的版本，进入vim执行命令 :version
@@ -1291,49 +1317,48 @@ Ctrl+V到下一页
     如果出现上述字样，说明当前系统只安装了兼容vi模式的精简版 vim.tiny，不支持语法高亮、切分窗格等
 
         $ apt show vim.tiny
-        Package: vim-tiny
-        Version: 2:8.1.0875-5+deb10u2
-        Priority: important
         Description: Vi IMproved - enhanced vi editor - compact version
-        Vim is an almost compatible version of the UNIX editor Vi.
-        .
+
         This package contains a minimal version of Vim compiled with no GUI and
         a small subset of features. This package's sole purpose is to provide
         the vi binary for base installations.
-        .
+
         If a vim binary is wanted, try one of the following more featureful
         packages: vim, vim-nox, vim-athena, vim-gtk, or vim-gtk3.
 
         $ vi --version
-        VIM - Vi IMproved 8.1 (2018 May 18, compiled Dec 25 2021 15:48:51)
-        Included patches: 1-875, 878, 881, 883-884, 936, 948, 1046, 1365-1368, 1382, 1401
-        Extra patches: 8.2.3402, 8.2.3403, 8.2.3409, 8.2.3428
-        Modified by team+vim@tracker.debian.org
-        Compiled by team+vim@tracker.debian.org
         Small version without GUI.  Features included (+) or not (-):
         +acl               -extra_search      -mouse_sgr         -tcl
         -arabic            -farsi             -mouse_sysmouse    -termguicolors
         +autocmd           -file_in_path      -mouse_urxvt       -terminal
 
-    先删除
+    先删除vim.tiny
 
-        sudo atp remove vim-common
+        $ sudo apt remove vim-common
+        The following packages will be REMOVED:
+            vim-common vim-tiny
 
-    需要先安装更多的vim的增强版
+    然后安装vim的增强版
 
         # https://askubuntu.com/questions/284957/vi-getting-multiple-sorry-the-command-is-not-available-in-this-version-af
         # sudo apt install vim-runtime
-        # sudo apt install vim-gui-common
-        sudo apt install vim
+        # sudo apt install vim-gui-common 给linux桌面准备的
 
-        装完后 vim 中运行命令 :version 会显示 Huge version without GUI.
+        $sudo apt install vim
+        The following NEW packages will be installed:
+            vim vim-common vim-runtime
+
+    确认 vim 中运行命令 :version
+
+        Huge version without GUI.
 
 插件管理器
 
     # https://github.com/MarcWeber/vim-addon-manager
     sudo apt install vim-addon-manager
 
-    https://github.com/junegunn/vim-plug
+    推荐 https://github.com/junegunn/vim-plug
+        Download plug.vim and put it in the "/usr/share/vim/addons/autoload/" directory
 
     https://github.com/VundleVim/Vundle.vim 2019年之后不更新了。。。
 
@@ -1341,53 +1366,142 @@ Ctrl+V到下一页
 
 颜色方案
 
+    北极 https://www.nordtheme.com/ports/vim
+
     夜猫子 https://github.com/sdras/night-owl-vscode-theme
 
-    北极 https://www.nordtheme.com/ports/vim
+##### 不推荐 vim 状态栏工具使用 powerline
+
+参见章节 [状态栏工具 powerline]。
+
+powerline 要求 Vim 在编译时添加 python 支持，所以 vim.tinny 版本是不支持该的
+
+    powerline 为保证多样性，使用python，但是这个python环境问题是最讨厌的
+        搞清 操作系统安装的包 python-pip 和 python3-pip 的使用区别
+        搞清 powerline 有 python 和 python3 两个发行版本
+        搞清 操作系统默认的 python 环境是 python 还是 python3
+        搞清 你安装的 powerline 到底是用 python 还是 python3 执行的？如果是用 apt install 安装的更不一样。
+        搞清 所有的 powerline 的插件，安装前都要先看看到底支持哪个python版本？
+        搞清 前面这堆 python 到底是指 python2 还是 python3 ？如果是python3，最低要求 3.6 还是 3.7 ？
+
+    建议别走自行编译 vim 这条路！你的 python 环境是什么，在 virtualenv 下如何使用vim？
+
+    建议安装 debian 发行版自带的 powerline，用 `sudo apt install powerline`即可
+        新版只能pypi `python3 -m pip install powerline-status`
+        最新版就得github `python3 -m pip install --user git+git://github.com/powerline/powerline`
+        如果，你用的是 pip install powerline-status，那么安装的应该是 python 2.7 版本的 powerline-status。
+        然后继续，所有的 powerline 的插件，安装前都要先看看到底支持哪个python版本？
+
+    推荐使用替代品 vim-airline ，开箱即用，万事大吉。
+
+如果确定你的 vim 是有 python 支持的，那么可以使用 powerline ，做如下设置：
+
+    先查看你安装 powerline 的位置，找到bindings目录
+
+        如果是用 pip 安装的 powerline，就是如下这种的路径
+
+            # pip show powerline-status
+            # /usr/lib/python3/dist-packages/powerline/bindings/vim/
+            /usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
+
+        如果是用 apt 安装的 powerline ，就是这种路径
+
+            /usr/share/powerline/bindings/vim/
+
+    添加到配置文件 ~/.vimrc 或 /etc/vim/vimrc 中
+
+        set rtp+=/usr/share/powerline/bindings/vim/
+
+        " Always show statusline
+        set laststatus=2
+
+        " Always show tabline
+        set showtabline=2
+
+        " Use 256 colours (Use this setting only if your terminal supports 256 colours)
+        set t_Co=256
+
+或者用 vim powerline 的另一个替代品：
+
+状态栏工具 lightline.vim
+
+    https://github.com/itchyny/lightline.vim
+
+如果你想只安装个干净的工具栏，其它插件自己配置自己玩的话，状态栏工具用这个 lightline.vim 就足够了。
+
+Why yet another clone of powerline?
+
+    [vim-powerline](https://github.com/Lokaltog/vim-powerline)  is a nice plugin, but deprecated.
+
+    powerline is a nice plugin, but difficult to configure.
+
+    vim-airline is a nice plugin, but it uses too many functions of other plugins, which should be done by users in .vimrc.
+
+这个比较简洁，只有状态栏工具和颜色方案。最大的优点是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
 ##### 插件管理器 Vundle
 
-安装了 vim-airline 就自带这个，优点是只修改 ~/.vimrc，便于用户自定义
+优点是只需要编辑 ~/.vimrc，便于用户自定义，可惜自2019年之后没更新了
 
-    https://github.com/VundleVim/
+    https://github.com/VundleVim/Vundle.vim
 
-配置插件，编辑 ~/.vimrc
+先git安装 (会在子目录 autoload、ftplugin等增加内容)
 
-    call vundle#begin()
-    "...
-    Plugin 'VundleVim/Vundle.vim'
+    # apt install vim 的路径
+    git clone https://github.com/VundleVim/Vundle.vim.git /usr/share/vim/addons/Vundle.vim
 
-    "插件在Github仓库中
-    "Plugin 'scrooloose/nerdtree'
-    "插件在 https://github.com/vim-scripts 用户仓库中
-    "Plugin 'YankRing.vim'
-    "插件在非Github的Git仓库中
-    "Plugin 'git://git.wincent.com/command-t.git'
-    "插件在本地Git仓库中
-    "Plugin 'file:///home/gmarik/path/to/plugin'
+    # 自行安装 vim 的路径
+    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
-    Plugin 'vim-airline/vim-airline'
-    Plugin 'vim-airline/vim-airline-themes'
+然后修改  ~/.vimrc 如下
 
-    Plugin 'arcticicestudio/nord-vim'
-    Plugin 'scrooloose/nerdtree'
-    "...
-    call vundle#end()
+```python
 
-    在文件最后增加自己的参数设置
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" VundleVim 插件管理器官方配置
 
-    syntax enable  " 启用语法高亮
+set nocompatible              " be iMproved, required，这个应该是关闭兼容vi模式，就用vim
+filetype off                  " required
 
-    colorscheme nord  "启用 nord 主题，语法高亮的配色也变了
+" airline 安装时需要屏蔽原配置的 powerline
+" set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
-    " NERDTree
-    map <C-n> :NERDTreeToggle<CR>
-    let NERDTreeShowHidden=1 "在打开时默认显示隐藏文件
-    " map 是快捷键映射命令
-    " <C-n> 定义了快捷键，表示 Ctrl-n
-    " 后面是对应的命令以及回车键 <CR>
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+"
+"插件在Github仓库中
+"Plugin 'scrooloose/nerdtree'
+"
+"插件在 https://github.com/vim-scripts 用户仓库中
+"Plugin 'YankRing.vim'
+"
+"插件在非Github的Git仓库中
+"Plugin 'git://git.wincent.com/command-t.git'
+"
+"插件在本地
+"Plugin 'file:///home/gmarik/path/to/plugin'
 
-配置后运行命令安装插件
+" 自己要添加的插件在这里配置
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+
+Plugin 'scrooloose/nerdtree'
+
+" https://www.nordtheme.com/ports/vim
+Plugin 'arcticicestudio/nord-vim'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 在下面增加自己的设置
+```
+
+然后进入vim，运行命令安装插件
 
     :PluginInstall
 
@@ -1408,6 +1522,61 @@ Ctrl+V到下一页
 
     :PluginSearch colorscheme
 
+##### 插件管理器 vim-plug
+
+Vundle不更新了，这个项目取代之，用法神似
+
+    https://github.com/junegunn/vim-plug
+
+先github下载 (会在子目录 autoload、ftplugin等增加内容)
+
+    # apt install vim 的路径
+    curl -fLo /usr/share/vim/addons/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+    # 自行安装 vim 的路径
+    curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+然后修改  ~/.vimrc
+
+```python
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-plug 插件管理器官方配置
+
+call plug#begin()
+" The default plugin directory will be as follows:
+"   - Vim (Linux/macOS): '~/.vim/plugged'
+"   - Vim (Windows): '~/vimfiles/plugged'
+"   - Neovim (Linux/macOS/Windows): stdpath('data') . '/plugged'
+" You can specify a custom plugin directory by passing it as the argument
+"   - e.g. `call plug#begin('~/.vim/plugged')`
+"   - Avoid using standard Vim directory names like 'plugin'
+
+" Unmanaged plugin (manually installed and updated)
+Plug '/usr/share/vim/addons/plugin/vim-airline'
+Plug '/usr/share/vim/addons/plugin/vim-airline-themes'
+
+" On-demand loading
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+
+" https://www.nordtheme.com/ports/vim
+Plugin 'arcticicestudio/nord-vim'
+
+" Initialize plugin system
+" - Automatically executes `filetype plugin indent on` and `syntax enable`.
+call plug#end()
+" You can revert the settings after the call like so:
+"   filetype indent off   " Disable file-type-specific indentation
+"   syntax off            " Disable syntax highlighting
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 在下面增加自己的设置
+```
+
+然后 Reload .vimrc and :PlugInstall to install plugins.
+
 ##### 推荐安装插件 vim-airline
 
     https://github.com/vim-airline/vim-airline
@@ -1422,13 +1591,7 @@ Ctrl+V到下一页
 
     :help airline
 
-Airline自己管理插件，在 ~/.vimrc 中配置
-
-    " 安装时自动屏蔽原配置的 powerline，并安装了 Vundle 插件管理器
-
-    " 建议使用主题 nord，不止修改了状态栏，还自带了语法高亮的方案，方便
-    Plugin 'arcticicestudio/nord-vim'
-    colorscheme nord
+Airline 自己管理插件，在 ~/.vimrc 中配置
 
     " 内置插件的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
     " 内置插件保存在 /.vim/bundle/vim-airline/autoload/airline/extensions/ 下
@@ -1447,7 +1610,7 @@ Airline自己管理插件，在 ~/.vimrc 中配置
     " 启用 airline 内置插件：nerdtree左侧显示文件树内容的状态栏效果
     let g:airline#extensions#nerdtree_statusline = 1
 
-AirlineTheme自己管理主题，在 ~/.vimrc 中配置
+AirlineTheme 自己管理主题，在 ~/.vimrc 中配置
 
     " AirlineTheme 需要启用 powerline 的字体才能起飞
     let g:airline_powerline_fonts = 1
@@ -1504,32 +1667,15 @@ AirlineTheme自己管理主题，在 ~/.vimrc 中配置
 
 结合我自己使用的插件和 airline 的配置
 
-```shell
+```python
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" airline 安装时自动屏蔽原配置的 powerline，并安装了 Vundle 插件管理器
-
-set nocompatible              " be iMproved, required，这个应该是关闭兼容vi模式，就用vim
-filetype off                  " required
-" set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
-
-" 自己要添加的插件在这里配置
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'scrooloose/nerdtree'
-" https://www.nordtheme.com/ports/vim
-Plugin 'arcticicestudio/nord-vim'
-
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-
+" 插件管理器二选一：
+"
+"   见章节 [插件管理器 Vundle] VundleVim 插件管理器官方配置
+"
+"   见章节 [插件管理器 vim-plug] vim-plug 插件管理器官方配置
+"
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim 的一些默认设置
 set laststatus=2  " 始终显示状态栏
@@ -1572,7 +1718,8 @@ colorscheme nord
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " 使用下载的插件：NERDTree
 
-let NERDTreeShowHidden=1 " 在打开时默认显示隐藏文件
+" NERDTree 显示隐藏文件
+let NERDTreeShowHidden=1
 
 " 切换目录树显示的热键定义为 Ctrl-n
 " map 是 vim 的快捷键映射命令
@@ -1581,57 +1728,6 @@ let NERDTreeShowHidden=1 " 在打开时默认显示隐藏文件
 map <C-n> :NERDTreeToggle<CR>
 
 ```
-
-##### 不推荐 vim 状态栏工具使用 powerline
-
-参见章节 [状态栏工具 powerline]。
-
-powerline 要求 Vim 在编译时添加 python 支持，我也不知道vim的哪个版本支持。
-
-    在自己编译 vim 前想清楚，你的 python 环境是什么，在 virtualenv 下如何使用vim？
-
-    建议别走自行编译 vim 这条路！可以安装 debian 发行版自带的 powerline，或者使用替代品 vim-airline 就万事大吉。
-
-如果确定你的 vim 是有 python 支持的，那么可以使用 powerline ，做如下设置：
-
-    先查看你安装 powerline 的位置，找到bindings目录
-
-        如果是用 pip 安装的 powerline，就是如下这种的路径
-
-            # pip show powerline-status
-            /usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
-
-        如果是用 apt 安装的 powerline ，就是这种路径
-
-            /usr/share/powerline/bindings/vim/
-
-    添加到配置文件 ~/.vimrc 或 /etc/vim/vimrc 中
-
-        set rtp+=/usr/share/powerline/bindings/vim/
-
-        " Always show statusline
-        set laststatus=2
-
-        " Use 256 colours (Use this setting only if your terminal supports 256 colours)
-        set t_Co=256
-
-或者用 vim powerline 的另一个替代品：
-
-状态栏工具 lightline.vim
-
-    https://github.com/itchyny/lightline.vim
-
-如果你想只安装个干净的工具栏，其它插件自己配置自己玩的话，状态栏工具用这个 lightline.vim 就足够了。
-
-Why yet another clone of powerline?
-
-    [vim-powerline](https://github.com/Lokaltog/vim-powerline)  is a nice plugin, but deprecated.
-
-    powerline is a nice plugin, but difficult to configure.
-
-    vim-airline is a nice plugin, but it uses too many functions of other plugins, which should be done by users in .vimrc.
-
-这个比较简洁，只有状态栏工具和颜色方案。最大的优点是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
 #### vim 快捷键
 

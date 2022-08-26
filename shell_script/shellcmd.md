@@ -126,6 +126,9 @@ test 和 [] 是等价的，[] 注意两边留空格
     # 如果执行命令的结果是失败，则打印
     if ! $(which vcgencmd >/dev/null) ; then printf "%s" 'error cmd'; fi
 
+    # 如果执行命令成功则执行xxx，否则执行yyy
+    lscpu|grep -q arm && echo "xxx" || echo "yyy"
+
 使用逻辑运算符将多个 [[ ]] 连接起来依然是可以的，因为这是 Shell 本身提供的功能，跟 [[ ]] 或者 test 没有关系，如下所示：
 
     [[ -z $str1 ]] || [[ -z $str2 ]]
