@@ -129,6 +129,12 @@ test 和 [] 是等价的，[] 注意两边留空格
     # 如果执行命令成功则执行xxx，否则执行yyy
     lscpu|grep -q arm && echo "xxx" || echo "yyy"
 
+    # 数值判断用 (( ))
+    (($LOAD_AVG_THLOD > 10)) && echo "greater than" || echo "not..."
+
+    # 字符串判断用 [[ ]]，如果判断字符串有值，则 -n 都可以省略了
+    [[ $envname ]] && printf "conda:%s" $envname
+
 使用逻辑运算符将多个 [[ ]] 连接起来依然是可以的，因为这是 Shell 本身提供的功能，跟 [[ ]] 或者 test 没有关系，如下所示：
 
     [[ -z $str1 ]] || [[ -z $str2 ]]
