@@ -118,7 +118,7 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     test -f $DAEMON || exit 0
 
-从本质上讲，if 检测的是命令的退出状态，下面的判断跳转就无法使用 test 命令，或许 zsh 支持
+从本质上讲，if 检测的是命令的退出状态，下面的判断跳转就无法使用 test 命令（或许 zsh 支持）
 
     # 如果命令存在则执行
     if $(which vcgencmd >/dev/null) ; then vcgencmd measure_temp; fi
@@ -129,15 +129,17 @@ test 和 [] 是等价的，[] 注意两边留空格
     # 如果执行命令成功则执行xxx，否则执行yyy
     lscpu|grep -q arm && echo "xxx" || echo "yyy"
 
+使用逻辑运算符将多个 [[ ]] 连接起来依然是可以的，因为这是 Shell 本身提供的功能，跟 [[ ]] 或者 test 没有关系，如下所示：
+
+    [[ -z $str1 ]] || [[ -z $str2 ]]
+
+组合使用 && 、 || 可以实现简单的 if ...else...
+
     # 数值判断用 (( ))
     (($LOAD_AVG_THLOD > 10)) && echo "greater than" || echo "not..."
 
     # 字符串判断用 [[ ]]，如果判断字符串有值，则 -n 都可以省略了
     [[ $envname ]] && printf "conda:%s" $envname
-
-使用逻辑运算符将多个 [[ ]] 连接起来依然是可以的，因为这是 Shell 本身提供的功能，跟 [[ ]] 或者 test 没有关系，如下所示：
-
-    [[ -z $str1 ]] || [[ -z $str2 ]]
 
  -（减号） 的作用是代表标准输出/标准输入, 视命令而定
 
