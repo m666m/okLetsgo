@@ -1354,15 +1354,12 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
 插件管理器
 
-    # https://github.com/MarcWeber/vim-addon-manager
-    sudo apt install vim-addon-manager
-
     推荐 https://github.com/junegunn/vim-plug
-        Download plug.vim and put it in the "/usr/share/vim/addons/autoload/" directory
 
-    https://github.com/VundleVim/Vundle.vim 2019年之后不更新了。。。
+    2019年之后不更新了 https://github.com/VundleVim/Vundle.vim
 
-    插件大全列表 https://vimawesome.com/
+    老资格的vim插件管理器 https://github.com/MarcWeber/vim-addon-manager
+    sudo apt install vim-addon-manager
 
 颜色方案
 
@@ -1370,33 +1367,40 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
     夜猫子 https://github.com/sdras/night-owl-vscode-theme
 
+插件大全列表
+
+    https://vimawesome.com/
+
 ##### 不推荐 vim 状态栏工具使用 powerline
-
-参见章节 [状态栏工具 powerline]。
-
-powerline 要求 Vim 在编译时添加 python 支持，所以 vim.tinny 版本是不支持该的
-
-    powerline 为保证多样性，使用python，但是这个python环境问题是最讨厌的
-        搞清 操作系统安装的包 python-pip 和 python3-pip 的使用区别
-        搞清 powerline 有 python 和 python3 两个发行版本
-        搞清 操作系统默认的 python 环境是 python 还是 python3
-        搞清 你安装的 powerline 到底是用 python 还是 python3 执行的？如果是用 apt install 安装的更不一样。
-        搞清 所有的 powerline 的插件，安装前都要先看看到底支持哪个python版本？
-        搞清 前面这堆 python 到底是指 python2 还是 python3 ？如果是python3，最低要求 3.6 还是 3.7 ？
-
-    建议别走自行编译 vim 这条路！你的 python 环境是什么，在 virtualenv 下如何使用vim？
-
-    建议安装 debian 发行版自带的 powerline，用 `sudo apt install powerline`即可
-        新版只能pypi `python3 -m pip install powerline-status`
-        最新版就得github `python3 -m pip install --user git+git://github.com/powerline/powerline`
-        如果，你用的是 pip install powerline-status，那么安装的应该是 python 2.7 版本的 powerline-status。
-        然后继续，所有的 powerline 的插件，安装前都要先看看到底支持哪个python版本？
 
     推荐使用替代品 vim-airline ，开箱即用，万事大吉。
 
+powerline介绍，参见章节 [状态栏工具 powerline]。
+
+powerline 给 vim 使用是提供了插件的形式，要求 Vim 在编译时添加 python 支持，所以 vim.tinny 版是无法使用的，如何解决见上面的“先决条件”。
+
+powerline 为保证多样性，使用python
+
+    搞清 操作系统安装的包 python-pip 和 python3-pip 的使用区别
+    搞清 powerline 有 python 和 python3 两个发行版本
+    搞清 操作系统默认的 python 环境是 python 还是 python3
+    搞清 你安装的 powerline 到底是用 python 还是 python3 执行的？如果是用 apt install 安装的更不一样。
+    搞清 所有的 powerline 的插件，安装前都要先看看到底支持哪个python版本？
+    搞清 前面这堆 python 到底是指 python2 还是 python3 ？如果是python3，最低要求 3.6 还是 3.7 ？
+
+    建议不要自行编译 vim ！你的 python 环境是什么，在 virtualenv 下如何使用vim？
+
+    建议安装 debian 发行版自带的 powerline，用 `sudo apt install powerline`即可
+        新版只能用pypi `python3 -m pip install powerline-status`
+        最新版就得用github `python3 -m pip install --user git+git://github.com/powerline/powerline`
+
+        如果，你用的是 pip install powerline-status，那么安装的应该是 python 2.7 版本的 powerline-status。
+
+        然后继续，所有的 powerline 的插件，安装前都要先看看到底支持哪个python版本？
+
 如果确定你的 vim 是有 python 支持的，那么可以使用 powerline ，做如下设置：
 
-    先查看你安装 powerline 的位置，找到bindings目录
+    先查看 powerline 的安装位置，找到bindings目录
 
         如果是用 pip 安装的 powerline，就是如下这种的路径
 
@@ -1420,24 +1424,6 @@ powerline 要求 Vim 在编译时添加 python 支持，所以 vim.tinny 版本�
 
         " Use 256 colours (Use this setting only if your terminal supports 256 colours)
         set t_Co=256
-
-或者用 vim powerline 的另一个替代品：
-
-状态栏工具 lightline.vim
-
-    https://github.com/itchyny/lightline.vim
-
-如果你想只安装个干净的工具栏，其它插件自己配置自己玩的话，状态栏工具用这个 lightline.vim 就足够了。
-
-Why yet another clone of powerline?
-
-    [vim-powerline](https://github.com/Lokaltog/vim-powerline)  is a nice plugin, but deprecated.
-
-    powerline is a nice plugin, but difficult to configure.
-
-    vim-airline is a nice plugin, but it uses too many functions of other plugins, which should be done by users in .vimrc.
-
-这个比较简洁，只有状态栏工具和颜色方案。最大的优点是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
 ##### 插件管理器 Vundle
 
@@ -1577,12 +1563,15 @@ call plug#end()
 
 然后 Reload .vimrc and :PlugInstall to install plugins.
 
-##### 推荐安装插件 vim-airline
+##### 推荐状态栏工具使用 vim-airline
+
+完美替换掉 powerline
 
     https://github.com/vim-airline/vim-airline
 
 省事了，不仅是状态栏工具，自带很多常用插件如目录树语法高亮色彩主题啥的都有，普通字体也可以正常显示，开箱即用。
-最重要的是，它没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
+
+没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
     apt install vim-airline
     apt install vim-airline-themes
@@ -1622,6 +1611,22 @@ AirlineTheme 自己管理主题，在 ~/.vimrc 中配置
     " 使用说明 ~/.vim/bundle/vim-airline-themes/README.md
     " 在vi中切换主题 :AirlineTheme night_owl
     let g:airline_theme='papercolor'  " 建议使用插件里的 nord ，比这个好
+
+##### powerline 的另一个替代品：lightline.vim
+
+    https://github.com/itchyny/lightline.vim
+
+如果你想只安装个干净的工具栏，其它插件自己配置自己玩的话，状态栏工具用这个 lightline.vim 就足够了。
+
+Why yet another clone of powerline?
+
+    [vim-powerline](https://github.com/Lokaltog/vim-powerline)  is a nice plugin, but deprecated.
+
+    powerline is a nice plugin, but difficult to configure.
+
+    vim-airline is a nice plugin, but it uses too many functions of other plugins, which should be done by users in .vimrc.
+
+这个比较简洁，只有状态栏工具和颜色方案。最大的优点是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
 ##### 插件 nerdtree 的热键
 
