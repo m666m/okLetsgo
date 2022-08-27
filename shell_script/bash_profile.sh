@@ -51,7 +51,7 @@ function PS1conda-env-name {
 
 function PS1git-branch-name {
 
-  # 这个命令在裸仓库或.git目录中运行不报错，一样可以打印当前分支名
+  # 这个命令在裸仓库或.git目录中运行不报错，一样会打印出当前分支名
   git symbolic-ref --short -q HEAD >/dev/null 2>&1
   local exitcode=$?
 
@@ -81,28 +81,24 @@ function PS1git-branch-name {
 }
 
 function PS1git-branch-prompt {
+
   local branch=`PS1git-branch-name`
 
-  # 有branch名说明是在git环境中
-  if [ $branch ]; then
+  # 没有branch名说明不在git环境中
+  [[ $branch ]] || return 0
 
-    # 在裸仓库或.git目录中，运行 git status 会报错，所以这里先走个判断
-    if ! $(git status >/dev/null 2>&1) ; then
-      local is_raw='raw!'
-
-    else
-      # git status有值得输出的就显示，否则是空串
-      local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<?>'; else printf "%s" ''; fi)
-    fi
-
+  # 在裸仓库或.git目录中，运行 git status 会报错，所以先判断下
+  # if ! $(git status >/dev/null 2>&1) ; then
+  if [ "$(git rev-parse --is-inside-work-tree)" == 'false' ]; then
     # 如果在裸仓库或的.git目录，则不打印分支名，以提醒使用者
-    if [ -n "$is_raw" ]; then
-	  printf " git:%s" $is_raw
-    else
-	  printf " git:%s%s" $notify_flag $branch
-    fi
+    printf " git:raw!"
 
+  else
+    # git status有值得输出的就显示，否则是空
+    local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<?>'; else printf "%s" ''; fi)
+    printf " git:%s%s" $notify_flag $branch
   fi
+
 }
 
 # linux bash 命令行提示符显示： \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
