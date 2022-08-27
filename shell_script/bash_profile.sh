@@ -66,12 +66,14 @@ function PS1git-branch-name {
 
       local headhash="$(git rev-parse HEAD)"
       local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
+
       # 有标签名就显示标签否则显示 commit id
       if [[ -n $tagname ]]; then
         printf "#(%s)" "$tagname"
       else
         printf "@(%s)" "$headhash"
       fi
+
   fi
 
   # exitcode 是其它数字的，是不在git环境中，需要打印

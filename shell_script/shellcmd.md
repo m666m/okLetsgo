@@ -86,19 +86,24 @@ test 和 [] 是等价的，[] 注意两边留空格
     好   [ "$a" = "7" ]
 
     最安全：当变量可能为空的时候，强烈建议在变量的基础上加上其他辅助字符串，参见 /etc/init.d/ 下的脚本
+
     [ "a$a" = "a7" ]   # 判断a是否为7
+
     [ "a$a" = "a" ]    # 判断a是否为空
+
     [ ! -z "$a" -a "a$a" = "a7" ]  # a不为空且a=7时才为真
 
 [[ ]] 是 test 的升级版
 [[ ]] 注意两边留空格
 
-    if [[ -z $str1 ]] || [[ -z $str2 ]]  #不需要对变量名加双引号
-    then
+    # 不需要对变量名加双引号
+    if [[ -z $str1 ]] || [[ -z $str2 ]]; then
         echo "字符串不能为空"
-    elif [[ $str1 < $str2 ]]  #不需要也不能对 < 进行转义
+
+    elif [[ $str1 < $str2 ]]  # 不需要也不能对 < 进行转义
     then
         echo "str1 < str2"
+
     else
         echo "str1 >= str2"
     fi
@@ -116,15 +121,19 @@ test 和 [] 是等价的，[] 注意两边留空格
 
 如果条件测试失败则执行，否则不执行
 
-    test -f $DAEMON || exit 0
+    test -f $DAEMON || echo "文件不存在，退出，不再执行下面的语句了"
 
 从本质上讲，if 检测的是命令的退出状态，下面的判断跳转就无法使用 test 命令（或许 zsh 支持）
 
     # 如果命令存在则执行
-    if $(which vcgencmd >/dev/null) ; then vcgencmd measure_temp; fi
+    if $(which vcgencmd >/dev/null 2>&1) ; then vcgencmd measure_temp; fi
+
+    which vcgencmd >/dev/null 2>&1 && vcgencmd measure_temp
 
     # 如果执行命令的结果是失败，则打印
-    if ! $(which vcgencmd >/dev/null) ; then printf "%s" 'error cmd'; fi
+    if ! $(which vcgencmd >/dev/null 2>&1) ; then printf "%s" 'error cmd'; fi
+
+    which vcgencmd >/dev/null 2>&1 || echo "不是树莓派，exit,终止执行之后的语句"
 
     # 如果执行命令成功则执行xxx，否则执行yyy
     lscpu|grep -q arm && echo "xxx" || echo "yyy"
@@ -138,7 +147,8 @@ test 和 [] 是等价的，[] 注意两边留空格
     # 数值判断用 (( ))
     (($LOAD_AVG_THLOD > 10)) && echo "greater than" || echo "not..."
 
-    # 字符串判断用 [[ ]]，如果判断字符串有值，则 -n 都可以省略了
+    # 字符串判断用 [[ ]]
+    # 如果是判断字符串有值，则 -n 可以省略
     [[ $envname ]] && printf "conda:%s" $envname
 
  -（减号） 的作用是代表标准输出/标准输入, 视命令而定
