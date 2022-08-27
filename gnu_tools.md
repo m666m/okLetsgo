@@ -433,7 +433,7 @@ zsh自带功能
 
 #### 强烈推荐主题 powerlevel10k
 
-这个主题可以完全替代状态栏工具 powerline 在zsh命令行提示符的作用，而且更好看
+在zsh命令行提示符，这个主题可以完全替代状态栏工具 powerline ，而且更简单、更好看
 
     https://github.com/romkatv/powerlevel10k
 
@@ -485,7 +485,8 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 )
 
 function prompt_raspi_temp_warn() {
-  if ! $(which vcgencmd >/dev/null) ; then return 0; fi
+
+  which vcgencmd >/dev/null 2>&1 || return 0
 
   local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
@@ -1211,37 +1212,51 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
 + 自定义 vim 编辑器的颜色方案(vim tinny 版本不支持)
 
-    打开一个Vim窗口
+打开一个Vim窗口
 
-        输入命令:color 后回车查看当前的颜色主题。
+    输入命令:color 后回车查看当前的颜色主题。
 
-        输入命令:echo $VIMRUNTIME 来查看Vim的运行目录
-            进入vim的运行目录，查看color目录下以“.vim”为结尾的文件
-            这些文件即是颜色主题文件，文件名就是主题名字。
+    输入命令:echo $VIMRUNTIME 来查看Vim的运行目录
+        进入vim的运行目录，查看color目录下以“.vim”为结尾的文件
+        这些文件即是颜色主题文件，文件名就是主题名字。
 
-        输入命令":colorscheme 主题名字"，即可设置当前vim实例的颜色主题。
+    输入命令":colorscheme 主题名字"，即可设置当前vim实例的颜色主题。
 
-    更改默认颜色主题
+更改默认颜色主题
 
-        打开~/.vimrc文件，在其中加入一行"colorscheme 颜色主题名字"，之后保存更改即可。
+    打开~/.vimrc文件，在其中加入一行"colorscheme 颜色主题名字"，之后保存更改即可。
 
-            colorscheme slate
+        colorscheme slate
 
 + Vim 解决汉字乱码
 
-    如果你的 Vim 打开汉字出现乱码的话，那么在home目录(~)下，新建.vimrc文件
+如果你的 Vim 打开汉字出现乱码的话，那么在home目录(~)下，新建.vimrc文件
 
-        nano ~/.vimrc
+    nano ~/.vimrc
 
-    添加内容如下：
+添加内容如下：
 
-        set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
-        set enc=utf8
-        set fencs=utf8,gbk,gb2312,gb18030
+    set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
+    set enc=utf8
+    set fencs=utf8,gbk,gb2312,gb18030
 
-    保存退出后执行下环境变量
+保存退出后执行下环境变量
 
-        source ~/.vimrc
+    source ~/.vimrc
+
++ 鼠标右键不能粘贴而是进入了visual模式
+
+解决方法一禁用鼠标：
+
+    :set mouse-=a
+
+或编辑 ~/.vimrc 文件，加入如下代码：
+
+    if has('mouse')
+        set mouse-=a
+    endif
+
+解决方法二，鼠标选择后使用vim快捷键p粘贴
 
 #### nano 用法
 
@@ -1286,7 +1301,7 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
     https://vimhelp.org/options.txt.html#%27runtimepath%27
 
-    如果是 `apt install xxx` 安装的一般在 /usr/share/vim/ 下
+    如果是 `apt install xxx` 安装的一般在 /usr/share/vim/addons/ 下
 
         自定义插件  /usr/share/vim/addons/plugin/
         使用时加载  /usr/share/vim/addons/autoload/
@@ -1294,13 +1309,10 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
         vim 自带插件        /usr/share/vim/vim81/plugin/
         vim 自带使用时加载   /usr/share/vim/vim81/autoload/
 
-    其它安装方式的一般在 ~/.vim/ 下
+    自定义的在 ~/.vim/ 下，vim 自动查找
 
-        自定义插件  ~/.vim/bundle/对应的插件/
-        使用时加载  ~/.vim/bundle/对应的插件/autoload/
-
-        vim 自带插件        ~/.vim/plugin/
-        vim 自带使用时加载   ~/.vim/autoload/
+        插件        ~/.vim/plugin/
+        使用时加载   ~/.vim/autoload/
 
 进入 vim 后使用命令 :set rtp 查看
 
@@ -1437,10 +1449,10 @@ powerline 为保证多样性，使用python
 
 先git安装 (会在子目录 autoload、ftplugin等增加内容)
 
-    # apt install vim 的路径
-    git clone --depth=1 https://github.com/VundleVim/Vundle.vim.git /usr/share/vim/addons/Vundle.vim
+    # Vundle使用    ~/.vim/bundle/
+    # 自定义插件    ~/.vim/bundle/对应的插件/plugin/
+    # 使用时加载    ~/.vim/bundle/对应的插件/autoload/
 
-    # 自行安装 vim 的路径
     git clone --depth=1 https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
 然后修改  ~/.vimrc 如下
@@ -1518,13 +1530,11 @@ Vundle不更新了，这个项目取代之，用法神似
 
     https://github.com/junegunn/vim-plug
 
-先github下载 (会在子目录 autoload、ftplugin等增加内容)
+先github下载
 
-    # apt install vim 的路径
-    curl -fLo /usr/share/vim/addons/autoload/plug.vim --create-dirs \
-        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    # vim 使用时加载     ~/.vim/autoload/
+    # vim-plug 存放插件  ~/.vim/plugged/
 
-    # 自行安装 vim 的路径
     curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
@@ -1552,7 +1562,7 @@ Plug '/usr/share/vim/addons/plugin/vim-airline-themes'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
 " https://www.nordtheme.com/ports/vim
-Plugin 'arcticicestudio/nord-vim'
+Plug 'arcticicestudio/nord-vim'
 
 " Initialize plugin system
 " - Automatically executes `filetype plugin indent on` and `syntax enable`.
@@ -1684,7 +1694,7 @@ Why yet another clone of powerline?
 "   见章节 [插件管理器 Vundle] VundleVim 插件管理器官方配置
 "
 "   见章节 [插件管理器 vim-plug] vim-plug 插件管理器官方配置
-"
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim 的一些默认设置
 set laststatus=2  " 始终显示状态栏
@@ -1752,11 +1762,21 @@ map <C-n> :NERDTreeToggle<CR>
     map <C-n> :NERDTreeToggle<CR>
 ```
 
-##### 命令行模式
+##### 文本输入模式（编辑模式/插入模式）
+
+在普通模式下输入插入命令i、附加命令a、打开命令o、修改命令c、取代命令r或替换命令s都可以进入文本输入模式。
+
+在该模式下，用户输入的任何字符都被 vi 当做文件内容保存起来，并将其显示在屏幕上。
+
+在文本输入过程中，若想回到普通模式下，按下Esc键即可。
+
+在普通模式下输入:即可切换到命令行模式，然后输入命令后回车。
+
+##### 普通模式
 
 移动光标
 
-    h,j,k,l 上，下，左，右
+    h,j,k,l     上，下，左，右
 
     ctrl-e  移动页面
     ctrl-f  上翻一页
@@ -1781,65 +1801,73 @@ map <C-n> :NERDTreeToggle<CR>
     gt      跳至下一个标签页
     gT      跳至前一个标签页
 
-    fx 在当前行中找x字符，找到了就跳转至
-    ; 重复上一个f命令，而不用重复的输入fx
+    fx  在当前行中找x字符，找到了就跳转至
+    ;   重复上一个f命令，而不用重复的输入fx
 
-    * 查找光标所在处的单词，向下查找
-    # 查找光标所在处的单词，向上查找
+    *   查找光标所在处的单词，向下查找
+    #   查找光标所在处的单词，向上查找
 
 查找替换
 
-    /pattern 向后搜索字符串pattern
-    ?pattern 向前搜索字符串pattern
-    "\c" 忽略大小写
-    "\C" 大小写敏感
+    /pattern    向后搜索字符串pattern
+    ?pattern    向前搜索字符串pattern
 
-    n 下一个匹配(如果是/搜索，则是向下的下一个，?搜索则是向上的下一个)
-    N 上一个匹配(同上)
-    :%s/old/new/g 搜索整个文件，将所有的old替换为new
+    "\c"    忽略大小写
+    "\C"    大小写敏感
+
+    n   下一个匹配(如果是/搜索，则是向下的下一个，?搜索则是向上的下一个)
+    N   上一个匹配(同上)
+    :%s/old/new/g  搜索整个文件，将所有的old替换为new
     :%s/old/new/gc 搜索整个文件，将所有的old替换为new，每次都要你确认是否替换
 
 删除复制粘贴
 
-    J 删除行尾的换行，将下一行和当前行连接为一行
+    J   删除行尾的换行，将下一行和当前行连接为一行
 
-    dd 删除光标所在行
-    dw 删除一个字(word)
-    d/D删除到行末
-    x删除当前字符
-    X删除前一个字符
+    dd  删除光标所在行
+    dw  删除一个字(word)
+    d/D 删除到行末
+    x   删除当前字符
+    X   删除前一个字符
+
     注意：删除操作其实是剪切，详见下面章节[vi中的删除是剪切操作]
 
-    yy复制一行
-    yw复制一个字
+    yy  复制一行
+    yw  复制一个字
     y/Y 复制到行末
 
-    p 粘贴剪贴板的内容到当前行的下面
-    P 粘贴剪贴板的内容到当前行的上面
+    p   粘贴剪贴板的内容到当前行的下面
+    P   粘贴剪贴板的内容到当前行的上面
 
 编辑
 
-    i 从当前光标处进入编辑模式，插入
-    I 进入编辑模式，并置光标于行首
-    a 进入编辑模式，置光标于当前光标之后
-    A 进入编辑模式，置光标于行末
-    o 进入编辑模式，在当前行之下新加一行，光标位于新加行
-    O 进入编辑模式，在当前行之上新加一行，光标位于新加行
+    i   从当前光标处进入编辑模式，插入
+    I   进入编辑模式，并置光标于行首
+    a   进入编辑模式，置光标于当前光标之后
+    A   进入编辑模式，置光标于行末
+    o   进入编辑模式，在当前行之下新加一行，光标位于新加行
+    O   进入编辑模式，在当前行之上新加一行，光标位于新加行
 
-    cc 删除当前行并进入编辑模式
-    cw 删除当前字，并进入编辑模式
-    c$ 擦除从当前位置至行末的内容，并进入编辑模式
-    s 删除当前字符并进入编辑模式
-    S 删除光标所在行并进入编辑模式
-    xp 交换当前字符和下一个字符
+    cc  删除当前行并进入编辑模式
+    cw  删除当前字，并进入编辑模式
+    c$  擦除从当前位置至行末的内容，并进入编辑模式
+    s   删除当前字符并进入编辑模式
+    S   删除光标所在行并进入编辑模式
+    xp  交换当前字符和下一个字符
 
-    u 撤销
-    ctrl+r 重做
+    u       撤销
+    ctrl+r  重做
 
-    ~ 切换大小写，当前字符
-    >> 将当前行右移一个单位
-    << 将当前行左移一个单位(一个tab符)
-    == 自动缩进当前行
+    ~   切换大小写，当前字符
+    >>  将当前行右移一个单位
+    <<  将当前行左移一个单位(一个tab符)
+    ==  自动缩进当前行
+
+##### 可视模式
+
+相当于高亮选取文本后的普通模式，可视模式具有子模式，以行为单位进行选取的可视行模式，使用“V”键进入和以块为单位进行选取的可视块模式，使用“Ctrl+v”键进入。
+
+进入可视模式：正常模式 + ctrl + v|V
 
 区块操作
 
@@ -1862,13 +1890,13 @@ map <C-n> :NERDTreeToggle<CR>
         3.SHIFT+i(I) 输入要插入的内容。
         4.ESC 按两次，会在每行的选定的区域出现插入的内容
 
-##### 末行模式
+##### 命令行模式
 
-    在命令模式下，用户按:键即可进入末行模式下，此时 vi 会在显示窗口的最后一行（通常也是屏幕的最后一行）显示一个:作为末行模式的说明符，等待用户输入命令。多数文件管理命令都是在此模式下执行的（如把编辑缓冲区的内容写到文件中等）。
+在普通模式下，用户按:键即可进入命令行模式下，此时 vi 会在显示窗口的最后一行（通常也是屏幕的最后一行）显示一个:作为命令行模式的说明符，等待用户输入命令。多数文件管理命令都是在此模式下执行的（如把编辑缓冲区的内容写到文件中等）。
 
-    末行命令执行完后，vi 自动回到命令模式。
+命令行命令执行完后，vi 自动回到普通模式。
 
-    在vim中输入的命令，也可编辑 ~/.vimrc 文件配置。
+在vim中输入的命令，也可编辑 ~/.vimrc 文件配置。
 
 常用
 
@@ -1894,8 +1922,8 @@ map <C-n> :NERDTreeToggle<CR>
 
 执行shell命令
 
-    1、在命令模式下输入 ":sh"，可以运行一个shell，想回到vim编辑器中用`exit`或`ctrl+D`返回vim编辑器
-    2、在命令模式下输入 ":!xxx"，在当前目录下运行指定的命令xxx，运行结束后自动回到 vim 编辑器中
+    1、在普通模式下输入 ":sh"，可以运行一个shell，想回到vim编辑器中用`exit`或`ctrl+D`返回vim编辑器
+    2、在普通模式下输入 ":!xxx"，在当前目录下运行指定的命令xxx，运行结束后自动回到 vim 编辑器中
     3、用 "Ctrl+Z" 回到shell，用 `fg` 返回编辑
 
 多文件操作（缓冲 buffer）
@@ -1915,8 +1943,8 @@ map <C-n> :NERDTreeToggle<CR>
 
 多标签页操作
 
-    :tabn       移动到下一个标签页 或 命令模式直接输入 gt
-    :tabp       移动到上一个标签页 或 命令模式直接输入 gT
+    :tabn       移动到下一个标签页 或 普通模式直接输入 gt
+    :tabp       移动到上一个标签页 或 普通模式直接输入 gT
 
     :tabfirst   移动到第一个标签页
     :tablast    移动到最后一个标签页
@@ -1940,16 +1968,6 @@ map <C-n> :NERDTreeToggle<CR>
     Ctrl+w+方向键       切换到前／下／上／后一个窗格
     Ctrl+w+h/j/k/l     同上
     Ctrl+ww            依次向后切换到下一个窗格中
-
-##### 文本输入模式（编辑模式）
-
-在命令模式下输入插入命令i、附加命令a、打开命令o、修改命令c、取代命令r或替换命令s都可以进入文本输入模式。
-
-在该模式下，用户输入的任何字符都被 vi 当做文件内容保存起来，并将其显示在屏幕上。
-
-在文本输入过程中，若想回到命令模式下，按下Esc键即可。
-
-在命令模式下输入:即可切换到末行模式，然后输入命令后回车。
 
 #### vim 使用的各种坑
 
@@ -1998,9 +2016,42 @@ map <C-n> :NERDTreeToggle<CR>
     c  "%   当前文件的名字
     c  "/   上一次查找的字符串
 
-在命令模式使用剪贴板，直接使用"开头的寄存器名称加命令操作即可
+在普通模式使用剪贴板，直接使用 "开头的寄存器名称加命令 操作即可
 
-    "0p 从0号寄存器粘贴内容
+    "0p     表示从0号寄存器粘贴内容
+
+设置vim默认使用系统剪贴板
+
+    https://www.cnblogs.com/huahuayu/p/12235242.html
+
+确定vim支持+clipboard后，如果想y/p直接和系统剪贴板打通，可以在~/.vimrc中加上以下配置）：
+
+    set clipboard^=unnamed,unnamedplus
+
+其中unnamed代表*寄存器，unnamedplus代表+寄存器。在mac系统中，两者都一样；一般在linux系统中+和*是不同的，+对应ctrl + c,ctrl + v的桌面系统剪贴板，*对应x桌面系统的剪贴板（用鼠标选择复制，用鼠标中键粘贴）。
+
+服务器vim复制到本地剪贴板
+
+通过ssh连接到linux服务器时，vim是跑在远程服务器的，不能使用y复制到本地的剪贴板。这时有几个方法：
+
+cmd + c
+用鼠标选中文字cmd + c复制（windows下ctrl + c复制），cmd + v粘贴到本地。这个方法是最自然的，但是想要用这个方法有几个前提：
+
+vim配置中开启鼠标支持，.vimrc文件中加上
+
+    set mouse=a
+
+terminal客户端关闭mouse reporting选项，否则鼠标点击vim界面会进入visual模式。
+
+如果使用tmux，tmux需要配置支持鼠标滚轮，否则最多只能复制当前页面的内容
+
+本地vim通过scp编辑远程文件
+
+使用本地vim通过scp直接编辑远程文件。这样就可以使用本地寄存器"+y"复制了。这种方法对远程vim配置没有要求。
+
+    vim scp://remoteuser@server.com//absolute/path/to/file
+
+注意com和absolute间是两个反斜杠//并不是敲错了。
 
 ### tmux 不怕断连的多窗口命令行
 
