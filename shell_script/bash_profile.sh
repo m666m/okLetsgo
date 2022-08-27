@@ -52,32 +52,29 @@ function PS1conda-env-name {
 function PS1git-branch-name {
 
   # 这个命令在裸仓库或.git目录中运行不报错，一样会打印出当前分支名
-  git symbolic-ref --short -q HEAD >/dev/null 2>&1
+  branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
   local exitcode=$?
 
   # 优先显示当前head指向的分支名
   if [ $exitcode -eq 0 ]; then
-    local branch_name="$(git symbolic-ref --short -q HEAD)"
     printf "(%s)" $branch_name
+    return
+  fi
 
   # detached HEAD
-  elif [ $exitcode -eq 1 ]; then
+  if [ $exitcode -eq 1 ]; then
 
       local headhash="$(git rev-parse HEAD)"
       local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
-
       # 有标签名就显示标签否则显示 commit id
       if [[ -n $tagname ]]; then
         printf "#(%s)" "$tagname"
       else
         printf "@(%s)" "$headhash"
       fi
-
-  # 不是git环境
-  else
-    printf "%s" ""
-
   fi
+
+  # exitcode 是其它数字的，是不在git环境中，需要打印
 }
 
 function PS1git-branch-prompt {
