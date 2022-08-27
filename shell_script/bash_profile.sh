@@ -76,7 +76,7 @@ function PS1git-branch-name {
 
   fi
 
-  # exitcode 是其它数字的，是不在git环境中，需要打印
+  # exitcode 是其它数字的，不在git环境中，不需要打印
 }
 
 function PS1git-branch-prompt {
