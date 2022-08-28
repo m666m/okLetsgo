@@ -636,7 +636,7 @@ figlet实现字符画钟表，在tmux里开一个正合适
 终端工具应该开启透明效果，或在登陆脚本中设置环境变量开启256color显示
 
     # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
-    export TERM=xterm-256color
+    export TERM="xterm-256color"
 
 简单的双行状态栏 见章节  [bash_profile.sh] <shell_script okletsgo>
 
@@ -676,7 +676,7 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
 终端工具最好明确设置变量Term，这样各个插件会自动使用更丰富的颜色
 
     # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
-    export TERM=xterm-256color
+    export TERM="xterm-256color"
 
 终端工具字体推荐 MesloLGS NF，详见下面章节[状态栏字体]。
 
@@ -897,7 +897,7 @@ zsh自带功能
 启用插件，编辑 ~/.zshrc 文件
 
     # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
-    export TERM=xterm-256color
+    export TERM="xterm-256color"
 
     # 有插件管理这俩设置不需要
     # 启用彩色提示符
@@ -983,7 +983,7 @@ zsh自带功能
 终端工具最好明确设置变量Term，这样各个插件会自动使用更丰富的颜色
 
     # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
-    export TERM=xterm-256color
+    export TERM="xterm-256color"
 
 如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示效果会有差别，这是设计者做了考虑，已防止出现不正常的显示。
 
@@ -1056,7 +1056,7 @@ function prompt_raspi_temp_warn() {
 ############ 下为手动配置插件
 
 # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
-export TERM=xterm-256color
+export TERM="xterm-256color"
 
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
 # 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
@@ -1324,7 +1324,7 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
         # 在 .bash_profile 中显式设置终端启用256color，防止终端工具未设置
         # 如果终端工具能开启透明选项，则显示的效果更好
-        export TERM=xterm-256color
+        export TERM="xterm-256color"
 
     检查vim的版本，进入vim执行命令 :version
 
@@ -1702,6 +1702,7 @@ set showtabline=2  " 始终显示标签页
 
 " https://www.codenong.com/15375992/
 " 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
+" if &term =~? 'mlterm\|xterm'
 if &term =="screen"
     set t_Co=256
 endif
@@ -2055,7 +2056,9 @@ terminal客户端关闭mouse reporting选项，否则鼠标点击vim界面会进
 
 ### tmux 不怕断连的多窗口命令行
 
-    http://mingxinglai.com/cn/2012/09/tmux/
+    tmux的使用方法和个性化配置 http://mingxinglai.com/cn/2012/09/tmux/
+
+    Tmux使用手册 http://louiszhai.github.io/2017/09/30/tmux/
 
     http://man.openbsd.org/OpenBSD-current/man1/tmux.1
 
@@ -2082,10 +2085,10 @@ terminal客户端关闭mouse reporting选项，否则鼠标点击vim界面会进
 
     https://bobbyhadz.com/blog/tmux-powerline-ubuntu
 
-要设置状态栏彩色，需要编辑 ~/.tmux.conf 文件，添加如下行
+要设置状态栏彩色，包括tmux中vim使用彩色，需要编辑 ~/.tmux.conf 文件，添加如下行
 
-    # 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
-    set -g default-terminal screen-256color
+    # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
+    set -g default-terminal "screen-256color"
 
 一、状态栏显示使用 powerline
 
@@ -2122,9 +2125,9 @@ tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
 
     git clone --depth=1 https://github.com/arcticicestudio/nord-tmux ~/.tmux/themes/nord-tmux
 
-编辑 ~/.tmux.conf 文件，最终
+###### 最终 ~/.tmux.conf 文件
 
-    # 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
+    # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
     set -g default-terminal screen-256color
 
     # 可注释掉原 powerline 那行
@@ -2316,6 +2319,30 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     bind -n WheelDownPane select-pane -t= ; send-keys -M
 
 如果开启了鼠标滚屏，在tmux中用鼠标右键粘贴等就不能用了，用 ctrl+shift+c/v，或 shift+ins。
+
+#### tmux 开机自启动
+
+    https://github.com/Louiszhai/tmux/blob/master/init.sh
+
+```shell
+
+#!/bin/bash
+# 该脚本用于开机初始化tmux服务
+
+tmux new -s init -d # 后台创建一个名称为init的会话
+tmux rename-window -t "init:1" service # 重命名init会话的第一个窗口名称为service
+tmux send -t "init:service" "cd ~/workspace/language/python/;python2.7 server.py" Enter # 切换到指定目录并运行python服务
+
+tmux split-window -t "init:service" # 默认上下分屏
+tmux send -t "init:service" 'cd ~/data/louiszhai/node-webserver/;npm start' Enter # 切换到指定目录并运行node服务
+
+# 新建一个名称为tool的窗口
+tmux neww -a -n tool -t init # neww等同于new window
+tmux send -t "init:tool" "weinre --httpPort 8881 --boundHost -all-" Enter # 运行weinre调试工具
+
+tmux split-window -h -t "init:tool" # 水平分屏
+tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServer 10108" Enter # 切换到指定目录并启用aria2 web管理后台
+```
 
 #### 类似的工具 screen
 
