@@ -7,6 +7,536 @@
     Bash脚本指南 https://linux.die.net/abs-guide/
                     https://linux.die.net/
 
+## Windows 下的 GNU/POSIX 环境
+
+### 环境方案选择
+
+Windows 10+ 下使用 WSL 开发 GNU 环境设置
+
+    https://github.com/hsab/WSL-config
+
+Windows C++ 开发环境配置
+
+    g++7.0 + git + cmake
+
+    code::block / vscode
+
+    库 toft + chrome + leveldb + folly + zeromq
+
+<https://zhuanlan.zhihu.com/p/56572298>
+
+#### MGW 和 Cygwin 的实现思路
+
+##### MingW 在编译时对二进制代码转译
+
+MingW (gcc 编译到mscrt)包含gcc和一系列工具，是Windows下的gnu环境。
+
+编译 linux c++ 源代码，生成 Windows 下的exe程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API，相比Cygwin体积更小，使用更方便。
+
+如 创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的mscrt CreateProcess()形式。
+
+##### Cygwin 在编译时中间加了个翻译层 cygwin1.dll
+
+Cygwin 生成的程序依然有 fork() 这样的 Linux 系统调用，但目标库是 cygwin1.dll。
+
+Cygwin（POSIX接口转换后操作windows）在Windows中增加了一个中间层——兼容POSIX的模拟层，在此基础上构建了大量Linux-like的软件工具，由此提供了一个完整的 POSIX Linux 环境（以 GNU 工具为代表），模拟层对linux c++代码的接口如同 UNIX 一样， 对Windows由 win32 的 API 实现的cygwin1.dll，这就是 Cygwin 的做法。
+
+Cygwin实现，不是 kvm 虚拟机环境，也不是 QEMU 那种运行时模拟，它提供的是程序编译时的模拟层环境：exe调用通过它的中间层dll转换为对windows操作系统的调用。
+
+借助它不仅可以在 Windows 平台上使用 GCC 编译器，理论上可以在编译后运行 Linux 平台上所有的程序：GNU、UNIX、Linux软件的c++源代码几乎不用修改就可以在Cygwin环境中编译构建，从而在windows环境下运行。
+
+对于Windows开发者，程序代码既可以调用Win32 API，又可以调用Cygwin API，甚至混合，借助Cygwin的交叉编译构建环境，Windows版的代码改动很少就可以编译后运行在Linux下。
+
+用 MingW 编译的程序性能会高一点，而且也不用带着那个接近两兆的 cygwin1.dll 文件。
+但 Cygwin 对 Linux 的模拟比较完整，甚至有一个 Cygwin X 的项目，可以直接用 Cygwin 跑 X。
+
+另外 Cygwin 可以设置 -mno-cygwin 的 flag，来使用 MingW 编译。
+
+##### 取舍：选 MSYS2
+
+如果仅需要在 Windows 平台上使用 GCC，可以使用 MinGW 或者 Cygwin。
+
+如果还有更高的需求（例如运行 POSIX 应用程序），就只能选择安装 Cygwin。
+
+相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具。
+
+目前流行的 MSYS2 是 MSYS 的一个升级版，准确的说是集成了 pacman 和 Mingw-w64 的 Cygwin 升级版。
+
+如果你只是想在Windows下使用一些linux小工具，建议用 MSYS2，把 /usr/bin 加进环境变量 path 以后，可以直接在 命令行终端中使用 Linux 命令。
+
+#### MinGW
+
+此项目已停止维护。
+
+<https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html>
+
+#### MinGW64
+
+MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接口协议是 win32，异常处理模型是 seh，Build revision 是 1 。
+
+简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了Mingw64。
+比如 CodeLite，CodeBlocks，Eclipse CDT，Apache NetBeans（JDK 8）。
+收费的有JetBrains Clion，AppCode （mac）。
+
+#### MSYS、MSYS2
+
+    https://www.msys2.org/
+    https://msys2.github.io/
+
+MinGW 仅仅是工具链，Windows 下的 cmd 使用起来不够方便，MSYS 是用于辅助 Windows 版 MinGW 进行命令行开发的配套软件包：提供了部分 Unix 工具以使得 MinGW 的工具使用起来方便一些。相比基于庞大的 Cygwin 下的 MinGW 会轻巧不少。
+
+MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包管理器 pacman (ArchLinux)。
+
+目前在windows上使用Linux程序
+
+    如果只是需要一个编译器的话，可以用MinGW64。
+
+    如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman (ArcLinux)作为包管理器。
+
+    Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发使用 WSL2 也可以。
+
+#### Windows 10+ 下的 WSL 混合环境
+
+    https://github.com/hsab/WSL-config
+
+### 字符终端
+
+#### 居然有给cmd做美化的
+
+    https://github.com/starship/starship
+
+#### 简单使用：安装 Git for Windows
+
+GIT Bash 使用了 GNU tools 的 MINGW，但是工具只选择了它自己需要的部分进行了集成，我们主要使用他的 mintty 命令行终端程序和 ssh、gpg 等工具。
+
+下载地址 <https://git-scm.com/download/win>
+
+##### Windows下 的 bash -- mintty
+
+    http://mintty.github.io/
+    https://github.com/mintty/mintty/wiki/Tips
+
+安装 git for Windows 或 MSYS2 后就有了，git for Windows下的配置文件在 ~\.minttyrc。
+
+如果安装 MSYS2，则配置文件不同，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]。
+
+    Background=C:\Users\xxxx\Pictures\1111111111.jpg
+    Font=Consolas
+    FontHeight=11
+    Columns=200
+    Rows=60
+    # 如果嫌默认的白色不够纯就改
+    ForegroundColour=255,255,255
+    # mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
+    Language=@
+    # 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
+    # https://www.cnblogs.com/LCcnblogs/p/6208110.html
+    # bash下设置，这个变量设置区域，影响语言、词汇、日期格式等
+    Locale=zh_CN  # bash 下显示中文
+    Charset=GBK  # ls列windows目录名可以显示中文，但tail等命令显示中文utf-8文件需要设为UTF-8，此时中文目录名就不正常显示了，原因是中文版windows是ANSI而不是UTF
+    # LANG 只影响字符的显示语言
+    LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
+
+如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"。
+
+git for windows 的 mintty 目录
+
+    / 目录          位于git安装目录下的 C:\Program Files\Git\ 目录
+    /usr 目录       C:\Program Files\Git\ 目录下
+    /bin 目录       C:\Program Files\Git\ 目录下
+    /dev 目录       C:\Program Files\Git\ 目录下
+    /etc 目录       C:\Program Files\Git\ 目录下
+
+    /tmp 目录       位于 C:\Users\%USERNAME%\AppData\Local\Temp\  目录下
+
+    /proc 目录      这个是 git 自己虚出来的，只能在 git bash(mintty) 下看到
+
+    /cmd 目录       C:\Program Files\Git\ 目录下，给在 Windows cmd 命令行窗口下运行 git 和 ssh 用的脚本
+
+退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不如会提示有进程未关闭。
+
+putty的退出也是同样的建议。
+
+###### mintty 美化
+
+    北极主题颜色 https://github.com/arcticicestudio/nord-mintty
+
+    字符终端的颜色配置说明 https://github.com/termstandard/colors
+
+如果是 git for Windows 的mintty，编辑 ~/.minttyrc 文件为下面的内容
+
+```config
+# https://mintty.github.io/mintty.1.html
+# https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
+Font=MesloLGS NF
+FontHeight=11
+Columns=130
+Rows=40
+CursorType=block
+AllowBlinking=yes
+ScrollbackLines=12000
+CursorBlinks=no
+
+# 语言设置
+Language=@
+# Locale=zh_CN
+Locale=zh_SG
+# Charset=GBK
+Charset=UTF-8
+
+# 窗体透明效果，不适用于嵌入多窗口终端工具
+# Transparency=low
+
+# 为了使用花哨颜色，确保终端设置恰当
+Term=xterm-256color
+
+FontSmoothing=full
+# FontWeight=700
+# FontIsBold=yes
+
+# 自定义颜色方案，跟深色背景搭配
+# https://github.com/itchyny/lightline.vim/blob/master/autoload/lightline/colorscheme/PaperColor_light.vim
+Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
+BackgroundColour=13,25,38
+ForegroundColour=217,230,242
+CursorColour=217,230,242
+Black=53,53,53
+BoldBlack=92,92,92
+Red=207,116,133
+BoldRed=232,190,198
+Green=0,135,0
+BoldGreen=143,218,149
+Yellow=207,190,116
+BoldYellow=232,225,190
+Blue=88,133,192
+BoldBlue=66,113,174
+Magenta=190,116,207
+BoldMagenta=225,190,232
+Cyan=116,207,190
+BoldCyan=190,232,225
+White=209,209,209
+BoldWhite=255,255,255
+
+# 自定义颜色方案，跟深色背景搭配
+# https://github.com/arcticicestudio/nord-mintty
+#Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
+#BackgroundColour=46,52,64
+#ForegroundColour=216,222,233
+#CursorColour=216,222,233
+#Black=59,66,82
+#BoldBlack=76,86,106
+#Red=191,97,106
+#BoldRed=191,97,106
+#Green=163,190,140
+#BoldGreen=163,190,140
+#Yellow=235,203,139
+#BoldYellow=235,203,139
+#Blue=129,161,193
+#BoldBlue=129,161,193
+#Magenta=180,142,173
+#BoldMagenta=180,142,173
+#Cyan=136,192,208
+#BoldCyan=143,188,187
+#White=229,233,240
+#BoldWhite=236,239,244
+
+# 自定义颜色方案，跟浅色背景搭配-黄色
+#Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
+#BackgroundColour=250,234,182
+#ForegroundColour=0,61,121
+#CursorColour=217,230,242
+#
+#Black=0,0,0
+#BoldBlack=72,72,72
+#Red=255,30,18
+#BoldRed=255,84,74
+#Green=82,173,58
+#BoldGreen=65,136,47
+#Yellow=192,175,56
+#BoldYellow=166,150,36
+#Blue=11,80,155
+#BoldBlue=9,58,113
+#Magenta=255,18,243
+#BoldMagenta=255,147,250
+#Cyan=3,201,162
+#BoldCyan=67,214,181
+##218,232,237
+#White=107,165,186
+#BoldWhite=180,180,180
+
+# 自定义颜色方案，跟浅色背景搭配-绿色
+#Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
+#BackgroundColour=250,234,182
+#ForegroundColour=47,47,47
+#CursorColour=217,230,242
+#
+#Black=0,0,0
+#BoldBlack=38,38,38
+#Red=255,30,18
+#BoldRed=255,153,147
+#Green=82,173,58
+#BoldGreen=65,136,47
+#Yellow=193,117,40
+#BoldYellow=213,179,60
+#Blue=11,80,155
+#BoldBlue=17,120,234
+#Magenta=255,18,243
+#BoldMagenta=255,147,250
+#Cyan=32,138,115
+#BoldCyan=36,162,133
+#White=235,235,235
+#BoldWhite=255,255,255
+
+# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.light
+#ForegroundColour=101, 123, 131
+#BackgroundColour=252, 241, 209
+#CursorColour=    220,  50,  47
+#
+#Black=             7,  54,  66
+#BoldBlack=         0,  43,  54
+#Red=             220,  50,  47
+#BoldRed=         203,  75,  22
+#Green=           133, 153,   0
+#BoldGreen=        88, 110, 117
+#Yellow=          181, 137,   0
+#BoldYellow=      101, 123, 131
+#Blue=             38, 139, 210
+#BoldBlue=        131, 148, 150
+#Magenta=         211,  54, 130
+#BoldMagenta=     108, 113, 196
+#Cyan=             42, 161, 152
+#BoldCyan=        147, 161, 161
+#White=           238, 232, 213
+#BoldWhite=       253, 246, 227
+
+# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.dark
+#ForegroundColour=131,148,150
+#BackgroundColour=0,43,54
+#CursorColour=220,50,47
+#
+#Black=7,54,66
+#BoldBlack=0,43,54
+#Red=220,50,47
+#BoldRed=203,75,22
+#Green=133,153,0
+#BoldGreen=88,110,117
+#Yellow=181,137,0
+#BoldYellow=101,123,131
+#Blue=38,139,210
+#BoldBlue=131,148,150
+#Magenta=211,54,130
+#BoldMagenta=108,113,196
+#Cyan=42,161,152
+#BoldCyan=147,161,161
+#White=238,232,213
+#BoldWhite=253,246,227
+
+# 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
+# ThemeFile=mintty
+```
+
+如果是 MSYS2 的 mintty，可以在<https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
+
+###### 多终端工具 SuperPutty 等
+
+SuperPutty 支持putty、mintty、cmd、powershell等多种终端嵌入显示，可导入putty站点，可设置站点关联WinScp/FileZilla等软件的快捷调用，使用简单方便，只要安装了 git for Windows 和 putty 等软件即可直接使用，不需要做复杂的设置。
+
+ConEmu是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2，bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
+
+    https://zhuanlan.zhihu.com/p/99963508
+        https://conemu.github.io/
+
+    ConEmu配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
+    msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
+
+conemu中设置MSYS2
+
++ 以MSYS2 MingGW64为例：
+
+    打开conemu的settings对话框
+
+    选择Startup>>Tasks选项
+
+    点击+号，新建一个Task
+
+    修改Task名字为Msys2::MingGW64
+
+    在commands下文本框内输入如下代码：
+
+        set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
+
+MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变量值`D=`为你的msys2的安装目录。
+
+如果安装了zsh并想默认使用zsh，可以把代码里的bash改为zsh。
+
+打开后会自动把工作目录设置为msys64/home/%user%下。
+
+#### 组合使用：git for Windows + MSYS2
+
+##### 拷贝 MSYS2 的工具到 git 里，这样只使用 git bash(mintty) 就可以了
+
+假设git的安装目录在 D:\Git，可执行文件在 D:\Git\usr\bin\ 目录：
+
+以迁移 tmux.exe 为例，可执行文件放在 D:\Git\usr\bin\：
+
+    tmux.exe
+    event_rpcgen.py
+    msys-event-2-1-7.dll
+    msys-event_core-2-1-7.dll
+    msys-event_extra-2-1-7.dll
+    msys-event_openssl-2-1-7.dll
+    msys-event_pthreads-2-1-7.dll
+
+其它放在 D:\Git\usr\share\ 下：
+
+    licenses\libevent
+    licenses\tmux
+    man\man1\tmux.1.gz
+
+##### 共享一套 Home 目录
+
+如果安装了 git for windows ，其 home 目录默认为 %USERPROFILE%，导致 git for windows 和 MSYS2 的 git 配置和 vim 等配置不能共享。
+
+如果在安装 MSYS2 之前已经安装 git for windows 需要使用将之前的 ssh 和 git 的配置拷贝到 MSYS2 的 home 目录下。
+
+在 Windows 上配置环境变量 HOME 为 C:\you-path\msys64\home\your-name，增加这个环境变量的目的是为了让 git for windows 的 home 目录指向 MSYS2 的 home 目录。
+
+#### 全套使用：安装 MSYS2(Cygwin/Msys)
+
+参考文章
+
+    MSYS2 和 mintty 打造 Windows 下 Linux 工具体验
+        https://creaink.github.io/post/Computer/Windows/win-msys2/
+
+    Windows 下 MSYS2 配置及填坑 https://hustlei.github.io/2018/11/msys2-for-win.html
+
+下载安装 MSYS2
+
+    https://www.msys2.org/
+    https://msys2.github.io/
+
+使用pacman安装各种包：
+
+    pacman -S vim openssh opengpg git
+
+安装后先pacman更换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，在windows下是msys的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
+
+依次添加
+
+    nano 编辑 /etc/pacman.d/mirrorlist.msys ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/msys/$arch/
+        Server = http://mirrors.ustc.edu.cn/msys2/msys/$arch/
+
+    nano 编辑 /etc/pacman.d/mirrorlist.mingw32 ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/i686/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/i686/
+
+    nano 编辑 /etc/pacman.d/mirrorlist.mingw64 ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/x86_64/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/x86_64/
+
+    nano 编辑 /etc/pacman.d/mirrorlist.ucrt64 ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/ucrt64/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/ucrt64/
+
+    nano 编辑 /etc/pacman.d/mirrorlist.clang64 ，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/clang64/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/clang64/
+
+然后Windows执行开始菜单的快捷方式 "MSYS2 MSYS" 以打开命令行，更新软件包数据，之后可以使用 "MSYS2 MinGW X64"，
+
+    # pacman -Sy
+    :: Synchronizing package databases...
+    mingw32              1594.6 KiB   729 KiB/s 00:02 [#####################] 100%
+    mingw64              1604.5 KiB   494 KiB/s 00:03 [#####################] 100%
+    ucrt64               1663.1 KiB   985 KiB/s 00:02 [#####################] 100%
+    clang32              1556.7 KiB   400 KiB/s 00:04 [#####################] 100%
+    clang64              1587.3 KiB   532 KiB/s 00:03 [#####################] 100%
+    msys                  384.9 KiB   293 KiB/s 00:01 [#####################] 100%
+
+    # 更新核心软件包
+    # pacman -Su
+
+安装时给出了一些文件链接的提示
+
+    './.bashrc' -> '/home/%USERNAME%/.bashrc'
+    './.bash_logout' -> '/home/%USERNAME%/.bash_logout'
+    './.bash_profile' -> '/home/%USERNAME%/.bash_profile'
+    './.inputrc' -> '/home/%USERNAME%/.inputrc'
+    './.profile' -> '/home/%USERNAME%/.profile'
+    'C:\Windows\system32\drivers\etc\hosts' -> '/etc/hosts'
+    'C:\Windows\system32\drivers\etc\protocol' -> '/etc/protocols'
+    'C:\Windows\system32\drivers\etc\services' -> '/etc/services'
+    'C:\Windows\system32\drivers\etc\networks' -> '/etc/networks'
+
+该软件安装后，使用的Linux目录结构跟Windows目录的对应关系
+
+    / 目录          位于msys2的安装目录 msys64\ 下
+    /usr 目录       同上
+    /tmp 目录       同上
+    /home 目录      位于msys2的安装目录 msys64\ 下的 home\%USERNAME%
+
+环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件。
+
+NOTE: 如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的bash、mintty等配置文件，注意区分。
+
+msys2在开始菜单下的好几个版本是因为编译器和链接的windows的c库不同
+
+    LLVM/Clang 和 MINGW(GCC) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个用的话就 mingw64 就没问题。
+
+    具体区别是：mingw64 与 ucrt64 都是用 mingw64 编译器编译的 Windows 64位程序，只不过它们链接到的 crt（C runtime）不同， mingw64 是链接到了 msvcrt ，而 ucrt64 则是链接到了 Windows 10+ 上新的 ucrt 上。而 clang64 很好理解，就是用 clang 而非 mingw 来编译各种库，另外它也是链接到了 ucrt 而非 msvcrt。
+
+    引自 <https://www.zhihu.com/question/463666011/answer/1927907983>
+
+    官方解释 <https://www.msys2.org/docs/environments/>
+
+msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递了变量 set MSYSTEM=xxxx，msys2_shell.cmd启动时，都默认使用mintty虚拟终端。
+
+    # c:\msys64为msys2安装目录，bash为默认shell，可以用zsh,csh等替换
+    set MSYSTEM=MINGW64
+    "c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
+
+自己运行Msys2时可以不使用mintty虚拟终端。直接运行如下命令就OK：
+
+```bat
+    rem 启动MSYS2 MSYS
+    set MSYSTEM=MSYS
+    "c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
+
+    rem 启动MSYS2 MINGW32
+    set MSYSTEM=MINGW32
+    "c:\msys64\usr\bin\bash" --login
+
+    rem 启动MSYS2 MINGW64
+    set MSYSTEM=MINGW64
+    "c:\msys64\usr\bin\bash" --login
+```
+
+##### 软件仓库 pacman
+
+基于 Arch Linux 的 pacman 提供软件仓库，采用滚动升级模式，初始安装仅提供命令行环境：用户不需要删除大量不需要的软件包，而是可以从官方软件仓库成千上万的高质量软件包中进行选择，搭建自己的系统。
+
+pacman命令较多，作为新手，将个人最常用的命令总结如下：
+
+    pacman -Sy :更新软件包数据
+    pacman -Su :更新核心软件包
+    # pacman -Syu: 升级系统及所有已经安装的软件。
+    pacman -S 软件名: 安装软件。也可以同时安装多个包，只需以空格分隔包名即可。
+    pacman -Rs 软件名: 删除软件，同时删除本机上只有该软件依赖的软件。
+    pacman -Ru 软件名: 删除软件，同时删除不再被任何软件所需要的依赖。
+    pacman -Ssq 关键字: 在仓库中搜索含关键字的软件包，并用简洁方式显示。
+    pacman -Qs 关键字: 搜索已安装的软件包。
+    pacman -Qi 软件名: 查看某个软件包信息，显示软件简介,构架,依赖,大小等详细信息。
+    pacman -Sg: 列出软件仓库上所有的软件包组。
+    pacman -Sg 软件包组: 查看某软件包组所包含的所有软件包。
+    pacman -Sc：清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
+    pacman -Scc：清理所有的缓存文件。
+
 ## Linux 字符终端管理
 
 ### 字符终端的区域、编码、语言
@@ -675,536 +1205,6 @@ antigen用法：快速配置
     zsh
 
 zsh配置文件样例，有空慢慢研究吧 <https://linux.zone/1306>。
-
-## Windows 下的 GNU/POSIX 环境
-
-### 环境方案选择
-
-Windows 10+ 下使用 WSL 开发 GNU 环境设置
-
-    https://github.com/hsab/WSL-config
-
-Windows C++ 开发环境配置
-
-    g++7.0 + git + cmake
-
-    code::block / vscode
-
-    库 toft + chrome + leveldb + folly + zeromq
-
-<https://zhuanlan.zhihu.com/p/56572298>
-
-#### MGW 和 Cygwin 的实现思路
-
-##### MingW 在编译时对二进制代码转译
-
-MingW (gcc 编译到mscrt)包含gcc和一系列工具，是Windows下的gnu环境。
-
-编译 linux c++ 源代码，生成 Windows 下的exe程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API，相比Cygwin体积更小，使用更方便。
-
-如 创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的mscrt CreateProcess()形式。
-
-##### Cygwin 在编译时中间加了个翻译层 cygwin1.dll
-
-Cygwin 生成的程序依然有 fork() 这样的 Linux 系统调用，但目标库是 cygwin1.dll。
-
-Cygwin（POSIX接口转换后操作windows）在Windows中增加了一个中间层——兼容POSIX的模拟层，在此基础上构建了大量Linux-like的软件工具，由此提供了一个完整的 POSIX Linux 环境（以 GNU 工具为代表），模拟层对linux c++代码的接口如同 UNIX 一样， 对Windows由 win32 的 API 实现的cygwin1.dll，这就是 Cygwin 的做法。
-
-Cygwin实现，不是 kvm 虚拟机环境，也不是 QEMU 那种运行时模拟，它提供的是程序编译时的模拟层环境：exe调用通过它的中间层dll转换为对windows操作系统的调用。
-
-借助它不仅可以在 Windows 平台上使用 GCC 编译器，理论上可以在编译后运行 Linux 平台上所有的程序：GNU、UNIX、Linux软件的c++源代码几乎不用修改就可以在Cygwin环境中编译构建，从而在windows环境下运行。
-
-对于Windows开发者，程序代码既可以调用Win32 API，又可以调用Cygwin API，甚至混合，借助Cygwin的交叉编译构建环境，Windows版的代码改动很少就可以编译后运行在Linux下。
-
-用 MingW 编译的程序性能会高一点，而且也不用带着那个接近两兆的 cygwin1.dll 文件。
-但 Cygwin 对 Linux 的模拟比较完整，甚至有一个 Cygwin X 的项目，可以直接用 Cygwin 跑 X。
-
-另外 Cygwin 可以设置 -mno-cygwin 的 flag，来使用 MingW 编译。
-
-##### 取舍：选 MSYS2
-
-如果仅需要在 Windows 平台上使用 GCC，可以使用 MinGW 或者 Cygwin。
-
-如果还有更高的需求（例如运行 POSIX 应用程序），就只能选择安装 Cygwin。
-
-相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具。
-
-目前流行的 MSYS2 是 MSYS 的一个升级版，准确的说是集成了 pacman 和 Mingw-w64 的 Cygwin 升级版。
-
-如果你只是想在Windows下使用一些linux小工具，建议用 MSYS2，把 /usr/bin 加进环境变量 path 以后，可以直接在 命令行终端中使用 Linux 命令。
-
-#### MinGW
-
-此项目已停止维护。
-
-<https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html>
-
-#### MinGW64
-
-MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接口协议是 win32，异常处理模型是 seh，Build revision 是 1 。
-
-简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了Mingw64。
-比如 CodeLite，CodeBlocks，Eclipse CDT，Apache NetBeans（JDK 8）。
-收费的有JetBrains Clion，AppCode （mac）。
-
-#### MSYS、MSYS2
-
-    https://www.msys2.org/
-    https://msys2.github.io/
-
-MinGW 仅仅是工具链，Windows 下的 cmd 使用起来不够方便，MSYS 是用于辅助 Windows 版 MinGW 进行命令行开发的配套软件包：提供了部分 Unix 工具以使得 MinGW 的工具使用起来方便一些。相比基于庞大的 Cygwin 下的 MinGW 会轻巧不少。
-
-MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包管理器 pacman (ArchLinux)。
-
-目前在windows上使用Linux程序
-
-    如果只是需要一个编译器的话，可以用MinGW64。
-
-    如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman (ArcLinux)作为包管理器。
-
-    Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发使用 WSL2 也可以。
-
-#### Windows 10+ 下的 WSL 混合环境
-
-    https://github.com/hsab/WSL-config
-
-### 字符终端
-
-#### 居然有给cmd做美化的
-
-    https://github.com/starship/starship
-
-#### 简单使用：安装 Git for Windows
-
-GIT Bash 使用了 GNU tools 的 MINGW，但是工具只选择了它自己需要的部分进行了集成，我们主要使用他的 mintty 命令行终端程序和 ssh、gpg 等工具。
-
-下载地址 <https://git-scm.com/download/win>
-
-##### Windows下 的 bash -- mintty
-
-    http://mintty.github.io/
-    https://github.com/mintty/mintty/wiki/Tips
-
-安装 git for Windows 或 MSYS2 后就有了，git for Windows下的配置文件在 ~\.minttyrc。
-
-如果安装 MSYS2，则配置文件不同，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]。
-
-    Background=C:\Users\xxxx\Pictures\1111111111.jpg
-    Font=Consolas
-    FontHeight=11
-    Columns=200
-    Rows=60
-    # 如果嫌默认的白色不够纯就改
-    ForegroundColour=255,255,255
-    # mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
-    Language=@
-    # 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
-    # https://www.cnblogs.com/LCcnblogs/p/6208110.html
-    # bash下设置，这个变量设置区域，影响语言、词汇、日期格式等
-    Locale=zh_CN  # bash 下显示中文
-    Charset=GBK  # ls列windows目录名可以显示中文，但tail等命令显示中文utf-8文件需要设为UTF-8，此时中文目录名就不正常显示了，原因是中文版windows是ANSI而不是UTF
-    # LANG 只影响字符的显示语言
-    LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
-
-如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"。
-
-git for windows 的 mintty 目录
-
-    / 目录          位于git安装目录下的 C:\Program Files\Git\ 目录
-    /usr 目录       C:\Program Files\Git\ 目录下
-    /bin 目录       C:\Program Files\Git\ 目录下
-    /dev 目录       C:\Program Files\Git\ 目录下
-    /etc 目录       C:\Program Files\Git\ 目录下
-
-    /tmp 目录       位于 C:\Users\%USERNAME%\AppData\Local\Temp\  目录下
-
-    /proc 目录      这个是 git 自己虚出来的，只能在 git bash(mintty) 下看到
-
-    /cmd 目录       C:\Program Files\Git\ 目录下，给在 Windows cmd 命令行窗口下运行 git 和 ssh 用的脚本
-
-退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不如会提示有进程未关闭。
-
-putty的退出也是同样的建议。
-
-###### mintty 美化
-
-    北极主题颜色 https://github.com/arcticicestudio/nord-mintty
-
-    字符终端的颜色配置说明 https://github.com/termstandard/colors
-
-如果是 git for Windows 的mintty，编辑 ~/.minttyrc 文件为下面的内容
-
-```config
-# https://mintty.github.io/mintty.1.html
-# https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
-Font=MesloLGS NF
-FontHeight=11
-Columns=130
-Rows=40
-CursorType=block
-AllowBlinking=yes
-ScrollbackLines=12000
-CursorBlinks=no
-
-# 语言设置
-Language=@
-# Locale=zh_CN
-Locale=zh_SG
-# Charset=GBK
-Charset=UTF-8
-
-# 窗体透明效果，不适用于嵌入多窗口终端工具
-# Transparency=low
-
-# 为了使用花哨颜色，确保终端设置恰当
-Term=xterm-256color
-
-FontSmoothing=full
-# FontWeight=700
-# FontIsBold=yes
-
-# 自定义颜色方案，跟深色背景搭配
-# https://github.com/itchyny/lightline.vim/blob/master/autoload/lightline/colorscheme/PaperColor_light.vim
-Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
-BackgroundColour=13,25,38
-ForegroundColour=217,230,242
-CursorColour=217,230,242
-Black=53,53,53
-BoldBlack=92,92,92
-Red=207,116,133
-BoldRed=232,190,198
-Green=0,135,0
-BoldGreen=143,218,149
-Yellow=207,190,116
-BoldYellow=232,225,190
-Blue=88,133,192
-BoldBlue=66,113,174
-Magenta=190,116,207
-BoldMagenta=225,190,232
-Cyan=116,207,190
-BoldCyan=190,232,225
-White=209,209,209
-BoldWhite=255,255,255
-
-# 自定义颜色方案，跟深色背景搭配
-# https://github.com/arcticicestudio/nord-mintty
-#Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
-#BackgroundColour=46,52,64
-#ForegroundColour=216,222,233
-#CursorColour=216,222,233
-#Black=59,66,82
-#BoldBlack=76,86,106
-#Red=191,97,106
-#BoldRed=191,97,106
-#Green=163,190,140
-#BoldGreen=163,190,140
-#Yellow=235,203,139
-#BoldYellow=235,203,139
-#Blue=129,161,193
-#BoldBlue=129,161,193
-#Magenta=180,142,173
-#BoldMagenta=180,142,173
-#Cyan=136,192,208
-#BoldCyan=143,188,187
-#White=229,233,240
-#BoldWhite=236,239,244
-
-# 自定义颜色方案，跟浅色背景搭配-黄色
-#Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
-#BackgroundColour=250,234,182
-#ForegroundColour=0,61,121
-#CursorColour=217,230,242
-#
-#Black=0,0,0
-#BoldBlack=72,72,72
-#Red=255,30,18
-#BoldRed=255,84,74
-#Green=82,173,58
-#BoldGreen=65,136,47
-#Yellow=192,175,56
-#BoldYellow=166,150,36
-#Blue=11,80,155
-#BoldBlue=9,58,113
-#Magenta=255,18,243
-#BoldMagenta=255,147,250
-#Cyan=3,201,162
-#BoldCyan=67,214,181
-##218,232,237
-#White=107,165,186
-#BoldWhite=180,180,180
-
-# 自定义颜色方案，跟浅色背景搭配-绿色
-#Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
-#BackgroundColour=250,234,182
-#ForegroundColour=47,47,47
-#CursorColour=217,230,242
-#
-#Black=0,0,0
-#BoldBlack=38,38,38
-#Red=255,30,18
-#BoldRed=255,153,147
-#Green=82,173,58
-#BoldGreen=65,136,47
-#Yellow=193,117,40
-#BoldYellow=213,179,60
-#Blue=11,80,155
-#BoldBlue=17,120,234
-#Magenta=255,18,243
-#BoldMagenta=255,147,250
-#Cyan=32,138,115
-#BoldCyan=36,162,133
-#White=235,235,235
-#BoldWhite=255,255,255
-
-# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.light
-#ForegroundColour=101, 123, 131
-#BackgroundColour=252, 241, 209
-#CursorColour=    220,  50,  47
-#
-#Black=             7,  54,  66
-#BoldBlack=         0,  43,  54
-#Red=             220,  50,  47
-#BoldRed=         203,  75,  22
-#Green=           133, 153,   0
-#BoldGreen=        88, 110, 117
-#Yellow=          181, 137,   0
-#BoldYellow=      101, 123, 131
-#Blue=             38, 139, 210
-#BoldBlue=        131, 148, 150
-#Magenta=         211,  54, 130
-#BoldMagenta=     108, 113, 196
-#Cyan=             42, 161, 152
-#BoldCyan=        147, 161, 161
-#White=           238, 232, 213
-#BoldWhite=       253, 246, 227
-
-# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.dark
-#ForegroundColour=131,148,150
-#BackgroundColour=0,43,54
-#CursorColour=220,50,47
-#
-#Black=7,54,66
-#BoldBlack=0,43,54
-#Red=220,50,47
-#BoldRed=203,75,22
-#Green=133,153,0
-#BoldGreen=88,110,117
-#Yellow=181,137,0
-#BoldYellow=101,123,131
-#Blue=38,139,210
-#BoldBlue=131,148,150
-#Magenta=211,54,130
-#BoldMagenta=108,113,196
-#Cyan=42,161,152
-#BoldCyan=147,161,161
-#White=238,232,213
-#BoldWhite=253,246,227
-
-# 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
-# ThemeFile=mintty
-```
-
-如果是 MSYS2 的 mintty，可以在<https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
-
-###### 多终端工具 SuperPutty 等
-
-SuperPutty 支持putty、mintty、cmd、powershell等多种终端嵌入显示，可导入putty站点，可设置站点关联WinScp/FileZilla等软件的快捷调用，使用简单方便，只要安装了 git for Windows 和 putty 等软件即可直接使用，不需要做复杂的设置。
-
-ConEmu是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2，bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
-
-    https://zhuanlan.zhihu.com/p/99963508
-        https://conemu.github.io/
-
-    ConEmu配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
-    msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
-
-conemu中设置MSYS2
-
-+ 以MSYS2 MingGW64为例：
-
-    打开conemu的settings对话框
-
-    选择Startup>>Tasks选项
-
-    点击+号，新建一个Task
-
-    修改Task名字为Msys2::MingGW64
-
-    在commands下文本框内输入如下代码：
-
-        set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
-
-MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变量值`D=`为你的msys2的安装目录。
-
-如果安装了zsh并想默认使用zsh，可以把代码里的bash改为zsh。
-
-打开后会自动把工作目录设置为msys64/home/%user%下。
-
-#### 组合使用：git for Windows + MSYS2
-
-##### 拷贝 MSYS2 的工具到 git 里，这样只使用 git bash(mintty) 就可以了
-
-假设git的安装目录在 D:\Git，可执行文件在 D:\Git\usr\bin\ 目录：
-
-以迁移 tmux.exe 为例，可执行文件放在 D:\Git\usr\bin\：
-
-    tmux.exe
-    event_rpcgen.py
-    msys-event-2-1-7.dll
-    msys-event_core-2-1-7.dll
-    msys-event_extra-2-1-7.dll
-    msys-event_openssl-2-1-7.dll
-    msys-event_pthreads-2-1-7.dll
-
-其它放在 D:\Git\usr\share\ 下：
-
-    licenses\libevent
-    licenses\tmux
-    man\man1\tmux.1.gz
-
-##### 共享一套 Home 目录
-
-如果安装了 git for windows ，其 home 目录默认为 %USERPROFILE%，导致 git for windows 和 MSYS2 的 git 配置和 vim 等配置不能共享。
-
-如果在安装 MSYS2 之前已经安装 git for windows 需要使用将之前的 ssh 和 git 的配置拷贝到 MSYS2 的 home 目录下。
-
-在 Windows 上配置环境变量 HOME 为 C:\you-path\msys64\home\your-name，增加这个环境变量的目的是为了让 git for windows 的 home 目录指向 MSYS2 的 home 目录。
-
-#### 全套使用：安装 MSYS2(Cygwin/Msys)
-
-参考文章
-
-    MSYS2 和 mintty 打造 Windows 下 Linux 工具体验
-        https://creaink.github.io/post/Computer/Windows/win-msys2/
-
-    Windows 下 MSYS2 配置及填坑 https://hustlei.github.io/2018/11/msys2-for-win.html
-
-下载安装 MSYS2
-
-    https://www.msys2.org/
-    https://msys2.github.io/
-
-使用pacman安装各种包：
-
-    pacman -S vim openssh opengpg git
-
-安装后先pacman更换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，在windows下是msys的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
-
-依次添加
-
-    nano 编辑 /etc/pacman.d/mirrorlist.msys ，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/msys/$arch/
-        Server = http://mirrors.ustc.edu.cn/msys2/msys/$arch/
-
-    nano 编辑 /etc/pacman.d/mirrorlist.mingw32 ，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/i686/
-        Server = http://mirrors.ustc.edu.cn/msys2/mingw/i686/
-
-    nano 编辑 /etc/pacman.d/mirrorlist.mingw64 ，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/x86_64/
-        Server = http://mirrors.ustc.edu.cn/msys2/mingw/x86_64/
-
-    nano 编辑 /etc/pacman.d/mirrorlist.ucrt64 ，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/ucrt64/
-        Server = http://mirrors.ustc.edu.cn/msys2/mingw/ucrt64/
-
-    nano 编辑 /etc/pacman.d/mirrorlist.clang64 ，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/clang64/
-        Server = http://mirrors.ustc.edu.cn/msys2/mingw/clang64/
-
-然后Windows执行开始菜单的快捷方式 "MSYS2 MSYS" 以打开命令行，更新软件包数据，之后可以使用 "MSYS2 MinGW X64"，
-
-    # pacman -Sy
-    :: Synchronizing package databases...
-    mingw32              1594.6 KiB   729 KiB/s 00:02 [#####################] 100%
-    mingw64              1604.5 KiB   494 KiB/s 00:03 [#####################] 100%
-    ucrt64               1663.1 KiB   985 KiB/s 00:02 [#####################] 100%
-    clang32              1556.7 KiB   400 KiB/s 00:04 [#####################] 100%
-    clang64              1587.3 KiB   532 KiB/s 00:03 [#####################] 100%
-    msys                  384.9 KiB   293 KiB/s 00:01 [#####################] 100%
-
-    # 更新核心软件包
-    # pacman -Su
-
-安装时给出了一些文件链接的提示
-
-    './.bashrc' -> '/home/%USERNAME%/.bashrc'
-    './.bash_logout' -> '/home/%USERNAME%/.bash_logout'
-    './.bash_profile' -> '/home/%USERNAME%/.bash_profile'
-    './.inputrc' -> '/home/%USERNAME%/.inputrc'
-    './.profile' -> '/home/%USERNAME%/.profile'
-    'C:\Windows\system32\drivers\etc\hosts' -> '/etc/hosts'
-    'C:\Windows\system32\drivers\etc\protocol' -> '/etc/protocols'
-    'C:\Windows\system32\drivers\etc\services' -> '/etc/services'
-    'C:\Windows\system32\drivers\etc\networks' -> '/etc/networks'
-
-该软件安装后，使用的Linux目录结构跟Windows目录的对应关系
-
-    / 目录          位于msys2的安装目录 msys64\ 下
-    /usr 目录       同上
-    /tmp 目录       同上
-    /home 目录      位于msys2的安装目录 msys64\ 下的 home\%USERNAME%
-
-环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件。
-
-NOTE: 如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的bash、mintty等配置文件，注意区分。
-
-msys2在开始菜单下的好几个版本是因为编译器和链接的windows的c库不同
-
-    LLVM/Clang 和 MINGW(GCC) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个用的话就 mingw64 就没问题。
-
-    具体区别是：mingw64 与 ucrt64 都是用 mingw64 编译器编译的 Windows 64位程序，只不过它们链接到的 crt（C runtime）不同， mingw64 是链接到了 msvcrt ，而 ucrt64 则是链接到了 Windows 10+ 上新的 ucrt 上。而 clang64 很好理解，就是用 clang 而非 mingw 来编译各种库，另外它也是链接到了 ucrt 而非 msvcrt。
-
-    引自 <https://www.zhihu.com/question/463666011/answer/1927907983>
-
-    官方解释 <https://www.msys2.org/docs/environments/>
-
-msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递了变量 set MSYSTEM=xxxx，msys2_shell.cmd启动时，都默认使用mintty虚拟终端。
-
-    # c:\msys64为msys2安装目录，bash为默认shell，可以用zsh,csh等替换
-    set MSYSTEM=MINGW64
-    "c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
-
-自己运行Msys2时可以不使用mintty虚拟终端。直接运行如下命令就OK：
-
-```bat
-    rem 启动MSYS2 MSYS
-    set MSYSTEM=MSYS
-    "c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
-
-    rem 启动MSYS2 MINGW32
-    set MSYSTEM=MINGW32
-    "c:\msys64\usr\bin\bash" --login
-
-    rem 启动MSYS2 MINGW64
-    set MSYSTEM=MINGW64
-    "c:\msys64\usr\bin\bash" --login
-```
-
-##### 软件仓库 pacman
-
-基于 Arch Linux 的 pacman 提供软件仓库，采用滚动升级模式，初始安装仅提供命令行环境：用户不需要删除大量不需要的软件包，而是可以从官方软件仓库成千上万的高质量软件包中进行选择，搭建自己的系统。
-
-pacman命令较多，作为新手，将个人最常用的命令总结如下：
-
-    pacman -Sy :更新软件包数据
-    pacman -Su :更新核心软件包
-    # pacman -Syu: 升级系统及所有已经安装的软件。
-    pacman -S 软件名: 安装软件。也可以同时安装多个包，只需以空格分隔包名即可。
-    pacman -Rs 软件名: 删除软件，同时删除本机上只有该软件依赖的软件。
-    pacman -Ru 软件名: 删除软件，同时删除不再被任何软件所需要的依赖。
-    pacman -Ssq 关键字: 在仓库中搜索含关键字的软件包，并用简洁方式显示。
-    pacman -Qs 关键字: 搜索已安装的软件包。
-    pacman -Qi 软件名: 查看某个软件包信息，显示软件简介,构架,依赖,大小等详细信息。
-    pacman -Sg: 列出软件仓库上所有的软件包组。
-    pacman -Sg 软件包组: 查看某软件包组所包含的所有软件包。
-    pacman -Sc：清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
-    pacman -Scc：清理所有的缓存文件。
 
 ## Linux 常用工具
 
@@ -2059,24 +2059,17 @@ terminal客户端关闭mouse reporting选项，否则鼠标点击vim界面会进
 
     http://man.openbsd.org/OpenBSD-current/man1/tmux.1
 
-开启tmux后，一个session管理多个window，每个window都有一个shell。
+开启tmux后，可以有多个 session，每个 session 管理多个 window，每个window还可以划分多个窗格，每个窗格都有一个shell。
 
-任意的非tmux shell可以attach到你的session。
+任意的非 tmux shell 可以 attach 到你的 session。
 
-只要不主动退出session和重启，都可以通过attach的方式回到你的操作界面。
+只要不主动退出 shell，或重启计算机，任何时候都可以通过attach的方式回到你的操作界面。
 
 #### 安装
 
 1.操作系统仓库安装
 
-redhat、centos 或 fedora:
-    yum install tmux
-
-ubuntu:
-    apt-get install tmux
-
-mac os:
-    brew install tmux
+    sudo apt install tmux
 
 2.源代码编译安装
 
@@ -2096,7 +2089,7 @@ mac os:
 
 一、状态栏显示使用 powerline
 
-先安装powerline，见章节 [状态栏工具 powerline]。
+先安装 powerline，见章节 [状态栏工具 powerline]。
 
 tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
 
@@ -2104,7 +2097,9 @@ tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
 
 然后就可以自由发挥了。
 
-如果不想使用 powerline，可以安装原装的 <https://github.com/erikw/tmux-powerline>，这个只使用bash脚本，更简洁。
+如果不使用 powerline，可以安装 tmux-powerline，这个只使用bash脚本，更简洁
+
+    https://github.com/erikw/tmux-powerline
 
 二、插件管理
 
@@ -2116,7 +2111,7 @@ tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
 
 三、安装nord主题，替换 powerline 状态栏显示
 
-使用这个主题的好处是它支持上面的官方插件，在状态栏显示各种字符，启动速度也比 powerline 快。
+使用这个主题的好处是它支持<https://github.com/tmux-plugins>的所有插件，在状态栏显示各种字符，启动速度也比 powerline 快。
 
     https://www.nordtheme.com/ports/tmux
         https://github.com/arcticicestudio/nord-tmux
