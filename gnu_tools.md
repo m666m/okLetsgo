@@ -894,7 +894,7 @@ zsh自带功能
         # https://github.com/junegunn/fzf#fuzzy-completion-for-bash-and-zsh
         sudo apt install fzf
 
-启用插件，编辑 ~/.zshrc 文件
+使用 source 命令启用插件的 ~/.zshrc 文件
 
     # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
@@ -1205,6 +1205,12 @@ antigen用法：快速配置
     zsh
 
 zsh配置文件样例，有空慢慢研究吧 <https://linux.zone/1306>。
+
+目前最快的插件管理器是 zinit（原 zplugin）
+
+    https://gist.github.com/laggardkernel/4a4c4986ccdcaf47b91e8227f9868ded
+
+    https://zhuanlan.zhihu.com/p/98450570
 
 ## Linux 常用工具
 
@@ -2125,7 +2131,7 @@ tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
 
     git clone --depth=1 https://github.com/arcticicestudio/nord-tmux ~/.tmux/themes/nord-tmux
 
-###### 最终 ~/.tmux.conf 文件
+###### 样例 ~/.tmux.conf 文件
 
     # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
     set -g default-terminal screen-256color
