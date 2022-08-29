@@ -103,7 +103,14 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
 #### 居然有给cmd做美化的
 
-    https://github.com/starship/starship
+推荐使用 sh、bash、cmd 等 shell 下通用的状态栏工具
+
+    https://starship.rs/zh-CN/
+        https://github.com/starship/starship
+
+    https://sspai.com/post/72888
+
+需要安装支持多种符号的字体，见下面章节 [Nerd Font]。
 
 #### 简单使用：安装 Git for Windows
 
@@ -156,6 +163,12 @@ git for windows 的 mintty 目录
 退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不如会提示有进程未关闭。
 
 putty的退出也是同样的建议。
+
+###### putty 颜色美化
+
+    北极主题颜色 https://github.com/arcticicestudio/nord-putty
+
+只进行了颜色设置的一个session：Nord，以此 session 打开各个ssh连接即可。
 
 ###### mintty 美化
 
@@ -349,7 +362,7 @@ ConEmu是一个非常好用的终端，支持标签切换功能，可以在conem
     ConEmu配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
     msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
 
-conemu中设置MSYS2
+conemu 中设置 MSYS2
 
 + 以MSYS2 MingGW64为例：
 
@@ -645,6 +658,10 @@ figlet实现字符画钟表，在tmux里开一个正合适
     # 如果是pip安装的查看路径用 pip show powerline-status
     source /usr/share/powerline/bindings/bash/powerline.sh
 
+各种工具通用的颜色方案-北极
+
+    https://www.nordtheme.com/ports
+
 ### 状态栏工具 powerline
 
 vim、tmux 等众多工具的插件，大部分都依赖 powerline 进行状态栏显示。
@@ -739,6 +756,11 @@ powerline最大的优点是它的各种符号字体可以图形化的显示文�
 想自己做个状态栏工具，参考下这个
 
     https://github.com/agnoster/agnoster-zsh-theme
+
+如果不使用 powerline，推荐使用 sh、bash、cmd 等 shell 下通用的状态栏工具
+
+    # 需要安装 Nerd Font，见下面
+    https://starship.rs/zh-CN/
 
 ### 状态栏字体
 
@@ -844,7 +866,7 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
     # 修改指定用户的登陆shell
     sudo usermod -s /bin/zsh username
 
-插件和主题太多了容易搞乱环境，保守点的用法是登陆shell默认还是用 bash，登陆后再手动执行 `exec zsh` 切换到zsh。如果执行 `zsh`，退出时会发现先退出到bash，然后再次退出才是断开连接。
+插件和主题太多了容易搞乱环境，保守点的用法是登陆shell默认还是用 bash，登陆后再手动执行 `exec zsh` 切换到zsh。如果执行 `zsh`，退出时会先退出到bash，然后再次退出才是断开连接。
 
     # 如果在 .bash_profile 中，需要判断下是否在终端打开的（程序登陆时不是交互式shell）
     if [ -t 1 ]; then
@@ -861,13 +883,15 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 
 有些插件和主题依赖 python 和 git，注意提前安装好。
 
-推荐个简洁的zsh提示符主题
+推荐使用简洁的zsh提示符主题 pure
 
     https://github.com/sindresorhus/pure
 
+    下面章节[推荐主题 powerlevel10k]，也可设置为 pure 风格。
+
 zsh自带功能
 
-    智能补全：输入长命令，输入开头字母后连续敲击两次 TAB 键 zsh 给你一个可能的列表，用tab或方向键选择，回车确认。比如已经输入了 svn commit，但是有一个 commit 的参数我忘记了，我只记得两个减号开头的，在svn commit -- 后面按两次TAB，会列出所有命令。相对于bash只能提示目录，这是个大进步。
+    命令智能补全：相对于 bash，两次 TAB 键只能用于提示目录，在 zsh 中输入长命令，输入开头字母后连续敲击两次 TAB 键 zsh 给你一个可能的列表，用tab或方向键选择，回车确认。比如已经输入了 svn commit，但是有一个 commit 的参数我忘记了，我只记得两个减号开头的，在svn commit -- 后面按两次TAB，会列出所有命令。
 
     快速跳转：输入 cd - 按TAB，会列出历史路径清单供选择。
 
@@ -925,45 +949,9 @@ zsh自带功能
     # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
-#### 推荐安装 -- zsh4humans
+#### 推荐主题 powerlevel10k
 
-嫌上面逐个配置太麻烦就用打包的，它还优化了速度，比自己手工在zsh里挨个装插件还有优化。
-
-    https://github.com/romkatv/zsh4humans
-
-无脑安装就完事了，最常用的几个插件都给你配置好了：状态栏工具、自动完成、语法高亮、命令模糊查找
-
-    powerlevel10k
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    fzf
-
-而且能跨主机记忆命令历史，比如你在本机ssh某个主机后执行的操作，在本机或另一个ssh主机上都可以被回忆到，方便！
-
-如果想研究哪个插件过慢导致命令行反应让人不爽，有专门搞测量的 zsh-bench
-
-    https://github.com/romkatv/zsh-bench#conclusions
-
-它的建议是状态栏工具使用主题 powerlevle10k，如果还需要自动完成啥的几个插件，那就直接安装 zsh4humans，这些都有而且优化了。
-
-自己简单测试下加载zsh的速度
-
-    $  for i in $(seq 1 5); do /usr/bin/time /bin/zsh -i -c exit; done
-
-    0.23user 0.14system 0:00.33elapsed 114%CPU (0avgtext+0avgdata 6044maxresident)k
-    0inputs+0outputs (0major+4998minor)pagefaults 0swaps
-    0.25user 0.09system 0:00.30elapsed 113%CPU (0avgtext+0avgdata 5912maxresident)k
-    0inputs+0outputs (0major+5016minor)pagefaults 0swaps
-    0.21user 0.18system 0:00.33elapsed 118%CPU (0avgtext+0avgdata 5916maxresident)k
-    0inputs+0outputs (0major+5012minor)pagefaults 0swaps
-    0.19user 0.15system 0:00.30elapsed 111%CPU (0avgtext+0avgdata 5980maxresident)k
-    0inputs+0outputs (0major+4998minor)pagefaults 0swaps
-    0.20user 0.13system 0:00.30elapsed 114%CPU (0avgtext+0avgdata 5904maxresident)k
-    0inputs+0outputs (0major+4995minor)pagefaults 0swaps
-
-#### 强烈推荐主题 powerlevel10k
-
-在zsh命令行提示符，这个主题可以完全替代状态栏工具 powerline ，而且更简单、更好看
+zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 powerline ，而且更简单、更好看
 
     https://github.com/romkatv/powerlevel10k
 
@@ -985,7 +973,7 @@ zsh自带功能
     # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
-如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示效果会有差别，这是设计者做了考虑，已防止出现不正常的显示。
+如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示风格会有差别，这是设计者做了考虑，以防止出现不正常的显示。
 
 然后从github安装powerlevel10k
 
@@ -1042,11 +1030,128 @@ function prompt_raspi_temp_warn() {
         source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
     fi
 
+#### 推荐套件 -- zsh4humans
+
+嫌上面逐个配置太麻烦就用打包的，它还优化了速度，比自己手工在zsh里挨个装插件还有优化。
+
+    https://github.com/romkatv/zsh4humans
+
+无脑安装就完事了，最常用的几个插件都给你配置好了：状态栏工具、自动完成、语法高亮、命令模糊查找
+
+    powerlevel10k
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    fzf
+
+而且能跨主机记忆命令历史，比如你在本机ssh某个主机后执行的操作，在本机或另一个ssh主机上都可以被回忆到，方便！
+
+如果想研究哪个插件过慢导致命令行反应让人不爽，有专门搞测量的 zsh-bench
+
+    https://github.com/romkatv/zsh-bench#conclusions
+
+它的建议是状态栏工具使用主题 powerlevle10k，如果还需要自动完成啥的那几个插件，就直接安装 zsh4humans，这些都有而且优化了。
+
+自己简单测试下加载zsh的速度
+
+    $  for i in $(seq 1 5); do /usr/bin/time /bin/zsh -i -c exit; done
+
+    0.23user 0.14system 0:00.33elapsed 114%CPU (0avgtext+0avgdata 6044maxresident)k
+    0inputs+0outputs (0major+4998minor)pagefaults 0swaps
+    0.25user 0.09system 0:00.30elapsed 113%CPU (0avgtext+0avgdata 5912maxresident)k
+    0inputs+0outputs (0major+5016minor)pagefaults 0swaps
+    0.21user 0.18system 0:00.33elapsed 118%CPU (0avgtext+0avgdata 5916maxresident)k
+    0inputs+0outputs (0major+5012minor)pagefaults 0swaps
+    0.19user 0.15system 0:00.30elapsed 111%CPU (0avgtext+0avgdata 5980maxresident)k
+    0inputs+0outputs (0major+4998minor)pagefaults 0swaps
+    0.20user 0.13system 0:00.30elapsed 114%CPU (0avgtext+0avgdata 5904maxresident)k
+    0inputs+0outputs (0major+4995minor)pagefaults 0swaps
+
+#### 内置超多插件和主题的 ohmyzsh
+
+ohmyzsh 是在 zsh 的基础上增加了更多的花样的shell封装、主题管理等。
+
+    https://ohmyz.sh/
+        https://github.com/ohmyzsh/ohmyzsh
+
+先在你使用终端窗口工具的计算机上安装 MesloLGS NF 字体，详见章节[状态栏字体]。
+
+ohmyzsh 目前是从 github 安装
+
+    # wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh
+    sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+
+    # 或 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+在 ~/.zshrc 里设置主题，默认 robbyrussell
+
+    ZSH_THEME=”robbyrussell”
+
+启用插件，编辑 ~/.zshrc 文件，找到 plugins= 的段落填写插件名，空格或回车分隔
+
+    plugins=(git
+        conda
+        # other plugins...
+        zsh-autosuggestions
+        # 官网介绍要放到最后
+        zsh-syntax-highlighting
+    )
+
+下载主题
+
+    https://github.com/ohmyzsh/ohmyzsh/wiki/Customization#overriding-and-adding-themes
+
+    内置主题 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+
+    更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
+                https://github.com/unixorn/awesome-zsh-plugins
+
+内置主题bira比较简洁，可手工修改添加时间提示`RPROMPT="[%*]%B${return_code}%b"`
+![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
+
+额外主题 [Bullet train](https://github.com/caiogondim/bullet-train.zsh)，可手工修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta`，目前还没找到合适的字体显示各种图标，安装了 Powerline Vim plugin 没见效果。
+
+内置插件在 $ZSH/plugins/ 目录下（默认 ~/.oh-my-zsh/plugins/），兼容zsh插件。
+
+ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的位置 $ZSH_CUSTOM 目录下（默认 ~/.oh-my-zsh/custom）
+
+    $ZSH_CUSTOM
+    ├── plugins
+    └── themes
+        └── my_awesome_theme.zsh-theme
+
+ ~/.zshrc 文件已经被 ohmyzsh 接管了，插件不需要用 source 运行，改为 plugins=(...) 的形式。
+
+    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+如果你想用自己安装的插件，也可以继续 source xxx 。
+
+ohmyzsh的插件管理机制更智能，还会提示更新，建议用这种方式配置，不再用 ~/.zshrc 文件里逐个 source xxxx 的方式。
+
+zsh 默认未提供命令行的 vi 模式，需要手工编辑 ~/.zshrc 文件
+
+    # 命令行开启vi-mode模式，按esc后用vi中的上下键选择历史命令
+    set -o vi
+
 #### .zshrc 配置文件样例
 
-安装 powerlevle10k 后，新增自己使用的插件配置
+安装 ohmyzsh(可选) 、powerlevle10k 等几个插件后的配置
 
 ```zsh
+############ zsh或ohmyzsh自动生成的一堆设置，不用动
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# 自动生成的一堆设置...
+# 如果安装了ohmyzsh，这里有个 plugin=() 段落启用内置插件
+
+source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -1080,74 +1185,6 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
 ```
 
-#### 内置超多插件和主题的 ohmyzsh
-
-ohmyzsh 是在 zsh 的基础上增加了更多的花样的shell包装
-
-    https://ohmyz.sh/
-        https://github.com/ohmyzsh/ohmyzsh
-
-先在你使用终端窗口工具的计算机上安装 MesloLGS NF 字体，详见章节[状态栏字体]。
-
-ohmyzsh 目前是从 github 安装
-
-    # wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh
-    sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
-
-    # 或 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-在 ~/.zshrc 里设置主题，默认 robbyrussell
-
-    ZSH_THEME=”robbyrussell”
-
-启用插件，编辑 ~/.zshrc 文件，空格分隔
-
-    plugins=(git
-        conda
-        # other plugins...
-        zsh-autosuggestions
-        # 官网介绍要放到最后
-        zsh-syntax-highlighting
-    )
-
-下载主题
-
-    https://github.com/ohmyzsh/ohmyzsh/wiki/Customization#overriding-and-adding-themes
-
-    内置主题 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-
-    更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
-                https://github.com/unixorn/awesome-zsh-plugins
-
-内置主题bira比较简洁，可手工修改添加时间提示`RPROMPT="[%*]%B${return_code}%b"`
-![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
-
-额外主题 [Bullet train](https://github.com/caiogondim/bullet-train.zsh)，可手工修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta`，目前还没找到合适的字体显示各种图标，安装了 Powerline Vim plugin 没见效果。
-
-内置插件在 $ZSH/plugins/ 目录下（默认 ~/.oh-my-zsh/plugins/），兼容zsh插件。
-
-ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的位置 $ZSH_CUSTOM 目录下（默认 ~/.oh-my-zsh/custom）
-
-    $ZSH_CUSTOM
-    ├── plugins
-    └── themes
-        └── my_awesome_theme.zsh-theme
-
- ~/.zshrc 文件已经被 ohmyzsh 接管了，不需要专门 source 那2个发行版的插件了，改为 plugins=(...) 的形式。
-
-    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-
-    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-
-如果你只想用发行版的插件，那就在这个新的 ~/.zshrc 文件里再补上之前的语句：source xxx 。
-
-ohmyzsh的插件管理机制更智能，还会提示更新，建议用这种方式配置，不再用 ~/.zshrc 文件里逐个 source xxxx 的方式。
-
-zsh 未提供命令行的 vi 模式，手工编辑 ~/.zshrc 文件
-
-    # 命令行开启vi-mode模式，按esc后用vi中的上下键选择历史命令
-    set -o vi
-
 #### zsh插件管理器 antigen
 
     <https://github.com/zsh-users/antigen>
@@ -1172,7 +1209,7 @@ antigen用法：快速配置
 
     antigen use oh-my-zsh
 
-    # 加载原版oh-my-zsh中的功能(robbyrussell's oh-my-zsh).
+    # 加载原版oh-my-zsh中的功能
 
     antigen bundle git
 
@@ -1208,9 +1245,17 @@ zsh配置文件样例，有空慢慢研究吧 <https://linux.zone/1306>。
 
 目前最快的插件管理器是 zinit（原 zplugin）
 
+    https://github.com/zdharma-continuum/zinit
+
     https://gist.github.com/laggardkernel/4a4c4986ccdcaf47b91e8227f9868ded
 
     https://zhuanlan.zhihu.com/p/98450570
+
+这个插件管理器在 ~/.zshrc 文件中的加载设置如下
+
+    # Load powerlevel10k theme
+    zinit ice depth"1" # git clone depth
+    zinit light romkatv/powerlevel10k
 
 ## Linux 常用工具
 
@@ -1385,7 +1430,9 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
 颜色方案
 
-    北极 https://www.nordtheme.com/ports/vim
+    推荐北极 https://www.nordtheme.com/ports/vim
+
+    material https://github.com/material-theme/vsc-material-theme
 
     夜猫子 https://github.com/sdras/night-owl-vscode-theme
 
@@ -1393,7 +1440,7 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
     https://vimawesome.com/
 
-##### 不推荐 vim 状态栏工具使用 powerline
+##### 不推荐 vim 状态栏工具 powerline
 
     推荐使用替代品 vim-airline ，开箱即用，万事大吉。
 
@@ -1446,6 +1493,111 @@ powerline 为保证多样性，使用python
 
         " Use 256 colours (Use this setting only if your terminal supports 256 colours)
         set t_Co=256
+
+##### 推荐 vim 状态栏工具 vim-airline
+
+完美替换掉 powerline
+
+    https://github.com/vim-airline/vim-airline
+
+省事了，不仅是状态栏工具，而且能匹配很多常用插件如目录树等，普通字体也可以正常显示，开箱即用。
+
+没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
+
+    apt install vim-airline
+    apt install vim-airline-themes
+
+查看帮助
+
+    :help airline
+
+Airline 扩展支持tabline、nerdtree等的颜色方案，在 ~/.vimrc 中配置
+
+    " 内置插件的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
+    " 内置插件保存在 /.vim/bundle/vim-airline/autoload/airline/extensions/ 下
+    " 命令 :AirlineExtensions 查看当前自动启用的内置插件
+
+    " an empty list disables all extensions
+    let g:airline_extensions = []
+
+    " or only load what you want
+    let g:airline_extensions = ['branch', 'tabline']
+
+    " 启用 airline 内置插件：标签式显示多个打开的文件的状态栏效果
+    " 在说明文件中搜 airline-tabline
+    let g:airline#extensions#tabline#enabled = 1
+
+    " 启用 airline 内置插件：nerdtree左侧显示文件树内容的状态栏效果
+    let g:airline#extensions#nerdtree_statusline = 1
+
+AirlineTheme 自己管理主题，在 ~/.vimrc 中配置
+
+    " AirlineTheme 需要启用 powerline 的字体才能起飞
+    let g:airline_powerline_fonts = 1
+
+    " 这个主题好像都只是状态栏的，没有同步设置语法高亮呢？
+    " https://github.com/vim-airline/vim-airline-themes/tree/master/autoload/airline/themes
+    " 列表见 https://github.com/vim-airline/vim-airline/wiki/Screenshots
+    " 保存在 ~/.vim/bundle/vim-airline-themes/autoload/airline/themes
+    " 使用说明 ~/.vim/bundle/vim-airline-themes/README.md
+    " 在vi中切换主题 :AirlineTheme night_owl
+    let g:airline_theme='papercolor'  " 建议使用插件里的 nord ，比这个好
+
+##### powerline 的另一个替代品：lightline.vim
+
+    https://github.com/itchyny/lightline.vim
+
+如果你想只安装个干净的工具栏，其它插件自己配置自己玩的话，状态栏工具用这个 lightline.vim 就足够了。
+
+Why yet another clone of powerline?
+
+    [vim-powerline](https://github.com/Lokaltog/vim-powerline)  is a nice plugin, but deprecated.
+
+    powerline is a nice plugin, but difficult to configure.
+
+    vim-airline is a nice plugin, but it uses too many functions of other plugins, which should be done by users in .vimrc.
+
+这个比较简洁，只有状态栏工具和颜色方案。最大的优点是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
+
+##### 插件 nerdtree 的热键
+
+切换目录树显示，在 ~/.vimrc 配置文件中定义为 Ctrl-n
+
+        " NERDTree
+        map <C-n> :NERDTreeToggle<CR>
+        let NERDTreeShowHidden=1 "在打开时默认显示隐藏文件
+        " map 是快捷键映射命令
+        " <C-n> 定义了快捷键，表示 Ctrl-n
+        " 后面是对应的命令以及回车键 <CR>
+
+目录树和文件显示窗格间切换使用 vim 的窗格切换热键
+
+    前导 ctrl + w ，然后方向键左或 h 光标跳到左侧树形目录
+    前导 ctrl + w ，然后方向键右或 l 光标跳到右侧文件显示窗格
+
+在左侧树形目录中的热键
+
+    回车    打开的的文件默认是vim的多个文件模式，即添加到缓冲中了，需要用命令 :ls 来显示， :b 2 切换
+            注意缓冲中的编号不是1，2，3的顺序分布
+
+    ?   切换是否显示 nerdtree 的快捷帮助
+
+    e   在目录树上按e，则在右侧窗格显示目录内容，光标键进行选择操作即可，再次按e退出
+
+    K   跳到当前目录下同级的第一个结点
+    J   跳到当前目录下同级的最后一个结点
+
+    t   在新 Tab 中打开选中文件/书签，并跳到新 Tab，或命令 :NERDTree-t
+    T   在新 Tab 中打开选中文件/书签，但不跳到新 Tab，或命令 :NERDTree-T
+
+    o   在已有窗格中打开文件、目录或书签，并跳到该窗口，或命令 :NERDTree-o
+    go  在已有窗格中打开文件、目录或书签，但不跳到该窗口，或命令 :NERDTree-go
+
+    i   切割一个新窗格打开选中文件，并跳到该窗口，或命令 :NERDTree-i
+    gi  split一个新窗格打开选中文件，但不跳到该窗口，或命令 :NERDTree-gi
+    s   vsp一个新窗格打开选中文件，并跳到该窗口，或命令 :NERDTree-s
+    gs  vsp一个新窗格打开选中文件，但不跳到该窗口，或命令 :NERDTree-gs
+    !   执行当前文件，或命令 :NERDTree-!
 
 ##### 插件管理器 Vundle
 
@@ -1582,111 +1734,6 @@ call plug#end()
 ```
 
 然后 Reload .vimrc and :PlugInstall to install plugins.
-
-##### 推荐状态栏工具使用 vim-airline
-
-完美替换掉 powerline
-
-    https://github.com/vim-airline/vim-airline
-
-省事了，不仅是状态栏工具，自带很多常用插件如目录树语法高亮色彩主题啥的都有，普通字体也可以正常显示，开箱即用。
-
-没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
-
-    apt install vim-airline
-    apt install vim-airline-themes
-
-查看帮助
-
-    :help airline
-
-Airline 自己管理插件，在 ~/.vimrc 中配置
-
-    " 内置插件的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
-    " 内置插件保存在 /.vim/bundle/vim-airline/autoload/airline/extensions/ 下
-    " 命令 :AirlineExtensions 查看当前自动启用的内置插件
-
-    " an empty list disables all extensions
-    let g:airline_extensions = []
-
-    " or only load what you want
-    let g:airline_extensions = ['branch', 'tabline']
-
-    " 启用 airline 内置插件：标签式显示多个打开的文件的状态栏效果
-    " 在说明文件中搜 airline-tabline
-    let g:airline#extensions#tabline#enabled = 1
-
-    " 启用 airline 内置插件：nerdtree左侧显示文件树内容的状态栏效果
-    let g:airline#extensions#nerdtree_statusline = 1
-
-AirlineTheme 自己管理主题，在 ~/.vimrc 中配置
-
-    " AirlineTheme 需要启用 powerline 的字体才能起飞
-    let g:airline_powerline_fonts = 1
-
-    " 这个主题好像都只是状态栏的，没有同步设置语法高亮呢？
-    " https://github.com/vim-airline/vim-airline-themes/tree/master/autoload/airline/themes
-    " 列表见 https://github.com/vim-airline/vim-airline/wiki/Screenshots
-    " 保存在 ~/.vim/bundle/vim-airline-themes/autoload/airline/themes
-    " 使用说明 ~/.vim/bundle/vim-airline-themes/README.md
-    " 在vi中切换主题 :AirlineTheme night_owl
-    let g:airline_theme='papercolor'  " 建议使用插件里的 nord ，比这个好
-
-##### powerline 的另一个替代品：lightline.vim
-
-    https://github.com/itchyny/lightline.vim
-
-如果你想只安装个干净的工具栏，其它插件自己配置自己玩的话，状态栏工具用这个 lightline.vim 就足够了。
-
-Why yet another clone of powerline?
-
-    [vim-powerline](https://github.com/Lokaltog/vim-powerline)  is a nice plugin, but deprecated.
-
-    powerline is a nice plugin, but difficult to configure.
-
-    vim-airline is a nice plugin, but it uses too many functions of other plugins, which should be done by users in .vimrc.
-
-这个比较简洁，只有状态栏工具和颜色方案。最大的优点是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
-
-##### 插件 nerdtree 的热键
-
-切换目录树显示，在 ~/.vimrc 配置文件中定义为 Ctrl-n
-
-        " NERDTree
-        map <C-n> :NERDTreeToggle<CR>
-        let NERDTreeShowHidden=1 "在打开时默认显示隐藏文件
-        " map 是快捷键映射命令
-        " <C-n> 定义了快捷键，表示 Ctrl-n
-        " 后面是对应的命令以及回车键 <CR>
-
-目录树和文件显示窗格间切换使用 vim 的窗格切换热键
-
-    前导 ctrl + w ，然后方向键左或 h 光标跳到左侧树形目录
-    前导 ctrl + w ，然后方向键右或 l 光标跳到右侧文件显示窗格
-
-在左侧树形目录中的热键
-
-    回车    打开的的文件默认是vim的多个文件模式，即添加到缓冲中了，需要用命令 :ls 来显示， :b 2 切换
-            注意缓冲中的编号不是1，2，3的顺序分布
-
-    ?   切换是否显示 nerdtree 的快捷帮助
-
-    e   在目录树上按e，则在右侧窗格显示目录内容，光标键进行选择操作即可，再次按e退出
-
-    K   跳到当前目录下同级的第一个结点
-    J   跳到当前目录下同级的最后一个结点
-
-    t   在新 Tab 中打开选中文件/书签，并跳到新 Tab，或命令 :NERDTree-t
-    T   在新 Tab 中打开选中文件/书签，但不跳到新 Tab，或命令 :NERDTree-T
-
-    o   在已有窗格中打开文件、目录或书签，并跳到该窗口，或命令 :NERDTree-o
-    go  在已有窗格中打开文件、目录或书签，但不跳到该窗口，或命令 :NERDTree-go
-
-    i   切割一个新窗格打开选中文件，并跳到该窗口，或命令 :NERDTree-i
-    gi  split一个新窗格打开选中文件，但不跳到该窗口，或命令 :NERDTree-gi
-    s   vsp一个新窗格打开选中文件，并跳到该窗口，或命令 :NERDTree-s
-    gs  vsp一个新窗格打开选中文件，但不跳到该窗口，或命令 :NERDTree-gs
-    !   执行当前文件，或命令 :NERDTree-!
 
 ##### .vimrc 配置文件样例
 
@@ -2122,7 +2169,7 @@ tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
 
 使用这个主题的好处是它支持<https://github.com/tmux-plugins>的所有插件，在状态栏显示各种字符，启动速度也比 powerline 快。
 
-    https://www.nordtheme.com/ports/tmux
+    颜色方案 https://www.nordtheme.com/ports/tmux
         https://github.com/arcticicestudio/nord-tmux
 
 不使用插件管理器的安装步骤：
