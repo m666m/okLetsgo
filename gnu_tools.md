@@ -1257,6 +1257,22 @@ zsh配置文件样例，有空慢慢研究吧 <https://linux.zone/1306>。
     zinit ice depth"1" # git clone depth
     zinit light romkatv/powerlevel10k
 
+This is powerlevel10k, pure, starship sample:
+
+    # Load powerlevel10k theme
+    zinit ice depth"1" # git clone depth
+    zinit light romkatv/powerlevel10k
+
+    # Load pure theme
+    zinit ice pick"async.zsh" src"pure.zsh" # with zsh-async library that's bundled with it.
+    zinit light sindresorhus/pure
+
+    # Load starship theme
+    zinit ice as"command" from"gh-r" \ # `starship` binary as command, from github release
+            atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \ # starship setup at clone(create init.zsh, completion)
+            atpull"%atclone" src"init.zsh" # pull behavior same as clone, source init.zsh
+    zinit light starship/starship
+
 ## Linux 常用工具
 
 ### Vim 和 nano
