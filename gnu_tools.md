@@ -2393,7 +2393,7 @@ tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServe
 
 ```
 
-##### tmux 扩展插件
+#### tmux 扩展插件
 
     https://bobbyhadz.com/blog/tmux-powerline-ubuntu
 
@@ -2437,7 +2437,7 @@ tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
 
     git clone --depth=1 https://github.com/arcticicestudio/nord-tmux ~/.tmux/themes/nord-tmux
 
-###### 定制 powerline 的段Segment
+##### 定制 powerline 的段Segment
 
 powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 powerline 的配置文件
 
@@ -2483,14 +2483,8 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
 ```shell
 
-# 按完前导 ctrl+B后，再按冒号：进入命令行模式
-# 这些命令在tmn的:命令行模式一样可以使用
-
 # 窗口保存的历史内容行数
 set-option -g history-limit 20000
-
-# 开启窗口的UTF-8支持
-set-window-option -g utf8 on
 
 # 把前导键从 ctrl+b 改成 ctrl+x， M-a是Alt+a
 # set-option -g prefix C-x unbind-key C-b bind-key C-x send-prefix
