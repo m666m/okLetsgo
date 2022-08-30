@@ -220,8 +220,8 @@ Green=0,135,0
 BoldGreen=143,218,149
 Yellow=207,190,116
 BoldYellow=232,225,190
-Blue=88,133,192
-BoldBlue=66,113,174
+Blue=66,113,174
+BoldBlue=88,133,192
 Magenta=190,116,207
 BoldMagenta=225,190,232
 Cyan=116,207,190
@@ -232,7 +232,8 @@ BoldWhite=255,255,255
 # 自定义颜色方案，跟深色背景搭配
 # https://github.com/arcticicestudio/nord-mintty
 #Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
-#BackgroundColour=46,52,64
+## 46,52,64 # 37,50,56
+#BackgroundColour=37,50,56
 #ForegroundColour=216,222,233
 #CursorColour=216,222,233
 #Black=59,66,82
@@ -243,7 +244,8 @@ BoldWhite=255,255,255
 #BoldGreen=163,190,140
 #Yellow=235,203,139
 #BoldYellow=235,203,139
-#Blue=129,161,193
+## 129,161,193 # 121,191,212
+#Blue=121,191,212
 #BoldBlue=129,161,193
 #Magenta=180,142,173
 #BoldMagenta=180,142,173

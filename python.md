@@ -1811,8 +1811,8 @@ python 套件为兼容老版本不用 pylance 的习惯，所以默认不安装 
 |----------------------------------------|------------------------------|
 |   MacOS Modern Theme：Xcode Catalina   |                               |
 |   Nord                                 |                               |
-|   Material Theme                       |   Material Theme              |
 |   Winter is coming：Dark Blue          | Winter is coming：Dark Black   |
+|   Material Neutral Theme               |   Material Theme              |
 
 MacOS Modern Theme 深色浅色都好
 
@@ -1835,6 +1835,9 @@ Night Owl。夜猫子在晚上稍有刺眼，浅色更好
 material-theme 深色比较养眼，比 Night Owl 舒服。
 
     Equinusocio.vsc-material-theme
+
+    这个修改版的看代码更不刺眼
+    bernardodsanderson.theme-material-neutral
 
 Solarized Light（vscode 自带）  这个是羊皮纸底色，去蓝光了，但是如果你看起来感觉累眼就别用了。。。
 
