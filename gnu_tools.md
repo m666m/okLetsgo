@@ -2496,10 +2496,8 @@ set-window-option -g utf8 on
 
 # 开启鼠标滚屏，默认是鼠标滚轮选择历史命令。
 # https://github.com/hongwenjun/tmux_for_windows
-set-option -g mouse on  # v2.1 之前的老版本 set-option -g mode-mouse on
-# 更改鼠标滚轮的动作为切换面板
-# bind -n WheelUpPane select-pane -t= ; copy-mode -e ; send-keys -M
-# bind -n WheelDownPane select-pane -t= ; send-keys -M
+# v2.1 之前的老版本 set-option -g mode-mouse on
+set-option -g mouse on
 
 # 设置状态栏工具显示彩色
 # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
@@ -2508,6 +2506,7 @@ set -g default-terminal screen-256color
 # 使用nord主题，可注释掉 powerline
 # run-shell 'powerline-config tmux setup'
 run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
+
 ```
 
 重新加载配置文件
