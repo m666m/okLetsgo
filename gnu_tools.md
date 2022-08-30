@@ -1890,11 +1890,13 @@ map <C-n> :NERDTreeToggle<CR>
 重新定义快捷键，放到 ~/.vimrc 文件中即可：
 
 ```shell
-    " 切换目录树显示的热键定义为 Ctrl-n
-    " map 是 vim 的快捷键映射命令
-    " <C-n> 定义了快捷键，表示 Ctrl-n
-    " 后面是对应的命令以及回车键 <CR>
-    map <C-n> :NERDTreeToggle<CR>
+
+" 切换目录树显示的热键定义为 Ctrl-n
+" map 是 vim 的快捷键映射命令
+" <C-n> 定义了快捷键，表示 Ctrl-n
+" 后面是对应的命令以及回车键 <CR>
+map <C-n> :NERDTreeToggle<CR>
+
 ```
 
 ##### 文本输入模式（编辑模式/插入模式）
@@ -2336,57 +2338,55 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     ,       重命名当前窗口；这样便于识别
     .       修改当前窗口编号；相当于窗口重新排序
 
-#### 配置文件
+### tmux 的 copy 模式
 
-    按完前导 ctrl+B后，再按冒号：进入命令行模式
-
-这些命令在tmn的:命令行模式一样可以使用
-
-~/.tmux.conf
-
-    set-option -g history-limit 20000
-    set-window-option -g utf8 on # 开启窗口的UTF-8支持
-
-    # 把前导键从 ctrl+b 改成 ctrl+x， M-a是Alt+a
-    set-option -g prefix C-x unbind-key C-b bind-key C-x send-prefix
-
-    # 键绑定使用 vi 模式，原默认是 emac 模式
-    set-window-option -g mode-keys vi
-
-    # 开启鼠标滚屏，默认是鼠标滚轮选择历史命令。
-    # https://github.com/hongwenjun/tmux_for_windows
-    set-option -g mouse on  # v2.1 之前的老版本 set-option -g mode-mouse on
-    bind -n WheelUpPane select-pane -t= ; copy-mode -e ; send-keys -M
-    bind -n WheelDownPane select-pane -t= ; send-keys -M
-
-tmux的copy模式可以处理屏幕内容，默认emacs，可以设置vi模式。
+可以处理屏幕内容，默认操作模式是emacs，可以设置为vi模式。
 
 如果开启了鼠标滚屏，在tmux中用鼠标右键粘贴等就不能用了，用 ctrl+shift+c/v，或 shift+ins。
 
-在 tmux 中不论选择还是复制时，都按住 Shift 键，你会发现熟悉的中键又回来了 ? 此外，还可以使用 Shift+Insert 快捷键将系统剪切板中的内容输入 tmux 中。 相对于 tmux 原生的选择模式（不加 shift 键），使用系统选择有个缺陷，即当一行内存在多个面板时，无法选择单个面板中的内容，这时就必须使用 tmux 自带的复制粘贴系统了。
+在 tmux 中不论选择还是复制时，都按住 Shift 键，你会发现熟悉的中键又回来了。
+
+此外，还可以使用 Shift+Insert 快捷键将系统剪切板中的内容输入 tmux 中。
+
+相对于 tmux 原生的选择模式（不加 shift 键），使用系统选择有个缺陷，即当一行内存在多个面板时，无法选择单个面板中的内容，这时就必须使用 tmux 自带的复制粘贴系统了。
 
 #### tmux 开机自启动
 
-    https://github.com/Louiszhai/tmux/blob/master/init.sh
+开机脚本，自动启动tmux服务，运行指定的程序。
 
 ```shell
 
 #!/bin/bash
+# https://github.com/Louiszhai/tmux/blob/master/init.sh
 # 该脚本用于开机初始化tmux服务
 
-tmux new -s init -d # 后台创建一个名称为init的会话
-tmux rename-window -t "init:1" service # 重命名init会话的第一个窗口名称为service
-tmux send -t "init:service" "cd ~/workspace/language/python/;python2.7 server.py" Enter # 切换到指定目录并运行python服务
+# 后台创建一个名称为init的会话
+tmux new -s init -d
 
-tmux split-window -t "init:service" # 默认上下分屏
-tmux send -t "init:service" 'cd ~/data/louiszhai/node-webserver/;npm start' Enter # 切换到指定目录并运行node服务
+# 重命名init会话的第一个窗口名称为service
+tmux rename-window -t "init:1" service
 
-# 新建一个名称为tool的窗口
-tmux neww -a -n tool -t init # neww等同于new window
-tmux send -t "init:tool" "weinre --httpPort 8881 --boundHost -all-" Enter # 运行weinre调试工具
+# 切换到指定目录并运行python服务
+tmux send -t "init:service" "cd ~/workspace/language/python/;python2.7 server.py" Enter
 
-tmux split-window -h -t "init:tool" # 水平分屏
-tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServer 10108" Enter # 切换到指定目录并启用aria2 web管理后台
+# 默认上下分屏
+tmux split-window -t "init:service"
+
+# 切换到指定目录并运行node服务
+tmux send -t "init:service" 'cd ~/data/louiszhai/node-webserver/;npm start' Enter
+
+# 新建一个名称为tool的窗口，neww等同于new window
+tmux neww -a -n tool -t init
+
+# 运行weinre调试工具
+tmux send -t "init:tool" "weinre --httpPort 8881 --boundHost -all-" Enter
+
+# 水平分屏
+tmux split-window -h -t "init:tool"
+
+# 切换到指定目录并启用aria2 web管理后台
+tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServer 10108" Enter
+
 ```
 
 ##### tmux 扩展插件
@@ -2433,12 +2433,16 @@ tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
 
     git clone --depth=1 https://github.com/arcticicestudio/nord-tmux ~/.tmux/themes/nord-tmux
 
-###### powerline 插件定制状态栏显示的段Segment
+###### 定制 powerline 的段Segment
 
-编辑 powerline 的配置文件
+powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 powerline 的配置文件
 
     # 如果是pip安装的查看路径用 pip show powerline-status
     /usr/share/powerline/config_files/themes/tmux/default.json
+
+替换自己喜欢的函数即可
+
+    官方函数说明 https://powerline.readthedocs.io/en/master/configuration/segments.html
 
 ```json
 {
@@ -2471,18 +2475,40 @@ tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
 }
 ```
 
-替换自己喜欢的函数即可
+##### 样例 ~/.tmux.conf 配置文件
 
-    官方函数说明 https://powerline.readthedocs.io/en/master/configuration/segments.html
+```shell
 
-##### 样例 ~/.tmux.conf 文件
+# 按完前导 ctrl+B后，再按冒号：进入命令行模式
+# 这些命令在tmn的:命令行模式一样可以使用
 
-    # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
-    set -g default-terminal screen-256color
+# 窗口保存的历史内容行数
+set-option -g history-limit 20000
 
-    # 使用nord主题，可注释掉 powerline
-    # run-shell 'powerline-config tmux setup'
-    run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
+# 开启窗口的UTF-8支持
+set-window-option -g utf8 on
+
+# 把前导键从 ctrl+b 改成 ctrl+x， M-a是Alt+a
+# set-option -g prefix C-x unbind-key C-b bind-key C-x send-prefix
+
+# 键绑定使用 vi 模式，原默认是 emac 模式
+# set-window-option -g mode-keys vi
+
+# 开启鼠标滚屏，默认是鼠标滚轮选择历史命令。
+# https://github.com/hongwenjun/tmux_for_windows
+set-option -g mouse on  # v2.1 之前的老版本 set-option -g mode-mouse on
+# 更改鼠标滚轮的动作为切换面板
+# bind -n WheelUpPane select-pane -t= ; copy-mode -e ; send-keys -M
+# bind -n WheelDownPane select-pane -t= ; send-keys -M
+
+# 设置状态栏工具显示彩色
+# 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
+set -g default-terminal screen-256color
+
+# 使用nord主题，可注释掉 powerline
+# run-shell 'powerline-config tmux setup'
+run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
+```
 
 重新加载配置文件
 
@@ -3020,6 +3046,7 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
 #### 示例脚本：备份用户的主目录
 
 ```shell
+
 #!/bin/bash
 
 # A script to perform incremental backups using rsync
@@ -3044,6 +3071,7 @@ rsync -av --delete \
 
 rm -rf "${LATEST_LINK}"
 ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
+
 ```
 
 ### 操作时间时区 timedatectl
@@ -3078,6 +3106,7 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 cpu 压力测试，入参是cpu的核心数
 
 ```shell
+
 #!/bin/bash
 # Destription: testing cpu usage performance
 # Example    : sh cpu_usage.sh 12
@@ -3109,6 +3138,7 @@ done
 for i in "${pid_array[@]}"; do
   echo 'kill ' $i ';';
 done
+
 ```
 
 ### 开机启动 SystemV(init) 和 systemd
@@ -3166,6 +3196,7 @@ init 程序最先运行的服务是放在 /etc/rc.d/ 目录下的文件。
 1、在 /etc/init.d/目录下添加需要执行的.sh脚本，脚本里调用需要开机启动的程序（shell文件格式参考目录下其它文件）
 
 ```shell
+
 #!/bin/sh
 
 ### BEGIN INIT INFO
@@ -3181,6 +3212,7 @@ init 程序最先运行的服务是放在 /etc/rc.d/ 目录下的文件。
 your_cmd_here
 
 exit 0
+
 ```
 
 Provides 的名字是唯一的，也就是在所有的开机启动项中，Provides不能有任何同名冲突。
@@ -3951,9 +3983,10 @@ cron服务每分钟不仅要读一次 /var/spool/cron/crontabs/ 内的所有文�
 
     crontab -r
 
-[root@kind-codes-1 /etc]# cat /etc/crontab
+/etc/crontab 文件的内容如下
 
 ```shell
+
 SHELL=/bin/bash
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名文件中
@@ -3969,6 +4002,7 @@ MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名�
 # |  |  |  |  |
 # *  *  *  *  * user-name  command to be executed
 0 3 1 */2 0 root systemctl stop nginx; /usr/local/bin/certbot renew; systemctl restart nginx
+
 ```
 
 星号  如果某个部分出现的是星号而不是数字，就是说明这个部分表示的时间全部会执行。
