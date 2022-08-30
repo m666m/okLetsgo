@@ -1811,8 +1811,8 @@ python 套件为兼容老版本不用 pylance 的习惯，所以默认不安装 
 |----------------------------------------|------------------------------|
 |   MacOS Modern Theme：Xcode Catalina   |                               |
 |   Nord                                 |                               |
+|   Material Theme                       |   Material Theme              |
 |   Winter is coming：Dark Blue          | Winter is coming：Dark Black   |
-|   Material Theme                       |   Material Theme               |
 
 MacOS Modern Theme 深色浅色都好
 
