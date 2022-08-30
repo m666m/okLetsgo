@@ -192,8 +192,7 @@ CursorBlinks=no
 
 # 语言设置
 Language=@
-# Locale=zh_CN
-Locale=zh_SG
+Locale=zh_CN
 # Charset=GBK
 Charset=UTF-8
 
@@ -212,7 +211,7 @@ FontSmoothing=full
 Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
 BackgroundColour=13,25,38
 ForegroundColour=217,230,242
-CursorColour=217,230,242
+CursorColour=236,255,255
 Black=53,53,53
 BoldBlack=92,92,92
 Red=207,116,133
@@ -227,7 +226,7 @@ Magenta=190,116,207
 BoldMagenta=225,190,232
 Cyan=116,207,190
 BoldCyan=190,232,225
-White=209,209,209
+White=255,255,253
 BoldWhite=255,255,255
 
 # 自定义颜色方案，跟深色背景搭配
