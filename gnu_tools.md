@@ -1519,6 +1519,7 @@ powerline 为保证多样性，使用python
 
 没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
+    # 会自动安装插件管理器 vim-addon-manager，然后把自己安装到插件目录中
     apt install vim-airline
     apt install vim-airline-themes
 
@@ -1528,15 +1529,21 @@ powerline 为保证多样性，使用python
 
 Airline 扩展支持tabline、nerdtree等的颜色方案，在 ~/.vimrc 中配置
 
-    " 内置插件的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
-    " 内置插件保存在 /.vim/bundle/vim-airline/autoload/airline/extensions/ 下
+    " 内置扩展的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
+    " 内置扩展保存在：
+    " apt install [vim-addon-manager] /usr/share/vim/addons/autoload/airline/extensions/ 下
+    " [Vundle]   ~/.vim/bundle/vim-airline/autoload/airline/extensions/ 下
+    " [vim-plug] ~/.vim/plugged/ 下
+    " 自定义 ~/.vim/autoload/ 和 ~/.vim/plugin/
     " 命令 :AirlineExtensions 查看当前自动启用的内置插件
 
     " an empty list disables all extensions
-    let g:airline_extensions = []
-
+    "let g:airline_extensions = []
     " or only load what you want
-    let g:airline_extensions = ['branch', 'tabline']
+    "let g:airline_extensions = ['branch', 'tabline']
+
+    " 需要启用 powerline 的字体，状态栏显示的效果才能起飞
+    let g:airline_powerline_fonts = 1
 
     " 启用 airline 内置插件：标签式显示多个打开的文件的状态栏效果
     " 在说明文件中搜 airline-tabline
@@ -1614,9 +1621,60 @@ Why yet another clone of powerline?
     gs  vsp一个新窗格打开选中文件，但不跳到该窗口，或命令 :NERDTree-gs
     !   执行当前文件，或命令 :NERDTree-!
 
+##### 插件管理器 vim-addon-manager
+
+    apt install vim-addon-manager
+
+使用目录
+
+    # apt install 安装
+    /usr/share/vim/addons/
+
+    # 自定义安装
+    ~/.vim/addons/
+
+使用有一系列的命令
+
+    $ vim-addons -h
+    Usage:
+    vim-addons [OPTION ...] [COMMAND [ADDON ...]]
+    Commands:
+    list, status (default command), install, remove, disable, enable, files, show
+    Options:
+    -h, --help          show this usage message and exit
+    -q, --query         be quiet and make the output more parseable
+    -r, --registry-dir  set the registry directory
+                            (default: /usr/share/vim/registry)
+    -s, --source-dir    set the addons source directory
+                            (default: /usr/share/vim/addons)
+    -t, --target-dir    set the addons target directory
+                            (default: $HOME/.vim)
+    -v, --verbose       increase verbosity
+    -z, --silent        silent mode: suppress most of the output
+    -y, --system-dir    set the system-wide target directory
+                            (default: /var/lib/vim/addons)
+    -w, --system-wide   set target directory to the system-wide one
+                            (overrides -t setting)
+
+    $ vim-addons status
+    # Name                     User Status  System Status
+    airline                     removed       installed
+    airline-themes              removed       installed
+    editexisting                removed       removed
+    justify                     removed       removed
+    matchit                     removed       removed
+    nginx                       removed       removed
+    powerline                   removed       removed
+
+    vim-addons install xxx
+
+    vim-addons remove xxx
+
+    vim-addons show xxx
+
 ##### 插件管理器 Vundle
 
-优点是只需要编辑 ~/.vimrc，便于用户自定义，可惜自2019年之后没更新了
+优点是只需要编辑 ~/.vimrc，便于用户自定义，可惜自2019年之后不更新了
 
     https://github.com/VundleVim/Vundle.vim
 
@@ -1697,7 +1755,7 @@ filetype plugin indent on    " required
 
     :PluginSearch colorscheme
 
-##### 插件管理器 vim-plug
+##### 推荐：插件管理器 vim-plug
 
 Vundle不更新了，这个项目取代之，用法神似
 
@@ -1717,7 +1775,7 @@ Vundle不更新了，这个项目取代之，用法神似
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-plug 插件管理器官方配置
-
+" 不需要设置rtp，因为引导程序plug.vim放到autoload目录里了
 call plug#begin()
 " The default plugin directory will be as follows:
 "   - Vim (Linux/macOS): '~/.vim/plugged'
@@ -1776,12 +1834,20 @@ if &term =="screen"
 endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" airline 内置插件设置
+" airline 内置扩展设置
 "
-" airline 内置插件的逐个说明在 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
-" airline 内置插件保存在 /.vim/bundle/vim-airline/autoload/airline/extensions/ 下
-" 命令 :help airline 查看 airline 说明
+" 内置扩展的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
+" 内置扩展保存在：
+" apt install [vim-addon-manager] /usr/share/vim/addons/autoload/airline/extensions/ 下
+" [Vundle]   ~/.vim/bundle/vim-airline/autoload/airline/extensions/ 下
+" [vim-plug] ~/.vim/plugged/ 下
+" 自定义 ~/.vim/autoload/ 和 ~/.vim/plugin/
 " 命令 :AirlineExtensions 查看当前自动启用的内置插件
+
+" an empty list disables all extensions
+"let g:airline_extensions = []
+" or only load what you want
+"let g:airline_extensions = ['branch', 'tabline']
 
 " 需要启用 powerline 的字体，状态栏显示的效果才能起飞
 let g:airline_powerline_fonts = 1
@@ -1796,7 +1862,7 @@ let g:airline#extensions#tabline#tab_nr_type = 2
 let g:airline#extensions#nerdtree_statusline = 1
 
 " 启用 airline 内置主题：如果使用了下载的主题，可以关闭
-let g:airline_theme='papercolor'
+"let g:airline_theme='papercolor'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " 使用下载的插件：主题 nord，不止设置了状态栏颜色，还自带了语法高亮的方案
