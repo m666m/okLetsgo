@@ -2215,106 +2215,9 @@ terminal客户端关闭mouse reporting选项，否则鼠标点击vim界面会进
     sh autogen.sh
     ./configure && make
 
-##### tmux 扩展插件
-
-    https://bobbyhadz.com/blog/tmux-powerline-ubuntu
-
-要设置状态栏彩色，包括tmux中vim使用彩色，需要编辑 ~/.tmux.conf 文件，添加如下行
-
-    # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
-    set -g default-terminal "screen-256color"
-
-一、状态栏显示使用 powerline
-
-先安装 powerline，见章节 [状态栏工具 powerline]。
-
-tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
-
-    run-shell 'powerline-config tmux setup'
-
-然后就可以自由发挥了。
-
-如果不使用 powerline，可以安装 tmux-powerline，这个只使用bash脚本，更简洁
-
-    https://github.com/erikw/tmux-powerline
-
-二、插件管理
-
-感觉这个就别折腾各种插件了。。。
-
-    https://github.com/tmux-plugins/tpm
-
-        高亮关键字 https://github.com/tmux-plugins/tmux-prefix-highlight
-
-三、安装nord主题，替换 powerline 状态栏显示
-
-使用这个主题的好处是它支持<https://github.com/tmux-plugins>的所有插件，在状态栏显示各种字符，启动速度也比 powerline 快。
-
-    颜色方案 https://www.nordtheme.com/ports/tmux
-        https://github.com/arcticicestudio/nord-tmux
-
-不使用插件管理器的安装步骤：
-
-先从github下载
-
-    git clone --depth=1 https://github.com/arcticicestudio/nord-tmux ~/.tmux/themes/nord-tmux
-
-###### 样例 ~/.tmux.conf 文件
-
-    # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
-    set -g default-terminal screen-256color
-
-    # 可注释掉原 powerline 那行
-    # run-shell 'powerline-config tmux setup'
-    run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
-
-重新加载配置文件
-
-    tmux source-file ~/.tmux.conf
-
-powerline 定制状态栏显示的段Segment：
-
-编辑文件
-
-    # 如果是pip安装的查看路径用 pip show powerline-status
-    /usr/share/powerline/config_files/themes/tmux/default.json
-
-```json
-{
-    "segments": {
-        "right": [
-            {
-                    "function": "powerline.segments.common.sys.uptime",
-                    "priority": 50
-            },
-            {
-                    "function": "powerline.segments.common.sys.system_load",
-                    "priority": 50
-            },
-            {
-                    "function": "powerline.segments.common.time.date"
-            },
-            {
-                    "function": "powerline.segments.common.time.date",
-                    "name": "time",
-                    "args": {
-                            "format": "%H:%M",
-                            "istime": true
-                    }
-            },
-            {
-                    "function": "powerline.segments.common.net.hostname"
-            }
-        ]
-    }
-}
-```
-
-替换自己喜欢的函数即可
-
-    官方函数说明 https://powerline.readthedocs.io/en/master/configuration/segments.html
-
 #### 常用命令
+
+    按完前导 ctrl+B后，再按冒号：进入命令行模式
 
 这些命令在tmn的:命令行模式一样可以使用
 
@@ -2435,6 +2338,10 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
 #### 配置文件
 
+    按完前导 ctrl+B后，再按冒号：进入命令行模式
+
+这些命令在tmn的:命令行模式一样可以使用
+
 ~/.tmux.conf
 
     set-option -g history-limit 20000
@@ -2446,13 +2353,17 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
     # 键绑定使用 vi 模式，原默认是 emac 模式
     set-window-option -g mode-keys vi
 
+    # 开启鼠标滚屏，默认是鼠标滚轮选择历史命令。
     # https://github.com/hongwenjun/tmux_for_windows
-    setw -g mouse
     set-option -g mouse on  # v2.1 之前的老版本 set-option -g mode-mouse on
     bind -n WheelUpPane select-pane -t= ; copy-mode -e ; send-keys -M
     bind -n WheelDownPane select-pane -t= ; send-keys -M
 
+tmux的copy模式可以处理屏幕内容，默认emacs，可以设置vi模式。
+
 如果开启了鼠标滚屏，在tmux中用鼠标右键粘贴等就不能用了，用 ctrl+shift+c/v，或 shift+ins。
+
+在 tmux 中不论选择还是复制时，都按住 Shift 键，你会发现熟悉的中键又回来了 ? 此外，还可以使用 Shift+Insert 快捷键将系统剪切板中的内容输入 tmux 中。 相对于 tmux 原生的选择模式（不加 shift 键），使用系统选择有个缺陷，即当一行内存在多个面板时，无法选择单个面板中的内容，这时就必须使用 tmux 自带的复制粘贴系统了。
 
 #### tmux 开机自启动
 
@@ -2477,6 +2388,105 @@ tmux send -t "init:tool" "weinre --httpPort 8881 --boundHost -all-" Enter # 运�
 tmux split-window -h -t "init:tool" # 水平分屏
 tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServer 10108" Enter # 切换到指定目录并启用aria2 web管理后台
 ```
+
+##### tmux 扩展插件
+
+    https://bobbyhadz.com/blog/tmux-powerline-ubuntu
+
+要设置状态栏彩色，包括tmux中vim使用彩色，需要编辑 ~/.tmux.conf 文件，添加如下行
+
+    # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
+    set -g default-terminal "screen-256color"
+
+一、状态栏显示使用 powerline
+
+先安装 powerline，见章节 [状态栏工具 powerline]。
+
+tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
+
+    run-shell 'powerline-config tmux setup'
+
+然后就可以自由发挥了。
+
+如果不使用 powerline，可以安装 tmux-powerline，这个只使用bash脚本，更简洁
+
+    https://github.com/erikw/tmux-powerline
+
+二、插件管理
+
+感觉这个就别折腾各种插件了。。。
+
+    https://github.com/tmux-plugins/tpm
+
+        高亮关键字 https://github.com/tmux-plugins/tmux-prefix-highlight
+
+三、安装nord主题，替换 powerline 状态栏显示
+
+使用这个主题的好处是它支持<https://github.com/tmux-plugins>的所有插件，在状态栏显示各种字符，启动速度也比 powerline 快。
+
+    颜色方案 https://www.nordtheme.com/ports/tmux
+        https://github.com/arcticicestudio/nord-tmux
+
+不使用插件管理器的安装步骤：
+
+先从github下载
+
+    git clone --depth=1 https://github.com/arcticicestudio/nord-tmux ~/.tmux/themes/nord-tmux
+
+###### powerline 插件定制状态栏显示的段Segment
+
+编辑 powerline 的配置文件
+
+    # 如果是pip安装的查看路径用 pip show powerline-status
+    /usr/share/powerline/config_files/themes/tmux/default.json
+
+```json
+{
+    "segments": {
+        "right": [
+            {
+                    "function": "powerline.segments.common.sys.uptime",
+                    "priority": 50
+            },
+            {
+                    "function": "powerline.segments.common.sys.system_load",
+                    "priority": 50
+            },
+            {
+                    "function": "powerline.segments.common.time.date"
+            },
+            {
+                    "function": "powerline.segments.common.time.date",
+                    "name": "time",
+                    "args": {
+                            "format": "%H:%M",
+                            "istime": true
+                    }
+            },
+            {
+                    "function": "powerline.segments.common.net.hostname"
+            }
+        ]
+    }
+}
+```
+
+替换自己喜欢的函数即可
+
+    官方函数说明 https://powerline.readthedocs.io/en/master/configuration/segments.html
+
+##### 样例 ~/.tmux.conf 文件
+
+    # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
+    set -g default-terminal screen-256color
+
+    # 使用nord主题，可注释掉 powerline
+    # run-shell 'powerline-config tmux setup'
+    run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
+
+重新加载配置文件
+
+    tmux source-file ~/.tmux.conf
 
 #### 类似的工具 screen
 
