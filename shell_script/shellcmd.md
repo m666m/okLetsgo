@@ -108,6 +108,11 @@ test 和 [] 是等价的，[] 注意两边留空格
         echo "str1 >= str2"
     fi
 
+    # 判断命令执行结果的字符串比较用=，不需要-eq了
+    if [[ $(systemctl is-active 'nginx') = "active" ]]; then
+        echo -e "nginx     [ ✓ ]"
+    fi
+
 如果变量存在则执行，否则不执行
 
     [[ -n $conda_env_exist ]] && printf "conda:%s" $envname
@@ -149,7 +154,7 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     # 字符串判断用 [[ ]]
     # 如果是判断字符串有值，则 -n 可以省略
-    [[ $envname ]] && printf "conda:%s" $envname
+    [[ $envname ]] && printf "conda:%s" $envname || echo "not..."
 
  -（减号） 的作用是代表标准输出/标准输入, 视命令而定
 
