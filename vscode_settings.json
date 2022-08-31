@@ -28,11 +28,10 @@
     "outline.showVariables": false,
     "diffEditor.ignoreTrimWhitespace": false,
     "window.newWindowDimensions": "offset", // "offset" maximized
-    "window.autoDetectColorScheme": false,  // 深色背景切换时会闪一下全白，很烦人
+    "window.autoDetectColorScheme": false,  // 深色背景下切换项目时会闪一下白，很烦人
     "workbench.preferredDarkColorTheme": "MacOS Modern Dark - Big Sur Xcode Default",
     "workbench.preferredLightColorTheme": "MacOS Modern Light - Big Sur Xcode Default",
     "workbench.colorTheme": "Winter is Coming (Dark Black)",
-    "workbench.editor.wrapTabs": true,
     // https://code.visualstudio.com/api/references/theme-color
     // http://www.apeth.com/nonblog/stories/textmatebundle.html
     // 在线编辑 https://tmtheme-editor.herokuapp.com/#!/editor/theme/Monokai
@@ -44,6 +43,7 @@
         // "editor.foldBackground": "#355000",  // 折叠代码块高亮  editor.foldingHighlight
 		// "editor.foreground": "#010216",
     },
+    "workbench.editor.wrapTabs": true,
     "jupyter.exportWithOutputEnabled": true,
     "jupyter.sendSelectionToInteractiveWindow": true,
     "security.workspace.trust.emptyWindow": false,
@@ -58,13 +58,6 @@
         "hostwind": "linux",
         "banwagong": "linux"
     },
-    "files.exclude": {
-        "**/__pycache__": true,
-        "**/.ipynb_checkpoints":true,
-        "**/.pytest_cache": true,
-        "**/.vscode": true
-    },
-    "extensions.autoUpdate": false,  // 如果有插件升级后出问题，阻止自动升级
     "python.terminal.activateEnvironment": false,  // 打开终端自动执行切换到指定环境，在cmd下使用conda可以设为True，如果在bash下使用conda会报错windows路径
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
@@ -80,6 +73,13 @@
         // "--sytle=yapf_style.cfg"
     ],
     "python.formatting.autopep8Args": ["--ignore","E402"],
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.ipynb_checkpoints":true,
+        "**/.pytest_cache": true,
+        "**/.vscode": true
+    },
+    "extensions.autoUpdate": false,  // 如果有插件升级后出问题，阻止自动升级
     //////////////////////////////////////////////////////////////////
     // 下面是插件设置
     // Trailing Spaces
@@ -117,7 +117,7 @@
     // Rainbow CSV https://github.com/mechatroner/vscode_rainbow_csv/blob/master/test/color_customization_example.md#colors-customization
     "editor.tokenColorCustomizations": {
         "textMateRules": [
-            // 自定义 禁用注释文字斜体显示
+            // 自定义 总有些主题斜体注释，禁用之
             {
                 "scope": "comment",
                 "settings": {
