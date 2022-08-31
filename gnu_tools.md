@@ -114,7 +114,7 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
 #### 简单使用：安装 Git for Windows
 
-GIT Bash 使用了 GNU tools 的 MINGW，但是工具只选择了它自己需要的部分进行了集成，我们主要使用他的 mintty 命令行终端程序和 ssh、gpg 等工具。
+Git Bash 使用了 GNU tools 的 MinGW，但是工具只选择了它自己需要的部分进行了集成，我们主要使用他的 mintty 命令行终端程序(自称 git bash)和 ssh、gpg 等工具。
 
 下载地址 <https://git-scm.com/download/win>
 
@@ -123,9 +123,9 @@ GIT Bash 使用了 GNU tools 的 MINGW，但是工具只选择了它自己需要
     http://mintty.github.io/
     https://github.com/mintty/mintty/wiki/Tips
 
-安装 git for Windows 或 MSYS2 后就有了，git for Windows下的配置文件在 ~\.minttyrc。
+安装 git for Windows 或 MSYS2 后就有了，git for Windows 下的配置文件在 ~\.minttyrc。
 
-如果安装 MSYS2，则配置文件不同，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]。
+如果安装 MSYS2，则 mintty 的配置文件与 git 带的不同，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]。
 
     Background=C:\Users\xxxx\Pictures\1111111111.jpg
     Font=Consolas
@@ -160,7 +160,7 @@ git for windows 的 mintty 目录
 
     /cmd 目录       C:\Program Files\Git\ 目录下，给在 Windows cmd 命令行窗口下运行 git 和 ssh 用的脚本
 
-退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不如会提示有进程未关闭。
+退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不然会提示有进程未关闭。
 
 putty的退出也是同样的建议。
 
@@ -168,7 +168,7 @@ putty的退出也是同样的建议。
 
     北极主题颜色 https://github.com/arcticicestudio/nord-putty
 
-只进行了颜色设置的一个session：Nord，以此 session 打开各个ssh连接即可。
+只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
 
 ###### mintty 美化
 
@@ -176,9 +176,10 @@ putty的退出也是同样的建议。
 
     字符终端的颜色配置说明 https://github.com/termstandard/colors
 
-如果是 git for Windows 的mintty，编辑 ~/.minttyrc 文件为下面的内容
+如果是 git for Windows 的 mintty，编辑 ~/.minttyrc 文件为下面的内容
 
 ```config
+
 # https://mintty.github.io/mintty.1.html
 # https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
 Font=MesloLGS NF
@@ -193,7 +194,7 @@ CursorBlinks=no
 # 语言设置
 Language=@
 Locale=zh_CN
-# Charset=GBK
+# Charset=GBK # 中文版 Windows 使用 ansi 字符集
 Charset=UTF-8
 
 # 窗体透明效果，不适用于嵌入多窗口终端工具
@@ -259,7 +260,6 @@ BoldWhite=255,255,255
 #BackgroundColour=250,234,182
 #ForegroundColour=0,61,121
 #CursorColour=217,230,242
-#
 #Black=0,0,0
 #BoldBlack=72,72,72
 #Red=255,30,18
@@ -283,7 +283,6 @@ BoldWhite=255,255,255
 #BackgroundColour=250,234,182
 #ForegroundColour=47,47,47
 #CursorColour=217,230,242
-#
 #Black=0,0,0
 #BoldBlack=38,38,38
 #Red=255,30,18
@@ -305,7 +304,6 @@ BoldWhite=255,255,255
 #ForegroundColour=101, 123, 131
 #BackgroundColour=252, 241, 209
 #CursorColour=    220,  50,  47
-#
 #Black=             7,  54,  66
 #BoldBlack=         0,  43,  54
 #Red=             220,  50,  47
@@ -327,7 +325,6 @@ BoldWhite=255,255,255
 #ForegroundColour=131,148,150
 #BackgroundColour=0,43,54
 #CursorColour=220,50,47
-#
 #Black=7,54,66
 #BoldBlack=0,43,54
 #Red=220,50,47
@@ -347,23 +344,24 @@ BoldWhite=255,255,255
 
 # 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
 # ThemeFile=mintty
+
 ```
 
-如果是 MSYS2 的 mintty，可以在<https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
+如果是 MSYS2 的 mintty，可以在 <https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
 
 ###### 多终端工具 SuperPutty 等
 
-SuperPutty 支持putty、mintty、cmd、powershell等多种终端嵌入显示，可导入putty站点，可设置站点关联WinScp/FileZilla等软件的快捷调用，使用简单方便，只要安装了 git for Windows 和 putty 等软件即可直接使用，不需要做复杂的设置。
+SuperPutty 支持 putty、mintty、cmd、powershell 等多种终端嵌入显示，可导入 putty 站点，可设置站点关联WinScp/FileZilla 等软件的快捷调用，使用简单方便，只要安装了 git for Windows 和 putty 等软件即可直接使用，不需要做复杂的设置。
 
-ConEmu是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2，bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
+ConEmu 是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2，bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
 
     https://zhuanlan.zhihu.com/p/99963508
         https://conemu.github.io/
 
-    ConEmu配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
+    ConEmu 配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
     msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
 
-conemu 中设置 MSYS2
+ConEmu 中设置 MSYS2
 
 + 以MSYS2 MingGW64为例：
 
@@ -379,17 +377,17 @@ conemu 中设置 MSYS2
 
         set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
 
-MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变量值`D=`为你的msys2的安装目录。
+MSYS2_PATH_TYPE=inherit表示合并 Windows 系统的 path 变量。注意修改变量值 `D=` 为你的msys2的安装目录。
 
-如果安装了zsh并想默认使用zsh，可以把代码里的bash改为zsh。
+如果安装了 zsh 并想默认使用 zsh，可以把代码里的 bash 改为 zsh。
 
-打开后会自动把工作目录设置为msys64/home/%user%下。
+打开后会自动把工作目录设置为 msys64/home/%user% 下。
 
 #### 组合使用：git for Windows + MSYS2
 
 ##### 拷贝 MSYS2 的工具到 git 里，这样只使用 git bash(mintty) 就可以了
 
-假设git的安装目录在 D:\Git，可执行文件在 D:\Git\usr\bin\ 目录：
+假设 git 的安装目录在 D:\Git，可执行文件在 D:\Git\usr\bin\ 目录：
 
 以迁移 tmux.exe 为例，可执行文件放在 D:\Git\usr\bin\：
 
@@ -409,11 +407,15 @@ MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变�
 
 ##### 共享一套 Home 目录
 
-如果安装了 git for windows ，其 home 目录默认为 %USERPROFILE%，导致 git for windows 和 MSYS2 的 git 配置和 vim 等配置不能共享。
+如果安装了 git for windows ，其 home 目录默认为 %USERPROFILE%。home 目录的隔离虽然是两个软件的设置互不干扰，但也使得 ssh、gpg、git、vim、tmux 等工具的配置文件不能共享。
 
-如果在安装 MSYS2 之前已经安装 git for windows 需要使用将之前的 ssh 和 git 的配置拷贝到 MSYS2 的 home 目录下。
+保持隔离的解决办法
 
-在 Windows 上配置环境变量 HOME 为 C:\you-path\msys64\home\your-name，增加这个环境变量的目的是为了让 git for windows 的 home 目录指向 MSYS2 的 home 目录。
+    如果在安装 MSYS2 之前已经安装了 git for windows，可以将之前 ssh、git 、vim、tmux 等工具的配置文件拷贝到 MSYS2 的 home 目录下。
+
+共享的解决办法
+
+    在 Windows 上配置环境变量 HOME 为 C:\you-path\msys64\home\your-name，增加这个环境变量的目的是为了让 git for windows 的 home 目录指向 MSYS2 的 home 目录。
 
 #### 全套使用：安装 MSYS2(Cygwin/Msys)
 
@@ -431,9 +433,9 @@ MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变�
 
 使用pacman安装各种包：
 
-    pacman -S vim openssh opengpg git
+    pacman -S openssh opengpg git vim tmux
 
-安装后先pacman更换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，在windows下是msys的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
+pacman安装后先更换 清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，配置文件在windows下是msys的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
 
 依次添加
 
@@ -462,7 +464,7 @@ MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变�
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/clang64/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/clang64/
 
-然后Windows执行开始菜单的快捷方式 "MSYS2 MSYS" 以打开命令行，更新软件包数据，之后可以使用 "MSYS2 MinGW X64"，
+然后 Windows 执行开始菜单的快捷方式 "MSYS2 MSYS" 以打开命令行，更新软件包数据，之后可以使用 "MSYS2 MinGW X64"，
 
     # pacman -Sy
     :: Synchronizing package databases...
@@ -483,6 +485,7 @@ MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变�
     './.bash_profile' -> '/home/%USERNAME%/.bash_profile'
     './.inputrc' -> '/home/%USERNAME%/.inputrc'
     './.profile' -> '/home/%USERNAME%/.profile'
+
     'C:\Windows\system32\drivers\etc\hosts' -> '/etc/hosts'
     'C:\Windows\system32\drivers\etc\protocol' -> '/etc/protocols'
     'C:\Windows\system32\drivers\etc\services' -> '/etc/services'
@@ -497,27 +500,32 @@ MSYS2_PATH_TYPE=inherit表示合并windows系统的path变量。注意修改变�
 
 环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件。
 
-NOTE: 如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的bash、mintty等配置文件，注意区分。
+NOTE: 如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的 bash_profile、mintty 等配置文件，注意区分。
 
 msys2在开始菜单下的好几个版本是因为编译器和链接的windows的c库不同
 
     LLVM/Clang 和 MINGW(GCC) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个用的话就 mingw64 就没问题。
 
-    具体区别是：mingw64 与 ucrt64 都是用 mingw64 编译器编译的 Windows 64位程序，只不过它们链接到的 crt（C runtime）不同， mingw64 是链接到了 msvcrt ，而 ucrt64 则是链接到了 Windows 10+ 上新的 ucrt 上。而 clang64 很好理解，就是用 clang 而非 mingw 来编译各种库，另外它也是链接到了 ucrt 而非 msvcrt。
+具体区别是：
 
-    引自 <https://www.zhihu.com/question/463666011/answer/1927907983>
+    mingw64 与 ucrt64 都是用 mingw64 编译器编译的 Windows 64位程序，只不过它们链接到的 crt（C runtime）不同， mingw64 是链接到了 msvcrt ，而 ucrt64 则是链接到了 Windows 10+ 上新的 ucrt 上。
 
-    官方解释 <https://www.msys2.org/docs/environments/>
+    而 clang64 很好理解，就是用 clang 而非 mingw 来编译各种库，另外它也是链接到了 ucrt 而非 msvcrt。
 
-msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递了变量 set MSYSTEM=xxxx，msys2_shell.cmd启动时，都默认使用mintty虚拟终端。
+引自 <https://www.zhihu.com/question/463666011/answer/1927907983>.
 
-    # c:\msys64为msys2安装目录，bash为默认shell，可以用zsh,csh等替换
+官方解释 <https://www.msys2.org/docs/environments/>.
+
+msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递了变量 set MSYSTEM=xxxx，msys2_shell.cmd 启动时，都默认使用 mintty 虚拟终端。
+
+    # c:\msys64为msys2安装目录，bash 为默认 shell，可以用 zsh,csh 等替换
     set MSYSTEM=MINGW64
     "c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
 
-自己运行Msys2时可以不使用mintty虚拟终端。直接运行如下命令就OK：
+自己运行 Msys2 时可以不使用 mintty 虚拟终端。直接运行如下命令就OK：
 
 ```bat
+
     rem 启动MSYS2 MSYS
     set MSYSTEM=MSYS
     "c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
@@ -529,6 +537,7 @@ msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递�
     rem 启动MSYS2 MINGW64
     set MSYSTEM=MINGW64
     "c:\msys64\usr\bin\bash" --login
+
 ```
 
 ##### 软件仓库 pacman
@@ -615,7 +624,7 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
             Ctrl + c 或 q 退出
 
-    Centos
+    Centos 需要自行编译
 
         <https://thornelabs.net/posts/linux-install-cmatrix-from-rpm-deb-xz-or-source.html>
 
@@ -645,9 +654,9 @@ figlet实现字符画钟表，在tmux里开一个正合适
             make
             sudo make install
 
-### bash命令提示符美化
+### bash 命令提示符美化
 
-终端工具应该开启透明效果，或在登陆脚本中设置环境变量开启256color显示
+终端工具应该设置256color显示，最好开启透明效果，或在登陆脚本中设置环境变量
 
     # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
@@ -659,7 +668,7 @@ figlet实现字符画钟表，在tmux里开一个正合适
     # 如果是pip安装的查看路径用 pip show powerline-status
     source /usr/share/powerline/bindings/bash/powerline.sh
 
-各种工具通用的颜色方案-北极
+各种字符显示工具通用的颜色方案-北极
 
     https://www.nordtheme.com/ports
 
@@ -671,9 +680,9 @@ vim、tmux 等众多工具的插件，大部分都依赖 powerline 进行状态�
 
     配置说明 https://powerline.readthedocs.io/en/master/configuration/reference.html
 
-powerline最大的优点是它的各种符号字体可以图形化的显示文件夹、电池、git状态、进度等。
+powerline 最大的优点是它的各种符号字体可以图形化的显示文件夹、电池、git状态、进度等。
 
-缺点是它的代码python2、3混杂，安装和使用都很难配置，所以现在有些插件都不使用它了。
+缺点是它的代码 python2、3 混杂，安装和使用都很难配置，所以现在有些插件都不使用它了。
 
 基础安装
 
@@ -2381,7 +2390,7 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
     先退出当前面板，返回到当前窗口的上一个面板，
     如果没有面板可用，则退出当前窗口，返回到当前会话的上一个窗口的某个面板，
-    如果所有窗口都退出了，当前的会话就会被关闭并退出tmux，其他会话继续运行。
+    如果当前会话的所有窗口都退出了，当前的会话就会被关闭并退出tmux，但其他会话继续运行。
 
     x       关闭当前面板，并自动切换到下一个，
             操作之后会给出是否关闭的提示，按y确认即关闭。
