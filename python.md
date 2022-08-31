@@ -1809,7 +1809,7 @@ python 套件为兼容老版本不用 pylance 的习惯，所以默认不安装 
 
 |            看代码                      |           看文字              |
 |----------------------------------------|------------------------------|
-|   MacOS Modern Theme：Xcode Catalina   |                               |
+|   MacOS Modern Theme：Xcode Catalina   | MacOS Modern Theme：Xcode Catalina |
 |   Nord                                 |                               |
 |   Winter is coming：Dark Blue          | Winter is coming：Dark Black   |
 |   Material Neutral Theme               |   Material Theme              |
