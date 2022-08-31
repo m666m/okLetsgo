@@ -25,28 +25,13 @@
     "editor.unicodeHighlight.includeStrings": false,
     "editor.unicodeHighlight.includeComments": false,
     "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize宽度而自动判断
-    "window.newWindowDimensions": "offset", // "offset" maximized
     "outline.showVariables": false,
-    "extensions.autoUpdate": false,  // 如果有插件升级后出问题，阻止自动升级
-    "python.terminal.activateEnvironment": false,  // 打开终端自动执行切换到指定环境，在cmd下使用conda可以设为True，如果在bash下使用conda会报错windows路径
-    "python.testing.unittestEnabled": true,
-    "python.analysis.autoImportCompletions": false,
-    "python.languageServer": "Pylance",
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true,
-    "python.linting.flake8Args": [
-        "--max-line-length=100"
-        // "--ignore=E501, E262",
-    ],
-    "python.formatting.provider": "yapf",
-    "python.formatting.yapfArgs": [
-        // "--sytle=yapf_style.cfg"
-    ],
-    "python.formatting.autopep8Args": ["--ignore","E402"],
     "diffEditor.ignoreTrimWhitespace": false,
-    "window.autoDetectColorScheme": true,
+    "window.newWindowDimensions": "offset", // "offset" maximized
+    "window.autoDetectColorScheme": false,  // 深色背景切换时会闪一下全白，很烦人
     "workbench.preferredDarkColorTheme": "MacOS Modern Dark - Big Sur Xcode Default",
     "workbench.preferredLightColorTheme": "MacOS Modern Light - Big Sur Xcode Default",
+    "workbench.colorTheme": "Winter is Coming (Dark Black)",
     "workbench.editor.wrapTabs": true,
     // https://code.visualstudio.com/api/references/theme-color
     // http://www.apeth.com/nonblog/stories/textmatebundle.html
@@ -79,6 +64,22 @@
         "**/.pytest_cache": true,
         "**/.vscode": true
     },
+    "extensions.autoUpdate": false,  // 如果有插件升级后出问题，阻止自动升级
+    "python.terminal.activateEnvironment": false,  // 打开终端自动执行切换到指定环境，在cmd下使用conda可以设为True，如果在bash下使用conda会报错windows路径
+    "python.testing.unittestEnabled": true,
+    "python.analysis.autoImportCompletions": false,
+    "python.languageServer": "Pylance",
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=100"
+        // "--ignore=E501, E262",
+    ],
+    "python.formatting.provider": "yapf",
+    "python.formatting.yapfArgs": [
+        // "--sytle=yapf_style.cfg"
+    ],
+    "python.formatting.autopep8Args": ["--ignore","E402"],
     //////////////////////////////////////////////////////////////////
     // 下面是插件设置
     // Trailing Spaces
@@ -92,19 +93,24 @@
         "MD046": false, //代码块缩进或围栏起来都可以
         "MD024": false  //不同标题下的子标题内容可以重复
     },
-    // PYQT Integration 根据你的python、conda、virtunalenv的不同，自行调整
+    // PYQT Integration 自行调整：
+    // 根据你的 python、conda、virtunalenv 的不同，在哪个环境下安装了 pyqt5-tools，就在哪个环境下安装 PYQT Integration。
+    // 先激活你的环境，然后用命令 `where/which designer.exe` 找一下，记下路径，填写到下面
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\Qt\\bin\\designer.exe",
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Library\\bin\\designer.exe",
-    "pyqt-integration.qtdesigner.path": "C:\\Users\\yourusername\\.conda\\envs\\p37\\Scripts\\designer.exe",
-    //"pyqt-integration.qtdesigner.path": "c:\\tools\\pyenvs\\your_virtualenv\\Lib\\site-packages\\qt5_applications\\Qt\\bin\\designer.exe",
+    // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\envs\\p37\\Scripts\\designer.exe",
+    "pyqt-integration.qtdesigner.path": "C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\designer.exe",
+    // "pyqt-integration.qtdesigner.path": "c:\\tools\\pyenvs\\your_virtualenv\\Lib\\site-packages\\qt5_applications\\Qt\\bin\\designer.exe",
     //
     // "pyqt-integration.pyuic.cmd":"C:\\ProgramData\\Anaconda3\\Library\\bin\\pyuic5.bat",
-    // "pyqt-integration.pyuic.cmd":"C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\pyuic5.bat",
-    "pyqt-integration.pyuic.cmd":"c:\\tools\\pyenvs\\your_virtualenv\\Scripts\\pyuic5.exe",
+    // "pyqt-integration.pyuic.cmd":"C:\\ProgramData\\Anaconda3\\envs\\p37\\Library\\bin\\pyuic5.bat",
+    "pyqt-integration.pyuic.cmd":"C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\pyuic5.bat",
+    // "pyqt-integration.pyuic.cmd":"c:\\tools\\pyenvs\\your_virtualenv\\Scripts\\pyuic5.exe",
     //
     // "pyqt-integration.pyrcc.cmd":"C:\\ProgramData\\Anaconda3\\Library\\bin\\pyrcc5.bat",
-    // "pyqt-integration.pyrcc.cmd":"C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\pyrcc5.bat",
-    "pyqt-integration.pyrcc.cmd":"c:\\tools\\pyenvs\\your_virtualenv\\Scripts\\pyrcc5.exe",
+    // "pyqt-integration.pyrcc.cmd":"C:\\ProgramData\\Anaconda3\\envs\\p37\\Library\\bin\\pyrcc5.bat",
+    "pyqt-integration.pyrcc.cmd":"C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\pyrcc5.bat",
+    // "pyqt-integration.pyrcc.cmd":"c:\\tools\\pyenvs\\your_virtualenv\\Scripts\\pyrcc5.exe",
     //
     "pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
     "pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
@@ -240,5 +246,4 @@
     //
     // 下面这些是vscode自己加的，随时变
     //
-    "workbench.colorTheme": "Winter is Coming (Dark Black)",
 }
