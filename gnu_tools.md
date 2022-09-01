@@ -4318,10 +4318,17 @@ Linux下新建用户密码过期时间是从/etc/login.defs文件中PASS_MAX_DAY
     lastb|awk '{print $1}'|sort|uniq
 
 端口是否可用
-    telnet 127.0.0.1 443
+
+    curl -vvv 127.0.0.1:443
+
     wget 127.0.0.1:443
 
+    ssh -vvv -p 443 127.0.0.1
+
+    telnet 127.0.0.1 443
+
 当前对外开放的监听端口
+
     # 127.0.0.1 只对本机开放
     # 0.0.0.0   外来连接也开放
     netstat -ant
@@ -4330,17 +4337,14 @@ Linux下新建用户密码过期时间是从/etc/login.defs文件中PASS_MAX_DAY
 
     sudo apt update && sudo apt -y install ncat
 
-    nc -l 端口
+    nc -l <端口>
 
-    nc 192.168.200.27 端口 后直接输入文字即可
+    nc 192.168.200.27 <端口>
+    然后直接输入文字即可简单通信
 
 icmp测试网络连通情况
 
     ping -t 192.168.0.1
-
-    tracert www.bing.com
-
-    traceroute
 
     # apt install dnsutils
     whois
@@ -4354,3 +4358,29 @@ icmp测试网络连通情况
     Name:    baidu.com
     Addresses:  220.181.38.148
             220.181.38.251
+
+查看路由节点
+
+    # apt install iputils
+    $ traceroute www.bing.com
+    traceroute to www.bing.com (204.79.197.200), 30 hops max, 60 byte packets
+    1  * * *
+    2  96.44.162.49.static.quadranet.com (96.44.162.49)  0.852 ms  0.896 ms  0.855 ms
+    3  lax1-fatpipe-1.it7.net (69.12.70.232)  1.818 ms lax1-fatpipe-1.it7.net (69.12.70.234)  0.327 ms lax1-fatpipe-1.it7.net (69.12.70.232)  1.711 ms
+    4  69.12.69.1 (69.12.69.1)  9.722 ms microsoft.as8075.any2ix.coresite.com (206.72.210.143)  2.802 ms 69.12.69.1 (69.12.69.1)  9.714 ms
+    5  * 206.72.211.94.any2ix.coresite.com (206.72.211.94)  1.325 ms *
+    6  * * *
+    7  * * *
+    8  * * *
+
+    # Windows: tracert www.bing.com
+
+查看 mtu
+
+    # apt install iputils
+    $ tracepath www.bing.com
+    1?: [LOCALHOST]                                         pmtu 1500
+    1:  no reply
+    2:  96.44.162.49.static.quadranet.com                     0.814ms
+    3:  lax1-fatpipe-1.it7.net                                2.990ms
+    4:  microsoft.as8075.any2ix.coresite.com                  5.255ms
