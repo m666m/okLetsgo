@@ -1247,7 +1247,13 @@ fuser 查看占用文件的进程号（sudo apt install psmisc）
     bucket : Show states, which are maintained as minisockets, i.e. time-wait and syn-recv.
     big : Opposite to bucket state.
 
-lsof列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof）
+查看ssh连接数
+
+    netstat -nat | grep -i ':22' | wc -l
+
+    sudo lsof -i :22 | wc -l
+
+lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof）
 
     $ sudo lsof -i
     COMMAND     PID     USER   FD   TYPE  DEVICE SIZE/OFF NODE NAME
