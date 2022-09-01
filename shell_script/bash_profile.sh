@@ -156,7 +156,7 @@ function PS1git-bash-new-line {
 
 function PS1git-bash-exitcode {
     local exitcode=$(printf "$?")
-    (($exitcode != '0')) && printf "%s" ' -'$exitcode' '
+    (($exitcode != 0)) && printf "%s" ' -'$exitcode' '
 }
 
 PS1="\n$magenta┌─$red\$(PS1git-bash-exitcode)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta$(PS1git-bash-new-line)──$white\$ $normal"
