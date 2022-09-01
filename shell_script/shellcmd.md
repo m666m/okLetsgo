@@ -1188,6 +1188,24 @@ sar 命令选项    功能
 
 ## 查看文件占用（含端口哦）
 
+可以看文件是shell类型、二进制类型，文本类型等
+
+    $ file .profile
+    .profile: UTF-8 Unicode text
+
+    $ file .
+    .: directory
+
+    $ file /etc/os-release
+    /etc/os-release: symbolic link to ../usr/lib/os-release
+
+    $ file /dev/null
+    /dev/null: character special (1/3)
+
+    # cat 查看有很多内容
+    $ file /proc/cpuinfo
+    /proc/cpuinfo: empty
+
 无论设备、端口、内存句柄等等，一切皆文件。
 
 lsof 查看进程打开的文件（sudo apt install lsof）
@@ -1271,16 +1289,6 @@ lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof）
     nginx     28988 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
     nginx     28989 www-data    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
     nginx     28989 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
-
-## 文件信息
-
-可以看文件是shell类型、二进制类型，文本类型等
-
-    $ file .profile
-    .profile: UTF-8 Unicode text
-
-    $ file .
-    .: directory
 
 ## 后台执行
 
