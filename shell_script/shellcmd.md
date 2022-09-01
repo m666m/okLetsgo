@@ -1247,11 +1247,11 @@ fuser 查看占用文件的进程号（sudo apt install psmisc）
     bucket : Show states, which are maintained as minisockets, i.e. time-wait and syn-recv.
     big : Opposite to bucket state.
 
-查看ssh连接数
+查看ssh连接数，指定端口号即可
 
-    netstat -nat | grep -i ':22' | wc -l
+    netstat -nat | grep -i ':22'
 
-    sudo lsof -i :22 | wc -l
+    sudo lsof -i :22
 
 lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof）
 
@@ -1271,10 +1271,6 @@ lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof）
     nginx     28988 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
     nginx     28989 www-data    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
     nginx     28989 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
-    nginx     28990 www-data    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
-    nginx     28990 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
-    nginx     28991 www-data    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
-    nginx     28991 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
 
 ## 文件信息
 
