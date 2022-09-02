@@ -4,6 +4,8 @@
 
     非常好用的shell语句分析解释 https://explainshell.com/explain?cmd=join+-1+1+-2+5++%3C%28file+*+%7C+sed+%27s%2F%5B%3A%2C%5D%2F%2Fg%27%29+%3C%28ls+--full-time+-h+%7C+awk+%27%7Bprint+%245%22+%22%246%22+%22%247%22+%22%248%22+%22%249%7D%27%29+%7C+column+-t
 
+    成套shell script 参考 https://github.com/jacyl4/de_GWD
+
 ## bash 常见符号用法
 
     http://c.biancheng.net/view/743.html
