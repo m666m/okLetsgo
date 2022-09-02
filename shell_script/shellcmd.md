@@ -6,6 +6,9 @@
 
     成套shell script 参考 https://github.com/jacyl4/de_GWD
 
+    Bash脚本指南 https://linux.die.net/abs-guide/
+                    https://linux.die.net/
+
 ## bash 常见符号用法
 
     http://c.biancheng.net/view/743.html

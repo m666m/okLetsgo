@@ -4,9 +4,6 @@
 
     Linux 命令速查 https://linux.die.net/man/
 
-    Bash脚本指南 https://linux.die.net/abs-guide/
-                    https://linux.die.net/
-
 ## Windows 下的 GNU/POSIX 环境
 
 ### 环境方案选择
@@ -17,9 +14,14 @@ Windows 10+ 下使用 WSL 开发 GNU 环境设置
 
 Windows C++ 开发环境配置
 
-    g++7.0 + git + cmake
+    g++ 7.0 + git + cmake
 
-    code::block / vscode
+    code::block / vscode / SourceInsight(WinSCP 同步本地和编译机代码，或 BeyondCompare 合并)
+
+    tmux + vim 直接在编译机写代码，方便随时ssh上去复原现场继续。
+
+    静态代码分析工具除了 SourceInsight，就是 [Understand](https://www.scitools.com/)，王者没有之一。
+        https://blog.csdn.net/jojozym/article/details/104722107
 
     库 toft + chrome + leveldb + folly + zeromq
 
@@ -2214,7 +2216,7 @@ map <C-n> :NERDTreeToggle<CR>
 
     "0p     从0号寄存器粘贴内容
 
-    "+yy    将内容复制到系统剪切板中，供其他程序使用
+    "+y    将内容复制到系统剪切板中，供其他程序使用
 
     使用系统剪贴板粘贴还是先进入文本模式，然后按 shift + Ins
 
@@ -2537,7 +2539,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 }
 ```
 
-##### 样例 ~/.tmux.conf 配置文件
+##### .tmux.conf 配置文件样例
 
 ```shell
 
@@ -2823,7 +2825,7 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     # 以 ASCII 码的形式显示文件aa.txt内容的，等效 -ta
     od -a aa.txt
 
-### find + grep + xargs 组合查找文件内容
+### find + grep + xargs 组合按内容查找文件
 
 查找指定文件
 
@@ -2843,16 +2845,16 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
     find ./ -name "*" -type f | xargs grep -in 'gitee'
 
-xargs命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说find的结果经过xargs后，其实将find找出来的文件名逐个作为了grep的参数。grep再在这些文件内容中查找关键字test。
+xargs 命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs 能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说 find 的结果经过 xargs 后，其实将 find 找出来的文件名逐个作为了 grep 的参数。grep 再在这些文件内容中查找关键字 test。
 
 ### 字符串处理 awk sed cut tr wc
 
-删除字符，主要用于截取字符串
+tr 删除字符，主要用于截取字符串
 
     $ echo "throttled=50.0"| tr -d "throttled="
     50.0
 
-按分隔符打印指定的字段
+cut 按分隔符打印指定的字段
 
     $ cat /etc/passwd| cut -d ':' -f7
     /bin/bash
@@ -2864,11 +2866,11 @@ awk 指定分隔符，可以用简单的语句组合字段
 
 sed 删除、替换文件中的字符串
 
-计算文本文件的行数，用于 vi 打开大文件之前先评估
+wc -l 计算文本文件的行数，用于 vi 打开大文件之前先评估
 
     wc -l README.rst
 
-要找的字符串所在的行号，便于 vi 打开文件后直接定位
+grep -i 要找的字符串所在的行号，便于 vi 打开文件后直接定位
 
     $ grep -in 'apt-get' README.rst
     20:     sudo apt-get install fonts-powerline
@@ -2877,7 +2879,7 @@ sed 删除、替换文件中的字符串
 
 前提条件
 
-    可以ssh登陆才能scp文件
+    可以 ssh 登陆才能 scp 文件
 
 基本用法
 
@@ -3103,7 +3105,6 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
 ```shell
 
 #!/bin/bash
-
 # A script to perform incremental backups using rsync
 
 set -o errexit
@@ -3253,7 +3254,6 @@ init 程序最先运行的服务是放在 /etc/rc.d/ 目录下的文件。
 ```shell
 
 #!/bin/sh
-
 ### BEGIN INIT INFO
 # Provides:       nginx
 # Required-Start:    $local_fs $remote_fs $network $syslog $named
@@ -4378,10 +4378,16 @@ icmp测试网络连通情况
 
 查看 mtu
 
-    # apt install iputils
-    $ tracepath www.bing.com
-    1?: [LOCALHOST]                                         pmtu 1500
-    1:  no reply
-    2:  96.44.162.49.static.quadranet.com                     0.814ms
-    3:  lax1-fatpipe-1.it7.net                                2.990ms
-    4:  microsoft.as8075.any2ix.coresite.com                  5.255ms
+    # apt install iputils-tracepath
+    ❯ tracepath www.baidu.com
+    1?: [LOCALHOST]                      pmtu 1500
+    1:  192.168.0.1                                           0.554ms
+    1:  192.168.0.1                                           0.670ms
+    2:  192.168.1.1                                           1.232ms
+    3:  192.168.1.1                                           1.182ms pmtu 1492
+    3:  39.71.56.1                                            3.526ms
+    4:  112.232.166.9                                         3.512ms
+    29:  no reply
+    30:  no reply
+    Too many hops: pmtu 1492
+    Resume: pmtu 1492

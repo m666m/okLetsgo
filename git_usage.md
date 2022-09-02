@@ -712,8 +712,8 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
     # 酌情合并代码到本地
     git merge 或 git rebase
     # 解决冲突
-    git add 冲突文件
-    git rebase –continue 或 git merge
+    git add -u 冲突文件
+    git rebase -–continue 或 git merge
 
     # 再确认下没问题了
     git status
