@@ -2202,7 +2202,7 @@ map <C-n> :NERDTreeToggle<CR>
     l  "4   104.88^J
     l  "5   104.188^J
     l  "6   ^J
-    l  "7       p74.117^J
+    l  "7     p74.117^J
     l  "8   ^J
     l  "9   ^Jaaa^Jbbbbbb^Jccc^Jxxx^J^Jff^Jfa^J
     c  "-   上一次删除的文本
@@ -2210,27 +2210,28 @@ map <C-n> :NERDTreeToggle<CR>
     c  "%   当前文件的名字
     c  "/   上一次查找的字符串
 
-在普通模式使用剪贴板，直接使用 "开头的寄存器名称加命令 操作即可
+在普通模式使用寄存器，直接使用 "开头的寄存器名称加命令 操作即可
 
-    "0p     表示从0号寄存器粘贴内容
+    "0p     从0号寄存器粘贴内容
 
     "+yy    将内容复制到系统剪切板中，供其他程序使用
 
-设置vim默认使用系统剪贴板
+    使用系统剪贴板粘贴还是先进入文本模式，然后按 shift + Ins
 
-    https://www.cnblogs.com/huahuayu/p/12235242.html
+也可以设置vim默认使用系统剪贴板 <https://www.cnblogs.com/huahuayu/p/12235242.html>
 
-确定vim支持+clipboard后，如果想y/p直接和系统剪贴板打通，可以在~/.vimrc中加上以下配置）：
+    确定vim支持 +clipboard后，如果想 y/p 直接和系统剪贴板打通，可以在~/.vimrc中加上以下配置）：
 
-    set clipboard^=unnamed,unnamedplus
+        set clipboard^=unnamed,unnamedplus
 
-其中unnamed代表*寄存器，unnamedplus代表+寄存器。在mac系统中，两者都一样；一般在linux系统中+和*是不同的，+对应ctrl + c,ctrl + v的桌面系统剪贴板，*对应x桌面系统的剪贴板（用鼠标选择复制，用鼠标中键粘贴）。
+    其中unnamed代表 *寄存器，unnamedplus 代表 +寄存器。在mac系统中，两者都一样；一般在linux系统中+和*是不同的，+对应ctrl + c,ctrl + v的桌面系统剪贴板，*对应x桌面系统的剪贴板（用鼠标选择复制，用鼠标中键粘贴）。
 
-服务器vim复制到本地剪贴板
+##### 服务器vim复制到本地剪贴板
 
 通过ssh连接到linux服务器时，vim是跑在远程服务器的，不能使用y复制到本地的剪贴板。这时有几个方法：
 
 cmd + c
+
 用鼠标选中文字cmd + c复制（windows下ctrl + c复制），cmd + v粘贴到本地。这个方法是最自然的，但是想要用这个方法有几个前提：
 
 vim配置中开启鼠标支持，.vimrc文件中加上
@@ -2241,7 +2242,7 @@ terminal客户端关闭mouse reporting选项，否则鼠标点击vim界面会进
 
 如果使用tmux，tmux需要配置支持鼠标滚轮，否则最多只能复制当前页面的内容
 
-本地vim通过scp编辑远程文件
+##### 本地vim通过scp编辑远程文件
 
 使用本地vim通过scp直接编辑远程文件。这样就可以使用本地寄存器"+y"复制了。这种方法对远程vim配置没有要求。
 
