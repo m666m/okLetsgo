@@ -2402,15 +2402,17 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
             操作之后会给出是否关闭的提示，按y确认即关闭。
             等同于当前所有面板的unix shell下Ctrl+d或输入exit命令。
 
-#### tmux 的 copy 模式
+#### tmux 的 copy 模式 -鼠标或光标选择
 
-可以处理屏幕内容，默认操作模式是emacs，可以设置为vi模式。
+查看历史输入时的翻页、移动光标等键绑定使用 vi 模式，原默认是 emac 模式
+
+    set-window-option -g mode-keys vi
 
 如果开启了鼠标滚屏，在终端工具中常用的鼠标右键粘贴等就不能用了
 
-    在 tmux 中不论选择还是复制时，都按住 Shift 键，你会发现熟悉的中键又回来了。
+    鼠标选择时，按住 Shift 键，然后y，即可复制到系统剪贴板，熟悉的中键又回来了。
 
-    用 Shift+Insert 快捷键将系统剪切板中的内容输入 tmux 中。
+    需要输入文字的编辑模式，用 Shift+Insert 可将系统剪切板中的内容输入 tmux 中。
 
 相对于 tmux 原生的选择模式（不加 shift 键），使用系统选择有个缺陷，即当一行内存在多个面板时，无法选择单个面板中的内容，这时就必须使用 tmux 自带的复制粘贴系统了ctrl+shift+c/v。
 
@@ -2549,8 +2551,8 @@ set-option -g history-limit 20000
 # 把前导键从 ctrl+b 改成 ctrl+x， M-a是Alt+a
 # set-option -g prefix C-x unbind-key C-b bind-key C-x send-prefix
 
-# 键绑定使用 vi 模式，原默认是 emac 模式
-# set-window-option -g mode-keys vi
+# 查看历史输入时的翻页、移动光标等键绑定使用 vi 模式，原默认是 emac 模式
+set-window-option -g mode-keys vi
 
 # 开启鼠标滚屏，鼠标点选当前面板。原默认是终端工具下发的滚轮选择历史命令。
 # https://github.com/hongwenjun/tmux_for_windows
