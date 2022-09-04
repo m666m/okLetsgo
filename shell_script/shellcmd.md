@@ -418,6 +418,22 @@ print('back to normal now')
         PATH="$HOME/.local/bin:$PATH"
     fi
 
+命令提示符、ls 和 grep 命令的彩色显示在 ~/.bashrc的代码中进行了设置
+
+```shell
+if [ -x /usr/bin/dircolors ]; then
+
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+```
+
 ## 目录结构
 
 linux的目录，有几个固定用途的，有些是文件系统挂载在这个目录上
