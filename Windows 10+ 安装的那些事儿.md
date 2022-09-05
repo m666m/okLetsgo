@@ -394,7 +394,7 @@ Debian包含一个由Microsoft签名的“shim”启动加载程序，因此可�
 
 对 Windows 10 + 来说，推荐直接使用 Windows 自带的系统映像备份，参见下面章节[系统映像备份]。
 
-## 技嘉 B560M AORUS PRO 主板 BIOS 打开网络唤醒功能
+## 主板 BIOS 打开网络唤醒功能
 
 根据产品规格指出，此产品有提供网络唤醒 (Wake On LAN) 的功能，但是找不到相关设定或是开关可以启用该选项。
 
@@ -405,7 +405,7 @@ Debian包含一个由Microsoft签名的“shim”启动加载程序，因此可�
 
 注意：确认 Windows 10 快速启动功能是否关闭，参见下面章节 [开启或关闭“快速启动”]  <https://www.asus.com.cn/support/FAQ/1045950>
 
-## 技嘉 B560M AORUS PRO 主板开启待机状态 USB 口供电功能和定时自动开机功能
+## 主板开启待机状态 USB 口供电功能和定时自动开机功能
 
 BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产品节能要求）选项选择开启，
 
@@ -540,7 +540,8 @@ PBP分屏注意
     设置：隐私策略各种关闭，这个大部分都是针对 app 商店里的应用，有空的时候挨个琢磨吧
 
 打开 Windows store，菜单选择“settings”，把“App updates”的“Update apps automatically”选项抓紧关闭了，太烦人了！
-商店应用默认不提供卸载选项，解决办法见下面章节 [删除无关占用 cpu 时间的项目]
+
+Windows 商店应用默认不提供卸载选项，解决办法见下面章节 [删除无关占用 cpu 时间的项目]
 
 如果有程序开机就启动挺烦人的，运行“msconfig”，在启动选项卡进行筛选
 
@@ -559,8 +560,11 @@ Windows 10 系统安全的基础目前有向虚拟化方面加强的趋势，所
 Windows 10 默认的虚拟化功能开放的较少，增强功能需要手动安装：设置->应用->应用和功能->可选功能，点击右侧的“更多 Windows 功能”，弹出窗口选择“启用和关闭 Windows 功能”：
 
     Hyper-V (Windows Hypervisor)
+
     Windows 虚拟机监控程序平台 (Windows Hypervisor Platform)
+
     虚拟机平台 (Virtual Machine Platform)
+
     适用于 Linux 的 Windows 子系统（这个是WSL安装 Linux 用的，不是安全必备，顺手装上吧）
 
 关于这几个功能的解释
@@ -586,6 +590,7 @@ Windows 10 默认没有安装的某些增强性安全功能组件是依赖虚拟
     设置->应用->应用和功能->可选功能，点击右侧的“更多 Windows 功能”，弹出窗口选择“启用和关闭 Windows 功能”：
 
         Microsoft Defender 应用程序防护
+
         Windows 沙盒(Windows Sandbox)
 
 + 设置 Windows安全中心
