@@ -827,7 +827,8 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 
 #### Nerd font
 
-    https://github.com/ryanoasis/nerd-fonts
+    https://www.nerdfonts.com/font-downloads
+        https://github.com/ryanoasis/nerd-fonts
 
 原理和 Powerline fonts 是一样的，也是针对已有的字体打 patch，把一些 icon 字符插入进去。不过 Nerd font 就比较厉害了，是一个“集大成者”，他几乎把目前市面上主流的 icon 字符全打进去了，包括上面刚刚提到的 powerline icon 字符以及 Font Awesome 等几千个 icon 字符。
 
@@ -846,6 +847,8 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 代码编辑器推荐安装 FiraCode NF 字体，该字体支持连字符，Windows 用户找带 Windows 字样的下载即可
 
     https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
+
+字体名称的区别在于，“Code”变体包含连字，而“Mono”变体不包含连字，“PL”字样是支持PowerLine图形。
 
 简单测试几个 unicode 扩展 NF 字符
 
