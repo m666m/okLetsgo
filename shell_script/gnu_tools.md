@@ -2236,32 +2236,34 @@ autocmd VimEnter * call TabPos_Initialize()
     r   跳过|lit-enter|提示
     A   在可视模式下自动选择
 
-'mouse' 的缺省值为空，即不使用鼠标。
+'mouse' 的缺省值为空，即不响应鼠标
 
-打开鼠标功能
+    这时用鼠标在 vim 中选择，会进入可视模式，但只响应终端工具的右键菜单操作，而不会响应vim自己的热键操作。
+
+    也就是说，你用鼠标进入的这个可视模式，vim 不会响应热键做y复制、d删除等操作。
+
+打开鼠标功能，就会使你的vim响应你的鼠标选择了，即在鼠标选择进入的可视模式中，你可以使用vim热键了
 
     # 等价于设置 'mouse' 为 "nvich"
     :set mouse=a
 
-关闭鼠标功能
+    关闭鼠标功能
 
     :set mouse-=a
     或
     :set mouse=""
 
-设置鼠标在普通模式和可视模式下工作
+    设置鼠标在普通模式和可视模式下工作
 
     :set mouse=nv
 
 鼠标能否在可视模式或者选择模式下开始选择，决定于 "selectmode" 选项包不包括"mouse"。
 
-解决鼠标模式右键不能粘贴问题
-
-用鼠标和可视模式复制/粘贴 ('mouse' 选项必须设置，见上):
+所以，如果你开启了鼠标功能，则在鼠标选择进入的可视模式下复制/粘贴，操作模式如下
 
     在文本的第一个字符上按鼠标左键，拖动鼠标到文本的最后一个字母，然后释放左键。这会启动可视模式并高亮选择区域。
 
-    按 "y" 抽出可视文本到无名寄存器里。
+    按 "y" 抽出可视文本到 vim 无名寄存器里。
 
     移动光标到要插入的位置，或按鼠标左键选择插入位置，光标在此处闪动。
 
@@ -2270,6 +2272,38 @@ autocmd VimEnter * call TabPos_Initialize()
 不要使用模仿 Windows 鼠标习惯的一个mswin.vim， 如“Ctrl + A”全选、 “Ctrl + C”复制、 “Ctrl + V”粘贴等等， 这些快捷键与 VIM 本身的快捷键有不少是冲突的：部分原有的快捷键映射成了别的键， 例如把“Ctrl + V”(矩形块选择)改成了粘贴， 而原有的“Ctrl + V”改成了“Ctrl + Q”； 还有部分快捷键就彻底没有了， 如原有的“Ctrl + A”(将当前光标所在的数字加 1)改成了全选， 而原有的相应功能就找不到了。
 
     :behave mswin
+
+##### 服务器vim复制到本地剪贴板
+
+当通过终端工具用 ssh 连接到 linux 服务器上使用 vim 时，使用热键y只能复制到vim的寄存器，无法复制到用户终端所在的本地操作系统的剪贴板。
+
+简单的方法
+
+一般终端工具，在命令行时的默认行为是 x-Window 下的，鼠标选择即复制，中键（或右键或 shift+ins）粘贴，这个是操作系统剪贴板。
+
+在 vim 中，用鼠标选择，默认会进入可视模式进行多选，然后按右键，在终端工具的弹出菜单选：复制，这样即可复制到系统剪贴板。然后可以在文本编辑模式下，用 shift+ins 来粘贴了，这个也是读取的系统剪贴板。
+
+复杂的方法
+
+cmd + c
+
+用鼠标选中文字cmd + c复制（windows下ctrl + c复制），cmd + v粘贴到本地。这个方法是最自然的，但是想要用这个方法有几个前提：
+
+vim配置中开启鼠标支持，.vimrc文件中加上
+
+    set mouse=a
+
+终端工具关闭mouse reporting选项，否则鼠标点击vim界面会进入visual模式。
+
+如果使用tmux，tmux需要配置支持鼠标滚轮，否则最多只能复制当前页面的内容
+
+冷门点的解决办法：本地 vim 通过 scp 编辑远程文件
+
+使用本地vim(要求本机是linux)通过scp直接编辑远程文件。这样就可以使用本地寄存器"+y"复制了。这种方法对远程vim配置没有要求。
+
+    vim scp://remoteuser@server.com//absolute/path/to/file
+
+注意 com 和 absolute 间是两个反斜杠//并不是敲错了。
 
 #### vi中的删除是剪切操作--寄存器
 
@@ -2336,30 +2370,6 @@ autocmd VimEnter * call TabPos_Initialize()
         set clipboard^=unnamed,unnamedplus
 
     其中unnamed代表 *寄存器，unnamedplus 代表 +寄存器。在mac系统中，两者都一样；一般在linux系统中+和*是不同的，+对应ctrl + c,ctrl + v的桌面系统剪贴板，*对应x桌面系统的剪贴板（用鼠标选择复制，用鼠标中键粘贴）。
-
-##### 服务器vim复制到本地剪贴板
-
-通过ssh连接到linux服务器时，vim是跑在远程服务器的，不能使用y复制到本地的剪贴板。这时有几个方法：
-
-cmd + c
-
-用鼠标选中文字cmd + c复制（windows下ctrl + c复制），cmd + v粘贴到本地。这个方法是最自然的，但是想要用这个方法有几个前提：
-
-vim配置中开启鼠标支持，.vimrc文件中加上
-
-    set mouse=a
-
-terminal客户端关闭mouse reporting选项，否则鼠标点击vim界面会进入visual模式。
-
-如果使用tmux，tmux需要配置支持鼠标滚轮，否则最多只能复制当前页面的内容
-
-##### 本地vim通过scp编辑远程文件
-
-使用本地vim通过scp直接编辑远程文件。这样就可以使用本地寄存器"+y"复制了。这种方法对远程vim配置没有要求。
-
-    vim scp://remoteuser@server.com//absolute/path/to/file
-
-注意com和absolute间是两个反斜杠//并不是敲错了。
 
 ### tmux 不怕断连的多窗口命令行
 
@@ -2531,7 +2541,7 @@ vim 模式下复制到 Windows 剪贴板
 
     set-window-option -g mode-keys vi
 
-如果开启了鼠标滚屏，在终端工具中常用的鼠标右键粘贴等就不能用了
+建议开启鼠标滚屏，这样可以用滚轮方便的查看历史输出。不过，在终端工具中常用的鼠标右键粘贴等就不能用了，需要换个操作方式：
 
     鼠标选择时，按住 Shift 键，选择完毕后，按 y，即可复制到系统剪贴板，熟悉的中键又回来了。
 
@@ -2539,7 +2549,7 @@ vim 模式下复制到 Windows 剪贴板
 
 相对于 tmux 原生的选择模式（不加 shift 键），使用系统选择有个缺陷，即当一行内存在多个面板时，无法选择单个面板中的内容，这时就必须使用 tmux 自带的复制粘贴系统了ctrl+shift+c/v。
 
-右键单击tmux窗格，是个标记作用，该窗格的边框会加粗显示。
+右键单击tmux窗格，是做标记，该窗格的边框会加粗显示，脚本里可以引用，界面操作无感。
 
 #### tmux 开机自启动
 
@@ -2669,6 +2679,8 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 ##### .tmux.conf 配置文件样例
 
 ```shell
+# 按完前导 ctrl+B 后，再按冒号即可进入命令行模式
+# 下列命令在 tmux 的命令行模式一样可以使用
 
 # 窗口保存的历史内容行数
 set-option -g history-limit 20000
@@ -2676,7 +2688,7 @@ set-option -g history-limit 20000
 # 把前导键从 ctrl+b 改成 ctrl+x， M-a是Alt+a
 # set-option -g prefix C-x unbind-key C-b bind-key C-x send-prefix
 
-# 查看历史输入时的翻页、移动光标等键绑定使用 vi 模式，原默认是 emac 模式
+# 查看历史输入时的翻页、移动光标等键绑定使用 vi 模式，原默认是 emacs 模式
 set-window-option -g mode-keys vi
 
 # 开启鼠标滚屏，鼠标点选当前面板。原默认是终端工具下发的滚轮选择历史命令。
@@ -2688,7 +2700,7 @@ set-option -g mouse on
 # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
 set -g default-terminal screen-256color
 
-# 使用nord主题，可注释掉 powerline
+# 状态栏使用 nord 主题，替换掉 powerline
 # run-shell 'powerline-config tmux setup'
 run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
