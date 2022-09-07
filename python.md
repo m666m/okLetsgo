@@ -1693,29 +1693,29 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
     https://stackoverflow.com/questions/42707896/vscode-keep-asking-for-passphrase-of-ssh-key
 
-你已经设置过ssh代理进程缓存密钥的保护密码
+问题现象
+
+    vscode + Git for Windows 使用 ssh 登陆 git 的服务器，每次 pull 代码或 fetch 代码，都会提问 ssh 密钥的保护密码。特别是如果 vscode 设置了选项：自动同步（"git.autofetch": true），会频繁提示输入密钥的保护密码。
+
+    点击 vscode 的 git 代码同步功能的按钮会报错 ssh 密钥验证失败，而你在终端窗口运行 push、pull 都不会报错。
+
+而你已经设置过ssh代理进程缓存密钥的保护密码
 
     在 bash 窗口运行过 ssh-agent 并且已经添加了密钥，ssh 连接网站时，不需要再输入 ssh 密钥的保护密码了。
 
     或在 cmd 窗口里运行过 start-ssh-agent.cmd 并且已经添加了密钥，ssh 连接网站也不需要输入 ssh 密钥的保护密码了。
 
-    或 在 bash 窗口已经运行过 ssh-pageant 代理进程，共享使用了 putty 的 pageant.exe 的ssh-agent功能，在 bash 或 putty 中 ssh 连接网站都不需要输入 ssh 密钥的保护密码了。
+    或 在 bash 窗口已经运行过 ssh-pageant 代理进程，共享使用了 putty 的 pageant.exe 的 ssh-agent 功能，在 bash 或 putty 中 ssh 连接网站都不需要输入 ssh 密钥的保护密码了。
 
-    或在 cmd 窗口里运行过 start-ssh-pageant.cmd，共享使用了 putty 的 pageant.exe 的ssh代理功能，在 cmd 或 putty 中 ssh 连接网站也不需要输入 ssh 密钥的保护密码了。
-
-问题现象
-
-    vscode + Git for Windows 使用ssh登陆git的服务器，每次pull代码或fetch代码，都会提问ssh密钥的保护密码。特别是如果设置了选项 自动同步（"git.autofetch": true），会频繁提示输入密钥的保护密码。
-
-    点击 vscode 的git代码同步功能的按钮会报错ssh密钥验证失败，而你单独打开bash终端窗口运行push、pull都成功。
+    或在 cmd 窗口里运行过 start-ssh-pageant.cmd，共享使用了 putty 的 pageant.exe 的 ssh 代理功能，在 cmd 或 putty 中 ssh 连接网站也不需要输入 ssh 密钥的保护密码了。
 
 解决办法
 
-法一： 在 git bash 里运行命令 code 打开 vscode，这样会继承ssh代理进程设置的环境变量 SSH_AUTH_SOCK，vscode 就不会问密码了（如果是cmd执行 start-ssh-agent.cmd 的窗口不能关）。如果需要打开多个 vscode 实例，在任务栏的 vscode 图标右键选择“新窗口”。偶发问题：在退出git bash的最后一个实例前，要先关闭code，否则再重新运行git bash时会报错打不开。
+法一： 在已经运行过 ssh 代理进程缓存密钥的终端窗口里运行命令 `code` 打开 vscode，这样会继承 ssh 代理进程设置的环境变量 SSH_AUTH_SOCK，vscode 就不会问密码了（如果是cmd执行 start-ssh-agent.cmd 的窗口不能关）。如果需要打开多个 vscode 实例，在任务栏的 vscode 图标右键选择“新窗口”。偶发问题：在退出 git bash 的最后一个实例前，要先关闭 vs code，否则再重新运行 git bash 时会报错打不开。
 
-法二： 使用 Windows 10 自带的 OpenSSH，打开服务 SSH-AGENT 的自动运行，每次开机后在 power shell 提示窗口执行 ssh-add 添加你的密钥，并设置 vscode 也使用 Windows 10 自带的 OpenSSH，而不要用自行安装的ssh。
+法二： 使用 Windows 10 自带的 OpenSSH，启用服务 SSH-AGENT 的自动运行，设置 vscode 使用 Windows 10 自带的 OpenSSH，而不要用自行安装的 Git for Windows 的 ssh。开机后在 power shell 提示窗口执行一次 `ssh-add` 缓存你的密钥，后续也不会被提示输入密码了。
 
-法三：取消ssh密钥的保护密码，执行命令 ssh-keygen -p 提示新密码时直接回车。
+法三：取消 ssh 密钥的保护密码：执行命令 `ssh-keygen -p` 提示新密码时直接回车。
 
 ## vscode 插件
 
@@ -2105,19 +2105,21 @@ source runsnake/bin/activate
 
 python出来的时间太早了，80年代的操作系统只支持英文，所以绝大多数软件也只支持英文编码 ANSI。
 
-90年代，微软 Windows 生意做到了全球，所以推出了各种本地化版本，比如中国大陆版的中文 Windows 95，使用 GB-2132 编码，该标准兼容英文的ANSI，操作系统内置的中文字体支持正常显示中文字符，而要查看来自日本、韩国、港台等使用其它编码规则字符的文件，需要安装个转码软件，才能正常的显示字符，有时候还需要安装对应的字体文件。后来标准扩展了叫 gbk，也称 cp-936.
+90年代，微软 Windows 生意做到了全球，所以推出了各种本地化版本，比如中国大陆版的中文 Windows 95，使用 GB-2132 编码，该标准兼容英文的ANSI，Windows 内置中文字体支持正常显示该编码的中文字符。而港台日韩等地区的本地化 Windows 版本也有自己的编码标准，都不一致。所以，在中文 Windows 下要查看来自日本、韩国、港台等使用其它编码规则字符的文件，需要安装个转码软件，才能正常的显示字符，有时候还需要安装对应的字体文件。
 
-2000年代，全球的语言编码太多了，各种本地化版本操作系统下生成的文本文件，在别人的系统上经常出现不支持正常显示字符的问题，如果不知道文件来源，接收方甚至无法手动指定转码软件使用何种规则解码。
+大陆的 GB-2132 后来标准扩展了叫 gbk，也称 cp-936.
+
+带来的问题是，全球的语言编码太多了，各种本地化版本操作系统下生成的文本文件，在别人的操作系统上不支持正常显示字符，必须安装转码软件或字体文件，如果不知道文件来源，接收方甚至无法手动指定转码软件使用何种规则解码。
 
 所以，国际化统一标准来了，通用编码规则 UTF，目的是分区域的把全人类用的字符都装里面叫 unicode ，一般使用的是 UTF-8 编码规则，使用UTF规则进行编码是大势所趋。
 
-这时候微软的 Windows、Office 的各种本地化版本就尴尬了，比如中文版 Windows，即便到了2010年代的版本，操作系统的代码页还是GBK，一般编辑软件都是跟随当前操作系统代码页的设置，导致你打开个utf-8编码的文本文件都无法正常显示，需要手动选择切换编码方式。
+全球大多数软件都操作系统设置的本地规则编码解码字符，即读取操作系统的区域语言设置。如果操作系统设置为是 gbk，这些软件默认设置下是无法显示 UTF-8 编码的文件的。
 
-全球大多数软件都是用本地的规则编码字符的，即读取操作系统的区域语言设置。如果操作系统设置为是gbk，这些软件都会无法正确显示你的UTF-8字符。
+比如中文版 Windows，即便到了2010年代的版本，操作系统的代码页还是GBK，一般文字编辑软件都是跟随当前操作系统代码页的设置，导致你打开个utf-8编码的文本文件都无法正常显示，需要手动选择切换编码方式。包括微软的 Windows、Office 的各种本地化版本，都有这种问题。
 
-如果你修改了操作系统的代码页设置为默认编码UTF-8， Windows、Office 可以正常显示UTF-8文件了，打开gbk文件又乱码了。。。想正确显示还是得手动指定编码规则。
+如果你修改了操作系统的代码页设置为默认编码 UTF-8， Windows、Office 可以正常显示 UTF-8 文件了，打开 gbk 文件又乱码了。。。想正确显示还是得手动指定编码规则。
 
-有些老程序没做操作系统代码页适配就玩不转了，比如 CMD 命令行窗口，执行命令：dir c:\，如果操作系统使用UTF-8编码，会报错不认识这些字，需要手动设置cmd的参数，设置代码页。为嘛这么麻烦呢？ cmd 这货来自dos，当年dos操作系统就需要用户手动设置代码页，为保持对老系统的使用习惯兼容，这没法改。所以后来微软搞了 power shell，想抛弃 cmd，这也是一个原因。仅对微软来说，光是让 Windows 操作系统内置的程序都可以默认使用操作系统代码页都是一件很头疼的事，何况全球范围的各大软件呢。
+有些老程序没做操作系统代码页适配就玩不转了，比如 CMD 命令行窗口，执行命令：dir c:\，如果操作系统使用 UTF-8 编码，会报错不认识这些字，需要手动设置 cmd 的参数，设置代码页。为嘛这么麻烦呢？ cmd 这货来自 dos，当年 dos 操作系统就需要用户手动设置代码页，为保持对老系统的使用习惯兼容，就一直这样了。所以后来微软搞了 power shell，想抛弃 cmd，这也是一个原因。仅对微软来说，光是让 Windows 操作系统内置的程序都可以默认使用操作系统代码页都是一件很头疼的事，何况全球范围的各大软件呢。
 
     CMD 命令 chcp 手动设置当前会话的代码页
 
@@ -2127,11 +2129,11 @@ python出来的时间太早了，80年代的操作系统只支持英文，所以
     936         简体中文默认的GBK
     437         MS-DOS 美国英语
 
-如果你切换命令行环境 mintty 的代码页为 gbk，执行命令 ls，好，正常显示列表的文件名了，。执行下 tail 命令打开个 utf-8 的日志文件，显示出来还会是乱码，因为它使用的打开文件的函数，默认去适配当前操作系统代码页读取文件。这一切的混乱来自于，你还在使用Windows 7 gbk...
+如果你切换命令行环境 mintty 的代码页为 gbk，执行命令 ls，好，正常显示列表的文件名了，。执行下 tail 命令打开个 utf-8 的日志文件，显示出来还会是乱码，因为 tail 命令使用的打开文件的函数，默认去适配当前操作系统代码页读取文件，晕了没。
 
-Windows 下 python 代码，有个非常常见的运行时报错：只要该代码使用函数 open() 打开文件，大多数都使用默认的设置即操作系统代码页，导致打开现在流行的 utf8 编码的文本文件都报错。。。为嘛？ 因为 Windows 7 到2020年代还在广泛使用，默认代码页是 gbk 啊。。。
+在 Windows 下的 python 代码，有个常见的运行时报错：只要该代码使用函数 open() 打开文件，大多数程序都使用默认的设置即操作系统代码页，导致打开现在流行的 utf8 编码的文本文件都报错。。。
 
-所以，各个软件切换使用UTF编码不够统一，使用上总是有一定的混乱。而为保持兼容性，直到2010年代后的 Windows 和 Office 才开始慢慢的切换为默认使用UTF编码，对于你原来使用了GBK编码的文件，会自动判断并转换为UTF-8编码进行显示，这时你的使用体验是无感的。但是对编程来说，单个或几个字符的字符串，就不大好猜了，需要明确指定编码方式。
+所以，各个软件切换使用 UTF 编码不够统一，使用上总是有一定的混乱。而为保持兼容性，直到 2010 年代 Windows 记事本 和 Office 才开始慢慢的切换为默认使用UTF编码，对于你原来使用了 ANSI/GBK 编码的文件，会自动判断并转换为 UTF-8 编码进行显示，这时你的使用体验是无感的。但是对小文件来说，单个或几个字符的字符串，就不大好猜了，需要明确指定编码方式。
 
 ### python的字符编码问题
 
@@ -2141,7 +2143,7 @@ python 1 只支持 ansi 编码方式，这个是很久远的历史了，那个�
 
 python 2 的问题，在于支持全球的本地化代码页的解释方式。
 
-你在本地化版本Windows下建立.py文件，有些编辑器（如记事本）默认使用的文本编码是当前操作系统的代码页，有些编辑器（如vs code）默认使用UTF-8等。试一下用中文Windows自带的记事本，保存内容到一个.py文件，你会发现是GBK编码。
+你在本地化版本Windows下建立.py文件，有些编辑器（如记事本）默认使用的文本编码是当前操作系统的代码页，有些编辑器（如vs code）默认使用UTF-8等。试一下用中文Windows自带的记事本，保存内容到一个.py文件，你会发现是GBK编码（Windows 10的后期版本已经改为默认 UTF-8编码了）。
 
 而 python 2 对.py文件的读取，默认使用 ANSI 编码，它不跟随当前操作系统的代码页，估计是为了保持源代码共享时原文件的解释一致性。这样导致了，代码里只要出现中文字符就报错。
 
@@ -2154,9 +2156,9 @@ print 'abcdefg'
 # 中文注释都报错
 ```
 
-所以制定了一个规则，统一手动控制，在.py文件的第1或2行写“# coding：utf-8”，明确告知python 2这个文件的编码使用UTF-8。当然，这样要求你使用的编辑器，在保存的文件时，必须指定UTF-8编码方式。或者尝试下指定为GBK，python 2读取该文件是不报错的。
+所以制定了一个规则，统一手动控制，在.py文件的第1或2行写“# coding：utf-8”，明确告知python 2这个文件的编码使用UTF-8。当然，这样要求你使用的编辑器，在保存的文件时，有选项指定使用 UTF-8 编码方式。或者尝试下指定为GBK，python 2 读取该文件是不报错的。
 
-.py文件的编码格式使用UTF-8就没问题了？不是！
+.py文件的编码格式使用 UTF-8 就没问题了？不是！
 
     python 2 对代码中字符串的处理，与对.py文件的读取，处理逻辑是不一致的，你光设置了.py文件使用UTF-8格式编码是不够的
 
@@ -2169,9 +2171,9 @@ print 'abcdefg'
 print '这行用中文报错'
 ```
 
-python 2 对代码中的字符串，默认使用 ANSI 编码进行解释，即使你的.py文件是UTF-8编码保存的，python 2在解释你的python代码时，遇到字符串里的中文字符还是会报错：“UnicodeDecodeError: 'ascii' codec can't decode byte ......”
+python 2 对代码中的字符串，默认使用 ANSI 编码进行解释，即使你的 .py 文件是 UTF-8 编码保存的，python 2 在遇到字符串里的中文字符还是会报错：“UnicodeDecodeError: 'ascii' codec can't decode byte ......”
 
-所以对python代码里的中文字符串，还得加个前缀u表示该字符串使用unicode编码。或者用函数.encode()指定。
+所以对 python2 代码里的中文字符串，还得加个前缀 u 表示该字符串使用 unicode 编码，或者用函数.encode()指定。
 
 ```python
 # coding：utf-8
@@ -2184,18 +2186,28 @@ print '这行用中文转码为UTF-8也不报错'.decode('UTF-8')
 print '这行用中文会默认被用ansi解码导致报错'
 ```
 
-在python 2 中使用的各个包，都是全球网友自制的，使用的各种字符编码方式都有，所以很多时候你加载别的包，用它的函数处理字符串的时候，如果遇到报错，还是得指定编码方式，以适应它能够处理的字符集，如
+在python 2 中使用的各个包，都是全球网友自制的，使用各种字符编码方式都有可能，有的是 ansi，有的是 utf-8。所以很多时候你加载别人的包，使用它的函数获取的结果是字符串的时候，还得指定下编码方式，以防止报错，如
 
-    my_str = received_from_other_pkg_string.decode('UTF-8')
+    my_str1 = received_from_other_pkg_string.decode('UTF-8')
 
-    other_pkg_function(hell_str.encode('UTF-8'))
+    other_pkg_function(my_str2.encode('UTF-8'))
 
-简单来说，所有的包、所有的文件、所有的字符串默认都用UTF-8编码是最好的了。
+简单来说，所有的包、所有的文件、所有的字符串默认都用 UTF-8 编码是最好的了。
 
 这就得等到 python 3 才统一。
 
-但是你在python 3里用到个谁写包不处理字符串编码也不是没有可能，比如，python 3 内置的open()函数，必须指定解码方式 encoding='UTF-8'，否则默认使用当前操作系统的代码页，在中文Widnows下是GBK。
+那统一了 .py 文件的编码方式就完事了么？ 不！程序中输入输出的字符串编码方式，还没统一呢。
 
-邪门吧？python 2打开.py文件默认用ansi编码，但是内置的函数如open()默认用当前操作系统设置的代码页。
+很多包或内置函数都不指定字符编码方式，即默认使用当前操作系统的代码页设置，你调用这些包或函数获取到的字符串，可能需要转码才是 utf-8。如果你使用的是中文版 Windows，你或别人的包用 open() 函数打开文件时，如果不指定转换编码规则，读取到的字符串是 gbk 编码，你的 .py 文件中各种操作默认是 utf-8，会报错。
 
-pip install  -r 命令使用这个open函数打开文件时，不带encoding参数。所以对命令`pip install -r requirements.txt`，如果 requirements.txt 文件使用了UTF-8编码，且里面有中文注释，在中文Windows下会报错 UnicodeDecodeError: 'gbk' codec can't decode byte...。解决办法是，该文件转换编码为GBK，或者你去修改 pip 命令的.py文件，加上encoding参数指定'UTF-8'。
+所以，从输入输出流等获取到的字符串，需要转码为 utf-8 才能用。
+
+比如，python 内置的 open() 函数，必须指定解码方式 encoding='UTF-8'，否则默认使用当前操作系统的代码页，在中文 Widnows 下是 GBK。
+
+    python2 解释 .py 文件默认用 ansi 编码，你为了保持统一，设置 .py 文件头声明用 utf-8，只是解决了文件的编码方式问题。如果遇到使用 python 内置的 open() 函数。如果是中文 Windows ，这就不一致了，需要转码的。
+
+    python3 一样的问题，它比 python2 就是多了个默认读取 .py 文件使用 UTF-8 编码，内置的 open() 函数还是一样的习惯。。。
+
+常见的一个就是 `pip install  -r` 命令使用这个 open() 函数打开文件时，未指定encoding参数。所以对命令`pip install -r requirements.txt`，如果 requirements.txt 文件使用了UTF-8编码，且里面有中文注释，在中文Windows下会报错 UnicodeDecodeError: 'gbk' codec can't decode byte...。解决办法是，该文件转换编码为GBK，或者你去修改 pip 命令的 .py 文件，找到调用 open() 的地方，加上encoding参数指定'UTF-8'。
+
+对网络爬取的包比如 request/lxml，花样更多了，它还会根据读取到的 html 文件中写的编码方式转换缓冲区，最终你对缓冲区获得的字符串，很可能需要再转一次 utf-8 或 gbk 才能正常使用。
