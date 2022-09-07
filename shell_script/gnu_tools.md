@@ -1463,6 +1463,9 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
     推荐北极 https://www.nordtheme.com/ports/vim
 
+    vim-airline 和 lightline 都内置的一个养眼主题
+        papercolor https://github.com/NLKNguyen/papercolor-theme
+
     material https://github.com/material-theme/vsc-material-theme
 
     夜猫子 https://github.com/sdras/night-owl-vscode-theme
@@ -1597,7 +1600,7 @@ Why yet another clone of powerline?
 
 这个比较简洁，只有状态栏工具和颜色方案。最大的优点是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
-##### 插件 nerdtree 的热键
+##### nerdtree 树形文件夹插件的热键
 
 切换目录树显示，在 ~/.vimrc 配置文件中定义为 Ctrl-n
 
@@ -1618,24 +1621,27 @@ Why yet another clone of powerline?
     回车    打开的的文件默认是vim的多个文件模式，即添加到缓冲中了，需要用命令 :ls 来显示， :b 2 切换
             注意缓冲中的编号不是1，2，3的顺序分布
 
-    ?   切换是否显示 nerdtree 的快捷帮助
-
-    e   在目录树上按e，则在右侧窗格显示目录内容，光标键进行选择操作即可，再次按e退出
-
-    K   跳到当前目录下同级的第一个结点
-    J   跳到当前目录下同级的最后一个结点
-
     t   在新 Tab 中打开选中文件/书签，并跳到新 Tab，或命令 :NERDTree-t
     T   在新 Tab 中打开选中文件/书签，但不跳到新 Tab，或命令 :NERDTree-T
+    切换 tab 的热键见 vim 快捷键
 
     o   在已有窗格中打开文件、目录或书签，并跳到该窗口，或命令 :NERDTree-o
     go  在已有窗格中打开文件、目录或书签，但不跳到该窗口，或命令 :NERDTree-go
 
     i   切割一个新窗格打开选中文件，并跳到该窗口，或命令 :NERDTree-i
     gi  split一个新窗格打开选中文件，但不跳到该窗口，或命令 :NERDTree-gi
-    s   vsp一个新窗格打开选中文件，并跳到该窗口，或命令 :NERDTree-s
-    gs  vsp一个新窗格打开选中文件，但不跳到该窗口，或命令 :NERDTree-gs
+
+    s   垂直分割一个新窗格打开选中文件，并跳到该窗口，或命令 :NERDTree-s
+    gs  垂直分割一个新窗格打开选中文件，但不跳到该窗口，或命令 :NERDTree-gs
+
+    e   在目录树上按e，则在右侧窗格显示目录内容，光标键进行选择操作即可，再次按e退出
+
+    K   跳到当前目录下同级的第一个结点
+    J   跳到当前目录下同级的最后一个结点
+
     !   执行当前文件，或命令 :NERDTree-!
+
+    ?   切换是否显示 nerdtree 的快捷帮助
 
 ##### 插件管理器 vim-addon-manager
 
@@ -1742,6 +1748,9 @@ Plugin 'scrooloose/nerdtree'
 " https://www.nordtheme.com/ports/vim
 Plugin 'arcticicestudio/nord-vim'
 
+" https://github.com/NLKNguyen/papercolor-theme
+" Plugin 'NLKNguyen/papercolor-theme'
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -1811,6 +1820,9 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 " https://www.nordtheme.com/ports/vim
 Plug 'arcticicestudio/nord-vim'
 
+" https://github.com/NLKNguyen/papercolor-theme
+" Plug 'NLKNguyen/papercolor-theme'
+
 " Initialize plugin system
 " - Automatically executes `filetype plugin indent on` and `syntax enable`.
 call plug#end()
@@ -1839,6 +1851,7 @@ call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim 的一些默认设置
+set number  " 显示行号
 set laststatus=2  " 始终显示状态栏
 set showtabline=2  " 始终显示标签页
 
@@ -1869,21 +1882,54 @@ endif
 let g:airline_powerline_fonts = 1
 
 " 启用 airline 内置插件：标签式显示多个打开的或缓冲中的文件的状态栏效果
-" 在说明文件中搜 airline-tabline
 let g:airline#extensions#tabline#enabled = 1
+" 在说明文件中搜 airline-tabline
 let g:airline#extensions#tabline#tab_nr_type = 2
-"let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#tabline#show_tab_nr = 1
+let g:airline#extensions#tabline#formatter = 'default'
+let g:airline#extensions#tabline#buffer_nr_show = 0 " 有一个就够了
+let g:airline#extensions#tabline#fnametruncate = 16
+let g:airline#extensions#tabline#fnamecollapse = 2
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+" 使用 vim-airline 自带功能进行 tab 和 Buffer 之间的切换
+" 定义切换 tab 和 buffer 的快捷键
+nmap <C-w>1 <Plug>AirlineSelectTab1
+nmap <C-w>2 <Plug>AirlineSelectTab2
+nmap <C-w>3 <Plug>AirlineSelectTab3
+nmap <C-w>4 <Plug>AirlineSelectTab4
+nmap <C-w>5 <Plug>AirlineSelectTab5
+nmap <C-w>6 <Plug>AirlineSelectTab6
+nmap <C-w>7 <Plug>AirlineSelectTab7
+nmap <C-w>8 <Plug>AirlineSelectTab8
+nmap <C-w>9 <Plug>AirlineSelectTab9
+nmap <C-w>0 <Plug>AirlineSelectTab0
+nmap <C-w>- <Plug>AirlineSelectPrevTab
+nmap <C-w>+ <Plug>AirlineSelectNextTab
 
 " 启用 airline 内置插件：左侧显示文件树内容的状态栏效果
 let g:airline#extensions#nerdtree_statusline = 1
 
-" 启用 airline 内置主题：如果使用了下载的主题，可以关闭
+" 启用 airline 内置主题：如果自行下载了主题，可以关闭这里
+" airline 内置主题居然没有配套的 colorscheme，不用这个内置的了
 "let g:airline_theme='papercolor'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" 使用下载的插件：主题 nord，不止设置了状态栏颜色，还自带了语法高亮的方案
-syntax enable  " 防止某次关闭了语法高亮，下次打开vi则自动再打开
+" 语法高亮的彩色方案设置
+
+" 防止某次关闭了语法高亮，下次打开vi则自动再打开
+syntax enable
+
+" 使用下载的插件主题: 很多自带语法高亮的色彩方案
+"colorscheme PaperColor
 colorscheme nord
+
+" 切换语法颜色方案使用亮色还是暗色，如果支持的话
+"set background=dark
+"set background=light
+
+" 终端工具设置了背景透明以显示图片，如果你使用了配色方案以后设置背景色挡住了图片，开启这个设置强制透明
+"hi Normal guibg=#111111 ctermbg=black
+"hi Normal guibg=NONE ctermbg=NONE
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " 使用下载的插件：NERDTree
@@ -1951,6 +1997,7 @@ map <C-n> :NERDTreeToggle<CR>
     G       跳至文尾
     5gg/5G  跳至第5行
     gd      跳至当前光标所在的变量的声明处
+
     gt      跳至下一个标签页
     gT      跳至前一个标签页
 
@@ -1983,7 +2030,7 @@ map <C-n> :NERDTreeToggle<CR>
     x   删除当前字符
     X   删除前一个字符
 
-    注意：删除操作其实是剪切，详见下面章节 [vi中的删除是剪切操作--寄存器]
+    NOTE: 删除操作其实是剪切，详见下面章节 [vi中的删除是剪切操作--寄存器]
 
     yy  复制一行
     yw  复制一个字
@@ -2017,6 +2064,59 @@ map <C-n> :NERDTreeToggle<CR>
     >>  将当前行右移一个单位
     <<  将当前行左移一个单位(一个tab符)
     ==  自动缩进当前行
+
+###### 使用 alt+数字键 来切换 tab 标签页
+
+建议使用 vim-airline 自带的功能进行 tab 和 Buffer 之间的切换，见上面章节 [.vimrc配置文件样例]。
+
+自定义用 Alt 总是设置不上，用的 Ctrl+w 解决了，不知道咋回事，待研究。
+
+或自定义
+
+    https://blog.csdn.net/ghostyusheng/article/details/77893780
+
+用 gt, gT 来一个个切换有点不方便, 如果用 :tabnext {count}, 又按键太多.
+
+可以用 alt + n 来切换tab标签, 比如按 alt + 1 切换到第一个 tab，按 alt + 2 切换到第二个 tab。
+
+把以下代码加到你的 .vimrc 文件, 或者存为 .vim 文件，然后放到 plugin 目录
+
+```shell
+
+function ! TabPos_ActivateBuffer(num)
+     let  s:count = a:num
+     exe  "tabfirst"
+     exe  "tabnext"  s:count
+endfunction
+
+function ! TabPos_Initialize()
+for  i  in  range(1, 9)
+         exe  "map <M-"  . i .  "> :call TabPos_ActivateBuffer(" . i .  ")<CR>"
+     endfor
+     exe  "map <M-0> :call TabPos_ActivateBuffer(10)<CR>"
+endfunction
+
+autocmd VimEnter * call TabPos_Initialize()
+
+```
+
+上面的看上去太复杂了，来个简单的
+
+```python
+
+    " 用 alt + n 来切换tab标签
+    :nn <M-1> 1gt
+    :nn <M-2> 2gt
+    :nn <M-3> 3gt
+    :nn <M-4> 4gt
+    :nn <M-5> 5gt
+    :nn <M-6> 6gt
+    :nn <M-7> 7gt
+    :nn <M-8> 8gt
+    :nn <M-9> 9gt
+    :nn <M-0> :tablast<CR>
+
+```
 
 ##### 可视模式
 
@@ -2081,16 +2181,17 @@ map <C-n> :NERDTreeToggle<CR>
 
 多文件操作（缓冲 buffer）
 
-    vim 其实打开的是多个文件，在当前窗口默认只显示当前的这一个
+    vim 其实打开的是多个文件，每个文件对应一个缓冲区。
+    在当前窗口默认只显示当前的一个缓冲区，用 :q 命令退出也就关闭全部缓冲区退出了。
 
     :e xxxx     在当前窗口打开文件
 
     Ctrl+6      切换到下一个文件
 
     :ls         显示缓冲，即已经打开的文件列表
-    :b num      切换文件（其中num为buffer list中的编号）
-    :bn         切换到下一个文件
-    :bp         切换到上一个文件
+    :b num      切换文件（其中 num 为 buffer list 中的编号）
+    :bn         切换到下一个缓冲区（即下一个文件）
+    :bp         切换到上一个缓冲区（即上一个文件）
 
     对于用(v)split在多个窗格中打开的文件，这种方法只会在当前窗格中切换不同的文件。
 
