@@ -1377,6 +1377,9 @@ Ctrl+V到下一页
 
     https://vimhelp.org/starting.txt.html#vimrc
 
+    插件大全，Vundle等插件管理器支持简写
+        https://github.com/vim-scripts/
+
 vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
 扩展的目录
@@ -1576,13 +1579,14 @@ AirlineTheme 自己管理主题，在 ~/.vimrc 中配置
     " AirlineTheme 需要启用 powerline 的字体才能起飞
     let g:airline_powerline_fonts = 1
 
-    " 这个主题好像都只是状态栏的，没有同步设置语法高亮呢？
+    " airline_theme内置的主题大部分都只是状态栏的，没有同步设置语法高亮
+    " 建议自定义插件，直接安装 PaperColor 或 nord，状态栏和语法高亮颜色都有
     " https://github.com/vim-airline/vim-airline-themes/tree/master/autoload/airline/themes
     " 列表见 https://github.com/vim-airline/vim-airline/wiki/Screenshots
     " 保存在 ~/.vim/bundle/vim-airline-themes/autoload/airline/themes
     " 使用说明 ~/.vim/bundle/vim-airline-themes/README.md
     " 在vi中切换主题 :AirlineTheme night_owl
-    let g:airline_theme='papercolor'  " 建议使用插件里的 nord ，比这个好
+    let g:airline_theme='papercolor'
 
 ##### powerline 的另一个替代品：lightline.vim
 
@@ -1600,48 +1604,53 @@ Why yet another clone of powerline?
 
 这个比较简洁，只有状态栏工具和颜色方案。最大的优点是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
-##### nerdtree 树形文件夹插件的热键
+##### nerdtree 树形文件夹插件
 
-切换目录树显示，在 ~/.vimrc 配置文件中定义为 Ctrl-n
+nerdtree 以在当前窗口的左侧垂直新建窗格的方式，树形展示当前路径下的文件列表，方便用户操作。
 
-        " NERDTree
-        map <C-n> :NERDTreeToggle<CR>
-        let NERDTreeShowHidden=1 "在打开时默认显示隐藏文件
-        " map 是快捷键映射命令
-        " <C-n> 定义了快捷键，表示 Ctrl-n
-        " 后面是对应的命令以及回车键 <CR>
-
-目录树和文件显示窗格间切换使用 vim 的窗格切换热键
+所以，在左侧目录树窗格和右侧文件窗格间切换使用 vim 的窗格切换热键
 
     前导 ctrl + w ，然后方向键左或 h 光标跳到左侧树形目录
     前导 ctrl + w ，然后方向键右或 l 光标跳到右侧文件显示窗格
 
-在左侧树形目录中的热键
+窗格操作详见章节 [多窗口(Window)操作]。
 
-    回车    打开的的文件默认是vim的多个文件模式，即添加到缓冲中了，需要用命令 :ls 来显示， :b 2 切换
-            注意缓冲中的编号不是1，2，3的顺序分布
+自定义个热键 Ctrl-n，方便切换显示目录树，在 ~/.vimrc 配置文件中定义为
+
+    " NERDTree
+    map <C-n> :NERDTreeToggle<CR>
+    let NERDTreeShowHidden=1 "在打开时默认显示隐藏文件
+    " map 是快捷键映射命令
+    " <C-n> 定义了快捷键，表示 Ctrl-n
+    " 后面是对应的命令以及回车键 <CR>
+
+nerdtree 在左侧树形目录中的热键
+
+    ?   切换是否显示 nerdtree 的快捷帮助
+
+    回车 打开的的文件默认是vim的多个文件模式，即添加到缓冲中
+    o   在已有窗口中打开文件、目录或书签，并跳到该窗口，或命令 :NERDTree-o
+    go  在已有窗口中打开文件、目录或书签，但不跳到该窗口，或命令 :NERDTree-go
+
+    缓冲区列表需要用命令 :ls 来显示， :b<编号> 切换。详见章节[理解vim的多文件操作（缓冲buffer）]。
+
+    i   水平切割一个新窗口打开选中文件，并跳到该窗口，或命令 :NERDTree-i
+    gi  水平分割一个新窗口打开选中文件，但不跳到该窗口，或命令 :NERDTree-gi
+
+    s   垂直分割一个新窗口打开选中文件，并跳到该窗口，或命令 :NERDTree-s
+    gs  垂直分割一个新窗口打开选中文件，但不跳到该窗口，或命令 :NERDTree-gs
 
     t   在新 Tab 中打开选中文件/书签，并跳到新 Tab，或命令 :NERDTree-t
     T   在新 Tab 中打开选中文件/书签，但不跳到新 Tab，或命令 :NERDTree-T
-    切换 tab 的热键见 vim 快捷键
 
-    o   在已有窗格中打开文件、目录或书签，并跳到该窗口，或命令 :NERDTree-o
-    go  在已有窗格中打开文件、目录或书签，但不跳到该窗口，或命令 :NERDTree-go
+    切换 tab 的热键详见章节 [多标签页(Tab)操作]
 
-    i   切割一个新窗格打开选中文件，并跳到该窗口，或命令 :NERDTree-i
-    gi  split一个新窗格打开选中文件，但不跳到该窗口，或命令 :NERDTree-gi
-
-    s   垂直分割一个新窗格打开选中文件，并跳到该窗口，或命令 :NERDTree-s
-    gs  垂直分割一个新窗格打开选中文件，但不跳到该窗口，或命令 :NERDTree-gs
-
-    e   在目录树上按e，则在右侧窗格显示目录内容，光标键进行选择操作即可，再次按e退出
+    e   在目录树上按e，则在右侧窗口显示目录内容，光标键进行选择操作即可，再次按e退出
 
     K   跳到当前目录下同级的第一个结点
     J   跳到当前目录下同级的最后一个结点
 
     !   执行当前文件，或命令 :NERDTree-!
-
-    ?   切换是否显示 nerdtree 的快捷帮助
 
 ##### 插件管理器 vim-addon-manager
 
@@ -1843,17 +1852,14 @@ call plug#end()
 ```python
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" 插件管理器二选一：
-"
-"   见章节 [插件管理器 Vundle] VundleVim 插件管理器官方配置
-"
-"   见章节 [插件管理器 vim-plug] vim-plug 插件管理器官方配置
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim 的一些默认设置
 set number  " 显示行号
+" set nonumber
 set laststatus=2  " 始终显示状态栏
 set showtabline=2  " 始终显示标签页
+
+" 利用转义符“\”将前导键定义为空格键
+    let mapleader="\<space>"
 
 " https://www.codenong.com/15375992/
 " 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
@@ -1861,6 +1867,13 @@ set showtabline=2  " 始终显示标签页
 if &term =="screen"
     set t_Co=256
 endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 插件管理器二选一：
+"
+"   见章节 [插件管理器 Vundle] VundleVim 插件管理器官方配置
+"
+"   见章节 [插件管理器 vim-plug] vim-plug 插件管理器官方配置
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " airline 内置扩展设置
@@ -1893,20 +1906,20 @@ let g:airline#extensions#tabline#fnamecollapse = 2
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 " 使用 vim-airline 自带功能进行 tab 和 Buffer 之间的切换
 " 定义切换 tab 和 buffer 的快捷键
-nmap <C-w>1 <Plug>AirlineSelectTab1
-nmap <C-w>2 <Plug>AirlineSelectTab2
-nmap <C-w>3 <Plug>AirlineSelectTab3
-nmap <C-w>4 <Plug>AirlineSelectTab4
-nmap <C-w>5 <Plug>AirlineSelectTab5
-nmap <C-w>6 <Plug>AirlineSelectTab6
-nmap <C-w>7 <Plug>AirlineSelectTab7
-nmap <C-w>8 <Plug>AirlineSelectTab8
-nmap <C-w>9 <Plug>AirlineSelectTab9
-nmap <C-w>0 <Plug>AirlineSelectTab0
-nmap <C-w>- <Plug>AirlineSelectPrevTab
-nmap <C-w>+ <Plug>AirlineSelectNextTab
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
+nmap <leader>6 <Plug>AirlineSelectTab6
+nmap <leader>7 <Plug>AirlineSelectTab7
+nmap <leader>8 <Plug>AirlineSelectTab8
+nmap <leader>9 <Plug>AirlineSelectTab9
+nmap <leader>0 <Plug>AirlineSelectTab0
+nmap <leader>- <Plug>AirlineSelectPrevTab
+nmap <leader>+ <Plug>AirlineSelectNextTab
 
-" 启用 airline 内置插件：左侧显示文件树内容的状态栏效果
+" 启用 airline 内置插件：左侧显示nerdtree插件文件树内容的状态栏效果
 let g:airline#extensions#nerdtree_statusline = 1
 
 " 启用 airline 内置主题：如果自行下载了主题，可以关闭这里
@@ -1948,18 +1961,6 @@ map <C-n> :NERDTreeToggle<CR>
 #### vim 快捷键
 
     Esc 退出编辑模式，或终止当前命令
-
-重新定义快捷键，放到 ~/.vimrc 文件中即可：
-
-```shell
-
-" 切换目录树显示的热键定义为 Ctrl-n
-" map 是 vim 的快捷键映射命令
-" <C-n> 定义了快捷键，表示 Ctrl-n
-" 后面是对应的命令以及回车键 <CR>
-map <C-n> :NERDTreeToggle<CR>
-
-```
 
 ##### 文本输入模式（编辑模式/插入模式）
 
@@ -2069,7 +2070,7 @@ map <C-n> :NERDTreeToggle<CR>
 
 建议使用 vim-airline 自带的功能进行 tab 和 Buffer 之间的切换，见上面章节 [.vimrc配置文件样例]。
 
-自定义用 Alt 总是设置不上，用的 Ctrl+w 解决了，不知道咋回事，待研究。
+自定义热键用 Alt 总是设置不上，用的 Ctrl+w 解决了，不知道咋回事，待研究。
 
 或自定义
 
@@ -2143,7 +2144,7 @@ autocmd VimEnter * call TabPos_Initialize()
 
 ##### 命令行模式
 
-在普通模式下，用户按:键即可进入命令行模式下，此时 vi 会在显示窗口的最后一行（通常也是屏幕的最后一行）显示一个:作为命令行模式的说明符，等待用户输入命令。多数文件管理命令都是在此模式下执行的（如把编辑缓冲区的内容写到文件中等）。
+在普通模式下，用户按冒号:键即可进入命令行模式下，此时 vi 会在显示窗口的最后一行（通常也是屏幕的最后一行）显示一个:作为命令行模式的说明符，等待用户输入命令。多数文件管理命令都是在此模式下执行的（如把编辑缓冲区的内容写到文件中等）。
 
 命令行命令执行完后，vi 自动回到普通模式。
 
@@ -2179,23 +2180,96 @@ autocmd VimEnter * call TabPos_Initialize()
 
     3、用 "Ctrl+Z" 回到shell，用 `fg` 返回编辑
 
-多文件操作（缓冲 buffer）
+##### 自定义快捷键
 
-    vim 其实打开的是多个文件，每个文件对应一个缓冲区。
-    在当前窗口默认只显示当前的一个缓冲区，用 :q 命令退出也就关闭全部缓冲区退出了。
+重新定义快捷键，放到 ~/.vimrc 文件中即可：
+
+```shell
+
+" 切换目录树显示的热键定义为 Ctrl-n
+" map 是 vim 的快捷键映射命令
+" <C-n> 定义了快捷键，表示 Ctrl-n
+" 后面是对应的命令以及回车键 <CR>
+map <C-n> :NERDTreeToggle<CR>
+
+```
+
+前缀代表生效范围
+
+    inoremap就只在插入(insert)模式下生效
+
+    vnoremap只在visual模式下生效
+
+    nnoremap就在normal模式下(狂按esc后的模式)生效
+
+前导键
+
+为解决 vim 中快捷键太多不够用的问题，又引入了前导键，即按一个热键松手，然后再按键，对应新的命令。
+
+前导键默认为“\”，可以定义为其它的：
+
+    " 前导键定义为 逗号
+    let mapleader=","
+
+    " 利用转义符“\”将前导键为空格键
+    let mapleader = "\<space>"
+
+    "后续的热键定义使用 <leader> 声明即可
+    map <Leader>bn :bn<CR>
+
+#### 理解vim的多文件操作（缓冲buffer）
+
+    https://www.cnblogs.com/standardzero/p/10720922.html
+
+vim 打开的多个文件，每个文件都会加载到缓冲区。
+
+在当前窗口默认只显示缓冲区中的一个文件
+
+    :ls         显示缓冲区里的文件列表，即已经打开的文件列表
+
+    :b num      切换显示文件（其中 num 为 buffer list 中的编号）
+                NOTE: 缓冲中的编号不是1，2，3的顺序分布。
+
+    :bn         切换显示下一个文件
+    :bp         切换显示上一个文件
+
+    Ctrl+6      在普通模式下的热键，切换到下一个文件
+
+    对于用 split 在多个窗口中打开的文件，切换缓冲区文件的命令只会在当前窗口中切换不同的文件。
+
+    :q          退出vi，也就关闭全部缓冲区退出了。
+                如果是tab标签页或window分割窗口打开的文件，则会关闭当前标签页或窗口。
+
+    :qa!        丢弃所有缓冲区退出vim
 
     :e xxxx     在当前窗口打开文件
+    :e          重新把当前文件加载到缓冲区，丢弃修改
+    :close      关闭当前窗口
+    :only       只显示当前窗口, 关闭所有其他的窗口
 
-    Ctrl+6      切换到下一个文件
+vim 除了使用一个窗口显示所有缓冲区(只能来回切换)，还可以使用tab标签化或window窗格化单独的文件。
 
-    :ls         显示缓冲，即已经打开的文件列表
-    :b num      切换文件（其中 num 为 buffer list 中的编号）
-    :bn         切换到下一个缓冲区（即下一个文件）
-    :bp         切换到上一个缓冲区（即上一个文件）
+##### 多窗口(Window)操作
 
-    对于用(v)split在多个窗格中打开的文件，这种方法只会在当前窗格中切换不同的文件。
+在Vim 术语中，窗口是缓冲区的显示区域。既可以打开多个窗口，在这些窗口中显示同一个文件， 也可以在每个窗口里载入不同的文件。
 
-多标签页操作
+    :split      当前窗口水平切分为两个窗口，简写  :sp
+    :vsplit     当前窗口垂直切分为两个窗口，简写  :vsp
+
+    前导Ctrl+w 方向键       切换到前／下／上／后一个窗口
+    前导Ctrl+w h/j/k/l     同上
+    前导Ctrl+w w           依次向后切换到下一个窗口中
+
+    :qall        对所有窗口执行 :q  操作
+    :qall!       对所有窗口执行 :q! 操作
+    :wall        对所有窗口执行 :w  操作
+    :wqall       对所有窗口执行 :wq 操作
+
+##### 多标签页(Tab)操作
+
+普通的文本编辑器中，标签页代表了当前打开的文件，在 Vim 中，标签页与缓冲区并非一一对应的关系。
+
+把 vim 的标签页理解为多个窗口组成的一个工作区，每个标签页都可包含一个或多个窗口。
 
     :tabn       移动到下一个标签页 或 普通模式直接输入 gt
     :tabp       移动到上一个标签页 或 普通模式直接输入 gT
@@ -2205,23 +2279,14 @@ autocmd VimEnter * call TabPos_Initialize()
 
     :help tab-page-intro 标签页使用的帮助信息
 
-    :tabnew     新建标签页
-    :tabe filename 用标签页打开文件
+    :tabnew          新建标签页
+    :tabe filename   用标签页打开文件
     :tabnew filename 用标签页打开文件
 
     :tabs       显示已打开标签页的列表
-    :tabc       关闭当前标签页，功能等同于:q
+    :tabc       关闭当前标签页，功能等同于 :q
     :tabo       关闭所有标签页
     :tabm 0/1/2 将当前标签页移动到第1/2/3个页面位置
-
-多窗格操作
-
-    :split      当前窗口垂直切分为两个窗格，简写  :sp
-    :vsplit     当前窗口垂直切分为两个窗格，简写  :vsp
-
-    Ctrl+w+方向键       切换到前／下／上／后一个窗格
-    Ctrl+w+h/j/k/l     同上
-    Ctrl+ww            依次向后切换到下一个窗格中
 
 #### vim 使用鼠标
 
