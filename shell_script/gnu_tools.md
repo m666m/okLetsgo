@@ -1654,6 +1654,8 @@ nerdtree 在左侧树形目录中的热键
 
 ##### 插件管理器 vim-addon-manager
 
+在 `apt install vim-airline` 的时候会自动安装 vim-addon-manager
+
     apt install vim-addon-manager
 
 使用目录
@@ -1754,6 +1756,9 @@ Plugin 'vim-airline/vim-airline-themes'
 
 Plugin 'scrooloose/nerdtree'
 
+" 在侧边显示git修改状态
+Plug 'airblade/vim-gitgutter',
+
 " https://www.nordtheme.com/ports/vim
 Plugin 'arcticicestudio/nord-vim'
 
@@ -1826,6 +1831,9 @@ Plug '/usr/share/vim/addons/plugin/vim-airline-themes'
 " On-demand loading
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
+" 在侧边显示git修改状态
+Plug 'airblade/vim-gitgutter',
+
 " https://www.nordtheme.com/ports/vim
 Plug 'arcticicestudio/nord-vim'
 
@@ -1853,17 +1861,21 @@ call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim 的一些默认设置
+
+"set nonumber
 set number  " 显示行号
-" set nonumber
+
 set laststatus=2  " 始终显示状态栏
+
 set showtabline=2  " 始终显示标签页
 
-" 利用转义符“\”将前导键定义为空格键
-    let mapleader="\<space>"
+" 设置前导键为空格键，需要利用转义符“\”
+let mapleader="\<space>"
 
-" https://www.codenong.com/15375992/
 " 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
-" if &term =~? 'mlterm\|xterm'
+" 如果在 tmux 下使用 vim ，防止 tmux 默认设置 TERM=screen，应该保留此设置
+" https://www.codenong.com/15375992/
+"if &term =~? 'mlterm\|xterm'
 if &term =="screen"
     set t_Co=256
 endif
@@ -1880,10 +1892,10 @@ endif
 "
 " 内置扩展的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
 " 内置扩展保存在：
-" apt install [vim-addon-manager] /usr/share/vim/addons/autoload/airline/extensions/ 下
-" [Vundle]   ~/.vim/bundle/vim-airline/autoload/airline/extensions/ 下
-" [vim-plug] ~/.vim/plugged/ 下
-" 自定义 ~/.vim/autoload/ 和 ~/.vim/plugin/
+"   apt install [vim-addon-manager] /usr/share/vim/addons/autoload/airline/extensions/ 下
+"   [Vundle]   ~/.vim/bundle/vim-airline/autoload/airline/extensions/ 下
+"   [vim-plug] ~/.vim/plugged/ 下
+"   自定义 ~/.vim/autoload/ 和 ~/.vim/plugin/
 " 命令 :AirlineExtensions 查看当前自动启用的内置插件
 
 " an empty list disables all extensions
@@ -1891,20 +1903,22 @@ endif
 " or only load what you want
 "let g:airline_extensions = ['branch', 'tabline']
 
-" 需要启用 powerline 的字体，状态栏显示的效果才能起飞
+" 启用 powerline 的字体，状态栏显示的效果才能起飞
 let g:airline_powerline_fonts = 1
 
-" 启用 airline 内置插件：标签式显示多个打开的或缓冲中的文件的状态栏效果
+" 启用 airline 内置插件：状态栏效果，标签式显示多个tab、window或缓冲区里的文件
 let g:airline#extensions#tabline#enabled = 1
-" 在说明文件中搜 airline-tabline
+" 在说明文件中搜 airline-tabline 查看具体功能说明
 let g:airline#extensions#tabline#tab_nr_type = 2
 let g:airline#extensions#tabline#show_tab_nr = 1
+
 let g:airline#extensions#tabline#formatter = 'default'
 let g:airline#extensions#tabline#buffer_nr_show = 0 " 有一个就够了
 let g:airline#extensions#tabline#fnametruncate = 16
 let g:airline#extensions#tabline#fnamecollapse = 2
-let g:airline#extensions#tabline#buffer_idx_mode = 1
+
 " 使用 vim-airline 自带功能进行 tab 和 Buffer 之间的切换
+let g:airline#extensions#tabline#buffer_idx_mode = 1
 " 定义切换 tab 和 buffer 的快捷键
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
@@ -1932,7 +1946,7 @@ let g:airline#extensions#nerdtree_statusline = 1
 " 防止某次关闭了语法高亮，下次打开vi则自动再打开
 syntax enable
 
-" 使用下载的插件主题: 很多自带语法高亮的色彩方案
+" 使用下载的主题插件自带的语法高亮的色彩方案
 "colorscheme PaperColor
 colorscheme nord
 
