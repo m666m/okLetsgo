@@ -61,7 +61,7 @@ function PS1git-branch-name {
 
   # 优先显示当前head指向的分支名
   if [ $exitcode -eq 0 ]; then
-    printf "(%s)" $branch_name
+    printf "%s" $branch_name
     return
   fi
 
@@ -73,9 +73,9 @@ function PS1git-branch-name {
 
       # 有标签名就显示标签否则显示 commit id
       if [[ -n $tagname ]]; then
-        printf "#(%s)" "$tagname"
+        printf "#%s" "$tagname"
       else
-        printf "@(%s)" "$headhash"
+        printf "@%s" "$headhash"
       fi
 
   fi
@@ -94,7 +94,7 @@ function PS1git-branch-prompt {
   # if ! $(git status >/dev/null 2>&1) ; then
   if [ "$(git rev-parse --is-inside-work-tree)" == 'false' ]; then
     # 如果在裸仓库或的.git目录，则不打印分支名，以提醒使用者
-    printf " git:raw!"
+    printf " git:!raw"
 
   else
     # git status有值得输出的就显示，否则是空
