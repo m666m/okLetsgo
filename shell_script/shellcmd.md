@@ -140,12 +140,15 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     which vcgencmd >/dev/null 2>&1 && vcgencmd measure_temp
 
+    # 如果命令不存在则退出
+    which vcgencmd >/dev/null 2>&1 || return 0
+
     # 如果执行命令的结果是失败，则打印
     if ! $(which vcgencmd >/dev/null 2>&1) ; then printf "%s" 'error cmd'; fi
 
     which vcgencmd >/dev/null 2>&1 || echo "不是树莓派，exit,终止执行之后的语句"
 
-    # 如果执行命令成功则执行xxx，否则执行yyy
+    # 执行命令，如果成功则执行xxx，否则执行yyy
     lscpu|grep -q arm && echo "xxx" || echo "yyy"
 
 使用逻辑运算符将多个 [[ ]] 连接起来依然是可以的，因为这是 Shell 本身提供的功能，跟 [[ ]] 或者 test 没有关系，如下所示：

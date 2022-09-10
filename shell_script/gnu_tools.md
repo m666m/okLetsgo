@@ -1588,7 +1588,7 @@ AirlineTheme 自己管理主题，在 ~/.vimrc 中配置
     " 在vi中切换主题 :AirlineTheme night_owl
     let g:airline_theme='papercolor'
 
-##### powerline 的另一个替代品：lightline.vim
+##### 相对简洁的状态栏工具 lightline.vim
 
     https://github.com/itchyny/lightline.vim
 
@@ -1602,7 +1602,11 @@ Why yet another clone of powerline?
 
     vim-airline is a nice plugin, but it uses too many functions of other plugins, which should be done by users in .vimrc.
 
-这个比较简洁，只有状态栏工具和颜色方案。最大的优点是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
+这个比较简洁，只有状态栏工具和颜色方案。也是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
+
+配置主题
+
+    let g:lightline = { 'colorscheme': 'PaperColor' }
 
 ##### nerdtree 树形文件夹插件
 
@@ -1865,9 +1869,10 @@ call plug#end()
 "set nonumber
 set number  " 显示行号
 
-set laststatus=2  " 始终显示状态栏
-
-set showtabline=2  " 始终显示标签页
+" 使用 vim-airline 并开启tabline设置后，就不需要这两个设置了
+"set laststatus=2  " 始终显示状态栏
+"set showtabline=2  " 始终显示标签页
+set noshowmode  " 有了状态栏工具就可以省掉当前模式的显示
 
 " 设置前导键为空格键，需要利用转义符“\”
 let mapleader="\<space>"
@@ -1888,7 +1893,7 @@ endif
 "   见章节 [插件管理器 vim-plug] vim-plug 插件管理器官方配置
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" airline 内置扩展设置
+" vim-airline 内置扩展设置
 "
 " 内置扩展的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
 " 内置扩展保存在：
@@ -1906,7 +1911,7 @@ endif
 " 启用 powerline 的字体，状态栏显示的效果才能起飞
 let g:airline_powerline_fonts = 1
 
-" 启用 airline 内置插件：状态栏效果，标签式显示多个tab、window或缓冲区里的文件
+" 启用 airline 内置插件：标签式显示多个tab、window或缓冲区里的文件
 let g:airline#extensions#tabline#enabled = 1
 " 在说明文件中搜 airline-tabline 查看具体功能说明
 let g:airline#extensions#tabline#tab_nr_type = 2
@@ -1917,7 +1922,7 @@ let g:airline#extensions#tabline#buffer_nr_show = 0 " 有一个就够了
 let g:airline#extensions#tabline#fnametruncate = 16
 let g:airline#extensions#tabline#fnamecollapse = 2
 
-" 使用 vim-airline 自带功能进行 tab 和 Buffer 之间的切换
+" 使用 airline 自带功能进行标签之间的切换
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 " 定义切换 tab 和 buffer 的快捷键
 nmap <leader>1 <Plug>AirlineSelectTab1
@@ -1937,7 +1942,7 @@ nmap <leader>+ <Plug>AirlineSelectNextTab
 let g:airline#extensions#nerdtree_statusline = 1
 
 " 启用 airline 内置主题：如果自行下载了主题，可以关闭这里
-" airline 内置主题居然没有配套的 colorscheme，不用这个内置的了
+" 内置主题居然没有配套的 colorscheme，不用这个内置的了
 "let g:airline_theme='papercolor'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
