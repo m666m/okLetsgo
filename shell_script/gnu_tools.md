@@ -910,7 +910,7 @@ zsh自带功能
 
     快速跳转：输入 cd - 按TAB，会列出历史路径清单供选择。
 
-安装最常用的插件功能
+#### 常用的插件
 
     powerline：见章节[状态栏工具 powerline]
 
@@ -1017,6 +1017,8 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     ...
 )
 
+...
+
 function prompt_raspi_temp_warn() {
 
   which vcgencmd >/dev/null 2>&1 || return 0
@@ -1035,6 +1037,7 @@ function prompt_raspi_temp_warn() {
           p10k segment -b red -f black -i '' -t "$CPUTEMP_WARN"
   fi
 }
+
 ```
 
 如果担心 instant-prompt 功能会在出现 y/n 提示的时候提前输入y，酌情关掉这个功能
@@ -1081,7 +1084,7 @@ function prompt_raspi_temp_warn() {
     0.20user 0.13system 0:00.30elapsed 114%CPU (0avgtext+0avgdata 5904maxresident)k
     0inputs+0outputs (0major+4995minor)pagefaults 0swaps
 
-#### 内置超多插件和主题的 ohmyzsh
+#### 自带插件管理器，内置超多插件和主题的 ohmyzsh
 
 ohmyzsh 是在 zsh 的基础上增加了更多的花样的shell封装、主题管理等。
 
@@ -2025,18 +2028,25 @@ map <C-n> :NERDTreeToggle<CR>
 
     w       跳到下一个字首，按标点或单词分割
     W       跳到下一个字首，长跳，如end-of-line被认为是一个字
+
     e       跳到下一个字尾
     E       跳到下一个字尾，长跳
+
     b       跳到上一个字
     B       跳到上一个字，长跳
+
     0       跳至行首，不管有无缩进，就是跳到第0个字符
     ^       跳至行首的第一个字符
+
     $       跳至行尾
 
     gg      跳至文首
     G       跳至文尾
+
     5gg/5G  跳至第5行
     gd      跳至当前光标所在的变量的声明处
+
+    ctrl+g  显示当前行位置
 
     gt      跳至下一个标签页
     gT      跳至前一个标签页
@@ -2260,7 +2270,18 @@ map <C-n> :NERDTreeToggle<CR>
 
     https://www.cnblogs.com/standardzero/p/10720922.html
 
-vim 打开的多个文件，每个文件都会加载到缓冲区。
+vim 打开的多个文件，每个文件都会加载到缓冲区
+
+    vim file1 file2 ... 同时打开多个文件，当前窗口只展现一个文件
+
+    :next 切换到下个文件
+    :prev 切换到前个文件
+
+    :next！ 不保存当前编辑文件并切换到下个文件
+    :prev！ 不保存当前编辑文件并切换到上个文件
+
+    :wnext 保存当前编辑文件并切换到下个文件
+    :wprev 保存当前编辑文件并切换到上个文件
 
 在当前窗口默认只显示缓冲区中的一个文件
 
@@ -2287,6 +2308,16 @@ vim 打开的多个文件，每个文件都会加载到缓冲区。
     :only       只显示当前窗口, 关闭所有其他的窗口
 
 vim 除了使用一个窗口显示所有缓冲区(只能来回切换)，还可以使用tab标签化或window窗格化单独的文件。
+
+buffer状态
+
+    - （非活动的缓冲区）
+    a （当前被激活缓冲区）
+    h （隐藏的缓冲区）
+    % （当前的缓冲区）
+    # （交换缓冲区）
+    = （只读缓冲区）
+    + （已经更改的缓冲区）
 
 ##### 多窗口(Window)操作
 
