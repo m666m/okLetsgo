@@ -4073,7 +4073,9 @@ systemctl cat 命令可以查看配置文件的内容
 
 ##### 配置文件的区块
 
-[Unit]区块通常是配置文件的第一个区块，用来定义 Unit 的元数据，以及配置与其他 Unit 的关系。它的主要字段如下。
+[Unit]区块通常是配置文件的第一个区块，用来定义 Unit 的元数据，以及配置与其他 Unit 的关系。它的主要字段如下
+
+    https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 
     Description：简短描述
     Documentation：文档地址
@@ -4093,7 +4095,9 @@ systemctl cat 命令可以查看配置文件的内容
     Alias：当前 Unit 可用于启动的别名
     Also：当前 Unit 激活（enable）时，会被同时激活的其他 Unit
 
-[Service]区块用来 Service 的配置，只有 Service 类型的 Unit 才有这个区块。它的主要字段如下。
+[Service]区块用来 Service 的配置，只有 Service 类型的 Unit 才有这个区块。它的主要字段如下
+
+    https://www.freedesktop.org/software/systemd/man/systemd.service.html
 
     Type：定义启动时的进程行为。它有以下几种值。
     Type=simple：默认值，执行ExecStart指定的命令，启动主进程
