@@ -3549,7 +3549,7 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     update-alternatives --config vi
 
-### 开机启动 SystemV(init) 和 systemd
+## 开机启动 SystemV(init) 和 systemd
 
     https://www.debian.org/doc/manuals/debian-handbook/unix-services.zh-cn.html#sect.systemd
 
@@ -3567,7 +3567,7 @@ Linux 主机从关机状态到运行状态的完整启动过程很复杂，但�
 
 Linux 启动阶段始于内核加载了 init 或 systemd（取决于具体发行版使用的是旧的方式还是还是新的方式）之后。init 和 systemd 程序启动并管理所有其它进程，它们在各自的系统上都被称为“所有进程之母”。
 
-#### SystemV
+### SystemV
 
 unix systemV以来的习惯是使用 Bash 脚本来完成启动。
 
@@ -3599,7 +3599,7 @@ init 程序最先运行的服务是放在 /etc/rc.d/ 目录下的文件。
 
 注：在2020年代的linux系统中，目录 /etc/rc.d/init.d/ 和 /etc/rc.d/rcX.d/ 简化为 /etc/init.d/ 和 /etc/rcX.d/。
 
-##### SystemV设置开机自启动
+#### SystemV设置开机自启动
 
 1、在 /etc/init.d/目录下添加需要执行的.sh脚本，脚本里调用需要开机启动的程序（shell文件格式参考目录下其它文件）
 
@@ -3640,7 +3640,7 @@ Provides 的名字是唯一的，也就是在所有的开机启动项中，Provi
 
     update-rc.d -f test.sh remove
 
-或者，简单的命令脚本调用，可以直接修改/etc/rc.local文件，在exit 0之前增加需要运行的脚本
+简单的命令脚本调用，可以直接修改 /etc/rc.local 文件，在exit 0之前增加需要运行的脚本
 
     1.vi /etc/rc.local
 
@@ -3658,7 +3658,12 @@ Provides 的名字是唯一的，也就是在所有的开机启动项中，Provi
 
     3、重启计算机，程序会被root用户调用起来。
 
-#### systemd
+这个 /etc/rc.local 文件，在systemd中也添加了文件调用到
+
+
+### systemd
+
+    https://www.freedesktop.org/software/systemd/man/index.html
 
 systemd 工具是编译后的二进制文件，但该工具包是开放的，因为所有配置文件都是 ASCII 文本文件。可以通过各种 GUI 和命令行工具来修改启动配置，也可以添加或修改各种配置文件来满足特定的本地计算环境的需求。几乎可以管理正在运行的 Linux 系统的各个方面。它可以管理正在运行的服务，同时提供比SystemV 多得多的状态信息。它还管理硬件、进程和进程组、文件系统挂载等。systemd 几乎涉足于现代 Linux 操作系统的每方面，使其成为系统管理的一站式工具。
 
@@ -4204,7 +4209,7 @@ Target 与 传统 RunLevel 的对应关系如下
 
     systemctl enable tproxyrule
 
-### crontab 定时任务
+## crontab 定时任务
 
     https://www.debian.org/doc/manuals/debian-handbook/sect.task-scheduling-cron-atd.zh-cn.html
 
@@ -4220,7 +4225,7 @@ Target 与 传统 RunLevel 的对应关系如下
     https://blog.csdn.net/zhubin215130/article/details/43271835
     https://developer.aliyun.com/article/541971
 
-#### 1、crontab 与 anacron
+### 1、crontab 与 anacron
 
     crontab：crontab命令被用来提交和管理用户的需要周期性执行的任务，与windows下的计划任务类似，当安装完成操作系统后，默认会安装此服务工具，并且会自动启动crond服务，crond进程每分钟会定期检查是否有要执行的任务，如果有，则自动执行该任务。依赖于crond服务
 
@@ -4228,7 +4233,7 @@ Target 与 传统 RunLevel 的对应关系如下
 
     debian 中安装 anacron 软件包会禁用 cron 在/etc/cron.{daily，weekly，monthly} 目录中的脚本，仅由 anacron 调用，以避免 anacron 和 cron 重复运行这些脚本。 cron 命令仍然可用并处理其他计划任务（特别是用户安排的计划任务）。
 
-#### 2、Crontab任务种类及格式定义
+### 2、Crontab任务种类及格式定义
 
 cron分为系统cron和用户cron，用户cron指 /var/spool/cron/crontabs/$USER 文件，系统cron指
 /etc/crontab 文件 以及 /etc/cron.{daily，weekly，monthly}/ 目录 ，这两者是存在部分差异的。
@@ -4300,7 +4305,7 @@ run-parts 参数运行指定目录中的所有脚本。
 
 只是在系统启动后，单次执行一个命令，可以使用 @reboot 宏（仅仅重启 cron 命令不会触发使用@reboot调度的命令）。该宏表示了 crontab条目的前五个区段。
 
-#### 3、时间的有效取值
+### 3、时间的有效取值
 
     代表意义    分钟    小时    日    月    周    命令
     ------------------------------------------------
@@ -4320,7 +4325,7 @@ run-parts 参数运行指定目录中的所有脚本。
 
     用*与/5来搭配，也可以写成0-59/5，意思相同
 
-#### 4、时间通配表示
+### 4、时间通配表示
 
 1)对应时间的所有有效取值
 
@@ -4350,7 +4355,7 @@ run-parts 参数运行指定目录中的所有脚本。
 
     10 04 */2 * *                 # 每两天执行一次
 
-#### 5、cron的环境变量
+### 5、cron的环境变量
 
 cron 启动任务时，环境变量非常少，即使是用户级任务，也不会执行用户的 .profile 文件，所以，如果需要操作数据库等跟用户相关的脚本或命令，一般采用在用户脚本中执行环境变量文件，然后再执行相关操作。
 
@@ -4358,7 +4363,7 @@ cron在crontab文件中的默认 PATH=/usr/bin:/bin，cron执行所有命令都�
 
 详见章节 [坑：环境变量是单独的跟用户登陆后的环境变量不一样]
 
-#### 6、执行结果将以邮件形式发送
+### 6、执行结果将以邮件形式发送
 
     */3 * * * * /bin/cat /etc/fstab > /dev/null         # 错误信息仍然发送给管理员
 
@@ -4370,7 +4375,7 @@ cron在crontab文件中的默认 PATH=/usr/bin:/bin，cron执行所有命令都�
 
 注意 /var 的空间不要被填满了
 
-#### 坑：区分crontab命令和crontab文件
+### 坑：区分crontab命令和crontab文件
 
 用 crontab -e 命令配置是针对当前用户的定时任务，而编辑 /etc/crontab 文件是针对系统的任务。
 
@@ -4434,7 +4439,7 @@ MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名�
 
     0 5-10 * * * user-name  command
 
-#### 坑：crontab文件最后要有个空行
+### 坑：crontab文件最后要有个空行
 
     crontab要求cron中的每个条目都要以换行符结尾
 
@@ -4446,7 +4451,7 @@ MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名�
 
 如果你用Windows编辑的crontab文件，注意必须改为 unix格式保存。
 
-#### 坑：修改 /etc/crontab 文件后要加载到cron服务
+### 坑：修改 /etc/crontab 文件后要加载到cron服务
 
 命令和文件名相同，注意区分
 
@@ -4461,7 +4466,7 @@ debian 不需要这么做了
     # and files in /etc/cron.d. These files also have username fields,
     # that none of the other crontabs do.
 
-#### 坑：环境变量是单独的跟用户登陆后的环境变量不一样
+### 坑：环境变量是单独的跟用户登陆后的环境变量不一样
 
 root用户登陆后的PATH
 
@@ -4504,7 +4509,7 @@ cron中的环境变量与用户登陆系统后的env环境变量不一样（cron
 
     可以执行，但放在crontab里就总是不起作用。
 
-#### 坑：命令解释器默认是sh而不是bash
+### 坑：命令解释器默认是sh而不是bash
 
 从坑一的变量 SHELL=/bin/sh 可以看到默认的解释器不是bash，而大多数命令脚本都是用bash来解释执行的。所以配置定时任务时，要明确的指定执行命令的解释器
 
@@ -4517,7 +4522,7 @@ cron中的环境变量与用户登陆系统后的env环境变量不一样（cron
 
     #!/bin/bash
 
-#### 坑：换行符
+### 坑：换行符
 
 这也算通病了，很多linux命令的执行都以行结束为标志，从文件中读取的最后一行如果直接结束时没有换行符的，导致永远无法执行。。。
 
@@ -4529,7 +4534,7 @@ cron中的环境变量与用户登陆系统后的env环境变量不一样（cron
 
 很多编辑软件编辑ftp上的文件，或上传到ftp时，默认都做格式转换，其实容易混淆，还不如直接设置，保留原文件格式，不要自动转换。这样查看文件的时候非常方便，一目了然，unix下的vi显示Windows文件会出现很多乱码。在Windows下编辑unix文件，现在流行的编辑软件也都支持正确显示这个格式了，不要让他来回的转。
 
-#### 坑：需要执行权限
+### 坑：需要执行权限
 
 如果设置了非root用户的定时任务，需要注意很多权限问题，比如该用户对操作的文件或目录是否存在权限等。
 
@@ -4541,19 +4546,19 @@ cron中的环境变量与用户登陆系统后的env环境变量不一样（cron
     # signal crond to reload the file
     sudo touch /var/spool/cron/crontabs
 
-#### 坑：防止屏幕打印
+### 坑：防止屏幕打印
 
 把脚本的输出和报错信息都打印到空
 
     xxx.sh >/dev/null 2>&1
 
-#### 坑：定时时间的书写格式不统一
+### 坑：定时时间的书写格式不统一
 
 一些特殊选项各个平台支持不一样，有的支持，有的不支持，例如2/3、1-5、1,3,5
 
 这个只能试一下才知道。
 
-#### 坑：corn服务默认不启动
+### 坑：corn服务默认不启动
 
 查看当前系统是否有进程
 
@@ -4573,7 +4578,7 @@ cron中的环境变量与用户登陆系统后的env环境变量不一样（cron
     CGroup: /system.slice/cron.service
             └─398 /usr/sbin/cron -f
 
-#### 坑：百分号需要转义字符
+### 坑：百分号需要转义字符
 
     https://unix.stackexchange.com/questions/29578/how-can-i-execute-date-inside-of-a-cron-tab-job
 
@@ -4592,7 +4597,7 @@ cron中的环境变量与用户登陆系统后的env环境变量不一样（cron
 
     0 * * * * echo hello >> ~/cron-logs/hourly/test`date "+\%d"`.log
 
-#### 坑：crontab文件里的变量使用有限制
+### 坑：crontab文件里的变量使用有限制
 
 因为在crontable里面只能声明变量，不能对变量进行操作或者执行其他任何shell命令的，所以下述的shell字符串拼接是不会成功的，所以只能声明变量，然后在命令中引用变量。
 
@@ -4626,7 +4631,7 @@ cron中的环境变量与用户登陆系统后的env环境变量不一样（cron
 
     0 10 * * * ${BIN_DIR}/${MY_EXE} some_param >> ${SOME_DIR}/${MY_LOG_FILE}
 
-#### 坑：用户密码过期也不会启动定时任务
+### 坑：用户密码过期也不会启动定时任务
 
 当用户密码过期也会导致cron脚本执行失败。
 
@@ -4639,7 +4644,7 @@ Linux下新建用户密码过期时间是从/etc/login.defs文件中PASS_MAX_DAY
     或
     passwd -x -1 <username>
 
-#### 坑：切换时区后要重启cron服务
+### 坑：切换时区后要重启cron服务
 
 当修改系统时区后，无论是之前已经存在的cron还是之后新创建的cron，脚本中设置的定时时间都以旧时区为准，比如原来时区是Asia/Shanghai，时间为10:00，然后修改时区为Europe/Paris，时间变为3:00，此时你设置11:00的定时时间，cron会在Asia/Shanghai时区的11:00执行。
 
