@@ -3658,8 +3658,9 @@ Provides 的名字是唯一的，也就是在所有的开机启动项中，Provi
 
     3、重启计算机，程序会被root用户调用起来。
 
-这个 /etc/rc.local 文件，在systemd中也添加了文件调用到
+这个 /etc/rc.local 文件，在systemd中也添加了文件调用到，可以保持对 SystemV 的兼容性
 
+    /usr/lib/systemd/system/rc-local.service
 
 ### systemd
 
@@ -3996,7 +3997,11 @@ journalctl 功能强大，用法非常多
 
 每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit 。
 
-Systemd 默认从目录 /etc/systemd/system/ 读取配置文件。但是，里面存放的大部分文件都是符号链接，指向目录/usr/lib/systemd/system/，真正的配置文件存放在那个目录。
+Systemd 的配置文件存放在2个目录
+
+    /etc/systemd/system/    开机自启动
+
+    /usr/lib/systemd/system/ 用户安装的各种服务的配置文件
 
 systemctl enable 命令用于在上面两个目录之间，建立符号链接关系
 
