@@ -1,10 +1,12 @@
-# unix/linux 常用shell操作
+# unix/linux 常用 shell 编程
+
+参考
 
     Advanced Bash-Scripting Guide https://tldp.org/LDP/abs/html/index.html
 
     非常好用的shell语句分析解释 https://explainshell.com/explain?cmd=join+-1+1+-2+5++%3C%28file+*+%7C+sed+%27s%2F%5B%3A%2C%5D%2F%2Fg%27%29+%3C%28ls+--full-time+-h+%7C+awk+%27%7Bprint+%245%22+%22%246%22+%22%247%22+%22%248%22+%22%249%7D%27%29+%7C+column+-t
 
-    成套shell script 参考 https://github.com/jacyl4/de_GWD
+    成套 shell script 参考 https://github.com/jacyl4/de_GWD
 
     Bash脚本指南 https://linux.die.net/abs-guide/
                     https://linux.die.net/
@@ -14,7 +16,7 @@
     http://c.biancheng.net/view/743.html
     https://www.jb51.net/article/123081.htm
 
-用完后记得清除变量，防止大规模脚本使用容易发生的变量名污染
+用完后记得清除变量，防止大规模脚本中容易发生的变量名污染
 
     unset variable_name
 
@@ -589,6 +591,38 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
 
     $ ( ( ( (echo "$SHLVL  $BASH_SUBSHELL") ) ) )  #四层组命令
     1  4
+
+## 用户切换和提权：sudo、su 和 su -
+
+    https://blog.csdn.net/mutou990/article/details/107724302
+
+su 为switch user，即切换用户的简写，需要输入密码。一般使用 `su - username`，不使用`su username`，区别如下：
+
+    su - username 切换用户后，同时切换到新用户的工作环境中，同时变更工作目录，以及HOME，SHELL，USER，LOGNAME，也会变更PATH变量。比如从普通用户切换到数据库用户，使用数据库管理工具等。如果 `su -` 不指定用户，则默认转换到 root 用户。
+
+    su   username 切换用户后，不改变原用户的工作目录，及其他环境变量目录。这样导致在现在用户目录下未必有权限。这个命令的使用场景一般是数据库用户使用中需要修改系统配置，提权到 root 用户，但是保留数据库用户的环境，即Shell环境仍然是普通用户的Shell，方便使用数据库工具等。
+
+sudo 是一种权限管理机制，依赖于/etc/sudoers，其定义了授权给哪个用户可以以管理员的身份能够执行什么样的管理命令。
+
+`sudo -i` 有sudo权限的用户，临时提权到 root 用户，用于为了频繁的执行某些只有超级用户才能执行的权限，而不用每次输入密码。执行该命令后提示符变为“#”而不是“$”。想退回普通账户时可以执行“exit”或“logout” 。运行结果 PWD=/root
+
+`sudo su`表示前用户暂时申请root权限，所以输入的不是root用户密码，而是当前用户的密码。sudo是用户申请管理员权限执行一个操作，而此处的操作就是变成管理员。运行结果 PWD=/home/用户名（当前用户主目录） 。
+
+`sudo su` 切换root身份，不携带当前用户环境变量。
+`sudo su -` 切换root身份，携带当前用户环境变量。效果类似于`sudo -i`
+
+    $ sudo su
+    root@your_host:/home/some_user# echo $PATH
+    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+    $  sudo su -
+    root@your_host:~# echo $PATH
+    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+    $ sudo -i
+    root@your_host:~# echo $PATH
+    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    root@your_host:~#
 
 ## 查看操作系统信息
 
@@ -1479,35 +1513,3 @@ tmux用一个守护进程打开多个终端窗口实现了一直在后台运行�
     501 33681 30419   0  6:02PM ttys000    0:00.00 grep sleep
 
     bash-3.2$ exit
-
-## sudo、su和su -
-
-    https://blog.csdn.net/mutou990/article/details/107724302
-
-su 为switch user，即切换用户的简写，需要输入密码。一般使用 `su - username`，不使用`su username`，区别如下：
-
-    su - username 切换用户后，同时切换到新用户的工作环境中，同时变更工作目录，以及HOME，SHELL，USER，LOGNAME，也会变更PATH变量。比如从普通用户切换到数据库用户，使用数据库管理工具等。如果 `su -` 不指定用户，则默认转换到 root 用户。
-
-    su   username 切换用户后，不改变原用户的工作目录，及其他环境变量目录。这样导致在现在用户目录下未必有权限。这个命令的使用场景一般是数据库用户使用中需要修改系统配置，提权到 root 用户，但是保留数据库用户的环境，即Shell环境仍然是普通用户的Shell，方便使用数据库工具等。
-
-sudo 是一种权限管理机制，依赖于/etc/sudoers，其定义了授权给哪个用户可以以管理员的身份能够执行什么样的管理命令。
-
-`sudo -i` 有sudo权限的用户，临时提权到 root 用户，用于为了频繁的执行某些只有超级用户才能执行的权限，而不用每次输入密码。执行该命令后提示符变为“#”而不是“$”。想退回普通账户时可以执行“exit”或“logout” 。运行结果 PWD=/root
-
-`sudo su`表示前用户暂时申请root权限，所以输入的不是root用户密码，而是当前用户的密码。sudo是用户申请管理员权限执行一个操作，而此处的操作就是变成管理员。运行结果 PWD=/home/用户名（当前用户主目录） 。
-
-`sudo su` 切换root身份，不携带当前用户环境变量。
-`sudo su -` 切换root身份，携带当前用户环境变量。效果类似于`sudo -i`
-
-    $ sudo su
-    root@your_host:/home/some_user# echo $PATH
-    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-    $  sudo su -
-    root@your_host:~# echo $PATH
-    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-    $ sudo -i
-    root@your_host:~# echo $PATH
-    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-    root@your_host:~#

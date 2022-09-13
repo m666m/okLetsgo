@@ -3482,27 +3482,6 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 ```
 
-### 操作时间时区 timedatectl
-
-    https://www.cnblogs.com/zhi-leaf/p/6282301.html
-
-### 设置替换命令 update-alternatives
-
-linux 版本历经多年的使用，有些命令会出现各种变体，为保持通用，用符号链接的方式统一进行管理
-
-    update-alternatives --all
-
-设置 vi 的变体
-
-查看实际使用版本
-
-    $ readlink -f `which vi`
-    /usr/bin/vim.tiny
-
-设置替换版本
-
-    update-alternatives --config vi
-
 ### 压力测试
 
     sudo apt install stress-ng
@@ -3548,6 +3527,27 @@ for i in "${pid_array[@]}"; do
 done
 
 ```
+
+### 操作时间时区 timedatectl
+
+    https://www.cnblogs.com/zhi-leaf/p/6282301.html
+
+### 设置替换命令 update-alternatives
+
+linux 版本历经多年的使用，有些命令会出现各种变体，为保持通用，用符号链接的方式统一进行管理
+
+    update-alternatives --all
+
+设置 vi 的变体
+
+查看实际使用版本
+
+    $ readlink -f `which vi`
+    /usr/bin/vim.tiny
+
+设置替换版本
+
+    update-alternatives --config vi
 
 ### 开机启动 SystemV(init) 和 systemd
 
