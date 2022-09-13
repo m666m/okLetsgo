@@ -1174,6 +1174,19 @@ fi
 # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
 export TERM="xterm-256color"
 
+# 添加 dbian 自带的 .bashrc 脚本，常用命令开启彩色选项
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
 ############# 手动设置插件
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
 # 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
