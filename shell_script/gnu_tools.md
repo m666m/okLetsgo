@@ -2957,18 +2957,49 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 .tar.gz 文件
 
-    # 打包并压缩
+    # 去掉 z 就是只打包，生成 .tar 文件，其它参数相同
+    # 把 z 换成 j 就是压缩为.bz2文件，而不是.gz文件了
+
+    # 打包并压缩，可以是多个文件或目录名
     tar -czvf arc.tar.gz file1 file2
 
-    # 解包并解压缩
+    # 解包并解压缩, 把 x 换成 t 就是只查看文件列表而不真正解压
     tar -xzvf arc.tar.gz
 
     tar -jxvf xx.tar.bz2
 
-zip
+.gz 文件
 
-    # 默认只有解压缩zip
+    # 解压
+    gunzip FileName.gz
+
+    gzip -d FileName.gz
+
+    # 压缩，生成同名文件，后缀.gz
+    gzip FileName
+
+    # 列出指定文件列表并压缩
+    ls |grep -v GNUmakefile |xargs gzip
+
+    # 查看内容
+    zcat usermod.8.gz
+
+.zip 文件
+
+    # 解压缩zip
     unzip arc.zip -d your_unzip_dir
+
+    # 压缩文件，生成 .zip 后缀的文件
+
+    zip arc file1.txt file2.txt ...
+
+    # 打包压缩目录
+    zip -r foo.zip foo1/ foo2/
+
+    # 查找匹配的 c 语言文件并打包压缩
+    find . -name "*.[ch]" -print | zip source -@
+
+    tar cf - . | zip backup -
 
     # 只查看文件列表
     unzip -l arc.zip
