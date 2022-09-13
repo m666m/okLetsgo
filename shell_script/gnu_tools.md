@@ -2975,7 +2975,7 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
     gzip -d FileName.gz
 
-    # 压缩，生成同名文件，后缀.gz
+    # 压缩，生成同名文件，后缀.gz，原文件默认删除
     gzip FileName
 
     # 列出指定文件列表并压缩
@@ -2989,15 +2989,15 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
     # 解压缩zip
     unzip arc.zip -d your_unzip_dir
 
-    # 压缩文件，生成 .zip 后缀的文件
+    # 压缩文件，生成新文件，并添加 .zip 后缀的文件
 
     zip arc file1.txt file2.txt ...
 
     # 打包压缩目录
-    zip -r foo.zip foo1/ foo2/
+    zip -r arc.zip foo1/ foo2/
 
     # 查找匹配的 c 语言文件并打包压缩
-    find . -name "*.[ch]" -print | zip source -@
+    find . -name "*.[ch]" -print | zip source_code -@
 
     tar cf - . | zip backup -
 
