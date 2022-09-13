@@ -4157,9 +4157,7 @@ Target 与 传统 RunLevel 的对应关系如下
 
 确认 systemd 已经开启了 systemV 启动脚本 rc.local 的兼容服务
 
-    cd /lib/systemd/system/
-
-    $ cat rc-local.service
+    $ cat /lib/systemd/system/rc-local.service
     [Unit]
     Description=/etc/rc.local Compatibility
     Documentation=man:systemd-rc-local-generator(8)
@@ -4663,12 +4661,6 @@ Linux下新建用户密码过期时间是从/etc/login.defs文件中PASS_MAX_DAY
 
     # apt install net-tools
     ifconfig
-
-列出登入系统失败的用户相关信息，安全性检查，经常看看，如果太多必须考虑ssh的安全性
-
-    lastb|less
-
-    lastb|awk '{print $1}'|sort|uniq
 
 端口是否可用
 

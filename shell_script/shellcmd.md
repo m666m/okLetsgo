@@ -1314,6 +1314,111 @@ lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof）
     nginx     28989 www-data    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
     nginx     28989 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
 
+## 查看日志
+
+    https://ivanzz1001.github.io/records/post/linuxops/2018/04/10/linux-restart-log
+
+查看关机、重启、死机记录
+
+    # 执行等级的改变的时间点，初步排查问题
+    $ lastx
+
+    $ last| grep -E -i "crash|down|reboot"
+    pi       pts/0        192.168.0.106    Tue Aug  2 17:09 - crash (-19206+09:08)
+    pi       pts/5        tmux(2151).%5    Tue Aug  2 04:29 - crash (-19205+20:29)
+    pi       pts/4        tmux(2151).%4    Tue Aug  2 04:29 - crash (-19205+20:29)
+    pi       pts/3        tmux(2151).%3    Tue Aug  2 04:29 - crash (-19205+20:29)
+    pi       pts/2        tmux(2151).%0    Tue Aug  2 04:29 - crash (-19205+20:29)
+    pi       pts/1        192.168.0.106    Tue Aug  2 04:09 - crash (-19205+20:09)
+
+查看系统日志，查找内存溢出oom-kill导致的死机
+
+    # cat /var/log/syslog |less
+    # cat /var/log/kern.log | less
+    grep -i kill /var/log/messages*
+
+    Aug  2 04:51:11 your_host kernel: [ 4683.267560] oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=/,mems_allowed=0,global_oom,task_memcg=/,task=bash,pid=9626,uid=1000
+    Aug  2 04:51:11 your_host kernel: [ 4683.269942] oom_reaper: reaped process 9626 (bash), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
+    Aug  2 04:51:11 your_host rsyslogd: imuxsock: Acquired UNIX socket '/run/systemd/journal/syslog' (fd 3) from systemd.  [v8.1901.0]
+    Aug  2 04:51:11 your_host rsyslogd:  [origin software="rsyslogd" swVersion="8.1901.0" x-pid="19826" x-info="https://www.rsyslog.com"] start
+    Aug  2 14:47:31 your_host kernel: [    0.000000] Booting Linux on physical CPU 0x0
+    Aug  2 14:47:31 your_host kernel: [    0.000000] Linux version 5.10.103-v7l+ (dom@buildbot) (arm-linux-gnueabihf-gcc-8 (Ubuntu/Linaro 8.4.0-3ubuntu1) 8.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #1529 SMP Tue Mar 8 12:24:00 GMT 2022
+
+查看守护进程的日志，这个在oom死机也有输出
+
+    cat /var/log/daemon.log
+
+对空指针异常的内核死机，暂未找到详细记录的位置 `ls /var/crash`。
+
+对看门狗引发的重启，暂未找到记录日志的位置。
+
+### 手工重启内核SysRq
+
+    https://www.cnblogs.com/ylan2009/articles/2322950.html
+
+    https://www.cnblogs.com/klb561/p/11013746.html
+
+    https://wiki.ubuntu.com/Kernel/CrashdumpRecipe
+
+先要激活内核 sysrq 功能
+
+    # 修改 /etc/sysctl.conf 文件，设置 kernel.sysrq = 1
+    echo "1" > /proc/sys/kernel/sysrq
+
+键：Print Screen/SysRq
+
+系统异常时依次按下 alt+sysrq+{reisub} ，然后系统会自动重启。括号内的英文字母需要依次顺序按下，而且每次按下字母后需要间隔 5-10s 再执行下一个动作。（如 alt + SysRq + R，间隔10s 后再按 alt + SysRq + E，以此类推）切记不可快速按下 R-E-I-S-U-B ，否则后果和 扣电池拔电源线无异！
+
+使用 SysRq 重启计算机的方法：
+
+全尺寸键盘
+
+    Alt + SysRq + [R-E-I-S-U-B]
+
+笔记本键盘
+
+    Fn + Alt + SysRq + [R-E-I-S-U-B]
+
+reisub各个序列，需要留出执行时间：
+
+    unRaw – 把键盘设置为 ASCII 模式，使按键可以穿透 x server 捕捉传递给内核
+
+    tErminate – 向除 init 外进程发送 SIGTERM 信号，让其自行结束
+
+    kIll - 向除 init 以外所有进程发送 SIGKILL 信号，强制结束进程
+
+    Sync – 同步缓冲区数据到硬盘，避免数据丢失
+
+    Unmount – 将所有已经挂载的文件系统 重新挂载为只读
+
+    reBoot - 立即重启计算机
+
+拓展：
+
+    # 立即重新启动计算机
+    echo "b" > /proc/sysrq-trigger
+
+    # 立即关闭计算机
+    echo "o" > /proc/sysrq-trigger
+
+    # 导出内存分配的信息 （可以用/var/log/message 查看）
+    echo "m" > /proc/sysrq-trigger
+
+    # 导出当前CPU寄存器信息和标志位的信息
+    echo "p" > /proc/sysrq-trigger
+
+    # 导出线程状态信息
+    echo "t" > /proc/sysrq-trigger
+
+    # 故意让系统溃
+    echo "c" > /proc/sysrq-trigger
+
+    # 立即重新挂载所有的文件系统
+    echo "s" > /proc/sysrq-trigger
+
+    # 立即重新挂载所有的文件系统为只读
+    echo "u" > /proc/sysrq-trigger
+
 ## 后台执行
 
 ### nohup
@@ -1321,6 +1426,8 @@ lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof）
     nohup sleep 3600 &
 
 ### 后知后觉发现一个命令要执行很久，半路让它改成后台执行
+
+tmux用一个守护进程打开多个终端窗口实现了一直在后台运行，详见 <gun_tools.md> 的 tmux 章节。
 
     https://www.ruanyifeng.com/blog/2016/02/linux-daemon.html
 
@@ -1373,11 +1480,7 @@ lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof）
 
     bash-3.2$ exit
 
-### 使用 tmux
-
-tmux用一个守护进程打开多个终端窗口实现了一直在后台运行，详见 <gun_tools.md> 的 tmux 章节。
-
-### sudo、su和su -
+## sudo、su和su -
 
     https://blog.csdn.net/mutou990/article/details/107724302
 
