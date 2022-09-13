@@ -2975,7 +2975,7 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
     gzip -d FileName.gz
 
-    # 压缩，生成同名文件，后缀.gz，原文件默认删除
+    # 压缩，生成同名文件，后缀.gz，原文件默认删除，除非使用 -k 参数保留
     gzip FileName
 
     # 列出指定文件列表并压缩
