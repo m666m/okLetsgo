@@ -1088,6 +1088,8 @@ function prompt_raspi_temp_warn() {
 
 #### 自带插件管理器，内置超多插件和主题的 ohmyzsh
 
+    如果只是简单使用 zsh + powerlevel10k + 自动完成等几个插件，不需要安装ohmyzsh，这货太慢，而且经常自动升级，你进入zsh时会等半天它更新才给出提示行...
+
 ohmyzsh 是在 zsh 的基础上增加了更多的花样的shell封装、主题管理等。
 
     https://ohmyz.sh/
@@ -1159,8 +1161,8 @@ zsh 默认未提供命令行的 vi 模式，需要手工编辑 ~/.zshrc 文件
 安装 ohmyzsh(可选) 、powerlevle10k 等几个插件后的配置
 
 ```zsh
-############ zsh或ohmyzsh自动生成的一堆设置，不用动
 
+############ powerlevel10k 自动生成的首行，不用动
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -1168,21 +1170,11 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# 自动生成的一堆设置...
-# 如果安装了ohmyzsh，这里有个 plugin=() 段落启用内置插件
-
-source ~/powerlevel10k/powerlevel10k.zsh-theme
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-############ 状态栏工具 powerlevle10k 安装程序自动修改 后的最后一行 ############
-
-############ 下为手动配置插件
-
+#############
 # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
 export TERM="xterm-256color"
 
+############# 手动设置插件
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
 # 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
 
@@ -1194,14 +1186,33 @@ export TERM="xterm-256color"
 # source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
+##############
+# 如果安装了 ohmyzsh 会自动生成一堆设置，不用动
+# ...
+# ...
+# 有个 ohmyzsh 的插件管理，在 plugin=() 段落启用内置插件，可以在这里加载上面的插件，不需要手动设置了
+
+############## powerlevel10k 追加部分，不用动
+
+source ~/powerlevel10k/powerlevel10k.zsh-theme
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+############ 手动配置插件
+
 # 启用插件：命令语法高亮
 # 官网提示要在配置文件的最后一行
 # source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+############ 自定义调整
 # 命令自动完成的颜色太暗  # ,bg=cyan
 # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
+
+# zsh 默认是 vi 操作模式，不需要显式设置了
+#set -o vi
 
 ```
 
