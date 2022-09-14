@@ -909,7 +909,7 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 
     https://github.com/sindresorhus/pure
 
-    下面章节[推荐主题 powerlevel10k]，也可设置为 pure 风格。
+    下面章节[推荐状态栏工具 powerlevel10k]，也可设置为 pure 风格。
 
 zsh自带功能
 
@@ -971,7 +971,7 @@ zsh自带功能
     # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
-#### 推荐主题 powerlevel10k
+#### 推荐状态栏工具 powerlevel10k
 
 zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 powerline ，而且更简单、更好看
 
