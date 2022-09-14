@@ -1822,7 +1822,10 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'scrooloose/nerdtree'
 
 " 在侧边显示git修改状态
-Plug 'airblade/vim-gitgutter',
+Plug 'airblade/vim-gitgutter'
+
+" Peekaboo extends " and @ in normal mode and <CTRL-R> in insert mode so you can see the contents of the registers.
+Plug 'junegunn/vim-peekaboo'
 
 " https://www.nordtheme.com/ports/vim
 Plugin 'arcticicestudio/nord-vim'
@@ -1898,6 +1901,9 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
 " 在侧边显示git修改状态
 Plug 'airblade/vim-gitgutter',
+
+" Peekaboo extends " and @ in normal mode and <CTRL-R> in insert mode so you can see the contents of the registers.
+Plug 'junegunn/vim-peekaboo'
 
 " https://www.nordtheme.com/ports/vim
 Plug 'arcticicestudio/nord-vim'
@@ -2525,17 +2531,13 @@ vim配置中开启鼠标支持，.vimrc文件中加上
     "0       y{motion}指令 存储复制内容
     "1       104.188^J
     "2       4.117^J
-    "3       77777.117^J
-    "4       104.88^J
-    "5       104.188^J
-    "6       ^J
-    "7         p74.117^J
-    "8       ^J
-    "9       ^Jaaa^Jbbbbbb^Jccc^Jxxx^J^Jff^Jfa^J
+    ...
     "-       上一次删除的文本
+    ".       上一次插入的文本
     "*       系统剪贴板
     "%       当前文件的名字
     "/       上一次查找的字符串
+    ":       上次执行的命令
 
 普通模式下使用寄存器，直接使用 "开头的寄存器名称加命令 操作即可
 
@@ -2547,9 +2549,11 @@ vim配置中开启鼠标支持，.vimrc文件中加上
 
     这里说的系统剪贴板，通过终端工具，使用的是用户操作系统的剪贴板。
 
-插入模式下使用寄存器，使用热键 <C-r> 做前导即可
+插入模式下使用寄存器，比如：在文本输入模式，使用寄存器里的内容
 
-    <C-r>0  从0号寄存器粘贴内容。在用 / 搜索内容时可用这个方法使用y复制的文件内容
+    使用热键 <C-r> 做前导即可: <C-r>0  从0号寄存器粘贴内容
+
+用 / 输入搜索内容 或 : 命令行模式 都可用这个方法使用寄存器里的内容。
 
 也可以设置vim默认使用系统剪贴板 <https://www.cnblogs.com/huahuayu/p/12235242.html>
 
@@ -2558,6 +2562,10 @@ vim配置中开启鼠标支持，.vimrc文件中加上
         set clipboard^=unnamed,unnamedplus
 
     其中unnamed代表 *寄存器，unnamedplus 代表 +寄存器。在mac系统中，两者都一样；一般在linux系统中+和*是不同的，+对应ctrl + c,ctrl + v的桌面系统剪贴板，*对应x桌面系统的剪贴板（用鼠标选择复制，用鼠标中键粘贴）。
+
+可以给 vim 安装个插件在按到对应热键时显式寄存器内容
+
+    https://github.com/junegunn/vim-peekaboo
 
 ### tmux 不怕断连的多窗口命令行
 
