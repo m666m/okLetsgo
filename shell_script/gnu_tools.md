@@ -728,7 +728,11 @@ tmux:
 
     powerline-config tmux
 
-其它的shell，我直接使用命令配置 `powerline-config shell -s zsh command` 不行呢
+其它的shell，我没弄出来效果呢？
+
+    powerline-config shell -s bash uses prompt
+
+    powerline-config shell -s zsh uses prompt
 
 #### 手工配置各软件的绑定
 
