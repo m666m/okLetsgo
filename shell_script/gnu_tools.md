@@ -1380,11 +1380,13 @@ This is powerlevel10k, pure, starship sample:
 
 #### nano 用法
 
-用法
+常用编辑命令在底部都有提示，适合不会用 vi 的用户。
+
 光标控制
 
 移动光标：使用用方向键移动。
 选择文字：按住鼠标左键拖到。
+
 复制、剪贴和粘贴
 
 复制一整行：Alt+6
@@ -1401,6 +1403,7 @@ This is powerlevel10k, pure, starship sample:
 
 Ctrl+Y到上一页
 Ctrl+V到下一页
+
 保存
 
 使用Ctrl+O来保存所做的修改
@@ -2094,11 +2097,14 @@ map <C-n> :NERDTreeToggle<CR>
 
 查找替换
 
-    /pattern    向后搜索字符串pattern
-    ?pattern    向前搜索字符串pattern
+    *   向前搜索 当前光标位置所在的词，重复按就是查找下一个匹配项
+    #   向后搜索 当前光标位置所在的词，重复按就是查找下一个匹配项
 
-    "\c"    忽略大小写
-    "\C"    大小写敏感
+    /   向后搜索，会在命令行下面进入输入模式，输入匹配模式 pattern 后回车即可
+    ?   向前搜索，同上
+
+    :set ignorecase    忽略大小写，或命令 :set ic，或在上面的搜索匹配模式后缀 \c
+    :set noignorecase  大小写敏感，或命令 :set noic，或在上面的搜索匹配模式后缀 \C
 
     n   下一个匹配(如果是/搜索，则是向下的下一个，?搜索则是向上的下一个)
     N   上一个匹配(同上)
@@ -3608,7 +3614,7 @@ init 程序最先运行的服务是放在 /etc/rc.d/ 目录下的文件。
 
 注：在2020年代的linux系统中，目录 /etc/rc.d/init.d/ 和 /etc/rc.d/rcX.d/ 简化为 /etc/init.d/ 和 /etc/rcX.d/。
 
-#### SystemV设置开机自启动
+#### SystemV 设置开机自启动
 
 1、在 /etc/init.d/目录下添加需要执行的.sh脚本，脚本里调用需要开机启动的程序（shell文件格式参考目录下其它文件）
 
@@ -3667,7 +3673,15 @@ Provides 的名字是唯一的，也就是在所有的开机启动项中，Provi
 
     3、重启计算机，程序会被root用户调用起来。
 
-这个 /etc/rc.local 文件，在systemd中也添加了文件调用到，可以保持对 SystemV 的兼容性
+#### systemd 对 SystemV 的兼容性
+
+    /etc/init.d/ 下的脚本，有不少是对 systemd 兼容的，写法参见具体文件，如 nginx、rng-tools
+
+    /etc/rc.local 文件，在systemd中也添加了控制文件，可以保持对 SystemV 的兼容性
+
+systemd 保持对 SystemV 的兼容性使用的控制文件
+
+    /usr/lib/systemd/system/systemd-initctl.service
 
     /usr/lib/systemd/system/rc-local.service
 
@@ -3699,7 +3713,7 @@ systemd并不是一个命令，而是一组命令，涉及到系统管理的方�
 
 对之前系统的兼容性
 
-    systemd会检查老的 SystemV init 目录，以确认是否存在任何启动文件。如果有，systemd 会将它们作为配置文件以启动它们描述的服务。
+    systemd 会检查老的 SystemV init 目录，以确认是否存在任何启动文件。如果有，systemd 会将它们作为配置文件以启动它们描述的服务，参见章节 [systemd 对 SystemV 的兼容性]。
 
     systemd 定时器提供类似 cron 的高级功能，包括在相对于系统启动、systemd 启动时间、定时器上次启动时间的某个时间点运行脚本。它提供了一个工具来分析定时器规范中使用的日期和时间。
 
@@ -3877,30 +3891,9 @@ systemctl list-dependencies 命令列出一个 Unit 的所有依赖
     ● ├─system.slice
     ● └─sysinit.target
     ●   ├─dev-hugepages.mount
-    ●   ├─dev-mqueue.mount
-    ●   ├─fake-hwclock.service
     ●   ├─keyboard-setup.service
-    ●   ├─kmod-static-nodes.service
-    ●   ├─proc-sys-fs-binfmt_misc.automount
-    ●   ├─sys-fs-fuse-connections.mount
-    ●   ├─sys-kernel-config.mount
-    ●   ├─sys-kernel-debug.mount
-    ●   ├─systemd-ask-password-console.path
-    ●   ├─systemd-binfmt.service
-    ●   ├─systemd-hwdb-update.service
-    ●   ├─systemd-journal-flush.service
-    ●   ├─systemd-journald.service
-    ●   ├─systemd-machine-id-commit.service
-    ●   ├─systemd-modules-load.service
-    ●   ├─systemd-random-seed.service
-    ●   ├─systemd-sysctl.service
-    ●   ├─systemd-sysusers.service
-    ●   ├─systemd-timesyncd.service
-    ●   ├─systemd-tmpfiles-setup-dev.service
-    ●   ├─systemd-tmpfiles-setup.service
-    ●   ├─systemd-udev-trigger.service
-    ●   ├─systemd-udevd.service
     ●   ├─systemd-update-utmp.service
+    ...
     ●   ├─cryptsetup.target
     ●   ├─local-fs.target
     ●   │ ├─-.mount
