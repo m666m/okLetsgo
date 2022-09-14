@@ -665,7 +665,7 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
 简单的双行状态栏 见章节  [bash_profile.sh] <shell_script okletsgo>
 
-或者在已经安装了 powerline（参见章节[状态栏工具 powerline]）的情况下
+或者使用 powerline（参见章节[状态栏工具 powerline]）
 
     # 如果是pip安装的查看路径用 pip show powerline-status
     source /usr/share/powerline/bindings/bash/powerline.sh
@@ -676,7 +676,7 @@ figlet实现字符画钟表，在tmux里开一个正合适
 
 ### 状态栏工具 powerline
 
-vim、tmux 等众多工具的插件，大部分都依赖 powerline 进行状态栏显示。
+bash、vim、tmux 等众多工具及插件，powerline 都可适配进行状态栏显示。
 
     https://github.com/powerline/powerline/
 
@@ -684,7 +684,7 @@ vim、tmux 等众多工具的插件，大部分都依赖 powerline 进行状态�
 
 powerline 最大的优点是它的各种符号字体可以图形化的显示文件夹、电池、git状态、进度等。
 
-缺点是它的代码 python2、3 混杂，安装和使用都很难配置，所以现在有些插件都不使用它了。
+缺点是它的代码 python2、3 混杂，安装和使用都很难配置，所以现在有些插件不使用它了。
 
 基础安装
 
@@ -699,17 +699,20 @@ powerline 最大的优点是它的各种符号字体可以图形化的显示文�
     # 最好用发行版自带的，一步到位，默认的安装到 /usr/share/powerline/ 目录下了
     sudo apt install powerline
 
+安装后有个后台进程
+
+    # 由 systemd 调度管理 /etc/systemd/user/default.target.wants/powerline-daemon.service
     $ ps -ef|grep powerline
     00:00:00 /usr/bin/python3 /usr/bin/powerline-daemon --foreground
 
-终端工具最好明确设置变量Term，这样各个插件会自动使用更丰富的颜色
+使用者的终端工具最好明确设置变量 Term，这样各个插件会自动使用更丰富的颜色
 
     # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
 终端工具字体推荐 MesloLGS NF，详见下面章节[状态栏字体]。
 
-绑定到各软件：命令行方式配置
+#### 使用 powerline-config 命令行绑定到各软件
 
     $ powerline-config -h
     usage: powerline-config [-h] [-p PATH] {tmux,shell} ...
@@ -721,40 +724,35 @@ powerline 最大的优点是它的各种符号字体可以图形化的显示文�
         tmux                Tmux-specific commands
         shell               Shell-specific commands
 
-    powerline-config tmux 好用，直接配置到 tmux 里了。
+tmux:
 
-    这个不行 powerline-config shell -s zsh command，到zsh得source的方式
+    powerline-config tmux
 
-绑定到各软件：手工配置
+其它的shell，我直接使用命令配置 `powerline-config shell -s zsh command` 不行呢
 
-先查看你安装的位置，找到bindings目录
+#### 手工配置各软件的绑定
 
-如果是用 pip 安装的 powerline，就是如下这种的路径
+先查看你安装 powerline 的位置，找到bindings目录
 
-    # pip show powerline-status
+    # 如果是用 pip 安装的 powerline
+    # 用命令 pip show powerline-status 查看
     . /usr/lib/python3.7/site-packages/powerline/bindings/bash/powerline.sh
 
-如果是用 apt 安装的powerline在，就是这种路径 /usr/share/powerline/bindings/
-
-    $ tree -L 1 /usr/share/powerline/bindings
-    /usr/share/powerline/bindings
-    ├── awesome
-    ├── bar
-    ├── bash
-    ├── fish
-    ├── i3
-    ├── lemonbar
-    ├── qtile
-    ├── rc
-    ├── shell
-    ├── tcsh
-    ├── tmux
-    └── vim
-    └── zsh
+    # 如果是用 apt 安装的 powerline
+    $ ls /usr/share/powerline/bindings
+    awesome  bar  bash  fish  i3  lemonbar  qtile  rc  shell  tcsh  tmux  zsh
 
 然后在各软件的配置文件中设置插件，指向这个bindings目录下的脚本即可，详见各软件的说明。
 
-定制状态栏显示的段Segment
+bash
+
+    source /usr/share/powerline/bindings/bash/powerline.sh
+
+zsh:
+
+    source /usr/share/powerline/bindings/zsh/powerline.zsh
+
+#### 定制 powerline 状态栏显示的段Segment
 
 编辑文件
 
@@ -769,10 +767,11 @@ powerline 最大的优点是它的各种符号字体可以图形化的显示文�
 
     https://github.com/agnoster/agnoster-zsh-theme
 
-如果不使用 powerline，推荐使用 sh、bash、cmd 等 shell 下通用的状态栏工具
+#### 替代品
 
-    # 需要安装 Nerd Font，见下面
-    https://starship.rs/zh-CN/
+如果不使用 powerline，推荐使用 sh、bash、cmd 等 shell 下通用的状态栏工具，见章节 [居然有给cmd做美化的]。
+
+更推荐安装 zsh，使用 zsh 下的 powerlevle10k 工具，这个兼容性和效果直接起飞，见章节 [推荐主题powerlevel10k]。
 
 ### 状态栏字体
 
@@ -856,6 +855,8 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
      ±  ➦ ✘ ⚡ ⚙ ❃      
 
 ### 使用 zsh
+
+单纯的 zsh 并不慢，只要别装 ohmyzsh 就好（没有任何功能性插件的使用场景必须 ohmyzsh）。
 
     https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
 
