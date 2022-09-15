@@ -4058,15 +4058,16 @@ journalctl 功能强大，用法非常多
     # 指定日志文件保存多久
     $ journalctl --vacuum-time=1years
 
-#### 系统资源配置文件
+#### 系统资源配置文件 xxx.service
 
 每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit 。
 
 Systemd 的配置文件存放在2个目录
 
-    /etc/systemd/system/    开机自启动
+    /lib/systemd/system/
+        启动后出现在 /usr/lib/systemd/system/
 
-    /usr/lib/systemd/system/ 用户安装的各种服务的配置文件
+    /etc/systemd/system/
 
 systemctl enable 命令用于在上面两个目录之间，建立符号链接关系
 
