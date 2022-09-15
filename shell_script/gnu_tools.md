@@ -1328,6 +1328,16 @@ This is powerlevel10k, pure, starship sample:
 
 ## Linux 常用工具
 
+### man/info 查看帮助信息
+
+SEE ALSO
+       kill(1), alarm(2), kill(2), pause(2), sigaction(2),  signalfd(2),  sigpending(2),  sigprocmask(2),  sigsuspend(2),  bsd_signal(3),
+       killpg(3), raise(3), siginterrupt(3), sigqueue(3), sigsetops(3), sigvec(3), sysv_signal(3), signal(7)
+
+man 查看各章节后缀用.数字即可
+
+    man signal.7
+
 ### Vim 和 nano
 
 + 自定义 vim 编辑器的颜色方案(vim tinny 版本不支持)
