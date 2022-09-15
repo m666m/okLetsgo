@@ -4062,18 +4062,15 @@ journalctl 功能强大，用法非常多
 
 每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit 。
 
-Systemd 的配置文件存放在2个目录
+Systemd 的配置文件存放在目录 /lib/systemd/system/，启动后出现在 /usr/lib/systemd/system/ ，
 
-    /lib/systemd/system/
-        启动后出现在 /usr/lib/systemd/system/
-
-    /etc/systemd/system/
+用 enable 设置为自启动后添加连接文件在 /etc/systemd/system/ 。
 
 systemctl enable 命令用于在上面两个目录之间，建立符号链接关系
 
     $ sudo systemctl enable clamd@scan.service
     # 等同于
-    $ sudo ln -s '/usr/lib/systemd/system/clamd@scan.service' '/etc/systemd/system/multi-user.target.wants/clamd@scan.service'
+    $ sudo ln -s '/lib/systemd/system/clamd@scan.service' '/etc/systemd/system/multi-user.target.wants/clamd@scan.service'
 
 如果配置文件里面设置了开机启动，systemctl enable 命令相当于激活指定服务的开机启动。
 
