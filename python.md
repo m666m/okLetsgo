@@ -1721,6 +1721,24 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
 插件的安装位置为 C:\Users\你的用户名\.vscode\extensions
 
+### 不要用AI代码完成的插件
+
+全都把你的代码上传服务器了，包括 kate、[Visual Studio IntelliCode](https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.vscodeintellicode) 等。
+
+原
+
+    "python.jediEnabled": True, // Falses
+
+现
+
+    https://docs.microsoft.com/zh-cn/visualstudio/intellicode/intellicode-visual-studio-code
+
+    "python.languageServer": "Jedi" // "Pylance"
+
+java 套件安装及默认安装 IntelliCode，注意禁用。
+
+python 套件为兼容老版本不用 pylance 的习惯，所以默认不安装 IntelliCode，不代表以后不装。
+
 ### 快速解析python，代码自动完成更快
 
 pylance
@@ -1747,24 +1765,6 @@ pylance
     打开远程ssh文件夹后，各插件不可用？ 删除服务器上的 ~/.vscode-server 目录，重新安装插件
     Extension not working on remote SSH?  Remove directory ~/.vscode-server
     https://github.com/microsoft/vscode-remote-release/issues/1443
-
-### 不要用AI代码完成的插件
-
-全都把你的代码上传服务器了，包括 kate、Visual Studio IntelliCode  <https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.vscodeintellicode> 等。
-
-原
-
-    "python.jediEnabled": True, // Falses
-
-现
-
-    https://docs.microsoft.com/zh-cn/visualstudio/intellicode/intellicode-visual-studio-code
-
-    "python.languageServer": "Jedi" // "Pylance"
-
-java 套件安装及默认安装 IntelliCode，注意禁用。
-
-python 套件为兼容老版本不用 pylance 的习惯，所以默认不安装 IntelliCode，不代表以后不装。
 
 ### 自动添加函数头说明 Python Docstring Generator
 
@@ -1962,6 +1962,16 @@ Prettier - Code formatter
         ]
     },
 ```
+
+### vim
+
+完整模拟了 vim 的各种操作
+
+    vscodevim.vim
+
+vim script 语法高亮
+
+    XadillaX.viml
 
 ### Draw.io Integration
 
