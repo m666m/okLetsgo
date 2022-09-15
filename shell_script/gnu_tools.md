@@ -2569,17 +2569,25 @@ vim配置中开启鼠标支持，.vimrc文件中加上
 
 ### tmux 不怕断连的多窗口命令行
 
+开启tmux后，可以有多个 session，每个 session 管理多个 window，每个window还可以划分多个面板，每个面板都运行一个shell。
+
+任意的非 tmux shell 可以 attach 到你的 session。
+
+只要不主动退出 shell，或重启计算机，任何时候都可以通过attach的方式回到你的操作界面。
+
     tmux的使用方法和个性化配置 http://mingxinglai.com/cn/2012/09/tmux/
 
     Tmux使用手册 http://louiszhai.github.io/2017/09/30/tmux/
 
     http://man.openbsd.org/OpenBSD-current/man1/tmux.1
 
-开启tmux后，可以有多个 session，每个 session 管理多个 window，每个window还可以划分多个面板，每个面板都运行一个shell。
+如果感觉 tmux/screen 用起来比较麻烦，有个前端替代品（后端调用 tmux 进程）
 
-任意的非 tmux shell 可以 attach 到你的 session。
+    https://github.com/dustinkirkland/byobu
 
-只要不主动退出 shell，或重启计算机，任何时候都可以通过attach的方式回到你的操作界面。
+如果 tmux 开启的会话较多，希望重启后能一次性恢复
+
+    https://github.com/tmux-python/tmuxp
 
 #### 安装
 
@@ -2613,9 +2621,13 @@ vim配置中开启鼠标支持，.vimrc文件中加上
 
         进入tmux，直接回到上次退出前的那个会话的那个窗口的那个分屏
 
-    tmux new -s roclinux
+    tmux new -s mydevelop
 
-        创建一个新会话名为 roclinux，并连接
+        创建一个新会话名为 mydevelop，并连接
+
+    tmux a -t mydevelop
+
+        进入tmux，连接到名为 mydevelop 的会话，如果有人已经连接，则进入双人共用模式，互相操作可见
 
     #  ssh -t localhost tmux  a
     tmux new-session -s username -d
@@ -2627,10 +2639,6 @@ vim配置中开启鼠标支持，.vimrc文件中加上
 
         进入tmux，连接到3号会话
 
-    tmux a -t mydevelop
-
-        进入tmux，连接到名为 mydevelop 的会话
-
     tmux kill-session -t mydevelop
 
         不用的会话可能有很多窗口，挨个退出很麻烦，直接杀掉会话，mydevelop 是要杀掉的会话名称
@@ -2638,6 +2646,18 @@ vim配置中开启鼠标支持，.vimrc文件中加上
     tmux rename -t old_session_name new_session_name
 
         重命名会话
+
+    # 列出所有快捷键，及其对应的 Tmux 命令
+    tmux list-keys
+
+    # 列出所有 Tmux 命令及其参数
+    tmux list-commands
+
+    # 列出当前所有 Tmux 的信息
+    tmux info
+
+    # 重新加载当前的 Tmux 配置
+    tmux source-file ~/.tmux.conf
 
 #### 快捷键
 
@@ -2749,7 +2769,7 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
 可以用滚轮方便的查看历史输出，按 q 退出。
 
-右键单击tmux窗格，该窗格的边框会加粗显示，脚本里可以引用，界面操作无感，就是给该窗口做个标记。
+右键单击tmux窗格，该窗格的边框会加粗显示，脚本里可以引用，界面操作无感，就是给该窗口做个标记，窗口名会出现 *M 字样。
 
 不过，在终端工具中常用的鼠标右键粘贴等就不能用了，需要换个操作方式：
 
