@@ -3860,7 +3860,7 @@ loginctl 命令用于查看当前登录的用户
     # 列出显示指定用户的信息
     $ loginctl show-user ruanyf
 
-#### 系统资源管理命令 systemctl
+#### systemctl系统资源管理命令
 
 Systemd 可以管理所有系统资源。不同的资源统称为 Unit（单位）。
 
@@ -3969,7 +3969,7 @@ systemctl list-dependencies 命令列出一个 Unit 的所有依赖
 
     systemctl list-dependencies --all nginx.service
 
-#### 日志管理命令 journalctl
+#### journalctl日志管理命令
 
 Systemd 统一管理所有 Unit 的日志，可以只用 journalctl 一个命令，查看所有日志（内核日志和应用日志）。
 
@@ -4058,13 +4058,15 @@ journalctl 功能强大，用法非常多
     # 指定日志文件保存多久
     $ journalctl --vacuum-time=1years
 
-#### 系统资源配置文件 xxx.service
+#### xxx.service系统资源配置文件
 
 每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit 。
 
-Systemd 的配置文件存放在目录 /lib/systemd/system/，启动后出现在 /usr/lib/systemd/system/ ，
+Systemd 的配置文件存放在目录 /lib/systemd/system/，
+用 systemctl start 启动后出现在 /usr/lib/systemd/system/
+用 systemctl enable 设置为自启动后添加连接文件在 /etc/systemd/system/ 。
 
-用 enable 设置为自启动后添加连接文件在 /etc/systemd/system/ 。
+也可直接存放在 /etc/systemd/system/ 下，暂不知道区别
 
 systemctl enable 命令用于在上面两个目录之间，建立符号链接关系
 
