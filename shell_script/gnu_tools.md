@@ -1490,7 +1490,7 @@ vim 自定义目录 ~/.vim/ 下的目录介绍
 
         Small version without GUI.
 
-    如果出现上述字样，说明当前系统只安装了兼容 vi 模式的精简版 vim.tiny，不支持语法高亮、切分窗格等
+    如果出现上述字样，说明当前系统只安装了兼容 vi 模式的精简版 vim.tiny，不支持语法高亮、切分窗口等
 
         $ apt show vim.tiny
         Description: Vi IMproved - enhanced vi editor - compact version
@@ -1681,14 +1681,14 @@ Why yet another clone of powerline?
 
 ##### nerdtree 树形文件夹插件
 
-nerdtree 以在当前窗口的左侧垂直新建窗格的方式，树形展示当前路径下的文件列表，方便用户操作。
+nerdtree 以在当前窗口的左侧垂直新建窗口的方式，树形展示当前路径下的文件列表，方便用户操作。
 
-所以，在左侧目录树窗格和右侧文件窗格间切换使用 vim 的窗格切换热键
+所以，在左侧目录树窗口和右侧文件窗口间切换使用 vim 的窗口切换热键
 
     前导 ctrl + w ，然后方向键左或 h 光标跳到左侧树形目录
-    前导 ctrl + w ，然后方向键右或 l 光标跳到右侧文件显示窗格
+    前导 ctrl + w ，然后方向键右或 l 光标跳到右侧文件显示窗口
 
-窗格操作详见章节 [多窗口(Window)操作]。
+窗口操作详见章节 [多窗口(Window)操作]。
 
 自定义个热键 Ctrl-n，方便切换显示目录树，在 ~/.vimrc 配置文件中定义为
 
@@ -1726,6 +1726,124 @@ nerdtree 在左侧树形目录中的热键
     J   跳到当前目录下同级的最后一个结点
 
     !   执行当前文件，或命令 :NERDTree-!
+
+一般再搭配个显示每个文件 git 状态的插件
+
+    https://github.com/Xuyuanp/nerdtree-git-plugin
+
+在 .vimrc 中配置用 plug 安装几个nerdtree配合的常用插件
+
+    Plug 'preservim/nerdtree' |
+            \ Plug 'Xuyuanp/nerdtree-git-plugin' |
+            \ Plug 'ryanoasis/vim-devicons'
+
+还可以搭配比较醒目的图标
+
+    let g:NERDTreeGitStatusUseNerdFonts = 1 " you should install nerdfonts by yourself. default: 0
+
+    let g:NERDTreeIndicatorMapCustom = {
+        \ "Modified"  : "✹",
+        \ "Staged"    : "✚",
+        \ "Untracked" : "✭",
+        \ "Renamed"   : "➜",
+        \ "Unmerged"  : "═",
+        \ "Deleted"   : "✖",
+        \ "Dirty"     : "✗",
+        \ "Clean"     : "✔︎",
+        \ "Unknown"   : "?"
+        \ }
+
+如果感觉插件太多太麻烦，可以使用 vim 自带的树形文件夹插件，见章节 [vim 内置的树形文件夹管理 netrw]。
+
+###### vim 内置的树形文件夹管理 netrw
+
+netrw 是 vim 自带的插件, 不需要额外安装, 其提供的功能非常强大, 相比与 NERDTREE 这些第三方插件来说速度更快, 体量更轻, 设计更简洁。
+
+默认情况下，Netrw 将在当前窗口中打开目录树列表，选择文件后回车即可在当前窗口打开文件。
+
+    可设置打开的方式
+
+        let g:netrw_browse_split = n
+
+    其中，参数 n 的值可以为以下四种
+
+        1   在目录树列表窗口，水平拆分新窗口打开文件
+        2   在目录树列表窗口，垂直拆分新窗口打开文件
+        3   用新建标签页打开文件
+        4   用前一个窗口打开文件
+
+    拆分窗口的切换用 vim 的前导键 ctrl+w，参见章节 [多窗口(Window)操作]
+
+退出
+
+    :q  退出当前的 netrw 窗口（保持回车打开文件的窗口），如果是唯一打开的窗口，那么将同时退出Vim。
+
+    :bd 我们可以将 netrw 理解为，使用编辑命令对于目录进行操作的特殊缓冲区。也就是说，我们可以使用:bdelete命令，来关闭Netwr打开的缓冲区，但不会退出Vim。
+
+几个设置命令，可放到 .vimrc 配置文件中
+
+```python
+
+    " 设置 netrw 的显示风格
+    "let g:netrw_hide = 1 " 设置默认隐藏
+    "let g:netrw_banner = 0  " 隐藏 netrw 顶端的横幅（Banner）
+    let g:netrw_browse_split = 4  " 用前一个窗口打开文件
+    let g:netrw_liststyle = 3  " 目录树的显示风格，可以用 i 键来回切换
+    let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
+    "let g:netrw_altv = 1 " 控制垂直拆分的窗口位于右边
+
+```
+
+操作命令
+
+    <F1>      在 netrw 界面弹出帮助信息
+    I         显示/隐藏顶部 banner
+
+    :E        全屏进入 netrw, 全称是 :Explorer 或 :Ex
+    :Se      水平分割进入 netrw
+    :Ve      垂直分割进入 netrw
+
+    <CR>      打开光标下文件/夹
+
+    o         在目录树列表窗口，水平拆分新窗口打开文件
+    v         在目录树列表窗口，垂直拆分新窗口打开文件
+
+    t         新 tab 中打开文件
+
+    p         预览当前文件(光标保持不动)
+    qf        显示当前文件详细信息
+    <C-w>z    关闭预览窗口
+    P         打开文件, 会在上一个使用的窗口一侧的第一个窗口打开文件
+
+    %         在当前目录下新建一个文件并编辑
+
+    <c-l>     更新 netrw 列表内容
+    i         文件列表的风格：在 thin, long, wide, tree listings 状态之间切换
+
+    s         切换文件的排序，在 name, time 和 file size 之间轮换
+    r         翻转文件的排序方式
+
+    qb        列出所有的目录以及历史路径
+
+    gn        使光标下的目录作为目录树最顶部, 在 tree style 下与 <CR> 是不同的
+
+    cd        change 工作目录到当前路径
+    -         进入上一级目录
+
+    d         创建文件夹
+    D         移除文件/夹
+    R         重命名文件/文件夹
+
+    mf         标记一个文件
+    mF         取消标记一个文件
+    mu         对所有标记文件取消标记
+    me         将标记的文件放入参数列表中并进行编辑
+    gb         跳转到上次标记的书签
+    mb         将当前目录存为书签
+
+    u         跳转到上一次浏览的目录
+    x         使用系统中与之关联的程序打开光标下文件
+    X         执行光标下的文件
 
 ##### 插件管理器 vim-addon-manager
 
@@ -1804,7 +1922,7 @@ nerdtree 在左侧树形目录中的热键
 set nocompatible              " be iMproved, required，这个应该是关闭兼容vi模式，就用vim
 filetype off                  " required
 
-" airline 安装时需要屏蔽原配置的 powerline
+" airline 安装时可屏蔽原配置的 powerline
 " set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -1834,13 +1952,13 @@ Plugin 'scrooloose/nerdtree'
 " 在侧边显示git修改状态
 Plug 'airblade/vim-gitgutter'
 
-" Peekaboo extends " and @ in normal mode and <CTRL-R> in insert mode so you can see the contents of the registers.
+" 显示 vim 寄存器的内容
 Plug 'junegunn/vim-peekaboo'
 
-" https://www.nordtheme.com/ports/vim
+" 颜色主题 https://www.nordtheme.com/ports/vim
 Plugin 'arcticicestudio/nord-vim'
 
-" https://github.com/NLKNguyen/papercolor-theme
+" 颜色主题 https://github.com/NLKNguyen/papercolor-theme
 " Plugin 'NLKNguyen/papercolor-theme'
 
 " All of your Plugins must be added before the following line
@@ -1892,7 +2010,12 @@ Vundle不更新了，这个项目取代之，用法神似
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-plug 插件管理器官方配置
+
 " 不需要设置rtp，因为引导程序plug.vim放到autoload目录里了
+
+" airline 安装时可屏蔽原配置的 powerline
+" set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
+
 call plug#begin()
 " The default plugin directory will be as follows:
 "   - Vim (Linux/macOS): '~/.vim/plugged'
@@ -1912,13 +2035,13 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 " 在侧边显示git修改状态
 Plug 'airblade/vim-gitgutter',
 
-" Peekaboo extends " and @ in normal mode and <CTRL-R> in insert mode so you can see the contents of the registers.
+" 显示 vim 寄存器的内容
 Plug 'junegunn/vim-peekaboo'
 
-" https://www.nordtheme.com/ports/vim
+" 颜色主题 https://www.nordtheme.com/ports/vim
 Plug 'arcticicestudio/nord-vim'
 
-" https://github.com/NLKNguyen/papercolor-theme
+" 颜色主题 https://github.com/NLKNguyen/papercolor-theme
 " Plug 'NLKNguyen/papercolor-theme'
 
 " Initialize plugin system
@@ -1961,6 +2084,14 @@ let mapleader="\<space>"
 if &term =="screen"
     set t_Co=256
 endif
+
+" 设置 netrw 的显示风格
+"let g:netrw_hide = 1 " 设置默认隐藏
+"let g:netrw_banner = 0  " 隐藏 netrw 顶端的横幅（Banner）
+let g:netrw_browse_split = 4  " 用前一个窗口打开文件
+let g:netrw_liststyle = 3  " 目录树的显示风格，可以用 i 键来回切换
+let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
+"let g:netrw_altv = 1 " 控制垂直拆分的窗口位于右边
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " 插件管理器二选一：
@@ -2266,21 +2397,18 @@ autocmd VimEnter * call TabPos_Initialize()
 
     :syntax clear       关闭语法高亮
 
-    :set mouse=a        使用鼠标
-
-    :set mouse-=a       禁用鼠标
+    :bd    关闭当前打开的缓冲区，单一窗口下也不会退出 vim ，或 :bdelete
 
 退出编辑器
 
     即使缓冲区打开了多个文件，一次q就会全部退出，不需要挨个退出。
 
-    如果有多个标签页或窗格，需要挨个执行q退出。
-
-    :w 将缓冲区写入文件，即保存修改
-    :wq 保存修改并退出
-    :x 保存修改并退出
-    :q 退出，如果对缓冲区进行过修改，则会提示
-    :q! 强制退出，放弃修改
+    如果有多个标签页或窗口，需要挨个执行q退出。
+    :w      将缓冲区写入文件，即保存修改
+    :wq     保存修改并退出
+    :x      保存修改并退出
+    :q      退出，如果对缓冲区进行过修改，则会提示
+    :q!     强制退出，放弃修改
 
 执行shell命令
 
@@ -2356,10 +2484,12 @@ vim 打开的多个文件，每个文件都会加载到缓冲区
 
     Ctrl+6      在普通模式下的热键，切换到下一个文件
 
-    对于用 split 在多个窗口中打开的文件，切换缓冲区文件的命令只会在当前窗口中切换不同的文件。
+                对于用 split 在多个窗口中打开的文件，切换缓冲区文件的命令只会在当前窗口中切换不同的文件。
+
+    :bd         关闭当前打开的缓冲区，单一窗口下也不会退出vim，或 :bdelete 。
 
     :q          退出vi，也就关闭全部缓冲区退出了。
-                如果是tab标签页或window分割窗口打开的文件，则会关闭当前标签页或窗口。
+                如果是 tab 标签页或 window 分割窗口打开的文件，则会关闭当前标签页或窗口。
 
     :qa!        丢弃所有缓冲区退出vim
 
@@ -2368,7 +2498,7 @@ vim 打开的多个文件，每个文件都会加载到缓冲区
     :close      关闭当前窗口
     :only       只显示当前窗口, 关闭所有其他的窗口
 
-vim 除了使用一个窗口显示所有缓冲区(只能来回切换)，还可以使用tab标签化或window窗格化单独的文件。
+vim 除了使用一个窗口显示所有缓冲区(只能来回切换)，还可以使用tab标签化或window窗口化单独的文件。
 
 buffer状态
 
@@ -2387,9 +2517,9 @@ buffer状态
     :split      当前窗口水平切分为两个窗口，简写  :sp
     :vsplit     当前窗口垂直切分为两个窗口，简写  :vsp
 
-    前导Ctrl+w 方向键       切换到前／下／上／后一个窗口
-    前导Ctrl+w h/j/k/l     同上
-    前导Ctrl+w w           依次向后切换到下一个窗口中
+    前导 Ctrl+w，然后 方向键       切换到前／下／上／后一个窗口
+    前导 Ctrl+w，然后  h/j/k/l     同上
+    前导 Ctrl+w，然后  w           依次向后切换到下一个窗口中
 
     :qall        对所有窗口执行 :q  操作
     :qall!       对所有窗口执行 :q! 操作
@@ -2783,7 +2913,7 @@ tmux可以有多个会话，每个会话里可以有多个窗口，每个窗口�
 
 可以用滚轮方便的查看历史输出，按 q 退出。
 
-右键单击tmux窗格，该窗格的边框会加粗显示，脚本里可以引用，界面操作无感，就是给该窗口做个标记，窗口名会出现 *M 字样。
+右键单击tmux面板，该面板的边框会加粗显示，脚本里可以引用，界面操作无感，就是给该面板做个标记，状态栏对应的窗口名会出现 *M 字样。
 
 不过，在终端工具中常用的鼠标右键粘贴等就不能用了，需要换个操作方式：
 
