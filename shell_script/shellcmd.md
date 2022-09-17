@@ -124,9 +124,11 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     [[ -n $conda_env_exist ]] && printf "conda:%s" $envname
 
-如果条件测试成功则执行，否则不执行
+如果条件测试成功则执行
 
     [ -r /etc/default/cron ] && . /etc/default/cron
+
+如果条件测试成功则执行，否则执行另一个
 
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
@@ -139,7 +141,7 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     # 如果命令存在则执行
     if $(which vcgencmd >/dev/null 2>&1) ; then vcgencmd measure_temp; fi
-
+    # 等价
     which vcgencmd >/dev/null 2>&1 && vcgencmd measure_temp
 
     # 如果命令不存在则退出
