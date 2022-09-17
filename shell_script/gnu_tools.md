@@ -2612,6 +2612,10 @@ vim配置中开启鼠标支持，.vimrc文件中加上
     sh autogen.sh
     ./configure && make
 
+有个好心人提取的 Msys2 里的 tmux，可在 git for Widnows 环境下使用
+
+    https://github.com/hongwenjun/tmux_for_windows
+
 #### 常用命令
 
     按完前导 ctrl+B 后，再按冒号：进入命令行模式
@@ -2929,11 +2933,9 @@ set-option -g history-limit 20000
 # 查看历史输入时的翻页、移动光标、切换选择窗口等方向键绑定使用 vi 模式，原默认是 emacs 模式
 set-window-option -g mode-keys vi
 
-# 开启鼠标滚屏，鼠标点选当前面板，切换窗口。
-# 如不设置，默认是终端工具下发的滚轮选择历史命令，实在无用。
-# https://github.com/hongwenjun/tmux_for_windows
-# v2.1 之前的老版本 set-option -g mode-mouse on
-set-option -g mouse on
+# 开启鼠标滚屏，鼠标点选当前面板，切换窗口。如不设置，默认是终端工具下发的滚轮选择历史命令，实在无用。
+#set-option -g mouse on # v2.1 之前的老版本 set-option -g mode-mouse on
+set -g mouse on
 
 # 设置状态栏工具显示彩色
 # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
