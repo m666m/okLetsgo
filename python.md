@@ -231,6 +231,10 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 ### PyPI使用国内源
 
+如果需要的版本下载不到
+
+    国内的 pypi 源一般只保留包的最近几个版本，去 pypi.org 手动下载 wheel 包到本地手动安装
+
 任何操作前，先切换到自己的环境下，然后检查pip的路径设置
 
     # 切换到base环境(conda/virtualenv等)
