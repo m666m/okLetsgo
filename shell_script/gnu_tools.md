@@ -1366,9 +1366,109 @@ Ctrl+V到下一页
     插件大全，Vundle等插件管理器支持简写
         https://github.com/vim-scripts/
 
+插件管理器
+
+    推荐 https://github.com/junegunn/vim-plug
+
+    2019年之后不更新了 https://github.com/VundleVim/Vundle.vim
+
+    老资格的vim插件管理器 https://github.com/MarcWeber/vim-addon-manager
+    在 debian 10 buster 里如果用 apt install 安装 vim 的插件就会自动安装这个依赖
+    sudo apt install vim-addon-manager
+
+颜色方案
+
+    推荐北极，作为插件安装即可 https://www.nordtheme.com/ports/vim
+
+    vim-airline 和 lightline 都内置的一个养眼主题
+        papercolor https://github.com/NLKNguyen/papercolor-theme
+
+    material https://github.com/material-theme/vsc-material-theme
+
+    夜猫子 https://github.com/sdras/night-owl-vscode-theme
+
+插件大全列表
+
+    https://vimawesome.com/
+
+##### 使用状态栏工具等扩展插件的先决条件
+
+终端工具启用 256color，最好支持透明效果
+
+    # 在 .bash_profile 中显式设置终端启用256color，防止终端工具未设置
+    # 如果终端工具能开启透明选项，则显示的效果更好
+    export TERM="xterm-256color"
+
+检查vim的版本，进入vim执行命令 :version
+
+    Small version without GUI.
+
+如果出现上述字样，说明当前系统只安装了兼容 vi 模式的精简版 vim.tiny，不支持语法高亮、切分窗口等高级功能（vim 内置插件）
+
+    $ apt show vim.tiny
+    Description: Vi IMproved - enhanced vi editor - compact version
+
+    This package contains a minimal version of Vim compiled with no GUI and
+    a small subset of features. This package's sole purpose is to provide
+    the vi binary for base installations.
+
+    If a vim binary is wanted, try one of the following more featureful
+    packages: vim, vim-nox, vim-athena, vim-gtk, or vim-gtk3.
+
+    $ vi --version
+    Small version without GUI.  Features included (+) or not (-):
+    +acl               -extra_search      -mouse_sgr         -tcl
+    -arabic            -farsi             -mouse_sysmouse    -termguicolors
+    +autocmd           -file_in_path      -mouse_urxvt       -terminal
+
+先删除 vim.tiny
+
+    $ sudo apt remove vim-common
+    The following packages will be REMOVED:
+        vim-common vim-tiny
+
+然后安装vim的增强版
+
+    # https://askubuntu.com/questions/284957/vi-getting-multiple-sorry-the-command-is-not-available-in-this-version-af
+    # sudo apt install vim-runtime
+    # sudo apt install vim-gui-common 给linux桌面准备的
+
+    $sudo apt install vim
+    The following NEW packages will be installed:
+        vim vim-common vim-runtime
+
+然后在 vim 中运行命令 :version
+
+    Huge version without GUI.
+
+确认如上字样即可。
+
+##### 配置扩展插件
+
 vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
-vim 自定义目录 ~/.vim/ 下的目录介绍
+各种扩展插件使用的目录
+
+    https://vimhelp.org/options.txt.html#%27runtimepath%27
+
+使用命令 `:set rtp` 查看当前加载扩展的路径
+
+    runtimepath=~/.vim,/var/lib/vim/addons,/usr/share/vim/vimfiles,/usr/share/vim/vim81,/usr/share/vim/vimfiles/after,/var/lib/vim/addons/after,~/.vim/after
+
+1、如果是 `apt install xxx` 安装的插件一般默认安装了插件管理 vim-addon-manager，在 /usr/share/vim/addons/
+
+   自定义插件  /usr/share/vim/addons/plugin/
+   使用时加载  /usr/share/vim/addons/autoload/
+
+   vim 自带插件        /usr/share/vim/vim81/plugin/
+   vim 自带使用时加载   /usr/share/vim/vim81/autoload/
+
+2、如果是用户自定义安装的插件，保存在 ~/.vim/ 下，vim 会自动查找该目录
+
+   插件        ~/.vim/plugin/
+   使用时加载   ~/.vim/autoload/
+
+~/.vim/ 下的目录介绍
 
     ~/.vim/autoload/ 它是一个非常重要的目录，尽管听起来比实际复杂。简而言之，它里面放置的是当你真正需要的时候才被自动加载运行的文件，而不是在vim启动时就加载。
 
@@ -1392,111 +1492,15 @@ vim 自定义目录 ~/.vim/ 下的目录介绍
 
     ~/.vim/spell/ 拼写检查脚本。
 
-各种扩展插件使用的目录
-
-    https://vimhelp.org/options.txt.html#%27runtimepath%27
-
-如果是 `apt install xxx` 安装的一般在 /usr/share/vim/addons/ 下
-
-        自定义插件  /usr/share/vim/addons/plugin/
-        使用时加载  /usr/share/vim/addons/autoload/
-
-        vim 自带插件        /usr/share/vim/vim81/plugin/
-        vim 自带使用时加载   /usr/share/vim/vim81/autoload/
-
-自定义的在 ~/.vim/ 下，vim 自动查找
-
-        插件        ~/.vim/plugin/
-        使用时加载   ~/.vim/autoload/
-
-使用命令 :set rtp 查看当前加载扩展的路径
-
-    runtimepath=~/.vim,/var/lib/vim/addons,/usr/share/vim/vimfiles,/usr/share/vim/vim81,/usr/share/vim/vimfiles/after,/var/lib/vim/addons/after,~/.vim/after
-
-使用状态栏工具等插件的先决条件
-
-    终端工具启用256color，最好支持透明效果
-
-        # 在 .bash_profile 中显式设置终端启用256color，防止终端工具未设置
-        # 如果终端工具能开启透明选项，则显示的效果更好
-        export TERM="xterm-256color"
-
-    检查vim的版本，进入vim执行命令 :version
-
-        Small version without GUI.
-
-    如果出现上述字样，说明当前系统只安装了兼容 vi 模式的精简版 vim.tiny，不支持语法高亮、切分窗口等
-
-        $ apt show vim.tiny
-        Description: Vi IMproved - enhanced vi editor - compact version
-
-        This package contains a minimal version of Vim compiled with no GUI and
-        a small subset of features. This package's sole purpose is to provide
-        the vi binary for base installations.
-
-        If a vim binary is wanted, try one of the following more featureful
-        packages: vim, vim-nox, vim-athena, vim-gtk, or vim-gtk3.
-
-        $ vi --version
-        Small version without GUI.  Features included (+) or not (-):
-        +acl               -extra_search      -mouse_sgr         -tcl
-        -arabic            -farsi             -mouse_sysmouse    -termguicolors
-        +autocmd           -file_in_path      -mouse_urxvt       -terminal
-
-    先删除vim.tiny
-
-        $ sudo apt remove vim-common
-        The following packages will be REMOVED:
-            vim-common vim-tiny
-
-    然后安装vim的增强版
-
-        # https://askubuntu.com/questions/284957/vi-getting-multiple-sorry-the-command-is-not-available-in-this-version-af
-        # sudo apt install vim-runtime
-        # sudo apt install vim-gui-common 给linux桌面准备的
-
-        $sudo apt install vim
-        The following NEW packages will be installed:
-            vim vim-common vim-runtime
-
-    确认 vim 中运行命令 :version
-
-        Huge version without GUI.
-
-插件管理器
-
-    推荐 https://github.com/junegunn/vim-plug
-
-    2019年之后不更新了 https://github.com/VundleVim/Vundle.vim
-
-    老资格的vim插件管理器 https://github.com/MarcWeber/vim-addon-manager
-    在 debian 10 buster 里如果用 apt install 安装 vim 的插件就会自动安装这个依赖
-    sudo apt install vim-addon-manager
-
-颜色方案
-
-    推荐北极 https://www.nordtheme.com/ports/vim
-
-    vim-airline 和 lightline 都内置的一个养眼主题
-        papercolor https://github.com/NLKNguyen/papercolor-theme
-
-    material https://github.com/material-theme/vsc-material-theme
-
-    夜猫子 https://github.com/sdras/night-owl-vscode-theme
-
-插件大全列表
-
-    https://vimawesome.com/
-
 ##### 不推荐 vim 状态栏工具 powerline
 
     推荐使用替代品 vim-airline，状态栏和标签栏都有，而且可以配合很多知名插件的显示
 
 powerline 介绍，参见章节 [状态栏工具 powerline]。
 
-powerline 给 vim 使用是提供了插件的形式，要求 Vim 在编译时添加 python 支持，所以 vim.tinny 版是无法使用的，如何解决见上面的“先决条件”。
+使用 powerline 插件需要 Vim 在编译时添加 python 支持，所以 vim.tinny 版是无法使用该插件的，如何解决见上面的“使用状态栏工具等扩展插件的先决条件”。
 
-powerline 为保证多样性，使用python
+powerline 为保证多样性，使用python，现在的问题是默认python指的python2版本
 
     搞清 操作系统安装的包 python-pip 和 python3-pip 的使用区别
     搞清 powerline 有 python 和 python3 两个发行版本
@@ -1508,14 +1512,16 @@ powerline 为保证多样性，使用python
     建议不要自行编译 vim ！你的 python 环境是什么，在 virtualenv 下如何使用vim？
 
     建议安装 debian 发行版自带的 powerline，用 `sudo apt install powerline`即可
+
         新版只能用pypi `python3 -m pip install powerline-status`
+
         最新版就得用github `python3 -m pip install --user git+git://github.com/powerline/powerline`
 
         如果，你用的是 pip install powerline-status，那么安装的应该是 python 2.7 版本的 powerline-status。
 
         然后继续，所有的 powerline 的插件，安装前都要先看看到底支持哪个python版本？
 
-如果确定你的 vim 是有 python 支持的，那么可以使用 powerline ，做如下设置：
+如果确定你的 vim 可以使用 powerline ，做如下设置：
 
     先查看 powerline 的安装位置，找到bindings目录
 
@@ -1556,11 +1562,13 @@ powerline 为保证多样性，使用python
     apt install vim-airline
     apt install vim-airline-themes
 
+vim.tinny 版是无法使用该插件的，如何解决见上面的“使用状态栏工具等扩展插件的先决条件”。
+
 查看帮助
 
     :help airline
 
-Airline 扩展支持tabline、nerdtree等的颜色方案，在 ~/.vimrc 中配置
+Airline 扩展支持适配 tabline、nerdtree 等插件的颜色方案，在 ~/.vimrc 中配置
 
     " 内置扩展的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
     " 内置扩展保存在：
@@ -1586,7 +1594,7 @@ AirlineTheme 自己管理主题，在 ~/.vimrc 中配置
     let g:airline_powerline_fonts = 1
 
     " airline_theme内置的主题大部分都只是状态栏的，没有同步设置语法高亮
-    " 建议自定义插件，直接安装 PaperColor 或 nord，状态栏和语法高亮颜色都有
+    " 建议自定义插件，直接安装 PaperColor 或 nord，状态栏和语法高亮颜色都有了,不需要用 airline_theme内置的主题
     " https://github.com/vim-airline/vim-airline-themes/tree/master/autoload/airline/themes
     " 列表见 https://github.com/vim-airline/vim-airline/wiki/Screenshots
     " 保存在 ~/.vim/bundle/vim-airline-themes/autoload/airline/themes
@@ -1594,7 +1602,7 @@ AirlineTheme 自己管理主题，在 ~/.vimrc 中配置
     " 在vi中切换主题 :AirlineTheme night_owl
     let g:airline_theme='papercolor'
 
-##### 相对简洁的状态栏工具 lightline.vim
+##### 更简洁的状态栏工具 lightline.vim
 
     https://github.com/itchyny/lightline.vim
 
@@ -1610,11 +1618,15 @@ Why yet another clone of powerline?
 
 这个比较简洁，只有状态栏工具和颜色方案。也是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
+vim.tinny 版是无法使用该插件的，如何解决见上面的“使用状态栏工具等扩展插件的先决条件”。
+
 配置主题
 
     let g:lightline = { 'colorscheme': 'PaperColor' }
 
 ##### nerdtree 树形文件夹插件
+
+如果感觉插件太多太麻烦，可以使用 vim 自带的树形文件夹插件 netrw，见章节 [vim 内置的树形文件夹管理 netrw]。
 
 nerdtree 以在当前窗口的左侧垂直新建窗口的方式，树形展示当前路径下的文件列表，方便用户操作。
 
@@ -1625,7 +1637,7 @@ nerdtree 以在当前窗口的左侧垂直新建窗口的方式，树形展示�
 
 窗口操作详见章节 [多窗口(Window)操作]。
 
-自定义个热键 Ctrl-n，方便切换显示目录树，在 ~/.vimrc 配置文件中定义为
+自定义个 vim 中的热键 Ctrl-n，方便切换显示目录树，在 ~/.vimrc 配置文件中定义
 
     " NERDTree
     map <C-n> :NERDTreeToggle<CR>
@@ -1666,35 +1678,34 @@ nerdtree 在左侧树形目录中的热键
 
     https://github.com/Xuyuanp/nerdtree-git-plugin
 
-在 .vimrc 中配置用 plug 安装几个nerdtree配合的常用插件
+    在 .vimrc 中配置用 plug 安装几个nerdtree配合的常用插件
 
-    Plug 'preservim/nerdtree' |
-            \ Plug 'Xuyuanp/nerdtree-git-plugin' |
-            \ Plug 'ryanoasis/vim-devicons'
+        Plug 'preservim/nerdtree' |
+                \ Plug 'Xuyuanp/nerdtree-git-plugin' |
+                \ Plug 'ryanoasis/vim-devicons'
 
-还可以搭配比较醒目的图标
+    还可以搭配比较醒目的图标
 
-    let g:NERDTreeGitStatusUseNerdFonts = 1 " you should install nerdfonts by yourself. default: 0
+        " nerdtree-git-plugin 启用带图标的字体
+        let g:NERDTreeGitStatusUseNerdFonts = 1 " you should install nerdfonts by yourself. default: 0
 
-    let g:NERDTreeIndicatorMapCustom = {
-        \ "Modified"  : "✹",
-        \ "Staged"    : "✚",
-        \ "Untracked" : "✭",
-        \ "Renamed"   : "➜",
-        \ "Unmerged"  : "═",
-        \ "Deleted"   : "✖",
-        \ "Dirty"     : "✗",
-        \ "Clean"     : "✔︎",
-        \ "Unknown"   : "?"
-        \ }
+        let g:NERDTreeIndicatorMapCustom = {
+            \ "Modified"  : "✹",
+            \ "Staged"    : "✚",
+            \ "Untracked" : "✭",
+            \ "Renamed"   : "➜",
+            \ "Unmerged"  : "═",
+            \ "Deleted"   : "✖",
+            \ "Dirty"     : "✗",
+            \ "Clean"     : "✔︎",
+            \ "Unknown"   : "?"
+            \ }
 
-如果感觉插件太多太麻烦，可以使用 vim 自带的树形文件夹插件，见章节 [vim 内置的树形文件夹管理 netrw]。
+###### vim 内置的树形文件夹插件 netrw
 
-###### vim 内置的树形文件夹管理 netrw
+netrw 是 vim 自带的插件, 不需要额外安装, 其提供的功能非常强大, 相比与 nerdtree 这些第三方插件来说速度更快, 体量更轻, 设计更简洁。
 
-netrw 是 vim 自带的插件, 不需要额外安装, 其提供的功能非常强大, 相比与 NERDTREE 这些第三方插件来说速度更快, 体量更轻, 设计更简洁。
-
-默认情况下，Netrw 将在当前窗口中打开目录树列表，选择文件后回车即可在当前窗口打开文件。
+默认情况下，netrw 将在当前窗口中打开目录树列表，选择文件后回车即可在当前窗口打开文件。
 
     可设置打开的方式
 
@@ -1853,7 +1864,7 @@ netrw 是 vim 自带的插件, 不需要额外安装, 其提供的功能非常�
 set nocompatible              " be iMproved, required，这个应该是关闭兼容vi模式，就用vim
 filetype off                  " required
 
-" airline 安装时可屏蔽原配置的 powerline
+" airline 安装后可屏蔽原配置的 powerline
 " set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -1944,7 +1955,7 @@ Vundle不更新了，这个项目取代之，用法神似
 
 " 不需要设置rtp，因为引导程序plug.vim放到autoload目录里了
 
-" airline 安装时可屏蔽原配置的 powerline
+" airline 安装后可屏蔽原配置的 powerline
 " set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
 
 call plug#begin()
