@@ -2165,25 +2165,9 @@ map <C-n> :NERDTreeToggle<CR>
     ma      创建一个书签 a， 则 mb 创建一个书签 b，以此类推，如果书签名称是大写字母，那么这是一个全局书签。
     `a      跳转到书签a的精确位置（行和列），以此类推
     'a      调整到书签a所在行的起始位置，以此类推
-    :delmarks a  删除所有书签
-    :marks
-    mark line  col file/text
-     '     12    6 "enabled": true,
-     a     27   10 "port": 10808,
-     0     13    0 ~/.vimrc
-     1     58    0 ~/.vimrc
-     2     58    0 ~/.vimrc
-     3     40    0 ~/NERD_tree_2
-     4      1    0 {
-     5      1    0 ~/powerlevel10k/NetrwTreeListing 16
-     6      1    0 ~/.p10k.zsh
-     7      1    0 ~/.p10k.zsh
-     8      1    0 ~/.p10k.zsh
-     9      1    0 ~/.p10k.zsh
-     "      1    0 {
-     [      1    0 {
-     ]    248    0
-     .      1    5 {
+
+    :delmarks a  删除书签a
+    :marks       显示所有标签
 
 查找替换
 
