@@ -1977,6 +1977,10 @@ vim script 语法高亮
 
     XadillaX.viml
 
+还可以模拟几个著名的插件
+
+    https://github.com/VSCodeVim/Vim#vim-airline
+
 ### Draw.io Integration
 
 ### UMLet 简单好用的UML流程图

@@ -174,8 +174,6 @@ putty的退出也是同样的建议。
 
 ###### mintty 美化
 
-    北极主题颜色 https://github.com/arcticicestudio/nord-mintty
-
     字符终端的颜色配置说明 https://github.com/termstandard/colors
 
 如果是 git for Windows 的 mintty，编辑 ~/.minttyrc 文件为下面的内容
@@ -197,7 +195,7 @@ CursorBlinks=no
 Language=@
 Locale=zh_CN
 # Charset=GBK # 中文版 Windows 使用 ansi 字符集
-Charset=UTF-8
+Charset=UTF-8 # 这样就能正确展现那些带图标的字体了
 
 # 窗体透明效果，不适用于嵌入多窗口终端工具
 # Transparency=low
@@ -210,7 +208,6 @@ FontSmoothing=full
 # FontIsBold=yes
 
 # 自定义颜色方案，跟深色背景搭配
-# https://github.com/itchyny/lightline.vim/blob/master/autoload/lightline/colorscheme/PaperColor_light.vim
 Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
 BackgroundColour=13,25,38
 ForegroundColour=217,230,242
@@ -231,31 +228,6 @@ Cyan=116,207,190
 BoldCyan=190,232,225
 White=255,255,253
 BoldWhite=255,255,255
-
-# 自定义颜色方案，跟深色背景搭配
-# https://github.com/arcticicestudio/nord-mintty
-#Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
-## 46,52,64 # 37,50,56
-#BackgroundColour=37,50,56
-#ForegroundColour=216,222,233
-#CursorColour=216,222,233
-#Black=59,66,82
-#BoldBlack=76,86,106
-#Red=191,97,106
-#BoldRed=191,97,106
-#Green=163,190,140
-#BoldGreen=163,190,140
-#Yellow=235,203,139
-#BoldYellow=235,203,139
-## 129,161,193 # 121,191,212
-#Blue=121,191,212
-#BoldBlue=129,161,193
-#Magenta=180,142,173
-#BoldMagenta=180,142,173
-#Cyan=136,192,208
-#BoldCyan=143,188,187
-#White=229,233,240
-#BoldWhite=236,239,244
 
 # 自定义颜色方案，跟浅色背景搭配-黄色
 #Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
@@ -302,50 +274,13 @@ BoldWhite=255,255,255
 #White=235,235,235
 #BoldWhite=255,255,255
 
+# 北极主题颜色 https://github.com/arcticicestudio/nord-mintty
+# papercolor https://github.com/NLKNguyen/papercolor-theme
 # https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.light
-#ForegroundColour=101, 123, 131
-#BackgroundColour=252, 241, 209
-#CursorColour=    220,  50,  47
-#Black=             7,  54,  66
-#BoldBlack=         0,  43,  54
-#Red=             220,  50,  47
-#BoldRed=         203,  75,  22
-#Green=           133, 153,   0
-#BoldGreen=        88, 110, 117
-#Yellow=          181, 137,   0
-#BoldYellow=      101, 123, 131
-#Blue=             38, 139, 210
-#BoldBlue=        131, 148, 150
-#Magenta=         211,  54, 130
-#BoldMagenta=     108, 113, 196
-#Cyan=             42, 161, 152
-#BoldCyan=        147, 161, 161
-#White=           238, 232, 213
-#BoldWhite=       253, 246, 227
-
 # https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.dark
-#ForegroundColour=131,148,150
-#BackgroundColour=0,43,54
-#CursorColour=220,50,47
-#Black=7,54,66
-#BoldBlack=0,43,54
-#Red=220,50,47
-#BoldRed=203,75,22
-#Green=133,153,0
-#BoldGreen=88,110,117
-#Yellow=181,137,0
-#BoldYellow=101,123,131
-#Blue=38,139,210
-#BoldBlue=131,148,150
-#Magenta=211,54,130
-#BoldMagenta=108,113,196
-#Cyan=42,161,152
-#BoldCyan=147,161,161
-#White=238,232,213
-#BoldWhite=253,246,227
-
+#
 # 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
-# ThemeFile=mintty
+# ThemeFile=nord
 
 ```
 
@@ -2199,162 +2134,123 @@ map <C-n> :NERDTreeToggle<CR>
 
 移动光标
 
-    h,j,k,l     上，下，左，右
+    h,j,k,l  上，下，左，右
 
-    ctrl-e  移动页面
-    ctrl-f  上翻一页
-    ctrl-b  下翻一页
-    ctrl-u  上翻半页
-    ctrl-d  下翻半页
+    ctrl-e   移动页面
+    ctrl-f   上翻一页
+    ctrl-b   下翻一页
+    ctrl-u   上翻半页
+    ctrl-d   下翻半页
 
-    w       跳到下一个字首，按标点或单词分割
-    W       跳到下一个字首，长跳，如end-of-line被认为是一个字
+    w    跳到下一个字首，按标点或单词分割
+    W    跳到下一个字首，长跳，如end-of-line被认为是一个字
 
-    e       跳到下一个字尾
-    E       跳到下一个字尾，长跳
+    e    跳到下一个字尾
+    E    跳到下一个字尾，长跳
 
-    b       跳到上一个字
-    B       跳到上一个字，长跳
+    b    跳到上一个字
+    B    跳到上一个字，长跳
 
-    0       跳至行首，不管有无缩进，就是跳到第0个字符
-    ^       跳至行首的第一个字符
+    0    跳至行首，不管有无缩进，就是跳到第0个字符
+    ^    跳至行首的第一个字符
 
-    $       跳至行尾
+    $    跳至行尾
 
-    gg      跳至文首
-    G       跳至文尾
+    gg   跳至文首
+    G    跳至文尾
 
-    5gg/5G  跳至第5行
-    gd      跳至当前光标所在的变量的声明处
+    5gg     跳至第5行，或 5G
+    ctrl-g  显示当前行位置
 
-    ctrl+g  显示当前行位置
-
-    gt      跳至下一个标签页
-    gT      跳至前一个标签页
-
-    fx  在当前行中找x字符，找到了就跳转至
-    ;   重复上一个f命令，而不用重复的输入fx
-
-    *   查找光标所在处的单词，向下查找
-    #   查找光标所在处的单词，向上查找
+    ma      创建一个书签 a， 则 mb 创建一个书签 b，以此类推，如果书签名称是大写字母，那么这是一个全局书签。
+    `a      跳转到书签a的精确位置（行和列），以此类推
+    'a      调整到书签a所在行的起始位置，以此类推
+    :delmarks a  删除所有书签
+    :marks
+    mark line  col file/text
+     '     12    6 "enabled": true,
+     a     27   10 "port": 10808,
+     0     13    0 ~/.vimrc
+     1     58    0 ~/.vimrc
+     2     58    0 ~/.vimrc
+     3     40    0 ~/NERD_tree_2
+     4      1    0 {
+     5      1    0 ~/powerlevel10k/NetrwTreeListing 16
+     6      1    0 ~/.p10k.zsh
+     7      1    0 ~/.p10k.zsh
+     8      1    0 ~/.p10k.zsh
+     9      1    0 ~/.p10k.zsh
+     "      1    0 {
+     [      1    0 {
+     ]    248    0
+     .      1    5 {
 
 查找替换
-
-    *   向前搜索 当前光标位置所在的词，重复按就是查找下一个匹配项
-    #   向后搜索 当前光标位置所在的词，重复按就是查找下一个匹配项
 
     /   向后搜索，会在命令行下面进入输入模式，输入匹配模式 pattern 后回车即可
     ?   向前搜索，同上
 
-    如果想引用y复制到寄存器"0的内容，使用热键 <C-r>，然后输入0，该内容即出现在 /后面的模式文字了
+        如果想用 p 粘贴寄存器 "0 的内容，使用热键 <C-r>，然后输入 0p，该内容即出现在 / 后面了
 
-    :set ignorecase    忽略大小写，或命令 :set ic，或在上面的搜索匹配模式后缀 \c
-    :set noignorecase  大小写敏感，或命令 :set noic，或在上面的搜索匹配模式后缀 \C
+      :set ic   忽略大小写，或 :set ignorecase，或在上面的搜索匹配模式后缀 \c
+      :set noic 大小写敏感，或 :set noignorecase，或在上面的搜索匹配模式后缀 \C
 
-    n   下一个匹配(如果是/搜索，则是向下的下一个，?搜索则是向上的下一个)
-    N   上一个匹配(同上)
-    :%s/old/new/g  搜索整个文件，将所有的old替换为new
-    :%s/old/new/gc 搜索整个文件，将所有的old替换为new，每次都要你确认是否替换
+      n   下一个匹配(如果是 / 搜索，则是向下的下一个匹配，? 搜索则是向上的下一个匹配)
+      N   上一个匹配(同上)
+
+    fx  在当前行中找x字符，找到了就跳转至
+    ;   重复上一个f命令，而不用重复的输入 fx
+
+    *   查找光标所在处的单词，向下查找，重复按就是查找下一个匹配项
+    #   查找光标所在处的单词，向上查找，重复按就是查找下一个匹配项
+
+    :%s/old/new/g   替换，搜索整个文件，将所有的 old 替换为 new
+    :%s/old/new/gc  替换，搜索整个文件，将所有的 old 替换为 new，每次都要你确认是否替换
 
 删除复制粘贴
 
-    **vim中没有所谓删除，实际上都是剪切，黑洞寄存器除外** 参见章节 [vi中的删除是剪切操作--寄存器]
+    J     删除行尾的换行，将下一行和当前行连接为一行
 
-    J   删除行尾的换行，将下一行和当前行连接为一行
-
-    dd  删除光标所在行
-    dw  删除一个字(word)
-    d/D 删除到行末
-    x   删除当前字符
-    X   删除前一个字符
+    dd    删除光标所在行
+    dw    删除一个字(word)
+    d/D   删除到行末
+    x     删除当前字符
+    X     删除前一个字符
 
     NOTE: 删除操作其实是剪切，详见下面章节 [vi中的删除是剪切操作--寄存器]
 
-    yy  复制一行
-    yw  复制一个字
-    y/Y 复制到行末
+    yy    复制一行
+    yw    复制一个字
+    y/Y   复制到行末
 
-    p   粘贴剪贴板的内容到当前行的下面
-    P   粘贴剪贴板的内容到当前行的上面
+    p     粘贴剪贴板的内容到当前行的下面
+    P     粘贴剪贴板的内容到当前行的上面
 
 编辑
 
-    i   从当前光标处进入编辑模式，插入
-    a   进入编辑模式，置光标于当前光标之后
+    i     从当前光标处进入编辑模式，插入
+    a     进入编辑模式，置光标于当前光标之后
 
-    I   进入编辑模式，并置光标于行首
-    A   进入编辑模式，置光标于行末
+    I     进入编辑模式，并置光标于行首
+    A     进入编辑模式，置光标于行末
 
-    o   进入编辑模式，在当前行之下新加一行，光标位于新加行
-    O   进入编辑模式，在当前行之上新加一行，光标位于新加行
+    o     进入编辑模式，在当前行之下新加一行，光标位于新加行
+    O     进入编辑模式，在当前行之上新加一行，光标位于新加行
 
-    s   删除当前字符并进入编辑模式
-    S   删除光标所在行并进入编辑模式
-    cc  删除当前行并进入编辑模式
-    cw  删除当前字，并进入编辑模式
-    c$  擦除从当前位置至行末的内容，并进入编辑模式
-    xp  交换当前字符和下一个字符
+    s     删除当前字符并进入编辑模式
+    S     删除光标所在行并进入编辑模式
+    cc    删除当前行并进入编辑模式
+    cw    删除当前字，并进入编辑模式
+    c$    擦除从当前位置至行末的内容，并进入编辑模式
+    xp    交换当前字符和下一个字符
 
     u       撤销
     ctrl+r  重做
 
-    ~   切换大小写，当前字符
-    >>  将当前行右移一个单位
-    <<  将当前行左移一个单位(一个tab符)
-    ==  自动缩进当前行
-
-###### 使用 alt+数字键 来切换 tab 标签页
-
-建议使用 vim-airline 自带的功能进行 tab 和 Buffer 之间的切换，见上面章节 [.vimrc配置文件样例]。
-
-自定义热键用 Alt 总是设置不上，用的 Ctrl+w 解决了，不知道咋回事，待研究。
-
-或自定义
-
-    https://blog.csdn.net/ghostyusheng/article/details/77893780
-
-用 gt, gT 来一个个切换有点不方便, 如果用 :tabnext {count}, 又按键太多.
-
-可以用 alt + n 来切换tab标签, 比如按 alt + 1 切换到第一个 tab，按 alt + 2 切换到第二个 tab。
-
-把以下代码加到你的 .vimrc 文件, 或者存为 .vim 文件，然后放到 plugin 目录
-
-```shell
-
-function ! TabPos_ActivateBuffer(num)
-     let  s:count = a:num
-     exe  "tabfirst"
-     exe  "tabnext"  s:count
-endfunction
-
-function ! TabPos_Initialize()
-for  i  in  range(1, 9)
-         exe  "map <M-"  . i .  "> :call TabPos_ActivateBuffer(" . i .  ")<CR>"
-     endfor
-     exe  "map <M-0> :call TabPos_ActivateBuffer(10)<CR>"
-endfunction
-
-autocmd VimEnter * call TabPos_Initialize()
-
-```
-
-上面的看上去太复杂了，来个简单的
-
-```python
-
-    " 用 alt + n 来切换tab标签
-    :nn <M-1> 1gt
-    :nn <M-2> 2gt
-    :nn <M-3> 3gt
-    :nn <M-4> 4gt
-    :nn <M-5> 5gt
-    :nn <M-6> 6gt
-    :nn <M-7> 7gt
-    :nn <M-8> 8gt
-    :nn <M-9> 9gt
-    :nn <M-0> :tablast<CR>
-
-```
+    ~     切换大小写，当前字符
+    >>    将当前行右移一个单位
+    <<    将当前行左移一个单位(一个tab符)
+    ==    自动缩进当前行
 
 ##### 可视模式
 
@@ -2494,7 +2390,7 @@ vim 打开的多个文件，每个文件都会加载到缓冲区
     :close      关闭当前窗口
     :only       只显示当前窗口, 关闭所有其他的窗口
 
-vim 除了使用一个窗口显示所有缓冲区(只能来回切换)，还可以使用tab标签化或window窗口化单独的文件。
+vim 除了使用一个窗口显示所有缓冲区(只能来回切换)，还可以使用 tab 多标签化或 Window 多窗口化。
 
 buffer状态
 
@@ -2510,17 +2406,17 @@ buffer状态
 
 在Vim 术语中，窗口是缓冲区的显示区域。既可以打开多个窗口，在这些窗口中显示同一个文件， 也可以在每个窗口里载入不同的文件。
 
-    :split      当前窗口水平切分为两个窗口，简写  :sp
-    :vsplit     当前窗口垂直切分为两个窗口，简写  :vsp
+    :sp    当前窗口水平切分为两个窗口，或 :split
+    :vsp   当前窗口垂直切分为两个窗口，或 :vsplit
 
-    前导 Ctrl+w，然后 方向键       切换到前／下／上／后一个窗口
+    前导 Ctrl+w，然后 方向键        切换到前／下／上／后一个窗口
     前导 Ctrl+w，然后  h/j/k/l     同上
     前导 Ctrl+w，然后  w           依次向后切换到下一个窗口中
 
-    :qall        对所有窗口执行 :q  操作
-    :qall!       对所有窗口执行 :q! 操作
-    :wall        对所有窗口执行 :w  操作
-    :wqall       对所有窗口执行 :wq 操作
+    :qall    对所有窗口执行 :q  操作
+    :qall!   对所有窗口执行 :q! 操作
+    :wall    对所有窗口执行 :w  操作
+    :wqall   对所有窗口执行 :wq 操作
 
 ##### 多标签页(Tab)操作
 
@@ -2544,6 +2440,59 @@ buffer状态
     :tabc       关闭当前标签页，功能等同于 :q
     :tabo       关闭所有标签页
     :tabm 0/1/2 将当前标签页移动到第1/2/3个页面位置
+
+###### 使用 alt+数字键 来切换 tab 标签页
+
+建议使用 vim-airline 自带的功能进行 tab 和 Buffer 之间的切换，见上面章节 [.vimrc配置文件样例]。
+
+自定义热键用 Alt 总是设置不上，用的 Ctrl+w 解决了，不知道咋回事，待研究。
+
+或自定义
+
+    https://blog.csdn.net/ghostyusheng/article/details/77893780
+
+用 gt, gT 来一个个切换有点不方便, 如果用 :tabnext {count}, 又按键太多.
+
+可以用 alt + n 来切换tab标签, 比如按 alt + 1 切换到第一个 tab，按 alt + 2 切换到第二个 tab。
+
+把以下代码加到你的 .vimrc 文件, 或者存为 .vim 文件，然后放到 plugin 目录
+
+```shell
+
+function ! TabPos_ActivateBuffer(num)
+     let  s:count = a:num
+     exe  "tabfirst"
+     exe  "tabnext"  s:count
+endfunction
+
+function ! TabPos_Initialize()
+for  i  in  range(1, 9)
+         exe  "map <M-"  . i .  "> :call TabPos_ActivateBuffer(" . i .  ")<CR>"
+     endfor
+     exe  "map <M-0> :call TabPos_ActivateBuffer(10)<CR>"
+endfunction
+
+autocmd VimEnter * call TabPos_Initialize()
+
+```
+
+上面的看上去太复杂了，来个简单的
+
+```python
+
+    " 用 alt + n 来切换tab标签
+    :nn <M-1> 1gt
+    :nn <M-2> 2gt
+    :nn <M-3> 3gt
+    :nn <M-4> 4gt
+    :nn <M-5> 5gt
+    :nn <M-6> 6gt
+    :nn <M-7> 7gt
+    :nn <M-8> 8gt
+    :nn <M-9> 9gt
+    :nn <M-0> :tablast<CR>
+
+```
 
 #### vim 使用鼠标
 
@@ -2628,6 +2577,8 @@ vim配置中开启鼠标支持，.vimrc文件中加上
 注意 com 和 absolute 间是两个反斜杠//并不是敲错了。
 
 #### vi中的删除是剪切操作--寄存器
+
+    vim中没有删除，实际上都是剪切，黑洞寄存器除外
 
 你以为用 x、dw、dd 啥的删除了东西，其实删除的会替换最近的无名寄存器。
 
