@@ -24,6 +24,8 @@ Node.js 利用了可以在浏览器之外运行的 V8 JavaScript 引擎（Google
 
     领域驱动设计 https://www.yuque.com/liberty/rf322x
 
+对 tomcat 来说，web 容器化部署就是把 将war包放置到webapps目录下，从而实现网页的自动发布。
+
 对项目开发来说，不同的CI流程，用各级子目录目录来对应不同的功能
 
     一个基于 DDD 领域驱动设计的项目目录结构
