@@ -2006,13 +2006,18 @@ HEAD 的 第三个父级
 
 ### 如何回退
 
-    https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E9%87%8D%E7%BD%AE%E6%8F%AD%E5%AF%86
+    https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified
+
+FailSafe: 如果是已经 git commit的操作，首先保留下现场以便反悔救命，这个窗口千万别关啊！
+
+    # 最好用 tmux 保留这个命令的输出，救命用的
+    git log --graph --oneline
 
 工作区
 
     你的修改在这里。
 
-暂存区的意义
+暂存区(index)的意义
 
     当你修改了很多还没改完，想临时性的保存下，不应该形成一个 commit 保存到仓库区。
 
@@ -2026,9 +2031,9 @@ HEAD 的 第三个父级
 
 养成一个习惯吧，大批量的修改，感觉这一部分差不多了，就顺手 `git add .` 在暂存区固定这部分修改，后续如果工作区改乱了可以用 `git diff` 轻松调整，最后完全没问题了就可以形成一个 commit 提交了。
 
-仓库区
+仓库区(head)
 
-    你的提交在这里，分布式存储，需要你push才能到远程。
+    你的commit提交在这里，分布式存储，需要你push才能到远程。
 
 用户修改文件，文件的变更路径是
 
@@ -2052,6 +2057,16 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
     reset [commit] <paths>     NO    YES    NO    YES
     checkout [commit] <paths>  NO    YES    YES    NO
 
+git reset 分几种回退情形
+
+    git reset --soft HEAD~ 重置 head 的位置，指向你commit到仓库里的提交点，只回退上一步的commit，如果暂存区没有修改，会出现在暂存区。不影响暂存区和工作区的修改：如果暂存区有新增和修改，不会出现在暂存区了,直接丢弃，不过你可以用 git reflog 查看 commit 往回cherry-pick。
+
+    git reset HEAD~ 这个会先做上面的步骤，然后再加一步，把当前head指向的commit重置到暂存区
+
+        所以如果是 HEAD 把当前head指向的commit重置到暂存区，即把暂存区的变更直接取消
+
+    git reset --hard [id] 这个会先做上面的步骤，然后再加一步，把当前head指向的commit重置到工作区
+
 情况1.修改了工作区文件，没有任何 git 操作，需要从版本库HEAD指向的那个提交覆盖到工作区
 
 撤销指定文件的修改
@@ -2069,7 +2084,7 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 情况2.修改了文件，已经 git add 提交到暂存区了，需要回退到版本库的状态
 
-    # 1. 先撤销暂存区的修改，这样文件的变更仅体现在工作区了
+    # 1. 先撤销暂存区的修改，这样文件的变更体现在工作区了
     git reset HEAD
 
     # 2. 再撤销工作区的修改，这时文件的内容就跟版本库一致了。
