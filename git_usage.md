@@ -2010,10 +2010,13 @@ HEAD 的 第三个父级
 
     https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified
 
-FailSafe: 如果是已经 git commit的操作，首先保留下现场以便反悔救命，这个窗口千万别关啊！
+FailSafe: 在你回退之前务必要做
 
+    如果是已经 git commit的操作，首先保留下现场以便反悔救命，这个窗口千万别关啊！
     # 最好用 tmux 保留这个命令的输出，救命用的
     git log --graph --oneline
+
+    如果你有修改保存在暂存区和工作区，或者提交，或者stash，然后再做回退的操作。git 的回退弯弯绕比较多，回退之前务必清理下暂存区和工作区，千万小心，有好几种情况会无提示清理。
 
 工作区
 
@@ -2061,17 +2064,25 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 git reset 分几种回退情形
 
-    git reset --soft HEAD~ 重置 head 的位置，指向你commit到仓库里的提交点，只回退上一步的commit，如果暂存区没有修改，会出现在暂存区。不影响暂存区和工作区的修改：如果暂存区有新增和修改，不会出现在暂存区了,直接丢弃，不过你可以用 git reflog 查看 commit 往回cherry-pick。
+    git reset --soft HEAD~ 重置 head 的位置，指向你commit到仓库里的提交点，HEAD~表示只回退上一步的commit，回退的commit重置到暂存区。
 
-    git reset HEAD~ 这个会先做上面的步骤，然后再加一步，把当前head指向的commit重置到暂存区
+        如果暂存区有修改，则丢弃该commit的内容。不过你可以用 git reflog 查看 commit 往回cherry-pick。
 
-        所以如果是 HEAD 把当前head指向的commit重置到暂存区，即把暂存区的变更直接取消
+    git reset HEAD~ 这个会先做上面的步骤，然后再加一步，丢弃暂存区的修改，把回退的commit重置到工作区
+
+        如果工作区有修改，则丢弃该commit的内容。不过你可以用 git reflog 查看 commit 往回cherry-pick。
+
+    git reset HEAD 把暂存区的变更回退到工作区
+
+        如果工作区有修改，则丢弃暂存区的变更。
 
     git reset --hard [id] 这个会先做上面的步骤，然后再加一步，把当前head指向的commit重置到工作区
 
+    注： 这个“有修改”，指相同位置有变更，git的回退就需要取舍了，但不会提示冲突，直接丢
+
 情况1.修改了工作区文件，没有任何 git 操作，需要从版本库HEAD指向的那个提交覆盖到工作区
 
-撤销指定文件的修改
+撤销工作区指定文件的修改
 
     git checkout -- aaa.txt
 
