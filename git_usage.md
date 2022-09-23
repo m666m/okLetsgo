@@ -1868,6 +1868,21 @@ git diff 主要的应用场景：
 
     git diff SHA1 SHA2
 
+制作补丁
+
+    git diff xxx > your.patch
+
+在其它的机器上应用补丁
+
+    # 先检查这个补丁操作是否会报错
+    git apply --check your.patch
+
+    # 部分打上补丁也可以接受，保留冲突部分，冲突的会生成.rej文件供手工分析
+    git apply --reject your.patch
+
+    # 没问题，完全打上补丁
+    git apply your.patch
+
 #### 没点，俩点，仨点的区别
 
 <https://stackoverflow.com/questions/4944376/how-to-check-real-git-diff-before-merging-from-remote-branch>
