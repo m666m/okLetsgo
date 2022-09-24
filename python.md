@@ -1973,11 +1973,7 @@ Prettier - Code formatter
 
     vscodevim.vim
 
-vim script 语法高亮
-
-    XadillaX.viml
-
-还可以模拟几个著名的插件
+这个插件还可以配置模拟几个著名的插件
 
     https://github.com/VSCodeVim/Vim#vim-airline
 
