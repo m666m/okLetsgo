@@ -324,8 +324,9 @@ github.com获取仓库默认给的是https地址，但是在国内的网络下�
 
     git clone git://example.com/path/to/repo.git [默认当前目录]
 
-    git clone ssh://[user@]example.com:port/path/to/repo.git
-    git clone [user@]example.com:port/path/to/repo.git
+    git clone [user@]example.com/path/to/repo.git 默认 ssh 22 端口
+    git clone ssh://[user@]example.com:port/path/to/repo.git 非标准22端口要写明确写协议名
+    git clone ssh://user@[20:40:d:9f::1]:22122/uspace/gitrepo/tea.git 用ipv6加[]即可
 
     git clone http[s]://example.com/path/to/repo.git
     git clone http://git.oschina.net/yiibai/sample.git
@@ -2085,7 +2086,7 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 git reset 分几种回退情形
 
-    git reset --soft HEAD~ 重置 head 的位置，指向你commit到仓库里的提交点，HEAD~表示只回退上一步的commit，回退的commit重置到暂存区。
+    git reset --soft HEAD~ 重置 head 的位置，指向你commit到仓库里的提交点，回退的commit重置到暂存区，HEAD~表示只回退上一步的commit，如果是间隔多个commit，回退会累积起来，类似 squash 的效果。
 
         如果暂存区有修改，则丢弃该commit的内容。不过你可以用 git reflog 查看 commit 往回cherry-pick。
 
@@ -2093,11 +2094,13 @@ git reset 分几种回退情形
 
         如果工作区有修改，则丢弃该commit的内容。不过你可以用 git reflog 查看 commit 往回cherry-pick。
 
-    git reset HEAD 把暂存区的变更回退到工作区
+    git reset HEAD 把暂存区的变更回退到工作区，是 git add 的逆过程。
 
         如果工作区有修改，则丢弃暂存区的变更。
 
-    git reset --hard [id] 这个会先做上面的步骤，然后再加一步，把当前head指向的commit重置到工作区
+    git reset <commit> <file> 把工作区的文件回滚到指定的commit版本，如果没有commid就是回退暂存区到工作区。
+
+    git reset --hard [commitid] 这个会先做上面的步骤，然后再加一步，把当前head指向的commit重置到工作区
 
     注： 这个“有修改”，指相同位置有变更，git的回退就需要取舍了，但不会提示冲突，直接丢
 
