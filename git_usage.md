@@ -326,7 +326,7 @@ github.com获取仓库默认给的是https地址，但是在国内的网络下�
 
     git clone [user@]example.com/path/to/repo.git 默认 ssh 22 端口
     git clone ssh://[user@]example.com:port/path/to/repo.git 非标准22端口要写明确写协议名
-    git clone ssh://user@[20:40:d:9f::1]:22122/uspace/gitrepo/tea.git 用ipv6加[]即可
+    git clone ssh://user@[20:40:d:9f::1]:22122/path/to/repo.git 用ipv6加[]即可
 
     git clone http[s]://example.com/path/to/repo.git
     git clone http://git.oschina.net/yiibai/sample.git
