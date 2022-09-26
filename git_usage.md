@@ -2366,6 +2366,43 @@ git 如果提交一个文件，然后删除他，继续提交，那么这个文�
 
 git给出了解决方案，使用git branch-filter来遍历git history tree, 可以永久删除history中的大文件，达到让.git文件瘦身的目的。 <https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/removing-sensitive-data-from-a-repository>
 
+### 暂存区大文件导致推送远程失败
+
+直接剔除那个大文件，再重新上传。但此时暂存区已经被修改，无法执行git push，需要重建目录树。
+
+查看对象库：
+
+    $ ls -l .git/objects/pack
+    -r--r--r--  1 xxxsun  staff    54K Feb 20 20:30 pack-f49501cbd6851d3cbdf8ad44028263e2b1526b32.idx
+    -r--r--r--  1 xxxsun  staff   118M Feb 20 20:30 pack-f49501cbd6851d3cbdf8ad44028263e2b1526b32.pack
+
+查看最大的N个文件sha1：
+
+    $ git verify-pack -v .git/objects/pack/pack-f49501cbd6851d3cbdf8ad44028263e2b1526b32.idx | sort -k 3 -n | tail -n 10
+    5f466dec2fc24624d09790c369e5ad1e5343ec61 blob   8377466 8351646 110662168
+    8c915661c66e9b3a9ec9e17c9b55fb4bdaf152fc blob   9162783 6558772 101211526
+    8533ba160d286563df5b7bd774b2814a46b64857 blob   20848460 16287722 8254071
+    0b98ac11ba523cc7c58459548dc52c68135e3862 blob   20876763 3485525 94296622
+    b56c8f61a3c9f153a9064ef3c888fb6051307212 blob   39627800 25196894 69099728
+
+查看sha1对应文件名：
+
+    $ git rev-list --objects --all | grep b56c8f61a3c9f153a9064ef3c888fb6051307212
+    b56c8f61a3c9f153a9064ef3c888fb6051307212 产品文档/xxx系统-产品团队补充部分v2.2.pdf
+
+发现比较大的几个文件均为*.pdf，从暂存区删除：
+
+    git filter-branch --index-filter 'git rm --cached --ignore-unmatch *.docx' -- --all
+    rm -Rf .git/refs/original
+    rm -Rf .git/logs/
+    git gc --aggressive --prune=now
+
+验证：
+
+    git count-objects -v
+
+重新提交成功
+
 ### 配置Beyond Compare 4作为git mergetool
 
 <https://blog.csdn.net/albertsh/article/details/106294095>
