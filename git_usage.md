@@ -237,6 +237,10 @@ github.com获取仓库默认给的是https地址，但是在国内的网络下�
     # git remote add origin sqt@180.169.33.117:repositores/ZSKPad.git
     git remote add origin git@github.com:m666m/raspi-info.git
 
+    # 非 github 的 ssh 地址，需要用户名
+    git remote add origin ssh://git@<ip>:<port>/your_path/xxx.git
+    git branch --set-upstream-to=origin/<branch> master
+
     # 第一次push的时候要 -u
     git push -u origin master
 
