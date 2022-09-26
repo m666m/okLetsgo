@@ -449,10 +449,15 @@ git clone 命令正常拉取
     git remote add origin git@github.com:m666m/nothing2.git
 
     git fetch origin dev（dev即分支名）
-    git branch -a -v
+
+    $ git branch -a -v
+    * master                 8d96022 3
+    remotes/origin/HEAD    -> origin/master
+    remotes/origin/dev        b414ac9 功能3
+    remotes/origin/master  8d96022 3
 
     git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
-    git pull origin dev(远程分支名称)
+    git pull --rebase origin dev(远程分支名称)
 
 #### 本地非空目录，拉取远程非空裸仓库
 
@@ -546,7 +551,7 @@ git clone 命令正常拉取
 3、从远程仓库同步本地仓库，以便同步hotfix进来。
 
     # git pull <远程主机> <远程分支>:<本地分支>
-    git pull （默认 orgin master 合到当前分支）
+    git pull --rebase（从远程拉取到本地默认都是用拉直合并）
 
     # 标签也同步过来，不分叉的合并
     # git pull --tags --rebase origin master
@@ -573,7 +578,7 @@ git clone 命令正常拉取
     git remote add origin 远程仓库地址
 
     git checkout master
-    git pull
+    git pull --rebase
     git branch 分支名
 
 1、每日工作，先确认本地无未提交未储存等等问题，处理后再继续
@@ -582,11 +587,11 @@ git clone 命令正常拉取
 
 2、从远程仓库master同步本地仓库master
 
-    git pull （默认远程origin本地master）
+    git pull --rebase （默认远程origin本地master）
 
 3、切换本地dev分支
 
-    git checkout 分支名
+    git checkout dev
 
 4、合并本地 master 到本地dev分支，以便同步hotfix进来。
 
@@ -598,14 +603,14 @@ git clone 命令正常拉取
 
 5、开发告一段落，可以发布时，提交dev分支，合并到master再上传远程仓库
 
-    git checkout 分支名
+    git checkout dev
     git add .
     git commit -m "提交的信息"
 
     git checkout master
-    git pull
+    git pull --rebase
 
-    git merge 分支名
+    git merge dev
     git push -u origin master
 
 ### git工作流： 功能分支工作流 master -- dev(开发人员工作在此)
@@ -631,7 +636,7 @@ git clone 命令正常拉取
 
     2、将远程的 dev_xxx 同步到本地
 
-        git pull origin dev_xxx
+        git pull --rebase origin dev_xxx
 
 工作告一段落，推送自己dev_xxx分支到远程dev_xxx，以便大家拉取测试：
 
@@ -644,7 +649,7 @@ git clone 命令正常拉取
         git checkout dev_xxx
         git status
 
-        git pull origin dev_xxx
+        git pull --rebase origin dev_xxx
 
     2、提交到 local 开发分支
 
@@ -669,7 +674,7 @@ dev代码测试完毕，合并到master，正式发布：
         git checkout master
         git status
 
-        git pull origin master
+        git pull --rebase origin master
 
     3、将本地的dev_xxx合并到本地master
 
@@ -842,9 +847,7 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
 严重注意
 
-    千万别一上来就 git pull ！！！
-
-    用 git fetch + git status 不变动本地工作目录的内容查看远程，详见下面章节<git fetch 和 git pull的区别>。
+    别一上来就 git pull ，用 git fetch + git status 不变动本地工作目录的内容查看远程，详见下面章节<git fetch 和 git pull的区别>。
 
     git pull的合并原则，见下面章节[合并两分支时的原则：如何选择菱形还是拉直]
 
@@ -865,10 +868,12 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
     git diff ..origin/master
 
     # 酌情合并代码到本地
-    git merge 或 git rebase
-    # 解决冲突
-    git add -u 冲突文件
-    git rebase -–continue 或 git merge
+    git rebaseg 或 it merge
+    # 如果提示有冲突，不建议直接 git merge，会导致本地菱形分叉
+        git add -u 冲突文件
+        git commit --amend
+
+        git rebase -–continue
 
     # 再确认下没问题了
     git status
@@ -878,7 +883,7 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
     # 拉取远程加合并本地，连带标签，-r是rebase，否则是merge，最好指定要fetch的remote和分支名。
     # 详见下面章节[远程拉取合并本地的pull用法]
 
-    git pull --tags -r origin master
+    git pull --rebase --tags -r origin master
 
 ### 远程拉取合并本地的pull用法
 
@@ -897,28 +902,27 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
               \
                 f---g  你的master
 
-2.大家分别提交自己的代码，e点的先提交，他pull+push，这时候远程仓库上直接接上了
+2.大家分别提交自己的代码，e点的先提交，他pull+push，这时候远程仓库上没有其它提交，git会自动拉直接上
 
     a---b---c ---d---e
                 别人的
 
-3.你的g点要提交，先pull，这时git会提示输入新建commit点的注释了。。。
+3.你的g点要提交，先pull，这时git会提示输入新建commit点的注释了，因为c点已经有人接续上了，你也申请从c点接续，git需要新建个结合点给你俩的提交结合上
 
-git pull = git fetch + git merge后的效果，看起来像个菱形，提交的人越多，这个环越多
+git pull = git fetch + git merge后的效果，看起来像个菱形，从c点拉取后提交的人越多，这个环越多
 
               h--i 又一个人的。。。
              /     \
-            ...     ...
               d---e 别人的
              /     \
     a---b---c       new commit 由git制造
              \     /
               f---g  你的
 
-git pull --rebase = git fetch + git rebase 去掉多余的分叉：
+git pull --rebase = git fetch + git rebase 去掉多余的分叉，你的提交放到别人的后面，实现拉直：
 
     a---b---c ---d---e  ---f---g
-              别人      你的
+               别人的     你的
 
 通过 --rebase 方式，你的提交重新拼接在远端新增提交的最后，这样看起来更简洁，找自己的提交点也方便。
 
@@ -939,16 +943,15 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
 所以 git fetch 是十分安全的，你不用担心这个命令破坏你的工作区或暂存区，它下载的远程分支到本地，但是并不做任何的合并工作，然后可以执行以下命令合并到本地仓库
 
     git diff  # 对比下本地的远程分支和本地的本地分支的差异
-    git merge o/master
-    git rebase o/master
+    git merge o/master 或 git rebase o/master
     git cherry-pick o/master
 
 通常的工作流程是，先用 git fetch 拉取远程分支，然后用 git merge 把拉取的内容合并到本地分支。
 
 因为这二者都是连用的，所有有个简化版就是 git pull，大多数情况下直接用 git pull 就够用了，
-但是要记住，正规的分支拉取操作是 fetch 和 merge 两个步骤完成的。
+但是要记住，正规的分支拉取操作是 fetch 和 merge（或rebase） 两个步骤完成的。
 
-最完整的操作，是先fetch下来然后diff看看，然后再决定是否merge或rebase，图省事才pull。
+最完整的操作，是先fetch下来然后diff看看，然后再决定是否merge或rebase，简略操作用 pull。
 
     $git fetch <远程主机名> <分支名> # 注意之间有空格
 
@@ -996,23 +999,20 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
 
 #### git pull 把2个过程合并，减少了操作
 
-默认是 fetch + merge，可以设置成 fetch + rebase。
+git pull 的操作默认是 fetch + merge，可以设置成 fetch + rebase。
 
 将远程主机的某个分支的更新取回，并与本地指定的分支合并 ：
 
-    git pull <远程主机名> <远程分支名>:<本地分支名>
+    # 远程拉取下列同步到本地一般显式的写明用拉直
+    git pull --rebase <远程主机名> <远程分支名>:<本地分支名>
 
     # 如果远程分支是与当前分支合并，则冒号后面的部分可以省略
-    git pull origin master
+    git pull --rebase origin master
 
     # 如果远程主机名origin，分支就是当前分支，可简写
-    git pull
-
-    # 拉取后，用rebase进行拉直合并
     git pull --rebase
 
-分支的合并，如上所述的是fetch下来一份远程合并到本地，
-这个操作，跟本地有两个分支进行合并，没什么区别。
+分支的合并，如上所述的是fetch下来一份远程合并到本地，这个操作于本地的两个分支进行合并，没什么区别。
 
 分支合并的详细用法见下面的章节 [两个分支合并的merge常用方法]
 
