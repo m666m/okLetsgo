@@ -1542,7 +1542,7 @@ powerline 为保证多样性，使用python，现在的问题是默认python指�
     apt install vim-airline
     apt install vim-airline-themes
 
-vim.tinny 版是无法使用该插件的，如何解决见上面的“使用状态栏工具等扩展插件的先决条件”。
+vim.tinny 版是无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
 
 查看帮助
 
