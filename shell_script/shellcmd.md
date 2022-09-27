@@ -604,13 +604,15 @@ su 是 switch user 切换用户的简写，需要校验密码。一般使用 `su
 
 sudo 是一种权限管理机制，依赖于/etc/sudoers，其授权某些普通用户，能够以管理员的身份执行命令。有 sudo 权限的用户，临时提权到 root 用户，用于为了频繁的执行某些只有超级用户才能执行的权限，而不用每次输入密码。一般用法是 `sudo command`，下面的两个用法可以直接切换 shell 环境的用户：
 
-`sudo -i` 是 `sudo --login` 或 `sudo -l` 的简写，执行 root 用户的配置文件，等同于该用户登陆shell：执行该命令后提示符变为“#”而不是“$”。运行结果 PWD=/root 。另有 `sudo su -` 切换root身份，执行 root 用户配置文件。效果等同于`sudo -i`。
+`sudo -i` 是 `sudo --login` 的简写，执行 root 用户的配置文件，等同于该用户登陆shell：执行该命令后提示符变为“#”而不是“$”。运行结果 PWD=/root 。另有 `sudo su -` 切换root身份，执行 root 用户配置文件。效果等同于`sudo -i`。
 
 `sudo su` 表示前用户暂时申请root权限，所以输入的不是root用户密码，而是当前用户的密码。不执行 root 用户的配置文件，运行结果 PWD=/home/用户名（当前用户主目录） 。
 
 以上用法，都是在shell环境下切换用户，要返回上一个用户时，执行退出命令 `exit` 或 `logout` 或 Ctrl+d 即可。
 
 示例
+
+    some_user@yourhost:~$ cd
 
     $ sudo su
     root@your_host:/home/some_user#
