@@ -125,28 +125,19 @@ Git Bash 使用了 GNU tools 的 MinGW，但是工具只选择了它自己需要
     http://mintty.github.io/
     https://github.com/mintty/mintty/wiki/Tips
 
-安装 git for Windows 或 MSYS2 后就有了，git for Windows 下的配置文件在 ~\.minttyrc。
+安装 git for Windows 或 MSYS2 后就有了
 
-如果安装 MSYS2，则 mintty 的配置文件与 git 带的不同，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]。
+    git for Windows 下的配置文件在 ~\.minttyrc
 
-    Background=C:\Users\xxxx\Pictures\1111111111.jpg
-    Font=Consolas
-    FontHeight=11
-    Columns=200
-    Rows=60
-    # 如果嫌默认的白色不够纯就改
-    ForegroundColour=255,255,255
-    # mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
-    Language=@
-    # 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
-    # https://www.cnblogs.com/LCcnblogs/p/6208110.html
-    # bash下设置，这个变量设置区域，影响语言、词汇、日期格式等
-    Locale=zh_CN  # bash 下显示中文
-    Charset=GBK  # ls列windows目录名可以显示中文，但tail等命令显示中文utf-8文件需要设为UTF-8，此时中文目录名就不正常显示了，原因是中文版windows是ANSI而不是UTF
-    # LANG 只影响字符的显示语言
-    LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
+    MSYS2 的 mintty 的配置文件与 git for Windows 不同，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]
 
-如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"。
+    配置文件样例参见章节 [mintty 美化]
+
+如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"
+
+    -i      创建一个交互式的shell
+
+    --login 加载配置文件 ~/.profile、~/.bash_profile 等，不然你进入的是个干巴的shell
 
 git for windows 的 mintty 目录
 
@@ -186,21 +177,27 @@ Font=MesloLGS NF
 FontHeight=11
 Columns=130
 Rows=40
+ScrollbackLines=12000
 CursorType=block
 AllowBlinking=yes
-ScrollbackLines=12000
 CursorBlinks=no
 
 # 语言设置
+# mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
 Language=@
-Locale=zh_CN
-# Charset=GBK # 中文版 Windows 使用 ansi 字符集
+# 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
+# https://www.cnblogs.com/LCcnblogs/p/6208110.html
+# bash下设置，这个变量设置区域，影响语言、词汇、日期格式等，参见章节 [字符终端的区域、编码、语言]
+Locale=zh_CN  # bash 下显示中文
+#Charset=GBK # 中文版 Windows 使用 ansi 字符集，有些使用utf-8的命令如tail与使用本地字符集的命令如ls会没法都设置完美显示
 Charset=UTF-8 # 这样就能正确展现那些带图标的字体了
+# LANG 只影响字符的显示语言
+#LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
 
 # 窗体透明效果，不适用于嵌入多窗口终端工具
 # Transparency=low
 
-# 为了使用花哨颜色，确保终端设置恰当
+# 为了使用更多的颜色，确保终端设置恰当
 Term=xterm-256color
 
 FontSmoothing=full
