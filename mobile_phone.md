@@ -50,13 +50,160 @@
 
 ### 沙箱运行
 
-google 自称安卓 app 都是在 java 沙箱运行，但是留足了系统接口，应用可以经权限申请，读取整个系统的任意信息。这样跟没限制啥区别？
+google 自称安卓 app 都是在 java 沙箱运行，但是留足了系统接口，应用可以经权限申请，读取整个系统的任意信息，这样跟没限制啥区别。
 
-安卓操作系统是开源的，如果手机厂商深度修改了安卓的权限控制，用户怎么知道？ 人家卖广告数据赚钱的，都是走后台。
+安卓操作系统是开源的，很多手机厂商都是深度修改了安卓的权限控制，用户怎么知道？ 人家卖广告数据赚钱的，都是走后台。
+
+比较有名的是小米手机的广告链，你打开任何app，在首页广告闪现的时候，小米的广告链广告会覆盖app的广告，你知道不？
 
 ### 某些山寨机，深度修改安卓系统的权限申请控制
 
 有些权限比如读取应用列表等，根本不会在用户界面给出提示，摆明了给某些特殊 app 比如广告程序调用，详见下面章节[验证方法] 的 java 代码。
+
+### 反炸
+
+    https://www.zhihu.com/question/507934297/answer/2676942838
+
+首先，我们在获取apk文件后，使用 apktool 解包
+
+    arch -x86_64 brew install apktool
+    apktool -d ~/downloads/gjfzzx.apk
+
+我们来看 一下AndroidManifest.xml，我们着重观察下receiver。
+
+```xml
+
+<!--OPPO手机 查看你收到的短信-->
+<receiver android:name="receiver.SmsReceiver">
+  <intent-filter android:priority="1000">
+    <action android:name="android.provider.OppoSpeechAssist.SMS_RECEIVED"/>
+    <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+  </intent-filter>
+</receiver>
+
+<!--查看播出的电话-->
+<!--嗅探TCP和UDP连接-->
+<!--阅读通信记录-->
+<!--阅读短信-->
+<!--阅读浏览记录-->
+<!--阅读手机状态（手机号，设备ID，拨打种的电话）-->
+<!--获取当前位置-->
+<!--分析来源：JoeSandbox-->
+<receiver android:enabled="true" android:exported="false" android:name="receiver.AVLAlarmReceiver"/>
+
+<!--淘宝提供的接口，用于检测你的购买行为-->
+<receiver android:name="com.taobao.accs.EventReceiver" android:process=":channel">
+  <intent-filter>
+    <action android:name="android.intent.action.BOOT_COMPLETED"/>
+  </intent-filter>
+  <intent-filter>
+    <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+  </intent-filter>
+  <intent-filter>
+    <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+    <data android:scheme="package"/>
+  </intent-filter>
+  <intent-filter>
+    <action android:name="android.intent.action.USER_PRESENT"/>
+  </intent-filter>
+</receiver>
+
+<!--友盟提供的接口，用于检测你收到的推送信息-->
+<service android:exported="true" android:name="com.umeng.message.UmengMessageIntentReceiverService" android:process=":channel">
+  <intent-filter>
+    <action android:name="org.android.agoo.client.MessageReceiverService"/>
+  </intent-filter>
+</service>
+<receiver android:exported="false" android:name="com.umeng.message.NotificationProxyBroadcastReceiver"/>
+
+<!--魅族提供的接口，用于检测各种存在于魅族系统上的信息-->
+<receiver android:name="receiver.UMMeizuReceiver">
+  <intent-filter>
+    <action android:name="com.meizu.flyme.push.intent.MESSAGE"/>
+    <action android:name="com.meizu.flyme.push.intent.REGISTER.FEEDBACK"/>
+    <action android:name="com.meizu.flyme.push.intent.UNREGISTER.FEEDBACK"/>
+    <action android:name="com.meizu.c2dm.intent.REGISTRATION"/>
+    <action android:name="com.meizu.c2dm.intent.RECEIVE"/>
+    <category android:name="com.hicorenational.antifraud"/>
+  </intent-filter>
+</receiver>
+
+<!--华为提供的接口，用于检测推送消息-->
+<receiver android:name="org.android.agoo.huawei.HuaweiPushReceiver">
+  <intent-filter>
+    <action android:name="com.huawei.android.push.intent.REGISTRATION"/>
+    <action android:name="com.huawei.android.push.intent.RECEIVE"/>
+    <action android:name="com.huawei.android.push.intent.CLICK"/>
+    <action android:name="com.huawei.intent.action.PUSH_STATE"/>
+  </intent-filter>
+</receiver>
+
+<!--华为提供的服务，猜测是用于升级华为内置的API服务（这个猛）-->
+<service android:exported="false" android:name="com.huawei.updatesdk.service.deamon.download.DownloadService"/>
+
+<!--VIVO提供的接口，用于检测推送消息-->
+<receiver android:name="org.android.agoo.vivo.PushMessageReceiverImpl">
+  <intent-filter>
+    <action android:name="com.vivo.pushclient.action.RECEIVE"/>
+  </intent-filter>
+</receiver>
+
+<!--小米提供的接口，用于检测推送消息-->
+<service android:enabled="true" android:name="com.xiaomi.push.service.XMPushService" android:process=":pushservice"/>
+<service android:enabled="true" android:exported="false" android:name="com.xiaomi.push.service.XMJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:process=":pushservice"/>
+<service android:enabled="true" android:exported="true" android:name="com.xiaomi.mipush.sdk.PushMessageHandler"/>
+<service android:enabled="true" android:name="com.xiaomi.mipush.sdk.MessageHandleService"/>
+<receiver android:exported="false" android:name="com.xiaomi.push.service.receivers.PingReceiver" android:process=":pushservice">
+  <intent-filter>
+    <action android:name="com.xiaomi.push.PING_TIMER"/>
+  </intent-filter>
+</receiver>
+<receiver android:exported="true" android:name="org.android.agoo.xiaomi.MiPushBroadcastReceiver">
+  <intent-filter>
+    <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE"/>
+  </intent-filter>
+  <intent-filter>
+    <action android:name="com.xiaomi.mipush.MESSAGE_ARRIVED"/>
+  </intent-filter>
+  <intent-filter>
+    <action android:name="com.xiaomi.mipush.ERROR"/>
+  </intent-filter>
+</receiver>
+
+```
+
+然后，我们再看看包含了哪些so库
+
+    libcwlive.so (嗅探某些直播软件？)
+    libumeng-spy.so (友盟放出的侦测sdk？)
+    liburldetectorsys.so (探测浏览记录相关的sdk？)
+    libweibosdkcore.so (探测微博信息？)
+
+我们再看看资源文件包括了哪些值得注意的东西？
+
+file_path.xml 似乎列出了各种path，疑似扫描目录，位于以下路径的文件可能都会被扫描
+
+```xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <paths>
+        <external-path name="download" path="" />
+        <external-path name="files_root" path="Android/data/com.hicorenational.antifraud/" />
+        <external-path name="external_storage_root" path="." />
+        <cache-path name="downloads" path="downloads" />
+        <external-path name="beta_external_path" path="Download/" />
+        <external-path name="beta_external_files_path" path="Android/data/" />
+        <external-files-path name="umeng_cache" path="umeng_cache" />
+        <root-path name="opensdk_root" path="" />
+        <external-files-path name="opensdk_external" path="Images/tmp" />
+        <external-files-path name="share_files" path="." />
+    </paths>
+</resources>
+
+```
+
+接下来应该没什么可以看到的了，代码明显被加固过，使用的是腾讯的加固服务。
 
 ### 虚拟化解决方案
 
