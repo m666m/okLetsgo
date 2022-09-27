@@ -175,12 +175,18 @@ putty的退出也是同样的建议。
 # https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
 Font=MesloLGS NF
 FontHeight=11
+
 Columns=130
 Rows=40
 ScrollbackLines=12000
+
 CursorType=block
 AllowBlinking=yes
 CursorBlinks=no
+
+FontSmoothing=full
+# FontWeight=700
+# FontIsBold=yes
 
 # 语言设置
 # mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
@@ -200,9 +206,8 @@ Charset=UTF-8 # 这样就能正确展现那些带图标的字体了
 # 为了使用更多的颜色，确保终端设置恰当
 Term=xterm-256color
 
-FontSmoothing=full
-# FontWeight=700
-# FontIsBold=yes
+# 非通用标准的色彩项目，单独
+UnderlineColour=153,241,219
 
 # 自定义颜色方案，跟深色背景搭配
 Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
