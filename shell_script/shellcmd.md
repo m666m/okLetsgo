@@ -592,36 +592,33 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
     $ ( ( ( (echo "$SHLVL  $BASH_SUBSHELL") ) ) )  #四层组命令
     1  4
 
-## 用户切换和提权：sudo、su 和 su -
+## 用户切换和提权：su 和 sudo
 
     https://blog.csdn.net/mutou990/article/details/107724302
 
-su 为switch user，即切换用户的简写，需要输入密码。一般使用 `su - username`，不使用`su username`，区别如下：
+su 是 switch user 切换用户的简写，需要校验密码。一般使用 `su - username`，还有个 `su username`。
 
-    su - username 切换用户后，同时切换到新用户的工作环境中，同时变更工作目录，以及HOME，SHELL，USER，LOGNAME，也会变更PATH变量。比如从普通用户切换到数据库用户，使用数据库管理工具等。如果 `su -` 不指定用户，则默认转换到 root 用户。
+`su - username` 是 `su --login username` 或 `su -l` 的简写，执行用户的配置文件，等同于该用户登陆shell：切换用户，同时切换到新用户的环境，变更工作目录，以及HOME，SHELL，USER，LOGNAME，也会变更PATH变量。比如从 root 用户切换到数据库用户，就可以使用数据库管理工具进行数据库维护了。如果 `su -` 不指定用户，则默认转换到 root 用户。
 
-    su   username 切换用户后，不改变原用户的工作目录，及其他环境变量目录。这样导致在现在用户目录下未必有权限。这个命令的使用场景一般是数据库用户使用中需要修改系统配置，提权到 root 用户，但是保留数据库用户的环境，即Shell环境仍然是普通用户的Shell，方便使用数据库工具等。
+`su   username` 仅切换用户，不执行用户的配置文件，不改变原用户的工作目录，及其他环境变量目录，使用后会进入一个新shell。如果是两个普通权限的用户切换，注意切换后的目录下未必有权限，因为这个目录是切换前那个用户可以操作的路径。这个命令的使用场景一般是普通用户提权，比如数据库用户使用中需要修改系统配置，提权到 root 用户，但是保留数据库用户的环境，以便可以继续使用数据库工具等。
 
-sudo 是一种权限管理机制，依赖于/etc/sudoers，其定义了授权给哪个用户可以以管理员的身份能够执行什么样的管理命令。
+sudo 是一种权限管理机制，依赖于/etc/sudoers，其授权某些普通用户，能够以管理员的身份执行命令。有 sudo 权限的用户，临时提权到 root 用户，用于为了频繁的执行某些只有超级用户才能执行的权限，而不用每次输入密码。一般用法是 `sudo command`，下面的两个用法可以直接切换 shell 环境的用户：
 
-`sudo -i` 有sudo权限的用户，临时提权到 root 用户，用于为了频繁的执行某些只有超级用户才能执行的权限，而不用每次输入密码。执行该命令后提示符变为“#”而不是“$”。想退回普通账户时可以执行“exit”或“logout” 。运行结果 PWD=/root
+`sudo -i` 是 `sudo --login` 或 `sudo -l` 的简写，执行 root 用户的配置文件，等同于该用户登陆shell：执行该命令后提示符变为“#”而不是“$”。运行结果 PWD=/root 。另有 `sudo su -` 切换root身份，执行 root 用户配置文件。效果等同于`sudo -i`。
 
-`sudo su`表示前用户暂时申请root权限，所以输入的不是root用户密码，而是当前用户的密码。sudo是用户申请管理员权限执行一个操作，而此处的操作就是变成管理员。运行结果 PWD=/home/用户名（当前用户主目录） 。
+`sudo su` 表示前用户暂时申请root权限，所以输入的不是root用户密码，而是当前用户的密码。不执行 root 用户的配置文件，运行结果 PWD=/home/用户名（当前用户主目录） 。
 
-`sudo su` 切换root身份，不携带当前用户环境变量。
-`sudo su -` 切换root身份，携带当前用户环境变量。效果类似于`sudo -i`
+以上用法，都是在shell环境下切换用户，要返回上一个用户时，执行退出命令 `exit` 或 `logout` 或 Ctrl+d 即可。
+
+示例
 
     $ sudo su
-    root@your_host:/home/some_user# echo $PATH
-    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    root@your_host:/home/some_user#
 
     $  sudo su -
-    root@your_host:~# echo $PATH
-    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    root@your_host:~#
 
     $ sudo -i
-    root@your_host:~# echo $PATH
-    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     root@your_host:~#
 
 ## 查看操作系统信息
