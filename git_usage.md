@@ -1604,6 +1604,59 @@ merge菱形分叉会制造新的commit点，根据具体情况考虑是否需要
 
 只有自己一个人使用的分支，可以自由 git push -f
 
+## git worktree
+
+    https://minsonlee.github.io/2020/05/git-worktree
+
+一个分支正在开发，有另一个分支需要紧急处理bug，有两种解决方案
+
+    stash 当前内容，然后切换分支修改bug，提交后再切换回来，stash pop 继续
+
+    新建个目录拉取仓库，在那个目录里切换分支搞，极端情况是每个分支一个目录，都克隆同一个仓库，但是这样占用容量太大了
+
+一个 git 仓库可以支持多个工作树，允许你==在同一时间检出多个分支。通过 git worktree add 将一个新的工作目录和一个仓库进行关联。 这个新的工作目录被称为 “linked working tree（链接工作树）”，不同于通过 git init 或 git clone产生的主工作树。
+
+一个仓库只有一个主工作树(裸仓库是没有工作树的），可以有零个或多个链接工作树. 当你在链接工作树已经完成了工作，使用 git worktree remove 就可以移除它了。
+
+    # 查看当前仓库所有的 "linked working tree"
+    $ git worktree list
+    /uspace/pycode/tea  7cabce4 [master]
+
+创建 worktree
+
+    # 基于已存在分支创建 `worktree`
+    git worktree add <new-workpath> <existing-branch/commit-id/remote-branch-name>
+
+    # 基于当前 commit 新建一个分支并创建 `worktree`
+    git worktree <new-wokpath> -b <new-branch>
+
+    # 基于指定 commit 创建一个 worktree
+    git worktree <new-workpath> --detach <commit-hash>
+
+移动 worktree
+
+    git worktree move <worktree> <new-path>/<new-worktree>
+
+清理 worktree
+
+    # 删除存在的 worktree
+    git worktree remove <worktree>
+    # 清理失去关联的 worktree
+    git worktree prune
+
+示例
+
+保留当前分支代码现状，基于 master 分支创建一个 hotfix 分支修复问题
+
+    # 基于 master 分支头指针，在目录同级创建一个 hotfix 的工作树
+    git worktree add ../hotfix --detach master
+
+    # 进入 hotfix 工作树创建检出分支(注意：此时工作树的头指针是分离的，即：不属于任何一个分支的)
+    cd ../hotfiex
+    git checkout -b hotfix
+
+    # 在该工作树下处理工作
+
 ## git 常用法
 
 ### 切换分支checkout
@@ -2107,6 +2160,28 @@ git reset 分几种回退情形
     git reset --hard [commitid] 这个会先做上面的步骤，然后再加一步，把当前head指向的commit重置到工作区
 
     注： 这个“有修改”，指相同位置有变更，git的回退就需要取舍了，但不会提示冲突，直接丢
+
+git checkout 撤回工作区的修改，分几种回退情形
+
+    暂存区无修改，工作区有修改：丢弃工作区的修改，退回版本库的内容
+
+    暂存区有修改，工作区有修改：丢弃工作区的修改，退回暂存区的内容
+
+    暂存区有修改，工作区无修改：无变化，没意义
+
+git rm 移除git对该文件的跟踪，跟 git add 相对，分几种回退情形
+
+    暂存区无修改，工作区有修改：丢弃暂存区的修改，退回版本库的内容
+
+    暂存区有修改，工作区有修改：丢弃暂存区的修改，退回暂存区的内容
+
+    暂存区有修改，工作区无修改：丢弃暂存区的修改，移除该文件 `git rm -f <file>`
+
+    暂存区无修改，工作区无修改：移除该文件 `git rm <file>`。移除文件但保留到工作区 `git rm --cached <file>`
+
+    如果没有做commit提交变更，想恢复该文件，要两步 `git reset HEAD <file> ; git checkout <file>` 解除删除状态。
+
+示例
 
 情况1.修改了工作区文件，没有任何 git 操作，需要从版本库HEAD指向的那个提交覆盖到工作区
 
