@@ -12,6 +12,8 @@
 
 ## 参考文档
 
+善用 git 帮助查找命令 `git help branch`
+
     使用 Git hub <http://www.cnblogs.com/zhangjianbin/category/934478.html>
 
     git的几种工作流 <https://www.zhihu.com/question/20070065/answer/1174997617>
@@ -856,7 +858,7 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
     # 先看看有无未提交的，跟现有的本地远程代码比对没差别，不代表远程仓库的代码没差别，别人可能有更新
     git status
 
-    # 本地git branch -a看不到时，一般需要在本地使用git remote update 或 git fetch --all更新
+    # 本地git branch -av 看不到时，一般需要在本地使用git remote update 或 git fetch --all更新
     # 从远程下载，这个不会跟本地现有文件冲突，下载的是本地的那个对应远程仓库的目录
     # 下载当前分支可以简写为： git fetch
     git fetch origin master
@@ -1032,7 +1034,7 @@ git pull 的操作默认是 fetch + merge，可以设置成 fetch + rebase。
     git clone xxxx
 
     # 查看当前有多少分支
-    git branch -a
+    git branch -av
 
     # 切换到master分支
     git checkout master
@@ -1604,17 +1606,17 @@ merge菱形分叉会制造新的commit点，根据具体情况考虑是否需要
 
 只有自己一个人使用的分支，可以自由 git push -f
 
-## git worktree
+## git worktree 多分支目录共用一个仓库
 
     https://minsonlee.github.io/2020/05/git-worktree
 
-一个分支正在开发，有另一个分支需要紧急处理bug，有两种解决方案
+git checkout 命令是在同一个文件夹中切换不同分支，当一个分支正在开发，有另一个分支需要紧急处理bug，有两种解决方案
 
-    stash 当前内容，然后切换分支修改bug，提交后再切换回来，stash pop 继续
+    `git stash` 当前内容，然后切换分支修改bug，提交后再切换回来， `git stash pop` 继续
 
-    新建个目录拉取仓库，在那个目录里切换分支搞，极端情况是每个分支一个目录，都克隆同一个仓库，但是这样占用容量太大了
+    新建个目录拉取仓库，在那个目录里切换分支修改bug，极端情况下每个分支一个目录，都克隆同一个仓库，但是这样占用容量太大了
 
-一个 git 仓库可以支持多个工作树，允许你==在同一时间检出多个分支。通过 git worktree add 将一个新的工作目录和一个仓库进行关联。 这个新的工作目录被称为 “linked working tree（链接工作树）”，不同于通过 git init 或 git clone产生的主工作树。
+一个 git 仓库可以支持多个工作树，允许你在同一时间检出多个分支。通过 git worktree add 将一个新的工作目录和一个仓库进行关联。 这个新的工作目录被称为 “linked working tree（链接工作树）”。不同于通过 git init 或 git clone 产生的主工作树，这个目录只保存了静态内容，容量相对小很多，在这个目录下切换分支操作即可。
 
 一个仓库只有一个主工作树(裸仓库是没有工作树的），可以有零个或多个链接工作树. 当你在链接工作树已经完成了工作，使用 git worktree remove 就可以移除它了。
 
@@ -1641,6 +1643,7 @@ merge菱形分叉会制造新的commit点，根据具体情况考虑是否需要
 
     # 删除存在的 worktree
     git worktree remove <worktree>
+
     # 清理失去关联的 worktree
     git worktree prune
 
@@ -1648,14 +1651,19 @@ merge菱形分叉会制造新的commit点，根据具体情况考虑是否需要
 
 保留当前分支代码现状，基于 master 分支创建一个 hotfix 分支修复问题
 
-    # 基于 master 分支头指针，在目录同级创建一个 hotfix 的工作树
-    git worktree add ../hotfix --detach master
+    # 基于 master 分支头指针，在目录同级创建一个 hotfix 的工作树，并检出一个本地分支hotfix以便后期合入
+    # git worktree add ../hotfix --detach master 如果分离式检出，切换到目录后手工创建分支 `git checkout -b hotfix`
+    # git worktree add -b hotfix ../hotfix master
+    git worktree add ../hotfix  # 创建目录并自动检出一个同名的本地分支
 
-    # 进入 hotfix 工作树创建检出分支(注意：此时工作树的头指针是分离的，即：不属于任何一个分支的)
-    cd ../hotfiex
-    git checkout -b hotfix
+    # 进入 hotfix 工作树
+    cd ../hotfix
 
-    # 在该工作树下处理工作
+    # 在该工作树下处理bug
+
+    # 切换回主分支合并
+    cd -
+    git rebase hotfix
 
 ## git 常用法
 
@@ -1663,12 +1671,12 @@ merge菱形分叉会制造新的commit点，根据具体情况考虑是否需要
 
 1.查看远程分支
 
-    $ git branch -a
+    $ git branch -av
     我在mxnet根目录下运行以上命令：
 
-    ~/mxnet$ git branch -a
-    * master
-    remotes/origin/HEAD -> origin/master
+    ~/mxnet$ git branch -av
+    * master                                7cabce4 [ahead 1] res me
+    remotes/origin/HEAD -> origin/master    下略
     remotes/origin/master
     remotes/origin/nnvm
     remotes/origin/piiswrong-patch-1
@@ -1700,7 +1708,7 @@ merge菱形分叉会制造新的commit点，根据具体情况考虑是否需要
 
 0.先看看有多少本地和远程分支
 
-    git branch -a
+    git branch -av
 
 1.切换到其他分支再进行操作
 
@@ -1725,7 +1733,7 @@ merge菱形分叉会制造新的commit点，根据具体情况考虑是否需要
 
 3.其它人的机器上还有该远程分支，清理无效远程分支
 
-    git branch -a # 查看
+    git branch -av  # 查看
 
     git fetch origin -p  # git remote prune
 
