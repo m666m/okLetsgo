@@ -2149,27 +2149,27 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
     reset [commit] <paths>     NO    YES    NO    YES
     checkout [commit] <paths>  NO    YES    YES    NO
 
-git reset 分几种回退情形
+git reset 主要关注已经提交的修改的 commit 的回退，分几种回退情形
 
-    git reset --soft HEAD~ 重置 head 的位置，指向你commit到仓库里的提交点，回退的commit重置到暂存区，HEAD~表示只回退上一步的commit，如果是间隔多个commit，回退会累积起来，类似 squash 的效果。
+    git reset --soft HEAD~ 重置 head 的位置，指向本地仓库里的提交点，回退的commit内容放到暂存区，HEAD~表示只回退上一步的commit，如果是间隔多个commit，回退会累积起来，类似 squash 的效果。
 
         如果暂存区有修改，则丢弃该commit的内容。不过你可以用 git reflog 查看 commit 往回cherry-pick。
 
-    git reset HEAD~ 这个会先做上面的步骤，然后再加一步，丢弃暂存区的修改，把回退的commit重置到工作区
+    git reset HEAD~ 这个会先做上面的步骤，然后再加一步，丢弃暂存区的修改，把回退的 commit 重置到工作区
 
-        如果工作区有修改，则丢弃该commit的内容。不过你可以用 git reflog 查看 commit 往回cherry-pick。
+        如果工作区有修改，则丢弃该 commit 的内容。不过你可以用 git reflog 查看 commit 往回cherry-pick。
 
-    git reset HEAD 把暂存区的变更回退到工作区，是 git add 的逆过程。
+    git reset HEAD 把暂存区的内容回退到工作区，是 git add 的逆过程。
 
         如果工作区有修改，则丢弃暂存区的变更。
 
-    git reset <commit> <file> 把工作区的文件回滚到指定的commit版本，如果没有commid就是回退暂存区到工作区。
+    git reset <commit> <file> 把工作区的文件回滚到指定的commit版本，如果没有 commid 就是暂存区的内容回退到工作区。
 
     git reset --hard [commitid] 这个会先做上面的步骤，然后再加一步，把当前head指向的commit重置到工作区
 
-    注： 这个“有修改”，指相同位置有变更，git的回退就需要取舍了，但不会提示冲突，直接丢
+    注： 这个“有修改”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
 
-git checkout 撤回工作区的修改，分几种回退情形
+git checkout 主要关注未提交的修改的撤回，分几种回退情形
 
     暂存区有修改，工作区无修改：无变化
 
@@ -2177,7 +2177,7 @@ git checkout 撤回工作区的修改，分几种回退情形
 
     暂存区有修改，工作区有修改：丢弃工作区的修改，暂存区保持不动
 
-git restore 代替 `git checkout` 关于回撤的几个用法
+git restore 代替 `git checkout` 关于撤回的几个用法
 
     暂存区有修改，工作区无修改： `git restore <file>` 无变化
                             `git restore --staged <file>` 暂存区的内容撤回到工作区
