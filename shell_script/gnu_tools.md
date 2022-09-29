@@ -530,7 +530,7 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     Locale=zh_CN
     Charset=GB18030
 
-### 字符界面的一些小玩具如emoji等
+### 字符界面的一些小玩具如 emoji、cmatrix 等
 
     字符式输入 https://www.webfx.com/tools/emoji-cheat-sheet/
 
@@ -544,9 +544,25 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
     sudo apt install sl
 
-figlet实现字符画钟表，在tmux里开一个正合适
+字符画 figlet + toilet
 
-    watch -n1 "date '+%D%n%T'|figlet -k"
+    # figlet字体位置 /usr/share/figlet
+    # 命令 showfigfonts 查看figlet字体
+
+    # 安装 toilet 后，figlet 可使用更好看的 toilet UTF-8 字体
+    for tlf in $(ls /usr/share/figlet/*.tlf)
+    do
+        echo -e "$(basename ${tlf} :) \n"
+        figlet -f $tlf 12:34:56:78:90:abc:ABC
+    done
+
+    # 钟表
+    # watch -n1 "date '+%D%n%T'|figlet -k"
+    watch -n1 "date '+%D %T'|figlet -f future.tlf -w 80"
+
+    # 温度及钟表
+    # watch -n1  "date '+%D %T ' && vcgencmd measure_temp |figlet -f future.tlf -w 80 "
+    watch -n1  "(date '+%T'; vcgencmd measure_temp) |tr '\n' ' ' |figlet -f future.tlf -w 80 "
 
 + matrix 字符屏保
 
@@ -555,13 +571,40 @@ figlet实现字符画钟表，在tmux里开一个正合适
         https://magiclen.org/cmatrix/
             https://github.com/abishekvashok/cmatrix
 
-    Debian / Ubuntu
+    Debian / Ubuntu 安装发行版
 
-            sudo apt install cmatrix
+        sudo apt install cmatrix
 
-            cmatrix -ba
+        cmatrix -ba
 
-            Ctrl + c 或 q 退出
+        Ctrl + c 或 q 退出
+
+    Debian 自编最新版
+
+        下载源代码
+
+            git clone --depth=1 https://github.com/abishekvashok/cmatrix
+
+        安装依赖库
+
+            sudo apt install automake libncurses-dev
+
+        Using configure (recommended for most linux/mingw users)
+
+            autoreconf -i  # skip if using released tarball
+            ./configure
+            make
+
+            $ sudo make install
+            make[1]: Entering directory '/pcode/cmatrix'
+            /usr/bin/mkdir -p '/usr/local/bin'
+            /usr/bin/install -c cmatrix '/usr/local/bin'
+            Installing matrix fonts in /usr/share/consolefonts...
+            /usr/bin/mkdir -p '/usr/local/share/man/man1'
+            /usr/bin/install -c -m 644 cmatrix.1 '/usr/local/share/man/man1'
+            make[1]: Leaving directory '/pcode/cmatrix'
+
+        /usr/local/bin/cmatrix -ba
 
     Centos 需要自行编译
 
