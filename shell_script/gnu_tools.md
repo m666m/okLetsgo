@@ -604,7 +604,7 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
             /usr/bin/install -c -m 644 cmatrix.1 '/usr/local/share/man/man1'
             make[1]: Leaving directory '/pcode/cmatrix'
 
-        /usr/local/bin/cmatrix -ba
+        /usr/local/bin/cmatrix -sbau8
 
     Centos 需要自行编译
 
