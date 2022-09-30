@@ -3320,6 +3320,18 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     $ gpg --gen-random --armor 1 14
     RaJKEUBT89Tq9uZzvkI=
 
+    # python3.6 增加了标准库 secrets
+    genernator = secrets.SystemRandom()
+    genernator.choice([3, 4, 5])
+    genernator.randint(0, 50)
+    genernator.uniform(2.5, 13.8)
+    # secrets.token_urlsafe()  # base64
+    url = 'https://mydomain.com/reset=' + secrets.token_urlsafe()
+    secrets.token_bytes(nbytes=10)
+    secrets.token_hex()
+    # 判断相等或不等的耗时一致，抵抗计时攻击
+    secrets.compare_digest('50','500')
+
 补充熵池
 
 随机数生成的这些工具，通过 /dev/random 依赖系统的熵池，而服务器在运行时，既没有键盘事件，也没有鼠标事件，那么就会导致噪声源减少。在很多发行版本中存在一个 rngd 程序，用来增加系统的熵池（用 urandom 给 random 灌数据）。在 debian，该工具包含在 rng-tools 工具中。
