@@ -452,7 +452,7 @@ git clone 命令正常拉取
 
     git fetch origin dev（dev即分支名）
 
-    $ git branch -a -v
+    $ git branch -av
     * master                 8d96022 3
     remotes/origin/HEAD    -> origin/master
     remotes/origin/dev        b414ac9 功能3
@@ -460,6 +460,14 @@ git clone 命令正常拉取
 
     git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
     git pull --rebase origin dev(远程分支名称)
+
+又一个方法
+
+    只想要fetch其他的分支，比如dev：
+
+    git remote set-branches origin dev
+    git fetch --depth 1 origin dev
+    git checkout -b dev origin/dev
 
 #### 本地非空目录，拉取远程非空裸仓库
 
@@ -505,7 +513,7 @@ git clone 命令正常拉取
 
         git push
 
-#### 大仓库非全量拉取
+#### 大仓库非全量拉取(shallow clone)
 
 对比较大且未清理的大仓库，克隆仓库这个仓库，会把所有的历史协作记录都clone下来。其实对于我们直接使用仓库，而不是参与仓库工作的人来说，只要把最近的一次commit给clone下来就好了。
 
@@ -516,6 +524,16 @@ git clone 命令正常拉取
 进一步精简，拉取指定分支的最近一次提交的版本
 
     git clone --depth 1  --branch dev_xxx
+
+这样clone的仓库，如果你只是用来查看最新内容或者直接编译那无所谓，但是如果是要像正常仓库一样操作还是有些区别的
+
+    使用了--depth克隆的仓库就是一个浅克隆的仓库，并不完整，只包含远程仓库的HEAD分支。
+
+    没有远程仓库的tags。
+
+    不fetch子仓库(submodules)。
+
+    即使你使用gi fetch，也不能把完整仓库fetch下来(config文件可以看到,remote.origin.fetch的值是+refs/heads/master:refs/remotes/origin/master)
 
 ## 使用git的各种工作流程方案
 
