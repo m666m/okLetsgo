@@ -103,15 +103,28 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
 ### Windows下的字符终端
 
-alacritty 使用gpu进行显示加速的字符终端
+终端的历史演进
 
-    https://github.com/alacritty/alacritty
+    https://zhuanlan.zhihu.com/p/99963508
 
-putty 字符终端工具也可美化颜色
+Windows 下如果要显示图标化字符，需要安装支持多种符号的字体，见下面章节 [Nerd Font]。
+
+putty 应用最广泛的 Windows 下的 ssh 终端工具
+
+    https://www.chiark.greenend.org.uk/~sgtatham/putty/
 
     北极主题颜色 https://github.com/arcticicestudio/nord-putty
+        只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
 
-    只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
+mintty 应用最广泛的 Windows 下的终端工具
+
+    http://mintty.github.io/
+        https://github.com/mintty/mintty
+        https://github.com/mintty/mintty/wiki/Tips
+
+alacritty 使用gpu进行显示加速的字符终端，在 Windows 下调用 powershell
+
+    https://github.com/alacritty/alacritty
 
 startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
 
@@ -120,16 +133,31 @@ startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
 
     https://sspai.com/post/72888
 
-需要安装支持多种符号的字体，见下面章节 [Nerd Font]。
+多终端外壳工具 SuperPutty
 
-#### 多终端工具 SuperPutty
+    https://github.com/jimradford/superputty
 
-SuperPutty 支持 putty、mintty、cmd、powershell 等多种终端嵌入显示，可导入 putty 站点，可设置站点关联WinScp/FileZilla 等软件的快捷调用，使用简单方便，只要安装了 git for Windows 和 putty 等软件即可直接使用，不需要做复杂的设置。
+功能亮点
+
+    给 putty 的会话加了个多窗口的外壳，方便管理和使用
+
+    支持其它的各种shell: putty、mintty、cmd、powershell 等多种终端嵌入显示
+
+    可导入 putty 站点
+
+    可设置站点关联WinScp/FileZilla 等软件的快捷调用，使用简单方便，只要安装了 git for Windows 和 putty 等软件即可直接使用，不需要做复杂的设置。
+
+#### mintty 和 ConEmu
+
+让二者可以支持 wsl （Windows Subsystem for Linux）
+
+    https://github.com/Biswa96/wslbridge2
+
+mintty 是目前应用最广泛的终端工具，Cygwin Terminal – terminal emulator for Cygwin, MSYS, and WSL，详见下面几个章节的详细介绍。
 
 ConEmu 是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2，bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
 
-    https://zhuanlan.zhihu.com/p/99963508
-        https://conemu.github.io/
+    https://conemu.github.io/
 
     ConEmu 配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
     msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
@@ -156,24 +184,21 @@ MSYS2_PATH_TYPE=inherit表示合并 Windows 系统的 path 变量。注意修改
 
 打开后会自动把工作目录设置为 msys64/home/%user% 下。
 
-#### 简单使用：安装 Git for Windows
+#### mintty 简单使用：Git for Windows
 
 Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是工具只选择了它自己需要的部分进行了集成，我们主要使用他的 mintty 命令行终端程序(自称 git bash)和 ssh、gpg 等工具。
 
-下载地址 <https://git-scm.com/download/win>
-
-##### Windows下 的 bash -- mintty
-
-    http://mintty.github.io/
-    https://github.com/mintty/mintty/wiki/Tips
-
 安装 git for Windows 或 MSYS2 后就有了
 
-    git for Windows 下的配置文件在 ~\.minttyrc
+    https://git-scm.com/download/win
+
+注意配置文件的位置
+
+    git for Windows 下的 mintty 配置文件在 ~\.minttyrc
 
     MSYS2 的 mintty 的配置文件与 git for Windows 不同，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]
 
-    配置文件样例参见章节 [mintty 美化]
+配置文件样例参见章节 [mintty 美化]
 
 如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"
 
@@ -199,134 +224,11 @@ git for windows 的 mintty 目录
 
 putty的退出也是同样的建议。
 
-###### mintty 美化
-
-    字符终端的颜色配置说明 https://github.com/termstandard/colors
-
-如果是 git for Windows 的 mintty，编辑 ~/.minttyrc 文件为下面的内容
-
-```config
-
-# https://mintty.github.io/mintty.1.html
-# https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
-Font=MesloLGS NF
-FontHeight=11
-
-Columns=130
-Rows=40
-ScrollbackLines=12000
-
-CursorType=block
-AllowBlinking=yes
-CursorBlinks=no
-
-FontSmoothing=full
-# FontWeight=700
-# FontIsBold=yes
-
-# 语言设置
-# mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
-Language=@
-# 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
-# https://www.cnblogs.com/LCcnblogs/p/6208110.html
-# bash下设置，这个变量设置区域，影响语言、词汇、日期格式等，参见章节 [字符终端的区域、编码、语言]
-Locale=zh_CN  # bash 下显示中文
-#Charset=GBK # 中文版 Windows 使用 ansi 字符集，有些使用utf-8的命令如tail与使用本地字符集的命令如ls会没法都设置完美显示
-Charset=UTF-8 # 这样就能正确展现那些带图标的字体了
-# LANG 只影响字符的显示语言
-#LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
-
-# 窗体透明效果，不适用于嵌入多窗口终端工具
-# Transparency=low
-
-# 为了使用更多的颜色，确保终端设置恰当
-Term=xterm-256color
-
-# 非通用标准的色彩项目，单独
-UnderlineColour=153,241,219
-
-# 自定义颜色方案，跟深色背景搭配
-Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
-BackgroundColour=13,25,38
-ForegroundColour=217,230,242
-CursorColour=236,255,255
-Black=53,53,53
-BoldBlack=92,92,92
-Red=207,116,133
-BoldRed=232,190,198
-Green=0,135,0
-BoldGreen=143,218,149
-Yellow=207,190,116
-BoldYellow=232,225,190
-Blue=66,113,174
-BoldBlue=88,133,192
-Magenta=190,116,207
-BoldMagenta=225,190,232
-Cyan=116,207,190
-BoldCyan=190,232,225
-White=255,255,253
-BoldWhite=255,255,255
-
-# 自定义颜色方案，跟浅色背景搭配-黄色
-#Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
-#BackgroundColour=250,234,182
-#ForegroundColour=0,61,121
-#CursorColour=217,230,242
-#Black=0,0,0
-#BoldBlack=72,72,72
-#Red=255,30,18
-#BoldRed=255,84,74
-#Green=82,173,58
-#BoldGreen=65,136,47
-#Yellow=192,175,56
-#BoldYellow=166,150,36
-#Blue=11,80,155
-#BoldBlue=9,58,113
-#Magenta=255,18,243
-#BoldMagenta=255,147,250
-#Cyan=3,201,162
-#BoldCyan=67,214,181
-##218,232,237
-#White=107,165,186
-#BoldWhite=180,180,180
-
-# 自定义颜色方案，跟浅色背景搭配-绿色
-#Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
-#BackgroundColour=250,234,182
-#ForegroundColour=47,47,47
-#CursorColour=217,230,242
-#Black=0,0,0
-#BoldBlack=38,38,38
-#Red=255,30,18
-#BoldRed=255,153,147
-#Green=82,173,58
-#BoldGreen=65,136,47
-#Yellow=193,117,40
-#BoldYellow=213,179,60
-#Blue=11,80,155
-#BoldBlue=17,120,234
-#Magenta=255,18,243
-#BoldMagenta=255,147,250
-#Cyan=32,138,115
-#BoldCyan=36,162,133
-#White=235,235,235
-#BoldWhite=255,255,255
-
-# 北极主题颜色 https://github.com/arcticicestudio/nord-mintty
-# papercolor https://github.com/NLKNguyen/papercolor-theme
-# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.light
-# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.dark
-#
-# 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
-# ThemeFile=nord
-
-```
-
 如果是 MSYS2 的 mintty，可以在 <https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
 
-#### 组合使用：git for Windows + MSYS2
+#### mintty 组合使用：git for Windows + MSYS2
 
-##### 拷贝 MSYS2 的工具到 git 里，这样只使用 git bash(mintty) 就可以了
+拷贝 MSYS2 的工具到 git 里，这样只使用 git bash(mintty) 就可以了
 
 假设 git 的安装目录在 D:\Git，可执行文件在 D:\Git\usr\bin\ 目录：
 
@@ -346,9 +248,13 @@ BoldWhite=255,255,255
     licenses\tmux
     man\man1\tmux.1.gz
 
-##### 共享一套 Home 目录
+二者共享一套 HOME 目录：
 
-如果安装了 git for windows ，其 home 目录默认为 %USERPROFILE%。home 目录的隔离虽然是两个软件的设置互不干扰，但也使得 ssh、gpg、git、vim、tmux 等工具的配置文件不能共享。
+MSYS2 的 mintty 的配置文件不使用操作系统当前用户的 home 目录，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]。
+
+git for windows 的 home 目录默认为 %USERPROFILE% (C:\Users\%USERNAME%\)。
+
+home 目录的隔离虽然是两个软件的设置互不干扰，但也使得 ssh、gpg、git、vim、tmux 等工具的配置文件不能共享。
 
 保持隔离的解决办法
 
@@ -358,7 +264,7 @@ BoldWhite=255,255,255
 
     在 Windows 上配置环境变量 HOME 为 C:\you-path\msys64\home\your-name，增加这个环境变量的目的是为了让 git for windows 的 home 目录指向 MSYS2 的 home 目录。
 
-#### 全套使用：安装 MSYS2(Cygwin/Msys)
+#### mintty 全套使用：安装 MSYS2(Cygwin/Msys) + pacman
 
 参考文章
 
@@ -370,13 +276,14 @@ BoldWhite=255,255,255
 下载安装 MSYS2
 
     https://www.msys2.org/
+
     https://msys2.github.io/
 
-使用pacman安装各种包：
+使用 pacman 安装各种包：
 
     pacman -S openssh opengpg git vim tmux
 
-pacman安装后先更换 清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，配置文件在windows下是msys的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
+pacman安装后先更换 清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，配置文件在 msys 的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
 
 依次添加
 
@@ -501,7 +408,130 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     pacman -Sc           清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
     pacman -Scc          清理所有的缓存文件。
 
-## Linux 字符终端管理
+#### mintty 美化
+
+    字符终端的颜色配置说明 https://github.com/termstandard/colors
+
+如果是 git for Windows 的 mintty，编辑 ~/.minttyrc 文件为下面的内容
+
+```config
+
+# https://mintty.github.io/mintty.1.html
+# https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
+Font=MesloLGS NF
+FontHeight=11
+
+Columns=130
+Rows=40
+ScrollbackLines=12000
+
+CursorType=block
+AllowBlinking=yes
+CursorBlinks=no
+
+FontSmoothing=full
+# FontWeight=700
+# FontIsBold=yes
+
+# 语言设置
+# mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
+Language=@
+# 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
+# https://www.cnblogs.com/LCcnblogs/p/6208110.html
+# bash下设置，这个变量设置区域，影响语言、词汇、日期格式等，参见章节 [字符终端的区域、编码、语言]
+Locale=zh_CN  # bash 下显示中文
+#Charset=GBK # 中文版 Windows 使用 ansi 字符集，有些使用utf-8的命令如tail与使用本地字符集的命令如ls会没法都设置完美显示
+Charset=UTF-8 # 这样就能正确展现那些带图标的字体了
+# LANG 只影响字符的显示语言
+#LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
+
+# 窗体透明效果，不适用于嵌入多窗口终端工具
+# Transparency=low
+
+# 为了使用更多的颜色，确保终端设置恰当
+Term=xterm-256color
+
+# 非通用标准的色彩项目，单独
+UnderlineColour=153,241,219
+
+# 自定义颜色方案，跟深色背景搭配
+Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
+BackgroundColour=13,25,38
+ForegroundColour=217,230,242
+CursorColour=236,255,255
+Black=53,53,53
+BoldBlack=92,92,92
+Red=207,116,133
+BoldRed=232,190,198
+Green=0,135,0
+BoldGreen=143,218,149
+Yellow=207,190,116
+BoldYellow=232,225,190
+Blue=66,113,174
+BoldBlue=88,133,192
+Magenta=190,116,207
+BoldMagenta=225,190,232
+Cyan=116,207,190
+BoldCyan=190,232,225
+White=255,255,253
+BoldWhite=255,255,255
+
+# 自定义颜色方案，跟浅色背景搭配-黄色
+#Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
+#BackgroundColour=250,234,182
+#ForegroundColour=0,61,121
+#CursorColour=217,230,242
+#Black=0,0,0
+#BoldBlack=72,72,72
+#Red=255,30,18
+#BoldRed=255,84,74
+#Green=82,173,58
+#BoldGreen=65,136,47
+#Yellow=192,175,56
+#BoldYellow=166,150,36
+#Blue=11,80,155
+#BoldBlue=9,58,113
+#Magenta=255,18,243
+#BoldMagenta=255,147,250
+#Cyan=3,201,162
+#BoldCyan=67,214,181
+##218,232,237
+#White=107,165,186
+#BoldWhite=180,180,180
+
+# 自定义颜色方案，跟浅色背景搭配-绿色
+#Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
+#BackgroundColour=250,234,182
+#ForegroundColour=47,47,47
+#CursorColour=217,230,242
+#Black=0,0,0
+#BoldBlack=38,38,38
+#Red=255,30,18
+#BoldRed=255,153,147
+#Green=82,173,58
+#BoldGreen=65,136,47
+#Yellow=193,117,40
+#BoldYellow=213,179,60
+#Blue=11,80,155
+#BoldBlue=17,120,234
+#Magenta=255,18,243
+#BoldMagenta=255,147,250
+#Cyan=32,138,115
+#BoldCyan=36,162,133
+#White=235,235,235
+#BoldWhite=255,255,255
+
+# 北极主题颜色 https://github.com/arcticicestudio/nord-mintty
+# papercolor https://github.com/NLKNguyen/papercolor-theme
+# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.light
+# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.dark
+#
+# 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
+# ThemeFile=nord
+
+```
+
+## Linux 字符终端
 
 使用 gpu 进行显示加速的字符终端，号称比 iTerm 速度快
 
@@ -542,9 +572,9 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     Locale=zh_CN
     Charset=GB18030
 
-### 字符界面的一些小玩具如 emoji、cmatrix 等
+### 字符终端下的一些小玩具如 emoji、cmatrix 等
 
-    字符式输入 https://www.webfx.com/tools/emoji-cheat-sheet/
+    符号字符 https://www.webfx.com/tools/emoji-cheat-sheet/
 
     unicode编码 http://www.unicode.org/emoji/charts/full-emoji-list.html
 
@@ -558,17 +588,20 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
 字符画 figlet + toilet
 
+    sudo apt install -y figlet toilet
+
     # figlet字体位置 /usr/share/figlet
     # 命令 showfigfonts 查看figlet字体
 
-    # 安装 toilet 后，figlet 可使用更好看的 toilet UTF-8 字体
+    # 安装 toilet 后，figlet 可使用更好看的 tlf(toilet UTF-8) 字体
     for tlf in $(ls /usr/share/figlet/*.tlf)
     do
         echo -e "$(basename ${tlf} :) \n"
         figlet -f $tlf 12:34:56:78:90:abc:ABC
     done
 
-    # 钟表
+ 钟表
+
     # watch -n1 "date '+%D%n%T'|figlet -k"
     watch -n1 "date '+%D %T'|figlet -f future.tlf -w 80"
 
@@ -852,13 +885,13 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 
 ### 使用 zsh
 
-单纯的 zsh 并不慢，只要别装 ohmyzsh 就好（没有任何功能性插件的使用场景必须 ohmyzsh）。
+单纯的 zsh 并不慢，只要别装 ohmyzsh，没有任何功能性插件的使用场景依赖这个 ohmyzsh）。
 
     https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
 
     https://www.zhihu.com/question/21418449/answer/300879747
 
-从语法上来说，zsh和bash是不兼容的；但是zsh有一个仿真模式，可以支持对bash/sh语法的仿真（也有对csh的仿真，但是支持不完善，不建议使用）：
+从语法上来说，zsh和bash是不兼容的；但是zsh有一个仿真模式，可以支持对 bash/sh 语法的仿真（也有对csh的仿真，但是支持不完善，不建议使用）：
 
     $ emulate bash
     # or
@@ -870,7 +903,7 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 
 如果是用 apt install 安装的发行版，位置在 /usr/share/
 
-如果用 zsh 默认的插件保存位置，在 ~/.zsh/plugin/
+zsh 默认使用的用户插件位置，在 ~/.zsh/plugin/
 
 设置当前用户使用 zsh
 
@@ -880,7 +913,7 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
     # 修改指定用户的登陆shell
     sudo usermod -s /bin/zsh username
 
-插件和主题太多了容易搞乱环境，保守点的用法是登陆shell默认还是用 bash，登陆后再手动执行 `exec zsh` 切换到zsh。如果执行 `zsh`，退出时会先退出到bash，然后再次退出才是断开连接。
+插件和主题太多了容易搞乱环境，保守点的用法是登陆环境默认还是用 bash，登陆后手动执行 `exec zsh` 切换到zsh（如果执行 `zsh` 则在 bash 的基础上进入 zsh，执行 exit 退出时会先退出到 bash，然后再次 exit 才是断开连接）。
 
     # 如果在 .bash_profile 中，需要判断下是否在终端打开的（程序登陆时不是交互式shell）
     if [ -t 1 ]; then

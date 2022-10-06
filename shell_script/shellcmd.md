@@ -612,16 +612,17 @@ sudo 是一种权限管理机制，依赖于/etc/sudoers，其授权某些普通
 
 示例
 
-    some_user@yourhost:~$ cd
+    $ cd
+    some_user@yourhost:~$
 
     $ sudo su
-    root@your_host:/home/some_user#
+    root@your_host:/home/some_user# exit
 
     $  sudo su -
-    root@your_host:~#
+    root@your_host:~# exit
 
     $ sudo -i
-    root@your_host:~#
+    root@your_host:~# exit
 
 ## 查看操作系统信息
 
