@@ -248,9 +248,11 @@ github.com获取仓库默认给的是https地址，但是在国内的网络下�
 
 其实，执行添加了 -u 参数的命令 git push -u origin master就相当于是执行了
 
-    git push origin master 和
+    git push origin master
 
-    git branch --set-upstream master origin/master。
+    和
+
+    git branch --set-upstream master origin/master
 
 所以，在进行推送代码到远端分支，且之后希望持续向该远程分支推送，则可以在推送命令中添加 -u 参数，简化之后的推送命令输入。
 
