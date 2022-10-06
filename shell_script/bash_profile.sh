@@ -11,7 +11,7 @@ set -o vi
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
-# : 命令行提示符显示当前路径和git分支等，放入任一 .profile 或 .bashrc 或 .bash_profile 内
+# 命令行提示符显示当前路径和git分支
 
 # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
@@ -104,16 +104,16 @@ function PS1git-branch-prompt {
 
 }
 
-# linux bash 命令行提示符显示： \t当前时间 \u用户名 \h主机名 \w当前路径 返回值 git分支及状态
+# linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
 PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
 #################################
 # Linux bash
-# : 在上面的基础上增加 raspberry pi 的状态检测
+# 在上面的基础上增加 raspberry pi 的状态检测
 # 告警条件：
-#   CPU 温度的单位是千分位提权1000
-#   系统throttled不是零
-#   CPU Load Average的值应该小于CPU核数X0.7，取5分钟平均负载
+#   CPU 温度的单位是千分位提权 1000
+#   系统 throttled 不是零
+#   CPU Load Average 的值应该小于CPU核数的70%，取5分钟平均负载
 function PS1raspi-warning-info {
   local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
@@ -144,15 +144,16 @@ function PS1raspi-warning-prompt {
   fi
 }
 
+# Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 树莓派温度 git分支及状态
 PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1raspi-warning-prompt)$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
 #################################
 # Windows git bash(mintty)
-# : 命令行提示符显示： 部分复用了上面的函数
+# 命令行提示符显示： 在上面的基础上修改了两个兼容性函数
 #
 # 在\$(函数名)后直接用换行\n就冲突，不支持$?检查退出码，或者把换行\n放在引用函数前面，或者拼接凑合用
 #PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
-# 目前完美解决办法是新增子函数PS1git-bash-new-line和PS1git-bash-exitcode实现跟上面完全一致的美化效果。
+# 目前用新增子函数 PS1git-bash-new-line 和 PS1git-bash-exitcode 实现跟上面完全一致的显示效果。
 
 function PS1git-bash-new-line {
     printf "\n└"
@@ -163,11 +164,12 @@ function PS1git-bash-exitcode {
     (($exitcode != 0)) && printf "%s" ' -'$exitcode' '
 }
 
+# git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
 PS1="\n$magenta┌─$red\$(PS1git-bash-exitcode)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta$(PS1git-bash-new-line)──$white\$ $normal"
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
-# : 多会话复用 ssh-agent
+# 多会话复用 ssh-agent
 #
 # 来自章节 [多会话复用 ssh-agent 进程] <ssh.md>
 # git bash auto ssh-agent
@@ -217,8 +219,8 @@ unset env
 
 ####################################################################
 # Windows git bash(mintty)
-# : 多会话复用 ssh-pageant，用它连接 putty 的 pagent.exe，代替上面多会话复用 ssh-agent 的段落
-# : 运行gpg钥匙圈更新
+# 多会话复用 ssh-pageant，用它连接 putty 的 pagent.exe，代替上面多会话复用 ssh-agent 的段落
+# 运行gpg钥匙圈更新
 
 # 利用检查 ssh-pageant 进程是否存在，
 # 判断是否开机后第一次打开bash会话，则运行gpg钥匙圈更新
