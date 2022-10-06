@@ -101,11 +101,19 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
     https://github.com/hsab/WSL-config
 
-### 字符终端
+### Windows下的字符终端
 
-#### 居然有给cmd做美化的
+alacritty 使用gpu进行显示加速的字符终端
 
-推荐使用 sh、bash、cmd 等 shell 下通用的状态栏工具
+    https://github.com/alacritty/alacritty
+
+putty 字符终端工具也可美化颜色
+
+    北极主题颜色 https://github.com/arcticicestudio/nord-putty
+
+    只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
+
+startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
 
     https://starship.rs/zh-CN/
         https://github.com/starship/starship
@@ -114,9 +122,43 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
 需要安装支持多种符号的字体，见下面章节 [Nerd Font]。
 
+#### 多终端工具 SuperPutty
+
+SuperPutty 支持 putty、mintty、cmd、powershell 等多种终端嵌入显示，可导入 putty 站点，可设置站点关联WinScp/FileZilla 等软件的快捷调用，使用简单方便，只要安装了 git for Windows 和 putty 等软件即可直接使用，不需要做复杂的设置。
+
+ConEmu 是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2，bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
+
+    https://zhuanlan.zhihu.com/p/99963508
+        https://conemu.github.io/
+
+    ConEmu 配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
+    msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
+
+ConEmu 中设置 MSYS2
+
++ 以MSYS2 MingGW64为例：
+
+    打开conemu的settings对话框
+
+    选择Startup>>Tasks选项
+
+    点击+号，新建一个Task
+
+    修改Task名字为Msys2::MingGW64
+
+    在commands下文本框内输入如下代码：
+
+        set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
+
+MSYS2_PATH_TYPE=inherit表示合并 Windows 系统的 path 变量。注意修改变量值 `D=` 为你的msys2的安装目录。
+
+如果安装了 zsh 并想默认使用 zsh，可以把代码里的 bash 改为 zsh。
+
+打开后会自动把工作目录设置为 msys64/home/%user% 下。
+
 #### 简单使用：安装 Git for Windows
 
-Git Bash 使用了 GNU tools 的 MinGW，但是工具只选择了它自己需要的部分进行了集成，我们主要使用他的 mintty 命令行终端程序(自称 git bash)和 ssh、gpg 等工具。
+Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是工具只选择了它自己需要的部分进行了集成，我们主要使用他的 mintty 命令行终端程序(自称 git bash)和 ssh、gpg 等工具。
 
 下载地址 <https://git-scm.com/download/win>
 
@@ -156,12 +198,6 @@ git for windows 的 mintty 目录
 退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不然会提示有进程未关闭。
 
 putty的退出也是同样的建议。
-
-###### putty 颜色美化
-
-    北极主题颜色 https://github.com/arcticicestudio/nord-putty
-
-只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
 
 ###### mintty 美化
 
@@ -287,40 +323,6 @@ BoldWhite=255,255,255
 ```
 
 如果是 MSYS2 的 mintty，可以在 <https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
-
-###### 多终端工具 SuperPutty 等
-
-SuperPutty 支持 putty、mintty、cmd、powershell 等多种终端嵌入显示，可导入 putty 站点，可设置站点关联WinScp/FileZilla 等软件的快捷调用，使用简单方便，只要安装了 git for Windows 和 putty 等软件即可直接使用，不需要做复杂的设置。
-
-ConEmu 是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2，bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
-
-    https://zhuanlan.zhihu.com/p/99963508
-        https://conemu.github.io/
-
-    ConEmu 配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
-    msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
-
-ConEmu 中设置 MSYS2
-
-+ 以MSYS2 MingGW64为例：
-
-    打开conemu的settings对话框
-
-    选择Startup>>Tasks选项
-
-    点击+号，新建一个Task
-
-    修改Task名字为Msys2::MingGW64
-
-    在commands下文本框内输入如下代码：
-
-        set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
-
-MSYS2_PATH_TYPE=inherit表示合并 Windows 系统的 path 变量。注意修改变量值 `D=` 为你的msys2的安装目录。
-
-如果安装了 zsh 并想默认使用 zsh，可以把代码里的 bash 改为 zsh。
-
-打开后会自动把工作目录设置为 msys64/home/%user% 下。
 
 #### 组合使用：git for Windows + MSYS2
 
@@ -485,21 +487,31 @@ msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递�
 
 pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
-    pacman -Sy :更新软件包数据
-    pacman -Su :更新核心软件包
-    # pacman -Syu: 升级系统及所有已经安装的软件。
-    pacman -S 软件名: 安装软件。也可以同时安装多个包，只需以空格分隔包名即可。
-    pacman -Rs 软件名: 删除软件，同时删除本机上只有该软件依赖的软件。
-    pacman -Ru 软件名: 删除软件，同时删除不再被任何软件所需要的依赖。
-    pacman -Ssq 关键字: 在仓库中搜索含关键字的软件包，并用简洁方式显示。
-    pacman -Qs 关键字: 搜索已安装的软件包。
-    pacman -Qi 软件名: 查看某个软件包信息，显示软件简介,构架,依赖,大小等详细信息。
-    pacman -Sg: 列出软件仓库上所有的软件包组。
-    pacman -Sg 软件包组: 查看某软件包组所包含的所有软件包。
-    pacman -Sc：清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
-    pacman -Scc：清理所有的缓存文件。
+    pacman -Sy           更新软件包数据
+    pacman -Su           更新核心软件包
+    # pacman -Syu        升级系统及所有已经安装的软件。
+    pacman -S 软件名      安装软件。也可以同时安装多个包，只需以空格分隔包名即可。
+    pacman -Rs 软件名     删除软件，同时删除本机上只有该软件依赖的软件。
+    pacman -Ru 软件名     删除软件，同时删除不再被任何软件所需要的依赖。
+    pacman -Ssq 关键字    在仓库中搜索含关键字的软件包，并用简洁方式显示。
+    pacman -Qs 关键字     搜索已安装的软件包。
+    pacman -Qi 软件名     查看某个软件包信息，显示软件简介,构架,依赖,大小等详细信息。
+    pacman -Sg           列出软件仓库上所有的软件包组。
+    pacman -Sg 软件包组    查看某软件包组所包含的所有软件包。
+    pacman -Sc           清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
+    pacman -Scc          清理所有的缓存文件。
 
 ## Linux 字符终端管理
+
+使用 gpu 进行显示加速的字符终端，号称比 iTerm 速度快
+
+    https://github.com/alacritty/alacritty
+
+使用 gpu 进行显示加速的字符终端，只能在 linux 桌面下使用
+
+    https://github.com/kovidgoyal/kitty
+
+        https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
 
 ### 字符终端的区域、编码、语言
 
@@ -753,7 +765,7 @@ zsh:
 
 #### 替代品
 
-如果不使用 powerline，推荐使用 sh、bash、cmd 等 shell 下通用的状态栏工具，见章节 [居然有给cmd做美化的]。
+如果不使用 powerline，推荐使用 sh、bash、cmd 等 shell 下通用的状态栏工具，见章节 [Windows下的字符终端]。
 
 更推荐安装 zsh，使用 zsh 下的 powerlevle10k 工具，这个兼容性和效果直接起飞，见章节 [推荐主题powerlevel10k]。
 
@@ -3082,6 +3094,8 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 ##### .tmux.conf 配置文件样例
 
 ```shell
+# 可参考一个非常流行的配置 https://github.com/gpakosz/.tmux
+#
 # 按完前导 ctrl+B 后，再按冒号即可进入命令行模式
 # 下列命令在 tmux 的命令行模式一样可以使用
 
