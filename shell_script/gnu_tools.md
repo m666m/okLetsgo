@@ -2031,10 +2031,16 @@ call plug#end()
 ```python
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim 的一些默认设置
+" vim 的一些默认设置，一般在全局配置文件 /etc/vim/vimrc 中都有
 
 "set nonumber
 set number  " 显示行号
+
+" Uncomment the following to have Vim jump to the last position when
+" reopening a file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
 
 " 使用 vim-airline 并开启tabline设置后，就不需要这两个设置了
 "set laststatus=2  " 始终显示状态栏
@@ -2093,7 +2099,7 @@ let g:airline#extensions#tabline#tab_nr_type = 2
 let g:airline#extensions#tabline#show_tab_nr = 1
 
 let g:airline#extensions#tabline#formatter = 'default'
-let g:airline#extensions#tabline#buffer_nr_show = 0 " 有一个就够了
+let g:airline#extensions#tabline#buffer_nr_show = 0  " 有一个就够了
 let g:airline#extensions#tabline#fnametruncate = 16
 let g:airline#extensions#tabline#fnamecollapse = 2
 
@@ -2301,17 +2307,17 @@ map <C-n> :NERDTreeToggle<CR>
 
         gr命令，可以进入单字符虚拟替换模式。在替换光标下的当前字符之后，将自动返回到常规模式。
 
-##### 可视模式
+##### 可视模式(列块操作)
 
 普通模式下按下列键进入可视模式
 
-    按“v”键，然后加方向键（h、j、k、l）或者另外的四个方向键移动光标，从光标位置开始进逐字符的行多选，然后可以执行删除复制粘贴合并行等普通模式下的命令操作
+    按 v 键，然后加方向键（h、j、k、l）或者另外的四个方向键移动光标，从光标位置开始进逐字符的行多选，然后可以执行删除复制粘贴合并行等普通模式下的命令操作
 
-    按 V 是以行为单位的多选，操作同上
+    按 V 键是以行为单位的多选，操作同上
 
-    按“Ctrl + v”键，从光标位置开始进逐字符的列多选，操作同上
+    按 Ctrl + v 键，从光标位置开始进逐字符的列多选，操作同上
 
-列块操作
+示例
 
     删除列
 
@@ -2357,17 +2363,17 @@ map <C-n> :NERDTreeToggle<CR>
 
 执行shell命令
 
-    1、在普通模式下输入 ":sh"，可以运行一个shell，想回到vim编辑器中用`exit`或`ctrl+D`返回vim编辑器
+    在普通模式下输入 ":sh"，可以运行一个shell，想回到vim编辑器中用`exit`或`ctrl+D`返回vim编辑器
 
-    2、在普通模式下输入 ":!xxx"，在当前目录下运行指定的命令xxx，运行结束后自动回到 vim 编辑器中
+    在普通模式下输入 ":!xxx"，在当前目录下运行指定的命令xxx，运行结束后自动回到 vim 编辑器中
 
-    3、用 "Ctrl+Z" 回到shell，用 `fg` 返回编辑
+    用 "Ctrl+Z" 回到shell，用 `fg` 返回 vim 编辑器中
 
 ##### 自定义快捷键
 
 重新定义快捷键，放到 ~/.vimrc 文件中即可：
 
-```shell
+```python
 
 " 切换目录树显示的热键定义为 Ctrl-n
 " map 是 vim 的快捷键映射命令
@@ -2379,11 +2385,11 @@ map <C-n> :NERDTreeToggle<CR>
 
 前缀代表生效范围
 
-    inoremap就只在插入(insert)模式下生效
+    inoremap 就只在插入(insert)模式下生效
 
-    vnoremap只在visual模式下生效
+    vnoremap 只在 visual 模式下生效
 
-    nnoremap就在normal模式下(狂按esc后的模式)生效
+    nnoremap 就在 normal 模式下(狂按esc后的模式)生效
 
 前导键
 
@@ -2394,10 +2400,10 @@ map <C-n> :NERDTreeToggle<CR>
     " 前导键定义为 逗号
     let mapleader=","
 
-    " 利用转义符“\”将前导键为空格键
+    " 利用转义符“\”将前导键定义为空格键
     let mapleader = "\<space>"
 
-    "后续的热键定义使用 <leader> 声明即可
+    "后续的热键定义使用前导键只需要用 <leader> 声明即可
     map <Leader>bn :bn<CR>
 
 ##### 重复上步操作
@@ -2405,11 +2411,11 @@ map <C-n> :NERDTreeToggle<CR>
 vim中有五种基本的重复类型，分别是：
 
     重复类型        重复操作符    回退操作符
-    文本改变重复      .              u
-    行内查找重复      ;              ,
-    全文查找重复      n              N
-    文本替换重复      &              u
-    宏重复          @[寄存器]        u
+    文本改变重复      .             u
+    行内查找重复      ;             ,
+    全文查找重复      n             N
+    文本替换重复      &             u
+    宏重复           @[寄存器]      u
 
 #### 理解vim的多文件操作（缓冲buffer）
 
@@ -2454,8 +2460,6 @@ vim 打开的多个文件，每个文件都会加载到缓冲区
     :close      关闭当前窗口
     :only       只显示当前窗口, 关闭所有其他的窗口
 
-vim 除了使用一个窗口显示所有缓冲区(只能来回切换)，还可以使用 tab 多标签化或 Window 多窗口化。
-
 buffer状态
 
     - （非活动的缓冲区）
@@ -2466,9 +2470,11 @@ buffer状态
     = （只读缓冲区）
     + （已经更改的缓冲区）
 
+vim 除了使用一个窗口显示所有缓冲区(只能来回切换)，还可以使用 tab 多标签化或 Window 多窗口化。
+
 ##### 多窗口(Window)操作
 
-在Vim 术语中，窗口是缓冲区的显示区域。既可以打开多个窗口，在这些窗口中显示同一个文件， 也可以在每个窗口里载入不同的文件。
+在 vim 术语中，窗口是缓冲区的显示区域。既可以打开多个窗口，在这些窗口中显示同一个文件，也可以在每个窗口里载入不同的文件。
 
     :sp    当前窗口水平切分为两个窗口，或 :split
     :vsp   当前窗口垂直切分为两个窗口，或 :vsplit
@@ -2507,7 +2513,7 @@ buffer状态
 
 ###### 使用 alt+数字键 来切换 tab 标签页
 
-建议使用 vim-airline 自带的功能进行 tab 和 Buffer 之间的切换，见上面章节 [.vimrc配置文件样例]。
+建议使用 vim-airline 自带的功能进行 tab 和 Buffer 之间的切换，见章节 [.vimrc配置文件样例]。
 
 自定义热键用 Alt 总是设置不上，用的 Ctrl+w 解决了，不知道咋回事，待研究。
 
@@ -2560,7 +2566,7 @@ autocmd VimEnter * call TabPos_Initialize()
 
 #### vim 使用鼠标
 
-鼠标右键不能粘贴而是进入了visual模式
+鼠标右键不能粘贴而是进入了 visual 模式
 
 解决方法一
 
@@ -2595,17 +2601,15 @@ autocmd VimEnter * call TabPos_Initialize()
 
 打开鼠标功能，就会使你的vim响应你的鼠标选择了，即在鼠标选择进入的可视模式中，你可以使用vim热键了
 
-    # 等价于设置 'mouse' 为 "nvich"
+    # 等价于 mouse=nvich
     :set mouse=a
 
-    关闭鼠标功能
-
+    # 关闭鼠标功能
     :set mouse-=a
     或
     :set mouse=""
 
-    设置鼠标在普通模式和可视模式下工作
-
+    # 设置鼠标在普通模式和可视模式下工作
     :set mouse=nv
 
 鼠标能否在可视模式或者选择模式下开始选择，决定于 "selectmode" 选项包不包括"mouse"。
@@ -2620,7 +2624,7 @@ autocmd VimEnter * call TabPos_Initialize()
 
     按鼠标中键（滚轮），或按 p 键粘贴。
 
-不要使用模仿 Windows 鼠标习惯的一个 mswin.vim， 如“Ctrl + A”全选、 “Ctrl + C”复制、 “Ctrl + V”粘贴等等， 这些快捷键与vim本身的快捷键有不少是冲突的：部分原有的快捷键映射成了别的键， 例如把“Ctrl + V”(矩形块选择)改成了粘贴， 而原有的“Ctrl + V”改成了“Ctrl + Q”； 还有部分快捷键就彻底没有了， 如原有的“Ctrl + A”(将当前光标所在的数字加 1)改成了全选， 而原有的相应功能就找不到了。
+不要使用模仿 Windows 鼠标习惯的一个 mswin.vim， 如“Ctrl + A”全选、 “Ctrl + C”复制、 “Ctrl + V”粘贴等等， 这些快捷键与vim本身的快捷键有不少是冲突的：部分原有的快捷键映射成了别的键， 例如把“Ctrl + V”(矩形块选择)改成了粘贴， 而原有的“Ctrl + V”改成了“Ctrl + Q”； 还有部分快捷键就彻底没有了， 如原有的“Ctrl + A”(将当前光标所在的数字加 1)改成了全选， 而原有的相应功能就找不到了
 
     :behave mswin
 
