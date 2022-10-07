@@ -144,7 +144,7 @@ function PS1raspi-warning-prompt {
   fi
 }
 
-# Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 树莓派温度 git分支及状态
+# Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 树莓派温度告警 git分支及状态
 PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1raspi-warning-prompt)$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
 #################################
