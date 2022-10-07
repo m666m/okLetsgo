@@ -610,7 +610,7 @@ sudo 是一种权限管理机制，依赖于/etc/sudoers，其授权某些普通
 
 以上用法，都是在shell环境下切换用户，要返回上一个用户时，执行退出命令 `exit` 或 `logout` 或 Ctrl+d 即可。
 
-示例
+查看区别
 
     $ cd
     some_user@yourhost:~$
@@ -623,6 +623,12 @@ sudo 是一种权限管理机制，依赖于/etc/sudoers，其授权某些普通
 
     $ sudo -i
     root@your_host:~# exit
+
+有 sudo 权限的用户免密码切换到其它用户
+
+    user@your_server:~ $ sudo su
+    root@your_server:/home/user# su - git
+    git@your_server:~ $
 
 ## 查看操作系统信息
 
