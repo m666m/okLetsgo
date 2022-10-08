@@ -163,25 +163,21 @@ ConEmu 配自定义选项多置复杂，支持 cmd, powershell, msys2, bash 等�
 
     msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
 
-ConEmu 美化
-
-    https://github.com/joonro/ConEmu-Color-Themes
-
-有个 [Cmder](https://github.com/cmderdev/cmder) 看作一个软件包，而非单个软件，它包含了：
-
-    控制台模拟器：Conemu （它是Cmder的基础），可换为别的 <https://zhuanlan.zhihu.com/p/71706782>
-
-    Cmd.exe增强功能：clink （通过clink进一步增强cmd shell）
-
-    Unix tools on windows：git for windows
-
 让 mintty 或 ConEmu 可以支持 wsl （Windows Subsystem for Linux）
 
     https://github.com/Biswa96/wslbridge2
 
-##### 基本的 ConEmu 配置示例
+ConEmu 色彩方案
+
+    https://github.com/joonro/ConEmu-Color-Themes
+
+##### 基本的 ConEmu 任务配置示例
+
+ConEmu 安装时会自动检测当前可用的shell并配置为任务。
 
 ConEmu 配置 putty 会话
+
+直接调用 putty.exe，显示效果完美。
 
     点击+号，新建一个Task名为 putty::your_putty_session，命令文本框输入
 
@@ -193,13 +189,28 @@ ConEmu 配置 Anaconda 会话
 
     "%windir%\syswow64\cmd.exe" /k "C:\ProgramData\Anaconda3\Scripts\activate.bat C:\ProgramData\Anaconda3"
 
-ConeEmu 配置 Git Bash 会话
+ConEmu 配置 Git Bash 会话
+
+直接调用 git-bash.exe，显示效果完美。
 
     点击+号，新建一个Task名为 Bash::Git Bash，命令文本框输入
 
+    set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-bash.exe --cd-to-home
+
+ConEmu 配置 bash 会话
+
+这个显示 tmux/zsh 状态栏工具会错行
+
     set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-cmd.exe --no-cd --command=%ConEmuBaseDirShort%\conemu-msys2-64.exe /usr/bin/bash.exe -l -i -new_console:p
 
-ConEmu 配置 MSYS2 （ConEmu 安装时会自动检测当前可用的shell并配置为任务）
+ConEmu 解决 tmux/zsh 的状态栏工具错行问题
+
+conemu是通过cmd实现的，ConEmu的 ChildGUI 配置，tmux不能直接打开，在ssh到服务器后使用tmux会出现显示的问题，在刷新后总会出现底部栏重叠，还有光标错位的问题。 使用mintty可以解决tmux的问题。
+
+    C:\msys64\usr\bin\mintty.exe -i /msys2.ico -t "%CONTITLE%" "/usr/bin/zsh" -new_console:C:"%D%\msys2.ico"
+
+
+ConEmu 配置 MSYS2
 
     打开conemu的settings对话框，选择Startup>>Tasks选项
 
@@ -212,6 +223,18 @@ MSYS2_PATH_TYPE=inherit表示合并 Windows 系统的 path 变量。注意修改
 如果安装了 zsh 并想默认使用 zsh，可以把代码里的 bash 改为 zsh。
 
 打开后会自动把工作目录设置为 msys64/home/%user% 下。
+
+##### cmder 无需安装直接使用的整合包
+
+    https://github.com/cmderdev/cmder
+
+Cmder 是一个软件包，而非单个软件，它整合了：
+
+    控制台模拟器：Conemu （它是Cmder的基础），可换为别的 <https://zhuanlan.zhihu.com/p/71706782>
+
+    Cmd.exe增强功能：clink （通过clink进一步增强cmd shell）
+
+    Unix tools on windows：git for windows
 
 #### mintty 简单使用：Git for Windows
 
