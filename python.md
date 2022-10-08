@@ -392,9 +392,17 @@ windows下用mintty(bash)执行sh脚本自动执行环境和python程序，cmd�
 
     "C:\Program Files\Git\git-bash.exe" --no-cd "C:\tools\pyenvs\yourprojectenv.sh"
 
-#### Windows 命令行环境下 bash 的sh文件（virtualenv）
+cmd 的bat文件，在 cmd 下执行
 
-git-bash(mintty) 下执行，Windows 下只要安装了git直接双击sh文件就关联调用了。
+```cmd
+@REM
+call c:\tools\pyenvs\yourprojectenv\Scripts\activate.bat
+python C:\Users\xxxuser\pycode\yourapp.py
+
+pause
+```
+
+bash 的sh文件，在 git-bash(mintty) 下执行，Windows 下只要安装了git直接双击sh文件就关联调用了。
 
 ```shell
 #!/bin/sh
@@ -406,21 +414,7 @@ conda deactivate
 read -n1 -p "Press any key to continue..."
 ```
 
-#### Windows 命令行环境下 cmd 的bat文件（virtualenv）
-
-cmd下执行
-
-```cmd
-@REM
-call c:\tools\pyenvs\yourprojectenv\Scripts\activate.bat
-python C:\Users\xxxuser\pycode\yourapp.py
-
-pause
-```
-
-## python-xy
-
-不再更新维护了，废弃
+python-xy 不再更新维护了，废弃
 <https://python-xy.github.io/> 微软推荐的<https://devblogs.microsoft.com/python/unable-to-find-vcvarsall-bat>
 
 ## 何时用 conda/virtualenv/venv
@@ -439,7 +433,23 @@ virtualenv 依赖操作系统内安装好的 python，主要解决多个项目�
 
     如果你使用 Python 2，就只能选择 virtualenv。
 
-## Linux 下安装 anaconda
+## Anaconda 管理
+
+    命令速查 https://docs.conda.io/projects/conda/en/latest/commands/remove.html
+
+    用户指南 https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#
+
+理解Anaconda版本管理的特殊性
+
+    当我们创建新的环境的时候，Anaconda 对相同的python版本指向为一个打包文件的链接。
+
+    所以如果你改变了第一个python版本的环境，则后续新建同版本的环境会跟着变。。。
+
+    对pip包默认下载路径，conda库更新，都会同步这个影响。
+
+    <https://www.anaconda.com/blog/using-pip-in-a-conda-environment>
+
+### Linux 安装 anaconda
 
 1. 网站下载
 2. bash xxxx.sh
@@ -452,11 +462,11 @@ virtualenv 依赖操作系统内安装好的 python，主要解决多个项目�
 -搜索计算机： visual studio code 或 conda
  或 终端运行：spyder
 
-## Windows 安装 anaconda
+### Windows 安装 anaconda
 
 官方介绍 <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>
 
-### 初始化
+#### 初始化
 
 0.先安装git，后续使用它自带的bash、ssh比较方便，不装也行
 
@@ -502,7 +512,7 @@ NOTE:这里有个耦合，后续建立的同版本的python环境都会复用最
 
 10.详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
 
-### 填坑
+#### 填坑
 
 如果安装anaconda时没有勾选"add anaconda3 to the system PATH environment variable"加入到环境变量，vscode 无法找到python，则安装插件：Code Runner
 
@@ -528,7 +538,7 @@ windows下python按[TAB]出现报错：
     https://github.com/pyreadline/pyreadline/pull/56
     https://github.com/winpython/winpython/issues/544
 
-### 如果不想用了
+#### 如果不想用了
 
 卸载 anaconda
 
@@ -547,22 +557,6 @@ windows下python按[TAB]出现报错：
 
     C:\Users\xxxx\AppData\Roaming\Code 目录清空
     C:\Users\xxxx\.vscode 目录清空
-
-## Anaconda 管理
-
-    命令速查 https://docs.conda.io/projects/conda/en/latest/commands/remove.html
-
-    用户指南 https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#
-
-理解Anaconda版本管理的特殊性
-
-    当我们创建新的环境的时候，Anaconda 对相同的python版本指向为一个打包文件的链接。
-
-    所以如果你改变了第一个python版本的环境，则后续新建同版本的环境会跟着变。。。
-
-    对pip包默认下载路径，conda库更新，都会同步这个影响。
-
-    <https://www.anaconda.com/blog/using-pip-in-a-conda-environment>
 
 ### Anaconda多环境最佳方案
 
@@ -616,7 +610,47 @@ Anaconda 安装完毕后，默认的环境base是最新的一个python版本如p
         # 再正常进入conda环境
         conda activate p36
 
-如果需要在Windows下执行bat或sh脚本文件，参见下面的章节 [Windows 下执行 conda 脚本]。
+如果需要在Windows下执行bat或sh脚本文件，参见下面的章节 [Windows 命令行环境下使用脚本执行  conda 环境]。
+
+### Windows 命令行环境下使用脚本执行  conda 环境
+
+在windows的命令行脚本环境下，第一次运行 conda activate 是激活[base]环境，
+然后再次执行 conda activate p37 以切换到指定的环境。
+
+也就是说，确保你执行的conda命令都是在[base]环境下，就不会报错找不到啥的。
+
+cmd 的bat文件，在 cmd 下执行（需要设置 conda init 以支持cmd，详见章节[conda init 命令设置命令行工具]）
+
+```cmd
+@rem anaconda 命令行执行
+@rem C:\ProgramData\Anaconda3\Scripts\activate
+@rem conda activate xdhj
+
+@rem --------------------------------------------------
+@rem anaconda 脚本执行
+call C:\ProgramData\Anaconda3\condabin\conda.bat activate p37
+
+@rem --------------------------------------------------
+python C:\Users\your_name\pycode\your_project\app.py
+
+pause
+```
+
+bash 的 sh 文件，在 bash 下执行（需要设置 conda init 以支持 git bash(mintty)，详见章节[conda init 命令设置命令行工具]）。
+
+```shell
+#!/bin/sh
+# env source export 只认识linux目录结构
+/c/ProgramData/Anaconda3/condabin/conda.bat activate
+
+conda activate p37
+python /c/Users/your_name/pycode/your_project/app.py
+
+conda deactivate
+read -n1 -p "Press any key to continue..."
+```
+
+如果需要显示中文需要修改配置文件 ~\.minttyrc，详见 [mintty(bash)] <gnu_tools.md>
 
 ### conda init 命令设置命令行工具
 
@@ -987,52 +1021,6 @@ conda 有很多频道，在网页版频道列表里有对应的版本，找合�
 
     # vscode 提示
     # conda update -n base -c defaults conda
-
-### Windows 下执行 conda 脚本
-
-在windows的命令行脚本环境下，第一次运行 conda activate 是激活[base]环境，
-然后再次执行 conda activate p37 以切换到指定的环境。
-
-也就是说，确保你执行的conda命令都是在[base]环境下，就不会报错找不到啥的。
-
-#### Windows 下执行 conda 脚本的 bat 文件
-
-需要设置conda init 以支持cmd，详见上面章节[conda init 命令设置命令行工具].
-cmd下执行
-
-```cmd
-@rem anaconda 命令行执行
-@rem C:\ProgramData\Anaconda3\Scripts\activate
-@rem conda activate xdhj
-
-@rem --------------------------------------------------
-@rem anaconda 脚本执行
-call C:\ProgramData\Anaconda3\condabin\conda.bat activate p37
-
-@rem --------------------------------------------------
-python C:\Users\your_name\pycode\your_project\app.py
-
-pause
-```
-
-#### Windows 下执行 conda 脚本的 的 sh 文件
-
-需要设置conda init 以支持bash，详见上面章节[conda init 命令设置命令行工具].
-只要安装了 git 直接双击sh文件就自带调用git-bash(mintty)了。
-
-```shell
-#!/bin/sh
-# env source export 只认识linux目录结构
-/c/ProgramData/Anaconda3/condabin/conda.bat activate
-
-conda activate p37
-python /c/Users/your_name/pycode/your_project/app.py
-
-conda deactivate
-read -n1 -p "Press any key to continue..."
-```
-
-如果需要显示中文需要修改配置文件 ~\.minttyrc，详见 [mintty(bash)] <gnu_tools.md>
 
 ## Anaconda环境中使用pip
 
@@ -1425,11 +1413,11 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
 
 ## 在ubuntu系统配置多python环境
 
-### ubuntu16.04自带python的版本
+### ubuntu16.04自带2个 python 版本
 
 Debian/Ubuntu 下同时安装了python2和python3，既有python2.7，又有python3.5
 
-但是默认的python命令是python2.7，我要想执行python3就必须输入python3
+但是默认的 python 命令是指向 python2.7，要执行 python3 就必须输入python3
 
     输入命令sudo apt-get install python3.7
 
@@ -1462,6 +1450,7 @@ Debian/Ubuntu 下同时安装了python2和python3，对应的pip也是两个：p
 2.系统已内置安装了python2.7和python3.6版本
 
     python执行路径为:/usr/bin/python2 /usr/bin/python3
+
     如果没有安装对应的版本，可执行以下命令安装
     sudo apt-get install python2.7 python2.7-dev
     sudo apt-get install python3.6 python3.6-dev
@@ -1546,6 +1535,7 @@ lib_dirs = self.compiler.library_dirs + [
 ubuntu16 上自带python2 (2.7.12)和python3 (3.5.2)，而apt-get install python 安装的是3.6，所以手动下载源代码安装python3.7为最新的3.7.5
 
 未测试：用apt-get install安装指定版本的软件
+
     # 查看可用版本并安装指定版本
     sudo apt-get update
     aptitude versions apache2
@@ -1561,7 +1551,7 @@ ubuntu16 上自带python2 (2.7.12)和python3 (3.5.2)，而apt-get install python
     sudo xz -d Python-3.7.3.tar.xz
     sudo tar -xf Python-3.7.3.tar
 
-2.解决个zlib库找不到报错的问题 的问题
+2.解决个zlib库找不到报错的问题
 
   No module named zlib found
 
@@ -1575,13 +1565,17 @@ ubuntu16 上自带python2 (2.7.12)和python3 (3.5.2)，而apt-get install python
     '/lib64', '/usr/lib64',
     '/lib', '/usr/lib',
     ]
+
     添加个 '/usr/lib/x86_64-linux-gnu' 或 /usr/lib/i386-linux-gnu
 
 或
 
     sudo apt-get install zlib1g-dev
+
     假如出现->“Ubuntu ：zlib1g-dev依赖: zlib1g (= 1:1.2.8.dfsg-2ubuntu4) 但是 1:1.2.8.dfsg-2ubuntu4.1 正要被安装” 的问题，解决办法：
+
     图形界面的桌面下，点击“软件和更新”，选择选项卡“更新”，勾选前两个选项，安装重要的和可选的更新。
+
     然后，sudo apt-get update
             sudo apt-get upgrade
             sudo apt-get install zlib1g-dev
@@ -1609,6 +1603,7 @@ ubuntu16 上自带python2 (2.7.12)和python3 (3.5.2)，而apt-get install python
 
         linux下使用官方source release安装会出现问题 ModuleNotFoundError: No module named '_bz2'，
             需要 sudo apt-get install libbz2-dev
+
         解决 sudo apt-get install E: 无法定位软件包
             在 etc/apt 下的sources.list添加镜像源：deb http://archive.ubuntu.com/ubuntu/ trusty main universe restricted multiverse  sudo apt-get update
 
@@ -1639,6 +1634,7 @@ comes with Python 3 installed by default, but it does not come with pip.
 ### To install pip for Python 3 on Ubuntu 18.04
 
 1.Open the terminal.
+
 The simplest way is to right-click on the desktop and select Open Terminal from the drop-down menu.
 
 2.Update the repository package list by running the following command in the terminal:
@@ -1654,8 +1650,6 @@ The simplest way is to right-click on the desktop and select Open Terminal from 
     pip3 -–version
 
 The installed version might be different for you, but the general output should resemble the line below:
-
-    OUTPUT
 
     pip 9.0.1 from /usr/lib/python3/dist-packages (python 3.6)
 
@@ -1683,7 +1677,6 @@ The installed version might be different for you, but the general output should 
 
 At the time of writing this article, the latest version of Pip is 9.0.1, but this may vary.
 
-    OUTPUT
     pip 9.0.1 from /usr/lib/python2.7/dist-packages (python 2.7)
 
 5.This step is optional but highly recommended. Namely, you can install a required file that contains all the packages that can be installed with pip. To install the requirements contained in requirements.txt, run the following command:
@@ -1694,47 +1687,13 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
     sudo pip install --upgrade pip
 
-## Visual Sutdio 2022 中使用 python 虚拟环境
+## 配置 vs code
 
-<https://docs.microsoft.com/zh-cn/visualstudio/python/managing-python-environments-in-visual-studio?view=vs-2022>
-
-## vscode 外网访问内网使用ssh和远程桌面
-
-<https://github.com/microsoft/vscode-docs/blob/master/remote-release-notes/v1_37.md>
-
-## vscode 在 Windows 下不断提示输入 ssh 密钥的保护密码
-
-    https://stackoverflow.com/questions/42707896/vscode-keep-asking-for-passphrase-of-ssh-key
-
-问题现象
-
-    vscode + Git for Windows 使用 ssh 登陆 git 的服务器，每次 pull 代码或 fetch 代码，都会提问 ssh 密钥的保护密码。特别是如果 vscode 设置了选项：自动同步（"git.autofetch": true），会频繁提示输入密钥的保护密码。
-
-    点击 vscode 的 git 代码同步功能的按钮会报错 ssh 密钥验证失败，而你在终端窗口运行 push、pull 都不会报错。
-
-而你已经设置过ssh代理进程缓存密钥的保护密码
-
-    在 bash 窗口运行过 ssh-agent 并且已经添加了密钥，ssh 连接网站时，不需要再输入 ssh 密钥的保护密码了。
-
-    或在 cmd 窗口里运行过 start-ssh-agent.cmd 并且已经添加了密钥，ssh 连接网站也不需要输入 ssh 密钥的保护密码了。
-
-    或 在 bash 窗口已经运行过 ssh-pageant 代理进程，共享使用了 putty 的 pageant.exe 的 ssh-agent 功能，在 bash 或 putty 中 ssh 连接网站都不需要输入 ssh 密钥的保护密码了。
-
-    或在 cmd 窗口里运行过 start-ssh-pageant.cmd，共享使用了 putty 的 pageant.exe 的 ssh 代理功能，在 cmd 或 putty 中 ssh 连接网站也不需要输入 ssh 密钥的保护密码了。
-
-解决办法
-
-法一： 在已经运行过 ssh 代理进程缓存密钥的终端窗口里运行命令 `code` 打开 vscode，这样会继承 ssh 代理进程设置的环境变量 SSH_AUTH_SOCK，vscode 就不会问密码了（如果是cmd执行 start-ssh-agent.cmd 的窗口不能关）。如果需要打开多个 vscode 实例，在任务栏的 vscode 图标右键选择“新窗口”。偶发问题：在退出 git bash 的最后一个实例前，要先关闭 vs code，否则再重新运行 git bash 时会报错打不开。
-
-法二： 使用 Windows 10 自带的 OpenSSH，启用服务 SSH-AGENT 的自动运行，设置 vscode 使用 Windows 10 自带的 OpenSSH，而不要用自行安装的 Git for Windows 的 ssh。开机后在 power shell 提示窗口执行一次 `ssh-add` 缓存你的密钥，后续也不会被提示输入密码了。
-
-法三：取消 ssh 密钥的保护密码：执行命令 `ssh-keygen -p` 提示新密码时直接回车。
-
-## vscode 插件
+### vscode 插件
 
 插件的安装位置为 C:\Users\你的用户名\.vscode\extensions
 
-### 不要用AI代码完成的插件
+#### 不要用AI代码完成的插件
 
 全都把你的代码上传服务器了，包括 kate、[Visual Studio IntelliCode](https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.vscodeintellicode) 等。
 
@@ -1752,20 +1711,20 @@ java 套件安装及默认安装 IntelliCode，注意禁用。
 
 python 套件为兼容老版本不用 pylance 的习惯，所以默认不安装 IntelliCode，不代表以后不装。
 
-### 快速解析python，代码自动完成更快
+#### 快速解析python，代码自动完成更快
 
 pylance
 
-### 高亮空格并消除
+#### 高亮空格并消除
 
     Trailing Spaces
 
-### 正则表达式预览
+#### 正则表达式预览
 
     LouisWT.regexp-explain
         RegExp Preview and Editor : le0zh.vscode-regexp-preivew （废弃了）
 
-### 查看sqllite数据库
+#### 查看sqllite数据库
 
     sqlite (alexcvzz.vscode-sqlite)
 
@@ -1773,17 +1732,17 @@ pylance
         DB Browser for SQLite <https://github.com/sqlitebrowser/sqlitebrowser>
         SQLiteStudio <https://github.com/pawelsalawa/sqlitestudio>
 
-### 远程开发： Remote Development  装这一个就会自动装一堆
+#### 远程开发： Remote Development  装这一个就会自动装一堆
 
     打开远程ssh文件夹后，各插件不可用？ 删除服务器上的 ~/.vscode-server 目录，重新安装插件
     Extension not working on remote SSH?  Remove directory ~/.vscode-server
     https://github.com/microsoft/vscode-remote-release/issues/1443
 
-### 自动添加函数头说明 Python Docstring Generator
+#### 自动添加函数头说明 Python Docstring Generator
 
     "autoDocstring.docstringFormat": "numpy",
 
-### MarkDown
+#### MarkDown
 
     Markdown All in One 高亮，预览
 
@@ -1791,21 +1750,21 @@ pylance
 
     xlthu.pangu-markdown 中文英文之间加入空格，所谓“盘古空白”
 
-### shell-format
+#### shell-format
 
     shell 脚本语法高亮
 
-### PYQT Integration
+#### PYQT Integration
 
     "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\designer.exe",
     "pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
     "pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
 
-### GitLens
+#### GitLens
 
-### Git History
+#### Git History
 
-### 护眼主题
+#### 护眼主题
 
 看代码和看md文字有些区别，一切以字体清晰可辨，眼睛不费力为原则。
 
@@ -1854,15 +1813,15 @@ material-theme 深色比较养眼，比 Night Owl 舒服。
 
 Solarized Light（vscode 自带）  这个是羊皮纸底色，去蓝光了，但是如果你看起来感觉累眼就别用了。。。
 
-### JScript/Json的格式化，比系统自带的好用
+#### JScript/Json的格式化，比系统自带的好用
 
 Prettier - Code formatter
 
-### Prettify JSON
+#### Prettify JSON
 
     格式化json文件很好用，容错率高
 
-### TODO TREE
+#### TODO TREE
 
 ```json
     "todo-tree.general.tags": [
@@ -1901,7 +1860,7 @@ Prettier - Code formatter
     "todo-tree.tree.grouped": true,
 ```
 
-### csv文件查看
+#### csv文件查看
 
 ```json
     Rainbow CSV 设置颜色区分：
@@ -1976,7 +1935,7 @@ Prettier - Code formatter
     },
 ```
 
-### vim
+#### vim
 
 完整模拟了 vim 的各种操作
 
@@ -1986,17 +1945,17 @@ Prettier - Code formatter
 
     https://github.com/VSCodeVim/Vim#vim-airline
 
-### Draw.io Integration
+#### Draw.io Integration
 
-### UMLet 简单好用的UML流程图
+#### UMLet 简单好用的UML流程图
 
 Free UML Tool for Fast UML Diagrams 生成一个".uxf"文件打开即可使用
 
-### vscode-mindmap 脑图
+#### vscode-mindmap 脑图
 
 json文件格式节点图。生成一个".km"文件打开即可使用
 
-### Graphviz Dot文件查看
+#### Graphviz Dot文件查看
 
 Graphviz Interactive Preview 支持路线高亮
     F1命令呼叫预览
@@ -2008,7 +1967,7 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 
     https://github.com/joaompinto/vscode-graphviz
 
-### 括号匹配 Bracket Pair Colorizer 2
+#### 括号匹配 Bracket Pair Colorizer 2
 
 ```json
     // vscode 1.60+ 自带了 "editor.bracketPairColorization.enabled": true,
@@ -2020,11 +1979,11 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
     ],
 ```
 
-## vscode 用的 Python 配套包
+### vscode 用的 Python 配套包
 
 注意这些包被 vscode 默认安装到了你的基础环境中，conda[base] 或 virtualenv 不同。
 
-### 格式化 yapf
+#### 格式化 yapf
 
 用conda在指定环境中安装，这个直接带二进制包：
 
@@ -2033,8 +1992,8 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 禁用代码块
 
     # yapf:disable
-    代码块
-    #yapf:enable
+    你的代码块
+    # yapf:enable
 
 禁用一行
 
@@ -2047,7 +2006,9 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
     ],
 ```
 
-### 代码检查 flake8
+#### 代码规范检查 flake8
+
+    https://gitlab.com/pycqa/flake8/
 
 在要忽略 flake8 检查的那一行加上 # noqa 注释即可
 
@@ -2056,34 +2017,47 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
     # flake8: noqa
 
 ```json
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true,
-    "python.linting.flake8Args": [
-        "--max-line-length=100",
-        // "--ignore=E501, E262",
-    ],
+
+"python.linting.enabled": true,
+"python.linting.pylintEnabled": false,
+"python.linting.flake8Enabled": true,
+"python.linting.flake8Args": [
+    "--max-line-length=100",
+    // "--ignore=E501, E262",
+],
+
 ```
 
-### 代码测试 unittest
+#### 代码测试 unittest
 
-单元测试不要用pytest，老老实实用系统的unittest.
+单元测试不要用 pytest，老老实实用系统的 unittest。
 
 如果用pytest ，虽然兼容unittest，不需要写子类也可以的。但是：记得在项目跟目录放个空文件 conftest.py
 
     https://stackoverflow.com/questions/10253826/path-issue-with-pytest-importerror-no-module-named-yadayadayada/50610630#50610630
 
-### pyreverse
+#### pylint 代码静态分析工具
 
-pylint里自带
+    https://github.com/PyCQA/pylint
 
-        pyreverse -ASmy -o png your/
+pyreverse 生成 UML 的包图和类图（pylint 自带）
 
-### GitHubcdn加速
+    pyreverse -ASmy -o png your/
+
+代码复杂度 Mccabe
+
+    https://github.com/PyCQA/mccabe
+
+整合上述多个代码分析工具 prospector
+
+    https://github.com/PyCQA/prospector
+        https://prospector.landscape.io/en/latest/supported_tools.html
+
+#### GitHubcdn加速
 
 jsdelivr  <https://cdn.jsdelivr.net/gh/xxx>
 
-### 性能分析
+#### 性能分析
 
 runsnakerun 可惜了只能在python2下面运行
 
@@ -2093,14 +2067,55 @@ For Debian/Ubuntu distributions the prerequisite setup looks like this:
 
     apt-get install python-profiler python-wxgtk2.8 python-setuptools
 
-RunSnakeRun and SquareMap will install well in a VirtualEnv
+RunSnakeRun and SquareMap will install well in a VirtualEnv.
+
 if you would like to keep them isolated (normally you do not want to use the --no-site-packages flag if you are doing this).
+
 I recommend this approach rather than using easy_install directly on your Linux/OS-X host.
 
-virtualenv runsnake
-source runsnake/bin/activate
+    virtualenv runsnake
 
-### vscode python多线程调试的坑
+    source runsnake/bin/activate
+
+### 填坑
+
+Visual Sutdio 2022 中使用 python 虚拟环境
+
+    https://docs.microsoft.com/zh-cn/visualstudio/python/managing-python-environments-in-visual-studio?view=vs-2022
+
+vscode 外网访问内网使用ssh和远程桌面
+
+    https://github.com/microsoft/vscode-docs/blob/master/remote-release-notes/v1_37.md
+
+### vscode 在 Windows 下不断提示输入 ssh 密钥的保护密码
+
+    https://stackoverflow.com/questions/42707896/vscode-keep-asking-for-passphrase-of-ssh-key
+
+问题现象
+
+    vscode + Git for Windows 使用 ssh 登陆 git 的服务器，每次 pull 代码或 fetch 代码，都会提问 ssh 密钥的保护密码。特别是如果 vscode 设置了选项：自动同步（"git.autofetch": true），会频繁提示输入密钥的保护密码。
+
+    点击 vscode 的 git 代码同步功能的按钮会报错 ssh 密钥验证失败，而你在终端窗口运行 push、pull 都不会报错。
+
+而你已经设置过ssh代理进程缓存密钥的保护密码
+
+    在 bash 窗口运行过 ssh-agent 并且已经添加了密钥，ssh 连接网站时，不需要再输入 ssh 密钥的保护密码了。
+
+    或在 cmd 窗口里运行过 start-ssh-agent.cmd 并且已经添加了密钥，ssh 连接网站也不需要输入 ssh 密钥的保护密码了。
+
+    或 在 bash 窗口已经运行过 ssh-pageant 代理进程，共享使用了 putty 的 pageant.exe 的 ssh-agent 功能，在 bash 或 putty 中 ssh 连接网站都不需要输入 ssh 密钥的保护密码了。
+
+    或在 cmd 窗口里运行过 start-ssh-pageant.cmd，共享使用了 putty 的 pageant.exe 的 ssh 代理功能，在 cmd 或 putty 中 ssh 连接网站也不需要输入 ssh 密钥的保护密码了。
+
+解决办法
+
+法一： 在已经运行过 ssh 代理进程缓存密钥的终端窗口里运行命令 `code` 打开 vscode，这样会继承 ssh 代理进程设置的环境变量 SSH_AUTH_SOCK，vscode 就不会问密码了（如果是cmd执行 start-ssh-agent.cmd 的窗口不能关）。如果需要打开多个 vscode 实例，在任务栏的 vscode 图标右键选择“新窗口”。偶发问题：在退出 git bash 的最后一个实例前，要先关闭 vs code，否则再重新运行 git bash 时会报错打不开。
+
+法二： 使用 Windows 10 自带的 OpenSSH，启用服务 SSH-AGENT 的自动运行，设置 vscode 使用 Windows 10 自带的 OpenSSH，而不要用自行安装的 Git for Windows 的 ssh。开机后在 power shell 提示窗口执行一次 `ssh-add` 缓存你的密钥，后续也不会被提示输入密码了。
+
+法三：取消 ssh 密钥的保护密码：执行命令 `ssh-keygen -p` 提示新密码时直接回车。
+
+#### vscode python多线程调试的坑
 
     # https://code.visualstudio.com/docs/python/debugging#_troubleshooting
     # If you're working with a multi-threaded app that uses native thread APIs (such as the Win32 CreateThread function rather than the Python threading APIs), it's presently necessary to include the following source code at the top of whichever file you wish to debug:
