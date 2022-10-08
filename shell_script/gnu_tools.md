@@ -153,7 +153,7 @@ SuperPutty，可惜目前更新不大及时
 
     可设置关联 WinScp/FileZilla 等软件的快捷调用，右键点选站点方便调用
 
-ConEmu 配自定义选项多置复杂，支持 cmd, powershell, msys2, bash 等等，兼容性稍差。
+ConEmu 配自定义选项多置复杂，支持 cmd, powershell, msys2, bash 等等。
 
     https://conemu.github.io/
 
@@ -170,6 +170,18 @@ ConEmu 配自定义选项多置复杂，支持 cmd, powershell, msys2, bash 等�
 ConEmu 色彩方案
 
     https://github.com/joonro/ConEmu-Color-Themes
+
+Cmder 整合上述几个工具无需安装直接使用的软件包
+
+    https://github.com/cmderdev/cmder
+
+Cmder 是一个软件包，而非单个软件，它整合了：
+
+    控制台模拟器：Conemu （它是Cmder的基础），可换为别的 <https://zhuanlan.zhihu.com/p/71706782>
+
+    Cmd.exe增强功能：clink （通过clink进一步增强cmd shell）
+
+    Unix tools on windows：git for windows
 
 ##### 基本的 ConEmu 任务配置示例
 
@@ -226,18 +238,6 @@ MSYS2_PATH_TYPE=inherit表示合并 Windows 系统的 path 变量。注意修改
 如果安装了 zsh 并想默认使用 zsh，可以把代码里的 bash 改为 zsh。
 
 打开后会自动把工作目录设置为 msys64/home/%user% 下。
-
-##### cmder 无需安装直接使用的整合包
-
-    https://github.com/cmderdev/cmder
-
-Cmder 是一个软件包，而非单个软件，它整合了：
-
-    控制台模拟器：Conemu （它是Cmder的基础），可换为别的 <https://zhuanlan.zhihu.com/p/71706782>
-
-    Cmd.exe增强功能：clink （通过clink进一步增强cmd shell）
-
-    Unix tools on windows：git for windows
 
 #### mintty 简单使用：Git for Windows
 
