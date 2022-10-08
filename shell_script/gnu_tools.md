@@ -143,7 +143,7 @@ SuperPutty，可惜目前更新不大及时
 
     https://github.com/jimradford/superputty
 
-本质上是给 putty 的会话加了个多窗口的外壳，方便管理和使用
+本质上是给 putty 的会话加了个多窗口的外壳，方便管理和使用，兼容性满分
 
     还支持嵌入其它的各种终端窗口: putty、mintty(bash)、cmd、powershell
 
@@ -153,7 +153,7 @@ SuperPutty，可惜目前更新不大及时
 
     可设置关联 WinScp/FileZilla 等软件的快捷调用，右键点选站点方便调用
 
-ConEmu 是一个非常好用的多标签窗口的终端管理工具，支持标签切换功能，可以在conemu中同时打开 cmd, powershell, msys2, bash 等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧。
+ConEmu 配自定义选项多置复杂，支持 cmd, powershell, msys2, bash 等等，兼容性稍差。
 
     https://conemu.github.io/
 
