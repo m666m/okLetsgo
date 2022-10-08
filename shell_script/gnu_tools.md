@@ -183,7 +183,7 @@ ConEmu 配置 Anaconda 会话
 
 ConEmu 配置 putty 会话
 
-利用 ConEmu 的 ChildGUI 功能，直接调用 putty.exe，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案。
+利用 ConEmu 的 ChildGUI 功能，直接调用 putty.exe，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案。<https://conemu.github.io/en/ChildGui.html>
 
     点击+号，新建一个Task名为 putty::your_putty_session，命令文本框输入
 
