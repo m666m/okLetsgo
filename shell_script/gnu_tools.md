@@ -137,7 +137,7 @@ startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
 
     https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
 
-#### 多终端外壳的多标签窗口管理工具 SuperPutty 和 ConEmu
+#### 多终端外壳的多标签窗口管理工具 SuperPutty、ConEmu 和 Cmder
 
 SuperPutty，可惜目前更新不大及时
 
@@ -163,15 +163,29 @@ ConEmu 是一个非常好用的多标签窗口的终端管理工具，支持标�
 
     msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
 
+ConEmu 美化
+
+    https://github.com/joonro/ConEmu-Color-Themes
+
+有个 [Cmder](https://github.com/cmderdev/cmder) 看作一个软件包，而非单个软件，它包含了：
+
+    控制台模拟器：Conemu （它是Cmder的基础），可换为别的 <https://zhuanlan.zhihu.com/p/71706782>
+
+    Cmd.exe增强功能：clink （通过clink进一步增强cmd shell）
+
+    Unix tools on windows：git for windows
+
 让 mintty 或 ConEmu 可以支持 wsl （Windows Subsystem for Linux）
 
     https://github.com/Biswa96/wslbridge2
 
-ConEmu 配置 putty 会话任务
+##### 基本的 ConEmu 配置示例
 
-    点击+号，新建一个Task名为 putty::rasp-jnzh，命令文本框输入
+ConEmu 配置 putty 会话
 
-    C:\tools\PuTTY\putty.exe -new_console:d:C:\tools\PuTTY  -load "putty_session_name"
+    点击+号，新建一个Task名为 putty::your_putty_session，命令文本框输入
+
+    C:\tools\PuTTY\putty.exe -new_console:d:C:\tools\PuTTY  -load "your_putty_session_name"
 
 ConEmu 配置 Anaconda 会话
 
@@ -198,14 +212,6 @@ MSYS2_PATH_TYPE=inherit表示合并 Windows 系统的 path 变量。注意修改
 如果安装了 zsh 并想默认使用 zsh，可以把代码里的 bash 改为 zsh。
 
 打开后会自动把工作目录设置为 msys64/home/%user% 下。
-
-有个 [Cmder](https://github.com/cmderdev/cmder) 看作一个软件包，而非单个软件，它包含了：
-
-    控制台模拟器：Conemu （它是Cmder的基础）
-
-    Cmd.exe增强功能：clink （通过clink进一步增强cmd shell）
-
-    Unix tools on windows：git for windows
 
 #### mintty 简单使用：Git for Windows
 
