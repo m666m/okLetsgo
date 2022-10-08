@@ -2053,15 +2053,22 @@ pyreverse 生成 UML 的包图和类图（pylint 自带）
     https://github.com/PyCQA/prospector
         https://prospector.landscape.io/en/latest/supported_tools.html
 
-#### GitHubcdn加速
+#### GitHub 用 cdn 加速
 
 jsdelivr  <https://cdn.jsdelivr.net/gh/xxx>
 
-#### 性能分析
+#### 性能分析 runsnakerun
 
-runsnakerun 可惜了只能在python2下面运行
+runsnakerun 需要安装图形库 wxPython4
 
-<http://www.vrplumber.com/programming/runsnakerun/>
+    python3 导入版 https://github.com/venthur/snakerunner
+        一个动画地图库 https://github.com/jpenilla/squaremap
+
+使用说明
+
+    http://www.vrplumber.com/programming/runsnakerun/
+
+    https://cci.lbl.gov/docs/phenix/prog_runsnake/
 
 For Debian/Ubuntu distributions the prerequisite setup looks like this:
 
