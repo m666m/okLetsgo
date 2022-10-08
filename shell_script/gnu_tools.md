@@ -137,7 +137,7 @@ startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
 
     https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
 
-#### 多终端外壳的多标签窗口管理工具 SuperPutty、ConEmu 和 Cmder
+#### 终端多路复用器 SuperPutty、ConEmu 和 Cmder
 
 SuperPutty，可惜目前更新不大及时
 
