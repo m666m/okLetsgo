@@ -399,6 +399,7 @@ cmd 的bat文件，在 cmd 下执行
 call c:\tools\pyenvs\yourprojectenv\Scripts\activate.bat
 python C:\Users\xxxuser\pycode\yourapp.py
 
+deactivate
 pause
 ```
 
@@ -410,7 +411,7 @@ bash 的sh文件，在 git-bash(mintty) 下执行，Windows 下只要安装了gi
 source /c/tools/pyenvs/yourprojectenv/Scripts/activate
 python /c/Users/xxxuser/pycode/yourproject/app.py
 
-conda deactivate
+deactivate
 read -n1 -p "Press any key to continue..."
 ```
 
