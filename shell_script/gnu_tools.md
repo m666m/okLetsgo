@@ -107,22 +107,22 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
     https://zhuanlan.zhihu.com/p/99963508
 
-Windows 下如果要显示图标化字符，需要安装支持多种符号的字体，见下面章节 [Nerd Font]。
+Windows 下如果要显示图标化字符，需要给 Windows 安装支持多种符号的字体，见下面章节 [Nerd Font]。
 
-putty 应用最广泛的 Windows 下的 ssh 终端工具
+putty 应用最广泛的 Windows 下的远程 ssh 终端模拟器
 
     https://www.chiark.greenend.org.uk/~sgtatham/putty/
 
     北极主题颜色 https://github.com/arcticicestudio/nord-putty
         只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
 
-mintty 应用最广泛的 Windows 下的终端工具
+mintty 应用最广泛的 Windows 下的本地终端模拟器，自带 bash，详见下面几个章节的详细介绍。
 
     http://mintty.github.io/
         https://github.com/mintty/mintty
         https://github.com/mintty/mintty/wiki/Tips
 
-alacritty 使用gpu进行显示加速的字符终端，在 Windows 下调用 powershell
+alacritty 使用gpu进行显示加速的本地终端模拟器，使用 powershell
 
     https://github.com/alacritty/alacritty
 
@@ -133,56 +133,79 @@ startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
 
     https://sspai.com/post/72888
 
-多终端外壳工具 SuperPutty
+独立的 powershell
+
+    https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
+
+#### 多终端外壳的多标签窗口管理工具 SuperPutty 和 ConEmu
+
+SuperPutty，可惜目前更新不大及时
 
     https://github.com/jimradford/superputty
 
-功能亮点
+本质上是给 putty 的会话加了个多窗口的外壳，方便管理和使用
 
-    给 putty 的会话加了个多窗口的外壳，方便管理和使用
+    还支持嵌入其它的各种终端窗口: putty、mintty(bash)、cmd、powershell
 
-    支持其它的各种shell: putty、mintty、cmd、powershell 等多种终端嵌入显示
+    可一键导入 putty 站点
 
-    可导入 putty 站点
+    只要安装了 git for Windows 和 putty 等软件即可直接配置使用，不需要做复杂的设置
 
-    可设置站点关联WinScp/FileZilla 等软件的快捷调用，使用简单方便，只要安装了 git for Windows 和 putty 等软件即可直接使用，不需要做复杂的设置。
+    可设置关联 WinScp/FileZilla 等软件的快捷调用，右键点选站点方便调用
 
-#### mintty 和 ConEmu
-
-让二者可以支持 wsl （Windows Subsystem for Linux）
-
-    https://github.com/Biswa96/wslbridge2
-
-mintty 是目前应用最广泛的终端工具，Cygwin Terminal – terminal emulator for Cygwin, MSYS, and WSL，详见下面几个章节的详细介绍。
-
-ConEmu 是一个非常好用的终端，支持标签切换功能，可以在conemu中同时打开cmd,powershell,msys2，bash等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧
+ConEmu 是一个非常好用的多标签窗口的终端管理工具，支持标签切换功能，可以在conemu中同时打开 cmd, powershell, msys2, bash 等等。自定义选项多，非常好用。缺点是配置复杂，慢慢研究吧。
 
     https://conemu.github.io/
 
-    ConEmu 配置Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
+    ConEmu 配置 putty https://zhuanlan.zhihu.com/p/49161830
+
+    ConEmu 配置 Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
+
     msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
 
-ConEmu 中设置 MSYS2
+让 mintty 或 ConEmu 可以支持 wsl （Windows Subsystem for Linux）
 
-+ 以MSYS2 MingGW64为例：
+    https://github.com/Biswa96/wslbridge2
 
-    打开conemu的settings对话框
+ConEmu 配置 putty 会话任务
 
-    选择Startup>>Tasks选项
+    点击+号，新建一个Task名为 putty::rasp-jnzh，命令文本框输入
 
-    点击+号，新建一个Task
+    C:\tools\PuTTY\putty.exe -new_console:d:C:\tools\PuTTY  -load "putty_session_name"
 
-    修改Task名字为Msys2::MingGW64
+ConEmu 配置 Anaconda 会话
 
-    在commands下文本框内输入如下代码：
+    点击+号，新建一个Task名为 Shells::Anaconda，命令文本框输入
 
-        set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
+    "%windir%\syswow64\cmd.exe" /k "C:\ProgramData\Anaconda3\Scripts\activate.bat C:\ProgramData\Anaconda3"
+
+ConeEmu 配置 Git Bash 会话
+
+    点击+号，新建一个Task名为 Bash::Git Bash，命令文本框输入
+
+    set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-cmd.exe --no-cd --command=%ConEmuBaseDirShort%\conemu-msys2-64.exe /usr/bin/bash.exe -l -i -new_console:p
+
+ConEmu 配置 MSYS2 （ConEmu 安装时会自动检测当前可用的shell并配置为任务）
+
+    打开conemu的settings对话框，选择Startup>>Tasks选项
+
+    点击+号，新建一个Task名字为 Msys2::MingGW64，在commands下文本框内输入如下代码：
+
+    set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
 
 MSYS2_PATH_TYPE=inherit表示合并 Windows 系统的 path 变量。注意修改变量值 `D=` 为你的msys2的安装目录。
 
 如果安装了 zsh 并想默认使用 zsh，可以把代码里的 bash 改为 zsh。
 
 打开后会自动把工作目录设置为 msys64/home/%user% 下。
+
+有个 [Cmder](https://github.com/cmderdev/cmder) 看作一个软件包，而非单个软件，它包含了：
+
+    控制台模拟器：Conemu （它是Cmder的基础）
+
+    Cmd.exe增强功能：clink （通过clink进一步增强cmd shell）
+
+    Unix tools on windows：git for windows
 
 #### mintty 简单使用：Git for Windows
 
@@ -798,7 +821,7 @@ zsh:
 
 #### 替代品
 
-如果不使用 powerline，推荐使用 sh、bash、cmd 等 shell 下通用的状态栏工具，见章节 [Windows下的字符终端]。
+如果不使用 powerline，推荐使用 startship，这个 sh、bash、cmd 等 shell 下通用的状态栏工具，见章节 [Windows下的字符终端]。
 
 更推荐安装 zsh，使用 zsh 下的 powerlevle10k 工具，这个兼容性和效果直接起飞，见章节 [推荐主题powerlevel10k]。
 
