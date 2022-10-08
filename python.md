@@ -345,12 +345,17 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
     cd 到存放虚拟环境的地址
 
-    在当前目录下创建名为myvenv的虚拟环境（如果第三方包virtualenv安装在python3下面，此时创建的虚拟环境就是基于python3的）
+    # 在当前目录下创建名为myvenv的虚拟环境（如果第三方包virtualenv安装在python3下面，此时创建的虚拟环境就是基于python3的）
     virtualenv myvenv
 
-    virtualenv -p /usr/local/bin/python2.7 myvenv2 参数 -p 指定python版本创建虚拟环境
+    # 参数 -p 指定python版本创建虚拟环境
+    virtualenv -p /usr/local/bin/python2.7 myvenv2
 
-    virtualenv --system-site-packages myvenv 参数 --system-site-packages 指定创建虚拟环境时继承系统三方库
+    # 参数 --system-site-packages 指定创建虚拟环境时继承系统三方库
+    virtualenv --system-site-packages myvenv
+
+    # 已经安装到系统python环境中的所有第三方包都不会复制过来
+    virtualenv --no-site-packages myvenv
 
 3.激活/退出虚拟环境
 
