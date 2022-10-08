@@ -1078,6 +1078,12 @@ sar 命令选项    功能
     # 统计5秒间隔的所有信息，执行1次
     sar -A 5 1
 
+#### 可视化 sar 数据
+
+    本地文件分析 https://github.com/vlsi/ksar
+
+    在线 https://github.com/sargraph/sargraph.github.io
+
 #### 先找 sys 或 iowait 字段的值高的
 
 按cpu查看
