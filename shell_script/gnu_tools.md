@@ -183,7 +183,7 @@ ConEmu 配置 Anaconda 会话
 
 ConEmu 配置 putty 会话
 
-直接调用 putty.exe，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案。
+利用 ConEmu 的 ChildGUI 功能，直接调用 putty.exe，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案。
 
     点击+号，新建一个Task名为 putty::your_putty_session，命令文本框输入
 
@@ -191,27 +191,29 @@ ConEmu 配置 putty 会话
 
 ConEmu 配置 git-bash 会话
 
-直接调用 git-bash.exe，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案。
+利用 ConEmu 的 ChildGUI 功能，直接调用 git-bash.exe，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案。
 
     点击+号，新建一个Task名为 Bash::git-bash，命令文本框输入
 
     set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-bash.exe --cd-to-home
 
+    等同于 %ProgramFiles%\Git\usr\bin\mintty.exe" /bin/bash -l
+
 ConEmu 配置 Git bash 会话（默认任务）
 
 如果不使用 tmux/zsh 状态栏工具，倒是可以正常使用，好处是支持 ConEmu 的颜色和背景方案。
 
-如果运行 tmux/zsh 状态栏工具会错行，而且光标错位：conemu是通过cmd实现的，ConEmu的 ChildGUI 配置，tmux不能直接打开，在ssh到服务器后使用tmux会出现显示的问题，在刷新后总会出现底部栏重叠，还有光标错位的问题。
+如果运行 tmux/zsh 状态栏工具会错行，而且光标错位：conemu是通过cmd实现对bash的连接，tmux不能直接打开，在ssh到服务器后使用tmux会出现显示的问题，在刷新后总会出现底部栏重叠，还有光标错位的问题。
 
     set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-cmd.exe --no-cd --command=%ConEmuBaseDirShort%\conemu-msys2-64.exe /usr/bin/bash.exe -l -i -new_console:p
 
 ConEmu 配置 MSYS2
 
-直接调用 mintty.exe 也可完美显示不错行，暂未安装 MSYS2 进行验证。
+利用 ConEmu 的 ChildGUI 功能，直接调用 mintty.exe 也可完美显示不错行，暂未安装 MSYS2 进行验证。
 
     C:\msys64\usr\bin\mintty.exe -i /msys2.ico -t "%CONTITLE%" "/usr/bin/zsh" -new_console:C:"%D%\msys2.ico"
 
-调用 bash.exe，显示会光标错行
+调用 bash.exe，显示会光标错行，估计也是因为ConEmu 通过cmd实现对bash的连接导致的。
 
     打开conemu的settings对话框，选择Startup>>Tasks选项
 
