@@ -418,23 +418,27 @@ pause
 不再更新维护了，废弃
 <https://python-xy.github.io/> 微软推荐的<https://devblogs.microsoft.com/python/unable-to-find-vcvarsall-bat>
 
-## 何时用 conda
+## 何时用 conda/virtualenv/venv
 
-pip只能安装Python的包，conda可以安装一些工具软件，即使这些软件不是基于Python开发的。也就是说，pip安装的时候，可能有需要源码编译的场景，而conda把二进制代码编译好了直接发布包。
+pip 只能安装 Python 的包，conda 可以安装一些工具软件，即使这些软件不是基于 Python 开发的。也就是说，pip 安装的时候，可能有需要源码编译的场景，而 conda 把二进制代码编译好了直接发布包。
 
-conda虚拟环境是独立于操作系统解释器环境的，即无论操作系统解释器什么版本（哪怕2.7+3.2），我也可以指定虚拟环境python版本为3.9/3.8/3.7/3.6。而vtualenv依赖操作系统内安装好的python，主要解决多个项目对不同库和版本的依赖、以及间接授权等问题（也支持多个python版本，需要操作系统里先安装好）。
+conda 虚拟环境是独立于操作系统自带的 python 解释器环境的（debian 自带的是 2.7+3.3），通过使用 conda 自带的 python，用户可以任意指定虚拟环境 python 版本为 2.7/3.3/3.4/3.5/3.x，所以 conda 的隔离性最强。
 
-virtualenv 创建虚拟环境的时候，会把系统Python复制一份到虚拟环境目录下，当用命令 source venv/bin/activate 进入虚拟环境时，virtualenv会修改相关环境变量，让命令python和pip均指向当前的虚拟环境。
+virtualenv 依赖操作系统内安装好的 python，主要解决多个项目对不同库版本的依赖、以及间接授权等问题（也支持多个 python 版本，需要操作系统里先安装好）。virtualenv 在创建虚拟环境的时候，会把系统 Python 复制 一份到虚拟环境目录下，当用命令 source env/bin/activate 进入虚拟环境时，virtualenv 会修改相关环境变量，让命令 python 和 pip 均指向当前的虚拟环境，所以 virtualenv 的隔离性也很强，只是无法任意指定 python 版本，只能使用当前系统自带的 python。
 
-如果你的多个项目需要对应多个python版本，且无法在操作系统里安装多个python版本，或你的项目依赖的包在pip下不好找，用 conda。
+    如果你的多个项目需要对应多个 python 版本，且无法在操作系统里安装多个 python 版本，或你的项目依赖的包在 pip 下不好找，用 conda。
 
-如果你的多个项目只是一个版本的python下对不同的库有依赖，用 virtualenv 就可以了。
+    如果你的多个项目只是一个版本的 python 下对不同的库版本有依赖，用 virtualenv 。
+
+    如果你只使用 Python 3.3 及以上版本，使用标准库内置的 venv 模块即可，不需要 virtualenv。
+
+    如果你使用 Python 2，就只能选择 virtualenv。
 
 ## Linux 下安装 anaconda
 
 1. 网站下载
 2. bash xxxx.sh
-3. 注意选择：添加到路径中!!! 这个跟windows下安装是不同的.
+3. 注意选择：添加到路径中!!! 这个跟 Windows 下安装是不同的.
 4. 安装完毕，重启Linux
 5. python 看输出信息包含 anaconda 字样
    conda info
