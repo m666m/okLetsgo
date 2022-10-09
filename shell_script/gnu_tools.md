@@ -695,6 +695,7 @@ BoldWhite=255,255,255
             ./configure
             make
 
+            # 不要sudo make install，尽量打包然后用包管理器安装
             $ sudo make install
             make[1]: Entering directory '/pcode/cmatrix'
             /usr/bin/mkdir -p '/usr/local/bin'
