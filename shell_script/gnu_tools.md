@@ -211,9 +211,9 @@ ConEmu 配置 git-bash 会话
 
     set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-bash.exe --cd-to-home
 
-    等同于 %ProgramFiles%\Git\usr\bin\mintty.exe" /bin/bash -l
+    等同于 "%ProgramFiles%\Git\usr\bin\mintty.exe" /bin/bash -l
 
-ConEmu 配置 Git bash 会话（默认任务）
+ConEmu 配置 Git bash 会话（默认任务{Bash::Git bash}）
 
 如果不使用 tmux/zsh 状态栏工具，倒是可以正常使用，好处是支持 ConEmu 的颜色和背景方案。
 
@@ -431,17 +431,17 @@ msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递�
 
 ```bat
 
-    rem 启动MSYS2 MSYS
-    set MSYSTEM=MSYS
-    "c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
+rem 启动MSYS2 MSYS
+set MSYSTEM=MSYS
+"c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
 
-    rem 启动MSYS2 MINGW32
-    set MSYSTEM=MINGW32
-    "c:\msys64\usr\bin\bash" --login
+rem 启动MSYS2 MINGW32
+set MSYSTEM=MINGW32
+"c:\msys64\usr\bin\bash" --login
 
-    rem 启动MSYS2 MINGW64
-    set MSYSTEM=MINGW64
-    "c:\msys64\usr\bin\bash" --login
+rem 启动MSYS2 MINGW64
+set MSYSTEM=MINGW64
+"c:\msys64\usr\bin\bash" --login
 
 ```
 
