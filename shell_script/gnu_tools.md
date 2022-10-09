@@ -153,7 +153,7 @@ SuperPutty，可惜目前更新不大及时
 
     可设置关联 WinScp/FileZilla 等软件的快捷调用，右键点选站点方便调用
 
-ConEmu 配自定义选项多置复杂，支持 cmd, powershell, msys2, bash 等等。
+ConEmu 配自定义选项多置复杂，支持 cmd, powershell, msys2, bash, putty 等等。
 
     https://conemu.github.io/
 
@@ -185,13 +185,15 @@ Cmder 是一个软件包，而非单个软件，它整合了：
 
 ##### 基本的 ConEmu 任务配置示例
 
-ConEmu 安装时会自动检测当前可用的shell并配置为任务。
+ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列表
+
+    https://conemu.github.io/en/Tasks.html#add-default-tasks
 
 ConEmu 配置 Anaconda 会话
 
     点击+号，新建一个Task名为 Shells::Anaconda，命令文本框输入
 
-    "%windir%\syswow64\cmd.exe" /k "C:\ProgramData\Anaconda3\Scripts\activate.bat C:\ProgramData\Anaconda3"
+    "%windir%\syswow64\cmd.exe" /k "C:\ProgramData\Anaconda3\Scripts\activate.bat C:\ProgramData\Anaconda3"  -new_console:d:%USERPROFILE%
 
 ConEmu 配置 putty 会话
 
@@ -199,7 +201,7 @@ ConEmu 配置 putty 会话
 
     点击+号，新建一个Task名为 putty::your_putty_session，命令文本框输入
 
-    C:\tools\PuTTY\putty.exe -new_console:d:C:\tools\PuTTY  -load "your_putty_session_name"
+    C:\tools\PuTTY\putty.exe -load "your_putty_session_name"
 
 ConEmu 配置 git-bash 会话
 
