@@ -943,6 +943,8 @@ cpu属性值说明：
 
 ## 查看io情况
 
+    https://www.zhihu.com/collection/750892894
+
     https://zhuanlan.zhihu.com/p/346630811
 
     https://blog.csdn.net/sumengnan/article/details/109462795
@@ -950,6 +952,13 @@ cpu属性值说明：
 top 命令
 
     看 wa 字段，值是cpu等待io的百分比。
+
+与top相比，htop有以下优点：
+
+    可以横向或者纵向滚动浏览进程列表，以便看到所有的进程和完整的命令行
+    在启动上，比top更快
+    杀进程时不需要输入进程号
+    htop支持鼠标点击字段排序等操作
 
 vmstat 命令 提供当前CPU、IO、进程和内存使用率的快照
 
@@ -1255,6 +1264,25 @@ sar 命令选项    功能
     mapped: 9160K 映射到文件的内存量
     writeable/private: 1296K 私有地址空间
     shared: 28K 此进程与其他进程共享的地址空间
+
+### 使用 linux-perf 工具包
+
+    https://developer.aliyun.com/article/65255
+
+Perf是Linux kernel自带的系统性能优化工具。
+
+    # 注意跟当前操作系统的内核版本匹配
+    # sudo apt install linux-perf  # apt show 发现是 4.x，而当前已经是5.x了
+    # sudo apt install linux-tools
+    # 用 apt search 看看是否有这个版本的
+    sudo apt install linux-doc-"$(uname -r)"
+    sudo apt install linux-tools-"$(uname -r)"
+
+### 火焰图辅助分析
+
+火焰图是一种剖析软件运行状态的工具，它能够快速的将频繁执行的代码路径以图式的形式展现给用户。
+
+    https://zhuanlan.zhihu.com/p/54276509
 
 ## 查看文件占用（含端口哦）
 
