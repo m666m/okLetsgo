@@ -3441,15 +3441,7 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 补充熵池
 
-随机数生成的这些工具，通过 /dev/random 依赖系统的熵池，而服务器在运行时，既没有键盘事件，也没有鼠标事件，那么就会导致噪声源减少。在很多发行版本中存在一个 rngd 程序，用来增加系统的熵池（用 urandom 给 random 灌数据）。在 debian，该工具包含在 rng-tools 工具中。
-
-可以通过如下命令查看
-
-    # 监视当前熵池的大小
-    watch cat /proc/sys/kernel/random/entropy_avail
-
-    # 从另外一个终端窗口启动服务
-    sudo rngd -r /dev/urandom -o /dev/random -f -t 1
+随机数生成的这些工具，通过 /dev/random 依赖系统的熵池，而服务器在运行时，既没有键盘事件，也没有鼠标事件，那么就会导致噪声源减少。很多发行版本中存在一个 rngd 程序，用来增加系统的熵池（用 urandom 给 random 灌数据），详见章节 [给random()增加熵] <init_a_server.md think>。
 
 ### od 按数制显示内容
 
