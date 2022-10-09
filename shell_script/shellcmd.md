@@ -943,7 +943,7 @@ cpu属性值说明：
 
 ## 查看io情况
 
-    https://www.zhihu.com/collection/750892894
+    Linux 性能分析工具汇总 https://zhuanlan.zhihu.com/p/409237909
 
     https://zhuanlan.zhihu.com/p/346630811
 
@@ -1266,6 +1266,8 @@ sar 命令选项    功能
     shared: 28K 此进程与其他进程共享的地址空间
 
 ### 使用 linux-perf 工具包
+
+    https://github.com/brendangregg/perf-tools
 
     https://developer.aliyun.com/article/65255
 
