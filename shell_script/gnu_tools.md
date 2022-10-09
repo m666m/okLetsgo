@@ -157,15 +157,13 @@ ConEmu 配自定义选项多置复杂，支持 cmd, powershell, msys2, bash, put
 
     https://conemu.github.io/
 
-    ConEmu 配置 putty https://zhuanlan.zhihu.com/p/49161830
+    类似的 https://sourceforge.net/projects/console/
 
-    ConEmu 配置 Msys2 https://blog.csdn.net/sherpahu/article/details/101903539
+    让 cmd 像 bash 一样自动完成 https://mridgers.github.io/clink/
 
-    msys2使用conemu终端配置 https://blog.csdn.net/hustlei/article/details/86688160
+    让 mintty 或 ConEmu 可以支持 wsl （Windows Subsystem for Linux）
 
-让 mintty 或 ConEmu 可以支持 wsl （Windows Subsystem for Linux）
-
-    https://github.com/Biswa96/wslbridge2
+        https://github.com/Biswa96/wslbridge2
 
 ConEmu 色彩方案
 
