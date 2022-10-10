@@ -159,9 +159,9 @@ ConEmu 配自定义选项多置复杂，支持 cmd, powershell, msys2, bash, put
 
     类似的 https://sourceforge.net/projects/console/
 
-    让 cmd 像 bash 一样自动完成 https://mridgers.github.io/clink/
+    使 cmd 像 bash 一样自动完成 https://mridgers.github.io/clink/
 
-    让 mintty 或 ConEmu 可以支持 wsl （Windows Subsystem for Linux）
+    使 mintty 或 ConEmu 可以支持 wsl （Windows Subsystem for Linux）
 
         https://github.com/Biswa96/wslbridge2
 
