@@ -5068,8 +5068,9 @@ icmp测试网络连通情况
 
 查看 mtu
 
-    # apt install iputils-tracepath
-    ❯ tracepath www.baidu.com
+    $ sudo apt install iputils-tracepath
+
+    $ tracepath www.baidu.com
     1?: [LOCALHOST]                      pmtu 1500
     1:  192.168.0.1                                           0.554ms
     1:  192.168.0.1                                           0.670ms
