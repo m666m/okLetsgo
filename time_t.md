@@ -23,6 +23,7 @@
       - [内置数据类型](#内置数据类型)
         - [timestamp     对应 c 标准库的 time_t](#timestamp-----对应-c-标准库的-time_t)
         - [struct_time   对应 c 标准库的struct tm](#struct_time---对应-c-标准库的struct-tm)
+      - [格式字符串 strftime() 方法速查](#格式字符串-strftime-方法速查)
       - [内置函数，不需要实例化对象直接用](#内置函数不需要实例化对象直接用)
         - [time.tzname 当前时区名](#timetzname-当前时区名)
         - [time.time()       → timestamp](#timetime--------timestamp)
@@ -449,6 +450,40 @@ class time.struct_time
 
 注解 对于上述时区常量（ altzone 、 daylight 、 timezone 和 tzname ），该值由模块加载时有效的时区规则确定，或者最后一次 tzset() 被调用时，并且在过去的时间可能不正确。建议使用来自 localtime() 结果的 tm_gmtoff 和 tm_zone 来获取时区信息。
 
+#### 格式字符串 strftime() 方法速查
+
+    http://strftime.org/
+
+    datetime、date、time都提供了strftime()方法，该方法接收一个格式字符串，输出日期时间的字符串表示。
+    下表是从python手册中拉过来的，我对些进行了简单的翻译（翻译的有点噢口~~）。
+
+格式字符  意义
+
+    %a  星期的简写。如 星期三为Web
+    %A  星期的全写。如 星期三为Wednesday
+    %b  月份的简写。如4月份为Apr
+    %B  月份的全写。如4月份为April
+    %c  日期时间的字符串表示。（如： 04/07/10 10:43:39）
+    %d  日在这个月中的天数（是这个月的第几天）
+    %f  微秒（范围[0,999999]）
+    %H  小时（24小时制，[0, 23]）
+    %I  小时（12小时制，[0, 11]）
+    %j  日在年中的天数 [001,366]（是当年的第几天）
+    %m  月份（[01,12]）
+    %M  分钟（[00,59]）
+    %p  AM或者PM
+    %S  秒（范围为[00,61]，为什么不是[00, 59]，参考python手册~_~）
+    %U  周在当年的周数当年的第几周），星期天作为周的第一天
+    %w  今天在这周的天数，范围为[0, 6]，6表示星期天
+    %W  周在当年的周数（是当年的第几周），星期一作为周的第一天
+    %x  日期字符串（如：04/07/10）
+    %X  时间字符串（如：10:43:39）
+    %y  2个数字表示的年份
+    %Y  4个数字表示的年份
+    %z  与utc时间的间隔 （如果是本地时间，返回空字符串）
+    %Z  时区名称（如果是本地时间，返回空字符串）
+    %%  %% => %
+
 #### 内置函数，不需要实例化对象直接用
 
 ##### time.tzname 当前时区名
@@ -768,28 +803,20 @@ __str__()
 
 #### 库datetime的日期时间对象datetime
 
-<https://docs.python.org/zh-cn/3/library/datetime.html#datetime-objects>
+注意，是库里有个与库同名的共享对象，在 import 的时候写出来容易混淆，注意区别
 
-包含来自 date 对象和 time 对象的所有信息的单一对象。
+    import datetime         # 导入库
+    datetime.date.today()   # 引用 date 对象的方法
+    datetime.datetime.now() # 引用 datetime 对象的方法
+
+    from datetime import datetime  # 导入库里的同名对象！
+    datetime.now()          # 引用 datetime 对象的方法
+
+datetime 实质就是 date 对象和 time 对象的组合，表示完整的日期时间一般用这个对象。
+
+    https://docs.python.org/zh-cn/3/library/datetime.html#datetime-objects
 
 属性：year, month, day, hour, minute, second, microsecond, tzinfo.
-
-完整的日期时间表示一般用这个对象。
-
-注意区别
-
-    import datetime
-    datetime.date.today()   # 是操作date对象，取当天日期
-    datetime.datetime.now() # 取当前时间作为datetime对象
-
-    from datetime import datetime
-    datetime.now()          # 取当前时间作为datetime对象
-
-构造方法
-
-    # 实质就是 date 对象和 time 对象的组合
-    import datetime
-    datetime.datetime(year, month, day, hour=0, minute=0, second=0, microsecond=0)
 
 ##### now()     → datetime
 
@@ -1119,6 +1146,9 @@ total_seconds()
 
     # dt64为datetime64类型的变量
     (dt64 - np.datetime64('1970-01-01T00:00:00Z')) / np.timedelta64(1, 's')
+
+    # 另一个写法
+    dt64.astype(datetime.datetime)
 
 #### split() 字符串创建datetime64数组
 
