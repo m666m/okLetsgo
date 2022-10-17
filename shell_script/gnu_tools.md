@@ -187,6 +187,10 @@ ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列�
 
     https://conemu.github.io/en/Tasks.html#add-default-tasks
 
+如果是调用 putty.exe/notepad.exe 等 Windows 程序，ConEmu 会利用自己的 ChildGUI 功能，内嵌显示窗体，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案 <https://conemu.github.io/en/ChildGui.html>。
+
+conemu 是通过 cmd 实现对 bash.exe/tmux.exe 等 unix pty 的连接，在 ssh 到服务器后使用 tmux 会出现显示问题：在刷新后总会出现底部栏重叠，还有光标错位的问题。这种情况下，建议配置任务为直接调用 mintty.exe，配置参数加载 bash，在 bash 中调用 ssh/tmux 的方式实现完美兼容。
+
 ConEmu 配置 Anaconda 会话
 
     点击+号，新建一个Task名为 Shells::Anaconda，命令文本框输入
@@ -195,21 +199,23 @@ ConEmu 配置 Anaconda 会话
 
 ConEmu 配置 putty 会话
 
-利用 ConEmu 的 ChildGUI 功能，直接调用 putty.exe，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案。<https://conemu.github.io/en/ChildGui.html>
+直接调用 putty.exe
 
-    点击+号，新建一个Task名为 putty::your_putty_session，命令文本框输入
+    点击+号，新建一个Task名为 putty::your_putty_session，命令文本框输入如下
 
     C:\tools\PuTTY\putty.exe -load "your_putty_session_name"
 
+    如果不指定会话名称，会自动弹出 putty 的窗口供用户选择会话
+
 ConEmu 配置 git-bash 会话
 
-利用 ConEmu 的 ChildGUI 功能，直接调用 git-bash.exe，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案。
+直接调用 git-bash.exe
 
     点击+号，新建一个Task名为 Bash::git-bash，命令文本框输入
 
     set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-bash.exe --cd-to-home
 
-    等同于 "%ProgramFiles%\Git\usr\bin\mintty.exe" /bin/bash -l
+    git-bash.exe 等同于 "%ProgramFiles%\Git\usr\bin\mintty.exe" /bin/bash -l
 
 关于 ConEmu 配置 Git bash 会话的默认任务 {Bash::Git bash}
 
@@ -221,21 +227,20 @@ ConEmu 配置 git-bash 会话
 
 ConEmu 配置 MSYS2
 
-利用 ConEmu 的 ChildGUI 功能，直接调用 mintty.exe 也可完美显示不错行，暂未安装 MSYS2 进行验证。
+    直接调用 mintty.exe，由它调用 shell 程序，这样显示效果由 mintty 决定。
 
-    C:\msys64\usr\bin\mintty.exe -i /msys2.ico -t "%CONTITLE%" "/usr/bin/zsh" -new_console:C:"%D%\msys2.ico"
+        C:\msys64\usr\bin\mintty.exe -i /msys2.ico -t "%CONTITLE%" "/usr/bin/zsh" -new_console:C:"%D%\msys2.ico"
 
-ConEmu 直接调用 bash.exe 配置为任务，显示会光标错行，估计也是因为ConEmu 通过cmd实现对bash的连接导致的。
+    直接调用 bash.exe
 
-    打开conemu的settings对话框，选择Startup>>Tasks选项
+        显示会光标错行，估计也是因为 ConEmu 通过 cmd 实现对 bash.exe 的连接导致的。
 
-    点击+号，新建一个Task名字为 Msys2::MingGW64，在commands下文本框内输入如下代码：
+        打开 conemu 的 settings 对话框，选择 Startup>>Tasks 选项
+        点击+号，新建一个 Task 名字为 Msys2::MingGW64，在 commands 下文本框内输入如下代码：
 
-    set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
+            set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
 
-MSYS2_PATH_TYPE=inherit表示合并 Windows 系统的 path 变量。注意修改变量值 `D=` 为你的msys2的安装目录。
-
-如果安装了 zsh 并想默认使用 zsh，可以把代码里的 bash 改为 zsh。
+MSYS2_PATH_TYPE=inherit 表示合并 Windows 系统的 path 变量。注意修改变量值 `D=` 为你的msys2的安装目录。
 
 打开后会自动把工作目录设置为 msys64/home/%user% 下。
 
