@@ -505,8 +505,13 @@ busybox跟它比，简直就是小弟 <https://stackoverflow.com/questions/40140
 
 Termux 初步使用和设置
 
-    <https://zhuanlan.zhihu.com/p/92664273>
-    <http://wwj718.github.io/post/%E5%B7%A5%E5%85%B7/termux-hello-world/>
+    https://zhuanlan.zhihu.com/p/92664273
+    https://cloud.tencent.com/developer/article/2136450#3.3
+    http://wwj718.github.io/post/%E5%B7%A5%E5%85%B7/termux-hello-world/
+
+Android 应用都是在沙盒中运行的，每个应用都有自己的Linux用户id和SELinux标签。Termux也不例外，Termux中的所有程序都使用和Termux同样的用户id运行，用户id也许是 u0_a231 这种格式，并且不能更改。
+
+所有的包（除了必须Root才能用的包），都被去掉了 多用户，setuid/getuid和其它类似的功能。同时 ftpd, httpd 和 sshd 的默认端口也分别被修改为 8021, 8080 和 8022 。
 
 Termux支持pkg、apt管理软件包
 
@@ -526,12 +531,7 @@ Termux支持pkg、apt管理软件包
 
     # c/c++
     pkg install clang
-
-    # 取得sd卡权限，需授权
-    pkg install termux-tools
-    termux-setup-storage
-    # 当前目录下出现了storage这个目录，下面在子目录分别对应了手机当中的部分目录
-    # 子目录shared，共享了手机中的内部存储
+    # 可以复制代码到子目录shared里面然后进行编译，如c++，但是要注意的是，在手机内存中的文件无法通过chmod进行更改权限，进而无法运行。 必须将文件放在home 目录下，且非storage目录下(可以是home/test/test1)才能使用chmod更改权限
 
     # 设置密码
     passwd
@@ -548,6 +548,19 @@ Termux支持pkg、apt管理软件包
     # 电脑端ssh连接手机端termux
     # 假定用户名为u0_a123（whoami查询可得），ip为192.168.0.1（ifconfig查询可得）
     ssh u0_a123@192.168.0.1 -p 8022
+
+    # 取得sd卡权限，需授权
+    # 在手机中设置给予 termux 所有文件系统访问权限即可
+    pkg install termux-tools
+    termux-setup-storage
+    # 当前目录下出现了storage这个目录，下面在子目录分别对应了手机当中的部分目录
+    # 子目录shared，共享了手机中的内部存储
+    # https://wiki.termux.com/wiki/Internal_and_external_storage
+
+    # 对 安卓系统目录下的 /Andriod/data/com.xxx/ 的读取只能先 root
+    # su、sudo 命令封装
+    pkg install tsu
+    sudo su
 
 Aria2+Transdroid完全能够代替其他手机版下载软件，并且表现完美。唯一的问题是aria2依托于Termux终端环境，终端关闭，Aria2下载服务也就关闭了。
 
@@ -583,6 +596,8 @@ ssh服务的配置文件默认在 $PREFIX/etc/ssh/sshd_config 中。
     极致安卓之—Termux安装完整版Linux <https://zhuanlan.zhihu.com/p/95865982>
 
     <https://wiki.termux.com/wiki/PRoot#Installing_Linux_distributions>
+
+PRoot 是一个 chroot, mount –bind, 和 binfmt_misc 的用户空间实现。这意味着，用户不需要任何特殊权限和设置就可以使用任意目录作为新的根文件系统或者通过QEMU运行为其它CPU架构构建的程序。PRoot 通过伪造系统调用的参数和返回值，可以使程序看起来像运行在root用户下，但它并不提供任何方法来真正的提权。确实需要root权限去修改内核或硬件状态的程序将无法工作。
 
 ### Termux 下的chroot
 
