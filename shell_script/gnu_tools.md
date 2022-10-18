@@ -1259,8 +1259,10 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+############ zsh 自己的内容
+
 ##########################################################
-# 插件设置
+# 用户自己的插件设置
 
 # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
 export TERM="xterm-256color"
@@ -1273,13 +1275,14 @@ if [ -x /usr/bin/dircolors ]; then
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+
     alias la='ls -lA'
     alias lla='ls -la'
     alias ll='ls -l'
 
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
 fi
 
 ############# 手动设置插件

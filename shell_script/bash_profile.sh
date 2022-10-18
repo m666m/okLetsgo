@@ -9,6 +9,11 @@ test -f ~/.bashrc && . ~/.bashrc
 # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
 set -o vi
 
+# some more ls aliases
+alias ll='ls -l'
+alias la='ls -lA'
+alias l='ls -CF'
+
 ####################################################################
 # Linux bash / Windows git bash(mintty)
 # 命令行提示符显示当前路径和git分支
