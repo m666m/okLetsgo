@@ -1693,6 +1693,48 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
     cd -
     git rebase hotfix
 
+## git 项目包含子项目
+
+主项目对子模块有依赖关系，却又并不关心子模块的内部开发流程细节。
+
+这种情况下，通常不会把所有源码都放在同一个 Git 仓库中。
+
+有一种比较简单的方式，是在当前工作目录下，将子模块文件夹加入到 .gitignore 文件内容中，这样主项目就能够无视子项目的存在。这样做有一个弊端就是，使用主项目的人需要有一个先验知识：需要在当前目录下放置一份某版本的子模块代码。
+
+还有另外一种方式可供借鉴，可以使用 Git 的 submodule 功能。
+
+增加子项目
+
+    # 进入主项目的目录
+    git submodule add https://your_sub_project
+
+    # 提交一次，表示引入了某个子模块。提交后，在主项目仓库中，会显示出子模块文件夹，并带上其所在仓库的版本号。
+    git commit -m "add submodule xxx"
+    git push
+
+对于后续使用者而言，对于主项目使用普通的 clone 操作并不会拉取到子模块中的实际代码，只有一个空目录，除非显式指定拉取子项目
+
+    git clone --recurse-submodules https://github.com/username/project-main.git
+
+更新子项目需要手动，在当前主项目中执行
+
+    git submodule init
+    git submodule update
+
+对于子模块而言，并不需要知道引用自己的主项目的存在，子模块本身就是一个完整的 Git 仓库，按照正常的 Git 代码管理规范操作即可。通常的操作都需要进入子模块文件夹，按照子模块内部的版本控制体系更新、提交代码。
+
+对子模块远程仓库有更新的情况，主项目下运行 `git status` 不会有提示，需要进入子项目的目录后手动执行更新`git pull --rebase`，然后回到主项目执行 `git add .; git commit -m "update submodule"; git push`。当主项目的子项目特别多时，可以使用批量命令：`git submodule foreach 'git pull --rebase'`。
+
+删除子模块
+
+    git submodule deinit your_sub_project
+
+    git rm your_sub_project
+
+    git commit -m "delete submodule your_sub_project"
+
+    git push
+
 ## git 常用法
 
 ### 切换分支checkout
