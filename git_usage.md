@@ -1703,7 +1703,7 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
 
 还有另外一种方式可供借鉴，可以使用 Git 的 submodule 功能。
 
-增加子项目
+增加子项目，或称子模块
 
     # 进入主项目的目录
     git submodule add https://your_sub_project
@@ -1712,18 +1712,20 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
     git commit -m "add submodule xxx"
     git push
 
-对于后续使用者而言，对于主项目使用普通的 clone 操作并不会拉取到子模块中的实际代码，只有一个空目录，除非显式指定拉取子项目
+对于后续使用者而言，对于主项目使用普通的 clone 操作并不会拉取到子模块中的实际代码，只有一个空目录，除非显式指定拉取子模块
 
     git clone --recurse-submodules https://github.com/username/project-main.git
 
-更新子项目需要手动，在当前主项目中执行
+更新子模块需要手动，在当前主项目中执行
 
     git submodule init
     git submodule update
 
+子模块更新后，注意切换回主项目的目录，此时对主项目来说子模块的状态是有修改的，在主项目中 git add/commit/push 提交这个修改即可。
+
 对于子模块而言，并不需要知道引用自己的主项目的存在，子模块本身就是一个完整的 Git 仓库，按照正常的 Git 代码管理规范操作即可。通常的操作都需要进入子模块文件夹，按照子模块内部的版本控制体系更新、提交代码。比如更换远程仓库也只需进入子模块目录后执行命令 `git remote set-url origin xx.git` 即可。
 
-对子模块远程仓库有更新的情况，主项目下运行 `git status` 不会有提示，需要进入子项目的目录后手动执行更新`git pull --rebase`，然后回到主项目执行 `git add .; git commit -m "update submodule"; git push`。当主项目的子项目特别多时，可以使用批量命令：`git submodule foreach 'git pull --rebase'`。
+对子模块远程仓库有更新的情况，主项目下运行 `git status` 不会有提示，需要进入子模块的目录后手动执行更新`git pull --rebase`，当主项目的子模块特别多时，可以使用批量命令：`git submodule foreach 'git pull --rebase'`。然后回到主项目 git add/commit/push 提交这个修改。
 
 删除子模块
 
