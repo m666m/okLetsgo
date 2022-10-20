@@ -1721,11 +1721,11 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
     git submodule init
     git submodule update
 
-子模块更新后，注意切换回主项目的目录，此时对主项目来说子模块的状态是有修改的，在主项目中 git add/commit/push 提交这个修改即可。
+子模块更新后，此时对主项目来说子模块的状态是有修改的，注意切换回主项目的目录，执行 git add/commit/push 提交这个修改即可。
 
 对于子模块而言，并不需要知道引用自己的主项目的存在，子模块本身就是一个完整的 Git 仓库，按照正常的 Git 代码管理规范操作即可。通常的操作都需要进入子模块文件夹，按照子模块内部的版本控制体系更新、提交代码。比如更换远程仓库也只需进入子模块目录后执行命令 `git remote set-url origin xx.git` 即可。
 
-对子模块远程仓库有更新的情况，主项目下运行 `git status` 不会有提示，需要进入子模块的目录后手动执行更新`git pull --rebase`，当主项目的子模块特别多时，可以使用批量命令：`git submodule foreach 'git pull --rebase'`。然后回到主项目 git add/commit/push 提交这个修改。
+对子模块远程仓库有更新的情况，主项目下运行 `git status` 不会有提示，需要进入子模块的目录后手动执行更新`git pull --rebase`，当主项目的子模块特别多时，可以使用批量命令：`git submodule foreach 'git pull --rebase'`。然后回到主项目的目录，执行 git add/commit/push 提交这个修改。
 
 删除子模块
 

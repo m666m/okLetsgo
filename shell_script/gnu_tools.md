@@ -2321,7 +2321,7 @@ map <C-n> :NERDTreeToggle<CR>
 
     $    跳至行尾
 
-    gg   跳至文首
+    gg   跳至文首，或 1g 跳到第一行，默认是在行首
     G    跳至文尾
 
     5gg     跳至第5行，或 5G
