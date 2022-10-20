@@ -1098,9 +1098,13 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
 
 自定义启用它自带的哪些插件，编辑 ~/.p10k.zsh 文件，搜索 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS= 即可。
 
-自定义状态栏提示段，编辑 ~/.p10k.zsh 文件，搜索 prompt_example，看说明文字
+##### 自定义状态栏提示段，监控树莓派温度
+
+编辑 ~/.p10k.zsh 文件，搜索 prompt_example，看说明文字
 
     p10k help segment
+
+状态栏提示段的新增一个处理函数
 
 ```shell
 
@@ -1110,7 +1114,11 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     ...
 )
 
-...
+```
+
+在函数 prompt_example() 后面追加个新的函数：
+
+``` shell
 
 function prompt_raspi_temp_warn() {
 
@@ -1121,11 +1129,11 @@ function prompt_raspi_temp_warn() {
   if [ "$CPUTEMP" -gt  "60000" ] && [ "$CPUTEMP" -lt  "65000" ]; then
           p10k segment -b yellow -f blue -i ''
 
-  elif [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "75000" ]; then
+  elif [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "70000" ]; then
           local CPUTEMP_WARN="CPU `vcgencmd measure_temp`!"
           p10k segment -b yellow -f blue -i '' -t "$CPUTEMP_WARN"
 
-  elif [ "$CPUTEMP" -gt  "75000" ];  then
+  elif [ "$CPUTEMP" -gt  "70000" ];  then
           local CPUTEMP_WARN="CPU TEMPERATURE IS VERY HIGH!`vcgencmd measure_temp`"
           p10k segment -b red -f black -i '' -t "$CPUTEMP_WARN"
   fi

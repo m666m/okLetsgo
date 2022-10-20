@@ -123,9 +123,9 @@ PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green
 function PS1raspi-warning-info {
   local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
-  if [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "75000" ]; then
+  if [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "70000" ]; then
     local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ！HIGH TEMPERATURE! ="
-  elif [ "$CPUTEMP" -gt  "75000" ];  then
+  elif [ "$CPUTEMP" -gt  "70000" ];  then
      local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` IS VERY HIGH! PLEASE SHUTDOWN! ="
   fi
 
