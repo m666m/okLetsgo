@@ -3317,15 +3317,14 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 .tar.gz 文件
 
+    # 打包并压缩，可以是多个文件或目录名
     # 去掉 z 就是只打包，生成 .tar 文件，其它参数相同
     # 把 z 换成 j 就是压缩为.bz2文件，而不是.gz文件了
-
-    # 打包并压缩，可以是多个文件或目录名
     tar -czvf arc.tar.gz file1 file2
+    tar -cjvf arc.tar.bz2 file1 file2
 
     # 解包并解压缩, 把 x 换成 t 就是只查看文件列表而不真正解压
     tar -xzvf arc.tar.gz
-
     tar -jxvf xx.tar.bz2
 
 .gz 文件
