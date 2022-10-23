@@ -162,11 +162,11 @@ SuperPutty，可惜目前更新不大及时
 
 本质上是给 putty 的会话加了个多窗口的外壳，方便管理和使用，兼容性满分
 
-    还支持嵌入其它的各种终端窗口: putty、mintty(bash)、cmd、powershell
-
-    可一键导入 putty 站点
+    支持嵌入其它的各种终端窗口: putty、mintty(bash)、cmd、powershell
 
     只要安装了 git for Windows 和 putty 等软件即可直接配置使用，不需要做复杂的设置
+
+    可一键导入 putty 站点
 
     可设置关联 WinScp/FileZilla 等软件的快捷调用，右键点选站点方便调用
 
