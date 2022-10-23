@@ -170,7 +170,7 @@ SuperPutty，可惜目前更新不大及时
 
     可设置关联 WinScp/FileZilla 等软件的快捷调用，右键点选站点方便调用
 
-ConEmu 配自定义选项多置复杂，支持 cmd, powershell, msys2, bash, putty 等等。
+ConEmu 配自定义选项多置复杂，支持 cmd, powershell, msys2, bash, putty 等等
 
     https://conemu.github.io/
 
@@ -181,6 +181,14 @@ ConEmu 配自定义选项多置复杂，支持 cmd, powershell, msys2, bash, put
     使 mintty 或 ConEmu 可以支持 wsl （Windows Subsystem for Linux）
 
         https://github.com/Biswa96/wslbridge2
+
+甚至 Windows 下的软件都可以嵌套到ConEmu的窗口下，如
+
+    选择新建任务的选项 'New console dialog'
+
+    在弹出窗口的栏目 'Startup command or {Task} name...'下输入： notepad
+
+    会看到新建了一个标签打开了 Windows 的记事本。
 
 ConEmu 色彩方案
 
@@ -194,7 +202,7 @@ Cmder 整合上述几个工具无需安装直接使用的软件包
 
     控制台模拟器：Conemu （它是Cmder的基础），可换为别的 <https://zhuanlan.zhihu.com/p/71706782>
 
-    Cmd.exe增强显示效果类似bash：clink （通过clink进一步增强cmd shell）
+    Cmd.exe增强效果类似bash：clink （通过clink进一步增强cmd shell）
         https://github.com/mridgers/clink
 
     Unix tools on windows：git for windows
