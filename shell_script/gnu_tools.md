@@ -137,6 +137,23 @@ startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
 
     https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
 
+cmd 增加工具 clink
+
+    https://github.com/mridgers/clink
+
+    安装后打开cmd就会发现，cmd支持bash一样的行编辑功能了，在命令提示符下默认可以像emacs一样编辑输入的命令
+
+        Ctrl+p：显示上一条命令
+        Ctrl+n：显示下一条命令
+        Ctrl+a：移动光标到行首
+        Ctrl+e：移动光标到行尾
+        Ctrl+b：光标后退一个字符
+        Ctrl+f：光标前进一个字符
+        Ctrl+d：删除一个字
+        Ctrl+y：粘贴
+
+    等等。
+
 #### 终端多路复用器 SuperPutty、ConEmu 和 Cmder
 
 SuperPutty，可惜目前更新不大及时
