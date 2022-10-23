@@ -247,6 +247,26 @@ test 和 [] 是等价的，[] 注意两边留空格
     unset       刪除指定的环境变量或 shell 属性
     wait        等待指定的进程完成，并返回退出状态码
 
+## bash 快捷键
+
+linux下shell终端里有行编辑功能，在命令提示符下默认可以像 emacs 一样编辑输入的命令
+
+    Ctrl+p：显示上一条命令
+    Ctrl+n：显示下一条命令
+    Ctrl+a：移动光标到行首
+    Ctrl+e：移动光标到行尾
+    Ctrl+b：光标后退一个字符
+    Ctrl+f：光标前进一个字符
+    Ctrl+d：删除一个字
+    Ctrl+y：粘贴
+
+等等。
+
+可改为 vi 模式
+
+    # 命令行开启vi-mode模式，按esc后用vi中的上下键选择历史命令
+    set -o vi
+
 ## 常用脚本收集
 
 目录 shell_script 下是写的不错的脚本示例

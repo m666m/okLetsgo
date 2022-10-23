@@ -173,13 +173,15 @@ Cmder 整合上述几个工具无需安装直接使用的软件包
 
     https://github.com/cmderdev/cmder
 
-Cmder 是一个软件包，而非单个软件，它整合了：
+是一个软件包，而非单个软件，它整合了：
 
     控制台模拟器：Conemu （它是Cmder的基础），可换为别的 <https://zhuanlan.zhihu.com/p/71706782>
 
-    Cmd.exe增强功能：clink （通过clink进一步增强cmd shell）
+    Cmd.exe增强显示效果类似bash：clink （通过clink进一步增强cmd shell）
+        https://github.com/mridgers/clink
 
     Unix tools on windows：git for windows
+        https://git-scm.com/
 
 ##### 基本的 ConEmu 任务配置示例
 
@@ -859,9 +861,9 @@ zsh:
 
 #### 替代品
 
-如果不使用 powerline，推荐使用 startship，这个 sh、bash、cmd 等 shell 下通用的状态栏工具，见章节 [Windows下的字符终端]。
+如果不使用 powerline，可使用 startship，这个 sh、bash、cmd 等 shell 下通用的状态栏工具，见章节 [Windows下的字符终端]。
 
-更推荐安装 zsh，使用 zsh 下的 powerlevle10k 工具，这个兼容性和效果直接起飞，见章节 [推荐主题powerlevel10k]。
+推荐安装 zsh，使用 zsh 下的 powerlevle10k 工具，这个兼容性和效果直接起飞，见章节 [推荐主题powerlevel10k]。
 
 ### 状态栏字体
 
