@@ -4967,9 +4967,9 @@ cron中的环境变量与用户登陆系统后的env环境变量不一样（cron
     $ ps -ef|grep cron
     root       398     1  0 May08 ?        00:00:07 /usr/sbin/cron -f
 
-查看系统服务cron的状态
+Debian 等现在用 systemd 配置 cron 服务，拉起来的 cron 进程
 
-    $ sudo systemctl status cron
+    $ systemctl status cron
     ● cron.service - Regular background program processing daemon
     Loaded: loaded (/lib/systemd/system/cron.service; enabled; vendor preset: enabled)
     Active: active (running) since Sun 2022-05-08 09:10:43 UTC; 1 months 27 days ago
@@ -5001,10 +5001,10 @@ cron中的环境变量与用户登陆系统后的env环境变量不一样（cron
 
 ### 坑：crontab文件里的变量使用有限制
 
-因为在crontable里面只能声明变量，不能对变量进行操作或者执行其他任何shell命令的，所以下述的shell字符串拼接是不会成功的，所以只能声明变量，然后在命令中引用变量。
+因为在 crontable 里面只能声明变量，不能对变量进行操作或者执行其他任何shell命令的，所以下述的shell字符串拼接是不会成功的，所以只能声明变量，然后在命令中引用变量。
 
     SOME_DIR=/var/log
-    MY_LOG_FILE=${SOME_LOG}/some_file.log
+    MY_LOG_FILE=${SOME_DIR}/some_file.log
 
     BIN_DIR=/usr/local/bin
     MY_EXE=${BIN_DIR}/some_executable_file
@@ -5013,7 +5013,7 @@ cron中的环境变量与用户登陆系统后的env环境变量不一样（cron
 
 解决方案：
 
-方案1： 直接声明变量
+方案1： 直接声明一个变量，值是完整拼接好的字符串
 
     SOME_DIR=/var/log
     MY_LOG_FILE=/var/log/some_file.log
@@ -5023,7 +5023,7 @@ cron中的环境变量与用户登陆系统后的env环境变量不一样（cron
 
     0 10 * * * ${MY_EXE} some_param >> ${MY_LOG_FILE}
 
-方案2： 声明多个变量，在命令中引用拼接
+方案2： 声明多个变量，在命令中引用可以拼接变量
 
     SOME_DIR=/var/log
     MY_LOG_FILE=some_file.log
