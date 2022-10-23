@@ -960,6 +960,10 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 
         https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S/Regular/complete
 
+        原版 Meslo 字体
+            https://github.com/andreberg/Meslo-Font
+                Windows 下用 Meslo LG S (行间距 小)
+
 代码编辑器推荐安装 FiraCode NF 字体，该字体支持连字符，Windows 用户找带 Windows 字样的下载即可
 
     https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
