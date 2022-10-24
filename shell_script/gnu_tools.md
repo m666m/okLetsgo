@@ -1320,9 +1320,10 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 
+    alias l='ls -CF'
+    alias ll='ls -l'
     alias la='ls -lA'
     alias lla='ls -la'
-    alias ll='ls -l'
 
 fi
 

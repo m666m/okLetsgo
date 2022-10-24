@@ -10,9 +10,10 @@ test -f ~/.bashrc && . ~/.bashrc
 set -o vi
 
 # some more ls aliases
+alias l='ls -CF'
 alias ll='ls -l'
 alias la='ls -lA'
-alias l='ls -CF'
+alias lla='ls -la'
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
