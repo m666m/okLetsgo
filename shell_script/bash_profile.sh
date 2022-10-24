@@ -18,7 +18,7 @@ alias l='ls -CF'
 # Linux bash / Windows git bash(mintty)
 # 命令行提示符显示当前路径和git分支
 
-# 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
+# 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
 
 # https://zhuanlan.zhihu.com/p/566797565

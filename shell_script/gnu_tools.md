@@ -281,33 +281,33 @@ Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是工具只选择了它自�
 
     https://git-scm.com/download/win
 
-注意配置文件的位置
+配置文件样例参见章节 [mintty 美化]
 
     git for Windows 下的 mintty 配置文件在 ~\.minttyrc
 
     MSYS2 的 mintty 的配置文件与 git for Windows 不同，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]
 
-配置文件样例参见章节 [mintty 美化]
-
-如果在 SuperPutty 下使用，需要添加额外的启动参数 "/bin/bash --login -i"
+如果使用 mintty.exe，需要添加额外的启动参数 "mintty.exe /bin/bash --login -i"
 
     -i      创建一个交互式的shell
 
     --login 加载配置文件 ~/.profile、~/.bash_profile 等，不然你进入的是个干巴的shell
 
-git for windows 的 mintty 目录
+如果使用 git-bash.exe，一般使用 `git-bash.exe --cd-to-home` 打开即进入$HOME目录，比较方便。git-bash.exe 其实就是 mintty.exe 带上面参数的一个封装。
+
+git for windows 的Linux目录结构跟Windows目录的对应关系
 
     / 目录          位于git安装目录下的 C:\Program Files\Git\ 目录
-    /usr 目录       C:\Program Files\Git\ 目录下
-    /bin 目录       C:\Program Files\Git\ 目录下
-    /dev 目录       C:\Program Files\Git\ 目录下
-    /etc 目录       C:\Program Files\Git\ 目录下
+    /usr 目录       C:\Program Files\Git\usr\
+    /bin 目录       C:\Program Files\Git\bin\
+    /dev 目录       C:\Program Files\Git\dev\
+    /etc 目录       C:\Program Files\Git\etc\
 
     /tmp 目录       位于 C:\Users\%USERNAME%\AppData\Local\Temp\  目录下
 
     /proc 目录      这个是 git 自己虚出来的，只能在 git bash(mintty) 下看到
 
-    /cmd 目录       C:\Program Files\Git\ 目录下，给在 Windows cmd 命令行窗口下运行 git 和 ssh 用的脚本
+    /cmd 目录       C:\Program Files\Git\cmd\，保存给 cmd 命令行窗口下运行 git 和 ssh 用的几个脚本
 
 退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不然会提示有进程未关闭。
 
@@ -335,21 +335,21 @@ putty的退出也是同样的建议。
     licenses\tmux
     man\man1\tmux.1.gz
 
-二者共享一套 HOME 目录：
+使二者共享一套 HOME 目录：
 
 MSYS2 的 mintty 的配置文件不使用操作系统当前用户的 home 目录，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]。
 
-git for windows 的 home 目录默认为 %USERPROFILE% (C:\Users\%USERNAME%\)。
+git for windows 使用操作系统当前用户的 home 目录，默认为 %USERPROFILE% （C:\Users\%USERNAME%\）。
 
-home 目录的隔离虽然是两个软件的设置互不干扰，但也使得 ssh、gpg、git、vim、tmux 等工具的配置文件不能共享。
+home 目录的隔离虽然使两个软件的设置互不干扰，但也使得 ssh、gpg、git、vim、tmux 等工具的配置文件不能共享。
 
-保持隔离的解决办法
+    保持隔离的解决办法
 
-    如果在安装 MSYS2 之前已经安装了 git for windows，可以将之前 ssh、git 、vim、tmux 等工具的配置文件拷贝到 MSYS2 的 home 目录下。
+        如果在安装 MSYS2 之前已经安装了 git for windows，可以将之前 ssh、git 、vim、tmux 等工具的配置文件拷贝到 MSYS2 的 home 目录下。
 
-共享的解决办法
+    共享的解决办法
 
-    在 Windows 上配置环境变量 HOME 为 C:\you-path\msys64\home\your-name，增加这个环境变量的目的是为了让 git for windows 的 home 目录指向 MSYS2 的 home 目录。
+        在 Windows 上配置环境变量 HOME 为 C:\you-path\msys64\home\your-name，增加这个环境变量的目的是为了让 git for windows 的 home 目录指向 MSYS2 的 home 目录。
 
 #### mintty 全套使用：安装 MSYS2(Cygwin/Msys) + pacman
 
@@ -433,15 +433,15 @@ pacman安装后先更换 清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/ms
     /tmp 目录       同上
     /home 目录      位于msys2的安装目录 msys64\ 下的 home\%USERNAME%
 
-环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件。
+环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件
 
-NOTE: 如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的 bash_profile、mintty 等配置文件，注意区分。
+    如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的 bash_profile、mintty 等配置文件，注意区分。
 
-msys2在开始菜单下的好几个版本是因为编译器和链接的windows的c库不同
+msys2在开始菜单下的好几个版本的说明
 
-    LLVM/Clang 和 MINGW(GCC) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个用的话就 mingw64 就没问题。
+    是因为编译器和链接的windows的c库不同，而故意分开编译的。作为一个软件运行平台，为了适应不同编译器编译出来的程序（Windows 对 CRT 运行库的支持不一样），而不得不区分开来。
 
-具体区别是：
+    LLVM/Clang 和 MINGW(GCC) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个的话就用 mingw64。具体区别是：
 
     mingw64 与 ucrt64 都是用 mingw64 编译器编译的 Windows 64位程序，只不过它们链接到的 crt（C runtime）不同， mingw64 是链接到了 msvcrt ，而 ucrt64 则是链接到了 Windows 10+ 上新的 ucrt 上。
 
@@ -773,7 +773,7 @@ BoldWhite=255,255,255
 
 终端工具应该设置256color显示，最好开启透明效果，或在登陆脚本中设置环境变量
 
-    # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
+    # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
 简单的双行状态栏 见章节  [bash_profile.sh] <shell_script okletsgo>
@@ -818,9 +818,9 @@ powerline 最大的优点是它的各种符号字体可以图形化的显示文�
     $ ps -ef|grep powerline
     00:00:00 /usr/bin/python3 /usr/bin/powerline-daemon --foreground
 
-使用者的终端工具最好明确设置变量 Term，这样各个插件会自动使用更丰富的颜色
+终端工具最好明确设置变量 Term，这样各个插件会自动使用更丰富的颜色
 
-    # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
+    # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
 终端工具字体推荐 MesloLGS NF，详见下面章节[状态栏字体]。
@@ -1059,7 +1059,7 @@ zsh自带功能
 
 使用 source 命令启用插件的 ~/.zshrc 文件
 
-    # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
+    # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
     # 有插件管理这俩设置不需要
@@ -1109,10 +1109,10 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
 
 终端工具最好明确设置变量Term，这样各个插件会自动使用更丰富的颜色
 
-    # 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
+    # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
-如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示风格会有差别，这是设计者做了考虑，以防止出现不正常的显示。
+如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示风格会有差别，这是设计者做了兼容性考虑，以防止出现不正常的显示。
 
 然后从github安装powerlevel10k
 
@@ -1131,11 +1131,13 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
 
 ##### 自定义状态栏提示段，监控树莓派温度
 
-编辑 ~/.p10k.zsh 文件，搜索 prompt_example，看说明文字
+可运行命令查看帮助说明
 
     p10k help segment
 
-状态栏提示段的新增一个处理函数
+编辑 ~/.p10k.zsh 文件，搜索 prompt_example，先看说明
+
+1、在状态栏提示段新增一个处理函数
 
 ```shell
 
@@ -1147,7 +1149,7 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 
 ```
 
-在函数 prompt_example() 后面追加个新的函数：
+2、在函数 prompt_example() 后面追加个新的函数：
 
 ``` shell
 
@@ -1303,7 +1305,7 @@ fi
 ##########################################################
 # 用户自己的插件设置
 
-# 显式设置终端启用256color，防止终端工具未设置，终端工具能开启透明选项，则显示的效果更好
+# 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM="xterm-256color"
 
 # 添加 dbian 自带的 .bashrc 脚本，常用命令开启彩色选项
@@ -1665,13 +1667,13 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
     ~/.vim/spell/ 拼写检查脚本。
 
-##### 不推荐 vim 状态栏工具 powerline
+##### 不推荐状态栏工具 powerline
 
     推荐使用替代品 vim-airline，状态栏和标签栏都有，而且可以配合很多知名插件的显示
 
 powerline 介绍，参见章节 [状态栏工具 powerline]。
 
-使用 powerline 插件需要 Vim 在编译时添加 python 支持，所以 vim.tinny 版是无法使用该插件的，如何解决见上面的“使用状态栏工具等扩展插件的先决条件”。
+使用 powerline 在 vim 下的插件需要 Vim 在编译时添加 python 支持，所以 vim.tinny 版是无法使用该插件的，如何解决见上面的“使用状态栏工具等扩展插件的先决条件”。
 
 powerline 为保证多样性，使用python，现在的问题是默认python指的python2版本
 
@@ -1880,7 +1882,19 @@ netrw 是 vim 自带的插件, 不需要额外安装, 其提供的功能非常�
 
 默认情况下，netrw 将在当前窗口中打开目录树列表，选择文件后回车即可在当前窗口打开文件。
 
-    可设置打开的方式
+在 vim 中打开 netrw 窗口
+
+    :E       全屏进入 netrw, 全称是 :Explorer 或 :Ex
+    :Se      水平分割进入 netrw
+    :Ve      垂直分割进入 netrw
+
+退出
+
+    :q  关闭 netrw 窗口（保持回车打开文件的窗口），如果 netrw 是唯一打开的窗口，那么将同时退出Vim。
+
+    :bd 我们可以将 netrw 理解为，使用编辑命令对于目录进行操作的特殊缓冲区。也就是说，我们可以使用:bdelete命令，来关闭Netwr打开的缓冲区，但不会退出 Vim。
+
+可设置打开的方式
 
         let g:netrw_browse_split = n
 
@@ -1891,13 +1905,7 @@ netrw 是 vim 自带的插件, 不需要额外安装, 其提供的功能非常�
         3   用新建标签页打开文件
         4   用前一个窗口打开文件
 
-    拆分窗口的切换用 vim 的前导键 ctrl+w，参见章节 [多窗口(Window)操作]
-
-退出
-
-    :q  关闭 netrw 窗口（保持回车打开文件的窗口），如果 netrw 是唯一打开的窗口，那么将同时退出Vim。
-
-    :bd 我们可以将 netrw 理解为，使用编辑命令对于目录进行操作的特殊缓冲区。也就是说，我们可以使用:bdelete命令，来关闭Netwr打开的缓冲区，但不会退出 Vim。
+拆分窗口的切换，使用 vim 多窗口操作的前导键 ctrl+w，参见章节 [多窗口(Window)操作]
 
 几个设置命令，可放到 .vimrc 配置文件中
 
@@ -1913,19 +1921,15 @@ let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
 
 ```
 
-操作命令
+netrw窗口内的操作快捷键
 
     <F1>      在 netrw 界面弹出帮助信息
     I         显示/隐藏顶部 banner
 
-    :E       全屏进入 netrw, 全称是 :Explorer 或 :Ex
-    :Se      水平分割进入 netrw
-    :Ve      垂直分割进入 netrw
-
     o         在目录树列表窗口，水平拆分新窗口打开文件
     v         在目录树列表窗口，垂直拆分新窗口打开文件
 
-    t         新 tab 中打开文件
+    t         新 tab 中打开当前光标所在的文件
 
     p         预览当前文件(光标保持不动)
     qf        显示当前文件详细信息
@@ -2012,6 +2016,73 @@ let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
     vim-addons remove xxx
 
     vim-addons show xxx
+
+##### 推荐：插件管理器 vim-plug
+
+Vundle不更新了，这个项目取代之，用法神似
+
+    https://github.com/junegunn/vim-plug
+
+先github下载
+
+    # vim 使用时加载     ~/.vim/autoload/
+    # vim-plug 存放插件  ~/.vim/plugged/
+
+    curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+然后修改  ~/.vimrc
+
+```vim
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-plug 插件管理器官方配置
+
+" 不需要设置rtp，因为引导程序plug.vim放到autoload目录里了
+
+" airline 安装后可屏蔽原配置的 powerline
+" set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
+
+call plug#begin()
+" The default plugin directory will be as follows:
+"   - Vim (Linux/macOS): '~/.vim/plugged'
+"   - Vim (Windows): '~/vimfiles/plugged'
+"   - Neovim (Linux/macOS/Windows): stdpath('data') . '/plugged'
+" You can specify a custom plugin directory by passing it as the argument
+"   - e.g. `call plug#begin('~/.vim/plugged')`
+"   - Avoid using standard Vim directory names like 'plugin'
+
+" Unmanaged plugin (manually installed and updated)
+Plug '/usr/share/vim/addons/plugin/vim-airline'
+Plug '/usr/share/vim/addons/plugin/vim-airline-themes'
+
+" On-demand loading
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+
+" 在侧边显示git修改状态
+Plug 'airblade/vim-gitgutter',
+
+" 显示 vim 寄存器的内容
+Plug 'junegunn/vim-peekaboo'
+
+" 颜色主题 https://www.nordtheme.com/ports/vim
+Plug 'arcticicestudio/nord-vim'
+
+" 颜色主题 https://github.com/NLKNguyen/papercolor-theme
+" Plug 'NLKNguyen/papercolor-theme'
+
+" Initialize plugin system
+" - Automatically executes `filetype plugin indent on` and `syntax enable`.
+call plug#end()
+" You can revert the settings after the call like so:
+"   filetype indent off   " Disable file-type-specific indentation
+"   syntax off            " Disable syntax highlighting
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 在下面增加自己的设置
+```
+
+然后 Reload .vimrc and :PlugInstall to install plugins.
 
 ##### 插件管理器 Vundle
 
@@ -2104,73 +2175,6 @@ filetype plugin indent on    " required
 搜索插件，选择一个你想要安装的插件，并敲击键盘 i 来安装这个插件，完成后选中这个插件的名称，并粘贴到 .vimrc 文件中去
 
     :PluginSearch colorscheme
-
-##### 推荐：插件管理器 vim-plug
-
-Vundle不更新了，这个项目取代之，用法神似
-
-    https://github.com/junegunn/vim-plug
-
-先github下载
-
-    # vim 使用时加载     ~/.vim/autoload/
-    # vim-plug 存放插件  ~/.vim/plugged/
-
-    curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-然后修改  ~/.vimrc
-
-```vim
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim-plug 插件管理器官方配置
-
-" 不需要设置rtp，因为引导程序plug.vim放到autoload目录里了
-
-" airline 安装后可屏蔽原配置的 powerline
-" set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
-
-call plug#begin()
-" The default plugin directory will be as follows:
-"   - Vim (Linux/macOS): '~/.vim/plugged'
-"   - Vim (Windows): '~/vimfiles/plugged'
-"   - Neovim (Linux/macOS/Windows): stdpath('data') . '/plugged'
-" You can specify a custom plugin directory by passing it as the argument
-"   - e.g. `call plug#begin('~/.vim/plugged')`
-"   - Avoid using standard Vim directory names like 'plugin'
-
-" Unmanaged plugin (manually installed and updated)
-Plug '/usr/share/vim/addons/plugin/vim-airline'
-Plug '/usr/share/vim/addons/plugin/vim-airline-themes'
-
-" On-demand loading
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-
-" 在侧边显示git修改状态
-Plug 'airblade/vim-gitgutter',
-
-" 显示 vim 寄存器的内容
-Plug 'junegunn/vim-peekaboo'
-
-" 颜色主题 https://www.nordtheme.com/ports/vim
-Plug 'arcticicestudio/nord-vim'
-
-" 颜色主题 https://github.com/NLKNguyen/papercolor-theme
-" Plug 'NLKNguyen/papercolor-theme'
-
-" Initialize plugin system
-" - Automatically executes `filetype plugin indent on` and `syntax enable`.
-call plug#end()
-" You can revert the settings after the call like so:
-"   filetype indent off   " Disable file-type-specific indentation
-"   syntax off            " Disable syntax highlighting
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 在下面增加自己的设置
-```
-
-然后 Reload .vimrc and :PlugInstall to install plugins.
 
 ##### .vimrc 配置文件样例
 
@@ -2554,6 +2558,8 @@ map <C-n> :NERDTreeToggle<CR>
     "后续的热键定义使用前导键只需要用 <leader> 声明即可
     map <Leader>bn :bn<CR>
 
+多窗口操作也有自己的前导键 ctrl+w，注意区别。
+
 ##### 重复上步操作
 
 vim中有五种基本的重复类型，分别是：
@@ -2564,6 +2570,27 @@ vim中有五种基本的重复类型，分别是：
     全文查找重复      n             N
     文本替换重复      &             u
     宏重复           @[寄存器]      u
+
+##### vim查看命令历史
+
+命令行模式下：
+
+    :history 查看所有命令行模式下输入的命令历史，按q退出
+
+    :history search或 / 或？ 查看搜索历史
+
+普通模式下：
+
+    q:  查看命令行历史
+
+    q/  查看使用/输入的搜索历史
+    q?  查看使用？输入的搜索历史
+
+##### 其它常用快捷键
+
+内置插件 netrw 的快捷键，参见章节 [vim 内置的树形文件夹插件 netrw]
+
+文件夹树形展示插件 nerdtree 的快捷键，参见章节 [nerdtree 树形文件夹插件]。
 
 #### 理解vim的多文件操作（缓冲buffer）
 
