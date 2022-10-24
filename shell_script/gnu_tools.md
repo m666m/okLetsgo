@@ -122,6 +122,8 @@ mintty 应用最广泛的 Windows 下的本地终端模拟器，自带 bash，�
         https://github.com/mintty/mintty
         https://github.com/mintty/mintty/wiki/Tips
 
+    可以在 https://github.com/hsab/WSL-config/tree/master/mintty/themes 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
+
 alacritty 使用gpu进行显示加速的本地终端模拟器，使用 powershell
 
     https://github.com/alacritty/alacritty
@@ -310,8 +312,6 @@ git for windows 的 mintty 目录
 退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不然会提示有进程未关闭。
 
 putty的退出也是同样的建议。
-
-如果是 MSYS2 的 mintty，可以在 <https://github.com/hsab/WSL-config/tree/master/mintty/themes> 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
 
 #### mintty 组合使用：git for Windows + MSYS2
 
