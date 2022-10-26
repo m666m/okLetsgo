@@ -101,7 +101,7 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
     https://github.com/hsab/WSL-config
 
-### Windows下的字符终端
+## Windows字符终端
 
 终端的历史演进
 
@@ -109,169 +109,22 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
 Windows 下如果要显示图标化字符，需要给 Windows 安装支持多种符号的字体，见下面章节 [Nerd Font]。
 
-putty 应用最广泛的 Windows 下的远程 ssh 终端模拟器
+### putty 远程终端模拟器
 
     https://www.chiark.greenend.org.uk/~sgtatham/putty/
 
     北极主题颜色 https://github.com/arcticicestudio/nord-putty
         只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
 
-mintty 应用最广泛的 Windows 下的本地终端模拟器，自带 bash，详见下面几个章节的详细介绍。
+### mintty 本地终端模拟器
+
+自带 bash，详见下面几个章节的详细介绍。
 
     http://mintty.github.io/
         https://github.com/mintty/mintty
         https://github.com/mintty/mintty/wiki/Tips
 
     可以在 https://github.com/hsab/WSL-config/tree/master/mintty/themes 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
-
-alacritty 使用gpu进行显示加速的本地终端模拟器，使用 powershell
-
-    https://github.com/alacritty/alacritty
-
-startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
-
-    https://starship.rs/zh-CN/
-        https://github.com/starship/starship
-
-    https://sspai.com/post/72888
-
-独立的 powershell
-
-    https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
-
-cmd 增加工具 clink
-
-    https://github.com/mridgers/clink
-
-    安装后打开cmd就会发现，cmd支持bash一样的行编辑功能了，在命令提示符下默认可以像emacs一样编辑输入的命令
-
-        Ctrl+p：显示上一条命令
-        Ctrl+n：显示下一条命令
-        Ctrl+a：移动光标到行首
-        Ctrl+e：移动光标到行尾
-        Ctrl+b：光标后退一个字符
-        Ctrl+f：光标前进一个字符
-        Ctrl+d：删除一个字
-        Ctrl+y：粘贴
-
-    等等。
-
-#### 终端多路复用器 SuperPutty、ConEmu 和 Cmder
-
-SuperPutty，可惜目前更新不大及时
-
-    https://github.com/jimradford/superputty
-
-本质上是给 putty 的会话加了个多窗口的外壳，方便管理和使用，兼容性满分
-
-    支持嵌入其它的各种终端窗口: putty、mintty(bash)、cmd、powershell
-
-    只要安装了 git for Windows 和 putty 等软件即可直接配置使用，不需要做复杂的设置
-
-    可一键导入 putty 站点
-
-    可设置关联 WinScp/FileZilla 等软件的快捷调用，右键点选站点方便调用
-
-ConEmu 配自定义选项多置复杂，支持 cmd, powershell, msys2, bash, putty 等等
-
-    https://conemu.github.io/
-
-    类似的 https://sourceforge.net/projects/console/
-
-    使 cmd 像 bash 一样自动完成 https://mridgers.github.io/clink/
-
-    使 mintty 或 ConEmu 可以支持 wsl （Windows Subsystem for Linux）
-
-        https://github.com/Biswa96/wslbridge2
-
-甚至 Windows 下的软件都可以嵌套到ConEmu的窗口下，如
-
-    选择新建任务的选项 'New console dialog'
-
-    在弹出窗口的栏目 'Startup command or {Task} name...'下输入： notepad
-
-    会看到新建了一个标签打开了 Windows 的记事本。
-
-ConEmu 色彩方案
-
-    https://github.com/joonro/ConEmu-Color-Themes
-
-Cmder 整合上述几个工具无需安装直接使用的软件包
-
-    https://github.com/cmderdev/cmder
-
-是一个软件包，而非单个软件，它整合了：
-
-    控制台模拟器：Conemu （它是Cmder的基础），可换为别的 <https://zhuanlan.zhihu.com/p/71706782>
-
-    Cmd.exe增强效果类似bash：clink （通过clink进一步增强cmd shell）
-        https://github.com/mridgers/clink
-
-    Unix tools on windows：git for windows
-        https://git-scm.com/
-
-##### 基本的 ConEmu 任务配置示例
-
-ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列表
-
-    https://conemu.github.io/en/Tasks.html#add-default-tasks
-
-如果是调用 putty.exe/notepad.exe 等 Windows 程序，ConEmu 会利用自己的 ChildGUI 功能，内嵌显示窗体，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案 <https://conemu.github.io/en/ChildGui.html>。
-
-conemu 是通过 cmd 实现对 bash.exe/tmux.exe 等 unix pty 的连接，在 ssh 到服务器后使用 tmux 会出现显示问题：在刷新后总会出现底部栏重叠，还有光标错位的问题。这种情况下，建议配置任务为直接调用 mintty.exe，配置参数加载 bash，在 bash 中调用 ssh/tmux 的方式实现完美兼容。
-
-ConEmu 配置 Anaconda 会话
-
-    点击+号，新建一个Task名为 Shells::Anaconda，命令文本框输入
-
-    "%windir%\syswow64\cmd.exe" /k "C:\ProgramData\Anaconda3\Scripts\activate.bat C:\ProgramData\Anaconda3"  -new_console:d:%USERPROFILE%
-
-ConEmu 配置 putty 会话
-
-直接调用 putty.exe
-
-    点击+号，新建一个Task名为 putty::your_putty_session，命令文本框输入如下
-
-    C:\tools\PuTTY\putty.exe -load "your_putty_session_name"
-
-    如果不指定会话名称，会自动弹出 putty 的窗口供用户选择会话
-
-ConEmu 配置 git-bash 会话
-
-直接调用 git-bash.exe
-
-    点击+号，新建一个Task名为 Bash::git-bash，命令文本框输入
-
-    set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-bash.exe --cd-to-home
-
-    git-bash.exe 等同于 "%ProgramFiles%\Git\usr\bin\mintty.exe" /bin/bash -l
-
-关于 ConEmu 配置 Git bash 会话的默认任务 {Bash::Git bash}
-
-如果不使用 tmux/zsh 状态栏工具，倒是可以正常使用，好处是支持 ConEmu 的颜色和背景方案。
-
-如果运行 tmux/zsh 状态栏工具会错行，而且光标错位：conemu 是通过 cmd 实现对 bash 的连接，tmux 不能直接打开，在 ssh到服务器后使用 tmux 会出现显示的问题，在刷新后总会出现底部栏重叠，还有光标错位的问题。
-
-    set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-cmd.exe --no-cd --command=%ConEmuBaseDirShort%\conemu-msys2-64.exe /usr/bin/bash.exe -l -i -new_console:p
-
-ConEmu 配置 MSYS2
-
-    直接调用 mintty.exe，由它调用 shell 程序，这样显示效果由 mintty 决定。
-
-        C:\msys64\usr\bin\mintty.exe -i /msys2.ico -t "%CONTITLE%" "/usr/bin/zsh" -new_console:C:"%D%\msys2.ico"
-
-    直接调用 bash.exe
-
-        显示会光标错行，估计也是因为 ConEmu 通过 cmd 实现对 bash.exe 的连接导致的。
-
-        打开 conemu 的 settings 对话框，选择 Startup>>Tasks 选项
-        点击+号，新建一个 Task 名字为 Msys2::MingGW64，在 commands 下文本框内输入如下代码：
-
-            set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
-
-MSYS2_PATH_TYPE=inherit 表示合并 Windows 系统的 path 变量。注意修改变量值 `D=` 为你的msys2的安装目录。
-
-打开后会自动把工作目录设置为 msys64/home/%user% 下。
 
 #### mintty 简单使用：Git for Windows
 
@@ -618,6 +471,205 @@ BoldWhite=255,255,255
 
 ```
 
+### 其他本地终端
+
+alacritty 使用gpu进行显示加速的本地终端模拟器，使用 powershell
+
+    https://github.com/alacritty/alacritty
+
+startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
+
+    https://starship.rs/zh-CN/
+        https://github.com/starship/starship
+
+    https://sspai.com/post/72888
+
+独立的 powershell
+
+    https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
+
+cmd 增加工具 clink
+
+    https://github.com/mridgers/clink
+
+    安装后打开cmd就会发现，cmd支持bash一样的行编辑功能了，在命令提示符下默认可以像emacs一样编辑输入的命令
+
+        Ctrl+p：显示上一条命令
+        Ctrl+n：显示下一条命令
+        Ctrl+a：移动光标到行首
+        Ctrl+e：移动光标到行尾
+        Ctrl+b：光标后退一个字符
+        Ctrl+f：光标前进一个字符
+        Ctrl+d：删除一个字
+        Ctrl+y：粘贴
+
+    等等。
+
+### 终端多路复用器
+
+#### Supper Putty
+
+    可惜目前更新不大及时 https://github.com/jimradford/superputty
+
+本质上是给 putty 的站点加了个多窗口的外壳，树形展示站点列表，方便管理和使用
+
+    支持嵌入其它的各种终端窗口: putty、mintty(bash)、cmd、powershell
+
+    putty/mintty 兼容性和反应速度满分，Windows 切换任务热键 alt+tab 要按两次才能切换成功
+
+    只要安装了 git for Windows 和 putty 等软件即可直接配置使用，不需要做复杂的设置
+
+    可一键导入 putty 站点
+
+    可设置关联 WinScp/FileZilla 等软件的快捷调用，右键点选站点方便调用
+
+1、设置 Supper Putty 使用的各工具路径
+
+选择菜单项 Tools->Options:General，至少要给出 putty.exe 的路径，还可以给出 mintty.exe 的路径。
+
+其它的工具类似，配置好了后在站点列表处点击右键，可以方便调用 winscp、filezila、vnc 等工具。
+
+2、初次使用，先导入 putty 的 session。
+
+选择菜单项 File->Import Sessions->From Putty Settings，导入putty session。导入后，在窗口侧栏的树状选择列表，双击即会打开 putty 窗口登陆该站点。
+
+3、设置自动登陆 putty 的用户名
+
+点击想设置的session，右键菜单选“Edit”，弹出窗口选择“Login username”。这样设置了以后，打开该站点不需要putty的 session 里保存登陆用户名了。如果putty中该用户可以使用密钥登陆，则这里也自动免密码登陆，如果 pageant 代理程序在运行，一样可以免密码。
+
+4、使用本地命令行工具 mintty (git bash)
+
+本地登陆协议选择 “minty”，主机地址留空即可，然后回车，就出现登陆窗口了。其实就是git bash用的那个。
+
+或者，编辑一个已导入的putty session，把“Connection type”选“Mintty”，“HOST Name”设置为 “localhost”即可。
+
+注意选项 “Extra Arguments”，因为最终要实现调用命令行如下：
+
+    "C:\Program Files (x86)\Git\bin\mintty.exe" /bin/bash --login -i
+
+其它的设置选项在mintty的窗口右键菜单都有选项可选。
+
+5、备份自己的站点设置
+
+除了putty的站点，用户还可以自建 cmd/power shell/rdp 等多种协议的站点，保存站点设置很有必要。
+
+保存站点设置
+
+选择菜单项 File->Emport Sessions，会给出默认的当前目录下的 Sessions.XML 文件，点击确定即可。
+
+恢复站点设置
+
+选择菜单项 File->Import Sessions->From File，选择之前备份的 Sessions.XML 文件，点击确定即可。
+
+#### ConEmu 和 Cmder
+
+ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器.
+
+    https://conemu.github.io/
+
+    console 类似ConEmu的软件 https://sourceforge.net/projects/console/
+
+    ConEmu\ConEmu 目录下集成几个常用工具
+
+        clink 使 cmd 像 bash 一样自动完成 https://mridgers.github.io/clink/
+
+        wslbridge  使 mintty 或 ConEmu 可以支持 wsl （Windows Subsystem for Linux）
+
+            不再更新了 https://github.com/rprichard/wslbridge/
+
+            wslbridge2 手动安装这个吧
+
+                https://github.com/Biswa96/wslbridge2
+
+    ConEmu 色彩方案
+
+        https://github.com/joonro/ConEmu-Color-Themes
+
+Cmder 是一个软件包，整合上述几个工具无需安装直接使用的软件包
+
+    https://github.com/cmderdev/cmder
+
+    它整合了：
+
+        控制台模拟器：Conemu （它是Cmder的基础），可换为别的 <https://zhuanlan.zhihu.com/p/71706782>
+
+        Cmd.exe增强效果类似bash：clink （通过clink进一步增强cmd shell）
+            https://github.com/mridgers/clink
+
+        Unix tools on windows：git for windows
+            https://git-scm.com/
+
+##### 基本的 ConEmu 任务配置示例
+
+ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列表
+
+    https://conemu.github.io/en/Tasks.html#add-default-tasks
+
+甚至 Windows 下的普通软件都可以嵌套到ConEmu的窗口下
+
+    选择新建任务的选项 'New console dialog'
+
+    在弹出窗口的栏目 'Startup command or {Task} name...'下输入： notepad
+
+    会看到新建了一个标签打开了 Windows 的记事本。
+
+如果是调用 putty.exe/notepad.exe 等 Windows 程序，ConEmu 会利用自己的 ChildGUI 功能，内嵌显示窗体，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案 <https://conemu.github.io/en/ChildGui.html>。
+
+conemu 是通过 cmd 实现对 bash.exe/tmux.exe 等 unix pty 的连接，在 ssh 到服务器后使用 tmux 会出现显示问题：在刷新后总会出现底部栏重叠，还有光标错位的问题。这种情况下，建议配置任务为直接调用 mintty.exe，用参数加载 bash，在 bash 中调用 ssh/tmux 的方式实现完美兼容。
+
+ConEmu 配置 Anaconda 会话
+
+    点击+号，新建一个Task名为 Shells::Anaconda，命令文本框输入
+
+    "%windir%\syswow64\cmd.exe" /k "C:\ProgramData\Anaconda3\Scripts\activate.bat C:\ProgramData\Anaconda3"  -new_console:d:%USERPROFILE%
+
+ConEmu 配置 putty 会话
+
+    直接调用 putty.exe
+
+        点击+号，新建一个Task名为 putty::your_putty_session，命令文本框输入如下
+
+        C:\tools\PuTTY\putty.exe -load "your_putty_session_name"
+
+        如果不指定会话名称，会自动弹出 putty 的窗口供用户选择会话
+
+ConEmu 配置 git-bash 会话
+
+    直接调用 git-bash.exe
+
+        点击+号，新建一个Task名为 Bash::git-bash，命令文本框输入
+
+        set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-bash.exe --cd-to-home
+
+        git-bash.exe 等同于 "%ProgramFiles%\Git\usr\bin\mintty.exe" /bin/bash -l
+
+关于 ConEmu 配置 Git bash 会话的默认任务 {Bash::Git bash}
+
+    如果不使用 tmux/zsh 状态栏工具，倒是可以正常使用，好处是支持 ConEmu 的颜色和背景方案。
+
+    如果运行 tmux/zsh 状态栏工具会错行，而且光标错位：conemu 是通过 cmd 实现对 bash 的连接，tmux 不能直接打开，在 ssh到服务器后使用 tmux 会出现显示的问题，在刷新后总会出现底部栏重叠，还有光标错位的问题。
+
+        set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-cmd.exe --no-cd --command=%ConEmuBaseDirShort%\conemu-msys2-64.exe /usr/bin/bash.exe -l -i -new_console:p
+
+ConEmu 配置 MSYS2 任务
+
+    直接调用 mintty.exe，由它调用 shell 程序，这样显示效果由 mintty 决定。
+
+        C:\msys64\usr\bin\mintty.exe -i /msys2.ico -t "%CONTITLE%" "/usr/bin/zsh" -new_console:C:"%D%\msys2.ico"
+
+    直接调用 bash.exe
+
+        显示会光标错行，估计也是因为 ConEmu 通过 cmd 实现对 bash.exe 的连接导致的。
+
+        打开 conemu 的 settings 对话框，选择 Startup>>Tasks 选项
+        点击+号，新建一个 Task 名字为 Msys2::MingGW64，在 commands 下文本框内输入如下代码：
+
+            set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
+
+        MSYS2_PATH_TYPE=inherit 表示合并 Windows 系统的 path 变量。注意修改变量值 `D=` 为你的msys2的安装目录。
+
+        打开后会自动把工作目录设置为 msys64/home/%user% 下。
+
 ## Linux 字符终端
 
 使用 gpu 进行显示加速的字符终端，号称比 iTerm 速度快
@@ -886,7 +938,7 @@ zsh:
 
 #### 替代品
 
-如果不使用 powerline，可使用 startship，这个 sh、bash、cmd 等 shell 下通用的状态栏工具，见章节 [Windows下的字符终端]。
+如果不使用 powerline，可使用 startship，这个 sh、bash、cmd 等 shell 下通用的状态栏工具，见章节 [Windows字符终端]。
 
 推荐安装 zsh，使用 zsh 下的 powerlevle10k 工具，这个兼容性和效果直接起飞，见章节 [推荐主题powerlevel10k]。
 
