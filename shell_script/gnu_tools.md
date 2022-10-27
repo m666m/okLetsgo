@@ -116,7 +116,13 @@ Windows 下如果要显示图标化字符，需要给 Windows 安装支持多种
     北极主题颜色 https://github.com/arcticicestudio/nord-putty
         只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
 
-putty 只有一个使用界面，使用逻辑有点绕：
+putty 登陆站点后的使用很简单
+
+    默认的鼠标的点击操作当前操作系统剪贴板，左键是选择并复制，右键粘贴
+
+    其它所有终端参数设置都在初始界面的站点设置里。
+
+putty 的初始界面只有一个，选择站点和站点设置功能区分不大清晰，使用逻辑有点绕：
 
     站点配置界面Category在左侧树形展示
 
@@ -130,6 +136,8 @@ putty 只有一个使用界面，使用逻辑有点绕：
 
 简易连接：
 
+    先确认下，站点选择界面在右侧，对应左侧界面 “Category” 的树形列表第一项 “Session”
+
     在右侧站点选择界面，操作如下：
 
     在 “Host Name(or IP address)” 输入地址和端口，点击下方的 “Open” 按钮
@@ -137,6 +145,8 @@ putty 只有一个使用界面，使用逻辑有点绕：
     这样会使用默认的参数进行连接。
 
 连接已有站点：
+
+    先确认下，站点选择界面在右侧，对应左侧界面 “Category” 的树形列表第一项 “Session”
 
     在右侧站点选择界面，操作如下：
 
@@ -147,6 +157,8 @@ putty 只有一个使用界面，使用逻辑有点绕：
     或在 “Saved Sessions” 下方的编辑框手动输入站点名称，然后点击下方的 “Open” 按钮
 
 建立新的站点
+
+    先确认下，站点选择界面在右侧，对应左侧界面 “Category” 的树形列表第一项 “Session”
 
     在右侧站点选择界面，操作如下：
 
@@ -159,6 +171,8 @@ putty 只有一个使用界面，使用逻辑有点绕：
     如果新站点有某些参数需要设置，再执行下面的“编辑已有站点”步骤。
 
 编辑已有站点
+
+    先确认下，站点选择界面在右侧，对应左侧界面 “Category” 的树形列表第一项 “Session”
 
     1、在右侧站点选择界面，操作如下：
 
@@ -176,7 +190,7 @@ putty 只有一个使用界面，使用逻辑有点绕：
 
     点击右侧按钮 “Save” 保存你的修改。如果不保存，直接点击下方的 “Open” 按钮，相当于用你修改的参数临时连接当前站点。
 
-    可转下面第4步。
+    然后可转下面第4步。
 
     3、高级站点参数的修改：（这里比较绕，习惯习惯就好）
 
@@ -184,17 +198,23 @@ putty 只有一个使用界面，使用逻辑有点绕：
 
         切换左侧选择树形列表的各个分支，则右侧界面跟随变为相关参数的设置，自行调整即可。
 
-        比如 “Connection->Data” 里预设登陆用户名，“Connection->SSH-Auth” 里设置密钥登陆的密钥文件等等。
+        比如 “Connection->Data” 里预设该站点的登陆用户名，“Connection->SSH-Auth” 里设置该站点密钥登陆的密钥文件等等。
 
-    调整完成后，点击左侧界面 “Category” 的树形列表第一项 “Session”，右侧会重新出现你的站点选择界面
+        有些参数是影响终端呈现效果的，比如终端类型可以选择 xterm-256color 等效于设置变量 Term=xterm-256color。
+
+        有些参数影响 putty 的窗口，比如窗口滚动条缓存屏幕内容12000行，酌情设置。
+
+    保存你的修改：调整完成后，点击左侧界面 “Category” 的树形列表第一项 “Session”，右侧会重新出现你的站点选择界面
 
         检查下 “Saved Sessions” 下方的编辑框，务必确认自动填充的还是你刚才选择的那个站点名称。
 
         点击右侧按钮 “Save” 保存你的修改。如果不保存，直接点击下方的 “Open” 按钮，相当于用你修改的参数临时连接当前站点。
 
-    4、执行上面“连接已有站点”的步骤，连接你的站点。
+    然后可转下面第4步。
 
-如果在站点选择界面，不选择已有站点，直接在左侧 “Category” 界面的树形列表进行了各种调整
+    4、执行上面第1步“连接已有站点”的步骤，连接你的站点。
+
+如果在右侧的站点选择界面，不选择已有站点，直接在左侧 “Category” 界面的树形列表进行了各种调整
 
     不推荐这样做，可能会乱。
 
@@ -623,33 +643,45 @@ cmder 推荐的本地终端
 
     可设置关联 WinScp/FileZilla 等软件的快捷调用，右键点选站点方便调用
 
-1、设置 Supper Putty 使用的各工具路径
+初次使用前的设置
 
-    选择菜单项 Tools->Options:General，至少要给出 putty.exe 的路径，还可以给出 mintty.exe 的路径。
+    先设置 Supper Putty 使用的各工具路径
 
-    其它的工具类似，配置好了后在站点列表处点击右键，可以方便调用 winscp、filezila、vnc 等工具。
+        选择菜单项 Tools->Options:General，至少要给出 putty.exe 的路径，还可以给出 mintty.exe 的路径。
 
-2、初次使用，先导入 putty 的 session。
+        其它的工具类似，配置好了后在站点列表处点击右键，可以方便调用 winscp、filezila、vnc 等工具。
 
-    选择菜单项 File->Import Sessions->From Putty Settings，导入putty session。导入后，在窗口侧栏的树状选择列表，双击即会打开 putty 窗口登陆该站点。
+    导入 putty 的 session。
 
-3、设置自动登陆 putty 的用户名
+        选择菜单项 File->Import Sessions->From Putty Settings，导入putty session。导入后，在窗口侧栏的树状选择列表，双击即会打开 putty 窗口登陆该站点。
 
-    点击想设置的session，右键菜单选“Edit”，弹出窗口选择“Login username”。这样设置了以后，打开该站点不需要putty的 session 里保存登陆用户名了。如果putty中该用户可以使用密钥登陆，则这里也自动免密码登陆，如果 pageant 代理程序在运行，一样可以免密码。
+设置自动登陆 putty 的用户名
 
-4、使用本地命令行工具 mintty (git bash)
+    点击想导入的session，右键菜单选“Edit”，弹出窗口选择“Login username”。这样设置了以后，打开该站点不需要putty的 session 里保存登陆用户名了。
 
-    本地登陆协议选择 “minty”，主机地址留空即可，然后回车，就出现登陆窗口了。其实就是git bash用的那个。
+    如果putty中该用户可以使用密钥登陆，则这里也自动免密码登陆，如果 pageant 代理程序在运行，一样可以免密码。
 
-    或者，编辑一个已导入的putty session，把“Connection type”选“Mintty”，“HOST Name”设置为 “localhost”即可。
+新建 mintty (git bash) 终端
 
-    注意选项 “Extra Arguments”，因为最终要实现调用命令行如下：
+    快速连接工具栏，本地登陆协议选择 “mintty”，主机地址“localhost”即可，然后回车，就出现登陆窗口了。
 
-        "C:\Program Files (x86)\Git\bin\mintty.exe" /bin/bash --login -i
+    或会话列表上点击右键，选择“New”，填写“Session Name”，把“Connection type”选“Mintty”，“HOST Name”设置为 “localhost”即可。
 
-    其它的设置选项在mintty的窗口右键菜单都有选项可选。
+    或编辑一个已导入的putty session，把“Connection type”选“Mintty”，“HOST Name”设置为 “localhost”即可。
 
-5、备份自己的站点设置
+    如果需要mintty在调用bash登陆的时候执行用户脚本，则需要编辑会话的高级设置：
+
+        注意选项 “Extra Arguments”
+
+            /bin/bash --login -i
+
+        因为最终要实现调用命令行如下：
+
+            "C:\Program Files (x86)\Git\bin\mintty.exe" /bin/bash --login -i
+
+    因为是窗体嵌套的 mintty，所以在 mintty 窗口里，它的右键菜单依然是可用的。
+
+备份自己的站点设置
 
     除了putty的站点，用户还可以自建 cmd/power shell/rdp 等多种协议的站点，保存站点设置很有必要。
 
