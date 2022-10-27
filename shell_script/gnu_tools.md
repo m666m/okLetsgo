@@ -3551,7 +3551,7 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 这个命令会将你朋友的终端Attach到你的Screen会话上，并且你的终端不会被Detach。这样你就可以和朋友共享同一个会话了，如果你们当前又处于同一个窗口，那就相当于坐在同一个显示器前面，你的操作会同步演示给你朋友，你朋友的操作也会同步演示给你。当然，如果你们切换到这个会话的不同窗口中去，那还是可以分别进行不同的操作的。
 
-### 项目构建工具 Make、Automake、CMake
+### 项目构建工具 Make、Automake、CMake、Ninja
 
 Make
 
@@ -3585,8 +3585,45 @@ CMake
 
 重新用CMake生成Makefile，Automake中的9步被压缩到了只需要2步！
 
-编写CMakeLists.txt
-执行cmake .
+    编写CMakeLists.txt
+
+    执行cmake .
+
+Ninja
+
+Ninja通过将编译任务并行组织，大大提高了构建速度。
+
+    https://ninja-build.org/
+        https://github.com/ninja-build/ninja
+
+    https://www.cnblogs.com/sandeepin/p/ninja.html
+
+Ninja 还集成了 graphviz 等一些对开发非常有用的工具，执行 `./ninja -t list`
+
+    ninja subtools:
+
+        browse        # 在浏览器中浏览依赖关系图。（默认会在 8080 端口启动一个基于python的http服务）
+        clean         # 清除构建生成的文件
+        commands      # 罗列重新构建制定目标所需的所有命令
+        deps          # 显示存储在deps日志中的依赖关系
+        graph         # 为指定目标生成 graphviz dot 文件。
+                        如 ninja -t graph all |dot -Tpng -ograph.png
+        query         # 显示一个路径的inputs/outputs
+        targets       # 通过DAG中rule或depth罗列target
+        compdb        # dump JSON兼容的数据库到标准输出
+        recompact     # 重新紧凑化ninja内部数据结构
+
+可通过cmake来生成ninja的配置，进而进行编译
+
+    # 生成ninja工程
+    cmake -Bbuild -GNinja
+
+    # 运行ninja编译
+    ninja
+
+### graphviz 文本生成流程图
+
+    https://www.graphviz.org/
 
 ### Aria2 下载工具
 
