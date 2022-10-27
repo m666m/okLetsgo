@@ -748,9 +748,9 @@ ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列�
 
     会看到新建了一个标签打开了 Windows 的记事本。
 
-如果是调用 putty.exe/notepad.exe 等 Windows 程序，ConEmu 会利用自己的 ChildGUI 功能，内嵌显示窗体，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案 <https://conemu.github.io/en/ChildGui.html>。
+如果是调用 putty.exe、mintty.exe、notepad.exe 等 Windows 程序，ConEmu 会利用自己的 ChildGUI 功能，内嵌显示窗体，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案 <https://conemu.github.io/en/ChildGui.html>。
 
-conemu 是通过 cmd 实现对 bash.exe/tmux.exe 等 unix pty 的连接，在 ssh 到服务器后使用 tmux 会出现显示问题：在刷新后总会出现底部栏重叠，还有光标错位的问题。这种情况下，建议配置任务为直接调用 mintty.exe，用参数加载 bash，在 bash 中调用 ssh/tmux 的方式实现完美兼容。
+对 bash.exe/tmux.exe 等 unix pty 的连接，Conemu 是通过 cmd 实现的，显示兼容性并不完美（参见 Conemu 安装后生成的默认任务 {Bash::Git bash}）：在 ssh 到服务器后使用 tmux 会出现显示问题：在刷新后总会出现底部栏重叠，还有光标错位的问题。这种情况下，建议配置任务为直接调用 mintty.exe，用参数加载 bash，在 bash 中调用 ssh/tmux 的方式实现完美兼容。
 
 ConEmu 配置 Anaconda 会话
 
@@ -778,7 +778,7 @@ ConEmu 配置 git-bash 会话
 
         git-bash.exe 等同于 "%ProgramFiles%\Git\usr\bin\mintty.exe" /bin/bash -l
 
-关于 ConEmu 配置 Git bash 会话的默认任务 {Bash::Git bash}
+关于 ConEmu 安装后自动生成的任务 {Bash::Git bash}
 
     如果不使用 tmux/zsh 状态栏工具，倒是可以正常使用，好处是支持 ConEmu 的颜色和背景方案。
 
