@@ -3551,6 +3551,43 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 这个命令会将你朋友的终端Attach到你的Screen会话上，并且你的终端不会被Detach。这样你就可以和朋友共享同一个会话了，如果你们当前又处于同一个窗口，那就相当于坐在同一个显示器前面，你的操作会同步演示给你朋友，你朋友的操作也会同步演示给你。当然，如果你们切换到这个会话的不同窗口中去，那还是可以分别进行不同的操作的。
 
+### 项目构建工具 Make、Automake、CMake
+
+Make
+
+    http://www.gnu.org/software/make/manual/html_node/index.html#SEC_Contents
+
+Make的流行也带动起一批自动生成Makefile的工具，目的就是进一步减轻项目构建中的工作量，让我们程序员全身心投入到开发之中。在这些工具中，不得不提Automake和CMake。
+
+Automake
+
+Automake 其实是一系列工具集 Autotools 中的一员，要想发挥Automake的威力，需要配合使用 Autotools 中的其他工具，例如 autoscan、aclocal、autoconf 和 autoheader。在下面的 Automake 构建流程中，能看到这些工具的身影。
+
+    autoscan：生成 configure.scan
+
+    configure.in：将 configure.scan 重命名为 configure.in 后，修改内容。重点是 AM_INIT_AUTOMAKE 和 AC_CONFIG_FILES 两项，如果没配置的话，下一步的 aclocal 是无法产生 aclocal.m4 的
+
+    aclocal：生成 aclocal.m4
+
+    autoconf：生成 configure
+
+    autoheader：生成 config.h.in，使程序可移植
+
+    Makefile.am：手动编写 Makefile.am。bin_PROGRAMS 指定最终生成可执行文件的名称，helloworld_SOURCES 指定所有源文件
+
+    NEWS AUTHORS README ChangeLog：手动创建
+
+    automake：执行 `automake -a` 生成 Makefile.in
+
+    configure：执行 ./configure 生成Makefile
+
+CMake
+
+重新用CMake生成Makefile，Automake中的9步被压缩到了只需要2步！
+
+编写CMakeLists.txt
+执行cmake .
+
 ### Aria2 下载工具
 
 命令行传输各种参数，设置复杂，Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳dht站点清单。
