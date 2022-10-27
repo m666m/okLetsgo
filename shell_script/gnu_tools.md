@@ -3625,6 +3625,41 @@ Ninja 还集成了 graphviz 等一些对开发非常有用的工具，执行 `./
 
     https://www.graphviz.org/
 
+<https://stackoverflow.com/questions/4366511/is-there-a-jquery-plugin-for-dot-language-file-visualization/>
+There are three different implementations:
+
+1.Render svg in simple js, no needs install of graphviz
+
+    jquery.graphviz.svg[DEPRECATED] https://github.com/mountainstorm/jquery.graphviz.svg
+
+        jQuery plugin to make Graphviz SVG output more interactive and easier to navigate. Makes it easy to have features like:
+
+        Highlight nodes/edges
+        Zoom in/out
+        Graph navigation - select linked nodes
+        Fancy UI tooltips; bootstrap supported out the box
+        Move things forward/back in the graph
+
+        Have a look at the demo: https://cdn.rawgit.com/mountainstorm/jquery.graphviz.svg/master/demo.html
+
+2.Based on d3.js
+
+    d3.js + hpcc-js-wasm https://github.com/magjac/d3-graphviz
+
+        build graphviz to wasm https://github.com/hpcc-systems/hpcc-js-wasm
+
+    d3.js + dagre https://github.com/dagrejs/dagre-d3
+
+        pure js library from graphviz https://github.com/dagrejs/dagre
+
+3.server side call graphviz to generate svg file.
+
+    http://viz-js.com/
+
+        https://github.com/mdaines/viz.js
+
+    https://github.com/dreampuf/GraphvizOnline
+
 ### Aria2 下载工具
 
 命令行传输各种参数，设置复杂，Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳dht站点清单。
