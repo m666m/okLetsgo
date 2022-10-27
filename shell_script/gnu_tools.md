@@ -627,6 +627,8 @@ cmder 推荐的本地终端
 
 ### 终端多路复用器
 
+Windows 下的命令行工具、本地终端类型很多，如果想统一在一个程序下使用，标签化管理各个窗口，选择以下工具即可。
+
 #### Supper Putty
 
     可惜目前更新不大及时 https://github.com/jimradford/superputty
@@ -647,7 +649,7 @@ cmder 推荐的本地终端
 
     先设置 Supper Putty 使用的各工具路径
 
-        选择菜单项 Tools->Options:General，至少要给出 putty.exe 的路径，还可以给出 mintty.exe 的路径。
+        选择菜单项 Tools->Options:General，至少要给出 putty.exe 的路径，还可以给出 mintty.exe 的路径，只要安装了 git for Windows 一般在 C:\Program Files\Git\usr\bin\mintty.exe 。
 
         其它的工具类似，配置好了后在站点列表处点击右键，可以方便调用 winscp、filezila、vnc 等工具。
 
