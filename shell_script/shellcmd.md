@@ -184,6 +184,10 @@ test 和 [] 是等价的，[] 注意两边留空格
     $ ls {ex[1-3],ex4}.sh
     ex1.sh ex2.sh ex3.sh ex4.sh
 
+不想有任何输出，或只想测试命令的退出码而不想有任何输出时
+
+    cat $filename >/dev/null 2>/dev/null
+
 ## Bash内建命令
 
     命令            说明
