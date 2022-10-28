@@ -4988,9 +4988,13 @@ Target 与 传统 RunLevel 的对应关系如下
 
 ### 1、crontab 与 anacron
 
-    crontab：crontab命令被用来提交和管理用户的需要周期性执行的任务，与windows下的计划任务类似，当安装完成操作系统后，默认会安装此服务工具，并且会自动启动crond服务，crond进程每分钟会定期检查是否有要执行的任务，如果有，则自动执行该任务。依赖于crond服务
+crontab
 
-    anacron：cron的补充，能够实现让cron因为各种原因在过去的时间该执行而未执行的任务在恢复正常执行一次。依赖于nancron服务
+    crontab命令被用来提交和管理用户的需要周期性执行的任务，与windows下的计划任务类似，当安装完成操作系统后，默认会安装此服务工具，并且会自动启动crond服务，crond进程每分钟会定期检查是否有要执行的任务，如果有则自动执行该任务。依赖于crond服务
+
+anacron
+
+    cron的补充，能够实现让cron因为各种原因在过去的时间该执行而未执行的任务在恢复正常执行一次。依赖于nancron服务
 
     debian 中安装 anacron 软件包会禁用 cron 在/etc/cron.{daily，weekly，monthly} 目录中的脚本，仅由 anacron 调用，以避免 anacron 和 cron 重复运行这些脚本。 cron 命令仍然可用并处理其他计划任务（特别是用户安排的计划任务）。
 
@@ -5120,7 +5124,7 @@ run-parts 参数运行指定目录中的所有脚本。
 
 cron 启动任务时，环境变量非常少，即使是用户级任务，也不会执行用户的 .profile 文件，所以，如果需要操作数据库等跟用户相关的脚本或命令，一般采用在用户脚本中执行环境变量文件，然后再执行相关操作。
 
-cron在crontab文件中的默认 PATH=/usr/bin:/bin，cron执行所有命令都用该PATH环境变量指定的路径下去找。
+cron 在 crontab 文件中的默认 PATH=/usr/bin:/bin，cron 执行所有命令都用该PATH环境变量指定的路径下去找。
 
 详见章节 [坑：环境变量是单独的跟用户登陆后的环境变量不一样]
 
@@ -5130,9 +5134,9 @@ cron在crontab文件中的默认 PATH=/usr/bin:/bin，cron执行所有命令都�
 
     */3 * * * * /bin/cat /etc/fstab &> /dev/null         # 所有信息都不发送给管理员，无论是否正确执行
 
-在 /var/mail 目录下查看邮件
+在 /var/mail/ 目录下查看邮件
 
-在 /var/log/syslog 查看日志，debian默认的rsyslog不记录cron日志，需要手动开启
+在 /var/log/syslog 文件查看系统日志，debian默认的 rsyslog 不记录 cron 日志，需要手动开启
 
 注意 /var 的空间不要被填满了
 
@@ -5142,7 +5146,7 @@ cron在crontab文件中的默认 PATH=/usr/bin:/bin，cron执行所有命令都�
 
 cron服务每分钟不仅要读一次 /var/spool/cron/crontabs/ 内的所有文件，还读一次 /etc/crontab 文件。
 
-使用下面的命令，会在vi 里打开crontab的内容以供编辑：
+使用下面的命令，会在 vi 里打开crontab的内容以供编辑：
 
     crontab -e
 

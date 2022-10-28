@@ -882,7 +882,8 @@ cpu属性值说明：
 
 ### 当前系统进程树
 
-    # 注意伯克利写法的参数不用减号，跟用减号的有区别，详见man ps
+ps 命令，注意伯克利写法的参数不用减号，与我们通常用减号的写法有区别，详见 man ps
+
     # ps -ef 和 ps aux 类似
     # ps axuf 显示cpu和内存占用
     $ ps axjf
@@ -902,7 +903,23 @@ cpu属性值说明：
     23597 28982 28982  1054 pts/2    28982 S+       0   0:00 |       \_ sudo rngd -r /dev/urandom -o /dev/random -f -t 1
     28982 28983 28982  1054 pts/2    28982 SLl+     0   0:02 |           \_ rngd -r /dev/urandom -o /dev/random -f -t 1
 
-或安装 pstree 工具(sudo apt install psmisc)
+    # 进程信息，用x显示归属
+    $ ps -efx
+    PID TTY      STAT   TIME COMMAND
+    26577 ?        S      0:06 sshd: pi@pts/0
+    26578 pts/0    Ss     0:00  \_ -bash USER=pi LOGNAME=pi HOME=/home/pi PATH=/usr/local/bin:/usr/bin:/bin:/usr/games MAIL=/var/mail/pi SHE
+    12445 pts/0    R+     0:00      \_ ps -efx SHELL=/bin/bash NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi XDG_SESSION_TYPE=tty HOME=/home/pi LAN
+    10615 ?        Ss    89:40 tmux SHELL=/bin/bash NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi XDG_SESSION_TYPE=tty HOME=/home/pi LANG=en_GB.UTF
+    10819 pts/8    Ss     0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
+    26848 pts/8    S      0:00  |   \_ /bin/bash SHELL=/bin/bash TMUX=/tmp/tmux-1000/default,10615,1 NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi
+    26849 ?        Ss     0:00  |       \_ ssh-agent /bin/bash
+    26974 pts/8    S+     0:00  |       \_ /usr/lib/autossh/autossh -M ...
+    26977 pts/8    S+     0:00  |           \_ /usr/bin/ssh -L ...
+    21772 pts/3    Ss+    0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
+    9901 ?        Ss      0:00 /lib/systemd/systemd --user LANG=en_GB.UTF-8 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bi
+    9902 ?        S       0:00  \_ (sd-pam)
+
+或安装 pstree 工具
 
     $ pstree -a
     systemd
@@ -930,36 +947,49 @@ cpu属性值说明：
     ├─wpa_supplicant -u -s -O /run/wpa_supplicant
     └─wpa_supplicant -B -c/etc/wpa_supplicant/wpa_supplicant.conf -iwlan0 -Dnl80211,wext
 
-展示指定用户的进程树
+    # 显示pid和命令行
+    $ pstree -pa
+    systemd,1
+    ├─agetty,575 -o -p -- \\u --keep-baud 115200,38400,9600 ttyS0 vt220
+    ├─agetty,576 -o -p -- \\u --noclear tty1 linux
+    ├─alsactl,385 -E HOME=/run/alsa -s -n 19 -c rdaemon
+    ├─avahi-daemon,378
+    │   └─avahi-daemon,398
+    ├─bluetoothd,515
+    ├─cron,369 -f
+    ├─dbus-daemon,395 --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+    ├─dhcpcd,567 -q -w
+    ├─hciattach,508 /dev/serial1 bcm43xx 3000000 flow -
+    ├─polkitd,10843 --no-debug
+    │   ├─{polkitd},10844
+    │   └─{polkitd},10846
+    ├─rngd,380 -r /dev/hwrng
+    │   ├─{rngd},381
+    │   ├─{rngd},382
+    │   └─{rngd},383
+    ├─rsyslogd,375 -n -iNONE
+    │   ├─{rsyslogd},417
+    │   ├─{rsyslogd},418
+    │   └─{rsyslogd},419
 
+    # 展示指定用户的进程树
     $ pstree pi
-    sshd───bash───pstree
+    sshd───bash───zsh───tmux: client
 
-    systemd───(sd-pam)
+    systemd─┬─(sd-pam)
+            └─powerline-daemo
 
-    tmux: server─┬─bash───cmatrix
-                 ├─bash───watch
-                 ├─2*[bash]
-                 ├─bash───top
-                 └─bash───bash─┬─autossh───ssh
-                               └─ssh-agent
+    tmux: server─┬─2*[bash───watch]
+                ├─bash───htop
+                ├─bash───journalctl
+                ├─2*[bash───bash─┬─autossh───ssh]
+                │                └─ssh-agent]
+                ├─bash───cmatrix
+                ├─2*[bash]
+                ├─bash───zsh───pstree
+                └─bash───zsh
 
-进程信息，用x显示归属
-
-    $ ps -efx
-    PID TTY      STAT   TIME COMMAND
-    26577 ?        S      0:06 sshd: pi@pts/0
-    26578 pts/0    Ss     0:00  \_ -bash USER=pi LOGNAME=pi HOME=/home/pi PATH=/usr/local/bin:/usr/bin:/bin:/usr/games MAIL=/var/mail/pi SHE
-    12445 pts/0    R+     0:00      \_ ps -efx SHELL=/bin/bash NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi XDG_SESSION_TYPE=tty HOME=/home/pi LAN
-    10615 ?        Ss    89:40 tmux SHELL=/bin/bash NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi XDG_SESSION_TYPE=tty HOME=/home/pi LANG=en_GB.UTF
-    10819 pts/8    Ss     0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
-    26848 pts/8    S      0:00  |   \_ /bin/bash SHELL=/bin/bash TMUX=/tmp/tmux-1000/default,10615,1 NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi
-    26849 ?        Ss     0:00  |       \_ ssh-agent /bin/bash
-    26974 pts/8    S+     0:00  |       \_ /usr/lib/autossh/autossh -M ...
-    26977 pts/8    S+     0:00  |           \_ /usr/bin/ssh -L ...
-    21772 pts/3    Ss+    0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
-    9901 ?        Ss      0:00 /lib/systemd/systemd --user LANG=en_GB.UTF-8 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bi
-    9902 ?        S       0:00  \_ (sd-pam)
+    zsh───gitstatusd-linu───8*[{gitstatusd-linu}]
 
 ## 查看io情况
 
