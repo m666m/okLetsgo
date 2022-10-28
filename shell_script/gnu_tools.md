@@ -699,6 +699,8 @@ Windows 下的命令行工具、本地终端类型很多，如果想统一在一
 
 #### ConEmu 和 Cmder
 
+最大的缺点是不稳定，反应速度慢，估计跟它的包打一切的实现机制有关。
+
 ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器.
 
     https://conemu.github.io/
