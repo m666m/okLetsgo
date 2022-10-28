@@ -3778,39 +3778,40 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 在 Linux 中，有两类用于生成随机数的设备，分别是 /dev/random 以及 /dev/urandom ，其中前者可能会导致阻塞，而读取 /dev/urandom 不会堵塞，不过此时 urandom 的随机性弱于 random 。 urandom 是 unblocked random 的简称，会重用内部池中的数据以产生伪随机数据，可用于安全性较低的应用。
 
-    # sha256sum md5sum
+    # 把数字 5-12 直接乱序排序，每行一个数字，输出1行
+    shuf -i5-12 -n1
+
+    # 对随机数取哈希，cksum 是 crc 校验和，还可以用 sha256sum md5sum 等
     $ head /dev/random | cksum
     3768469767 1971
 
+    # 对随机数转化为16进制2字节一组，取第一行
     $ cat /dev/urandom | od  -An -x | head -n 1
     0637 34d5 16f5 f393 250e a2eb aac0 27c3
 
+    # 对随机数只取字符和数字，9个一行，取第一行
+    $ cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 9 | head -n 1
+    DPTDA9W29
+
+    # 对随机数只取字符和数字，取前14个
     $ cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 14
     cFW4vaqucb4K4T
 
-    $ cat /proc/sys/kernel/random/uuid
-    6ab4ef55-2501-4ace-b069-139855bea8dc
-
+    # base64编码的14个字符
     $ openssl rand -base64 14
     lPIm1hobPBr+iaUXLSk=
 
+    # 16进制编码的20个字符
     $ openssl rand -hex 20
     f231202787c01502287c420a8a05e960ec8f5129
 
+    # 14个ascii字符
     $ gpg --gen-random --armor 1 14
     RaJKEUBT89Tq9uZzvkI=
 
-    # python3.6 增加了标准库 secrets
-    genernator = secrets.SystemRandom()
-    genernator.choice([3, 4, 5])
-    genernator.randint(0, 50)
-    genernator.uniform(2.5, 13.8)
-    # secrets.token_urlsafe()  # base64
-    url = 'https://mydomain.com/reset=' + secrets.token_urlsafe()
-    secrets.token_bytes(nbytes=10)
-    secrets.token_hex()
-    # 判断相等或不等的耗时一致，抵抗计时攻击
-    secrets.compare_digest('50','500')
+    # 生成一个uuid，这个也是随机的
+    $ cat /proc/sys/kernel/random/uuid
+    6ab4ef55-2501-4ace-b069-139855bea8dc
 
 补充熵池
 
@@ -3818,41 +3819,41 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 ### od 按数制显示内容
 
-    od [-A<字码基数> ] [-t[TYPE][SIZE] ] 文件名
+    od [-A<字码基数> ] [-t[TYPE[SIZE]] ] 文件名
 
--A<字码基数>  左侧显示的地址使用何种基数
+-A<字码基数>，在第一列地址栏，使用何种基数表示地址
 
     o：八进制（系统默认值）
     d：十进制
     x：十六进制
     n：不打印位移值
 
-主要关心输出格式-t
+输出格式-t，格式比较奇怪，是累加的，不明白看下面的示例
 
--t[TYPE] 指定数据的显示格式的主要参数有：
+    -t[TYPE] 指定数据的显示格式的主要参数有：
 
-    a[SIZE]: ASCII字符，回车用字母
-    c[SIZE]：ASCII字符，回车用反斜杠序列(如\n)
-    d[SIZE]：有符号十进制数
-    f[SIZE]：浮点数
-    o[SIZE]：八进制（系统默认值）
-    u[SIZE]：无符号十进制数
-    x[SIZE]：十六进制数 默认以四字节为一组（一列）显示。
+        a[SIZE]: ASCII字符，回车用字母
+        c[SIZE]：ASCII字符，回车用反斜杠序列(如\n)
+        d[SIZE]：有符号十进制数
+        f[SIZE]：浮点数
+        o[SIZE]：八进制（系统默认值）
+        u[SIZE]：无符号十进制数
+        x[SIZE]：十六进制数 默认以四字节为一组（一列）显示。
 
-    [SIZE]：每列输出几个字节。
-    SIZE may also be
-        C for sizeof(char),
-        S for sizeof(short),
-        I for sizeof(int) or
-        L for sizeof(long).
-        If TYPE is f, SIZE may also be
-            F for sizeof(float),
-            D for sizeof(double) or
-            L for sizeof(long double)
+            [SIZE]：每列输出几个字节。
+            SIZE may also be
+                C for sizeof(char),
+                S for sizeof(short),
+                I for sizeof(int) or
+                L for sizeof(long).
+                If TYPE is f, SIZE may also be
+                    F for sizeof(float),
+                    D for sizeof(double) or
+                    L for sizeof(long double)
 
-如果-t后面跟随两个小写字母，表示同时使用两个显示格式。
+    如果-t后面跟随两个小写字母，表示同时使用两个显示格式。
 
-快速参数
+如果感觉 -t[type[size]] 不好记，常用的几个有快速参数
 
     -a     same as -t a,  select named characters, ignoring high-order bit
 
@@ -3876,8 +3877,19 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 示例
 
-    # 以 ASCII 码的形式显示文件aa.txt内容
-    od -tc aa.txt
+    # 以 16 进制显示文件 test.json，2字节一组，注意第一列是地址栏
+    $ od -tx2 test.json
+    0000000 0a7b 2020 6922 626e 756f 646e 2273 203a
+    0000020 0a5b 2020 2020 0a7b 2020 2020 2020 7422
+    0000040 6761 3a22 2220 7274 6e61 7073 7261 6e65
+
+    # 以 ASCII 码的形式显示文件aa.txt内容，注意第一列是地址栏
+    $ od -tc winscp.bat
+    0000000   s   t   a   r   t       C   :   \   S   t   a   r   t   H   e
+    0000020   r   e   \   t   o   o   l   s   \   W   i   n   S   C   P   -
+    0000040   P   o   r   t   a   b   l   e   \   W   i   n   S   C   P   .
+    0000060   e   x   e       %   1  \n
+    0000067
 
     # 以 ASCII 码 和 16 进制的形式显示文件aa.txt内容
     od -tcx aa.txt
