@@ -3997,6 +3997,17 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
 对本机端口转发来说，nc是个临时的端口转发的好工具，永久的端口转发用iptables。
 
+利用netcat远程备份
+
+    # 在源主机上执行此命令备份/dev/hda
+    dd if=/dev/hda bs=16065b | netcat < targethost-IP > 1234
+
+    # 在目的主机上执行此命令来接收数据并写入/dev/hdc
+    netcat -l -p 1234 | dd of=/dev/hdc bs=16065b
+
+    # 在目的主机上执行此命令来采用bzip2、gzip对数据进行压缩，并将备份文件保存在当前目录。
+    netcat -l -p 1234 | bzip2 > partition.img
+
 ### scp 跨机远程拷贝
 
 前提条件
