@@ -3986,7 +3986,61 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
     $ grep -in 'apt-get' README.rst
     20:     sudo apt-get install fonts-powerline
 
-### nc 监听端口的简单通信
+### dd 写入文件
+
+用 boot.img 制作启动盘
+
+    dd if=boot.img of=/dev/fd0 bs=1440k
+
+读取挂载在存储设备上的iso文件，进行 gpg 校验
+
+    dd if=/dev/sdb | gpg --keyid-format 0xlong --verify my_signature.sig -
+
+将本地的/dev/hdb整盘备份到/dev/hdd
+
+    dd if=/dev/hdb of=/dev/hdd
+
+将/dev/hdb全盘数据备份到指定路径的image文件
+
+    dd if=/dev/hdb of=/root/image
+
+将备份文件恢复到指定盘
+
+    dd if=/root/image of=/dev/hdb
+
+备份/dev/hdb全盘数据，并利用gzip工具进行压缩，保存到指定路径
+
+    dd if=/dev/hdb | gzip > /root/image.gz
+
+将压缩的备份文件恢复到指定盘
+
+    gzip -dc /root/image.gz | dd of=/dev/hdb
+
+备份与恢复MBR
+
+备份磁盘开始的512个字节大小的MBR信息到指定文件：
+
+    # count=1指仅拷贝一个块；bs=512指块大小为512个字节。
+    dd if=/dev/hda of=/root/image count=1 bs=512
+
+恢复：
+
+    # 将上面备份的MBR信息写到磁盘开始部分
+    dd if=/root/image of=/dev/had
+
+备份软盘
+
+    dd if=/dev/fd0 of=disk.img count=1 bs=1440k (即块大小为1.44M)
+
+拷贝内存内容到硬盘
+
+    dd if=/dev/mem of=/root/mem.bin bs=1024 (指定块大小为1k)
+
+拷贝光盘内容到指定文件夹，并保存为cd.iso文件
+
+    dd if=/dev/cdrom(hdc) of=/root/cd.iso
+
+### nc 简单的端口通信
 
     sudo apt update && sudo apt -y install ncat
 
@@ -4266,13 +4320,46 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 ### 压力测试
 
-    sudo apt install stress-ng
+dd 可用于做 i/o 速率测试：
 
+不执行 `sync` 的话，其实是生成数据到内存的速率
+
+    # 测试内存最大写入速率
+    $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000
+    3000+0 records in
+    3000+0 records out
+    24576000 bytes (25 MB, 23 MiB) copied, 0.0136067 s, 1.8 GB/s
+
+    # 测试当前系统的随机数生成能力
+    $ dd if=/dev/urandom of=/tmp/file_01.txt bs=8K count=3000
+    3000+0 records in
+    3000+0 records out
+    24576000 bytes (25 MB, 23 MiB) copied, 0.0276212 s, 890 MB/s
+
+读取到内存后，一次性同步到硬盘的速率
+
+    $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000 conv=fdatasync
+    3000+0 records in
+    3000+0 records out
+    24576000 bytes (25 MB, 23 MiB) copied, 0.0365097 s, 673 MB/s
+
+执行时每次都进行同步到硬盘的操作，下例是做了3000次8k写入硬盘
+
+    $ $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000 oflag=dsync
+    3000+0 records in
+    3000+0 records out
+    24576000 bytes (25 MB, 23 MiB) copied, 0.280321 s, 87.7 MB/s
+
+如果要防止硬盘缓存优化，写入量要加大，比如 1 GB 的文件写入速率更客观 bs=64k count=16k
+
+有个现成的工具测试 cpu
+
+    # sudo apt install stress-ng
     stress-ng -c 2 --cpu-method pi --timeout 60
     stress-ng -i 1 --timeout 60
     stress-ng -m 1 --timeout 60
 
-cpu 压力测试，入参是cpu的核心数
+下面是个简单的脚本用于 cpu 加热，入参是cpu的核心数
 
 ```shell
 
