@@ -232,6 +232,8 @@ putty 的初始界面只有一个，选择站点和站点设置功能区分不�
 
     可以在 https://github.com/hsab/WSL-config/tree/master/mintty/themes 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
 
+mintty.exe 完美实现了 Windows 下 linux 软件的运行，模拟 pty 效果又快又好。缺点是运行 cmd 程序有些字符解释的显示效果不一致，建议与 cmd 组合使用，不在 mintty 下使用 cmd 的命令。
+
 #### mintty 简单使用：Git for Windows
 
 Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是工具只选择了它自己需要的部分进行了集成，我们主要使用他的 mintty.exe 命令行终端程序（自称 git bash）和 ssh、gpg 等工具。
@@ -579,6 +581,12 @@ BoldWhite=255,255,255
 
 ### 其他本地终端模拟器
 
+Windows 10 现在推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API 和 新的 ConPTY，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
+
+    # https://github.com/microsoft/terminal/releases
+
+    winget install --id=Microsoft.WindowsTerminal -e
+
 alacritty 使用gpu进行显示加速的本地终端模拟器，在 Windows 下使用 powershell
 
     https://github.com/alacritty/alacritty
@@ -697,13 +705,15 @@ Windows 下的命令行工具、本地终端类型很多，如果想统一在一
 
 #### ConEmu 和 Cmder
 
-最大的缺点是不稳定，反应速度慢，估计跟它的包打一切的实现机制有关。
+最大的缺点是不稳定，反应速度慢，估计跟它基于 Windows Console、连带支持 pty 这样包打一切的实现机制有关。
 
 ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器.
 
     https://conemu.github.io/
 
-    console 类似ConEmu的软件 https://sourceforge.net/projects/console/
+    console 类似ConEmu的软件，都不大更新了
+        https://sourceforge.net/projects/console/
+        console2 https://github.com/cbucher/console
 
     ConEmu\ConEmu 目录下集成几个常用工具
 
@@ -809,11 +819,11 @@ ConEmu 配置 MSYS2 任务
 
 在80年代个人计算机出现前，50-70年代的电子计算机都是多用户大型机，使用者使用不同的硬件设备连接到主机，这些设备给使用者提供键盘输入和字符显示功能，称为终端Terminal。最简单的字符输入设备是电传打字机（Teletype, tty）所以现在也用 tty 来表示字符输入终端。终端展现的用户界面有不同的显示规格和字符编码方式，在70年代确定ANSI标准以来流行的有 vt-100、xterm 等多种类型。
 
-90年代局域网、互联网发展以来，网络上的主机作为服务器提供客户机的连接服务（非http服务），客户机需要有个程序把自己模拟成主机的终端，跟主机进行交互，即所谓终端模拟程序，现在最流行的字符终端模拟程序有 ssh、putty 等，图形终端模拟程序有 vnc、rdp 等，连接的通信协议主要采用非对称密钥加密算法，一般都是用ssh建立通信隧道。
+90年代局域网、互联网发展以来，网络上的主机作为服务器提供客户机的连接服务（非http服务），客户机需要有个程序把自己模拟成主机的终端，跟主机进行交互，即所谓终端模拟程序（Terminal Emulator）。为给命令行程序营造出一个设备终端的环境，UNIX/Linux内核发展出了伪终端（pseudo tty，缩写为pty）设备顺应这一趋势。现在最流行的字符终端模拟程序有 ssh、putty 等，图形终端模拟程序有 xterm、vnc、rdp 等，远程连接的通信协议主要采用非对称密钥加密算法，一般都是用ssh建立通信隧道。
 
-现代的个人计算机 pc、notebook，甚至 pad、smart phone 的处理能力都超过当年的大型机，本身也可以作为服务器的角色对外提供客户机连接服务。Windows 操作系统下，字符终端模拟程序的角色是 cmd、powershell，他们在启动时把自己作为客户端，本机作为服务器进行连接。这种连接本机的终端称为本地终端，也有 mintty.exe 作为本地终端模拟器使用 unix tty 的程序。
+现代的个人计算机 pc、notebook，甚至 pad、smart phone 的处理能力都超过当年的大型机，本身也可以作为服务器的角色对外提供客户机连接服务。在 Windows 操作系统下，终端模拟程序的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的conhost，类似于 linux 的伪终端机制。这种连接本机的终端可称为本地终端。因为Windows 的conhost实现机制跟linux伪终端实质上不同，第三方终端应用程序其实无法连接 conhost，所以有来自 Msys2 项目的 mintty.exe 作为本地终端模拟程序，以使用 unix pty 的程序。
 
-终端的历史演进
+详见终端的历史演进
 
     https://zhuanlan.zhihu.com/p/99963508
 
