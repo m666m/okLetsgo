@@ -253,23 +253,46 @@ test 和 [] 是等价的，[] 注意两边留空格
 
 ## bash 快捷键
 
-linux下shell终端里有行编辑功能，在命令提示符下默认可以像 emacs 一样编辑输入的命令
-
-    Ctrl+p：显示上一条命令
-    Ctrl+n：显示下一条命令
-    Ctrl+a：移动光标到行首
-    Ctrl+e：移动光标到行尾
-    Ctrl+b：光标后退一个字符
-    Ctrl+f：光标前进一个字符
-    Ctrl+d：删除一个字
-    Ctrl+y：粘贴
-
-    等等。
-
 可改为 vi 模式
 
-    # 命令行开启vi-mode模式，按esc后用vi中的上下键选择历史命令
+    # 命令行开启 vi 模式，按esc后用vi中的上下键选择历史命令
     set -o vi
+
+    # 使用默认的 emacs 模式
+    set -o emacs
+
+linux下shell终端里有行编辑功能，在命令提示符下默认可以像 emacs 一样编辑输入的命令
+
+    Ctrl+c    中断，终结一个前台作业。
+    Ctrl+d    “EOF” (文件结尾：end of file)。它用于表示标准输入（stdin）的结束。在控制台或xterm 窗口输入文本时，CTRL-D 删除在光标下的字符。从一个shell中退出 (类似于exit)。如果没有字符存在，CTRL-D 则会登出该会话。在一个xterm窗口中，则会产生关闭此窗口的效果。
+
+    Ctrl+Z    暂停一个前台的作业，详见章节 [后知后觉发现一个命令要执行很久，半路让它改成后台执行]
+
+    Ctrl+r    回溯搜索(Backwards search)history缓冲区内的文本（在命令行下）。注意：按下之后，提示符会变成(reverse-i-search)”:输入的搜索内容出现在单引号内，同时冒号后面出现最近最匹配的历史命令。
+    Ctrl+s    向前搜索历史记录
+    Alt+r     撤销对从历史记录中带来的命令的修改
+
+    Ctrl+p    显示上一条命令
+    Ctrl+n    显示下一条命令
+
+    Ctrl+a    移动光标到行首
+    Ctrl+e    移动光标到行尾
+
+    Ctrl+b    光标后退一个字符
+    Ctrl+f    光标前进一个字符
+
+    Alt+b     光标往回跳一个词
+    Alt+f     光标往前跳一个词
+
+    Ctrl+h    擦除(Rubout)(破坏性的退格)。在光标往回移动的时候，同时擦除光标前的一个字符。
+    Ctrl+u    擦除光标前的所有字符
+    Ctrl+k    删除光标后的所有字符
+    Ctrl+w    删除光标前的一个单词
+    Ctrl+y    将之前已经清除的文本粘贴回来（主要针对CTRL-U或CTRL-W）。
+
+    Ctrl+/    撤消操作，Undo。
+
+    Ctrl+l     清空屏幕并重新显示当前行，比用 clear 命令更方便。
 
 ## 常用脚本收集
 
