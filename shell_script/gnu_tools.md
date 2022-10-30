@@ -103,9 +103,7 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
 ## Windows字符终端
 
-终端的历史演进
-
-    https://zhuanlan.zhihu.com/p/99963508
+终端概念参见章节 [Linux 字符终端]。
 
 Windows 下如果要显示图标化字符，需要给 Windows 安装支持多种符号的字体，见下面章节 [Nerd Font]。
 
@@ -236,7 +234,7 @@ putty 的初始界面只有一个，选择站点和站点设置功能区分不�
 
 #### mintty 简单使用：Git for Windows
 
-Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是工具只选择了它自己需要的部分进行了集成，我们主要使用他的 mintty 命令行终端程序(自称 git bash)和 ssh、gpg 等工具。
+Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是工具只选择了它自己需要的部分进行了集成，我们主要使用他的 mintty.exe 命令行终端程序（自称 git bash）和 ssh、gpg 等工具。
 
 安装 git for Windows 或 MSYS2 后就有了
 
@@ -808,6 +806,16 @@ ConEmu 配置 MSYS2 任务
         打开后会自动把工作目录设置为 msys64/home/%user% 下。
 
 ## Linux 字符终端
+
+在80年代个人计算机出现前，50-70年代的电子计算机都是多用户大型机，使用者使用不同的硬件设备连接到主机，这些设备给使用者提供键盘输入和字符显示功能，称为终端Terminal。最简单的字符输入设备是电传打字机（Teletype, tty）所以现在也用 tty 来表示字符输入终端。终端展现的用户界面有不同的显示规格和字符编码方式，在70年代确定ANSI标准以来流行的有 vt-100、xterm 等多种类型。
+
+90年代局域网、互联网发展以来，网络上的主机作为服务器提供客户机的连接服务（非http服务），客户机需要有个程序把自己模拟成主机的终端，跟主机进行交互，即所谓终端模拟程序，现在最流行的字符终端模拟程序有 ssh、putty 等，图形终端模拟程序有 vnc、rdp 等，连接的通信协议主要采用非对称密钥加密算法，一般都是用ssh建立通信隧道。
+
+现代的个人计算机 pc、notebook，甚至 pad、smart phone 的处理能力都超过当年的大型机，本身也可以作为服务器的角色对外提供客户机连接服务。Windows 操作系统下，字符终端模拟程序的角色是 cmd、powershell，他们在启动时把自己作为客户端，本机作为服务器进行连接。这种连接本机的终端称为本地终端，也有 mintty.exe 作为本地终端模拟器使用 unix tty 的程序。
+
+终端的历史演进
+
+    https://zhuanlan.zhihu.com/p/99963508
 
 使用 gpu 进行显示加速的字符终端，号称比 iTerm 速度快
 
