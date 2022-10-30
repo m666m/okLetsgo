@@ -1676,6 +1676,19 @@ man 查看各章节后缀用.数字即可
 
     man signal.7
 
+    man 7 signal
+
+用 `apropos 命令` 来查找相关联的帮助
+
+    $ apropos  sysctl
+    _sysctl (2)          - read/write system parameters
+    sysctl (2)           - read/write system parameters
+    sysctl (8)           - configure kernel parameters at runtime
+    sysctl.conf (5)      - sysctl preload/configuration file
+    sysctl.d (5)         - Configure kernel parameters at boot
+    systemd-sysctl (8)   - Configure kernel parameters at boot
+    systemd-sysctl.service (8) - Configure kernel parameters at boot
+
 ### Vim 和 nano
 
 最基础的版本是类似 vi 的 vim tinny 版本，不支持语法高亮、窗口拆分等各种高级功能。
@@ -3738,6 +3751,8 @@ There are three different implementations:
     # 只查看文件列表
     unzip -l arc.zip
 
+使用 zless、zmore、zcat 和 zgrep 对压缩过的文件进行查看等操作。
+
 ### 文件链接
 
 ln 命令默认生成硬链接，但是我们通常使用软连接
@@ -3796,10 +3811,7 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 在 Linux 中，有两类用于生成随机数的设备，分别是 /dev/random 以及 /dev/urandom ，其中前者可能会导致阻塞，而读取 /dev/urandom 不会堵塞，不过此时 urandom 的随机性弱于 random 。 urandom 是 unblocked random 的简称，会重用内部池中的数据以产生伪随机数据，可用于安全性较低的应用。
 
-    # 把数字 5-12 直接乱序排序，每行一个数字，输出1行
-    shuf -i5-12 -n1
-
-    # 对随机数取哈希，cksum 是 crc 校验和，还可以用 sha256sum md5sum 等
+    # 对随机数取哈希，用 cksum 取 crc 校验和，还可以用 sha256sum、md5sum 等
     $ head /dev/random | cksum
     3768469767 1971
 
@@ -3830,6 +3842,11 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     # 生成一个uuid，这个也是随机的
     $ cat /proc/sys/kernel/random/uuid
     6ab4ef55-2501-4ace-b069-139855bea8dc
+
+    # 这个shuf不知道是否伪随机
+    # 把数字 5-12 直接乱序排序，每行一个数字，输出1行
+    $ shuf -i5-12 -n1
+    9
 
 补充熵池
 
@@ -4006,6 +4023,8 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
 ### dd 写入文件
 
+    dd所执行的复制为block块拷贝
+
 用 boot.img 制作启动盘
 
     dd if=boot.img of=/dev/fd0 bs=1440k
@@ -4057,6 +4076,17 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 拷贝光盘内容到指定文件夹，并保存为cd.iso文件
 
     dd if=/dev/cdrom(hdc) of=/root/cd.iso
+
+### 快速清零文件和快速建立文件
+
+最快建立大文件的方式不是用 dd，用 truncate 创建稀疏文件
+
+    truncate  --size 10G test.db.bak
+
+快速清理文件
+
+    # truncate -s 0 /var/log/yum.log
+    > your_file.txt
 
 ### nc 简单的端口通信
 
@@ -4335,6 +4365,24 @@ rm -rf "${LATEST_LINK}"
 ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 ```
+
+### 删除大量文件的最快方法
+
+    # https://web.archive.org/web/20130929001850/http://linuxnote.net/jianingy/en/linux/a-fast-way-to-remove-huge-number-of-files.html
+
+    mkdir empty && rsync -r --delete empty/ some-dir && rmdir some-dir
+
+### 在当前目录启动一个简单的http服务器
+
+    # Python 2，使用端口 7777
+    python -m SimpleHTTPServer 7777
+
+    # Python 3 http服务器的包名变了，使用端口 7777
+    python3 -m http.server 7777
+
+### 对程序的输出同时打印到文件和屏幕
+
+    ls -al | tee file.txt
 
 ### 压力测试
 

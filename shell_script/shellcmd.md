@@ -11,6 +11,21 @@
     Bash脚本指南 https://linux.die.net/abs-guide/
                     https://linux.die.net/
 
+    Bash 使用技巧 https://github.com/jlevy/the-art-of-command-line
+
+        $ curl -sL https://github.com/jlevy/the-art-of-command-line/raw/master/README.md|egrep -o '`\w+`'|tr -d '`'|cowsay -W70
+        _______________________________________________________________________
+        / apt yum dnf pacman pip brew nano vi man apropos help jobs fg bg kill  \
+        | ssh ls less head tail ln chown chmod du df mount fdisk mkfs lsblk ip  |
+        | ls tail awk sed gawk gsed perl sw_vers wmic ping ipconfig tracert     |
+        \ netstat Rundll32 mintty cygstart regtool cygpath                      /
+        -----------------------------------------------------------------------
+                \   ^__^
+                \   (oo)\_______
+                    (__)\       )\/\
+                        ||----w |
+                        ||     ||
+
 ## bash 常见符号用法
 
     http://c.biancheng.net/view/743.html
@@ -190,6 +205,8 @@ test 和 [] 是等价的，[] 注意两边留空格
 
 ## Bash内建命令
 
+用 `type 命令` 来判断这个命令到底是可执行文件、shell 内置命令还是别名
+
     命令            说明
 
     :           扩展参数列表，执行重定向操作
@@ -253,6 +270,8 @@ test 和 [] 是等价的，[] 注意两边留空格
 
 ## bash 快捷键
 
+linux下shell终端里有行编辑功能，在命令提示符下默认可以像 emacs 一样编辑输入的命令。
+
 可改为 vi 模式
 
     # 命令行开启 vi 模式，按esc后用vi中的上下键选择历史命令
@@ -261,14 +280,18 @@ test 和 [] 是等价的，[] 注意两边留空格
     # 使用默认的 emacs 模式
     set -o emacs
 
-linux下shell终端里有行编辑功能，在命令提示符下默认可以像 emacs 一样编辑输入的命令
+执行 `man readline` 可以查看 Bash 中的默认快捷键
+
+    Tab 键    自动补全命令
+
+    按住ctrl按x再按e    在编辑器中打开命令行，如果是vi模式则是同时按 esc 和 v
 
     Ctrl+c    中断，终结一个前台作业。
-    Ctrl+d    “EOF” (文件结尾：end of file)。它用于表示标准输入（stdin）的结束。在控制台或xterm 窗口输入文本时，CTRL-D 删除在光标下的字符。从一个shell中退出 (类似于exit)。如果没有字符存在，CTRL-D 则会登出该会话。在一个xterm窗口中，则会产生关闭此窗口的效果。
-
     Ctrl+Z    暂停一个前台的作业，详见章节 [后知后觉发现一个命令要执行很久，半路让它改成后台执行]
 
-    Ctrl+r    回溯搜索(Backwards search)history缓冲区内的文本（在命令行下）。注意：按下之后，提示符会变成(reverse-i-search)”:输入的搜索内容出现在单引号内，同时冒号后面出现最近最匹配的历史命令。
+    Ctrl+d    “EOF” (文件结尾：end of file)。它用于表示标准输入（stdin）的结束。在控制台或xterm 窗口输入文本时，CTRL-D 删除在光标下的字符。从一个shell中退出 (类似于exit)。如果没有字符存在，CTRL-D 则会登出该会话。在一个xterm窗口中，则会产生关闭此窗口的效果。
+
+    Ctrl+r    回溯搜索(Backwards search)history缓冲区内的文本（在命令行下）。注意：按下之后，提示符会变成(reverse-i-search)”:输入的搜索内容出现在单引号内，同时冒号后面出现最近最匹配的历史命令。重复按下 ctrl-r 会向后查找匹配项，按下 Enter 键会执行当前匹配的命令，而按下右方向键会将匹配项放入当前行中，不会直接执行，以便做出修改
     Ctrl+s    向前搜索历史记录
     Alt+r     撤销对从历史记录中带来的命令的修改
 
@@ -396,6 +419,16 @@ print(Style.RESET_ALL)
 print('back to normal now')
 
 ####################################################################
+
+#############################################
+#
+# cat 生成一段代码到文件
+#
+cat << EOF >/etc/network/if-pre-up.d/restore_my_iptables_rule
+#!/bin/sh
+iptables -F
+iptables-restore < /etc/iptables/rules.v4
+EOF
 
 ```
 
@@ -1271,6 +1304,21 @@ sar 命令选项    功能
 
     Device             tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
     mmcblk0           0.00         0.00         0.00          0          0
+
+    $ iostat -mxz 15
+    Linux 5.10.103-v7l+ (jn-zh)     31/10/22        _armv7l_        (4 CPU)
+
+    avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+            2.72    0.00    3.90    0.05    0.00   93.33
+
+    Device            r/s     w/s     rMB/s     wMB/s   rrqm/s   wrqm/s  %rrqm  %wrqm r_await w_await aqu-sz rareq-sz wareq-sz  svctm  %util
+    mmcblk0          0.01    0.10      0.00      0.00     0.01     0.14  45.41  57.09    9.18  251.38   0.03    37.24    31.96  22.27   0.25
+
+    avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+            2.39    0.00    3.45    0.02    0.00   94.14
+
+    Device            r/s     w/s     rMB/s     wMB/s   rrqm/s   wrqm/s  %rrqm  %wrqm r_await w_await aqu-sz rareq-sz wareq-sz  svctm  %util
+    mmcblk0          0.00    0.47      0.00      0.00     0.00     0.13   0.00  22.22    0.00    8.43   0.00     0.00     5.14   4.29   0.20
 
 看网络，按设备
 
