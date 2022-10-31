@@ -114,6 +114,11 @@ Windows 下如果要显示图标化字符，需要给 Windows 安装支持多种
     北极主题颜色 https://github.com/arcticicestudio/nord-putty
         只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
 
+    KiTTY
+    从 putty 拉的分支而来，是对 putty 的易用性改进，共用putty的站点配置，增加了背景透明、支持站点列表的文件夹、自动化操作脚本，可以给站点加注释，还有便携版
+
+        https://github.com/cyd01/KiTTY
+
 putty 登陆站点后的使用很简单
 
     默认的鼠标的点击操作当前操作系统剪贴板，左键是选择并复制，右键粘贴
@@ -221,6 +226,17 @@ putty 的初始界面只有一个，选择站点和站点设置功能区分不�
         点击Open按钮就是“简易连接”
 
         如果给出站点名称后点击“Save”按钮，这样会保存一个站点。
+
+备份站点
+
+putty把站点配置写入了 Windows 注册表，需要手工导入，新建一个 exp_session.bat
+
+```bat
+REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
+```
+
+执行该 bat 文件，会在当前目录下生成一个名为 session.reg 的文件。
+如果需要恢复站点设置，直接双击该文件即会被 Windows 导入注册表。
 
 ### mintty 本地终端模拟器
 
@@ -581,15 +597,18 @@ BoldWhite=255,255,255
 
 ### 其他本地终端模拟器
 
-Windows 10 现在推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API 和 新的 ConPTY，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
-
-    # https://github.com/microsoft/terminal/releases
-
-    winget install --id=Microsoft.WindowsTerminal -e
-
 alacritty 使用gpu进行显示加速的本地终端模拟器，在 Windows 下使用 powershell
 
     https://github.com/alacritty/alacritty
+
+WezTerm GPU 加速跨平台终端仿真器和多路复用器
+
+    https://github.com/wez/wezterm
+
+使用 gpu 进行显示加速的字符终端，只能在 linux/MacOS 桌面下使用
+
+    https://github.com/kovidgoyal/kitty
+        https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
 
 startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
 
@@ -598,38 +617,38 @@ startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
 
     https://sspai.com/post/72888
 
-独立的 powershell
-
-    https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
-
-clink 使 cmd 像 bash 按tab键tab键自动完成
-
-    https://github.com/chrisant996/clink
-        不再更新了 https://github.com/mridgers/clink
-
-    安装后打开cmd就会发现，cmd支持bash一样的行编辑功能了，在命令提示符下默认可以像emacs一样编辑输入的命令
-
-        Ctrl+p：显示上一条命令
-        Ctrl+n：显示下一条命令
-        Ctrl+a：移动光标到行首
-        Ctrl+e：移动光标到行尾
-        Ctrl+b：光标后退一个字符
-        Ctrl+f：光标前进一个字符
-        Ctrl+d：删除一个字
-        Ctrl+y：粘贴
-
-    等等。
-
-cmder 推荐的本地终端
+cmder 推荐的本地终端模拟器，可以嵌入 cmder 代替 ConEmu
 
     https://github.com/cmderdev/cmder/wiki/Seamless-Terminus-integration
+
         Tabby（原名Terminus）跨平台的终端模拟器 https://github.com/Eugeny/tabby
 
     https://github.com/cmderdev/cmder/wiki/Seamless-Hyper-integration
+
         hyper 基于 xterm.js 和 Electron实现 https://hyper.is/
 
     https://github.com/cmderdev/cmder/wiki/Seamless-FluentTerminal-Integration
+
         FluentTerminal 基于 xterm.js 的 UWP 应用 https://github.com/felixse/FluentTerminal
+
+Windows Terminal
+
+Windows 10 现在推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API 和 新的 ConPTY，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
+
+    # https://github.com/microsoft/terminal/releases
+
+    winget install --id=Microsoft.WindowsTerminal -e
+
+独立的 powershell 7，从这个版本开始不跟随 Windows 发布了
+
+    https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
+
+    https://github.com/nushell/nushell
+
+clink 在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入的命令
+
+    https://github.com/chrisant996/clink
+        不再更新了 https://github.com/mridgers/clink
 
 ### 终端多路复用器
 
@@ -826,16 +845,6 @@ ConEmu 配置 MSYS2 任务
 详见终端的历史演进
 
     https://zhuanlan.zhihu.com/p/99963508
-
-使用 gpu 进行显示加速的字符终端，号称比 iTerm 速度快
-
-    https://github.com/alacritty/alacritty
-
-使用 gpu 进行显示加速的字符终端，只能在 linux 桌面下使用
-
-    https://github.com/kovidgoyal/kitty
-
-        https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
 
 ### 字符终端的区域、编码、语言
 
