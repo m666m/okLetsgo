@@ -1,5 +1,6 @@
 
 # 别人的配置文件参考大全 https://github.com/pseudoyu/dotfiles
+#                       https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
 # exit for non-interactive shell
 [[ ! -t 1 ]] && return
 
