@@ -4081,7 +4081,8 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
 最快建立大文件的方式不是用 dd，用 truncate 创建稀疏文件
 
-    truncate  --size 10G test.db.bak
+    # dd if=/dev/zero of=fs.img bs=1M count=1M seek=1024
+    truncate --size 10G test.db.bak
 
 快速清理文件
 
