@@ -1,4 +1,5 @@
 
+# 别人的配置文件参考大全 https://github.com/pseudoyu/dotfiles
 # exit for non-interactive shell
 [[ ! -t 1 ]] && return
 

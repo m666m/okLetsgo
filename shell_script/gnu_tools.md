@@ -604,18 +604,14 @@ alacritty 使用gpu进行显示加速的本地终端模拟器，在 Windows 下�
 WezTerm GPU 加速跨平台终端仿真器和多路复用器
 
     https://github.com/wez/wezterm
+        https://wezfurlong.org/
 
-使用 gpu 进行显示加速的字符终端，只能在 linux/MacOS 桌面下使用
+kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/MacOS 桌面下使用
 
     https://github.com/kovidgoyal/kitty
         https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
 
-startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
-
-    https://starship.rs/zh-CN/
-        https://github.com/starship/starship
-
-    https://sspai.com/post/72888
+    Warp 号称比 iTerm2 顺滑，半开源 https://github.com/warpdotdev/Warp
 
 cmder 推荐的本地终端模拟器，可以嵌入 cmder 代替 ConEmu
 
@@ -643,7 +639,10 @@ Windows 10 现在推出的 ConPTY 接口也支持第三方终端模拟器了，�
 
     https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
 
+Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` 查看常用命令。自己的脚本语言可以基于自己的指令定义函数、基于函数定义脚本。可以开发 rust 插件给他扩展功能。
+
     https://github.com/nushell/nushell
+        https://www.nushell.sh/zh-CN/book/thinking_in_nu.html
 
 clink 在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入的命令
 
@@ -652,7 +651,7 @@ clink 在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入�
 
 ### 终端多路复用器
 
-Windows 下的命令行工具、本地终端类型很多，如果想统一在一个程序下使用，标签化管理各个窗口，选择以下工具即可。
+Windows 下的命令行终端类型很多，如果想统一在一个程序下x标签化管理各个窗口，这样的程序成为 terminal multiplexer。
 
 #### Supper Putty
 
@@ -838,7 +837,7 @@ ConEmu 配置 MSYS2 任务
 
 在80年代个人计算机出现前，50-70年代的电子计算机都是多用户大型机，使用者使用不同的硬件设备连接到主机，这些设备给使用者提供键盘输入和字符显示功能，称为终端Terminal。最简单的字符输入设备是电传打字机（Teletype, tty）所以现在也用 tty 来表示字符输入终端。终端展现的用户界面有不同的显示规格和字符编码方式，在70年代确定ANSI标准以来流行的有 vt-100、xterm 等多种类型。
 
-90年代局域网、互联网发展以来，网络上的主机作为服务器提供客户机的连接服务（非http服务），客户机需要有个程序把自己模拟成主机的终端，跟主机进行交互，即所谓终端模拟程序（Terminal Emulator）。为给命令行程序营造出一个设备终端的环境，UNIX/Linux内核发展出了伪终端（pseudo tty，缩写为pty）设备顺应这一趋势。现在最流行的字符终端模拟程序有 ssh、putty 等，图形终端模拟程序有 xterm、vnc、rdp 等，远程连接的通信协议主要采用非对称密钥加密算法，一般都是用ssh建立通信隧道。
+90年代局域网、互联网发展以来，网络上的主机作为服务器提供客户机的连接服务（非http服务），客户机需要有个程序把自己模拟成主机的终端，跟主机进行交互，即所谓终端模拟程序（Terminal Emulator）。为给命令行程序营造出一个设备终端的环境，UNIX/Linux内核发展出了伪终端（pseudo tty，缩写为pty）设备顺应这一趋势，实现这个伪终端功能的程序称为终端模拟器terminal emulator。现在最流行的字符终端模拟程序有 ssh、putty 等，图形终端模拟程序有 xterm、vnc、rdp 等，远程连接的通信协议主要采用非对称密钥加密算法，一般都是用ssh建立通信隧道。
 
 现代的个人计算机 pc、notebook，甚至 pad、smart phone 的处理能力都超过当年的大型机，本身也可以作为服务器的角色对外提供客户机连接服务。在 Windows 操作系统下，终端模拟程序的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的conhost，类似于 linux 的伪终端机制。这种连接本机的终端可称为本地终端。因为Windows 的conhost实现机制跟linux伪终端实质上不同，第三方终端应用程序其实无法连接 conhost，所以有来自 Msys2 项目的 mintty.exe 作为本地终端模拟程序，以使用 unix pty 的程序。
 
@@ -1102,9 +1101,14 @@ zsh:
 
 #### 替代品
 
-如果不使用 powerline，可使用 startship，这个 sh、bash、cmd 等 shell 下通用的状态栏工具，见章节 [Windows字符终端]。
+startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
 
-推荐安装 zsh，使用 zsh 下的 powerlevle10k 工具，这个兼容性和效果直接起飞，见章节 [推荐主题powerlevel10k]。
+    https://starship.rs/zh-CN/
+        https://github.com/starship/starship
+
+    https://sspai.com/post/72888
+
+推荐安装 zsh，安装 powerlevle10k，这个状态栏工具的兼容性和显示效果直接起飞，见章节 [推荐主题powerlevel10k]。
 
 ### 状态栏字体
 
@@ -3244,6 +3248,8 @@ vim配置中开启鼠标支持，.vimrc文件中加上
 #### 快捷键
 
     组合键 ctrl+b 作为前导，松开后再按其它键如下
+
+    MacOS 下可以做映射 https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/
 
 会话（Session）
 
