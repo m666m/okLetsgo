@@ -719,6 +719,27 @@ edge 浏览器->设置->外观->整体外观：选择“系统默认”则跟随
 
     Aria2 for Edge：“读取和更改站点数据”配置为“单击扩展时”，配合开源的使用aria2的下载程序[Motrix](https://github.com/agalwood/Motrix/)，打开rpc，端口统一16800，设置相同的api key。
 
+### 安装 Google Chrome 浏览器插件
+
+TODO: 待整理
+
+自从谷歌退出中国市场后，其搜索结果质量日渐下降。壹读、每日头条、热备资讯、兰州养生网、代码日志等网站，多为复制抄袭、机器翻译的垃圾内容网站，在谷歌搜索中反而占据前排位置。
+
+uBlacklist是一个禁止特定网站显示在谷歌搜索结果的浏览器插件，使用其可以将不喜欢的网站、垃圾网站加入屏蔽列表，从而净化搜索结果，节省你宝贵的时间。
+
+使用Chrome浏览器打开uBlacklist安装网址：
+
+    https://chrome.google.com/webstore/detail/ublacklist/pncfbmialoiaghdehhbnbhkkgmjanfhe
+
+点击页面上的安装按钮即可。
+
+uBlacklist添加订阅源
+
+    uBlacklist插件支持订阅黑名单，感谢网友提供信息，可以使用 https://cdn.jsdelivr.net/gh/cobaltdisco/Google-Chinese-Results-Blocklist@master/uBlacklist_subscription.txt 这一个比较好的订阅源，基本覆盖了各种不良网址以及内容农场。使用方法如下：
+
+    在禁止图标上右键，点击“选项”；
+    选项页面拉到下面，点击“添加订阅”。在弹框中名称随便填写，例如“abc”，URL地址填入 https://cdn.jsdelivr.net/gh/cobaltdisco/Google-Chinese-Results-Blocklist@master/uBlacklist_subscription.txt，然后点击“添加”
+
 ### 关闭附件管理器检查
 
 为什么要关闭？
