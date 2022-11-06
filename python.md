@@ -1,5 +1,8 @@
 # python
 
+    https://github.com/jackfrued/Python-100-Days
+    https://www.labri.fr/perso/nrougier/from-python-to-numpy/#id7
+
 ## Windows 7 最高只能使用 Python3.8
 
 Windows下的python，各种命令的脚本都是cmd下的bat，如果用bash运行这些命令，有时候会出现各种提示报错信息。
