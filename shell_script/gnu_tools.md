@@ -908,6 +908,14 @@ ConEmu 配置 MSYS2 任务
 
     sudo apt install sl
 
+牛说
+
+    sudo apt install cowsay
+
+格言大全
+
+    sudo apt install fortunes
+
 字符画 figlet + toilet
 
     sudo apt install -y figlet toilet
