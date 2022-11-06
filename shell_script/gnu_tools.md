@@ -254,7 +254,7 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
 
     可以在 https://github.com/hsab/WSL-config/tree/master/mintty/themes 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
 
-mintty.exe 完美实现了 Windows 下 linux 软件的运行，模拟 pty 效果又快又好。缺点是运行 cmd 程序有些字符解释的显示效果不一致，建议与 cmd 组合使用，不在 mintty 下使用 cmd 的命令。
+mintty.exe 完美实现了 Windows 下 linux 软件的运行，模拟 pty 效果又快又好。缺点是运行 cmd 下的命令，有些字符解释的显示效果不一致，建议与 cmd 分别使用，不在 mintty 下使用 cmd 的命令。
 
 #### mintty 简单使用：Git for Windows
 
