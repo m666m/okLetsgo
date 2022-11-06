@@ -673,11 +673,13 @@ Windows 下的命令行终端类型很多，如果想统一在一个程序下x�
 
     可惜目前更新不大及时 https://github.com/jimradford/superputty
 
-本质上是给 putty 的站点加了个多窗口的外壳，树形展示站点列表，方便管理和使用
+本质上是给 putty 加了个多窗口的外壳，树形展示会话列表，方便管理和使用
 
     支持嵌入其它的各种终端窗口: putty、mintty(bash)、cmd、powershell
 
-    putty/mintty 兼容性和反应速度满分，Windows 切换任务热键 alt+tab 要按两次才能切换成功
+    putty/mintty 兼容性和反应速度满分
+
+    窗口切换有点问题，Windows 切换任务热键 alt+tab 要按两次才能切换成功
 
     只要安装了 git for Windows 和 putty 等软件即可直接配置使用，不需要做复杂的设置
 
@@ -699,9 +701,11 @@ Windows 下的命令行终端类型很多，如果想统一在一个程序下x�
 
 设置自动登陆 putty 的用户名
 
-    点击想导入的session，右键菜单选“Edit”，弹出窗口选择“Login username”。这样设置了以后，打开该站点不需要putty的 session 里保存登陆用户名了。
+    点击想导入的session，右键菜单选“Edit”，弹出窗口选择“Login username”。这样设置了以后，打开该站点不需要在 putty 的 session 里保存登陆用户名了。
 
-    如果putty中该用户可以使用密钥登陆，则这里也自动免密码登陆，如果 pageant 代理程序在运行，一样可以免密码。
+    如果 putty 中该用户可以使用密钥登陆，在这里也跟单独使用 putty 同样效果。
+
+    如果 pageant 代理程序在运行，在这里也跟单独使用 putty 同样效果。
 
 新建 mintty (git bash) 终端
 
@@ -739,7 +743,7 @@ Windows 下的命令行终端类型很多，如果想统一在一个程序下x�
 
 #### ConEmu 和 Cmder
 
-最大的缺点是不稳定，反应速度慢，估计跟它基于 Windows Console、连带支持 pty 这样包打一切的实现机制有关。
+最大的缺点是不稳定，反应速度偶尔很慢，估计跟它基于 Windows conhost，连带支持 unix pty 这样包打一切的实现机制有关。
 
 ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器。不止是个终端多路复用器，他还自己实现了对 cmd 和 pty 两种类型的终端模拟。
 
