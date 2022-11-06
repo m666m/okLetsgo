@@ -258,7 +258,7 @@ mintty.exe 完美实现了 Windows 下 linux 软件的运行，模拟 pty 效果
 
 #### mintty 简单使用：Git for Windows
 
-Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是工具只选择了它自己需要的部分进行了集成，我们主要使用他的 mintty.exe 命令行终端程序（自称 git bash）和 ssh、gpg 等工具。
+Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是只编译了它自己需要的部分工具软件进行了集成，我们主要使用他的 mintty.exe 命令行终端模拟器和 ssh、gpg 等工具软件。
 
 安装 git for Windows 或 MSYS2 后就有了
 
@@ -270,13 +270,23 @@ Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是工具只选择了它自�
 
     MSYS2 的 mintty 的配置文件与 git for Windows 不同，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]
 
-如果使用 mintty.exe，需要添加额外的启动参数 "mintty.exe /bin/bash --login -i"
+如果使用 mintty.exe，需要添加额外的启动参数，指定使用何种shell
+
+    mintty.exe /bin/bash --login -i
+
+    --login 加载配置文件 ~/.bash_profile 等，不然你进入的是个干巴的shell
 
     -i      创建一个交互式的shell
 
-    --login 加载配置文件 ~/.profile、~/.bash_profile 等，不然你进入的是个干巴的shell
+git-bash.exe
 
-如果使用 git-bash.exe，一般使用 `git-bash.exe --cd-to-home` 打开即进入$HOME目录，比较方便。git-bash.exe 其实就是 mintty.exe 带上面参数的一个封装。
+    自称 git bash，其实是 `mintty.exe /bin/bash --login -i` 的封装，可直接双击执行。用于执行 unix pty 的命令，显示兼容性最好。
+
+    如果使用 git-bash.exe，一般使用 `git-bash.exe --cd-to-home` 打开即进入$HOME目录，比较方便
+
+git-cmd.exe
+
+    其实是 cmd 的一个封装，可直接双击执行。用于执行 cmd 下的命令，显示兼容性最好。路径path优先指向了git for windows 的目录。
 
 git for windows 的Linux目录结构跟Windows目录的对应关系
 
@@ -298,7 +308,7 @@ putty的退出也是同样的建议。
 
 #### mintty 组合使用：git for Windows + MSYS2
 
-拷贝 MSYS2 的工具到 git 里，这样只使用 git bash(mintty) 就可以了
+拷贝 MSYS2 的工具到 git 里，这样只使用 git bash(mintty) 就可以了。
 
 假设 git 的安装目录在 D:\Git，可执行文件在 D:\Git\usr\bin\ 目录：
 
