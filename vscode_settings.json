@@ -65,6 +65,17 @@
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
     "python.languageServer": "Pylance",
+    "python.analysis.packageIndexDepths": [
+        {
+            "name": "matplotlib",
+            "depth": 3
+        },
+        {
+            "name": "pyqtgraph",
+            "depth": 4,
+            "includeAllSymbols": true
+        }
+    ],
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Args": [
