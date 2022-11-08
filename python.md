@@ -2264,3 +2264,18 @@ print '这行用中文会默认被用ansi解码导致报错'
 对网络爬取的包比如 request/lxml，花样更多了，它还会根据读取到的 html 文件中写的编码方式转换缓冲区，最终你对缓冲区获得的字符串，很可能需要再转一次编码才能正常使用。
 
 所以，通用的解决方式，linux 下还好办，中文 Windows 下，只能是多调试了。
+
+## python 常用法
+
+```python
+
+    import itertools
+
+    # 拉平为一维 [0  1  2  11 12 13]
+    # pos_arr_1d = np.array([y for x in valid_pos_2dlist for y in x])
+    # 多维数组转换为一维最有效率的做法 https://blog.csdn.net/qq_36853469/article/details/106928360
+    # 展开列表内嵌的列表或组合两个列表可以用 itertools.chain https://blog.csdn.net/woshisunyizhen/article/details/103157881
+    # list(itertools.chain(config_cc.values()))
+    pos_arr_1d = list(itertools.chain.from_iterable(valid_pos_2dlist))
+
+```

@@ -1327,6 +1327,8 @@ Intel 的主板芯片中有一个独立于CPU和操作系统的微处理器，�
 WSL2 内的 container 是 linux 提供的，不算 Windows 的容器。Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-V 隔离，process 只在 server 版提供
 <https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/hyperv-container>
 
+虚拟机讨论详见章节 [虚拟机技术] <init_a_server.md think>。
+
 ### Hyper-V
 
 就像普通虚拟机操作，类似 VM Ware、Virtual Box

@@ -5194,6 +5194,50 @@ Target 与 传统 RunLevel 的对应关系如下
 
     systemctl enable tproxyrule
 
+## cgroup 控制操作系统资源分配
+
+查看当前的服务
+
+    ❯ systemd-cgls
+    Control group /:
+    -.slice
+    ├─user.slice
+    │ └─user-1000.slice
+    │   ├─session-2.scope
+    │   │ ├─  661 zsh
+    │   │ ├─  664 zsh
+    │   │ ├─  678 zsh
+    │   │ ├─  918 tmux
+    │   │ └─8519 tmux a
+    │   └─user@1000.service
+    │     ├─powerline-daemon.service
+    │     │ └─872 /usr/bin/python3 /usr/bin/powerline-daemon --foreground
+    │     └─init.scope
+    │       ├─860 /lib/systemd/systemd --user
+    │       └─861 (sd-pam)
+    ├─init.scope
+    │ └─1 /sbin/init
+    └─system.slice
+    ├─alsa-state.service
+    │ └─385 /usr/sbin/alsactl -E HOME=/run/alsa -s -n 19 -c rdaemon
+    ├─systemd-timesyncd.service
+    │ └─332 /lib/systemd/systemd-timesyncd
+    ├─dbus.service
+    │ └─395 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+    ├─ssh.service
+    │ └─579 /usr/sbin/sshd -D
+    ├─watchdog.service
+    │ └─5008 /usr/sbin/watchdog
+    ├─cron.service
+    │ └─369 /usr/sbin/cron -f
+    ├─systemd-journald.service
+    │ └─127 /lib/systemd/systemd-journald
+    ├─rng-tools.service
+    │ └─380 /usr/sbin/rngd -r /dev/hwrng
+    └─dhcpcd.service
+        ├─497 wpa_supplicant -B -c/etc/wpa_supplicant/wpa_supplicant.conf -iwlan0 -Dnl80211,wext
+        └─567 /sbin/dhcpcd -q -w
+
 ## crontab 定时任务
 
     https://www.debian.org/doc/manuals/debian-handbook/sect.task-scheduling-cron-atd.zh-cn.html
