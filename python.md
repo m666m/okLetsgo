@@ -3,6 +3,57 @@
     https://github.com/jackfrued/Python-100-Days
     https://www.labri.fr/perso/nrougier/from-python-to-numpy/#id7
 
+## python 多环境隔离
+
+    https://www.cnblogs.com/doublexi/p/15783355.html
+
+我们经常会遇见这样的场景：
+
+1、各个项目使用的python版本不相同
+
+由于Python的解释器版本众多，各版本之间差异非常大。特别是python2和python3，互不兼容。
+
+有些项目可能用的python2.7，有些项目可能用的是python3.6，有些则使用的3.8等，但是它们却需要运行在同一个服务器环境中。（docker除外，docker容器可以隔离不同的项目环境。）
+
+2、系统依赖自带的解释器
+
+系统的一些服务组件一般也会依赖Python环境。不同的Linux发行版自带的Python也不同。如ubuntu16自带2.7和3.5版本, Centos7依赖python2.7。而系统很多组件都依赖自带的解释器，比如yum等，你不能轻易删除这个版本，一旦删除或者更改都可能造成系统出问题。
+
+3、依赖默认的解释器路径冲突
+
+比如Centos7系统自带的python是2.7，系统很多组件比如yum依赖的都是2.7这个版本。但是我们发现这些工具开头使用的都是：#!/usr/bin/python。
+
+而一些新的使用python开发的服务组件，它们依赖python3.6以上的版本，但是它们一些代码开头用的也是这个引用：#!/usr/bin/python。
+
+它们都是用python这一个引用，却没有使用python2、python3这样分开，这就很容易导致它们的一些python引用冲突。
+
+对 Debian 11之前的发行版同时带有python 2 和 python 3，命令 `python` 默认是python 2，如果要使用python 3，则使用命令 `python3`：
+
+    python  指向 python2，.py代码文件开头写 #!/usr/bin/python
+    python3 指向 python3，.py代码文件开头写 #!/usr/bin/python3
+
+4、依赖冲突。（最常见）
+
+我们都知道python的软件包依赖经常是个很头疼的问题，经常因为这个问题导致到家在安装一些python环境或者服务组件时失败。
+
+而不同的python解释器版本，对软件包依赖库的管理也是个问题。
+
+比如sqlalchemy这个包，有些项目使用的python2.7版本，它需要依赖这个库，有些项目使用的python3.6版本，它也需要依赖这个库，有些项目使用的python3.8版本，它同样也需要依赖这个库，
+
+但是头疼的是，这三者它们依赖的这个包版本还不一致。sqlalchemy从0.1-2.0有众多版本。
+
+这时候如果你在系统上直接使用pip install sqlalchemy的话，它只能选择安装一个版本，但是这样其他两个项目是无法使用这个版本，就会出现依赖冲突的问题。
+
+由于 Python 的依赖库管理是中心化的，而且大版本上的不兼容且长期并行，就出现了这么一个独特的话题。
+
+常用的隔离方案比较多
+
+    venv是python3自带的，只能在3.3版本以后，2.x用不了，只能创建个虚拟环境，不能指定系统不存在的python环境版本，不能查看环境列表。
+
+    virtualenv 同时支持 python2 和 python3，可通过 pip 安装和更新，会自动查找当前操作系统内的不同python版本，为每个虚拟环境指定某版本的 python 解释器，可选择继承父环境的包。
+
+    conda 虚拟环境是独立于操作系统解释器环境的，可以建立当前操作系统不存在的 python 版本，conda 可以安装编译版，所以可以安装一些工具软件，即使这些软件不是基于Python开发的。
+
 ## Windows 7 最高只能使用 Python3.8
 
 Windows下的python，各种命令的脚本都是cmd下的bat，如果用bash运行这些命令，有时候会出现各种提示报错信息。
@@ -23,8 +74,9 @@ pip install 的各种问题 <https://www.cnblogs.com/feixiablog/p/8320602.html>�
 
 如果要在conda下使用pip，见下面章节[Anaconda环境中使用pip]。
 
-Debian/Ubuntu 下默认安装python 2和3，pip命令是python2的pip, pip3命令才是python3的pip，但是调用python3 -m 时用pip 如 `python3 -m pip install xxx`
+Debian/Ubuntu 下默认安装python 2和3，pip命令是python2的pip, pip3命令才是python3的pip。不过使用命令python3 -m 执行包的方式时，用 pip 如 `python3 -m pip install xxx`
 
+    # 安装 pip3 给 python3 使用
     sudo apt install python3-pip
 
 ### 操作系统发行版的基础python环境不要变更
