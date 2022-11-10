@@ -3809,11 +3809,16 @@ ln 命令默认生成硬链接，但是我们通常使用软连接
     # 如果最后的目录给出的是一个文件名，则就是在当前目录下建立软链接文件
     ln -s /tmp/cmd_1 /tmp/cmd_2 /usr/bin/
 
-### sha256文件完整性校验
+### 文件完整性校验 sha256
 
-Linux
+Linux 下，每个算法都是单独的程序
 
-每个算法都是单独的程序 md5sum sha1sum sha256sum sha512sum，直接带文件名操作即可。
+    md5sum
+    sha1sum
+    sha256sum
+    sha512sum
+
+直接带文件名操作即可
 
     # 生成sha256校验文件
     $ sha256sum file > file.sha256
