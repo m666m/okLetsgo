@@ -418,7 +418,6 @@ print(Fore.BLACK + Back.WHITE + text + Style.RESET_ALL)
 print(Style.RESET_ALL)
 print('back to normal now')
 
-####################################################################
 
 #############################################
 #
@@ -429,6 +428,26 @@ cat >/etc/network/if-pre-up.d/restore_my_iptables_rule << EOFA
 iptables -F
 iptables-restore < /etc/iptables/rules.v4
 EOFA
+
+#############################################
+#
+# 打印多行命令并执行，注意 ${变量名[@]} 的用法
+readonly IPV6_RESERVED_IPADDRS=(
+    ::/128
+    ::1/128
+    ::ffff:0:0/96
+    ::ffff:0:0:0/96
+    64:ff9b::/96
+    100::/64
+    2001::/32
+    2001:20::/28
+    2001:db8::/32
+    2002::/16
+    fc00::/7
+    fe80::/10
+    ff00::/8
+)
+for private_addr in "${IPV6_RESERVED_IPADDRS[@]}" ; do $(ip6tables -t mangle -A VVTAB -d $private_addr -j RETURN); done
 
 ```
 
