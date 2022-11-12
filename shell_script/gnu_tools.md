@@ -794,51 +794,55 @@ ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列�
 
     在弹出窗口的栏目 'Startup command or {Task} name...'下输入： notepad
 
-    会看到新建了一个标签打开了 Windows 的记事本。
+    启动该任务会看到新建了一个标签打开了 Windows 的记事本。
 
-如果是调用 putty.exe、mintty.exe、notepad.exe 等 Windows 程序，ConEmu 会利用自己的 ChildGUI 功能，内嵌显示窗体，显示效果完美，缺点是无法使用 ConEmu 的颜色和背景方案 <https://conemu.github.io/en/ChildGui.html>。
+可以调用普通的 Windows 程序
 
-对 bash.exe/tmux.exe 等 unix pty 的连接，Conemu 是通过 cmd 实现的，显示兼容性并不完美（参见 Conemu 安装后生成的默认任务 {Bash::Git bash}）：在 ssh 到服务器后使用 tmux 会出现显示问题：在刷新后总会出现底部栏重叠，还有光标错位的问题。这种情况下，建议配置任务为直接调用 mintty.exe，用参数加载 bash，在 bash 中调用 ssh/tmux 的方式实现完美兼容。
+如果是调用 putty.exe、mintty.exe、notepad.exe 等 Windows 程序，ConEmu 会利用自己的 ChildGUI 功能，内嵌显示窗体，显示效果完美，但不能使用 ConEmu 的颜色和背景方案 <https://conemu.github.io/en/ChildGui.html>。
 
-ConEmu 配置 Anaconda 会话
+对 bash.exe/tmux.exe 等 unix pty 的连接，Conemu 是通过 cmd 实现的，支持 ConEmu 的颜色和背景方案。显示兼容性并不完美，见 Conemu 安装后生成的默认任务 {Bash::Git bash}。
 
-    点击+号，新建一个Task名为 Shells::Anaconda，命令文本框输入
+1、关于 ConEmu 安装后自动生成的任务 {Bash::Git bash}
 
-    "%windir%\syswow64\cmd.exe" /k "C:\ProgramData\Anaconda3\Scripts\activate.bat C:\ProgramData\Anaconda3"  -new_console:d:%USERPROFILE%
+    因为上面所述原因，显示效果有缺陷。如果不使用 tmux/zsh 状态栏工具，可以正常使用，而且可以支持 ConEmu 的颜色和背景方案。如果运行 tmux 或 bash/zsh 状态栏工具：在刷新后会出现底部栏重叠，还有光标错位的问题。这种情况下，建议配置任务为直接调用 mintty.exe，用参数加载 bash，在 bash 中调用 ssh/tmux 的方式实现完美兼容。
 
-ConEmu 配置 putty 会话
+        set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-cmd.exe --no-cd --command=%ConEmuBaseDirShort%\conemu-msys2-64.exe /usr/bin/bash.exe -l -i -new_console:p
 
-    直接调用 putty.exe
+    建议用下面的示例2配置原生的 git-bash.exe 任务
 
-        点击+号，新建一个Task名为 putty::your_putty_session，命令文本框输入如下
+2、配置 git-bash 任务
 
-        C:\tools\PuTTY\putty.exe -load "your_putty_session_name"
+    需要安装 git for Windows，直接调用 git-bash.exe
 
-        如果不指定会话名称，会自动弹出 putty 的窗口供用户选择会话
-
-ConEmu 配置 git-bash 会话
-
-    直接调用 git-bash.exe
-
-        点击+号，新建一个Task名为 Bash::git-bash，命令文本框输入
+        点击+号，新建一个Task名为 {Bash::git-bash}，命令文本框输入
 
         set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-bash.exe --cd-to-home
 
         git-bash.exe 等同于 "%ProgramFiles%\Git\usr\bin\mintty.exe" /bin/bash -l
 
-关于 ConEmu 安装后自动生成的任务 {Bash::Git bash}
+3、配置 Anaconda 任务
 
-    如果不使用 tmux/zsh 状态栏工具，倒是可以正常使用，好处是支持 ConEmu 的颜色和背景方案。
+    点击+号，新建一个Task名为 {cmd::Anaconda}，命令文本框输入
 
-    如果运行 tmux/zsh 状态栏工具会错行，而且光标错位：conemu 是通过 cmd 实现对 bash 的连接，tmux 不能直接打开，在 ssh到服务器后使用 tmux 会出现显示的问题，在刷新后总会出现底部栏重叠，还有光标错位的问题。
+    cmd /k "C:\ProgramData\Anaconda3\Scripts\activate.bat C:\ProgramData\Anaconda3"  -new_console:d:%USERPROFILE%
 
-        set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-cmd.exe --no-cd --command=%ConEmuBaseDirShort%\conemu-msys2-64.exe /usr/bin/bash.exe -l -i -new_console:p
+4、配置 putty 任务
 
-ConEmu 配置 MSYS2 任务
+    直接调用 putty.exe
 
-    直接调用 mintty.exe，由它调用 shell 程序，这样显示效果由 mintty 决定。
+        点击+号，新建一个Task名为 {putty::your_putty_session}，命令文本框输入如下
+
+        C:\tools\PuTTY\putty.exe -load "your_putty_session_name"
+
+        如果不使用参数指定 putty 会话名，任务启动时会自动弹出 putty 的窗口供用户选择
+
+5、ConEmu 配置 MSYS2 任务
+
+    直接调用 mintty.exe，由它调用 shell 程序，这样显示效果由 mintty 决定，等效于上面的示例2。
 
         C:\msys64\usr\bin\mintty.exe -i /msys2.ico -t "%CONTITLE%" "/usr/bin/zsh" -new_console:C:"%D%\msys2.ico"
+
+        C:\msys64\usr\bin\mintty.exe -i /msys2.ico -t "%CONTITLE%" "/usr/bin/bash -l" -new_console:C:"%D%\msys2.ico"
 
     直接调用 bash.exe
 
@@ -859,7 +863,7 @@ console即控制台，是与操作系统交互的设备，系统将一些信息�
 
 在80年代个人计算机出现前，50-70年代的电子计算机都是多用户大型机，程序在大型机上运行，使用者使用不同的硬件设备连接到主机，这些设备给使用者提供键盘输入和输出显示字符的功能，称为终端机 Terminal。最简单的字符输入设备是电传打字机（Teletype, tty），所以现在也用 tty 来表示字符输入终端。输出显示字符的界面有不同的显示规格，从打字机的纸带到不同分辨率的电子显示屏等都不相同。终端实现用户界面的输入和输出功能，对字符进行编码以便与主机互相“理解”。在 70 年代 ANSI 标准确定以来，流行的终端机有 vt-100、xterm 等多种类型。ANSI 标准沿用至今，其它标准大都保持对此标准的兼容。现在的终端，大都支持使用 ANSI 编码的 xterm 终端。
 
-90年代局域网、互联网发展以来，C/S模式成为主流，网络上的主机（host）作为服务器（Server）给客户机（Client）连接以提供服务（除了http还有很多类型的服务）。对于字符类交互的服务，客户机需要给命令行程序营造出一个设备终端的仿真环境，以便跟主机进行交互，即所谓终端模拟器（Terminal Emulator）。UNIX/Linux 内核发展出了伪终端（pseudo tty，缩写为 pty）设备的概念顺应这一趋势，实现这个伪终端功能的程序即可把自己模拟成主机的终端。现在最流行的字符终端模拟器有 ssh、putty 等，图形终端模拟器有 xterm、vnc、rdp 等，远程连接使用的通信协议主要采用非对称密钥加密算法，一般利用 ssh 建立通信隧道。我们现在说的终端，一般都是指终端模拟器。
+90年代局域网、互联网发展以来，C/S模式成为主流，除了http服务，网络上服务器（Server）的作为主机（host），客户机（Client）连接它，主机和客户机间可以使用各种不同类型的连接。对于命令行交互的字符式连接（如 ssh/telnet 等），客户机需要给命令行程序营造出一个终端设备的仿真环境，以便跟主机进行交互，即所谓终端模拟器（Terminal Emulator）。UNIX/Linux 内核发展出了伪终端（pseudo tty，缩写为 pty）设备的概念顺应这一趋势，实现这个伪终端功能的程序即可把自己模拟成主机的终端。现在最流行的字符终端模拟器有 ssh、putty 等，图形终端模拟器有 vnc、rdp 等，远程连接使用的通信协议主要采用非对称密钥加密算法，一般利用 ssh 建立通信隧道。我们现在说的终端，一般都是指终端模拟器。
 
 现代的个人计算机 pc、notebook，甚至 pad、smart phone 的处理能力都超过当年的大型机，本身也可以作为服务器的角色对外提供客户机连接服务，实现机制各有不同。在 Windows 操作系统下，终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost，类似于 linux 的伪终端机制。这种连接本机的终端可称为本地终端。因为 Windows 的 conhost 实现机制跟 linux 伪终端实质上不同，第三方终端应用程序其实无法连接 conhost，所以有来自 Msys2 项目的 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。其它还有很多，详见章节 [Windows字符终端]。
 
@@ -1152,15 +1156,11 @@ Powerline fonts 或者 Nerd fonts 这些字体集，他们对已有的一些 (�
 
 字体要安装到你使用终端窗口工具的计算机上
 
-    你在 Windows 下使用 putty 或 mintty 等终端窗口工具连接到服务器，则字体要安装到你的 Windows 系统中。
+    你在 Windows 下使用 putty 或 mintty 等终端工具，则字体要安装到你的 Windows 系统中。
 
-    你在 MacOS 下使用 iTerm2 终端窗口工具连接服务器，则要在你的苹果电脑上安装这些字体。
+    你在 MacOS 下使用 iTerm2 终端工具，则要在你的苹果电脑上安装这些字体。
 
-如果你使用的是linux终端就比较省事了，直接安装到本机，Debian 发行版自带 powline 字体
-
-    # https://github.com/caiogondim/bullet-train.zsh
-    sudo apt install fonts-powerline
-    sudo apt install ttf-ancient-fonts
+如果你的计算机使用的是 linux 就比较省事，命令行直接安装到本机，很多发行版如 Debian 都带 powline 字体
 
 然后设置在终端窗口工具或编辑器使用该字体，这样才能正确显示。
 
@@ -1181,7 +1181,12 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 
 很多状态栏插件工具等，即使不支持 powerline，也会支持 powerline fonts 的字体。
 
-    # clone
+    # Debian 等发行版自带
+    # https://github.com/caiogondim/bullet-train.zsh
+    sudo apt install fonts-powerline
+    sudo apt install ttf-ancient-fonts
+
+    # 最新版
     git clone --depth=1 https://github.com/powerline/fonts.git
 
     # install
