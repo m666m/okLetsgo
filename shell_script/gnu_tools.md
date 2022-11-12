@@ -804,7 +804,7 @@ ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列�
 
 1、关于 ConEmu 安装后自动生成的任务 {Bash::Git bash}
 
-    因为上面所述原因，显示效果有缺陷。如果不使用 tmux/zsh 状态栏工具，可以正常使用，而且可以支持 ConEmu 的颜色和背景方案。如果运行 tmux 或 bash/zsh 状态栏工具：在刷新后会出现底部栏重叠，还有光标错位的问题。这种情况下，建议配置任务为直接调用 mintty.exe，用参数加载 bash，在 bash 中调用 ssh/tmux 的方式实现完美兼容。
+    使用普通的 linux 命令显示效果正常，而且支持 ConEmu 的颜色和背景方案。但如果使用 tmux/zsh 状态栏工具，因为上面所述原因，显示效果有缺陷：在刷新后会出现底部栏重叠，还有光标错位的问题。这种情况下，建议见下面的示例 2。
 
         set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-cmd.exe --no-cd --command=%ConEmuBaseDirShort%\conemu-msys2-64.exe /usr/bin/bash.exe -l -i -new_console:p
 
@@ -812,13 +812,13 @@ ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列�
 
 2、配置 git-bash 任务
 
-    需要安装 git for Windows，直接调用 git-bash.exe
+    简单使用，安装 git for Windows，配置任务为直接调用 git-bash.exe，或直接调用 mintty.exe，用参数加载 bash，在 bash 中使用 ssh/tmux 效果是完美的。复杂点的可以安装 MSYS2（MinGW64)工具包，见下面示例 5。
 
         点击+号，新建一个Task名为 {Bash::git-bash}，命令文本框输入
 
         set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-bash.exe --cd-to-home
 
-        git-bash.exe 等同于 "%ProgramFiles%\Git\usr\bin\mintty.exe" /bin/bash -l
+        注：git-bash.exe 其实是封装执行 `mintty.exe /bin/bash -l`
 
 3、配置 Anaconda 任务
 
