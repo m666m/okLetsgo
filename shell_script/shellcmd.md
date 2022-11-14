@@ -62,6 +62,8 @@ ${}用于明确界定变量，与$var并没有区别，但是界定更清晰
     A="to"
     echo $AB 不如 echo ${A}B
 
+    变量展开见下面 ${变量名[@]} 的用法
+
 变量 ZSH_CUSTOM 有值就用，没有就用后面的，这个用法比较独特
 
     # https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md
@@ -448,6 +450,13 @@ readonly IPV6_RESERVED_IPADDRS=(
     ff00::/8
 )
 for private_addr in "${IPV6_RESERVED_IPADDRS[@]}" ; do $(ip6tables -t mangle -A VVTAB -d $private_addr -j RETURN); done
+
+#################################################
+#
+# 判断语句包装
+is_ipv4_address() {
+    [ $(grep -Ec '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' <<<"$1") -ne 0 ]
+}
 
 ```
 
