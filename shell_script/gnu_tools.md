@@ -4146,14 +4146,25 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
     # truncate -s 0 /var/log/yum.log
     > your_file.txt
 
-### nc 简单的端口通信
+### natcat(nc) 简单的端口通信
 
-    sudo apt update && sudo apt -y install ncat
+开源项目持续性不稳定，历史较复杂
 
-    nc -l <端口>
+    原始 nc(netcat)，在 2007 年发布 1.10 稳定版本之后，就不再更新了。它的原始版本是一个类Unix程序，原作者 Hobbit。
 
-    nc 192.168.200.27 <端口>
-    然后直接输入文字即可简单通信
+    现在一般用的是 GNU 项目维护的 GNU Netcat，维护目的是提升 nc 在其他平台的可移植性的同时保持对原始 nc 的兼容性。安装 netcat后，nc 是 netcat 的 alias，命令行里输入 nc 等于输入 netcat。
+
+    Ncat 是 Nmap 项目的作者 Fyodor，在原始 Netcat 之上新增功能二次开发的另一款强大工具，也就是说 Netcat 有的功能 Ncat 都具备，并且 ncat还有更多强大的功能。安装了 ncat 后，nc、netcat 都成了 ncat 的 alias，命令行里输入这三者都是一样的。
+
+运行服务端
+
+    nc -l 5678
+
+运行客户端
+
+    nc 127.0.0.1 5678 或 telnet 127.0.0.1 5678
+
+客户端输入文字即可显示在服务端
 
 对本机端口转发来说，nc是个临时的端口转发的好工具，永久的端口转发用iptables。
 
