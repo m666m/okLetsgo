@@ -613,12 +613,17 @@ BoldWhite=255,255,255
 
 ### 其他本地终端模拟器
 
-WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装
-
-    速度超级快，兼容性非常好，左侧就是文件夹树方便sftp，命令行输出还支持标签折叠，就用它了！
+WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装。速度超级快，兼容性非常好，左侧就是文件夹树方便sftp，命令行输出还支持标签折叠，就用它了！
 
     https://github.com/kingToolbox/WindTerm
         https://kingtoolbox.github.io/
+
+    https://zhuanlan.zhihu.com/p/550149638
+    初次使用注意关闭主密码、关闭自动锁屏的功能。否则只能编辑 user.config 文件
+
+        干掉 application.fingerprint 和 application.masterPassword
+
+        再找到 .wind/profiles/default.v10/terminal/user.sessions 文件删除 session.autoLogin 就可以将主密码设置为空字符串了，之后再来修改主密码，就 OK 了。
 
 alacritty 使用gpu进行显示加速的本地终端模拟器，在 Windows 下使用 powershell
 
