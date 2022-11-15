@@ -652,7 +652,7 @@ cmder 推荐了几个本地终端模拟器，可以嵌入 cmder 代替 ConEmu
 
 Windows Terminal
 
-Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API 和 新的 ConPTY，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
+    Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API 和 新的 ConPTY，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
 
     https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/
 
@@ -661,7 +661,7 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
     # https://github.com/microsoft/terminal/releases
     winget install --id=Microsoft.WindowsTerminal -e
 
-独立的 powershell 7，从这个版本开始不跟随 Windows 发布了
+独立的 Powershell 7，从这个版本开始不跟随 Windows 发布了
 
     https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
 
@@ -670,7 +670,7 @@ Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` �
     https://github.com/nushell/nushell
         https://www.nushell.sh/zh-CN/book/thinking_in_nu.html
 
-clink 在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入的命令
+clink 在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
 
     https://github.com/chrisant996/clink
         不再更新了 https://github.com/mridgers/clink
