@@ -613,6 +613,13 @@ BoldWhite=255,255,255
 
 ### 其他本地终端模拟器
 
+WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装
+
+    速度超级快，兼容性非常好，左侧就是文件夹树方便scp，命令行输出还支持标签折叠，就用它了！
+
+    https://github.com/kingToolbox/WindTerm
+        https://kingtoolbox.github.io/
+
 alacritty 使用gpu进行显示加速的本地终端模拟器，在 Windows 下使用 powershell
 
     https://github.com/alacritty/alacritty
@@ -632,11 +639,6 @@ Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
     https://www.warp.dev/
         https://github.com/warpdotdev/Warp
         主题 https://github.com/warpdotdev/themes
-
-WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用
-
-    https://github.com/kingToolbox/WindTerm
-        https://kingtoolbox.github.io/
 
 cmder 推荐了几个本地终端模拟器，可以嵌入 cmder 代替 ConEmu
 
@@ -3773,6 +3775,14 @@ There are three different implementations:
 如果嵌入式设备传送文件，没有sftp、ftp时，用这个，速率较慢，误码率较高，大文件传送需要自行做 hash 校验。
 
     https://blog.csdn.net/mynamepg/article/details/81118580
+
+如果你的终端工具支持 zmodem 工具，使用起来比较方便
+
+    sudo apt install lrzsz
+
+    $ rz
+    **B0100000023be50eive.**B0100000023be50
+    直接把你要发送的文件拖动到你的终端工具窗口
 
 ### 压缩解压缩
 
