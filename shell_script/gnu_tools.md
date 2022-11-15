@@ -617,7 +617,7 @@ alacritty 使用gpu进行显示加速的本地终端模拟器，在 Windows 下�
 
     https://github.com/alacritty/alacritty
 
-WezTerm GPU 加速跨平台终端仿真器和多路复用器
+WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用
 
     https://github.com/wez/wezterm
         https://wezfurlong.org/
@@ -629,11 +629,18 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/Ma
 
     Warp 号称比 iTerm2 顺滑，半开源 https://github.com/warpdotdev/Warp
 
-cmder 推荐的本地终端模拟器，可以嵌入 cmder 代替 ConEmu
+WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用
+
+    https://github.com/kingToolbox/WindTerm
+        https://kingtoolbox.github.io/
+
+cmder 推荐了几个本地终端模拟器，可以嵌入 cmder 代替 ConEmu
 
     https://github.com/cmderdev/cmder/wiki/Seamless-Terminus-integration
 
-        Tabby（原名Terminus）跨平台的终端模拟器 https://github.com/Eugeny/tabby
+        Tabby（原名Terminus）跨平台的终端模拟器，electron + nodejs 写的，支持终端多路复用，目前不支持导入 putty 的站点 https://github.com/Eugeny/tabby
+        目前使用sz传输大文件时文件会损坏，老老实实的用 sftp 吧
+            使用介绍 https://zhuanlan.zhihu.com/p/447977207
 
     https://github.com/cmderdev/cmder/wiki/Seamless-Hyper-integration
 
@@ -645,10 +652,13 @@ cmder 推荐的本地终端模拟器，可以嵌入 cmder 代替 ConEmu
 
 Windows Terminal
 
-Windows 10 现在推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API 和 新的 ConPTY，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
+Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API 和 新的 ConPTY，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
+
+    https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/
+
+    https://www.zhihu.com/question/303307670
 
     # https://github.com/microsoft/terminal/releases
-
     winget install --id=Microsoft.WindowsTerminal -e
 
 独立的 powershell 7，从这个版本开始不跟随 Windows 发布了
@@ -667,7 +677,7 @@ clink 在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入�
 
 ### 终端多路复用器
 
-Windows 下的命令行终端类型很多，如果想统一在一个程序下x标签化管理各个窗口，这样的程序成为 terminal multiplexer。
+Windows 下的命令行终端类型很多，如果想统一在一个程序下x标签化管理各个窗口，这样的程序称为终端多路复用器 terminal multiplexer。
 
 #### Supper Putty
 
@@ -743,31 +753,32 @@ Windows 下的命令行终端类型很多，如果想统一在一个程序下x�
 
 #### ConEmu 和 Cmder
 
-最大的缺点是不稳定，反应速度偶尔很慢，估计跟它基于 Windows conhost，连带支持 unix pty 这样包打一切的实现机制有关。
-
 ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器。不止是个终端多路复用器，他还自己实现了对 cmd 和 pty 两种类型的终端模拟。
 
     https://conemu.github.io/
 
-    console 类似ConEmu的软件，都不大更新了
-        https://sourceforge.net/projects/console/
-        console2 https://github.com/cbucher/console
+    console 类似ConEmu的软件
+        console2 不更新了2021 https://github.com/cbucher/console
+            console 不更新了2013 https://sourceforge.net/projects/console/
 
-    ConEmu\ConEmu 目录下集成几个常用工具
+ConEmu 最大的缺点是不稳定，反应速度偶尔很慢，估计跟它基于 Windows conhost，连带支持 unix pty 这样包打一切的实现机制有关。
 
-        clink 使 cmd 像 bash 按tab键自动完成
+ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器。不止是个终端多路复用器，他还自己实现了对 cmd 和 pty 两种类型的终端模拟。
 
-        wslbridge  使 mintty 或 ConEmu 可以支持 wsl （Windows Subsystem for Linux）
+ConEmu\ConEmu 目录下集成几个常用工具
 
-            不再更新了 https://github.com/rprichard/wslbridge/
+    clink 使 cmd 像 bash 按tab键自动完成
 
-            wslbridge2 手动安装这个吧
+    wslbridge 使 mintty 或 ConEmu 可以支持 wsl （Windows Subsystem for Linux）
 
-                https://github.com/Biswa96/wslbridge2
+        wslbridge2 https://github.com/Biswa96/wslbridge2
+            wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
 
-    ConEmu 色彩方案
+        Windows 10 v1809 推出的 ConPTY 接口支持第三方终端模拟器了，不知道这个插件后续发展
 
-        https://github.com/joonro/ConEmu-Color-Themes
+ConEmu 色彩方案
+
+    https://github.com/joonro/ConEmu-Color-Themes
 
 Cmder 是一个软件包，整合上述几个工具无需安装直接使用的软件包
 
@@ -3752,6 +3763,12 @@ There are three different implementations:
     aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce  --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
 浏览器搜索插件：aria2 相关，安装后设置aip-key，可在浏览器中直接调用Motrix运行的aria2进程。
+
+### ZModem文件传输协议工具 rs rz
+
+如果嵌入式设备传送文件，没有sftp、ftp时，用这个，速率较慢，误码率较高，大文件传送需要自行做 hash 校验。
+
+    https://blog.csdn.net/mynamepg/article/details/81118580
 
 ### 压缩解压缩
 
