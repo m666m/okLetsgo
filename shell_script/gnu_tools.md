@@ -627,7 +627,11 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/Ma
     https://github.com/kovidgoyal/kitty
         https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
 
-    Warp 号称比 iTerm2 顺滑，半开源 https://github.com/warpdotdev/Warp
+Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
+
+    https://www.warp.dev/
+        https://github.com/warpdotdev/Warp
+        主题 https://github.com/warpdotdev/themes
 
 WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用
 
