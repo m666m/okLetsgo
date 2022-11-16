@@ -4548,7 +4548,9 @@ icmp测试网络连通情况
 
 ### 删除大量文件的最快方法
 
-    # https://web.archive.org/web/20130929001850/http://linuxnote.net/jianingy/en/linux/a-fast-way-to-remove-huge-number-of-files.html
+    https://web.archive.org/web/20130929001850/
+
+    http://linuxnote.net/jianingy/en/linux/a-fast-way-to-remove-huge-number-of-files.html
 
     mkdir empty && rsync -r --delete empty/ some-dir && rmdir some-dir
 
