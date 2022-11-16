@@ -1,6 +1,7 @@
 # numpy/pandas 常用方法
 
 - [numpy/pandas 常用方法](#numpypandas-常用方法)
+  - [科学计算的几个常用库](#科学计算的几个常用库)
   - [各个库取最大最小的函数区别，以取最小min()为例](#各个库取最大最小的函数区别以取最小min为例)
     - [python.min()    如果有None会将None作为最小值](#pythonmin----如果有none会将none作为最小值)
     - [DataFrame.min() 默认排除 NA/null 值](#dataframemin-默认排除-nanull-值)
@@ -69,6 +70,21 @@
     - [ufunc对象](#ufunc对象)
       - [np.frompyfunc() 实现自定义ufunc对象](#npfrompyfunc-实现自定义ufunc对象)
     - [数组广播机制](#数组广播机制)
+
+## 科学计算的几个常用库
+
+都自带绘图功能
+
+    gnuplot http://www.gnuplot.info/
+        https://sourceforge.net/projects/gnuplot/files/gnuplot/
+
+    scilab https://www.scilab.org/
+
+    matplotlib https://matplotlib.org/
+
+    scipy https://scipy.org/
+            https://numpy.org/
+            https://pandas.pydata.org/
 
 ## 各个库取最大最小的函数区别，以取最小min()为例
 
