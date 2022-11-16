@@ -3777,17 +3777,17 @@ There are three different implementations:
 
 ### ZModem文件传输协议工具 rs rz
 
-如果嵌入式设备传送文件，没有sftp、ftp时，用这个，速率较慢，误码率较高，大文件传送需要自行做 hash 校验。
+如果嵌入式设备传送文件，没有 sftp、ftp 时，用 rs rz，缺点是速率较慢误码率较高，大文件传送需要自行做 hash 校验。
 
     https://blog.csdn.net/mynamepg/article/details/81118580
 
-如果你的终端工具支持 zmodem 工具，使用起来比较方便
+如果你的终端工具支持 zmodem 协议，使用起来比较方便
 
     sudo apt install lrzsz
 
     $ rz
     **B0100000023be50eive.**B0100000023be50
-    直接把你要发送的文件拖动到你的终端工具窗口
+    然后直接把你要发送的文件拖动到你的终端工具窗口
 
 ### 压缩解压缩
 
@@ -4470,6 +4470,81 @@ rm -rf "${LATEST_LINK}"
 ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 ```
+
+### 网络故障排查
+
+    https://www.debian.org/doc/manuals/debian-reference/ch05.zh-cn.html
+
+不建议使用ifconfig，而推荐使用新的 ip 命令，未来net-tools套件会被完全废弃，功能上被iproute2套件取代，见[二者命令详细对比](https://linux.cn/article-4326-1.html)。
+
+    # apt install net-tools
+    ifconfig
+
+端口是否可用
+
+    curl -vvv 127.0.0.1:443
+
+    wget 127.0.0.1:443
+
+    ssh -vvv -p 443 127.0.0.1
+
+    telnet 127.0.0.1 443
+
+当前对外开放的监听端口
+
+    # 127.0.0.1 只对本机开放
+    # 0.0.0.0   外来连接也开放
+    netstat -ant
+
+icmp测试网络连通情况
+
+    ping -t 192.168.0.1
+
+    # apt install dnsutils
+    whois
+    dig/nslookup
+
+    $ nslookup baidu.com
+    Non-authoritative answer:
+    Server:  192.168.0.1
+    Address:  192.168.0.1
+
+    Name:    baidu.com
+    Addresses:  220.181.38.148
+            220.181.38.251
+
+查看路由节点
+
+    # apt install iputils
+    $ traceroute www.bing.com
+    traceroute to www.bing.com (204.79.197.200), 30 hops max, 60 byte packets
+    1  * * *
+    2  96.44.162.49.static.quadranet.com (96.44.162.49)  0.852 ms  0.896 ms  0.855 ms
+    3  lax1-fatpipe-1.it7.net (69.12.70.232)  1.818 ms lax1-fatpipe-1.it7.net (69.12.70.234)  0.327 ms lax1-fatpipe-1.it7.net (69.12.70.232)  1.711 ms
+    4  69.12.69.1 (69.12.69.1)  9.722 ms microsoft.as8075.any2ix.coresite.com (206.72.210.143)  2.802 ms 69.12.69.1 (69.12.69.1)  9.714 ms
+    5  * 206.72.211.94.any2ix.coresite.com (206.72.211.94)  1.325 ms *
+    6  * * *
+    7  * * *
+    8  * * *
+
+    # Windows: tracert www.bing.com
+
+查看 mtu
+
+    $ sudo apt install iputils-tracepath
+
+    $ tracepath www.baidu.com
+    1?: [LOCALHOST]                      pmtu 1500
+    1:  192.168.0.1                                           0.554ms
+    1:  192.168.0.1                                           0.670ms
+    2:  192.168.1.1                                           1.232ms
+    3:  192.168.1.1                                           1.182ms pmtu 1492
+    3:  39.71.56.1                                            3.526ms
+    4:  112.232.166.9                                         3.512ms
+    29:  no reply
+    30:  no reply
+    Too many hops: pmtu 1492
+    Resume: pmtu 1492
 
 ### 删除大量文件的最快方法
 
@@ -5745,78 +5820,3 @@ Linux下新建用户密码过期时间是从/etc/login.defs文件中PASS_MAX_DAY
 解决方案2：
 
     kill cron进程，因为cron进程是自动重生的
-
-## 网络故障排查
-
-    https://www.debian.org/doc/manuals/debian-reference/ch05.zh-cn.html
-
-不建议使用ifconfig，而推荐使用新的 ip 命令，未来net-tools套件会被完全废弃，功能上被iproute2套件取代，见[二者命令详细对比](https://linux.cn/article-4326-1.html)。
-
-    # apt install net-tools
-    ifconfig
-
-端口是否可用
-
-    curl -vvv 127.0.0.1:443
-
-    wget 127.0.0.1:443
-
-    ssh -vvv -p 443 127.0.0.1
-
-    telnet 127.0.0.1 443
-
-当前对外开放的监听端口
-
-    # 127.0.0.1 只对本机开放
-    # 0.0.0.0   外来连接也开放
-    netstat -ant
-
-icmp测试网络连通情况
-
-    ping -t 192.168.0.1
-
-    # apt install dnsutils
-    whois
-    dig/nslookup
-
-    $ nslookup baidu.com
-    Non-authoritative answer:
-    Server:  192.168.0.1
-    Address:  192.168.0.1
-
-    Name:    baidu.com
-    Addresses:  220.181.38.148
-            220.181.38.251
-
-查看路由节点
-
-    # apt install iputils
-    $ traceroute www.bing.com
-    traceroute to www.bing.com (204.79.197.200), 30 hops max, 60 byte packets
-    1  * * *
-    2  96.44.162.49.static.quadranet.com (96.44.162.49)  0.852 ms  0.896 ms  0.855 ms
-    3  lax1-fatpipe-1.it7.net (69.12.70.232)  1.818 ms lax1-fatpipe-1.it7.net (69.12.70.234)  0.327 ms lax1-fatpipe-1.it7.net (69.12.70.232)  1.711 ms
-    4  69.12.69.1 (69.12.69.1)  9.722 ms microsoft.as8075.any2ix.coresite.com (206.72.210.143)  2.802 ms 69.12.69.1 (69.12.69.1)  9.714 ms
-    5  * 206.72.211.94.any2ix.coresite.com (206.72.211.94)  1.325 ms *
-    6  * * *
-    7  * * *
-    8  * * *
-
-    # Windows: tracert www.bing.com
-
-查看 mtu
-
-    $ sudo apt install iputils-tracepath
-
-    $ tracepath www.baidu.com
-    1?: [LOCALHOST]                      pmtu 1500
-    1:  192.168.0.1                                           0.554ms
-    1:  192.168.0.1                                           0.670ms
-    2:  192.168.1.1                                           1.232ms
-    3:  192.168.1.1                                           1.182ms pmtu 1492
-    3:  39.71.56.1                                            3.526ms
-    4:  112.232.166.9                                         3.512ms
-    29:  no reply
-    30:  no reply
-    Too many hops: pmtu 1492
-    Resume: pmtu 1492
