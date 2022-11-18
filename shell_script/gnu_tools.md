@@ -4219,7 +4219,7 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
     # truncate -s 0 /var/log/yum.log
     > your_file.txt
 
-### natcat(nc) 简单的端口通信
+### netcat(nc) 简单的端口通信
 
 开源项目持续性不稳定，历史较复杂
 
@@ -4251,6 +4251,31 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
     # 在目的主机上执行此命令来采用bzip2、gzip对数据进行压缩，并将备份文件保存在当前目录。
     netcat -l -p 1234 | bzip2 > partition.img
+
+还有个加强版 socat(socket cat)
+
+    socat [参数]  <地址1>  <地址2>
+
+使用 socat 需要提供两个地址，然后 socat 做的事情就是把这两个地址的数据流串起来，把第左边地址的输出数据传给右边，同时又把右边输出的数据传到左边。<https://zhuanlan.zhihu.com/p/347722248>
+
+最简单的地址就是一个减号“-”，代表标准输入输出，而在命令行输入：
+
+    socat - -
+
+把标准输入和标准输出对接，输入什么显示什么。除了减号地址外，socat 还支持：TCP, TCP-LISTEN, UDP, UDP-LISTEN, OPEN, EXEC, SOCKS, PROXY 等多种地址，用于端口监听、链接，文件和进程读写，代理桥接等等。
+
+类似 nc 的连通性测试，两台主机到底网络能否联通：
+
+    socat - TCP-LISTEN:8080               # 终端1 上启动 server 监听 TCP
+    socat - TCP:localhost:8080            # 终端2 上启动 client 链接 TCP
+
+在终端 1 上输入第一行命令作为服务端，并在终端 2 上输入第二行命令作为客户端去链接。
+
+[无安全性]把局域网下设备(如Nas、监控摄像头、网络服务器)的IPv4地址的端口转发到路由器的IPv6地址上
+
+    socat TCP6-LISTEN:{IPv6端口,远程访问的端口},reuseaddr,fork TCP4:{IPv4地址}:{IPv4端口}
+
+国内目前拨号路由器的端口都被屏蔽了，但是ipv6的端口是放开的。用 socat 简单的实现内网设备的端口转发到路由器对外开放。注意：你的内网设备对外开放端口，安全性由使用该端口的程序自行保障！
 
 ### scp 跨机远程拷贝
 
@@ -4556,7 +4581,7 @@ icmp测试网络连通情况
     Addresses:  220.181.38.148
             220.181.38.251
 
-查看路由节点
+traceroute 查看路由节点
 
     # apt install iputils
     $ traceroute www.bing.com
@@ -4588,6 +4613,10 @@ icmp测试网络连通情况
     30:  no reply
     Too many hops: pmtu 1492
     Resume: pmtu 1492
+
+用 tcpdump 抓包
+
+    https://zhuanlan.zhihu.com/p/74812069
 
 ### 删除大量文件的最快方法
 

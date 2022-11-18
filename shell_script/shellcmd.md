@@ -1461,7 +1461,7 @@ Perf是Linux kernel自带的系统性能优化工具。
 
 无论设备、端口、内存句柄等等，一切皆文件。
 
-lsof 查看进程打开的文件（sudo apt install lsof）
+lsof 查看指定进程号打开的文件（sudo apt install lsof）
 
     $ sudo lsof -p 28987
     COMMAND   PID USER   FD   TYPE     DEVICE SIZE/OFF    NODE NAME
@@ -1487,9 +1487,7 @@ fuser 查看占用文件的进程号（sudo apt install psmisc）
     $ sudo fuser /usr/lib/nginx/modules/ngx_mail_module.so
     /usr/lib/nginx/modules/ngx_mail_module.so: 28987m 28988m 28989m 28990m 28991m
 
-## 查看端口占用
-
-使用 ss 命令（iproute2 套件由操作系统默认安装了），比 netstat 命令看的信息更多
+使用 ss 命令（sudo apt install iproute2），比 netstat 命令看的信息更多
 
     # ss -aw 查看raw端口
     # ss -au 查看udp端口
