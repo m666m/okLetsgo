@@ -248,9 +248,10 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
 
 自带 bash，详见下面几个章节的详细介绍。
 
-    http://mintty.github.io/
-        https://github.com/mintty/mintty
+    https://github.com/mintty/mintty
         https://github.com/mintty/mintty/wiki/Tips
+        http://mintty.github.io/
+        帮助 https://mintty.github.io/mintty.1.html
 
     可以在 https://github.com/hsab/WSL-config/tree/master/mintty/themes 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
 
@@ -349,7 +350,7 @@ home 目录的隔离虽然使两个软件的设置互不干扰，但也使得 ss
 参考文章
 
     MSYS2 和 mintty 打造 Windows 下 Linux 工具体验
-        https://creaink.github.io/post/Computer/Windows/win-msys2/
+        https://creaink.github.io/post/Computer/Windows/win-msys2.html
 
     Windows 下 MSYS2 配置及填坑 https://hustlei.github.io/2018/11/msys2-for-win.html
 
@@ -500,18 +501,18 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 # https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
 Font=MesloLGS NF
 FontHeight=11
+FontSmoothing=full
+# FontWeight=700
+# FontIsBold=yes
+
+# 可自定义表情标签 https://github.com/mintty/mintty/wiki/Tips#installing-emoji-resources
 
 Columns=130
 Rows=40
 ScrollbackLines=12000
 
 CursorType=block
-AllowBlinking=yes
 CursorBlinks=no
-
-FontSmoothing=full
-# FontWeight=700
-# FontIsBold=yes
 
 # 语言设置
 # mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
@@ -533,8 +534,10 @@ Term=xterm-256color
 
 # 非通用标准的色彩项目，单独
 UnderlineColour=153,241,219
+AllowBlinking=yes
 
 # 自定义颜色方案，跟深色背景搭配
+# https://github.com/mintty/mintty/wiki/Tips#background-image
 Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
 BackgroundColour=13,25,38
 ForegroundColour=217,230,242
@@ -611,7 +614,29 @@ BoldWhite=255,255,255
 
 ```
 
+完全版安装 MSYS2 的 mintty 自带图片显示工具 showimg。
+
+如果想让 mintty 的命令行可以显示图片，可以安装个 lsix 脚本，因为 mintty 支持 Sixel 图形格式
+
+    https://www.linuxprobe.com/sixel-linux.html
+
+先在服务器端安装依赖包，会安装一堆的库
+
+    sudo apt install imagemagick
+
+然后把脚本 lsix 拷贝到你的终端的 /usr/bin/ 目录下即可
+
+    # 只要你的终端支持 Sixel 图形格式即可
+    git clone --depth=1 https://github.com/hackerb9/lsix
+
+就像 ls 命令那样使用 lsix。
+
 ### 其他本地终端模拟器
+
+ConPtyShell 使用Windows 10 的 ConPty 接口实现的本地终端
+
+    需要 Windows version >= 10 / 2019 1809 (build >= 10.0.17763)
+    https://github.com/antonioCoco/ConPtyShell
 
 WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装。速度快，兼容性较好，左侧就是文件夹树方便sftp，命令行输出还支持标签折叠
 
@@ -785,6 +810,9 @@ ConEmu\ConEmu 目录下集成几个常用工具
         wslbridge2 https://github.com/Biswa96/wslbridge2
             wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
 
+            # /bin/ 下安装 wslbridge2
+            mintty --WSL=Ubuntu
+
         Windows 10 v1809 推出的 ConPTY 接口支持第三方终端模拟器了，不知道这个插件后续发展
 
 ConEmu 色彩方案
@@ -885,9 +913,11 @@ console即控制台，是与操作系统交互的设备，系统将一些信息�
 
 在80年代个人计算机出现前，50-70年代的电子计算机都是多用户大型机，程序在大型机上运行，使用者使用不同的硬件设备连接到主机，这些设备给使用者提供键盘输入和输出显示字符的功能，称为终端机 Terminal。最简单的字符输入设备是电传打字机（Teletype, tty），所以现在也用 tty 来表示字符输入终端。输出显示字符的界面有不同的显示规格，从打字机的纸带到不同分辨率的电子显示屏等都不相同。终端实现用户界面的输入和输出功能，对字符进行编码以便与主机互相“理解”。在 70 年代 ANSI 标准确定以来，流行的终端机有 vt-100、xterm 等多种类型。ANSI 标准沿用至今，其它标准大都保持对此标准的兼容。现在的终端，大都支持使用 ANSI 编码的 xterm 终端。
 
-90年代局域网、互联网发展以来，C/S模式成为主流，除了http服务，网络上服务器（Server）的作为主机（host），客户机（Client）连接它，主机和客户机间可以使用各种不同类型的连接。对于命令行交互的字符式连接（如 ssh/telnet 等），客户机需要给命令行程序营造出一个终端设备的仿真环境，以便跟主机进行交互，即所谓终端模拟器（Terminal Emulator）。UNIX/Linux 内核发展出了伪终端（pseudo tty，缩写为 pty）设备的概念顺应这一趋势，实现这个伪终端功能的程序即可把自己模拟成主机的终端。现在最流行的字符终端模拟器有 ssh、putty 等，图形终端模拟器有 vnc、rdp 等，远程连接使用的通信协议主要采用非对称密钥加密算法，一般利用 ssh 建立通信隧道。我们现在说的终端，一般都是指终端模拟器。
+90年代局域网、互联网发展以来，C/S模式成为主流，除了http服务，网络上服务器（Server）的作为主机（host），客户机（Client）连接它，主机和客户机间可以使用各种不同类型的连接。对于命令行交互的字符式连接（如 ssh/telnet 等），客户机需要给命令行程序营造出一个终端设备的仿真环境，以便跟主机进行交互，即所谓终端模拟器（Terminal Emulator）。UNIX/Linux 内核发展出了伪终端（pseudo tty，缩写为 pty）设备的概念顺应这一趋势，实现这个伪终端功能的程序即可把自己模拟成主机的终端。现在最流行的字符终端模拟器有 putty、xterm 等，图形终端模拟器有 vnc、rdp 等，远程连接使用的通信协议主要采用非对称密钥加密算法，一般利用 ssh 建立通信隧道。我们现在说的终端，不再是真实的硬件设备，一般都是指软件终端模拟器。
 
-现代的个人计算机 pc、notebook，甚至 pad、smart phone 的处理能力都超过当年的大型机，本身也可以作为服务器的角色对外提供客户机连接服务，实现机制各有不同。在 Windows 操作系统下，终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost，类似于 linux 的伪终端机制。这种连接本机的终端可称为本地终端。因为 Windows 的 conhost 实现机制跟 linux 伪终端实质上不同，第三方终端应用程序其实无法连接 conhost，所以有来自 Msys2 项目的 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。其它还有很多，详见章节 [Windows字符终端]。
+现代的个人计算机 pc、notebook，甚至 pad、smart phone 的处理能力都超过当年的大型机，本身也可以作为服务器的角色对外提供客户机连接服务，实现机制各有不同。在 Windows 操作系统下，终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost，类似于 linux 的伪终端机制。这种连接本机的终端可称为本地终端，或是软件进入“console mode”。因为 Windows 的 conhost 实现机制跟 linux 伪终端实质上不同，第三方终端应用程序其实无法连接 conhost，所以有来自 Msys2 项目的 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，可设置 mintty 的配置文件 `ConPTY=true` 支持这个功能。
+
+其它还有很多，详见章节 [Windows字符终端]。
 
 参见终端的历史演进
 
@@ -4221,6 +4251,10 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
     可以 ssh 登陆才能 scp 文件
 
+scp 使用 rcp 传输文件，使用 ssh 进行身份验证和加密。所以命令行用法跟 rcp 一致。
+
+scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了远程文件管理功能如建立或删除文件、支持断点续传等，单纯看速度 scp 更快。Windows 下二者是 WinSCP 和 FileZilla。
+
 基本用法
 
     后缀有没有目录标识‘/’导致拷贝为目录下或目录名
@@ -4275,7 +4309,9 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
 用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器。
 
-默认使用文件大小和修改时间决定文件是否需要更新。
+    默认设置是使用文件大小和修改时间来判断文件是否需要更新
+
+scp 不占资源，不会提高多少系统负荷，在这一点上，rsync就远远不及它了。虽然 rsync比scp会快一点，但当小文件众多的情况下，rsync会导致硬盘I/O非常高，而scp基本不影响系统正常使用。所以使用时根据自己的情况酌情决定选用哪个。
 
 rsync 命令提供使用的 OPTION 及功能
 
