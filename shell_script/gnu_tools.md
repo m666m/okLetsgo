@@ -3811,13 +3811,20 @@ There are three different implementations:
 
     https://blog.csdn.net/mynamepg/article/details/81118580
 
+    mintty 不支持 https://github.com/mintty/mintty/issues/235
+
 如果你的终端工具支持 zmodem 协议，使用起来比较方便
 
     sudo apt install lrzsz
 
     $ rz
     **B0100000023be50eive.**B0100000023be50
+
     然后直接把你要发送的文件拖动到你的终端工具窗口
+
+    $ sha1sum your_file
+
+    记得比对下校验码，防止误码
 
 ### 压缩解压缩
 
