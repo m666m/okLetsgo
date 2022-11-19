@@ -1242,15 +1242,11 @@ sar 命令选项    功能
     18:47:14        all      0.25      0.00      1.31      0.00      0.00     98.44
     18:47:14          0      0.75      0.00      0.75      0.00      0.00     98.49
     18:47:14          1      0.00      0.00      1.99      0.00      0.00     98.01
-    18:47:14          2      0.00      0.00      1.26      0.00      0.00     98.74
-    18:47:14          3      0.25      0.00      1.25      0.00      0.00     98.50
 
     Average:        CPU     %user     %nice   %system   %iowait    %steal     %idle
     Average:        all      0.30      0.00      1.10      0.00      0.00     98.60
     Average:          0      0.00      0.00      1.01      0.00      0.00     98.99
     Average:          1      0.20      0.00      1.20      0.00      0.00     98.60
-    Average:          2      0.60      0.00      1.00      0.00      0.00     98.40
-    Average:          3      0.40      0.00      1.20      0.00      0.00     98.40
 
     $ mpstat -P ALL 5 3
     Linux 5.10.103-v7l+ (your_host)     27/07/22        _armv7l_        (4 CPU)
@@ -1259,8 +1255,6 @@ sar 命令选项    功能
     18:29:03     all    0.40    0.00    1.35    0.00    0.00    0.00    0.00    0.00    0.00   98.25
     18:29:03       0    0.40    0.00    1.40    0.00    0.00    0.00    0.00    0.00    0.00   98.20
     18:29:03       1    0.40    0.00    1.20    0.00    0.00    0.00    0.00    0.00    0.00   98.40
-    18:29:03       2    0.60    0.00    1.81    0.00    0.00    0.00    0.00    0.00    0.00   97.59
-    18:29:03       3    0.20    0.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00   98.80
 
 按执行的进程查看
 
@@ -1269,14 +1263,10 @@ sar 命令选项    功能
 
     18:29:59      UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
     18:30:04     1000      1033    0.20    0.20    0.00    0.00    0.40     2  tmux: server
-    18:30:04        0      6738    0.00    0.20    0.00    0.00    0.20     3  kworker/3:2-events
     18:30:04        0      9559    0.00    0.20    0.00    0.00    0.20     1  kworker/1:2-events
     18:30:04        0     17923    0.20    0.00    0.00    0.00    0.20     0  kworker/0:1-mm_percpu_wq
-    18:30:04        0     18227    0.00    0.20    0.00    0.20    0.20     2  kworker/2:3-events
     18:30:04     1000     21584    0.59    0.79    0.00    0.00    1.39     2  pidstat
-    18:30:04     1000     27015    0.20    0.20    0.00    0.00    0.40     1  watch
     18:30:04     1000     27157    0.00    0.40    0.00    0.00    0.40     2  top
-    18:30:04     1000     29113    0.59    0.20    0.00    0.00    0.79     2  watch
 
 #### 再找io流量高的
 
@@ -1383,12 +1373,6 @@ sar 命令选项    功能
     19:04:06     atmptf/s  estres/s retrans/s isegerr/s   orsts/s
     19:04:07         0.00      0.00      0.00      0.00      0.00
 
-    19:04:07     active/s passive/s    iseg/s    oseg/s
-    19:04:08         0.00      0.00      5.00      5.00
-
-    19:04:07     atmptf/s  estres/s retrans/s isegerr/s   orsts/s
-    19:04:08         0.00      0.00      0.00      0.00      0.00
-
 #### 可显示指定日期指定项目的信息
 
     # 网络
@@ -1401,14 +1385,9 @@ sar 命令选项    功能
     Address   Kbytes Mode  Offset           Device    Mapping
     00010000     416 r-x-- 0000000000000000 0b3:00002 tmux
     00087000       4 r---- 0000000000067000 0b3:00002 tmux
-    00088000       4 rw--- 0000000000068000 0b3:00002 tmux
-    00089000      16 rw--- 0000000000000000 000:00000   [ anon ]
-    01a8a000     132 rw--- 0000000000000000 000:00000   [ anon ]
     01aab000     904 rw--- 0000000000000000 000:00000   [ anon ]
     b67d5000      36 r-x-- 0000000000000000 0b3:00002 libnss_files-2.28.so
     b67de000      64 ----- 0000000000009000 0b3:00002 libnss_files-2.28.so
-    b67ee000       4 r---- 0000000000009000 0b3:00002 libnss_files-2.28.so
-    b67ef000       4 rw--- 000000000000a000 0b3:00002 libnss_files-2.28.so
     ffff0000       4 r-x-- 0000000000000000 000:00000   [ anon ]
     mapped: 9160K    writeable/private: 1296K    shared: 28K
 
@@ -1471,23 +1450,13 @@ lsof 查看指定进程号打开的文件（sudo apt install lsof）
     nginx   28987 root  mem    REG      179,2   130696  129293 /usr/lib/nginx/modules/ngx_stream_module.so
     nginx   28987 root  mem    REG      179,2    82872  129283 /usr/lib/nginx/modules/ngx_mail_module.so
     ...
-    nginx   28987 root  DEL    REG        0,1             3073 /dev/zero
-    nginx   28987 root    0u   CHR        1,3      0t0       5 /dev/null
-    nginx   28987 root    1u   CHR        1,3      0t0       5 /dev/null
-    nginx   28987 root    2w   REG      179,2        0  130189 /var/log/nginx/error.log
-    nginx   28987 root    3u  unix 0xf367c717      0t0 1888607 type=STREAM
-    nginx   28987 root    4w   REG      179,2        0  125086 /var/log/nginx/access.log
-    nginx   28987 root    5w   REG      179,2        0  130189 /var/log/nginx/error.log
-    nginx   28987 root    6u  IPv4    1891872      0t0     TCP *:http (LISTEN)
-    nginx   28987 root    7u  IPv6    1891873      0t0     TCP *:http (LISTEN)
-    nginx   28987 root    8u  unix 0x0967072f      0t0 1888608 type=STREAM
 
 fuser 查看占用文件的进程号（sudo apt install psmisc）
 
     $ sudo fuser /usr/lib/nginx/modules/ngx_mail_module.so
     /usr/lib/nginx/modules/ngx_mail_module.so: 28987m 28988m 28989m 28990m 28991m
 
-使用 ss 命令（sudo apt install iproute2），比 netstat 命令看的信息更多
+ss 命令（sudo apt install iproute2），比 netstat 命令看的信息更多
 
     # ss -aw 查看raw端口
     # ss -au 查看udp端口
