@@ -111,13 +111,15 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
 
     https://www.chiark.greenend.org.uk/~sgtatham/putty/
 
-    北极主题颜色 https://github.com/arcticicestudio/nord-putty
-        只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
-
     KiTTY
     从 putty 拉的分支而来，是对 putty 的易用性改进，共用putty的站点配置，增加了背景透明、支持站点列表的文件夹、自动化操作脚本，可以给站点加注释，还有便携版
 
         https://github.com/cyd01/KiTTY
+
+    北极主题颜色 https://github.com/arcticicestudio/nord-putty
+        只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
+
+    超多主题有 putty 的 https://github.com/mbadolato/iTerm2-Color-Schemes
 
 术语：会话 Session
 
@@ -4153,21 +4155,21 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
 ### dd 写入文件
 
-    dd所执行的复制为block块拷贝
+dd 命令是基于块（block）的复制，用途很多。
 
 用 boot.img 制作启动盘
 
     dd if=boot.img of=/dev/fd0 bs=1440k
 
-读取挂载在存储设备上的iso文件，进行 gpg 校验
+读取挂载在存储设备上的 iso 文件，进行 gpg 校验
 
     dd if=/dev/sdb | gpg --keyid-format 0xlong --verify my_signature.sig -
 
-将本地的/dev/hdb整盘备份到/dev/hdd
+将本地的 /dev/hdb 整盘备份到 /dev/hdd
 
     dd if=/dev/hdb of=/dev/hdd
 
-将/dev/hdb全盘数据备份到指定路径的image文件
+将 /dev/hdb 全盘数据备份到指定路径的 image 文件
 
     dd if=/dev/hdb of=/root/image
 
@@ -4175,7 +4177,7 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
     dd if=/root/image of=/dev/hdb
 
-备份/dev/hdb全盘数据，并利用gzip工具进行压缩，保存到指定路径
+备份 /dev/hdb 全盘数据，并利用 gzip 工具进行压缩，保存到指定路径
 
     dd if=/dev/hdb | gzip > /root/image.gz
 
@@ -4183,9 +4185,9 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
     gzip -dc /root/image.gz | dd of=/dev/hdb
 
-备份与恢复MBR
+备份与恢复 MBR
 
-备份磁盘开始的512个字节大小的MBR信息到指定文件：
+备份磁盘开始的 512 个字节大小的 MBR 信息到指定文件：
 
     # count=1指仅拷贝一个块；bs=512指块大小为512个字节。
     dd if=/dev/hda of=/root/image count=1 bs=512
@@ -4203,13 +4205,13 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
     dd if=/dev/mem of=/root/mem.bin bs=1024 (指定块大小为1k)
 
-拷贝光盘内容到指定文件夹，并保存为cd.iso文件
+拷贝光盘内容到指定文件夹，并保存为 cd.iso 文件
 
     dd if=/dev/cdrom(hdc) of=/root/cd.iso
 
 ### 快速清零文件和快速建立文件
 
-最快建立大文件的方式不是用 dd，用 truncate 创建稀疏文件
+最快建立大文件的方式是用 truncate 命令
 
     # dd if=/dev/zero of=fs.img bs=1M count=1M seek=1024
     truncate --size 10G test.db.bak
@@ -4539,6 +4541,14 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 ```
 
+### 删除大量文件的最快方法
+
+    https://web.archive.org/web/20130929001850/
+
+    http://linuxnote.net/jianingy/en/linux/a-fast-way-to-remove-huge-number-of-files.html
+
+    mkdir empty && rsync -r --delete empty/ some-dir && rmdir some-dir
+
 ### 网络故障排查
 
     https://www.debian.org/doc/manuals/debian-reference/ch05.zh-cn.html
@@ -4662,14 +4672,6 @@ Debian 的桌面图形界面使用 NetworkManager，这又是一大堆使用方�
 
     # 用nmcli命令让WiFi网卡连接热点
     nmcli dev wifi connect wifi_name password 123456 wep-key-type key ifname wlan0
-
-### 删除大量文件的最快方法
-
-    https://web.archive.org/web/20130929001850/
-
-    http://linuxnote.net/jianingy/en/linux/a-fast-way-to-remove-huge-number-of-files.html
-
-    mkdir empty && rsync -r --delete empty/ some-dir && rmdir some-dir
 
 ### 在当前目录启动一个简单的http服务器
 
