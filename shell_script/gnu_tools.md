@@ -119,7 +119,10 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
     北极主题颜色 https://github.com/arcticicestudio/nord-putty
         只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
 
-    超多主题有 putty 的 https://github.com/mbadolato/iTerm2-Color-Schemes
+    超多主题颜色有 putty 的
+
+        http://ciembor.github.io/4bit/ 点击右上角“Get Scheme”
+        https://github.com/mbadolato/iTerm2-Color-Schemes
 
 术语：会话 Session
 
@@ -494,6 +497,8 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 #### mintty 美化
 
     字符终端的颜色配置说明 https://github.com/termstandard/colors
+
+    mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开网址 http://ciembor.github.io/4bit/
 
 如果是 git for Windows 的 mintty，编辑 ~/.minttyrc 文件为下面的内容
 
