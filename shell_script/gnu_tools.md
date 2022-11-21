@@ -258,7 +258,9 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
         http://mintty.github.io/
         帮助 https://mintty.github.io/mintty.1.html
 
-    可以在 https://github.com/hsab/WSL-config/tree/master/mintty/themes 找到很多主题，将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
+    有用的工具如 showimg，建议放到你的终端工具目录和ssh服务器端，执行之都可以在mintty下显示图片
+
+        https://github.com/mintty/utils
 
 mintty.exe 完美实现了 Windows 下 linux 软件的运行，模拟 pty 效果又快又好。缺点是运行 cmd 下的命令，有些字符解释的显示效果不一致，建议与 cmd 分别使用，不在 mintty 下使用 cmd 的命令。
 
@@ -496,9 +498,19 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
 #### mintty 美化
 
-    字符终端的颜色配置说明 https://github.com/termstandard/colors
+字符终端的颜色配置说明
 
-    mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开网址 http://ciembor.github.io/4bit/
+    https://github.com/termstandard/colors
+
+mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
+
+    http://ciembor.github.io/4bit/
+
+主题颜色
+
+        https://github.com/hsab/WSL-config/tree/master/mintty/themes
+
+将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
 
 如果是 git for Windows 的 mintty，编辑 ~/.minttyrc 文件为下面的内容
 
