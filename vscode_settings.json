@@ -32,9 +32,8 @@
     "diffEditor.ignoreTrimWhitespace": false,
     "window.newWindowDimensions": "offset", // "offset" maximized
     "window.autoDetectColorScheme": false,  // 深色背景下切换项目时会闪一下白，很烦人
-    "workbench.preferredDarkColorTheme": "MacOS Modern Dark - Big Sur Xcode Default",
-    "workbench.preferredLightColorTheme": "MacOS Modern Light - Big Sur Xcode Default",
-    "workbench.colorTheme": "Winter is Coming (Dark Black)",
+    //"workbench.preferredDarkColorTheme": "MacOS Modern Dark - Big Sur Xcode Default",
+    //"workbench.preferredLightColorTheme": "MacOS Modern Light - Big Sur Xcode Default",
     // https://code.visualstudio.com/api/references/theme-color
     // http://www.apeth.com/nonblog/stories/textmatebundle.html
     // 在线编辑 https://tmtheme-editor.herokuapp.com/#!/editor/theme/Monokai
@@ -101,6 +100,10 @@
     "files.trimTrailingWhitespace": true,
     // Python Docstring Generator
     "autoDocstring.docstringFormat": "numpy",
+    // 指定markdown格式化提供者(因为有多个插件支持)
+    "[markdown]": {
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one"
+    },
     // markdownlint
     "markdownlint.config": {
         "default": true,
@@ -254,7 +257,6 @@
         //"[x]"
     ],
     "todo-tree.general.statusBar": "tags",
-    //"todo-tree.tree.showScanModeButton": false,
     "gitlens.views.tags.branches.layout": "list",
     // vim airline
     "vim.statusBarColorControl": true,
@@ -273,4 +275,5 @@
     //
     // 下面这些是vscode自己加的，随时变
     //
+    "workbench.colorTheme": "Nord",
 }

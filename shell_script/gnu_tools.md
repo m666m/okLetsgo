@@ -502,9 +502,9 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
     https://github.com/termstandard/colors
 
-    zsh 下展示当前终端可以显示的颜色
+zsh 下展示当前终端可以显示的颜色
 
-        for code ({000..255}) print -P -- "$code: %F{$code}最左侧三位数字即颜色值Text Color%f"
+    for code ({000..255}) print -P -- "$code: %F{$code}最左侧三位数字即颜色值Text Color%f"
 
 mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
 
@@ -512,7 +512,7 @@ mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打�
 
 主题颜色
 
-        https://github.com/hsab/WSL-config/tree/master/mintty/themes
+    https://github.com/hsab/WSL-config/tree/master/mintty/themes
 
 将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
 
