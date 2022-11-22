@@ -258,7 +258,7 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
         http://mintty.github.io/
         帮助 https://mintty.github.io/mintty.1.html
 
-    有用的工具如 showimg，建议放到你的终端工具目录和ssh服务器端，执行之都可以在mintty下显示图片
+    有用的脚本如 showimg，建议放到本地的终端工具目录和ssh服务器端，执行之都可以在mintty下显示图片
 
         https://github.com/mintty/utils
 
