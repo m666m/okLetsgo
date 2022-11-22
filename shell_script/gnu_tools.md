@@ -502,6 +502,10 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
     https://github.com/termstandard/colors
 
+    zsh 下展示当前终端可以显示的颜色
+
+        for code ({000..255}) print -P -- "$code: %F{$code}最左侧三位数字即颜色值Text Color%f"
+
 mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
 
     http://ciembor.github.io/4bit/
@@ -1451,7 +1455,7 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
 
 初次进入zsh后会自动提示设置使用习惯，之后可以执行命令 `p10k configure` 再次设置。
 
-这个主题自带一堆状态插件包括git、virtualenv等等，如果之前在zsh的plugin里启用了git，可以删除。
+这个主题自带一堆状态插件包括 git、virtualenv 等，如果之前在 zsh 的 plugin 里启用了 git 等，可以删除。
 
 自定义启用它自带的哪些插件，编辑 ~/.p10k.zsh 文件，搜索 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS= 即可。
 
@@ -1463,13 +1467,14 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
 
 编辑 ~/.p10k.zsh 文件，搜索 prompt_example，先看说明
 
-1、在状态栏提示段新增一个处理函数
+1、在状态栏提示段 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS 新增一个处理函数
 
 ```shell
 
 typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
     raspi_temp_warn         # raspberry pi cpu temperature
+    os_icon                 # os identifier
     ...
 )
 
@@ -1479,24 +1484,24 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 
 ``` shell
 
-function prompt_raspi_temp_warn() {
+  function prompt_raspi_temp_warn() {
 
-  which vcgencmd >/dev/null 2>&1 || return 0
+    which vcgencmd >/dev/null 2>&1 || return 0
 
-  local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
+    local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
-  if [ "$CPUTEMP" -gt  "60000" ] && [ "$CPUTEMP" -lt  "65000" ]; then
-          p10k segment -b yellow -f blue -i ''
+    if [ "$CPUTEMP" -gt  "60000" ] && [ "$CPUTEMP" -lt  "65000" ]; then
+            p10k segment -b yellow -f blue -i ''
 
-  elif [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "70000" ]; then
-          local CPUTEMP_WARN="CPU `vcgencmd measure_temp`!"
-          p10k segment -b yellow -f blue -i '' -t "$CPUTEMP_WARN"
+    elif [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "70000" ]; then
+            local CPUTEMP_WARN="CPU `vcgencmd measure_temp`!"
+            p10k segment -b yellow -f blue -i '' -t "$CPUTEMP_WARN"
 
-  elif [ "$CPUTEMP" -gt  "70000" ];  then
-          local CPUTEMP_WARN="CPU TEMPERATURE IS VERY HIGH!`vcgencmd measure_temp`"
-          p10k segment -b red -f black -i '' -t "$CPUTEMP_WARN"
-  fi
-}
+    elif [ "$CPUTEMP" -gt  "70000" ];  then
+            local CPUTEMP_WARN="CPU TEMPERATURE IS VERY HIGH!`vcgencmd measure_temp`"
+            p10k segment -b red -f black -i '' -t "$CPUTEMP_WARN"
+    fi
+  }
 
 ```
 
