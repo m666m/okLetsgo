@@ -296,19 +296,23 @@ git-cmd.exe
 
     其实是 cmd 的一个封装，可直接双击执行。用于执行 cmd 下的命令，显示兼容性最好。路径path优先指向了git for windows 的目录。
 
-git for windows 的Linux目录结构跟Windows目录的对应关系
+对路径的表示有点特殊，如磁盘路径需要使用 /c/ 来代替 c：来访问具体路径
 
-    / 目录          位于git安装目录下的 C:\Program Files\Git\ 目录
-    /usr 目录       C:\Program Files\Git\usr\
-    /bin 目录       C:\Program Files\Git\bin\
-    /dev 目录       C:\Program Files\Git\dev\
-    /etc 目录       C:\Program Files\Git\etc\
+    cd /c/tools 表示访问 Windows 的 c:\tools 目录
 
-    /tmp 目录       位于 C:\Users\%USERNAME%\AppData\Local\Temp\  目录下
+其它的几个的Linux目录结构跟Windows目录的对应关系
+
+    / 目录          git安装目录 C:\Program Files\Git
+    /usr 目录       C:\Program Files\Git\usr
+    /bin 目录       C:\Program Files\Git\bin
+    /dev 目录       C:\Program Files\Git\dev
+    /etc 目录       C:\Program Files\Git\etc
+
+    /tmp 目录       C:\Users\%USERNAME%\AppData\Local\Temp
 
     /proc 目录      这个是 git 自己虚出来的，只能在 git bash(mintty) 下看到
 
-    /cmd 目录       C:\Program Files\Git\cmd\，保存给 cmd 命令行窗口下运行 git 和 ssh 用的几个脚本
+    /cmd 目录       C:\Program Files\Git\cmd，用于 cmd 命令行窗口下运行 git 和 ssh 用的几个脚本
 
 退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不然会提示有进程未关闭。
 
