@@ -719,9 +719,10 @@ BoldWhite=255,255,255
 
 ### 其他本地终端模拟器
 
-ConPtyShell 使用Windows 10 的 ConPty 接口实现的本地终端
+注：使用Windows 10 的 ConPty 接口的本地终端，需要需要 Windows version >= 10 / 2019 1809 (build >= 10.0.17763)
 
-    需要 Windows version >= 10 / 2019 1809 (build >= 10.0.17763)
+ConPtyShell 使用 Windows 10 的 ConPty 接口实现的本地终端
+
     https://github.com/antonioCoco/ConPtyShell
 
 WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装。速度快，兼容性较好，左侧就是文件夹树方便sftp，命令行输出还支持标签折叠
@@ -774,7 +775,7 @@ cmder 推荐了几个本地终端模拟器，可以嵌入 cmder 代替 ConEmu
 
 Windows Terminal
 
-    Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API 和 新的 ConPTY，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
+    Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
 
     https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/
 
@@ -796,12 +797,12 @@ Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` �
     https://github.com/nushell/nushell
         https://www.nushell.sh/zh-CN/book/thinking_in_nu.html
 
-clink 在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
+clink 辅助工具，在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
 
     https://github.com/chrisant996/clink
         不再更新了 https://github.com/mridgers/clink
 
-wslbridge 使用 Windows ConPTY 接口 以支持 WSL(Windows Subsystem for Linux)，很多支持终端多路复用的软件在 Windows 下都使用该组件
+wslbridge 辅助工具，使用 Windows ConPTY 接口 以支持 WSL(Windows Subsystem for Linux)，很多支持终端多路复用的软件在 Windows 下都使用该组件
 
     wslbridge2 https://github.com/Biswa96/wslbridge2
         wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
