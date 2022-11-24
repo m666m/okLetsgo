@@ -1953,3 +1953,130 @@ M$不支持了，自求多福吧，自己挨个版本研究去 <https://docs.mic
     使用来自不同 Windows 操作系统版本的源将安装与 .NET Framework 3.5 不匹配的版本，或导致安装失败，使系统处于不受支持和无法提供服务的状态。
 
 也就是说，弄个 3.5 的离线安装包，在 Windows 10 下面可能不能用。
+
+## 解决 Intel CPU 的 Meltdown/Spectre 熔断幽灵漏洞的降速问题
+
+这个漏洞居然覆盖了 1998 年到 2018 年的所有英特尔 cpu。。。
+
+英特尔提供的解决方式，从bios刷新到操作系统补丁，整体降低cpu速度大概在 10% ~ 20%。
+
+    https://blog.csdn.net/hbuxiaofei/article/details/115519407
+
+    https://zhuanlan.zhihu.com/p/348390245
+
+    https://zhuanlan.zhihu.com/p/32784852
+
+家用电脑必须打补丁，恶意网站内嵌的js脚本跑几个循环就能获取你的密码了。如果是仅内网使用，仅安装发行版和自主开发软件的服务器，可以不启用这个补丁。
+
+本简要指南介绍了如何通过关闭Spectre和Meltdown缓解措施使Linux系统在Intel CPU上更快地运行。
+
+警告 :
+
+在实施以下解决方案之前，我必须警告你 - 这是高度不安全的，不建议这样做。这将禁用Intel CPU上的所有Spectre和Meltdown缓解措施，并使Linux系统对风险敞开大门。除非清楚地知道你在做什么，不要这样做。
+
+如果您根本不关心安全性，请继续按照以下说明禁用缓解措施。
+
+使Linux系统在Intel CPU上运行更快
+使用你喜欢的文本编辑器编辑GRUB文件。
+
+在Debian上，Ubuntu：
+
+    sudo nano /etc/default/grub
+
+如果你使用的是Linux内核版本5.1.13及更新版本，请添加/编辑以下内核参数，如下所示：
+
+    GRUB_CMDLINE_LINUX="mitigations=off"
+
+这将禁用所有可选的CPU缓解措施。
+
+如果你使用的内核版本早于5.1.13，请添加/编辑以下内容：
+
+    GRUB_CMDLINE_LINUX="noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off tsx=on tsx_async_abort=off mitigations=off"
+
+这些是内核参数，可用于禁用所有降低Linux系统速度的Spectre/Meltdown缓解措施。
+
+有关每个标志的更多详细信息，请快速搜索google。
+
+添加内核parameter之后，使用命令更新GRUB配置：
+
+    sudo update-grub
+
+最后，重新启动系统：
+
+    sudo reboot
+
+在CentOS和RHEL这样的RPM-based系统上，编辑/etc/sysconfig/grub文件：
+
+    sudo /etc/sysconfig/grub
+
+在GRUB_CMDLINE_LINUX中添加上面的参数，然后使用命令更新GRUB配置：
+
+    sudo grub2-mkconfig
+
+最后重新启动：
+
+    sudo reboot
+
+在一些Linux系统中，需要在"GRUB_CMDLINE_LINUX_DEFAULT ="中添加这些内核参数。
+
+我们现在已禁用所有"Spectre"和"Meltdown"缓解措施。这会稍微提高系统的性能，但也可能使用户面临多个CPU漏洞。
+
+检查Spectre/Meltdown mitigations是否被禁用
+我们可以使用"spectre-meltdown-checker"工具来帮助你识别Linux中的specre和missdown漏洞，在一些Linux发行版的官方存储库中可以找到它。
+
+在Debian上，Ubuntu：
+
+    sudo apt install spectre-meltdown-checker
+
+在CentOS上，RHEL：
+
+    sudo yum install epel-release
+    sudo yum install spectre-meltdown-checker
+
+在Fedora上：
+
+    sudo dnf install $ sudo apt install spectre-meltdown-checker
+
+安装spectre-meltdown-checker后，以root用户身份或以sudo权限运行它，以检查是否关闭了Spectre和Meltdown：
+
+你应该看到如下所示的消息。
+
+    [...]
+    > STATUS: VULNERABLE (Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers)
+    [...]
+    > STATUS: VULNERABLE (IBRS+IBPB or retpoline+IBPB is needed to mitigate the vulnerability)
+    [...]
+    > STATUS: VULNERABLE (PTI is needed to mitigate the vulnerability)
+
+或者，你可以检查Spectre/Meltdown漏洞，如下所示。
+
+    ls /sys/devices/system/cpu/vulnerabilities/
+
+示例输出：
+
+    itlb_multihit l1tf mds meltdown spec_store_bypass spectre_v1 spectre_v2 tsx_async_abort
+
+还有
+
+$ grep . /sys/devices/system/cpu/vulnerabilities/*
+
+示例输出：
+
+    /sys/devices/system/cpu/vulnerabilities/itlb_multihit:KVM: Vulnerable
+    /sys/devices/system/cpu/vulnerabilities/l1tf:Mitigation: PTE Inversion
+    /sys/devices/system/cpu/vulnerabilities/mds:Vulnerable; SMT Host state unknown
+    /sys/devices/system/cpu/vulnerabilities/meltdown:Vulnerable
+    /sys/devices/system/cpu/vulnerabilities/spec_store_bypass:Vulnerable
+    /sys/devices/system/cpu/vulnerabilities/spectre_v1:Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers
+    /sys/devices/system/cpu/vulnerabilities/spectre_v2:Vulnerable, STIBP: disabled
+    /sys/devices/system/cpu/vulnerabilities/tsx_async_abort:Not affected
+
+运行一些基准测试，并检查你将获得的性能，然后决定是否有必要禁用所有功能。
+
+我已经警告过:对于家庭或单用户计算机，此技巧是一个有用且明智的选择。但不建议用于生产系统。
+
+参考：
+
+    什么叫旁路（Side Channel）攻击呢？就是说，在你的程序正常通讯通道之外，产生了一种边缘特征，这些特征反映了你不想产生的信息，这个信息被人拿到了，你就泄密了。这个边缘特征产生的信息通道，就叫旁路。比如你的内存在运算的时候，产生了一个电波，这个电波反映了内存中的内容的，有人用特定的手段收集到这个电波，这就产生了一个旁路了。基于旁路的攻击，就称为旁路攻击。这个论文对这种攻击有一个归纳：https://csrc.nist.gov/csrc/media/events/physical-security-testing-workshop/documents/papers/physecpaper19.pdf。读者可以体会一下可能的攻击方法：时延，异常（Fault），能耗，电磁，噪声，可见光，错误消息，频率，JTag等等，反正你运行总是有边缘特征的，一不小心这个边缘特征就成了泄密的机会。
+
+    缓冲时延（Cache Timing）旁路是通过内存访问时间的不同来产生的旁路。假设你访问一个变量，这个变量在内存中，这需要上百个时钟周期才能完成，但如果你访问过一次，这个变量被加载到缓冲（Cache）中了，下次你再访问，可能几个时钟周期就可以完成了。这样，如果我攻击一个对象（比如一个进程，或者内核），要得到其中某个地址ptr的内容，我只要和它共享一个数组，然后诱导它用ptr的内容作为下标访问这个数组，然后我检查这个数组每个成员的访问时间，我就可以知道ptr的值了。
