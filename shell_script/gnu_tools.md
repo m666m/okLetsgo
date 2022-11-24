@@ -453,7 +453,6 @@ BoldWhite=255,255,255
 
 ```
 
-
 #### mintty 简单使用：Git for Windows
 
 Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是只编译了它自己需要的部分工具软件进行了集成，我们主要使用他的 mintty.exe 命令行终端模拟器和 ssh、gpg 等工具软件。
