@@ -724,6 +724,10 @@ Windows Terminal
     # https://github.com/microsoft/terminal/releases
     winget install --id=Microsoft.WindowsTerminal -e
 
+wsltty 使用 Windows ConPTY 接口开发的 mintty，通过 wslbridge 实现调用
+
+    https://github.com/mintty/wsltty
+
 独立的 Powershell 7，从这个版本开始不跟随 Windows 发布了
 
     https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
@@ -737,6 +741,16 @@ clink 在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入�
 
     https://github.com/chrisant996/clink
         不再更新了 https://github.com/mridgers/clink
+
+wslbridge 使用 Windows ConPTY 接口 以支持 WSL(Windows Subsystem for Linux)，很多支持终端多路复用的软件在 Windows 下都使用该组件
+
+    wslbridge2 https://github.com/Biswa96/wslbridge2
+        wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
+
+        # /bin/ 下安装 wslbridge2
+        mintty --WSL=Ubuntu
+
+    Windows 10 v1809 推出的 ConPTY 接口支持第三方终端模拟器了，不知道这个插件后续发展
 
 ### 终端多路复用器
 
@@ -828,19 +842,11 @@ ConEmu 最大的缺点是不稳定，反应速度偶尔很慢，估计跟它基�
 
 ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器。不止是个终端多路复用器，他还自己实现了对 cmd 和 pty 两种类型的终端模拟。
 
-ConEmu\ConEmu 目录下集成几个常用工具
+ConEmu\ConEmu 目录下集成了几个常用工具
 
-    clink 使 cmd 像 bash 按tab键自动完成
+    clink 使 cmd 像 bash 按 tab 键自动完成
 
-    wslbridge 使 mintty 或 ConEmu 可以支持 wsl （Windows Subsystem for Linux）
-
-        wslbridge2 https://github.com/Biswa96/wslbridge2
-            wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
-
-            # /bin/ 下安装 wslbridge2
-            mintty --WSL=Ubuntu
-
-        Windows 10 v1809 推出的 ConPTY 接口支持第三方终端模拟器了，不知道这个插件后续发展
+    wslbridge 使 mintty 或 ConEmu 可以支持 WSL(Windows Subsystem for Linux)
 
 ConEmu 色彩方案
 
