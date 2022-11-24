@@ -258,11 +258,7 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
         http://mintty.github.io/
         帮助 https://mintty.github.io/mintty.1.html
 
-    有用的脚本如 showimg，建议放到本地的终端工具目录和ssh服务器端，执行之都可以在mintty下显示图片
-
-        https://github.com/mintty/utils
-
-mintty.exe 完美实现了 Windows 下 linux 软件的运行，模拟 pty 效果又快又好。缺点是运行 cmd 下的命令，有些字符解释的显示效果不一致，建议与 cmd 分别使用，不在 mintty 下使用 cmd 的命令。
+   模拟 pty 效果又快又好。缺点是运行 cmd 下的命令，有些字符解释的显示效果不一致，建议与 cmd 分别使用，不在 mintty 下使用 cmd 的命令。
 
     ctrl/shift + ins 复制/粘贴，其实用鼠标拖动选择的文字就已经复制到系统剪贴板了
 
@@ -271,6 +267,192 @@ mintty.exe 完美实现了 Windows 下 linux 软件的运行，模拟 pty 效果
     ctrl + plus/minus/zero 放大、缩小、还原
 
     拖拽资源管理器里的文件/文件夹到 mintty 可以得到其路径
+
+mintty 可以在命令行显示图片，下载他的utils目录下的脚本 showimg 即可
+
+    cd /usr/local/bin/
+
+    curl -fsSLO https://github.com/mintty/utils/raw/master/showimg
+
+    chmod 755 ./showimg
+
+建议放到本地 /usr/bin/ 下，以后执行 `showimg xxx.jpg` 就可以在 mintty 下显示本地图片；如果 ssh 登陆到服务器上，在服务器的 /usr/local/bin/ 下也安装这个脚本，则 mintty 也可以响应服务器上执行的 `showimg xxx.jpg`，显示服务器上的图片。
+
+或安装个 lsix 脚本，因为 mintty 支持 Sixel 图形格式
+
+        https://www.linuxprobe.com/sixel-linux.html
+
+    先在服务器端安装依赖包，会安装一堆的库
+
+        sudo apt install imagemagick
+
+    然后把脚本 lsix 拷贝到你的终端的 /usr/bin/ 目录下即可
+
+        # 只要你的终端支持 Sixel 图形格式即可
+        git clone --depth=1 https://github.com/hackerb9/lsix
+
+    就像 ls 命令那样使用 lsix。
+
+#### winpty 运行 cmd 字符终端程序
+
+在 mintty 下使用普通的 Windows CMD 字符程序，如 python 会无法进入。这是因为因为宿主机上的 python 使用的是 native Windows API for command-line user interaction，也就是涉及到 Windows 的关于终端输入的程序在 msys2 下都会无法进入，需要有个代理提供类似 wslbridge 的角色。
+
+安装 winpty 作为 mintty 代理
+
+    pacman -S winpty
+
+    winpty python 即可正常进入 python 解释器环境了
+
+在 .bashrc/.zshrc 里添加 alias 即可
+
+    alias mysql="winpty mysql"
+    alias node="winpty node"
+    alias python="winpty python"
+    alias ipython="winpty ipython"
+    alias psql="winpty psql"
+    alias redis-cli="winpty redis-cli"
+
+#### mintty 美化
+
+字符终端的颜色配置说明
+
+    https://github.com/termstandard/colors
+
+zsh 下展示当前终端可以显示的颜色
+
+    for code ({000..255}) print -P -- "$code: %F{$code}最左侧三位数字即颜色值Text Color%f"
+
+mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
+
+    http://ciembor.github.io/4bit/
+
+主题颜色
+
+    https://github.com/hsab/WSL-config/tree/master/mintty/themes
+
+将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
+
+如果是 git for Windows 的 mintty，编辑 ~/.minttyrc 文件为下面的内容
+
+```config
+
+# https://mintty.github.io/mintty.1.html
+# https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
+Font=MesloLGS NF
+FontHeight=11
+FontSmoothing=full
+# FontWeight=700
+# FontIsBold=yes
+
+# 可自定义表情标签 https://github.com/mintty/mintty/wiki/Tips#installing-emoji-resources
+
+Columns=130
+Rows=40
+ScrollbackLines=12000
+
+CursorType=block
+CursorBlinks=no
+
+# 语言设置
+# mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
+Language=@
+# 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
+# https://www.cnblogs.com/LCcnblogs/p/6208110.html
+# bash下设置，这个变量设置区域，影响语言、词汇、日期格式等，参见章节 [字符终端的区域、编码、语言]
+Locale=zh_CN  # bash 下显示中文
+#Charset=GBK # 中文版 Windows 使用 ansi 字符集，有些使用utf-8的命令如tail与使用本地字符集的命令如ls会没法都设置完美显示
+Charset=UTF-8 # 这样就能正确展现那些带图标的字体了
+# LANG 只影响字符的显示语言
+#LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
+
+# 窗体透明效果，不适用于嵌入多窗口终端工具
+# Transparency=low
+
+# 为了使用更多的颜色，确保终端设置恰当
+Term=xterm-256color
+
+# 非通用标准的色彩项目，单独
+UnderlineColour=153,241,219
+AllowBlinking=yes
+
+# 自定义颜色方案，跟深色背景搭配
+# https://github.com/mintty/mintty/wiki/Tips#background-image
+Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
+BackgroundColour=13,25,38
+ForegroundColour=217,230,242
+CursorColour=236,255,255
+Black=53,53,53
+BoldBlack=92,92,92
+Red=207,116,133
+BoldRed=232,190,198
+Green=0,135,0
+BoldGreen=143,218,149
+Yellow=207,190,116
+BoldYellow=232,225,190
+Blue=66,113,174
+BoldBlue=88,133,192
+Magenta=190,116,207
+BoldMagenta=225,190,232
+Cyan=116,207,190
+BoldCyan=190,232,225
+White=255,255,253
+BoldWhite=255,255,255
+
+# 自定义颜色方案，跟浅色背景搭配-黄色
+#Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
+#BackgroundColour=250,234,182
+#ForegroundColour=0,61,121
+#CursorColour=217,230,242
+#Black=0,0,0
+#BoldBlack=72,72,72
+#Red=255,30,18
+#BoldRed=255,84,74
+#Green=82,173,58
+#BoldGreen=65,136,47
+#Yellow=192,175,56
+#BoldYellow=166,150,36
+#Blue=11,80,155
+#BoldBlue=9,58,113
+#Magenta=255,18,243
+#BoldMagenta=255,147,250
+#Cyan=3,201,162
+#BoldCyan=67,214,181
+##218,232,237
+#White=107,165,186
+#BoldWhite=180,180,180
+
+# 自定义颜色方案，跟浅色背景搭配-绿色
+#Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
+#BackgroundColour=250,234,182
+#ForegroundColour=47,47,47
+#CursorColour=217,230,242
+#Black=0,0,0
+#BoldBlack=38,38,38
+#Red=255,30,18
+#BoldRed=255,153,147
+#Green=82,173,58
+#BoldGreen=65,136,47
+#Yellow=193,117,40
+#BoldYellow=213,179,60
+#Blue=11,80,155
+#BoldBlue=17,120,234
+#Magenta=255,18,243
+#BoldMagenta=255,147,250
+#Cyan=32,138,115
+#BoldCyan=36,162,133
+#White=235,235,235
+#BoldWhite=255,255,255
+
+# 北极主题颜色 https://github.com/arcticicestudio/nord-mintty
+# papercolor https://github.com/NLKNguyen/papercolor-theme
+# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.light
+# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.dark
+#
+# 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
+# ThemeFile=nord
+
+```
+
 
 #### mintty 简单使用：Git for Windows
 
@@ -327,25 +509,6 @@ git-cmd.exe
 退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不然会提示有进程未关闭。
 
 putty的退出也是同样的建议。
-
-##### winpty 运行 cmd 字符终端程序
-
-在 mintty 下使用普通的 Windows CMD 字符程序，如 python 会无法进入。这是因为因为宿主机上的 python 使用的是 native Windows API for command-line user interaction，也就是涉及到 Windows 的关于终端输入的程序在 msys2 下都会无法进入，需要有个代理提供类似 wslbridge 的角色。
-
-安装 winpty 作为 mintty 代理
-
-    pacman -S winpty
-
-    winpty python 即可正常进入 python 解释器环境了
-
-在 .bashrc/.zshrc 里添加 alias 即可
-
-    alias mysql="winpty mysql"
-    alias node="winpty node"
-    alias python="winpty python"
-    alias ipython="winpty ipython"
-    alias psql="winpty psql"
-    alias redis-cli="winpty redis-cli"
 
 #### mintty 组合使用：git for Windows + MSYS2
 
@@ -558,164 +721,6 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     openbsd-netcat
 
 需要安装什么命令，一般可以在搜索引擎里以 `MSYS2 xxx` 的形式得到结果。
-
-#### mintty 美化
-
-字符终端的颜色配置说明
-
-    https://github.com/termstandard/colors
-
-zsh 下展示当前终端可以显示的颜色
-
-    for code ({000..255}) print -P -- "$code: %F{$code}最左侧三位数字即颜色值Text Color%f"
-
-mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
-
-    http://ciembor.github.io/4bit/
-
-主题颜色
-
-    https://github.com/hsab/WSL-config/tree/master/mintty/themes
-
-将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
-
-如果是 git for Windows 的 mintty，编辑 ~/.minttyrc 文件为下面的内容
-
-```config
-
-# https://mintty.github.io/mintty.1.html
-# https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
-Font=MesloLGS NF
-FontHeight=11
-FontSmoothing=full
-# FontWeight=700
-# FontIsBold=yes
-
-# 可自定义表情标签 https://github.com/mintty/mintty/wiki/Tips#installing-emoji-resources
-
-Columns=130
-Rows=40
-ScrollbackLines=12000
-
-CursorType=block
-CursorBlinks=no
-
-# 语言设置
-# mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
-Language=@
-# 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
-# https://www.cnblogs.com/LCcnblogs/p/6208110.html
-# bash下设置，这个变量设置区域，影响语言、词汇、日期格式等，参见章节 [字符终端的区域、编码、语言]
-Locale=zh_CN  # bash 下显示中文
-#Charset=GBK # 中文版 Windows 使用 ansi 字符集，有些使用utf-8的命令如tail与使用本地字符集的命令如ls会没法都设置完美显示
-Charset=UTF-8 # 这样就能正确展现那些带图标的字体了
-# LANG 只影响字符的显示语言
-#LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
-
-# 窗体透明效果，不适用于嵌入多窗口终端工具
-# Transparency=low
-
-# 为了使用更多的颜色，确保终端设置恰当
-Term=xterm-256color
-
-# 非通用标准的色彩项目，单独
-UnderlineColour=153,241,219
-AllowBlinking=yes
-
-# 自定义颜色方案，跟深色背景搭配
-# https://github.com/mintty/mintty/wiki/Tips#background-image
-Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
-BackgroundColour=13,25,38
-ForegroundColour=217,230,242
-CursorColour=236,255,255
-Black=53,53,53
-BoldBlack=92,92,92
-Red=207,116,133
-BoldRed=232,190,198
-Green=0,135,0
-BoldGreen=143,218,149
-Yellow=207,190,116
-BoldYellow=232,225,190
-Blue=66,113,174
-BoldBlue=88,133,192
-Magenta=190,116,207
-BoldMagenta=225,190,232
-Cyan=116,207,190
-BoldCyan=190,232,225
-White=255,255,253
-BoldWhite=255,255,255
-
-# 自定义颜色方案，跟浅色背景搭配-黄色
-#Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
-#BackgroundColour=250,234,182
-#ForegroundColour=0,61,121
-#CursorColour=217,230,242
-#Black=0,0,0
-#BoldBlack=72,72,72
-#Red=255,30,18
-#BoldRed=255,84,74
-#Green=82,173,58
-#BoldGreen=65,136,47
-#Yellow=192,175,56
-#BoldYellow=166,150,36
-#Blue=11,80,155
-#BoldBlue=9,58,113
-#Magenta=255,18,243
-#BoldMagenta=255,147,250
-#Cyan=3,201,162
-#BoldCyan=67,214,181
-##218,232,237
-#White=107,165,186
-#BoldWhite=180,180,180
-
-# 自定义颜色方案，跟浅色背景搭配-绿色
-#Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
-#BackgroundColour=250,234,182
-#ForegroundColour=47,47,47
-#CursorColour=217,230,242
-#Black=0,0,0
-#BoldBlack=38,38,38
-#Red=255,30,18
-#BoldRed=255,153,147
-#Green=82,173,58
-#BoldGreen=65,136,47
-#Yellow=193,117,40
-#BoldYellow=213,179,60
-#Blue=11,80,155
-#BoldBlue=17,120,234
-#Magenta=255,18,243
-#BoldMagenta=255,147,250
-#Cyan=32,138,115
-#BoldCyan=36,162,133
-#White=235,235,235
-#BoldWhite=255,255,255
-
-# 北极主题颜色 https://github.com/arcticicestudio/nord-mintty
-# papercolor https://github.com/NLKNguyen/papercolor-theme
-# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.light
-# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.dark
-#
-# 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
-# ThemeFile=nord
-
-```
-
-完全版安装 MSYS2 的 mintty 自带图片显示工具 showimg。
-
-如果想让 mintty 的命令行可以显示图片，可以安装个 lsix 脚本，因为 mintty 支持 Sixel 图形格式
-
-    https://www.linuxprobe.com/sixel-linux.html
-
-先在服务器端安装依赖包，会安装一堆的库
-
-    sudo apt install imagemagick
-
-然后把脚本 lsix 拷贝到你的终端的 /usr/bin/ 目录下即可
-
-    # 只要你的终端支持 Sixel 图形格式即可
-    git clone --depth=1 https://github.com/hackerb9/lsix
-
-就像 ls 命令那样使用 lsix。
 
 ### 其他本地终端模拟器
 
