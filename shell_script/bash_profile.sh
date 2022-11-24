@@ -11,11 +11,19 @@ test -f ~/.bashrc && . ~/.bashrc
 # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
 set -o vi
 
-# some more ls aliases
+# 常用的列文件
 alias l='ls -CF'
 alias ll='ls -l'
 alias la='ls -lA'
 alias lla='ls -la'
+
+# 在 mintty 下使用普通的 Windows 字符程序
+alias mysql="winpty mysql"
+alias node="winpty node"
+alias python="winpty python"
+alias ipython="winpty ipython"
+alias psql="winpty psql"
+alias redis-cli="winpty redis-cli"
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)

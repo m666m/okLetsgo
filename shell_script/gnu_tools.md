@@ -264,6 +264,14 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
 
 mintty.exe 完美实现了 Windows 下 linux 软件的运行，模拟 pty 效果又快又好。缺点是运行 cmd 下的命令，有些字符解释的显示效果不一致，建议与 cmd 分别使用，不在 mintty 下使用 cmd 的命令。
 
+    ctrl/shift + ins 复制/粘贴，其实用鼠标拖动选择的文字就已经复制到系统剪贴板了
+
+    在 tmux 的鼠标模式下，按下 shift 就可以使用鼠标选择文字，自动复制到系统剪贴板
+
+    ctrl + plus/minus/zero 放大、缩小、还原
+
+    拖拽资源管理器里的文件/文件夹到 mintty 可以得到其路径
+
 #### mintty 简单使用：Git for Windows
 
 Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是只编译了它自己需要的部分工具软件进行了集成，我们主要使用他的 mintty.exe 命令行终端模拟器和 ssh、gpg 等工具软件。
@@ -302,6 +310,8 @@ git-cmd.exe
 
 其它的几个的Linux目录结构跟Windows目录的对应关系
 
+    home 目录       %USERPROFILE%
+
     / 目录          git安装目录 C:\Program Files\Git
     /usr 目录       C:\Program Files\Git\usr
     /bin 目录       C:\Program Files\Git\bin
@@ -317,6 +327,25 @@ git-cmd.exe
 退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不然会提示有进程未关闭。
 
 putty的退出也是同样的建议。
+
+##### winpty 运行 cmd 字符终端程序
+
+在 mintty 下使用普通的 Windows CMD 字符程序，如 python 会无法进入。这是因为因为宿主机上的 python 使用的是 native Windows API for command-line user interaction，也就是涉及到 Windows 的关于终端输入的程序在 msys2 下都会无法进入，需要有个代理提供类似 wslbridge 的角色。
+
+安装 winpty 作为 mintty 代理
+
+    pacman -S winpty
+
+    winpty python 即可正常进入 python 解释器环境了
+
+在 .bashrc/.zshrc 里添加 alias 即可
+
+    alias mysql="winpty mysql"
+    alias node="winpty node"
+    alias python="winpty python"
+    alias ipython="winpty ipython"
+    alias psql="winpty psql"
+    alias redis-cli="winpty redis-cli"
 
 #### mintty 组合使用：git for Windows + MSYS2
 
@@ -433,10 +462,11 @@ pacman安装后先更换 清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/ms
 
 该软件安装后，使用的Linux目录结构跟Windows目录的对应关系
 
+    home 目录      位于msys2的安装目录 msys64\ 下的 home\%USERNAME%
+
     / 目录          位于msys2的安装目录 msys64\ 下
     /usr 目录       同上
     /tmp 目录       同上
-    /home 目录      位于msys2的安装目录 msys64\ 下的 home\%USERNAME%
 
 环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件
 
@@ -452,17 +482,17 @@ msys2在开始菜单下的好几个版本的说明
 
     而 clang64 很好理解，就是用 clang 而非 mingw 来编译各种库，另外它也是链接到了 ucrt 而非 msvcrt。
 
-引自 <https://www.zhihu.com/question/463666011/answer/1927907983>.
+    引自 <https://www.zhihu.com/question/463666011/answer/1927907983>
 
-官方解释 <https://www.msys2.org/docs/environments/>.
+    官方解释 <https://www.msys2.org/docs/environments/>
 
-msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递了变量 set MSYSTEM=xxxx，msys2_shell.cmd 启动时，都默认使用 mintty 虚拟终端。
+msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递了变量 set MSYSTEM=xxxx，msys2_shell.cmd 启动时，都默认使用 mintty
 
     # c:\msys64为msys2安装目录，bash 为默认 shell，可以用 zsh,csh 等替换
     set MSYSTEM=MINGW64
     "c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
 
-自己运行 Msys2 时可以不使用 mintty 虚拟终端。直接运行如下命令就OK：
+自己运行 Msys2 时可以不使用 mintty，直接运行如下命令就OK：
 
 ```bat
 
@@ -499,6 +529,35 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     pacman -Sg 软件包组    查看某软件包组所包含的所有软件包。
     pacman -Sc           清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
     pacman -Scc          清理所有的缓存文件。
+
+安装常用软件
+
+下面列出常用的包：
+
+    vim
+
+    git
+
+    tmux
+
+    tree
+
+    zsh
+
+    rsync
+
+    winpty
+
+    # watch
+    procps-ng
+
+    inetutils
+
+    curl
+
+    openbsd-netcat
+
+需要安装什么命令，一般可以在搜索引擎里以 `MSYS2 xxx` 的形式得到结果。
 
 #### mintty 美化
 
