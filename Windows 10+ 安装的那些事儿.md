@@ -837,25 +837,6 @@ Windows Registry Editor Version 5.00
 
 重启 explorer.exe
 
-### 为 Windows 10 Enterprise LTSC 增加应用商店
-
-    只有2019版 https://github.com/kkkgo/LTSC-Add-MicrosoftStore
-        这个已经更新到2021LTSC版了 https://github.com/GFOXSH/LTSC-Add-MicrosoftStore
-
-要开始安装，请打包下载 LTSC-Add-MicrosoftStore-2019.zip 后用右键管理员运行 Add-Store.cmd
-
-如果您不想安装 App Installer / Purchase App / Xbox，请在运行安装之前删除对应的。appxbundle 后缀的文件。但是，如果您计划安装游戏，或带有购买选项的应用，则不要删除。
-
-如果装完之后商店仍然打不开，请先重启试试。如果仍然不行，请以管理员身份打开命令提示符并运行以下命令之后，然后再重启试试。
-PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage Microsoft.WindowsStore).InstallLocation + '\AppxManifest.xml' ; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
-
-商店修复
-Win+R 打开运行，输入 WSReset.exe 回车。
-该命令会清空并重置 Windows Store 商店的所有缓存。
-
-该脚本由 abbodi1406 贡献：
-<https://forums.mydigitallife.net/threads/add-store-to-Windows-10-enterprise-ltsc-LTSC.70741/page-30#post-1468779>
-
 ### 关闭 Windows 自带的压缩文件夹（zip folder）
 
 Windows 10 下发现取消这个组件，居然有 Windows 更新的安装包报错的情况，建议用开源的 7-zip 软件替换 zip 文件的打开方式，不要取消Windows的zip组件。
