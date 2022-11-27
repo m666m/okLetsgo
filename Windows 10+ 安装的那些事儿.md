@@ -1351,13 +1351,13 @@ WSL2 内的 container 是 linux 提供的，不算 Windows 的容器。Windows �
 
 1、虚拟机需要工作在“Hyper-V增强会话模式”
 
-  新建虚拟机，注意要选择 “第二代” 虚拟化，然后安装 Windows，来宾虚拟机操作系统版本至少为Windows Server 2012 或 Windows 8。
-
   打开 Hyper-V 设置
 
     定位到 “服务器 - 增强会话模式策略” ，确认已勾选 “允许增强会话模式” 。
 
     定位到 “用户 - 增强会话模式” ，确认已勾选 “允许增强会话模式” 。
+
+  新建虚拟机，注意要选择 “第二代” 虚拟化，然后安装 Windows，来宾虚拟机操作系统版本至少为Windows Server 2012 或 Windows 8。
 
 2、在宿主电脑上开启RemoteFX USB 重定向功能
 
