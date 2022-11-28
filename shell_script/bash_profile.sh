@@ -17,6 +17,8 @@ alias ll='ls -l'
 alias la='ls -lA'
 alias lla='ls -la'
 
+####################################################################
+# Windows git bash(mintty)
 # 在 mintty 下使用普通的 Windows 字符程序
 alias mysql="winpty mysql"
 alias node="winpty node"
@@ -26,7 +28,7 @@ alias psql="winpty psql"
 alias redis-cli="winpty redis-cli"
 
 ####################################################################
-# Linux bash / Windows git bash(mintty)
+# Linux bash
 # 命令行提示符显示当前路径和git分支
 
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
