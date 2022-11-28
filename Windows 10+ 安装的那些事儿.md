@@ -541,7 +541,7 @@ PBP分屏注意
 
     设置：轻松使用->键盘，那些“粘滞键”、“切换键”啥的热键统统关掉
 
-    设置：隐私策略各种关闭，这个大部分都是针对 app 商店里的应用，有空的时候挨个琢磨吧
+    设置：隐私策略各种关闭，这个大部分都是针对 app 商店里的应用，有空的时候挨个琢磨吧。关闭这些隐私设置可能不会影响某些桌面应用。 例如，同时安装驱动程序的应用可以直接与摄像头或麦克风硬件交互，从而绕过 Windows 的访问控制功能。 要更全面地保护与这些设置关联的个人数据，你可以考虑禁用这些设备，例如断开或禁用摄像头或麦克风。<https://support.microsoft.com/en-us/windows/windows-desktop-apps-and-privacy-8b3b13bc-d8ff-5460-8423-7d5d5c1f6665>
 
 打开 Windows store，菜单选择“settings”，把“App updates”的“Update apps automatically”选项抓紧关闭了，太烦人了！
 
