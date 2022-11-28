@@ -1332,15 +1332,19 @@ WSL2 内的 container 是 linux 提供的，不算 Windows 的容器。Windows �
 
 #### Hyper-V 直连主机USB设备
 
+    https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/user-guide/enhanced-session-mode
+
 1、虚拟机需要工作在“Hyper-V增强会话模式”
 
-  打开 Hyper-V 设置
+打开 Hyper-V 设置
 
     定位到 “服务器 - 增强会话模式策略” ，确认已勾选 “允许增强会话模式” 。
 
     定位到 “用户 - 增强会话模式” ，确认已勾选 “允许增强会话模式” 。
 
-  新建虚拟机，注意要选择 “第二代” 虚拟化，然后安装 Windows，来宾虚拟机操作系统版本至少为Windows Server 2012 或 Windows 8。
+这里是两个，一个是对全局的许可，一个是对你当前这个用户的许可，都要许可。
+
+新建虚拟机，注意要选择 “第二代” 虚拟化，然后安装 Windows，来宾虚拟机操作系统版本至少为Windows Server 2012 或 Windows 8。
 
 2、在宿主电脑上开启RemoteFX USB 重定向功能
 
@@ -1348,7 +1352,17 @@ WSL2 内的 container 是 linux 提供的，不算 Windows 的容器。Windows �
 
     双击右边的 “允许此计算机中受支持的其他 RemoteFX USB 设备的 RDP 重定向”，设置为已启用，然后将选项中的 “RemoteFX USB 重定向访问权限”设置为“管理员和用户”，然后重启宿主电脑使配置生效。
 
-3、连接Hyper-v虚拟机的时候要选择增强模式。增强模式会使用RDP远程桌面的方式去连接到虚拟机。点击 “本地资源->更多”，然后勾选 “其他支持的RemoteFX USB设备” 或者选择自己需要的设备共享到虚拟机中。
+3、增强的会话模式要求在 VM 中启用远程桌面
+
+首先，使用基本模式重新登录到 VM。 在“设置”应用或“开始”菜单中搜索“登录选项”。 在此页面上，关闭“需要 Windows Hello 登录 Microsoft 帐户”。
+
+在“设置”应用或“开始”菜单中搜索“远程桌面设置”，开启“启用远程桌面”。
+
+4、连接Hyper-v虚拟机的时候，如果启用了增强模式，会弹出一个对话框供选择。因为增强模式使用RDP远程桌面的方式去连接到虚拟机。点击 “显示选项”，点击标签页“本地资源”
+
+    在选项框 “本地设备和资源”，点击 “更多”，然后勾选 “其他支持的RemoteFX USB设备” 或者选择自己需要的设备共享到虚拟机中。
+
+    如果要使用摄像头，需要要添加麦克风传递（以便你可以在虚拟机上录制音频），在选项框 “远程音频”，点击 “设置”，对 “远程音频录制” 选择 “从此计算机进行录制”。
 
 验证
 
@@ -1594,7 +1608,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
         dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 
-    要启用 WSL，请在 PowerShell 提示符下以具有管理员权限的身份运行此命令：
+    要启用 WSL，请以管理员权限在 PowerShell 运行此命令：
 
         Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 
@@ -1644,8 +1658,7 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 
 【废弃】13. 重启电脑后并没有安装 linux 系统，还需要输入 lxrun /install /y 来进行系统的下载 （win10 2020 版已经弃用此命令）
 
-13.在 Windows 搜索框中输入网址 <https://aka.ms/wslstore> ，然后回车，之后会先打开 edge 浏览器，然后自动跳转到 win10 应用商店。
-打开微软商店应用，在搜索框中输入“Linux”然后搜索，选择一个你喜欢的 Linux 发行版本然后安装。
+13.在 Windows 搜索框中输入网址 <https://aka.ms/wslstore> ，然后回车，之后会先打开 edge 浏览器，然后自动跳转到 win10 应用商店。打开微软商店应用，在搜索框中输入“Linux”然后搜索，选择一个你喜欢的 Linux 发行版本然后安装。
 
 14.然后会弹出一个 shell 窗口，正在安装。
 
