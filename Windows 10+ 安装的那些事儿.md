@@ -855,6 +855,18 @@ Windows 10 下发现取消这个组件，居然有 Windows 更新的安装包报
 
 网络和共享中心\高级共享设置：将“专用”场景的“文件和打印共享”、“网络发现”选项都开启。
 
+### 取消输入用户登录密码
+
+1、
+运行“regedit.exe”，打开注册表 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\PasswordLess\Device
+
+将 DevicePasswordLessBuildVersion 值设置为0，即可出现复选框。
+
+2、
+运行“netplwiz.exe”，取消勾选复选框“用户必须输入密码”，这时会提示需要记住的密码免密登录的用户名及密码
+
+3、重启计算机验证
+
 ### 关闭 Windows defender杀毒软件
 
 [各种方法失效]，只能暂时停用，过后 Windows 会自动拉起来。
