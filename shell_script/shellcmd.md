@@ -1450,7 +1450,7 @@ Perf是Linux kernel自带的系统性能优化工具。
 
 ## 查看文件占用（含端口哦）
 
-可以看文件是shell类型、二进制类型，文本类型等
+file 查看文件是shell类型、二进制类型，文本类型等
 
     $ file .profile
     .profile: UTF-8 Unicode text
@@ -1480,6 +1480,41 @@ lsof 查看指定进程号打开的文件（sudo apt install lsof）
     nginx   28987 root  mem    REG      179,2   130696  129293 /usr/lib/nginx/modules/ngx_stream_module.so
     nginx   28987 root  mem    REG      179,2    82872  129283 /usr/lib/nginx/modules/ngx_mail_module.so
     ...
+
+stat 查看文件的 inode 情况
+
+    $ stat showimg
+    File: ‘showimg’
+    Size: 1038            Blocks: 8          IO Block: 4096   regular file
+    Device: 802h/2050d      Inode: 291577      Links: 1
+    Access: (0664/-rw-rw-r--)  Uid: ( 1000/      uu)   Gid: ( 1000/      uu)
+    Access: 2022-11-25 02:00:21.824163803 +0800
+    Modify: 2022-11-25 02:00:21.824163803 +0800
+    Change: 2022-11-25 02:00:21.824163803 +0800
+    Birth: -
+
+df 查看磁盘占用
+
+    # 查看各个文件系统的空间占用情况，主要关注 Avail 段的可用空间
+    $ df -h
+
+    Filesystem                    Size  Used Avail Use% Mounted on
+    /dev/mapper/dev01-root         75G   58G   14G  82% /
+    udev                          2.0G  4.0K  2.0G   1% /dev
+    tmpfs                         396M  292K  396M   1% /run
+    none                          5.0M     0  5.0M   0% /run/lock
+    none                          2.0G  4.0K  2.0G   1% /run/shm
+    /dev/sda1                     228M  149M   68M  69% /boot
+
+    # 查看 inode 占用情况，如果小文件过多会看到 IFree 段 为 0，会导致该文件系统上无法新建文件
+    $ df -i
+    Filesystem                    Inodes   IUsed  IFree IUse% Mounted on
+    /dev/mapper/dev01-root       4964352 4964352      0  100% /
+    udev                          503779     440 503339    1% /dev
+    tmpfs                         506183     353 505830    1% /run
+    none                          506183       5 506178    1% /run/lock
+    none                          506183       2 506181    1% /run/shm
+    /dev/sda1                     124496     255 124241    1% /boot
 
 fuser 查看占用文件的进程号（sudo apt install psmisc）
 

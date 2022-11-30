@@ -4305,7 +4305,7 @@ dd 命令是基于块（block）的复制，用途很多。
 
     dd if=/dev/cdrom(hdc) of=/root/cd.iso
 
-### 快速清零文件和快速建立文件
+### 快速清理文件和快速建立文件
 
 最快建立大文件的方式是用 truncate 命令
 
@@ -4316,6 +4316,12 @@ dd 命令是基于块（block）的复制，用途很多。
 
     # truncate -s 0 /var/log/yum.log
     > your_file.txt
+
+删除数量巨大的文件， rm * 报错，用 find 命令遍历目录挨个传参数的办法删除，虽然慢但是能做，注意用后台命令，不然挂好久
+
+    find /tmp -type f -exec rm {} \; &
+
+    find /home -type f -size 0 -exec rm {} \;
 
 ### netcat(nc) 简单的端口通信
 
