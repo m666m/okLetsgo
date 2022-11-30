@@ -1350,6 +1350,24 @@ sar 命令选项    功能
     Device            r/s     w/s     rMB/s     wMB/s   rrqm/s   wrqm/s  %rrqm  %wrqm r_await w_await aqu-sz rareq-sz wareq-sz  svctm  %util
     mmcblk0          0.00    0.47      0.00      0.00     0.00     0.13   0.00  22.22    0.00    8.43   0.00     0.00     5.14   4.29   0.20
 
+按进程
+
+    $ pidstat -d 1
+    Linux 5.10.103-v7l+ (jn-zh)     30/11/22        _armv7l_        (4 CPU)
+
+    11:47:40      UID       PID   kB_rd/s   kB_wr/s kB_ccwr/s iodelay  Command
+    11:47:41      UID       PID   kB_rd/s   kB_wr/s kB_ccwr/s iodelay  Command
+    11:47:42      UID       PID   kB_rd/s   kB_wr/s kB_ccwr/s iodelay  Command
+    11:48:05      UID       PID   kB_rd/s   kB_wr/s kB_ccwr/s iodelay  Command
+    11:48:06      UID       PID   kB_rd/s   kB_wr/s kB_ccwr/s iodelay  Command
+    11:48:07        0        93     -1.00     -1.00     -1.00       1  jbd2/mmcblk0p2-
+    11:48:08      UID       PID   kB_rd/s   kB_wr/s kB_ccwr/s iodelay  Command
+
+    ^C
+
+    Average:      UID       PID   kB_rd/s   kB_wr/s kB_ccwr/s iodelay  Command
+    Average:        0        93     -1.00     -1.00     -1.00       0  jbd2/mmcblk0p2-
+
 看网络，按设备
 
     $ sar -n DEV 5 3
