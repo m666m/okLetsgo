@@ -1508,6 +1508,7 @@ df 查看磁盘占用
 
     # 查看 inode 占用情况，如果小文件过多会看到 IFree 段 为 0，会导致该文件系统上无法新建文件
     $ df -i
+
     Filesystem                    Inodes   IUsed  IFree IUse% Mounted on
     /dev/mapper/dev01-root       4964352 4964352      0  100% /
     udev                          503779     440 503339    1% /dev

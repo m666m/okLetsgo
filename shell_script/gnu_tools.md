@@ -2049,7 +2049,7 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
     runtimepath=~/.vim,/var/lib/vim/addons,/usr/share/vim/vimfiles,/usr/share/vim/vim81,/usr/share/vim/vimfiles/after,/var/lib/vim/addons/after,~/.vim/after
 
-1、如果是 `apt install xxx` 安装的插件一般默认安装了插件管理 vim-addon-manager，在 /usr/share/vim/addons/
+1、如果是 `apt install xxx` 的方式安装发行版插件，会自动安装插件管理器 vim-addon-manager，以便统一管理插件，位置在 /usr/share/vim/addons/
 
    自定义插件  /usr/share/vim/addons/plugin/
    使用时加载  /usr/share/vim/addons/autoload/
@@ -2057,7 +2057,7 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
    vim 自带插件        /usr/share/vim/vim81/plugin/
    vim 自带使用时加载   /usr/share/vim/vim81/autoload/
 
-2、如果是用户自定义安装的插件，保存在 ~/.vim/ 下，vim 会自动查找该目录
+2、如果是用户自定义安装的插件，保存在 ~/.vim/ 下，vim 默认会查找该目录进行加载
 
    插件        ~/.vim/plugin/
    使用时加载   ~/.vim/autoload/
@@ -2092,32 +2092,33 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
 powerline 介绍，参见章节 [状态栏工具 powerline]。
 
-使用 powerline 在 vim 下的插件需要 Vim 在编译时添加 python 支持，所以 vim.tinny 版是无法使用该插件的，如何解决见上面的“使用状态栏工具等扩展插件的先决条件”。
+使用 powerline 在 vim 下的插件需要 Vim 在编译时添加 python 支持，而一般的用于嵌入式设备的操作系统如树莓派自带的是 vim 精简版 vim.tinny，这个版本是无法使用该插件的，如何解决见上面的“使用状态栏工具等扩展插件的先决条件”。
 
-powerline 为保证多样性，使用python，现在的问题是默认python指的python2版本
+powerline 为保证多样性，使用python，现在的问题是操作系统自带的python指的python2还是python3版本
 
     搞清 操作系统安装的包 python-pip 和 python3-pip 的使用区别
     搞清 powerline 有 python 和 python3 两个发行版本
     搞清 操作系统默认的 python 环境是 python 还是 python3
-    搞清 你安装的 powerline 到底是用 python 还是 python3 执行的？如果是用 apt install 安装的更不一样。
+    搞清 你安装的 powerline 到底是用 python 还是 python3 执行的？如果是用 apt install 安装的是使用发行版环境的。
     搞清 所有的 powerline 的插件，安装前都要先看看到底支持哪个python版本？
     搞清 前面这堆 python 到底是指 python2 还是 python3 ？如果是python3，最低要求 3.6 还是 3.7 ？
+    搞清 在 virtualenv/conda 下使用vim会否影响其使用python的插件？
 
-    建议不要自行编译 vim ！你的 python 环境是什么，在 virtualenv 下如何使用vim？
+    不是迫不得已，更不要自行编译 vim，尽量用发行版自带的。
 
     建议安装 debian 发行版自带的 powerline，用 `sudo apt install powerline`即可
 
-        新版只能用pypi `python3 -m pip install powerline-status`
+        如果，你在 Debian 10 用 `pip install powerline-status`，那么安装的应该是 python 2.7 版本的 powerline-status。
 
-        最新版就得用github `python3 -m pip install --user git+git://github.com/powerline/powerline`
+        新版用 pypi 安装 `python3 -m pip install powerline-status`
 
-        如果，你用的是 pip install powerline-status，那么安装的应该是 python 2.7 版本的 powerline-status。
+        最新版用 github 安装 `python3 -m pip install --user git+git://github.com/powerline/powerline`
 
         然后继续，所有的 powerline 的插件，安装前都要先看看到底支持哪个python版本？
 
-如果确定你的 vim 可以使用 powerline ，做如下设置：
+如果确定你的 vim 可以使用 powerline，做如下设置：
 
-    先查看 powerline 的安装位置，找到bindings目录
+    先查看 powerline 的安装位置，找到 bindings 目录
 
         如果是用 pip 安装的 powerline，就是如下这种的路径
 
@@ -2125,11 +2126,11 @@ powerline 为保证多样性，使用python，现在的问题是默认python指�
             # /usr/lib/python3/dist-packages/powerline/bindings/vim/
             /usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
 
-        如果是用 apt 安装的 powerline ，就是这种路径
+        如果是用 apt 安装的 powerline，就是这种路径
 
             /usr/share/powerline/bindings/vim/
 
-    添加到配置文件 ~/.vimrc 或 /etc/vim/vimrc 中
+    将上述路径添加到配置文件 ~/.vimrc 或 /etc/vim/vimrc 中
 
         set rtp+=/usr/share/powerline/bindings/vim/
 
