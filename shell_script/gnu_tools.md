@@ -334,6 +334,8 @@ mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打�
 
 如果是 git for Windows 的 mintty，编辑 ~/.minttyrc 文件为下面的内容
 
+#### .minttyrc 配置文件样例
+
 ```config
 
 # https://mintty.github.io/mintty.1.html
