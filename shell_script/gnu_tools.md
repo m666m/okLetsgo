@@ -1199,7 +1199,7 @@ powerline 最大的优点是它的各种符号字体可以图形化的显示文�
 
 缺点是它的代码 python2、3 混杂，安装和使用都很难配置，所以现在有些插件不使用它了。
 
-使用这个插件，先确定你当前操作系统的 python 命令指向的是 python2 还是 python3，我的 Debian 10 默认是 python2。
+使用这个插件，先确定你当前操作系统的 python 命令指向的是 python2 还是 python3，我的 Debian 10 默认是 python2，目前从 github 安装的最新版只支持 python3，所以得改设置。简单点的安装发行版自带的就可以了。
 
 基础安装
 
@@ -1220,7 +1220,7 @@ powerline 最大的优点是它的各种符号字体可以图形化的显示文�
     $ ps -ef|grep powerline
     00:00:00 /usr/bin/python3 /usr/bin/powerline-daemon --foreground
 
-终端工具的参数设置中最好明确设置变量 Term 是 xterm-256color，防止用户登陆脚本未设置，以保证命令行显示的颜色更丰富
+你使用的终端工具的 Terminal 相关参数设置中设置 xterm-256color，防止用户登陆脚本未设置变量TERM，以保证命令行显示的颜色更丰富
 
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
