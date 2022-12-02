@@ -685,10 +685,11 @@ apt命令大家应该都比较熟悉了，这里直接简单的介绍下pkg命�
 
 #### Termux:API
 
-
 ## 安卓手机的最好解决方案
 
 开源手机
+
+暂未找到合适的
 
 开源 rom
 
@@ -698,3 +699,5 @@ apt命令大家应该都比较熟悉了，这里直接简单的介绍下pkg命�
             https://spark-os.live/team
                 文档 https://github.com/Spark-Devices/Documentation
                 rom https://github.com/Spark-Rom
+
+    需要明确开发者是否独立，另外小米手机硬件是否有独立于 rom 不受控制的功能？千万不要低估它的下限。
