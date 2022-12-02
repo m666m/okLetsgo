@@ -1518,7 +1518,7 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
-如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示风格会有差别，这是设计者做了兼容性考虑，以防止出现不正常的显示。
+如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示风格会有差别，这是设计者做了兼容性考虑，以防止显示不正常。
 
 然后从github安装powerlevel10k
 
@@ -1622,6 +1622,70 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     0inputs+0outputs (0major+4998minor)pagefaults 0swaps
     0.20user 0.13system 0:00.30elapsed 114%CPU (0avgtext+0avgdata 5904maxresident)k
     0inputs+0outputs (0major+4995minor)pagefaults 0swaps
+
+#### zsh插件管理器
+
+antigen
+
+    <https://github.com/zsh-users/antigen>
+
+我在 Debian 10 buster 下面就没整利索过这货，不用了，装了 zsh4humans 足够了
+
+    # https://github.com/zsh-users/antigen/wiki/Installation
+    sudo apt install zsh-antigen
+
+如果是用 apt install 安装的发行版，位置在 /usr/share/ 下面
+
+antigen用法：快速配置
+
+假如你之前使用了oh-my-zsh，在这里可以先把原来的oh-my-zsh和.zshrc文件删掉，然后创建一个新的 ~/.zshrc 文件，内容如下
+
+    # 格式：antigen bundle <内置的插件名>
+    # 格式：antigen bundle <github_user/repo_name>
+    source /path-to-antigen/antigen.zsh
+
+    # 加载oh-my-zsh库
+    antigen use oh-my-zsh
+
+    # 加载原版oh-my-zsh中的功能
+    antigen bundle git
+    antigen bundle pip
+    antigen bundle command-not-found
+
+    # 语法高亮功能
+    antigen bundle zsh-users/zsh-syntax-highlighting
+
+    # 代码提示功能
+    antigen bundle zsh-users/zsh-autosuggestions
+
+    # 自动补全功能
+    antigen bundle zsh-users/zsh-completions
+
+    # 加载主题
+    antigen theme robbyrussell
+
+    # 保存更改
+    antigen apply
+
+    # 退出重启shell
+    exit
+    zsh
+
+zsh配置文件样例，有空慢慢研究吧 <https://linux.zone/1306>。
+
+zinit（原 zplugin）号称 zsh 下最快的插件管理器
+
+    https://github.com/zdharma-continuum/zinit
+
+    https://gist.github.com/laggardkernel/4a4c4986ccdcaf47b91e8227f9868ded
+
+    https://zhuanlan.zhihu.com/p/98450570
+
+    这个插件管理器在 ~/.zshrc 文件中的加载设置如下
+
+        # Load powerlevel10k theme
+        zinit ice depth"1" # git clone depth
+        zinit light romkatv/powerlevel10k
 
 #### 自带插件管理器，内置超多插件和主题的 ohmyzsh
 
@@ -1752,10 +1816,10 @@ source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 ##############
-# 如果安装了 ohmyzsh 会自动生成一堆设置，不用动
+# 如果安装了 ohmyzsh 会自动生成一堆设置，不用管他
 # ...
 # ...
-# 有个 ohmyzsh 的插件管理，在 plugin=() 段落启用内置插件，可以在这里加载上面的插件，不用 source xxx 了
+# ohmyzsh 自带插件管理，在 plugin=() 段落启用内置插件，可以在这里加载上面那些 source xxx 的插件
 
 ############## powerlevel10k 安装程序添加部分
 
@@ -1775,94 +1839,6 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 #set -o vi
 
 ```
-
-#### zsh插件管理器 antigen
-
-    <https://github.com/zsh-users/antigen>
-
-我在 Debian 10 buster 下面就没整利索过这货，不用了
-
-    # https://github.com/zsh-users/antigen/wiki/Installation
-    sudo apt install zsh-antigen
-
-如果是用 apt install 安装的发行版，位置在 /usr/share/ 下面
-
-antigen用法：快速配置
-
-假如你之前使用了oh-my-zsh，在这里可以先把原来的oh-my-zsh和.zshrc文件删掉，然后创建一个新的 ~/.zshrc 文件，内容如下
-
-    # 格式：antigen bundle <内置的插件名>
-    # 格式：antigen bundle <github_user/repo_name>
-
-    source /path-to-antigen/antigen.zsh
-
-    # 加载oh-my-zsh库
-
-    antigen use oh-my-zsh
-
-    # 加载原版oh-my-zsh中的功能
-
-    antigen bundle git
-
-    antigen bundle pip
-
-    antigen bundle command-not-found
-
-    # 语法高亮功能
-
-    antigen bundle zsh-users/zsh-syntax-highlighting
-
-    # 代码提示功能
-
-    antigen bundle zsh-users/zsh-autosuggestions
-
-    # 自动补全功能
-
-    antigen bundle zsh-users/zsh-completions
-
-    # 加载主题
-
-    antigen theme robbyrussell
-
-    # 保存更改
-
-    antigen apply
-
-    # 退出重启shell
-    exit
-    zsh
-
-zsh配置文件样例，有空慢慢研究吧 <https://linux.zone/1306>。
-
-目前最快的插件管理器是 zinit（原 zplugin）
-
-    https://github.com/zdharma-continuum/zinit
-
-    https://gist.github.com/laggardkernel/4a4c4986ccdcaf47b91e8227f9868ded
-
-    https://zhuanlan.zhihu.com/p/98450570
-
-这个插件管理器在 ~/.zshrc 文件中的加载设置如下
-
-    # Load powerlevel10k theme
-    zinit ice depth"1" # git clone depth
-    zinit light romkatv/powerlevel10k
-
-This is powerlevel10k, pure, starship sample:
-
-    # Load powerlevel10k theme
-    zinit ice depth"1" # git clone depth
-    zinit light romkatv/powerlevel10k
-
-    # Load pure theme
-    zinit ice pick"async.zsh" src"pure.zsh" # with zsh-async library that's bundled with it.
-    zinit light sindresorhus/pure
-
-    # Load starship theme
-    zinit ice as"command" from"gh-r" \ # `starship` binary as command, from github release
-            atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \ # starship setup at clone(create init.zsh, completion)
-            atpull"%atclone" src"init.zsh" # pull behavior same as clone, source init.zsh
-    zinit light starship/starship
 
 ## Linux 常用工具
 
