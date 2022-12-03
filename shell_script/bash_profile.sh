@@ -86,10 +86,10 @@ function PS1git-branch-name {
   # 优先显示当前head指向的分支名
   if [ $exitcode -eq 0 ]; then
     printf "%s" $branch_name
-    return
+    return 0
   fi
 
-  # detached HEAD
+  # detached HEAD，显示标签名或commit id
   if [ $exitcode -eq 1 ]; then
 
       local headhash="$(git rev-parse HEAD)"
@@ -104,7 +104,7 @@ function PS1git-branch-name {
 
   fi
 
-  # exitcode 是其它数字的，不在git环境中，不需要打印
+  # exitcode 是其它数字的，不在git环境中，不需要打印git信息
 }
 
 function PS1git-branch-prompt {
@@ -169,7 +169,7 @@ function PS1raspi-warning-prompt {
 }
 
 # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 树莓派温度告警 git分支及状态
-PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1raspi-warning-prompt)$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
+PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1raspi-warning-prompt)$yellow\$(PS1conda-env-name)\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
 #################################
 # Windows git bash(mintty)
