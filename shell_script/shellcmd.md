@@ -59,7 +59,7 @@
     var1='say $var'
     var2="say $var"
 
-反引号和$()的作用相同，用于命令替换(command substitution)，即完成引用的命令的执行，将其结果替换出来
+反引号``和$()的作用相同，用于命令替换(command substitution)，即完成引用的命令的执行，将其结果替换出来
 
     echo `date '--date=1 hour ago' +%Y-%m-%d-%H`
     echo $(date '--date=1 hour ago' +%Y-%m-%d-%H)
@@ -76,7 +76,7 @@ ${}用于明确界定变量，与$var并没有区别，但是界定更清晰
 
     变量展开见下面 ${变量名[@]} 的用法
 
-变量 ZSH_CUSTOM 有值就用，没有就用后面的，这个用法比较独特
+变量 ZSH_CUSTOM 有值就用，没有就用后面的，这个用法是zsh的
 
     # https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md
     echo ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions

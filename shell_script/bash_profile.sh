@@ -1,6 +1,8 @@
-
+# 适用于 Linux bash、Windows mintty bash，每段用 ########## 分隔，根据说明自行选用搭配即可
+#
 # 别人的配置文件参考大全 https://github.com/pseudoyu/dotfiles
 #                       https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
+#
 # exit for non-interactive shell
 [[ ! -t 1 ]] && return
 
@@ -11,6 +13,8 @@ test -f ~/.bashrc && . ~/.bashrc
 # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
 set -o vi
 
+####################################################################
+# alias 本该放到 .bashrc 文件，为了方便统一在此了
 # 常用的列文件
 alias l='ls -CF'
 alias ll='ls -l'
@@ -67,9 +71,10 @@ function PS1exit-code {
 }
 
 function PS1conda-env-name {
-  # 暂未调试成功
-  local envname=$(if [ "$(which conda >/dev/null 2>&1)" = "0" ]; then printf "%s" $(conda env list); fi)
-  [[ ! -z $envname ]] && printf " conda:%s" $envname
+  # 请先激活conda环境，做如下设置
+  #     禁止conda修改命令行提示符，以防止激活环境后conda修改PS1 `conda config --set changeps1 False`
+  #     禁止conda进入命令行提示符时自动激活base环境，以防止设置变量$CONDA_DEFAULT_ENV `conda config --set auto_activate_base false`
+  [[ -n $CONDA_DEFAULT_ENV ]] && printf "(conda:%s)" $CONDA_DEFAULT_ENV
 }
 
 function PS1git-branch-name {
@@ -124,7 +129,7 @@ function PS1git-branch-prompt {
 }
 
 # linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
-PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
+PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1conda-env-name)\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
 #################################
 # Linux bash
@@ -184,7 +189,7 @@ function PS1git-bash-exitcode {
 }
 
 # git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
-PS1="\n$magenta┌─$red\$(PS1git-bash-exitcode)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1git-branch-prompt)$magenta$(PS1git-bash-new-line)──$white\$ $normal"
+PS1="\n$magenta┌─$red\$(PS1git-bash-exitcode)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1conda-env-name)\$(PS1git-branch-prompt)$magenta$(PS1git-bash-new-line)──$white\$ $normal"
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
