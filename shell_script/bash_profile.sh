@@ -71,9 +71,12 @@ function PS1exit-code {
 }
 
 function PS1conda-env-name {
-  # 请先激活conda环境，做如下设置
-  #     禁止conda修改命令行提示符，以防止激活环境后conda修改PS1 `conda config --set changeps1 False`
-  #     禁止conda进入命令行提示符时自动激活base环境，以防止设置变量$CONDA_DEFAULT_ENV `conda config --set auto_activate_base false`
+  # 自定义 conda 的环境名格式，需要先修改conda的默认设置，
+  # 激活conda环境后做如下的设置，只需要做一次
+  #     禁止conda修改命令行提示符，以防止conda环境激活脚本修改PS1
+  #         conda config --set changeps1 False
+  #     禁止conda进入命令行提示符时自动激活base环境，以防止设置变量$CONDA_DEFAULT_ENV
+  #         conda config --set auto_activate_base false
   [[ -n $CONDA_DEFAULT_ENV ]] && printf "(conda:%s)" $CONDA_DEFAULT_ENV
 }
 
