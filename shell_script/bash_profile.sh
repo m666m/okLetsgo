@@ -77,6 +77,13 @@ function PS1conda-env-name {
   [[ -n $CONDA_DEFAULT_ENV ]] && printf "(conda:%s)" $CONDA_DEFAULT_ENV
 }
 
+# virtualenv 自定义环境名格式，禁用 activate 脚本中在PS1前添加的环境名称
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+function PS1virtualenv-env-name {
+    [[ -n $VIRTUAL_ENV ]] && printf "(venv:%s)" $(basename $VIRTUAL_ENV)
+}
+
 function PS1git-branch-name {
 
   # 这个命令在裸仓库或.git目录中运行不报错，一样会打印出当前分支名
@@ -129,7 +136,7 @@ function PS1git-branch-prompt {
 }
 
 # linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
-PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1conda-env-name)\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
+PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
 #################################
 # Linux bash
@@ -169,7 +176,7 @@ function PS1raspi-warning-prompt {
 }
 
 # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 树莓派温度告警 git分支及状态
-PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1raspi-warning-prompt)$yellow\$(PS1conda-env-name)\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
+PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1raspi-warning-prompt)$yellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
 #################################
 # Windows git bash(mintty)
@@ -189,7 +196,7 @@ function PS1git-bash-exitcode {
 }
 
 # git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
-PS1="\n$magenta┌─$red\$(PS1git-bash-exitcode)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1conda-env-name)\$(PS1git-branch-prompt)$magenta$(PS1git-bash-new-line)──$white\$ $normal"
+PS1="\n$magenta┌─$red\$(PS1git-bash-exitcode)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$magenta$(PS1git-bash-new-line)──$white\$ $normal"
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
