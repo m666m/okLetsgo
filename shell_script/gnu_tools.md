@@ -463,7 +463,7 @@ BoldWhite=255,255,255
 
 #### mintty 简单使用：Git for Windows
 
-Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是只编译了它自己需要的部分工具软件进行了集成，我们主要使用他的 mintty.exe 命令行终端模拟器和 ssh、gpg 等工具软件。
+Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是只编译了它自己需要的部分工具软件进行了集成，我们主要使用他的 mintty.exe 命令行终端模拟器和 git、ssh、gpg、winpty 等工具。
 
 安装 git for Windows 或 MSYS2 后就有了
 
@@ -521,6 +521,8 @@ putty的退出也是同样的建议。
 
 拷贝 MSYS2 的工具到 git 里，这样只使用 git bash(mintty) 就可以了。
 
+二者混用是个凑合的解决办法，因为如果遇到二者的调用库版本不一致会导致报错，所以最好是安装 MSYS2，然后使用它自带的 mintty、git、ssh、zsh 等工具，详见下面章节 [mintty 全套使用]。
+
 假设 git 的安装目录在 D:\Git，可执行文件在 D:\Git\usr\bin\ 目录：
 
 以迁移 tmux.exe 为例，可执行文件放在 D:\Git\usr\bin\：
@@ -572,7 +574,10 @@ home 目录的隔离虽然使两个软件的设置互不干扰，但也使得 ss
 
 使用 pacman 安装各种包：
 
-    pacman -S openssh opengpg git vim tmux
+    不要安装 msys2 版的 python，还是 anaconda 最方便
+
+    # netcat 的版本选择： gnu nc 没有 proxy 参数(-x), 因此我们要选择 openbsd 版
+    pacman -S openssh opengpg git vim tmux openbsd-netcat
 
 pacman安装后先更换 清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，配置文件在 msys 的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
 
@@ -789,11 +794,15 @@ cmder 推荐了几个本地终端模拟器，可以嵌入 cmder 代替 ConEmu
 
 Windows Terminal
 
-    Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
+Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
 
-    https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/
+    Contpy 介绍
+        https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/
 
-    https://www.zhihu.com/question/303307670
+        https://www.zhihu.com/question/303307670
+
+    Windows Terminal 与 MSYS2 MinGW64 集成
+        https://ttys3.dev/post/windows-terminal-msys2-mingw64-setup/
 
     # https://github.com/microsoft/terminal/releases
     winget install --id=Microsoft.WindowsTerminal -e
@@ -1689,53 +1698,17 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 
 #### zsh插件管理器
 
+简单使用不需要插件管理器，装了 zsh4humans 足够了。
+
 antigen
 
-    <https://github.com/zsh-users/antigen>
+    不更新了2019
+        https://github.com/zsh-users/antigen
+        https://github.com/zsh-users/antigen/wiki/Installation
 
-我在 Debian 10 buster 下面就没整利索过这货，不用了，装了 zsh4humans 足够了
-
-    # https://github.com/zsh-users/antigen/wiki/Installation
     sudo apt install zsh-antigen
 
-如果是用 apt install 安装的发行版，位置在 /usr/share/ 下面
-
-antigen用法：快速配置
-
-假如你之前使用了oh-my-zsh，在这里可以先把原来的oh-my-zsh和.zshrc文件删掉，然后创建一个新的 ~/.zshrc 文件，内容如下
-
-    # 格式：antigen bundle <内置的插件名>
-    # 格式：antigen bundle <github_user/repo_name>
-    source /path-to-antigen/antigen.zsh
-
-    # 加载oh-my-zsh库
-    antigen use oh-my-zsh
-
-    # 加载原版oh-my-zsh中的功能
-    antigen bundle git
-    antigen bundle pip
-    antigen bundle command-not-found
-
-    # 语法高亮功能
-    antigen bundle zsh-users/zsh-syntax-highlighting
-
-    # 代码提示功能
-    antigen bundle zsh-users/zsh-autosuggestions
-
-    # 自动补全功能
-    antigen bundle zsh-users/zsh-completions
-
-    # 加载主题
-    antigen theme robbyrussell
-
-    # 保存更改
-    antigen apply
-
-    # 退出重启shell
-    exit
-    zsh
-
-zsh配置文件样例，有空慢慢研究吧 <https://linux.zone/1306>。
+    这个是接班的 https://github.com/mattmc3/antidote
 
 zinit（原 zplugin）号称 zsh 下最快的插件管理器
 
