@@ -72,15 +72,15 @@ function PS1exit-code {
 
 function PS1conda-env-name {
   # 自定义 conda 的环境名格式，需要先修改conda的默认设置，
-  # 激活conda环境后做如下的设置，只需要做一次
-  #     禁止conda修改命令行提示符，以防止conda环境激活脚本修改PS1
+  # 需要先激活conda环境 `conda activate` 后做如下的设置，只做一次即可
+  #     禁止conda修改命令行提示符，以防止修改变量PS1
   #         conda config --set changeps1 False
-  #     禁止conda进入命令行提示符时自动激活base环境，以防止设置变量$CONDA_DEFAULT_ENV
+  #     禁止conda进入命令行提示符时自动激活base环境，以方便检测变量$CONDA_DEFAULT_ENV
   #         conda config --set auto_activate_base false
   [[ -n $CONDA_DEFAULT_ENV ]] && printf "(conda:%s)" $CONDA_DEFAULT_ENV
 }
 
-# virtualenv 自定义环境名格式，禁用 activate 脚本中在PS1前添加的环境名称
+# virtualenv 自定义环境名格式，禁用 activate 命令脚本中在变量PS1前添加的环境名称
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 function PS1virtualenv-env-name {
@@ -185,9 +185,13 @@ PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green
 # Windows git bash(mintty)
 # 命令行提示符显示： 在上面的基础上修改了两个兼容性函数
 #
-# 在\$(函数名)后直接用换行\n就冲突，不支持$?检查退出码，或者把换行\n放在引用函数前面，或者拼接凑合用
-#PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
-# 目前用新增子函数 PS1git-bash-new-line 和 PS1git-bash-exitcode 实现跟上面完全一致的显示效果。
+# 目前 git bash(mintty) 有点bug：
+# 在\$(函数名)后直接用换行\n就冲突，不支持$?检查退出码
+# 规避办法是或者把换行\n放在引用函数前面，或者拼接凑合用
+#   PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
+#
+# 新的解决办法：
+# 用新增子函数 PS1git-bash-new-line 和 PS1git-bash-exitcode 实现跟上面完全一致的显示效果。
 
 function PS1git-bash-new-line {
     printf "\n└"
