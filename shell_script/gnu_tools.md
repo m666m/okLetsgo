@@ -109,7 +109,7 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
     https://zhuanlan.zhihu.com/p/377263437
 
-Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发使用 WSL2 也可以。
+Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发可以使用 WSL2。
 
 WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 Linux，但是实现了 Linux 程序可以在 Windows 上运行，但是有些功能如 GUI 实现的有限。可以理解成使用了 MingW/Cygwin 的中间模拟层思路，但不在编译时实现，而是 QEMU 这种运行时转码的实现思路。 <https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility>。后来发现坑太大填不满，就搞了个新思路 WSL2。
 
