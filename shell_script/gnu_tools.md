@@ -295,6 +295,8 @@ mintty 可以在命令行显示图片，下载他的utils目录下的脚本 show
 
 #### winpty 运行 cmd 字符终端程序
 
+    https://zhuanlan.zhihu.com/p/102393122
+
 在 mintty 下使用普通的 Windows CMD 字符程序，如 python 会无法进入。这是因为因为宿主机上的 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 Unix pty。
 
 也就是说，涉及到 Windows 的关于终端输入的程序在 msys2 下会无法进入，需要有个代理提供类似 wslbridge 的角色。
@@ -726,6 +728,8 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     openbsd-netcat
 
 需要安装什么命令，一般可以在搜索引擎里以 `MSYS2 xxx` 的形式得到结果。
+
+另外， Cygwin下还有 apt-cyg 命令行包管理器 <https://zhuanlan.zhihu.com/p/66930502>，操作软件仓库 <https://zhuanlan.zhihu.com/p/65482014>。
 
 ### 其他本地终端模拟器
 

@@ -1392,11 +1392,19 @@ Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7
 
 ### WSL 适用于 Linux 的 Windows 子系统 - 命令行安装 Ubuntu
 
-WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的linux，但是实现了linux程序可以在Windows上运行，但是有些功能如GUI实现的有限制。可以理解成 MingW/Cygwin 的中间层思路，但不是编译时实现，而是运行时转码这种QEMU的实现思路。 <https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility>
+    https://zhuanlan.zhihu.com/p/377263437
 
-WSL 2 在底层使用虚拟机（Hyper-V）同时运行linux内核和Windows内核，并且把Linux 完全集成到了 Windows 中，即使用起来就像在 Windows 中直接运行 linux 程序。
+WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 Linux，但是实现了 Linux 程序可以在 Windows 上运行，但是有些功能如 GUI 实现的有限。可以理解成使用了 MingW/Cygwin 的中间模拟层思路，但不在编译时实现，而是 QEMU 这种运行时转码的实现思路。 <https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility>。后来发现坑太大填不满，就搞了个新思路 WSL2。
 
-缺点是IO不如 WSL 1 快，见下面章节[混合使用 Windows 和 Linux 进行工作]。
+WSL 2 在底层使用虚拟机（Hyper-V）同时运行 Linux 内核和 Windows 内核，并且把 Linux 完全集成到了 Windows 中，使用起来就像在 Windows 中直接运行 Linux 程序。
+
+    在2021年发布的 WSLg <https://github.com/microsoft/wslg>，已经可以支持命令行启动运行 Linux GUI 程序了，如： gvim、gedit 等，甚至支持 GPU 加速的 3D 程序。WSLg 其实是个部署了 X Server 的 Linux，添加了支持 Windows 远程桌面的 FreeRDP 服务，即作为 X-window 应用和 windows 窗口应用的桥梁存在。即在底层通过 Windows 远程桌面的接口实现了用户在 Windows 桌面使用 Linux GUI 程序： Windows 用户界面 <-> RDP <-> X Server <-> Linux GUI 程序。而且 WSLg 用到的其实是替代 X Window System 的 Wayland Compositor，就是 Wayland 官方给出的参考实现 Weston。这种类似于添加了个中间代理的解决方式，有利于完美适配各大 Linux 发行版和各种 Linux GUI 程序。
+
+    X window system 参见 <https://zhuanlan.zhihu.com/p/134325713> <https://zhuanlan.zhihu.com/p/427637159>，最著名的GUI客户端是 xterm，直接很多字符终端模拟器的多彩色方案支持的还是 xterm。
+
+    替代品 Wayland 体系见《https://zhuanlan.zhihu.com/p/503627248>。
+
+缺点是IO不如 WSL 1 快，见下面章节 [混合使用 Windows 和 Linux 进行工作]。
 
 开发工具可以使用 Virsual Studio Code，支持直接打开 WSL 虚机，就像连接 Docker 虚机或远程连接 SSH 服务器一样简单。其它开发工具如 git、docker、数据库、vGpu 加速（<https://developer.nvidia.com/cuda/wsl> ）等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/setup/environment>。
 
