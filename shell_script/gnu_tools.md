@@ -877,7 +877,7 @@ clink 辅助工具，在cmd下模仿bash，按tab键自动完成，像emacs一�
     https://github.com/chrisant996/clink
         不再更新了 https://github.com/mridgers/clink
 
-winpty 辅助工具，提供了 unix pty 接口与 cmd conhost 接口的互通，是 Windows cmd 程序在 mintty 这种 MSYS2 环境下执行的中介
+winpty 辅助工具，提供了 unix pty 接口与 cmd conhost 接口的互通，是 Windows cmd 程序在 mintty 这种 MSYS2 环境下执行的中介，参见章节 [winpty 运行 cmd 字符终端程序]
 
 wslbridge 辅助工具，使用 Windows ConPty 接口 以支持 WSL(Windows Subsystem for Linux)，很多支持终端多路复用的软件在 Windows 下都使用该组件
 

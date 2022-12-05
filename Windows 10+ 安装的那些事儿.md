@@ -1390,7 +1390,7 @@ Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7
 
 完整 Windows api 的是 Windows 和 Windows server，其它的是仅支持 .net，注意不同映像的区别 <https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/container-base-images>
 
-### WSL 适用于 Linux 的 Windows 子系统 - 命令行安装 Ubuntu
+### WSL 安装 Ubuntu
 
 WSL2 的缺点是 IO 不如 WSL1 快，见下面章节 [混合使用 Windows 和 Linux 进行工作]。
 
