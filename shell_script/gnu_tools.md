@@ -105,17 +105,47 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
     如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman (ArcLinux)作为包管理器。
 
-Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发使用 WSL2 也可以
+#### WSL 适用于 Linux 的 Windows 子系统
 
-    对 Linux 字符程序，通过 ConPty 接口支持 unix pty
+    https://zhuanlan.zhihu.com/p/377263437
+
+Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发使用 WSL2 也可以。
+
+WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 Linux，但是实现了 Linux 程序可以在 Windows 上运行，但是有些功能如 GUI 实现的有限。可以理解成使用了 MingW/Cygwin 的中间模拟层思路，但不在编译时实现，而是 QEMU 这种运行时转码的实现思路。 <https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility>。后来发现坑太大填不满，就搞了个新思路 WSL2。
+
+WSL 2 在底层使用虚拟机（Hyper-V）同时运行 Linux 内核和 Windows 内核，并且把 Linux 完全集成到了 Windows 中，使用起来就像在 Windows 中直接运行 Linux 程序。
+
+##### Windows 10 对 Linux 的字符程序和GUI程序的支持
+
+Windows 10 在 2022 年后已经比较完整的对外提供了编程接口
+
+    对 Linux 字符程序，通过 ConPty 接口支持 unix pty 应用
 
     对 Linux GUI 程序，通过 WSLg 接口支持 x-window 应用
 
-参见章节 [WSL 适用于 Linux 的 Windows 子系统](../Windows%2010+%20安装的那些事儿.md) 。
+ConPty
 
-#### Windows 10+ 下的 WSL 混合环境
+    https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/
 
-    https://github.com/hsab/WSL-config
+    https://www.zhihu.com/question/303307670
+
+基于 ConPTY 的终端，既能运行 POSIX 命令行程序，也能运行基于 Windows ConHost 的命令行程序。需要 Windows version >= 10 / 2019 1809 (build >= 10.0.17763)。
+
+WSLg
+
+    https://github.com/microsoft/wslg
+
+目前已经可以支持命令行启动运行 Linux GUI 程序了，如： gvim、gedit 等，甚至支持 GPU 加速的 3D 程序。WSLg 其实是个部署了 X Server 的 Linux，添加了支持 Windows 远程桌面的 FreeRDP 服务，即作为 X-window 应用和 windows 窗口应用的桥梁存在。通过 Windows 远程桌面的接口实现了用户在 Windows 桌面直接使用 Linux GUI 程序： Windows 用户界面 <-> RDP <-> X Server <-> Linux GUI 程序。而且 WSLg 用到的其实是替代 X Window System 的 Wayland Compositor，就是 Wayland 官方给出的参考实现 Weston。这种类似于添加了个中间代理的解决方式，有利于完美适配各大 Linux 发行版和各种 Linux GUI 程序。
+
+X window system
+
+    https://zhuanlan.zhihu.com/p/134325713
+
+    https://zhuanlan.zhihu.com/p/427637159>
+
+    最著名的GUI客户端是 xterm，直接很多字符终端模拟器的多彩色方案支持的还是 xterm。
+
+替代品 Wayland 体系见 <https://zhuanlan.zhihu.com/p/503627248>。
 
 ## Windows字符终端
 
@@ -754,9 +784,21 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
 ### 其他本地终端模拟器
 
-注：使用Windows 10 的 ConPty 接口的本地终端，需要需要 Windows version >= 10 / 2019 1809 (build >= 10.0.17763)
+配置 WSL 环境
 
-ConPtyShell 使用 Windows 10 的 ConPty 接口实现的本地终端
+    https://github.com/hsab/WSL-config
+
+wsltty 使用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用
+
+    https://github.com/mintty/wsltty
+
+    在 mintty 的配置文件中设置 ConPTY=true
+
+    或安装 wslbridge2
+    # 需要在目录/bin/下安装 wslbridge2
+    mintty --WSL=Ubuntu
+
+ConPtyShell 使用 Windows ConPty 接口实现的本地终端
 
     https://github.com/antonioCoco/ConPtyShell
 
@@ -814,20 +856,12 @@ Windows Terminal
 
 Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
 
-    Contpy 介绍
-        https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/
-
-        https://www.zhihu.com/question/303307670
-
-    Windows Terminal 与 MSYS2 MinGW64 集成
-        https://ttys3.dev/post/windows-terminal-msys2-mingw64-setup/
-
     # https://github.com/microsoft/terminal/releases
     winget install --id=Microsoft.WindowsTerminal -e
 
-wsltty 使用 Windows ConPTY 接口开发的 mintty，通过 wslbridge 实现调用
+    Windows Terminal 与 MSYS2 MinGW64 集成
 
-    https://github.com/mintty/wsltty
+        https://ttys3.dev/post/windows-terminal-msys2-mingw64-setup/
 
 独立的 Powershell 7，从这个版本开始不跟随 Windows 发布了
 
@@ -843,15 +877,15 @@ clink 辅助工具，在cmd下模仿bash，按tab键自动完成，像emacs一�
     https://github.com/chrisant996/clink
         不再更新了 https://github.com/mridgers/clink
 
-wslbridge 辅助工具，使用 Windows ConPTY 接口 以支持 WSL(Windows Subsystem for Linux)，很多支持终端多路复用的软件在 Windows 下都使用该组件
+winpty 辅助工具，提供了 unix pty 接口与 cmd conhost 接口的互通，是 Windows cmd 程序在 mintty 这种 MSYS2 环境下执行的中介
+
+wslbridge 辅助工具，使用 Windows ConPty 接口 以支持 WSL(Windows Subsystem for Linux)，很多支持终端多路复用的软件在 Windows 下都使用该组件
 
     wslbridge2 https://github.com/Biswa96/wslbridge2
         wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
 
-        # /bin/ 下安装 wslbridge2
+        # 需要在目录/bin/下安装 wslbridge2
         mintty --WSL=Ubuntu
-
-    Windows 10 v1809 推出的 ConPTY 接口支持第三方终端模拟器了，不知道这个插件后续发展
 
 ### 终端多路复用器
 
@@ -1049,7 +1083,7 @@ console即控制台，是与操作系统交互的设备，系统将一些信息�
 
 90年代局域网、互联网发展以来，C/S模式成为主流，除了http服务，网络上服务器（Server）的作为主机（host），客户机（Client）连接它，主机和客户机间可以使用各种不同类型的连接。对于命令行交互的字符式连接（如 ssh/telnet 等），客户机需要给命令行程序营造出一个终端设备的仿真环境，以便跟主机进行交互，即所谓终端模拟器（Terminal Emulator）。UNIX/Linux 内核发展出了伪终端（pseudo tty，缩写为 pty）设备的概念顺应这一趋势，实现这个伪终端功能的程序即可把自己模拟成主机的终端。现在最流行的字符终端模拟器有 putty、xterm 等，图形终端模拟器有 vnc、rdp 等，远程连接使用的通信协议主要采用非对称密钥加密算法，一般利用 ssh 建立通信隧道。我们现在说的终端，不再是真实的硬件设备，一般都是指软件终端模拟器。
 
-现代的个人计算机 pc、notebook，甚至 pad、smart phone 的处理能力都超过当年的大型机，本身也可以作为服务器的角色对外提供客户机连接服务，实现机制各有不同。在 Windows 操作系统下，终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost，类似于 linux 的伪终端机制。这种连接本机的终端可称为本地终端，或是软件进入“console mode”。因为 Windows 的 conhost 实现机制跟 linux 伪终端实质上不同，第三方终端应用程序其实无法连接 conhost，所以有来自 Msys2 项目的 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，可设置 mintty 的配置文件 `ConPTY=true` 支持这个功能。
+现代的个人计算机 pc、notebook，甚至 pad、smart phone 的处理能力都超过当年的大型机，本身也可以作为服务器的角色对外提供客户机连接服务，实现机制各有不同。在 Windows 操作系统下，终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost，类似于 linux 的伪终端机制。这种连接本机的终端可称为本地终端，或是软件进入“console mode”。因为 Windows 的 conhost 实现机制跟 linux 伪终端实质上不同，第三方终端应用程序其实无法连接 conhost，所以有来自 Msys2 项目的 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。
 
 其它还有很多，详见章节 [Windows字符终端]。
 
