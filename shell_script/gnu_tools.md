@@ -22,6 +22,7 @@ Windows C++ 开发环境配置
 
     静态代码分析工具除了 SourceInsight，就是 [Understand](https://www.scitools.com/)，王者没有之一。
         https://blog.csdn.net/jojozym/article/details/104722107
+        https://www.zhihu.com/question/19570229/answer/1626066191
 
     meld 基于python的开源合并工具，替换 BeyondCompare https://meldmerge.org/
 
