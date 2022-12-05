@@ -16,64 +16,70 @@ Windows C++ 开发环境配置
 
     g++ 7.0 + git + cmake
 
-    code::block / vscode / SourceInsight(WinSCP 同步本地和编译机代码，或 BeyondCompare 合并)
+    code::block / vscode / SourceInsight
+
+    WinSCP 同步本地和编译机代码
+
+    BeyondCompare 合并代码
+        meld 基于python的开源合并工具，替换 BeyondCompare https://meldmerge.org/
 
     tmux + vim 直接在编译机写代码，方便随时ssh上去复原现场继续。
 
-    静态代码分析工具除了 SourceInsight，就是 [Understand](https://www.scitools.com/)，王者没有之一。
+    静态代码分析工具 SourceInsight
+
+    Understand 王者没有之一
+        https://www.scitools.com
         https://blog.csdn.net/jojozym/article/details/104722107
         https://www.zhihu.com/question/19570229/answer/1626066191
 
-    meld 基于python的开源合并工具，替换 BeyondCompare https://meldmerge.org/
-
     库 toft + chrome + leveldb + folly + zeromq
-
-<https://zhuanlan.zhihu.com/p/56572298>
 
 #### MGW 和 Cygwin 的实现思路
 
-##### MingW 在编译时对二进制代码转译
+MingW 在编译时对二进制代码转译
 
-MingW (gcc 编译到mscrt)包含gcc和一系列工具，是Windows下的gnu环境。
+    MingW (gcc 编译到mscrt)包含gcc和一系列工具，是Windows下的gnu环境。
 
-编译 linux c++ 源代码，生成 Windows 下的exe程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API，相比Cygwin体积更小，使用更方便。
+    编译 linux c++ 源代码，生成 Windows 下的exe程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API，相比Cygwin体积更小，使用更方便。
 
-如 创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的mscrt CreateProcess()形式。
+    如 创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的mscrt CreateProcess()形式。
 
-##### Cygwin 在编译时中间加了个翻译层 cygwin1.dll
+Cygwin 在编译时中间加了个翻译层 cygwin1.dll
 
-Cygwin 生成的程序依然有 fork() 这样的 Linux 系统调用，但目标库是 cygwin1.dll。
+    https://zhuanlan.zhihu.com/p/56572298
 
-Cygwin（POSIX接口转换后操作windows）在Windows中增加了一个中间层——兼容POSIX的模拟层，在此基础上构建了大量Linux-like的软件工具，由此提供了一个完整的 POSIX Linux 环境（以 GNU 工具为代表），模拟层对linux c++代码的接口如同 UNIX 一样， 对Windows由 win32 的 API 实现的cygwin1.dll，这就是 Cygwin 的做法。
+    Cygwin 生成的程序依然有 fork() 这样的 Linux 系统调用，但目标库是 cygwin1.dll。
 
-Cygwin实现，不是 kvm 虚拟机环境，也不是 QEMU 那种运行时模拟，它提供的是程序编译时的模拟层环境：exe调用通过它的中间层dll转换为对windows操作系统的调用。
+    Cygwin（POSIX接口转换后操作windows）在Windows中增加了一个中间层——兼容POSIX的模拟层，在此基础上构建了大量Linux-like的软件工具，由此提供了一个完整的 POSIX Linux 环境（以 GNU 工具为代表），模拟层对linux c++代码的接口如同 UNIX 一样， 对Windows由 win32 的 API 实现的cygwin1.dll，这就是 Cygwin 的做法。
 
-借助它不仅可以在 Windows 平台上使用 GCC 编译器，理论上可以在编译后运行 Linux 平台上所有的程序：GNU、UNIX、Linux软件的c++源代码几乎不用修改就可以在Cygwin环境中编译构建，从而在windows环境下运行。
+    Cygwin实现，不是 kvm 虚拟机环境，也不是 QEMU 那种运行时模拟，它提供的是程序编译时的模拟层环境：exe调用通过它的中间层dll转换为对windows操作系统的调用。
 
-对于Windows开发者，程序代码既可以调用Win32 API，又可以调用Cygwin API，甚至混合，借助Cygwin的交叉编译构建环境，Windows版的代码改动很少就可以编译后运行在Linux下。
+    借助它不仅可以在 Windows 平台上使用 GCC 编译器，理论上可以在编译后运行 Linux 平台上所有的程序：GNU、UNIX、Linux软件的c++源代码几乎不用修改就可以在Cygwin环境中编译构建，从而在windows环境下运行。
 
-用 MingW 编译的程序性能会高一点，而且也不用带着那个接近两兆的 cygwin1.dll 文件。
-但 Cygwin 对 Linux 的模拟比较完整，甚至有一个 Cygwin X 的项目，可以直接用 Cygwin 跑 X。
+    对于Windows开发者，程序代码既可以调用Win32 API，又可以调用Cygwin API，甚至混合，借助Cygwin的交叉编译构建环境，Windows版的代码改动很少就可以编译后运行在Linux下。
 
-另外 Cygwin 可以设置 -mno-cygwin 的 flag，来使用 MingW 编译。
+    用 MingW 编译的程序性能会高一点，而且也不用带着那个接近两兆的 cygwin1.dll 文件。
+    但 Cygwin 对 Linux 的模拟比较完整，甚至有一个 Cygwin X 的项目，可以直接用 Cygwin 跑 X。
 
-##### 取舍：选 MSYS2
+    另外 Cygwin 可以设置 -mno-cygwin 的 flag，来使用 MingW 编译。
 
-如果仅需要在 Windows 平台上使用 GCC，可以使用 MinGW 或者 Cygwin。
+取舍：选 MSYS2
 
-如果还有更高的需求（例如运行 POSIX 应用程序），就只能选择安装 Cygwin。
+    如果仅需要在 Windows 平台上使用 GCC，可以使用 MinGW 或者 Cygwin。
 
-相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具。
+    如果还有更高的需求（例如运行 POSIX 应用程序），就只能选择安装 Cygwin。
 
-目前流行的 MSYS2 是 MSYS 的一个升级版，准确的说是集成了 pacman 和 Mingw-w64 的 Cygwin 升级版。
+    相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具。
 
-如果你只是想在Windows下使用一些linux小工具，建议用 MSYS2，把 /usr/bin 加进环境变量 path 以后，可以直接在 命令行终端中使用 Linux 命令。
+    目前流行的 MSYS2 是 MSYS 的一个升级版，准确的说是集成了 pacman 和 Mingw-w64 的 Cygwin 升级版。
+
+    如果你只是想在Windows下使用一些linux小工具，建议用 MSYS2，把 /usr/bin 加进环境变量 path 以后，可以直接在命令行终端中使用 Linux 命令。
 
 #### MinGW
 
-此项目已停止维护。
+此项目已停止维护
 
-<https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html>
+    https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html
 
 #### MinGW64
 
@@ -86,19 +92,26 @@ MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接�
 #### MSYS、MSYS2
 
     https://www.msys2.org/
+
     https://msys2.github.io/
 
 MinGW 仅仅是工具链，Windows 下的 cmd 使用起来不够方便，MSYS 是用于辅助 Windows 版 MinGW 进行命令行开发的配套软件包：提供了部分 Unix 工具以使得 MinGW 的工具使用起来方便一些。相比基于庞大的 Cygwin 下的 MinGW 会轻巧不少。
 
 MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包管理器 pacman (ArchLinux)。
 
-目前在windows上使用Linux程序
+在 Windows 上使用 Linux 程序
 
     如果只是需要一个编译器的话，可以用MinGW64。
 
     如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman (ArcLinux)作为包管理器。
 
-    Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发使用 WSL2 也可以。
+Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发使用 WSL2 也可以
+
+    对 Linux 字符程序，通过 ConPty 接口支持 unix pty
+
+    对 Linux GUI 程序，通过 WSLg 接口支持 x-window 应用
+
+参见章节 [WSL 适用于 Linux 的 Windows 子系统](../Windows%2010+%20安装的那些事儿.md) 。
 
 #### Windows 10+ 下的 WSL 混合环境
 
