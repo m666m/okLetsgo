@@ -23,6 +23,8 @@ Windows C++ 开发环境配置
     静态代码分析工具除了 SourceInsight，就是 [Understand](https://www.scitools.com/)，王者没有之一。
         https://blog.csdn.net/jojozym/article/details/104722107
 
+    meld 基于python的开源合并工具，替换 BeyondCompare https://meldmerge.org/
+
     库 toft + chrome + leveldb + folly + zeromq
 
 <https://zhuanlan.zhihu.com/p/56572298>
@@ -760,7 +762,7 @@ alacritty 使用gpu进行显示加速的本地终端模拟器，在 Windows 下�
 
     https://github.com/alacritty/alacritty
 
-WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用
+WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用，至今未解决奇怪的卡顿问题
 
     https://github.com/wez/wezterm
         https://wezfurlong.org/
@@ -769,6 +771,8 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/Ma
 
     https://github.com/kovidgoyal/kitty
         https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
+
+    常用插件挺好用 https://sw.kovidgoyal.net/kitty/kittens_intro/
 
 Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
 

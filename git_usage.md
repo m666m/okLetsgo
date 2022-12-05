@@ -2574,8 +2574,14 @@ git给出了解决方案，使用git branch-filter来遍历git history tree, 可
 
 ### 配置Beyond Compare 4作为git mergetool
 
-<https://blog.csdn.net/albertsh/article/details/106294095>
-<https://blog.csdn.net/LeonSUST/article/details/103565031>
+    https://blog.csdn.net/albertsh/article/details/106294095
+    https://blog.csdn.net/LeonSUST/article/details/103565031
+
+建议使用开源的 meld 替换，基于python的
+
+    https://meldmerge.org/
+        https://gitlab.gnome.org/GNOME/meld
+        https://gitlab.gnome.org/GNOME/meld/-/wikis/home
 
 ## 常见问题
 
