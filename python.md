@@ -21,9 +21,9 @@
 
 3、依赖默认的解释器路径冲突
 
-比如Centos7系统自带的python是2.7，系统很多组件比如yum依赖的都是2.7这个版本。但是我们发现这些工具开头使用的都是：#!/usr/bin/python。
+比如Centos7系统自带的python是2.7，系统很多组件比如yum依赖的都是2.7这个版本，这些工具脚本开头使用的都是：#!/usr/bin/python。
 
-而一些新的使用python开发的服务组件，它们依赖python3.6以上的版本，但是它们一些代码开头用的也是这个引用：#!/usr/bin/python。
+而一些新的使用python开发的服务组件，它们依赖python3.6以上的版本，但是它们一些代码开头也是这样的写法：#!/usr/bin/python。
 
 它们都是用python这一个引用，却没有使用python2、python3这样分开，这就很容易导致它们的一些python引用冲突。
 
@@ -31,6 +31,8 @@
 
     python  指向 python2，.py代码文件开头写 #!/usr/bin/python
     python3 指向 python3，.py代码文件开头写 #!/usr/bin/python3
+
+开源系统各家的处理方式有差别，导致你使用软件时不一定能完整适配，所以一般安装使用发行版组件，尽量不自行下载安装。
 
 4、依赖冲突。（最常见）
 
@@ -74,7 +76,7 @@ pip install 的各种问题 <https://www.cnblogs.com/feixiablog/p/8320602.html>�
 
 如果要在conda下使用pip，见下面章节[Anaconda环境中使用pip]。
 
-Debian/Ubuntu 下默认安装python 2和3，pip命令是python2的pip, pip3命令才是python3的pip。不过使用命令python3 -m 执行包的方式时，用 pip 如 `python3 -m pip install xxx`
+Debian/Ubuntu 下默认安装python 2和3，pip命令是python2的pip, pip3命令才是python3的pip。不过使用命令python3 -m 执行包的方式时，用 pip ，如 `python3 -m pip install xxx`
 
     # 安装 pip3 给 python3 使用
     sudo apt install python3-pip
@@ -585,7 +587,8 @@ NOTE:这里有个耦合，后续建立的同版本的python环境都会复用最
     Go to 82 line and edit: this - for line in open(filename, 'r'): on this -
         for line in open(filename, 'r', encoding='utf-8'):
 
-windows下python按[TAB]出现报错：
+Windows 命令行进入 python 后，按[TAB]出现报错：
+
     AttributeError: module 'readline' has no attribute 'redisplay'
 
 执行
@@ -593,6 +596,10 @@ windows下python按[TAB]出现报错：
     pip install git+https://github.com/ankostis/pyreadline@redisplay
     https://github.com/pyreadline/pyreadline/pull/56
     https://github.com/winpython/winpython/issues/544
+
+在 mintty 下的 bash，进入 python 后不出现命令提示符，需要使用 winpty 程序加载执行
+
+    winpty python
 
 #### 如果不想用了
 

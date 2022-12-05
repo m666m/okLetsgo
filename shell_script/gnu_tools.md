@@ -295,15 +295,17 @@ mintty 可以在命令行显示图片，下载他的utils目录下的脚本 show
 
 #### winpty 运行 cmd 字符终端程序
 
-在 mintty 下使用普通的 Windows CMD 字符程序，如 python 会无法进入。这是因为因为宿主机上的 python 使用的是 native Windows API for command-line user interaction，也就是涉及到 Windows 的关于终端输入的程序在 msys2 下都会无法进入，需要有个代理提供类似 wslbridge 的角色。
+在 mintty 下使用普通的 Windows CMD 字符程序，如 python 会无法进入。这是因为因为宿主机上的 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 Unix pty。
 
-安装 winpty 作为 mintty 代理
+也就是说，涉及到 Windows 的关于终端输入的程序在 msys2 下会无法进入，需要有个代理提供类似 wslbridge 的角色。
+
+安装 winpty 作为 mintty 代理（git for windows 自带)
 
     pacman -S winpty
 
     winpty python 即可正常进入 python 解释器环境了
 
-在 .bashrc/.zshrc 里添加 alias 即可
+在 .bashrc/.zshrc 里添加 alias 方便使用
 
     alias mysql="winpty mysql"
     alias node="winpty node"
@@ -311,6 +313,8 @@ mintty 可以在命令行显示图片，下载他的utils目录下的脚本 show
     alias ipython="winpty ipython"
     alias psql="winpty psql"
     alias redis-cli="winpty redis-cli"
+
+如果你使用 Windows version >= 10 / 2019 1809，且你调用的字符程序使用 ConPty 接口而不再使用 CMD 的 ConHost 接口，则不再需要借助 winpty 去加载调用了。
 
 #### mintty 美化
 
