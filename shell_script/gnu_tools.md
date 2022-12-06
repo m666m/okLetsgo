@@ -1061,7 +1061,7 @@ ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列�
 
         打开后会自动把工作目录设置为 msys64/home/%user% 下。
 
-### Windows Terminal
+#### Windows Terminal
 
 Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
 
