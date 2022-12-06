@@ -728,9 +728,9 @@ set MSYSTEM=MINGW64
 
 ##### 软件仓库 pacman
 
-基于 Arch Linux 的 pacman 提供软件仓库，采用滚动升级模式，初始安装仅提供命令行环境：用户不需要删除大量不需要的软件包，而是可以从官方软件仓库成千上万的高质量软件包中进行选择，搭建自己的系统。
+基于 Arch Linux 的 pacman 提供软件仓库，采用滚动升级模式，初始安装仅提供命令行环境：高手用户不需要删除大量不需要的软件包，而是可以从官方软件仓库成千上万的高质量软件包中进行选择，搭建自己的系统。
 
-pacman命令较多，作为新手，将个人最常用的命令总结如下：
+pacman命令较多，常用的命令如下：
 
     pacman -Sy           更新软件包数据
     pacman -Su           更新核心软件包
@@ -748,21 +748,25 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
 安装常用软件
 
-    不要安装 msys2 版的 python，还是 anaconda 最方便
+    不要安装 msys2 版的 python，还是用 anaconda 最方便
 
     pacman -S openssh opengpg vim git tmux winpty
+
+    pacman -S sed awk tree curl time nano tar gzip rsync
 
     # netcat 的版本选择： gnu nc 没有 proxy 参数(-x), 因此我们要选择 openbsd 版
     pacman -S openbsd-netcat
 
-    # https://www.gnu.org/software/inetutils/
-    # ping, ping6, traceroute, whois, rsh, rlogin
-    pacman -S inetutils
+    # 下面的命令大部分在 bash 中内置了
 
-    pacman -S sed awk treecurl time nano tar gzip rsync
+    # 常用的系统命令 cat cut chmod echo mv tail 等，http://gnu.org/software/coreutils
+    pacman -S coreutils
 
-    # watch
+    # 进程管理 ps、kill、top、watch 等，https://gitlab.com/procps-ng/procps/
     pacman -S procps-ng
+
+    # 常用的网络命令 ping, ping6, traceroute, whois, rsh 等，https://www.gnu.org/software/inetutils/
+    pacman -S inetutils
 
     # find xargs
     pacman -S Findutils
@@ -770,9 +774,10 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     # diff
     pacman -S diffutils
 
+    # 安装 zsh 主要是为了它多彩的命令行提示符等扩展插件，详见下面章节 [使用 zsh]
     pacman -S zsh
 
-需要安装什么命令，一般可以在搜索引擎里以 `MSYS2 xxx` 的形式得到结果。
+如果需要安装什么命令不知道输入何种包名，一般可以在搜索引擎里以 `MSYS2 xxx` 的形式得到结果。
 
 另外， Cygwin下还有 apt-cyg 命令行包管理器 <https://zhuanlan.zhihu.com/p/66930502>，操作软件仓库 <https://zhuanlan.zhihu.com/p/65482014>。
 
@@ -4003,8 +4008,7 @@ There are three different implementations:
 .gz 文件
 
     # 解压
-    gunzip FileName.gz
-
+    #gunzip FileName.gz
     gzip -d FileName.gz
 
     # 压缩，生成同名文件，后缀.gz，原文件默认删除，除非使用 -k 参数保留
@@ -4022,7 +4026,6 @@ There are three different implementations:
     unzip arc.zip -d your_unzip_dir
 
     # 压缩文件，生成新文件，并添加 .zip 后缀的文件
-
     zip arc file1.txt file2.txt ...
 
     # 打包压缩目录
@@ -4051,12 +4054,17 @@ ln 命令默认生成硬链接，但是我们通常使用软连接
 
 Linux 下，每个算法都是单独的程序
 
+    cksum
     md5sum
     sha1sum
     sha256sum
     sha512sum
 
 直接带文件名操作即可
+
+    # 生成 crc 校验和以及字节数
+    $ cksum test.json
+    1758862648 4855 test.json
 
     # 生成sha256校验文件
     $ sha256sum file > file.sha256
