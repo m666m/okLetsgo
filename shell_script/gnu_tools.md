@@ -1063,7 +1063,7 @@ ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列�
 
 #### Windows Terminal
 
-Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
+Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口，自动添加当前识别到的 git bash 等 mintty 应用。
 
     # https://github.com/microsoft/terminal/releases
     winget install --id=Microsoft.WindowsTerminal -e
@@ -1071,6 +1071,27 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
 Windows Terminal 与 MSYS2 MinGW64 集成
 
     https://ttys3.dev/post/windows-terminal-msys2-mingw64-setup/
+
+直接安装从github下载的 .msixbundle 文件后，无法正常启动Windows Terminal。经过一顿操作，终于找到了解决方法，用魔法打败了魔法！<https://www.cnblogs.com/albelt/p/15253147.html>
+
+要求：
+
+    Windows 10 1903版本及以上
+
+步骤：
+    到Windows Terminal的Github仓库下载最新的release包，即以 .msixbundle 为后缀的文件
+
+    将文件后缀名改为.zip后解压缩文件
+
+    在解压后的文件夹中找到名为 CascadiaPackage***.msix 的文件，有x86、x64和ARM64版本的，选择x64那个文件，修改后缀名为.zip，然后解压
+
+    在解压后的文件夹中，找到 WindowsTerminal.exe 的文件，直接双击就能运行了，还是绿色免安装版的，是不是很简单？
+
+    可以把这个文件夹拷贝到安全的位置，然后将 .exe 文件添加到桌面快捷方式，就能愉快地使用 Windows Terminal 啦！
+
+美化及工具栏等
+
+    https://yqc.im/windows-terminal-using-windows-terminal/
 
 ## Linux 字符终端
 
