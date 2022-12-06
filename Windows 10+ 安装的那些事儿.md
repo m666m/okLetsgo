@@ -1380,6 +1380,8 @@ WSL2 内的 container 是 linux 提供的，不算 Windows 的容器。Windows �
 
     连接到虚拟机后，打开设备管理器，可以发现通用串行总线USB设备已经成功接入Hyper-V虚拟机
 
+5、运行 `mstsc` 远程登陆此虚拟机，选项设置跟第2步相同，把主机的设备都选择共享给虚拟机即可，并选择记住密码，以后使用就不需要登陆密码了。
+
 ### docker (Hyper-V)
 
 Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7 上的 docker 是安装了 virtual box 虚拟机。
@@ -1764,6 +1766,10 @@ Windows Subsystem for Android 在Windows Store[安装apk时默认安装](https:/
 
     https://cloud.tencent.com/developer/article/1987523
     https://zhuanlan.zhihu.com/p/437231485
+
+## Windows 双系统
+
+Windows 11 要求 分区在52G以上
 
 ## 其它常见问题
 
