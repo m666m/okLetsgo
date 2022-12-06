@@ -304,9 +304,9 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
         http://mintty.github.io/
         帮助 https://mintty.github.io/mintty.1.html
 
-   模拟 pty 效果又快又好。缺点是运行 cmd 下的命令，有些字符解释的显示效果不一致，建议与 cmd 分别使用，不在 mintty 下使用 cmd 的命令。
+   模拟 unix pty 效果又快又好，如果运行 cmd 下的命令，有些字符解释的显示效果不一致，建议与 cmd 分别使用，不在 mintty 下使用 cmd 的命令。或者使用 winpty 调度，参见章节 [winpty 运行 cmd 字符终端程序]。
 
-    ctrl/shift + ins 复制/粘贴，其实用鼠标拖动选择的文字就已经复制到系统剪贴板了
+    ctrl/shift + ins 复制/粘贴，其实系统默认用鼠标拖动选择的文字复制到系统剪贴板
 
     在 tmux 的鼠标模式下，按下 shift 就可以使用鼠标选择文字，自动复制到系统剪贴板
 
@@ -314,7 +314,7 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
 
     拖拽资源管理器里的文件/文件夹到 mintty 可以得到其路径
 
-mintty 可以在命令行显示图片，下载他的utils目录下的脚本 showimg 即可
+mintty 可以在命令行显示图片，下载他的源代码下utils目录下的脚本 showimg 即可
 
     cd /usr/local/bin/
 
@@ -781,21 +781,7 @@ pacman命令较多，常用的命令如下：
 
 另外， Cygwin下还有 apt-cyg 命令行包管理器 <https://zhuanlan.zhihu.com/p/66930502>，操作软件仓库 <https://zhuanlan.zhihu.com/p/65482014>。
 
-### 其他本地终端模拟器
-
-配置 WSL 环境
-
-    https://github.com/hsab/WSL-config
-
-wsltty 使用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用
-
-    https://github.com/mintty/wsltty
-
-    在 mintty 的配置文件中设置 ConPTY=true
-
-    或安装 wslbridge2
-    # 需要在目录/bin/下安装 wslbridge2
-    mintty --WSL=Ubuntu
+### 其他本地终端模拟器(Windows terminal emulators)
 
 ConPtyShell 使用 Windows ConPty 接口实现的本地终端
 
@@ -851,40 +837,41 @@ cmder 推荐了几个本地终端模拟器，可以嵌入 cmder 代替 ConEmu
 
         FluentTerminal 基于 xterm.js 的 UWP 应用 https://github.com/felixse/FluentTerminal
 
-Windows Terminal
-
-Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
-
-    # https://github.com/microsoft/terminal/releases
-    winget install --id=Microsoft.WindowsTerminal -e
-
-    Windows Terminal 与 MSYS2 MinGW64 集成
-
-        https://ttys3.dev/post/windows-terminal-msys2-mingw64-setup/
-
-独立的 Powershell 7，从这个版本开始不跟随 Windows 发布了
-
-    https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
-
 Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` 查看常用命令。自己的脚本语言可以基于自己的指令定义函数、基于函数定义脚本。可以开发 rust 插件给他扩展功能。
 
     https://github.com/nushell/nushell
         https://www.nushell.sh/zh-CN/book/thinking_in_nu.html
+
+配置 WSL 环境
+
+    https://github.com/hsab/WSL-config
+
+wsltty 使用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用 WSL 会话
+
+    https://github.com/mintty/wsltty
+
+    在 mintty 的配置文件中设置 ConPTY=true
+
+    # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin/下安装了 wslbridge2
+    mintty --WSL=Ubuntu
+
+独立的 Powershell 7，从这个版本开始不跟随 Windows 发布了
+
+    https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
 
 clink 辅助工具，在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
 
     https://github.com/chrisant996/clink
         不再更新了 https://github.com/mridgers/clink
 
-winpty 辅助工具，提供了 unix pty 接口与 cmd conhost 接口的互通，是 Windows cmd 程序在 mintty 这种 MSYS2 环境下执行的中介，参见章节 [winpty 运行 cmd 字符终端程序]
+winpty 辅助工具，提供了 unix pty 接口与 cmd conhost 接口的互通，是 mintty 这种 MSYS2 环境下执行 Windows CMD/PowerShell 程序的中介，参见章节 [winpty 运行 cmd 字符终端程序]
 
-wslbridge 辅助工具，使用 Windows ConPty 接口 以支持 WSL(Windows Subsystem for Linux)，很多支持终端多路复用的软件在 Windows 下都使用该组件
+    https://github.com/rprichard/winpty
+
+wslbridge 辅助工具，使用 Windows ConPty 接口 以支持 WSL(Windows Subsystem for Linux)，很多支持终端多路复用的软件在 Windows 下都通过该组件使用 WSL 会话
 
     wslbridge2 https://github.com/Biswa96/wslbridge2
         wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
-
-        # 需要在目录/bin/下安装 wslbridge2
-        mintty --WSL=Ubuntu
 
 ### 终端多路复用器
 
@@ -1073,6 +1060,17 @@ ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列�
         MSYS2_PATH_TYPE=inherit 表示合并 Windows 系统的 path 变量。注意修改变量值 `D=` 为你的msys2的安装目录。
 
         打开后会自动把工作目录设置为 msys64/home/%user% 下。
+
+### Windows Terminal
+
+Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口
+
+    # https://github.com/microsoft/terminal/releases
+    winget install --id=Microsoft.WindowsTerminal -e
+
+Windows Terminal 与 MSYS2 MinGW64 集成
+
+    https://ttys3.dev/post/windows-terminal-msys2-mingw64-setup/
 
 ## Linux 字符终端
 
