@@ -618,14 +618,9 @@ home 目录的隔离虽然使两个软件的设置互不干扰，但也使得 ss
 
     https://msys2.github.io/
 
-使用 pacman 安装各种包：
+使用 pacman 安装各种包，详见下面章节 [软件仓库 pacman]。
 
-    不要安装 msys2 版的 python，还是 anaconda 最方便
-
-    # netcat 的版本选择： gnu nc 没有 proxy 参数(-x), 因此我们要选择 openbsd 版
-    pacman -S openssh opengpg git vim tmux openbsd-netcat
-
-pacman安装后先更换 清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，配置文件在 msys 的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
+pacman 更换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，配置文件在 msys 的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
 
 依次添加
 
@@ -753,30 +748,21 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
 安装常用软件
 
-下面列出常用的包：
+    不要安装 msys2 版的 python，还是 anaconda 最方便
 
-    vim
+    pacman -S openssh opengpg vim git tmux tree winpty rsync curl
 
-    git
+    # netcat 的版本选择： gnu nc 没有 proxy 参数(-x), 因此我们要选择 openbsd 版
+    pacman -S openbsd-netcat
 
-    tmux
-
-    tree
-
-    zsh
-
-    rsync
-
-    winpty
+    # https://www.gnu.org/software/inetutils/
+    # ping, ping6, traceroute, whois, rsh, rlogin
+    pacman -S inetutils
 
     # watch
-    procps-ng
+    pacman -S procps-ng
 
-    inetutils
-
-    curl
-
-    openbsd-netcat
+    pacman -S zsh
 
 需要安装什么命令，一般可以在搜索引擎里以 `MSYS2 xxx` 的形式得到结果。
 
