@@ -750,7 +750,7 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
 
     不要安装 msys2 版的 python，还是 anaconda 最方便
 
-    pacman -S openssh opengpg vim git tmux tree winpty rsync curl
+    pacman -S openssh opengpg vim git tmux winpty
 
     # netcat 的版本选择： gnu nc 没有 proxy 参数(-x), 因此我们要选择 openbsd 版
     pacman -S openbsd-netcat
@@ -759,8 +759,16 @@ pacman命令较多，作为新手，将个人最常用的命令总结如下：
     # ping, ping6, traceroute, whois, rsh, rlogin
     pacman -S inetutils
 
+    pacman -S sed awk treecurl time nano tar gzip rsync
+
     # watch
     pacman -S procps-ng
+
+    # find xargs
+    pacman -S Findutils
+
+    # diff
+    pacman -S diffutils
 
     pacman -S zsh
 
