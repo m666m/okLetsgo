@@ -1059,20 +1059,22 @@ ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列�
 
 #### Windows Terminal
 
+    WIndows Terminal 文档
+        https://learn.microsoft.com/zh-cn/windows/terminal/
+
+    Windows Terminal 与 MSYS2 MinGW64 集成
+        https://ttys3.dev/post/windows-terminal-msys2-mingw64-setup/
+
 Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口，自动添加当前识别到的 git bash 等 mintty 应用。
 
     # https://github.com/microsoft/terminal/releases
     winget install --id=Microsoft.WindowsTerminal -e
 
-Windows Terminal 与 MSYS2 MinGW64 集成
-
-    https://ttys3.dev/post/windows-terminal-msys2-mingw64-setup/
-
 直接安装从 github 下载的 .msixbundle 文件安装后，无法正常启动 Windows Terminal。经过一顿操作，终于找到了解决方法，用魔法打败了魔法！<https://www.cnblogs.com/albelt/p/15253147.html>
 
 要求：
 
-    Windows 10 1903版本及以上
+    Windows 10 1903 版本及以上
 
 步骤：
 
@@ -1086,7 +1088,7 @@ Windows Terminal 与 MSYS2 MinGW64 集成
 
     可以把这个文件夹拷贝到安全的位置，然后将 .exe 文件添加到桌面快捷方式，就能愉快地使用 Windows Terminal 啦！
 
-##### 美化及工具栏等
+##### 命令提示符工具及美化
 
     https://yqc.im/windows-terminal-using-windows-terminal/
 
@@ -1104,7 +1106,7 @@ Windows 系统自带的 Windows PowerShell 5.x 和刚安装的 PowerShell 7.x �
 
 为了减少疑惑，接下来将统一使用原生的 PowerShell 7.x。
 
-PowerShell 主要美化：
+PowerShell 美化：
 
     更改整体配色
 
@@ -1116,14 +1118,162 @@ PowerShell 主要美化：
 
     ls 命令显示色彩
 
-安装 oh-my-posh 和 posh-git
+1、安装图标字体
 
-oh-my-posh 是 PowerShell 主题管理工具，posh-git 可以实现类似 oh-my-zsh 一样的 Git 命令增强工具（命令别名和显示分支信息等），但是，oh-my-posh 基于 posh-git 的，所以两个都要安装。
+    > scoop search FantasqueSansMono-NF
+    > scoop bucket add 'nerd-fonts'
 
-可以通过 PowerShell Gallery 安装，方法：打开 PowerShell 7（不是 Windows PowerShell），输入命令：
+    # 下面一个命令要加 sudo 提权
+    > sudo scoop install FantasqueSansMono-NF
+
+2、安装 oh-my-posh 和 posh-git
+
+oh-my-posh 是 PowerShell 主题管理工具，posh-git 可以实现类似 oh-my-zsh 一样的 Git 命令增强工具（命令别名和显示分支信息等），但是，oh-my-posh 基于 posh-git 的，所以两个都要安装。查看各色主题参见 <https://github.com/JanDeDobbeleer/oh-my-posh#themes>
+
+可以通过 [PowerShell Gallery](https://www.powershellgallery.com) 安装，方法：打开 PowerShell 7（不是 Windows PowerShell），输入命令：
 
     > Install-Module posh-git
+
     > Install-Module oh-my-posh
+
+配置 PowerShell
+
+开启 Prompt，当前窗口生效
+
+    # 这是开启默认配置的
+    > Set-Prompt
+    # 设置主题，Paradox 是主题名
+    > Set-Theme Paradox
+
+显示效果变成了 Linux Shell 风格。原来的 PS C:\Users\yulinyige> 变成了 yulinyige@DESKTOP-N8LA1TE。
+
+3、增强 PowerShell 的 ls 功能
+dircolors 是 Linux 下的命令，可以设置 ls 指令在显示目录或文件时的色彩，同样的，如果也想让 PowerShell 显示彩色目录，可用插件 DirColors 实现。
+
+    # 安装 DirColors
+    > Install-Module DirColors
+
+4、如果对 oh-my-posh 的颜色方案bumanyui，还可以使用 ColorTool 更改 PowerShell 文字颜色。
+
+oh-my-posh 是更改显示内容的风格，而 ColorTool 是更改文字的颜色。当觉得 oh-my-posh 内置的颜色不满足需求时，可以使用 ColorTool 更改
+
+    # 安装更改文字颜色工具
+    > scoop install colortool
+
+    # 查看内置的配色方案，共有 8 种
+    > colortool --schemes
+
+    # 设置主题，后面是配色方案名称
+    > colortool OneHalfDark.itermcolors
+
+最后，把配置写入 PowerShell 的配置文件
+
+    PS C:\Users\your_name> $PROFILE
+    C:\Users\your_name\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+
+    > code $PROFILE
+
+输入内容如下
+
+    # 命令行提示符美化
+    Import-Module posh-git
+    Import-Module oh-my-posh
+    Set-Theme Paradox
+
+    # 设置预测文本来源为历史记录
+    Set-PSReadLineOption -PredictionSource History
+
+    # 设置 Tab 键补全
+    Set-PSReadlineKeyHandler -Key Tab -Function Complete
+
+    # 设置 Ctrl+d 为菜单补全和 Intellisense
+    Set-PSReadLineKeyHandler -Key "Ctrl+d" -Function MenuComplete
+
+    # 设置 Ctrl+z 为撤销
+    Set-PSReadLineKeyHandler -Key "Ctrl+z" -Function Undo
+
+    # 设置向上键为后向搜索历史记录
+    Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+
+    # 设置向下键为前向搜索历史纪录
+    Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+
+    # ls 结果使用彩色
+    Import-Module DirColors
+
+配置 Windows Terminal
+
+因为 Windows Terminal 也有一套自己的主题，前面对 PowerShell 7 做的美化并不起作用，需要修改 setting.json。
+
+四部分：
+
+    Global Windows Terminal APP 整体的配置，启动参数、样式等，对应下图的 Global Config
+
+    profiles 配置每个终端的样式
+
+    schemes 终端配色方案
+
+    actions 定义快捷键操作，一般默认即可
+
+如果不知道如何配置 setting.json，可以参考 default.json 每一个节点的 key-value 值。主题配置主要是 Global、profiles 和 schemes 节点。
+
+list 段是基本设置
+
+    "list":
+    [
+        {
+            "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+            "hidden": false,
+            "name": "PowerShell",
+            "source": "Windows.Terminal.PowershellCore",
+            "colorScheme":"Zhuang B",
+            "fontFace":"Cascadia Code PL",
+            // 开启毛玻璃效果
+            "useAcrylic":true,
+            // 毛玻璃透明度
+            "acrylicOpacity":0.5
+            // 只要加上这一句，即可开启亮瞎眼的效果。
+            "experimental.retroTerminalEffect":true
+        }
+    ]
+
+schemes 段设置配色方案，同样是一个数组，每种配色方案会有一个名字 name ，引用配色方案就是通过 name 的值。默认预设了几种配色方案，可在 default.json 查看
+
+    // 典型的 schemes 格式
+    {
+        "schemes":[
+            {
+                "name": "Campbell", // 配色方案名称，必须的
+                "foreground": "#CCCCCC", // 输出显示字体颜色
+                "background": "#0C0C0C", // 背景色
+                "cursorColor": "#FFFFFF", // 光标颜色
+                "black": "#0C0C0C", // 箭头左边三角，git 目录的 .git 目录下提示箭头背景提示文字
+                "red": "#C50F1F", // ssh 后 vim 打开文本文件已输入行普通字符显示文字
+                "green": "#13A10E", // git 目录的 .git 目录下提示箭头背景提示
+                "yellow": "#C19C00", // git 目录的分支箭头背景提示
+                "blue": "#0037DA", // 目录箭头本体
+                "purple": "#881798", // ssh 后 vim 等工具打开文件后的 { 和 }等符号本体，git 更新完后显示的分支箭头背景提示
+                "cyan": "#3A96DD", // 引号及内部字符
+                "white": "#CCCCCC", // 未知
+                "brightBlack": "#767676", // cd 等 命令后面的 .. 和 * 等特殊符号，以及命令参数字符颜色
+                "brightRed": "#E74856", // 系统提示字符颜色：错误的命令，git status 显示
+                "brightGreen": "#16C60C", // ssh 用户权限显示
+                "brightYellow": "#F9F1A5", // 输入的命令字符
+                "brightBlue": "#3B78FF", // ssh 文件夹等高亮显示，ssh 目录，vim 打开文本文件未输入行 ~ 字符显示
+                "brightPurple": "#B4009E", // 未知
+                "brightCyan": "#61D6D6", // ssh vim 等工具打开文件后的 { 和 } 等符号背景
+                "brightWhite": "#F2F2F2" // 目录箭头左边和中间的提示文字
+            }
+        ]
+    }
+
+在如下几个网站别已有的颜色方案
+
+    https://github.com/mbadolato/iTerm2-Color-Schemes
+
+    https://windowsterminalthemes.dev/
+
+    http://terminal.sexy/
 
 ## Linux 字符终端
 
@@ -3550,9 +3700,9 @@ vim配置中开启鼠标支持，.vimrc文件中加上
 
 #### 快捷键
 
-    组合键 ctrl+b 作为前导，松开后再按其它键如下
+组合键 ctrl+b 作为前导，松开后再按其它键。
 
-    MacOS 下可以做映射 https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/
+MacOS 下可以做映射 <https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/>
 
 会话（Session）
 
