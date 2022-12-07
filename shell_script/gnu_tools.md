@@ -1098,6 +1098,8 @@ Windows Terminal 与 MSYS2 MinGW64 集成
 
     https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
 
+    还有自己的软件包仓库 https://www.powershellgallery.com/packages/oh-my-posh/7.85.2
+
 Windows 系统自带的 Windows PowerShell 5.x 和刚安装的 PowerShell 7.x 是两个独立的 Shell，注意到 5.x 带有 Windows 前缀，而 7.x 没有。两者的配置也是独立的，互不影响，所以如果你在 7.x 做配置，打开 5.x 并不会生效。
 
 为了减少疑惑，接下来将统一使用原生的 PowerShell 7.x。
