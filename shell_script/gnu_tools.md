@@ -895,7 +895,7 @@ Windows 下的命令行终端类型很多，如果想统一在一个程序下x�
 
     先设置 Supper Putty 使用的各工具路径
 
-        选择菜单项 Tools->Options:General，至少要给出 putty.exe 的路径，还可以给出 mintty.exe 的路径，只要安装了 git for Windows 一般在 C:\Program Files\Git\usr\bin\mintty.exe 。
+        选择菜单项 Tools->Options:General，至少要给出 putty.exe 的路径。还可以给出 mintty.exe 的路径，只要安装了 git for Windows 一般在 C:\Program Files\Git\usr\bin\mintty.exe 。
 
         其它的工具类似，配置好了后在站点列表处点击右键，可以方便调用 winscp、filezila、vnc 等工具。
 

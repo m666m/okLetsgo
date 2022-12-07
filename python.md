@@ -677,10 +677,7 @@ Anaconda 安装完毕后，默认的环境base是最新的一个python版本如p
 
 ### Windows 命令行环境下使用脚本执行  conda 环境
 
-在windows的命令行脚本环境下，第一次运行 `conda activate` 是激活[base]环境，
-然后再次执行 `conda activate p37` 以切换到指定的环境。
-
-也就是说，确保你执行的conda命令都是在[base]环境下，就不会报错找不到啥的。
+在 Windows 的命令行脚本环境（cmd/bash）下，先运行一次 `conda activate` 激活[base]环境，确保你执行的conda命令都是在[base]环境下，就不会报错找不到啥的。 然后再次执行 `conda activate p37` 就可以切换到指定的环境。
 
 对 powershell 特殊些，conda 命令不在系统变量 PATH 中，需要手动先执行 `C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1`，然后即可执行 `conda activate` 。
 
