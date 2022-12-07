@@ -1078,17 +1078,17 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
 
 步骤：
 
-    到Windows Terminal的Github仓库下载最新的release包，即以 .msixbundle 为后缀的文件
+    到 Windows Terminal 的 Github 仓库下载最新的 release 包，即以 .msixbundle 为后缀的文件
 
-    将文件后缀名改为.zip后解压缩文件
+    将文件后缀名改为 .zip 后解压缩文件
 
-    在解压后的文件夹中找到名为 CascadiaPackage***.msix 的文件，有x86、x64和ARM64版本的，选择x64那个文件，修改后缀名为.zip，然后解压
+    在解压后的文件夹中找到名为 CascadiaPackage***.msix 的文件，有 x86、x64 和 ARM64 版本的，选择 x64 那个文件，修改后缀名为 .zip，然后解压
 
     在解压后的文件夹中，找到 WindowsTerminal.exe 的文件，直接双击就能运行了，还是绿色免安装版的，是不是很简单？
 
     可以把这个文件夹拷贝到安全的位置，然后将 .exe 文件添加到桌面快捷方式，就能愉快地使用 Windows Terminal 啦！
 
-##### 命令提示符工具及美化
+##### PowerShell 命令提示符工具及美化
 
     https://yqc.im/windows-terminal-using-windows-terminal/
 
@@ -1100,7 +1100,10 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
 
     https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
 
-    还有自己的软件包仓库 https://www.powershellgallery.com/packages/oh-my-posh/7.85.2
+    还有自己的软件包仓库
+        https://learn.microsoft.com/zh-cn/powershell/scripting/gallery/overview?view=powershell-7.3
+
+        https://www.powershellgallery.com/packages/
 
 Windows 系统自带的 Windows PowerShell 5.x 和刚安装的 PowerShell 7.x 是两个独立的 Shell，注意到 5.x 带有 Windows 前缀，而 7.x 没有。两者的配置也是独立的，互不影响，所以如果你在 7.x 做配置，打开 5.x 并不会生效。
 
@@ -1108,9 +1111,7 @@ Windows 系统自带的 Windows PowerShell 5.x 和刚安装的 PowerShell 7.x �
 
 PowerShell 美化：
 
-    更改整体配色
-
-    改变输出样式，提示符前显示用户名和计算机名
+    更改整体配色，改变输出样式，提示符前显示用户名和计算机名
 
     增强 Git 命令功能和 Git 分支状态显示
 
@@ -1126,26 +1127,17 @@ PowerShell 美化：
     # 下面一个命令要加 sudo 提权
     > sudo scoop install FantasqueSansMono-NF
 
-2、安装 oh-my-posh 和 posh-git
+2、安装 posh-git
 
-oh-my-posh 是 PowerShell 主题管理工具，posh-git 可以实现类似 oh-my-zsh 一样的 Git 命令增强工具（命令别名和显示分支信息等），但是，oh-my-posh 基于 posh-git 的，所以两个都要安装。查看各色主题参见 <https://github.com/JanDeDobbeleer/oh-my-posh#themes>
+posh-git 可以实现命令提示符 Git 命令增强（命令别名和显示分支信息等）
 
 可以通过 [PowerShell Gallery](https://www.powershellgallery.com) 安装，方法：打开 PowerShell 7（不是 Windows PowerShell），输入命令：
 
     > Install-Module posh-git
 
-    > Install-Module oh-my-posh
+更改配色的 oh-my-posh 配置复杂，不玩了，用 Windows Terminal 自己的配色方案就好
 
-配置 PowerShell
-
-开启 Prompt，当前窗口生效
-
-    # 这是开启默认配置的
-    > Set-Prompt
-    # 设置主题，Paradox 是主题名
-    > Set-Theme Paradox
-
-显示效果变成了 Linux Shell 风格。原来的 PS C:\Users\yulinyige> 变成了 yulinyige@DESKTOP-N8LA1TE。
+    https://ohmyposh.dev/docs/installation/windows
 
 3、增强 PowerShell 的 ls 功能
 dircolors 是 Linux 下的命令，可以设置 ls 指令在显示目录或文件时的色彩，同样的，如果也想让 PowerShell 显示彩色目录，可用插件 DirColors 实现。
@@ -1153,9 +1145,7 @@ dircolors 是 Linux 下的命令，可以设置 ls 指令在显示目录或文�
     # 安装 DirColors
     > Install-Module DirColors
 
-4、如果对 oh-my-posh 的颜色方案bumanyui，还可以使用 ColorTool 更改 PowerShell 文字颜色。
-
-oh-my-posh 是更改显示内容的风格，而 ColorTool 是更改文字的颜色。当觉得 oh-my-posh 内置的颜色不满足需求时，可以使用 ColorTool 更改
+4、使用 ColorTool 更改 PowerShell 文字颜色。
 
     # 安装更改文字颜色工具
     > scoop install colortool
@@ -1166,7 +1156,7 @@ oh-my-posh 是更改显示内容的风格，而 ColorTool 是更改文字的颜�
     # 设置主题，后面是配色方案名称
     > colortool OneHalfDark.itermcolors
 
-最后，把配置写入 PowerShell 的配置文件
+5、最后，把配置写入 PowerShell 的配置文件
 
     PS C:\Users\your_name> $PROFILE
     C:\Users\your_name\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
@@ -1175,10 +1165,11 @@ oh-my-posh 是更改显示内容的风格，而 ColorTool 是更改文字的颜�
 
 输入内容如下
 
-    # 命令行提示符美化
+    # 命令行提示符git增强
     Import-Module posh-git
-    Import-Module oh-my-posh
-    Set-Theme Paradox
+
+    # ls 结果使用彩色
+    Import-Module DirColors
 
     # 设置预测文本来源为历史记录
     Set-PSReadLineOption -PredictionSource History
@@ -1198,12 +1189,12 @@ oh-my-posh 是更改显示内容的风格，而 ColorTool 是更改文字的颜�
     # 设置向下键为前向搜索历史纪录
     Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
 
-    # ls 结果使用彩色
-    Import-Module DirColors
+    # 关联 conda 命令，来自 Ananconda 的开始菜单快捷方式
+    C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
 配置 Windows Terminal
 
-因为 Windows Terminal 也有一套自己的主题，前面对 PowerShell 7 做的美化并不起作用，需要修改 setting.json。
+因为 Windows Terminal 有自己的主题，颜色方案背景等配置修改 setting.json。目前版本的 Windows Terminal 可以在用户界面选择设置，如选择背景图片、开启毛玻璃效果、开启复古的终端效果等，下面的说明仅供参考。
 
 四部分：
 

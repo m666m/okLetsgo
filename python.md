@@ -645,7 +645,7 @@ Anaconda 安装完毕后，默认的环境base是最新的一个python版本如p
 
 <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#deactivating-an-environment>
 
-以前 conda 版本的 source activate 和 source deactivate 跟 virtualenv 环境的脚本经常路径冲突。conda 4.4之后激活和退出环境统一了命令用法，不用 source了，操作步骤如下：
+以前 conda 版本的 source activate 和 source deactivate 跟 virtualenv 环境的脚本经常路径冲突。conda 4.4之后激活和退出环境统一了命令用法，不用 source 了，操作步骤如下：
 
     # 激活[base]环境
     conda activat
@@ -656,7 +656,7 @@ Anaconda 安装完毕后，默认的环境base是最新的一个python版本如p
     # 退出当前环境，返回的是上一个环境，官方建议是重新开个shell再activate别的环境。
     conda deactivate
 
-仍需要用source的案例
+仍需要用 source 的案例
 
     ssh连接该服务器使用 conda activate p36 命令激活环境后，
     未使用 conda deactivate 退出环境就关闭终端，
@@ -677,10 +677,12 @@ Anaconda 安装完毕后，默认的环境base是最新的一个python版本如p
 
 ### Windows 命令行环境下使用脚本执行  conda 环境
 
-在windows的命令行脚本环境下，第一次运行 conda activate 是激活[base]环境，
-然后再次执行 conda activate p37 以切换到指定的环境。
+在windows的命令行脚本环境下，第一次运行 `conda activate` 是激活[base]环境，
+然后再次执行 `conda activate p37` 以切换到指定的环境。
 
 也就是说，确保你执行的conda命令都是在[base]环境下，就不会报错找不到啥的。
+
+对 powershell 特殊些，conda 命令不在系统变量 PATH 中，需要手动先执行 `C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1`，然后即可执行 `conda activate` 。
 
 cmd 的bat文件，在 cmd 下执行（需要设置 conda init 以支持cmd，详见章节[conda init 命令设置命令行工具]）
 
