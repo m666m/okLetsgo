@@ -781,7 +781,7 @@ pacman命令较多，常用的命令如下：
 
 另外， Cygwin下还有 apt-cyg 命令行包管理器 <https://zhuanlan.zhihu.com/p/66930502>，操作软件仓库 <https://zhuanlan.zhihu.com/p/65482014>。
 
-### 其他本地终端模拟器(Windows terminal emulators)
+### 其他本地终端模拟器
 
 ConPtyShell 使用 Windows ConPty 接口实现的本地终端
 
@@ -854,10 +854,6 @@ wsltty 使用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调
 
     # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin/下安装了 wslbridge2
     mintty --WSL=Ubuntu
-
-独立的 Powershell 7，从这个版本开始不跟随 Windows 发布了
-
-    https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
 
 clink 辅助工具，在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
 
@@ -1072,13 +1068,14 @@ Windows Terminal 与 MSYS2 MinGW64 集成
 
     https://ttys3.dev/post/windows-terminal-msys2-mingw64-setup/
 
-直接安装从github下载的 .msixbundle 文件后，无法正常启动Windows Terminal。经过一顿操作，终于找到了解决方法，用魔法打败了魔法！<https://www.cnblogs.com/albelt/p/15253147.html>
+直接安装从 github 下载的 .msixbundle 文件安装后，无法正常启动 Windows Terminal。经过一顿操作，终于找到了解决方法，用魔法打败了魔法！<https://www.cnblogs.com/albelt/p/15253147.html>
 
 要求：
 
     Windows 10 1903版本及以上
 
 步骤：
+
     到Windows Terminal的Github仓库下载最新的release包，即以 .msixbundle 为后缀的文件
 
     将文件后缀名改为.zip后解压缩文件
@@ -1089,9 +1086,42 @@ Windows Terminal 与 MSYS2 MinGW64 集成
 
     可以把这个文件夹拷贝到安全的位置，然后将 .exe 文件添加到桌面快捷方式，就能愉快地使用 Windows Terminal 啦！
 
-美化及工具栏等
+##### 美化及工具栏等
 
     https://yqc.im/windows-terminal-using-windows-terminal/
+
+    https://zhuanlan.zhihu.com/p/352882990
+
+首先要进行 PowerShell 自身的美化，然后 PowerShell + Windows Terminal 一起美化，效果更佳。
+
+先安装独立的 Powershell 7，从这个版本开始不跟随 Windows 发布了
+
+    https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
+
+Windows 系统自带的 Windows PowerShell 5.x 和刚安装的 PowerShell 7.x 是两个独立的 Shell，注意到 5.x 带有 Windows 前缀，而 7.x 没有。两者的配置也是独立的，互不影响，所以如果你在 7.x 做配置，打开 5.x 并不会生效。
+
+为了减少疑惑，接下来将统一使用原生的 PowerShell 7.x。
+
+PowerShell 主要美化：
+
+    更改整体配色
+
+    改变输出样式，提示符前显示用户名和计算机名
+
+    增强 Git 命令功能和 Git 分支状态显示
+
+    自动补齐功能，可根据历史命令和当前目录补齐
+
+    ls 命令显示色彩
+
+安装 oh-my-posh 和 posh-git
+
+oh-my-posh 是 PowerShell 主题管理工具，posh-git 可以实现类似 oh-my-zsh 一样的 Git 命令增强工具（命令别名和显示分支信息等），但是，oh-my-posh 基于 posh-git 的，所以两个都要安装。
+
+可以通过 PowerShell Gallery 安装，方法：打开 PowerShell 7（不是 Windows PowerShell），输入命令：
+
+    > Install-Module posh-git
+    > Install-Module oh-my-posh
 
 ## Linux 字符终端
 

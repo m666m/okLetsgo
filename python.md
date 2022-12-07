@@ -460,7 +460,7 @@ deactivate
 pause
 ```
 
-bash 的sh文件，在 git-bash(mintty) 下执行，Windows 下只要安装了git直接双击sh文件就关联调用了。
+mintty bash 的sh文件，在 git-bash(mintty) 下执行，Windows 下只要安装了git直接双击sh文件就关联调用了。
 
 ```shell
 #!/bin/sh
@@ -699,7 +699,7 @@ python C:\Users\your_name\pycode\your_project\app.py
 pause
 ```
 
-bash 的 sh 文件，在 bash 下执行（需要设置 conda init 以支持 git bash(mintty)，详见章节[conda init 命令设置命令行工具]）。
+mintty bash 的 sh 文件，在 bash 下执行（需要设置 conda init 以支持 git bash(mintty)，详见章节[conda init 命令设置命令行工具]）。
 
 ```shell
 #!/bin/sh
