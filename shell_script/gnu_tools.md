@@ -1437,10 +1437,26 @@ console即控制台，是与操作系统交互的设备，系统将一些信息�
 
 bash 内置命令和快捷键见 <shellcmd.md> 的相关章节。
 
-终端工具应该设置256color显示，最好开启透明效果，或在登陆脚本中设置环境变量
+终端工具应该在自己的选项设置中启用256color显示，最好开启透明效果，或在登陆脚本中设置环境变量
 
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
+
+验证，色条不要出现肉眼可见的断续即可
+
+    awk 'BEGIN{
+        s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
+        for (colnum = 0; colnum<77; colnum++) {
+            r = 255-(colnum*255/76);
+            g = (colnum*510/76);
+            b = (colnum*255/76);
+            if (g>255) g = 510-g;
+            printf "\033[48;2;%d;%d;%dm", r,g,b;
+            printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
+            printf "%s\033[0m", substr(s,colnum+1,1);
+        }
+        printf "\n";
+    }'
 
 简单的双行状态栏 见 <bash_profile.sh> 的相关章节。
 
@@ -2864,7 +2880,7 @@ filetype plugin indent on    " required
 
 结合我自己使用的插件和 airline 的配置
 
-```vim
+```python
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim 的一些默认设置，一般在全局配置文件 /etc/vim/vimrc 中都有
@@ -2892,6 +2908,13 @@ let mapleader="\<space>"
 "if &term =~? 'mlterm\|xterm'
 if &term =="screen"
     set t_Co=256
+endif
+
+" https://github.com/tmux/tmux/issues/1246
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
 endif
 
 " 设置 netrw 的显示风格
@@ -3973,6 +3996,10 @@ set -g mouse on
 # 设置状态栏工具显示彩色
 # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
 set -g default-terminal screen-256color
+# https://github.com/tmux/tmux/wiki/FAQ#how-do-i-use-rgb-colour
+#   https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh
+#set -as terminal-features ",xterm-256color:RGB"
+set -as terminal-overrides ",xterm-256color:RGB"
 
 # 状态栏使用 nord 主题，替换掉 powerline
 # run-shell 'powerline-config tmux setup'
