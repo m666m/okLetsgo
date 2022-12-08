@@ -1903,15 +1903,15 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
     if [ "$CPUTEMP" -gt  "60000" ] && [ "$CPUTEMP" -lt  "65000" ]; then
-            p10k segment -b yellow -f blue -i ''
+      p10k segment -b yellow -f blue -i ''
 
     elif [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "70000" ]; then
-            local CPUTEMP_WARN="CPU `vcgencmd measure_temp`!"
-            p10k segment -b yellow -f blue -i '' -t "$CPUTEMP_WARN"
+      local CPUTEMP_WARN="CPU `vcgencmd measure_temp`!"
+      p10k segment -b yellow -f blue -i '' -t "$CPUTEMP_WARN"
 
     elif [ "$CPUTEMP" -gt  "70000" ];  then
-            local CPUTEMP_WARN="CPU TEMPERATURE IS VERY HIGH!`vcgencmd measure_temp`"
-            p10k segment -b red -f black -i '' -t "$CPUTEMP_WARN"
+      local CPUTEMP_WARN="CPU TEMPERATURE IS VERY HIGH!`vcgencmd measure_temp`"
+      p10k segment -b red -f black -i '' -t "$CPUTEMP_WARN"
     fi
   }
 
