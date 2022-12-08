@@ -1526,7 +1526,7 @@ conda 激活环境时，默认会修改命令行提示符，比较丑
 
 ### 状态栏工具 powerline
 
-bash、vim、tmux 等众多工具及插件，powerline 都可适配进行状态栏显示。
+Powerline 最初是一款 Vim statusline 的插件，后来发展到支持 bash、vim、tmux 等众多工具及插件，powerline 都可适配进行状态栏显示。
 
     https://github.com/powerline/powerline/
 
@@ -1590,8 +1590,7 @@ tmux:
 
 先查看你安装 powerline 的位置，找到bindings目录
 
-    # 如果是用 pip 安装的 powerline
-    # 用命令 pip show powerline-status 查看
+    # 如果是 pip 安装的查看路径用 pip show powerline-status
     . /usr/lib/python3.7/site-packages/powerline/bindings/bash/powerline.sh
 
     # 如果是用 apt 安装的 powerline
@@ -1612,7 +1611,7 @@ zsh:
 
 编辑文件
 
-    # 如果是pip安装的查看路径用 pip show powerline-status
+    # 如果是 pip 安装的查看路径用 pip show powerline-status
     /usr/share/powerline/config_files/themes/相关软件名/xxx.json
 
 替换自己喜欢的函数即可
@@ -1650,7 +1649,7 @@ Powerline fonts 或者 Nerd fonts 这些字体集，他们对已有的一些 (�
 
     你在 MacOS 下使用 iTerm2 终端工具，则要在你的苹果电脑上安装这些字体。
 
-如果你的计算机使用的是 linux 就比较省事，命令行直接安装到本机，很多发行版如 Debian 都带 powline 字体
+如果你的计算机使用的是 Linux 就比较省事，直接 apt install 安装到本机，很多发行版如 Debian 都带 powerline 字体。
 
 然后设置在终端窗口工具或编辑器使用该字体，这样才能正确显示。
 
@@ -1661,15 +1660,11 @@ Powerline fonts 或者 Nerd fonts 这些字体集，他们对已有的一些 (�
 
 #### Powerline fonts
 
-Nerd fonts 是 Powerline fonts 的超集，建议直接使用 Nerd font 就好了。
-
     https://github.com/powerline/fonts
 
-Powerline 是一款 Vim statusline 的插件，它用到了很多特殊的 icon 字符。
+Powerline发展到后来，为了显示各种好看的图标使用了特殊的 icon 字符。powerline fonts 就是给 Powerline 配套的字体集，本质是对一些现有的字体打 patch，把 powerline icon 字符添加到这些现有的字体里去，目前对非常多的编程字体打了 patch。Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 for Powerline 的后缀，比如 Source Code Pro 打完 patch 后名字改为了 Source Code Pro for Powerline。
 
-powerline fonts 是一个字体集，本质是对一些现有的字体打 patch，把 powerline icon 字符添加到这些现有的字体里去，目前对非常多的编程字体打了 patch。Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 for Powerline 的后缀，比如 Source Code Pro 打完 patch 后名字改为了 Source Code Pro for Powerline。
-
-很多状态栏插件工具等，即使不支持 powerline，也会支持 powerline fonts 的字体。
+很多状态栏插件等工具，为了使用图标字体，都依赖 powerline fonts 的字体。
 
     # Debian 等发行版自带
     # https://github.com/caiogondim/bullet-train.zsh
@@ -1686,16 +1681,18 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
     cd ..
     rm -rf fonts/
 
+Nerd fonts 是 Powerline fonts 的超集，建议直接使用 Nerd font，参见下面章节 [Nerd font]。
+
 #### Nerd font
 
     https://www.nerdfonts.com/font-downloads
         https://github.com/ryanoasis/nerd-fonts
 
-原理和 Powerline fonts 是一样的，也是针对已有的字体打 patch，把一些 icon 字符插入进去。不过 Nerd font 就比较厉害了，是一个“集大成者”，他几乎把目前市面上主流的 icon 字符全打进去了，包括上面刚刚提到的 powerline icon 字符以及 Font Awesome 等几千个 icon 字符。
+原理和 Powerline fonts 是一样的，针对已有的字体打 patch，把一些 icon 字符插入进去。不过 Nerd font 就比较厉害了，是一个“集大成者”，他几乎把目前市面上主流的 icon 字符全打进去了，包括上面提到的 powerline icon 字符以及 Font Awesome 等几千个 icon 字符。
 
-和 Powerline fonts 类似，也会在 patch 后，对名字做一下修改，比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)
+类似 Powerline fonts，字体 patch 后对名字加了后缀 NF，比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)，Fira Code 改名为 Fira Code NF。
 
-终端窗口工具推荐安装 MesloLGS NF 字体，如果窗口支持透明效果（如mintty），显示效果直接起飞 <https://github.com/romkatv/powerlevel10k#fonts>。
+终端窗口工具推荐安装 Meslo LGS NF 字体，如果窗口支持透明效果（如mintty），显示效果直接起飞 <https://github.com/romkatv/powerlevel10k#fonts>。
 
     快速下载地址
 
@@ -1717,12 +1714,12 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 
 简单测试几个 unicode 扩展 NF 字符
 
-    $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \uf70f \ue20a \ue350 \uf2c8 \uf2c7"
-     ±  ➦ ✘ ⚡ ⚙ ❃      
+    $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \uf70f \ue20a \ue350 \uf2c8"
+     ±  ➦ ✘ ⚡ ⚙ ❃    
 
 ### 使用 zsh
 
-单纯的 zsh 并不慢，只要别装 ohmyzsh，没有任何功能性插件的使用场景依赖这个 ohmyzsh）。
+单纯的 zsh 并不慢，只要别装 ohmyzsh，没有任何功能性插件的使用场景依赖这个 ohmyzsh。
 
     https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
 
@@ -1731,18 +1728,18 @@ powerline fonts 是一个字体集，本质是对一些现有的字体打 patch�
 从语法上来说，zsh和bash是不兼容的；但是zsh有一个仿真模式，可以支持对 bash/sh 语法的仿真（也有对csh的仿真，但是支持不完善，不建议使用）：
 
     $ emulate bash
-    # or
+    或
     $ emulate sh
 
 安装
 
     sudo apt install zsh
 
-如果是用 apt install 安装的发行版，位置在 /usr/share/
+如果是用 apt install 安装的发行版，位置在 /usr/share/zsh
 
 zsh 默认使用的用户插件位置，在 ~/.zsh/plugin/
 
-设置当前用户使用 zsh
+可设置当前用户默认登陆使用 zsh
 
     # 用户修改自己的登陆shell
     sudo chsh -s /bin/zsh
@@ -1781,18 +1778,18 @@ zsh自带功能
 
 #### 安装常用的插件
 
-    powerline：见章节[状态栏工具 powerline]
+除了 powerline 外，其它的插件都要进入 zsh 后再执行安装
+
+    powerline：见章节[状态栏工具 powerline]，建议使用替代品见章节 [推荐状态栏工具 powerlevel10k]。
 
     命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按TAB键快速进入下一级，或直接按右方向键确认该提示。
 
         # git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
-        zsh
         sudo apt install zsh-autosuggestions
 
     命令语法高亮：根据你输入的命令是否正确的色彩高亮，比如输入date查看时间，错为data，字体的颜色会跟随你的输入一个字母一个字母的变化，错误会直接变红。
 
         # git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zsh-syntax-highlighting
-        zsh
         sudo apt install zsh-syntax-highlighting
 
         # 发现个替代品 https://github.com/zdharma-continuum/fast-syntax-highlighting

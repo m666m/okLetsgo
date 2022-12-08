@@ -294,7 +294,7 @@ linux下shell终端里有行编辑功能，在命令提示符下默认可以像 
     # 使用默认的 emacs 模式
     set -o emacs
 
-执行 `man readline` 可以查看 Bash 中的默认快捷键
+执行 `man readline` 可以查看 Bash 中的默认快捷键，emacs 模式
 
     Tab 键    自动补全命令
 
