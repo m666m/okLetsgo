@@ -1101,6 +1101,7 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
     https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
 
     还有自己的软件包仓库
+
         https://learn.microsoft.com/zh-cn/powershell/scripting/gallery/overview?view=powershell-7.3
 
         https://www.powershellgallery.com/packages/
@@ -1119,9 +1120,9 @@ PowerShell 美化：
 
     ls 命令显示色彩
 
-1、安装图标字体
+1、安装图标字体，参见章节 [状态栏字体]。
 
-如果之前手动下载安装过，不需要再用 scoop 装了
+可以用 scoop 安装
 
     > scoop search FantasqueSansMono-NF
     > scoop bucket add 'nerd-fonts'
@@ -1131,7 +1132,7 @@ PowerShell 美化：
 
 2、安装 posh-git
 
-posh-git 可以实现命令提示符 Git 命令增强（命令别名和显示分支信息等）
+posh-git 可以实现命令提示符 Git 命令增强（命令别名和显示分支信息等）。
 
 可以通过 [PowerShell Gallery](https://www.powershellgallery.com) 安装，方法：打开 PowerShell 7（不是 Windows PowerShell），输入命令：
 
