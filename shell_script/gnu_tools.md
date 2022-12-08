@@ -1776,6 +1776,8 @@ zsh自带功能
 
     快速跳转：输入 cd - 按TAB，会列出历史路径清单供选择。
 
+zsh 命令行默认是 vi 操作模式，不需要在 ~/.zshrc 文件里 “set -o vi”。
+
 #### 安装常用的插件
 
 除了 powerline 外，其它的插件都要进入 zsh 后再执行安装
@@ -2052,11 +2054,6 @@ ohmyzsh自带很多主题和插件，用户自己下载定制主题和插件的�
 
 ohmyzsh的插件管理机制更智能，还会提示更新，建议用这种方式配置，不再用 ~/.zshrc 文件里逐个 source xxxx 的方式。
 
-zsh 默认未提供命令行的 vi 模式，需要手工编辑 ~/.zshrc 文件
-
-    # 命令行开启vi-mode模式，按esc后用vi中的上下键选择历史命令
-    set -o vi
-
 #### .zshrc 配置文件样例
 
 安装 powerlevle10k、ohmyzsh(可选) 等几个插件后的配置
@@ -2135,7 +2132,8 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
-# zsh 默认是 vi 操作模式，不需要显式设置了
+# zsh 命令行默认是 vi 操作模式，不需要显式设置了
+# 命令行开启vi-mode模式，按esc后用vi中的上下键选择历史命令
 #set -o vi
 
 ```
