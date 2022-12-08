@@ -1435,15 +1435,14 @@ console即控制台，是与操作系统交互的设备，系统将一些信息�
 
 ### bash 命令提示符美化
 
-bash 内置命令和快捷键见 <shellcmd.md> 的相关章节。
-
-终端工具应该在自己的选项设置中启用256color显示，最好开启透明效果，或在登陆脚本中设置环境变量
+终端工具应该在自己的选项设置中启用 256color 显示，或在登陆脚本中设置环境变量，能开启透明效果更好
 
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
 验证，色条不要出现肉眼可见的断续即可
 
+    # curl -fsSL https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh |bash
     awk 'BEGIN{
         s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
         for (colnum = 0; colnum<77; colnum++) {
@@ -1468,6 +1467,8 @@ bash 内置命令和快捷键见 <shellcmd.md> 的相关章节。
 各种字符显示工具通用的颜色方案-北极
 
     https://www.nordtheme.com/ports
+
+bash 内置命令和快捷键见 <shellcmd.md> 的相关章节。
 
 #### bash 下使用 conda 命令行提示符
 
