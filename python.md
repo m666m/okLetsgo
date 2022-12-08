@@ -405,8 +405,10 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     # 在当前目录下创建名为myvenv的虚拟环境（如果第三方包virtualenv安装在python3下面，此时创建的虚拟环境就是基于python3的）
     virtualenv myvenv
 
-    # 参数 -p 指定python版本创建虚拟环境
+    # 参数 -p 指定python可执行文件，根据版本创建虚拟环境
     virtualenv -p /usr/local/bin/python2.7 myvenv2
+
+    virtualenv -p /c/tools/Python38/python.exe e38
 
     # 参数 --system-site-packages 指定创建虚拟环境时继承系统三方库
     virtualenv --system-site-packages myvenv
@@ -639,11 +641,9 @@ Anaconda 安装完毕后，默认的环境base是最新的一个python版本如p
 
 ### 命令行工具使用conda环境
 
-要确保在[base]环境下执行 conda 命令，这个是特殊的root环境，可以找到conda需要的各种变量和路径设置，在base环境的基础上 conda activate p37 进入你的环境，在你的环境下执行 conda 相关命令，这样可以确保安装到了你的环境目录下。
+要确保在[base]环境下执行 conda 的各种操作，这个是特殊的root环境，可以找到conda需要的各种变量和路径设置，所以最好的方式是点击开始菜单的Anaconda命令行快捷方式，如果想设置各命令行自动进入conda见下面章节 [conda init 命令设置命令行工具]。在base环境的基础上执行 `conda xxx` 等操作，也可以用 `conda activate p37` 进入你的环境。
 
-官方推荐：慎用 deactivate 命令，从当前环境用deactivate命令返回到[base]，不如重新开个shell，默认是base环境，这样更少bug。
-
-<https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#deactivating-an-environment>
+官方推荐：慎用 deactivate 命令，从当前环境用 deactivate` 命令返回到[base]，不如重新开个 shell，默认是 [base] 环境，这样更少bug <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#deactivating-an-environment>。
 
 以前 conda 版本的 source activate 和 source deactivate 跟 virtualenv 环境的脚本经常路径冲突。conda 4.4之后激活和退出环境统一了命令用法，不用 source 了，操作步骤如下：
 
@@ -673,15 +673,52 @@ Anaconda 安装完毕后，默认的环境base是最新的一个python版本如p
         # 再正常进入conda环境
         conda activate p36
 
-如果需要在Windows下执行bat或sh脚本文件，参见下面的章节 [Windows 命令行环境下使用脚本执行  conda 环境]。
+#### conda init 命令设置命令行工具
 
-### Windows 命令行环境下使用脚本执行  conda 环境
+设置在哪个 shell 下使用 conda，主要的操作其实是给该命令行的用户配置文件添加自动进入 [base] 环境的脚本，这样可以使conda 的各个命令在 bash、cmd、powershell 等命令行工具下直接使用。
 
-在 Windows 的命令行脚本环境（cmd/bash）下，先运行一次 `conda activate` 激活[base]环境，确保你执行的conda命令都是在[base]环境下，就不会报错找不到啥的。 然后再次执行 `conda activate p37` 就可以切换到指定的环境。
+打开 Windows 开始菜单里 Anaconda prompt，执行
 
-对 powershell 特殊些，conda 命令不在系统变量 PATH 中，需要手动先执行 `C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1`，然后即可执行 `conda activate` 。
+    conda init -h
 
-cmd 的bat文件，在 cmd 下执行（需要设置 conda init 以支持cmd，详见章节[conda init 命令设置命令行工具]）
+用管理员权限打开 cmd 命令行工具
+
+    # 激活[base]环境
+    # 如果打开Windows开始菜单里Anaconda prompt，就不用这步重复激活base了
+    conda activate
+
+    # 用 bash，推荐
+    # 需要先安装 git，conda使用它自带的bash(mintty)即可
+    # 操作是在 ~/.bash_profile 中添加代码，自动激活[base]环境
+    conda init bash
+
+    # 用cmd，不推荐
+    # 建议把cmd留给单独安装的python环境，这样可以并行使用 virtualenv
+    # Windows开始菜单里的 Anaconda Prompt (Anaconda3)，也可以进入cmd
+    conda init cmd.exe
+
+    # powershell，微软来回改版本，不推荐
+    # 再次打开 powershell会提示：C:\Users\...\profile.ps1限制执行
+    # 需要以管理员身份打开PowerShell，输入 get-executionpolicy 查询当前策略，
+    # 输入 set-executionpolicy remotesigned，输入 y 变更策略。
+    conda init powershell
+
+    # 都绑定上，太乱，不推荐
+    conda init --all
+
+然后关闭cmd窗口，以便生效。如果是用的bash，用^d或exit显式退出。
+
+以后用bash就可以了（打开就是默认的base环境）。
+
+不执行这个设置也可以，则每次进入命令行工具后，都要先执行 conda activate 进入base环境，以确保后续的 conda 命令可以被搜索到。
+
+    对 cmd 环境，如果 conda 命令不在系统变量 PATH 中，可以手动执行 `C:\ProgramData\Anaconda3\Scripts\activate.bat C:\ProgramData\Anaconda3`，然后即可执行 `conda activate`。
+
+    对 bash 环境，如果 conda 命令不在系统变量 PATH 中，可以手动执行 `eval "$('/c/ProgramData/Anaconda3/Scripts/conda.exe' 'shell.bash' 'hook')"`，然后即可执行 `conda activate`。
+
+    对 powershell 环境，如果 conda 命令不在系统变量 PATH 中，需要手动先执行 `C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1`，然后即可执行 `conda activate` 。
+
+#### Windows 命令行环境下使用脚本执行  conda 环境
 
 ```cmd
 @rem anaconda 命令行执行
@@ -712,48 +749,7 @@ conda deactivate
 read -n1 -p "Press any key to continue..."
 ```
 
-如果需要显示中文需要修改配置文件 ~\.minttyrc，详见 [mintty(bash)] <gnu_tools.md>
-
-### conda init 命令设置命令行工具
-
-设置conda在哪个shell下使用，主要的操作其实是给该命令行的用户配置文件添加自动进入base环境的脚本，这样可以使conda 的各个命令脚本在 bash、cmd、powershell 等命令行工具下直接使用。
-
-不执行这个设置也可以，则每次进入命令行工具后，都要先执行 conda activate 进入base环境，以确保后续的 conda 命令可以被搜索到。
-
-详情见
-
-    conda init -h
-
-查找路径的解释见章节 [conda/pip操作前务必先检查当前环境中conda/pip/python的路径]
-
-用管理员权限打开cmd命令行工具
-
-    # 激活[base]环境
-    # 如果打开Windows开始菜单里Anaconda prompt，就不用这步重复激活base了
-    conda activate
-
-    # 用 bash，推荐
-    # 需要先安装 git，conda使用它自带的bash(mintty)即可
-    # 操作是在 ~/.bash_profile 中添加代码，自动激活[base]环境
-    conda init bash
-
-    # 用cmd，不推荐
-    # 建议把cmd留给单独安装的python环境，这样可以并行使用 virtualenv
-    # Windows开始菜单里的 Anaconda Prompt (Anaconda3)，也可以进入cmd
-    conda init cmd.exe
-
-    # powershell，微软来回改版本，不推荐
-    # 再次打开 powershell会提示：C:\Users\...\profile.ps1限制执行
-    # 需要以管理员身份打开PowerShell，输入 get-executionpolicy 查询当前策略，
-    # 输入 set-executionpolicy remotesigned，输入 y 变更策略。
-    conda init powershell
-
-    # 都绑定上，太乱，不推荐
-    conda init --all
-
-然后关闭cmd窗口，以便生效。如果是用的bash，用^d或exit显式退出。
-
-以后用bash就可以了（打开就是默认的base环境）。
+如果需要显示中文需要修改配置文件 ~\.minttyrc，详见 [mintty(bash)] <gnu_tools.md>。
 
 ### conda 包管理常用命令
 
