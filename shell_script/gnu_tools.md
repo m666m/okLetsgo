@@ -183,6 +183,11 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
 
 真彩色条测试，如果色条出现明显的条带分隔，那说明只支持 256color
 
+    https://hellricer.github.io/2019/10/05/test-drive-your-terminal.html
+        https://gist.github.com/XVilka/8346728
+
+    curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/color-spaces.pl |perl
+
     curl -fsSL https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh |bash
 
     如果上面的脚本在putty下无输出(进入 tmux 下执行没问题)，用下面这个简单的
