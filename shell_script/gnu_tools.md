@@ -2905,7 +2905,7 @@ let mapleader="\<space>"
 if &term =="screen"
     set t_Co=256
 endif
-
+" 真彩色
 " https://github.com/tmux/tmux/issues/1246
 if exists('+termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
@@ -3989,12 +3989,13 @@ set-window-option -g mode-keys vi
 #set-option -g mouse on # v2.1 之前的老版本 set-option -g mode-mouse on
 set -g mouse on
 
-# 设置状态栏工具显示彩色
+# 设置状态栏工具显示256彩色
 # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
 set -g default-terminal screen-256color
+# 真彩色
 # https://github.com/tmux/tmux/wiki/FAQ#how-do-i-use-rgb-colour
 #   https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh
-#set -as terminal-features ",xterm-256color:RGB"
+#set -as terminal-features ",xterm-256color:RGB"  # tmux 3.2+
 set -as terminal-overrides ",xterm-256color:RGB"
 
 # 状态栏使用 nord 主题，替换掉 powerline
