@@ -1315,134 +1315,36 @@ console即控制台，是与操作系统交互的设备，系统将一些信息�
     Locale=zh_CN
     Charset=GB18030
 
-### 字符终端下的一些小玩具如 emoji、cmatrix 等
+### 终端模拟器和软件的真彩色设置
 
-    符号字符 https://www.webfx.com/tools/emoji-cheat-sheet/
+终端模拟器应该在选项设置中启用 256color 显示，能支持24位真彩、透明效果更好
 
-    unicode编码 http://www.unicode.org/emoji/charts/full-emoji-list.html
-
-    emoji 大全 https://emojipedia.org/
-        unicode emoji https://unicode.org/emoji/charts/full-emoji-list.html
-        git emoji https://blog.csdn.net/li1669852599/article/details/113336076
-
-小火车sl
-
-    sudo apt install sl
-
-牛说
-
-    sudo apt install cowsay
-
-格言大全
-
-    sudo apt install fortunes
-
-字符画 figlet + toilet
-
-    sudo apt install -y figlet toilet
-
-    # figlet字体位置 /usr/share/figlet
-    # 命令 showfigfonts 查看figlet字体
-
-    # 安装 toilet 后，figlet 可使用更好看的 tlf(toilet UTF-8) 字体
-    for tlf in $(ls /usr/share/figlet/*.tlf)
-    do
-        echo -e "$(basename ${tlf} :) \n"
-        figlet -f $tlf 12:34:56:78:90:abc:ABC
-    done
-
- 钟表
-
-    # watch -n1 "date '+%D%n%T'|figlet -k"
-    watch -n1 "date '+%D %T'|figlet -f future.tlf -w 80"
-
-    # 温度及钟表
-    # watch -n1  "date '+%D %T ' && vcgencmd measure_temp |figlet -f future.tlf -w 80 "
-    watch -n1  "(date '+%T'; vcgencmd measure_temp) |tr '\n' ' ' |figlet -f future.tlf -w 80 "
-
-+ matrix 字符屏保
-
-    参考
-
-        https://magiclen.org/cmatrix/
-            https://github.com/abishekvashok/cmatrix
-
-    Debian / Ubuntu 安装发行版
-
-        sudo apt install cmatrix
-
-        cmatrix -ba
-
-        Ctrl + c 或 q 退出
-
-    Debian 自编最新版
-
-        下载源代码
-
-            git clone --depth=1 https://github.com/abishekvashok/cmatrix
-
-        安装依赖库
-
-            sudo apt install automake libncurses-dev
-
-        Using configure (recommended for most linux/mingw users)
-
-            autoreconf -i  # skip if using released tarball
-            ./configure
-            make
-
-            # 不要sudo make install，尽量打包然后用包管理器安装
-            $ sudo make install
-            make[1]: Entering directory '/pcode/cmatrix'
-            /usr/bin/mkdir -p '/usr/local/bin'
-            /usr/bin/install -c cmatrix '/usr/local/bin'
-            Installing matrix fonts in /usr/share/consolefonts...
-            /usr/bin/mkdir -p '/usr/local/share/man/man1'
-            /usr/bin/install -c -m 644 cmatrix.1 '/usr/local/share/man/man1'
-            make[1]: Leaving directory '/pcode/cmatrix'
-
-        /usr/local/bin/cmatrix -sbau8
-
-    Centos 需要自行编译
-
-        <https://thornelabs.net/posts/linux-install-cmatrix-from-rpm-deb-xz-or-source.html>
-
-        下载源代码
-
-            git clone --depth=1 https://github.com/abishekvashok/cmatrix
-
-        安装依赖库
-
-            sudo yum install -y gcc make autoconf automake ncurses-devel
-
-        Generate aclocal.m4 man page:
-
-            aclocal
-
-        Generate configuration scripts:
-
-            autoconf
-
-        Generate Makefile.in for configure from Makefile.am:
-
-            automake -a
-
-        Configure, make, and make install the binary:
-
-            ./configure
-            make
-            sudo make install
-
-### bash 命令提示符美化
-
-终端工具应该在自己的选项设置中启用 256color 显示，或在登陆脚本中设置环境变量，能开启透明效果更好
-
-    # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
+    # 可以在 .bash_profile 登陆脚本中设置环境变量
+    # 显式设置终端启用256color，防止终端工具未设置。若终端工具能支持24位真彩、开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
-验证，色条不要出现肉眼可见的断续即可
+各软件如 tmux、vim 也有自己的设置选项，一般都是256color和真彩色两个，详见下面章节中的各软件自己的配置文件样例。
 
-    # curl -fsSL https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh |bash
+验证方法
+
+使用不同终端模拟器（mintty、putty、Windows Terminal）下 ssh 登陆同一个服务器，测试 bash/zsh 、tmux、tmux 里用 vim 查看代码文件， vim 里执行 `:terminal`进入终端，各种情况下进行测试。观察彩色文字的颜色、状态栏的颜色过渡：如果文字的颜色明亮，状态栏色条过渡断裂，一般是只支持256color。
+
+    -       bash+vim   zsh+powerlevel10k+vim   tmux+bash+vim     tmux+zsh+powerlevel10k+vim
+    ----------------------------------------------------------------------------------------
+    mintty
+
+    putty
+
+    Windows Terminal
+
+验证代码
+
+真彩色条测试，如果色条出现明显的条带分隔，那说明只支持 256color
+
+    curl -fsSL https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh |bash
+
+    如果上面的脚本在putty下无输出(进入 tmux 下执行没问题)，用下面这个简单的
+
     awk 'BEGIN{
         s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
         for (colnum = 0; colnum<77; colnum++) {
@@ -1457,20 +1359,36 @@ console即控制台，是与操作系统交互的设备，系统将一些信息�
         printf "\n";
     }'
 
-简单的双行状态栏 见 <bash_profile.sh> 的相关章节。
+我的测试结果
+
+    mintty 在本地、ssh 登陆远程bash/zsh、ssh连接到远程后打开 tmux、进入vim、zsh+powerlevel10k 下都完美呈现。
+
+    putty 可以通过测试，但是 zsh+powerlevel10k 下状态栏工具颜色过渡明显断裂，vim状态栏工具也如此
+
+    Windows Terminal 可以通过测试，但是 zsh+powerlevel10k 下状态栏工具颜色过渡明显断裂，vim状态栏工具也如此
+
+### bash 命令提示符美化
+
+依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
+
+简单的双行状态栏，见 <bash_profile.sh> 中设置变量 PS1 的代码。
 
 或者使用 powerline，参见章节 [状态栏工具 powerline]
 
     # apt 安装的在 /usr/share 下，如果是 pip 安装的用 `pip show powerline-status` 查看路径
     source /usr/share/powerline/bindings/bash/powerline.sh
 
-各种字符显示工具通用的颜色方案-北极
+强烈推荐各种字符显示工具通用的颜色方案-北极
 
     https://www.nordtheme.com/ports
 
 bash 内置命令和快捷键见 <shellcmd.md> 的相关章节。
 
-#### bash 下使用 conda 命令行提示符
+#### bash 命令行提示符显示 python 环境名
+
+完整的命令行提示符显示 conda/virtualenv 环境名，见 <bash_profile.sh> 中设置变量 PS1 的代码。
+
+Conda
 
     https://zhuanlan.zhihu.com/p/572716915
 
@@ -1524,7 +1442,17 @@ conda 激活环境时，默认会修改命令行提示符，比较丑
 
     conda config --set changeps1 False
 
+Virtualenv 的处理类似 conda
+
+先禁止 activate 命令脚本中在变量PS1前添加的环境名称
+
+    export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+然后读取变量 $VIRTUAL_ENV 的值就是当前环境名。
+
 ### 状态栏工具 powerline
+
+依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
 
 Powerline 最初是一款 Vim statusline 的插件，后来发展到支持 bash、vim、tmux 等众多工具及插件，powerline 都可适配进行状态栏显示。
 
@@ -1833,6 +1761,8 @@ zsh 命令行默认是 vi 操作模式，不需要在 ~/.zshrc 文件里 “set 
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
 #### 推荐状态栏工具 powerlevel10k
+
+依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
 
 zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 powerline ，而且更简单、更好看
 
@@ -2263,11 +2193,7 @@ man 查看各章节后缀用.数字即可
 
 ##### 使用状态栏工具等扩展插件的先决条件
 
-终端工具启用 256color，最好支持透明效果
-
-    # 在 .bash_profile 中显式设置终端启用256color，防止终端工具未设置
-    # 如果终端工具能开启透明选项，则显示的效果更好
-    export TERM="xterm-256color"
+依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
 
 检查vim的版本，进入vim执行命令 :version
 
@@ -2312,6 +2238,23 @@ man 查看各章节后缀用.数字即可
     Huge version without GUI.
 
 确认如上字样即可。
+
+要设置状态栏彩色，包括tmux中vim使用彩色，需要编辑 ~/.vimrc 文件，添加如下行
+
+    " 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
+    " 如果在 tmux 下使用 vim ，防止 tmux 默认设置 TERM=screen，应该保留此设置
+    " https://www.codenong.com/15375992/
+    "if &term =~? 'mlterm\|xterm'
+    if &term =="screen"
+      set t_Co=256
+    endif
+    " 真彩色
+    " https://github.com/tmux/tmux/issues/1246
+    if exists('+termguicolors')
+      let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+      let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+      lset termguicolors
+    endif
 
 ##### 配置扩展插件
 
@@ -3886,10 +3829,18 @@ tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServe
 
     https://bobbyhadz.com/blog/tmux-powerline-ubuntu
 
+依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
+
 要设置状态栏彩色，包括tmux中vim使用彩色，需要编辑 ~/.tmux.conf 文件，添加如下行
 
+    # 设置状态栏工具显示256彩色
     # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
-    set -g default-terminal "screen-256color"
+    set -g default-terminal screen-256color
+    # 真彩色
+    # https://github.com/tmux/tmux/wiki/FAQ#how-do-i-use-rgb-colour
+    #   https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh
+    #set -as terminal-features ",xterm-256color:RGB"  # tmux 3.2+
+    set -as terminal-overrides ",xterm-256color:RGB"
 
 一、状态栏显示使用 powerline
 
@@ -4081,6 +4032,124 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
     screen -x
 
 这个命令会将你朋友的终端Attach到你的Screen会话上，并且你的终端不会被Detach。这样你就可以和朋友共享同一个会话了，如果你们当前又处于同一个窗口，那就相当于坐在同一个显示器前面，你的操作会同步演示给你朋友，你朋友的操作也会同步演示给你。当然，如果你们切换到这个会话的不同窗口中去，那还是可以分别进行不同的操作的。
+
+### 字符终端下的一些小玩具如 figlet、cmatrix 等
+
+    符号字符 https://www.webfx.com/tools/emoji-cheat-sheet/
+
+    unicode编码 http://www.unicode.org/emoji/charts/full-emoji-list.html
+
+    emoji 大全 https://emojipedia.org/
+        unicode emoji https://unicode.org/emoji/charts/full-emoji-list.html
+        git emoji https://blog.csdn.net/li1669852599/article/details/113336076
+
+小火车sl
+
+    sudo apt install sl
+
+牛说
+
+    sudo apt install cowsay
+
+    格言大全
+
+        sudo apt install fortunes
+
+字符画 figlet + toilet
+
+    sudo apt install -y figlet toilet
+
+    # figlet字体位置 /usr/share/figlet
+    # 命令 showfigfonts 查看figlet字体
+
+    # 安装 toilet 后，figlet 可使用更好看的 tlf(toilet UTF-8) 字体
+    for tlf in $(ls /usr/share/figlet/*.tlf)
+    do
+        echo -e "$(basename ${tlf} :) \n"
+        figlet -f $tlf 12:34:56:78:90:abc:ABC
+    done
+
+    钟表
+
+        # watch -n1 "date '+%D%n%T'|figlet -k"
+        watch -n1 "date '+%D %T'|figlet -f future.tlf -w 80"
+
+        # 温度及钟表
+        # watch -n1  "date '+%D %T ' && vcgencmd measure_temp |figlet -f future.tlf -w 80 "
+        watch -n1  "(date '+%T'; vcgencmd measure_temp) |tr '\n' ' ' |figlet -f future.tlf -w 80 "
+
++ matrix 字符屏保
+
+    参考
+
+        https://magiclen.org/cmatrix/
+            https://github.com/abishekvashok/cmatrix
+
+    Debian / Ubuntu 安装发行版
+
+        sudo apt install cmatrix
+
+        cmatrix -ba
+
+        Ctrl + c 或 q 退出
+
+    Debian 自编最新版
+
+        下载源代码
+
+            git clone --depth=1 https://github.com/abishekvashok/cmatrix
+
+        安装依赖库
+
+            sudo apt install automake libncurses-dev
+
+        Using configure (recommended for most linux/mingw users)
+
+            autoreconf -i  # skip if using released tarball
+            ./configure
+            make
+
+            # 不要sudo make install，尽量打包然后用包管理器安装
+            $ sudo make install
+            make[1]: Entering directory '/pcode/cmatrix'
+            /usr/bin/mkdir -p '/usr/local/bin'
+            /usr/bin/install -c cmatrix '/usr/local/bin'
+            Installing matrix fonts in /usr/share/consolefonts...
+            /usr/bin/mkdir -p '/usr/local/share/man/man1'
+            /usr/bin/install -c -m 644 cmatrix.1 '/usr/local/share/man/man1'
+            make[1]: Leaving directory '/pcode/cmatrix'
+
+        /usr/local/bin/cmatrix -sbau8
+
+    Centos 需要自行编译
+
+        <https://thornelabs.net/posts/linux-install-cmatrix-from-rpm-deb-xz-or-source.html>
+
+        下载源代码
+
+            git clone --depth=1 https://github.com/abishekvashok/cmatrix
+
+        安装依赖库
+
+            sudo yum install -y gcc make autoconf automake ncurses-devel
+
+        Generate aclocal.m4 man page:
+
+            aclocal
+
+        Generate configuration scripts:
+
+            autoconf
+
+        Generate Makefile.in for configure from Makefile.am:
+
+            automake -a
+
+        Configure, make, and make install the binary:
+
+            ./configure
+            make
+            sudo make install
 
 ### 项目构建工具 Make、Automake、CMake、Ninja
 
