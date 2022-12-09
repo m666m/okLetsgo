@@ -3421,6 +3421,38 @@ autocmd VimEnter * call TabPos_Initialize()
 
 ```
 
+#### vim 的内嵌 terminal 窗口
+
+写完代码想测试一下，有几个方法：保存并退出vim，然后运行，或执行章节 [命令行模式] 中介绍的“执行shell命令”的几个方法，都太繁琐不直观。
+
+自从vim 8.1版本后，支持了一个新的命令 :ter 或 :terminal，在vim中拆分窗口打开一个shell，所以使用切换拆分窗口的快捷键来在你的文本窗口和终端窗口中切换即可。
+
+详细内容参看
+
+    :help terminal
+
+暂时关闭/隐藏这个terminal窗口，而不希望shell中的工作被杀死，或者一些东西消失（就比如当前进入的某个及其深的目录，或者activate的某个conda环境）
+
+    按 Ctrl+w 并输入 :hide 。注意 Ctrl+w 后直接输入命令，不要切换到文本窗口输入命令
+
+要恢复这个隐藏了的窗口，需要先知道它在哪个 buffer。在文本窗口输入命令
+
+    :ls
+
+然后使用 :buffer 命令切换，因为这个命令会在当前窗口打开buffer，所以要提前split或vsplit一个新的窗口，然后根据buffer的序号，比如2，输入命令
+
+    :buffer 2
+
+关闭这个terminal
+
+    [Ctrl+w]:quit!
+
+要加!，因为vim认为这个工作没有结束，不能这么轻易地关了。
+
+以特定高度/行数打开
+
+    :ter ++rows=2
+
 #### vim 使用鼠标
 
 鼠标右键不能粘贴而是进入了 visual 模式
