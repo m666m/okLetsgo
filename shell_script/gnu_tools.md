@@ -153,6 +153,65 @@ X window system
 
 Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安装支持多种符号的字体，见下面章节 [Nerd Font]。
 
+### 终端模拟器和软件的真彩色设置
+
+字符终端的颜色配置说明
+
+    https://github.com/termstandard/colors
+
+终端模拟器应该在选项设置中启用 256color 显示，能支持24位真彩、透明效果更好
+
+    # 可以在 .bash_profile 登陆脚本中设置环境变量
+    # 显式设置终端启用256color，防止终端工具未设置。若终端工具能支持24位真彩、开启透明选项，则显示的效果更好
+    export TERM="xterm-256color"
+
+各软件如 tmux、vim 也有自己的设置选项，一般都是256color和真彩色两个，详见下面章节中的各软件自己的配置文件样例，参看 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
+
+验证方法
+
+使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）下 ssh 登陆同一个服务器，测试 bash/zsh 、tmux、tmux 里用 vim 查看代码文件， vim 里执行 `:terminal`进入终端，各种情况下进行测试。观察彩色文字的颜色、状态栏色条的颜色过渡：如果彩色文字的颜色明亮，状态栏色条颜色过渡断裂，一般是只支持256color。
+
+    -       bash+vim   zsh+powerlevel10k+vim   tmux+bash+vim     tmux+zsh+powerlevel10k+vim
+    ----------------------------------------------------------------------------------------
+    mintty
+
+    putty
+
+    Windows Terminal
+
+验证代码
+
+真彩色条测试，如果色条出现明显的条带分隔，那说明只支持 256color
+
+    curl -fsSL https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh |bash
+
+    如果上面的脚本在putty下无输出(进入 tmux 下执行没问题)，用下面这个简单的
+
+    awk 'BEGIN{
+        s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
+        for (colnum = 0; colnum<77; colnum++) {
+            r = 255-(colnum*255/76);
+            g = (colnum*510/76);
+            b = (colnum*255/76);
+            if (g>255) g = 510-g;
+            printf "\033[48;2;%d;%d;%dm", r,g,b;
+            printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
+            printf "%s\033[0m", substr(s,colnum+1,1);
+        }
+        printf "\n";
+    }'
+
+    zsh 下展示当前终端可以显示的颜色
+        for code ({000..255}) print -P -- "$code: %F{$code}最左侧三位数字即颜色值Text Color%f"
+
+我的测试结果
+
+    mintty 在本地、ssh 登陆远程bash/zsh、ssh连接到远程后打开 tmux、进入vim、zsh+powerlevel10k 下都完美呈现。
+
+    putty 可以通过测试，但 zsh+powerlevel10k 命令提示符颜色过渡明显断裂，vim状态栏工具 airline 也如此
+
+    Windows Terminal 可以通过测试，但 zsh+powerlevel10k 命令提示符颜色过渡明显断裂，vim状态栏工具 airline 也如此
+
 ### putty 远程终端模拟器
 
     https://www.chiark.greenend.org.uk/~sgtatham/putty/
@@ -366,13 +425,7 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
 
 #### mintty 美化
 
-字符终端的颜色配置说明
-
-    https://github.com/termstandard/colors
-
-zsh 下展示当前终端可以显示的颜色
-
-    for code ({000..255}) print -P -- "$code: %F{$code}最左侧三位数字即颜色值Text Color%f"
+依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
 
 mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
 
@@ -1314,58 +1367,6 @@ console即控制台，是与操作系统交互的设备，系统将一些信息�
 
     Locale=zh_CN
     Charset=GB18030
-
-### 终端模拟器和软件的真彩色设置
-
-终端模拟器应该在选项设置中启用 256color 显示，能支持24位真彩、透明效果更好
-
-    # 可以在 .bash_profile 登陆脚本中设置环境变量
-    # 显式设置终端启用256color，防止终端工具未设置。若终端工具能支持24位真彩、开启透明选项，则显示的效果更好
-    export TERM="xterm-256color"
-
-各软件如 tmux、vim 也有自己的设置选项，一般都是256color和真彩色两个，详见下面章节中的各软件自己的配置文件样例。
-
-验证方法
-
-使用不同终端模拟器（mintty、putty、Windows Terminal）下 ssh 登陆同一个服务器，测试 bash/zsh 、tmux、tmux 里用 vim 查看代码文件， vim 里执行 `:terminal`进入终端，各种情况下进行测试。观察彩色文字的颜色、状态栏的颜色过渡：如果文字的颜色明亮，状态栏色条过渡断裂，一般是只支持256color。
-
-    -       bash+vim   zsh+powerlevel10k+vim   tmux+bash+vim     tmux+zsh+powerlevel10k+vim
-    ----------------------------------------------------------------------------------------
-    mintty
-
-    putty
-
-    Windows Terminal
-
-验证代码
-
-真彩色条测试，如果色条出现明显的条带分隔，那说明只支持 256color
-
-    curl -fsSL https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh |bash
-
-    如果上面的脚本在putty下无输出(进入 tmux 下执行没问题)，用下面这个简单的
-
-    awk 'BEGIN{
-        s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
-        for (colnum = 0; colnum<77; colnum++) {
-            r = 255-(colnum*255/76);
-            g = (colnum*510/76);
-            b = (colnum*255/76);
-            if (g>255) g = 510-g;
-            printf "\033[48;2;%d;%d;%dm", r,g,b;
-            printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
-            printf "%s\033[0m", substr(s,colnum+1,1);
-        }
-        printf "\n";
-    }'
-
-我的测试结果
-
-    mintty 在本地、ssh 登陆远程bash/zsh、ssh连接到远程后打开 tmux、进入vim、zsh+powerlevel10k 下都完美呈现。
-
-    putty 可以通过测试，但是 zsh+powerlevel10k 下状态栏工具颜色过渡明显断裂，vim状态栏工具也如此
-
-    Windows Terminal 可以通过测试，但是 zsh+powerlevel10k 下状态栏工具颜色过渡明显断裂，vim状态栏工具也如此
 
 ### bash 命令提示符美化
 
