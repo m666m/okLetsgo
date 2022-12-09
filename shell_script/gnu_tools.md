@@ -158,6 +158,7 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
 字符终端的颜色配置说明
 
     https://github.com/termstandard/colors
+        https://gist.github.com/XVilka/8346728
 
 终端模拟器应该在选项设置中启用 256color 显示，能支持24位真彩、透明效果更好
 
@@ -167,11 +168,11 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
 
 各软件如 tmux、vim 也有自己的设置选项，一般都是256color和真彩色两个，详见下面章节中的各软件自己的配置文件样例，参看 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
 
-验证方法
+验证
 
 使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）下 ssh 登陆同一个服务器，测试 bash/zsh 、tmux、tmux 里用 vim 查看代码文件， vim 里执行 `:terminal`进入终端，各种情况下进行测试。观察彩色文字的颜色、状态栏色条的颜色过渡：如果彩色文字的颜色明亮，状态栏色条颜色过渡断裂，一般是只支持256color。
 
-    -       bash+vim   zsh+powerlevel10k+vim   tmux+bash+vim     tmux+zsh+powerlevel10k+vim
+        -    bash+vim   zsh+powerlevel10k+vim   tmux+bash+vim     tmux+zsh+powerlevel10k+vim
     ----------------------------------------------------------------------------------------
     mintty
 
@@ -179,20 +180,22 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
 
     Windows Terminal
 
-验证代码
-
-真彩色条测试，如果色条出现明显的条带分隔，那说明只支持 256color
-
-    https://hellricer.github.io/2019/10/05/test-drive-your-terminal.html
-        https://gist.github.com/XVilka/8346728
+256 color 色条测试
 
     curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/color-spaces.pl |perl
 
+    curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/colortest.sh |bash
+
+24bit true color 色条测试
+
+    # 如果色条出现明显的条带分隔，那说明只支持 256 color
     curl -fsSL https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh |bash
 
-    如果上面的脚本在putty下无输出(进入 tmux 下执行没问题)，用下面这个简单的
+    如果上面的脚本在putty下无输出，用下面这个简单的
 
     awk 'BEGIN{
+        printf "\x1b[38;2;255;100;0m24-bitTRUECOLOR\x1b[0m\n";
+
         s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
         for (colnum = 0; colnum<77; colnum++) {
             r = 255-(colnum*255/76);
@@ -207,7 +210,16 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
     }'
 
     zsh 下展示当前终端可以显示的颜色
+
         for code ({000..255}) print -P -- "$code: %F{$code}最左侧三位数字即颜色值Text Color%f"
+
+综合测试
+
+    # 需要先安装 sudo apt install bc 或手工修改代码 cols=64
+    # https://gist.github.com/hellricer/e514d9615d02838244d8de74d0ab18b3
+        https://hellricer.github.io/2019/10/05/test-drive-your-terminal.html
+
+    curl -fsSL https://gist.github.com/hellricer/e514d9615d02838244d8de74d0ab18b3/raw/7e5be20969b7274d64a550b9132fee5268cff2d8/terminal-testdrive.sh|sh
 
 我的测试结果
 
