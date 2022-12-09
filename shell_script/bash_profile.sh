@@ -1,8 +1,10 @@
-# 适用于 Linux bash、Windows mintty bash，每段用 ########## 分隔，根据说明自行选用搭配即可
+# 适用于 Linux bash、Windows mintty bash，每个段落用 ########## 分隔，根据说明自行选用搭配即可
 #
 # 别人的配置文件参考大全 https://github.com/pseudoyu/dotfiles
 #                       https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
 #
+
+####################################################################
 # exit for non-interactive shell
 [[ ! -t 1 ]] && return
 
@@ -33,7 +35,7 @@ alias redis-cli="winpty redis-cli"
 
 ####################################################################
 # Linux bash
-# 命令行提示符显示当前路径和git分支
+# 命令行提示符显示当前路径、git分支、python环境名等
 
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
@@ -209,15 +211,9 @@ PS1="\n$magenta┌─$red\$(PS1git-bash-exitcode)$magenta[$white\t $green\u$whit
 # Linux bash / Windows git bash(mintty)
 # 多会话复用 ssh-agent
 #
-# 来自章节 [多会话复用 ssh-agent 进程] <ssh.md>
-# git bash auto ssh-agent
+# 代码来源 git bash auto ssh-agent
 # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
-#
-# You can run ssh-agent automatically when you open bash or Git shell.
-# Copy the following lines and paste them into one of your
-#    ~/.bash_profile
-#    ~/.profile
-#    ~/.bashrc
+# 来自章节 [多会话复用 ssh-agent 进程] <ssh.md>
 
 env=~/.ssh/agent.env
 
@@ -257,11 +253,12 @@ unset env
 
 ####################################################################
 # Windows git bash(mintty)
-# 多会话复用 ssh-pageant，用它连接 putty 的 pagent.exe，代替上面多会话复用 ssh-agent 的段落
-# 运行gpg钥匙圈更新
+# 多会话复用 ssh-pageant 及运行gpg钥匙圈更新
+#
+# 用它连接 putty 的 pagent.exe，代替上面多会话复用 ssh-agent 的段落
+# 来自章节 [使ssh鉴权统一调用putty的pageant] <ssh.md>
 
-# 利用检查 ssh-pageant 进程是否存在，
-# 判断是否开机后第一次打开bash会话，则运行gpg钥匙圈更新
+# 利用检查 ssh-pageant 进程是否存在，判断是否开机后第一次打开bash会话，则运行gpg钥匙圈更新
 if ! $(ps -s|grep ssh-pageant>/dev/null) ;then
     echo ''
     # echo "更新gpg钥匙圈需要点时间，请稍等..."

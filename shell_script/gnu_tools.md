@@ -1407,7 +1407,7 @@ console即控制台，是与操作系统交互的设备，系统将一些信息�
 
 依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
 
-简单的双行状态栏，见 <bash_profile.sh> 中设置变量 PS1 的代码。
+简单的双行状态栏，见代码段落 [命令行提示符显示当前路径、git分支、python环境名等](bash_profile.sh) 中设置变量 PS1 部分。
 
 或者使用 powerline，参见章节 [状态栏工具 powerline]
 
@@ -1422,7 +1422,7 @@ bash 内置命令和快捷键见 <shellcmd.md> 的相关章节。
 
 #### bash 命令行提示符显示 python 环境名
 
-完整的命令行提示符显示 conda/virtualenv 环境名，见 <bash_profile.sh> 中设置变量 PS1 的代码。
+完整的命令行提示符显示 conda/virtualenv 环境名，见代码段落 [命令行提示符显示当前路径、git分支、python环境名等](bash_profile.sh) 中设置变量 PS1 部分。
 
 Conda
 
