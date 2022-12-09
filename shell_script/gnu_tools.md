@@ -168,9 +168,9 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
 
 各软件如 tmux、vim 也有自己的设置选项，一般都是256color和真彩色两个，详见下面章节中的各软件自己的配置文件样例，参看 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
 
-验证
+测试方法
 
-使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）下 ssh 登陆同一个服务器，测试 bash/zsh 、tmux、tmux 里用 vim 查看代码文件， vim 里执行 `:terminal`进入终端，各种情况下进行测试。观察彩色文字的颜色、状态栏色条的颜色过渡：如果彩色文字的颜色明亮，状态栏色条颜色过渡断裂，一般是只支持256color。
+    使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）下 ssh 登陆同一个服务器，测试 bash/zsh+powerlevel10k 、tmux、tmux 里用 vim 查看代码文件， vim 里执行 `:terminal`进入终端，各种情况下进行测试。观察彩色文字的颜色、状态栏色条的颜色过渡：如果彩色文字的颜色明亮，状态栏色条颜色过渡断裂，一般是只支持256color。
 
         -    bash+vim   zsh+powerlevel10k+vim   tmux+bash+vim     tmux+zsh+powerlevel10k+vim
     ----------------------------------------------------------------------------------------
@@ -180,54 +180,65 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
 
     Windows Terminal
 
-256 color 色条测试
+256 color 测试
 
-    curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/color-spaces.pl |perl
+    颜色、文字粗体闪烁等都有，按终端颜色伪代码组织
 
-    curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/colortest.sh |bash
+        curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/colortest.sh |bash
 
-24bit true color 色条测试
+    mintty 也有个颜色工具，按终端颜色伪代码组织
 
-    # 如果色条出现明显的条带分隔，那说明只支持 256 color
-    curl -fsSL https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh |bash
+        curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |sh
 
-    如果上面的脚本在putty下无输出，用下面这个简单的
+    256色展示，按每种颜色组织
 
-    awk 'BEGIN{
-        printf "\x1b[38;2;255;100;0m24-bitTRUECOLOR\x1b[0m\n";
+        curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/color-spaces.pl |perl
 
-        s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
-        for (colnum = 0; colnum<77; colnum++) {
-            r = 255-(colnum*255/76);
-            g = (colnum*510/76);
-            b = (colnum*255/76);
-            if (g>255) g = 510-g;
-            printf "\033[48;2;%d;%d;%dm", r,g,b;
-            printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
-            printf "%s\033[0m", substr(s,colnum+1,1);
-        }
-        printf "\n";
-    }'
+24bit true color 色条测试，如果色条出现明显的条带分隔，那说明只支持 256 color
+
+    连续过渡的颜色色条，代码有点兼容性问题
+
+        curl -fsSL https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh |bash
+
+    如果上面的脚本在 putty/Windows Terminal 下无输出，换 mintty 或用下面这个简单的
+
+        awk 'BEGIN{
+            printf "\x1b[38;2;255;100;0m24-bitTRUECOLOR\x1b[0m\n";
+
+            s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
+            for (colnum = 0; colnum<77; colnum++) {
+                r = 255-(colnum*255/76);
+                g = (colnum*510/76);
+                b = (colnum*255/76);
+                if (g>255) g = 510-g;
+                printf "\033[48;2;%d;%d;%dm", r,g,b;
+                printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
+                printf "%s\033[0m", substr(s,colnum+1,1);
+            }
+            printf "\n";
+        }'
 
     zsh 下展示当前终端可以显示的颜色
 
         for code ({000..255}) print -P -- "$code: %F{$code}最左侧三位数字即颜色值Text Color%f"
 
-综合测试
+综合测试 terminal-testdrive.sh
+
+    这个的兼容性最好，在 mintty、putty、Windows Terminal 下都可以正常显示
 
     # 需要先安装 sudo apt install bc 或手工修改代码 cols=64
     # https://gist.github.com/hellricer/e514d9615d02838244d8de74d0ab18b3
-        https://hellricer.github.io/2019/10/05/test-drive-your-terminal.html
+          https://hellricer.github.io/2019/10/05/test-drive-your-terminal.html
 
-    curl -fsSL https://gist.github.com/hellricer/e514d9615d02838244d8de74d0ab18b3/raw/7e5be20969b7274d64a550b9132fee5268cff2d8/terminal-testdrive.sh|sh
+    curl -fsSL https://gist.github.com/hellricer/e514d9615d02838244d8de74d0ab18b3/raw/7e5be20969b7274d64a550b9132fee5268cff2d8/terminal-testdrive.sh |sh
 
 我的测试结果
 
-    mintty 在本地、ssh 登陆远程bash/zsh、ssh连接到远程后打开 tmux、进入vim、zsh+powerlevel10k 下都完美呈现。
+    mintty 所有验证条件都完美呈现。
 
-    putty 可以通过测试，但 zsh+powerlevel10k 命令提示符颜色过渡明显断裂，vim状态栏工具 airline 也如此
+    putty 可以通过真彩测试，但 zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此。terminal-testdrive.sh 测试不支持：文字闪烁、 sixel 图像
 
-    Windows Terminal 可以通过测试，但 zsh+powerlevel10k 命令提示符颜色过渡明显断裂，vim状态栏工具 airline 也如此
+    Windows Terminal 可以通过真彩测试，但 zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此。terminal-testdrive.sh 测试：不支持 sixel 图像，少了几个文字修饰效果。
 
 ### putty 远程终端模拟器
 
@@ -498,6 +509,7 @@ Term=xterm-256color
 # 非通用标准的色彩项目，单独
 UnderlineColour=153,241,219
 AllowBlinking=yes
+BoldAsFont=yes
 
 # 自定义颜色方案，跟深色背景搭配
 # https://github.com/mintty/mintty/wiki/Tips#background-image
@@ -1166,7 +1178,7 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
 
 首先要进行 PowerShell 自身的美化，然后 PowerShell + Windows Terminal 一起美化，效果更佳。
 
-先安装独立的 Powershell 7，从这个版本开始不跟随 Windows 发布了
+一、先安装独立的 Powershell 7，从这个版本开始不跟随 Windows 发布了
 
     https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
 
@@ -1177,6 +1189,12 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
         https://www.powershellgallery.com/packages/
 
 Windows 系统自带的 Windows PowerShell 5.x 和刚安装的 PowerShell 7.x 是两个独立的 Shell，注意到 5.x 带有 Windows 前缀，而 7.x 没有。两者的配置也是独立的，互不影响，所以如果你在 7.x 做配置，打开 5.x 并不会生效。
+
+其实使用 PowerShell 最大的问题是
+
+    执行 `ssh` 使用 Windows 自带的 C:\Windows\System32\OpenSSH，版本太老了
+
+    执行 `curl` 等工具被 alias 指向 wsl，也就是说，你得先在 wsl 里装个 Linux。
 
 为了减少疑惑，接下来将统一使用原生的 PowerShell 7.x。
 
