@@ -4460,13 +4460,7 @@ ln 命令默认生成硬链接，但是我们通常使用软连接
 
 ### 文件完整性校验 sha256
 
-Linux 下，每个算法都是单独的程序
-
-    cksum
-    md5sum
-    sha1sum
-    sha256sum
-    sha512sum
+Linux 下，每个算法都是单独的程序：cksum md5sum sha1sum sha256sum sha512sum
 
 直接带文件名操作即可
 
@@ -4658,7 +4652,7 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
     find ./ -name "*" -type f | xargs grep -in 'gitee'
 
-xargs 命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs 能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说 find 的结果经过 xargs 后，其实将 find 找出来的文件名逐个作为了 grep 的参数。grep 再在这些文件内容中查找关键字 test。
+xargs 命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs 能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说 find 的结果经过 xargs 后，其实将 find 找出来的文件名逐个传递给 grep 做参数。grep 再在这些文件内容中查找关键字 test。
 
 ### 字符串处理 awk sed cut tr wc
 
@@ -4680,18 +4674,17 @@ awk 指定分隔符，可以用简单的语句组合字段
 sed 删除、替换文件中的字符串
 
     # 在文件的匹配行前面加上#注释
-    #   // 模式匹配，可匹配文字中的空格，后面的替换操作是在匹配到的行中找的
+    #   // 模式匹配，可匹配文字中的空格，后面的替换操作是在匹配到的行中做
     #   s:替换
     #   ^:开头匹配
     #   [^#]:匹配非#
     #   #&:用&来原封不动引用前面匹配到的行内容，在其前面加上#号
-    #   g:全部（只匹配特定行不加）
+    #   g:全部（只匹配特定行不加g）
     sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
 
     # 在文件的匹配行前面取消#注释
     #   // 模式匹配，可匹配文字中的空格，后面的替换操作是在匹配到的行中找的
     #   ^#//:去掉代表开头的#
-
     sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
 
     # 给所有没有#开头的行改为#开头
@@ -4795,11 +4788,21 @@ dd 命令是基于块（block）的复制，用途很多。
     # truncate -s 0 /var/log/yum.log
     > your_file.txt
 
-删除数量巨大的文件， rm * 报错，用 find 命令遍历目录挨个传参数的办法删除，虽然慢但是能做，注意用后台命令，不然挂好久
++ 删除大量文件
 
-    find /tmp -type f -exec rm {} \; &
+    删除数量巨大的文件， rm * 报错，用 find 命令遍历目录挨个传参数的办法删除，虽然慢但是能做，注意用后台命令，不然挂好久
 
-    find /home -type f -size 0 -exec rm {} \;
+        find /tmp -type f -exec rm {} \; &
+
+        find /home -type f -size 0 -exec rm {} \;
+
+    最快方法
+
+        https://web.archive.org/web/20130929001850/
+
+        http://linuxnote.net/jianingy/en/linux/a-fast-way-to-remove-huge-number-of-files.html
+
+        mkdir empty && rsync -r --delete empty/ some-dir && rmdir some-dir
 
 ### netcat(nc) 简单的端口通信
 
@@ -4834,11 +4837,11 @@ dd 命令是基于块（block）的复制，用途很多。
     # 在目的主机上执行此命令来采用bzip2、gzip对数据进行压缩，并将备份文件保存在当前目录。
     netcat -l -p 1234 | bzip2 > partition.img
 
-还有个加强版 socat(socket cat)
+加强版 socat(socket cat)
 
     socat [参数]  <地址1>  <地址2>
 
-使用 socat 需要提供两个地址，然后 socat 做的事情就是把这两个地址的数据流串起来，把第左边地址的输出数据传给右边，同时又把右边输出的数据传到左边。<https://zhuanlan.zhihu.com/p/347722248>
+使用 socat 需要提供两个地址，然后 socat 做的事情就是把这两个地址的数据流串起来，把左边地址的输出数据传给右边，同时又把右边输出的数据传到左边。<https://zhuanlan.zhihu.com/p/347722248>
 
 最简单的地址就是一个减号“-”，代表标准输入输出，而在命令行输入：
 
@@ -4851,13 +4854,15 @@ dd 命令是基于块（block）的复制，用途很多。
     socat - TCP-LISTEN:8080               # 终端1 上启动 server 监听 TCP
     socat - TCP:localhost:8080            # 终端2 上启动 client 链接 TCP
 
-在终端 1 上输入第一行命令作为服务端，并在终端 2 上输入第二行命令作为客户端去链接。
+在终端 1 上输入第一行命令作为服务端，并在终端 2 上输入第二行命令作为客户端去连接。
 
-[无安全性]把局域网下设备(如Nas、监控摄像头、网络服务器)的IPv4地址的端口转发到路由器的IPv6地址上
+做简易的端口转发
+
+    把局域网下设备(如Nas、监控摄像头、网络服务器)的IPv4地址的到路由器的IPv6地址上
 
     socat TCP6-LISTEN:{IPv6端口,远程访问的端口},reuseaddr,fork TCP4:{IPv4地址}:{IPv4端口}
 
-国内目前拨号路由器的端口都被屏蔽了，但是ipv6的端口是放开的。用 socat 简单的实现内网设备的端口转发到路由器对外开放。注意：你的内网设备对外开放端口，安全性由使用该端口的程序自行保障！
+国内目前拨号路由器的端口都被屏蔽了，但是ipv6的端口是放开的。用 socat 简单的实现内网设备的端口转发到路由器对外开放。注意：你的内网设备对外开放端口，安全性由使用该端口的程序自行保障！酌情考虑用 openVPN 进行保护。
 
 ### scp 跨机远程拷贝
 
@@ -5120,14 +5125,6 @@ rm -rf "${LATEST_LINK}"
 ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 ```
-
-### 删除大量文件的最快方法
-
-    https://web.archive.org/web/20130929001850/
-
-    http://linuxnote.net/jianingy/en/linux/a-fast-way-to-remove-huge-number-of-files.html
-
-    mkdir empty && rsync -r --delete empty/ some-dir && rmdir some-dir
 
 ### 网络故障排查
 
