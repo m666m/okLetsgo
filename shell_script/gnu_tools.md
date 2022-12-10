@@ -2026,7 +2026,8 @@ ohmyzsh的插件管理机制更智能，还会提示更新，建议用这种方�
 
 ```zsh
 
-############ powerlevel10k 自动生成的首行，不用动
+##########################################################
+# powerlevel10k 自动生成的首行，不用动
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -2034,15 +2035,21 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-############ zsh 自己的内容
+##########################################################
+# zsh 自己的内容，不用动
+# ...
 
 ##########################################################
-# 用户自己的插件设置
+# 从这里开始用户自己的设置
+
+# zsh 命令行默认是 vi 操作模式，不需要显式设置了
+# 命令行开启vi-mode模式，按esc后用vi中的上下键选择历史命令
+#set -o vi
 
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM="xterm-256color"
 
-# 添加 dbian 自带的 .bashrc 脚本，常用命令开启彩色选项
+# 添加 dbian 自带的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -2061,7 +2068,7 @@ if [ -x /usr/bin/dircolors ]; then
 
 fi
 
-############# 手动设置插件
+############# 手动启动插件
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
 # 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
 
@@ -2084,23 +2091,20 @@ source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # ...
 # ohmyzsh 自带插件管理，在 plugin=() 段落启用内置插件，可以在这里加载上面那些 source xxx 的插件
 
-############## powerlevel10k 安装程序添加部分
+##########################################################
+# powerlevel10k 安装程序添加部，不用动分
 
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-############ 手动配置插件
+##########################################################
+# 手动配置插件
 
-############ 自定义调整
 # 命令自动完成的颜色太暗  # ,bg=cyan
 # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
-
-# zsh 命令行默认是 vi 操作模式，不需要显式设置了
-# 命令行开启vi-mode模式，按esc后用vi中的上下键选择历史命令
-#set -o vi
 
 ```
 
@@ -2132,6 +2136,8 @@ man 查看各章节后缀用.数字即可
 ### Vim 和 nano
 
 最基础的版本是类似 vi 的 vim tinny 版本，不支持语法高亮、窗口拆分等各种高级功能。
+
+vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
 
 如果 vim 的默认颜色方案太丑
 
@@ -2229,13 +2235,11 @@ man 查看各章节后缀用.数字即可
 
 ##### 使用状态栏工具等扩展插件的先决条件
 
-依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
-
 检查vim的版本，进入vim执行命令 :version
 
     Small version without GUI.
 
-如果出现上述字样，说明当前系统只安装了兼容 vi 模式的精简版 vim.tiny，不支持语法高亮、切分窗口等高级功能（vim 内置插件）
+如果出现上述字样，说明当前系统只安装了兼容 vi 模式的精简版 vim.tiny，不支持彩色语法高亮、切分窗口等高级功能（vim 内置插件）
 
     $ apt show vim.tiny
     Description: Vi IMproved - enhanced vi editor - compact version
@@ -2262,12 +2266,17 @@ man 查看各章节后缀用.数字即可
 然后安装vim的增强版
 
     # https://askubuntu.com/questions/284957/vi-getting-multiple-sorry-the-command-is-not-available-in-this-version-af
-    # sudo apt install vim-runtime
-    # sudo apt install vim-gui-common 给linux桌面准备的
-
-    $sudo apt install vim
+    # 不用单独装 sudo apt install vim-runtime
+    # 不用单独装 sudo apt install vim-gui-common 这个是给linux桌面用的
+    $ sudo apt install vim
     The following NEW packages will be installed:
         vim vim-common vim-runtime
+
+    # 安装个文档
+    suodu apt install vim-doc
+
+    # 可选安装各种脚本 https://github.com/vim-scripts
+    sudo apt install vim-scripts
 
 然后在 vim 中运行命令 :version
 
@@ -2275,7 +2284,7 @@ man 查看各章节后缀用.数字即可
 
 确认如上字样即可。
 
-要设置状态栏彩色，包括tmux中vim使用彩色，需要编辑 ~/.vimrc 文件，添加如下行
+要启用彩色语法高亮、状态栏彩色，包括tmux中vim使用彩色，需要编辑 ~/.vimrc 文件，添加如下行
 
     " 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
     " 如果在 tmux 下使用 vim ，防止 tmux 默认设置 TERM=screen，应该保留此设置
@@ -2291,6 +2300,8 @@ man 查看各章节后缀用.数字即可
       let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
       lset termguicolors
     endif
+
+终端工具和软件的色彩设置，详见章节 [终端模拟器和软件的真彩色设置]。
 
 ##### 配置扩展插件
 
@@ -2641,6 +2652,8 @@ netrw窗口内的操作快捷键
 
 ##### 插件管理器 vim-addon-manager
 
+命令的方式对插件进行管理，不需要配置文件，适合安装发行版自带的插件。
+
 在 `apt install vim-airline` 的时候会自动安装 vim-addon-manager
 
     apt install vim-addon-manager
@@ -2653,13 +2666,15 @@ netrw窗口内的操作快捷键
     # 自定义安装
     ~/.vim/addons/
 
-使用有一系列的命令
+用法
 
     $ vim-addons -h
     Usage:
     vim-addons [OPTION ...] [COMMAND [ADDON ...]]
+
     Commands:
     list, status (default command), install, remove, disable, enable, files, show
+
     Options:
     -h, --help          show this usage message and exit
     -q, --query         be quiet and make the output more parseable
@@ -2694,7 +2709,7 @@ netrw窗口内的操作快捷键
 
 ##### 推荐：插件管理器 vim-plug
 
-Vundle不更新了，这个项目取代之，用法神似
+Vundle不更新了，这个项目取代之，用法神似，只需要编辑 ~/.vimrc，便于用户自定义，安装使用 github 来源的插件非常简单
 
     https://github.com/junegunn/vim-plug
 
@@ -2738,6 +2753,7 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'airblade/vim-gitgutter',
 
 " 显示 vim 寄存器的内容
+" Peekaboo extends " and @ in normal mode and <CTRL-R> in insert mode so you can see the contents of the registers.
 Plug 'junegunn/vim-peekaboo'
 
 " 颜色主题 https://www.nordtheme.com/ports/vim
@@ -2758,6 +2774,28 @@ call plug#end()
 ```
 
 然后 Reload .vimrc and :PlugInstall to install plugins.
+
+常用命令
+
+然后进入vim，运行命令安装插件，会新建拆分窗口根据你编辑的 .vimrc 文件内容列出可选操作
+
+    :PlugInstall
+
+卸载插件只需编辑 .vimrc 配置文件中删除欲卸载插件的配置，保存，然后在Vim中执行下述命令即可完成卸载
+
+    :PlugClean
+
+更新插件
+
+    :PlugUpdate
+
+列出当前插件
+
+    :PlugList
+
+搜索插件，选择一个你想要安装的插件，并敲击键盘 i 来安装这个插件，完成后选中这个插件的名称，并粘贴到 .vimrc 文件中去
+
+    :PlugSearch colorscheme
 
 ##### 插件管理器 Vundle
 
@@ -2870,9 +2908,9 @@ if has("autocmd")
 endif
 
 " 使用 vim-airline 并开启tabline设置后，就不需要这两个设置了
-"set laststatus=2  " 始终显示状态栏
+"set laststatus=2   " 始终显示状态栏
 "set showtabline=2  " 始终显示标签页
-set noshowmode  " 有了状态栏工具就可以省掉当前模式的显示
+set noshowmode      " 有了状态栏工具就可以省掉当前模式的显示
 
 " 设置前导键为空格键，需要利用转义符“\”
 let mapleader="\<space>"
@@ -2901,11 +2939,12 @@ let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
 "let g:netrw_altv = 1 " 控制垂直拆分的窗口位于右边
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
+" 加载插件 vim-airline vim-airline-themes nerdtree 等
+"
 " 插件管理器二选一：
 "
-"   见章节 [插件管理器 Vundle] VundleVim 插件管理器官方配置
-"
-"   见章节 [插件管理器 vim-plug] vim-plug 插件管理器官方配置
+"   见章节 [插件管理器 vim-plug] 里的示例配置
+"   见章节 [插件管理器 vim-addon-manager]，用命令的方式对插件进行管理，不需要配置文件
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-airline 内置扩展设置
@@ -2927,8 +2966,8 @@ let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
 let g:airline_powerline_fonts = 1
 
 " 启用 airline 内置扩展：标签式显示多个tab、window或缓冲区里的文件
-let g:airline#extensions#tabline#enabled = 1
 " 在说明文件中搜 airline-tabline 查看具体功能说明
+let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#tab_nr_type = 2
 let g:airline#extensions#tabline#show_tab_nr = 1
 
@@ -2939,7 +2978,7 @@ let g:airline#extensions#tabline#fnamecollapse = 2
 
 " 使用 airline 自带功能进行标签之间的切换
 let g:airline#extensions#tabline#buffer_idx_mode = 1
-" 定义切换 tab 和 buffer 的快捷键
+" 定义切换标签的快捷键
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
 nmap <leader>3 <Plug>AirlineSelectTab3
