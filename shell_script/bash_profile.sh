@@ -4,7 +4,9 @@
 #                       https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
 #
 
-####################################################################
+###################################################################
+# 自此开始都是自定义设置
+
 # exit for non-interactive shell
 [[ ! -t 1 ]] && return
 
@@ -34,7 +36,7 @@ alias psql="winpty psql"
 alias redis-cli="winpty redis-cli"
 
 ####################################################################
-# Linux bash
+# Linux bash / Windows git bash(mintty)
 # 命令行提示符显示当前路径、git分支、python环境名等
 
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
@@ -92,7 +94,7 @@ function PS1virtualenv-env-name {
 function PS1git-branch-name {
 
   # 这个命令在裸仓库或.git目录中运行不报错，一样会打印出当前分支名
-  branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+  local branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
   local exitcode=$?
 
   # 优先显示当前head指向的分支名
