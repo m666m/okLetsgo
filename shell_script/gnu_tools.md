@@ -166,6 +166,8 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能支持24位真彩、开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
+终端模拟器即使选择开启 24 位真彩，默认主题一般为了兼容性只设置了256色，看不出效果，尝试选择自定义主题看看，详见各终端模拟器的设置。
+
 各软件如 tmux、vim 也有自己的设置选项，一般都是256color和真彩色两个，详见下面章节中的各软件自己的配置文件样例，参看 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
 
 测试方法
@@ -382,6 +384,20 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
 执行该 bat 文件，会在当前目录下生成一个名为 session.reg 的文件。
 如果需要恢复站点设置，直接双击该文件即会被 Windows 导入注册表。
 
+putty 美化
+
+即使你设置会话时勾选了使用 256color 和 true color 真彩色，putty 默认的主题比较保守，只使用256色。
+
+可以自定义颜色，在设置会话时 custom color，如果感觉挨个设置太麻烦，试试别人做好的
+
+    https://github.com/AlexAkulov/putty-color-themes
+
+推荐使用 nord 主题
+
+    curl -fsSLO https://github.com/arcticicestudio/nord-putty/raw/develop/src/nord.reg
+
+双击该reg文件，会在你的putty会话列表里新增一个“NORD”会话，点击“load”按钮加载该会话，然后填写自己的ip地址和端口，连接看看，会发现颜色效果柔和多了。
+
 ### mintty 本地终端模拟器
 
 自带 bash，详见下面几个章节的详细介绍。
@@ -463,9 +479,11 @@ mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打�
 
     https://github.com/hsab/WSL-config/tree/master/mintty/themes
 
-将主题文件保存到 msys64/usr/share/mintty/themes 目录下，通过右键 mintty 窗口标题栏的 option 进行选择。
+将主题文件保存到mintty安装目录的 msys64/usr/share/mintty/themes 目录下（C:\Program Files\Git\usr\share\mintty\themes），通过右键 mintty 窗口标题栏的 option 进行选择。
 
-如果是 git for Windows 的 mintty，编辑 ~/.minttyrc 文件为下面的内容
+mintty 默认的主题比较保守，只使用256色，如果你想看到真彩色的效果，尝试下选择自定义主题，会看到颜色柔和多了，推荐 nord 主题。
+
+也可以编辑 ~/.minttyrc 文件，自行设置各种颜色。
 
 #### .minttyrc 配置文件样例
 
@@ -1208,9 +1226,9 @@ PowerShell 美化：
 
     ls 命令显示色彩
 
-1、安装图标字体，参见章节 [状态栏字体]。
+1、安装图标字体，参见章节 [图标字体]。
 
-可以用 scoop 安装
+也可以用 scoop 安装
 
     > scoop search FantasqueSansMono-NF
     > scoop bucket add 'nerd-fonts'
@@ -1526,7 +1544,7 @@ powerline 最大的优点是它的各种符号字体可以图形化的显示文�
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
-终端工具字体推荐 MesloLGS NF，详见下面章节[状态栏字体]。
+终端模拟器字体推荐 MesloLGS NF，详见下面章节[图标字体]。
 
 #### 使用 powerline-config 命令行绑定到各软件
 
@@ -1597,7 +1615,7 @@ startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
 
 推荐安装 zsh，安装 powerlevle10k，这个状态栏工具的兼容性和显示效果直接起飞，见章节 [推荐主题powerlevel10k]。
 
-### 状态栏字体
+### 图标字体
 
     https://juejin.cn/post/6844904054322102285
 
@@ -1607,7 +1625,7 @@ startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
 
 Powerline fonts 或者 Nerd fonts 这些字体集，他们对已有的一些 (编程) 字体打了 patch，新增一些 icon 字符。
 
-字体要安装到你使用终端窗口工具的计算机上
+字体要安装到你使用终端模拟器的计算机上
 
     你在 Windows 下使用 putty 或 mintty 等终端工具，则字体要安装到你的 Windows 系统中。
 
@@ -1615,7 +1633,7 @@ Powerline fonts 或者 Nerd fonts 这些字体集，他们对已有的一些 (�
 
 如果你的计算机使用的是 Linux 就比较省事，直接 apt install 安装到本机，很多发行版如 Debian 都带 powerline 字体。
 
-然后设置在终端窗口工具或编辑器使用该字体，这样才能正确显示。
+然后设置在终端模拟器或编辑器使用该字体，这样才能正确显示。
 
 简单测试几个unicode字符
 
@@ -1656,7 +1674,7 @@ Nerd fonts 是 Powerline fonts 的超集，建议直接使用 Nerd font，参见
 
 类似 Powerline fonts，字体 patch 后对名字加了后缀 NF，比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)，Fira Code 改名为 Fira Code NF。
 
-终端窗口工具推荐安装 Meslo LGS NF 字体，如果窗口支持透明效果（如mintty），显示效果直接起飞 <https://github.com/romkatv/powerlevel10k#fonts>。
+终端模拟器推荐使用 Meslo LGS NF 字体，如果还支持透明效果（如mintty），显示效果直接起飞 <https://github.com/romkatv/powerlevel10k#fonts>。
 
     快速下载地址
 
@@ -1815,14 +1833,15 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
         cd ~/powerlevel10k
         exec zsh'
 
-先在你使用终端窗口工具的计算机上安装 MesloLGS NF 字体，详见章节[状态栏字体]。
+先在你使用终端模拟器的计算机上安装 MesloLGS NF 字体，详见章节[图标字体]。
 
-终端工具最好明确设置变量Term，这样各个插件会自动使用更丰富的颜色
+终端模拟器最好明确设置变量Term，这样各个插件会自动使用更丰富的颜色
 
+    # 或者在你的用户登陆脚本 .bash_profile 中显式设置
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
-如果你的终端窗口工具不支持透明效果，且未使用 MesloLGS NF 字体的话，显示风格会有差别，这是设计者做了兼容性考虑，以防止显示不正常。
+如果你的终端模拟器不支持透明效果，且未使用 MesloLGS NF 字体的话，显示风格会有差别，这是设计者做了兼容性考虑，以防止显示不正常。
 
 然后从github安装powerlevel10k
 
@@ -1964,7 +1983,7 @@ ohmyzsh 是在 zsh 的基础上增加了更多的花样的shell封装、主题�
     https://ohmyz.sh/
         https://github.com/ohmyzsh/ohmyzsh
 
-先在你使用终端窗口工具的计算机上安装 MesloLGS NF 字体，详见章节[状态栏字体]。
+先在你使用的终端模拟器的计算机上安装 MesloLGS NF 字体，详见章节[图标字体]。
 
 ohmyzsh 目前是从 github 安装
 
@@ -1993,11 +2012,11 @@ ohmyzsh 目前是从 github 安装
 
     内置主题 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 
-    更多的主题 https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
-                https://github.com/unixorn/awesome-zsh-plugins
+    更多的主题
+        https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
+            https://github.com/unixorn/awesome-zsh-plugins
 
-内置主题bira比较简洁，可手工修改添加时间提示`RPROMPT="[%*]%B${return_code}%b"`
-![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)
+内置主题 bira 比较简洁，可手工修改添加时间提示 `RPROMPT="[%*]%B${return_code}%b"` 图例 ![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)。
 
 额外主题 [Bullet train](https://github.com/caiogondim/bullet-train.zsh)，可手工修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta`，目前还没找到合适的字体显示各种图标，安装了 Powerline Vim plugin 没见效果。
 
