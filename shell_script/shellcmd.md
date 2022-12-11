@@ -356,7 +356,7 @@ linux下shell终端里有行编辑功能，在命令提示符下默认可以像 
 
 ```shell
 #!/usr/bin/env python3  # 按照PATH寻找第一个python3程序来执行
-#!/bin/bash
+#!/bin/bash 注意：在#!和/bin/bash间不要有空格，有些Linux系统遇到空格就不会执行后面的/bin/bash了，但是不会提示使用了默认的 $SHELL，而两种解释器之间细微的语法区别，偶尔会出现让人摸不到头脑的报错，要尽量避免这个麻烦
 #
 # 参考:
 # https://zhuanlan.zhihu.com/p/123989641

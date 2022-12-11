@@ -111,9 +111,9 @@ function PS1git-branch-name {
 
       # 有标签名就显示标签否则显示 commit id
       if [[ -n $tagname ]]; then
-        printf "#%s" "$tagname"
+        printf "@%s" "$tagname"
       else
-        printf "@%s" "$headhash"
+        printf "#%s" "$headhash"
       fi
 
   fi
