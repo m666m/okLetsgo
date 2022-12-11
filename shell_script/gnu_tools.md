@@ -168,11 +168,11 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
 
 终端模拟器即使选择开启 24 位真彩，默认主题一般为了兼容性只设置了256色，看不出效果，尝试选择自定义主题看看，详见各终端模拟器的设置。
 
-各软件如 tmux、vim 也有自己的设置选项，一般都是256color和真彩色两个，详见下面章节中的各软件自己的配置文件样例，参看 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
+各软件如 tmux、vim 也有自己的设置，一般都是 256color 和真彩色两个选项，详见下面章节中的各软件自己的配置文件样例，参看 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
 
 测试方法
 
-    使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）下 ssh 登陆同一个服务器，测试 bash/zsh+powerlevel10k 、tmux、tmux 里用 vim 查看代码文件， vim 里执行 `:terminal`进入终端，各种情况下进行测试。观察彩色文字的颜色、状态栏色条的颜色过渡：如果彩色文字的颜色明亮，状态栏色条颜色过渡断裂，一般是只支持256color。
+    使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）下 ssh 登陆同一个服务器，测试 bash/zsh+powerlevel10k 、tmux、tmux 里用 vim 查看代码文件， vim 里执行 `:terminal`进入终端，各种情况下进行测试。观察彩色文字的颜色、状态栏色条：如果彩色文字的颜色深且明亮，状态栏色条颜色过渡断裂，一般是只支持 256color。
 
         -    bash+vim   zsh+powerlevel10k+vim   tmux+bash+vim     tmux+zsh+powerlevel10k+vim
     ----------------------------------------------------------------------------------------
