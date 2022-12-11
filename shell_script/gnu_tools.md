@@ -2110,11 +2110,31 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
 ## Linux 常用工具
 
-### man/info 查看帮助信息
+    Linux 命令速查
 
-SEE ALSO
-       kill(1), alarm(2), kill(2), pause(2), sigaction(2),  signalfd(2),  sigpending(2),  sigprocmask(2),  sigsuspend(2),  bsd_signal(3),
-       killpg(3), raise(3), siginterrupt(3), sigqueue(3), sigsetops(3), sigvec(3), sysv_signal(3), signal(7)
+        https://man7.org/linux/man-pages/index.html
+
+        https://www.gnu.org/software/coreutils/manual/html_node/index.html#SEC_Contents
+
+        常用工具 coreutils 包清单
+            https://manpages.debian.org/unstable/coreutils/index.html
+
+        按内容搜索包
+            https://www.debian.org/distrib/packages#search_contents
+
+    GNU 按软件包分类
+
+        https://www.gnu.org/manual/manual.html
+
+    简易 GNU 软件列表
+
+        https://www.gnu.org/software/software.en.html#allgnupkgs
+
+    带说明的 GUN 软件列表
+
+        https://directory.fsf.org/wiki/GNU
+
+### man/info 查看帮助信息
 
 man 查看各章节后缀用.数字即可
 
@@ -2122,9 +2142,9 @@ man 查看各章节后缀用.数字即可
 
     man 7 signal
 
-用 `apropos 命令` 来查找相关联的帮助
+用 `apropos` 命令来查找相关联的帮助
 
-    $ apropos  sysctl
+    $ apropos sysctl
     _sysctl (2)          - read/write system parameters
     sysctl (2)           - read/write system parameters
     sysctl (8)           - configure kernel parameters at runtime
@@ -4449,7 +4469,7 @@ There are three different implementations:
 
 使用 zless、zmore、zcat 和 zgrep 对压缩过的文件进行查看等操作。
 
-### 文件链接
+### 文件链接 ln
 
 ln 命令默认生成硬链接，但是我们通常使用软连接
 
