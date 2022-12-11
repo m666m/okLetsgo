@@ -2114,7 +2114,8 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
         https://man7.org/linux/man-pages/index.html
 
-        https://www.gnu.org/software/coreutils/manual/html_node/index.html#SEC_Contents
+        GNU 按用途分类介绍
+            https://www.gnu.org/software/coreutils/manual/html_node/index.html#SEC_Contents
 
         常用工具 coreutils 包清单
             https://manpages.debian.org/unstable/coreutils/index.html
