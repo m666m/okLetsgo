@@ -155,31 +155,30 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
 
 ### 终端模拟器和软件的真彩色设置
 
-Unix 至 Linux 以来，一直有一个通用的 ANSI escape codes 彩色字符方案，使用16种固定的文本代码，对字符终端的文本进行颜色修饰，由终端模拟器和软件进行解释并呈现。
+Unix 至 Linux 以来，一直有一个通用的 ANSI escape codes 彩色字符方案，使用固定的文本代码，对字符终端的文本进行颜色修饰，由终端模拟器和软件进行解释并呈现。
 
     目前有扩充了 https://zhuanlan.zhihu.com/p/570148970
 
-如，在 bash 下输入如下代码，会看到输出的是红色的文字
-
-    echo -e "\033[0;31m I am red"
-
-修饰颜色的文本代码，参见终端登陆脚本中颜色设置的代码 <bash_profile.sh>
+最古老的基本颜色板（basic colour palette），前景色和背景色分别有 8 种，所以修饰文本的颜色代码 \033[0; 合计16种如下，参见终端登陆脚本中颜色设置的代码 <bash_profile.sh>
 
     # https://zhuanlan.zhihu.com/p/566797565
     # 色彩      黑    红    绿    黄    蓝    洋红    青    白
     # 前景色    30    31    32    33   34    35    36    37
     # 背景色    40    41    42    43   44    45    46    47
 
-如果终端模拟器支持表现 256 种甚至 24 位真彩色，那么对上述16种颜色代码可以进行单独的定义，如 (r,g,b) 的形式设置，从而使得这 16 种颜色文本代码的实际显示效果远超最古老的16色效果。
+如，你的终端模拟器支持彩色，那么在 bash 下输入如下代码，会看到输出红色的文字
+
+    echo -e "\033[0;31m I am red"
+
+如果终端模拟器支持表现 256 种甚至 24 位真彩色，那么还可以对上述16种颜色代码的实际展现效果进行自定义，从 65536 种颜色中选取，如你可以把红色31的实际展现效果定义为(168,28,38)。而且终端模拟器也可以支持扩充的 \x1b[38;2;r;g;b 表达形式等。自定义基本颜色板的展现颜色，详见各终端模拟器的设置。
 
 如果需要确定当前终端模拟器是否支持真彩色，参看下面网址中的真彩色检测代码
 
     https://github.com/termstandard/colors
         https://gist.github.com/XVilka/8346728
 
-所以，终端模拟器应该在选项设置中启用 256color 显示，能支持24位真彩、透明效果更好
+所以，终端模拟器应该至少在选项设置中启用 256color 显示，能支持24位真彩、透明效果更好。一般为防止终端未进行设置，我们在 .bash_profile 登陆脚本中设置环境变量，起到相同的效果
 
-    # 在 .bash_profile 登陆脚本中设置环境变量
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能支持24位真彩、开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
@@ -199,7 +198,7 @@ Unix 至 Linux 以来，一直有一个通用的 ANSI escape codes 彩色字符�
 
     Windows Terminal
 
-256 color 测试
++ 256 color 测试
 
     颜色、文字粗体闪烁等都有，按终端颜色伪代码组织
 
@@ -213,7 +212,7 @@ Unix 至 Linux 以来，一直有一个通用的 ANSI escape codes 彩色字符�
 
         curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/color-spaces.pl |perl
 
-24bit true color 色条测试，如果色条出现明显的条带分隔，那说明只支持 256 color
++ 24bit true color 色条测试，如果色条出现明显的条带分隔，那说明只支持 256 color
 
     连续过渡的颜色色条，代码有点兼容性问题
 
@@ -241,15 +240,15 @@ Unix 至 Linux 以来，一直有一个通用的 ANSI escape codes 彩色字符�
 
         for code ({000..255}) print -P -- "$code: %F{$code}最左侧三位数字即颜色值Text Color%f"
 
-综合测试 terminal-testdrive.sh
++ 综合测试 terminal-testdrive.sh
 
     这个的兼容性最好，在 mintty、putty、Windows Terminal 下都可以正常显示
 
-    # 需要先安装 sudo apt install bc 或手工修改代码 cols=64
-    # https://gist.github.com/hellricer/e514d9615d02838244d8de74d0ab18b3
-          https://hellricer.github.io/2019/10/05/test-drive-your-terminal.html
+        # 需要先安装 sudo apt install bc 或手工修改代码 cols=64
+        # https://gist.github.com/hellricer/e514d9615d02838244d8de74d0ab18b3
+            https://hellricer.github.io/2019/10/05/test-drive-your-terminal.html
 
-    curl -fsSL https://gist.github.com/hellricer/e514d9615d02838244d8de74d0ab18b3/raw/7e5be20969b7274d64a550b9132fee5268cff2d8/terminal-testdrive.sh |sh
+        curl -fsSL https://gist.github.com/hellricer/e514d9615d02838244d8de74d0ab18b3/raw/7e5be20969b7274d64a550b9132fee5268cff2d8/terminal-testdrive.sh |sh
 
 我的测试结果
 
