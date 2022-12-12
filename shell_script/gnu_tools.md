@@ -1935,9 +1935,30 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 
 而且能跨主机记忆命令历史，比如你在本机ssh某个主机后执行的操作，在本机或另一个ssh主机上都可以被回忆到，方便！
 
-    ssh 命令套壳了，会自动在远程主机上安装zsh4human等套件，然后传递命令历史
+    https://github.com/romkatv/zsh4humans/blob/master/tips.md#ssh
 
-    如果不喜欢这个功能，编辑 ~/.zshrc 搜索 ssh 响应代码去掉它即可。
+注意，实现方法是套壳了 ssh 命令，当你初次ssh连接新的远程主机，会自动在远程主机上安装zsh4human等套件，然后传递自己的命令历史，对你的 ssh 配置 ~/.ssh/config 也有点要求
+
+    # https://github.com/romkatv/zsh4humans/blob/master/tips.md#ssh-config
+    Host *
+        ServerAliveInterval 60
+        ConnectTimeout 10
+        AddKeysToAgent yes
+        EscapeChar `
+        ControlMaster auto
+        ControlPersist 72000
+        ControlPath ~/.ssh/s/%C
+
+这个功能有点安全性隐患，默认是关闭的，可设置白名单模式指定开启，如对自己内网的计算机
+
+    # Disable SSH teleportation by default.
+    zstyle ':z4h:ssh:*'                   enable no
+
+    # Enable SSH teleportation for specific hosts.
+    zstyle ':z4h:ssh:example-hostname1'   enable yes
+    zstyle ':z4h:ssh:*.example-hostname2' enable yes
+
+如果非常不喜欢这个功能，编辑 ~/.zshrc 搜索 ssh 响应代码去掉它即可。
 
 设置技巧，有些设置都是插件里的，注意区别
 
