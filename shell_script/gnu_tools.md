@@ -155,18 +155,19 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
 
 ### 终端模拟器和软件的真彩色设置
 
-对字符终端的文本颜色，有固定的对应代码，由终端模拟器和软件自己进行解释
-
-    # 参见终端登陆脚本中颜色设置的代码<bash_profile.sh>
-    # https://zhuanlan.zhihu.com/p/566797565
-    # 色彩      黑    红    绿    黄    蓝    洋红    青    白
-    # 前景色    30    31    32    33   34    35    36    37
-    # 背景色    40    41    42    43   44    45    46    47
+Unix 以来至 Linux，一直有一个通用的彩色字符方案，对字符终端的文本进行颜色修饰，使用固定的文本代码，由终端模拟器和软件进行解释并呈现（不同终端模拟器下的不同软件的色彩效果可能有差异）。
 
 字符终端的颜色配置说明
 
     https://github.com/termstandard/colors
         https://gist.github.com/XVilka/8346728
+
+参见终端登陆脚本中颜色设置的代码 <bash_profile.sh>
+
+    # https://zhuanlan.zhihu.com/p/566797565
+    # 色彩      黑    红    绿    黄    蓝    洋红    青    白
+    # 前景色    30    31    32    33   34    35    36    37
+    # 背景色    40    41    42    43   44    45    46    47
 
 终端模拟器应该在选项设置中启用 256color 显示，能支持24位真彩、透明效果更好
 
@@ -174,9 +175,9 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能支持24位真彩、开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
-终端模拟器即使选择开启 24 位真彩，默认主题一般为了兼容性只设置了256色，看不出效果，尝试选择自定义主题看看，详见各终端模拟器的设置。
+终端模拟器即使选择开启 24 位真彩，默认主题一般为了兼容性只设置了256色，单纯列目录查看彩色文字可能看不出效果，尝试选择自定义主题，观察不是最早的16色方案的文字颜色，更容易区分，详见各终端模拟器的设置。
 
-各软件如 tmux、vim 也有自己的设置，一般都是 256color 和真彩色两个选项，详见下面章节中的各软件自己的配置文件样例，参看 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
+各软件如 tmux、vim 也有自己的设置，一般有 256color 和真彩色两个选项，详见下面章节中的各软件自己的配置文件样例，参看 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
 
 测试方法
 
@@ -246,7 +247,7 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
 
     mintty 所有验证条件都完美呈现。
 
-    putty 可以通过真彩测试，但 zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此。terminal-testdrive.sh 测试不支持：文字闪烁、 sixel 图像
+    putty 可以通过真彩测试，但 zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此，应该是对块状字符的渲染方式问题。terminal-testdrive.sh 测试不支持：文字闪烁、 sixel 图像
 
     Windows Terminal 可以通过真彩测试，但 zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此。terminal-testdrive.sh 测试：不支持 sixel 图像，少了几个文字修饰效果。
 
@@ -477,7 +478,7 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
 
 #### mintty 美化
 
-依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
+文字彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
 
 mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
 
@@ -2380,7 +2381,7 @@ vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
       lset termguicolors
     endif
 
-终端工具和软件的色彩设置，详见章节 [终端模拟器和软件的真彩色设置]。
+光vim自己设置真彩色还不够，需要终端工具也支持，详见章节 [终端模拟器和软件的真彩色设置]。
 
 ##### 配置扩展插件
 
@@ -2533,8 +2534,8 @@ AirlineTheme 自己管理主题，在 ~/.vimrc 中配置
     " AirlineTheme 需要启用 powerline 的字体才能起飞
     let g:airline_powerline_fonts = 1
 
-    " airline_theme内置的主题大部分都只是状态栏的，没有同步设置语法高亮
-    " 建议自定义插件，直接安装 PaperColor 或 nord，状态栏和语法高亮颜色都有了,不需要用 airline_theme内置的主题
+    " airline_theme内置的插件主题大部分都只是状态栏的，居然不同步设置语法高亮
+    " 建议自行安装vim插件 PaperColor 或 nord，状态栏和语法高亮颜色都有了,不需要用 airline_theme 内置的同名主题
     " https://github.com/vim-airline/vim-airline-themes/tree/master/autoload/airline/themes
     " 列表见 https://github.com/vim-airline/vim-airline/wiki/Screenshots
     " 保存在 ~/.vim/bundle/vim-airline-themes/autoload/airline/themes
