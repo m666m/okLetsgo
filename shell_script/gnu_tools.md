@@ -155,6 +155,14 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
 
 ### 终端模拟器和软件的真彩色设置
 
+对字符终端的文本颜色，有固定的对应代码，由终端模拟器和软件自己进行解释
+
+    # 参见终端登陆脚本中颜色设置的代码<bash_profile.sh>
+    # https://zhuanlan.zhihu.com/p/566797565
+    # 色彩      黑    红    绿    黄    蓝    洋红    青    白
+    # 前景色    30    31    32    33   34    35    36    37
+    # 背景色    40    41    42    43   44    45    46    47
+
 字符终端的颜色配置说明
 
     https://github.com/termstandard/colors
@@ -205,7 +213,7 @@ Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安
     如果上面的脚本在 putty/Windows Terminal 下无输出，换 mintty 或用下面这个简单的
 
         awk 'BEGIN{
-            printf "\x1b[38;2;255;100;0m24-bitTRUECOLOR\x1b[0m\n";
+            printf "\x1b[38;2;255;100;0mTRUECOLOR\x1b[0m\n";
 
             s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
             for (colnum = 0; colnum<77; colnum++) {
@@ -1762,11 +1770,13 @@ zsh 命令行默认是 vi 操作模式，不需要在 ~/.zshrc 文件里 “set 
 
 #### 安装常用的插件
 
+下面的几个常用插件挨个装太复杂了，想无脑安装参见章节 [开箱即用一步到位的套件 -- zsh4humans]。
+
 除了 powerline 外，其它的插件都要进入 zsh 后再执行安装
 
     powerline：见章节[状态栏工具 powerline]，建议使用替代品见章节 [推荐状态栏工具 powerlevel10k]。
 
-    命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按TAB键快速进入下一级，或直接按右方向键确认该提示。
+    命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按TAB键快速进入下一级，或直接按右方向键确认该提示(按Alt+m更方便)。
 
         # git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
         sudo apt install zsh-autosuggestions
@@ -1814,7 +1824,7 @@ zsh 命令行默认是 vi 操作模式，不需要在 ~/.zshrc 文件里 “set 
     # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
-#### 推荐状态栏工具 powerlevel10k
+#### 状态栏工具 powerlevel10k
 
 依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
 
@@ -1854,9 +1864,9 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
 
 初次进入zsh后会自动提示设置使用习惯，之后可以执行命令 `p10k configure` 再次设置。
 
-这个主题自带一堆状态插件包括 git、virtualenv 等，如果之前在 zsh 的 plugin 里启用了 git 等，可以删除。
+这个主题自带一堆状态插件包括 git、virtualenv 等，非常好用。如果之前在 zsh 的 plugin 里配置下载了 git 等插件，可以删除他们。
 
-自定义启用它自带的哪些插件，编辑 ~/.p10k.zsh 文件，搜索 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS= 即可。
+自定义启用它自带的哪些插件，编辑配置文件，用 `echo $POWERLEVEL9K_CONFIG_FILE` 查看，一般是 ~/.p10k.zsh，搜索 `POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=` 即可。
 
 ##### 自定义状态栏提示段，监控树莓派温度
 
@@ -1910,7 +1920,7 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
         source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
     fi
 
-#### 推荐套件 -- zsh4humans
+#### 开箱即用一步到位的套件 -- zsh4humans
 
 嫌上面逐个配置太麻烦就用打包的，它还优化了速度，比自己手工在zsh里挨个装插件还有优化。
 
@@ -1924,6 +1934,14 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     fzf
 
 而且能跨主机记忆命令历史，比如你在本机ssh某个主机后执行的操作，在本机或另一个ssh主机上都可以被回忆到，方便！
+
+    ssh 命令套壳了，会自动在远程主机上安装zsh4human等套件，然后传递命令历史
+
+    如果不喜欢这个功能，编辑 ~/.zshrc 搜索 ssh 响应代码去掉它即可。
+
+设置技巧，有些设置都是插件里的，注意区别
+
+    https://github.com/romkatv/zsh4humans/blob/master/tips.md
 
 如果想研究哪个插件过慢导致命令行反应让人不爽，有专门搞测量的 zsh-bench
 
@@ -1948,7 +1966,7 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 
 #### zsh插件管理器
 
-简单使用不需要插件管理器，装了 zsh4humans 足够了。
+简单使用不需要插件管理器，安装 zsh4humans 足够了。
 
 antigen
 
@@ -1960,7 +1978,7 @@ antigen
 
     这个是接班的 https://github.com/mattmc3/antidote
 
-zinit（原 zplugin）号称 zsh 下最快的插件管理器
+zinit（原 zplugin）插件管理器
 
     https://github.com/zdharma-continuum/zinit
 
@@ -1976,7 +1994,7 @@ zinit（原 zplugin）号称 zsh 下最快的插件管理器
 
 #### 自带插件管理器，内置超多插件和主题的 ohmyzsh
 
-    如果只是简单使用 zsh + powerlevel10k + 自动完成等几个插件，不需要安装ohmyzsh，这货太慢，而且经常自动升级，你进入zsh时会等半天它更新才给出提示行...
+    如果只是简单使用 zsh + powerlevel10k + 自动完成等几个插件，不需要安装ohmyzsh，这货太慢，而且经常自动升级，你进入 zsh 时会等半天它更新才给出提示行...
 
 ohmyzsh 是在 zsh 的基础上增加了更多的花样的shell封装、主题管理等。
 

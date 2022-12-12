@@ -1714,12 +1714,19 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
 
 对于后续使用者而言，对于主项目使用普通的 clone 操作并不会拉取到子模块中的实际代码，只有一个空目录，除非显式指定拉取子模块
 
+    # git clone --recursive
     git clone --recurse-submodules https://github.com/username/project-main.git
 
 更新子模块需要手动，在当前主项目中执行
 
-    git submodule init
-    git submodule update
+    cd your_main_project
+    git pull --rebase
+
+    git submodule sync --recursive
+
+    # git submodule init
+    # git submodule update
+    git submodule update --init --recursive
 
 子模块更新后，此时对主项目来说子模块的状态是有修改的，注意切换回主项目的目录，执行 git add/commit/push 提交这个修改即可。
 
