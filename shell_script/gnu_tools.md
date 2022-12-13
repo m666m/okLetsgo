@@ -262,7 +262,7 @@ Unix 至 Linux 以来，有一个通用的 ANSI escape codes 彩色字符方案�
 
     mintty 所有验证条件都完美呈现。
 
-    putty 可以通过真彩测试，但对块状字符的渲染方式问题：zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此。terminal-testdrive.sh 测试不支持：文字闪烁、 sixel 图像。
+    putty 可以通过真彩测试，但对块状字符的渲染方式有问题：zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此。terminal-testdrive.sh 测试不支持：文字闪烁、sixel 图像。
 
     Windows Terminal 可以通过真彩测试，但 zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此。terminal-testdrive.sh 测试：不支持 sixel 图像，少了几个文字修饰效果。
 
