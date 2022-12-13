@@ -1936,22 +1936,22 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 
 #### 开箱即用一步到位的套件 -- zsh4humans
 
-嫌上面逐个配置太麻烦就用打包的，它还优化了速度，比自己手工在zsh里挨个装插件还有优化。
+嫌上面逐个配置太麻烦就用这个打包的，它还优化了速度，比自己手工在zsh里挨个装插件还有优化。
 
     https://github.com/romkatv/zsh4humans
 
-无脑安装就完事了，最常用的几个插件都给你配置好了：状态栏工具、自动完成、语法高亮、命令模糊查找
+无脑安装就完事了，最常用的几个插件都配置好了：状态栏工具、自动完成、语法高亮、命令模糊查找
 
     powerlevel10k
     zsh-autosuggestions
     zsh-syntax-highlighting
     fzf
 
-而且能跨主机记忆命令历史，比如你在本机ssh某个主机后执行的操作，在本机或另一个ssh主机上都可以被回忆到，方便！
+而且能跨主机记忆命令历史，比如你在本机ssh某个主机后执行的命令，在本机或另一个ssh主机上的命令历史里都可以被回忆到，方便！
 
     https://github.com/romkatv/zsh4humans/blob/master/tips.md#ssh
 
-注意，实现方法是套壳了 ssh 命令，当你初次ssh连接新的远程主机，会自动在远程主机上安装zsh4human等套件，然后传递自己的命令历史，对你的 ssh 配置 ~/.ssh/config 也有点要求
+注意：该功能的实现方法是套壳 ssh 命令，当你初次ssh连接新的远程主机，会自动在远程主机上安装 zsh4human 等套件，然后传递自己本地的命令历史。对你的 ssh 配置 ~/.ssh/config 也有要求
 
     # https://github.com/romkatv/zsh4humans/blob/master/tips.md#ssh-config
     Host *
@@ -1963,7 +1963,7 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
         ControlPersist 72000
         ControlPath ~/.ssh/s/%C
 
-这个功能有点安全性隐患，默认是关闭的，可设置白名单模式指定开启，如对自己内网的计算机
+这个功能有点安全隐患，默认是关闭的，可设置白名单模式指定开启，如对自己内网的计算机
 
     # Disable SSH teleportation by default.
     zstyle ':z4h:ssh:*'                   enable no
@@ -1972,7 +1972,7 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     zstyle ':z4h:ssh:example-hostname1'   enable yes
     zstyle ':z4h:ssh:*.example-hostname2' enable yes
 
-如果非常不喜欢这个功能，编辑 ~/.zshrc 搜索 ssh 响应代码去掉它即可。
+如果非常不喜欢这个功能，编辑 ~/.zshrc 搜索“ssh”字样，找到相应代码去掉它即可。
 
 设置技巧，有些设置都是插件里的，注意区别
 
