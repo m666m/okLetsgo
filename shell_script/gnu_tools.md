@@ -268,17 +268,19 @@ Unix 至 Linux 以来，有一个通用的 ANSI escape codes 彩色字符方案�
 
 ### putty 远程终端模拟器
 
+PuTTY is a free implementation of SSH and Telnet for Windows and Unix platforms, along with an xterm terminal emulator.
+
     https://www.chiark.greenend.org.uk/~sgtatham/putty/
 
-    KiTTY
-    从 putty 拉的分支而来，是对 putty 的易用性改进，共用putty的站点配置，增加了背景透明、支持站点列表的文件夹、自动化操作脚本，可以给站点加注释，还有便携版
+    KiTTY https://github.com/cyd01/KiTTY
 
-        https://github.com/cyd01/KiTTY
+        从 putty 拉的分支而来，是对 putty 的易用性改进，共用putty的站点配置，增加了背景透明、支持站点列表的文件夹、自动化操作脚本，可以给站点加注释，还有便携版
 
     北极主题颜色 https://github.com/arcticicestudio/nord-putty
-        只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
 
-    超多主题颜色有 putty 的
+    i   只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
+
+    超多主题颜色，有 putty 的
 
         http://ciembor.github.io/4bit/ 点击右上角“Get Scheme”
         https://github.com/mbadolato/iTerm2-Color-Schemes
