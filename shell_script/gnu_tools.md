@@ -117,7 +117,7 @@ WSL 2 在底层使用虚拟机（Hyper-V）同时运行 Linux 内核和 Windows 
 
 ##### Windows 10 对 Linux 的字符程序和GUI程序的支持
 
-Windows 10 在 2022 年后已经比较完整的对外提供了编程接口
+Windows 10 在 2022 年后已经比较完整的对外提供了相应编程接口
 
     对 Linux 字符程序，通过 ConPty 接口支持 unix pty 应用
 
@@ -137,7 +137,7 @@ WSLg
 
 目前已经可以支持命令行启动运行 Linux GUI 程序了，如： gvim、gedit 等，甚至支持 GPU 加速的 3D 程序。WSLg 其实是个部署了 X Server 的 Linux，添加了支持 Windows 远程桌面的 FreeRDP 服务，即作为 X-window 应用和 windows 窗口应用的桥梁存在。通过 Windows 远程桌面的接口实现了用户在 Windows 桌面直接使用 Linux GUI 程序： Windows 用户界面 <-> RDP <-> X Server <-> Linux GUI 程序。而且 WSLg 用到的其实是替代 X Window System 的 Wayland Compositor，就是 Wayland 官方给出的参考实现 Weston。这种类似于添加了个中间代理的解决方式，有利于完美适配各大 Linux 发行版和各种 Linux GUI 程序。
 
-X window system
+X Window system
 
     https://zhuanlan.zhihu.com/p/134325713
 
@@ -145,7 +145,7 @@ X window system
 
     最著名的GUI客户端是 xterm，直接很多字符终端模拟器的多彩色方案支持的还是 xterm。
 
-替代品 Wayland 体系见 <https://zhuanlan.zhihu.com/p/503627248>。
+    替代品 Wayland 体系见 <https://zhuanlan.zhihu.com/p/503627248>。
 
 ## Windows字符终端
 
@@ -1402,17 +1402,27 @@ schemes 段设置配色方案，同样是一个数组，每种配色方案会有
 
 ## Linux 字符终端
 
-console即控制台，是与操作系统交互的设备，系统将一些信息直接输出到控制台上。用户登录控制台，一般都是通过终端设备。
-
-在80年代个人计算机出现前，50-70年代的电子计算机都是多用户大型机，程序在大型机上运行，使用者使用不同的硬件设备连接到主机，这些设备给使用者提供输入和输出字符的功能，称为终端机 Terminal。最简单的字符输入设备是电传打字机（Teletype, tty），所以现在也用 tty 来表示字符输入终端。输出字符的显示界面有不同的显示规格，从打字机的纸带到不同分辨率的电子显示屏等都不相同。终端设备接受用户界面的输入传递给主机，接受主机的输出展现在用户界面，在这个过程中需要对字符进行编码转换以便人与主机互相“理解”。在 70 年代 ANSI 标准确定以来，流行的终端机有 vt-100、xterm 等多种类型。ANSI 标准沿用至今，主流设备都保持对此标准的兼容，所以在使用终端模拟器的时候，如果不清楚主机类型，终端类型可选择一般都支持的 xterm。
-
-局域网、互联网发展以来，主要的连接方式是在网络上的服务器（Server）作为主机（host），客户机（Client）通过网络连接主机。主机和客户机间可以使用各种不同类型的协议进行连接，对于命令行交互的字符式连接（如 ssh/telnet/ftp 等），客户机需要给命令行程序营造出一个终端设备的仿真环境，以便跟主机进行交互，即所谓终端模拟器（Terminal Emulator）。UNIX/Linux 内核发展出了伪终端（pseudo tty，缩写为 pty）设备的概念顺应这一趋势，实现这个伪终端功能的程序即可把自己模拟成主机的终端。流行的字符终端模拟器有 putty、xterm 等，图形终端模拟器有 vnc、rdp 等。远程连接使用的通信协议主要采用非对称密钥加密算法，一般利用 ssh 建立通信隧道。我们现在说的终端，不再是真实的硬件设备，一般都是指软件终端模拟器。
-
-现代的个人计算机 pc、notebook，甚至 pad、smart phone 的处理能力都超过当年的大型机，本身也可以作为服务器的角色对外提供客户机连接服务，实现机制各有不同。早期 Windows 操作系统下，终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost，类似于 Linux 的伪终端机制。这种连接本机的终端可称为本地终端，或是软件进入“console mode”。因为 Windows 的 conhost 实现机制跟 linux 伪终端实质上不同，第三方终端应用程序其实无法连接 conhost，所以有来自 Msys2 项目的 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。详见章节 [Windows字符终端]。
-
 参见终端的历史演进
 
+    https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/#in-the-beginning-was-the-tty
+
     https://zhuanlan.zhihu.com/p/99963508
+
+console 即控制台，是与操作系统交互的设备，操作系统将一些信息直接输出到控制台上。用户登录控制台，一般都是通过终端设备，输入命令等跟操作系统交互。
+
+在80年代个人计算机出现前，50-70年代的电子计算机都是多用户大型机，程序在大型机上运行，使用者使用不同的硬件设备连接到主机进行操作。这些设备给使用者提供输入和输出字符的功能，称为终端机 Terminal。最简单的字符输入设备是电传打字机（Teletype, tty），所以现在也用 tty 来表示字符输入终端。输出字符的显示界面有不同的显示规格，从打字机的纸带发展到到不同分辨率的电子显示屏。
+
+终端设备接受用户界面的输入传递给主机，接受主机的输出展现在用户界面，在这个过程中需要对字符进行编码转换以便人与主机互相“理解”。70 年代 ANSI 标准沿用至今，主流设备都保持对此标准的兼容。
+
+80年代通用计算机发展以来，主要的连接方式是通用计算机通过串行电缆连接主机，利用通用计算机的显示器和键盘与主机的命令行程序交互。随着处理器能力发展强大，GUI 图形化操作系统的发展，带来了一个新的使用问题：如果用户使用图形化窗口的Terminal，需要与本机上运行的另一个命令行应用程序交互，那么本机的程序需要营造出一个物理终端设备的仿真环境，以便通过命令行跟主机进行交互，即所谓终端模拟器（Terminal Emulator）。这种连接本机的终端可称为本地终端，或称软件进入“console mode”。
+
+UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念，实现这个伪终端功能的程序即可把自己模拟成主机的终端。我们现在说的终端，不再是真实的硬件设备，一般都是指软件终端模拟器。目前流行的字符终端模拟器有 putty、xterm 等，图形终端模拟器有 vnc、rdp 等。远程连接使用的通信协议主要采用非对称密钥加密算法，一般利用 ssh 建立通信隧道。在使用终端模拟器的时候，如果不清楚主机类型，终端类型可选择最常见的 xterm。
+
+随着计算机网络的发展，网络上的服务器（Server）作为主机，客户机（Client）通过网络连接主机。主机和客户机间可以使用各种不同类型的协议进行连接，比如 ssh/telnet/ftp 等都有对应的命令行程序。上述终端模拟器中，xterm 连接本机，通过 ssh 等程序连接网络上的主机。putty 主要用于 ssh 协议连接网络上的主机，通过 ssh 的方式也可连接本机（需要本机运行 sshd 服务），也支持模拟 rs232 串口方式连接本机操作系统 console。
+
+早期 Windows 操作系统下，终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost，类似于 Linux 的伪终端机制。因为 Windows 的 conhost 实现机制跟 Linux 伪终端实质上不同(一个是调用Windows API，一个是发送文本字符)，第三方终端应用程序其实无法连接 conhost，所以有来自 Msys2 项目的 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。详见章节 [Windows字符终端]。
+
+直至 2018年 Windows 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机。参见章节 [Windows 10 对 Linux 的字符程序和GUI程序的支持]。
 
 ### 字符终端的区域、编码、语言
 
