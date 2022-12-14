@@ -470,9 +470,9 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
 
     https://zhuanlan.zhihu.com/p/102393122
 
-在 mintty 下使用普通的 Windows CMD 字符程序，如 python 会无法进入。这是因为因为宿主机上的 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 Unix pty。
+在 mintty 下使用普通的 Windows CMD 字符程序，如 python 会无法进入。这是因为宿主机上的 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 Unix pty。
 
-也就是说，涉及到 Windows 的关于终端输入的程序在 msys2 下会无法进入，需要有个代理提供类似 wslbridge 的角色。
+也就是说，涉及到 Windows 的关于终端输入的程序在 MSYS2 mintty 下会无法进入，需要有个代理提供类似 wslbridge 的角色。
 
 安装 winpty 作为 mintty 代理（git for windows 自带)
 
@@ -907,10 +907,6 @@ pacman命令较多，常用的命令如下：
 
 ### 其他本地终端模拟器
 
-ConPtyShell 使用 Windows ConPty 接口实现的本地终端
-
-    https://github.com/antonioCoco/ConPtyShell
-
 WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装。速度快，兼容性较好，左侧就是文件夹树方便sftp，命令行输出还支持标签折叠
 
     https://github.com/kingToolbox/WindTerm
@@ -978,6 +974,10 @@ wsltty 使用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调
 
     # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin/下安装了 wslbridge2
     mintty --WSL=Ubuntu
+
+ConPtyShell 使用 Windows ConPty 接口利用 PowerShell 实现的 WSL 本地终端
+
+    https://github.com/antonioCoco/ConPtyShell
 
 clink 辅助工具，在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
 
@@ -2152,19 +2152,19 @@ if [ -x /usr/bin/dircolors ]; then
 
 fi
 
-############# 手动启动插件
+############# 加载插件
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
 # 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
 
-# 启用插件：状态栏工具 powerline
+# 加载插件：状态栏工具 powerline
 # 如果是pip安装的查看路径用 pip show powerline-status
 # source /usr/share/powerline/bindings/zsh/powerline.zsh
 
-# 启用插件：命令自动完成
+# 加载插件：命令自动完成
 # source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-# 启用插件：命令语法高亮
+# 加载插件：命令语法高亮
 # 官网提示要在配置文件的最后一行
 # source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -2176,7 +2176,7 @@ source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # ohmyzsh 自带插件管理，在 plugin=() 段落启用内置插件，可以在这里加载上面那些 source xxx 的插件
 
 ##########################################################
-# powerlevel10k 安装程序添加部，不用动分
+# powerlevel10k 安装程序添加，不用动
 
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 
