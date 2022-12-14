@@ -2579,7 +2579,9 @@ git给出了解决方案，使用git branch-filter来遍历git history tree, 可
 
 重新提交成功
 
-### 配置Beyond Compare 4作为git mergetool
+### 配置git的编辑器和比较工具
+
+配置 Beyond Compare 4 作为 git mergetool
 
     https://blog.csdn.net/albertsh/article/details/106294095
     https://blog.csdn.net/LeonSUST/article/details/103565031
@@ -2589,6 +2591,39 @@ git给出了解决方案，使用git branch-filter来遍历git history tree, 可
     https://meldmerge.org/
         https://gitlab.gnome.org/GNOME/meld
         https://gitlab.gnome.org/GNOME/meld/-/wikis/home
+
+配置git的默认编辑器为 vscode
+
+    https://blog.csdn.net/ShuSheng0007/article/details/115449596
+
+    git config --global core.editor "code --wait"
+
+如果想恢复使用 Vim，使用下面命令即可
+
+    git config --global --unset core.editor
+
+也可直接编辑配置文件
+
+    git config --global --edit
+
+配置git的difftool与mergetool为VsCode
+
+执行如下命令git将使用上一部分配置好的vscode打开配置文件
+
+    git config --global --edit
+
+将下面的配置粘贴上去，保存，关闭即可
+
+    [diff]
+        tool = vscode-diff
+    [difftool]
+        prompt = false
+    [difftool "vscode-diff"]
+        cmd = code --wait --diff $LOCAL $REMOTE
+    [merge]
+        tool = vscode-merge
+    [mergetool "vscode-merge"]
+        cmd = code --wait $MERGED
 
 ## 常见问题
 
