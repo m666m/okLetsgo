@@ -2242,6 +2242,8 @@ man 查看各章节后缀用.数字即可
 
 ### Vim 和 nano
 
+    https://vim-jp.org/vimdoc-en/scroll.html
+
 最基础的版本是类似 vi 的 vim tinny 版本，不支持语法高亮、窗口拆分等各种高级功能。
 
 vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
@@ -3014,6 +3016,11 @@ if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
+" 用鼠标滚轮滚屏
+set mouse=a
+map <ScrollWheelUp> <C-Y>
+map <ScrollWheelDown> <C-E>
+
 " 使用 vim-airline 并开启tabline设置后，就不需要这两个设置了
 "set laststatus=2   " 始终显示状态栏
 "set showtabline=2  " 始终显示标签页
@@ -3160,15 +3167,23 @@ map <C-n> :NERDTreeToggle<CR>
 
 在普通模式下输入：即可切换到命令行模式，然后输入命令后回车。
 
-移动光标
+翻页
 
-    h,j,k,l  上，下，左，右
+    ctrl-y   向上移动页面，光标保持原位
+    ctrl-e   向下移动页面，光标保持原位
 
-    ctrl-e   移动页面
+    z + Enter   滚动屏幕，使当前光标所在行处于屏幕第一行；
+    z + .       滚动屏幕，使当前光标所在行处于屏幕中间行；
+    z + -       滚动屏幕，使当前光标所在行处于屏幕最后一行；
+
     ctrl-f   上翻一页
     ctrl-b   下翻一页
     ctrl-u   上翻半页
     ctrl-d   下翻半页
+
+移动光标
+
+    h,j,k,l  上，下，左，右
 
     w    跳到下一个字首，按标点或单词分割
     W    跳到下一个字首，长跳，如end-of-line被认为是一个字
@@ -3620,7 +3635,9 @@ autocmd VimEnter * call TabPos_Initialize()
 
     鼠标选择后使用快捷键 p 粘贴
 
-鼠标模式 :set mouse= 的参数说明
+鼠标模式 :
+
+    set mouse= 设置在何种模式下进入鼠标模式
 
     n   普通模式
     v   可视模式
@@ -3631,13 +3648,9 @@ autocmd VimEnter * call TabPos_Initialize()
     r   跳过|lit-enter|提示
     A   在可视模式下自动选择
 
-'mouse' 的缺省值为空，即不响应鼠标
+缺省值为空，即不进入鼠标模式，这时的鼠标响应:用鼠标在 vim 中选择，会进入可视模式，但点击右键会触发终端工具的右键菜单操作，而不是触发vim自己的热键操作。也就是说，默认情况下点击拖动鼠标进入的这个可视模式，vim 不会响应热键做y复制、d删除等操作。
 
-    这时用鼠标在 vim 中选择，会进入可视模式，但只响应终端工具的右键菜单操作，而不会响应vim自己的热键操作。
-
-    也就是说，你用鼠标进入的这个可视模式，vim 不会响应热键做y复制、d删除等操作。
-
-打开鼠标功能，就会使你的vim响应你的鼠标选择了，即在鼠标选择进入的可视模式中，你可以使用vim热键了
+如果进行了设置，则在对应的模式下点击拖动鼠标后，你可以使用vim热键了。
 
     # 等价于 mouse=nvich
     :set mouse=a
@@ -3661,6 +3674,13 @@ autocmd VimEnter * call TabPos_Initialize()
     移动光标到要插入的位置，或按鼠标左键选择插入位置，光标在此处闪动。
 
     按鼠标中键（滚轮），或按 p 键粘贴。
+
+自定义鼠标滚轮的操作，也需要开启鼠标模式才能有效设置。
+
+    " 用鼠标滚轮滚屏
+    set mouse=a
+    map <ScrollWheelUp> <C-Y>
+    map <ScrollWheelDown> <C-E>
 
 不要使用模仿 Windows 鼠标习惯的一个 mswin.vim， 如“Ctrl + A”全选、 “Ctrl + C”复制、 “Ctrl + V”粘贴等等， 这些快捷键与vim本身的快捷键有不少是冲突的：部分原有的快捷键映射成了别的键， 例如把“Ctrl + V”(矩形块选择)改成了粘贴， 而原有的“Ctrl + V”改成了“Ctrl + Q”； 还有部分快捷键就彻底没有了， 如原有的“Ctrl + A”(将当前光标所在的数字加 1)改成了全选， 而原有的相应功能就找不到了
 
