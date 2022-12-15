@@ -3042,7 +3042,7 @@ set noshowmode      " 状态栏工具显示当前模式更明晰，不使用vim�
 "set nocindent  "关闭C语言缩进  :set cindent
 "
 " 粘贴的代码（shift+insert）会自动缩进，导致格式非常混乱
-" 命令模式输入：set paste，进行粘贴，就不会乱码了。但是不会自动产生缩进了，在粘贴完成之后命了输入：set nopaste，恢复缩进模式。
+" 输入命令 ：set paste 再进行粘贴，就不会乱码了，自动缩进也没了，所以在粘贴之后输入 ：set nopaste，恢复缩进模式。
 " 把<F2>就设置为改变paste模式的快捷键
 "nnoremap <F2> :set invpaste paste?<CR>  " 按下后提示当前paset的状态，使用了状态栏工具无需用此
 set pastetoggle=<F2>
