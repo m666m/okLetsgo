@@ -2244,6 +2244,8 @@ man 查看各章节后缀用.数字即可
 
     https://vim-jp.org/vimdoc-en/scroll.html
 
+    https://vimcdoc.sourceforge.net/doc/help.html
+
 最基础的版本是类似 vi 的 vim tinny 版本，不支持语法高亮、窗口拆分等各种高级功能。
 
 vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
@@ -3011,18 +3013,6 @@ filetype plugin indent on    " required
 "
 " 查看当前设置值 :verbose set showcmd?
 
-"set nonumber
-set number   " 显示行号
-set showcmd  " 显示正在输入的命令按键
-
-" 使用 vim-airline 并开启 tabline 设置后，就不需要这两个设置了
-"set laststatus=2   " 始终显示状态栏
-"set showtabline=2  " 始终显示标签页
-set noshowmode      " 有了状态栏工具就可以省掉当前模式的显示
-
-" 设置前导键为空格键，需要利用转义符“\”，这个前导键在后面的 airline 设置用到了
-let mapleader="\<space>"
-
 " 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
 " 如果在 tmux 下使用 vim ，防止 tmux 默认设置 TERM=screen，应该保留此设置
 " https://www.codenong.com/15375992/
@@ -3037,6 +3027,28 @@ if exists('+termguicolors')
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   set termguicolors
 endif
+
+"set nonumber
+set number   " 显示行号
+set showcmd  " 显示正在输入的命令按键
+
+" 使用 vim-airline 并开启 tabline 设置后，就不需要这两个设置了
+"set laststatus=2   " 始终显示状态栏
+"set showtabline=2  " 始终显示标签页
+set noshowmode      " 有了状态栏工具就可以省掉当前模式的显示
+
+" 开启了自动注释和自动缩进对粘帖代码不方便
+"set fo-=r  "关闭自动注释
+"set noautoindent  "关闭自动缩进（这个对C/C++代码好像无效） :set autoindent
+"set nocindent  "关闭C语言缩进  :set cindent
+"
+" 粘贴的代码（shift+insert）会自动缩进，导致格式非常混乱
+" 命令模式输入：set paste，在进行粘贴，就不会乱码了。但是不会自动产生缩进了，在粘贴完成之后命了输入：set nopaste，恢复缩进模式。
+" 把<F9>就设置为改变paste模式的快捷键
+set pastetoggle=<F9>
+
+" 设置前导键为空格键，需要利用转义符“\”，这个前导键在后面的 airline 设置用到了
+let mapleader="\<space>"
 
 " 打开文件自动定位到上次离开的位置，从vim默认的配置里摘出来的
 if has("autocmd")
@@ -3127,7 +3139,7 @@ syntax enable
 "colorscheme PaperColor
 colorscheme nord
 
-" 切换语法颜色方案使用亮色还是暗色，如果支持的话
+" 切换语法颜色方案使用亮色还是暗色，如果你的主题支持的话
 "set background=dark
 "set background=light
 
