@@ -2763,9 +2763,11 @@ netrw窗口内的操作快捷键
 
 ##### 插件管理器 vim-addon-manager
 
+    https://github.com/MarcWeber/vim-addon-manager
+
 命令的方式对插件进行管理，不需要配置文件，适合安装发行版自带的插件。
 
-在 `apt install vim-airline` 的时候会自动安装 vim-addon-manager
+在 Debian 使用 `apt install vim-airline` 安装插件的时候，会自动安装 vim-addon-manager
 
     apt install vim-addon-manager
 
@@ -2864,6 +2866,7 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'airblade/vim-gitgutter',
 
 " 显示 vim 寄存器的内容
+" 在 vis mode 有点小问题 https://github.com/junegunn/vim-peekaboo/issues/22
 " Peekaboo extends " and @ in normal mode and <CTRL-R> in insert mode so you can see the contents of the registers.
 Plug 'junegunn/vim-peekaboo'
 
@@ -3812,7 +3815,7 @@ vim配置中开启鼠标支持，.vimrc文件中加上
 
 插入模式下使用寄存器，比如：在文本输入模式，使用寄存器里的内容
 
-    使用热键 <C-r> 做前导即可: <C-r>0  从0号寄存器粘贴内容
+    使用前导键 <C-r> 即可: <C-r>0  从0号寄存器粘贴内容
 
 用 / 输入搜索内容 或 : 命令行模式 都可用这个方法使用寄存器里的内容。
 
