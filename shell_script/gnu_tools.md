@@ -3028,13 +3028,34 @@ if exists('+termguicolors')
   set termguicolors
 endif
 
-set number   " 显示行号 :set nonumber
-set showcmd  " 显示正在输入的命令按键
+" 打开文件自动定位到上次离开的位置，从vim默认的配置里摘出来的
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+" 用鼠标滚轮滚屏
+set mouse=a
+map <ScrollWheelUp> <C-Y>
+map <ScrollWheelDown> <C-E>
+
+" 显示行号 :set nonumber
+set number
+
+" 显示正在输入的命令按键
+set showcmd
 
 " 使用 vim-airline 并开启 tabline 设置后，就不需要这两个设置了
 "set laststatus=2   " 始终显示状态栏
 "set showtabline=2  " 始终显示标签页
 set noshowmode      " 状态栏工具显示当前模式更明晰，不使用vim的了
+
+" 设置 netrw 的显示风格
+"let g:netrw_hide = 1 " 设置默认隐藏
+"let g:netrw_banner = 0  " 隐藏 netrw 顶端的横幅（Banner）
+let g:netrw_browse_split = 4  " 用前一个窗口打开文件
+let g:netrw_liststyle = 3  " 目录树的显示风格，可以用 i 键来回切换
+let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
+"let g:netrw_altv = 1 " 控制垂直拆分的窗口位于右边
 
 " 开启了自动注释和自动缩进对粘帖代码不方便
 "set fo-=r  "关闭自动注释
@@ -3050,24 +3071,6 @@ set pastetoggle=<F2>
 " 设置前导键为空格键，需要利用转义符“\”，这个前导键在后面的 airline 设置用到了
 let mapleader="\<space>"
 
-" 打开文件自动定位到上次离开的位置，从vim默认的配置里摘出来的
-if has("autocmd")
-  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
-
-" 用鼠标滚轮滚屏
-set mouse=a
-map <ScrollWheelUp> <C-Y>
-map <ScrollWheelDown> <C-E>
-
-" 设置 netrw 的显示风格
-"let g:netrw_hide = 1 " 设置默认隐藏
-"let g:netrw_banner = 0  " 隐藏 netrw 顶端的横幅（Banner）
-let g:netrw_browse_split = 4  " 用前一个窗口打开文件
-let g:netrw_liststyle = 3  " 目录树的显示风格，可以用 i 键来回切换
-let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
-"let g:netrw_altv = 1 " 控制垂直拆分的窗口位于右边
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " 加载插件 vim-airline vim-airline-themes nerdtree 等
 "
@@ -3077,7 +3080,7 @@ let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
 "   见章节 [插件管理器 vim-addon-manager]，用命令的方式对插件进行管理，不需要配置文件
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim-airline 内置扩展设置
+" 插件设置：vim-airline 内置扩展设置
 "
 " 内置扩展的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
 " 内置扩展保存在：
@@ -3148,7 +3151,7 @@ colorscheme nord
 "hi Normal guibg=NONE ctermbg=NONE
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" 使用下载的插件：NERDTree
+" 插件设置：：NERDTree
 
 " NERDTree 显示隐藏文件
 let NERDTreeShowHidden=1
