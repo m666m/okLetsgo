@@ -1525,7 +1525,7 @@ conda 激活环境时，默认会修改命令行提示符，比较丑
 
 取消设置bash环境中的命令行提示符
 
-    # 需要进入 conda 环境后执行
+    # 需要进入 conda 环境再执行
     conda env config vars unset PS1
 
 禁止conda修改命令行提示符
@@ -2316,18 +2316,11 @@ vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
 
     https://vimhelp.org/starting.txt.html#vimrc
 
-    插件大全，Vundle等插件管理器支持简写
-        https://github.com/vim-scripts/
+插件大全，Vundle等插件管理器支持简写
 
-插件管理器
+    https://github.com/vim-scripts/
 
-    推荐 https://github.com/junegunn/vim-plug
-
-    2019年之后不更新了 https://github.com/VundleVim/Vundle.vim
-
-    老资格的vim插件管理器 https://github.com/MarcWeber/vim-addon-manager
-    在 debian 10 buster 里如果用 apt install 安装 vim 的插件就会自动安装这个依赖
-    sudo apt install vim-addon-manager
+插件管理器见下面相关章节
 
 颜色方案
 
@@ -2346,7 +2339,7 @@ vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
 
 ##### 使用状态栏工具等扩展插件的先决条件
 
-检查vim的版本，进入vim执行命令 :version
+检查 vim 的版本，进入 vim 执行命令 :version
 
     Small version without GUI.
 
@@ -2374,7 +2367,7 @@ vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
     The following packages will be REMOVED:
         vim-common vim-tiny
 
-然后安装vim的增强版
+然后安装 vim 的增强版
 
     # https://askubuntu.com/questions/284957/vi-getting-multiple-sorry-the-command-is-not-available-in-this-version-af
     # 不用单独装 sudo apt install vim-runtime
@@ -2412,7 +2405,7 @@ vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
       lset termguicolors
     endif
 
-光vim自己设置真彩色还不够，需要终端工具也支持，详见章节 [终端模拟器和软件的真彩色设置]。
+光 vim 自己设置真彩色还不够，需要终端工具也支持，详见章节 [终端模拟器和软件的真彩色设置]。
 
 ##### 配置扩展插件
 
@@ -2471,7 +2464,7 @@ powerline 介绍，参见章节 [状态栏工具 powerline]。
 
 使用 powerline 在 vim 下的插件需要 Vim 在编译时添加 python 支持，而一般的用于嵌入式设备的操作系统如树莓派自带的是 vim 精简版 vim.tinny，这个版本是无法使用该插件的，如何解决见上面的“使用状态栏工具等扩展插件的先决条件”。
 
-powerline 为保证多样性，使用python，现在的问题是操作系统自带的python指的python2还是python3版本
+powerline 为保证多样性，使用python实现的。现在的问题是操作系统自带的 python 指的 python2 还是 python3 版本
 
     搞清 操作系统安装的包 python-pip 和 python3-pip 的使用区别
     搞清 powerline 有 python 和 python3 两个发行版本
@@ -2590,7 +2583,7 @@ Why yet another clone of powerline?
 
 这个比较简洁，只有状态栏工具和颜色方案。也是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
-vim.tinny 版是无法使用该插件的，如何解决见上面的“使用状态栏工具等扩展插件的先决条件”。
+vim.tinny 版是无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
 
 配置主题
 
