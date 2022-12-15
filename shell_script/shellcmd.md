@@ -470,6 +470,23 @@ is_ipv4_address() {
     [ $(grep -Ec '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' <<<"$1") -ne 0 ]
 }
 
+#################################################
+# case
+case "$platform" in
+  'darwin arm64');;
+  'darwin x86_64');;
+  'linux aarch64');;
+  'linux armv6l');;
+  'linux armv7l');;
+  'linux armv8l');;
+  'linux x86_64');;
+  'linux i686');;
+  *)
+    >&2 'printf' '\033[33mz4h\033[0m: sorry, unsupported platform: \033[31m%s\033[0m\n' "$platform"
+    'exit' '1'
+  ;;
+esac
+
 ```
 
 ## 环境变量文件的说明
