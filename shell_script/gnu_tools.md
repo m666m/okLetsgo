@@ -3005,28 +3005,22 @@ filetype plugin indent on    " required
 ```python
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim 的一些默认设置，一般在全局配置文件 /etc/vim/vimrc 中都有
+" vim 的默认设置
+"   全局配置文件 /etc/vim/vimrc
+"   启动脚本 /usr/share/vim/vim81
+"
+" 查看当前设置值 :verbose set showcmd?
 
 "set nonumber
-set number  " 显示行号
+set number   " 显示行号
+set showcmd  " 显示正在输入的命令按键
 
-" Uncomment the following to have Vim jump to the last position when
-" reopening a file
-if has("autocmd")
-  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
-
-" 用鼠标滚轮滚屏
-set mouse=a
-map <ScrollWheelUp> <C-Y>
-map <ScrollWheelDown> <C-E>
-
-" 使用 vim-airline 并开启tabline设置后，就不需要这两个设置了
+" 使用 vim-airline 并开启 tabline 设置后，就不需要这两个设置了
 "set laststatus=2   " 始终显示状态栏
 "set showtabline=2  " 始终显示标签页
 set noshowmode      " 有了状态栏工具就可以省掉当前模式的显示
 
-" 设置前导键为空格键，需要利用转义符“\”
+" 设置前导键为空格键，需要利用转义符“\”，这个前导键在后面的 airline 设置用到了
 let mapleader="\<space>"
 
 " 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
@@ -3043,6 +3037,16 @@ if exists('+termguicolors')
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   set termguicolors
 endif
+
+" 打开文件自动定位到上次离开的位置，从vim默认的配置里摘出来的
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+" 用鼠标滚轮滚屏
+set mouse=a
+map <ScrollWheelUp> <C-Y>
+map <ScrollWheelDown> <C-E>
 
 " 设置 netrw 的显示风格
 "let g:netrw_hide = 1 " 设置默认隐藏
