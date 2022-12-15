@@ -2834,11 +2834,11 @@ Vundle不更新了，这个项目取代之，用法神似，只需要编辑 ~/.v
 
 然后修改  ~/.vimrc
 
-```vim
+```python
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-plug 插件管理器官方配置
-
+"
 " 不需要设置rtp，因为引导程序plug.vim放到autoload目录里了
 
 " airline 安装后可屏蔽原配置的 powerline
@@ -2884,7 +2884,7 @@ call plug#end()
 " 在下面增加自己的设置
 ```
 
-然后 Reload .vimrc and :PlugInstall to install plugins.
+然后重新加载配置文件 `:source ~/.vimrc`，命令行执行 `:PlugInstall` 按提示操作即可安装插件。
 
 常用命令
 
@@ -3009,7 +3009,7 @@ filetype plugin indent on    " required
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim 的默认设置
 "   全局配置文件 /etc/vim/vimrc
-"   启动脚本 /usr/share/vim/vim81
+"   启动脚本 /usr/share/vim/vim81/default.vim
 "
 " 查看当前设置值 :verbose set showcmd?
 
@@ -3028,14 +3028,13 @@ if exists('+termguicolors')
   set termguicolors
 endif
 
-"set nonumber
-set number   " 显示行号
+set number   " 显示行号 :set nonumber
 set showcmd  " 显示正在输入的命令按键
 
 " 使用 vim-airline 并开启 tabline 设置后，就不需要这两个设置了
 "set laststatus=2   " 始终显示状态栏
 "set showtabline=2  " 始终显示标签页
-set noshowmode      " 有了状态栏工具就可以省掉当前模式的显示
+set noshowmode      " 状态栏工具显示当前模式更明晰，不使用vim的了
 
 " 开启了自动注释和自动缩进对粘帖代码不方便
 "set fo-=r  "关闭自动注释
@@ -3043,9 +3042,10 @@ set noshowmode      " 有了状态栏工具就可以省掉当前模式的显示
 "set nocindent  "关闭C语言缩进  :set cindent
 "
 " 粘贴的代码（shift+insert）会自动缩进，导致格式非常混乱
-" 命令模式输入：set paste，在进行粘贴，就不会乱码了。但是不会自动产生缩进了，在粘贴完成之后命了输入：set nopaste，恢复缩进模式。
-" 把<F9>就设置为改变paste模式的快捷键
-set pastetoggle=<F9>
+" 命令模式输入：set paste，进行粘贴，就不会乱码了。但是不会自动产生缩进了，在粘贴完成之后命了输入：set nopaste，恢复缩进模式。
+" 把<F2>就设置为改变paste模式的快捷键
+"nnoremap <F2> :set invpaste paste?<CR>  " 按下后提示当前paset的状态，使用了状态栏工具无需用此
+set pastetoggle=<F2>
 
 " 设置前导键为空格键，需要利用转义符“\”，这个前导键在后面的 airline 设置用到了
 let mapleader="\<space>"
@@ -3171,7 +3171,7 @@ map <C-n> :NERDTreeToggle<CR>
 
     :help Visual-mode
 
-##### 文本输入模式（编辑模式/插入模式）
+##### 文本输入模式（编辑模式/插入模式）insert mode
 
 在普通模式下输入插入命令i、附加命令a、打开命令o、修改命令c、取代命令r或替换命令s都可以进入文本输入模式。
 
@@ -3179,7 +3179,7 @@ map <C-n> :NERDTreeToggle<CR>
 
 在文本输入过程中，若想回到普通模式下，按下 Esc 键即可。
 
-##### 普通模式
+##### 普通模式 normal mode
 
 在普通模式下输入：即可切换到命令行模式，然后输入命令后回车。
 
@@ -3302,7 +3302,7 @@ map <C-n> :NERDTreeToggle<CR>
     <<    将当前行左移一个单位(一个tab符)
     ==    自动缩进当前行
 
-##### 替换模式
+##### 替换模式 replace mode
 
     r   单字符替换模式，此时新输入的字符将替代光标之下的当前字符，然后自动返回到普通模式。
 
@@ -3318,7 +3318,7 @@ map <C-n> :NERDTreeToggle<CR>
 
         gr命令，可以进入单字符虚拟替换模式。在替换光标下的当前字符之后，将自动返回到常规模式。
 
-##### 可视模式(列块操作)
+##### 可视模式(列块操作) visual mode
 
 普通模式下按下列键进入可视模式
 
@@ -3353,7 +3353,7 @@ map <C-n> :NERDTreeToggle<CR>
 
     对高亮显示的文本块，可以用 `o` 或 `O` 在块内移动光标，方便后续操作执行后光标的起始定位。
 
-##### 命令行模式
+##### 命令行模式 command mode
 
 在普通模式下，用户按冒号:键即可进入命令行模式下，此时 vi 会在显示窗口的最后一行（通常也是屏幕的最后一行）显示一个:作为命令行模式的说明符，等待用户输入命令。多数文件管理命令都是在此模式下执行的（如把编辑缓冲区的内容写到文件中等）。
 
@@ -3377,7 +3377,7 @@ map <C-n> :NERDTreeToggle<CR>
 
 重新定义快捷键，放到 ~/.vimrc 文件中即可：
 
-```vim
+```python
 
 " 切换目录树显示的热键定义为 Ctrl-n
 " map 是 vim 的快捷键映射命令
@@ -3387,13 +3387,13 @@ map <C-n> :NERDTreeToggle<CR>
 
 ```
 
-前缀代表生效范围
+前缀可以约束生效范围
 
-    inoremap 就只在插入(insert)模式下生效
+    inoremap 只在 insert 模式下生效
 
     vnoremap 只在 visual 模式下生效
 
-    nnoremap 就在 normal 模式下(狂按esc后的模式)生效
+    nnoremap 就在 normal 模式下生效
 
 前导键
 
@@ -3423,7 +3423,7 @@ vim中有五种基本的重复类型，分别是：
     文本替换重复      &             u
     宏重复           @[寄存器]      u
 
-##### vim查看命令历史
+##### 查看命令历史
 
 命令行模式下：
 
