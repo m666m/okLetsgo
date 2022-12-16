@@ -1852,6 +1852,17 @@ zsh 命令行默认是 vi 操作模式，不需要在 ~/.zshrc 文件里 “set 
     # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
+zsh下，如果想研究哪个插件过慢导致命令行反应让人不爽，有专门搞测量的 zsh-bench
+
+    https://github.com/romkatv/zsh-bench#conclusions
+
+它的建议是状态栏工具使用主题 powerlevle10k，如果还需要自动完成啥的那几个插件，就直接安装 zsh4humans，这些都带了而且有优化。
+
+自己简单测试下加载zsh的速度
+
+    $ for i in $(seq 1 5); do /usr/bin/time /bin/zsh -i -c exit; done
+    ...
+
 #### 状态栏工具 powerlevel10k
 
 依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
@@ -1950,18 +1961,16 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 
 #### 开箱即用一步到位的套件 -- zsh4humans
 
-嫌上面逐个配置太麻烦就用这个打包的，它还优化了速度，比自己手工在zsh里挨个装插件还有优化。
-
     https://github.com/romkatv/zsh4humans
 
-无脑安装就完事了，最常用的几个插件都配置好了：状态栏工具、自动完成、语法高亮、命令模糊查找
+开箱即用，最常用的几个插件都配置好了：状态栏工具、自动完成、语法高亮、命令模糊查找，而且作者还专门为速度进行了优化
 
     powerlevel10k
     zsh-autosuggestions
     zsh-syntax-highlighting
     fzf
 
-而且能跨主机记忆命令历史，比如你在本机ssh某个主机后执行的命令，在本机或另一个ssh主机上的命令历史里都可以被回忆到，方便！
+能跨主机记忆命令历史，比如你在本机ssh某个主机后执行的命令，在本机或另一个ssh主机上的命令历史里都可以被回忆到，方便！
 
     https://github.com/romkatv/zsh4humans/blob/master/tips.md#ssh
 
@@ -1992,37 +2001,34 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 
     https://github.com/romkatv/zsh4humans/blob/master/tips.md
 
-安装时会提示是否在 tmux 里一直使用 zsh，我选的 No。
+安装
 
-安装时，我选择的安装到home下，而且不作为默认登陆shell
+    提示是否在 tmux 里一直使用 zsh，我选的 No。
 
-    Installed Zsh 5.8 to /home/pi/.local
+    选择把 zsh 安装到home下，而且不作为默认登陆shell
 
-    To start Zsh, type:
+        Installed Zsh 5.8 to /home/pi/.local
 
-    export PATH="/home/pi/.local/bin:$PATH"
-    zsh
+        To start Zsh, type:
 
-如果想研究哪个插件过慢导致命令行反应让人不爽，有专门搞测量的 zsh-bench
+        export PATH="/home/pi/.local/bin:$PATH"
+        zsh
 
-    https://github.com/romkatv/zsh-bench#conclusions
+    z4h: installing systemd completions
+    z4h: installing zsh-history-substring-search
+    z4h: installing zsh-autosuggestions
+    z4h: installing zsh-completions
+    z4h: installing terminfo
+    z4h: installing fzf
+    z4h: fetching fzf binary
+    z4h: installing ohmyzsh/ohmyzsh
+    z4h: installing powerlevel10k
+    z4h: fetching gitstatus binary
 
-它的建议是状态栏工具使用主题 powerlevle10k，如果还需要自动完成啥的那几个插件，就直接安装 zsh4humans，这些都有而且优化了。
+安装完成后记得挑选 Bash 配置文件的部分设置到 ~/.zshrc
 
-自己简单测试下加载zsh的速度
-
-    $  for i in $(seq 1 5); do /usr/bin/time /bin/zsh -i -c exit; done
-
-    0.23user 0.14system 0:00.33elapsed 114%CPU (0avgtext+0avgdata 6044maxresident)k
-    0inputs+0outputs (0major+4998minor)pagefaults 0swaps
-    0.25user 0.09system 0:00.30elapsed 113%CPU (0avgtext+0avgdata 5912maxresident)k
-    0inputs+0outputs (0major+5016minor)pagefaults 0swaps
-    0.21user 0.18system 0:00.33elapsed 118%CPU (0avgtext+0avgdata 5916maxresident)k
-    0inputs+0outputs (0major+5012minor)pagefaults 0swaps
-    0.19user 0.15system 0:00.30elapsed 111%CPU (0avgtext+0avgdata 5980maxresident)k
-    0inputs+0outputs (0major+4998minor)pagefaults 0swaps
-    0.20user 0.13system 0:00.30elapsed 114%CPU (0avgtext+0avgdata 5904maxresident)k
-    0inputs+0outputs (0major+4995minor)pagefaults 0swaps
+      ~/.profile
+      ~/.bashrc
 
 #### zsh插件管理器
 
