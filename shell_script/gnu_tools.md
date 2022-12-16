@@ -1992,6 +1992,17 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 
     https://github.com/romkatv/zsh4humans/blob/master/tips.md
 
+安装时会提示是否在 tmux 里一直使用 zsh，我选的 No。
+
+安装时，我选择的安装到home下，而且不作为默认登陆shell
+
+    Installed Zsh 5.8 to /home/pi/.local
+
+    To start Zsh, type:
+
+    export PATH="/home/pi/.local/bin:$PATH"
+    zsh
+
 如果想研究哪个插件过慢导致命令行反应让人不爽，有专门搞测量的 zsh-bench
 
     https://github.com/romkatv/zsh-bench#conclusions

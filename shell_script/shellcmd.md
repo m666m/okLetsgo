@@ -35,10 +35,9 @@
                         ||----w |
                         ||     ||
 
-    成套 shell script 参考
-        https://github.com/jacyl4/de_GWD
-
 ## bash 常见符号用法
+
+    https://linux.cn/article-5657-1.html
 
     http://c.biancheng.net/view/743.html
     https://www.jb51.net/article/123081.htm
