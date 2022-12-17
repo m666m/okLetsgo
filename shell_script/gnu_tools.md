@@ -2001,29 +2001,136 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 
     https://github.com/romkatv/zsh4humans/blob/master/tips.md
 
-安装
+安装过程需要注意看看设置是否符合自己的实际需求
+
+    ┌─[14:58:59 user@yourhost:~]
+    └──$ if command -v curl >/dev/null 2>&1; then   sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"; else   sh -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"; fi
+    Greetings, Human!
+
+    What kind of keyboard are you using?
+
+    (1)  Mac. It has Option key(s) and does not have Backspace.
+    (2)  PC.  It has Backspace key(s) and does not have Option.
+    (q)  Quit and do nothing.
+
+    Choice [12q]: 2
+
+    What keybindings do you prefer?
+
+    (1)  Standard. I delete characters with Backspace key.
+    (2)  Like in vi. I delete characters with X key in command mode.
+    (q)  Quit and do nothing.
+
+    Choice [12q]: 1
 
     提示是否在 tmux 里一直使用 zsh，我选的 No。
+    Do you want zsh to always run in tmux?
+
+    (y)  Yes.
+    (n)  No.
+    (q)  Quit and do nothing.
+
+    Choice [ynq]: n
+
+    Do you use direnv?
+
+    (y)  Yes.
+    (n)  No.
+    (q)  Quit and do nothing.
+
+    Choice [ynq]: n
+
+    Settings up Zsh For Humans...
+
+    z4h: fetching z4h.zsh from github.com/romkatv/zsh4humans
+    z4h: generating ~/.zshenv
+    z4h: generating ~/.zshrc
+    z4h: bootstrapping zsh environment
+    z4h: installing zsh4humans
+    z4h: cannot find usable zsh
+    z4h: fetching zsh 5.8 installer
 
     选择把 zsh 安装到home下，而且不作为默认登陆shell
+    Choose installation directory for Zsh 5.8:
 
-        Installed Zsh 5.8 to /home/pi/.local
+    (1)  /usr/local        <= uses sudo (recommended)
+    (2)  ~/.local          <= does not need sudo
+    (3)  Custom directory.
+    (q)  Quit and do nothing.
 
-        To start Zsh, type:
+    Choice [123q]: 2
 
-        export PATH="/home/pi/.local/bin:$PATH"
-        zsh
+    ===> installing Zsh 5.8 to /home/user/.local
+    ===> fetching zsh-5.8-linux-x86_64.tar.gz
+    ===> verifying archive integrity
+    ===> sha256 signature matches
+    ===> md5 signature matches
+    ===> extracting files
 
+    Add /home/user/.local/bin/zsh to /etc/shells?
+
+    This will allow you to use it as a login shell.
+
+    (y)  Yes. Recommended.
+    (n)  No.
+    (q)  Quit and do nothing.
+
+    Choice [ynq]: n
+
+    Installed Zsh 5.8 to /home/user/.local
+
+    To start Zsh, type:
+
+    zsh
+
+    z4h: login shell isn't the same as this shell
+
+    user         user
+    login shell  /bin/bash
+    this shell   /home/user/.local/bin/zsh
+
+    Change login shell of user to /home/user/.local/bin/zsh?
+
+    (y)  Yes. Recommended.
+    (n)  No.
+
+    Won't ask again unless $Z4H/stickycache/no-chsh is deleted.
     z4h: installing systemd completions
     z4h: installing zsh-history-substring-search
     z4h: installing zsh-autosuggestions
     z4h: installing zsh-completions
+    z4h: installing zsh-syntax-highlighting
     z4h: installing terminfo
     z4h: installing fzf
     z4h: fetching fzf binary
     z4h: installing ohmyzsh/ohmyzsh
     z4h: installing powerlevel10k
     z4h: fetching gitstatus binary
+    z4h: initializing zsh
+
+    Zsh For Humans installed successfully!
+
+    Next steps:
+
+    - Your new personal Zsh config is in ~/.zshrc. Edit this file to export
+        environment variables, define aliases, etc. There are plenty of examples and
+        comments to get you started.
+
+    - Zsh does not read startup files used by Bash. You might want to copy bits
+        and pieces from them to ~/.zshrc. Here are the files:
+
+        ~/.profile
+        ~/.bash_profile
+        ~/.bashrc
+
+    - Prompt config from Powerlevel10k is in ~/.p10k.zsh. To customize prompt, you
+        can either manually edit this file or generate a new version through the
+        wizard:
+
+        p10k configure
+
+    Enjoy Zsh For Humans!
+
 
 安装完成后记得挑选 Bash 配置文件的部分设置到 ~/.zshrc
 
@@ -6277,7 +6384,7 @@ run-parts 参数运行指定目录中的所有脚本。
 
     # 显示当前用户的定时任务
     $ crontab -l
-    no crontab for uu
+    no crontab for user
 
     # 显示指定用户的定时任务
     $ sudo crontab -u root -l
