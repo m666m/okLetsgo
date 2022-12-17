@@ -301,7 +301,7 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
 
 putty 美化
 
-即使你设置会话时勾选了使用 256color 和 true color 真彩色，putty 默认的主题比较保守，只使用256色。
+即使你设置会话时勾选了使用 256color 和 true color 真彩色，putty 默认的主题比较保守，只使用 16 种颜色（用 rgb 设置，其实支持真彩色），你ssh登陆到服务器会发现文字色彩比较刺眼。
 
 可以自定义颜色，在设置会话时 custom color，如果感觉挨个设置太麻烦，试试别人做好的
 
@@ -2130,7 +2130,6 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
         p10k configure
 
     Enjoy Zsh For Humans!
-
 
 安装完成后记得挑选 Bash 配置文件的部分设置到 ~/.zshrc
 
