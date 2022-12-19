@@ -798,7 +798,7 @@ pacman命令较多，常用的命令如下：
 
 ### 其他本地终端模拟器
 
-WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装。速度快，兼容性较好，左侧就是文件夹树方便sftp，命令行输出还支持标签折叠
+WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装。速度快，兼容性较好，左侧就是文件夹树方便sftp，支持 lrzsz 的文件拖放传送，命令行输出还支持标签折叠
 
     https://github.com/kingToolbox/WindTerm
         https://kingtoolbox.github.io/
