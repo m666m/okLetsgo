@@ -384,8 +384,6 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
 
 #### mintty 美化
 
-文字彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
-
 mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
 
     http://ciembor.github.io/4bit/
@@ -394,9 +392,9 @@ mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打�
 
     https://github.com/hsab/WSL-config/tree/master/mintty/themes
 
-将主题文件保存到mintty安装目录的 msys64/usr/share/mintty/themes 目录下（C:\Program Files\Git\usr\share\mintty\themes），通过右键 mintty 窗口标题栏的 option 进行选择。
+将主题文件保存到 mintty 安装目录的 msys64/usr/share/mintty/themes 目录下（C:\Program Files\Git\usr\share\mintty\themes），通过右键 mintty 窗口标题栏的 option 进行选择。
 
-mintty 默认的主题比较保守，只使用256色，如果你想看到真彩色的效果，尝试下选择自定义主题，会看到颜色柔和多了，推荐 nord 主题。
+mintty 默认的主题比较保守，只使用256色，如果你想看到真彩色的效果，尝试下选择自定义主题，会看到颜色柔和多了，推荐 nord 主题。文字彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
 
 也可以编辑 ~/.minttyrc 文件，自行设置各种颜色。
 
