@@ -361,9 +361,9 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
 
     https://zhuanlan.zhihu.com/p/102393122
 
-在 mintty 下使用普通的 Windows CMD 字符程序，如 python 会无法进入。这是因为宿主机上的 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 Unix pty。
+在 mintty 下，如果执行 Windows CMD 字符程序，如 python 会挂死无法进入。这是因为 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 Unix pty。
 
-也就是说，涉及到 Windows 的关于终端输入的程序在 MSYS2 mintty 下会无法进入，需要有个代理提供类似 wslbridge 的角色。
+也就是说，Windows 字符程序在 MSYS2 mintty 下会挂死，需要有个代理提供类似 wslbridge 的角色。
 
 安装 winpty 作为 mintty 代理（git for windows 自带)
 
@@ -380,7 +380,7 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
     alias psql="winpty psql"
     alias redis-cli="winpty redis-cli"
 
-如果你使用 Windows version >= 10 / 2019 1809，且你调用的字符程序使用 ConPty 接口而不再使用 CMD 的 ConHost 接口，则不再需要借助 winpty 去加载调用了。
+如果你使用 Windows version >= 10 / 2019 1809 下的 PowerShell，且你调用的字符程序使用 ConPty 接口而不再使用 CMD 的 ConHost 接口，则不再需要借助 winpty 去加载调用了。
 
 #### mintty 美化
 
@@ -851,23 +851,6 @@ Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` �
     https://github.com/nushell/nushell
         https://www.nushell.sh/zh-CN/book/thinking_in_nu.html
 
-配置 WSL 环境
-
-    https://github.com/hsab/WSL-config
-
-wsltty 使用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用 WSL 会话
-
-    https://github.com/mintty/wsltty
-
-    在 mintty 的配置文件中设置 ConPTY=true
-
-    # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin/下安装了 wslbridge2
-    mintty --WSL=Ubuntu
-
-ConPtyShell 使用 Windows ConPty 接口利用 PowerShell 实现的 WSL 本地终端
-
-    https://github.com/antonioCoco/ConPtyShell
-
 clink 辅助工具，在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
 
     https://github.com/chrisant996/clink
@@ -881,6 +864,28 @@ wslbridge 辅助工具，使用 Windows ConPty 接口 以支持 WSL(Windows Subs
 
     wslbridge2 https://github.com/Biswa96/wslbridge2
         wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
+
+### 连接 WSL
+
+配置 WSL 环境
+
+    https://github.com/hsab/WSL-config
+
+在 mintty 的配置文件中设置 ConPTY=true
+
+    # https://github.com/mintty/mintty/wiki/Tips#supporting-linuxposix-subsystems
+    # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin/下安装了 wslbridge2
+    mintty --WSL=Ubuntu
+
+或使用独立的 WSLtty
+
+调用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用 WSL 会话
+
+    https://github.com/mintty/wsltty
+
+ConPtyShell 使用 Windows ConPty 接口利用 PowerShell 实现的 WSL 本地终端
+
+    https://github.com/antonioCoco/ConPtyShell
 
 ### 终端多路复用器
 
