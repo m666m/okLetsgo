@@ -143,7 +143,7 @@ X Window system
 
     https://zhuanlan.zhihu.com/p/427637159>
 
-    最著名的GUI客户端是 xterm，直接很多字符终端模拟器的多彩色方案支持的还是 xterm。
+    最著名的GUI客户端是 xterm，至今大多数字符终端模拟器的彩色文本方案支持的还是 xterm。
 
     替代品 Wayland 体系见 <https://zhuanlan.zhihu.com/p/503627248>。
 
@@ -383,9 +383,15 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
     alias node="winpty node"
     alias vue='winpty vue'
 
-Windows version >= 10 / 2019 1809 下的 ConPty 接口兼容了老的控制台应用程序 ConHost接口和新的字符接口，所以如果使用新版的 PowerShell 运行字符程序。
+Windows version >= 10 / 2019 1809 下的 ConPty 接口兼容了老的控制台应用程序 ConHost 接口，目前支持 ConPty 接口的应用：
 
-在 2022-10-28 MSYS2 mintty 支持使用 ConPty 接口了，在MSYS2种设置环境变量`MSYS=enable_pcon`，或mintty配置文件中设置 `ConPTY=true` 即可，则不再需要借助 winpty 去加载调用了 <https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs>。
+一、PowerShell 7+ 运行 cmd 字符程序
+
+二、在 2022-10-28 MSYS2 mintty 支持使用 ConPty 接口了
+
+在MSYS2种设置环境变量`MSYS=enable_pcon`，或 mintty 配置文件 .minttyrc 中设置 `ConPTY=true` 即可。调用普通 cmd 字符程序，不再需要借助 winpty 去加载调用了 <https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs>。
+
+新接口的说明见章节 [Windows 10 对 Linux 的字符程序和GUI程序的支持]。
 
 #### mintty 美化
 
