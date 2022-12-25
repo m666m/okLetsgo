@@ -361,6 +361,8 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
 
     https://zhuanlan.zhihu.com/p/102393122
 
+    https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs
+
 在 mintty 下，如果执行 Windows CMD 字符程序（Windows 控制台程序），如 python 会挂死无法进入。这是因为 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 unix pty。
 
 也就是说，Windows CMD 字符程序在 MSYS2 mintty 下直接执行会挂死，需要有个代理提供类似 wslbridge 的角色。
@@ -381,7 +383,9 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
     alias node="winpty node"
     alias vue='winpty vue'
 
-如果你使用 Windows version >= 10 / 2019 1809 下的 PowerShell，且你调用的字符程序使用 ConPty 接口而不再使用 CMD 的 ConHost 接口，则不再需要借助 winpty 去加载调用了。
+Windows version >= 10 / 2019 1809 下的 ConPty 接口兼容了老的控制台应用程序 ConHost接口和新的字符接口，所以如果使用新版的 PowerShell 运行字符程序。
+
+在 2022-10-28 MSYS2 mintty 支持使用 ConPty 接口了，在MSYS2种设置环境变量`MSYS=enable_pcon`，或mintty配置文件中设置 `ConPTY=true` 即可，则不再需要借助 winpty 去加载调用了 <https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs>。
 
 #### mintty 美化
 
@@ -872,8 +876,6 @@ wslbridge 辅助工具，使用 Windows ConPty 接口 以支持 WSL(Windows Subs
 
     https://github.com/hsab/WSL-config
 
-在 mintty 的配置文件中设置 ConPTY=true
-
     # https://github.com/mintty/mintty/wiki/Tips#supporting-linuxposix-subsystems
     # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin/下安装了 wslbridge2
     mintty --WSL=Ubuntu
@@ -1084,7 +1086,7 @@ ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列�
     Windows Terminal 与 MSYS2 MinGW64 集成
         https://ttys3.dev/post/windows-terminal-msys2-mingw64-setup/
 
-Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl 等多个终端窗口，自动添加当前识别到的 git bash 等 mintty 应用。
+Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl、bash 等多个终端窗口，自动添加当前识别到的 git bash 等 mintty 应用（对 MSYS2 应用通过 ConPty 接口实现的兼容 <https://github.com/msys2/MSYS2-packages/issues/1684>）。
 
     # https://github.com/microsoft/terminal/releases
     winget install --id=Microsoft.WindowsTerminal -e
@@ -1388,6 +1390,9 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
     256色展示，按每种颜色组织
 
         curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/color-spaces.pl |perl
+
+    在bash下执行 <https://github.com/msys2/MSYS2-packages/issues/1684#issuecomment-570793998>
+    for x in {0..8}; do for i in {30..37}; do for a in {40..47}; do echo -ne "\e[$x;$i;$a""m\\\e[$x;$i;$a""m\e[0;37;40m "; done; echo; done; done; echo ""
 
 + 24bit true color 色条测试脚本，如果色条出现明显的条带分隔，那说明只支持 256 color
 
