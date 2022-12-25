@@ -876,13 +876,13 @@ wslbridge 辅助工具，使用 Windows ConPty 接口 以支持 WSL(Windows Subs
 
     https://github.com/hsab/WSL-config
 
+mintty 支持连接 WSL
+
     # https://github.com/mintty/mintty/wiki/Tips#supporting-linuxposix-subsystems
     # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin/下安装了 wslbridge2
     mintty --WSL=Ubuntu
 
-或使用独立的 WSLtty
-
-调用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用 WSL 会话
+或使用独立的 WSLtty，调用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用 WSL 会话
 
     https://github.com/mintty/wsltty
 
