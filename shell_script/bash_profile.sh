@@ -34,13 +34,14 @@ alias tree='tree -a -I .git'
 
 ####################################################################
 # Windows git bash(mintty)
-# 在 mintty 下使用普通的 Windows 字符程序
-alias mysql="winpty mysql"
-alias node="winpty node"
+# 在 mintty 下使用普通的 Windows 控制台程序
 alias python="winpty python"
 alias ipython="winpty ipython"
+alias mysql="winpty mysql"
 alias psql="winpty psql"
 alias redis-cli="winpty redis-cli"
+alias node="winpty node"
+alias vue='winpty vue'
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)

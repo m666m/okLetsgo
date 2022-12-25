@@ -361,24 +361,25 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
 
     https://zhuanlan.zhihu.com/p/102393122
 
-在 mintty 下，如果执行 Windows CMD 字符程序，如 python 会挂死无法进入。这是因为 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 Unix pty。
+在 mintty 下，如果执行 Windows CMD 字符程序（Windows 控制台程序），如 python 会挂死无法进入。这是因为 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 unix pty。
 
-也就是说，Windows 字符程序在 MSYS2 mintty 下会挂死，需要有个代理提供类似 wslbridge 的角色。
+也就是说，Windows CMD 字符程序在 MSYS2 mintty 下直接执行会挂死，需要有个代理提供类似 wslbridge 的角色。
 
 安装 winpty 作为 mintty 代理（git for windows 自带)
 
     pacman -S winpty
 
-    winpty python 即可正常进入 python 解释器环境了
+然后执行 `winpty python` 即可正常进入 python 解释器环境了
 
-在 .bashrc/.zshrc 里添加 alias 方便使用
+最好在用户登陆脚本文件 .bashrc/.zshrc 里添加 alias 方便使用
 
-    alias mysql="winpty mysql"
-    alias node="winpty node"
     alias python="winpty python"
     alias ipython="winpty ipython"
+    alias mysql="winpty mysql"
     alias psql="winpty psql"
     alias redis-cli="winpty redis-cli"
+    alias node="winpty node"
+    alias vue='winpty vue'
 
 如果你使用 Windows version >= 10 / 2019 1809 下的 PowerShell，且你调用的字符程序使用 ConPty 接口而不再使用 CMD 的 ConHost 接口，则不再需要借助 winpty 去加载调用了。
 
