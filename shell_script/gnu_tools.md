@@ -1398,7 +1398,8 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
         curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/color-spaces.pl |perl
 
     在bash下执行 <https://github.com/msys2/MSYS2-packages/issues/1684#issuecomment-570793998>
-    for x in {0..8}; do for i in {30..37}; do for a in {40..47}; do echo -ne "\e[$x;$i;$a""m\\\e[$x;$i;$a""m\e[0;37;40m "; done; echo; done; done; echo ""
+
+        for x in {0..8}; do for i in {30..37}; do for a in {40..47}; do echo -ne "\e[$x;$i;$a""m\\\e[$x;$i;$a""m\e[0;37;40m "; done; echo; done; done; echo ""
 
 + 24bit true color 色条测试脚本，如果色条出现明显的条带分隔，那说明只支持 256 color
 
