@@ -455,7 +455,7 @@ BoldAsFont=yes
 
 # 自定义颜色方案，跟深色背景搭配
 # https://github.com/mintty/mintty/wiki/Tips#background-image
-Background=C:\StartHere\tools\SuperPuTTY\111dark.jpg
+Background=C:\tools\SuperPuTTY\111dark.jpg
 BackgroundColour=13,25,38
 ForegroundColour=217,230,242
 CursorColour=236,255,255
@@ -477,7 +477,7 @@ White=255,255,253
 BoldWhite=255,255,255
 
 # 自定义颜色方案，跟浅色背景搭配-黄色
-#Background=C:\StartHere\tools\SuperPuTTY\222yellow.jpg
+#Background=C:\tools\SuperPuTTY\222yellow.jpg
 #BackgroundColour=250,234,182
 #ForegroundColour=0,61,121
 #CursorColour=217,230,242
@@ -500,7 +500,7 @@ BoldWhite=255,255,255
 #BoldWhite=180,180,180
 
 # 自定义颜色方案，跟浅色背景搭配-绿色
-#Background=C:\StartHere\tools\SuperPuTTY\333green.jpg
+#Background=C:\tools\SuperPuTTY\333green.jpg
 #BackgroundColour=250,234,182
 #ForegroundColour=47,47,47
 #CursorColour=217,230,242

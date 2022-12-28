@@ -364,6 +364,22 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     [install]
     trusted-host=mirrors.aliyun.com
 
+## 何时用 conda/virtualenv/venv
+
+pip 只能安装 Python 的包，conda 可以安装一些工具软件，即使这些软件不是基于 Python 开发的。也就是说，pip 安装的时候，可能有需要源码编译的场景，而 conda 把二进制代码编译好了直接发布。
+
+conda 虚拟环境是独立于操作系统自带的 python 解释器环境的（debian 自带的是 2.7+3.3），通过使用 conda 自带的 python，用户可以任意指定虚拟环境 python 版本为 2.7/3.3/3.4/3.5/3.x，所以 conda 的隔离性最强。
+
+virtualenv 依赖操作系统内安装好的 python，主要解决多个项目对不同库版本的依赖、以及间接授权等问题（也支持多个 python 版本，需要操作系统里先安装好）。virtualenv 在创建虚拟环境的时候，会把系统 Python 复制一份到虚拟环境目录下，当用命令 `source env/bin/activate` 进入虚拟环境时，virtualenv 会修改相关环境变量，让命令 python 和 pip 均指向当前的虚拟环境，所以 virtualenv 的隔离性也很强，只是无法任意指定 python 版本，只能使用当前系统自带的 python。
+
+    如果你的多个项目需要对应多个 python 版本，且无法在操作系统里安装多个 python 版本，或你的项目依赖的包在 pip 下不好找，用 conda。
+
+    如果你的多个项目只是一个版本的 python 下对不同的库版本有依赖，用 virtualenv 。
+
+    如果你只使用 Python 3.3 及以上版本，使用标准库内置的 venv 模块即可，可不用安装 virtualenv。
+
+    如果你使用 Python 2，就只能选择 virtualenv。
+
 ## virtualenv 配置python环境
 
     https://docs.python-guide.org/dev/virtualenvs/
@@ -373,12 +389,10 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 激活环境命令：
 
     # CMD
-    c:/Users/xxxx/pyenvs/py38/Scripts/activate.bat
+    call c:/Users/xxxx/pyenvs/py38/Scripts/activate.bat
 
     # bash
     source c:/Users/xxxx/pyenvs/py38/Scripts/activate
-
-命令行脚本（bat、sh）文件一键运行，详见下面的章节
 
 创建虚拟环境
 
@@ -400,7 +414,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 2.创建虚拟环境
 
-    cd 到存放虚拟环境的地址
+    cd your_envs
 
     # 在当前目录下创建名为myvenv的虚拟环境（如果第三方包virtualenv安装在python3下面，此时创建的虚拟环境就是基于python3的）
     virtualenv myvenv
@@ -436,39 +450,40 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 在自己的环境下更新pip，当前用户目录是公用的不要去动他
 
-    source c:/Users/xxxx/pyenvs/py38/Scripts/activate
+    source c:/Users/xxx/pyenvs/py38/Scripts/activate
+
     pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
 
-直接 pip install 就好了，这样默认才会把下载的包放到你的环境目录下<https://stackoverflow.com/questions/30604952/pip-default-behavior-conflicts-with-virtualenv>。
+直接 pip install 就好了，这样默认才会把下载的包放到你的环境目录下 <https://stackoverflow.com/questions/30604952/pip-default-behavior-conflicts-with-virtualenv>。
 
-### Windows 命令行环境下使用脚本执行 Virtualenv 环境
+### Windows 下脚本化使用 Virtualenv 环境
 
-如果用cmd，则vscode使用的时候偶尔会有脚本报错……
+最好使用 cmd 环境，因为 python 在 Windows 下的脚本都是按 cmd 环境开发的。缺点是 vscode 使用的时候偶尔会有脚本报错，因为开发团队在 bash 下开发测试的。。。
 
-用bash的问题是，用pip的时候偶尔有报错，最好切换回cmd环境，因为python的windows脚本都是按cmd环境开发的
+用 bash 的问题是，用 pip 的时候偶尔有报错，因为 pip 在 Windows 下的脚本是按 cmd 环境开发的。
 
-windows下用mintty(bash)执行sh脚本自动执行环境和python程序，cmd命令行：
+示例：cmd 的 bat 文件，在 cmd 下执行
 
-    "C:\Program Files\Git\git-bash.exe" --no-cd "C:\tools\pyenvs\yourprojectenv.sh"
-
-cmd 的bat文件，在 cmd 下执行
+    call your_env.bat
 
 ```cmd
 @REM
-call c:\tools\pyenvs\yourprojectenv\Scripts\activate.bat
-python C:\Users\xxxuser\pycode\yourapp.py
+call c:\tools\pyenvs\yourenv\Scripts\activate.bat
+python C:\Users\xxx\pycode\yourapp.py
 
 deactivate
 pause
 ```
 
-mintty bash 的sh文件，在 git-bash(mintty) 下执行，Windows 下只要安装了git直接双击sh文件就关联调用了。
+只要安装了git for windows，直接双击sh文件就可以。如果 sh 文件关联没有建立，则执行 git-bash(mintty) 调用 sh 文件
+
+    "C:\Program Files\Git\git-bash.exe" --no-cd "C:\tools\pyenvs\yourprojectenv.sh"
 
 ```shell
 #!/bin/sh
 # env source export 只认识linux目录结构
-source /c/tools/pyenvs/yourprojectenv/Scripts/activate
-python /c/Users/xxxuser/pycode/yourproject/app.py
+source /c/tools/pyenvs/yourenv/Scripts/activate
+python /c/Users/xxx/pycode/yourapp.py
 
 deactivate
 read -n1 -p "Press any key to continue..."
@@ -476,22 +491,6 @@ read -n1 -p "Press any key to continue..."
 
 python-xy 不再更新维护了，废弃
 <https://python-xy.github.io/> 微软推荐的<https://devblogs.microsoft.com/python/unable-to-find-vcvarsall-bat>
-
-## 何时用 conda/virtualenv/venv
-
-pip 只能安装 Python 的包，conda 可以安装一些工具软件，即使这些软件不是基于 Python 开发的。也就是说，pip 安装的时候，可能有需要源码编译的场景，而 conda 把二进制代码编译好了直接发布包。
-
-conda 虚拟环境是独立于操作系统自带的 python 解释器环境的（debian 自带的是 2.7+3.3），通过使用 conda 自带的 python，用户可以任意指定虚拟环境 python 版本为 2.7/3.3/3.4/3.5/3.x，所以 conda 的隔离性最强。
-
-virtualenv 依赖操作系统内安装好的 python，主要解决多个项目对不同库版本的依赖、以及间接授权等问题（也支持多个 python 版本，需要操作系统里先安装好）。virtualenv 在创建虚拟环境的时候，会把系统 Python 复制 一份到虚拟环境目录下，当用命令 source env/bin/activate 进入虚拟环境时，virtualenv 会修改相关环境变量，让命令 python 和 pip 均指向当前的虚拟环境，所以 virtualenv 的隔离性也很强，只是无法任意指定 python 版本，只能使用当前系统自带的 python。
-
-    如果你的多个项目需要对应多个 python 版本，且无法在操作系统里安装多个 python 版本，或你的项目依赖的包在 pip 下不好找，用 conda。
-
-    如果你的多个项目只是一个版本的 python 下对不同的库版本有依赖，用 virtualenv 。
-
-    如果你只使用 Python 3.3 及以上版本，使用标准库内置的 venv 模块即可，不需要 virtualenv。
-
-    如果你使用 Python 2，就只能选择 virtualenv。
 
 ## Anaconda 管理
 
@@ -718,7 +717,7 @@ Anaconda 安装完毕后，默认的环境base是最新的一个python版本如p
 
     对 powershell 环境，如果 conda 命令不在系统变量 PATH 中，需要手动先执行 `C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1`，然后即可执行 `conda activate` 。
 
-#### Windows 命令行环境下使用脚本执行  conda 环境
+### Windows 下脚本化使用 conda 环境
 
 ```cmd
 @rem anaconda 命令行执行
@@ -735,7 +734,7 @@ python C:\Users\your_name\pycode\your_project\app.py
 pause
 ```
 
-mintty bash 的 sh 文件，在 bash 下执行（需要设置 conda init 以支持 git bash(mintty)，详见章节[conda init 命令设置命令行工具]）。
+mintty bash 的 sh 文件，在 bash 下执行，需要设置 conda init 以支持 git bash(mintty)，详见章节 [conda init 命令设置命令行工具]。
 
 ```shell
 #!/bin/sh
