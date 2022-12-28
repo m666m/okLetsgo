@@ -73,8 +73,6 @@ ${}用于明确界定变量，与$var并没有区别，但是界定更清晰
     A="to"
     echo $AB 不如 echo ${A}B
 
-    变量展开见下面 ${变量名[@]} 的用法
-
 变量 ZSH_CUSTOM 有值就用，没有就用后面的，这个用法是zsh的
 
     # https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md
@@ -212,9 +210,32 @@ test 和 [] 是等价的，[] 注意两边留空格
     $ ls {ex[1-3],ex4}.sh
     ex1.sh ex2.sh ex3.sh ex4.sh
 
+数组用法
+
+    A="a b c def"   # 定义字符串
+    A=(a b c def)   # 定义字符数组
+
+    命令    解释    结果
+    ${A[@]}    返回数组全部元素    a b c def
+    ${A[*]}    同上    a b c def
+    ${A[0]}    返回数组第一个元素    a
+    ${#A[@]}    返回数组元素总个数    4
+    ${#A[*]}    同上    4
+    ${#A[3]}    返回第四个元素的长度，即def的长度    3
+    A[3]=xzy    则是将第四个组数重新定义为 xyz
+
+    变量展开的用法见下面 ${变量名[@]}
+
 不想有任何输出，或只想测试命令的退出码而不想有任何输出时
 
     cat $filename >/dev/null 2>/dev/null
+
+想让函数返回值
+
+    fff()
+    {echo 'abc'}
+
+    print fff
 
 ## Bash内建命令
 

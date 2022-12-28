@@ -43,7 +43,7 @@
         "inputOption.activeBackground": "#9b9999" // 查找界面的高亮标识
         // "input.border":"#ff0000" // vs 1.61发现没这个查找到的内容在光标位置不高亮
         // "editor.foldBackground": "#355000",  // 折叠代码块高亮  editor.foldingHighlight
-		// "editor.foreground": "#010216",
+        // "editor.foreground": "#010216",
     },
     "workbench.editor.wrapTabs": true,
     "jupyter.exportWithOutputEnabled": true,
