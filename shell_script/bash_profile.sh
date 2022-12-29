@@ -112,6 +112,7 @@ function PS1git-branch-name {
     unset branch_name
     return 0
   fi
+  unset branch_name
 
   # detached HEAD，显示标签名或commit id
   if [ $exitcode -eq 1 ]; then
