@@ -2,7 +2,6 @@
 #
 # 别人的配置文件参考大全 https://github.com/pseudoyu/dotfiles
 #                       https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
-#
 
 ###################################################################
 # 自此开始都是自定义设置
@@ -20,8 +19,8 @@ set -o vi
 ####################################################################
 # alias 本该放到 .bashrc 文件，为了方便统一在此了
 # 常用的列文件
-#alias ls='ls --color=auto -A'
-alias l='ls -CF'
+alias ls='ls --color=auto'
+alias l='ls -CFA'
 alias ll='ls -l'
 alias la='ls -lA'
 alias lla='ls -la'
@@ -102,12 +101,15 @@ function PS1virtualenv-env-name {
 function PS1git-branch-name {
 
   # 这个命令在裸仓库或.git目录中运行不报错，一样会打印出当前分支名
-  local branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+  # 一条命令取当前分支名，如果不在当前分支，返回 128，如果当前分支是分离的，返回 1
+  #目前发现 $? 在 raspberry os 下的 bash 里，如果用local则无法直接判断上个命令的失败状态(嵌入变量赋值语句)
+  branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
   local exitcode=$?
 
   # 优先显示当前head指向的分支名
   if [ $exitcode -eq 0 ]; then
     printf "%s" $branch_name
+    unset branch_name
     return 0
   fi
 

@@ -1978,7 +1978,9 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
         source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
     fi
 
-#### 开箱即用一步到位的套件 -- zsh4humans
+#### 开箱即用的套件 -- zsh4humans
+
+目前不知道哪个功能，经常在你打字的时候加点字符，这个没法用啊
 
     https://github.com/romkatv/zsh4humans
 
@@ -2265,13 +2267,38 @@ fi
 
 ##########################################################
 # zsh 自己的内容，不用动
+# Lines configured by zsh-newuser-install
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+bindkey -v
+# End of lines configured by zsh-newuser-install
+# The following lines were added by compinstall
+zstyle :compinstall filename '/home/pi/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+
+##############
+# 如果安装了 ohmyzsh 会自动生成一堆设置，不用管他
 # ...
+# ...
+# ohmyzsh 自带插件管理，在 plugin=() 段落启用内置插件，可以在这里加载那些 source xxx 的插件
+
+##########################################################
+# powerlevel10k 安装程序添加，不用动
+
+source ~/powerlevel10k/powerlevel10k.zsh-theme
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 ##########################################################
 # 从这里开始用户自己的设置
 
-# zsh 命令行默认是 vi 操作模式，不需要显式设置了
 # 命令行开启vi-mode模式，按esc后用vi中的上下键选择历史命令
+# zsh 命令行用 bindkey -v 来设置 vi 操作模式
 #set -o vi
 
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
@@ -2282,17 +2309,17 @@ export TERM="xterm-256color"
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
+    alias l='ls -CFA'
+    alias ll='ls -l'
+    alias la='ls -lA'
+    alias lla='ls -la'
+
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
-
-    alias l='ls -CF'
-    alias ll='ls -l'
-    alias la='ls -lA'
-    alias lla='ls -la'
 
 fi
 
@@ -2312,20 +2339,6 @@ source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # 官网提示要在配置文件的最后一行
 # source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-##############
-# 如果安装了 ohmyzsh 会自动生成一堆设置，不用管他
-# ...
-# ...
-# ohmyzsh 自带插件管理，在 plugin=() 段落启用内置插件，可以在这里加载上面那些 source xxx 的插件
-
-##########################################################
-# powerlevel10k 安装程序添加，不用动
-
-source ~/powerlevel10k/powerlevel10k.zsh-theme
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 ##########################################################
 # 手动配置插件
