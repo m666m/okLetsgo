@@ -395,7 +395,7 @@ Windows version >= 10 / 2019 1809 下的 ConPty 接口兼容了老的控制台�
 
 #### mintty 美化
 
-mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
+mintty 支持对 16 色代码表的实际展现效果进行自定义，在 mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
 
     http://ciembor.github.io/4bit/
 
@@ -1330,6 +1330,8 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 直至 2018年 Windows 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机。参见章节 [Windows 10 对 Linux 的字符程序和GUI程序的支持]。
 
 ### 终端模拟器和软件的真彩色设置
+
+    https://github.com/mintty/mintty/wiki/CtrlSeqs
 
 自1978年的 VT100 以来，Unix/Linux 通用 ANSI escape codes 彩色字符方案：使用固定的文本代码，对字符终端的文本进行修饰，由终端模拟器和软件解释并呈现对应的色彩，目前一般选择终端类型为 xterm 即可。
 
