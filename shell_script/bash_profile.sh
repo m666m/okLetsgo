@@ -27,8 +27,7 @@ alias lla='ls -la'
 
 alias diff='diff --color=auto'
 alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
-alias egrep='egrep --color=auto'
-alias fgrep='fgrep --color=auto'
+#alias egrep='egrep --color=auto'
 alias tree='tree -a -I .git'
 
 ####################################################################
@@ -82,8 +81,8 @@ function PS1exit-code {
 }
 
 function PS1conda-env-name {
-  # 自定义 conda 的环境名格式，需要先修改conda的默认设置，
-  # 需要先激活conda环境 `conda activate` 后做如下的设置，只做一次即可
+  # 自定义 conda 的环境名格式，需要先修改conda的默认设置，不允许 conda 修改变量 PS1
+  # 需要先激活 base 环境 `conda activate` 后做如下的设置，只做一次即可
   #     禁止conda修改命令行提示符，以防止修改变量PS1
   #         conda config --set changeps1 False
   #     禁止conda进入命令行提示符时自动激活base环境，以方便检测变量$CONDA_DEFAULT_ENV
@@ -91,7 +90,7 @@ function PS1conda-env-name {
   [[ -n $CONDA_DEFAULT_ENV ]] && printf "(conda:%s)" $CONDA_DEFAULT_ENV
 }
 
-# virtualenv 自定义环境名格式，禁用 activate 命令脚本中在变量PS1前添加的环境名称
+# virtualenv 自定义环境名格式，禁止 activate 命令脚本中在变量PS1前添加的环境名称
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 function PS1virtualenv-env-name {
@@ -100,9 +99,10 @@ function PS1virtualenv-env-name {
 
 function PS1git-branch-name {
 
-  # 这个命令在裸仓库或.git目录中运行不报错，一样会打印出当前分支名
-  # 一条命令取当前分支名，如果不在当前分支，返回 128，如果当前分支是分离的，返回 1
-  #目前发现 $? 在 raspberry os 下的 bash 里，如果用local则无法直接判断上个命令的失败状态(嵌入变量赋值语句)
+  # 一条命令取当前分支名
+  # 命令 git symbolic-ref 在裸仓库或.git目录中运行不报错，都会打印出当前分支名：
+  # 如果不在当前分支，返回 128，如果当前分支是分离i的，分返回 1
+  # 注意：如果用 local branch_name 则无法直接判断嵌入变量赋值语句的命令的失败状态
   branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
   local exitcode=$?
 
@@ -121,11 +121,7 @@ function PS1git-branch-name {
       local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
 
       # 有标签名就显示标签否则显示 commit id
-      if [[ -n $tagname ]]; then
-        printf "@%s" "$tagname"
-      else
-        printf "#%s" "$headhash"
-      fi
+      [[ -n $tagname ]] && printf "@%s" "$tagname" || printf "#%s" "$headhash"
 
   fi
 
@@ -146,11 +142,12 @@ function PS1git-branch-prompt {
     printf " git:!raw"
 
   else
-    # git status有值得输出的就显示，否则是空
+    # git status 工作区有变更就显示问号
     local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<?>'; else printf "%s" ''; fi)
+    # 拼接后输出 git 工作区状态和分支名
     printf " git:%s%s" $notify_flag $branch
-  fi
 
+  fi
 }
 
 # linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
