@@ -18,6 +18,7 @@ set -o vi
 
 ####################################################################
 # alias 本该放到 .bashrc 文件，为了方便统一在此了
+# 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题
 # 常用的列文件
 alias ls='ls --color=auto'
 alias l='ls -CFA'
@@ -25,6 +26,7 @@ alias ll='ls -l'
 alias la='ls -lA'
 alias lla='ls -la'
 
+# 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题
 alias diff='diff --color=auto'
 alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
 #alias egrep='egrep --color=auto'
