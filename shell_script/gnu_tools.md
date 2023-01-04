@@ -1333,7 +1333,7 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
     https://github.com/mintty/mintty/wiki/CtrlSeqs
 
-自1978年的 VT100 以来，Unix/Linux 通用 ANSI escape codes 彩色字符方案：使用固定的文本代码，对字符终端的文本进行修饰，由终端模拟器和软件解释并呈现对应的色彩，目前一般选择终端类型为 xterm 即可。
+自1978年的 VT100 以来，Unix/Linux 通用 ANSI escape codes 彩色字符方案：使用固定的文本代码，对字符终端的文本进行修饰，由终端模拟器和软件解释并呈现对应的色彩，目前一般选择终端类型为 xterm 即可。（用户可以使用shell的tput命令创建交互性的、专业性强的屏幕输出，如移动或更改光标、更改文本属性，以及清除终端屏幕的特定区域）
 
 最古老的基本颜色板（basic colour palette），前景色和背景色分别有 8 种，合计16种如下，修饰文本的颜色代码 \033[0，参见终端登陆脚本中颜色设置的代码 <bash_profile.sh>
 
