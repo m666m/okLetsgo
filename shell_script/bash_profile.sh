@@ -74,9 +74,9 @@ white=$'\[\e[0;37m\]'
 normal=$'\[\e[m\]'
 
 # 为防止函数名污染命令行环境，尽量使用奇怪点的函数名
-# 注意：在执行判断退出码的函数前面不能执行函数，
-#      所以 PS1exit-code 要放在最前面执行
 
+# 注意：在执行判断退出码的函数前面不能执行别的函数，
+# 所以 PS1exit-code 要放在变量 PS1 的最前面
 function PS1exit-code {
   local exitcode=$?
   if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
