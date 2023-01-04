@@ -5593,6 +5593,12 @@ traceroute 查看路由节点
     Too many hops: pmtu 1492
     Resume: pmtu 1492
 
+#### 网络抓包
+
+tcpdump、wireshark 的常见命令
+
+    https://plantegg.github.io/2022/01/01/%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/
+
 用 tcpdump 抓包
 
     https://zhuanlan.zhihu.com/p/74812069
