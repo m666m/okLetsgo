@@ -1463,11 +1463,14 @@ sar 命令选项    功能
 
     https://developer.aliyun.com/article/65255
 
-Perf是Linux kernel自带的系统性能优化工具。
+    Linux Perf 性能分析工具及火焰图浅析 https://zhuanlan.zhihu.com/p/54276509
+
+Perf 是 Linux kernel 自带的系统性能优化工具。
 
     # 注意跟当前操作系统的内核版本匹配
     # sudo apt install linux-perf  # apt show 发现是 4.x，而当前已经是5.x了
     # sudo apt install linux-tools
+
     # 用 apt search 看看是否有这个版本的
     sudo apt install linux-doc-"$(uname -r)"
     sudo apt install linux-tools-"$(uname -r)"
