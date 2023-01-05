@@ -416,6 +416,7 @@ mintty 默认的主题比较保守，只使用256色，如果你想看到真彩�
 
 ```config
 
+# 可自定义表情标签 https://github.com/mintty/mintty/wiki/Tips#installing-emoji-resources
 # https://mintty.github.io/mintty.1.html
 # https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
 Font=MesloLGS NF
@@ -423,8 +424,6 @@ FontHeight=11
 FontSmoothing=full
 # FontWeight=700
 # FontIsBold=yes
-
-# 可自定义表情标签 https://github.com/mintty/mintty/wiki/Tips#installing-emoji-resources
 
 Columns=130
 Rows=40
@@ -436,14 +435,22 @@ CursorBlinks=no
 # 语言设置
 # mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
 Language=@
+
 # 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
 # https://www.cnblogs.com/LCcnblogs/p/6208110.html
 # bash下设置，这个变量设置区域，影响语言、词汇、日期格式等，参见章节 [字符终端的区域、编码、语言]
-Locale=zh_CN  # bash 下显示中文
-#Charset=GBK # 中文版 Windows 使用 ansi 字符集，有些使用utf-8的命令如tail与使用本地字符集的命令如ls会没法都设置完美显示
-Charset=UTF-8 # 这样就能正确展现那些带图标的字体了
+
+# bash 下显示中文
+Locale=zh_CN
+
+# 中文版 Windows 使用 ansi 字符集，有些使用utf-8的命令如tail与使用本地字符集的命令如ls会没法都设置完美显示，需要借助 winpty
+#Charset=GBK
+# 这样就能正确展现那些带图标的字体了
+Charset=UTF-8
+
 # LANG 只影响字符的显示语言
-#LANG=zh_CN.UTF-8  # win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
+# win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
+#LANG=zh_CN.UTF-8
 
 # 窗体透明效果，不适用于嵌入多窗口终端工具
 # Transparency=low
@@ -451,7 +458,7 @@ Charset=UTF-8 # 这样就能正确展现那些带图标的字体了
 # 为了使用更多的颜色，确保终端设置恰当
 Term=xterm-256color
 
-# 非通用标准的色彩项目，单独
+# 非通用标准的项目
 UnderlineColour=153,241,219
 AllowBlinking=yes
 BoldAsFont=yes
