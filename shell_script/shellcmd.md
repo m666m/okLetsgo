@@ -456,12 +456,22 @@ print('back to normal now')
 #############################################
 #
 # cat 生成一段代码到文件，文本当中带有变量也会被解析，除非结束符用单引号包围 'EOFA'
-# EOFA 必须顶行写，前面不能用制表符或者空格，除非用 <<- EOFA
+# EOFA 必须顶行写，前面不能有制表符或者空格
+# https://askubuntu.com/questions/858238/eof-in-cat-and-less
 cat >/etc/network/if-pre-up.d/restore_my_iptables_rule << EOFA
 #!/bin/sh
 iptables -F
 iptables-restore < /etc/iptables/rules.v4
 EOFA
+
+# 除非用 <<-
+if [ -e ~/.bash_profile ]; then
+    cat >abc.txt <<- EOF
+        ABC
+        DEF
+        G
+        EOF
+fi
 
 #############################################
 #
