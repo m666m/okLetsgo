@@ -43,6 +43,9 @@ alias redis-cli="winpty redis-cli"
 alias node="winpty node"
 alias vue='winpty vue'
 
+# Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
+alias ping='winpty ping'
+
 ####################################################################
 # Linux bash / Windows git bash(mintty)
 # 命令行提示符显示当前路径、git分支、python环境名等

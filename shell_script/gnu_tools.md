@@ -383,6 +383,9 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
     alias node="winpty node"
     alias vue='winpty vue'
 
+    # Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
+    alias ping='winpty ping'
+
 Windows version >= 10 / 2019 1809 下的 ConPty 接口兼容了老的控制台应用程序 ConHost 接口，目前支持 ConPty 接口的应用：
 
 一、PowerShell 7+ 运行 cmd 字符程序
