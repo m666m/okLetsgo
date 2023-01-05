@@ -3245,7 +3245,7 @@ filetype plugin indent on    " required
 " https://www.codenong.com/15375992/
 "if &term =~? 'mlterm\|xterm'
 if &term =="screen"
-    set t_Co=256
+  set t_Co=256
 endif
 " 真彩色
 " https://github.com/tmux/tmux/issues/1246
@@ -3338,6 +3338,7 @@ let g:airline#extensions#tabline#fnamecollapse = 2
 
 " 使用 airline 自带功能进行标签之间的切换
 let g:airline#extensions#tabline#buffer_idx_mode = 1
+
 " 定义切换标签的快捷键
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
