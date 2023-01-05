@@ -50,6 +50,7 @@ alias vue='winpty vue'
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
 
+# https://zhuanlan.zhihu.com/p/570148970
 # https://zhuanlan.zhihu.com/p/566797565
 # 色彩      黑    红    绿    黄    蓝    洋红    青    白
 # 前景色    30    31    32    33   34    35    36    37
