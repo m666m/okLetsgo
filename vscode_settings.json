@@ -38,6 +38,9 @@
     // http://www.apeth.com/nonblog/stories/textmatebundle.html
     // 在线编辑 https://tmtheme-editor.herokuapp.com/#!/editor/theme/Monokai
     "workbench.colorCustomizations": {
+        "[Nord]": {
+            "editor.background": "#18161bc5"
+        },
         "window.activeBorder": "#ff7b00c5",
         "sideBarSectionHeader.border": "#ebebeb",
         "inputOption.activeBackground": "#9b9999" // 查找界面的高亮标识
