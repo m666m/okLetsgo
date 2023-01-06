@@ -406,6 +406,8 @@ mintty 支持对 16 色代码表的实际展现效果进行自定义，在 mintt
 
     https://github.com/hsab/WSL-config/tree/master/mintty/themes
 
+    https://github.com/oumu/mintty-color-schemes
+
 将主题文件保存到 mintty 安装目录的 msys64/usr/share/mintty/themes 目录下（C:\Program Files\Git\usr\share\mintty\themes），通过右键 mintty 窗口标题栏的 option 进行选择。
 
 mintty 默认的主题比较保守，只使用256色，如果你想看到真彩色的效果，尝试下选择自定义主题，会看到颜色柔和多了，推荐 nord 主题。文字彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
@@ -465,6 +467,7 @@ BoldAsFont=yes
 
 # 自定义颜色方案，跟深色背景搭配
 # https://github.com/mintty/mintty/wiki/Tips#background-image
+# 根据图片生成颜色方案 https://github.com/makuto/auto-base16-theme
 Background=C:\tools\SuperPuTTY\111dark.jpg
 BackgroundColour=13,25,38
 ForegroundColour=217,230,242
@@ -1343,9 +1346,9 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
     https://github.com/mintty/mintty/wiki/CtrlSeqs
 
-自 1978 年的 VT100 以来，Unix/Linux 一直通用 ANSI escape codes 彩色字符方案：使用固定的文本代码，对字符终端的文本进行修饰，由终端模拟器和软件解释并呈现对应的色彩。在我们使用终端模拟器软件时，设置 ssh 要连接的站点，一般选择终端类型为 xterm 即可（可以使用 shell 的 tput 命令查询或创建交互性的、专业性强的屏幕输出，如移动或更改光标、更改文本属性，以及清除终端屏幕的特定区域）。
+自 1978 年的 VT100 以来，Unix/Linux 一直通用 [ANSI escape codes 彩色字符方案](http://en.wikipedia.org/wiki/ANSI_escape_code)：使用固定的文本代码，对字符终端的文本进行修饰，由终端模拟器和软件解释并呈现对应的色彩。在我们使用终端模拟器软件时，设置 ssh 要连接的站点，一般选择终端类型为 xterm 即可（可以使用 shell 的 tput 命令查询或创建交互性的、专业性强的屏幕输出，如移动或更改光标、更改文本属性，以及清除终端屏幕的特定区域）。
 
-最古老的基本颜色板（basic colour palette），前景色和背景色分别有 8 种，合计16种如下，修饰文本的颜色代码 \033[0，参见终端登陆脚本中颜色设置的代码 <bash_profile.sh>
+最古老的基本颜色板（basic colour palette），前景色和背景色分别有 8 种，合计16种如下，修饰文本的颜色代码 \033[0，参见终端登陆脚本中颜色设置的代码 <bash_profile.sh>。（有个通用的 base16 标准 <https://github.com/chriskempson/base16>，目前各软件应用较少）。
 
     # https://zhuanlan.zhihu.com/p/570148970
     # https://zhuanlan.zhihu.com/p/566797565
