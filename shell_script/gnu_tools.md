@@ -3272,11 +3272,6 @@ if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
-" 用鼠标滚轮滚屏
-set mouse=a
-map <ScrollWheelUp> <C-Y>
-map <ScrollWheelDown> <C-E>
-
 " 显示行号 :set nonumber
 set number
 
@@ -3296,9 +3291,13 @@ let g:netrw_liststyle = 3  " 目录树的显示风格，可以用 i 键来回切
 let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
 "let g:netrw_altv = 1 " 控制垂直拆分的窗口位于右边
 
+" 设置前导键为空格键，需要利用转义符“\”，这个前导键在后面的 airline 设置用到了
+let mapleader="\<space>"
+
 " 开启了自动注释和自动缩进对粘帖代码不方便
 "set fo-=r  "关闭自动注释
-"set noautoindent  "关闭自动缩进（这个对C/C++代码好像无效） :set autoindent
+"set smartindent "识别花括号、c语言格式的自动缩进
+"set noautoindent  "关闭自动缩进（新增加的行和前一行使用相同的缩进，这个对C/C++代码好像无效） :set autoindent
 "set nocindent  "关闭C语言缩进  :set cindent
 "
 " 粘贴的代码（shift+insert）会自动缩进，导致格式非常混乱
@@ -3307,8 +3306,10 @@ let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
 "nnoremap <F2> :set invpaste paste?<CR>  " 按下后提示当前paset的状态，使用了状态栏工具无需用此
 set pastetoggle=<F2>
 
-" 设置前导键为空格键，需要利用转义符“\”，这个前导键在后面的 airline 设置用到了
-let mapleader="\<space>"
+" 用鼠标滚轮滚屏
+set mouse=a
+map <ScrollWheelUp> <C-Y>
+map <ScrollWheelDown> <C-E>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " 加载插件 vim-airline vim-airline-themes nerdtree 等
@@ -3376,7 +3377,9 @@ let g:airline#extensions#nerdtree_statusline = 1
 " 语法高亮的彩色方案设置
 
 " 防止某次关闭了语法高亮，下次打开vi则自动再打开
-syntax enable
+if !exists('g:syntax_on')
+  syntax enable
+endif
 
 " 使用下载的主题插件自带的语法高亮的色彩方案
 "colorscheme PaperColor
