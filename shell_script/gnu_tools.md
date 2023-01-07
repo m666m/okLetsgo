@@ -3109,11 +3109,12 @@ Plug 'airblade/vim-gitgutter',
 " Peekaboo extends " and @ in normal mode and <CTRL-R> in insert mode so you can see the contents of the registers.
 Plug 'junegunn/vim-peekaboo'
 
+" 注意颜色主题需要使用命令 colorscheme xxx 才能启用
 " 颜色主题 https://www.nordtheme.com/ports/vim
 Plug 'arcticicestudio/nord-vim'
 
 " 颜色主题 https://github.com/NLKNguyen/papercolor-theme
-" Plug 'NLKNguyen/papercolor-theme'
+Plug 'NLKNguyen/papercolor-theme'
 
 " Initialize plugin system
 " - Automatically executes `filetype plugin indent on` and `syntax enable`.
@@ -3294,8 +3295,16 @@ let g:netrw_liststyle = 3  " 目录树的显示风格，可以用 i 键来回切
 let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
 "let g:netrw_altv = 1 " 控制垂直拆分的窗口位于右边
 
+" 用鼠标滚轮滚屏
+set mouse=a
+map <ScrollWheelUp> <C-Y>
+map <ScrollWheelDown> <C-E>
+
 " 设置前导键为空格键，需要利用转义符“\”，这个前导键在后面的 airline 设置用到了
 let mapleader="\<space>"
+
+ " 删除行尾空格，普通模式下连续按3次空格
+ nmap <leader><Space><Space> :%s/\s\+$//<cr>
 
 " 开启了自动注释和自动缩进对粘帖代码不方便
 "set fo-=r  "关闭自动注释
@@ -3308,11 +3317,6 @@ let mapleader="\<space>"
 " 把<F2>就设置为改变paste模式的快捷键
 "nnoremap <F2> :set invpaste paste?<CR>  " 按下后提示当前paset的状态，使用了状态栏工具无需用此
 set pastetoggle=<F2>
-
-" 用鼠标滚轮滚屏
-set mouse=a
-map <ScrollWheelUp> <C-Y>
-map <ScrollWheelDown> <C-E>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " 加载插件 vim-airline vim-airline-themes nerdtree 等
@@ -3372,9 +3376,9 @@ nmap <leader>+ <Plug>AirlineSelectNextTab
 " 启用 airline 内置扩展：左侧显示nerdtree插件文件树内容的状态栏效果
 let g:airline#extensions#nerdtree_statusline = 1
 
-" 启用 airline 内置主题：如果自行下载了主题，可以关闭这里
-" 内置主题居然没有配套的 colorscheme，不用这个内置的了
-"let g:airline_theme='papercolor'
+" airline 启用内置主题：只影响状态栏颜色，没有配套的 colorscheme
+" 如果再指定 colorscheme 方案，就可以使用不同的语法高亮和状态栏的色彩
+let g:airline_theme='papercolor'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " 语法高亮的彩色方案设置
@@ -3384,7 +3388,7 @@ if !exists('g:syntax_on')
   syntax enable
 endif
 
-" 使用下载的主题插件自带的语法高亮的色彩方案
+" 使用下载的主题插件自带的语法高亮的色彩方案，同时会影响状态栏颜色
 "colorscheme PaperColor  " 支持设置背景色
 colorscheme nord
 
