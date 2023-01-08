@@ -731,22 +731,29 @@ edge 浏览器->设置->外观->整体外观：选择“系统默认”则跟随
 
 TODO: 待整理
 
-自从谷歌退出中国市场后，其搜索结果质量日渐下降。壹读、每日头条、热备资讯、兰州养生网、代码日志等网站，多为复制抄袭、机器翻译的垃圾内容网站，在谷歌搜索中反而占据前排位置。
++ uBlacklist
 
-uBlacklist是一个禁止特定网站显示在谷歌搜索结果的浏览器插件，使用其可以将不喜欢的网站、垃圾网站加入屏蔽列表，从而净化搜索结果，节省你宝贵的时间。
+    自从谷歌退出中国市场后，其搜索结果质量日渐下降。壹读、每日头条、热备资讯、兰州养生网、代码日志等网站，多为复制抄袭、机器翻译的垃圾内容网站，在谷歌搜索中反而占据前排位置。
 
-使用Chrome浏览器打开uBlacklist安装网址：
+    uBlacklist 是一个禁止特定网站显示在谷歌搜索结果的浏览器插件，使用其可以将不喜欢的网站、垃圾网站加入屏蔽列表，从而净化搜索结果，节省你宝贵的时间。
 
-    https://chrome.google.com/webstore/detail/ublacklist/pncfbmialoiaghdehhbnbhkkgmjanfhe
+    使用Chrome浏览器打开 uBlacklist 安装网址：
 
-点击页面上的安装按钮即可。
+        https://chrome.google.com/webstore/detail/ublacklist/pncfbmialoiaghdehhbnbhkkgmjanfhe
 
-uBlacklist添加订阅源
+    点击页面上的安装按钮即可。
 
-    uBlacklist插件支持订阅黑名单，感谢网友提供信息，可以使用 https://cdn.jsdelivr.net/gh/cobaltdisco/Google-Chinese-Results-Blocklist@master/uBlacklist_subscription.txt 这一个比较好的订阅源，基本覆盖了各种不良网址以及内容农场。使用方法如下：
+    uBlacklist 添加订阅源
 
-    在禁止图标上右键，点击“选项”；
-    选项页面拉到下面，点击“添加订阅”。在弹框中名称随便填写，例如“abc”，URL地址填入 https://cdn.jsdelivr.net/gh/cobaltdisco/Google-Chinese-Results-Blocklist@master/uBlacklist_subscription.txt，然后点击“添加”
+        uBlacklist 插件支持订阅黑名单，感谢网友提供信息，可以使用 https://cdn.jsdelivr.net/gh/cobaltdisco/Google-Chinese-Results-Blocklist@master/uBlacklist_subscription.txt
+
+        这一个比较好的订阅源，基本覆盖了各种不良网址以及内容农场。使用方法如下：
+
+        在禁止图标上右键，点击“选项”；
+
+        选项页面拉到下面，点击“添加订阅”。在弹框中名称随便填写，例如“abc”，URL地址填入 https://cdn.jsdelivr.net/gh/cobaltdisco/Google-Chinese-Results-Blocklist@master/uBlacklist_subscription.txt，
+
+        然后点击“添加”
 
 ### 关闭附件管理器检查
 

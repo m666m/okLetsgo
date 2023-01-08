@@ -116,7 +116,7 @@ function PS1git-branch-name {
   if [ $exitcode -eq 0 ]; then
     printf "%s" $branch_name
     unset branch_name
-    return 0
+    return
   fi
   unset branch_name
 
@@ -139,7 +139,7 @@ function PS1git-branch-prompt {
   local branch=`PS1git-branch-name`
 
   # 没有 branch 名说明不在 git 环境中
-  [[ $branch ]] || return 0
+  [[ $branch ]] || return
 
   # 在裸仓库或 .git 目录中，运行 git status 会报错，所以先判断下
   # if ! $(git status >/dev/null 2>&1) ; then
@@ -167,6 +167,9 @@ PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green
 #   系统 throttled 不是零
 #   CPU Load Average 的值应该小于CPU核数的70%，取5分钟平均负载
 function PS1raspi-warning-info {
+
+  # [[ $(which vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
+
   local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
   if [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "70000" ]; then
