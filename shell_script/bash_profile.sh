@@ -30,6 +30,7 @@ alias lla='ls -la'
 alias diff='diff --color=auto'
 alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
 #alias egrep='egrep --color=auto'
+#alias fgrep='fgrep --color=auto'
 alias tree='tree -a -I .git'
 
 ####################################################################

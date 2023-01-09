@@ -462,9 +462,7 @@ virtualenv 依赖操作系统内安装好的 python，主要解决多个项目�
 
 用 bash 的问题是，用 pip 的时候偶尔有报错，因为 pip 在 Windows 下的脚本是按 cmd 环境开发的。
 
-示例：cmd 的 bat 文件，在 cmd 下执行
-
-    call your_env.bat
+在 cmd 下执行的 bat 文件
 
 ```cmd
 @REM
@@ -475,9 +473,11 @@ deactivate
 pause
 ```
 
-只要安装了git for windows，直接双击sh文件就可以。如果 sh 文件关联没有建立，则执行 git-bash(mintty) 调用 sh 文件
+执行最好用 call
 
-    "C:\Program Files\Git\git-bash.exe" --no-cd "C:\tools\pyenvs\yourprojectenv.sh"
+    call your_env.bat
+
+在 bash 下执行的 sh 文件，需要设置 conda init 以支持 git bash(mintty)，详见章节 [conda init 命令设置命令行工具]。
 
 ```shell
 #!/bin/sh
@@ -488,6 +488,12 @@ python /c/Users/xxx/pycode/yourapp.py
 deactivate
 read -n1 -p "Press any key to continue..."
 ```
+
+如果安装了 git for windows，直接双击该 sh 文件就可以执行。如果 sh 文件的关联没有建立，则执行 git-bash(mintty) 调用 sh 文件
+
+    "C:\Program Files\Git\git-bash.exe" --no-cd "C:\tools\pyenvs\yourprojectenv.sh"
+
+如果需要显示中文需要修改配置文件 ~\.minttyrc，详见 [mintty(bash)] <gnu_tools.md>。
 
 python-xy 不再更新维护了，废弃
 <https://python-xy.github.io/> 微软推荐的<https://devblogs.microsoft.com/python/unable-to-find-vcvarsall-bat>
@@ -719,6 +725,8 @@ Anaconda 安装完毕后，默认的环境base是最新的一个python版本如p
 
 ### Windows 下脚本化使用 conda 环境
 
+CMD 下执行的 bat 脚本
+
 ```cmd
 @rem anaconda 命令行执行
 @rem C:\ProgramData\Anaconda3\Scripts\activate
@@ -734,7 +742,7 @@ python C:\Users\your_name\pycode\your_project\app.py
 pause
 ```
 
-mintty bash 的 sh 文件，在 bash 下执行，需要设置 conda init 以支持 git bash(mintty)，详见章节 [conda init 命令设置命令行工具]。
+mintty bash 的 sh 文件
 
 ```shell
 #!/bin/sh
@@ -747,8 +755,6 @@ python /c/Users/your_name/pycode/your_project/app.py
 conda deactivate
 read -n1 -p "Press any key to continue..."
 ```
-
-如果需要显示中文需要修改配置文件 ~\.minttyrc，详见 [mintty(bash)] <gnu_tools.md>。
 
 ### conda 包管理常用命令
 
