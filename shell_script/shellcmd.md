@@ -1793,3 +1793,11 @@ tmux用一个守护进程打开多个终端窗口实现了一直在后台运行�
 
     # 退出会话，后台任务不会再跟随关闭了
     bash-3.2$ exit
+
+如果后续又想把这个任务调回前台，需要安装 reptyr
+
+    比 screenify 好用 https://github.com/nelhage/reptyr
+
+最好在 tmux 里执行，这样以后就不用担心遇到这种尴尬了
+
+    reptyr PID

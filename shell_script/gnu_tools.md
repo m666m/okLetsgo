@@ -4676,6 +4676,12 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
             make
             sudo make install
 
+reptyr
+
+    https://github.com/nelhage/reptyr
+
+从你的当前终端连接指定的 pid，适用于把 Ctrl+Z 挂起到后台的任务重新调用回前台。
+
 ### 项目构建工具 Make、Automake、CMake、Ninja
 
 Make

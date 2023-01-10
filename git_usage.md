@@ -40,7 +40,6 @@
 
     git分支的使用过程 https://zhuanlan.zhihu.com/p/22369088
 
-
 ## 何时使用git而不是svn
 
 因为git就是给开源准备的，适合开源方式开发的就适合用git。
