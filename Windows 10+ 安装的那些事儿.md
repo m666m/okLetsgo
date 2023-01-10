@@ -789,7 +789,9 @@ uBlock Origin
 
         uBlacklist 插件支持订阅黑名单，感谢网友提供信息，可以使用 https://cdn.jsdelivr.net/gh/cobaltdisco/Google-Chinese-Results-Blocklist@master/uBlacklist_subscription.txt
 
-        这一个比较好的订阅源，基本覆盖了各种不良网址以及内容农场。使用方法如下：
+        这一个比较好的订阅源，基本覆盖了各种不良网址以及内容农场。
+
+        使用方法如下：
 
         在禁止图标上右键，点击“选项”；
 
@@ -797,7 +799,9 @@ uBlock Origin
 
         然后点击“添加”
 
-    读取网站数据权限：在所有网站上
+    读取网站数据权限：在特定网站
+
+        https://google.com/*
 
 ### 关闭附件管理器检查
 
