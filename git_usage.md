@@ -22,19 +22,24 @@
 
     git官方文档 <https://git-scm.com/book/zh/v2/Git-%E5%88%86%E6%94%AF-%E5%88%86%E6%94%AF%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E6%B5%81>
 
-    命令速查 <https://training.github.com/downloads/zh_CN/github-git-cheat-sheet/>
-    命令参考 <https://git-scm.com/docs>
+    命令参考 https://git-scm.com/docs
+
+    命令速查
+
+        https://github.com/k88hudson/git-flight-rules
+
+        https://training.github.com/downloads/zh_CN/github-git-cheat-sheet/
 
     git使用教程
-        <https://zhuanlan.zhihu.com/p/158076293>
-        <https://www.liaoxuefeng.com/wiki/896043488029600>
+        https://zhuanlan.zhihu.com/p/158076293
+        https://www.liaoxuefeng.com/wiki/896043488029600
 
     git命令教程
-        <https://learngitbranching.js.org/?locale=zh_CN>
-        <https://www.yiibai.com/git/git_branch.html>
+        https://learngitbranching.js.org/?locale=zh_CN
+        https://www.yiibai.com/git/git_branch.html
 
-    git分支的使用过程 <https://zhuanlan.zhihu.com/p/22369088>
-    Git 之 merge 与 rebase 的区别 <https://www.cnblogs.com/zhangzhang-y/p/13682281.html>
+    git分支的使用过程 https://zhuanlan.zhihu.com/p/22369088
+
 
 ## 何时使用git而不是svn
 
@@ -1092,6 +1097,8 @@ clone完成后，进入目录，执行
 不断增大步骤2的数字，直到找到你要的commit
 
 ## 两个分支合并的 merge/rebase 效果
+
+    Git 之 merge 与 rebase 的区别 https://www.cnblogs.com/zhangzhang-y/p/13682281.html
 
 能做合并的基础是两个分支有相交点，如果三分支合并无直接交点需要用rebase <https://git-scm.com/docs/git-rebase>
 
