@@ -729,7 +729,49 @@ edge 浏览器->设置->外观->整体外观：选择“系统默认”则跟随
 
 ### 安装 Google Chrome 浏览器插件
 
-TODO: 待整理
+Aria2 for Chrome
+
+    chrome://extensions/?id=mpkodccbngfoacfalldjimigbofkhgjn
+
+搭配本机安装的 Motrix 下载（后台 aira2），只要选项 `Aria2-RPC-Server` 设置一致的 “API KEY” 和 监听地址 <http://localhost:6800/jsonrpcAria2-RPC-Server>。
+
+读取网站数据权限：在所有网站上
+
+smartUp手势
+
+    chrome://extensions/?id=bgjfekefhjemchdeigphccilhncnjldn
+
+Proxy SwitchyOmega
+
+    chrome://extensions/?id=padekgcemlokbadohgkifijomclgjgif
+
+添加 proxy，类型 SOCKS5 localhost 10808
+
+读取网站数据权限：在所有网站上
+
+Git Master
+
+    chrome://extensions/?id=klmeolbcejnhefkapdchfhlhhjgobhmo
+
+读取网站数据权限：在特定网站上
+
+    https://github.com/*
+    https://gitlab.com/*
+    https://gitee.com/*
+
+读取网站数据权限：在所有网站上
+
+APK Downloader
+
+    chrome://extensions/?id=idkigghdjmipnppaeahkpcoaiphjdccm
+
+读取网站数据权限：无
+
+uBlock Origin
+
+    chrome://extensions/?id=cjpalhdlnbpafiamejdnhcphjbkeiagm
+
+读取网站数据权限：在所有网站上
 
 + uBlacklist
 
@@ -754,6 +796,8 @@ TODO: 待整理
         选项页面拉到下面，点击“添加订阅”。在弹框中名称随便填写，例如“abc”，URL地址填入 https://cdn.jsdelivr.net/gh/cobaltdisco/Google-Chinese-Results-Blocklist@master/uBlacklist_subscription.txt，
 
         然后点击“添加”
+
+    读取网站数据权限：在所有网站上
 
 ### 关闭附件管理器检查
 
