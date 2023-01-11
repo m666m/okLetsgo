@@ -1243,7 +1243,7 @@ Windows内存诊断
 
 根证书预期目的是“所有”的危险性，比如写一个Windows程序，签名用假造的证书名叫微软公司，Windows操作系统会认可为正确。<https://www.zhihu.com/question/50919835>。
 
-现实中，大量的淘宝等杂货铺来源的usb/pcie/雷电接口的外接设备，提供的各种国内国外小公司的驱动程序，都在安装一个test证书，权限是“ALL”。对这种驱动程序，只能建议在虚拟机中隔离使用，千万不能为了方便跟你的常用电脑环境混在一起。
+现实中，大量的淘宝等杂货铺来源的 usb/pcie/雷电接口的外接设备，提供的驱动程序来自国内国外各种奇怪的小作坊公司，一般都会安装一个test证书，权限是“ALL”，这种证书一般是开发内部测试使用，绝不该出现在正规的厂商中。对这种驱动程序，只能建议在虚拟机中隔离使用，千万不能为了方便跟你的常用电脑环境混在一起。
 
 如果证书有问题，通信加密是完全没有作用的，对方可以随便使用一个伪造的网站如邮箱网站引导你登陆，而你的浏览器会视为真实网站，不会做任何提示。对网络通信的封包来说，如果证书有问题，在网关或路由器层面隐藏的中间人代理，完全可以使用他的私钥解密任何你发送的数据包的内容。
 
@@ -1251,9 +1251,11 @@ Windows内存诊断
 
     不明来源、声誉不好的公司出品的软件，尽量在虚拟机安装使用。
 
+    如果要清除该证书，只需将其移动到"不受信任的证书"中。
+
     删除所有疑似跟cn相关的证书，即使来源注明是美国注册的公司，但是只要有cn投资的，统统删除，这个之前出过几次丑闻了，搜“Firefox CNNIC MCS wosign starcom OSCCA 证书” <https://zhuanlan.zhihu.com/p/34391770> <https://www.zhihu.com/question/49291684> <https://www.landian.vip/archives/15656.html>。
 
-    Mozilla Firefox 自己维护一套可信任的 CA 证书列表；而 Chrome 使用操作系统厂商维护的可信任 CA 证书列表。Firefox Fusion 甚至用洋葱，但是，Mozilla 的 CA 认证出事不止一次了（搜“Firefox 证书” <https://wiki.mozilla.org/CA%3AWoSign_Issues>）。
+    Mozilla Firefox 自己维护一套可信任的 CA 证书列表；而 Chrome 使用操作系统厂商维护的可信任 CA 证书列表。Firefox Fusion 甚至用洋葱，但是，Mozilla 的 CA 认证出事不止一次了，搜“Firefox 证书” <https://wiki.mozilla.org/CA%3AWoSign_Issues>。
 
 Windows 10的1607版本之后，内核模式代码似乎使用了独立的信任证书库，可防止第三方的驱动程序只要有自签名就可以加载到操作系统<https://github.com/HyperSine/Windows10-CustomKernelSigners/blob/master/README.zh-CN.md>。
 
