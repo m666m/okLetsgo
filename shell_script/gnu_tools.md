@@ -4834,6 +4834,9 @@ There are three different implementations:
     tar -xzvf arc.tar.gz
     tar -jxvf xx.tar.bz2
 
+    # 把 /home 目录压缩，输出到标准输入流，管道后面的命令是从标准输出流读取数据解压
+    tar -cvf - /home | tar -xvf -
+
 .gz 文件
 
     # 解压
