@@ -166,8 +166,7 @@ PuTTY is a free implementation of SSH and Telnet for Windows and Unix platforms,
         从 putty 拉的分支而来，是对 putty 的易用性改进，共用putty的站点配置，增加了背景透明、支持站点列表的文件夹、自动化操作脚本，可以给站点加注释，还有便携版
 
     北极主题颜色 https://github.com/arcticicestudio/nord-putty
-
-    i   只进行了颜色设置的一个 session：Nord，以此 session 打开各个ssh连接即可。
+        导入后putty会话里多了一个只进行了颜色设置的 session：Nord，以此 session 打开各个ssh连接即可。
 
     超多主题颜色，有 putty 的
 
@@ -451,7 +450,7 @@ Locale=zh_CN
 Charset=UTF-8
 
 # LANG 只影响字符的显示语言
-# win7下显示utf-8文件内容, 可先执行命令“locale” 查看ssh所在服务器是否支持
+# win7下显示utf-8文件内容, 可先执行命令 `locale` 查看ssh所在服务器是否支持
 #LANG=zh_CN.UTF-8
 
 # 窗体透明效果，不适用于嵌入多窗口终端工具
@@ -841,34 +840,54 @@ WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用，至今�
     https://github.com/wez/wezterm
         https://wezfurlong.org/
 
-kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/MacOS 桌面下使用
+Linux 桌面感觉没啥意义，用自带的就行了
 
-    https://github.com/kovidgoyal/kitty
-        https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
+    Gnome 桌面自带 Xterm
+    KDE 桌面自带 Konsole
+    Xfce 桌面自带 xfce
 
-    常用插件挺好用 https://sw.kovidgoyal.net/kitty/kittens_intro/
+    sudo apt install rxvt-unicode
 
-Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
+    sudo apt install terminator
 
-    https://www.warp.dev/
-        https://github.com/warpdotdev/Warp
-        主题 https://github.com/warpdotdev/themes
+    sudo apt install guake
+
+    sudo apt install cool-retro-term
+
+    sudo apt install terminology
+
+    kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/MacOS 桌面下使用
+
+        sudo apt install kitty
+
+        https://github.com/kovidgoyal/kitty
+            https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
+
+        常用插件挺好用 https://sw.kovidgoyal.net/kitty/kittens_intro/
+
+    Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
+
+        https://www.warp.dev/
+            https://github.com/warpdotdev/Warp
+            主题 https://github.com/warpdotdev/themes
 
 cmder 推荐了几个本地终端模拟器，可以嵌入 cmder 代替 ConEmu
 
     https://github.com/cmderdev/cmder/wiki/Seamless-Terminus-integration
 
-        Tabby（原名Terminus）跨平台的终端模拟器，electron + nodejs 写的，支持终端多路复用，目前不支持导入 putty 的站点 https://github.com/Eugeny/tabby
-        目前使用sz传输大文件时文件会损坏，老老实实的用 sftp 吧
+        Tabby（原名Terminus）跨平台的终端模拟器，electron + nodejs 写的，支持终端多路复用，不支持导入 putty 的站点，目前使用sz传输大文件时文件会损坏，老老实实的用 sftp 吧
+            https://github.com/Eugeny/tabby
             使用介绍 https://zhuanlan.zhihu.com/p/447977207
 
     https://github.com/cmderdev/cmder/wiki/Seamless-Hyper-integration
 
-        hyper 基于 xterm.js 和 Electron实现 https://hyper.is/
+        hyper 基于 xterm.js 和 Electron实现
+            https://hyper.is/
 
     https://github.com/cmderdev/cmder/wiki/Seamless-FluentTerminal-Integration
 
-        FluentTerminal 基于 xterm.js 的 UWP 应用 https://github.com/felixse/FluentTerminal
+        FluentTerminal 基于 xterm.js 的 UWP 应用
+            https://github.com/felixse/FluentTerminal
 
 Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` 查看常用命令。自己的脚本语言可以基于自己的指令定义函数、基于函数定义脚本。可以开发 rust 插件给他扩展功能。
 
