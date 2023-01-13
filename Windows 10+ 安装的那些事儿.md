@@ -1043,7 +1043,7 @@ Git Master 在 github web页面添加导航树：
 
     同类还有 https://github.com/ovity/octotree
 
-“读取和更改站点数据”配置仅读取 github、gitee、gitlab 站点
+“读取和更改站点数据”配置为仅限 github、gitee、gitlab 站点
 
 smartUp 手势：配置中增加“摇杆手势”
 
@@ -1057,13 +1057,13 @@ Aria2 for Edge：配合开源的使用aria2的下载程序[Motrix](https://githu
 
     https://microsoftedge.microsoft.com/addons/detail/aria2-for-edge/jjfgljkjddpcpfapejfkelkbjbehagbh
 
-“读取和更改站点数据”配置为“单击扩展时”，
+“读取和更改站点数据”配置为“单击扩展时”
 
 QR码生成与识别
 
     https://microsoftedge.microsoft.com/addons/detail/qr%E7%A0%81%E7%94%9F%E6%88%90%E4%B8%8E%E8%AF%86%E5%88%AB/nmddeihindhodaigflchmkmechmjjjbc
 
-“读取和更改站点数据”配置为“单击扩展时”，
+“读取和更改站点数据”配置为“单击扩展时”
 
 ### 安装 Google Chrome 浏览器插件
 

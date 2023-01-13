@@ -4832,12 +4832,12 @@ There are three different implementations:
 
     # 解包并解压缩, 把 x 换成 t 就是只查看文件列表而不真正解压
     tar -xzvf arc.tar.gz
-    tar -jxvf xx.tar.bz2
+    tar -xjvf xx.tar.bz2
 
-    # 把 /home 目录压缩，输出到标准输入流，管道后面的命令是从标准输出流读取数据解压
-    tar -cvf - /home | tar -xvf -
+    # 把 /home 目录打包，输出到标准输入流，管道后面的命令是从标准输出流读取数据解包
+    tar -cvf - /home |tar -xvf -
 
-    # curl下载默认输出是标准输入流，tar从标准输出流读取数据解压到指定的目录下
+    # curl下载默认输出是标准输入流，管道后面的命令是tar从标准输出流读取数据解压到指定的目录下
     curl -fsSL https://go.dev/dl/go1.19.5.linux-armv6l.tar.gz |sudo tar -C /usr/local -xzvf -
 
 .gz 文件
