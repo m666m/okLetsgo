@@ -668,7 +668,7 @@ Windows 10 默认没有安装的某些增强性安全功能组件是依赖虚拟
 
 优选：设置->轻松使用->颜色滤镜：选择“打开颜色滤镜”，选择“灰度”按钮，显示器变成黑白效果，失去了彩色，也不舒服。
 
-最优选：设置->个性化->颜色：下面有个“更多选项”，对“选择默认应用模式”选择“暗”，整个 Windows 的配色方案都变成了暗色，各个软件窗口也跟着变了。这个办法最舒服，白天切换回去也很方便。写到注册表里，在桌面点击右键实现方便切换
+最优选：设置->个性化->颜色：下面有个“更多选项”，对“选择默认应用模式”选择“暗”，整个 Windows 的主题配色方案都变成了暗色，各个软件窗口也跟着变了。这个办法最舒服，白天切换到“亮”也很方便。写到注册表里，在桌面点击右键实现方便切换
 
 Add_App_Mode_to_desktop_context_menu.reg：
 
@@ -708,100 +708,6 @@ edge 浏览器->设置->外观->整体外观：选择“系统默认”则跟随
     在搜索栏输入“Force Dark Mode for Web Contents”
 
     选择 enable，点击选择重启浏览器，除图片以外的所有部分进入夜间模式
-
-### 安装 Microsoft Edge 浏览器插件
-
-注意设置右键插件图标，选择扩展在哪些网站生效，尽量缩小插件的生效范围。
-
-    uBlock Origin
-
-    最终启用右键单击：“读取和更改站点数据”配置为“单击扩展时”
-
-    Git Master 在 github web页面添加导航树：“读取和更改站点数据”配置仅读取 github、gitee、gitlab 站点
-        https://github.com/ineo6/git-master
-    同类还有 https://github.com/ovity/octotree
-
-    smartUp 手势：配置中增加“摇杆手势”
-        https://github.com/zimocode/smartup
-    同类有个 clean crxMouse Gestures 但是没有开源且不更新了。
-
-    Aria2 for Edge：“读取和更改站点数据”配置为“单击扩展时”，配合开源的使用aria2的下载程序[Motrix](https://github.com/agalwood/Motrix/)，打开rpc，端口统一16800，设置相同的api key。
-
-### 安装 Google Chrome 浏览器插件
-
-Aria2 for Chrome
-
-    chrome://extensions/?id=mpkodccbngfoacfalldjimigbofkhgjn
-
-搭配本机安装的 Motrix 下载（后台 aira2），只要选项 `Aria2-RPC-Server` 设置一致的 “API KEY” 和 监听地址 <http://localhost:6800/jsonrpcAria2-RPC-Server>。
-
-读取网站数据权限：在所有网站上
-
-smartUp手势
-
-    chrome://extensions/?id=bgjfekefhjemchdeigphccilhncnjldn
-
-Proxy SwitchyOmega
-
-    chrome://extensions/?id=padekgcemlokbadohgkifijomclgjgif
-
-添加 proxy，类型 SOCKS5 localhost 10808
-
-读取网站数据权限：在所有网站上
-
-Git Master
-
-    chrome://extensions/?id=klmeolbcejnhefkapdchfhlhhjgobhmo
-
-读取网站数据权限：在特定网站上
-
-    https://github.com/*
-    https://gitlab.com/*
-    https://gitee.com/*
-
-读取网站数据权限：在所有网站上
-
-APK Downloader
-
-    chrome://extensions/?id=idkigghdjmipnppaeahkpcoaiphjdccm
-
-读取网站数据权限：无
-
-uBlock Origin
-
-    chrome://extensions/?id=cjpalhdlnbpafiamejdnhcphjbkeiagm
-
-读取网站数据权限：在所有网站上
-
-+ uBlacklist
-
-    自从谷歌退出中国市场后，其搜索结果质量日渐下降。壹读、每日头条、热备资讯、兰州养生网、代码日志等网站，多为复制抄袭、机器翻译的垃圾内容网站，在谷歌搜索中反而占据前排位置。
-
-    uBlacklist 是一个禁止特定网站显示在谷歌搜索结果的浏览器插件，使用其可以将不喜欢的网站、垃圾网站加入屏蔽列表，从而净化搜索结果，节省你宝贵的时间。
-
-    使用Chrome浏览器打开 uBlacklist 安装网址：
-
-        https://chrome.google.com/webstore/detail/ublacklist/pncfbmialoiaghdehhbnbhkkgmjanfhe
-
-    点击页面上的安装按钮即可。
-
-    uBlacklist 添加订阅源
-
-        uBlacklist 插件支持订阅黑名单，感谢网友提供信息，可以使用 https://cdn.jsdelivr.net/gh/cobaltdisco/Google-Chinese-Results-Blocklist@master/uBlacklist_subscription.txt
-
-        这一个比较好的订阅源，基本覆盖了各种不良网址以及内容农场。
-
-        使用方法如下：
-
-        在禁止图标上右键，点击“选项”；
-
-        选项页面拉到下面，点击“添加订阅”。在弹框中名称随便填写，例如“abc”，URL地址填入 https://cdn.jsdelivr.net/gh/cobaltdisco/Google-Chinese-Results-Blocklist@master/uBlacklist_subscription.txt，
-
-        然后点击“添加”
-
-    读取网站数据权限：在特定网站
-
-        https://google.com/*
 
 ### 关闭附件管理器检查
 
@@ -1091,14 +997,13 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
     主板BIOS中的FAST BOOT选项也要关闭。
 
-## Windows 10 小工具
+## 常用软件工具
 
 问题步骤记录器
 
     快捷键【Win+R】调出运行窗口，在运行窗口内输入【psr.exe】命令，输入完成之后句点击下方的【确定】按钮。
 
     弹出问题步骤记录器后，点击【开始记录】就可以记录桌面上所有的操作，点击【停止记录】就会自动弹出保存文件的窗口。（这个录制的方法只能录制画面，不能录制声音，而且它是以HTML的格式保存的，会抓取你的每一步操作并添加说明。）
-
 
     PPT也自带录屏功能，打开PPT，点击菜单栏上的【插入】-【媒体】，然后点击里面的【屏幕录制】功能。
 
@@ -1113,6 +1018,128 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
     快捷键【Win+g】调出，属于xbox游戏工具栏，可以录制游戏中的视频。
 
 QQ里面也有一个录屏功能，不过要在QQ运行状态下才能使用，按下快捷键【Ctrl+Alt+S】弹出鼠标箭头和网格线后，框选要录屏的区域，然后点击右上角的【开始录制】就可以了。
+
+### 安装 Microsoft Edge 浏览器插件
+
+注意设置右键插件图标，选择扩展在哪些网站生效，尽量缩小插件的生效范围。
+
+uBlock Origin
+
+    https://microsoftedge.microsoft.com/addons/detail/ublock-origin/odfafepnkmbhccpbejgmiehpchacaeak
+
+    https://github.com/gorhill/uBlock
+
+最终启用右键单击：
+
+    https://microsoftedge.microsoft.com/addons/detail/%E6%9C%80%E7%BB%88%E5%90%AF%E7%94%A8%E5%8F%B3%E9%94%AE%E5%8D%95%E5%87%BB/ijopbbfjlehabpldjiaipgiiedhfhbad
+
+“读取和更改站点数据”配置为“单击扩展时”
+
+Git Master 在 github web页面添加导航树：
+
+    https://microsoftedge.microsoft.com/addons/detail/git-master/pcpkfgepcjdmdfelbabogmgoadgmiocg
+
+    https://github.com/ineo6/git-master
+
+    同类还有 https://github.com/ovity/octotree
+
+“读取和更改站点数据”配置仅读取 github、gitee、gitlab 站点
+
+smartUp 手势：配置中增加“摇杆手势”
+
+    https://microsoftedge.microsoft.com/addons/detail/smartup%E6%89%8B%E5%8A%BF/elponhbfjjjihgeijofonnflefhcbckp
+
+    https://github.com/zimocode/smartup
+
+    同类有个 clean crxMouse Gestures 但是没有开源且不更新了。
+
+Aria2 for Edge：配合开源的使用aria2的下载程序[Motrix](https://github.com/agalwood/Motrix/)，打开rpc，端口统一16800，设置相同的api key。
+
+    https://microsoftedge.microsoft.com/addons/detail/aria2-for-edge/jjfgljkjddpcpfapejfkelkbjbehagbh
+
+“读取和更改站点数据”配置为“单击扩展时”，
+
+QR码生成与识别
+
+    https://microsoftedge.microsoft.com/addons/detail/qr%E7%A0%81%E7%94%9F%E6%88%90%E4%B8%8E%E8%AF%86%E5%88%AB/nmddeihindhodaigflchmkmechmjjjbc
+
+“读取和更改站点数据”配置为“单击扩展时”，
+
+### 安装 Google Chrome 浏览器插件
+
+Aria2 for Chrome
+
+    chrome://extensions/?id=mpkodccbngfoacfalldjimigbofkhgjn
+
+配合开源的aria2的下载程序 [Motrix](https://github.com/agalwood/Motrix/)，选项 `Aria2-RPC-Server`，端口统一16800，设置相同的 api key，监听地址 <http://localhost:16800/jsonrpcAria2-RPC-Server>。
+
+读取网站数据权限：在所有网站上
+
+smartUp手势
+
+    chrome://extensions/?id=bgjfekefhjemchdeigphccilhncnjldn
+
+Proxy SwitchyOmega
+
+    chrome://extensions/?id=padekgcemlokbadohgkifijomclgjgif
+
+添加 proxy，类型 SOCKS5 localhost 10808
+
+读取网站数据权限：在所有网站上
+
+Git Master
+
+    chrome://extensions/?id=klmeolbcejnhefkapdchfhlhhjgobhmo
+
+读取网站数据权限：在特定网站上
+
+    https://github.com/*
+    https://gitlab.com/*
+    https://gitee.com/*
+
+读取网站数据权限：在所有网站上
+
+APK Downloader
+
+    chrome://extensions/?id=idkigghdjmipnppaeahkpcoaiphjdccm
+
+读取网站数据权限：无
+
+uBlock Origin
+
+    chrome://extensions/?id=cjpalhdlnbpafiamejdnhcphjbkeiagm
+
+读取网站数据权限：在所有网站上
+
++ uBlacklist
+
+    自从谷歌退出中国市场后，其搜索结果质量日渐下降。壹读、每日头条、热备资讯、兰州养生网、代码日志等网站，多为复制抄袭、机器翻译的垃圾内容网站，在谷歌搜索中反而占据前排位置。
+
+    uBlacklist 是一个禁止特定网站显示在谷歌搜索结果的浏览器插件，使用其可以将不喜欢的网站、垃圾网站加入屏蔽列表，从而净化搜索结果，节省你宝贵的时间。
+
+    使用Chrome浏览器打开 uBlacklist 安装网址：
+
+        https://chrome.google.com/webstore/detail/ublacklist/pncfbmialoiaghdehhbnbhkkgmjanfhe
+
+    点击页面上的安装按钮即可。
+
+    uBlacklist 添加订阅源
+
+        uBlacklist 插件支持订阅黑名单，感谢网友提供信息，可以使用 https://cdn.jsdelivr.net/gh/cobaltdisco/Google-Chinese-Results-Blocklist@master/uBlacklist_subscription.txt
+
+        这一个比较好的订阅源，基本覆盖了各种不良网址以及内容农场。
+
+        使用方法如下：
+
+        在禁止图标上右键，点击“选项”；
+
+        选项页面拉到下面，点击“添加订阅”。在弹框中名称随便填写，例如“abc”，URL地址填入 https://cdn.jsdelivr.net/gh/cobaltdisco/Google-Chinese-Results-Blocklist@master/uBlacklist_subscription.txt，
+
+        然后点击“添加”
+
+    读取网站数据权限：在特定网站
+
+        https://google.com/*
 
 ## 备份和恢复选项
 
