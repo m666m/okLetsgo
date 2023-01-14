@@ -1553,6 +1553,74 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
     Windows Terminal 可以通过真彩测试，但对块状字符的渲染方式有问题：zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此。terminal-testdrive.sh 测试：不支持 sixel 图像，少了几个文字修饰效果。
 
+#### base16颜色方案
+
+    https://github.com/chriskempson/base16
+
+base16 在语法高亮时的定义
+
+    https://github.com/chriskempson/base16/blob/main/styling.md
+
+    base00 - Default Background
+    base01 - Lighter Background (Used for status bars, line number and folding marks)
+    base02 - Selection Background
+    base03 - Comments, Invisibles, Line Highlighting
+    base04 - Dark Foreground (Used for status bars)
+    base05 - Default Foreground, Caret, Delimiters, Operators
+    base06 - Light Foreground (Not often used)
+    base07 - Light Background (Not often used)
+    base08 - Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted
+    base09 - Integers, Boolean, Constants, XML Attributes, Markup Link Url
+    base0A - Classes, Markup Bold, Search Text Background
+    base0B - Strings, Inherited Class, Markup Code, Diff Inserted
+    base0C - Support, Regular Expressions, Escape Characters, Markup Quotes
+    base0D - Functions, Methods, Attribute IDs, Headings
+    base0E - Keywords, Storage, Selector, Markup Italic, Diff Changed
+    base0F - Deprecated, Opening/Closing Embedded Language Tags, e.g. <?php ?>
+
+终端模拟器方案
+
+    https://github.com/thefryscorer/schemer2
+
+给出背景图片，会生成各种终端模拟器的16色配色方案
+
+    schemer2 -format img::colors -in 111dark2.jpg -out colors.txt
+
+转换为 mintty 使用
+
+```python
+
+mintty_template=(
+    'Black=',
+    'BoldBlack=',
+    'Red=',
+    'BoldRed=',
+    'Green=',
+    'BoldGreen=',
+    'Yellow=',
+    'BoldYellow=',
+    'Blue=',
+    'BoldBlue=',
+    'Magenta=',
+    'BoldMagenta=',
+    'Cyan=',
+    'BoldCyan=',
+    'White=',
+    'BoldWhite='
+)
+
+with open('./colors.txt', encoding="utf-8") as f:
+    colorStringHex = f.readlines()
+
+for m in range(16):
+
+    # From https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
+    rgb = tuple(int(colorStringHex[m].strip('#')[i:i+2], 16) for i in (0, 2 ,4))
+
+    print(rgb)
+
+```
+
 ### 字符终端的区域、编码、语言
 
 变量依赖从大到小的顺序是：LC_ALL, LC_CTYPE, LANG
@@ -3526,7 +3594,7 @@ map <C-n> :NERDTreeToggle<CR>
     #   查找光标所在处的单词，向上查找，重复按就是查找下一个匹配项
 
     :%s/old/new/g   替换，搜索整个文件，将所有的 old 替换为 new
-    :%s/old/new/gc  替换，搜索整个文件，将所有的 old 替换为 new，每次都要你确认是否替换
+    :%s/old/new/gc  替换，搜索整个文件，将所有的 old 替换为 new，每次都要你确认是否替换，可根据提示选择a=all
 
 删除复制粘贴
 
