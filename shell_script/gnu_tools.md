@@ -170,8 +170,11 @@ PuTTY is a free implementation of SSH and Telnet for Windows and Unix platforms,
 
     超多主题颜色，有 putty 的
 
-        http://ciembor.github.io/4bit/ 点击右上角“Get Scheme”
         https://github.com/mbadolato/iTerm2-Color-Schemes
+
+    自定义主题颜色，自己设计
+
+        https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
 
 术语：会话 Session
 
@@ -399,7 +402,7 @@ Windows version >= 10 / 2019 1809 下的 ConPty 接口兼容了老的控制台�
 
 mintty 支持对 16 色代码表的实际展现效果进行自定义，在 mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
 
-    http://ciembor.github.io/4bit/
+    https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
 
 主题颜色
 
@@ -444,9 +447,11 @@ Language=@
 # bash 下显示中文
 Locale=zh_CN
 
-# 中文版 Windows 使用 ansi 字符集，有些使用utf-8的命令如tail与使用本地字符集的命令如ls会没法都设置完美显示，需要借助 winpty
+# 中文版 Windows 使用 ansi 字符集，
+# 但使用 UTF-8 的命令如 tail、ls 会没法都设置完美显示中文，
+# 或使用 uinx pty 的命令如 python卡死，需要借助 winpty。
+# 设置为 UTF-8 还能正确展现那些带图标的字体
 #Charset=GBK
-# 这样就能正确展现那些带图标的字体了
 Charset=UTF-8
 
 # LANG 只影响字符的显示语言
@@ -466,8 +471,8 @@ BoldAsFont=yes
 
 # 自定义颜色方案，跟深色背景搭配
 # https://github.com/mintty/mintty/wiki/Tips#background-image
-# 根据图片生成颜色方案 https://github.com/thefryscorer/schemer2
-#   参见章节 [base16颜色方案](gnu_tools.md okletsgo)
+# 自定义颜色方案 https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
+# 根据图片生成颜色方案 https://github.com/thefryscorer/schemer2 参见章节 [base16颜色方案](gnu_tools.md okletsgo)
 Background=C:\tools\SuperPuTTY\111dark.jpg
 BackgroundColour=13,25,38
 ForegroundColour=217,230,242
@@ -499,17 +504,16 @@ BoldWhite=255,255,255
 #Red=255,30,18
 #BoldRed=255,84,74
 #Green=82,173,58
-#BoldGreen=65,136,47
+#BoldGreen=86,182,63
 #Yellow=192,175,56
 #BoldYellow=166,150,36
-#Blue=11,80,155
-#BoldBlue=9,58,113
+#Blue=13,94,183
+#BoldBlue=13,86,168
 #Magenta=255,18,243
 #BoldMagenta=255,147,250
-#Cyan=3,201,162
-#BoldCyan=67,214,181
-##218,232,237
-#White=107,165,186
+#Cyan=2,179,143
+#BoldCyan=40,164,142
+#White=134,179,196
 #BoldWhite=180,180,180
 
 # 自定义颜色方案，跟浅色背景搭配-绿色
@@ -1625,7 +1629,7 @@ print('\nPut below into your .minttyrc file:\n')
 for m in range(16):
 
     # From https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
-    rgb = tuple(str(int(colorStringHex[m].strip('#')[i:i+2], 16)) for i in (0, 2 ,4))
+    rgb = tuple(str(int(colorStringHex[m].strip('#')[i:i+2], 16)) for i in (0, 2, 4))
     #print(rgb)
 
     mintty_rgb = mintty_template[m] + ','.join(rgb)

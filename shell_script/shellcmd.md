@@ -409,7 +409,7 @@ cmd1 | tee out1.dat | cmd2 | tee out2.dat | cmd3 > out3.dat
 
 ####################################################################
 #
-# 文字颜色生成模板 http://ciembor.github.io/4bit
+# 文字颜色生成模板 https://ciembor.github.io/4bit
 #
 
 # 一个颜色文字的例子
