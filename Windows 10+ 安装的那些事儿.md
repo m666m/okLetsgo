@@ -1045,6 +1045,12 @@ Git Master 在 github web页面添加导航树：
 
 “读取和更改站点数据”配置为仅限 github、gitee、gitlab 站点
 
+    https://github.com/*
+
+    https://gitlab.com/*
+
+    https://gitee.com/*
+
 smartUp 手势：配置中增加“摇杆手势”
 
     https://microsoftedge.microsoft.com/addons/detail/smartup%E6%89%8B%E5%8A%BF/elponhbfjjjihgeijofonnflefhcbckp

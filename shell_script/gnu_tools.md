@@ -466,7 +466,8 @@ BoldAsFont=yes
 
 # 自定义颜色方案，跟深色背景搭配
 # https://github.com/mintty/mintty/wiki/Tips#background-image
-# 根据图片生成颜色方案 https://github.com/makuto/auto-base16-theme
+# 根据图片生成颜色方案 https://github.com/thefryscorer/schemer2
+#   参见章节 [base16颜色方案](gnu_tools.md okletsgo)
 Background=C:\tools\SuperPuTTY\111dark.jpg
 BackgroundColour=13,25,38
 ForegroundColour=217,230,242
@@ -1425,7 +1426,7 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
     mintty 也有个颜色工具，按终端颜色伪代码组织
 
-        curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |sh
+        curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash
 
     256色展示，按每种颜色组织
 
@@ -1580,15 +1581,22 @@ base16 在语法高亮时的定义
 
 终端模拟器方案
 
+给出背景图片，会生成各种终端模拟器的16色配色方案
+
     https://github.com/thefryscorer/schemer2
 
-给出背景图片，会生成各种终端模拟器的16色配色方案
+普通使用生成 colors 即可，格式对应上面的 base16 在语法高亮时的定义
 
     schemer2 -format img::colors -in 111dark2.jpg -out colors.txt
 
-转换为 mintty 使用
+转换为 mintty 的颜色方案使用如下 python 代码
 
 ```python
+
+# https://github.com/thefryscorer/schemer2
+#   schemer2 -format img::colors -in 111dark2.jpg -out colors.txt
+#   python3 colors_to_mintty.py
+# 查看整体效果 curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash
 
 mintty_template=(
     'Black=',
@@ -1612,12 +1620,18 @@ mintty_template=(
 with open('./colors.txt', encoding="utf-8") as f:
     colorStringHex = f.readlines()
 
+print('\nPut below into your .minttyrc file:\n')
+
 for m in range(16):
 
     # From https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
-    rgb = tuple(int(colorStringHex[m].strip('#')[i:i+2], 16) for i in (0, 2 ,4))
+    rgb = tuple(str(int(colorStringHex[m].strip('#')[i:i+2], 16)) for i in (0, 2 ,4))
+    #print(rgb)
 
-    print(rgb)
+    mintty_rgb = mintty_template[m] + ','.join(rgb)
+    print(mintty_rgb)
+
+print('\nThen restart mintty to take effect, you can run `curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash` to see the color scheme.')
 
 ```
 
