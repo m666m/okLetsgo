@@ -4458,12 +4458,9 @@ tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServe
 
 #### tmux 扩展插件
 
-    插件大全 https://github.com/tmux-plugins/list
-        保存 tmux 布局方便恢复
-            https://github.com/tmux-plugins/tmux-continuum
-            https://github.com/tmux-plugins/tmux-resurrect
+插件大全
 
-依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
+    https://github.com/tmux-plugins/list
 
 要设置状态栏彩色，包括tmux中vim使用彩色，需要编辑 ~/.tmux.conf 文件，添加如下行
 
@@ -4475,6 +4472,8 @@ tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServe
     #   https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh
     #set -as terminal-features ",xterm-256color:RGB"  # tmux 3.2+
     set -as terminal-overrides ",xterm-256color:RGB"
+
+多彩色设置的其它依赖，详见章节 [终端模拟器和软件的真彩色设置]。
 
 一、状态栏显示使用 powerline
 
@@ -4499,6 +4498,33 @@ tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
     https://github.com/tmux-plugins/tpm
 
         高亮关键字 https://github.com/tmux-plugins/tmux-prefix-highlight
+
++ 保存 tmux 会话设置，以便计算机重启后快速恢复
+
+        https://github.com/tmux-plugins/tmux-continuum
+        https://github.com/tmux-plugins/tmux-resurrect
+
+    配置
+
+        # 将下述命令添加到.tmux.conf文件中
+        run-shell ~/.tmux/tmux-resurrect/resurrect.tmux
+        run-shell ~/.tmux/tmux-continuum/continuum.tmux
+
+        # Tmux Continuum 默认每隔 15 分钟备份一次，如果你频率过高，可以设置为 1 小时一次：
+        set -g @continuum-save-interval '60'
+
+        # 重载配置文件使之生效
+        tmux source-file ~/.tmux.conf
+
+    使用方法
+
+    手动保存tmux会话
+
+        前缀键(Ctrl-b) + Ctrl-s
+        此时 ，左下角 tmux 状态栏会显示 saving ... 字样 ， 完毕后会提示 Tmux environment saved字样表示 tmux 环境已保存 。
+        Tmux Resurrect 会将 Tmux 会话的详细信息以文本文件形式保存到 ~/.tmux/resurrect 目录 。
+
+    手动还原tmux会话： 前缀键(Ctrl-b) + Ctrl-r
 
 三、安装nord主题，替换 powerline 状态栏显示
 
