@@ -479,17 +479,17 @@ ForegroundColour=217,230,242
 CursorColour=236,255,255
 Black=53,53,53
 BoldBlack=92,92,92
-Red=239,73,73
-BoldRed=250,116,82
-Green=6,183,64
-BoldGreen=15,232,123
+Red=253,102,102
+BoldRed=243,143,141
+Green=34,206,112
+BoldGreen=65,243,123
 Yellow=207,190,116
 BoldYellow=223,216,149
 Blue=55,122,176
 BoldBlue=78,105,214
-Magenta=231,84,124
-BoldMagenta=235,113,146
-Cyan=86,205,157
+Magenta=173,81,54
+BoldMagenta=202,112,85
+Cyan=79,196,181
 BoldCyan=116,207,190
 White=243,240,255
 BoldWhite=255,254,247
@@ -4458,7 +4458,10 @@ tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServe
 
 #### tmux 扩展插件
 
-    https://bobbyhadz.com/blog/tmux-powerline-ubuntu
+    插件大全 https://github.com/tmux-plugins/list
+        保存 tmux 布局方便恢复
+            https://github.com/tmux-plugins/tmux-continuum
+            https://github.com/tmux-plugins/tmux-resurrect
 
 依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
 
@@ -4474,6 +4477,8 @@ tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServe
     set -as terminal-overrides ",xterm-256color:RGB"
 
 一、状态栏显示使用 powerline
+
+    https://bobbyhadz.com/blog/tmux-powerline-ubuntu
 
 先安装 powerline，见章节 [状态栏工具 powerline]。
 
