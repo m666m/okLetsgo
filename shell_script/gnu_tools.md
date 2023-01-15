@@ -4475,71 +4475,19 @@ tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServe
 
 多彩色设置的其它依赖，详见章节 [终端模拟器和软件的真彩色设置]。
 
-一、状态栏显示使用 powerline
+##### 状态栏显示使用 powerline
 
     https://bobbyhadz.com/blog/tmux-powerline-ubuntu
 
 先安装 powerline，见章节 [状态栏工具 powerline]。
 
-tmux使用powerline，编辑 ~/.tmux.conf 文件，添加如下行
+tmux 使用 powerline，编辑 ~/.tmux.conf 文件，添加如下行
 
     run-shell 'powerline-config tmux setup'
 
 然后就可以自由发挥了。
 
-如果不使用 powerline，可以安装 tmux-powerline，这个只使用bash脚本，更简洁
-
-    https://github.com/erikw/tmux-powerline
-
-二、插件管理
-
-感觉这个就别折腾各种插件了。。。
-
-    https://github.com/tmux-plugins/tpm
-
-        高亮关键字 https://github.com/tmux-plugins/tmux-prefix-highlight
-
-+ 保存 tmux 会话设置，以便计算机重启后快速恢复
-
-        https://github.com/tmux-plugins/tmux-continuum
-        https://github.com/tmux-plugins/tmux-resurrect
-
-    配置
-
-        # 将下述命令添加到.tmux.conf文件中
-        run-shell ~/.tmux/tmux-resurrect/resurrect.tmux
-        run-shell ~/.tmux/tmux-continuum/continuum.tmux
-
-        # Tmux Continuum 默认每隔 15 分钟备份一次，如果你频率过高，可以设置为 1 小时一次：
-        set -g @continuum-save-interval '60'
-
-        # 重载配置文件使之生效
-        tmux source-file ~/.tmux.conf
-
-    使用方法
-
-    手动保存tmux会话
-
-        前缀键(Ctrl-b) + Ctrl-s
-        此时 ，左下角 tmux 状态栏会显示 saving ... 字样 ， 完毕后会提示 Tmux environment saved字样表示 tmux 环境已保存 。
-        Tmux Resurrect 会将 Tmux 会话的详细信息以文本文件形式保存到 ~/.tmux/resurrect 目录 。
-
-    手动还原tmux会话： 前缀键(Ctrl-b) + Ctrl-r
-
-三、安装nord主题，替换 powerline 状态栏显示
-
-使用这个主题的好处是它支持<https://github.com/tmux-plugins>的所有插件，在状态栏显示各种字符，启动速度也比 powerline 快。
-
-    颜色方案 https://www.nordtheme.com/ports/tmux
-        https://github.com/arcticicestudio/nord-tmux
-
-不使用插件管理器的安装步骤：
-
-先从github下载
-
-    git clone --depth=1 https://github.com/arcticicestudio/nord-tmux ~/.tmux/themes/nord-tmux
-
-##### 定制 powerline 的段Segment
+###### 定制 powerline 的段Segment
 
 powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 powerline 的配置文件
 
@@ -4580,6 +4528,69 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
     }
 }
 ```
+
+###### 替换 powerline 状态栏显示
+
+安装 nord 主题，使用这个主题的好处是它支持 <https://github.com/tmux-plugins> 的所有插件，在状态栏显示各种字符，启动速度也比 powerline 快。
+
+注意终端工具也需要启用 nord 主题
+
+    https://www.nordtheme.com/ports/tmux
+        https://github.com/arcticicestudio/nord-tmux
+
+不使用插件管理器的安装步骤：
+
+先从 github 下载
+
+    git clone --depth=1 https://github.com/arcticicestudio/nord-tmux ~/.tmux/themes/nord-tmux
+
+将下述命令添加到.tmux.conf文件中
+
+    run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
+
+最好重新加载配置文件
+
+    tmux source-file ~/.tmux.conf
+
+还可以安装 tmux-powerline，这个只使用 bash 脚本实现
+
+    https://github.com/erikw/tmux-powerline
+
+##### 插件管理
+
+感觉这个就别折腾各种插件了。。。
+
+    插件管理器 https://github.com/tmux-plugins/tpm
+
+    高亮关键字 https://github.com/tmux-plugins/tmux-prefix-highlight
+
++ 保存 tmux 会话设置，以便计算机重启后快速恢复
+
+        https://github.com/tmux-plugins/tmux-continuum
+
+        https://github.com/tmux-plugins/tmux-resurrect
+
+    配置
+
+        # 将下述命令添加到.tmux.conf文件中
+        run-shell ~/.tmux/tmux-resurrect/resurrect.tmux
+        run-shell ~/.tmux/tmux-continuum/continuum.tmux
+
+        # Tmux Continuum 默认每隔 15 分钟备份一次，如果你频率过高，可以设置为 1 小时一次：
+        set -g @continuum-save-interval '60'
+
+        # 重载配置文件使之生效
+        tmux source-file ~/.tmux.conf
+
+    使用方法
+
+    手动保存tmux会话
+
+        前缀键(Ctrl-b) + Ctrl-s 此时 ，左下角 tmux 状态栏会显示 saving ... 字样 ， 完毕后会提示 Tmux environment saved字样表示 tmux 环境已保存 。
+
+        Tmux Resurrect 会将 Tmux 会话的详细信息以文本文件形式保存到 ~/.tmux/resurrect 目录 。
+
+    手动还原tmux会话： 前缀键(Ctrl-b) + Ctrl-r，Tmux Continuum 会读取之前在 Tmux Resurrect 保存的会话配置并按此恢复 tmux
 
 ##### .tmux.conf 配置文件样例
 
