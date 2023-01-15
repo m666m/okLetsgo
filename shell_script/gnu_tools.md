@@ -3493,7 +3493,8 @@ if !exists('g:syntax_on')
   syntax enable
 endif
 
-" 使用下载的主题插件自带的语法高亮的色彩方案，同时会影响状态栏颜色
+" 不使用自定义的 colorscheme 会使 vim 背景跟随终端模拟器背景图片
+" 使用下载的主题插件自带的语法高亮的色彩方案
 "colorscheme PaperColor  " 支持设置背景色
 colorscheme nord
 
@@ -3501,7 +3502,7 @@ colorscheme nord
 "set background=dark
 "set background=light
 
-" 终端工具设置了背景透明以显示图片，如果你的主题设置背景色挡住了图片，开启这个设置强制透明
+" 如果终端工具设置了背景图片，而你的colorscheme背景色挡住了图片，开启这个设置强制透明
 "hi Normal guibg=#111111 ctermbg=black
 "hi Normal guibg=NONE ctermbg=NONE
 
