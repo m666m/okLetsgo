@@ -1152,7 +1152,7 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
 
     可以把这个文件夹拷贝到安全的位置，然后将 .exe 文件添加到桌面快捷方式，就能愉快地使用 Windows Terminal 啦！
 
-##### PowerShell 命令提示符工具及美化
+##### PowerShell 7+ 命令提示符工具及美化
 
     https://yqc.im/windows-terminal-using-windows-terminal/
 
@@ -1233,11 +1233,13 @@ dircolors 是 Linux 下的命令，可以设置 ls 指令用彩色显示目录�
 5、最后，把配置写入 PowerShell 的配置文件
 
     PS C:\Users\your_name> $PROFILE
-    C:\Users\your_name\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+    C:\Users\your_name\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
 
     > code $PROFILE
 
 输入内容如下
+
+```powershell
 
     # 命令行提示符git增强
     Import-Module posh-git
@@ -1265,6 +1267,8 @@ dircolors 是 Linux 下的命令，可以设置 ls 指令用彩色显示目录�
 
     # 关联 conda 命令，来自 Ananconda 的开始菜单快捷方式
     C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
+
+```
 
 配置 Windows Terminal
 
