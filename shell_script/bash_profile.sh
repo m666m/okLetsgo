@@ -6,12 +6,12 @@
 ###################################################################
 # 自此开始都是自定义设置
 
-# exit for non-interactive shell
-[[ ! -t 1 ]] && return
-
 # 兼容性设置，用于 .bash_profile 加载多种linux的配置文件
 test -f ~/.profile && . ~/.profile
 test -f ~/.bashrc && . ~/.bashrc
+
+# exit for non-interactive shell
+[[ ! -t 1 ]] && return
 
 # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
 set -o vi
