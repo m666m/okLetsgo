@@ -1428,55 +1428,61 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
     Windows Terminal
 
-+ 256 color 测试脚本
+16 色 测试脚本
 
     颜色、文字粗体闪烁等都有，按终端颜色伪代码组织
 
         curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/colortest.sh |bash
-
-    mintty 也有个颜色工具，按终端颜色伪代码组织
-
-        curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash
-
-    256色展示，按每种颜色组织
-
-        curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/color-spaces.pl |perl
 
     这个简单，在 bash 下执行即可
 
         # https://github.com/msys2/MSYS2-packages/issues/1684#issuecomment-570793998
         for x in {0..8}; do for i in {30..37}; do for a in {40..47}; do echo -ne "\e[$x;$i;$a""m\\\e[$x;$i;$a""m\e[0;37;40m "; done; echo; done; done; echo ""
 
-+ 24bit true color 色条测试脚本，如果色条出现明显的条带分隔，那说明只支持 256 color
+    mintty 的颜色工具，按终端颜色伪代码组织
 
-    这个简单，在 bash 下执行即可
+        curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash
 
-        awk 'BEGIN{
-            printf "\x1b[38;2;255;100;0mTRUECOLOR\x1b[0m\n";
+256 color 测试脚本
 
-            s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
-            for (colnum = 0; colnum<77; colnum++) {
-                r = 255-(colnum*255/76);
-                g = (colnum*510/76);
-                b = (colnum*255/76);
-                if (g>255) g = 510-g;
-                printf "\033[48;2;%d;%d;%dm", r,g,b;
-                printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
-                printf "%s\033[0m", substr(s,colnum+1,1);
-            }
-            printf "\n";
-        }'
+    256色展示，按每种颜色组织
+
+        curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/color-spaces.pl |perl
+
+24bit true color 色条测试脚本，如果色条出现明显的条带分隔，那说明只支持 256 color
+
+    简单在 bash 下执行即可
+
+    ```shell
+
+    awk 'BEGIN{
+        printf "\x1b[38;2;255;100;0mTRUECOLOR\x1b[0m\n";
+
+        s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
+        for (colnum = 0; colnum<77; colnum++) {
+            r = 255-(colnum*255/76);
+            g = (colnum*510/76);
+            b = (colnum*255/76);
+            if (g>255) g = 510-g;
+            printf "\033[48;2;%d;%d;%dm", r,g,b;
+            printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
+            printf "%s\033[0m", substr(s,colnum+1,1);
+        }
+        printf "\n";
+    }'
+
+    ```
 
     连续过渡的颜色色条
 
         # 如果在 putty、Windows Terminal 下无输出，换 mintty 试试
         curl -fsSL https://github.com/bitcrazed/24bit-color/raw/master/24-bit-color.sh |sh
 
-    zsh 下执行
+    zsh 脚本
 
         for code ({000..255}) print -P -- "$code: %F{$code}最左侧三位数字即颜色值Text Color%f"
 
-+ 综合测试 terminal-testdrive.sh
+综合测试 terminal-testdrive.sh
 
     把真彩色和各种文字效果都测试了，兼容性好，在 mintty、putty、Windows Terminal 下都可以正常显示
 
