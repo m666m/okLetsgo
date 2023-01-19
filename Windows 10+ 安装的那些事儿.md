@@ -1019,6 +1019,19 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
 QQ里面也有一个录屏功能，不过要在QQ运行状态下才能使用，按下快捷键【Ctrl+Alt+S】弹出鼠标箭头和网格线后，框选要录屏的区域，然后点击右上角的【开始录制】就可以了。
 
+媒体播放器
+
+    vlc player
+        https://www.videolan.org/vlc/index.zh_CN.html
+            https://www.videolan.org/vlc/download-sources.html
+
+    media player classic BE/HC
+
+    mpv player
+        https://mpv.io/installation/
+            https://github.com/mpv-player/mpv/
+            https://sourceforge.net/projects/mpv-player-windows/files/
+
 ### 安装 Microsoft Edge 浏览器插件
 
 注意设置右键插件图标，选择扩展在哪些网站生效，尽量缩小插件的生效范围。
