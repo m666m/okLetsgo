@@ -105,7 +105,6 @@ GNU/Linux 操作系统中的 /bin/sh 是 bash（Bourne-Again Shell）的符号�
     bash: 支持 echo -e, 支持 declare
     dash: 不支持。
 
-
 ## bash 常见符号用法
 
     https://linux.cn/article-5657-1.html
