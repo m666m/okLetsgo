@@ -35,6 +35,77 @@
                         ||----w |
                         ||     ||
 
+## dash 和 bash
+
+    https://www.cnblogs.com/macrored/p/11548347.html
+
+GNU/Linux 操作系统中的 /bin/sh 是 bash（Bourne-Again Shell）的符号链接a，但鉴于 bash 过于复杂，有人把 ash 从 NetBSD 移植到 Linux 并更名为 dash（Debian Almquist Shell），并建议将 /bin/sh 指向它，以获得更快的脚本执行速度。
+
+在 Debian 和 Ubuntu 中，/bin/sh 默认指向 dash。如需要更换，执行命令 `sudo dpkg-reconfigure dash` 即可。
+
+按照惯例（以及很多写脚本的规范），标记为“#!/bin/sh”的脚本不应使用任何 POSIX 没有规定的特性，即 dash 是支持的。而使用 bash 特性的脚本要使用“#!/bin/bash”。
+
+在理论上，这样应该没有任何副作用。但是现实中，Linux 下的很多（不规范的）脚本有所谓 bashism，却在文件头标记为“#!/bin/sh”，导致 dash 去执行该脚本而报错。有人把脚本失败归咎于 Ubuntu 而不是自己的脚本，这是不公平的：或者把你的脚本首行 shebang 改为 “#!/bin/bash”，或者命令行执行指定解释器 `bash you_script.sh` 。
+
+语法上的主要的区别有:
+
+    1. 定义函数
+    bash: function在bash中为关键字
+    dash: dash中没有function这个关键字
+
+    2. select var in list; do command; done
+    bash:支持
+    dash:不支持, 替代方法:采用while+read+case来实现
+
+    3. echo {0..10}
+    bash:支持{n..m}展开
+    dash:不支持，替代方法, 采用seq外部命令
+
+    4. here string
+    bash:支持here string
+    dash:不支持, 替代方法:可采用here documents
+
+    5. >&word重定向标准输出和标准错误
+    bash: 当word为非数字时，>&word变成重定向标准错误和标准输出到文件word
+    dash: >&word, word不支持非数字, 替代方法: >word 2>&1; 常见用法 >/dev/null 2>&1
+
+    6. 数组
+    bash: 支持数组, bash4支持关联数组
+    dash: 不支持数组，替代方法, 采用变量名+序号来实现类似的效果
+
+    7. 子字符串扩展
+    bash: 支持parameter:offset:length,parameter:offset:length,{parameter:offset}
+    dash: 不支持， 替代方法:采用expr或cut外部命令代替
+
+    8. 大小写转换
+    bash: 支持parameterpattern,parameterpattern,{parameter^^pattern},parameter,pattern,parameter,pattern,{parameter,,pattern}
+    dash: 不支持，替代方法:采用tr/sed/awk等外部命令转换
+
+    9. 进程替换<(command), >(command)
+    bash: 支持进程替换
+    dash: 不支持, 替代方法, 通过临时文件中转
+
+    10. [ string1 = string2 ] 和 [ string1 == string2 ]
+    bash: 支持两者
+    dash: 只支持=
+
+    11. [[ 加强版test
+    bash: 支持[[ ]], 可实现正则匹配等强大功能
+    dash: 不支持[[ ]], 替代方法，采用外部命令
+
+    12. for (( expr1 ; expr2 ; expr3 )) ; do list ; done
+    bash: 支持C语言格式的for循环
+    dash: 不支持该格式的for, 替代方法，用while+((expression))实现13.let命令和((expression))bash:有内置命令let,也支持((expression))方式dash:不支持，替代方法，采用((expression))实现13.let命令和((expression))bash:有内置命令let,也支持((expression))方式dash:不支持，替代方法，采用((expression))或者外部命令做计算
+
+    13. $((expression))
+    bash: 支持id++,id–,++id,–id这样到表达式
+    dash: 不支持++,–, 替代方法:id+=1,id-=1, id=id+1,id=id-1
+
+    14. 其它常用命令
+    bash: 支持 echo -e, 支持 declare
+    dash: 不支持。
+
+
 ## bash 常见符号用法
 
     https://linux.cn/article-5657-1.html
