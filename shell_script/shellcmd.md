@@ -39,15 +39,15 @@
 
     https://www.cnblogs.com/macrored/p/11548347.html
 
-GNU/Linux 操作系统中的 /bin/sh 是 bash（Bourne-Again Shell）的符号链接a，但鉴于 bash 过于复杂，有人把 ash 从 NetBSD 移植到 Linux 并更名为 dash（Debian Almquist Shell），并建议将 /bin/sh 指向它，以获得更快的脚本执行速度。
+GNU/Linux 操作系统中的 /bin/sh 是 bash（Bourne-Again Shell）的符号链接，但鉴于 bash 过于复杂，有人把 ash 从 NetBSD 移植到 Linux 并更名为 dash（Debian Almquist Shell），并建议将 /bin/sh 指向它，以获得更快的脚本执行速度。
 
 在 Debian 和 Ubuntu 中，/bin/sh 默认指向 dash。如需要更换，执行命令 `sudo dpkg-reconfigure dash` 即可。
 
-按照惯例（以及很多写脚本的规范），标记为“#!/bin/sh”的脚本不应使用任何 POSIX 没有规定的特性，即 dash 是支持的。而使用 bash 特性的脚本要使用“#!/bin/bash”。
+按照惯例（以及很多写脚本的规范），标记为 “#!/bin/sh” 的脚本不应使用任何 POSIX 没有规定的特性，这样的脚本用 dash 执行是没问题的。使用 bash 特性的脚本要使用 “#!/bin/bash”。
 
 在理论上，这样应该没有任何副作用。但是现实中，Linux 下的很多（不规范的）脚本有所谓 bashism，却在文件头标记为“#!/bin/sh”，导致 dash 去执行该脚本而报错。有人把脚本失败归咎于 Ubuntu 而不是自己的脚本，这是不公平的：或者把你的脚本首行 shebang 改为 “#!/bin/bash”，或者命令行执行指定解释器 `bash you_script.sh` 。
 
-语法上的主要的区别有:
+dash 和 bash 语法上的主要的区别有:
 
     1. 定义函数
     bash: function在bash中为关键字
