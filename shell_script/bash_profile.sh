@@ -32,6 +32,8 @@ alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
 #alias egrep='egrep --color=auto'
 #alias fgrep='fgrep --color=auto'
 alias tree='tree -a -I .git'
+# ls 列出的目录颜色被 grep 覆盖，用 ls -l 更方便
+alias lsg='ls -l|grep'
 
 ####################################################################
 # Windows git bash(mintty)
