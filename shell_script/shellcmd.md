@@ -67,7 +67,8 @@ dash 和 bash 语法上的主要的区别有:
 
     5. >&word重定向标准输出和标准错误
     bash: 当word为非数字时，>&word变成重定向标准错误和标准输出到文件word
-    dash: >&word, word不支持非数字, 替代方法: >word 2>&1; 常见用法 >/dev/null 2>&1
+    dash: >&word, word不支持非数字, 替代方法: >word 2>&1;
+          bash 常见用法 `your_cmd &>/dev/null` 改写为更兼容的写法 `your_cmd >/dev/null 2>&1`
 
     6. 数组
     bash: 支持数组, bash4支持关联数组
