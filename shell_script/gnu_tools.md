@@ -2510,22 +2510,30 @@ export TERM="xterm-256color"
 
 # 添加 dbian 自带的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias l='ls -CFA'
-    alias ll='ls -l'
-    alias la='ls -lA'
-    alias lla='ls -la'
+#if [ -x /usr/bin/dircolors ]; then
+#    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+#     这里放 alias
+#fi
 
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
+# 常用的列文件
+alias ls='ls --color=auto'
+alias l='ls -CFA'
+alias ll='ls -l'
+alias la='ls -lA'
+alias lla='ls -la'
 
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+#alias dir='dir --color=auto'
+#alias vdir='vdir --color=auto'
 
-fi
+# 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题
+alias diff='diff --color=auto'
+alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
+#alias egrep='egrep --color=auto'
+#alias fgrep='fgrep --color=auto'
+alias tree='tree -a -I .git'
+
+# ls 列出的目录颜色被 grep 覆盖，用 ls -l 更方便
+alias lsg='ls -lA|grep'
 
 # 执行 cd 命令后自动执行下 ls 列出当前文件
 chpwd() ls
