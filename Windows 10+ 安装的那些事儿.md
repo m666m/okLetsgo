@@ -1023,14 +1023,42 @@ QQ里面也有一个录屏功能，不过要在QQ运行状态下才能使用，�
 
     vlc player
         https://www.videolan.org/vlc/index.zh_CN.html
-            https://www.videolan.org/vlc/download-sources.html
+            https://github.com/videolan/vlc
 
-    media player classic BE/HC
+    media player classic BE
+
+        https://sourceforge.net/projects/mpcbe/
+            https://apps.microsoft.com/store/detail/mpcbe/9PD88QB3BGKN?hl=en-us&gl=us
+
+        HC 不再更新2017 https://mpc-hc.org/
+            https://github.com/mpc-hc/mpc-hc
+
+        搭配 madVR
+            http://www.madvr.com/
 
     mpv player
         https://mpv.io/installation/
             https://github.com/mpv-player/mpv/
             https://sourceforge.net/projects/mpv-player-windows/files/
+
+    mplayer 原生 linux 下的播放器
+        http://www.mplayerhq.hu/design7/dload.html
+
+        Windows build
+            https://oss.netfarm.it/mplayer/
+            GUI外壳 https://www.smplayer.info/
+                    https://github.com/smplayer-dev/smplayer
+
+图片查看器
+
+    IrfanView
+        https://www.irfanview.com/
+
+    ImageGlass
+        https://github.com/d2phap/ImageGlass
+
+    XnView
+        https://www.xnview.com/
 
 ### 安装 Microsoft Edge 浏览器插件
 
