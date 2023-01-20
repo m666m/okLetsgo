@@ -42,6 +42,9 @@
             "editor.background": "#212022e0",
             "activityBar.foreground": "#40f9ff"
         },
+        "[Material Neutral]": {
+            "activityBar.foreground": "#40ffb6"
+        },
         "window.activeBorder": "#ff7b00c5",
         "sideBarSectionHeader.border": "#ebebeb",
         "inputOption.activeBackground": "#9b9999" // 查找界面的高亮标识
