@@ -4760,7 +4760,8 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
     # cowsay
     # cowsay -l
-    # echo "Hello world!"|cowsay -f cock
+    # echo "Hello world" |cowthink
+    # echo "Hello world" |cowsay -f www -d
     sudo apt install cowsay
 
     格言大全
