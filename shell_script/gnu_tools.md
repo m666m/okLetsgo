@@ -4758,11 +4758,38 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 牛说
 
+    # cowsay
+    # cowsay -l
+    # echo "Hello world!"|cowsay -f cock
     sudo apt install cowsay
 
     格言大全
 
         sudo apt install fortunes
+
+    随机化选取动物的脚本：
+
+    ```bash
+    # https://zhuanlan.zhihu.com/p/81867213
+    #!/bin/bash
+
+    function rand(){
+        min=$1
+        max=$(($2-$min+1))
+        echo $(($RANDOM%$max+$min))
+    }
+
+    animal=$(ls /usr/share/cowsay/cows | sed 's/\.cow//' | shuf -n 1)
+    fortunes[0]='fortune -e fortunes | cowsay'
+    fortunes[1]='fortune -e literature | cowsay'
+    fortunes[2]='fortune -e riddles | cowsay'
+    fortunes[3]='fortune -e chinese | cowsay'
+    fortunes[4]='fortune -e tang300 | cowsay -n'
+    fortunes[5]='fortune -e song100 | cowsay -n'
+    index=$(rand 0 5)
+    cmd="${fortunes[$index]} -f $animal | lolcat"
+    eval $cmd
+    ```
 
 字符画 figlet + toilet
 
@@ -4860,11 +4887,22 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
             make
             sudo make install
 
+### 小管理工具
+
 reptyr
 
-    https://github.com/nelhage/reptyr
+    # https://github.com/nelhage/reptyr
+    sudo apt install reptyr
 
 从你的当前终端连接指定的 pid，适用于把 Ctrl+Z 挂起到后台的任务重新调用回前台。
+
+Midnight Commander
+
+    # https://midnight-commander.org/ https://github.com/MidnightCommander/mc
+    # https://sourceforge.net/projects/mcwin32/files/
+    sudo apt install mc
+
+命令行下使用两个面板来处理文件和目录。
 
 ### 项目构建工具 Make、Automake、CMake、Ninja
 
