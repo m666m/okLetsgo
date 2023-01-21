@@ -5851,6 +5851,19 @@ traceroute 查看路由节点
     Too many hops: pmtu 1492
     Resume: pmtu 1492
 
+查看网卡统计信息
+
+    $ ethtool -S eth0
+    NIC statistics:
+        rx_packets: 1174939
+        tx_packets: 2813892
+        rx_bytes: 217844784
+        tx_bytes: 952958558
+        rx_errors: 0
+        tx_errors: 0
+        rx_dropped: 0
+        tx_dropped: 0
+
 #### 网络抓包
 
 tcpdump、wireshark 的常见命令
