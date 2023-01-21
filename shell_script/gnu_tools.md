@@ -5834,6 +5834,15 @@ traceroute 查看路由节点
 
     # Windows: tracert www.bing.com
 
+查看网关
+
+    $ route -n
+    Kernel IP routing table
+    Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+    0.0.0.0         192.168.0.1     0.0.0.0         UG    202    0        0 eth0
+    172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
+    192.168.0.0     0.0.0.0         255.255.255.0   U     202    0        0 eth0
+
 查看 mtu
 
     $ sudo apt install iputils-tracepath
