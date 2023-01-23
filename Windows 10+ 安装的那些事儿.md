@@ -19,21 +19,19 @@ UEFI 模式是 Windows 7 之后出现的新型操作系统启动引导方式，�
 
 具体来说，CSM 模式提供硬盘 MBR 引导和传统 PCI opROM 加载支持，后者可以让没有 GOP 的显卡在操作系统启动前（例如 BIOS 设置和 OS 引导器）可以使用并固定使用 VGA 分辨率。只要用到其中一个功能就需要打开 CSM。
 
-早期的 Windows 7 无法很好地支持 UEFI，因此需要 CSM 来检测 UEFI 功能是否已完全启用。也就是说，主板 BIOS 在 CSM 模式下，对 UEFI 进行支持，同时提供选项使用非 UEFI 的古典方式。但是这跟 Windows 10+ 开机纯粹的 UEFI 引导操作系统有区别。
+早期的 Windows 7 无法很好地支持 UEFI，因此需要 CSM 模式来检测 UEFI 功能是否已启用。也就是说，主板 BIOS 在 CSM 模式下，对 UEFI 进行兼容性支持，同时提供使用非 UEFI 的古典方式的选项。
 
 有些如 Nvidia gtx 1080 时代的显卡，用 HDMI 口可以用 UEFI 方式显示画面，而 DP 口则不兼容（只能通过 CSM 模式下的 UEFI 进行显示），需要根据连接该口开机后显示器是否出现画面来设置 BIOS 的上述选项。
 
 ### 硬盘分区类型 GPT/MBR
 
-古典 BIOS、CSM 模式下的 UEFI 和原生 UEFI 之间完全不同。
+MBR 是 Windows 7 之前的硬盘分区方式，GPT 是后续增加的原生 UEFI 引导使用的硬盘分区方式。对不同的硬盘分区类型，Windows 引导启动的方式是不同的。
 
-一个主要的区别是，硬盘分区在硬盘上的记录方式。古典的 BIOS 和 UEFI 在 CSM 模式下使用 DOS 分区表（MBR），原生 UEFI 使用不同的分区方案，称为 “GUID分区表”（GPT）。
+古典 BIOS、CSM 模式下的 UEFI 和原生 UEFI 之间完全不同，一个主要的区别是，硬盘分区在硬盘上的记录方式：古典的 BIOS 和 UEFI 在 CSM 模式下使用 DOS 分区表（MBR），原生 UEFI 使用不同的分区方案，称为 “GUID分区表”（GPT）。
 
 在单个磁盘上，只能使用以上二者中的一个，并且在同一个磁盘上使用不同操作系统的多引导设置的情况下，所有系统都必须使用相同类型的分区表。使用 GPT 从磁盘引导只能在原生 UEFI 模式下进行 <https://www.debian.org/releases/stable/amd64/ch03s06.zh-cn.html#UEFI>。
 
-MBR 是 Windows 7 之前的硬盘分区方式，GPT 是后续增加的纯 UEFI 引导使用的硬盘分区方式。使用不同的硬盘分区类型，Windows 引导启动的方式是不同的。
-
-在 Windows 安装时，有个步骤是划分硬盘分区，如果是一块新的未划分分区的硬盘，默认把启动硬盘上划分了 3 个分区，其中两个特殊的小分区在 Windows 安装完成后默认是隐藏看不到的，这里其实放置了存储设备的 UEFI 引导信息。
+在 Windows 安装时，有个步骤是划分硬盘分区，如果是一块新的未划分分区的硬盘，默认把启动硬盘上划分了 3 个分区，其中两个特殊的小分区在 Windows 安装完成后默认是隐藏看不到的，这里其实放置了存储设备的 UEFI 引导信息，但无法保证硬盘类型是 GPT 还是 MBR，依赖条件见章节 [确保硬盘格式化为 GPT 类型]。
 
 如果只想用一个分区，需要提前把硬盘挂到别的电脑上用 Windows 管理或其他软件分区，明确选择类型为 MBR，或者在 Windows安装程序界面按 Shift+F10 调出命令行，使用命令行 diskpart 程序，手工划分（不推荐）。
 
@@ -148,7 +146,7 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 只是 Windows 安装程序提示不允许罢了。
 
-主板 BIOS 设置 UEFI 启动如果没找到 GPT 分区，就会自动转 CSM 模式，通过 MBR 分区表引导 UEFI 模式的 Windows 进行启动，注意这只是一种兼容方式，不是纯 UEFI 模式。
+主板 BIOS 设置 UEFI 启动如果没找到 GPT 分区，就会自动转 CSM 模式，通过 MBR 分区表引导 UEFI 模式的 Windows 进行启动，注意这只是一种兼容方式，不是原生 UEFI 模式。
 
 #### 参考
 
@@ -164,7 +162,7 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 2. F7 装载系统默认优化设置：BOOT->Load optimized defaults，F10 保存设置并立刻重启计算机。然后再重新进入主板 BIOS 设置做进一步设置。如果连续改一堆设置，在BIOS里就死机，估计是bios系统没初始化好。改的太多它自己就乱了或bios电池没激活导致的。所以如果有很多功能要调整，别连续改，改一个系列的就保存设置重启计算机一次。
 
-3. 注意这之后引导操作系统默认是 UEFI 的，存储设备选项需要手动打开 CSM 后切换，详见后面的章节 [主板 BIOS 设置启动模式为纯 UEFI]。
+3. 注意这之后引导操作系统默认是 UEFI 的，存储设备选项需要手动打开 CSM 后切换，详见后面的章节 [主板 BIOS 设置启动模式为原生 UEFI]。
 
 4. 内存：TWEAKS->Memory， 选择 X.M.P profiles，以启用 3600MHz 最优频率，这个版本的 BIOS 也已经自动放开了，我的这个内存默认 1.2v 跑到了 3900MHz。
 
@@ -204,27 +202,35 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
     https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot
 
-在 Windows 10/11 安装之前，如果要 Secure Boot 功能，则需要在主板的 BIOS 设置中明确开启 UEFI 选项，在主板 BIOS 设置中，启动模式选项（Windows 10 Features）要选择 “Windows 10” 而不是 “other os”，CMS 模式选择“关闭”。技嘉主板要注意，CMS 模式开启时，关于存储和 PCIe 设备的选项要保证是 UEFI 模式，然后再关闭 CSM 模式。原因详见下面章节 [主板 BIOS 设置启动模式为纯 UEFI]。
+### 前提条件
+
+    只要系统引导时不是使用原生 UEFI+GPT，比如使用 CSM 兼容模式，这样安装的 Windows 都无法开启 Secure Boot 功能。
 
 Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
-    主板 BIOS 启动模式是纯 UEFI：在 BIOS 设置 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选项是 “Disable”。
+    主板 BIOS 启动模式是原生 UEFI：在 BIOS 设置 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选项是 “Disable”。
 
     主板 BIOS 开启 Secure Boot 功能。
 
     安装u盘：在使用 Rufus 制作安装u盘时要选择 “GPT+UEFI” 方式，再用u盘以 UEFI 启动计算机安装 Windows。
 
-    硬盘格式化为纯 UEFI+ GPT 类型
+    硬盘格式化为原生 UEFI+ GPT 类型
 
-安装 Windows 时，安装程序检查上面几个条件，并且用户选择对整个磁盘重新建立分区，才会把硬盘格式化为纯 UEFI+ GPT 类型。如果之前已有分区，不是纯 UEFI+GPT，在上面安装 Widnows 也无法开启 Secure Boot 功能
+如果是已经划分过分区的硬盘：
 
-    在主板 BIOS 的启动模式是 none UEFI 和 CSM 模式下， Windows 安装程序自动把硬盘格式化为 MBR 类型而不是 GPT 类型。即使你用现成的 GPT 类型硬盘安装 Windows 也不行：二者都会让安装程序自动使用 CSM 兼容模式下的 UEFI 方式，这样安装的 Windows 都无法开启 Secure Boot 功能。
+    硬盘是原生 UEFI+GPT，但是其它前提条件不符
 
-如果有条件不符，Windows 安装程序不会给出提示，只是默默的换用 CSM 兼容模式进行安装，在 Windows 安装后才能验证是否正确开启了 Secure Boot 功能。
+    硬盘不是原生 UEFI+GPT，你没有选择对整个磁盘重新建立分区，而是选择直接安装 Windows
 
-如果安装后发现 BIOS 启动模式不是纯 UEFI，想把 BIOS 设置里的存储设备类型改回为 UEFI：
+都会导致 Windows 安装程序自动使用 CSM 兼容模式进行引导安装。
 
-    该硬盘启动系统的时候会自动跳转主板 BIOS 的 CMS 模式下的 UEFI 方式，读取硬盘的 UEFI 分区引导系统。只能重装系统，用纯 UEFI+GPT 模式安装 Windows，参见章节 [Windows 启用 Secure Boot 功能]。
+如果是新硬盘，或用户选择对整个磁盘重新建立分区，Windows 安装程序先检查上面3个前提条件，然后决定硬盘类型：前提条件都符合，才会把硬盘格式化为原生 UEFI+ GPT 类型。只要有前提条件不符，Windows 安装程序就会自动把硬盘格式化为 MBR 类型，导致用 CSM 兼容模式进行引导安装。
+
+最尴尬的是，在 Windows 安装完成后才能确认 Secure Boot 功能是否成功开启。
+
+如果安装后发现 BIOS 启动模式不是原生 UEFI，想把 BIOS 设置里的存储设备类型改回为 UEFI：
+
+    该硬盘启动系统的时候会自动跳转主板 BIOS 的 CMS 模式下的 UEFI 方式，读取硬盘的 UEFI 分区引导系统。只能重装系统，用原生 UEFI+GPT 模式安装 Windows，参见章节 [Windows 启用 Secure Boot 功能]。
 
 安装 Windows 11 在 Secure Boot 的基础上，还要求主板 BIOS 开启 TPM2.0
 
@@ -280,7 +286,7 @@ rufus 制作时引导类型选择 “FreeDos” 就行了，完成后把 ghost �
 
 对 Windows 10 + 来说，不需要用 ghost 启动盘了，推荐直接使用 Windows 自带的系统映像备份，参见下面章节 [系统映像备份]。
 
-### 二、主板 BIOS 设置启动模式为纯 UEFI
+### 二、主板 BIOS 设置启动模式为原生 UEFI
 
 Windows 安装程序是根据当前 BIOS 设置的引导方式，来决定对硬盘格式化为哪个分区类型
 
@@ -330,7 +336,7 @@ Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个�
 
 1、主板 BIOS 先开启 UEFI 功能
 
-见章节 [主板 BIOS 设置启动模式为纯 UEFI]。
+见章节 [主板 BIOS 设置启动模式为原生 UEFI]。
 
 2、开启 “Secure Boot”
 
@@ -975,11 +981,11 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
 开机硬件加载阶段
 
-    纯 UEFI 引导会直接跳过硬件检测，过程如下：引导→UEFI 初始化→加载系统→进入系统。传统的 BIOS 在加载系统之前需要进行一系列的硬件检查。
+    原生 UEFI 引导会直接跳过硬件检测，过程如下：引导→UEFI 初始化→加载系统→进入系统。传统的 BIOS 在加载系统之前需要进行一系列的硬件检查。
 
 “UEFI + GPT” 模式结合 “快速启动（Fast Boot）” 功能打开后，关机之后的开机，都是直接厂商 logo 转一圈就直接进系统的，不会再有主板自检启动画面和 Windows 启动的画面。
 
-即使是 CSM 模式，也能开机秒进桌面，只要 BIOS 中设置开启 Fast Boot，而 Windows 默认开启了 FAST BOOT，二者配合，即使没有纯 UEFI 模式下跳过 UEFE 开机加载的零点几秒，也有睡眠恢复操作系统节约的好几秒，从而使用户感觉开机非常快。
+即使是 CSM 模式，也能开机秒进桌面，只要 BIOS 中设置开启 Fast Boot，而 Windows 默认开启了 FAST BOOT，二者配合，即使没有原生 UEFI 模式下跳过 UEFE 开机加载的零点几秒，也有睡眠恢复操作系统节约的好几秒，从而使用户感觉开机非常快。
 
 操作系统快速恢复之前现场
 
