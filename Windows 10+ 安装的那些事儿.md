@@ -53,7 +53,7 @@ UEFI 启动的时候，经过一系列初始化阶段（SEC、CAR、DXE 等）�
 
     UEFI 标准 2.x，推出了一个叫做 SecureBoot 的功能。开了 SecureBoot 功能之后，主板会验证即将加载的 efi 文件的签名，如果开发者不是受信任的开发者，就会拒绝加载。所以主板厂商需要提前在主板里内置微软的公钥，设备商想做 efi 文件需要去微软做认证取得签名，这样主板加载 efi 的时候会用内置的微软的公钥验证设备商 efi 文件里的签名，通过了才加载。这个过程从头到位都得微软认证，满满的对 linux 不友好啊。
 
-    目前Debian包含一个由Microsoft签名的“shim”启动加载程序，因此可以在启用了安全引导的系统上正常工作 <https://www.debian.org/releases/stable/amd64/ch03s06.en.html#secure-boot>。
+    目前Debian包含一个由Microsoft签名的“shim”启动加载程序，因此可以在启用了安全引导的计算机上正常工作  <https://www.debian.org/releases/stable/amd64/ch03s06.en.html#secure-boot>。
 
 首先各种 PCI-E 的设备，比如显卡，比如 PCI-E 的 NVMe 固态硬盘，都有固件。其中支持 UEFI 的设备，比如 10 系列的 Nvidia 显卡，固件里就会有对应的 UEFI 的驱动。
 
@@ -288,11 +288,7 @@ rufus 制作时引导类型选择 “FreeDos” 就行了，完成后把 ghost �
 
 ### 二、主板 BIOS 设置启动模式为原生 UEFI
 
-Windows 安装程序是根据当前 BIOS 设置的引导方式，来决定对硬盘格式化为哪个分区类型
-
-    只有 BIOS 里把PCIE设备和存储设备类型设为 UEFI 才会默认用 GPT 类型，设为 legacy 会默认用 MBR 类型（可能需要先 “CSM Support” - enable 才有这个选项，设置后记得再 “CSM Support” - disable）。
-
-重启开机后按 F2 进入 bios
+重启开机后按 F2 进入 BIOS
 
 1、确保“启动模式”、“存储”和 “PCIe 设备” 等都是 UEFI 模式
 
@@ -300,9 +296,9 @@ Windows 安装程序是根据当前 BIOS 设置的引导方式，来决定对硬
 
     启动模式选项（Windows 10 Features）要选择 “Windows 10” 而不是 “other os”。
 
-    选项 “CSM Support”， 先选 “Enable”，之后下面出现的三项，除了网卡启动的那个选项不用管，其它两个关于 “存储” 和 “PCIe 设备” 的选项要确认选的是 “UEFI”。
+    选项 “CSM Support”， 先选 “Enable”，之后出现的三项，除了网卡启动的那个选项不用管，其它两个关于 “存储” 和 “PCIe 设备” 的选项要确认选的是 “UEFI”。
 
-    然后对选项 “CSM Support”， 再选 “Disable” 关闭 CMS 模式，下面三个选项消失。
+    然后对选项 “CSM Support”， 再选 “Disable” 关闭 CMS 模式，三个选项消失。
 
 确认
 
@@ -314,7 +310,9 @@ Windows 安装程序是根据当前 BIOS 设置的引导方式，来决定对硬
 
     主板 BIOS 设置里 “Windows 10 Features” 选择 “other os”，“CSM Support” 选 “Enable”，存储和 PCIe 设备都选择 “UEFI”，兼容 UEFI 设备，可以安装 Windows 10，但无法开启 Secure Boot 功能。
 
-    主板 BIOS 设置里 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选 “Disable”，存储和 PCIe 设备都选择 “UEFI”，完全支持 UEFI 设备，可以安装 Windows 10，自动开启 Secure Boot 功能。
+    主板 BIOS 设置里 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选“Enable”，存储和 PCIe 设备都选择 “leagcy”，兼容非 UEFI 设备，可以安装 Windows 10，但无法开启 Secure Boot 功能。
+
+    主板 BIOS 设置里 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选 “Disable”，存储和 PCIe 设备都选择 “UEFI”，完全支持 UEFI 设备，可以安装 Windows 10，可以开启 Secure Boot 功能。
 
 UEFI 模式下显卡连接 DP 口刚开机时，屏幕自动使用显示器的物理分辨率，出现的主板厂商 logo 画面应该是比较小的原始图片尺寸，没有经过拉伸等分辨率调整。我的 Nvidia 1080 显卡目前只能在 HDMI 口连接时实现这个效果，DP 口连接时主板厂商 logo 画面被自动拉伸了，暂无法确定是否在显示器的物理分辨率下。
 
@@ -330,9 +328,9 @@ UEFI 模式下显卡连接 DP 口刚开机时，屏幕自动使用显示器的�
 
 Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用是主板 UEFI 启动时只加载经过认证的操作系统或者硬件驱动程序，从而防止恶意软件侵入。
 
-    Debian 包含一个由 Microsoft 签名的 “shim” 启动加载程序，因此可以在启用了 Secure Boot 的系统上正常工作 <https://www.debian.org/releases/stable/amd64/ch03s06.en.html#secure-boot>。
-
     如果你要装的 Linux 不支持 SecureBoot，记得关掉主板 BIOS 的 SecureBoot 设置。
+
+    Debian 包含一个由 Microsoft 签名的 “shim” 启动加载程序，因此可以在启用了 Secure Boot 的计算机上正常工作 <https://www.debian.org/releases/stable/amd64/ch03s06.en.html#secure-boot>。
 
 1、主板 BIOS 先开启 UEFI 功能
 
@@ -388,23 +386,25 @@ Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个�
 
 使用安装u盘开机启动，按快捷键 F8 进入 BIOS 的启动菜单，对u盘有两个选项，注意要选择带有 “UEFI” 字样的那个u盘启动。
 
-以上都符合了，Windows 安装程序才会认为计算机是完全的 UEFI 模式，对硬盘的操作默认采用 GPT 类型。
+如果不明确选择使用 UEFI 驱动引导u盘启动，有可能导致主板使用 CMS 模式，从而影响 Windows 安装程序的条件判断。
 
-验证：
+### 四、确保硬盘格式化为 GPT 类型
 
-    cmd 管理员模式，进入 diskpart
+以上条件都符合了，Windows 安装程序才会认为计算机是原生的 UEFI 模式，对硬盘的操作会默认采用 GPT 类型。
+
+因为 Windows 安装程序遇到不满足条件，就会无提示自动转为 CSM 兼容模式安装，所以不管新老硬盘，都建议把硬盘分区全删后重新建分区，然后安装 Windows。
+
+验证1
+
+    Windows安装后，cmd 管理员模式，进入 diskpart
 
     >list disk
 
     查看对应磁盘的 Gpt 那一列，是否有星号，有就是确认 GPT 磁盘了
 
-### 四、确保硬盘格式化为 GPT 类型
+验证2
 
-因为 Windows 安装程序遇到不满足条件，就会无提示转为 CSM 兼容模式安装，所以不管新老硬盘，都建议把硬盘分区全删后新建安装。
-
-验证
-
-    Windows安装后，在控制面板进入磁盘管理，在磁盘 0 上点击右键，看看“转换成 GPT 磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是 GPT 类型，大概率是 MBR 类型。真正的 GPT 磁盘，只提供“转换成 MBR 磁盘”选项。
+    Windows安装后，在控制面板进入磁盘管理，在磁盘 0 上点击右键，看看“转换成 GPT 磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是 GPT 类型，大概率是 MBR 类型。真正的 GPT 磁盘，只提供“转换成 MBR 磁盘”选项。注意，那个 “转换成动态磁盘” 不要理它，微软都废弃了。
 
 参考 <https://www.163.com/dy/article/FTJ5LN090531NEQA.html>
 
