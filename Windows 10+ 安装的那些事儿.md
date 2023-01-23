@@ -7,40 +7,45 @@
 
 跟以前的 application 区别，那个是 Windows 桌面版的 exe 程序，俗称应用程序。
 
-现在的 app 来自于安卓的称呼，专用于手机，俗称应用。
+现在的 app 来自于安卓、ios 操作系统，俗称应用。
 
-微软的 Windows 10+为了打通手机和桌面操作系统，把 app 商店这一套都移植到 Windows 了
-（而且开发工具也在打通，一套 API 可以在多个 os 平台无缝自适应运行），
-所以现在的 Windows 里的“应用”这个词，特指商店里安装的那些“app”。
+微软自 Windows 10 以来，为了打通手机和桌面操作系统，把 app 商店这一套都移植到 Windows 了， 而且开发工具也在打通，一套 API 可以在多个 os 平台无缝自适应运行，所以在 Windows 10+ 里的“应用”这个词，特指商店里安装的那些 “app”。
 
 ### 目标系统类型 UEFI/CSM
 
 UEFI 模式是 Windows 7 之后出现的新型操作系统启动引导方式，跳过很多硬件自检，加速了开机步骤，缺点是跟 Windows 7 之前的系统启动过程不兼容。
 
-固件加载操作系统的方式在经典 BIOS（或 CSM 模式下的 UEFI）和原生 UEFI 之间完全不同。为区别于新式的 UEFI，主板 BIOS 设置中提供了兼容老的启动方式的选项“CSM 模式”，CSM 模式从 BIOS 引导设备，用于在引导时检查兼容性模式，适用于不兼容 UEFI 方式启动的老显卡等设备能正常的显示。
+固件加载操作系统的方式在经典 BIOS（或 CSM 模式下的 UEFI）和原生 UEFI 之间完全不同。为区别于新式的 UEFI，主板 BIOS 设置中提供了兼容老的启动方式的选项 “CSM 模式”，CSM 模式从 BIOS 引导设备，用于在引导时检查兼容性模式，适用于不兼容 UEFI 方式启动的老显卡等设备能正常的显示。
 
-具体来说，CSM 模式提供硬盘 MBR 引导和传统 PCI opROM 加载支持，后者可以让没有 GOP 的显卡在操作系统启动前（例如 bios 设置和 OS 引导器）可以使用并固定使用 VGA 分辨率。只要用到其中一个功能就需要打开 CSM。
+具体来说，CSM 模式提供硬盘 MBR 引导和传统 PCI opROM 加载支持，后者可以让没有 GOP 的显卡在操作系统启动前（例如 BIOS 设置和 OS 引导器）可以使用并固定使用 VGA 分辨率。只要用到其中一个功能就需要打开 CSM。
 
-早期的 Windows 7 无法很好地支持 UEFI，因此需要 CSM 来检测 UEFI 功能是否已完全启用。也就是说，主板 BIOS 在 CSM 模式下，对 UEFI 进行支持（甚至提供选项使用非 UEFI 的最古老方式），但是这跟 Windows 10 的那种开机后直接 UEFI 引导操作系统快速进入桌面有区别。
+早期的 Windows 7 无法很好地支持 UEFI，因此需要 CSM 来检测 UEFI 功能是否已完全启用。也就是说，主板 BIOS 在 CSM 模式下，对 UEFI 进行支持，同时提供选项使用非 UEFI 的最古老方式。但是这跟 Windows 10+ 开机纯粹的 UEFI 引导操作系统有区别。
 
 有些如 Nvidia gtx 1080 时代的显卡，用 HDMI 口可以用 UEFI 方式显示画面，而 DP 口则不兼容（只能通过 CSM 模式下的 UEFI 进行显示），需要根据连接该口开机后显示器是否出现画面来设置 BIOS 的上述选项。
 
-在 Windows 10/11 安装之前，如果要享受快速启动进入桌面，则需要在主板的 BIOS 设置中明确开启 UEFI 选项，在主板 BIOS 设置中，启动模式选项（Windows 10 Features）要选择“Windows 10”而不是“other os”，CMS 模式选择“关闭”。
-
-技嘉主板要注意，CMS 模式开启时，关于存储和 PCIe 设备的选项要保证是 UEFI 模式，然后再关闭 CSM 模式。原因详见下面章节 [技嘉主板 BIOS 设置 UEFI + GPT 模式启动 Windows]
+在 Windows 10/11 安装之前，如果要 Secure Boot 功能，则需要在主板的 BIOS 设置中明确开启 UEFI 选项，在主板 BIOS 设置中，启动模式选项（Windows 10 Features）要选择 “Windows 10” 而不是 “other os”，CMS 模式选择“关闭”。技嘉主板要注意，CMS 模式开启时，关于存储和 PCIe 设备的选项要保证是 UEFI 模式，然后再关闭 CSM 模式。原因详见下面章节 [技嘉主板 BIOS 设置 UEFI + GPT 模式启动 Windows]
 
 ### 硬盘分区类型 GPT/MBR
 
-经典 BIOS（或 CSM 模式下的 UEFI）和原生 UEFI 之间完全不同。一个主要的区别是，硬盘分区在硬盘上的记录方式。虽然经典的 BIOS 和 UEFI 在 CSM 模式下使用 DOS 分区表，但是原生 UEFI 使用不同的分区方案，称为 “GUID分区表”（GPT）。在单个磁盘上，为了所有的实际目的，只能使用两个中的一个，并且在一个磁盘上使用不同操作系统的多引导设置的情况下，所有系统都必须使用相同类型的分区表。使用 GPT 从磁盘引导只能在原生 UEFI 模式下进行<https://www.debian.org/releases/stable/amd64/ch03s06.zh-cn.html#UEFI>。
+经典 BIOS（或 CSM 模式下的 UEFI）和原生 UEFI 之间完全不同。
 
-MBR 是 Windows 10/7 之前老的硬盘分区方式， GPT 是 Win7 之后新的硬盘分区方式，使用不同的硬盘分区类型，Windows 引导启动的方式是不同的。
+一个主要的区别是，硬盘分区在硬盘上的记录方式。虽然经典的 BIOS 和 UEFI 在 CSM 模式下使用 DOS 分区表，但是原生 UEFI 使用不同的分区方案，称为 “GUID分区表”（GPT）。
+
+在单个磁盘上，只能使用两个中的一个，并且在一个磁盘上使用不同操作系统的多引导设置的情况下，所有系统都必须使用相同类型的分区表。使用 GPT 从磁盘引导只能在原生 UEFI 模式下进行 <https://www.debian.org/releases/stable/amd64/ch03s06.zh-cn.html#UEFI>。
+
+MBR 是 Windows 7 之前老的硬盘分区方式， GPT 是后续增加的纯 UEFI 引导使用的硬盘分区方式。使用不同的硬盘分区类型，Windows 引导启动的方式是不同的。
 
 在 Windows 安装时，有个步骤是划分硬盘分区，自动使用的是 GPT 方式，默认把启动硬盘上划分了 3 个分区（如果是一块新的未划分分区的硬盘），其中两个特殊的小分区在 Windows 安装完成后默认是隐藏看不到的，这里其实放置了存储设备的 UEFI 引导信息。
-所以如果只想用一个分区，需要提前把硬盘挂到别的电脑上用 Windows 管理或其他软件分区，明确选择类型为 MBR，或者在Windows安装程序界面按 Shift+F10 调出命令行，使用命令行 diskpart 程序。
 
-目前发现 Windows 10 安装程序根据 BIOS 设置里把存储设备设为 UEFI 才会给硬盘用 GPT 类型分区，否则会用 MBR 类型分区，但是安装的时候是不给出任何提示的。
+所以如果只想用一个分区，需要提前把硬盘挂到别的电脑上用 Windows 管理或其他软件分区，明确选择类型为 MBR，或者在 Windows安装程序界面按 Shift+F10 调出命令行，使用命令行 diskpart 程序，手工划分（不推荐）。
 
-这样用 MBR 类型的硬盘安装好的 Windows 10，虽然也像 GPT 类型的硬盘一样分成了 3 个区，其实只是保持在 CSM 模式下的 UEFI 方式的兼容而已，系统启动其实是走的主板 CSM 模式，存储设备 leagcy，不会绕开 bios 引导自检那些耗时过程。即使这时进入主板 BIOS 设置里，把存储设备改为 UEFI，该 MBR 硬盘启动系统的时候会转主板的 CMS 模式下的 UEFI 方式，利用 Windows 安装时的 UEFI 分区引导系统，这样还是绕不开系统 bios 引导自检步骤的，无法实现 Windows 10 真正的 UEFI 方式启动系统那样秒进桌面。详见下面章节 [技嘉主板 BIOS 设置 UEFI + GPT 模式启动 Windows] 中的踩坑经历。
+目前发现 Windows 10 安装程序根据 BIOS 设置里把存储设备设为 UEFI 才会给硬盘用 GPT 类型分区（在 none UEFI 和 CSM 模式下都是如此），否则会用 MBR 类型分区，但是安装的时候是不给出任何提示的。
+
+这样用 MBR 类型的硬盘安装好的 Windows 10，虽然也像 GPT 类型的硬盘一样分成了 3 个区，其实只是保持在 CSM 模式下的 UEFI 方式的兼容而已，系统启动其实是走的主板 CSM 模式，存储设备的类型还是 “leagcy”，不会绕开 bios 引导自检那些耗时过程。
+
+如果这时想改回 UEFI 方式，进入主板 BIOS 设置里，把存储设备改为 UEFI，是误用的：该 MBR 硬盘启动系统的时候会自动跳转主板 BIOS 的 CMS 模式下的 UEFI 方式，读取硬盘的 UEFI 分区引导系统。这样无法跳过系统 BIOS 引导自检步骤。所以只能重装系统，用纯 UEFI+GPT 模式安装 Windows，参见章节 [Windows 启用 Secure Boot 功能]。
+
+详见下面章节 [技嘉主板 BIOS 设置 UEFI + GPT 模式启动 Windows] 中的踩坑经历。
 
 ### EFI 方式加载设备驱动程序
 
@@ -208,17 +213,78 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 ## Windows 启用 Secure Boot 功能
 
     https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot
-    https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/oem-secure-boot
 
-下面几点，是 Windows 的安装程序确认可以启用 Secure Boot 功能的前提。如果设置不正确，它不会给出提示，只是默默的换用兼容的CSM模式进行安装。在Windows安装完才能验证是否启用了 Secure Boot 功能。
+下面几点，是 Windows 的安装程序确认可以启用 Secure Boot 功能的前提。如果设置不符，它不会给出提示，只是默默的换用兼容的CSM模式进行安装，在 Windows 安装完才能验证是否正确开启了 Secure Boot 功能。
 
-### 一、启动 Windows安装程序前，主板 BIOS 设置 UEFI + GPT 模式
+快速总结：
 
-“UEFI + GPT”模式结合“快速启动（Fast Boot）”功能打开后，关机之后的开机，都是直接厂商 logo 转一圈就直接进系统的，不会再有主板自检启动画面和 Windows 启动的画面。
+    在 BIOS 设置 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选项选择“Enable” 后出现的存储和 PCIe 设备的选项都选择“UEFI”，然后再把 “CSM Support”选项选择 “Disable”。
 
-UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化→加载系统→进入系统。传统的 BIOS 在加载系统之前需要进行一系列的硬件检查。
+    在使用 Rufus 制作安装u盘时要选择 “GPT+UEFI” 方式，再用这样的u盘启动计算机安装 Windows。这样安装后的 Windows 才能实现开启 Secure Boot功能。
 
-#### 1. 确保“启动模式”、“存储”和 “PCIe 设备” 都是 UEFI 模式
+### 先制作支持 UEFI + GPT 的启动u盘
+
+    rufus
+        https://rufus.ie/
+            https://github.com/pbatard/rufus
+
+    ventoy
+        https://www.ventoy.net/
+            https://github.com/ventoy/Ventoy
+
+建议使用英文版 Windows 的 iso 文件制作启动u盘，安装 Windows 时区域选择 “新加坡”，系统语言选择简体中文，或英文版选择区域为美国，安装完成后添加中文语言包，再更改界面提示语言为简体中文，原因不解释了。
+
+#### 用 Rufus 制作启动u盘安装 Windows 10+
+
+安装 Windows 11 除了基本硬件要求之外，还有 2 个必要条件：
+
+    1.主板 BIOS 开启 TPM2.0
+
+        进入主板 BIOS 设置的 “Settings”，选择 “Intel Platform Trust Technology(PTT)”，选择 “Enable”，下面的选项 “Trusted Computing” 回车，进入的设置界面，找 “Security Device Support” 选择 “Enable”。
+
+    2.主板 BIOS 开启安全启动（Secure Boot）
+
+        见章节 [主板 BIOS 开启 Secure Boot 功能]
+
+用 Rufus 制作启动u盘时，分区类型要选择 GPT（这时目标系统类型自动选择 UEFI），这是 Windows 11 的强制要求。
+
+对 Windows 10 来说是这时可选的，如果u盘用 MBR 模式启动，那主板 BIOS 也得设置存储设备为非 UEFI（或 CMS 兼容模式），则 Windows 10 安装程序默认的格式化硬盘就不是 GPT 类型。
+
+特殊之处在于 Rufus 3.17 版之前制作的启动u盘，初始引导启动需要临时关闭“Secure Boot”（3.17 之后的版本不用了，已经取得 Windows 的签名了）：
+
+    一、根据 Rufus 的要求 <https://github.com/pbatard/Rufus/wiki/FAQ#Windows_11_and_Secure_Boot>，见下面的章节 [老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）] 中的 [凑合方案：主板 BIOS 设置为 CSM 方式安装 Windows 可以连接 DP 口]。
+
+    用 Rufus 制作的启动u盘（制作时的选项是“分区类型 GPT+目标系统类型 UEFI”）启动计算机，Windows 安装程序自动启动，按提示点选下一步，注意原硬盘分区建议全删，这时 Windows 安装程序开始拷贝文件，并未实质进入配置计算机硬件系统的过程，这时的 Windows 安装过程并不要求 Secure Boot。
+
+    注：觉得 Secure Boot 关闭就不安全了？ 不，它本来就不是什么安全措施，只是名字叫安全，其实做的工作就是数字签名验证，而且微软的密钥已经在 2016 年就泄露了…… 参见<https://github.com/pbatard/Rufus/wiki/FAQ#Why_do_I_need_to_disable_Secure_Boot_to_use_UEFINTFS>。也就是说，各个厂商制作的驱动，现在都需要给微软发申请得到数字签名，这样操作系统启动时才会加载该驱动，仅此而已。
+
+    至于 Linux，没参与微软的这个步骤的话，主板厂商不会内置它的公钥到主板中，安装的时候无法开启 Secure Boot 选项。后续如何解决还需要 Linux 跟微软的协调解决。
+
+    二、在 Windows 安装程序拷贝完文件，提示进行第一次重启的时候，注意手快点重新进入 BIOS ，打开 “Secure Boot” 选项：
+
+    重启后按 F2 进入 bios 设置，选 BOOT 选项卡，
+
+        找到“Windows 10 Features” 设置为 “Windows 10”
+
+        之后下面的选项“CSM Support”会消失，故其原来设置的 Disabled 或 Enable 没啥用了，同时下面的三个选项也会消失，都不需要了
+
+        之后下面出现的是“Secure Boot”选项，选择 Enable，按 F10 保存退出，主板重启后自动引导硬盘上的 Windows 安装程序进行后续的安装配置工作
+
+        注意：主板 BIOS 的选项 Windows 10 feature 设置为 “win10” 后，原来用 MBR 方式安装的 Win7 或 Win10 就进不了系统了，除非还原为 “other os”。
+
+#### 使用 Rufus 制作 ghost 启动盘
+
+rufus 制作时引导类型选择 “FreeDos” 就行了，完成后把 ghost 拷贝到u盘上，以后用它开机引导直接进入 dos 命令行方式，运行命令 ghost 即可。
+
+<https://qastack.cn/superuser/1228136/what-version-of-ms-dos-does-rufus-use-to-make-bootable-usbs>
+
+如果引导类型选择 “grub”，那你得准备 menu.list 文件，引导到对应的 img 文件上。
+
+对 Windows 10 + 来说，不需要用 ghost 启动盘了，推荐直接使用 Windows 自带的系统映像备份，参见下面章节 [系统映像备份]。
+
+### 一、主板 BIOS 设置 UEFI + GPT 模式
+
+#### 1、确保“启动模式”、“存储”和 “PCIe 设备” 等都是 UEFI 模式
 
 重启开机后按 F2 进入 bios，选 BOOT 选项卡：
 
@@ -232,45 +298,45 @@ UEFI 引导会直接跳过硬件检测。过程如下：引导→UEFI 初始化�
 
 这样系统才能默认用 Windows 的 UEFI 模式快速启动（HDMI线安装无视CSM模式开启，好神奇），安装后的 Windows 会开启Secure Boot功能。
 
-为什么要 CSM 模式又开又关这样操作呢？Windows 10 安装的时候我踩了个坑
+为什么要 CSM 模式又开又关这样操作呢？Windows 10 安装的时候我踩了个坑：
 
-因为我的老显卡不支持UEFI下DP口开机显示，初次安装用了HDMI线，而且为了兼容使用了CSM模式安装的：BIOS 设置里“Windows 10 Features”选择“other os”，“CSM Support”选“Enable”，存储和 PCIe 设备都选择“UEFI” 安装了 Windows 10。而且，用HDMI线安装 Windows 10 即使是CSM模式，也能开机秒进桌面，应该是Windows默认开启了FAST BOOT。见章节[老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）]。
+因为我的老显卡不支持在 UEFI 下连接 DP 口开机显示内容，初次安装用了HDMI线，而且为了兼容使用了 CSM 模式安装的 Windows：BIOS 设置里 “Windows 10 Features” 选择 “other os”，“CSM Support” 选 “Enable”，存储和 PCIe 设备都选择 “UEFI” ，然后安装了 Windows 10。见章节 [老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）]。
 
-后来显卡升级了 BIOS，又关闭主板 CMS 模式，重新安装了 Windows 10 21H1，在主板 BIOS 设置里装载默认值“Load optimized defaults”（默认把存储设备换回了 legacy），然后设置“Windows 10 Features”选择“Windows 10”，“CSM Support”选“Disable”，但是忘记把存储设备换回 UEFI 类型了，Windows 安装程序自动把硬盘格式化为 MBR 类型了。
+后来显卡升级了 BIOS，又关闭主板 CMS 模式，重新安装了 Windows 10 21H1，在主板 BIOS 设置里装载默认值 “Load optimized defaults”（默认把存储设备换回了 legacy），然后设置 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选 “Disable”，但没有提前把存储设备换回 UEFI 类型。该存储设备的选项在关闭 CMS 模式时屏蔽显示，没有自动改回为 UEFI 类型，而用户又看不到了。。。这就导致后续运行的 Windows 安装程序自动把硬盘格式化为 MBR 类型。
 
-这样装完 Windows 开机启动后，估计是主板尝试 UEFI 没有引导成功，自动转为 CSM 模式走 bios+UEFI 的过程，导致Windows下无法开启Secure Boot功能。
+这样装完 Windows 开机启动后，估计是主板尝试 UEFI 没有引导成功，自动转为 CSM 模式走 bios+UEFI 的过程，导致 Windows下无法开启 Secure Boot 功能。
 
-    后来升级了显卡bios支持UEFI下的DP口显示后，我重装了Windows，在主板 BIOS 设置中启动模式选项（Windows 10 Features）选择“Windows 10”，“CSM Support”选项选择“Disable”后下面的三个选项自动隐藏了，我以为都是自动 UEFI 了，其实技嘉主板只是把选项隐藏了，硬盘模式保持了上次安装 Windows 时设置的 legacy 不是 UEFI……
+后来升级了显卡 BIOS ，可以支持主板 UEFI 下的 DP 口显示后，我重装了 Windows，在主板 BIOS 设置中启动模式选项 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选项 “Disable” 后下面的三个选项自动隐藏了，我以为都是自动 UEFI 了，其实技嘉主板只是把选项隐藏了，硬盘模式保持了上次安装 Windows 时设置的 legacy 不是 UEFI……
 
-    这样导致我的 Windows 引导还是走的老模式，UEFI 引导硬盘其实没用上，装完后 Windows 启动没有实现秒进桌面才发现的这个问题。
+这样导致我的 Windows 引导还是走的老模式，UEFI 引导硬盘其实没用上，装完后 Windows 启动没有实现秒进桌面才发现的这个问题。
 
-    原因在于，Windows 安装程序是根据当前 BIOS 设置的引导方式，来决定对硬盘格式化为哪个分区类型，只有 BIOS 里把“CSM Support”模式 enable 后出现的存储设备类型设为 UEFI 才会默认用 GPT 类型，设为 legacy 就会默认用 MBR 类型，设好后还得把“CSM Support”禁用选 disable 才行。
+解决：
 
-总结来说，Windows 10 的安装兼容各种老设备，最古老的一种是主板 BIOS 设置里“Windows 10 Features”选择“other os”，“CSM Support”选“Enable”，存储和 PCIe 设备都选择“leagcy”，也可以安装 Windows 10，但是就无法享受真正 UEFI FAST BOOT 引导系统的秒进桌面了。
+Windows 安装程序是根据当前 BIOS 设置的引导方式，来决定对硬盘格式化为哪个分区类型，只有 BIOS 里把 “CSM Support” 模式 enable 后出现的存储设备类型设为 UEFI 才会默认用 GPT 类型，设为 legacy 就会默认用 MBR 类型，设好后还得把 “CSM Support” 禁用选 disable，顺序别乱了。
 
-总之，完美的做法，应该在 BIOS 设置中“Windows 10 Features”选择“Windows 10”，“CSM Support”选项选择“Enable”后出现的存储和 PCIe 设备的选项都选择“UEFI”，然后再把“CSM Support”选项选择“Disable”。在使用 Rufus 制作安装u盘时也要选择“GPT+UEFI”方式，再用这样的u盘启动计算机安装Windows。这样安装后的 Windows 才能实现开启Secure Boot功能。
+总结来说，Windows 10 的安装兼容各种老设备，最古老的一种是主板 BIOS 设置里 “Windows 10 Features” 选择 “other os”，“CSM Support” 选 “Enable”，存储和 PCIe 设备都选择 “leagcy”，也可以安装 Windows 10，但是就无法使用 Secure Boot 功能了。
 
-UEFI 模式DP口刚开机时，屏幕自动使用显示器的物理分辨率，出现的主板厂商 logo 画面应该是比较小的原始图片尺寸，没有经过拉伸等分辨率调整。
+UEFI 模式 DP 口刚开机时，屏幕自动使用显示器的物理分辨率，出现的主板厂商 logo 画面应该是比较小的原始图片尺寸，没有经过拉伸等分辨率调整。
 
 我的 Nvidia 1080 显卡目前只能在 HDMI 口连接时实现这个效果，DP 口连接时主板厂商 logo 画面被自动拉伸了，暂无法确定是否在显示器的物理分辨率下。
 
-#### 2.SATA 硬盘使用“AHCI”模式
+#### 2、SATA 硬盘使用“AHCI”模式
 
-确认下主板 BIOS 的“settings”界面中，“SATA And RST configuration”的选项，硬盘模式为“AHCI”，这个一般主板都是默认开启的。如果硬盘不是这个模式，后续的 Windows 安装程序会默认把Windows的启动模式转为CSM模式。。。
+确认下主板 BIOS 的 “settings” 界面中，“SATA And RST configuration” 的选项，硬盘模式为 “AHCI”，这个一般主板都是默认开启的。如果硬盘不是这个模式，后续的 Windows 安装程序会默认把 Windows 的启动模式转为 CSM 模式。。。
 
-#### 验证
+#### 3、验证
 
-启动 Windows 后运行 msinfo32，在“系统摘要”界面找“BIOS 模式”选项，看到结果是“UEFI”。
+安装 Windows 后运行 msinfo32，在 “系统摘要” 界面找 “BIOS 模式” 选项，看到结果是 “UEFI”。
 
 ### 二、主板 BIOS 开启 Secure Boot 功能
 
 其实 Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用是主板UEFI启动时只加载经过认证的操作系统或者硬件驱动程序，从而防止恶意软件侵入。
 
-1.先开启 UEFI 功能
+1、主板 BIOS 先开启 UEFI 功能
 
-    见前面的章节 [确保“启动模式”、“存储”和 “PCIe 设备” 都是 UEFI 模式]
+    见章节 [确保“启动模式”、“存储”和 “PCIe 设备” 都是 UEFI 模式]
 
-2.设置“Secure Boot”为“Enable”并导入设备商出厂密钥
+2、设置“Secure Boot”为“Enable”并导入设备商出厂密钥
 
 在 BIOS 中，仅仅设置“Secure Boot”项为“Enable”还不够，这个只是开启，并没有激活。
 
@@ -347,52 +413,6 @@ Debian包含一个由Microsoft签名的“shim”启动加载程序，因此可�
 ### 验证
 
 启动 Windows 后运行 msinfo32，在“系统摘要”界面找“安全启动”选项，看到结果是“开启”。
-
-## 用 Rufus 制作启动u盘安装 Windows11
-
-建议使用英文版 Windows iso 文件制作启动u盘，安装时区域选择“新加坡”，然后系统语言切换为简体中文，或英文版用美国安装后添加中文语言包再更改界面提示语言为简体中文，原因不解释了。
-
-安装 Windows11 除了硬件要求之外，还有 2 个必要条件：
-
-1.主板 BIOS 开启 TPM2.0
-
-    进入主板 BIOS 设置的“Settings”，选择“Intel Platform Trust Technology(PTT)”，选择“Enable”，下面的选项“Trusted Computing”回车，进入的设置界面，找“Security Device Support”选择“Enable”。
-
-2.主板 BIOS 开启安全启动（Secure Boot）
-
-    见前面的章节 [主板 BIOS 开启 Secure Boot 功能]
-
-用 Rufus 制作启动u盘时，分区类型要选择 GPT（这时目标系统类型自动选择 UEFI），这样的开机过程直接可以跳过 BIOS 自检等一堆耗时过程，U 盘启动用 UEFI+GPT，秒进引导系统，也符合 Windows 11 的启动要求（如果u盘用 MBR 模式启动，那主板 BIOS 也得设置存储设备为非 UEFI，则 Windows 11 安装程序默认的格式化硬盘就不是 GPT 类型了……）。
-
-特殊之处在于 Rufus 3.17 版之前制作的启动u盘，初始引导启动需要临时关闭“Secure Boot”（3.17 之后的版本不用了，已经取得 Windows 的签名了）：
-
-    一、根据 Rufus 的要求 <https://github.com/pbatard/Rufus/wiki/FAQ#Windows_11_and_Secure_Boot>，见下面的章节 [老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）] 中的 [凑合方案：主板 BIOS 设置为 CSM 方式安装 Windows 可以连接 DP 口]。
-
-    用 Rufus 制作的启动u盘（制作时的选项是“分区类型 GPT+目标系统类型 UEFI”）启动计算机，Windows 安装程序自动启动，按提示点选下一步，注意原硬盘分区建议全删，这时 Windows 安装程序开始拷贝文件，并未实质进入配置计算机硬件系统的过程，这时的 Windows 安装过程并不要求 Secure Boot。
-
-    注：觉得 Secure Boot 关闭就不安全了？ 不，它本来就不是什么安全措施，只是名字叫安全，其实做的工作就是数字签名验证，而且微软的密钥已经在 2016 年就泄露了…… 参见<https://github.com/pbatard/Rufus/wiki/FAQ#Why_do_I_need_to_disable_Secure_Boot_to_use_UEFINTFS>。至于 linux，没参与微软的这个步骤的话，主板厂商不会内置它的公钥到主板中，估计安装的时候就不能开启这个选项。
-
-    二、在 Windows 安装程序拷贝完文件，提示进行第一次重启的时候，重新打开 BIOS 的“Secure Boot”选项：
-
-    重启后按 F2 进入 bios 设置，选 BOOT 选项卡，
-
-        找到“Windows 10 Features” 设置为 “Windows 10”
-
-        之后下面的选项“CSM Support”会消失，故其原来设置的 Disabled 或 Enable 没啥用了，同时下面的三个选项也会消失，都不需要了
-
-        之后下面出现的是“Secure Boot”选项，选择 Enable，按 F10 保存退出，主板重启后自动引导硬盘上的 Windows 安装程序进行后续的安装配置工作
-
-        注意：主板 BIOS 的选项 Windows 10 feature 设置为“win10”后，原来用 MBR 方式安装的 win7 或 win10 就进不了系统了，除非还原为“other os”
-
-## 使用 Rufus 制作 ghost 启动盘
-
-制作时引导类型选择“FreeDos”就行了，完成后把 ghost 拷贝到u盘上，以后用它开机引导直接进入 dos 命令行方式，运行命令 ghost 即可。
-
-<https://qastack.cn/superuser/1228136/what-version-of-ms-dos-does-rufus-use-to-make-bootable-usbs>
-
-如果引导类型选择“grub”，那你得准备 menu.list 文件，引导到对应的 img 文件上。
-
-对 Windows 10 + 来说，推荐直接使用 Windows 自带的系统映像备份，参见下面章节[系统映像备份]。
 
 ## 主板 BIOS 打开网络唤醒功能
 
@@ -945,7 +965,15 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
 这功能是 Windows 关机后操作系统暂存挂起功能，类似休眠+睡眠，而且他跟主板 BIOS 设置中的 UEFI Fast Boot 功能关联，二者互相起作用，实现关机后的再次开机非常快。
 
-原理
+开机硬件加载阶段
+
+    纯 UEFI 引导会直接跳过硬件检测，过程如下：引导→UEFI 初始化→加载系统→进入系统。传统的 BIOS 在加载系统之前需要进行一系列的硬件检查。
+
+“UEFI + GPT” 模式结合 “快速启动（Fast Boot）” 功能打开后，关机之后的开机，都是直接厂商 logo 转一圈就直接进系统的，不会再有主板自检启动画面和 Windows 启动的画面。
+
+即使是 CSM 模式，也能开机秒进桌面，只要 BIOS 中设置开启 Fast Boot，而 Windows 默认开启了 FAST BOOT，二者配合，即使没有纯 UEFI 模式下跳过 UEFE 开机加载的零点几秒，也有睡眠恢复操作系统节约的好几秒，从而使用户感觉开机非常快。
+
+操作系统快速恢复之前现场
 
     快速启动设计初衷是，「如果用户关机只是想要电脑回到初始化状态，为什么我们不将这种状态存储到「休眠文件」中，以实现更快的开机速度呢？」
 
@@ -955,14 +983,17 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
 快速启动意味着你上次的关机并不是完全关机，所以笔记本电脑用户会发现关机的电脑没几天电池就没电了；有些人的电脑开机后需要重启一次才能恢复正常，因为上一次关机并不是真正的关机，而重启时执行的关机才是真正的关机。
 
-对添加或更换硬件的计算机来说，因为 bios 和 Windows 会综合判断这次开机是否可以启用上次的快速启动文件和系统状态，但是不保证判断失误。所以在更换硬件之前，关机后务必关闭电源拔掉电池，以防止操作系统因为不兼容这个硬件的状态判断错了，导致开机之后的 Windows 不稳定或不识别你的新硬件。
+如果要添加或更换硬件
+
+    因为 BIOS 和 Windows 会综合判断这次开机是否可以启用上次的快速启动文件和系统状态，但是不保证判断失误。所以在更换硬件之前，关机后务必关闭电源，笔记本要拔掉电池，以防止操作系统因为不兼容这个硬件的状态判断错了，导致开机之后的 Windows 不稳定或不识别你的新硬件。
 
 晕了没？
 
 验证：
 
-    打开任务管理器，查看[性能]选项卡，“正常运行时间”中显示的是你上次重启后到现在的运行时间。如果你关机时快速启动功能是打开的，这个时间就不会清零。
-    在[启动]选项卡里的“上次bios所用时间”，也会不一样，快速启动功能开启后会减小。
+    打开任务管理器，查看[性能]选项卡，“正常运行时间” 中显示的是你上次重启后到现在的运行时间。如果你关机时快速启动功能是打开的，这个时间就不会清零。
+
+    在[启动]选项卡里的“上次bios所用时间”，也会不一样，快速启动功能开启后会该时间会减小。
 
 缺陷
 
@@ -970,32 +1001,32 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
 比如我的无线网卡、我的显示器集成的 usb-hub 连接的鼠标键盘网卡显示器等等，开机或重启后偶发无响应需要重新插拔……
 
-影响linux双引导：<https://www.debian.org/releases/stable/amd64/ch03s06.zh-cn.html#disable-fast-boot>
+影响与 Linux 系统的双引导：<https://www.debian.org/releases/stable/amd64/ch03s06.zh-cn.html#disable-fast-boot>
 
 如果启用了快速启动，你真正需要重启计算机的时候，操作不能是关机，需要热键，具体说明如下：
 
     点关机按钮，执行的是休眠+睡眠，下次开机会秒开。
 
-    点重启按钮，执行的是注销并登陆Windows，会秒重启完。 注意通过这种重启你无法按F8进入「恢复模式」。
+    点重启按钮，执行的是注销并登陆 Windows，会秒重启完。 注意通过这种重启你无法按 F8 进入「恢复模式」。
 
     按住 Shift 点关机按钮，此次关机后的再次开机将不使用快速启动。
 
-    按住 Shift 点重启按钮，会让电脑重启进入「恢复模式」的WinRe。
+    按住 Shift 点重启按钮，会让电脑重启进入「恢复模式」的 WinRe。
 
 或者使用命令行关机
 
     shutdown /r     完全关闭并重启计算机。
-    shutdown /r /o  完全关闭转到WinRe高级启动选项菜单并重新启动计算机。
+    shutdown /r /o  完全关闭转到 WinRe 高级启动选项菜单并重新启动计算机。
 
 关闭“快速启动”
 
     打开 设置-系统-电源和睡眠-其他电源设置（或右击开始菜单 (win+x)，选择“电源选项”，弹出窗口的右侧选择“其它电源设置”），
 
-    点击“选择电源按钮的功能”，选择“更改当前不可用的设置”，
+    点击 “选择电源按钮的功能”，选择 “更改当前不可用的设置”，
 
-    去掉勾选“启用快速启动（推荐）”，然后点击保存修改。
+    去掉勾选 “启用快速启动（推荐）”，然后点击保存修改。
 
-    主板BIOS中的FAST BOOT选项也要关闭。
+    主板 BIOS 中的 FAST BOOT 选项也要关闭。
 
 ## 常用软件工具
 
