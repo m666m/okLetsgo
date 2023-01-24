@@ -163,9 +163,7 @@ X Window system
 
 终端概念参见章节 [Linux 字符终端]。
 
-Windows 10 新的 ConPty 接口参见章节 [Windows 10 对 Linux 的字符程序和GUI程序的支持]。
-
-Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安装支持多种符号的字体，见下面章节 [Nerd Font]。
+Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安装支持多种符号的字体，见章节 [Nerd Font]。
 
 ### putty 远程终端模拟器
 
@@ -844,36 +842,37 @@ WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持�
         https://kingtoolbox.github.io/
 
     https://zhuanlan.zhihu.com/p/550149638
-    初次使用注意关闭主密码、关闭自动锁屏的功能。否则只能编辑 user.config 文件
+
+    初次使用注意关闭主密码、关闭自动锁屏的功能。否则只能编辑 user.config 文件：
 
         干掉 application.fingerprint 和 application.masterPassword
 
         再找到 .wind/profiles/default.v10/terminal/user.sessions 文件删除 session.autoLogin 就可以将主密码设置为空字符串了，之后再来修改主密码，就 OK 了。
 
-alacritty 使用gpu进行显示加速的本地终端模拟器，在 Windows 下使用 powershell
+alacritty 使用 OpenGL 进行显示加速的本地终端模拟器，在 Windows 下使用 powershell
 
     https://github.com/alacritty/alacritty
 
-WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用，至今未解决奇怪的卡顿问题
+WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用，至今未解决偶发的卡顿问题
 
     https://github.com/wez/wezterm
         https://wezfurlong.org/
 
-Linux 桌面感觉没啥意义，用自带的就行了
+Linux 桌面下的终端模拟器感觉没啥意义，用自带的就行了
 
     Gnome 桌面自带 Xterm
     KDE 桌面自带 Konsole
     Xfce 桌面自带 xfce
 
-    sudo apt install rxvt-unicode
+    rxvt-unicode
 
-    sudo apt install terminator
+    terminator
 
-    sudo apt install guake
+    guake
 
-    sudo apt install cool-retro-term
+    cool-retro-term
 
-    sudo apt install terminology
+    terminology
 
     kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/MacOS 桌面下使用
 
