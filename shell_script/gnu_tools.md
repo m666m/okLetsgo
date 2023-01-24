@@ -5960,7 +5960,7 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     https://www.debian.org/doc/manuals/debian-reference/ch05.zh-cn.html
 
-不建议使用ifconfig，而推荐使用新的 ip 命令，未来net-tools套件会被完全废弃，功能上被iproute2套件取代，见[二者命令详细对比](https://linux.cn/article-4326-1.html)。
+不建议使用 ifconfig，而推荐使用新的 ip 命令，未来 net-tools 套件会被完全废弃，功能上被 iproute2 套件取代，见[二者命令详细对比](https://linux.cn/article-4326-1.html)。
 
     # apt install net-tools
     ifconfig
@@ -6062,53 +6062,6 @@ tcpdump、wireshark 的常见命令
 用 tcpdump 抓包
 
     https://zhuanlan.zhihu.com/p/74812069
-
-#### iproute2 套件
-
-底层网络配置，Debian 10 默认安装了 iproute2 套件 ，替换了很多之前流行的网络命令：
-
-Obsolete tools: nslookup & ifconfig
-
-    https://cstan.io/?p=8620&lang=en
-
-    https://www.linuxquestions.org/questions/linux-networking-3/why-nslookup-is-deprecated-122337/
-
-    iproute2的使用简介 https://blog.csdn.net/astrotycoon/article/details/52317288
-
-表 5.3. 从旧的 net-tools 命令集到新的 iproute2 命令集转换表
-
-    https://www.debian.org/doc/manuals/debian-reference/ch05.zh-cn.html
-
-    旧的 net-tools    新的 iproute2          操作
-    -----------------------------------------------------------------
-    ifconfig(8)        ip addr          一个设备上的协议（IP 或 IPv6）地址
-    route(8)           ip route         路由表条目
-    arp(8)             ip neigh         ARP 或 NDISC 缓存条目
-    ipmaddr            ip maddr         多播地址
-    iptunnel           ip tunnel        IP 隧道
-    nameif(8)          ifrename(8)      基于 MAC 地址的网络接口名
-    mii-tool(8)        ethtool(8)       以太网设备设置
-
-    net-tools: ifconfig、route、arp 换为 iproute2: if 命令
-
-    nslookup [IP] 换为 dnsutils: dig -x [IP]
-
-#### NetworkManager 套件
-
-Debian 的桌面图形界面使用 NetworkManager，这又是一大堆使用方式的变化，用到的时候再更新吧
-
-    https://developer-old.gnome.org/NetworkManager/stable/nmcli.html
-
-    nmcli connection show eth0
-
-    # 用nmcli命令让WiFi网卡连接热点
-    nmcli dev wifi connect wifi_name password 123456 wep-key-type key ifname wlan0
-
-#### netfilter 套件
-
-    iptables 用于 IPv4
-
-    ip6tables 用于 IPv6
 
 ## 开机启动 SystemV(init) 和 systemd
 
