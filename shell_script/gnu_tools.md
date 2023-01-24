@@ -317,14 +317,14 @@ putty 美化
 
 ### mintty 本地终端模拟器
 
-自带 bash，详见下面几个章节的详细介绍。
-
     https://github.com/mintty/mintty
         https://github.com/mintty/mintty/wiki/Tips
         http://mintty.github.io/
         帮助 https://mintty.github.io/mintty.1.html
 
-   模拟 unix pty 效果又快又好，如果运行 cmd 下的命令，有些字符解释的显示效果不一致，建议与 cmd 分别使用，不在 mintty 下使用 cmd 的命令。或者使用 winpty 调度，参见章节 [winpty 运行 cmd 字符终端程序]。
+源码来自 putty 拉分支，目前归属 MSYS2 项目，自带 bash， 模拟 unix pty 效果又快又好
+
+    如果运行 cmd 下的 Windows 字符命令，有些字符解释的显示效果不一致，建议与 cmd 分别使用，不在 mintty 下使用 cmd 的命令。或者使用 winpty 调度，参见章节 [winpty 运行 cmd 字符终端程序]。
 
     ctrl/shift + ins 复制/粘贴，其实系统默认用鼠标拖动选择的文字复制到系统剪贴板
 
@@ -344,7 +344,7 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
 
 建议放到本地 /usr/bin/ 下，以后执行 `showimg xxx.jpg` 就可以在 mintty 下显示本地图片；如果 ssh 登陆到服务器上，在服务器的 /usr/local/bin/ 下也安装这个脚本，则 mintty 也可以响应服务器上执行的 `showimg xxx.jpg`，显示服务器上的图片。
 
-或安装个 lsix 脚本，因为 mintty 支持 Sixel 图形格式
+或安装个 lsix 脚本，因为 mintty 支持 Sixel 格式的图片显示
 
         https://www.linuxprobe.com/sixel-linux.html
 
@@ -369,7 +369,7 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
 
 也就是说，Windows CMD 字符程序在 MSYS2 mintty 下直接执行会挂死，需要有个代理提供类似 wslbridge 的角色。
 
-安装 winpty 作为 mintty 代理（git for windows 自带)
+安装 winpty 作为 mintty 代理（git for windows 自带无需安装)
 
     pacman -S winpty
 
@@ -388,21 +388,21 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
     # Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
     alias ping='winpty ping'
 
-Windows version >= 10 / 2019 1809 下的 ConPty 接口兼容了老的控制台应用程序 ConHost 接口，目前支持 ConPty 接口的应用：
+Windows version >= 10 / 2019 1809 下的 ConPty 接口兼容了老的控制台应用程序 ConHost 接口，支持 ConPty 接口的应用就不需要使用 winpty 做调度了：
 
 一、PowerShell 7+ 运行 cmd 字符程序
 
 二、在 2022-10-28 MSYS2 mintty 支持使用 ConPty 接口了
 
-在MSYS2种设置环境变量`MSYS=enable_pcon`，或 mintty 配置文件 .minttyrc 中设置 `ConPTY=true` 即可。调用普通 cmd 字符程序，不再需要借助 winpty 去加载调用了 <https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs>。
+在 MSYS2 中设置环境变量 `MSYS=enable_pcon`，或 mintty 配置文件 .minttyrc 中设置 `ConPTY=true` 即可。调用普通 cmd 字符程序，不再需要借助 winpty 去加载调用了 <https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs>。
 
-新接口的说明见章节 [Windows 10 对 Linux 的字符程序和GUI程序的支持]。
+Conpty 接口的说明见章节 [Windows 10 对 Linux 的字符程序和GUI程序的支持]。
 
 #### mintty 美化
 
 mintty 支持对 16 色代码表的实际展现效果进行自定义，在 mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
 
-    https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
+    https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，弹出页面的链接上点右键选复制，在地址栏粘贴后回车
 
 主题颜色
 
