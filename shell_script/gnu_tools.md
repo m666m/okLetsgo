@@ -139,7 +139,9 @@ ConPty
 
     Windows Terminal (from the people who wrote conpty)
 
-    VSCode’s integrated terminal using ConPTY
+    VSCode、IDEA、Eclipse 等 integrated terminal using ConPTY
+
+有个对比测试 <https://kichwacoders.com/2021/05/24/conpty-performance-in-eclipse-terminal/>
 
 WSLg
 
