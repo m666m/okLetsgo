@@ -2601,7 +2601,7 @@ alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
 alias tree='tree -a -I .git'
 
 # ls 列出的目录颜色被 grep 覆盖，用 ls -l 更方便
-alias lsg='ls -lA|grep'
+alias lsg='ls -lA|grep -i'
 
 # 执行 cd 命令后自动执行下 ls 列出当前文件
 chpwd() ls
