@@ -2633,6 +2633,34 @@ git给出了解决方案，使用git branch-filter来遍历git history tree, 可
 
 ## 常见问题
 
+Ubuntu克隆下源码后对其操作时git报错 fatal: unsafe repository
+
+     https://blog.csdn.net/guoyihaoguoyihao/article/details/124868059
+
+并提示可以
+
+    git config --global --add safe.directory /目录
+
+解决思路：
+
+按提示执行确实可以短暂避免该问题，但治标不治本，且文件很多时需要一个个敲命令。产生这一问题的本质原因是下载代码的所有权没有转移，即你下载了别人的代码，别人声明该代码所有权。所以，在修改代码时会报以上问题。
+
+因此，我们需要做的并不是声称哪目录是安全的，而是要将代码所有权转移。
+
+解决方法：
+
+在你下载的文件目录下打开terminal
+
+    whoami
+
+    chown -R 用户名：用户组 .
+
+第一行是查看本机用户名，用户组与用户名一般一致；
+
+第二行将该目录下的文件所有权转移给该用户名。
+
+P.S 第二行最后有个"."
+
 ### Your branch and 'origin/xxx' have diverged
 
 <https://blog.csdn.net/d6619309/article/details/52711035>
