@@ -5844,158 +5844,6 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 ```
 
-### 网络故障排查
-
-    https://www.debian.org/doc/manuals/debian-reference/ch05.zh-cn.html
-
-不建议使用ifconfig，而推荐使用新的 ip 命令，未来net-tools套件会被完全废弃，功能上被iproute2套件取代，见[二者命令详细对比](https://linux.cn/article-4326-1.html)。
-
-    # apt install net-tools
-    ifconfig
-
-端口是否可用
-
-    curl -vvv 127.0.0.1:443
-
-    wget 127.0.0.1:443
-
-    ssh -vvv -p 443 127.0.0.1
-
-    telnet 127.0.0.1 443
-
-当前对外开放的监听端口
-
-    # 127.0.0.1 只对本机开放
-    # 0.0.0.0   外来连接也开放
-    netstat -ant
-
-icmp测试网络连通情况
-
-    ping -t 192.168.0.1
-
-    # apt install dnsutils
-    whois
-    dig/nslookup
-
-    $ nslookup baidu.com
-    Non-authoritative answer:
-    Server:  192.168.0.1
-    Address:  192.168.0.1
-
-    Name:    baidu.com
-    Addresses:  220.181.38.148
-            220.181.38.251
-
-traceroute 查看路由节点
-
-    # apt install iputils
-    $ traceroute www.bing.com
-    traceroute to www.bing.com (204.79.197.200), 30 hops max, 60 byte packets
-    1  * * *
-    2  96.44.162.49.static.quadranet.com (96.44.162.49)  0.852 ms  0.896 ms  0.855 ms
-    3  lax1-fatpipe-1.it7.net (69.12.70.232)  1.818 ms lax1-fatpipe-1.it7.net (69.12.70.234)  0.327 ms lax1-fatpipe-1.it7.net (69.12.70.232)  1.711 ms
-    4  69.12.69.1 (69.12.69.1)  9.722 ms microsoft.as8075.any2ix.coresite.com (206.72.210.143)  2.802 ms 69.12.69.1 (69.12.69.1)  9.714 ms
-    5  * 206.72.211.94.any2ix.coresite.com (206.72.211.94)  1.325 ms *
-    6  * * *
-    7  * * *
-    8  * * *
-
-    # Windows: tracert www.bing.com
-
-查看网关
-
-    $ route -n
-    Kernel IP routing table
-    Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-    0.0.0.0         192.168.0.1     0.0.0.0         UG    202    0        0 eth0
-    172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
-    192.168.0.0     0.0.0.0         255.255.255.0   U     202    0        0 eth0
-
-查看 mtu
-
-    $ sudo apt install iputils-tracepath
-
-    $ tracepath www.baidu.com
-    1?: [LOCALHOST]                      pmtu 1500
-    1:  192.168.0.1                                           0.554ms
-    1:  192.168.0.1                                           0.670ms
-    2:  192.168.1.1                                           1.232ms
-    3:  192.168.1.1                                           1.182ms pmtu 1492
-    3:  39.71.56.1                                            3.526ms
-    4:  112.232.166.9                                         3.512ms
-    29:  no reply
-    30:  no reply
-    Too many hops: pmtu 1492
-    Resume: pmtu 1492
-
-查看网卡统计信息
-
-    $ ethtool -S eth0
-    NIC statistics:
-        rx_packets: 1174939
-        tx_packets: 2813892
-        rx_bytes: 217844784
-        tx_bytes: 952958558
-        rx_errors: 0
-        tx_errors: 0
-        rx_dropped: 0
-        tx_dropped: 0
-
-#### 网络抓包
-
-tcpdump、wireshark 的常见命令
-
-    https://plantegg.github.io/2022/01/01/%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/
-
-用 tcpdump 抓包
-
-    https://zhuanlan.zhihu.com/p/74812069
-
-#### iproute2 套件
-
-底层网络配置，Debian 10 默认安装了 iproute2 套件 ，替换了很多之前流行的网络命令：
-
-Obsolete tools: nslookup & ifconfig
-
-    https://cstan.io/?p=8620&lang=en
-
-    https://www.linuxquestions.org/questions/linux-networking-3/why-nslookup-is-deprecated-122337/
-
-    iproute2的使用简介 https://blog.csdn.net/astrotycoon/article/details/52317288
-
-表 5.3. 从旧的 net-tools 命令集到新的 iproute2 命令集转换表
-
-    https://www.debian.org/doc/manuals/debian-reference/ch05.zh-cn.html
-
-    旧的 net-tools    新的 iproute2          操作
-    -----------------------------------------------------------------
-    ifconfig(8)        ip addr          一个设备上的协议（IP 或 IPv6）地址
-    route(8)           ip route         路由表条目
-    arp(8)             ip neigh         ARP 或 NDISC 缓存条目
-    ipmaddr            ip maddr         多播地址
-    iptunnel           ip tunnel        IP 隧道
-    nameif(8)          ifrename(8)      基于 MAC 地址的网络接口名
-    mii-tool(8)        ethtool(8)       以太网设备设置
-
-    net-tools: ifconfig、route、arp 换为 iproute2: if 命令
-
-    nslookup [IP] 换为 dnsutils: dig -x [IP]
-
-netfilter 管理工具套件
-
-    iptables 用于 IPv4
-
-    ip6tables 用于 IPv6
-
-Debian 的桌面图形界面使用 NetworkManager，这又是一大堆使用方式的变化，用到的时候再更新吧
-
-    https://developer-old.gnome.org/NetworkManager/stable/nmcli.html
-
-    nmcli connection show eth0
-
-    # 用nmcli命令让WiFi网卡连接热点
-    nmcli dev wifi connect wifi_name password 123456 wep-key-type key ifname wlan0
-
 ### 在当前目录启动一个简单的http服务器
 
     # Python 2，使用端口 7777
@@ -6107,6 +5955,160 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 设置替换版本
 
     update-alternatives --config vi
+
+### 网络故障排查
+
+    https://www.debian.org/doc/manuals/debian-reference/ch05.zh-cn.html
+
+不建议使用ifconfig，而推荐使用新的 ip 命令，未来net-tools套件会被完全废弃，功能上被iproute2套件取代，见[二者命令详细对比](https://linux.cn/article-4326-1.html)。
+
+    # apt install net-tools
+    ifconfig
+
+端口是否可用
+
+    curl -vvv 127.0.0.1:443
+
+    wget 127.0.0.1:443
+
+    ssh -vvv -p 443 127.0.0.1
+
+    telnet 127.0.0.1 443
+
+当前对外开放的监听端口
+
+    # 127.0.0.1 只对本机开放
+    # 0.0.0.0   外来连接也开放
+    netstat -ant
+
+icmp测试网络连通情况
+
+    ping -t 192.168.0.1
+
+    # apt install dnsutils
+    whois
+    dig/nslookup
+
+    $ nslookup baidu.com
+    Non-authoritative answer:
+    Server:  192.168.0.1
+    Address:  192.168.0.1
+
+    Name:    baidu.com
+    Addresses:  220.181.38.148
+            220.181.38.251
+
+traceroute 查看路由节点
+
+    # apt install iputils
+    $ traceroute www.bing.com
+    traceroute to www.bing.com (204.79.197.200), 30 hops max, 60 byte packets
+    1  * * *
+    2  96.44.162.49.static.quadranet.com (96.44.162.49)  0.852 ms  0.896 ms  0.855 ms
+    3  lax1-fatpipe-1.it7.net (69.12.70.232)  1.818 ms lax1-fatpipe-1.it7.net (69.12.70.234)  0.327 ms lax1-fatpipe-1.it7.net (69.12.70.232)  1.711 ms
+    4  69.12.69.1 (69.12.69.1)  9.722 ms microsoft.as8075.any2ix.coresite.com (206.72.210.143)  2.802 ms 69.12.69.1 (69.12.69.1)  9.714 ms
+    5  * 206.72.211.94.any2ix.coresite.com (206.72.211.94)  1.325 ms *
+    6  * * *
+    7  * * *
+    8  * * *
+
+    # Windows: tracert www.bing.com
+
+查看网关
+
+    $ route -n
+    Kernel IP routing table
+    Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+    0.0.0.0         192.168.0.1     0.0.0.0         UG    202    0        0 eth0
+    172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
+    192.168.0.0     0.0.0.0         255.255.255.0   U     202    0        0 eth0
+
+查看 mtu
+
+    $ sudo apt install iputils-tracepath
+
+    $ tracepath www.baidu.com
+    1?: [LOCALHOST]                      pmtu 1500
+    1:  192.168.0.1                                           0.554ms
+    1:  192.168.0.1                                           0.670ms
+    2:  192.168.1.1                                           1.232ms
+    3:  192.168.1.1                                           1.182ms pmtu 1492
+    3:  39.71.56.1                                            3.526ms
+    4:  112.232.166.9                                         3.512ms
+    29:  no reply
+    30:  no reply
+    Too many hops: pmtu 1492
+    Resume: pmtu 1492
+
+查看网卡统计信息
+
+    $ ethtool -S eth0
+    NIC statistics:
+        rx_packets: 1174939
+        tx_packets: 2813892
+        rx_bytes: 217844784
+        tx_bytes: 952958558
+        rx_errors: 0
+        tx_errors: 0
+        rx_dropped: 0
+        tx_dropped: 0
+
+网络抓包
+
+tcpdump、wireshark 的常见命令
+
+    https://plantegg.github.io/2022/01/01/%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/
+
+用 tcpdump 抓包
+
+    https://zhuanlan.zhihu.com/p/74812069
+
+#### iproute2 套件
+
+底层网络配置，Debian 10 默认安装了 iproute2 套件 ，替换了很多之前流行的网络命令：
+
+Obsolete tools: nslookup & ifconfig
+
+    https://cstan.io/?p=8620&lang=en
+
+    https://www.linuxquestions.org/questions/linux-networking-3/why-nslookup-is-deprecated-122337/
+
+    iproute2的使用简介 https://blog.csdn.net/astrotycoon/article/details/52317288
+
+表 5.3. 从旧的 net-tools 命令集到新的 iproute2 命令集转换表
+
+    https://www.debian.org/doc/manuals/debian-reference/ch05.zh-cn.html
+
+    旧的 net-tools    新的 iproute2          操作
+    -----------------------------------------------------------------
+    ifconfig(8)        ip addr          一个设备上的协议（IP 或 IPv6）地址
+    route(8)           ip route         路由表条目
+    arp(8)             ip neigh         ARP 或 NDISC 缓存条目
+    ipmaddr            ip maddr         多播地址
+    iptunnel           ip tunnel        IP 隧道
+    nameif(8)          ifrename(8)      基于 MAC 地址的网络接口名
+    mii-tool(8)        ethtool(8)       以太网设备设置
+
+    net-tools: ifconfig、route、arp 换为 iproute2: if 命令
+
+    nslookup [IP] 换为 dnsutils: dig -x [IP]
+
+#### NetworkManager 套件
+
+Debian 的桌面图形界面使用 NetworkManager，这又是一大堆使用方式的变化，用到的时候再更新吧
+
+    https://developer-old.gnome.org/NetworkManager/stable/nmcli.html
+
+    nmcli connection show eth0
+
+    # 用nmcli命令让WiFi网卡连接热点
+    nmcli dev wifi connect wifi_name password 123456 wep-key-type key ifname wlan0
+
+#### netfilter 套件
+
+    iptables 用于 IPv4
+
+    ip6tables 用于 IPv6
 
 ## 开机启动 SystemV(init) 和 systemd
 
