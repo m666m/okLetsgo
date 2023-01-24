@@ -127,9 +127,19 @@ ConPty
 
     https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/
 
+    https://learn.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
+    https://learn.microsoft.com/en-us/windows/terminal/samples
+            https://github.com/microsoft/terminal/tree/main/samples/ConPTY/EchoCon
+
     https://www.zhihu.com/question/303307670
 
 基于 ConPTY 的终端，既能运行 POSIX 命令行程序，也能运行基于 Windows ConHost 的命令行程序。需要 Windows version >= 10 / 2019 1809 (build >= 10.0.17763)。
+
+目前支持 Conpty 接口的终端主要有
+
+    Windows Terminal (from the people who wrote conpty)
+
+    VSCode’s integrated terminal using ConPTY
 
 WSLg
 
@@ -733,7 +743,9 @@ msys2在开始菜单下的好几个版本的说明
 
     是因为编译器和链接的windows的c库不同，而故意分开编译的。作为一个软件运行平台，为了适应不同编译器编译出来的程序（Windows 对 CRT 运行库的支持不一样），而不得不区分开来。
 
-    LLVM/Clang 和 MINGW(GCC) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个的话就用 mingw64。具体区别是：
+    LLVM/Clang 和 MINGW(GCC) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个的话就用 mingw64。
+
+具体区别是：
 
     mingw64 与 ucrt64 都是用 mingw64 编译器编译的 Windows 64位程序，只不过它们链接到的 crt（C runtime）不同， mingw64 是链接到了 msvcrt ，而 ucrt64 则是链接到了 Windows 10+ 上新的 ucrt 上。
 
@@ -1011,7 +1023,7 @@ Windows 下的命令行终端类型很多，如果想统一在一个程序下x�
 
 #### ConEmu 和 Cmder
 
-ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器。不止是个终端多路复用器，他还自己实现了对 cmd 和 pty 两种类型的终端模拟。
+ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器。不止是个终端多路复用器，他还自己实现了对 cmd 和 unix pty 两种类型的终端模拟。
 
     https://conemu.github.io/
 
@@ -1021,7 +1033,7 @@ ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, po
 
 ConEmu 最大的缺点是不稳定，反应速度偶尔很慢，估计跟它基于 Windows conhost，连带支持 unix pty 这样包打一切的实现机制有关。
 
-ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器。不止是个终端多路复用器，他还自己实现了对 cmd 和 pty 两种类型的终端模拟。
+ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器。
 
 ConEmu\ConEmu 目录下集成了几个常用工具
 
@@ -1064,7 +1076,7 @@ ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列�
 
 如果是调用 putty.exe、mintty.exe、notepad.exe 等 Windows 程序，ConEmu 会利用自己的 ChildGUI 功能，内嵌显示窗体，显示效果完美，但不能使用 ConEmu 的颜色和背景方案 <https://conemu.github.io/en/ChildGui.html>。
 
-对 bash.exe/tmux.exe 等 unix pty 的连接，Conemu 是通过 cmd 实现的，支持 ConEmu 的颜色和背景方案。显示兼容性并不完美，见 Conemu 安装后生成的默认任务 {Bash::Git bash}。
+对 bash.exe/tmux.exe 等 unix pty 的连接，Conemu 是通过 cmd 实现的，支持 ConEmu 的颜色和背景方案目前的实现方式，显示兼容性并不完美，见 Conemu 安装后生成的默认任务 {Bash::Git bash}。不知何时切换到 Windows 新的 Conpty 接口。
 
 1、关于 ConEmu 安装后自动生成的任务 {Bash::Git bash}
 
@@ -4971,7 +4983,7 @@ Midnight Commander
     # https://sourceforge.net/projects/mcwin32/files/
     sudo apt install mc
 
-命令行下使用两个面板来处理文件和目录。
+命令行下使用两个面板来处理文件和目录，类似 [Far Manager](https://conemu.github.io/en/FarManager.html)。
 
 ### 项目构建工具 Make、Automake、CMake、Ninja
 
