@@ -509,11 +509,11 @@ Termux 初步使用和设置
     https://cloud.tencent.com/developer/article/2136450#3.3
     http://wwj718.github.io/post/%E5%B7%A5%E5%85%B7/termux-hello-world/
 
-Android 应用都是在沙盒中运行的，每个应用都有自己的Linux用户id和SELinux标签。Termux也不例外，Termux中的所有程序都使用和Termux同样的用户id运行，用户id也许是 u0_a231 这种格式，并且不能更改。
+Android 应用都是在沙盒中运行的，每个应用都有自己的 Linux 用户 id 和 SELinux 标签。Termux 也不例外，Termux 中的所有程序都使用和 Termux 同样的用户 id 运行，用户 id 也许是 u0_a231 这种格式，并且不能更改。
 
-所有的包（除了必须Root才能用的包），都被去掉了 多用户，setuid/getuid和其它类似的功能。同时 ftpd, httpd 和 sshd 的默认端口也分别被修改为 8021, 8080 和 8022 。
+所有的包（除了必须 Root 才能用的包），都被去掉了 多用户，setuid/getuid 和其它类似的功能。同时 ftpd, httpd 和 sshd 的默认端口也分别被修改为 8021, 8080 和 8022 。
 
-Termux支持pkg、apt管理软件包
+Termux 支持 pkg、apt 管理软件包
 
     # pkg的底层就是apt，只是运行前会执行一次apt update，保证安装的是最新版本。
 
