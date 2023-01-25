@@ -1592,20 +1592,34 @@ Qubes
 
 #### Whonix 和 Kicksecure 安全加固
 
-    https://www.whonix.org/
+Whonix ™ 是一个专注于匿名性和安全性的操作系统。它隐藏用户的 IP 地址/位置并使用 Tor 网络来匿名化数据流量。Whonix 设计允许对自身不具备代理支持能力的应用程序进行 “torification”。此外，用户不会因安装自定义应用程序或个性化桌面而受到危害。
 
-    https://www.kicksecure.com/
-        https://github.com/Kicksecure
+官方推荐用法是 VirtualBox 加载 Whonix 镜像，预装的应用程序并都配置了安全默认值，以使其随时可用
+
+    https://www.whonix.org/wiki/VirtualBox
+
+    也可安装在 Debian 上 https://www.whonix.org/wiki/Packages_for_Debian_Hosts
 
     介绍文章 https://www.ddosi.org/whonix/
 
-Whonix 基于 Debian 和 Tor。该设计提供了一个双虚拟机、拆分的安全架构：一个隔离的 Whonix-Gateway（ProxyVM），用于通过 Tor 完成流量路由；和 Whonix-Workstation（App Qube;），用于所有桌面应用程序，作为基于 Tor 的隐私/匿名的定制操作系统环境。
+应用程序预先设置好的安全加固方案使用的是 Kicksecure
 
-AppArmor 是Linux内核的一个安全模块，与 SELinux 类似的一个访问控制系统，使你可以对每一个程序设置读、写或运行，是否可以打开文件、网络端口等，一般用 AppArmor 限制容器对资源的访问。
+    https://www.kicksecure.com/wiki/Software
+        https://github.com/Kicksecure
+
+可安装到u盘，推荐安装 kicksecure 操作系统（可以启动到 live mode <https://www.kicksecure.com/wiki/Live_Mode>，即不保存任何运行时文件，重启即丢），然后安装 VirtualBox，然后在 VirtualBox 里安装运行 Whonix <https://www.whonix.org/wiki/Linux>：
+
+    https://www.whonix.org/wiki/USB_Installation
+
+Whonix 基于 Debian 和 Tor。该设计提供了一个双虚拟机、拆分的安全架构：
+
+    一个隔离的 Whonix-Gateway（ProxyVM），用于通过 Tor 完成流量路由；
+
+    Whonix-Workstation（App Qube;），用于所有桌面应用程序，作为基于 Tor 的隐私/匿名的定制操作系统环境。
 
 ##### Qubes-Whonix
 
-Qubes OS 和 Whonix 的无缝组合，可实现高级安全性和匿名性。
+Qubes OS 和 Whonix 的无缝组合，可实现更高级的安全性和匿名性。
 
     https://www.whonix.org/wiki/Qubes
 
