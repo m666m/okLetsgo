@@ -1462,15 +1462,15 @@ QQ、微信、钉钉、360啥的很多cn软件很多都添加到系统级驱动�
 
 1、Windows 桌面应用程序（desktop applications）
 
-从 Windows 95 以来这几十年发展的*.exe，对操作系统底层调用 Win32 API。后来引入的VC/MFC等框架，底层都依赖Win32 API。具备对 Windows 和硬件的直接访问权限，此应用类型是需要最高级别性能和直接访问系统硬件的应用程序的理想选择。这种程序对操作系统各组件的访问，在区分用户这个级别是可以用system权限超越的，基本不受控。
+从 Windows 95 以来这几十年发展的 *.exe，对操作系统底层调用 Win32 API。后来引入的 VC/MFC 等框架，底层都依赖 Win32 API。具备对 Windows 和硬件的直接访问权限，此应用类型是需要最高级别性能和直接访问系统硬件的应用程序的理想选择。这种程序对操作系统各组件的访问，在区分用户这个级别是可以用 system 权限超越的，基本不受控。
 
-2、WPF/.Net/Windows Form等新的框架
+2、WPF/.Net/Windows Form 等新的框架
 
-各种新的API框架，意图是统一不同硬件的操作系统，流行程度都不如 Win32 API。后来这些打包搞了个托管运行时环境(WinRT)。这种软件想流氓起来，运行时环境也控制不了。
+各种新的 API 框架，意图是统一不同硬件的操作系统，流行程度都不如 Win32 API。后来这些框架打包统一起来，叫托管运行时环境(WinRT)。这些框架本身对安全权限的限制也不多，软件想流氓起来，运行时环境也控制不了。
 
 3、通用 Windows 平台 (UWP) 应用
 
-类似手机的方式，在 Windows 商店下载的应用(APP)，使用 UWP 组件的方式，在应用容器内部运行。
+类似手机的方式，在 Windows 商店下载的应用(APP)，使用 UWP 组件的方式，在应用容器内部运行，即沙盒运行容器化。
 
 UWP 应用在其清单中声明所需的设备能力，如访问麦克风、位置、网络摄像头、USB 设备、文件等，在应用被授予能力前，由用户确认并授权该访问。UWP 核心 API 在所有 Windows 设备上是相同的。
 
@@ -1480,9 +1480,21 @@ UWP 应用可以是本机应用，也可以是托管应用。使用 C++/WinRT �
 
 <https://docs.microsoft.com/zh-cn/windows/apps/get-started/?tabs=cpp-win32#other-app-types>
 
-Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这次好像是想搞个大一统的开发平台：原来的 Win32 API 升级成 WinRT API，对应的称呼就是变成了应用（APP）；原来的 wpf、.net、uwp 也都被大一统了。 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/>；UWP 也要迁移到 Widnows App，理论上还是容器化运行。<https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/desktop-to-uwp-extend>；安卓应用现在也可以在Windows上容器化运行。开发平台打包统一了，能再卖一波 Visual Studio，但是各类应用还是各搞各的，桌面应用的通用化没啥指望，后续看谁能流行起来再说吧。
+Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这次好像是想搞个大一统的开发平台：
 
-总之，依赖在操作系统这个层面对应用程序的权限进行控制，一直做不到。目前最好的办法，只能是把操作系统包起来运行的虚拟机方式，才能完全彻底的隔离流氓软件对用户信息的侵害。也就是说，在你的 Windows 操作系统安装完毕之后，基本的用户信息都具备了，可信赖的大公司的软件都安装了，其他zh软件，统统安装到一个虚拟机里使用，不要安装到实机里。至于是使用沙盒还是hyper-v虚机，酌情决定。
+    原来的 Win32 API 升级成 WinRT API，对应的称呼就是变成了应用（APP）；
+
+    原来的 wpf、.net、uwp 也都被大一统了 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/>；
+
+    UWP 也要迁移到 Widnows App，理论上还是容器化运行 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/desktop-to-uwp-extend>；
+
+    安卓应用现在也可以在 Windows 11 上容器化运行。
+
+开发平台打包统一了，能再卖一波 Visual Studio，但是各类应用还是各搞各的，桌面应用的通用化没啥指望，后续看谁能流行起来再说吧。
+
+总之，Windows 依赖在操作系统这个层面对应用程序的权限进行控制，一直做不到。目前最好的办法，只能是把操作系统包起来运行的虚拟机方式，才能完全彻底的隔离流氓软件对用户信息的侵害。
+
+也就是说，在你的 Windows 操作系统安装完毕之后，基本的用户信息都具备了，可信赖的大公司的软件都安装了，其他zh软件，统统安装到一个虚拟机里使用，不要安装到实机里。至于是使用 Windows Sandbox 沙盒还是 hyper-v 虚机，酌情决定。
 
 ### Windows S Mode
 
@@ -1524,7 +1536,7 @@ Intel 的主板芯片中有一个独立于CPU和操作系统的微处理器，�
 
     https://github.com/corna/me_cleaner
 
-另外： AMD 也有类似技术，叫PSP，全称 Platform Security Processor，逻辑不同，功能近似——一句话概括：没比英特尔强多少……
+另外： AMD 也有类似技术，叫 PSP，全称 Platform Security Processor，逻辑不同，功能近似——一句话概括：没比英特尔强多少……
 
 ## Windows 10 使用虚拟机的几个途径
 

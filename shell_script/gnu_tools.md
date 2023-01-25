@@ -115,6 +115,32 @@ WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 L
 
 WSL 2 在底层使用虚拟机（Hyper-V）同时运行 Linux 内核和 Windows 内核，并且把 Linux 完全集成到了 Windows 中，使用起来就像在 Windows 中直接运行 Linux 程序。
 
+##### 连接 WSL
+
+配置 WSL 环境
+
+    https://github.com/hsab/WSL-config
+
+PowerShell 通过函数包装器，实现在 Windows 命令行使用 Linux 命令，实质是指向了 wsl 虚拟机去执行。<https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/>
+
+PowerShell 可以配置命令提示符等，参见章节 [PowerShell 7+ 命令提示符工具及美化]。
+
+其它连接 wsl 的工具
+
+    mintty 支持连接 WSL
+
+        # https://github.com/mintty/mintty/wiki/Tips#supporting-linuxposix-subsystems
+        # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin/下安装了 wslbridge2
+        mintty --WSL=Ubuntu
+
+    独立的 WSLtty，调用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用 WSL 会话
+
+        https://github.com/mintty/wsltty
+
+    ConPtyShell 使用 Windows ConPty 接口利用 PowerShell 实现的 WSL 本地终端
+
+        https://github.com/antonioCoco/ConPtyShell
+
 ##### Windows 10 对 Linux 的字符程序和GUI程序的支持
 
 Windows 10 在 2022 年后已经比较完整的对外提供了相应编程接口
@@ -141,7 +167,12 @@ ConPty
 
     VSCode、IDEA、Eclipse 等 integrated terminal using ConPTY
 
-有个对比测试 <https://kichwacoders.com/2021/05/24/conpty-performance-in-eclipse-terminal/>
+    PowerShell 7+ 使用 conpty 接口运行 cmd 字符程序
+
+    在 2022-10-28 MSYS2 mintty 支持使用 ConPty 接口了：
+    在 MSYS2 中设置环境变量 `MSYS=enable_pcon`，或 mintty 配置文件 .minttyrc 中设置 `ConPTY=true` 即可。调用普通 cmd 字符程序，不再需要借助 winpty 去加载调用了 <https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs>。
+
+有个性能对比测试 <https://kichwacoders.com/2021/05/24/conpty-performance-in-eclipse-terminal/>
 
 WSLg
 
@@ -369,15 +400,15 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
 
     就像 ls 命令那样使用 lsix。
 
-#### winpty 运行 cmd 字符终端程序
+#### winpty 运行 cmd 字符程序
 
     https://zhuanlan.zhihu.com/p/102393122
 
     https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs
 
-在 mintty 下，如果执行 Windows CMD 字符程序（Windows 控制台程序），如 python 会挂死无法进入。这是因为 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 unix pty。
+在 mintty 或 Cygwin's sshd 下，如果执行Windows 控制台程序 （Windows CMD 字符程序或PowerShell），如 python 会挂死无法进入。这是因为 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 unix pty，或称 Cygwin/MSYS pty。
 
-也就是说，Windows CMD 字符程序在 MSYS2 mintty 下直接执行会挂死，需要有个代理提供类似 wslbridge 的角色。
+也就是说，Windows 控制台程序在 MSYS2 mintty 下直接执行会挂死，需要有个 Cygwin/MSYS adapter 提供类似 wslbridge 的角色。
 
 安装 winpty 作为 mintty 代理（git for windows 自带无需安装)
 
@@ -395,18 +426,10 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
     alias node="winpty node"
     alias vue='winpty vue'
 
-    # Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
+    # Windows 控制台程序都可以在 bash 下用 winpty 来调用
     alias ping='winpty ping'
 
-Windows version >= 10 / 2019 1809 下的 ConPty 接口兼容了老的控制台应用程序 ConHost 接口，支持 ConPty 接口的应用就不需要使用 winpty 做调度了：
-
-一、PowerShell 7+ 运行 cmd 字符程序
-
-二、在 2022-10-28 MSYS2 mintty 支持使用 ConPty 接口了
-
-在 MSYS2 中设置环境变量 `MSYS=enable_pcon`，或 mintty 配置文件 .minttyrc 中设置 `ConPTY=true` 即可。调用普通 cmd 字符程序，不再需要借助 winpty 去加载调用了 <https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs>。
-
-Conpty 接口的说明见章节 [Windows 10 对 Linux 的字符程序和GUI程序的支持]。
+Windows version >= 10 / 2019 1809 下的 ConPty 接口兼容了老的控制台应用程序 ConHost 接口，支持 ConPty 接口的应用可以支持unix pty，就不需要使用 winpty 做调度了，见章节 [Windows 10 对 Linux 的字符程序和GUI程序的支持]。
 
 #### mintty 美化
 
@@ -576,7 +599,7 @@ Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是只编译了它自己需�
 
     mintty.exe /bin/bash --login -i
 
-    --login 加载配置文件 ~/.bash_profile 等，不然你进入的是个干巴的shell
+    --login 加载配置文件 ~/.bash_profile 等，不然你进入的是个干巴的 shell
 
     -i      创建一个交互式的shell
 
@@ -584,19 +607,19 @@ git-bash.exe
 
     自称 git bash，其实是 `mintty.exe /bin/bash --login -i` 的封装，可直接双击执行。用于执行 unix pty 的命令，显示兼容性最好。
 
-    如果使用 git-bash.exe，一般使用 `git-bash.exe --cd-to-home` 打开即进入$HOME目录，比较方便
+    如果使用 git-bash.exe，一般使用 `git-bash.exe --cd-to-home` 打开即进入 $HOME 目录，比较方便
 
 git-cmd.exe
 
-    其实是 cmd 的一个封装，可直接双击执行。用于执行 cmd 下的命令，显示兼容性最好。路径path优先指向了git for windows 的目录。
+    其实是 cmd 的一个封装，可直接双击执行。用于执行 cmd 下的命令，显示兼容性最好。路径 path 优先指向了 git for windows 的目录。
 
 对路径的表示有点特殊，如磁盘路径需要使用 /c/ 来代替 c：来访问具体路径
 
     cd /c/tools 表示访问 Windows 的 c:\tools 目录
 
-其它的几个的Linux目录结构跟Windows目录的对应关系
+其它的几个的 Linux 目录结构跟 Windows 目录的对应关系
 
-    home 目录       %USERPROFILE%
+    $HOME 目录      %USERPROFILE%
 
     / 目录          git安装目录 C:\Program Files\Git
     /usr 目录       C:\Program Files\Git\usr
@@ -675,27 +698,27 @@ pacman 更换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科
 
 依次添加
 
-    nano 编辑 /etc/pacman.d/mirrorlist.msys ，在文件开头添加：
+    编辑 /etc/pacman.d/mirrorlist.msys ，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/msys/$arch/
         Server = http://mirrors.ustc.edu.cn/msys2/msys/$arch/
 
-    nano 编辑 /etc/pacman.d/mirrorlist.mingw32 ，在文件开头添加：
+    编辑 /etc/pacman.d/mirrorlist.mingw32 ，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/i686/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/i686/
 
-    nano 编辑 /etc/pacman.d/mirrorlist.mingw64 ，在文件开头添加：
+    编辑 /etc/pacman.d/mirrorlist.mingw64 ，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/x86_64/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/x86_64/
 
-    nano 编辑 /etc/pacman.d/mirrorlist.ucrt64 ，在文件开头添加：
+    编辑 /etc/pacman.d/mirrorlist.ucrt64 ，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/ucrt64/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/ucrt64/
 
-    nano 编辑 /etc/pacman.d/mirrorlist.clang64 ，在文件开头添加：
+    编辑 /etc/pacman.d/mirrorlist.clang64 ，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/clang64/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/clang64/
@@ -926,26 +949,6 @@ wslbridge 辅助工具，使用 Windows ConPty 接口 以支持 WSL(Windows Subs
     wslbridge2 https://github.com/Biswa96/wslbridge2
         wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
 
-### 连接 WSL
-
-配置 WSL 环境
-
-    https://github.com/hsab/WSL-config
-
-mintty 支持连接 WSL
-
-    # https://github.com/mintty/mintty/wiki/Tips#supporting-linuxposix-subsystems
-    # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin/下安装了 wslbridge2
-    mintty --WSL=Ubuntu
-
-或使用独立的 WSLtty，调用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用 WSL 会话
-
-    https://github.com/mintty/wsltty
-
-ConPtyShell 使用 Windows ConPty 接口利用 PowerShell 实现的 WSL 本地终端
-
-    https://github.com/antonioCoco/ConPtyShell
-
 ### 终端多路复用器
 
 Windows 下的命令行终端类型很多，如果想统一在一个程序下x标签化管理各个窗口，这样的程序称为终端多路复用器 terminal multiplexer。
@@ -1165,127 +1168,9 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
 
     可以把这个文件夹拷贝到安全的位置，然后将 .exe 文件添加到桌面快捷方式，就能愉快地使用 Windows Terminal 啦！
 
-##### PowerShell 7+ 命令提示符工具及美化
+##### 配置 Windows Terminal
 
-    https://yqc.im/windows-terminal-using-windows-terminal/
-
-    https://zhuanlan.zhihu.com/p/352882990
-
-首先要进行 PowerShell 自身的美化，然后 PowerShell + Windows Terminal 一起美化，效果更佳。
-
-一、先安装独立的 Powershell 7，从这个版本开始不跟随 Windows 发布了
-
-    https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2
-
-    还有自己的软件包仓库
-
-        https://learn.microsoft.com/zh-cn/powershell/scripting/gallery/overview?view=powershell-7.3
-
-        https://www.powershellgallery.com/packages/
-
-Windows 系统自带的 Windows PowerShell 5.x 和刚安装的 PowerShell 7.x 是两个独立的 Shell，注意到 5.x 带有 Windows 前缀，而 7.x 没有。两者的配置也是独立的，互不影响，所以如果你在 7.x 做配置，打开 5.x 并不会生效。
-
-其实使用 PowerShell 最大的问题是
-
-    执行 `ssh` 使用 Windows 自带的 C:\Windows\System32\OpenSSH，版本太老了
-
-    执行 `curl` 等工具被 alias 指向 wsl，也就是说，你得先在 wsl 里装个 Linux。
-
-为了减少疑惑，接下来将统一使用原生的 PowerShell 7.x。
-
-PowerShell 美化：
-
-    更改整体配色，改变输出样式，提示符前显示用户名和计算机名等
-
-    增强 Git 命令功能和 Git 分支状态显示
-
-    自动补齐功能，可根据历史命令和当前目录补齐
-
-    ls 命令显示色彩
-
-1、安装图标字体，参见章节 [图标字体]。
-
-也可以用 scoop 安装
-
-    > scoop search FantasqueSansMono-NF
-    > scoop bucket add 'nerd-fonts'
-
-    # 下面一个命令要加 sudo 提权
-    > sudo scoop install FantasqueSansMono-NF
-
-2、安装 posh-git
-
-posh-git 可以实现命令提示符 Git 命令增强（命令别名和显示分支信息等）。
-
-可以通过 [PowerShell Gallery](https://www.powershellgallery.com) 安装，方法：打开 PowerShell 7（不是 Windows PowerShell），输入命令：
-
-    > Install-Module posh-git
-
-更改命令提示符显示的 oh-my-posh 配置复杂，不玩了
-
-    https://ohmyposh.dev/docs/installation/windows
-
-3、增强 PowerShell 的 ls 功能
-
-dircolors 是 Linux 下的命令，可以设置 ls 指令用彩色显示目录或文件。PowerShell 用插件 DirColors 实现同样的效果。
-
-    # 安装 DirColors
-    > Install-Module DirColors
-
-4、使用 ColorTool 更改 PowerShell 文字颜色，这个可以省略
-
-    # 安装更改文字颜色工具
-    > scoop install colortool
-
-    # 查看内置的配色方案，共有 8 种
-    > colortool --schemes
-
-    # 设置主题，后面是配色方案名称
-    > colortool OneHalfDark.itermcolors
-
-5、最后，把配置写入 PowerShell 的配置文件
-
-    PS C:\Users\your_name> $PROFILE
-    C:\Users\your_name\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
-
-    > code $PROFILE
-
-输入内容如下
-
-```powershell
-
-    # 命令行提示符git增强
-    Import-Module posh-git
-
-    # ls 结果使用彩色
-    Import-Module DirColors
-
-    # 设置预测文本来源为历史记录
-    Set-PSReadLineOption -PredictionSource History
-
-    # 设置 Tab 键补全
-    Set-PSReadlineKeyHandler -Key Tab -Function Complete
-
-    # 设置 Ctrl+d 为菜单补全和 Intellisense
-    Set-PSReadLineKeyHandler -Key "Ctrl+d" -Function MenuComplete
-
-    # 设置 Ctrl+z 为撤销
-    Set-PSReadLineKeyHandler -Key "Ctrl+z" -Function Undo
-
-    # 设置向上键为后向搜索历史记录
-    Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
-
-    # 设置向下键为前向搜索历史纪录
-    Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
-
-    # 关联 conda 命令，来自 Ananconda 的开始菜单快捷方式
-    C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
-
-```
-
-配置 Windows Terminal
-
-因为 Windows Terminal 有自己的主题，颜色方案背景等配置修改 setting.json。目前版本的 Windows Terminal 可以在用户界面选择设置，如选择背景图片、开启毛玻璃效果、开启复古的终端效果等，下面的说明仅供参考。
+因为 Windows Terminal 有自己的主题，颜色方案背景等配置修改 setting.json。目前版本的 Windows Terminal 可以在用户界面选择设置，如选择背景图片、开启毛玻璃效果、开启复古的像素化终端效果等，下面的说明仅供参考。
 
 四部分：
 
@@ -1356,6 +1241,124 @@ schemes 段设置配色方案，同样是一个数组，每种配色方案会有
     https://windowsterminalthemes.dev/
 
     http://terminal.sexy/
+
+### PowerShell 7+ 命令提示符工具及美化
+
+    https://yqc.im/windows-terminal-using-windows-terminal/
+
+    https://zhuanlan.zhihu.com/p/352882990
+
+Windows 系统自带的 Windows PowerShell 5.x 和下载安装的 PowerShell 7.x 是两个独立的 Shell，注意到 5.x 带有 Windows 前缀，而 7.x 没有。两者的配置也是独立的，互不影响，所以如果你在 7.x 做配置，打开 5.x 并不会生效。
+
+一、先安装独立的 Powershell 7，从这个版本开始不跟随 Windows 发布了
+
+    https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3
+
+Powershell 7 有自己的软件包仓库
+
+        https://learn.microsoft.com/zh-cn/powershell/scripting/gallery/overview?view=powershell-7.3
+
+        https://www.powershellgallery.com/packages/
+
+其实使用 PowerShell 最大的问题是
+
+    执行 `ssh` 使用 Windows 自带的 C:\Windows\System32\OpenSSH，版本太老了
+
+    执行 `curl` 等工具被 alias 指向 wsl，也就是说，你得先在 wsl 里装个 Linux。
+
+为了减少疑惑，接下来将统一使用原生的 PowerShell 7.x。
+
+PowerShell 美化：
+
+    更改整体配色，改变输出样式，提示符前显示用户名和计算机名等
+
+    增强 Git 命令功能和 Git 分支状态显示
+
+    自动补齐功能，可根据历史命令和当前目录补齐
+
+    ls 命令显示色彩
+
+1、安装图标字体，参见章节 [图标字体]。
+
+也可以用 scoop 安装
+
+    > scoop search FantasqueSansMono-NF
+    > scoop bucket add 'nerd-fonts'
+
+    # 下面一个命令要加 sudo 提权
+    > sudo scoop install FantasqueSansMono-NF
+
+2、安装 posh-git
+
+posh-git 可以实现命令提示符 Git 命令增强（命令别名和显示分支信息等）。
+
+可以通过 [PowerShell Gallery](https://www.powershellgallery.com) 安装，方法：打开 PowerShell 7（不是 Windows PowerShell），输入命令：
+
+    > Install-Module posh-git
+
+更改命令提示符显示的 oh-my-posh 配置复杂，不玩了
+
+    https://ohmyposh.dev/docs/installation/windows
+
+3、增强 PowerShell 的 ls 功能
+
+dircolors 是 Linux 下的命令，可以设置 ls 指令用彩色显示目录或文件。PowerShell 用插件 DirColors 实现同样的效果。
+
+    # 安装 DirColors
+    > Install-Module DirColors
+
+4、使用 ColorTool 更改 PowerShell 文字颜色，这个可以省略
+
+    # 安装更改文字颜色工具
+    > scoop install colortool
+
+    # 查看内置的配色方案，共有 8 种
+    > colortool --schemes
+
+    # 设置主题，后面是配色方案名称
+    > colortool OneHalfDark.itermcolors
+
+5、最后，把配置写入 PowerShell 的配置文件
+
+    PS C:\Users\your_name> $PROFILE
+    C:\Users\your_name\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
+
+    > code $PROFILE
+
+内容见下。
+
+#### PowerShell 7 配置文件样例
+
+```powershell
+
+# 命令行提示符git增强
+Import-Module posh-git
+
+# ls 结果使用彩色
+Import-Module DirColors
+
+# 设置预测文本来源为历史记录
+Set-PSReadLineOption -PredictionSource History
+
+# 设置 Tab 键补全
+Set-PSReadlineKeyHandler -Key Tab -Function Complete
+
+# 设置 Ctrl+d 为菜单补全和 Intellisense
+Set-PSReadLineKeyHandler -Key "Ctrl+d" -Function MenuComplete
+
+# 设置 Ctrl+z 为撤销
+Set-PSReadLineKeyHandler -Key "Ctrl+z" -Function Undo
+
+# 设置向上键为后向搜索历史记录
+Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+
+# 设置向下键为前向搜索历史纪录
+Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+
+# 关联 conda 命令，来自 Ananconda 的开始菜单快捷方式
+C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
+
+```
 
 ## Linux 字符终端
 
@@ -1786,63 +1789,65 @@ Conda
 
     https://zhuanlan.zhihu.com/p/572716915
 
-conda 激活环境时，默认会修改命令行提示符，比较丑
+conda 激活环境时，默认会修改命令行提示符，比较丑，Windows cmd 下还好，只是增加个前缀 (base) C:\>，在 mintty bash 下是个两行的怪物，而且默认不支持 utf-8。
 
-    Windows cmd 下还好，只是增加个前缀 (base) C:\>
++ mintty bash 使用 conda 自定义 PS1 变量的尝试过程如下：
 
-    bash 下是个两行的怪物，而且在 mintty bash 下默认不支持 utf-8
+    mintty bash 使用 conda 自定义 PS1
 
-所以我们可以修改bash环境中的命令行提示符，自定义 PS1
+        $ conda env config vars set PS1='($CONDA_DEFAULT_ENV)[\u@\h:\W]$'
 
-    $ conda env config vars set PS1='($CONDA_DEFAULT_ENV)[\u@\h:\W]$'
+        这样设置后，进入 mintty bash 后使用 conda 的效果如下：
 
-    这样设置后，进入 mintty bash 后使用 conda 的效果如下：
+        1、如果先执行 conda activate，会导致激活其它环境的嵌套显示
 
-    1、如果先执行 conda activate，会导致激活其它环境的嵌套显示
+            ┌─[your_bash_PS1]
+            └──$ conda activate
+            (base)[user_name@host_name:current_dir]$
 
-        ┌─[your_bash_PS1]
-        └──$ conda activate
-        (base)[user_name@host_name:current_dir]$ls
-        1.txt  2.txt  3.txt  band.py  fg.py  hotfix111.py  mmm.py  nbranch.py
+        再激活其它环境，会有俩环境名
 
-    再激活其它环境，会有俩环境名
+            (base)[user_name@host_name:current_dir]$conda activate p37
+            (p37) (p37)[user_name@host_name:current_dir]$
 
-        (base)[user_name@host_name:current_dir]$conda activate p37
-        (p37) (p37)[user_name@host_name:current_dir]$
+        退出环境时也需要执行两遍 conda deactivate
 
-    退出环境时也需要执行两遍 conda deactivate
+        2、如果不先执行 conda activate ，直接激活指定的环境，这样前缀了一个环境名，但是换行了。。。
 
-    2、如果不先执行 conda activate ，直接激活指定的环境，这样前缀了一个环境名，但是换行了。。。
+            ┌─[your_bash_PS1]
+            └──$ conda activate p37
+            (p37)
+            ����[16:32:37 user_name@host_name:current_dir]
+            ������$
 
-        ┌─[your_bash_PS1]
-        └──$ conda activate p37
-        (p37)
-        ����[16:32:37 ThinkRight@ThinkRight-PC:~]
-        ������$
+        3、太丑了，还是取消 conda 设置的命令行提示符吧
 
-    是否考虑：先取消自动激活
-    conda config --set auto_activate_base false
-    然后退出终端
-    然后打开终端 conda init一下
-    再把自动激活conda环境打开
-    conda config --set auto_activate_base true
+            # 需要进入 conda 环境再执行
+            conda env config vars unset PS1
 
-取消设置bash环境中的命令行提示符
+最终还是用 mintty bash 自定义比较好：
 
-    # 需要进入 conda 环境再执行
-    conda env config vars unset PS1
+1、把 conda 的自定义PS1关掉
 
-禁止conda修改命令行提示符
+    禁止 conda 修改命令行提示符，以防止修改变量 PS1
 
-    conda config --set changeps1 False
+        conda config --set changeps1 False
 
-Virtualenv 的处理类似 conda
+    禁止 conda 进入命令行提示符时自动激活 base 环境，以方便检测变量 $CONDA_DEFAULT_ENV
 
-先禁止 activate 命令脚本中在变量PS1前添加的环境名称
+        conda config --set auto_activate_base false
 
-    export VIRTUAL_ENV_DISABLE_PROMPT=1
+    这样在用户执行 `conda activate` 后读取 $CONDA_DEFAULT_ENV 变量的值就是当前环境名。
 
-然后读取变量 $VIRTUAL_ENV 的值就是当前环境名。
+2、Virtualenv 的处理类似 conda
+
+    先禁止 activate 命令脚本中在变量 PS1 前添加的环境名称
+
+        export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+    这样在用户执行 `source activate` 后读取 $VIRTUAL_ENV 变量的值就是当前环境名。
+
+3、在 PS1 变量的设置代码中读取二者的环境名变量，具体实现详见 [PS1conda-env-name](bash_profile.sh)。
 
 ### 状态栏工具 powerline
 
