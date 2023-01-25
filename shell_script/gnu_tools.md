@@ -1829,6 +1829,8 @@ conda 激活环境时，默认会修改命令行提示符，比较丑，Windows 
 
 1、把 conda 的自定义PS1关掉
 
+    先执行 `conda init` 以绑定 .bash_profile 。
+
     禁止 conda 修改命令行提示符，以防止修改变量 PS1
 
         conda config --set changeps1 False

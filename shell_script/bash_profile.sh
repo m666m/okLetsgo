@@ -102,7 +102,10 @@ function PS1exit-code {
 
 function PS1conda-env-name {
   # 自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 修改变量 PS1
-  # 需要先激活 base 环境 `conda activate` 后做如下的设置，只做一次即可
+  #
+  # 在 Anaconda 命令行下执行（或者手工激活 base 环境执行命令 `conda activate`）做如下的设置，只做一次即可
+  #     让 Anaconda 可以 hook 到 bash
+  #         conda init bash
   #     禁止 conda 修改命令行提示符，以防止修改变量 PS1
   #         conda config --set changeps1 False
   #     禁止 conda 进入命令行提示符时自动激活 base 环境，以方便检测变量 CONDA_DEFAULT_ENV
