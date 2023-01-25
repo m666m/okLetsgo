@@ -1496,6 +1496,109 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
 也就是说，在你的 Windows 操作系统安装完毕之后，基本的用户信息都具备了，可信赖的大公司的软件都安装了，其他zh软件，统统安装到一个虚拟机里使用，不要安装到实机里。至于是使用 Windows Sandbox 沙盒还是 hyper-v 虚机，酌情决定。
 
+### Windows 虚拟机下运行安全 Linux
+
+    https://bynss.com/linux/835302.html
+
+这样的用法，安全性最高，在这里的桌面冲浪吧。
+
+Linux 有很多开源的安全增强的发行版，结合了一流的工具、加密和虚拟化策略来应对威胁。
+
+Kodachi
+
+    https://sourceforge.net/projects/linuxkodachi/
+
+Kodachi 是一个基于 Debian 的定制 Linux 发行版，具有 XFCE 环境，可从 DVD、便携式 USB 记忆棒甚至 SD 卡无缝运行。 它捆绑了预装的 VPN 服务和支持 Tor 的浏览解决方案，以改善在线隐私并为最终用户提供安全的浏览体验。
+
+该发行版打包了 DNSCrypt 以屏蔽 TCP/IP 协议配置，以便通过隐私过滤器过滤所有在线活动。 此外，用户可以使用发行版中提供的高级加密工具来加密他们的文件目录、电子邮件和 IM。
+
+Kodachi 的实时会话无法检测到，因为操作系统会从主机系统中清除其痕迹。 您的桌面活动保持私密，发行版对您的系统数据的访问永远不会未经授权。
+
+Qubes
+
+    https://www.qubes-os.org/
+
+Qubes 操作系统是一个 Fedora- 基于 Linux 的发行版，它运行基于 Xen 的虚拟化环境，以便您可以将应用程序和连接的设备作为独立组件运行。
+
+其划分功能有助于服务器端网络堆栈和防火墙管理，以及面向安全的桌面计算。 此外，Whonix 与 Qubes 的集成允许用户在系统范围内使用 Tor。
+
+Qubes OS 有助于使用拆分 GPG 来增强安全性，允许用户安全地保存他们的私钥。 作为附加步骤，该发行版通过使用设备隔离和 U2F 代理设置来增强其加密功能，使其立即受到注重隐私的用户的欢迎。
+
+Tails
+
+    https://tails.boum.org/install/
+
+Tails 是另一个备受追捧的实时 Linux 发行版，可从各种存储介质执行，包括 HDD、USB 和 SD 卡。
+
+作为一个 Linux 发行版，Tails 在很大程度上依赖于其维护和扩展其用户隐私方面的能力。 想象一下，有一个操作系统会在您每次关闭系统时删除所有存储的数据和文件。 为避免丢失您的个人数据，您需要将文件保存在加密文件夹中。
+
+Tails 是一个以隐私为中心的 Linux 发行版，它很好地适应了 Tor 的细微差别。 随后，它提供了擦除数据的额外优势，以在每个实例之后启用防故障、面向隐私的计算。
+
+Tails 可以作为一个不可变的操作系统运行，并添加了加密层来保护您的数据。 其高度活跃的社区支持和广泛的用户文档使其成为公认的受隐私影响的 Linux 操作系统。
+
+Kali
+
+    https://www.kali.org/
+
+Kali Linux 是最流行的高级安全工程发行版之一。 这个基于 Debian 的发行版带有一套广泛的渗透测试工具和应用程序。
+
+Kali 开箱即用的可操作性使其成为新手易于使用的发行版。 该操作系统享有相当多的开发和社区支持，为大量文档铺平了道路。 这还涵盖了您可能需要的自定义（包括 ISO 自定义）和元包的任何指南。
+
+Kali 以其卧底模式和用于移动安全测试的 Kali NetHunter 套件吸引了用户。
+
+BlackArch
+
+    https://blackarch.org/
+
+BlackArch 是对 Kali 专用的基于 Linux 的测试功能的狡猾挑战者。 它基于 Arch Linux，拥有一个包含近 3000 个工具的测试套件。
+
+其模块化打包能力允许您打包测试解决方案，以便在任何目标系统上进行便携式执行。
+
+BlackArch 提供大量文档，其 XFCE 桌面环境进一步为新手提供了轻松导航。 值得注意的是，桌面环境仅使用预配置的窗口管理器，使用起来绝对令人愉悦。
+
+BlackArch 可用于 满的 和 苗条的 版本，取决于您要怎样使用发行版。 它还有一个支持社区，可以方便地进行故障排除。
+
+Parrot
+
+    https://www.parrotsec.org/
+
+Parrot OS 不可避免地包含在任何面向安全的 Linux 发行版列表中。 Parrot OS 基于 Debian，迎合各种网络安全计算应用程序，就像它的一些同行一样。
+
+Parrot OS 的系统捆绑软件框架帮助其用户进行逆向工程和数字取证任务。 该发行版使用以加密为中心的应用程序存储库，比同时代的发行版更重视安全性。 它通过其虚拟的沙盒环境限制您的所有 Linux 活动。
+
+这些特性使 Parrot OS 成为任何离散数据主机防御管理最值得信赖的开源平台之一。 Parrot 结合使用 Anonsurf、I2P 和 Tor 以及其他实用程序，为最终用户提供最佳的安全环境。
+
+Septor
+
+    https://sourceforge.net/projects/septor/
+
+Septor 源于 Debian，并吸收了 KDE 桌面环境。 该发行版配备了完善的软件生态系统，从而提供了安全且独立的开源桌面解决方案。
+
+用户会发现适用于基于 Tor 的加密网络服务的捆绑应用程序。 一些典型的 Tor 应用程序包括 Tor 浏览器、OnionShare、QuiteRSS、HexChat 和 Thunderbird 等等。
+
+Septor 作为一个基于隐私的发行版，与 Tails 非常相似，但它在桌面界面和安装介质方面有其差异化因素。
+
+Alpine
+
+    https://www.alpinelinux.org/
+
+Alpine Linux 是一个通用的实时发行版，专为匿名网上冲浪和高级恶意软件的高级保护而设计。
+
+Alpine Linux 基于 musl libc 和 BusyBox； 它是一种资源高效的开源操作系统，占用空间极小。
+
+相反，不要让这些属性欺骗您而忽略其出色的包管理器、APK 和 shell 脚本功能。
+
+用户可以使用 GNOME 或 XFCE 作为首选桌面环境。 Alpine 通过与 Docker 协同工作进一步解决安全操作系统虚拟化问题。
+
+#### Whonix 和 Kicksecure 安全加固
+
+    https://www.whonix.org/
+
+    https://www.kicksecure.com/
+        https://github.com/Kicksecure
+
+    介绍文章 https://www.ddosi.org/whonix/
+
 ### Windows S Mode
 
 只能在设备上使用 Microsoft Store 中的应用
