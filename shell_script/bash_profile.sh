@@ -104,13 +104,10 @@ function PS1conda-env-name {
   # 自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 命令修改 PS1 变量
   #
   # 在 Anaconda cmd 命令行下执行（或者cmd下手工激活base环境，执行命令 `conda activate`）做如下的设置，只做一次即可
-  #
   #   让 Anaconda 可以 hook 到 .bash_profile
   #       conda init bash
-  #
   #   禁止 conda 修改命令行提示符，以防止修改 PS1 变量
   #       conda config --set changeps1 False
-  #
   #   禁止 conda 进入命令行提示符时自动激活base环境，以方便检测 $CONDA_DEFAULT_ENV 变量
   #       conda config --set auto_activate_base false
   [[ -n $CONDA_DEFAULT_ENV ]] && printf "(conda:%s)" $CONDA_DEFAULT_ENV
