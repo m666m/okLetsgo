@@ -5049,11 +5049,11 @@ hhighlighter 给命令行输出的文字标颜色，自定义关键字
     # sudo apt install ack
 
     cd /usr/local/bin/
-    sudo curl -fsSLo ackg https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
+    sudo curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
 
 然后测试你感兴趣的文字，支持perl形式的正则表达式
 
-    source /usr/local/bin/ackg
+    source /usr/local/bin/ackg.sh
 
     # echo abc | ack --flush --passthru --color --color-match=red a | ack --flush --passthru --color --color-match=yellow b
     echo "abcdefghijklmnopqrstuvxywz" |ackg a b c d e f g h i j k l
