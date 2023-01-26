@@ -5060,7 +5060,7 @@ hhighlighter 给命令行输出的文字标颜色，自定义关键字
 
     sudo journalctl -f |ackg 'invalid|unknown' "$(hostname)" '(ssh|user)'
 
-    less /var/log/kern.log.1 |ackg -i 'Error|Fail|Failed|No|Not|Invalid|Unknown' 'Ok|Good|Done|Finish' 'Warn|Timeout|Down|Disconnect|Restart'
+    less /var/log/kern.log.1 |ackg -i 'Error|Failed|Fail|Not|No|Invalid|Unknown' 'Ok|Good|Done|Finish' 'Warning|Warned|Warn|Timeout|Down|Disconnect|Restart'
 
 ### 项目构建工具 Make、Automake、CMake、Ninja
 
