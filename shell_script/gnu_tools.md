@@ -5047,6 +5047,7 @@ hhighlighter 给命令行输出的文字标颜色，自定义关键字
 
     # 先安装依赖 ack https://wangchujiang.com/linux-command/c/ack.html
     # sudo apt install ack
+
     cd /usr/local/bin/
     sudo curl -fsSLo ackg https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
 
@@ -5054,13 +5055,14 @@ hhighlighter 给命令行输出的文字标颜色，自定义关键字
 
     source /usr/local/bin/ackg
 
+    # echo abc | ack --flush --passthru --color --color-match=red a | ack --flush --passthru --color --color-match=yellow b
     echo "abcdefghijklmnopqrstuvxywz" |ackg a b c d e f g h i j k l
 
     ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
 
     sudo journalctl -f |ackg 'invalid|unknown' "$(hostname)" '(ssh|user)'
 
-    less /var/log/kern.log.1 |ackg -i 'Error|Failed|Fail|Not|No|Invalid|Unknown' 'Ok|Good|Done|Finish' 'Warning|Warned|Warn|Timeout|Down|Disconnect|Restart'
+    less /var/log/kern.log.1 |ackg -i -w 'Error|Failed|Fail|Not|No|Invalid|Unknown' 'Ok|Good|Done|Finish' 'Warning|Warned|Warn|Timeout|Down|Disconnect|Restart'
 
 ### 项目构建工具 Make、Automake、CMake、Ninja
 
