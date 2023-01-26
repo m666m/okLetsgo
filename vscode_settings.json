@@ -265,19 +265,22 @@
     ],
     "todo-tree.general.statusBar": "tags",
     "gitlens.views.tags.branches.layout": "list",
-    // vim airline
+    // vim airline 风格的状态栏变颜色
     "vim.statusBarColorControl": true,
-    "vim.statusBarColors.normal": ["#8FBCBB", "#434C5E"],
+    "vim.statusBarColors.normal": [
+        "#8FBCBB",
+        "#434C5E"
+    ],
     "vim.statusBarColors.insert": "#BF616A",
-    "vim.statusBarColors.visual": "#B48EAD",
-    "vim.statusBarColors.visualline": "#B48EAD",
+    "vim.statusBarColors.visual": "#B96A03",
+    "vim.statusBarColors.visualline": "#B96A03",
     "vim.statusBarColors.visualblock": "#A3BE8C",
     "vim.statusBarColors.replace": "#D08770",
-    "vim.statusBarColors.commandlineinprogress": "#007ACC",
-    "vim.statusBarColors.searchinprogressmode": "#007ACC",
-    "vim.statusBarColors.easymotionmode": "#007ACC",
-    "vim.statusBarColors.easymotioninputmode": "#007ACC",
-    "vim.statusBarColors.surroundinputmode": "#007ACC",
+    "vim.statusBarColors.commandlineinprogress": "#50b8f0",
+    "vim.statusBarColors.searchinprogressmode": "#50b8f0",
+    "vim.statusBarColors.easymotionmode": "#50b8f0",
+    "vim.statusBarColors.easymotioninputmode": "#50b8f0",
+    "vim.statusBarColors.surroundinputmode": "#50b8f0",
     //////////////////////////////////////////////////////////////////
     //
     // 下面这些是vscode自己加的，随时变
