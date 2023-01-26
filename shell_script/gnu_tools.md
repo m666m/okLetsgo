@@ -1392,10 +1392,10 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 自 1978 年的 VT100 以来，Unix/Linux 一直通用 [ANSI escape codes 彩色字符方案](http://en.wikipedia.org/wiki/ANSI_escape_code)：使用固定的文本代码，对字符终端的文本进行修饰，由终端模拟器和软件解释并呈现对应的色彩。在我们使用终端模拟器软件时，设置 ssh 要连接的站点，一般选择终端类型为 xterm 即可（可以使用 shell 的 tput 命令查询或创建交互性的、专业性强的屏幕输出，如移动或更改光标、更改文本属性，以及清除终端屏幕的特定区域）。
 
-最古老的基本颜色板（basic colour palette），前景色和背景色分别有 8 种，合计16种如下，修饰文本的颜色代码 \033[0，参见终端登陆脚本中颜色设置的代码 <bash_profile.sh>。
+最古老的基本颜色板（basic colour palette），前景色和背景色分别有 8 种，合计16种如下，修饰文本的颜色代码 \033[0，参见终端登陆脚本中颜色设置的代码 <bash_profile.sh>，历史介绍见 <https://zhuanlan.zhihu.com/p/566797565>。
 
+    # https://blog.csdn.net/Dreamhai/article/details/103432525
     # https://zhuanlan.zhihu.com/p/570148970
-    # https://zhuanlan.zhihu.com/p/566797565
     # 色彩      黑    红    绿    黄    蓝    洋红    青    白
     # 前景色    30    31    32    33   34    35    36    37
     # 背景色    40    41    42    43   44    45    46    47
@@ -4399,6 +4399,10 @@ tmux 可以保持多个会话 session，每次在命令行运行 `tmux` 就会�
 
         创建一个新会话名为 mydevelop，并连接到该会话
 
+    tmux new -s share_with -t mydevelop
+
+        创建组的方法是在创建第二个session的时候用 -t target-session 将前一个session指定为新session的目标session，这样也是进入双人共用模式，但是可以分别查看不同的窗口。<https://www.cnblogs.com/bamanzi/p/tmux-share-windows-between-sessions.html>
+
     #  ssh -t localhost tmux  a
     tmux new-session -s username -d
 
@@ -4784,9 +4788,25 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 #### 类似 tmux 的工具 screen
 
-在Screen环境下，所有的会话都独立的运行，并拥有各自的编号、输入、输出和窗口缓存。用户可以通过快捷键在不同的窗口下切换，并可以自由的重定向各个窗口的输入和输出。Screen实现了基本的文本操作，如复制粘贴等；还提供了类似滚动条的功能，可以查看窗口状况的历史记录。窗口还可以被分区和命名，还可以监视后台窗口的活动。 会话共享 Screen可以让一个或多个用户从不同终端多次连接到同一个会话，并共享会话的所有特性（比如可以看到完全相同的输出）。它同时提供了窗口访问权限的机制，可以对窗口进行密码保护。
+    https://www.cnblogs.com/bamanzi/p/switch-tmux-to-gnu-screen.html
+
+安装发行版的即可
 
     sudo apt install screen
+
+在Screen环境下，所有的会话都独立的运行，并拥有各自的编号、输入、输出和窗口缓存。
+
+用户可以通过快捷键在不同的窗口下切换，并可以自由的重定向各个窗口的输入和输出。GNU Screen的窗口与区域关系更接近Emacs里面buffer与window的关系：
+
+    gnu screen里面的region相当于tmux里面的pane，而screen的window更类似于跑在tmux pane里面的程序；与tmux不同的是，一般情况下程序/窗口是隐藏的，每次只把一个程序/窗口切换到当前region来（tmux里面一般情况下所有程序都会在某个window的某个pane里面显示者，除非有其它pane被最大化导致当前pane被隐藏了）
+
+    GNU Screen里面没有tmux里面的window那样的东西，它的layout倒是跟tmux的window有点像，虽然我们可以从一个layout切换到另外一个layout，但layout只是region的容器，而不是window的容器，两个layout里面是可以查看同一个应用(window)的．
+
+Screen实现了基本的文本操作，如复制粘贴等；还提供了类似滚动条的功能，可以查看窗口状况的历史记录。窗口还可以被分区和命名，还可以监视后台窗口的活动。
+
+Screen 支持 Zmodem 协议，也就是说，你可以用 rz、sz 命令方便的传输文件 <https://adammonsen.com/post/256/>。
+
+会话共享 Screen可以让一个或多个用户从不同终端多次连接到同一个会话，并共享会话的所有特性（比如可以看到完全相同的输出）。它同时提供了窗口访问权限的机制，可以对窗口进行密码保护。
 
 会列出当前存在的会话列表
 
@@ -4972,7 +4992,7 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
         /usr/local/bin/cmatrix -sbau8
 
-    Centos 需要自行编译
+    CentOs 需要自行编译
 
         <https://thornelabs.net/posts/linux-install-cmatrix-from-rpm-deb-xz-or-source.html>
 
@@ -5018,6 +5038,27 @@ Midnight Commander
     sudo apt install mc
 
 命令行下使用两个面板来处理文件和目录，类似 [Far Manager](https://conemu.github.io/en/FarManager.html)。
+
+hhighlighter 给命令行输出的文字标颜色，自定义关键字
+
+    https://github.com/paoloantinori/hhighlighter
+    竞品 https://github.com/Scopart/colorex/
+    https://www.cnblogs.com/bamanzi/p/colorful-shell.html
+
+    # 先安装依赖 ack https://wangchujiang.com/linux-command/c/ack.html
+    # sudo apt install ack
+    cd /usr/local/bin/
+    sudo curl -fsSLo ackg https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
+
+然后测试你感兴趣的文字
+
+    source /usr/local/bin/ackg
+
+    echo "abcdefghijklmnopqrstuvxywz" |ackg   a b c d e f g h i j k l
+
+    journalctl -f |ackg 'invalid|unknown' "$(hostname)" '(ssh|user)'
+
+    less /var/log/kern.log.1 |ackg -i 'Error|Fail|Failed|No|Not|Invalid|Unknown' 'Ok|Good|Done|Finish' 'Warn|Timeout|Down|Disconnect|Restart'
 
 ### 项目构建工具 Make、Automake、CMake、Ninja
 
