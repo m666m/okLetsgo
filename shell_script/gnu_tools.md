@@ -5960,7 +5960,44 @@ done
 
 ### 操作时间时区 timedatectl
 
-    https://www.cnblogs.com/zhi-leaf/p/6282301.html
+很多发行版用 timedatectl 代替了 ntpd 等服务
+
+    用timedatectl命令操作时间时区  https://www.cnblogs.com/zhi-leaf/p/6282301.html
+
+    网络时间的那些事及 ntpq 详解  https://www.cnblogs.com/GYoungBean/p/4225465.html
+
+一般都使用 systemd 自带的时间同步服务
+
+    $ systemctl status systemd-timesyncd.service
+    Warning: The unit file, source configuration file or drop-ins of systemd-timesyncd.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+    ● systemd-timesyncd.service - Network Time Synchronization
+    Loaded: loaded (/lib/systemd/system/systemd-timesyncd.service; enabled; vendor preset: enabled)
+    Drop-In: /usr/lib/systemd/system/systemd-timesyncd.service.d
+            └─disable-with-time-daemon.conf
+    Active: active (running) since Sat 2023-01-21 00:14:58 +08; 6 days ago
+        Docs: man:systemd-timesyncd.service(8)
+    Main PID: 338 (systemd-timesyn)
+    Status: "Synchronized to time server for the first time [2406:da1e:2b8:7e32:e92a:3c4b:358e:2dfb]:123 (2.debian.pool.ntp.org)."
+        Tasks: 2 (limit: 4915)
+    CGroup: /system.slice/systemd-timesyncd.service
+            └─338 /lib/systemd/systemd-timesyncd
+
+timedatectl 查看时间同步服务器状态
+
+    $ timedatectl timesync-status
+    Server: 2406:da1e:2b8:7e32:e92a:3c4b:358e:2dfb (2.debian.pool.ntp.org)
+    Poll interval: 34min 8s (min: 32s; max 34min 8s)
+            Leap: normal
+        Version: 4
+        Stratum: 2
+        Reference: 875729E5
+        Precision: 1us (-25)
+    Root distance: 23.338ms (max: 5s)
+        Offset: -406us
+            Delay: 95.029ms
+        Jitter: 2.817ms
+    Packet count: 263
+        Frequency: -1.446ppm
 
 ### 设置替换命令 update-alternatives
 
