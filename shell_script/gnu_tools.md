@@ -1827,27 +1827,30 @@ conda 激活环境时，默认会修改命令行提示符，比较丑，Windows 
 
 最终还是用 mintty bash 自定义比较好：
 
-1、把 conda 的自定义PS1关掉
+1、把 conda 的自定义 PS1 变量关掉
 
-    先执行 `conda init` 以绑定 .bash_profile 。
+    自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 命令修改 PS1 变量
 
-    禁止 conda 修改命令行提示符，以防止修改变量 PS1
+    在 Anaconda cmd 命令行下执行（或者cmd下手工激活base环境，执行命令 `conda activate`）做如下的设置，只做一次即可
 
-        conda config --set changeps1 False
+        让 Anaconda 可以 hook 到 .bash_profile
+            conda init bash
 
-    禁止 conda 进入命令行提示符时自动激活 base 环境，以方便检测变量 $CONDA_DEFAULT_ENV
+        禁止 conda 修改命令行提示符，以防止修改 PS1 变量
+            conda config --set changeps1 False
 
-        conda config --set auto_activate_base false
+        禁止 conda 进入命令行提示符时自动激活base环境，以方便检测 $CONDA_DEFAULT_ENV 变量
+            conda config --set auto_activate_base false
 
-    这样在用户执行 `conda activate` 后读取 $CONDA_DEFAULT_ENV 变量的值就是当前环境名。
+    这样在用户登陆进入bash环境后，执行 `conda activate` 后读取 $CONDA_DEFAULT_ENV 变量即可获取到当前环境名。
 
-2、Virtualenv 的处理类似 conda
+2、virtualenv 的处理类似 conda
 
-    先禁止 activate 命令脚本中在变量 PS1 前添加的环境名称
+    先禁止 virtualenv 环境中的 activate 命令在 PS1 变量添加环境名称
 
         export VIRTUAL_ENV_DISABLE_PROMPT=1
 
-    这样在用户执行 `source activate` 后读取 $VIRTUAL_ENV 变量的值就是当前环境名。
+    这样在用户登陆进入bash环境后，执行 `source activate` 后读取 $VIRTUAL_ENV 变量即可获取到当前环境名。
 
 3、在 PS1 变量的设置代码中读取二者的环境名变量，具体实现详见 [PS1conda-env-name](bash_profile.sh)。
 

@@ -101,19 +101,22 @@ function PS1exit-code {
 }
 
 function PS1conda-env-name {
-  # 自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 修改变量 PS1
+  # 自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 命令修改 PS1 变量
   #
-  # 在 Anaconda 命令行下执行（或者手工激活 base 环境执行命令 `conda activate`）做如下的设置，只做一次即可
-  #     让 Anaconda 可以 hook 到 bash
-  #         conda init bash
-  #     禁止 conda 修改命令行提示符，以防止修改变量 PS1
-  #         conda config --set changeps1 False
-  #     禁止 conda 进入命令行提示符时自动激活 base 环境，以方便检测变量 CONDA_DEFAULT_ENV
-  #         conda config --set auto_activate_base false
+  # 在 Anaconda cmd 命令行下执行（或者cmd下手工激活base环境，执行命令 `conda activate`）做如下的设置，只做一次即可
+  #
+  #   让 Anaconda 可以 hook 到 .bash_profile
+  #       conda init bash
+  #
+  #   禁止 conda 修改命令行提示符，以防止修改 PS1 变量
+  #       conda config --set changeps1 False
+  #
+  #   禁止 conda 进入命令行提示符时自动激活base环境，以方便检测 $CONDA_DEFAULT_ENV 变量
+  #       conda config --set auto_activate_base false
   [[ -n $CONDA_DEFAULT_ENV ]] && printf "(conda:%s)" $CONDA_DEFAULT_ENV
 }
 
-# virtualenv 自定义环境名格式，禁止 activate 命令脚本中在变量 PS1 前添加的环境名称
+# virtualenv 自定义环境名格式，禁止 activate 命令脚本中在 PS1 变量添加环境名称
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 function PS1virtualenv-env-name {
