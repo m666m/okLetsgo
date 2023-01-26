@@ -5050,13 +5050,15 @@ hhighlighter 给命令行输出的文字标颜色，自定义关键字
     cd /usr/local/bin/
     sudo curl -fsSLo ackg https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
 
-然后测试你感兴趣的文字
+然后测试你感兴趣的文字，支持perl形式的正则表达式
 
     source /usr/local/bin/ackg
 
-    echo "abcdefghijklmnopqrstuvxywz" |ackg   a b c d e f g h i j k l
+    echo "abcdefghijklmnopqrstuvxywz" |ackg a b c d e f g h i j k l
 
-    journalctl -f |ackg 'invalid|unknown' "$(hostname)" '(ssh|user)'
+    ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
+
+    sudo journalctl -f |ackg 'invalid|unknown' "$(hostname)" '(ssh|user)'
 
     less /var/log/kern.log.1 |ackg -i 'Error|Fail|Failed|No|Not|Invalid|Unknown' 'Ok|Good|Done|Finish' 'Warn|Timeout|Down|Disconnect|Restart'
 
