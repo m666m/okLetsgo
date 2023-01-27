@@ -5276,7 +5276,7 @@ hhighlighter 给终端输出的关键字加颜色，自定义关键字
 
     ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
 
-    cat /var/log/kern.log.1 |ackg -i 'Fail|Error|Not|[^\w]No[^\w]|Invalid' 'Ok|Success|Good|Done|Finish' 'Warn|Timeout|Down|Unknown|Disconnect|Restart'
+    cat /var/log/kern.log.1 |ackg -i 'Fail|Error|[^\w]Not[^\w]|[^\w]No[^\w]|Invalid' 'Ok|Success|Good|Done|Finish' 'Warn|Timeout|Down|Unknown|Disconnect|Restart'
 
 ### dd 写入文件
 
