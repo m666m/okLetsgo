@@ -2115,23 +2115,21 @@ zsh 默认使用的用户插件位置，在 ~/.zsh/plugin/
 
     zsh-newuser-install -f
 
-如果之前使用bash，在 ~/.zshrc 文件中加上`source ~/.bash_profile`，可以继承 bash 的配置文件 ~/.bash_profile 内容。
+如果之前使用bash，在 ~/.zshrc 文件中加上 `source ~/.bash_profile`，可以继承执行 bash 的配置文件。
 
 有些插件和主题依赖 python 和 git，注意提前安装好。
 
-推荐使用简洁的zsh提示符主题 pure
+zsh 命令提示符主题推荐使用简洁的 pure
 
     https://github.com/sindresorhus/pure
 
     下面章节[推荐状态栏工具 powerlevel10k]，也可设置为 pure 风格。
 
-zsh自带功能
+zsh 自带功能
 
     命令智能补全：相对于 bash，两次 TAB 键只能用于提示目录，在 zsh 中输入长命令，输入开头字母后连续敲击两次 TAB 键 zsh 给你一个可能的列表，用tab或方向键选择，回车确认。比如已经输入了 svn commit，但是有一个 commit 的参数我忘记了，我只记得两个减号开头的，在svn commit -- 后面按两次TAB，会列出所有命令。
 
     快速跳转：输入 cd - 按TAB，会列出历史路径清单供选择。
-
-zsh 命令行默认是 vi 操作模式，不需要在 ~/.zshrc 文件里 “set -o vi”。
 
 #### 安装常用的插件
 
@@ -2158,7 +2156,7 @@ zsh 命令行默认是 vi 操作模式，不需要在 ~/.zshrc 文件里 “set 
         # https://github.com/junegunn/fzf#fuzzy-completion-for-bash-and-zsh
         sudo apt install fzf
 
-使用 source 命令启用插件的 ~/.zshrc 文件
+简单启用插件就直接在 ~/.zshrc 文件里使用 source 命令即可，完整示例见章节 [.zshrc 配置文件样例]
 
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
@@ -2202,8 +2200,6 @@ zsh下，如果想研究哪个插件过慢导致命令行反应让人不爽，�
 
 #### 状态栏工具 powerlevel10k
 
-依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
-
 zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 powerline ，而且更简单、更好看
 
     https://github.com/romkatv/powerlevel10k
@@ -2219,13 +2215,15 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
         cd ~/powerlevel10k
         exec zsh'
 
-先在你使用终端模拟器的计算机上安装 MesloLGS NF 字体，详见章节[图标字体]。
+炫酷的符号字体，需要在你使用终端模拟器的计算机上安装 MesloLGS NF 字体，详见章节[图标字体]。
 
-终端模拟器最好明确设置变量Term，这样各个插件会自动使用更丰富的颜色
+终端模拟器最好明确设置 $TERM 变量，这样各个插件会自动使用更丰富的颜色
 
     # 或者在你的用户登陆脚本 .bash_profile 中显式设置
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
+
+依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
 
 如果你的终端模拟器不支持透明效果，且未使用 MesloLGS NF 字体的话，显示风格会有差别，这是设计者做了兼容性考虑，以防止显示不正常。
 
