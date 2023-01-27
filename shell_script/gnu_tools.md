@@ -4876,303 +4876,6 @@ Screen 支持 Zmodem 协议，也就是说，你可以用 rz、sz 命令方便�
 
 这个命令会将你朋友的终端Attach到你的Screen会话上，并且你的终端不会被Detach。这样你就可以和朋友共享同一个会话了，如果你们当前又处于同一个窗口，那就相当于坐在同一个显示器前面，你的操作会同步演示给你朋友，你朋友的操作也会同步演示给你。当然，如果你们切换到这个会话的不同窗口中去，那还是可以分别进行不同的操作的。
 
-### 字符终端下的一些小玩具如 figlet、cmatrix 等
-
-    符号字符 https://www.webfx.com/tools/emoji-cheat-sheet/
-
-    unicode编码 http://www.unicode.org/emoji/charts/full-emoji-list.html
-
-    emoji 大全 https://emojipedia.org/
-        unicode emoji https://unicode.org/emoji/charts/full-emoji-list.html
-        git emoji https://blog.csdn.net/li1669852599/article/details/113336076
-
-小火车sl
-
-    sudo apt install sl
-
-牛说
-
-    # cowsay
-    # cowsay -l
-    # echo "Hello world" |cowthink
-    # echo "Hello world" |cowsay -f www -d
-    sudo apt install cowsay
-
-    格言大全
-
-        sudo apt install fortunes
-
-    随机化选取动物的脚本：
-
-    ```bash
-    # https://zhuanlan.zhihu.com/p/81867213
-    #!/bin/bash
-
-    function rand(){
-        min=$1
-        max=$(($2-$min+1))
-        echo $(($RANDOM%$max+$min))
-    }
-
-    animal=$(ls /usr/share/cowsay/cows | sed 's/\.cow//' | shuf -n 1)
-    fortunes[0]='fortune -e fortunes | cowsay'
-    fortunes[1]='fortune -e literature | cowsay'
-    fortunes[2]='fortune -e riddles | cowsay'
-    fortunes[3]='fortune -e chinese | cowsay'
-    fortunes[4]='fortune -e tang300 | cowsay -n'
-    fortunes[5]='fortune -e song100 | cowsay -n'
-    index=$(rand 0 5)
-    cmd="${fortunes[$index]} -f $animal | lolcat"
-    eval $cmd
-    ```
-
-字符画 figlet + toilet
-
-    sudo apt install -y figlet toilet
-
-    # figlet字体位置 /usr/share/figlet
-    # 命令 showfigfonts 查看figlet字体
-
-    # 安装 toilet 后，figlet 可使用更好看的 tlf(toilet UTF-8) 字体
-    for tlf in $(ls /usr/share/figlet/*.tlf)
-    do
-        echo -e "$(basename ${tlf} :) \n"
-        figlet -f $tlf 12:34:56:78:90:abc:ABC
-    done
-
-    钟表
-
-        # watch -n1 "date '+%D%n%T'|figlet -k"
-        watch -n1 "date '+%D %T'|figlet -f future.tlf -w 80"
-
-        # 温度及钟表
-        # watch -n1  "date '+%D %T ' && vcgencmd measure_temp |figlet -f future.tlf -w 80 "
-        watch -n1  "(date '+%T'; vcgencmd measure_temp) |tr '\n' ' ' |figlet -f future.tlf -w 80 "
-
-+ matrix 字符屏保
-
-    参考
-
-        https://magiclen.org/cmatrix/
-            https://github.com/abishekvashok/cmatrix
-
-    Debian / Ubuntu 安装发行版
-
-        sudo apt install cmatrix
-
-        cmatrix -ba
-
-        Ctrl + c 或 q 退出
-
-    Debian 自编最新版
-
-        下载源代码
-
-            git clone --depth=1 https://github.com/abishekvashok/cmatrix
-
-        安装依赖库
-
-            sudo apt install automake libncurses-dev
-
-        Using configure (recommended for most linux/mingw users)
-
-            autoreconf -i  # skip if using released tarball
-            ./configure
-            make
-
-            # 不要sudo make install，尽量打包然后用包管理器安装
-            $ sudo make install
-            make[1]: Entering directory '/pcode/cmatrix'
-            /usr/bin/mkdir -p '/usr/local/bin'
-            /usr/bin/install -c cmatrix '/usr/local/bin'
-            Installing matrix fonts in /usr/share/consolefonts...
-            /usr/bin/mkdir -p '/usr/local/share/man/man1'
-            /usr/bin/install -c -m 644 cmatrix.1 '/usr/local/share/man/man1'
-            make[1]: Leaving directory '/pcode/cmatrix'
-
-        /usr/local/bin/cmatrix -sbau8
-
-    CentOs 需要自行编译
-
-        <https://thornelabs.net/posts/linux-install-cmatrix-from-rpm-deb-xz-or-source.html>
-
-        下载源代码
-
-            git clone --depth=1 https://github.com/abishekvashok/cmatrix
-
-        安装依赖库
-
-            sudo yum install -y gcc make autoconf automake ncurses-devel
-
-        Generate aclocal.m4 man page:
-
-            aclocal
-
-        Generate configuration scripts:
-
-            autoconf
-
-        Generate Makefile.in for configure from Makefile.am:
-
-            automake -a
-
-        Configure, make, and make install the binary:
-
-            ./configure
-            make
-            sudo make install
-
-### 小管理工具
-
-reptyr
-
-    # https://github.com/nelhage/reptyr
-    sudo apt install reptyr
-
-从你的当前终端连接指定的 pid，适用于把 Ctrl+Z 挂起到后台的任务重新调用回前台。
-
-Midnight Commander
-
-    # https://midnight-commander.org/ https://github.com/MidnightCommander/mc
-    # https://sourceforge.net/projects/mcwin32/files/
-    sudo apt install mc
-
-命令行下使用两个面板来处理文件和目录，类似 [Far Manager](https://conemu.github.io/en/FarManager.html)。
-
-hhighlighter 给命令行输出的文字标颜色，自定义关键字
-
-    https://github.com/paoloantinori/hhighlighter
-    竞品 https://github.com/Scopart/colorex/
-    https://www.cnblogs.com/bamanzi/p/colorful-shell.html
-
-    # 先安装依赖 ack https://wangchujiang.com/linux-command/c/ack.html
-    # sudo apt install ack
-
-    cd /usr/local/bin/
-    sudo curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
-
-然后测试你感兴趣的文字，支持perl形式的正则表达式
-
-    source /usr/local/bin/ackg.sh
-
-    # echo abc | ack --flush --passthru --color --color-match=red a | ack --flush --passthru --color --color-match=yellow b
-    echo "abcdefghijklmnopqrstuvxywz" |ackg a b c d e f g h i j k l
-
-    ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
-
-    sudo journalctl -f |ackg 'invalid|unknown' "$(hostname)" '(ssh|user)'
-
-    less /var/log/kern.log.1 |ackg -i -w 'Error|Failed|Fail|Not|No|Invalid|Unknown' 'Ok|Good|Done|Finish' 'Warning|Warned|Warn|Timeout|Down|Disconnect|Restart'
-
-### 项目构建工具 Make、Automake、CMake、Ninja
-
-Make
-
-    http://www.gnu.org/software/make/manual/html_node/index.html#SEC_Contents
-
-Make的流行也带动起一批自动生成Makefile的工具，目的就是进一步减轻项目构建中的工作量，让我们程序员全身心投入到开发之中。在这些工具中，不得不提Automake和CMake。
-
-Automake
-
-Automake 其实是一系列工具集 Autotools 中的一员，要想发挥Automake的威力，需要配合使用 Autotools 中的其他工具，例如 autoscan、aclocal、autoconf 和 autoheader。在下面的 Automake 构建流程中，能看到这些工具的身影。
-
-    autoscan：生成 configure.scan
-
-    configure.in：将 configure.scan 重命名为 configure.in 后，修改内容。重点是 AM_INIT_AUTOMAKE 和 AC_CONFIG_FILES 两项，如果没配置的话，下一步的 aclocal 是无法产生 aclocal.m4 的
-
-    aclocal：生成 aclocal.m4
-
-    autoconf：生成 configure
-
-    autoheader：生成 config.h.in，使程序可移植
-
-    Makefile.am：手动编写 Makefile.am。bin_PROGRAMS 指定最终生成可执行文件的名称，helloworld_SOURCES 指定所有源文件
-
-    NEWS AUTHORS README ChangeLog：手动创建
-
-    automake：执行 `automake -a` 生成 Makefile.in
-
-    configure：执行 ./configure 生成Makefile
-
-CMake
-
-重新用CMake生成Makefile，Automake中的9步被压缩到了只需要2步！
-
-    编写CMakeLists.txt
-
-    执行cmake .
-
-Ninja
-
-Ninja通过将编译任务并行组织，大大提高了构建速度。
-
-    https://ninja-build.org/
-        https://github.com/ninja-build/ninja
-
-    https://www.cnblogs.com/sandeepin/p/ninja.html
-
-Ninja 还集成了 graphviz 等一些对开发非常有用的工具，执行 `./ninja -t list`
-
-    ninja subtools:
-
-        browse        # 在浏览器中浏览依赖关系图。（默认会在 8080 端口启动一个基于python的http服务）
-        clean         # 清除构建生成的文件
-        commands      # 罗列重新构建制定目标所需的所有命令
-        deps          # 显示存储在deps日志中的依赖关系
-        graph         # 为指定目标生成 graphviz dot 文件。
-                        如 ninja -t graph all |dot -Tpng -ograph.png
-        query         # 显示一个路径的inputs/outputs
-        targets       # 通过DAG中rule或depth罗列target
-        compdb        # dump JSON兼容的数据库到标准输出
-        recompact     # 重新紧凑化ninja内部数据结构
-
-可通过cmake来生成ninja的配置，进而进行编译
-
-    # 生成ninja工程
-    cmake -Bbuild -GNinja
-
-    # 运行ninja编译
-    ninja
-
-### graphviz 文本生成流程图
-
-    https://www.graphviz.org/
-
-<https://stackoverflow.com/questions/4366511/is-there-a-jquery-plugin-for-dot-language-file-visualization/>
-There are three different implementations:
-
-1.Render svg in simple js, no needs install of graphviz
-
-    jquery.graphviz.svg[DEPRECATED] https://github.com/mountainstorm/jquery.graphviz.svg
-
-        jQuery plugin to make Graphviz SVG output more interactive and easier to navigate. Makes it easy to have features like:
-
-        Highlight nodes/edges
-        Zoom in/out
-        Graph navigation - select linked nodes
-        Fancy UI tooltips; bootstrap supported out the box
-        Move things forward/back in the graph
-
-        Have a look at the demo: https://cdn.rawgit.com/mountainstorm/jquery.graphviz.svg/master/demo.html
-
-2.Based on d3.js
-
-    d3.js + hpcc-js-wasm https://github.com/magjac/d3-graphviz
-
-        build graphviz to wasm https://github.com/hpcc-systems/hpcc-js-wasm
-
-    d3.js + dagre https://github.com/dagrejs/dagre-d3
-
-        pure js library from graphviz https://github.com/dagrejs/dagre
-
-3.server side call graphviz to generate svg file.
-
-    http://viz-js.com/
-
-        https://github.com/mdaines/viz.js
-
-    https://github.com/dreampuf/GraphvizOnline
-
 ### Aria2 下载工具
 
 命令行传输各种参数，设置复杂，Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳dht站点清单。
@@ -5465,7 +5168,17 @@ xargs 命令是给其他命令传递参数的一个过滤器，常作为组合�
 
 ### 字符串处理 awk sed cut tr wc
 
-tr 删除字符，主要用于截取字符串
+tr 功能1 -- 替换字符
+
+    $ dircolors | tr ":" "\n"
+    LS_COLORS='rs=0
+    ln=01;36
+    so=01;35
+    *.tar=01;31
+    *.tgz=01;31
+    *.arc=01;31
+
+tr 功能2 -- 删除字符，主要用于截取字符串
 
     $ echo "throttled=50.0"| tr -d "throttled="
     50.0
@@ -5482,29 +5195,34 @@ awk 指定分隔符，可以用简单的语句组合字段
 
 sed 删除、替换文件中的字符串
 
-    # 在文件的匹配行前面加上#注释
-    #   // 模式匹配，可匹配文字中的空格，后面的替换操作是在匹配到的行中做
-    #   s:替换
-    #   ^:开头匹配
-    #   [^#]:匹配非#
-    #   #&:用&来原封不动引用前面匹配到的行内容，在其前面加上#号
-    #   g:全部（只匹配特定行不加g）
+    在文件的匹配行前面加上#注释
+    #   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+    #   s       替换
+    #   ^       开头匹配
+    #   [^#]    匹配非#
+    #   #&      用&来原封不动引用前面匹配到的行内容，在其前面加上#号
+    #   g       全部（只匹配特定行不加g）
     sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
 
-    # 在文件的匹配行前面取消#注释
-    #   // 模式匹配，可匹配文字中的空格，后面的替换操作是在匹配到的行中找的
-    #   ^#//:去掉代表开头的#
+    在文件的匹配行前面取消#注释
+    #   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+    #   ^#//    去掉代表开头的#
     sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
 
     # 给所有没有#开头的行改为#开头
+    # sed '/[^#]/ s/^[^#]/#&/' /etc/dhcpcd.conf
     sed 's/^[^#]/#&/' /etc/dhcpcd.conf
 
     选项与参数：
 
         -n ：使用安静(silent)模式。在一般 sed 的用法中，所有来自 STDIN 的数据一般都会被列出到终端上。但如果加上 -n 参数后，则只有经过sed 特殊处理的那一行(或者动作)才会被列出来。
+
         -e ：直接在命令列模式上进行 sed 的动作编辑；
+
         -f ：直接将 sed 的动作写在一个文件内， -f filename 则可以运行 filename 内的 sed 动作；
+
         -r ：sed 的动作支持的是延伸型正规表示法的语法。(默认是基础正规表示法语法)
+
         -i ：直接修改读取的文件内容，而不是输出到终端。
 
     动作说明： [n1[,n2]]function
@@ -5528,6 +5246,37 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
     $ grep -in 'apt-get' README.rst
     20:     sudo apt-get install fonts-powerline
+
+### 终端输出的处理
+
+对程序的输出同时打印到文件和屏幕
+
+    ls -al | tee file.txt
+
+hhighlighter 给终端输出的关键字加颜色，自定义关键字
+
+    https://github.com/paoloantinori/hhighlighter
+    竞品 https://github.com/Scopart/colorex/
+    https://www.cnblogs.com/bamanzi/p/colorful-shell.html
+
+    # 先安装依赖 ack https://wangchujiang.com/linux-command/c/ack.html
+    # sudo apt install ack
+
+    cd /usr/local/bin/
+    sudo curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
+
+然后测试你感兴趣的文字，支持perl形式的正则表达式
+
+    source /usr/local/bin/ackg.sh
+
+    # echo abc | ack --flush --passthru --color --color-match=red a | ack --flush --passthru --color --color-match=yellow b
+    echo "abcdefghijklmnopqrstuvxywz" |ackg a b c d e f g h i j k l
+
+    ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
+
+    sudo journalctl -f |ackg 'invalid|unknown' "$(hostname)" '(ssh|user)'
+
+    less /var/log/kern.log.1 |ackg -i -w 'Error|Failed|Fail|Not|No|Invalid|Unknown' 'Ok|Good|Done|Finish' 'Warning|Warned|Warn|Timeout|Down|Disconnect|Restart'
 
 ### dd 写入文件
 
@@ -5943,9 +5692,277 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
     # Python 3 http服务器的包名变了，使用端口 7777
     python3 -m http.server 7777
 
-### 对程序的输出同时打印到文件和屏幕
+### reptyr 从 pid 把后台任务调回前台
 
-    ls -al | tee file.txt
+reptyr
+
+    # https://github.com/nelhage/reptyr
+    sudo apt install reptyr
+
+从你的当前终端连接指定的 pid，适用于把 Ctrl+Z 挂起到后台的任务重新调用回前台。
+
+### Midnight Commander 命令行下的文件资源管理器
+
+    # https://midnight-commander.org/ https://github.com/MidnightCommander/mc
+    # https://sourceforge.net/projects/mcwin32/files/
+    sudo apt install mc
+
+命令行下使用两个面板来处理文件和目录，类似 [Far Manager](https://conemu.github.io/en/FarManager.html)。
+
+### 字符终端下的一些小玩具如 figlet、cmatrix 等
+
+    符号字符 https://www.webfx.com/tools/emoji-cheat-sheet/
+
+    unicode编码 http://www.unicode.org/emoji/charts/full-emoji-list.html
+
+    emoji 大全 https://emojipedia.org/
+        unicode emoji https://unicode.org/emoji/charts/full-emoji-list.html
+        git emoji https://blog.csdn.net/li1669852599/article/details/113336076
+
+小火车sl
+
+    sudo apt install sl
+
+牛说
+
+    # cowsay
+    # cowsay -l
+    # echo "Hello world" |cowthink
+    # echo "Hello world" |cowsay -f www -d
+    sudo apt install cowsay
+
+    格言大全
+
+        sudo apt install fortunes
+
+    随机化选取动物的脚本：
+
+    ```bash
+    # https://zhuanlan.zhihu.com/p/81867213
+    #!/bin/bash
+
+    function rand(){
+        min=$1
+        max=$(($2-$min+1))
+        echo $(($RANDOM%$max+$min))
+    }
+
+    animal=$(ls /usr/share/cowsay/cows | sed 's/\.cow//' | shuf -n 1)
+    fortunes[0]='fortune -e fortunes | cowsay'
+    fortunes[1]='fortune -e literature | cowsay'
+    fortunes[2]='fortune -e riddles | cowsay'
+    fortunes[3]='fortune -e chinese | cowsay'
+    fortunes[4]='fortune -e tang300 | cowsay -n'
+    fortunes[5]='fortune -e song100 | cowsay -n'
+    index=$(rand 0 5)
+    cmd="${fortunes[$index]} -f $animal | lolcat"
+    eval $cmd
+    ```
+
+字符画 figlet + toilet
+
+    sudo apt install -y figlet toilet
+
+    # figlet字体位置 /usr/share/figlet
+    # 命令 showfigfonts 查看figlet字体
+
+    # 安装 toilet 后，figlet 可使用更好看的 tlf(toilet UTF-8) 字体
+    for tlf in $(ls /usr/share/figlet/*.tlf)
+    do
+        echo -e "$(basename ${tlf} :) \n"
+        figlet -f $tlf 12:34:56:78:90:abc:ABC
+    done
+
+    钟表
+
+        # watch -n1 "date '+%D%n%T'|figlet -k"
+        watch -n1 "date '+%D %T'|figlet -f future.tlf -w 80"
+
+        # 温度及钟表
+        # watch -n1  "date '+%D %T ' && vcgencmd measure_temp |figlet -f future.tlf -w 80 "
+        watch -n1  "(date '+%T'; vcgencmd measure_temp) |tr '\n' ' ' |figlet -f future.tlf -w 80 "
+
++ matrix 字符屏保
+
+    参考
+
+        https://magiclen.org/cmatrix/
+            https://github.com/abishekvashok/cmatrix
+
+    Debian / Ubuntu 安装发行版
+
+        sudo apt install cmatrix
+
+        cmatrix -ba
+
+        Ctrl + c 或 q 退出
+
+    Debian 自编最新版
+
+        下载源代码
+
+            git clone --depth=1 https://github.com/abishekvashok/cmatrix
+
+        安装依赖库
+
+            sudo apt install automake libncurses-dev
+
+        Using configure (recommended for most linux/mingw users)
+
+            autoreconf -i  # skip if using released tarball
+            ./configure
+            make
+
+            # 不要sudo make install，尽量打包然后用包管理器安装
+            $ sudo make install
+            make[1]: Entering directory '/pcode/cmatrix'
+            /usr/bin/mkdir -p '/usr/local/bin'
+            /usr/bin/install -c cmatrix '/usr/local/bin'
+            Installing matrix fonts in /usr/share/consolefonts...
+            /usr/bin/mkdir -p '/usr/local/share/man/man1'
+            /usr/bin/install -c -m 644 cmatrix.1 '/usr/local/share/man/man1'
+            make[1]: Leaving directory '/pcode/cmatrix'
+
+        /usr/local/bin/cmatrix -sbau8
+
+    CentOs 需要自行编译
+
+        <https://thornelabs.net/posts/linux-install-cmatrix-from-rpm-deb-xz-or-source.html>
+
+        下载源代码
+
+            git clone --depth=1 https://github.com/abishekvashok/cmatrix
+
+        安装依赖库
+
+            sudo yum install -y gcc make autoconf automake ncurses-devel
+
+        Generate aclocal.m4 man page:
+
+            aclocal
+
+        Generate configuration scripts:
+
+            autoconf
+
+        Generate Makefile.in for configure from Makefile.am:
+
+            automake -a
+
+        Configure, make, and make install the binary:
+
+            ./configure
+            make
+            sudo make install
+
+### 项目构建工具 Make、Automake、CMake、Ninja
+
+Make
+
+    http://www.gnu.org/software/make/manual/html_node/index.html#SEC_Contents
+
+Make的流行也带动起一批自动生成Makefile的工具，目的就是进一步减轻项目构建中的工作量，让我们程序员全身心投入到开发之中。在这些工具中，不得不提Automake和CMake。
+
+Automake
+
+Automake 其实是一系列工具集 Autotools 中的一员，要想发挥Automake的威力，需要配合使用 Autotools 中的其他工具，例如 autoscan、aclocal、autoconf 和 autoheader。在下面的 Automake 构建流程中，能看到这些工具的身影。
+
+    autoscan：生成 configure.scan
+
+    configure.in：将 configure.scan 重命名为 configure.in 后，修改内容。重点是 AM_INIT_AUTOMAKE 和 AC_CONFIG_FILES 两项，如果没配置的话，下一步的 aclocal 是无法产生 aclocal.m4 的
+
+    aclocal：生成 aclocal.m4
+
+    autoconf：生成 configure
+
+    autoheader：生成 config.h.in，使程序可移植
+
+    Makefile.am：手动编写 Makefile.am。bin_PROGRAMS 指定最终生成可执行文件的名称，helloworld_SOURCES 指定所有源文件
+
+    NEWS AUTHORS README ChangeLog：手动创建
+
+    automake：执行 `automake -a` 生成 Makefile.in
+
+    configure：执行 ./configure 生成Makefile
+
+CMake
+
+重新用CMake生成Makefile，Automake中的9步被压缩到了只需要2步！
+
+    编写CMakeLists.txt
+
+    执行cmake .
+
+Ninja
+
+Ninja通过将编译任务并行组织，大大提高了构建速度。
+
+    https://ninja-build.org/
+        https://github.com/ninja-build/ninja
+
+    https://www.cnblogs.com/sandeepin/p/ninja.html
+
+Ninja 还集成了 graphviz 等一些对开发非常有用的工具，执行 `./ninja -t list`
+
+    ninja subtools:
+
+        browse        # 在浏览器中浏览依赖关系图。（默认会在 8080 端口启动一个基于python的http服务）
+        clean         # 清除构建生成的文件
+        commands      # 罗列重新构建制定目标所需的所有命令
+        deps          # 显示存储在deps日志中的依赖关系
+        graph         # 为指定目标生成 graphviz dot 文件。
+                        如 ninja -t graph all |dot -Tpng -ograph.png
+        query         # 显示一个路径的inputs/outputs
+        targets       # 通过DAG中rule或depth罗列target
+        compdb        # dump JSON兼容的数据库到标准输出
+        recompact     # 重新紧凑化ninja内部数据结构
+
+可通过cmake来生成ninja的配置，进而进行编译
+
+    # 生成ninja工程
+    cmake -Bbuild -GNinja
+
+    # 运行ninja编译
+    ninja
+
+### graphviz 文本生成流程图
+
+    https://www.graphviz.org/
+
+<https://stackoverflow.com/questions/4366511/is-there-a-jquery-plugin-for-dot-language-file-visualization/>
+There are three different implementations:
+
+1.Render svg in simple js, no needs install of graphviz
+
+    jquery.graphviz.svg[DEPRECATED] https://github.com/mountainstorm/jquery.graphviz.svg
+
+        jQuery plugin to make Graphviz SVG output more interactive and easier to navigate. Makes it easy to have features like:
+
+        Highlight nodes/edges
+        Zoom in/out
+        Graph navigation - select linked nodes
+        Fancy UI tooltips; bootstrap supported out the box
+        Move things forward/back in the graph
+
+        Have a look at the demo: https://cdn.rawgit.com/mountainstorm/jquery.graphviz.svg/master/demo.html
+
+2.Based on d3.js
+
+    d3.js + hpcc-js-wasm https://github.com/magjac/d3-graphviz
+
+        build graphviz to wasm https://github.com/hpcc-systems/hpcc-js-wasm
+
+    d3.js + dagre https://github.com/dagrejs/dagre-d3
+
+        pure js library from graphviz https://github.com/dagrejs/dagre
+
+3.server side call graphviz to generate svg file.
+
+    http://viz-js.com/
+
+        https://github.com/mdaines/viz.js
+
+    https://github.com/dreampuf/GraphvizOnline
 
 ### 压力测试
 
