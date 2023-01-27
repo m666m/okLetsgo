@@ -5263,11 +5263,13 @@ hhighlighter 给终端输出的关键字加颜色，自定义关键字
     # sudo apt install ack
 
     cd /usr/local/bin/
+    # 名字都换成不易混淆的 ackg 吧
     sudo curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
+    sudo sed -i 's/h()/ackg()/' ackg.sh
 
 然后测试你感兴趣的文字，支持perl形式的正则表达式
 
-    source /usr/local/bin/ackg.sh
+    source ackg.sh
 
     # echo abc | ack --flush --passthru --color --color-match=red a | ack --flush --passthru --color --color-match=yellow b
     echo "abcdefghijklmnopqrstuvxywz" |ackg a b c d e f g h i j k l
