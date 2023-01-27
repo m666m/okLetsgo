@@ -5253,7 +5253,7 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
     ls -al | tee file.txt
 
-hhighlighter 给终端输出的关键字加颜色，自定义关键字
+hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控日志输出调试程序使用
 
     https://github.com/paoloantinori/hhighlighter
     竞品 https://github.com/Scopart/colorex/
