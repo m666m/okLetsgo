@@ -5272,11 +5272,11 @@ hhighlighter 给终端输出的关键字加颜色，自定义关键字
     # echo abc | ack --flush --passthru --color --color-match=red a | ack --flush --passthru --color --color-match=yellow b
     echo "abcdefghijklmnopqrstuvxywz" |ackg a b c d e f g h i j k l
 
+    echo ':no:not:now_1no2notno no'|ackg -i '[^\w]no[^\w]|not'
+
     ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
 
-    sudo journalctl -f |ackg 'invalid|unknown' "$(hostname)" '(ssh|user)'
-
-    less /var/log/kern.log.1 |ackg -i -w 'Error|Failed|Fail|Not|No|Invalid|Unknown' 'Ok|Good|Done|Finish' 'Warning|Warned|Warn|Timeout|Down|Disconnect|Restart'
+    cat /var/log/kern.log.1 |ackg -i 'Fail|Error|Not|[^\w]No[^\w]|Invalid' 'Ok|Success|Good|Done|Finish' 'Warn|Timeout|Down|Unknown|Disconnect|Restart'
 
 ### dd 写入文件
 
