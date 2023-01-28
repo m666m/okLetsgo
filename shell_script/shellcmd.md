@@ -1,5 +1,9 @@
 # unix/linux 常用 shell 编程
 
+非常好用的 shell 语句分析器，输入语句就能给出说明
+
+    https://explainshell.com/explain?cmd=join+-1+1+-2+5++%3C%28file+*+%7C+sed+%27s%2F%5B%3A%2C%5D%2F%2Fg%27%29+%3C%28ls+--full-time+-h+%7C+awk+%27%7Bprint+%245%22+%22%246%22+%22%247%22+%22%248%22+%22%249%7D%27%29+%7C+column+-t
+
 参考
 
     Debian 参考手册
@@ -14,10 +18,6 @@
 
         https://linux.die.net/abs-guide/
             https://linux.die.net/
-
-    非常好用的shell语句分析解释
-
-        https://explainshell.com/explain?cmd=join+-1+1+-2+5++%3C%28file+*+%7C+sed+%27s%2F%5B%3A%2C%5D%2F%2Fg%27%29+%3C%28ls+--full-time+-h+%7C+awk+%27%7Bprint+%245%22+%22%246%22+%22%247%22+%22%248%22+%22%249%7D%27%29+%7C+column+-t
 
     Bash 使用技巧
         https://github.com/jlevy/the-art-of-command-line
@@ -1507,7 +1507,7 @@ Perf 是 Linux kernel 自带的系统性能优化工具。
 
     https://zhuanlan.zhihu.com/p/54276509
 
-## 查看文件占用（含端口哦）
+## 查看文件占用
 
 file 查看文件是shell类型、二进制类型，文本类型等
 
@@ -1581,11 +1581,53 @@ fuser 查看占用文件的进程号（sudo apt install psmisc）
     $ sudo fuser /usr/lib/nginx/modules/ngx_mail_module.so
     /usr/lib/nginx/modules/ngx_mail_module.so: 28987m 28988m 28989m 28990m 28991m
 
+lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof）
+
+    $ sudo lsof -i
+    COMMAND     PID     USER   FD   TYPE  DEVICE SIZE/OFF NODE NAME
+    avahi-dae   371    avahi   12u  IPv4   13904      0t0  UDP *:mdns
+    avahi-dae   371    avahi   13u  IPv6   13905      0t0  UDP *:mdns
+    avahi-dae   371    avahi   14u  IPv4   13906      0t0  UDP *:57630
+    avahi-dae   371    avahi   15u  IPv6   13907      0t0  UDP *:47663
+    dhcpcd      556     root   10u  IPv4   13950      0t0  UDP *:bootpc
+    dhcpcd      556     root   15u  IPv6 1702269      0t0  UDP *:dhcpv6-client
+    sshd        566     root    3u  IPv4   17230      0t0  TCP *:ssh (LISTEN)
+    sshd        566     root    4u  IPv6   17240      0t0  TCP *:ssh (LISTEN)
+    nginx     28987     root    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
+    nginx     28987     root    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
+    nginx     28988 www-data    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
+    nginx     28989 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
+
+## 网络故障排查
+
+    https://www.debian.org/doc/manuals/debian-reference/ch05.zh-cn.html
+
+iproute2 软件包 代替了 net-tools 软件包，详见章节 [iproute2 软件包](init_a_server.md think)。
+
+网卡基本信息查看
+
+    # 代替 ifconfig
+    ip a
+
+端口是否可用
+
+    curl -vvv 127.0.0.1:443
+
+    wget 127.0.0.1:443
+
+    ssh -vvv -p 443 127.0.0.1
+
+    telnet 127.0.0.1 443
+
 ss 命令（sudo apt install iproute2），比 netstat 命令看的信息更多
+
+    # 127.0.0.1 只对本机开放
+    # 0.0.0.0   外来连接也开放
 
     # ss -aw 查看raw端口
     # ss -au 查看udp端口
-    # 查看tcp端口
+
+    # 查看tcp端口 等效 `netstat -ant`
     ss -at
 
     # 已经建立连接的http端口
@@ -1612,28 +1654,91 @@ ss 命令（sudo apt install iproute2），比 netstat 命令看的信息更多
 
 查看ssh连接数，指定端口号即可
 
-    netstat -nat | grep -i ':22'
+    ss -at | grep -i ':22'
 
     sudo lsof -i :22
 
-lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof）
+icmp测试网络连通情况
 
-    $ sudo lsof -i
-    COMMAND     PID     USER   FD   TYPE  DEVICE SIZE/OFF NODE NAME
-    avahi-dae   371    avahi   12u  IPv4   13904      0t0  UDP *:mdns
-    avahi-dae   371    avahi   13u  IPv6   13905      0t0  UDP *:mdns
-    avahi-dae   371    avahi   14u  IPv4   13906      0t0  UDP *:57630
-    avahi-dae   371    avahi   15u  IPv6   13907      0t0  UDP *:47663
-    dhcpcd      556     root   10u  IPv4   13950      0t0  UDP *:bootpc
-    dhcpcd      556     root   15u  IPv6 1702269      0t0  UDP *:dhcpv6-client
-    sshd        566     root    3u  IPv4   17230      0t0  TCP *:ssh (LISTEN)
-    sshd        566     root    4u  IPv6   17240      0t0  TCP *:ssh (LISTEN)
-    nginx     28987     root    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
-    nginx     28987     root    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
-    nginx     28988 www-data    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
-    nginx     28988 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
-    nginx     28989 www-data    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
-    nginx     28989 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
+    ping -t 192.168.0.1
+
+    # apt install dnsutils
+    whois
+    dig/nslookup
+
+    $ nslookup baidu.com
+    Non-authoritative answer:
+    Server:  192.168.0.1
+    Address:  192.168.0.1
+
+    Name:    baidu.com
+    Addresses:  220.181.38.148
+            220.181.38.251
+
+traceroute 查看路由节点
+
+    # apt install iputils
+    $ traceroute www.bing.com
+    traceroute to www.bing.com (204.79.197.200), 30 hops max, 60 byte packets
+    1  * * *
+    2  96.44.162.49.static.quadranet.com (96.44.162.49)  0.852 ms  0.896 ms  0.855 ms
+    3  lax1-fatpipe-1.it7.net (69.12.70.232)  1.818 ms lax1-fatpipe-1.it7.net (69.12.70.234)  0.327 ms lax1-fatpipe-1.it7.net (69.12.70.232)  1.711 ms
+    4  69.12.69.1 (69.12.69.1)  9.722 ms microsoft.as8075.any2ix.coresite.com (206.72.210.143)  2.802 ms 69.12.69.1 (69.12.69.1)  9.714 ms
+    5  * 206.72.211.94.any2ix.coresite.com (206.72.211.94)  1.325 ms *
+    6  * * *
+    7  * * *
+    8  * * *
+
+    # Windows: tracert www.bing.com
+
+查看网关
+
+    $ route -n
+    Kernel IP routing table
+    Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+    0.0.0.0         192.168.0.1     0.0.0.0         UG    202    0        0 eth0
+    172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
+    192.168.0.0     0.0.0.0         255.255.255.0   U     202    0        0 eth0
+
+查看 mtu
+
+    $ sudo apt install iputils-tracepath
+
+    $ tracepath www.baidu.com
+    1?: [LOCALHOST]                      pmtu 1500
+    1:  192.168.0.1                                           0.554ms
+    1:  192.168.0.1                                           0.670ms
+    2:  192.168.1.1                                           1.232ms
+    3:  192.168.1.1                                           1.182ms pmtu 1492
+    3:  39.71.56.1                                            3.526ms
+    4:  112.232.166.9                                         3.512ms
+    29:  no reply
+    30:  no reply
+    Too many hops: pmtu 1492
+    Resume: pmtu 1492
+
+查看网卡统计信息
+
+    $ ethtool -S eth0
+    NIC statistics:
+        rx_packets: 1174939
+        tx_packets: 2813892
+        rx_bytes: 217844784
+        tx_bytes: 952958558
+        rx_errors: 0
+        tx_errors: 0
+        rx_dropped: 0
+        tx_dropped: 0
+
+网络抓包
+
+tcpdump、wireshark 的常见命令
+
+    https://plantegg.github.io/2022/01/01/%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/
+
+用 tcpdump 抓包
+
+    https://zhuanlan.zhihu.com/p/74812069
 
 ## 查看日志
 
