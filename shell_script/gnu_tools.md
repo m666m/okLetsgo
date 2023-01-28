@@ -4996,7 +4996,7 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
 ### 终端输出字符的后处理工具
 
-格式化 JSON 数据，并彩色显示
+格式化 JSON 数据，并彩色显示，也可用作格式检查
 
     # sudo apt install jq
     cat config.json |jq
