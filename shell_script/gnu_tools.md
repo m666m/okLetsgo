@@ -4874,34 +4874,247 @@ Screen 支持 Zmodem 协议，也就是说，你可以用 rz、sz 命令方便�
 
 这个命令会将你朋友的终端Attach到你的Screen会话上，并且你的终端不会被Detach。这样你就可以和朋友共享同一个会话了，如果你们当前又处于同一个窗口，那就相当于坐在同一个显示器前面，你的操作会同步演示给你朋友，你朋友的操作也会同步演示给你。当然，如果你们切换到这个会话的不同窗口中去，那还是可以分别进行不同的操作的。
 
-### Aria2 下载工具
+### Midnight Commander 命令行下的文件资源管理器
 
-命令行传输各种参数，设置复杂，Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳dht站点清单。
+    # https://midnight-commander.org/ https://github.com/MidnightCommander/mc
+    # https://sourceforge.net/projects/mcwin32/files/
+    sudo apt install mc
 
-    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce  --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+命令行下使用两个面板来处理文件和目录，类似 [Far Manager](https://conemu.github.io/en/FarManager.html)。
 
-浏览器搜索插件：aria2 相关，安装后设置aip-key，可在浏览器中直接调用Motrix运行的aria2进程。
+### reptyr 从 pid 把后台任务调回前台
 
-### ZModem文件传输协议工具 rs rz
+reptyr
 
-如果嵌入式设备传送文件，没有 sftp、ftp 时，用 rs rz，缺点是速率较慢误码率较高，大文件传送需要自行做 hash 校验。
+    # https://github.com/nelhage/reptyr
+    sudo apt install reptyr
 
-    https://blog.csdn.net/mynamepg/article/details/81118580
+从你的当前终端连接指定的 pid，适用于把 Ctrl+Z 挂起到后台的任务重新调用回前台。
 
-    mintty 不支持 https://github.com/mintty/mintty/issues/235
+### find + grep + xargs 组合按内容查找文件
 
-如果你的终端工具支持 zmodem 协议，使用起来比较方便
+查找指定文件
 
-    sudo apt install lrzsz
+    find ./ -name 2.sql
 
-    $ rz
-    **B0100000023be50eive.**B0100000023be50
+组合查找文件内容
 
-    然后直接把你要发送的文件拖动到你的终端工具窗口
+显示内容，但是带目录了
 
-    $ sha1sum your_file
+    find ./ -name "*" -exec grep "gitee" {} \;
 
-    记得比对下校验码，防止误码
+显示内容，排除目录
+
+    find ./ -name "*" -type f -exec grep -in "gitee" {} \;
+
+显示内容，显示文件名和行号，排除目录
+
+    find ./ -name "*" -type f | xargs grep -in 'gitee'
+
+xargs 命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs 能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说 find 的结果经过 xargs 后，其实将 find 找出来的文件名逐个传递给 grep 做参数。grep 再在这些文件内容中查找关键字 test。
+
+### 字符串处理 awk sed cut tr wc
+
+tr 功能1 -- 替换字符
+
+    $ dircolors | tr ":" "\n"
+    LS_COLORS='rs=0
+    ln=01;36
+    so=01;35
+    *.tar=01;31
+    *.tgz=01;31
+    *.arc=01;31
+
+tr 功能2 -- 删除字符，主要用于截取字符串
+
+    $ echo "throttled=50.0"| tr -d "throttled="
+    50.0
+
+cut 按分隔符打印指定的字段
+
+    $ cat /etc/passwd| cut -d ':' -f7
+    /bin/bash
+    /usr/sbin/nologin
+    /bin/sync
+    /usr/sbin/nologin
+
+awk 指定分隔符，可以用简单的语句组合字段
+
+sed 删除、替换文件中的字符串
+
+    在文件的匹配行前面加上#注释
+    #   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+    #   s       替换
+    #   ^       开头匹配
+    #   [^#]    匹配非#
+    #   #&      用&来原封不动引用前面匹配到的行内容，在其前面加上#号
+    #   g       全部（只匹配特定行不加g）
+    sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
+
+    在文件的匹配行前面取消#注释
+    #   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+    #   ^#//    去掉代表开头的#
+    sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
+
+    # 给所有没有#开头的行改为#开头
+    # sed '/[^#]/ s/^[^#]/#&/' /etc/dhcpcd.conf
+    sed 's/^[^#]/#&/' /etc/dhcpcd.conf
+
+    选项与参数：
+
+        -n ：使用安静(silent)模式。在一般 sed 的用法中，所有来自 STDIN 的数据一般都会被列出到终端上。但如果加上 -n 参数后，则只有经过sed 特殊处理的那一行(或者动作)才会被列出来。
+
+        -e ：直接在命令列模式上进行 sed 的动作编辑；
+
+        -f ：直接将 sed 的动作写在一个文件内， -f filename 则可以运行 filename 内的 sed 动作；
+
+        -r ：sed 的动作支持的是延伸型正规表示法的语法。(默认是基础正规表示法语法)
+
+        -i ：直接修改读取的文件内容，而不是输出到终端。
+
+    动作说明： [n1[,n2]]function
+
+        n1, n2 ：不见得会存在，一般代表『选择进行动作的行数』，举例来说，如果我的动作是需要在 10 到 20 行之间进行的，则『 10,20[动作行为] 』
+
+    function：
+
+        a ：新增， a 的后面可以接字串，而这些字串会在新的一行出现(目前的下一行)～
+        c ：取代， c 的后面可以接字串，这些字串可以取代 n1,n2 之间的行！
+        d ：删除，因为是删除啊，所以 d 后面通常不接任何咚咚；
+        i ：插入， i 的后面可以接字串，而这些字串会在新的一行出现(目前的上一行)；
+        p ：列印，亦即将某个选择的数据印出。通常 p 会与参数 sed -n 一起运行～
+        s ：取代，可以直接进行取代的工作哩！通常这个 s 的动作可以搭配正规表示法！例如 1,20s/old/new/g
+
+wc -l 计算文本文件的行数，用于 vi 打开大文件之前先评估
+
+    wc -l README.rst
+
+grep -n 显示要找的字符串所在的行号 -i 忽略大小写
+
+    $ grep -in 'apt-get' README.rst
+    20:     sudo apt-get install fonts-powerline
+
+### 终端输出字符的后处理工具
+
+格式化 JSON 数据，并彩色显示
+
+    # sudo apt install jq
+    cat config.json |jq
+
+对程序的输出同时打印到文件和屏幕
+
+    ls -al | tee file.txt
+
+hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控日志输出调试程序使用
+
+    https://github.com/paoloantinori/hhighlighter
+    竞品 https://github.com/Scopart/colorex/
+    https://www.cnblogs.com/bamanzi/p/colorful-shell.html
+
+    # 先安装依赖 ack https://wangchujiang.com/linux-command/c/ack.html
+    # sudo apt install ack
+
+    cd /usr/local/bin/
+    # 名字都换成不易混淆的 ackg 吧
+    sudo curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
+    sudo sed -i 's/h()/ackg()/' ackg.sh
+
+然后测试你感兴趣的文字，支持perl形式的正则表达式
+
+    source ackg.sh
+
+    # echo abc | ack --flush --passthru --color --color-match=red a | ack --flush --passthru --color --color-match=yellow b
+    echo "abcdefghijklmnopqrstuvxywz" |ackg a b c d e f g h i j k l
+
+    echo ':no:not:now_1no2notno no'|ackg -i '[^\w]no[^\w]|not'
+
+    ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
+
+    cat /var/log/kern.log.1 |ackg -i 'Fail|Error|[^\w]Not[^\w]|[^\w]No[^\w]|Invalid' 'Ok|Success|Good|Done|Finish' 'Warn|Timeout|Down|Unknown|Disconnect|Restart'
+
+### dd 写入文件
+
+dd 命令是基于块（block）的复制，用途很多。
+
+用 boot.img 制作启动盘
+
+    dd if=boot.img of=/dev/fd0 bs=1440k
+
+读取挂载在存储设备上的 iso 文件，进行 gpg 校验
+
+    dd if=/dev/sdb | gpg --keyid-format 0xlong --verify my_signature.sig -
+
+将本地的 /dev/hdb 整盘备份到 /dev/hdd
+
+    dd if=/dev/hdb of=/dev/hdd
+
+将 /dev/hdb 全盘数据备份到指定路径的 image 文件
+
+    dd if=/dev/hdb of=/root/image
+
+将备份文件恢复到指定盘
+
+    dd if=/root/image of=/dev/hdb
+
+备份 /dev/hdb 全盘数据，并利用 gzip 工具进行压缩，保存到指定路径
+
+    dd if=/dev/hdb | gzip > /root/image.gz
+
+将压缩的备份文件恢复到指定盘
+
+    gzip -dc /root/image.gz | dd of=/dev/hdb
+
+备份与恢复 MBR
+
+备份磁盘开始的 512 个字节大小的 MBR 信息到指定文件：
+
+    # count=1指仅拷贝一个块；bs=512指块大小为512个字节。
+    dd if=/dev/hda of=/root/image count=1 bs=512
+
+恢复：
+
+    # 将上面备份的MBR信息写到磁盘开始部分
+    dd if=/root/image of=/dev/had
+
+备份软盘
+
+    dd if=/dev/fd0 of=disk.img count=1 bs=1440k (即块大小为1.44M)
+
+拷贝内存内容到硬盘
+
+    dd if=/dev/mem of=/root/mem.bin bs=1024 (指定块大小为1k)
+
+拷贝光盘内容到指定文件夹，并保存为 cd.iso 文件
+
+    dd if=/dev/cdrom(hdc) of=/root/cd.iso
+
+### 快速清理文件和快速建立文件
+
+最快建立大文件的方式是用 truncate 命令
+
+    # dd if=/dev/zero of=fs.img bs=1M count=1M seek=1024
+    truncate --size 10G test.db.bak
+
+快速清理文件
+
+    # truncate -s 0 /var/log/yum.log
+    > your_file.txt
+
++ 删除大量文件
+
+    删除数量巨大的文件， rm * 报错，用 find 命令遍历目录挨个传参数的办法删除，虽然慢但是能做，注意用后台命令，不然挂好久
+
+        find /tmp -type f -exec rm {} \; &
+
+        find /home -type f -size 0 -exec rm {} \;
+
+    最快方法
+
+        https://web.archive.org/web/20130929001850/
+
+        http://linuxnote.net/jianingy/en/linux/a-fast-way-to-remove-huge-number-of-files.html
+
+        mkdir empty && rsync -r --delete empty/ some-dir && rmdir some-dir
 
 ### 压缩解压缩
 
@@ -5014,6 +5227,14 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     certutil -hashfile cn_windows_7.iso MD5
     certutil -hashfile cn_windows_7.iso SHA1
     certutil -hashfile cn_windows_7.iso SHA256
+
+### 带精度的计算器
+
+bc - An arbitrary precision calculator language
+
+    # sudo apt install jq
+    $ echo '1 / 6' |bc -l
+    .16666666666666666666
 
 ### 生成随机数
 
@@ -5142,225 +5363,34 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     # 以 ASCII 码的形式显示文件aa.txt内容的，等效 -ta
     od -a aa.txt
 
-### find + grep + xargs 组合按内容查找文件
+### Aria2 下载工具
 
-查找指定文件
+命令行传输各种参数，设置复杂，Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳dht站点清单。
 
-    find ./ -name 2.sql
+    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce  --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
-组合查找文件内容
+浏览器搜索插件：aria2 相关，安装后设置aip-key，可在浏览器中直接调用Motrix运行的aria2进程。
 
-显示内容，但是带目录了
+### ZModem 文件传输协议工具 rs rz
 
-    find ./ -name "*" -exec grep "gitee" {} \;
+需要你的终端工具支持 zmodem 协议，使用起来比较方便
 
-显示内容，排除目录
+    sudo apt install lrzsz
 
-    find ./ -name "*" -type f -exec grep -in "gitee" {} \;
+    $ rz
+    **B0100000023be50eive.**B0100000023be50
 
-显示内容，显示文件名和行号，排除目录
+    然后直接把你要发送的文件拖动到你的终端工具窗口
 
-    find ./ -name "*" -type f | xargs grep -in 'gitee'
+    $ sha1sum your_file
 
-xargs 命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs 能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说 find 的结果经过 xargs 后，其实将 find 找出来的文件名逐个传递给 grep 做参数。grep 再在这些文件内容中查找关键字 test。
+    记得比对下校验码，防止误码
 
-### 字符串处理 awk sed cut tr wc
+如果嵌入式设备传送文件，没有 sftp、ftp 时，用 rs rz，缺点是速率较慢误码率较高，大文件传送需要自行做 hash 校验。
 
-tr 功能1 -- 替换字符
+    https://blog.csdn.net/mynamepg/article/details/81118580
 
-    $ dircolors | tr ":" "\n"
-    LS_COLORS='rs=0
-    ln=01;36
-    so=01;35
-    *.tar=01;31
-    *.tgz=01;31
-    *.arc=01;31
-
-tr 功能2 -- 删除字符，主要用于截取字符串
-
-    $ echo "throttled=50.0"| tr -d "throttled="
-    50.0
-
-cut 按分隔符打印指定的字段
-
-    $ cat /etc/passwd| cut -d ':' -f7
-    /bin/bash
-    /usr/sbin/nologin
-    /bin/sync
-    /usr/sbin/nologin
-
-awk 指定分隔符，可以用简单的语句组合字段
-
-sed 删除、替换文件中的字符串
-
-    在文件的匹配行前面加上#注释
-    #   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
-    #   s       替换
-    #   ^       开头匹配
-    #   [^#]    匹配非#
-    #   #&      用&来原封不动引用前面匹配到的行内容，在其前面加上#号
-    #   g       全部（只匹配特定行不加g）
-    sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
-
-    在文件的匹配行前面取消#注释
-    #   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
-    #   ^#//    去掉代表开头的#
-    sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
-
-    # 给所有没有#开头的行改为#开头
-    # sed '/[^#]/ s/^[^#]/#&/' /etc/dhcpcd.conf
-    sed 's/^[^#]/#&/' /etc/dhcpcd.conf
-
-    选项与参数：
-
-        -n ：使用安静(silent)模式。在一般 sed 的用法中，所有来自 STDIN 的数据一般都会被列出到终端上。但如果加上 -n 参数后，则只有经过sed 特殊处理的那一行(或者动作)才会被列出来。
-
-        -e ：直接在命令列模式上进行 sed 的动作编辑；
-
-        -f ：直接将 sed 的动作写在一个文件内， -f filename 则可以运行 filename 内的 sed 动作；
-
-        -r ：sed 的动作支持的是延伸型正规表示法的语法。(默认是基础正规表示法语法)
-
-        -i ：直接修改读取的文件内容，而不是输出到终端。
-
-    动作说明： [n1[,n2]]function
-
-        n1, n2 ：不见得会存在，一般代表『选择进行动作的行数』，举例来说，如果我的动作是需要在 10 到 20 行之间进行的，则『 10,20[动作行为] 』
-
-    function：
-
-        a ：新增， a 的后面可以接字串，而这些字串会在新的一行出现(目前的下一行)～
-        c ：取代， c 的后面可以接字串，这些字串可以取代 n1,n2 之间的行！
-        d ：删除，因为是删除啊，所以 d 后面通常不接任何咚咚；
-        i ：插入， i 的后面可以接字串，而这些字串会在新的一行出现(目前的上一行)；
-        p ：列印，亦即将某个选择的数据印出。通常 p 会与参数 sed -n 一起运行～
-        s ：取代，可以直接进行取代的工作哩！通常这个 s 的动作可以搭配正规表示法！例如 1,20s/old/new/g
-
-wc -l 计算文本文件的行数，用于 vi 打开大文件之前先评估
-
-    wc -l README.rst
-
-grep -n 显示要找的字符串所在的行号 -i 忽略大小写
-
-    $ grep -in 'apt-get' README.rst
-    20:     sudo apt-get install fonts-powerline
-
-### 终端输出的处理
-
-对程序的输出同时打印到文件和屏幕
-
-    ls -al | tee file.txt
-
-hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控日志输出调试程序使用
-
-    https://github.com/paoloantinori/hhighlighter
-    竞品 https://github.com/Scopart/colorex/
-    https://www.cnblogs.com/bamanzi/p/colorful-shell.html
-
-    # 先安装依赖 ack https://wangchujiang.com/linux-command/c/ack.html
-    # sudo apt install ack
-
-    cd /usr/local/bin/
-    # 名字都换成不易混淆的 ackg 吧
-    sudo curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
-    sudo sed -i 's/h()/ackg()/' ackg.sh
-
-然后测试你感兴趣的文字，支持perl形式的正则表达式
-
-    source ackg.sh
-
-    # echo abc | ack --flush --passthru --color --color-match=red a | ack --flush --passthru --color --color-match=yellow b
-    echo "abcdefghijklmnopqrstuvxywz" |ackg a b c d e f g h i j k l
-
-    echo ':no:not:now_1no2notno no'|ackg -i '[^\w]no[^\w]|not'
-
-    ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
-
-    cat /var/log/kern.log.1 |ackg -i 'Fail|Error|[^\w]Not[^\w]|[^\w]No[^\w]|Invalid' 'Ok|Success|Good|Done|Finish' 'Warn|Timeout|Down|Unknown|Disconnect|Restart'
-
-### dd 写入文件
-
-dd 命令是基于块（block）的复制，用途很多。
-
-用 boot.img 制作启动盘
-
-    dd if=boot.img of=/dev/fd0 bs=1440k
-
-读取挂载在存储设备上的 iso 文件，进行 gpg 校验
-
-    dd if=/dev/sdb | gpg --keyid-format 0xlong --verify my_signature.sig -
-
-将本地的 /dev/hdb 整盘备份到 /dev/hdd
-
-    dd if=/dev/hdb of=/dev/hdd
-
-将 /dev/hdb 全盘数据备份到指定路径的 image 文件
-
-    dd if=/dev/hdb of=/root/image
-
-将备份文件恢复到指定盘
-
-    dd if=/root/image of=/dev/hdb
-
-备份 /dev/hdb 全盘数据，并利用 gzip 工具进行压缩，保存到指定路径
-
-    dd if=/dev/hdb | gzip > /root/image.gz
-
-将压缩的备份文件恢复到指定盘
-
-    gzip -dc /root/image.gz | dd of=/dev/hdb
-
-备份与恢复 MBR
-
-备份磁盘开始的 512 个字节大小的 MBR 信息到指定文件：
-
-    # count=1指仅拷贝一个块；bs=512指块大小为512个字节。
-    dd if=/dev/hda of=/root/image count=1 bs=512
-
-恢复：
-
-    # 将上面备份的MBR信息写到磁盘开始部分
-    dd if=/root/image of=/dev/had
-
-备份软盘
-
-    dd if=/dev/fd0 of=disk.img count=1 bs=1440k (即块大小为1.44M)
-
-拷贝内存内容到硬盘
-
-    dd if=/dev/mem of=/root/mem.bin bs=1024 (指定块大小为1k)
-
-拷贝光盘内容到指定文件夹，并保存为 cd.iso 文件
-
-    dd if=/dev/cdrom(hdc) of=/root/cd.iso
-
-### 快速清理文件和快速建立文件
-
-最快建立大文件的方式是用 truncate 命令
-
-    # dd if=/dev/zero of=fs.img bs=1M count=1M seek=1024
-    truncate --size 10G test.db.bak
-
-快速清理文件
-
-    # truncate -s 0 /var/log/yum.log
-    > your_file.txt
-
-+ 删除大量文件
-
-    删除数量巨大的文件， rm * 报错，用 find 命令遍历目录挨个传参数的办法删除，虽然慢但是能做，注意用后台命令，不然挂好久
-
-        find /tmp -type f -exec rm {} \; &
-
-        find /home -type f -size 0 -exec rm {} \;
-
-    最快方法
-
-        https://web.archive.org/web/20130929001850/
-
-        http://linuxnote.net/jianingy/en/linux/a-fast-way-to-remove-huge-number-of-files.html
-
-        mkdir empty && rsync -r --delete empty/ some-dir && rmdir some-dir
+    mintty 不支持 https://github.com/mintty/mintty/issues/235
 
 ### netcat(nc) 简单的端口通信
 
@@ -5691,23 +5721,6 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
     # Python 3 http服务器的包名变了，使用端口 7777
     python3 -m http.server 7777
-
-### reptyr 从 pid 把后台任务调回前台
-
-reptyr
-
-    # https://github.com/nelhage/reptyr
-    sudo apt install reptyr
-
-从你的当前终端连接指定的 pid，适用于把 Ctrl+Z 挂起到后台的任务重新调用回前台。
-
-### Midnight Commander 命令行下的文件资源管理器
-
-    # https://midnight-commander.org/ https://github.com/MidnightCommander/mc
-    # https://sourceforge.net/projects/mcwin32/files/
-    sudo apt install mc
-
-命令行下使用两个面板来处理文件和目录，类似 [Far Manager](https://conemu.github.io/en/FarManager.html)。
 
 ### 字符终端下的一些小玩具如 figlet、cmatrix 等
 
