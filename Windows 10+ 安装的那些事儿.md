@@ -1110,6 +1110,22 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
     XnView
         https://www.xnview.com/
 
+### 添加开机启动
+
+运行（win + r）
+
+    shell:startup
+
+或资源管理器打开如下位置
+
+系统级
+
+    C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+
+用户级
+
+    C:\Users\xxx\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
 ### 安装 Microsoft Edge 浏览器插件
 
 注意设置右键插件图标，选择扩展在哪些网站生效，尽量缩小插件的生效范围。
