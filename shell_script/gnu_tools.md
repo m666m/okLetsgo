@@ -5026,11 +5026,12 @@ hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控�
     # echo abc | ack --flush --passthru --color --color-match=red a | ack --flush --passthru --color --color-match=yellow b
     echo "abcdefghijklmnopqrstuvxywz" |ackg a b c d e f g h i j k l
 
-    echo ':no:not:now_1no2notno no'|ackg -i '[^\w]no[^\w]|not'
+    # 行开始结束位置的单词、连续相同的单词、暂不知道如何写正则表达式检出
+    echo -e ':NoD:_notebook:no:no_:1no2notl no no\nno no no no no'|ackg -i '[^\w]no[^\w]|[^\w]no$|^no[^\w]|not'
 
     ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
 
-    cat /var/log/kern.log.1 |ackg -i 'Fail|Error|[^\w]Not[^\w]|[^\w]No[^\w]|Invalid' '[^\w]Ok[^\w]|Success|Good|Done|Finish' 'Warn|Timeout|[^\w]Down[^\w]|Unknown|Disconnect|Restart'
+    cat /var/log/kern.log.1 |ackg -i 'Fail|Error|[\W]Not[\W]|[\W]No[\W]|Invalid' '[\W]Ok[\W]|Success|Good|Done|Finish' 'Warn|Timeout|[\W]Down[\W]|Unknown|Disconnect|Restart'
 
 ### dd 写入文件
 
