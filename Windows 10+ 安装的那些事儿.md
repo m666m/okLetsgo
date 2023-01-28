@@ -1110,22 +1110,6 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
     XnView
         https://www.xnview.com/
 
-### 添加开机启动
-
-运行（win + r）
-
-    shell:startup
-
-或资源管理器打开如下位置
-
-系统级
-
-    C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
-
-用户级
-
-    C:\Users\xxx\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
-
 ### 安装 Microsoft Edge 浏览器插件
 
 注意设置右键插件图标，选择扩展在哪些网站生效，尽量缩小插件的生效范围。
@@ -1395,6 +1379,36 @@ Windows内存诊断
         赚钱嘛，不丢人
 
 确保 Windows 安全中心的相关设置都开启，参见上面的章节 [装完Windows10后的一些设置] 里的“设置 Windows 安全中心”部分。
+
+### 整理开机启动项目
+
+开始菜单的启动项
+
+运行（win + r）
+
+    shell:startup
+
+或资源管理器打开如下位置
+
+系统级
+
+    C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+
+用户级
+
+    C:\Users\xxx\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+注册表启动项位置（还有很多略）
+
+    HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+
+计划任务
+
+    taskschd.msc
+
+在这里有 Interl 和 Office 安装后搞的一些用户数据遥测上传，把能看懂的都选择 “禁用”。
+
+如果想看到最全的统计，下载微软官方的 SystemInternals 工具包，运行 `Autoruns.exe`。
 
 ### 务必检查当前操作系统的证书
 
