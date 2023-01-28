@@ -1770,9 +1770,9 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
     "python.languageServer": "Jedi" // "Pylance"
 
-java 套件安装及默认安装 IntelliCode，注意禁用。
+java 软件包安装及默认安装 IntelliCode，注意禁用。
 
-python 套件为兼容老版本不用 pylance 的习惯，所以默认不安装 IntelliCode，不代表以后不装。
+python 软件包为兼容老版本不用 pylance 的习惯，所以默认不安装 IntelliCode，不代表以后不装。
 
 #### 快速解析python，代码自动完成更快
 

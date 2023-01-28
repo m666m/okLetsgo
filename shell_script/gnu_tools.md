@@ -2133,7 +2133,7 @@ zsh 自带功能
 
 #### 安装常用的插件
 
-下面的几个常用插件挨个装太复杂了，想无脑安装参见章节 [开箱即用一步到位的套件 -- zsh4humans]。
+下面的几个常用插件挨个装太复杂了，想无脑安装参见章节 [开箱即用一步到位的软件包 -- zsh4humans]。
 
 除了 powerline 外，其它的插件都要进入 zsh 后再执行安装
 
@@ -2294,7 +2294,7 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
         source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
     fi
 
-#### 开箱即用的套件 -- zsh4humans
+#### 开箱即用的软件包 -- zsh4humans
 
 目前不知道哪个功能，经常在你打字的时候加点字符，这个没法用啊
 
@@ -2311,7 +2311,7 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 
     https://github.com/romkatv/zsh4humans/blob/master/tips.md#ssh
 
-注意：该功能的实现方法是套壳 ssh 命令，当你初次ssh连接新的远程主机，会自动在远程主机上安装 zsh4human 等套件，然后传递自己本地的命令历史。对你的 ssh 配置 ~/.ssh/config 也有要求
+注意：该功能的实现方法是套壳 ssh 命令，当你初次ssh连接新的远程主机，会自动在远程主机上安装 zsh4human 等软件包，然后传递自己本地的命令历史。对你的 ssh 配置 ~/.ssh/config 也有要求
 
     # https://github.com/romkatv/zsh4humans/blob/master/tips.md#ssh-config
     Host *
