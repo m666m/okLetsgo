@@ -60,10 +60,18 @@ Node.js 利用了可以在浏览器之外运行的 V8 JavaScript 引擎（Google
 
 ## Node.js
 
+node + npm 都要装
+
     https://nodejs.org/
         https://cnodejs.org/
 
     https://www.zhihu.com/column/eggjs
+
+查看版本
+
+    node -v
+
+    npm -v
 
 ## web server：Apache服务器和tomcat服务器区别
 
