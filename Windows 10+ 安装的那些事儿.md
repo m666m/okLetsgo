@@ -13,27 +13,25 @@
 
 ### 目标系统类型 UEFI/CSM
 
-UEFI 模式是 Windows 7 之后出现的新型操作系统启动引导方式，可以优化硬件驱动的加载方式，加速了开机步骤，缺点是跟 Windows 7 之前的系统启动过程不兼容。
+UEFI 模式是 Windows 7 之后出现的新型操作系统启动引导方式，可以优化硬件驱动的加载方式，加速了开机步骤，缺点是跟 Windows 7 之前的传统系统启动过程不兼容。
 
-固件加载操作系统的方式在古典 BIOS、CSM 模式下的 UEFI 和原生 UEFI 之间完全不同。为区别于新式的 UEFI，主板 BIOS 设置中提供了兼容老的启动方式的选项 “CSM 模式”，CSM 模式从 BIOS 引导设备，用于在引导时检查兼容性模式，适用于不兼容 UEFI 方式启动的老显卡等设备能正常的显示。
+主板加载操作系统的方式在“传统 BIOS(Leagcy)”模式、“UEFI CSM” 模式（兼容传统(Leagcy)模式）和原生 UEFI 模式之间完全不同。为区别于原生 UEFI，主板 BIOS 设置中提供了兼容传统(Leagcy)模式的 “UEFI CSM” 模式，一般简称 CSM 模式。CSM 模式可以让不兼容原生 UEFI 方式启动的老显卡和存储设备等可以正常的工作。
 
-具体来说，CSM 模式提供硬盘 MBR 引导和传统 PCI opROM 加载支持，后者可以让没有 GOP 的显卡在操作系统启动前（例如 BIOS 设置和 OS 引导器）可以使用并固定使用 VGA 分辨率。只要用到其中一个功能就需要打开 CSM。
+具体来说，CSM 模式启动时主板 BIOS 可以选择使用传统(Leagcy)模式引导 UEFI 设备和非 UEFI 设备：比如硬盘 MBR 引导和传统 PCI opROM 加载支持，后者可以让没有 GOP 的显卡在操作系统启动前（例如 BIOS 设置和 OS 引导器）可以使用并固定使用 VGA 分辨率。存储或 PCIE 设备只要其中一个用到该功能就需要主板打开 CSM 模式。支持 WinXP/Win7 的 Intel z170 之前的主板还提供使用非 UEFI 的传统(Leagcy)模式的选项。
 
-早期的 Windows 7 无法很好地支持 UEFI，因此需要 CSM 模式来检测 UEFI 功能是否已启用。也就是说，主板 BIOS 在 CSM 模式下，对 UEFI 进行兼容性支持，同时提供使用非 UEFI 的古典方式的选项。
-
-有些如 Nvidia gtx 1080 时代的显卡，用 HDMI 口可以用 UEFI 方式显示画面，而 DP 口则不兼容（只能通过 CSM 模式下的 UEFI 进行显示），需要根据连接该口开机后显示器是否出现画面来设置 BIOS 的上述选项。
+有些如 Nvidia gtx 1080 时代的显卡，用 HDMI 口可以在 UEFI 模式显示画面，而 DP 口则不兼容（只能在 CSM 模式进行显示），需要根据连接该口开机后显示器是否出现画面来调整 BIOS 的选项。
 
 ### 硬盘分区类型 GPT/MBR
 
 MBR 是 Windows 7 之前的硬盘分区方式，GPT 是后续增加的原生 UEFI 引导使用的硬盘分区方式。对不同的硬盘分区类型，Windows 引导启动的方式是不同的。
 
-古典 BIOS、CSM 模式下的 UEFI 和原生 UEFI 之间完全不同，一个主要的区别是，硬盘分区在硬盘上的记录方式：古典的 BIOS 和 UEFI 在 CSM 模式下使用 DOS 分区表（MBR），原生 UEFI 使用不同的分区方案，称为 “GUID分区表”（GPT）。
+传统 BIOS、UEFI CSM 模式和原生 UEFI 之间完全不同，一个主要的区别是硬盘分区在硬盘上的记录方式：传统模式 和 CSM 模式下使用 DOS 分区表（MBR），原生 UEFI 模式使用不同的分区方案，称为 “GUID分区表”（GPT）。
 
-在单个磁盘上，只能使用以上二者中的一个，并且在同一个磁盘上使用不同操作系统的多引导设置的情况下，所有系统都必须使用相同类型的分区表。使用 GPT 从磁盘引导只能在原生 UEFI 模式下进行 <https://www.debian.org/releases/stable/amd64/ch03s06.zh-cn.html#UEFI>。
+在单个磁盘上，MBR 或 GPT 类型只能使用二者之一，并且在同一个磁盘上使用不同操作系统的多引导设置的情况下，所有系统都必须使用相同类型的分区表。使用 GPT 从磁盘引导只能在原生 UEFI 模式下进行 <https://www.debian.org/releases/stable/amd64/ch03s06.zh-cn.html#UEFI>。
 
 在 Windows 安装时，有个步骤是划分硬盘分区，如果是一块新的未划分分区的硬盘，默认把启动硬盘上划分了 3 个分区，其中两个特殊的小分区在 Windows 安装完成后默认是隐藏看不到的，这里其实放置了存储设备的 UEFI 引导信息，但无法保证硬盘类型是 GPT 还是 MBR，依赖条件见章节 [确保硬盘格式化为 GPT 类型]。
 
-如果只想用一个分区，需要提前把硬盘挂到别的电脑上用 Windows 管理或其他软件分区，明确选择类型为 MBR，或者在 Windows安装程序界面按 Shift+F10 调出命令行，使用命令行 diskpart 程序，手工划分（不推荐）。
+如果只想用一个分区，需要提前把硬盘挂到别的电脑上用 Windows 管理或其他软件分区，明确选择类型为 MBR，或者在 Windows安装程序界面按 Shift+F10 调出命令行，使用命令行 diskpart 程序，手工划分（不推荐）。这样主板必须设置为 CSM 模式了，因为需要它启动时读取 MBR 磁盘数据。
 
 ### EFI 方式加载设备驱动程序
 
@@ -51,16 +49,17 @@ UEFI 启动的时候，经过一系列初始化阶段（SEC、CAR、DXE 等）�
 
     设备启动项，大约记录的就是“某个u盘”、“某个硬盘”。（此处只讨论u盘、硬盘）对于设备启动项，UEFI 标准规定了默认的路径“\EFI\Boot\bootX64.efi”。UEFI 会加载磁盘上的这个文件。文件不存在则失败。
 
-    UEFI 标准 2.x，推出了一个叫做 SecureBoot 的功能。开了 SecureBoot 功能之后，主板会验证即将加载的 efi 文件的签名，如果开发者不是受信任的开发者，就会拒绝加载。所以主板厂商需要提前在主板里内置微软的公钥，设备商想做 efi 文件需要去微软做认证取得签名，这样主板加载 efi 的时候会用内置的微软的公钥验证设备商 efi 文件里的签名，通过了才加载。这个过程从头到位都得微软认证，满满的对 linux 不友好啊。
+    UEFI 标准 2.x，推出了一个叫做 SecureBoot 的功能。开了 SecureBoot 功能之后，主板会验证即将加载的 efi 文件的签名，如果开发者不是受信任的开发者，就会拒绝加载。所以主板厂商需要提前在主板里内置微软的公钥，设备商想做 efi 文件需要去微软做认证取得签名，这样主板加载 efi 的时候会用内置的微软的公钥验证设备商 efi 文件里的签名，通过了才加载。这个过程从头到位都得微软认证，满满的对 Linux 不友好啊。
 
-    目前Debian包含一个由Microsoft签名的“shim”启动加载程序，因此可以在启用了安全引导的计算机上正常工作  <https://www.debian.org/releases/stable/amd64/ch03s06.en.html#secure-boot>。
+    目前Debian包含一个由 Microsoft 签名的 “shim” 启动加载程序，因此可以在启用了安全引导的计算机上正常工作  <https://www.debian.org/releases/stable/amd64/ch03s06.en.html#secure-boot>。
 
 首先各种 PCI-E 的设备，比如显卡，比如 PCI-E 的 NVMe 固态硬盘，都有固件。其中支持 UEFI 的设备，比如 10 系列的 Nvidia 显卡，固件里就会有对应的 UEFI 的驱动。
 
 UEFI 启动后，进入了 DXE 阶段，就开始加载设备驱动，然后 UEFI 就会有设备列表了。启动过程中的 DXE 阶段，全称叫 Driver eXecution Environment，就是加载驱动用的。
 
 对于其中的磁盘，UEFI 会加载对应的驱动解析其中的分区表（GPT 和 MBR）。
-然后 UEFI 就会有所有分区的列表了。然后 UEFI 就会用内置的文件系统驱动，解析每个分区。UEFI 标准里，钦定的文件系统，FAT32.efi 是每个主板都会带的。所有 UEFI 的主板都认识 FAT32 分区。这就是 UEFI 的 Windows 安装盘为啥非得是 FAT32 的，UEFI 模式安装好的的 Windows 操作系统，也会有个默认的 FAT32 格式的 EFI 分区，就是保存的这个信息以便主板读取加载。苹果的主板还会支持 hfs 分区，linux 如果有专用主板，那应该会支持 EXT4.efi 分区。
+
+然后 UEFI 就会有所有分区的列表了。然后 UEFI 就会用内置的文件系统驱动，解析每个分区。UEFI 标准里，钦定的文件系统，FAT32.efi 是每个主板都会带的。所有 UEFI 的主板都认识 FAT32 分区。这就是 UEFI 的 Windows 安装盘为啥非得是 FAT32 的，UEFI 模式安装好的的 Windows 操作系统，也会有个默认的 FAT32 格式的 EFI 分区，就是保存的这个信息以便主板读取加载。苹果的主板还会支持 hfs 分区，Linux 如果有专用主板，那应该会支持 EXT4.efi 分区。
 
 然后 UEFI 就会认识分区里的文件了。比如“\EFI\Boot\bootX64.efi”。UEFI 规范里，在 GPT 分区表的基础上，规定了一个 EFI 系统分区（EFI System Partition，ESP），ESP 要格式化成 FAT32，EFI 启动文件要放在“\EFI\<厂商>”文件夹下面。比如 Windows 的 UEFI 启动文件，都在“\EFI\Microsoft”下面。
 
@@ -70,7 +69,7 @@ UEFI 启动后，进入了 DXE 阶段，就开始加载设备驱动，然后 UEF
 
 EFI 分区中的“\EFI\Boot”这个文件夹，放谁家的程序都行。无论是“\EFI\Microsoft\Boot\Bootmgfw.efi”，还是“\EFI\Clover\CloverX64.efi”，只要放到“\EFI\Boot”下并且改名“bootX64.efi”，就能在没添加文件启动项的情况下，默认加载对应的系统。
 
-BIOS 下：
+传统模式下：
 
     BIOS 加载某个磁盘 MBR 的启动代码，这里特指 Windows 的引导代码，这段代码会查找活动分区（BIOS 不认识活动分区，但这段代码认识活动分区）的位置，加载并执行活动分区的 PBR（另一段引导程序）。
 
@@ -78,7 +77,7 @@ BIOS 下：
 
     bootmgr 没了 MBR 和 PBR 的大小限制，可以做更多的事。它会加载并分析 BCD 启动项存储。而且 bootmgr 可以跨越磁盘读取文件了。所以无论你有几个磁盘，你在多少块磁盘上装了 Windows，一个电脑只需要一个 bootmgr 就行了。bootmgr 会去加载某磁盘某 NTFS 分区的“\Windows\System32\WinLoad.exe”，后面启动 Windows 的事就由 WinLoad.exe 来完成了。
 
-UEFI 下：
+UEFI 模式下：
 
     “UEFI 下，启动盘是 ESP 分区，跟 Windows 不是同一个分区”。
 
@@ -146,7 +145,7 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 只是 Windows 安装程序提示不允许罢了。
 
-主板 BIOS 设置 UEFI 启动如果没找到 GPT 分区，就会自动转 CSM 模式，通过 MBR 分区表引导 UEFI 模式的 Windows 进行启动，注意这只是一种兼容方式，不是原生 UEFI 模式。
+现代主板设置为 UEFI 模式启动，如果没找到 GPT 分区，就会自动转 CSM 模式，通过 MBR 分区表引导 UEFI 模式的 Windows 进行启动，注意这只是一种兼容方式，不是原生 UEFI 模式。
 
 #### 参考
 
@@ -160,7 +159,7 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 1. HDMI 口连接显示器（防止老显卡的 DP 口不支持默认的 UEFI），开机按 Del 键进入主板 BIOS 设置。
 
-2. F7 装载系统默认优化设置：BOOT->Load optimized defaults，F10 保存设置并立刻重启计算机。然后再重新进入主板 BIOS 设置做进一步设置。如果连续改一堆设置，在BIOS里就死机，估计是bios系统没初始化好。改的太多它自己就乱了或bios电池没激活导致的。所以如果有很多功能要调整，别连续改，改一个系列的就保存设置重启计算机一次。
+2. F7 装载系统默认优化设置：BOOT->Load optimized defaults，F10 保存设置并立刻重启计算机。然后再重新进入主板 BIOS 设置做进一步设置。特别是主板在第一次使用时、刷新bios后、主板更换电池后等情况下。我装机时第一次开机进入 BIOS 连续改一堆设置，正改着就死机了，估计是bios系统没初始化好，改的太多它自己就乱了或主板电池没激活导致的。所以如果有很多功能要调整，别连续改，改一个系列的就保存设置重启计算机一次。
 
 3. 注意这之后引导操作系统默认是 UEFI 的，存储设备选项需要手动打开 CSM 后切换，详见后面的章节 [主板 BIOS 设置启动模式为原生 UEFI]。
 
@@ -172,13 +171,15 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 7. F6 风扇设置：对各个风扇选静音模式，或手动，先选全速看看最大转速多少，再切换手动，先拉曲线到最低转速，然后再横向找不同的温度调整风扇转速挡位。
 
-8. BIOS开启UEFI + GPT 和 Secure Boot： 先 F10 保存设置并重启计算机，然后再进行设置，详见下面相关章节[Windows 启用 Secure Boot 功能]
+8. BIOS开启UEFI + GPT 和 Secure Boot： 先 F10 保存之前的设置并重启计算机，然后再进行设置，详见下面相关章节[Windows 启用 Secure Boot 功能]
 
 9. 开启“UEFI Fast Boot”，这样关机后的再次开机很快。参见下面章节 [开启或关闭“快速启动”]
 
 ### 电源功耗 PL1/PL2
 
 不用设了，这个版本的 BIOS 已经全放开了。开机默认就是 4.6GHz
+
+以下引用网上烤鸡的文章：
 
 先默认状态烤个机：在 AIDA 的 FPU 烤机测试中，我们可以看到 10700K 最终在接近70℃左右的温度下运行在了 4.5GHz 左右，功耗保持在 125W 左右。通过对记录文件的分析，开启测试后 10700K 频率保持在 4.7G Hz全核心（140W），3 分钟之后掉到了 4.5GHz~4.6GHz 之间跳动。通过这一点判断，B560M AORUS PRO AX 一阶段功耗控制约 140W，二阶段功耗控制在 125W。
 
@@ -208,25 +209,15 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
-    主板 BIOS 启动模式是原生 UEFI：在 BIOS 设置 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选项是 “Disable”。
+    主板 BIOS 启动模式是原生 UEFI：设置 “Windows 10 Features” 选择 “Windows 10”；“CSM Support” 选项是 “Disable”（需要先 “Enable”，把下面出现的存储设备和 PCIE 设备的项目都选择 “UEFI”）。
 
     主板 BIOS 开启 Secure Boot 功能。
 
-    安装u盘：在使用 Rufus 制作安装u盘时要选择 “GPT+UEFI” 方式，再用u盘以 UEFI 启动计算机安装 Windows。
+    安装u盘：在使用 Rufus 制作安装u盘时要选择 “GPT+UEFI” 方式，再用u盘以 UEFI 启动计算机安装 Windows（开机引导时按F12出现引导菜单，选择带 “UEFI” 后缀的那个u盘）。
 
     硬盘格式化为原生 UEFI+ GPT 类型
 
-如果是已经划分过分区的硬盘：
-
-    硬盘是原生 UEFI+GPT，但是其它前提条件不符
-
-    硬盘不是原生 UEFI+GPT，你没有选择对整个磁盘重新建立分区，而是选择直接安装 Windows
-
-都会导致 Windows 安装程序自动使用 CSM 兼容模式进行引导安装。
-
-如果是新硬盘，或用户选择对整个磁盘重新建立分区，Windows 安装程序先检查上面3个前提条件，然后决定硬盘类型：前提条件都符合，才会把硬盘格式化为原生 UEFI+ GPT 类型。只要有前提条件不符，Windows 安装程序就会自动把硬盘格式化为 MBR 类型，并使用 CSM 兼容模式进行引导安装。
-
-最尴尬的是，在 Windows 安装完成后才能确认 Secure Boot 功能是否成功开启。
+最尴尬的是，在 Windows 安装时不会做任何提示，安装完成启动 Windows 后运行 msinfo32才能确认 Secure Boot 功能是否成功开启。
 
 如果安装后发现 BIOS 启动模式不是原生 UEFI，想把 BIOS 设置里的存储设备类型改回为 UEFI：
 
@@ -286,7 +277,7 @@ rufus 制作时引导类型选择 “FreeDos” 就行了，完成后把 ghost �
 
 对 Windows 10 + 来说，不需要用 ghost 启动盘了，推荐直接使用 Windows 自带的系统映像备份，参见下面章节 [系统映像备份]。
 
-### 二、主板 BIOS 设置启动模式为原生 UEFI
+### 二、主板设置启动模式为原生 UEFI
 
 重启开机后按 F2 进入 BIOS
 
@@ -324,7 +315,7 @@ UEFI 模式下显卡连接 DP 口刚开机时，屏幕自动使用显示器的�
 
     安装 Windows 后运行 msinfo32，在 “系统摘要” 界面找 “BIOS 模式” 选项，看到结果是 “UEFI”。
 
-### 三、主板 BIOS 开启 Secure Boot 功能
+### 三、主板开启 Secure Boot 功能
 
 Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用是主板 UEFI 启动时只加载经过认证的操作系统或者硬件驱动程序，从而防止恶意软件侵入。
 
@@ -390,15 +381,27 @@ Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个�
 
 ### 四、确保硬盘格式化为 GPT 类型
 
-以上条件都符合了，Windows 安装程序才会认为计算机是原生的 UEFI 模式，对硬盘的操作会默认采用 GPT 类型。
+以上条件作为前提条件，如果都符合，Windows 安装程序才会认为计算机是启动于原生 UEFI 模式，接下来对硬盘的操作才会默认采用 GPT 类型。
 
-因为 Windows 安装程序遇到不满足条件，就会无提示自动转为 CSM 兼容模式安装，所以不管新老硬盘，都建议把硬盘分区全删后重新建分区，然后安装 Windows。
+细分具体情况如下：
+
+如果是新硬盘，或用户选择对整个磁盘重新建立分区：前提条件都符合，Windows 安装程序会把硬盘格式化为 GPT 类型，并进行安装，这样能保证安装后的 Windows 启用 Secure Boot 功能。只要有前提条件不符，Windows 安装程序就会自动把硬盘格式化为 MBR 类型，并使用 CSM 兼容模式进行引导安装。
+
+如果是已经划分过分区的硬盘：如果硬盘是 GPT，但是其它前提条件不符，或硬盘不是 GPT 且用户选择直接在原有分区上安装 Windows，都会导致 Windows 安装程序自动使用 CSM 兼容模式进行引导安装。
+
+注意：Windows 安装程序判断应该是原生 UEFI 模式安装还是 CSM 兼容模式，都不会做出任何提示。
+
+所以不管新旧硬盘，在 Windows 安装程序到了划分磁盘这一步，都是建议把硬盘分区全删后重新建分区，然后安装 Windows。
+
+另外：三星 SSD 硬盘的管理程序 Samsung Magican 里，不要设置 Over Provisioning 功能。原因见章节 [踩坑经历]。
 
 验证1
 
-    Windows安装后，cmd 管理员模式，进入 diskpart
+    Windows 安装后，cmd 管理员模式
 
-    >list disk
+        diskpart
+
+        >list disk
 
     查看对应磁盘的 Gpt 那一列，是否有星号，有就是确认 GPT 磁盘了
 
@@ -407,8 +410,6 @@ Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个�
     Windows安装后，在控制面板进入磁盘管理，在磁盘 0 上点击右键，看看“转换成 GPT 磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是 GPT 类型，大概率是 MBR 类型。真正的 GPT 磁盘，只提供“转换成 MBR 磁盘”选项。注意，那个 “转换成动态磁盘” 不要理它，微软都废弃了。
 
 参考 <https://www.163.com/dy/article/FTJ5LN090531NEQA.html>
-
-另外：三星 SSD 硬盘的管理程序 Samsung Magican 里，不要设置 Over Provisioning 功能。原因见章节 [踩坑经历]。
 
 ### 验证
 
@@ -427,6 +428,8 @@ Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个�
 后来升级了显卡 BIOS ，可以支持主板 UEFI 下的 DP 口显示后，我重装了 Windows，在主板 BIOS 设置中启动模式选项 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选项 “Disable” 后下面的三个选项自动隐藏了，我以为都是自动 UEFI 了，其实技嘉主板只是把选项隐藏了，硬盘模式保持了上次安装 Windows 时设置的 legacy 不是 UEFI……
 
 这样导致我的 Windows 引导还是走的老模式，UEFI 引导硬盘其实没用上，装完后 Windows 启动没有实现秒进桌面才发现的这个问题。
+
+另外，安装成功后我手贱，三星 SSD 硬盘的管理程序 Samsung Magican 里，设置 Over Provisioning 功能，重新调整了硬盘分区，结果 Secure Boot 没了。。。
 
 ## 主板 BIOS 打开网络唤醒功能
 
