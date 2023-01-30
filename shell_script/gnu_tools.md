@@ -5121,8 +5121,8 @@ dd 命令是基于块（block）的复制，用途很多。
 
 .tar.gz 文件
 
-    # 打包并压缩，可以是多个文件或目录名
-    # 去掉 z 就是只打包，生成 .tar 文件，其它参数相同
+    # c打包并z压缩，生成.tar.gz文件，源可以是多个文件或目录名
+    # 只c打包，生成 .tar 文件，其它参数相同
     # 把 z 换成 j 就是压缩为.bz2文件，而不是.gz文件了
     tar -czvf arc.tar.gz file1 file2
     tar -cjvf arc.tar.bz2 file1 file2
@@ -5166,12 +5166,21 @@ dd 命令是基于块（block）的复制，用途很多。
     # 查找匹配的 c 语言文件并打包压缩
     find . -name "*.[ch]" -print | zip source_code -@
 
+    # 把当前目录打包到tar，用zip
     tar cf - . | zip backup -
 
     # 只查看文件列表
     unzip -l arc.zip
 
 使用 zless、zmore、zcat 和 zgrep 对压缩过的文件进行查看等操作。
+
+.xz 文件
+
+    # 把 foo.tar.xz 解压缩为 foo.tar
+    xz -d foo.tar.xz
+
+    # 把文件 foo 压缩为 foo.xz
+    xz foo
 
 ### 文件链接 ln
 
