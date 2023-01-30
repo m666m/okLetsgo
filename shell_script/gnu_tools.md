@@ -6115,6 +6115,12 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     update-alternatives --config vi
 
+### rdesktop
+
+    rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
+
+按ctrl + alt +回车退出或进入全屏模式。
+
 ## 开机启动 SystemV(init) 和 systemd
 
     https://www.debian.org/doc/manuals/debian-handbook/unix-services.zh-cn.html#sect.systemd
