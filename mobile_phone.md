@@ -395,6 +395,8 @@ private void getPackageList(Context ctx) {
 
 目前最优是三星手机，开启 knox 功能，把cn软件放到安全文件夹里，在外面安装 F-Droid 软件商店。
 
+次选 google 的 Pixel 手机，除了它家的全家桶，还真不收集你其它隐私了。。。
+
 开源手机
 
 暂未找到合适的
