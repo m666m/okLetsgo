@@ -636,22 +636,22 @@ git clone 命令正常拉取
 
     $ git branch -a
     * master
+    remotes/origin/master
+
+fetch 远程仓库，会拉取到其它分支的信息
+
+    git fetch origin
+
+    $ git branch -a
+    * master
     remotes/origin/dependabot/pip/doc/pydata-sphinx-theme-0.12.0
     remotes/origin/dependabot/pip/doc/sphinx-6.1.3
     remotes/origin/develop
     remotes/origin/master
 
-拉取仓库
-
-    git fetch origin
-
-再次查看远程分支
-
-    git branch -r
-
 切换到其他分支，这里切换到2.3.x分支
 
-    git checkout -b 2.3.x origin/2.3.x
+    git checkout -b develop
 
 结论
 
