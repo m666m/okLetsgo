@@ -121,8 +121,15 @@ function PS1virtualenv-env-name {
 }
 
 function PS1git-branch-name {
-
   # 一条命令取当前分支名
+
+  # 如果使用 git for Windows 自带的 mintty bash，它自带 git 状态脚本
+  # 只要启动 bash ，其会自动 source C:\Program Files\Git\etc\profile.d\git-prompt.sh，
+  # 最终执行 C:\Program Files\Git\mingw64\share\git\completion\git-prompt.sh。
+  # 只要是git管理的目录就会显示git状态字符串。
+  # 来源 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
+  # 如果自定义命令提示符，可以在PS1变量拼接中调用函数 __git_ps1() ，我嫌它格式丑，还是用自己写的吧
+
   # 命令 git symbolic-ref 在裸仓库或 .git 目录中运行不报错，都会打印出当前分支名，
   # 除非不在当前分支，返回 128，如果当前分支是分离的，返回 1
   # 注意：如果用 local branch_name 则无法直接判断嵌入变量赋值语句的命令的失败状态
@@ -148,14 +155,14 @@ function PS1git-branch-name {
 
   fi
 
-  # exitcode 是其它数字的，视为不在 git 环境中，不打印 git 信息
+  # exitcode 是其它数字的，视为不在 git 环境中，不打印任何字符
 }
 
 function PS1git-branch-prompt {
 
   local branch=`PS1git-branch-name`
 
-  # 没有 branch 名说明不在 git 环境中
+  # branch 变量是空的说明不在 git 环境中
   [[ $branch ]] || return
 
   # 在裸仓库或 .git 目录中，运行 git status 会报错，所以先判断下
