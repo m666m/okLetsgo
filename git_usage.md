@@ -626,13 +626,13 @@ git clone 命令正常拉取
 
 3）拉取目录
 
-执行拉取操作，由于 pyqtgraph 的主分支是 main，因此命令如下
+执行拉取操作，由于 pyqtgraph 的主分支是 master，因此命令如下
 
-    git pull origin main
+    git pull origin master
 
 4）切换分支
 
-以上只是拉取了仓库的 main 分支，查看本地分支仅有 master 分支；查看远程分支也有 origin/main 分支
+以上只是拉取了仓库的 master 分支，查看本地分支仅有 master 分支；查看远程分支也有 origin/master 分支
 
     $ git branch -a
     * master
