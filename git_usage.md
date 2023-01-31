@@ -10,6 +10,14 @@
 
     尽量不删文件，更不要删除目录
 
+有个竞品 pijul
+
+    基于文件差异的补丁式源代码管理系统，可以随意加入、撤销、重排历史上任意没有依赖关系的改动，并且保持单个 Commit（Change）的 Hash 以及得到的结果不变。
+
+    https://pijul.org/
+        原理 https://jneem.github.io/merging/
+            https://segmentfault.com/a/1190000013648329
+
 ## 参考文档
 
 善用 git 帮助查找命令 `git help branch`
@@ -266,7 +274,7 @@ github.com获取仓库默认给的是https地址，但是在国内的网络下�
 
 远程仓库地址格式
 
-    ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/myproj.git
+    ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/myproj.git
 
     git@github.com:m666m/okLetsgo.git
 
@@ -274,11 +282,11 @@ github.com获取仓库默认给的是https地址，但是在国内的网络下�
 
 方法一、推送命令只会推送到默认的origin地址，其他的各个server1，2，3得再挨个执行push命令
 
-    git remote add server1 ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
+    git remote add server1 ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
 
-    git remote add server2 ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
+    git remote add server2 ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
 
-    git remote add server3 ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
+    git remote add server3 ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
 
     git push server1 master
 
@@ -286,13 +294,13 @@ github.com获取仓库默认给的是https地址，但是在国内的网络下�
 
 方法二、省事的方法，给origin添加多个push远程地址(upstream)，默认fetch还是origin最早添加的地址
 
-    git remote set-url --add origin ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
+    git remote set-url --add origin ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
 
     $ git remote show origin
     * remote origin
     Fetch URL: git@github.com:m666m/project_name.git
     Push  URL: git@github.com:m666m/project_name.git
-    Push  URL: ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
+    Push  URL: ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
     HEAD branch: main
     Remote branch:
         main tracked
@@ -304,7 +312,7 @@ github.com获取仓库默认给的是https地址，但是在国内的网络下�
     $ git remote -v
     origin  git@github.com:m666m//project_name.git (fetch)
     origin  git@github.com:m666m//project_name.git (push)
-    origin  ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git (push)
+    origin  ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git (push)
 
 添加后，本地项目中的.git/config 对应内容如下
 
@@ -312,11 +320,11 @@ github.com获取仓库默认给的是https地址，但是在国内的网络下�
         url = git@github.com:m666m/project_name.git
         fetch = +refs/heads/*:refs/remotes/origin/*
         # url = https://github.com/m666m/project_name.git
-        url = ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
+        url = ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
 
 如果想删除
 
-    git remote set-url --delete origin ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/project_name.git
+    git remote set-url --delete origin ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
 
 2、一个本地库同步到另外两个远程库，不使用origin
 
@@ -416,7 +424,7 @@ git clone 命令正常拉取
 
     # Ipv6 用标准的中括号方式：
     #
-    $ git clone ssh://git@[299:4c:c:8da::2]:2345/uspace/gitrepo/tea.git
+    $ git clone ssh://git@[299:4c:c:8da::2]:2345/ghcode/gitrepo/tea.git
     Cloning into tea...
     warning: You appear to have cloned an empty repository.
 
@@ -511,14 +519,14 @@ git clone 命令正常拉取
 
 本地先 git init，然后
 
-    git remote add origin ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/okletgo.git
+    git remote add origin ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/okletgo.git
 
 这时显示结果
 
     $ git remote show origin
     * remote origin
-    Fetch URL: ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/okletgo.git
-    Push  URL: ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/okletgo.git
+    Fetch URL: ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/okletgo.git
+    Push  URL: ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/okletgo.git
     HEAD branch: (unknown)
 
 把文件都push上去，会提示没有上游分支，直接推。
@@ -527,8 +535,8 @@ git clone 命令正常拉取
 
     $ git remote show origin
     * remote origin
-    Fetch URL: ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/okletgo.git
-    Push  URL: ssh://git@xx.xx.xx.xx:2345/uspace/gitrepo/okletgo.git
+    Fetch URL: ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/okletgo.git
+    Push  URL: ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/okletgo.git
     HEAD branch: master
     Remote branch:
         master tracked
@@ -579,7 +587,7 @@ git的指定目录拉取，对于灵活选取仓库资源非常有帮助
 
     https://zhuanlan.zhihu.com/p/602129987
 
-注意：只在单个项目的目录里设置稀疏检出，不要变更全局配置。
+NOTE：只在单个项目的目录里设置稀疏检出，不要变更全局配置。
 
 1）在本地创建目录，初始化仓库
 
@@ -618,15 +626,19 @@ git的指定目录拉取，对于灵活选取仓库资源非常有帮助
 
 配置稀疏检查的目录
 
-    # 实际修改的是 .git/info/sparse-checkout 文件
-    # 注意路径格式，是项目主目录后面的相对路径
-    git sparse-checkout set 'pyqtgraph/examples/'
+    # 注意路径格式
+    #   pyqtgraph/pyqtgraph.git examples/
+    #   romkatv/zsh4humans.git sc/
+    git sparse-checkout set 'examples/'
+
+    # 实际修改的是文件 .git/info/sparse-checkout
+    # 由于该文件的匹配规则比较怪异，git 展开后的结果不确定，
+    # 务必 cat 该文件确认下
+    cat .git/info/sparse-checkout
 
 执行拉取操作，由于 pyqtgraph 的主分支是 master，因此命令如下
 
     git pull origin master
-
-对于目录中多余的文件，在稀疏检查时不会去处理，类似切换分支对非git管理文件的处理效果。
 
 4）切换分支
 
@@ -641,15 +653,142 @@ fetch 远程仓库，会拉取到其它分支的信息
     git fetch origin
 
     $ git branch -a
-    * master
+    * develop
+    master
     remotes/origin/dependabot/pip/doc/pydata-sphinx-theme-0.12.0
     remotes/origin/dependabot/pip/doc/sphinx-6.1.3
     remotes/origin/develop
     remotes/origin/master
 
-切换到其他分支
+切换到其他分支，本地建立新分支，跟该远程分支关联，则稀疏检出的代码会切换到该分支
 
-    git checkout -b develop
+    git checkout -b develop origin/develop
+
+总结：
+
+把稀疏检出，理解为跟随分支切换后，git做的一个是否显示目录或文件的匹配。
+
+对于目录中不是git管理的文件，在git切换分支和做稀疏检出时都不会去处理，相对的目录结构在切换分支后会保留。
+
+验证：
+
+对不同结构的目录，切换分支后，稀疏检出会跟随分支情况变化
+
+    示例 git@github.com:pyqtgraph/pyqtgraph.git
+        git sparse-checkout set 'examples/'
+
+    两个分支的 examples 目录的位置不同，分别检出
+
+    $ git checkout develop
+    $ tree /ghcode/pg_examples
+    /ghcode/pg_examples
+    └── examples
+        ├── Arrow.py
+        ├── BarGraphItem.py
+        ├── beeswarm.py
+        ├── CLIexample.py
+       ...
+        └── ViewLimits.py
+
+    $ git checkout master
+    $ tree /ghcode/pg_examples
+    /ghcode/pg_examples
+    └── pyqtgraph
+        └── examples
+            ├── Arrow.py
+            ├── BarGraphItem.py
+            ├── beeswarm.py
+            ├── CLIexample.py
+            ...
+            └── ViewLimits.py
+
+对同名目录，切换分支后，稀疏检出会跟随分支情况变化
+
+    示例 git@github.com:romkatv/zsh4humans.git
+        git sparse-checkout set 'sc/'
+
+    $ git checkout v5
+    $ tree /ghcode/zsh4_sc
+    /ghcode/zsh4_sc
+    └── sc
+        ├── exec-zsh-i
+        ├── install-tmux
+        ├── setup
+        └── ssh-bootstrap
+
+    $ git checkout v4
+    $ tree /ghcode/zsh4_sc
+    /ghcode/zsh4_sc
+    └── sc
+        ├── exec-zsh-i
+        ├── setup
+        └── ssh-bootstrap
+
+##### 本地已clone了仓库
+
+    https://www.jianshu.com/p/680f2c6c84de
+
+对于目录中多余的文件，在稀疏检查时不会去处理，类似切换分支对非git管理文件的处理效果。
+
+1、打开 sparse checkout 功能
+进入版本库的目录，执行以下命令
+
+    git config --local core.sparsecheckout true
+
+使用文本编辑打开 .git/info/sparse-checkout 文件 (没有这个文件可以手动创建一个)
+添加如下列表
+
+    /*
+    !/add_on/native_addon/kylinv4_ft1500a/*
+    !/add_on/native_addon/neokylin_lib/*
+    !/add_on/native_addon/ubuntu_lib/*
+    !/add_on/native_addon/uos_arm_lib/*
+    !*.so
+
+3、 重新checkout
+
+    $ git checkout [branch]
+
+    or
+
+    $ git read-tree -mu HEAD
+
+sparse-checkout 文件设置
+
+    https://www.git-scm.com/docs/git-sparse-checkout/2.39.0#_internalsnon_cone_problems
+
+    子目录的匹配
+
+        目录名称前带斜杠，如 /docs/，将只匹配项目根目录下的 docs目录
+
+        目录名称前不带斜杠，如 docs/，其他目录下如果也有这个名称的目录，如 test/docs/ 也能被匹配
+
+        多级目录，如 docs/05/，则不管前面是否带有斜杠，都只匹配项目根目录下的目录，如 test/docs/05/ 不能被匹配
+
+    通配符 ““ (星号)匹配
+
+        docs/
+        index.
+        *.so
+
+    排除项 “!” (感叹号)匹配
+
+        /*
+        !unwanted
+
+    关闭sparsecheckout
+
+        关闭sparsecheckout功能，全取整个项目库，可以写一个”“号，但如果有排除项，必须写”/“，同时排除项要写在通配符后面。
+
+    比如，命令 `git sparse-checkout set A/B/C` 会被展开成
+
+        /*
+        !/*/
+        /A/
+        !/A/*/
+        /A/B/
+        !/A/B/*/
+        /A/B/C/
 
 ## 使用git的各种工作流程方案
 
@@ -1760,7 +1899,7 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
 
     # 查看当前仓库所有的 "linked working tree"
     $ git worktree list
-    /uspace/pycode/tea  7cabce4 [master]
+    /ghcode/pycode/tea  7cabce4 [master]
 
 创建 worktree
 
@@ -2027,7 +2166,11 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
 
 ### 补丁神器 cherry-pick
 
-针对master分支上修改过的bug，要在dev分支上也做一遍修复
+git、svn、hg 等基于 snapshot 的版本控制系统，以 snapshot 的方式存储当前版本。虽然这一类版本控制系统也会用到 patch，不过它们只有在需要时才计算出 patch 文件来。patch 是这一类版本控制系统的产物，而非基石。（注意：切勿混淆 commit 和 snapshot 的概念，两者并不等价。Git 显然不会在每个 commit 中存储对整个仓库的 snapshot，这么做太占空间。事实上，Git 的 commit 只包含指向 snapshot tree 的指针，参见：Git-内部原理-Git-对象 <https://git-scm.com/book/en/v2/Git-Internals-Git-Objects>）
+
+git diff 输出格式就是个 patch 文件，git cherry-pick 会把摘取的修改以 patch 的形式应用到目标分支上。
+
+应用场景：master分支上修改过的bug，要在dev分支上也做一遍修复
 
 1.先确定master分支上的commit id
 
