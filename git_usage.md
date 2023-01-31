@@ -575,6 +575,8 @@ git clone 命令正常拉取
 
 #### 拉取指定目录（稀疏检出sparsecheckout）
 
+git的指定目录拉取，对于灵活选取仓库资源非常有帮助
+
     https://zhuanlan.zhihu.com/p/602129987
 
 注意：只在单个项目的目录里设置稀疏检出，不要变更全局配置。
@@ -591,11 +593,11 @@ git clone 命令正常拉取
 
     git remote add origin git@github.com:pyqtgraph/pyqtgraph.git
 
-2）设置稀疏检出配置
+2）设置本项目使用稀疏检出功能
 
-这里可以先查看一下本地的git配置
+这里可以先查看一下本项目的git配置
 
-    $ $ git config -l --local
+    $ git config --local -l
     core.repositoryformatversion=0
     core.filemode=false
     core.bare=false
@@ -609,30 +611,26 @@ git clone 命令正常拉取
 
 配置稀疏检出
 
-    注意要用参数 --local 指定为仅此项目
-
+    # 注意要用参数 --local 指定为仅此项目
     git config --local core.sparsecheckout true
 
-再次 `git config -l --local` 查看git的本地配置，可看到已经存在相关配置。
-
-同时，再次确认一下 git 全局配置，确保全局配置并没有修改，避免影响其他的git拉取操作
-
-    git config -l --global | grep core.sparsecheckout
-
-将需要拉取的目录配置
-
-    # 注意路径是主目录后面的
-    git sparse-checkout set 'pyqtgraph/examples/*'
-
 3）拉取目录
+
+配置稀疏检查的目录
+
+    # 实际修改的是 .git/info/sparse-checkout 文件
+    # 注意路径格式，是项目主目录后面的相对路径
+    git sparse-checkout set 'pyqtgraph/examples/'
 
 执行拉取操作，由于 pyqtgraph 的主分支是 master，因此命令如下
 
     git pull origin master
 
+对于目录中多余的文件，在稀疏检查时不会去处理，类似切换分支对非git管理文件的处理效果。
+
 4）切换分支
 
-以上只是拉取了仓库的 master 分支，查看本地分支仅有 master 分支；查看远程分支也有 origin/master 分支
+以上只是拉取了仓库的一个分支，所以查看本地分支和远程分支也就只显示这个分支
 
     $ git branch -a
     * master
@@ -649,13 +647,9 @@ fetch 远程仓库，会拉取到其它分支的信息
     remotes/origin/develop
     remotes/origin/master
 
-切换到其他分支，这里切换到2.3.x分支
+切换到其他分支
 
     git checkout -b develop
-
-结论
-
-git的指定目录拉取，对于灵活选取仓库资源非常有帮助。同时，在设置时需要注意git配置不要设置成全局配置，进而影响其他git操作。
 
 ## 使用git的各种工作流程方案
 
