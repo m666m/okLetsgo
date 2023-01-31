@@ -26,7 +26,7 @@
 
     命令速查
 
-        https://github.com/k88hudson/git-flight-rules
+        https://github.com/k88hudson/git-flight-rules/blob/master/README_zh-CN.md
 
         https://training.github.com/downloads/zh_CN/github-git-cheat-sheet/
 
@@ -340,19 +340,43 @@ github.com获取仓库默认给的是https地址，但是在国内的网络下�
 
     https://www.w3cschool.cn/git/git-uroc2pow.html
 
-支持多种协议，Git协议下载速度最快，SSH协议用于需要用户认证的场合。
+支持多种协议，Git 协议下载速度最快，SSH 协议用于需要用户认证的场合。
+
+Git
 
     git clone git://example.com/path/to/repo.git [默认当前目录]
 
-    git clone [user@]example.com/path/to/repo.git 默认 ssh 22 端口
-    git clone ssh://[user@]example.com:port/path/to/repo.git 非标准22端口要写明确写协议名
-    git clone ssh://user@[20:40:d:9f::1]:22122/path/to/repo.git 用ipv6加[]即可
+    # 特殊，对 “git@github.com” 开头，默认用git协议，在冒号后是用户名
+    git clone git@github.com:user_name/repo.git
+
+    $ ssh -T git@github.com
+    > Hi username! You've successfully authenticated...
+
+SSH
+
+    # 对 “用户名@地址” 开头，默认 ssh 22 端口
+    git clone [user@]example.com:/path/to/repo.git
+
+    # 非标准22端口要写明确写协议名
+    git clone ssh://[user@]example.com:port/path/to/repo.git
+
+    # github网站提供基于https的ssh连接方式 https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
+    git clone ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
+
+    # 对ipv6地址加[]即可
+    git clone ssh://user@[20:40:d:9f::1]:22122/path/to/repo.git
+
+Http、Https
 
     git clone http[s]://example.com/path/to/repo.git
     git clone http://git.oschina.net/yiibai/sample.git
 
+File
+
     git clone /opt/git/project.git
     git clone file:///opt/git/project.git
+
+其它
 
     git clone ftp[s]://example.com/path/to/repo.git
     git clone rsync://example.com/path/to/repo.git
@@ -527,7 +551,7 @@ git clone 命令正常拉取
 
         git push
 
-#### 大仓库非全量拉取(shallow clone)
+#### 大仓库非全量拉取（shallow clone）
 
 对比较大且未清理的大仓库，克隆仓库这个仓库，会把所有的历史协作记录都clone下来。其实对于我们直接使用仓库，而不是参与仓库工作的人来说，只要把最近的一次commit给clone下来就好了。
 
@@ -549,11 +573,97 @@ git clone 命令正常拉取
 
     即使你使用gi fetch，也不能把完整仓库fetch下来(config文件可以看到,remote.origin.fetch的值是+refs/heads/master:refs/remotes/origin/master)
 
+#### 拉取指定目录（稀疏检出sparsecheckout）
+
+    https://zhuanlan.zhihu.com/p/602129987
+
+注意：只在单个项目的目录里设置稀疏检出，不要变更全局配置。
+
+1）在本地创建目录，初始化仓库
+
+    mkdir pg_examples
+
+    cd pg_examples
+
+    git init
+
+完成初始化之后，添加远程仓库
+
+    git remote add origin git@github.com:pyqtgraph/pyqtgraph.git
+
+2）设置稀疏检出配置
+
+这里可以先查看一下本地的git配置
+
+    $ $ git config -l --local
+    core.repositoryformatversion=0
+    core.filemode=false
+    core.bare=false
+    core.logallrefupdates=true
+    core.symlinks=false
+    core.ignorecase=true
+    remote.origin.url=git@github.com:pyqtgraph/pyqtgraph.git
+    remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+
+此时可以看到并没有关于 core.sparsecheckout 的配置
+
+配置稀疏检出
+
+    注意要用参数 --local 指定为仅此项目
+
+    git config --local core.sparsecheckout true
+
+再次 `git config -l --local` 查看git的本地配置，可看到已经存在相关配置。
+
+同时，再次确认一下 git 全局配置，确保全局配置并没有修改，避免影响其他的git拉取操作
+
+    git config -l --global | grep core.sparsecheckout
+
+将需要拉取的目录配置
+
+    # 注意路径是主目录后面的
+    git sparse-checkout set 'pyqtgraph/examples/*'
+
+3）拉取目录
+
+执行拉取操作，由于 pyqtgraph 的主分支是 main，因此命令如下
+
+    git pull origin main
+
+4）切换分支
+
+以上只是拉取了仓库的 main 分支，查看本地分支仅有 master 分支；查看远程分支也有 origin/main 分支
+
+    $ git branch -a
+    * master
+    remotes/origin/dependabot/pip/doc/pydata-sphinx-theme-0.12.0
+    remotes/origin/dependabot/pip/doc/sphinx-6.1.3
+    remotes/origin/develop
+    remotes/origin/master
+
+拉取仓库
+
+    git fetch origin
+
+再次查看远程分支
+
+    git branch -r
+
+切换到其他分支，这里切换到2.3.x分支
+
+    git checkout -b 2.3.x origin/2.3.x
+
+结论
+
+git的指定目录拉取，对于灵活选取仓库资源非常有帮助。同时，在设置时需要注意git配置不要设置成全局配置，进而影响其他git操作。
+
 ## 使用git的各种工作流程方案
 
 思路太灵活了，大家根据自己实际情况，用法各有不同。
 
-### git工作流：类似svn的TrunkBased集中式工作流 remote master -- local master(开发人员工作在此)
+### git工作流：类似svn的TrunkBased集中式工作流
+
+    remote master -- local master(开发人员工作在此)
 
 主干仅master分支
 
@@ -603,7 +713,9 @@ git clone 命令正常拉取
     git pull --rebase
     git push （默认远程origin本地master）
 
-### git工作流：改良版集中式工作流 remote master -- local dev(开发人员工作在此)
+### git工作流：改良版集中式工作流
+
+    remote master -- local dev(开发人员工作在此)
 
 主干仅master分支。在本地新建其它分支，每天仅拉取远程master，更新本地dev分支。这种工作方式可以确保主干master的相对稳定。
 
@@ -647,7 +759,9 @@ git clone 命令正常拉取
     git merge dev
     git push -u origin master
 
-### git工作流： 功能分支工作流 master -- dev(开发人员工作在此)
+### git工作流： 功能分支工作流
+
+    master -- dev(开发人员工作在此)
 
 在上面的工作流基础上改良，把本地分支推送到远程，两个分支在本地和远程都存在，master分支保持稳定，开发工作放在dev分支，这俩都做主干分支。 CI/CD中持续集成部署在dev，持续交付部署在master。hotfix合并到远程的master分支和dev分支。主干分支和功能分支的合并原则，见下面章节[合并两分支时的原则：如何选择菱形还是拉直]。
 
@@ -800,7 +914,9 @@ dev代码测试完毕，合并到master，正式发布：
 
         各小组从开发分支（起点标签）拉取为小组级别的分支，各小组有自测服务器，套娃上面的开发过程
 
-### git工作流： Gitflow工作流 master -- develop -- feature(开发人员工作在此)
+### git工作流： Gitflow工作流
+
+    master -- develop -- feature(开发人员工作在此)
 
 这个流程是功能分支工作流的进一步扩展，适合长期稳定的商用项目。
 
@@ -843,7 +959,9 @@ master分支很少变动，head始终对应生产环境代码。由master分支v
 
     抛弃 Git Flow 的 8 大理由 <https://baijiahao.baidu.com/s?id=1661688354212771172&wfr=spider&for=pc>
 
-### 阿里巴巴 AoneFlow：从master上拉出feature分支，相关feature分支合并出release分支最终合入master
+### 阿里巴巴 AoneFlow
+
+    从master上拉出feature分支，相关feature分支合并出release分支最终合入master
 
 只使用三种分支类型：主干master、特性分支feature、发布分支release，以及三条基本规则。
 
@@ -1050,17 +1168,9 @@ git pull 的操作默认是 fetch + merge，可以设置成 fetch + rebase。
 
 分支合并的详细用法见下面的章节 [两个分支合并的merge常用方法]
 
-### 拉取指定版本
-
-    git clone 下载源码
-
-    git tag　列出所有版本号
-
-    git checkout　+某版本号　
-
-你当前文件夹下的源码会变成这个版本号的源码，比起一个个下，这种切换比较方便。
-
 ### 切换到指定的提交点
+
+切换到的提交点可以是分支名、标签tag、commit id（hash）
 
     # 先下载完整的git代码
     git clone xxxx
@@ -1075,7 +1185,7 @@ git pull 的操作默认是 fetch + merge，可以设置成 fetch + rebase。
     git log --oneline
 
     # 从当前分支直接切换到指定的commit点
-    git reset --hard 93890e9
+    git checkout 93890e9
 
 #### 拉取指定分支的指定commit版本
 
