@@ -17,7 +17,7 @@ UEFI 模式是 Windows 7 之后出现的新型操作系统启动引导方式，�
 
 主板加载操作系统的方式在“传统 BIOS(Leagcy)”模式、“UEFI CSM” 模式（兼容传统(Leagcy)模式）和原生 UEFI 模式之间完全不同。为区别于原生 UEFI，主板 BIOS 设置中提供了兼容传统(Leagcy)模式的 “UEFI CSM” 模式，一般简称 CSM 模式。CSM 模式可以让不兼容原生 UEFI 方式启动的老显卡和存储设备等可以正常的工作。
 
-具体来说，CSM 模式启动时主板 BIOS 可以选择使用传统(Leagcy)模式引导 UEFI 设备和非 UEFI 设备：比如硬盘 MBR 引导和传统 PCI opROM 加载支持，后者可以让没有 GOP 的显卡在操作系统启动前（例如 BIOS 设置和 OS 引导器）可以使用并固定使用 VGA 分辨率。存储或 PCIE 设备只要其中一个用到该功能就需要主板打开 CSM 模式。支持 WinXP/Win7 的 Intel z170 之前的主板还提供使用非 UEFI 的传统(Leagcy)模式的选项。
+具体来说，CSM 模式启动时主板 BIOS 可以选择使用传统(Leagcy)模式引导 UEFI 设备和非 UEFI 设备：比如硬盘 MBR 引导和传统 PCI opROM 加载支持，后者可以让没有 GOP 的显卡在操作系统启动前（例如 BIOS 设置和 OS 引导器）可以使用并固定使用 VGA 分辨率（如果开机后显示的主板厂商 logo 基本满屏就说明可能是 CSM 模式）。存储或 PCIE 设备只要其中一个用到该功能就需要主板打开 CSM 模式。支持 WinXP/Win7 的 Intel z170 之前的主板还提供使用非 UEFI 的传统(Leagcy)模式的选项。
 
 有些如 Nvidia gtx 1080 时代的显卡，用 HDMI 口可以在 UEFI 模式显示画面，而 DP 口则不兼容（只能在 CSM 模式进行显示），需要根据连接该口开机后显示器是否出现画面来调整 BIOS 的选项。
 
@@ -157,23 +157,25 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 ## 技嘉 B560M AORUS PRO 主板（BIOS 版本 F7） + Intel 11600KF CPU + DDR4 3600 内存的初始 BIOS 设置
 
-1. HDMI 口连接显示器（防止老显卡的 DP 口不支持默认的 UEFI），开机按 Del 键进入主板 BIOS 设置。
+1、HDMI 口连接显示器（防止老显卡的 DP 口不支持默认的 UEFI），开机按 Del 键进入主板 BIOS 设置。
 
-2. F7 装载系统默认优化设置：BOOT->Load optimized defaults，F10 保存设置并立刻重启计算机。然后再重新进入主板 BIOS 设置做进一步设置。特别是主板在第一次使用时、刷新bios后、主板更换电池后等情况下。我装机时第一次开机进入 BIOS 连续改一堆设置，正改着就死机了，估计是bios系统没初始化好，改的太多它自己就乱了或主板电池没激活导致的。所以如果有很多功能要调整，别连续改，改一个系列的就保存设置重启计算机一次。
+2、F7 装载系统默认优化设置：BOOT->Load optimized defaults，F10 保存设置并立刻重启计算机。然后再重新进入主板 BIOS 设置做进一步设置。特别是在装机后第一次开机后、刷新bios后、主板更换电池后等情况下。
 
-3. 注意这之后引导操作系统默认是 UEFI 的，存储设备选项需要手动打开 CSM 后切换，详见后面的章节 [主板 BIOS 设置启动模式为原生 UEFI]。
+我装机时第一次开机进入 BIOS 连续改一堆设置，正改着就死机了，估计是bios系统没初始化好，改的太多它自己就乱了或主板电池没激活导致的。所以如果有很多功能要调整，别连续改，改一个系列的就保存设置重启计算机一次。
 
-4. 内存：TWEAKS->Memory， 选择 X.M.P profiles，以启用 3600MHz 最优频率，这个版本的 BIOS 也已经自动放开了，我的这个内存默认 1.2v 跑到了 3900MHz。
+3、注意这之后引导操作系统默认是 UEFI 的，存储设备选项需要手动打开 CSM 后切换，详见后面的章节 [主板 BIOS 设置启动模式为原生 UEFI]。
 
-5. AVX512: Advanced CPU settings-> AVX settings，选 custom，出现的 avx512 选项选择 disable，关闭这个无用功能，可以降低 20%的 cpu 整体功耗。
+4、内存：TWEAKS->Memory， 选择 X.M.P profiles，以启用 3600MHz 最优频率，这个版本的 BIOS 也已经自动放开了，我的这个内存默认 1.2v 跑到了 3900MHz。
 
-6. 虚拟化：Advanced CPU settings-> Hyper Threading 选项打开英特尔 CPU 超线程； Settings-> MISC-> VT-d 选项打开虚拟机。
+5、AVX512: Advanced CPU settings-> AVX settings，选 custom，出现的 avx512 选项选择 disable，关闭这个无用功能，可以降低 20%的 cpu 整体功耗。
 
-7. F6 风扇设置：对各个风扇选静音模式，或手动，先选全速看看最大转速多少，再切换手动，先拉曲线到最低转速，然后再横向找不同的温度调整风扇转速挡位。
+6、虚拟化：Advanced CPU settings-> Hyper Threading 选项打开英特尔 CPU 超线程； Settings-> MISC-> VT-d 选项打开虚拟机。
 
-8. BIOS开启UEFI + GPT 和 Secure Boot： 先 F10 保存之前的设置并重启计算机，然后再进行设置，详见下面相关章节[Windows 启用 Secure Boot 功能]
+7、F6 风扇设置：对各个风扇选静音模式，或手动，先选全速看看最大转速多少，再切换手动，先拉曲线到最低转速，然后再横向找不同的温度调整风扇转速挡位。
 
-9. 开启“UEFI Fast Boot”，这样关机后的再次开机很快。参见下面章节 [开启或关闭“快速启动”]
+8、BIOS开启UEFI + GPT 和 Secure Boot： 先 F10 保存之前的设置并重启计算机，然后再进行设置，详见下面相关章节[Windows 启用 Secure Boot 功能]
+
+9、开启“UEFI Fast Boot”，这样关机后的再次开机很快。参见下面章节 [开启或关闭“快速启动”]
 
 ### 电源功耗 PL1/PL2
 
@@ -205,7 +207,7 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 ### 前提条件
 
-    只要系统引导时不是使用原生 UEFI+GPT，比如使用 CSM 兼容模式，这样安装的 Windows 都无法开启 Secure Boot 功能。
+    只要系统引导时不是原生 UEFI+GPT，比如使用 UEFI CSM 兼容模式，这样安装的 Windows 无法开启 Secure Boot 功能。
 
 Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
@@ -215,13 +217,13 @@ Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
     安装u盘：在使用 Rufus 制作安装u盘时要选择 “GPT+UEFI” 方式，再用u盘以 UEFI 启动计算机安装 Windows（开机引导时按F12出现引导菜单，选择带 “UEFI” 后缀的那个u盘）。
 
-    硬盘格式化为原生 UEFI+ GPT 类型
+    硬盘格式化为 GPT 类型
 
-最尴尬的是，在 Windows 安装时不会做任何提示，安装完成启动 Windows 后运行 msinfo32才能确认 Secure Boot 功能是否成功开启。
+最尴尬的是，在 Windows 安装时不会做任何提示，安装完成启动 Windows 后运行 msinfo32 才能确认 Secure Boot 功能是否成功开启。
 
 如果安装后发现 BIOS 启动模式不是原生 UEFI，想把 BIOS 设置里的存储设备类型改回为 UEFI：
 
-    该硬盘启动系统的时候会自动跳转主板 BIOS 的 CMS 模式下的 UEFI 方式，读取硬盘的 UEFI 分区引导系统。只能重装系统，用原生 UEFI+GPT 模式安装 Windows，参见章节 [Windows 启用 Secure Boot 功能]。
+    该硬盘启动系统的时候会自动跳转主板 BIOS 的 CMS 模式下的 UEFI 方式，读取硬盘的 UEFI 分区引导系统。无法启用 Secure Boot 功能，只能重装系统，用原生 UEFI+GPT 模式安装 Windows。
 
 安装 Windows 11 在 Secure Boot 的基础上，还要求主板 BIOS 开启 TPM2.0
 
@@ -267,7 +269,7 @@ Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
         注意：主板 BIOS 的选项 Windows 10 feature 设置为 “win10” 后，原来用 MBR 方式安装的 Win7 或 Win10 就进不了系统了，除非还原为 “other os”。
 
-#### 使用 Rufus 制作 ghost 启动盘
+#### 用 Rufus 制作 ghost 启动盘
 
 rufus 制作时引导类型选择 “FreeDos” 就行了，完成后把 ghost 拷贝到u盘上，以后用它开机引导直接进入 dos 命令行方式，运行命令 ghost 即可。
 
@@ -305,7 +307,7 @@ rufus 制作时引导类型选择 “FreeDos” 就行了，完成后把 ghost �
 
     主板 BIOS 设置里 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选 “Disable”，存储和 PCIe 设备都选择 “UEFI”，完全支持 UEFI 设备，可以安装 Windows 10，可以开启 Secure Boot 功能。
 
-UEFI 模式下显卡连接 DP 口刚开机时，屏幕自动使用显示器的物理分辨率，出现的主板厂商 logo 画面应该是比较小的原始图片尺寸，没有经过拉伸等分辨率调整。我的 Nvidia 1080 显卡目前只能在 HDMI 口连接时实现这个效果，DP 口连接时主板厂商 logo 画面被自动拉伸了，暂无法确定是否在显示器的物理分辨率下。
+UEFI 模式下显卡连接 DP 口刚开机时，显示器会自动使用物理分辨率，出现的主板厂商 logo 画面应该是比较小的原始图片尺寸，没有经过拉伸等分辨率调整。我的 Nvidia 1080 显卡目前只能在 HDMI 口连接时实现这个效果，DP 口连接时主板厂商 logo 画面被自动拉伸了，暂无法确定是否在显示器的物理分辨率下。
 
 2、SATA 硬盘使用“AHCI”模式
 
@@ -375,11 +377,11 @@ Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个�
 
 ### 四、Windows安装u盘使用 UEFI 模式启动计算机
 
-使用安装u盘开机启动，按快捷键 F8 进入 BIOS 的启动菜单，对u盘有两个选项，注意要选择带有 “UEFI” 字样的那个u盘启动。
+用第一步制作的 UEFI+GPT 的安装u盘开机启动，按快捷键 F8 进入 BIOS 的启动菜单，同一个启动u盘有两个选项，注意要选择带有 “UEFI” 字样的那个u盘启动。
 
 如果不明确选择使用 UEFI 驱动引导u盘启动，有可能导致主板使用 CMS 模式，从而影响 Windows 安装程序的条件判断。
 
-### 四、确保硬盘格式化为 GPT 类型
+### 五、确保硬盘格式化为 GPT 类型
 
 以上条件作为前提条件，如果都符合，Windows 安装程序才会认为计算机是启动于原生 UEFI 模式，接下来对硬盘的操作才会默认采用 GPT 类型。
 
@@ -387,13 +389,13 @@ Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个�
 
 如果是新硬盘，或用户选择对整个磁盘重新建立分区：前提条件都符合，Windows 安装程序会把硬盘格式化为 GPT 类型，并进行安装，这样能保证安装后的 Windows 启用 Secure Boot 功能。只要有前提条件不符，Windows 安装程序就会自动把硬盘格式化为 MBR 类型，并使用 CSM 兼容模式进行引导安装。
 
-如果是已经划分过分区的硬盘：如果硬盘是 GPT，但是其它前提条件不符，或硬盘不是 GPT 且用户选择直接在原有分区上安装 Windows，都会导致 Windows 安装程序自动使用 CSM 兼容模式进行引导安装。
+如果是已经划分过分区的旧硬盘：如果硬盘是 GPT类型，但是其它前提条件不符，或硬盘不是 GPT 类型，且用户选择直接在原有分区上安装 Windows，都会导致 Windows 安装程序自动使用 CSM 兼容模式进行引导安装。所以，如果你的硬盘之前安装过的 Windows 是可以启用 Secure Boot 功能的，那它的分区设置是没有问题的，可以不用重新新建分区，选择把老的分区格式化清除即可继续安装 Windows 了。
 
-注意：Windows 安装程序判断应该是原生 UEFI 模式安装还是 CSM 兼容模式，都不会做出任何提示。
+NOTE：Windows 安装程序选择原生 UEFI 模式还是 CSM 兼容模式安装，都不会做出任何提示。
 
-所以不管新旧硬盘，在 Windows 安装程序到了划分磁盘这一步，都是建议把硬盘分区全删后重新建分区，然后安装 Windows。
+所以不管新旧硬盘，在 Windows 安装程序到了划分磁盘这一步，都是建议把硬盘分区全删后重新建分区，然后全新安装 Windows。
 
-另外：三星 SSD 硬盘的管理程序 Samsung Magican 里，不要设置 Over Provisioning 功能。原因见章节 [踩坑经历]。
+另外：安装完 Windows 后，三星 SSD 硬盘的管理程序 Samsung Magican 里，不要设置 Over Provisioning 功能。原因见章节 [踩坑经历]。
 
 验证1
 
@@ -504,7 +506,7 @@ Philips 346P1CRH 基本参数
 
     自带 windows hello 摄像头，为了保证隐私安全，在摄像头工作的时候，旁边会亮起白色的LED灯。
 
-    自带的两个 5W 的音响
+    自带两个 5W 的音响
 
     拓展坞带 1Ghz 网卡接口
 
@@ -544,19 +546,15 @@ KVM功能
 
 PBP分屏注意
 
-     关机黑屏，三星 Galaxy 手机 DEX 连接显示器集成的 usb-hub
+    如果用三星 Galaxy 手机 DEX 连接显示器集成的 usb-hub，关机会黑屏，拔下来手机之后 Windows 才能继续关机
 
-    拔下来之后 Windows 才能继续关机。。。
-
-在 Windows 下不要开启 HDR 效果，只在相关软件和游戏内设置开启HDR，参见章节 [显示器在 Win10 开启 HDR 变灰泛白的原因]。
+在 Windows 设置下不要开启 HDR 效果，即桌面使用不要开启 HDR 效果，只在相关软件和游戏内找设置开启HDR，参见章节 [显示器在 Win10 开启 HDR 变灰泛白的原因]。
 
 ### 开启 HDR 玩 Doom
 
 显示器分辨率切换到 60hz，全屏使用最佳，不然游戏容易死机。
 
-开启HDR时，显示器的睿动光感、环境光、低蓝光模式、SmartImage等等功能均不可用
-
-    如果游戏设置了开启 HDR，在进入游戏时显示器会自动切换到标准模式，打完游戏需要手工调整，切换回节能模式。
+如果在游戏设置了开启 HDR，在开始游戏后显示器会自动切换到标准模式。进入 HDR 模式后，显示器的睿动光感、环境光、低蓝光模式、SmartImage等等功能均被关闭，打完游戏需要手工调整显示器，切换回各项模式。
 
 ## 装完 Windows 10 后的一些设置
 
@@ -1656,7 +1654,7 @@ WSL2 内的 container 是 linux 提供的，不算 Windows 的容器。Windows �
 
     连接到虚拟机后，打开设备管理器，可以发现通用串行总线USB设备已经成功接入Hyper-V虚拟机。
 
-目前我的 Windows 10 Ltsc 2021 版，总是无法使用摄像头自带的麦克风，解决方法是直接使用远程桌面，见下。
+目前我的 Windows 10 Ltsc 2021 版，总是无法使用摄像头自带的麦克风，解决方法是直接使用 “远程桌面mstsc.exe” 而不是在 Widnows 的虚拟机管理器（Hyper-V Manager）里选择连接到虚拟机。
 
 5、运行 `mstsc` 远程登陆你的虚拟机，计算机处填写你的虚拟机的计算机名，用户名填写你的虚拟机的登陆用户名，其它选项设置跟第 4 步相同，把主机的设备都选择共享给虚拟机即可，并选择记住密码，以后使用就不需要登陆密码了。
 
@@ -1988,7 +1986,7 @@ Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但�
 
     Visual Studio 内涉及到设备模拟的虚拟化方案；
 
-所以必须确保以上列表内所有项目被正确关闭后，Hyper-V 平台才能被真正关闭。据说进入主板 BIOS 将 Intel VT-x 设为 Disabled 都不行.
+所以必须确保以上列表内所有项目被正确关闭后，Hyper-V 平台才能被真正关闭。单纯的进入主板 BIOS 将 Intel VT-x 设为 Disabled 是解决不了问题的。
 
 管理员身份运行命令提示符 cmd
 
@@ -2133,7 +2131,7 @@ Windows 10 重启之后你将会看到出现一个界面提供选项，选择“
 
 ### 显示器在 Win10 开启 HDR 变灰泛白的原因
 
-在游戏或播放软件里单独设置 HDR 选项就可以了，Windows 操作系统不需要打开 HDR 选项，目前的 Windows 10/11 的桌面并没有很好的适配当前的 HDR 显示器。
+在游戏或播放软件里单独设置 HDR 选项就可以了，Windows 的设置里不需要打开 HDR 选项，目前的 Windows 10/11 的“桌面”并没有很好的适配当前的 HDR 显示器。
 
 简单来说，为了支持桌面上显示 HDR 软件, 桌面必须声明需求显示器的完整 HDR 亮度范围，因为桌面 UI 本身不能闪瞎人眼，所以桌面 UI 的亮度是低亮度模式。而 Display HDR400-600 的显示器的 HDR 并没有低亮度细节，所以低亮度部分就发灰了。HDR 和暗部平衡差不多，都可以把暗部细节显示出来，所以看起来就像是亮度调得很高的样子，会泛白。
 
@@ -2144,6 +2142,7 @@ Windows 10 重启之后你将会看到出现一个界面提供选项，选择“
 折衷的办法是，显示器厂商单独出 HDR 配置文件，让 Windows 自动识别实际的 HDR 亮度范围，而不是接收显示器现在汇报的这个虚假的 HDR 亮度范围。
 
 其实现在的 HDR 标准其实是纯凑活事，显卡信号输出了剩下的全看显示器，导致 HDR 内容的显示没有任何标准，大家效果千差万别。
+
 这点在真 HDR 显示器上也很明显，不同品牌的 FALD 显示器效果也是完全不同的，颜色亮度各种跑偏，完全是群魔乱舞。
 
 很多游戏内置 HDR 选项，让你单独调节亮度来适应屏幕就是这个原因。
@@ -2182,9 +2181,9 @@ Windows 10 重启之后你将会看到出现一个界面提供选项，选择“
 
 Windows 7 之后微软把远程桌面做了比较大的变动
 
-因为Windows更新自动升级，有几个补丁包不是必需安装，导致远程桌面报错无法使用，用户摸不到头脑，其实是微软没有明确告知这个变动导致的混淆。
+因为 Windows 更新自动升级，远程桌面相关的几个升级补丁包却没有安装，导致远程桌面报错无法使用，用户摸不到头脑，其实是微软没有明确告知这个变动导致的混淆。
 
-#### 报错：无法连接
+报错：无法连接
 
 远程服务端升级到 rdp8.0 以上版本，建议客户端也升级到这个版本。
 
@@ -2198,7 +2197,7 @@ Windows 7 之后微软把远程桌面做了比较大的变动
 
 远程服务端的远程桌面设置，系统属性->允许远程桌面：勾选“仅允许使用网络级别身份验证的远程桌面计算机连接（更安全）”。
 
-#### “身份验证错误，要求的函数不受支持”
+报错：“身份验证错误，要求的函数不受支持”
 
 这是由于本地客户端或远程服务器端只有一方更新了CVE-2018-0886 的 CredSSP 补丁 KB4103718、KB4103712 ，而另外一方未安装更新的原因导致的，详见：<https://msrc.microsoft.com/update-guide/zh-cn/vulnerability/CVE-2018-0886>，其它受影响的 Windows 版本详见<https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/credssp-encryption-oracle-remediation>。
 
@@ -2230,29 +2229,29 @@ KB4103718 如果运行时报告无法安装，先运行自带的那个 pciclears
 
     "AllowEncryptionOracle"=dword:00000002
 
-#### 远程桌面的开始菜单没有关机键
+远程桌面的开始菜单没有关机键
 
-cmd窗口执行命令
+    cmd窗口执行命令
 
-    # 立刻关机
-    shutdown -s -t 0
+        # 立刻关机
+        shutdown -s -t 0
 
-    # 立刻重启
-    shutdown -r -t 0
+        # 立刻重启
+        shutdown -r -t 0
 
 ### 乱七八糟的 .NET Framework 各版本安装
 
 .NET Framework 4.x 号称是互相覆盖的，版本继承性可以延续。
 
-#### .NET Framework 4.5 之前的 4.x 版本
+.NET Framework 4.5 之前的 4.x 版本
 
 M$不支持了，自求多福吧，自己挨个版本研究去 <https://docs.microsoft.com/zh-cn/dotnet/framework/install/guide-for-developers>
 
-#### .NET Framework 4.5 及之后的 4.x 版本
+.NET Framework 4.5 及之后的 4.x 版本
 
 从 .NET Framework 4 开始，所有 .NET Framework 版本都是就地更新的，因此，在系统中只能存在一个 4.x 版本。
 
-#### .NET Framework 3.5 在 Windows 10 + 只能按需安装
+.NET Framework 3.5 在 Windows 10 + 只能按需安装
 
 通过 Windows 控制面板启用 .NET Framework 3.5。 此选项需要 Internet 连接。
 简单点办法，安装 directx 9，Windows 自己会弹出提示要求给你安装。NET Framework 3.5。
@@ -2293,7 +2292,8 @@ M$不支持了，自求多福吧，自己挨个版本研究去 <https://docs.mic
 如果您根本不关心安全性，请继续按照以下说明禁用缓解措施。
 
 使Linux系统在Intel CPU上运行更快
-使用你喜欢的文本编辑器编辑GRUB文件。
+
+使用你喜欢的文本编辑器编辑 grub 文件。
 
 在Debian上，Ubuntu：
 
@@ -2338,6 +2338,7 @@ M$不支持了，自求多福吧，自己挨个版本研究去 <https://docs.mic
 我们现在已禁用所有"Spectre"和"Meltdown"缓解措施。这会稍微提高系统的性能，但也可能使用户面临多个CPU漏洞。
 
 检查Spectre/Meltdown mitigations是否被禁用
+
 我们可以使用"spectre-meltdown-checker"工具来帮助你识别Linux中的specre和missdown漏洞，在一些Linux发行版的官方存储库中可以找到它。
 
 在Debian上，Ubuntu：
