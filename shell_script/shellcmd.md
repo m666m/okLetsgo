@@ -217,6 +217,15 @@ test 和 [] 是等价的，[] 注意两边留空格
         echo -e "nginx     [ ✓ ]"
     fi
 
+组合使用 && 、 || 可以实现简单的 if ...else...
+
+    # 数值判断用 (( ))
+    (($LOAD_AVG_THLOD > 10)) && echo "greater than" || echo "not..."
+
+    # 字符串判断用 [[ ]]
+    # 如果是判断字符串有值，则 -n 可以省略
+    [[ $envname ]] && printf "conda:%s" $envname || echo "not..."
+
 如果变量存在则执行，否则不执行
 
     [[ -n $conda_env_exist ]] && printf "conda:%s" $envname
@@ -228,7 +237,6 @@ test 和 [] 是等价的，[] 注意两边留空格
 如果条件测试成功则执行，否则执行另一个
 
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
 
 如果条件测试失败则执行，否则不执行
 
@@ -250,20 +258,11 @@ test 和 [] 是等价的，[] 注意两边留空格
     which vcgencmd >/dev/null 2>&1 || echo "不是树莓派，exit,终止执行之后的语句"
 
     # 执行命令，如果成功则执行xxx，否则执行yyy
-    lscpu|grep -q arm && echo "xxx" || echo "yyy"
+    $(lscpu |grep -q arm) && echo "xxx" || echo "yyy"
 
 使用逻辑运算符将多个 [[ ]] 连接起来依然是可以的，因为这是 Shell 本身提供的功能，跟 [[ ]] 或者 test 没有关系，如下所示：
 
     [[ -z $str1 ]] || [[ -z $str2 ]]
-
-组合使用 && 、 || 可以实现简单的 if ...else...
-
-    # 数值判断用 (( ))
-    (($LOAD_AVG_THLOD > 10)) && echo "greater than" || echo "not..."
-
-    # 字符串判断用 [[ ]]
-    # 如果是判断字符串有值，则 -n 可以省略
-    [[ $envname ]] && printf "conda:%s" $envname || echo "not..."
 
  -（减号） 的作用是代表标准输出/标准输入, 视命令而定
 

@@ -123,12 +123,18 @@ function PS1virtualenv-env-name {
 function PS1git-branch-name {
   # 一条命令取当前分支名
 
-  # 如果使用 git for Windows 自带的 mintty bash，它自带 git 状态脚本
-  # 只要启动 bash ，其会自动 source C:\Program Files\Git\etc\profile.d\git-prompt.sh，
-  # 最终执行 C:\Program Files\Git\mingw64\share\git\completion\git-prompt.sh。
-  # 只要是git管理的目录就会显示git状态字符串。
-  # 来源 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
-  # 如果自定义命令提示符，可以在PS1变量拼接中调用函数 __git_ps1() ，我嫌它格式丑，还是用自己写的吧
+  # 优先使用 __git_ps1 取分支名信息
+  #
+  #   如果使用 git for Windows 自带的 mintty bash，它自带 git 状态脚本
+  #   只要启动 bash ，其会自动 source C:\Program Files\Git\etc\profile.d\git-prompt.sh，
+  #   最终执行 C:\Program Files\Git\mingw64\share\git\completion\git-prompt.sh。
+  #   只要是git管理的目录就会显示git状态字符串。
+  #   来源 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
+  #   如果自定义命令提示符，可以在PS1变量拼接中调用函数 $(__git_ps1 " (%s)") ，
+  #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
+  pp_git_pt="$(__git_ps1 '%s' 2>/dev/null)"
+  local _has_gitps1=$?
+  [[ "$_has_gitps1" = '0' ]] && $(printf "%s" $pp_git_pt; unset pp_git_pt; return) || unset pp_git_pt
 
   # 命令 git symbolic-ref 在裸仓库或 .git 目录中运行不报错，都会打印出当前分支名，
   # 除非不在当前分支，返回 128，如果当前分支是分离的，返回 1
@@ -144,7 +150,7 @@ function PS1git-branch-name {
   fi
   unset branch_name
 
-  # detached HEAD，显示标签名或 commit id
+  # 如果是 detached HEAD，则显示标签名或 commit id
   if [ $exitcode -eq 1 ]; then
 
       local headhash="$(git rev-parse HEAD)"
@@ -184,7 +190,7 @@ function PS1git-branch-prompt {
 PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$magenta└──$white\$ $normal"
 
 #################################
-# Linux bash
+# Linux bash - raspberrypi
 # 在上面的基础上增加 raspberry pi 的状态检测
 # 告警条件：
 #   CPU 温度的单位是千分位提权 1000
