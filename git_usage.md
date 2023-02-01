@@ -677,8 +677,6 @@ fetch 远程仓库，会拉取到其它分支的信息
     示例 git@github.com:pyqtgraph/pyqtgraph.git
         git sparse-checkout set 'examples/'
 
-    两个分支的 examples 目录的位置不同，分别检出
-
     $ git checkout develop
     $ tree /ghcode/pg_examples
     /ghcode/pg_examples
