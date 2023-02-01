@@ -2961,6 +2961,33 @@ rebase之前的git提交历史树:
 
 XXX:我的想法是，不用 git push -f，用 git merge 是否可以解决？
 
+### fatal: does not appear to a git repository
+
+先确认下，已经有 origin 远程库，没有也需要重新建立连接
+
+    $ git remote show
+    origin
+
+一般都是因为 remote 端目录变更导致
+
+    $ git remote -v
+    origin  ssh://git@xx.xx.xx.xx:22/download/tea (fetch)
+    origin  ssh://git@xx.xx.xx.xx:22/download/tea (push)
+
+删除 origin 重建
+
+    git remote rm origin
+
+    git remote add origin ssh://git@xx.xx.xx.xx:22/gitrepo/tea.git
+
+建立origin 和 master 的联系
+
+    git push -u origin master
+
+如果上一步报错，因为本地跟远程库新的提交冲突了，需要先拉取下来做merge
+
+    git pull --rebase origin master
+
 ### 掉电导致objects目录下的某些文件为空
 
 如果保存远程gitrepo的虚拟机经常关闭或者本地机器突然掉电，会导致.git/objects目录下的某些文件为空的报错:
