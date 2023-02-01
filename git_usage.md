@@ -1480,13 +1480,7 @@ rebase的拉直效果，虽然需要付出一些合并冲突解决的代价，�
 rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决冲突。
 解决冲突后,将修改add，执行git rebase –continue继续操作，或者git rebase –skip忽略冲突，或者git rebase --abort终止这次rebase。
 
-### 在一个分支上做变基 rebase 的日常用途
-
-    https://zhuanlan.zhihu.com/p/249231960
-
-    https://opensource.com/article/20/7/git-best-practices
-
-#### 一个本地分支拉取远程时做变基
+一个本地分支拉取远程时，二者的合并做变基，起到拉直效果
 
     # 本地dev分支拉取远程dev分支的时候做rebase
     git checkout dev_xxx
@@ -1494,11 +1488,9 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
     # 实质是 fetch + rebase
     git pull --rebase
 
-fetch远程仓库，然后跟本地做rebase，详见章节 [git pull 把2个过程合并，减少了操作]
+    fetch远程仓库，然后跟本地做rebase，详见章节 [git pull 把2个过程合并，减少了操作]
 
-#### 对一个分支做变基以压缩提交
-
-参见章节[一个分支的变基操作：交互式合并提交点]。
+在本质上，这跟两个分支合并时用rebase 强行拉直，是一样的。
 
 ## 合并两分支的原则：merge菱形还是rebase拉直
 
@@ -1510,9 +1502,9 @@ merge菱形分叉会制造新的commit点，根据具体情况考虑是否需要
 
 但是，master 分支的历史将穿插着所有同时开发的功能的提交，这样混乱的历史很难回顾。
 
-### 原则
+原则：
 
-何时采用分叉或拉直的形态，以能清晰区分各新增功能为目的
+    何时采用分叉或拉直的形态，以能清晰区分各新增功能为目的
 
     本地主干分支master，拉取同步远程，做拉直
 
@@ -1524,9 +1516,7 @@ merge菱形分叉会制造新的commit点，根据具体情况考虑是否需要
 
     主干分支master合入功能分支dev，做菱形分叉
 
-### 方法
-
-两分支合并
+两分支合并方法
 
     git merge -no-ff 做菱形分叉
 
@@ -1687,7 +1677,10 @@ merge菱形分叉会制造新的commit点，根据具体情况考虑是否需要
              /                              \
     master  -- ...                         -- v1.1 ...
 
-## rebase 分支的变基操作：交互式压缩提交点
+## 对一个分支做变基：交互式压缩提交点
+
+    https://zhuanlan.zhihu.com/p/249231960
+        https://opensource.com/article/20/7/git-best-practices
 
 当你在功能分支上开发时，即使再小的修改也可以作为一个提交。
 
@@ -1749,15 +1742,15 @@ merge菱形分叉会制造新的commit点，根据具体情况考虑是否需要
 
     drop：我要丢弃该commit（缩写:d）
 
-### 做变基的限制
+做压缩提交变基的限制
 
-只能在本地分支未推送远程仓库**之前**做 rebase。
+    只能在本地分支未推送远程仓库**之前**做 rebase。
 
-只能在合并到别的分支**之前**做 rebase。
+    只能在合并到别的分支**之前**做 rebase。
 
-别处合并过来的 commit **不要**做 rebase。
+    别处合并过来的 commit **不要**做 rebase。
 
-参见章节[重要：git推送远程时的大忌]。
+    参见章节[重要：git推送远程时的大忌]。
 
 ### 示例
 
