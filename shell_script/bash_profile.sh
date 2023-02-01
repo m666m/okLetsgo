@@ -132,9 +132,21 @@ function PS1git-branch-name {
   #   来源 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
   #   如果自定义命令提示符，可以在PS1变量拼接中调用函数 $(__git_ps1 " (%s)") ，
   #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
-  pp_git_pt="$(__git_ps1 '%s' 2>/dev/null)"
-  local _has_gitps1=$?
-  [[ "$_has_gitps1" = '0' ]] && $(printf "%s" $pp_git_pt; unset pp_git_pt; return) || unset pp_git_pt
+  #
+  # 这货透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，佛了
+  $(>/dev/null)
+  pp_git_pt=$(__git_ps1 '%s' 2>/dev/null)
+  [[ "$?" = "0" ]] && (printf "%s" $pp_git_pt; unset pp_git_pt; return) || unset pp_git_pt
+
+  $(>/dev/null)
+  pp_git_pt=$(__git_ps1 '%s' 2>/dev/null)
+  if [[ "$?" = "0" ]]; then
+    printf "%s" $pp_git_pt
+    unset pp_git_pt
+    return
+  else
+    unset pp_git_pt
+  fi
 
   # 命令 git symbolic-ref 在裸仓库或 .git 目录中运行不报错，都会打印出当前分支名，
   # 除非不在当前分支，返回 128，如果当前分支是分离的，返回 1

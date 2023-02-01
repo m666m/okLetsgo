@@ -14,6 +14,10 @@
 
         https://tldp.org/LDP/abs/html/index.html
 
+    Bash scripting cheatsheet
+
+        https://devhints.io/bash
+
     Bash脚本指南
 
         https://linux.die.net/abs-guide/
@@ -139,7 +143,7 @@ $()中只需要使用一个反斜杠进行转义，下列语句表示给var变�
     var2=`echo \\$HOME`
     var3=$(echo \$HOME)
 
-${}用于明确界定变量，与$var并没有区别，但是界定更清晰
+${var}用于明确界定变量，与$var并没有区别，但是界定更清晰
 
     A="to"
     echo $AB 不如 echo ${A}B
@@ -212,7 +216,7 @@ test 和 [] 是等价的，[] 注意两边留空格
         echo "str1 >= str2"
     fi
 
-    # 判断命令执行结果的字符串比较用=，不需要-eq了
+    # 判断命令执行结果的字符串比较
     if [[ $(systemctl is-active 'nginx') = "active" ]]; then
         echo -e "nginx     [ ✓ ]"
     fi
@@ -223,11 +227,11 @@ test 和 [] 是等价的，[] 注意两边留空格
     (($LOAD_AVG_THLOD > 10)) && echo "greater than" || echo "not..."
 
     # 字符串判断用 [[ ]]
+
     # 如果是判断字符串有值，则 -n 可以省略
     [[ $envname ]] && printf "conda:%s" $envname || echo "not..."
 
-如果变量存在则执行，否则不执行
-
+    如果变量存在则执行，否则不执行
     [[ -n $conda_env_exist ]] && printf "conda:%s" $envname
 
 如果条件测试成功则执行
