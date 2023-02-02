@@ -187,11 +187,27 @@ git colne一个项目，然后查看是否此项目是使用https协议
 
     git config  user.email
 
-图形化的 git 客户端
+github网站提供基于https端口的ssh连接方式 <https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port>，主要用于内网封禁22端口，但是443端口是开放的场合。
 
-    Git GUI 的 Visualize All Branches History 功能可以图形化的方便查看提交历史
+先试试能否在 443 端口连接
 
-    https://www.sourcetreeapp.com/
+    $ ssh -T -p 443 git@ssh.github.com
+    Hi m666m! You've successfully authenticated, but GitHub does not provide shell access.
+
+之后的项目地址都使用 ssh 协议即可
+
+    git clone ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
+
+还可以编辑 ~/.ssh/config 文件，并添加以下部分：
+
+   Host github.com
+       Hostname ssh.github.com
+       Port 443
+       User git
+
+之后的项目地址可以简写
+
+    git clone ssh://git@github.com/YOUR-USERNAME/YOUR-REPOSITORY.git
 
 ## git仓库初始设置
 
@@ -368,12 +384,11 @@ SSH
     # 非标准22端口要写明确写协议名
     git clone ssh://[user@]example.com:port/path/to/repo.git
 
-    # github网站提供基于https端口的ssh连接方式 https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
-    # 主要用于内网封禁22端口，但是443端口是开放的
-    git clone ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
-
     # 对ipv6地址加[]即可
     git clone ssh://user@[20:40:d:9f::1]:22122/path/to/repo.git
+
+    # github网站提供基于https端口的ssh连接方式 https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
+    git clone ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
 
 Http、Https
 
