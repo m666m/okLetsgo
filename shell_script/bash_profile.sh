@@ -93,13 +93,11 @@ normal=$'\[\e[m\]'
 
 # 为防止函数名污染命令行环境，尽量使用奇怪点的函数名
 
-TODO:缩进不统一，需要解决
-
 # 注意：在执行判断退出码的函数前面不能执行别的函数，
 # 所以 PS1exit-code 要放在放在 PS1 变量赋值语句的最前面
 # 否则
 #   所有的函数都要实现 $? 变量的透传
-#   { ret_code=$? your code... return ret_code}
+#   { ret_code=$? ;your code...; return ret_code}
 #   这样的好处是 PS1exit-code 不必放在 PS1 变量赋值语句的最前面了
 function PS1exit-code {
     local exitcode=$?

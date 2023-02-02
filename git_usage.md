@@ -1069,7 +1069,7 @@ main 分支不保存主干代码，只存放 Redadme、License、安装脚本等
 
 一个分支本身尽量后向兼容，使本分支代码的延续性好，便于开发和使用者理解。不仅使老版本对老用户的友好度非常大，对新手使用也简单方便，对项目版本升级也更容易理解。开发方面，版本bug管理也非常方便，参与者 git colne 拉取代码后，想修改哪个版本的代码直接 git checkout 即可。
 
-TODO:参见 zsh4humans 的分支组织
+参见 zsh4humans 的分支组织
 
     https://github.com/romkatv/zsh4humans
 
