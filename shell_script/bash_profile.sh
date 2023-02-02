@@ -102,21 +102,21 @@ TODO:缩进不统一，需要解决
 #   { ret_code=$? your code... return ret_code}
 #   这样的好处是 PS1exit-code 不必放在 PS1 变量赋值语句的最前面了
 function PS1exit-code {
-  local exitcode=$?
-  if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
+    local exitcode=$?
+    if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
 }
 
 function PS1conda-env-name {
-  # 自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 命令修改 PS1 变量
-  #
-  # 在 Anaconda cmd 命令行下执行（或者cmd下手工激活base环境，执行命令 `conda activate`）做如下的设置，只做一次即可
-  #   让 Anaconda 可以 hook 到 .bash_profile
-  #       conda init bash
-  #   禁止 conda 修改命令行提示符，以防止修改 PS1 变量
-  #       conda config --set changeps1 False
-  #   禁止 conda 进入命令行提示符时自动激活base环境，以方便检测 $CONDA_DEFAULT_ENV 变量
-  #       conda config --set auto_activate_base false
-  [[ -n $CONDA_DEFAULT_ENV ]] && printf "(conda:%s)" $CONDA_DEFAULT_ENV
+    # 自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 命令修改 PS1 变量
+    #
+    # 在 Anaconda cmd 命令行下执行（或者cmd下手工激活base环境，执行命令 `conda activate`）做如下的设置，只做一次即可
+    #   让 Anaconda 可以 hook 到 .bash_profile
+    #       conda init bash
+    #   禁止 conda 修改命令行提示符，以防止修改 PS1 变量
+    #       conda config --set changeps1 False
+    #   禁止 conda 进入命令行提示符时自动激活base环境，以方便检测 $CONDA_DEFAULT_ENV 变量
+    #       conda config --set auto_activate_base false
+    [[ -n $CONDA_DEFAULT_ENV ]] && printf "(conda:%s)" $CONDA_DEFAULT_ENV
 }
 
 # virtualenv 自定义环境名格式，禁止 activate 命令脚本中在 PS1 变量添加环境名称
@@ -127,76 +127,75 @@ function PS1virtualenv-env-name {
 }
 
 function PS1git-branch-name {
-  # 一条命令取当前分支名
 
-  # 优先使用 __git_ps1 取分支名信息
-  #
-  #   如果使用 git for Windows 自带的 mintty bash，它自带 git 状态脚本
-  #   只要启动 bash ，其会自动 source C:\Program Files\Git\etc\profile.d\git-prompt.sh，
-  #   最终执行 C:\Program Files\Git\mingw64\share\git\completion\git-prompt.sh。
-  #   只要是git管理的目录就会显示git状态字符串。
-  #   来源 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
-  #   如果自定义命令提示符，可以在PS1变量拼接中调用函数 $(__git_ps1 " (%s)") ，
-  #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
-  #
-  # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，佛了
-  pp_git_pt=$(>/dev/null;__git_ps1 '%s' 2>/dev/null)
-  if [ "$?" = "0" ]; then
-    printf "%s" $pp_git_pt
-    unset pp_git_pt
-    return
-  else
-    unset pp_git_pt
-  fi
+    # 优先使用 __git_ps1 取分支名信息
+    #
+    #   如果使用 git for Windows 自带的 mintty bash，它自带 git 状态脚本
+    #   只要启动 bash ，其会自动 source C:\Program Files\Git\etc\profile.d\git-prompt.sh，
+    #   最终执行 C:\Program Files\Git\mingw64\share\git\completion\git-prompt.sh。
+    #   只要是git管理的目录就会显示git状态字符串。
+    #   来源 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
+    #   如果自定义命令提示符，可以在PS1变量拼接中调用函数 $(__git_ps1 " (%s)") ，
+    #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
+    #
+    # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，佛了
+    pp_git_pt=$(>/dev/null;__git_ps1 '%s' 2>/dev/null)
+    if [ "$?" = "0" ]; then
+        printf "%s" $pp_git_pt
+        unset pp_git_pt
+        return
+    else
+        unset pp_git_pt
+    fi
 
-  # 命令 git symbolic-ref 在裸仓库或 .git 目录中运行不报错，都会打印出当前分支名，
-  # 除非不在当前分支，返回 128，如果当前分支是分离的，返回 1
-  # 注意：如果用 local branch_name 则无法直接判断嵌入变量赋值语句的命令的失败状态
-  branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
-  local exitcode=$?
+    # 一条命令取当前分支名
+    # 命令 git symbolic-ref 在裸仓库或 .git 目录中运行不报错，都会打印出当前分支名，
+    # 除非不在当前分支，返回 128，如果当前分支是分离的，返回 1
+    # 注意：如果用 local branch_name 则无法直接判断嵌入变量赋值语句的命令的失败状态
+    branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+    local exitcode=$?
 
-  # 优先显示当前 head 指向的分支名
-  if [ $exitcode -eq 0 ]; then
-    printf "%s" $branch_name
+    # 优先显示当前 head 指向的分支名
+    if [ $exitcode -eq 0 ]; then
+        printf "%s" $branch_name
+        unset branch_name
+        return
+    fi
     unset branch_name
-    return
-  fi
-  unset branch_name
 
-  # 如果是 detached HEAD，则显示标签名或 commit id
-  if [ $exitcode -eq 1 ]; then
+    # 如果是 detached HEAD，则显示标签名或 commit id
+    if [ $exitcode -eq 1 ]; then
 
-      local headhash="$(git rev-parse HEAD)"
-      local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
+        local headhash="$(git rev-parse HEAD)"
+        local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
 
-      # 有标签名就显示标签否则显示 commit id
-      [[ -n $tagname ]] && printf "@%s" "$tagname" || printf "#%s" "$headhash"
+        # 有标签名就显示标签否则显示 commit id
+        [[ -n $tagname ]] && printf "@%s" "$tagname" || printf "#%s" "$headhash"
 
-  fi
+    fi
 
-  # exitcode 是其它数字的，视为不在 git 环境中，不做任何打印输出
+    # exitcode 是其它数字的，视为不在 git 环境中，不做任何打印输出
 }
 
 function PS1git-branch-prompt {
+    local branch=`PS1git-branch-name`
 
-  local branch=`PS1git-branch-name`
+    # branch 变量是空的说明不在 git 环境中
+    [[ $branch ]] || return
 
-  # branch 变量是空的说明不在 git 环境中
-  [[ $branch ]] || return
+    # 在裸仓库或 .git 目录中，运行 git status 会报错，所以先判断下
+    # if ! $(git status >/dev/null 2>&1) ; then
+    if [ "$(git rev-parse --is-inside-work-tree)" == 'false' ]; then
+        # 如果不在 git 工作区，则不打印分支名，以提醒使用者
+        printf " git:!git-dir"
 
-  # 在裸仓库或 .git 目录中，运行 git status 会报错，所以先判断下
-  # if ! $(git status >/dev/null 2>&1) ; then
-  if [ "$(git rev-parse --is-inside-work-tree)" == 'false' ]; then
-    # 如果不在 git 工作区，则不打印分支名，以提醒使用者
-    printf " git:!git-dir"
+    else
+        # git 工作区有变更就显示问号
+        local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<?>'; else printf "%s" ''; fi)
+        # 拼接后输出 git 工作区状态和分支名
+        printf " git:%s%s" $notify_flag $branch
 
-  else
-    # git 工作区有变更就显示问号
-    local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<?>'; else printf "%s" ''; fi)
-    # 拼接后输出 git 工作区状态和分支名
-    printf " git:%s%s" $notify_flag $branch
-
-  fi
+    fi
 }
 
 # linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
@@ -211,35 +210,35 @@ PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green
 #   CPU Load Average 的值应该小于CPU核数的70%，取5分钟平均负载
 function PS1raspi-warning-info {
 
-  # [[ $(which vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
+    # [[ $(which vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
 
-  local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
+    local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
-  if [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "70000" ]; then
-    local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ！HIGH TEMPERATURE! ="
-  elif [ "$CPUTEMP" -gt  "70000" ];  then
-     local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` IS VERY HIGH! PLEASE SHUTDOWN! ="
-  fi
+    if [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "70000" ]; then
+        local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ！HIGH TEMPERATURE! ="
+    elif [ "$CPUTEMP" -gt  "70000" ];  then
+        local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` IS VERY HIGH! PLEASE SHUTDOWN! ="
+    fi
 
-  local THROTT=`vcgencmd get_throttled| tr -d "throttled="`
-  if [ "$THROTT" != "0x0" ];  then
-    local THROTT_WARN="= System throttled $THROTT ！PLEASE check RASPBERRYPI:https://www.raspberrypi.com/documentation/computers/os.html#get_throttled ="
-  fi
+    local THROTT=`vcgencmd get_throttled| tr -d "throttled="`
+    if [ "$THROTT" != "0x0" ];  then
+        local THROTT_WARN="= System throttled $THROTT ！PLEASE check RASPBERRYPI:https://www.raspberrypi.com/documentation/computers/os.html#get_throttled ="
+    fi
 
-  local CPU_CORES=`grep 'model name' /proc/cpuinfo | wc -l`
-  local LOAD_AVG_CAP=`echo | awk -v cores="$CPU_CORES" '{printf("%.2f",cores*0.7)}'`
-  local LOAD_AVG_5=`cat /proc/loadavg | cut -d' ' -f 2`
-  local LOAD_AVG_THLOD=`echo | awk -v avg="$LOAD_AVG_5" -v cap="$LOAD_AVG_CAP" '{if (avg>cap) {print "1"} else {print "0"}}'`
-  (($LOAD_AVG_THLOD > 0)) && local LOAD_AVG_WARN="= AVG_LOAD 5min: $LOAD_AVG_5 ="
+    local CPU_CORES=`grep 'model name' /proc/cpuinfo | wc -l`
+    local LOAD_AVG_CAP=`echo | awk -v cores="$CPU_CORES" '{printf("%.2f",cores*0.7)}'`
+    local LOAD_AVG_5=`cat /proc/loadavg | cut -d' ' -f 2`
+    local LOAD_AVG_THLOD=`echo | awk -v avg="$LOAD_AVG_5" -v cap="$LOAD_AVG_CAP" '{if (avg>cap) {print "1"} else {print "0"}}'`
+    (($LOAD_AVG_THLOD > 0)) && local LOAD_AVG_WARN="= AVG_LOAD 5min: $LOAD_AVG_5 ="
 
-  printf "%s%s%s" "$CPUTEMP_WARN" "$THROTT_WARN" "$LOAD_AVG_WARN"
+    printf "%s%s%s" "$CPUTEMP_WARN" "$THROTT_WARN" "$LOAD_AVG_WARN"
 }
 
 function PS1raspi-warning-prompt {
-  local raspi_warning=`PS1raspi-warning-info`
-  if [ -n "$raspi_warning" ]; then
-    printf "====%s====" "$raspi_warning"
-  fi
+    local raspi_warning=`PS1raspi-warning-info`
+    if [ -n "$raspi_warning" ]; then
+        printf "====%s====" "$raspi_warning"
+    fi
 }
 
 # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 树莓派温度告警 git分支及状态
