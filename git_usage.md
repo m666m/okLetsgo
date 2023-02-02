@@ -368,7 +368,8 @@ SSH
     # 非标准22端口要写明确写协议名
     git clone ssh://[user@]example.com:port/path/to/repo.git
 
-    # github网站提供基于https的ssh连接方式 https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
+    # github网站提供基于https端口的ssh连接方式 https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
+    # 主要用于内网封禁22端口，但是443端口是开放的
     git clone ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
 
     # 对ipv6地址加[]即可
