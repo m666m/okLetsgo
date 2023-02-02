@@ -44,7 +44,7 @@ alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
 alias tree='tree -a -I .git'
 
 # ls 列出的目录颜色被 grep 覆盖，用 ls -l 更方便
-alias lsg='ls -lA|grep -i'
+alias lsg='ls -lA |grep -i'
 
 ####################################################################
 # Windows git bash(mintty)
@@ -133,14 +133,9 @@ function PS1git-branch-name {
   #   如果自定义命令提示符，可以在PS1变量拼接中调用函数 $(__git_ps1 " (%s)") ，
   #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
   #
-  # 这货透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，佛了
-  $(>/dev/null)
-  pp_git_pt=$(__git_ps1 '%s' 2>/dev/null)
-  [[ "$?" = "0" ]] && (printf "%s" $pp_git_pt; unset pp_git_pt; return) || unset pp_git_pt
-
-  $(>/dev/null)
-  pp_git_pt=$(__git_ps1 '%s' 2>/dev/null)
-  if [[ "$?" = "0" ]]; then
+  # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，佛了
+  pp_git_pt=$(>/dev/null;__git_ps1 '%s' 2>/dev/null)
+  if [ "$?" = "0" ]; then
     printf "%s" $pp_git_pt
     unset pp_git_pt
     return
@@ -173,7 +168,7 @@ function PS1git-branch-name {
 
   fi
 
-  # exitcode 是其它数字的，视为不在 git 环境中，不打印任何字符
+  # exitcode 是其它数字的，视为不在 git 环境中，不做任何打印输出
 }
 
 function PS1git-branch-prompt {
@@ -187,7 +182,7 @@ function PS1git-branch-prompt {
   # if ! $(git status >/dev/null 2>&1) ; then
   if [ "$(git rev-parse --is-inside-work-tree)" == 'false' ]; then
     # 如果不在 git 工作区，则不打印分支名，以提醒使用者
-    printf " git:!raw"
+    printf " git:!git-dir"
 
   else
     # git 工作区有变更就显示问号
@@ -274,7 +269,7 @@ PS1="\n$blue┌─$red\$(PS1git-bash-exitcode)$blue[$white\t $green\u$white@$gre
 #
 # 代码来源 git bash auto ssh-agent
 # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
-# 来自章节 [多会话复用 ssh-agent 进程] <ssh.md>
+# 来自章节 [多会话复用 ssh-agent 进程] <ssh okletsgo>
 
 env=~/.ssh/agent.env
 

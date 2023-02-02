@@ -228,7 +228,7 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     # 字符串判断用 [[ ]]
 
-    # 如果是判断字符串有值，则 -n 可以省略
+    # 如果是判断字符串是否有值，则 -n 可以省略
     [[ $envname ]] && printf "conda:%s" $envname || echo "not..."
 
     如果变量存在则执行，否则不执行
@@ -607,7 +607,7 @@ esac
         --> $HOME/.bashrc
                 --> /etc/bashrc
 
-命令提示符、ls 和 grep 命令的彩色显示在 ~/.bashrc 的代码中进行了设置
+Bash 的命令提示符、ls 和 grep 命令的默认彩色显示在 ~/.bashrc 的代码中进行了设置
 
 ```shell
 
