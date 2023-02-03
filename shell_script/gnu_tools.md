@@ -5507,6 +5507,10 @@ scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了�
 
 scp 不占资源，不会提高多少系统负荷，在这一点上，rsync就远远不及它了。虽然 rsync比scp会快一点，但当小文件众多的情况下，rsync会导致硬盘I/O非常高，而scp基本不影响系统正常使用。所以使用时根据自己的情况酌情决定选用哪个。
 
+其实可以在 rsync 下代替 scp
+
+    rsync -e ssh
+
 rsync 命令提供使用的 OPTION 及功能
 
     OPTION选项    功能
