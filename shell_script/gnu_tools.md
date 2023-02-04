@@ -5352,11 +5352,101 @@ bc - An arbitrary precision calculator language
 
 ### Aria2 下载工具
 
-命令行传输各种参数，设置复杂，Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳dht站点清单。
+命令行传输各种参数，设置复杂。
+
+建议使用 Windows下下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳 dht 站点清单。
+
+浏览器搜索插件：aria2 相关，安装后设置aip-key，可在浏览器中直接调用Motrix运行的aria2进程。
+
+这是 Motrix 生成的启动命令行
 
     aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce  --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
-浏览器搜索插件：aria2 相关，安装后设置aip-key，可在浏览器中直接调用Motrix运行的aria2进程。
+Motrix 使用的 Aria2 来源于他自己的专用 Fork 而非官方发行的预编译包。
+建议：
+使用官方 Aria2 v1.36.0 ，配置文件原样复用 Motrix 的 aria2.conf ，使用 WinSW 将 Aria2 安装成用户服务来开机自启，配合 Aria2 for Edge 插件拦截浏览器下载，使用插件附带 AirNG 进行图形化交互。<https://github.com/agalwood/Motrix/issues/1379>。
+
+配置文件 aira2.conf，以 Motrix 为例
+
+```conf
+
+###############################
+# Motrix Windows Aria2 config file
+#
+# @see https://aria2.github.io/manual/en/html/aria2c.html
+#
+###############################
+
+
+################ RPC ################
+# Enable JSON-RPC/XML-RPC server.
+enable-rpc=true
+# Add Access-Control-Allow-Origin header field with value * to the RPC response.
+rpc-allow-origin-all=true
+# Listen incoming JSON-RPC/XML-RPC requests on all network interfaces.
+rpc-listen-all=true
+
+
+################ File system ################
+# Save a control file(*.aria2) every SEC seconds.
+auto-save-interval=10
+# Enable disk cache.
+disk-cache=32M
+# Specify file allocation method.
+file-allocation=falloc
+# Save error/unfinished downloads to a file specified by --save-session option every SEC seconds.
+save-session-interval=10
+
+
+################ Task ################
+# Exclude seed only downloads when counting concurrent active downloads
+bt-detach-seed-only=true
+# Verify the peer using certificates specified in --ca-certificate option.
+check-certificate=false
+# If aria2 receives "file not found" status from the remote HTTP/FTP servers NUM times
+# without getting a single byte, then force the download to fail.
+max-file-not-found=5
+# Set number of tries.
+max-tries=5
+# aria2 does not split less than 2*SIZE byte range.
+min-split-size=1M
+# Set user agent for HTTP(S) downloads.
+user-agent=Transmission/2.94
+# Send Accept: deflate, gzip request header
+http-accept-gzip=true
+
+
+################ BT Task ################
+# Enable Local Peer Discovery.
+bt-enable-lpd=true
+# Requires BitTorrent message payload encryption with arc4.
+# bt-force-encryption=true
+# If true is given, after hash check using --check-integrity option and file is complete, continue to seed file.
+bt-hash-check-seed=true
+# Specify the maximum number of peers per torrent.
+bt-max-peers=255
+# Try to download first and last pieces of each file first. This is useful for previewing files.
+bt-prioritize-piece=head
+# Removes the unselected files when download is completed in BitTorrent.
+bt-remove-unselected-file=true
+# Seed previously downloaded files without verifying piece hashes.
+bt-seed-unverified=true
+# Set host and port as an entry point to IPv4 DHT network.
+dht-entry-point=dht.transmissionbt.com:6881
+# Set host and port as an entry point to IPv6 DHT network.
+dht-entry-point6=dht.transmissionbt.com:6881
+# Enable IPv4 DHT functionality. It also enables UDP tracker support.
+enable-dht=true
+# Enable IPv6 DHT functionality.
+enable-dht6=true
+# Enable Peer Exchange extension.
+enable-peer-exchange=true
+# Specify the string used during the bitorrent extended handshake for the peer's client version.
+peer-agent=Transmission/2.94
+# Specify the prefix of peer ID.
+peer-id-prefix=-TR2940-
+
+```
 
 ### ZModem 文件传输协议工具 rs rz
 
@@ -6235,6 +6325,10 @@ systemd 保持对 SystemV 的兼容性使用的控制文件
 ### systemd
 
     https://www.freedesktop.org/software/systemd/man/index.html
+
+大多数 Linux 发行版都过渡到使用 systemd 管理系统了，但还是有讨厌 systemd 的发行版：Devuan 是使用 SysV init 软件代替 Debian systemd 包的 Debian 分支，提供了多种初始化系统供用户选择，其中包括 SysV init、sinit、openrc、runit、s6 和 shepherd
+
+    https://www.devuan.org/
 
 systemd 工具是编译后的二进制文件，但该工具包是开放的，因为所有配置文件都是 ASCII 文本文件。可以通过各种 GUI 和命令行工具来修改启动配置，也可以添加或修改各种配置文件来满足特定的本地计算环境的需求。几乎可以管理正在运行的 Linux 系统的各个方面。它可以管理正在运行的服务，同时提供比 SystemV 多得多的状态信息。它还管理硬件、进程和进程组、文件系统挂载等。systemd 几乎涉足于现代 Linux 操作系统的每方面，使其成为系统管理的一站式工具。
 

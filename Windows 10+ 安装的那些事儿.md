@@ -1411,6 +1411,12 @@ Windows内存诊断
 
 如果想看到最全的统计，下载微软官方的 SystemInternals 工具包，运行 `Autoruns.exe`。
 
+把任意程序配置为开机自启动的服务
+
+    https://github.com/winsw/winsw
+        配置文件说明 https://github.com/winsw/winsw/blob/v3/docs/xml-config-file.md
+        配置文件样例 https://github.com/winsw/winsw/tree/v3/samples
+
 ### 务必检查当前操作系统的证书
 
 当今世界，普遍采用非对称加密算法对文件进行签名和验签，而非对称加密无法防御“中间人攻击”，目前的解决办法是通过建立CA认证体系，由大家公认的大机构对各公钥提供签名的方式，实现公钥交换阶段的互相认可。各厂家的浏览器、各操作系统，在出厂设置时都会内置一些CA证书，以保证连接其它CA认证的网站时可以互相验证签名，操作系统发布的程序或包，也有很多使用CA证书来验证是否原厂签发的文件，所谓保真。

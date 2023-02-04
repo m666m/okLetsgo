@@ -374,6 +374,8 @@ github.com获取仓库默认给的是https地址，但是在国内的网络下�
 
     https://www.w3cschool.cn/git/git-uroc2pow.html
 
+    https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories
+
 支持多种协议，Git 协议下载速度最快，SSH 协议用于需要用户认证的场合。
 
 Git
