@@ -168,7 +168,7 @@ function PS1git-branch-name {
         local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
 
         # 有标签名就显示标签否则显示 commit id
-        [[ -n $tagname ]] && printf "@%s" "$tagname" || printf "#%s" "$headhash"
+        [[ -n $tagname ]] && printf "%s" "@${tagname}" || printf "%s" "#${headhash}"
 
     fi
 

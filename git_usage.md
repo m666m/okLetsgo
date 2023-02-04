@@ -255,6 +255,12 @@ git做操作之前或操作之后，查看当前的git状态
 
 ### 修改本地仓库的远程仓库地址
 
+查看远程仓库地址
+
+    $ git remote -v
+    origin  git@github.com:m666m/okLetsgo.git (fetch)
+    origin  git@github.com:m666m/okLetsgo.git (push)
+
 github.com获取仓库默认给的是https地址，但是在国内的网络下经常连接超时，使用不变，改成git协议或ssh协议的地址格式相对好些
 
     # 删除远程origin
