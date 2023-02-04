@@ -128,7 +128,7 @@ function PS1git-branch-name {
 
     # 优先使用 __git_ps1 取分支名信息
     #
-    #   如果使用 git for Windows 自带的 mintty bash，它自带 git 状态脚本
+    #   如果使用 git for Windows 自带的 mintty bash，它自带 git 状态脚本(貌似Debian系的bash都有)
     #   只要启动 bash ，其会自动 source C:\Program Files\Git\etc\profile.d\git-prompt.sh，
     #   最终执行 C:\Program Files\Git\mingw64\share\git\completion\git-prompt.sh。
     #   只要是git管理的目录就会显示git状态字符串。
