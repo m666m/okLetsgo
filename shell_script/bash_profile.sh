@@ -137,29 +137,29 @@ function PS1git-branch-name {
     #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
     #
     # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，佛了
-    pp_git_pt=$(>/dev/null;__git_ps1 '%s' 2>/dev/null)
+    _pp_git_pt=$(>/dev/null;__git_ps1 '%s' 2>/dev/null)
     if [ "$?" = "0" ]; then
-        printf "%s" $pp_git_pt
-        unset pp_git_pt
+        printf "%s" $_pp_git_pt
+        unset _pp_git_pt
         return
     else
-        unset pp_git_pt
+        unset _pp_git_pt
     fi
 
     # 一条命令取当前分支名
     # 命令 git symbolic-ref 在裸仓库或 .git 目录中运行不报错，都会打印出当前分支名，
     # 除非不在当前分支，返回 128，如果当前分支是分离的，返回 1
-    # 注意：如果用 local branch_name 则无法直接判断嵌入变量赋值语句的命令的失败状态
-    branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+    # 注意：如果用 local _pp_branch_name 则无法直接判断嵌入变量赋值语句的命令的失败状态
+    _pp_branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
     local exitcode=$?
 
     # 优先显示当前 head 指向的分支名
     if [ $exitcode -eq 0 ]; then
-        printf "%s" $branch_name
-        unset branch_name
+        printf "%s" $_pp_branch_name
+        unset _pp_branch_name
         return
     fi
-    unset branch_name
+    unset _pp_branch_name
 
     # 如果是 detached HEAD，则显示标签名或 commit id
     if [ $exitcode -eq 1 ]; then
