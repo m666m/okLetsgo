@@ -255,6 +255,11 @@ git做操作之前或操作之后，查看当前的git状态
 
 ### 修改本地仓库的远程仓库地址
 
+先确认下，已经有 origin 远程库，没有也需要重新建立连接
+
+    $ git remote show
+    origin
+
 查看远程仓库地址
 
     $ git remote -v
@@ -270,8 +275,10 @@ github.com获取仓库默认给的是https地址，但是在国内的网络下�
     # git remote add origin sqt@180.169.33.117:repositores/ZSKPad.git
     git remote add origin git@github.com:m666m/raspi-info.git
 
-    # 非 github 的 ssh 地址，需要用户名
+    # ssh 地址，需要协议名、用户名
     git remote add origin ssh://git@<ip>:<port>/your_path/xxx.git
+
+    # 建立origin 和 master 的联系
     git branch --set-upstream-to=origin/<branch> master
 
     # 第一次push的时候要 -u
@@ -3057,6 +3064,8 @@ XXX:我的想法是，不用 git push -f，用 git merge 是否可以解决？
 
 ### fatal: does not appear to a git repository
 
+参见章节 [修改本地仓库的远程仓库地址]。
+
 先确认下，已经有 origin 远程库，没有也需要重新建立连接
 
     $ git remote show
@@ -3065,8 +3074,8 @@ XXX:我的想法是，不用 git push -f，用 git merge 是否可以解决？
 一般都是因为 remote 端目录变更导致
 
     $ git remote -v
-    origin  ssh://git@xx.xx.xx.xx:22/download/tea (fetch)
-    origin  ssh://git@xx.xx.xx.xx:22/download/tea (push)
+    origin  ssh://git@74.120.175.117:26179/uspace/gitrepo/af_monitor.git (fetch)
+    origin  ssh://git@74.120.175.117:26179/uspace/gitrepo/af_monitor.git (push)
 
 删除 origin 重建
 
