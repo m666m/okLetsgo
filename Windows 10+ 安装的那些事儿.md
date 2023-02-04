@@ -1463,6 +1463,8 @@ Mozilla浏览器的信任列表 <https://ccadb-public.secure.force.com/mozilla/I
 
 ### 2. 用沙盒运行小工具等相对不靠谱的程序
 
+    https://learn.microsoft.com/zh-cn/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview
+
 开始菜单，选择“Windows sandbox”程序，将新开一个虚拟的 Windows 窗口，把你觉得危险的程序复制粘贴到这个虚拟的 Windows 系统里运行，格式化这里的硬盘都没关系，在这个系统里可以正常上网。
 
 这个虚拟的 Windows 窗口一旦关闭，里面的任何操作都会清零，所以可以提前把运行结果复制粘贴到正常使用的 Windows 中。
