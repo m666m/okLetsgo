@@ -97,7 +97,7 @@ MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接�
 
 MinGW 仅仅是工具链，Windows 下的 cmd 使用起来不够方便，MSYS 是用于辅助 Windows 版 MinGW 进行命令行开发的配套软件包：提供了部分 Unix 工具以使得 MinGW 的工具使用起来方便一些。相比基于庞大的 Cygwin 下的 MinGW 会轻巧不少。
 
-MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包管理器 pacman (ArchLinux)。
+MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包管理器 pacman (Arch Linux)。
 
 在 Windows 上使用 Linux 程序
 
