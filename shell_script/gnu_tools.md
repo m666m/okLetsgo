@@ -502,6 +502,9 @@ UnderlineColour=153,241,219
 AllowBlinking=yes
 BoldAsFont=yes
 
+# Windows version >= 10 / 2019 1809 (build >= 10.0.17763)
+ConPTY=true
+
 # 自定义颜色方案，跟深色背景搭配
 # https://github.com/mintty/mintty/wiki/Tips#background-image
 # 自定义颜色方案 https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
