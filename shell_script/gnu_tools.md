@@ -1640,17 +1640,17 @@ True color(24bit) 综合测试 terminal-testdrive.sh
         s="  ";
         m=cols+rows;
         for (row = 0; row<rows; row++) {
-        for (col = 0; col<cols; col++) {
-            i = row+col;
-            r = 255-(i*255/m);
-            g = (i*510/m);
-            b = (i*255/m);
-            if (g>255) g = 510-g;
-            printf "\033[48;2;%d;%d;%dm", r,g,b;
-            printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
-            printf "%s\033[0m", substr(s,(col+row)%2+1,1);
-        }
-        printf "\n";
+            for (col = 0; col<cols; col++) {
+                i = row+col;
+                r = 255-(i*255/m);
+                g = (i*510/m);
+                b = (i*255/m);
+                if (g>255) g = 510-g;
+                printf "\033[48;2;%d;%d;%dm", r,g,b;
+                printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
+                printf "%s\033[0m", substr(s,(col+row)%2+1,1);
+            }
+            printf "\n";
         }
         printf "\n\n";
     }'
