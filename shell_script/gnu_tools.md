@@ -1206,6 +1206,8 @@ list 段是基本设置
 
 schemes 段设置配色方案，同样是一个数组，每种配色方案会有一个名字 name ，引用配色方案就是通过 name 的值。默认预设了几种配色方案，可在 default.json 查看
 
+```json
+
     // 典型的 schemes 格式
     {
         "schemes":[
@@ -1233,6 +1235,40 @@ schemes 段设置配色方案，同样是一个数组，每种配色方案会有
             }
         ]
     }
+
+```
+
+自定义 nord 方案，来自章节 [Nord 整套支持终端模拟器和各个软件的配色方案]的三种模式
+
+```json
+
+    "schemes": [
+        {
+            "name": "Nord",
+            "foreground": "#d8dee9",
+            "background": "#2e3440",
+            "cursorColor": "#d8dee9",
+            "black": "#3b4252",
+            "red": "#bf616a",
+            "green": "#a3be8c",
+            "yellow": "#ebcb8b",
+            "blue": "#81a1c1",
+            "purple": "#b48ead",
+            "cyan": "#88c0d0",
+            "white": "#e5e9f0",
+            "brightBlack": "#4c566a",
+            "brightRed": "#bf616a",
+            "brightGreen": "#a3be8c",
+            "brightYellow": "#ebcb8b",
+            "brightBlue": "#81a1c1",
+            "brightPurple": "#b48ead",
+            "brightCyan": "#8fbcbb",
+            "brightWhite": "#eceff4",
+            "selectionBackground": "#FFFFFF"
+        },
+    ],
+
+```
 
 在如下几个网站别已有的颜色方案
 
@@ -1434,6 +1470,7 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
         blue = "\033[0;34m"
         light_blue = "\033[1;34m"
 
+        # 也有叫 purple 的
         magenta = "\033[0;35m"
         light_magenta = "\033[1;35m"
 
@@ -1498,7 +1535,15 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 终端模拟器即使开启了 24 位真彩，出于兼容性考虑，默认的色彩主题，对16种颜色代码也只会选用 16/256 色中的颜色，导致看不出更好看的效果。所以，为了能看到更丰富的颜色，应该自定义设置，选择颜色更丰富的其它主题，或自定义这16种颜色代码的实际展现颜色，详见各终端模拟器的设置。
 
-即使终端模拟器定义了更丰富的颜色，不同软件的色彩效果也可能有差异：如 tmux、vim 也有自己的设置，一般有 256color 和 RGB 真彩色两个选项，都要开启，否则在使用这两个软件时，还是无法呈现真彩色。详见下面章节中的各软件自己的配置文件样例，可参考 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。而且，基于跟上面所述同样的原因，不要使用 tmux、vim 默认的主题颜色，自定义设置使用颜色更丰富的其它主题效果更好。
+#### 软件设置
+
+终端模拟器定义的颜色方案，默认只影响 shell 下基本的文字显示效果。
+
+对有些软件支持自定义颜色方案，色彩效果可能有差异：
+
+如 tmux、vim 有自己的色彩方案设置，而且要开启 256color 和 RGB 真彩色两个选项。两个选项都要开启，否则在使用这两个软件时，还是无法呈现真彩色。详见下面章节中的各软件自己的配置文件样例，可参考 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
+
+而且，基于跟前面章节所述同样的原因，不要使用 tmux、vim 默认的主题颜色，自定义设置，选用颜色更丰富的其它主题效果更好。
 
 测试彩色的方法
 
@@ -1514,18 +1559,41 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 16 色 测试脚本
 
-    颜色、文字粗体闪烁等都有，按终端颜色伪代码组织
+    简单，在 bash 下执行即可
 
-        curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/colortest.sh |bash
+        # curl -fsSL https://github.com/pablopunk/colortest/blob/master/colortest |bash
 
-    这个简单，在 bash 下执行即可
+        ```bash
+
+        T='gYw' # The test text
+
+        echo -e "\n                 40m     41m     42m     43m\
+             44m     45m     46m     47m";
+
+        for FGs in '    m' '   1m' '  30m' '1;30m' '  31m' '1;31m' '  32m' \
+                   '1;32m' '  33m' '1;33m' '  34m' '1;34m' '  35m' '1;35m' \
+                   '  36m' '1;36m' '  37m' '1;37m';
+          do FG=${FGs// /}
+          echo -en " $FGs \033[$FG  $T  "
+          for BG in 40m 41m 42m 43m 44m 45m 46m 47m;
+            do echo -en "$EINS \033[$FG\033[$BG  $T  \033[0m";
+          done
+          echo;
+        done
+        echo
+
+        ```
 
         # https://github.com/msys2/MSYS2-packages/issues/1684#issuecomment-570793998
-        for x in {0..8}; do for i in {30..37}; do for a in {40..47}; do echo -ne "\e[$x;$i;$a""m\\\e[$x;$i;$a""m\e[0;37;40m "; done; echo; done; done; echo ""
+        # for x in {0..8}; do for i in {30..37}; do for a in {40..47}; do echo -ne "\e[$x;$i;$a""m\\\e[$x;$i;$a""m\e[0;37;40m "; done; echo; done; done; echo ""
 
     mintty 的颜色工具，按终端颜色伪代码组织
 
         curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash
+
+    颜色、文字粗体闪烁等都有，按终端颜色伪代码组织
+
+        curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/colortest.sh |bash
 
 256 color 测试脚本
 
@@ -1654,14 +1722,13 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
     Windows Terminal 可以通过真彩测试，但对块状字符的渲染方式有问题：zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此。terminal-testdrive.sh 测试：不支持 sixel 图像，少了几个文字修饰效果。
 
-#### base16颜色方案
+#### base16 颜色方案
 
     https://github.com/chriskempson/base16
 
-base16 在语法高亮时的定义
+base16 是语法高亮时的定义，但是也可以直接给终端模拟器的16色方案使用
 
-    https://github.com/chriskempson/base16/blob/main/styling.md
-
+    # https://github.com/chriskempson/base16/blob/main/styling.md
     base00 - Default Background
     base01 - Lighter Background (Used for status bars, line number and folding marks)
     base02 - Selection Background
@@ -1679,17 +1746,14 @@ base16 在语法高亮时的定义
     base0E - Keywords, Storage, Selector, Markup Italic, Diff Changed
     base0F - Deprecated, Opening/Closing Embedded Language Tags, e.g. <?php ?>
 
-终端模拟器方案
-
-给出背景图片，会生成各种终端模拟器的16色配色方案
+schemer2 可以用读取指定的图片，生成该图片用色风格的 base16 配色方案
 
     https://github.com/thefryscorer/schemer2
 
-普通使用生成 colors 即可，格式对应上面的 base16 在语法高亮时的定义
-
+    # 普通使用生成 colors 即可，格式对应上面的 base16 在语法高亮时的定义
     schemer2 -format img::colors -in 111dark2.jpg -out colors.txt
 
-转换为 mintty 的颜色方案使用如下 python 代码
+给终端模拟器使用，转换为 mintty 的颜色方案使用如下 python 代码
 
 ```python
 
@@ -1734,6 +1798,123 @@ for m in range(16):
 print('\nThen restart mintty to take effect, you can run `curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash` to see the color scheme.')
 
 ```
+
+#### Nord 整套支持终端模拟器和各个软件的配色方案
+
+10进制
+
+    # https://github.com/arcticicestudio/nord-mintty/blob/develop/src/nord.minttyrc
+    # https://github.com/arcticicestudio/nord-konsole/blob/develop/src/nord.colorscheme
+    BackgroundColour=46,52,64
+    ForegroundColour=216,222,233
+    CursorColour=216,222,233
+    Black=59,66,82
+    BoldBlack=76,86,106
+    Red=191,97,106
+    BoldRed=191,97,106
+    Green=163,190,140
+    BoldGreen=163,190,140
+    Yellow=235,203,139
+    BoldYellow=235,203,139
+    Blue=129,161,193
+    BoldBlue=129,161,193
+    Magenta=180,142,173
+    BoldMagenta=180,142,173
+    Cyan=136,192,208
+    BoldCyan=143,188,187
+    White=229,233,240
+    BoldWhite=236,239,244
+
+16进制
+
+    # https://github.com/arcticicestudio/nord-termite/blob/develop/src/config
+    # https://github.com/arcticicestudio/nord-terminator/blob/develop/src/config
+
+    [colors]
+    cursor = #d8dee9
+    cursor_foreground = #2e3440
+
+    foreground = #d8dee9
+    foreground_bold = #d8dee9
+    background = #2e3440
+
+    highlight = #4c566a
+
+    这里是标准的8种颜色
+    color0  = #3b4252
+    color1  = #bf616a
+    color2  = #a3be8c
+    color3  = #ebcb8b
+    color4  = #81a1c1
+    color5  = #b48ead
+    color6  = #88c0d0
+    color7  = #e5e9f0
+
+    这里是上面8种颜色对应的 Bold 或 bright
+    color8  = #4c566a
+    color9  = #bf616a
+    color10 = #a3be8c
+    color11 = #ebcb8b
+    color12 = #81a1c1
+    color13 = #b48ead
+    color14 = #8fbcbb
+    color15 = #eceff4
+
+三种模式
+
+    # https://github.com/arcticicestudio/nord-alacritty/blob/main/src/nord.yml
+
+    colors:
+    primary:
+        background: '#2e3440'
+        foreground: '#d8dee9'
+        dim_foreground: '#a5abb6'
+    cursor:
+        text: '#2e3440'
+        cursor: '#d8dee9'
+    vi_mode_cursor:
+        text: '#2e3440'
+        cursor: '#d8dee9'
+    selection:
+        text: CellForeground
+        background: '#4c566a'
+    search:
+        matches:
+        foreground: CellBackground
+        background: '#88c0d0'
+        bar:
+        background: '#434c5e'
+        foreground: '#d8dee9'
+    这里是标准的8种颜色
+    normal:
+        black: '#3b4252'
+        red: '#bf616a'
+        green: '#a3be8c'
+        yellow: '#ebcb8b'
+        blue: '#81a1c1'
+        magenta: '#b48ead'
+        cyan: '#88c0d0'
+        white: '#e5e9f0'
+    这里是上面8种颜色对应的 Bold 或 bright
+    bright:
+        black: '#4c566a'
+        red: '#bf616a'
+        green: '#a3be8c'
+        yellow: '#ebcb8b'
+        blue: '#81a1c1'
+        magenta: '#b48ead'
+        cyan: '#8fbcbb'
+        white: '#eceff4'
+    这里是一个新增的风格，待尝试
+    dim:
+        black: '#373e4d'
+        red: '#94545d'
+        green: '#809575'
+        yellow: '#b29e75'
+        blue: '#68809a'
+        magenta: '#8c738c'
+        cyan: '#6d96a5'
+        white: '#aeb3bb'
 
 ### 字符终端的区域、编码、语言
 
