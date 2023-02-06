@@ -64,7 +64,16 @@ alias ping='winpty ping'
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
-# 命令行提示符显示当前路径、git分支、python环境名等
+# 双行彩色命令行提示符，显示当前路径、git分支、python环境名等
+#
+# 效果示例：
+#
+#  ┌─[13:18:06 user@MY-PC:/usr/share/vim/vim82/autoload/dist]
+#  └──$ uname -a
+#  MSYS_NT-10.0-19044 MY-PC 3.3.5-341.x86_64 2022-11-08 19:41 UTC x86_64 Msys
+#
+#  ┌─[13:18:18 user@MY-PC:/usr/share/vim/vim82/autoload/dist]
+#  └──$ ls
 
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
