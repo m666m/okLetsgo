@@ -519,7 +519,7 @@ BoldGreen=65,243,123
 Yellow=207,190,116
 BoldYellow=223,216,149
 Blue=55,122,176
-BoldBlue=78,105,214
+BoldBlue=48,135,222
 Magenta=173,81,54
 BoldMagenta=202,112,85
 Cyan=79,196,181
@@ -1422,7 +1422,7 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 直至 2018年 Windows 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机。参见章节 [Windows 10 对 Linux 的字符程序和GUI程序的支持]。
 
-### 终端模拟器和软件的真彩色设置
+### 终端模拟器和软件的彩色设置
 
     https://github.com/mintty/mintty/wiki/CtrlSeqs
 
@@ -1447,39 +1447,6 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
         \033[30m -- \033[37m 设置前景色
         \033[40m -- \033[47m 设置背景色
 
-    颜色特效控制：
-
-        printf("\033[1;33m Hello World. \033[0m \n");
-
-    前景颜色代码如下:
-
-        normal = "\033[0m"
-
-        black = "\033[0;30m"
-        dark_gray = "\033[1;30m"
-
-        red = "\033[0;31m"
-        light_red = "\033[1;31m"
-
-        green = "\033[0;32m"
-        light_green -= "\033[1;32m"
-
-        yellow = "\033[0;33m"
-        light_yellow = "\033[1;33m"
-
-        blue = "\033[0;34m"
-        light_blue = "\033[1;34m"
-
-        # 也有叫 purple 的
-        magenta = "\033[0;35m"
-        light_magenta = "\033[1;35m"
-
-        cyan = "\033[0;36m"
-        light_cyan = "\033[1;36m"
-
-        white = "\033[0;37m"
-        light_gray = "\033[1;37m"
-
     光标位置等的格式控制：
 
         \033[nA 光标上移n行
@@ -1494,26 +1461,57 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
         \033[?25l 隐藏光标
         \33[?25h 显示光标
 
+所以目前通用的前景颜色代码就是16种（基本8种、加亮8种）:
+
+        normal="\033[0m"
+
+        black="\033[0;30m"
+        dark_gray="\033[1;30m"
+
+        red="\033[0;31m"
+        light_red="\033[1;31m"
+
+        green="\033[0;32m"
+        light_green="\033[1;32m"
+
+        yellow="\033[0;33m"
+        light_yellow="\033[1;33m"
+
+        blue="\033[0;34m"
+        light_blue="\033[1;34m"
+
+        # 也有叫 purple 的
+        magenta="\033[0;35m"
+        light_magenta="\033[1;35m"
+
+        cyan="\033[0;36m"
+        light_cyan="\033[1;36m"
+
+        white="\033[0;37m"
+        light_gray="\033[1;37m"
+
 如果你的终端模拟器支持彩色，那么在 bash 下输入如下代码，会看到输出红色的文字
 
-    # ascii表中 \033 或 \x1b
+    # ascii表中 \e 或 \033 或 \x1b
     # 使用16色代码表 基本颜色板
-    echo -en "\033[0;31m I am red\n"
+    echo -en "\033[0;31m I am red\033[0m\n"
 
     # 使用256色代码表
-    echo -en "\033[38:5:88m I am red\n"
+    echo -en "\033[38:5:88m I am red\033[0m\n"
 
     # 使用RGB真彩色
-    echo -en "\033[38:2:168:28:38m I am red\n"
+    echo -en "\033[38:2:168:28:38m I am red\033[0m\n"
 
-所以，要能看到彩色的文本，终端模拟器应该至少在选项设置中启用 256color 显示，如果能支持24位真彩、透明效果更好。
+所以，要能看到彩色的文本，终端模拟器应该至少在选项设置中设置为 xterm 类型。若终端工具能支持24位真彩色、开启透明选项，则显示的效果更好
 
 为防止终端模拟器中未进行设置，一般在用户登陆脚本 .bash_profile 中设置环境变量，起到相同的效果
 
-    # 显式设置终端启用256color，防止终端工具未设置。若终端工具能支持24位真彩、开启透明选项，则显示的效果更好
+    # 显式设置终端启用256color，防止终端工具未设置。若终端工具能支持24位真彩色、开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
-如果终端模拟器支持真彩色，还可以对16色代码表的实际展现效果进行自定义，从 65536 种颜色中选取。比如把红色代码 31 的实际展现效果定义为 RGB(168,28,38)。这样做的目的是兼容性：绝大多数的 shell 脚本对文字进行颜色修饰都使用 16 色代码，除非脚本的代码改造为 RGB() 的形式才能呈现更丰富的色彩。所以，不需要修改脚本的折衷办法是，由用户设置自己的终端模拟器把这 16 种颜色解释为更丰富的颜色。基本颜色板的自定义，详见各终端模拟器的设置。
+如果终端模拟器支持真彩色，还可以对16色代码表的实际展现效果进行自定义，从 65536 种颜色中选取：比如把红色代码 31 的实际展现效果定义为 RGB(168,28,38)。这样做的目的是兼容性：绝大多数的 shell 脚本对文字进行颜色修饰都通用 16 色代码，除非脚本的代码改造为 RGB() 的形式才能呈现更丰富的色彩。所以，不需要修改脚本的折衷办法是，由用户设置自己的终端模拟器把这 16 种颜色解释为更丰富的颜色。
+
+基本颜色板的自定义，详见各终端模拟器的设置。
 
 如果需要确定当前终端模拟器是否支持真彩色，参见下面网址中的真彩色检测代码
 
@@ -1522,17 +1520,17 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 终端模拟器即使开启了 24 位真彩，出于兼容性考虑，默认的色彩主题，对16种颜色代码也只会选用 16/256 色中的颜色，导致看不出更好看的效果。所以，为了能看到更丰富的颜色，应该自定义设置，选择颜色更丰富的其它主题，或自定义这16种颜色代码的实际展现颜色，详见各终端模拟器的设置。
 
-#### 测试终端支持的色彩
+#### 测试终端支持色彩的情况
 
 使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）,
 
 用 ssh 登陆同一个服务器，
 
-测试 bash/zsh+powerlevel10k 、tmux、tmux 环境下，
+在 bash/zsh+powerlevel10k 、tmux 环境下，
 
-打开 vim 查看代码文件，在 vim 里执行 `:terminal`进入新的终端，各种情况的组合测试。
+打开 vim 查看代码文件，在 vim 里执行 `:terminal` 进入新的终端，各种情况的组合测试。
 
-观察彩色文字的颜色、状态栏色条：如果彩色文字的颜色深且明亮、状态栏工具的色条颜色过渡断裂，一般是只支持 256color。
+观察彩色文字的颜色、状态栏色条：如果彩色文字的颜色深且明亮、状态栏工具的色条颜色过渡断裂，说明只支持 256color。
 
         -    bash+vim   zsh+powerlevel10k+vim   tmux+bash+vim     tmux+zsh+powerlevel10k+vim
     ----------------------------------------------------------------------------------------
@@ -1542,9 +1540,9 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
     Windows Terminal
 
-基本16 色 测试脚本
+基本 16 色测试脚本
 
-    简单8色，在 bash 下执行即可
+    行为文字颜色(普通前景色+16色)，列为背景颜色（8色），在 bash 下执行即可
 
         # curl -fsSL https://github.com/pablopunk/colortest/raw/master/colortest |bash
 
@@ -1576,7 +1574,7 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
         curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash
 
-    16 色，带背景，加上文字粗体闪烁
+    16 色，带背景，加上文字粗体闪烁等效果
 
         curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/colortest.sh |bash
 
@@ -1712,9 +1710,7 @@ True color(24bit) 综合测试 terminal-testdrive.sh
 
 终端模拟器定义的颜色方案，默认只影响 shell 下基本的文字显示效果，如 ls、grep、systemctl 等命令输出标准的16色文字修饰代码都可以正常显示。
 
-对有些软件支持自定义颜色方案，色彩效果可能有差异：
-
-命令 ls 对子目录显示蓝色，可执行sh文件显示绿色，通过变量 $LS_COLORS 获取颜色值，该值由 ls 程序所在的服务器端设置，参见 `man dir_colors`。如果你发现在不同的 Linux 下 ls 命令的结果显示颜色用的不同，就是这里的设置不同导致
+命令 ls 对子目录显示蓝色，可执行sh文件显示绿色，对特定类型的文件用不同的颜色显示。通过变量 $LS_COLORS 获取颜色值，该值由 ls 程序所在的服务器端设置，参见 `man dir_colors`。如果你发现在不同的 Linux 下 ls 命令的结果对特定类型的文件显示不同的颜色，就是这里的设置不同导致
 
     $ dircolors | tr ":" "\n"
     LS_COLORS='rs=0
@@ -1726,6 +1722,17 @@ True color(24bit) 综合测试 terminal-testdrive.sh
     *.tar=01;31
     *.tgz=01;31
     *.arc=01;31
+
+    ls、tree 等命令颜色方案-北极
+
+        https://www.nordtheme.com/docs/ports/dircolors/type-support
+            https://github.com/arcticicestudio/nord-dircolors
+
+        curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
+
+    这些颜色整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，修改 dir_colors 比较适合指定文件类型，修改颜色意义不大。
+
+有些软件支持自定义颜色方案，色彩效果超越终端模拟器设置：
 
 tmux、vim 有自己的色彩方案设置：
 
@@ -1972,13 +1979,6 @@ print('\nThen restart mintty to take effect, you can run `curl -fsSL https://git
 
     # apt 安装的在 /usr/share 下，如果是 pip 安装的用 `pip show powerline-status` 查看路径
     source /usr/share/powerline/bindings/bash/powerline.sh
-
-ls、tree等命令推荐颜色方案-北极
-
-    https://www.nordtheme.com/docs/ports/dircolors/type-support
-        https://github.com/arcticicestudio/nord-dircolors
-
-    curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 
 bash 内置命令和快捷键见 <shellcmd.md> 的相关章节。
 
