@@ -201,29 +201,33 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 3200MHz、3600MHz频率内存最适合于B560主板+11代酷睿平台。这样的频率下并没有分频。当超频至4000MHz时，虽然内存带宽有所增加，但是延迟却比3600MHz高出不少，这是Gear2分频模式下带来的弊端。除非将内存超至4400MHz或以上高频，同时保持较好的时序。那内存带宽提升的同时，延迟也会降下来。
 
-## Windows 启用 Secure Boot 功能
+## 安装 Windows 启用 Secure Boot 功能
+
+从制作安装u盘，到主板 BIOS 设置，都要进行设置
 
     https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot
 
 ### 前提条件
 
-    只要系统引导时不是原生 UEFI+GPT，比如使用 UEFI CSM 兼容模式，这样安装的 Windows 无法开启 Secure Boot 功能。
-
 Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
-    主板 BIOS 启动模式是原生 UEFI：设置 “Windows 10 Features” 选择 “Windows 10”；“CSM Support” 选项是 “Disable”（需要先 “Enable”，把下面出现的存储设备和 PCIE 设备的项目都选择 “UEFI”）。
+    安装u盘在制作时要选择 “GPT+UEFI” 方式：见下面的一。
 
-    主板 BIOS 开启 Secure Boot 功能。
+    主板 BIOS 设置启动模式为原生 UEFI：见下面的二。
 
-    安装u盘：在使用 Rufus 制作安装u盘时要选择 “GPT+UEFI” 方式，再用u盘以 UEFI 启动计算机安装 Windows（开机引导时按F12出现引导菜单，选择带 “UEFI” 后缀的那个u盘）。
+    主板 BIOS 设置开启 Secure Boot 功能：见下面的三。
 
-    硬盘格式化为 GPT 类型
+    安装u盘启动计算机时要选择 UEFI 模式：见下面的四。
+
+    硬盘是 GPT 类型：见下面的五。
+
+只要系统引导时不是原生 UEFI+GPT，比如使用 UEFI CSM 兼容模式，这样安装的 Windows 无法开启 Secure Boot 功能。
 
 最尴尬的是，在 Windows 安装时不会做任何提示，安装完成启动 Windows 后运行 msinfo32 才能确认 Secure Boot 功能是否成功开启。
 
 如果安装后发现 BIOS 启动模式不是原生 UEFI，想把 BIOS 设置里的存储设备类型改回为 UEFI：
 
-    该硬盘启动系统的时候会自动跳转主板 BIOS 的 CMS 模式下的 UEFI 方式，读取硬盘的 UEFI 分区引导系统。无法启用 Secure Boot 功能，只能重装系统，用原生 UEFI+GPT 模式安装 Windows。
+    该硬盘启动系统的时候会自动跳转主板 BIOS 的 CMS 模式的 UEFI，读取硬盘的 UEFI 分区引导系统。无法启用 Secure Boot 功能，只能重装系统 Windows。
 
 安装 Windows 11 在 Secure Boot 的基础上，还要求主板 BIOS 开启 TPM2.0
 
@@ -231,7 +235,9 @@ Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
 ### 一、制作支持 UEFI + GPT 的启动u盘
 
-建议使用英文版 Windows 的 iso 文件制作启动u盘，安装 Windows 时区域选择 “新加坡”，系统语言选择简体中文，非unicode区域选择新加坡。或英文版选择区域为美国，安装完成后添加中文语言包，再更改界面提示语言为简体中文，原因不解释了。
+建议使用英文版 Windows 的 iso 文件制作启动u盘，在安装 Windows 时，区域设置选择 “新加坡”，系统语言选择简体中文，安装后 “非unicode区域设置” 选择新加坡。或安装时直接选择区域为美国。安装完成后添加中文语言包，再更改界面提示语言为简体中文，原因不解释了。
+
+开源的u盘制作工具
 
     rufus
         https://rufus.ie/
@@ -271,13 +277,15 @@ Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
 #### 用 Rufus 制作 ghost 启动盘
 
-rufus 制作时引导类型选择 “FreeDos” 就行了，完成后把 ghost 拷贝到u盘上，以后用它开机引导直接进入 dos 命令行方式，运行命令 ghost 即可。
+    https://qastack.cn/superuser/1228136/what-version-of-ms-dos-does-rufus-use-to-make-bootable-usbs
 
-<https://qastack.cn/superuser/1228136/what-version-of-ms-dos-does-rufus-use-to-make-bootable-usbs>
+rufus 制作u盘时引导类型选择 “FreeDos” 就行了，完成后把 ghost 拷贝到u盘上。
+
+用该u盘开机引导直接进入 dos 命令行方式，运行命令 ghost 即可。
 
 如果引导类型选择 “grub”，那你得准备 menu.list 文件，引导到对应的 img 文件上。
 
-对 Windows 10 + 来说，不需要用 ghost 启动盘了，推荐直接使用 Windows 自带的系统映像备份，参见下面章节 [系统映像备份]。
+对 Windows 10 + 来说，不需要用 ghost 启动盘了，推荐直接使用 Windows 自带的系统映像备份，参见章节 [系统映像备份]。
 
 ### 二、主板设置启动模式为原生 UEFI
 
@@ -315,7 +323,7 @@ UEFI 模式下显卡连接 DP 口刚开机时，显示器会自动使用物理�
 
 3、验证
 
-    安装 Windows 后运行 msinfo32，在 “系统摘要” 界面找 “BIOS 模式” 选项，看到结果是 “UEFI”。
+    Windows 安装完成后，运行 msinfo32，在 “系统摘要” 界面找 “BIOS 模式” 选项，看到结果是 “UEFI”。
 
 ### 三、主板开启 Secure Boot 功能
 
@@ -399,7 +407,7 @@ NOTE：Windows 安装程序选择原生 UEFI 模式还是 CSM 兼容模式安装
 
 验证1
 
-    Windows 安装后，cmd 管理员模式
+    Windows 安装完成后，cmd 管理员模式
 
         diskpart
 
@@ -409,19 +417,19 @@ NOTE：Windows 安装程序选择原生 UEFI 模式还是 CSM 兼容模式安装
 
 验证2
 
-    Windows安装后，在控制面板进入磁盘管理，在磁盘 0 上点击右键，看看“转换成 GPT 磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是 GPT 类型，大概率是 MBR 类型。真正的 GPT 磁盘，只提供“转换成 MBR 磁盘”选项。注意，那个 “转换成动态磁盘” 不要理它，微软都废弃了。
+    Windows安装完成后，在控制面板进入磁盘管理，在磁盘 0 上点击右键，看看“转换成 GPT 磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是 GPT 类型，大概率是 MBR 类型。真正的 GPT 磁盘，只提供“转换成 MBR 磁盘”选项。注意，那个 “转换成动态磁盘” 不要理它，微软都废弃了。
 
 参考 <https://www.163.com/dy/article/FTJ5LN090531NEQA.html>
 
 ### 验证
 
-启动 Windows 后运行 msinfo32，在“系统摘要”界面找“安全启动”选项，看到结果是“开启”。
+Windows 安装完成后，运行 msinfo32，在 “系统摘要” 界面找 “安全启动” 选项，看到结果是 “开启”。
 
 ### 踩坑经历
 
 为什么要 CSM 模式又开又关这样操作呢？我安装 Windows 10 的时候踩了个坑：
 
-因为我的老显卡不支持在 UEFI 下连接 DP 口开机显示内容，初次安装用了HDMI线，而且为了兼容使用了 CSM 模式安装的 Windows：BIOS 设置里 “Windows 10 Features” 选择 “other os”，“CSM Support” 选 “Enable”，存储和 PCIe 设备都选择 “UEFI” ，然后安装了 Windows 10。见章节 [老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）]。
+因为我的老显卡不支持在 UEFI 下连接 DP 口开机显示内容，初次安装用了 HDMI 线，而且为了兼容使用了 CSM 模式安装的 Windows：BIOS 设置里 “Windows 10 Features” 选择 “other os”，“CSM Support” 选 “Enable”，存储和 PCIe 设备都选择 “UEFI” ，然后安装了 Windows 10。见章节 [老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）]。
 
 后来显卡升级了 BIOS，又关闭主板 CMS 模式，重新安装了 Windows 10 21H1，在主板 BIOS 设置里装载默认值 “Load optimized defaults”（默认把存储设备换回了 legacy），然后设置 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选 “Disable”，但没有提前把存储设备换回 UEFI 类型。该存储设备的选项在关闭 CMS 模式时屏蔽显示，没有自动改回为 UEFI 类型，而用户又看不到了。。。这就导致后续运行的 Windows 安装程序自动把硬盘格式化为 MBR 类型。
 
@@ -431,7 +439,7 @@ NOTE：Windows 安装程序选择原生 UEFI 模式还是 CSM 兼容模式安装
 
 这样导致我的 Windows 引导还是走的老模式，UEFI 引导硬盘其实没用上，装完后 Windows 启动没有实现秒进桌面才发现的这个问题。
 
-另外，安装成功后我手贱，三星 SSD 硬盘的管理程序 Samsung Magican 里，设置 Over Provisioning 功能，重新调整了硬盘分区，结果 Secure Boot 没了。。。
+另外，安装成功后我手贱，三星 SSD 硬盘的管理程序 Samsung Magican 里，设置 Over Provisioning 功能，重新调整了硬盘分区，结果 Secure Boot 又没了。。。
 
 ## 主板 BIOS 打开网络唤醒功能
 
@@ -446,9 +454,10 @@ NOTE：Windows 安装程序选择原生 UEFI 模式还是 CSM 兼容模式安装
 
 ## 主板开启待机状态 USB 口供电功能和定时自动开机功能
 
-BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产品节能要求）选项选择开启，
+BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产品节能要求）选项选择开启
 
     usb 口功能设置选择供电。
+
     RTC（定时开机）设置具体时间
 
 根据戴尔的文章进行设置 <https://www.dell.com/support/kbdoc/zh-cn/000132056/shut-down-sleep-hibernate-or-change-the-power-plan-in-Windows-10>
@@ -478,7 +487,9 @@ BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产
 
 确认 Windows 10 快速启动功能是否关闭，参见下面章节 [关闭“快速启动”]
 
-    <https://www.asus.com.cn/support/FAQ/1042220> <https://www.asus.com.cn/support/FAQ/1043640>
+    https://www.asus.com.cn/support/FAQ/1042220
+
+    https://www.asus.com.cn/support/FAQ/1043640
 
 ## 设置带集成 usb-hub 拓展坞的显示器
 
@@ -548,21 +559,21 @@ PBP分屏注意
 
     如果用三星 Galaxy 手机 DEX 连接显示器集成的 usb-hub，关机会黑屏，拔下来手机之后 Windows 才能继续关机
 
-在 Windows 设置下不要开启 HDR 效果，即桌面使用不要开启 HDR 效果，只在相关软件和游戏内找设置开启HDR，参见章节 [显示器在 Win10 开启 HDR 变灰泛白的原因]。
+在 Windows 操作系统的设置里不要开启 HDR 效果，即使用桌面应用不要开启 HDR 效果，只在相关视频软件和游戏内找设置开启 HDR，原因参见章节 [显示器在 Win10 开启 HDR 变灰泛白的原因]。
 
 ### 开启 HDR 玩 Doom
 
 显示器分辨率切换到 60hz，全屏使用最佳，不然游戏容易死机。
 
-如果在游戏设置了开启 HDR，在开始游戏后显示器会自动切换到标准模式。进入 HDR 模式后，显示器的睿动光感、环境光、低蓝光模式、SmartImage等等功能均被关闭，打完游戏需要手工调整显示器，切换回各项模式。
+如果在游戏设置里开启 HDR，在开始游戏后，显示器会自动切换回标准模式以显示 HRD 内容，原开启的睿动光感、环境光、低蓝光模式、SmartImage 等等功能均被关闭，打完游戏需要手工调整显示器，把各节能功能再打开。
 
 ## 装完 Windows 10 后的一些设置
 
-    如果是 VirtualBox、Vmware 虚拟机，先选择安装该软件的“增强包”，这样桌面的鼠标反应会顺畅。
+    如果是在 VirtualBox、Vmware 类的虚拟机里安装的 Windows，先选择安装 “增强包”，这样桌面的鼠标反应会顺畅。
 
     激活
 
-    把电源计划调整为“高性能”或“卓越性能”，省的它各种乱省电，系统反应不正常的时候你根本猜不出啥原因导致的。
+    把电源计划调整为 “高性能” 或 “卓越性能”，省的它各种乱省电，系统反应不正常的时候你根本猜不出啥原因导致的。
 
     做一次 Windows 更新，有一大堆的包要装，装完了再改设置吧，不然会给改回去。。。
 
@@ -574,7 +585,7 @@ PBP分屏注意
 
     设置：个性化->任务栏，合并任务栏按钮，选择“任务栏已满时”，不然多开窗口非常不方便在任务栏上选择切换。
 
-    设置：轻松使用->键盘，那些“粘滞键”、“切换键”啥的热键统统关掉
+    设置：轻松使用->键盘，那些 “粘滞键”、“切换键” 啥的热键统统关掉，特别是连按五次 shift，打 fps 游戏时给你个弹窗。。。
 
     设置：隐私策略各种关闭，这个大部分都是针对 app 商店里的应用，有空的时候挨个琢磨吧。关闭这些隐私设置可能不会影响某些桌面应用。 例如，同时安装驱动程序的应用可以直接与摄像头或麦克风硬件交互，从而绕过 Windows 的访问控制功能。 要更全面地保护与这些设置关联的个人数据，你可以考虑禁用这些设备，例如断开或禁用摄像头或麦克风。<https://support.microsoft.com/en-us/windows/windows-desktop-apps-and-privacy-8b3b13bc-d8ff-5460-8423-7d5d5c1f6665>
 
@@ -673,7 +684,7 @@ Windows 10 默认没有安装的某些增强性安全功能组件是依赖虚拟
 
 中文版 Windows 10 默认唯一键盘是中文，而且中文键盘的默认输入法是微软拼音的中文状态。原 Windows 7、XP 的 “Ctrl+空格” 切换中英文的热键，被微软拼音输入法占用为切换中英文，按 shift 键也是切换中英文，而且默认各个应用的窗口统一使用这个状态。
 
-问题是 桌面/资源管理器/炒股/游戏/网页浏览器 等软件的默认热键是响应英文的键盘输入，所以仅对文本编辑软件启用中文输入才是最优方案。在实际使用中，各个软件只要切换窗口，或者输入个字母就弹出中文候选字对话框，按 shift 键就来回切换中英文，实际输入的过程中，非常非常非常的繁琐。尤其在打游戏的时候，一按 shift 就切出来中文输入法，再按 asdw 就变成打字到中文输入法的输入栏了。
+问题是 桌面/资源管理器/炒股/游戏/网页浏览器 等软件的默认热键是响应英文的键盘输入，所以仅对文本编辑软件启用中文输入才是最优方案。在实际使用中，各个软件只要切换窗口，或者输入个字母就弹出中文候选字对话框，按 shift 键就来回切换中英文，实际输入的过程中，非常非常非常的繁琐。尤其在打 fps 游戏的时候，一按 shift 就切出来中文输入法，再按 asdw 就变成打字到中文输入法的输入栏了。
 
 所以需要再添加一个“英文键盘”，使用它的英文输入法状态，并把这个键盘作为默认状态。两种键盘间切换使用热键“Win+空格”。这样做的好处是，切换键盘的同时中英文输入法也跟着切换了（不需要依赖在中文键盘下微软拼音输入法的 shift 键切换），而且有了多种输入法，不同的窗口还可以选择记住不同的输入法状态，非常方便。
 
@@ -2084,9 +2095,10 @@ Windows 11 要求 分区在52G以上
 
 这时如果想使用 DP 口开机显示，则主板 BIOS 要更改设置，CSM Support（Windows 10 之前 Windows 版本安装的兼容模式，事关识别 usb 键盘鼠标和 UEFI 显卡）要选“Enable”，并设置兼容模式：
 
-    重启开机后按 F2 进入 bios，选 BOOT 选项卡，找到 Window 10 Features，选“other os”
+    重启开机后按 F2 进入 bios，选 BOOT 选项卡，找到 Window 10 Features，选 “other os”
 
     之后下面出现了 CSM Support， 选“Enable”，
+
     之后下面出现的三项，除了网卡启动的那个选项不用管，其它两个关于存储和 PCIe 设备的选项要确认选的是“UEFI”，这样在“other os”模式下可以实现 DP 口的开机显示，要是还不行，那两个选项直接选非 UEFI 的选项。
 
 这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。

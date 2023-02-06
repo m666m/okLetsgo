@@ -49,6 +49,9 @@ alias lsg='ls -lA |grep -i'
 ####################################################################
 # Windows git bash(mintty)
 # 在 mintty 下使用普通的 Windows 控制台程序
+#   如满足以下条件可以不需要 这些alias
+#   Windows version >= 10 / 2019 1809 (build >= 10.0.17763)
+#   在 ~/.mintty.rc 中添加 `ConPTY=true` 则可以免除使用 winpty 来调用了
 alias python="winpty python"
 alias ipython="winpty ipython"
 alias mysql="winpty mysql"
@@ -56,7 +59,6 @@ alias psql="winpty psql"
 alias redis-cli="winpty redis-cli"
 alias node="winpty node"
 alias vue='winpty vue'
-
 # Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
 alias ping='winpty ping'
 
