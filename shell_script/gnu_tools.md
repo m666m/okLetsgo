@@ -1513,19 +1513,6 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能支持24位真彩、开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
-命令 ls 对子目录显示蓝色，可执行sh文件显示绿色，通过变量 $LS_COLORS 获取颜色值，该值由 ls 程序所在的服务器端设置，参见 `man dir_colors`。如果你发现在不同的 Linux 下 ls 命令的结果显示颜色用的不同，就是这里的设置不同导致
-
-    $ dircolors | tr ":" "\n"
-    LS_COLORS='rs=0
-    di=01;34
-    ln=01;36
-    mh=00
-    pi=40;33
-    ex=01;32
-    *.tar=01;31
-    *.tgz=01;31
-    *.arc=01;31
-
 如果终端模拟器支持真彩色，还可以对16色代码表的实际展现效果进行自定义，从 65536 种颜色中选取。比如把红色代码 31 的实际展现效果定义为 RGB(168,28,38)。这样做的目的是兼容性：绝大多数的 shell 脚本对文字进行颜色修饰都使用 16 色代码，除非脚本的代码改造为 RGB() 的形式才能呈现更丰富的色彩。所以，不需要修改脚本的折衷办法是，由用户设置自己的终端模拟器把这 16 种颜色解释为更丰富的颜色。基本颜色板的自定义，详见各终端模拟器的设置。
 
 如果需要确定当前终端模拟器是否支持真彩色，参见下面网址中的真彩色检测代码
@@ -1723,11 +1710,28 @@ True color(24bit) 综合测试 terminal-testdrive.sh
 
 #### 软件支持真彩色
 
-终端模拟器定义的颜色方案，默认只影响 shell 下基本的文字显示效果，ls、grep、systemctl 等命令输出标准的16色文字修饰代码都可以正常显示。
+终端模拟器定义的颜色方案，默认只影响 shell 下基本的文字显示效果，如 ls、grep、systemctl 等命令输出标准的16色文字修饰代码都可以正常显示。
 
 对有些软件支持自定义颜色方案，色彩效果可能有差异：
 
-如 tmux、vim 有自己的色彩方案设置，而且要开启 256color 和 RGB 真彩色两个选项。两个选项都要开启，否则在使用这两个软件时，还是无法呈现真彩色。详见下面章节中的各软件自己的配置文件样例，可参考 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
+命令 ls 对子目录显示蓝色，可执行sh文件显示绿色，通过变量 $LS_COLORS 获取颜色值，该值由 ls 程序所在的服务器端设置，参见 `man dir_colors`。如果你发现在不同的 Linux 下 ls 命令的结果显示颜色用的不同，就是这里的设置不同导致
+
+    $ dircolors | tr ":" "\n"
+    LS_COLORS='rs=0
+    di=01;34
+    ln=01;36
+    mh=00
+    pi=40;33
+    ex=01;32
+    *.tar=01;31
+    *.tgz=01;31
+    *.arc=01;31
+
+tmux、vim 有自己的色彩方案设置：
+
+要开启软件自己的 256color 和 RGB 真彩色两个选项。两个选项都要开启，否则在使用这两个软件时，还是无法呈现真彩色。
+
+详见下面章节中的各软件自己的配置文件样例，可参考 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
 
 而且，基于跟前面章节所述同样的原因，不要使用 tmux、vim 默认的主题颜色，自定义设置，选用颜色更丰富的其它主题效果更好。
 
@@ -1809,6 +1813,10 @@ print('\nThen restart mintty to take effect, you can run `curl -fsSL https://git
 ```
 
 #### Nord 整套支持终端模拟器和各个软件的配色方案
+
+    https://www.nordtheme.com/ports/
+
+        https://github.com/arcticicestudio/
 
 10进制
 
@@ -1965,9 +1973,12 @@ print('\nThen restart mintty to take effect, you can run `curl -fsSL https://git
     # apt 安装的在 /usr/share 下，如果是 pip 安装的用 `pip show powerline-status` 查看路径
     source /usr/share/powerline/bindings/bash/powerline.sh
 
-强烈推荐各种字符显示工具通用的颜色方案-北极
+ls、tree等命令推荐颜色方案-北极
 
-    https://www.nordtheme.com/ports
+    https://www.nordtheme.com/docs/ports/dircolors/type-support
+        https://github.com/arcticicestudio/nord-dircolors
+
+    curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 
 bash 内置命令和快捷键见 <shellcmd.md> 的相关章节。
 
