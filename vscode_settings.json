@@ -219,30 +219,30 @@
     "todo-tree.highlights.customHighlight": {
         "TODO": {
             "icon": "tasklist",
-            "iconColour": "#37aaaa",
-            "foreground": "#127272",
-            "background": "#D0FFFF",
+            "iconColour": "#b96a03",
+            "foreground": "#30fdfd",
+            "background": "#b96a03",
             "type": "tag"
         },
         "FIXME": {
             "icon": "eye",
-            "iconColour": "#fc0707",
-            "foreground": "#fc0707",
-            "background": "#D0FFFF",
+            "iconColour": "#e4136a",
+            "foreground": "#30fdfd",
+            "background": "#e4136a",
             "type": "tag"
         },
         "XXX": {
             "icon": "beaker",
-            "iconColour": "#df5577",
-            "foreground": "#df5577",
-            "background": "#D0FFFF",
+            "iconColour": "#10dfdf",
+            "foreground": "#072cfc",
+            "background": "#10dfdf",
             "type": "tag"
         },
         "NOTE": {
             "icon": "info",
             "iconColour": "#3e58a0",
             "foreground": "#4217dd",
-            "background": "#D0FFFF",
+            "background": "#40b9b9",
             "type": "tag"
         }
         // "[x]":{
