@@ -326,10 +326,10 @@ unset env
 # 多会话复用 ssh-pageant 及运行gpg钥匙圈更新
 #
 # 用它连接 putty 的 pagent.exe，代替上面多会话复用 ssh-agent 的段落
-# 来自章节 [使ssh鉴权统一调用putty的pageant] <ssh.md>
+# 来自章节 [使ssh鉴权统一调用putty的pageant] <ssh.md think>
 
 # 利用检查 ssh-pageant 进程是否存在，判断是否开机后第一次打开bash会话，则运行gpg钥匙圈更新
-if ! $(ps -s|grep ssh-pageant>/dev/null) ;then
+if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
     echo ''
     # echo "更新gpg钥匙圈需要点时间，请稍等..."
     # gpg --refresh-keys
