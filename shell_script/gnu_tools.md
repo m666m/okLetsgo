@@ -1535,19 +1535,17 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 终端模拟器即使开启了 24 位真彩，出于兼容性考虑，默认的色彩主题，对16种颜色代码也只会选用 16/256 色中的颜色，导致看不出更好看的效果。所以，为了能看到更丰富的颜色，应该自定义设置，选择颜色更丰富的其它主题，或自定义这16种颜色代码的实际展现颜色，详见各终端模拟器的设置。
 
-#### 软件设置
+#### 测试终端支持的色彩
 
-终端模拟器定义的颜色方案，默认只影响 shell 下基本的文字显示效果。
+使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）,
 
-对有些软件支持自定义颜色方案，色彩效果可能有差异：
+用 ssh 登陆同一个服务器，
 
-如 tmux、vim 有自己的色彩方案设置，而且要开启 256color 和 RGB 真彩色两个选项。两个选项都要开启，否则在使用这两个软件时，还是无法呈现真彩色。详见下面章节中的各软件自己的配置文件样例，可参考 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
+测试 bash/zsh+powerlevel10k 、tmux、tmux 环境下，
 
-而且，基于跟前面章节所述同样的原因，不要使用 tmux、vim 默认的主题颜色，自定义设置，选用颜色更丰富的其它主题效果更好。
+打开 vim 查看代码文件，在 vim 里执行 `:terminal`进入新的终端，各种情况的组合测试。
 
-测试彩色的方法
-
-    使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）用 ssh 登陆同一个服务器，测试 bash/zsh+powerlevel10k 、tmux、tmux 环境下，打开 vim 查看代码文件，在 vim 里执行 `:terminal`进入新的终端，各种情况的组合测试。观察彩色文字的颜色、状态栏色条：如果彩色文字的颜色深且明亮、状态栏工具的色条颜色过渡断裂，一般是只支持 256color。
+观察彩色文字的颜色、状态栏色条：如果彩色文字的颜色深且明亮、状态栏工具的色条颜色过渡断裂，一般是只支持 256color。
 
         -    bash+vim   zsh+powerlevel10k+vim   tmux+bash+vim     tmux+zsh+powerlevel10k+vim
     ----------------------------------------------------------------------------------------
@@ -1557,11 +1555,11 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
     Windows Terminal
 
-16 色 测试脚本
+基本16 色 测试脚本
 
-    简单，在 bash 下执行即可
+    简单8色，在 bash 下执行即可
 
-        # curl -fsSL https://github.com/pablopunk/colortest/blob/master/colortest |bash
+        # curl -fsSL https://github.com/pablopunk/colortest/raw/master/colortest |bash
 
         ```bash
 
@@ -1587,11 +1585,11 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
         # https://github.com/msys2/MSYS2-packages/issues/1684#issuecomment-570793998
         # for x in {0..8}; do for i in {30..37}; do for a in {40..47}; do echo -ne "\e[$x;$i;$a""m\\\e[$x;$i;$a""m\e[0;37;40m "; done; echo; done; done; echo ""
 
-    mintty 的颜色工具，按终端颜色伪代码组织
+    16 色，带背景
 
         curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash
 
-    颜色、文字粗体闪烁等都有，按终端颜色伪代码组织
+    16 色，带背景，加上文字粗体闪烁
 
         curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/colortest.sh |bash
 
@@ -1601,7 +1599,7 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
         curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/color-spaces.pl |perl
 
-24bit true color 色条测试脚本，如果色条出现明显的条带分隔，那说明只支持 256 color
+True color(24bit) 色条测试脚本，如果色条出现明显的条带分隔，那说明只支持 256 color
 
     简单在 bash 下执行即可
 
@@ -1634,11 +1632,12 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
         for code ({000..255}) print -P -- "$code: %F{$code}最左侧三位数字即颜色值Text Color%f"
 
-综合测试 terminal-testdrive.sh
+True color(24bit) 综合测试 terminal-testdrive.sh
 
     把真彩色和各种文字效果都测试了，兼容性好，在 mintty、putty、Windows Terminal 下都可以正常显示
 
-        # 需要先安装 `apt install bc` 或手工修改代码 `cols=24`
+    需要先安装 `apt install bc` 或手工修改代码 `cols=24`
+
         # https://gist.github.com/hellricer/e514d9615d02838244d8de74d0ab18b3
             https://hellricer.github.io/2019/10/05/test-drive-your-terminal.html
 
@@ -1721,6 +1720,16 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
     putty 可以通过真彩测试，但对块状字符的渲染方式有问题：zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此。terminal-testdrive.sh 测试不支持：文字闪烁、sixel 图像。
 
     Windows Terminal 可以通过真彩测试，但对块状字符的渲染方式有问题：zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此。terminal-testdrive.sh 测试：不支持 sixel 图像，少了几个文字修饰效果。
+
+#### 软件支持真彩色
+
+终端模拟器定义的颜色方案，默认只影响 shell 下基本的文字显示效果，ls、grep、systemctl 等命令输出标准的16色文字修饰代码都可以正常显示。
+
+对有些软件支持自定义颜色方案，色彩效果可能有差异：
+
+如 tmux、vim 有自己的色彩方案设置，而且要开启 256color 和 RGB 真彩色两个选项。两个选项都要开启，否则在使用这两个软件时，还是无法呈现真彩色。详见下面章节中的各软件自己的配置文件样例，可参考 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
+
+而且，基于跟前面章节所述同样的原因，不要使用 tmux、vim 默认的主题颜色，自定义设置，选用颜色更丰富的其它主题效果更好。
 
 #### base16 颜色方案
 
