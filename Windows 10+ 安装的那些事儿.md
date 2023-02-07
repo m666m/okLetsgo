@@ -603,7 +603,9 @@ Windows 商店应用默认不提供卸载选项，解决办法见下面章节 [�
 
 ### 选择开启虚拟化功能
 
-Windows 10 系统安全的基础目前有向虚拟化方面加强的趋势，所以本章节跟下面的‘设置Windows安全中心’并列。
+强烈建议**在虚拟机里使用你的日常软件**，参见章节 [在虚拟机里使用你的日常软件]。
+
+Windows 系统安全的基础目前有向虚拟化方面加强的趋势，所以本章跟下面的 [设置Windows安全中心] 并列。
 
 如果主板 BIOS 设置中关于 Intel CPU 虚拟化选项如 vt-d、hyper-threading 的设置没有打开，则可能有些依赖虚拟机的隔离浏览的选项不可用，需要去主板 BIOS 设置中打开。
 
@@ -619,14 +621,18 @@ Windows 10 默认的虚拟化功能开放的较少，增强功能需要手动安
 
 关于这几个功能的解释
 
-    Hyper-V: is Microsoft's Hypervisor.
+    Hyper-V: is Microsoft's Hypervisor. 微软的Hyper-V虚拟机及其管理器
 
-    Windows Hypervisor Platform - "Enables virtualization software to run on the Windows hypervisor" and at one time was required for Docker on Windows. The Hypervisor platform is an API that third-party developers can use in order to use Hyper-V. Oracle VirtualBox, Docker, and QEMU are examples of these projects.
+    Windows Hypervisor Platform - "Enables virtualization software to run on the Windows hypervisor" and at one time was required for Docker on Windows. The Hypervisor platform is an API that third-party developers can use in order to use Hyper-V. Oracle VirtualBox, Docker, and QEMU are examples of these projects. 微软向第三方虚拟机软件开放的虚拟机平台，使得 VirtualBox 等虚拟机软件也可以安装在开启了 hyper-v 的计算机上（之前 hyper-v 独占模式，别人无法安装）。
 
-    Virtual Machine Platform - "Enables platform support for virtual machines" and is required for WSL2. Virtual Machine Platform can be used to create MSIX Application packages for an App-V or MSI.
+    Virtual Machine Platform - "Enables platform support for virtual machines" and is required for WSL2. Virtual Machine Platform can be used to create MSIX Application packages for an App-V or MSI. 给 WSL2 使用的虚拟机平台，跟 Windows 融合密切，使得在 Windows 下可以无缝执行 Linux 程序。
+
+参考
 
     https://superuser.com/questions/1510172/hyper-v-vs-virtual-machine-platform-vs-Windows-hypervisor-platform-settings-in-p
+
     https://zhuanlan.zhihu.com/p/381969738
+
     https://superuser.com/questions/1556521/virtual-machine-platform-in-win-10-2004-is-hyper-v
 
 ### 设置 Windows 安全中心
@@ -647,38 +653,51 @@ Windows 10 默认没有安装的某些增强性安全功能组件是依赖虚拟
 
 + 设置 Windows安全中心
 
-  设置->更新和安全->Windows 安全中心，左侧页面点击“打开 Windows 安全中心”
+  设置->更新和安全->Windows 安全中心，左侧页面点击 “打开 Windows 安全中心”
 
     ->应用和浏览器控制，打开“隔离浏览（WDAG）”
-        <https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/microsoft-defender-application-guard/install-md-app-guard>
+
+        https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/microsoft-defender-application-guard/install-md-app-guard
 
     ->设备安全性->内核隔离，手动开启“内存完整性”
-        <https://support.microsoft.com/zh-cn/Windows/afa11526-de57-b1c5-599f-3a4c6a61c5e2>
 
-        <https://go.microsoft.com/fwlink/?linkid=866348>
+        https://support.microsoft.com/zh-cn/Windows/afa11526-de57-b1c5-599f-3a4c6a61c5e2
+
+        https://go.microsoft.com/fwlink/?linkid=866348
 
     在“设备安全性”屏幕的底部，如果显示“你的设备满足增强型硬件安全性要求”，那就是基本都打开了。
 
-    如果“内核隔离”类别中缺少“内核 DMA 保护”、“固件保护”等选项，在主板BIOS (IOMMU) 中启用 Hyper-V 虚拟化，并在 Windows 功能中安装Hyper-V。
-        <https://docs.microsoft.com/en-us/Windows/security/information-protection/kernel-dma-protection-for-thunderbolt#using-system-information>
+    “内核隔离” ->“内核 DMA 保护”、“固件保护”等选项，内核 DMA 是为了应对 PCIE 设备现在可以热插拔（如雷电thunderbolt接口）导致的黑客可以插入u盘入侵操作系统的问题
 
-        <https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-kernel-dma-protection>
+        https://learn.microsoft.com/zh-cn/windows/security/information-protection/kernel-dma-protection-for-thunderbolt
+
+        https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-kernel-dma-protection
 
     如果想显示“你的设备超出增强的硬件安全性要求”，需要在下面的页面慢慢研究如何开启。
-        <https://docs.microsoft.com/zh-cn/Windows/security/information-protection/kernel-dma-protection-for-thunderbolt>
 
-        <https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/Windows-defender-system-guard/system-guard-secure-launch-and-smm-protection>
+        https://docs.microsoft.com/zh-cn/Windows/security/information-protection/kernel-dma-protection-for-thunderbolt
 
-验证：启动 Windows 后以管理员权限运行 msinfo32，在“系统摘要”界面查看
+        https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/Windows-defender-system-guard/system-guard-secure-launch-and-smm-protection
 
-    “内核 DMA 保护”选项，“启用”
+验证：
+
+启动 Windows 后以管理员权限运行 msinfo32，在“系统摘要”界面查看
+
+    “内核 DMA 保护”  --  “启用”
+
     “基于虚拟化的安全 xxx”等选项，有详细描述信息
 
-更多关于 Windows10 安全性要求的选项参见各个子目录章节 <https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-highly-secure#what-makes-a-secured-core-pc>
+更多关于 Windows10 安全性要求的选项参见各个子目录章节
 
-基于虚拟化的安全 Virtualization Based Security(VBS) 详细介绍 <https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-vbs>
+    https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-highly-secure#what-makes-a-secured-core-pc
 
-整个 Windows 安全体系，挨个看吧 <https://docs.microsoft.com/zh-cn/Windows/security/>
+基于虚拟化的安全 Virtualization Based Security(VBS) 详细介绍
+
+    https://docs.microsoft.com/zh-cn/Windows-hardware/design/device-experiences/oem-vbs
+
+整个 Windows 安全体系，挨个看吧
+
+    https://docs.microsoft.com/zh-cn/Windows/security/
 
 ### 默认键盘设置为英文
 
@@ -892,7 +911,7 @@ Windows 10 下发现取消这个组件，居然有 Windows 更新的安装包报
 
 待机(S0 低电量待机)功能比较新，截至2022年仅部分笔记本电脑实现该功能了，而且功能不稳定，耗电情况不如之前的睡眠模式好。
 
-S0 新式待机（Modern Standby），可实现类似手机锁屏后的秒开机。在最初，它叫做Instant-on，Windows 8上市的时候叫做Connected Standby，后改名叫做InstantGo，在Windows 10为了包容性，改名Modern Standby（现代待机），包含Connected Standby和Disconnected Standby两种模式。<https://docs.microsoft.com/en-us/Windows-hardware/design/device-experiences/modern-standby-vs-s3>
+S0 新式待机（Modern Standby），可实现类似手机锁屏后的秒开机。在最初，它叫做 Instant-on，Windows 8上市的时候叫做 Connected Standby，后改名叫做 InstantGo，在 Windows 10 为了包容性，改名 Modern Standby（现代待机），包含 Connected Standby 和 Disconnected Standby 两种模式。<https://docs.microsoft.com/en-us/Windows-hardware/design/device-experiences/modern-standby-vs-s3>
 
     C:\Windows\system32>powercfg -a
     此系统上有以下睡眠状态:
@@ -913,10 +932,12 @@ S0 新式待机（Modern Standby），可实现类似手机锁屏后的秒开机
         混合睡眠
             虚拟机监控程序不支持此待机状态。
 
-为防止待机时有黑客手工把硬件接入计算机，connected standby这个功能需要TPM2.0的支持，并进行一系列的加密防护，所以，这些功能都跟安全加密功能有关联。
+为防止待机时有黑客手工把硬件接入计算机，connected standby 这个功能需要 TPM2.0 的支持，并进行一系列的加密防护，所以，这些功能都跟安全加密功能有关联。
 
-如果在Windows安全里启用了内核保护的内存完整性，则它的虚拟机程序会禁用混合睡眠，因为内存隔离区不允许复制。参见 <https://forums.tomshardware.com/threads/hybrid-sleep-and-Windows-10-hypervisor.3699339/> 下面这个提问者直接关闭了虚拟机，其实是通过关闭内存完整性保护实现了混合睡眠，意义不大。相关的类似有
-使用 WSL2 的虚拟化开启后，Windows10 无法睡眠，合盖后自动睡眠但无法唤醒系统，只能通过电源键强制重启来重启系统等。<https://support.microsoft.com/en-us/topic/connected-standby-is-not-available-when-the-hyper-v-role-is-enabled-4af35556-6065-35aa-ed01-f8aef90f2027>
+如果在 “Windows 安全中心”->“设备安全性”->“内核隔离” 里启用了内核保护的内存完整性，则它的虚拟机程序会禁用混合睡眠，因为内存隔离区不允许复制，参见 <https://forums.tomshardware.com/threads/hybrid-sleep-and-Windows-10-hypervisor.3699339/>。
+
+这个提问者 <https://support.microsoft.com/en-us/topic/connected-standby-is-not-available-when-the-hyper-v-role-is-enabled-4af35556-6065-35aa-ed01-f8aef90f2027> 直接关闭了虚拟机，其实是通过关闭内存完整性保护实现了混合睡眠，意义不大。相关的类似有
+使用 WSL2 的虚拟化开启后，Windows10 无法睡眠，合盖后自动睡眠但无法唤醒系统，只能通过电源键强制重启来重启系统等。
 
 ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模式：
 
@@ -1368,6 +1389,8 @@ Windows内存诊断
 
 ## 安全的使用你的 Windows 10
 
+强烈建议**在虚拟机里使用你的日常软件**，参见章节 [在虚拟机里使用你的日常软件]。
+
 + 信息盗窃已经渗透到了驱动程序、操作系统组件、根证书级别
 
     制作安装u盘时，iso 的 Windows 版本一定要使用英文版，安装时选择区域“新加坡”，装完操作系统后再将语言切换为简体中文。或安装时选择区域“美国”，安装后添加中文语言包，更改界面提示语言为简体中文，原因不解释。
@@ -1468,11 +1491,13 @@ Mozilla浏览器的信任列表 <https://ccadb-public.secure.force.com/mozilla/I
 
 ### 1. 浏览网页时防止网页偷偷改浏览器主页等坏行为
 
-在 edge 浏览器，点击菜单，选择“应用程序防护窗口”，这样新开的一个 edge 窗口，是在虚拟机进程启动的，任何网页操作都不会侵入到正常使用的 Windows 中。
+在 edge 浏览器，点击菜单，选择“应用程序防护窗口”，这样新开的一个 edge 窗口，是在虚拟机进程启动的，感觉是容器化处理，任何网页操作都不会侵入到正常使用的 Windows 中。
 
 在 Windows 安全中心里可以设置，能否从这里复制粘贴内容到正常使用的 Windows 中等各种功能。
 
 ### 2. 用沙盒运行小工具等相对不靠谱的程序
+
+沙盒共用你当前操作系统的静态文件，应该是容器化执行的
 
     https://learn.microsoft.com/zh-cn/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview
 
@@ -1551,29 +1576,11 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
 也就是说，在你的 Windows 操作系统安装完毕之后，基本的用户信息都具备了，可信赖的大公司的软件都安装了，其他zh软件，统统安装到一个虚拟机里使用，不要安装到实机里。至于是使用 Windows Sandbox 沙盒还是 hyper-v 虚机，酌情决定。
 
-### 在虚拟机里使用你的计算机
+### Windows 10 S 模式
 
-在虚拟机里安装的操作系统上使用桌面应用程序，安全性最高，在这里的桌面冲浪吧。
+处于 S 模式的 Windows 10 是 Windows 10 的一个特定版本，该版本进行过简化处理以提升安全性和性能，并仍然提供熟悉的 Windows 体验。 为了提高安全性，它仅允许安装 Microsoft Store 提供的应用，并且要求使用 Microsoft Edge 进行安全浏览。
 
-如果有隔离需求，那就再复制一个虚拟机即可。
-
-简单方案，用 hyper-v 安装一个 Windows 10，在这里安装各种cn软件并主力使用。
-
-偏执狂治愈强迫症方案：
-
-    用 u 盘安装安全 Linux 发行版的 live cd 或 live usb，以便独立启动运行一个主机
-
-    在主机里面安装虚拟机软件如 virtualbox
-
-    在虚拟机里安装一个安全 Linux 发行版
-
-    在虚拟机里的安全 Linux 安装并使用你的各种保密程序
-
-    日常使用时，开机用u盘启动进入 live 模式，打开虚拟机里的 Linux，在这里尽情冲浪，因为使用的主机是安全 Linux 的 live 模式，一般在关机后所有写操作都不会保存。参见章节 [虚拟机下运行面向安全的 Linux 发行版](init_a_server think)。
-
-### Windows S Mode
-
-只能在设备上使用 Microsoft Store 中的应用
+    https://learn.microsoft.com/zh-cn/windows-hardware/design/device-experiences/oem-10s-security
 
     https://support.microsoft.com/en-us/windows/windows-10-and-windows-11-in-s-mode-faq-851057d6-1ee9-b9e5-c30b-93baebeebc85
 
@@ -1613,22 +1620,35 @@ Intel 的主板芯片中有一个独立于CPU和操作系统的微处理器，�
 
 另外： AMD 也有类似技术，叫 PSP，全称 Platform Security Processor，逻辑不同，功能近似——一句话概括：没比英特尔强多少……
 
-## Windows 10 使用虚拟机的几个途径
+## 在虚拟机里使用你的日常软件
 
-WSL2 内的 container 是 linux 提供的，不算 Windows 的容器。Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-V 隔离，process 只在 server 版提供
-<https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/hyperv-container>
+日常在虚拟机里使用桌面应用程序，安全性最高，在这里的桌面冲浪吧。
 
-虚拟机讨论详见章节 [虚拟机技术] <init_a_server.md think>。
+如果有应用隔离需求，那就再复制一个虚拟机即可。
+
+简单方案，用 hyper-v 安装一个 Windows 10，在这里安装各种cn软件并主力使用。
+
+更高层级的方案，参见章节 [安全使用方案](init_a_server think)。
+
+如何开启虚拟化功能参见章节 [选择开启虚拟化功能]。
+
+虚拟机技术详见章节 [虚拟机技术] <init_a_server.md think>。
+
+WSL2 内的 container 是 Linux 提供的，不算 Windows 的容器。Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-V 隔离，process 只在 server 版提供 <https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/hyperv-container>。
 
 ### Hyper-V
 
 就像普通虚拟机操作，类似 VM Ware、Virtual Box
-<https://docs.microsoft.com/zh-cn/virtualization/hyper-v-on-Windows/quick-start/enable-hyper-v>
+
+    https://docs.microsoft.com/zh-cn/virtualization/hyper-v-on-Windows/quick-start/enable-hyper-v
 
 如何在 Windows 10 上使用 Hypver-V
-    <https://www.tenforums.com/tutorials/2087-hyper-v-virtualization-setup-use-Windows-10-a.html>
+
+    https://www.tenforums.com/tutorials/2087-hyper-v-virtualization-setup-use-Windows-10-a.html
 
 如果启用了 Hyper-V，则这些对延迟敏感（小于10毫秒）的高精度应用程序也可能在主机中运行时出现问题。这是因为启用虚拟化后，主机操作系统也会在 Hyper-V 虚拟化层之上运行，就像来宾操作系统一样。但是，与来宾不同，主机操作系统的特殊之处在于它可以直接访问所有硬件，这意味着具有特殊硬件要求的应用程序仍然可以在主机操作系统中正常运行而不会出现问题。
+
+开启了 Hyper-V 可能会影响待机功能，进而使笔记本电脑待机时间缩短，参见章节 [设备不是 InstantGo]。
 
 #### Hyper-V 直连主机USB设备
 
@@ -2064,7 +2084,7 @@ Windows Subsystem for Android 在Windows Store[安装apk时默认安装](https:/
 
 ## Windows 双系统
 
-Windows 11 要求 分区在52G以上
+Windows 11 要求 分区在 52GB 以上
 
 ## 其它常见问题
 
