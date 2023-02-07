@@ -527,8 +527,8 @@ Magenta=173,81,54
 BoldMagenta=202,112,85
 Cyan=79,196,181
 BoldCyan=116,207,190
-White=243,240,255
-BoldWhite=255,254,247
+White=242,251,249
+BoldWhite=251,243,242
 
 # 自定义颜色方案，跟浅色背景搭配-黄色
 #Background=C:\tools\SuperPuTTY\222yellow.jpg
