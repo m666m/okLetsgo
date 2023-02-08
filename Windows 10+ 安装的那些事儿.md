@@ -2082,9 +2082,147 @@ Windows Subsystem for Android 在Windows Store[安装apk时默认安装](https:/
     https://cloud.tencent.com/developer/article/1987523
     https://zhuanlan.zhihu.com/p/437231485
 
-## Windows 双系统
+## 安装双系统
 
 Windows 11 要求 分区在 52GB 以上
+
+硬盘A（分区A）
+
+    主机：游戏
+
+    客户虚拟机：家庭私密、网课等日常用途
+
+硬盘B（分区B）
+
+    主机：只做升级维护等管理用途
+
+    客户虚拟机：开发、办公
+
+双硬盘的好处是在开机启动的时候即进行选择，隔离性比一个硬盘多个分区安装 Windows 的隔离性要好。
+
+    硬盘B启动后对自己开启软件加密，防止硬盘A的操作系统启动后访问硬盘B，避免A上木马监控程序的扫描和传播。
+
+## Bitlocker 加密
+
+Bitlocker 不需要输入密码的原理是利用计算机主板上的 TPM 芯片做 boot measure, 只要启动过程未被篡改, 就可以解密.
+
+    不需要登录Microsoft账户
+
+    搞出来问题可以试试 diskgenius 能否恢复出一点数据
+
+如果 Bitlock 使用软件加密，硬盘读写速度大概 30% 的降幅，如果使用 ssd 硬件加密功能，不影响读写速度，但是不够安全(后面详述)。
+
+基于文件夹加密的工具软件，大多数采用的是隐藏文件或者隔离文件的方式进行加密存储，但很容通过DiskGenius等分区工具跳过密码验证直接进行复制。
+
+基于驱动器加密的工具有 Windows BitLocker、VeraCrypt 等，安全性有保证。
+
+C盘为操作系统所在盘，一般不建议加密，因为没啥用，而且降低系统运行速度。
+
+要加密你的数据盘，数据盘里可能放有照片或者小电影、或者商业机密文件，这样在电脑送修、硬盘丢弃等场合可以使无关人员无法访问。
+
+没有智能卡，就选“使用密码解锁驱动器”。恢复密钥（48位纯数字）是你忘记密码需要解锁时用的，这个一定要保存好。如果你电脑登陆有微软账号就选“保存到Microsoft账户”，这样相当保存到云端了，不容易丢。如果没有可以选择保存到文件或者打印恢复密钥。一般选择保存到文件，注意**恢复文件保存路径选择非加密磁盘**，千万别给保存到加密盘里，那就不起作用了。
+
+已有数据的加密速度比较慢，所以数据盘加密，最好在空盘的时候就设置上，使用后写入数据，不然就只能慢慢等所有数据加密完毕，大硬盘可能得几个小时。
+
+加密后，磁盘驱动器上会显示一把没有上的锁，这时驱动器是可以打开的。我们需要重启电脑，驱动器锁会彻底锁上，之后的访问需要输入密码或者验证密钥才能打开。
+
+如果要取消 Bitlocker 加密：
+
+在Windows设置视窗中点击 [更新和安全]，左下部有个选项 [设备加密]，点击后选择右侧对应的 [关闭]。
+
+或命令提示符(管理员)
+
+    manage-bde -off D：
+
+关闭设备加密功能的需要一点时间，期间请连接适配器不要关机，也请注意期间不要进入休眠或睡眠。
+
+NOTE:ssd 硬盘不要开启自带的硬件加密功能，这样 Bitlocker 基本给废了
+
+    https://www.sohu.com/a/273668088_465914
+
+简单说，ssd 硬盘自带硬件加密功能，微软的 Bitloker 虽然属于软件加密方案，但是直接调用 ssd 硬盘自带的硬件加密接口。
+
+原因在于：ssd 硬盘用固件自带的密钥来加密和解密内容，用户在 Bitlocker 里认真输入和保存的密码，其实根本没用上。
+
+理论上，ssd硬盘使用的数据加密密钥（DEK），应该以某种加密算法组合所有者的口令短语（passphrase）。没有口令短语，就没有完整的密钥。而实际上，ssd 硬盘作弊了。此外，许多SSD使用单单一个DEK用于整个闪存盘，即使它们可以使用不同密码来保护磁盘的不同部分。
+
+这样黑客或维修人员拿到 ssd 硬盘，使用工厂模式调试接口，用 ssd 硬盘固件自带的密钥解密读取数据即可，或注入恶意代码到 ssd 的固件，绕过密钥检查。别以为谁都拿不到固件密钥，硬件厂商的安全意识都很差，索尼的ps游戏机固件密钥就被泄露过，三星也有钥，汽车电子设备尝试也有，甚至微软自己，也有过泄露了安全启动功能的密钥。
+
+如何确定 BitLocker 使用了ssd的硬件加密功能
+
+    如果发现自己对某个数据盘加密时没有出现漫长的等待，而是设置在瞬间完成了
+
+解决办法：
+
+    BitLocker用户，更改首选项以强制执行软件加密
+
+    Windows 10 从 18317版本开始就默认不再使用 ssd 硬盘自带的硬件加密功能(eDrive)了
+
+使用其它的全盘加密软件，在数据落盘之前就进行了加密，ssd 硬盘接触到的是加密后的数据.
+
+    开源的 VeraCrypt
+
+        https://www.veracrypt.fr/code/VeraCrypt/
+            https://github.com/veracrypt/VeraCrypt
+
+Linux 有自己的文件加密系统 eCryptfs，2022年之后的 systemd（systemd-cryptsetup）可以自动挂载 /etc/crypttab 中配置的加密卷。或者简单点，用 7zip 加密你的文件夹即可。
+
+    https://www.ecryptfs.org/documentation
+        https://blog.csdn.net/ck784101777/article/details/104544731
+
+    $ sudo apt install ecryptfs-utils
+    $ sudo modprobe ecryptfs
+
+    $ mkdir my_dir
+
+    # 挂载文件目录
+    $ mount -t ecryptfs my_dir enc_dir
+
+    $ df -h
+    /root/enc_dir     37G   18G   18G  50% /root/enc_dir
+
+    $ cd /root/enc_dir
+
+    $ echo 123 > 123.txt
+
+    # TODO:解挂载待试验
+    $ umount -t ecryptfs enc_dir
+    $ sudo umount /disk2
+
+    $ cat 123.txt 查看文件,为乱码文件
+
+    # 再挂载
+    $ mount -t ecryptfs my_dir enc_dir
+
+    # 密码故意输错，可以挂载，却打不开文件
+    $ cat 123.txt
+    cat: 123.txt: Input/output error
+
+eCryptFS自动挂载
+
+    ecryptfs-setup-private
+
+它会要求你输入登录密码和挂载密码。登录密码和你常规登录的密码一样，而挂载密码用于派生一个文件加密主密钥。这里留空可以生成一个（复杂的），这样会更安全。登出然后重新登录。
+
+你会注意到，eCryptFS默认在你的家目录中创建了两个目录：Private和.Private。~/.Private目录包含有加密的数据，而你可以在~/Private目录中访问到相应的解密后的数据。在你登录时，~/.Private目录会自动解密并映射到~/Private目录，因此你可以访问它。当你登出时，~/Private目录会自动卸载，而~/Private目录中的内容会加密回到~/.Private目录。
+
+eCryptFS怎么会知道你拥有~/.Private目录，并自动将其解密到~/Private目录而不需要我们输入密码呢？这就是eCryptFS的PAM模块捣的鬼，它为我们提供了这项便利服务。
+
+如果你不想让~/Private目录在登录时自动挂载，只需要在运行ecryptfs-setup-private工具时添加“--noautomount”选项。同样，如果你不想要~/Private目录在登出后自动卸载，也可以自动“--noautoumount”选项。但是，那样后，你需要自己手工挂载或卸载~/Private目录：
+
+    ecryptfs-mount-private ~/.Private ~/Private
+
+    ecryptfs-umount-private ~/Private
+
+现在，我们可以开始把任何敏感文件放进~/Private文件夹里头了，它们会在我们登出时自动被加密并锁在~/.Private文件内。
+
+所有这一切看起来是那么得神奇。这主要是ecryptfs-setup-private工具让一切设置变得简单。如果你想要深究一点，对eCryptFS指定的方面进行设置，那么请转到官方文档。
+
+弱点
+
+    当系统内存不足时，Page Cache 中的加密文件的明文页可能会被交换到 swap 区，目前的解决方法是用 dm-crypt 加密 swap 区。
+
+    eCryptfs 实现的安全性完全依赖于操作系统自身的安全。如果 Linux Kernel 被攻陷，那么黑客可以轻而易举地获得文件的明文，FEK 等重要信息。
 
 ## 其它常见问题
 
