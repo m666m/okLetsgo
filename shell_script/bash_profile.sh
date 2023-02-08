@@ -19,32 +19,33 @@ set -o vi
 ####################################################################
 # alias 本该放到 .bashrc 文件，为了方便统一在此了
 #
-# 添加 dbian 自带的 .bashrc 脚本中，常用命令开启彩色选项
+# 参考自 dbian 的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
-#if [ -x /usr/bin/dircolors ]; then
-#    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-#     这里放 alias
-#fi
+# 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的多种文件类型使用彩色显示
+# curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 
-# 常用的列文件
-alias ls='ls --color=auto'
-alias l='ls -CFA'
-alias ll='ls -l'
-alias la='ls -lA'
-alias lla='ls -la'
+    # 常用的列文件
+    alias ls='ls --color=auto'
+    alias l='ls -CFA'
+    alias ll='ls -l'
+    alias la='ls -lA'
+    alias lla='ls -la'
 
-#alias dir='dir --color=auto'
-#alias vdir='vdir --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
 
-# 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题
-alias diff='diff --color=auto'
-alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
-#alias egrep='egrep --color=auto'
-#alias fgrep='fgrep --color=auto'
-alias tree='tree -a -I .git'
+    # 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题
+    alias diff='diff --color=auto'
+    alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
+    #alias egrep='egrep --color=auto'
+    #alias fgrep='fgrep --color=auto'
+    alias tree='tree -a -I .git'
 
-# ls 列出的目录颜色被 grep 覆盖，用 ls -l 更方便
-alias lsg='ls -lA |grep -i'
+    # ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便
+    alias lsg='ls -lA |grep -i'
+fi
 
 ####################################################################
 # Windows git bash(mintty)

@@ -1733,7 +1733,7 @@ True color(24bit) 综合测试 terminal-testdrive.sh
 
         curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 
-    这些颜色整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，修改 dir_colors 比较适合指定文件类型，修改颜色意义不大。
+    这些颜色整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的多种文件类型使用彩色显示。
 
 有些软件支持自定义颜色方案，色彩效果超越终端模拟器设置：
 
