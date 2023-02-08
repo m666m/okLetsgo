@@ -1545,7 +1545,7 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 基本 16 色测试脚本
 
-    行为文字颜色(普通前景色+16色)，列为背景颜色（8色），在 bash 下执行即可
+    行为文字颜色(前景色16色)，列为背景颜色（8色），在 bash 下执行即可
 
         # curl -fsSL https://github.com/pablopunk/colortest/raw/master/colortest |bash
 
@@ -1573,11 +1573,11 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
         # https://github.com/msys2/MSYS2-packages/issues/1684#issuecomment-570793998
         # for x in {0..8}; do for i in {30..37}; do for a in {40..47}; do echo -ne "\e[$x;$i;$a""m\\\e[$x;$i;$a""m\e[0;37;40m "; done; echo; done; done; echo ""
 
-    16 色，带背景
+    16 色，前景和背景
 
         curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash
 
-    16 色，带背景，加上文字粗体闪烁等效果
+    16 色，前景和背景，加上文字粗体闪烁等效果
 
         curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/colortest.sh |bash
 
