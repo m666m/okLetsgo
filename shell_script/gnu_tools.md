@@ -1733,7 +1733,7 @@ True color(24bit) 综合测试 terminal-testdrive.sh
 
         curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 
-    这些颜色整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的多种文件类型使用彩色显示。
+    这些颜色整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示。
 
 有些软件支持自定义颜色方案，色彩效果超越终端模拟器设置：
 
@@ -2437,7 +2437,7 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
 
 typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
-    raspi_temp_warn         # raspberry pi cpu temperature
+    raspi_thermal_warn      # raspberry pi cpu temperature
     os_icon                 # os identifier
     ...
 )
@@ -2448,13 +2448,12 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 
 ``` shell
 
-  function prompt_raspi_temp_warn() {
-
+  function prompt_raspi_thermal_warn() {
     which vcgencmd >/dev/null 2>&1 || return 0
 
     local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
-    if [ "$CPUTEMP" -gt  "60000" ] && [ "$CPUTEMP" -lt  "65000" ]; then
+    if [ "$CPUTEMP" -gt  "55000" ] && [ "$CPUTEMP" -lt  "65000" ]; then
       p10k segment -b yellow -f blue -i ''
 
     elif [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "70000" ]; then
@@ -2462,8 +2461,8 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
       p10k segment -b yellow -f blue -i '' -t "$CPUTEMP_WARN"
 
     elif [ "$CPUTEMP" -gt  "70000" ];  then
-      local CPUTEMP_WARN="CPU TEMPERATURE IS VERY HIGH!`vcgencmd measure_temp`"
-      p10k segment -b red -f black -i '' -t "$CPUTEMP_WARN"
+      local CPUTEMP_WARN="CPU TOO HOT!`vcgencmd measure_temp`"
+      p10k segment -b black -f red -i '' -t "$CPUTEMP_WARN"
     fi
   }
 
@@ -2801,32 +2800,36 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM="xterm-256color"
 
-# 添加 dbian 自带的 .bashrc 脚本中，常用命令开启彩色选项
+####################################################################
+# alias 本该放到 .bashrc 文件，为了方便统一在此了
+#
+# 参考自 dbian 的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
-#if [ -x /usr/bin/dircolors ]; then
-#    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-#     这里放 alias
-#fi
+# 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的多种文件类型使用彩色显示
+# curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 
-# 常用的列文件
-alias ls='ls --color=auto'
-alias l='ls -CFA'
-alias ll='ls -l'
-alias la='ls -lA'
-alias lla='ls -la'
+    # 常用的列文件
+    alias ls='ls --color=auto'
+    alias l='ls -CFA'
+    alias ll='ls -l'
+    alias la='ls -lA'
+    alias lla='ls -la'
 
-#alias dir='dir --color=auto'
-#alias vdir='vdir --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
 
-# 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题
-alias diff='diff --color=auto'
-alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
-#alias egrep='egrep --color=auto'
-#alias fgrep='fgrep --color=auto'
-alias tree='tree -a -I .git'
+    # 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题
+    alias diff='diff --color=auto'
+    alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
+    #alias egrep='egrep --color=auto'
+    #alias fgrep='fgrep --color=auto'
+    alias tree='tree -a -I .git'
 
-# ls 列出的目录颜色被 grep 覆盖，用 ls -l 更方便
-alias lsg='ls -lA|grep -i'
+    # ls 列出的目录颜色被 grep 覆盖，用 ls -l 更方便
+    alias lsg='ls -lA|grep -i'
+fi
 
 # 执行 cd 命令后自动执行下 ls 列出当前文件
 chpwd() ls
