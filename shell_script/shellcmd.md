@@ -1609,6 +1609,12 @@ lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof）
 
     https://www.debian.org/doc/manuals/debian-reference/ch05.zh-cn.html
 
+    一个网络包的旅程 https://plantegg.github.io/2019/05/15/%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82%E7%BD%91%E7%BB%9C--%E4%B8%80%E4%B8%AA%E7%BD%91%E7%BB%9C%E5%8C%85%E7%9A%84%E6%97%85%E7%A8%8B/
+
+概念澄清
+
+    Unix socket（Unix domain socket）是在 socket 架构上发展起来的用于同一台主机的进程间通讯（IPC），只是将应用层数据从一个进程拷贝到另一个进程。UNIX Domain Socket有SOCK_DGRAM或SOCK_STREAM两种工作模式，类似于UDP和TCP，但是面向消息的UNIX Domain Socket也是可靠的，消息既不会丢失也不会顺序错乱。UNIX Domain Socket可用于两个没有亲缘关系的进程，是全双工的，是目前使用最广泛的IPC机制，比如X Window服务器和GUI程序之间就是通过UNIX Domain Socket通讯的。
+
 iproute2 软件包 代替了 net-tools 软件包，详见章节 [iproute2 软件包](init_a_server.md think)。
 
 网卡基本信息查看
@@ -1627,6 +1633,8 @@ iproute2 软件包 代替了 net-tools 软件包，详见章节 [iproute2 软件
     telnet 127.0.0.1 443
 
 ss 命令（sudo apt install iproute2），比 netstat 命令看的信息更多
+
+    ss用法大全 https://plantegg.github.io/2016/10/12/ss%E7%94%A8%E6%B3%95%E5%A4%A7%E5%85%A8/
 
     # 127.0.0.1 只对本机开放
     # 0.0.0.0   外来连接也开放

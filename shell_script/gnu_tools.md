@@ -5708,9 +5708,14 @@ peer-id-prefix=-TR2940-
 
 加强版 socat(socket cat)
 
+    socat 使用手册 https://payloads.online/tools/socat/
+    新版瑞士军刀：socat https://zhuanlan.zhihu.com/p/347722248
+
+命令格式
+
     socat [参数]  <地址1>  <地址2>
 
-使用 socat 需要提供两个地址，然后 socat 做的事情就是把这两个地址的数据流串起来，把左边地址的输出数据传给右边，同时又把右边输出的数据传到左边。<https://zhuanlan.zhihu.com/p/347722248>
+使用 socat 需要提供两个地址，然后 socat 做的事情就是把这两个地址的数据流串起来，把左边地址的输出数据传给右边，同时又把右边输出的数据传到左边。
 
 最简单的地址就是一个减号“-”，代表标准输入输出，而在命令行输入：
 
