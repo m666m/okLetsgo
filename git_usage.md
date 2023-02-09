@@ -936,7 +936,7 @@ sparse-checkout 文件设置
 
         git status
 
-    1、切换到的local开发分支，并查看状态
+    1、切换到的本地开发分支，并查看状态
 
         git checkout dev_xxx
         git status
@@ -945,7 +945,7 @@ sparse-checkout 文件设置
 
         git pull --rebase origin dev_xxx
 
-工作告一段落，推送自己dev_xxx分支到远程dev_xxx，以便大家拉取测试：
+工作告一段落（自测通过），推送本地 dev_xxx 分支到远程 dev_xxx，以便大家拉取测试：
 
     0、查看当前在git的哪个位置，是否有未提交未更新未暂存的，确保是干净的再继续
 
@@ -958,17 +958,17 @@ sparse-checkout 文件设置
 
         git pull --rebase origin dev_xxx
 
-    2、提交到 local 开发分支
+    2、本地的修改都要做提交
 
         git add .
 
         git commit -m "@@@"
 
-    3、将本地的多次提交合并为一个，以简化提交历史
+       可将本地的多次提交合并为一个，以简化提交历史
 
         git rebase -i
 
-    4、将 local dev_xxx 推送更新到gitlab，使gitlab同步更新显示
+    3、将本地 dev_xxx 推送更新到 gitlab，使 gitlab 同步更新显示
 
         git push origin dev_xxx
 
@@ -1238,6 +1238,8 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
 ### 远程拉取合并本地的pull用法
 
+    git pull origin xxx --rebase
+
 先看看原理：
 
     git pull          = git fetch + git merge
@@ -1304,13 +1306,13 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的 master
 
 最完整的操作，是先fetch下来然后diff看看，然后再决定是否merge或rebase，简略操作用 pull。
 
-    $git fetch <远程主机名> <分支名> # 注意之间有空格
+    $ git fetch <远程主机名> <分支名> # 注意之间有空格
 
     # 取回特定分支的更新
-    $git fetch origin master
+    $ git fetch origin master
 
     # 可简写，默认拉取所有分支，如果有很多分支，就比较慢了
-    $git fetch
+    $ git fetch
 
     # 查看fetch下来的远程代码跟本地的区别
     git diff ..origin/master
@@ -1404,39 +1406,52 @@ clone完成后，进入目录，执行
 
 不断增大步骤2的数字，直到找到你要的commit
 
-## 合并两分支的原则：merge菱形还是rebase拉直
+## 合并两分支的原则：merge菱形分叉还是rebase拉直
 
 两个分支合并的 merge/rebase 效果
 
     Git 之 merge 与 rebase 的区别 https://www.cnblogs.com/zhangzhang-y/p/13682281.html
 
-能做合并的基础是两个分支有相交点，如果三分支合并无直接交点需要用rebase <https://git-scm.com/docs/git-rebase>。
+能做合并的基础是两个分支有相交点，如果是三个分支合并无直接交点则需要用 rebase <https://git-scm.com/docs/git-rebase>。
 
-merge菱形分叉会制造新的commit点，根据具体情况考虑是否需要，一般情况下尽量用变基拉直。
+merge 菱形分叉会制造新的 commit 点，根据具体情况考虑是否需要，一般情况下尽量用 rebase 拉直。
 
-对一个分支定期的变基是一个干净可靠的策略，因为提交历史日志将以有意义的功能序列进行排列（每个人的commit都是分段但是线性的排列）。
+对一个分支定期的 rebase 是一个干净可靠的策略，因为提交历史日志将以有意义的功能序列进行排列（每个人的commit都是分段但是线性的排列）。
 
-还有一些其他的合并哲学（例如，只使用合并而不使用变基以防止重写历史），其中一些甚至可能更简单易用。
+还有一些其他的合并哲学（例如，只使用 merge 菱形分叉而不使用 rebase 拉直以防止重写历史），其中一些甚至可能更简单易用。
 
 但是，master 分支的历史将穿插着所有同时开发的功能的提交，这样混乱的历史很难回顾。
 
-原则：
+基本原则：
+
+    尽可能多建分支进行开发，而不是在一个开发分支上过多的人操作
 
     何时采用分叉或拉直的形态，以能清晰区分各新增功能为目的
 
-    本地主干分支master，拉取同步远程，做拉直
-
-    本地功能分支dev，拉取同步远程，做拉直
-
     主干分支master合入hotfix， 应该是在主干分支上的接续，做拉直
 
-    功能分支dev合入主干分支master，做拉直
+    更新当前分支的内容时做拉直：如本地分支拉取同步远程，做拉直 git pull origin xxx --rebase
 
-    主干分支master合入功能分支dev，做菱形分叉
+    下游分支更新上游分支内容时做拉直：如功能分支 dev 合入主干分支 master，做拉直。
+    这里有个前提，如果主干分支跟功能分支在某些文件上出现合并冲突，则做拉直为了解决冲突会制造新的提交点，会覆盖本地开发组之前的那个提交点，这样的修改记录缺失在项目组不可接受的话，那就做分叉合入。
+
+    上游分支合并下游分支内容时做分叉：如主干分支 master 合入功能分支 dev，做分叉
+
+时效性原则：
+
+    合并代码的时候按照最新分支优先合并为原则
+
+    要经常从上游分支更新代码，如果长时间不更新上游分支代码容易出现大量冲突
+
+例如
+
+    现有上游分支 master，基于 master 分支拉出来一个开发分支 dev，在 dev 上开发了一段时间后要把 master 分支提交的新内容更新到 dev 分支，此时切换到 dev 分支，做 git rebase master
+
+    等 dev 分支开发完成了之后，要合并到上游分支 master 上的时候，切换到 master 分支，做 git merge dev --no-ff
 
 两分支合并方法
 
-    git merge -no-ff 做菱形分叉
+    git merge -no-ff 做分叉（git merge 不带参数就比较坑人，优先拉直否则分叉，所以最好用参数指定）
 
     git rebase 做拉直
 
@@ -1745,15 +1760,61 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
 ### 本地分支合并远程，提示需要解决合并冲突conflicts
 
-    https://www.cnblogs.com/ZhangRuoXu/p/6706571.html
+#### merge 对冲突的处理
 
-TODO:本地分支拉取或推送远程时，远程库上有新的提交，与本地的提交，对同一文件的同一行的修改出现冲突，需要手工解决。
+    本地分支拉取或推送远程时，远程库上有新的提交，与本地的提交，在某个 commit 点之后出现了两种提交的延续，如果直接 git pull，会默认尝试分叉合并，失败则提示需要解决冲突（对同一文件的同一行的修改出现冲突），即手工解决。
+
+merge 如果可以做分叉合入，会直接提示新增提交点的注释，这种不需要手动干预
+
+    $ git pull
+    merge: Merge branch 'master' of git://...
+
+merge 提示需要手工解决冲突
+
+    $ git pull
+    Auto-merging mmm.py
+    CONFLICT (content): Merge conflict in mmm.py
+    Automatic merge failed; fix conflicts and then commit the result.
+
+    $ git status
+    On branch master
+    Your branch and 'origin/master' have diverged,
+    and have 1 and 1 different commits each, respectively.
+    (use "git pull" to merge the remote branch into yours)
+
+    You have unmerged paths.
+    (fix conflicts and run "git commit")
+    (use "git merge --abort" to abort the merge)
+
+    Unmerged paths:
+    (use "git add <file>..." to mark resolution)
+            both modified:   mmm.py
+
+    no changes added to commit (use "git add" and/or "git commit -a")
+
+#### rebase 对冲突的处理
+
+    本地分支拉取或推送远程时，远程库上有新的提交，与本地的提交，对同一文件的同一行的修改出现冲突需要解决，即手工解决。比如 git push 会提示需要先 git pull，注意做 git pull 的时候选择是否默认分叉，因为默认分叉失败也会提示解决冲突、新增提交点，可直接明确选择变基 git pull --rebase，这样你的代码的分支树是直线的。
 
     本地分支 A 合入 本地分支 B，二者对同一文件的同一行的修改出现冲突，需要手工解决。
 
+rebase 会提示需要手工解决冲突才能继续你当前的提交
+
+    $ git pull --rebase
+    Auto-merging band.py
+    CONFLICT (content): Merge conflict in band.py
+    error: could not apply 94950e8... "提交点注释"
+    hint: Resolve all conflicts manually, mark them as resolved with
+    hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+    hint: You can instead skip this commit: run "git rebase --skip".
+    hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+    Could not apply 94950e8... "提交点注释"
+
 直接用 vi 打开 git 提示的有冲突的文件进行修改即可。
 
-冲突文件的格式基本如下
+#### 冲突文件的格式
+
+基本如下
 
     [不冲突的内容]
     <<<<<<<< HEAD
@@ -1770,26 +1831,45 @@ TODO:本地分支拉取或推送远程时，远程库上有新的提交，与本
             如果你在跟远程分支合并，那就是本地分支的代码，
             如果你在合入本地的其它分支，那就是其它分支的代码
     ]
-    >>>>>>> 94950e8 (1add for conflit)
+    >>>>>>> 94950e8 ("提交点注释")
     [不冲突的内容]
 
 git 修改了冲突文件的内容，同时列出的两种版本，是为了方便你修改的时候对比酌情编辑，比如删除一个保留另一个等，其实全删了重新写也可以。只要你删除了冲突标记符号保存文件，git 就认可，接受为无冲突的最终版本。
 
 总之，你的最终修改结果，使文件内容是你想要的样子，记得要删除冲突标记符号所在行，然后保存退出。
 
-使用 git diff 命令也可以查看冲突，格式同上。
+使用 git diff 命令也可以查看冲突，格式同上，但注意前面的 a 表示当前本地内容，后面的 b 表示要合入的内容
 
-解决了所有的冲突文件后，提交的命令稍有区别：
+    $ git diff
+    diff --cc mmm.py
+    index 3988649e86,51def895e0..0000000000
+    --- a/mmm.py
+    +++ b/mmm.py
+    @@@ -1,5 -1,5 +1,10 @@@
+    + mod1conf
+    # aaa
+    ++<<<<<<< HEAD
+    +0000000000# b2222222222222b mod conflict
+    +ooooooooooooo mod conflict
+    ++=======
+    +mod1 for conflict
+    ++>>>>>>> 411165b222debbb155d331326689726c0e254396
+    # ccc
+    - # fff
+    + mod1 conf ori
+    + # fff ggggggggggggggg mod1 conf
 
-    如果是 merge 时提示冲突
+解决了所有的冲突文件后，提交的命令稍有区别，最好每一步都运行 git status 看看提示再做
 
-        git add .
+    如果是 merge 时提示冲突，解决后
+
+        git add .  # 注意这是把所有文件都添加了，确保没有无关文件
 
         git commit
 
-    如果是 rebase 时提示冲突
+    如果是 rebase 时提示冲突，解决后
 
-        git add .
+        git add .  # 注意这是把所有文件都添加了，确保没有无关文件
 
         git rebase --continue
 
@@ -1797,7 +1877,9 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
 
 如果想跳过这个提交，会导致以原提交为准，新增提交丢弃
 
-    git rebase --skip
+    git commit -a
+
+    或 git rebase --skip
 
 如果想放弃合并，重新编辑
 
