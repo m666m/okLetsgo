@@ -531,6 +531,29 @@ BoldCyan=116,207,190
 White=242,251,249
 BoldWhite=251,243,242
 
+# 自定义颜色方案，跟深色背景搭配，nord 的暗淡方案
+# https://github.com/arcticicestudio/nord-alacritty/blob/main/src/nord.yml
+#Background=C:\tools\SuperPuTTY\DR_6.jpg
+#BackgroundColour=46,52,64
+#ForegroundColour=216,222,233
+#CursorColour=216,222,233
+#Black=55,62,77
+#BoldBlack=55,62,77
+#Red=148,84,93
+#BoldRed=148,84,93
+#Green=128,149,117
+#BoldGreen=128,149,117
+#Yellow=178,158,117
+#BoldYellow=178,158,117
+#Blue=104,128,154
+#BoldBlue=104,128,154
+#Magenta=140,115,140
+#BoldMagenta=140,115,140
+#Cyan=109,150,165
+#BoldCyan=109,150,165
+#White=174,179,187
+#BoldWhite=174,179,187
+
 # 自定义颜色方案，跟浅色背景搭配-黄色
 #Background=C:\tools\SuperPuTTY\222yellow.jpg
 #BackgroundColour=250,234,182
