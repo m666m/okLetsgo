@@ -5190,22 +5190,28 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
     ls -al | tee file.txt
 
+#### ackg 给终端输出的自定义关键字加颜色
+
 hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控日志输出调试程序使用
 
     https://github.com/paoloantinori/hhighlighter
     竞品 https://github.com/Scopart/colorex/
     https://www.cnblogs.com/bamanzi/p/colorful-shell.html
 
+脚本名和函数名都太简单了，都换成不易混淆的 ackg 吧
+
     # 先安装依赖 ack https://wangchujiang.com/linux-command/c/ack.html
     # sudo apt install ack
 
     cd /usr/local/bin/
-    # 名字都换成不易混淆的 ackg 吧
+
     sudo curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
+
     sudo sed -i 's/h()/ackg()/' ackg.sh
 
-然后测试你感兴趣的文字，支持perl形式的正则表达式
+然后测试你感兴趣的文字，支持 -i 忽略大小写，支持perl形式的正则表达式
 
+    # 先 source 一下就可以在 shell 下使用它的同名函数了
     source ackg.sh
 
     # echo abc | ack --flush --passthru --color --color-match=red a | ack --flush --passthru --color --color-match=yellow b
