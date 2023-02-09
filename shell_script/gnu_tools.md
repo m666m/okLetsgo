@@ -5195,7 +5195,13 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控日志输出调试程序使用
 
     https://github.com/paoloantinori/hhighlighter
+        主要封装的是 ack --passthru 的透传和着色
+            https://linux.die.net/man/1/ack
+                https://beyondgrep.com/
+                    https://github.com/beyondgrep/ack3/
+
     竞品 https://github.com/Scopart/colorex/
+
     https://www.cnblogs.com/bamanzi/p/colorful-shell.html
 
 脚本名和函数名都太简单了，都换成不易混淆的 ackg 吧
@@ -5209,20 +5215,18 @@ hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控�
 
     sudo sed -i 's/h()/ackg()/' ackg.sh
 
-然后测试你感兴趣的文字，支持 -i 忽略大小写，支持perl形式的正则表达式
+然后测试你感兴趣的文字，支持 -i 忽略大小写，支持 perl 形式的正则表达式
 
     # 先 source 一下就可以在 shell 下使用它的同名函数了
     source ackg.sh
 
-    # echo abc | ack --flush --passthru --color --color-match=red a | ack --flush --passthru --color --color-match=yellow b
+    # 等效 echo abc | ack --flush --passthru --color --color-match=red a | ack --flush --passthru --color --color-match=yellow b
     echo "abcdefghijklmnopqrstuvxywz" |ackg a b c d e f g h i j k l
-
-    # 行开始结束位置的单词、连续相同的单词、暂不知道如何写正则表达式检出
-    echo -e ':NoD:_notebook:no:no_:1no2notl no no\nno no no no no'|ackg -i '[^\w]no[^\w]|[^\w]no$|^no[^\w]|not'
 
     ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
 
-    cat /var/log/kern.log.1 |ackg -i 'Fail|Error|[\W]Not[\W]|[\W]No[\W]|Invalid' '[\W]Ok[\W]|Success|Good|Done|Finish' 'Warn|Timeout|[\W]Down[\W]|Unknown|Disconnect|Restart'
+    # \b 是perl正则表达式的单词限定符 https://perldoc.perl.org/perlre
+    cat /var/log/kern.log.1 |ackg -i 'Fail|Error|\bNot\b|\bNo\b|Invalid' '\bOk\b|Success|Good|Done|Finish' 'Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart'
 
 ### dd 写入文件
 
