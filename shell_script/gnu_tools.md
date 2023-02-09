@@ -502,8 +502,9 @@ UnderlineColour=153,241,219
 AllowBlinking=yes
 BoldAsFont=yes
 
+# 2023.2 脚本执行速度慢于 mintty 本地处理
 # Windows version >= 10 / 2019 1809 (build >= 10.0.17763)
-ConPTY=true
+#ConPTY=true
 
 # 自定义颜色方案，跟深色背景搭配
 # https://github.com/mintty/mintty/wiki/Tips#background-image
