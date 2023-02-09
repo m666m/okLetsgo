@@ -3178,8 +3178,8 @@ XXX:我的想法是，不用 git push -f，用 git merge 是否可以解决？
 一般都是因为 remote 端目录变更导致
 
     $ git remote -v
-    origin  ssh://git@74.120.175.117:26179/uspace/gitrepo/af_monitor.git (fetch)
-    origin  ssh://git@74.120.175.117:26179/uspace/gitrepo/af_monitor.git (push)
+    origin  ssh://git@xx.xx.xx.xx:2345/gitrepo/af_monitor.git (fetch)
+    origin  ssh://git@xx.xx.xx.xx:2345/gitrepo/af_monitor.git (push)
 
 删除 origin 重建
 
