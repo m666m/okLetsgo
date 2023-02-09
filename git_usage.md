@@ -1810,9 +1810,11 @@ rebase 会提示需要手工解决冲突才能继续你当前的提交
     hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
     Could not apply 94950e8... "提交点注释"
 
-直接用 vi 打开 git 提示的有冲突的文件进行修改即可。
+直接用 vi 打开 git 提示的有冲突的文件进行修改即可，注意这样的修改会覆盖你的当前提交点，整合为一个新的提交点。
 
 #### 冲突文件的格式
+
+TODO : 区分 rebase/diff、merge/diff 的结果是否都是相同的格式？包括对远程合入，本地其它分支的合入
 
 基本如下
 
@@ -1888,6 +1890,59 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     或 git rebase --abort
 
 可以使用图形化的合并工具 git merge tool，它会将找到一份两个分支的祖先代码作为base也就是基准，然后再将两个分支的改动都列举出来作为对比，显示的是三个窗口，让我们在git编辑器当中决定要留下什么。如果使用 vs code 的话，它的显示效果更友好，而且还可以切换比对。
+
+#### Your branch and 'origin/xxx' have diverged
+
+<https://blog.csdn.net/d6619309/article/details/52711035>
+
+当前工作的git仓库模型为:
+
+    upstream
+      |
+    origin
+      |
+    local copy
+
+##### 情况1： Git fetch 、merge以后出现分叉
+
+git fetch upstream上游代码后执行git merge，然后git status发现Git分支出现分叉。
+
+出现分叉的原因是本地和远程的共同节点之后，出现了两种独立的提交(每种可能有多个提交)：一种是你在本地分支新增的提交，另外是远程分支新增的提交。
+
+这种情况，通常是由于另外一个人在上游相同的分支做了提交，或是你在本地修改之前没有先git pull同步远程代码，直接修改然后提交再push远程，不巧的是远程已经有人提交了新的修改，git这时候要提示你分叉了，这两个提交需要你手工确认做融合。
+
+解决的话，在本地分支上，执行:
+
+    git fetch
+    git rebase
+
+rebase以后的git提交历史树为:
+
+    ... o ---- o ---- A ---- B  origin/branch_xxx (upstream work)
+                              \
+                               C`  branch_xxx (your work)
+
+##### 情况2：rebase以后提示同样的错误
+
+这是因为你在执行rebase之前，已经往你的远程上面push了提交。由于rebase会重写历史提交记录，因此你的本地和你的远程的历史提交状态是不同的，同样产生了分叉:
+
+rebase之前的git提交历史树:
+
+    ... o ---- o ---- A ---- B  master, origin/master
+                       \
+                        C  branch_xxx, origin/branch_xxx
+
+执行rebase之后的git提交历史树:
+
+    ... o ---- o ---- A ---------------------- B  master, origin/master
+                       \                        \
+                        C  origin/branch_xxx     C` branch_xxx
+
+这时候，你必须确定你是处于上面描述的情况，解决方案就是强制push到你的origin上游，执行下面命令可以解决:
+
+    git push origin branch_xxx -f
+
+XXX:我的想法是，不用 git push -f，用 git merge 是否可以解决？
 
 ## 对一个分支做变基：交互式压缩提交点
 
@@ -3112,59 +3167,6 @@ Ubuntu克隆下源码后对其操作时git报错 fatal: unsafe repository
 第二行将该目录下的文件所有权转移给该用户名。
 
 P.S 第二行最后有个"."
-
-### Your branch and 'origin/xxx' have diverged
-
-<https://blog.csdn.net/d6619309/article/details/52711035>
-
-当前工作的git仓库模型为:
-
-    upstream
-      |
-    origin
-      |
-    local copy
-
-#### 情况1： Git fetch 、merge以后出现分叉
-
-git fetch upstream上游代码后执行git merge，然后git status发现Git分支出现分叉。
-
-出现分叉的原因是本地和远程的共同节点之后，出现了两种独立的提交(每种可能有多个提交)：一种是你在本地分支新增的提交，另外是远程分支新增的提交。
-
-这种情况，通常是由于另外一个人在上游相同的分支做了提交，或是你在本地修改之前没有先git pull同步远程代码，直接修改然后提交再push远程，不巧的是远程已经有人提交了新的修改，git这时候要提示你分叉了，这两个提交需要你手工确认做融合。
-
-解决的话，在本地分支上，执行:
-
-    git fetch
-    git rebase
-
-rebase以后的git提交历史树为:
-
-    ... o ---- o ---- A ---- B  origin/branch_xxx (upstream work)
-                              \
-                               C`  branch_xxx (your work)
-
-#### 情况2：rebase以后提示同样的错误
-
-这是因为你在执行rebase之前，已经往你的远程上面push了提交。由于rebase会重写历史提交记录，因此你的本地和你的远程的历史提交状态是不同的，同样产生了分叉:
-
-rebase之前的git提交历史树:
-
-    ... o ---- o ---- A ---- B  master, origin/master
-                       \
-                        C  branch_xxx, origin/branch_xxx
-
-执行rebase之后的git提交历史树:
-
-    ... o ---- o ---- A ---------------------- B  master, origin/master
-                       \                        \
-                        C  origin/branch_xxx     C` branch_xxx
-
-这时候，你必须确定你是处于上面描述的情况，解决方案就是强制push到你的origin上游，执行下面命令可以解决:
-
-    git push origin branch_xxx -f
-
-XXX:我的想法是，不用 git push -f，用 git merge 是否可以解决？
 
 ### fatal: does not appear to a git repository
 
