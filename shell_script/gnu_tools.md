@@ -1956,7 +1956,7 @@ print('\nThen restart mintty to take effect, you can run `curl -fsSL https://git
         magenta: '#b48ead'
         cyan: '#8fbcbb'
         white: '#eceff4'
-    这里是一个新增的风格，待尝试
+    这里是一个暗淡风格的nord，其它地方未见
     dim:
         black: '#373e4d'
         red: '#94545d'

@@ -220,7 +220,7 @@
         "TODO": {
             "icon": "tasklist",
             "iconColour": "#b96a03",
-            "foreground": "#30fdfd",
+            "foreground": "#5cd1ff",
             "background": "#b96a03",
             "type": "tag"
         },
@@ -234,15 +234,15 @@
         "XXX": {
             "icon": "beaker",
             "iconColour": "#10dfdf",
-            "foreground": "#072cfc",
+            "foreground": "#03043a",
             "background": "#10dfdf",
             "type": "tag"
         },
         "NOTE": {
             "icon": "info",
             "iconColour": "#3e58a0",
-            "foreground": "#4217dd",
-            "background": "#40b9b9",
+            "foreground": "#e0bb3f",
+            "background": "#3e58a0",
             "type": "tag"
         }
         // "[x]":{
