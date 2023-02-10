@@ -151,6 +151,8 @@ Windows 10 在 2022 年后已经比较完整的对外提供了相应编程接口
 
 ConPty
 
+    https://zhuanlan.zhihu.com/p/102393122
+
     https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/
 
     https://learn.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
@@ -402,9 +404,9 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
 
 #### winpty 运行 cmd 字符程序
 
-    https://zhuanlan.zhihu.com/p/102393122
-
     https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs
+
+    https://github.com/git-for-windows/git/wiki/FAQ#some-native-console-programs-dont-work-when-run-from-git-bash-how-to-fix-it
 
 在 mintty 或 Cygwin's sshd 下，如果执行Windows 控制台程序 （Windows CMD 字符程序或PowerShell），如 python 会挂死无法进入。这是因为 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 unix pty，或称 Cygwin/MSYS pty。
 
