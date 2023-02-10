@@ -127,6 +127,9 @@ git通过ssh客户端连接github。除了github这样的，私有仓库都需�
 
     常见问题 https://github.com/git-for-windows/git/wiki/FAQ
 
+    在 cmd 或 powershell 下运行要设置环境变量
+        https://github.com/git-for-windows/git/wiki/FAQ#running-without-git-bash
+
 ### 1.ssh客户端的设置
 
 生成 ssh key 文件，默认回答都是一路回车
