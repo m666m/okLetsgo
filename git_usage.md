@@ -1199,7 +1199,7 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
 
 ## 分支的拉取和上传
 
-### 每日工作第一件事 拉取合并（含标签，变基）
+### 【每日工作第一件事 拉取合并（含标签，变基）】
 
 严重注意
 
@@ -1222,16 +1222,12 @@ master分支上的最新版本始终与线上版本一致，如果要回溯历�
     git status  # 如果有本地未提交的，先stash暂存才能继续下面的代码合并
     # 详细的：
     git diff ..origin/master
+    # 如果提示有冲突，酌情选择分叉还是拉直，参见章节 [合并两分支的原则：merge菱形分叉还是rebase拉直]
 
-    # 酌情合并代码到本地
-    git rebaseg 或 it merge
-    # 如果提示有冲突，不建议直接 git merge，会导致本地菱形分叉
-        git add -u 冲突文件
-        git commit --amend
+    # 根据上一步确定的策略合并代码，或者先解决冲突再合并
+    git rebase 或 git merge -noff
 
-        git rebase -–continue
-
-    # 再确认下没问题了
+    # 再确认
     git status
 
 整合到一个命令：
@@ -1468,15 +1464,39 @@ merge 菱形分叉会制造新的 commit 点，根据具体情况考虑是否需
                          \
                           f---g---h---i  feature分支
 
+### 本地分支合并远程的操作流程
+
+NOTE:本地分支更新远程代码时，不要直接做 git pull 或 git pull --rebase，应该把拉取和合并分开做，以明确的策略进行合并。
+
+如果是你自用的代码，一般简单选择拉直合并 git pull --rebase，但如果不想要 rebase 修改提交历史，那就应该选择分叉合并。
+
+对多人合作的功能分支、主干分支等，都要把拉取和合并分开做。
+
+拉取远程合并之前，先fetch看看是不是有别人提交了远程导致冲突，提前确定合并策略
+
+    git fetch 先拉远程，而不是上来就 git pull 或 git pull --rebase
+
+    git status 看看提示，是否有冲突
+
+    git diff ..origin/master  具体啥冲突
+
+    想好了如何解决冲突，该分叉还是拉直，参考章节 [合并两分支的原则]
+
+    然后再
+
+    git merge -noff 或 git rebase
+
+    或 git pull 或 git pull --rebase
+
 ### merge 合并默认做快进（Fast Forward） 取拉直效果
 
 需要合入分支的接续点就是分叉点。
 
 merge默认做的是快进，即不新增commit点，走一条线的效果，执行 git status 会提示可以做快进。
 
-NOTE: 如果merge不能做快进，就会分叉制作菱形，但并无提示，这个地方最容易让人糊涂。
+NOTE: 如果merge不能做快进，就会分叉制作菱形，但做之前并不让用户选择，只是告诉你一下。
 
-所以最保险的方法是，git merge之前，先git status 看看 git merge 是否会提示快进。
+所以最保险的方法是，git merge 之前，先 git status 看看是否提示merge会做快进。
 
 1.hotfix分支先合并到主干分支 master
 
@@ -1562,11 +1582,11 @@ feature 分支是用来开发特性的，上面会存在许多零碎的提交。
 
 初始状态是两条分叉，master分支先合入了hotfix，默认快进合并：
 
-               f---g---h---i feature分支
-             /
-    a---b---c---d---e
-            *
-            hotfix分支和feature分支的分叉点在c
+                          d---e  hotfix分支
+                         /
+    master主干  a---b---c  * hotfix分支和feature分支的分叉点在c
+                         \
+                          f---g---h---i  feature分支
 
 为了合入不制造菱形，feature 分支在 master 分支的基础上延伸拉直，这时两分支的head位置不一样
 
@@ -1579,21 +1599,22 @@ feature 分支是用来开发特性的，上面会存在许多零碎的提交。
 
 rebase的拉直效果，虽然需要付出一些合并冲突解决的代价，但是清晰多了：
 
-                  A'--B'--C' feature
-                 /
-    D---E---F---G master
+                      f---g---h---i feature分支
+                     /
+    a---b---c---d---e master主干
 
-然后 master 分支（落后了）做合并，两分支的head位置一样了。（因为 master 分支的head位于分叉点，实质二者在一条线上，所以merge做的是快进合并）
+然后 master 分支（落后了）做合并，两分支的head位置一样了。（因为 master 分支的head位于分叉点，实质二者在一条线上，所以master主干分支合入feature分支时merge做的是快进合并）
 
     git checkout master
     git merge feature
 
 最终效果，大家都同步到一条直线的最末端：
 
-    D---E---F---G---A'--B'--C' master
-                               feature
+    a---b---c---d---e---f---g---h---i   master
+                                        feature
 
 rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决冲突。
+
 解决冲突后,将修改add，执行git rebase –continue继续操作，或者git rebase –skip忽略冲突，或者git rebase --abort终止这次rebase。
 
 一个本地分支拉取远程时，二者的合并做变基，起到拉直效果
@@ -1763,7 +1784,23 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
 11.新的功能分支，从[远程]的主分支拉取建立，开始新的一轮循环。
 
-### 本地分支合并远程，提示需要解决合并冲突conflicts
+### 解决合并冲突conflicts
+
+如果是本地分支合并远程，在执行 git pull 或 git pull --rebase 的时候出现冲突的提示，你已经无法选择合并策略了。
+
+为防止出现这种情况，正确的拉取远程合并代码的工作顺序，参见章节 [本地分支合并远程的操作流程]。
+
+出现冲突的原因：
+
+出现分叉的原因是本地和远程的共同节点之后，出现了两种独立的提交(每种可能有多个提交)：一种是你在本地分支新增的提交，另外是远程分支新增的提交。
+
+这种情况，通常是由于另外一个人在上游相同的分支做了提交，或是你在本地修改之前没有先 git pull 同步远程代码，直接修改然后提交再push远程，不巧的是远程已经有人提交了新的修改，git这时候要提示你分叉了，这两个提交需要你手工确认做融合。
+
+其实两个分支合并也会出现这种情况：
+
+你在功能分支合并主干分支时，没有先更新本地的主干分支，而主干分支的远程已经有新的提交了，而你把功能分支合并到本地的这个旧的主干分支，在推送到远程的主干分支时会发现提示冲突。
+
+或者，即使你更新了本地的主干分支，但是没有锁定远程主干分支的合入，在你做本地的合并工作时，有人在远程的主干分支新增了提交，这样在你推送合并后的新主干分支到远程时，也会提示冲突。
 
 #### merge 对冲突的处理
 
@@ -1908,13 +1945,192 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
       |
     local copy
 
-##### 情况1： Git fetch 、merge以后出现分叉
+##### 情况1：本地分支 git fetch 远程提示有冲突
+
+先拉取远程
+
+    git fetch
+
+检查到有冲突
+
+    $ git status
+    On branch master
+    Your branch and 'origin/master' have diverged,
+    and have 1 and 1 different commits each, respectively.
+    (use "git pull" to merge the remote branch into yours)
+
+    nothing to commit, working tree clean
+
+查看具体差异，对比下本地和远程，其中 a 是本地，b 是远程，减号表示本地相对远程被删除的内容，+表示远程相对本地新增的内容，没有加减号的表示无差异。
+
+    $ git diff ..origin/master
+    diff --git a/newhot.txt b/newhot.txt
+    index 15cd1bb637..c4af76e0e4 100644
+    --- a/newhot.txt
+    +++ b/newhot.txt
+    @@ -1,14 +1,15 @@
+    -2add
+    -newhostfix
+    -aaaaa
+    -ffffff
+    +bbbbbb
+    +c111modecc
+    +eee
+    +111add
+    +ffffff111mode
+    gggg
+    -2addhhhhhhh
+    +hh111modehhhhh
+    iiiii
+    -jjj2modjjjmode2jjjjjjj
+    -2add
+    +jjjjjjjj111modjjjjj
+    +111add
+    +111add
+    kk
+    -llllllllll2add  注意：diff发现有区别，但是后面的rebase认为可以直接追加不是冲突
+    +llllllllll
+    mmm
+    -
+    -2dd
+    +111add
+
+做 rebase，git 会修改冲突的文件内容，同时列出二者并标记差异，便于你直接编辑
+
+    $ git rebase
+    Auto-merging newhot.txt
+    CONFLICT (content): Merge conflict in newhot.txt
+    error: could not apply 57d79f7ec7... 2add for conflict
+    hint: Resolve all conflicts manually, mark them as resolved with
+    hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+    hint: You can instead skip this commit: run "git rebase --skip".
+    hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+    Could not apply 57d79f7ec7... 2add for conflict
+
+再看看提示
+
+    $ git status
+    interactive rebase in progress; onto e7f51c588e
+    Last command done (1 command done):
+    pick 57d79f7ec7 2add for conflict
+    No commands remaining.
+    You are currently rebasing branch 'master' on 'e7f51c588e'.
+    (fix conflicts and then run "git rebase --continue")
+    (use "git rebase --skip" to skip this patch)
+    (use "git rebase --abort" to check out the original branch)
+
+    Unmerged paths:
+    (use "git restore --staged <file>..." to unstage)
+    (use "git add <file>..." to mark resolution)
+            both modified:   newhot.txt
+
+    no changes added to commit (use "git add" and/or "git commit -a")
+
+编辑冲突文件，解决冲突，参见上面章节 [冲突文件的格式]
+
+    $ cat newhot.txt
+    <<<<<<< HEAD  这后面是远程的
+    bbbbbb
+    c111modecc
+    eee
+    111add
+    ffffff111mode
+    gggg
+    hh111modehhhhh
+    iiiii
+    jjjjjjjj111modjjjjj
+    111add
+    111add
+    =======  这后面是本地的
+    2add
+    newhostfix
+    aaaaa
+    ffffff
+    gggg
+    2addhhhhhhh
+    iiiii
+    jjj2modjjjmode2jjjjjjj
+    2add
+    >>>>>>> 57d79f7ec7 (2add for conflict)
+    kk                                     \
+    llllllllll2add                         ---- 这三行没冲突
+    mmm                                    /
+    <<<<<<< HEAD  HEAD  这后面是远程的
+    111add
+    =======  这后面是本地的
+
+    2dd
+    >>>>>>> 57d79f7ec7 (2add for conflict)
+
+改完了，看看区别，一个是合并列出了本地和远程的内容，一个是列出的你当前的修改
+
+    $ git diff
+    diff --cc newhot.txt
+    index c4af76e0e4,15cd1bb637..0000000000
+    --- a/newhot.txt
+    +++ b/newhot.txt
+    @@@ -1,15 -1,14 +1,5 @@@
+    - bbbbbb
+    - c111modecc
+    - eee
+    - 111add
+    - ffffff111mode
+    -2add
+    -newhostfix
+    -aaaaa
+    -ffffff
+    --gggg
+    - hh111modehhhhh
+    -2addhhhhhhh
+    --iiiii
+    - jjjjjjjj111modjjjjj
+    - 111add
+    - 111add
+    -jjj2modjjjmode2jjjjjjj
+    -2add
+    --kk
+    - llllllllll
+    -llllllllll2add
+    --mmm
+    - 111add
+    -
+    -2dd
+    ++小孩子才做选择题，我选择全都不要
+    ++啊啊啊啊
+    ++吧吧吧吧
+    ++从从从从
+    ++的的的的
+
+标记改完了，添加该文件
+
+    git add .  # 注意如果有无关文件就别用 . 通配了，还是指定具体文件名比较好
+
+这次提示没有冲突了
+
+    $ git status
+    interactive rebase in progress; onto e7f51c588e
+    Last command done (1 command done):
+    pick 57d79f7ec7 2add for conflict
+    No commands remaining.
+    You are currently rebasing branch 'master' on 'e7f51c588e'.
+    (all conflicts fixed: run "git rebase --continue")
+
+    Changes to be committed:
+    (use "git restore --staged <file>..." to unstage)
+            modified:   newhot.txt
+
+继续rebase，会直接提示更新提交点，给出的是原来的注释，但是 commit id 已经变更了
+
+    $ git log --oneline --graph
+    * 134a0adfe1 (HEAD -> master) rebase update 2add for conflict
+    * e7f51c588e (origin/master) 111mod 111add
+    * 3982bb09ba suibianshashi
+
+也就是说，rebase 更新了你的提交点，如果你希望保留历史以便查看，那么应该选择分叉合并。
+
+##### 情况2： Git fetch 、merge以后出现分叉
 
 git fetch upstream上游代码后执行git merge，然后git status发现Git分支出现分叉。
-
-出现分叉的原因是本地和远程的共同节点之后，出现了两种独立的提交(每种可能有多个提交)：一种是你在本地分支新增的提交，另外是远程分支新增的提交。
-
-这种情况，通常是由于另外一个人在上游相同的分支做了提交，或是你在本地修改之前没有先git pull同步远程代码，直接修改然后提交再push远程，不巧的是远程已经有人提交了新的修改，git这时候要提示你分叉了，这两个提交需要你手工确认做融合。
 
 解决的话，在本地分支上，执行:
 
@@ -1927,7 +2143,7 @@ rebase以后的git提交历史树为:
                               \
                                C`  branch_xxx (your work)
 
-##### 情况2：rebase以后提示同样的错误
+##### 情况3：rebase以后提示同样的错误
 
 这是因为你在执行rebase之前，已经往你的远程上面push了提交。由于rebase会重写历史提交记录，因此你的本地和你的远程的历史提交状态是不同的，同样产生了分叉:
 
@@ -2462,8 +2678,11 @@ Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803
 git diff 主要的应用场景：
 
     尚未缓存的改动：git diff
+
     查看已缓存的改动： git diff --cached
+
     查看已缓存的与未缓存的所有改动：git diff HEAD
+
     显示摘要而非整个 diff：git diff --stat
 
 示例 -
@@ -2537,6 +2756,13 @@ git diff 主要的应用场景：
 
     git diff SHA1 SHA2
 
+拉取远程，先看看是不是有别人提交了远程，防止互相merge新增commit
+
+    git fetch
+    git diff ..origin/master
+
+    git status
+
 制作补丁
 
     git diff xxx > your.patch
@@ -2554,9 +2780,9 @@ git diff 主要的应用场景：
 
 #### 没点，俩点，仨点的区别
 
-<https://stackoverflow.com/questions/4944376/how-to-check-real-git-diff-before-merging-from-remote-branch>
+    https://stackoverflow.com/questions/4944376/how-to-check-real-git-diff-before-merging-from-remote-branch
 
-<https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E9%80%89%E6%8B%A9%E4%BF%AE%E8%AE%A2%E7%89%88%E6%9C%AC>
+    https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E9%80%89%E6%8B%A9%E4%BF%AE%E8%AE%A2%E7%89%88%E6%9C%AC
 
 You can use various combinations of specifiers to git to see your diffs as you desire (the following examples use the local working copy as the implicit first commit):
 
@@ -2566,8 +2792,7 @@ You can use various combinations of specifiers to git to see your diffs as you d
 
     git diff remote/origin
 
-This shows the incoming remote additions as deletions; any additions in your local
-repository are shown as additions.
+This shows the incoming remote additions as deletions; any additions in your local repository are shown as additions.
 
 2.可以看到更改
 
@@ -2576,7 +2801,7 @@ repository are shown as additions.
 Shows incoming remote additions as additions; the double-dot includes changes
 committed to your local repository as deletions (since they are not yet pushed).
 
-For info on ".." vs "..." see as well as the excellent documentation at [git-scm revision selection: commit ranges Briefly] <https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Commit-Ranges>, for the examples above, double-dot syntax shows all commits reachable from origin/master but not your working copy. Likewise, the triple-dot syntax shows all the commits reachable from either commit (implicit working copy, remote/origin) but not from both.git help diff
+For info on ".." vs "..." see as well as the excellent documentation at [git-scm revision selection: commit ranges Briefly] <https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Commit-Ranges>, for the examples above, double-dot syntax shows all commits reachable from origin/master but not your working copy. Likewise, the triple-dot syntax shows all the commits reachable from either commit (implicit working copy, remote/origin) but not from both.
 
 例如
 
@@ -2584,12 +2809,11 @@ For info on ".." vs "..." see as well as the excellent documentation at [git-scm
 
 您将看到本地git存储库的内容与远程存储库中的不同之处。您将看不到本地文件系统中或索引中的任何更改。
 
-3.三点语法显示从任一提交（隐式工作副本、远程/原点）可以到达的所有提交，但不能同时来自两个提交。git help diff
+3.三点语法显示从任一提交（隐式工作副本、远程/原点）可以到达的所有提交，但不能同时来自两个提交。
 
     git diff ...remote/origin
 
-Shows incoming remote additions as additions; the triple-dot excludes changes
-committed to your local repository.
+Shows incoming remote additions as additions; the triple-dot excludes changes committed to your local repository.
 
 ### HEAD、HEAD^、HEAD~ 的含义
 
