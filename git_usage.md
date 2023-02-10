@@ -2126,7 +2126,18 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     * e7f51c588e (origin/master) 111mod 111add
     * 3982bb09ba suibianshashi
 
-也就是说，rebase 更新了你的提交点，如果你希望保留历史以便查看，那么应该选择分叉合并。
+也就是说，rebase 更新了你的提交点，如果你希望保留历史以便查看，那么应该选择分叉合并的策略。
+
+提交点更新了，还需要推送到远程
+
+    $ git status
+    On branch master
+    Your branch is ahead of 'origin/master' by 1 commit.
+    (use "git push" to publish your local commits)
+
+    nothing to commit, working tree clean
+
+    $ git push
 
 ##### 情况2： Git fetch 、merge以后出现分叉
 
