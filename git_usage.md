@@ -1786,6 +1786,10 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
 ### 解决合并冲突conflicts
 
+    Your branch and 'origin/xxx' have diverged
+
+    <https://blog.csdn.net/d6619309/article/details/52711035>
+
 如果是本地分支合并远程，在执行 git pull 或 git pull --rebase 的时候出现冲突的提示，你已经无法选择合并策略了。
 
 为防止出现这种情况，正确的拉取远程合并代码的工作顺序，参见章节 [本地分支合并远程的操作流程]。
@@ -1933,19 +1937,7 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
 
 可以使用图形化的合并工具 git merge tool，它会将找到一份两个分支的祖先代码作为base也就是基准，然后再将两个分支的改动都列举出来作为对比，显示的是三个窗口，让我们在git编辑器当中决定要留下什么。如果使用 vs code 的话，它的显示效果更友好，而且还可以切换比对。
 
-#### Your branch and 'origin/xxx' have diverged
-
-<https://blog.csdn.net/d6619309/article/details/52711035>
-
-当前工作的git仓库模型为:
-
-    upstream
-      |
-    origin
-      |
-    local copy
-
-##### 情况1：本地分支 git fetch 远程提示有冲突
+##### 示例1：用 rebase 解决本地分支更新远程的冲突
 
 先拉取远程
 
@@ -1960,6 +1952,8 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     (use "git pull" to merge the remote branch into yours)
 
     nothing to commit, working tree clean
+
+    注：git的建议给的 git pull 是让 git 自动确定合并策略，后续还是会让你解决冲突
 
 查看具体差异，对比下本地和远程，其中 a 是本地，b 是远程，减号表示本地相对远程被删除的内容，+表示远程相对本地新增的内容，没有加减号的表示无差异。
 
