@@ -219,6 +219,8 @@ PuTTY is a free implementation of SSH and Telnet for Windows and Unix platforms,
 
         https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
 
+putty 连接远程服务器，实现了 ssh 的全部功能，使用 PUTTYGEN.EXE 生成并管理密钥，使用 PAGEANT.EXE 作为密钥代理，并在一个单一窗口下填写远程服务器的参数配置，远程服务器的终端显示也是一个单一窗口。
+
 术语：会话 Session
 
     因为功能是连接远程站点然后执行命令行操作，putty 把每个连接保存为会话，设置会话就是设置连接某站点的参数，除了终端显示的参数，还有各种连接协议的参数等多种设置
