@@ -2159,6 +2159,29 @@ push 时发现冲突了，远程有人跟你改了一个位置了
 
     nothing to commit, working tree clean
 
+查看具体差异，对比下本地和远程。跟上面 rebase 的一样：其中 a 是本地，b 是远程，减号表示本地相对远程被删除的内容，+表示远程相对本地新增的内容，没有加减号的表示无差异。
+
+    $ git diff ..origin/master
+    diff --git a/nbranch.py b/nbranch.py
+    index 9b9041b..db1d997 100644
+    --- a/nbranch.py
+    +++ b/nbranch.py
+    @@ -1,7 +1,9 @@
+    -# 11addaddadd111
+    +先推送到远程的占优先2dd
+    +# 1112add11
+    +2add
+    +2add
+    # 22222
+    -1add# 33333add1
+    -1add
+    -1add
+    -
+    +2add
+
+    +2add
+    +2add
+
 ##### 情况3：rebase以后提示同样的错误
 
 这是因为你在执行rebase之前，已经往你的远程上面push了提交。由于rebase会重写历史提交记录，因此你的本地和你的远程的历史提交状态是不同的，同样产生了分叉:
