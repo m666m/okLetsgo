@@ -1470,19 +1470,17 @@ merge 菱形分叉会制造新的 commit 点，根据具体情况考虑是否需
 
 对多人合作的功能分支、主干分支等，都要把拉取和合并分开做
 
-    NOTE:本地分支更新远程时，不要直接做 git pull 或 git pull --rebase，应该把拉取和合并分开做，以明确的策略进行合并。
+    NOTE:本地分支更新远程时，不要直接做 git pull 或 git pull --rebase，应该把拉取和合并分开做，以便可以根据情况来选择合并策略。
 
-拉取远程合并之前，先fetch看看是不是有别人提交了远程导致冲突，提前确定合并策略
+先做fetch，先看看是不是有别人提交了远程导致冲突，提前确定合并策略
 
     git fetch 先拉远程，而不是上来就 git pull 或 git pull --rebase
 
-    git status 看看提示，是否有冲突
+    git status 看看提示，是否有冲突，根据提示选择接下来如何做
 
-    如果有冲突，参见章节 [解决合并冲突conflicts] 的两个示例，都是依据此操作流程处理过程中，发现合并冲突并选择了合并策略的。
+    如果提示有冲突，参见章节 [解决合并冲突conflicts] 的两个示例，都是依据此操作流程处理过程中，发现合并冲突并选择了合并策略的。
 
-    想好了如何
-
-    然后再
+    如果提示没有冲突，想好个合并策略，然后再做如下即可
 
     git merge -noff 或 git rebase
 
@@ -1792,27 +1790,31 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
     https://blog.csdn.net/d6619309/article/details/52711035
 
-友情提示：
+合并冲突是指：在共同节点之后，出现了两种独立的提交(每种可能有多个提交)。比如本地合并远程时，一种是你在本地分支新增的提交，另外是远程分支新增的提交。两个分支的情况同理。
 
-    如果是本地分支更新远程，在执行 git pull 或 git pull --rebase 的时候出现冲突的提示，你已经无法选择合并策略了。
+比如，文件有一行内容 ‘123456'，你修改为 '123'，别人修改为 '456'，谁先提交无所谓，后面的那个在推送或拉取的时候就会发现有合并冲突。
 
-    为防止出现这种情况，正确的拉取远程合并代码的工作顺序，参见章节 [本地分支更新远程的操作流程]。下面的两个示例，都是依据此操作流程处理过程中，发现合并冲突并选择了合并策略的。
-
-解决冲突的合并策略，该分叉还是拉直，参考章节 [合并两分支的原则]，选择 merge 对冲突的处理是分叉，选择 rebase 对冲突的处理是重写提交点。
-
-出现合并冲突的原因：
-
-    本地和远程的共同节点之后，出现了两种独立的提交(每种可能有多个提交)：一种是你在本地分支新增的提交，另外是远程分支新增的提交。
+本地分支更新远程，出现合并冲突：
 
     这种情况，通常是由于另外一个人在上游相同的分支做了提交，或是你在本地修改之前没有先 git pull 同步远程代码，直接修改然后提交再push远程，不巧的是远程已经有人提交了新的修改，git这时候要提示你分叉了，这两个提交需要你手工确认做融合。
 
-其实两个分支合并也会出现这种情况：
+两个分支合并，也会出现合并冲突：
+
+    本地分支 A 合入 本地分支 B，二者对同一文件的同一行的都进行了修改，则出现冲突。
 
     你在功能分支合并主干分支时，没有先更新本地的主干分支，而主干分支的远程已经有新的提交了，而你把功能分支合并到本地的这个旧的主干分支，在推送到远程的主干分支时会发现提示冲突。
 
     或者，即使你更新了本地的主干分支，但是没有锁定远程主干分支的合入，在你做本地的合并工作时，有人在远程的主干分支新增了提交，这样在你推送合并后的新主干分支到远程时，也会提示冲突。
 
-如果是做 push 时发现冲突了，只是提示，没有进入 merge 或 rebase 的过程中，你可以选择合并策略，具体操作参见下面的章节示例。
+所以，本地分支更新远程，pull之前要想想：
+
+    如果在执行 git pull 或 git pull --rebase 的时候出现合并冲突的提示，你已经无法选择合并策略了，git 自动进入 merge conflict 或 rebase conflict 状态，冲突文件都给你准备好了。
+
+    为防止出现这种情况，正确的拉取远程合并代码的工作顺序，参见章节 [本地分支更新远程的操作流程]。
+
+    下面的两个示例，都是依据此操作流程处理过程中，发现合并冲突并选择了合并策略的。
+
+如果在做 push 时发现冲突了，git 只是提示下，没有进入 merge 或 rebase 的过程中，你可以选择合并策略，具体操作参见下面的章节示例。
 
     $ git push
     To git://
@@ -1823,6 +1825,8 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
     hint: to the same ref. You may want to first integrate the remote changes
     hint: (e.g., 'git pull ...') before pushing again.
     hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+解决冲突的合并策略，该分叉还是拉直，参考章节 [合并两分支的原则]，选择 merge 对冲突的处理是分叉，选择 rebase 对冲突的处理是重写提交点。
 
 #### merge 对冲突的处理是分叉
 
@@ -1856,17 +1860,17 @@ merge 提示需要手工解决冲突
 
     no changes added to commit (use "git add" and/or "git commit -a")
 
-    冲突文件都准备下了，直接编辑解决冲突吧。
+git pull 自动使用 merge，发现冲突后，会进入 merge confict 状态，给你准备好冲突文件，直接编辑解决冲突吧。
 
 ##### 示例：merge 处理合并冲突
 
-步骤根据章节 [本地分支更新远程的操作流程]，不直接 git pull，有目的的选择合并策略。
+本地更新远程，操作步骤根据章节 [本地分支更新远程的操作流程]，不直接 git pull，以便可以根据情况来选择合并策略。
 
 先拉取远程
 
     git fetch
 
-查看当前状态，提示有冲突用pull，其实上一步已经fetch下来了，直接执行 merge 即可。
+查看当前状态，提示有冲突，并建议用pull，其实上一步已经fetch下来了，直接执行 merge 即可。
 
     $ git status
     On branch master
@@ -2032,17 +2036,17 @@ rebase 会提示需要手工解决冲突才能继续你当前的提交
     hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
     Could not apply 94950e8... "提交点注释"
 
-直接用 vi 打开 git 提示的有冲突的文件进行修改即可，注意这样的修改会覆盖你的当前提交点，整合为一个新的提交点。
+git pull --rebase 自动使用 rebase，发现冲突后，会进入 merge confict 状态，给你准备好冲突文件，直接编辑解决冲突吧。
 
 ##### 示例：rebase 处理合并冲突
 
-步骤根据章节 [本地分支更新远程的操作流程]，不直接 git pull --rebase，有目的的选择合并策略。
+本地更新远程，操作步骤根据章节 [本地分支更新远程的操作流程]，不直接 git pull --rebase，以便可以根据情况来选择合并策略。
 
 先拉取远程
 
     git fetch
 
-检查到有冲突
+查看当前状态，提示有冲突，并建议用 pull，pull 是使用 merge 方法分叉合并，这里我们不用
 
     $ git status
     On branch master
@@ -2051,8 +2055,6 @@ rebase 会提示需要手工解决冲突才能继续你当前的提交
     (use "git pull" to merge the remote branch into yours)
 
     nothing to commit, working tree clean
-
-    注：git 建议用 git pull 是让 merge 方法分叉合并，后续还是会让你解决冲突，参见示例2。
 
 查看具体差异，对比下本地和远程，其中 a 是本地，b 是远程，减号表示本地相对远程被删除的内容，+表示远程相对本地新增的内容，没有加减号的表示无差异。
 
@@ -2114,23 +2116,10 @@ rebase 会提示需要手工解决冲突才能继续你当前的提交
     bbbbbb
     c111modecc
     eee
-    111add
-    ffffff111mode
-    gggg
-    hh111modehhhhh
-    iiiii
-    jjjjjjjj111modjjjjj
-    111add
-    111add
     =======  这后面是本地的
     2add
     newhostfix
     aaaaa
-    ffffff
-    gggg
-    2addhhhhhhh
-    iiiii
-    jjj2modjjjmode2jjjjjjj
     2add
     >>>>>>> 57d79f7ec7 (2add for conflict) 至此结束
     kk                                     \
@@ -2143,7 +2132,7 @@ rebase 会提示需要手工解决冲突才能继续你当前的提交
     2dd
     >>>>>>> 57d79f7ec7 (2add for conflict) 至此结束
 
-改完了，diff 看看区别，一个是合并列出了本地commit和远程commit的内容，一个是列出的你当前做的修改
+改完了，diff 看看区别，一个是合并列出了本地commit和远程commit的内容，一个是列出的你当前做的修改，加号表示保留的内容，减号表示删除的内容，没有符号表示保持原样。
 
     $ git diff
     diff --cc newhot.txt
@@ -2155,22 +2144,6 @@ rebase 会提示需要手工解决冲突才能继续你当前的提交
     - c111modecc
     - eee
     - 111add
-    - ffffff111mode
-    -2add
-    -newhostfix
-    -aaaaa
-    -ffffff
-    --gggg
-    - hh111modehhhhh
-    -2addhhhhhhh
-    --iiiii
-    - jjjjjjjj111modjjjjj
-    - 111add
-    - 111add
-    -jjj2modjjjmode2jjjjjjj
-    -2add
-    --kk
-    - llllllllll
     -llllllllll2add
     --mmm
     - 111add
@@ -2182,11 +2155,11 @@ rebase 会提示需要手工解决冲突才能继续你当前的提交
     ++从从从从
     ++的的的的
 
-标记改完了，添加该文件以便rebase可以更新进度
+冲突解决后，添加该文件以便 rebase 可以更新进度
 
     git add .  # 注意如果有无关文件就别用 . 通配了，还是指定具体文件名比较好
 
-这次提示没有冲突了，可以继续 rebase
+这次提示没有冲突了，会提示 rebase 的下一步操作
 
     $ git status
     interactive rebase in progress; onto e7f51c588e
@@ -2200,16 +2173,19 @@ rebase 会提示需要手工解决冲突才能继续你当前的提交
     (use "git restore --staged <file>..." to unstage)
             modified:   newhot.txt
 
-继续rebase，会直接提示更新提交点，给出的是原来的注释，但是 commit id 已经变更了
+按提示执行命令，会直接提示更新提交点，给出的是原来的注释，但是 commit id 已经变更了
 
     $ git rebase --continue
+    [detached HEAD f6e40755ab] tea2我删掉了123，应该会冲突,看看到底把谁的 commit id 给更新了
+    1 file changed, 2 insertions(+)
+    Successfully rebased and updated refs/heads/master.
 
     $ git log --oneline --graph
     * 134a0adfe1 (HEAD -> master) rebase update 2add for conflict
     * e7f51c588e (origin/master) 111mod 111add
     * 3982bb09ba suibianshashi
 
-也就是说，rebase 更新了你的提交点，之前的提交点丢弃了。所以，如果你希望保留 commit id 以便查看历史，那么应该选择分叉合并的策略。
+也就是说，rebase 更新了你的提交点，之前的提交点丢弃，搞了个新的提交点，连接到你的远程 HEAD 了。所以，如果你希望保留本地 commit id 以便查看历史，那么应该选择分叉合并的策略。
 
 提交点更新了，还需要推送到远程
 
