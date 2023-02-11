@@ -2054,7 +2054,7 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     2dd
     >>>>>>> 57d79f7ec7 (2add for conflict)
 
-改完了，看看区别，一个是合并列出了本地和远程的内容，一个是列出的你当前的修改
+改完了，diff 看看区别，一个是合并列出了本地commit和远程commit的内容，一个是列出的你当前做的修改
 
     $ git diff
     diff --cc newhot.txt
@@ -2093,7 +2093,7 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     ++从从从从
     ++的的的的
 
-标记改完了，添加该文件
+标记改完了，添加该文件以便rebase可以更新进度
 
     git add .  # 注意如果有无关文件就别用 . 通配了，还是指定具体文件名比较好
 
@@ -2132,6 +2132,18 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     $ git push
 
 ##### 情况2：merge 处理本地分支更新远程的冲突
+
+push 时发现冲突了，远程有人跟你改了一个位置了
+
+    $ git push
+    To git://xx.xx.xx.xx:2345/gitrepo/tea.git
+    ! [rejected]        master -> master (fetch first)
+    error: failed to push some refs to 'git://xx.xx.xx.xx:2345/gitrepo/tea.git'
+    hint: Updates were rejected because the remote contains work that you do
+    hint: not have locally. This is usually caused by another repository pushing
+    hint: to the same ref. You may want to first integrate the remote changes
+    hint: (e.g., 'git pull ...') before pushing again.
+    hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 
 先拉取远程
 
