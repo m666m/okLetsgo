@@ -1786,6 +1786,8 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
 ### 合并冲突conflicts：Your branch and 'origin/xxx' have diverged
 
+    https://blog.csdn.net/qq_44536533/article/details/123412327
+
     https://blog.csdn.net/d6619309/article/details/52711035
 
 如果是本地分支合并远程，在执行 git pull 或 git pull --rebase 的时候出现冲突的提示，你已经无法选择合并策略了。
@@ -1842,6 +1844,13 @@ merge 提示需要手工解决冲突
 
     本地分支 A 合入 本地分支 B，二者对同一文件的同一行的修改出现冲突，需要手工解决。
 
+rebase 如果没有冲突，会有提示信息，但无需任何操作，直接 push 即可。
+
+    $ git pull --rebase
+    From  git://...
+    First, rewinding head to replay your work on top of it ...
+    Applying:1
+
 rebase 会提示需要手工解决冲突才能继续你当前的提交
 
     $ git pull --rebase
@@ -1858,24 +1867,24 @@ rebase 会提示需要手工解决冲突才能继续你当前的提交
 
 #### 冲突文件的格式
 
-TODO : 区分 rebase/diff、merge/diff 的结果是否都是相同的格式？包括对远程合入，本地其它分支的合入
+NOTE: 区分 rebase、merge 时的 HEAD 指针，究竟是指向的本地库还是远程库，不同的
 
 基本如下
 
     [不冲突的内容]
     <<<<<<<< HEAD
     [
-        当前分支当中代码的冲突部分，
-        从 <<<<<<<< HEAD 到 ======== ，是 HEAD 指针指向的节点的代码：
-            如果你在跟远程分支合并，那就是远程分支的代码，
-            如果你在合入本地的其它分支，那就是本分支的代码
+        冲突代码：
+        从 <<<<<<<< HEAD 到 ======== ，是 HEAD 指针指向的节点的代码，属于当前，
+        如果是 merge，这里是本地的，因为会把你整理后的结果新建 commit 点，所以是保留本地commit，新建一个。
+        TODO:需要确认，commit点到底改的谁的？如果是 rebase，这里是远程的，因为是直接修改commit点，所以修改远程。
     ]
     =======
     [
-        当前分支当中代码的冲突部分，
-        从 ======= 到 >>>>>>> '提交时的注释'，是要合并进分支的代码：
-            如果你在跟远程分支合并，那就是本地分支的代码，
-            如果你在合入本地的其它分支，那就是其它分支的代码
+        冲突部分：
+        从 ======= 到 >>>>>>> '提交时的注释'，是要合并进分支的代码，属于要合入的，
+        如果是 merge，这里是远程的，相对上面的本地。
+        如果是 rebase，这里是本地的，相对上面的远程。
     ]
     >>>>>>> 94950e8 ("提交点注释")
     [不冲突的内容]
@@ -1963,21 +1972,9 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     @@ -1,14 +1,15 @@
     -2add
     -newhostfix
-    -aaaaa
-    -ffffff
-    +bbbbbb
-    +c111modecc
     +eee
     +111add
-    +ffffff111mode
-    gggg
-    -2addhhhhhhh
-    +hh111modehhhhh
     iiiii
-    -jjj2modjjjmode2jjjjjjj
-    -2add
-    +jjjjjjjj111modjjjjj
-    +111add
     +111add
     kk
     -llllllllll2add  注意：diff发现有区别，但是后面的rebase认为可以直接追加不是冲突
@@ -1987,7 +1984,7 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     -2dd
     +111add
 
-做 rebase，git 会修改冲突的文件内容，同时列出二者并标记差异，便于你直接编辑
+执行 rebase，git 会修改冲突的文件内容，同时列出二者并标记差异，便于你直接编辑
 
     $ git rebase
     Auto-merging newhot.txt
@@ -1999,7 +1996,7 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
     Could not apply 57d79f7ec7... 2add for conflict
 
-再看看提示
+再看看提示，会提示冲突详情
 
     $ git status
     interactive rebase in progress; onto e7f51c588e
@@ -2043,7 +2040,7 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     iiiii
     jjj2modjjjmode2jjjjjjj
     2add
-    >>>>>>> 57d79f7ec7 (2add for conflict)
+    >>>>>>> 57d79f7ec7 (2add for conflict) 至此结束
     kk                                     \
     llllllllll2add                         ---- 这三行没冲突
     mmm                                    /
@@ -2052,7 +2049,7 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     =======  这后面是本地的
 
     2dd
-    >>>>>>> 57d79f7ec7 (2add for conflict)
+    >>>>>>> 57d79f7ec7 (2add for conflict) 至此结束
 
 改完了，diff 看看区别，一个是合并列出了本地commit和远程commit的内容，一个是列出的你当前做的修改
 
@@ -2097,7 +2094,7 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
 
     git add .  # 注意如果有无关文件就别用 . 通配了，还是指定具体文件名比较好
 
-这次提示没有冲突了
+这次提示没有冲突了，可以继续 rebase
 
     $ git status
     interactive rebase in progress; onto e7f51c588e
@@ -2113,12 +2110,14 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
 
 继续rebase，会直接提示更新提交点，给出的是原来的注释，但是 commit id 已经变更了
 
+    $ git rebase --continue
+
     $ git log --oneline --graph
     * 134a0adfe1 (HEAD -> master) rebase update 2add for conflict
     * e7f51c588e (origin/master) 111mod 111add
     * 3982bb09ba suibianshashi
 
-也就是说，rebase 更新了你的提交点，如果你希望保留历史以便查看，那么应该选择分叉合并的策略。
+也就是说，rebase 更新了你的提交点，之前的提交点丢弃了。所以，如果你希望保留 commit id 以便查看历史，那么应该选择分叉合并的策略。
 
 提交点更新了，还需要推送到远程
 
@@ -2133,7 +2132,7 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
 
 ##### 情况2：merge 处理本地分支更新远程的冲突
 
-push 时发现冲突了，远程有人跟你改了一个位置了
+push 时发现冲突了，远程有人提交的跟你改的是同一个位置
 
     $ git push
     To git://xx.xx.xx.xx:2345/gitrepo/tea.git
@@ -2149,7 +2148,7 @@ push 时发现冲突了，远程有人跟你改了一个位置了
 
     git fetch
 
-检查到有冲突
+查看当前状态，提示有冲突用pull，其实上一步已经fetch下来了，直接执行 merge 即可。
 
     $ git status
     On branch master
@@ -2181,6 +2180,114 @@ push 时发现冲突了，远程有人跟你改了一个位置了
 
     +2add
     +2add
+
+执行 merge，git 会修改冲突的文件内容，同时列出二者并标记差异，便于你直接编辑
+
+    $ git merge
+    Auto-merging nbranch.py
+    CONFLICT (content): Merge conflict in nbranch.py
+    Automatic merge failed; fix conflicts and then commit the result.
+
+再看看提示，会提示冲突详情
+
+    $ git status
+    On branch master
+    Your branch and 'origin/master' have diverged,
+    and have 1 and 1 different commits each, respectively.
+    (use "git pull" to merge the remote branch into yours)
+
+    You have unmerged paths.
+    (fix conflicts and run "git commit")
+    (use "git merge --abort" to abort the merge)
+
+    Unmerged paths:
+    (use "git add <file>..." to mark resolution)
+            both modified:   nbranch.py
+
+    no changes added to commit (use "git add" and/or "git commit -a")
+
+编辑冲突文件，解决冲突，参见上面章节 [冲突文件的格式]
+
+    $ cat nbranch.py
+    <<<<<<< HEAD
+    # 11addaddadd111 这后面是本地的
+    # 22222
+    1add# 33333add1
+    1add
+    1add
+
+
+    =======
+    先推送到远程的占优先2dd 这后面是远程的
+    # 1112add11
+    2add
+    2add
+    # 22222
+    2add
+
+    2add
+    2add 至此结束
+    >>>>>>> refs/remotes/origin/master
+
+标记改完了，添加该文件以便rebase可以更新进度
+
+    git add .  # 注意如果有无关文件就别用 . 通配了，还是指定具体文件名比较好
+
+这次提示没有冲突了，可以直接提交
+
+    $ git status
+    On branch master
+    Your branch and 'origin/master' have diverged,
+    and have 1 and 1 different commits each, respectively.
+    (use "git pull" to merge the remote branch into yours)
+
+    All conflicts fixed but you are still merging.
+    (use "git commit" to conclude merge)
+
+    Changes to be committed:
+            modified:   nbranch.py
+
+然后提交新建的分叉点，查看信息会提示推送
+
+    $ git commit
+
+    $ git status
+    On branch master
+    Your branch is ahead of 'origin/master' by 2 commits.
+    (use "git push" to publish your local commits)
+
+确认下历史提交的情况
+
+    原本地
+
+        $ git log --oneline --graph
+        * 177d0d0 (HEAD -> master) 要想 1add 历史能记下，用merge解决冲突
+        * 134a0ad rebase update 2add for conflict
+        * e7f51c5 111mod 111add
+
+    原远程
+
+        $ git log --oneline --graph
+        * 67a69c9 (HEAD -> master, origin/master) 2add 占先
+        * 134a0ad rebase update 2add for conflict
+        * e7f51c5 111mod 111add
+
+    当前，保留了原远程和原本地的commit，新建了分叉点保留合并后的结果
+
+        $ git log --oneline --graph
+        *   03ea730 (HEAD -> master) 解决了冲突，应该是分叉合并了 Merge remote-tracking branch 'refs/remotes/origin/master'
+        |\
+        | * 67a69c9 (origin/master, origin/HEAD) 2add 占先
+        * | 177d0d0 要想 1add 历史能记下，用merge解决冲突
+        |/
+        * 134a0ad rebase update 2add for conflict
+        * e7f51c5 111mod 111add
+
+没问题，推送远程
+
+    $ git push
+    Enumerating objects: 10, done.
+    Counting objects: 100% (10/10), done.
 
 ##### 情况3：rebase以后提示同样的错误
 
