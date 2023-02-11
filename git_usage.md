@@ -2315,6 +2315,8 @@ XXX:我的想法是，不用 git push -f，用 git merge 是否可以解决？
 
 ## 对一个分支做变基：交互式压缩提交点
 
+NOTE: rebase 要在 git push 推送远程之前做，已经推送远程的就不要改了！
+
     https://zhuanlan.zhihu.com/p/249231960
         https://opensource.com/article/20/7/git-best-practices
 
@@ -2700,9 +2702,9 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
 
 ### 开发分支常用 commit --amend 压缩多余的提交点
 
-注意这个要在 git push 推送远程之前做，已经推送远程的就不要改了！
+NOTE: amend 要在 git push 推送远程之前做，已经推送远程的commit 就不要追加！
 
-提交但是不制作新的commit点（上次的变一下），适合本次和上次提交内容相近的场景
+追加到最近的commit，不制作新的commit（其实commit已经变了），适合本次和上次提交内容相近的场景
 
     git add .
     git commit --amend  # 等价于 git rebase -i HEAD~2
