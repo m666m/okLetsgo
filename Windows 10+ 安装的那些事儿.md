@@ -2185,7 +2185,7 @@ Linux 有自己的文件加密系统 eCryptfs，2022年之后的 systemd（syste
 
     $ echo 123 > 123.txt
 
-    # TODO:解挂载待试验
+    # TODO:解挂载待试验，这俩命令到底是哪个？
     $ umount -t ecryptfs enc_dir
     $ sudo umount /disk2
 

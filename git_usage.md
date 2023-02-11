@@ -1828,6 +1828,89 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
 解决冲突的合并策略，该分叉还是拉直，参考章节 [合并两分支的原则]，选择 merge 对冲突的处理是分叉，选择 rebase 对冲突的处理是重写提交点。
 
+解决了所有的冲突文件后，提交的命令稍有区别，最好每一步都运行 git status 看看提示再做
+
+    如果是 merge 时提示冲突，解决后
+
+        git add .  # 注意这是把所有文件都添加了，确保没有无关文件
+
+        git commit
+
+    如果是 rebase 时提示冲突，解决后
+
+        git add .  # 注意这是把所有文件都添加了，确保没有无关文件
+
+        git rebase --continue
+
+        这时看 git log，看到你的提交就新增成功了，可以继续 git push 了
+
+如果想跳过这个提交，会导致以原提交为准，新增提交丢弃
+
+    git commit -a
+
+    或 git rebase --skip
+
+如果想放弃合并，重新编辑
+
+    git merge --abort
+
+    或 git rebase --abort
+
+可以使用图形化的合并工具 git merge tool，它会将找到一份两个分支的祖先代码作为base也就是基准，然后再将两个分支的改动都列举出来作为对比，显示的是三个窗口，让我们在git编辑器当中决定要留下什么。如果使用 vs code 的话，它的显示效果更友好，而且还可以切换比对。
+
+#### 冲突文件的格式
+
+NOTE: 区分 rebase、merge 时的 HEAD 指针，究竟是指向的本地库还是远程库，不同的
+
+基本如下
+
+    [不冲突的内容]
+    <<<<<<<< HEAD
+    [
+        冲突代码：
+        从 <<<<<<<< HEAD 到 ======== ，是 HEAD 指针指向的节点的代码，属于当前内容。
+
+        如果是 merge，这里是本地的。
+
+        如果是 rebase，这里是远程的。
+    ]
+    =======
+    [
+        冲突部分：
+        从 ======= 到 >>>>>>> '提交时的注释'，是要合并进分支的代码，属于要合入的，
+
+        如果是 merge，这里是远程的，相对上面的本地。
+
+        如果是 rebase，这里是本地的，相对上面的远程。
+    ]
+    >>>>>>> 94950e8 ("提交点注释")
+    [不冲突的内容]
+
+git 修改了冲突文件的内容，同时列出的两种版本，是为了方便你修改的时候对比酌情编辑，比如删除一个保留另一个等，其实全删了重新写也可以。只要你删除了冲突标记符号保存文件，git 就认可，接受为无冲突的最终版本。
+
+总之，你的最终修改结果，使文件内容是你想要的样子，记得要删除冲突标记符号所在行，然后保存退出。
+
+使用 git diff 命令可以查看差别，前面的 a 表示当前本地内容，后面的 b 表示要合入的内容
+
+    $ git diff
+    diff --cc mmm.py
+    index 3988649e86,51def895e0..0000000000
+    --- a/mmm.py
+    +++ b/mmm.py
+    @@@ -1,5 -1,5 +1,10 @@@
+    + mod1conf
+    # aaa
+    ++<<<<<<< HEAD
+    +0000000000# b2222222222222b mod conflict
+    +ooooooooooooo mod conflict
+    ++=======
+    +mod1 for conflict
+    ++>>>>>>> 411165b222debbb155d331326689726c0e254396
+    # ccc
+    - # fff
+    + mod1 conf ori
+    + # fff ggggggggggggggg mod1 conf
+
 #### merge 对冲突的处理是分叉
 
     本地分支拉取或推送远程时，远程库上有新的提交，与本地的提交，在某个 commit 点之后出现了两种提交的延续，如果直接 git pull，会默认执行 merge，如果有冲突则自动进入一个 merge conflict 过程状态，需要手工解决冲突。
@@ -1880,7 +1963,7 @@ git pull 自动使用 merge，发现冲突后，会进入 merge confict 状态�
 
     nothing to commit, working tree clean
 
-查看具体差异，对比下本地和远程。跟上面 rebase 的一样：其中 a 是本地，b 是远程，减号表示本地相对远程被删除的内容，+表示远程相对本地新增的内容，没有加减号的表示无差异。
+查看具体差异，对比下本地和远程，其中 a 是本地，b 是远程，减号表示本地相对远程被删除的内容，+表示远程相对本地新增的内容，没有加减号的表示无差异。
 
     $ git diff ..origin/master
     diff --git a/nbranch.py b/nbranch.py
@@ -1969,7 +2052,7 @@ git pull 自动使用 merge，发现冲突后，会进入 merge confict 状态�
     Changes to be committed:
             modified:   nbranch.py
 
-然后提交新建的分叉点，查看信息会提示推送
+然后提交新建的分叉点，查看状态，提示可以推送远程了
 
     $ git commit
 
@@ -1977,6 +2060,8 @@ git pull 自动使用 merge，发现冲突后，会进入 merge confict 状态�
     On branch master
     Your branch is ahead of 'origin/master' by 2 commits.
     (use "git push" to publish your local commits)
+
+因为 git 会把你整理后的结果新建 commit 作为分叉，所以整套操作下来，保留本地commit + 接收远程的commit + 新建一个分叉点，相对远程合计新增了 2 个commit点。
 
 确认下历史提交的情况
 
@@ -1994,7 +2079,7 @@ git pull 自动使用 merge，发现冲突后，会进入 merge confict 状态�
         * 134a0ad rebase update 2add for conflict
         * e7f51c5 111mod 111add
 
-    当前，保留了原远程和原本地的commit，新建了分叉点保留合并后的结果
+可以看到，保留了原远程和原本地的commit，新建了分叉点保留合并后的结果
 
         $ git log --oneline --graph
         *   03ea730 (HEAD -> master) 解决了冲突，应该是分叉合并了 Merge remote-tracking branch 'refs/remotes/origin/master'
@@ -2036,7 +2121,7 @@ rebase 会提示需要手工解决冲突才能继续你当前的提交
     hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
     Could not apply 94950e8... "提交点注释"
 
-git pull --rebase 自动使用 rebase，发现冲突后，会进入 merge confict 状态，给你准备好冲突文件，直接编辑解决冲突吧。
+git pull --rebase 自动使用 rebase，发现冲突后，会进入 rebase confict 状态，给你准备好冲突文件，直接编辑解决冲突吧。
 
 ##### 示例：rebase 处理合并冲突
 
@@ -2090,7 +2175,7 @@ git pull --rebase 自动使用 rebase，发现冲突后，会进入 merge confic
     hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
     Could not apply 57d79f7ec7... 2add for conflict
 
-再看看提示，会提示冲突详情
+再看看状态，会提示冲突详情
 
     $ git status
     interactive rebase in progress; onto e7f51c588e
@@ -2109,7 +2194,7 @@ git pull --rebase 自动使用 rebase，发现冲突后，会进入 merge confic
 
     no changes added to commit (use "git add" and/or "git commit -a")
 
-编辑冲突文件，解决冲突，参见上面章节 [冲突文件的格式]
+编辑冲突文件，解决冲突，参见章节 [冲突文件的格式]
 
     $ cat newhot.txt
     <<<<<<< HEAD  这后面是远程的
@@ -2176,7 +2261,7 @@ git pull --rebase 自动使用 rebase，发现冲突后，会进入 merge confic
 按提示执行命令，会直接提示更新提交点，给出的是原来的注释，但是 commit id 已经变更了
 
     $ git rebase --continue
-    [detached HEAD f6e40755ab] tea2我删掉了123，应该会冲突,看看到底把谁的 commit id 给更新了
+    [detached HEAD 134a0adfe1] tea2我删掉了123，应该会冲突,看看到底把谁的 commit id 给更新了
     1 file changed, 2 insertions(+)
     Successfully rebased and updated refs/heads/master.
 
@@ -2185,9 +2270,9 @@ git pull --rebase 自动使用 rebase，发现冲突后，会进入 merge confic
     * e7f51c588e (origin/master) 111mod 111add
     * 3982bb09ba suibianshashi
 
-也就是说，rebase 更新了你的提交点，之前的提交点丢弃，搞了个新的提交点，连接到你的远程 HEAD 了。所以，如果你希望保留本地 commit id 以便查看历史，那么应该选择分叉合并的策略。
+也就是说，rebase 更新了你本地的提交点（之前的提交点丢弃，搞了个新的提交点），把这个提交点连接到你拉取下来的远程的提交点了。所以，如果你希望保留本地 commit id 以便查看历史，那么应该选择分叉合并的策略。
 
-提交点更新了，还需要推送到远程
+查看状态，提示可以推送远程了
 
     $ git status
     On branch master
@@ -2196,86 +2281,13 @@ git pull --rebase 自动使用 rebase，发现冲突后，会进入 merge confic
 
     nothing to commit, working tree clean
 
+你的本地提交点被rebase更新，直接连接到原远程的提交点，起到了拉直效果，所以只是新增了1个commit。
+
+没问题，推送远程
+
     $ git push
-
-#### 冲突文件的格式
-
-NOTE: 区分 rebase、merge 时的 HEAD 指针，究竟是指向的本地库还是远程库，不同的
-
-基本如下
-
-    [不冲突的内容]
-    <<<<<<<< HEAD
-    [
-        冲突代码：
-        从 <<<<<<<< HEAD 到 ======== ，是 HEAD 指针指向的节点的代码，属于当前，
-        如果是 merge，这里是本地的，因为会把你整理后的结果新建 commit 点，所以是保留本地commit，新建一个。
-        TODO:需要确认，commit点到底改的谁的？如果是 rebase，这里是远程的，因为是直接修改commit点，所以修改远程。
-    ]
-    =======
-    [
-        冲突部分：
-        从 ======= 到 >>>>>>> '提交时的注释'，是要合并进分支的代码，属于要合入的，
-        如果是 merge，这里是远程的，相对上面的本地。
-        如果是 rebase，这里是本地的，相对上面的远程。
-    ]
-    >>>>>>> 94950e8 ("提交点注释")
-    [不冲突的内容]
-
-git 修改了冲突文件的内容，同时列出的两种版本，是为了方便你修改的时候对比酌情编辑，比如删除一个保留另一个等，其实全删了重新写也可以。只要你删除了冲突标记符号保存文件，git 就认可，接受为无冲突的最终版本。
-
-总之，你的最终修改结果，使文件内容是你想要的样子，记得要删除冲突标记符号所在行，然后保存退出。
-
-使用 git diff 命令也可以查看冲突，格式同上，但注意前面的 a 表示当前本地内容，后面的 b 表示要合入的内容
-
-    $ git diff
-    diff --cc mmm.py
-    index 3988649e86,51def895e0..0000000000
-    --- a/mmm.py
-    +++ b/mmm.py
-    @@@ -1,5 -1,5 +1,10 @@@
-    + mod1conf
-    # aaa
-    ++<<<<<<< HEAD
-    +0000000000# b2222222222222b mod conflict
-    +ooooooooooooo mod conflict
-    ++=======
-    +mod1 for conflict
-    ++>>>>>>> 411165b222debbb155d331326689726c0e254396
-    # ccc
-    - # fff
-    + mod1 conf ori
-    + # fff ggggggggggggggg mod1 conf
-
-解决了所有的冲突文件后，提交的命令稍有区别，最好每一步都运行 git status 看看提示再做
-
-    如果是 merge 时提示冲突，解决后
-
-        git add .  # 注意这是把所有文件都添加了，确保没有无关文件
-
-        git commit
-
-    如果是 rebase 时提示冲突，解决后
-
-        git add .  # 注意这是把所有文件都添加了，确保没有无关文件
-
-        git rebase --continue
-
-        这时看 git log，看到你的提交就新增成功了，可以继续 git push 了
-
-如果想跳过这个提交，会导致以原提交为准，新增提交丢弃
-
-    git commit -a
-
-    或 git rebase --skip
-
-如果想放弃合并，重新编辑
-
-    git merge --abort
-
-    或 git rebase --abort
-
-可以使用图形化的合并工具 git merge tool，它会将找到一份两个分支的祖先代码作为base也就是基准，然后再将两个分支的改动都列举出来作为对比，显示的是三个窗口，让我们在git编辑器当中决定要留下什么。如果使用 vs code 的话，它的显示效果更友好，而且还可以切换比对。
+    Enumerating objects: 10, done.
+    Counting objects: 100% (10/10), done.
 
 #### 拉shi往回缩：rebase以后提示同样的错误
 
