@@ -281,11 +281,13 @@ sim卡的安全性是由私钥只可写入不可读出来保证的，在实体si
 
 ### 全开源自由软件的手机平台
 
-硬件上可以关闭手机 Modem，软件上有安全启动
+硬件上可以关闭 Modem，软件上有安全启动的 Linux 手机
 
     https://puri.sm/posts/privacy-in-depth/
 
-        使用了开源操作系统，只预装自由软件 https://pureos.net/
+        使用了开源操作系统 PureOS（基于Debian + Purism 的 phosh、phoc、libhandy、Calls 和 Chats），只预装自由软件
+        https://pureos.net/
+            https://puri.sm/posts/what-is-mobile-pureos/
 
 ### 三星 knox
 
