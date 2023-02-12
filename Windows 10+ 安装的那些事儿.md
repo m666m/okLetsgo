@@ -2160,6 +2160,8 @@ LUKS格式的加密盘默认能够提供8个"key slot",每个"key slot"就是一
 
 ##### 让 LUKS 使用 TPM 加密芯片
 
+简单结论：使用 TPM 价值不大，不如使用 YubiKey 或智能卡来外部存储 LUKS 密钥。在启动过程中，您只需要将智能卡输入笔记本电脑usb接口即可，它将解密磁盘。
+
     启用 TPM 的说明 https://wiki.archlinux.org/title/Trusted_Platform_Module#Data-at-rest_encryption_with_LUKS
 
     可以给 ssh 认证等添加 TPM 支持 https://wiki.archlinux.org/title/Trusted_Platform_Module#Other_good_examples_of_TPM_2.0_usage
