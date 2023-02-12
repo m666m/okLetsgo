@@ -1788,6 +1788,11 @@ eCryptFS怎么会知道你拥有~/.Private目录，并自动将其解密到~/Pri
 
 cryptsetup 是分区级别的加密，它通过调用 Linux 内核中的 dm-crypt 模块来实现磁盘加密的功能。比文件系统级别工作在更底层的位置，是在经过加密的块设备上，再创建文件系统，再挂载使用。
 
+如果需要在硬件制造级别的开源安全，可以试试 Purism
+
+    https://puri.sm/
+        https://puri.sm/posts/introducing-pureboot-restricted-boot/
+
 前置知识 dm-crypt
 
     dm-crypt 支持多种加密格式
@@ -2176,11 +2181,6 @@ TPM 一般用于操作系统在开机引导时防篡改，防止木马监控程�
 所以，使用带有核心引导UEFI的加密Linux发行版应该可以像大多数信息安全专家一样确保您安全。
 
 您也可以考虑使用非持久性操作系统（在RAM中执行的Live USB），它们不会受到篡改操作系统的威胁（但在BIOS中的被篡改的UEFI设备驱动仍然可以监视它们）。
-
-如果需要在硬件制造级别的开源安全，可以试试 Purism
-
-    https://puri.sm/
-        https://puri.sm/posts/introducing-pureboot-restricted-boot/
 
 ## 在虚拟机里使用你的日常软件
 
