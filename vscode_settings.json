@@ -222,9 +222,9 @@
     "todo-tree.highlights.customHighlight": {
         "TODO": {
             "icon": "tasklist",
-            "iconColour": "#b96a03",
-            "foreground": "#5cd1ff",
-            "background": "#b96a03",
+            "iconColour": "#c5760f",
+            "foreground": "#e7e955",
+            "background": "#c5760f",
             "type": "tag"
         },
         "FIXME": {
