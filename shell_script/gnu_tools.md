@@ -5123,7 +5123,7 @@ reptyr
 
     find ./ -name "*" -type f | xargs grep -in 'gitee'
 
-xargs 命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs 能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说 find 的结果经过 xargs 后，其实将 find 找出来的文件名逐个传递给 grep 做参数。grep 再在这些文件内容中查找关键字 test。
+xargs 命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs 能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说 find 的结果经过 xargs 后，其实将 find 找出来的文件名逐个传递给 grep 做参数，grep 再在这些文件内容中查找关键字 test。
 
 ### 字符串处理 awk sed cut tr wc
 
@@ -5359,6 +5359,8 @@ dd 命令是基于块（block）的复制，用途很多。
     # curl下载默认输出是标准输入流，管道后面的命令是tar从标准输出流读取数据解压到指定的目录下
     curl -fsSL https://go.dev/dl/go1.19.5.linux-armv6l.tar.gz |sudo tar -C /usr/local -xzvf -
 
+    大文件压缩，用 -d 进行校验
+
 .gz 文件
 
     # 解压
@@ -5417,7 +5419,9 @@ ln 命令默认生成硬链接，但是我们通常使用软连接
 
 Linux 下，每个算法都是单独的程序：cksum md5sum sha1sum sha256sum sha512sum
 
-直接带文件名操作即可
+直接传递文件名操作即可
+
+生成
 
     # 生成 crc 校验和以及字节数
     $ cksum test.json
@@ -5431,6 +5435,11 @@ Linux 下，每个算法都是单独的程序：cksum md5sum sha1sum sha256sum s
     $ more checksums.sha256
     17e682f060b5f8e47ea04c5c4855908b0a5ad612022260fe50e11ecb0cc0ab76  a.txt
     3cf9a1a81f6bdeaf08a343c1e1c73e89cf44c06ac2427a892382cae825e7c9c1  b.txt
+
+    # 对当前目录下找到的所有文件，生成校验码
+    find . -type f -exec sha256sum \{\} \; > checksum-file
+
+校验
 
     # 根据校验和文件进行校验
     $ sha256sum -c checksums.sha256
