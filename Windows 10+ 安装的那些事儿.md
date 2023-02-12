@@ -1775,8 +1775,12 @@ eCryptFS怎么会知道你拥有~/.Private目录，并自动将其解密到~/Pri
 
 #### Linux 使用 cryptsetup 加密磁盘
 
-    https://linux.die.net/man/8/cryptsetup
-        https://gitlab.com/cryptsetup/cryptsetup
+    https://gitlab.com/cryptsetup/cryptsetup
+
+    命令手册 https://linux.die.net/man/8/cryptsetup
+        https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/dm-crypt.html
+
+    使用说明 https://wiki.archlinux.org/title/Dm-crypt/Device_encryption
 
     http://blog.lujun9972.win/blog/2018/04/12/%E4%BD%BF%E7%94%A8cryptsetup%E5%88%9B%E5%BB%BA%E5%8A%A0%E5%AF%86%E7%A3%81%E7%9B%98/index.html
 
@@ -1808,7 +1812,7 @@ cryptsetup 是分区级别的加密，它通过调用 Linux 内核中的 dm-cryp
 
 这就创建了一个100M的文件作为虚拟磁盘分区 /tmp/ENC_DISC.img 来用。
 
-在实际使用中，硬盘挂载后一般会是 /dev/sdb1、/dev/vdb1 这样的名称，你可以用cryptsetup来对实际的磁盘分区来进行操作。
+注意：在实际使用中，硬盘挂载后一般会是 /dev/sdb1、/dev/vdb1 这样的名称，你可以用 cryptsetup 来对实际的磁盘分区来进行操作。
 
 创建加密磁盘分区
 
@@ -1896,26 +1900,6 @@ cryptsetup 是分区级别的加密，它通过调用 Linux 内核中的 dm-cryp
 
     cryptsetup luksClose /dev/mapper/ENC_DISC
 
-用文件来加密，可以实现加密磁盘的永久挂载（这里的加密卷目录是 /enc_dir）
-
-    1. vim /root/diskpass       # 建立你的密码文件
-
-        （你的密码）
-
-    2.chmod 600 /root/diskpass    # 加可执行权限
-
-    3.vim /etc/crypttab   # 建立密码文件和加密卷的联系
-
-        enc_dir     /dev/vdb1    /root/diskpass
-
-    4.vim /etc/fastab
-
-        /dev/mapper/ENC_DIR      /enc_dir    xfs     defaults    0   0
-
-    2022年之后的 systemd（systemd-cryptsetup）可以自动挂载 /etc/crypttab 中配置的加密卷
-
-如果把该文件保存在u盘，可以把它作为解密u盘使用，使用加密磁盘前插上u盘，用完后拔出u盘。
-
 查看加密盘状态
 
 在打开加密盘后，可以查看该加密盘的状态，语法为
@@ -1950,6 +1934,10 @@ cryptsetup 是分区级别的加密，它通过调用 Linux 内核中的 dm-cryp
 
     sudo umount /mnt
     sudo cryptsetup close ENC_DISC
+
+##### 用文件来加密，可以实现加密磁盘的永久挂载
+
+    https://blog.csdn.net/weixin_34204722/article/details/93212868
 
 让加密盘使用keyfile认证
 
@@ -2006,9 +1994,8 @@ LUKS格式的加密盘默认能够提供8个"key slot",每个"key slot"就是一
 
 比如
 
-    [lujun9972@X61 ~]$ cryptsetup luksAddKey /tmp/ENC_DISC.img /tmp/keyfile
+    $ cryptsetup luksAddKey /tmp/ENC_DISC.img /tmp/keyfile
     输入任意已存在的密码：
-    [lujun9972@X61 ~]$
 
 再查一下Key Slot:
 
@@ -2092,6 +2079,108 @@ LUKS格式的加密盘默认能够提供8个"key slot",每个"key slot"就是一
     Key Slot 7: DISABLED
 
 会发现 key slot0 已经被禁用了
+
+示例：这里的加密卷目录是 /enc_dir
+
+    1.建立你的密码文件
+
+        dd if=/dev/urandom of=/root/diskpass bs=1k count=64
+
+    或简单的自己写一个 vim /root/diskpass
+
+        （你的密码）
+
+    2.chmod 600 /root/diskpass    # 加可执行权限
+
+    3.vim /etc/crypttab   # 建立密码文件和加密卷的联系
+
+        enc_dir     /dev/sdb2   /root/diskpass
+
+    4.vim /etc/fastab
+
+        /dev/mapper/ENC_DIR      /enc_dir    xfs     defaults    0   0
+
+    2022年之后的 systemd（systemd-cryptsetup）可以自动挂载 /etc/crypttab 中配置的加密卷
+
+    有个软件包 cryptsetup-run 可以实现自动配置启动时加载加密磁盘
+
+如果把该文件保存在u盘，可以把它作为解密u盘使用，使用加密磁盘前插上u盘，用完后拔出u盘。
+
+查看已经使用的密码槽，一般是建立加密盘时手输的那个，剩余7个solot可以用
+
+    $ cryptsetup luksDump /dev/sdb2
+    LUKS header information for /dev/sdb2
+
+    Version:           1
+    Cipher name:       aes
+    Cipher mode:       xts-plain64
+    Hash spec:         sha512
+    Payload offset:    4096
+    MK bits:           512
+    MK digest:         e6 12 5c 12 e8 ab 1d 8a 81 ac cc f6 e5 7d bb d0 e2 6c 5f ed
+    MK salt:           a8 03 1d b6 05 c8 64 cb de f4 2a 64 0d 77 5b cb
+                    b9 11 aa e7 d2 58 eb aa aa 68 24 8f bf 16 26 f2
+    MK iterations:     28000
+    UUID:              da24c447-4e62-463b-b533-89bd7fdf3238
+
+    Key Slot 0: ENABLED
+        Iterations:             112280
+        Salt:                   10 8f 31 ab 38 9a e1 28 94 df 61 0b 43 62 5e 94
+                                57 0c c7 18 fc e8 d6 39 e7 5d d1 93 76 0e f1 13
+        Key material offset:    8
+        AF stripes:                4000
+    Key Slot 1: DISABLED
+    Key Slot 2: DISABLED
+    Key Slot 3: DISABLED
+    Key Slot 4: DISABLED
+    Key Slot 5: DISABLED
+    Key Slot 6: DISABLED
+    Key Slot 7: DISABLED
+
+再添加一个密码到密码槽位
+
+    $ cryptsetup luksAddKey /dev/sdb2 /root/diskpass
+    Enter any passphrase:
+
+然后我们umount这个挂载的路径，看新增加的密码文件能否解密我们的分区。
+
+    $ umount /mnt/caqEncryptedFilesystem/
+
+    $ cryptsetup close /dev/mapper/ENC_DISC
+
+    $ cryptsetup --key-file /root/diskpass luksOpen /dev/sdb2 enc_dir
+    应该有需要sudo的命令
+
+从第三行可以看出，再也不用输入密码了，直接从文件中读密码。
+
+##### 让 LUKS 使用 TPM 加密芯片
+
+    启用 TPM 的说明 https://wiki.archlinux.org/title/Trusted_Platform_Module#Data-at-rest_encryption_with_LUKS
+
+    可以给 ssh 认证等添加 TPM 支持 https://wiki.archlinux.org/title/Trusted_Platform_Module#Other_good_examples_of_TPM_2.0_usage
+
+        https://incenp.org/notes/2020/tpm-based-ssh-key.html
+            https://tpm2-software.github.io/
+
+    操作过程 https://www.cnblogs.com/10087622blog/p/7840163.html
+
+TPM 一般用于操作系统在开机引导时防篡改，防止木马监控程序在启动加载IO设备驱动程序阶段进行加载，对磁盘加密并不会起更大的作用。
+
+    https://security.stackexchange.com/questions/234320/how-safe-is-dm-crypt-luks-would-tpm-make-me-more-secure-in-this-case
+
+    TPM 非常有趣，因为可以将计算机配置为在操作系统或 UEFI 被篡改时拒绝启动（UEFI 和操作系统需要事先签名）。而且，由于签名密钥验证是在 TPM 中硬编码的，因此更改它需要一些昂贵的设备。
+    但大多数情况下，TPM 仅适用于预安装（由 OEM 签名）的 OEM 操作系统。我不确定您是否可以擦除它，安装Linux，对其进行签名并要求TPM使用您的密钥来检测篡改。
+
+    而且，据我所知，TPM还没有很好地标准化，也没有经过严格的审计。因此，您对未修补的漏洞和后门的担忧是有道理的。
+
+所以，使用带有核心引导UEFI的加密Linux发行版应该可以像大多数信息安全专家一样确保您安全。
+
+您也可以考虑使用非持久性操作系统（在RAM中执行的Live USB），它们不会受到篡改操作系统的威胁（但在BIOS中的被篡改的UEFI设备驱动仍然可以监视它们）。
+
+如果需要在硬件制造级别的开源安全，可以试试 Purism
+
+    https://puri.sm/
+        https://puri.sm/posts/introducing-pureboot-restricted-boot/
 
 ## 在虚拟机里使用你的日常软件
 
