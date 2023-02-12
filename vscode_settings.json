@@ -27,6 +27,9 @@
     // "editor.bracketPairColorization.enabled": true,
     "editor.unicodeHighlight.includeStrings": false,
     "editor.unicodeHighlight.includeComments": false,
+    "editor.unicodeHighlight.allowedLocales": {
+        "zh-hant": true
+    },
     "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize宽度而自动判断
     "outline.showVariables": false,
     "diffEditor.ignoreTrimWhitespace": false,
@@ -267,10 +270,7 @@
     "gitlens.views.tags.branches.layout": "list",
     // vim airline 风格的状态栏变颜色
     "vim.statusBarColorControl": true,
-    "vim.statusBarColors.normal": [
-        "#8FBCBB",
-        "#434C5E"
-    ],
+    "vim.statusBarColors.normal": ["#8FBCBB", "#434C5E"],
     "vim.statusBarColors.insert": "#FBA2A2",
     "vim.statusBarColors.visual": "#F8D9A0",
     "vim.statusBarColors.visualline": "#F8D9A0",
