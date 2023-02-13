@@ -1,8 +1,11 @@
 # GNU/Linux 常用工具
 
-    各种linux帮助手册速查 https://manned.org/
+    GNU 收录软件，可查手册 https://www.gnu.org/software/software.html
 
-    Linux 命令速查 https://linux.die.net/man/
+        Linux 命令速查 https://man7.org/linux/man-pages/index.html
+        Linux 命令速查 https://linux.die.net/man/
+
+    各种linux帮助手册速查 https://manned.org/
 
 ## Windows 下的 GNU/POSIX 环境
 
@@ -5341,25 +5344,52 @@ dd 命令是基于块（block）的复制，用途很多。
 
 ### 压缩解压缩
 
+tar 命令的选项和参数有几种写法，注意区别
+
+    GUN 传统写法没横线，多个单字母选项合起来写在第一个参数位
+
+        tar vcf a.tar /tmp
+
+    UNIX 写法用 -选项1 选项1自己的参数 -选项2 选项2自己的参数
+
+        tar -c -v -f a.tar /tmp
+
+        tar -cvf a.tar /tmp  # 没有参数的选项合写
+
+        tar -vkp -f a.tar /tmp  # f也可以合写，但是要在最后一个，以便后面跟参数
+
+    GUN 写法用 -- 或 -，连写用一个 -
+
+        tar --create --file a.tar --verbose /etc
+
+        # or (abbreviating some options):
+        tar --cre --file=a.tar --verb /etc
+
 .tar.gz 文件
 
     # c打包并z压缩，生成.tar.gz文件，源可以是多个文件或目录名
     # 只c打包，生成 .tar 文件，其它参数相同
     # 把 z 换成 j 就是压缩为.bz2文件，而不是.gz文件了
-    tar -czvf arc.tar.gz file1 file2
-    tar -cjvf arc.tar.bz2 file1 file2
+    tar czvf arc.tar.gz file1 file2
+    tar cjvf arc.tar.bz2 file1 file2
 
     # 解包并解压缩, 把 x 换成 t 就是只查看文件列表而不真正解压
-    tar -xzvf arc.tar.gz
-    tar -xjvf xx.tar.bz2
+    tar xzvf arc.tar.gz
+    tar xjvf xx.tar.bz2
 
     # 把 /home 目录打包，输出到标准输入流，管道后面的命令是从标准输出流读取数据解包
-    tar -cvf - /home |tar -xvf -
+    tar cvf - /home |tar -xvf -
 
     # curl下载默认输出是标准输入流，管道后面的命令是tar从标准输出流读取数据解压到指定的目录下
     curl -fsSL https://go.dev/dl/go1.19.5.linux-armv6l.tar.gz |sudo tar -C /usr/local -xzvf -
 
-    大文件压缩，用 -d 进行校验
+    大文件压缩，注意加参数 d 校验
+
+    # 打包并加密
+    tar cjf - <path> | gpg --cipher-algo AES -c - > backup.tbz2.gpg
+
+    # 解密并解包
+    cat backup.tbz2.gpg | gpg - | tar djf -
 
 .gz 文件
 
