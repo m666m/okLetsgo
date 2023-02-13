@@ -1853,10 +1853,16 @@ print('\nThen restart mintty to take effect, you can run `curl -fsSL https://git
 
 ```
 
-#### Nord 整套支持终端模拟器和各个软件的配色方案
+#### 整套支持终端模拟器和各个软件的配色方案
+
+Dracula theme
+
+    https://draculatheme.com/
+        https://github.com/dracula/dracula-theme/tree/master/themes
+
+Nord theme
 
     https://www.nordtheme.com/ports/
-
         https://github.com/arcticicestudio/
 
 10进制
@@ -2002,6 +2008,10 @@ print('\nThen restart mintty to take effect, you can run `curl -fsSL https://git
 
     Locale=zh_CN
     Charset=GB18030
+
+shell中的命令显示中文（如果支持的话）就设置 LANG
+
+    export LANG=zh_CN.UTF-8
 
 ### bash 命令提示符美化
 

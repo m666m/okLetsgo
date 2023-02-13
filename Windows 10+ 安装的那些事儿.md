@@ -1112,6 +1112,10 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
     QQ里面也有一个录屏功能，不过要在QQ运行状态下才能使用，按下快捷键【Ctrl+Alt+S】弹出鼠标箭头和网格线后，框选要录屏的区域，然后点击右上角的【开始录制】就可以了。
 
+屏幕录制、直播推流
+
+    https://obsproject.com/
+
 媒体播放器
 
     vlc player
@@ -1152,6 +1156,30 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
     XnView
         https://www.xnview.com/
+
+Windows 驱动存储查看
+
+    https://github.com/lostindark/DriverStoreExplorer
+        https://learn.microsoft.com/zh-cn/windows-hardware/drivers/install/driver-store
+
+开发人员随手工具，数值转换、颜色、格式整理等
+
+    https://github.com/veler/DevToys
+
+Microsoft 出品的工具包
+
+    https://learn.microsoft.com/en-us/windows/powertoys/
+
+    https://learn.microsoft.com/en-us/sysinternals/
+
+在线流程图
+
+    https://app.diagrams.net/
+
+在线ps
+
+    https://pixlr.com/cn/
+    https://www.photopea.com/
 
 ### 安装 Microsoft Edge 浏览器插件
 
