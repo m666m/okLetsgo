@@ -1235,6 +1235,21 @@ QR码生成与识别
 
 ### 安装 Google Chrome 浏览器插件
 
+改善 google 搜索质量，过滤某些国家
+
+    打开 Chrome 的 偏好设置 - 搜索引擎，选择管理搜索引擎：
+
+    点击 Add 按钮添加搜索引擎
+
+    添加 Google NCR（无国家/地区重定向）搜素引擎，并将其设置为浏览器默认搜索引擎即可
+
+    //设置 URL with %s in place of query 为：
+    https://www.google.com/search?q=%s&pws=0&gl=us&gws_rd=cr
+
+    打开 Google 搜索的 偏好设置，之后有些垃圾搜索结果会被屏蔽掉，所以现在需要将搜索结果分页设置为 20 条，否则每个分页的搜索结果就太少啦。
+
+    导航到搜索语言设置，将 Google 产品的语言设置为 English，将显示搜索结果的语言设置为：English, 한국어, 中文 (简体), 中文 (繁體), 日本語
+
 Aria2 for Chrome
 
     chrome://extensions/?id=mpkodccbngfoacfalldjimigbofkhgjn
