@@ -3645,7 +3645,7 @@ head当前是指向最新的那一条记录，所以我们看一下parent commit
 
 ### 1.github网页端添加gpg公钥
 
-github要求，gpg密钥的电邮地址应该使用github页面提示给出的（对于隐藏自己邮件地址）对外电邮。查看该电邮地址，登陆github，菜单“settings-emails：Primary email address的说明文字里有对外电邮地址”，操作说明见<https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>，所以单独给这个电邮地址新建个github专用的gpg密钥即可，uid设为github用户名'm666m'。为提高使用安全性，新建个有签名功能的子密钥使用，提交到github和本地git存储的设置中使用。
+github 要求，gpg 密钥的电邮地址应该使用 github 页面提示给出的（对于隐藏自己邮件地址）对外电邮。查看该电邮地址，登陆 github，菜单 “settings-emails：Primary email address的说明文字里有对外电邮地址”，操作说明见 <https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>，所以单独给这个电邮地址新建个 github 专用的 gpg 密钥即可，uid 设为 github 用户名 'm666m'。为提高使用安全性，新建个有签名功能的子密钥使用，提交到 github 和本地 git 存储的设置中使用。
 
 显示当前的gpg公钥，本地控制台下执行命令
 
@@ -3657,6 +3657,10 @@ github要求，gpg密钥的电邮地址应该使用github页面提示给出的�
    github 页面右上角，单击你的头像，Settings—> GPG keys，然后粘贴 GPG key。
 
 #### github不发布公钥
+
+这时自己的github公钥就在可以公开访问了
+
+    https://github.com/m666m.gpg
 
 GitHub 只维护用户自行上传的公钥，不会去查找 Pubkey Server 的，所以不需要担心第三方的影响。
 
