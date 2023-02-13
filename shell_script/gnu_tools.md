@@ -5360,10 +5360,12 @@ tar 命令的选项和参数有几种写法，注意区别
 
     GUN 写法用 -- 或 -，连写用一个 -
 
-        tar --create --file a.tar --verbose /etc
+        # --选项 后面紧跟空格参数
+        tar --create --file a.tar --verbose /tmp
 
-        # or (abbreviating some options):
-        tar --cre --file=a.tar --verb /etc
+        # -- 也可以用单字母选项连写，但是要保证没有歧义
+        # -- 选项用=连接参数，中间没有空格。可选参数必须始终使用这种方法
+        tar --cre --file=a.tar --verb /tmp
 
 .tar.gz 文件
 
