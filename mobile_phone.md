@@ -289,6 +289,10 @@ sim卡的安全性是由私钥只可写入不可读出来保证的，在实体si
         https://pureos.net/
             https://puri.sm/posts/what-is-mobile-pureos/
 
+魔改电脑和手机，有些通过了Qubes认证
+
+    https://www.nitrokey.com/
+
 ### 三星 knox
 
     <https://zhuanlan.zhihu.com/p/66659414>
