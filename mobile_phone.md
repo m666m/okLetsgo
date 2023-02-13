@@ -281,7 +281,7 @@ sim卡的安全性是由私钥只可写入不可读出来保证的，在实体si
 
 ### 全开源自由软件的手机平台
 
-硬件上可以关闭 Modem，软件上有安全启动的 Linux 手机
+硬件上可以关闭 Modem，有 coreboot 安全启动的 Linux 手机
 
     https://puri.sm/posts/privacy-in-depth/
 
