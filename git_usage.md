@@ -3670,6 +3670,10 @@ GitHub 只维护用户自行上传的公钥，不会去查找 Pubkey Server 的�
 
 ### 2.将 GPG 密钥与 Git 关联
 
+    # 如果有 Yubikey 这种智能卡，插入
+    gpg --card-status
+    # 找到用于签名应用的子密钥 ID，比如 FBB74XXXXXXXAE51
+
     # FBB74XXXXXXXAE51 是之前gpg生成的uid的密钥指纹，也可以直接写uid如'm666m'
     # 如果有签名功能的子密钥，设置为该子密钥的keyid即可。
     git config --global user.signingkey FBB74XXXXXXXAE51
