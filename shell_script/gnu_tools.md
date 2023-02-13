@@ -1338,6 +1338,13 @@ Powershell 7 有自己的软件包仓库
 
 为了减少疑惑，接下来将统一使用原生的 PowerShell 7.x。
 
+Powershell 优化
+
+    https://www.dejavu.moe/posts/windows-terminal/
+    一般我们不用 Azure 相关服务的话，建议禁用 Azure 账户模块
+
+    $env:AZ_ENABLE=$false
+
 PowerShell 美化：
 
     更改整体配色，改变输出样式，提示符前显示用户名和计算机名等
@@ -1390,6 +1397,8 @@ dircolors 是 Linux 下的命令，可以设置 ls 指令用彩色显示目录�
 
 5、最后，把配置写入 PowerShell 的配置文件
 
+    # if (!(Test-Path -Path $PROFILE )) { New-Item -Type File -Path $PROFILE -Force } notepad $PROFILE
+
     PS C:\Users\your_name> $PROFILE
     C:\Users\your_name\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
 
@@ -1424,6 +1433,9 @@ Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
 
 # 设置向下键为前向搜索历史纪录
 Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+
+# 清除 scoop 缓存和软件旧版本 | 别名: scoopwipe
+#function scoopwipe{sudo scoop cleanup -gk * && sudo scoop cleanup * -g && scoop cache rm * && scoop cleanup * && Write-Host "Scoop 缓存清理完成啦~👌" }
 
 # 关联 conda 命令，来自 Ananconda 的开始菜单快捷方式
 C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1

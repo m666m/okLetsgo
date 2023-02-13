@@ -3637,6 +3637,8 @@ head当前是指向最新的那一条记录，所以我们看一下parent commit
 
 ## 使用 GPG 签名 Github 提交
 
+    https://www.dejavu.moe/posts/gpg-verified-github/
+
     https://www.zackwu.com/posts/2019-08-04-how-to-use-gpg-on-github/
 
     https://cloud.tencent.com/developer/article/1656009?from=article.detail.1531457
