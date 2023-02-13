@@ -1620,7 +1620,7 @@ Intel 的主板芯片中有一个独立于CPU和操作系统的微处理器，�
 
 另外： AMD 也有类似技术，叫 PSP，全称 Platform Security Processor，逻辑不同，功能近似——一句话概括：没比英特尔强多少……
 
-### 双硬盘安装双系统
+### TODO:双硬盘安装双系统
 
 双硬盘的好处是在开机启动的时候即进行选择，隔离性比一个硬盘多个分区安装 Windows 的隔离性要好，不过无法保护 /boot 分区，在操作系统引导阶段对木马监控程序的防护差，建议开启 Secure Boot 功能。
 
@@ -1721,7 +1721,7 @@ NOTE:ssd 硬盘不要开启自带的硬件加密功能，这样 Bitlocker 基本
 
 如何开启虚拟化功能参见章节 [选择开启虚拟化功能]。
 
-虚拟机技术详见章节 [虚拟机技术] <init_a_server.md think>。
+虚拟机技术详见章节 [虚拟机技术](init_a_server.md think)。
 
 WSL2 内的 container 是 Linux 提供的，不算 Windows 的容器。Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-V 隔离，process 只在 server 版提供 <https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/hyperv-container>。
 
