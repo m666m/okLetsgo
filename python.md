@@ -1861,7 +1861,9 @@ MacOS Modern Theme 深色浅色都好
 
     arcticicestudio.nord-visual-studio-code
 
-    还有其它各种软件颜色方案的导出，比如 mintty/putty/vim 等 https://www.nordtheme.com/ports
+    深一点的北极，对比度高 marlosirapuan.nord-deep
+
+    最深的北极，适合暗夜 dnlytras.nord-wave
 
 Night Owl。夜猫子在晚上稍有刺眼，浅色更好
 
