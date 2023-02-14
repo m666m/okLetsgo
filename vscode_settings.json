@@ -30,6 +30,7 @@
     "editor.unicodeHighlight.allowedLocales": {
         "zh-hant": true
     },
+    "editor.guides.bracketPairs": active,
     "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize宽度而自动判断
     "outline.showVariables": false,
     "diffEditor.ignoreTrimWhitespace": false,
@@ -48,7 +49,14 @@
         },
         "[Nord Wave]": {
             "editor.foreground": "#b6ceca",
-            "activityBar.foreground": "#0ccff1"
+            "activityBar.foreground": "#0ccff1",
+            // 很多主题不设置括号高亮，颜色太艳了
+            "editorBracketHighlight.foreground1": "#49c5aa",
+            "editorBracketHighlight.foreground2": "#5189c9",
+            "editorBracketHighlight.foreground3": "#578bac",
+            "editorBracketHighlight.foreground4": "#49c5aa",
+            "editorBracketHighlight.foreground5": "#5189c9",
+            "editorBracketHighlight.foreground6": "#578bac"
         },
         "[Material Neutral]": {
             "activityBar.foreground": "#40ffb6"
