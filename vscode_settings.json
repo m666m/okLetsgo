@@ -42,7 +42,8 @@
     // 在线编辑 https://tmtheme-editor.herokuapp.com/#!/editor/theme/Monokai
     "workbench.colorCustomizations": {
         "[Nord]": {
-            "editor.background": "#212022e0",
+            "editor.background": "#242327e0",
+            "editor.foreground": "#9eb6b2",
             "activityBar.foreground": "#40f9ff"
         },
         "[Material Neutral]": {
