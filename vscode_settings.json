@@ -47,16 +47,16 @@
             //"editor.foreground": "#9eb6b2",
             "activityBar.foreground": "#40f9ff"
         },
-        "[Nord Wave]": {
-            "editor.foreground": "#b6ceca",
+        "[Nord Deep]": {
+            "editor.foreground": "#c9dbd8",
             "activityBar.foreground": "#0ccff1",
-            // 很多主题不设置括号高亮，颜色太艳了
-            "editorBracketHighlight.foreground1": "#49c5aa",
-            "editorBracketHighlight.foreground2": "#5189c9",
-            "editorBracketHighlight.foreground3": "#578bac",
-            "editorBracketHighlight.foreground4": "#49c5aa",
-            "editorBracketHighlight.foreground5": "#5189c9",
-            "editorBracketHighlight.foreground6": "#578bac"
+            // 很多主题不设置括号高亮的颜色，系统默认的太艳了
+            "editorBracketHighlight.foreground1": "#c9dbd8",
+            "editorBracketHighlight.foreground2": "#71a4df",
+            "editorBracketHighlight.foreground3": "#5bd6d6",
+            "editorBracketHighlight.foreground4": "#c9dbd8",
+            "editorBracketHighlight.foreground5": "#71a4df",
+            "editorBracketHighlight.foreground6": "#5bd6d6"
         },
         "[Material Neutral]": {
             "activityBar.foreground": "#40ffb6"
