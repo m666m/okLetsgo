@@ -311,6 +311,77 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     print fff
 
+## 常用 bash 技巧
+
+    https://plantegg.github.io/2017/01/01/top_linux_commands/
+
+rm之前先ls试试，所谓 dry-run
+
+    ls to_be*
+    确认没问题了
+    rm to_be*
+
+清空或创建一个文件
+
+    > file.txt
+
+    touch file.txt
+
+回到上次的目录
+
+    cd -
+
+以sudo运行上条命令
+
+    $ vi /etc/hosts
+    $ sudo !!
+
+    通常出现的情况是，敲完命令执行后报错才发现忘了sudo。
+
+替换上一条命令中的一个短语
+
+    $ ^foo^bar^
+
+    把上一条命令当中的foo替换成bar。
+
+    $ !!:gs/foo/bar
+    重复执行上一条命令，并用 :gs/foo/bar 进行替换操作
+
+在需要重复运行调试一道长长的命令，需要测试某个参数时候，用这个命令会比较实用
+
+快速备份一个文件
+
+    $ cp filename{,.bak}
+
+    这道命令把 filename 文件拷贝成 filename.bak
+
+    我常用 cp -p my{.txt,.txt.2001.1.1}
+
+重置终端
+
+    reset
+
+如果你试过不小心cat了某个二进制文件，很可能整个终端就傻掉了，可能不会换行，没法回显，大堆乱码之类的，这时候敲入reset回车，不管命令有没有显示，就能回复正常了。
+
+映射一个内存目录
+
+    mount -t tmpfs -o size=1024m tmpfs /mnt/ram
+
+    多数发行版都会在fstab内预留了一个内存目录，挂载在 /dev/shm，直接使用即可
+    最常见的用途是用内存空间来放Firefox的配置，可以让慢吞吞的FF快很多
+
+在一个子shell中运行一个命令
+
+    (cd /tmp && ls)
+
+    好处就是不会改变当前shell的目录，以及如果命令中涉及环境变量，也不会对当前shell有任何更改。
+
+用diff对比远程文件跟本地文件
+
+    ssh user@host 'cat /path/to/remotefile' |diff /path/to/localfile -
+
+diff通常的用法是从参数读入两个文件，而命令里面的-则是指从stdin读入了
+
 ## Bash内建命令
 
 用 `set` 显示当前所有变量的定义，以及 `source xxx` 等执行后的函数里的变量和函数定义
