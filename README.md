@@ -43,8 +43,6 @@ OOP的思维模式，是大一统的；C的思维模式，是分离的。前者�
     会有多少人支持解决svn的问题
     如果你只知道提出问题却提不出解法，你自己就已经成为了问题
 
-Mkdocs 配置和使用 <https://www.xncoding.com/2020/03/01/tool/mkdocs.html>
-
 ## 别人的速查手册
 
 python
