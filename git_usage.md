@@ -1890,7 +1890,7 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
 
 总之，你的最终修改结果，使文件内容是你想要的样子，记得要删除冲突标记符号所在行，然后保存退出。
 
-使用 git diff 命令可以查看差别，前面的 a 表示当前本地内容，后面的 b 表示要合入的内容
+因为进入合并冲突的过程了，这时执行 `git diff` 可以对比查看合并差别，前面的 a 表示当前本地内容，后面的 b 表示要合入的内容
 
     $ git diff
     diff --cc mmm.py
@@ -3250,57 +3250,123 @@ git rm 移除git对该文件的跟踪，跟 git add 相对，分几种回退情�
 
 这样文件回到了初始状态。
 
-#### 使用 git revert 进行分支硬回退
+#### 避免 push -f 进行回退
 
-以master分支为例，A2提交不用了，需要回退到A1
+    https://zhuanlan.zhihu.com/p/104806087
 
-    A1 -- A2
+你的修改已经提交到远程库了，后来发现有错，需要回退到之前的某个提交点，如果使用 git push -f 强行切换到某个提交点，总是会引起很大的混乱：其他人也在同步你的变化，即使你回退了并强行 push -f，而其他人不知道的话，只要他做push，你的回退又被他本地保存的你提交的变化覆盖回去了。。。
 
-1.查看版本号：
+git push -f 制造混乱的过程
 
-    git log --graph --oneline
-    或 git reflog 查看更多的操作
+    以 master 分支为例，A2 提交不用了，需要回退到 A1
 
-2.将版本回退到指定的提交点：
+        A1 -- A2
 
-    git reset --hard 指定的commitId
+    1.查看版本号：
 
-3.更新远程仓库端的版本也进行同步的回退
+        git log --graph --oneline
+        或 git reflog 查看更多的操作
 
-    git push -f
+    2.将版本回退到指定的提交点：
 
-如果远程仓库不允许 push -f，先使用 rebase 把多个提交合并成一个提交，再使用 revert 产生一次反提交
+        git reset --hard A1
 
-    <https://zhuanlan.zhihu.com/p/104806087>
-    # 从master 分支建立新分支 tmp_re ，使用 git log 查询一下要回退到的 commit 版本 N
-    git log --graph --oneline
+    3.更新远程仓库端的版本也进行同步的回退
 
-    # 使用命令 git rebase -i N 将这些 commits 都合并到最旧的 commit1 上
-    git rebase -i commit1
-    # 这个时候，master 分支上的提交记录是 older, commit1, commit2, commit3, commit4，而 tmp_re 分支上的提交记录是 older, commit_rebase，二者的内容其实是一样的
+        git push -f
 
-    # tmp_re 分支合并master分支，多了一个 commit_merge。
-    git merge master
+    远程库提交记录的历史也会跟着丢，其他人的修改都只能依赖本地的提交记录了
 
-    合并前
-    master分支  older---commit1---commit2---commit3---commit4
-    tmp_re分支  older---commit_rebase
+    4. 其它人已经同步 A2 到自己的本地了，他自己的工作是提交点 A3，然后也 push 到远程库，你撤销 A2 的企图没有实现
+
+        A1 -- A2 -- A3
+
+所以，回退的方法，必须尽量避免使用 git push -f。
+
+着眼点不要放在撤回到某个提交点上，而是放在撤回到那个提交点的内容上，即：文件内容回退到之前的某个提交点的样子，但在提交记录上是新增一个提交点，这样的办法是最妥当的。
+
+法一：基于 git 文件操作的办法
+
+    1、在 master 分支上，需要回退到 A1，先对提交点 A1 新建分支
+
+    2、切换到新建的分支，除了 .git 目录，拷贝所有文件和目录到临时目录
+
+    2、切换回 master 分支，除了 .git 目录，删除的所有文件和目录
+
+    3、从临时目录拷贝回全部内容，这样让 git 处理，新增一个提交即可
+
+    最终实现了在提交记录上新增一个提交点，文件内容回退到之前指定的提交点，提交记录是向前延展的，所有人都不受影响。
+
+法二：组合使用 revert + rebase 进行回退
+
+利用两个特点
+
+    git revert 命令反做你上一步的提交，通过在提交记录上新增一个提交点，实现文件内容的回退。
+
+    git rebase 压缩你所有要回撤的提交点为一个提交点。
+
+方案
+
+    先使用 rebase 把多个提交合并成一个提交
+
+    再使用 revert 反做这个提交
+
+revert 新增的提交点，是对 rebase 那个提交点的反向执行，从而实现了修改内容的回退。
+
+这样在提交记录里新增了一个提交点，但是提交记录是向前延展的，所有人都不受影响。
+
+示例：
+
+    从master 分支建立新分支 tmp_re ，使用 git log 查询一下要回退到的 commit 版本 N
+
+        git checkout -b tmp_re
+        git log --graph --oneline
+
+    使用命令 git rebase -i N 将这些 commits 都合并到最旧的 commit1 上
+
+        git rebase -i commit1
+
+    合并前：
+                        起点       修改1        修改2        修改3
+        [master分支] --- older --- commit1 --- commit2 --- commit3
+
+                        起点       所有的修改合并
+        [tmp_re分支] --- older --- commit_rebase
+
+    这个时候，master 分支上的提交记录是跟 tmp_re 分支上的提交记录不同，但两个分支的文件的内容其实是一样的。
+
+    tmp_re 分支用分叉合并 master 分支（只能进度落后的合并进度领先的，倒过来合并git会报错），新增一个分叉合并的提交点
+
+        git merge master
 
     合并后：
-    tmp_re分支  older---commit_rebase---------------------commit_merge---commit_revert
-                    \                                    /
-                     commit1---commit2---commit3---commit4
+                        起点       所有的修改合并             分叉点
+        [tmp_re分支] --- older --- commit_rebase --------- commit_merge
+                    \                                /
+                      commit1 --- commit2 --- commit3
+                       修改1        修改2        修改3
 
-    # 再在 tmp_re 分支上对 commit_merge 进行一次 revert 反提交，就实现了把 commit1 到 commit4 的提交全部回退。
+    再在 tmp_re 分支上对 commit_merge 进行一次 revert 反提交。
 
-    git log --graph --oneline # 注意merge出现分叉，回退需要指定分支，先用git log看好了
-    git revert HEAD^ -m 1  # 退有rebase提交的那一支
+    这样就实现了在文件内容上，把 commit1 到 commit3 提交做的修改全部撤回，但是提交记录是向前延展的。
 
-    # 最终tmp_re分支的内容回退掉了commit1-4的内容，commit历史都在：
+    merge 有分叉，做 revert 时需要指定分支，先用 git log 看好了
 
-    tmp_re分支  older---commit_rebase---------------------commit_merge---commit_revert
-                    \                                    /
-                     commit1---commit2---commit3---commit4
+        git log --graph --oneline
+
+    回退选择有 rebase 提交的那一支。
+
+    NOTE: git revert 的 m 参数指定 mainline，如果是功能分支合并功能分支，就不好判断了！
+
+        git revert HEAD^ -m 1
+
+    这样，tmp_re 分支的文件内容回退掉了 commit1-3 修改的内容，但是提交记录没有任何删除，一直向前延展
+
+        [tmp_re分支] --- older --- commit_rebase ---- commit_merge --- commit_revert（其实回到 older 的内容了）
+                          \                           /
+                           commit1---commit2---commit3
+
+    最后，把 tmp_re 分支合并到 master 分支，覆盖 master 分支上的差异，使 master 分支上的文件内容也回到了点 older 点的样子。
 
 #### 远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1
 
