@@ -3711,7 +3711,7 @@ head当前是指向最新的那一条记录，所以我们看一下parent commit
 
     https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key
 
-### 1.github网页端添加gpg公钥
+### 1、在github网页端添加自己的gpg公钥
 
 github 要求，gpg 密钥的电邮地址应该使用 github 页面提示给出的（对于隐藏自己邮件地址）对外电邮。查看该电邮地址，登陆 github，菜单 “settings-emails：Primary email address的说明文字里有对外电邮地址”，操作说明见 <https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>，所以单独给这个电邮地址新建个 github 专用的 gpg 密钥即可，uid 设为 github 用户名 'm666m'。为提高使用安全性，新建个有签名功能的子密钥使用，提交到 github 和本地 git 存储的设置中使用。
 
@@ -3724,13 +3724,13 @@ github 要求，gpg 密钥的电邮地址应该使用 github 页面提示给出�
 
    github 页面右上角，单击你的头像，Settings—> GPG keys，然后粘贴 GPG key。
 
-#### github不发布公钥
+#### github不在 Pubkey Server 发布公钥
 
-这时自己的github公钥就在可以公开访问了
+这时自己的github公钥就可以公开访问了
 
     https://github.com/m666m.gpg
 
-GitHub 只维护用户自行上传的公钥，不会去查找 Pubkey Server 的，所以不需要担心第三方的影响。
+GitHub 不去查找 Pubkey Server，只维护用户自行上传的公钥
 
     吊销密钥将取消验证已签名的提交，通过使用此密钥验证的提交将变为未验证状态。如果你的密钥已被盗用，则应使用此操作。
 
@@ -3739,8 +3739,8 @@ GitHub 只维护用户自行上传的公钥，不会去查找 Pubkey Server 的�
 ### 2.将 GPG 密钥与 Git 关联
 
     # 如果有 Yubikey 这种智能卡，插入
-    gpg --card-status
-    # 找到用于签名应用的子密钥 ID，比如 FBB74XXXXXXXAE51
+    #   gpg --card-status
+    #   找到用于签名应用的子密钥 ID，比如 FBB74XXXXXXXAE51
 
     # FBB74XXXXXXXAE51 是之前gpg生成的uid的密钥指纹，也可以直接写uid如'm666m'
     # 如果有签名功能的子密钥，设置为该子密钥的keyid即可。
