@@ -71,9 +71,6 @@
             "editorBracketHighlight.foreground5": "#71a4df",
             "editorBracketHighlight.foreground6": "#5bd6d6"
         },
-        "[Material Neutral]": {
-            "activityBar.foreground": "#40ffb6"
-        },
         "window.activeBorder": "#ff7b00c5",
         "sideBarSectionHeader.border": "#ebebeb",
         "inputOption.activeBackground": "#9b9999" // 查找界面的高亮标识
@@ -248,9 +245,9 @@
     "todo-tree.highlights.customHighlight": {
         "TODO": {
             "icon": "tasklist",
-            "iconColour": "#c5760f",
-            "foreground": "#e7e955",
-            "background": "#c5760f",
+            "iconColour": "#b96a03",
+            "foreground": "#ffffff",
+            "background": "#b96a03",
             "type": "tag"
         },
         "FIXME": {
