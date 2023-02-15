@@ -891,17 +891,18 @@ git pull 的操作默认是 fetch + merge，可以设置成 fetch + rebase。
 将远程主机的某个分支的更新取回，并与本地指定的分支合并 ：
 
     # 远程拉取下列同步到本地一般显式的写明用拉直
-    git pull --rebase <远程主机名> <远程分支名>:<本地分支名>
+    git pull <远程主机名> <远程分支名>:<本地分支名>
 
     # 如果远程分支是与当前本地分支合并，则冒号后面的部分可以省略
-    git pull --rebase origin master
+    git pull origin master
 
     # 如果远程主机名 origin，分支就是当前分支，可简写
+    git pull
+
+    # 因为默认是 fetch + merge，所以需要用 rebase 的话，需要明确指定参数 --rebase
     git pull --rebase
 
-分支的合并，如上所述的是fetch下来一份远程合并到本地，这个操作于本地的两个分支进行合并，没什么区别。
-
-分支合并的详细用法见章节 [分支合并]。
+分支合并的详细用法见章节 [分支合并：merge菱形分叉还是rebase拉直]。
 
 ### fetch 和 pull 的区别
 
@@ -917,7 +918,7 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的本地�
 
 所以 git fetch 是十分安全的，你不用担心这个命令破坏你的工作区或暂存区，它下载的远程分支到本地的远程仓库分支，但是并不做任何的合并工作，然后可以执行以下命令合并到本地仓库
 
-其实 git pull 也可以默认为 fetch + rebase，见章节 [可以设置 git pull 的2个过程]。
+其实 git pull 也可以默认为 fetch + rebase，见章节 [git pull 的2个过程]。
 
 #### 本地有两份代码--本地仓库和远程仓库
 
@@ -991,6 +992,10 @@ NOTE: 本地分支更新远程时，不要直接做 git pull 或 git pull --reba
     或 git cherry-pick o/master
 
 如果提示有冲突，解决冲突的操作参见章节 [解决合并冲突conflicts] 的示例。
+
+所以本地分支的更新，就是 fetch 下来一份到远程的本地库，然后合并到本地分支。
+
+其实这个操作与你合并本地的两个分支没什么区别，都可以用 merge 或 rebase 进行。
 
 ## 分支推送
 
