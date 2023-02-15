@@ -2857,7 +2857,7 @@ HEAD 的 第三个父级
     HEAD^2~3 = HEAD^2^^^
     HEAD^3~3 = HEAD^3^^^
 
-## ----------下为 git 常用法-------------
+## ---------- git 常用法 -------------
 
 ### 查看尚未合并的变更
 
@@ -3131,314 +3131,6 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
     [mergetool "vscode-merge"]
         cmd = code --wait $MERGED
 
-## 使用 GPG 签名 Github 提交
-
-    https://www.dejavu.moe/posts/gpg-verified-github/
-
-    https://www.zackwu.com/posts/2019-08-04-how-to-use-gpg-on-github/
-
-    https://cloud.tencent.com/developer/article/1656009?from=article.detail.1531457
-
-    https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key
-
-### 1、在github网页端添加自己的gpg公钥
-
-github 要求，gpg 密钥的电邮地址应该使用 github 页面提示给出的（对于隐藏自己邮件地址）对外电邮。查看该电邮地址，登陆 github，菜单 “settings-emails：Primary email address的说明文字里有对外电邮地址”，操作说明见 <https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>，所以单独给这个电邮地址新建个 github 专用的 gpg 密钥即可，uid 设为 github 用户名 'm666m'。为提高使用安全性，新建个有签名功能的子密钥使用，提交到 github 和本地 git 存储的设置中使用。
-
-显示当前的gpg公钥，本地控制台下执行命令
-
-    # FBB74XXXXXXXAE51 是之前gpg生成的uid的密钥指纹，也可以直接写uid如'm666m'
-    gpg --armor --export FBB74XXXXXXXAE51
-
-找到你的电邮地址对应的那个公钥，复制将其添加到 github 个人资料的设置中：
-
-   github 页面右上角，单击你的头像，Settings—> GPG keys，然后粘贴 GPG key。
-
-#### github不在 Pubkey Server 发布公钥
-
-这时自己的github公钥就可以公开访问了
-
-    https://github.com/m666m.gpg
-
-GitHub 不去查找 Pubkey Server，只维护用户自行上传的公钥
-
-    吊销密钥将取消验证已签名的提交，通过使用此密钥验证的提交将变为未验证状态。如果你的密钥已被盗用，则应使用此操作。
-
-    删除密钥不会取消验证已签名的提交。使用此密钥验证的提交将保持验证状态。
-
-### 2.将 GPG 密钥与 Git 关联
-
-    # 如果有 Yubikey 这种智能卡，插入
-    #   gpg --card-status
-    #   找到用于签名应用的子密钥 ID，比如 FBB74XXXXXXXAE51
-
-    # FBB74XXXXXXXAE51 是之前gpg生成的uid的密钥指纹，也可以直接写uid如'm666m'
-    # 如果有签名功能的子密钥，设置为该子密钥的keyid即可。
-    git config --global user.signingkey FBB74XXXXXXXAE51
-    # 或者
-    git config user.signingkey FBB74XXXXXXXAE51
-
-如果是在已有的项目文件夹里，注意检查是否需要更新用户名和电邮地址
-
-    git config user.name
-
-    git config  user.email
-
-### 3.设置gpg程序的路径
-
-    $ where gpg
-        E:\Git\usr\bin\gpg.exe  # 这个是 Git for windows 自带的
-        E:\GnuPG\bin\gpg.exe    # 这个是Gpg4Win安装的
-
-    $ git config --global gpg.program "E:\GnuPG\bin\gpg.exe"
-    done
-
-### 4.签名提交
-
-git commit 使用 -S 参数进行 GPG 签名：
-
-    # 每次都得给 git commit 操作（包括 --amend）传递 -S。
-    git commit -S -m “commit message"
-
-建议始终使用签名提交，设置默认使用 GPG 签名提交：
-
-    git config --global commit.gpgsign true
-    # 或者
-    git config commit.gpgsign true
-
-验证签名的提交
-
-    git verify-commit [hash]
-
-在 Git 中通过命令行验证相关提交的签名
-
-    $ git log --show-signature -1
-    commit 374010d1af1de40fdf8f1f6f5cca0c0c60e4fe9d (HEAD -> master, origin/master, origin/HEAD)
-    gpg: 签名建立于 四 10/31 11:24:16 2019 CST
-    gpg:               使用 RSA 密钥 39033F321A83635ECD7FC8DA66DD4800155F7A2B
-    gpg: 完好的签名，来自于 “admin <admin@example.com>” [绝对]
-    Author: admin <admin@example.com>
-    Date:   Thu Oct 31 11:24:16 2019 +0800
-
-        update README.md
-
-在 GitLab 验证提交
-
-    1、在 GitLab 提交选项卡，签名的提交将显示包含“ Verified”或“ Unverified”的徽章，具体取决于 GPG 签名的验证状态。
-    2、通过单击 GPG 徽章，将显示签名的详细信息。
-
-### 5. 给标签签名
-
-tag命令后跟 -s 参数即可
-
-    git tag -s [tagname]
-
-对带注释的标签，每次都传递一个 -s 开关：
-
-    git tag -asm "Tag message" tagname
-
-建议始终对 git 标签签名，设置始终签名带注释的标签
-
-    git config --global tag.forceSignAnnotated true
-
-验证一个签名的标签
-
-    git verify-tag [tagname]
-
-如果你要验证其他人的 git 标签，需要你导入他的 gpg 公钥。
-
-### 6.合并时强制进行签名检查
-
-需要项目的所有成员都签名了他们的提交，否则只要有一个提交没有签名或验证失败，都会导致合并操作失败。
-
-    git merge --verify-signatures -S merged-branch
-
-### 7.可选步骤：给Github的GPG公钥签名
-
-在Github网页端进行的操作，比如创建仓库。这些commit是由Github代为签名的。
-
-    $ git log --show-signature
-    # some output is omitted
-    commit ec37d4af120a69dafa077052cfdf4f5e33fa1ef3 (HEAD -> master)
-    gpg: Signature made 2019年08月 4日 12:52:29
-    gpg:                using RSA key 1BA074F113915706D141348CDC3DB5873563E6B2
-    gpg: Good signature from "fortest <test@test.com>" [ultimate]
-    Author: keithnull <keith1126@126.com>
-    Date:   Sun Aug 4 12:52:29 2019 +0800
-
-        test GPG
-
-    commit 6937d638d950362f73bfbf28bc4a39d1700bf26b
-    gpg: Signature made 2019年07月24日 15:58:46
-    gpg:                using RSA key 4AEE18F83AFDEB23
-    gpg: Can't check signature: No public key
-    Author: Keith Null <20233656+keithnull@users.noreply.github.com>
-    Date:   Wed Jul 24 15:58:46 2019 +0800
-
-        Initial commit
-
-注意网页端的提交导致“gpg: Can't check signature: No public key”。
-
-为了解决这个问题，我们需要导入Github所用的GPG密钥并签名。
-
-先是导入：
-
-    $ curl https://github.com/web-flow.gpg | gpg --import
-    # curl's output is omitted
-    gpg: key 4AEE18F83AFDEB23: public key "GitHub (web-flow commit signing) <noreply@github.com>" imported
-    gpg: Total number processed: 1
-    gpg:               imported: 1
-
-查看刚导入后的有效性是  [ unknown]
-
-    $ gpg -k
-    /c/Users/XXXXX/.gnupg/pubring.kbx
-    -------------------------------------
-    pub   rsa2048 2017-08-16 [SC]
-        5DE3E0509C47EA3CF04A42D34AEE18F83AFDEB23
-    uid           [ unknown] GitHub (web-flow commit signing) <noreply@github.com>
-
-导入后不签名，git log显示签名时gpg验证提示会有警告性信息
-
-    gpg: Good signature from "..." [unknown]
-    gpg: WARNING: This key is not certified with a trusted signature!
-    gpg:          There is no indication that the signature belongs to the owner.
-
-用自己的密钥为其签名
-
-   $ gpg --sign-key 4AEE18F83AFDEB23
-
-    pub  rsa2048/4AEE18F83AFDEB23
-        created: 2017-08-16  expires: never       usage: SC
-        trust: unknown       validity: unknown
-    [ unknown] (1). GitHub (web-flow commit signing) <noreply@github.com>
-
-
-    pub  rsa2048/4AEE18F83AFDEB23
-        created: 2017-08-16  expires: never       usage: SC
-        trust: unknown       validity: unknown
-    Primary key fingerprint: 5DE3 E050 9C47 EA3C F04A  42D3 4AEE 18F8 3AFD EB23
-
-        GitHub (web-flow commit signing) <noreply@github.com>
-
-    Are you sure that you want to sign this key with your
-    key "m666m (for github use) <31643783+m666m@users.noreply.github.com>" (FBB74XXXXXXXAE51)
-
-    Really sign? (y/N) y
-
-确认签名生效，有效性validity变为 full了
-
-    $ gpg --edit-key 4AEE18F83AFDEB23
-    gpg (GnuPG) 2.2.29-unknown; Copyright (C) 2021 Free Software Foundation, Inc.
-    This is free software: you are free to change and redistribute it.
-    There is NO WARRANTY, to the extent permitted by law.
-
-
-    gpg: checking the trustdb
-    gpg: marginals needed: 3  completes needed: 1  trust model: pgp
-    gpg: depth: 0  valid:   1  signed:   1  trust: 0-, 0q, 0n, 0m, 0f, 1u
-    gpg: depth: 1  valid:   1  signed:   0  trust: 1-, 0q, 0n, 0m, 0f, 0u
-    pub  rsa2048/4AEE18F83AFDEB23
-        created: 2017-08-16  expires: never       usage: SC
-        trust: unknown       validity: full
-    [  full  ] (1). GitHub (web-flow commit signing) <noreply@github.com>
-
-    gpg> quit
-
-查看现在的有效性是  [ full]
-
-    $ gpg -k
-    /c/Users/XXXXX/.gnupg/pubring.kbx
-    -------------------------------------
-    pub   rsa2048 2017-08-16 [SC]
-        5DE3E0509C47EA3CF04A42D34AEE18F83AFDEB23
-    uid           [  full  ] GitHub (web-flow commit signing) <noreply@github.com>
-
-至此，再尝试查看本地仓库的commit签名信息，则会发现所有的commit签名都已得到验证：
-
-    $ git log --show-signature
-    # some output is omitted
-    commit 6937d638d950362f73bfbf28bc4a39d1700bf26b
-    gpg: Signature made 2019年07月24日 15:58:46
-    gpg:                using RSA key 4AEE18F83AFDEB23
-    gpg: Good signature from "GitHub (web-flow commit signing) <noreply@github.com>" [full]
-    Author: Keith Null <20233656+keithnull@users.noreply.github.com>
-    Date:   Wed Jul 24 15:58:46 2019 +0800
-
-        Initial commit
-
-## Github 创建 Pull Request
-
-Pull Request 是开发者使用 GitHub 进行协作的利器。这个功能为用户提供了友好的页面，让提议的更改在并入官方项目之前，可以得到充分的讨论。
-
-最简单地来说，Pull Request 是一种机制，让开发者告诉项目成员一个功能已经完成。一旦 feature 分支开发完毕，
-开发者使用 GitHub 账号提交一个 Pull Request。它告诉所有参与者，他们需要审查代码，并将代码并入 master 分支。
-
-Pull Request 不只是一个通知，还是一个专注于某个提议功能的讨论版
-
-### Pull Request是如何工作的
-
-Pull Request 需要两个不同的分支或是两个不同的仓库,
-
-    1.开发者在他们的本地仓库中为某个功能创建一个专门的分支。
-    2.开发者将分支推送到公共的 GitHub 仓库。
-    3.开发者用 GitHub 发起一个 Pull Request。
-    4.其余的团队成员审查代码，讨论并且做出修改。
-    5.项目维护者将这个功能并入官方的仓库，然后关闭这个 Pull Request。
-
-### 例子
-
-如何将 Pull Request 用在 Fork 工作流中。小团队中的开发和向一个开源项目贡献代码都可以这样做。
-
-Mary 是一位开发者，John 是项目的维护者。他们都有自己公开的 GitHub 仓库，John 的仓库之一便是下面的官方项目。
-
-为了参与这个项目，Mary 首先要做的是 fork 属于 John 的 GitHub 仓库。她需要注册登录 GitHub，找到 John 的仓库，点击 Fork 按钮。
-
-选好 fork 的目标位置之后，她在服务端就有了一个项目的副本.
-
-接下来，Mary 需要将她刚刚 fork 的 GitHub 仓库克隆下来.她在本地会有一份项目的副本。她需要运行下面这个命令：
-
-    git clone https://github.com/user/repo.git
-
-请记住，git clone 自动创建了一个名为 origin 的远端连接，指向 Mary 所 fork 的仓库。
-
-在她写任何代码之前，Mary 需要为这个功能创建一个新的分支。这个分支将是她随后发起 Pull Request 时要用到的源分支。
-
-    # 创建新分支
-    git checkout -b some-feature
-    # 编辑一些代码
-    git commit -a -m "新功能的一些草稿"
-
-为了完成这个新功能，Mary 想创建多少个提交都可以。如果 feature 分支的历史有些乱，她可以使用交互式的 rebase 来移除或者拼接不必要的提交。对于大项目来说，清理 feature 的项目历史使得项目维护者更容易看清楚 Pull Request 的所处的进展。
-
-在功能完成后，Mary 使用简单的 git push 将 feature 分支推送到了她自己的 GitHub 仓库上（不是官方的仓库）：
-
-    git push origin some-branch
-
-这样她的更改就可以被项目维护者看到了（或者任何有权限的协作者）。
-
-#### Mary创建了一个Pull Request
-
-GitHub 上已经有了她的 feature 分支之后，Mary 可以找到被她 fork 的仓库，点击项目简介下的 New Pull Request 按钮，用她的 GitHub 账号创建一个 Pull Request。Mary 的仓库会被默认设置为源仓库（head fork），询问她指定源分支（compare）、目标仓库（base fork）和目标分支（base）。
-
-Mary 想要将她的功能并入主代码库，所以源分支就是她的 feature 分支，目标仓库就是 John 的公开仓库，目标分支为 master。她还需要提供一个 Pull Request 的标题和简介。
-
-在她创建了 Pull Request 之后，GitHub 会给 John 发送一条通知。
-
-#### John审查了这个Pull Request
-
-John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到所有的 Pull Request。点击 Mary 的 Pull Request 会显示这个 Pull Request 的简介、feature 分支的提交历史，以及包含的更改。
-
-如果他认为 feature 分支已经可以合并了，他只需点击 Merge Pull Request 按钮来通过这个 Pull Request，将 Mary 的 feature分支并入他的 master 分支.
-
-但是，在这里例子中，假设 John 发现了 Mary 代码中的一个小 bug，需要她在合并前修复。他可以评论整个 Pull Request，也可以评论 feature 分支中某个特定的提交。
-
-为了修复错误，Mary 在她的 feature 分支后面添加了另一个提交，并将它推送到了她的 GitHub 仓库，就像她之前做的一样。这个提交被自动添加到原来的 Pull Request 后面，John 可以在他的评论下方再次审查这些修改。
-
-#### John 接受了 Pull Request
-
-最后，John 接受了这些修改，将 feature 分支并入了 master 分支，关闭了这个 Pull Request。功能现在已经整合到了项目中，其他在 master 分支上工作的开发者可以使用标准的 git pull 命令将这些修改拉取到自己的本地仓库。
-
 ## 常见问题
 
 Ubuntu克隆下源码后对其操作时git报错 fatal: unsafe repository
@@ -3556,6 +3248,325 @@ head当前是指向最新的那一条记录，所以我们看一下parent commit
     2.远程报错的，本地直接git clone --bare 重新搞上去得了，但是会丢历史版本信息
 
     3.本地报错的，把.git删掉，重新init，但是会丢历史版本信息
+
+## 使用 GPG 签名 Github 提交
+
+    https://www.dejavu.moe/posts/gpg-verified-github/
+
+    https://www.zackwu.com/posts/2019-08-04-how-to-use-gpg-on-github/
+
+    https://cloud.tencent.com/developer/article/1656009?from=article.detail.1531457
+
+    https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key
+
+验证签名
+
+    git log --show-signature -1
+
+### 1、在github网页端添加自己的gpg公钥
+
+github 要求，gpg 密钥的电邮地址应该使用 github 页面提示给出的（对于隐藏自己邮件地址）对外电邮。
+
+查看该电邮地址，登陆 github，菜单 “settings-emails：Primary email address的说明文字里有对外电邮地址”，操作说明见 <https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key>。
+
+单独给这个电邮地址新建个 github 专用的 gpg 密钥，其 uid 设为 github 用户名 'm666m'。
+
+为提高使用安全性，新建的主密钥仅具有签发功能，再签发一个有签名功能的子密钥，把子密钥提交到 github 和本地 git 存储的设置中使用。
+
+显示当前的 gpg 公钥，本地控制台下执行命令
+
+    # FBB74XXXXXXXAE51 是之前gpg生成的uid的密钥指纹，也可以直接写uid如'm666m'
+    gpg --armor --export FBB74XXXXXXXAE51
+
+复制你的电邮地址对应的那个公钥，将其添加到 github 个人资料的设置中：
+
+   github 页面右上角，单击你的头像，Settings—> GPG keys，然后粘贴 GPG key。
+
+#### github不在 Pubkey Server 发布公钥
+
+这时自己的 github 公钥就可以公开访问了
+
+    https://github.com/m666m.gpg
+
+GitHub 不去查找 Pubkey Server，只维护用户自行上传的公钥
+
+    吊销密钥将取消验证已签名的提交，通过使用此密钥验证的提交将变为未验证状态。如果你的密钥已被盗用，则应使用此操作。
+
+    删除密钥不会取消验证已签名的提交。使用此密钥验证的提交将保持验证状态。
+
+### 2、将 GPG 密钥与 Git 关联
+
+    # 如果有 Yubikey 这种智能卡，插入
+    #   gpg --card-status
+    #   找到用于签名应用的子密钥 ID，比如 FBB74XXXXXXXAE51
+
+    # FBB74XXXXXXXAE51 是之前gpg生成的uid的密钥指纹，也可以直接写uid如'm666m'
+    # 如果有签名功能的子密钥，设置为该子密钥的keyid即可。
+    git config --global user.signingkey FBB74XXXXXXXAE51
+    # 或者
+    git config user.signingkey FBB74XXXXXXXAE51
+
+如果是在已有的项目文件夹里，注意检查是否需要更新用户名和电邮地址
+
+    git config user.name
+
+    git config  user.email
+
+### 3、设置gpg程序的路径
+
+    $ where gpg
+        E:\Git\usr\bin\gpg.exe  # 这个是 Git for windows 自带的
+        E:\GnuPG\bin\gpg.exe    # 这个是Gpg4Win安装的
+
+    $ git config --global gpg.program "E:\GnuPG\bin\gpg.exe"
+    done
+
+### 4、签名提交
+
+git commit 使用 -S 参数进行 GPG 签名：
+
+    # 每次都得给 git commit 操作（包括 --amend）传递 -S。
+    git commit -S -m “commit message"
+
+建议始终使用签名提交，设置默认使用 GPG 签名提交：
+
+    git config --global commit.gpgsign true
+    # 或者
+    git config commit.gpgsign true
+
+验证签名的提交
+
+    git verify-commit [hash]
+
+在 git 中通过命令行验证相关提交记录的签名
+
+    $ git log --show-signature -1
+    commit 374010d1af1de40fdf8f1f6f5cca0c0c60e4fe9d (HEAD -> master, origin/master, origin/HEAD)
+    gpg: 签名建立于 四 10/31 11:24:16 2019 CST
+    gpg:               使用 RSA 密钥 39033F321A83635ECD7FC8DA66DD4800155F7A2B
+    gpg: 完好的签名，来自于 “admin <admin@example.com>” [绝对]
+    Author: admin <admin@example.com>
+    Date:   Thu Oct 31 11:24:16 2019 +0800
+
+        update README.md
+
+在 GitLab 验证提交
+
+    1、在 GitLab 提交选项卡，签名的提交将显示包含“ Verified”或“ Unverified”的徽章，具体取决于 GPG 签名的验证状态。
+    2、通过单击 GPG 徽章，将显示签名的详细信息。
+
+### 5、给标签签名
+
+tag命令后跟 -s 参数即可
+
+    git tag -s [tagname]
+
+对带注释的标签，每次都传递一个 -s 开关：
+
+    git tag -asm "Tag message" tagname
+
+建议始终对 git 标签签名，设置始终签名带注释的标签
+
+    git config --global tag.forceSignAnnotated true
+
+验证一个签名的标签
+
+    git verify-tag [tagname]
+
+如果你要验证其他人的 git 标签，需要你导入他的 gpg 公钥。
+
+### 6、合并时强制进行签名检查
+
+需要项目的所有成员都签名了他们的提交，否则只要有一个提交没有签名或验证失败，都会导致合并操作失败。
+
+    git merge --verify-signatures -S merged-branch
+
+### 7、可选步骤：给Github的GPG公钥签名
+
+在Github网页端进行的操作，比如创建仓库。这些commit是由Github代为签名的。
+
+    $ git log --show-signature
+    # some output is omitted
+    commit ec37d4af120a69dafa077052cfdf4f5e33fa1ef3 (HEAD -> master)
+    gpg: Signature made 2019年08月 4日 12:52:29
+    gpg:                using RSA key 1BA074F113915706D141348CDC3DB5873563E6B2
+    gpg: Good signature from "fortest <test@test.com>" [ultimate]
+    Author: keithnull <keith1126@126.com>
+    Date:   Sun Aug 4 12:52:29 2019 +0800
+
+        test GPG
+
+    commit 6937d638d950362f73bfbf28bc4a39d1700bf26b
+    gpg: Signature made 2019年07月24日 15:58:46
+    gpg:                using RSA key 4AEE18F83AFDEB23
+    gpg: Can't check signature: No public key
+    Author: Keith Null <20233656+keithnull@users.noreply.github.com>
+    Date:   Wed Jul 24 15:58:46 2019 +0800
+
+        Initial commit
+
+注意网页端的提交导致 “gpg: Can't check signature: No public key”。
+
+为了解决这个问题，我们需要导入 Github 所用的 GPG 密钥并签名。
+
+先导入：
+
+    $ curl https://github.com/web-flow.gpg | gpg --import
+    # curl's output is omitted
+    gpg: key 4AEE18F83AFDEB23: public key "GitHub (web-flow commit signing) <noreply@github.com>" imported
+    gpg: Total number processed: 1
+    gpg:               imported: 1
+
+查看刚导入后的有效性是 [unknown]
+
+    $ gpg -k
+    /c/Users/XXXXX/.gnupg/pubring.kbx
+    -------------------------------------
+    pub   rsa2048 2017-08-16 [SC]
+        5DE3E0509C47EA3CF04A42D34AEE18F83AFDEB23
+    uid           [ unknown] GitHub (web-flow commit signing) <noreply@github.com>
+
+导入后不签名，git log 显示签名时 gpg 验证提示会有警告性信息
+
+    $ git log --show-signature -1
+    gpg: Good signature from "..." [unknown]
+    gpg: WARNING: This key is not certified with a trusted signature!
+    gpg:          There is no indication that the signature belongs to the owner.
+
+所以，用自己的密钥为其签名
+
+    $ gpg --sign-key 4AEE18F83AFDEB23
+
+    pub  rsa2048/4AEE18F83AFDEB23
+        created: 2017-08-16  expires: never       usage: SC
+        trust: unknown       validity: unknown
+    [ unknown] (1). GitHub (web-flow commit signing) <noreply@github.com>
+
+
+    pub  rsa2048/4AEE18F83AFDEB23
+        created: 2017-08-16  expires: never       usage: SC
+        trust: unknown       validity: unknown
+    Primary key fingerprint: 5DE3 E050 9C47 EA3C F04A  42D3 4AEE 18F8 3AFD EB23
+
+        GitHub (web-flow commit signing) <noreply@github.com>
+
+    Are you sure that you want to sign this key with your
+    key "m666m (for github use) <31643783+m666m@users.noreply.github.com>" (FBB74XXXXXXXAE51)
+
+    Really sign? (y/N) y
+
+确认签名生效，有效性validity 变为 full 了
+
+    $ gpg --edit-key 4AEE18F83AFDEB23
+    gpg (GnuPG) 2.2.29-unknown; Copyright (C) 2021 Free Software Foundation, Inc.
+    This is free software: you are free to change and redistribute it.
+    There is NO WARRANTY, to the extent permitted by law.
+
+
+    gpg: checking the trustdb
+    gpg: marginals needed: 3  completes needed: 1  trust model: pgp
+    gpg: depth: 0  valid:   1  signed:   1  trust: 0-, 0q, 0n, 0m, 0f, 1u
+    gpg: depth: 1  valid:   1  signed:   0  trust: 1-, 0q, 0n, 0m, 0f, 0u
+    pub  rsa2048/4AEE18F83AFDEB23
+        created: 2017-08-16  expires: never       usage: SC
+        trust: unknown       validity: full
+    [  full  ] (1). GitHub (web-flow commit signing) <noreply@github.com>
+
+    gpg> quit
+
+查看现在的有效性是 [full]
+
+    $ gpg -k
+    /c/Users/XXXXX/.gnupg/pubring.kbx
+    -------------------------------------
+    pub   rsa2048 2017-08-16 [SC]
+        5DE3E0509C47EA3CF04A42D34AEE18F83AFDEB23
+    uid           [  full  ] GitHub (web-flow commit signing) <noreply@github.com>
+
+再次尝试验证本地仓库的提交记录的签名信息，则会发现所有的 commit 签名都已得到验证：
+
+    $ git log --show-signature
+    # some output is omitted
+    commit 6937d638d950362f73bfbf28bc4a39d1700bf26b
+    gpg: Signature made 2019年07月24日 15:58:46
+    gpg:                using RSA key 4AEE18F83AFDEB23
+    gpg: Good signature from "GitHub (web-flow commit signing) <noreply@github.com>" [full]
+    Author: Keith Null <20233656+keithnull@users.noreply.github.com>
+    Date:   Wed Jul 24 15:58:46 2019 +0800
+
+        Initial commit
+
+## Github 创建 Pull Request
+
+Pull Request 是开发者使用 GitHub 进行协作的利器。这个功能为用户提供了友好的页面，让提议的更改在并入官方项目之前，可以得到充分的讨论。
+
+最简单地来说，Pull Request 是一种机制，让开发者告诉项目成员一个功能已经完成。一旦 feature 分支开发完毕，
+开发者使用 GitHub 账号提交一个 Pull Request。它告诉所有参与者，他们需要审查代码，并将代码并入 master 分支。
+
+Pull Request 不只是一个通知，还是一个专注于某个提议功能的讨论版
+
+### Pull Request是如何工作的
+
+Pull Request 需要两个不同的分支或是两个不同的仓库,
+
+    1.开发者在他们的本地仓库中为某个功能创建一个专门的分支。
+    2.开发者将分支推送到公共的 GitHub 仓库。
+    3.开发者用 GitHub 发起一个 Pull Request。
+    4.其余的团队成员审查代码，讨论并且做出修改。
+    5.项目维护者将这个功能并入官方的仓库，然后关闭这个 Pull Request。
+
+### 例子
+
+如何将 Pull Request 用在 Fork 工作流中。小团队中的开发和向一个开源项目贡献代码都可以这样做。
+
+Mary 是一位开发者，John 是项目的维护者。他们都有自己公开的 GitHub 仓库，John 的仓库之一便是下面的官方项目。
+
+为了参与这个项目，Mary 首先要做的是 fork 属于 John 的 GitHub 仓库。她需要注册登录 GitHub，找到 John 的仓库，点击 Fork 按钮。
+
+选好 fork 的目标位置之后，她在服务端就有了一个项目的副本.
+
+接下来，Mary 需要将她刚刚 fork 的 GitHub 仓库克隆下来.她在本地会有一份项目的副本。她需要运行下面这个命令：
+
+    git clone https://github.com/user/repo.git
+
+请记住，git clone 自动创建了一个名为 origin 的远端连接，指向 Mary 所 fork 的仓库。
+
+在她写任何代码之前，Mary 需要为这个功能创建一个新的分支。这个分支将是她随后发起 Pull Request 时要用到的源分支。
+
+    # 创建新分支
+    git checkout -b some-feature
+    # 编辑一些代码
+    git commit -a -m "新功能的一些草稿"
+
+为了完成这个新功能，Mary 想创建多少个提交都可以。如果 feature 分支的历史有些乱，她可以使用交互式的 rebase 来移除或者拼接不必要的提交。对于大项目来说，清理 feature 的项目历史使得项目维护者更容易看清楚 Pull Request 的所处的进展。
+
+在功能完成后，Mary 使用简单的 git push 将 feature 分支推送到了她自己的 GitHub 仓库上（不是官方的仓库）：
+
+    git push origin some-branch
+
+这样她的更改就可以被项目维护者看到了（或者任何有权限的协作者）。
+
+#### Mary创建了一个Pull Request
+
+GitHub 上已经有了她的 feature 分支之后，Mary 可以找到被她 fork 的仓库，点击项目简介下的 New Pull Request 按钮，用她的 GitHub 账号创建一个 Pull Request。Mary 的仓库会被默认设置为源仓库（head fork），询问她指定源分支（compare）、目标仓库（base fork）和目标分支（base）。
+
+Mary 想要将她的功能并入主代码库，所以源分支就是她的 feature 分支，目标仓库就是 John 的公开仓库，目标分支为 master。她还需要提供一个 Pull Request 的标题和简介。
+
+在她创建了 Pull Request 之后，GitHub 会给 John 发送一条通知。
+
+#### John审查了这个Pull Request
+
+John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到所有的 Pull Request。点击 Mary 的 Pull Request 会显示这个 Pull Request 的简介、feature 分支的提交历史，以及包含的更改。
+
+如果他认为 feature 分支已经可以合并了，他只需点击 Merge Pull Request 按钮来通过这个 Pull Request，将 Mary 的 feature分支并入他的 master 分支.
+
+但是，在这里例子中，假设 John 发现了 Mary 代码中的一个小 bug，需要她在合并前修复。他可以评论整个 Pull Request，也可以评论 feature 分支中某个特定的提交。
+
+为了修复错误，Mary 在她的 feature 分支后面添加了另一个提交，并将它推送到了她的 GitHub 仓库，就像她之前做的一样。这个提交被自动添加到原来的 Pull Request 后面，John 可以在他的评论下方再次审查这些修改。
+
+#### John 接受了 Pull Request
+
+最后，John 接受了这些修改，将 feature 分支并入了 master 分支，关闭了这个 Pull Request。功能现在已经整合到了项目中，其他在 master 分支上工作的开发者可以使用标准的 git pull 命令将这些修改拉取到自己的本地仓库。
 
 ## ------------ 下为git的各种方案 ------------
 
