@@ -781,7 +781,7 @@ clone完成后，进入目录，执行
 
 ## 分支切换
 
-切换到的提交点可以是分支名、标签tag、commit id（hash）
+切换到的提交点可以是分支名、标签tag、提交点commit id（hash）
 
     # 先下载完整的git代码
     git clone xxxx
@@ -796,7 +796,7 @@ clone完成后，进入目录，执行
     git log --oneline
 
     # 从当前分支直接切换到指定的commit点
-    git checkout 93890e9
+    git checkout A9380e9
 
 ### 切换分支checkout
 
@@ -1227,21 +1227,22 @@ feature 分支是用来开发特性的，上面会存在许多零碎的提交。
 
     功能分支的commit合并应该在合入主干之前，由开发组内部自行整理，不能简单粗暴的一把压缩合并。
 
-### 分叉的强行拉直用变基 rebase，不制造新commit点
+### 变基 rebase，不制造分叉点
 
     如果不想被 rebase 修改提交历史，那就应该选择分叉合并
 
-初始状态是两条分叉，master分支先合入了hotfix，默认快进合并：
+feature 分支从状态 c 分叉，master 分支先合入了 hotfix 的 d、e，默认快进合并：
 
-                          d---e  hotfix分支
-                         /
-    master主干  a---b---c  * hotfix分支和feature分支的分叉点在c
-                         \
-                          f---g---h---i  feature分支
+                              f---g---h---i  feature分支
+                             /
+    master主干  a --- b --- c --- d --- e  hotfix分支
+
+如果使用 merge 的默认合并会分叉，在 master 主干分支上新增一个提交，指向 i 和 e。
 
 为了合入不制造菱形，feature 分支在 master 分支的基础上延伸拉直，这时两分支的head位置不一样
 
     git checkout feature
+
     git rebase master
 
 一条命令搞定：git rebase < basebranch > < topicbranch >
@@ -2294,30 +2295,6 @@ git rm 移除git对该文件的跟踪，跟 git add 相对，分几种回退情�
 
 不要直接回退！参见章节[重要：推送远程前的检查]
 
-### 签出指定文件
-
-如果在一个提交中，你只想取消某些文件在本地的变更，而同时保留另外一些文件在本地的变更
-
-    git checkout forget-my-changes.js
-
-从其他分支或者之前的提交中签出文件的不同版本：
-
-    git checkout some-branch-name file-name.js
-
-    git checkout {{some-commit-hash}} file-name.js
-
-签出的文件处于“暂存并准备提交”的状态。
-
-如果不想要上面的状态，想回退并签出到未暂存的状态，需要执行一下
-
-    git reset HEAD file-name.js
-
-然后再次执行
-
-    git checkout file-name.js
-
-这样文件回到了初始状态。
-
 ### 避免 push -f 进行回退
 
     https://zhuanlan.zhihu.com/p/104806087
@@ -2353,19 +2330,19 @@ git push -f 制造混乱的过程
 
 着眼点不要放在撤回到某个提交点上，而是放在撤回到那个提交点的内容上，即：文件内容回退到之前的某个提交点的样子，但在提交记录上是新增一个提交点，这样的办法是最妥当的。
 
-法一：基于 git 文件操作的办法
+#### 法一：基于 git 文件操作的办法
 
-    1、在 master 分支上，需要回退到 A1，先对提交点 A1 新建分支
+1、在 master 分支上，需要回退到 A1，先对提交点 A1 新建分支
 
-    2、切换到新建的分支，除了 .git 目录，拷贝所有文件和目录到临时目录
+2、切换到新建的分支，除了 .git 目录，拷贝所有文件和目录到临时目录
 
-    2、切换回 master 分支，除了 .git 目录，删除的所有文件和目录
+2、切换回 master 分支，除了 .git 目录，删除的所有文件和目录
 
-    3、从临时目录拷贝回全部内容，这样让 git 处理，新增一个提交即可
+3、从临时目录拷贝回全部内容，这样让 git 处理，新增一个提交即可
 
-    最终实现了在提交记录上新增一个提交点，文件内容回退到之前指定的提交点，提交记录是向前延展的，所有人都不受影响。
+最终实现了在提交记录上新增一个提交点，文件内容回退到之前指定的提交点，提交记录是向前延展的，所有人都不受影响。
 
-法二：组合使用 revert + rebase 进行回退
+#### 法二：组合使用 revert + rebase 进行回退
 
 利用两个特点
 
@@ -2438,20 +2415,25 @@ revert 新增的提交点，是对 rebase 那个提交点的反向执行，从�
 
 ### 远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1
 
-这种情况，操作就比较繁琐了 <https://www.cnblogs.com/Super-scarlett/p/8183348.html>
+    https://www.cnblogs.com/Super-scarlett/p/8183348.html
 
-先通知所有人都做回退，A2后没有提交的本地master分支就回到A1了。
+这种情况，操作就比较繁琐了
+
+    远程仓库 A1 --- A2 强行回退到 A1
+
+先通知所有人都做回退，A2 后没有提交的本地 master 分支就回到 A1 了。
 
     git reset --hard origin/master
 
-但是B先生已经提交了B1-B2
+但是 B 先生已经提交了 B1-B2
 
-    他的本地 master 分支是 A1 - A2 - B1 - B2
-    他的本地 开发   分支是 A1 - A2 - B1 - B2 - B3
+    他的本地 master  分支是  A1 - A2 - B1 - B2
+
+    他的本地 feature 分支是  A1 - A2 - B1 - B2 - B3
 
 只要他再次提交，A2还是会出现在远程仓库，你的回退对分布式来说无用。
 
-所以需要B先生找出新增的B1，B2，cherry-pick到 master 分支
+所以需要B先生找出新增的 B1，B2，cherry-pick 到 master 分支
 
     # 切到自己的开发分支，记录下需要新增到主干的commit点，B1 B2
     git checkout b_branch
@@ -2482,6 +2464,30 @@ revert 新增的提交点，是对 rebase 那个提交点的反向执行，从�
     git cherry-pick B3
 
     # 最终的开发分支内容是 A1 - B1 - B2 - B3
+
+### 签出指定文件
+
+如果在一个提交中，你只想取消某些文件在本地的变更，而同时保留另外一些文件在本地的变更
+
+    git checkout forget-my-changes.js
+
+从其他分支或者之前的提交中签出文件的不同版本：
+
+    git checkout some-branch-name file-name.js
+
+    git checkout {{some-commit-hash}} file-name.js
+
+签出的文件处于“暂存并准备提交”的状态。
+
+如果不想要上面的状态，想回退并签出到未暂存的状态，需要执行一下
+
+    git reset HEAD file-name.js
+
+然后再次执行
+
+    git checkout file-name.js
+
+这样文件回到了初始状态。
 
 ## ----------下为 git 常用法-------------
 
