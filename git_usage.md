@@ -781,16 +781,27 @@ clone完成后，进入目录，执行
 
 ## 分支切换
 
-切换到的提交点可以是分支名、标签tag、提交点commit id（hash）
+先下载完整的git代码
 
-    # 先下载完整的git代码
     git clone xxxx
+
+切换到的提交点可以是分支名
 
     # 查看当前有多少分支
     git branch -av
 
     # 切换到master分支
     git checkout master
+
+切换到的提交点可以是标签tag
+
+    # 查看标签
+    git tag
+
+    # 切换到指定标签
+    git checkout v1.23
+
+切换到的提交点可以是提交点commit id（hash）
 
     # 查找指定的commit点的hash值并复制
     git log --oneline
@@ -803,34 +814,31 @@ clone完成后，进入目录，执行
 1.查看远程分支
 
     $ git branch -av
-    我在mxnet根目录下运行以上命令：
+    * master                 cf83e50 第四次添加开始回退‘ ’ ;
+    remotes/origin/HEAD    -> origin/master
+    remotes/origin/def_xxx b414ac9 功能3
+    remotes/origin/hotfix  7cabce4 res me
+    remotes/origin/master  cf83e50 第四次添加开始回退‘ ’ ;
 
-    ~/mxnet$ git branch -av
-    * master                                7cabce4 [ahead 1] res me
-    remotes/origin/HEAD -> origin/master    下略
-    remotes/origin/master
-    remotes/origin/nnvm
-    remotes/origin/piiswrong-patch-1
-    remotes/origin/v0.9rc1
-    可以看到，我们现在在master分支下
+从*号的位置可以看到，我们现在在 master 分支下
 
 2.查看本地分支
 
-    ~/mxnet$ git branch
+    $ git branch
     * master
 
 3.切换分支，注意这里是在本地新建了一个分支，对应远程的某个分支名
 
-    $ git checkout -b v0.9rc1 origin/v0.9rc1
-    Branch v0.9rc1 set up to track remote branch v0.9rc1 from origin.
-    Switched to a new branch 'v0.9rc1'
+    $ git checkout -b hotfix origin/hotfix
+    Switched to a new branch 'hotfix'
+    branch 'hotfix' set up to track 'origin/hotfix'.
 
-    ＃已经切换到v0.9rc1分支了
+    ＃ 已经切换到 hotfix 分支了
     $ git branch
+    * hotfix
     master
-    * v0.9rc1
 
-    ＃切换回master分支
+    ＃ 切换回master分支
     $ git checkout master
     Switched to branch 'master'
     Your branch is up-to-date with 'origin/master'.
@@ -872,108 +880,11 @@ clone完成后，进入目录，执行
 
     git branch -d fea_xxx
 
-## 分支的拉取
+## 分支的拉取 fetch/pull
 
-基本的拉取操作是 fetch，因为拉取之后都要做 merge 或 rebase，则引入了 pull 命令把这个操作过程简化了。
+基本的拉取操作是 fetch，因为拉取之后都要做 merge 或 rebase，就引入了 pull 命令把这个操作过程简化了，大多数情况下直接用 git pull 就足够了。
 
-### 本地分支更新远程的操作流程
-
-除非你不介意合并策略，否则在 git pull 之前要想想：
-
-    如果在执行 git pull 或 git pull --rebase 的时候出现合并冲突的提示，你已经无法选择合并策略了，git 自动进入 merge conflict 或 rebase conflict 过程，冲突文件都给你准备好了。
-
-NOTE: 本地分支更新远程时，不要直接做 git pull 或 git pull --rebase，应该把拉取和合并分开做，以便可以明确选择合并策略。
-
-1、git fetch 先拉远程防止别人提交了远程导致冲突，不变动本地工作目录，便于比对差异
-
-2、git status 看看提示，是否有冲突，根据提示选择接下来如何做
-
-3、如果没有提示冲突，可以正常合并：
-
-酌情选择自己的合并策略分叉还是拉直（参见章节 [合并两分支的原则：merge菱形分叉还是rebase拉直]）。
-
-然后选择做如下命令之一即可
-
-    git merge -noff（分叉合并） 或 git rebase（拉直合并）
-
-    或 git pull（拉取+默认拉直否则分叉合并） 或 git pull --rebase（拉取+拉直合并）
-
-4、如果提示有冲突，解决冲突的操作参见章节 [解决合并冲突conflicts] 的示例。
-
-git pull 的工作方式解释，详见下面章节 [git fetch 和 git pull的区别]。
-
-### fetch 和 pull 的区别
-
-原理：
-
-    git pull          = git fetch + git merge
-    git pull --rebase = git fetch + git rebase
-
-git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相应分支最新的状态。
-
-git fetch 并不会改变你本地仓库的状态。它不会更新你的 master 分支，也不会修改你磁盘上的文件。
-
-所以 git fetch 是十分安全的，你不用担心这个命令破坏你的工作区或暂存区，它下载的远程分支到本地，但是并不做任何的合并工作，然后可以执行以下命令合并到本地仓库
-
-    git diff ..origin/master # 对比下本地的远程分支和本地的本地分支的差异
-    git merge o/master 或 git rebase o/master
-    git cherry-pick o/master
-
-通常的工作流程是，先用 git fetch 拉取远程分支，然后用 git merge 把拉取的内容合并到本地分支。
-
-因为这二者都是连用的，所有有个简化版就是 git pull，大多数情况下直接用 git pull 就够用了。
-
-NOTE:正规的分支拉取操作是先 fetch 、再 git status 决定合并方法、最后 merge 或rebase 完成的。
-
-参见章节 [本地分支更新远程的操作流程]。
-
-最完整的操作，是先fetch下来然后diff看看，然后再决定是否merge或rebase，简略操作用 pull。
-
-    $ git fetch <远程主机名> <分支名> # 注意之间有空格
-
-    # 取回特定分支的更新
-    $ git fetch origin master
-
-    # 可简写，默认拉取所有分支，如果有很多分支，就比较慢了
-    $ git fetch
-
-    # 查看fetch下来的远程代码跟本地的区别
-    git diff ..origin/master
-
-#### 本地有两份代码--本地仓库和远程仓库
-
-我们本地的git文件夹里面对应也存储了git本地仓库master分支的commit ID 和 跟踪的远程分支orign/master的commit ID（可以有多个远程仓库）。那什么是跟踪的远程分支呢，打开git文件夹可以看到如下文件：
-
-    .git/refs/head/[本地分支]
-    .git/refs/remotes/[正在跟踪的分支]
-
-其中head就是本地分支，remotes是跟踪的远程分支，这个类型的分支在某种类型上是十分相似的，他们都是表示提交的SHA1校验和（就是commitID）。
-我们无法直接对远程跟踪分支操作，我们必须先切回本地分支然后创建一个新的commit提交。
-更改远端跟踪分支只能用git fetch，或者是git push后作为副产品（side-effect）来改变。
-
-取回更新后，会返回一个FETCH_HEAD ，指的是某个branch在服务器上的最新状态，我们可以在本地通过它查看刚取回的更新信息：
-
-    git log -p FETCH_HEAD
-
-可以看到返回的信息包括更新的文件名，更新的作者和时间，以及更新的代码（x行红色[删除]和绿色[新增]部分）。
-我们可以通过这些信息来判断是否产生冲突，以确定是否将更新merge到当前分支。
-
-这时候我们本地相当于存储了两个代码的版本号，可以通过 git merge 去合并这两个不同的代码版本， git merge做的就是把拉取下来的远程最新 commit 跟本地最新 commit 合并。如果不用merge，用rebase也是可以的。
-
-    git merge FETCH_HEAD
-
-    git merge origin/master
-
-    # 或者，不使用merge，用rebase
-    $ git rebase origin/master
-
-也可以在它的基础上，使用git checkout命令创建一个新的分支并切换过去。
-
-    git checkout -b newBrach origin/master
-    # 这个不自动切换
-    git branch newBrach a9c146a09505837ec03b
-
-#### git pull 把2个过程合并，减少了操作
+### git pull 的2个过程
 
 git pull 的操作默认是 fetch + merge，可以设置成 fetch + rebase。
 
@@ -982,15 +893,104 @@ git pull 的操作默认是 fetch + merge，可以设置成 fetch + rebase。
     # 远程拉取下列同步到本地一般显式的写明用拉直
     git pull --rebase <远程主机名> <远程分支名>:<本地分支名>
 
-    # 如果远程分支是与当前分支合并，则冒号后面的部分可以省略
+    # 如果远程分支是与当前本地分支合并，则冒号后面的部分可以省略
     git pull --rebase origin master
 
-    # 如果远程主机名origin，分支就是当前分支，可简写
+    # 如果远程主机名 origin，分支就是当前分支，可简写
     git pull --rebase
 
 分支的合并，如上所述的是fetch下来一份远程合并到本地，这个操作于本地的两个分支进行合并，没什么区别。
 
-分支合并的详细用法见下面的章节 [两个分支合并的merge常用方法]
+分支合并的详细用法见章节 [分支合并]。
+
+### fetch 和 pull 的区别
+
+原理：见章节 [本地有两份代码--本地仓库和远程仓库]
+
+    git pull          = git fetch + git merge
+
+    git pull --rebase = git fetch + git rebase
+
+git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相应分支最新的状态。
+
+git fetch 并不会改变你本地仓库的状态。它不会更新你的本地分支，即不会修改你工作区上的文件。
+
+所以 git fetch 是十分安全的，你不用担心这个命令破坏你的工作区或暂存区，它下载的远程分支到本地的远程仓库分支，但是并不做任何的合并工作，然后可以执行以下命令合并到本地仓库
+
+其实 git pull 也可以默认为 fetch + rebase，见章节 [可以设置 git pull 的2个过程]。
+
+#### 本地有两份代码--本地仓库和远程仓库
+
+我们本地的 .git 文件夹里存储了本地 分支的 commit ID 和 跟踪的远程分支 orign/master 的 commit ID（可以有多个远程仓库）。
+
+那什么是跟踪的远程分支呢，打开 .git 文件夹可以看到如下文件：
+
+    .git/refs/head/[本地分支]
+
+    .git/refs/remotes/[正在跟踪的分支]
+
+其中 head 就是本地分支，remotes 是跟踪的远程分支，这个类型的分支在某种类型上是十分相似的，他们都是表示提交的 SHA1 校验和（就是 commit ID）。
+
+我们无法直接对远程跟踪分支操作，更新远端跟踪分支只能用 git fetch，或者在本地分支创建一个新的 commit 提交，在 git push 后作为副产品（side-effect）改变远程跟踪分支。
+
+取回更新后，会返回一个 FETCH_HEAD ，指的是某个 branch 在服务器上的最新状态，我们可以在本地通过它查看刚取回的更新信息：
+
+    git log -p FETCH_HEAD
+
+可以看到返回的信息包括更新的文件名，更新的作者和时间，以及更新的代码（x行红色[删除]和绿色[新增]部分）。
+
+我们可以通过这些信息来判断是否产生冲突，以确定是否将更新合并到当前分支。
+
+这时候我们本地相当于存储了两个代码的版本号，可以通过 git merge 去合并这两个不同的代码版本， git merge 做的就是把拉取下来的远程最新 commit 跟本地最新 commit 合并。如果不用merge，用rebase也是可以的。
+
+    git merge FETCH_HEAD
+
+    git merge origin/master
+
+    # 或者，不使用 merge，用 rebase
+    $ git rebase origin/master
+
+也可以在它的基础上，使用 git checkout 命令创建一个新的分支并切换过去。
+
+    git checkout -b newBrach origin/master
+    # 这个不自动切换
+    git branch newBrach a9c146a09505837ec03b
+
+### 本地分支更新远程的操作流程
+
+除非你不介意合并策略，否则在 git pull 之前要想想：
+
+    如果在执行 git pull 或 git pull --rebase 的时候出现合并冲突的提示，你已经无法选择合并策略了，git 自动进入 merge conflict 或 rebase conflict 过程，冲突文件都给你准备好了。
+
+    当然你可以用 git merge --abort 或 git rebase --abort 终止这个过程。
+
+NOTE: 本地分支更新远程时，不要直接做 git pull 或 git pull --rebase，应该把拉取和合并分开做，以便可以明确选择合并策略。
+
+操作流程：先 fetch 下来，然后 status 看看，然后再决定是否 merge 或 rebase，简略操作才用 pull。
+
+    # 先拉远程防止别人提交了远程导致冲突，不变动本地工作目录，便于比对差异
+    # git fetch <远程主机名> <分支名> # 注意之间有空格
+    # 可简写，默认拉取所有分支，如果有很多分支，就比较慢了
+    $ git fetch
+
+    # 拉取指定分支的更新
+    # git fetch origin master
+
+    # 看看提示，是否有冲突，根据提示选择接下来如何做
+    git status
+
+    # 查看 fetch 下来的远程代码跟本地的区别
+    git diff ..origin/master
+
+如果没有提示冲突，可以正常合并：酌情选择自己的合并策略分叉还是拉直（参见章节 [分支合并：merge菱形分叉还是rebase拉直]）。做如下命令之一即可
+
+    git merge（自动） 或 git merge -noff（分叉合并） 或 git rebase（拉直合并）
+
+    或 git pull（拉取+默认拉直否则分叉合并） 或 git pull --rebase（拉取+拉直合并）
+
+    或 git cherry-pick o/master
+
+如果提示有冲突，解决冲突的操作参见章节 [解决合并冲突conflicts] 的示例。
 
 ## 分支推送
 
@@ -1030,7 +1030,7 @@ NOTE:**远程仓库的提交记录只做追加，不要修改，不要回退**
 
 只有自己一个人使用的分支，可以自由 git push -f
 
-## 合并两分支的原则：merge菱形分叉还是rebase拉直
+## 分支合并：merge菱形分叉还是rebase拉直
 
 两个分支合并的 merge/rebase 效果
 
@@ -1472,7 +1472,7 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
     hint: (e.g., 'git pull ...') before pushing again.
     hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 
-合并策略该分叉还是拉直，参考章节 [合并两分支的原则：merge菱形分叉还是rebase拉直]，选择 merge 对冲突的处理是分叉，选择 rebase 对冲突的处理是重写提交点。
+合并策略该分叉还是拉直，参考章节 [分支合并：merge菱形分叉还是rebase拉直]，选择 merge 对冲突的处理是分叉，选择 rebase 对冲突的处理是重写提交点。
 
 解决了所有的冲突文件后，提交的命令稍有区别，最好每一步都运行 git status 看看提示再做
 
@@ -3580,7 +3580,7 @@ head当前是指向最新的那一条记录，所以我们看一下parent commit
 
     # 如果 git status 提示有冲突，操作见章节 [解决合并冲突conflicts]
 
-    # 合并代码，选择何种策略见章节 [合并两分支的原则：merge菱形分叉还是rebase拉直]
+    # 合并代码，选择何种策略见章节 [分支合并：merge菱形分叉还是rebase拉直]
     git rebase 或 git merge -noff
 
     # 再确认
