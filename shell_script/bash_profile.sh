@@ -48,6 +48,9 @@ if [ -x /usr/bin/dircolors ]; then
 
     # git 常用命令
     alias glog='git log --oneline --graph'
+
+    # gpg 常用命令
+    alias gkey='gpg -K --keyid-format=long'
 fi
 
 ####################################################################
