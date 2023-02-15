@@ -902,42 +902,6 @@ NOTE: 本地分支更新远程时，不要直接做 git pull 或 git pull --reba
 
 git pull 的工作方式解释，详见下面章节 [git fetch 和 git pull的区别]。
 
-#### 示例：【每日工作第一件事 拉取合并（含标签，变基）】
-
-根据章节 [本地分支更新远程的操作流程]，整理如下
-
-    # 先看看有无未提交的，跟现有的本地远程代码比对没差别，不代表远程仓库的代码没差别，别人可能有更新
-    git status
-
-    # 不直接 pull
-    # git pull origin xxx --rebase
-
-    # 本地 git branch -av 看不到时，一般需要在本地使用 git remote update 或 git fetch --all 更新
-    # fetch 是只更新本地的远程仓库的目录，不会跟本地工作区的现有文件冲突
-    # 下载当前分支可以简写为： git fetch
-    git fetch origin master
-
-    # 查看本地代码跟远程仓库代码（已下载到本地）的差异
-    # 简单的：
-    git status  # 如果有本地未提交的，先stash暂存才能继续下面的代码合并
-    # 详细的：
-    git diff ..origin/master
-
-    # 如果提示有冲突，酌情选择分叉还是拉直，参见章节 [合并两分支的原则：merge菱形分叉还是rebase拉直]
-
-    # 根据上一步确定的策略合并代码，或者先解决冲突再合并
-    git rebase 或 git merge -noff
-
-    # 再确认
-    git status
-
-整合到一个命令：
-
-    # 拉取远程加合并本地，连带标签，-r是rebase，否则是merge，最好指定要fetch的remote和分支名。
-    # 详见下面章节[远程拉取合并本地的pull用法]
-
-    git pull --rebase --tags -r origin master
-
 ### fetch 和 pull 的区别
 
 原理：
@@ -1030,11 +994,13 @@ git pull 的操作默认是 fetch + merge，可以设置成 fetch + rebase。
 
 ## 分支推送
 
-### 推送远程前的检查
+### 重要：推送远程前的检查
 
-牢记一个原则：NOTE:**不要修改远程仓库的 commit，只能追加**
+NOTE:**远程仓库的提交记录只做追加，不要修改，不要回退**
 
-无论是代码回退，还是对分支变基，分支合并过来的远程其它分支的commit也不要变更
+压缩式提交 git commit --amend ，代码回退，变基等操作，都只限对本地分支未推送远程的提交点。
+
+本分支分叉合并过来的远程其它分支的提交记录也不要做修改，任何内容上的修改，体现到提交记录上的都应该式追加，千万不要在历史提交记录上开倒车。
 
 宁可新增修改也不回退或变基，如果rebase或回退了已经在远程存在的commit
 
@@ -1505,7 +1471,7 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
     hint: (e.g., 'git pull ...') before pushing again.
     hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 
-合并策略该分叉还是拉直，参考章节 [合并两分支的原则]，选择 merge 对冲突的处理是分叉，选择 rebase 对冲突的处理是重写提交点。
+合并策略该分叉还是拉直，参考章节 [合并两分支的原则：merge菱形分叉还是rebase拉直]，选择 merge 对冲突的处理是分叉，选择 rebase 对冲突的处理是重写提交点。
 
 解决了所有的冲突文件后，提交的命令稍有区别，最好每一步都运行 git status 看看提示再做
 
@@ -2195,8 +2161,6 @@ FailSafe: 在你回退之前务必要做
     前一阶段的内容在暂存区，可以用 git diff 很方便的比较暂存区和工作区的差异，轻松调整为你想要的内容。
 
     如果你长时间在做一份内容修改，分阶段的保存一下，非常必要。
-
-养成一个习惯吧，大批量的修改，感觉这一部分差不多了，就顺手 `git add .` 在暂存区固定这部分修改，后续如果工作区改乱了可以用 `git diff` 轻松调整，最后完全没问题了就可以形成一个 commit 提交了。
 
 仓库区(head)
 
@@ -3581,6 +3545,61 @@ head当前是指向最新的那一条记录，所以我们看一下parent commit
     3.本地报错的，把.git删掉，重新init，但是会丢历史版本信息
 
 ## ------------ 下为git的各种方案 ------------
+
+## 日常使用的大致流程
+
+### 日常工作：准备工作 --- 拉取、合并（含标签，变基）
+
+根据章节 [本地分支更新远程的操作流程]，整理如下
+
+    # 先看看有无未提交的，跟现有的本地远程代码比对没差别，不代表远程仓库的代码没差别，别人可能有更新
+    git status
+
+    # 不直接 pull
+    # git pull origin xxx --rebase
+
+    # 本地 git branch -av 看不到输出时，一般需要在本地使用 git remote update 或 git fetch --all 更新
+
+    # fetch 是只更新本地的远程仓库的目录，不会跟本地工作区的现有文件冲突
+    # 下载当前分支可以简写为： git fetch
+    git fetch origin master
+
+    # 查看本地代码跟远程仓库代码（已下载到本地）的差异
+    # 简单的：
+    git status
+    # 详细的：
+    git diff ..origin/master
+
+    # 如果有本地未提交的，先stash暂存才能继续下面的代码合并
+
+    # 如果 git status 提示有冲突，操作见章节 [解决合并冲突conflicts]
+
+    # 合并代码，选择何种策略见章节 [合并两分支的原则：merge菱形分叉还是rebase拉直]
+    git rebase 或 git merge -noff
+
+    # 再确认
+    git status
+
+如果是本人使用的独立分支，可以简单点操作，整合到一个命令：
+
+    # 拉取远程加合并本地，连带标签，-r是rebase，否则是merge，最好指定要fetch的remote和分支名。
+    # 详见下面章节[远程拉取合并本地的pull用法]
+
+    git pull --tags --rebase origin master
+
+### 日常工作：修改、添加、提交
+
+养成一个习惯：大批量的修改，感觉这一部分差不多了，就顺手 `git add .` ，先在暂存区固定这部分修改
+
+后续如果工作区改乱了可以用 `git diff` 轻松调整。
+
+完全没问题了就可以形成一个 commit 提交
+
+    git commit -m '你的提交说明'
+
+确认本地的所有提交，是否需要回退、rebase，或压缩为一个提交点，然后推送远程
+
+    git push
 
 ## 使用git的各种工作流程方案
 
