@@ -155,7 +155,7 @@ github网站提供基于https端口的ssh连接方式 <https://docs.github.com/z
 
 ### 建立本地仓库：Git 工作区、暂存区和版本库
 
-你的文件有3种存在：仓库区 ----> 暂存区 ----> 工作区
+你的文件有3种存在：仓库区 ----> 暂存区 stage 或 index ----> 工作区 work space
 
     初始状态工作区的文件就版本库的文件，暂存区是空的，版本库没变化
 
@@ -779,7 +779,102 @@ clone完成后，进入目录，执行
 
 不断增大步骤2的数字，直到找到你要的commit
 
-## 分支的拉取和上传
+## 分支切换
+
+切换到的提交点可以是分支名、标签tag、commit id（hash）
+
+    # 先下载完整的git代码
+    git clone xxxx
+
+    # 查看当前有多少分支
+    git branch -av
+
+    # 切换到master分支
+    git checkout master
+
+    # 查找指定的commit点的hash值并复制
+    git log --oneline
+
+    # 从当前分支直接切换到指定的commit点
+    git checkout 93890e9
+
+### 切换分支checkout
+
+1.查看远程分支
+
+    $ git branch -av
+    我在mxnet根目录下运行以上命令：
+
+    ~/mxnet$ git branch -av
+    * master                                7cabce4 [ahead 1] res me
+    remotes/origin/HEAD -> origin/master    下略
+    remotes/origin/master
+    remotes/origin/nnvm
+    remotes/origin/piiswrong-patch-1
+    remotes/origin/v0.9rc1
+    可以看到，我们现在在master分支下
+
+2.查看本地分支
+
+    ~/mxnet$ git branch
+    * master
+
+3.切换分支，注意这里是在本地新建了一个分支，对应远程的某个分支名
+
+    $ git checkout -b v0.9rc1 origin/v0.9rc1
+    Branch v0.9rc1 set up to track remote branch v0.9rc1 from origin.
+    Switched to a new branch 'v0.9rc1'
+
+    ＃已经切换到v0.9rc1分支了
+    $ git branch
+    master
+    * v0.9rc1
+
+    ＃切换回master分支
+    $ git checkout master
+    Switched to branch 'master'
+    Your branch is up-to-date with 'origin/master'.
+
+### 删除分支，远程/本地
+
+0.先看看有多少本地和远程分支
+
+    git branch -av
+
+1.切换到其他分支再进行操作
+
+    git checkout master
+
+2.删除远程分支的指针而不是直接删分支，方便数据恢复。
+
+    git push origin --delete fea_xxx
+
+如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
+
+    git push origin :refs/fea_xxx
+
+用本地分支fea_-2覆盖远程分支fea_-1
+
+    git push -f origin fea_-2:refs/fea_-1
+
+对追踪分支，git push origin --delete 该命令也会删除本地-远程的追踪分支，等于还做了个
+
+    # 如果只删除追踪分支，则还需要 git remote prune 来删除追踪分支
+    git branch --delete --remotes <remote>/<branch>
+
+3.其它人的机器上还有该远程分支，清理无效远程分支
+
+    git branch -av  # 查看
+
+    git fetch origin -p  # git remote prune
+
+4.删除本地
+
+    git branch -d fea_xxx
+
+## 分支的拉取
+
+基本的拉取操作是 fetch，因为拉取之后都要做 merge 或 rebase，则引入了 pull 命令把这个操作过程简化了。
 
 ### 本地分支更新远程的操作流程
 
@@ -933,24 +1028,39 @@ git pull 的操作默认是 fetch + merge，可以设置成 fetch + rebase。
 
 分支合并的详细用法见下面的章节 [两个分支合并的merge常用方法]
 
-## 分支切换
+## 分支推送
 
-切换到的提交点可以是分支名、标签tag、commit id（hash）
+重要：git推送远程时的大忌
 
-    # 先下载完整的git代码
-    git clone xxxx
+无论是代码回退，还是对分支变基，牢记一个原则：**不要变更远程仓库已存在的 commit；分支合并过来的远程其它分支的commit也不要变更**
 
-    # 查看当前有多少分支
-    git branch -av
+宁可新增修改也不回退或变基，如果rebase或回退了已经在远程存在的commit
 
-    # 切换到master分支
-    git checkout master
+    如果别人拉取并基于此开发，你再做rebase并再次提交，之前别人拉取的内容变了，双方都得再做拉取整合。如果时间线已经是很长的了，会导致很大的混乱。
 
-    # 查找指定的commit点的hash值并复制
-    git log --oneline
+    你拉取到本地的最新代码，不要对之前的内容做变基合并commit或回退。不然，如果推送到服务器上，之前别人拉取的内容变了，需要再次合并你改的那块内容，又是在制造混乱。
 
-    # 从当前分支直接切换到指定的commit点
-    git checkout 93890e9
+如果你真的重写了分支的 Git 提交历史，推送远程会失败，只能强制更新远程分支：`git push -f`，所有之前拉取过相关代码的人员，你需要挨个通知重新拉取合并。。。
+
+更糟糕的是，如果你发现自己重写了git提交历史并推送到了远程，回退解决并再次推送远程，你以为成功解决了失误：
+
+    如果有别人已经从远程仓库拉取了最新变化，分布式存储了你的修改，你怎么回退都没用了，他的本地有你之前推送的代码，只要他执行push，你的变更就改回去了。这种混乱，如果项目组人数多，那是鸡飞狗跳。解决方案很复杂，见下面章节[远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1]。
+
+如果幸运，没有人新增提交，把自己的代码手工修改为最终正确的结果，作为一个新的commit再次push上去，你就装作啥也没发生。如果有人已经在你的提交基础上新增了提交，工作已经展开了，挨个给受你影响的人打电话道歉，然后通知大家再次根据你的最新代码合并分支，如果大家因此集体加班，你请大家喝咖啡，如果项目因此延期，及时通知项目经理报备。
+
+如何尽量缩小这种情况的影响范围，见章节 [开发分支的组织管理] 。
+
+### 遇到提示 push -f 的时候多想想
+
+    https://www.jianshu.com/p/b03bb5f75250
+
+在推送时，尽量避免git push -f的操作，或者说git push -f是一个需要谨慎的操作，它是将本地历史覆盖到远端仓库的行为。
+
+刚才的测试中，b开发者在a进行git push -f前已经进行git pull操作，所以历史上的commit2是可以查找到，但是如果没有任何其他开发者进行pull，a再改变历史并强制推送，这部分数据就会丢失。
+
+当然也并非禁止，有时，如果代码组内review后，确认代码正确无误，保证大家未pull的情况下，强制推送后，可以保持目录树清洁。
+
+只有自己一个人使用的分支，可以自由 git push -f
 
 ## 合并两分支的原则：merge菱形分叉还是rebase拉直
 
@@ -1878,12 +1988,12 @@ rebase之前的git提交历史树:
 
 没有隐患的解决办法就是先回退你的rebase，参见章节 [避免 push -f 进行回退]。
 
-## 对一个分支做变基：交互式压缩提交点
-
-NOTE: rebase 要在 git push 推送远程之前做，已经推送远程的就不要改了！
+## 分支变基rebase：交互式压缩提交点
 
     https://zhuanlan.zhihu.com/p/249231960
         https://opensource.com/article/20/7/git-best-practices
+
+NOTE: rebase 要在 git push 推送远程之前做，已经推送远程的就不要改了！git 最怕的就是修改远程的提交记录，只追加才好。
 
 当你在功能分支上开发时，即使再小的修改也可以作为一个提交。
 
@@ -2000,7 +2110,16 @@ NOTE: rebase 要在 git push 推送远程之前做，已经推送远程的就不
 
     git push -f
 
-### 第一次做的时候遇到问题了： 622c01c没关联到 fea_stragy 分支
+### 开发分支常用 commit --amend 压缩多余的提交点
+
+NOTE: amend 要在 git push 推送远程之前做，已经推送远程的 commit 就不要追加！
+
+追加到最近的commit，不制作新的commit（其实commit已经变了），适合本次和上次提交内容相近的场景
+
+    git add .
+    git commit --amend  # 等价于 git rebase -i HEAD~2
+
+### 第一次做rebase的时候遇到问题了： 622c01c没关联到 fea_stragy 分支
 
     $ git switch master
     Warning: you are leaving 1 commit behind, not connected to
@@ -2047,232 +2166,358 @@ NOTE: rebase 要在 git push 推送远程之前做，已经推送远程的就不
 
     git merge 622c01c
 
-## 重要：git推送远程时的大忌
+## 如何回退
 
-无论是代码回退，还是对分支变基，牢记一个原则：**不要变更远程仓库已存在的 commit；分支合并过来的远程其它分支的commit也不要变更**
+    https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified
 
-宁可新增修改也不回退或变基，如果rebase或回退了已经在远程存在的commit
+FailSafe: 在你回退之前务必要做
 
-    如果别人拉取并基于此开发，你再做rebase并再次提交，之前别人拉取的内容变了，双方都得再做拉取整合。如果时间线已经是很长的了，会导致很大的混乱。
+    如果是已经 git commit的操作，首先保留下现场以便反悔救命，这个窗口千万别关啊！
+    # 最好用 tmux 保留这个命令的输出，救命用的
+    git log --graph --oneline
 
-    你拉取到本地的最新代码，不要对之前的内容做变基合并commit或回退。不然，如果推送到服务器上，之前别人拉取的内容变了，需要再次合并你改的那块内容，又是在制造混乱。
+    如果你有修改保存在暂存区和工作区，或者提交，或者stash，然后再做回退的操作。git 的回退弯弯绕比较多，回退之前务必清理下暂存区和工作区，千万小心，有好几种情况会无提示清理。
 
-如果你真的重写了分支的 Git 提交历史，推送远程会失败，只能强制更新远程分支：`git push -f`，所有之前拉取过相关代码的人员，你需要挨个通知重新拉取合并。。。
+工作区
 
-更糟糕的是，如果你发现自己重写了git提交历史并推送到了远程，回退解决并再次推送远程，你以为成功解决了失误：
+    你的修改在这里。
 
-    如果有别人已经从远程仓库拉取了最新变化，分布式存储了你的修改，你怎么回退都没用了，他的本地有你之前推送的代码，只要他执行push，你的变更就改回去了。这种混乱，如果项目组人数多，那是鸡飞狗跳。解决方案很复杂，见下面章节[远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1]。
+暂存区(index)的意义
 
-如果幸运，没有人新增提交，把自己的代码手工修改为最终正确的结果，作为一个新的commit再次push上去，你就装作啥也没发生。如果有人已经在你的提交基础上新增了提交，工作已经展开了，挨个给受你影响的人打电话道歉，然后通知大家再次根据你的最新代码合并分支，如果大家因此集体加班，你请大家喝咖啡，如果项目因此延期，及时通知项目经理报备。
+    当你修改了很多还没改完，想临时性的保存下，不应该形成一个 commit 保存到仓库区。
 
-如何尽量缩小这种情况的影响范围，见章节 [开发分支的组织管理] 。
+    继续改，担心把之前正确的弄乱，那就先暂存这部分修改内容，然后继续在工作区修改。
 
-### 遇到提示 push -f 的时候多想想
+    万一你越改越乱，把之前的修改也变动了，工作区里改动的内容很多不好复原，咋办？
 
-    https://www.jianshu.com/p/b03bb5f75250
+    前一阶段的内容在暂存区，可以用 git diff 很方便的比较暂存区和工作区的差异，轻松调整为你想要的内容。
 
-在推送时，尽量避免git push -f的操作，或者说git push -f是一个需要谨慎的操作，它是将本地历史覆盖到远端仓库的行为。
+    如果你长时间在做一份内容修改，分阶段的保存一下，非常必要。
 
-刚才的测试中，b开发者在a进行git push -f前已经进行git pull操作，所以历史上的commit2是可以查找到，但是如果没有任何其他开发者进行pull，a再改变历史并强制推送，这部分数据就会丢失。
+养成一个习惯吧，大批量的修改，感觉这一部分差不多了，就顺手 `git add .` 在暂存区固定这部分修改，后续如果工作区改乱了可以用 `git diff` 轻松调整，最后完全没问题了就可以形成一个 commit 提交了。
 
-当然也并非禁止，有时，如果代码组内review后，确认代码正确无误，保证大家未pull的情况下，强制推送后，可以保持目录树清洁。
+仓库区(head)
 
-只有自己一个人使用的分支，可以自由 git push -f
+    你的commit提交在这里，分布式存储，需要你push才能到远程。
 
-## git worktree 多分支目录共用一个仓库
+用户修改文件，文件的变更路径是
 
-    https://minsonlee.github.io/2020/05/git-worktree
+    工作区 ----> 暂存区 ----> 仓库区
 
-git checkout 命令是在同一个文件夹中切换不同分支，当一个分支正在开发，有另一个分支需要紧急处理bug，有两种解决方案
+修改的文件要撤回，跟上面的过程相反
 
-    `git stash` 当前内容，然后切换分支修改bug，提交后再切换回来， `git stash pop` 继续
+    仓库区 ----> 暂存区 ----> 工作区
 
-    新建个目录拉取仓库，在那个目录里切换分支修改bug，极端情况下每个分支一个目录，都克隆同一个仓库，但是这样占用容量太大了
+git的实际工作，修改的文件进入每个区域，都需要专门的命令
 
-一个 git 仓库可以支持多个工作树，允许你在同一时间检出多个分支。通过 git worktree add 将一个新的工作目录和一个仓库进行关联。 这个新的工作目录被称为 “linked working tree（链接工作树）”。不同于通过 git init 或 git clone 产生的主工作树，这个目录只保存了静态内容，容量相对小很多，在这个目录下切换分支操作即可。
+                              HEAD    Index    Workdir    WD Safe?
 
-一个仓库只有一个主工作树(裸仓库是没有工作树的），可以有零个或多个链接工作树. 当你在链接工作树已经完成了工作，使用 git worktree remove 就可以移除它了。
+    Commit Level
+    reset --soft [commit]     REF    NO    NO    YES
+    reset [commit]    REF     YES    NO    YES
+    reset --hard [commit]     REF    YES    YES    NO
+    checkout <commit>         HEAD    YES    YES    YES
 
-    # 查看当前仓库所有的 "linked working tree"
-    $ git worktree list
-    /ghcode/pycode/tea  7cabce4 [master]
+    File Level
+    reset [commit] <paths>     NO    YES    NO    YES
+    checkout [commit] <paths>  NO    YES    YES    NO
 
-创建 worktree
+git reset 主要关注已经提交的修改的 commit 的回退，分几种回退情形
 
-    # 基于已存在分支创建 `worktree`
-    git worktree add <new-workpath> <existing-branch/commit-id/remote-branch-name>
+    git reset --soft HEAD~ 重置 head 的位置，指向本地仓库里的提交点，回退的commit内容放到暂存区，HEAD~表示只回退上一步的commit，如果是间隔多个commit，回退会累积起来，类似 squash 的效果。
 
-    # 基于当前 commit 新建一个分支并创建 `worktree`
-    git worktree <new-wokpath> -b <new-branch>
+        如果暂存区有修改，则丢弃该commit的内容。不过你可以用 git reflog 查看 commit 往回cherry-pick。
 
-    # 基于指定 commit 创建一个 worktree
-    git worktree <new-workpath> --detach <commit-hash>
+    git reset HEAD~ 这个会先做上面的步骤，然后再加一步，丢弃暂存区的修改，把回退的 commit 重置到工作区
 
-移动 worktree
+        如果工作区有修改，则丢弃该 commit 的内容。不过你可以用 git reflog 查看 commit 往回cherry-pick。
 
-    git worktree move <worktree> <new-path>/<new-worktree>
+    git reset HEAD 把暂存区的内容回退到工作区，是 git add 的逆过程。
 
-清理 worktree
+        如果工作区有修改，则丢弃暂存区的变更。
 
-    # 删除存在的 worktree
-    git worktree remove <worktree>
+    git reset <commit> <file> 把工作区的文件回滚到指定的commit版本，如果没有 commid 就是暂存区的内容回退到工作区。
 
-    # 清理失去关联的 worktree
-    git worktree prune
+    git reset --hard [commitid] 这个会先做上面的步骤，然后再加一步，把当前head指向的commit重置到工作区
+
+    注： 这个“有修改”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
+
+git checkout 主要关注未提交的修改的撤回，分几种回退情形
+
+    暂存区有修改，工作区无修改：无变化
+
+    暂存区无修改，工作区有修改：丢弃工作区的修改
+
+    暂存区有修改，工作区有修改：丢弃工作区的修改，暂存区保持不动
+
+git restore 代替 `git checkout` 关于撤回的几个用法
+
+    暂存区有修改，工作区无修改： `git restore <file>` 无变化
+                            `git restore --staged <file>` 暂存区的内容撤回到工作区
+
+    暂存区无修改，工作区有修改：`git restore <file>` 丢弃工作区的修改
+
+    暂存区有修改，工作区有修改：`git restore <file>` 丢弃工作区的修改，暂存区保持不动
+                           `"git restore --staged <file>` 丢弃暂存区的修改，工作区保持不动
+
+git rm 移除git对该文件的跟踪，跟 git add 相对，分几种回退情形
+
+    暂存区无修改，工作区无修改：移除该文件 `git rm <file>`。移除文件但保留到工作区 `git rm --cached <file>`
+
+    暂存区有修改，工作区无修改：丢弃暂存区的修改，移除该文件 `git rm -f <file>`
+
+    暂存区无修改，工作区有修改：丢弃工作区的修改，移除该文件 `git rm -f <file>`
+
+    暂存区有修改，工作区有修改：丢弃暂存区的修改，丢弃工作区的修改，移除该文件 `git rm -f <file>`
+
+    如果没有做commit提交变更，想恢复该文件，要两步 `git reset HEAD <file>` 先恢复到暂存区，然后再 ` git checkout <file>` 解除删除状态，该文件恢复到版本库的状态，不会恢复原暂存区和工作区被删除的内容。
 
 示例
 
-保留当前分支代码现状，基于 master 分支创建一个 hotfix 分支修复问题
+情况1.修改了工作区文件，没有任何 git 操作，需要从版本库HEAD指向的那个提交覆盖到工作区
 
-    # 基于 master 分支头指针，在目录同级创建一个 hotfix 的工作树，并检出一个本地分支hotfix以便后期合入
-    # git worktree add ../hotfix --detach master 如果分离式检出，切换到目录后手工创建分支 `git checkout -b hotfix`
-    # git worktree add -b hotfix ../hotfix master
-    git worktree add ../hotfix  # 创建目录并自动检出一个同名的本地分支
+撤销工作区指定文件的修改
 
-    # 进入 hotfix 工作树
-    cd ../hotfix
+    git checkout -- aaa.txt
 
-    # 在该工作树下处理bug
+撤销所有修改
 
-    # 切换回主分支合并
-    cd -
-    git rebase hotfix
+    # git checkout HEAD .
+    git checkout .
 
-## git 项目包含子项目
+从暂存区删除指定文件，跟git add对应
 
-当项目依赖并跟踪一个开源的第三方库，或主项目对子模块有依赖关系，却又并不关心子模块的内部开发流程细节。
+    git rm --cached <file>
 
-这种情况下，通常不会把所有源码都放在同一个 Git 仓库中。
+情况2.修改了文件，已经 git add 提交到暂存区了，需要回退到版本库的状态
 
-有一种比较简单的方式，是在当前工作目录下，将子模块文件夹加入到 .gitignore 文件内容中，这样主项目就能够无视子项目的存在。这样做有一个弊端就是，使用主项目的人需要有一个先验知识：需要在当前目录下放置一份某版本的子模块代码。
+    # 1. 先撤销暂存区的修改，这样文件的变更体现在工作区了
+    git reset HEAD
 
-还有另外一种方式可供借鉴，可以使用 Git 的 submodule 功能。
+    # 2. 再撤销工作区的修改，这时文件的内容就跟版本库一致了。
+    git checkout -- aaa.txt
 
-增加子项目，或称子模块
+情况2.1 修改了文件，已经 git add 提交到暂存区了，又做了些修改在工作区
 
-    # 进入主项目的目录
-    git submodule add https://your_sub_project
+    # 取消工作区的变更，暂存区的不变
+    git checkout aaa.txt
 
-    # 提交一次，表示引入了某个子模块。提交后，在主项目仓库中，会显示出子模块文件夹，并带上其所在仓库的版本号。
-    git commit -m "add submodule xxx"
-    git push
+    # 直接reset会提示无法继续
+    # git reset HEAD
 
-对于后续使用者而言，对于主项目使用普通的 clone 操作并不会拉取到子模块中的实际代码，只有一个空目录，除非显式指定拉取子模块
+情况3.修改了文件，已经 git commit 提交到仓库区了
 
-    # git clone --recursive
-    git clone --recurse-submodules https://github.com/username/project-main.git
+如果是已经git commit的操作，首先保留下现场以便反悔救命，窗口千万别关啊！
 
-更新子模块需要手动，在当前主项目中执行
+    git log --graph --oneline
 
-    cd your_main_project
-    git pull --rebase
+然后回退，也是先到暂存区，然后到工作区的两步操作
 
-    git submodule sync --recursive
+    # 1. 先撤销暂存区修改，这样文件的变更仅体现在工作区了
+    # git reset --soft HEAD~1 差异放在在储藏（stage）区域
+    git reset HEAD^
 
-    # git submodule init
-    # git submodule update
-    git submodule update --init --recursive
+    # 2. 再撤销工作区的修改，这时文件的内容就跟版本库一致了。
+    git checkout -- aaa.txt
 
-子模块更新后，此时对主项目来说子模块的状态是有修改的，注意切换回主项目的目录，执行 git add/commit/push 提交这个修改即可。
+直接回撤到版本库的某个commit点，之前的修改全抛弃（没做git push）
 
-对于子模块而言，并不需要知道引用自己的主项目的存在，子模块本身就是一个完整的 Git 仓库，按照正常的 Git 代码管理规范操作即可。通常的操作都需要进入子模块文件夹，按照子模块内部的版本控制体系更新、提交代码。比如更换远程仓库也只需进入子模块目录后执行命令 `git remote set-url origin xx.git` 即可。
+    git reset --hard HEAD~1
 
-对子模块远程仓库有更新的情况，主项目下运行 `git status` 不会有提示，需要进入子模块的目录后手动执行更新`git pull --rebase`，当主项目的子模块特别多时，可以使用批量命令：`git submodule foreach 'git pull --rebase'`。然后回到主项目的目录，执行 git add/commit/push 提交这个修改。
+情况4.不仅提交到仓库区了，还 git push 到远程仓库了
 
-删除子模块
+不要直接回退！参见章节[重要：git推送远程时的大忌]
 
-    git submodule deinit your_sub_project
+### 签出指定文件
 
-    git rm your_sub_project
+如果在一个提交中，你只想取消某些文件在本地的变更，而同时保留另外一些文件在本地的变更
 
-    git commit -m "delete submodule your_sub_project"
+    git checkout forget-my-changes.js
 
-    git push
+从其他分支或者之前的提交中签出文件的不同版本：
 
-## git 常用法
+    git checkout some-branch-name file-name.js
 
-### 切换分支checkout
+    git checkout {{some-commit-hash}} file-name.js
 
-1.查看远程分支
+签出的文件处于“暂存并准备提交”的状态。
 
-    $ git branch -av
-    我在mxnet根目录下运行以上命令：
+如果不想要上面的状态，想回退并签出到未暂存的状态，需要执行一下
 
-    ~/mxnet$ git branch -av
-    * master                                7cabce4 [ahead 1] res me
-    remotes/origin/HEAD -> origin/master    下略
-    remotes/origin/master
-    remotes/origin/nnvm
-    remotes/origin/piiswrong-patch-1
-    remotes/origin/v0.9rc1
-    可以看到，我们现在在master分支下
+    git reset HEAD file-name.js
 
-2.查看本地分支
+然后再次执行
 
-    ~/mxnet$ git branch
-    * master
+    git checkout file-name.js
 
-3.切换分支，注意这里是在本地新建了一个分支，对应远程的某个分支名
+这样文件回到了初始状态。
 
-    $ git checkout -b v0.9rc1 origin/v0.9rc1
-    Branch v0.9rc1 set up to track remote branch v0.9rc1 from origin.
-    Switched to a new branch 'v0.9rc1'
+### 避免 push -f 进行回退
 
-    ＃已经切换到v0.9rc1分支了
-    $ git branch
-    master
-    * v0.9rc1
+    https://zhuanlan.zhihu.com/p/104806087
 
-    ＃切换回master分支
-    $ git checkout master
-    Switched to branch 'master'
-    Your branch is up-to-date with 'origin/master'.
+你的修改已经提交到远程库了，后来发现有错，需要回退到之前的某个提交点，如果使用 git push -f 强行切换到某个提交点，总是会引起很大的混乱：其他人也在同步你的变化，即使你回退了并强行 push -f，而其他人不知道的话，只要他做push，你的回退又被他本地保存的你提交的变化覆盖回去了。。。
 
-### 删除分支，远程/本地
+git push -f 制造混乱的过程
 
-0.先看看有多少本地和远程分支
+    以 master 分支为例，A2 提交不用了，需要回退到 A1
 
-    git branch -av
+        A1 -- A2
 
-1.切换到其他分支再进行操作
+    1.查看版本号：
 
+        git log --graph --oneline
+        或 git reflog 查看更多的操作
+
+    2.将版本回退到指定的提交点：
+
+        git reset --hard A1
+
+    3.更新远程仓库端的版本也进行同步的回退
+
+        git push -f
+
+    远程库提交记录的历史也会跟着丢，其他人的修改都只能依赖本地的提交记录了
+
+    4. 其它人已经同步 A2 到自己的本地了，他自己的工作是提交点 A3，然后也 push 到远程库，你撤销 A2 的企图没有实现
+
+        A1 -- A2 -- A3
+
+所以，回退的方法，必须尽量避免使用 git push -f。
+
+着眼点不要放在撤回到某个提交点上，而是放在撤回到那个提交点的内容上，即：文件内容回退到之前的某个提交点的样子，但在提交记录上是新增一个提交点，这样的办法是最妥当的。
+
+法一：基于 git 文件操作的办法
+
+    1、在 master 分支上，需要回退到 A1，先对提交点 A1 新建分支
+
+    2、切换到新建的分支，除了 .git 目录，拷贝所有文件和目录到临时目录
+
+    2、切换回 master 分支，除了 .git 目录，删除的所有文件和目录
+
+    3、从临时目录拷贝回全部内容，这样让 git 处理，新增一个提交即可
+
+    最终实现了在提交记录上新增一个提交点，文件内容回退到之前指定的提交点，提交记录是向前延展的，所有人都不受影响。
+
+法二：组合使用 revert + rebase 进行回退
+
+利用两个特点
+
+    git revert 命令反做你上一步的提交，通过在提交记录上新增一个提交点，实现文件内容的回退。
+
+    git rebase 压缩你所有要回撤的提交点为一个提交点。
+
+方案
+
+    先使用 rebase 把多个提交合并成一个提交
+
+    再使用 revert 反做这个提交
+
+revert 新增的提交点，是对 rebase 那个提交点的反向执行，从而实现了修改内容的回退。
+
+这样在提交记录里新增了一个提交点，但是提交记录是向前延展的，所有人都不受影响。
+
+示例：
+
+    从master 分支建立新分支 tmp_re ，使用 git log 查询一下要回退到的 commit 版本 N
+
+        git checkout -b tmp_re
+        git log --graph --oneline
+
+    使用命令 git rebase -i N 将这些 commits 都合并到最旧的 commit1 上
+
+        git rebase -i commit1
+
+    合并前：
+                        起点       修改1        修改2        修改3
+        [master分支] --- older --- commit1 --- commit2 --- commit3
+
+                        起点       所有的修改合并
+        [tmp_re分支] --- older --- commit_rebase
+
+    这个时候，master 分支上的提交记录是跟 tmp_re 分支上的提交记录不同，但两个分支的文件的内容其实是一样的。
+
+    tmp_re 分支用分叉合并 master 分支（只能进度落后的合并进度领先的，倒过来合并git会报错），新增一个分叉合并的提交点
+
+        git merge master
+
+    合并后：
+                        起点       所有的修改合并             分叉点
+        [tmp_re分支] --- older --- commit_rebase --------- commit_merge
+                    \                                /
+                      commit1 --- commit2 --- commit3
+                       修改1        修改2        修改3
+
+    再在 tmp_re 分支上对 commit_merge 进行一次 revert 反提交。
+
+    这样就实现了在文件内容上，把 commit1 到 commit3 提交做的修改全部撤回，但是提交记录是向前延展的。
+
+    merge 有分叉，做 revert 时需要指定分支，先用 git log 看好了
+
+        git log --graph --oneline
+
+    回退选择有 rebase 提交的那一支。
+
+    NOTE: git revert 的 m 参数指定 mainline，如果是功能分支合并功能分支，就不好判断了！
+
+        git revert HEAD^ -m 1
+
+    这样，tmp_re 分支的文件内容回退掉了 commit1-3 修改的内容，但是提交记录没有任何删除，一直向前延展
+
+        [tmp_re分支] --- older --- commit_rebase ---- commit_merge --- commit_revert（其实回到 older 的内容了）
+                          \                           /
+                           commit1---commit2---commit3
+
+    最后，把 tmp_re 分支合并到 master 分支，覆盖 master 分支上的差异，使 master 分支上的文件内容也回到了点 older 点的样子。
+
+### 远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1
+
+这种情况，操作就比较繁琐了 <https://www.cnblogs.com/Super-scarlett/p/8183348.html>
+
+先通知所有人都做回退，A2后没有提交的本地master分支就回到A1了。
+
+    git reset --hard origin/master
+
+但是B先生已经提交了B1-B2
+
+    他的本地 master 分支是 A1 - A2 - B1 - B2
+    他的本地 开发   分支是 A1 - A2 - B1 - B2 - B3
+
+只要他再次提交，A2还是会出现在远程仓库，你的回退对分布式来说无用。
+
+所以需要B先生找出新增的B1，B2，cherry-pick到 master 分支
+
+    # 切到自己的开发分支，记录下需要新增到主干的commit点，B1 B2
+    git checkout b_branch
+    git log  --graph --oneline
+    或 git reflog 查看更多的操作
+
+    # 备份开发分支 内容是 A1 - A2 - B1 - B2 - B3
+    git checkout -b b_backup
+
+    # 开发分支回滚到A1
+    git reset --hard A1
+
+    # cherry-pick到 开发分支，内容是 A1 - B1 - B2
+    git cherry-pick B1 B2
+
+    # 开发分支做冲突合并，测试正常，不受A2消失的影响等一堆工作，然后继续下面的
+
+    # 更新master分支，做回滚到 A1，然后合并开发分支
     git checkout master
+    git reset --hard origin/master
+    git merge b_branch
 
-2.删除远程分支的指针而不是直接删分支，方便数据恢复。
+    # 这时B先生的 master 分支，可以推送到远程仓库了，内容是A1 – B1 - B2
+    git push
 
-    git push origin --delete fea_xxx
+    # 最后，开发分支把自己最新的B3之类部分从备份分支cherry-pick过来
+    git checkout b_branch
+    git cherry-pick B3
 
-如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
+    # 最终的开发分支内容是 A1 - B1 - B2 - B3
 
-    git push origin :refs/fea_xxx
-
-用本地分支fea_-2覆盖远程分支fea_-1
-
-    git push -f origin fea_-2:refs/fea_-1
-
-对追踪分支，git push origin --delete 该命令也会删除本地-远程的追踪分支，等于还做了个
-
-    # 如果只删除追踪分支，则还需要 git remote prune 来删除追踪分支
-    git branch --delete --remotes <remote>/<branch>
-
-3.其它人的机器上还有该远程分支，清理无效远程分支
-
-    git branch -av  # 查看
-
-    git fetch origin -p  # git remote prune
-
-4.删除本地
-
-    git branch -d fea_xxx
-
-### 开发分支常用 commit --amend 压缩多余的提交点
-
-NOTE: amend 要在 git push 推送远程之前做，已经推送远程的commit 就不要追加！
-
-追加到最近的commit，不制作新的commit（其实commit已经变了），适合本次和上次提交内容相近的场景
-
-    git add .
-    git commit --amend  # 等价于 git rebase -i HEAD~2
+## ----------下为 git 常用法-------------
 
 ### 使用标签 tag
 
@@ -2629,357 +2874,6 @@ HEAD 的 第三个父级
     HEAD^2~3 = HEAD^2^^^
     HEAD^3~3 = HEAD^3^^^
 
-### 如何回退
-
-    https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified
-
-FailSafe: 在你回退之前务必要做
-
-    如果是已经 git commit的操作，首先保留下现场以便反悔救命，这个窗口千万别关啊！
-    # 最好用 tmux 保留这个命令的输出，救命用的
-    git log --graph --oneline
-
-    如果你有修改保存在暂存区和工作区，或者提交，或者stash，然后再做回退的操作。git 的回退弯弯绕比较多，回退之前务必清理下暂存区和工作区，千万小心，有好几种情况会无提示清理。
-
-工作区
-
-    你的修改在这里。
-
-暂存区(index)的意义
-
-    当你修改了很多还没改完，想临时性的保存下，不应该形成一个 commit 保存到仓库区。
-
-    继续改，担心把之前正确的弄乱，那就先暂存这部分修改内容，然后继续在工作区修改。
-
-    万一你越改越乱，把之前的修改也变动了，工作区里改动的内容很多不好复原，咋办？
-
-    前一阶段的内容在暂存区，可以用 git diff 很方便的比较暂存区和工作区的差异，轻松调整为你想要的内容。
-
-    如果你长时间在做一份内容修改，分阶段的保存一下，非常必要。
-
-养成一个习惯吧，大批量的修改，感觉这一部分差不多了，就顺手 `git add .` 在暂存区固定这部分修改，后续如果工作区改乱了可以用 `git diff` 轻松调整，最后完全没问题了就可以形成一个 commit 提交了。
-
-仓库区(head)
-
-    你的commit提交在这里，分布式存储，需要你push才能到远程。
-
-用户修改文件，文件的变更路径是
-
-    工作区 ----> 暂存区 ----> 仓库区
-
-修改的文件要撤回，跟上面的过程相反
-
-    仓库区 ----> 暂存区 ----> 工作区
-
-git的实际工作，修改的文件进入每个区域，都需要专门的命令
-
-                              HEAD    Index    Workdir    WD Safe?
-
-    Commit Level
-    reset --soft [commit]     REF    NO    NO    YES
-    reset [commit]    REF     YES    NO    YES
-    reset --hard [commit]     REF    YES    YES    NO
-    checkout <commit>         HEAD    YES    YES    YES
-
-    File Level
-    reset [commit] <paths>     NO    YES    NO    YES
-    checkout [commit] <paths>  NO    YES    YES    NO
-
-git reset 主要关注已经提交的修改的 commit 的回退，分几种回退情形
-
-    git reset --soft HEAD~ 重置 head 的位置，指向本地仓库里的提交点，回退的commit内容放到暂存区，HEAD~表示只回退上一步的commit，如果是间隔多个commit，回退会累积起来，类似 squash 的效果。
-
-        如果暂存区有修改，则丢弃该commit的内容。不过你可以用 git reflog 查看 commit 往回cherry-pick。
-
-    git reset HEAD~ 这个会先做上面的步骤，然后再加一步，丢弃暂存区的修改，把回退的 commit 重置到工作区
-
-        如果工作区有修改，则丢弃该 commit 的内容。不过你可以用 git reflog 查看 commit 往回cherry-pick。
-
-    git reset HEAD 把暂存区的内容回退到工作区，是 git add 的逆过程。
-
-        如果工作区有修改，则丢弃暂存区的变更。
-
-    git reset <commit> <file> 把工作区的文件回滚到指定的commit版本，如果没有 commid 就是暂存区的内容回退到工作区。
-
-    git reset --hard [commitid] 这个会先做上面的步骤，然后再加一步，把当前head指向的commit重置到工作区
-
-    注： 这个“有修改”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
-
-git checkout 主要关注未提交的修改的撤回，分几种回退情形
-
-    暂存区有修改，工作区无修改：无变化
-
-    暂存区无修改，工作区有修改：丢弃工作区的修改
-
-    暂存区有修改，工作区有修改：丢弃工作区的修改，暂存区保持不动
-
-git restore 代替 `git checkout` 关于撤回的几个用法
-
-    暂存区有修改，工作区无修改： `git restore <file>` 无变化
-                            `git restore --staged <file>` 暂存区的内容撤回到工作区
-
-    暂存区无修改，工作区有修改：`git restore <file>` 丢弃工作区的修改
-
-    暂存区有修改，工作区有修改：`git restore <file>` 丢弃工作区的修改，暂存区保持不动
-                           `"git restore --staged <file>` 丢弃暂存区的修改，工作区保持不动
-
-git rm 移除git对该文件的跟踪，跟 git add 相对，分几种回退情形
-
-    暂存区无修改，工作区无修改：移除该文件 `git rm <file>`。移除文件但保留到工作区 `git rm --cached <file>`
-
-    暂存区有修改，工作区无修改：丢弃暂存区的修改，移除该文件 `git rm -f <file>`
-
-    暂存区无修改，工作区有修改：丢弃工作区的修改，移除该文件 `git rm -f <file>`
-
-    暂存区有修改，工作区有修改：丢弃暂存区的修改，丢弃工作区的修改，移除该文件 `git rm -f <file>`
-
-    如果没有做commit提交变更，想恢复该文件，要两步 `git reset HEAD <file>` 先恢复到暂存区，然后再 ` git checkout <file>` 解除删除状态，该文件恢复到版本库的状态，不会恢复原暂存区和工作区被删除的内容。
-
-示例
-
-情况1.修改了工作区文件，没有任何 git 操作，需要从版本库HEAD指向的那个提交覆盖到工作区
-
-撤销工作区指定文件的修改
-
-    git checkout -- aaa.txt
-
-撤销所有修改
-
-    # git checkout HEAD .
-    git checkout .
-
-从暂存区删除指定文件，跟git add对应
-
-    git rm --cached <file>
-
-情况2.修改了文件，已经 git add 提交到暂存区了，需要回退到版本库的状态
-
-    # 1. 先撤销暂存区的修改，这样文件的变更体现在工作区了
-    git reset HEAD
-
-    # 2. 再撤销工作区的修改，这时文件的内容就跟版本库一致了。
-    git checkout -- aaa.txt
-
-情况2.1 修改了文件，已经 git add 提交到暂存区了，又做了些修改在工作区
-
-    # 取消工作区的变更，暂存区的不变
-    git checkout aaa.txt
-
-    # 直接reset会提示无法继续
-    # git reset HEAD
-
-情况3.修改了文件，已经 git commit 提交到仓库区了
-
-如果是已经git commit的操作，首先保留下现场以便反悔救命，窗口千万别关啊！
-
-    git log --graph --oneline
-
-然后回退，也是先到暂存区，然后到工作区的两步操作
-
-    # 1. 先撤销暂存区修改，这样文件的变更仅体现在工作区了
-    # git reset --soft HEAD~1 差异放在在储藏（stage）区域
-    git reset HEAD^
-
-    # 2. 再撤销工作区的修改，这时文件的内容就跟版本库一致了。
-    git checkout -- aaa.txt
-
-直接回撤到版本库的某个commit点，之前的修改全抛弃（没做git push）
-
-    git reset --hard HEAD~1
-
-情况4.不仅提交到仓库区了，还 git push 到远程仓库了
-
-不要直接回退！参见章节[重要：git推送远程时的大忌]
-
-#### 签出指定文件
-
-如果在一个提交中，你只想取消某些文件在本地的变更，而同时保留另外一些文件在本地的变更
-
-    git checkout forget-my-changes.js
-
-从其他分支或者之前的提交中签出文件的不同版本：
-
-    git checkout some-branch-name file-name.js
-
-    git checkout {{some-commit-hash}} file-name.js
-
-签出的文件处于“暂存并准备提交”的状态。
-
-如果不想要上面的状态，想回退并签出到未暂存的状态，需要执行一下
-
-    git reset HEAD file-name.js
-
-然后再次执行
-
-    git checkout file-name.js
-
-这样文件回到了初始状态。
-
-#### 避免 push -f 进行回退
-
-    https://zhuanlan.zhihu.com/p/104806087
-
-你的修改已经提交到远程库了，后来发现有错，需要回退到之前的某个提交点，如果使用 git push -f 强行切换到某个提交点，总是会引起很大的混乱：其他人也在同步你的变化，即使你回退了并强行 push -f，而其他人不知道的话，只要他做push，你的回退又被他本地保存的你提交的变化覆盖回去了。。。
-
-git push -f 制造混乱的过程
-
-    以 master 分支为例，A2 提交不用了，需要回退到 A1
-
-        A1 -- A2
-
-    1.查看版本号：
-
-        git log --graph --oneline
-        或 git reflog 查看更多的操作
-
-    2.将版本回退到指定的提交点：
-
-        git reset --hard A1
-
-    3.更新远程仓库端的版本也进行同步的回退
-
-        git push -f
-
-    远程库提交记录的历史也会跟着丢，其他人的修改都只能依赖本地的提交记录了
-
-    4. 其它人已经同步 A2 到自己的本地了，他自己的工作是提交点 A3，然后也 push 到远程库，你撤销 A2 的企图没有实现
-
-        A1 -- A2 -- A3
-
-所以，回退的方法，必须尽量避免使用 git push -f。
-
-着眼点不要放在撤回到某个提交点上，而是放在撤回到那个提交点的内容上，即：文件内容回退到之前的某个提交点的样子，但在提交记录上是新增一个提交点，这样的办法是最妥当的。
-
-法一：基于 git 文件操作的办法
-
-    1、在 master 分支上，需要回退到 A1，先对提交点 A1 新建分支
-
-    2、切换到新建的分支，除了 .git 目录，拷贝所有文件和目录到临时目录
-
-    2、切换回 master 分支，除了 .git 目录，删除的所有文件和目录
-
-    3、从临时目录拷贝回全部内容，这样让 git 处理，新增一个提交即可
-
-    最终实现了在提交记录上新增一个提交点，文件内容回退到之前指定的提交点，提交记录是向前延展的，所有人都不受影响。
-
-法二：组合使用 revert + rebase 进行回退
-
-利用两个特点
-
-    git revert 命令反做你上一步的提交，通过在提交记录上新增一个提交点，实现文件内容的回退。
-
-    git rebase 压缩你所有要回撤的提交点为一个提交点。
-
-方案
-
-    先使用 rebase 把多个提交合并成一个提交
-
-    再使用 revert 反做这个提交
-
-revert 新增的提交点，是对 rebase 那个提交点的反向执行，从而实现了修改内容的回退。
-
-这样在提交记录里新增了一个提交点，但是提交记录是向前延展的，所有人都不受影响。
-
-示例：
-
-    从master 分支建立新分支 tmp_re ，使用 git log 查询一下要回退到的 commit 版本 N
-
-        git checkout -b tmp_re
-        git log --graph --oneline
-
-    使用命令 git rebase -i N 将这些 commits 都合并到最旧的 commit1 上
-
-        git rebase -i commit1
-
-    合并前：
-                        起点       修改1        修改2        修改3
-        [master分支] --- older --- commit1 --- commit2 --- commit3
-
-                        起点       所有的修改合并
-        [tmp_re分支] --- older --- commit_rebase
-
-    这个时候，master 分支上的提交记录是跟 tmp_re 分支上的提交记录不同，但两个分支的文件的内容其实是一样的。
-
-    tmp_re 分支用分叉合并 master 分支（只能进度落后的合并进度领先的，倒过来合并git会报错），新增一个分叉合并的提交点
-
-        git merge master
-
-    合并后：
-                        起点       所有的修改合并             分叉点
-        [tmp_re分支] --- older --- commit_rebase --------- commit_merge
-                    \                                /
-                      commit1 --- commit2 --- commit3
-                       修改1        修改2        修改3
-
-    再在 tmp_re 分支上对 commit_merge 进行一次 revert 反提交。
-
-    这样就实现了在文件内容上，把 commit1 到 commit3 提交做的修改全部撤回，但是提交记录是向前延展的。
-
-    merge 有分叉，做 revert 时需要指定分支，先用 git log 看好了
-
-        git log --graph --oneline
-
-    回退选择有 rebase 提交的那一支。
-
-    NOTE: git revert 的 m 参数指定 mainline，如果是功能分支合并功能分支，就不好判断了！
-
-        git revert HEAD^ -m 1
-
-    这样，tmp_re 分支的文件内容回退掉了 commit1-3 修改的内容，但是提交记录没有任何删除，一直向前延展
-
-        [tmp_re分支] --- older --- commit_rebase ---- commit_merge --- commit_revert（其实回到 older 的内容了）
-                          \                           /
-                           commit1---commit2---commit3
-
-    最后，把 tmp_re 分支合并到 master 分支，覆盖 master 分支上的差异，使 master 分支上的文件内容也回到了点 older 点的样子。
-
-#### 远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1
-
-这种情况，操作就比较繁琐了 <https://www.cnblogs.com/Super-scarlett/p/8183348.html>
-
-先通知所有人都做回退，A2后没有提交的本地master分支就回到A1了。
-
-    git reset --hard origin/master
-
-但是B先生已经提交了B1-B2
-
-    他的本地 master 分支是 A1 - A2 - B1 - B2
-    他的本地 开发   分支是 A1 - A2 - B1 - B2 - B3
-
-只要他再次提交，A2还是会出现在远程仓库，你的回退对分布式来说无用。
-
-所以需要B先生找出新增的B1，B2，cherry-pick到 master 分支
-
-    # 切到自己的开发分支，记录下需要新增到主干的commit点，B1 B2
-    git checkout b_branch
-    git log  --graph --oneline
-    或 git reflog 查看更多的操作
-
-    # 备份开发分支 内容是 A1 - A2 - B1 - B2 - B3
-    git checkout -b b_backup
-
-    # 开发分支回滚到A1
-    git reset --hard A1
-
-    # cherry-pick到 开发分支，内容是 A1 - B1 - B2
-    git cherry-pick B1 B2
-
-    # 开发分支做冲突合并，测试正常，不受A2消失的影响等一堆工作，然后继续下面的
-
-    # 更新master分支，做回滚到 A1，然后合并开发分支
-    git checkout master
-    git reset --hard origin/master
-    git merge b_branch
-
-    # 这时B先生的 master 分支，可以推送到远程仓库了，内容是A1 – B1 - B2
-    git push
-
-    # 最后，开发分支把自己最新的B3之类部分从备份分支cherry-pick过来
-    git checkout b_branch
-    git cherry-pick B3
-
-    # 最终的开发分支内容是 A1 - B1 - B2 - B3
-
 ### 创建常用命令的别名
 
 常用的较长的git命令应该使用git或者bash别名
@@ -3109,7 +3003,7 @@ git给出了解决方案，使用git branch-filter来遍历git history tree, 可
     https://blog.csdn.net/albertsh/article/details/106294095
     https://blog.csdn.net/LeonSUST/article/details/103565031
 
-建议使用开源的 meld 替换，基于python的
+建议使用开源的 meld 替换，基于python
 
     https://meldmerge.org/
         https://gitlab.gnome.org/GNOME/meld
@@ -3147,6 +3041,116 @@ git给出了解决方案，使用git branch-filter来遍历git history tree, 可
         tool = vscode-merge
     [mergetool "vscode-merge"]
         cmd = code --wait $MERGED
+
+### git worktree 多分支目录共用一个仓库
+
+    https://minsonlee.github.io/2020/05/git-worktree
+
+git checkout 命令是在同一个文件夹中切换不同分支，当一个分支正在开发，有另一个分支需要紧急处理bug，有两种解决方案
+
+    `git stash` 当前内容，然后切换分支修改bug，提交后再切换回来， `git stash pop` 继续
+
+    新建个目录拉取仓库，在那个目录里切换分支修改bug，极端情况下每个分支一个目录，都克隆同一个仓库，但是这样占用容量太大了
+
+一个 git 仓库可以支持多个工作树，允许你在同一时间检出多个分支。通过 git worktree add 将一个新的工作目录和一个仓库进行关联。 这个新的工作目录被称为 “linked working tree（链接工作树）”。不同于通过 git init 或 git clone 产生的主工作树，这个目录只保存了静态内容，容量相对小很多，在这个目录下切换分支操作即可。
+
+一个仓库只有一个主工作树(裸仓库是没有工作树的），可以有零个或多个链接工作树. 当你在链接工作树已经完成了工作，使用 git worktree remove 就可以移除它了。
+
+    # 查看当前仓库所有的 "linked working tree"
+    $ git worktree list
+    /ghcode/pycode/tea  7cabce4 [master]
+
+创建 worktree
+
+    # 基于已存在分支创建 `worktree`
+    git worktree add <new-workpath> <existing-branch/commit-id/remote-branch-name>
+
+    # 基于当前 commit 新建一个分支并创建 `worktree`
+    git worktree <new-wokpath> -b <new-branch>
+
+    # 基于指定 commit 创建一个 worktree
+    git worktree <new-workpath> --detach <commit-hash>
+
+移动 worktree
+
+    git worktree move <worktree> <new-path>/<new-worktree>
+
+清理 worktree
+
+    # 删除存在的 worktree
+    git worktree remove <worktree>
+
+    # 清理失去关联的 worktree
+    git worktree prune
+
+示例
+
+保留当前分支代码现状，基于 master 分支创建一个 hotfix 分支修复问题
+
+    # 基于 master 分支头指针，在目录同级创建一个 hotfix 的工作树，并检出一个本地分支hotfix以便后期合入
+    # git worktree add ../hotfix --detach master 如果分离式检出，切换到目录后手工创建分支 `git checkout -b hotfix`
+    # git worktree add -b hotfix ../hotfix master
+    git worktree add ../hotfix  # 创建目录并自动检出一个同名的本地分支
+
+    # 进入 hotfix 工作树
+    cd ../hotfix
+
+    # 在该工作树下处理bug
+
+    # 切换回主分支合并
+    cd -
+    git rebase hotfix
+
+### git 项目包含子项目
+
+当项目依赖并跟踪一个开源的第三方库，或主项目对子模块有依赖关系，却又并不关心子模块的内部开发流程细节。
+
+这种情况下，通常不会把所有源码都放在同一个 Git 仓库中。
+
+有一种比较简单的方式，是在当前工作目录下，将子模块文件夹加入到 .gitignore 文件内容中，这样主项目就能够无视子项目的存在。这样做有一个弊端就是，使用主项目的人需要有一个先验知识：需要在当前目录下放置一份某版本的子模块代码。
+
+还有另外一种方式可供借鉴，可以使用 Git 的 submodule 功能。
+
+增加子项目，或称子模块
+
+    # 进入主项目的目录
+    git submodule add https://your_sub_project
+
+    # 提交一次，表示引入了某个子模块。提交后，在主项目仓库中，会显示出子模块文件夹，并带上其所在仓库的版本号。
+    git commit -m "add submodule xxx"
+    git push
+
+对于后续使用者而言，对于主项目使用普通的 clone 操作并不会拉取到子模块中的实际代码，只有一个空目录，除非显式指定拉取子模块
+
+    # git clone --recursive
+    git clone --recurse-submodules https://github.com/username/project-main.git
+
+更新子模块需要手动，在当前主项目中执行
+
+    cd your_main_project
+    git pull --rebase
+
+    git submodule sync --recursive
+
+    # git submodule init
+    # git submodule update
+    git submodule update --init --recursive
+
+子模块更新后，此时对主项目来说子模块的状态是有修改的，注意切换回主项目的目录，执行 git add/commit/push 提交这个修改即可。
+
+对于子模块而言，并不需要知道引用自己的主项目的存在，子模块本身就是一个完整的 Git 仓库，按照正常的 Git 代码管理规范操作即可。通常的操作都需要进入子模块文件夹，按照子模块内部的版本控制体系更新、提交代码。比如更换远程仓库也只需进入子模块目录后执行命令 `git remote set-url origin xx.git` 即可。
+
+对子模块远程仓库有更新的情况，主项目下运行 `git status` 不会有提示，需要进入子模块的目录后手动执行更新`git pull --rebase`，当主项目的子模块特别多时，可以使用批量命令：`git submodule foreach 'git pull --rebase'`。然后回到主项目的目录，执行 git add/commit/push 提交这个修改。
+
+删除子模块
+
+    git submodule deinit your_sub_project
+
+    git rm your_sub_project
+
+    git commit -m "delete submodule your_sub_project"
+
+    git push
 
 ## 常见问题
 
@@ -3574,7 +3578,7 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 
 最后，John 接受了这些修改，将 feature 分支并入了 master 分支，关闭了这个 Pull Request。功能现在已经整合到了项目中，其他在 master 分支上工作的开发者可以使用标准的 git pull 命令将这些修改拉取到自己的本地仓库。
 
-## ---------------下为git的各种方案------------
+## ------------ 下为git的各种方案 ------------
 
 ## 使用git的各种工作流程方案
 
