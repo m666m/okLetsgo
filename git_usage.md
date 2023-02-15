@@ -2154,13 +2154,15 @@ FailSafe: 在你回退之前务必要做
     # 最好用 tmux 保留这个命令的输出，救命用的
     git log --graph --oneline
 
-    如果你有修改保存在暂存区和工作区，或者提交，或者stash，然后再做回退的操作。git 的回退弯弯绕比较多，回退之前务必清理下暂存区和工作区，千万小心，有好几种情况会无提示清理。
+    如果你有修改保存在暂存区和工作区，或者提交，或者stash，然后再做回退的操作。
+
+    git 的回退弯弯绕比较多，回退之前务必清理下暂存区和工作区，千万小心，有好几种情况会无提示清理。
 
 工作区
 
     你的修改在这里。
 
-暂存区(index)的意义
+暂存区(stage/index)的意义
 
     当你修改了很多还没改完，想临时性的保存下，不应该形成一个 commit 保存到仓库区。
 
@@ -2174,7 +2176,7 @@ FailSafe: 在你回退之前务必要做
 
 仓库区(head)
 
-    你的commit提交在这里，分布式存储，需要你push才能到远程。
+    你的commit提交在这里，分布式存储，需要你 push 才能到远程。
 
 用户修改文件，文件的变更路径是
 
@@ -2186,17 +2188,17 @@ FailSafe: 在你回退之前务必要做
 
 git的实际工作，修改的文件进入每个区域，都需要专门的命令
 
-                              HEAD    Index    Workdir    WD Safe?
+                             HEAD      Index  Workdir   WD Safe?
 
     Commit Level
-    reset --soft [commit]     REF    NO    NO    YES
-    reset [commit]    REF     YES    NO    YES
-    reset --hard [commit]     REF    YES    YES    NO
-    checkout <commit>         HEAD    YES    YES    YES
+    reset --soft [commit]     REF       NO      NO      YES
+    reset [commit]            REF       YES     NO      YES
+    reset --hard [commit]     REF       YES     YES     NO
+    checkout <commit>         HEAD      YES     YES     YES
 
     File Level
-    reset [commit] <paths>     NO    YES    NO    YES
-    checkout [commit] <paths>  NO    YES    YES    NO
+    reset [commit] <paths>     NO       YES     NO      YES
+    checkout [commit] <paths>  NO       YES     YES     NO
 
 git reset 主要关注已经提交的修改的 commit 的回退，分几种回退情形
 
@@ -2247,6 +2249,30 @@ git rm 移除git对该文件的跟踪，跟 git add 相对，分几种回退情�
     暂存区有修改，工作区有修改：丢弃暂存区的修改，丢弃工作区的修改，移除该文件 `git rm -f <file>`
 
     如果没有做commit提交变更，想恢复该文件，要两步 `git reset HEAD <file>` 先恢复到暂存区，然后再 ` git checkout <file>` 解除删除状态，该文件恢复到版本库的状态，不会恢复原暂存区和工作区被删除的内容。
+
+### 本地回退：签出指定文件
+
+如果在一个提交中，你只想取消某些文件在本地的变更，而同时保留另外一些文件在本地的变更
+
+    git checkout forget-my-changes.js
+
+从其他分支或者之前的提交中签出文件的不同版本：
+
+    git checkout some-branch-name file-name.js
+
+    git checkout {{some-commit-hash}} file-name.js
+
+签出的文件处于“暂存并准备提交”的状态。
+
+如果不想要上面的状态，想回退并签出到未暂存的状态，需要执行一下
+
+    git reset HEAD file-name.js
+
+然后再次执行
+
+    git checkout file-name.js
+
+这样文件回到了初始状态。
 
 示例
 
@@ -2304,9 +2330,11 @@ git rm 移除git对该文件的跟踪，跟 git add 相对，分几种回退情�
 
 不要直接回退！参见章节[重要：推送远程前的检查]
 
-### 避免 push -f 进行回退
+### 远程仓库避免 push -f 进行回退
 
     https://zhuanlan.zhihu.com/p/104806087
+
+参见章节 [重要：推送远程前的检查]。
 
 你的修改已经提交到远程库了，后来发现有错，需要回退到之前的某个提交点，如果使用 git push -f 强行切换到某个提交点，总是会引起很大的混乱：其他人也在同步你的变化，即使你回退了并强行 push -f，而其他人不知道的话，只要他做push，你的回退又被他本地保存的你提交的变化覆盖回去了。。。
 
@@ -2422,7 +2450,7 @@ revert 新增的提交点，是对 rebase 那个提交点的反向执行，从�
 
     最后，把 tmp_re 分支合并到 master 分支，覆盖 master 分支上的差异，使 master 分支上的文件内容也回到了点 older 点的样子。
 
-### 远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1
+#### 远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1
 
     https://www.cnblogs.com/Super-scarlett/p/8183348.html
 
@@ -2474,33 +2502,7 @@ revert 新增的提交点，是对 rebase 那个提交点的反向执行，从�
 
     # 最终的开发分支内容是 A1 - B1 - B2 - B3
 
-### 签出指定文件
-
-如果在一个提交中，你只想取消某些文件在本地的变更，而同时保留另外一些文件在本地的变更
-
-    git checkout forget-my-changes.js
-
-从其他分支或者之前的提交中签出文件的不同版本：
-
-    git checkout some-branch-name file-name.js
-
-    git checkout {{some-commit-hash}} file-name.js
-
-签出的文件处于“暂存并准备提交”的状态。
-
-如果不想要上面的状态，想回退并签出到未暂存的状态，需要执行一下
-
-    git reset HEAD file-name.js
-
-然后再次执行
-
-    git checkout file-name.js
-
-这样文件回到了初始状态。
-
-## ----------下为 git 常用法-------------
-
-### 使用标签 tag
+## 使用标签 tag
 
 标签总是和某个commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，那么在这两个分支上都可以看到这个标签。
 
@@ -2540,7 +2542,7 @@ revert 新增的提交点，是对 rebase 那个提交点的反向执行，从�
 
     git checkout -b fea_xxx v2.0.0
 
-### 使用储藏 stash
+## 使用储藏 stash
 
 当在一个分支的开发工作未完成，却又要切换到另外一个hotfix分支进行开发的时候，当前的分支不commit的话git不允许checkout到别的分支，而代码功能不完整随便commit是没有意义的。
 
@@ -2570,7 +2572,7 @@ revert 新增的提交点，是对 rebase 那个提交点的反向执行，从�
 
     （8）git stash clear ：删除所有缓存的stash
 
-#### 找回误删的 stash 数据
+### 找回误删的 stash 数据
 
 本想 git stash pop ，但是输入成 git stash drop
 
@@ -2586,7 +2588,7 @@ revert 新增的提交点，是对 rebase 那个提交点的反向执行，从�
 
     git stash apply 95ccbd927ad4cd413ee2a28014c81454f4ede82c
 
-### 补丁神器 cherry-pick
+## 补丁神器 cherry-pick
 
 git、svn、hg 等基于 snapshot 的版本控制系统，以 snapshot 的方式存储当前版本。虽然这一类版本控制系统也会用到 patch，不过它们只有在需要时才计算出 patch 文件来。patch 是这一类版本控制系统的产物，而非基石。（注意：切勿混淆 commit 和 snapshot 的概念，两者并不等价。Git 显然不会在每个 commit 中存储对整个仓库的 snapshot，这么做太占空间。事实上，Git 的 commit 只包含指向 snapshot tree 的指针，参见：Git-内部原理-Git-对象 <https://git-scm.com/book/en/v2/Git-Internals-Git-Objects>）
 
@@ -2614,7 +2616,7 @@ git diff 输出格式就是个 patch 文件，git cherry-pick 会把摘取的修
 
 Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803，它并不同于master分支的 4c805e2，因为这两个commit只是改动相同，但确实是两个不同的commit。用git cherry-pick，我们就不需要在dev分支上手动再把修bug的过程重复一遍。
 
-### 变更比对 diff 的多种用法
+## 变更比对 diff 的多种用法
 
 git diff 主要的应用场景：
 
@@ -2719,7 +2721,7 @@ git diff 主要的应用场景：
     # 没问题，完全打上补丁
     git apply your.patch
 
-#### 没点，俩点，仨点的区别
+### 没点，俩点，仨点的区别
 
     https://stackoverflow.com/questions/4944376/how-to-check-real-git-diff-before-merging-from-remote-branch
 
@@ -2855,6 +2857,8 @@ HEAD 的 第三个父级
     HEAD^2~3 = HEAD^2^^^
     HEAD^3~3 = HEAD^3^^^
 
+## ----------下为 git 常用法-------------
+
 ### 查看尚未合并的变更
 
 如果你曾经与很多小伙伴工作在同一个持久分支上，也许会有这样的经历，父分支（例如：master）上的大量合并同步到你当前的分支。这使得我们很难分辨哪些变更发生在主分支，哪些变更发生在当前分支，尚未合并到 master 分支。
@@ -2971,52 +2975,6 @@ git给出了解决方案，使用git branch-filter来遍历git history tree, 可
 
 重新提交成功
 
-### 配置git的编辑器和比较工具
-
-配置 Beyond Compare 4 作为 git mergetool
-
-    https://blog.csdn.net/albertsh/article/details/106294095
-    https://blog.csdn.net/LeonSUST/article/details/103565031
-
-建议使用开源的 meld 替换，基于python
-
-    https://meldmerge.org/
-        https://gitlab.gnome.org/GNOME/meld
-        https://gitlab.gnome.org/GNOME/meld/-/wikis/home
-
-配置git的默认编辑器为 vscode
-
-    https://blog.csdn.net/ShuSheng0007/article/details/115449596
-
-    git config --global core.editor "code --wait"
-
-如果想恢复使用 Vim，使用下面命令即可
-
-    git config --global --unset core.editor
-
-也可直接编辑配置文件
-
-    git config --global --edit
-
-配置git的difftool与mergetool为VsCode
-
-执行如下命令git将使用上一部分配置好的vscode打开配置文件
-
-    git config --global --edit
-
-将下面的配置粘贴上去，保存，关闭即可
-
-    [diff]
-        tool = vscode-diff
-    [difftool]
-        prompt = false
-    [difftool "vscode-diff"]
-        cmd = code --wait --diff $LOCAL $REMOTE
-    [merge]
-        tool = vscode-merge
-    [mergetool "vscode-merge"]
-        cmd = code --wait $MERGED
-
 ### git worktree 多分支目录共用一个仓库
 
     https://minsonlee.github.io/2020/05/git-worktree
@@ -3126,6 +3084,52 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
     git commit -m "delete submodule your_sub_project"
 
     git push
+
+### 配置git的编辑器和比较工具
+
+配置 Beyond Compare 4 作为 git mergetool
+
+    https://blog.csdn.net/albertsh/article/details/106294095
+    https://blog.csdn.net/LeonSUST/article/details/103565031
+
+建议使用开源的 meld 替换，基于python
+
+    https://meldmerge.org/
+        https://gitlab.gnome.org/GNOME/meld
+        https://gitlab.gnome.org/GNOME/meld/-/wikis/home
+
+配置git的默认编辑器为 vscode
+
+    https://blog.csdn.net/ShuSheng0007/article/details/115449596
+
+    git config --global core.editor "code --wait"
+
+如果想恢复使用 Vim，使用下面命令即可
+
+    git config --global --unset core.editor
+
+也可直接编辑配置文件
+
+    git config --global --edit
+
+配置git的difftool与mergetool为VsCode
+
+执行如下命令git将使用上一部分配置好的vscode打开配置文件
+
+    git config --global --edit
+
+将下面的配置粘贴上去，保存，关闭即可
+
+    [diff]
+        tool = vscode-diff
+    [difftool]
+        prompt = false
+    [difftool "vscode-diff"]
+        cmd = code --wait --diff $LOCAL $REMOTE
+    [merge]
+        tool = vscode-merge
+    [mergetool "vscode-merge"]
+        cmd = code --wait $MERGED
 
 ## 使用 GPG 签名 Github 提交
 
@@ -3598,15 +3602,17 @@ head当前是指向最新的那一条记录，所以我们看一下parent commit
 
 ### 日常工作：修改、添加、提交
 
-养成一个习惯：大批量的修改，感觉这一部分差不多了，就顺手 `git add .` ，先在暂存区固定这部分修改
+养成一个习惯：大批量的修改，感觉这一部分差不多了，就顺手 `git add .` ，先在暂存区固定这部分修改。参见章节 [如何回退] 中关于'暂存区(stage/index)的意义' 部分。
 
 后续如果工作区改乱了可以用 `git diff` 轻松调整。
 
-完全没问题了就可以形成一个 commit 提交
+完全没问题了，形成一个 commit 提交
 
     git commit -m '你的提交说明'
 
-确认本地的所有提交，是否需要回退、rebase，或压缩为一个提交点，然后推送远程
+确认本地的所有提交，是否需要回退、rebase，或压缩为一个提交点。
+
+确认没有问题了，推送远程
 
     git push
 
