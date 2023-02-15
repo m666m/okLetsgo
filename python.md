@@ -323,6 +323,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     conda activate
 
     # NOTE: 在Anancoda下的[base]环境，不要更新pip，不然其它conda环境默认共用这个pip！只在自己的conda环境下更新pip！
+
     # 临时使用国内镜像，更新pip自身
     # pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
 
@@ -568,7 +569,7 @@ x. 不推荐更新pip。仅在自己的虚拟环境里更新pip和指定的包�
 
 8.anaconda-navigator 逐个python版本的新建环境，作为标准环境，这些环境建了之后不要更新、下载包，不要做任何改动！
 
-NOTE:这里有个耦合，后续建立的同版本的python环境都会复用最早建立的那个环境！原因是Anaconda节省空间使用文件的链接，但是无法区分pip。
+NOTE:后续建立的同版本的python环境都会复用最早建立的那个环境！原因是Anaconda节省空间使用文件的链接，但是无法区分pip。
 
 所以，稳妥的办法是，如果你的系统里要使用多个python版本，先逐个建立各个版本的环境，什么都不要改。
 然后针对具体的项目建路径名的虚拟环境，在这个虚拟环境里面安装pip，然后改路径。
