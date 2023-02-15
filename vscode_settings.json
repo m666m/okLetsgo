@@ -59,7 +59,7 @@
             "editorBracketHighlight.foreground6": "#5bd6d6"
         },
         "[Nord Wave]": {
-            "editor.foreground": "#c0d1ce",
+            "editor.foreground": "#bdc8d6",
             "activityBar.foreground": "#0ccff1",
             // 括号高亮的背景色居然用肉色
             "editorBracketMatch.background": "#6d4d12",
