@@ -882,7 +882,11 @@ clone完成后，进入目录，执行
 
 ## 分支的拉取 fetch/pull
 
-基本的拉取操作是 fetch，因为拉取之后都要做 merge 或 rebase，就引入了 pull 命令把这个操作过程简化了，大多数情况下直接用 git pull 就足够了。
+基本的拉取操作是 fetch，因为拉取之后都要做合并 merge 或 rebase，就引入了 pull 命令，把这个操作过程简化了，大多数情况下，我们直接使用 git pull 就足够了
+
+    git pull          = git fetch + git merge
+
+    git pull --rebase = git fetch + git rebase
 
 ### git pull 的2个过程
 
@@ -904,13 +908,9 @@ git pull 的操作默认是 fetch + merge，可以设置成 fetch + rebase。
 
 分支合并的详细用法见章节 [分支合并：merge菱形分叉还是rebase拉直]。
 
-### fetch 和 pull 的区别
+### fetch
 
-原理：见章节 [本地有两份代码--本地仓库和远程仓库]
-
-    git pull          = git fetch + git merge
-
-    git pull --rebase = git fetch + git rebase
+原理：见章节 [你的代码在本地有两份--本地仓库和远程仓库]。
 
 git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相应分支最新的状态。
 
@@ -918,9 +918,15 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的本地�
 
 所以 git fetch 是十分安全的，你不用担心这个命令破坏你的工作区或暂存区，它下载的远程分支到本地的远程仓库分支，但是并不做任何的合并工作，然后可以执行以下命令合并到本地仓库
 
-其实 git pull 也可以默认为 fetch + rebase，见章节 [git pull 的2个过程]。
+    git fetch <远程主机名> <分支名> # 注意之间有空格
 
-#### 本地有两份代码--本地仓库和远程仓库
+    可简写，默认拉取所有分支，如果有很多分支，就比较慢了
+    git fetch
+
+    拉取指定分支的更新
+    git fetch origin master
+
+#### 你的代码在本地有两份--本地仓库和远程仓库
 
 我们本地的 .git 文件夹里存储了本地 分支的 commit ID 和 跟踪的远程分支 orign/master 的 commit ID（可以有多个远程仓库）。
 
@@ -932,7 +938,11 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的本地�
 
 其中 head 就是本地分支，remotes 是跟踪的远程分支，这个类型的分支在某种类型上是十分相似的，他们都是表示提交的 SHA1 校验和（就是 commit ID）。
 
-我们无法直接对远程跟踪分支操作，更新远端跟踪分支只能用 git fetch，或者在本地分支创建一个新的 commit 提交，在 git push 后作为副产品（side-effect）改变远程跟踪分支。
+本地分支在执行 git push 后会改变本地的远程跟踪分支。
+
+我们无法直接对远程跟踪分支操作，更新远端跟踪分支只能用 fetch
+
+    git fetch
 
 取回更新后，会返回一个 FETCH_HEAD ，指的是某个 branch 在服务器上的最新状态，我们可以在本地通过它查看刚取回的更新信息：
 
@@ -942,7 +952,7 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的本地�
 
 我们可以通过这些信息来判断是否产生冲突，以确定是否将更新合并到当前分支。
 
-这时候我们本地相当于存储了两个代码的版本号，可以通过 git merge 去合并这两个不同的代码版本， git merge 做的就是把拉取下来的远程最新 commit 跟本地最新 commit 合并。如果不用merge，用rebase也是可以的。
+这时候我们本地相当于存储了代码的两个版本，可以通过 merge 去合并这两个不同的版本，merge 做的就是把拉取下来的远程最新 commit 跟本地最新 commit 合并。如果不用 merge，用 rebase 也是可以的。
 
     git merge FETCH_HEAD
 
@@ -969,13 +979,7 @@ NOTE: 本地分支更新远程时，不要直接做 git pull 或 git pull --reba
 
 操作流程：先 fetch 下来，然后 status 看看，然后再决定是否 merge 或 rebase，简略操作才用 pull。
 
-    # 先拉远程防止别人提交了远程导致冲突，不变动本地工作目录，便于比对差异
-    # git fetch <远程主机名> <分支名> # 注意之间有空格
-    # 可简写，默认拉取所有分支，如果有很多分支，就比较慢了
-    $ git fetch
-
-    # 拉取指定分支的更新
-    # git fetch origin master
+    git fetch
 
     # 看看提示，是否有冲突，根据提示选择接下来如何做
     git status
@@ -2851,26 +2855,20 @@ HEAD 的 第三个父级
     HEAD^2~3 = HEAD^2^^^
     HEAD^3~3 = HEAD^3^^^
 
-### 创建常用命令的别名
-
-常用的较长的git命令应该使用git或者bash别名
-
-例如，在我的.bashrc文件中有下面的词条：
-
-Alias glog=”git log –oneline -graph”，允许我使用glog代替长命令
-
 ### 查看尚未合并的变更
 
-如果你曾经与很多小伙伴工作在同一个持久分支上，也许会有这样的经历，父分支（例如：master）上的大量合并同步到你当前的分支。这使得我们很难分辨哪些变更时发生主分支，哪些变更发生在当前分支，尚未合并到master分支。
+如果你曾经与很多小伙伴工作在同一个持久分支上，也许会有这样的经历，父分支（例如：master）上的大量合并同步到你当前的分支。这使得我们很难分辨哪些变更发生在主分支，哪些变更发生在当前分支，尚未合并到 master 分支。
 
     git log --no-merges master..
 
---no-merges 标志意味着只显示没有合并到任何分支的变更，
-master..选项，意思是指显示没有合并到master分支的变更（在master后面必须有..）。
+    --no-merges 标志意味着只显示没有合并到任何分支的变更
+
+    master.. 选项，意思是指显示没有合并到master分支的变更（在master后面必须有..）。
 
 查看一下尚未合并的文件变更
 
     git show --no-merges master..
+
     # 输出结果相同
     git log -p --no-merges master..
 

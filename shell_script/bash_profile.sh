@@ -45,6 +45,9 @@ if [ -x /usr/bin/dircolors ]; then
 
     # ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便
     alias lsg='ls -lA |grep -i'
+
+    # git 常用命令
+    alias glog='git log --oneline --graph'
 fi
 
 ####################################################################
