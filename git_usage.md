@@ -779,6 +779,87 @@ clone完成后，进入目录，执行
 
 不断增大步骤2的数字，直到找到你要的commit
 
+## 日常使用的大致流程
+
+### 日常工作：准备工作 --- 拉取、合并（含标签，变基）
+
+建立仓库，拉取代码，参见章节 [git仓库初始操作]。
+
+如果需要对分支进行各种操作，参见章节 [分支管理：针对已经提交的历史记录链条的折腾] 下面的各个章节，随用随查即可。
+
+每日的日常操作，根据章节 [本地分支更新远程的操作流程]，整理如下
+
+    # 先看看有无未提交的，跟现有的本地远程代码比对没差别，不代表远程仓库的代码没差别，别人可能有更新
+    git status
+
+    # 不直接 pull
+    # git pull origin xxx --rebase
+
+    # 本地 git branch -av 看不到输出时，一般需要在本地使用 git remote update 或 git fetch --all 更新
+
+    # fetch 是只更新本地的远程仓库的目录，不会跟本地工作区的现有文件冲突
+    # 下载当前分支可以简写为： git fetch
+    git fetch origin master
+
+    # 查看本地代码跟远程仓库代码（已下载到本地）的差异
+    # 简单的：
+    git status
+    # 详细的：
+    git diff ..origin/master
+
+    # 如果有本地未提交的，先stash暂存才能继续下面的代码合并
+
+    # 如果 git status 提示有冲突，操作见章节 [解决合并冲突conflicts]
+
+    # 合并代码，选择何种策略见章节 [分支合并：merge菱形分叉还是rebase拉直]
+    git rebase 或 git merge -noff
+
+    # 再确认
+    git status
+
+如果是本人使用的独立分支，可以简单点操作，整合到一个命令：
+
+    # 拉取远程加合并本地，连带标签，-r是rebase，否则是merge，最好指定要fetch的remote和分支名。
+    # 详见下面章节[远程拉取合并本地的pull用法]
+
+    git pull --tags --rebase origin master
+
+### 日常工作：修改、添加、提交
+
+要养成习惯：感觉修改的比较多了，内容固定了，就顺手 `git add .` ，先在暂存区固定这部分修改。
+
+放在暂存区的目的，方便比对，如有错误，可以撤销该添加，详见章节 [如何回退] 中关于 '暂存区(stage/index)的意义' 部分。
+
+后续如果工作区在这个基础上改乱了，可以用 `git diff` 跟暂存区比较，方便改回去。也可以跟各个区进行对比，参见章节 [差异比对 diff 的多种用法]。
+
+如果修改未提交，需要回退用 `git restore`，参见 章节 [如何回退] 中关于 'git restore' 的说明。
+
+完全没问题了，形成一个 commit 提交
+
+    git commit -m '你的提交说明'
+
+发现有遗漏，先改内容，再补到本次提交里（没推送远程才能这么做）
+
+    git add .
+
+    git commit --amend
+
+确认本地新增的提交记录，是否需要回退、rebase，或压缩为一个提交点。
+
+最后确认没有问题了，推送远程
+
+    # 先看看远程是不是又有新增提交了
+    git fetch
+    git status
+
+    如果看到远程有新增提交，别急着推送了，
+    先拉取吧，见章节 [本地分支更新远程的操作流程]
+
+    # 远程跟本地是同步的，可以推送
+    # git push
+
+## -------- 分支管理：针对已经提交的历史记录链条的折腾 --------
+
 ## 分支切换
 
 先下载完整的git代码
@@ -969,6 +1050,8 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的本地�
 
 ### 本地分支更新远程的操作流程
 
+本地分支的更新，就是 fetch 远程库到本地的远程库，然后合并到本地分支。这个合并与你合并本地的两个分支没什么区别，都可以用 merge 或 rebase 进行。
+
 除非你不介意合并策略，否则在 git pull 之前要想想：
 
     如果在执行 git pull 或 git pull --rebase 的时候出现合并冲突的提示，你已经无法选择合并策略了，git 自动进入 merge conflict 或 rebase conflict 过程，冲突文件都给你准备好了。
@@ -996,10 +1079,6 @@ NOTE: 本地分支更新远程时，不要直接做 git pull 或 git pull --reba
     或 git cherry-pick o/master
 
 如果提示有冲突，解决冲突的操作参见章节 [解决合并冲突conflicts] 的示例。
-
-所以本地分支的更新，就是 fetch 下来一份到远程的本地库，然后合并到本地分支。
-
-其实这个操作与你合并本地的两个分支没什么区别，都可以用 merge 或 rebase 进行。
 
 ## 分支推送
 
@@ -2201,23 +2280,96 @@ NOTE: amend 要在 git push 推送远程之前做，已经推送远程的 commit
 
     git merge 622c01c
 
+## 补丁神器 cherry-pick
+
+git、svn、hg 等基于 snapshot 的版本控制系统，以 snapshot 的方式存储当前版本。虽然这一类版本控制系统也会用到 patch，不过它们只有在需要时才计算出 patch 文件来。patch 是这一类版本控制系统的产物，而非基石。（注意：切勿混淆 commit 和 snapshot 的概念，两者并不等价。Git 显然不会在每个 commit 中存储对整个仓库的 snapshot，这么做太占空间。事实上，Git 的 commit 只包含指向 snapshot tree 的指针，参见：Git-内部原理-Git-对象 <https://git-scm.com/book/en/v2/Git-Internals-Git-Objects>）
+
+git diff 输出格式就是个 patch 文件（参见章节 [差异比对 diff 的多种用法]中的 '制作补丁' 部分），git cherry-pick 则会把摘取的提交点修改以 patch 的形式应用到目标分支上。
+
+应用场景：master分支上修改过的bug，要在dev分支上也做一遍修复
+
+1.先确定master分支上的commit id
+
+    git log  --graph --pretty=oneline --abbrev-commit
+
+我们只需要把4c805e2 fix bug 101这个提交所做的修改“复制”到dev分支。
+
+注意：我们只想复制 4c805e2 fix bug 101这个提交所做的修改，并不是把整个master分支merge过来。
+
+为了方便操作，Git专门提供了一个cherry-pick命令，让我们能复制一个特定的提交到当前分支：
+
+    $ git branch
+    * dev
+    master
+
+    $ git cherry-pick 4c805e2
+    [master 1d4b803] fix bug 101
+    1 file changed, 1 insertion(+), 1 deletion(-)
+
+Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803，它并不同于master分支的 4c805e2，因为这两个commit只是改动相同，但确实是两个不同的commit。用git cherry-pick，我们就不需要在dev分支上手动再把修bug的过程重复一遍。
+
+## 使用标签 tag
+
+标签总是和某个提交记录commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，那么在这两个分支上都可以看到这个标签。
+
+1.新增标签
+
+    git tag -a v1.1 -m"新增xxx功能"
+
+2.查看标签
+
+    git tag
+    git show v1*
+
+3.不要忘记将标签显式推送到远程
+
+    git push origin v1.1
+
+    # 批量推送
+    git push origin --tags
+
+4.新增轻量化标签
+
+    git tag v1.1-bw
+
+5.删除标签
+
+    git tag -d v1.1-bw
+    git push origin :refs/tags/v1.1-bw
+
+6.从指定标签检出分支
+
+假如某个历史版本需要重建，排除bug，从标签位置拉分支
+
+    git checkout milestone-id        # 切换到分发给客户的标签
+    git checkout -b new-branch-name  # 创建新的分支用于重现 bug
+
+或一行命令
+
+    git checkout -b fea_xxx v2.0.0
+
+## -------- 日常编辑常用 --------
+
 ## 如何回退
 
     https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified
 
-FailSafe: 在你回退之前务必要做
+NOTE: git 的回退弯弯绕比较多，回退之前务必清理下暂存区和工作区，千万小心，有好几种情况会无提示清理。
 
-    如果是已经 git commit的操作，首先保留下现场以便反悔救命，这个窗口千万别关啊！
-    # 最好用 tmux 保留这个命令的输出，救命用的
-    git log --graph --oneline
+FailSafe:
 
-    如果你有修改保存在暂存区和工作区，或者提交，或者stash，然后再做回退的操作。
+    在你回退之前务必要做
 
-    git 的回退弯弯绕比较多，回退之前务必清理下暂存区和工作区，千万小心，有好几种情况会无提示清理。
+    如果是已经 git commit 的操作，首先保留下现场以便反悔救命，这个窗口千万别关啊！
+
+        # 最好用 tmux 保留这个命令的输出，救命用的
+        git log --graph --oneline
+
+    如果你在暂存区或工作区有修改，或者提交，或者stash，然后再做回退的操作。
 
 工作区
 
-    你的修改在这里。
+    你的修改，没有提交的都在这里。即使做了 git add，内容还没提交，整体还是在这里。
 
 暂存区(stage/index)的意义
 
@@ -2233,17 +2385,18 @@ FailSafe: 在你回退之前务必要做
 
 仓库区(head)
 
-    你的commit提交在这里，分布式存储，需要你 push 才能到远程。
+    你的commit提交在这里，分布式存储，需要你 push 才能到远程库。
 
 用户修改文件，文件的变更路径是
 
-    工作区 ----> 暂存区 ----> 仓库区
+    工作区 ---------> 暂存区 ------------> 仓库区
+           git add          git commit          git push 到远程
 
 修改的文件要撤回，跟上面的过程相反
 
     仓库区 ----> 暂存区 ----> 工作区
 
-git的实际工作，修改的文件进入每个区域，都需要专门的命令
+TODO: git的实际工作，修改的文件进入每个区域，都需要专门的命令
 
                              HEAD      Index  Workdir   WD Safe?
 
@@ -2287,25 +2440,49 @@ git checkout 主要关注未提交的修改的撤回，分几种回退情形
 
 git restore 代替 `git checkout` 关于撤回的几个用法
 
-    暂存区有修改，工作区无修改： `git restore <file>` 无变化
-                            `git restore --staged <file>` 暂存区的内容撤回到工作区
+    暂存区有修改，工作区无修改：
 
-    暂存区无修改，工作区有修改：`git restore <file>` 丢弃工作区的修改
+        `git restore <file>` 无变化
 
-    暂存区有修改，工作区有修改：`git restore <file>` 丢弃工作区的修改，暂存区保持不动
-                           `"git restore --staged <file>` 丢弃暂存区的修改，工作区保持不动
+        `git restore --staged <file>` 暂存区的内容撤回到工作区
 
-git rm 移除git对该文件的跟踪，跟 git add 相对，分几种回退情形
+    暂存区无修改，工作区有修改：
 
-    暂存区无修改，工作区无修改：移除该文件 `git rm <file>`。移除文件但保留到工作区 `git rm --cached <file>`
+        `git restore <file>` 丢弃工作区的修改
 
-    暂存区有修改，工作区无修改：丢弃暂存区的修改，移除该文件 `git rm -f <file>`
+    暂存区有修改，工作区有修改：
 
-    暂存区无修改，工作区有修改：丢弃工作区的修改，移除该文件 `git rm -f <file>`
+        `git restore <file>` 丢弃工作区的修改，暂存区保持不动
 
-    暂存区有修改，工作区有修改：丢弃暂存区的修改，丢弃工作区的修改，移除该文件 `git rm -f <file>`
+        `"git restore --staged <file>` 丢弃暂存区的修改，工作区保持不动
 
-    如果没有做commit提交变更，想恢复该文件，要两步 `git reset HEAD <file>` 先恢复到暂存区，然后再 ` git checkout <file>` 解除删除状态，该文件恢复到版本库的状态，不会恢复原暂存区和工作区被删除的内容。
+git rm 移除 git 对该文件的跟踪，跟 git add 相对，分几种回退情形
+
+    暂存区无修改，工作区无修改：
+
+        移除该文件 `git rm <file>`
+
+        移除文件但保留到工作区 `git rm --cached <file>`
+
+    暂存区有修改，工作区无修改：
+
+        丢弃暂存区的修改，移除该文件 `git rm -f <file>`
+
+    暂存区无修改，工作区有修改：
+
+        丢弃工作区的修改，移除该文件 `git rm -f <file>`
+
+    暂存区有修改，工作区有修改：
+
+        丢弃暂存区的修改，丢弃工作区的修改，移除该文件 `git rm -f <file>`
+
+    如果没有做 commit 提交变更，想恢复该文件，要两步
+
+        `git reset HEAD <file>` 先恢复到暂存区，
+
+        然后再 ` git checkout <file>` 解除删除状态，
+
+        该文件恢复到版本库的状态，不会恢复原暂存区和工作区被删除的内容。
 
 ### 本地回退：签出指定文件
 
@@ -2559,46 +2736,6 @@ revert 新增的提交点，是对 rebase 那个提交点的反向执行，从�
 
     # 最终的开发分支内容是 A1 - B1 - B2 - B3
 
-## 使用标签 tag
-
-标签总是和某个commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，那么在这两个分支上都可以看到这个标签。
-
-1.新增标签
-
-    git tag -a v1.1 -m"新增xxx功能"
-
-2.查看标签
-
-    git tag
-    git show v1*
-
-3.不要忘记将标签显式推送到远程
-
-    git push origin v1.1
-
-    # 批量推送
-    git push origin --tags
-
-4.新增轻量化标签
-
-    git tag v1.1-bw
-
-5.删除标签
-
-    git tag -d v1.1-bw
-    git push origin :refs/tags/v1.1-bw
-
-6.从指定标签检出分支
-
-假如某个历史版本需要重建，排除bug，从标签位置拉分支
-
-    git checkout milestone-id        # 切换到分发给客户的标签
-    git checkout -b new-branch-name  # 创建新的分支用于重现 bug
-
-或一行命令
-
-    git checkout -b fea_xxx v2.0.0
-
 ## 使用储藏 stash
 
 当在一个分支的开发工作未完成，却又要切换到另外一个hotfix分支进行开发的时候，当前的分支不commit的话git不允许checkout到别的分支，而代码功能不完整随便commit是没有意义的。
@@ -2645,35 +2782,7 @@ revert 新增的提交点，是对 rebase 那个提交点的反向执行，从�
 
     git stash apply 95ccbd927ad4cd413ee2a28014c81454f4ede82c
 
-## 补丁神器 cherry-pick
-
-git、svn、hg 等基于 snapshot 的版本控制系统，以 snapshot 的方式存储当前版本。虽然这一类版本控制系统也会用到 patch，不过它们只有在需要时才计算出 patch 文件来。patch 是这一类版本控制系统的产物，而非基石。（注意：切勿混淆 commit 和 snapshot 的概念，两者并不等价。Git 显然不会在每个 commit 中存储对整个仓库的 snapshot，这么做太占空间。事实上，Git 的 commit 只包含指向 snapshot tree 的指针，参见：Git-内部原理-Git-对象 <https://git-scm.com/book/en/v2/Git-Internals-Git-Objects>）
-
-git diff 输出格式就是个 patch 文件（参见章节 [差异比对 diff 的多种用法]中的 '制作补丁' 部分），git cherry-pick 则会把摘取的提交点修改以 patch 的形式应用到目标分支上。
-
-应用场景：master分支上修改过的bug，要在dev分支上也做一遍修复
-
-1.先确定master分支上的commit id
-
-    git log  --graph --pretty=oneline --abbrev-commit
-
-我们只需要把4c805e2 fix bug 101这个提交所做的修改“复制”到dev分支。
-
-注意：我们只想复制 4c805e2 fix bug 101这个提交所做的修改，并不是把整个master分支merge过来。
-
-为了方便操作，Git专门提供了一个cherry-pick命令，让我们能复制一个特定的提交到当前分支：
-
-    $ git branch
-    * dev
-    master
-
-    $ git cherry-pick 4c805e2
-    [master 1d4b803] fix bug 101
-    1 file changed, 1 insertion(+), 1 deletion(-)
-
-Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803，它并不同于master分支的 4c805e2，因为这两个commit只是改动相同，但确实是两个不同的commit。用git cherry-pick，我们就不需要在dev分支上手动再把修bug的过程重复一遍。
-
-## 差异比对 diff 的多种用法
+## 差异比对 diff 的多种用法：提交的和未提交的都可以比对
 
     显示摘要用参数 --stat
 
@@ -2914,7 +3023,7 @@ HEAD 的 第三个父级
     HEAD^2~3 = HEAD^2^^^
     HEAD^3~3 = HEAD^3^^^
 
-## ---------- git 常用法 -------------
+## git 常用法
 
 ### 快速定位故障版本
 
@@ -3608,70 +3717,7 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 
 最后，John 接受了这些修改，将 feature 分支并入了 master 分支，关闭了这个 Pull Request。功能现在已经整合到了项目中，其他在 master 分支上工作的开发者可以使用标准的 git pull 命令将这些修改拉取到自己的本地仓库。
 
-## ------------ 下为git的各种方案 ------------
-
-## 日常使用的大致流程
-
-### 日常工作：准备工作 --- 拉取、合并（含标签，变基）
-
-根据章节 [本地分支更新远程的操作流程]，整理如下
-
-    # 先看看有无未提交的，跟现有的本地远程代码比对没差别，不代表远程仓库的代码没差别，别人可能有更新
-    git status
-
-    # 不直接 pull
-    # git pull origin xxx --rebase
-
-    # 本地 git branch -av 看不到输出时，一般需要在本地使用 git remote update 或 git fetch --all 更新
-
-    # fetch 是只更新本地的远程仓库的目录，不会跟本地工作区的现有文件冲突
-    # 下载当前分支可以简写为： git fetch
-    git fetch origin master
-
-    # 查看本地代码跟远程仓库代码（已下载到本地）的差异
-    # 简单的：
-    git status
-    # 详细的：
-    git diff ..origin/master
-
-    # 如果有本地未提交的，先stash暂存才能继续下面的代码合并
-
-    # 如果 git status 提示有冲突，操作见章节 [解决合并冲突conflicts]
-
-    # 合并代码，选择何种策略见章节 [分支合并：merge菱形分叉还是rebase拉直]
-    git rebase 或 git merge -noff
-
-    # 再确认
-    git status
-
-如果是本人使用的独立分支，可以简单点操作，整合到一个命令：
-
-    # 拉取远程加合并本地，连带标签，-r是rebase，否则是merge，最好指定要fetch的remote和分支名。
-    # 详见下面章节[远程拉取合并本地的pull用法]
-
-    git pull --tags --rebase origin master
-
-### 日常工作：修改、添加、提交
-
-养成一个习惯：大批量的修改，感觉这一部分差不多了，就顺手 `git add .` ，先在暂存区固定这部分修改。参见章节 [如何回退] 中关于'暂存区(stage/index)的意义' 部分。
-
-后续如果工作区改乱了可以用 `git diff` 轻松调整。
-
-完全没问题了，形成一个 commit 提交
-
-    git commit -m '你的提交说明'
-
-发现有遗漏，先改内容，再补到本次提交里（没推送远程才能这么做）
-
-    git add .
-
-    git commit --amend
-
-确认本地新增的提交记录，是否需要回退、rebase，或压缩为一个提交点。
-
-最后确认没有问题了，推送远程
-
-    git push
+## ------------ 下为 git 分支的各种方案 ------------
 
 ## 使用git的各种工作流程方案
 
@@ -3760,8 +3806,10 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
     git merge master
 
 本地只是远程的一个镜像，以远程为准。
-所以跨分支操作比如想合并远程master分支到远程dev分支，需要先pull远程master到本地master，再merge到本地dev，再push本地dev到远程master。
-或在本地dev分支fetch远程master一个临时分支然后diff/merge到本地dev分支 <https://www.jianshu.com/p/bfb4b0de7e03>
+
+所以跨分支操作比如想合并远程 master 分支到远程 dev 分支，需要先 pull 远程 master 到本地 master，再 merge 到本地 dev，再 push 本地 dev 到远程 master。
+
+或在本地 dev 分支 fetch 远程 master 一个临时分支，然后 diff/merge 到本地 dev 分支  <https://www.jianshu.com/p/bfb4b0de7e03>
 
 5、开发告一段落，可以发布时，提交dev分支，合并到master再上传远程仓库
 
@@ -3777,9 +3825,11 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 
 ### 【推荐】git工作流： 功能分支工作流
 
-    master -- dev(开发人员工作在此)
+    master --- dev(开发人员工作在此)
 
-在上面的工作流基础上改良，把本地分支推送到远程，两个分支在本地和远程都存在，master分支保持稳定，开发工作放在dev分支，这俩都做主干分支。 CI/CD中持续集成部署在dev，持续交付部署在master。hotfix合并到远程的master分支和dev分支。主干分支和功能分支的合并原则，见下面章节[合并两分支时的原则：如何选择菱形还是拉直]。
+在上面的工作流基础上改良，把本地分支推送到远程，两个分支在本地和远程都存在，master分支保持稳定，开发工作放在dev分支，这俩都做主干分支。 CI/CD中持续集成部署在dev，持续交付部署在master。hotfix合并到远程的master分支和dev分支。
+
+主干分支和功能分支的合并原则，见章节 [分支合并：merge菱形分叉还是rebase拉直]。
 
 大家每日同步远程的dev分支即可工作：
 
