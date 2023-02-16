@@ -2882,6 +2882,15 @@ if [ -x /usr/bin/dircolors ]; then
 
     # ls 列出的目录颜色被 grep 覆盖，用 ls -l 更方便
     alias lsg='ls -lA|grep -i'
+
+    # git 常用命令
+    alias gs='echo "git status ..." && git status'
+    alias glog='echo "[树形提交记录]" && git log --oneline --graph'
+    alias gdh='echo "[对比最近的两次提交]" && git diff HEAD^ HEAD'
+    alias gdo='echo "[对比本地远程库]" && git diff ..origin/master'
+
+    # gpg 常用命令
+    alias gkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
 fi
 
 # 执行 cd 命令后自动执行下 ls 列出当前文件
