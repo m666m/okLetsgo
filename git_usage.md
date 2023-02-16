@@ -928,11 +928,11 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的本地�
 
 #### 你的代码在本地有两份--本地仓库和远程仓库
 
-我们本地的 .git 文件夹里存储了本地 分支的 commit ID 和 跟踪的远程分支 orign/master 的 commit ID（可以有多个远程仓库）。
+我们本地的 .git 文件夹里存储的本地分支的 commit ID 和跟踪的远程分支 orign/master 的 commit ID（可以有多个远程仓库）。
 
 那什么是跟踪的远程分支呢，打开 .git 文件夹可以看到如下文件：
 
-    .git/refs/head/[本地分支]
+    .git/refs/head/[本地分支] 又称版本库
 
     .git/refs/remotes/[正在跟踪的分支]
 
@@ -2675,94 +2675,74 @@ Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803
 
 ## 差异比对 diff 的多种用法
 
+    显示摘要用参数 --stat
+
 git diff 主要的应用场景：
 
-    尚未缓存的改动：git diff
+工作树中的更改尚未进行下一次提交。索引和最后一次提交之间的变化; 查看已经git add ，但没有git commit 的改动。自上次提交以来工作树中的更改；如果运行“git commit -a”，查看将会提交什么。
 
-    查看已缓存的改动： git diff --cached
+三个区域的逐一对比
 
-    查看已缓存的与未缓存的所有改动：git diff HEAD
+    ·比较工作区(Working tree)和暂存区(staged)的差异
 
-    显示摘要而非整个 diff：git diff --stat
+        git diff
 
-示例 -
+    你做了 `git add` 后又修改了内容还没再次 `git add`，对比二者差异，也就是在 vs code 里你点击 git 树中 '更改' 列出来的差异。
 
-    git diff <file>  # 比较当前文件和暂存区文件差异 git diff
+    ·比较暂存区(staged)和版本库(HEAD)的差异
 
-    git diff <id1><id1><id2>  # 比较两次提交之间的差异
+        git diff --staged
 
-    git diff <branch1> <branch2> # 在两个分支之间比较
-    git diff --staged  # 比较暂存区和版本库差异
+        或 git diff --cached
 
-    git diff --cached  # 比较暂存区和版本库差异
+    预测用，显示你做了 `git add` 后如果要做 `git commit` 时会提交的内容有哪些，也就是在 vs code 里你点击 git 树中 '暂存的更改' 列出来的差异。
 
-    git diff --stat  # 仅仅比较统计信息
+    ·对比工作区(Working tree)和版本库(HEAD)的差别
 
-    # 查看另一个分支上文件与当前分支上文件的差异
-    git diff <another_branch> some-filename.js
+        git diff HEAD
 
-·检查工作树的几种方式
+    只要你没有做 `git commit`，当前工作区的所有改动（含暂存区的）都会体现出来。
 
-    git diff            #(1)
-    git diff --cached   #(2)
-    git diff HEAD       #(3)
+    ·其实，所有的修改都没有 `git add` 执行 `git diff HEAD` ，跟执行了 `git add` 后行 `git diff --staged`，看到的效果都是一样的。
 
-工作树中的更改尚未分段进行下一次提交。索引和最后一次提交之间的变化; 查看已经git add ，但没有git commit 的改动。自上次提交以来工作树中的更改；如果运行“git commit -a”，查看将会提交什么。
+·比较两个分支（上最新的提交）的差别
 
-·查看尚未暂存的文件更新了哪些部分，不加参数直接输入
+    git diff topic master
 
-    git diff
+    或 git diff topic..master
 
-此命令比较的是工作目录(Working tree)和暂存区域快照(index)之间的差异也就是修改之后还没有暂存起来的变化内容。
-
-·显示自上次提交以来工作树中的更改，即工作版本(Working tree)和HEAD的差别
-
-    git diff HEAD
-
-·对比最近的两次提交
-
-    git diff HEAD^ HEAD
-
-·拉取远程，先看看是不是有别人提交了远程，防止互相merge新增commit
+·拉取远程后，先看看是不是有别人提交了远程，防止互相merge新增commit
 
     git fetch
     git diff ..origin/master
 
     git status
 
-·查看已经暂存起来的文件(staged)和上次提交时的快照之间(HEAD)的差异
+·对比最近的两次提交
 
-    git diff --cached
+    git diff HEAD^ HEAD
 
-    git diff --staged
+·比较两个提交记录之间的差异
 
-显示的是下一次提交时会提交到HEAD的内容(不带-a情况下)
+    git diff SHA1 SHA2
 
-·直接将两个分支上最新的提交做diff
-
-    git diff topic master
-    # 或
-    git diff topic..master
-
-·输出自topic和master分别开发以来，master分支上的变更。
+·输出自 topic 和 master 分别开发以来，master 分支上的变更。
 
     git diff topic...master
 
-·查看简单的diff结果，可以加上--stat参数
+就是说两个分支分叉延续了，看看差异，一般用于合并之前查看情况。
 
-    git diff --stat
-
-·查看当前目录和另外一个分支(test)的差别
+·查看当前分支和另一个叫’test‘分支的差别
 
     git diff test
 
-·显示当前目录和另一个叫’test‘分支的差别
+·显示当前分支的子目录 lib 与上次提交之间的差别
 
     git diff HEAD -- ./lib
 
-·比较两个历史版本之间的差异
+·查看另一个分支上文件与当前分支上文件的差异
 
-    git diff SHA1 SHA2
+    git diff <another_branch> some-filename.js
 
 ·制作补丁
 
@@ -2780,6 +2760,23 @@ git diff 主要的应用场景：
     git apply your.patch
 
 等同于章节 [补丁神器 cherry-pick]。
+
+### 查看尚未合并的变更
+
+如果你曾经与很多小伙伴工作在同一个持久分支上，也许会有这样的经历，父分支（例如：master）上的大量合并同步到你当前的分支。这使得我们很难分辨哪些变更发生在主分支，哪些变更发生在当前分支，尚未合并到 master 分支。
+
+    git log --no-merges master..
+
+    --no-merges 标志意味着只显示没有合并到任何分支的变更
+
+    master.. 选项，意思是指显示没有合并到master分支的变更（在master后面必须有..）。
+
+查看一下尚未合并的文件变更
+
+    git show --no-merges master..
+
+    # 输出结果相同
+    git log -p --no-merges master..
 
 ### 没点，俩点，仨点的区别
 
@@ -2918,23 +2915,6 @@ HEAD 的 第三个父级
     HEAD^3~3 = HEAD^3^^^
 
 ## ---------- git 常用法 -------------
-
-### 查看尚未合并的变更
-
-如果你曾经与很多小伙伴工作在同一个持久分支上，也许会有这样的经历，父分支（例如：master）上的大量合并同步到你当前的分支。这使得我们很难分辨哪些变更发生在主分支，哪些变更发生在当前分支，尚未合并到 master 分支。
-
-    git log --no-merges master..
-
-    --no-merges 标志意味着只显示没有合并到任何分支的变更
-
-    master.. 选项，意思是指显示没有合并到master分支的变更（在master后面必须有..）。
-
-查看一下尚未合并的文件变更
-
-    git show --no-merges master..
-
-    # 输出结果相同
-    git log -p --no-merges master..
 
 ### 快速定位故障版本
 
