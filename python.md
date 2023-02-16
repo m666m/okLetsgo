@@ -1832,6 +1832,8 @@ pylance
 
 看代码和看md文字有些区别，一切以字体清晰可辨，眼睛不费力为原则。
 
+除了白天和黑夜，不同的光照条件下，没法只用一个主题，酌情切换即可。
+
 浅色
 
 |            看代码                              |          看文字            |
@@ -1862,13 +1864,13 @@ MacOS Modern Theme 深色浅色都好
 
     arcticicestudio.nord-visual-studio-code
 
-    深一点的北极，对比度高 marlosirapuan.nord-deep
+    marlosirapuan.nord-deep     深一点的北极，对比度高
 
-    最深的北极，适合暗夜 dnlytras.nord-wave
+    dnlytras.nord-wave          最深的北极，适合暗夜
 
 Night Owl。夜猫子在晚上稍有刺眼，浅色更好
 
-    sdras.night-owl
+    sdras.night-owl 有比较多的方案 https://github.com/sdras/night-owl-vscode-theme
 
 material-theme 深色比较养眼，比 Night Owl 舒服。
 
