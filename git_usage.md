@@ -2038,48 +2038,112 @@ NOTE: rebase 变基注意不要删提交点，只做压缩合并
 
 ### 示例
 
-    # 先做提交或储存，保证要修改的分支没有暂存内容才能继续
+先做提交或储存，保证要修改的分支没有暂存内容才能继续
 
-    # 查看当前分支的提交commit，以便选择范围
+查看当前分支的提交commit，以便选择范围
+
     git log --oneline --graph
 
-        112bd52 (HEAD, fea_stragy) 1
-        588e326 一般性的一些注释
-        a5c7c9a 又一些注释
-        1ae0123 最初的一些注释
+        * cf83e50 (HEAD -> master, origin/master, origin/HEAD) 第四次添加开始回退‘ ’ ;
+        * 61ce6d7 第三次添加也是要丢
+        * b263d60 第二次添加作为要丢的
+        * 0a2883c 第一次添加作为基础
+        * a952e5b mod cpp
 
-    # 第一次用需要指定分支，因为我的fea_stragy没有远程分支
-    #   git rebase ：There is no tracking information for the current branch.
+第一次用需要指定分支，因为我的fea_stragy没有远程分支
 
+    # git rebase ：There is no tracking information for the current branch.
     git rebase fea_stragy
 
-    # 列出该点之后的所有commit，调用vi交互式进行编辑
-    git rebase  -i 1ae0123
-    # 简单的话，从近20个开始看： git rebase -i HEAD~20
+列出该点之后的所有commit，调用vi交互式进行编辑
 
-    # 编辑 112bd52 那行，把 pick 改成 s
-    # 编辑完成 :wq 退出后新出现个提示窗口
-    # 让修改commit的注释，可以修改合并的commit点的注释
-    # 不改就直接 :q
+    git rebase  -i 0a2883c
 
-    # 操作完看看提示，还有什么需要解决的会提示
-    [detached HEAD 9cf8ad2] 一般性的一些注释
-    Date: Wed Sep 16 13:55:16 2020 +0800
-    9 files changed, 1774 insertions(+), 1752 deletions(-)
-    Successfully rebased and updated refs/heads/fea_stragy.
+简单的话，从近20个开始看：
 
-    git status
+    git rebase -i HEAD~20
 
-    # 再看当前commit，合并后出现了一个新的commit取代了压缩的那几个
-    git log  --oneline
+git会自动调用 vim 等编辑器打开一个文本文件，显示顺序是从老到新，最新的在下面，示例内容如下
 
-        9cf8ad2 (HEAD) 一般性的一些注释
-        a5c7c9a 又一些注释
-        1ae0123 最初的一些注释
+    pick 0a2883c 第一次添加作为基础
+    pick b263d60 第二次添加作为要丢的
+    pick 61ce6d7 第三次添加也是要丢
+    pick cf83e50 第四次添加开始回退
 
-    # 最后，由于重写了分支的 Git 提交历史，必须强制更新远程分支（如果有的话）：
+    # 只编辑上面的提交记录行的首列单词即可，比如 pick 改成 s 等
+    # 后面是大段的说明，用 # 开头的、空行的都不用管
+    # ...
+    # ...
 
-    git push -f
+注意：最老的 0a2883c 这行不能 squash，否则 error: cannot 'squash' without a previous commit
+
+编辑 b263d60 和 61ce6d7 那行，把 'pick' 改成 's'
+
+    pick 0a2883c 第一次添加作为基础
+    s b263d60 第二次添加作为要丢的
+    s 61ce6d7 第三次添加也是要丢
+    pick cf83e50 第四次添加开始回退
+
+    # 后面是大段的说明，用 # 开头的、空行的都不用管
+    # ...
+    # ...
+
+编辑完成 :wq 退出，
+
+然后 git 会自动再打开个 vim 窗口，让你可以修改合并后的提交点的注释，默认是把合并的几个提交点的注释都摆上了（用 # 开头的、空行的都不用管），可以酌情修改，不改就直接 :q，示例如下：
+
+    # This is a combination of 3 commits.
+    # This is the 1st commit message:
+
+    第一次添加作为基础
+
+    # This is the commit message #2:
+
+    第二次添加作为要丢的
+
+    # This is the commit message #3:
+
+    第三次添加也是要丢
+
+    # Please enter the commit message for your changes. Lines starting
+    # with '#' will be ignored, and an empty message aborts the commit.
+    # ...
+
+操作完会提示新的commit点的hash值
+
+    $ git rebase -i a952e5b
+    [detached HEAD 75cc2d9] 第一次添加作为基础
+    Date: Wed Feb 15 16:53:13 2023 +0800
+    1 file changed, 4 insertions(+)
+    Successfully rebased and updated refs/heads/master.
+
+再看提交记录，对照之前会看到压缩的，压缩之后的提交点的 hash 值都变了
+
+    git log --oneline --graph
+
+    * 20a28f0 (HEAD -> master) 第四次添加开始回退
+    * 75cc2d9 第一次添加作为基础
+    * a952e5b mod cpp
+
+git status 看看提示，还有什么需要解决的会提示
+
+    $ git status
+    On branch master
+    Your branch and 'origin/master' have diverged,  提示冲突了，因为你的远程库的提交记录跟你本地的对不上了
+    and have 2 and 4 different commits each, respectively.
+    (use "git pull" to merge the remote branch into yours)
+
+你当前的分支无法再推送或拉取远程了。
+
+解决办法
+
+    见章节 [如何回退]，效果就是退回原样
+
+    见章节 [解决合并冲突conflicts]，效果就是文件内容没变，你的提交记录再精简的基础上又变多了
+
+所以，rebase的一个前提就是，不要改动远程已经存在的提交记录。
+
+如果有人告诉你 git push -f，麻烦更多，参见章节 [远程仓库避免 push -f 进行回退]。
 
 ### 开发分支常用 commit --amend 压缩多余的提交点
 
