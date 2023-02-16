@@ -2649,7 +2649,7 @@ revert 新增的提交点，是对 rebase 那个提交点的反向执行，从�
 
 git、svn、hg 等基于 snapshot 的版本控制系统，以 snapshot 的方式存储当前版本。虽然这一类版本控制系统也会用到 patch，不过它们只有在需要时才计算出 patch 文件来。patch 是这一类版本控制系统的产物，而非基石。（注意：切勿混淆 commit 和 snapshot 的概念，两者并不等价。Git 显然不会在每个 commit 中存储对整个仓库的 snapshot，这么做太占空间。事实上，Git 的 commit 只包含指向 snapshot tree 的指针，参见：Git-内部原理-Git-对象 <https://git-scm.com/book/en/v2/Git-Internals-Git-Objects>）
 
-git diff 输出格式就是个 patch 文件，git cherry-pick 会把摘取的修改以 patch 的形式应用到目标分支上。
+git diff 输出格式就是个 patch 文件（参见章节 [差异比对 diff 的多种用法]中的 '制作补丁' 部分），git cherry-pick 则会把摘取的提交点修改以 patch 的形式应用到目标分支上。
 
 应用场景：master分支上修改过的bug，要在dev分支上也做一遍修复
 
@@ -2673,7 +2673,7 @@ git diff 输出格式就是个 patch 文件，git cherry-pick 会把摘取的修
 
 Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803，它并不同于master分支的 4c805e2，因为这两个commit只是改动相同，但确实是两个不同的commit。用git cherry-pick，我们就不需要在dev分支上手动再把修bug的过程重复一遍。
 
-## 变更比对 diff 的多种用法
+## 差异比对 diff 的多种用法
 
 git diff 主要的应用场景：
 
@@ -2687,16 +2687,16 @@ git diff 主要的应用场景：
 
 示例 -
 
-    git diff <file> # 比较当前文件和暂存区文件差异 git diff
+    git diff <file>  # 比较当前文件和暂存区文件差异 git diff
 
-    git diff <id1><id1><id2> # 比较两次提交之间的差异
+    git diff <id1><id1><id2>  # 比较两次提交之间的差异
 
     git diff <branch1> <branch2> # 在两个分支之间比较
-    git diff --staged # 比较暂存区和版本库差异
+    git diff --staged  # 比较暂存区和版本库差异
 
-    git diff --cached # 比较暂存区和版本库差异
+    git diff --cached  # 比较暂存区和版本库差异
 
-    git diff --stat # 仅仅比较统计信息
+    git diff --stat  # 仅仅比较统计信息
 
     # 查看另一个分支上文件与当前分支上文件的差异
     git diff <another_branch> some-filename.js
@@ -2715,16 +2715,28 @@ git diff 主要的应用场景：
 
 此命令比较的是工作目录(Working tree)和暂存区域快照(index)之间的差异也就是修改之后还没有暂存起来的变化内容。
 
+·显示自上次提交以来工作树中的更改，即工作版本(Working tree)和HEAD的差别
+
+    git diff HEAD
+
+·对比最近的两次提交
+
+    git diff HEAD^ HEAD
+
+·拉取远程，先看看是不是有别人提交了远程，防止互相merge新增commit
+
+    git fetch
+    git diff ..origin/master
+
+    git status
+
 ·查看已经暂存起来的文件(staged)和上次提交时的快照之间(HEAD)的差异
 
     git diff --cached
+
     git diff --staged
 
 显示的是下一次提交时会提交到HEAD的内容(不带-a情况下)
-
-·显示工作版本(Working tree)和HEAD的差别
-
-    git diff HEAD
 
 ·直接将两个分支上最新的提交做diff
 
@@ -2748,22 +2760,11 @@ git diff 主要的应用场景：
 
     git diff HEAD -- ./lib
 
-·显示当前目录下的lib目录和上次提交之间的差别(更准确的说是在当前分支下)比较上次提交和上上次提交
-
-    git diff HEAD^ HEAD
-
 ·比较两个历史版本之间的差异
 
     git diff SHA1 SHA2
 
-拉取远程，先看看是不是有别人提交了远程，防止互相merge新增commit
-
-    git fetch
-    git diff ..origin/master
-
-    git status
-
-制作补丁
+·制作补丁
 
     git diff xxx > your.patch
 
@@ -2777,6 +2778,8 @@ git diff 主要的应用场景：
 
     # 没问题，完全打上补丁
     git apply your.patch
+
+等同于章节 [补丁神器 cherry-pick]。
 
 ### 没点，俩点，仨点的区别
 

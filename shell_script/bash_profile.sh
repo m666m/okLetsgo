@@ -47,10 +47,13 @@ if [ -x /usr/bin/dircolors ]; then
     alias lsg='ls -lA |grep -i'
 
     # git 常用命令
-    alias glog='git log --oneline --graph'
+    alias gs='echo "git status ..." && git status'
+    alias glog='echo "[树形提交记录]" && git log --oneline --graph'
+    alias gdh='echo "[对比最近的两次提交]" && git diff HEAD^ HEAD'
+    alias gdo='echo "[对比本地远程库]" && git diff ..origin/master'
 
     # gpg 常用命令
-    alias gkey='gpg -K --keyid-format=long'
+    alias gkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
 fi
 
 ####################################################################
