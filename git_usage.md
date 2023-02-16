@@ -2145,7 +2145,7 @@ git status 看看提示，还有什么需要解决的会提示
 
 如果有人告诉你 git push -f，麻烦更多，参见章节 [远程仓库避免 push -f 进行回退]。
 
-### 开发分支常用 commit --amend 压缩多余的提交点
+### 本地分支多 commit --amend 压缩多余的提交点
 
 NOTE: amend 要在 git push 推送远程之前做，已经推送远程的 commit 就不要追加！
 
