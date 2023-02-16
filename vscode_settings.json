@@ -295,15 +295,15 @@
     "vim.statusBarColorControl": true,
     "vim.statusBarColors.normal": ["#8FBCBB", "#434C5E"],
     "vim.statusBarColors.insert": "#FBA2A2",
-    "vim.statusBarColors.visual": "#F8D9A0",
-    "vim.statusBarColors.visualline": "#F8D9A0",
+    "vim.statusBarColors.visual": "#50b8f0",
+    "vim.statusBarColors.visualline": "#50b8f0",
     "vim.statusBarColors.visualblock": "#A3BE8C",
     "vim.statusBarColors.replace": "#D08770",
-    "vim.statusBarColors.commandlineinprogress": "#50b8f0",
-    "vim.statusBarColors.searchinprogressmode": "#50b8f0",
-    "vim.statusBarColors.easymotionmode": "#50b8f0",
-    "vim.statusBarColors.easymotioninputmode": "#50b8f0",
-    "vim.statusBarColors.surroundinputmode": "#50b8f0",
+    "vim.statusBarColors.commandlineinprogress": "#F8D9A0",
+    "vim.statusBarColors.searchinprogressmode": "#F8D9A0",
+    "vim.statusBarColors.easymotionmode": "#F8D9A0",
+    "vim.statusBarColors.easymotioninputmode": "#F8D9A0",
+    "vim.statusBarColors.surroundinputmode": "#F8D9A0",
     //////////////////////////////////////////////////////////////////
     //
     // 下面这些是vscode自己加的，随时变
