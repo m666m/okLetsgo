@@ -10,14 +10,6 @@
 
     尽量不删文件，更不要删除目录
 
-有个竞品 pijul
-
-    基于文件差异的补丁式源代码管理系统，可以随意加入、撤销、重排历史上任意没有依赖关系的改动，并且保持单个 Commit（Change）的 Hash 以及得到的结果不变。
-
-    https://pijul.org/
-        原理 https://jneem.github.io/merging/
-            https://segmentfault.com/a/1190000013648329
-
 ## 参考文档
 
 善用 git 帮助查找命令 `git help branch`
@@ -781,7 +773,7 @@ clone完成后，进入目录，执行
 
 ## git 使用总原则
 
-git 对每个操作都有 commit 记录，多人交替编辑相同的文件，本地和远程的分离，潜在的分歧点较多。
+git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的文件，本地和远程的分离，cherry-pick 做相同的操作但是生成不同的commit hash，这样潜在的分歧点较多，使用的时候会让人感觉文件内容没变，或者相同的变化，怎么 git 就不认。
 
 在实际使用中，会经常出现推送和提交冲突，一般都是本地库跟远程库的提交记录对不上导致的。
 
@@ -806,6 +798,16 @@ git 对每个操作都有 commit 记录，多人交替编辑相同的文件，�
     参考思路，参见章节 [远程仓库避免 push -f 进行回退]，里面的两个办法，都不如 “无脑大法” 直接替换文件的方法给快捷，解决问题更清晰。
 
 参见章节 [无脑撤销大法：本地库和远程库的提交记录hash对不上]。
+
+3、 git 的一个痛点，跟内容无关跟操作有关的这种唯一hash的区别方式
+
+    取消过的补丁，被其它分支又合并进来（二者hash不同），不容易发现，埋雷。
+
+    你删除的某行推送远程，可能被其他人的推送又送回来，如果提交记录很多，不容易发现，这雷就埋下了。
+
+也就是说，git 对文件内容的操作并不敏感，相同的改动，重复在其它分支生成的hash是不同的。而最终用户看到的是文件内容没有区别，而不是hashid是否不一致，理解起来很别扭。在撤销和回退的场景下非常容易把撤销和回退的又合并回来，而git并不感知内容的变化，所以一般都是通过软件工程上代码核查、测试等环节重新发现已解决bug。
+
+解决参见章节 [竞品 -- 基于文件差异(patch)的源代码管理系统]。
 
 ## 日常使用的大致流程
 
@@ -2428,9 +2430,19 @@ NOTE: amend 要在 git push 推送远程之前做，已经推送远程的 commit
 
 ## 补丁神器 cherry-pick
 
-git、svn、hg 等基于 snapshot 的版本控制系统，以 snapshot 的方式存储当前版本。虽然这一类版本控制系统也会用到 patch，不过它们只有在需要时才计算出 patch 文件来。patch 是这一类版本控制系统的产物，而非基石。（注意：切勿混淆 commit 和 snapshot 的概念，两者并不等价。Git 显然不会在每个 commit 中存储对整个仓库的 snapshot，这么做太占空间。事实上，Git 的 commit 只包含指向 snapshot tree 的指针，参见：Git-内部原理-Git-对象 <https://git-scm.com/book/en/v2/Git-Internals-Git-Objects>）
+git、svn、hg 等基于 snapshot 的版本控制系统，以 snapshot 的方式存储当前版本。虽然这一类版本控制系统也会用到 patch，不过它们只有在需要时才计算出 patch 文件来。
+
+patch 是这一类版本控制系统的产物，而非基石。（注意：切勿混淆 commit 和 snapshot 的概念，两者并不等价。Git 显然不会在每个 commit 中存储对整个仓库的 snapshot，这么做太占空间。）
+
+事实上，Git 的 commit 只包含指向 snapshot tree 的指针，参见：Git-内部原理-Git-对象 <https://git-scm.com/book/en/v2/Git-Internals-Git-Objects>）
 
 git diff 输出格式就是个 patch 文件（参见章节 [diff 对比差异的多种用法]中的 '制作补丁' 部分），git cherry-pick 则会把摘取的提交点修改以 patch 的形式应用到目标分支上。
+
+潜在问题来了：
+
+    相同的 cherry-pick，在每个分支上操作后的 hashid 是不一样的。如果有分支应用后又取消过这个补丁，只要合入另一个应用了这个补丁的分支，这补丁就又回来了，这分支还不知道。。。
+
+    参见 <https://jneem.github.io/pijul/> 中 [Case study 2: parallel development]。
 
 应用场景：master分支上修改过的bug，要在dev分支上也做一遍修复
 
@@ -2644,9 +2656,9 @@ git revert 反做你指定的提交点的操作，新增一个提交点
     # 倒回从B到D点范围的提交记录，用 -n 只生成一个提交点
     git revert B^…D
 
-如果在 revert 中发现冲突，git 会提示解决冲突，格式参见章节 [冲突文件的格式]，解决后执行 `git add . ; git --continue` 继续。如果想终止，可以执行 `git revert --abort`。
+如果在 revert 中发现冲突，git 会提示解决冲突，格式参见章节 [冲突文件的格式]，解决后执行 `git add . ; git revert --continue` 继续。如果想终止，可以执行 `git revert --abort`。
 
-对于分叉合并形成的交叉点的那个提交记录，如果回退，需要指明主线分支：用 -m 选项，接收的参数是一个数字，数字取值为 1 和 2，也就是 Merge 行里面列出来的第一个还是第二个
+特殊：对于分叉合并形成的交叉点的那个提交记录，如果回退，需要指明主线分支：用 -m 选项，接收的参数是一个数字，数字取值为 1 和 2，也就是你在做 merge 时提示行里面列出来的第一个还是第二个，这谁记得住？（这是git的一个痛点，参见 <https://jneem.github.io/pijul/> 的 [Case study 1: reverting an old commit]）
 
     git revert HEAD^ -m 1
 
@@ -4264,4 +4276,47 @@ devops平台搭建工具
 
     上面的组件都是分离的，可以考虑微服务架构体系的组件合集 Spring Cloud: Eureka、Ribbon、Feign、Hystrix、Zuul
 
-有了这一套完整的流程工具，整个开发流程涉及到人员都可以无阻碍的进行协调工作了，开发每天到公司，先看看jira,看看线上日志，出了问题看看监控日志，运营同学反馈问题不着急的去JIRA，着急的群里吆喝，产品和UI的图直接蓝湖看，运维关注监控着大盘，改革春风开满地，互联网人民真高兴~
+有了这一套完整的流程工具，整个开发流程涉及到人员都可以无阻碍的进行协调工作了，开发每天到公司，先看看 jira,看看线上日志，出了问题看看监控日志，运营同学反馈问题不着急的去 jira，着急的群里吆喝，产品和 UI 的图直接蓝湖看，运维关注监控着大盘，改革春风开满地，互联网人民真高兴~。
+
+## 竞品 -- 基于文件差异(patch)的源代码管理系统
+
+基于文件差异(patch)的源代码管理系统，可以随意加入、撤销、重排历史上任意没有依赖关系的改动，并且保持单个 Commit（Change）的 Hash 以及得到的结果不变。当前流行的 svn/git/hg，都是基于 snapshot 而不是 patch 的。
+
+    pijul https://pijul.org/
+
+    darcs 不如 pijul http://darcs.net/
+
+    原理 https://jneem.github.io/merging/
+            https://arxiv.org/abs/1311.3903
+
+        https://segmentfault.com/a/1190000013648329
+
+处理方式不同，某些 git 上很繁琐的事情在这里就简化了。
+
+1、假设以下的场景：在开发 feature 分支上，发现 master 分支上有一个 bug，影响到新功能的开发，所以在 feature 分支上修了，然后 cherry-pick 到 master 分支上来。后来由于业务上的变动，master 分支去掉了这个修复。当我们合并 feature 分支后，这个修复又会重新出现在 master 分支。
+
+在基于 patch 的版本控制系统没有这个问题，在它们眼里，无论在哪个分支上，同样的修改都是同一个 patch。在合并时，它们比较的是 patch 的多寡，而非 snapshot 的异同。同样的道理，基于 patch 的版本控制系统，在处理 cherry-pick，revert 和 blame 时，也会更加简单。
+
+2、基于 snapshot 的版本控制系统，在合并时采用三路合并（three-way merge）。比如 Git 中合并就是采用递归三路合并。所谓的三路合并，就是 theirs(A) 和 ours(B) 两个版本先计算出公共祖先 merge_base(C)，接着分别做 theirs-merge_base 和 ours-merge_base 的 diff，然后合并这两个 diff。当两个 diff 修改了同样的地方时，就会产生合并冲突。
+
+如果是基于 patch 的版本控制系统，会把对方分支上多出来的 patch 添加到当前分支上，效果看上去就像 git rebase 一样。也就是说，某些在 git 中会出现冲突的合并，在 pijul 中不会出现，参见 <https://jneem.github.io/pijul/> 中 [Case study 2: parallel development]。
+
+3、如果添加过程中发生了冲突怎么办？
+
+patch 有两个重要的属性：
+
+    假设 patch B 依赖于 patch A，patch C 依赖于 patch B，B 可以在 A 和 C 之间自由移动而不改变最终结果。这种移动操作称之为 commute。
+
+    每个 patch 都有一个对应的 inverse patch，可以把这个 path 引入的修改去掉。
+
+darcs 在处理合并冲突时，会先添加若干个 inverse patch，回退到可以直接添加 patch 的时候。额外添加的 inverse patch 和之前有冲突的 patch 合并在一起，成为一个新的 patch。这其中可能还会有 commute 操作来移动 patch 到适当的位置。
+
+通常对于差别较大的 Git 分支，不建议用 rebase 操作，因为 rebase 过程中，可能会发生因为修复冲突带来的往后更多的冲突 - 冲突的滚雪球效应。darcs 的合并，也会有同样的问题，一个合并操作耗费的时间可能会遇上指数爆炸。
+
+pijul 通过引入名为有向图文件（directed graph file，以下简称为 digle）的数据结构，解决了这个问题。由 digle 表示的数据结构能够保证不会发生合并冲突。这意味着，我们可以用 digle 作为 patch 的内部实现，这样两个 patch 的合并就是两个 digle 的合并，而 digle 的合并是不会产生冲突的。这么一来，合并过程中就不会有滚雪球效应了，我们可以在最后把 digle 具象成实际的 patch 的时候，才开始解决合并冲突。
+
+pijul 的 merge 有两个优点：
+
+    最终结果跟用了 git rebase 一样，能够保证历史是单线条的。
+
+    由于 merge 过程中能够参考中间各个 patch 的信息，合并的效果理论上应该比简单粗暴的三路合并要好。
