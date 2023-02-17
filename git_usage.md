@@ -866,7 +866,11 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
 
 完全没问题了，形成一个 commit 提交
 
+    git add .
+
     git commit -m '你的提交说明'
+
+    上面2条可以合并称一条命令：git commit -a -m '你的提交说明'
 
 发现有遗漏，先改内容，再补到本次提交里（没推送远程才能这么做）
 
@@ -2436,25 +2440,17 @@ patch 是这一类版本控制系统的产物，而非基石。（注意：切�
 
 事实上，Git 的 commit 只包含指向 snapshot tree 的指针，参见：Git-内部原理-Git-对象 <https://git-scm.com/book/en/v2/Git-Internals-Git-Objects>）
 
-git diff 输出格式就是个 patch 文件（参见章节 [diff 对比差异的多种用法]中的 '制作补丁' 部分），git cherry-pick 则会把摘取的提交点修改以 patch 的形式应用到目标分支上。
+git diff 输出格式就是个 patch 文件（参见章节 [diff 对比差异的多种用法]中的 '制作补丁' 部分），git cherry-pick 则会把指定的提交点所作的修改以 patch 的形式应用到目标分支上。
 
-潜在问题来了：
+应用场景：master 分支上修改了一个 bug，要在 dev 分支上也做一遍修复
 
-    相同的 cherry-pick，在每个分支上操作后的 hashid 是不一样的。如果有分支应用后又取消过这个补丁，只要合入另一个应用了这个补丁的分支，这补丁就又回来了，这分支还不知道。。。
-
-这是 git 的一个痛点，参见 <https://jneem.github.io/pijul/> 中 [Case study 2: parallel development]。
-
-应用场景：master分支上修改过的bug，要在dev分支上也做一遍修复
-
-1.先确定master分支上的commit id
+先确定 master 分支上哪个修改的提交记录的 commit id
 
     git log  --graph --pretty=oneline --abbrev-commit
 
-我们只需要把4c805e2 fix bug 101这个提交所做的修改“复制”到dev分支。
+假设我们只需要把 4c805e2 fix bug 101 这个提交所做的 “修改” 复制到 dev 分支。
 
-注意：我们只想复制 4c805e2 fix bug 101这个提交所做的修改，并不是把整个master分支merge过来。
-
-为了方便操作，Git专门提供了一个cherry-pick命令，让我们能复制一个特定的提交到当前分支：
+因为我们只想复制 4c805e2 fix bug 101这个提交所做的 “修改”，既不是合并这个提交点，也不是把整个 master 分支 merge 过来。为了方便操作，Git 专门提供了一个 cherry-pick 命令，让我们能复制一个特定的提交的操作到当前分支：
 
     $ git branch
     * dev
@@ -2464,7 +2460,13 @@ git diff 输出格式就是个 patch 文件（参见章节 [diff 对比差异的
     [master 1d4b803] fix bug 101
     1 file changed, 1 insertion(+), 1 deletion(-)
 
-Git自动给dev分支做了一次提交，注意这次提交的commit是 1d4b803，它并不同于master分支的 4c805e2，因为这两个commit只是改动相同，但确实是两个不同的commit。用git cherry-pick，我们就不需要在dev分支上手动再把修bug的过程重复一遍。
+Git 自动给 dev 分支做了一次提交，注意这次提交的commit是 1d4b803，它并不同于master分支的 4c805e2，因为这两个commit只是改动相同，但确实是两个不同的commit。用git cherry-pick，我们就不需要在dev分支上手动再把修bug的过程重复一遍。
+
+潜在问题来了：
+
+    相同的 cherry-pick，在每个分支上操作后的 hashid 是不一样的。如果有分支应用后又取消过这个补丁，只要合入另一个应用了这个补丁的分支，这补丁就又回来了，这分支还不知道。。。
+
+这是 git 的一个痛点，参见 <https://jneem.github.io/pijul/> 中 [Case study 2: parallel development]。
 
 ## 使用标签 tag
 
@@ -2959,6 +2961,9 @@ git diff 主要的应用场景：
 
     git diff HEAD^ HEAD
 
+    # 也可以让 git log 显示提交记录跟之前一条的差异diff
+    git log -p <commit id>
+
 ·比较两个提交记录之间的差异
 
     git diff SHA1 SHA2
@@ -3152,6 +3157,22 @@ HEAD 的 第三个父级
     HEAD^3~3 = HEAD^3^^^
 
 ## git 常用法
+
+### 提交记录
+
+    https://www.cnblogs.com/bellkosmos/p/5923439.html
+
+查看<指定文件的>提交记录
+
+    git log --oneline --graph <file>
+
+显示提交记录跟之前一条的差异diff
+
+    # 当前这个提交点
+    git show <commit id>
+
+    # 在此提交点之前的
+    git log -p <commit id>
 
 ### 快速定位故障版本
 
