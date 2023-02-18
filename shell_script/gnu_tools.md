@@ -5679,29 +5679,31 @@ bc - An arbitrary precision calculator language
 
 命令行传输各种参数，设置复杂。
 
-    https://github.com/P3TERX/aria2.sh
-        https://github.com/P3TERX/aria2.conf
+    Aria2 Linux下一键安装管理脚本 增强版 https://github.com/P3TERX/aria2.sh
+        Aria2 完美配置 https://github.com/P3TERX/aria2.conf
 
-TODO:Aria2 Pro: 基于 Aria2 完美配置和特殊定制优化的 Aria2 Docker
+    每日更新tracker
+        https://github.com/ngosang/trackerslist
+        https://github.com/XIU2/TrackersListCollection
 
-    https://p3terx.com/archives/docker-aria2-pro.html
-        https://github.com/P3TERX/Aria2-Pro-Docker
-            https://github.com/P3TERX/aria2.conf
-        https://hub.docker.com/r/p3terx/aria2-pro
+    Aria2 Pro: 基于 Aria2 完美配置和特殊定制优化的 Aria2 Docker
+        https://p3terx.com/archives/docker-aria2-pro.html
+            https://github.com/P3TERX/Aria2-Pro-Docker
+            https://hub.docker.com/r/p3terx/aria2-pro
 
-    docker run -d \
-        --name aria2-pro \
-        --restart unless-stopped \
-        --log-opt max-size=1m \
-        --network host \
-        -e PUID=$UID \
-        -e PGID=$GID \
-        -e RPC_SECRET=<TOKEN> \
-        -e RPC_PORT=6800 \
-        -e LISTEN_PORT=6888 \
-        -v $PWD/aria2-config:/config \
-        -v $PWD/aria2-downloads:/downloads \
-        p3terx/aria2-pro
+        docker run -d \
+            --name aria2-pro \
+            --restart unless-stopped \
+            --log-opt max-size=1m \
+            --network host \
+            -e PUID=$UID \
+            -e PGID=$GID \
+            -e RPC_SECRET=<TOKEN> \
+            -e RPC_PORT=6800 \
+            -e LISTEN_PORT=6888 \
+            -v $PWD/aria2-config:/config \
+            -v $PWD/aria2-downloads:/downloads \
+            p3terx/aria2-pro
 
     配置本机防火墙开放必要的入站端口，内网机器在路由器设置端口转发到相同端口。
     使用你喜欢的 WebUI 或 App 进行连接，强烈推荐 AriaNg
