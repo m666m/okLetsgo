@@ -211,6 +211,8 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
     https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot
 
+    嵌入式 CPU 安全启动的说明 https://www.zhihu.com/question/57346559/answer/2895463445
+
 ### 前提条件
 
 Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
