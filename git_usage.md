@@ -3069,7 +3069,7 @@ You can use various combinations of specifiers to git to see your diffs as you d
 
 This shows the incoming remote additions as deletions; any additions in your local repository are shown as additions.
 
-2.可以看到更改
+2.可以看到更改，俩点让 Git 选出在一个分支中而不在另一个分支中的提交
 
     git diff ..remote/origin
 
@@ -3084,7 +3084,7 @@ For info on ".." vs "..." see as well as the excellent documentation at [git-scm
 
 您将看到本地git存储库的内容与远程存储库中的不同之处。您将看不到本地文件系统中或索引中的任何更改。
 
-3.三点语法显示从任一提交（隐式工作副本、远程/原点）可以到达的所有提交，但不能同时来自两个提交。
+3.三点语法显示从任一提交（隐式工作副本、远程/原点）可以到达的所有提交，但不能同时来自两个提交。选择出被两个引用之一包含但又不被两者同时包含的提交。
 
     git diff ...remote/origin
 
