@@ -1001,11 +1001,17 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
 
 ## 分支的拉取 fetch/pull
 
-基本的拉取操作是 fetch，因为拉取之后都要做合并 merge 或 rebase，就引入了 pull 命令，把这个操作过程简化了，大多数情况下，我们直接使用 git pull 就足够了
+基本的拉取操作是 fetch，因为拉取之后都要做合并 merge 或 rebase，就引入了 pull 命令，把这个操作过程简化了
 
     git pull          = git fetch + git merge
 
     git pull --rebase = git fetch + git rebase
+
+如果提示会做快进合并，那么执行 merge/rebase 的效果相同，只接续，不会更新那部分提交记录的 hash 值
+
+    大多数情况下，我们日常使用只需要执行 git pull 就够了。
+
+    如果你使用开发分支经常需要同步远程库中队友的代码，那么该执行 git pull --rebase 来明确的保持开发分支的直线效果，避免菱形分叉。
 
 ### git pull 的2个过程
 
@@ -1088,9 +1094,9 @@ git fetch 并不会改变你本地仓库的状态。它不会更新你的本地�
 
 ### 本地分支更新远程的操作流程
 
-注：本地分支的更新，就是 fetch 远程库到本地的远程库，然后合并到本地分支。这个合并与你合并本地的两个分支没什么区别，都可以用 merge 或 rebase 进行。
+    本地分支的更新，就是 fetch 远程库到本地的远程库，然后合并到本地分支。这个合并与你合并本地的两个分支没什么区别，都可以用 merge 或 rebase 进行。
 
-除非你不介意合并策略，否则在 git pull 之前要想想：
+如果你介意合并策略，那在 git pull 之前要想想：
 
     如果在执行 git pull 或 git pull --rebase 的时候出现合并冲突的提示，你已经无法选择合并策略了，git 自动进入 merge conflict 或 rebase conflict 过程，冲突文件都给你准备好了。
 
@@ -1116,17 +1122,19 @@ NOTE: 本地分支更新远程时，不要直接做 git pull 或 git pull --reba
 
         git log ..origin/master --graph --oneline
 
-本地分支更新远程操作流程：先 fetch 下来，然后 status 看看，然后再决定是否 merge 或 rebase，简略操作才用 pull。
+故总结本地分支更新远程操作流程如下：
+
+1、先 fetch 下来，然后 status 看看，然后再决定是否 merge 或 rebase，简略操作才用 pull。
 
     git fetch
 
     # 看看提示，是否有冲突，根据提示选择接下来如何做
     git status
 
-    # 查看 fetch 下来的远程代码跟本地的区别
+    # 查看 fetch 下来的远程代码跟本地的具体差异
     git diff ..origin/master
 
-如果没有提示冲突，可以正常合并：酌情选择自己的合并策略分叉还是拉直（参见章节 [分支合并：merge菱形分叉还是rebase拉直]）。做如下命令之一即可
+2、如果没有提示冲突，可以正常合并：酌情选择自己的合并策略分叉还是拉直（参见章节 [分支合并：merge菱形分叉还是rebase拉直]）。做如下命令之一即可
 
     git merge（自动） 或 git merge -noff（分叉合并） 或 git rebase（拉直合并）
 
@@ -1134,7 +1142,7 @@ NOTE: 本地分支更新远程时，不要直接做 git pull 或 git pull --reba
 
     或 git cherry-pick o/master
 
-如果提示有冲突，解决冲突的操作参见章节 [解决合并冲突conflicts] 的示例。
+3、如果提示有冲突，解决冲突的操作参见章节 [解决合并冲突conflicts] 的示例。
 
 ## 分支推送
 
@@ -1360,11 +1368,11 @@ git pull 命令的这种实现方式的探讨，参见章节 [分支的拉取 fe
 
 git pull = git fetch + git merge 后的效果，merge 创建提交点，看起来像个菱形，从c点拉取后提交的人越多，这个环越多
 
-              h---i 又一个人的提交记录 -------------
+              h---i 又一个人的提交记录 ------------
              /                                  \
               f---g  你的提交记录                   \
              /      \                              \
-    a---b---c        你合并时的 merge 创建的提交点 ---- 第三个人合并时的 merge 创建的提交点
+    a---b---c        你合并时的 merge 创建的提交点 ----- 第三个人合并时的 merge 创建的提交点
              \      /
               d---e 第一个人提交的
 
@@ -1386,13 +1394,11 @@ git pull --rebase = git fetch + git rebase 去掉多余的分叉，你的提交�
 
 #### merge 合并默认做快进（Fast Forward） 取拉直效果
 
-需要合入分支的接续点就是分叉点。
+merge 默认做的是快进，即不新增 commit 点，走一条线的效果，执行 git status 也会提示可以做快进。
 
-merge默认做的是快进，即不新增commit点，走一条线的效果，执行 git status 会提示可以做快进。
+NOTE: 如果 merge 不能做快进，就会分叉制作菱形，但做之前并不让用户选择，只是告诉你一下。
 
-NOTE: 如果merge不能做快进，就会分叉制作菱形，但做之前并不让用户选择，只是告诉你一下。
-
-所以最保险的方法是，git merge 之前，先 git status 看看是否提示merge会做快进。如果是本地分支更新远程，不使用 pull 而是 fetch，参见章节 [本地分支更新远程的操作流程]。
+所以最保险的方法是，git merge 之前，先 git status 看看是否提示 merge 会做快进。如果是本地分支更新远程，不使用 pull 而是 fetch，参见章节 [本地分支更新远程的操作流程]。
 
 1.hotfix 分支先合并到主干分支 master
 
@@ -1476,35 +1482,54 @@ feature 分支是用来开发特性的，上面会存在许多零碎的提交。
 
 ### 变基 rebase，更新提交记录的hash值但不制造分叉点
 
-    如果不想被 rebase 修改提交历史，那就应该选择分叉合并
+如果 git 提示会做快进合并，那么执行 merge/rebase 的效果相同，只接续，不会更新那部分提交记录的 hash 值。
 
-feature 分支从状态 c 分叉，master 分支先合入了 hotfix 的 d、e，默认快进合并：
+如果不想被 rebase 修改接续部分提交记录的 hash 值，那就应该选择分叉合并
+
+    比如从开发者个人向项目组合并分支，功能分支向主干分支合并等的过程中，可能会往复应用、撤销提交点等情况下，git 对内容的修改无法依赖提交点的 hash值，非常依赖看提交记录的注释。
+
+    所以很多情况下，项目组的功能分支更新合并主干分支，不喜欢用 rebase，往往选择用 merge 分叉，毕竟一更新主干分支的内容，功能分支的提交记录的 hash 值就全变了，总会带来一些混乱。
+
+feature 分支从状态 c 分叉，master 分支先合入了 hotfix 的 d、e，做 merge 会默认快进合并：
 
                               f---g---h---i  feature分支
                              /
     master主干  a --- b --- c --- d --- e  hotfix分支
 
-如果使用 merge 的默认合并会分叉，在 master 主干分支上新增一个提交，指向 i 和 e。
+1、feature 分支合并主干分支
 
-为了合入不制造菱形，feature 分支在 master 分支的基础上延伸拉直，这时两分支的head位置不一样
+feature 分支合并主干分支，如果 使用 merge 会分叉，新增一个提交点指向 i 和 e。
+
+为了合入不制造菱形使用变基 rebase，feature 分支在 master 分支的基础上延伸拉直，这时两分支的 head 位置不一样
 
     git checkout feature
 
     git rebase master
 
-一条命令搞定：git rebase < basebranch > < topicbranch >
+    一条命令搞定：
 
-    git rebase master feature
+        # git rebase < basebranch > < topicbranch >
+        git rebase master feature
 
-rebase的拉直效果，虽然需要付出一些合并冲突解决的代价，但是清晰多了：
+rebase 的拉直效果如下：
 
-                      f---g---h---i feature分支
-                     /
-    a---b---c---d---e master主干
+                                    f---g---h---i 重写 feature 分支多出来的
+                                   /
+    feature分支  a---b---c ---d---e
+                           在分叉点后面接续 master 的提交记录
 
-然后 master 分支（落后了）做合并，两分支的head位置一样了。（因为 master 分支的head位于分叉点，实质二者在一条线上，所以master主干分支合入feature分支时merge做的是快进合并）
+可以看到 f 被调整指向了 e，虽然可能需要付出一些合并冲突解决的代价，但是清晰多了
+
+注意
+
+    做 rebase 之后，feature 分支的提交记录 f、g、h、i 全被更新，hash 值全变了。如果你的分支管理依赖这个 hash 值，就不要用 rebase，这种情况下只能使用 merge，在合并后 feature 分支会出现菱形。
+
+2、主干分支合并 feature 分支
+
+master 分支这时落后于 feature 分支了，需要做合并：因为 master 分支的 head 位于分叉点，实质二者在一条线上，所以 master 主干分支合入 feature 分支时，git 会做的是快进合并，执行  merge 或 rebase 效果相同，这种情况下不会修改任何提交记录的hash值。
 
     git checkout master
+
     git merge feature
 
 最终效果，大家都同步到一条直线的最末端：
@@ -1512,21 +1537,7 @@ rebase的拉直效果，虽然需要付出一些合并冲突解决的代价，�
     a---b---c---d---e---f---g---h---i   master
                                         feature
 
-rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决冲突。
-
-解决冲突后,将修改add，执行git rebase –continue继续操作，或者git rebase –skip忽略冲突，或者git rebase --abort终止这次rebase。
-
-一个本地分支拉取远程时，二者的合并做变基，起到拉直效果
-
-    # 本地dev分支拉取远程dev分支的时候做rebase
-    git checkout dev_xxx
-
-    # 实质是 fetch + rebase
-    git pull --rebase
-
-    fetch远程仓库，然后跟本地做rebase，详见章节 [git pull 把2个过程合并，减少了操作]
-
-在本质上，这跟两个分支合并时用rebase 强行拉直，是一样的。
+rebase 操作遇到冲突的时候，会中断rebase，同时会提示你解决冲突，解决参见章节 [解决合并冲突conflicts]。
 
 ### 建立合并专用分支的好处
 
@@ -1544,7 +1555,7 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
     在功能分支合并到主干之前
 
-    使用文件比对工具，可大大简化合并 commit 点的复杂度
+NOTE: 使用文件比对工具，可大大简化合并 commit 点的复杂度
 
 方法
 
@@ -2258,9 +2269,9 @@ rebase之前的git提交历史树:
 
     通常来说，每个功能分支只应该往 master 中增加一个或几个提交。为此，你需要将多个提交压扁（Squash）成一个或者几个带有更详细信息的提交，然后才可以推送远程，或合并到 master 分支。
 
-rebase 的一个缺陷，也是 git 的痛点
+不适用 rebase 的场景
 
-    同样的文件内容修改，你的提交做了，如果被rebase了，提交点的hash值就变了，往复应用提交点等情况下，git 对该内容的修改不是很可控。参见章节 [竞品 -- 基于文件差异(patch)的源代码管理系统]。
+    提交如果被 rebase 了，那这些提交点的 hash 值就变了。实际工作中，分支的重整、合并、cherry-pick 经常发生，有时候还会撤销修改。对开发组来说，提交记录的 hash 值全变，如果会带来管理混乱，那就尽量缩小 rebase 的范围，或放到开发稳定后，管理可控时再做。
 
 NOTE: git rebase 切忌修改远程的提交记录，只做追加不要做修改！
 
@@ -2519,9 +2530,9 @@ Git 自动给 dev 分支做了一次提交，注意这次提交的commit是 1d4b
 
 潜在问题来了：
 
-    相同的 cherry-pick，在每个分支上操作后的 hashid 是不一样的。如果有分支应用后又取消过这个补丁，只要合入另一个应用了这个补丁的分支，这补丁就又回来了，这分支还不知道。。。
+    相同的 cherry-pick，在每个分支上操作后的 hashid 是不一样的。如果有分支应用后又 revert 过这个补丁，只要合入另一个应用了这个补丁的分支，这补丁就又回来了，这分支还不知道。。。
 
-这是 git 的一个痛点，参见 <https://jneem.github.io/pijul/> 中 [Case study 2: parallel development]。
+这是 git 的一个痛点，参见章节 [竞品 -- 基于文件差异(patch)的源代码管理系统]。
 
 ## 使用标签 tag
 
@@ -2720,7 +2731,7 @@ git revert 反做你指定的提交点的操作，新增一个提交点。
 
     git revert HEAD^ -m 1
 
-接上步：如果被 revert 掉的分支修改了错误，重新提交，不能直接 merge，应该把之前 revert 掉自己的那个提交点也再 revert 掉，然后再 merge。（其实这是 git 的一个痛点，参见 <https://jneem.github.io/pijul/> 的 [Case study 1: reverting an old commit]）
+接上步：如果被 revert 掉的分支修改了错误，重新提交，不能直接 merge，应该把之前 revert 掉自己的那个提交点也再 revert 掉，然后再 merge。（其实这是 git 的一个痛点，参见章节 [竞品 -- 基于文件差异(patch)的源代码管理系统]）
 
     https://blog.csdn.net/allanGold/article/details/111372750
 
@@ -2923,15 +2934,11 @@ git revert 新增的提交点，是对 rebase 那个提交点的反向执行，�
 
 ## 使用储藏 stash
 
-当在一个分支的开发工作未完成，却又要切换到另外一个hotfix分支进行开发的时候，当前的分支不commit的话git不允许checkout到别的分支，而代码功能不完整随便commit是没有意义的。
+当在一个分支的开发工作未完成，却又要切换到另外一个 hotfix 分支进行开发的时候，当前的分支不 commit 的话 git 不允许 checkout 到别的分支，而代码功能不完整随便 commit 是没有意义的。
 
-一般使用，git stash push 和 git stash pop这两条就够了。
+一般使用，`git stash push` 和 `git stash pop` 这两条就够了。
 
-注意
-
-    新增的文件，直接执行stash是不会被存储的，
-    因为没有在git 版本控制中的文件，是不能被git stash 存起来的，
-    所以先执行下git add 再储存就可以了。
+如果是新增的文件，直接执行 stash 是不会被存储的，因为没有在 git 版本控制中的文件，是不能被 git stash 存起来的，所以先执行下 `git add` 再储存就可以了。
 
 详细用法
 
@@ -3217,15 +3224,17 @@ HEAD 的 第三个父级
 
     https://www.cnblogs.com/bellkosmos/p/5923439.html
 
-注意 git log 的很多用法也适用于 git diff，参见章节 [diff 对比差异的多种用法]。
+注意：
 
-查日志做对比之前，最好先拉取所有分支的远程库
+    git log 的很多用法也适用于 git diff，参见章节 [diff 对比差异的多种用法]。
 
-    git fetch -all
+    查日志做对比之前，先拉取所有分支的远程库，以保证数据最新
 
-查看<指定文件的>提交记录
+        git fetch -all
 
-    git log <file> --oneline --graph
+查看 <指定文件、分支的> 提交记录
+
+    git log <file/branch> --oneline --graph
 
 显示提交记录跟之前一条的差异diff
 
@@ -4412,9 +4421,13 @@ devops平台搭建工具
 
 在基于 patch 的版本控制系统没有这个问题，在它们眼里，无论在哪个分支上，同样的修改都是同一个 patch。在合并时，它们比较的是 patch 的多寡，而非 snapshot 的异同。同样的道理，基于 patch 的版本控制系统，在处理 cherry-pick，revert 和 blame 时，也会更加简单。
 
+参见 <https://jneem.github.io/pijul/> 的 [Case study 1: reverting an old commit]。
+
 2、基于 snapshot 的版本控制系统，在合并时采用三路合并（three-way merge）。比如 Git 中合并就是采用递归三路合并。所谓的三路合并，就是 theirs(A) 和 ours(B) 两个版本先计算出公共祖先 merge_base(C)，接着分别做 theirs-merge_base 和 ours-merge_base 的 diff，然后合并这两个 diff。当两个 diff 修改了同样的地方时，就会产生合并冲突。
 
-如果是基于 patch 的版本控制系统，会把对方分支上多出来的 patch 添加到当前分支上，效果看上去就像 git rebase 一样。也就是说，某些在 git 中会出现冲突的合并，在 pijul 中不会出现，参见 <https://jneem.github.io/pijul/> 中 [Case study 2: parallel development]。
+如果是基于 patch 的版本控制系统，会把对方分支上多出来的 patch 添加到当前分支上，效果看上去就像 git rebase 一样。也就是说，某些在 git 中会出现冲突的合并，在 pijul 中不会出现。
+
+参见 <https://jneem.github.io/pijul/> 中 [Case study 2: parallel development]。
 
 3、如果添加过程中发生了冲突怎么办？
 
