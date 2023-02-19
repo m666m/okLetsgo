@@ -3164,7 +3164,7 @@ HEAD 的 第三个父级
     $ git show HEAD^3~2 / git show HEAD^3^^
     master foo 2
 
-示例
+#### 示例
 
     # 当前提交
     HEAD = HEAD~0 = HEAD^0
@@ -3247,25 +3247,25 @@ git bisect 使用分治算法查找出错版本号。
 
 你查看了一下休假之前最后一次提交的代码，功能尚且正常。不幸的是，你离开的这段时间，已经有上百次提交记录，你无法找到那一次提交导致了这个问题。
 
-这时你或许想找到破坏功能的bug，然后对该文件使用git blame 命令，找出并指责破坏者。
+这时你或许想找到破坏功能的 bug，然后对该文件使用 git blame 命令，找出并指责破坏者。
 
-如果bug很难定位，那么或许你可以去看一下提交历史，试一下看能不能找到出问题的版本。
+如果 bug 很难定位，那么或许你可以去看一下提交历史，试一下看能不能找到出问题的版本。
 
-另一种快捷的方式则是使用git bisect，可以快速找到出问题的版本。
+另一种快捷的方式则是使用 git bisect，可以快速找到出问题的版本。
 
-那么git bitsect是如何做的呢？
+那么 git bisect 是如何做的呢？
 
-指定了已知的正常版本和问题版本之后，git bisectit bisect会把指定范围内的提交信息从中间一分为二，并会根据最中间的提交信息创建一个新的分支， 你可以检查这个版本是否有问题。
+指定了已知的正常版本和问题版本之后，git bisectit bisect 会把指定范围内的提交信息从中间一分为二，并会根据最中间的提交信息创建一个新的分支， 你可以检查这个版本是否有问题。
 
-假设这个中间版本依然可以正常运行。你可以通过git bisect good命令告诉git。然后，你就只有剩下的一半的版本需要测试。
+假设这个中间版本依然可以正常运行。你可以通过git bisect good 命令告诉 git。然后，你就只有剩下的一半的版本需要测试。
 
-Git会继续分割剩下的版本，将中间版本再次到处让你测试。
+Git 会继续分割剩下的版本，将中间版本再次到处让你测试。
 
-Git bisect会继续用相似的方式缩小版本查找范围，直到第一个出问题的版本被找到。
+Git bisect 会继续用相似的方式缩小版本查找范围，直到第一个出问题的版本被找到。
 
-因为你每次将版本分为两半，所以可以用log(n)次查找到问题版本（时间复杂度为“big O”，非常快）。
+因为你每次将版本分为两半，所以可以用 log(n) 次查找到问题版本（时间复杂度为 “big O”，非常快）。
 
-运行整个git bisect的过程中你会用到的所有命令如下：
+运行整个 git bisect 的过程中你会用到的所有命令如下：
 
  1. git bisect start ——通知git你开始二分查找。
  2. git bisect good {{some-commit-hash}} ——反馈给git 这个版本是没有问题的（例如：你休假之前的最后一个版本）。
@@ -3277,7 +3277,7 @@ Git bisect会继续用相似的方式缩小版本查找范围，直到第一个�
  8. git bisect reset——返回到 git bisect进程的初始状态（例如，master分支的HEAD版本）。
  9. git bisect log ——显示最后一次完全成功的 git bisect日志。
 
-你也可以给git bisect提供一个脚本，自动执行这一过程 <http://git-scm.com/docs/git-bisect#_bisect_run>
+你也可以给 git bisect 提供一个脚本，自动执行这一过程 <http://git-scm.com/docs/git-bisect#_bisect_run>
 
 ### 从远程库删除某些文件但保留本地的文件
 
@@ -3383,7 +3383,7 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
 
 保留当前分支代码现状，基于 master 分支创建一个 hotfix 分支修复问题
 
-    # 基于 master 分支头指针，在目录同级创建一个 hotfix 的工作树，并检出一个本地分支hotfix以便后期合入
+    # 基于 master 分支头指针，在目录同级创建一个 hotfix 的工作树，并检出一个本地分支 hotfix 以便后期合入
     # git worktree add ../hotfix --detach master 如果分离式检出，切换到目录后手工创建分支 `git checkout -b hotfix`
     # git worktree add -b hotfix ../hotfix master
     git worktree add ../hotfix  # 创建目录并自动检出一个同名的本地分支
@@ -3450,12 +3450,14 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
 
 ### 配置git的编辑器和比较工具
 
+    https://git-scm.com/docs/git-config
+
 配置 Beyond Compare 4 作为 git mergetool
 
     https://blog.csdn.net/albertsh/article/details/106294095
     https://blog.csdn.net/LeonSUST/article/details/103565031
 
-建议使用开源的 meld 替换，基于python
+建议使用开源的 meld 替换，基于 python
 
     https://meldmerge.org/
         https://gitlab.gnome.org/GNOME/meld
@@ -3475,24 +3477,20 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
 
     git config --global --edit
 
-配置git的difftool与mergetool为VsCode
+    将下面的配置粘贴上去，保存，关闭即可
 
-执行如下命令git将使用上一部分配置好的vscode打开配置文件
+        [diff]
+            tool = vscode-diff
+        [difftool]
+            prompt = false
+        [difftool "vscode-diff"]
+            cmd = code --wait --diff $LOCAL $REMOTE
+        [merge]
+            tool = vscode-merge
+        [mergetool "vscode-merge"]
+            cmd = code --wait $MERGED
 
-    git config --global --edit
-
-将下面的配置粘贴上去，保存，关闭即可
-
-    [diff]
-        tool = vscode-diff
-    [difftool]
-        prompt = false
-    [difftool "vscode-diff"]
-        cmd = code --wait --diff $LOCAL $REMOTE
-    [merge]
-        tool = vscode-merge
-    [mergetool "vscode-merge"]
-        cmd = code --wait $MERGED
+git revert 在合并冲突时使用`core.editor`的设置，没有单独的设置选项。
 
 ## 常见问题
 
