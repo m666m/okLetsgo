@@ -1337,7 +1337,7 @@ merge 菱形分叉会制造一个新的提交记录，rebase 拉直会更新相�
 
 ### merge 的二义性
 
-对确定的结果，输出可以是不唯一的，默认做快进合并，直接接续在目标分支的最新提交点后面，如果不行，则创建菱形分叉，新建一个提交点。
+对确定的结果，输出不唯一：默认做快进合并，直接接续在目标分支的最新提交点后面，如果不行，则创建菱形分叉，新建一个提交点。做完给你个提示性信息。
 
 如果多人同时操作一个分支，merge 的时候会结合多个提交的最新位置新建一个提交点（不是快进合并就这样），形成了一个菱形：
 
@@ -1360,13 +1360,13 @@ git pull 命令的这种实现方式的探讨，参见章节 [分支的拉取 fe
 
 git pull = git fetch + git merge 后的效果，看起来像个菱形，从c点拉取后提交的人越多，这个环越多
 
-              h--i 又一个人的提交记录
-             /     \
+              h--i 又一个人的提交记录 -------------
+             /                                  \
+              f---g  你的提交记录                   \
+             /      \                              \
+    a---b---c        你合并时的 merge 创建的提交点 ---- 另一个人合并时的 merge 创建的提交点
+             \      /
               d---e 第一个人提交的
-             /     \
-    a---b---c       new commit 由 merge 创建
-             \     /
-              f---g  你的提交记录
 
 git pull --rebase = git fetch + git rebase 去掉多余的分叉，你的提交追加到别人的后面，实现拉直。但是要注意，c 点的 hash 值被你的 rebase 操作更新了，你的 e 点的 hash 值 被后续 rebase 的人更新了。如果你的本地分支管理依赖这些提交点的 hash 值，那么就不要采用 rebase 合并分支。
 
@@ -1384,7 +1384,7 @@ git pull --rebase = git fetch + git rebase 去掉多余的分叉，你的提交�
     -a-b-c -d-e  -f-g  -h-i  -j-k  ...
            别人   你的   别人   你的   ...
 
-### merge 合并默认做快进（Fast Forward） 取拉直效果
+#### merge 合并默认做快进（Fast Forward） 取拉直效果
 
 需要合入分支的接续点就是分叉点。
 
@@ -1392,9 +1392,9 @@ merge默认做的是快进，即不新增commit点，走一条线的效果，执
 
 NOTE: 如果merge不能做快进，就会分叉制作菱形，但做之前并不让用户选择，只是告诉你一下。
 
-所以最保险的方法是，git merge 之前，先 git status 看看是否提示merge会做快进。
+所以最保险的方法是，git merge 之前，先 git status 看看是否提示merge会做快进。如果是本地分支更新远程，不使用 pull 而是 fetch，参见章节 [本地分支更新远程的操作流程]。
 
-1.hotfix分支先合并到主干分支 master
+1.hotfix 分支先合并到主干分支 master
 
     git checkout master
     git pull
@@ -1428,7 +1428,7 @@ merge发现不能做快进，就会制作分叉，并无提示，这个地方最
 
 如果遇到多人合并分支，都是在c点后，不想出现很多环状提交，拉直见下面的方法三。
 
-### merge --no-ff 强行保留菱形分叉
+#### merge --no-ff 强行保留菱形分叉
 
 大的分支合入用菱形，便于管理。
 
@@ -1689,15 +1689,35 @@ rebase 操作遇到冲突的时候，会中断rebase，同时会提示去解决�
 
     https://blog.csdn.net/d6619309/article/details/52711035
 
-合并冲突是指：在共同节点之后，出现了两种独立的提交(每种可能有多个提交)。比如本地合并远程时，一种是你在本地分支新增的提交，另外是远程分支新增的提交。两个分支的情况同理。
+合并冲突是指：在共同节点之后，出现了两种独立的提交(每种可能有多个提交)。比如本地合并远程时，一种是你在本地分支新增的提交，另外是远程分支新增的提交。两个分支合并的情况同理。参见章节 [merge 的二义性]。
 
-比如，文件有一行内容 ‘123456'，你修改为 '123'，别人修改为 '456'，谁先提交无所谓，后面的人在推送或拉取的时候就会发现有合并冲突。
+    $ git push 被拒绝
+    To ssh://
+    ! [rejected]              master -> master (fetch first)
+    error: failed to push some refs to 'ssh://7'
+    hint: Updates were rejected because the remote contains work that you do
+    hint: not have locally. This is usually caused by another repository pushing
+    hint: to the same ref. You may want to first integrate the remote changes
+    hint: (e.g., 'git pull ...') before pushing again.
+    hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+    $ git fetch 先拉下远程
+
+    $ git status 看看提示
+    On branch master
+    Your branch and 'origin/master' have diverged,
+    and have 2 and 2 different commits each, respectively.
+    (use "git pull" to merge the remote branch into yours)
+
+一般来说，只要不是同文件同行的修改，git 会根据你的策略选择分叉或拉直自动接续提交点。比如你运行 git pull 或 git pull --rebase 命令，会自动把最新的远程合并到你的本地，有些提示下信息告诉你合并的内容，然后你可以继续推送。
+
+合并冲突需要手工解决的情况：比如，文件有一行内容 ‘123456'，你修改为 '123'，别人修改为 '456'，谁先提交无所谓，后面的人在推送或拉取的时候就会被提示处理该合并冲突。
 
 本地分支更新远程，出现合并冲突：
 
-    这种情况，通常是由于另外一个人在上游相同的分支做了提交，或是你在本地修改之前没有先 git pull 同步远程代码，直接修改然后提交再push远程，不巧的是远程已经有人提交了新的修改，git这时候要提示你分叉了，这两个提交需要你手工确认做融合。
+    这种情况，通常是由于另外一个人在上游相同的分支做了提交，你俩在之前的提交记录历史中有功能的起点，但是现在分歧了。比如你的本地修改push远程，不巧的是远程已经有人提交了新的修改，你俩的分支相同，但是在某个提交点之后，各自延续发展了提交点，导致 push 操作报错。
 
-    最差的情况是，你把已经推送远程库的代码，重新rebase了，再次推送就报错了，见章节 [拉shi往回缩：rebase以后提示同样的错误]。
+    最差的情况是：你把已经推送远程库的代码，重新rebase了，再次推送就报错了，见章节 [拉shi往回缩：rebase以后提示同样的错误]。
 
     可以先对比查看下远程库的提交记录跟本地库提交记录的差异
 
