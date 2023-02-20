@@ -1,9 +1,5 @@
 # git 源代码分支管理
 
-程序开发，大部分都是在处理源代码这种文本文档，期间会对同一文件反复修改，为记录变更，便于回溯或多次修改、同步变更等操作，版本控制软件专门处理这种工作，git 是以文本文件的文字差异为基准进行差异比对的，再此基础上衍生出分支管理等功能。
-
-## 参考文档
-
 善用 git 帮助查找命令 `git help branch`
 
     使用 Git hub <http://www.cnblogs.com/zhangjianbin/category/934478.html>
@@ -32,7 +28,29 @@
 
     git分支的使用过程 https://zhuanlan.zhihu.com/p/22369088
 
-## 何时使用git而不是svn
+## git 的基本概念
+
+程序开发，大部分都是在处理源代码这种文本文档，期间会对同一文件反复修改，为记录变更，便于回溯或多次修改、同步变更等操作，版本控制软件专门处理这种工作，git 是以文本文件的文字差异为基准进行差异比对的，再此基础上衍生出分支管理等功能，它的底层是基于 snapshot 快照的工作方式，并进行分布式存储。
+
+你的文件有3种存在：仓库区 ----> 暂存区 stage 或 index ----> 工作区 work space
+
+    初始状态工作区的文件就版本库的文件，暂存区是空的，版本库没变化
+
+    当你修改了文件，则工作区文件的状态是修改，暂存区是空的，版本库没变化
+
+    当你执行了 git add，修改的文件添加到了暂存区，这时你在工作区的文件和暂存区是一致的，版本库没变化。
+
+    所有修改都验证无误之后，git commit提交到版本库，这时三个区的文件都一致了。
+
+    文件每添加到一个区域，有对应的回退步骤，见章节[如何回退]
+
+git 的很多命令操作都是区分这几个区的，如 git fetch、git diff，参数不同意义不同，使用时注意区分。
+
+一般执行一个操作之后运行 git status 查看当前状态，git 也会出下一步操作的建议。
+
+git 对文件内容的修改，在撤销和重做方面有些使用不便，详见章节 [竞品 -- 基于文件差异(patch)的源代码管理系统]。
+
+### 何时使用git而不是svn
 
 因为git就是给开源准备的，适合开源方式开发的就适合用git。
 
@@ -44,7 +62,7 @@
 
 ## git 客户端初始化
 
-git通过ssh客户端连接github。除了github这样的，私有仓库都需要用户鉴权才能读取文件。
+git 通过 ssh 客户端连接 github。除了 github 这样的，私有仓库都需要用户鉴权才能读取文件。
 
     https://git-scm.com/download/win
         https://github.com/git-for-windows/git/
@@ -54,21 +72,28 @@ git通过ssh客户端连接github。除了github这样的，私有仓库都需�
     在 cmd 或 powershell 下运行要设置环境变量
         https://github.com/git-for-windows/git/wiki/FAQ#running-without-git-bash
 
-### 1.ssh客户端的设置
+### 1、ssh客户端的设置
+
+    https://docs.github.com/zh/authentication
 
 生成 ssh key 文件，默认回答都是一路回车
 
     ssh-keygen -t ed25519
 
-将以下 ssh 密钥条目添加到 ~/.ssh/known_hosts 文件中，以避免手动验证 GitHub 主机：
+将以下 ssh 密钥条目添加到你本地的 ~/.ssh/known_hosts 文件中，以避免手动验证 GitHub 主机：
 
-    https://docs.github.com/zh/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints
+    # https://docs.github.com/zh/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints
+    github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+    github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+    github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
 
 如果是私有仓库，可以添加本机用户的公钥到远程仓库git用户的认证密钥文件中，以便后续ssh免密登陆
 
     ssh-copy-id -i ~/.ssh/id_ed25519.pub -p 2345 git@xx.xx.xx.xx
 
-### 2.设置 gitub 使用 ssh 密钥方式管理代码库
+### 2、设置 gitub 使用 ssh 密钥方式管理代码库
+
+    https://docs.github.com/zh/authentication/connecting-to-github-with-ssh
 
 登陆你的github帐户，点击你的头像，然后 Settings。
 
@@ -80,7 +105,7 @@ git通过ssh客户端连接github。除了github这样的，私有仓库都需�
 
     cat ~/.ssh/id_ed25519.pub
 
-git colne一个项目，然后查看是否此项目是使用https协议
+git colne 一个项目，然后查看是否此项目是使用 https 协议
 
     git remote -v
 
@@ -91,8 +116,8 @@ git colne一个项目，然后查看是否此项目是使用https协议
 
     # 如果超时，就多试几次，国内的网络环境太差
     $ ssh -T git@github.com
-    Received disconnect from 20.205.243.166 port 22:11: Bye Bye
-    Disconnected from 20.205.243.166 port 22
+    Received disconnect from ... port 22:11: Bye Bye
+    Disconnected from ... port 22
 
     # 如果你在已有的github项目目录下，是这个提示
     $ ssh -T git@github.com
@@ -101,7 +126,7 @@ git colne一个项目，然后查看是否此项目是使用https协议
     # 登陆问题排查
     ssh -v git@github.com
 
-如果未设置过git用户名和邮箱，注意填写前面复制的 github 的 noreply 电邮地址。
+如果未设置过 git 用户名和邮箱，注意填写前面复制的 github 的 noreply 电邮地址。
 
     # 查看 git config --global --list
     git config --global user.name "m666m"
@@ -113,14 +138,14 @@ git colne一个项目，然后查看是否此项目是使用https协议
 
     git config  user.email
 
-github网站提供基于https端口的ssh连接方式 <https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port>，主要用于内网封禁22端口，但是443端口是开放的场合。
+github 网站提供基于 https 端口的 ssh 连接方式 <https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port>，主要用于内网封禁对外使用 22 端口，但是开放 443 端口的场合。
 
 先试试能否在 443 端口连接
 
     $ ssh -T -p 443 git@ssh.github.com
     Hi m666m! You've successfully authenticated, but GitHub does not provide shell access.
 
-之后的项目地址都使用 ssh 协议即可
+配置你的项目地址在该端口使用 ssh 协议即可
 
     git clone ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
 
@@ -138,20 +163,6 @@ github网站提供基于https端口的ssh连接方式 <https://docs.github.com/z
 ## git仓库初始操作
 
 ### 建立本地仓库：Git 工作区、暂存区和版本库
-
-你的文件有3种存在：仓库区 ----> 暂存区 stage 或 index ----> 工作区 work space
-
-    初始状态工作区的文件就版本库的文件，暂存区是空的，版本库没变化
-
-    当你修改了文件，则工作区文件的状态是修改，暂存区是空的，版本库没变化
-
-    当你执行了 git add，修改的文件添加到了暂存区，这时你在工作区的文件和暂存区是一致的，版本库没变化。
-
-    所有修改都验证无误之后，git commit提交到版本库，这时三个区的文件都一致了。
-
-    文件每添加到一个区域，有对应的回退步骤，见章节[如何回退]
-
-git 的很多命令操作都是区分这几个区的，如git fetch、git diff，参数不同意义不同，使用时注意区分。一般执行一个操作之后运行 git status 查看当前状态，git也会出下一步操作的建议。
 
 工作区 work space：就是你建立的源代码目录
 
@@ -184,18 +195,31 @@ git做操作之前或操作之后，查看当前的git状态
 
 ### 修改本地仓库的远程仓库地址
 
-先确认下，已经有 origin 远程库，没有也需要重新建立连接
-
-    $ git remote show
-    origin
-
-查看远程仓库地址
+查看远程仓库地址，这个地址格式可以给 git clone 直接使用
 
     $ git remote -v
     origin  git@github.com:m666m/okLetsgo.git (fetch)
     origin  git@github.com:m666m/okLetsgo.git (push)
 
-github.com获取仓库默认给的是https地址，但是在国内的网络下经常连接超时，使用不变，改成git协议或ssh协议的地址格式相对好些
+先确认下，已经有 origin 远程库，没有也需要重新建立连接
+
+    $ git remote show
+    origin
+
+    # 显示该远程的详细信息，git 会测试该地址连通性
+    $ git remote show origin
+    * remote origin
+    Fetch URL: git@github.com:m666m/okLetsgo.git
+    Push  URL: git@github.com:m666m/okLetsgo.git
+    HEAD branch: master
+    Remote branch:
+        master tracked
+    Local branch configured for 'git pull':
+        master merges with remote master
+    Local ref configured for 'git push':
+        master pushes to master (up to date)
+
+github.com 获取仓库默认给的是 https 地址，但是在国内的网络下经常连接超时，改成 git 协议或 ssh 协议的地址格式相对好些。地址格式参见章节 [从远程仓库下载到本地仓库 git clone]。
 
     # 删除远程origin
     git remote rm origin
@@ -900,33 +924,7 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
 
     git clone xxxx
 
-切换到的提交点可以是分支名
-
-    # 查看当前有多少分支
-    git branch -av
-
-    # 切换到master分支
-    git checkout master
-
-切换到的提交点可以是标签tag
-
-    # 查看标签
-    git tag
-
-    # 切换到指定标签
-    git checkout v1.23
-
-切换到的提交点可以是提交点commit id（hash）
-
-    # 查找指定的commit点的hash值并复制
-    git log --oneline
-
-    # 从当前分支直接切换到指定的commit点
-    git checkout A9380e9
-
-### 切换分支checkout
-
-1.查看远程分支
+查看分支情况
 
     $ git branch -av
     * master                 cf83e50 第四次添加开始回退‘ ’ ;
@@ -935,15 +933,35 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
     remotes/origin/hotfix  7cabce4 res me
     remotes/origin/master  cf83e50 第四次添加开始回退‘ ’ ;
 
-从*号的位置可以看到，我们现在在 master 分支下
+-a 显示所有分支（含远程），带 remotes 开头的是远程分支，否则默认只显示本地分支；
+-v 参数标注了分支当前最新提交记录的注释信息；
+从 * 号的位置可以看到，我们现在在 master 本地分支下。
 
-2.查看本地分支
+分支切换的目标是分支名
 
-    $ git branch
-    * master
+    # 切换到 master 分支
+    git checkout master
 
-3.切换分支，注意这里是在本地新建了一个分支，对应远程的某个分支名
+分支切换的目标是标签tag（某提交点）
 
+    # 查看标签
+    git tag
+
+    # 切换到指定标签
+    git checkout v1.23
+
+分支切换的目标是提交点commit id（hash）
+
+    # 从当前分支直接切换到指定的 commit 点，使用其 hash 值即可
+    git checkout A9380e9
+
+在任意提交点都可以建立分支
+
+    # 切换到某个提交点后就地建立分支
+    git checkout A9380e9
+    git checkout -b new_branch
+
+    # 从远程库的某个分支建立一个本地分支（默认拉取建立本地库的只有 master）
     $ git checkout -b hotfix origin/hotfix
     Switched to a new branch 'hotfix'
     branch 'hotfix' set up to track 'origin/hotfix'.
