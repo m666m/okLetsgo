@@ -93,7 +93,7 @@ git 通过 ssh 客户端连接 github。除了 github 这样的，私有仓库�
     git config user.name "m666m"
     git config user.email "31643783+m666m@users.noreply.github.com"
 
-### 2、ssh客户端的设置
+### 2、ssh 客户端的设置
 
     https://docs.github.com/zh/authentication
 
@@ -210,7 +210,7 @@ git做操作之前或操作之后，查看当前的git状态
     origin  git@github.com:m666m/okLetsgo.git (fetch)
     origin  git@github.com:m666m/okLetsgo.git (push)
 
-先确认下，已经有 origin 远程库，没有也需要重新建立连接
+先确认下，已经有 origin 远程库，没有的话需要重新建立
 
     $ git remote show
     origin
@@ -246,7 +246,7 @@ github.com 获取仓库默认给的是 https 地址，但是在国内的网络�
     # 第一次push的时候要 -u
     git push -u origin master
 
-其实，执行添加了 -u 参数的命令 git push -u origin master就相当于是执行了
+其实，执行添加了 -u 参数的命令 `git push -u origin master` 就相当于是执行了
 
     git push origin master
 
@@ -258,7 +258,7 @@ github.com 获取仓库默认给的是 https 地址，但是在国内的网络�
 
 ### 从本地仓库推送多个远程仓库
 
-1、一般使用中，可以默认fetch/push一个远程仓库，添加多个push远程仓库地址，这样可以实现代码的多处备份，而且默认的origin还存在。
+1、一般使用中，可以默认 fetch/push 一个远程仓库，添加多个 push 远程仓库地址，这样可以实现代码的多处备份，而且默认的 origin 还存在。
 
 远程仓库地址格式
 
@@ -268,7 +268,7 @@ github.com 获取仓库默认给的是 https 地址，但是在国内的网络�
 
     https://github.com/m666m/myproj
 
-方法一、推送命令只会推送到默认的origin地址，其他的各个server1，2，3得再挨个执行push命令
+方法一、推送命令只会推送到默认的 origin 地址，其他的各个 server1，2，3 得再挨个执行 push 命令
 
     git remote add server1 ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
 
@@ -280,7 +280,7 @@ github.com 获取仓库默认给的是 https 地址，但是在国内的网络�
 
     git push server1 developer
 
-方法二、省事的方法，给origin添加多个push远程地址(upstream)，默认fetch还是origin最早添加的地址
+方法二、省事的方法，给 origin 添加多个 push 远程地址(upstream)，默认 fetch 还是 origin 最早添加的地址
 
     git remote set-url --add origin ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
 
@@ -302,7 +302,7 @@ github.com 获取仓库默认给的是 https 地址，但是在国内的网络�
     origin  git@github.com:m666m//project_name.git (push)
     origin  ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git (push)
 
-添加后，本地项目中的.git/config 对应内容如下
+添加后，本地项目中的 .git/config 对应内容如下
 
     [remote "origin"]
         url = git@github.com:m666m/project_name.git
@@ -344,7 +344,7 @@ Git
 
     git clone git://example.com/path/to/repo.git [默认当前目录]
 
-    # 特殊，对 “git@github.com” 开头，默认用git协议，在冒号后是用户名
+    # 特殊，对 “git@github.com” 开头，默认用 git 协议，在冒号后是用户名
     git clone git@github.com:user_name/repo.git
 
     $ ssh -T git@github.com
@@ -381,11 +381,18 @@ File
 
 #### git clone之后的第一次pull和push
 
-先看有几个远程
+查看远程仓库地址，这个地址格式可以给 git clone 直接使用
 
-    git remote show
+    $ git remote -v
+    origin  git@github.com:m666m/okLetsgo.git (fetch)
+    origin  git@github.com:m666m/okLetsgo.git (push)
 
-查看远程，配置
+先确认下，已经有 origin 远程库，没有的话需要重新建立
+
+    $ git remote show
+    origin
+
+显示该远程的详细信息，git 会测试该地址连通性
 
     $ git remote show origin
 
@@ -401,9 +408,9 @@ File
     Local ref configured for 'git push':
         master pushes to master (up to date)
 
-如果pull和push未关联，需要关联
+如果 pull 和 push 未关联，需要关联
 
-    # 将本地的master分支推送到origin主机，同时指定origin为默认主机
+    # 将本地的 master 分支推送到 origin 主机，同时指定 origin 为默认主机
     git push -u origin master
 
 #### 本地空目录，远程裸仓库里有文件
