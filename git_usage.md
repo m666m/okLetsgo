@@ -1874,6 +1874,57 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     + mod1 conf ori
     + # fff ggggggggggggggg mod1 conf
 
+##### 使用 diff3 处理冲突
+
+    https://git-scm.com/book/en/v2/Git-Tools-Advanced-Merging#_checking_out_conflicts
+
+    https://blog.nilbus.com/take-the-pain-out-of-git-conflict-resolution-use-diff3/
+
+在冲突文件中，会新增类似 `||||||| merged common ancestor=======` 的行来指出合并前的共同祖先，这样便于使用者更容易的区分保留哪个。
+
+    <<<<<<< HEAD
+    GreenMessage.send(include_signature: true)
+    ||||||| merged common ancestor
+    BlueMessage.send(include_signature: true)
+    =======
+    BlueMessage.send(include_signature: false)
+    >>>>>>> merged-branch
+
+使用 diff3 的缺点是处理交叉合并（criss-cross merge）会变复杂
+
+    https://blog.nilbus.com/temporary-merge-branch-in-diff3-conflict-markers/
+
+    出现的如下格式
+
+        <<<<<<< HEAD
+            aaaaaa
+        ||||||| merged common ancestors
+        <<<<<<< Temporary merge branch 1
+            bbbbbb
+        =======
+            cccccc
+        >>>>>>> mybranch
+            dddddd
+        <<<<<<< HEAD
+            eeeeee
+        ||||||| merged common ancestors
+            ffffff
+        ||||||| merged common ancestors
+            gggggg
+        =======
+        >>>>>>> Temporary merge branch 2
+        =======
+            hhhhhh
+        >>>>>>> mybranch
+
+    其中 `<<<<<<< Temporary merge branch` 和 `>>>>>>> Temporary merge branch` 包围的部分是交叉合并导致的diff3的一些输出，可以无视，删除后的内容跟不使用 diff3 的结果一致
+
+        <<<<<<< HEAD
+            aaaaaa
+        =======
+            hhhhhh
+        >>>>>>> mybranch
+
 #### merge 对冲突的处理是分叉
 
     本地分支拉取或推送远程时，远程库上有新的提交，与本地的提交，在某个 commit 点之后出现了两种提交的延续，如果直接 git pull，会默认执行 merge，如果有冲突则自动进入一个 merge conflict 过程状态，需要手工解决冲突。
@@ -2763,7 +2814,7 @@ git revert 反做你指定的提交点的操作，新增一个提交点。
 如果在 revert 中发现冲突，git 会提示解决冲突，格式参见章节 [冲突文件的格式]，解决后执行 `git add . ; git revert --continue` 继续。如果想终止，可以执行 `git revert --abort`。
 
 特殊：
-对于分叉合并形成的交叉点的那个提交记录，如果回退，需要指明主线分支：用 -m 选项，接收的参数是一个数字，数字取值为 1 和 2，也就是你在做 merge 时提示行里面列出来的第一个还是第二个，这谁记得住？（其实这是 git 的一个痛点，参见 <https://jneem.github.io/pijul/> 的 [Case study 1: reverting an old commit]）
+对于分叉合并形成的交叉点的那个提交记录，如果回退，需要指明主线分支：用 -m 选项，接收的参数是一个数字，数字取值为 1 和 2，也就是你在做 merge 时提示行里面列出来的第一个还是第二个，这谁记得住？参见 <https://git-scm.com/book/en/v2/Git-Tools-Advanced-Merging#reverse_the_commit>、<https://git-scm.com/docs/howto/revert-a-faulty-merge>。其实这是 git 的一个痛点，参见 <https://jneem.github.io/pijul/> 的 [Case study 1: reverting an old commit]。
 
     git revert HEAD^ -m 1
 
@@ -2775,7 +2826,7 @@ git revert 反做你指定的提交点的操作，新增一个提交点。
 
 这种骚操作只会越搞越乱，不如直接使用章节 [无脑撤销大法：本地库和远程库的提交记录hash对不上]
 
-### 使用角度归纳
+### 从使用角度的总结
 
 TODO: 内容重复了。如果在一个提交中，你只想取消某些文件在本地的变更，而同时保留另外一些文件在本地的变更
 
@@ -3128,9 +3179,9 @@ git diff 主要的应用场景：
 
 ### 没点，俩点，仨点的区别
 
-    https://stackoverflow.com/questions/4944376/how-to-check-real-git-diff-before-merging-from-remote-branch
+    https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#_triple_dot
 
-    https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
+    https://stackoverflow.com/questions/4944376/how-to-check-real-git-diff-before-merging-from-remote-branch
 
 You can use various combinations of specifiers to git to see your diffs as you desire (the following examples use the local working copy as the implicit first commit):
 
@@ -3164,6 +3215,8 @@ For info on ".." vs "..." see as well as the excellent documentation at [git-scm
 Shows incoming remote additions as additions; the triple-dot excludes changes committed to your local repository.
 
 ### HEAD、HEAD^、HEAD~ 的含义
+
+    https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#_ancestry_references
 
 #### HEAD
 
