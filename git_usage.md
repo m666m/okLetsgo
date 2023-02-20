@@ -949,13 +949,16 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
     remotes/origin/hotfix  7cabce4 res me
     remotes/origin/master  cf83e50 第四次添加开始回退‘ ’ ;
 
--a 显示所有分支（含远程），带 remotes 开头的是远程分支，否则默认只显示本地分支；
--v 参数标注了分支当前最新提交记录的注释信息；
-从 * 号的位置可以看到，我们现在在 master 本地分支下。
+    -a 显示所有分支（含远程），带 remotes 开头的是远程分支，否则默认只显示本地分支；
+    -v 参数标注了分支当前最新提交记录的注释信息；
+    从 * 号的位置可以看到，我们现在在 master 本地分支下。
+
+git 用 switch 命令替代了 checkout 命令关于分支切换的功能。
 
 分支切换的目标是分支名
 
     # 切换到 master 分支
+    # git switch master
     git checkout master
 
 分支切换的目标是标签tag（某提交点）
@@ -964,33 +967,28 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
     git tag
 
     # 切换到指定标签
+    # git switch --detach v1.23
     git checkout v1.23
 
 分支切换的目标是提交点commit id（hash）
 
     # 从当前分支直接切换到指定的 commit 点，使用其 hash 值即可
+    # git switch --detach A9380e9
     git checkout A9380e9
 
 在任意提交点都可以建立分支
 
     # 切换到某个提交点后就地建立分支
     git checkout A9380e9
-    git checkout -b new_branch
+    #后面加上提交点的 hash，可以省去 git checkout 那一步
+    # 等效 git switch -c new_branch
+    # 等效 git checkout -b new_branch
+    git branch new_branch
 
-    # 从远程库的某个分支建立一个本地分支（默认拉取建立本地库的只有 master）
+    # 从远程库的某个分支建立一个本地分支（默认拉取建立的本地库只有 master）
     $ git checkout -b hotfix origin/hotfix
     Switched to a new branch 'hotfix'
     branch 'hotfix' set up to track 'origin/hotfix'.
-
-    ＃ 已经切换到 hotfix 分支了
-    $ git branch
-    * hotfix
-    master
-
-    ＃ 切换回master分支
-    $ git checkout master
-    Switched to branch 'master'
-    Your branch is up-to-date with 'origin/master'.
 
 ### 删除分支，远程/本地
 
@@ -2303,9 +2301,13 @@ rebase之前的git提交历史树:
 
 不适用 rebase 的场景
 
-    提交如果被 rebase 了，那这些提交点的 hash 值就变了。实际工作中，分支的重整、合并、cherry-pick 经常发生，有时候还会撤销修改。对开发组来说，提交记录的 hash 值全变，如果会带来管理混乱，那就尽量缩小 rebase 的范围，或放到开发稳定后，管理可控时再做。
+    rebase 提交记录的操作会改变提交记录的 hash 值。实际工作中，分支的重整、合并、cherry-pick 经常发生，有时候还会撤销修改。对开发组来说，提交记录的 hash 值全变，如果会带来管理混乱，那就尽量缩小 rebase 的范围，或放到开发稳定后，管理可控时再做。
 
-NOTE: git rebase 切忌修改远程的提交记录，只做追加不要做修改！
+    如果只是想更改提交记录的注释信息，但是又不想变更它的 hash 值，用 git notes 命令而不是 git rebase
+
+        git notes add -m 'Your can see me in git show command' 72a144e2
+
+NOTE: git rebase 切忌修改已经记录在远程库的提交记录！
 
 + 做压缩提交变基的限制：
 
@@ -2670,7 +2672,7 @@ TODO: git的实际工作，修改的文件进入每个区域，都需要专门�
     reset [commit] <paths>     NO       YES     NO      YES
     checkout [commit] <paths>  NO       YES     YES     NO
 
-git restore 代替 `git checkout` 关于撤回的几个用法，用途明晰：只操作提交之前的修改
+git restore 取代 `git checkout` 关于撤回的几个用法，用途明晰：只操作提交之前的修改
 
     暂存区有修改，工作区无修改：
 
@@ -2773,7 +2775,7 @@ git revert 反做你指定的提交点的操作，新增一个提交点。
 
 这种骚操作只会越搞越乱，不如直接使用章节 [无脑撤销大法：本地库和远程库的提交记录hash对不上]
 
-### 本地回退：签出指定文件
+### 使用角度归纳
 
 TODO: 内容重复了。如果在一个提交中，你只想取消某些文件在本地的变更，而同时保留另外一些文件在本地的变更
 
