@@ -3336,6 +3336,9 @@ HEAD 的 第三个父级
 
     git log <file/branch> --oneline --graph
 
+    查看所有最近的提交记录，不再本分支上的也显示，经常用于改动之前的保留现场
+    git reflog
+
 显示提交记录跟之前一条的差异diff
 
     # 当前这个提交点
@@ -3624,6 +3627,8 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
 git revert 在合并冲突时使用`core.editor`的设置，没有单独的设置选项。
 
 ## 常见问题
+
+    https://git-scm.com/docs/gitfaq
 
 Ubuntu克隆下源码后对其操作时git报错 fatal: unsafe repository
 
