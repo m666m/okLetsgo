@@ -72,7 +72,28 @@ git 通过 ssh 客户端连接 github。除了 github 这样的，私有仓库�
     在 cmd 或 powershell 下运行要设置环境变量
         https://github.com/git-for-windows/git/wiki/FAQ#running-without-git-bash
 
-### 1、ssh客户端的设置
+### 1、设置用户名和电邮
+
+如果未设置过 git 用户名和邮箱，设置个默认的全局使用，如果是主用办公，设为办公用户名和电邮，家庭自用，按自己的习惯设置。
+
+    # 查看
+    git config --global --list
+
+    # 设置
+    git config --global user.name "m666m"
+    git config --global user.email "31643783+m666m@users.noreply.github.com"
+
+如果是在已有的项目文件夹里，注意检查是否需要更新用户名和电邮地址。比如 github 项目使用 github 用户名和电邮，填写前面复制的 github 的 noreply 电邮地址。
+
+    # 查看
+    git config user.name
+    git config  user.email
+
+    # 设置
+    git config user.name "m666m"
+    git config user.email "31643783+m666m@users.noreply.github.com"
+
+### 2、ssh客户端的设置
 
     https://docs.github.com/zh/authentication
 
@@ -91,7 +112,7 @@ git 通过 ssh 客户端连接 github。除了 github 这样的，私有仓库�
 
     ssh-copy-id -i ~/.ssh/id_ed25519.pub -p 2345 git@xx.xx.xx.xx
 
-### 2、设置 gitub 使用 ssh 密钥方式管理代码库
+### 3、设置 gitub 使用 ssh 密钥方式管理代码库
 
     https://docs.github.com/zh/authentication/connecting-to-github-with-ssh
 
@@ -125,18 +146,6 @@ git colne 一个项目，然后查看是否此项目是使用 https 协议
 
     # 登陆问题排查
     ssh -v git@github.com
-
-如果未设置过 git 用户名和邮箱，注意填写前面复制的 github 的 noreply 电邮地址。
-
-    # 查看 git config --global --list
-    git config --global user.name "m666m"
-    git config --global user.email "31643783+m666m@users.noreply.github.com"
-
-如果是在已有的项目文件夹里，注意检查是否需要更新用户名和电邮地址
-
-    git config user.name
-
-    git config  user.email
 
 github 网站提供基于 https 端口的 ssh 连接方式 <https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port>，主要用于内网封禁对外使用 22 端口，但是开放 443 端口的场合。
 
@@ -3700,11 +3709,11 @@ github 要求，gpg 密钥的电邮地址应该使用 github 页面提示给出�
 
    github 页面右上角，单击你的头像，Settings—> GPG keys，然后粘贴 GPG key。
 
-#### github不在 Pubkey Server 发布公钥
-
 这时自己的 github 公钥就可以公开访问了
 
     https://github.com/m666m.gpg
+
+#### github不在 Pubkey Server 发布公钥
 
 GitHub 不去查找 Pubkey Server，只维护用户自行上传的公钥
 
@@ -3712,7 +3721,7 @@ GitHub 不去查找 Pubkey Server，只维护用户自行上传的公钥
 
     删除密钥不会取消验证已签名的提交。使用此密钥验证的提交将保持验证状态。
 
-### 2、将 GPG 密钥与 Git 关联
+### 2、设置 git 中使用的 gpg 密钥
 
     # 如果有 Yubikey 这种智能卡，插入
     #   gpg --card-status
@@ -3720,14 +3729,14 @@ GitHub 不去查找 Pubkey Server，只维护用户自行上传的公钥
 
     # FBB74XXXXXXXAE51 是之前gpg生成的uid的密钥指纹，也可以直接写uid如'm666m'
     # 如果有签名功能的子密钥，设置为该子密钥的keyid即可。
-    git config --global user.signingkey FBB74XXXXXXXAE51
-    # 或者
+    #
+    # 分项目设置，全局使用加 --global
     git config user.signingkey FBB74XXXXXXXAE51
 
-如果是在已有的项目文件夹里，注意检查是否需要更新用户名和电邮地址
+要确保用户名和电邮跟 github中 设置的一致
 
+    # 分项目设置，全局使用加 --global
     git config user.name
-
     git config  user.email
 
 ### 3、设置gpg程序的路径
@@ -3739,17 +3748,16 @@ GitHub 不去查找 Pubkey Server，只维护用户自行上传的公钥
     $ git config --global gpg.program "E:\GnuPG\bin\gpg.exe"
     done
 
-### 4、签名提交
+### 4、设置始终签名提交
 
 git commit 使用 -S 参数进行 GPG 签名：
 
     # 每次都得给 git commit 操作（包括 --amend）传递 -S。
     git commit -S -m “commit message"
 
-建议始终使用签名提交，设置默认使用 GPG 签名提交：
+建议始终使用签名提交，设置默认使用 GPG 签名提交，这样 git commit 命令不需要加 -S 了
 
-    git config --global commit.gpgsign true
-    # 或者
+    # 分项目设置，全局使用加 --global
     git config commit.gpgsign true
 
 验证签名的提交
@@ -3773,7 +3781,7 @@ git commit 使用 -S 参数进行 GPG 签名：
     1、在 GitLab 提交选项卡，签名的提交将显示包含“ Verified”或“ Unverified”的徽章，具体取决于 GPG 签名的验证状态。
     2、通过单击 GPG 徽章，将显示签名的详细信息。
 
-### 5、给标签签名
+### 5、设置始终给标签签名
 
 tag命令后跟 -s 参数即可
 
@@ -3785,7 +3793,8 @@ tag命令后跟 -s 参数即可
 
 建议始终对 git 标签签名，设置始终签名带注释的标签
 
-    git config --global tag.forceSignAnnotated true
+    # 分项目设置，全局使用加 --global
+    git config tag.forceSignAnnotated true
 
 验证一个签名的标签
 
@@ -3801,7 +3810,7 @@ tag命令后跟 -s 参数即可
 
 ### 7、可选步骤：给Github的GPG公钥签名
 
-在Github网页端进行的操作，比如创建仓库。这些commit是由Github代为签名的。
+在 Github 网页端进行的操作，比如创建仓库。这些 commit 是由 Github 代为签名的
 
     $ git log --show-signature
     # some output is omitted
@@ -3925,13 +3934,17 @@ Pull Request 不只是一个通知，还是一个专注于某个提议功能的�
 
 ### Pull Request是如何工作的
 
-Pull Request 需要两个不同的分支或是两个不同的仓库,
+Pull Request 需要两个不同的分支或是两个不同的仓库
 
-    1.开发者在他们的本地仓库中为某个功能创建一个专门的分支。
-    2.开发者将分支推送到公共的 GitHub 仓库。
-    3.开发者用 GitHub 发起一个 Pull Request。
-    4.其余的团队成员审查代码，讨论并且做出修改。
-    5.项目维护者将这个功能并入官方的仓库，然后关闭这个 Pull Request。
+    1.开发者在他们的本地仓库中为某个功能创建一个专门的分支
+
+    2.开发者将分支推送到公共的 GitHub 仓库
+
+    3.开发者用 GitHub 发起一个 Pull Request
+
+    4.其余的团队成员审查代码，讨论并且做出修改
+
+    5.项目维护者将这个功能并入官方的仓库，然后关闭这个 Pull Request
 
 ### 例子
 
@@ -3943,7 +3956,7 @@ Mary 是一位开发者，John 是项目的维护者。他们都有自己公开�
 
 选好 fork 的目标位置之后，她在服务端就有了一个项目的副本.
 
-接下来，Mary 需要将她刚刚 fork 的 GitHub 仓库克隆下来.她在本地会有一份项目的副本。她需要运行下面这个命令：
+接下来，Mary 需要将她刚刚 fork 的 GitHub 仓库克隆到本地，这样她在本地会有一份项目的副本
 
     git clone https://github.com/user/repo.git
 
@@ -3953,7 +3966,9 @@ Mary 是一位开发者，John 是项目的维护者。他们都有自己公开�
 
     # 创建新分支
     git checkout -b some-feature
+
     # 编辑一些代码
+
     git commit -a -m "新功能的一些草稿"
 
 为了完成这个新功能，Mary 想创建多少个提交都可以。如果 feature 分支的历史有些乱，她可以使用交互式的 rebase 来移除或者拼接不必要的提交。对于大项目来说，清理 feature 的项目历史使得项目维护者更容易看清楚 Pull Request 的所处的进展。
@@ -3964,15 +3979,17 @@ Mary 是一位开发者，John 是项目的维护者。他们都有自己公开�
 
 这样她的更改就可以被项目维护者看到了（或者任何有权限的协作者）。
 
-#### Mary创建了一个Pull Request
+#### Mary 创建了一个Pull Request
 
-GitHub 上已经有了她的 feature 分支之后，Mary 可以找到被她 fork 的仓库，点击项目简介下的 New Pull Request 按钮，用她的 GitHub 账号创建一个 Pull Request。Mary 的仓库会被默认设置为源仓库（head fork），询问她指定源分支（compare）、目标仓库（base fork）和目标分支（base）。
+GitHub 上已经有了她的 feature 分支之后，Mary 可以找到被她 fork 的仓库，点击项目简介下的 New Pull Request 按钮，用她的 GitHub 账号创建一个 Pull Request。
+
+Mary 的仓库会被默认设置为源仓库（head fork），询问她指定源分支（compare）、目标仓库（base fork）和目标分支（base）。
 
 Mary 想要将她的功能并入主代码库，所以源分支就是她的 feature 分支，目标仓库就是 John 的公开仓库，目标分支为 master。她还需要提供一个 Pull Request 的标题和简介。
 
 在她创建了 Pull Request 之后，GitHub 会给 John 发送一条通知。
 
-#### John审查了这个Pull Request
+#### John 审查了这个 Pull Request
 
 John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到所有的 Pull Request。点击 Mary 的 Pull Request 会显示这个 Pull Request 的简介、feature 分支的提交历史，以及包含的更改。
 
