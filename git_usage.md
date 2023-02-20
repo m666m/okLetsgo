@@ -949,7 +949,8 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
     remotes/origin/hotfix  7cabce4 res me
     remotes/origin/master  cf83e50 第四次添加开始回退‘ ’ ;
 
-    -a 显示所有分支（含远程），带 remotes 开头的是远程分支，否则默认只显示本地分支；
+    默认只显示本地分支、工作树
+    -a 显示所有（含远程分支、工作树）。带 remotes 开头的是远程分支。
     -v 参数标注了分支当前最新提交记录的注释信息；
     从 * 号的位置可以看到，我们现在在 master 本地分支下。
 
