@@ -851,6 +851,8 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
 
 ## 日常使用的大致流程
 
+    https://git-scm.com/docs/giteveryday
+
 ### 日常工作：准备工作 --- 拉取、合并（含标签，变基）
 
 建立仓库，拉取代码，参见章节 [git仓库初始操作]。
@@ -3084,7 +3086,7 @@ git diff 主要的应用场景：
 
         git diff
 
-    你做了 `git add` 后又修改了内容还没再次 `git add`，对比二者差异，也就是在 vs code 里你点击 git 树中 '更改' 列出来的差异。
+    你做了 `git add` 后，又修改了内容还没再次 `git add`，对比二者差异。也就是在 vs code 里你点击 git 树中 '更改' ，如果暂存区有内容，列出来的差异。
 
     ·比较暂存区(staged)和版本库(HEAD)的差异
 
@@ -3092,15 +3094,15 @@ git diff 主要的应用场景：
 
         或 git diff --cached
 
-    预测用，显示你做了 `git add` 后如果要做 `git commit` 时会提交的内容有哪些，也就是在 vs code 里你点击 git 树中 '暂存的更改' 列出来的差异。
+    显示即将被提交的内容，就是在你做了 `git add` 后，预测如果要做 `git commit` 时会提交的内容有哪些。也就是在 vs code 里你点击 git 树中 '暂存的更改' 列出来的差异。
 
     ·对比工作区(Working tree)和版本库(HEAD)的差别
 
         git diff HEAD
 
-    只要你没有做 `git commit`，当前工作区的所有改动（含暂存区的）都会体现出来。
+    只要你没有做 `git commit`，当前工作区的所有改动（含暂存区的）都会体现出来。也就是在 vs code 里你点击 git 树中 '更改' ，如果暂存区没有内容，列出来的差异。
 
-    ·其实，所有的修改都没有 `git add` 执行 `git diff HEAD` ，跟执行了 `git add` 后行 `git diff --staged`，看到的效果都是一样的。
+可以看出，修改完成后还没有执行 `git add`，做 `git diff HEAD` 显示的结果，跟执行了 `git add` 后行 `git diff --staged`，看到的结果是一样的。
 
 ·比较两个分支（上最新的提交）的差别
 
