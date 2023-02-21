@@ -2744,17 +2744,17 @@ git restore file 关于撤回文件的用途很明晰：只操作提交之前的
 
         `git restore <file>` 无变化（用 HEAD 指向的内容覆盖工作区）
 
-        `git restore --staged <file>` 丢弃工作区，暂存区内容回退到工作区
+        `git restore --staged <file>` 丢弃暂存区内容，暂存区内容回退到工作区
 
     暂存区无修改，工作区有修改：
 
-        `git restore <file>` 丢弃工作区的修改（用 HEAD 指向的内容覆盖工作区）
+        `git restore <file>` 丢弃工作区内容（用 HEAD 指向的内容覆盖工作区）
 
     暂存区有修改，工作区有修改：
 
-        `git restore <file>` 丢弃工作区，暂存区保持不动
+        `git restore <file>` 丢弃工作区内容，保留暂存区内容
 
-        `"git restore --staged <file>` 丢弃暂存区，工作区保持不动
+        `"git restore --staged <file>` 丢弃暂存区内容，保留工作区内容
 
 git checkout file 把HEAD或暂存区文件内容覆盖到工作区
 
@@ -2890,11 +2890,11 @@ TODO: 内容重复了。如果在一个提交中，你只想取消某些文件�
 
         git checkout file-name.js
 
-2、仅取消工作区文件内容
+2、取消工作区文件所作修改
 
     git checkout -- <file>
 
-3、仅取消暂存区工作内容
+3、取消暂存区文件所作修改，暂存区内容回退到工作区
 
     git reset HEAD -- <file>
 
