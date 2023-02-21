@@ -403,13 +403,17 @@ File
     HEAD branch: master
     Remote branch:
         master tracked
-    Local branch configured for 'git pull':
+    Local branch configured for 'git pull':  未关联pull就没有这两行
         master merges with remote master
-    Local ref configured for 'git push':
+    Local ref configured for 'git push':     未关联push就没有这两行
         master pushes to master (up to date)
 
 如果 pull 和 push 未关联，需要关联
 
+    # 关联 pull
+    git branch --set-upstream-to=origin/master master
+
+    # 管理 push
     # 将本地的 master 分支推送到 origin 主机，同时指定 origin 为默认主机
     git push -u origin master
 
