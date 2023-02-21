@@ -499,6 +499,7 @@ git clone 命令正常拉取
 
     $ git fetch origin dev（dev即分支名）
 
+    # 看不到完整输出时，则使用 git remote update 或 git fetch --all 先更新下
     $ git branch -avv
     * master                 8d96022 [origin/master] 3
     remotes/origin/HEAD    -> origin/master
@@ -874,9 +875,6 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
     # 不直接 pull
     # git pull origin xxx --rebase
 
-    # 本地 git branch -avv 看不到输出时，一般需要在本地使用 git remote update 或 git fetch --all 更新
-
-    # fetch 是只更新本地的远程仓库的目录，不会跟本地工作区的现有文件冲突
     # 下载当前分支可以简写为： git fetch
     git fetch origin master
 
@@ -951,6 +949,7 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
 
 查看分支情况
 
+    # 看不到完整输出时，则使用 git remote update 或 git fetch --all 先更新下
     $ git branch -avv
     hotfix                 7cabce4 [origin/hotfix] res me
     * master                 494c93b [origin/master] fea 添加第三次
@@ -1005,6 +1004,7 @@ git 用 switch 命令替代了 checkout 命令关于分支切换的功能。
 
 0.先看看有多少本地和远程分支
 
+    # 看不到完整输出时，则使用 git remote update 或 git fetch --all 先更新下
     git branch -avv
 
 1.切换到其他分支再进行操作
@@ -1030,7 +1030,7 @@ git 用 switch 命令替代了 checkout 命令关于分支切换的功能。
 
 3.其它人的机器上还有该远程分支，清理无效远程分支
 
-    git branch -avv  # 查看
+    git branch -avv
 
     git fetch origin -p  # git remote prune
 
@@ -1076,9 +1076,9 @@ git pull 的操作默认是 fetch + merge，可以设置成 fetch + rebase。
 
 原理：见章节 [你的代码在本地有两份--本地仓库和远程仓库]。
 
-git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相应分支最新的状态。
+git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相应分支最新的状态，并不会改变你本地仓库的状态。
 
-git fetch 并不会改变你本地仓库的状态。它不会更新你的本地分支，即不会修改你工作区上的文件。
+它既不会更新你的本地分支，也不会修改你工作区上的文件。
 
 所以 git fetch 是十分安全的，你不用担心这个命令破坏你的工作区或暂存区，它下载的远程分支到本地的远程仓库分支，但是并不做任何的合并工作，然后可以执行以下命令合并到本地仓库
 
@@ -1157,7 +1157,7 @@ NOTE: 本地分支更新远程时，不要直接做 git pull 或 git pull --reba
 
     可以先对比查看下远程库的提交记录跟本地库提交记录的差异
 
-        git fetch --all
+        git fetch
 
         git log ..origin/master --graph --oneline
 
