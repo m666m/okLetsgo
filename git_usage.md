@@ -2841,6 +2841,21 @@ TODO: 内容重复了。如果在一个提交中，你只想取消某些文件�
 
     git checkout {{some-commit-hash}} file-name.js
 
+    先查找指定文件的相关提交记录
+    $ git log --oneline zhyc.txt
+    [树形提交记录]
+    * cf83e50 第四次添加开始回退‘ ’ ;
+    * 61ce6d7 第三次添加也是要丢
+    * b263d60 第二次添加作为要丢的
+    * 0a2883c 第一次添加作为基础
+    * f6e4075 tea2我删掉了123，应该会冲突,看看到底把谁的 commit id 给更新了
+    * a928649 我删掉了456
+    * b224511 zhyc.txt
+
+    然后直接签出
+    $ git checkout a928649 zhyc.txt
+    Updated 1 path from e53b7d8
+
 签出的文件处于“暂存并准备提交”的状态。
 
 如果不想要上面的状态，想回退并签出到未暂存的状态，需要执行一下
