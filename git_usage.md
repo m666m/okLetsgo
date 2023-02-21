@@ -963,7 +963,9 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
     -v 参数标注了分支当前最新提交记录的注释信息；
     从 * 号的位置可以看到，我们现在在 master 本地分支下。
 
-git 用 switch 命令替代了 checkout 命令关于分支切换的功能。
+git 用 switch 命令替代了 checkout 命令中关于分支切换的功能
+
+    https://git-scm.com/docs/git-switch
 
 分支切换的目标是分支名
 
@@ -2734,51 +2736,67 @@ TODO: git的实际工作，修改的文件进入每个区域，都需要专门�
     reset [commit] <paths>     NO       YES     NO      YES
     checkout [commit] <paths>  NO       YES     YES     NO
 
-git restore 取代 `git checkout` 关于撤回的几个用法，用途明晰：只操作提交之前的修改
+git restore file 关于撤回文件的用途很明晰：只操作提交之前的修改
+
+    https://git-scm.com/docs/git-restore
 
     暂存区有修改，工作区无修改：
 
-        `git restore <file>` 无变化
+        `git restore <file>` 无变化（用 HEAD 指向的内容覆盖工作区）
 
-        `git restore --staged <file>` 暂存区的内容撤回到工作区
+        `git restore --staged <file>` 丢弃工作区，暂存区内容回退到工作区
 
     暂存区无修改，工作区有修改：
 
-        `git restore <file>` 丢弃工作区的修改
+        `git restore <file>` 丢弃工作区的修改（用 HEAD 指向的内容覆盖工作区）
 
     暂存区有修改，工作区有修改：
 
-        `git restore <file>` 丢弃工作区的修改，暂存区保持不动
+        `git restore <file>` 丢弃工作区，暂存区保持不动
 
-        `"git restore --staged <file>` 丢弃暂存区的修改，工作区保持不动
+        `"git restore --staged <file>` 丢弃暂存区，工作区保持不动
+
+git checkout file 把HEAD或暂存区文件内容覆盖到工作区
+
+    https://git-scm.com/docs/git-checkout
+
+    只丢弃工作区的修改，暂存区保持不动
+
+git checkout commit
+
+    直接切换到指定的提交记录，当前工作区等内容都保留，如果有文件重复，切不过去
 
 git reset 主要关注已经提交的修改的 commit 的回退，分几种回退情形
 
-    git reset --soft HEAD~ 重置 head 的位置，指向本地仓库里的提交点，回退的commit内容放到暂存区，HEAD~表示只回退上一步的commit，如果是间隔多个commit，回退会累积起来，类似 squash 的效果。
+    https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified#_the_role_of_reset
+
+    git reset --soft HEAD~
+
+        重置 head 的位置，指向本地仓库里的提交点，回退的commit内容放到暂存区，HEAD~表示只回退上一步的commit，如果是间隔多个commit，回退会累积起来，类似 squash 的效果。
 
         如果暂存区有修改，则丢弃该commit的内容。不过你可以用 git reflog 查看 commit 往回cherry-pick。
 
-    git reset HEAD~ 这个会先做上面的步骤，然后再加一步，丢弃暂存区的修改，把回退的 commit 重置到工作区
+    git reset HEAD~
+
+        这个会先做上面的步骤，然后再加一步，丢弃暂存区的修改，把回退的 commit 重置到工作区
 
         如果工作区有修改，则丢弃该 commit 的内容。不过你可以用 git reflog 查看 commit 往回cherry-pick。
 
-    git reset HEAD 把暂存区的内容回退到工作区，是 git add 的逆过程。
+    git reset HEAD
+
+        把暂存区的内容回退到工作区，是 git add 的逆过程。
 
         如果工作区有修改，则丢弃暂存区的变更。
 
-    git reset <commit> <file> 把工作区的文件回滚到指定的commit版本，如果没有 commid 就是暂存区的内容回退到工作区。
+    git reset <commit> <file>
 
-    git reset --hard [commitid] 这个会先做上面的步骤，然后再加一步，把当前head指向的commit重置到工作区
+        把工作区的文件回滚到指定的commit版本，如果没有 commid 就是暂存区的内容回退到工作区。
 
-    注： 这个“有修改”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
+    git reset --hard [commitid]
 
-git checkout 主要关注未提交的修改的撤回，分几种回退情形
+        这个会先做上面的步骤，然后再加一步，把当前head指向的commit重置到工作区
 
-    暂存区有修改，工作区无修改：无变化
-
-    暂存区无修改，工作区有修改：丢弃工作区的修改
-
-    暂存区有修改，工作区有修改：丢弃工作区的修改，暂存区保持不动
+注： “有修改”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
 
 git rm 移除 git 对该文件的跟踪，跟 git add 相对，分几种回退情形
 
@@ -2843,11 +2861,9 @@ TODO: 内容重复了。如果在一个提交中，你只想取消某些文件�
 
     git checkout forget-my-changes.js
 
-从其他分支或者之前的提交中签出文件的不同版本：
+1、从其他分支或者之前的提交中签出文件的不同版本：
 
-    git checkout some-branch-name file-name.js
-
-    git checkout {{some-commit-hash}} file-name.js
+    git checkout <branch/commit> file-name.js
 
     先查找指定文件的相关提交记录
     $ git log --oneline zhyc.txt
@@ -2864,17 +2880,23 @@ TODO: 内容重复了。如果在一个提交中，你只想取消某些文件�
     $ git checkout a928649 zhyc.txt
     Updated 1 path from e53b7d8
 
-签出的文件处于“暂存并准备提交”的状态。
+    签出的文件处于“暂存并准备提交”的状态。
 
-如果不想要上面的状态，想回退并签出到未暂存的状态，需要执行一下
+    如果不想要上面的状态，想回退并签出到未暂存的工作区状态，需要执行一下
 
-    git reset HEAD file-name.js
+        git reset HEAD file-name.js
 
-然后再次执行
+    不想看了，回到最新提交
 
-    git checkout file-name.js
+        git checkout file-name.js
 
-这样文件回到了初始状态。
+2、仅取消工作区文件内容
+
+    git checkout -- <file>
+
+3、仅取消暂存区工作内容
+
+    git reset HEAD -- <file>
 
 示例
 
@@ -3341,9 +3363,7 @@ HEAD 的 第三个父级
     HEAD^2~3 = HEAD^2^^^
     HEAD^3~3 = HEAD^3^^^
 
-## git 常用法
-
-### 查看提交记录
+## 查看提交记录
 
     https://www.cnblogs.com/bellkosmos/p/5923439.html
 
@@ -3351,7 +3371,7 @@ HEAD 的 第三个父级
 
     git log 的很多用法也适用于 git diff，参见章节 [diff 显示差异的多种用法]。
 
-    查日志做对比之前，先拉取所有分支的远程库，以保证数据最新
+    查日志做对比之前，可以先拉取所有分支的远程库，以保证数据最新
 
         git fetch -all
 
@@ -3359,13 +3379,13 @@ HEAD 的 第三个父级
 
     git log <file/branch> --oneline --graph
 
-    查看所有最近的提交记录，不再本分支上的也显示，经常用于改动之前的保留现场
+    查看所有最近的提交记录，不在本分支上的也显示，经常用于改动之前的保留现场
     git reflog
 
 显示提交记录跟之前一条的差异diff
 
-    # 当前这个提交点
-    git show <commit id>
+    # 指定这个提交点，也可同时限定文件
+    git show <commit id> <file>
 
     # 在此提交点之前的所有记录
     git log -p <commit id>
@@ -3395,6 +3415,8 @@ HEAD 的 第三个父级
 某个提交记录归属于哪些分支
 
     git branch --contains <commit> --all
+
+## git 常用法
 
 ### 快速定位故障版本
 
@@ -3771,13 +3793,15 @@ head当前是指向最新的那一条记录，所以我们看一下parent commit
 
 ## 使用 GPG 签名 Github 提交
 
+    https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work
+
+    https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key
+
     https://www.dejavu.moe/posts/gpg-verified-github/
 
     https://www.zackwu.com/posts/2019-08-04-how-to-use-gpg-on-github/
 
     https://cloud.tencent.com/developer/article/1656009?from=article.detail.1531457
-
-    https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key
 
 验证签名
 
