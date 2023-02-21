@@ -492,29 +492,32 @@ git clone 命令正常拉取
 
     git clone -b dev 代码仓库地址 （dev是分支名称）
 
-或fetch下来再建个本地分支
+或 fetch 下来再建个本地分支
 
-    git init
-    git remote add origin git@github.com:m666m/nothing2.git
+    $ git init
+    $ git remote add origin git@github.com:m666m/nothing2.git
 
-    git fetch origin dev（dev即分支名）
+    $ git fetch origin dev（dev即分支名）
 
-    $ git branch -av
-    * master                 8d96022 3
+    $ git branch -avv
+    * master                 8d96022 [origin/master] 3
     remotes/origin/HEAD    -> origin/master
     remotes/origin/dev        b414ac9 功能3
     remotes/origin/master  8d96022 3
 
-    git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
-    git pull --rebase origin dev(远程分支名称)
+    $ git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
+
+    $ git pull --rebase origin dev(远程分支名称)
 
 又一个方法
 
-    只想要fetch其他的分支，比如dev：
+    只想要 fetch 其他的分支，比如dev：
 
-    git remote set-branches origin dev
-    git fetch --depth 1 origin dev
-    git checkout -b dev origin/dev
+    $ git remote set-branches origin dev
+
+    $ git fetch --depth 1 origin dev
+
+    $ git checkout -b dev origin/dev
 
 #### 本地非空目录，拉取远程非空裸仓库
 
@@ -871,7 +874,7 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
     # 不直接 pull
     # git pull origin xxx --rebase
 
-    # 本地 git branch -av 看不到输出时，一般需要在本地使用 git remote update 或 git fetch --all 更新
+    # 本地 git branch -avv 看不到输出时，一般需要在本地使用 git remote update 或 git fetch --all 更新
 
     # fetch 是只更新本地的远程仓库的目录，不会跟本地工作区的现有文件冲突
     # 下载当前分支可以简写为： git fetch
@@ -948,12 +951,13 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
 
 查看分支情况
 
-    $ git branch -av
-    * master                 cf83e50 第四次添加开始回退‘ ’ ;
+    $ git branch -avv
+    hotfix                 7cabce4 [origin/hotfix] res me
+    * master                 494c93b [origin/master] fea 添加第三次
     remotes/origin/HEAD    -> origin/master
     remotes/origin/def_xxx b414ac9 功能3
     remotes/origin/hotfix  7cabce4 res me
-    remotes/origin/master  cf83e50 第四次添加开始回退‘ ’ ;
+    remotes/origin/master  494c93b fea 添加第三次
 
     默认只显示本地分支、工作树
     -a 显示所有（含远程分支、工作树）。带 remotes 开头的是远程分支。
@@ -1001,7 +1005,7 @@ git 用 switch 命令替代了 checkout 命令关于分支切换的功能。
 
 0.先看看有多少本地和远程分支
 
-    git branch -av
+    git branch -avv
 
 1.切换到其他分支再进行操作
 
@@ -1026,7 +1030,7 @@ git 用 switch 命令替代了 checkout 命令关于分支切换的功能。
 
 3.其它人的机器上还有该远程分支，清理无效远程分支
 
-    git branch -av  # 查看
+    git branch -avv  # 查看
 
     git fetch origin -p  # git remote prune
 
