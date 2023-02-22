@@ -49,7 +49,7 @@
         },
         "[Nord Deep]": {
             "editor.foreground": "#c9d9e6",
-            "activityBar.foreground": "#0ccff1",
+            "activityBar.foreground": "#0cb0f1",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
             "editorBracketHighlight.foreground1": "#c9dbd8",
             "editorBracketHighlight.foreground2": "#71a4df",
@@ -59,7 +59,7 @@
             "editorBracketHighlight.foreground6": "#5bd6d6"
         },
         "[Nord Wave]": {
-            "editor.foreground": "#bdc8d6",
+            "editor.foreground": "#bac5d3",
             "activityBar.foreground": "#0ccff1",
             // 括号高亮的背景色居然用肉色
             "editorBracketMatch.background": "#6d4d12",
