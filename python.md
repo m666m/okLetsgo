@@ -2049,7 +2049,7 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 
 ### vscode 用的 Python 配套包
 
-注意这些包被 vscode 默认安装到了你的基础环境中，conda[base] 或 virtualenv 不同。
+TODO:注意这些包被 vscode 默认安装到了你的基础环境中，conda[base] 或 virtualenv 不同。
 
 #### 格式化 yapf
 
@@ -2077,6 +2077,8 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 #### 代码规范检查 flake8
 
     https://gitlab.com/pycqa/flake8/
+
+    目前被 vscode 发展称扩展了 ms-python.flake8，不用装到自己的 python 环境了
 
 在要忽略 flake8 检查的那一行加上 # noqa 注释即可
 
