@@ -2746,15 +2746,17 @@ git restore file 关于撤回文件的用途很明晰：只操作提交之前的
 
     示例
 
-        暂存区有内容，工作区无内容：
-
-            `git restore <file>` 无变化（文件内容恢复 HEAD 指向的内容）
-
-            `git restore --staged <file>` 丢弃暂存区内容，暂存区内容回退到工作区
-
         暂存区无内容，工作区有内容：
 
             `git restore <file>` 丢弃工作区内容（文件内容恢复 HEAD 指向的内容）
+
+            `git restore --staged <file>` 无变化
+
+        暂存区有内容，工作区无内容：
+
+            `git restore <file>` 无变化
+
+            `git restore --staged <file>` 丢弃暂存区内容，暂存区内容回退到工作区
 
         暂存区有内容，工作区有内容：
 
@@ -2791,7 +2793,7 @@ git reset 主要关注已经提交的修改的 commit 的回退，分几种回�
 
     https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified#_the_role_of_reset
 
-    注意，如果你回退的是远程库已有的提交记录，建议不要用 git reset，参见章节 [远程库也有的提交记录，如何回退] 的办法。
+    注意：如果你回退的是远程库已有的提交记录，建议不要用 git reset，参见章节 [远程库也有的提交记录，如何回退] 的办法。
 
     git reset --soft HEAD~
 
@@ -3120,6 +3122,8 @@ git diff 主要的应用场景：
         git diff
 
     你做了 `git add` 后，又修改了内容还没再次 `git add`，对比二者差异。也就是在 vs code 里你点击 git 树中 '更改' ，如果暂存区有内容，列出来的差异。
+
+    如果暂存区无内容，则会比较工作区和版本库(HEAD)，这二义性只能死记。
 
     ·比较暂存区(staged)和版本库(HEAD)的差异
 
