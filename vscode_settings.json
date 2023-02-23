@@ -45,11 +45,11 @@
         "[Nord]": {
             //"editor.background": "#242327e0",
             //"editor.foreground": "#9eb6b2",
-            "activityBar.foreground": "#40f9ff"
+            "activityBar.foreground": "#45f4fa"
         },
         "[Nord Deep]": {
             "editor.foreground": "#c9d9e6",
-            "activityBar.foreground": "#0cb0f1",
+            "activityBar.foreground": "#16b7f7",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
             "editorBracketHighlight.foreground1": "#c9dbd8",
             "editorBracketHighlight.foreground2": "#71a4df",
@@ -60,7 +60,7 @@
         },
         "[Nord Wave]": {
             "editor.foreground": "#bac5d3",
-            "activityBar.foreground": "#0ccff1",
+            "activityBar.foreground": "#93ceff",
             // 括号高亮的背景色居然用肉色
             "editorBracketMatch.background": "#6d4d12",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
