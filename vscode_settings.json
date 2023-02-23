@@ -49,7 +49,7 @@
         },
         "[Nord Deep]": {
             "editor.foreground": "#c9d9e6",
-            "activityBar.foreground": "#16b7f7",
+            "activityBar.foreground": "#56bbff",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
             "editorBracketHighlight.foreground1": "#c9dbd8",
             "editorBracketHighlight.foreground2": "#71a4df",
@@ -260,7 +260,7 @@
         "XXX": {
             "icon": "beaker",
             "iconColour": "#10dfdf",
-            "foreground": "#03043a",
+            "foreground": "#2b313d",
             "background": "#10dfdf",
             "type": "tag"
         },
@@ -293,10 +293,10 @@
     "gitlens.views.tags.branches.layout": "list",
     // vim airline 风格的状态栏变颜色
     "vim.statusBarColorControl": true,
-    "vim.statusBarColors.normal": ["#8FBCBB", "#434C5E"],
+    "vim.statusBarColors.normal": ["#789c9c", "#0f0602"],
     "vim.statusBarColors.insert": "#FBA2A2",
-    "vim.statusBarColors.visual": "#50b8f0",
-    "vim.statusBarColors.visualline": "#50b8f0",
+    "vim.statusBarColors.visual": "#2492ce",
+    "vim.statusBarColors.visualline": "#2492ce",
     "vim.statusBarColors.visualblock": "#A3BE8C",
     "vim.statusBarColors.replace": "#D08770",
     "vim.statusBarColors.commandlineinprogress": "#F8D9A0",
