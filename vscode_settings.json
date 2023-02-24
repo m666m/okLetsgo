@@ -51,32 +51,31 @@
             "editor.foreground": "#c9d9e6",
             "activityBar.foreground": "#56bbff",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
-            "editorBracketHighlight.foreground1": "#c9dbd8",
-            "editorBracketHighlight.foreground2": "#71a4df",
-            "editorBracketHighlight.foreground3": "#5bd6d6",
-            "editorBracketHighlight.foreground4": "#c9dbd8",
-            "editorBracketHighlight.foreground5": "#71a4df",
-            "editorBracketHighlight.foreground6": "#5bd6d6"
+            "editorBracketHighlight.foreground1": "#67a8dd",
+            "editorBracketHighlight.foreground2": "#cf831f",
+            "editorBracketHighlight.foreground3": "#3bc299",
+            "editorBracketHighlight.foreground4": "#da216e",
+            "editorBracketHighlight.foreground5": "#0a9956",
+            "editorBracketHighlight.foreground6": "#def136"
         },
         "[Nord Wave]": {
             "editor.foreground": "#bac5d3",
             "activityBar.foreground": "#93ceff",
             // 括号高亮的背景色居然用肉色
-            "editorBracketMatch.background": "#6d4d12",
+            "editorBracketMatch.background": "#0a4e75",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
-            "editorBracketHighlight.foreground1": "#c9dbd8",
-            "editorBracketHighlight.foreground2": "#71a4df",
-            "editorBracketHighlight.foreground3": "#5bd6d6",
-            "editorBracketHighlight.foreground4": "#c9dbd8",
-            "editorBracketHighlight.foreground5": "#71a4df",
-            "editorBracketHighlight.foreground6": "#5bd6d6"
+            "editorBracketHighlight.foreground1": "#67a8dd",
+            "editorBracketHighlight.foreground2": "#cf831f",
+            "editorBracketHighlight.foreground3": "#3bc299",
+            "editorBracketHighlight.foreground4": "#da216e",
+            "editorBracketHighlight.foreground5": "#0a9956",
+            "editorBracketHighlight.foreground6": "#def136"
         },
         "window.activeBorder": "#ff7b00c5",
-        "sideBarSectionHeader.border": "#ebebeb",
+        "sideBarSectionHeader.border": "#1b6181", // 侧边栏子项目分割线更清晰些
         "inputOption.activeBackground": "#9b9999" // 查找界面的高亮标识
         // "input.border":"#ff0000" // vs 1.61发现没这个查找到的内容在光标位置不高亮
         // "editor.foldBackground": "#355000",  // 折叠代码块高亮  editor.foldingHighlight
-        // "editor.foreground": "#010216",
     },
     "workbench.editor.wrapTabs": true,
     "jupyter.exportWithOutputEnabled": true,
