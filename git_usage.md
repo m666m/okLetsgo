@@ -2742,11 +2742,11 @@ git restore [file] 关于撤回文件的用途很明晰：只操作提交（comm
 
     git restore <file>
 
-        丢弃工作区，恢复文件原貌（仓库区(HEAD)的内容）。等同于 `git checkout <file>`。
+        丢弃工作区，恢复文件原貌（仓库区(HEAD)的内容）。
 
     git restore --staged <file>
 
-        丢弃暂存区，把暂存区内容回退到工作区，工作区内容优先保留。 等同于 `git reset <file>`
+        丢弃暂存区，把暂存区内容回退到工作区，工作区内容优先保留。
 
     示例
 
@@ -2766,7 +2766,7 @@ git restore [file] 关于撤回文件的用途很明晰：只操作提交（comm
 
             `git restore <file>` 丢弃工作区内容，保留暂存区内容
 
-            `"git restore --staged <file>` 丢弃暂存区内容，保留工作区内容
+            `git restore --staged <file>` 丢弃暂存区内容，保留工作区内容
 
 注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
 
@@ -2774,7 +2774,7 @@ git checkout [file]
 
         https://git-scm.com/docs/git-checkout
 
-    丢弃工作区，恢复文件原貌（仓库区(HEAD)的内容）。
+    丢弃工作区，恢复文件原貌（仓库区(HEAD)的内容）。等同于 `git restore <file>`。
 
     示例
 
@@ -2803,7 +2803,7 @@ git checkout [commit]
 
 git reset [file]
 
-    丢弃暂存区，把暂存区内容回退到工作区，工作区内容优先保留。
+    丢弃暂存区，把暂存区内容回退到工作区，工作区内容优先保留。等同于 `git restore --staged <file>`。
 
     git reset <commit> <file>
 
