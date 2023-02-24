@@ -293,17 +293,17 @@
     "gitlens.views.tags.branches.layout": "list",
     // vim airline 风格的状态栏变颜色
     "vim.statusBarColorControl": true,
-    "vim.statusBarColors.normal": ["#789c9c", "#0f0602"],
-    "vim.statusBarColors.insert": "#FBA2A2",
-    "vim.statusBarColors.visual": "#2492ce",
-    "vim.statusBarColors.visualline": "#2492ce",
-    "vim.statusBarColors.visualblock": "#A3BE8C",
-    "vim.statusBarColors.replace": "#D08770",
-    "vim.statusBarColors.commandlineinprogress": "#F8D9A0",
-    "vim.statusBarColors.searchinprogressmode": "#F8D9A0",
-    "vim.statusBarColors.easymotionmode": "#F8D9A0",
-    "vim.statusBarColors.easymotioninputmode": "#F8D9A0",
-    "vim.statusBarColors.surroundinputmode": "#F8D9A0",
+    "vim.statusBarColors.normal": ["#2b313d", "#e0bb3f"],
+    "vim.statusBarColors.insert": "#005994",
+    "vim.statusBarColors.visual": "#27989c",
+    "vim.statusBarColors.visualline": "#27989c",
+    "vim.statusBarColors.visualblock": "#27989c",
+    "vim.statusBarColors.replace": "#27989c",
+    "vim.statusBarColors.commandlineinprogress": "#c52929",
+    "vim.statusBarColors.searchinprogressmode": "#c52929",
+    "vim.statusBarColors.easymotionmode": "#c52929",
+    "vim.statusBarColors.easymotioninputmode": "#c52929",
+    "vim.statusBarColors.surroundinputmode": "#c52929",
     //////////////////////////////////////////////////////////////////
     //
     // 下面这些是vscode自己加的，随时变
