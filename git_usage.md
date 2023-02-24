@@ -2831,6 +2831,8 @@ git reset [commit]
 
         简单理解就是本地仓库的提交记录回退到暂存区，优先保留暂存区内容。
 
+        TODO: git reset --soft HEAD
+
     git reset HEAD~
 
         这个会先做上面的步骤，然后再加一步，丢弃暂存区，把暂存区内容回退到工作区。
@@ -2849,6 +2851,8 @@ git reset [commit]
     git reset --hard HEAD~
 
         TODO: 这个会先做上面的步骤，然后再加一步，把当前 head 指向的 commit 重置到工作区
+
+        git reset --hard HEAD
 
 注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
 
