@@ -2722,12 +2722,6 @@ FailSafe:
 
     仓库区 ----> 暂存区 ----> 工作区
 
-理解为火车停靠站台，站台有2个格最多只能停靠2个车厢，根据你的回退指令倒车，仓库区的修改是提交记录
-
-       站台： |          仓库区             |   暂存区   |   工作区  |
-
-    你的提交：火车头---修改1---修改2----修改3-----|修改4|------|修改5|
-
 git的实际工作，修改的文件进入每个区域，都需要专门的命令
 
                              HEAD      Index  Workdir   WD Safe?
@@ -2744,17 +2738,17 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 git restore file 关于撤回文件的用途很明晰：只操作提交之前的修改
 
-    https://git-scm.com/docs/git-restore
+        https://git-scm.com/docs/git-restore
 
-    git restore <file> 丢弃工作区内容
+    git restore <file> 丢弃工作区内容，恢复文件原貌（HEAD 指向的内容）
 
-    git restore --staged <file> 丢弃暂存区内容，暂存区内容回退到工作区，工作区内容优先保留
+    git restore --staged <file> 暂存区内容回退到工作区，工作区内容优先保留
 
     示例
 
         暂存区无内容，工作区有内容：
 
-            `git restore <file>` 丢弃工作区内容（文件内容恢复 HEAD 指向的内容）
+            `git restore <file>` 丢弃工作区内容，恢复文件原貌（HEAD 指向的内容）
 
             `git restore --staged <file>` 无变化
 
@@ -2774,7 +2768,7 @@ git restore file 关于撤回文件的用途很明晰：只操作提交之前的
 
 git checkout [file] 把HEAD或暂存区文件内容覆盖到工作区
 
-    https://git-scm.com/docs/git-checkout
+        https://git-scm.com/docs/git-checkout
 
     只丢弃工作区，暂存区保持不动
 
@@ -2825,7 +2819,7 @@ git reset 主要关注已经提交的修改的 commit 的回退，分几种回�
 
         你的提交：火车头---<修改1>---修改2----修改3-----------------|修改5|
 
-        TODO:    回退后       火车头---修改2---修改3------|修改1|------|修改5|
+        TODO:    回退后    火车头---修改2---修改3------|修改1|------|修改5|
 
         你的提交：火车头---<修改1>---修改2----修改3
 
@@ -2843,9 +2837,7 @@ git reset 主要关注已经提交的修改的 commit 的回退，分几种回�
 
         git reset HEAD
 
-            丢弃暂存区，把暂存区的内容重置到工作区，是 git add 的逆过程。
-
-            如果工作区有修改，则丢弃暂存区。
+            暂存区内容回退到工作区，工作区内容优先保留，是 git add 的逆过程。
 
         按火车倒车来说，回退两个位置：第一是本地仓库，第二是暂存区，回退内容到工作区，优先保留工作区内容
 
@@ -3163,29 +3155,35 @@ git diff 主要的应用场景：
 
     自上次提交以来工作区中的更改
 
-三个区域的逐一对比
+三个区域的交叉对比
 
-    ·比较工作区(Working tree)和暂存区(staged)的差异
+    ·单纯的运行 `git diff` 有二义性：
+
+        git diff 用工作区先跟暂存区比，没有暂存区则跟仓库（HEAD）比。
+
+    默认比较工作区(Working tree)和暂存区(staged)的差异
 
         git diff
 
-    你做了 `git add` 后，又修改了内容还没再次 `git add`，对比二者差异。也就是在 vs code 里你点击 git 树中 '更改' ，如果暂存区有内容，列出来的差异。
+    如果暂存区无内容，则会比较工作区和仓库(HEAD)，等同于 `git diff HEAD`。
 
-    如果暂存区无内容，则会比较工作区和版本库(HEAD)，这二义性只能死记。
+    在 vs code 里，就是你点击源代码管理树中 '更改' 项目下的文件 ，列出来的差异。
 
-    ·比较暂存区(staged)和版本库(HEAD)的差异
+    ·比较暂存区(staged)和仓库(HEAD)的差异
 
         git diff --staged
 
         或 git diff --cached
 
-    显示即将被提交的内容，就是在你做了 `git add` 后，预测如果要做 `git commit` 时会提交的内容有哪些。也就是在 vs code 里你点击 git 树中 '暂存的更改' 列出来的差异。
+    显示即将被提交的内容，就是在你做了 `git add` 后，预测如果要做 `git commit` 时会提交的内容有哪些。
 
-    ·对比工作区(Working tree)和版本库(HEAD)的差别
+    在 vs code 里，就是你点击源代码管理树中 '暂存的更改' 项目下的文件，列出来的差异。
+
+    ·对比工作区(Working tree)和仓库(HEAD)的差别
 
         git diff HEAD
 
-    只要你没有做 `git commit`，当前工作区的所有改动（含暂存区的）都会体现出来。也就是在 vs code 里你点击 git 树中 '更改' ，如果暂存区没有内容，列出来的差异。
+    只要你没有做 `git commit`，当前的所有改动（含暂存区的）都会体现在工作区，直接跟仓库（HEAD）对比可以看看你的修改的总体效果。
 
 可以看出，修改完成后还没有执行 `git add`，做 `git diff HEAD` 显示的结果，跟执行了 `git add` 后行 `git diff --staged`，看到的结果是一样的。
 
