@@ -1004,41 +1004,67 @@ git 用 switch 命令替代了 checkout 命令中关于分支切换的功能
 
 ### 删除分支，远程/本地
 
-0.先看看有多少本地和远程分支
+0、先看看有多少本地和远程分支
 
     # 看不到完整输出时，则使用 git remote update 或 git fetch --all 先更新下
     git branch -avv
 
-1.切换到其他分支再进行操作
+1、切换到其他分支再进行操作
 
     git checkout master
 
-2.删除远程分支的指针而不是直接删分支，方便数据恢复。
+2、删除远程分支的指针而不是直接删分支，方便数据恢复。
 
     git push origin --delete fea_xxx
+
+    对跟踪分支，git push origin --delete 该命令也会删除本地-远程的跟踪分支，等于还做了个
+
+        # 如果只删除跟踪分支，则还需要 git remote prune 来删除跟踪分支
+        git branch --delete --remotes <remote>/<branch>
 
 如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
 
     git push origin :refs/fea_xxx
 
-用本地分支fea_-2覆盖远程分支fea_-1
+    或可以用本地分支 fea_-2 覆盖远程分支 fea_-1
 
-    git push -f origin fea_-2:refs/fea_-1
+        git push -f origin fea_-2:refs/fea_-1
 
-对追踪分支，git push origin --delete 该命令也会删除本地-远程的追踪分支，等于还做了个
+3、更新本地的远程库，用 prune 进行清理
 
-    # 如果只删除追踪分支，则还需要 git remote prune 来删除追踪分支
-    git branch --delete --remotes <remote>/<branch>
+    # 等效 git remote prune
+    git fetch origin -p
 
-3.其它人的机器上还有该远程分支，清理无效远程分支
-
-    git branch -avv
-
-    git fetch origin -p  # git remote prune
-
-4.删除本地
+4、从本地库删除该分支
 
     git branch -d fea_xxx
+
+5、你删除远程后，其它人计算机的本地库也记录着这个远程分支
+
+    $ git remote show origin
+    Remote branches:
+        dev                            tracked
+        master                         tracked
+        refs/remotes/origin/fea_stragy stale (use 'git remote prune' to remove)
+
+可以看到提示：stale (use ‘git remote prune’ to remove)
+
+这样的标注 这代表远程服务器上已经删除当前这条分枝 但是本地代码库和本地远程库并未同步这个状态。需要清理这些无用的未被tracked 的远程。
+
+在他们自己的计算机上运行如下命令，跟上面第三步的操作一样
+
+    $ git remote prune origin
+    Pruning origin
+    URL: ssh://
+    * [pruned] origin/fea_stragy
+
+6、确认是否干净了
+
+    git fetch
+
+    git remote show origin
+
+    git branch -avv
 
 ## 分支的拉取 fetch/pull
 
