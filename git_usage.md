@@ -564,7 +564,7 @@ git clone 命令正常拉取
 
         git push
 
-#### 大仓库非全量拉取（shallow clone）
+#### 浅克隆(shallow clone) --- 大仓库非全量拉取
 
 对比较大且未清理的大仓库，克隆仓库这个仓库，会把所有的历史协作记录都clone下来。其实对于我们直接使用仓库，而不是参与仓库工作的人来说，只要把最近的一次commit给clone下来就好了。
 
@@ -586,7 +586,27 @@ git clone 命令正常拉取
 
     即使你使用gi fetch，也不能把完整仓库fetch下来(config文件可以看到,remote.origin.fetch的值是+refs/heads/master:refs/remotes/origin/master)
 
-#### 拉取指定目录（稀疏检出sparsecheckout）
+这种方式有两个问题
+
+    切换不到历史 commit
+
+    切换不到别的分支
+
+解决
+
+    当你有一天需要历史提交记录的时候
+
+        git pull --unshallow
+
+    当你需要切换到其它分支的时候
+
+        git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
+        git pull
+
+    然后就可以正常使用了
+
+#### 稀疏检出(sparsecheckout) --- 拉取指定目录
 
 git的指定目录拉取，对于灵活选取仓库资源非常有帮助
 
@@ -793,9 +813,68 @@ sparse-checkout 文件设置
         !/A/B/*/
         /A/B/C/
 
+#### 部分克隆(Partial clone) --- 大项目减少下载提交记录的部分对象
+
+仓库中的提交记录有三者组合：commit对象、tree对象、blob对象。
+
+部分克隆通过只下载部分数据的方式，在首次克隆时减轻了需要传输的数据量，降低了克隆需要的时间。
+
+blobless 模式
+
+    # 我只看看代码，不下载 blob 对象
+    git clone --filter=blob:none xxxx
+
+这样的克隆不影响 git merge、git rebase、git log等命令，我们可以正常使用
+
+treeless 模式
+
+    # 我只看看代码，不下载 tree 对象
+    git clone --filter=tree:0 xxxx
+
+需要下载的对象更少，克隆时间会更短，磁盘占用空间也会更少。但是在后续的工作中，treeless 模式的克隆会更加频繁的触发数据的下载。treeless 克隆更加适用于自动构建的场景，快速的克隆仓库，构建，然后删除。
+
+在后续使用中如果涉及到这些历史数据，就会触发对象的按需下载。
+
+可手工查找缺失对象，通过管道传递给下面的git fetch进程，实现缺失对象的批量获取：
+
+    git rev-list --objects --missing=print v1.0.0..v2.0.0 | grep "^?" |\
+    git -c fetch.negotiationAlgorithm=noop \
+        fetch origin \
+        --no-tags \
+        --no-write-fetch-head \
+        --recurse-submodules=no \
+        --filter=blob:none \
+        --stdin
+
+如果项目中二进制文件较多，建议配置 Git LFS。
+
+#### 部分克隆+稀疏检出 --- 大项目用这个最精简
+
+    https://help.aliyun.com/document_detail/309002.html
+
+方便只对大项目的某个部分感兴趣时的代码检出
+
+1、先部分克隆，并配置克隆完成后不执行自动检出
+
+    git clone --filter=blob:none --no-checkout
+
+2、然后对该项目配置稀疏检出
+
+    git config core.sparsecheckout true
+
+3、指定稀疏检出的目录为 backend
+
+    echo "backend/*" > .git/info/sparse-checkout
+
+4、真正的下载文件
+
+    git checkout
+
 #### 拉取指定分支的指定commit版本
 
-git clone 默认是取回 master 分支，可以使用 -b 参数指定的分支。 -b 参数不仅支持分支名，还支持 tag 名等。
+git clone 默认是取回 master 分支，可以使用 -b 参数指定的分支。
+
+-b 参数不仅支持分支名，还支持 tag 名等。
 
         git clone  <remote-addr:repo.git> -b <branch-or-tag-or-commit>
 
