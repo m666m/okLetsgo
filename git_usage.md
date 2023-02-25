@@ -2789,7 +2789,9 @@ git checkout [file]
 
             git checkout <commit> <file>
 
-            git checkout b22c20fc8d -- abc.txt`。
+        如：
+
+            git checkout b22c20fc8d -- abc.txt
 
         TODO: 等同于 `git reset <commit> <file>`。
 
