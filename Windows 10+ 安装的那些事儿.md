@@ -623,29 +623,29 @@ Windows 系统安全在向虚拟化方面加强，所以本章跟下面的 [设�
 
 Windows 10 默认的虚拟化功能开放的较少，增强功能需要手动安装：设置->应用->应用和功能->可选功能，点击右侧的“更多 Windows 功能”，弹出窗口选择“启用和关闭 Windows 功能”：
 
-    Hyper-V (Windows Hypervisor)
+    Hyper-V (Windows Hypervisor) --- 微软的Hyper-V虚拟机及其管理器
 
-    Windows 虚拟机监控程序平台 (Windows Hypervisor Platform)
+    Windows 虚拟机监控程序平台 (Windows Hypervisor Platform) --- 给 virtualBox提供服务
 
-    虚拟机平台 (Virtual Machine Platform)
+    虚拟机平台 (Virtual Machine Platform) --- 给 wsl2 虚拟机提供服务
 
-    适用于 Linux 的 Windows 子系统（这个是WSL安装 Linux 用的，不是安全必备，顺手装上吧）
+    适用于 Linux 的 Windows 子系统（这个是 WSL 1 安装 Linux 用的，不是安全必备，顺手装上吧）
+
+为何这么多组件，参见章节 [Hyper-V] 中关于 Windows 10+ 体系架构基于虚拟化的部分。
 
 关于这几个功能的解释
-
-    Hyper-V: is Microsoft's Hypervisor. 微软的Hyper-V虚拟机及其管理器
-
-    Windows Hypervisor Platform - "Enables virtualization software to run on the Windows hypervisor" and at one time was required for Docker on Windows. The Hypervisor platform is an API that third-party developers can use in order to use Hyper-V. Oracle VirtualBox, Docker, and QEMU are examples of these projects. 微软向第三方虚拟机软件开放的虚拟机平台，使得 VirtualBox 等虚拟机软件也可以安装在开启了 hyper-v 的计算机上（之前 hyper-v 独占模式，别人无法安装）。
-
-    Virtual Machine Platform - "Enables platform support for virtual machines" and is required for WSL2. Virtual Machine Platform can be used to create MSIX Application packages for an App-V or MSI. 给 WSL2 使用的虚拟机平台，跟 Windows 融合密切，使得在 Windows 下可以无缝执行 Linux 程序。
-
-参考
 
     https://superuser.com/questions/1510172/hyper-v-vs-virtual-machine-platform-vs-Windows-hypervisor-platform-settings-in-p
 
     https://zhuanlan.zhihu.com/p/381969738
 
     https://superuser.com/questions/1556521/virtual-machine-platform-in-win-10-2004-is-hyper-v
+
+Hyper-V: is Microsoft's Hypervisor.
+
+Windows Hypervisor Platform - "Enables virtualization software to run on the Windows hypervisor" and at one time was required for Docker on Windows. The Hypervisor platform is an API that third-party developers can use in order to use Hyper-V. Oracle VirtualBox, Docker, and QEMU are examples of these projects. 微软向第三方虚拟机软件开放的虚拟机平台，使得 VirtualBox 等虚拟机软件也可以安装在开启了 hyper-v 的计算机上（之前 hyper-v 独占模式，别人无法安装）。
+
+Virtual Machine Platform - "Enables platform support for virtual machines" and is required for WSL2. Virtual Machine Platform can be used to create MSIX Application packages for an App-V or MSI. 给 WSL2 使用的虚拟机平台，跟 Windows 融合密切，使得在 Windows 下可以无缝执行 Linux 程序。
 
 ### 设置 Windows 安全中心
 
@@ -667,7 +667,7 @@ Windows 10 默认没有安装的某些增强性安全功能组件是依赖虚拟
 
   设置->更新和安全->Windows 安全中心，左侧页面点击 “打开 Windows 安全中心”
 
-    ->应用和浏览器控制，打开“隔离浏览（WDAG）”
+    ->应用和浏览器控制，打开 “隔离浏览（WDAG）”
 
         https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/microsoft-defender-application-guard/install-md-app-guard
 
@@ -1757,6 +1757,16 @@ WSL2 内的 container 是 Linux 提供的，不算 Windows 的容器。Windows �
 如何在 Windows 10 上使用 Hypver-V
 
     https://www.tenforums.com/tutorials/2087-hyper-v-virtualization-setup-use-Windows-10-a.html
+
+Hyper-V 体系结构
+
+    https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/reference/hyper-v-architecture
+
+Windows 10+ 在 2020 年代以来，体系架构类似 Xen，混合虚拟化： 一个 hypervisor 运行在裸机（计算机硬件）上，用特权虚拟机运行操作系统核心称为根分区，提供 Windows 基本功能。虚拟化技术或容器技术封装子分区，托管来宾操作系统的分区。
+
+而且，用虚拟化技术把很多软件功能隔离出来，比如 Windows 安全中心里的 “隔离浏览（WDAG）”、“内核保护” ，这样在用户使用无感的前提下，操作系统整体的安全性大大提高。详见章节 [设置 Windows 安全中心]。
+
+至 Windows 11 强制开启 TPM 2.0 和 安全启动，可以用微软和硬件厂商的密钥把计算机启动部分也进行保护，防止木马程序隐藏在系统引导区开机启动即加载运行。
 
 #### 开启 hyper-v 的负面影响
 
