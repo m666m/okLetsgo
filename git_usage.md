@@ -1941,7 +1941,7 @@ NOTE: 使用文件比对工具，可大大简化合并 commit 点的复杂度
 
 #### 冲突文件的格式
 
-NOTE: 区分 rebase、merge 时的 HEAD 指针，究竟是指向的本地库还是远程库，不同的
+NOTE: 冲突文件区分 rebase、merge 时的 HEAD 指针，当前和合入的意义不同
 
 基本如下
 
@@ -1992,13 +1992,19 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     + mod1 conf ori
     + # fff ggggggggggggggg mod1 conf
 
+如果想重新检出然后生成冲突文件
+
+    git checkout --conflict hello.txt
+
 ##### 使用 diff3 处理冲突
 
     https://git-scm.com/book/en/v2/Git-Tools-Advanced-Merging#_checking_out_conflicts
 
     https://blog.nilbus.com/take-the-pain-out-of-git-conflict-resolution-use-diff3/
 
-在冲突文件中，会新增类似 `||||||| merged common ancestor=======` 的行来指出合并前的共同祖先，这样便于使用者更容易的区分保留哪个。
+在冲突文件中，会新增类似 `||||||| merged common ancestor=======` 的行来指出合并前的共同祖先 base，这样便于使用者更容易的区分保留哪个。
+
+    git checkout --conflict=diff3 hello.txt
 
     <<<<<<< HEAD
     GreenMessage.send(include_signature: true)
