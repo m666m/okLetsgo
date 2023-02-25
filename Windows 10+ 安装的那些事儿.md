@@ -1760,7 +1760,11 @@ WSL2 内的 container 是 Linux 提供的，不算 Windows 的容器。Windows �
 
 #### 开启 hyper-v 的负面影响
 
-如果启用了 Hyper-V，则这些对延迟敏感（小于10毫秒）的高精度应用程序也可能在主机中运行时出现问题。这是因为启用虚拟化后，主机操作系统也会在 Hyper-V 虚拟化层之上运行，就像来宾操作系统一样。但是，与来宾不同，主机操作系统的特殊之处在于它可以直接访问所有硬件，这意味着具有特殊硬件要求的应用程序仍然可以在主机操作系统中正常运行而不会出现问题。
+    https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/about/#limitations
+
+依赖于特定硬件的程序不能在虚拟机中良好运行。 例如，需要使用 GPU 进行处理的游戏或应用程序可能无法良好运行。 依赖于子 10 毫秒计时器的应用程序（如实时音乐混合应用程序或高精度时间）在虚拟机中运行时也可能会出问题。
+
+此外，如果已启用了 Hyper-V，这些易受延迟影响的高精度应用程序在主机中运行时可能也会出问题。 这是因为在启用了虚拟化后，主机操作系统也会在 Hyper-V 虚拟化层的顶部运行，就如来宾操作系统那样。 但是，与来宾操作系统不同，主机操作系统在这点上很特殊，它是直接访问所有硬件，这意味着具有特殊硬件要求的应用程序仍然可以在主机操作系统中运行，而不会出问题。
 
 开启了 Hyper-V 可能会影响待机功能，进而使笔记本电脑待机时间缩短，参见章节 [设备不是 InstantGo]。
 
@@ -1823,7 +1827,7 @@ Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7
 
 ### WSL 安装 Ubuntu
 
-WSL2 的缺点是 IO 不如 WSL1 快，见下面章节 [混合使用 Windows 和 Linux 进行工作]。
+WSL2 属于运行在操作系统上的托管的虚拟机，所以兼容性100%，但 IO 性能不如 WSL1 快，见下面章节 [混合使用 Windows 和 Linux 进行工作]。
 
 开发工具可以使用 Virsual Studio Code，支持直接打开 WSL 虚机，就像连接 Docker 虚机或远程连接 SSH 服务器一样简单。其它开发工具如 git、docker、数据库、vGpu 加速（<https://developer.nvidia.com/cuda/wsl> ）等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/setup/environment>。
 
@@ -1858,21 +1862,29 @@ WSL2 的缺点是 IO 不如 WSL1 快，见下面章节 [混合使用 Windows 和
 
 #### 混合使用 Windows 和 Linux 进行工作
 
-<https://docs.microsoft.com/zh-cn/windows/wsl/filesystems>
+    https://docs.microsoft.com/zh-cn/windows/wsl/filesystems
+
+    支持图形化 GUI 应用的混合使用了 https://learn.microsoft.com/zh-cn/windows/wsl/tutorials/gui-apps
 
 借助 WSL，Windows 和 Linux 工具和命令可互换使用
 
-    从 Linux 命令行（如 Ubuntu）运行 Windows 工具（如 notepad.exe ）。
-    从 Windows 命令行（如 PowerShell）运行 Linux 工具（如 grep ）。
-    在 Windows 与 Windows 之间共享环境变量。
+    从 Linux 命令行（如 Ubuntu）运行 Windows 工具（如 notepad.exe ）
+
+    从 Windows 命令行（如 PowerShell）运行 Linux 工具（如 grep ）
+
+    在 Windows 与 Windows 之间共享环境变量
 
 不要跨操作系统使用文件，比如在存储 WSL 项目文件时：
 
-    使用 Linux 文件系统根目录：\\wsl$\Ubuntu-18.04\home\<user name>\Project
+    https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems
 
-    而不使用 Windows 文件系统根目录：/mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
+    使用 Linux 文件系统根目录：
 
-<https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems>
+        \\wsl$\Ubuntu-18.04\home\<user name>\Project
+
+    而不使用 Windows 文件系统根目录：
+
+        /mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
 
 #### WSL 1 和 WSL 2 的定制安装
 
@@ -2019,21 +2031,23 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 #### 使用了 WSL2 就只能用微软发布的 Linux 版本
 
-<https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-linux-kernel>，它提供了完全的二进制兼容，用户可以自行升级 linux 内核。
+    https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-linux-kernel
+
+它提供了完全的二进制兼容，用户可以自行升级 linux 内核。
 
 #### 可以在WSL 2的linux里再运行 docker
 
-这个 docker 也需要是微软发布的 <https://docs.microsoft.com/zh-cn/Windows/wsl/tutorials/wsl-containers> 。
+    https://docs.microsoft.com/zh-cn/Windows/wsl/tutorials/wsl-containers
 
-#### WSL 2的linux是放到当前用户目录下的，比较占用系统盘空间
+这个 docker 也需要是微软发布的
 
-类似于：USERPROFILE%\AppData\Local\Packages\CanonicalGroupLimited...，所以注意你的 c 盘空间。
+#### WSL 2 的 Linux 是放到当前用户目录下的，比较占用系统盘空间
+
+注意你的 c 盘空间
+
+    %USERPROFILE%\AppData\Local\Packages\CanonicalGroupLimited...
 
 如果需要更改存储位置，打开“设置”->“系统”-->“存储”->“更多存储设置：更改新内容的保存位置”，选择项目“新的应用将保存到”。
-
-#### Linux 下的 GUI 应用的安装和使用
-
-    详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/tutorials/gui-apps>
 
 #### 安装遇到问题
 
