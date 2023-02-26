@@ -42,6 +42,9 @@
     // http://www.apeth.com/nonblog/stories/textmatebundle.html
     // 在线编辑 https://tmtheme-editor.herokuapp.com/#!/editor/theme/Monokai
     "workbench.colorCustomizations": {
+        "[Solarized Light]": {
+            "editor.foreground": "#073a69"
+        },
         "[Nord]": {
             //"editor.background": "#242327e0",
             //"editor.foreground": "#9eb6b2",
