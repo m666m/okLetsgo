@@ -183,7 +183,7 @@ github 网站提供基于 https 端口的 ssh 连接方式 <https://docs.github.
 
 注意：
 
-    该方法只适用于 http 方式（你执行 git clone https://github.com 时默认都是 https 下载的），不适用于 ssh 方式。ssh 方式推荐使用 proxychains(linux)，或见章节 [使用 SSH 传输协议的代理方法](ssh think)。
+    该方法只适用于 http 方式（你执行 git clone https://github.com 时默认都是 https 下载的），不适用于 ssh 方式。
 
 1、设置 scoks 代理
 
@@ -206,7 +206,7 @@ github 网站提供基于 https 端口的 ssh 连接方式 <https://docs.github.
     git config --global --unset http.proxy
     git config --global --unset https.proxy
 
-如果你的 git 仓库为了身份认证，使用 git 协议或 ssh 协议，因为 Git 依靠 ssh 程序处理连接，所以您必须在调 ~/.ssh/config 配置文件中指定你的主机，为其设置 ProxyCommand 选项，通过代理建立连接。
+如果你的 git 仓库为了身份认证，使用 git 协议或 ssh 协议，因为 Git 依靠 ssh 程序处理连接，所以您必须在 ~/.ssh/config 配置文件中指定你的主机，为其设置 ProxyCommand 选项，通过代理建立连接。ssh 方式简单使用推荐 proxychains(linux) + git，或见章节 [通过 socks/http 代理连接 ssh](ssh think)。
 
 #### 针对特定域名的 Git 仓库
 

@@ -1613,9 +1613,6 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
         ```
 
-        # https://github.com/msys2/MSYS2-packages/issues/1684#issuecomment-570793998
-        # for x in {0..8}; do for i in {30..37}; do for a in {40..47}; do echo -ne "\e[$x;$i;$a""m\\\e[$x;$i;$a""m\e[0;37;40m "; done; echo; done; done; echo ""
-
     16 色，前景和背景
 
         curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash
@@ -1623,6 +1620,9 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
     16 色，前景和背景，加上文字粗体闪烁等效果
 
         curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/colortest.sh |bash
+
+    同上，简单脚本实现  # https://github.com/msys2/MSYS2-packages/issues/1684#issuecomment-570793998
+    for x in {0..8}; do for i in {30..37}; do for a in {40..47}; do echo -ne "\e[$x;$i;$a""m\\\e[$x;$i;$a""m\e[0;37;40m "; done; echo; done; done; echo ""
 
 256 color 测试脚本
 

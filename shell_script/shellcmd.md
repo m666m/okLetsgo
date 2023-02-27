@@ -577,30 +577,22 @@ colorEcho(){
 colorEcho ${RED} "ERROR: This script has been DISCARDED"
 colorEcho ${YELLOW} "USE: https://github.com/"
 
-####################################################################
-#
-# python 颜色字符串
-#
-import platform
-from colorama import Fore, Back, Style
+#############################################
+# 一条命令取结果赋值给变量，并判断返回值决定是否命令不存在
+# 主要用于 无命令报错，退出，有命令，直接取值，避免多运行一次。
+_pp_branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+exitcode="$?"
 
-text = "Ok, let's go!"
+if [ $exitcode -eq 0 ]; then
+    printf "%s" $_pp_branch_name
+fi
 
-def print_color(color, message=""):
-    v_system = platform.system()
-        if v_system == 'Linux':
-            print(color+message)
+if [ $exitcode -eq 1 ]; then
 
-# 将前景设为红色，背景默认是黑色
-print(Fore.RED + text)
-# 将背景设为白色，前景沿用之前的红色，并且在显示完之后将格式复位
-print(Back.WHITE + text + Style.RESET_ALL)
-print(text)
-# 将前景设为黑色，背景设为白色
-print(Fore.BLACK + Back.WHITE + text + Style.RESET_ALL)
-print(Style.RESET_ALL)
-print('back to normal now')
+    headhash="$(git rev-parse HEAD)"
+    printf "%s" "#${headhash}"
 
+fi
 
 #############################################
 #

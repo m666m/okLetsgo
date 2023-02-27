@@ -120,11 +120,12 @@ normal=$'\[\e[m\]'
 # 所以 PS1exit-code 要放在放在 PS1 变量赋值语句的最前面
 # 否则
 #   所有的函数都要实现 $? 变量的透传
-#   { ret_code=$? ;your code...; return ret_code}
+#   { ret_code="$?"; your code...; return ret_code}
 #   这样的好处是 PS1exit-code 不必放在 PS1 变量赋值语句的最前面了
 function PS1exit-code {
-    local exitcode=$?
-    if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
+    local exitcode="$?"
+    #if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
+    (($exitcode != 0)) && printf "%s" ' '$exitcode' '
 }
 
 function PS1conda-env-name {
@@ -160,7 +161,7 @@ function PS1git-branch-name {
     #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
     #
     # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，佛了
-    _pp_git_pt=$(>/dev/null;__git_ps1 '%s' 2>/dev/null)
+    _pp_git_pt=$(>/dev/null; __git_ps1 '%s' 2>/dev/null)
     if [ "$?" = "0" ]; then
         printf "%s" $_pp_git_pt
         unset _pp_git_pt
@@ -174,7 +175,7 @@ function PS1git-branch-name {
     # 除非不在当前分支，返回 128，如果当前分支是分离的，返回 1
     # 注意：如果用 local _pp_branch_name 则无法直接判断嵌入变量赋值语句的命令的失败状态
     _pp_branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
-    local exitcode=$?
+    local exitcode="$?"
 
     # 优先显示当前 head 指向的分支名
     if [ $exitcode -eq 0 ]; then
@@ -275,19 +276,14 @@ PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green
 #   PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
 #
 # 新的解决办法：
-# 用新增子函数 PS1git-bash-new-line 和 PS1git-bash-exitcode 实现跟上面完全一致的显示效果。
+# 用新增子函数 PS1git-bash-new-line 实现跟上面完全一致的显示效果。
 
 function PS1git-bash-new-line {
     printf "\n└"
 }
 
-function PS1git-bash-exitcode {
-    local exitcode=$(printf "$?")
-    (($exitcode != 0)) && printf "%s" ' -'$exitcode' '
-}
-
 # git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
-PS1="\n$blue┌─$red\$(PS1git-bash-exitcode)$blue[$white\t $green\u$white@$green\h$white:$cyan\w$blue]$yellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$blue$(PS1git-bash-new-line)──$white\$ $normal"
+PS1="\n$blue┌─$red\$(PS1exit-code)$blue[$white\t $green\u$white@$green\h$white:$cyan\w$blue]$yellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$blue$(PS1git-bash-new-line)──$white\$ $normal"
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
