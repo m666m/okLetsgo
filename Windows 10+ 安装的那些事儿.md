@@ -215,6 +215,8 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 ### 前提条件
 
+NOTE: Windows 10+ 取消了对非 ssd 硬盘做系统盘的优化，SATA 硬盘最多安装 Windows 8。
+
 Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
     安装u盘在制作时要选择 “GPT+UEFI” 方式：见下面的一。
@@ -573,7 +575,7 @@ PBP分屏注意
 
 如果在游戏设置里开启 HDR，在开始游戏后，显示器会自动切换回标准模式以显示 HRD 内容，原开启的睿动光感、环境光、低蓝光模式、SmartImage 等等功能均被关闭，打完游戏需要手工调整显示器，把各节能功能再打开。
 
-## 装完 Windows 10 后的一些设置
+## 装完 Windows 后的一些设置
 
 不要把你使用的计算机的账户，跟微软账户绑定，也不要跟你的微软邮箱绑定，或者什么手机认证，2FA认证啥的。这些账户之间不要建立联系。在cn无所谓，在法律很严的地方，这是合法的关联使用证据，认定标准不同，后果不同。
 
@@ -1643,7 +1645,7 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
     https://docs.microsoft.com/zh-cn/windows/deployment/s-mode#%E4%BF%9D%E6%8C%81%E4%B8%9A%E5%8A%A1%E7%BA%BF%E5%BA%94%E7%94%A8%E4%B8%8E%E6%A1%8C%E9%9D%A2%E6%A1%A5%E4%B8%80%E8%B5%B7%E8%BF%90%E8%A1%8C
 
-### TODO:双硬盘安装双系统
+### 双硬盘安装双系统
 
 双硬盘的好处是在开机启动的时候即进行选择，隔离性比一个硬盘多个分区安装 Windows 的隔离性要好，不过无法保护 /boot 分区，在操作系统引导阶段对木马监控程序的防护差，建议开启 Secure Boot 功能。
 
@@ -1668,6 +1670,14 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
     客户虚拟机：上网冲浪
 
 Windows 11 要求 分区在 52GB 以上
+
+TODO: 先装 Windows 再装 Fedora
+
+    https://zhuanlan.zhihu.com/p/488292819
+
+先装 Ubuntu 再装 Windows
+
+    https://zhuanlan.zhihu.com/p/609573337
 
 ### Bitlocker 加密
 

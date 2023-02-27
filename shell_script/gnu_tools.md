@@ -6155,6 +6155,60 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 ```
 
+#### 用rsync服务从Linux到Windows和linux进行长途备份
+
+    https://www.zhihu.com/question/20322405/answer/2874017681
+
+一、装备服务器端软件
+
+下载 rysnc 的主页地址为：<http://rsync.samba.org>
+
+在两台服务器中都要安装，主服务器上 rsync 以服务器模式运行 rsyn 守护进程，在同步上用 crond 定时任务以客户端方法运行 rsync，同步主服务器上需求同步的内容
+
+    一般 Linux 发行版自带的就不必自行编译安装了
+
+    $ tar xvf rsync-2.6.3.tgz$ cd rsync-2.6.3
+
+    $ ./configure
+
+    $ make
+
+    $ make install
+
+ rsync服务器的装备文件为 /etc/rsyncd.conf，其操控认证、拜访、日志记载等。
+
+ 该文件是由一个或多个模块结构组成。一个模块界说以方括弧中的模块名开端，直到下一个模块界说开端或许文件结束，模块中包含格局为 name= value 的参数界说。
+
+ 每个模块其实就对应需求备份的一个目录树，比方说在咱们的实例环境中，有三个目录树需求备份：
+
+    /www/
+
+    /mirror/file0/
+
+    /mirror/file1/
+
+那么就需求在装备文件中界说三个模块，别离对应三个目录树。
+
+装备文件是行为单位的，每个新行都表明一个新的注释、模块界说或许参数赋值。
+
+例如，在168上创建rsyncd的装备文件/etc/rsyncd.conf，内容如下：
+
+    uid = nobody # 备份以什么身份进行，用户ID
+
+    gid = nobody # 备份以什么身份进行，组ID
+
+    #留意这个用户ID和组ID，假如要便利的话，能够设置成root，这样rsync简直就可以读取任何文件和目录了，但是也带来安全隐患。建议设置成只能读取你要备#份的目录和文件即可。
+
+    #use chroot = no
+
+    max connections = 0 # 最大衔接数没有限制
+
+    pid file = /var/log/rsync/rsyncd.pid
+
+    lock file = /var/log/rsync/rsync.lock
+
+    log file = /var/log/rsync/rsyncd.log[attachment] # 指定认证的备份模块名path = /www/htdocs/pub/attachment/ # 需求备份的目录comment = BACKUP attachment # 注释ignore errors # 疏忽一些无关的IO过错read only = false # 设置为非只读list = false # 不答应列文件#hosts allow = 210.51.0.80 #答应衔接服务器的主机IP地址#hosts deny = 0.0.0.0/0.0.0.0 #制止衔接服务器的主机IP地址auth users = msyn # 认证的用户名，假如没有这行，则表明是匿名secrets file = /etc/rsyncd.scrt # 认证文件名，用来存放暗码[98htdocs]uid = nobodygid = nobodypath = /www/htdocs/#ignore errorsread only = falselist = false#hosts allow = 210.51.0.98#hosts deny = 202.108.211.38#hosts deny = 0.0.0.0/0.0.0.0auth users = msynsecrets file = /etc/rsyncd.scrt[98html]uid = ejbftpgid = nobodypath = /www/htdocs/pub/html/#ignore errorsread only = falselist = false#hosts allow = 210.51.0.98#hosts deny = 0.0.0.0/0.0.0.0auth users = 98synsecrets file = /etc/rsync98.scrt
+
 ### 在当前目录启动一个简单的http服务器
 
     # Python 2，使用端口 7777
