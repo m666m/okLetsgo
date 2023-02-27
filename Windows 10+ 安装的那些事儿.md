@@ -1675,6 +1675,8 @@ TODO: 先装 Windows 再装 Fedora
 
     https://zhuanlan.zhihu.com/p/488292819
 
+    https://zhuanlan.zhihu.com/p/363640824
+
 先装 Ubuntu 再装 Windows
 
     https://zhuanlan.zhihu.com/p/609573337

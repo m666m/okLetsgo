@@ -6155,19 +6155,21 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 ```
 
-#### 用rsync服务从Linux到Windows和linux进行长途备份
+#### 用 rsync 服务从 Linux 到 Windows 和 Linux 进行远程备份
 
     https://www.zhihu.com/question/20322405/answer/2874017681
 
-一、装备服务器端软件
+一、安装设置服务器端软件
 
 下载 rysnc 的主页地址为：<http://rsync.samba.org>
 
-在两台服务器中都要安装，主服务器上 rsync 以服务器模式运行 rsyn 守护进程，在同步上用 crond 定时任务以客户端方法运行 rsync，同步主服务器上需求同步的内容
+在两台服务器中都要安装，主服务器上 rsync 以服务器模式运行 rsyn 守护进程，在同步上用 crond 定时任务以客户端方法运行 rsync，同步主服务器上需要同步的内容
 
     一般 Linux 发行版自带的就不必自行编译安装了
 
-    $ tar xvf rsync-2.6.3.tgz$ cd rsync-2.6.3
+    $ tar xvf rsync-2.6.3.tgz
+
+    $ cd rsync-2.6.3
 
     $ ./configure
 
@@ -6175,11 +6177,11 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
     $ make install
 
- rsync服务器的装备文件为 /etc/rsyncd.conf，其操控认证、拜访、日志记载等。
+ rsync服务器的设置文件为 /etc/rsyncd.conf，其操控认证、拜访、日志记载等。
 
- 该文件是由一个或多个模块结构组成。一个模块界说以方括弧中的模块名开端，直到下一个模块界说开端或许文件结束，模块中包含格局为 name= value 的参数界说。
+ 该文件是由一个或多个模块结构组成。一个模块定义以方括弧中的模块名开端，直到下一个模块定义开端或文件结束，模块中包含格式为 `name= value` 的参数定义。
 
- 每个模块其实就对应需求备份的一个目录树，比方说在咱们的实例环境中，有三个目录树需求备份：
+ 每个模块其实就对应需要备份的一个目录树，比方说在咱们的实例环境中，有三个目录树需要备份：
 
     /www/
 
@@ -6187,27 +6189,108 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
     /mirror/file1/
 
-那么就需求在装备文件中界说三个模块，别离对应三个目录树。
+那么就需要在设置文件中定义三个模块，分别对应三个目录树。
 
-装备文件是行为单位的，每个新行都表明一个新的注释、模块界说或许参数赋值。
+设置文件是行为单位的，每个新行都表明一个新的注释、模块定义或许参数赋值。
 
-例如，在168上创建rsyncd的装备文件/etc/rsyncd.conf，内容如下：
+例如，在 168 上创建 rsyncd 的设置文件 /etc/rsyncd.conf，内容如下：
 
     uid = nobody # 备份以什么身份进行，用户ID
-
     gid = nobody # 备份以什么身份进行，组ID
-
-    #留意这个用户ID和组ID，假如要便利的话，能够设置成root，这样rsync简直就可以读取任何文件和目录了，但是也带来安全隐患。建议设置成只能读取你要备#份的目录和文件即可。
+    # 留意这个用户 ID 和组 ID，假如要便利的话，能够设置成 root，这样 rsync 简直就可以读取任何文件和目录了，但是也带来安全隐患。建议设置成只能读取你要备份的目录和文件即可。
 
     #use chroot = no
-
     max connections = 0 # 最大衔接数没有限制
-
     pid file = /var/log/rsync/rsyncd.pid
-
     lock file = /var/log/rsync/rsync.lock
+    log file = /var/log/rsync/rsyncd.log
 
-    log file = /var/log/rsync/rsyncd.log[attachment] # 指定认证的备份模块名path = /www/htdocs/pub/attachment/ # 需求备份的目录comment = BACKUP attachment # 注释ignore errors # 疏忽一些无关的IO过错read only = false # 设置为非只读list = false # 不答应列文件#hosts allow = 210.51.0.80 #答应衔接服务器的主机IP地址#hosts deny = 0.0.0.0/0.0.0.0 #制止衔接服务器的主机IP地址auth users = msyn # 认证的用户名，假如没有这行，则表明是匿名secrets file = /etc/rsyncd.scrt # 认证文件名，用来存放暗码[98htdocs]uid = nobodygid = nobodypath = /www/htdocs/#ignore errorsread only = falselist = false#hosts allow = 210.51.0.98#hosts deny = 202.108.211.38#hosts deny = 0.0.0.0/0.0.0.0auth users = msynsecrets file = /etc/rsyncd.scrt[98html]uid = ejbftpgid = nobodypath = /www/htdocs/pub/html/#ignore errorsread only = falselist = false#hosts allow = 210.51.0.98#hosts deny = 0.0.0.0/0.0.0.0auth users = 98synsecrets file = /etc/rsync98.scrt
+    [attachment] # 指定认证的备份模块名
+    path = /www/htdocs/pub/attachment/ # 需要备份的目录
+    comment = BACKUP attachment # 注释
+    ignore errors # 疏忽一些无关的IO过错
+    read only = false # 设置为非只读
+    list = false # 不答应列文件
+    #hosts allow = 210.51.0.80 #答应衔接服务器的主机IP地址
+    #hosts deny = 0.0.0.0/0.0.0.0 #制止衔接服务器的主机IP地址
+    auth users = msyn # 认证的用户名，假如没有这行，则表明是匿名
+    secrets file = /etc/rsyncd.scrt # 认证文件名，用来存放暗码
+
+    [98htdocs]
+    uid = nobody
+    gid = nobody
+    path = /www/htdocs/
+    #ignore errors
+    read only = false
+    list = false
+    #hosts allow = 210.51.0.98
+    #hosts deny = 202.108.211.38
+    #hosts deny = 0.0.0.0/0.0.0.0
+    auth users = msyn
+    secrets file = /etc/rsyncd.scrt
+
+    [98html]
+    uid = ejbftp
+    gid = nobody
+    path = /www/htdocs/pub/html/
+    #ignore errors
+    read only = false
+    list = false
+    #hosts allow = 210.51.0.98
+    #hosts deny = 0.0.0.0/0.0.0.0
+    auth users = 98syn
+    secrets file = /etc/rsync98.scrt
+
+这里分别定义了 [attachment]、[98htdocs]、[98html] 三个模块，分别对应于三个需要备份的目树。三个模块授权的备份用户分别为 msyn，msyn，98syn，用户信息保存在文件 /etc/rsyncd.scrt 和 /etc/rsync98.scrt 中，其内容如下：
+
+    $ sudo cat /etc/rsyncd.scrt
+    msyn:xxxxxxxxx
+
+该文件只能 是root 用户可读写的，出于安全目的，这个文件的特点必需是只要属主可读，文件权限 600 不然 rsync 将拒绝运行。
+
+    # /usr/local/bin/rsync --daemon
+
+rsync 默许服务端口为 873。
+
+二、装备客户端
+
+1、linux下执行 rsync 客户端指令
+
+    [backup@backup /] /usr/bin/rsync -vlzrtogp --progress --delete 98syn@x.x.x.168::98html /usr/local/apache/htdocs/pub/html/ --password-file=/etc/rsync98.scrt
+
+上面这个指令行中：
+
+-vzrtopg 里的 v 是代表 verbose(具体)，z 是代表 zip（压缩），r 是代表 recursive（递归），topg 都是保留文件原有特点如属主、时间的参数。
+
+--progress 是指显示出当前的进度，
+
+--delete 是指假如服务器端删除了这一文件，那么客户端也相应把文件删除，保持一致。
+
+98syn@x.x.x.168::98html 是表明该指令是对服务器x .x.x.168 中的 98html 模块进行备份，其中 98syn 表明运用 98syn 用户来对该模块进行备份。
+
+-- password-file=/etc/rsync98.scrt 来指定密码文件，这样就能够在脚本中调用而无需交互式地输入验证密码了，这里需要注意的是密码文件权限，要设得只能执行这个指令的用户可读，本例中是98syn 用户。
+
+备份的内容存放在备份机的/usr/local/apache/htdocs/pub/html/目录下。
+
+这样，rsync同步服务就搭建好了，可以通过 设置 crontab 定时任务来调度执行。
+
+2、Windows装备客户端
+
+为了在Windows环境运用 rsync 工具，需要下载 rsync for windows --- cwRsync。
+
+然后运行以下指令
+
+    rsync -vzrtopg --progress --delete 98syn@xx.xx.xx.xx::98html .\bak\ --password-file=.\rsync98.scrt
+
+如果命令行执行过程中出现提示输入密码 `password:`，正确输入密码后就应该看到开始执行备份了。
+
+引起这种过错有几种可能性
+
+    一是你没有输入正确的用户名或密码
+
+    二是你的服务器端存储密码的文件没有正确的 600 权限
+
+最好把命令写成批处理文件，放到 Windows 计划任务里定时执行。
 
 ### 在当前目录启动一个简单的http服务器
 
