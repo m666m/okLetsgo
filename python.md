@@ -1777,46 +1777,79 @@ python 软件包为兼容老版本不用 pylance 的习惯，所以默认不安�
 
 #### 快速解析python，代码自动完成更快
 
-pylance
+pylance 目前是 python 插件默认安装了
+
+    ms-python.vscode-pylance
+
+自带这个插件对逐个排查 import 的使用方式来说没用，建议禁用
+
+    ms-python.isort
 
 #### 高亮空格并消除
 
-    Trailing Spaces
+Trailing Spaces
+
+    shardulm94.trailing-spaces
 
 #### 正则表达式预览
 
-    LouisWT.regexp-explain
-        RegExp Preview and Editor : le0zh.vscode-regexp-preivew （废弃了）
+Regexp Explain
+
+    LouisWT.regexp-preview
+
+RegExp Preview and Editor 废弃了
+
+    le0zh.vscode-regexp-preivew
 
 #### 查看sqllite数据库
 
-    sqlite (alexcvzz.vscode-sqlite)
+sqlite
 
-    优选工具
-        DB Browser for SQLite <https://github.com/sqlitebrowser/sqlitebrowser>
-        SQLiteStudio <https://github.com/pawelsalawa/sqlitestudio>
+    alexcvzz.vscode-sqlite
 
-#### 远程开发： Remote Development  装这一个就会自动装一堆
+优选工具
 
-    打开远程ssh文件夹后，各插件不可用？ 删除服务器上的 ~/.vscode-server 目录，重新安装插件
+    DB Browser for SQLite  https://github.com/sqlitebrowser/sqlitebrowser
+
+    SQLiteStudio https://github.com/pawelsalawa/sqlitestudio
+
+#### 远程开发： Remote Development
+
+装这一个就会自动装一堆
+
+    ms-vscode-remote.vscode-remote-extensionpack
+
+打开远程ssh文件夹后，各插件不可用？
+
+    删除服务器上的 ~/.vscode-server 目录，重新安装插件
     Extension not working on remote SSH?  Remove directory ~/.vscode-server
     https://github.com/microsoft/vscode-remote-release/issues/1443
 
-#### 自动添加函数头说明 Python Docstring Generator
+#### Python自动添加函数头说明
+
+autoDocstring - Python Docstring Generator
+
+    njpwerner.autodocstring
+
+可配置文本风格
 
     "autoDocstring.docstringFormat": "numpy",
 
 #### MarkDown
 
-    Markdown All in One 高亮，预览
+markdownlint 语法检查
 
-    markdownlint 语法检查
+    DavidAnson.vscode-markdownlint
 
-    xlthu.pangu-markdown 中文英文之间加入空格，所谓“盘古空白”
+Markdown All in One 高亮，预览，支持目录
 
-#### shell-format
+中文英文之间加入空格，所谓“盘古空白”
 
-    shell 脚本语法高亮
+    xlthu.pangu-markdown
+
+#### shell 脚本格式化
+
+    foxundermoon.shell-format
 
 #### PYQT Integration
 
@@ -1826,7 +1859,11 @@ pylance
 
 #### GitLens
 
+    eamodio.gitlens
+
 #### Git History
+
+    donjayamanne.githistory
 
 #### 护眼主题
 
@@ -1864,9 +1901,9 @@ MacOS Modern Theme 深色浅色都好
 
     arcticicestudio.nord-visual-studio-code
 
-    marlosirapuan.nord-deep     深一点的北极，对比度高
+    marlosirapuan.nord-deep     深一点的北极，适合暗光
 
-    dnlytras.nord-wave          最深的北极，适合暗夜
+    dnlytras.nord-wave          最深的北极，适合无光
 
 Night Owl。夜猫子在晚上稍有刺眼，浅色更好
 
@@ -1879,17 +1916,21 @@ material-theme 深色比较养眼，比 Night Owl 舒服。
     这个修改版的看代码更不刺眼
     bernardodsanderson.theme-material-neutral
 
-Solarized Light（vscode 自带）  这个是羊皮纸底色，去蓝光了，但是如果你看起来感觉累眼就别用了。。。
+Solarized Light（vscode 自带）  这个是羊皮纸底色，去蓝光了
 
 #### JScript/Json的格式化，比系统自带的好用
 
+Prettify JSON，格式化json文件很好用，容错率高
+
+    mohsen1.prettify-json
+
 Prettier - Code formatter
 
-#### Prettify JSON
-
-    格式化json文件很好用，容错率高
+    esbenp.prettier-vscode
 
 #### TODO TREE
+
+    Gruntfuggly.todo-tree
 
 ```json
     "todo-tree.general.tags": [
@@ -1929,6 +1970,10 @@ Prettier - Code formatter
 ```
 
 #### csv文件查看
+
+Rainbow CSV
+
+    mechatroner.rainbow-csv
 
 ```json
     Rainbow CSV 设置颜色区分：
@@ -2013,39 +2058,39 @@ Prettier - Code formatter
 
     https://github.com/VSCodeVim/Vim#vim-airline
 
+vim 脚本语言语法高亮
+
+    fallenwood.vimL
+
 #### Draw.io Integration
 
-#### UMLet 简单好用的UML流程图
+    hediet.vscode-drawio
+
+#### UMLet 简单好用的 UML 流程图
 
 Free UML Tool for Fast UML Diagrams 生成一个".uxf"文件打开即可使用
+
+    TheUMLetTeam.umlet
 
 #### vscode-mindmap 脑图
 
 json文件格式节点图。生成一个".km"文件打开即可使用
 
-#### Graphviz Dot文件查看
+    Souche.vscode-mindmap
+
+#### Graphviz Dot 文件查看
 
 Graphviz Interactive Preview 支持路线高亮
+
+    tintinweb.graphviz-interactive-preview
+
     F1命令呼叫预览
 
-    https://github.com/tintinweb/vscode-interactive-graphviz
-
 Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成Html代码
+
+    joaompinto.vscode-graphviz
+
     右键菜单呼叫预览
-
-    https://github.com/joaompinto/vscode-graphviz
-
-#### 括号匹配 Bracket Pair Colorizer 2
-
-```json
-    // vscode 1.60+ 自带了 "editor.bracketPairColorization.enabled": true,
-
-    "bracket-pair-colorizer-2.colors": [
-        "rgba(213,135,32,255)",
-        "rgba(62,145,222,255)",
-        "rgba(18,230,155,255)"
-    ],
-```
 
 ### vscode 用的 Python 配套包
 
@@ -2077,8 +2122,9 @@ TODO:注意这些包被 vscode 默认安装到了你的基础环境中，conda[b
 #### 代码规范检查 flake8
 
     https://gitlab.com/pycqa/flake8/
+    # pip install flake8
 
-    目前被 vscode 发展称扩展了 ms-python.flake8，不用装到自己的 python 环境了
+目前被 vscode 发展成扩展了 ms-python.flake8，不用在自己的 python 环境安装了。
 
 在要忽略 flake8 检查的那一行加上 # noqa 注释即可
 

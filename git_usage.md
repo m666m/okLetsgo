@@ -72,6 +72,10 @@ git 通过 ssh 客户端连接 github。除了 github 这样的，私有仓库�
     在 cmd 或 powershell 下运行要设置环境变量
         https://github.com/git-for-windows/git/wiki/FAQ#running-without-git-bash
 
+git config 配置文件位置，默认在各个 Git 仓库里的 .git/config
+
+git config --glboal 选项指的是修改 Git 的全局配置文件 ~/.gitconfig
+
 ### 1、设置用户名和电邮
 
 如果未设置过 git 用户名和邮箱，设置个默认的全局使用，如果是主用办公，设为办公用户名和电邮，家庭自用，按自己的习惯设置。
@@ -168,6 +172,53 @@ github 网站提供基于 https 端口的 ssh 连接方式 <https://docs.github.
 之后的项目地址可以简写
 
     git clone ssh://git@github.com/YOUR-USERNAME/YOUR-REPOSITORY.git
+
+### 4、设置代理
+
+    https://hugueliu.github.io/2019/12/25/config_git_proxy_with_v2ray_in_win10/
+
+    https://ericclose.github.io/git-proxy-config.html
+
+国内经常连不上，需要多次重试，如果嫌麻烦，直接加代理得了。
+
+注意：
+
+    该方法只适用于 http 方式（你执行 git clone https://github.com 时默认都是 https 下载的），不适用于 ssh 方式。ssh 方式推荐使用 proxychains(linux)，或见章节 [使用 SSH 传输协议的代理方法](ssh think)。
+
+1、设置 scoks 代理
+
+在“参数设置-Core:基础设置”中可以查看本地socks端口号，一般为1080。
+
+在命令行中使用以下命令设置 socks 代理：
+
+    git config --global http.proxy socks5://127.0.0.1:1080
+    git config --global https.proxy socks5://127.0.0.1:1080
+
+2、设置 http 代理
+
+在命令行中使用以下命令设置 http 代理：
+
+    git config --global http.proxy http://127.0.0.1:1081
+    git config --global https.proxy https://127.0.0.1:1081
+
+3、取消代理设置
+
+    git config --global --unset http.proxy
+    git config --global --unset https.proxy
+
+#### 针对特定域名的 Git 仓库
+
+前面我们说的是，让所有域名下的仓库都走代理的情况，但是在现实情况下我们并不想这么做。那么现在我来介绍一下针对特定域名仓库走代理的做法，此处以 GitHub 为例:
+
+当我们在 GitHub 仓库使用 HTTPS 传输协议克隆源码时，我们往往是这么做的的：
+
+    git clone https://github.com/<user>/<repository>.git
+
+根据你的代理软件支持的代理协议选取其中一种即可：
+
+    git config --global http.https://github.com.proxy http://127.0.0.1:7890
+
+    git config --global http.https://github.com.proxy socks5://127.0.0.1:7891
 
 ## git仓库初始操作
 

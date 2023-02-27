@@ -50,6 +50,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias gs='echo "git status ..." && git status'
     alias glog='echo "[树形提交记录]" && git log --oneline --graph'
     alias gdh='echo "[对比最近的两次提交]" && git diff HEAD^ HEAD'
+    # git 经常断连，自动重试直至成功
+    alias gpull='git pull || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull; done'
+    alias gpush='git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 
     # gpg 常用命令
     alias gkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'

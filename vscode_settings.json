@@ -24,12 +24,12 @@
     "editor.minimap.scale": 1,
     "editor.columnSelection": false,
     "editor.multiCursorModifier": "alt",
-    // "editor.bracketPairColorization.enabled": true,
     "editor.unicodeHighlight.includeStrings": false,
     "editor.unicodeHighlight.includeComments": false,
     "editor.unicodeHighlight.allowedLocales": {
         "zh-hant": true
     },
+    // "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs": active,
     "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize宽度而自动判断
     "outline.showVariables": false,
