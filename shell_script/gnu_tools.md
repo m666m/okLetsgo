@@ -517,7 +517,7 @@ BoldAsFont=yes
 # https://github.com/mintty/mintty/wiki/Tips#background-image
 # 自定义颜色方案 https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
 # 根据图片生成颜色方案 https://github.com/thefryscorer/schemer2 参见章节 [base16颜色方案](gnu_tools.md okletsgo)
-Background=C:\tools\SuperPuTTY\111dark.jpg
+Background=C:\tools\SuperPuTTY\111dark.jpg,225
 BackgroundColour=13,25,38
 ForegroundColour=217,230,242
 CursorColour=236,255,255
@@ -562,7 +562,7 @@ BoldWhite=251,243,242
 #BoldWhite=174,179,187
 
 # 自定义颜色方案，跟浅色背景搭配-黄色
-#Background=C:\tools\SuperPuTTY\222yellow.jpg
+#Background=C:\tools\SuperPuTTY\222yellow.jpg,225
 #BackgroundColour=250,234,182
 #ForegroundColour=0,61,121
 #CursorColour=217,230,242
@@ -584,7 +584,7 @@ BoldWhite=251,243,242
 #BoldWhite=176,182,204
 
 # 自定义颜色方案，跟浅色背景搭配-绿色
-#Background=C:\tools\SuperPuTTY\333green.jpg
+#Background=C:\tools\SuperPuTTY\333green.jpg,128
 #BackgroundColour=250,234,182
 #ForegroundColour=47,47,47
 #CursorColour=217,230,242
