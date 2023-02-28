@@ -271,7 +271,7 @@ PS1="\n$magenta┌─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green
 # 命令行提示符显示： 在上面的基础上修改了两个兼容性函数
 #
 # 目前 git bash(mintty) 有点bug：
-# 在\$(函数名)后直接用换行\n就冲突，不支持$?检查退出码
+# 在\$(函数名)后直接用换行\n就冲突
 # 规避办法是或者把换行\n放在引用函数前面，或者拼接凑合用
 #   PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
 #
