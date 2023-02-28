@@ -5897,7 +5897,9 @@ peer-id-prefix=-TR2940-
 
 scp 使用 rcp 传输文件，使用 ssh 进行身份验证和加密。所以命令行用法跟 rcp 一致。
 
-scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了远程文件管理功能如建立或删除文件、支持断点续传等，单纯看速度 scp 更快。Windows 下二者是 WinSCP 和 FileZilla。
+scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了远程文件管理功能如建立或删除文件、支持断点续传等，单纯看速度 scp 更快。而且 sftp 的安全性要高于 scp <https://goteleport.com/blog/sftp/> <https://goteleport.com/blog/scp-familiar-simple-insecure-slow/>。
+
+在 Windows 下二者是 WinSCP 和 FileZilla。
 
 基本用法
 
