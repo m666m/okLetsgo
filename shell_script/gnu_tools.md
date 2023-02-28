@@ -995,15 +995,17 @@ Windows 下的命令行终端类型很多，如果想统一在一个程序下x�
 
     支持嵌入其它的各种终端窗口: putty、mintty(bash)、cmd、powershell
 
-    putty/mintty 兼容性和反应速度满分
-
-    窗口切换有点问题，Windows 切换任务热键 alt+tab 要按两次才能切换成功
-
     只要安装了 git for Windows 和 putty 等软件即可直接配置使用，不需要做复杂的设置
 
     可一键导入 putty 站点
 
     可设置关联 WinScp/FileZilla 等软件的快捷调用，右键点选站点方便调用
+
+    putty/mintty 显示兼容性和反应速度满分
+
+    调用 mintty 相比直接执行 git-bash ，环境变量 PATH 缺少 /mingw64/bin 等几个，导致我设置 ssh ProxyCommand 时提示找不到 connect，需要在登陆脚本自行补充。
+
+    窗口切换有点问题，Windows 10+ 切换任务热键 alt+tab 要按两次才能切换成功
 
 初次使用前的设置
 
