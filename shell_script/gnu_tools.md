@@ -5830,11 +5830,29 @@ peer-id-prefix=-TR2940-
 
 开源项目持续性不稳定，历史较复杂
 
-    原始 nc(netcat)，在 2007 年发布 1.10 稳定版本之后，就不再更新了。它的原始版本是一个类Unix程序，原作者 Hobbit。
+    原始 nc(netcat)，在 2007 年发布 1.10 稳定版本之后，就不再更新了。它的原始版本是一个类 Unix 程序，原作者 Hobbit。此即 OpenBSD 版的代码来源。
 
-    现在一般用的是 GNU 项目维护的 GNU Netcat，维护目的是提升 nc 在其他平台的可移植性的同时保持对原始 nc 的兼容性。安装 netcat后，nc 是 netcat 的 alias，命令行里输入 nc 等于输入 netcat。
+    现在一般用的是 GNU 项目维护的 GNU Netcat，维护目的是提升 nc 在其他平台的可移植性的同时保持对原始 nc 的兼容性，这里主要是给各大 Linux 发行版提供一个维护性的版本，也即 OpenBSD 版。安装 netcat后，nc 是 netcat 的 alias，命令行里输入 nc 等于输入 netcat。
 
     Ncat 是 Nmap 项目的作者 Fyodor，在原始 Netcat 之上新增功能二次开发的另一款强大工具，也就是说 Netcat 有的功能 Ncat 都具备，并且 ncat还有更多强大的功能。安装了 ncat 后，nc、netcat 都成了 ncat 的 alias，命令行里输入这三者都是一样的。
+
+    这几个版本软件的使用方法是互相兼容的，建议用之前还是多查查 man。
+
+所以目前 nc 程序有 2 种 netcat 版本，分为 Nmap 版和 OpenBSD 版
+
+    如果是 OpenBSD 的版本，则 nc 命令与 macOS 相同
+
+    如果是 Nmap 版本的，nc 命令其实是指向 ncat 程序的符号链接。
+
+各 Linux 发行版本下 netcat 软件包名如下：
+
+    Linux 发行版本  netcat Nmap 版      netcat OpenBSD 版
+
+    Fedora 系列     nmap-ncat               netcat
+
+    Debian 系列     ncat                    netcat-openbsd
+
+    macOS                                   netcat
 
 运行服务端
 

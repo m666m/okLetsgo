@@ -206,7 +206,11 @@ github 网站提供基于 https 端口的 ssh 连接方式 <https://docs.github.
     git config --global --unset http.proxy
     git config --global --unset https.proxy
 
-如果你的 git 仓库为了身份认证，使用 git 协议或 ssh 协议，因为 Git 依靠 ssh 程序处理连接，所以您必须在 ~/.ssh/config 配置文件中指定你的主机，为其设置 ProxyCommand 选项，通过代理建立连接。ssh 方式简单使用推荐 proxychains(linux) + git，或见章节 [通过 socks/http 代理连接 ssh](ssh think)。
+如果你的 git 仓库为了身份认证，使用 git 协议或 ssh 协议。因为 Git 依靠 ssh 程序处理连接，所以您必须在 ~/.ssh/config 配置文件中指定你的主机
+
+    为其设置 ProxyJump 选项，通过跳板机建立连接，参见章节 [ssh 配置跳板 --- 使用 ProxyJump](ssh think)。
+
+    或为其设置 ProxyCommand 选项，通过代理建立连接，参见章节 [通过 socks/http 代理连接 ssh](ssh think)。
 
 #### 针对特定域名的 Git 仓库
 
