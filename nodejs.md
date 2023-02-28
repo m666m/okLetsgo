@@ -189,3 +189,9 @@ Container用于封装和管理Servlet，以及具体处理Request请求，在Con
     Wrapper：每一Wrapper封装着一个Servlet；
 
 ### 常见的Spring MVC的执行流程，一个URL的完整调用链路
+
+### electron
+
+自带 chrome 引擎，用 js 封装，各种简单快速成型的应用程序，除了太大没别的不好
+
+    https://www.electronjs.org/zh/docs/latest/tutorial/process-model
