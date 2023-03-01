@@ -52,6 +52,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
     alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
     alias gdh='echo "[差异：对比最近的两次提交]" && git diff HEAD^ HEAD'
+    alias gba='echo "[分支：全部分支带最近提交的注释]" && git branch -avv'
     # git 经常断连，自动重试直至成功
     alias gpull='git pull || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull; done'
     alias gpush='git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
