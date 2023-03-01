@@ -2807,43 +2807,80 @@ Git 自动给 dev 分支做了一次提交，注意这次提交的commit是 1d4b
 
 ## 使用标签 tag
 
-标签总是和某个提交记录commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，那么在这两个分支上都可以看到这个标签。
+标签总是和某个提交记录commit挂钩，默认操作的标签都是指的本地。
 
-1.新增标签
+如果这个commit既出现在master分支，又出现在dev分支，那么在这两个分支上都可以看到这个标签。
+
+新增附注标签（annotated）
 
     git tag -a v1.1 -m"新增xxx功能"
 
-2.查看标签
+    # 在某次提交上创建标签
+    git tag v0.2 -m "version 0.2" a9f5115
 
-    git tag
-    git show v1*
-
-3.不要忘记将标签显式推送到远程
-
-    git push origin v1.1
-
-    # 批量推送
-    git push origin --tags
-
-4.新增轻量化标签
+新增轻量标签（lightweight）
 
     git tag v1.1-bw
 
-5.删除标签
+查看标签
+
+    git tag
+
+查看标签对应提交记录的信息
+
+    git show v1*
+
+删除标签
 
     git tag -d v1.1-bw
+
+删除远程标签
+
+    git push origin --delete tag v1.1-bw
+
     git push origin :refs/tags/v1.1-bw
 
-6.从指定标签检出分支
+    远程仓库的标签删除后，本地仓库无法通过命令获取到删除的信息，只能通过 `git ls-remote` 获取到远程仓库的标签，与本地仓库的标签比对找到多余的标签，然后手动执行 `git tag -d [标签名]` 进行删除。
 
-假如某个历史版本需要重建，排除bug，从标签位置拉分支
+标签推送远程需要显式声明，推送标签并不会区分轻量标签和附注标签
 
-    git checkout milestone-id        # 切换到分发给客户的标签
-    git checkout -b new-branch-name  # 创建新的分支用于重现 bug
+    # 推送指定标签
+    git push origin v1.1
 
-或一行命令
+    # 推送全部标签
+    git push origin --tags
 
-    git checkout -b fea_xxx v2.0.0
+    # 推送，包括标签
+    git push origin master --tags
+
+标签拉取自远程时包括需要显式声明，拉取标签并不会区分轻量标签和附注标签
+
+    # 拉取远程全部标签
+    git fetch origin --tags
+
+    # 拉取远程全部标签
+    git pull --tags
+
+    # 拉取，包括标签
+    git pull origin master --tags
+
+查看远程仓库的标签
+
+    git ls-remote --tags
+
+标签的一大用途，是从指定标签位置检出分支
+
+    比如某历史版本需要重建，排除bug，我们就从标签位置拉分支
+
+        # 切换到标签位置的提交记录，此时属于 detached 状态，无法保存修改
+        git checkout milestone-v1.2.3
+
+        # 从这个提交记录的位置创建一个新分支
+        git checkout -b new-branch-name
+
+       一行命令搞定:
+
+        git checkout -b new-branch-name milestone-v1.2.3
 
 ## -------- 日常编辑常用 --------
 
