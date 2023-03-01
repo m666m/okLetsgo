@@ -48,10 +48,10 @@ if [ -x /usr/bin/dircolors ]; then
 
     # git 常用命令
     alias gs='echo "git status ..." && git status'
-    alias glog='echo "[树形提交记录]" && git log --oneline --graph'
-    alias glm='echo "[本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
-    alias gld='echo "[本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
-    alias gdh='echo "[对比最近的两次提交]" && git diff HEAD^ HEAD'
+    alias glog='echo "[提交记录：树形]" && git log --oneline --graph'
+    alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
+    alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
+    alias gdh='echo "[差异：对比最近的两次提交]" && git diff HEAD^ HEAD'
     # git 经常断连，自动重试直至成功
     alias gpull='git pull || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull; done'
     alias gpush='git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
