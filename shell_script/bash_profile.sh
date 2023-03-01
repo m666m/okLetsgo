@@ -49,7 +49,7 @@ if [ -x /usr/bin/dircolors ]; then
     # git 常用命令
     alias gs='echo "git status ..." && git status'
     alias glog='echo "[树形提交记录]" && git log --oneline --graph'
-    alias glm='echo "[本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master'
+    alias glm='echo "[本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
     alias gld='echo "[本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
     alias gdh='echo "[对比最近的两次提交]" && git diff HEAD^ HEAD'
     # git 经常断连，自动重试直至成功
