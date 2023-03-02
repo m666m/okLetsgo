@@ -1876,8 +1876,8 @@ Markdown All in One 高亮，预览，支持目录
 |            看代码                              |          看文字            |
 |-----------------------------------------------|---------------------------|
 |   MacOS Modern Light：Ventura Xcode Default   |                           |
-|   Winter is coming：Light                     |   Winter is coming：Light  |
-|   Solarized Light                             |   Solarized Light         |
+|   Solarized Light                             | Solarized Light           |
+|   Winter is coming：Light                     | Winter is coming：Light    |
 
 深色
 
@@ -1885,8 +1885,8 @@ Markdown All in One 高亮，预览，支持目录
 |----------------------------------------------|------------------------------|
 |   MacOS Modern Dark：Ventura Xcode Default    |                               |
 |   Nord                                        |                               |
+|                                               | Material Neutral              |
 |   Winter is coming：Dark Blue                 | Winter is coming：Dark Black   |
-|                                               |   Material Neutral              |
 
 Solarized Light（vscode 自带）  这个是羊皮纸底色，去蓝光了
 
