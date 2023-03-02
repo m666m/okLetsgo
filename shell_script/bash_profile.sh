@@ -46,6 +46,9 @@ if [ -x /usr/bin/dircolors ]; then
     # ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便
     alias lsg='ls -lA |grep -i'
 
+    # ackg 看日志最常用
+    alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid" "\bOk\b|Success|Good|Done|Finish" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
+
     # git 常用命令
     alias gs='echo "git status ..." && git status'
     alias glog='echo "[提交记录：树形]" && git log --oneline --graph'

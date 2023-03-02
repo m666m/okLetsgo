@@ -1659,22 +1659,13 @@ fuser 查看占用文件的进程号（sudo apt install psmisc）
     $ sudo fuser /usr/lib/nginx/modules/ngx_mail_module.so
     /usr/lib/nginx/modules/ngx_mail_module.so: 28987m 28988m 28989m 28990m 28991m
 
-lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof）
+lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof），即当前对外监听的端口
 
-    $ sudo lsof -i
-    COMMAND     PID     USER   FD   TYPE  DEVICE SIZE/OFF NODE NAME
-    avahi-dae   371    avahi   12u  IPv4   13904      0t0  UDP *:mdns
-    avahi-dae   371    avahi   13u  IPv6   13905      0t0  UDP *:mdns
-    avahi-dae   371    avahi   14u  IPv4   13906      0t0  UDP *:57630
-    avahi-dae   371    avahi   15u  IPv6   13907      0t0  UDP *:47663
-    dhcpcd      556     root   10u  IPv4   13950      0t0  UDP *:bootpc
-    dhcpcd      556     root   15u  IPv6 1702269      0t0  UDP *:dhcpv6-client
-    sshd        566     root    3u  IPv4   17230      0t0  TCP *:ssh (LISTEN)
-    sshd        566     root    4u  IPv6   17240      0t0  TCP *:ssh (LISTEN)
-    nginx     28987     root    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
-    nginx     28987     root    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
-    nginx     28988 www-data    6u  IPv4 1891872      0t0  TCP *:http (LISTEN)
-    nginx     28989 www-data    7u  IPv6 1891873      0t0  TCP *:http (LISTEN)
+    $ sudo lsof -i -P -n|grep LISTEN
+    sshd      7131     uu   11u  IPv4 276030011      0t0  TCP *:22 (LISTEN)
+    sshd     31856     uu   11u  IPv6 276013854      0t0  TCP *:22 (LISTEN)
+    nginx    15882   root    6u  IPv4 275158656      0t0  TCP *:80 (LISTEN)
+    nginx    15882   root   10u  IPv4 275158660      0t0  TCP *:443 (LISTEN)
 
 ## 网络故障排查
 
@@ -1738,9 +1729,9 @@ ss 命令（sudo apt install iproute2），比 netstat 命令看的信息更多
     bucket : Show states, which are maintained as minisockets, i.e. time-wait and syn-recv.
     big : Opposite to bucket state.
 
-查看ssh连接数，指定端口号即可
+查看当前的 tcp 连接，可指定端口号
 
-    ss -at | grep -i ':22'
+    sudo ss -at | grep -i ':22'
 
     sudo lsof -i :22
 
