@@ -1875,21 +1875,22 @@ Markdown All in One 高亮，预览，支持目录
 
 |            看代码                              |          看文字            |
 |-----------------------------------------------|---------------------------|
-|   MacOS Modern Theme：Big Sur Xcode Default   |                           |
-|   Night Owl：Light                            |   Night Owl：Light         |
+|   MacOS Modern Light：Ventura Xcode Default   |                           |
 |   Winter is coming：Light                     |   Winter is coming：Light  |
-|   Solarized Light                             |                           |
+|   Solarized Light                             |   Solarized Light         |
 
 深色
 
-|            看代码                      |           看文字              |
-|----------------------------------------|------------------------------|
-|   MacOS Modern Theme：Xcode Catalina   | MacOS Modern Theme：Xcode Catalina |
-|   Nord                                 |                               |
-|   Winter is coming：Dark Blue          | Winter is coming：Dark Black   |
-|   Material Neutral Theme               |   Material Theme              |
+|            看代码                             |           看文字              |
+|----------------------------------------------|------------------------------|
+|   MacOS Modern Dark：Ventura Xcode Default    |                               |
+|   Nord                                        |                               |
+|   Winter is coming：Dark Blue                 | Winter is coming：Dark Black   |
+|                                               |   Material Neutral              |
 
-MacOS Modern Theme 深色浅色都好
+Solarized Light（vscode 自带）  这个是羊皮纸底色，去蓝光了
+
+MacOS Modern Theme 看代码深色浅色都好，多选单选查找相关内容高亮颜色都有区分不刺眼
 
     davidbwaters.macos-modern-theme
 
@@ -1905,18 +1906,9 @@ MacOS Modern Theme 深色浅色都好
 
     dnlytras.nord-wave          最深的北极，适合无光
 
-Night Owl。夜猫子在晚上稍有刺眼，浅色更好
+Material Neutral 深色看文字比较养眼
 
-    sdras.night-owl 有比较多的方案 https://github.com/sdras/night-owl-vscode-theme
-
-material-theme 深色比较养眼，比 Night Owl 舒服。
-
-    Equinusocio.vsc-material-theme
-
-    这个修改版的看代码更不刺眼
     bernardodsanderson.theme-material-neutral
-
-Solarized Light（vscode 自带）  这个是羊皮纸底色，去蓝光了
 
 #### JScript/Json的格式化，比系统自带的好用
 

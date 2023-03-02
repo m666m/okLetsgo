@@ -46,13 +46,17 @@
             "editor.foreground": "#073a69"
         },
         "[Nord]": {
-            //"editor.background": "#242327e0",
-            //"editor.foreground": "#9eb6b2",
-            "activityBar.foreground": "#45f4fa"
+            "activityBar.foreground": "#45f4fa",
+            // 双击高亮和同类高亮颜色无区分，非常不方便
+            "editor.selectionBackground": "#a35207cc",
+            "editor.selectionHighlightBackground": "#753a02cc"
         },
         "[Nord Deep]": {
             "editor.foreground": "#c9d9e6",
             "activityBar.foreground": "#56bbff",
+            // 双击高亮和同类高亮颜色无区分，非常不方便
+            "editor.selectionBackground": "#a35207cc",
+            "editor.selectionHighlightBackground": "#753a02cc",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
             "editorBracketHighlight.foreground1": "#67a8dd",
             "editorBracketHighlight.foreground2": "#cf831f",
@@ -64,6 +68,9 @@
         "[Nord Wave]": {
             "editor.foreground": "#bac5d3",
             "activityBar.foreground": "#93ceff",
+            // 双击高亮和同类高亮颜色无区分，非常不方便
+            "editor.selectionBackground": "#a35207cc",
+            "editor.selectionHighlightBackground": "#753a02cc",
             // 括号高亮的背景色居然用肉色
             "editorBracketMatch.background": "#0a4e75",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
@@ -75,9 +82,9 @@
             "editorBracketHighlight.foreground6": "#def136"
         },
         "window.activeBorder": "#ff7b00c5",
-        "sideBarSectionHeader.border": "#1b6181", // 侧边栏子项目分割线更清晰些
-        "inputOption.activeBackground": "#9b9999" // 查找界面的高亮标识
-        // "input.border":"#ff0000" // vs 1.61发现没这个查找到的内容在光标位置不高亮
+        //"sideBarSectionHeader.border": "#45505c", // 侧边栏子项目分割线更清晰些
+        //"inputOption.activeBackground": "#4287a7ef", // 查找界面的按钮高亮
+        // "input.border":"#ff0000", // vs 1.61发现没这个查找到的内容在光标位置不高亮
         // "editor.foldBackground": "#355000",  // 折叠代码块高亮  editor.foldingHighlight
     },
     "workbench.editor.wrapTabs": true,
