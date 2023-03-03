@@ -351,6 +351,8 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
 
 putty 美化
 
+开启Putty终端256色的支持: Putty->load你的session->Window->Colors->勾选 “General options for colour usage” 下的几个选项。
+
 即使你设置会话时勾选了使用 256color 和 true color 真彩色，putty 默认的主题比较保守，只使用 16 种颜色（用 rgb 设置，其实支持真彩色），你ssh登陆到服务器会发现文字色彩比较刺眼。
 
 可以自定义颜色，在设置会话时 custom color，如果感觉挨个设置太麻烦，试试别人做好的
@@ -1570,13 +1572,17 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 #### 测试终端支持色彩的情况
 
-使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）,
+使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）, 用 ssh 登陆同一个服务器， 分别进入 bash/zsh+powerlevel10k 、tmux 环境
 
-用 ssh 登陆同一个服务器，
+查看终端设置是否配置好了基本的变量
 
-在 bash/zsh+powerlevel10k 、tmux 环境下，
+    $ echo $TERM
+    xterm-256color
 
-打开 vim 查看代码文件，在 vim 里执行 `:terminal` 进入新的终端，各种情况的组合测试。
+    $ tput colors
+    256
+
+打开 vim 查看代码文件，在 vim 里执行 `:terminal` 进入新的终端，各种情况的组合测试：
 
 观察彩色文字的颜色、状态栏色条：如果彩色文字的颜色深且明亮、状态栏工具的色条颜色过渡断裂，说明只支持 256color。
 
