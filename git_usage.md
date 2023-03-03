@@ -2,13 +2,18 @@
 
 善用 git 帮助查找命令 `git help branch`
 
-    使用 Git hub <http://www.cnblogs.com/zhangjianbin/category/934478.html>
+    使用 Git hub http://www.cnblogs.com/zhangjianbin/category/934478.html
 
-    git的几种工作流 <https://www.zhihu.com/question/20070065/answer/1174997617>
-                   <https://zhuanlan.zhihu.com/p/79668697>
-                   <https://www.cnblogs.com/pluto4596/p/11464819.html>
+    git的几种工作流
+        https://www.zhihu.com/question/20070065/answer/1174997617
+        https://zhuanlan.zhihu.com/p/79668697
+        https://www.cnblogs.com/pluto4596/p/11464819.html
 
-    git官方文档 <https://git-scm.com/book/zh/v2/Git-%E5%88%86%E6%94%AF-%E5%88%86%E6%94%AF%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E6%B5%81>
+    git官方文档
+        https://git-scm.com/book/zh/v2/Git-%E5%88%86%E6%94%AF-%E5%88%86%E6%94%AF%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E6%B5%81
+
+    vs code 使用 git
+        https://code.visualstudio.com/docs/sourcecontrol/intro-to-git
 
     命令参考 https://git-scm.com/docs
 
