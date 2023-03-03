@@ -78,9 +78,9 @@
             "editor.selectionBackground": "#a35207cc",
             "editor.selectionHighlightBackground": "#753a02cc",
             // minimap 滑块看不清
-            "scrollbarSlider.activeBackground": "#88c0d0",
-            "scrollbarSlider.background": "#2c535e",
-            "scrollbarSlider.hoverBackground": "#4e8797",
+            "scrollbarSlider.activeBackground": "#88c0d0b2",
+            "scrollbarSlider.background": "#2c535e7e",
+            "scrollbarSlider.hoverBackground": "#4e879794",
             // 括号高亮的背景色居然用肉色
             "editorBracketMatch.background": "#0a4e75",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
