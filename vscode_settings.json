@@ -31,11 +31,11 @@
     },
     // "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs":  "active",
-    // 自动缩进挺烦的，关了，仅在某些代码中开启即可
-    "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize宽度而自动判断
+    "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize而自行决定
+    "editor.autoIndent": "keep",  // 自动缩进只跟随上一行未知就可以了，乱跳挺烦的。
     "[python]": {
         "editor.formatOnType": true,
-        "editor.detectIndentation": true
+        "editor.autoIndent": "full"
     },
     "outline.showVariables": false,
     "diffEditor.ignoreTrimWhitespace": false,
@@ -67,23 +67,27 @@
             "editorBracketHighlight.foreground1": "#67a8dd",
             "editorBracketHighlight.foreground2": "#cf831f",
             "editorBracketHighlight.foreground3": "#3bc299",
-            "editorBracketHighlight.foreground4": "#da216e",
+            "editorBracketHighlight.foreground4": "#476baf",
             "editorBracketHighlight.foreground5": "#0a9956",
             "editorBracketHighlight.foreground6": "#def136"
         },
         "[Nord Wave]": {
-            "editor.foreground": "#bac5d3",
+            "editor.foreground": "#a1b7be",
             "activityBar.foreground": "#93ceff",
             // 双击高亮和同类高亮颜色无区分，非常不方便
             "editor.selectionBackground": "#a35207cc",
             "editor.selectionHighlightBackground": "#753a02cc",
+            // minimap 滑块看不清
+            "scrollbarSlider.activeBackground": "#88c0d0",
+            "scrollbarSlider.background": "#2c535e",
+            "scrollbarSlider.hoverBackground": "#4e8797",
             // 括号高亮的背景色居然用肉色
             "editorBracketMatch.background": "#0a4e75",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
             "editorBracketHighlight.foreground1": "#67a8dd",
             "editorBracketHighlight.foreground2": "#cf831f",
             "editorBracketHighlight.foreground3": "#3bc299",
-            "editorBracketHighlight.foreground4": "#da216e",
+            "editorBracketHighlight.foreground4": "#476baf",
             "editorBracketHighlight.foreground5": "#0a9956",
             "editorBracketHighlight.foreground6": "#def136"
         },
