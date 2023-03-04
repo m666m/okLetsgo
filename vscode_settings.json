@@ -65,7 +65,7 @@
             "editor.selectionHighlightBackground": "#753a02cc",
             // minimap 滑块看不清
             "scrollbarSlider.activeBackground": "#42628bee",
-            "scrollbarSlider.background": "#30435cee",
+            "scrollbarSlider.background": "#2a4363d3",
             "scrollbarSlider.hoverBackground": "#384f6eee",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
             "editorBracketHighlight.foreground1": "#67c5dd",
@@ -83,8 +83,8 @@
             "editor.selectionHighlightBackground": "#753a02cc",
             // minimap 滑块看不清
             "scrollbarSlider.activeBackground": "#5f9bad6c",
-            "scrollbarSlider.background": "#40667450",
-            "scrollbarSlider.hoverBackground": "#41788565",
+            "scrollbarSlider.background": "#2e5963af",
+            "scrollbarSlider.hoverBackground": "#406674a2",
             // 括号高亮的背景色居然用肉色
             "editorBracketMatch.background": "#0a4e75",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
