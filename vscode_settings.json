@@ -78,8 +78,8 @@
             "editor.selectionBackground": "#a35207cc",
             "editor.selectionHighlightBackground": "#753a02cc",
             // minimap 滑块看不清
-            "scrollbarSlider.activeBackground": "#88c0d0b2",
-            "scrollbarSlider.background": "#2c535e7e",
+            "scrollbarSlider.activeBackground": "#74abbbb2",
+            "scrollbarSlider.background": "#4066747e",
             "scrollbarSlider.hoverBackground": "#4e879794",
             // 括号高亮的背景色居然用肉色
             "editorBracketMatch.background": "#0a4e75",
@@ -92,8 +92,8 @@
             "editorBracketHighlight.foreground6": "#def136"
         },
         "window.activeBorder": "#ff7b00c5",
-        //"sideBarSectionHeader.border": "#45505c", // 侧边栏子项目分割线更清晰些
-        //"inputOption.activeBackground": "#4287a7ef", // 查找界面的按钮高亮
+        //"sideBarSectionHeader.border": "#4d5a61", // 侧边栏子项目分割线更清晰些
+        //"inputOption.activeBackground": "#688faf", // 查找界面的按钮高亮
         // "input.border":"#ff0000", // vs 1.61发现没这个查找到的内容在光标位置不高亮
         // "editor.foldBackground": "#355000",  // 折叠代码块高亮  editor.foldingHighlight
     },
