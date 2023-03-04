@@ -156,10 +156,6 @@
     "files.trimTrailingWhitespace": true,
     // Python Docstring Generator
     "autoDocstring.docstringFormat": "numpy",
-    // 指定markdown格式化提供者(因为有多个插件支持)
-    "[markdown]": {
-        "editor.defaultFormatter": "yzhang.markdown-all-in-one"
-    },
     // markdownlint
     "markdownlint.config": {
         "default": true,

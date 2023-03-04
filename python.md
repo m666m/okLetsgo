@@ -1837,11 +1837,13 @@ autoDocstring - Python Docstring Generator
 
 #### MarkDown
 
-markdownlint 语法检查
+markdownlint 语法检查、格式化
 
     DavidAnson.vscode-markdownlint
 
-Markdown All in One 高亮，预览，支持目录
+选装：
+
+Markdown All in One 高亮，预览，markdown加目录
 
 中文英文之间加入空格，所谓“盘古空白”
 
