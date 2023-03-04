@@ -1876,7 +1876,7 @@ Markdown All in One 高亮，预览，支持目录
 |            看代码                              |          看文字            |
 |-----------------------------------------------|---------------------------|
 |   MacOS Modern Light：Ventura Xcode Default   |                           |
-|   Solarized Light                             | Solarized Light           |
+|                                               | Solarized Light           |
 |   Winter is coming：Light                     | Winter is coming：Light    |
 
 深色
