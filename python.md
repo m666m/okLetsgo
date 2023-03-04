@@ -1875,7 +1875,7 @@ Markdown All in One 高亮，预览，支持目录
 
 |            看代码                              |          看文字            |
 |-----------------------------------------------|---------------------------|
-|   MacOS Modern Light：Ventura Xcode Default   |                           |
+|   MacOS Modern Light：Ventura Xcode Default   |         <----             |
 |                                               | Solarized Light           |
 |   Winter is coming：Light                     | Winter is coming：Light    |
 
@@ -1883,22 +1883,20 @@ Markdown All in One 高亮，预览，支持目录
 
 |            看代码                             |           看文字              |
 |----------------------------------------------|------------------------------|
-|   MacOS Modern Dark：Ventura Xcode            |                               |
-|   Nord                                        |                               |
-|                                               | Material Neutral              |
-|   Winter is coming：Dark Blue                 | Winter is coming：Dark Black   |
+|   MacOS Modern Dark：Ventura Xcode            |          <----              |
+|   Nord                                        |          <----              |
+|                                               | Material Neutral            |
+|   Winter is coming：Dark Blue                 | Winter is coming：Dark Black |
 
-Solarized Light（vscode 自带）  这个是羊皮纸底色，去蓝光了
-
-MacOS Modern Theme 看代码深色浅色都好，多选单选查找相关内容高亮颜色都有区分不刺眼
+MacOS Modern Theme 看代码深色浅色都好，多选单选查找相关内容高亮颜色都有区分，而且不刺眼
 
     davidbwaters.macos-modern-theme
 
-凛冬来临 Winter is coming。深浅主题都不刺眼，非常清晰。
+凛冬来临 Winter is coming，深浅主题都不刺眼，非常清晰。
 
     johnpapa.winteriscoming
 
-北极 Nord。夏夜使用，凉爽的感觉
+北极 Nord。夏夜使用，凉爽的感觉，适合环境亮度高的时候使用
 
     arcticicestudio.nord-visual-studio-code
 
@@ -1909,6 +1907,8 @@ MacOS Modern Theme 看代码深色浅色都好，多选单选查找相关内容�
 Material Neutral 深色看文字比较养眼
 
     bernardodsanderson.theme-material-neutral
+
+Solarized Light（vscode 自带），这个是羊皮纸底色，但是语法高亮浅蓝色太多，视物不清，需要自改。
 
 #### JScript/Json的格式化，比系统自带的好用
 
