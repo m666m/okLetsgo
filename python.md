@@ -1883,7 +1883,7 @@ Markdown All in One 高亮，预览，支持目录
 
 |            看代码                             |           看文字              |
 |----------------------------------------------|------------------------------|
-|   MacOS Modern Dark：Ventura Xcode Default    |                               |
+|   MacOS Modern Dark：Ventura Xcode            |                               |
 |   Nord                                        |                               |
 |                                               | Material Neutral              |
 |   Winter is coming：Dark Blue                 | Winter is coming：Dark Black   |
