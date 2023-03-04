@@ -49,7 +49,7 @@
     // 在线编辑 https://tmtheme-editor.herokuapp.com/#!/editor/theme/Monokai
     "workbench.colorCustomizations": {
         "[Solarized Light]": {
-            "editor.foreground": "#073a69"
+            "editor.foreground": "#222931"
         },
         "[Nord]": {
             "activityBar.foreground": "#45f4fa",
@@ -63,8 +63,12 @@
             // 双击高亮和同类高亮颜色无区分，非常不方便
             "editor.selectionBackground": "#a35207cc",
             "editor.selectionHighlightBackground": "#753a02cc",
+            // minimap 滑块看不清
+            "scrollbarSlider.activeBackground": "#74abbbb2",
+            "scrollbarSlider.background": "#4066747e",
+            "scrollbarSlider.hoverBackground": "#4e879794",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
-            "editorBracketHighlight.foreground1": "#67a8dd",
+            "editorBracketHighlight.foreground1": "#67c5dd",
             "editorBracketHighlight.foreground2": "#cf831f",
             "editorBracketHighlight.foreground3": "#3bc299",
             "editorBracketHighlight.foreground4": "#476baf",
@@ -84,7 +88,7 @@
             // 括号高亮的背景色居然用肉色
             "editorBracketMatch.background": "#0a4e75",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
-            "editorBracketHighlight.foreground1": "#67a8dd",
+            "editorBracketHighlight.foreground1": "#67c5dd",
             "editorBracketHighlight.foreground2": "#cf831f",
             "editorBracketHighlight.foreground3": "#3bc299",
             "editorBracketHighlight.foreground4": "#476baf",
