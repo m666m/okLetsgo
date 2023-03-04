@@ -521,7 +521,7 @@ BoldAsFont=yes
 # 根据图片生成颜色方案 https://github.com/thefryscorer/schemer2 参见章节 [base16颜色方案](gnu_tools.md okletsgo)
 Background=C:\tools\SuperPuTTY\111dark.jpg,225
 BackgroundColour=13,25,38
-ForegroundColour=217,230,242
+ForegroundColour=201,217,230
 CursorColour=236,255,255
 Black=53,53,53
 BoldBlack=92,92,92
