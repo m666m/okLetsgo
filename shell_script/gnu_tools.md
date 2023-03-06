@@ -5285,11 +5285,11 @@ hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控�
     # 先安装依赖 ack https://wangchujiang.com/linux-command/c/ack.html
     # sudo apt install ack
 
-    cd /usr/local/bin/
+    curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
 
-    sudo curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
+    sed -i 's/h()/ackg()/' ackg.sh
 
-    sudo sed -i 's/h()/ackg()/' ackg.sh
+    sudo mv ./ackg.sh /usr/local/bin/
 
 然后测试你感兴趣的文字，支持 -i 忽略大小写，支持 perl 形式的正则表达式
 
@@ -6433,7 +6433,7 @@ rsync 默许服务端口为 873。
             make
 
             # 不要sudo make install，尽量打包然后用包管理器安装
-            $ sudo make install
+            $ sudo make install  # 这样装完了 cmatrix 文件是 root 属组
             make[1]: Entering directory '/pcode/cmatrix'
             /usr/bin/mkdir -p '/usr/local/bin'
             /usr/bin/install -c cmatrix '/usr/local/bin'
