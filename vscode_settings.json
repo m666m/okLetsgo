@@ -49,7 +49,7 @@
     // 在线编辑 https://tmtheme-editor.herokuapp.com/#!/editor/theme/Monokai
     "workbench.colorCustomizations": {
         "[Solarized Light]": {
-            "editor.foreground": "#222931"
+            "editor.foreground": "#2c353f"
         },
         "[Nord]": {
             "activityBar.foreground": "#45f4fa",
