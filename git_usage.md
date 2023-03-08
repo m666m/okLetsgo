@@ -4135,9 +4135,9 @@ git commit 使用 -S 参数进行 GPG 签名：
 
         update README.md
 
-在 GitLab 验证提交
+在 github 验证提交
 
-    1、在 GitLab 提交选项卡，签名的提交将显示包含“ Verified”或“ Unverified”的徽章，具体取决于 GPG 签名的验证状态。
+    1、在 github 提交选项卡，签名的提交将显示包含“ Verified”或“ Unverified”的徽章，具体取决于 GPG 签名的验证状态。
     2、通过单击 GPG 徽章，将显示签名的详细信息。
 
 ### 5、设置始终给标签签名
@@ -4281,6 +4281,12 @@ tag命令后跟 -s 参数即可
     Date:   Wed Jul 24 15:58:46 2019 +0800
 
         Initial commit
+
+## 如果 Github 完蛋了
+
+    https://gitlab.com/
+
+    https://bitbucket.org/
 
 ## Github 创建 Pull Request
 
@@ -4499,7 +4505,7 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 
 工作告一段落（自测通过），推送本地 dev_xxx 分支到远程 dev_xxx，以便大家拉取测试：
 
-    0、查看当前在git的哪个位置，是否有未提交未更新未暂存的，确保是干净的再继续
+    0、查看当前在 git 的哪个位置，是否有未提交未更新未暂存的，确保是干净的再继续
 
         git status
 
@@ -4520,7 +4526,7 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 
         git rebase -i
 
-    3、将本地 dev_xxx 推送更新到 gitlab，使 gitlab 同步更新显示
+    3、将本地 dev_xxx 推送到远程
 
         git push origin dev_xxx
 
