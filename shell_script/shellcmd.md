@@ -384,8 +384,6 @@ diff通常的用法是从参数读入两个文件，而命令里面的-则是指
 
 ## Bash内建命令
 
-用 `set` 显示当前所有变量的定义，以及 `source xxx` 等执行后的函数里的变量和函数定义
-
 用 `type 命令` 来判断这个命令到底是可执行文件、shell 内置命令还是别名
 
     命令            说明
@@ -498,7 +496,153 @@ linux下shell终端里有行编辑功能，在命令提示符下默认可以像 
 
     Ctrl+l     清空屏幕并重新显示当前行，比用 clear 命令更方便。
 
-## 常用脚本收集
+## 环境变量的说明
+
+执行 `set` 可以查看当前shell的环境变量和函数设置，便于调试。
+
+系统级
+
+    /etc/profile
+        --> /etc/bash.bashrc
+        --> /etc/profile.d
+
+用户级
+
+    ~/.profile 或 ~/.bash_profile
+        --> $HOME/.bashrc
+                --> /etc/bashrc
+
+Bash 的命令提示符、ls 和 grep 命令的默认彩色显示在 ~/.bashrc 的代码中进行了设置
+
+```shell
+
+if [ -x /usr/bin/dircolors ]; then
+
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+```
+
+## Linux 命令行参数一个杠，俩杠，没杠
+
+参见章节 [压缩解压缩] 中 tar 的说明，或 `man tar` 或 `info tar`
+
+## Linux 目录结构
+
+linux的目录，有几个固定用途的，有些是文件系统挂载在这个目录上
+
+    $ df -h
+    Filesystem      Size  Used Avail Use% Mounted on
+    /dev/root        29G  1.6G   26G   6% /
+    devtmpfs        1.8G     0  1.8G   0% /dev
+    tmpfs           1.9G     0  1.9G   0% /dev/shm
+    tmpfs           1.9G  8.5M  1.9G   1% /run
+    tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+    tmpfs           1.9G     0  1.9G   0% /sys/fs/cgroup
+    /dev/mmcblk0p1  253M   49M  204M  20% /boot
+    tmpfs           384M     0  384M   0% /run/user/1000
+
+/ 根文件系统
+
+/etc : 系统级配置文件
+
+/bin：软链接到 /usr/bin。
+
+/usr：发行版的内容基本都在这里，可以理解为 C:/Windows/。
+
+    /usr/bin：各种可执行程序在这里，安装到各种路径下的软件，一般把启动引导命令行程序放置在这里，只要PATH变量有这个路径，用户使用该命令时就很方便，不需要指明程序的安装路径。有些命令在/bin 或/usr/local/bin 中，也在这里做个软链接。
+
+    /usr/sbin：根文件系统不必须的系统管理命令，例如多数服务程序。
+
+    /usr/man, /usr/info, /usr/doc：手册页、GNU信息文档和各种其他文档文件。
+
+    /usr/include：C编程语言的头文件.为了一致性这实际上应该在/usr/lib 下，但传统上支持这个名字.
+
+    /usr/lib：理解为 C:/Windows/System32。编程的原始库存在/usr/lib 里，所谓库(library) 。程序或子系统的不变的数据文件，包括一些site-wide配置文件。
+
+    /usr/local：用户级的程序目录，可以理解为 C:/Progrem Files/。用户自己编译的软件默认会安装到这个目录下。这里主要存放那些手动安装的软件，即不是通过“新立得”或 apt 安装的软件。它和 /usr 目录具有相类似的目录结构。让软件包管理器来管理 /usr 目录，而把自定义的脚本(scripts)放到 /usr/local 目录下面。
+        /usr/local/bin：自编译安装的软件的可执行部分在这里
+
+    /usr/share：一些共享数据，
+        /usr/share/man：联机帮助文件
+        /usr/share/doc：软件杂项的文件说明
+        /usr/share/zoneinfo：与时区有关的时区档案
+
+/var 系统一般运行时要改变的数据.每个系统是特定的，即不通过网络与其他计算机共享.
+
+    /var/log
+    各种程序的Log文件，特别是login  (/var/log/wtmp log所有到系统的登录和注销) 和syslog (/var/log/messages 里存储所有核心和系统程序信息. /var/log 里的文件经常不确定地增长，应该定期清除.
+
+    /var/spool
+    mail, news, 打印队列和其他队列工作的目录.每个不同的spool在/var/spool 下有自己的子目录，例如，用户的邮箱在/var/spool/mail 中.
+
+    /var/tmp
+    比/tmp 允许的大或需要存在较长时间的临时文件. (虽然系统管理员可能不允许/var/tmp 有很旧的文件.)
+
+    /var/catman
+    当要求格式化时的man页的cache.man页的源文件一般存在/usr/man/man* 中；有些man页可能有预格式化的版本，存在/usr/man/cat* 中.而其他的man页在第一次看时需要格式化，格式化完的版本存在/var/man 中，这样其他人再看相同的页时就无须等待格式化了. (/var/catman 经常被清除，就象清除临时目录一样.)
+
+    /var/lib
+    系统正常运行时要改变的文件.
+
+    /var/local
+    /usr/local 中安装的程序的可变数据(即系统管理员安装的程序).注意，如果必要，即使本地安装的程序也会使用其他/var 目录，例如/var/lock .
+
+    /var/lock
+    锁定文件.许多程序遵循在/var/lock 中产生一个锁定文件的约定，以支持他们正在使用某个特定的设备或文件.其他程序注意到这个锁定文件，将不试图使用这个设备或文件.
+
+    /var/run
+    保存到下次引导前有效的关于系统的信息文件.例如， /var/run/utmp 包含当前登录的用户的信息.
+
+/opt 目录
+
+    用来安装附加软件包，是用户级的程序目录，可以理解为 D:/Software。安装到 /opt 目录下的程序，它所有的数据、库文件等等都是放在同个目录下面。opt 有可选的意思，这里可以用于放置第三方大型软件（或游戏），当你不需要时，直接 rm -rf掉即可。在硬盘容量不够时，也可将 /opt 单独挂载到其他磁盘上使用。
+
+查看目录结构
+
+    $ tree /opt
+    /opt
+    └── vc
+        ├── bin
+        │   ├── containers_check_frame_int
+        │   ├── containers_datagram_receiver
+        │   ├── containers_datagram_sender
+        │   ├── containers_dump_pktfile
+        │   ├── containers_rtp_decoder
+        │   ├── containers_stream_client
+        │   ├── containers_stream_server
+        │   ├── containers_test
+        │   ├── containers_test_bits
+        │   ├── containers_test_uri
+        │   ├── containers_uri_pipe
+        │   ├── dtmerge
+        │   ├── dtoverlay
+        │   ├── dtoverlay-post
+        │   ├── dtoverlay-pre
+        │   ├── dtparam -> dtoverlay
+        │   ├── edidparser
+        │   ├── mmal_vc_diag
+        │   ├── raspistill
+        │   ├── raspivid
+        │   ├── raspividyuv
+        │   ├── raspiyuv
+        │   ├── tvservice
+        │   ├── vcdbg
+        │   ├── vcgencmd
+        │   ├── vchiq_test
+        │   ├── vcmailbox
+        │   └── vcsmem
+        ├── include
+        |
+
+## shell 常用脚本收集
 
 目录 shell_script 下是写的不错的脚本示例
 
@@ -549,6 +693,9 @@ flock  --wait 5  123 || { echo 'cannot get lock, exit'; exit 1; }
 
 # 意外退出时杀掉所有子进程
 trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
+#或
+trap "pkill -f $(basename $0);exit 1" SIGINT SIGTERM EXIT ERR
+trap "echo 'signal_handled:';kill 0" SIGINT SIGTERM
 
 # timeout 限制运行时间
 timeout 600s  some_command arg1 arg2
@@ -659,152 +806,6 @@ case "$platform" in
 esac
 
 ```
-
-## 环境变量文件的说明
-
-系统级
-
-    /etc/profile
-        --> /etc/bash.bashrc
-        --> /etc/profile.d
-
-用户级
-
-    ~/.profile 或 ~/.bash_profile
-        --> $HOME/.bashrc
-                --> /etc/bashrc
-
-Bash 的命令提示符、ls 和 grep 命令的默认彩色显示在 ~/.bashrc 的代码中进行了设置
-
-```shell
-
-if [ -x /usr/bin/dircolors ]; then
-
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
-```
-
-执行 `set` 可以查看当前shell的环境变量和函数设置，便于调试。
-
-## Linux 命令行参数一个杠，俩杠，没杠
-
-参见章节 [压缩解压缩] 中 tar 的说明，或 `man tar` 或 `info tar`
-
-## 目录结构
-
-linux的目录，有几个固定用途的，有些是文件系统挂载在这个目录上
-
-    $ df -h
-    Filesystem      Size  Used Avail Use% Mounted on
-    /dev/root        29G  1.6G   26G   6% /
-    devtmpfs        1.8G     0  1.8G   0% /dev
-    tmpfs           1.9G     0  1.9G   0% /dev/shm
-    tmpfs           1.9G  8.5M  1.9G   1% /run
-    tmpfs           5.0M  4.0K  5.0M   1% /run/lock
-    tmpfs           1.9G     0  1.9G   0% /sys/fs/cgroup
-    /dev/mmcblk0p1  253M   49M  204M  20% /boot
-    tmpfs           384M     0  384M   0% /run/user/1000
-
-/ 根文件系统
-
-/etc : 系统级配置文件
-
-/bin：软链接到 /usr/bin。
-
-/usr：发行版的内容基本都在这里，可以理解为 C:/Windows/。
-
-    /usr/bin：各种可执行程序在这里，安装到各种路径下的软件，一般把启动引导命令行程序放置在这里，只要PATH变量有这个路径，用户使用该命令时就很方便，不需要指明程序的安装路径。有些命令在/bin 或/usr/local/bin 中，也在这里做个软链接。
-
-    /usr/sbin：根文件系统不必须的系统管理命令，例如多数服务程序。
-
-    /usr/man, /usr/info, /usr/doc：手册页、GNU信息文档和各种其他文档文件。
-
-    /usr/include：C编程语言的头文件.为了一致性这实际上应该在/usr/lib 下，但传统上支持这个名字.
-
-    /usr/lib：理解为 C:/Windows/System32。编程的原始库存在/usr/lib 里，所谓库(library) 。程序或子系统的不变的数据文件，包括一些site-wide配置文件。
-
-    /usr/local：用户级的程序目录，可以理解为 C:/Progrem Files/。用户自己编译的软件默认会安装到这个目录下。这里主要存放那些手动安装的软件，即不是通过“新立得”或 apt 安装的软件。它和 /usr 目录具有相类似的目录结构。让软件包管理器来管理 /usr 目录，而把自定义的脚本(scripts)放到 /usr/local 目录下面。
-        /usr/local/bin：自编译安装的软件的可执行部分在这里
-
-    /usr/share：一些共享数据，
-        /usr/share/man：联机帮助文件
-        /usr/share/doc：软件杂项的文件说明
-        /usr/share/zoneinfo：与时区有关的时区档案
-
-/var 系统一般运行时要改变的数据.每个系统是特定的，即不通过网络与其他计算机共享.
-
-    /var/log
-    各种程序的Log文件，特别是login  (/var/log/wtmp log所有到系统的登录和注销) 和syslog (/var/log/messages 里存储所有核心和系统程序信息. /var/log 里的文件经常不确定地增长，应该定期清除.
-
-    /var/spool
-    mail, news, 打印队列和其他队列工作的目录.每个不同的spool在/var/spool 下有自己的子目录，例如，用户的邮箱在/var/spool/mail 中.
-
-    /var/tmp
-    比/tmp 允许的大或需要存在较长时间的临时文件. (虽然系统管理员可能不允许/var/tmp 有很旧的文件.)
-
-    /var/catman
-    当要求格式化时的man页的cache.man页的源文件一般存在/usr/man/man* 中；有些man页可能有预格式化的版本，存在/usr/man/cat* 中.而其他的man页在第一次看时需要格式化，格式化完的版本存在/var/man 中，这样其他人再看相同的页时就无须等待格式化了. (/var/catman 经常被清除，就象清除临时目录一样.)
-
-    /var/lib
-    系统正常运行时要改变的文件.
-
-    /var/local
-    /usr/local 中安装的程序的可变数据(即系统管理员安装的程序).注意，如果必要，即使本地安装的程序也会使用其他/var 目录，例如/var/lock .
-
-    /var/lock
-    锁定文件.许多程序遵循在/var/lock 中产生一个锁定文件的约定，以支持他们正在使用某个特定的设备或文件.其他程序注意到这个锁定文件，将不试图使用这个设备或文件.
-
-    /var/run
-    保存到下次引导前有效的关于系统的信息文件.例如， /var/run/utmp 包含当前登录的用户的信息.
-
-/opt 目录
-
-    用来安装附加软件包，是用户级的程序目录，可以理解为 D:/Software。安装到 /opt 目录下的程序，它所有的数据、库文件等等都是放在同个目录下面。opt 有可选的意思，这里可以用于放置第三方大型软件（或游戏），当你不需要时，直接 rm -rf掉即可。在硬盘容量不够时，也可将 /opt 单独挂载到其他磁盘上使用。
-
-查看目录结构
-
-    $ tree /opt
-    /opt
-    └── vc
-        ├── bin
-        │   ├── containers_check_frame_int
-        │   ├── containers_datagram_receiver
-        │   ├── containers_datagram_sender
-        │   ├── containers_dump_pktfile
-        │   ├── containers_rtp_decoder
-        │   ├── containers_stream_client
-        │   ├── containers_stream_server
-        │   ├── containers_test
-        │   ├── containers_test_bits
-        │   ├── containers_test_uri
-        │   ├── containers_uri_pipe
-        │   ├── dtmerge
-        │   ├── dtoverlay
-        │   ├── dtoverlay-post
-        │   ├── dtoverlay-pre
-        │   ├── dtparam -> dtoverlay
-        │   ├── edidparser
-        │   ├── mmal_vc_diag
-        │   ├── raspistill
-        │   ├── raspivid
-        │   ├── raspividyuv
-        │   ├── raspiyuv
-        │   ├── tvservice
-        │   ├── vcdbg
-        │   ├── vcgencmd
-        │   ├── vchiq_test
-        │   ├── vcmailbox
-        │   └── vcsmem
-        ├── include
-        |
 
 ## 当前shell和嵌套层数
 
@@ -2004,3 +2005,93 @@ tmux用一个守护进程打开多个终端窗口实现了一直在后台运行�
 最好在 tmux 里执行，这样以后就不用担心遇到这种尴尬了
 
     reptyr PID
+
+## 避免后台执行
+
+    https://www.cnblogs.com/f-ck-need-u/p/8661501.html
+
+shell脚本中的一个"疑难杂症"，CTRL+C 中止了脚本进程，这个脚本却还在后台不断运行，且时不时地输出点信息到终端(我这里是循环中的echo命令输出的)，只能手动 ps 列表自己找出来 kill。
+
+这是因为 shell 脚本中有一些后台任务会直接挂靠在init/systemd进程下，而不会随着脚本退出而停止。
+
+例如：
+
+    [root@mariadb ~]# cat test1.sh
+    #!/bin/bash
+    echo $BASHPID
+    sleep 50 &
+
+    [root@mariadb ~]# ps -elf | grep slee[p]
+    0 S root      10806      1  0  80   0 - 26973 hrtime 19:26 pts/1    00:00:00 sleep 50
+
+脚本退出后，sleep进程的父进程变为了1，也就是挂在了init/systemd进程下。
+
+可以在脚本中直接使用kill命令杀掉sleep进程。
+
+    [root@mariadb ~]# cat test1.sh
+    #!/bin/bash
+    echo $BASHPID
+    sleep 50 &
+    kill $!
+
+但是，如果这个sleep进程是在循环中(for、while、until均可)，那就麻烦了。
+
+例如下面的例子，直接将循环放入后台，杀掉sleep、或者exit、或者杀掉脚本自身进程、或者让脚本自动退出、甚至exec退出当前脚本shell都是无效的。
+
+    [root@mariadb ~]# cat test1.sh
+    #!/bin/bash
+    echo $BASHPID
+
+    while true;do
+        sleep 50
+        echo 1
+    done &
+
+    killall sleep
+    kill $BASHPID
+
+究其原因，是因为while/for/until等是bash内置命令，它们的特殊性在于它们有一个很替它们着想的爹：bash进程。bash进程对他们的孩子非常负责，所有能直接执行的内置命令都不会创建新进程，它们直接在当前bash进程内部调用执行，所以我们用ps/top等工具是捕捉不到cd、let、expr等等内置命令的。但正因为爹太负责，把孩子们宠坏了，这些bash内置命令的执行必须依赖于bash进程才能执行。
+
+内置命令中还有几个比较特殊的关键字：while、for、until、if、case等，它们无法直接执行，需要结合其他关键字(如do/done/then等)才能执行。非后台情况下，它们的爹会直接带它们执行，但当它们放进后台后，它们必须先找个bash爹提供执行环境：
+
+如果是在当前shell中放进后台，则这个爹是新生成的bash进程。这个新的bash进程只负责一件事，就是负责这个后台，为它的孩子们提供它们依赖的bash环境。
+
+如果是在脚本中放进后台，则这个爹就是脚本进程。由于脚本不是内置命令，它能直接负责这个后台(因为脚本进程也算是bash进程的特殊变体，也相当于一个新的bash进程)。
+
+无论它们的爹是脚本进程还是新的bash进程，它们都是当前shell下的子shell。如果某个子shell中有后台进程，当杀掉子shell，意味着杀掉了它们的爹。非内置bash命令不依赖于bash，所以直接挂在init/systemd下，而bash内置命令严重依赖于bash爹，没有爹就没法执行，所以在杀掉bash进程(上面pid=7008)的时候，bash爹(pid=13295)会立即带着它下面的进程(sleep)挂在init/systemd下。
+
+该bash和终端无关，你就是退出了当前连接也会被系统新建一个bash继续运行。
+
+解决方案
+
+```bash
+
+#!/bin/bash
+
+trap "pkill -f $(basename $0);exit 1" SIGINT SIGTERM EXIT ERR
+
+while true;do
+    sleep 1
+    echo "hello world!"
+done &
+
+# do something
+sleep 60
+
+```
+
+更方便更精确的自杀手段：man kill。在该man手册中解释了，如果kill的pid值为0，表示发送信号给当前进程组中所有进程，对shell脚本来说这意味着杀掉脚本中产生的所有进程。方案如下：
+
+```bash
+
+#!/bin/bash
+
+trap "echo 'signal_handled:';kill 0" SIGINT SIGTERM
+
+while true;do
+    sleep 5
+    echo "hello world! hello world!"
+done &
+sleep 60
+
+```

@@ -341,6 +341,8 @@ Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个�
 
     Debian 包含一个由 Microsoft 签名的 “shim” 启动加载程序，因此可以在启用了 Secure Boot 的计算机上正常工作 <https://www.debian.org/releases/stable/amd64/ch03s06.en.html#secure-boot>。
 
+    UEFI 安全启动可以绕过，已经有常驻 UEFI 启动区的木马了 <https://arstechnica.com/information-technology/2023/03/unkillable-uefi-malware-bypassing-secure-boot-enabled-by-unpatchable-windows-flaw/>。
+
 1、主板 BIOS 先开启 UEFI 功能
 
 见章节 [主板 BIOS 设置启动模式为原生 UEFI]。

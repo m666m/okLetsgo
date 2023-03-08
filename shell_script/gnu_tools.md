@@ -2863,6 +2863,7 @@ export TERM="xterm-256color"
 
 ####################################################################
 # alias 本该放到 .bashrc 文件，为了方便统一在此了
+# 这段代码需要跟你的 bash 的 .bash_profile 同步，以保持使用习惯一致
 #
 # 参考自 dbian 的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
@@ -2891,13 +2892,22 @@ if [ -x /usr/bin/dircolors ]; then
     # ls 列出的目录颜色被 grep 覆盖，用 ls -l 更方便
     alias lsg='ls -lA|grep -i'
 
+    # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
+    alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid" "\bOk\b|Success|Good|Done|Finish" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
+
     # git 常用命令
     alias gs='echo "git status ..." && git status'
-    alias glog='echo "[树形提交记录]" && git log --oneline --graph'
-    alias gdh='echo "[对比最近的两次提交]" && git diff HEAD^ HEAD'
+    alias glog='echo "[提交记录：树形]" && git log --oneline --graph'
+    alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
+    alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
+    alias gdh='echo "[差异：对比最近的两次提交]" && git diff HEAD^ HEAD'
+    alias gba='echo "[分支：全部分支带最近提交的注释]" && git branch -avv'
+    # git 经常断连，自动重试直至成功
+    alias gpull='git pull || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull; done'
+    alias gpush='git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 
     # gpg 常用命令
-    alias gkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
+    alias pkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
 fi
 
 # 执行 cd 命令后自动执行下 ls 列出当前文件
@@ -2920,6 +2930,9 @@ source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # 官网提示要在配置文件的最后一行
 # source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
+source /usr/local/bin/ackg.sh
 
 ##########################################################
 # 手动配置插件
@@ -5264,7 +5277,7 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
 对程序的输出同时打印到文件和屏幕
 
-    ls -al | tee file.txt
+    ls -al | tee -a file.txt
 
 #### ackg 给终端输出的自定义关键字加颜色
 
@@ -5303,6 +5316,57 @@ hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控�
 
     # \b 是perl正则表达式的单词限定符 https://perldoc.perl.org/perlre
     cat /var/log/kern.log.1 |ackg -i 'Fail|Error|\bNot\b|\bNo\b|Invalid' '\bOk\b|Success|Good|Done|Finish' 'Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart'
+
+### 比较两个目录的文件差异
+
+方法一：使用 diff
+
+    diff -r directory1 directory2
+
+但是diff会对每个文件中的每一行都做比较，所以文件较多或者文件较大的时候会非常慢。请谨慎使用。
+
+方法二：使用diff结合tree
+
+    $ diff <(tree -Ci --noreport ./tea) <(tree -Ci --noreport ./tea_hot)
+    1c1
+    < ./tea
+    ---
+    > ./tea_hot
+    8d7
+    < cad.sh
+    14d12
+    < lxhb.md
+    17,19d14
+    < newhot.txt
+    < nljson.cpp
+    < zhyc.txt
+
+说明：
+
+    tree 的 -C 选项是输出颜色，如果只是看一下目录的不同，可以使用该选项，但在结合其他命令使用的时候建议不要使用该选项，因为颜色也会转换为对应的编码而输出；
+    -i 是不缩进，建议不要省略 -i，否则 diff 的结果很难看，也不好继续后续的文件操作；
+    --noreport 是不输出报告结果，建议不要省略该选项。
+
+该方法效率很高。
+
+方法三：find结合diff
+
+    find directory1 -printf "%P\n" | sort > file1
+    find directory2 -printf "%P\n" | sort | diff file1 -
+    2d1
+    < 1.png
+    4a4
+    > 4.png
+说明：
+
+    < 代表的行是 directory1 中有而 directory2 没有的文件，
+    > 则相反，是 directory2 中有而directory1中没有。
+
+    不要省略 -printf "%P\n"，此处的%P表示find的结果中去掉前缀路径，详细内容 `man find`。
+
+    例如，find /root/ -printf "%P\n"的结果中将显示 /root/a/xyz.txt 中去掉 /root/ 后的结果：a/xyz.txt。
+
+效率很高，输出也简洁。
 
 ### dd 写入文件
 
@@ -5975,9 +6039,11 @@ scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了�
 
 ### rsync 文件同步
 
-    http://c.biancheng.net/view/6121.html
-
     https://www.ruanyifeng.com/blog/2020/08/rsync.html
+
+    rsync 完全手册 https://www.junmajinlong.com/linux/index/#Linux%E5%9F%BA%E6%9C%AC%E6%9C%8D%E5%8A%A1
+
+    http://c.biancheng.net/view/6121.html
 
 用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器。
 
@@ -6319,6 +6385,22 @@ rsync 默许服务端口为 873。
     二是你的服务器端存储密码的文件没有正确的 600 权限
 
 最好把命令写成批处理文件，放到 Windows 计划任务里定时执行。
+
+### sshfs 通过 ssh 来挂载远程目录
+
+    https://www.junmajinlong.com/linux/sshfs/
+
+相比于 NFS，sshfs 更简洁，它是基于 fuse 模块来实现的，可以认为 sshfs 所挂载的文件系统是 fuse 文件系统的一种实现。但是 NFS 比 sshfs 要完整的多，nfs 毕竟是【小型】分布式文件系统，对数据的一致性、完整性实现的都比较完美，访问权限控制也比 sshfs 要丰富的多。
+
+例如，挂载 192.168.100.150 上的根目录 "/usp" 到本地的 "/mnt" 上
+
+    sshfs root@192.168.100.150:/usp /mnt
+
+注意：只能挂载远程目录，像普通文件、块设备 (如 /dev/sda2) 等无法挂载。
+
+卸载挂载点，直接 umount 即可
+
+    umount /mnt
 
 ### 在当前目录启动一个简单的http服务器
 
@@ -6850,6 +6932,8 @@ systemd 保持对 SystemV 的兼容性使用的控制文件
 ### systemd
 
     https://www.freedesktop.org/software/systemd/man/index.html
+
+    https://www.junmajinlong.com/linux/index/#systemd%E7%B3%BB%E5%88%97
 
 大多数 Linux 发行版都过渡到使用 systemd 管理系统了，但还是有讨厌 systemd 的发行版：Devuan 是使用 SysV init 软件代替 Debian systemd 包的 Debian 分支，提供了多种初始化系统供用户选择，其中包括 SysV init、sinit、openrc、runit、s6 和 shepherd
 

@@ -364,3 +364,9 @@ eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
 ssh-add -l
 
 ####################################################################
+# 加载插件
+
+# ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
+source /usr/local/bin/ackg.sh
+
+####################################################################
