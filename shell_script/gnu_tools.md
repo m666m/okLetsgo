@@ -5269,6 +5269,8 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
     $ grep -in 'apt-get' README.rst
     20:     sudo apt-get install fonts-powerline
 
+grep -w 匹配单词，用于搜索结果中类似字母组合太多的情况。
+
 ### 终端输出字符的后处理工具
 
 格式化 JSON 数据，并彩色显示，也可用作格式检查
@@ -5296,7 +5298,8 @@ hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控�
 
 脚本名和函数名都太简单了，都换成不易混淆的 ackg 吧
 
-    # 先安装依赖 ack https://wangchujiang.com/linux-command/c/ack.html
+    # 先安装依赖 ack https://beyondgrep.com/apt list
+    #   命令使用简介 https://wangchujiang.com/linux-command/c/ack.html
     # sudo apt install ack
 
     curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
