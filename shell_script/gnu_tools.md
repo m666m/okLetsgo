@@ -2381,7 +2381,7 @@ zsh 自带功能
 
     powerline：见章节[状态栏工具 powerline]，建议使用替代品见章节 [推荐状态栏工具 powerlevel10k]。
 
-    命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按 TAB 键快速进入下一级，或直接按右方向键确认该提示。最方便的用法是按 alt+l(vi的右方向键)自动接受结果，回车即执行，更方便。
+    命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按 TAB 键快速进入下一级，或直接按右方向键确认该提示。最方便的用法是按 alt+m 或 alt+l(vi的右方向键)自动接受结果，回车即执行，更方便。
 
         # git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
         sudo apt install zsh-autosuggestions
