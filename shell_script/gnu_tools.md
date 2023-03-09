@@ -2361,17 +2361,17 @@ zsh 默认使用的用户插件位置，在 ~/.zsh/plugin/
 
 有些插件和主题依赖 python 和 git，注意提前安装好。
 
-zsh 命令提示符主题推荐使用简洁的 pure
+不需要安装 zsh 命令提示符主题默认使用简洁的 pure 主题
 
     https://github.com/sindresorhus/pure
 
-    下面章节[推荐状态栏工具 powerlevel10k]，也可设置为 pure 风格。
+安装 powerlevel10k 足够了，参见章节[推荐状态栏工具 powerlevel10k]，它也可设置为 pure 风格。
 
 zsh 自带功能
 
     命令智能补全：相对于 bash，两次 TAB 键只能用于提示目录，在 zsh 中输入长命令，输入开头字母后连续敲击两次 TAB 键 zsh 给你一个可能的列表，用tab或方向键选择，回车确认。比如已经输入了 svn commit，但是有一个 commit 的参数我忘记了，我只记得两个减号开头的，在svn commit -- 后面按两次TAB，会列出所有命令。
 
-    快速跳转：输入 cd - 按TAB，会列出历史路径清单供选择。
+    快速跳转：输入 cd - 按 TAB，会列出历史路径清单供选择。
 
 #### 安装常用的插件
 
@@ -2381,7 +2381,7 @@ zsh 自带功能
 
     powerline：见章节[状态栏工具 powerline]，建议使用替代品见章节 [推荐状态栏工具 powerlevel10k]。
 
-    命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按TAB键快速进入下一级，或直接按右方向键确认该提示(按Alt+m接两次vi的右方向键更方便)。
+    命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按 TAB 键快速进入下一级，或直接按右方向键确认该提示。最方便的用法是按 alt+l(vi的右方向键)自动接受结果，回车即执行，更方便。
 
         # git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
         sudo apt install zsh-autosuggestions
