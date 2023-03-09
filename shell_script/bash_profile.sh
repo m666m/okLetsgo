@@ -128,7 +128,7 @@ normal=$'\[\e[m\]'
 function PS1exit-code {
     local exitcode="$?"
     #if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
-    (($exitcode != 0)) && printf "%s" ' '$exitcode' '
+    (($exitcode != 0)) && printf "%s" ' -'$exitcode' '
 }
 
 function PS1conda-env-name {
