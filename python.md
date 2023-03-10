@@ -1884,11 +1884,11 @@ Markdown All in One 高亮，预览，markdown加目录
 深色
 
 |            看代码                             |           看文字              |
-|----------------------------------------------|------------------------------|
-|   MacOS Modern Dark：Ventura Xcode Default    |          <----              |
-|   Nord                                        |          <----              |
-|                                               | Material Neutral            |
-|   Winter is coming：Dark Blue                 | Winter is coming：Dark Black |
+|----------------------------------------------|-------------------------------|
+|   MacOS Modern Dark：Ventura Xcode Default   | MacOS Modern Dark：Xcode Modern|
+|   Nord                                       |          <----                |
+|                                              | Material Neutral              |
+|   Winter is coming：Dark Blue                | Winter is coming：Dark Black   |
 
 MacOS Modern Theme 看代码深色浅色都好，多选单选查找相关内容高亮颜色都有区分，而且不刺眼
 
