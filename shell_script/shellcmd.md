@@ -1700,6 +1700,16 @@ iproute2 软件包 代替了 net-tools 软件包，详见章节 [iproute2 软件
 
     telnet 127.0.0.1 443
 
+查看当前的连接，可指定监听端口号
+
+    sudo ss -atp | grep -i ':22'
+
+    sudo lsof -i :22  -n -P
+
+    sudo lsof -i -n -P
+
+    sudo netstat -antpl
+
 ss 命令（sudo apt install iproute2），比 netstat 命令看的信息更多
 
     ss用法大全 https://plantegg.github.io/2016/10/12/ss%E7%94%A8%E6%B3%95%E5%A4%A7%E5%85%A8/
@@ -1710,11 +1720,11 @@ ss 命令（sudo apt install iproute2），比 netstat 命令看的信息更多
     # ss -aw 查看raw端口
     # ss -au 查看udp端口
 
-    # 查看tcp端口 等效 `netstat -ant`
-    ss -at
+    # 查看tcp端口 等效 `netstat -antlp`
+    sudo ss -atp
 
     # 已经建立连接的http端口
-    ss -o state established '( dport = :http or sport = :http )'
+    sudo ss -o state established '( dport = :http or sport = :http )'
 
     state FILTER-NAME-HERE, Where FILTER-NAME-HERE can be any one of the following
 
@@ -1734,12 +1744,6 @@ ss 命令（sudo apt install iproute2），比 netstat 命令看的信息更多
     synchronized : All the connected states except for syn-sent
     bucket : Show states, which are maintained as minisockets, i.e. time-wait and syn-recv.
     big : Opposite to bucket state.
-
-查看当前的 tcp 连接，可指定端口号
-
-    sudo ss -at | grep -i ':22'
-
-    sudo lsof -i :22
 
 icmp测试网络连通情况
 
