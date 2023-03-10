@@ -41,10 +41,16 @@ if [ -x /usr/bin/dircolors ]; then
     alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
     #alias egrep='egrep --color=auto'
     #alias fgrep='fgrep --color=auto'
-    alias tree='tree -a -I .git'
 
     # ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便
     alias lsg='ls -lA |grep -i'
+
+    # 下为各命令的惯用法
+    alias tree='tree -a -I .git'
+    alias pstree='pstree -p -s'
+
+    # gpg 常用命令
+    alias pkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
 
     # git 常用命令
     alias gs='echo "git status ..." && git status'
@@ -56,9 +62,6 @@ if [ -x /usr/bin/dircolors ]; then
     # git 经常断连，自动重试直至成功
     alias gpull='git pull || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull; done'
     alias gpush='git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
-
-    # gpg 常用命令
-    alias pkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
 fi
 
 ####################################################################
