@@ -39,6 +39,7 @@
     },
     "outline.showVariables": false,
     "diffEditor.ignoreTrimWhitespace": false,
+    //"window.activeBorder": "#ff7b00c5",
     "window.newWindowDimensions": "offset", // "offset" maximized
     "window.autoDetectColorScheme": false,  // 深色背景下切换项目时会闪一下白，很烦人，关了
     "window.menuBarVisibility": "toggle",  // 按 alt 键显示系统菜单
@@ -95,7 +96,6 @@
             "editorBracketHighlight.foreground5": "#0a9956",
             "editorBracketHighlight.foreground6": "#def136"
         },
-        "window.activeBorder": "#ff7b00c5",
         //"sideBarSectionHeader.border": "#4d5a61", // 侧边栏子项目分割线更清晰些
         //"inputOption.activeBackground": "#688faf", // 查找界面的按钮高亮
         // "input.border":"#ff0000", // vs 1.61发现没这个查找到的内容在光标位置不高亮
