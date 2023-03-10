@@ -1877,7 +1877,7 @@ Markdown All in One 高亮，预览，markdown加目录
 
 |            看代码                              |          看文字            |
 |-----------------------------------------------|---------------------------|
-|   MacOS Modern Light：Ventura Xcode Default   |         <----             |
+|   MacOS Modern Light：Xcode Default           |         <----             |
 |                                               | Solarized Light           |
 |   Winter is coming：Light                     | Winter is coming：Light    |
 
@@ -1885,7 +1885,7 @@ Markdown All in One 高亮，预览，markdown加目录
 
 |            看代码                             |           看文字              |
 |----------------------------------------------|------------------------------|
-|   MacOS Modern Dark：Ventura Xcode            |          <----              |
+|   MacOS Modern Dark：Ventura Xcode Default    |          <----              |
 |   Nord                                        |          <----              |
 |                                               | Material Neutral            |
 |   Winter is coming：Dark Blue                 | Winter is coming：Dark Black |
