@@ -1052,7 +1052,7 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
 
 放在暂存区的目的，方便比对，如有错误，可以撤销该添加，详见章节 [如何回退] 中关于 '暂存区(stage/index)的意义' 部分。
 
-后续如果工作区在这个基础上改乱了，可以用 `git diff` 跟暂存区比较，方便改回去。也可以跟各个区进行对比，参见章节 [diff 显示差异的多种用法]。
+后续如果工作区在这个基础上改乱了，可以用 `git diff` 跟暂存区比较，方便改回去。也可以跟各个区进行对比，参见章节 [显示差异 diff]。
 
 如果修改未提交，需要回退用 `git restore`，参见章节 [如何回退] 中关于 'git restore' 的说明。
 
@@ -2782,7 +2782,7 @@ patch 是这一类版本控制系统的产物，而非基石。（注意：切�
 
 事实上，Git 的 commit 只包含指向 snapshot tree 的指针，参见：Git-内部原理-Git-对象 <https://git-scm.com/book/en/v2/Git-Internals-Git-Objects>）
 
-git diff 输出格式就是个 patch 文件（参见章节 [diff 显示差异的多种用法]中的 '制作补丁' 部分），git cherry-pick 则会把指定的提交点所作的修改以 patch 的形式应用到目标分支上。
+git diff 输出格式就是个 patch 文件（参见章节 [显示差异 diff] 中的 '制作补丁' 部分），git cherry-pick 则会把指定的提交点所作的修改以 patch 的形式应用到目标分支上。
 
 应用场景：master 分支上修改了一个 bug，要在 dev 分支上也做一遍修复
 
@@ -2949,9 +2949,11 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
     reset [commit] <paths>     NO       YES     NO      YES
     checkout [commit] <paths>  NO       YES     YES     NO
 
-git restore [file] 关于撤回文件的用途很明晰：只操作提交（commit）之前你的修改
+### git restore [file]
 
-        https://git-scm.com/docs/git-restore
+    https://git-scm.com/docs/git-restore
+
+关于撤回文件的用途很明晰：只操作提交（commit）之前你的修改
 
     git restore <file>
 
@@ -2961,107 +2963,96 @@ git restore [file] 关于撤回文件的用途很明晰：只操作提交（comm
 
         丢弃暂存区，把暂存区内容回退到工作区，工作区内容优先保留。
 
-    示例
+示例
 
-        暂存区无内容，工作区有内容：
+    暂存区无内容，工作区有内容：
 
-            `git restore <file>` 丢弃工作区，恢复文件原貌（仓库区(HEAD)的内容）
+        `git restore <file>` 丢弃工作区，恢复文件原貌（仓库区(HEAD)的内容）
 
-            `git restore --staged <file>` 无变化
+        `git restore --staged <file>` 无变化
 
-        暂存区有内容，工作区无内容：
+    暂存区有内容，工作区无内容：
 
-            `git restore <file>` 无变化
+        `git restore <file>` 无变化
 
-            `git restore --staged <file>` 丢弃暂存区，把暂存区内容回退到工作区
+        `git restore --staged <file>` 丢弃暂存区，把暂存区内容回退到工作区
 
-        暂存区有内容，工作区有内容：
+    暂存区有内容，工作区有内容：
 
-            `git restore <file>` 丢弃工作区，保留暂存区内容
+        `git restore <file>` 丢弃工作区，保留暂存区内容
 
-            `git restore --staged <file>` 丢弃暂存区，保留工作区内容
+        `git restore --staged <file>` 丢弃暂存区，保留工作区内容
 
-    注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
+注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
 
-git checkout [file]
+### git checkout [file]
 
         https://git-scm.com/docs/git-checkout
 
-    丢弃工作区，恢复文件原貌（仓库区(HEAD)的内容）。等同于 `git restore <file>`。
+丢弃工作区，恢复文件原貌（仓库区(HEAD)的内容）。等同于 `git restore <file>`。
 
-    不丢弃暂存区，也就是说，如果你得明确丢弃暂存区，否则恢复不了文件内容到 HEAD 的状态。
+不丢弃暂存区，也就是说，如果你得明确丢弃暂存区，否则恢复不了文件内容到 HEAD 的状态。
 
-    示例
+示例
 
-        丢弃工作区内指定文件的修改
+    丢弃工作区内指定文件的修改
 
-            git checkout -- aaa.txt
+        git checkout -- aaa.txt
 
-        丢弃工作区内所有文件的修改
+    丢弃工作区内所有文件的修改
 
-            # git checkout HEAD .
-            git checkout .
+        # git checkout HEAD .
+        git checkout .
 
-git checkout [commit]
+### git checkout [commit]
 
-    如果没有文件冲突，直接切换到指定的提交记录。
+如果没有文件冲突，直接切换到指定的提交记录。
 
-    如果暂存区或工作区有内容会报错无法切换，但是我遇到过丢弃暂存区直接切换的情况，没搞明白为啥。
+如果暂存区或工作区有内容会报错无法切换，但是我遇到过丢弃暂存区直接切换的情况，没搞明白为啥。
 
-    切换到某个提交记录后，如果对文件内容做了修改，需要你建立新的分支或切换回现有分支，才能提交你当前的工作，否则这种分离 detached HEAD 情况下做的修改 git 不知道往何处保存。
+切换到某个提交记录后，如果对文件内容做了修改，需要你建立新的分支或切换回现有分支，才能提交你当前的工作，否则这种分离 detached HEAD 情况下做的修改 git 不知道往何处保存。
 
-    注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
+注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
 
-git checkout [commit] [file]
+### git checkout [commit] [file]
 
-    恢复某个提交记录时的文件，把该文件直接恢复到暂存区
+恢复某个提交记录时的文件，把该文件直接恢复到暂存区，如果暂存区之前有内容，会被替换
 
-    如：
+如：
 
-        git checkout b22c20fc8d -- abc.txt
+    git checkout b22c20fc8d -- abc.txt
 
-    TODO: 等同于 `git reset <commit> <file>`。
-
-git reset [file]
+### git reset [file]
 
     丢弃暂存区，把暂存区内容回退到工作区，工作区内容优先保留。等同于 `git restore --staged <file>`。
 
-    git reset <commit> <file>
+### git reset [commit]
 
-        TODO: 丢弃工作区，把指定提交点的文件内容回退到工作区，等同于 `git checkout <commit> <file>`。
+主要关注已经提交的修改的 commit 的回退,重置 head 的位置为你指定的提交点。
 
-git reset [commit]
+    https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified#_the_role_of_reset
 
-    主要关注已经提交的修改的 commit 的回退，分几种回退情形。
+注意
 
-        https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified#_the_role_of_reset
+    如果你回退的是远程库已有的提交记录，建议不要用 git reset，参见章节 [远程库也有的提交记录，如何回退] 的办法。
 
-    注意：如果你回退的是远程库已有的提交记录，建议不要用 git reset，参见章节 [远程库也有的提交记录，如何回退] 的办法。
+如果用 git reset 把提交记录回退后，又想找回
 
-    如果用 git reset 把提交记录回退后，又想找回
+    可以用 git reflog 查看近期的提交记录往回cherry-pick，或简单点，直接从远程库 origin/master 合并回来：运行 `git merge` 即可。原理见章节 [你的代码在本地有两份--本地仓库和远程仓库]。
 
-        可以用 git reflog 查看近期的提交记录往回cherry-pick，或简单点，直接从远程库 origin/master 合并回来：运行 `git merge` 即可。原理见章节 [你的代码在本地有两份--本地仓库和远程仓库]。
+分几种回退情形
 
-    git reset --soft HEAD~
+    git reset --soft <commit>
 
-        重置 head 的位置为你指定的提交点，回退的内容放到暂存区。
-
-            如果暂存区有内容，则优先保留暂存区，丢弃回退的内容。
+        重置 head 的位置为你指定的提交点，本地仓库的提交记录回退到暂存区，优先保留暂存区内容。
 
             HEAD~ 表示只回退上一步的提交记录。如果是间隔多个提交记录，回退会累积到暂存区，类似 squash 的效果。
 
-        简单理解就是本地仓库的提交记录回退到暂存区，优先保留暂存区内容。
+    git reset <commit>
 
-        TODO: git reset --soft HEAD
+        重置 head 的位置为你指定的提交点，丢弃暂存区，把暂存区内容回退到工作区，优先保留工作区。
 
-    git reset HEAD~
-
-        这个会先做上面的步骤，然后再加一步，丢弃暂存区，把暂存区内容回退到工作区。
-        TODO: 重置 head 的位置为你指定的提交点，回退的内容放到工作区。
-
-            如果工作区有内容，则优先保留工作区，丢弃回退的内容。
-
-            TODO：如果暂存区有内容，则丢弃回退的commit的内容，把暂存区内容回退到工作区。
+            如果暂存区有内容，则丢弃回退的commit的内容，把暂存区内容回退到工作区。
 
             如果暂存区和工作区都有内容，则丢弃回退的commit的内容，丢弃暂存区，保留工作区。
 
@@ -3069,45 +3060,53 @@ git reset [commit]
 
             把暂存区内容回退到工作区，工作区内容优先保留，是 git add 的逆过程。
 
-    git reset --hard HEAD~
+    git reset --hard <commit>
 
-        TODO: 这个会先做上面的步骤，然后再加一步，把当前 head 指向的 commit 重置到工作区
+        重置 head 的位置为你指定的提交点，丢弃暂存区，丢弃工作区，
 
         git reset --hard HEAD
 
 注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
 
-git rm 移除 git 对该文件的跟踪，跟 git add 相对，分几种回退情形
+### git reset [commit] [file]
 
-    暂存区无修改，工作区无修改：
+    丢弃暂存区、丢弃工作区，把指定提交点的文件内容回退到工作区。
 
-        移除该文件 `git rm <file>`
+### TODO:git rm
 
-        移除文件但保留到工作区 `git rm --cached <file>`
+移除 git 对该文件的跟踪，跟 git add 相对，分几种回退情形
 
-    暂存区有修改，工作区无修改：
+暂存区无修改，工作区无修改：
 
-        丢弃暂存区的修改，移除该文件 `git rm -f <file>`
+    移除该文件 `git rm <file>`
 
-    暂存区无修改，工作区有修改：
+    移除文件但保留到工作区 `git rm --cached <file>`
 
-        丢弃工作区的修改，移除该文件 `git rm -f <file>`
+暂存区有修改，工作区无修改：
 
-    暂存区有修改，工作区有修改：
+    丢弃暂存区的修改，移除该文件 `git rm -f <file>`
 
-        丢弃暂存区的修改，丢弃工作区的修改，移除该文件 `git rm -f <file>`
+暂存区无修改，工作区有修改：
 
-    如果没有做 commit 提交变更，想恢复该文件，要两步
+    丢弃工作区的修改，移除该文件 `git rm -f <file>`
 
-        `git reset HEAD <file>` 先恢复到暂存区，
+暂存区有修改，工作区有修改：
 
-        然后再 ` git checkout <file>` 解除删除状态，
+    丢弃暂存区的修改，丢弃工作区的修改，移除该文件 `git rm -f <file>`
 
-        该文件恢复到版本库的状态，不会恢复原暂存区和工作区被删除的内容。
+如果没有做 commit 提交变更，想恢复该文件，要两步
+
+    `git reset HEAD <file>` 先恢复到暂存区，
+
+    然后再 ` git checkout <file>` 解除删除状态，
+
+    该文件恢复到版本库的状态，不会恢复原暂存区和工作区被删除的内容。
 
 注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
 
-git revert 反做你指定的提交点的操作，新增一个提交点。
+### git revert
+
+反做你指定的提交点的操作，新增一个提交点。
 
     # 撤销指定的版本，撤销也会作为一次提交进行保存
     git revert commit
@@ -3153,7 +3152,7 @@ git revert 反做你指定的提交点的操作，新增一个提交点。
     # git reset --soft HEAD~1 差异放在在储藏（stage）区域
     git reset HEAD^
 
-直接回撤到版本库的某个commit点，之前的修改全抛弃（没做git push）
+直接回撤到版本库的某个commit点，之前的修改全抛弃（没做 git push）
 
     git reset --hard HEAD~1
 
@@ -3347,7 +3346,9 @@ git revert 新增的提交点，是对 rebase 那个提交点的反向执行，�
 
     git stash apply 95ccbd927ad4cd413ee2a28014c81454f4ede82c
 
-## diff 显示差异的多种用法：提交的和未提交的都可以比对
+## 显示差异 diff
+
+提交的和未提交的都可以比对，有多种用法。
 
     显示摘要加参数 --stat
 
@@ -3613,7 +3614,7 @@ HEAD 的 第三个父级
 
 注意：
 
-    git log 的很多用法也适用于 git diff，参见章节 [diff 显示差异的多种用法]。
+    git log 的很多用法也适用于 git diff，参见章节 [显示差异 diff]。
 
     查日志做对比之前，可以先拉取所有分支的远程库，以保证数据最新
 
