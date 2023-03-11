@@ -265,6 +265,27 @@ sim卡的安全性是由私钥只可写入不可读出来保证的，在实体si
 
         手机下载联通营业厅app，在“我的业务“里面找到视频彩铃，选择关闭。
 
+## 安卓手机选择
+
+目前最优是三星手机，开启 knox 功能，把 cn 软件放到安全文件夹里，在外面安装 F-Droid 软件商店。
+
+次选 google 的 Pixel 手机，除了它家的全家桶，还真不收集你其它隐私了。。。
+
+开源手机
+
+暂未找到合适的
+
+开源 rom
+
+    spark-os 适配小米手机比较多
+
+        https://sourceforge.net/projects/sparkosofficial/
+            https://spark-os.live/team
+                文档 https://github.com/Spark-Devices/Documentation
+                rom https://github.com/Spark-Rom
+
+    需要明确开发者是否独立，另外小米手机硬件是否有独立于 rom 不受控制的功能？千万不要高估它的下限。
+
 ## 虚拟化解决方案
 
 要求
@@ -278,20 +299,6 @@ sim卡的安全性是由私钥只可写入不可读出来保证的，在实体si
 重点就是虚拟机内运行的 app，看不到外部的应用、应用列表、数据等。
 
 如果不安装虚拟机，轻量化的实现是：应用程序虚拟化运行--给流氓软件个干净的系统环境让他随便折腾。
-
-### 全开源自由软件的手机平台
-
-硬件上可以关闭 Modem，有 coreboot 安全启动的 Linux 手机
-
-    https://puri.sm/posts/privacy-in-depth/
-
-        使用了开源操作系统 PureOS（基于Debian + Purism 的 phosh、phoc、libhandy、Calls 和 Chats），只预装自由软件
-        https://pureos.net/
-            https://puri.sm/posts/what-is-mobile-pureos/
-
-魔改电脑和手机，有些通过了Qubes认证
-
-    https://www.nitrokey.com/
 
 ### 三星 knox
 
@@ -405,34 +412,59 @@ private void getPackageList(Context ctx) {
 }
 ```
 
-## 安卓手机选择
-
-目前最优是三星手机，开启 knox 功能，把cn软件放到安全文件夹里，在外面安装 F-Droid 软件商店。
-
-次选 google 的 Pixel 手机，除了它家的全家桶，还真不收集你其它隐私了。。。
-
-开源手机
-
-暂未找到合适的
-
-开源 rom
-
-    spark-os 适配小米手机比较多
-
-        https://sourceforge.net/projects/sparkosofficial/
-            https://spark-os.live/team
-                文档 https://github.com/Spark-Devices/Documentation
-                rom https://github.com/Spark-Rom
-
-    需要明确开发者是否独立，另外小米手机硬件是否有独立于 rom 不受控制的功能？千万不要低估它的下限。
-
 ## 软件安全解决方案
 
 Guardian Project
 
     https://guardianproject.info/
 
+## 全开源自由软件的手机平台
+
+    https://bbs.letitfly.me/d/1058
+
+    https://zhuanlan.zhihu.com/p/402700739
+
+    https://itsfoss.com/open-source-alternatives-android/
+
+Android 自己就不怎么干净，哪怕是开放源代码的 Android Open Source Project，也有不少私有成分（例如 Linux 内核里到处乱飞的厂商 Blob，通常是一堆没有源代码只有二进制文件的部份，通常是固件和微码什么的）。
+
+虽然核心操作系统仍然作为 Android 开源项目的一部分发布，但大多数核心应用程序都没有开源。 情况变得更糟：越来越多的库和 API 仅在预装运行各种 Google 应用程序的手机上可用，有效地将第三方应用锁定在谷歌生态系统中。
+
+真正算得上完全自由的 Android 发行版大概只有 [Replicant](https://replicant.us/) 了，虽然到现在只支持到 Android 6.0 ，支持的设备也有限（最新的大概也只是 Galaxy S3/ Note 2那个时期的），已经有构建的设备的支持也很是问题（不少缺 WiFi 固件于是不能用 WiFi，图形性能也很糟糕……）。
+
+开源的安卓操作系统替代品，你得自己刷机
+
+    缺点是 Google 服务几乎全都没法用了 https://lineageos.org/
+
+    尽力在替换 Google专有核心库和应用程序的开源实现 https://microg.org/
+
+硬件上可以关闭 Modem，有 coreboot 安全启动的 Linux 手机
+
+     Librem 5 https://puri.sm/posts/privacy-in-depth/
+
+        使用了开源操作系统 PureOS（基于Debian + Purism 的 phosh、phoc、libhandy、Calls 和 Chats），只预装自由软件
+        https://pureos.net/
+            https://puri.sm/posts/what-is-mobile-pureos/
+
+    PinePhone https://www.pine64.org/pinephone/
+
+        使用开源的操作系统 Major Linux Phone Projects，支持其它很多开源的 Linux 手机版
+
+    Fairphone https://shop.fairphone.com/en/
+
+        使用定制版的安卓系统，即 Fairphone OS
+
+    https://www.fxtec.com/
+
+        支持 Ubuntu Touch、Lineage OS 和安卓
+
+魔改电脑和手机，有些通过了Qubes认证
+
+    https://www.nitrokey.com/
+
 ## 安卓的开源软件商店F-Droid
+
+F-Droid 是一个 Android 应用程序的软件资源库（或应用商店）；其功能类似于 Google Play 商店，但只包含自由及开放源代码软件。应用可从 F-Droid 网站或直接从 F-Droid 客户端应用浏览及安装。
 
     https://f-droid.org/
         https://f-droid.org/zh_Hans/contribute/
@@ -441,20 +473,45 @@ Guardian Project
 
 F-Droid的软件虽然不多，但是很实用。
 
+F-Droid最大的特点在与其与Linux软件包管理高度吻合，采用的是源安装，即有源有软件，无源无软件，和linux必须添加软件源是一个道理。这些 repositories 源，类似于我们在 Linux 平台上在 /etc/apt/sources.list.d/（Debian 或 Ubuntu 系）或 /etc/yum.repos.d/（Fedora 系）放入源一样， 表示从此信任这个来源/市集/repository 里面的软件。
+
+F-Droid 会把这些 repositories 所提供的软体信息存储一份清单在手机里。这个清单需要不时更新。当我们发现有些 App 或某些版本看得见却无法安装的时候，很可能就是因为我们手机上的清单过时了，需要更新，这跟 Debian 的 apt-get update 或 Fedora 的 yum update 意思一样。当然，我们也可以在手机客户端中设置 automatic update interval（自动更新间隔）。
+
 优点一、
 
 应用源代码看得见，用户自己可以审核。大家从可靠的 repositories 下载软件，这些repositories由长期帮助人类编译源代码的热心人士共享。至于哪些 repositories 是可信任的？没有人帮你决定，你有权利也有义务自己判断。
 
 优点二、
+
 商店接受应用上架时的审查原则：[Anti-Features（负特征）](https://f-droid.org/zh_Hans/docs/Inclusion_Policy)。
 
 F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原则的严格的收录标准。 应用的某些内容可能不会阻止它被收录，但许多用户也许不想接受它们。 为了处理这类情况，F-Droid制定了一系列明确的负特征来标记应用，以便用户选择是否仍要接受该应用。包括应用调用的第三方库的可疑之处，如广告、跟踪用户行为的活动、使用的加密算法不够公开等。
 
-F-Droid 是一个免费和开源应用的下载平台，类似谷歌的 Play 商店，不过 F-Droid 针对的是开源的应用软件. 而且你可以打造自己的“店铺”——通过 Repomaker，可创建包含应用、音乐、视频或书籍的资源库。
+最严重的情况是很多开源应用程序需要安装私有组件或google的专有库（程序员只要能用现成的库省事，一般都不会自己去开发）。
 
-F-Droid最大的特点在与其与Linux软件包管理高度吻合，采用的是源安装，即有源有软件，无源无软件，和linux必须添加软件源是一个道理。这些 repositories 源，类似于我们在 Linux 平台上在 /etc/apt/sources.list.d/（Debian 或 Ubuntu 系）或 /etc/yum.repos.d/（Fedora 系）放入源一样， 表示从此信任这个来源/市集/repository 里面的软件。
+例如 Telegram 的官方客户端有私有组建，服务端还是私有的，默认情况下不会在列表里显示。汝可以在设置中的应用兼容性选项中打开“显示需要 anti-feature 的应用”选项来显示那些包含 anti-feature 的程序。
 
-F-Droid 会把这些 repositories 所提供的软体信息存储一份清单在手机里。这个清单需要不时更新。当我们发现有些 App 或某些版本看得见却无法安装的时候，很可能就是因为我们手机上的清单过时了，需要更新，这跟 Debian 的 apt-get update 或 Fedora 的 yum update 意思一样。当然，我们也可以在手机客户端中设置 automatic update interval（自动更新间隔）。
+### 各种应用的（部份）自由替代品
+
+电话、短信和拍照的话，用系统自带的大概就够用了。（LineageOS 内置的应该也是自由的吧……）
+
+聊天的话， Telegram 有部份自由处理过的 [Telegram-FOSS](https://f-droid.org/en/packages/org.telegram.messenger/) ，XMPP 的话有 Xabber 和 Conversations （为啥咱会用两个呢，因为前者支持 XMPP 中最常见的端到端加密协议 OTR，另一个支持比较新的 OMEMO 和 openPGP…… （其实 Conversations 一开始也是支持 OTR 的，就是行为有些奇怪而且后来砍掉了……）😂）。IRC 的话就用 [WeeChat for Android](https://f-droid.org/en/packages/com.ubergeek42.WeechatAndroid/) 连上咱 VPS 上的 WeeChat 好了（别和某微幕搞混！）， Matrix 和 Mattermost 的话也都各自有客户端（ [Riot.im](https://f-droid.org/en/packages/im.vector.alpha) 和 [Mattermost](https://f-droid.org/en/packages/com.mattermost.rnbeta) ）。
+
+浏览器的话， F-Droid 上有重新编译过的 Firefox（叫做 [Fennic](https://f-droid.org/en/packages/org.mozilla.fennec_fdroid/) ）， Guardian Project 也有 Tor Browser，[在这里添加它们的仓库](https://guardianproject.info/fdroid/)到 F-Droid 。
+
+文件管理器的话，咱比较中意和习惯 [Amaze](https://f-droid.org/zh_Hans/packages/com.amaze.filemanager/) 。
+
+网盘的话，咱有自己的 Nextcloud 实例，[所以当然就用它们的客户端啦……](https://f-droid.org/zh_Hans/packages/com.nextcloud.client/) ， F-Droid 上也有不少可以和 Nextcloud 协作的应用，例如 [RSS 阅读器 Nextcloud News Reader](https://f-droid.org/zh_Hans/packages/de.luhmer.owncloudnewsreader/) 和 [笔记辅助软件 Notes](https://f-droid.org/zh_Hans/packages/it.niedermann.owncloud.notes) 。
+
+一时兴起想要写些什么的话，除了 Notes 以外也可以试试 [Markor](https://f-droid.org/en/packages/net.gsantner.markor/) 。
+
+想和以前一样读点什么的话，咱就用 [FBReader](https://f-droid.org/en/packages/org.geometerplus.zlibrary.ui.android/) 好了，虽然有些插件不是自由的……
+
+当然不能忘了关键的输入法啦，咱们有基于 Rime 的 [TRIME](https://f-droid.org/en/packages/com.osfans.trime/) 可以用。
+
+想在 Android 上运行一些 GNU/Linux 工具，例如 ssh 之类的话，可以试试 [Termux](https://f-droid.org/en/packages/com.termux/) ，也有一些像是浮动窗口或者快速运行脚本的扩展用。觉得虚拟键盘操作不方便的话可以尝试有方向键和功能键的 [Hacker's Keyboard](https://f-droid.org/en/packages/org.pocketworkstation.pckeyboard/)。
+
+阅读和发送电子邮件的话，咱比较喜欢老成（？）的 [K-9 Mail](https://f-droid.org/en/packages/com.fsck.k9)，也有比较新潮的 FairMail 啥的可以考虑，它们都能和另一个 openPGP 应用 [OpenKeyChain](https://f-droid.org/en/packages/org.sufficientlysecure.keychain/) 一起使用来发送和解密 GPG 加密的邮件。
 
 ### F-Droid添加清华源
 

@@ -2981,13 +2981,15 @@ git restore [file] 关于撤回文件的用途很明晰：只操作提交（comm
 
             `git restore --staged <file>` 丢弃暂存区，保留工作区内容
 
-注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
+    注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
 
 git checkout [file]
 
         https://git-scm.com/docs/git-checkout
 
     丢弃工作区，恢复文件原貌（仓库区(HEAD)的内容）。等同于 `git restore <file>`。
+
+    不丢弃暂存区，也就是说，如果你得明确丢弃暂存区，否则恢复不了文件内容到 HEAD 的状态。
 
     示例
 
@@ -3000,25 +3002,25 @@ git checkout [file]
             # git checkout HEAD .
             git checkout .
 
-        如果需要某个提交记录时的文件，把该文件直接恢复到工作区
-
-            git checkout <commit> <file>
-
-        如：
-
-            git checkout b22c20fc8d -- abc.txt
-
-        TODO: 等同于 `git reset <commit> <file>`。
-
 git checkout [commit]
 
     如果没有文件冲突，直接切换到指定的提交记录。
 
-    如果暂存区或工作区有内容会报错无法切换，但是我遇到过切换后暂存区丢失的情况，没搞明白为啥。
+    如果暂存区或工作区有内容会报错无法切换，但是我遇到过丢弃暂存区直接切换的情况，没搞明白为啥。
 
     切换到某个提交记录后，如果对文件内容做了修改，需要你建立新的分支或切换回现有分支，才能提交你当前的工作，否则这种分离 detached HEAD 情况下做的修改 git 不知道往何处保存。
 
-注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
+    注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
+
+git checkout [commit] [file]
+
+    恢复某个提交记录时的文件，把该文件直接恢复到暂存区
+
+    如：
+
+        git checkout b22c20fc8d -- abc.txt
+
+    TODO: 等同于 `git reset <commit> <file>`。
 
 git reset [file]
 
