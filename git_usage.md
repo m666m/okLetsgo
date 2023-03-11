@@ -2949,6 +2949,60 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
     reset [commit] <paths>     NO       YES     NO      YES
     checkout [commit] <paths>  NO       YES     YES     NO
 
+### 从使用角度的快速总结
+
+丢弃工作区内容
+
+    # git checkout <file>
+    git restore <file>
+
+丢弃暂存区内容，暂存区内容回退到工作区，工作区内容优先保留
+
+    # git reset HEAD <file>
+    git restore --staged <file>
+
+丢弃刚添加到仓库的提交记录
+
+    # git reset --soft HEAD~1 差异放在在储藏（stage）区域
+    git reset HEAD^
+
+直接回撤到版本库的某个commit点，之前的修改全抛弃（没做 git push）
+
+    git reset --hard HEAD~1
+
+不仅提交到仓库区了，还 git push 到远程仓库了
+
+    参见章节 [远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1]
+
+从其他分支或者之前的提交中签出文件的不同版本：
+
+    git checkout <branch/commit> file.js
+
+    先查找指定文件的相关提交记录
+    $ git log --oneline zhyc.txt
+    [树形提交记录]
+    * cf83e50 第四次添加开始回退‘ ’ ;
+    * 61ce6d7 第三次添加也是要丢
+    * b263d60 第二次添加作为要丢的
+    * 0a2883c 第一次添加作为基础
+    * f6e4075 tea2我删掉了123，应该会冲突,看看到底把谁的 commit id 给更新了
+    * a928649 我删掉了456
+    * b224511 zhyc.txt
+
+    然后直接签出
+    $ git checkout a928649 zhyc.txt
+    Updated 1 path from e53b7d8
+
+    签出的文件处于“暂存并准备提交”的状态。
+
+    如果不想要上面的状态，想回退并签出到未暂存的工作区状态，需要执行一下
+
+        git reset HEAD file-name.js
+
+    不想看了，回到最新提交
+
+        git checkout file-name.js
+
 ### git restore [file]
 
     https://git-scm.com/docs/git-restore
@@ -3134,60 +3188,6 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
         https://stackoverflow.com/questions/9059335/how-can-i-get-the-parents-of-a-merge-commit-in-git
 
 这种骚操作只会越搞越乱，不如直接使用章节 [无脑撤销大法：本地库和远程库的提交记录hash对不上]
-
-### 从使用角度的总结
-
-丢弃工作区内容
-
-    # git checkout <file>
-    git restore <file>
-
-丢弃暂存区内容，暂存区内容回退到工作区，工作区内容优先保留
-
-    # git reset HEAD <file>
-    git restore --staged <file>
-
-丢弃刚添加到仓库的提交记录
-
-    # git reset --soft HEAD~1 差异放在在储藏（stage）区域
-    git reset HEAD^
-
-直接回撤到版本库的某个commit点，之前的修改全抛弃（没做 git push）
-
-    git reset --hard HEAD~1
-
-不仅提交到仓库区了，还 git push 到远程仓库了
-
-    参见章节 [远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1]
-
-从其他分支或者之前的提交中签出文件的不同版本：
-
-    git checkout <branch/commit> file.js
-
-    先查找指定文件的相关提交记录
-    $ git log --oneline zhyc.txt
-    [树形提交记录]
-    * cf83e50 第四次添加开始回退‘ ’ ;
-    * 61ce6d7 第三次添加也是要丢
-    * b263d60 第二次添加作为要丢的
-    * 0a2883c 第一次添加作为基础
-    * f6e4075 tea2我删掉了123，应该会冲突,看看到底把谁的 commit id 给更新了
-    * a928649 我删掉了456
-    * b224511 zhyc.txt
-
-    然后直接签出
-    $ git checkout a928649 zhyc.txt
-    Updated 1 path from e53b7d8
-
-    签出的文件处于“暂存并准备提交”的状态。
-
-    如果不想要上面的状态，想回退并签出到未暂存的工作区状态，需要执行一下
-
-        git reset HEAD file-name.js
-
-    不想看了，回到最新提交
-
-        git checkout file-name.js
 
 ### 远程库也有的提交记录，如何回退
 
