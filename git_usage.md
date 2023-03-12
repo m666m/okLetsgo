@@ -3005,7 +3005,7 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
     https://git-scm.com/docs/git-restore
 
-关于撤回文件的用途很明晰：只操作提交（commit）之前你的修改
+关于撤回文件的用途很明晰：每个参数恢复一个区域的文件版本
 
     git restore <file>
 
@@ -3017,6 +3017,9 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
         丢弃暂存区，把暂存区内容恢复到工作区，优先保留工作区内容。
 
+    TODO:git restore --source master~2 Makefile
+
+        相当于 git checkout [commit] [file]，但是恢复的指定版本的文件防止工作区
 示例
 
     暂存区无内容，工作区有内容：
@@ -3138,7 +3141,7 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 注意：如果之前工作区就是 HEAD 的内容，保持不变，但是变为未添加状态。
 
-与 git checkout [commit] [file] 的区别
+TODO: 与 git checkout [commit] [file] 的区别
 
 ### TODO: git rm [file]
 
@@ -3407,6 +3410,9 @@ git diff 主要的应用场景：
     ·比较工作区(Working tree)和仓库(HEAD)的差别
 
         git diff HEAD
+
+        # 比较指定文件的最新版本与旧提交中的版本之间的差异
+        git diff <commit_id> <file_path>
 
     只要你没有做 `git commit`，当前的所有改动（含暂存区的）都会体现在工作区，直接跟仓库（HEAD）对比可以看看你的修改的总体效果。
 
