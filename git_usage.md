@@ -3138,6 +3138,8 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 注意：如果之前工作区就是 HEAD 的内容，保持不变，但是变为未添加状态。
 
+与 git checkout [commit] [file] 的区别
+
 ### TODO: git rm [file]
 
 移除 git 对该文件的跟踪，跟 git add 相对，分几种回退情形
