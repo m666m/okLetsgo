@@ -2858,16 +2858,17 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 # zsh 命令行用 bindkey -v 来设置 vi 操作模式
 #set -o vi
 
+####################################################################
+# 命令行的字符可以显示彩色，依赖这个设置
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
-export TERM="xterm-256color"
+export TERM=xterm-256color
 
 ####################################################################
 # alias 本该放到 .bashrc 文件，为了方便统一在此了
-# 这段代码需要跟你的 bash 的 .bash_profile 同步，以保持使用习惯一致
 #
 # 参考自 dbian 的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
-# 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的多种文件类型使用彩色显示
+# 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
 # curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -2887,29 +2888,32 @@ if [ -x /usr/bin/dircolors ]; then
     alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
     #alias egrep='egrep --color=auto'
     #alias fgrep='fgrep --color=auto'
-    alias tree='tree -a -I .git'
 
-    # ls 列出的目录颜色被 grep 覆盖，用 ls -l 更方便
-    alias lsg='ls -lA|grep -i'
+    # ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便
+    alias lsg='ls -lA |grep -i'
 
-    # git 常用命令
-    alias gs='echo "git status ..." && git status'
-    alias glog='echo "[提交记录：树形]" && git log --oneline --graph'
-    alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
-    alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
-    alias gdh='echo "[差异：对比最近的两次提交]" && git diff HEAD^ HEAD'
-    alias gba='echo "[分支：全部分支带最近提交的注释]" && git branch -avv'
-    # git 经常断连，自动重试直至成功
-    alias gpull='git pull || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull; done'
-    alias gpush='git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
+    # 下为各命令的惯用法
+    alias tree='tree -a'
+    alias trees='tree -a -CF -I .git -I __pycache__ -L 2'
+    alias pstree='pstree -p -s'
 
     # gpg 常用命令
     alias pkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
-fi
 
-# 执行 cd 命令后自动执行下 ls 列出当前文件
-chpwd() ls
-chpwd
+    # git 常用命令
+    alias gs='echo "git status:" && git status'
+    alias gdf='echo "git diff:" && git diff HEAD^ HEAD'
+    alias gds='echo "[差异：比较暂存区(staged)和仓库(HEAD)]" && git diff --staged'
+    alias gdh='echo "[差异：比较最近的两次提交记录]" && git diff HEAD^ HEAD'
+    alias glog='echo "[提交记录：树形]" && git log --oneline --graph'
+    alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
+    alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
+    alias gba='echo "[分支：全部分支带最近提交及注释]" && git branch -avv'
+
+    # git 经常断连，自动重试直至成功
+    alias gpull='git pull || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull; done'
+    alias gpush='git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
+fi
 
 ############# 加载插件
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
@@ -2935,6 +2939,10 @@ source /usr/local/bin/ackg.sh
 # 手动配置插件
 
 alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid" "\bOk\b|Success|Good|Done|Finish" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
+
+# 执行 cd 命令后自动执行下 ls 列出当前文件
+chpwd() ls
+chpwd
 
 # 命令自动完成的颜色太暗  # ,bg=cyan
 # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style

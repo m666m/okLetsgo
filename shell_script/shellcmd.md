@@ -536,6 +536,10 @@ fi
 
 ## Linux 目录结构
 
+    https://refspecs.linuxfoundation.org/fhs.shtml
+
+    https://zhuanlan.zhihu.com/p/107263805
+
 linux的目录，有几个固定用途的，有些是文件系统挂载在这个目录上
 
     $ df -h
@@ -549,61 +553,93 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
     /dev/mmcblk0p1  253M   49M  204M  20% /boot
     tmpfs           384M     0  384M   0% /run/user/1000
 
-/ 根文件系统
+/boot: 操作系统启动区
 
-/etc : 系统级配置文件
+/dev：以文件的形式保存 Linux 所有的设备及接口设备
 
-/bin：软链接到 /usr/bin。
+/sys：这个目录是一个虚拟文件系统，主要记录与内核相关的信息，与 /proc 目录十分相似
 
-/usr：发行版的内容基本都在这里，可以理解为 C:/Windows/。
+/ 根文件系统，下面内容是根文件系统的一级子目录介绍
 
-    /usr/bin：各种可执行程序在这里，安装到各种路径下的软件，一般把启动引导命令行程序放置在这里，只要PATH变量有这个路径，用户使用该命令时就很方便，不需要指明程序的安装路径。有些命令在/bin 或/usr/local/bin 中，也在这里做个软链接。
+    /proc：这个目录是一个虚拟文件系统，它放置的数据都是在内存当中，例如进程、外部设备状态、网络状态等。
 
-    /usr/sbin：根文件系统不必须的系统管理命令，例如多数服务程序。
+    /srv：该目录放置与网络服务相关的文件数据
 
-    /usr/man, /usr/info, /usr/doc：手册页、GNU信息文档和各种其他文档文件。
+    /media：放置可删除的设备。
 
-    /usr/include：C编程语言的头文件.为了一致性这实际上应该在/usr/lib 下，但传统上支持这个名字.
+    /mnt：用于暂时挂载某些额外设备。
 
-    /usr/lib：理解为 C:/Windows/System32。编程的原始库存在/usr/lib 里，所谓库(library) 。程序或子系统的不变的数据文件，包括一些site-wide配置文件。
+    /sbin：该目录下放置开机过程中需要的命令，包括开机、修复、还原系统等，软链接到 /usr/sbin。
 
-    /usr/local：用户级的程序目录，可以理解为 C:/Progrem Files/。用户自己编译的软件默认会安装到这个目录下。这里主要存放那些手动安装的软件，即不是通过“新立得”或 apt 安装的软件。它和 /usr 目录具有相类似的目录结构。让软件包管理器来管理 /usr 目录，而把自定义的脚本(scripts)放到 /usr/local 目录下面。
-        /usr/local/bin：自编译安装的软件的可执行部分在这里
+    /bin：放置执行文件/命令的目录，尤其是放置在单用户维护模式下还能够被操作执行的命令，软链接到 /usr/bin。
 
-    /usr/share：一些共享数据，
-        /usr/share/man：联机帮助文件
-        /usr/share/doc：软件杂项的文件说明
-        /usr/share/zoneinfo：与时区有关的时区档案
+    /lib：主要放置系统开机使用的、/bin 和 /sbin 目录下的命令使用的库函数。
 
-/var 系统一般运行时要改变的数据.每个系统是特定的，即不通过网络与其他计算机共享.
+    /etc: 系统级配置文件
 
-    /var/log
-    各种程序的Log文件，特别是login  (/var/log/wtmp log所有到系统的登录和注销) 和syslog (/var/log/messages 里存储所有核心和系统程序信息. /var/log 里的文件经常不确定地增长，应该定期清除.
+    /home：系统默认的普通用户的主文件夹。
 
-    /var/spool
-    mail, news, 打印队列和其他队列工作的目录.每个不同的spool在/var/spool 下有自己的子目录，例如，用户的邮箱在/var/spool/mail 中.
+    /root：root 用户的主目录。
 
-    /var/tmp
-    比/tmp 允许的大或需要存在较长时间的临时文件. (虽然系统管理员可能不允许/var/tmp 有很旧的文件.)
+    /usr：发行版的内容基本都在这里，可以理解为 C:/Windows/。
 
-    /var/catman
-    当要求格式化时的man页的cache.man页的源文件一般存在/usr/man/man* 中；有些man页可能有预格式化的版本，存在/usr/man/cat* 中.而其他的man页在第一次看时需要格式化，格式化完的版本存在/var/man 中，这样其他人再看相同的页时就无须等待格式化了. (/var/catman 经常被清除，就象清除临时目录一样.)
+        /usr/man, /usr/info, /usr/doc：手册页、GNU信息文档和各种其他文档文件。
 
-    /var/lib
-    系统正常运行时要改变的文件.
+        /usr/include：C编程语言的头文件.为了一致性这实际上应该在/usr/lib 目录下，但传统上支持这个名字.
 
-    /var/local
-    /usr/local 中安装的程序的可变数据(即系统管理员安装的程序).注意，如果必要，即使本地安装的程序也会使用其他/var 目录，例如/var/lock .
+        /usr/lib：编程用的库(library)保存在这里，理解为 C:/Windows/System32。包含各应用软件的函数库、目标文件，以及一些不被用户惯用的执行文件。除了程序或子系统使用的不变的数据文件，还包括一些 site-wide 配置文件。
 
-    /var/lock
-    锁定文件.许多程序遵循在/var/lock 中产生一个锁定文件的约定，以支持他们正在使用某个特定的设备或文件.其他程序注意到这个锁定文件，将不试图使用这个设备或文件.
+        /usr/sbin：根文件系统不必须的系统管理命令，例如大多数服务程序。
 
-    /var/run
-    保存到下次引导前有效的关于系统的信息文件.例如， /var/run/utmp 包含当前登录的用户的信息.
+        /usr/bin：可执行程序基本都在这里，其它安装到各种路径下(/usr/local/bin) 的软件，也在这里做个软链接，或把程序启动引导脚本程序放置在这里，只要 PATH 变量有这个路径，用户使用该命令时就很方便，不需要指明程序的安装路径。
 
-/opt 目录
+        /usr/local：这里主要存放那些手动安装的软件，即不是通过 apt 安装的软件。比如，用户自己编译的软件应该安装到这个目录下，用户自行下载的脚本等也应该保存在此处。它和 /usr 目录具有相类似的目录结构。让软件包管理器来管理 /usr 目录，而把自定义的脚本(scripts)放到 /usr/local 目录下面。
 
-    用来安装附加软件包，是用户级的程序目录，可以理解为 D:/Software。安装到 /opt 目录下的程序，它所有的数据、库文件等等都是放在同个目录下面。opt 有可选的意思，这里可以用于放置第三方大型软件（或游戏），当你不需要时，直接 rm -rf掉即可。在硬盘容量不够时，也可将 /opt 单独挂载到其他磁盘上使用。
+            /usr/local/bin：自编译安装的软件的可执行部分在这里
+
+            /usr/local/share：自编译安装的软件的配置文件部分在这里
+
+        /usr/share：放置用户间可以共享使用的数据
+
+            /usr/share/man：联机帮助文件
+
+            /usr/share/doc：软件杂项的文件说明
+
+            /usr/share/zoneinfo：与时区有关的时区档案
+
+    /var 主要放置常态化变动的文件，例如缓存、登录日志文件、软件运行产生的文件等。
+
+        /var/mail/：放置个人电子邮件的目录。
+
+        /var/cache/：应用程序运行过程中产生的暂存文件。
+
+        /var/catman
+        当要求格式化时的man页的cache.man页的源文件一般存在/usr/man/man* 中；有些man页可能有预格式化的版本，存在/usr/man/cat* 中.而其他的man页在第一次看时需要格式化，格式化完的版本存在/var/man 中，这样其他人再看相同的页时就无须等待格式化了. (/var/catman 经常被清除，就象清除临时目录一样.)
+
+        /var/spool：放置一些队列数据，包括等待收寄的电子邮件、cron 任务等。每个不同的队列数据在/var/spool 下建立自己的子目录，例如，用户的邮箱在/var/spool/mail 中.
+
+        /var/tmp
+        比/tmp 允许的大或需要存在较长时间的临时文件. (虽然系统管理员可能不允许/var/tmp 有很旧的文件.)
+
+        /var/lock/：某些设备或文件要求使用时具有排他性，即上锁，该目录存放锁定文件。许多程序遵循在/var/lock 中产生一个锁定文件的约定，以支持他们正在使用某个特定的设备或文件.其他程序注意到这个锁定文件，将不试图使用这个设备或文件。
+
+        /var/run：到下次引导前有效的关于系统的信息文件。例如，某些程序或者是服务启动后，将它们的 PID 记录在这个目录下，/var/run/utmp 包含当前登录的用户的信息.
+
+        /var/lib：应用程序运行过程中，需要使用到的数据文件放置的目录。
+
+        /var/log：应用程序运行过程中，生成的日志文件，特别是login  (/var/log/wtmp log所有到系统的登录和注销) 和syslog (/var/log/messages 里存储所有核心和系统程序信息. /var/log 里的文件经常不确定地增长，应该定期清除.
+
+        /var/local：手动安装的程序（位于/usr/local）的可变数据(即系统管理员安装的程序)。如果必要，即使本地安装的程序也会使用其他 /var 目录，例如/var/lock 等。
+
+    /opt 第三方软件放置的目录。
+
+        用来安装附加软件包，是用户级的程序目录，可以理解为 D:/Software。
+
+        安装到 /opt 目录下的程序，它所有的数据、库文件等等都是放在同个目录下面。
+
+        opt 有可选的意思，这里可以用于放置第三方大型软件（或游戏），当你不需要时，直接 rm -rf掉即可。
+
+        在硬盘容量不够时，也可将 /opt 单独挂载到其他磁盘上使用。
 
 查看目录结构
 
@@ -613,29 +649,6 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
         ├── bin
         │   ├── containers_check_frame_int
         │   ├── containers_datagram_receiver
-        │   ├── containers_datagram_sender
-        │   ├── containers_dump_pktfile
-        │   ├── containers_rtp_decoder
-        │   ├── containers_stream_client
-        │   ├── containers_stream_server
-        │   ├── containers_test
-        │   ├── containers_test_bits
-        │   ├── containers_test_uri
-        │   ├── containers_uri_pipe
-        │   ├── dtmerge
-        │   ├── dtoverlay
-        │   ├── dtoverlay-post
-        │   ├── dtoverlay-pre
-        │   ├── dtparam -> dtoverlay
-        │   ├── edidparser
-        │   ├── mmal_vc_diag
-        │   ├── raspistill
-        │   ├── raspivid
-        │   ├── raspividyuv
-        │   ├── raspiyuv
-        │   ├── tvservice
-        │   ├── vcdbg
-        │   ├── vcgencmd
         │   ├── vchiq_test
         │   ├── vcmailbox
         │   └── vcsmem

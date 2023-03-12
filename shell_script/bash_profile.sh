@@ -13,8 +13,14 @@ test -f ~/.bashrc && . ~/.bashrc
 # exit for non-interactive shell
 [[ ! -t 1 ]] && return
 
-# 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
+# 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命
+# zsh 命令行用 bindkey -v 来设置 vi 操作模式令
 set -o vi
+
+####################################################################
+# 命令行的字符可以显示彩色，依赖这个设置
+# 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
+export TERM=xterm-256color
 
 ####################################################################
 # alias 本该放到 .bashrc 文件，为了方便统一在此了
@@ -46,7 +52,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias lsg='ls -lA |grep -i'
 
     # 下为各命令的惯用法
-    alias tree='tree -a -I .git'
+    alias tree='tree -a'
+    alias trees='tree -a -CF -I .git -I __pycache__ -L 2'
     alias pstree='pstree -p -s'
 
     # gpg 常用命令
@@ -95,9 +102,6 @@ alias ping='winpty ping'
 #
 #  ┌─[13:18:18 user@MY-PC:/usr/share/vim/vim82/autoload/dist]
 #  └──$ ls
-
-# 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
-export TERM=xterm-256color
 
 # https://zhuanlan.zhihu.com/p/570148970
 # https://zhuanlan.zhihu.com/p/566797565
