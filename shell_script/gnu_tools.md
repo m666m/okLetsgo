@@ -2873,28 +2873,27 @@ export TERM=xterm-256color
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 
+    # 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题
+    alias diff='diff --color=auto'
+    alias grep='grep --color=auto'
+    #alias egrep='egrep --color=auto'
+    #alias fgrep='fgrep --color=auto'
+
     # 常用的列文件
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
     alias ls='ls --color=auto'
     alias l='ls -CFA'
     alias ll='ls -l'
     alias la='ls -lA'
     alias lla='ls -la'
-
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
-    # 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题
-    alias diff='diff --color=auto'
-    alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
-    #alias egrep='egrep --color=auto'
-    #alias fgrep='fgrep --color=auto'
-
     # ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便
-    alias lsg='ls -lA |grep -i'
+    alias lsg='ls -lFA |grep -i'
 
     # 下为各命令的惯用法
-    alias tree='tree -a'
-    alias trees='tree -a -CF -I .git -I __pycache__ -L 2'
+    alias greps='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,__pycache__}'
+    alias tree='tree -a -C'
+    alias trees='tree -a -CF -I .git -I .svn -I __pycache__ -L 2'
     alias pstree='pstree -p -s'
 
     # gpg 常用命令
@@ -2902,10 +2901,10 @@ if [ -x /usr/bin/dircolors ]; then
 
     # git 常用命令
     alias gs='echo "git status:" && git status'
-    alias gdf='echo "git diff:" && git diff HEAD^ HEAD'
     alias gds='echo "[差异：比较暂存区(staged)和仓库(HEAD)]" && git diff --staged'
     alias gdh='echo "[差异：比较最近的两次提交记录]" && git diff HEAD^ HEAD'
     alias glog='echo "[提交记录：树形]" && git log --oneline --graph'
+    alias glb='echo "[提交记录：对比分支，注意用三点分隔]" && git log --left-right --oneline'
     alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
     alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
     alias gba='echo "[分支：全部分支带最近提交及注释]" && git branch -avv'
