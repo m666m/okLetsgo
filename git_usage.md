@@ -3424,14 +3424,14 @@ git diff 主要的应用场景：
 
     或 git diff topic..master
 
-·拉取远程后，对比本地库和远程库，先看看是不是有别人提交了远程，防止互相merge新增commit
+    ·拉取远程后，对比本地库和远程库，先看看是不是有别人提交了远程，防止互相merge新增commit
 
-    git fetch
-    git diff ..origin/master
+        git fetch
+        git diff ..origin/master
 
-    git status
+        git status
 
-·对比最近的两次提交
+·对比最近的两次提交记录
 
     git diff HEAD^ HEAD
 
@@ -3494,7 +3494,7 @@ git diff 主要的应用场景：
     # 输出结果相同
     git log -p --no-merges master..
 
-### 没点，俩点，仨点的区别
+### TODO:没点，俩点，仨点的区别
 
     https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#_triple_dot
 
@@ -3506,13 +3506,14 @@ You can use various combinations of specifiers to git to see your diffs as you d
 
 1.您在本地可能不会看到任何更改
 
-    git diff remote/origin
+    git diff origin/master
 
 This shows the incoming remote additions as deletions; any additions in your local repository are shown as additions.
 
 2.可以看到更改，俩点让 Git 选出在一个分支中而不在另一个分支中的提交
 
-    git diff ..remote/origin
+    # 完整写法是 gid diff <本地分支>..<远程分支>
+    git diff ..origin/master
 
 Shows incoming remote additions as additions; the double-dot includes changes
 committed to your local repository as deletions (since they are not yet pushed).
@@ -3525,9 +3526,9 @@ For info on ".." vs "..." see as well as the excellent documentation at [git-scm
 
 您将看到本地git存储库的内容与远程存储库中的不同之处。您将看不到本地文件系统中或索引中的任何更改。
 
-3.三点语法显示从任一提交（隐式工作副本、远程/原点）可以到达的所有提交，但不能同时来自两个提交。选择出被两个引用之一包含但又不被两者同时包含的提交。
+3.三点语法显示从任一提交（隐式工作副本、远程/原点）可以到达的所有提交，但不能同时来自两个提交。选择出被两个引用之一包含但又不被两者同时包含的提交。这将区分来自远程/分支的更改，并忽略来自当前 HEAD 的更改。
 
-    git diff ...remote/origin
+    git diff ...origin/master
 
 Shows incoming remote additions as additions; the triple-dot excludes changes committed to your local repository.
 
@@ -3653,11 +3654,14 @@ HEAD 的 第三个父级
 
 显示提交记录跟之前一条的差异diff
 
+    git log -p
+
+查看在此提交点之前的所有记录
+
+    git log <commit id>
+
     # 指定这个提交点，也可同时限定文件
     git show <commit id> <file>
-
-    # 在此提交点之前的所有记录
-    git log -p <commit id>
 
 查看远程库的提交记录，用于本地库更新远程库时查看合并冲突
 
