@@ -37,7 +37,7 @@ if [ -x /usr/bin/dircolors ]; then
     #alias vdir='vdir --color=auto'
     alias ls='ls --color=auto'
     alias diff='diff --color=auto'
-    alias grep='grep --color=auto'
+    alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,__pycache__}'
     #alias egrep='egrep --color=auto'
     #alias fgrep='fgrep --color=auto'
     alias tree='tree -a -C'
@@ -51,8 +51,10 @@ if [ -x /usr/bin/dircolors ]; then
     alias lsg='ls -lFA |grep -i'
 
     # 下为各命令的惯用法
-    alias greps='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,__pycache__}'
-    alias trees='tree -a -CF -I ".git|.svn|__pycache__" -L 2'
+    alias greps='grep --color=auto -in'
+    # 列出所有文件中包含指定内容的的行，如 `grepf logg``
+    alias grepf='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
+    alias trees='tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='pstree -p -s'
 
     # gpg 常用命令

@@ -2878,7 +2878,7 @@ if [ -x /usr/bin/dircolors ]; then
     #alias vdir='vdir --color=auto'
     alias ls='ls --color=auto'
     alias diff='diff --color=auto'
-    alias grep='grep --color=auto'
+    alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,__pycache__}'
     #alias egrep='egrep --color=auto'
     #alias fgrep='fgrep --color=auto'
     alias tree='tree -a -C'
@@ -2892,8 +2892,10 @@ if [ -x /usr/bin/dircolors ]; then
     alias lsg='ls -lFA |grep -i'
 
     # 下为各命令的惯用法
-    alias greps='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,__pycache__}'
-    alias trees='tree -a -CF -I ".git|.svn|__pycache__" -L 2'
+    alias greps='grep --color=auto -in'
+    # 列出所有文件中包含指定内容的的行，如 `grepf logg``
+    alias grepf='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
+    alias trees='tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='pstree -p -s'
 
     # gpg 常用命令
@@ -5197,6 +5199,18 @@ xargs 命令是给其他命令传递参数的一个过滤器，常作为组合�
 
     上例子是{} ，后面命令行中可以多次使用占位符### 字符串处理 awk sed cut tr wc
 
+grep -n 显示要找的字符串所在的行号 -i 忽略大小写
+
+    $ grep -in 'apt-get' README.rst
+    20:     sudo apt-get install fonts-powerline
+
+grep -w 匹配单词，用于搜索结果中类似字母组合太多的情况。
+
+从当前目录及子目录列出所有目录名和文件名，排除目录 .git 和 __pycache__，逐个文件的查找文件内容包含 “logg” 的行，列出文件名、行号、内容
+
+    # find 没法加 -type f，否则没法过滤目录，在后面让 grep 跳过目录即可
+    find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto  -d skip -in logg
+
 tr 功能1 -- 替换字符
 
     $ dircolors | tr ":" "\n"
@@ -5270,13 +5284,6 @@ sed 删除、替换文件中的字符串
 wc -l 计算文本文件的行数，用于 vi 打开大文件之前先评估
 
     wc -l README.rst
-
-grep -n 显示要找的字符串所在的行号 -i 忽略大小写
-
-    $ grep -in 'apt-get' README.rst
-    20:     sudo apt-get install fonts-powerline
-
-grep -w 匹配单词，用于搜索结果中类似字母组合太多的情况。
 
 ### 终端输出字符的后处理工具
 
