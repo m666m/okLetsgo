@@ -61,10 +61,10 @@ if [ -x /usr/bin/dircolors ]; then
 
     # git 常用命令
     alias gs='echo "git status:" && git status'
-    alias gdf='echo "git diff:" && git diff HEAD^ HEAD'
     alias gds='echo "[差异：比较暂存区(staged)和仓库(HEAD)]" && git diff --staged'
     alias gdh='echo "[差异：比较最近的两次提交记录]" && git diff HEAD^ HEAD'
     alias glog='echo "[提交记录：树形]" && git log --oneline --graph'
+    alias glb='echo "[提交记录：对比分支，注意用三点分隔]" && git log --left-right --oneline'
     alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
     alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
     alias gba='echo "[分支：全部分支带最近提交及注释]" && git branch -avv'
