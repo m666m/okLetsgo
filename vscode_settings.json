@@ -55,15 +55,15 @@
         "[Nord]": {
             "activityBar.foreground": "#45f4fa",
             // 双击高亮和同类高亮颜色无区分，非常不方便
-            "editor.selectionBackground": "#a35207cc",
-            "editor.selectionHighlightBackground": "#753a02cc"
+            "editor.selectionBackground": "#1474acad",
+            "editor.selectionHighlightBackground": "#08537eb4"
         },
         "[Nord Deep]": {
             "editor.foreground": "#c9d9e6",
             "activityBar.foreground": "#56bbff",
             // 双击高亮和同类高亮颜色无区分，非常不方便
-            "editor.selectionBackground": "#a35207cc",
-            "editor.selectionHighlightBackground": "#753a02cc",
+            "editor.selectionBackground": "#1474acad",
+            "editor.selectionHighlightBackground": "#08537eb4",
             // minimap 滑块看不清
             "minimapSlider.activeBackground": "#36568085",
             "minimapSlider.background": "#2a43636b",
@@ -80,8 +80,8 @@
             "editor.foreground": "#a1b7be",
             "activityBar.foreground": "#93ceff",
             // 双击高亮和同类高亮颜色无区分，非常不方便
-            "editor.selectionBackground": "#a35207cc",
-            "editor.selectionHighlightBackground": "#753a02cc",
+            "editor.selectionBackground": "#1474acad",
+            "editor.selectionHighlightBackground": "#08537eb4",
             // minimap 滑块看不清
             "minimapSlider.activeBackground": "#4d879959",
             "minimapSlider.background": "#2e59634b",
