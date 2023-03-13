@@ -52,7 +52,7 @@ if [ -x /usr/bin/dircolors ]; then
 
     # 下为各命令的惯用法
     alias greps='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,__pycache__}'
-    alias trees='tree -a -CF -I .git -I .svn -I __pycache__ -L 2'
+    alias trees='tree -a -CF -I ".git|.svn|__pycache__" -L 2'
     alias pstrees='pstree -p -s'
 
     # gpg 常用命令
