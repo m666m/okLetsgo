@@ -2874,15 +2874,16 @@ if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 
     # 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+    alias ls='ls --color=auto'
     alias diff='diff --color=auto'
     alias grep='grep --color=auto'
     #alias egrep='egrep --color=auto'
     #alias fgrep='fgrep --color=auto'
+    alias tree='tree -a -C'
 
     # 常用的列文件
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-    alias ls='ls --color=auto'
     alias l='ls -CFA'
     alias ll='ls -l'
     alias la='ls -lA'
@@ -2892,9 +2893,8 @@ if [ -x /usr/bin/dircolors ]; then
 
     # 下为各命令的惯用法
     alias greps='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,__pycache__}'
-    alias tree='tree -a -C'
     alias trees='tree -a -CF -I .git -I .svn -I __pycache__ -L 2'
-    alias pstree='pstree -p -s'
+    alias pstrees='pstree -p -s'
 
     # gpg 常用命令
     alias pkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
