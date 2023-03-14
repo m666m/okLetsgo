@@ -2114,3 +2114,89 @@ done &
 sleep 60
 
 ```
+
+## ubuntu系统死机怎么办
+
+    https://blog.csdn.net/qq_39779233/article/details/114758689
+
+    https://wiki.archlinux.org/title/Keyboard_shortcuts
+
+情况一、桌面的图形界面突然卡机且无法操作时
+
+在进行下列步骤前，请回忆自己ubuntu系统的用户名和密码，接下来将会用到。
+
+接下来我们要做的是进入tty终端直接注销用户重新登录。
+
+在大多数 Linux 发行版中，你可以使用以下键盘快捷键来得到 TTY 屏幕：
+
+    CTRL + ALT + F1 – 锁屏
+    CTRL + ALT + F2 – 桌面环境
+    CTRL + ALT + F3 – TTY3
+    CTRL + ALT + F4 – TTY4
+    CTRL + ALT + F5 – TTY5
+    CTRL + ALT + F6 – TTY6
+
+输入用户名和密码登录
+
+此时会打印出一串信息，此时输入命令 `sudo pkill Xorg` 或者 `sudo restart lightdm` 注销桌面重新登录系统
+
+操作完成之后等待一会儿就会重新进入桌面，系统可以正常使用了。
+
+情况二、进入tty之后键盘无法输入任何内容，完全死机时
+
+使用“魔法键”：按住Ctrl，Alt 和 PtrSc（SysRq），按住他们的同时，顺序按 r，e，i，s，u，b
+
+键盘上一般都有一个键 SysRq, 和 PrintScreen(截屏)在同一个键位上，这就是系统请求的键。
+
+首先，你的系统要支持这个功能，查看和开启的方法大家应该很熟悉了，网上也有很多说明，而且最幸运的是：Ubuntu 默认已经开启了这个功能。
+
+接下来就是操作：马上你就会发现，同时按下 Alt + SysRq 压根儿行不通！只会蹦出来一个屏幕截图窗口。所以，真正的做法应该是：
+
+    伸出你的左手，同时按住 Ctrl + Alt 键，别松开
+    右手先按一下 SysRq （截图键，有的键盘是 SysRq） ，左手别松开，等1秒
+    右手按一下 R，左手别松开，等1秒
+    右手按一下 E，左手别松开。这时包括桌面在内，所有程序都会终止，你会看到一个黑乎乎的屏幕，稍微等一段时间
+    右手依次按下 I，S，U，B，左手别松开。每按一次都等那么几秒种，你会发现每按一次，屏幕上信息都会有所变化。最后按下B时，屏幕显示 reset，这时你的左手可以松开了，等几秒钟，计算机就会安全重启。
+
+SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候就相当于按住了 SysRq 键，这个时候输入的一切都会直接由 Linux 内核来处理，它可以进行许多低级操作.
+
+这个时候 reisub 中的每一个字母都是一个独立操作，分别表示：
+
+    r : unRaw 将键盘控制从 X Server 那里抢回来
+
+    e : tErminate 给所有进程发送 SIGTERM 信号，让它们自己解决善后
+
+    i : kIll 给所有进程发送 SIGKILL 信号，强制他们马上关闭
+
+    s : Sync 将所有数据同步至磁盘
+
+    u : Unmount 将所有分区挂载为只读模式
+
+    b : reBoot 重启
+
+要使用Magic Sysrq Key，有三个基本条件：
+
+1.键盘上有Sysrq键
+
+2.系统使用的内核，在编译时打开了CONFIG_MAGIC_KEY选项
+
+    # y表示已开启
+    CONFIG_MAGIC_SYSRQ=y
+
+验证
+
+    grep -F CONFIG_MAGIC_SYSRQ /boot/config-$(uname -r)
+
+3.系统配置Magic Sysrq Key为可用
+
+临时启用,设置/proc/sys/kernel/sysrq
+
+    sudo echo "1" > /proc/sys/kernel/sysrq
+
+长期使用,查看 /etc/sysctl.conf，确认
+
+    kernel.sysrq = 1
+
+如果先前为0，更改配置后使用以下方式激活
+
+    sudo sysctl -p
