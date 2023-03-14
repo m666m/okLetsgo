@@ -271,10 +271,6 @@ sim卡的安全性是由私钥只可写入不可读出来保证的，在实体si
 
 次选 google 的 Pixel 手机，除了它家的全家桶，还真不收集你其它隐私了。。。
 
-开源手机
-
-暂未找到合适的
-
 开源 rom
 
     spark-os 适配小米手机比较多
@@ -285,6 +281,60 @@ sim卡的安全性是由私钥只可写入不可读出来保证的，在实体si
                 rom https://github.com/Spark-Rom
 
     需要明确开发者是否独立，另外小米手机硬件是否有独立于 rom 不受控制的功能？千万不要高估它的下限。
+
+开源手机
+
+    暂未找到合适的
+
+## 全开源自由软件的手机平台
+
+    https://bbs.letitfly.me/d/1058
+
+    https://zhuanlan.zhihu.com/p/402700739
+
+    https://itsfoss.com/open-source-alternatives-android/
+
+Android 自己就不怎么干净，哪怕是开放源代码的 Android Open Source Project，也有不少私有成分（例如 Linux 内核里到处乱飞的厂商 Blob，通常是一堆没有源代码只有二进制文件的部份，通常是固件和微码什么的）。
+
+虽然核心操作系统仍然作为 Android 开源项目的一部分发布，但大多数核心应用程序都没有开源。 情况变得更糟：越来越多的库和 API 仅在预装运行各种 Google 应用程序的手机上可用，有效地将第三方应用锁定在谷歌生态系统中。
+
+真正算得上完全自由的 Android 发行版大概只有 [Replicant](https://replicant.us/) 了，虽然到现在只支持到 Android 6.0 ，支持的设备也有限（最新的大概也只是 Galaxy S3/ Note 2那个时期的），已经有构建的设备的支持也很是问题（不少缺 WiFi 固件于是不能用 WiFi，图形性能也很糟糕……）。
+
+开源的安卓操作系统替代品，你得自己刷机
+
+    lineageos 缺点是 Google 服务几乎全都没法用了 https://lineageos.org/
+
+        microg 尽力在替换 Google专有核心库和应用程序的开源实现 https://microg.org/
+
+硬件上可以关闭 Modem，有 coreboot 安全启动的 Linux 手机
+
+     Librem 5 https://puri.sm/posts/privacy-in-depth/
+
+        使用了开源操作系统 PureOS（基于Debian + Purism 的 phosh、phoc、libhandy、Calls 和 Chats），只预装自由软件
+            https://pureos.net/
+                https://puri.sm/posts/what-is-mobile-pureos/
+
+    PinePhone https://www.pine64.org/pinephone/
+
+        使用开源的操作系统 Major Linux Phone Projects，支持其它很多开源的 Linux 手机版
+
+    Fairphone https://shop.fairphone.com/en/
+
+        使用定制版的安卓系统，即 Fairphone OS
+
+    fxtec https://www.fxtec.com/
+
+        支持 Ubuntu Touch、Lineage OS 和安卓
+
+魔改电脑和手机，有些通过了Qubes认证
+
+    https://www.nitrokey.com/
+
+## 软件安全解决方案
+
+Guardian Project
+
+    https://guardianproject.info/
 
 ## 虚拟化解决方案
 
@@ -411,56 +461,6 @@ private void getPackageList(Context ctx) {
     }
 }
 ```
-
-## 软件安全解决方案
-
-Guardian Project
-
-    https://guardianproject.info/
-
-## 全开源自由软件的手机平台
-
-    https://bbs.letitfly.me/d/1058
-
-    https://zhuanlan.zhihu.com/p/402700739
-
-    https://itsfoss.com/open-source-alternatives-android/
-
-Android 自己就不怎么干净，哪怕是开放源代码的 Android Open Source Project，也有不少私有成分（例如 Linux 内核里到处乱飞的厂商 Blob，通常是一堆没有源代码只有二进制文件的部份，通常是固件和微码什么的）。
-
-虽然核心操作系统仍然作为 Android 开源项目的一部分发布，但大多数核心应用程序都没有开源。 情况变得更糟：越来越多的库和 API 仅在预装运行各种 Google 应用程序的手机上可用，有效地将第三方应用锁定在谷歌生态系统中。
-
-真正算得上完全自由的 Android 发行版大概只有 [Replicant](https://replicant.us/) 了，虽然到现在只支持到 Android 6.0 ，支持的设备也有限（最新的大概也只是 Galaxy S3/ Note 2那个时期的），已经有构建的设备的支持也很是问题（不少缺 WiFi 固件于是不能用 WiFi，图形性能也很糟糕……）。
-
-开源的安卓操作系统替代品，你得自己刷机
-
-    缺点是 Google 服务几乎全都没法用了 https://lineageos.org/
-
-    尽力在替换 Google专有核心库和应用程序的开源实现 https://microg.org/
-
-硬件上可以关闭 Modem，有 coreboot 安全启动的 Linux 手机
-
-     Librem 5 https://puri.sm/posts/privacy-in-depth/
-
-        使用了开源操作系统 PureOS（基于Debian + Purism 的 phosh、phoc、libhandy、Calls 和 Chats），只预装自由软件
-        https://pureos.net/
-            https://puri.sm/posts/what-is-mobile-pureos/
-
-    PinePhone https://www.pine64.org/pinephone/
-
-        使用开源的操作系统 Major Linux Phone Projects，支持其它很多开源的 Linux 手机版
-
-    Fairphone https://shop.fairphone.com/en/
-
-        使用定制版的安卓系统，即 Fairphone OS
-
-    https://www.fxtec.com/
-
-        支持 Ubuntu Touch、Lineage OS 和安卓
-
-魔改电脑和手机，有些通过了Qubes认证
-
-    https://www.nitrokey.com/
 
 ## 安卓的开源软件商店F-Droid
 
