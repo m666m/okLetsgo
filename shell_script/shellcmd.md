@@ -1947,6 +1947,8 @@ reisub各个序列，需要留出执行时间：
 
 ## 后台执行
 
+原理是利用所有的 linux 命令行程序连接 tty 设备，参见章节 [Linux 的 TTY 设备]。
+
 ### nohup
 
     nohup sleep 3600 &

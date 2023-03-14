@@ -144,7 +144,7 @@ PowerShell 可以配置命令提示符等，参见章节 [PowerShell 7+ 命令�
 
         https://github.com/antonioCoco/ConPtyShell
 
-##### Windows 10 对 Linux 的字符程序和GUI程序的支持
+##### Windows 10 对 Linux 的字符程序和 GUI 程序的支持
 
 Windows 10 在 2022 年后已经比较完整的对外提供了相应编程接口
 
@@ -200,6 +200,10 @@ X Window system
 终端概念参见章节 [Linux 字符终端]。
 
 Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安装支持多种符号的字体，见章节 [Nerd Font]。
+
+早期 Windows 操作系统下，终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost，类似于 Linux 的伪终端机制。因为 Windows 的 conhost 实现机制跟 Linux 伪终端实质上不同(一个是调用Windows API，一个是发送文本字符)，第三方终端应用程序其实无法连接 conhost，所以有来自 Msys2 项目的 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。详见章节 [Windows字符终端]。
+
+直至 2018年 Windows 10 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机。参见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]。
 
 ### putty 远程终端模拟器
 
@@ -415,17 +419,17 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
 
     https://github.com/git-for-windows/git/wiki/FAQ#some-native-console-programs-dont-work-when-run-from-git-bash-how-to-fix-it
 
-在 mintty 或 Cygwin's sshd 下，如果执行Windows 控制台程序 （Windows CMD 字符程序或PowerShell），如 python 会挂死无法进入。这是因为 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 unix pty，或称 Cygwin/MSYS pty。
+在 mintty 或 Cygwin 的命令行环境下，如果执行Windows 控制台程序 （Windows CMD 程序或 PowerShell），如 python 会挂死无法进入。这是因为 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 unix pty，或称 Cygwin/MSYS pty。
 
 也就是说，Windows 控制台程序在 MSYS2 mintty 下直接执行会挂死，需要有个 Cygwin/MSYS adapter 提供类似 wslbridge 的角色。
 
-安装 winpty 作为 mintty 代理（git for windows 自带无需安装)
+安装 winpty 作为 mintty 代理（git for windows 自带）
 
     pacman -S winpty
 
 然后执行 `winpty python` 即可正常进入 python 解释器环境了
 
-最好在用户登陆脚本文件 .bashrc/.zshrc 里添加 alias 方便使用
+最好在用户登陆脚本文件 ~/.bashrc、~/.zshrc 里添加 alias 方便使用
 
     alias python="winpty python"
     alias ipython="winpty ipython"
@@ -438,7 +442,7 @@ mintty 可以在命令行显示图片，下载他的源代码下utils目录下�
     # Windows 控制台程序都可以在 bash 下用 winpty 来调用
     alias ping='winpty ping'
 
-Windows version >= 10 / 2019 1809 下的 ConPty 接口兼容了老的控制台应用程序 ConHost 接口，支持 ConPty 接口的应用可以支持unix pty，就不需要使用 winpty 做调度了，见章节 [Windows 10 对 Linux 的字符程序和GUI程序的支持]。
+如果 Windows version >= 10.2019.1809，新增的 ConPty 接口兼容了老的控制台应用程序 ConHost 接口，支持 ConPty 接口的应用可以支持 unix pty，就不需要使用 winpty 做调度了，见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]。
 
 #### mintty 美化
 
@@ -1448,29 +1452,64 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
 ## Linux 字符终端
 
-参见终端的历史演进
+### 终端的历史演进
 
     https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/#in-the-beginning-was-the-tty
 
     https://zhuanlan.zhihu.com/p/99963508
 
-    https://vt100.net/
+    TTY 是什么 https://zhuanlan.zhihu.com/p/447014333
 
-console 即控制台，是与操作系统交互的设备，操作系统将一些信息直接输出到控制台上。用户登录控制台，一般都是通过终端设备，输入命令等跟操作系统交互。
+    TTY 里程碑 https://vt100.net/
 
-在80年代个人计算机出现前，50-70年代的电子计算机都是多用户大型机，程序在大型机上运行，使用者使用不同的硬件设备连接到主机进行操作。这些设备给使用者提供输入和输出字符的功能，称为终端机 Terminal。最简单的字符输入设备是电传打字机（Teletype, tty），所以现在也用 tty 来表示字符输入终端。输出字符的显示界面有不同的显示规格，从打字机的纸带发展到到不同分辨率的电子显示屏。
+#### console 控制台
 
-终端设备接受用户界面的输入传递给主机，接受主机的输出展现在用户界面，在这个过程中需要对字符进行编码转换以便人与主机互相“理解”。70 年代 ANSI 标准沿用至今，主流设备都保持对此标准的兼容。
+是与操作系统交互的设备，操作系统将一些信息直接输出到控制台上。用户登录控制台，一般都是通过终端设备，输入命令等跟操作系统交互。
+
+在80年代个人计算机出现前，50-70年代的电子计算机都是多用户大型机，程序在大型机上运行，使用者使用不同的硬件设备连接到主机进行操作。这些设备给使用者提供输入和输出字符的功能，称为终端机 Terminal。终端设备接受用户界面的输入传递给主机，接受主机的输出展现在用户界面，在这个过程中需要对字符进行编码转换以便人与主机互相“理解”。最简单的字符输入设备是电传打字机（Teletype, tty），所以现在也用 tty 来表示字符输入终端。输出字符的显示界面有不同的显示规格，从打字机的纸带发展到到不同分辨率的电子显示屏。70 年代 ANSI 标准沿用至今，主流设备都保持对此标准的兼容。
+
+#### TTY 设备
+
+    https://zhuanlan.zhihu.com/p/613534348
+
+在今天，类unix系统中（如Linux/MacOS 等），操作系统利用 tty 设备作为程序与终端显示之间的桥梁，程序的输入输出默认都是指向一个 TTY 设备。用户使用终端软件 ssh 登陆远程服务器，也是获取 tty 设备才能进行命令行操作（ssh 可以设置不给连接用户 tty 设备以提高安全性）。
+
+为便于理解，看这个示例：
+
+命令 `who` 可以显示当前用户打开的全部 TTY 设备，而命令 `tty` 则可以显示当前窗口所用的 TTY 设备。因为 Linux 的设备都是用文件的方式映射的，所以利用这两个命令获取的信息，我们把文本写入 tty 设备，可以实现在一个 session 中向另一个 session 发送消息：
+
+    # 当前有哪些终端
+    $ who
+    pi       pts/0        2023-03-14 11:50 (::1)
+    pi       pts/1        2023-02-07 22:52 (tmux(2044).%0)
+    pi       pts/2        2023-02-07 22:52 (tmux(2044).%1)
+
+    # 当前用的哪个终端
+    $ tty
+    /dev/pts/0
+
+    # 对方的命令行输入处会出现该文本的内容
+    $ echo "message from 0 to 2" >/dev/pts/2
+
+当用户退出终端（手动退出或者因为网络波动断网而退出）时，发送了什么：
+
+    系统给运行中的程序发送了 hangup 信号，如果程序不处理将被终止。
+
+    系统关闭了这个终端对应的 TTY 设备。而这个 TTY 设备是程序默认的输入、输出来源。此时，当程序尝试输入、输出时，就会遇到错误。
+
+因此，`nohup` 的工作原理也非常简单，通过 `man nohup` 就可以看到：nohup - run a command immune to hangups, with output to a non-tty。简单来说，nohup 让程序能够不受 hangup 信号的影响，并且将输入输出转移到一个非 TTY 的文件上，从而避免程序被关闭。
+
+在 tmux 中开启的 session，也不会受到当前终端退出的影响。这是因为 tmux 中开启的每个 session 都有自己的 TTY 设备，当前用户退出时操作系统并不会删除 tmux 的那些 tty 设备。
+
+当我们使用 `docker exec` 或者 `kubectl exec` 等命令连接到某个容器时，经常会加上 -it 参数。其中的 -t 的含义，就是分配一个TTY设备：-t,--tty[=false] Allocate a pseudo-TTY。于是，执行完这些命令后，就启动了一个 TTY 设备连接，可以当做一个正常的 terminal 来使用。大家也可以试试去掉 -t 参数，这时就像一个普通程序一样，你输入一个命令，它输出相应内容，没有 tab 补全，也没有各种显示与颜色。
+
+#### 终端模拟器（Terminal Emulator）
 
 80年代通用计算机发展以来，主要的连接方式是通用计算机通过串行电缆连接主机，利用通用计算机的显示器和键盘与主机的命令行程序交互。随着处理器能力发展强大，GUI 图形化操作系统的发展，带来了一个新的使用问题：如果用户使用图形化窗口的Terminal，需要与本机上运行的另一个命令行应用程序交互，那么本机的程序需要营造出一个物理终端设备的仿真环境，以便通过命令行跟主机进行交互，即所谓终端模拟器（Terminal Emulator）。这种连接本机的终端可称为本地终端，或称软件进入“console mode”。
 
 UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念，实现这个伪终端功能的程序即可把自己模拟成主机的终端。我们现在说的终端，不再是真实的硬件设备，一般都是指软件终端模拟器。目前流行的字符终端模拟器有 putty、xterm 等，图形终端模拟器有 vnc、rdp 等。在使用终端模拟器的时候，如果不清楚主机类型，终端类型可选择最常见的 xterm。
 
 随着计算机网络的发展，网络上的服务器（Server）作为主机，客户机（Client）通过网络连接主机。主机和客户机间可以使用各种不同类型的协议进行连接，比如 ssh/telnet/ftp 等都有对应的命令行程序。远程连接使用的通信协议主要采用非对称密钥加密算法，一般利用 ssh 建立通信隧道。上述终端模拟器中，xterm 连接本机，通过 ssh 等程序连接网络上的主机。putty 主要用于 ssh 协议连接网络上的主机，通过 ssh 的方式也可连接本机（需要本机运行 sshd 服务），也支持模拟 rs232 串口方式连接本机操作系统 console。
-
-早期 Windows 操作系统下，终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost，类似于 Linux 的伪终端机制。因为 Windows 的 conhost 实现机制跟 Linux 伪终端实质上不同(一个是调用Windows API，一个是发送文本字符)，第三方终端应用程序其实无法连接 conhost，所以有来自 Msys2 项目的 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。详见章节 [Windows字符终端]。
-
-直至 2018年 Windows 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机。参见章节 [Windows 10 对 Linux 的字符程序和GUI程序的支持]。
 
 ### 终端模拟器和软件的彩色设置
 

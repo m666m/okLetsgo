@@ -617,9 +617,9 @@ Windows 商店应用默认不提供卸载选项，解决办法见下面章节 [�
 
 ### 选择开启虚拟化功能
 
-只要不涉及章节 [开启 hyper-v 的负面影响]，强烈建议开启虚拟化功能。
-
 日常的使用习惯，应该**在虚拟机里使用你的日常软件**，参见章节 [在虚拟机里使用你的日常软件]。
+
+只要不涉及章节 [开启 hyper-v 的负面影响]，强烈建议开启虚拟化功能。
 
 Windows 系统安全在向虚拟化方面加强，所以本章跟下面的 [设置Windows安全中心] 并列。
 
@@ -627,9 +627,9 @@ Windows 系统安全在向虚拟化方面加强，所以本章跟下面的 [设�
 
 Windows 10 默认的虚拟化功能开放的较少，增强功能需要手动安装：设置->应用->应用和功能->可选功能，点击右侧的“更多 Windows 功能”，弹出窗口选择“启用和关闭 Windows 功能”：
 
-    Hyper-V (Windows Hypervisor) --- 微软的Hyper-V虚拟机及其管理器
+    Hyper-V (Windows Hypervisor) --- 微软的 Hyper-V 虚拟机及其管理工具
 
-    Windows 虚拟机监控程序平台 (Windows Hypervisor Platform) --- 给 virtualBox提供服务
+    Windows 虚拟机监控程序平台 (Windows Hypervisor Platform) --- 给 virtualBox 等第三方虚拟机软件提供服务
 
     虚拟机平台 (Virtual Machine Platform) --- 给 wsl2 虚拟机提供服务
 
@@ -1556,13 +1556,13 @@ Mozilla浏览器的信任列表 <https://ccadb-public.secure.force.com/mozilla/I
 
 ### 2. 用沙盒运行小工具等相对不靠谱的程序
 
-沙盒共用你当前操作系统的静态文件，应该是容器化执行的
+沙盒属于容器化技术，底层共用你当前操作系统的静态文件，系统资源的共享理解为进程争用即可，支持硬件直通
 
     https://learn.microsoft.com/zh-cn/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview
 
 开始菜单，选择“Windows sandbox”程序，将新开一个虚拟的 Windows 窗口，把你觉得危险的程序复制粘贴到这个虚拟的 Windows 系统里运行，格式化这里的硬盘都没关系，在这个系统里可以正常上网。
 
-这个虚拟的 Windows 窗口一旦关闭，里面的任何操作都会清零，所以可以提前把运行结果复制粘贴到正常使用的 Windows 中。
+沙盒属于无状态的操作系统，这个虚拟的 Windows 窗口一旦关闭，里面的任何操作都会清零，所以可以提前把运行结果复制粘贴到正常使用的 Windows 中。
 
 Windows 沙盒可以用配置文件的方式设置共享目录，并设置只读权限，方便使用。比如把 c:\tools 目录映射到 Windows 沙盒里运行网络下载的小程序，或者把 download 目录映射到沙盒的 download 目录以便在沙盒里浏览网页并下载程序。
 
@@ -1571,6 +1571,7 @@ Windows 沙盒使用 WDAGUtilityAccount 本地帐户，所以共享文件夹也�
 tools.wsb 示例：
 
 ```xml
+
 <Configuration>
   <MappedFolders>
     <MappedFolder>
@@ -1587,6 +1588,7 @@ tools.wsb 示例：
     <Command>explorer.exe C:\users\WDAGUtilityAccount\Downloads</Command>
   </LogonCommand>
 </Configuration>
+
 ```
 
 其中，MappedFolder 可以有多个，默认映射到桌面，也可以单独指定。关于 Windows 沙盒的详细介绍，参见 <https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/Windows-sandbox/Windows-sandbox-overview>
@@ -1601,19 +1603,25 @@ QQ、微信、钉钉、360啥的很多cn软件很多都添加到系统级驱动�
 
 1、Windows 桌面应用程序（desktop applications）
 
-从 Windows 95 以来这几十年发展的 *.exe，对操作系统底层调用 Win32 API。后来引入的 VC/MFC 等框架，底层都依赖 Win32 API。具备对 Windows 和硬件的直接访问权限，此应用类型是需要最高级别性能和直接访问系统硬件的应用程序的理想选择。这种程序对操作系统各组件的访问，在区分用户这个级别是可以用 system 权限超越的，基本不受控。
+从 Windows 95 以来这几十年发展的 *.exe，对操作系统底层调用 Win32 API。后来引入的 VC/MFC 等框架，底层都依赖 Win32 API。通过 Win32 API，应用程序具备对 Windows 和硬件的直接访问权限，此应用类型是需要最高级别性能和直接访问系统硬件的应用程序的理想选择。这种程序对操作系统各组件的访问，在区分用户这个级别是可以用 system 权限超越的，基本不受控。
 
 2、WPF/.Net/Windows Form 等新的框架
 
-各种新的 API 框架，意图是统一不同硬件的操作系统，流行程度都不如 Win32 API。后来这些框架打包统一起来，叫托管运行时环境(WinRT)。这些框架本身对安全权限的限制也不多，软件想流氓起来，运行时环境也控制不了。
+各种新的 API 框架，意图都是统一不同的操作系统的调用接口，应用程序只需要调用同一套接口即可直接运行。但流行程度都不如 Win32 API。这些框架本身对安全权限的限制也不多，软件想流氓起来，运行时环境也控制不了。后来这些框架打包统一起来，叫托管运行时环境(WinRT)，使用这种环境的程序成托管应用。
 
 3、通用 Windows 平台 (UWP) 应用
 
-类似手机的方式，在 Windows 商店下载的应用(APP)，使用 UWP 组件的方式，在应用容器内部运行，即沙盒运行容器化。
+类似手机的方式，在 Windows 商店下载的应用(APP)，使用 UWP 组件的方式，在操作系统的应用容器内部运行，即沙盒运行容器化。
 
-UWP 应用在其清单中声明所需的设备能力，如访问麦克风、位置、网络摄像头、USB 设备、文件等，在应用被授予能力前，由用户确认并授权该访问。UWP 核心 API 在所有 Windows 设备上是相同的。
+UWP 核心 API 在所有 Windows 设备上是相同的，这时微软的目标是统一手机和PC机的操作界面。
 
-UWP 应用可以是本机应用，也可以是托管应用。使用 C++/WinRT 编写的 UWP 应用可以访问属于 UWP 的 Win32 API。 所有 Windows 设备都实现这些 Win32 API。<https://docs.microsoft.com/zh-CN/windows/uwp/get-started/universal-application-platform-guide>
+UWP 应用在其清单中声明所需的直通设备，如访问麦克风、位置、网络摄像头、USB 设备、文件等，在应用被授予能力前，由用户确认并授权该访问。
+
+UWP 应用可以是本机应用，也可以是托管应用：
+
+    使用 C++/WinRT 编写的 UWP 应用可以访问属于 UWP 的 Win32 API，所有 Windows 设备都实现这些 Win32 API https://docs.microsoft.com/zh-CN/windows/uwp/get-started/universal-application-platform-guide
+
+    托管应用就是使用 WPF/.Net/Windows Form 框架的程序。
 
 4、合订本 - Windows应用程序(Widnows App)
 
@@ -1625,9 +1633,9 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
     原来的 wpf、.net、uwp 也都被大一统了 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/>；
 
-    UWP 也要迁移到 Widnows App，理论上还是容器化运行 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/desktop-to-uwp-extend>；
+    UWP 也要迁移到 Widnows App，理论上是容器化运行 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/desktop-to-uwp-extend>；
 
-    安卓应用现在也可以在 Windows 11 上容器化运行。
+    Android 应用现在借助微软的安卓虚拟机也可以在 Windows 11 上容器化运行，应该是类似 WSL 2 的思路，在 Windows 桌面可以使用其它操作系统的图形界面程序，估计是像 ConPty + WSLg 那样加了中间转换层，参见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]。
 
 开发平台打包统一了，能再卖一波 Visual Studio，但是各类应用还是各搞各的，桌面应用的通用化没啥指望，后续看谁能流行起来再说吧。
 
