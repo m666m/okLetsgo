@@ -1174,9 +1174,15 @@ Windows 驱动存储查看
 
 Microsoft 出品的工具包
 
+    https://learn.microsoft.com/en-us/sysinternals/
+
     https://learn.microsoft.com/en-us/windows/powertoys/
 
-    https://learn.microsoft.com/en-us/sysinternals/
+WinSW 把任意程序配置为开机自启动的服务
+
+    https://github.com/winsw/winsw
+        配置文件说明 https://github.com/winsw/winsw/blob/v3/docs/xml-config-file.md
+        配置文件样例 https://github.com/winsw/winsw/tree/v3/samples
 
 在线流程图
 
@@ -1503,12 +1509,6 @@ Windows内存诊断
 在这里有 Interl 和 Office 安装后搞的一些用户数据遥测上传，把能看懂的都选择 “禁用”。
 
 如果想看到最全的统计，下载微软官方的 SystemInternals 工具包，运行 `Autoruns.exe`。
-
-把任意程序配置为开机自启动的服务
-
-    https://github.com/winsw/winsw
-        配置文件说明 https://github.com/winsw/winsw/blob/v3/docs/xml-config-file.md
-        配置文件样例 https://github.com/winsw/winsw/tree/v3/samples
 
 ### 务必检查当前操作系统的证书
 
