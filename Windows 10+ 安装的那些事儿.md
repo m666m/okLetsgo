@@ -1780,6 +1780,10 @@ WSL2 内的 container 是 Linux 提供的，不算 Windows 的容器。Windows �
 
     https://www.tenforums.com/tutorials/2087-hyper-v-virtualization-setup-use-Windows-10-a.html
 
+优化 hyper-v 运行 Linux
+
+    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/best-practices-for-running-linux-on-hyper-v
+
 Hyper-V 体系结构
 
     https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/reference/hyper-v-architecture
