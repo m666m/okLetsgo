@@ -5822,21 +5822,32 @@ bc - An arbitrary precision calculator language
     # 以 ASCII 码的形式显示文件aa.txt内容的，等效 -ta
     od -a aa.txt
 
-### Aria2 下载工具
+### 下载工具
 
-TODO: 命令行传输各种参数，设置复杂。
+每日更新tracker
+
+        https://github.com/ngosang/trackerslist
+
+        https://github.com/XIU2/TrackersListCollection
+
+Transmission 是一种 BitTorrent 客户端，特点是一个跨平台的后端和其上的简洁的用户界面。
+
+    https://transmissionbt.com/
+        https://github.com/transmission/transmission
+
+    简单点直接 docker https://registry.hub.docker.com/r/linuxserver/transmission/
+
+Aria2 不更新了，废弃
 
     Aria2 Linux下一键安装管理脚本 增强版 https://github.com/P3TERX/aria2.sh
         Aria2 完美配置 https://github.com/P3TERX/aria2.conf
-
-    每日更新tracker
-        https://github.com/ngosang/trackerslist
-        https://github.com/XIU2/TrackersListCollection
 
     Aria2 Pro: 基于 Aria2 完美配置和特殊定制优化的 Aria2 Docker
         https://p3terx.com/archives/docker-aria2-pro.html
             https://github.com/P3TERX/Aria2-Pro-Docker
             https://hub.docker.com/r/p3terx/aria2-pro
+
+命令行传输各种参数，设置复杂，直接用别人做的 docker 得了
 
         docker run -d \
             --name aria2-pro \
@@ -5857,7 +5868,7 @@ TODO: 命令行传输各种参数，设置复杂。
 
 简单使用： Windows 下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳 dht 站点清单。
 
-浏览器搜索插件：aria2 相关，安装后设置aip-key，可在浏览器中直接调用Motrix运行的aria2进程。
+浏览器搜索插件：aria2 相关，安装后设置 aip-key，可在浏览器中直接调用 Motrix 运行的 aria2 进程。
 
 这是 Motrix 生成的启动命令行
 
