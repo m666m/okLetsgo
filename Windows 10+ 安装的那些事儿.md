@@ -1150,7 +1150,7 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
             https://github.com/mpv-player/mpv/
             https://sourceforge.net/projects/mpv-player-windows/files/
 
-    mplayer 原生 linux 下的播放器
+    MPlayer 原生 linux 下的播放器
         http://www.mplayerhq.hu/design7/dload.html
 
         Windows build
