@@ -577,6 +577,12 @@ PBP分屏注意
 
 如果在游戏设置里开启 HDR，在开始游戏后，显示器会自动切换回标准模式以显示 HRD 内容，原开启的睿动光感、环境光、低蓝光模式、SmartImage 等等功能均被关闭，打完游戏需要手工调整显示器，把各节能功能再打开。
 
+把 doom 的可执行文件加到 Windows 防火墙，即可离线模式玩单机，不需要登陆 bethesda 网络 <https://steamah.com/doom-eternal-how-to-play-in-offline-mode-with-no-bethesda-net-account/>。
+
+doom 服务器状态  <https://certb-status.bethesda.net/en>。
+
+在 Linux 上玩 doom，先装 Steam的 Flatpak 版本 <https://www.addictivetips.com/ubuntu-linux-tips/doom-eternal-on-linux/>。
+
 ## 装完 Windows 后的一些设置
 
 不要把你使用的计算机的账户，跟微软账户绑定，也不要跟你的微软邮箱绑定，或者什么手机认证，2FA认证啥的。这些账户之间不要建立联系。在cn无所谓，在法律很严的地方，这是合法的关联使用证据，认定标准不同，后果不同。
