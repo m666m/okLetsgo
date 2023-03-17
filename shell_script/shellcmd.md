@@ -534,13 +534,15 @@ fi
 
 参见章节 [压缩解压缩] 中 tar 的说明，或 `man tar` 或 `info tar`
 
-## Linux 目录结构
+## Linux 目录和分区
+
+    https://www.debian.org/releases/stable/amd64/apcs02.zh-cn.html
+
+linux的目录，有几个固定用途的，有些是文件系统挂载在这个目录上
 
     https://refspecs.linuxfoundation.org/fhs.shtml
 
     https://zhuanlan.zhihu.com/p/107263805
-
-linux的目录，有几个固定用途的，有些是文件系统挂载在这个目录上
 
     $ df -h
     Filesystem      Size  Used Avail Use% Mounted on
@@ -556,6 +558,24 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
 /boot: 操作系统启动区
 
 /dev：以文件的形式保存 Linux 所有的设备及接口设备
+
+    Linux 里的设备 https://www.debian.org/releases/stable/amd64/apds01.zh-cn.html
+    Linux 的许多特殊文件可以在 /dev 目录下找到。这些文件称为设备文件，其行为与普通文件不同。大多数设备文件的类型是块设备和字符设备。这些文件是访问硬件的驱动程序(Linux 内核的一部分)的接口。另外一些，不那么常见的类型，是命名管道(pipe)。下表中列出了最重要的设备文件。
+
+    sda    第一块硬盘
+    sdb    第一块硬盘
+    sda1    第一块硬盘上的第一个分区
+    sdb7    第二块硬盘上的第七个分区
+    sr0    第一个 CD-ROM
+    sr1    第二个 CD-ROM
+    ttyS0    串口 0，即 MS-DOS 下的 COM1
+    ttyS1    串口 1，即 MS-DOS 下的 COM2
+    psaux    PS/2 鼠标设备
+    gpmdata    伪设备，中转从 GPM（鼠标）服务传来的数据
+    cdrom    指向光驱的符号链接
+    mouse    指向鼠标设备文件的符号链接
+    null    所有写入该设备的东西都会消失
+    zero    可以从该设备永无休止地读出零
 
 /sys：这个目录是一个虚拟文件系统，主要记录与内核相关的信息，与 /proc 目录十分相似
 
@@ -593,7 +613,7 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
 
         /usr/bin：可执行程序基本都在这里，其它安装到各种路径下(/usr/local/bin) 的软件，也在这里做个软链接，或把程序启动引导脚本程序放置在这里，只要 PATH 变量有这个路径，用户使用该命令时就很方便，不需要指明程序的安装路径。
 
-        /usr/local：这里主要存放那些手动安装的软件，即不是通过 apt 安装的软件。比如，用户自己编译的软件应该安装到这个目录下，用户自行下载的脚本等也应该保存在此处。它和 /usr 目录具有相类似的目录结构。让软件包管理器来管理 /usr 目录，而把自定义的脚本(scripts)放到 /usr/local 目录下面。
+        /usr/local：这里主要存放那些手动安装的软件，即不是通过 apt 安装的发行版软件。比如，用户自己编译的软件应该安装到这个目录下，用户自行下载的脚本等也应该保存在此处。它和 /usr 目录具有相类似的目录结构。让软件包管理器来管理 /usr 目录，而把自定义的脚本(scripts)放到 /usr/local 目录下面。
 
             /usr/local/bin：自编译安装的软件的可执行部分在这里
 
@@ -627,7 +647,7 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
 
         /var/lib：应用程序运行过程中，需要使用到的数据文件放置的目录。
 
-        /var/log：应用程序运行过程中，生成的日志文件，特别是login  (/var/log/wtmp log所有到系统的登录和注销) 和syslog (/var/log/messages 里存储所有核心和系统程序信息. /var/log 里的文件经常不确定地增长，应该定期清除.
+        /var/log：应用程序运行过程中，生成的日志文件，特别是login  (/var/log/wtmp 所有到系统的登录和注销) 和syslog (/var/log/messages) 里存储所有核心和系统程序信息. /var/log 里的文件经常不确定地增长，应该定期清除.
 
         /var/local：手动安装的程序（位于/usr/local）的可变数据(即系统管理员安装的程序)。如果必要，即使本地安装的程序也会使用其他 /var 目录，例如/var/lock 等。
 
@@ -654,6 +674,65 @@ linux的目录，有几个固定用途的，有些是文件系统挂载在这个
         │   └── vcsmem
         ├── include
         |
+
+在 Linux 系统里，“分区partition” 被称作 “挂载点mount point”。“挂载点” 意思就是：把一部分硬盘容量，分配到一个目录的形式，这个文件夹的名字，就叫做：“挂载点”。硬盘分区这种对硬盘空间逻辑上进行的划分，主要好处是：1、冗余性高，文件系统损坏只影响本分区数据丢失。2、方便程序区分用途，而且如果有一个程序因为故障写满了某个分区，其它分区不会受影响。所以，我们根据 fhs 方案的目录划分，结合自己的实际情况，对硬盘进行分区和划分挂载点。划分过多分区也不好，分区空间被限制死了，如果出现浪费和不足，各分区间重新调整大小比较繁琐。
+
+    理论上只需要根目录一个挂载点就能运行操作系统 <https://www.debian.org/releases/stable/amd64/apcs01.zh-cn.html>。
+
+    为保证操作系统可以正常启动，不要挂载 /etc 和 /usr 为独立分区
+
+    如果你要安装大量的非发行版软件，最好把 /usr/local 挂载为独立分区
+
+Fedora 的分区方案
+
+        http://39.105.43.122/?p=4200
+
+        https://view.inews.qq.com/k/20200504A0F5TT00?web_channel=wap&openApp=false
+
+        使用 LVM 扩展卷空间 https://zhuanlan.zhihu.com/p/316063702
+
+        Btrfs 使用心得及布局管理 https://aquarium39.moe/posts/about-btrfs/
+
+    /boot – 至少 500MB
+
+        /boot 分区必须设置在RAID阵列存储设备以外的地方，比如将 /boot 放在一块单独的硬盘中。
+
+        /boot 不能放置在 LVM 逻辑卷中，也不能放置在 Btrfs 子卷中。请使用标准分区（即 Standard Partition）来对 /boot 进行分区。
+
+    EFI 系统分区 – 至少 200MB
+
+        GRUB2 引导程序可以安装在 MBR 类型或 GPT 类型的硬盘中。二十几年前，BIOS 最大操作一个1024柱面的硬盘，需要在磁盘前端分出一个小分区专门来存储启动文件。
+
+        主板BIOS设置为 “传统 BIOS(Leagcy)” 模式、（兼容传统(Leagcy)模式）：如果主板使用 “UEFI CSM” 模式，你可以把硬盘格式化为 GPT 类型，并且在硬盘上需要为 Linux 创建一个大小为 1MB 的 “BIOS Boot” 分区。如果主板使用 “传统 BIOS(Leagcy)” 模式，则无需创建这样的特定分区，但这样只能把硬盘格式化为 MBR 类型，最大只支持 2TB 硬盘，所以现代计算机没有这样使用的了。
+
+        主板 BIOS 设置为原生 UEFI 模式：仅支持 GPT 方式，需要一个空间的 EFI 分区（至少 200MB）。
+
+    / – 根目录至少 5G，推荐 10G
+
+        默认情况下，所有文件数据都会被写到根目录中。一般都是单独设置其下的 /boot、/home 分别挂载为独立的分区。
+
+    /home – 至少 10G，推荐 50G
+
+        为了让用户数据与系统数据分离开，建议为 /home 单独创建一个分区。用户数据与系统数据分离，有一个最大的好处在于，你无需删除用户数据，就可以重装或者升级你的 Fedora 系统。
+
+        按 Debian 的推荐分区方案， /var 和 /tmp 也都单独创建分区 <https://www.debian.org/releases/stable/amd64/apcs01.zh-cn.html>。
+
+
+    Swap – 根据你的计算机参数而定，不建议开启休眠
+
+        Swap 分区支持虚拟内存（virtual memory），当系统正在处理的数据已经耗尽了内存空间时，多余的数据就会被写入 Swap 中，作为一种性能平衡。当内存耗尽，而且 Swap 分区的容量也被耗尽时，内核便会开始强制终止一些进程。
+
+        如果你为 Swap 分区设置了过大的空间，经常让这个空间处于空闲状态，会造成资源的浪费，而且也会掩盖内存泄露的现象。
+
+        一般情况下，内存小于 2G swap x2；内存 2~8G swap x1；内存 8~64G swap x0.5；内存大于 64G swap 视系统承载的业务量而定。
+
+        现在一般用 Swapfile 作为创建交换分区的一种替代方案，方便创建和删除、也便于动态变更大小。
+
+        Fedora 等新版 Linux 操作系统，默认使用 zram 虚拟压缩内存技术替代交换分区 <https://fedoraproject.org/wiki/Changes/SwapOnZRAM> <https://wiki.debian.org/ZRam>。
+
+            $ swapon -s
+            Filename            Type            Size    Used    Priority
+            /dev/zram0         partition        102396  0       100
 
 ## shell 常用脚本收集
 
