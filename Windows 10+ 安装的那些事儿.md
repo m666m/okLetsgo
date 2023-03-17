@@ -1180,9 +1180,9 @@ Windows 驱动存储查看
 
 Microsoft 出品的工具包
 
-    https://learn.microsoft.com/en-us/sysinternals/
+    sysinternals https://learn.microsoft.com/en-us/sysinternals/
 
-    https://learn.microsoft.com/en-us/windows/powertoys/
+    powertoys https://learn.microsoft.com/en-us/windows/powertoys/
 
 WinSW 把任意程序配置为开机自启动的服务
 
@@ -1205,9 +1205,14 @@ WinSW 把任意程序配置为开机自启动的服务
 
 uBlock Origin
 
-    https://microsoftedge.microsoft.com/addons/detail/ublock-origin/odfafepnkmbhccpbejgmiehpchacaeak
-
     https://github.com/gorhill/uBlock
+
+    增加以下规则
+
+        CJX's Annoyance List（反自我推广，移除Anti AdBlock，防跟踪补充）：
+        https://github.com/cjx82630/cjxlist
+
+        https://github.com/xinggsf/Adblock-Plus-Rule
 
 最终启用右键单击：
 
