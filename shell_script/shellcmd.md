@@ -728,7 +728,7 @@ Fedora 的分区方案
 
         现在一般用 Swapfile 作为创建交换分区的一种替代方案，方便创建和删除、也便于动态变更大小。
 
-        Fedora 等新版 Linux 操作系统，默认使用 zram 虚拟压缩内存技术替代交换分区 <https://fedoraproject.org/wiki/Changes/SwapOnZRAM> <https://wiki.debian.org/ZRam>。
+        Fedora 等新版 Linux 操作系统，默认使用 zram 虚拟压缩内存技术替代交换分区 <https://fedoraproject.org/wiki/Changes/SwapOnZRAM> <https://wiki.debian.org/ZRam> <https://zhuanlan.zhihu.com/p/472097491>。
 
             $ swapon -s
             Filename            Type            Size    Used    Priority
