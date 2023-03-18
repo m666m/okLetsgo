@@ -54,61 +54,65 @@ GNU/Linux 操作系统中的 /bin/sh 是 bash（Bourne-Again Shell）的符号�
 dash 和 bash 语法上的主要的区别有:
 
     1. 定义函数
-    bash: function在bash中为关键字
-    dash: dash中没有function这个关键字
+    bash：function 在 bash 中为关键字
+    dash：dash 中没有 function 这个关键字
 
     2. select var in list; do command; done
-    bash:支持
-    dash:不支持, 替代方法:采用while+read+case来实现
+    bash：支持
+    dash：不支持, 替代方法: 采用 while + read + case 来实现
 
     3. echo {0..10}
-    bash:支持{n..m}展开
-    dash:不支持，替代方法, 采用seq外部命令
+    bash：支持 {n..m} 展开
+    dash：不支持，替代方法, 采用 seq 外部命令
 
     4. here string
-    bash:支持here string
-    dash:不支持, 替代方法:可采用here documents
+    bash：支持 here string
+    dash：不支持, 替代方法：可采用 here documents
 
-    5. >&word重定向标准输出和标准错误
-    bash: 当word为非数字时，>&word变成重定向标准错误和标准输出到文件word
-    dash: >&word, word不支持非数字, 替代方法: >word 2>&1;
+    5. >&word 重定向标准输出和标准错误
+    bash：当 word 为非数字时，>&word 变成重定向标准错误和标准输出到文件 word
+    dash：>&word, word 不支持非数字, 替代方法: >word 2>&1;
           bash 常见用法 `your_cmd &>/dev/null` 改写为更兼容的写法 `your_cmd >/dev/null 2>&1`
 
     6. 数组
-    bash: 支持数组, bash4支持关联数组
-    dash: 不支持数组，替代方法, 采用变量名+序号来实现类似的效果
+    bash：支持数组, bash4 支持关联数组
+    dash：不支持数组，替代方法, 采用 “变量名+序号” 来实现类似的效果
 
     7. 子字符串扩展
-    bash: 支持parameter:offset:length,parameter:offset:length,{parameter:offset}
-    dash: 不支持， 替代方法:采用expr或cut外部命令代替
+    bash：支持 parameter:offset:length,parameter:offset:length,{parameter:offset}
+    dash：不支持，替代方法:采用 expr 或 cut 外部命令代替
 
     8. 大小写转换
-    bash: 支持parameterpattern,parameterpattern,{parameter^^pattern},parameter,pattern,parameter,pattern,{parameter,,pattern}
-    dash: 不支持，替代方法:采用tr/sed/awk等外部命令转换
+    bash：支持 parameterpattern,parameterpattern,{parameter^^pattern},parameter,pattern,parameter,pattern,{parameter,,pattern}
+    dash：不支持，替代方法：采用 tr/sed/awk 等外部命令转换
 
-    9. 进程替换<(command), >(command)
-    bash: 支持进程替换
-    dash: 不支持, 替代方法, 通过临时文件中转
+    9. 进程替换 <(command),>(command)
+    bash：支持进程替换
+    dash：不支持, 替代方法, 通过临时文件中转
 
     10. [ string1 = string2 ] 和 [ string1 == string2 ]
-    bash: 支持两者
-    dash: 只支持=
+    bash：支持两者
+    dash：只支持=
 
-    11. [[ 加强版test
-    bash: 支持[[ ]], 可实现正则匹配等强大功能
-    dash: 不支持[[ ]], 替代方法，采用外部命令
+    11. [[ ]] 加强版test
+    bash：支持 [[ ]], 可实现正则匹配等强大功能
+    dash：不支持 [[ ]], 替代方法，采用外部命令
 
     12. for (( expr1 ; expr2 ; expr3 )) ; do list ; done
-    bash: 支持C语言格式的for循环
-    dash: 不支持该格式的for, 替代方法，用while+((expression))实现13.let命令和((expression))bash:有内置命令let,也支持((expression))方式dash:不支持，替代方法，采用((expression))实现13.let命令和((expression))bash:有内置命令let,也支持((expression))方式dash:不支持，替代方法，采用((expression))或者外部命令做计算
+    bash：支持 C 语言格式的 for 循环
+    dash：不支持该格式的 for, 替代方法，用 while+((expression)) 实现
+
+    13.let 命令 和 ((expression))
+    bash：有内置命令 let,也支持 ((expression)) 方式
+    dash：不支持，替代方法，采用 ((expression)) 实现
 
     13. $((expression))
-    bash: 支持id++,id–,++id,–id这样到表达式
-    dash: 不支持++,–, 替代方法:id+=1,id-=1, id=id+1,id=id-1
+    bash：支持 id++,id–,++id,–id 这样到表达式
+    dash：不支持 ++,–，替代方法：id+=1,id-=1, id=id+1,id=id-1
 
     14. 其它常用命令
-    bash: 支持 echo -e, 支持 declare
-    dash: 不支持。
+    bash：支持 echo -e，支持 declare
+    dash：不支持。
 
 ## bash 常见符号用法
 
