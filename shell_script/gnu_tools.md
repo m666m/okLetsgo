@@ -6126,6 +6126,8 @@ scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了�
 
 ### rsync 文件同步
 
+    https://blog.csdn.net/wanli245/article/details/80317255
+
     https://www.ruanyifeng.com/blog/2020/08/rsync.html
 
     rsync 完全手册 https://www.junmajinlong.com/linux/index/#Linux%E5%9F%BA%E6%9C%AC%E6%9C%8D%E5%8A%A1
@@ -6138,9 +6140,22 @@ scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了�
 
 scp 不占资源，不会提高多少系统负荷，在这一点上，rsync就远远不及它了。虽然 rsync比scp会快一点，但当小文件众多的情况下，rsync会导致硬盘I/O非常高，而scp基本不影响系统正常使用。所以使用时根据自己的情况酌情决定选用哪个。
 
-其实可以在 rsync 下代替 scp
+使用 `rsync -e ssh` 就代替 scp 命令了。
 
-    rsync -e ssh
+rsync 默认使用 SSH 进行远程登录和数据传输。
+
+由于早期 rsync 不使用 SSH 协议，需要用 -e 参数指定协议，后来才改的。
+
+    # -e ssh 可以省略
+    $ rsync -av -e ssh source/ user@remote_host:/destination
+
+但是，如果 ssh 命令有附加的参数，则必须使用 -e 参数指定所要执行的 SSH 命令。
+
+    # -e 参数指定 SSH 使用2234端口
+    $ rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
+
+    # 使用密钥文件登陆服务器，先删除掉服务器的文件，然后再上传本地的文件到服务器上
+    rsync -av  --delete -e "ssh -i /Users/hs/test.pem" {本地源文件夹路径}/* root@{服务器IP}:{服务器目标文件夹路径}
 
 rsync 命令提供使用的 OPTION 及功能
 
