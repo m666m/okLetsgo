@@ -1136,6 +1136,12 @@ git 用 switch 命令替代了 checkout 命令中关于分支切换的功能
 
 分支切换的目标是提交点commit id（hash）
 
+    直接切换到指定的提交记录，这时进入不关联分支的 detached HEAD 分离状态。如果暂存区或工作区有内容，会报错无法切换，但是我遇到过丢弃暂存区直接切换的情况，没搞明白为啥。
+
+    切换到某个提交记录后，如果对文件内容做了修改，需要你建立新的分支或切换回现有分支，才能提交你当前的工作，否则这种分离 detached HEAD 情况下做的修改 git 不知道往何处保存。
+
+    注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
+
     # 从当前分支直接切换到指定的 commit 点，使用其 hash 值即可
     # git switch --detach A9380e9
     git checkout A9380e9
@@ -3013,19 +3019,21 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 关于撤回文件的用途很明晰：每个参数恢复一个区域的文件版本
 
-    git restore <file>
+    git restore --source <commit> <file>
 
-        丢弃工作区，工作区内容恢复为 HEAD 的内容
+        丢弃工作区，保留暂存区，恢复某个提交记录时的文件，恢复的内容放在工作区。
 
-        如果暂存区有内容，则工作区是暂存区内容。
+        # 默认 --source HEAD
+        git restore  <file>
+
+            丢弃工作区，保留暂存区，如果暂存区无内容则工作区内容恢复为 HEAD 的内容。
+
+            用于替换 `git checkout [file]` 。
 
     git restore --staged <file>
 
         丢弃暂存区，把暂存区内容恢复到工作区，优先保留工作区内容。
 
-    TODO:git restore --source master~2 Makefile
-
-        相当于 git checkout [commit] [file]，但是恢复的指定版本的文件防止工作区
 示例
 
     暂存区无内容，工作区有内容：
@@ -3052,9 +3060,7 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
         https://git-scm.com/docs/git-checkout
 
-丢弃工作区，工作区内容恢复为 HEAD 的内容。
-
-如果暂存区有内容，则工作区的内容就是暂存区内容。
+丢弃工作区，保留暂存区，如果没有暂存区则工作区内容恢复为 HEAD 的内容。
 
 等同于 `git restore <file>`。
 
@@ -3071,14 +3077,6 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
 
-### git checkout [commit]
-
-直接切换到指定的提交记录，这时进入不关联分支的 detached HEAD 分离状态。如果暂存区或工作区有内容，会报错无法切换，但是我遇到过丢弃暂存区直接切换的情况，没搞明白为啥。
-
-切换到某个提交记录后，如果对文件内容做了修改，需要你建立新的分支或切换回现有分支，才能提交你当前的工作，否则这种分离 detached HEAD 情况下做的修改 git 不知道往何处保存。
-
-注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
-
 ### git checkout [commit] [file]
 
 丢弃工作区，丢弃暂存区，恢复某个提交记录时的文件，恢复内容放到暂存区。
@@ -3086,6 +3084,9 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 如：
 
     git checkout b22c20fc8d -- abc.txt
+
+    # 恢复到仓库的状态
+    git checkout HEAD -- abc.txt
 
 注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
 
@@ -3543,6 +3544,10 @@ Shows incoming remote additions as additions; the triple-dot excludes changes co
 ### HEAD、HEAD^、HEAD~ 的含义
 
     https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#_ancestry_references
+
+HEAD^ 和 HEAD~ 有区别，但不是 merge 多个分支的情况下无差别
+
+    https://stackoverflow.com/questions/57938466/git-what-is-difference-between-tilde-and-caret
 
 #### HEAD
 
