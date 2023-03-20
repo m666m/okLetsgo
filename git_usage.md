@@ -4856,7 +4856,9 @@ devops平台搭建工具
 
 ## 竞品 -- 基于文件差异(patch)的源代码管理系统
 
-基于文件差异(patch)的源代码管理系统，可以随意加入、撤销、重排历史上任意没有依赖关系的改动，并且保持单个 Commit（Change）的 Hash 以及得到的结果不变。当前流行的 svn/git/hg，都是基于 snapshot 而不是 patch 的。
+当前流行的 svn/git/hg，都是基于 snapshot 而不是 patch 的。
+
+基于文件差异(patch)的源代码管理系统，可以随意加入、撤销、重排历史上任意没有依赖关系的改动，并且保持单个 Commit（Change）的 Hash 以及得到的结果不变。
 
     pijul https://pijul.org/
 
