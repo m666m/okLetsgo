@@ -2901,6 +2901,376 @@ Git 自动给 dev 分支做了一次提交，注意这次提交的commit是 1d4b
 
 ## -------- 日常编辑常用 --------
 
+## 使用储藏 stash
+
+当在一个分支的开发工作未完成，却又要切换到另外一个 hotfix 分支进行开发的时候，当前的分支不 commit 的话 git 不允许 checkout 到别的分支，而代码功能不完整随便 commit 是没有意义的。
+
+一般使用，`git stash push` 和 `git stash pop` 这两条就够了。
+
+如果是新增的文件，直接执行 stash 是不会被存储的，因为没有在 git 版本控制中的文件，是不能被 git stash 存起来的，所以先执行下 `git add` 再储存就可以了。
+
+详细用法
+
+    （1）git stash push -m "save message"  : 执行存储时，添加备注，方便查找。只有 git stash 也可以，但查找时不方便识别。
+
+    （2）git stash list  ：查看stash了哪些存储
+
+    （3）git stash show ：显示哪些文件做了改动，默认show第一个存储，如果要显示其他存贮，后面加stash@{$num}，比如第二个 git stash show stash@{1}
+
+    （4）git stash show -p : 显示改动明细，默认show第一个存储，如果想显示其他存存储，命令：git stash show  stash@{$num}  -p ，比如第二个：git stash show  stash@{1}  -p
+
+    （5）git stash pop ：命令恢复之前缓存的工作目录，将缓存堆栈中的对应stash删除，并将对应修改应用到当前的工作目录下,默认为第一个stash,即stash@{0}，如果要应用并删除其他stash，命令：git stash pop stash@{$num} ，比如应用并删除第二个：git stash pop stash@{1}
+
+    （6）git stash apply :应用某个存储,但不会把存储从存储列表中删除，默认使用第一个存储,即stash@{0}，如果要使用其他个，git stash apply stash@{$num} ， 比如第二个：git stash apply stash@{1}
+
+    （7）git stash drop stash@{$num} ：丢弃stash@{$num}存储，从列表中删除这个存储
+
+    （8）git stash clear ：删除所有缓存的stash
+
+### 找回误删的 stash 数据
+
+本想 git stash pop ，但是输入成 git stash drop
+
+1.查找所有不可访问的对象
+
+    git fsck --unreachable
+
+2.逐个确认该对象的代码详情，找到自己丢失的那个
+
+    git show a923f340ua
+
+3.恢复找到的对象
+
+    git stash apply 95ccbd927ad4cd413ee2a28014c81454f4ede82c
+
+## 查看提交记录
+
+    https://www.cnblogs.com/bellkosmos/p/5923439.html
+
+注意：
+
+    git log 的很多用法也适用于 git diff，参见章节 [显示差异 diff]。
+
+    查日志做对比之前，可以先拉取所有分支的远程库，以保证数据最新
+
+        git fetch -all
+
+查看 <指定文件、分支的> 提交记录
+
+    git log <file/branch> --oneline --graph
+
+    查看所有最近的提交记录，不在本分支上的也显示，经常用于改动之前的保留现场
+    git reflog
+
+显示提交记录跟之前一条的差异diff
+
+    git log -p
+
+查看在此提交点之前的所有记录
+
+    git log <commit id>
+
+    # 指定这个提交点，也可同时限定文件
+    git show <commit id> <file>
+
+查看远程库的提交记录，用于本地库更新远程库时查看合并冲突
+
+    # 显示远程库的完整提交记录
+    git log origin/master --graph --oneline
+
+    # 查看分歧点以来的提交记录
+    #git log HEAD..origin/master --graph --oneline
+    git log ..origin/master --graph --oneline
+
+对比查看两个分支的提交记录的差异，用于两分支合并查看差异
+
+    # 注意分支名的顺序，这里是求前者比后者少的部分
+    git log master..feat --graph --oneline
+
+    # 效果等同，但是顺序倒过来了，这里是求前者比后者多的部分
+    git log feat ^master --graph --oneline
+
+    # 不知道谁提交的多谁提交的少，单纯显示两分支的差
+    # git log feat...master --graph --oneline
+    # 加个方向标识 < 开头的是左边的，> 开头的是右边的
+    git log --left-right feat...master --graph --oneline
+
+某个提交记录归属于哪些分支
+
+    git branch --contains <commit> --all
+
+## 显示差异 diff
+
+提交的和未提交的都可以比对，有多种用法。
+
+    显示摘要加参数 --stat
+
+git diff 主要的应用场景：
+
+    工作区中的更改尚未进行下一次提交
+
+    暂存区和最后一次提交之间的变化
+
+    查看已经 git add ，但没有 git commit 的改动
+
+    自上次提交以来工作区中的更改
+
+三个区域的交叉对比
+
+    ·`git diff` 无参数时有二义性：
+
+        先用工作区跟暂存区比，没有暂存区则跟仓库（HEAD）比。
+
+        默认比较工作区(Working tree)和暂存区(staged)的差异
+
+            git diff
+
+        如果暂存区无内容，则会比较工作区和仓库(HEAD)，等同于 `git diff HEAD`。
+
+        在 vs code 里，就是你点击源代码管理树中 '更改' 项目下的文件，列出来的差异。
+
+    ·比较暂存区(staged)和仓库(HEAD)的差异
+
+            git diff --staged
+
+            或 git diff --cached
+
+        显示即将被提交的内容，就是在你做了 `git add` 后，预测如果要做 `git commit` 时会提交的内容有哪些。
+
+        在 vs code 里，就是你点击源代码管理树中 '暂存的更改' 项目下的文件，列出来的差异。
+
+    ·比较工作区(Working tree)和仓库(HEAD)的差别
+
+        git diff HEAD
+
+        # 比较指定文件的最新版本与旧提交中的版本之间的差异
+        git diff <commit_id> <file_path>
+
+    只要你没有做 `git commit`，当前的所有改动（含暂存区的）都会体现在工作区，直接跟仓库（HEAD）对比可以看看你的修改的总体效果。
+
+可以看出，修改完成后还没有执行 `git add`，做 `git diff HEAD` 显示的结果，跟执行了 `git add` 后行 `git diff --staged`，看到的结果是一样的。
+
+·比较两个分支（上最新的提交）的差别
+
+    git diff topic master
+
+    或 git diff topic..master
+
+    ·拉取远程后，对比本地库和远程库，先看看是不是有别人提交了远程，防止互相merge新增commit
+
+        git fetch
+        git diff ..origin/master
+
+        git status
+
+·对比最近的两次提交记录
+
+    git diff HEAD^ HEAD
+
+    # 也可以让 git log 显示提交记录跟之前一条的差异diff
+    git log -p <commit id>
+
+·比较两个提交记录之间的差异
+
+    git diff SHA1 SHA2
+
+·输出自 topic 和 master 分别开发以来，master 分支上的变更。
+
+    git diff topic...master
+
+就是说两个分支分叉延续了，看看差异，一般用于合并之前查看情况。
+
+·查看当前分支和另一个叫’test‘分支的差别
+
+    git diff test
+
+·显示当前分支的子目录 lib 与上次提交之间的差别
+
+    git diff HEAD -- ./lib
+
+·查看另一个分支上文件与当前分支上文件的差异
+
+    git diff <another_branch> some-filename.js
+
+·制作补丁
+
+    git diff xxx > your.patch
+
+在其它的机器上应用补丁
+
+    # 先检查这个补丁操作是否会报错
+    git apply --check your.patch
+
+    # 部分打上补丁也可以接受，保留冲突部分，冲突的会生成.rej文件供手工分析
+    git apply --reject your.patch
+
+    # 没问题，完全打上补丁
+    git apply your.patch
+
+等同于章节 [补丁神器 cherry-pick]。
+
+### 查看尚未合并的变更
+
+如果你曾经与很多小伙伴工作在同一个持久分支上，也许会有这样的经历，父分支（例如：master）上的大量合并同步到你当前的分支。这使得我们很难分辨哪些变更发生在主分支，哪些变更发生在当前分支，尚未合并到 master 分支。
+
+    git log --no-merges master..
+
+    --no-merges 标志意味着只显示没有合并到任何分支的变更
+
+    master.. 选项，意思是指显示没有合并到master分支的变更（在master后面必须有..）。
+
+查看一下尚未合并的文件变更
+
+    git show --no-merges master..
+
+    # 输出结果相同
+    git log -p --no-merges master..
+
+### TODO:没点，俩点，仨点的区别
+
+    https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#_triple_dot
+
+    https://stackoverflow.com/questions/4944376/how-to-check-real-git-diff-before-merging-from-remote-branch
+
+You can use various combinations of specifiers to git to see your diffs as you desire (the following examples use the local working copy as the implicit first commit):
+
+假设某人在远程存储库中进行更改，即修改了分支并提交到远程库，下述3个使用方法有不同的效果
+
+1.您在本地可能不会看到任何更改
+
+    git diff origin/master
+
+This shows the incoming remote additions as deletions; any additions in your local repository are shown as additions.
+
+2.可以看到更改，俩点让 Git 选出在一个分支中而不在另一个分支中的提交
+
+    # 完整写法是 gid diff <本地分支>..<远程分支>
+    git diff ..origin/master
+
+Shows incoming remote additions as additions; the double-dot includes changes
+committed to your local repository as deletions (since they are not yet pushed).
+
+For info on ".." vs "..." see as well as the excellent documentation at [git-scm revision selection: commit ranges Briefly] <https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Commit-Ranges>, for the examples above, double-dot syntax shows all commits reachable from origin/master but not your working copy. Likewise, the triple-dot syntax shows all the commits reachable from either commit (implicit working copy, remote/origin) but not from both.
+
+例如
+
+    git fetch; git diff ..origin/master
+
+您将看到本地git存储库的内容与远程存储库中的不同之处。您将看不到本地文件系统中或索引中的任何更改。
+
+3.三点语法显示从任一提交（隐式工作副本、远程/原点）可以到达的所有提交，但不能同时来自两个提交。选择出被两个引用之一包含但又不被两者同时包含的提交。
+
+这将区分来自远程/分支的更改，并忽略来自当前 HEAD 的更改。
+
+    git diff ...origin/master
+
+Shows incoming remote additions as additions; the triple-dot excludes changes committed to your local repository.
+
+### HEAD、HEAD^、HEAD~ 的含义
+
+    https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#_ancestry_references
+
+HEAD^ 和 HEAD~ 有区别，但不是 merge 多个分支的情况下无差别
+
+    https://stackoverflow.com/questions/57938466/git-what-is-difference-between-tilde-and-caret
+
+#### HEAD
+
+HEAD 指向当前所在分支提交至仓库的最新一次的 commit
+
+    # 使用最新一次提交重制暂存区
+    git reset HEAD -- filename
+
+    # 使用最新一次提交重制暂存区和工作区
+    git reset --hard HEAD
+
+    # 将 commit log 回滚一次 暂存区和工作区代码不变
+    git reset --soft HEAD~1
+
+#### HEAD~{n}
+
+~ 是用来在当前提交路径上回溯的修饰符.
+
+HEAD~{n} 表示当前所在的提交路径上的前 n 个提交（n >= 0）：
+
+    HEAD = HEAD~0
+    HEAD~ = HEAD~1
+    HEAD~~ = HEAD~2
+    HEAD{n个~} = HEAD~n
+
+#### HEAD^n
+
+^ 是用来切换父级提交路径的修饰符。当我们始终在一个分支比如 dev 开发/提交代码时，每个 commit 都只会有一个父级提交，就是上一次提交，但当并行多个分支开发，feat1, feat2, feat3，完成后 merge feat1 feat2 feat3 回 dev 分支后，此次的 merge commit 就会有多个父级提交。
+
+父级 一词本身就代表回溯了 1 次
+
+HEAD 的 第一个父级
+
+    # 第一个父级提交 即 feat1 的最近第1次的提交
+    $ git show HEAD^
+    feat1 3 foo_feat1
+
+    # 第一个父级提交的上1次提交 即 feat1 的最近第2次的提交
+    $ git show HEAD^~1 / git show HEAD^^
+    feat1 2 foo_feat1
+
+    # 第一个父级提交的上2次提交 即 feat1 的最近第3次的提交
+    $ git show HEAD^~2 / git show HEAD^^^
+    feat1 1 foo_feat1
+
+HEAD 的 第二个父级
+
+    # 第二个父级提交 即 feat2 的最近第1次的提交
+    $ git show HEAD^2
+    feat2 2 foo_feat2
+
+    # 第二个父级提交的上1次提交 即 feat2 的最近第2次的提交
+    $ git show HEAD^2~1 / git show HEAD^2^
+    feat2 1 foo_feat2
+
+    # 第二个父级提交的上2次提交 即 feat2 的最近第3次的提交
+    $ git show HEAD^2~2 / git show HEAD^2^^
+    feat2 add foo_feat2
+
+HEAD 的 第三个父级
+
+    # 第三个父级提交 即 feat3 的最近第1次的提交
+    $ git show HEAD^3
+    feat3 2 foo_feat3
+
+    # 第三个父级提交的上1次提交 即 feat3 的最近第2次的提交
+    $ git show HEAD^3~1 / git show HEAD^3^
+    feat3 1 foo_feat3
+
+    # 第三个父级提交的上2次提交 feat3 的最近第3次的提交回归到了主线上
+    $ git show HEAD^3~2 / git show HEAD^3^^
+    master foo 2
+
+#### 示例
+
+    # 当前提交
+    HEAD = HEAD~0 = HEAD^0
+
+    # 主线回溯
+    HEAD~1 = HEAD^ 主线的上一次提交
+    HEAD~2 = HEAD^^ 主线的上二次提交
+    HEAD~3 = HEAD^^^ 主线的上三次提交
+
+    # 如果某个节点有其他分支并入
+    HEAD^1 主线提交（第一个父提交）
+    HEAD^2 切换到了第2个并入的分支并得到最近一次的提交
+    HEAD^2~3 切换到了第2个并入的分支并得到最近第 4 次的提交
+    HEAD^3~2 切换到了第3个并入的分支并得到最近第 3 次的提交
+
+    # ^{n} 和 ^ 重复 n 次的区别
+    HEAD~1 = HEAD^
+    HEAD~2 = HEAD^^
+    HEAD~3 = HEAD^^^
+    # 切换父级
+    HEAD^1~3 = HEAD~4
+    HEAD^2~3 = HEAD^2^^^
+    HEAD^3~3 = HEAD^3^^^
+
 ## 如何回退
 
     https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified
@@ -3331,376 +3701,6 @@ git revert 新增的提交点，是对 rebase 那个提交点的反向执行，�
                            commit1---commit2---commit3
 
     最后，把 tmp_re 分支合并到 master 分支，覆盖 master 分支上的差异，使 master 分支上的文件内容也回到了点 older 点的样子。
-
-## 使用储藏 stash
-
-当在一个分支的开发工作未完成，却又要切换到另外一个 hotfix 分支进行开发的时候，当前的分支不 commit 的话 git 不允许 checkout 到别的分支，而代码功能不完整随便 commit 是没有意义的。
-
-一般使用，`git stash push` 和 `git stash pop` 这两条就够了。
-
-如果是新增的文件，直接执行 stash 是不会被存储的，因为没有在 git 版本控制中的文件，是不能被 git stash 存起来的，所以先执行下 `git add` 再储存就可以了。
-
-详细用法
-
-    （1）git stash push -m "save message"  : 执行存储时，添加备注，方便查找。只有 git stash 也可以，但查找时不方便识别。
-
-    （2）git stash list  ：查看stash了哪些存储
-
-    （3）git stash show ：显示哪些文件做了改动，默认show第一个存储，如果要显示其他存贮，后面加stash@{$num}，比如第二个 git stash show stash@{1}
-
-    （4）git stash show -p : 显示改动明细，默认show第一个存储，如果想显示其他存存储，命令：git stash show  stash@{$num}  -p ，比如第二个：git stash show  stash@{1}  -p
-
-    （5）git stash pop ：命令恢复之前缓存的工作目录，将缓存堆栈中的对应stash删除，并将对应修改应用到当前的工作目录下,默认为第一个stash,即stash@{0}，如果要应用并删除其他stash，命令：git stash pop stash@{$num} ，比如应用并删除第二个：git stash pop stash@{1}
-
-    （6）git stash apply :应用某个存储,但不会把存储从存储列表中删除，默认使用第一个存储,即stash@{0}，如果要使用其他个，git stash apply stash@{$num} ， 比如第二个：git stash apply stash@{1}
-
-    （7）git stash drop stash@{$num} ：丢弃stash@{$num}存储，从列表中删除这个存储
-
-    （8）git stash clear ：删除所有缓存的stash
-
-### 找回误删的 stash 数据
-
-本想 git stash pop ，但是输入成 git stash drop
-
-1.查找所有不可访问的对象
-
-    git fsck --unreachable
-
-2.逐个确认该对象的代码详情，找到自己丢失的那个
-
-    git show a923f340ua
-
-3.恢复找到的对象
-
-    git stash apply 95ccbd927ad4cd413ee2a28014c81454f4ede82c
-
-## 显示差异 diff
-
-提交的和未提交的都可以比对，有多种用法。
-
-    显示摘要加参数 --stat
-
-git diff 主要的应用场景：
-
-    工作区中的更改尚未进行下一次提交
-
-    暂存区和最后一次提交之间的变化
-
-    查看已经 git add ，但没有 git commit 的改动
-
-    自上次提交以来工作区中的更改
-
-三个区域的交叉对比
-
-    ·`git diff` 无参数时有二义性：
-
-        先用工作区跟暂存区比，没有暂存区则跟仓库（HEAD）比。
-
-        默认比较工作区(Working tree)和暂存区(staged)的差异
-
-            git diff
-
-        如果暂存区无内容，则会比较工作区和仓库(HEAD)，等同于 `git diff HEAD`。
-
-        在 vs code 里，就是你点击源代码管理树中 '更改' 项目下的文件，列出来的差异。
-
-    ·比较暂存区(staged)和仓库(HEAD)的差异
-
-            git diff --staged
-
-            或 git diff --cached
-
-        显示即将被提交的内容，就是在你做了 `git add` 后，预测如果要做 `git commit` 时会提交的内容有哪些。
-
-        在 vs code 里，就是你点击源代码管理树中 '暂存的更改' 项目下的文件，列出来的差异。
-
-    ·比较工作区(Working tree)和仓库(HEAD)的差别
-
-        git diff HEAD
-
-        # 比较指定文件的最新版本与旧提交中的版本之间的差异
-        git diff <commit_id> <file_path>
-
-    只要你没有做 `git commit`，当前的所有改动（含暂存区的）都会体现在工作区，直接跟仓库（HEAD）对比可以看看你的修改的总体效果。
-
-可以看出，修改完成后还没有执行 `git add`，做 `git diff HEAD` 显示的结果，跟执行了 `git add` 后行 `git diff --staged`，看到的结果是一样的。
-
-·比较两个分支（上最新的提交）的差别
-
-    git diff topic master
-
-    或 git diff topic..master
-
-    ·拉取远程后，对比本地库和远程库，先看看是不是有别人提交了远程，防止互相merge新增commit
-
-        git fetch
-        git diff ..origin/master
-
-        git status
-
-·对比最近的两次提交记录
-
-    git diff HEAD^ HEAD
-
-    # 也可以让 git log 显示提交记录跟之前一条的差异diff
-    git log -p <commit id>
-
-·比较两个提交记录之间的差异
-
-    git diff SHA1 SHA2
-
-·输出自 topic 和 master 分别开发以来，master 分支上的变更。
-
-    git diff topic...master
-
-就是说两个分支分叉延续了，看看差异，一般用于合并之前查看情况。
-
-·查看当前分支和另一个叫’test‘分支的差别
-
-    git diff test
-
-·显示当前分支的子目录 lib 与上次提交之间的差别
-
-    git diff HEAD -- ./lib
-
-·查看另一个分支上文件与当前分支上文件的差异
-
-    git diff <another_branch> some-filename.js
-
-·制作补丁
-
-    git diff xxx > your.patch
-
-在其它的机器上应用补丁
-
-    # 先检查这个补丁操作是否会报错
-    git apply --check your.patch
-
-    # 部分打上补丁也可以接受，保留冲突部分，冲突的会生成.rej文件供手工分析
-    git apply --reject your.patch
-
-    # 没问题，完全打上补丁
-    git apply your.patch
-
-等同于章节 [补丁神器 cherry-pick]。
-
-### 查看尚未合并的变更
-
-如果你曾经与很多小伙伴工作在同一个持久分支上，也许会有这样的经历，父分支（例如：master）上的大量合并同步到你当前的分支。这使得我们很难分辨哪些变更发生在主分支，哪些变更发生在当前分支，尚未合并到 master 分支。
-
-    git log --no-merges master..
-
-    --no-merges 标志意味着只显示没有合并到任何分支的变更
-
-    master.. 选项，意思是指显示没有合并到master分支的变更（在master后面必须有..）。
-
-查看一下尚未合并的文件变更
-
-    git show --no-merges master..
-
-    # 输出结果相同
-    git log -p --no-merges master..
-
-### TODO:没点，俩点，仨点的区别
-
-    https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#_triple_dot
-
-    https://stackoverflow.com/questions/4944376/how-to-check-real-git-diff-before-merging-from-remote-branch
-
-You can use various combinations of specifiers to git to see your diffs as you desire (the following examples use the local working copy as the implicit first commit):
-
-假设某人在远程存储库中进行更改，即修改了分支并提交到远程库，下述3个使用方法有不同的效果
-
-1.您在本地可能不会看到任何更改
-
-    git diff origin/master
-
-This shows the incoming remote additions as deletions; any additions in your local repository are shown as additions.
-
-2.可以看到更改，俩点让 Git 选出在一个分支中而不在另一个分支中的提交
-
-    # 完整写法是 gid diff <本地分支>..<远程分支>
-    git diff ..origin/master
-
-Shows incoming remote additions as additions; the double-dot includes changes
-committed to your local repository as deletions (since they are not yet pushed).
-
-For info on ".." vs "..." see as well as the excellent documentation at [git-scm revision selection: commit ranges Briefly] <https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Commit-Ranges>, for the examples above, double-dot syntax shows all commits reachable from origin/master but not your working copy. Likewise, the triple-dot syntax shows all the commits reachable from either commit (implicit working copy, remote/origin) but not from both.
-
-例如
-
-    git fetch; git diff ..origin/master
-
-您将看到本地git存储库的内容与远程存储库中的不同之处。您将看不到本地文件系统中或索引中的任何更改。
-
-3.三点语法显示从任一提交（隐式工作副本、远程/原点）可以到达的所有提交，但不能同时来自两个提交。选择出被两个引用之一包含但又不被两者同时包含的提交。
-
-这将区分来自远程/分支的更改，并忽略来自当前 HEAD 的更改。
-
-    git diff ...origin/master
-
-Shows incoming remote additions as additions; the triple-dot excludes changes committed to your local repository.
-
-### HEAD、HEAD^、HEAD~ 的含义
-
-    https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#_ancestry_references
-
-HEAD^ 和 HEAD~ 有区别，但不是 merge 多个分支的情况下无差别
-
-    https://stackoverflow.com/questions/57938466/git-what-is-difference-between-tilde-and-caret
-
-#### HEAD
-
-HEAD 指向当前所在分支提交至仓库的最新一次的 commit
-
-    # 使用最新一次提交重制暂存区
-    git reset HEAD -- filename
-
-    # 使用最新一次提交重制暂存区和工作区
-    git reset --hard HEAD
-
-    # 将 commit log 回滚一次 暂存区和工作区代码不变
-    git reset --soft HEAD~1
-
-#### HEAD~{n}
-
-~ 是用来在当前提交路径上回溯的修饰符.
-
-HEAD~{n} 表示当前所在的提交路径上的前 n 个提交（n >= 0）：
-
-    HEAD = HEAD~0
-    HEAD~ = HEAD~1
-    HEAD~~ = HEAD~2
-    HEAD{n个~} = HEAD~n
-
-#### HEAD^n
-
-^ 是用来切换父级提交路径的修饰符。当我们始终在一个分支比如 dev 开发/提交代码时，每个 commit 都只会有一个父级提交，就是上一次提交，但当并行多个分支开发，feat1, feat2, feat3，完成后 merge feat1 feat2 feat3 回 dev 分支后，此次的 merge commit 就会有多个父级提交。
-
-父级 一词本身就代表回溯了 1 次
-
-HEAD 的 第一个父级
-
-    # 第一个父级提交 即 feat1 的最近第1次的提交
-    $ git show HEAD^
-    feat1 3 foo_feat1
-
-    # 第一个父级提交的上1次提交 即 feat1 的最近第2次的提交
-    $ git show HEAD^~1 / git show HEAD^^
-    feat1 2 foo_feat1
-
-    # 第一个父级提交的上2次提交 即 feat1 的最近第3次的提交
-    $ git show HEAD^~2 / git show HEAD^^^
-    feat1 1 foo_feat1
-
-HEAD 的 第二个父级
-
-    # 第二个父级提交 即 feat2 的最近第1次的提交
-    $ git show HEAD^2
-    feat2 2 foo_feat2
-
-    # 第二个父级提交的上1次提交 即 feat2 的最近第2次的提交
-    $ git show HEAD^2~1 / git show HEAD^2^
-    feat2 1 foo_feat2
-
-    # 第二个父级提交的上2次提交 即 feat2 的最近第3次的提交
-    $ git show HEAD^2~2 / git show HEAD^2^^
-    feat2 add foo_feat2
-
-HEAD 的 第三个父级
-
-    # 第三个父级提交 即 feat3 的最近第1次的提交
-    $ git show HEAD^3
-    feat3 2 foo_feat3
-
-    # 第三个父级提交的上1次提交 即 feat3 的最近第2次的提交
-    $ git show HEAD^3~1 / git show HEAD^3^
-    feat3 1 foo_feat3
-
-    # 第三个父级提交的上2次提交 feat3 的最近第3次的提交回归到了主线上
-    $ git show HEAD^3~2 / git show HEAD^3^^
-    master foo 2
-
-#### 示例
-
-    # 当前提交
-    HEAD = HEAD~0 = HEAD^0
-
-    # 主线回溯
-    HEAD~1 = HEAD^ 主线的上一次提交
-    HEAD~2 = HEAD^^ 主线的上二次提交
-    HEAD~3 = HEAD^^^ 主线的上三次提交
-
-    # 如果某个节点有其他分支并入
-    HEAD^1 主线提交（第一个父提交）
-    HEAD^2 切换到了第2个并入的分支并得到最近一次的提交
-    HEAD^2~3 切换到了第2个并入的分支并得到最近第 4 次的提交
-    HEAD^3~2 切换到了第3个并入的分支并得到最近第 3 次的提交
-
-    # ^{n} 和 ^ 重复 n 次的区别
-    HEAD~1 = HEAD^
-    HEAD~2 = HEAD^^
-    HEAD~3 = HEAD^^^
-    # 切换父级
-    HEAD^1~3 = HEAD~4
-    HEAD^2~3 = HEAD^2^^^
-    HEAD^3~3 = HEAD^3^^^
-
-## 查看提交记录
-
-    https://www.cnblogs.com/bellkosmos/p/5923439.html
-
-注意：
-
-    git log 的很多用法也适用于 git diff，参见章节 [显示差异 diff]。
-
-    查日志做对比之前，可以先拉取所有分支的远程库，以保证数据最新
-
-        git fetch -all
-
-查看 <指定文件、分支的> 提交记录
-
-    git log <file/branch> --oneline --graph
-
-    查看所有最近的提交记录，不在本分支上的也显示，经常用于改动之前的保留现场
-    git reflog
-
-显示提交记录跟之前一条的差异diff
-
-    git log -p
-
-查看在此提交点之前的所有记录
-
-    git log <commit id>
-
-    # 指定这个提交点，也可同时限定文件
-    git show <commit id> <file>
-
-查看远程库的提交记录，用于本地库更新远程库时查看合并冲突
-
-    # 显示远程库的完整提交记录
-    git log origin/master --graph --oneline
-
-    # 查看分歧点以来的提交记录
-    #git log HEAD..origin/master --graph --oneline
-    git log ..origin/master --graph --oneline
-
-对比查看两个分支的提交记录的差异，用于两分支合并查看差异
-
-    # 注意分支名的顺序，这里是求前者比后者少的部分
-    git log master..feat --graph --oneline
-
-    # 效果等同，但是顺序倒过来了，这里是求前者比后者多的部分
-    git log feat ^master --graph --oneline
-
-    # 不知道谁提交的多谁提交的少，单纯显示两分支的差
-    # git log feat...master --graph --oneline
-    # 加个方向标识 < 开头的是左边的，> 开头的是右边的
-    git log --left-right feat...master --graph --oneline
-
-某个提交记录归属于哪些分支
-
-    git branch --contains <commit> --all
 
 ## git 常用法
 
