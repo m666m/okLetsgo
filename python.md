@@ -2088,11 +2088,15 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 
 ### vscode 用的 Python 配套包
 
-TODO:注意这些包被 vscode 默认安装到了你的基础环境中，conda[base] 或 virtualenv 不同。
+    这些包需要在你当前环境下安装，如果按 vscode 提示安装，默认会安装到你的基础环境中，自动适应conda 或 virtualenv。
+
+    如果你远程连接服务器进行开发，则服务器上的对应环境下也需要安装这些包，否则无法使用该功能。
+
+    目前 flake8 被 vscode 做成插件(ms-python.flake8)了，已经不需要在各个环境下安装了，不知道 yapf 何时也这么处理。
 
 #### 格式化 yapf
 
-用conda在指定环境中安装，这个直接带二进制包：
+用 conda 在指定环境中安装，这个直接带二进制包：
 
     conda install --name p37 yapf -y
 
@@ -2140,9 +2144,13 @@ TODO:注意这些包被 vscode 默认安装到了你的基础环境中，conda[b
 
 #### 代码测试 unittest
 
-单元测试不要用 pytest，老老实实用系统的 unittest。
+单元测试如果不使用 pytest，那就用最基础的 python 系统包 unittest。
 
-如果用pytest ，虽然兼容unittest，不需要写子类也可以的。但是：记得在项目跟目录放个空文件 conftest.py
+使用 pytest
+
+pytest 兼容 unittest，不写子类也可以用的。
+
+记得在项目跟目录放个空文件 conftest.py
 
     https://stackoverflow.com/questions/10253826/path-issue-with-pytest-importerror-no-module-named-yadayadayada/50610630#50610630
 
@@ -2200,7 +2208,7 @@ Visual Sutdio 2022 中使用 python 虚拟环境
 
     https://docs.microsoft.com/zh-cn/visualstudio/python/managing-python-environments-in-visual-studio?view=vs-2022
 
-vscode 外网访问内网使用ssh和远程桌面
+vscode 外网访问内网使用 ssh和远程桌面
 
     https://github.com/microsoft/vscode-docs/blob/master/remote-release-notes/v1_37.md
 
@@ -2208,29 +2216,39 @@ vscode 外网访问内网使用ssh和远程桌面
 
     https://stackoverflow.com/questions/42707896/vscode-keep-asking-for-passphrase-of-ssh-key
 
+前提
+
+    安装了 Git for Windows，使用 git 协议（底层是 ssh）操作你的项目，已经配置好可以用密钥 ssh 连接到服务器，已经配置好了 ssh-agent 缓存密钥，在 git-bash（mintty bash）下可以正常使用 git 的 push、pull 进行推送和拉取，不再提示密钥的保护密码。
+
 问题现象
 
-    vscode + Git for Windows 使用 ssh 登陆 git 的服务器，每次 pull 代码或 fetch 代码，都会提问 ssh 密钥的保护密码。特别是如果 vscode 设置了选项：自动同步（"git.autofetch": true），会频繁提示输入密钥的保护密码。
+    在 vscode 下每次 pull 代码或 fetch 代码（点击按钮或在终端窗口手动执行命令），都会提问 ssh 密钥的保护密码。特别是如果 vscode 设置了选项：自动同步（"git.autofetch": true），界面会频繁弹窗提示输入密钥的保护密码。
 
-    点击 vscode 的 git 代码同步功能的按钮会报错 ssh 密钥验证失败，而你在终端窗口运行 push、pull 都不会报错。
+    点击 vscode 的 git 代码同步功能的按钮会报错 ssh 密钥验证失败。
 
-而你已经设置过ssh代理进程缓存密钥的保护密码
+而你已经设置过 ssh 代理进程缓存密钥的保护密码
 
-    在 bash 窗口运行过 ssh-agent 并且已经添加了密钥，ssh 连接网站时，不需要再输入 ssh 密钥的保护密码了。
+    在 bash 窗口运行过 ssh-agent 并且已经添加了密钥，用 ssh 连接站点时，不需要再输入 ssh 密钥的保护密码了。
 
-    或在 cmd 窗口里运行过 start-ssh-agent.cmd 并且已经添加了密钥，ssh 连接网站也不需要输入 ssh 密钥的保护密码了。
+    或在 cmd 窗口里运行过 start-ssh-agent.cmd 并且已经添加了密钥，用 ssh 连接站点时，不需要再输入 ssh 密钥的保护密码了。
 
-    或 在 bash 窗口已经运行过 ssh-pageant 代理进程，共享使用了 putty 的 pageant.exe 的 ssh-agent 功能，在 bash 或 putty 中 ssh 连接网站都不需要输入 ssh 密钥的保护密码了。
+    或 在 bash 窗口已经运行过 ssh-pageant 代理进程，共享使用了 putty 的 pageant.exe 的 ssh-agent 功能，在 bash 或 putty 中，用 ssh 连接站点时，不需要再输入 ssh 密钥的保护密码了。
 
-    或在 cmd 窗口里运行过 start-ssh-pageant.cmd，共享使用了 putty 的 pageant.exe 的 ssh 代理功能，在 cmd 或 putty 中 ssh 连接网站也不需要输入 ssh 密钥的保护密码了。
+    或在 cmd 窗口里运行过 start-ssh-pageant.cmd，共享使用了 putty 的 pageant.exe 的 ssh 代理功能，在 cmd 或 putty 中 ，用 ssh 连接站点时，不需要再输入 ssh 密钥的保护密码了。
 
 解决办法
 
-法一： 在已经运行过 ssh 代理进程缓存密钥的终端窗口里运行命令 `code` 打开 vscode，这样会继承 ssh 代理进程设置的环境变量 SSH_AUTH_SOCK，vscode 就不会问密码了（如果是cmd执行 start-ssh-agent.cmd 的窗口不能关）。如果需要打开多个 vscode 实例，在任务栏的 vscode 图标右键选择“新窗口”。偶发问题：在退出 git bash 的最后一个实例前，要先关闭 vs code，否则再重新运行 git bash 时会报错打不开。
+法一：
 
-法二： 使用 Windows 10 自带的 OpenSSH，启用服务 SSH-AGENT 的自动运行，设置 vscode 使用 Windows 10 自带的 OpenSSH，而不要用自行安装的 Git for Windows 的 ssh。开机后在 power shell 提示窗口执行一次 `ssh-add` 缓存你的密钥，后续也不会被提示输入密码了。
+    在已经运行过 ssh 代理进程缓存密钥的 git-bash（mintty bash）窗口里运行命令 `code` 打开 vscode。
 
-法三：取消 ssh 密钥的保护密码：执行命令 `ssh-keygen -p` 提示新密码时直接回车。
+    这样 vscode 会继承该 git-bash 终端窗口下 ssh 代理进程设置的环境变量 SSH_AUTH_SOCK，vscode 就不会问密码了。如果是 cmd 执行 start-ssh-agent 缓存密钥使用 ssh，则 cmd 的窗口不能关。如果需要打开多个 vscode 实例，在任务栏的 vscode 图标右键选择“新窗口”。偶发问题：在退出 git bash 的最后一个实例前，要先关闭 vs code，否则再重新运行 git bash 时会报错打不开。
+
+法二：
+
+    使用 Windows 10 自带的 OpenSSH，启用服务 SSH-AGENT 的自动运行，设置 vscode 使用 Windows 10 自带的 OpenSSH，而不要用自行安装的 Git for Windows 的 ssh。开机后在 power shell 提示窗口执行一次 `ssh-add` 缓存你的密钥，后续也不会被提示输入密码了。
+
+法三：取消 ssh 密钥的保护密码：执行命令 `ssh-keygen -p` 提示新密码时直接回车即可。
 
 #### vscode python多线程调试的坑
 
