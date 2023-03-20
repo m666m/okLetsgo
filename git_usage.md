@@ -3126,7 +3126,7 @@ git diff 主要的应用场景：
     # 输出结果相同
     git log -p --no-merges master..
 
-### TODO:没点，俩点，仨点的区别
+### 没点，俩点，仨点的区别
 
     https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#_triple_dot
 
