@@ -125,7 +125,14 @@ dash 和 bash 语法上的主要的区别有:
 
     unset variable_name
 
-或在函数中使用 local var="hell"来定义局部变量
+    或在函数中使用 `local var="hell"` 来定义局部变量
+
+Linux 命令行参数一个杠，俩杠，没杠，参见章节 [压缩解压缩] 中 tar 的说明，或 `man tar` 或 `info tar`。
+
+命令最后的 -（减号） 的作用是代表标准输出/标准输入, 视命令而定
+
+    # 把 /home 目录压缩，输出到标准输入流，管道后面的命令是从标准输出流读取数据解压
+    tar -cvf - /home | tar -xvf -
 
 把语句放到()中包围可以减小变量影响范围：
 
@@ -137,7 +144,7 @@ dash 和 bash 语法上的主要的区别有:
     var1='say $var'
     var2="say $var"
 
-反引号``和$()的作用相同，用于命令替换(command substitution)，即完成引用的命令的执行，将其结果替换出来
+反引号``和$()的作用相同，用于命令替换（command substitution），即完成引用的命令的执行，将其结果替换出来
 
     echo `date '--date=1 hour ago' +%Y-%m-%d-%H`
     echo $(date '--date=1 hour ago' +%Y-%m-%d-%H)
@@ -271,11 +278,6 @@ test 和 [] 是等价的，[] 注意两边留空格
 使用逻辑运算符将多个 [[ ]] 连接起来依然是可以的，因为这是 Shell 本身提供的功能，跟 [[ ]] 或者 test 没有关系，如下所示：
 
     [[ -z $str1 ]] || [[ -z $str2 ]]
-
- -（减号） 的作用是代表标准输出/标准输入, 视命令而定
-
-    # 把 /home 目录压缩，输出到标准输入流，管道后面的命令是从标准输出流读取数据解压
-    tar -cvf - /home | tar -xvf -
 
 大括号拓展
 
@@ -533,10 +535,6 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 ```
-
-## Linux 命令行参数一个杠，俩杠，没杠
-
-参见章节 [压缩解压缩] 中 tar 的说明，或 `man tar` 或 `info tar`
 
 ## Linux 目录和分区
 
@@ -1000,6 +998,86 @@ fi
 
     $ ( ( ( (echo "$SHLVL  $BASH_SUBSHELL") ) ) )  #四层组命令
     1  4
+
+## 用户切换和提权：su 和 sudo
+
+    https://blog.csdn.net/mutou990/article/details/107724302
+
+sudo 和 su 常用法
+
+    以 sudo 用户执行命令，临时提权到 root 用户的权限来执行命令
+
+        sudo apt update
+
+    有 sudo 权限的普通用户切换到 root 用户
+
+        sudo -i
+
+    从 root 用户切换到其它用户
+
+        su - uu
+
+    有 sudo 权限的用户免密码（需要该用户是密钥登陆）切换到其它用户，组合使用 sudo 和 su 即可
+
+        [uu@your_server:~] $ sudo su
+        [root@your_server:/home/uu] # su - git
+        [git@your_server:~] $
+
+小提示：
+
+    在输入密码、切换到非 bash 环境等字符输入状态可能单纯用 Backspace 退格键没效果。你可以同时按着 Ctrl+Backspace 退格键来删除或者按着 Ctrl+u 键，直接清除所有已输入的字符。
+
+因为 Linux、Unix 下安装的很多软件，都给自己建立专门的用户进行权限保护，所以为了执行该软件的某些操作，需要切换到有权限的用户去做，比如切换到数据库用户，以便使用数据库管理工具进行数据库维护；切换到 root 用户，修改操作系统配置。
+
+su 命令是 switch user 切换用户的简写，普通用户切换到其它用户均需要校验密码。
+
+一般使用 `su - username`，还有 `su username`：
+
+    `su - username` 切换用户，进入一个新shell，执行新用户的登录脚本。是 `su --login username` 或 `su -l username` 的简写，等同于该用户登录shell：变更 PWD 工作目录，执行用户的登录脚本，相关的变量都变成新用户的了如 $HOME，$SHELL，$USER，$PATH $LOGNAME 等等。需要输入新用户的登录密码，如果是从 root 用户切换到其它用户，不需要输入密码。
+
+        `su -` ，忽略用户名则默认切换到 root 用户登录，会提示输入 root 用户的密码。
+
+    `su username` 仅切换用户，进入一个新shell，但不执行新用户的登录脚本，保留原用户的工作目录及环境变量。如果是两个普通权限的用户切换，需要输入新用户的登录密码，而且切换后的目录下未必有权限，因为这个目录是切换前的用户可以操作的路径。
+
+        应用场景示例：当前是数据库用户，需要修改操作系统配置，用 `su root` 切换到 root 用户但是保留数据库用户的环境，以便可以继续使用数据库工具。
+
+sudo 命令是利用权限管理机制，授权某些普通用户能够以 root 用户的权限执行命令
+
+    因为是当前用户临时申请 root 权限，所以要输入的不是 root 用户密码，而是当前用户的密码，而且有个好处：如果当前用户是密钥登录的就不会提示输入密码了。用于非 root 用户登陆 tty 后，临时执行某些只有 root 用户才有权限的命令。
+
+一般用法是 `sudo your_command` 以 root 用户的权限执行命令。
+
+sudo 命令也可以用于切换到 root 用户：
+
+    `sudo su -` 切换到 root 用户，进入一个新shell，执行 root 用户的登录脚本，是 `sudo --login` 的简写。等同于执行 `su -`。
+
+        `sudo -i` 是 `sudo su -` 的等效命令。
+
+    `sudo su` 仅切换到 root 用户，进入一个新shell，但不执行 root 用户的登录脚本，保留原用户的工作目录及环境变量。等同于指向 `su root`。方便临时执行需要 root 用户权限的命令，参见上面 `su username` 的应用场景示例。
+
+    如果用 sudo 切换到 root 用户还是出现执行命令权限不足的情况，老老实实的用 `su -` 切换到 root 用户登录再执行你的操作即可。
+
+用 sudo 命令切换 root 用户，等同于执行 su 命令，但是享受 sudo 命令的好处：如果当前用户是密钥登录的就不会提示输入密码了。
+
+要返回上一个用户时，执行退出命令 `exit` 或 `logout` 或 Ctrl+d 即可。
+
+查看区别
+
+    $ cd
+    [uu@yourhost:~] $ pwd
+    /home/uu
+
+    $ sudo su
+    [root@your_host:/home/uu] # pwd;exit
+    /home/uu
+
+    $  sudo su -
+    [root@your_host:~] # pwd;exit
+    /root
+
+    $ sudo -i
+    [root@your_host:~] # pwd;exit
+    /root
 
 ## 查看操作系统信息
 
