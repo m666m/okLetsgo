@@ -251,6 +251,9 @@ Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
         https://rufus.ie/
             https://github.com/pbatard/rufus
 
+    balenaEtcher https://www.balena.io/etcher
+                    https://github.com/balena-io/etcher/
+
     ventoy
         https://www.ventoy.net/
             https://github.com/ventoy/Ventoy
