@@ -211,10 +211,6 @@ PuTTY is a free implementation of SSH and Telnet for Windows and Unix platforms,
 
     https://www.chiark.greenend.org.uk/~sgtatham/putty/
 
-    KiTTY https://github.com/cyd01/KiTTY
-
-        从 putty 拉的分支而来，是对 putty 的易用性改进，共用putty的站点配置，增加了背景透明、支持站点列表的文件夹、自动化操作脚本，可以给站点加注释，还有便携版
-
     北极主题颜色 https://github.com/arcticicestudio/nord-putty
         导入后putty会话里多了一个只进行了颜色设置的 session：Nord，以此 session 打开各个ssh连接即可。
 
@@ -225,6 +221,12 @@ PuTTY is a free implementation of SSH and Telnet for Windows and Unix platforms,
     自定义主题颜色，自己设计
 
         https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
+
+    竞品 KiTTY https://github.com/cyd01/KiTTY
+
+        从 putty 拉的分支而来，是对 putty 的易用性改进，共用putty的站点配置，增加了背景透明、支持站点列表的文件夹、自动化操作脚本，可以给站点加注释，还有便携版
+
+    竞品 bitvise https://www.bitvise.com/
 
 putty 连接远程服务器，实现了 ssh 的全部功能，使用 PUTTYGEN.EXE 生成并管理密钥，使用 PAGEANT.EXE 作为密钥代理，并在一个单一窗口下填写远程服务器的参数配置，远程服务器的终端显示也是一个单一窗口。
 
@@ -988,6 +990,8 @@ wslbridge 辅助工具，使用 Windows ConPty 接口 以支持 WSL(Windows Subs
 
     wslbridge2 https://github.com/Biswa96/wslbridge2
         wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
+
+    后续不知道发展如何：2018年 Windows 10 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机。参见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]。
 
 ### 终端多路复用器
 
@@ -5314,6 +5318,9 @@ sed 删除、替换文件中的字符串
     # sed '/[^#]/ s/^[^#]/#&/' /etc/dhcpcd.conf
     sed 's/^[^#]/#&/' /etc/dhcpcd.conf
 
+    # 模式匹配简写，替换满足条件行的回车为逗号
+    sed 'H;1h;$!d;x;y/\n/,/
+
     选项与参数：
 
         -n ：使用安静(silent)模式。在一般 sed 的用法中，所有来自 STDIN 的数据一般都会被列出到终端上。但如果加上 -n 参数后，则只有经过sed 特殊处理的那一行(或者动作)才会被列出来。
@@ -5837,17 +5844,16 @@ Transmission 是一种 BitTorrent 客户端，特点是一个跨平台的后端�
 
     简单点直接 docker https://registry.hub.docker.com/r/linuxserver/transmission/
 
-Aria2 不更新了，废弃
+Aria2 不更新了
 
-    Aria2 Linux下一键安装管理脚本 增强版 https://github.com/P3TERX/aria2.sh
-        Aria2 完美配置 https://github.com/P3TERX/aria2.conf
+    Aria2 完美配置 https://github.com/P3TERX/aria2.conf
 
     Aria2 Pro: 基于 Aria2 完美配置和特殊定制优化的 Aria2 Docker
         https://p3terx.com/archives/docker-aria2-pro.html
             https://github.com/P3TERX/Aria2-Pro-Docker
             https://hub.docker.com/r/p3terx/aria2-pro
 
-命令行传输各种参数，设置复杂，直接用别人做的 docker 得了
+命令行传输各种参数，设置复杂，直接用 p3terx 做的 docker 得了
 
         docker run -d \
             --name aria2-pro \
@@ -5866,19 +5872,41 @@ Aria2 不更新了，废弃
     配置本机防火墙开放必要的入站端口，内网机器在路由器设置端口转发到相同端口。
     使用你喜欢的 WebUI 或 App 进行连接，强烈推荐 AriaNg
 
-简单使用： Windows 下载开源的GUI程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳 dht 站点清单。
+测试 rpc
 
-浏览器搜索插件：aria2 相关，安装后设置 aip-key，可在浏览器中直接调用 Motrix 运行的 aria2 进程。
+    curl -vvv --no-buffer -H 'Connection: keep-alive, Upgrade' -H 'Upgrade: websocket' -v -H 'Sec-WebSocket-Version: 13' -H 'Sec-WebSocket-Key: websocket' http://localhost:16800/jsonrpc ws | od -t c
 
-这是 Motrix 生成的启动命令行
+    curl -vvv --include \
+     --no-buffer \
+     --header "Connection: Upgrade" \
+     --header "Upgrade: websocket" \
+     --header "Host: example.com:80" \
+     --header "Origin: http://example.com:80" \
+     --header "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+     --header "Sec-WebSocket-Version: 13" \
+     http://localhost:16800/jsonrpc
 
-    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce  --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+简单使用： Windows 使用开源的 GUI 程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳 dht 站点清单。
 
-Motrix 使用的 Aria2 来源于他自己的专用 Fork 而非官方发行的预编译包。
+因为 Motrix 使用的 Aria2 来源于他自己的专用 Fork 而非官方发行的预编译包。
 
 建议：
 
-    使用官方 Aria2 v1.36.0 ，配置文件原样复用 Motrix 的 aria2.conf ，使用 WinSW 将 Aria2 安装成用户服务来开机自启，配合 Aria2 for Edge 插件拦截浏览器下载，使用插件附带 AirNG 进行图形化交互。<https://github.com/agalwood/Motrix/issues/1379>。
+    使用官方 Aria2 v1.36.0 ，配置文件原样复用 Motrix 的 aria2.conf ，使用 WinSW 将 Aria2 安装成用户服务来开机自启，配合 Aria2 for Edge 插件拦截浏览器下载，使用该插件附带 AirNG 进行图形化交互。<https://github.com/agalwood/Motrix/issues/1379>。
+
+    浏览器搜索插件：Aria2 for Edge，安装后设置 aip-key，可在浏览器中直接调用 Motrix 运行的 aria2 进程。
+
+    使用 p3terx 的 tracker.sh 把最新的 bt-tracker 地址更新到配置文件。
+
+    修改 Motrix 生成的启动命令行，
+
+        aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce  --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=xxxxxx --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+
+        去掉 --bt-tracker=
+        去掉 --max-connection-per-server
+        修改 --rpc-secret 密码
+
+    使用此命令行启动 aira，然后在浏览器中通过插件 Aria2 for Edge 进行下载即可。
 
 配置文件 aira2.conf，以 Motrix 为例
 

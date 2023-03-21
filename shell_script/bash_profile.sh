@@ -46,8 +46,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias l='ls -CFA'
     alias ll='ls -l'
     alias la='ls -lA'
-    alias lla='ls -la'
-    # ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便
+    alias lsa='ls -la'
+    # 列目录，查找指定关键字。因为ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便
     alias lsg='ls -lFA |grep -i'
 
     # 下为各命令的惯用法
@@ -91,6 +91,8 @@ alias vue='winpty vue'
 # Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
 alias ping='winpty ping'
 
+# TODO:为防止变量名污染命令行环境，尽量使用奇怪点的名称
+
 ####################################################################
 # Linux bash / Windows git bash(mintty)
 # 双行彩色命令行提示符，显示当前路径、git分支、python环境名等
@@ -127,8 +129,6 @@ cyan=$'\[\e[0;36m\]'
 white=$'\[\e[0;37m\]'
 
 normal=$'\[\e[m\]'
-
-# 为防止函数名污染命令行环境，尽量使用奇怪点的函数名
 
 # 注意：在执行判断退出码的函数前面不能执行别的函数，
 # 所以 PS1exit-code 要放在放在 PS1 变量赋值语句的最前面

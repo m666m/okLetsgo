@@ -738,7 +738,7 @@ Fedora 的分区方案
             Filename            Type            Size    Used    Priority
             /dev/zram0         partition        102396  0       100
 
-## shell 常用脚本收集
+## shell 常用脚本示例
 
 目录 shell_script 下是写的不错的脚本示例
 
@@ -761,7 +761,7 @@ Fedora 的分区方案
 
 系统级默认/bin/sh，用户登陆默认/bin/bash，一般写脚本文件应该明确用哪个解释器执行，在第一行： #!/bin/bash 。
 
-```shell
+```bash
 #!/usr/bin/env python3  # 按照PATH寻找第一个python3程序来执行
 #!/bin/bash 注意：在#!和/bin/bash间不要有空格，有些Linux系统遇到空格就不会执行后面的/bin/bash了，但是不会提示使用了默认的 $SHELL，而两种解释器之间细微的语法区别，偶尔会出现让人摸不到头脑的报错，要尽量避免这个麻烦
 #
@@ -799,26 +799,86 @@ timeout 600s  some_command arg1 arg2
 # 连续管道时，考虑使用 tee 将中间结果落盘，以便查问题
 cmd1 | tee out1.dat | cmd2 | tee out2.dat | cmd3 > out3.dat
 
+DATE_TIME() {
+    date +"%m-%d %H:%M:%S"
+}
+
 ####################################################################
 #
 # 文字颜色生成模板 https://ciembor.github.io/4bit
 #
 
-# 一个颜色文字的例子
+# 给文字加颜色
+#   echo -e "${green}All done!${plain}"
 red='\033[0;31m'
 green="\033[0;32m"
+yellow="\033[0;33m"
 plain='\033[0m'
 
+# 输出信息
+# 调用时注意区别，是否使用变量替换
+#   $ aaaa='1111111111111'
+#   $ show_error "aaaa is ${aaaa}"
+#   21 11:25:35 [ERROR] aaaa is 1111111111111
+#   $ show_error 'aaaa is ${aaaa}'
+#   03/21 11:25:39 [ERROR] aaaa is ${aaaa}
+show_info() {
+    echo && echo -e "$(DATE_TIME) [${green}INFO${plain}] ${1}"
+}
+
+show_warn() {
+    echo && echo -e "$(DATE_TIME) [${yellow}WARN${plain}] ${1}"
+}
+
+show_error() {
+    echo && echo -e "$(DATE_TIME) [${red}ERROR${plain}] ${1}"
+}
+
+# 设置变量
+ARIA2_CONF=${1:-aria2.conf}
+DOWNLOADER="curl -fsSL --connect-timeout 3 --max-time 3 --retry 2"
+
+# 包装判断语句
+is_ipv4_address() {
+    [ $(grep -Ec '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' <<<"$1") -ne 0 ]
+}
+
+# 判断返回值
 [ -z "$res" ] && ngstatus="${red}已停止${plain}" || ngstatus="${green}正在运行${plain}"
 echo -e " nginx运行状态：${ngstatus}"
 
-RED="31m"      # Error message
-YELLOW="33m"   # Warning message
-colorEcho(){
-    echo -e "\033[${1}${@:2}\033[0m" 1>& 2
+# 更简洁的判断执行结果
+[ $(command -v curl) ] || {
+    show_error "curl is not installed."
+    exit 1
 }
-colorEcho ${RED} "ERROR: This script has been DISCARDED"
-colorEcho ${YELLOW} "USE: https://github.com/"
+
+# 判断端口是否存在，否则打印
+[[ ${RPC_PORT} ]] || {
+    echo && echo -e "$(DATE_TIME) ${ERROR} Aria2 configuration file incomplete."
+    exit 1
+}
+
+# 字符串比较，用 [[]] 更方便
+if [[ $(systemctl is-active 'nginx') = "active" ]]; then
+    echo -e "nginx     [ ✓ ]"
+fi
+
+# 尝试多个指令，成功一个即可
+TRACKER=$(
+    ${DOWNLOADER} https://trackerslist.com/all_aria2.txt ||
+        ${DOWNLOADER} https://cdn.staticaly.com/gh/XIU2/TrackersListCollection@master/all_aria2.txt ||
+        ${DOWNLOADER} https://trackers.p3terx.com/all_aria2.txt
+)
+
+# 按格式打印
+ECHO_TRACKERS() {
+    echo -e "
+--------------------[BitTorrent Trackers]--------------------
+${TRACKER}
+--------------------[BitTorrent Trackers]--------------------
+"
+}
 
 #############################################
 # 一条命令取结果赋值给变量，并判断返回值决定是否命令不存在
@@ -835,26 +895,6 @@ if [ $exitcode -eq 1 ]; then
     headhash="$(git rev-parse HEAD)"
     printf "%s" "#${headhash}"
 
-fi
-
-#############################################
-#
-# cat 生成一段代码到文件，文本当中带有变量也会被解析，除非结束符用单引号包围 'EOFA'
-# EOFA 必须顶行写，前面不能有制表符或者空格，结束输入还得 ctrl+d
-# https://askubuntu.com/questions/858238/eof-in-cat-and-less
-cat >/etc/network/if-pre-up.d/restore_my_iptables_rule << EOFA
-#!/bin/sh
-iptables -F
-iptables-restore < /etc/iptables/rules.v4
-EOFA
-
-# 除非用 <<-
-if [ -e ~/.bash_profile ]; then
-    cat >abc.txt <<- EOF
-        ABC
-        DEF
-        G
-        EOF
 fi
 
 #############################################
@@ -878,13 +918,6 @@ readonly IPV6_RESERVED_IPADDRS=(
 for private_addr in "${IPV6_RESERVED_IPADDRS[@]}" ; do $(ip6tables -t mangle -A VVTAB -d $private_addr -j RETURN); done
 
 #################################################
-#
-# 判断语句包装
-is_ipv4_address() {
-    [ $(grep -Ec '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' <<<"$1") -ne 0 ]
-}
-
-#################################################
 # case
 case "$platform" in
   'darwin arm64');;
@@ -900,6 +933,26 @@ case "$platform" in
     'exit' '1'
   ;;
 esac
+
+#############################################
+#
+# cat 生成一段代码到文件，文本当中带有变量也会被解析，除非结束符用单引号包围 'EOFA'
+# EOFA 必须顶行写，前面不能有制表符或者空格，结束输入还得 ctrl+d
+# https://askubuntu.com/questions/858238/eof-in-cat-and-less
+cat >/etc/network/if-pre-up.d/restore_my_iptables_rule << EOFA
+#!/bin/sh
+iptables -F
+iptables-restore < /etc/iptables/rules.v4
+EOFA
+
+# 除非用 <<-
+if [ -e ~/.bash_profile ]; then
+    cat >abc.txt <<- EOF
+        ABC
+        DEF
+        G
+        EOF
+fi
 
 ```
 

@@ -407,7 +407,8 @@ Git
     git clone git://example.com/path/to/repo.git [默认当前目录]
 
     # 特殊，对 “git@github.com” 开头，默认用 git 协议，在冒号后是用户名
-    git clone git@github.com:user_name/repo.git
+    # git clone git@github.com:user_name/repo.git
+    git clone --depth=1 git@github.com:winsw/winsw.git
 
     $ ssh -T git@github.com
     > Hi username! You've successfully authenticated...
