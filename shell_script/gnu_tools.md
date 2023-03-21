@@ -6938,6 +6938,272 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
 按ctrl + alt +回车退出或进入全屏模式。
 
+## Linux 桌面环境
+
+### 使用 gnome 扩展
+
+    https://extensions.gnome.org/
+
+    https://wiki.gnome.org/Projects/GnomeShell
+
+    GNOME-4X 入坑指南 https://zhuanlan.zhihu.com/p/545083349
+
+    如何使用 GNOME Shell 扩展 https://zhuanlan.zhihu.com/p/34608388
+
+    https://opensource.com/article/19/8/extensions-gnome-desktop
+
+    GNOME Linux — 一场彻底的灾难 https://zhuanlan.zhihu.com/p/490505981
+
+先装 GNOME 扩展，在软件管理里搜索 “Extensions” 即可，一般都自带了。
+
+GNOME 桌面增强功能，至少有个任务栏，少点几次鼠标，在软件管理里搜索 “GNOME Tweaks” 即可。
+
+    sudo apt install gnome-tweak-tool
+
+    sudo apt install gnome-shell-extensions
+
+如果想以后使用网站浏览安装
+
+    先用 浏览器访问 https://extensions.gnome.org/，点击顶部提示，安装浏览器组件
+
+    然后安装本地消息组件
+
+        sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
+
+Gnome 主题乐园
+
+    https://www.gnome-look.org/p/1275087/
+
+### 使用窗口管理器
+
+    https://zhuanlan.zhihu.com/p/47526909
+
+    https://www.zhihu.com/question/41364792
+
+    https://zhongguo.eskere.club/%E9%80%82%E7%94%A8%E4%BA%8E-linux-%E7%9A%84-5-%E4%B8%AA%E6%9C%80%E4%BD%B3%E7%AA%97%E5%8F%A3%E7%AE%A1%E7%90%86%E5%99%A8/2021-10-03/
+
+窗口管理器 vs 桌面环境
+
+窗口管理器(Windows Manager)，负责绘制窗口的边框，处理窗口运行比如移动、最小化之类的行为。
+
+桌面(Desktop Environment)，窗口管理器的超集，它使用窗口管理器及其其他软件提供一个完整的工作环境。
+
+例如：gnome就是一个桌面环境，默认使用 Metacity 作为窗口管理器。
+
+平铺式窗口管理器
+
+平铺就是之所有的窗口都不会相互重叠，而是自动的被调整大小使得它们能够刚好占满整个屏幕。
+
+相对的，我们平时使用的是浮动式窗口管理器，由于屏幕空间有限，当前激活的窗口会浮在最上面，而遮住下面的窗口。
+
+常见的窗口管理相关的工具如下：(来自alim0x - Awesome-Linux-Software-zh_CN)
+
+合成器
+
+    Compton - Compton 是一款独立的合成管理器，适合同没有原生提供合成功能的窗口管理器一同使用。
+
+    Gamescope - Gamescope 是一款微合成器，提供一个带有独立输入，分辨率和刷新率的沙盒 Xwayland 桌面。
+
+    Sway - Sway 是平铺 Wayland 合成器和 X11 下 i3 窗口管理器的新替代。
+
+    Xcompmgr - Xcompmgr 是一个简单的合成管理器，能够渲染下拉阴影，使用 transset 工具的话，还可以实现简单的窗口透明。
+
+叠加式窗口管理器
+
+    2bwm - 快速的浮动窗口管理，有两个特殊边界，基于 XCB 库，由 mcwm 衍生。
+
+    Blackbox - 快速，轻量化的 X 窗口系统窗口管理器，没有那些烦人的库依赖。
+
+    Fluxbox - 基于 Blackbox 0.61.1 代码的 X 窗口管理器。
+
+    Openbox - 高度可配置，带有可扩展标准支持的下一代窗口管理器。
+
+平铺式窗口管理器：自动排列窗口，以不重叠的方式占据整个屏幕
+
+    Bspwm - bspwm 是一个平铺式窗口管理器，将窗口以二叉树的叶结点的方式展现。
+
+    Herbstluftwm - 使用 Xlib 和 Glib 的手工平铺式窗口管理器。
+
+    i3 WM - 更好的平铺及动态窗口管理器。完全重写。目标平台是 GNU/Linux 和 BSD 操作系统。
+
+    i3-gaps - i3-gaps 是拥有更多功能的 i3。
+
+    Pop!_OS Shell - Pop Shell 是基于 GNOME shell 的窗口管理器，键盘驱动，自动平铺。
+
+    Qtile - qtile 是一款全功能，可 hack 的平铺窗口管理器，使用 Python 编写和配置。
+
+动态窗口管理器
+
+    awesome - 高度可配置，下一代 X 框架窗口管理器。
+
+        https://blog.kelu.org/tech/2021/12/29/linux-awesome-wm.html
+
+        https://blog.theerrorlog.com/switching-from-gnome-shell-to-awesome-wm-zh.html
+
+        awesome 窗口管理器使用备忘 https://blog.kelu.org/tech/2021/12/29/linux-awesome-wm.html
+
+    dwm - X 动态窗口管理器。它以平铺，单片镜以及浮动布局的方式管理窗口。
+
+    spectrwm - 小型动态平铺 X11 窗口管理器。主要受 xmonad 和 dwm 启发。
+
+    xmonad - 动态平铺 X11 窗口管理器，用 Haskell 编写和配置。
+
+#### i3
+
+    https://zhuanlan.zhihu.com/p/44783017
+
+    https://zhuanlan.zhihu.com/p/51077654
+
+    https://segmentfault.com/a/1190000022083424
+
+通过键盘操作的 i3 平铺窗口管理器使用 Linux 桌面，当您开始使用 i3 时，您需要记住其中的一些快捷方式才能使用。mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
+
+    要打开终端 urxvt，请按 <SUPER>+<ENTER>。
+
+    按 <SUPER>+num 切换到工作区 num
+
+在 i3 中，工作区是对窗口进行分组的一种简单方法。您可以根据您的工作流以不同的方式对它们进行分组。例如，您可以将浏览器放在一个工作区上，终端放在另一个工作区上，将电子邮件客户端放在第三个工作区上等等。
+
+下载 font-awesome:开源的图标字体
+
+    https://fontawesome.com/v5/cheatsheet
+
+配置文件 /etc/i3/config，或命令 i3-config-wizard
+
+    # 先把屏保功能关了：
+    exec --no-startup-id xset s 0
+
+    # 黑屏、睡眠、断电时间分别设为6000s，8000s，9000s，也可以只写前一个，不必三个都写
+    exec --no-startup-id xset dpms 6000 8000 9000
+
+    # win+c可以调出选项，你可以选择锁屏(L)，注销(O)，重启(R)，关机(S)，退出选项(Esc)。
+    set $mode_system  lock(L) logout(O) reboot(R) shutdown(S) exit(Esc)
+    bindsym $mod+c mode "$mode_system"
+    mode "$mode_system" {
+        bindsym l exec --no-startup-id i3lock -c '#000000', mode "default"
+        bindsym o exec --no-startup-id i3-msg exit, mode "default"
+        bindsym r exec --no-startup-id systemctl reboot, mode "default"
+        bindsym s exec --no-startup-id systemctl poweroff, mode "default"
+        bindsym Escape mode "default"
+    }
+
+    # 常用的软件在用户设定的工作区打开：
+    # 打开URxvt的同时切换到tab模式
+    for_window [class="URxvt"] layout tabbed
+    # 打开软件时自动移至相应工作区
+    assign [class="URxvt"] $WS1
+    assign [class="Thunar"] $WS1
+    assign [class="Firefox"] $WS2
+    assign [class="Zathura"] $WS3
+    assign [class="Gvim"] $WS4
+    assign [class="Ise"] $WS5
+    assign [class="VirtualBox"] $WS6
+
+### 常用桌面工具
+
+    https://linux.cn/article-13761-1.html
+
+虚拟机 Gnome Box
+
+    底层操作的是 kvm 虚拟机，详见章节 [GNOME Boxes]。
+
+浏览器
+
+    FireFox 中的多帐户容器：通过使用容器，你在一个容器中的浏览活动不会与其他容器共享。这种隔离意味着你可以在不同容器中登录同一网站上的两个不同帐户。你的登录会话、网站偏好和跟踪数据将被限制在你使用某个网站的容器中。你的登录会话、网站偏好和跟踪数据将被限制在你使用某个网站的容器中。Firefox 默认情况下提供的容器包括 Facebook、Messenger 和 Instagram 网站，当你打开这三个网站中的任何一个时，它们都只会在 “Facebook 容器” 中打开。因此，Facebook 将无法跟踪你在其他网站上的活动。Firefox 附加组件网站上的 扩展程序页面，找到 “Firefox Multi-Account Containers”。之后你唯一需要做的就是单击 “添加到 Firefox” 按钮。
+
+        注意：你的浏览器历史记录本身之类的内容仍会暴露给你的正常浏览器会话，容器功能只是提供了一种方法来分离登录帐户等内容。
+
+
+        中文版的 FireFox 等浏览器由cn公司开发，不要下载安装！
+
+        FireFox 只在 mozila 官方网站下载“英文版”使用，去除内置的 CN 证书、Certum 证书！或导入为 “不信任的证书”。
+
+            测试：访问网站，提示不安全的数字证书
+
+                https://www.xycq.gov.cn/
+
+    GNOME Web 是 GNOME 桌面（Fedora 工作站的默认桌面环境）的一个浏览器。如果你使用 GNOME 作为默认桌面环境的 Fedora 工作站，它可能非常适合作为你的主浏览器。这个浏览器有一个简单、干净、漂亮的外观。GNOME Web 的功能比 Firefox 少，但对于普通用途来说已经足够了。
+
+    Chromium 是一个来自 Chromium 项目的开源 Web 浏览器，它有一个极简的用户界面。它的外观与 Chrome 相似，因为它实际上是作为 Chrome 和其他几个浏览器的基础。许多人使用 Chromium 是因为他们已经习惯了 Chrome。
+        https://www.chromium.org/Home
+
+办公套件
+
+    LibreOffice 是 GNU/Linux 用户中最流行的办公套件。它的用户界面和用户体验类似于微软 Office。
+
+    ONLYOFFICE 是一款与微软 Office 高度兼容的办公套件应用程序。
+
+邮件
+
+    Thunderbird 支持 gpg 加密
+
+画图工具
+
+    Inkscape 号称替代 Adobe illustrator（AI）的矢量图制作编辑工具
+        https://inkscape.org/
+
+    GIMP 功能几乎与 Adobe Photoshop 相同
+        https://www.gimp.org/
+
+    Krita 是一款用于创作像艺术家那样的数字绘画的应用程序。你可以用 Krita 来制作概念艺术、插图、漫画、纹理和哑光画。
+        https://krita.org/en/
+
+音频编辑器
+
+    Audacity 是一个流行的多轨音频编辑器和录音机，可用于对所有类型的音频进行后期处理。
+
+视频播放
+
+    vlc player
+        https://www.videolan.org/vlc/index.zh_CN.html
+            https://github.com/videolan/vlc
+
+    mplayer 原生 linux 下的播放器，不提供有效的GUI
+        http://www.mplayerhq.hu/design7/info.html
+            Windows build
+                https://oss.netfarm.it/mplayer/
+
+        新发展 mpv player，支持播放 youtube
+            https://mpv.io/installation/
+                https://github.com/mpv-player/mpv/
+                https://sourceforge.net/projects/mpv-player-windows/files/
+
+        smplayer 使用 以上两者做作为播放引擎的 GUI 外壳程序，也支持播放 youtube
+            https://www.smplayer.info/
+                https://github.com/smplayer-dev/smplayer
+
+下载 youtube 用 mpv player 播放
+
+        https://github.com/mpv-player/mpv/wiki/FAQ#user-content-Does_mpv_have_an_official_GUI
+
+        youtube-dl https://github.com/ytdl-org/youtube-dl
+                    分叉 yt-dlp https://github.com/yt-dlp/yt-dlp
+
+    下载过程
+
+        $ youtube-dl -F https://www.youtube.com/watch?v=SYM-RJwSGQ8
+        [info] Available formats for SYM-RJwSGQ8:
+        format code  extension  resolution note
+        ...
+        251          webm       audio only DASH audio  149k , opus @160k, 4.29MiB
+        135          mp4        854x480    480p 1159k , avc1.4d401e, 25fps, video only, 16.02MiB
+        247          webm       1280x720   720p 1372k , vp9, 25fps, video only, 20.12MiB
+        136          mp4        1280x720   720p 2318k , avc1.4d401f, 25fps, video only, 30.37MiB
+        248          webm       1920x1080  1080p 2402k , vp9, 25fps, video only, 35.54MiB
+        137          mp4        1920x1080  1080p 3770k , avc1.640028, 25fps, video only, 55.70MiB
+        22           mp4        1280x720   hd720 , avc1.64001F,  mp4a.40.2@192k (best)
+        ...
+
+        youtube-dl --proxy socks5://127.0.0.1:10808 -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio --merge-output-format mp4
+
+        for 1280x720:
+        $ mpv --ytdl-format 22 https://www.youtube.com/watch?v=SYM-RJwSGQ8
+
+        For mp4 1080p video (3770k) and webm audio (149k, opus @160k):
+        $ mpv --ytdl-format 137+251 https://www.youtube.com/watch?v=SYM-RJwSGQ8
+
+        简单省事直接安装  smplayer https://www.smplayer.info/zh/mpv
+
 ## 开机启动 SystemV(init) 和 systemd
 
     https://www.debian.org/doc/manuals/debian-handbook/unix-services.zh-cn.html#sect.systemd
