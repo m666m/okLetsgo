@@ -4744,7 +4744,7 @@ tmux 可以保持多个会话 session，每次在命令行运行 `tmux` 就会�
     #  ssh -t localhost tmux  a
     tmux new-session -s username -d
 
-        新建一个 tmux 会话 ，在开机脚本(Service等）中调度也不会关闭
+        新建一个 tmux 会话 ，在开机脚本（Service等）中调度也不会关闭
         https://stackoverflow.com/questions/25207909/tmux-open-terminal-failed-not-a-terminal
 
     tmux a
