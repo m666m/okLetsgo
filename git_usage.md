@@ -4417,13 +4417,17 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 
 ## 使用git的各种工作流程方案
 
-思路太灵活了，大家根据自己实际情况，用法各有不同。
+    https://www.zhihu.com/question/379545619/answer/1862411356
 
-### git工作流：类似svn的TrunkBased集中式工作流
+根据自己实际情况，用法各有不同。
+
+### git工作流：类似 svn 的 TrunkBased 集中式工作流
 
     remote master -- local master(开发人员工作在此)
 
-主干仅master分支
+开发都在主干分支，拉出新的分支进行开发部署、修复BUG。
+
+主干仅 master 分支
 
     适用场景：适合于单一稳定产品线，迭代排期稳定，需求边界完全可控的团队。
     优点：模型简单
@@ -4718,9 +4722,17 @@ main 分支不保存主干代码，只存放 Redadme、License、安装脚本等
 
 ### git工作流： Gitflow工作流
 
-    master -- develop -- feature(开发人员工作在此)
+    汉化 https://zhuanlan.zhihu.com/p/38772378
+        https://zhuanlan.zhihu.com/p/36085631
+        原文 https://nvie.com/posts/a-successful-git-branching-model/
 
-这个流程是功能分支工作流的进一步扩展，适合长期稳定的商用项目。
+    流程图片 https://nvie.com/img/git-model@2x.png
+
+    改进：抛弃 Git Flow 的 8 大理由 https://baijiahao.baidu.com/s?id=1661688354212771172&wfr=spider&for=pc
+
+这个流程是功能分支工作流的进一步扩展，适合长期稳定的商用项目，适合的是需要『多个版本并存』的场景。
+
+    master -- develop -- feature(开发人员工作在此)
 
 适用场景：处于前中期的大型项目，人员较多管理场景较复杂，但是迭代相对稳定，周期内不会频繁的变更需求，尽量不要开长需求分支。
 
@@ -4754,12 +4766,6 @@ master分支很少变动，head始终对应生产环境代码。由master分支v
     之前新feature分支v0.5.y已经开发一段时间了，到版本点的时候进入下一个v1.x的工作流程循环。这个对CI/CD的定制化要求就比较高了。
 
 注意 hotfix需要合入master和develop两个分支，其他分支只要同步这俩，就要更新大版本号。
-
-原文 <https://nvie.com/posts/a-successful-git-branching-model/> 流程图片<https://nvie.com/img/git-model@2x.png>
-
-    汉化 <https://zhuanlan.zhihu.com/p/38772378> <https://zhuanlan.zhihu.com/p/36085631>
-
-    抛弃 Git Flow 的 8 大理由 <https://baijiahao.baidu.com/s?id=1661688354212771172&wfr=spider&for=pc>
 
 ### 阿里巴巴 AoneFlow
 

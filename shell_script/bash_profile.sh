@@ -43,10 +43,11 @@ if [ -x /usr/bin/dircolors ]; then
     alias tree='tree -a -C'
 
     # 常用的列文件
+    alias lsa='ls -A'
     alias l='ls -CFA'
     alias ll='ls -l'
     alias la='ls -lA'
-    alias lsa='ls -la'
+    alias lla='ls -la'
     # 列目录，查找指定关键字。因为ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便
     alias lsg='ls -lFA |grep -i'
 
@@ -91,7 +92,7 @@ alias vue='winpty vue'
 # Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
 alias ping='winpty ping'
 
-# TODO:为防止变量名污染命令行环境，尽量使用奇怪点的名称
+# 为防止变量名污染命令行环境，尽量使用奇怪点的名称
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
@@ -112,23 +113,23 @@ alias ping='winpty ping'
 # 前景色    30    31    32    33   34    35    36    37
 # 背景色    40    41    42    43   44    45    46    47
 
-black=$'\[\e[0;30m\]'
+PS1Cblack=$'\[\e[0;30m\]'
 
-red=$'\[\e[0;31m\]'
+PS1Cred=$'\[\e[0;31m\]'
 
-green=$'\[\e[0;32m\]'
+PS1Cgreen=$'\[\e[0;32m\]'
 
-yellow=$'\[\e[0;33m\]'
+PS1Cyellow=$'\[\e[0;33m\]'
 
-blue=$'\[\e[0;34m\]'
+PS1Cblue=$'\[\e[0;34m\]'
 
-magenta=$'\[\e[0;35m\]'
+PS1Cmagenta=$'\[\e[0;35m\]'
 
-cyan=$'\[\e[0;36m\]'
+PS1Ccyan=$'\[\e[0;36m\]'
 
-white=$'\[\e[0;37m\]'
+PS1Cwhite=$'\[\e[0;37m\]'
 
-normal=$'\[\e[m\]'
+PS1Cnormal=$'\[\e[m\]'
 
 # 注意：在执行判断退出码的函数前面不能执行别的函数，
 # 所以 PS1exit-code 要放在放在 PS1 变量赋值语句的最前面
@@ -235,7 +236,7 @@ function PS1git-branch-prompt {
 }
 
 # linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
-PS1="\n$magenta╭─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$yellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$magenta╰──$white\$ $normal"
+PS1="\n$PS1Cmagenta╭─$PS1Cred\$(PS1exit-code)$PS1Cmagenta[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cmagenta]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cmagenta╰──$PS1Cwhite\$ $PS1Cnormal"
 
 #################################
 # Linux bash - raspberrypi
@@ -278,7 +279,7 @@ function PS1raspi-warning-prompt {
 }
 
 # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 树莓派温度告警 git分支及状态
-PS1="\n$magenta╭─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green\h$white:$cyan\w$magenta]$red\$(PS1raspi-warning-prompt)$yellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$magenta╰──$white\$ $normal"
+PS1="\n$PS1Cmagenta╭─$PS1Cred\$(PS1exit-code)$PS1Cmagenta[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cmagenta]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cmagenta╰──$PS1Cwhite\$ $PS1Cnormal"
 
 #################################
 # Windows git bash(mintty)
@@ -287,7 +288,7 @@ PS1="\n$magenta╭─$red\$(PS1exit-code)$magenta[$white\t $green\u$white@$green
 # 目前 git bash(mintty) 有点bug：
 # 在\$(函数名)后直接用换行\n就冲突
 # 规避办法是或者把换行\n放在引用函数前面，或者拼接凑合用
-#   PS1="\n$magenta┌──── $white\t ""$PS1""$magenta───┘ $normal"
+#   PS1="\n$PS1Cmagenta┌──── $PS1Cwhite\t ""$PS1""$PS1Cmagenta───┘ $PS1Cnormal"
 #
 # 新的解决办法：
 # 用新增子函数 PS1git-bash-new-line 实现跟上面完全一致的显示效果。
@@ -297,7 +298,7 @@ function PS1git-bash-new-line {
 }
 
 # git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
-PS1="\n$blue┌─$red\$(PS1exit-code)$blue[$white\t $green\u$white@$green\h$white:$cyan\w$blue]$yellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$blue$(PS1git-bash-new-line)──$white\$ $normal"
+PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)

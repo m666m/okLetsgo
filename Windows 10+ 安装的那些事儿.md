@@ -1494,6 +1494,8 @@ Windows内存诊断
 
     FireFox 只在 mozila 官方网站下载“英文版”使用，去除内置的 CN 证书、Certum 证书！或导入为 “不信任的证书”。
 
+        https://zhuanlan.zhihu.com/p/612235572
+
         测试：访问网站，提示不安全的数字证书就说明不信任“Certum”证书了
 
             https://www.xycq.gov.cn/
