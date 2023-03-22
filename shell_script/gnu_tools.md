@@ -3032,7 +3032,7 @@ source /usr/local/bin/ackg.sh
 alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid" "\bOk\b|Success|Good|Done|Finish" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
 
 # 执行 cd 命令后自动执行下 ls 列出当前文件
-chpwd() ls
+chpwd() ls -A
 chpwd
 
 # 命令自动完成的颜色太暗  # ,bg=cyan
