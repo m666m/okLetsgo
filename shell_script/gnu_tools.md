@@ -2124,16 +2124,16 @@ shell中的命令显示中文（如果支持的话）就设置 LANG
 
 ### bash 命令提示符美化
 
-依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
+bash 下文字显示彩色有依赖，详见章节 [终端模拟器和软件的真彩色设置]。
 
-简单的双行状态栏，见代码段落 [命令行提示符显示当前路径、git分支、python环境名等](bash_profile.sh) 中设置变量 PS1 部分。
+命令提示符使用简单的双行状态栏，见代码段落 [命令行提示符显示当前路径、git分支、python环境名等](bash_profile.sh) 中设置变量 PS1 部分。
 
-或者使用 powerline，参见章节 [状态栏工具 powerline]
+或者命令提示符使用 powerline，参见章节 [状态栏工具 powerline]
 
     # apt 安装的在 /usr/share 下，如果是 pip 安装的用 `pip show powerline-status` 查看路径
     source /usr/share/powerline/bindings/bash/powerline.sh
 
-bash 内置命令和快捷键见 <shellcmd.md> 的相关章节。
+bash 内置命令和快捷键见 (shellcmd.md) 的相关章节。
 
 #### bash 命令行提示符显示 python 环境名
 
@@ -2210,7 +2210,7 @@ conda 激活环境时，默认会修改命令行提示符，比较丑，Windows 
 
 ### 状态栏工具 powerline
 
-依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
+bash 下文字显示彩色有依赖，详见章节 [终端模拟器和软件的真彩色设置]。
 
 Powerline 最初是一款 Vim statusline 的插件，后来发展到支持 bash、vim、tmux 等众多工具及插件，powerline 都可适配进行状态栏显示。
 
@@ -2222,7 +2222,7 @@ powerline 最大的优点是它的各种符号字体可以图形化的显示文�
 
 缺点是它的代码 python2、3 混杂，安装和使用都很难配置，所以现在有些插件不使用它了。
 
-使用这个插件，先确定你当前操作系统的 python 命令指向的是 python2 还是 python3，我的 Debian 10 默认是 python2，目前从 github 安装的最新版只支持 python3，所以得改设置。简单点的安装发行版自带的就可以了。
+使用这个插件，先确定你当前操作系统的命令 `python` 指向的是 python2 还是 python3，我的 Debian 10 默认是 python2。如果从 github 安装最新版的 powerline 只支持 python3，所以得改设置。简单点，安装发行版自带的就可以了。
 
 基础安装
 
@@ -2237,11 +2237,13 @@ powerline 最大的优点是它的各种符号字体可以图形化的显示文�
     # 最好用发行版自带的，一步到位，默认的安装到 /usr/share/powerline/ 目录下了
     sudo apt install powerline
 
-安装后有个后台进程
+安装后有个后台进程，
 
     # 由 systemd 调度管理 /etc/systemd/user/default.target.wants/powerline-daemon.service
     $ ps -ef|grep powerline
     00:00:00 /usr/bin/python3 /usr/bin/powerline-daemon --foreground
+
+    TODO: 研究下用 python 实现的 select()
 
 你使用的终端工具的 Terminal 相关参数设置中设置 xterm-256color，防止用户登陆脚本未设置变量TERM，以保证命令行显示的颜色更丰富
 
