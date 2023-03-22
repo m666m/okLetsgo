@@ -1843,7 +1843,7 @@ markdownlint 语法检查、格式化
 
 选装：
 
-Markdown All in One 高亮，预览，markdown加目录
+Markdown All in One 高亮，预览，给md文件加目录
 
 中文英文之间加入空格，所谓“盘古空白”
 
@@ -1902,7 +1902,7 @@ MacOS Modern Theme 看代码深色浅色都好，多选单选查找相关内容�
 
     arcticicestudio.nord-visual-studio-code
 
-    marlosirapuan.nord-deep     深一点的北极，适合暗光
+    marlosirapuan.nord-deep     深点的北极，适合暗光
 
     dnlytras.nord-wave          最深的北极，适合无光
 
@@ -2048,9 +2048,9 @@ Rainbow CSV
 
     vscodevim.vim
 
-这个插件还可以配置模拟几个著名的插件
+    这个插件还可以配置模拟几个著名的插件
 
-    https://github.com/VSCodeVim/Vim#vim-airline
+        https://github.com/VSCodeVim/Vim#vim-airline
 
 vim 脚本语言语法高亮
 
