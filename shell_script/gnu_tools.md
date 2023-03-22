@@ -2977,7 +2977,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias l='ls -CFA'
     alias ll='ls -l'
     alias la='ls -lA'
-    alias lla='ls -la'
     # 列目录，查找指定关键字。因为ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便
     alias lsg='ls -lFA |grep -i'
 
