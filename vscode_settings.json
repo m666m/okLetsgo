@@ -70,11 +70,11 @@
             "minimapSlider.hoverBackground": "#33527a77",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
             "editorBracketHighlight.foreground1": "#67c5dd",
-            "editorBracketHighlight.foreground2": "#cf831f",
-            "editorBracketHighlight.foreground3": "#3bc299",
+            "editorBracketHighlight.foreground2": "#3bc299",
+            "editorBracketHighlight.foreground3": "#0a9956",
             "editorBracketHighlight.foreground4": "#476baf",
-            "editorBracketHighlight.foreground5": "#0a9956",
-            "editorBracketHighlight.foreground6": "#def136"
+            "editorBracketHighlight.foreground5": "#def136",
+            "editorBracketHighlight.foreground6": "#cf831f"
         },
         "[Nord Wave]": {
             "editor.foreground": "#a1b7be",
@@ -90,11 +90,11 @@
             "editorBracketMatch.background": "#0a4e75",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
             "editorBracketHighlight.foreground1": "#67c5dd",
-            "editorBracketHighlight.foreground2": "#cf831f",
-            "editorBracketHighlight.foreground3": "#3bc299",
+            "editorBracketHighlight.foreground2": "#3bc299",
+            "editorBracketHighlight.foreground3": "#0a9956",
             "editorBracketHighlight.foreground4": "#476baf",
-            "editorBracketHighlight.foreground5": "#0a9956",
-            "editorBracketHighlight.foreground6": "#def136"
+            "editorBracketHighlight.foreground5": "#def136",
+            "editorBracketHighlight.foreground6": "#cf831f"
         },
         //"sideBarSectionHeader.border": "#4d5a61", // 侧边栏子项目分割线更清晰些
         //"inputOption.activeBackground": "#688faf", // 查找界面的按钮高亮
