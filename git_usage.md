@@ -77,6 +77,11 @@ git 通过 ssh 客户端连接 github。除了 github 这样的，私有仓库�
     在 cmd 或 powershell 下运行要设置环境变量
         https://github.com/git-for-windows/git/wiki/FAQ#running-without-git-bash
 
+    图形化客户端
+
+        https://www.sourcetreeapp.com/
+        https://tortoisegit.org/
+
 git config 配置文件位置，默认在各个 Git 仓库里的 .git/config
 
 git config --glboal 选项指的是修改 Git 的全局配置文件 ~/.gitconfig
@@ -1094,7 +1099,7 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
 
 ## -------- 分支管理：针对已经提交的历史记录链条的折腾 --------
 
-## 分支切换
+## 分支切换 switch
 
 先下载完整的git代码
 
@@ -1123,41 +1128,36 @@ git 用 switch 命令替代了 checkout 命令中关于分支切换的功能
 分支切换的目标是分支名
 
     # 切换到 master 分支
-    # git switch master
-    git checkout master
+    # git checkout master
+    git switch master
 
-分支切换的目标是标签tag（某提交点）
-
-    # 查看标签
-    git tag
-
-    # 切换到指定标签
-    # git switch --detach v1.23
-    git checkout v1.23
-
-分支切换的目标是提交点commit id（hash）
-
-    直接切换到指定的提交记录，这时进入不关联分支的 detached HEAD 分离状态。如果暂存区或工作区有内容，会报错无法切换，但是我遇到过丢弃暂存区直接切换的情况，没搞明白为啥。
-
-    切换到某个提交记录后，如果对文件内容做了修改，需要你建立新的分支或切换回现有分支，才能提交你当前的工作，否则这种分离 detached HEAD 情况下做的修改 git 不知道往何处保存。
-
-    注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
+分支切换的目标是提交点commit id（hash或tag）
 
     # 从当前分支直接切换到指定的 commit 点，使用其 hash 值即可
-    # git switch --detach A9380e9
-    git checkout A9380e9
+    # git checkout A9380e9
+    git switch --detach A9380e9
 
-在任意提交点都可以建立分支
+    # 切换到指定标签
+    # git checkout v1.23
+    git switch --detach v1.23
 
-    # 切换到某个提交点后就地建立分支
-    git checkout A9380e9
-    #后面加上提交点的 hash，可以省去 git checkout 那一步
-    # 等效 git switch -c new_branch
-    # 等效 git checkout -b new_branch
-    git branch new_branch
+TODO: 在指定提交点建立分支
+
+    # 目前推荐的用法：切换到某个提交点后就地建立分支
+    git switch -c new_branch <commit>
+
+        # 切换到某个提交点后就地建立分支
+        git checkout A9380e9
+        git branch new_branch
+
+        # 后面加上提交点的 hash，可以省去上面 git checkout 那一步
+        git checkout -b new_branch <commit>
+        # 或
+        git branch new_branch A9380e9
 
     # 从远程库的某个分支建立一个本地分支（默认拉取建立的本地库只有 master）
-    $ git checkout -b hotfix origin/hotfix
+    # git checkout -b hotfix origin/hotfix
+    $ git switch -c hotfix origin/hotfix
     Switched to a new branch 'hotfix'
     branch 'hotfix' set up to track 'origin/hotfix'.
 
@@ -1370,7 +1370,7 @@ NOTE: 本地分支更新远程时，不要直接做 git pull 或 git pull --reba
 
 3、如果提示有冲突，解决冲突的操作参见章节 [解决合并冲突conflicts] 的示例。
 
-## 分支推送
+## 分支推送 push
 
 ### 重要：推送远程前的检查
 
@@ -1708,7 +1708,7 @@ feature 分支是用来开发特性的，上面会存在许多零碎的提交。
 
 ### 变基 rebase，更新提交记录的hash值但不制造分叉点
 
-如果 git 提示会做快进合并，那么执行 merge/rebase 的效果相同，只接续，不会更新那部分提交记录的 hash 值。
+如果 git 提示会做快进合并，那么执行 merge/rebase 的效果相同，只做接续，而不会更新那部分提交记录的 hash 值。
 
 如果不想被 rebase 修改接续部分提交记录的 hash 值，那就应该选择分叉合并
 
@@ -3414,7 +3414,7 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
         丢弃工作区，保留暂存区，工作区内容恢复为指定提交记录的内容。
 
-    git restore <file> 上面命令的简写，利用默认值 --source HEAD
+    git restore <file> 是上面命令的简写，利用默认值 --source HEAD
 
         丢弃工作区，保留暂存区，如果暂存区无内容，则工作区内容恢复为 HEAD 的内容，否则是暂存区的内容。
 
@@ -3454,9 +3454,29 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 丢弃工作区，丢弃暂存区，恢复某个提交记录时的文件，恢复内容放到暂存区。
 
+    暂存区无内容，工作区无内容：指定提交点的内容回退到暂存区
+
+    暂存区无内容，工作区有内容：
+
+    暂存区有内容，工作区有内容：
+
+    暂存区有内容，工作区无内容：
+
 如：
 
     git checkout b22c20fc8d -- abc.txt
+
+HEAD特殊：
+
+    git checkout HEAD [file]
+
+        暂存区无内容，工作区无内容：
+
+        暂存区无内容，工作区有内容：
+
+        暂存区有内容，工作区有内容：
+
+        暂存区有内容，工作区无内容：
 
     # 恢复到仓库的状态
     git checkout HEAD -- abc.txt
@@ -3467,7 +3487,7 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 丢弃工作区，保留暂存区，如果没有暂存区则工作区内容恢复为 HEAD 的内容。
 
-TODO:注意跟 `git checkout HEAD [file]` 有区别。太乱，换 `git restore <file>`命令。
+TODO:是 `git checkout HEAD [file]` 的简写。太乱，换 `git restore <file>`命令。
 
 示例
 
@@ -3481,6 +3501,50 @@ TODO:注意跟 `git checkout HEAD [file]` 有区别。太乱，换 `git restore 
         git checkout .
 
 注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
+
+### 废弃 git checkout [commit]
+
+git 用 switch 命令替代了 checkout 命令中关于分支切换的功能，详见章节 [分支切换]。
+
+直接切换到指定的提交记录，这时进入不关联分支的 detached HEAD 分离状态。如果暂存区或工作区有内容，会报错无法切换，但是我遇到过丢弃暂存区直接切换的情况，没搞明白为啥。
+
+直接切换到某个提交记录后，如果对文件内容做了修改，需要你建立新的分支或切换回现有分支，才能提交你当前的工作，否则这种分离 detached HEAD 情况下做的修改 git 不知道往何处保存。
+
+注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
+
+### git reset [commit] [file]
+
+把指定提交点的文件内容回退到暂存区，把原暂存区内容回退到工作区，优先保留工作区。
+
+    暂存区无内容，工作区无内容：指定提交点的内容回退到暂存区，工作区变为未添加状态！
+
+    暂存区无内容，工作区有内容：指定提交点的内容回退到暂存区，保留工作区
+
+    暂存区有内容，工作区有内容：丢弃暂存区，指定提交点的内容回退到暂存区，保留工作区
+
+    暂存区有内容，工作区无内容：丢弃暂存区，指定提交点的内容回退到暂存区
+
+与 `git checkout [commit] [file]` 的区别是优先保留工作区内容。
+
+HEAD特殊：
+
+    git reset HEAD [file]
+
+        暂存区无内容，工作区无内容：无变化
+
+        暂存区无内容，工作区有内容：暂存区无内容，保留工作区
+
+        暂存区有内容，工作区有内容：丢弃暂存区，保留工作区
+
+        暂存区有内容，工作区无内容：暂存区内容回退到工作区
+
+注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
+
+### 废弃---git reset [file]
+
+丢弃暂存区，把暂存区内容恢复到工作区，优先保留工作区内容。
+
+TODO:是 `git reset HEAD [file]` 的简写。太乱，换 `git restore --staged <file>` 命令。
 
 ### git reset [commit]
 
@@ -3522,25 +3586,9 @@ TODO:注意跟 `git checkout HEAD [file]` 有区别。太乱，换 `git restore 
 
             丢弃暂存区、丢弃工作区，工作区恢复为当前仓库 HEAD 指针指向的内容。
 
-注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
-
 如果用 git reset 回退提交记录后，后悔还想使用原来 HEAD 指向的远程库最新的提交点
 
     可以用 git reflog 查看近期的提交记录往回cherry-pick，或简单点，直接从远程库 origin/master 合并回来：运行 `git merge` 即可。原理见章节 [你的代码在本地有两份--本地仓库和远程仓库]。
-
-### git reset [commit] [file]
-
-把指定提交点的文件内容回退到暂存区，把原暂存区内容回退到工作区，优先保留工作区。
-
-如果之前工作区就是 HEAD 的内容，保持不变，但是变为未添加状态。
-
-与 git checkout [commit] [file] 的区别是优先保留工作区内容。
-
-### 废弃---git reset [file]
-
-丢弃暂存区，把暂存区内容恢复到工作区，优先保留工作区内容。
-
-TODO:注意跟 `git reset HEAD [file]` 有区别。太乱，换 `git restore --staged <file>` 命令。
 
 ### TODO: git rm
 
@@ -4344,7 +4392,7 @@ tag命令后跟 -s 参数即可
 
     https://bitbucket.org/
 
-    https://forgejo.org/
+    https://sourceforge.net/
 
 ## Github 创建 Pull Request
 
