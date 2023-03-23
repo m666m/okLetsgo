@@ -3243,7 +3243,11 @@ HEAD~{n} 表示当前所在的提交路径上的前 n 个提交（n >= 0）：
 
 #### HEAD^n
 
-^ 是用来切换父级提交路径的修饰符。当我们始终在一个分支比如 dev 开发/提交代码时，每个 commit 都只会有一个父级提交，就是上一次提交，但当并行多个分支开发，feat1, feat2, feat3，完成后 merge feat1 feat2 feat3 回 dev 分支后，此次的 merge commit 就会有多个父级提交。
+^ 是用来切换父级提交路径的修饰符。
+
+当我们始终在一个分支比如 dev 开发/提交代码时，每个 commit 都只会有一个父级提交，就是上一次提交。
+
+但当并行多个分支开发，feat1, feat2, feat3，完成后 merge feat1 feat2 feat3 回 dev 分支后，此次的 merge commit 就会有多个父级提交。
 
 父级 一词本身就代表回溯了 1 次
 
@@ -3309,6 +3313,7 @@ HEAD 的 第三个父级
     HEAD~1 = HEAD^
     HEAD~2 = HEAD^^
     HEAD~3 = HEAD^^^
+
     # 切换父级
     HEAD^1~3 = HEAD~4
     HEAD^2~3 = HEAD^2^^^
