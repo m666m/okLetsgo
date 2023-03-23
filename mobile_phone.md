@@ -50,7 +50,7 @@
 
 据信，苹果虽然把数据加密存放到贵州云中心，但是可以根据司法要求，提供查看的子密钥，这个是为了国内的合规，跟米国不同的。
 
-### 沙箱运行
+### 沙箱运行的虚假安全
 
 google 自称安卓 app 都是在 java 沙箱运行，但是留足了系统接口，应用可以经权限申请，读取整个系统的任意信息，这样跟没限制啥区别。
 
@@ -384,8 +384,11 @@ Shelter：利用安卓的 "Work Profile" 功能实现应用程序的套娃运行
     https://f-droid.org/packages/net.typeblog.shelter/
 
     源代码 https://gitea.angry.im/PeterCxy/Shelter
+            https://github.com/PeterCxy/Shelter
 
-Shelter 是一款免费开源（FOSS）应用程序，它利用Android的 "Work Profile" 功能来提供一个隔离的空间，您可以将应用程序安装或克隆到其中。Shelter 的安全性只能与 "Work Profile" 的实施一样。
+    原理 https://support.google.com/work/android/answer/6191949?hl=en
+
+Shelter 是一款免费开源（FOSS）应用程序，它利用Android的 "Work Profile" 功能来提供一个隔离的空间，您可以将应用程序安装或克隆到其中。Shelter 的安全性只能与 "Work Profile" 的实施一样，参见章节 [沙箱运行的虚假安全]。
 
 Shelter 的主要用例包括：
 

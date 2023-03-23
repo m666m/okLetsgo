@@ -4333,6 +4333,8 @@ tag命令后跟 -s 参数即可
 
     https://bitbucket.org/
 
+    https://forgejo.org/
+
 ## Github 创建 Pull Request
 
 Pull Request 是开发者使用 GitHub 进行协作的利器。这个功能为用户提供了友好的页面，让提议的更改在并入官方项目之前，可以得到充分的讨论。
