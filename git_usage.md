@@ -3031,13 +3031,17 @@ Git 管理仓库中的文件，是根据文件名来追踪文件的，如果你�
 
 ## 显示差异 diff
 
-主要用于工作区、暂存区、仓库区三个区域的交叉对比
+主要用于工作区(Working tree)、暂存区(staged)、仓库区(HEAD)三个区域的交叉对比
 
     显示摘要加参数 --stat
 
-TODO:`git diff`  无参数时有二义性：
+TODO:`git diff`  无参数时有多义性：
 
-   先用工作区(Working tree)跟暂存区(staged)比，如果暂存区无内容，则跟仓库（HEAD）比。
+    先找有内容的区域，优先级工作区、暂存区、仓库区、远程仓库区，按优先级比对有内容的两个区域。
+
+    暂存区有内容，工作区无内容：git diff 无结果，git diff HEAD 结果与 git diff --staged 结果一致，默认对比了暂存区和仓库区。
+
+    暂存区有内容，工作区有内容：git diff 比较工作区和暂存区，git diff HEAD 对比工作区和仓库区，git diff --staged 对比暂存区和仓库区。
 
 工作区(Working tree)与暂存区(staged)的差异
 
