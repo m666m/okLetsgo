@@ -2902,6 +2902,26 @@ Git 自动给 dev 分支做了一次提交，注意这次提交的commit是 1d4b
 
 ## -------- 日常编辑常用 --------
 
+## 文件改名
+
+Git 管理仓库中的文件，是根据文件名来追踪文件的，如果你在本地直接用操作系统的 `mv` 命令改名一个文件，git 会认为你删掉了一个文件，新增了一个文件。运行命令 `git status` 会看到 deleted 了原文件， untracked 新文件。如果你提交了这个修改，你会发现新文件没有之前源文件的提交记录，历史记录全丢了！
+
+所以，重命名文件或文件夹应该使用 `git mv` 命令，这样才会保留你的提交记录。
+
+重命名文件或文件夹
+
+    git mv -v oldfile newfile
+
+    # 已经追踪，无需进行 add -u
+    $ git status
+    Changes to be committed:
+    (use "git reset HEAD <file>..." to unstage)
+
+            renamed:    oldfile -> newfile
+
+    # 重命名之后正常 commit push 就可以了
+    $ git commit -m "rename oldfile to newfile"
+
 ## 使用储藏 stash
 
 当在一个分支的开发工作未完成，却又要切换到另外一个 hotfix 分支进行开发的时候，当前的分支不 commit 的话 git 不允许 checkout 到别的分支，而代码功能不完整随便 commit 是没有意义的。
@@ -3521,41 +3541,31 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 与 git checkout [commit] [file] 的区别是优先保留工作区内容。
 
-### TODO: git rm [file]
+### TODO: git rm
 
 移除 git 对该文件的跟踪，跟 git add 相对，分几种回退情形
 
-暂存区无修改，工作区无修改：
+git rm [file]
 
-    移除该文件 `git rm <file>`
+    移除该文件。暂存区无修改，工作区无修改
 
-### git rm --cached [file]
+git rm --cached [file]
 
     移除文件但保留到工作区
 
-### git rm -f [file]
+git rm -f [file]
 
-暂存区有修改，工作区无修改：
+    移除该文件，丢弃暂存区，丢弃工作区
 
-    丢弃暂存区的修改，移除该文件
+如果 rm 又后悔了，想恢复该文件：
 
-暂存区无修改，工作区有修改：
-
-    丢弃工作区的修改，移除该文件
-
-暂存区有修改，工作区有修改：
-
-    丢弃暂存区的修改，丢弃工作区的修改，移除该文件
-
-如果没有做 commit 提交变更，想恢复该文件，要两步
+    前提是没有做 commit 提交变更
 
     `git reset HEAD <file>` 先恢复到暂存区，
 
     然后再 ` git checkout <file>` 解除删除状态，
 
-    该文件恢复到版本库的状态，不会恢复原暂存区和工作区被删除的内容。
-
-注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
+    只能把该文件恢复到版本库的状态，不会恢复原暂存区和工作区被删除的内容。
 
 ### git revert
 
@@ -3704,6 +3714,8 @@ git revert 新增的提交点，是对 rebase 那个提交点的反向执行，�
     最后，把 tmp_re 分支合并到 master 分支，覆盖 master 分支上的差异，使 master 分支上的文件内容也回到了点 older 点的样子。
 
 ## git 常用法
+
+    https://git-scm.com/docs/gitfaq
 
 ### 快速定位故障版本
 
@@ -3958,11 +3970,9 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
 
 git revert 在合并冲突时使用`core.editor`的设置，没有单独的设置选项。
 
-## 常见问题
+### fatal: unsafe repository
 
-    https://git-scm.com/docs/gitfaq
-
-Ubuntu克隆下源码后对其操作时git报错 fatal: unsafe repository
+Ubuntu克隆下源码后对其操作时git报错
 
      https://blog.csdn.net/guoyihaoguoyihao/article/details/124868059
 
@@ -4021,7 +4031,7 @@ P.S 第二行最后有个"."
 
 ### 掉电导致objects目录下的某些文件为空
 
-如果保存远程gitrepo的虚拟机经常关闭或者本地机器突然掉电，会导致.git/objects目录下的某些文件为空的报错:
+如果保存远程 gitrepo 的虚拟机非正常关闭或者本地机器突然掉电，会导致 .git/objects 目录下的某些文件为空的报错:
 
     error: object file .git/objects/31/65329bb680e30595f242b7c4d8406ca63eeab0 is empty
 fatal: loose object 3165329bb680e30595f242b7c4d8406ca63eeab0 (stored in .git/objects/31/65329bb680e30595f242b7c4d8406ca63eeab0) is corrupt
