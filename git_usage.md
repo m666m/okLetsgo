@@ -3031,9 +3031,40 @@ Git 管理仓库中的文件，是根据文件名来追踪文件的，如果你�
 
 ## 显示差异 diff
 
-提交的和未提交的都可以比对，有多种用法。
+主要用于工作区、暂存区、仓库区三个区域的交叉对比
 
     显示摘要加参数 --stat
+
+TODO:`git diff`  无参数时有二义性：
+
+   先用工作区(Working tree)跟暂存区(staged)比，如果暂存区无内容，则跟仓库（HEAD）比。
+
+工作区(Working tree)与暂存区(staged)的差异
+
+    git diff
+
+    在 vs code 里，就是你点击源代码管理树中 '更改' 项目下的文件，列出来的差异。
+
+工作区(Working tree)与仓库(HEAD)的差异
+
+    git diff HEAD
+
+    # 比较指定文件的最新版本与旧提交中的版本之间的差异
+    git diff <commit_id> <file_path>
+
+暂存区(staged)与仓库(HEAD)的差异
+
+    git diff --staged
+
+    或 git diff --cached
+
+    显示即将被提交的内容，就是在你做了 `git add` 后，预测如果要做 `git commit` 时会提交的内容有哪些。
+
+    在 vs code 里，就是你点击源代码管理树中 '暂存的更改' 项目下的文件，列出来的差异。
+
+    只要你没有做 `git commit`，当前的所有改动（含暂存区的）都会体现在工作区，直接跟仓库（HEAD）对比可以看看你的修改的总体效果。
+
+可以看出，修改完成后还没有执行 `git add`，做 `git diff HEAD` 显示的结果，跟执行了 `git add` 后行 `git diff --staged`，看到的结果是一样的。
 
 git diff 主要的应用场景：
 
@@ -3044,41 +3075,6 @@ git diff 主要的应用场景：
     查看已经 git add ，但没有 git commit 的改动
 
     自上次提交以来工作区中的更改
-
-三个区域的交叉对比
-
-    ·`git diff` 无参数时有二义性：
-
-        先用工作区跟暂存区比，没有暂存区则跟仓库（HEAD）比。
-
-        默认比较工作区(Working tree)和暂存区(staged)的差异
-
-            git diff
-
-        如果暂存区无内容，则会比较工作区和仓库(HEAD)，等同于 `git diff HEAD`。
-
-        在 vs code 里，就是你点击源代码管理树中 '更改' 项目下的文件，列出来的差异。
-
-    ·比较暂存区(staged)和仓库(HEAD)的差异
-
-            git diff --staged
-
-            或 git diff --cached
-
-        显示即将被提交的内容，就是在你做了 `git add` 后，预测如果要做 `git commit` 时会提交的内容有哪些。
-
-        在 vs code 里，就是你点击源代码管理树中 '暂存的更改' 项目下的文件，列出来的差异。
-
-    ·比较工作区(Working tree)和仓库(HEAD)的差别
-
-        git diff HEAD
-
-        # 比较指定文件的最新版本与旧提交中的版本之间的差异
-        git diff <commit_id> <file_path>
-
-    只要你没有做 `git commit`，当前的所有改动（含暂存区的）都会体现在工作区，直接跟仓库（HEAD）对比可以看看你的修改的总体效果。
-
-可以看出，修改完成后还没有执行 `git add`，做 `git diff HEAD` 显示的结果，跟执行了 `git add` 后行 `git diff --staged`，看到的结果是一样的。
 
 ·比较两个分支（上最新的提交）的差别
 
