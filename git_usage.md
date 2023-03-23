@@ -3408,14 +3408,15 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
     https://git-scm.com/docs/git-restore
 
-关于撤回文件的用途很明晰：每个参数恢复一个区域的文件版本
+关于撤回文件的用途很明晰：恢复一个区域的文件版本
 
     git restore --source <commit> <file>
 
         丢弃工作区，保留暂存区，恢复某个提交记录时的文件，恢复的内容放在工作区。
 
-        # 默认 --source HEAD
-        git restore  <file>
+        默认值 --source HEAD，所以一般不需要写：
+
+        git restore <file>
 
             丢弃工作区，保留暂存区，如果暂存区无内容则工作区内容恢复为 HEAD 的内容。
 
@@ -3424,6 +3425,8 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
     git restore --staged <file>
 
         丢弃暂存区，把暂存区内容恢复到工作区，优先保留工作区内容。
+
+        用于替换 `git reset [file]`
 
 示例
 
@@ -3447,13 +3450,26 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，会自动合并内容
 
-### git checkout [file]
+### git checkout [commit] [file]
 
-        https://git-scm.com/docs/git-checkout
+    https://git-scm.com/docs/git-checkout
+
+丢弃工作区，丢弃暂存区，恢复某个提交记录时的文件，恢复内容放到暂存区。
+
+如：
+
+    git checkout b22c20fc8d -- abc.txt
+
+    # 恢复到仓库的状态
+    git checkout HEAD -- abc.txt
+
+注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
+
+### 废弃---git checkout [file]
 
 丢弃工作区，保留暂存区，如果没有暂存区则工作区内容恢复为 HEAD 的内容。
 
-等同于 `git restore <file>`。
+TODO:注意跟 `git checkout HEAD [file]` 有区别。太乱，换 `git restore <file>`命令。
 
 示例
 
@@ -3468,30 +3484,11 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
 注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
 
-### git checkout [commit] [file]
-
-丢弃工作区，丢弃暂存区，恢复某个提交记录时的文件，恢复内容放到暂存区。
-
-如：
-
-    git checkout b22c20fc8d -- abc.txt
-
-    # 恢复到仓库的状态
-    git checkout HEAD -- abc.txt
-
-注： “有内容”，指文件中相同位置的内容有变更，如果不是相同位置，无影响。
-
-### git reset [file]
-
-丢弃暂存区，把暂存区内容恢复到工作区，优先保留工作区内容。
-
-等同于 `git restore --staged <file>`。
-
 ### git reset [commit]
 
-主要关注回退提交记录，并且重置 head 的位置为你指定的提交点。
-
     https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified#_the_role_of_reset
+
+主要关注回退提交记录，并且重置 head 的位置为你指定的提交点。
 
 注意
 
@@ -3540,6 +3537,12 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 如果之前工作区就是 HEAD 的内容，保持不变，但是变为未添加状态。
 
 与 git checkout [commit] [file] 的区别是优先保留工作区内容。
+
+### 废弃---git reset [file]
+
+丢弃暂存区，把暂存区内容恢复到工作区，优先保留工作区内容。
+
+TODO:注意跟 `git reset HEAD [file]` 有区别。太乱，换 `git restore --staged <file>` 命令。
 
 ### TODO: git rm
 
