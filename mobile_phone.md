@@ -522,11 +522,11 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
 浏览器：F-Droid 上有重新编译过的 Firefox（叫做 [Fennic](https://f-droid.org/en/packages/org.mozilla.fennec_fdroid/) ）， Guardian Project 也有 Tor Browser，[在这里添加它们的仓库](https://guardianproject.info/fdroid/)到 F-Droid 。
 
-文件管理器： [Amaze](https://f-droid.org/zh_Hans/packages/com.amaze.filemanager/) 。
+文件管理器： [Amaze](https://f-droid.org/en/packages/com.amaze.filemanager/) 。
 
 媒体播放：VLC Player
 
-网盘：服务器搭建自己的 Nextcloud 实例，[所以当然就用它们的客户端啦……](https://f-droid.org/zh_Hans/packages/com.nextcloud.client/) ， F-Droid 上也有不少可以和 Nextcloud 协作的应用，例如 [RSS 阅读器 Nextcloud News Reader](https://f-droid.org/zh_Hans/packages/de.luhmer.owncloudnewsreader/) 和 [笔记辅助软件 Notes](https://f-droid.org/zh_Hans/packages/it.niedermann.owncloud.notes) 。
+网盘：服务器搭建自己的 Nextcloud 实例，[所以当然就用它们的客户端啦……](https://f-droid.org/en/packages/com.nextcloud.client/) ， F-Droid 上也有不少可以和 Nextcloud 协作的应用，例如 [RSS 阅读器 Nextcloud News Reader](https://f-droid.org/en/packages/de.luhmer.owncloudnewsreader/) 和 [笔记辅助软件 Notes](https://f-droid.org/en/packages/it.niedermann.owncloud.notes) 。
 
 一时兴起想要写些什么的话，除了 Notes 以外也可以试试 [Markor](https://f-droid.org/en/packages/net.gsantner.markor/) 。
 
@@ -538,7 +538,7 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
 阅读和发送电子邮件：[K-9 Mail](https://f-droid.org/en/packages/com.fsck.k9)，也有比较新潮的 FairMail 啥的可以考虑，它们都能和另一个 openPGP 应用 [OpenKeyChain](https://f-droid.org/en/packages/org.sufficientlysecure.keychain/) 一起使用来发送和解密 GPG 加密的邮件。
 
-2FA 应用： [Aegis]。
+2FA 应用： [Aegis](https://f-droid.org/en/packages/com.beemdevelopment.aegis/)。
 
 远程桌面：aFreeRDP
 
