@@ -3412,15 +3412,13 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
     git restore --source <commit> <file>
 
-        丢弃工作区，保留暂存区，恢复某个提交记录时的文件，恢复的内容放在工作区。
+        丢弃工作区，保留暂存区，工作区内容恢复为指定提交记录的内容。
 
-        默认值 --source HEAD，所以一般不需要写：
+    git restore <file> 上面命令的简写，利用默认值 --source HEAD
 
-        git restore <file>
+        丢弃工作区，保留暂存区，如果暂存区无内容，则工作区内容就是 HEAD 的内容，否则是暂存区的内容。
 
-            丢弃工作区，保留暂存区，如果暂存区无内容则工作区内容恢复为 HEAD 的内容。
-
-            用于替换 `git checkout [file]` 。
+        用于替换 `git checkout [file]` 。
 
     git restore --staged <file>
 
