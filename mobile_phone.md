@@ -379,6 +379,26 @@ Guardian Project
 
     TODO: 自己写个申请各种权限的 app，装到手机里挨个检查。
 
+Shelter：利用安卓的 "Work Profile" 功能实现应用程序的套娃运行。
+
+    https://f-droid.org/packages/net.typeblog.shelter/
+
+    源代码 https://gitea.angry.im/PeterCxy/Shelter
+
+Shelter 是一款免费开源（FOSS）应用程序，它利用Android的 "Work Profile" 功能来提供一个隔离的空间，您可以将应用程序安装或克隆到其中。Shelter 的安全性只能与 "Work Profile" 的实施一样。
+
+Shelter 的主要用例包括：
+
+    在工作配置文件中安装应用程序以进行隔离
+
+    在工作配置文件中“冻结”应用程序，以防止它们在您不主动使用它们时运行或被唤醒
+
+    在一个手机上安装运行同一应用程序的两个副本
+
+请注意：Shelter 依赖于 Android 系统的 "Work Profile" 功能，因此与您手机使用的 Android 衍生系统中的 "Work Profile"相关的任何错误都会影响 Shelter。
+
+有关完整的说明，请阅读 Shelter 的 Git 存储库。
+
 ### XXX: 实现安卓系统下自定义的的虚拟机套娃
 
 硬件只暴露为出厂状态，系统软件为出厂状态。
@@ -464,7 +484,7 @@ private void getPackageList(Context ctx) {
 
 ## 安卓的开源软件商店F-Droid
 
-F-Droid 是一个 Android 应用程序的软件资源库（或应用商店）；其功能类似于 Google Play 商店，但只包含自由及开放源代码软件。应用可从 F-Droid 网站或直接从 F-Droid 客户端应用浏览及安装。
+F-Droid 是一个 Android 应用程序的软件资源库（或应用商店）；其功能类似于 Google Play 商店，但只包含自由及开放源代码软件，即所谓免费开源（FOSS）。应用可从 F-Droid 网站或直接从 F-Droid 客户端应用浏览及安装。
 
     https://f-droid.org/
         https://f-droid.org/zh_Hans/contribute/
@@ -473,7 +493,7 @@ F-Droid 是一个 Android 应用程序的软件资源库（或应用商店）；
 
 F-Droid的软件虽然不多，但是很实用。
 
-F-Droid最大的特点在与其与Linux软件包管理高度吻合，采用的是源安装，即有源有软件，无源无软件，和linux必须添加软件源是一个道理。这些 repositories 源，类似于我们在 Linux 平台上在 /etc/apt/sources.list.d/（Debian 或 Ubuntu 系）或 /etc/yum.repos.d/（Fedora 系）放入源一样， 表示从此信任这个来源/市集/repository 里面的软件。
+F-Droid 最大的特点在与其与Linux软件包管理高度吻合，采用的是源安装，和 Linux 必须添加软件源是一个道理。这些 repositories 源，类似于我们在 Linux 平台上在 /etc/apt/sources.list.d/（Debian 或 Ubuntu 系）或 /etc/yum.repos.d/（Fedora 系）放入源一样， 表示从此信任这个来源/市集/repository 里面的软件。
 
 F-Droid 会把这些 repositories 所提供的软体信息存储一份清单在手机里。这个清单需要不时更新。当我们发现有些 App 或某些版本看得见却无法安装的时候，很可能就是因为我们手机上的清单过时了，需要更新，这跟 Debian 的 apt-get update 或 Fedora 的 yum update 意思一样。当然，我们也可以在手机客户端中设置 automatic update interval（自动更新间隔）。
 
@@ -495,13 +515,15 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
 电话、短信和拍照的话，用系统自带的大概就够用了。（LineageOS 内置的应该也是自由的吧……）
 
-聊天的话， Telegram 有部份自由处理过的 [Telegram-FOSS](https://f-droid.org/en/packages/org.telegram.messenger/) ，XMPP 的话有 Xabber 和 Conversations （为啥咱会用两个呢，因为前者支持 XMPP 中最常见的端到端加密协议 OTR，另一个支持比较新的 OMEMO 和 openPGP…… （其实 Conversations 一开始也是支持 OTR 的，就是行为有些奇怪而且后来砍掉了……）😂）。IRC 的话就用 [WeeChat for Android](https://f-droid.org/en/packages/com.ubergeek42.WeechatAndroid/) 连上咱 VPS 上的 WeeChat 好了（别和某微幕搞混！）， Matrix 和 Mattermost 的话也都各自有客户端（ [Riot.im](https://f-droid.org/en/packages/im.vector.alpha) 和 [Mattermost](https://f-droid.org/en/packages/com.mattermost.rnbeta) ）。
+聊天：Telegram 有部份自由处理过的 [Telegram-FOSS](https://f-droid.org/en/packages/org.telegram.messenger/) ，XMPP 的话有 Xabber 和 Conversations （为啥咱会用两个呢，因为前者支持 XMPP 中最常见的端到端加密协议 OTR，另一个支持比较新的 OMEMO 和 openPGP…… （其实 Conversations 一开始也是支持 OTR 的，就是行为有些奇怪而且后来砍掉了……）😂）。IRC 的话就用 [WeeChat for Android](https://f-droid.org/en/packages/com.ubergeek42.WeechatAndroid/) 连上咱 VPS 上的 WeeChat 好了（别和某微幕搞混！）， Matrix 和 Mattermost 的话也都各自有客户端（ [Riot.im](https://f-droid.org/en/packages/im.vector.alpha) 和 [Mattermost](https://f-droid.org/en/packages/com.mattermost.rnbeta) ）。
 
-浏览器的话， F-Droid 上有重新编译过的 Firefox（叫做 [Fennic](https://f-droid.org/en/packages/org.mozilla.fennec_fdroid/) ）， Guardian Project 也有 Tor Browser，[在这里添加它们的仓库](https://guardianproject.info/fdroid/)到 F-Droid 。
+浏览器：F-Droid 上有重新编译过的 Firefox（叫做 [Fennic](https://f-droid.org/en/packages/org.mozilla.fennec_fdroid/) ）， Guardian Project 也有 Tor Browser，[在这里添加它们的仓库](https://guardianproject.info/fdroid/)到 F-Droid 。
 
-文件管理器的话，咱比较中意和习惯 [Amaze](https://f-droid.org/zh_Hans/packages/com.amaze.filemanager/) 。
+文件管理器： [Amaze](https://f-droid.org/zh_Hans/packages/com.amaze.filemanager/) 。
 
-网盘的话，咱有自己的 Nextcloud 实例，[所以当然就用它们的客户端啦……](https://f-droid.org/zh_Hans/packages/com.nextcloud.client/) ， F-Droid 上也有不少可以和 Nextcloud 协作的应用，例如 [RSS 阅读器 Nextcloud News Reader](https://f-droid.org/zh_Hans/packages/de.luhmer.owncloudnewsreader/) 和 [笔记辅助软件 Notes](https://f-droid.org/zh_Hans/packages/it.niedermann.owncloud.notes) 。
+媒体播放：VLC Player
+
+网盘：服务器搭建自己的 Nextcloud 实例，[所以当然就用它们的客户端啦……](https://f-droid.org/zh_Hans/packages/com.nextcloud.client/) ， F-Droid 上也有不少可以和 Nextcloud 协作的应用，例如 [RSS 阅读器 Nextcloud News Reader](https://f-droid.org/zh_Hans/packages/de.luhmer.owncloudnewsreader/) 和 [笔记辅助软件 Notes](https://f-droid.org/zh_Hans/packages/it.niedermann.owncloud.notes) 。
 
 一时兴起想要写些什么的话，除了 Notes 以外也可以试试 [Markor](https://f-droid.org/en/packages/net.gsantner.markor/) 。
 
@@ -511,7 +533,21 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
 想在 Android 上运行一些 GNU/Linux 工具，例如 ssh 之类的话，可以试试 [Termux](https://f-droid.org/en/packages/com.termux/) ，也有一些像是浮动窗口或者快速运行脚本的扩展用。觉得虚拟键盘操作不方便的话可以尝试有方向键和功能键的 [Hacker's Keyboard](https://f-droid.org/en/packages/org.pocketworkstation.pckeyboard/)。
 
-阅读和发送电子邮件的话，咱比较喜欢老成（？）的 [K-9 Mail](https://f-droid.org/en/packages/com.fsck.k9)，也有比较新潮的 FairMail 啥的可以考虑，它们都能和另一个 openPGP 应用 [OpenKeyChain](https://f-droid.org/en/packages/org.sufficientlysecure.keychain/) 一起使用来发送和解密 GPG 加密的邮件。
+阅读和发送电子邮件：[K-9 Mail](https://f-droid.org/en/packages/com.fsck.k9)，也有比较新潮的 FairMail 啥的可以考虑，它们都能和另一个 openPGP 应用 [OpenKeyChain](https://f-droid.org/en/packages/org.sufficientlysecure.keychain/) 一起使用来发送和解密 GPG 加密的邮件。
+
+2FA 应用： [Aegis]。
+
+远程桌面：aFreeRDP
+
+安卓虚拟机：Shelter，详见章节 [安卓虚拟机]。
+
+紧急时刻：
+
+    Ripple：支持 F-Droid、OpenKeyChain、Aegis
+
+    Duress 直接擦除设备
+
+    自毁Wasted：支持 Telegram
 
 ### F-Droid添加清华源
 
@@ -529,20 +565,20 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
 其它的源速度很慢，不加也罢。
 
-## 简易点对点DHT网络通信 Tox
+### 简易点对点DHT网络通信 Tox
 
     https://wiki.tox.chat/clients
 
 无法在家庭内网独立运行，客户端功能简单，特别是在手机端。
 
-## 点对点DHT网络视频会议系统 Jami
+### 点对点DHT网络视频会议系统 Jami
 
 前身是SFLphone，然后被命名为GNU Ring，属于GNU项目。使用点对点的DHT网络，支持不依赖外部网络，在家庭内网独立运行，家庭各设备之间互相识别和发送消息，使用GPG加密，更新较快，适合多人视频会议的开源软件，对服务器的依赖比较多。其对全网唯一用户名服务使用了区块链技术，不知道日后是否会渗透到主业务。
 
     https://jami.net/
         https://git.jami.net/savoirfairelinux/jami-project
 
-## 支持 gpg 用于邮件签名和加解密的开源应用
+### 支持 gpg 用于邮件签名和加解密的开源应用
 
 [OpenKeychain](https://www.openkeychain.org)主要与[K-9 Mail](https://github.com/k9mail/k-9)集成。
 
@@ -550,13 +586,13 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
 如果你用 Android 收发邮件比较多的话，建议你直接用 OpenKeychain 生成密钥对然后发布公钥，使用 K-9 Mail 就好了，电脑端如果需要使用，可以从OpenKeychain导出私钥到电脑端，给Thunderbird使用。
 
-## haven 安卓手机变身监控器
+### haven 安卓手机变身监控器
 
     https://github.com/guardianproject/haven
 
     https://www.ctocio.com/ccnews/25688.html
 
-## BusyBox 工具箱
+### BusyBox 工具箱
 
     <https://busybox.net/>
 
@@ -568,6 +604,26 @@ BusyBox 包含了一些简单的工具，例如 ls、cat 和 echo 等等，还�
 
     <https://www.cnblogs.com/xiaowenji/archive/2011/03/12/1982309.html>
     <https://www.zhihu.com/question/26190694>
+
+### 商业闭源软件
+
+最好在应用商店安装，不要单独下载 apk 安装，权限的可控程度不如应用商店。注意在虚拟机内安装运行，比如三星手机的“安全文件夹”。
+
+行情查看
+
+    TradingView
+
+    OpenSea MetaMask CoinMarketCap
+
+    币安
+
+自媒体
+
+    YouTube Twitter Reddit Telegram Mastodon Spotify Instagram
+
+新闻聚合
+
+    Inoreader BuzzFeed
 
 ## 安卓神器 Termux -- 运行在 Android 上的开源linux模拟器
 
