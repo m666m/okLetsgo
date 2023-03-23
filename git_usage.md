@@ -1234,9 +1234,15 @@ TODO: 在指定提交点建立分支
 
     git branch -avv
 
-## 分支的拉取 fetch/pull
+## 分支更新 fetch/pull
 
-基本的拉取操作是 fetch，因为拉取之后都要做合并 merge 或 rebase，就引入了 pull 命令，把这个操作过程简化了
+前提
+
+    先 git clone 过一次或建立了远程仓库的的关联，不然 git 不知道本地代码如何对应远程分支。
+
+从远程更新本地分支的基本操作是 fetch，因为拉取之后都要做合并 merge 或 rebase，就引入了 pull 命令，把这个操作过程简化了。
+
+### pull
 
     git pull          = git fetch + git merge
 
@@ -1247,8 +1253,6 @@ TODO: 在指定提交点建立分支
     大多数情况下，我们日常使用只需要执行 git pull 就够了。
 
     如果你使用开发分支经常需要同步远程库中队友的代码，那么该执行 git pull --rebase 来明确的保持开发分支的直线效果，避免菱形分叉。
-
-### git pull 的2个过程
 
 git pull 的操作默认是 fetch + merge，可以设置成 fetch + rebase。
 
@@ -1304,15 +1308,17 @@ git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相�
 
     git fetch
 
-    取回更新后，会返回一个 FETCH_HEAD ，指的是某个 branch 在服务器上的最新状态，我们可以在本地通过它查看刚取回的更新信息：
+取回更新后，会返回一个 FETCH_HEAD ，指的是某个 branch 在服务器上的最新状态，我们可以在本地通过它查看刚取回的更新信息：
 
-        git log -p FETCH_HEAD
+    git log -p FETCH_HEAD
 
     可以看到返回的信息包括更新的文件名，更新的作者和时间，以及更新的代码（x行红色[删除]和绿色[新增]部分）。
 
     我们可以通过这些信息来判断是否产生冲突，以确定是否将更新合并到当前分支。
 
-这时候我们本地相当于存储了代码的两个版本，可以通过 merge 去合并这两个不同的版本，merge 做的就是把拉取下来的远程最新 commit 跟本地最新 commit 合并。如果不用 merge，用 rebase 也是可以的。
+注意，执行了 `gi fetch` 之后，我们本地相当于存储了代码的两个版本，可以通过 merge 去合并这两个不同的版本。
+
+merge 做的就是把本地的远程库 “origin/<分支名>” 跟本地库 “<分支名>” 进行分支合并。如果不用 merge，用 rebase 也是可以的。
 
     git merge FETCH_HEAD
 
@@ -1329,7 +1335,7 @@ git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相�
 
 ### 本地分支更新远程的操作流程
 
-    本地分支的更新，就是 fetch 远程库到本地的远程库，然后合并到本地分支。这个合并与你合并本地的两个分支没什么区别，都可以用 merge 或 rebase 进行。
+本地分支的更新，就是 fetch 远程库到本地的远程库，然后合并到本地分支。这个合并与你合并本地的两个分支没什么区别，都可以用 merge 或 rebase 进行。
 
 如果你介意合并策略，那在 git pull 之前要想想：
 
@@ -1337,7 +1343,7 @@ git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相�
 
     当然你可以用 git merge --abort 或 git rebase --abort 终止这个过程。
 
-NOTE: 本地分支更新远程时，不要直接做 git pull 或 git pull --rebase，应该把拉取和合并分开做，以便可以明确选择合并策略。
+NOTE: 本地分支更新远程时，为了明确选择合并策略，不直接做 git pull 或 git pull --rebase，把拉取和合并分开做。
 
 如果在做 push 时发现冲突了，git 只是提示下，没有进入 merge 或 rebase 的过程中，你可以选择合并策略，具体操作参见章节 [解决合并冲突conflicts]
 
@@ -1357,19 +1363,26 @@ NOTE: 本地分支更新远程时，不要直接做 git pull 或 git pull --reba
 
         git log ..origin/master --graph --oneline
 
-故总结本地分支更新远程操作流程如下：
+从远程服务器更新本地分支，操作流程如下：
 
-1、先 fetch 下来，然后 status 看看，然后再决定是否 merge 或 rebase，简略操作才用 pull。
+1、拉取远程，对比本地库和本地的远程库，先看看是不是远程有别人提交了，防止互相merge新增commit。
 
     git fetch
 
     # 看看提示，是否有冲突，根据提示选择接下来如何做
     git status
 
+    # 查看 fetch 下来的远程代码跟本地的提交记录的差别
+    git log ..origin/master --graph --oneline
+
     # 查看 fetch 下来的远程代码跟本地的具体差异
     git diff ..origin/master
 
-2、如果没有提示冲突，可以正常合并：酌情选择自己的合并策略分叉还是拉直（参见章节 [分支合并：merge菱形分叉还是rebase拉直]）。做如下命令之一即可
+然后再决定是否 merge 或 rebase，简略操作才用 pull。
+
+2、如果没有提示冲突，可以正常合并：酌情选择自己的合并策略，用分叉还是拉直，参见章节 [分支合并：merge菱形分叉还是rebase拉直]。
+
+做如下命令之一即可
 
     git merge（自动） 或 git merge -noff（分叉合并） 或 git rebase（拉直合并）
 
@@ -2565,7 +2578,9 @@ rebase之前的git提交历史树:
 
 不适用 rebase 的场景
 
-    rebase 提交记录的操作，可能会改变变基点提交记录之后所有提交记录的 hash 值。在实际工作中，分支的重整、合并、cherry-pick 经常发生，有时候还会撤销修改。对开发组来说，提交记录的 hash 值全变，如果会带来管理混乱，那就尽量缩小 rebase 的范围，或放到开发稳定后，管理可控时再对提交记录做精简整合。
+    TODO: rebase 提交记录的操作，会改变变基点提交记录之后所有提交记录的 hash 值。虽然它一般是把你本地的提交记录接续在来自远程的提交记录之后，只会改变你本地提交记录的hash值，但是在混合合并的情况下，仍然会改变变基点的hash值。
+
+    在实际工作中，分支的重整、合并、cherry-pick 经常发生，有时候还会撤销修改。对开发组来说，提交记录的 hash 值全变，如果会带来管理混乱，那就尽量缩小 rebase 的范围，或放到开发稳定后，管理可控时再对提交记录做精简整合。
 
     如果只是想更改提交记录的注释信息，但是又不想变更它的 hash 值，用 git notes 命令而不是 git rebase
 
@@ -3031,46 +3046,9 @@ Git 管理仓库中的文件，是根据文件名来追踪文件的，如果你�
 
 ## 显示差异 diff
 
-主要用于工作区(Working tree)、暂存区(staged)、仓库区(HEAD)三个区域的交叉对比
-
     显示摘要加参数 --stat
 
-TODO:`git diff`  无参数时有多义性：
-
-    先找有内容的区域，优先级工作区、暂存区、仓库区、远程仓库区，按优先级比对有内容的两个区域。
-
-    暂存区有内容，工作区无内容：git diff 无结果，git diff HEAD 结果与 git diff --staged 结果一致，默认对比了暂存区和仓库区。
-
-    暂存区有内容，工作区有内容：git diff 比较工作区和暂存区，git diff HEAD 对比工作区和仓库区，git diff --staged 对比暂存区和仓库区。
-
-工作区(Working tree)与暂存区(staged)的差异
-
-    git diff
-
-    在 vs code 里，就是你点击源代码管理树中 '更改' 项目下的文件，列出来的差异。
-
-工作区(Working tree)与仓库(HEAD)的差异
-
-    git diff HEAD
-
-    # 比较指定文件的最新版本与旧提交中的版本之间的差异
-    git diff <commit_id> <file_path>
-
-暂存区(staged)与仓库(HEAD)的差异
-
-    git diff --staged
-
-    或 git diff --cached
-
-    显示即将被提交的内容，就是在你做了 `git add` 后，预测如果要做 `git commit` 时会提交的内容有哪些。
-
-    在 vs code 里，就是你点击源代码管理树中 '暂存的更改' 项目下的文件，列出来的差异。
-
-    只要你没有做 `git commit`，当前的所有改动（含暂存区的）都会体现在工作区，直接跟仓库（HEAD）对比可以看看你的修改的总体效果。
-
-可以看出，修改完成后还没有执行 `git add`，做 `git diff HEAD` 显示的结果，跟执行了 `git add` 后行 `git diff --staged`，看到的结果是一样的。
-
-git diff 主要的应用场景：
+用于工作区(Working tree)、暂存区(staged)、仓库区(HEAD)三个区域的交叉对比，主要的应用场景：
 
     工作区中的更改尚未进行下一次提交
 
@@ -3080,18 +3058,45 @@ git diff 主要的应用场景：
 
     自上次提交以来工作区中的更改
 
+工作区与暂存区的差异 `git diff`
+
+    在 vs code 里，就是你点击源代码管理树中 '更改' 项目下的文件，列出来的差异。
+
+工作区与仓库的差异 `git diff HEAD`
+
+暂存区与仓库的差异 `git diff --staged` 或 `git diff --cached`
+
+    显示即将被提交的内容，就是在你做了 `git add` 后，预测如果要做 `git commit` 时会提交的内容有哪些。
+
+    在 vs code 里，就是你点击源代码管理树中 '暂存的更改' 项目下的文件，列出来的差异。
+
+    只要你没有做 `git commit`，当前的所有改动（含暂存区的）都会体现在工作区，直接跟仓库（HEAD）对比可以看看你的修改的总体效果。
+
+可以看出，修改完成后还没有执行 `git add`，做 `git diff HEAD` 显示的结果，跟执行了 `git add` 后行 `git diff --staged`，看到的结果是一样的。
+
+### 示例
+
+容易理解的情况
+
+    暂存区有内容，工作区有内容：git diff 显示工作区和暂存区的差异，git diff HEAD 显示工作区和仓库区的差异，git diff --staged 显示暂存区和仓库区的差异。
+
+不容易理解的情况
+
+    暂存区有内容，工作区无内容：因为工作区内容是跟暂存区一致的，所以 git diff 无差异，git diff HEAD 显示的差异与 git diff --staged 一致，是暂存区和仓库区的差异。
+
+    暂存区无内容，工作区有内容：因为暂存区跟仓库区内容一致，所以 git diff 显示的差异与 git diff HEAD 一致，是工作区和仓库区的差异，git diff --stage 无差异。
+
 ·比较两个分支（上最新的提交）的差别
 
+    # 或 git diff topic..master
     git diff topic master
 
-    或 git diff topic..master
+    # 对比本地库和远程库
+    git diff ..origin/master
 
-    ·拉取远程后，对比本地库和远程库，先看看是不是有别人提交了远程，防止互相merge新增commit
+·比较指定文件的最新版本与旧提交中的版本之间的差异
 
-        git fetch
-        git diff ..origin/master
-
-        git status
+    git diff <commit_id> <file_path>
 
 ·对比最近的两次提交记录
 
@@ -3186,6 +3191,10 @@ For info on ".." vs "..." see as well as the excellent documentation at [git-scm
 
     git fetch; git diff ..origin/master
 
+    # 简单点看提交记录的差别，以下二者结果不同
+    git log --left-right --oneline dev..master
+    git log --left-right --oneline master..dev
+
 您将看到本地git存储库的内容与远程存储库中的不同之处。您将看不到本地文件系统中或索引中的任何更改。
 
 3.三点语法显示从任一提交（隐式工作副本、远程/原点）可以到达的所有提交，但不能同时来自两个提交。选择出被两个引用之一包含但又不被两者同时包含的提交。
@@ -3193,6 +3202,10 @@ For info on ".." vs "..." see as well as the excellent documentation at [git-scm
 这将区分来自远程/分支的更改，并忽略来自当前 HEAD 的更改。
 
     git diff ...origin/master
+
+    # 简单点看提交记录的差别，以下二者结果相同
+    git log --left-right --oneline dev...master
+    git log --left-right --oneline master...dev
 
 Shows incoming remote additions as additions; the triple-dot excludes changes committed to your local repository.
 
