@@ -3512,7 +3512,9 @@ HEAD特殊：
 
 ### 废弃---git checkout [file]
 
-丢弃工作区，保留暂存区，如果没有暂存区则工作区内容恢复为 HEAD 的内容。
+丢弃工作区，保留暂存区。
+
+也就是说，如果没有暂存区，则工作区内容恢复为 HEAD 的内容，否则是暂存区的内容。
 
 注意：与 `git checkout HEAD [file]` 有区别。太乱，换 `git restore <file>`命令。
 
