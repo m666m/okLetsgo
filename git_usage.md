@@ -19,6 +19,12 @@
 
         `git help xxx`
 
+    命令速查
+
+        https://github.com/k88hudson/git-flight-rules/blob/master/README_zh-CN.md
+
+        https://training.github.com/downloads/zh_CN/github-git-cheat-sheet/
+
     git使用教程
         https://zhuanlan.zhihu.com/p/158076293
         https://www.liaoxuefeng.com/wiki/896043488029600
@@ -3975,12 +3981,6 @@ git revert 新增的提交点，是对 rebase 那个提交点的反向执行，�
 ## git 常用法
 
     https://git-scm.com/docs/gitfaq
-
-命令速查
-
-    https://github.com/k88hudson/git-flight-rules/blob/master/README_zh-CN.md
-
-    https://training.github.com/downloads/zh_CN/github-git-cheat-sheet/
 
 ### 快速定位故障版本
 
