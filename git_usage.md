@@ -232,6 +232,52 @@ github 网站提供基于 https 端口的 ssh 连接方式 <https://docs.github.
 
     git config --global http.https://github.com.proxy socks5://127.0.0.1:7891
 
+### 配置git的编辑器和比较工具
+
+    https://git-scm.com/docs/git-config
+
+git 默认使用 vim 作为编辑工具，diff 作为比较工具，但我们可以选择使用其它的工具。
+
+配置 Beyond Compare 4 作为 git mergetool
+
+    https://blog.csdn.net/albertsh/article/details/106294095
+    https://blog.csdn.net/LeonSUST/article/details/103565031
+
+建议使用开源的 meld 替换，基于 python
+
+    https://meldmerge.org/
+        https://gitlab.gnome.org/GNOME/meld
+        https://gitlab.gnome.org/GNOME/meld/-/wikis/home
+
+配置git的默认编辑器为 vscode
+
+    https://blog.csdn.net/ShuSheng0007/article/details/115449596
+
+    git config --global core.editor "code --wait"
+
+如果想恢复使用 Vim，使用下面命令即可
+
+    git config --global --unset core.editor
+
+也可直接编辑配置文件
+
+    git config --global --edit
+
+    将下面的配置粘贴上去，保存，关闭即可
+
+        [diff]
+            tool = vscode-diff
+        [difftool]
+            prompt = false
+        [difftool "vscode-diff"]
+            cmd = code --wait --diff $LOCAL $REMOTE
+        [merge]
+            tool = vscode-merge
+        [mergetool "vscode-merge"]
+            cmd = code --wait $MERGED
+
+git revert 在合并冲突时使用`core.editor`的设置，没有单独的设置选项。
+
 ## git仓库初始操作
 
 ### 建立本地仓库：Git 工作区、暂存区和版本库
@@ -670,6 +716,26 @@ git clone 命令正常拉取
 
     然后就可以正常使用了
 
+##### 拉取指定分支的指定commit版本
+
+git clone 默认是取回 master 分支，可以使用 -b 参数指定分支。
+
+-b 参数不仅支持分支名，还支持 tag 名等。
+
+        git clone  <remote-addr:repo.git> -b <branch-or-tag-or-commit>
+
+需求是获取 commit id，没直接的办法，下面提供另一个步骤：
+
+选择一个包含目标 commit id 的 branch 或 tag，并指定 depth=1 以获得比较少的额外文件传输。
+
+    git clone --depth 1 <remote-addr:repo.git> -b < branch-or-tag >
+
+clone 完成后，进入目录，执行
+
+    git fetch --depth < a-numer >
+
+不断增大步骤2的数字，直到找到你要的commit
+
 #### 稀疏检出(sparsecheckout) --- 拉取指定目录
 
 git的指定目录拉取，对于灵活选取仓库资源非常有帮助
@@ -883,14 +949,14 @@ sparse-checkout 文件设置
 
 部分克隆通过只下载部分数据的方式，在首次克隆时减轻了需要传输的数据量，降低了克隆需要的时间。
 
-blobless 模式
+1、blobless 模式
 
     # 我只看看代码，不下载 blob 对象
     git clone --filter=blob:none xxxx
 
 这样的克隆不影响 git merge、git rebase、git log等命令，我们可以正常使用
 
-treeless 模式
+2、treeless 模式
 
     # 我只看看代码，不下载 tree 对象
     git clone --filter=tree:0 xxxx
@@ -934,25 +1000,115 @@ treeless 模式
 
     git checkout
 
-#### 拉取指定分支的指定commit版本
+### git 项目包含子项目
 
-git clone 默认是取回 master 分支，可以使用 -b 参数指定的分支。
+当项目依赖并跟踪一个开源的第三方库，或主项目对子模块有依赖关系，却又并不关心子模块的内部开发流程细节。
 
--b 参数不仅支持分支名，还支持 tag 名等。
+这种情况下，通常不会把所有源码都放在同一个 Git 仓库中。
 
-        git clone  <remote-addr:repo.git> -b <branch-or-tag-or-commit>
+有一种比较简单的方式，是在当前工作目录下，将子模块文件夹加入到 .gitignore 文件内容中，这样主项目就能够无视子项目的存在。这样做有一个弊端就是，使用主项目的人需要有一个先验知识：需要在当前目录下放置一份某版本的子模块代码。
 
-需求是获取commit id，没直接的办法。下面提供另一个步骤：
+还有另外一种方式可供借鉴，可以使用 Git 的 submodule 功能。
 
-选择一个包含目标 commit id 的branch或tag，并指定depth=1以获得比较少的额外文件传输。
+增加子项目，或称子模块
 
-    git clone --depth 1 <remote-addr:repo.git> -b < branch-or-tag >
+    # 进入主项目的目录
+    git submodule add https://your_sub_project
 
-clone完成后，进入目录，执行
+    # 提交一次，表示引入了某个子模块。提交后，在主项目仓库中，会显示出子模块文件夹，并带上其所在仓库的版本号。
+    git commit -m "add submodule xxx"
+    git push
 
-    git fetch --depth < a-numer >
+对于后续使用者而言，对于主项目使用普通的 clone 操作并不会拉取到子模块中的实际代码，只有一个空目录，除非显式指定拉取子模块
 
-不断增大步骤2的数字，直到找到你要的commit
+    # git clone --recursive
+    git clone --recurse-submodules https://github.com/username/project-main.git
+
+更新子模块需要手动，在当前主项目中执行
+
+    cd your_main_project
+    git pull
+
+    git submodule sync --recursive
+
+    # git submodule init
+    # git submodule update
+    git submodule update --init --recursive
+
+子模块更新后，此时对主项目来说子模块的状态是有修改的，注意切换回主项目的目录，执行 git add/commit/push 提交这个修改即可。
+
+对于子模块而言，并不需要知道引用自己的主项目的存在，子模块本身就是一个完整的 Git 仓库，按照正常的 Git 代码管理规范操作即可。通常的操作都需要进入子模块文件夹，按照子模块内部的版本控制体系更新、提交代码。比如更换远程仓库也只需进入子模块目录后执行命令 `git remote set-url origin xx.git` 即可。
+
+对子模块远程仓库有更新的情况，主项目下运行 `git status` 不会有提示，需要进入子模块的目录后手动执行更新 `git pull`，当主项目的子模块特别多时，可以使用批量命令：`git submodule foreach 'git pull'`。然后回到主项目的目录，执行 git add/commit/push 提交这个修改。
+
+删除子模块
+
+    git submodule deinit your_sub_project
+
+    git rm your_sub_project
+
+    git commit -m "delete submodule your_sub_project"
+
+    git push
+
+### git worktree 多分支目录共用一个仓库
+
+    https://minsonlee.github.io/2020/05/git-worktree
+
+git checkout 命令是在同一个文件夹中切换不同分支，当一个分支正在开发，有另一个分支需要紧急处理bug，有两种解决方案
+
+    `git stash` 当前内容，然后切换分支修改bug，提交后再切换回来， `git stash pop` 继续
+
+    新建个目录拉取仓库，在那个目录里切换分支修改bug，极端情况下每个分支一个目录，都克隆同一个仓库，但是这样占用容量太大了
+
+一个 git 仓库可以支持多个工作树，允许你在同一时间检出多个分支。通过 git worktree add 将一个新的工作目录和一个仓库进行关联。 这个新的工作目录被称为 “linked working tree（链接工作树）”。不同于通过 git init 或 git clone 产生的主工作树，这个目录只保存了静态内容，容量相对小很多，在这个目录下切换分支操作即可。
+
+一个仓库只有一个主工作树(裸仓库是没有工作树的），可以有零个或多个链接工作树. 当你在链接工作树已经完成了工作，使用 git worktree remove 就可以移除它了。
+
+    # 查看当前仓库所有的 "linked working tree"
+    $ git worktree list
+    /ghcode/pycode/tea  7cabce4 [master]
+
+创建 worktree
+
+    # 基于已存在分支创建 `worktree`
+    git worktree add <new-workpath> <existing-branch/commit-id/remote-branch-name>
+
+    # 基于当前 commit 新建一个分支并创建 `worktree`
+    git worktree <new-wokpath> -b <new-branch>
+
+    # 基于指定 commit 创建一个 worktree
+    git worktree <new-workpath> --detach <commit-hash>
+
+移动 worktree
+
+    git worktree move <worktree> <new-path>/<new-worktree>
+
+清理 worktree
+
+    # 删除存在的 worktree
+    git worktree remove <worktree>
+
+    # 清理失去关联的 worktree
+    git worktree prune
+
+示例
+
+保留当前分支代码现状，基于 master 分支创建一个 hotfix 分支修复问题
+
+    # 基于 master 分支头指针，在目录同级创建一个 hotfix 的工作树，并检出一个本地分支 hotfix 以便后期合入
+    # git worktree add ../hotfix --detach master 如果分离式检出，切换到目录后手工创建分支 `git checkout -b hotfix`
+    # git worktree add -b hotfix ../hotfix master
+    git worktree add ../hotfix  # 创建目录并自动检出一个同名的本地分支
+
+    # 进入 hotfix 工作树
+    cd ../hotfix
+
+    # 在该工作树下处理bug
+
+    # 切换回主分支合并
+    cd -
+    git rebase hotfix
 
 ## git 使用习惯
 
@@ -3912,160 +4068,6 @@ git给出了解决方案，使用git branch-filter来遍历git history tree, 可
     git count-objects -vH
 
 重新提交成功
-
-### git worktree 多分支目录共用一个仓库
-
-    https://minsonlee.github.io/2020/05/git-worktree
-
-git checkout 命令是在同一个文件夹中切换不同分支，当一个分支正在开发，有另一个分支需要紧急处理bug，有两种解决方案
-
-    `git stash` 当前内容，然后切换分支修改bug，提交后再切换回来， `git stash pop` 继续
-
-    新建个目录拉取仓库，在那个目录里切换分支修改bug，极端情况下每个分支一个目录，都克隆同一个仓库，但是这样占用容量太大了
-
-一个 git 仓库可以支持多个工作树，允许你在同一时间检出多个分支。通过 git worktree add 将一个新的工作目录和一个仓库进行关联。 这个新的工作目录被称为 “linked working tree（链接工作树）”。不同于通过 git init 或 git clone 产生的主工作树，这个目录只保存了静态内容，容量相对小很多，在这个目录下切换分支操作即可。
-
-一个仓库只有一个主工作树(裸仓库是没有工作树的），可以有零个或多个链接工作树. 当你在链接工作树已经完成了工作，使用 git worktree remove 就可以移除它了。
-
-    # 查看当前仓库所有的 "linked working tree"
-    $ git worktree list
-    /ghcode/pycode/tea  7cabce4 [master]
-
-创建 worktree
-
-    # 基于已存在分支创建 `worktree`
-    git worktree add <new-workpath> <existing-branch/commit-id/remote-branch-name>
-
-    # 基于当前 commit 新建一个分支并创建 `worktree`
-    git worktree <new-wokpath> -b <new-branch>
-
-    # 基于指定 commit 创建一个 worktree
-    git worktree <new-workpath> --detach <commit-hash>
-
-移动 worktree
-
-    git worktree move <worktree> <new-path>/<new-worktree>
-
-清理 worktree
-
-    # 删除存在的 worktree
-    git worktree remove <worktree>
-
-    # 清理失去关联的 worktree
-    git worktree prune
-
-示例
-
-保留当前分支代码现状，基于 master 分支创建一个 hotfix 分支修复问题
-
-    # 基于 master 分支头指针，在目录同级创建一个 hotfix 的工作树，并检出一个本地分支 hotfix 以便后期合入
-    # git worktree add ../hotfix --detach master 如果分离式检出，切换到目录后手工创建分支 `git checkout -b hotfix`
-    # git worktree add -b hotfix ../hotfix master
-    git worktree add ../hotfix  # 创建目录并自动检出一个同名的本地分支
-
-    # 进入 hotfix 工作树
-    cd ../hotfix
-
-    # 在该工作树下处理bug
-
-    # 切换回主分支合并
-    cd -
-    git rebase hotfix
-
-### git 项目包含子项目
-
-当项目依赖并跟踪一个开源的第三方库，或主项目对子模块有依赖关系，却又并不关心子模块的内部开发流程细节。
-
-这种情况下，通常不会把所有源码都放在同一个 Git 仓库中。
-
-有一种比较简单的方式，是在当前工作目录下，将子模块文件夹加入到 .gitignore 文件内容中，这样主项目就能够无视子项目的存在。这样做有一个弊端就是，使用主项目的人需要有一个先验知识：需要在当前目录下放置一份某版本的子模块代码。
-
-还有另外一种方式可供借鉴，可以使用 Git 的 submodule 功能。
-
-增加子项目，或称子模块
-
-    # 进入主项目的目录
-    git submodule add https://your_sub_project
-
-    # 提交一次，表示引入了某个子模块。提交后，在主项目仓库中，会显示出子模块文件夹，并带上其所在仓库的版本号。
-    git commit -m "add submodule xxx"
-    git push
-
-对于后续使用者而言，对于主项目使用普通的 clone 操作并不会拉取到子模块中的实际代码，只有一个空目录，除非显式指定拉取子模块
-
-    # git clone --recursive
-    git clone --recurse-submodules https://github.com/username/project-main.git
-
-更新子模块需要手动，在当前主项目中执行
-
-    cd your_main_project
-    git pull --rebase
-
-    git submodule sync --recursive
-
-    # git submodule init
-    # git submodule update
-    git submodule update --init --recursive
-
-子模块更新后，此时对主项目来说子模块的状态是有修改的，注意切换回主项目的目录，执行 git add/commit/push 提交这个修改即可。
-
-对于子模块而言，并不需要知道引用自己的主项目的存在，子模块本身就是一个完整的 Git 仓库，按照正常的 Git 代码管理规范操作即可。通常的操作都需要进入子模块文件夹，按照子模块内部的版本控制体系更新、提交代码。比如更换远程仓库也只需进入子模块目录后执行命令 `git remote set-url origin xx.git` 即可。
-
-对子模块远程仓库有更新的情况，主项目下运行 `git status` 不会有提示，需要进入子模块的目录后手动执行更新`git pull --rebase`，当主项目的子模块特别多时，可以使用批量命令：`git submodule foreach 'git pull --rebase'`。然后回到主项目的目录，执行 git add/commit/push 提交这个修改。
-
-删除子模块
-
-    git submodule deinit your_sub_project
-
-    git rm your_sub_project
-
-    git commit -m "delete submodule your_sub_project"
-
-    git push
-
-### 配置git的编辑器和比较工具
-
-    https://git-scm.com/docs/git-config
-
-配置 Beyond Compare 4 作为 git mergetool
-
-    https://blog.csdn.net/albertsh/article/details/106294095
-    https://blog.csdn.net/LeonSUST/article/details/103565031
-
-建议使用开源的 meld 替换，基于 python
-
-    https://meldmerge.org/
-        https://gitlab.gnome.org/GNOME/meld
-        https://gitlab.gnome.org/GNOME/meld/-/wikis/home
-
-配置git的默认编辑器为 vscode
-
-    https://blog.csdn.net/ShuSheng0007/article/details/115449596
-
-    git config --global core.editor "code --wait"
-
-如果想恢复使用 Vim，使用下面命令即可
-
-    git config --global --unset core.editor
-
-也可直接编辑配置文件
-
-    git config --global --edit
-
-    将下面的配置粘贴上去，保存，关闭即可
-
-        [diff]
-            tool = vscode-diff
-        [difftool]
-            prompt = false
-        [difftool "vscode-diff"]
-            cmd = code --wait --diff $LOCAL $REMOTE
-        [merge]
-            tool = vscode-merge
-        [mergetool "vscode-merge"]
-            cmd = code --wait $MERGED
-
-git revert 在合并冲突时使用`core.editor`的设置，没有单独的设置选项。
 
 ### fatal: unsafe repository
 
