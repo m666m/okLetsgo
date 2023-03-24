@@ -317,15 +317,9 @@ git做操作之前或操作之后，查看当前的git状态
 
 版本库推送远程仓库见章节 [远程仓库拉取和推送的各种情况]
 
-### 修改本地仓库的远程仓库地址
+### 修改（重建）本地仓库的远程仓库地址
 
-查看远程仓库地址，这个地址格式可以给 git clone 直接使用
-
-    $ git remote -v
-    origin  git@github.com:m666m/okLetsgo.git (fetch)
-    origin  git@github.com:m666m/okLetsgo.git (push)
-
-先确认下，已经有 origin 远程库，没有的话需要重新建立
+假设主干分支已经关联了远程仓库地址，先确认下，已经有 origin 远程库，没有的话需要重新建立
 
     $ git remote show
     origin
@@ -342,6 +336,14 @@ git做操作之前或操作之后，查看当前的git状态
         master merges with remote master
     Local ref configured for 'git push':
         master pushes to master (up to date)
+
+如果主干分支没有关联远程仓库地址，如何操作参见章节 [本地空目录，拉取远程刚建好的空白裸仓库]。
+
+查看远程仓库地址，这个地址格式可以给 git clone 直接使用
+
+    $ git remote -v
+    origin  git@github.com:m666m/okLetsgo.git (fetch)
+    origin  git@github.com:m666m/okLetsgo.git (push)
 
 github.com 获取仓库默认给的是 https 地址，但是在国内的网络下经常连接超时，改成 git 协议或 ssh 协议的地址格式相对好些。地址格式参见章节 [从远程仓库下载到本地仓库 git clone]。
 
@@ -370,6 +372,17 @@ github.com 获取仓库默认给的是 https 地址，但是在国内的网络�
     git branch --set-upstream master origin/master
 
 所以，在进行推送代码到远端分支，且之后希望持续向该远程分支推送，则可以在推送命令中添加 -u 参数，简化之后的推送命令输入。
+
+另一种情况是，你在本地新建的分支，远程仓库没有该分支的，这时无法推送
+
+    $ git branch -avv
+    [分支：全部分支带最近提交及注释]
+    a                      6c97dc4acc rebase from remote
+    master                 c0a1f254be [origin/master: behind 1] ddd 333
+    * new_fea                1e8b100e4a 3.txt第二次
+    remotes/origin/def_xxx b414ac95d4 功能3
+    remotes/origin/hotfix  7cabce404f res me
+    remotes/origin/master  881ccdca75 ddd.txt 444
 
 ### 从本地仓库推送多个远程仓库
 
@@ -524,7 +537,7 @@ File
     Local ref configured for 'git push':     未关联push就没有这两行
         master pushes to master (up to date)
 
-如果 pull 和 push 未关联，需要关联
+如果 pull 和 push 未关联，需要关联，参见章节 [修改（重建）本地仓库的远程仓库地址]。
 
     # 关联 pull
     git branch --set-upstream-to=origin/master master
@@ -1150,7 +1163,7 @@ git 对每个操作都有唯一的 commit 记录，多人交替编辑相同的�
 
     如果使用者的注意力集中在用提交点解决合并冲突，很容易会把简单问题复杂化：更新提交点、转换提交点等等操作，改的多了一个不注意，你的本地库跟远程库的提交记录对不上了。回头再找也是麻烦事，git 提交记录不是基于文件内容比对的。如果你想重新过一遍提交记录核查下，哪怕相同的修改，提交点只要重新生成的，hash 值都变化了跟引入的那个提交点的 hash 值是不一致的。所以核查到底做了哪些修改，只能依赖看提交时候的注释，再加上逐个 commit 点看差异对比了。。。
 
-比如，章节 [远程库也有的提交记录，如何回退]，里面的两个方法，都不如章节 [无脑撤销大法：本地库和远程库的提交记录hash对不上] 直接替换文件的方法更快捷，解决问题更清晰。
+比如，章节 [远程库也有的提交记录，如何回退]，里面的两个方法，都不如章节 [基于文件的撤销大法] 直接替换文件的方法更快捷，解决问题更清晰。
 
 4、 git 的一个痛点，跟内容无关跟操作有关的这种唯一hash的区别方式
 
@@ -1309,7 +1322,7 @@ git 用 switch 命令替代了 checkout 命令中关于分支切换的功能
 
 TODO: 在指定提交点建立分支
 
-    # 目前推荐的用法：切换到某个提交点后就地建立分支
+    # 目前推荐的用法：在某个提交点就地建立分支
     git switch -c new_branch <commit>
 
         # 切换到某个提交点后就地建立分支
@@ -1320,6 +1333,8 @@ TODO: 在指定提交点建立分支
         git checkout -b new_branch <commit>
         # 或
         git branch new_branch A9380e9
+
+NOTE: 新建分支后没有对应到远程仓库，无法push，需要建立关联，参见章节 [修改（重建）本地仓库的远程仓库地址]。
 
 从远程库的某个分支建立一个本地分支（默认拉取建立的本地库只有 master）
 
@@ -1551,6 +1566,8 @@ NOTE: 本地分支更新远程时，为了明确选择合并策略，不直接�
 3、如果提示有冲突，解决冲突的操作参见章节 [解决合并冲突conflicts] 的示例。
 
 ## 分支推送 push
+
+分支如果没有对应到远程仓库，无法push，需要建立关联，参见章节 [修改（重建）本地仓库的远程仓库地址]。
 
 ### 重要：推送远程前的检查
 
@@ -2701,7 +2718,7 @@ git pull --rebase 自动使用 rebase，发现冲突后，会进入 rebase confi
 
     在本地库更改远程仓库已有的提交记录，就是你的不对
 
-简单点，参见章节 [无脑撤销大法：本地库和远程库的提交记录hash对不上]。
+简单点，参见章节 [基于文件的撤销大法]。
 
 你的本地分支已经推送了远程，但是你又重新 rebase 了本地的几个提交，然后不管你想再 push 还是 pull，都会被远程库拒绝。
 
@@ -2989,25 +3006,30 @@ patch 是这一类版本控制系统的产物，而非基石。（注意：切�
 
 git diff 输出格式就是个 patch 文件（参见章节 [显示差异 diff] 中的 '制作补丁' 部分），git cherry-pick 则会把指定的提交点所作的修改以 patch 的形式应用到目标分支上。
 
-应用场景：master 分支上修改了一个 bug，要在 dev 分支上也做一遍修复
+示例：master 分支上修改了一个 bug，要在 dev 分支上也做一遍修复
+
+当前分支情况如下
+
+    $ git branch -avv
+    master                 4c805e2 [origin/master: behind 1] ddd 333
+    * dev                  b22c20fc8d hotfix2
+    remotes/origin/def_xxx b414ac95d4 功能3
+    remotes/origin/hotfix  7cabce404f res me
+    remotes/origin/master  881ccdca75 ddd.txt 444
 
 先确定 master 分支上哪个修改的提交记录的 commit id
 
-    git log  --graph --pretty=oneline --abbrev-commit
+    git log --graph --oneline master
 
-假设我们只需要把 4c805e2 fix bug 101 这个提交所做的 “修改” 复制到 dev 分支。
+假设是 4c805e2 fix bug 101 这个提交，我们只需要把 4c805e2 所做的 “修改” 复制到 dev 分支。
 
-因为我们只想复制 4c805e2 fix bug 101这个提交所做的 “修改”，既不是合并这个提交点，也不是把整个 master 分支 merge 过来。为了方便操作，Git 专门提供了一个 cherry-pick 命令，让我们能复制一个特定的提交的操作到当前分支：
-
-    $ git branch
-    * dev
-    master
+因为我们只想复制 4c805e2 这个提交所做的 “修改”，既不是合并这个提交点，也不是把整个 master 分支 merge 过来。为了方便操作，Git 专门提供了一个 cherry-pick 命令，让我们能复制一个特定的提交的操作到当前分支：
 
     $ git cherry-pick 4c805e2
     [master 1d4b803] fix bug 101
     1 file changed, 1 insertion(+), 1 deletion(-)
 
-Git 自动给 dev 分支做了一次提交，注意这次提交的commit是 1d4b803，它并不同于master分支的 4c805e2，因为这两个commit只是改动相同，但确实是两个不同的commit。用git cherry-pick，我们就不需要在dev分支上手动再把修bug的过程重复一遍。
+Git 自动给 dev 分支做了一次提交，注意这次提交的commit是 1d4b803，它并不同于master分支的 4c805e2，因为这两个commit只是改动相同，但确实是两个不同的commit。用 git cherry-pick，我们就不需要在 dev 分支上手动再把修bug的过程重复一遍。
 
 潜在问题来了：
 
@@ -3170,7 +3192,7 @@ Git 管理仓库中的文件，是根据文件名来追踪文件的，如果你�
 
 查看 <指定文件、分支的> 提交记录
 
-    git log <file/branch> --oneline --graph
+    git log <file/branch> --graph --oneline
 
     查看所有最近的提交记录，不在本分支上的也显示，经常用于改动之前的保留现场
     git reflog
@@ -3189,6 +3211,7 @@ Git 管理仓库中的文件，是根据文件名来追踪文件的，如果你�
 查看远程库的提交记录，用于本地库更新远程库时查看合并冲突
 
     # 显示远程库的完整提交记录
+    # hash 太长用 --abbrev-commit
     git log origin/master --graph --oneline
 
     # 查看分歧点以来的提交记录
@@ -3842,9 +3865,11 @@ git rm -f [file]
     git commit -m "remove irrelated files"
     git push origin branch1
 
-### git revert
+### 不推荐：git revert
 
-反做你指定的提交点的操作，新增一个提交点。
+    git revert 的隐患太多，建议直接使用章节 [基于文件的撤销大法]。
+
+git revert 反做你指定的提交点的操作，新增一个提交点。
 
     # 撤销指定的版本，撤销也会作为一次提交进行保存
     git revert commit
@@ -3861,6 +3886,7 @@ git rm -f [file]
 如果在 revert 中发现冲突，git 会提示解决冲突，格式参见章节 [冲突文件的格式]，解决后执行 `git add . ; git revert --continue` 继续。如果想终止，可以执行 `git revert --abort`。
 
 特殊：
+
 对于分叉合并形成的交叉点的那个提交记录，如果回退，需要指明主线分支：用 -m 选项，接收的参数是一个数字，数字取值为 1 和 2，也就是你在做 merge 时提示行里面列出来的第一个还是第二个，这谁记得住？参见 <https://git-scm.com/book/en/v2/Git-Tools-Advanced-Merging#reverse_the_commit>、<https://git-scm.com/docs/howto/revert-a-faulty-merge>。其实这是 git 的一个痛点，参见 <https://jneem.github.io/pijul/> 的 [Case study 1: reverting an old commit]。
 
     git revert HEAD^ -m 1
@@ -3871,7 +3897,7 @@ git rm -f [file]
 
         https://stackoverflow.com/questions/9059335/how-can-i-get-the-parents-of-a-merge-commit-in-git
 
-这种骚操作只会越搞越乱，不如直接使用章节 [无脑撤销大法：本地库和远程库的提交记录hash对不上]
+这种骚操作只会越搞越乱，不如直接使用章节 [基于文件的撤销大法]。
 
 ### 远程库也有的提交记录，如何回退
 
@@ -3881,7 +3907,9 @@ git rm -f [file]
 
     文件内容回退到之前的某个提交点的样子，但在提交记录上是新增一个提交点，这样的办法是最妥当的。
 
-#### 无脑撤销大法：本地库和远程库的提交记录hash对不上
+#### 基于文件的撤销大法
+
+以本地库和远程库的提交记录hash对不上为例。
 
 史前有个哲人提示过：能用文件操作解决内容问题，就别用一系列的 git 操作来解决，哪个办法简洁用哪个。
 
@@ -4034,15 +4062,11 @@ Git bisect 会继续用相似的方式缩小版本查找范围，直到第一个
 
 ### 彻底删除git中的大文件
 
-git 如果提交一个文件，然后删除他，继续提交，那么这个文件是存在 git 中，需要使用特殊的命令才可以删除。.git主要记录每次提交变动，当我们的项目越来越大的时候，我们发现 .git文件越来越大
+本地的.git 目录主要记录每次提交变动，当我们的项目越来越大的时候，我们发现 .git 目录越来越大。原因在于，git 如果提交一个文件，然后删除他，继续提交，即使你在之后的版本中将其删除，在 .git 目录中仍然有该文件的提交记录，以备你找回提交记录。这种用不到的大文件的提交记录的清理，需要使用特殊的命令才可以删除。
 
-很大的可能是因为提交了大文件，如果你提交了大文件，那么即使你在之后的版本中将其删除，但是，
-实际上，记录中的大文件仍然存在。
+git给出了解决方案，使用 git branch-filter 来遍历 git history tree, 可以永久删除 history 中的大文件，达到让 .git 文件瘦身的目的。
 
-虽然你在后面的版本中删除了大文件，但是Git是有版本倒退功能的吧，那么如果大文件不记录下来，git拿什么来给你回退呢？但是，.git文件越来越大导致的问题是： 每次拉项目都要耗费大量的时间，并且每个人都要花费
-那么多的时间。
-
-git给出了解决方案，使用git branch-filter来遍历git history tree, 可以永久删除history中的大文件，达到让.git文件瘦身的目的。 <https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/removing-sensitive-data-from-a-repository>
+    https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/removing-sensitive-data-from-a-repository
 
 ### 暂存区大文件导致推送远程失败
 
@@ -4606,11 +4630,12 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 
 0、添加远程仓库，从master分支新建dev分支
 
-    git remote add origin 远程仓库地址
+    # git checkout master
+    git switch master
 
-    git checkout master
     git pull --rebase
-    git branch 分支名
+
+    git branch dev
 
 1、每日工作，先确认本地无未提交未储存等等问题，处理后再继续
 
@@ -4622,7 +4647,8 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 
 3、切换本地dev分支
 
-    git checkout dev
+    # git checkout dev
+    git switch dev
 
 4、合并本地 master 到本地dev分支，以便同步hotfix进来。
 
