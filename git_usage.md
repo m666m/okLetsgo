@@ -3078,13 +3078,31 @@ Git 管理仓库中的文件，是根据文件名来追踪文件的，如果你�
 
 容易理解的情况
 
-    暂存区有内容，工作区有内容：git diff 显示工作区和暂存区的差异，git diff HEAD 显示工作区和仓库区的差异，git diff --staged 显示暂存区和仓库区的差异。
+    暂存区有内容，工作区有内容：
+
+        git diff 显示工作区和暂存区的差异
+
+        git diff HEAD 显示工作区和仓库区的差异
+
+        git diff --staged 显示暂存区和仓库区的差异。
 
 不容易理解的情况
 
-    暂存区有内容，工作区无内容：因为工作区内容是跟暂存区一致的，所以 git diff 无差异，git diff HEAD 显示的差异与 git diff --staged 一致，是暂存区和仓库区的差异。
+    暂存区有内容，工作区无内容：
 
-    暂存区无内容，工作区有内容：因为暂存区跟仓库区内容一致，所以 git diff 显示的差异与 git diff HEAD 一致，是工作区和仓库区的差异，git diff --stage 无差异。
+        git diff 无差异
+
+        git diff HEAD 的结果与 git diff --staged 一致，是暂存区和仓库区的差异
+
+        原因在于工作区内容是跟暂存区一致的
+
+    暂存区无内容，工作区有内容：
+
+        git diff 的结果与 git diff HEAD 一致，是工作区和仓库区的差异
+
+        git diff --stage 无差异
+
+        原因在于暂存区跟仓库区内容一致
 
 ·比较两个分支（上最新的提交）的差别
 
@@ -3533,7 +3551,7 @@ HEAD特殊：
 
 ### 废弃 git checkout [commit]
 
-git 用 switch 命令替代了 checkout 命令中关于分支切换的功能，详见章节 [分支切换]。
+git 用 switch 命令替代了 checkout 命令中关于分支切换的功能，详见章节 [分支切换 switch]。
 
 ### git reset [commit] [file]
 
@@ -3565,9 +3583,9 @@ HEAD特殊：
 
 ### 废弃---git reset [file]
 
-丢弃暂存区，把暂存区内容恢复到工作区，优先保留工作区内容。
+暂存区内容回退到工作区，优先保留工作区内容。
 
-TODO:是 `git reset HEAD [file]` 的简写。太乱，换 `git restore --staged <file>` 命令。
+是 `git reset HEAD [file]` 的简写。太乱，换 `git restore --staged <file>` 命令。
 
 ### git reset [commit]
 
