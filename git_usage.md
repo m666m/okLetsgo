@@ -1217,7 +1217,7 @@ TODO: 在指定提交点建立分支
 
 可以看到提示：stale (use ‘git remote prune’ to remove)
 
-这样的标注 这代表远程服务器上已经删除当前这条分枝 但是本地代码库和本地远程库并未同步这个状态。需要清理这些无用的未被tracked 的远程。
+这代表远程服务器上已经删除当前这条分支 但是本地代码库和本地远程库并未同步这个状态，需要清理这些无用的未被tracked 的远程。
 
 在他们自己的计算机上运行如下命令，跟上面第三步的操作一样
 
@@ -3591,7 +3591,7 @@ HEAD特殊：
 
     https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified#_the_role_of_reset
 
-主要关注回退提交记录，并且重置 head 的位置为你指定的提交点。
+主要关注回退提交记录，并且重置 HEAD 的位置为你指定的提交点。
 
 注意
 
@@ -3601,7 +3601,7 @@ HEAD特殊：
 
     git reset --soft <commit>
 
-        重置 head 的位置为你指定的提交点，把回退的commit的内容恢复到暂存区，优先保留暂存区内容。如果是间隔多个提交记录，回退会累积到暂存区，类似 squash 的效果。
+        重置 HEAD 的位置为你指定的提交点，把回退的commit的内容恢复到暂存区，优先保留暂存区内容。如果是间隔多个提交记录，回退会累积到暂存区，类似 squash 的效果。
 
         git reset --soft HEAD~
 
@@ -3631,31 +3631,35 @@ HEAD特殊：
 
     可以用 git reflog 查看近期的提交记录往回cherry-pick，或简单点，直接从远程库 origin/master 合并回来：运行 `git merge` 即可。原理见章节 [你的代码在本地有两份--本地仓库和远程仓库]。
 
-### TODO: git rm
+### git rm
 
 移除 git 对该文件的跟踪，跟 git add 相对，分几种回退情形
 
 git rm [file]
 
-    移除该文件。暂存区无修改，工作区无修改
+    删除该文件，取消对该文件的追踪。该操作被加入暂存区等待提交。
+
+    如果暂存区或工作区有该文件的修改，则会报错，提示使用 `git rm -f`。
+
+    撤销该操作：
+
+        未提交：用 `git restore --staged <file>` 恢复到暂存区，然后用 `git restore <file>` 解除删除状态。
+
+        已提交：用 `git reset --hard HEAD`。
+
+        万一本地提交记录还回退了，导致 HEAD 也没法用：用合并本地远程库的方式恢复，详见章节 [分支更新]。 先对比下提交记录 `git log --graph --oneline ..origin/master --`，然后合并即可 `git merge`。
+
+        不止上面这样，还推送远程了：用 `git reflog` 看看之前的提交记录是否还在，用 `git cherry-pick` 捡回来，作为新的提交点再加回去。
+
+        不止上面这样，过了100天才发现，本地的提交记录清理过无用的了：找备份文件吧。
 
 git rm --cached [file]
 
-    移除文件但保留到工作区
+    取消对该文件的追踪，文件保留到工作区
 
 git rm -f [file]
 
-    移除该文件，丢弃暂存区，丢弃工作区
-
-如果 rm 又后悔了，想恢复该文件：
-
-    前提是没有做 commit 提交变更
-
-    `git reset HEAD <file>` 先恢复到暂存区，
-
-    然后再 ` git checkout <file>` 解除删除状态，
-
-    只能把该文件恢复到版本库的状态，不会恢复原暂存区和工作区被删除的内容。
+    删除该文件，取消对该文件的追踪。丢弃暂存区和工作区中该文件的修改。
 
 ### git revert
 
