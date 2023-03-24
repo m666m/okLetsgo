@@ -598,7 +598,7 @@ git clone 命令正常拉取
     remotes/origin/hotfix  7cabce404f res me
     remotes/origin/master  881ccdca75 ddd.txt 444
 
-    # 如果你的本地分支名称跟远程仓库不一致，需要显式指定远程库分支的名称才能推送
+    # 如果你的本地分支名称跟远程仓库不一致，需要显式指定本地分支和远程库分支的名称才能推送
     git push origin HEAD:remote_branch
 
 远程已有 dev_xxx 分支但未关联本地分支 dev_xxx，本地已经切换到 dev_xxx
@@ -1416,18 +1416,18 @@ NOTE: 新建分支后没有对应到远程仓库，无法push，需要建立关�
         # 如果只删除跟踪分支，则还需要 git remote prune 来删除跟踪分支
         git branch --delete --remotes <remote>/<branch>
 
-如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
+    如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
 
-    git push origin :refs/fea_xxx
+        git push origin :refs/fea_xxx
 
-    或可以用本地分支 fea_-2 覆盖远程分支 fea_-1
+        或可以用本地分支 fea_-2 覆盖远程分支 fea_-1
 
-        git push -f origin fea_-2:refs/fea_-1
+            git push -f origin fea_-2:refs/fea_-1
 
 3、更新本地的远程库，用 prune 进行清理
 
-    # 等效 git remote prune
-    git fetch origin -p
+    #git fetch origin -p
+    git remote prune origin
 
 4、从本地库删除该分支
 
@@ -1439,18 +1439,20 @@ NOTE: 新建分支后没有对应到远程仓库，无法push，需要建立关�
     Remote branches:
         dev                            tracked
         master                         tracked
-        refs/remotes/origin/fea_stragy stale (use 'git remote prune' to remove)
+        refs/remotes/origin/fea_xxx stale (use 'git remote prune' to remove)
 
-可以看到提示：stale (use ‘git remote prune’ to remove)
+    可以看到提示：stale (use ‘git remote prune’ to remove)
 
-这代表远程服务器上已经删除当前这条分支 但是本地代码库和本地远程库并未同步这个状态，需要清理这些无用的未被tracked 的远程。
+    这代表远程服务器上已经删除当前这条分支 但是本地代码库和本地远程库并未同步这个状态，需要清理这些无用的未被tracked 的远程。
 
 在他们自己的计算机上运行如下命令，跟上面第三步的操作一样
 
     $ git remote prune origin
     Pruning origin
     URL: ssh://
-    * [pruned] origin/fea_stragy
+    * [pruned] origin/fea_xxx
+
+    $ git branch -d fea_xxx
 
 6、确认是否干净了
 
