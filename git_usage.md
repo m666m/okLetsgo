@@ -3633,7 +3633,7 @@ HEAD特殊：
 
 ### git rm
 
-移除 git 对该文件的跟踪，跟 git add 相对，分几种回退情形
+移除 git 对该文件的跟踪，跟 git add 相对。
 
 git rm [file]
 
@@ -3645,13 +3645,13 @@ git rm [file]
 
         未提交：用 `git restore --staged <file>` 恢复到暂存区，然后用 `git restore <file>` 解除删除状态。
 
-        已提交：用 `git reset --hard HEAD`。
+        已提交：用 `git reset --hard HEAD~`，或本地远程库 `git reset --hard origin/HEAD`。
 
-        万一本地提交记录还回退了，导致 HEAD 也没法用：用合并本地远程库的方式恢复，详见章节 [分支更新]。 先对比下提交记录 `git log --graph --oneline ..origin/master --`，然后合并即可 `git merge`。
+        本地提交记录还回退了，导致 HEAD 也没法用：用合并本地远程库的方式恢复，先对比下提交记录 `git log --graph --oneline ..origin/master --`，然后合并即可 `git merge`。详见章节 [分支更新]。
 
-        不止上面这样，还推送远程了：用 `git reflog` 看看之前的提交记录是否还在，用 `git cherry-pick` 捡回来，作为新的提交点再加回去。
+        不止上面这样，还推送远程了：用 `git reflog` 看看之前的该文件相关的提交记录是否还在，用 `git cherry-pick` 捡回来，作为新的提交点再加回去。
 
-        不止上面这样，过了100天才发现，本地的提交记录清理过无用的了：找备份文件吧。
+        不止上面这样，过了100天才发现不该删除，本地的提交记录清理过无用的了：找备份文件吧。
 
 git rm --cached [file]
 
