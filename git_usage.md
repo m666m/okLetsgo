@@ -571,7 +571,7 @@ git clone 命令正常拉取
 
 远程没有 remote_branch 分支，本地已经切换到 dev_xxx。这种情况常见于你在本地新建的分支，远程仓库没有该分支的，这时无法推送，需要设置关联
 
-    # 1、先把本地分支推送到远程
+    # 1、先把本地分支推送到远程，最好二者名称一致，否则以后的 git push 命令要加参数
     $ git push origin dev_xxx:remote_branch
 
     # 查看分支情况
@@ -597,6 +597,9 @@ git clone 命令正常拉取
     remotes/origin/remote_branch   1e8b100e4a 3.txt第二次
     remotes/origin/hotfix  7cabce404f res me
     remotes/origin/master  881ccdca75 ddd.txt 444
+
+    # 如果你的本地分支名称跟远程仓库不一致，需要显式指定远程库分支的名称才能推送
+    git push origin HEAD:remote_branch
 
 远程已有 dev_xxx 分支但未关联本地分支 dev_xxx，本地已经切换到 dev_xxx
 
