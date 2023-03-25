@@ -1355,6 +1355,18 @@ git 用 switch 命令替代了 checkout 命令中关于分支切换的功能
     # git checkout master
     git switch master
 
+### 从远程库的某个分支建立一个本地分支
+
+因为 git clone 默认建立的本地库只有 master 这一个分支，想切换到其它分支，需要先从本地的远程库建立本地分支
+
+    # 最好二者名称一致，否则以后的 git push 命令要加参数才能用，太繁琐了
+    # git checkout -b hotfix origin/hotfix
+    $ git switch -c hotfix origin/hotfix
+    Switched to a new branch 'hotfix'
+    branch 'hotfix' set up to track 'origin/hotfix'.
+
+这个分支不需要手工建立关联关系。
+
 ### 直接切换到指定的提交记录
 
 这时进入不关联分支的 detached HEAD 分离状态。如果暂存区或工作区有内容，会报错无法切换，但是我遇到过丢弃暂存区直接切换的情况，没搞明白为啥。
@@ -1373,7 +1385,7 @@ git 用 switch 命令替代了 checkout 命令中关于分支切换的功能
     # git checkout v1.23
     git switch --detach v1.23
 
-### 在指定提交点建立分支
+#### TODO:在指定提交点建立分支
 
     # 目前推荐的用法：在某个提交点就地建立分支
     git switch -c new_branch <commit>
@@ -1389,14 +1401,6 @@ git 用 switch 命令替代了 checkout 命令中关于分支切换的功能
         git branch new_branch A9380e9
 
 NOTE: 新建分支后没有对应到远程仓库，无法push，需要建立关联，参见章节 [修改（重建）本地仓库的远程仓库地址]。
-
-从远程库的某个分支建立一个本地分支（默认拉取建立的本地库只有 master）
-
-    # 最好二者名称一致，否则以后的 git push 命令要加参数才能用，太繁琐了
-    # git checkout -b hotfix origin/hotfix
-    $ git switch -c hotfix origin/hotfix
-    Switched to a new branch 'hotfix'
-    branch 'hotfix' set up to track 'origin/hotfix'.
 
 ### 删除分支，远程/本地
 
