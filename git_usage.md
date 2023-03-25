@@ -321,21 +321,23 @@ git做操作之前或操作之后，查看当前的git状态
 
 git 支持多种协议，Git 协议下载速度最快，SSH 协议用于需要用户认证的场合。
 
-Git 协议
+Git 协议： 用户名@地址:仓库名
 
     git clone git://example.com/path/to/repo.git [默认当前目录]
 
-    # 特殊，对 “git@github.com” 开头，默认用 git 协议，在冒号后是用户名
-    # git clone git@github.com:user_name/repo.git
-    git clone --depth=1 git@github.com:winsw/winsw.git
+    # 特殊，对 “git@github.com” 开头，默认用 git 协议，在冒号后是仓库集名(注册用户名)
+    # 格式：git@地址:仓库名
+    # git clone git@github.com:repositores/repo.git
+    git clone git@github.com:m666m/okletsgo.git
 
+    # 用 ssh 测试
     $ ssh -T git@github.com
-    > Hi username! You've successfully authenticated...
+    > Hi m666m! You've successfully authenticated...
 
 SSH 协议
 
     # 对 “用户名@地址” 开头，默认 ssh 22 端口
-    git clone [user@]example.com:/path/to/repo.git
+    git clone ssh://[user@]example.com/path/to/repo.git
 
     # 非标准22端口要写明确写协议名
     git clone ssh://[user@]example.com:port/path/to/repo.git
@@ -343,25 +345,28 @@ SSH 协议
     # 对ipv6地址加[]即可
     git clone ssh://user@[20:40:d:9f::1]:22122/path/to/repo.git
 
-    # github网站提供基于https端口的ssh连接方式 https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
+    # github 网站提供基于 https 端口 443 的 ssh 连接方式
+    #   https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
     git clone ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
 
 Http、Https 协议
 
-    git clone http[s]://example.com/path/to/repo.git
+    # git clone http[s]://example.com/path/to/repo.git
     git clone http://git.oschina.net/yiibai/sample.git
 
 File 协议
 
     git clone /opt/git/project.git
+
     git clone file:///opt/git/project.git
 
-其它 协议
+其它协议
 
     git clone ftp[s]://example.com/path/to/repo.git
+
     git clone rsync://example.com/path/to/repo.git
 
-### 建立和设置本地仓库
+### TODO: 建立和设置本地仓库
 
 有两种方法：
 
@@ -385,11 +390,15 @@ File 协议
 
     git push -u origin master
 
-如果是新建的其它分支，如何关联远程库参见章节 [本地非空目录，远程仓库无本地分支的push用法]。
+更多操作参见章节 [本地空目录，拉取远程刚建好的空白裸仓库]。
 
-#### TODO:修改（重建）本地仓库的远程仓库地址
+#### 修改本地仓库的远程仓库设置
 
-假设主干分支已经关联了远程仓库地址，先确认下，已经设置了 origin 远程库
+github.com 获取仓库默认给的是 https 地址，但是在国内的网络下经常连接超时，改成 git 协议或 ssh 协议的地址格式相对好些。地址格式参见章节 [远程仓库拉取和推送的各种情况]。
+
+如果是新建的其它分支，远程仓库没有该分支的，这时无法推送，关联远程库见下面第 4 步，详细示例参见章节 [本地非空目录，远程仓库无本地分支的push用法]。
+
+1、假设主干分支已经关联了远程仓库地址，先确认下，已经设置了远程库 origin
 
     $ git remote show
     origin
@@ -407,48 +416,57 @@ File 协议
     Local ref configured for 'git push': 未关联就没有这两行
         master pushes to master (up to date)
 
-如果没有 origin 远程库对象，需要添加，参见章节 [本地空目录，拉取远程刚建好的空白裸仓库]。
-
-查看远程仓库地址，这个地址格式可以给 git clone 直接使用
-
+    # 查看远程仓库地址，这个地址格式可以给 git clone 直接使用
     $ git remote -v
     origin  https://github.com/m666m/okLetsgo.git (fetch)
     origin  https://github.com/m666m/okLetsgo.git (push)
 
-github.com 获取仓库默认给的是 https 地址，但是在国内的网络下经常连接超时，改成 git 协议或 ssh 协议的地址格式相对好些。地址格式参见章节 [远程仓库拉取和推送的各种情况]。
+2、先删除远程库 origin
 
-    # 删除远程origin
     git remote rm origin
 
-    # 重新添加远程origin
-    # ssh 协议：git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
+3、然后重新添加远程库 origin
+
+    # git 协议： 用户名@地址:仓库名
     # git 协议：git remote add origin sqt@180.169.33.106:repositores/ZSKPad.git
     git remote add origin git@github.com:m666m/raspi-info.git
 
-    # ssh 地址，需要协议名、用户名
+    # ssh 地址: 协议名://用户名@地址:端口
+    # ssh 协议：git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
     git remote add origin ssh://git@<ip>:<port>/your_path/xxx.git
 
-建立 origin 和 master 的联系
+4、建立 origin 和 master 的联系
 
-    git branch --set-upstream-to=origin/<branch> master
+简单使用的话，一般我们希望在进行推送代码到远端分支，且以后持续向该远程分支推送，则可以在第一次 push 的时候用 -u 参数，简化日后对该分支使用的推送命令输入参数，只执行 `git push` 就可以了。
 
-    git push --set-upstream origin
-
-在进行推送代码到远端分支，且之后希望持续向该远程分支推送，则可以在推送命令中添加 -u 参数，简化之后的推送命令输入。
-
-简单的，第一次 push 的时候用 -u
-
+    # -u 即 --set-upstream
     git push -u origin master
 
-    执行 `git push -u origin master` 就相当于是执行了
+    如果是其它分支
+    $ git push -u origin t3_fea
+    Enumerating objects: 5, done.
+    Counting objects: 100% (5/5), done.
+    Delta compression using up to 8 threads
+    Compressing objects: 100% (3/3), done.
+    Writing objects: 100% (3/3), 539 bytes | 539.00 KiB/s, done.
+    Total 3 (delta 1), reused 0 (delta 0), pack-reused 0
+    To ssh://xx.xx.xx.xx:2345/gitrepo/tea.git
+    * [new branch]      t3_fea -> t3_fea
+    branch 't3_fea' set up to track 'origin/t3_fea'.
 
-            git push origin master
+作用：
 
-            和
+    ·推送本地分支 master 到远程主机 origin 的 master 分支
 
-            git branch --set-upstream-to=origin/master master
+        git push origin master
 
-你在本地新建的分支，远程仓库没有该分支的，这时无法推送，参见章节 [本地非空目录，远程仓库无本地分支的push用法]。
+    ·追踪远程分支，远程没有master就自动创建一个
+
+        git branch --set-upstream-to=origin/<branch> <local_branch>
+
+        作用：追踪远程分支 origin/master 到本地分支 master，如果远程没有分支会报错，需要先创建远程分支
+
+    ·设置 origin 为默认主机
 
 ##### 从本地仓库推送多个远程仓库
 
@@ -590,7 +608,7 @@ github.com 获取仓库默认给的是 https 地址，但是在国内的网络�
     Local ref configured for 'git push':     未关联push就没有这两行
         master pushes to master (up to date)
 
-如果 pull 和 push 未关联，需要关联，参见章节 [修改（重建）本地仓库的远程仓库地址]。
+如果 pull 和 push 未关联，需要关联，参见章节 [修改本地仓库的远程仓库设置]。
 
     # 关联 pull
     git branch --set-upstream-to=origin/master master
@@ -716,7 +734,7 @@ git clone 命令正常拉取
     Push  URL: ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/okletgo.git
     HEAD branch: (unknown)
 
-把文件都push上去，会提示没有上游分支，直接推。
+先把文件都 push 上去，会提示没有上游分支，直接推。
 
 这时显示结果，正常了
 
@@ -732,11 +750,9 @@ git clone 命令正常拉取
     Local ref configured for 'git push':
         master pushes to master (up to date)
 
-#### TODO:本地非空目录，远程仓库无本地分支的push用法
+#### 本地非空目录，远程仓库无本地分支的push用法
 
-远程没有 remote_branch 分支，本地已经切换到 dev_xxx。
-
-这种情况常见于你在本地新建的分支，远程仓库没有该分支的，这时无法推送，需要设置关联，参见章节 [修改（重建）本地仓库的远程仓库地址]。
+远程没有 remote_branch 分支，本地已经切换到 dev_xxx。这种情况常见于你在本地新建的分支，远程仓库没有该分支的，这时无法推送，需要设置关联，参见章节 [修改本地仓库的远程仓库设置] 的第 4 步。
 
 一、本地和远程分支名称一致时的操作示例
 
@@ -768,19 +784,6 @@ git clone 命令正常拉取
         master pushes to master (up to date)
 
 2、为 git push 命令设置本地的 t3_fea 关联上游分支
-
-    $ git push --set-upstream origin t3_fea
-    Enumerating objects: 5, done.
-    Counting objects: 100% (5/5), done.
-    Delta compression using up to 8 threads
-    Compressing objects: 100% (3/3), done.
-    Writing objects: 100% (3/3), 539 bytes | 539.00 KiB/s, done.
-    Total 3 (delta 1), reused 0 (delta 0), pack-reused 0
-    To ssh://xx.xx.xx.xx:2345/gitrepo/tea.git
-    * [new branch]      t3_fea -> t3_fea
-    branch 't3_fea' set up to track 'origin/t3_fea'.
-
-    或
 
     $ git push -u origin t3_fea
     Everything up-to-date
@@ -886,7 +889,7 @@ git clone 命令正常拉取
     remotes/origin/hotfix  7cabce404f res me
     remotes/origin/master  881ccdca75 ddd.txt 444
 
-2、然后建立 origin 和 dev_xxx 的联系，参见章节 [修改（重建）本地仓库的远程仓库地址]
+2、然后建立 origin 和 dev_xxx 的联系，参见章节 [修改本地仓库的远程仓库设置]
 
     $ git branch --set-upstream-to=origin/remote_branch dev_xxx
     branch 'dev_xxx' set up to track 'origin/remote_branch'.
@@ -1803,7 +1806,7 @@ NOTE: 本地分支更新远程时，为了明确选择合并策略，不直接�
 
 ## 分支推送 push
 
-分支如果没有对应到远程仓库，无法push，需要建立关联，参见章节 [修改（重建）本地仓库的远程仓库地址]。
+分支如果没有对应到远程仓库，无法push，需要建立关联，参见章节 [修改本地仓库的远程仓库设置]。
 
 ### 重要：推送远程前的检查
 
