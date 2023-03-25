@@ -292,13 +292,13 @@ git revert 在合并冲突时使用`core.editor`的设置，没有单独的设�
 
     mkdir my_proj
 
-版本库或本地仓库 Repository ：在工作区执行 git init 命令就会建立隐藏目录 .git，就是Git的版本库。
+版本库或本地仓库 Repository ：在工作区执行 git init 命令就会建立隐藏目录 .git，这就是 Git 的版本库。
 
     cd my_proj
 
     git init
 
-暂存区 stage 或 index：一般存放在 .git 目录下的index文件（.git/index）中，所以我们把暂存区有时也叫作索引（index）。新增的文件，需要git进行管理了，执行 git add 命令添加。
+暂存区 stage 或 index：一般存放在 .git 目录下的index文件（.git/index）中，所以我们把暂存区有时也叫作索引（index）。如果新增的文件，需要 git 进行管理，执行 git add 命令即可添加。被 git 管理的文件进行了修改，也是使用 git add 命令来添加到暂存区。
 
     cd my_proj
     touch abc.txt
@@ -383,9 +383,9 @@ File 协议
 
 3、设置本地分支和远程库关联
 
-    git branch --set-upstream-to=origin/master master
+    git push -u origin master
 
-如果是在提交记录上新建的其它分支，如何关联远程库参见章节 [本地非空目录，远程仓库无本地分支的push用法]。
+如果是新建的其它分支，如何关联远程库参见章节 [本地非空目录，远程仓库无本地分支的push用法]。
 
 #### TODO:修改（重建）本地仓库的远程仓库地址
 
@@ -428,21 +428,25 @@ github.com 获取仓库默认给的是 https 地址，但是在国内的网络�
     # ssh 地址，需要协议名、用户名
     git remote add origin ssh://git@<ip>:<port>/your_path/xxx.git
 
-    # 建立origin 和 master 的联系
+建立 origin 和 master 的联系
+
     git branch --set-upstream-to=origin/<branch> master
 
-    # 第一次push的时候要 -u
+    git push --set-upstream origin
+
+在进行推送代码到远端分支，且之后希望持续向该远程分支推送，则可以在推送命令中添加 -u 参数，简化之后的推送命令输入。
+
+简单的，第一次 push 的时候用 -u
+
     git push -u origin master
 
-其实，执行添加了 -u 参数的命令 `git push -u origin master` 就相当于是执行了
+    执行 `git push -u origin master` 就相当于是执行了
 
-    git push origin master
+            git push origin master
 
-    和
+            和
 
-    git branch --set-upstream master origin/master
-
-所以，在进行推送代码到远端分支，且之后希望持续向该远程分支推送，则可以在推送命令中添加 -u 参数，简化之后的推送命令输入。
+            git branch --set-upstream-to=origin/master master
 
 你在本地新建的分支，远程仓库没有该分支的，这时无法推送，参见章节 [本地非空目录，远程仓库无本地分支的push用法]。
 
@@ -728,13 +732,148 @@ git clone 命令正常拉取
     Local ref configured for 'git push':
         master pushes to master (up to date)
 
-#### 本地非空目录，远程仓库无本地分支的push用法
+#### TODO:本地非空目录，远程仓库无本地分支的push用法
+
+远程没有 remote_branch 分支，本地已经切换到 dev_xxx。
+
+这种情况常见于你在本地新建的分支，远程仓库没有该分支的，这时无法推送，需要设置关联，参见章节 [修改（重建）本地仓库的远程仓库地址]。
+
+一、本地和远程分支名称一致时的操作示例
+
+本地新建的分支 t3_fea， 要推送到远程仓库，实现 push 和 pull
+
+1、确认下当前信息
+
+    $ git branch -avv
+    [分支：全部分支带最近提交及注释]
+    master                 3384fb2 [origin/master] tea2 再改2
+    * t3_fea                 f6aeb75 t3_fea 分支自己添加
+    remotes/origin/HEAD    -> origin/master
+    remotes/origin/def_xxx b414ac9 功能3
+    remotes/origin/hotfix  7cabce4 res me
+    remotes/origin/master  3384fb2 tea2 再改2
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
+    Push  URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
+    HEAD branch: master
+    Remote branches:
+        def_xxx tracked
+        hotfix  tracked
+        master  tracked
+    Local branch configured for 'git pull':
+        master merges with remote master
+    Local ref configured for 'git push':
+        master pushes to master (up to date)
+
+2、为 git push 命令设置本地的 t3_fea 关联上游分支
+
+    $ git push --set-upstream origin t3_fea
+    Enumerating objects: 5, done.
+    Counting objects: 100% (5/5), done.
+    Delta compression using up to 8 threads
+    Compressing objects: 100% (3/3), done.
+    Writing objects: 100% (3/3), 539 bytes | 539.00 KiB/s, done.
+    Total 3 (delta 1), reused 0 (delta 0), pack-reused 0
+    To ssh://xx.xx.xx.xx:2345/gitrepo/tea.git
+    * [new branch]      t3_fea -> t3_fea
+    branch 't3_fea' set up to track 'origin/t3_fea'.
+
+    或
+
+    $ git push -u origin t3_fea
+    Everything up-to-date
+    branch 't3_fea' set up to track 'origin/t3_fea'.
+
+3、本机验证
+
+    $ git push
+    Everything up-to-date
+
+    $ git fetch
+
+    $ git status
+    git status:
+    On branch t3_fea
+    Your branch is up to date with 'origin/t3_fea'.
+
+    nothing to commit, working tree clean
+
+    $ git branch -avv
+    master                 3384fb2 [origin/master] tea2 再改2
+    * t3_fea                 f6aeb75 [origin/t3_fea] t3_fea 分支自己添加  <----------注意这里显示添加了追踪
+    remotes/origin/HEAD    -> origin/master
+    remotes/origin/def_xxx b414ac9 功能3
+    remotes/origin/hotfix  7cabce4 res me
+    remotes/origin/master  3384fb2 tea2 再改2
+    remotes/origin/t3_fea  f6aeb75 t3_fea 分支自己添加
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
+    Push  URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
+    HEAD branch: master
+    Remote branches:
+        def_xxx tracked
+        hotfix  tracked
+        master  tracked
+        t3_fea  tracked <----------注意这里显示添加了追踪
+    Local branches configured for 'git pull':
+        master merges with remote master
+        t3_fea merges with remote t3_fea
+    Local refs configured for 'git push':
+        master pushes to master (up to date)
+        t3_fea pushes to t3_fea (up to date) <----------注意这里显示添加了追踪
+
+4、 其它机器验证
+
+    $ git fetch
+    remote: Enumerating objects: 5, done.
+    remote: Counting objects: 100% (5/5), done.
+    remote: Compressing objects: 100% (3/3), done.
+    remote: Total 3 (delta 1), reused 0 (delta 0), pack-reused 0
+    Unpacking objects: 100% (3/3), 519 bytes | 51.00 KiB/s, done.
+    From ssh://xx.xx.xx.xx:2345/gitrepo/tea
+    * [new branch]            t3_fea     -> origin/t3_fea
+
+    $ git branch -avv
+    * master                 3384fb2d33 [origin/master] tea2 再改2
+    remotes/origin/def_xxx b414ac95d4 功能3
+    remotes/origin/hotfix  7cabce404f res me
+    remotes/origin/master  3384fb2d33 tea2 再改2
+    remotes/origin/t3_fea  f6aeb75474 t3_fea 分支自己添加
+
+    $ git switch -c t3_fea origin/t3_fea
+    Switched to a new branch 't3_fea'
+    branch 't3_fea' set up to track 'origin/t3_fea'.
+
+    $ git branch -avv
+    master                 3384fb2d33 [origin/master] tea2 再改2
+    * t3_fea                 f6aeb75474 [origin/t3_fea] t3_fea 分支自己添加
+    remotes/origin/def_xxx b414ac95d4 功能3
+    remotes/origin/hotfix  7cabce404f res me
+    remotes/origin/master  3384fb2d33 tea2 再改2
+    remotes/origin/t3_fea  f6aeb75474 t3_fea 分支自己添加
+
+    $ git push
+    Everything up-to-date
+
+    $ git fetch
+
+    $ git status
+    git status:
+    On branch t3_fea
+    Your branch is up to date with 'origin/t3_fea'.
+
+    nothing to commit, working tree clean
+
+二、本地和远程分支名称不同时的操作示例
 
     NOTE:本地分支与远程分支二者名称尽量一致，否则以后每次使用 git push 命令都要加参数，太麻烦了
 
-远程没有 remote_branch 分支，本地已经切换到 dev_xxx。这种情况常见于你在本地新建的分支，远程仓库没有该分支的，这时无法推送，需要设置关联
+1、先把本地分支推送到远程，
 
-    # 1、先把本地分支推送到远程，
     $ git push origin dev_xxx:remote_branch
 
     # 查看分支情况
@@ -747,7 +886,8 @@ git clone 命令正常拉取
     remotes/origin/hotfix  7cabce404f res me
     remotes/origin/master  881ccdca75 ddd.txt 444
 
-    # 2、然后建立 origin 和 dev_xxx 的联系
+2、然后建立 origin 和 dev_xxx 的联系，参见章节 [修改（重建）本地仓库的远程仓库地址]
+
     $ git branch --set-upstream-to=origin/remote_branch dev_xxx
     branch 'dev_xxx' set up to track 'origin/remote_branch'.
 
@@ -1383,18 +1523,6 @@ git 用 switch 命令替代了 checkout 命令中关于分支切换的功能
     # git checkout master
     git switch master
 
-### 从远程库的某个分支建立一个本地分支
-
-因为 git clone 默认建立的本地库只有 master 这一个分支，想切换到其它分支，需要先从本地的远程库建立本地分支
-
-    # 最好二者名称一致，否则以后的 git push 命令要加参数才能用，太繁琐了
-    # git checkout -b hotfix origin/hotfix
-    $ git switch -c hotfix origin/hotfix
-    Switched to a new branch 'hotfix'
-    branch 'hotfix' set up to track 'origin/hotfix'.
-
-这个分支不需要手工建立关联关系。
-
 ### 直接切换到指定的提交记录
 
 这时进入不关联分支的 detached HEAD 分离状态。如果暂存区或工作区有内容，会报错无法切换，但是我遇到过丢弃暂存区直接切换的情况，没搞明白为啥。
@@ -1413,29 +1541,48 @@ git 用 switch 命令替代了 checkout 命令中关于分支切换的功能
     # git checkout v1.23
     git switch --detach v1.23
 
-#### TODO:在指定提交点建立分支
+### 在指定提交点建立分支
 
-    # 目前推荐的用法：在某个提交点就地建立分支
+目前推荐的用法：在某个提交点就地建立分支
+
     git switch -c new_branch <commit>
 
-        # 或
-        # 切换到某个提交点后就地建立分支
-        git checkout A9380e9
-        git branch new_branch
+以前的用法，废弃了
 
-        # 如果在参数里加上提交点的 hash，可以省去上面 git checkout 那一步
-        git checkout -b new_branch <commit>
-        # 或
-        git branch new_branch A9380e9
+    # 切换到某个提交点后就地建立分支
+    git checkout A9380e9
+    git branch new_branch
 
-NOTE: 新建分支后没有对应到远程仓库，无法push，需要建立关联，参见章节 [修改（重建）本地仓库的远程仓库地址]。
+如果在参数里加上提交点的 hash，可以省去上面 git checkout 那一步
 
-### 删除分支，远程/本地
+    git checkout -b new_branch <commit>
+
+    或
+
+    git branch new_branch A9380e9
+
+NOTE: 新建的分支没有对应到远程仓库，无法推送到远程，如何建立关联，参见章节 [本地非空目录，远程仓库无本地分支的push用法]。
+
+### 从远程库的某个分支建立一个本地分支
+
+因为 git clone 默认建立的本地库只有 master 这一个分支，想切换到其它分支，需要先从本地的远程库建立本地分支
+
+最好二者名称一致，否则以后的 git push 命令要加参数才能用，太繁琐了
+
+    废弃： git checkout -b hotfix origin/hotfix
+
+    $ git switch -c hotfix origin/hotfix
+    Switched to a new branch 'hotfix'
+    branch 'hotfix' set up to track 'origin/hotfix'.
+
+这个分支不需要手工建立与远程仓库的关联。
+
+## 删除分支，远程/本地
 
 0、先看看有多少本地和远程分支
 
     # 看不到完整输出时，则使用 git remote update 或 git fetch --all 先更新下
-    git branch -avv
+    $ git branch -avv
 
 1、切换到其他分支再进行操作
 
