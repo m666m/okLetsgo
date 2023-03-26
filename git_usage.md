@@ -380,13 +380,23 @@ File 协议
 
     git init
 
-如果是用 git clone 命令建立的目录，已经是 git 仓库了，不需要再做
-
 2、添加 origin 远程库对象
 
     git remote add origin ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
 
-3、设置本地分支和远程库关联
+3、拉取远程代码，未设置关联时需要先指明远程库和分支名
+
+    1、
+    $ git pull origin master
+
+    2、
+    $ git branch --set-upstream-to=origin/master master
+    branch 'master' set up to track 'origin/master'.
+    或
+    $ git push --set-upstream origin master
+    branch 'master' set up to track 'origin/master'.
+
+或一个语句直接设置本地分支和远程库关联
 
     git push -u origin master
 
