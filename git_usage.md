@@ -366,13 +366,13 @@ File 协议
 
     git clone rsync://example.com/path/to/repo.git
 
-### 建立和设置本地仓库
+### TODO:建立本地仓库，关联远程仓库
 
 有两种方法：
 
 法一：从远程服务器上已有的仓库，直接用 `git clone` 命令复制到本地即可。这样就在本地建立了 “本地仓库” 和 “本地的远程仓库”，参见章节 [定制化的 git clone]。
 
-法二：在本地建立 “本地仓库”，在远程服务器建立 “裸仓库”，需要手工把本地仓库建立的分支跟远程服务器上的裸仓库的分支关联起来。
+法二：在本地建立 “本地仓库”，手工把本地仓库建立的分支跟远程服务器上的裸仓库的分支关联起来。
 
 默认的 master 分支的用法
 
@@ -432,7 +432,7 @@ File 协议
     To have this happen automatically for branches without a tracking
     upstream, see 'push.autoSetupRemote' in 'git help config'.
 
-4、设置分支关联设置本地分支和远程库关联
+4、设置分支关联设置本地分支和远程库关联，远程无代码参见章节 [本地空目录，拉取远程刚建好的空白裸仓库]
 
     # 关联 pull
     git branch --set-upstream-to=origin/master master
@@ -490,7 +490,7 @@ github.com 获取仓库默认给的是 https 地址，但是在国内的网络�
 
     git remote rm origin
 
-3、然后重新添加远程库 origin，建立 origin 和 master 的联系，参见章节 [建立和设置本地仓库]。
+3、然后重新添加远程库 origin，建立 origin 和 master 的联系，参见章节 [建立本地仓库，关联远程仓库]。
 
 4、执行 git pull 和 git push 验证是否正常
 
@@ -619,7 +619,7 @@ github.com 获取仓库默认给的是 https 地址，但是在国内的网络�
 
 先执行章节 [查看远程库配置]。
 
-然后检查 pull 和 push 是否关联，参见章节 [建立和设置本地仓库] 的第 4 步。
+然后检查 pull 和 push 是否关联，参见章节 [建立本地仓库，关联远程仓库] 的第 4 步。
 
 #### 本地空目录，远程裸仓库里有文件
 
@@ -643,7 +643,7 @@ git clone 命令正常拉取
 
 0.远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
 
-1.本地操作，新建文件夹，git初始化，并添加远程仓库地址，详见章节 [建立和设置本地仓库]。
+1.本地操作，新建文件夹，git初始化，并添加远程仓库地址，详见章节 [建立本地仓库，关联远程仓库]。
 
     $ mkdir tea
 
@@ -664,7 +664,7 @@ git clone 命令正常拉取
 
 3.本地操作，拉取文件，先绑定远程
 
-    # git pull --rebase origin master
+    # git pull origin master
 
     $ git branch --set-upstream-to=origin/master master
     Branch 'master' set up to track remote branch 'master' from 'origin'.
