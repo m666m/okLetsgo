@@ -717,7 +717,7 @@ git clone 命令正常拉取
 
 远程没有 remote_branch 分支，本地已经切换到 dev_xxx。
 
-TODO:本地新建的分支 t3_fea， 要推送到远程仓库，实现 push 和 pull，这时远程仓库没有该分支，无法直接推送，需要先设置关联。
+适用场景：本地新建的分支 t3_fea， 要推送到远程仓库，实现 push 和 pull，这时远程仓库没有该分支，无法直接推送，需要先设置关联。
 
 ##### 一、分支名称一致的操作示例
 
@@ -775,7 +775,8 @@ TODO:本地新建的分支 t3_fea， 要推送到远程仓库，实现 push 和 
 
 4、 其它机器验证
 
-    拉取远程分支
+拉取远程分支
+
     $ git fetch
     * [new branch]            t3_fea     -> origin/t3_fea
 
@@ -786,12 +787,14 @@ TODO:本地新建的分支 t3_fea， 要推送到远程仓库，实现 push 和 
     remotes/origin/master  3384fb2d33 tea2 再改2
     remotes/origin/t3_fea  f6aeb75474 t3_fea 分支自己添加
 
-    可以在本地创建该分支了
+可以在本地创建该分支了
+
     $ git switch -c t3_fea origin/t3_fea
     Switched to a new branch 't3_fea'
     branch 't3_fea' set up to track 'origin/t3_fea'.
 
-    可以看到关联了跟踪分支
+可以看到关联了跟踪分支
+
     $ git branch -avv
     master                 3384fb2d33 [origin/master] tea2 再改2
     * t3_fea                 f6aeb75474 [origin/t3_fea] t3_fea 分支自己添加
