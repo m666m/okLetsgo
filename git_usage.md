@@ -126,7 +126,7 @@ git config --glboal 选项指的是修改 Git 的全局配置文件 ~/.gitconfig
 
 如果是私有仓库，可以添加本机用户的公钥到远程仓库git用户的认证密钥文件中，以便后续ssh免密登陆
 
-    ssh-copy-id -i ~/.ssh/id_ed25519.pub -p 2345 git@xx.xx.xx.xx
+    ssh-copy-id -i ~/.ssh/id_ed25519.pub -p 2345 git@11.22.33.44
 
 ### 3、设置 gitub 使用 ssh 密钥方式管理代码库
 
@@ -402,14 +402,14 @@ File 协议
 
     # 先获取主干分支，把 master 分支的 HEAD 配置上
     git pull origin master
-    From ssh://74.120.175.117:26179/uspace/gitrepo/tea
+    From ssh://11.22.33.44:2345/gitrepo/tea
     * branch            master     -> FETCH_HEAD
 
     # 再获取所有分支的信息
     $ git pull
     remote: Enumerating objects: 16, done.
     remote: Counting ... done.
-    From ssh://xx.xx.xx.xx:2345/gitrepo/tea
+    From ssh://11.22.33.44:2345/gitrepo/tea
     * [new branch]      def_xxx    -> origin/def_xxx
     * [new branch]      hotfix     -> origin/hotfix
     * [new branch]      t3_fea     -> origin/t3_fea
@@ -448,11 +448,11 @@ File 协议
 
         git push origin master
 
-    ·追踪远程分支，远程没有master就自动创建一个
+    ·跟踪远程分支，远程没有master就自动创建一个
 
         git branch --set-upstream-to=origin/master master
 
-        作用：追踪远程分支 origin/master 到本地分支 master，如果远程没有分支会报错，需要先创建远程分支
+        作用：跟踪远程分支 origin/master 到本地分支 master，如果远程没有分支会报错，需要先创建远程分支
 
     ·设置 origin 为默认主机
 
@@ -482,7 +482,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
 远程仓库地址格式
 
-    ssh://git@xx.xx.xx.xx:2345/gitrepo/myproj.git
+    ssh://git@11.22.33.44:2345/gitrepo/myproj.git
 
     git@github.com:m666m/okLetsgo.git
 
@@ -490,11 +490,11 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
 方法一、推送命令只会推送到默认的 origin 地址，其他的各个 server1，2，3 得再挨个执行 push 命令
 
-    git remote add server1 ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
+    git remote add server1 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
-    git remote add server2 ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
+    git remote add server2 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
-    git remote add server3 ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
+    git remote add server3 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
     git push server1 master
 
@@ -502,13 +502,13 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
 方法二、省事的方法，给 origin 添加多个 push 远程地址(upstream)，默认 fetch 还是 origin 最早添加的地址
 
-    git remote set-url --add origin ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
+    git remote set-url --add origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
     $ git remote show origin
     * remote origin
     Fetch URL: git@github.com:m666m/project_name.git
     Push  URL: git@github.com:m666m/project_name.git
-    Push  URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
+    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/project_name.git
     HEAD branch: main
     Remote branch:
         main tracked
@@ -520,7 +520,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
     $ git remote -v
     origin  git@github.com:m666m//project_name.git (fetch)
     origin  git@github.com:m666m//project_name.git (push)
-    origin  ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git (push)
+    origin  ssh://git@11.22.33.44:2345/gitrepo/project_name.git (push)
 
 添加后，本地项目中的 .git/config 对应内容如下
 
@@ -528,11 +528,11 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
         url = git@github.com:m666m/project_name.git
         fetch = +refs/heads/*:refs/remotes/origin/*
         # url = https://github.com/m666m/project_name.git
-        url = ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
+        url = ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
 如果想删除
 
-    git remote set-url --delete origin ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
+    git remote set-url --delete origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
 2、一个本地库同步到另外两个远程库，不使用origin
 
@@ -579,7 +579,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
     Push  URL: git@github.com:m666m/okLetsgo.git
     HEAD branch: master
     Remote branch:
-        master tracked：有追踪分支
+        master tracked：有跟踪分支
     Local branch configured for 'git pull':  未关联pull就没有这两行
         master merges with remote master
     Local ref configured for 'git push':     未关联push就没有这两行
@@ -604,7 +604,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
 git clone 命令正常拉取
 
-    git clone ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git [新目录名字]
+    git clone ssh://git@11.22.33.44:2345/gitrepo/tea.git [新目录名字]
 
     # Ipv6 用标准的中括号方式：
     #
@@ -637,7 +637,7 @@ git clone 命令正常拉取
     $ git init
     Initialized empty Git repository in C://tea/.git/
 
-    $ git remote add origin ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
+    $ git remote add origin ssh://git@11.22.33.44:2345/gitrepo/tea.git
 
 2.本地操作，先提交个文件，推送远程，否则直接 pull 会报错
 
@@ -661,8 +661,8 @@ git clone 命令正常拉取
 
     $ git remote show origin
     * remote origin
-      Fetch URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
-      Push  URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
+      Fetch URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
+      Push  URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
       HEAD branch: master
       Remote branch:
         master tracked
@@ -687,14 +687,14 @@ git clone 命令正常拉取
 
 本地先 git init，然后
 
-    git remote add origin ssh://git@xx.xx.xx.xx:2345/gitrepo/okletgo.git
+    git remote add origin ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
 
 这时显示结果 HEAD 是 unknown
 
     $ git remote show origin
     * remote origin
-    Fetch URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/okletgo.git
-    Push  URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/okletgo.git
+    Fetch URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
+    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
     HEAD branch: (unknown)
 
 先把文件都 push 上去，会提示没有上游分支，直接推就会建立关联关系。
@@ -703,8 +703,8 @@ git clone 命令正常拉取
 
     $ git remote show origin
     * remote origin
-    Fetch URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/okletgo.git
-    Push  URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/okletgo.git
+    Fetch URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
+    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
     HEAD branch: master
     Remote branch:
         master tracked 有跟踪分支了
@@ -749,7 +749,7 @@ TODO:本地新建的分支 t3_fea， 要推送到远程仓库，实现 push 和 
 
     $ git branch -avv
     master                 3384fb2 [origin/master] tea2 再改2
-    * t3_fea               f6aeb75 [origin/t3_fea] t3_fea 分支自己添加  <---------- 这里显示了对应的追踪分支
+    * t3_fea               f6aeb75 [origin/t3_fea] t3_fea 分支自己添加  <---------- 这里显示了对应的跟踪分支
     remotes/origin/HEAD    -> origin/master
     remotes/origin/def_xxx b414ac9 功能3
     remotes/origin/hotfix  7cabce4 res me
@@ -758,20 +758,20 @@ TODO:本地新建的分支 t3_fea， 要推送到远程仓库，实现 push 和 
 
     $ git remote show origin
     * remote origin
-    Fetch URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
-    Push  URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/tea.git
+    Fetch URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
+    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
     HEAD branch: master
     Remote branches:
         def_xxx tracked
         hotfix  tracked
         master  tracked
-        t3_fea  tracked <---------- 这里显示添加了追踪
+        t3_fea  tracked <---------- 这里显示添加了跟踪
     Local branches configured for 'git pull':
         master merges with remote master
         t3_fea merges with remote t3_fea
     Local refs configured for 'git push':
         master pushes to master (up to date)
-        t3_fea pushes to t3_fea (up to date) <---------- 这里显示添加了追踪
+        t3_fea pushes to t3_fea (up to date) <---------- 这里显示添加了跟踪
 
 4、 其它机器验证
 
@@ -835,7 +835,7 @@ TODO:本地新建的分支 t3_fea， 要推送到远程仓库，实现 push 和 
     remotes/origin/hotfix  7cabce404f res me
     remotes/origin/master  881ccdca75 ddd.txt 444
 
-如果你的本地分支名称跟远程仓库不一致，需要显式指定本地分支和远程库分支的名称才能推送
+日后的使用比较麻烦，因为你的本地分支名称跟远程仓库不一致，所以需要显式指定本地分支和远程库分支的名称才能推送
 
     git push origin HEAD:remote_branch
 
@@ -1569,35 +1569,44 @@ NOTE: 新建的分支没有对应到远程仓库，无法推送到远程，如�
 
 1、切换到其他分支再进行操作
 
-    git checkout master
+    git switch master
 
-2、删除远程分支的指针而不是直接删分支，方便数据恢复。
+2、删除远程服务器仓库中的远程分支及本地的跟踪分支
 
     git push origin --delete fea_xxx
+    To ssh://11.22.33.44:2345/gitrepo/tea.git
+    - [deleted]               fea_xxx
 
-    对跟踪分支，git push origin --delete 该命令也会删除本地-远程的跟踪分支，等于还做了个
+该命令也会删除本地远程库对象 origin 中的跟踪分支 origin/fea_xxx。
 
-        # 如果只删除跟踪分支，则还需要 git remote prune 来删除跟踪分支
-        git branch --delete --remotes <remote>/<branch>
+如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
 
-    如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
+    git push origin :refs/fea_xxx
 
-        git push origin :refs/fea_xxx
+    甚至可以用本地分支 fea_-2 覆盖远程分支 fea_-1
 
-        或可以用本地分支 fea_-2 覆盖远程分支 fea_-1
+        git push -f origin fea_-2:refs/fea_-1
 
-            git push -f origin fea_-2:refs/fea_-1
+如果只删除本地的跟踪分支
 
-3、更新本地的远程库，用 prune 进行清理
+    git branch --delete --remotes <remote>/<branch>
 
-    #git fetch origin -p
+则还需要删除本地远程的跟踪分支
+
     git remote prune origin
 
-4、从本地库删除该分支
+执行 git status、git remote show origin 看提示操作即可。
+
+3、从本地库删除该分支
 
     git branch -d fea_xxx
 
-5、你删除远程后，其它人计算机的本地库也记录着这个远程分支
+4、你删除远程后，其它人计算机的本地库也记录着这个远程分支
+
+其他人在自己计算机上的操作
+
+    # 先更新
+    $ git fetch
 
     $ git remote show origin
     Remote branches:
@@ -1605,20 +1614,22 @@ NOTE: 新建的分支没有对应到远程仓库，无法推送到远程，如�
         master                         tracked
         refs/remotes/origin/fea_xxx stale (use 'git remote prune' to remove)
 
-    可以看到提示：stale (use ‘git remote prune’ to remove)
+可以看到提示：stale (use ‘git remote prune’ to remove)
 
-    这代表远程服务器上已经删除当前这条分支 但是本地代码库和本地远程库并未同步这个状态，需要清理这些无用的未被tracked 的远程。
+这代表远程服务器上已经删除当前这条分支 但是本地代码库和本地远程库并未同步这个状态。
 
-在他们自己的计算机上运行如下命令，跟上面第三步的操作一样
+需要清理远程库对象 origin 中这些无效的跟踪分支
 
     $ git remote prune origin
     Pruning origin
     URL: ssh://
     * [pruned] origin/fea_xxx
 
-    $ git branch -d fea_xxx
+如果他们的本地也有 fea_xx分支，可以删除掉
 
-6、确认是否干净了
+    git branch -d fea_xxx
+
+5、确认是否干净了
 
     git fetch
 
@@ -3346,7 +3357,7 @@ Git 自动给 dev 分支做了一次提交，注意这次提交的commit是 1d4b
 
 ## 文件改名
 
-Git 管理仓库中的文件，是根据文件名来追踪文件的，如果你在本地直接用操作系统的 `mv` 命令改名一个文件，git 会认为你删掉了一个文件，新增了一个文件。运行命令 `git status` 会看到 deleted 了原文件， untracked 新文件。如果你提交了这个修改，你会发现新文件没有之前源文件的提交记录，历史记录全丢了！
+Git 管理仓库中的文件，是根据文件名来跟踪文件的，如果你在本地直接用操作系统的 `mv` 命令改名一个文件，git 会认为你删掉了一个文件，新增了一个文件。运行命令 `git status` 会看到 deleted 了原文件， untracked 新文件。如果你提交了这个修改，你会发现新文件没有之前源文件的提交记录，历史记录全丢了！
 
 所以，重命名文件或文件夹应该使用 `git mv` 命令，这样才会保留你的提交记录。
 
@@ -3354,7 +3365,7 @@ Git 管理仓库中的文件，是根据文件名来追踪文件的，如果你�
 
     git mv -v oldfile newfile
 
-    # 已经追踪，无需进行 add -u
+    # 已经跟踪，无需进行 add -u
     $ git status
     Changes to be committed:
     (use "git reset HEAD <file>..." to unstage)
@@ -4056,7 +4067,7 @@ HEAD特殊：
 
 git rm [file]
 
-    删除该文件，取消对该文件的追踪。该操作被加入暂存区等待提交。
+    删除该文件，取消对该文件的跟踪。该操作被加入暂存区等待提交。
 
     如果暂存区或工作区有该文件的修改，则会报错，提示使用 `git rm -f`。
 
@@ -4074,11 +4085,11 @@ git rm [file]
 
 git rm --cached [file]
 
-    取消对该文件的追踪，文件保留到工作区
+    取消对该文件的跟踪，文件保留到工作区
 
 git rm -f [file]
 
-    删除该文件，取消对该文件的追踪。丢弃暂存区和工作区中该文件的修改。
+    删除该文件，取消对该文件的跟踪。丢弃暂存区和工作区中该文件的修改。
 
 #### 从远程库删除某些文件但保留本地的文件
 
@@ -4373,14 +4384,14 @@ P.S 第二行最后有个"."
 一般都是因为 remote 端目录变更导致
 
     $ git remote -v
-    origin  ssh://git@xx.xx.xx.xx:2345/gitrepo/af_monitor.git (fetch)
-    origin  ssh://git@xx.xx.xx.xx:2345/gitrepo/af_monitor.git (push)
+    origin  ssh://git@11.22.33.44:2345/gitrepo/af_monitor.git (fetch)
+    origin  ssh://git@11.22.33.44:2345/gitrepo/af_monitor.git (push)
 
 删除 origin 重建
 
     git remote rm origin
 
-    git remote add origin ssh://git@xx.xx.xx.xx:22/gitrepo/tea.git
+    git remote add origin ssh://git@11.22.33.44:22/gitrepo/tea.git
 
 建立origin 和 master 的联系
 
