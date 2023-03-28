@@ -315,7 +315,7 @@ git做操作之前或操作之后，查看当前的git状态
 
     git commit -m '初始化提交'
 
-版本库推送远程仓库见章节 [远程仓库拉取和推送的各种情况]
+版本库推送远程仓库见章节 [同步远程仓库push和pull]
 
 #### git 地址协议
 
@@ -456,7 +456,7 @@ File 协议
 
     ·设置 origin 为默认主机
 
-如果远程仓位是空的，需要先推送个文件上去，参见章节 [本地空目录，拉取远程刚建好的空白裸仓库]。
+如果远程仓位是空的，需要先推送个文件上去，参见章节 [本地空目录，远程刚建好空白裸仓库]。
 
 5、执行 git pull 和 git push 验证是否正常
 
@@ -552,13 +552,13 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
     git push gitee master
 
-### 远程仓库拉取和推送的各种情况
+### 同步远程仓库push和pull
 
     https://www.w3cschool.cn/git/git-uroc2pow.html
 
     https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories
 
-远程仓库是个特殊对象 origin，本地分支和远程仓库建立联系，首先要添加 origin 对象，然后设置本地分支和远程仓库上分支的关联，然后才可以推送和拉取。
+本地的远程仓库是个特殊对象 origin，本地分支和服务器上的裸仓库建立联系，首先要添加 origin 对象，然后设置本地分支和远程仓库上分支的关联，才可以推送和拉取。
 
 远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
 
@@ -618,7 +618,7 @@ git clone 命令正常拉取
 
 这样本地目录里就会多了个名为 tea 的目录，这个目录已经是git管理的仓库了，远端服务器的信息都已经配置了。
 
-#### 本地空目录，拉取远程刚建好的空白裸仓库
+#### 本地空目录，远程刚建好空白裸仓库
 
 刚建好的裸仓库无内容，直接用 clone 拉是可以的，但是后续做pull和push会报错。
 
@@ -673,43 +673,9 @@ git clone 命令正常拉取
 
     nothing to commit, working tree clean
 
-#### 本地空目录，仅拉取指定远程分支的用法
+#### 本地非空目录，同步到远程非空裸仓库
 
-比如分支名称dev
-
-    git clone -b dev 代码仓库地址
-
-或 fetch 下来再建个本地分支
-
-    $ git init
-    $ git remote add origin git@github.com:m666m/nothing2.git
-
-    $ git fetch origin dev
-
-    # 看不到完整输出时，则使用 git remote update 或 git fetch --all 先更新下
-    $ git branch -avv
-    * master                 8d96022 [origin/master] 3
-    remotes/origin/HEAD    -> origin/master
-    remotes/origin/dev        b414ac9 功能3
-    remotes/origin/master  8d96022 3
-
-    $ git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
-
-    $ git pull origin dev(远程分支名称)
-
-又一个方法
-
-    只想要 fetch 其他的分支，比如 dev：
-
-    $ git remote set-branches origin dev
-
-    $ git fetch --depth 1 origin dev
-
-    $ git checkout -b dev origin/dev
-
-#### 本地非空目录，拉取远程非空裸仓库
-
-本质上二者是同一个的项目，只是提交记录步调不一致，比如下载了一份源代码，需要从远程仓库进行同步的场景。
+用于同一个的项目，只是提交记录步调不一致，比如下载了一份源代码，需要从远程仓库同步最新的数据。或本地仓库开发了文件，需要多人共享，则在服务器建立裸仓库，需要把本地推送上去。
 
 本地先 git init，然后
 
@@ -739,7 +705,7 @@ git clone 命令正常拉取
     Local ref configured for 'git push':
         master pushes to master (up to date) 推送也有了
 
-#### 本地非空目录，远程仓库无本地分支的push用法
+#### 本地非空目录，远程裸仓库无本地分支的push用法
 
 远程没有 remote_branch 分支，本地已经切换到 dev_xxx。
 
@@ -879,45 +845,84 @@ git clone 命令正常拉取
 
 #### 浅克隆(shallow clone) --- 大仓库非全量拉取
 
-对比较大且未清理的大仓库，克隆仓库这个仓库，会把所有的历史协作记录都clone下来。其实对于我们直接使用仓库，而不是参与仓库工作的人来说，只要把最近的一次commit给clone下来就好了。
+适用场景：你只是想 clone 最新版本来使用，而不是参与项目的开发
 
-适合用 git clone --depth=1 的场景：你只是想clone最新版本来使用或学习，而不是参与整个项目的开发工作
+git cole 命令默认会把所有的提交记录都 clone 下来，对比较大且未清理的大仓库，这个过程耗时长而且占用空间大。
+
+其实对于我们直接使用仓库的内容，而不是参与其开发工作的人来说，只根据最近的一次的提交记录把相关内容给 clone 下来就好了。
+
+只拉取最近一次提交记录相关内容
 
     git clone --depth 1
 
-进一步精简，拉取指定分支的最近一次提交的版本
+如果想限制只下载指定分支，参见章节 [仅拉取指定远程分支]。
 
-    git clone --depth 1  --branch dev_xxx
+这样 clone 下来的仓库，如果你只是用来查看最新内容或者直接编译是没问题的。
 
-这样clone的仓库，如果你只是用来查看最新内容或者直接编译那无所谓，但是如果是要像正常仓库一样操作还是有些区别的
+但是，如果是要像正常仓库一样操作还是有些区别的
 
-    使用了--depth克隆的仓库就是一个浅克隆的仓库，并不完整，只包含远程仓库的HEAD分支。
+    使用了--depth 克隆的仓库就是一个浅克隆的仓库，并不完整，只包含远程仓库的 HEAD 分支。
 
-    没有远程仓库的tags。
+    没有远程仓库的 tags。
 
-    不fetch子仓库(submodules)。
+    不 fetch 子仓库(submodules)。
 
-    即使你使用gi fetch，也不能把完整仓库fetch下来(config文件可以看到,remote.origin.fetch的值是+refs/heads/master:refs/remotes/origin/master)
+    即使你再使用 git fetch，也不能把完整仓库 fetch 下来(config文件可以看到,remote.origin.fetch的值是+refs/heads/master:refs/remotes/origin/master)
 
-这种方式有两个问题
+使用时注意其缺失功能
 
-    切换不到历史 commit
+    无法查看历史 commit、无法切换到历史 commit
 
-    切换不到别的分支
+    无法切换到其它分支
 
-解决
+当你有一天需要完整的提交记录的时，可以弥补
 
-    当你有一天需要历史提交记录的时候
+    git pull --unshallow
 
-        git pull --unshallow
+当你需要切换到其它分支的时候
 
-    当你需要切换到其它分支的时候
+    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 
-        git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+    git pull
 
-        git pull
+然后就可以正常使用了。
 
-    然后就可以正常使用了
+#### 仅拉取指定远程分支
+
+假设分支名称dev
+
+    git clone -b dev
+
+或 fetch 下来再建个本地分支
+
+    $ git init
+    $ git remote add origin git@github.com:m666m/nothing2.git
+
+    $ git fetch origin dev
+
+    # 查看远程分支，
+    $ git branch -avv
+    * master                 8d96022 [origin/master] 3
+    remotes/origin/HEAD    -> origin/master
+    remotes/origin/dev        b414ac9 功能3
+    remotes/origin/master  8d96022 3
+
+    # 看不到远程分支时，使用 git remote update 或 git fetch --all 先更新下，
+    # 其实文件都下载到本地的远程仓库了，只是没有出现在工作区
+
+    $ git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
+
+    $ git pull origin dev(远程分支名称)
+
+上面方法的改良，限制 fetch 只下载到指定分支
+
+    只想要 fetch 其他的分支，比如 dev：
+
+    $ git remote set-branches origin dev
+
+    $ git fetch --depth 1 origin dev
+
+    $ git checkout -b dev origin/dev
 
 ##### 拉取指定分支的指定commit版本
 
@@ -1199,7 +1204,7 @@ sparse-checkout 文件设置
 
     echo "backend/*" > .git/info/sparse-checkout
 
-4、真正的下载文件
+4、然后再拉取文件
 
     git checkout
 
@@ -1777,7 +1782,7 @@ NOTE: 本地分支更新远程时，为了明确选择合并策略，不直接�
 
 ### 重要：推送远程前的检查
 
-本地分支推送到远程，需要有远程库 origin，否则参见章节 [本地空目录，拉取远程刚建好的空白裸仓库]。
+本地分支推送到远程，需要有远程库 origin，否则参见章节 [本地空目录，远程刚建好空白裸仓库]。
 
     git push origin dev_xxx:remote_branch
 
