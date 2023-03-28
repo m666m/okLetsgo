@@ -2984,7 +2984,7 @@ if [ -x /usr/bin/dircolors ]; then
 
     # 下为各命令的惯用法
     alias greps='grep --color=auto -in'
-    # 列出所有文件中包含指定内容的的行，如 `grepf logg``
+    # 查找当前目录及子目录所有文件，列出包含指定内容的的行，如 `grepf logg`
     alias grepf='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
     alias trees='tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='pstree -p -s'
@@ -5301,8 +5301,9 @@ grep -w 匹配单词，用于搜索结果中类似字母组合太多的情况。
 
 从当前目录及子目录列出所有目录名和文件名，排除目录 .git 和 __pycache__，逐个文件的查找文件内容包含 “logg” 的行，列出文件名、行号、内容
 
-    # find 没法加 -type f，否则没法过滤目录，在后面让 grep 跳过目录即可
-    find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto  -d skip -in logg
+    # 查找当前目录及子目录所有文件，列出包含指定内容的的行，如 `grepf logg`
+    # find 没法加 -type f，否则没法过滤目录，在后面用 -d 让 grep 跳过目录即可
+    find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in logg
 
 tr 功能1 -- 替换字符
 

@@ -52,7 +52,7 @@ if [ -x /usr/bin/dircolors ]; then
 
     # 下为各命令的惯用法
     alias greps='grep --color=auto -in'
-    # 列出所有文件中包含指定内容的的行，如 `grepf logg``
+    # 查找当前目录及子目录所有文件，列出包含指定内容的的行，如 `grepf logg`
     alias grepf='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
     alias trees='tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='pstree -p -s'
