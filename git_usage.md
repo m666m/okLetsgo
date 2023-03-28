@@ -482,7 +482,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
 远程仓库地址格式
 
-    ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/myproj.git
+    ssh://git@xx.xx.xx.xx:2345/gitrepo/myproj.git
 
     git@github.com:m666m/okLetsgo.git
 
@@ -490,11 +490,11 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
 方法一、推送命令只会推送到默认的 origin 地址，其他的各个 server1，2，3 得再挨个执行 push 命令
 
-    git remote add server1 ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
+    git remote add server1 ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
 
-    git remote add server2 ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
+    git remote add server2 ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
 
-    git remote add server3 ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
+    git remote add server3 ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
 
     git push server1 master
 
@@ -502,13 +502,13 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
 方法二、省事的方法，给 origin 添加多个 push 远程地址(upstream)，默认 fetch 还是 origin 最早添加的地址
 
-    git remote set-url --add origin ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
+    git remote set-url --add origin ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
 
     $ git remote show origin
     * remote origin
     Fetch URL: git@github.com:m666m/project_name.git
     Push  URL: git@github.com:m666m/project_name.git
-    Push  URL: ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
+    Push  URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
     HEAD branch: main
     Remote branch:
         main tracked
@@ -520,7 +520,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
     $ git remote -v
     origin  git@github.com:m666m//project_name.git (fetch)
     origin  git@github.com:m666m//project_name.git (push)
-    origin  ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git (push)
+    origin  ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git (push)
 
 添加后，本地项目中的 .git/config 对应内容如下
 
@@ -528,11 +528,11 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
         url = git@github.com:m666m/project_name.git
         fetch = +refs/heads/*:refs/remotes/origin/*
         # url = https://github.com/m666m/project_name.git
-        url = ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
+        url = ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
 
 如果想删除
 
-    git remote set-url --delete origin ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/project_name.git
+    git remote set-url --delete origin ssh://git@xx.xx.xx.xx:2345/gitrepo/project_name.git
 
 2、一个本地库同步到另外两个远程库，不使用origin
 
@@ -608,7 +608,7 @@ git clone 命令正常拉取
 
     # Ipv6 用标准的中括号方式：
     #
-    $ git clone ssh://git@[2199:4c:c:8da::2]:2345/ghcode/gitrepo/tea.git
+    $ git clone ssh://git@[2199:4c:c:8da::2]:2345/gitrepo/tea.git
     Cloning into tea...
     warning: You appear to have cloned an empty repository.
 
@@ -679,18 +679,22 @@ git clone 命令正常拉取
 
 #### 本地非空目录，同步到远程非空裸仓库
 
-用于同一个的项目，只是提交记录步调不一致，比如下载了一份源代码，需要从远程仓库同步最新的数据。或本地仓库开发了文件，需要多人共享，则在服务器建立裸仓库，需要把本地推送上去。
+用于同一个的项目，只是提交记录步调不一致，比如
+
+    下载了一份源代码，需要从远程仓库同步最新的数据。
+
+    TODO:本地仓库开发的项目，后来需要多人共享，则在服务器建立裸仓库，把本地推送上去。
 
 本地先 git init，然后
 
-    git remote add origin ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/okletgo.git
+    git remote add origin ssh://git@xx.xx.xx.xx:2345/gitrepo/okletgo.git
 
 这时显示结果 HEAD 是 unknown
 
     $ git remote show origin
     * remote origin
-    Fetch URL: ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/okletgo.git
-    Push  URL: ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/okletgo.git
+    Fetch URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/okletgo.git
+    Push  URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/okletgo.git
     HEAD branch: (unknown)
 
 先把文件都 push 上去，会提示没有上游分支，直接推就会建立关联关系。
@@ -699,8 +703,8 @@ git clone 命令正常拉取
 
     $ git remote show origin
     * remote origin
-    Fetch URL: ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/okletgo.git
-    Push  URL: ssh://git@xx.xx.xx.xx:2345/ghcode/gitrepo/okletgo.git
+    Fetch URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/okletgo.git
+    Push  URL: ssh://git@xx.xx.xx.xx:2345/gitrepo/okletgo.git
     HEAD branch: master
     Remote branch:
         master tracked 有跟踪分支了
@@ -713,7 +717,7 @@ git clone 命令正常拉取
 
 远程没有 remote_branch 分支，本地已经切换到 dev_xxx。
 
-本地新建的分支 t3_fea， 要推送到远程仓库，实现 push 和 pull，这时远程仓库没有该分支，无法直接推送，需要先设置关联。
+TODO:本地新建的分支 t3_fea， 要推送到远程仓库，实现 push 和 pull，这时远程仓库没有该分支，无法直接推送，需要先设置关联。
 
 ##### 一、分支名称一致的操作示例
 
