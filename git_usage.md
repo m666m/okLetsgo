@@ -378,7 +378,7 @@ File 协议
 
 如果本地仓库需要关联远程仓库，跟其它人共享开发，有两种方法：
 
-法一：远程服务器上已有仓库，直接用 `git clone` 命令复制到本地即可。这样就在本地建立了 “本地仓库” 和 “本地的远程仓库”，详见章节 [定制化的 git clone]。
+法一：远程服务器上已有仓库，直接用 `git clone` 命令复制到本地即可。这样就在本地建立了 “本地仓库” 和 “本地的远程仓库”，关联关系也不需要配置。
 
 法二：手工把本地仓库建立的分支跟远程服务器上的仓库的分支关联起来。
 
@@ -464,13 +464,13 @@ File 协议
 
 github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国内的网络下经常连接超时，改成 git 协议或 ssh 协议的地址格式相对好些。各种地址格式参见章节 [git 地址协议]。
 
-1、删除远程库 origin
+1、先删除远程仓库对象 origin
 
     git remote rm origin
 
-如果是新建的其它分支，远程仓库没有该分支，这时无法推送，需要关联远程库，则不需要删除 origin。
+如果是本地新建的分支，远程仓库没有该分支，无法推送本地的新分支，则不需要删除 origin，只需要关联远程库，见第二步。
 
-2、重新添加远程库 origin，建立 origin 和 master 的联系
+2、重新添加远程仓库对象 origin，建立 origin 和 master 的联系
 
     git push -u origin master
 
@@ -564,12 +564,14 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
 #### 查看远程库配置
 
-先确认下，已经有 origin 远程库，没有的话需要重新建立
+先确认下，已经有远程库对象 origin
 
     $ git remote show
     origin
 
-显示该远程的详细信息，git 会测试该地址连通性
+没有的话需要重新建立，参见章节 [修改本地仓库的远程仓库设置]。
+
+显示该远程库对象的详细信息，git 会测试该地址连通性
 
     $ git remote show origin
     * remote origin
@@ -577,7 +579,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
     Push  URL: git@github.com:m666m/okLetsgo.git
     HEAD branch: master
     Remote branch:
-        master tracked：追踪分支有了
+        master tracked：有追踪分支
     Local branch configured for 'git pull':  未关联pull就没有这两行
         master merges with remote master
     Local ref configured for 'git push':     未关联push就没有这两行
@@ -589,7 +591,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
     origin  git@github.com:m666m/okLetsgo.git (fetch)
     origin  git@github.com:m666m/okLetsgo.git (push)
 
-查看全部分支及跟踪关系带最近提交及注释
+查看全部分支及跟踪关系、最近提交及注释
 
     # 需要执行过 git pull
     $ git branch -avv
@@ -597,12 +599,6 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
     remotes/origin/def_xxx b414ac9 功能3
     remotes/origin/hotfix  7cabce4 res me
     remotes/origin/master  3384fb2 tea2 再改2
-
-#### git clone之后的第一次pull和push
-
-先执行章节 [查看远程库配置]。
-
-然后检查 pull 和 push 是否关联，参见章节 [建立本地仓库，关联远程仓库] 的第 3、4 步。
 
 #### 本地空目录，远程裸仓库里有文件
 
@@ -616,7 +612,15 @@ git clone 命令正常拉取
     Cloning into tea...
     warning: You appear to have cloned an empty repository.
 
-这样本地目录里就会多了个名为 tea 的目录，这个目录已经是git管理的仓库了，远端服务器的信息都已经配置了。
+这样本地目录里就会多了个名为 tea 的目录，这个目录已经是git管理的仓库了，自动创建了 origin 远程仓库对象，远端服务器的信息也都配置好了。
+
+这样拉取后，本地默认只有 master 分支，如需使用其它分支，参见章节 [从远程库的某个分支建立一个本地分支]。
+
+##### git clone之后的第一次pull和push
+
+先执行章节 [查看远程库配置]。
+
+然后检查 pull 和 push 是否关联，参见章节 [建立本地仓库，关联远程仓库] 的第 3、4 步。
 
 #### 本地空目录，远程刚建好空白裸仓库
 
@@ -839,9 +843,9 @@ git clone 命令正常拉取
 
 但是，以后每次使用 git push、git fetch 命令都要加参数，太麻烦了。
 
-### 定制化的 git clone
+### 定制化的拉取仓库
 
-通常使用的 git clone 用法见章节 [本地空目录，远程裸仓库里有文件]。
+通常的 git clone 用法见章节 [本地空目录，远程裸仓库里有文件]。
 
 #### 浅克隆(shallow clone) --- 大仓库非全量拉取
 
