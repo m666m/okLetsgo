@@ -558,7 +558,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
     https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories
 
-本地的远程仓库是个特殊对象 origin，本地分支和服务器上的裸仓库建立联系，首先要添加 origin 对象，然后设置本地分支和远程仓库上分支的关联，才可以推送和拉取。
+本地的远程仓库(remote)是个特殊对象 origin，本地分支和服务器上的裸仓库建立联系，首先要添加 origin 对象，然后设置本地分支和远程仓库上分支的关联，才可以推送和拉取。
 
 远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
 
