@@ -70,7 +70,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias glb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]" && git log --left-right --oneline'
     alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
     alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
-    alias gba='echo "[分支：全部分支带最近提交及注释]" && git branch -avv'
+    alias gba='echo "[分支：全部分支及对应关系、最近提交及注释]" && git branch -avv'
     alias gro='echo "[远程信息]" && git remote show origin'
 
     # git 经常断连，自动重试直至成功

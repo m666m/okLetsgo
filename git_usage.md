@@ -685,7 +685,11 @@ git clone 命令正常拉取
 
     TODO:本地仓库开发的项目，后来需要多人共享，则在服务器建立裸仓库，把本地推送上去。
 
-本地先添加远程对象 origin
+本地先建立 git 仓库
+
+    git init
+
+添加远程对象 origin
 
     git remote add origin ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
 
@@ -707,11 +711,11 @@ git clone 命令正常拉取
     Push  URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
     HEAD branch: master
     Remote branch:
-        master tracked 有跟踪分支了
+        master tracked <--------- 有跟踪分支了
     Local branch configured for 'git pull':
-        master merges with remote master 拉取有了
+        master merges with remote master  <--------- 拉取有了
     Local ref configured for 'git push':
-        master pushes to master (up to date) 推送也有了
+        master pushes to master (up to date)  <--------- 推送也有了
 
 #### 本地非空目录，远程裸仓库无本地分支的push用法
 
@@ -719,33 +723,11 @@ git clone 命令正常拉取
 
 适用场景：本地新建的分支 t3_fea， 要推送到远程仓库，实现 push 和 pull，这时远程仓库没有该分支，无法直接推送，需要先设置关联。
 
-##### 一、分支名称一致的操作示例
-
-1、确认下当前信息
-
-    git branch -avv
-
-    git remote show origin
-
-2、设置本地的 t3_fea 关联上游分支
-
     $ git push -u origin t3_fea
     Everything up-to-date
     branch 't3_fea' set up to track 'origin/t3_fea'.
 
-3、本机验证
-
-    $ git push
-    Everything up-to-date
-
-    $ git fetch
-
-    $ git status
-    git status:
-    On branch t3_fea
-    Your branch is up to date with 'origin/t3_fea'.
-
-    nothing to commit, working tree clean
+设置后可以看到关联跟踪分支了
 
     $ git branch -avv
     master                 3384fb2 [origin/master] tea2 再改2
@@ -773,12 +755,10 @@ git clone 命令正常拉取
         master pushes to master (up to date)
         t3_fea pushes to t3_fea (up to date) <---------- 这里显示添加了跟踪
 
-4、 其它机器验证
-
-拉取远程分支
+其它机器需要重新拉取远程分支
 
     $ git fetch
-    * [new branch]            t3_fea     -> origin/t3_fea
+    * [new branch]            t3_fea     -> origin/t3_fea  <---------- 提示下载了新的分支在本地的远程库
 
     $ git branch -avv
     * master                 3384fb2d33 [origin/master] tea2 再改2
@@ -793,62 +773,21 @@ git clone 命令正常拉取
     Switched to a new branch 't3_fea'
     branch 't3_fea' set up to track 'origin/t3_fea'.
 
-可以看到关联了跟踪分支
+不要设置不同的分支名称
 
-    $ git branch -avv
-    master                 3384fb2d33 [origin/master] tea2 再改2
-    * t3_fea                 f6aeb75474 [origin/t3_fea] t3_fea 分支自己添加
-    remotes/origin/def_xxx b414ac95d4 功能3
-    remotes/origin/hotfix  7cabce404f res me
-    remotes/origin/master  3384fb2d33 tea2 再改2
-    remotes/origin/t3_fea  f6aeb75474 t3_fea 分支自己添加
+    如果你本地新建分支名称和远程服务器上的分支名称不一致，甚至不使用默认的 origin 对象
 
-##### TODO：二、分支名称不一致的操作示例
+        git push origin local_branch:remote_branch
 
-    NOTE:本地分支与远程分支二者名称最好一致，否则以后每次使用 git push 命令都要加参数，太麻烦了
+        git branch --set-upstream-to=origin/remote_branch local_branch
 
-如果你确实需要本地新建分支名称和远程服务器上的分支名称不一致，甚至不使用默认的 origin 对象，见下面操作。
+        git push origin HEAD:remote_branch
 
-1、先把本地分支推送到远程
+        git push -u origin/local_branch
 
-    $ git push origin dev_xxx:remote_branch
+    之后的 git push 和 git fentch 操作跟随 `git status` 的提示即可。
 
-    # 查看分支情况
-    $ git branch -avv
-    [分支：全部分支带最近提交及注释]
-    master                 c0a1f254be [origin/master: behind 1] ddd 333
-    * dev_xxx              1e8b100e4a 3.txt第二次
-    remotes/origin/def_xxx b414ac95d4 功能3
-    remotes/origin/remote_branch   1e8b100e4a 3.txt第二次
-    remotes/origin/hotfix  7cabce404f res me
-    remotes/origin/master  881ccdca75 ddd.txt 444
-
-2、然后建立 origin 和 dev_xxx 的联系
-
-    $ git branch --set-upstream-to=origin/remote_branch dev_xxx
-    branch 'dev_xxx' set up to track 'origin/remote_branch'.
-
-    # 查看分支情况，可以看到已经建立了联系
-    $ git branch -avv
-    [分支：全部分支带最近提交及注释]
-    master                 c0a1f254be [origin/master: behind 1] ddd 333
-    * dev_xxx                1e8b100e4a [origin/remote_branch] 3.txt第二次
-    remotes/origin/def_xxx b414ac95d4 功能3
-    remotes/origin/remote_branch   1e8b100e4a 3.txt第二次
-    remotes/origin/hotfix  7cabce404f res me
-    remotes/origin/master  881ccdca75 ddd.txt 444
-
-日后的使用比较麻烦，因为你的本地分支名称跟远程仓库不一致，所以需要显式指定本地分支和远程库分支的名称才能推送
-
-    git push origin HEAD:remote_branch
-
-远程已有 dev_xxx 分支但未关联本地分支 dev_xxx，本地已经切换到 dev_xxx
-
-    git push -u origin/dev_xxx
-
-以后就可以正常的拉取和推送了。
-
-但是，以后每次使用 git push、git fetch 命令都要加参数，太麻烦了。
+    但是，以后每次使用 git push、git fetch 命令都要加参数，太麻烦了。
 
 ### 定制化的拉取仓库
 
