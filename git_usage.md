@@ -317,16 +317,16 @@ git做操作之前或操作之后，查看当前的git状态
 
 版本库推送远程仓库见章节 [同步远程仓库 push、pull、clone]
 
-#### git 地址协议
+### git 地址协议
 
 git 支持多种协议，Git 协议下载速度最快，SSH 协议用于需要用户认证的场合。
 
-Git 协议： 用户名@地址:仓库名
+Git 协议：实质就是 ssh 协议的变体，格式为 “用户名@地址:仓库名”
 
     # 对 “git://” 开头，表示用 git 协议
     git clone git://example.com/path/to/repo.git [默认当前目录]
 
-    # github特殊：对 “git@github.com” 开头，默认用 git 协议，在冒号后是仓库集名(注册用户名)
+    # Github 特殊：对 “git@github.com” 开头，默认用 git 协议，在冒号后是仓库集名(注册用户名)
     # 格式：git@地址:仓库名
     # git clone git@github.com:repositores/repo.git
     git clone git@github.com:m666m/okletsgo.git
@@ -335,7 +335,7 @@ Git 协议： 用户名@地址:仓库名
     $ ssh -T git@github.com
     > Hi m666m! You've successfully authenticated...
 
-SSH 协议
+SSH 协议：一般用于需要用户鉴权的 git 仓库。
 
     # 对 “用户名@地址” 开头，默认 ssh 22 端口
     git clone [user@]example.com/path/to/repo.git
@@ -353,7 +353,7 @@ SSH 协议
     #   https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
     git clone ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
 
-Http、Https 协议
+Http、Https 协议，一般用于公众开放无需鉴权的项目
 
     # git clone http[s]://example.com/path/to/repo.git
     git clone http://git.oschina.net/yiibai/sample.git
@@ -377,6 +377,8 @@ File 协议
     https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories
 
 本地的远程仓库(remote)有个特殊对象 origin，本地分支和服务器上的裸仓库建立联系，首先要添加 origin 对象，然后设置本地分支和远程仓库上分支的关联，才可以推送和拉取。
+
+通常的 git clone 用法见章节 [本地空目录，远程裸仓库里有文件]。
 
 远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
 
@@ -499,7 +501,7 @@ File 协议
 
     git push
 
-##### 修改本地仓库的远程仓库设置
+#### 修改本地仓库的远程仓库设置
 
 所谓修改，其实就是删除了重建。
 
@@ -521,7 +523,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
 3、执行 git pull 和 git push 验证是否正常。
 
-###### 从本地仓库推送多个远程仓库
+#### 从本地仓库推送多个远程仓库
 
 有时候需要项目同时推送多个远程仓库，而且地址格式也不相同。
 
@@ -533,29 +535,13 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
     https://github.com/m666m/myproj
 
-1、使用默认的远程库对象 origin 的方法
+##### 使用默认的远程库对象 origin 的方法
 
 在一般使用中，可以默认 fetch/push 一个远程仓库，添加多个 push 远程仓库地址，这样可以实现代码的多处备份，而且默认的远程库对象 origin 还存在。
 
-方法一、添加多个server
+方法一、【推荐】给 origin 添加多个 push 远程地址(upstream)
 
-这样在执行 push 命令时，只会推送到默认的 origin 地址
-
-    git remote add server1 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-    git remote add server2 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-    git remote add server3 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-其他的各个 server1，2，3 得再挨个执行 push 命令
-
-    git push server1 master
-
-    git push server1 developer
-
-方法二、【推荐】给 origin 添加多个 push 远程地址(upstream)
-
-省事的方法，默认 fetch 还是 origin 最早添加的地址
+默认 fetch 保持 origin 最早添加的地址，增加多个 push 地址
 
     git remote set-url --add origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
@@ -585,17 +571,37 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
         # url = https://github.com/m666m/project_name.git
         url = ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
-这样的方式，使用 git fetch 或 git pull 只从默认的 fetch 地址拉取代码，推送时会默认推送到多个 push 地址，非常方便。
+这样的方式使用起来最方便， 执行 `git fetch` 或 `git pull` 只从默认的 fetch 地址拉取代码，而 执行 `git push` 时会默认推送到多个 push 地址。
 
 如果想删除
 
     git remote set-url --delete origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
-2、不使用默认的远程库对象 origin 的方法
+方法二、不推荐，除了 origin，再添加多个远程库对象
+
+这样在执行 push 命令时，只会推送到默认的 origin 地址
+
+    git remote add server1 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+    git remote add server2 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+    git remote add server3 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+这样使用步方便，执行 `git push` 只会推送到 origin 对象的地址。
+
+其他的各个 server1，2，3 得再挨个执行 push 命令
+
+    git push server1 master
+
+    git push server1 developer
+
+    ...
+
+##### 建立独立的远程库对象的方法
 
     https://www.runoob.com/git/git-gitee.html
 
-真正的多套远程地址，建立独立的远程库对象，实现一个本地库同步到多个远程库
+真正的多套远程地址，不使用默认的远程库对象 origin，实现一个本地库同步到多个远程库
 
     # 删除默认的 origin 对象
     git remote rm origin
@@ -624,13 +630,13 @@ git clone 命令正常拉取
 
 这样本地目录里就会多了个名为 tea 的目录，这个目录已经是git管理的仓库了，自动创建了 origin 远程仓库对象，远端服务器的信息也都配置好了。
 
-##### git clone之后的第一次pull和push
+git clone之后的第一次 pull 和 push：
 
-先执行章节 [查看远程库配置]。
+    先执行章节 [查看远程库配置]。
 
-然后检查 pull 和 push 是否报错没有关联跟踪分支，参见章节 [本地仓库关联远程仓库] 的第 4 步。
+    然后检查 pull 和 push 是否报错没有关联跟踪分支，参见章节 [本地仓库关联远程仓库] 的第 4 步。
 
-初次拉取后，本地默认只有 master 分支，如需使用其它分支，参见章节 [从远程库的某个分支建立一个本地分支]。
+    初次拉取后，本地默认只有 master 分支，如需使用其它分支，参见章节 [从远程库的某个分支建立一个本地分支]。
 
 #### 示例：本地空目录，远程刚建好空白裸仓库
 
