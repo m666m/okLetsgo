@@ -535,20 +535,20 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
     https://github.com/m666m/myproj
 
-##### 使用默认的远程库对象 origin 的方法
+##### 【推荐】添加多个 push 远程地址(upstream)
 
-在一般使用中，可以默认 fetch/push 一个远程仓库，添加多个 push 远程仓库地址，这样可以实现代码的多处备份，而且默认的远程库对象 origin 还存在。
+在一般使用中，保持默认的远程库对象 origin 的 fetch/push 地址，添加多个 push 远程仓库地址。
 
-方法一、【推荐】给 origin 添加多个 push 远程地址(upstream)
+这样的好处是，可以实现代码的多处备份，而且默认的远程库对象 origin 不受影响，照常 fetch、push。
 
-默认 fetch 保持 origin 最早添加的地址，增加多个 push 地址
+默认 fetch 保持 origin 最早添加的地址，只是给它增加多个 push 地址
 
     git remote set-url --add origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
     $ git remote show origin
     * remote origin
     Fetch URL: git@github.com:m666m/project_name.git  <-- 默认的 fetch 地址
-    Push  URL: git@github.com:m666m/project_name.git  <-- 多个 push 地址
+    Push  URL: git@github.com:m666m/project_name.git  <-- 默认的 push 地址
     Push  URL: ssh://git@11.22.33.44:2345/gitrepo/project_name.git  <-- 多个 push 地址
     HEAD branch: main
     Remote branch:
@@ -560,7 +560,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
     $ git remote -v
     origin  git@github.com:m666m//project_name.git (fetch)  <-- 默认的 fetch 地址
-    origin  git@github.com:m666m//project_name.git (push)  <-- 多个 push 地址
+    origin  git@github.com:m666m//project_name.git (push)   <-- 默认的 push 地址
     origin  ssh://git@11.22.33.44:2345/gitrepo/project_name.git (push)  <-- 多个 push 地址
 
 添加后，本地项目中的 .git/config 对应内容如下
@@ -571,15 +571,19 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
         # url = https://github.com/m666m/project_name.git
         url = ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
-这样的方式使用起来最方便， 执行 `git fetch` 或 `git pull` 只从默认的 fetch 地址拉取代码，而 执行 `git push` 时会默认推送到多个 push 地址。
+这样的方式使用起来最方便，执行 `git fetch` 或 `git pull` 命令时，只从默认的 fetch 地址拉取代码，而 执行 `git push` 时会推送到多个 push 地址。
 
-如果想删除
+如果想删除多余的 push 地址
 
     git remote set-url --delete origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
-方法二、不推荐，除了 origin，再添加多个远程库对象
+##### 添加多个远程库对象
 
-这样在执行 push 命令时，只会推送到默认的 origin 地址
+不推荐，使用不方便
+
+    https://www.runoob.com/git/git-gitee.html
+
+除了 origin，再添加多个远程库对象
 
     git remote add server1 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
@@ -587,7 +591,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
     git remote add server3 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
-这样使用步方便，执行 `git push` 只会推送到 origin 对象的地址。
+这样使用不方便，在执行 `git push` 时，只会推送到默认的 origin 地址。
 
 其他的各个 server1，2，3 得再挨个执行 push 命令
 
@@ -597,24 +601,9 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
     ...
 
-##### 建立独立的远程库对象的方法
+添加多个远程库对象后，还可以删除默认的 origin 对象，只使用自己添加的那些远程库对象
 
-    https://www.runoob.com/git/git-gitee.html
-
-真正的多套远程地址，不使用默认的远程库对象 origin，实现一个本地库同步到多个远程库
-
-    # 删除默认的 origin 对象
     git remote rm origin
-
-    # 远程库的名称叫 gitee 和 github，没有 origin 了。
-    git remote add github git@github.com:tianqixin/runoob-git-test.git
-    git remote add gitee git@gitee.com:imnoob/runoob-test.git
-
-使用起来比较麻烦，fetch/push需要多次操作，需要支持远程仓库的名称和分支名称
-
-    git push github master
-
-    git push gitee master
 
 #### 示例：本地空目录，远程裸仓库里有文件
 
