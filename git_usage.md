@@ -623,9 +623,7 @@ git clone 命令会自动创建了 origin 远程仓库对象，配置服务器�
 
 执行 `git clone` 之后的第一次 pull 和 push：
 
-可执行章节 [查看远程配置]。
-
-执行 `git pull` 和 `git push`，看是否报错没有关联跟踪分支。如果报错，可参见章节 [本地仓库关联远程仓库] 的第 4 步。
+执行 `git pull` 和 `git push`，看是否报错。可执行章节 [查看远程配置]，如果报错没有关联跟踪分支，可参见章节 [本地仓库关联远程仓库] 的第 4 步。。
 
 初次拉取后，本地默认只有 master 分支，如需使用其它分支，参见章节 [从远程库的某个分支建立一个本地分支]。
 
@@ -1524,17 +1522,20 @@ NOTE: 新建的分支没有对应到远程仓库，无法推送到远程，如�
 
 ### 从远程库的某个分支建立一个本地分支
 
-因为 git clone 默认建立的本地库只有 master 这一个分支，想切换到其它分支，需要先从本地的远程库建立本地分支
+前提
 
-最好二者名称一致，否则以后的 git push 命令要加参数才能用，太繁琐了
+    master 分支可以正常从远程库 pull 和 push
 
-    废弃： git checkout -b hotfix origin/hotfix
+因为 git clone 默认建立的本地库只有 master 这一个分支，想切换到其它分支，需要先从本地的远程库建立本地分支。
 
+本地和远程分支的名称尽量一致，否则以后的 git push 命令要加参数才能用，太麻烦了
+
+    # 废弃： git checkout -b hotfix origin/hotfix
     $ git switch -c hotfix origin/hotfix
     Switched to a new branch 'hotfix'
     branch 'hotfix' set up to track 'origin/hotfix'.
 
-这个分支不需要手工建立与远程仓库的关联。
+如果 master 分支都跟远程仓库关联好了，那么这个分支不需要再手工建立与远程仓库的关联。
 
 ## 删除分支，远程/本地
 
