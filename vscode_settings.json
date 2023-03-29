@@ -59,7 +59,7 @@
             "editor.selectionHighlightBackground": "#1474acad"
         },
         "[Nord Deep]": {
-            "editor.foreground": "#c9d9e6",
+            "editor.foreground": "#c2d1dd",
             "activityBar.foreground": "#56bbff",
             // 双击高亮和同类高亮颜色无区分，非常不方便
             "editor.selectionBackground": "#08537eb4",
