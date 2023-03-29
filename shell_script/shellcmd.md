@@ -1004,6 +1004,10 @@ fi
 
     https://blog.csdn.net/mutou990/article/details/107724302
 
+`su` 是 Linux 内置的命令，`sudo` 命令需要安装 sudo 软件包。
+
+所以，一般在操作系统安装后，如果默认没有安装 sudo 软件包，用 `su -` 命令切换到 root 用户，先安装 sudo 软件包。这样以后的使用中，用普通用户使用 sudo 来安装软件包即可。
+
 sudo 和 su 常用法
 
     以 sudo 用户执行命令，临时提权到 root 用户的权限来执行命令
