@@ -315,7 +315,7 @@ git做操作之前或操作之后，查看当前的git状态
 
     git commit -m '初始化提交'
 
-版本库推送远程仓库见章节 [同步远程仓库push和pull]
+版本库推送远程仓库见章节 [同步远程仓库 push、pull、clone]
 
 #### git 地址协议
 
@@ -370,7 +370,7 @@ File 协议
 
     git clone rsync://example.com/path/to/repo.git
 
-### 同步远程仓库push和pull
+### 同步远程仓库 push、pull、clone
 
     https://www.w3cschool.cn/git/git-uroc2pow.html
 
@@ -624,13 +624,13 @@ git clone 命令正常拉取
 
 这样本地目录里就会多了个名为 tea 的目录，这个目录已经是git管理的仓库了，自动创建了 origin 远程仓库对象，远端服务器的信息也都配置好了。
 
-这样拉取后，本地默认只有 master 分支，如需使用其它分支，参见章节 [从远程库的某个分支建立一个本地分支]。
-
 ##### git clone之后的第一次pull和push
 
 先执行章节 [查看远程库配置]。
 
 然后检查 pull 和 push 是否报错没有关联跟踪分支，参见章节 [本地仓库关联远程仓库] 的第 4 步。
+
+初次拉取后，本地默认只有 master 分支，如需使用其它分支，参见章节 [从远程库的某个分支建立一个本地分支]。
 
 #### 示例：本地空目录，远程刚建好空白裸仓库
 
@@ -748,11 +748,13 @@ git clone 命令正常拉取
 
 #### 示例：本地非空目录，远程裸仓库无本地分支
 
+常见场景：本地新建的分支 t3_fea， 这时远程仓库没有该分支，无法直接推送。
+
 前提
 
-    本地仓库的 master 分支跟远程是可以正常的 pull、push 的。
+    本地仓库的 master 分支可以正常的执行 pull、push，否则先关联远程仓库，见章节 [本地仓库关联远程仓库]。
 
-本地新建的分支 t3_fea， 这时远程仓库没有该分支，无法直接推送，要推送到远程仓库，实现 push 和 pull，需要先设置关联。
+要推送到远程仓库，实现 push 和 pull，需要先设置关联。
 
     $ git push -u origin t3_fea
     Everything up-to-date
@@ -1780,7 +1782,7 @@ NOTE: 本地分支更新远程时，为了明确选择合并策略，不直接�
 
 ### 重要：推送远程前的检查
 
-本地分支推送到远程，需要有远程库 origin 及跟踪分支，参见章节 [同步远程仓库push和pull]。
+本地分支推送到远程，需要有远程库 origin 及跟踪分支，参见章节 [同步远程仓库 push、pull、clone]。
 
     git push origin dev_xxx:remote_branch
 
