@@ -323,9 +323,10 @@ git 支持多种协议，Git 协议下载速度最快，SSH 协议用于需要�
 
 Git 协议： 用户名@地址:仓库名
 
+    # 对 “git://” 开头，表示用 git 协议
     git clone git://example.com/path/to/repo.git [默认当前目录]
 
-    # 特殊，对 “git@github.com” 开头，默认用 git 协议，在冒号后是仓库集名(注册用户名)
+    # github特殊：对 “git@github.com” 开头，默认用 git 协议，在冒号后是仓库集名(注册用户名)
     # 格式：git@地址:仓库名
     # git clone git@github.com:repositores/repo.git
     git clone git@github.com:m666m/okletsgo.git
@@ -337,15 +338,18 @@ Git 协议： 用户名@地址:仓库名
 SSH 协议
 
     # 对 “用户名@地址” 开头，默认 ssh 22 端口
-    git clone ssh://[user@]example.com/path/to/repo.git
+    git clone [user@]example.com/path/to/repo.git
 
-    # 非标准22端口要写明确写协议名
+    # 开头最好明确写 “ssh://” 以防混淆，一般服务器上会建立专用的 git 用户
+    git clone ssh://git@<ip>:<port>/your_path/xxx.git
+
+    # 非标准22端口要写明确写协议名，地址后面用冒号分隔端口名，第一个/后面是路径
     git clone ssh://[user@]example.com:port/path/to/repo.git
 
     # 对ipv6地址加[]即可
     git clone ssh://user@[20:40:d:9f::1]:22122/path/to/repo.git
 
-    # github 网站提供基于 https 端口 443 的 ssh 连接方式
+    # Github 特殊：提供基于 https 端口 443 的 ssh 连接方式
     #   https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
     git clone ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
 
@@ -366,199 +370,13 @@ File 协议
 
     git clone rsync://example.com/path/to/repo.git
 
-### 建立本地仓库，关联远程仓库
-
-如果只是建立本地仓库，只需要在一个目录下执行命令
-
-    git init
-
-就可以使用本地git仓库了。
-
-远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
-
-如果本地仓库需要关联远程仓库，跟其它人共享开发，有两种方法：
-
-法一：远程服务器上已有仓库，直接用 `git clone` 命令复制到本地即可。这样就在本地建立了 “本地仓库” 和 “本地的远程仓库”，关联关系也不需要配置。
-
-法二：手工把本地仓库建立的分支跟远程服务器上的仓库的分支关联起来。
-
-默认的 master 分支的用法
-
-1、本地初始化一个目录作为 git 仓库
-
-    git init
-
-2、添加 origin 远程库对象
-
-    # git 协议： 用户名@地址:仓库名
-    # git 协议：git remote add origin sqt@180.169.33.106:repositores/ZSKPad.git
-    git remote add origin git@github.com:m666m/raspi-info.git
-
-    # ssh 地址: 协议名://用户名@地址:端口
-    # ssh 协议：git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
-    git remote add origin ssh://git@<ip>:<port>/your_path/xxx.git
-
-3、拉取远程代码以让git获取分支相关信息
-
-    # 先获取主干分支，把 master 分支的 HEAD 配置上
-    git pull origin master
-    From ssh://11.22.33.44:2345/gitrepo/tea
-    * branch            master     -> FETCH_HEAD
-
-    # 再获取所有分支的信息
-    $ git pull
-    remote: Enumerating objects: 16, done.
-    remote: Counting ... done.
-    From ssh://11.22.33.44:2345/gitrepo/tea
-    * [new branch]      def_xxx    -> origin/def_xxx
-    * [new branch]      hotfix     -> origin/hotfix
-    * [new branch]      t3_fea     -> origin/t3_fea
-    * [new tag]         v1.2.3.4   -> v1.2.3.4
-
-这时，未设置远程库分支跟本地分支的关联，执行 git pull 或 git push 都会提示
-
-    $ git pull
-    There is no tracking information for the current branch.
-    Please specify which branch you want to merge with.
-    See git-pull(1) for details.
-
-        git pull <remote> <branch>
-
-    If you wish to set tracking information for this branch you can do so with:
-
-        git branch --set-upstream-to=origin/<branch> master
-
-    $ git push
-    fatal: The current branch master has no upstream branch.
-    To push the current branch and set the remote as upstream, use
-
-        git push --set-upstream origin master
-
-    To have this happen automatically for branches without a tracking
-    upstream, see 'push.autoSetupRemote' in 'git help config'.
-
-4、设置分支关联设置本地分支和远程库关联。
-
-    # 将本地的 master 分支推送到 origin 主机，同时指定 origin 为默认主机
-    git push -u origin master # -u 即 --set-upstream
-
-等效于执行下面的操作：
-
-    ·推送本地分支 master 到远程主机 origin 的 master 分支
-
-        git push origin master
-
-    ·跟踪远程分支，远程没有master就自动创建一个
-
-        git branch --set-upstream-to=origin/master master
-
-        作用：跟踪远程分支 origin/master 到本地分支 master，如果远程没有分支会报错，需要先创建远程分支
-
-    ·设置 origin 为默认主机
-
-如果远程仓位是空的，需要先推送个文件上去，参见章节 [本地空目录，远程刚建好空白裸仓库]。
-
-5、执行 git pull 和 git push 验证是否正常
-
-#### 修改本地仓库的远程仓库设置
-
-github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国内的网络下经常连接超时，改成 git 协议或 ssh 协议的地址格式相对好些。各种地址格式参见章节 [git 地址协议]。
-
-1、先删除远程仓库对象 origin
-
-    git remote rm origin
-
-如果是本地新建的分支，远程仓库没有该分支，无法推送本地的新分支，则不需要删除 origin，只需要关联远程库，见第二步。
-
-2、重新添加远程仓库对象 origin，建立 origin 和 master 的联系
-
-    git push -u origin master
-
-3、执行 git pull 和 git push 验证是否正常。
-
-##### 从本地仓库推送多个远程仓库
-
-1、一般使用中，可以默认 fetch/push 一个远程仓库，添加多个 push 远程仓库地址，这样可以实现代码的多处备份，而且默认的 origin 还存在。
-
-远程仓库地址格式
-
-    ssh://git@11.22.33.44:2345/gitrepo/myproj.git
-
-    git@github.com:m666m/okLetsgo.git
-
-    https://github.com/m666m/myproj
-
-方法一、推送命令只会推送到默认的 origin 地址，其他的各个 server1，2，3 得再挨个执行 push 命令
-
-    git remote add server1 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-    git remote add server2 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-    git remote add server3 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-    git push server1 master
-
-    git push server1 developer
-
-方法二、省事的方法，给 origin 添加多个 push 远程地址(upstream)，默认 fetch 还是 origin 最早添加的地址
-
-    git remote set-url --add origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-    $ git remote show origin
-    * remote origin
-    Fetch URL: git@github.com:m666m/project_name.git
-    Push  URL: git@github.com:m666m/project_name.git
-    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-    HEAD branch: main
-    Remote branch:
-        main tracked
-    Local branch configured for 'git pull':
-        main merges with remote main
-    Local ref configured for 'git push':
-        main pushes to main (up to date)
-
-    $ git remote -v
-    origin  git@github.com:m666m//project_name.git (fetch)
-    origin  git@github.com:m666m//project_name.git (push)
-    origin  ssh://git@11.22.33.44:2345/gitrepo/project_name.git (push)
-
-添加后，本地项目中的 .git/config 对应内容如下
-
-    [remote "origin"]
-        url = git@github.com:m666m/project_name.git
-        fetch = +refs/heads/*:refs/remotes/origin/*
-        # url = https://github.com/m666m/project_name.git
-        url = ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-如果想删除
-
-    git remote set-url --delete origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-2、一个本地库同步到另外两个远程库，不使用origin
-
-    https://www.runoob.com/git/git-gitee.html
-
-真正的多套远程地址
-
-    git remote rm origin
-
-    # 远程库的名称叫 gitee 和 github，没有 origin 了。
-    git remote add github git@github.com:tianqixin/runoob-git-test.git
-    git remote add gitee git@gitee.com:imnoob/runoob-test.git
-
-使用起来比较麻烦，fetch/push需要多次操作，需要支持远程仓库的名称和分支名称
-
-    git push github master
-
-    git push gitee master
-
 ### 同步远程仓库push和pull
 
     https://www.w3cschool.cn/git/git-uroc2pow.html
 
     https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories
 
-本地的远程仓库(remote)是个特殊对象 origin，本地分支和服务器上的裸仓库建立联系，首先要添加 origin 对象，然后设置本地分支和远程仓库上分支的关联，才可以推送和拉取。
+本地的远程仓库(remote)有个特殊对象 origin，本地分支和服务器上的裸仓库建立联系，首先要添加 origin 对象，然后设置本地分支和远程仓库上分支的关联，才可以推送和拉取。
 
 远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
 
@@ -600,7 +418,199 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
     remotes/origin/hotfix  7cabce4 res me
     remotes/origin/master  3384fb2 tea2 再改2
 
-#### 本地空目录，远程裸仓库里有文件
+#### 本地仓库关联远程仓库
+
+    如果只是建立本地仓库，只需要在一个目录下执行命令 `git init` 就可以以本地仓库的方式使用 git 了。
+
+    在远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
+
+如果本地仓库需要关联远程仓库，跟其它人共享开发，有两种方法：
+
+法一：远程服务器上已有仓库，直接用 `git clone` 命令复制到本地即可。这样就在本地建立了 “本地仓库” 和 “本地的远程仓库”，关联关系也不需要配置，这样最省事。参见章节 [本地空目录，远程裸仓库里有文件]。
+
+法二：手工把本地仓库建立的分支跟远程服务器上的仓库的分支关联起来。
+
+1、如果本地还不是 git 仓库，先建立
+
+    git init
+
+2、如果本地还没有远程库对象 origin，先建立
+
+    # git 协议
+    git remote add origin git_user@180.169.33.106:repositores/repository.git
+
+    # Github 的 git 协议
+    git remote add origin git@github.com:m666m/okletsgo.git
+
+    # ssh 协议
+    git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
+
+3、未设置远程库分支跟本地分支的关联，执行 git pull 或 git push 都会提示
+
+    $ git pull
+    There is no tracking information for the current branch.
+    Please specify which branch you want to merge with.
+    See git-pull(1) for details.
+
+        git pull <remote> <branch>
+
+    If you wish to set tracking information for this branch you can do so with:
+
+        git branch --set-upstream-to=origin/<branch> master
+
+    $ git push
+    fatal: The current branch master has no upstream branch.
+    To push the current branch and set the remote as upstream, use
+
+        git push --set-upstream origin master
+
+    To have this happen automatically for branches without a tracking
+    upstream, see 'push.autoSetupRemote' in 'git help config'.
+
+4、设置分支关联设置本地分支和远程库关联。
+
+    # 将本地的 master 分支推送到 origin 主机，同时指定 origin 为默认主机
+    # -u 即 --set-upstream
+    git push -u origin master
+    ...
+    To ssh://11.22.33.44：2345/gitrepo/tea.git
+    * [new branch]      master -> master
+    branch 'master' set up to track 'origin/master'.
+
+等效于执行下面的操作：
+
+    ·推送本地分支 master 到远程主机 origin 的 master 分支
+
+        git push origin master
+
+    ·跟踪远程分支，远程没有master就自动创建一个
+
+        git branch --set-upstream-to=origin/master master
+
+        作用：跟踪远程分支 origin/master 到本地分支 master，如果远程没有分支会报错，需要先创建远程分支
+
+    ·设置 origin 为默认主机
+
+如果远程仓库是空的，需要先推送个文件上去，参见章节 [本地空目录，远程刚建好空白裸仓库]。
+
+3、默认操作的是 master 分支，设置好之后才可以拉取其它分支。
+
+    git fetch
+
+    git push
+
+##### 修改本地仓库的远程仓库设置
+
+所谓修改，其实就是删除了重建。
+
+github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国内的网络下经常连接超时，改成 git 协议或 ssh 协议的地址格式相对好些。各种地址格式参见章节 [git 地址协议]。
+
+如果是本地新建的分支，远程仓库没有该分支，无法推送本地的新分支的情况，不需要重建 origin，参见章节 [本地非空目录，远程裸仓库无本地分支]。
+
+1、先删除远程仓库对象 origin
+
+    git remote rm origin
+
+2、重新添加远程仓库对象 origin
+
+    git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
+
+3、建立 origin 和 master 的联系
+
+    git push -u origin master
+
+3、执行 git pull 和 git push 验证是否正常。
+
+###### 从本地仓库推送多个远程仓库
+
+有时候需要项目同时推送多个远程仓库，而且地址格式也不相同。
+
+远程仓库地址格式
+
+    ssh://git@11.22.33.44:2345/gitrepo/myproj.git
+
+    git@github.com:m666m/okLetsgo.git
+
+    https://github.com/m666m/myproj
+
+1、使用默认的远程库对象 origin 的方法
+
+在一般使用中，可以默认 fetch/push 一个远程仓库，添加多个 push 远程仓库地址，这样可以实现代码的多处备份，而且默认的远程库对象 origin 还存在。
+
+方法一、添加多个server
+
+这样在执行 push 命令时，只会推送到默认的 origin 地址
+
+    git remote add server1 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+    git remote add server2 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+    git remote add server3 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+其他的各个 server1，2，3 得再挨个执行 push 命令
+
+    git push server1 master
+
+    git push server1 developer
+
+方法二、【推荐】给 origin 添加多个 push 远程地址(upstream)
+
+省事的方法，默认 fetch 还是 origin 最早添加的地址
+
+    git remote set-url --add origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: git@github.com:m666m/project_name.git  <-- 默认的 fetch 地址
+    Push  URL: git@github.com:m666m/project_name.git  <-- 多个 push 地址
+    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/project_name.git  <-- 多个 push 地址
+    HEAD branch: main
+    Remote branch:
+        main tracked
+    Local branch configured for 'git pull':
+        main merges with remote main
+    Local ref configured for 'git push':
+        main pushes to main (up to date)
+
+    $ git remote -v
+    origin  git@github.com:m666m//project_name.git (fetch)  <-- 默认的 fetch 地址
+    origin  git@github.com:m666m//project_name.git (push)  <-- 多个 push 地址
+    origin  ssh://git@11.22.33.44:2345/gitrepo/project_name.git (push)  <-- 多个 push 地址
+
+添加后，本地项目中的 .git/config 对应内容如下
+
+    [remote "origin"]
+        url = git@github.com:m666m/project_name.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
+        # url = https://github.com/m666m/project_name.git
+        url = ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+这样的方式，使用 git fetch 或 git pull 只从默认的 fetch 地址拉取代码，推送时会默认推送到多个 push 地址，非常方便。
+
+如果想删除
+
+    git remote set-url --delete origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+2、不使用默认的远程库对象 origin 的方法
+
+    https://www.runoob.com/git/git-gitee.html
+
+真正的多套远程地址，建立独立的远程库对象，实现一个本地库同步到多个远程库
+
+    # 删除默认的 origin 对象
+    git remote rm origin
+
+    # 远程库的名称叫 gitee 和 github，没有 origin 了。
+    git remote add github git@github.com:tianqixin/runoob-git-test.git
+    git remote add gitee git@gitee.com:imnoob/runoob-test.git
+
+使用起来比较麻烦，fetch/push需要多次操作，需要支持远程仓库的名称和分支名称
+
+    git push github master
+
+    git push gitee master
+
+#### 示例：本地空目录，远程裸仓库里有文件
 
 git clone 命令正常拉取
 
@@ -620,15 +630,15 @@ git clone 命令正常拉取
 
 先执行章节 [查看远程库配置]。
 
-然后检查 pull 和 push 是否关联，参见章节 [建立本地仓库，关联远程仓库] 的第 3、4 步。
+然后检查 pull 和 push 是否报错没有关联跟踪分支，参见章节 [本地仓库关联远程仓库] 的第 4 步。
 
-#### 本地空目录，远程刚建好空白裸仓库
+#### 示例：本地空目录，远程刚建好空白裸仓库
 
 刚建好的裸仓库无内容，直接用 clone 拉是可以的，但是后续做pull和push会报错。
 
 解决办法是，先在本地目录 git init，设置远程推送地址，给远程仓库上传个文件，然后再拉取。
 
-1.本地操作，新建文件夹，创建 git 仓库，并添加远程仓库对象。
+1、本地操作，新建文件夹，创建 git 仓库，并添加远程仓库对象。
 
     $ mkdir tea
 
@@ -639,57 +649,72 @@ git clone 命令正常拉取
 
     $ git remote add origin ssh://git@11.22.33.44:2345/gitrepo/tea.git
 
-2.本地操作，先提交个文件，推送远程，否则直接 pull 会报错
+2、本地操作，先提交个文件，否则直接 pull 会报错
 
-    echo 'init bare git repo, add a file' > readme.md
+    echo 'init my git repo, add a file' > readme.md
     git add readme.md
-    git commit -m 'init bare git repo'
+    git commit -m 'init.'
 
-    git push origin master
+后续操作参见章节 [本地非空目录，远程服务器的裸仓库是空的] 的第 3、4、5 步。
 
-3.本地操作，建立本地和远程的关联关系
+#### 示例：本地非空目录，远程服务器的裸仓库是非空的
 
-    #git pull origin master
+用于同一个的项目，只是提交记录步调不一致。比如下载了一份源代码，需要从远程仓库同步的场景。
 
-    $ git branch --set-upstream-to=origin/master master
-    Branch 'master' set up to track remote branch 'master' from 'origin'.
-
-    $ git pull
-    Already up to date.
-
-4.本地操作，正常了，看下origin设置，是不是pull和push都有配置了：
-
-    $ git remote show origin
-    * remote origin
-      Fetch URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
-      Push  URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
-      HEAD branch: master
-      Remote branch:
-        master tracked
-      Local branch configured for 'git pull':
-        master merges with remote master
-      Local ref configured for 'git push':
-        master pushes to master (up to date)
-
-    $ git status
-    On branch master
-    Your branch is up to date with 'origin/master'.
-
-    nothing to commit, working tree clean
-
-#### 本地非空目录，同步到远程裸仓库
-
-用于同一个的项目，只是提交记录步调不一致，比如
-
-    下载了一份源代码，需要从远程仓库同步，这种情况下远程服务器的裸仓库是非空的。
-
-    TODO:本地仓库开发的项目，后来需要多人共享，则在服务器建立裸仓库，远程服务器的裸仓库是空的，需要先把本地推送上去。
-
-本地先建立 git 仓库
+1、在本地目录下初始化为 git 仓库
 
     git init
 
-添加远程对象 origin
+2、添加 origin 远程库对象
+
+    # git 协议
+    git remote add origin git_user@180.169.33.106:repositores/repository.git
+
+    # Github 的 git 协议
+    git remote add origin git@github.com:m666m/okletsgo.git
+
+    # ssh 协议
+    git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
+
+3、拉取远程代码以让git获取分支相关信息
+
+    # 先获取主干分支，把 master 分支的 HEAD 配置上
+    $ git pull origin master
+    From ssh://11.22.33.44:2345/gitrepo/tea
+    * branch            master     -> FETCH_HEAD
+
+    # 再获取所有分支的信息
+    $ git pull
+    remote: Enumerating objects: 16, done.
+    remote: Counting ... done.
+    From ssh://11.22.33.44:2345/gitrepo/tea
+    * [new branch]      def_xxx    -> origin/def_xxx
+    * [new branch]      hotfix     -> origin/hotfix
+    * [new branch]      t3_fea     -> origin/t3_fea
+    * [new tag]         v1.2.3.4   -> v1.2.3.4
+
+这时还未设置远程库分支跟本地分支的关联，执行 git pull 或 git push 都会提示报错。
+
+4、设置分支关联设置本地分支和远程库关联。
+
+    git push -u origin master
+
+5、执行 git pull 和 git push 验证是否正常
+
+#### 示例：本地非空目录，远程服务器的裸仓库是空的
+
+比如本地仓库开发的项目，后来需要多人共享，则在服务器建立裸仓库，远程服务器的裸仓库是空的，需要先把本地推送上去。
+
+1、本地先建立 git 仓库
+
+    $ git init
+
+    $ git add .
+
+    $ git commit -m 'init 1st'
+    [master (root-commit) 34827c0] init 1st
+
+2、添加远程对象 origin
 
     git remote add origin ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
 
@@ -701,9 +726,11 @@ git clone 命令正常拉取
     Push  URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
     HEAD branch: (unknown)
 
-先把文件都 push 上去，会提示没有上游分支，直接推就会建立关联关系。
+3、这是因为没有上游分支，需要建立关联关系
 
-然后再看远程的信息，提示 tracked
+    git push -u origin master
+
+4、验证，查看看远程的信息，提示 tracked
 
     $ git remote show origin
     * remote origin
@@ -717,7 +744,9 @@ git clone 命令正常拉取
     Local ref configured for 'git push':
         master pushes to master (up to date)  <--------- 推送也有了
 
-#### 本地非空目录，远程裸仓库无本地分支
+5、执行 git pull 和 git push 同步数据，应该不会有报错提示。
+
+#### 示例：本地非空目录，远程裸仓库无本地分支
 
 前提
 
@@ -1751,7 +1780,7 @@ NOTE: 本地分支更新远程时，为了明确选择合并策略，不直接�
 
 ### 重要：推送远程前的检查
 
-本地分支推送到远程，需要有远程库 origin，否则参见章节 [本地空目录，远程刚建好空白裸仓库]。
+本地分支推送到远程，需要有远程库 origin 及跟踪分支，参见章节 [同步远程仓库push和pull]。
 
     git push origin dev_xxx:remote_branch
 
