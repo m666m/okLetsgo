@@ -317,7 +317,19 @@ git做操作之前或操作之后，查看当前的git状态
 
 版本库推送远程仓库见章节 [同步远程仓库 push、pull、clone]
 
-### git 地址协议
+### 同步远程仓库 push、pull、clone
+
+    https://www.w3cschool.cn/git/git-uroc2pow.html
+
+    https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories
+
+本地的远程仓库（remote）有个特殊的远程仓库对象 origin，如果本地仓库需要和服务器上的裸仓库建立联系，本地仓库首先要添加 origin 对象，然后设置本地分支和远程仓库上分支的关联，有了跟踪分支，才可以推送和拉取。
+
+通常的 git clone 用法见章节 [本地空目录，远程裸仓库里有文件]。
+
+远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
+
+#### git 使用的远程协议
 
 git 支持多种协议，Git 协议下载速度最快，SSH 协议用于需要用户认证的场合。
 
@@ -370,26 +382,14 @@ File 协议
 
     git clone rsync://example.com/path/to/repo.git
 
-### 同步远程仓库 push、pull、clone
-
-    https://www.w3cschool.cn/git/git-uroc2pow.html
-
-    https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories
-
-本地的远程仓库(remote)有个特殊对象 origin，本地分支和服务器上的裸仓库建立联系，首先要添加 origin 对象，然后设置本地分支和远程仓库上分支的关联，才可以推送和拉取。
-
-通常的 git clone 用法见章节 [本地空目录，远程裸仓库里有文件]。
-
-远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
-
-#### 查看远程库配置
+#### 查看远程配置
 
 先确认下，已经有远程库对象 origin
 
     $ git remote show
     origin
 
-没有的话需要重新建立，参见章节 [修改本地仓库的远程仓库设置]。
+没有的话需要重新建立，参见章节 [修改本地仓库的远程设置]。
 
 显示该远程库对象的详细信息，git 会测试该地址连通性
 
@@ -447,7 +447,7 @@ File 协议
     # ssh 协议
     git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
 
-3、未设置远程库分支跟本地分支的关联，执行 git pull 或 git push 都会提示
+3、如果未设置远程库分支跟本地分支的关联，执行 git pull 或 git push 都会提示
 
     $ git pull
     There is no tracking information for the current branch.
@@ -469,7 +469,7 @@ File 协议
     To have this happen automatically for branches without a tracking
     upstream, see 'push.autoSetupRemote' in 'git help config'.
 
-4、设置分支关联设置本地分支和远程库关联。
+4、设置本地分支和远程库关联，先把 master 分支搞好。
 
     # 将本地的 master 分支推送到 origin 主机，同时指定 origin 为默认主机
     # -u 即 --set-upstream
@@ -479,7 +479,7 @@ File 协议
     * [new branch]      master -> master
     branch 'master' set up to track 'origin/master'.
 
-等效于执行下面的操作：
+该命令等效于执行下面的操作：
 
     ·推送本地分支 master 到远程主机 origin 的 master 分支
 
@@ -501,11 +501,11 @@ File 协议
 
     git push
 
-#### 修改本地仓库的远程仓库设置
+#### 修改本地仓库的远程设置
 
 所谓修改，其实就是删除了重建。
 
-github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国内的网络下经常连接超时，改成 git 协议或 ssh 协议的地址格式相对好些。各种地址格式参见章节 [git 地址协议]。
+github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国内的网络下经常连接超时，改成 git 协议或 ssh 协议的地址格式相对好些。各种地址格式参见章节 [git 使用的远程协议]。
 
 如果是本地新建的分支，远程仓库没有该分支，无法推送本地的新分支的情况，不需要重建 origin，参见章节 [本地非空目录，远程裸仓库无本地分支]。
 
@@ -607,7 +607,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
 #### 示例：本地空目录，远程裸仓库里有文件
 
-git clone 命令正常拉取
+git clone 命令正常拉取即可
 
     git clone ssh://git@11.22.33.44:2345/gitrepo/tea.git [新目录名字]
 
@@ -617,15 +617,17 @@ git clone 命令正常拉取
     Cloning into tea...
     warning: You appear to have cloned an empty repository.
 
-这样本地目录里就会多了个名为 tea 的目录，这个目录已经是git管理的仓库了，自动创建了 origin 远程仓库对象，远端服务器的信息也都配置好了。
+这样本地目录里就会多了个名为 tea 的目录，这个目录已经是 git 管理的仓库了。
 
-git clone之后的第一次 pull 和 push：
+git clone 命令会自动创建了 origin 远程仓库对象，配置服务器的信息，默认下载 master 分支并跟远程关联，跟踪分支也都准备好了。
 
-    先执行章节 [查看远程库配置]。
+执行 `git clone` 之后的第一次 pull 和 push：
 
-    然后检查 pull 和 push 是否报错没有关联跟踪分支，参见章节 [本地仓库关联远程仓库] 的第 4 步。
+可执行章节 [查看远程配置]。
 
-    初次拉取后，本地默认只有 master 分支，如需使用其它分支，参见章节 [从远程库的某个分支建立一个本地分支]。
+执行 `git pull` 和 `git push`，看是否报错没有关联跟踪分支。如果报错，可参见章节 [本地仓库关联远程仓库] 的第 4 步。
+
+初次拉取后，本地默认只有 master 分支，如需使用其它分支，参见章节 [从远程库的某个分支建立一个本地分支]。
 
 #### 示例：本地空目录，远程刚建好空白裸仓库
 
@@ -759,7 +761,7 @@ git clone之后的第一次 pull 和 push：
 
     $ git branch -avv
     master                 3384fb2 [origin/master] tea2 再改2
-    * t3_fea               f6aeb75 [origin/t3_fea] t3_fea 分支自己添加  <---------- 这里显示了对应的跟踪分支
+    * t3_fea               f6aeb75 [origin/t3_fea] t3_fea 分支自己添加  <-- 对应的远程分支
     remotes/origin/HEAD    -> origin/master
     remotes/origin/def_xxx b414ac9 功能3
     remotes/origin/hotfix  7cabce4 res me
@@ -775,47 +777,45 @@ git clone之后的第一次 pull 和 push：
         def_xxx tracked
         hotfix  tracked
         master  tracked
-        t3_fea  tracked <---------- 这里显示添加了跟踪
+        t3_fea  tracked <---- 添加了跟踪分支
     Local branches configured for 'git pull':
         master merges with remote master
-        t3_fea merges with remote t3_fea
+        t3_fea merges with remote t3_fea <---- 关联了 fetch 命令
     Local refs configured for 'git push':
         master pushes to master (up to date)
-        t3_fea pushes to t3_fea (up to date) <---------- 这里显示添加了跟踪
+        t3_fea pushes to t3_fea (up to date) <---- 关联了 push 命令
 
 其它机器需要重新拉取远程分支
 
     $ git fetch
-    * [new branch]            t3_fea     -> origin/t3_fea  <---------- 提示下载了新的分支在本地的远程库
+    * [new branch]    t3_fea  -> origin/t3_fea  <--- 提示本地的远程库下载了新的分支
 
     $ git branch -avv
     * master                 3384fb2d33 [origin/master] tea2 再改2
     remotes/origin/def_xxx b414ac95d4 功能3
     remotes/origin/hotfix  7cabce404f res me
     remotes/origin/master  3384fb2d33 tea2 再改2
-    remotes/origin/t3_fea  f6aeb75474 t3_fea 分支自己添加
+    remotes/origin/t3_fea  f6aeb75474 t3_fea 分支自己添加 <---本地的远程库的分支
 
-可以在本地创建该分支了
+这样就可以创建本地分支了，注意分支名称最好保持一致
 
     $ git switch -c t3_fea origin/t3_fea
     Switched to a new branch 't3_fea'
     branch 't3_fea' set up to track 'origin/t3_fea'.
 
-不要设置不同的分支名称
+尽量不要设置不同的分支名称：
 
-    如果你本地新建分支名称和远程服务器上的分支名称不一致，甚至不使用默认的 origin 对象
+如果你本地新建分支名称和远程服务器上的分支名称不一致，甚至不使用默认的 origin 对象
 
-        git push origin local_branch:remote_branch
+    git push origin local_branch:remote_branch
 
-        git branch --set-upstream-to=origin/remote_branch local_branch
+    git branch --set-upstream-to=origin/remote_branch local_branch
 
-        git push origin HEAD:remote_branch
+    git push origin HEAD:remote_branch
 
-        git push -u origin/local_branch
+    git push -u origin/local_branch
 
-    之后的 git push 和 git fentch 操作跟随 `git status` 的提示即可。
-
-    但是，以后每次使用 git push、git fetch 命令都要加参数，太麻烦了。
+那么之后的 `git push` 和 `git fentch` 操作都要加参数，比较麻烦，跟随 `git status` 的提示即可。
 
 ### 定制化的拉取仓库
 
@@ -1773,7 +1773,7 @@ NOTE: 本地分支更新远程时，为了明确选择合并策略，不直接�
 
 ## 分支推送 push
 
-分支如果没有对应到远程仓库，无法push，需要建立关联，参见章节 [修改本地仓库的远程仓库设置]。
+分支如果没有对应到远程仓库，无法push，需要建立关联，参见章节 [修改本地仓库的远程设置]。
 
 ### 重要：推送远程前的检查
 
