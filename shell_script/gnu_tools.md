@@ -5685,7 +5685,7 @@ Linux 下，每个算法都是单独的程序：cksum md5sum sha1sum sha256sum s
     $ cksum test.json
     1758862648 4855 test.json
 
-    # 生成sha256校验文件
+    # 生成 sha256 校验文件
     $ sha256sum file > file.sha256
 
     # 生成多个文件的sha256校验
@@ -5693,6 +5693,11 @@ Linux 下，每个算法都是单独的程序：cksum md5sum sha1sum sha256sum s
     $ more checksums.sha256
     17e682f060b5f8e47ea04c5c4855908b0a5ad612022260fe50e11ecb0cc0ab76  a.txt
     3cf9a1a81f6bdeaf08a343c1e1c73e89cf44c06ac2427a892382cae825e7c9c1  b.txt
+
+    # 生成 BSD-style 的校验
+    $ sha256sum --tag colortest.sh  bing.jpg
+    SHA256 (colortest.sh) = b855d0ce40d7b578c41c2f199692570e627fb4501b3098de0c8e507f133c08c0
+    SHA256 (bing.jpg) = 90f9a057885b0d72ecca5d6708ca3e9c69419eb6dd46bc5071a4e17e31ed6178
 
     # 对当前目录下找到的所有文件，生成校验码
     find . -type f -exec sha256sum \{\} \; > checksum-file
