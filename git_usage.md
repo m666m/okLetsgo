@@ -503,7 +503,7 @@ File 协议
 
 #### 修改本地仓库的远程设置
 
-所谓修改，其实就是删除了重建。
+所谓修改，一般都是删除重建。
 
 github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国内的网络下经常连接超时，改成 git 协议或 ssh 协议的地址格式相对好些。各种地址格式参见章节 [git 使用的远程协议]。
 
@@ -515,6 +515,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
 2、重新添加远程仓库对象 origin
 
+    # git remote set-url origin
     git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
 
 3、建立 origin 和 master 的联系
@@ -539,11 +540,13 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
 在一般使用中，保持默认的远程库对象 origin 的 fetch/push 地址，添加多个 push 远程仓库地址。
 
-这样的好处是，可以实现代码的多处备份，而且默认的远程库对象 origin 不受影响，照常 fetch、push。
+这样的好处是，默认的远程库对象 origin 照常 fetch、push，只是增加了多个 push 地址，可以实现代码的多处备份。
 
-默认 fetch 保持 origin 最早添加的地址，只是给它增加多个 push 地址
+给 origin 增加多个 push 地址
 
     git remote set-url --add origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+添加后验证
 
     $ git remote show origin
     * remote origin
@@ -554,9 +557,9 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
     Remote branch:
         main tracked
     Local branch configured for 'git pull':
-        main merges with remote main
+        main merges with remote main <-- 当前分支的 pull 不变
     Local ref configured for 'git push':
-        main pushes to main (up to date)
+        main pushes to main (up to date) <-- 当前分支的 push 不变
 
     $ git remote -v
     origin  git@github.com:m666m//project_name.git (fetch)  <-- 默认的 fetch 地址
@@ -815,9 +818,51 @@ git clone 命令会自动创建了 origin 远程仓库对象，配置服务器�
 
 那么之后的 `git push` 和 `git fentch` 操作都要加参数，比较麻烦，跟随 `git status` 的提示即可。
 
-### 定制化的拉取仓库
+### 定制化拉取远程仓库
 
 通常的 git clone 用法见章节 [本地空目录，远程裸仓库里有文件]。
+
+#### 仅拉取指定远程分支
+
+假设分支名称dev
+
+    git clone -b dev
+
+或用 fetch 只下载指定分支如 dev：
+
+    $ git init
+
+    $ git remote add origin git@github.com:m666m/okletsgo.git
+
+    $ git remote set-branches origin dev
+
+    $ git fetch --depth 1 origin dev
+
+    # 如果 git branch -avv 看不到远程分支，使用 `git remote update` 更新下
+
+    $ git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
+
+    $ git pull origin dev(远程分支名称)
+
+##### 拉取指定分支的指定commit版本
+
+git clone 默认是取回 master 分支，可以使用 -b 参数指定分支。
+
+-b 参数不仅支持分支名，还支持 tag 名等。
+
+    git clone  <remote-addr:repo.git> -b <branch-or-tag-or-commit>
+
+需求是获取 commit id，没直接的办法，下面提供另一个步骤：
+
+选择一个包含目标 commit id 的 branch 或 tag，并指定 depth=1 以获得比较少的额外文件传输。
+
+    git clone --depth 1 <remote-addr:repo.git> -b < branch-or-tag >
+
+clone 完成后，进入目录，执行
+
+    git fetch --depth < a-numer >
+
+不断增大步骤2的数字，直到找到你要的commit
 
 #### 浅克隆(shallow clone) --- 大仓库非全量拉取
 
@@ -863,64 +908,42 @@ git cole 命令默认会把所有的提交记录都 clone 下来，对比较大�
 
 然后就可以正常使用了。
 
-#### 仅拉取指定远程分支
+#### 部分克隆(Partial clone) --- 减少下载提交记录的部分对象
 
-假设分支名称dev
+适用于大项目，浅克隆拉取都耗时很久，部分克隆更有效。
 
-    git clone -b dev
+仓库中的提交记录由三者组合：commit对象、tree对象、blob对象。部分克隆通过只下载部分对象的方式，在首次克隆时减轻了需要传输的数据量，降低了克隆需要的时间。
 
-或 fetch 下来再建个本地分支
+1、blobless 模式
 
-    $ git init
-    $ git remote add origin git@github.com:m666m/nothing2.git
+    # 我只看看代码，不下载 blob 对象
+    git clone --filter=blob:none xxxx
 
-    $ git fetch origin dev
+这样的克隆不影响 git merge、git rebase、git log 等命令，我们可以正常使用。
 
-    # 查看远程分支，
-    $ git branch -avv
-    * master                 8d96022 [origin/master] 3
-    remotes/origin/HEAD    -> origin/master
-    remotes/origin/dev        b414ac9 功能3
-    remotes/origin/master  8d96022 3
+2、treeless 模式
 
-    # 看不到远程分支时，使用 git remote update 或 git fetch --all 先更新下，
-    # 其实文件都下载到本地的远程仓库了，只是没有出现在工作区
+    # 我只看看代码，不下载 tree 对象
+    git clone --filter=tree:0 xxxx
 
-    $ git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
+需要下载的对象更少，克隆时间会更短，磁盘占用空间也会更少。但是在后续的工作中，treeless 模式的克隆会更加频繁的触发数据的下载。treeless 克隆更加适用于自动构建的场景，快速的克隆仓库，构建，然后删除。
 
-    $ git pull origin dev(远程分支名称)
+在后续使用中如果涉及到这些历史数据，就会触发对象的按需下载。
 
-上面方法的改良，限制 fetch 只下载到指定分支
+可手工查找缺失对象，通过管道传递给下面的git fetch进程，实现缺失对象的批量获取：
 
-    只想要 fetch 其他的分支，比如 dev：
+    git rev-list --objects --missing=print v1.0.0..v2.0.0 | grep "^?" |\
+    git -c fetch.negotiationAlgorithm=noop \
+        fetch origin \
+        --no-tags \
+        --no-write-fetch-head \
+        --recurse-submodules=no \
+        --filter=blob:none \
+        --stdin
 
-    $ git remote set-branches origin dev
+如果项目中二进制文件较多，建议配置 Git LFS。
 
-    $ git fetch --depth 1 origin dev
-
-    $ git checkout -b dev origin/dev
-
-##### 拉取指定分支的指定commit版本
-
-git clone 默认是取回 master 分支，可以使用 -b 参数指定分支。
-
--b 参数不仅支持分支名，还支持 tag 名等。
-
-        git clone  <remote-addr:repo.git> -b <branch-or-tag-or-commit>
-
-需求是获取 commit id，没直接的办法，下面提供另一个步骤：
-
-选择一个包含目标 commit id 的 branch 或 tag，并指定 depth=1 以获得比较少的额外文件传输。
-
-    git clone --depth 1 <remote-addr:repo.git> -b < branch-or-tag >
-
-clone 完成后，进入目录，执行
-
-    git fetch --depth < a-numer >
-
-不断增大步骤2的数字，直到找到你要的commit
-
-#### 稀疏检出(sparsecheckout) --- 拉取指定目录
+#### 稀疏检出(sparsecheckout) --- 只拉取指定目录
 
 git的指定目录拉取，对于灵活选取仓库资源非常有帮助
 
@@ -1065,9 +1088,10 @@ fetch 远程仓库，会拉取到其它分支的信息
 
     https://www.jianshu.com/p/680f2c6c84de
 
-对于目录中多余的文件，在稀疏检查时不会去处理，类似切换分支对非git管理文件的处理效果。
+对于目录中多余的文件，在稀疏检查时不会去处理，类似分支切换时对非 git 管理文件的处理方式。
 
 1、打开 sparse checkout 功能
+
 进入版本库的目录，执行以下命令
 
     git config --local core.sparsecheckout true
@@ -1127,42 +1151,7 @@ sparse-checkout 文件设置
         !/A/B/*/
         /A/B/C/
 
-#### 部分克隆(Partial clone) --- 大项目减少下载提交记录的部分对象
-
-仓库中的提交记录有三者组合：commit对象、tree对象、blob对象。
-
-部分克隆通过只下载部分数据的方式，在首次克隆时减轻了需要传输的数据量，降低了克隆需要的时间。
-
-1、blobless 模式
-
-    # 我只看看代码，不下载 blob 对象
-    git clone --filter=blob:none xxxx
-
-这样的克隆不影响 git merge、git rebase、git log等命令，我们可以正常使用
-
-2、treeless 模式
-
-    # 我只看看代码，不下载 tree 对象
-    git clone --filter=tree:0 xxxx
-
-需要下载的对象更少，克隆时间会更短，磁盘占用空间也会更少。但是在后续的工作中，treeless 模式的克隆会更加频繁的触发数据的下载。treeless 克隆更加适用于自动构建的场景，快速的克隆仓库，构建，然后删除。
-
-在后续使用中如果涉及到这些历史数据，就会触发对象的按需下载。
-
-可手工查找缺失对象，通过管道传递给下面的git fetch进程，实现缺失对象的批量获取：
-
-    git rev-list --objects --missing=print v1.0.0..v2.0.0 | grep "^?" |\
-    git -c fetch.negotiationAlgorithm=noop \
-        fetch origin \
-        --no-tags \
-        --no-write-fetch-head \
-        --recurse-submodules=no \
-        --filter=blob:none \
-        --stdin
-
-如果项目中二进制文件较多，建议配置 Git LFS。
-
-#### 部分克隆+稀疏检出 --- 大项目用这个最精简
+#### 组合使用：部分克隆+稀疏检出 --- 大项目用这个最精简
 
     https://help.aliyun.com/document_detail/309002.html
 
@@ -1241,9 +1230,9 @@ sparse-checkout 文件设置
 
 git checkout 命令是在同一个文件夹中切换不同分支，当一个分支正在开发，有另一个分支需要紧急处理bug，有两种解决方案
 
-    `git stash` 当前内容，然后切换分支修改bug，提交后再切换回来， `git stash pop` 继续
+    `git stash` 当前内容，然后切换分支修改bug，提交后再切换回来， `git stash pop` 继续原开发。
 
-    新建个目录拉取仓库，在那个目录里切换分支修改bug，极端情况下每个分支一个目录，都克隆同一个仓库，但是这样占用容量太大了
+    新建个目录拉取仓库，在那个目录里切换分支修改bug，极端情况下每个分支一个目录，都克隆同一个仓库，但是这样占用容量太大了。
 
 一个 git 仓库可以支持多个工作树，允许你在同一时间检出多个分支。通过 git worktree add 将一个新的工作目录和一个仓库进行关联。 这个新的工作目录被称为 “linked working tree（链接工作树）”。不同于通过 git init 或 git clone 产生的主工作树，这个目录只保存了静态内容，容量相对小很多，在这个目录下切换分支操作即可。
 
@@ -1276,11 +1265,11 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
     # 清理失去关联的 worktree
     git worktree prune
 
-示例
+示例：
 
 保留当前分支代码现状，基于 master 分支创建一个 hotfix 分支修复问题
 
-    # 基于 master 分支头指针，在目录同级创建一个 hotfix 的工作树，并检出一个本地分支 hotfix 以便后期合入
+    # 基于 master 分支的 HEAD，在目录同级创建一个 hotfix 的工作树，并检出一个本地分支 hotfix 以便后期合入
     # git worktree add ../hotfix --detach master 如果分离式检出，切换到目录后手工创建分支 `git checkout -b hotfix`
     # git worktree add -b hotfix ../hotfix master
     git worktree add ../hotfix  # 创建目录并自动检出一个同名的本地分支
@@ -1289,8 +1278,9 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
     cd ../hotfix
 
     # 在该工作树下处理bug
+    ...
 
-    # 切换回主分支合并
+    # 切换回主分支合并该分支的内容
     cd -
     git rebase hotfix
 
@@ -1498,7 +1488,7 @@ git 用 switch 命令替代了 checkout 命令中关于分支切换的功能
 
 目前推荐的用法：在某个提交点就地建立分支
 
-    # 为防止看不到全部分支，先更新下先使用
+    # 为防止看不到全部分支，先更新下
     # git remote update
     git fetch --all
 
@@ -1597,12 +1587,15 @@ NOTE: 新建的分支没有对应到远程仓库，无法推送到远程，如�
 
 需要清理远程库对象 origin 中这些无效的跟踪分支
 
+    # 拉取新分支，同时删除远程已删除的分支
+    # git update origin --prune
+
     $ git remote prune origin
     Pruning origin
     URL: ssh://
     * [pruned] origin/fea_xxx
 
-如果他们的本地也有 fea_xx分支，可以删除掉
+如果本地也建立了 fea_xx 分支，可以删除掉
 
     git branch -d fea_xxx
 
