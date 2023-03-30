@@ -5550,7 +5550,8 @@ dd 命令是基于块（block）的复制，用途很多。
 快速清理文件
 
     # truncate -s 0 /var/log/yum.log
-    > your_file.txt
+    # echo '' >your_big.log
+    > your_big.log
 
 + 删除大量文件
 
@@ -5572,11 +5573,11 @@ dd 命令是基于块（block）的复制，用途很多。
 
 tar 命令的选项和参数有几种写法，注意区别
 
-    GUN 传统写法没横线，多个单字母选项合起来写在第一个参数位
+    GNU 传统写法：没有 -，多个单字母选项合起来写在第一个参数位
 
         tar vcf a.tar /tmp
 
-    UNIX 写法用 -选项1 选项1自己的参数 -选项2 选项2自己的参数
+    UNIX 写法：用 -选项1 选项1自己的参数 -选项2 选项2自己的参数
 
         tar -c -v -f a.tar /tmp
 
@@ -5584,7 +5585,7 @@ tar 命令的选项和参数有几种写法，注意区别
 
         tar -vkp -f a.tar /tmp  # f也可以合写，但是要在最后一个，以便后面跟参数
 
-    GUN 写法用 -- 或 -，连写用一个 -
+    GUN 写法：用 -- 或 -，连写用一个 -
 
         # --选项 后面紧跟空格参数
         tar --create --file a.tar --verbose /tmp
@@ -5595,9 +5596,11 @@ tar 命令的选项和参数有几种写法，注意区别
 
 .tar.gz 文件
 
-    # c打包并z压缩，生成.tar.gz文件，源可以是多个文件或目录名
-    # 只c打包，生成 .tar 文件，其它参数相同
-    # 把 z 换成 j 就是压缩为.bz2文件，而不是.gz文件了
+    TODO:大文件压缩，注意加参数 d 校验
+
+    # c 打包并 z 压缩，生成 .tar.gz 文件，源可以是多个文件或目录名
+    # 只 c 打包，生成 .tar 文件，其它参数相同
+    # 把 z 换成 j 就是压缩为 .bz2 文件，而不是 .gz 文件了
     tar czvf arc.tar.gz file1 file2
     tar cjvf arc.tar.bz2 file1 file2
 
@@ -5611,13 +5614,20 @@ tar 命令的选项和参数有几种写法，注意区别
     # curl下载默认输出是标准输入流，管道后面的命令是tar从标准输出流读取数据解压到指定的目录下
     curl -fsSL https://go.dev/dl/go1.19.5.linux-armv6l.tar.gz |sudo tar -C /usr/local -xzvf -
 
-    大文件压缩，注意加参数 d 校验
+    # TODO:打包并 gpg 加密
+    tar cjf - <path> |gpg --cipher-algo AES-256 -c --output backup.tbz2.gpg -
 
-    # 打包并加密
-    tar cjf - <path> | gpg --cipher-algo AES -c - > backup.tbz2.gpg
+        # 解密并解包
+        # dd if=backup.tbz2.gpg |gpg - |tar djf -
+        cat backup.tbz2.gpg |gpg - |tar djf -
 
-    # 解密并解包
-    cat backup.tbz2.gpg | gpg - | tar djf -
+    # 打包并 openssl 加密
+    # 将当前目录下的 files 文件夹打包压缩，密码为password
+    tar -czvf - files |openssl des3 -salt -k password -out files.tar.gz
+
+        解密解缩
+        # 将当前目录下的files.tar.gz进行解密解压拆包
+        openssl des3 -d -k password -salt -in files.tar.gz |tar xzvf -
 
 .gz 文件
 
@@ -5740,7 +5750,7 @@ bc - An arbitrary precision calculator language
     $ echo '1 / 6' |bc -l
     .16666666666666666666
 
-### 生成随机数
+### 生成随机数做密码
 
     https://huataihuang.gitbooks.io/cloud-atlas/content/os/linux/device/random_number_generator.html
 
@@ -5755,7 +5765,7 @@ bc - An arbitrary precision calculator language
     0637 34d5 16f5 f393 250e a2eb aac0 27c3
 
     # 对随机数只取字符和数字，9个一行，取第一行
-    $ cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 9 | head -n 1
+    $ cat /dev/random | tr -dc 'a-zA-Z0-9' | fold -w 9 | head -n 1
     DPTDA9W29
 
     # 对随机数只取字符和数字，取前14个
