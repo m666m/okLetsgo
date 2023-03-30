@@ -5246,7 +5246,7 @@ Screen 支持 Zmodem 协议，也就是说，你可以用 rz、sz 命令方便�
 
 这个命令会将你朋友的终端Attach到你的Screen会话上，并且你的终端不会被Detach。这样你就可以和朋友共享同一个会话了，如果你们当前又处于同一个窗口，那就相当于坐在同一个显示器前面，你的操作会同步演示给你朋友，你朋友的操作也会同步演示给你。当然，如果你们切换到这个会话的不同窗口中去，那还是可以分别进行不同的操作的。
 
-### Midnight Commander 命令行下的文件资源管理器
+### 命令行下的文件资源管理器 Midnight Commander
 
     # https://midnight-commander.org/ https://github.com/MidnightCommander/mc
     # https://sourceforge.net/projects/mcwin32/files/
@@ -5254,7 +5254,7 @@ Screen 支持 Zmodem 协议，也就是说，你可以用 rz、sz 命令方便�
 
 命令行下使用两个面板来处理文件和目录，类似 [Far Manager](https://conemu.github.io/en/FarManager.html)。
 
-### reptyr 从 pid 把后台任务调回前台
+### 通过 pid 把后台任务调回前台 reptyr
 
 reptyr
 
@@ -5263,7 +5263,7 @@ reptyr
 
 从你的当前终端连接指定的 pid，适用于把 Ctrl+Z 挂起到后台的任务重新调用回前台。
 
-### find + grep + xargs 组合按内容查找文件
+### 按内容查找文件：find + grep + xargs 组合
 
 查找指定文件
 
@@ -5484,7 +5484,7 @@ hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控�
 
 效率很高，输出也简洁。
 
-### dd 写入文件
+### 写入文件 dd
 
 dd 命令是基于块（block）的复制，用途很多。
 
@@ -5568,7 +5568,7 @@ dd 命令是基于块（block）的复制，用途很多。
 
         mkdir empty && rsync -r --delete empty/ some-dir && rmdir some-dir
 
-### 压缩解压缩
+### 压缩解压缩 tar gz bz2
 
 tar 命令的选项和参数有几种写法，注意区别
 
@@ -5732,7 +5732,7 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     certutil -hashfile cn_windows_7.iso SHA1
     certutil -hashfile cn_windows_7.iso SHA256
 
-### 带精度的计算器
+### 带精度的计算器 bc
 
 bc - An arbitrary precision calculator language
 
@@ -5787,7 +5787,7 @@ bc - An arbitrary precision calculator language
 
 随机数生成的这些工具，通过 /dev/random 依赖系统的熵池，而服务器在运行时，既没有键盘事件，也没有鼠标事件，那么就会导致噪声源减少。很多发行版本中存在一个 rngd 程序，用来增加系统的熵池（用 urandom 给 random 灌数据），详见章节 [给random()增加熵] <init_a_server.md think>。
 
-### od 按数制显示内容
+### 按数制显示内容 od
 
     od [-A<字码基数> ] [-t[TYPE[SIZE]] ] 文件名
 
@@ -6028,7 +6028,7 @@ peer-id-prefix=-TR2940-
 
 ```
 
-### ZModem 文件传输协议工具 rs rz
+### ZModem 协议的文件传输协议工具 rs rz
 
 需要你的终端工具支持 zmodem 协议，使用起来比较方便
 
@@ -6049,7 +6049,7 @@ peer-id-prefix=-TR2940-
 
     mintty 不支持 https://github.com/mintty/mintty/issues/235
 
-### netcat(nc) 简单的端口通信
+### 简单的端口通信 netcat (nc)
 
 开源项目持续性不稳定，历史较复杂
 
@@ -6132,7 +6132,7 @@ peer-id-prefix=-TR2940-
 
 国内目前拨号路由器的端口都被屏蔽了，但是ipv6的端口是放开的。用 socat 简单的实现内网设备的端口转发到路由器对外开放。注意：你的内网设备对外开放端口，安全性由使用该端口的程序自行保障！酌情考虑用 openVPN 进行保护。
 
-### scp 跨机远程拷贝
+### 跨机远程拷贝 scp
 
 前提条件
 
@@ -6190,7 +6190,7 @@ scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了�
 
     scp root@192.168.1.104:/usr/local/xx.txt root@192.168.1.105:/usr/local/webs/
 
-### rsync 文件同步
+### 文件同步 rsync
 
     https://blog.csdn.net/wanli245/article/details/80317255
 
@@ -6554,7 +6554,7 @@ rsync 默许服务端口为 873。
 
 最好把命令写成批处理文件，放到 Windows 计划任务里定时执行。
 
-### sshfs 通过 ssh 来挂载远程目录
+### 通过 ssh 来挂载远程目录 sshfs
 
     https://www.junmajinlong.com/linux/sshfs/
 
@@ -6794,7 +6794,7 @@ Ninja 还集成了 graphviz 等一些对开发非常有用的工具，执行 `./
     # 运行ninja编译
     ninja
 
-### graphviz 文本生成流程图
+### 文本生成流程图 graphviz
 
     https://www.graphviz.org/
 
@@ -6970,11 +6970,11 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     update-alternatives --config vi
 
-### rdesktop
+### 远程桌面 rdesktop
 
     rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
 
-按ctrl + alt +回车退出或进入全屏模式。
+按 `ctrl + alt +回车` 退出或进入全屏模式。
 
 ## Linux 桌面环境
 
@@ -8000,7 +8000,7 @@ Target 与 传统 RunLevel 的对应关系如下
 
     systemctl enable tproxyrule
 
-## crontab 定时任务
+## 定时任务 crontab
 
     https://www.debian.org/doc/manuals/debian-handbook/sect.task-scheduling-cron-atd.zh-cn.html
 
@@ -8450,47 +8450,3 @@ Linux下新建用户密码过期时间是从/etc/login.defs文件中PASS_MAX_DAY
 解决方案2：
 
     kill cron进程，因为cron进程是自动重生的
-
-## cgroup 控制操作系统资源分配
-
-查看当前的服务
-
-    ❯ systemd-cgls
-    Control group /:
-    -.slice
-    ├─user.slice
-    │ └─user-1000.slice
-    │   ├─session-2.scope
-    │   │ ├─  661 zsh
-    │   │ ├─  664 zsh
-    │   │ ├─  678 zsh
-    │   │ ├─  918 tmux
-    │   │ └─8519 tmux a
-    │   └─user@1000.service
-    │     ├─powerline-daemon.service
-    │     │ └─872 /usr/bin/python3 /usr/bin/powerline-daemon --foreground
-    │     └─init.scope
-    │       ├─860 /lib/systemd/systemd --user
-    │       └─861 (sd-pam)
-    ├─init.scope
-    │ └─1 /sbin/init
-    └─system.slice
-    ├─alsa-state.service
-    │ └─385 /usr/sbin/alsactl -E HOME=/run/alsa -s -n 19 -c rdaemon
-    ├─systemd-timesyncd.service
-    │ └─332 /lib/systemd/systemd-timesyncd
-    ├─dbus.service
-    │ └─395 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
-    ├─ssh.service
-    │ └─579 /usr/sbin/sshd -D
-    ├─watchdog.service
-    │ └─5008 /usr/sbin/watchdog
-    ├─cron.service
-    │ └─369 /usr/sbin/cron -f
-    ├─systemd-journald.service
-    │ └─127 /lib/systemd/systemd-journald
-    ├─rng-tools.service
-    │ └─380 /usr/sbin/rngd -r /dev/hwrng
-    └─dhcpcd.service
-        ├─497 wpa_supplicant -B -c/etc/wpa_supplicant/wpa_supplicant.conf -iwlan0 -Dnl80211,wext
-        └─567 /sbin/dhcpcd -q -w
