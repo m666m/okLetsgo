@@ -901,6 +901,25 @@ pacman命令较多，常用的命令如下：
 
 ### 其他本地终端模拟器
 
+terminfo 问题
+
+    https://ttys3.dev/post/kitty/
+
+    如果你尝试ssh到远程机器, 可能会发现你本机的zsh报错:
+
+    /home/user007/.zsh_compatible:bindkey:2: cannot bind to an empty key sequence
+
+    这个问题其实不只存在于 kitty, 任何有自己独立的 terminfo 的 terminal (且其信息没有在ncurses中内置), 基本上都会有这个问题. 比如 Alacritty 也有这个问题.
+
+    这个问题官方faq文档里面也有说明: I get errors about the terminal being unknown or opening the terminal failing when SSHing into a different computer?
+
+    This happens because the kitty terminfo files are not available on the server. You can ssh in using the following command which will automatically copy the terminfo files to the server:
+
+    kitty +kitten ssh myserver
+    This ssh kitten takes all the same command line arguments as ssh, you can alias it to ssh in your shell’s rc files to avoid having to type it each time:
+
+    alias ssh="kitty +kitten ssh"
+
 WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装。速度快，兼容性较好，左侧就是文件夹树方便sftp，支持 lrzsz 的文件拖放传送，命令行输出还支持标签折叠
 
     https://github.com/kingToolbox/WindTerm
@@ -929,7 +948,7 @@ Linux 桌面下的终端模拟器感觉没啥意义，用自带的就行了
     KDE 桌面自带 Konsole
     Xfce 桌面自带 xfce
 
-    rxvt-unicode
+    urxvt(rxvt-unicode)
 
     terminator
 
@@ -1848,6 +1867,26 @@ True color(24bit) 综合测试 terminal-testdrive.sh
     putty 可以通过真彩测试，但对块状字符的渲染方式有问题：zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此。terminal-testdrive.sh 测试不支持：文字闪烁、sixel 图像。
 
     Windows Terminal 可以通过真彩测试，但对块状字符的渲染方式有问题：zsh+powerlevel10k 命令提示符颜色过渡明显断裂，tmux 状态栏颜色也如此。terminal-testdrive.sh 测试：不支持 sixel 图像，少了几个文字修饰效果。
+
+如果要测试刷新速度
+
+    ```bash
+    # 看谁刷的快 https://github.com/alacritty/alacritty/issues/289#issuecomment-340283908%29
+    for i in {1..400000}; do
+    echo -e '\r'
+    echo -e '\033[0K\033[1mBold\033[0m \033[7mInvert\033[0m \033[4mUnderline\033[0m'
+    echo -e '\033[0K\033[1m\033[7m\033[4mBold & Invert & Underline\033[0m'
+    echo
+    echo -e '\033[0K\033[31m Red \033[32m Green \033[33m Yellow \033[34m Blue \033[35m Magenta \033[36m Cyan \033[0m'
+    echo -e '\033[0K\033[1m\033[4m\033[31m Red \033[32m Green \033[33m Yellow \033[34m Blue \033[35m Magenta \033[36m Cyan \033[0m'
+    echo
+    echo -e '\033[0K\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+    echo -e '\033[0K\033[1m\033[4m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+    echo
+    echo -e '\033[0K\033[30m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+    echo -e '\033[0K\033[30m\033[1m\033[4m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+    done
+    ```
 
 #### 软件支持真彩色
 
@@ -7241,6 +7280,8 @@ Gnome 主题乐园
             https://mpv.io/installation/
                 https://github.com/mpv-player/mpv/
                 https://sourceforge.net/projects/mpv-player-windows/files/
+
+            配置 https://github.com/thisisshihan/mpv-player-config-snad
 
         smplayer 使用 以上两者做作为播放引擎的 GUI 外壳程序，也支持播放 youtube
             https://www.smplayer.info/
