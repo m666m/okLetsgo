@@ -5300,6 +5300,8 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
 grep -w 匹配单词，用于搜索结果中类似字母组合太多的情况。
 
+ripgrep 替代 grep，解决了不带文件名挂住的问题，rg 会默认查找所有文件。更推荐 ack，参见章节 [ackg 给终端输出的自定义关键字加颜色]。
+
 从当前目录及子目录列出所有目录名和文件名，排除目录 .git 和 __pycache__，逐个文件的查找文件内容包含 “logg” 的行，列出文件名、行号、内容
 
     # 查找当前目录及子目录所有文件，列出包含指定内容的的行，如 `grepf logg`
@@ -5408,11 +5410,15 @@ hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控�
 
     https://www.cnblogs.com/bamanzi/p/colorful-shell.html
 
-脚本名和函数名都太简单了，都换成不易混淆的 ackg 吧
+先安装依赖 ack，非常好的 grep 的替代品
 
-    # 先安装依赖 ack https://beyondgrep.com/apt list
-    #   命令使用简介 https://wangchujiang.com/linux-command/c/ack.html
-    # sudo apt install ack
+        https://beyondgrep.com/
+
+        命令使用简介 https://wangchujiang.com/linux-command/c/ack.html
+
+    sudo apt install ack
+
+脚本名和函数名都太简单了，都换成不易混淆的 ackg 吧
 
     curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
 
@@ -5571,9 +5577,11 @@ dd 命令是基于块（block）的复制，用途很多。
 
 ### 压缩解压缩 tar gz bz2
 
+    tar [选项] [选项参数] [生成文件名] [源文件1 源文件2 ...]
+
 tar 命令的选项和参数有几种写法，注意区别
 
-    GNU 传统写法：没有 -，多个单字母选项合起来写在第一个参数位
+    传统写法：没有 -，多个单字母选项合起来写在第一个参数位
 
         tar vcf a.tar /tmp
 
@@ -5596,8 +5604,6 @@ tar 命令的选项和参数有几种写法，注意区别
 
 .tar.gz 文件
 
-    TODO:大文件压缩，注意加参数 d 校验
-
     # c 打包并 z 压缩，生成 .tar.gz 文件，源可以是多个文件或目录名
     # 只 c 打包，生成 .tar 文件，其它参数相同
     # 把 z 换成 j 就是压缩为 .bz2 文件，而不是 .gz 文件了
@@ -5614,14 +5620,24 @@ tar 命令的选项和参数有几种写法，注意区别
     # curl下载默认输出是标准输入流，管道后面的命令是tar从标准输出流读取数据解压到指定的目录下
     curl -fsSL https://go.dev/dl/go1.19.5.linux-armv6l.tar.gz |sudo tar -C /usr/local -xzvf -
 
-    # TODO:打包并 gpg 加密
-    tar cjf - <path> |gpg --cipher-algo AES-256 -c --output backup.tbz2.gpg -
+    # 大文件压缩后，可以校验下，如果目录或子目录的文件有变化，都会提示
+    $ tar -df arc.tar.gz
+    dir1/file1: Mod time differs
+    dir1/file1: Contents differ
+    file2: Mod time differs
+    file2: Contents differ
 
-        # 解密并解包
-        # dd if=backup.tbz2.gpg |gpg - |tar djf -
-        cat backup.tbz2.gpg |gpg - |tar djf -
+    # 打包并 gpg 加密
+    tar cjf - <path> |gpg --cipher-algo AES-256 -c --output backup.tar.bz2.gpg -
 
-    # 打包并 openssl 加密
+        如果遇到报错：gpg: problem with the agent: Inappropriate ioctl for device
+        说明 gpg 获取不到当前的 tty 无法弹出密码输入框，手工执行 `export GPG_TTY=$(tty)` 再做（一般出现在使用 tmux 这种多个tty 的场合，注意在同一个窗口面板下操作）
+
+        # TODO:解密并解包
+        # dd if=backup.tar.bz2.gpg |gpg -d |tar xjf -
+        cat backup.tar.bz2.gpg |gpg -d |tar xjf -
+
+    # TODO:打包并 openssl 加密
     # 将当前目录下的 files 文件夹打包压缩，密码为password
     tar -czvf - files |openssl des3 -salt -k password -out files.tar.gz
 
@@ -7052,9 +7068,15 @@ Gnome 主题乐园
 
     Compiz：OpenGL 窗口和合成管理器
 
-        https://ubunlog.com/zh-CN/compiz%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A82022/
+        http://wiki.compiz.org/CommonKeyboardShortcuts
 
-        https://spins.fedoraproject.org/zh_Hans_CN/mate-compiz
+        Fedora 版 https://spins.fedoraproject.org/zh_Hans_CN/mate-compiz
+
+        Compiz：2022年年中安装、配置和使用 https://ubunlog.com/zh-CN/compiz%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A82022/
+
+        compizconfig设置 https://blog.csdn.net/ysynhtt/article/details/44948989
+
+        使用compiz https://blog.csdn.net/kewen_123/article/details/115871744
 
 叠加式窗口管理器：
 

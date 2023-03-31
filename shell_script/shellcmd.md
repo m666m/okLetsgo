@@ -1086,6 +1086,11 @@ sudo 命令也可以用于切换到 root 用户：
 
 ## 查看操作系统信息
 
+在启动后查看内核启动时 U-boot 传入参数
+
+    $ cat /proc/cmdline
+    coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_compat_alsa=0 snd_bcm2835.enable_hdmi=1 video=HDMI-A-1:640x480M@60 smsc95xx.macaddr=E4:5F:01:B6:A0:E5 vc_mem.mem_base=0x3ec00000 vc_mem.mem_size=0x40000000  console=ttyS0,115200 console=tty1 root=PARTUUID=3ae3e753-02 rootfstype=ext4 fsck.repair=yes rootwait
+
 hostnamectl 查看主机名及操作系统信息 (依赖安装了 systemd)
 
     $ hostnamectl
@@ -1279,6 +1284,15 @@ Linux 内核提供了一种通过 /proc 文件系统，在运行时访问内核�
     /proc/self 链接到当前正在运行的进程
 
 ## 进程查看
+
+显示进程的命令行
+
+    假设程序名 hello，进程号8034，使用命令：
+
+        $ cat /proc/8034/cmdline
+        ./hellocc
+
+    此时，可以看到该进程的命令行参数，包括进程的启动路径(argv[0])。
 
 显示cpu占用情况
 
