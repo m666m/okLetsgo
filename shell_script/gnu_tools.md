@@ -5621,21 +5621,21 @@ tar 命令的选项和参数有几种写法，注意区别
     curl -fsSL https://go.dev/dl/go1.19.5.linux-armv6l.tar.gz |sudo tar -C /usr/local -xzvf -
 
     # 大文件压缩后，可以校验下，如果目录或子目录的文件有变化，都会提示
-    $ tar -df arc.tar.gz
+    $ tar df arc.tar.gz
     dir1/file1: Mod time differs
     dir1/file1: Contents differ
     file2: Mod time differs
     file2: Contents differ
 
-    # 打包并 gpg 加密
-    tar cjf - <path> |gpg --cipher-algo AES-256 -c --output backup.tar.bz2.gpg -
+    # 打包并 gpg 加密，注意在文件名位置的参数使用了 bash 的特殊符号 - 表示输入和输出文件对象
+    tar cjf - dir1 dir2 file2 node.exe |gpg --output backup.tar.bz2.gpg --cipher-algo AES-256 -c -
 
         如果遇到报错：gpg: problem with the agent: Inappropriate ioctl for device
         说明 gpg 获取不到当前的 tty 无法弹出密码输入框，手工执行 `export GPG_TTY=$(tty)` 再做（一般出现在使用 tmux 这种多个tty 的场合，注意在同一个窗口面板下操作）
 
-        # TODO:解密并解包
-        # dd if=backup.tar.bz2.gpg |gpg -d |tar xjf -
-        cat backup.tar.bz2.gpg |gpg -d |tar xjf -
+        # 解密并解包
+        # dd if=backup.tar.bz2.gpg |gpg -d - |tar xjf -
+        gpg -d backup.tar.bz2.gpg |tar xjf -
 
     # TODO:打包并 openssl 加密
     # 将当前目录下的 files 文件夹打包压缩，密码为password
