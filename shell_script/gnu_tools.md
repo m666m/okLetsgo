@@ -5435,6 +5435,10 @@ wc -l 计算文本文件的行数，用于 vi 打开大文件之前先评估
 
     ls -al | tee -a file.txt
 
+把文本表格整齐化
+
+    openssl ciphers -V |column -t
+
 #### ackg 给终端输出的自定义关键字加颜色
 
 hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控日志输出调试程序使用
@@ -5678,11 +5682,11 @@ tar 命令的选项和参数有几种写法，注意区别
 
     # TODO:打包并 openssl 加密
     # 将当前目录下的 files 文件夹打包压缩，密码为password
-    tar -czvf - files |openssl des3 -salt -k password -out files.tar.gz
+    tar czf - files |openssl enc -aes-256-cbc -pbkdf2 -out files.tar.gz
 
         解密解缩
         # 将当前目录下的files.tar.gz进行解密解压拆包
-        openssl des3 -d -k password -salt -in files.tar.gz |tar xzvf -
+        openssl enc -aes-256-cbc -pbkdf2 -d -in files.tar.gz |tar xzvf -
 
 .gz 文件
 
