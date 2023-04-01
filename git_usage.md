@@ -1238,7 +1238,7 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
 
 一个 git 仓库可以支持多个工作树，允许你在同一时间检出多个分支。通过 git worktree add 将一个新的工作目录和一个仓库进行关联。 这个新的工作目录被称为 “linked working tree（链接工作树）”。不同于通过 git init 或 git clone 产生的主工作树，这个目录只保存了静态内容，容量相对小很多，在这个目录下切换分支操作即可。
 
-一个仓库只有一个主工作树(裸仓库是没有工作树的），可以有零个或多个链接工作树. 当你在链接工作树已经完成了工作，使用 git worktree remove 就可以移除它了。
+一个仓库只有一个主工作树（裸仓库是没有工作树的），可以有零个或多个链接工作树. 当你在链接工作树已经完成了工作，使用 git worktree remove 就可以移除它了。
 
     # 查看当前仓库所有的 "linked working tree"
     $ git worktree list
@@ -1352,7 +1352,7 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
 
 如果需要对分支进行各种操作，参见章节 [分支管理：针对已经提交的历史记录链条的折腾] 下面的各个章节，随用随查即可。
 
-每日的日常操作，根据章节 [本地分支更新远程的操作流程]，整理如下
+每日的日常操作，根据章节 [本地分支从远程仓库更新]，整理如下
 
     # 先看看有无未提交的，跟现有的本地远程代码比对没差别，不代表远程仓库的代码没差别，别人可能有更新
     git status
@@ -1426,7 +1426,7 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
     git status
 
     如果看到远程有新增提交，别急着推送了，
-    先拉取吧，见章节 [本地分支更新远程的操作流程]
+    先拉取吧，见章节 [本地分支从远程仓库更新]
 
     # 远程跟本地是同步的，可以推送
     # git push
@@ -1496,7 +1496,7 @@ git 用 switch 命令替代了 checkout 命令中关于分支切换的功能
 
     git switch -c new_branch <commit>
 
-以前的用法，废弃了
+废弃的过时用法：
 
     # 切换到某个提交点后就地建立分支
     git checkout A9380e9
@@ -1523,9 +1523,13 @@ NOTE: 新建的分支没有对应到远程仓库，无法推送到远程，如�
 本地和远程分支的名称尽量一致，否则以后的 git push 命令要加参数才能用，太麻烦了
 
     # 废弃： git checkout -b hotfix origin/hotfix
+
     $ git switch -c hotfix origin/hotfix
     Switched to a new branch 'hotfix'
     branch 'hotfix' set up to track 'origin/hotfix'.
+
+    # 或 只建立不切换过去
+    # git branch newBrach a9c146a09505837ec03b
 
 如果 master 分支都跟远程仓库关联好了，那么这个分支不需要再手工建立与远程仓库的关联。
 
@@ -1613,59 +1617,9 @@ NOTE: 新建的分支没有对应到远程仓库，无法推送到远程，如�
 
 前提
 
-    先 git clone 过一次或建立了远程仓库的的关联，不然 git 不知道本地代码如何对应远程分支。
+    先 git clone 过一次或建立了与远程仓库的的关联，不然 git 不知道本地代码如何对应远程分支。
 
-从远程更新本地分支的基本操作是 fetch，因为拉取之后都要做合并 merge 或 rebase，就引入了 pull 命令，把这个操作过程简化了。
-
-### pull
-
-    git pull          = git fetch + git merge
-
-    git pull --rebase = git fetch + git rebase
-
-如果提示会做快进合并，那么执行 merge/rebase 的效果相同，只接续，不会更新那部分提交记录的 hash 值
-
-    大多数情况下，我们日常使用只需要执行 git pull 就够了。
-
-    如果你使用开发分支经常需要同步远程库中队友的代码，那么该执行 git pull --rebase 来明确的保持开发分支的直线效果，避免菱形分叉。
-
-git pull 的操作默认是 fetch + merge，可以设置成 fetch + rebase。
-
-将远程主机的某个分支的更新取回，并与本地指定的分支合并 ：
-
-    # 远程拉取下列同步到本地一般显式的写明用拉直
-    git pull <远程主机名> <远程分支名>:<本地分支名>
-
-    # 如果远程分支是与当前本地分支合并，则冒号后面的部分可以省略
-    git pull origin master
-
-    # 如果远程主机名 origin，分支就是当前分支，可简写
-    git pull
-
-    # 因为默认是 fetch + merge，所以需要用 rebase 的话，需要明确指定参数 --rebase
-    git pull --rebase
-
-分支合并的详细用法见章节 [分支合并：merge菱形分叉还是rebase拉直]。
-
-### fetch
-
-原理：见章节 [你的代码在本地有两份--本地仓库和远程仓库]。
-
-git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相应分支最新的状态，并不会改变你本地仓库的状态。
-
-它既不会更新你的本地分支，也不会修改你工作区上的文件。
-
-所以 git fetch 是十分安全的，你不用担心这个命令破坏你的工作区或暂存区，它下载的远程分支到本地的远程仓库分支，但是并不做任何的合并工作，然后可以执行以下命令合并到本地仓库
-
-    git fetch <远程主机名> <分支名> # 注意之间有空格
-
-    可简写，默认拉取所有分支，如果有很多分支，就比较慢了
-    git fetch
-
-    拉取指定分支的更新
-    git fetch origin master
-
-#### 你的代码在本地有两份--本地仓库和远程仓库
+### 原理：你的代码在本地有两份--本地仓库和本地的远程仓库
 
 我们本地的 .git 文件夹里存储的本地分支的 commit ID 和跟踪的远程分支 orign/master 的 commit ID（可以有多个远程仓库）。
 
@@ -1691,85 +1645,151 @@ git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相�
 
     我们可以通过这些信息来判断是否产生冲突，以确定是否将更新合并到当前分支。
 
-注意，执行了 `gi fetch` 之后，我们本地相当于存储了代码的两个版本，可以通过 merge 去合并这两个不同的版本。
+注意：
 
-merge 做的就是把本地的远程库 “origin/<分支名>” 跟本地库 “<分支名>” 进行分支合并。如果不用 merge，用 rebase 也是可以的。
+    执行了 `gi fetch` 之后，我们本地相当于存储了代码的两个版本，然后需要合并这两个不同的版本。
 
-    git merge FETCH_HEAD
+    merge 做的就是把本地的远程库 “origin/<分支名>” 跟本地库 “<分支名>” 进行分支合并。如果不用 merge，用 rebase 也是可以的。
 
-    git merge origin/master
+        git merge FETCH_HEAD
 
-    # 或者，不使用 merge，用 rebase
-    $ git rebase origin/master
+        git merge origin/master
 
-也可以在它的基础上，使用 git checkout 命令创建一个新的分支并切换过去。
+        # 或者，不使用 merge，用 rebase
+        $ git rebase origin/master
 
-    git checkout -b newBrach origin/master
-    # 这个不自动切换
-    git branch newBrach a9c146a09505837ec03b
+    也可以在本地远程库的基础上，创建一个新的本地分支并切换过去
 
-### 本地分支更新远程的操作流程
+            git switch -c newBrach origin/master
 
-本地分支的更新，就是 fetch 远程库到本地的远程库，然后合并到本地分支。这个合并与你合并本地的两个分支没什么区别，都可以用 merge 或 rebase 进行。
+### fetch 只更新本地的远程仓库
 
-如果你介意合并策略，那在 git pull 之前要想想：
+git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相应分支最新的状态，并不会改变你本地仓库的状态。
 
-    如果在执行 git pull 或 git pull --rebase 的时候出现合并冲突的提示，你已经无法选择合并策略了，git 自动进入 merge conflict 或 rebase conflict 过程，冲突文件都给你准备好了。
+它既不会更新你的本地分支，也不会修改你工作区上的文件。
 
-    当然你可以用 git merge --abort 或 git rebase --abort 终止这个过程。
+所以 git fetch 是十分安全的，你不用担心这个命令破坏你的工作区或暂存区，它下载的远程分支到本地的远程仓库分支，但是并不做任何的合并工作，然后可以执行以下命令合并到本地仓库
+
+    git fetch <远程主机名> <分支名> # 注意之间有空格
+
+    可简写，默认拉取所有分支，如果有很多分支，就比较慢了
+    git fetch
+
+    拉取指定分支的更新
+    git fetch origin master
+
+### pull 还做了merge合并操作
+
+    大多数情况下，我们日常使用只需要执行 git pull 就够了。
+
+将远程主机的某个分支的更新取回，并与本地指定的分支合并：
+
+    # 远程拉取下列同步到本地一般显式的写明用拉直
+    git pull <远程主机名> <远程分支名>:<本地分支名>
+
+    # 如果远程分支是与当前本地分支合并，则冒号后面的部分可以省略
+    git pull origin master
+
+    # 如果远程主机名 origin，分支就是当前分支，可简写
+    git pull
+
+    # 因为默认是 fetch + merge，所以需要用 rebase 的话，需要明确指定参数 --rebase
+    git pull --rebase
+
+如果你介意合并策略，特别是执行 git pull 时会出现合并冲突，那么最好研究下 pull 如何处理合并策略。
+
+更新本地仓库需要两个操作：fetch 从远程拉取到本地的远程仓库，再做 merge 或 rebase 以合并到本地仓库。
+
+后来就引入了 pull 命令，把这两个操作过程合并了，以简化用户输入。
+
+所以 pull 实际上执行：拉取+合并
+
+    git pull          = git fetch + git merge
+
+    git pull --rebase = git fetch + git rebase
+
+git pull 的操作默认是 fetch + merge，可以在 git 的设置中设置成 fetch + rebase。
+
+如果可以做快进合并，那么执行 merge/rebase 的效果相同，只接续，不会更新那部分提交记录的 hash 值
+
+    merge 默认的操作不一定选择那种合并策略，参见章节 [merge 的二义性]。
+
+    如果你的开发分支需要同步远程库中队友的代码，可以选择强制分叉合并以区分各自的提交记录线，如果感觉太乱，也可以选择 rebase 来强行拉直。
+
+    如果你的本地主干分支 master 需要更新，那么该执行 git pull --rebase 来明确的保持直线效果，避免菱形分叉。
+
+    详细的关于分支合并的策略选择，参见章节 [分支合并：merge菱形分叉还是rebase拉直]。
+
+### 本地分支从远程仓库更新
+
+本地分支从远程更新，简单操作就是执行 `git pull` 或 `git pull --rebase`。
+
+但是，如果你介意合并策略，比如本地主干分支更新时，如果是 hotfix 可以做快进，如果是新增了功能分支需要做分叉，需要根据拉取下来的内容选择何种合并策略。
+
+那么在执行 git pull 之前要想想
+
+    直接执行 `git pull` 或 `git pull --rebase` 的话，你可能无法确定使用哪种合并策略更合适
+
+    如果出现合并冲突的提示，git 会进入 merge conflict 或 rebase conflict 过程，冲突文件都给你准备好了。你可以用 git merge --abort 或 git rebase --abort 终止这个过程，回到执行 git pull 之前的状态。
+
+    如果在做 push 时发现提示合并冲突了，git 只是提示下，没有进入 merge 或 rebase 的过程中，你可以选择合并策略，具体操作参见章节 [解决合并冲突conflicts]
+
+        $ git push
+        To git://
+        ! [rejected]        master -> master (fetch first)
+        error: failed to push some refs to 'git://'
+        hint: Updates were rejected because the remote contains work that you do
+        hint: not have locally. This is usually caused by another repository pushing
+        hint: to the same ref. You may want to first integrate the remote changes
+        hint: (e.g., 'git pull ...') before pushing again.
+        hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+        可以先更新下本地的远程库，然后对比它跟本地库提交记录的差异
+
+            git fetch
+
+            git log ..origin/master --graph --oneline
+
+本地分支的更新，就是 fetch 远程库到本地的远程库，然后合并到本地分支。
+
+合并时的过程与你合并本地的两个分支没什么区别，可以选择用 merge 或 rebase 进行，参见章节 [分支合并]。
 
 NOTE: 本地分支更新远程时，为了明确选择合并策略，不直接做 git pull 或 git pull --rebase，把拉取和合并分开做。
 
-如果在做 push 时发现冲突了，git 只是提示下，没有进入 merge 或 rebase 的过程中，你可以选择合并策略，具体操作参见章节 [解决合并冲突conflicts]
-
-    $ git push
-    To git://
-    ! [rejected]        master -> master (fetch first)
-    error: failed to push some refs to 'git://'
-    hint: Updates were rejected because the remote contains work that you do
-    hint: not have locally. This is usually caused by another repository pushing
-    hint: to the same ref. You may want to first integrate the remote changes
-    hint: (e.g., 'git pull ...') before pushing again.
-    hint: See the 'Note about fast-forwards' in 'git push --help' for details.
-
-    可以先对比查看下远程库的提交记录跟本地库提交记录的差异
-
-        git fetch
-
-        git log ..origin/master --graph --oneline
-
-从远程服务器更新本地分支，操作流程如下：
+#### 【推荐】更新本地分支的操作流程
 
 1、拉取远程，对比本地库和本地的远程库，先看看是不是远程有别人提交了，防止互相merge新增commit。
 
     git fetch
 
-    # 看看提示，是否有冲突，根据提示选择接下来如何做
+2、决定合并策略
+
+    # 看看提示，是否会有合并冲突，根据提示选择接下来如何做
     git status
 
-    # 查看 fetch 下来的远程代码跟本地的提交记录的差别
+    # 查看 fetch 下来的本地远程库跟本地库的提交记录的差别
     git log ..origin/master --graph --oneline
 
-    # 查看 fetch 下来的远程代码跟本地的具体差异
+    # 查看 fetch 下来的本地远程库跟本地库的具体差异
     git diff ..origin/master
 
-然后再决定是否 merge 或 rebase，简略操作才用 pull。
+简略操作才用 pull，让 merge 自动选择，参见章节 [merge 的二义性]。
 
 2、如果没有提示冲突，可以正常合并：酌情选择自己的合并策略，用分叉还是拉直，参见章节 [分支合并：merge菱形分叉还是rebase拉直]。
 
-做如下命令之一即可
+做如下之一即可
 
-    git merge（自动） 或 git merge -noff（分叉合并） 或 git rebase（拉直合并）
+    git merge（先尝试快进失败则分叉合并） 或 git merge -noff（分叉合并） 或 git rebase（拉直合并）
 
-    或 git pull（拉取+默认拉直否则分叉合并） 或 git pull --rebase（拉取+拉直合并）
+    或 git pull（fetch + merge） 或 git pull --rebase（fetch + rebase）
 
-    或 git cherry-pick o/master
+    或 git cherry-pick origin/master 单独选取本地远程库的提交记录
 
 3、如果提示有冲突，解决冲突的操作参见章节 [解决合并冲突conflicts] 的示例。
 
 ## 分支推送 push
 
-分支如果没有对应到远程仓库，无法push，需要建立关联，参见章节 [修改本地仓库的远程设置]。
+分支如果没有对应到远程仓库，无法push，需要建立关联，参见章节 [本地仓库关联远程仓库]。
 
 ### 重要：推送远程前的检查
 
@@ -1938,7 +1958,7 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
     下游分支更新上游分支内容时做拉直：如功能分支 dev 合并主干分支 master，一般做拉直。但是，如果主干分支跟功能分支在某些文件上出现合并冲突，解决该冲突时如果选择拉直，会更新分支原有的提交点，导致功能分支的相关提交点hash值变更，影响了所有其他人的提交记录的hash值都对不上了，导致巨大的混乱。如果这样的提交记录的变更在项目组内不可接受的话，那就做分叉合入。
 
-    所以，本地分支更新的场景，如果是多人合作的功能分支、主干分支，都要把拉取和合并分开做，参见章节 [本地分支更新远程的操作流程]。
+    所以，本地分支更新的场景，如果是多人合作的功能分支、主干分支，都要把拉取和合并分开做，参见章节 [本地分支从远程仓库更新]。
 
     上游分支合并下游分支内容时做分叉：如主干分支 master 合入功能分支 dev，做分叉
 
@@ -1976,86 +1996,51 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
 ### merge 的二义性
 
-对确定的结果，输出不唯一：默认做快进合并Fast-forward，直接接续在目标分支的最新提交点后面，如果不行，则创建菱形分叉，新建一个提交点。做完给你个提示性信息。
+命令 `git merge` 的执行结果有不确定性：
 
-    为防止自动选择，可以明确指定只做快进，否则报错退出
+    默认做快进合并 fast-forward，直接接续在目标分支的最新提交点后面，取拉直效果。
 
-        git merge --ff-only
+    如果无法做快进合并，则创建菱形分叉，新建一个提交点。
 
-如果多人同时操作一个分支，merge 的时候会结合多个提交的最新位置新建一个提交点（不是快进合并就这样），形成了一个菱形：
+    merge 会在做完给你个提示性信息，如果你后悔了，可以强行回退，参见章节 [git reset]。
 
-1、初始状态，在 c 点大家 pull 了最新代码，进行自己的变基，出现新增的 d、e、f、g 提交点，但是大家暂未 push：
+总之，在多人同时操作一个分支各自有提交的情况下，执行 merge 不带参数，可能会快进合并，也可能会结合多个提交的最新位置新建一个提交点（无法快进合并），形成了一个菱形。
 
-                d---e  别人的 master
-              /
-     a---b---c  远程仓库的 master 分支
-              \
-                f---g  你的 master
+为强制分叉，可以明确指定不做快进合并
 
-2、大家分别开始提交自己的代码，e 点的先提交，他执行 pull + push，执行 pull 命令默认调用 merge，因为这时候远程仓库上没有其它提交，merge 会自动拉直接上，不会新增提交点
+    git merge --no-ff
 
-    a---b---c ---d---e  远程仓库的 master 分支
-                别人的
+为强制只做快进，否则报错退出，这样可以防止默认的无法做快进时使用分叉
 
-3、你的 g 点要提交，先执行 pull，这时 git 会提示输入新建 commit 点的注释了。这是因为执行 pull 命令默认调用 merge，而 c 点已经有人接续上了，你也申请从 c 点接续，你的 merge 无法使用默认的拉直接续，只能用新建个结合点，把你俩的提交结合上。
+    git merge --ff-only
 
-git pull 命令的这种实现方式的探讨，参见章节 [分支的拉取 fetch/pull]。
+示例：如果命令不带参数，只执行 `git merge`：
 
-git pull = git fetch + git merge 后的效果，merge 创建提交点，看起来像个菱形，从c点拉取后提交的人越多，这个环越多
+1、先把 hotfix 分支合并到主干分支 master
 
-              h---i 又一个人的提交记录 ------------
-             /                                  \
-              f---g  你的提交记录                   \
-             /      \                              \
-    a---b---c        你合并时的 merge 创建的提交点 ----- 第三个人合并时的 merge 创建的提交点
-             \      /
-              d---e 第一个人提交的
+    git switch master
 
-git pull --rebase = git fetch + git rebase 去掉多余的分叉，你的提交追加到别人的后面，实现拉直。但是要注意，c 点的 hash 值被你的 rebase 操作更新了，你的 e 点的 hash 值 被后续 rebase 的人更新了。如果你的本地分支管理依赖这些提交点的 hash 值，那么就不要采用 rebase 合并分支。
-
-    a---b---c ---d---e------- f---g------- h---i ---------
-               第一个人提交的    你的提交记录   第三个人的提交记录
-
-通过 git pull --rebase 方式，你的提交重新拼接在远端新增提交的最后，这样使分支的提交记录看起来更简洁，找自己的提交点也方便。
-
-虽然可能要解决一些合并冲突，但是一条直线，看起来舒服多了，最重要的是后期合并 commit 就方便了。
-
-对别人来说，你推送后新增的 f-g 两个提交是新增在他的 d-e 上的，他在你的 f-g 后面继续线性追加，逻辑更清晰。
-
-最终用 rebase 实现大家集体开发的 master 分支，是在线性的增长，没有分叉
-
-    -a-b-c -d-e  -f-g  -h-i  -j-k  ...
-           别人   你的   别人   你的   ...
-
-#### merge 合并默认做快进（Fast Forward） 取拉直效果
-
-merge 默认做的是快进，即不新增 commit 点，走一条线的效果，执行 git status 也会提示可以做快进。
-
-NOTE: 如果 merge 不能做快进，就会分叉制作菱形，但做之前并不让用户选择，只是告诉你一下。
-
-所以最保险的方法是，git merge 之前，先 git status 看看是否提示 merge 会做快进。如果是本地分支更新远程，不使用 pull 而是 fetch，参见章节 [本地分支更新远程的操作流程]。
-
-1.hotfix 分支先合并到主干分支 master
-
-    git checkout master
     git pull
+
     git merge hotfix
 
 形成的master分支：
 
     master分支  a---b---c ---d---e(HEAD)
                             先合入的分支，直接接c点，git默认做快进，不制造新commit点
-                            git reset HEAD^ --hard 回退是到d
+                            git reset --hard HEAD^ 回退是到d
 
-2.feature分支后合并到master分支：
+2、然后再把 feature 分支后合并到 master 分支：
 
-merge发现不能做快进，就会制作分叉，并无提示，这个地方最容易让人糊涂。
+    git switch master
 
-    git checkout master
     git pull
+
     git merge feature
 
-因为不是接续c点，所以git会制作新commit点，形成菱形分叉：
+merge 发现不能做快进，就会制作分叉，并无提示，这个地方最容易让人糊涂。
+
+因为无法接续在c点，所以git会制作新commit点，形成菱形分叉：
 
                           d---e          hotfix分支
                          /              \
@@ -2063,11 +2048,19 @@ merge发现不能做快进，就会制作分叉，并无提示，这个地方最
                          \              /
                           f---g---h---i  feature分支
 
-    git reset HEAD^ --hard 回退是到e
+    git reset --hard HEAD^ 回退是到e
 
-如果 merge 操作遇到冲突，不能继续进行下去会提示解决冲突。手动修改冲突内容后，add . 修改，再次 commit 就可以了。
+如果 merge 操作遇到冲突，不能继续进行下去会提示解决合并冲突，详见章节 [解决合并冲突conflicts]。
 
-如果遇到多人合并分支，都是在c点后，不想出现很多环状提交，拉直见下面的方法三。
+如果遇到多人合并分支，都是在c点后，不想出现很多环状提交，拉直见章节 [变基 rebase，更新提交记录的hash值但不制造分叉点]。
+
+#### merge --ff-only 只做快进的拉直
+
+快进的好处是不新增 commit 点，走一条线的效果，执行 git status 也会提示是否可以做快进。
+
+如果执行 `merge` 不带参数，则无法做快进时会分叉，但做之前并不让用户选择，只是告诉你一下。
+
+所以保险的方法是：git merge 之前，先 git status 看看提示，或用命令 `merge --ff-only` 强制只做快进。
 
 #### merge --no-ff 强行保留菱形分叉
 
@@ -2176,37 +2169,52 @@ master 分支这时落后于 feature 分支了，需要做合并：因为 master
 
 rebase 操作遇到冲突的时候，会中断rebase，同时会提示你解决冲突，解决参见章节 [解决合并冲突conflicts]。
 
-### 建立合并专用分支的好处
+### 示例：分支合并演进
 
-两分支合并，因为分支的 commit 点的重整比较繁琐，而且容易搞乱，很多人都因此放弃整理，直接合入。
+1、初始状态，在 c 点大家 pull 了最新代码，进行自己的变基，出现新增的 d、e、f、g 提交点，但是大家暂未 push：
 
-如果不整理，太多的commit点使得分支形态不够简洁
+                d---e  别人的 master
+              /
+     a---b---c  远程仓库的 master 分支
+              \
+                f---g  你的 master
 
-               fea_1 -- fea_2 -- fea1_fix1 -- fea2_fix1 --...
-             /                                              \
-    master  -- ...                                         -- v1.1 ...
+2、大家分别开始提交自己的代码，e 点的先提交，他执行 pull + push，执行 pull 命令默认调用 merge，因为这时候远程仓库上没有其它提交，merge 会自动拉直接上，不会新增提交点
 
-建立合并专用分支是一个非常好的习惯
+    a---b---c ---d---e  远程仓库的 master 分支
+                别人的
 
-    在自己的比较乱的分支，需要合并到大家共用的分支之前
+3、你的 g 点要提交，先执行 `git pull`，这时 git 会提示输入新建 commit 点的注释了。这是因为执行 pull 命令默认调用 merge，而 c 点已经有人接续上了，你也申请从 c 点接续，你的 merge 无法使用默认的拉直接续，只能用新建个结合点，把你俩的提交结合上。
 
-    在功能分支合并到主干之前
+git pull 命令的这种实现方式的探讨，参见章节 [分支的拉取 fetch/pull]。
 
-NOTE: 使用文件比对工具，可大大简化合并 commit 点的复杂度
+git pull = git fetch + git merge 后的效果，merge 创建提交点，看起来像个菱形，从c点拉取后提交的人越多，这个环越多
 
-方法
+              h---i 又一个人的提交记录 ------------
+             /                                  \
+              f---g  你的提交记录                   \
+             /      \                              \
+    a---b---c        你合并时的 merge 创建的提交点 ----- 第三个人合并时的 merge 创建的提交点
+             \      /
+              d---e 第一个人提交的
 
-    合并用分支从功能分支在主干上拉取时的同一个起点拉取
+4、如果不执行 `git pull`，而是执行 `git pull --rebase`：你的提交追加到别人的后面，实现拉直。但是要注意，你的 rebase 操作更新了自己的 f、g 点的 hash 值，后续做 rebase 的人都会更新自己提交记录的 hash 值
 
-    使用 beyondcompare 比对两个分支的文件，即可方便的合入代码，按功能点形成提交点
+    a---b---c ---d---e------- f---g------- h---i ---------
+               第一个人提交的    你的提交记录   第三个人的提交记录
 
-    如果可以统一形成一个commit点，那么直接使用 squash 压缩即可
+通过 `git pull --rebase` 的方式，你的提交重新拼接在远端新增提交的最后，这样使分支的提交记录看起来更简洁，找自己的提交点也方便。
 
-这样最终的形态就比较完美了：
+虽然可能要解决一些合并冲突，但是一条直线，看起来舒服多了，最重要的是后期合并 commit 就方便了。
 
-               fea_1 -- fea_2 -- fea3 -- ...
-             /                              \
-    master  -- ...                         -- v1.1 ...
+对别人来说，你推送后新增的 f-g 两个提交是新增在他的 d-e 上的，他在你的 f-g 后面继续线性追加，逻辑更清晰。
+
+最终用 rebase 实现大家集体开发的 master 分支，是在线性的增长，没有分叉
+
+    -a-b-c -d-e  -f-g  -h-i  -j-k  ...
+           别人   你的   别人   你的   ...
+
+如果你的本地分支管理依赖这些提交点的 hash 值，或你需要用分叉来区分每个人的提交记录线，那么就不要采用 rebase 合并分支。
 
 ### 示例：功能分支合并到主干分支
 
@@ -2341,7 +2349,7 @@ NOTE: 使用文件比对工具，可大大简化合并 commit 点的复杂度
 
     https://blog.csdn.net/d6619309/article/details/52711035
 
-合并冲突是指：在共同节点之后，出现了两种独立的提交(每种可能有多个提交)。比如本地合并远程时，一种是你在本地分支新增的提交，另外是远程分支新增的提交。两个分支合并的情况同理。参见章节 [merge 的二义性]。
+合并冲突是指：在共同节点之后，出现了两种独立的提交(每种可能有多个提交)。两个分支合并，或本地合并远程时，都有可能出现合并冲突，参见章节 [merge 的二义性]。
 
     $ git push 被拒绝
     To ssh://
@@ -2375,7 +2383,7 @@ NOTE: 使用文件比对工具，可大大简化合并 commit 点的复杂度
 
         git log --graph --oneline ..origin/master
 
-    完美的拉取远程合并代码的操作顺序，参见章节 [本地分支更新远程的操作流程]。本章下面的两个示例，都是依据此操作流程处理过程中，发现合并冲突，然后选择合并策略后进行处理。
+    完美的拉取远程合并代码的操作顺序，参见章节 [本地分支从远程仓库更新]。本章下面的两个示例，都是依据此操作流程处理过程中，发现合并冲突，然后选择合并策略后进行处理。
 
 两个分支合并，也会出现合并冲突：
 
@@ -2583,7 +2591,7 @@ git pull 自动使用 merge，发现冲突后，会进入 merge confict 状态�
 
 ##### 示例：merge 处理合并冲突
 
-本地更新远程，操作步骤根据章节 [本地分支更新远程的操作流程]，不直接 git pull，以便可以根据情况来选择合并策略。
+本地更新远程，操作步骤根据章节 [本地分支从远程仓库更新]，不直接 git pull，以便可以根据情况来选择合并策略。
 
 先拉取远程
 
@@ -2761,7 +2769,7 @@ git pull --rebase 自动使用 rebase，发现冲突后，会进入 rebase confi
 
 ##### 示例：rebase 处理合并冲突
 
-本地更新远程，操作步骤根据章节 [本地分支更新远程的操作流程]，不直接 git pull --rebase，以便可以根据情况来选择合并策略。
+本地更新远程，操作步骤根据章节 [本地分支从远程仓库更新]，不直接 git pull --rebase，以便可以根据情况来选择合并策略。
 
 先拉取远程
 
@@ -2954,6 +2962,38 @@ rebase之前的git提交历史树:
 这样直接连接指定的提交点，之前的那些提交记录被忽略掉。但是，只要别人也同步了远程库，他的本地是有你的提交的，他只要推送就会再覆盖回去，而且你的 push -f 会覆盖掉他的提交点，导致他莫名的发现自己的提交消失了。参见章节 [遇到提示 push -f 的时候多想想]。
 
 没有隐患的解决办法就是不要强行推送，回退你的rebase，参见章节 [远程库也有的提交记录，如何回退]。
+
+### 建立合并专用分支的好处
+
+两分支合并，因为分支的 commit 点的重整比较繁琐，而且容易搞乱，很多人都因此放弃整理，直接合入。
+
+如果不整理，太多的commit点使得分支形态不够简洁
+
+               fea_1 -- fea_2 -- fea1_fix1 -- fea2_fix1 --...
+             /                                              \
+    master  -- ...                                         -- v1.1 ...
+
+建立合并专用分支是一个非常好的习惯
+
+    在自己的比较乱的分支，需要合并到大家共用的分支之前
+
+    在功能分支合并到主干之前
+
+NOTE: 使用文件比对工具，可大大简化合并 commit 点的复杂度
+
+方法
+
+    合并用分支从功能分支在主干上拉取时的同一个起点拉取
+
+    使用 beyondcompare 比对两个分支的文件，即可方便的合入代码，按功能点形成提交点
+
+    如果可以统一形成一个commit点，那么直接使用 squash 压缩即可
+
+这样最终的形态就比较完美了：
+
+               fea_1 -- fea_2 -- fea3 -- ...
+             /                              \
+    master  -- ...                         -- v1.1 ...
 
 ## 分支变基rebase：交互式压缩提交点
 
@@ -4007,6 +4047,8 @@ HEAD特殊：
 
     如果你想回退远程库已有的提交记录，比如你已经推送到远程了，或者你的本地代码都是从远程拉取的，不要用 `git reset` 进行回退，详见章节 [远程库也有的提交记录，如何回退] 的办法。
 
+查看历史记录，参见章节 [查看提交记录]。
+
 分几种回退情形
 
     git reset --soft <commit>
@@ -4039,7 +4081,7 @@ HEAD特殊：
 
 如果用 git reset 回退提交记录后，后悔还想使用原来 HEAD 指向的远程库最新的提交点
 
-    可以用 git reflog 查看近期的提交记录往回cherry-pick，或简单点，直接从远程库 origin/master 合并回来：运行 `git merge` 即可。原理见章节 [你的代码在本地有两份--本地仓库和远程仓库]。
+    可以用 git reflog 查看近期的提交记录往回cherry-pick，或简单点，直接从远程库 origin/master 合并回来：运行 `git merge` 即可。参见章节 [原理：你的代码在本地有两份--本地仓库和远程仓库]。
 
 ### git rm
 
