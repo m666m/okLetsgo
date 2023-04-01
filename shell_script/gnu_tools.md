@@ -5630,38 +5630,51 @@ tar 命令的选项和参数有几种写法，注意区别
 
     UNIX 写法：用 -选项1 选项1自己的参数 -选项2 选项2自己的参数
 
-        tar -c -v -f a.tar /tmp
+        tar -v -c -f a.tar /tmp
 
-        tar -cvf a.tar /tmp  # 没有参数的选项合写
+        tar -vcf a.tar /tmp  # 没有参数的选项合写
 
         tar -vkp -f a.tar /tmp  # f也可以合写，但是要在最后一个，以便后面跟参数
 
     GUN 写法：用 -- 或 -，连写用一个 -
 
         # --选项 后面紧跟空格参数
-        tar --create --file a.tar --verbose /tmp
+        tar --verbose --create --file a.tar /tmp
 
         # -- 也可以用单字母选项连写，但是要保证没有歧义
         # -- 选项用=连接参数，中间没有空格。可选参数必须始终使用这种方法
-        tar --cre --file=a.tar --verb /tmp
+        tar --verb --cre --file=a.tar /tmp
 
-.tar.gz 文件
+tar 最初只是个打包工具，把给定的文件和目录统一打包生成 .tar 文件。
 
-    # c 打包并 z 压缩，生成 .tar.gz 文件，源可以是多个文件或目录名
-    # 只 c 打包，生成 .tar 文件，其它参数相同
+    # 只打包，生成 .tar 文件，其它参数相同
+
+    tar cf myarch.tar dir1 dir2 file2.txt
+
+        # 解包
+        tar xf myarch.tar
+
+但是我们最常用的是打包然后再压缩，所以 tar 扩展支持 .gz 和 .bz2，实质是调用现有的 gzip 程序把自己打包好的文件再压缩，但是节省了用户在命令行的输入。
+
+最常用的 .tar.gz 文件
+
+    # 用 c 打包并 z 压缩，v 是显示明细，生成 .tar.gz 文件，源可以是多个文件或目录名
+    tar vczf arc.tar.gz file1 file2
+
     # 把 z 换成 j 就是压缩为 .bz2 文件，而不是 .gz 文件了
-    tar czvf arc.tar.gz file1 file2
-    tar cjvf arc.tar.bz2 file1 file2
+    tar vcjf arc.tar.bz2 file1 file2
 
-    # 解包并解压缩, 把 x 换成 t 就是只查看文件列表而不真正解压
-    tar xzvf arc.tar.gz
-    tar xjvf xx.tar.bz2
+    # 解包并解压缩
+    # 把 x 换成 t 就是只查看文件列表而不真正解压
+    tar vxzf arc.tar.gz
+
+    tar vxjf xx.tar.bz2
 
     # 把 /home 目录打包，输出到标准输入流，管道后面的命令是从标准输出流读取数据解包
-    tar cvf - /home |tar -xvf -
+    tar cf - /home |tar -xf -
 
     # curl下载默认输出是标准输入流，管道后面的命令是tar从标准输出流读取数据解压到指定的目录下
-    curl -fsSL https://go.dev/dl/go1.19.5.linux-armv6l.tar.gz |sudo tar -C /usr/local -xzvf -
+    curl -fsSL https://go.dev/dl/go1.19.5.linux-armv6l.tar.gz |sudo tar -C /usr/local -xzf -
 
     # 大文件压缩后，可以校验下，如果目录或子目录的文件有变化，都会提示
     $ tar df arc.tar.gz
@@ -5680,19 +5693,15 @@ tar 命令的选项和参数有几种写法，注意区别
         # dd if=backup.tar.bz2.gpg |gpg -d - |tar xjf -
         gpg -d backup.tar.bz2.gpg |tar xjf -
 
-    # TODO:打包并 openssl 加密
-    # 将当前目录下的 files 文件夹打包压缩，密码为password
-    tar czf - files |openssl enc -aes-256-cbc -pbkdf2 -out files.tar.gz
+    # 打包并 openssl 加密
+    # 将当前目录下的 files 文件夹打包压缩，提示输入密码
+    tar czf - files |openssl enc -aes-256-cbc -pbkdf2 -out files.tar.gz.bin
 
-        解密解缩
+        # 解密并解包
         # 将当前目录下的files.tar.gz进行解密解压拆包
-        openssl enc -aes-256-cbc -pbkdf2 -d -in files.tar.gz |tar xzvf -
+        openssl enc -aes-256-cbc -pbkdf2 -d -in files.tar.gz.bin |tar xzf -
 
 .gz 文件
-
-    # 解压
-    #gunzip FileName.gz
-    gzip -d FileName.gz
 
     # 压缩，生成同名文件，后缀.gz，原文件默认删除，除非使用 -k 参数保留
     gzip FileName
@@ -5700,13 +5709,14 @@ tar 命令的选项和参数有几种写法，注意区别
     # 列出指定文件列表并压缩
     ls |grep -v GNUmakefile |xargs gzip
 
+    # 解压缩
+    # gunzip FileName.gz
+    gzip -d FileName.gz
+
     # 查看内容
     zcat usermod.8.gz
 
 .zip 文件
-
-    # 解压缩zip
-    unzip arc.zip -d your_unzip_dir
 
     # 压缩文件，生成新文件，并添加 .zip 后缀的文件
     zip arc file1.txt file2.txt ...
@@ -5714,16 +5724,19 @@ tar 命令的选项和参数有几种写法，注意区别
     # 打包压缩目录
     zip -r arc.zip foo1/ foo2/
 
+    # 解压缩zip
+    unzip arc.zip -d your_unzip_dir
+
     # 查找匹配的 c 语言文件并打包压缩
     find . -name "*.[ch]" -print | zip source_code -@
 
-    # 把当前目录打包到tar，用zip
+    # 把当前目录打包到tar，用 zip 压缩
     tar cf - . | zip backup -
 
     # 只查看文件列表
     unzip -l arc.zip
 
-使用 zless、zmore、zcat 和 zgrep 对压缩过的文件进行查看等操作。
+对压缩过的文件进行查看等操作，使用 zless、zmore、zcat 和 zgrep 等。
 
 .xz 文件
 
