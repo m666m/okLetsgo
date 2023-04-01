@@ -909,7 +909,7 @@ terminfo 问题
 
     /home/user007/.zsh_compatible:bindkey:2: cannot bind to an empty key sequence
 
-    这个问题其实不只存在于 kitty, 任何有自己独立的 terminfo 的 terminal (且其信息没有在ncurses中内置), 基本上都会有这个问题. 比如 Alacritty 也有这个问题.
+    这个问题其实不只存在于 kitty, 任何有自己独立的 terminfo 的 terminal (且其信息没有在 ncurses 中内置), 基本上都会有这个问题. 比如 Alacritty 也有这个问题.
 
     这个问题官方faq文档里面也有说明: I get errors about the terminal being unknown or opening the terminal failing when SSHing into a different computer?
 
@@ -1586,11 +1586,19 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 随着计算机网络的发展，网络上的服务器（Server）作为主机，客户机（Client）通过网络连接主机。主机和客户机间可以使用各种不同类型的协议进行连接，比如 ssh/telnet/ftp 等都有对应的命令行程序。远程连接使用的通信协议主要采用非对称密钥加密算法，一般利用 ssh 建立通信隧道。上述终端模拟器中，xterm 连接本机，通过 ssh 等程序连接网络上的主机。putty 主要用于 ssh 协议连接网络上的主机，通过 ssh 的方式也可连接本机（需要本机运行 sshd 服务），也支持模拟 rs232 串口方式连接本机操作系统 console。
 
+在 shell 下对终端进行控制的常用命令
+
+    tput 命令查询或创建交互性的、专业性强的屏幕输出，如移动或更改光标、更改文本属性，以及清除终端屏幕的特定区域
+
+    reset 重置终端的显示，适用于 cat 了一个二进制命令，导致终端显示混乱的情况下。
+
+    ncurses 库被用于在 Linux 下生成基于文本的用户界面，你的终端模拟器必须被它内置的 terminfo 数据库接受，才能在 tty 下正常显示文本，一般都会把自己模拟成 xterm。
+
 ### 终端模拟器和软件的彩色设置
 
     https://github.com/mintty/mintty/wiki/CtrlSeqs
 
-自 1978 年的 VT100 以来，Unix/Linux 一直通用 [ANSI escape codes 彩色字符方案](http://en.wikipedia.org/wiki/ANSI_escape_code)：使用固定的文本代码，对字符终端的文本进行修饰，由终端模拟器和软件解释并呈现对应的色彩。在我们使用终端模拟器软件时，设置 ssh 要连接的站点，一般选择终端类型为 xterm 即可（可以使用 shell 的 tput 命令查询或创建交互性的、专业性强的屏幕输出，如移动或更改光标、更改文本属性，以及清除终端屏幕的特定区域）。
+自 1978 年的 VT100 以来，Unix/Linux 一直通用 [ANSI escape codes 彩色字符方案](http://en.wikipedia.org/wiki/ANSI_escape_code)：使用固定的文本代码，对字符终端的文本进行修饰，由终端模拟器和软件解释并呈现对应的色彩。在我们使用终端模拟器软件时，设置 ssh 要连接的站点，一般选择终端类型为 xterm 即可。
 
 最古老的基本颜色板（basic colour palette），前景色和背景色分别有 8 种，合计16种如下，修饰文本的颜色代码 \033[0，参见终端登陆脚本中颜色设置的代码 <bash_profile.sh>，历史介绍见 <https://zhuanlan.zhihu.com/p/566797565>。
 
