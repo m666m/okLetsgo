@@ -2004,46 +2004,6 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
 总之，在多人都操作同一个分支各自有提交的情况下，在分支合并时执行不带参数的 `git merge` 命令，可能会快进合并，也可能会结合多个提交的最新位置新建一个提交点（无法快进合并），形成了一个菱形。
 
-示例：如果命令不带参数，只执行 `git merge`：
-
-1、先把 hotfix 分支合并到主干分支 master
-
-    git switch master
-
-    git pull
-
-    git merge hotfix
-
-形成的master分支：
-
-    master分支  a---b---c ---d---e(HEAD)
-                            先合入的分支，直接接c点，git默认做快进，不制造新commit点
-                            git reset --hard HEAD^ 回退是到d
-
-2、然后再把 feature 分支后合并到 master 分支：
-
-    git switch master
-
-    git pull
-
-    git merge feature
-
-merge 发现不能做快进，就会制作分叉，并无提示，这个地方最容易让人糊涂。
-
-因为无法接续在c点，所以git会制作新commit点，形成菱形分叉：
-
-                          d---e          hotfix分支
-                         /              \
-    master分支  a---b---c                  new(HEAD) 由git制造
-                         \              /
-                          f---g---h---i  feature分支
-
-    git reset --hard HEAD^ 回退是到e
-
-如果 merge 操作遇到冲突，不能继续进行下去会提示解决合并冲突，详见章节 [解决合并冲突conflicts]。
-
-如果遇到多人合并分支，都是在c点后，不想出现很多环状提交，拉直见章节 [变基 rebase，更新提交记录的hash值但不制造分叉点]。
-
 #### merge --ff-only 只做快进的拉直
 
 为强制只做快进，否则报错退出，这样可以防止默认的无法做快进时使用分叉
@@ -2166,6 +2126,46 @@ master 分支这时落后于 feature 分支了，需要做合并：因为 master
                                         feature
 
 rebase 操作遇到冲突的时候，会中断rebase，同时会提示你解决冲突，解决参见章节 [解决合并冲突conflicts]。
+
+### TODO:示例：如果命令不带参数，只执行 `git merge`
+
+1、先把 hotfix 分支合并到主干分支 master
+
+    git switch master
+
+    git pull
+
+    git merge hotfix
+
+形成的master分支：
+
+    master分支  a---b---c ---d---e(HEAD)
+                            先合入的分支，直接接c点，git默认做快进，不制造新commit点
+                            git reset --hard HEAD^ 回退是到d
+
+2、然后再把 feature 分支后合并到 master 分支：
+
+    git switch master
+
+    git pull
+
+    git merge feature
+
+merge 发现不能做快进，就会制作分叉，并无提示，这个地方最容易让人糊涂。
+
+因为无法接续在c点，所以git会制作新commit点，形成菱形分叉：
+
+                          d---e          hotfix分支
+                         /              \
+    master分支  a---b---c                  new(HEAD) 由git制造
+                         \              /
+                          f---g---h---i  feature分支
+
+    git reset --hard HEAD^ 回退是到e
+
+如果 merge 操作遇到冲突，不能继续进行下去会提示解决合并冲突，详见章节 [解决合并冲突conflicts]。
+
+如果遇到多人合并分支，都是在c点后，不想出现很多环状提交，拉直见章节 [变基 rebase，更新提交记录的hash值但不制造分叉点]。
 
 ### 示例：分支合并演进
 
