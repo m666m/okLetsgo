@@ -2151,7 +2151,7 @@ NOTE:主干分支的 hash 值变更是大忌，会给所有之前拉取过主干
 
 但是这样会导致主干分支的提交记录 d、e 的 hash 值变更，这是绝对要避免的行为。
 
-所以，稳妥的方案是两步：先切换到分支 feature1，使用变基 rebase 合并主干分支的内容，使得 feature1 分支在 master 分支的基础上延伸拉直，而 rebase 更新的是自己的提交记录的 hash 值，不会变更主干分支的。这样即使处理合并冲突，也只是更新 feature1 的提交记录。这样才能确保主干分支上的 d、e 点的 hash 值保持不变。然后再把分支 feature1 合并到主干分支。
+所以，稳妥的方案是两步：先切换到分支 feature1，使用变基 rebase 合并主干分支的内容，使得 feature1 分支在 master 分支的基础上延续拉直。而且，这样 rebase 更新的是分支 feature1 自己的提交记录的 hash 值，不会变更主干分支的 d、e 点的 hash 值。即使处理合并冲突，都是更新分支 feature1 的提交记录，主干分支的提交记录的 hash 值保持不变。然后再把分支 feature1 合并到主干分支。
 
 1、分支 feature1 合并主干分支
 
@@ -2175,7 +2175,7 @@ rebase 的拉直效果如下：
 
 注意
 
-    做 rebase 之后，feature 分支的提交记录 f、g hash 值全变了。如果你的分支管理依赖这个 hash 值，就不要用 rebase，这种情况下只能使用 merge，在合并后 feature 分支会出现菱形。
+    做 rebase 之后，feature 分支的提交记录 f、g 点的 hash 值全变了。如果你的分支管理依赖这个 hash 值，就不要用 rebase，这种情况下只能使用 merge，在合并后 feature 分支会出现菱形。
 
 2、主干分支合并分支feature1
 
