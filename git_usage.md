@@ -1712,7 +1712,7 @@ git pull 的操作默认是 fetch + merge，可以在 git 的设置中设置成 
 
 如果可以做快进合并，那么执行 merge/rebase 的效果相同，只接续，不会更新那部分提交记录的 hash 值
 
-    merge 默认的操作不一定选择那种合并策略，参见章节 [merge 的二义性]。
+    merge 默认的操作不一定选择那种合并策略，参见章节 [merge 默认有二义性]。
 
     如果你的开发分支需要同步远程库中队友的代码，可以选择强制分叉合并以区分各自的提交记录线，如果感觉太乱，也可以选择 rebase 来强行拉直。
 
@@ -1765,6 +1765,7 @@ NOTE: 本地分支更新远程时，为了明确选择合并策略，不直接�
 2、决定合并策略
 
     # 看看提示，是否会有合并冲突，根据提示选择接下来如何做
+    # 会提示是否可以做快进
     git status
 
     # 查看 fetch 下来的本地远程库跟本地库的提交记录的差别
@@ -1773,7 +1774,7 @@ NOTE: 本地分支更新远程时，为了明确选择合并策略，不直接�
     # 查看 fetch 下来的本地远程库跟本地库的具体差异
     git diff ..origin/master
 
-简略操作才用 pull，让 merge 自动选择，参见章节 [merge 的二义性]。
+简略操作才用 pull，让 merge 自动选择，参见章节 [merge 默认有二义性]。
 
 2、如果没有提示冲突，可以正常合并：酌情选择自己的合并策略，用分叉还是拉直，参见章节 [分支合并：merge菱形分叉还是rebase拉直]。
 
@@ -1932,29 +1933,95 @@ git push -f 制造混乱的过程
 
 ## 分支合并：merge菱形分叉还是rebase拉直
 
-能做合并的基础是两个分支有相交点，如果是三个分支合并无直接交点则需要用 rebase 。
-
-以下讨论以此为例
-
-    主干在 c 点后出现 3 个分支，或 3 个人的不同的主干分支延续
-
-                           d---e  分支 hotfix
-                         /
-    master主干  a---b---c -- f---g  分支 feature1
-                         \
-                           h---i  分支 feature2
-
-两个分支合并的 merge/rebase 效果
-
     Git 之 merge 与 rebase 的区别 https://www.cnblogs.com/zhangzhang-y/p/13682281.html
 
-merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新该点之后所有提交记录的hash值。
+能做合并的基础是两个分支有相交点，如果是三个分支合并无直接交点则需要用 rebase。
+
+两分支合并方法
+
+    # 强制做分叉，参见章节 [merge --no-ff 强行分叉]
+    git merge -no-ff
+
+    # 强制做拉直，参见章节 [变基 rebase --- 强行拉直]
+    git rebase
+
+    # 不带参数有二义性，参见章节 [merge 默认有二义性]
+    git merge
+
+    # 只尝试快进合并，否则不做，参见章节 [merge --ff-only 只做快进的拉直]
+    merge --ff-only
+
+举例说明：
+
+主干在 c 点后出现 3 个分支各自延续，以下讨论以此为例：
+
+                            --- d---e  分支 hotfix
+                        /
+    master主干  a---b---c --- f---g  分支 feature1
+                        \
+                            --- h---i  分支 feature2
+
+在主干分支 master 合并这三个分支时，会出现多种形态的提交记录。
+
+假设命令不带参数，只执行 `git merge`。
+
+1、准备环境，切换到主干分支 master 并更新
+
+    git switch master
+
+    git pull
+
+2、先把 hotfix 分支合并到主干分支 master
+
+    git merge hotfix
+
+第一个合入的分支，可以直接在c点接续，`git merge` 默认做快进，不制造新commit点，做完会给个提示性信息
+
+    master分支  a---b---c ---d---e(HEAD)
+
+                            git reset --hard HEAD^ 回退是到d
+
+这样主干分支就延续到了 e 点。
+
+3、然后再把分支 feature1 后合并到主干分支 master
+
+    git merge feature1
+
+因为 feature1 的基础节点是 c 点，而主干分支已经延续到了 e 点，无法做快进合并就会制作分叉，`git merge` 并无提示，这个地方最容易让人糊涂。
+
+因为无法接续在c点，所以会制作新commit点，形成菱形分叉：
+
+                          d---e     分支hotfix
+                         /         \
+    master分支  a---b---c             new1(HEAD) 由`git merge`建立
+                         \         /
+                          f---g  分支feature1
+
+    git reset --hard HEAD^ 回退是到e
+
+4、再合并分支 feature2，菱形分叉更多了
+
+    master分支  a---b---c --- d---e  分支hotfix --- new1 --- new2 (HEAD)
+                        \                        /        /
+                          f---g 分支feature1 --- /        /
+                        \                               /
+                          h---g  分支feature2 --------- /
+
+    这次又添加了一个 new2 提交点。
+
+如果两分支修改了相同的文件，合并时会提示解决合并冲突，详见章节 [解决合并冲突conflicts]。
+
+如果不想要菱形分叉强行拉直，参见章节 [变基 rebase --- 强行拉直]。
+
+### 分支合并的策略选择
+
+merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新该点之后所有提交记录的hash值
+
+    使用菱形分叉，这样在查看历史提交记录时，方便区分主干和功能分支，不让功能分支的众多提交记录混入主干分支。
 
     使用 merge 菱形分叉而不使用 rebase 拉直以防止重写历史，其中一些甚至可能更简单易用。但是，master 分支的历史将穿插着所有同时开发的功能的提交，缺点是这样混乱的历史很难回顾。
 
-    对一个分支定期的 rebase 是一个干净可靠的策略，因为提交历史日志将以有意义的功能序列进行排列（每个人的commit都是分段但是线性的排列）。
-
-酌情考虑使用哪种方式，通常开发人员的独立使用的分支可以用 rebase 拉直。但是如果是工作组内共用分支，如果担心 rebase 重写提交记录的hash值，影响其它同事的提交记录，应该用菱形分叉。功能分支合并主干分支，应该先精简提交记录，然后用分叉方式合并到主干分支。
+    拉直效果最大的优点时避免很多分叉交错导致的混乱历史。能做默认的快进合并不会像 rebase 那样修改提交记录的 hash 值。
 
 基本原则：
 
@@ -1962,37 +2029,39 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
     何时采用分叉或拉直的形态，以能清晰区分各新增功能为目的，日后的分支管理可以方便的回溯历史提交，查找对应功能点
 
-    主干分支 master 合入 hotfix， 属于主干分支上的接续，做拉直
-
-    开发人员独立使用的分支本地拉取同步远程时做拉直： git pull origin xxx --rebase
-
-    下游分支更新上游分支内容时做拉直：如功能分支 dev 合并主干分支 master，一般做拉直。但是，如果主干分支跟功能分支在某些文件上出现合并冲突，解决该冲突时如果选择拉直，会更新分支原有的提交点，导致功能分支的相关提交点hash值变更，影响了所有其他人的提交记录的hash值都对不上了，导致巨大的混乱。如果这样的提交记录的变更在项目组内不可接受的话，那就做分叉合入。
-
-    所以，本地分支更新的场景，如果是多人合作的功能分支、主干分支，都要把拉取和合并分开做，参见章节 [本地分支从远程仓库更新]。
-
-    上游分支合并下游分支内容时做分叉：如主干分支 master 合入功能分支 dev，做分叉
-
 时效性原则：
 
     合并代码的时候按照最新分支优先合并为原则
 
     要经常从上游分支更新代码，如果长时间不更新上游分支代码容易出现大量冲突
 
-两分支合并方法
+TODO:酌情考虑如下策略：
 
-    # 强制做分叉
-    git merge -no-ff
+    主干分支 master 合入 hotfix， 属于主干分支上的接续，做拉直
 
-    # 强制做拉直
-    git rebase
+    功能分支合并主干分支，应该先精简提交记录，然后用分叉方式合并到主干分支。
 
-例如
+    如果是工作组内共用分支，如果担心 rebase 重写提交记录的hash值，影响其它同事的提交记录，应该用菱形分叉。
 
-    现有上游分支 master，基于 master 分支拉出来一个开发分支 dev，在 dev 上开发了一段时间后要把 master 分支提交的新内容更新到 dev 分支，此时切换到 dev 分支，做 git rebase master
+    开发人员独立使用的分支本地拉取同步远程时做拉直
 
-    等 dev 分支开发完成了之后，要合并到上游分支 master 上的时候，切换到 master 分支，做 git merge dev --no-ff
+    本地主干分支从远程更新，应该用 rebase 拉直
 
-### merge 的二义性
+    对一个分支定期的 rebase 是一个干净可靠的策略，因为提交历史日志将以有意义的功能序列进行排列（每个人的commit都是分段但是线性的排列）。
+
+    下游分支更新上游分支内容时做拉直：如功能分支 dev 合并主干分支 master，一般做拉直。但是，如果主干分支跟功能分支在某些文件上出现合并冲突，解决该冲突时如果选择拉直，会更新分支原有的提交点，导致功能分支的相关提交点hash值变更，影响了所有其他人的提交记录的hash值都对不上了，导致巨大的混乱。如果这样的提交记录的变更在项目组内不可接受的话，那就做分叉合入。
+
+    所以，本地分支更新的场景，如果是多人合作的功能分支、主干分支，都要把拉取和合并分开做，参见章节 [本地分支从远程仓库更新]。
+
+    上游分支合并下游分支内容时做分叉：如主干分支 master 合入功能分支 dev，做分叉。
+
+        例如
+
+            现有上游分支 master，基于 master 分支拉出来一个开发分支 dev，在 dev 上开发了一段时间后要把 master 分支提交的新内容更新到 dev 分支，此时切换到 dev 分支，做 git rebase master
+
+            等 dev 分支开发完成了之后，要合并到上游分支 master 上的时候，切换到 master 分支，做 git merge dev --no-ff
+
+### merge 默认有二义性
 
 命令 `git merge` 的执行结果有不确定性：
 
@@ -2000,59 +2069,21 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
     如果无法做快进合并，则创建菱形分叉，新建一个提交点。
 
-    merge 会在做完给你个提示性信息，如果你后悔了，可以强行回退，参见章节 [git reset]。
+    merge 会在做完给你个提示性信息，如果你后悔了，可以用 `git reset --hard HEAD^` 强行回退，参见章节 [git reset]。
 
 总之，在多人都操作同一个分支各自有提交的情况下，在分支合并时执行不带参数的 `git merge` 命令，可能会快进合并，也可能会结合多个提交的最新位置新建一个提交点（无法快进合并），形成了一个菱形。
 
-#### 示例：如果命令不带参数，只执行 `git merge`
+### merge --ff-only 只做快进的拉直
 
-准备环境，切换到主干分支 master 并更新
+因为执行 `git merge` 不带参数有二义性，而且并不让用户选择，只是合并后告诉你一下。所以你不喜欢这样的默认做法，那么可以使用命令 `merge --ff-only` 强制只做快进
 
     git switch master
 
-    git pull
+    git merge --ff-only -m "feature分支合入主干分支" feature
 
-1、先把 hotfix 分支合并到主干分支 master
+强制只做快进，否则报错退出，这样可以防止 `git merge` 默认的无法做快进时使用分叉。
 
-    git merge hotfix
-
-先合入的分支，直接在c点接续，`git merge` 默认做快进，不制造新commit点，做完会给个提示性信息
-
-    master分支  a---b---c ---d---e(HEAD)
-
-                            git reset --hard HEAD^ 回退是到d
-
-2、然后再把 feature 分支后合并到主干分支 master
-
-    git merge feature
-
-因为 feature 的基础节点是c点，而主干分支已经延续到了 e点，无法做做快进，就会制作分叉，`git merge` 并无提示，这个地方最容易让人糊涂。
-
-因为无法接续在c点，所以会制作新commit点，形成菱形分叉：
-
-                          d---e          hotfix分支
-                         /              \
-    master分支  a---b---c                  new(HEAD) 由git制造
-                         \              /
-                          f---g---h---i  feature分支
-
-    git reset --hard HEAD^ 回退是到e
-
-如果两分支修改了相同的文件，merge 会提示解决合并冲突，详见章节 [解决合并冲突conflicts]。
-
-如果不想要菱形分叉，参见章节 [变基 rebase --- 强行拉直]。
-
-### merge --ff-only 只做快进的拉直
-
-为强制只做快进，否则报错退出，这样可以防止默认的无法做快进时使用分叉
-
-    git merge --ff-only
-
-快进的好处是不新增 commit 点，走一条线的效果，执行 git status 也会提示是否可以做快进。
-
-如果执行 `merge` 不带参数，则无法做快进时会分叉，但做之前并不让用户选择，只是告诉你一下。
-
-所以保险的方法是：git merge 之前，先 git status 看看提示，或用命令 `merge --ff-only` 强制只做快进。
+快进合并的好处是不新增 commit 点，提交记录时拉直的一条线的效果，而且可以避免用 rebase 拉直导致的变更提交记录 hash 值。
 
 ### merge --no-ff 强行分叉
 
@@ -2060,11 +2091,11 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
     git switch master
 
-    git merge --no-ff -m "feature分支合入主干分支" feature
+    git merge --no-ff -m "分支feature1合入主干分支" feature1
 
 主要用于大的功能分支合并到主干分支：不使用快进合并而用菱形分叉，这样在查看历史提交记录时，方便区分主干和功能分支，不让功能分支的众多提交记录混入主干分支。
 
-                          f---g---h---i  feature分支
+                          f---g------- 分支feature1
                          /             \
     master主干  a---b---c -------------- new(HEAD) 由git制造
                                           *
@@ -2072,90 +2103,89 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
 菱形分叉最大的好处，除了便于观察之外，如果需要版本回退，很容易就可以退到feature合并之前的位置。
 
-对hotfix分支，再合入就在它后面又一个菱形，所以最好用rebase合入master，实现拉直，参见章节 [变基 rebase --- 强行拉直]。
-
-                              f---g---h---i  feature分支
-                             /              \
-        master主干  a---b---c ---------------- new ---d---e
-                                                *   hotfix分支用rebase合入，不制造commit点
-
 ### merge --squash 压缩为一个commit点合并
 
 如果提交记录太多了，在合入主干时简单粗暴的精简处理
 
     git checkout master
 
-    git merge --squash feature -m 'fgmix 只有我这一个提交点，原来的commit历史不要了'
+    git merge --squash -m '分支feature1合入主干分支，压缩掉原来的fg提交点' feature1
 
 受 merge 二义性的影响，默认快进，否则分叉。
 
 效果
 
-                           d---e      hotfix 分支先合并，git默认做快进
+                            de      分支hotfix先合并，git默认做快进
                          /        \
-    master主干  a---b---c            newP(HEAD) 由git在后合入分叉时生成
+    master主干  a---b---c            new1(HEAD) 由git在后合入分叉时生成
                          \        /
-                            fghi      feature分支压缩为只有一个commit点，后合并
+                            fg      分支feature1压缩为只有一个commit点，后合并
 
-分支只作为一个提交记录合入，要查历史提交只能在原分支上查，慎用。
+因为分支只作为一个提交记录合入了主干分支，要查历史提交只能在原 feature1 分支上查，慎用。
 
 ### 变基 rebase --- 强行拉直
 
 rebase 通过更新提交记录的 hash 值的方式，避开制造分叉点获取拉直效果，可能要解决不少合并冲突。
 
-如果 git 提示会做快进合并Fast-forward，那么执行 merge/rebase 的效果相同都是拉直，而不会更新那部分提交记录的 hash 值。
+NOTE:主干分支的 hash 值变更是大忌，会给所有之前拉取过主干分支的人带来混乱。
 
-如果不想被 rebase 修改接续部分提交记录的 hash 值，那就应该选择分叉合并
+注意使用 rebase 合并有坑
 
-    https://github.com/k88hudson/git-flight-rules/blob/master/README.md#i-rebased-but-i-dont-want-to-force-push
+    rebase 接续的那个分支提交记录的 hash 值会全变，对主干分支这种大家共享的分支来说，这是绝不能变更的。所以用 rebase 的方法合并两个分支时，一定要先想清楚哪个分支的提交记录 hash 值不许变，哪个分支的可以变，然后再执行 rebase 命令。
 
-    比如从开发者个人向项目组合并分支，功能分支向主干分支合并等的过程中，可能会往复应用、撤销提交点等情况下，git 对内容的修改无法依赖提交点的 hash值，非常依赖看提交记录的注释。
+    如果 git 提示会做快进合并Fast-forward，那么执行 merge/rebase 的效果相同都是拉直，而不会更新那部分提交记录的 hash 值。
 
-    功能分支更新合并主干分支，如果用 rebase 合入主干分支的内容，功能分支的提交记录的 hash 值就全变了，总会带来一些混乱.所以很多情况下，项目组的不喜欢用 rebase，往往选择用 merge 分叉合入主干的内容。
+    如果不想被 rebase 修改接续部分提交记录的 hash 值，那就应该选择分叉合并
 
-feature 分支从状态 c 分叉，master 分支先合入了 hotfix 的 d、e，做 merge 会默认快进合并：
+        https://github.com/k88hudson/git-flight-rules/blob/master/README.md#i-rebased-but-i-dont-want-to-force-push
 
-                              f---g---h---i  feature分支
-                             /
-    master主干  a --- b --- c --- d --- e  hotfix分支
+        比如从开发者个人向项目组合并分支，功能分支向主干分支合并等的过程中，可能会往复应用、撤销提交点等情况下，git 对内容的修改无法依赖提交点的 hash值，非常依赖看提交记录的注释。
 
-1、feature 分支合并主干分支
+        功能分支更新合并主干分支，如果用 rebase 合入主干分支的内容，功能分支的提交记录的 hash 值就全变了，总会带来一些混乱。所以很多情况下，项目组的不喜欢用 rebase，往往选择用 merge 分叉合入主干的内容。
 
-feature 分支合并主干分支，如果 使用 merge 会分叉，新增一个提交点指向 i 和 e。
+举例说明：
 
-为了合入不制造菱形使用变基 rebase，feature 分支在 master 分支的基础上延伸拉直，这时两分支的 head 位置不一样
+假设分支 feature1 要合并到主干分支里，但是主干分支已经合入了分支 hotfix，提交点已经延续到了 e。这时两分支的 head 位置不一样，直接合并会制造菱形分叉。
 
-    git checkout feature
+这次目标是主干分支不出现分叉，拉直合并其它分支，那么应该在主干分支用 rebase 合入分支 feature1。
+
+但是这样会导致主干分支的提交记录 d、e 的 hash 值变更，这是绝对要避免的行为。
+
+所以，稳妥的方案是两步：先切换到分支 feature1，使用变基 rebase 合并主干分支的内容，使得 feature1 分支在 master 分支的基础上延伸拉直，而 rebase 更新的是自己的提交记录的 hash 值，不会变更主干分支的。这样即使处理合并冲突，也只是更新 feature1 的提交记录。这样才能确保主干分支上的 d、e 点的 hash 值保持不变。然后再把分支 feature1 合并到主干分支。
+
+1、分支 feature1 合并主干分支
+
+    git switch feature1
 
     git rebase master
 
     一条命令搞定：
 
         # git rebase < basebranch > < topicbranch >
-        git rebase master feature
+        git rebase master feature1
 
 rebase 的拉直效果如下：
 
-                                    f---g---h---i 重写 feature 分支多出来的
+                                    f---g 重写 feature1 分支的提交记录，hash 值变更
                                    /
-    feature分支  a---b---c ---d---e
+    feature1分支  a---b---c ---d---e
                            在分叉点后面接续 master 的提交记录
 
 可以看到 f 被调整指向了 e，虽然可能需要付出一些合并冲突解决的代价，但是清晰多了
 
 注意
 
-    做 rebase 之后，feature 分支的提交记录 f、g、h、i 全被更新，hash 值全变了。如果你的分支管理依赖这个 hash 值，就不要用 rebase，这种情况下只能使用 merge，在合并后 feature 分支会出现菱形。
+    做 rebase 之后，feature 分支的提交记录 f、g hash 值全变了。如果你的分支管理依赖这个 hash 值，就不要用 rebase，这种情况下只能使用 merge，在合并后 feature 分支会出现菱形。
 
-2、主干分支合并 feature 分支
+2、主干分支合并分支feature1
 
 master 分支这时落后于 feature 分支了，需要做合并：因为 master 分支的 head 位于分叉点，实质二者在一条线上，所以 master 主干分支合入 feature 分支时，git 会做的是快进合并，执行  merge 或 rebase 效果相同，这种情况下不会修改任何提交记录的hash值。
 
-    git checkout master
+    git switch master
 
     git merge feature
 
-最终效果，大家都同步到一条直线的最末端：
+3、最终效果，大家都同步到一条直线的最末端：
 
     a---b---c---d---e---f---g---h---i   master
                                         feature
@@ -2342,7 +2372,7 @@ git pull = git fetch + git merge 后的效果，merge 创建提交点，看起�
 
     https://blog.csdn.net/d6619309/article/details/52711035
 
-合并冲突是指：在共同节点之后，出现了两种独立的提交(每种可能有多个提交)。两个分支合并，或本地合并远程时，都有可能出现合并冲突，参见章节 [merge 的二义性]。
+合并冲突是指：在共同节点之后，出现了两种独立的提交(每种可能有多个提交)。两个分支合并，或本地合并远程时，都有可能出现合并冲突，参见章节 [merge 默认有二义性]。
 
     $ git push 被拒绝
     To ssh://
