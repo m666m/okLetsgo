@@ -1932,11 +1932,21 @@ git push -f 制造混乱的过程
 
 ## 分支合并：merge菱形分叉还是rebase拉直
 
+能做合并的基础是两个分支有相交点，如果是三个分支合并无直接交点则需要用 rebase 。
+
+以下讨论以此为例
+
+    主干在 c 点后出现 3 个分支，或 3 个人的不同的主干分支延续
+
+                           d---e  分支 hotfix
+                         /
+    master主干  a---b---c -- f---g  分支 feature1
+                         \
+                           h---i  分支 feature2
+
 两个分支合并的 merge/rebase 效果
 
     Git 之 merge 与 rebase 的区别 https://www.cnblogs.com/zhangzhang-y/p/13682281.html
-
-能做合并的基础是两个分支有相交点，如果是三个分支合并无直接交点则需要用 rebase 。
 
 merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新该点之后所有提交记录的hash值。
 
@@ -1982,16 +1992,6 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
     等 dev 分支开发完成了之后，要合并到上游分支 master 上的时候，切换到 master 分支，做 git merge dev --no-ff
 
-以下讨论以此为例
-
-    主干在 c 点后出现 3 个分支，或 3 个人的不同的主干分支延续
-
-                           d---e  分支 hotfix
-                         /
-    master主干  a---b---c -- f---g  分支 feature1
-                         \
-                           h---i  分支 feature2
-
 ### merge 的二义性
 
 命令 `git merge` 的执行结果有不确定性：
@@ -2004,7 +2004,45 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
 总之，在多人都操作同一个分支各自有提交的情况下，在分支合并时执行不带参数的 `git merge` 命令，可能会快进合并，也可能会结合多个提交的最新位置新建一个提交点（无法快进合并），形成了一个菱形。
 
-#### merge --ff-only 只做快进的拉直
+#### 示例：如果命令不带参数，只执行 `git merge`
+
+准备环境，切换到主干分支 master 并更新
+
+    git switch master
+
+    git pull
+
+1、先把 hotfix 分支合并到主干分支 master
+
+    git merge hotfix
+
+先合入的分支，直接在c点接续，`git merge` 默认做快进，不制造新commit点，做完会给个提示性信息
+
+    master分支  a---b---c ---d---e(HEAD)
+
+                            git reset --hard HEAD^ 回退是到d
+
+2、然后再把 feature 分支后合并到主干分支 master
+
+    git merge feature
+
+因为 feature 的基础节点是c点，而主干分支已经延续到了 e点，无法做做快进，就会制作分叉，`git merge` 并无提示，这个地方最容易让人糊涂。
+
+因为无法接续在c点，所以会制作新commit点，形成菱形分叉：
+
+                          d---e          hotfix分支
+                         /              \
+    master分支  a---b---c                  new(HEAD) 由git制造
+                         \              /
+                          f---g---h---i  feature分支
+
+    git reset --hard HEAD^ 回退是到e
+
+如果两分支修改了相同的文件，merge 会提示解决合并冲突，详见章节 [解决合并冲突conflicts]。
+
+如果不想要菱形分叉，参见章节 [变基 rebase --- 强行拉直]。
+
+### merge --ff-only 只做快进的拉直
 
 为强制只做快进，否则报错退出，这样可以防止默认的无法做快进时使用分叉
 
@@ -2016,41 +2054,40 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
 所以保险的方法是：git merge 之前，先 git status 看看提示，或用命令 `merge --ff-only` 强制只做快进。
 
-#### merge --no-ff 强行保留菱形分叉
+### merge --no-ff 强行分叉
 
 为强制分叉，可以明确指定不做快进合并
 
-    git merge --no-ff
+    git switch master
 
-大的分支合入用菱形，便于管理。
+    git merge --no-ff -m "feature分支合入主干分支" feature
 
-feature 分支是用来开发特性的，上面会存在许多零碎的提交。
-如果feature 分支先合并到主干分支 master，出现接续分叉点合并，默认的快进式合并会把 feature 分支的提交历史混入到 master 中，这样 master 的提交历史就不够简洁了，所以分支合并到主干时，保留菱形分叉的效果更好。
-
-    git merge feature --no-ff -m"本次合并添加的注释信息"
+主要用于大的功能分支合并到主干分支：不使用快进合并而用菱形分叉，这样在查看历史提交记录时，方便区分主干和功能分支，不让功能分支的众多提交记录混入主干分支。
 
                           f---g---h---i  feature分支
                          /             \
     master主干  a---b---c -------------- new(HEAD) 由git制造
                                           *
-                       git reset HEAD^ --hard 的效果是回到c点
+                       git reset --hard HEAD^ 的效果是回到c点
 
 菱形分叉最大的好处，除了便于观察之外，如果需要版本回退，很容易就可以退到feature合并之前的位置。
 
-对hotfix分支，再合入就在它后面又一个菱形，所以最好用rebase合入master，实现拉直（参见方法三）
+对hotfix分支，再合入就在它后面又一个菱形，所以最好用rebase合入master，实现拉直，参见章节 [变基 rebase --- 强行拉直]。
 
                               f---g---h---i  feature分支
                              /              \
         master主干  a---b---c ---------------- new ---d---e
                                                 *   hotfix分支用rebase合入，不制造commit点
 
-### merge --squash压缩为一个commit点合并
+### merge --squash 压缩为一个commit点合并
 
-用于 feature 分支的commit太多了，合入主干时简单粗暴的精简处理
+如果提交记录太多了，在合入主干时简单粗暴的精简处理
 
     git checkout master
 
-    git merge --squash feature -m"fgmix 只有我这一个提交点，原来的commit历史不要了"
+    git merge --squash feature -m 'fgmix 只有我这一个提交点，原来的commit历史不要了'
+
+受 merge 二义性的影响，默认快进，否则分叉。
 
 效果
 
@@ -2060,13 +2097,11 @@ feature 分支是用来开发特性的，上面会存在许多零碎的提交。
                          \        /
                             fghi      feature分支压缩为只有一个commit点，后合并
 
-慎用压缩合并
+分支只作为一个提交记录合入，要查历史提交只能在原分支上查，慎用。
 
-    如果是最先合并，即紧接着分叉点c合入主干，有可能被快进合并，不能制造新commit点形成菱形。
+### 变基 rebase --- 强行拉直
 
-    功能分支的commit合并应该在合入主干之前，由开发组内部自行整理，不能简单粗暴的一把压缩合并。
-
-### 变基 rebase，更新提交记录的hash值但不制造分叉点
+rebase 通过更新提交记录的 hash 值的方式，避开制造分叉点获取拉直效果，可能要解决不少合并冲突。
 
 如果 git 提示会做快进合并Fast-forward，那么执行 merge/rebase 的效果相同都是拉直，而不会更新那部分提交记录的 hash 值。
 
@@ -2126,46 +2161,6 @@ master 分支这时落后于 feature 分支了，需要做合并：因为 master
                                         feature
 
 rebase 操作遇到冲突的时候，会中断rebase，同时会提示你解决冲突，解决参见章节 [解决合并冲突conflicts]。
-
-### TODO:示例：如果命令不带参数，只执行 `git merge`
-
-1、先把 hotfix 分支合并到主干分支 master
-
-    git switch master
-
-    git pull
-
-    git merge hotfix
-
-形成的master分支：
-
-    master分支  a---b---c ---d---e(HEAD)
-                            先合入的分支，直接接c点，git默认做快进，不制造新commit点
-                            git reset --hard HEAD^ 回退是到d
-
-2、然后再把 feature 分支后合并到 master 分支：
-
-    git switch master
-
-    git pull
-
-    git merge feature
-
-merge 发现不能做快进，就会制作分叉，并无提示，这个地方最容易让人糊涂。
-
-因为无法接续在c点，所以git会制作新commit点，形成菱形分叉：
-
-                          d---e          hotfix分支
-                         /              \
-    master分支  a---b---c                  new(HEAD) 由git制造
-                         \              /
-                          f---g---h---i  feature分支
-
-    git reset --hard HEAD^ 回退是到e
-
-如果 merge 操作遇到冲突，不能继续进行下去会提示解决合并冲突，详见章节 [解决合并冲突conflicts]。
-
-如果遇到多人合并分支，都是在c点后，不想出现很多环状提交，拉直见章节 [变基 rebase，更新提交记录的hash值但不制造分叉点]。
 
 ### 示例：分支合并演进
 
@@ -2995,6 +2990,8 @@ NOTE: 使用文件比对工具，可大大简化合并 commit 点的复杂度
 
 ## 分支变基rebase：交互式压缩提交点
 
+rebase 除了合并多个分支外，还有个整理单个分支提交记录的功能。
+
     https://zhuanlan.zhihu.com/p/249231960
         https://opensource.com/article/20/7/git-best-practices
 
@@ -3759,6 +3756,8 @@ HEAD 的 第三个父级
     $ git show HEAD^3~2 / git show HEAD^3^^
     master foo 2
 
+TODO:常用场景是：对两分支分叉的合并点，如果执行 git reset --hard HEAD^，会退回到第一个分支的最后一个提交记录。
+
 #### 示例
 
     # 当前提交
@@ -4076,6 +4075,8 @@ HEAD特殊：
         git reset --hard HEAD
 
             丢弃暂存区、丢弃工作区，工作区恢复为当前仓库 HEAD 指针指向的内容。
+
+        TODO:对两分支分叉的合并点，如果执行 git reset --hard HEAD^，会退回到第一个分支的最后一个提交记录，参见章节 [HEAD^n]。
 
 如果用 git reset 回退提交记录后，后悔还想使用原来 HEAD 指向的远程库最新的提交点
 
