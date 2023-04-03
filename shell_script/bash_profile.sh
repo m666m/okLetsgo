@@ -72,6 +72,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
     alias gba='echo "[分支：全部分支及对应关系、最近提交及注释]" && git branch -avv'
     alias gro='echo "[远程信息]" && git remote show origin'
+    alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
 
     # git 经常断连，自动重试直至成功
     alias gpull='git pull || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull; done'

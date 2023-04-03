@@ -1153,11 +1153,11 @@ sparse-checkout 文件设置
         !/A/B/*/
         /A/B/C/
 
-#### 组合使用：部分克隆+稀疏检出 --- 大项目用这个最精简
+#### 组合使用：部分克隆+稀疏检出
+
+只对大项目的某个部分感兴趣时的代码检出，大项目用这个方法最精简
 
     https://help.aliyun.com/document_detail/309002.html
-
-方便只对大项目的某个部分感兴趣时的代码检出
 
 1、先部分克隆，并配置克隆完成后不执行自动检出
 
@@ -1619,7 +1619,7 @@ NOTE: 新建的分支没有对应到远程仓库，无法推送到远程，如�
 
     先 git clone 过一次或建立了与远程仓库的的关联，不然 git 不知道本地代码如何对应远程分支。
 
-### 原理：你的代码在本地有两份--本地仓库和本地的远程仓库
+### 你的代码在本地有两份--本地仓库和本地的远程仓库
 
 我们本地的 .git 文件夹里存储的本地分支的 commit ID 和跟踪的远程分支 orign/master 的 commit ID（可以有多个远程仓库）。
 
@@ -2529,16 +2529,33 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
 
     https://blog.nilbus.com/take-the-pain-out-of-git-conflict-resolution-use-diff3/
 
+可以配置不使用 diff 而是 diff3
+
+    git config --global merge.conflictstyle diff3
+
 在冲突文件中，会新增类似 `||||||| merged common ancestor=======` 的行来指出合并前的共同祖先 base，这样便于使用者更容易的区分保留哪个。
 
+用如下行包围功能祖先的内容
+
+    ||||||| merged common ancestor      <-------这里开始
+    <<<<<<< Temporary merge branch 1    <-------分支1
+    ...
+    ...
+    ...
+    =======
+    >>>>>>> Temporary merge branch 2    <-------分支2 这里结束
+
+示例
+
+    # 在命令行用参数指定
     git checkout --conflict=diff3 hello.txt
 
     <<<<<<< HEAD
-    GreenMessage.send(include_signature: true)
+    bbbbbbbbb.yyyyyyyy
     ||||||| merged common ancestor
-    BlueMessage.send(include_signature: true)
+    aaaaaaaaa.yyyyyyyy
     =======
-    BlueMessage.send(include_signature: false)
+    aaaaaaaaa.xxxxxxxx
     >>>>>>> merged-branch
 
 使用 diff3 的缺点是处理交叉合并（criss-cross merge）会变复杂
@@ -2575,6 +2592,14 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
         =======
             hhhhhh
         >>>>>>> mybranch
+
+可以用 sed 进行这个精简过程
+
+    # 显示下结果
+    sed -n '/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p' your_conflict_file
+
+    # 直接修改到文件
+    sed -i '/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/d' your_conflict_file
 
 #### merge 对冲突的处理是分叉
 

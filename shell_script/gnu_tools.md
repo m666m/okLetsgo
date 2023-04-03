@@ -5338,13 +5338,13 @@ reptyr
 
 xargs 命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs 能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说 find 的结果经过 xargs 后，其实将 find 找出来的文件名逐个传递给 grep 做参数，grep 再在这些文件内容中查找关键字 test。
 
-    ls /xx | xargs -t -I{} cp {} /tmp/{}
+    ls *.txt | xargs -t -I{} cp {} /tmp/{}
 
         -t ： 打印内容，去掉\n之后的字符串
 
-        -I : 后面定义占位符，
+        -I : 定义占位符
 
-    上例子是{} ，后面命令行中可以多次使用占位符### 字符串处理 awk sed cut tr wc
+    定义占位符{}后，命令行后面的命令可以多次使用该占位符，一般是字符串处理 awk sed cut tr wc 等
 
 grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
@@ -5355,11 +5355,13 @@ grep -w 匹配单词，用于搜索结果中类似字母组合太多的情况。
 
 ripgrep 替代 grep，解决了不带文件名挂住的问题，rg 会默认查找所有文件。更推荐 ack，参见章节 [ackg 给终端输出的自定义关键字加颜色]。
 
-从当前目录及子目录列出所有目录名和文件名，排除目录 .git 和 __pycache__，逐个文件的查找文件内容包含 “logg” 的行，列出文件名、行号、内容
+从当前目录及子目录列出所有目录名和文件名，排除目录 .git 和 __pycache__，逐个文件的查找文件内容包含字符串 “logg” 的行，列出文件名、行号、内容
 
     # 查找当前目录及子目录所有文件，列出包含指定内容的的行，如 `grepf logg`
     # find 没法加 -type f，否则没法过滤目录，在后面用 -d 让 grep 跳过目录即可
     find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in logg
+
+### 字符增删改 tr cut awk sed
 
 tr 功能1 -- 替换字符
 
@@ -5388,27 +5390,6 @@ awk 指定分隔符，可以用简单的语句组合字段
 
 sed 删除、替换文件中的字符串
 
-    在文件的匹配行前面加上#注释
-    #   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
-    #   s       替换
-    #   ^       开头匹配
-    #   [^#]    匹配非#
-    #   #&      用&来原封不动引用前面匹配到的行内容，在其前面加上#号
-    #   g       全部（只匹配特定行不加g）
-    sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
-
-    在文件的匹配行前面取消#注释
-    #   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
-    #   ^#//    去掉代表开头的#
-    sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
-
-    # 给所有没有#开头的行改为#开头
-    # sed '/[^#]/ s/^[^#]/#&/' /etc/dhcpcd.conf
-    sed 's/^[^#]/#&/' /etc/dhcpcd.conf
-
-    # 模式匹配简写，替换满足条件行的回车为逗号
-    sed 'H;1h;$!d;x;y/\n/,/
-
     选项与参数：
 
         -n ：使用安静(silent)模式。在一般 sed 的用法中，所有来自 STDIN 的数据一般都会被列出到终端上。但如果加上 -n 参数后，则只有经过sed 特殊处理的那一行(或者动作)才会被列出来。
@@ -5434,28 +5415,57 @@ sed 删除、替换文件中的字符串
         p ：列印，亦即将某个选择的数据印出。通常 p 会与参数 sed -n 一起运行～
         s ：取代，可以直接进行取代的工作哩！通常这个 s 的动作可以搭配正规表示法！例如 1,20s/old/new/g
 
+sed 示例：
+
+    在文件的匹配行前面加上#注释
+    #   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+    #   s       替换
+    #   ^       开头匹配
+    #   [^#]    匹配非#
+    #   #&      用&来原封不动引用前面匹配到的行内容，在其前面加上#号
+    #   g       全部（只匹配特定行不加g）
+    sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
+
+    在文件的匹配行前面取消#注释
+    #   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+    #   ^#//    去掉代表开头的#
+    sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
+
+    # 给所有没有#开头的行改为#开头
+    # sed '/[^#]/ s/^[^#]/#&/' /etc/dhcpcd.conf
+    sed 's/^[^#]/#&/' /etc/dhcpcd.conf
+
+    # 模式匹配简写，替换满足条件行的回车为逗号
+    sed 'H;1h;$!d;x;y/\n/,/
+
+    # 范围删除匹配模式行，只显示删除后的结果
+    sed -n '/start_line/,/end_line/!p' your_file
+
+    # 删除匹配模式行，直接修改到文件
+    sed -i '/start_line/,/end_line/d' your_file
+
+### 终端输出字符的后处理工具
+
 wc -l 计算文本文件的行数，用于 vi 打开大文件之前先评估
 
     wc -l README.rst
 
-### 终端输出字符的后处理工具
+tee 对程序的输出同时打印到文件和屏幕
 
-格式化 JSON 数据，并彩色显示，也可用作格式检查
+    ls -al | tee -a file.txt
+
+column 把文本表格整齐化
+
+    openssl ciphers -V |column -t
+
+jq 格式化 JSON 数据，并彩色显示，也可用作格式检查
 
     # sudo apt install jq
     cat config.json |jq
 
-对程序的输出同时打印到文件和屏幕
+#### ackg 替代 grep 给自定义字符串加颜色
 
-    ls -al | tee -a file.txt
-
-把文本表格整齐化
-
-    openssl ciphers -V |column -t
-
-#### ackg 给终端输出的自定义关键字加颜色
-
-hhighlighter 给终端输出的自定义关键字加颜色，非常适合监控日志输出调试程序使用
+hhighlighter 给终端输出的自定义字符串加颜色，非常适合监控日志输出调试程序使用
 
     https://github.com/paoloantinori/hhighlighter
         主要封装的是 ack --passthru 的透传和着色

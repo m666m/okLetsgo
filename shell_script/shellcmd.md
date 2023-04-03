@@ -121,6 +121,8 @@ dash 和 bash 语法上的主要的区别有:
     http://c.biancheng.net/view/743.html
     https://www.jb51.net/article/123081.htm
 
+    引号和转义 https://www.cnblogs.com/cn-leoblog/p/15415841.html
+
 用完后记得清除变量，防止大规模脚本中容易发生的变量名污染
 
     unset variable_name
