@@ -543,9 +543,9 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
     https://github.com/m666m/myproj
 
-##### 添加多个 push 远程地址(upstream)
+##### 默认的远程库对象添加多个 push 远程地址
 
-在一般使用中，保持默认的远程库对象 origin 的 fetch/push 地址，添加多个 push 远程仓库地址。
+在一般使用中，保持默认的远程库对象 origin 的 fetch/push 地址，但添加多个 push 远程仓库地址(upstream)。
 
 这样的好处是，默认的远程库对象 origin 照常 fetch、push，只是增加了多个 push 地址，可以实现代码的多处备份。
 
