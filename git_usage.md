@@ -543,7 +543,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
     https://github.com/m666m/myproj
 
-##### 【推荐】添加多个 push 远程地址(upstream)
+##### 添加多个 push 远程地址(upstream)
 
 在一般使用中，保持默认的远程库对象 origin 的 fetch/push 地址，添加多个 push 远程仓库地址。
 
@@ -575,9 +575,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
     本地项目中的 .git/config 对应内容也会变化。
 
-使用：
-
-这种多个 push 地址的方式比较实用，在执行 `git fetch` 或 `git pull` 命令时，只从默认的 fetch 地址拉取代码，而在执行 `git push` 时会推送到多个 push 地址。
+日常使用中，在执行 `git fetch` 或 `git pull` 命令时，只从默认的 fetch 地址拉取代码，而在执行 `git push` 时会推送到多个 push 地址。
 
 如果想删除多余的 push 地址
 
@@ -585,7 +583,7 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
 ##### 添加多个远程库对象
 
-使用不方便，一般用于仓库备份时使用
+一般用于仓库备份、代码发布到专门的测试服务器等需要明确手工指定的场合
 
     https://www.runoob.com/git/git-gitee.html
 
@@ -597,15 +595,17 @@ github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国
 
     git remote add server3 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
 
-这样使用不方便，在执行 `git push` 时，只会推送到默认的 origin 地址。
+在执行 `git push` 时，只会推送到默认的 origin 地址。
 
-其他的各个 server1，2，3 得再挨个执行 push 命令
+如果需要推送到其他的各个 server1，2，3 ，需要明确给出参数挨个执行 push 命令
 
     git push server1 master
 
     git push server1 developer
 
     ...
+
+这样便于控制发布节奏，比如在某些时间节点才把开发分支推送到test_server，平时的默认推送都是推到 origin。
 
 添加多个远程库对象后，还可以删除默认的 origin 对象，只使用自己添加的那些远程库对象
 
