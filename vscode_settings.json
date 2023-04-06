@@ -93,7 +93,9 @@
             "minimapSlider.hoverBackground": "#40667462",
             "minimapSlider.activeBackground": "#4d879959",
             // 括号高亮的背景色居然用肉色
-            "editorBracketMatch.background": "#0a4e75",
+            "editorBracketMatch.background": "#15415a9f",
+            "editorBracketMatch.border": "#88c0d0",
+            "editorCursor.foreground": "#d8dee9",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
             "editorBracketHighlight.foreground1": "#67c5dd",
             "editorBracketHighlight.foreground2": "#3bc299",
