@@ -2365,14 +2365,14 @@ zsh:
 
 #### 替代品
 
-startship 通用的状态栏工具，支持 sh、bash、cmd 等 shell
+startship 通用的状态栏工具，支持 bash、zsh、PowerShell、cmd 等 shell
 
     https://starship.rs/zh-CN/
         https://github.com/starship/starship
 
     https://sspai.com/post/72888
 
-推荐安装 zsh，安装 powerlevle10k，这个状态栏工具的兼容性和显示效果直接起飞，见章节 [推荐主题powerlevel10k]。
+zsh 下推荐使用 powerlevle10k，这个状态栏工具的兼容性和显示效果直接起飞，见章节 [推荐主题powerlevel10k]。
 
 ### 图标字体
 

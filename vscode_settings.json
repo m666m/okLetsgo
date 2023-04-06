@@ -114,7 +114,8 @@
     "jupyter.sendSelectionToInteractiveWindow": true,
     "security.workspace.trust.emptyWindow": false,
     "security.workspace.trust.untrustedFiles": "open",
-    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    // 终端自定义颜色 https://glitchbone.github.io/vscode-base16-term/#/oceanicnext
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
     "git.enableCommitSigning": true,
     "git.enableSmartCommit": true,
     "git.autofetch": true,
