@@ -2008,11 +2008,11 @@ git push -f 制造混乱的过程
 
                           ---d---e 主干分支合入的 hotfix
                          /        \
-    feature1分支 a---b---c          new1(HEAD) 由`git merge`建立
+    主干分支     a---b---c          new1(HEAD) 由`git merge`建立
                          \        /
                           ---f---g  分支feature1 自己的提交记录
 
-    主干分支跟上面一致，两分支的提交记录的 hash 值也是一致的，完美。
+    feature1 跟上面完全一致，两分支的提交记录的 hash 值也是一致的，完美。
 
 ### `git merge` 执行合并的默认策略有二义性
 
