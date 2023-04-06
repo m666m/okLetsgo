@@ -2175,6 +2175,10 @@ TODO:酌情考虑如下策略：
     # git rebase [basebranch] [topicbranch]
     git rebase feature2 feature1
 
+    # 相当于
+    git switch feature1
+    git rebase feature2
+
 一般本地分支更新自己的远程分支，用变基合并拉直提交记录，是完全没有问题的。
 
 但是如果本地分支要合并到别的分支，两分支有远程跟踪分支，则有很多限制
