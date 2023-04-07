@@ -252,6 +252,8 @@ git colne 一个项目，然后查看是否此项目是使用 https 协议
 
 git 默认使用 vim 作为编辑工具，diff 作为比较工具，但我们可以选择使用其它的工具。
 
+    使用 vs code 作为你的代码编辑器的好处是合并工具等图形化更直观，解决起来更方便。
+
 比较工具
 
     不使用 diff，使用 diff3
@@ -277,11 +279,11 @@ git 默认使用 vim 作为编辑工具，diff 作为比较工具，但我们可
 
     https://blog.csdn.net/ShuSheng0007/article/details/115449596
 
-    git config --global core.editor "code --wait"
+        git config --global core.editor "code --wait"
 
-如果想恢复使用 Vim，使用下面命令即可
+    如果想恢复使用 Vim，使用下面命令即可
 
-    git config --global --unset core.editor
+        git config --global --unset core.editor
 
 也可直接编辑配置文件
 
@@ -2571,6 +2573,10 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     https://git-scm.com/book/en/v2/Git-Tools-Advanced-Merging#_checking_out_conflicts
 
     https://blog.nilbus.com/take-the-pain-out-of-git-conflict-resolution-use-diff3/
+
+不使用 diff，使用 diff3
+
+    git config --global merge.conflictstyle diff3
 
 在冲突文件中，会新增类似 `||||||| merged common ancestor=======` 的行来指出合并前的共同祖先 base，这样便于使用者更容易的区分保留哪个。
 
