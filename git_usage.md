@@ -109,26 +109,28 @@ git config --glboal 选项指的是修改 Git 的全局配置文件 ~/.gitconfig
     git config user.name "m666m"
     git config user.email "31643783+m666m@users.noreply.github.com"
 
-### 2、ssh 客户端的设置
+### 2、设置 ssh 客户端
 
     https://docs.github.com/zh/authentication
 
-生成 ssh key 文件，默认回答都是一路回车
-
-    ssh-keygen -t ed25519
-
-将以下 ssh 密钥条目添加到你本地的 ~/.ssh/known_hosts 文件中，以避免手动验证 GitHub 主机：
+将以下 ssh 密钥条目添加到你本地的 ~/.ssh/known_hosts 文件中，可以避免第一次连接时手动验证 GitHub 主机：
 
     # https://docs.github.com/zh/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints
     github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
     github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
     github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
 
+生成 ssh 密钥文件，默认回答都是一路回车
+
+    ssh-keygen -t ed25519
+
+如何生成 ssh 密钥参见章节 [ssh登录验证使用密钥文件](ssh think)。
+
 如果是私有仓库，可以添加本机用户的公钥到远程仓库git用户的认证密钥文件中，以便后续ssh免密登陆
 
     ssh-copy-id -i ~/.ssh/id_ed25519.pub -p 2345 git@11.22.33.44
 
-### 3、设置 gitub 使用 ssh 密钥方式管理代码库
+### 3、设置使用 ssh 密钥方式管理你的 gitub 代码库
 
     https://docs.github.com/zh/authentication/connecting-to-github-with-ssh
 
@@ -149,7 +151,7 @@ git colne 一个项目，然后查看是否此项目是使用 https 协议
     origin  https://github.com:m666m/okLetsgo.git (push)
 
     # 改为 git 协议
-    git remote set-url origin git@github.com:m666m/yourproject.git
+    git remote set-url origin git@github.com:m666m/okLetsgo.git
 
 验证：
 
@@ -158,14 +160,18 @@ git colne 一个项目，然后查看是否此项目是使用 https 协议
     Received disconnect from ... port 22:11: Bye Bye
     Disconnected from ... port 22
 
-    # 如果你在已有的github项目目录下，是这个提示
+    # 成功
     $ ssh -T git@github.com
     Hi m666m! You've successfully authenticated, but GitHub does not provide shell access.
 
     # 登陆问题排查
-    ssh -v git@github.com
+    ssh -vvv git@github.com
 
-github 网站提供基于 https 端口的 ssh 连接方式 <https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port>，主要用于内网封禁对外使用 22 端口，但是开放 443 端口的场合。
+#### github 提供基于 https 端口的 ssh 连接方式
+
+    https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port>
+
+主要用于办公室内网封禁对外使用 22 端口，但是开放 443 端口的场合。
 
 先试试能否在 443 端口连接
 
@@ -193,11 +199,11 @@ github 网站提供基于 https 端口的 ssh 连接方式 <https://docs.github.
 
     https://ericclose.github.io/git-proxy-config.html
 
-国内经常连不上，需要多次重试，如果嫌麻烦，直接加代理得了。
+国内经常连不上，需要多次重试，不如用代理。
 
-注意：
+#### http 代理
 
-    该方法只适用于 http 方式（你执行 git clone https://github.com 时默认都是 https 下载的），不适用于 ssh 方式。
+注意：该方法只适用于 http 方式，即你执行 `git clone https://github.com` 时默认都是 https 下载的方式，不适用于 ssh 方式。
 
 1、设置 scoks 代理
 
@@ -220,25 +226,25 @@ github 网站提供基于 https 端口的 ssh 连接方式 <https://docs.github.
     git config --global --unset http.proxy
     git config --global --unset https.proxy
 
+针对特定域名仓库走代理的做法，此处以 GitHub 为例:
+
+    当我们在 GitHub 仓库使用 HTTPS 传输协议克隆源码时，我们往往是这么做的的：
+
+        git clone https://github.com/<user>/<repository>.git
+
+    根据你的代理软件支持的代理协议选取其中一种即可：
+
+        git config --global http.https://github.com.proxy http://127.0.0.1:7890
+
+        git config --global http.https://github.com.proxy socks5://127.0.0.1:7891
+
+#### ssh 代理
+
 如果你的 git 仓库为了身份认证，使用 git 协议或 ssh 协议。因为 Git 依靠 ssh 程序处理连接，所以您必须在 ~/.ssh/config 配置文件中指定你的主机
 
     为其设置 ProxyJump 选项，通过跳板机建立连接，参见章节 [ssh 配置跳板 --- 使用 ProxyJump](ssh think)。
 
     或为其设置 ProxyCommand 选项，通过代理建立连接，参见章节 [通过 socks/http 代理连接 ssh](ssh think)。
-
-#### 针对特定域名的 Git 仓库
-
-前面我们说的是，让所有域名下的仓库都走代理的情况，但是在现实情况下我们并不想这么做。那么现在我来介绍一下针对特定域名仓库走代理的做法，此处以 GitHub 为例:
-
-当我们在 GitHub 仓库使用 HTTPS 传输协议克隆源码时，我们往往是这么做的的：
-
-    git clone https://github.com/<user>/<repository>.git
-
-根据你的代理软件支持的代理协议选取其中一种即可：
-
-    git config --global http.https://github.com.proxy http://127.0.0.1:7890
-
-    git config --global http.https://github.com.proxy socks5://127.0.0.1:7891
 
 ### 配置git的编辑器和比较工具
 
