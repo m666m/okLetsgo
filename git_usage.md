@@ -1092,6 +1092,8 @@ git的指定目录拉取，对于灵活选取仓库资源非常有帮助
 
     https://zhuanlan.zhihu.com/p/602129987
 
+    https://zhuanlan.zhihu.com/p/54581830
+
 NOTE：只在单个项目的目录里设置稀疏检出，不要变更全局配置。
 
 1）在本地创建目录，初始化仓库
@@ -1324,6 +1326,12 @@ sparse-checkout 文件设置
     git clone --recurse-submodules https://android.googlesource.com/platform/superproject/
 
 ### git submodule 包含子项目
+
+    https://zhuanlan.zhihu.com/p/87053283
+
+    https://zhuanlan.zhihu.com/p/404615843
+
+    git的submodule体验太痛苦 https://www.zhihu.com/question/267292008/answer/2389876457
 
 当项目依赖并跟踪一个开源的第三方库，或主项目对子模块有依赖关系，却又并不关心子模块的内部开发流程细节。
 
