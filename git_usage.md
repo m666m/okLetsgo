@@ -3473,7 +3473,7 @@ Git 管理仓库中的文件，是根据文件名来跟踪文件的，如果你�
 
     git mv -v oldfile newfile
 
-    # 已经跟踪，无需进行 add -u
+    # 如果已经跟踪，则无需 git add -u
     $ git status
     Changes to be committed:
     (use "git reset HEAD <file>..." to unstage)
