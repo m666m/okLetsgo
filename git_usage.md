@@ -3467,13 +3467,18 @@ Git 自动给 dev 分支做了一次提交，注意这次提交的commit是 1d4b
 
 Git 管理仓库中的文件，是根据文件名来跟踪文件的，如果你在本地直接用操作系统的 `mv` 命令改名一个文件，git 会认为你删掉了一个文件，新增了一个文件。运行命令 `git status` 会看到 deleted 了原文件， untracked 新文件。如果你提交了这个修改，你会发现新文件没有之前源文件的提交记录，历史记录全丢了！
 
-所以，重命名文件或文件夹应该使用 `git mv` 命令，这样才会保留你的提交记录。
+所以，重命名文件或文件夹应该使用 `git mv` 命令，这样才会保留你的提交记录
+
+    git mv 命令其实是首先执行了 mv 命令，将旧文件重命名为新文件，
+
+    接着，使用 git rm 命令删除旧文件，
+
+    最后使用 git add 添加新文件
 
 重命名文件或文件夹
 
     git mv -v oldfile newfile
 
-    # 如果已经跟踪，则无需 git add -u
     $ git status
     Changes to be committed:
     (use "git reset HEAD <file>..." to unstage)
