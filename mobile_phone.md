@@ -635,7 +635,9 @@ BusyBox 包含了一些简单的工具，例如 ls、cat 和 echo 等等，还�
     https://wiki.termux.com/wiki/Main_Page
     https://github.com/termux/termux-app#github
 
-    Termux各种玩法专栏 <https://zhuanlan.zhihu.com/c_1208079877376901120>
+    https://blog.csdn.net/weixin_42599499/article/details/111185609
+
+    Termux各种玩法专栏 https://zhuanlan.zhihu.com/c_1208079877376901120
 
 busybox跟它比，简直就是小弟 <https://stackoverflow.com/questions/40140533/android-busybox-termux-test-envionment>
 
