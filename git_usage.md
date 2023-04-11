@@ -37,7 +37,9 @@
 
 ## git 的基本概念
 
-程序开发，大部分都是在处理源代码这种文本文档，期间会对同一文件反复修改，为记录变更，便于回溯或多次修改、同步变更等操作，版本控制软件专门处理这种工作，git 是以文本文件的文字差异为基准进行差异比对的，再此基础上衍生出分支管理等功能，它的底层是基于 snapshot 快照的工作方式，并进行分布式存储。
+程序开发，大部分都是在处理源代码这种文本文档，期间会对同一文件反复修改，为记录变更，便于回溯或多次修改、同步变更等操作，我们使用版本控制软件专门处理这种工作。
+
+git 是以文件修改前后的差异为基准进行比对的，在此基础上衍生出分支管理等功能，它的工作方式基于 snapshot 快照，并进行分布式存储。
 
 你的文件有3种存在：仓库区 ----> 暂存区 stage 或 index ----> 工作区 work space
 
@@ -51,25 +53,27 @@
 
     文件每添加到一个区域，有对应的回退步骤，见章节[如何回退]
 
+详见章节 [基本概念：工作区、暂存区和版本库]。
+
 git 的很多命令操作都是区分这几个区的，如 git fetch、git diff，参数不同意义不同，使用时注意区分。
 
-一般执行一个操作之后运行 git status 查看当前状态，git 也会出下一步操作的建议。
+一般在执行一个操作之后都要运行 git status 查看下当前状态，git 也会出下一步操作的建议。
 
 git 对文件内容的修改，在撤销和重做方面有些使用不便，详见章节 [竞品 -- 基于文件差异(patch)的源代码管理系统]。
 
 ### 何时使用git而不是svn
 
-因为git就是给开源准备的，适合开源方式开发的就适合用git。
+因为git就是给开源准备的，适合开源方式开发的就适合用 git。
 
-    源代码、配置文件等文本文件占比大的项目，用git，少量的二进制文件可以用 git-lfs 管理。
+    源代码、配置文件等文本文件占比大的项目，用 git，少量的二进制文件可以用 git-lfs 管理。
 
-    二进制文件较多的项目，比如游戏、艺术、摄影等，用svn更合适。
+    二进制文件较多的项目，比如游戏、艺术、摄影等，用 svn 更合适。
 
-    如果是一个较大的项目，目录众多，管理权限设置分门别类，人员权限各有不同，用svn。
+    如果是一个较大的项目，目录众多，管理权限设置分门别类，人员权限各有不同，用 svn。
 
 ## git 客户端初始化
 
-git 通过 ssh 客户端连接 github。除了 github 这样的，私有仓库都需要用户鉴权才能读取文件。
+除了 github 这样的开源代码网站，git 私有仓库都需要用户鉴权才能读取文件，所以 git 通过调用 ssh 客户端操作 github 的远程仓库，实现用户鉴权。
 
     https://git-scm.com/download/win
         https://github.com/git-for-windows/git/
@@ -84,13 +88,13 @@ git 通过 ssh 客户端连接 github。除了 github 这样的，私有仓库�
         https://www.sourcetreeapp.com/
         https://tortoisegit.org/
 
-git config 配置文件位置，默认在各个 Git 仓库里的 .git/config
+命令 `git config` 操作的配置文件，在各个 Git 仓库里的 .git/config 文件
 
-git config --glboal 选项指的是修改 Git 的全局配置文件 ~/.gitconfig
+命令 `git config --glboal` 修改 Git 的全局配置文件，在 ~/.gitconfig 文件
 
 ### 1、设置用户名和电邮
 
-如果未设置过 git 用户名和邮箱，设置个默认的全局使用，如果是主用办公，设为办公用户名和电邮，家庭自用，按自己的习惯设置。
+如果未设置过 git 用户名和邮箱，设置个默认的全局使用，如果是主用办公，设为办公用户名和电邮，个人自用，按自己的习惯设置即可。
 
     # 查看
     git config --global --list
@@ -142,16 +146,8 @@ git config --glboal 选项指的是修改 Git 的全局配置文件 ~/.gitconfig
 
 在你本地机器登陆账户的主目录下的 ~/.ssh 目录，复制下面的文件内容粘贴进去
 
+    # 使用命令 `ssh-keygen -t ed25519` 即可生成，详见章节 [配置 ssh 客户端使用密钥文件登录](ssh think)。
     cat ~/.ssh/id_ed25519.pub
-
-git colne 一个项目，然后查看是否此项目是使用 https 协议
-
-    $ git remote -v
-    origin  https://github.com:m666m/okLetsgo.git (fetch)
-    origin  https://github.com:m666m/okLetsgo.git (push)
-
-    # 改为 git 协议
-    git remote set-url origin git@github.com:m666m/okLetsgo.git
 
 验证：
 
@@ -167,9 +163,28 @@ git colne 一个项目，然后查看是否此项目是使用 https 协议
     # 登陆问题排查
     ssh -vvv git@github.com
 
+拉取远程仓库，在本地建立项目
+
+    git clone https://xxx.git
+
+查看是否此项目使用 https 协议
+
+    $ git remote -v
+    origin  https://github.com:m666m/okLetsgo.git (fetch)
+    origin  https://github.com:m666m/okLetsgo.git (push)
+
+    # 可改为使用 git 协议
+    git remote set-url origin git@github.com:m666m/okLetsgo.git
+
+在拉取远程时直接使用 git 协议，就不用修改了
+
+    git clone git@github.com:m666m/okLetsgo.git
+
+因为本地持有 ssh 密钥，你可以编辑这个仓库的文件，然后提交推送到 github 上的远程仓库，然后可以刷新 github 的网页看是否有变动了。
+
 #### github 提供基于 https 端口的 ssh 连接方式
 
-    https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port>
+    https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
 
 主要用于办公室内网封禁对外使用 22 端口，但是开放 443 端口的场合。
 
@@ -199,11 +214,11 @@ git colne 一个项目，然后查看是否此项目是使用 https 协议
 
     https://ericclose.github.io/git-proxy-config.html
 
-国内经常连不上，需要多次重试，不如用代理。
+国内经常连不上 github，需要多次重试，不如用代理。
 
 #### http 代理
 
-注意：该方法只适用于 http 方式，即你执行 `git clone https://github.com` 时默认都是 https 下载的方式，不适用于 ssh 方式。
+注意：该方法只适用于 http 方式，即执行 `git clone https://github.com` 用的 https 下载的方式，不适用于 ssh 方式。
 
 1、设置 scoks 代理
 
@@ -326,8 +341,6 @@ git revert 在合并冲突时使用`core.editor`的设置，没有单独的设�
 
 ### 日常工作：编辑工作 --- 修改、添加、提交
 
-git 除了工作区之外，还有其它几个区域，详见章节 [基本概念：Git 工作区、暂存区和版本库]。
-
 文件修改，添加到暂存，然后提交
 
     要养成习惯：感觉修改的比较多了，内容固定了，就顺手 `git add .` ，先在暂存区固定这部分修改。
@@ -432,26 +445,48 @@ git 除了工作区之外，还有其它几个区域，详见章节 [基本概�
 
 远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
 
-### 基本概念：Git 工作区、暂存区和版本库
+### 基本概念：工作区、暂存区和版本库
 
-工作区 work space：就是你建立的源代码目录
+1、工作区（work space）：
+
+就是你建立的源代码目录
 
     mkdir my_proj
 
-版本库或本地仓库 Repository ：在工作区执行 git init 命令就会建立隐藏目录 .git，这就是 Git 的版本库。
+你对文件的任何改动在此操作。
+
+2、本地仓库或版本库（Repository）：
+
+在工作区执行 git init 命令就会建立隐藏目录 .git，这就是 Git 的版本库。
 
     cd my_proj
 
     git init
 
-暂存区 stage 或 index：一般存放在 .git 目录下的index文件（.git/index）中，所以我们把暂存区有时也叫作索引（index）。如果新增的文件，需要 git 进行管理，执行 git add 命令即可添加。被 git 管理的文件进行了修改，也是使用 git add 命令来添加到暂存区。
+建立了本地仓库之后，你就可以管理本目录的所有文件和目录了
+
+    使用 `git add .` 添加到暂存区
+
+    然后使用 `git commit` 提交到本地仓库
+
+    可以使用 `git log` 查看你的提交记录
+
+之后任何在工作区的修改，都会被 git 识别，需要重复上面的过程提交到本地仓库。
+
+3、暂存区（stage 或 index）：暂存区实质是 .git 目录下的index文件，所以暂存区也称为索引（index）。
+
+有了本地仓库之后，在工作区对文件的修改，都需要先添加到暂存区，然后才能提交到本地仓库。
 
     cd my_proj
     touch abc.txt
 
     git add .
 
-引入暂存区的目的，是你的修改方便使用 git diff 查看跟之前提交的对比，检验是否正确修改了，而且便于修改回退。详见章节 [如何回退版本]。
+    新增的文件需要 git 进行管理，执行 `git add` 命令即可添加到暂存区
+
+    被 git 管理的文件进行了修改，也是使用 `git add` 命令来添加到暂存区
+
+善用暂存区，你的修改可以使用 `git diff` 查看跟之前提交的对比，检验是否正确修改了，而且便于修改回退。
 
 如果使用 vscode，建议使用 “时间线” 功能，每次保存和git提交都有快照，点击即可查看跟当前工作区的差异，更方便。
 
@@ -463,7 +498,7 @@ git做操作之前或操作之后，查看当前的git状态
 
     git commit -m '初始化提交'
 
-版本库推送远程仓库见章节 [同步远程仓库 push、pull、clone]
+版本库推送到远程仓库见章节 [同步远程仓库 push、pull、clone]
 
 ### 同步远程仓库 push、pull、clone
 
@@ -855,7 +890,7 @@ git clone 命令会自动创建了 origin 远程仓库对象，配置服务器�
     $ git commit -m 'init 1st'
     [master (root-commit) 34827c0] init 1st
 
-2、添加远程对象 origin
+2、添加远程库对象 origin
 
     git remote add origin ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
 
@@ -1630,35 +1665,34 @@ NOTE: 本地新建的分支没有对应到远程仓库，无法推送到远程�
 
 ## 分支推送 push
 
-本地分支如果没有对应到远程仓库，无法push，需要建立关联，参见章节 [本地仓库关联远程仓库]。
+前提
+
+    本地分支推送到远程，需要有远程库 origin 对象及跟踪分支，参见章节 [同步远程仓库 push、pull、clone]。
 
 推送分支
 
-    git push
+    git push origin refs/heads/branch:refs/heads/branch
 
-    其实 git 在 push 时会自动填充填充缺省参数，默认自动填充源 origin 以及当前分支 branch
+        # 一般用简写
+        git push origin local_branch:remote_branch
 
+        # 如果当前的本地分支和远程分支同名，分支名参数可以省略写
         git push origin branch
 
-    还会自动展开分支，上面的命令展开后如下
-
-        git push origin refs/heads/branch:refs/heads/branch
+        # 如果远程库对象是默认的 origin，该参数也可省略
+        git push
 
 ### 重要：推送远程前的检查
 
-本地分支推送到远程，需要有远程库 origin 及跟踪分支，参见章节 [同步远程仓库 push、pull、clone]。
+NOTE:如果你修改了远程仓库的提交记录，git 会提示你使用 `git push -f` 来强行推送，不要这么做！参见章节 [遇到提示 push -f 的时候多想想]。
 
-    git push origin dev_xxx:remote_branch
-
-NOTE: **远程仓库已有的提交记录，只做追加，不要修改、不要回退**
+牢记：**远程仓库已有的提交记录，只做追加，不要修改、不要回退**
 
     压缩式提交 `git commit --amend`、回退 reset、变基 rebase 等操作，都应该只限于操作本地未推送远程的提交记录。
 
     本分支分叉合并过来的远程其它分支的提交记录也不要做修改，任何内容上的修改，体现到提交记录上的都应该是追加，千万不要在历史提交记录上开倒车。
 
-如果你修改了远程仓库的提交记录，git 会提示你使用 git push -f 来强行推送，不要这么做！参见章节 [遇到提示 push -f 的时候多想想]。
-
-如果必须修改，则不要动已经在远程存在的提交记录，只在文件内容上做操作，新增提交点把你的文件修改提交上去，也不要 push -f 强行更改远程库的提交记录。
+如果必须修改，则不要变动已经在远程存在的提交记录，只在文件内容上做比对变更，新增提交点把你的修改提交上去，以避免 push -f 强行更改远程库的提交记录。
 
 #### 遇到提示 push -f 的时候多想想
 
