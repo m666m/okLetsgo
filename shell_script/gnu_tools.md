@@ -6678,7 +6678,35 @@ rsync 默许服务端口为 873。
 
 最好把命令写成批处理文件，放到 Windows 计划任务里定时执行。
 
-### 通过 ssh 来挂载远程目录 sshfs
+#### 竞品
+
+restic：使用 ssh 密钥方式连接备份服务器，在存储池中加密你的快照
+
+    https://restic.net/
+        https://github.com/restic/restic
+
+    https://zhuanlan.zhihu.com/p/66324926
+        https://fedoramagazine.org/use-restic-encrypted-backups/
+
+    https://blog.csdn.net/weixin_37714509/article/details/120090368
+
+estic 备份原理跟其他简单的备份程序略有不同，它基于存储池和快照的概念，每次备份就相当于一份快照，快照存储在存储池中。存储池中的数据用AES加密，当您备份敏感数据并将备份放在不受自己管辖服务器（例如，云提供商）时，这一点尤其重要。
+
+### nfs server 网络存储
+
+    https://blog.csdn.net/qq_38265137/article/details/83146421
+
+NFS就是Network File System的缩写，它最大的功能就是可以通过网络，让不同的机器、不同的操作系统可以共享彼此的文件。
+
+​ NFS服务器可以让PC将网络中的NFS服务器共享的目录挂载到本地端的文件系统中，而在本地端的系统中来看，那个远程主机的目录就好像是自己的一个磁盘分区一样，在使用上相当便利；
+
+NFS 一般用来存储共享视频，图片等静态数据。
+
+客户端通过远程过程调用（Remote Procedure Call,RPC）协议来实现于服务端的通信。
+
+以下两种竞品都不如 nfs server 稳定：
+
+sshfs：通过 ssh 来挂载远程目录
 
     https://www.junmajinlong.com/linux/sshfs/
 
@@ -6693,6 +6721,10 @@ rsync 默许服务端口为 873。
 卸载挂载点，直接 umount 即可
 
     umount /mnt
+
+rclone：Rclone (rsync for cloud storage) 是一个命令行程序,用于同步文件和目录，支持常见的 Amazon Drive 、Google Drive 、OneDrive 、Dropbox 等云存储。本文将演示在 Windows 平台下将 OneDrive 挂载为本地硬盘，并使用跨平台的 Rclone GUI 连接到云盘。
+
+    https://rclone.org/
 
 ### 在当前目录启动一个简单的http服务器
 

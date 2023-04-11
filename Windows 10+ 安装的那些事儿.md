@@ -1699,8 +1699,6 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
     客户虚拟机：上网冲浪
 
-Windows 11 要求 分区在 52GB 以上
-
 TODO: 先装 Windows 再装 Fedora
 
     https://zhuanlan.zhihu.com/p/488292819
@@ -2503,7 +2501,7 @@ M$不支持了，自求多福吧，自己挨个版本研究去 <https://docs.mic
 
 也就是说，弄个 3.5 的离线安装包，在 Windows 10 下面可能不能用。
 
-## 解决 Intel CPU 的 Meltdown/Spectre 熔断幽灵漏洞的降速问题
+### 解决 Intel CPU 的 Meltdown/Spectre 熔断幽灵漏洞的降速问题
 
 这几个漏洞属于侧信道攻击(side channel)，居然覆盖了 1998 年到 2018 年的所有英特尔 cpu。。。
 
@@ -2628,3 +2626,134 @@ Fedora：
     什么叫旁路（Side Channel）攻击呢？就是说，在你的程序正常通讯通道之外，产生了一种边缘特征，这些特征反映了你不想产生的信息，这个信息被人拿到了，你就泄密了。这个边缘特征产生的信息通道，就叫旁路。比如你的内存在运算的时候，产生了一个电波，这个电波反映了内存中的内容的，有人用特定的手段收集到这个电波，这就产生了一个旁路了。基于旁路的攻击，就称为旁路攻击。这个论文对这种攻击有一个归纳：https://csrc.nist.gov/csrc/media/events/physical-security-testing-workshop/documents/papers/physecpaper19.pdf。读者可以体会一下可能的攻击方法：时延，异常（Fault），能耗，电磁，噪声，可见光，错误消息，频率，JTag等等，反正你运行总是有边缘特征的，一不小心这个边缘特征就成了泄密的机会。
 
     缓冲时延（Cache Timing）旁路是通过内存访问时间的不同来产生的旁路。假设你访问一个变量，这个变量在内存中，这需要上百个时钟周期才能完成，但如果你访问过一次，这个变量被加载到缓冲（Cache）中了，下次你再访问，可能几个时钟周期就可以完成了。这样，如果我攻击一个对象（比如一个进程，或者内核），要得到其中某个地址ptr的内容，我只要和它共享一个数组，然后诱导它用ptr的内容作为下标访问这个数组，然后我检查这个数组每个成员的访问时间，我就可以知道ptr的值了。
+
+### 如何用本地账户安装WINDOWS 11
+
+硬盘要求分区在 52GB 以上。
+
+安装 Windows 11 时，如果你的设备已经连接到互联网，它就会强制要求微软账户。
+
+Windows版本（通常是Windows 10及以后的版本）允许用户使用两种不同类型的账户工作。目前默认情况下，Windows提供使用微软账户。这是一个在线账户，可以连接到微软自己的服务和应用程序，并带来额外的功能，如OneDrive，Office等。
+
+本地账户是过去的经典账户类型，在Windows的旧版本中已经使用了多年。它不能用来与其他微软服务合作，但它可以使用空密码，不需要密码。值得注意的是，在其他方面，它对隐私的保护要好得多。一些Windows用户仍然喜欢这种传统的登录方式。
+
+法一：在 Windows 安装程序开始之前就关闭互联网
+
+启动计算机之前拔掉网线，否则安装程序会记住该连接是可用的。当互联网被禁用时，Windows 将只被迫提供你的本地账户来登录。
+
+法二：使用答案文件来安装WINDOWS 11，无需微软账户。
+
+    https://schneegans.de/windows/unattend-generator/
+
+    https://www.elevenforum.com/t/sharing-some-helpful-answer-files-to-bypass-win-11-setup-requirements-and-more.3300/
+
+只要在你的可启动USB驱动器或镜像的根部创建这个文件 autounattend.xml 文件，它就会为你自动完成以下任务
+
+    适用版本 Windows 11 Pro
+
+    创建一个本地账户 User，密码 "password"
+
+    创建本地管理员账户 Admin，密码 "password"
+
+    跳过选择wifi网络
+
+    隐私策略设置为严格
+
+文件内容如下：
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+    <settings pass="offlineServicing"></settings>
+    <settings pass="windowsPE">
+        <component name="Microsoft-Windows-Setup" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <UserData>
+                <ProductKey>
+                    <Key>VK7JG-NPHTM-C97JM-9MPGT-3V66T</Key>
+                </ProductKey>
+                <AcceptEula>true</AcceptEula>
+            </UserData>
+        </component>
+        <component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <UserData>
+                <ProductKey>
+                    <Key>VK7JG-NPHTM-C97JM-9MPGT-3V66T</Key>
+                </ProductKey>
+                <AcceptEula>true</AcceptEula>
+            </UserData>
+        </component>
+    </settings>
+    <settings pass="generalize"></settings>
+    <settings pass="specialize"></settings>
+    <settings pass="auditSystem"></settings>
+    <settings pass="auditUser"></settings>
+    <settings pass="oobeSystem">
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <UserAccounts>
+                <LocalAccounts>
+                    <LocalAccount wcm:action="add">
+                        <Name>Admin</Name>
+                        <Group>Administrators</Group>
+                        <Password>
+                            <Value>password</Value>
+                            <PlainText>true</PlainText>
+                        </Password>
+                    </LocalAccount>
+                    <LocalAccount wcm:action="add">
+                        <Name>User</Name>
+                        <Group>Users</Group>
+                        <Password>
+                            <Value>password</Value>
+                            <PlainText>true</PlainText>
+                        </Password>
+                    </LocalAccount>
+                </LocalAccounts>
+            </UserAccounts>
+            <AutoLogon></AutoLogon>
+            <OOBE>
+                <ProtectYourPC>3</ProtectYourPC>
+                <HideEULAPage>true</HideEULAPage>
+                <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+            </OOBE>
+        </component>
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <UserAccounts>
+                <LocalAccounts>
+                    <LocalAccount wcm:action="add">
+                        <Name>Admin</Name>
+                        <Group>Administrators</Group>
+                        <Password>
+                            <Value>password</Value>
+                            <PlainText>true</PlainText>
+                        </Password>
+                    </LocalAccount>
+                    <LocalAccount wcm:action="add">
+                        <Name>User</Name>
+                        <Group>Users</Group>
+                        <Password>
+                            <Value>password</Value>
+                            <PlainText>true</PlainText>
+                        </Password>
+                    </LocalAccount>
+                </LocalAccounts>
+            </UserAccounts>
+            <AutoLogon></AutoLogon>
+            <OOBE>
+                <ProtectYourPC>3</ProtectYourPC>
+                <HideEULAPage>true</HideEULAPage>
+                <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+            </OOBE>
+        </component>
+    </settings>
+</unattend>
+```
+
+法三：在安装过程中设置
+
+安裝過程, 在連到無線網路階段, 請按下 "Shift+F10" 或者 "Shift+Fn+F10" , 並且輸入以下指令,就可以跳過網路連線,建立本機帳號並且使用win11囉
+
+    oobe\bypassnro
+
+若是有線網路已取得ip, 可以拔除網路線, 或是使用以下指令清除網路設定
+
+    ipconfig/release
