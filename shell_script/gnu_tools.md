@@ -5894,6 +5894,10 @@ bc - An arbitrary precision calculator language
     $ openssl rand -hex 20
     f231202787c01502287c420a8a05e960ec8f5129
 
+    # 每次都不一样
+    $ openssl passwd 1234
+    j5FLQkXqH3m1c
+
     # 14个ascii字符
     $ gpg --gen-random --armor 1 14
     RaJKEUBT89Tq9uZzvkI=
