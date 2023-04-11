@@ -608,7 +608,7 @@ BusyBox 包含了一些简单的工具，例如 ls、cat 和 echo 等等，还�
     <https://www.cnblogs.com/xiaowenji/archive/2011/03/12/1982309.html>
     <https://www.zhihu.com/question/26190694>
 
-### 商业闭源软件
+### TODO:商业闭源软件
 
 最好在应用商店安装，不要单独下载 apk 安装，权限的可控程度不如应用商店。注意在虚拟机内安装运行，比如三星手机的“安全文件夹”。
 

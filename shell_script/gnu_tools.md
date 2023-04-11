@@ -7382,12 +7382,14 @@ Gnome 主题乐园
             https://www.smplayer.info/
                 https://github.com/smplayer-dev/smplayer
 
-下载 youtube 用 mpv player 播放
+TODO:下载 youtube 用 mpv player 播放
 
         https://github.com/mpv-player/mpv/wiki/FAQ#user-content-Does_mpv_have_an_official_GUI
 
         youtube-dl https://github.com/ytdl-org/youtube-dl
                     分叉 yt-dlp https://github.com/yt-dlp/yt-dlp
+
+    youtube 分离视频和音频
 
     下载过程
 
