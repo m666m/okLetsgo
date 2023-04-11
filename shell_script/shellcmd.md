@@ -1008,7 +1008,11 @@ fi
 
     https://blog.csdn.net/mutou990/article/details/107724302
 
-`su` 是 Linux 内置的命令用于切换用户，`sudo` 命令是单独的命令，需要安装 sudo 软件包。
+因为 Linux、Unix 下安装的很多软件，都给自己建立专门的用户进行权限保护，所以为了执行该软件的某些操作，需要切换到有权限的用户去做，比如切换到数据库用户，以便使用数据库管理工具进行数据库维护；切换到 root 用户，修改操作系统配置。
+
+    `su` 是 Linux 内置的命令用于切换用户
+
+    `sudo` 命令是单独的命令，需要安装 sudo 软件包才能使用。
 
 引入 sudo 命令的目的是实现所谓的 “借用 root 用户的权限”，就是普通用户执行的进程改变 euid 为 0，从而成为特权进程。原理参见章节 [进程的用户权限 uid 和 euid](init_a_server think)。
 
@@ -1016,11 +1020,19 @@ fi
 
 如果不安装 sudo 软件包，除了用 su 命令切换到 root，就只能依赖可执行文件设置特殊权限位了，参见章节 [设定文件的特殊权限](init_a_server think)。一般这种情况都是关注安全性比较高的系统，普通使用为了方便还是安装 sudo 包比较好。
 
+小提示：
+
+    在输入密码、切换到非 bash 环境等字符输入状态可能单纯用 Backspace 退格键没效果。你可以同时按着 Ctrl+Backspace 退格键来删除或者按着 Ctrl+u 键，直接清除所有已输入的字符。
+
 sudo 和 su 常用法
 
-    以 sudo 用户执行命令，临时提权到 root 用户的权限来执行命令
+    以 sudo 执行命令，临时提权到 root 用户的权限来执行命令
 
         sudo apt update
+
+        临时切换到其它用户的权限来执行命令
+
+            sudo -H -u otheruser bash -c 'command'
 
     有 sudo 权限的普通用户切换到 root 用户
 
@@ -1035,12 +1047,6 @@ sudo 和 su 常用法
         [uu@your_server:~] $ sudo su
         [root@your_server:/home/uu] # su - git
         [git@your_server:~] $
-
-小提示：
-
-    在输入密码、切换到非 bash 环境等字符输入状态可能单纯用 Backspace 退格键没效果。你可以同时按着 Ctrl+Backspace 退格键来删除或者按着 Ctrl+u 键，直接清除所有已输入的字符。
-
-因为 Linux、Unix 下安装的很多软件，都给自己建立专门的用户进行权限保护，所以为了执行该软件的某些操作，需要切换到有权限的用户去做，比如切换到数据库用户，以便使用数据库管理工具进行数据库维护；切换到 root 用户，修改操作系统配置。
 
 su 命令是 switch user 切换用户的简写，普通用户切换到其它用户均需要校验密码。
 
