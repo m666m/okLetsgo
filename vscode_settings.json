@@ -317,6 +317,18 @@
         //"[ ]",
         //"[x]"
     ],
+    "todo-tree.general.tagGroups": {
+        "FIXME": [
+            "FIXME",
+            "FIXIT",
+            "FIX",
+            "BUG"
+        ],
+        "XXX": [
+            "XXX",
+            "HACK"
+        ]
+    },
     "todo-tree.general.statusBar": "tags",
     "gitlens.views.tags.branches.layout": "list",
     // vim airline 风格的状态栏变颜色
