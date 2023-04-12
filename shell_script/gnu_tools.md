@@ -6176,11 +6176,29 @@ peer-id-prefix=-TR2940-
 
 ```
 
-#### curl 支持 http/https 的下载
+#### curl 支持 http/https 等下载
 
-显示连接信息
+    https://www.ruanyifeng.com/blog/2019/09/curl-reference.html
+
+显示连接信息，一般用于调试的时候
 
     curl -vvv
+
+    可以调试 ssh 站点，也支持 telnet、ftp 等站点
+    $ curl -vvv 11.22.33.44:1234
+    * About to connect() to 11.22.33.44 port 1234 (#0)
+    *   Trying 11.22.33.44...
+    * Connected to 11.22.33.44 (11.22.33.44) port 1234 (#0)
+    > GET / HTTP/1.1
+    > User-Agent: curl/7.29.0
+    > Host: 11.22.33.44:1234
+    > Accept: */*
+    >
+    SSH-2.0-OpenSSH_7.4
+    Protocol mismatch.
+    * Recv failure: Connection reset by peer
+    * Closing connection 0
+    curl: (56) Recv failure: Connection reset by peer
 
 无参数默认只把获取的内容输出到终端的默认标准输出流
 
@@ -6190,7 +6208,7 @@ peer-id-prefix=-TR2940-
 
     curl -fsSL https://www.cloudflare.com/ips-v4
 
-    如果 https 签名信息错误，可以用 -k 忽略
+    如果对端服务器的 https 签名信息错误，可以用 -k 跳过 SSL 检测
 
 下载并保存为默认文件名，最后一个参数是大写的 O
 
