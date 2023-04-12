@@ -7427,7 +7427,15 @@ Gnome 主题乐园
 
     LibreOffice 是 GNU/Linux 用户中最流行的办公套件。它的用户界面和用户体验类似于微软 Office。
 
-    ONLYOFFICE 是一款与微软 Office 高度兼容的办公套件应用程序。
+    ONLYOFFICE 是一款与微软 Office 高度兼容的办公套件应用程序
+
+        https://www.onlyoffice.com/zh/download-desktop.aspx
+
+        ONLYOFFICE 还有一个重磅功能，那就是它的多人协作功能，比如服务器安装使用 Nextcloud，而 ONLYOFFICE 文档我们可以直接通过Docker拉取即可。参见章节 [自建云盘](rasp think)。
+
+    FreeOffice 包括 TextMaker（可替代 Word）、PlanMaker（可替代 Excel）以及 Presentations（可替代 PowerPoint）。
+
+        https://www.freeoffice.com/en/
 
 邮件
 
