@@ -1416,6 +1416,10 @@ Windows 搜索 “恢复驱动器”，或选择“控制面板”>“恢复”�
 
 ### Windows RE
 
+    https://learn.microsoft.com/zh-cn/windows-hardware/manufacture/desktop/windows-recovery-environment--windows-re--technical-reference?view=windows-11
+
+    替换掉了 Windows To Go https://learn.microsoft.com/zh-cn/windows/deployment/planning/windows-to-go-overview
+
 Windows RE(简称 WinRe)的全称为 Windows Recovery Environment，即 Windows 恢复环境。
 
 Windows RE实质上是提供了一些恢复工具的 Windows PE，预安装了「系统还原」、「命令提示符」、「系统重置」等CMD实用工具，以Winre.wim镜像文件的形式，储存于操作系统安装分区的「C:\Recovery\WindowsRE」中。
