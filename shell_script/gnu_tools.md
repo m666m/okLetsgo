@@ -7478,40 +7478,6 @@ Gnome 主题乐园
             https://www.smplayer.info/
                 https://github.com/smplayer-dev/smplayer
 
-TODO:下载 youtube 用 mpv player 播放
-
-        https://github.com/mpv-player/mpv/wiki/FAQ#user-content-Does_mpv_have_an_official_GUI
-
-        youtube-dl https://github.com/ytdl-org/youtube-dl
-                    分叉 yt-dlp https://github.com/yt-dlp/yt-dlp
-
-    youtube 分离视频和音频
-
-    下载过程
-
-        $ youtube-dl -F https://www.youtube.com/watch?v=SYM-RJwSGQ8
-        [info] Available formats for SYM-RJwSGQ8:
-        format code  extension  resolution note
-        ...
-        251          webm       audio only DASH audio  149k , opus @160k, 4.29MiB
-        135          mp4        854x480    480p 1159k , avc1.4d401e, 25fps, video only, 16.02MiB
-        247          webm       1280x720   720p 1372k , vp9, 25fps, video only, 20.12MiB
-        136          mp4        1280x720   720p 2318k , avc1.4d401f, 25fps, video only, 30.37MiB
-        248          webm       1920x1080  1080p 2402k , vp9, 25fps, video only, 35.54MiB
-        137          mp4        1920x1080  1080p 3770k , avc1.640028, 25fps, video only, 55.70MiB
-        22           mp4        1280x720   hd720 , avc1.64001F,  mp4a.40.2@192k (best)
-        ...
-
-        youtube-dl --proxy socks5://127.0.0.1:10808 -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio --merge-output-format mp4
-
-        for 1280x720:
-        $ mpv --ytdl-format 22 https://www.youtube.com/watch?v=SYM-RJwSGQ8
-
-        For mp4 1080p video (3770k) and webm audio (149k, opus @160k):
-        $ mpv --ytdl-format 137+251 https://www.youtube.com/watch?v=SYM-RJwSGQ8
-
-        简单省事直接安装  smplayer https://www.smplayer.info/zh/mpv
-
 ### Linux 桌面死机怎么办 --- reisub“登录控制台”
 
     https://blog.csdn.net/qq_39779233/article/details/114758689

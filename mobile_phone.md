@@ -608,25 +608,11 @@ BusyBox 包含了一些简单的工具，例如 ls、cat 和 echo 等等，还�
     <https://www.cnblogs.com/xiaowenji/archive/2011/03/12/1982309.html>
     <https://www.zhihu.com/question/26190694>
 
-### TODO:商业闭源软件
+## 使用商业闭源软件
 
-最好在应用商店安装，不要单独下载 apk 安装，权限的可控程度不如应用商店。注意在虚拟机内安装运行，比如三星手机的“安全文件夹”。
+最好在应用商店安装，不要单独下载 apk 文件安装，权限全放开了，可控程度不如在应用商店安装。注意在虚拟机内安装运行，比如三星手机的“安全文件夹”。
 
-行情查看
-
-    TradingView
-
-    OpenSea MetaMask CoinMarketCap
-
-    币安
-
-自媒体
-
-    YouTube Twitter Reddit Telegram Mastodon Spotify Instagram
-
-新闻聚合
-
-    Inoreader BuzzFeed
+如果你使用的软件不断提醒你升级，点击确认后，不通过应用商店而是在程序内部自行下载安装，注意安全，这时候已经是本地 apk 文件的方式安装了，绕过了软件商店。
 
 ## 安卓神器 Termux -- 运行在 Android 上的开源linux模拟器
 
