@@ -56,9 +56,11 @@ if [ -x /usr/bin/dircolors ]; then
     alias grepf='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
     alias trees='tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='pstree -p -s'
+    alias curls='curl -fsSL'
 
     # gpg 常用命令
     alias pkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
+    alias gpgvs='echo "[使用临时钥匙圈校验文件签名]" && gpgv --keyring'
 
     # git 常用命令
     alias gs='echo "git status:" && git status'
@@ -70,7 +72,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias glb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]" && git log --left-right --oneline'
     alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
     alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
-    alias gba='echo "[分支：全部分支及对应关系、最近提交及注释]" && git branch -avv'
+    alias gba='echo "[分支：全部分支及跟踪关系、最近提交及注释]" && git branch -avv'
     alias gro='echo "[远程信息]" && git remote show origin'
     alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
 

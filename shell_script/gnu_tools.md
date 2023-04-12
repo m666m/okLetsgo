@@ -3041,9 +3041,11 @@ if [ -x /usr/bin/dircolors ]; then
     alias grepf='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
     alias trees='tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='pstree -p -s'
+    alias curls='curl -fsSL'
 
     # gpg 常用命令
     alias pkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
+    alias gpgvs='echo "[使用临时钥匙圈校验文件签名]" && gpgv --keyring'
 
     # git 常用命令
     alias gs='echo "git status:" && git status'
@@ -3055,7 +3057,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias glb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]" && git log --left-right --oneline'
     alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
     alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
-    alias gba='echo "[分支：全部分支带最近提交及注释]" && git branch -avv'
+    alias gba='echo "[分支：全部分支及跟踪关系、最近提交及注释]" && git branch -avv'
     alias gro='echo "[远程信息]" && git remote show origin'
     alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
 
@@ -5323,7 +5325,11 @@ reptyr
 
     find ./ -name 2.sql
 
-组合查找文件内容
+
+    对当前目录下找到的所有文件，生成校验码
+    find . -type f -exec sha256sum \{\} \; > checksum-file
+
+组合执行 grep 命令查找文件内容：
 
 显示内容，但是带目录了
 
@@ -5359,7 +5365,7 @@ ripgrep 替代 grep，解决了不带文件名挂住的问题，rg 会默认查�
 从当前目录及子目录列出所有目录名和文件名，排除目录 .git 和 __pycache__，逐个文件的查找文件内容包含字符串 “logg” 的行，列出文件名、行号、内容
 
     # 查找当前目录及子目录所有文件，列出包含指定内容的的行，如 `grepf logg`
-    # find 没法加 -type f，否则没法过滤目录，在后面用 -d 让 grep 跳过目录即可
+    # find 没法加 -type f，否则没法过滤指定目录，在后面用 -d 让 grep 跳过目录即可
     find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in logg
 
 ### 字符增删改 tr cut awk sed
@@ -5507,7 +5513,9 @@ hhighlighter 给终端输出的自定义字符串加颜色，非常适合监控�
     # \b 是perl正则表达式的单词限定符 https://perldoc.perl.org/perlre
     cat /var/log/kern.log.1 |ackg -i 'Fail|Error|\bNot\b|\bNo\b|Invalid' '\bOk\b|Success|Good|Done|Finish' 'Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart'
 
-### 比较两个目录的文件差异
+### 比较文件差异 diff
+
+比较两个目录
 
 方法一：使用 diff
 
@@ -5558,7 +5566,7 @@ hhighlighter 给终端输出的自定义字符串加颜色，非常适合监控�
 
 效率很高，输出也简洁。
 
-#### 文件补丁
+#### 文件补丁 patch
 
 基于两个文件的差异生成补丁
 
@@ -5660,19 +5668,24 @@ dd 命令是基于块（block）的复制，用途很多。
 
     tar [选项] [选项参数] [生成文件名] [源文件1 源文件2 ...]
 
-tar 命令的选项和参数有几种写法，注意区别
+tar 命令的选项及参数有几种写法，注意区别
 
-    传统写法：没有 -，多个单字母选项合起来写在第一个参数位
+    传统写法：没有 -，多个单字母选项合起来写在第一个选项位
 
         tar vcf a.tar /tmp
 
     UNIX 写法：用 -选项1 选项1自己的参数 -选项2 选项2自己的参数
 
-        tar -v -c -f a.tar /tmp
+        tar -f a.tar -c -v /tmp
 
-        tar -vcf a.tar /tmp  # 没有参数的选项合写
+        # 没有参数的选项可以合写
+        tar -f a.tar -vc /tmp
 
-        tar -vkp -f a.tar /tmp  # f也可以合写，但是要在最后一个，以便后面跟参数
+            # 选项 f 也可以合写，但是要放在最后，以便后面紧跟自己的参数，然后才是整个命令的参数
+            tar -vcf a.tar /tmp
+
+            # 这种写法常见，如 def.sh 是 o 的参数，连写了，就要紧跟
+            curl -fsSLo def.sh https://github.com/.../abc.sh
 
     GUN 写法：用 -- 或 -，连写用一个 -
 
@@ -5743,6 +5756,9 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
         # 将当前目录下的files.tar.gz进行解密解压拆包
         openssl enc -aes-256-cbc -pbkdf2 -d -in files.tar.gz.bin |tar xzf -
 
+    # 不覆盖文件，提取文件权限信息
+    tar -vkpf a.tar /tmp
+
 .gz 文件
 
     # 压缩，生成同名文件，后缀.gz，原文件默认删除，除非使用 -k 参数保留
@@ -5797,7 +5813,7 @@ ln 命令默认生成硬链接，但是我们通常使用软连接
     # 如果最后的目录给出的是一个文件名，则就是在当前目录下建立软链接文件
     ln -s /tmp/cmd_1 /tmp/cmd_2 /usr/bin/
 
-### 文件完整性校验 sha256
+### 文件完整性校验 sha256sum
 
 Linux 下，每个算法都是单独的程序：cksum md5sum sha1sum sha256sum sha512sum
 
@@ -5823,7 +5839,7 @@ Linux 下，每个算法都是单独的程序：cksum md5sum sha1sum sha256sum s
     SHA256 (colortest.sh) = b855d0ce40d7b578c41c2f199692570e627fb4501b3098de0c8e507f133c08c0
     SHA256 (bing.jpg) = 90f9a057885b0d72ecca5d6708ca3e9c69419eb6dd46bc5071a4e17e31ed6178
 
-    # 对当前目录下找到的所有文件，生成校验码
+    对当前目录下找到的所有文件，生成校验码
     find . -type f -exec sha256sum \{\} \; > checksum-file
 
 校验
@@ -6003,14 +6019,18 @@ bc - An arbitrary precision calculator language
 
         https://github.com/XIU2/TrackersListCollection
 
-Transmission 是一种 BitTorrent 客户端，特点是一个跨平台的后端和其上的简洁的用户界面。
+#### Transmission
+
+是一种 BitTorrent 客户端，特点是一个跨平台的后端和其上的简洁的用户界面。
 
     https://transmissionbt.com/
         https://github.com/transmission/transmission
 
     简单点直接 docker https://registry.hub.docker.com/r/linuxserver/transmission/
 
-Aria2 不更新了
+#### Aria2 不更新了
+
+支持 http、bt 等多种格式。
 
     Aria2 完美配置 https://github.com/P3TERX/aria2.conf
 
@@ -6155,6 +6175,56 @@ peer-agent=Transmission/2.94
 peer-id-prefix=-TR2940-
 
 ```
+
+#### curl 支持 http/https 的下载
+
+显示连接信息
+
+    curl -vvv
+
+无参数默认只把获取的内容输出到终端的默认标准输出流
+
+    curl https://www.cloudflare.com/ips-v4
+
+一般在使用中，至少要加参数：跟踪重定向，不显示进度条，静默错误信息但要报错失败
+
+    curl -fsSL https://www.cloudflare.com/ips-v4
+
+    如果 https 签名信息错误，可以用 -k 忽略
+
+下载并保存为默认文件名，最后一个参数是大写的 O
+
+    curl -fsSLO https://www.cloudflare.com/ips-v4
+
+下载并保存为指定文件名，最后一个参数是小写的 o
+
+    curl -fsSLo cfipv4 https://www.cloudflare.com/ips-v4
+
+下载并保存为文件名，如果指定路径不存在则创建
+
+    curl -fsSLo ~/.vim/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+直接上传，用 “-” 从标准输入流读取，如果换成 “.” 还可以显示服务器的输出
+
+    gpg --export your_address@example.net |curl -T - https://keys.openpgp.org
+
+之前流行的 wget 功能类似，它默认是下载为文件，而不是输出到标准输出流
+
+    $ wget https://www.cloudflare.com/ips-v4
+    --2023-04-12 15:06:35--  https://www.cloudflare.com/ips-v4
+    Resolving www.cloudflare.com (www.cloudflare.com)... 2606:4700::6810:7c60, 2606:4700::6810:7b60, 104.16.123.96, ...
+    Connecting to www.cloudflare.com (www.cloudflare.com)|2606:4700::6810:7c60|:443... connected.
+    HTTP request sent, awaiting response... 200 OK
+    Length: 230 [text/plain]
+    Saving to: ‘ips-v4’
+
+    100%[======================================>] 230         --.-K/s   in 0s
+
+    2023-04-12 15:06:35 (24.9 MB/s) - ‘ips-v4’ saved [230/230]
+
+    # 静默下载，输出到标准输出流
+    wget -q -O - http://deb.opera.com/archive.key |gpg --import
 
 ### ZModem 协议的文件传输协议工具 rs rz
 
