@@ -7218,12 +7218,6 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     update-alternatives --config vi
 
-### 远程桌面 rdesktop
-
-    rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
-
-按 `ctrl + alt +回车` 退出或进入全屏模式。
-
 ## Linux 桌面环境
 
 ### 使用 gnome 扩展
@@ -7477,6 +7471,12 @@ Gnome 主题乐园
         smplayer 使用 以上两者做作为播放引擎的 GUI 外壳程序，也支持播放 youtube
             https://www.smplayer.info/
                 https://github.com/smplayer-dev/smplayer
+
+### 远程桌面 rdesktop
+
+    rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
+
+按 `ctrl + alt +回车` 退出或进入全屏模式。
 
 ### Linux 桌面死机怎么办 --- reisub“登录控制台”
 
