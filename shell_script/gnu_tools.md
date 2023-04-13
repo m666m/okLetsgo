@@ -3089,7 +3089,7 @@ source /usr/local/bin/ackg.sh
 ##########################################################
 # 手动配置插件
 
-alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid" "\bOk\b|Success|Good|Done|Finish" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
+alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
 
 # 执行 cd 命令后自动执行下 ls 列出当前文件
 chpwd() ls -A
@@ -5511,7 +5511,7 @@ hhighlighter 给终端输出的自定义字符串加颜色，非常适合监控�
     ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
 
     # \b 是perl正则表达式的单词限定符 https://perldoc.perl.org/perlre
-    cat /var/log/kern.log.1 |ackg -i 'Fail|Error|\bNot\b|\bNo\b|Invalid' '\bOk\b|Success|Good|Done|Finish' 'Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart'
+    cat /var/log/kern.log.1 |ackg -i 'Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled' '\bOk\b|Success|Good|Done|Finish|Enabled' 'Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart'
 
 ### 比较文件差异 diff
 
@@ -5634,6 +5634,18 @@ dd 命令是基于块（block）的复制，用途很多。
 拷贝光盘内容到指定文件夹，并保存为 cd.iso 文件
 
     dd if=/dev/cdrom(hdc) of=/root/cd.iso
+
+注：选择合适的 bs 参数需要考虑多个因素，包括源设备、目标设备、数据块大小、文件系统等。下面是一些参考建议：
+
+    对于较小的文件，可以选择较小的块大小，如 512 字节或 1KB，这样可以提高复制速度。对于较大的文件，可以选择较大的块大小，如 4KB 或 8KB，这样可以减少 I/O 操作的次数，提高复制效率。
+
+    对于使用 USB 设备进行复制的情况，可以选择较小的块大小，因为 USB 设备通常具有较慢的传输速度。
+
+    对于使用网络设备进行复制的情况，可以选择较大的块大小，以利用网络带宽。
+
+    需要注意的是，在选择 bs 参数时，需要同时考虑源设备和目标设备的块大小。
+
+    如果源设备和目标设备的块大小不同，可以选择一个介于两者之间的块大小，以达到最佳效果。
 
 ### 快速清理文件和快速建立文件
 
@@ -6772,7 +6784,7 @@ rsync 默许服务端口为 873。
 
 #### 竞品
 
-restic：使用 ssh 密钥方式连接备份服务器，在存储池中加密你的快照
+TODO:restic：使用 ssh 密钥方式连接备份服务器，在存储池中加密你的快照
 
     https://restic.net/
         https://github.com/restic/restic
@@ -8177,7 +8189,10 @@ Target 与 传统 RunLevel 的对应关系如下
 
 （3）配置文件的位置，以前init进程的配置文件是/etc/inittab，各种服务的配置文件存放在/etc/sysconfig目录。现在的配置文件主要存放在/lib/systemd目录，在/etc/systemd目录里面的修改可以覆盖原始设置。
 
-#### 设置 systemd 开机自启动脚本
+##### 设置 systemd 开机自启动脚本
+
+    https://zhuanlan.zhihu.com/p/620849909
+    https://blog.csdn.net/bandaoyu/article/details/124358513
 
 示例一：
 
@@ -8203,6 +8218,8 @@ Target 与 传统 RunLevel 的对应关系如下
 
 示例二：
 
+    https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
+
 自制一个 systemd 服务，使用systemd的格式要求。
 
 创建 /etc/systemd/system/tproxyrule.service 文件
@@ -8225,12 +8242,27 @@ Target 与 传统 RunLevel 的对应关系如下
     # ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/nft -f /etc/nftables/rules.v4
     # ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0/0 dev lo table 100 ; /sbin/nft flush ruleset
 
-    [Install]
+    [Install] # 开机自启动必须要有这个字段
     WantedBy=multi-user.target
 
-执行下面的命令使 tproxyrule.service 可以开机自动运行
+执行下面的命令设置 tproxyrule.service 可以开机自动运行
 
+    systemctl daemon-reload
+
+    systemctl start  tproxyrule
     systemctl enable tproxyrule
+
+验证
+
+    systemctl list-unit-files |grep tproxy
+
+原理
+
+    TODO:顺序是不是反了：systemd 在开机后执行的是 /etc/systemd/system/ 目录下的启动脚本，而我们安装的服务的启动脚本文件放在 /usr/lib/systemd/system/ 下。
+
+    需要通过手工执行 `systemctl enable xxx` 命令，将 /usr/lib/systemd/system/ 目录下的服务启动脚本挂载到 /etc/systemd/system/ 目录下，实现开机自动运行。
+
+    一般都是挂载到 /etc/systemd/system/multi-user.target.wants/ 目录下，该目录表示启动了 multi-user.target 之后（即系统启动且运行级别为 3，为系统的默认启动 target）这个目录下的文件都会跟着启动。
 
 ## 定时任务 crontab
 

@@ -1778,6 +1778,8 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
 ## 配置 vs code
 
+    从源码构建 vscode https://cloud.tencent.com/developer/article/1588399
+
 ### vscode 插件
 
 插件的安装位置为 C:\Users\你的用户名\.vscode\extensions
@@ -1844,11 +1846,88 @@ sqlite
 
     ms-vscode-remote.vscode-remote-extensionpack
 
+远程开发最大的好处是你不需要在本地计算机保留代码了，省去每次在本地用 git 提交并推送远程仓库，然后 ssh 连接到远程开发机，再用 git 拉取同步代码，然后才能调试运行。当然了，开发机上的代码做了修改也要推送远程仓库的。
+
+Visual Studio Code Remote Development 允许您连接使用如下方式到远程服务器
+
+一、容器 container： vs code 直接编辑容器并使用
+
+二、连接到 Windows Linux 子系统 （WSL）：直接打开 wsl 环境下的文件夹
+
+三、ssh 连接到远程计算机：vs code 直接打开远程开发机上的文件夹进行编辑和调试运行
+
+首次连接到远程后需要等一下，vs code 会自动在远程服务器上安装 vs code server（在~/.vscode-server 目录下），此时打开的终端也是连接到远程后的tty了。
+
+需要在服务器上也安装扩展才能使用，点击 vs code 的侧栏“扩展”按钮，会看到你安装过的那些扩展都有了个提示 “Install in SSH：XXX”，酌情选择后点击安装即可。
+
+实质上是利用 ssh 端口转发在本地查看远程运行的 vs code server 的内容。
+
 打开远程ssh文件夹后，各插件不可用？
 
     删除服务器上的 ~/.vscode-server 目录，重新安装插件
     Extension not working on remote SSH?  Remove directory ~/.vscode-server
     https://github.com/microsoft/vscode-remote-release/issues/1443
+
+四、远程隧道：微软提供中继服务的 SSH 端口转发，这样ssh连接内网计算机不需要有外网 ip 的 ssh中转服务器做反向端口转发了。
+
+    1、远程开发机下载安装 code cli，运行 `code tunnel --accept-server-license-terms --disable-telemetry`，根据提示登陆 github 网址，输入 user code。这样就在你的 github 账户中注册了这台开发机。
+
+    2、客户端或使用 https://vscode.dev/ 都可以，登录你的 gihub 账户或微软账户。点击 vscode 的用户账户图标，在弹出菜单中选择你的远程隧道，这就实现了从任何能连公网的地方连接到开发机上进行开发。
+
+利用远程隧道，你可以实现一次登录，处处运行，996 越玩越开心：
+
+    你可以无缝的从一台设备切换到另一台设备，代码保存在内网的开发机，你开会前在台式机上写代码，开会时拿起笔记本继续写刚才的代码，下班可以直接关掉公司的电脑，在回家路上用手机登陆网页版 https://vscode.dev/ 继续写代码，回到家打开家里的电脑还可以继续写代码。。。开发机上的代码环境，只要你打开 vs code 登陆 github 账户即可选择恢复。
+
+服务端配置远程隧道开机自启(需要管理员权限)
+
+    没有 systemd 的计算机执行下述命令使得code以用户服务守护运行
+
+        code tunnel service install --accept-server-license-terms --disable-telemetry
+
+    使用systemctl管理的linux服务器上，服务将可以使用systemctl进行管理，
+
+        systemctl start code-tunnel
+        systemctl enable code-tunnel
+
+    下列示例以 ubuntu 为例，手动创建 systemctl 配置文件，并以普通用户（但可以使用sudo）启动tunnel 。
+
+        https://www.cnblogs.com/pdysb/p/17067042.html
+
+    配置自启动文件，自建 /etc/systemd/system/vscode-tunnel.service 文件，填写以下配置
+    TODO:路径好像写错了，见 [设置 systemd 开机自启动脚本](gnu_tools.md)。
+
+        [Unit]
+        Description=Visual Studio Code Tunneli2
+        After=network.target
+        StartLimitIntervalSec=0
+
+        [Service]
+        Type=simple
+        Restart=always
+        User={{your-user-name}}
+        RestartSec=10
+        ExecStart= {{path-to-your-code}} "--verbose" "--cli-data-dir" "{{path-to-your-root-dir}}/.vscode-cli" "tunnel" "service" "internal-run"
+
+        [Install]
+        WantedBy=multi-user.target
+
+    ⚠ 注意
+        your-user-name 是指你希望tunnel以什么用户身份运行
+
+        path-to-your-code 是指实例中vscode cli 的位置，即示例中解压的位置。
+
+        path-to-your-root-dir 是指 cli 配置文件所在目录，一般是第一次运行示例时候自动产生的，如 ~/.vscode-cli 目录。
+
+    验证：
+
+        code --verbose --cli-data-dir ~/.vscode-cli tunnel service internal-run
+
+    设置开机自启动
+
+        systemctl daemon-reload
+        systemctl restart vscode-tunnel
+
+        systemctl staus vscode-tunnel  # 看看有无错误
 
 #### Python自动添加函数头说明
 
