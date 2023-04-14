@@ -50,7 +50,10 @@
     // 在线编辑 https://tmtheme-editor.herokuapp.com/#!/editor/theme/Monokai
     "workbench.colorCustomizations": {
         "[Solarized Light]": {
-            "editor.foreground": "#2c353f"
+            "editor.foreground": "#2c353f",
+            // 双击高亮和同类高亮颜色无区分，非常不方便
+            "editor.selectionBackground": "#ddcaadc9",
+            "editor.selectionHighlightBackground": "#c2b6a3c9"
         },
         "[Nord]": {
             "activityBar.foreground": "#45f4fa",
@@ -82,9 +85,9 @@
         "[Nord Wave]": {
             "activityBar.foreground": "#93ceff",
             // 文字亮度低点
-            "editor.foreground": "#a1b7be",
-            "sideBar.foreground": "#a1b7be",
-            "terminal.foreground": "#a1b7be",
+            "editor.foreground": "#95a3a8",
+            "sideBar.foreground": "#8c989c",
+            "terminal.foreground": "#a6b9be",
             // 双击高亮和同类高亮颜色无区分，非常不方便
             "editor.selectionBackground": "#08537eb4",
             "editor.selectionHighlightBackground": "#1474acad",
