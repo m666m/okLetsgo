@@ -1476,6 +1476,36 @@ Windows内存诊断
 
 强烈建议**在虚拟机里使用你的日常软件**，参见章节 [在虚拟机里使用你的日常软件]。
 
+### 经常整理开机启动项目
+
+开始菜单的启动项
+
+运行（win + r）
+
+    shell:startup
+
+或资源管理器打开如下位置
+
+系统级
+
+    C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+
+用户级
+
+    C:\Users\xxx\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+注册表启动项位置（还有很多略）
+
+    HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+
+计划任务
+
+    taskschd.msc
+
+在这里有 Interl 和 Office 安装后搞的一些用户数据遥测上传，把能看懂的都选择 “禁用”。
+
+如果想看到最全的统计，下载微软官方的 SystemInternals 工具包，运行 `Autoruns.exe`。
+
 ### 信息盗窃已经渗透到了驱动程序、操作系统根证书、浏览器证书级别
 
 NOTE：如果有浏览器下载的不明来源程序，虚机里都不要用，防止它偷 qq 密码等，这种程序要放在 Windows 沙盒里运行。
@@ -1647,47 +1677,17 @@ Windows 10的1607版本之后，内核模式代码似乎使用了独立的信任
 
     访问网址 https://www.libinx.com/，提示不安全的数字证书就说明是假的 “Trust Asia” 证书
 
-### 整理开机启动项目
-
-开始菜单的启动项
-
-运行（win + r）
-
-    shell:startup
-
-或资源管理器打开如下位置
-
-系统级
-
-    C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
-
-用户级
-
-    C:\Users\xxx\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
-
-注册表启动项位置（还有很多略）
-
-    HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
-
-计划任务
-
-    taskschd.msc
-
-在这里有 Interl 和 Office 安装后搞的一些用户数据遥测上传，把能看懂的都选择 “禁用”。
-
-如果想看到最全的统计，下载微软官方的 SystemInternals 工具包，运行 `Autoruns.exe`。
-
-### 1. 浏览网页时防止网页偷偷改浏览器主页等坏行为
+### 浏览网页时防止网页偷偷改浏览器主页等坏行为
 
 在 edge 浏览器，点击菜单，选择“应用程序防护窗口”，这样新开的一个 edge 窗口，是在虚拟机进程启动的，感觉是容器化处理，任何网页操作都不会侵入到正常使用的 Windows 中。
 
 在 Windows 安全中心里可以设置，能否从这里复制粘贴内容到正常使用的 Windows 中等各种功能。
 
-### 2. 用沙盒运行小工具等相对不靠谱的程序
-
-沙盒属于容器化技术，底层共用你当前操作系统的静态文件，系统资源的共享理解为进程争用即可，支持硬件直通
+### 用沙盒运行小工具等相对不靠谱的程序
 
     https://learn.microsoft.com/zh-cn/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview
+
+沙盒属于容器化技术，底层共用你当前操作系统的静态文件，系统资源的共享理解为进程争用即可，支持硬件直通
 
 开始菜单，选择“Windows sandbox”程序，将新开一个虚拟的 Windows 窗口，把你觉得危险的程序复制粘贴到这个虚拟的 Windows 系统里运行，格式化这里的硬盘都没关系，在这个系统里可以正常上网。
 
@@ -1722,57 +1722,31 @@ tools.wsb 示例：
 
 其中，MappedFolder 可以有多个，默认映射到桌面，也可以单独指定。关于 Windows 沙盒的详细介绍，参见 <https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/Windows-sandbox/Windows-sandbox-overview>
 
-### 3. 开源的轻量化沙盒工具
+开源的轻量化沙盒工具
 
     https://github.com/sandboxie-plus/Sandboxie
 
 QQ、微信、钉钉、360啥的很多cn软件很多都添加到系统级驱动，在这种容器化沙盒里防不住，老老实实的用虚拟机吧。
 
-### 4. Windows 应用(APP)
+微软官方推荐的一些方便你使用的小工具
 
-1、Windows 桌面应用程序（desktop applications）
+    https://github.com/microsoft/Windows-Sandbox-Utilities
 
-从 Windows 95 以来这几十年发展的 *.exe，对操作系统底层调用 Win32 API。后来引入的 VC/MFC 等框架，底层都依赖 Win32 API。通过 Win32 API，应用程序具备对 Windows 和硬件的直接访问权限，此应用类型是需要最高级别性能和直接访问系统硬件的应用程序的理想选择。这种程序对操作系统各组件的访问，在区分用户这个级别是可以用 system 权限超越的，基本不受控。
+图形化编辑配置文件
 
-2、WPF/.Net/Windows Form 等新的框架
+    https://github.com/damienvanrobaeys/Windows_Sandbox_Editor
 
-各种新的 API 框架，意图都是统一不同的操作系统的调用接口，应用程序只需要调用同一套接口即可直接运行。但流行程度都不如 Win32 API。这些框架本身对安全权限的限制也不多，软件想流氓起来，运行时环境也控制不了。后来这些框架打包统一起来，叫托管运行时环境(WinRT)，使用这种环境的程序成托管应用。
+添加到右键
 
-3、通用 Windows 平台 (UWP) 应用
+    https://github.com/damienvanrobaeys/Run-in-Sandbox
 
-类似手机的方式，在 Windows 商店下载的应用(APP)，使用 UWP 组件的方式，在操作系统的应用容器内部运行，即沙盒运行容器化。
+    先下载
 
-UWP 核心 API 在所有 Windows 设备上是相同的，这时微软的目标是统一手机和PC机的操作界面。
+        git clone --depth=1 https://github.com/damienvanrobaeys/Run-in-Sandbox.git
 
-UWP 应用在其清单中声明所需的直通设备，如访问麦克风、位置、网络摄像头、USB 设备、文件等，在应用被授予能力前，由用户确认并授权该访问。
+    然后用管理员权限运行 Add_Structure.ps1
 
-UWP 应用可以是本机应用，也可以是托管应用：
-
-    使用 C++/WinRT 编写的 UWP 应用可以访问属于 UWP 的 Win32 API，所有 Windows 设备都实现这些 Win32 API https://docs.microsoft.com/zh-CN/windows/uwp/get-started/universal-application-platform-guide
-
-    托管应用就是使用 WPF/.Net/Windows Form 框架的程序。
-
-4、合订本 - Windows应用程序(Widnows App)
-
-<https://docs.microsoft.com/zh-cn/windows/apps/get-started/?tabs=cpp-win32#other-app-types>
-
-Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这次好像是想搞个大一统的开发平台：
-
-    原来的 Win32 API 升级成 WinRT API，对应的称呼就是变成了应用（APP）；
-
-    原来的 wpf、.net、uwp 也都被大一统了 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/>；
-
-    UWP 也要迁移到 Widnows App，理论上是容器化运行 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/desktop-to-uwp-extend>；
-
-    Android 应用现在借助微软的安卓虚拟机也可以在 Windows 11 上容器化运行，应该是类似 WSL 2 的思路，在 Windows 桌面可以使用其它操作系统的图形界面程序，估计是像 ConPty + WSLg 那样加了中间转换层，参见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]。
-
-开发平台打包统一了，能再卖一波 Visual Studio，但是各类应用还是各搞各的，桌面应用的通用化没啥指望，后续看谁能流行起来再说吧。
-
-总之，Windows 依赖在操作系统这个层面对应用程序的权限进行控制，一直做不到。目前最好的办法，只能是把操作系统包起来运行的虚拟机方式，才能完全彻底的隔离流氓软件对用户信息的侵害。
-
-也就是说，在你的 Windows 操作系统安装完毕之后，基本的用户信息都具备了，可信赖的大公司的软件都安装了，其他zh软件，统统安装到一个虚拟机里使用，不要安装到实机里。至于是使用 Windows Sandbox 沙盒还是 hyper-v 虚机，酌情决定。
-
-### TODO:RemoteApp 隔离国内 Windows 毒瘤应用运行方案
+#### RemoteApp 隔离国内 Windows 毒瘤应用运行方案
 
     https://bbs.letitfly.me/d/1199
 
@@ -1823,6 +1797,50 @@ stm322022年8月7日
     游戏类 因机能有限只测试了 galgame 游戏使用正常
 
     部分软件无法打开 -----> 腾讯会议
+
+### Windows 应用(APP)
+
+1、Windows 桌面应用程序（desktop applications）
+
+从 Windows 95 以来这几十年发展的 *.exe，对操作系统底层调用 Win32 API。后来引入的 VC/MFC 等框架，底层都依赖 Win32 API。通过 Win32 API，应用程序具备对 Windows 和硬件的直接访问权限，此应用类型是需要最高级别性能和直接访问系统硬件的应用程序的理想选择。这种程序对操作系统各组件的访问，在区分用户这个级别是可以用 system 权限超越的，基本不受控。
+
+2、WPF/.Net/Windows Form 等新的框架
+
+各种新的 API 框架，意图都是统一不同的操作系统的调用接口，应用程序只需要调用同一套接口即可直接运行。但流行程度都不如 Win32 API。这些框架本身对安全权限的限制也不多，软件想流氓起来，运行时环境也控制不了。后来这些框架打包统一起来，叫托管运行时环境(WinRT)，使用这种环境的程序成托管应用。
+
+3、通用 Windows 平台 (UWP) 应用
+
+类似手机的方式，在 Windows 商店下载的应用(APP)，使用 UWP 组件的方式，在操作系统的应用容器内部运行，即沙盒运行容器化。
+
+UWP 核心 API 在所有 Windows 设备上是相同的，这时微软的目标是统一手机和PC机的操作界面。
+
+UWP 应用在其清单中声明所需的直通设备，如访问麦克风、位置、网络摄像头、USB 设备、文件等，在应用被授予能力前，由用户确认并授权该访问。
+
+UWP 应用可以是本机应用，也可以是托管应用：
+
+    使用 C++/WinRT 编写的 UWP 应用可以访问属于 UWP 的 Win32 API，所有 Windows 设备都实现这些 Win32 API https://docs.microsoft.com/zh-CN/windows/uwp/get-started/universal-application-platform-guide
+
+    托管应用就是使用 WPF/.Net/Windows Form 框架的程序。
+
+4、合订本 - Windows应用程序(Widnows App)
+
+<https://docs.microsoft.com/zh-cn/windows/apps/get-started/?tabs=cpp-win32#other-app-types>
+
+Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这次好像是想搞个大一统的开发平台：
+
+    原来的 Win32 API 升级成 WinRT API，对应的称呼就是变成了应用（APP）；
+
+    原来的 wpf、.net、uwp 也都被大一统了 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/>；
+
+    UWP 也要迁移到 Widnows App，理论上是容器化运行 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/desktop-to-uwp-extend>；
+
+    Android 应用现在借助微软的安卓虚拟机也可以在 Windows 11 上容器化运行，应该是类似 WSL 2 的思路，在 Windows 桌面可以使用其它操作系统的图形界面程序，估计是像 ConPty + WSLg 那样加了中间转换层，参见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]。
+
+开发平台打包统一了，能再卖一波 Visual Studio，但是各类应用还是各搞各的，桌面应用的通用化没啥指望，后续看谁能流行起来再说吧。
+
+总之，Windows 依赖在操作系统这个层面对应用程序的权限进行控制，一直做不到。目前最好的办法，只能是把操作系统包起来运行的虚拟机方式，才能完全彻底的隔离流氓软件对用户信息的侵害。
+
+也就是说，在你的 Windows 操作系统安装完毕之后，基本的用户信息都具备了，可信赖的大公司的软件都安装了，其他zh软件，统统安装到一个虚拟机里使用，不要安装到实机里。至于是使用 Windows Sandbox 沙盒还是 hyper-v 虚机，酌情决定。
 
 ### Windows 10 S 模式
 
