@@ -56,6 +56,12 @@ google 自称安卓 app 都是在 java 沙箱运行，但是留足了系统接�
 
 安卓操作系统是开源的，很多手机厂商使用的安装系统都是自己深度修改了安卓的权限控制，用户怎么知道？ 人家卖广告数据赚钱的，都是走后台。
 
+2023年4月才被发现，“拼多多”组织了100多人的开发团队，专门研发利用安卓漏洞获取系统权限，在你的手机里弹窗、发消息。最初只针对农村乡镇，无人发现。
+
+    https://www.zhihu.com/question/590996457/answer/2957126967
+
+    https://github.com/davinci1010/pinduoduo_backdoor
+
 ### 某些山寨机，深度修改安卓系统的权限申请控制
 
 有些权限比如读取应用列表等，根本不会在用户界面给出提示，摆明了给某些特殊 app 比如广告程序调用，详见下面章节[验证方法] 的 java 代码。
@@ -286,7 +292,7 @@ sim卡的安全性是由私钥只可写入不可读出来保证的，在实体si
 
     暂未找到合适的
 
-## 全开源自由软件的手机平台
+### 全开源自由软件的手机平台
 
     https://bbs.letitfly.me/d/1058
 
@@ -302,9 +308,24 @@ Android 自己就不怎么干净，哪怕是开放源代码的 Android Open Sour
 
 开源的安卓操作系统替代品，你得自己刷机
 
-    lineageos 缺点是 Google 服务几乎全都没法用了 https://lineageos.org/
+        https://sspai.com/post/43338
 
-        microg 尽力在替换 Google专有核心库和应用程序的开源实现 https://microg.org/
+    LineageOS 缺点是 Google 服务几乎全都没法用了 https://lineageos.org/
+
+
+        https://forum.xda-developers.com/c/android-development-and-hacking.564/LineageOS
+
+        国内有个玩家论坛 https://www.lineageos.org.cn/
+
+        基于LineageOS
+            https://resurrectionremix.com/
+            https://aicp-rom.com/
+
+    OmniROM  基于AOSP的第三方
+        https://omnirom.org/
+
+    microg 尽力在替换 Google专有核心库和应用程序的开源实现
+        https://microg.org/
 
 硬件上可以关闭 Modem，有 coreboot 安全启动的 Linux 手机
 
@@ -329,12 +350,6 @@ Android 自己就不怎么干净，哪怕是开放源代码的 Android Open Sour
 魔改电脑和手机，有些通过了Qubes认证
 
     https://www.nitrokey.com/
-
-## 软件安全解决方案
-
-Guardian Project
-
-    https://guardianproject.info/
 
 ## 虚拟化解决方案
 
@@ -371,9 +386,11 @@ Guardian Project
 
 可以信赖的裸机是：如果 google 的安卓系统是照顾到用户个人权利，它进行权限控制是可信的；三星手机的订制版安卓系统是老老实实按照 google 的安卓系统要求开发实现的，并没有把权限控制等功能变成用户无感知，那么三星手机的安卓系统也是可信的，在此基础上的三星“安全文件夹”进行的权限控制，也是可信的。在“安全文件夹”内部运行的程序，都受到“安全文件夹”权限控制的管理，哪怕它绕过安全权限的限制，读取到的也是虚拟机本体的裸机状态，不会读取到实机的应用和数据。
 
-### 安卓虚拟机
+### 安卓虚拟机 Shelter
 
-    <https://www.jianshu.com/p/84127032d15a> 这个提到如何虚拟运行安卓 app，并检查它到底使用了啥权限
+如何虚拟运行安卓 app，并检查它到底使用了啥权限
+
+    https://www.jianshu.com/p/84127032d15a
         <https://github.com/android-hacker/VirtualXposed>
         <https://github.com/sgl890226/HookLoginDemo>
 
@@ -487,18 +504,22 @@ private void getPackageList(Context ctx) {
 
 ## 安卓的开源软件商店F-Droid
 
+    优先在 Fdoriod 软件仓库安装开源版的手机应用软件
+
 F-Droid 是一个 Android 应用程序的软件资源库（或应用商店）；其功能类似于 Google Play 商店，但只包含自由及开放源代码软件，即所谓免费开源（FOSS）。应用可从 F-Droid 网站或直接从 F-Droid 客户端应用浏览及安装。
 
     https://f-droid.org/
+
         https://f-droid.org/zh_Hans/contribute/
             https://gitlab.com/fdroid/fdroidclient
+
         https://f-droid.org/zh_Hans/docs/
 
 F-Droid的软件虽然不多，但是很实用。
 
 F-Droid 最大的特点在与其与Linux软件包管理高度吻合，采用的是源安装，和 Linux 必须添加软件源是一个道理。这些 repositories 源，类似于我们在 Linux 平台上在 /etc/apt/sources.list.d/（Debian 或 Ubuntu 系）或 /etc/yum.repos.d/（Fedora 系）放入源一样， 表示从此信任这个来源/市集/repository 里面的软件。
 
-F-Droid 会把这些 repositories 所提供的软体信息存储一份清单在手机里。这个清单需要不时更新。当我们发现有些 App 或某些版本看得见却无法安装的时候，很可能就是因为我们手机上的清单过时了，需要更新，这跟 Debian 的 apt-get update 或 Fedora 的 yum update 意思一样。当然，我们也可以在手机客户端中设置 automatic update interval（自动更新间隔）。
+F-Droid 会把这些 repositories 所提供的软体信息存储一份清单在手机里。这个清单需要不时更新。当我们发现有些 App 或某些版本看得见却无法安装的时候，很可能就是因为我们手机上的清单过时了，需要更新，这跟 Debian 的 apt update 或 Fedora 的 yum update 意思一样。当然，我们也可以在手机客户端中设置 automatic update interval（自动更新间隔）。
 
 优点一、
 
@@ -514,107 +535,241 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
 例如 Telegram 的官方客户端有私有组建，服务端还是私有的，默认情况下不会在列表里显示。汝可以在设置中的应用兼容性选项中打开“显示需要 anti-feature 的应用”选项来显示那些包含 anti-feature 的程序。
 
-### 各种应用的（部份）自由替代品
+### F-Droid 安装和添加仓库
 
-电话、短信和拍照的话，用系统自带的大概就够用了。（LineageOS 内置的应该也是自由的吧……）
+    https://forum.f-droid.org/t/known-repositories/721
 
-聊天：Telegram 有部份自由处理过的 [Telegram-FOSS](https://f-droid.org/en/packages/org.telegram.messenger/) ，XMPP 的话有 Xabber 和 Conversations （为啥咱会用两个呢，因为前者支持 XMPP 中最常见的端到端加密协议 OTR，另一个支持比较新的 OMEMO 和 openPGP…… （其实 Conversations 一开始也是支持 OTR 的，就是行为有些奇怪而且后来砍掉了……）😂）。IRC 的话就用 [WeeChat for Android](https://f-droid.org/en/packages/com.ubergeek42.WeechatAndroid/) 连上咱 VPS 上的 WeeChat 好了（别和某微幕搞混！）， Matrix 和 Mattermost 的话也都各自有客户端（ [Riot.im](https://f-droid.org/en/packages/im.vector.alpha) 和 [Mattermost](https://f-droid.org/en/packages/com.mattermost.rnbeta) ）。
+1、先用 apk 方式下载安装 F-droid 仓库
 
-浏览器：F-Droid 上有重新编译过的 Firefox（叫做 [Fennic](https://f-droid.org/en/packages/org.mozilla.fennec_fdroid/) ）， Guardian Project 也有 Tor Browser，[在这里添加它们的仓库](https://guardianproject.info/fdroid/)到 F-Droid 。
+    https://f-droid.org/F-Droid.apk
 
-文件管理器： [Amaze](https://f-droid.org/en/packages/com.amaze.filemanager/) 。
+2、启用 F-Droid 内置的 Guardian Project 仓库，，点选开启即可
 
-媒体播放：VLC Player
+也可手工添加
 
-网盘：服务器搭建自己的 Nextcloud 实例，[所以当然就用它们的客户端啦……](https://f-droid.org/en/packages/com.nextcloud.client/) ， F-Droid 上也有不少可以和 Nextcloud 协作的应用，例如 [RSS 阅读器 Nextcloud News Reader](https://f-droid.org/en/packages/de.luhmer.owncloudnewsreader/) 和 [笔记辅助软件 Notes](https://f-droid.org/en/packages/it.niedermann.owncloud.notes) 。
-
-一时兴起想要写些什么的话，除了 Notes 以外也可以试试 [Markor](https://f-droid.org/en/packages/net.gsantner.markor/) 。
-
-想和以前一样读点什么的话，咱就用 [FBReader](https://f-droid.org/en/packages/org.geometerplus.zlibrary.ui.android/) 好了，虽然有些插件不是自由的……
-
-当然不能忘了关键的输入法啦，咱们有基于 Rime 的 [TRIME](https://f-droid.org/en/packages/com.osfans.trime/) 可以用。
-
-想在 Android 上运行一些 GNU/Linux 工具，例如 ssh 之类的话，可以试试 [Termux](https://f-droid.org/en/packages/com.termux/) ，也有一些像是浮动窗口或者快速运行脚本的扩展用。觉得虚拟键盘操作不方便的话可以尝试有方向键和功能键的 [Hacker's Keyboard](https://f-droid.org/en/packages/org.pocketworkstation.pckeyboard/)。
-
-阅读和发送电子邮件：[K-9 Mail](https://f-droid.org/en/packages/com.fsck.k9)，也有比较新潮的 FairMail 啥的可以考虑，它们都能和另一个 openPGP 应用 [OpenKeyChain](https://f-droid.org/en/packages/org.sufficientlysecure.keychain/) 一起使用来发送和解密 GPG 加密的邮件。
-
-2FA 应用： [Aegis](https://f-droid.org/en/packages/com.beemdevelopment.aegis/)。
-
-远程桌面：aFreeRDP
-
-安卓虚拟机：Shelter，详见章节 [安卓虚拟机]。
-
-紧急时刻：
-
-    Ripple：支持 F-Droid、OpenKeyChain、Aegis
-
-    Duress 直接擦除设备
-
-    自毁Wasted：支持 Telegram
-
-### F-Droid添加清华源
-
-    https://mirrors.tuna.tsinghua.edu.cn/help/fdroid/
+        https://guardianproject.info/fdroid/
 
 用 F-Droid 客户端打开此链接：
 
-    https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/?fingerprint=43238D512C1E5EB2D6569F4A3AFBF5523418B82E0A3ED1552770ABB9A9C9CCAB
+    https://guardianproject.info/fdroid/repo?fingerprint=B7C2EEFD8DAC7806AF67DFCD92EB18126BC08312A7F2D6F3862E46013C7A6135
 
-使用 F-Droid 打开第一行的长链接，在弹出界面中点击添加镜像。也可以复制长链接，在应用⚙设置 - 存储库中，点击右上角的加号手动添加。添加完成后，还需要反选择存储库中的二个 F-Droid 库，只保留刚才添加的用户镜像，其他镜像悉数关闭，保证软件只从国内镜像站获取更新。
+使用 F-Droid 打开上面的长链接，在弹出界面中点击添加镜像。也可以复制长链接，在应用⚙设置 - 存储库中，点击右上角的加号手动添加。添加完成后，还需要反选择存储库中的二个 F-Droid 库，只保留刚才添加的用户镜像，其他镜像悉数关闭，保证软件只从国内镜像站获取更新。
 
-如果需要添加 Archive 库，可以使用如下链接：
+3、也可添加清华源
+
+    https://mirrors.tuna.tsinghua.edu.cn/help/fdroid/
+
+如果需要添加清华源的 Archive 库，可以使用如下链接：
 
     https://mirrors.tuna.tsinghua.edu.cn/fdroid/archive?fingerprint=43238D512C1E5EB2D6569F4A3AFBF5523418B82E0A3ED1552770ABB9A9C9CCAB
 
 其它的源速度很慢，不加也罢。
 
-### 简易点对点DHT网络通信 Tox
+### 手机软件开源化应用
 
-    https://wiki.tox.chat/clients
+    https://bbs.letitfly.me/d/1058
 
-无法在家庭内网独立运行，客户端功能简单，特别是在手机端。
+安装应用软件，优先在 F-droid 开源软件仓库安装，没有的软件在应用商店安装，最次选才是下载 apk 文件安装。
 
-### 点对点DHT网络视频会议系统 Jami
+对商业闭源软件，务必在三星手机在 “安全文件夹” 中安装，或者用 Shelter 运行，详见章节 [安卓虚拟机 Shelter]。
 
-前身是SFLphone，然后被命名为GNU Ring，属于GNU项目。使用点对点的DHT网络，支持不依赖外部网络，在家庭内网独立运行，家庭各设备之间互相识别和发送消息，使用GPG加密，更新较快，适合多人视频会议的开源软件，对服务器的依赖比较多。其对全网唯一用户名服务使用了区块链技术，不知道日后是否会渗透到主业务。
+电话、短信和拍照的话，用系统自带的大概就够用了。（LineageOS 内置的应该也是自由的吧……）
 
-    https://jami.net/
-        https://git.jami.net/savoirfairelinux/jami-project
+文件管理器：
 
-### 支持 gpg 用于邮件签名和加解密的开源应用
+    Amaze
 
-[OpenKeychain](https://www.openkeychain.org)主要与[K-9 Mail](https://github.com/k9mail/k-9)集成。
+        https://f-droid.org/en/packages/com.amaze.filemanager
 
-如果你在电脑上经常用邮件客户端的话你可以使用 [Thunderbird](https://www.thunderbird.net/en-US/)。在电脑上生成好的加密E和签名S功能的子密钥，导出子私钥到文件，然后导入到 OpenKeychain，这样 K-9 Mail 就可以调用了。
+媒体播放：
 
-如果你用 Android 收发邮件比较多的话，建议你直接用 OpenKeychain 生成密钥对然后发布公钥，使用 K-9 Mail 就好了，电脑端如果需要使用，可以从OpenKeychain导出私钥到电脑端，给Thunderbird使用。
+    VLC
 
-### haven 安卓手机变身监控器
+        https://f-droid.org/zh_Hant/packages/org.videolan.vlc/
 
-    https://github.com/guardianproject/haven
+    mpv-android
 
-    https://www.ctocio.com/ccnews/25688.html
+        https://f-droid.org/en/packages/is.xyz.mpv/
 
-### BusyBox 工具箱
+密钥管理:
 
-    <https://busybox.net/>
+    2FA 应用：Aegis
 
-一个集成了三百多个最常用Linux命令和工具的软件。
+        https://f-droid.org/en/packages/com.beemdevelopment.aegis/
 
-感觉这个适合改造老久手机替代树莓派，性价比超级高。缺点是需要root手机，优点是安装到安卓的linux系统里了，给系统增强了非常多的linux命令。
+    OpenKeyChain：支持 gpg 用于邮件签名和加解密的开源应用，主要与 K-9 Mail 集成
 
-BusyBox 包含了一些简单的工具，例如 ls、cat 和 echo 等等，还包含了一些更大、更复杂的工具，例 grep、find、mount 以及 telnet。有些人将 BusyBox 称为 Linux 工具里的瑞士军刀。简单的说 BusyBox 就好像是个大工具箱，它集成压缩了 Linux 的许多工具和命令，也包含了 Android 系统的自带的 shell。
+        https://f-droid.org/en/packages/org.sufficientlysecure.keychain/
+            https://www.openkeychain.org
 
-    <https://www.cnblogs.com/xiaowenji/archive/2011/03/12/1982309.html>
-    <https://www.zhihu.com/question/26190694>
+    OkcAgent：让你的 Termux 可以使用 OpenKeychain 里的 ssh 密钥，相当于密钥代理。
+
+        https://f-droid.org/en/packages/org.ddosolitary.okcagent/
+
+阅读和发送电子邮件：
+
+    K-9 Mail
+
+        https://f-droid.org/en/packages/com.fsck.k9
+            https://github.com/k9mail/k-9
+
+        如果你在电脑上经常用邮件客户端的话你可以使用 [Thunderbird](https://www.thunderbird.net/en-US/)。在电脑上生成好的 “加密E” 和 “签名S” 功能的子密钥，导出子私钥到文件，然后导入到 OpenKeychain，这样 K-9 Mail 就可以调用了。详见章节 [安装支持 gpg 签名的电子邮件软件](gpg think)。
+
+        如果你用 Android 收发邮件比较多的话，建议你直接用 OpenKeychain 生成密钥对然后发布公钥，使用 K-9 Mail 就好了，电脑端如果需要使用，可以从 OpenKeychain 导出私钥到电脑端，由 Thunderbird 导入使用。
+
+   FairMail
+
+        https://f-droid.org/packages/eu.faircode.email/
+
+        也能与 OpenKeyChain 配合，发送和解密 GPG 加密的邮件。
+
+浏览器：
+
+    Fennic 重新编译过的 Firefox
+
+        https://f-droid.org/en/packages/org.mozilla.fennec_fdroid/
+
+    Guardian Project 也有 Tor Browser
+
+        https://guardianproject.info/apps/org.torproject.torbrowser/
+
+            用于 Orbot，基于 Tor 浏览器的改进 https://guardianproject.info/apps/info.guardianproject.orfox/
+
+聊天：
+
+    Telegram-FOSS：自由化处理过的 Telegram
+
+        https://f-droid.org/en/packages/org.telegram.messenger/
+
+    XMPP 的话有 Xabber 和 Conversations （为啥咱会用两个呢，因为前者支持 XMPP 中最常见的端到端加密协议 OTR，另一个支持比较新的 OMEMO 和 openPGP…… （其实 Conversations 一开始也是支持 OTR 的，就是行为有些奇怪而且后来砍掉了……）😂）。
+
+    IRC：WeeChat for Android
+
+        https://f-droid.org/en/packages/com.ubergeek42.WeechatAndroid
+
+        连上咱 VPS 上的 WeeChat 好了（别和某微幕搞混！）
+
+    Matrix：Riot.im
+
+        https://f-droid.org/en/packages/im.vector.alpha
+
+    Mattermost： Mattermost
+
+        https://f-droid.org/en/packages/com.mattermost.rnbeta
+
+    Tox: 简易点对点DHT网络通信，无法在家庭内网独立运行，客户端功能简单，特别是在手机端。
+
+        aTox
+
+            https://f-droid.org/en/packages/ltd.evilcorp.atox/
+                https://github.com/evilcorpltd/aTox/
+
+            https://wiki.tox.chat/clients
+
+网盘：Nextcloud 服务器搭建自己的 Nextcloud 实例，支持各种客户端
+
+    https://f-droid.org/en/packages/com.nextcloud.client/
+
+    F-Droid 上也有不少可以和 Nextcloud 协作的应用，例如:
+
+    RSS 阅读器 Nextcloud News Reader
+
+        https://f-droid.org/en/packages/de.luhmer.owncloudnewsreader/
+
+    笔记辅助软件 Notes
+
+        https://f-droid.org/en/packages/it.niedermann.owncloud.notes
+
+    Notes 以外也可以试试 Markor
+
+        https://f-droid.org/en/packages/net.gsantner.markor/
+
+输入法：
+
+    TRIME：基于 Rime
+
+        https://f-droid.org/en/packages/com.osfans.trime/
+
+工具箱:
+
+    termux 在 Android 上运行 ssh 等 GNU/Linux 工具
+
+        https://f-droid.org/en/packages/com.termux/
+
+        详见章节 [安卓神器 Termux]。
+
+    BusyBox 工具箱，集成了三百多个最常用Linux命令和工具的软件，也包含了 Android 系统的自带的 shell。
+
+        https://busybox.net/
+
+            https://www.cnblogs.com/xiaowenji/archive/2011/03/12/1982309.html
+
+            https://www.zhihu.com/question/26190694
+
+        适合改造老久手机替代树莓派，性价比超级高。缺点是需要root手机，优点是安装到安卓的linux系统里了，给系统增强了非常多的linux命令。
+
+远程桌面：
+
+    aFreeRDP
+
+        https://f-droid.org/zh_Hant/packages/com.freerdp.afreerdp/
+
+监视器：
+
+    Haven 在你离开时，把你的手机变成监视器
+
+        https://guardianproject.info/apps/org.havenapp.main/
+            https://github.com/guardianproject/haven
+
+        https://www.ctocio.com/ccnews/25688.html
+
+紧急时刻：
+
+    Ripple：支持 F-Droid、OpenKeyChain、Aegis
+
+        https://guardianproject.info/apps/info.guardianproject.ripple/
+
+    Duress 直接擦除设备
+
+        https://f-droid.org/zh_Hans/packages/me.lucky.duress/
+
+    Wasted 自毁，支持 Telegram
+
+        https://f-droid.org/zh_Hans/packages/me.lucky.wasted/
+
+行情查看 [都是闭源的，在应用商店安装]
+
+    TradingView
+
+    CoinMarketCap Binance
+
+    OpenSea MetaMask
+
+自媒体 [都是闭源的，在应用商店安装]
+
+    Twitter Reddit  Mastodon  Instagram
+
+    Telegram
+
+    YouTube
+
+    Spotify 网络电台，比 google radio 好
+
+新闻聚合 RSS
+
+    Inoreader
+
+    BuzzFeed
 
 ## 使用商业闭源软件
 
-最好在应用商店安装，不要单独下载 apk 文件安装，权限全放开了，可控程度不如在应用商店安装。注意在虚拟机内安装运行，比如三星手机的“安全文件夹”。
+最好在应用商店安装，不要单独下载为本地 apk 文件安装，可控程度不如在应用商店安装，只能由手机操作系统保证。
+
+NOTE：最好在虚拟机内安装运行，比如三星手机的 “安全文件夹”，或使用 Shelter，详见章节 [安卓虚拟机 Shelter]。
 
 如果你使用的软件不断提醒你升级，点击确认后，不是跳转到应用商店的页面，而是在程序内部自行下载并提示你点击确定进行安装，注意安全，这时候已经是下载到本地 apk 文件的方式安装了，绕过了软件商店的权限检查，只能依赖手机操作系统了。
 
-  微信  qq  钉钉  支付宝  美团  腾讯会议  京东  淘宝  拼多多  知乎  微博轻享版  抖音  界面新闻  澎湃新闻  同花顺  西南金点子  西南期货  淘股吧  雪球  高德地图  滴滴出行  携程旅行  铁路12306  哔哩哔哩  酷狗音乐  掌上生活  招商银行  中国工商银行  中国建设银行  个人所得税  中国联通  小天才  学而思  天眼查  贝壳找房  货拉拉  momo
+    微信  qq  钉钉  支付宝  美团  腾讯会议  京东  淘宝  拼多多  知乎  微博轻享版  抖音  界面新闻  澎湃新闻  同花顺  西南金点子  西南期货  淘股吧  雪球  高德地图  滴滴出行  携程旅行  铁路12306  哔哩哔哩  酷狗音乐  掌上生活  招商银行  中国工商银行  中国建设银行  个人所得税  中国联通  小天才  学而思  天眼查  贝壳找房  货拉拉  momo
 
 ## 安卓神器 Termux -- 运行在 Android 上的开源linux模拟器
 
@@ -638,6 +793,8 @@ busybox跟它比，简直就是小弟 <https://stackoverflow.com/questions/40140
     方法一 从左向右滑动，显示隐藏式导航栏，长按左下角的KEYBOARD
 
     方法二 使用Termux快捷键:音量++Q键 或者 音量++K键
+
+觉得虚拟键盘操作不方便的话可以尝试有方向键和功能键的 [Hacker's Keyboard](https://f-droid.org/en/packages/org.pocketworkstation.pckeyboard/)。
 
 ### Termux 替换官方源为 TUNA 镜像源
 
@@ -754,6 +911,7 @@ ssh服务的配置文件默认在 $PREFIX/etc/ssh/sshd_config 中。
 我们如何把手机中的端口暴露到公网呢，有两种方式都很方便:
 
     使用ssh反向代理(使用autossh解决隧道的稳定性问题)
+
     使用ngrok（使用ngrok arm版本）
 
 如此一来手机中运行的网站你就可以在公网访问它，当然你也可以把ssh端口暴露到外网，这样你可以在任何有网络连接的地方连接到你的手机里，前提是Termux处于运行状态。
