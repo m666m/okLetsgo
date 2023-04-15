@@ -273,7 +273,7 @@ sim卡的安全性是由私钥只可写入不可读出来保证的，在实体si
 
     另外优先安装使用开源的app，参见章节 [安卓的开源软件商店F-Droid]。
 
-Android 提供了 "Work Profile" 功能来提供一个隔离的空间，您可以将应用程序安装或克隆到其中
+Android 提供了 "Work Profile" 功能来提供一个隔离的空间，用户可以在其中安装应用程序或把当前手机环境中的应用添加到其中
 
     https://learn.microsoft.com/zh-cn/mem/intune/user-help/what-happens-when-you-create-a-work-profile-android
 
@@ -354,7 +354,7 @@ Shelter：利用安卓的 "Work Profile" 功能实现应用程序的套娃运行
 
     原理 https://support.google.com/work/android/answer/6191949?hl=en
 
-Shelter 是一款免费开源（FOSS）应用程序，它利用Android的 "Work Profile" 功能来提供一个隔离的空间，您可以将应用程序安装或克隆到其中。Shelter 的安全性只能与 "Work Profile" 的实施一样，不会超越宿主机。
+Shelter 是一款免费开源（FOSS）应用程序，它利用安卓系统的 "Work Profile" 功能来提供一个隔离的空间，用户可以在其中安装应用程序或把当前手机环境中的应用添加到其中。Shelter 的安全性只能与 "Work Profile" 的实施一样，不会超越宿主机。
 
 Shelter 的主要用例包括：
 
@@ -364,7 +364,7 @@ Shelter 的主要用例包括：
 
     在一个手机上安装运行同一应用程序的两个副本
 
-请注意：Shelter 依赖于 Android 系统的 "Work Profile" 功能，因此与您手机使用的 Android 衍生系统中的 "Work Profile"相关的任何错误都会影响 Shelter。
+请注意：Shelter 依赖于安卓系统的 "Work Profile" 功能，因此与您手机使用的安卓衍生系统中的 "Work Profile"相关的任何错误都会影响 Shelter，也就是说，主机操作系统的安全漏洞，用 shelter 是规避不了的。
 
 有关完整的说明，请阅读 Shelter 的 Git 存储库。
 
