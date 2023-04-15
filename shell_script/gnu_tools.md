@@ -5399,7 +5399,7 @@ sed 删除、替换文件中的字符串
 
     选项与参数：
 
-        -n ：使用安静(silent)模式。在一般 sed 的用法中，所有来自 STDIN 的数据一般都会被列出到终端上。但如果加上 -n 参数后，则只有经过sed 特殊处理的那一行(或者动作)才会被列出来。
+        -n ：使用安静(silent)模式。在一般 sed 的用法中，所有来自 STDIN 的数据一般都会被列出到终端上。但如果加上 -n 参数后，则只显示那些被改变的行。
 
         -e ：直接在命令列模式上进行 sed 的动作编辑；
 
@@ -5422,8 +5422,17 @@ sed 删除、替换文件中的字符串
         p ：列印，亦即将某个选择的数据印出。通常 p 会与参数 sed -n 一起运行～
         s ：取代，可以直接进行取代的工作哩！通常这个 s 的动作可以搭配正规表示法！例如 1,20s/old/new/g
 
+    sed 的正则表达式能玩出花来
+
+        https://www.gnu.org/software/sed/manual/html_node/Regexp-Addresses.html#Regexp-Addresses
+
+            https://www.gnu.org/software/sed/manual/html_node/BRE-syntax.html#BRE-syntax
+
+            https://www.gnu.org/software/sed/manual/html_node/ERE-syntax.html#ERE-syntax
+
 sed 示例：
 
+```shell
     在文件的匹配行前面加上#注释
     #   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
     #   s       替换
@@ -5443,13 +5452,17 @@ sed 示例：
     sed 's/^[^#]/#&/' /etc/dhcpcd.conf
 
     # 模式匹配简写，替换满足条件行的回车为逗号
-    sed 'H;1h;$!d;x;y/\n/,/
+    sed 'H;1h;$!d;x;y/\n/,/'
+
+    # 把字符串 'bt-tracker=' 后面的内容替换为变量 $TRACKER 的值
+    sed -i "s@^\(bt-tracker=\).*@\1${TRACKER}@" btconfig.txt
 
     # 范围删除匹配模式行，只显示删除后的结果
     sed -n '/start_line/,/end_line/!p' your_file
 
-    # 删除匹配模式行，直接修改到文件
+    # 范围删除匹配模式行，直接修改到文件
     sed -i '/start_line/,/end_line/d' your_file
+```
 
 ### 终端输出字符的后处理工具
 
