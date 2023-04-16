@@ -947,10 +947,9 @@ Linux 桌面下的终端模拟器感觉没啥意义，用自带的就行了
     Gnome 桌面自带 Xterm
     KDE 桌面自带 Konsole
     Xfce 桌面自带 xfce
+    gtk 桌面自带 terminator
 
-    urxvt(rxvt-unicode)
-
-    terminator
+    i3 自带 urxvt(rxvt-unicode)
 
     guake
 
@@ -959,8 +958,6 @@ Linux 桌面下的终端模拟器感觉没啥意义，用自带的就行了
     terminology
 
     kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/MacOS 桌面下使用
-
-        sudo apt install kitty
 
         https://github.com/kovidgoyal/kitty
             https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
@@ -983,7 +980,7 @@ cmder 推荐了几个本地终端模拟器，可以嵌入 cmder 代替 ConEmu
 
     https://github.com/cmderdev/cmder/wiki/Seamless-Hyper-integration
 
-        hyper 基于 xterm.js 和 Electron实现
+        hyper 基于 xterm.js 和 Electron 实现
             https://hyper.is/
 
     https://github.com/cmderdev/cmder/wiki/Seamless-FluentTerminal-Integration
@@ -1014,7 +1011,7 @@ wslbridge 辅助工具，使用 Windows ConPty 接口 以支持 WSL(Windows Subs
 
 ### 终端多路复用器
 
-Windows 下的命令行终端类型很多，如果想统一在一个程序下x标签化管理各个窗口，这样的程序称为终端多路复用器 terminal multiplexer。
+Windows 下的命令行终端类型很多，如果想统一在一个程序下标签化管理各个窗口，这样的程序称为终端多路复用器 terminal multiplexer。
 
 #### Supper Putty
 
@@ -4871,7 +4868,7 @@ tmux 可以保持多个会话 session，每次在命令行运行 `tmux` 就会�
 
 MacOS 下可以做映射 <https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/>
 
-组合键 ctrl+b 作为前导，松开后再按其它键：
+前导键是个组合键 ctrl+b，松开后再按其它键：
 
 会话（Session）
 
@@ -5230,11 +5227,15 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 Screen实现了基本的文本操作，如复制粘贴等；还提供了类似滚动条的功能，可以查看窗口状况的历史记录。窗口还可以被分区和命名，还可以监视后台窗口的活动。
 
-Screen 支持 Zmodem 协议，也就是说，你可以用 rz、sz 命令方便的传输文件 <https://adammonsen.com/post/256/>。
+特殊功能
 
-会话共享 Screen可以让一个或多个用户从不同终端多次连接到同一个会话，并共享会话的所有特性（比如可以看到完全相同的输出）。它同时提供了窗口访问权限的机制，可以对窗口进行密码保护。
+    Screen 支持 Zmodem 协议，也就是说，你可以用 rz、sz 命令方便的传输文件 <https://adammonsen.com/post/256/>。
 
-会列出当前存在的会话列表
+    Screen 可以通过串行连接进行连接，如运行命令 `screen 9600 /dev/ttyUSB0` 连接 usb 端口调试，通过按键绑定可以方便地发出 XON 和 XOFF 信号。
+
+命令行操作：
+
+列出当前存在的会话列表
 
     $ screen -ls
     There are screens on:
@@ -5263,14 +5264,7 @@ Screen 支持 Zmodem 协议，也就是说，你可以用 rz、sz 命令方便�
 
     screen -wipe 　检查目前所有的screen作业，并删除已经无法使用的screen作业。
 
-当需要退出当前的screen界面回到初始的shell，可以用快捷键Ctrl+a d(即按住Ctrl按a,然后可以松手去按d)，会话中的程序不会关闭，仍在运行。
-
-关闭screen会话中的窗口
-
-    # 在screen会话里的shell执行 或热键 Ctrl+a k
-    exit
-
-如果一个Screen会话中最后一个窗口被关闭了，那么整个Screen会话也就退出了，screen进程会被终止。
+GNU Screen 的默认前导键是 Ctrl+A。
 
 常用快捷键，先按引导键 Ctrl+a，然后按
 
@@ -5286,7 +5280,7 @@ Screen 支持 Zmodem 协议，也就是说，你可以用 rz、sz 命令方便�
     n         下一个窗口
     p         上一个窗口
 
-    x      锁屏(需要你有该Linux登录用户的登录密码才能解锁，否则，当前的会话终端算是废了，你需要重新打开一个终端才行)(锁屏后，重新登录一个设置过密码的screen会话，你需要输入2次密码，第一次是输入Linux系统的登录密码，第二次是输入该screen会话的密码)
+    x      锁屏(需要你有该Linux登录用户的登录密码才能解锁，否则，当前的会话终端算是废了，你需要重新打开一个终端才行)(锁屏后，重新登录一个设置过密码的 Screen 会话，你需要输入2次密码，第一次是输入Linux系统的登录密码，第二次是输入该 Screen 会话的密码)
 
     S    屏幕水平分割
     |    屏幕垂直分割
@@ -5294,13 +5288,24 @@ Screen 支持 Zmodem 协议，也就是说，你可以用 rz、sz 命令方便�
     X     关闭当前焦点所在的屏幕区块,关闭的区块中的窗口并不会关闭，还可以通过窗口切换找到它。
     Q     关闭除当前区块之外其他的所有区块,关闭的区块中的窗口并不会关闭，还可以通过窗口切换找到它。
 
+比如：当需要退出当前的 Screen 界面回到初始的shell，可以用快捷键 Ctrl+a d，即按住Ctrl按a,然后可以松手去按d，会话中的程序不会关闭，仍在运行。
+
+关闭 Screen 会话中的窗口
+
+    # 在 Screen 会话里的shell执行 或热键 Ctrl+a k
+    exit
+
+如果一个 Screen 会话中最后一个窗口被关闭了，那么整个 Screen 会话也就退出了，screen 进程会被终止。
+
 会话共享
 
-还有一种比较好玩的会话恢复，可以实现会话共享。假设你在和朋友在不同地点以相同用户登录一台机器，然后你创建一个screen会话，你朋友可以在他的终端上命令：
+会话共享：Screen 可以让一个或多个用户从不同终端多次连接到同一个会话，并共享会话的所有特性（比如可以看到完全相同的输出）。它同时提供了窗口访问权限的机制，可以对窗口进行密码保护。
+
+假设你在和朋友在不同地点以相同用户登录一台机器，然后你创建一个 Screen 会话，你朋友可以在他的终端上命令：
 
     screen -x
 
-这个命令会将你朋友的终端Attach到你的Screen会话上，并且你的终端不会被Detach。这样你就可以和朋友共享同一个会话了，如果你们当前又处于同一个窗口，那就相当于坐在同一个显示器前面，你的操作会同步演示给你朋友，你朋友的操作也会同步演示给你。当然，如果你们切换到这个会话的不同窗口中去，那还是可以分别进行不同的操作的。
+这个命令会将你朋友的终端 Attach 到你的 Screen 会话上，并且你的终端不会被 Detach。这样你就可以和朋友共享同一个会话了，如果你们当前又处于同一个窗口，那就相当于坐在同一个显示器前面，你的操作会同步演示给你朋友，你朋友的操作也会同步演示给你。当然，如果你们切换到这个会话的不同窗口中去，那还是可以分别进行不同的操作的。
 
 ### 命令行下的文件资源管理器 Midnight Commander
 
