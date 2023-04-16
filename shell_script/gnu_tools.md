@@ -5748,14 +5748,12 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
     # 解包并解压缩
     # 把 x 换成 t 就是只查看文件列表而不真正解压
     tar vxzf arc.tar.gz
-
     tar vxjf xx.tar.bz2
 
-    管道操作，命令参数中文件名的位置使用 bash 的特殊符号 -（减号），代表标准输出/标准输入。
-    下面的例子中不少示例，酌情参考。
+管道操作，命令参数中文件名的位置使用 bash 的特殊符号 -（减号），代表标准输出/标准输入。
+下面的例子中不少示例，酌情参考。
 
     # 把 /home 目录打包，输出到标准输入流，管道后面的命令是从标准输出流读取数据解包
-
     tar cf - /home |tar -xf -
 
     # curl 下载默认输出是标准输入流，管道后面的命令是 tar 从标准输出流读取数据解压到指定的目录下
@@ -5833,6 +5831,13 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
 
     # 把文件 foo 压缩为 foo.xz
     xz foo
+
+    # 并行压缩 `man xz`
+    find . -type f \! -name '*.xz' -print0 \
+        | xargs -0r -P4 -n16 xz -T1
+
+    # 占用最小内存的压缩用法
+    xz --check=crc32 --lzma2=preset=6e,dict=64KiB foo
 
 ### 文件链接 ln
 
@@ -7271,6 +7276,10 @@ GNOME 桌面增强功能，至少有个任务栏，少点几次鼠标，在软�
     sudo apt install gnome-tweak-tool
 
     sudo apt install gnome-shell-extensions
+
+或者安装类似苹果的浮动任务栏
+
+    https://github.com/micheleg/dash-to-dock
 
 如果想以后使用网站浏览安装
 
