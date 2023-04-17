@@ -1888,6 +1888,20 @@ TODO: 先装 Windows 再装 Fedora
 
     https://zhuanlan.zhihu.com/p/609573337
 
+#### 解决双系统安装 Windows 与 ubuntu 时间不一致的问题
+
+问题原因：linux系统与win系统对于时间的管理方式不同。linux认为硬件时间为GMT+0时间，是世界标准时间，而中国上海是东八区时间，显示时间为GMT+8；win系统认为硬件时间就是本地时间，而这个时间已经被linux设置为GMT+0时间。因此win系统下时间比正常时间慢8个小时。
+
+解决办法：
+
+让ubuntu按照win的方式管理时间。
+
+    sudo apt-get install ntpdate // 在ubuntu下更新本地时间
+
+    sudo ntpdate time.windows.com
+
+    sudo hwclock --localtime --systohc //将本地时间更新到硬件上
+
 #### TODO: Linux多系统并存的GRUB配置文件内容分析
 
     http://c.biancheng.net/view/1033.html
@@ -1924,21 +1938,7 @@ TODO: 先装 Windows 再装 Fedora
 
 我们已经知道，为了实现多系统启动，除 MBR 中可以安装启动引导程序外，每个分区的第一个扇区也可以安装启动引导程序。在这个例子中，Windows 系统的启动引导程序就被安装到了 C: 盘所在分区的启动扇区中，chainloader+1 就是 GRU 把启动过程交给了 Windows 系统的启动引导程序，所以可以启动 Windows 系统。
 
-#### 解决双系统安装 Windows 与 ubuntu 时间不一致的问题
-
-问题原因：linux系统与win系统对于时间的管理方式不同。linux认为硬件时间为GMT+0时间，是世界标准时间，而中国上海是东八区时间，显示时间为GMT+8；win系统认为硬件时间就是本地时间，而这个时间已经被linux设置为GMT+0时间。因此win系统下时间比正常时间慢8个小时。
-
-解决办法：
-
-让ubuntu按照win的方式管理时间。
-
-    sudo apt-get install ntpdate // 在ubuntu下更新本地时间
-
-    sudo ntpdate time.windows.com
-
-    sudo hwclock --localtime --systohc //将本地时间更新到硬件上
-
-#### Linux GRUB手动安装方法详解
+#### TODO: Linux GRUB手动安装方法详解
 
     http://c.biancheng.net/view/1035.html
 
