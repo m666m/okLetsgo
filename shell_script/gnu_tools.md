@@ -7446,7 +7446,7 @@ Gnome 主题乐园
 
 虚拟机 Gnome Box
 
-    底层操作的是 kvm 虚拟机，详见章节 [GNOME Boxes]。
+    底层调用 virt-manager 操作 kvm 虚拟机，详见章节 [GNOME Boxes]。
 
 浏览器
 
@@ -7482,20 +7482,34 @@ Gnome 主题乐园
 
         https://www.freeoffice.com/en/
 
+    Okular 主要用于查看 pdf 并添加批注
+
 邮件
 
     Thunderbird 支持 gpg 加密
 
 画图工具
 
-    Inkscape 号称替代 Adobe illustrator（AI）的矢量图制作编辑工具
-        https://inkscape.org/
-
     GIMP 功能几乎与 Adobe Photoshop 相同
         https://www.gimp.org/
 
+    Inkscape 号称替代 Adobe illustrator（AI）的矢量图制作编辑工具
+        https://inkscape.org/
+
     Krita 是一款用于创作像艺术家那样的数字绘画的应用程序。你可以用 Krita 来制作概念艺术、插图、漫画、纹理和哑光画。
         https://krita.org/en/
+
+截屏
+
+    Shutter
+
+    Kazam
+
+照片管理
+
+    digKam
+
+    Darktable
 
 音频编辑器
 
@@ -7522,6 +7536,18 @@ Gnome 主题乐园
         smplayer 使用 以上两者做作为播放引擎的 GUI 外壳程序，也支持播放 youtube
             https://www.smplayer.info/
                 https://github.com/smplayer-dev/smplayer
+
+视频编辑
+
+    Kdenlive
+
+    Shotcut
+
+图片和视频转换
+
+    XnConvert
+
+    HandBrake
 
 ### 远程桌面 rdesktop
 
