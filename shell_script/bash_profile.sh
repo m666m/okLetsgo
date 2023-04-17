@@ -24,6 +24,7 @@ export TERM=xterm-256color
 
 ####################################################################
 # alias 本该放到 .bashrc 文件，为了方便统一在此了
+# 可直接把 alias 放到 .zshrc 中保持自己的使用习惯
 #
 # 参考自 dbian 的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
