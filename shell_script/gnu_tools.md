@@ -7322,7 +7322,7 @@ Gnome 主题乐园
 
 窗口管理器(Windows Manager)，负责绘制窗口的边框，处理窗口运行比如移动、最小化之类的行为。
 
-桌面(Desktop Environment)，是窗口管理器的超集，它使用合成器（Compositor）把多个程序窗口绘制出的内容，把它们合成出来并高效地增量更新用户界面GUI。比如 compiz 这种基于 OpenGL的混合型窗口管理器，用立体的方式显示窗口切换。
+桌面(Desktop Environment)，是窗口管理器的超集，它使用合成器（Compositor）把多个程序窗口绘制出的内容，把它们合成出来并高效地增量更新用户界面 GUI。比如 compiz 这种基于 OpenGL 的混合型窗口管理器，用立体的方式显示窗口切换。
 
 我们常用的 Gnome 就是一个桌面环境，默认使用 Metacity 作为窗口管理器。
 
