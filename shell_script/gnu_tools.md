@@ -7306,6 +7306,10 @@ Gnome 主题乐园
 
     https://www.gnome-look.org/p/1275087/
 
+### 使用 KDE
+
+软件管理器是 “Discovery”
+
 ### 使用窗口管理器
 
     https://zhuanlan.zhihu.com/p/47526909
