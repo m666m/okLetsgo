@@ -6805,7 +6805,7 @@ rsync 默许服务端口为 873。
 
 最好把命令写成批处理文件，放到 Windows 计划任务里定时执行。
 
-#### 竞品
+#### 竞品 restic
 
 TODO:restic：使用 ssh 密钥方式连接备份服务器，在存储池中加密你的快照
 
@@ -6833,25 +6833,25 @@ NFS 一般用来存储共享视频，图片等静态数据。
 
 以下两种竞品都不如 nfs server 稳定：
 
-sshfs：通过 ssh 来挂载远程目录
+    sshfs：通过 ssh 来挂载远程目录
 
-    https://www.junmajinlong.com/linux/sshfs/
+        https://www.junmajinlong.com/linux/sshfs/
 
-相比于 NFS，sshfs 更简洁，它是基于 fuse 模块来实现的，可以认为 sshfs 所挂载的文件系统是 fuse 文件系统的一种实现。但是 NFS 比 sshfs 要完整的多，nfs 毕竟是【小型】分布式文件系统，对数据的一致性、完整性实现的都比较完美，访问权限控制也比 sshfs 要丰富的多。
+        相比于 NFS，sshfs 更简洁，它是基于 fuse 模块来实现的，可以认为 sshfs 所挂载的文件系统是 fuse 文件系统的一种实现。但是 NFS 比 sshfs 要完整的多，nfs 毕竟是【小型】分布式文件系统，对数据的一致性、完整性实现的都比较完美，访问权限控制也比 sshfs 要丰富的多。
 
-例如，挂载 192.168.100.150 上的根目录 "/usp" 到本地的 "/mnt" 上
+        例如，挂载 192.168.100.150 上的根目录 "/usp" 到本地的 "/mnt" 上
 
-    sshfs root@192.168.100.150:/usp /mnt
+            sshfs root@192.168.100.150:/usp /mnt
 
-注意：只能挂载远程目录，像普通文件、块设备 (如 /dev/sda2) 等无法挂载。
+        注意：只能挂载远程目录，像普通文件、块设备 (如 /dev/sda2) 等无法挂载。
 
-卸载挂载点，直接 umount 即可
+        卸载挂载点，直接 umount 即可
 
-    umount /mnt
+            umount /mnt
 
-rclone：Rclone (rsync for cloud storage) 是一个命令行程序,用于同步文件和目录，支持常见的 Amazon Drive 、Google Drive 、OneDrive 、Dropbox 等云存储。本文将演示在 Windows 平台下将 OneDrive 挂载为本地硬盘，并使用跨平台的 Rclone GUI 连接到云盘。
+    rclone：Rclone (rsync for cloud storage) 是一个命令行程序,用于同步文件和目录，支持常见的 Amazon Drive 、Google Drive 、OneDrive 、Dropbox 等云存储。本文将演示在 Windows 平台下将 OneDrive 挂载为本地硬盘，并使用跨平台的 Rclone GUI 连接到云盘。
 
-    https://rclone.org/
+        https://rclone.org/
 
 ### 在当前目录启动一个简单的http服务器
 
@@ -7725,6 +7725,8 @@ systemd 保持对 SystemV 的兼容性使用的控制文件
     /usr/lib/systemd/system/rc-local.service
 
 ### systemd
+
+    https://fedoramagazine.org/series/systemd-series/
 
     https://www.freedesktop.org/software/systemd/man/index.html
 
