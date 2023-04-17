@@ -744,6 +744,12 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
             https://wiki.tox.chat/clients
 
+视频会议
+
+    Jitsi Meet
+
+        https://f-droid.org/en/packages/org.jitsi.meet/
+
 网盘：Nextcloud 服务器搭建自己的 Nextcloud 实例，支持各种客户端
 
     https://f-droid.org/en/packages/com.nextcloud.client/
