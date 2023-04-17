@@ -7513,6 +7513,8 @@ Gnome 主题乐园
 
 ### 远程桌面 rdesktop
 
+这个是连接 Windows 远程桌面用的工具
+
     rdesktop <ip>
 
     -f 全屏
