@@ -78,6 +78,10 @@ Cygwin 在编译时中间加了个翻译层 cygwin1.dll
 
     如果你只是想在Windows下使用一些linux小工具，建议用 MSYS2，把 /usr/bin 加进环境变量 path 以后，可以直接在命令行终端中使用 Linux 命令。
 
+另有 Linux 下运行 Windows 程序的中间层 wine，也是这个思路
+
+    https://www.winehq.org/
+
 #### MinGW
 
 此项目已停止维护
