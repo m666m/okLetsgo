@@ -5925,6 +5925,14 @@ bc - An arbitrary precision calculator language
 
 在 Linux 中，有两类用于生成随机数的设备，分别是 /dev/random 以及 /dev/urandom ，其中前者可能会导致阻塞，而读取 /dev/urandom 不会堵塞，不过此时 urandom 的随机性弱于 random 。 urandom 是 unblocked random 的简称，会重用内部池中的数据以产生伪随机数据，可用于安全性较低的应用。
 
+    # 对随机数只取字符和数字，取前16个
+    $ cat /dev/random | tr -dc 'a-zA-Z0-9' | head -c 16
+    cFW4vaqucb4K4T
+
+    # 对随机数只取字符和数字，9个一行，取第一行
+    $ cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 9 | head -n 1
+    DPTDA9W29
+
     # 对随机数取哈希，用 cksum 取 crc 校验和，还可以用 sha256sum、md5sum 等
     $ head /dev/random | cksum
     3768469767 1971
@@ -5933,13 +5941,9 @@ bc - An arbitrary precision calculator language
     $ cat /dev/urandom | od  -An -x | head -n 1
     0637 34d5 16f5 f393 250e a2eb aac0 27c3
 
-    # 对随机数只取字符和数字，9个一行，取第一行
-    $ cat /dev/random | tr -dc 'a-zA-Z0-9' | fold -w 9 | head -n 1
-    DPTDA9W29
-
-    # 对随机数只取字符和数字，取前14个
-    $ cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 14
-    cFW4vaqucb4K4T
+    # 对随机数使用 base64 编码，取第一行
+    $ cat /dev/urandom |base64 |head -n 1
+    H7k6xRGGGzHoipYg0IpGgxAc7wLQeHVGsLMxjNUrhP2uCS1kV4CmEQvi2PoDehJqB7GcTsklker/
 
     # base64编码的14个字符
     $ openssl rand -base64 14
@@ -5955,7 +5959,7 @@ bc - An arbitrary precision calculator language
 
     # 14个ascii字符
     $ gpg --gen-random --armor 1 14
-    RaJKEUBT89Tq9uZzvkI=
+    LtybfVoRF2Lc/Vw8tag=
 
     # 生成一个uuid，这个也是随机的
     $ cat /proc/sys/kernel/random/uuid

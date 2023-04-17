@@ -57,6 +57,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias trees='tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='pstree -p -s'
     alias curls='curl -fsSL'
+    alias passr='cat /dev/random | tr -dc 'a-zA-Z0-9' | head -c 16'
 
     # gpg 常用命令
     alias pkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
