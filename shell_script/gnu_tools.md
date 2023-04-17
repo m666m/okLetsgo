@@ -5487,6 +5487,10 @@ column 把文本表格整齐化
 
     openssl ciphers -V |column -t
 
+fold 按字母拆分行
+
+    fold -w 9
+
 jq 格式化 JSON 数据，并彩色显示，也可用作格式检查
 
     # sudo apt install jq
