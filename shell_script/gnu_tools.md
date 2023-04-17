@@ -7513,6 +7513,13 @@ Gnome 主题乐园
 
 ### 远程桌面 rdesktop
 
+    rdesktop <ip>
+
+    -f 全屏
+    -r clipboard:PRIMARYCLIPBOARD 是实现剪切板共享，也就是物理机复制虚拟机粘贴。
+    -r disk:mydisk=/device 实现文件夹共享，mydisk是名字，可以随便取，/device是物理机上用于共享的文件夹
+    ip ： 虚拟机的IP
+
     rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
 
 按 `ctrl + alt +回车` 退出或进入全屏模式。
