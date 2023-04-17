@@ -7447,7 +7447,7 @@ Gnome 主题乐园
 
 虚拟机 Gnome Box
 
-    底层调用 virt-manager 操作 kvm 虚拟机，详见章节 [GNOME Boxes]。
+    底层调用 virt-manager 操作 kvm 虚拟机，详见章节 [GNOME Boxes](virtualization think)。
 
 浏览器
 
