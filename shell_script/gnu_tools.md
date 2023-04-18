@@ -6086,12 +6086,12 @@ bc - An arbitrary precision calculator language
 
     Aria2 完美配置 https://github.com/P3TERX/aria2.conf
 
+命令行传输各种参数，设置复杂，直接用 p3terx 做的 docker 得了
+
     Aria2 Pro: 基于 Aria2 完美配置和特殊定制优化的 Aria2 Docker
         https://p3terx.com/archives/docker-aria2-pro.html
             https://github.com/P3TERX/Aria2-Pro-Docker
             https://hub.docker.com/r/p3terx/aria2-pro
-
-命令行传输各种参数，设置复杂，直接用 p3terx 做的 docker 得了
 
         docker run -d \
             --name aria2-pro \
@@ -6107,8 +6107,29 @@ bc - An arbitrary precision calculator language
             -v $PWD/aria2-downloads:/downloads \
             p3terx/aria2-pro
 
-    配置本机防火墙开放必要的入站端口，内网机器在路由器设置端口转发到相同端口。
-    使用你喜欢的 WebUI 或 App 进行连接，强烈推荐 AriaNg
+配置本机防火墙开放必要的入站端口，内网机器在路由器设置端口转发到相同端口。
+
+使用你喜欢的 WebUI 或 App 进行连接，强烈推荐 AriaNg。或在浏览器搜索插件：Aria2 for Edge，安装后设置 aip-key，可在浏览器中直接调用 Motrix 运行的 aria2 进程。
+
+简单使用： Windows 使用开源的 GUI 程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳 dht 站点清单。
+
+因为 Motrix 使用的 Aria2 来源于他自己的专用 Fork 而非官方发行的预编译包。
+
+建议用法：
+
+1、使用官方 Aria2 v1.36.0 ，配置文件原样复用 Motrix 的 aria2.conf ，使用 WinSW 将 Aria2 安装成用户服务来开机自启，配合 Aria2 for Edge 插件拦截浏览器下载，使用该插件附带的 AirNG 进行图形化交互。<https://github.com/agalwood/Motrix/issues/1379>。
+
+2、使用 p3terx 的 tracker.sh 把最新的 bt-tracker 地址更新到配置文件。
+
+3、修改 Motrix 生成的启动命令行，
+
+    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce  --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=xxxxxx --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+
+    去掉 --bt-tracker=
+    去掉 --max-connection-per-server
+    修改 --rpc-secret 密码
+
+使用此命令行启动 aira，然后在浏览器中通过插件 Aria2 for Edge 进行下载即可。
 
 测试 rpc
 
@@ -6124,27 +6145,26 @@ bc - An arbitrary precision calculator language
      --header "Sec-WebSocket-Version: 13" \
      http://localhost:16800/jsonrpc
 
-简单使用： Windows 使用开源的 GUI 程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳 dht 站点清单。
+start_rcp.bat 样例
 
-因为 Motrix 使用的 Aria2 来源于他自己的专用 Fork 而非官方发行的预编译包。
+```bat
 
-建议：
+aria2c.exe --conf-path=C:\tools\aria2\aria2.conf --save-session=C:\tools\aria2\download.session --input-file=C:\tools\aria2\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=C:\tools\aria2\dht.dat --dht-file-path6=C:\tools\aria2\dht6.dat --dht-listen-port=26701 --dir=C:\Users\sweethome\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
-    使用官方 Aria2 v1.36.0 ，配置文件原样复用 Motrix 的 aria2.conf ，使用 WinSW 将 Aria2 安装成用户服务来开机自启，配合 Aria2 for Edge 插件拦截浏览器下载，使用该插件附带 AirNG 进行图形化交互。<https://github.com/agalwood/Motrix/issues/1379>。
+```
 
-    浏览器搜索插件：Aria2 for Edge，安装后设置 aip-key，可在浏览器中直接调用 Motrix 运行的 aria2 进程。
+start_rpc.ps1 样例
 
-    使用 p3terx 的 tracker.sh 把最新的 bt-tracker 地址更新到配置文件。
+```powershell
 
-    修改 Motrix 生成的启动命令行，
+Start-Process -WindowStyle hidden -FilePath (C:\tools\aria2\aria2c.exe --conf-path=C:\tools\aria2\aria2.conf --save-session=C:\tools\aria2\download.session --input-file=C:\tools\aria2\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=C:\tools\aria2\dht.dat --dht-file-path6=C:\tools\aria2\dht6.dat --dht-listen-port=26701 --dir=C:\Users\sweethome\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94)
 
-        aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce  --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=xxxxxx --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+# PowerShell.exe -windowstyle hidden -FilePath xxx.ps1
+#Start-Job -ScriptBlock {
+#  C:\tools\aria2\aria2c.exe --conf-path=C:\tools\aria2\aria2.conf --save-session=C:\tools\aria2\download.session --input-file=C:\tools\aria2\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=C:\tools\aria2\dht.dat --dht-file-path6=C:\tools\aria2\dht6.dat --dht-listen-port=26701 --dir=C:\Users\sweethome\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+#}
 
-        去掉 --bt-tracker=
-        去掉 --max-connection-per-server
-        修改 --rpc-secret 密码
-
-    使用此命令行启动 aira，然后在浏览器中通过插件 Aria2 for Edge 进行下载即可。
+```
 
 配置文件 aira2.conf，以 Motrix 为例
 
