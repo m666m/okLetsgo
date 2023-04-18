@@ -6080,9 +6080,12 @@ bc - An arbitrary precision calculator language
 
     简单点直接 docker https://registry.hub.docker.com/r/linuxserver/transmission/
 
-#### Aria2 不更新了
+#### Aria2
 
-支持 http、bt 等多种格式。
+    https://github.com/aria2/aria2
+        https://aria2.github.io/
+
+支持 http、bt 等多种格式，可惜不更新了。
 
     Aria2 完美配置 https://github.com/P3TERX/aria2.conf
 
