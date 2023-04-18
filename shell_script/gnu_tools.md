@@ -8123,15 +8123,30 @@ journalctl 功能强大，用法非常多
     # 指定日志文件保存多久
     $ journalctl --vacuum-time=1years
 
-#### xxx.service系统资源配置文件
+#### TODO: xxx.service系统资源配置文件
+
+    https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 
 每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit 。
 
-Systemd 的配置文件存放在目录 /lib/systemd/system/，
-用 systemctl start 启动后出现在 /usr/lib/systemd/system/
-用 systemctl enable 设置为自启动后添加连接文件在 /etc/systemd/system/ 。
+不确定：
+
+    Systemd 的配置文件存放在目录 /lib/systemd/system/，
+    用 systemctl start 启动后出现在 /usr/lib/systemd/system/
+    用 systemctl enable 设置为自启动后添加连接文件在 /etc/systemd/system/ 。
 
 也可直接存放在 /etc/systemd/system/ 下，暂不知道区别
+
+     (--system)
+    /etc/systemd/system             System units created by the administrator
+    /usr/local/lib/systemd/system   System units installed by the administrator
+    /usr/lib/systemd/system         System units installed by the distribution package manager
+
+    (--user)
+    $HOME/.config/systemd/user  User configuration
+    /etc/systemd/user           User units created by the administrator
+    /usr/local/lib/systemd/user User units installed by the administrator
+    /usr/lib/systemd/user       User units installed by the distribution package manager
 
 systemctl enable 命令用于在上面两个目录之间，建立符号链接关系
 
@@ -8211,8 +8226,6 @@ systemctl cat 命令可以查看配置文件的内容
 
 [Unit]区块通常是配置文件的第一个区块，用来定义 Unit 的元数据，以及配置与其他 Unit 的关系。它的主要字段如下
 
-    https://www.freedesktop.org/software/systemd/man/systemd.unit.html
-
     Description：简短描述
     Documentation：文档地址
     Requires：当前 Unit 依赖的其他 Unit，如果它们没有运行，当前 Unit 会启动失败
@@ -8225,6 +8238,8 @@ systemctl cat 命令可以查看配置文件的内容
     Assert...：当前 Unit 运行必须满足的条件，否则会报启动失败
 
 [Install]通常是配置文件的最后一个区块，用来定义如何启动，以及是否开机启动。它的主要字段如下。
+
+    https://www.freedesktop.org/software/systemd/man/systemd.unit.html#%5BInstall%5D%20Section%20Options
 
     WantedBy：它的值是一个或多个 Target，当前 Unit 激活时（enable）符号链接会放入/etc/systemd/system目录下面以 Target 名 + .wants后缀构成的子目录中
     RequiredBy：它的值是一个或多个 Target，当前 Unit 激活时，符号链接会放入/etc/systemd/system目录下面以 Target 名 + .required后缀构成的子目录中
@@ -8255,6 +8270,37 @@ systemctl cat 命令可以查看配置文件的内容
     Environment：指定环境变量
 
 Unit 配置文件的完整字段清单，请参考[systemd官方文档](https://www.freedesktop.org/software/systemd/man/systemd.unit.html)。
+
+##### 普通用户定义的 unit
+
+    https://www.cnblogs.com/hadex/p/6571278.html
+        https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
+
+unit 默认都是系统级不必显式添加 --system 选项
+
+    $  systemctl --user status gpg-agent.socket
+    ● gpg-agent.socket - GnuPG cryptographic agent and passphrase cache
+    Loaded: loaded (/usr/lib/systemd/user/gpg-agent.socket; disabled; vendor preset: enabled)
+    Active: active (running) since Tue 2023-02-07 22:49:38 +08; 2 months 8 days ago
+        Docs: man:gpg-agent(1)
+    Listen: /run/user/1000/gnupg/S.gpg-agent (Stream)
+    CGroup: /user.slice/user-1000.slice/user@1000.service/gpg-agent.socket
+
+用户自定义的 unit[s] 可以放置在如下四个位置
+
+    /usr/lib/systemd/user：优先级最低，会被高优先级的同名 unit 覆盖
+
+    ~/.local/share/systemd/user
+
+    /etc/systemd/user：全局共享的用户级 unit[s]
+
+    ~/.config/systemd/user：优先级最高
+
+注：
+
+    用户级 unit 与系统级 unit 相互独立，不能互相关联或依赖
+    用户级 unit 运行环境用 default.target，系统级通常用 multi-user.target
+    即使用户不登陆，其定制的服务依然会启动
 
 ##### Target 就是一个 Unit 组
 
@@ -8306,9 +8352,9 @@ Target 与 传统 RunLevel 的对应关系如下
 
 示例一：
 
-自制的shell脚本，想让systemd进行启动管理。
+自制的shell脚本，想让 systemd 用兼容 SystemV 的方式进行启动管理。
 
-确认 systemd 已经开启了 systemV 启动脚本 rc.local 的兼容服务
+先确认 systemd 已经开启了 systemV 启动脚本 rc.local 的兼容服务
 
     $ cat /lib/systemd/system/rc-local.service
     [Unit]
@@ -8324,9 +8370,11 @@ Target 与 传统 RunLevel 的对应关系如下
     RemainAfterExit=yes
     GuessMainPID=no
 
-然后执行章节 [SystemV设置开机自启动]。
+然后执行章节 [SystemV设置开机自启动] 的步骤即可。
 
 示例二：
+
+    https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 
     https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
 
