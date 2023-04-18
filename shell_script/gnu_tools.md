@@ -6866,9 +6866,11 @@ NFS 一般用来存储共享视频，图片等静态数据。
 
             umount /mnt
 
-    rclone：Rclone (rsync for cloud storage) 是一个命令行程序,用于同步文件和目录，支持常见的 Amazon Drive 、Google Drive 、OneDrive 、Dropbox 等云存储。本文将演示在 Windows 平台下将 OneDrive 挂载为本地硬盘，并使用跨平台的 Rclone GUI 连接到云盘。
+    rclone：Rclone (rsync for cloud storage) 是一个命令行程序,用于同步文件和目录，支持常见的 Amazon Drive 、Google Drive 、OneDrive 、Dropbox 等云存储。一般在 Windows 平台下将 OneDrive 挂载为本地硬盘，并使用跨平台的 Rclone GUI 连接到云盘。
 
         https://rclone.org/
+
+        自建私有 API https://p3terx.com/archives/rclone-connect-onedrive-with-selfbuilt-api.html
 
 ### 在当前目录启动一个简单的http服务器
 
