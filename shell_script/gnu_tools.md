@@ -5497,6 +5497,10 @@ jq 格式化 JSON 数据，并彩色显示，也可用作格式检查
     # sudo apt install jq
     cat config.json |jq
 
+watch 对固定刷新屏幕的文本，可以高亮出变化的部分，非常适合监控
+
+    watch -d cat /proc/interrupts
+
 #### ackg 替代 grep 给自定义字符串加颜色
 
 hhighlighter 给终端输出的自定义字符串加颜色，非常适合监控日志输出调试程序使用

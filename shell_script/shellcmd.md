@@ -1498,6 +1498,12 @@ ps 命令，注意伯克利写法的参数不用减号，与我们通常用减�
 
 ## 查看 io 情况
 
+    系统的逐个讲解cpu、内存、网络的排查方法 《Linux性能优化实战》
+
+        https://www.cnblogs.com/fiab13/p/14394274.html
+
+        https://blog.csdn.net/hehuyi_in/category_8883889.html
+
     Linux 性能分析工具汇总 https://zhuanlan.zhihu.com/p/409237909
 
     https://zhuanlan.zhihu.com/p/346630811
@@ -1550,7 +1556,9 @@ sysstat 包含了许多商用 Unix 通用的各种工具，用于监视系统性
 
     mpstat      统计处理器相关的信息
 
-    pidstat     统计Linux进程的相关信息：IO、CPU、内存等
+    vmstat      统计系统总体的虚拟内存、上下文切换情况
+
+        pidstat     每个进程、线程的详细信息：同 vmstat
 
     tapstat     统计磁盘驱动器的相关信息
 
@@ -1803,6 +1811,89 @@ sar 命令选项    功能
     19:04:06     atmptf/s  estres/s retrans/s isegerr/s   orsts/s
     19:04:07         0.00      0.00      0.00      0.00      0.00
 
+#### 查找上下文切换过多导致高CPU占用
+
+    https://blog.csdn.net/Hehuyi_In/article/details/108439078
+
+主要使用两个命令：vmstat pidstat
+
+系统总体的上下文切换情况
+
+    $ vmstat -w 5
+    procs -----------------------memory---------------------- ---swap-- -----io---- -system-- --------cpu--------
+    r  b         swpd         free         buff        cache   si   so    bi    bo   in   cs  us  sy  id  wa  st
+    0  0            0      2679572       144608       868176    0    0     0     0    2    1   3   4  94   0   0
+    0  0            0      2679092       144608       868176    0    0     0     0 1956 3518   3   3  94   0   0
+    0  0            0      2679100       144608       868176    0    0     0     0 1293 3757   3   3  93   0   0
+    0  0            0      2679172       144608       868176    0    0     0     0  585 3912   3   5  92   0   0
+    1  0            0      2679504       144608       868176    0    0     0     0  585 3911   4   4  92   0   0
+
+主要关注的列：
+
+    us（user）和 sy（system）列：这两列是 CPU 使用率
+
+    对上下文切换而言需要特别关注的四列内容：
+
+        cs（context switch）是每秒上下文切换的次数。
+
+        in（interrupt）则是每秒中断的次数。
+
+        r（Running or Runnable）是就绪队列的长度，也就是正在运行和等待 CPU 的进程数。比如，就绪队列的长度 8，远远超过了系统 CPU 的个数 2，所以肯定会有大量的 CPU 竞争。
+
+        b（Blocked）则是处于不可中断睡眠状态的进程数。
+
+查看每个进程的上下文切换情况
+
+    $ pidstat  -w 3
+    14:25:02      UID      TGID       TID   cswch/s nvcswch/s  Command
+    14:25:03        0       846         -      1.85      0.00  watchdog
+    14:25:03        0         -       846      1.85      0.00  |__watchdog
+    14:25:03     1000      2044         -     20.37   1355.56  tmux: server
+    14:25:03     1000         -      2044     20.37   1355.56  |__tmux: server
+    14:25:03        0      2055         -    743.52      0.93  kworker/u8:1-events_unbound
+    14:25:03        0         -      2055    743.52      0.93  |__kworker/u8:1-events_unbound
+
+    注意这里的进程上下文切换不是自己的线程切换次数的累加，在这里看不出线程的问题：
+
+    cswch ，表示每秒自愿上下文切换（voluntary context switches）的次数。是指进程无法获取所需资源，导致的上下文切换。比如说，I/O、内存等系统资源不足时，就会发生自愿上下文切换。
+
+    nvcswch ，表示每秒非自愿上下文切换（non voluntary context switches）的次数。是指进程由于时间片已到等原因，被系统强制调度，进而发生的上下文切换。比如说，大量进程都在争抢 CPU 时，就容易发生非自愿上下文切换。
+
+按线程查看上下文切换次数，可指定 cpu 占用过高的那个进程
+
+    $ pidstat -p 14039 -wt 1
+    14:38:27      UID      TGID       TID   cswch/s nvcswch/s  Command
+    14:38:32        0     14039         -   1097.80      0.00  kworker/u8:0-events_unbound
+    14:38:32        0         -     14039   1097.80      0.00  |__kworker/u8:0-events_unbound
+
+    14:38:32      UID      TGID       TID   cswch/s nvcswch/s  Command
+    14:38:37        0     14039         -    542.80      0.00  kworker/u8:0-events_unbound
+    14:38:37        0         -     14039    542.80      0.00  |__kworker/u8:0-events_unbound
+
+每秒上下文切换多少次才算正常
+这个数值其实取决于系统本身的 CPU 性能。如果系统的上下文切换次数比较稳定，那么从数百到一万以内，都应该算是正常的。但当上下文切换次数超过一万次，或者切换次数出现数量级的增长时，就很可能已经出现了性能问题。
+
+这时，你还需要根据上下文切换的类型，再做具体分析。比方说：
+
+自愿上下文切换变多了，说明进程都在等待资源，有可能发生了 I/O 等其他问题；
+非自愿上下文切换变多了，说明进程都在被强制调度，也就是都在争抢 CPU，说明 CPU的确成了瓶颈；
+中断次数变多了，说明 CPU 被中断处理程序占用，还需要通过查看 /proc/interrupts文件来分析具体的中断类型。
+
+##### 查看中断次数过高
+
+接上文，除了上下文切换频率骤然升高，中断次数也上升到了 1 万，需要查看 /proc/interrupts 系统提供的中断使用情况文件。
+
+因为该文件实时刷新，所以我们使用 `watch -d` 来高亮显示变化的区域
+
+    watch -d cat /proc/interrupts
+
+            CPU0       CPU1
+    ...
+    RES:    2450431    5279697   Rescheduling interrupts
+    ...
+
+观察一段时间可以发现，变化速度最快的是重调度中断（RES），它表示唤醒空闲状态的 CPU 来调度新的任务运行。这是多处理器系统中，调度器用来分散任务到不同 CPU 的机制，通常也被称为处理器间中断（Inter-Processor Interrupts，IPI）。所以，这里的中断升高还是因为过多任务的调度问题，跟前面上下文切换次数的分析结果是一致的。
+
 #### 可显示指定日期指定项目的信息
 
     # 网络
@@ -1833,8 +1924,6 @@ sar 命令选项    功能
 
     https://developer.aliyun.com/article/65255
 
-    Linux Perf 性能分析工具及火焰图浅析 https://zhuanlan.zhihu.com/p/54276509
-
 Perf 是 Linux kernel 自带的系统性能优化工具。
 
     # 注意跟当前操作系统的内核版本匹配
@@ -1845,11 +1934,33 @@ Perf 是 Linux kernel 自带的系统性能优化工具。
     sudo apt install linux-doc-"$(uname -r)"
     sudo apt install linux-tools-"$(uname -r)"
 
-### 火焰图辅助分析
+#### 火焰图辅助分析
 
 火焰图是一种剖析软件运行状态的工具，它能够快速的将频繁执行的代码路径以图式的形式展现给用户。
 
-    https://zhuanlan.zhihu.com/p/54276509
+    https://blog.csdn.net/Hehuyi_In/article/details/108910584
+
+    Linux Perf 性能分析工具及火焰图浅析 https://zhuanlan.zhihu.com/p/54276509
+
+从 perf record 记录生成火焰图的工具
+
+    https://github.com/brendangregg/FlameGraph
+
+要生成火焰图，其实主要需要三个步骤：
+
+    执行 perf script ，将 perf record 的记录转换成可读的采样记录；
+    执行 stackcollapse-perf.pl 脚本，合并调用栈信息；
+    执行 flamegraph.pl 脚本，生成火焰图
+
+在 Linux 中，我们可以使用管道，来简化这三个步骤的执行过程。假设刚才用 perf record 生成的文件路径为 /root/perf.data，执行下面的命令，你就可以直接生成火焰图：
+
+    git clone --depth=1 https://github.com/brendangregg/FlameGraph
+
+    cd FlameGraph
+
+    perf script -i /root/perf.data | ./stackcollapse-perf.pl --all |  ./flamegraph.pl > ksoftirqd.svg
+
+执行成功后，使用浏览器打开 ksoftirqd.svg ，你就可以看到生成的火焰图了。
 
 ## 查看文件占用
 
