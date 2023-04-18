@@ -43,22 +43,32 @@ if [ -x /usr/bin/dircolors ]; then
     #alias fgrep='fgrep --color=auto'
     alias tree='tree -a -C'
 
-    # 常用的列文件
+    # 常用的列文件的惯用法
     alias lsa='ls -A'
     alias l='ls -CFA'
     alias ll='ls -l'
     alias la='ls -lA'
-    # 列目录，查找指定关键字。因为ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便
-    alias lsg='ls -lFA |grep -i'
 
-    # 下为各命令的惯用法
-    alias greps='grep --color=auto -in'
-    # 查找当前目录及子目录所有文件，列出包含指定内容的的行，如 `grepf logg`
-    alias grepf='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
+    # 各命令的惯用法
+    #
+    # 列出目录下的文件清单，查找指定关键字，如 `lsg txt`。因为ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便。
+    alias lsg='ls -lFA |grep -i'
+    # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findg txt`
+    alias findg='find ./ |grep -i'
+    #
+    # 在当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps echo *`
+    alias greps='grep --color=auto -d skip -in'
+    # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过 .git 等目录，如 `finds error`
+    alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
+    #
+    # 目录树，最多2级，显示目录和可执行文件的标识，跳过 .git 等目录
     alias trees='tree -a -CF -I ".git|__pycache__" -L 2'
+    # 进程树，列出 pid，全部子进程
     alias pstrees='pstree -p -s'
+    # curl 跟踪重定向，不显示进度条，静默错误信息但要报错失败
     alias curls='curl -fsSL'
-    alias passr='cat /dev/random | tr -dc 'a-zA-Z0-9' | head -c 16'
+    # 16 字符随机数作为密码
+    alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
 
     # gpg 常用命令
     alias pkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'

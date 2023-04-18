@@ -51,13 +51,15 @@
     "workbench.colorCustomizations": {
         "[Solarized Light]": {
             "editor.foreground": "#2c353f",
-            // 双击高亮和同类高亮颜色无区分，非常不方便
+            // 双击高亮和同类高亮颜色无区分
             "editor.selectionBackground": "#ddcaadc9",
             "editor.selectionHighlightBackground": "#c2b6a3c9"
         },
         "[Nord]": {
             "activityBar.foreground": "#45f4fa",
-            // 双击高亮和同类高亮颜色无区分，非常不方便
+            // 光标所在词高亮
+            "editor.wordHighlightBackground": "#267dd45b",
+            // 双击高亮和同类高亮颜色无区分
             "editor.selectionBackground": "#08537eb4",
             "editor.selectionHighlightBackground": "#1474acad"
         },
@@ -67,11 +69,11 @@
             "editor.foreground": "#c2d1dd",
             "sideBar.foreground": "#c2d1dd",
             "terminal.foreground": "#c2d1dd",
-            // 双击高亮和同类高亮颜色无区分，非常不方便
+            // 双击高亮和同类高亮颜色无区分
             "editor.selectionBackground": "#08537eb4",
             "editor.selectionHighlightBackground": "#1474acad",
             // minimap 滑块看不清
-            "minimapSlider.background": "#2d4c6e86",
+            "minimapSlider.background": "#25446679",
             "minimapSlider.hoverBackground": "#33527a77",
             "minimapSlider.activeBackground": "#36568085",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
@@ -88,13 +90,23 @@
             "editor.foreground": "#95a3a8",
             "sideBar.foreground": "#8c989c",
             "terminal.foreground": "#a6b9be",
-            // 双击高亮和同类高亮颜色无区分，非常不方便
+            // 光标所在行、光标所在词高亮
+            "editor.lineHighlightBackground": "#293450b0",
+            "editor.wordHighlightBackground": "#3572af4d",
+            // 双击高亮和同类高亮颜色无区分
             "editor.selectionBackground": "#08537eb4",
             "editor.selectionHighlightBackground": "#1474acad",
+            // 光标悬停提示框颜色跟底色无法区分
+		    "editorHoverWidget.background": "#2d3135",
+		    "editorHoverWidget.border": "#ffffff15",
+            // 进度条看不清
+            "scrollbarSlider.background": "#268b946b",
+            "scrollbarSlider.hoverBackground": "#45787cbe",
+            "scrollbarSlider.activeBackground": "#528f92c7",
             // minimap 滑块看不清
-            "minimapSlider.background": "#2e59634b",
-            "minimapSlider.hoverBackground": "#40667462",
-            "minimapSlider.activeBackground": "#4d879959",
+            "minimapSlider.background": "#164c6b5e",
+            "minimapSlider.hoverBackground": "#195a8075",
+            "minimapSlider.activeBackground": "#16638f94",
             // 括号高亮的背景色居然用肉色
             "editorBracketMatch.background": "#15415a9f",
             "editorBracketMatch.border": "#88c0d0",
