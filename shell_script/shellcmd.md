@@ -1034,11 +1034,11 @@ sudo 和 su 常用法
 
             sudo -H -u otheruser bash -c 'command'
 
-    有 sudo 权限的普通用户切换到 root 用户
+    普通用户切换到 root 用户并执行登录脚本（普通用户需要有sudo组）
 
         sudo -i
 
-    从 root 用户切换到其它用户
+    从当前用户切换到其它用户（当前是非root用户会提示 root 用户密码）
 
         su - uu
 
