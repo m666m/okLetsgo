@@ -6010,6 +6010,13 @@ bc - An arbitrary precision calculator language
 
 ### 按数制显示内容 od
 
+xxd : 反编译文件内容，从二进制转为十六进制转换
+
+    # 可以得到密码的hash值
+    xxd "/etc/shadow" |xxd -r
+
+od :按数制显示内容
+
     od [-A<字码基数> ] [-t[TYPE[SIZE]] ] 文件名
 
 -A<字码基数>，在第一列地址栏，使用何种基数表示地址
