@@ -1872,7 +1872,7 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
         安装 Windows，对自己开启 Bitlocker 加密（防止硬盘A的操作系统启动后访问硬盘B，避免A上木马监控程序的扫描和传播），只做升级维护等管理用途，不在这里做日常使用。
 
-        或安装 Qubes OS，默认使用 dm-luks 整盘加密，意味着你的整个系统是加密的（除了 /boot 分区）。
+        或安装 Qubes OS 等 Linux 系统，安装分区时使用 dm-luks 整盘加密，意味着你的整个系统是加密的（除了 /boot 分区）。
 
     客户虚拟机：开发、办公
 
