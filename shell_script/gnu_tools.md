@@ -5637,6 +5637,10 @@ hhighlighter 给终端输出的自定义字符串加颜色，非常适合监控�
 
 ### 写入文件 dd
 
+有个预创建块文件更快的命令
+
+    fallocate -l 10G test_file2.img
+
 dd 命令是基于块（block）的复制，用途很多。
 
 用 boot.img 制作启动盘
