@@ -3056,8 +3056,19 @@ if [ -x /usr/bin/dircolors ]; then
     alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
 
     # gpg 常用命令
-    alias pkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
-    alias gpgvs='echo "[使用临时钥匙圈校验文件签名]" && gpgv --keyring'
+    alias ggk='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
+    # 使用临时钥匙圈校验文件签名，如 `ggvs ./fedora.gpg xxxx.checksum`
+    alias ggvs='echo "[使用临时钥匙圈校验文件签名]" && gpgv --keyring'
+    # 对称算法加密，自动选择当前可用的私钥签名，需要给出文件名，生成的文件默认后缀 .gpg
+    alias ggcs='echo "[对称算法加密文件]" && gpg -s --cipher-algo AES-256 -c'
+    # 解密并验签，默认输出到屏幕
+    alias ggd='gpg -d'
+
+    # openssl 常用命令
+    # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件
+    alias ssle='openssl enc -e -aes-256-cbc -pbkdf2 -salt'
+    # 对称算法解密，如 `cat 1.txt.asc |ssld` 输出到屏幕，`ssld -in 1.txt.asc -out 1.txt`操作文件
+    alias ssld='openssl enc -d -aes-256-cbc -pbkdf2 -salt'
 
     # git 常用命令
     alias gs='echo "git status:" && git status'
@@ -5361,7 +5372,11 @@ reptyr
 
 显示内容，显示文件名和行号，排除目录
 
-    find ./ -name "*" -type f | xargs grep -in 'gitee'
+    find ./ -name "*" -type f |xargs grep -in 'gitee'
+
+在 jar 包中查找指定的类名，显示 jar 包名称和文件名称
+
+    find ./ -name "*.jar" |xargs -I{} bash -c "unzip -l {} |grep LicenseUtil && echo {}"
 
 xargs 命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs 能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说 find 的结果经过 xargs 后，其实将 find 找出来的文件名逐个传递给 grep 做参数，grep 再在这些文件内容中查找关键字 test。
 

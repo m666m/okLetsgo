@@ -71,8 +71,19 @@ if [ -x /usr/bin/dircolors ]; then
     alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
 
     # gpg 常用命令
-    alias pkey='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
-    alias gpgvs='echo "[使用临时钥匙圈校验文件签名]" && gpgv --keyring'
+    alias ggk='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
+    # 使用临时钥匙圈校验文件签名，如 `ggvs ./fedora.gpg xxxx.checksum`
+    alias ggvs='echo "[使用临时钥匙圈校验文件签名]" && gpgv --keyring'
+    # 对称算法加密，自动选择当前可用的私钥签名，需要给出文件名，生成的文件默认后缀 .gpg
+    alias ggcs='echo "[对称算法加密文件]" && gpg -s --cipher-algo AES-256 -c'
+    # 解密并验签，默认输出到屏幕
+    alias ggd='gpg -d'
+
+    # openssl 常用命令
+    # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件
+    alias ssle='openssl enc -e -aes-256-cbc -pbkdf2 -salt'
+    # 对称算法解密，如 `cat 1.txt.asc |ssld` 输出到屏幕，`ssld -in 1.txt.asc -out 1.txt`操作文件
+    alias ssld='openssl enc -d -aes-256-cbc -pbkdf2 -salt'
 
     # git 常用命令
     alias gs='echo "git status:" && git status'
