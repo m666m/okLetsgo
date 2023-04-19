@@ -1884,6 +1884,8 @@ TODO: 先装 Windows 再装 Fedora
 
     https://zhuanlan.zhihu.com/p/363640824
 
+    双系统全盘加密 https://www.cnblogs.com/xuanbjut/p/11796637.html
+
 先装 Ubuntu 再装 Windows
 
     https://zhuanlan.zhihu.com/p/609573337
