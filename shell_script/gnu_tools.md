@@ -3050,7 +3050,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias trees='tree -a -CF -I ".git|__pycache__" -L 2'
     # 进程树，列出 pid，全部子进程
     alias pstrees='pstree -p -s'
-    # curl 跟踪重定向，不显示进度条，静默错误信息但要报错失败
+    # curl 跟踪重定向，不显示进度条，静默错误信息但要报错失败，默认打印到屏幕，用 -O 保存为默认文件名
     alias curls='curl -fsSL'
     # 16 字符随机数作为密码
     alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
@@ -3061,7 +3061,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias ggvs='echo "[使用临时钥匙圈校验文件签名]" && gpgv --keyring'
     # 对称算法加密，自动选择当前可用的私钥签名，需要给出文件名，生成的文件默认后缀 .gpg
     alias ggcs='echo "[对称算法加密文件]" && gpg -s --cipher-algo AES-256 -c'
-    # 解密并验签，默认输出到屏幕
+    # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
     alias ggd='gpg -d'
 
     # openssl 常用命令
@@ -6306,7 +6306,7 @@ peer-id-prefix=-TR2940-
 
 一般在使用中，至少要加参数：跟踪重定向，不显示进度条，静默错误信息但要报错失败
 
-    curl -fsSL https://www.cloudflare.com/ips-v4
+    curl -fsSL https://github.com/web-flow.gpg
 
     如果对端服务器的 https 签名信息错误，可以用 -k 跳过 SSL 检测
 
