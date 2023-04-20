@@ -74,7 +74,7 @@
             "terminal.foreground": "#c2d1dd",
             // 双击高亮和同类高亮颜色无区分
             "editor.selectionBackground": "#1474acad",
-            "editor.selectionHighlightBackground": "#08537eb4"
+            "editor.selectionHighlightBackground": "#08537eb4",
             // minimap 滑块看不清
             "minimapSlider.background": "#25446679",
             "minimapSlider.hoverBackground": "#33527a77",
@@ -98,7 +98,7 @@
             "editor.wordHighlightBackground": "#3572af4d",
             // 双击高亮和同类高亮颜色无区分
             "editor.selectionBackground": "#1474acad",
-            "editor.selectionHighlightBackground": "#08537eb4"
+            "editor.selectionHighlightBackground": "#08537eb4",
             // 光标悬停提示框颜色跟底色无法区分
 		    "editorHoverWidget.background": "#2d3135",
 		    "editorHoverWidget.border": "#ffffff15",
