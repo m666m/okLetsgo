@@ -57,6 +57,8 @@
         },
         "[Nord]": {
             "activityBar.foreground": "#45f4fa",
+            // 搜索高亮看不清
+            "editor.findMatchHighlightBackground": "#07b6eb52",
             // 光标所在词高亮
             "editor.wordHighlightBackground": "#267dd45b",
             // 双击高亮和同类高亮颜色无区分
