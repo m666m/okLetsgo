@@ -5777,6 +5777,13 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
         # 解包
         tar xf myarch.tar
 
+        # 大文件压缩后，应该做校验，如果目录或子目录的文件有变化，都会提示
+        $ tar df arc.tar.gz
+        dir1/file1: Mod time differs
+        dir1/file1: Contents differ
+        file2: Mod time differs
+        file2: Contents differ
+
 但是我们最常用的是打包然后再压缩，所以 tar 扩展支持 .gz 和 .bz2，实质是调用现有的 gzip 程序把自己打包好的文件再压缩，但是节省了用户在命令行的输入。
 
 最常用的 .tar.gz 文件
@@ -5800,13 +5807,6 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
 
     # curl 下载默认输出是标准输入流，管道后面的命令是 tar 从标准输出流读取数据解压到指定的目录下
     curl -fsSL https://go.dev/dl/go1.19.5.linux-armv6l.tar.gz |sudo tar -C /usr/local -xzf -
-
-    # 大文件压缩后，可以校验下，如果目录或子目录的文件有变化，都会提示
-    $ tar df arc.tar.gz
-    dir1/file1: Mod time differs
-    dir1/file1: Contents differ
-    file2: Mod time differs
-    file2: Contents differ
 
     # 打包并 gpg 加密
     tar cjf - dir1 dir2 file2 node.exe |gpg --output backup.tar.bz2.gpg --cipher-algo AES-256 -c -
