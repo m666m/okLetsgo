@@ -2,10 +2,15 @@
 
     GNU 收录软件，可查手册 https://www.gnu.org/software/software.html
 
-        Linux 命令速查 https://man7.org/linux/man-pages/index.html
-        Linux 命令速查 https://linux.die.net/man/
+    Linux 命令速查
+
+        https://man7.org/linux/man-pages/index.html
+
+        这个老点 https://linux.die.net/man/
 
     各种linux帮助手册速查 https://manned.org/
+
+    内核相关工具和使用手册 https://docs.kernel.org/
 
 ## Windows 下的 GNU/POSIX 环境
 
