@@ -6404,17 +6404,39 @@ peer-id-prefix=-TR2940-
 
     macOS                                   netcat
 
-运行服务端
-
-    nc -l 5678
-
-运行客户端
-
-    nc 127.0.0.1 5678 或 telnet 127.0.0.1 5678
-
-客户端输入文字即可显示在服务端
-
 对本机端口转发来说，nc是个临时的端口转发的好工具，永久的端口转发用iptables。
+
+    运行服务端
+
+        nc -l 5678
+
+    运行客户端
+
+        nc 127.0.0.1 5678 或 telnet 127.0.0.1 5678
+
+    客户端输入文字即可显示在服务端
+
+在远程节点上使用 nc 或 socat 监听一个端口，在本地端向该端口发送数据。
+
+    # 远程节点
+    nc -l -k 12345 | cat
+
+    # 本地节点
+    while true;do
+      echo $RANDOM
+      sleep 1
+    done >/dev/tcp/192.168.200.142/12345
+
+    或利用 ssh 也可实现
+
+        # 本地节点
+        while true;do
+          echo $RANDOM
+          sleep 1
+        done | ssh 192.168.200.142 'cat /dev/stdin >/tmp/x.log'
+
+        # 远程节点验证数据
+        tail -f /tmp/x.log
 
 利用netcat远程备份
 
@@ -6519,11 +6541,11 @@ scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了�
 
 ### 文件同步 rsync
 
+    rsync 完全手册 https://www.junmajinlong.com/linux/index/#Linux%E5%9F%BA%E6%9C%AC%E6%9C%8D%E5%8A%A1
+
     https://blog.csdn.net/wanli245/article/details/80317255
 
     https://www.ruanyifeng.com/blog/2020/08/rsync.html
-
-    rsync 完全手册 https://www.junmajinlong.com/linux/index/#Linux%E5%9F%BA%E6%9C%AC%E6%9C%8D%E5%8A%A1
 
     http://c.biancheng.net/view/6121.html
 
@@ -6896,6 +6918,8 @@ TODO:restic：使用 ssh 密钥方式连接备份服务器，在存储池中加�
 estic 备份原理跟其他简单的备份程序略有不同，它基于存储池和快照的概念，每次备份就相当于一份快照，快照存储在存储池中。存储池中的数据用AES加密，当您备份敏感数据并将备份放在不受自己管辖服务器（例如，云提供商）时，这一点尤其重要。
 
 ### nfs server 网络存储
+
+    https://www.cnblogs.com/f-ck-need-u/p/7305755.html
 
     https://blog.csdn.net/qq_38265137/article/details/83146421
 
@@ -7843,11 +7867,17 @@ systemd 保持对 SystemV 的兼容性使用的控制文件
 
 ### systemd
 
-    https://fedoramagazine.org/series/systemd-series/
+    https://systemd.io/
+        https://www.freedesktop.org/software/systemd/man/
 
-    https://www.freedesktop.org/software/systemd/man/index.html
+        https://fedoramagazine.org/series/systemd-series/
 
-    https://www.junmajinlong.com/linux/index/#systemd%E7%B3%BB%E5%88%97
+    systemd 中文手册
+
+        http://www.jinbuguo.com/systemd/systemd.index.html
+
+        https://www.junmajinlong.com/linux/index/#systemd%E7%B3%BB%E5%88%97
+            开机自启动 https://www.junmajinlong.com/linux/systemd/auto_tasks_on_boot/
 
 大多数 Linux 发行版都过渡到使用 systemd 管理系统了，但还是有讨厌 systemd 的发行版：Devuan 是使用 SysV init 软件代替 Debian systemd 包的 Debian 分支，提供了多种初始化系统供用户选择，其中包括 SysV init、sinit、openrc、runit、s6 和 shepherd
 

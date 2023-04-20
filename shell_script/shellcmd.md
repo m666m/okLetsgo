@@ -6,6 +6,8 @@
 
 参考
 
+    bash 系列教程 https://www.junmajinlong.com/shell/index/
+
     Debian 参考手册
 
         https://www.debian.org/doc/manuals/debian-reference/index.zh-cn.html
