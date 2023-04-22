@@ -5361,9 +5361,11 @@ reptyr
 
     find ./ -name 2.sql
 
-
     对当前目录下找到的所有文件，生成校验码
     find . -type f -exec sha256sum \{\} \; > checksum-file
+
+    查找文件并打印 “文件名:内容”
+    find /sys/module -name refcnt -printf '\n%p: ' -exec cat {} \;
 
 组合执行 grep 命令查找文件内容：
 
