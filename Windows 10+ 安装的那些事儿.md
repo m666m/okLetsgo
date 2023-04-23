@@ -348,11 +348,9 @@ Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个�
 
     UEFI 安全启动可以绕过，已经有常驻 UEFI 启动区的木马了 <https://arstechnica.com/information-technology/2023/03/unkillable-uefi-malware-bypassing-secure-boot-enabled-by-unpatchable-windows-flaw/>。
 
-1、主板 BIOS 先开启 UEFI 功能
+前提是确保 章节 [主板 BIOS 设置启动模式为原生 UEFI]。
 
-见章节 [主板 BIOS 设置启动模式为原生 UEFI]。
-
-2、开启 “Secure Boot”
+1、开启 “Secure Boot”
 
 在 BIOS 中，设置 “Secure Boot” 项为 “Enable”。
 
@@ -374,7 +372,13 @@ Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个�
 
     在 “Settings” 界面中的 “IO Ports” 选项里，查看对应的 PCIe 设备，比如网卡、nvme硬盘等。能正确显示设备名称，可以选择查看信息或设置该设备选项。这表示该设备的 UEFI 驱动，已经被 BIOS 正确加载了。
 
-3、“Secure Boot Mode” 导入出厂密钥后，再改回 “Standard”
+原理：
+
+    安全启动使用三种密钥：PK(platform key) 是平台的主密钥，KEK(key exchange keys) 是每次更新数据库时使用的密钥，DB(authorized signatures) 是直接对应bootloader的密钥。KEK 被 PK 签名，DB 被 KEK 签名，而 bootloader 被 DB 签名。
+
+    你可以用 archLinux 实现集成自己的公钥签名自己打包的内核到安全启动 https://www.bilibili.com/read/cv10788457
+
+2、“Secure Boot Mode” 导入出厂密钥后，再改回 “Standard”
 
 在主板 BIOS 底部显示的操作提示是再改回 “Standard”。
 
