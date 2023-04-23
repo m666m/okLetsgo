@@ -1864,11 +1864,11 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
 ### 双硬盘安装双系统
 
-双硬盘的好处是在开机启动的时候即进行选择，隔离性比一个硬盘多个分区安装 Windows 的隔离性要好，不过无法保护 /boot 分区，在操作系统引导阶段对木马监控程序的防护差，建议开启 Secure Boot 功能。
+双硬盘的好处是在开机启动的时候即进行选择，隔离性比一个硬盘多个分区安装 Windows 的隔离性要好。不过无法保护 /boot 分区，在操作系统引导阶段对木马监控程序的防护差，建议开启 Secure Boot 功能。
 
 硬盘A（分区A）
 
-    主机：仅游戏
+    主机：安装 Windows，仅打游戏用
 
     客户虚拟机：家庭私密、网课等日常用途
 
@@ -1878,7 +1878,7 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
     主机：
 
-        安装 Windows，对自己开启 Bitlocker 加密（防止硬盘A的操作系统启动后访问硬盘B，避免A上木马监控程序的扫描和传播），只做升级维护等管理用途，不在这里做日常使用。
+        安装 Windows，对自己开启 Bitlocker 加密（防止硬盘A的操作系统启动后访问硬盘B，避免A上木马病毒程序的扫描和传播），只做升级维护等管理用途，不在这里做日常使用。
 
         或安装 Qubes OS 等 Linux 系统，安装分区时使用 dm-luks 整盘加密，意味着你的整个系统是加密的（除了 /boot 分区）。
 
@@ -1900,11 +1900,9 @@ TODO: 先装 Windows 再装 Fedora
 
 #### 解决双系统安装 Windows 与 ubuntu 时间不一致的问题
 
-问题原因：linux系统与win系统对于时间的管理方式不同。linux认为硬件时间为GMT+0时间，是世界标准时间，而中国上海是东八区时间，显示时间为GMT+8；win系统认为硬件时间就是本地时间，而这个时间已经被linux设置为GMT+0时间。因此win系统下时间比正常时间慢8个小时。
+Linux 与 Windows 对于本地硬件保存时间的理解方式不同：Linux 认为硬件时间为 GMT+0 时间，是世界标准时间，而中国上海是东八区时间，显示时间为 GMT+8；Windows 系统认为硬件时间就是本地时间，而这个时间已经被 Linux 设置为 GMT+0 时间。因此 Windows 系统下时间比正常时间慢 8 个小时。
 
-解决办法：
-
-让ubuntu按照win的方式管理时间。
+解决办法：让 Ubuntu 按照 Windows 的方式管理时间
 
     sudo apt-get install ntpdate // 在ubuntu下更新本地时间
 

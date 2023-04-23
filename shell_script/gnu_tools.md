@@ -749,27 +749,27 @@ pacman 更换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科
 
 依次添加
 
-    编辑 /etc/pacman.d/mirrorlist.msys ，在文件开头添加：
+    编辑 /etc/pacman.d/mirrorlist.msys，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/msys/$arch/
         Server = http://mirrors.ustc.edu.cn/msys2/msys/$arch/
 
-    编辑 /etc/pacman.d/mirrorlist.mingw32 ，在文件开头添加：
+    编辑 /etc/pacman.d/mirrorlist.mingw32，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/i686/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/i686/
 
-    编辑 /etc/pacman.d/mirrorlist.mingw64 ，在文件开头添加：
+    编辑 /etc/pacman.d/mirrorlist.mingw64，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/x86_64/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/x86_64/
 
-    编辑 /etc/pacman.d/mirrorlist.ucrt64 ，在文件开头添加：
+    编辑 /etc/pacman.d/mirrorlist.ucrt64，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/ucrt64/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/ucrt64/
 
-    编辑 /etc/pacman.d/mirrorlist.clang64 ，在文件开头添加：
+    编辑 /etc/pacman.d/mirrorlist.clang64，在文件开头添加：
 
         Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/clang64/
         Server = http://mirrors.ustc.edu.cn/msys2/mingw/clang64/
@@ -857,7 +857,7 @@ set MSYSTEM=MINGW64
 
 基于 Arch Linux 的 pacman 提供软件仓库，采用滚动升级模式，初始安装仅提供命令行环境：高手用户不需要删除大量不需要的软件包，而是可以从官方软件仓库成千上万的高质量软件包中进行选择，搭建自己的系统。
 
-pacman命令较多，常用的命令如下：
+pacman 命令较多，常用的命令如下：
 
     pacman -Sy           更新软件包数据
     pacman -Su           更新核心软件包
@@ -936,11 +936,11 @@ WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持�
 
     https://zhuanlan.zhihu.com/p/550149638
 
-    初次使用注意关闭主密码、关闭自动锁屏的功能。否则只能编辑 user.config 文件：
+    初次使用注意关闭主密码、关闭自动锁屏的功能。否则一旦锁屏了，只能编辑 user.config 文件：
 
         干掉 application.fingerprint 和 application.masterPassword
 
-        再找到 .wind/profiles/default.v10/terminal/user.sessions 文件删除 session.autoLogin 就可以将主密码设置为空字符串了，之后再来修改主密码，就 OK 了。
+        再找到 .wind/profiles/default.v10/terminal/user.sessions 文件删除 session.autoLogin， 就可以将主密码设置为空字符串了，之后再来修改主密码，就 OK 了。
 
 alacritty 使用 OpenGL 进行显示加速的本地终端模拟器，在 Windows 下使用 powershell
 
@@ -957,8 +957,7 @@ Linux 桌面下的终端模拟器感觉没啥意义，用自带的就行了
     KDE 桌面自带 Konsole
     Xfce 桌面自带 xfce
     gtk 桌面自带 terminator
-
-    i3 自带 urxvt(rxvt-unicode)
+    i3 窗口管理器自带 urxvt(rxvt-unicode)
 
     guake
 
@@ -1002,21 +1001,21 @@ Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` �
     https://github.com/nushell/nushell
         https://www.nushell.sh/zh-CN/book/thinking_in_nu.html
 
-clink 辅助工具，在cmd下模仿bash，按tab键自动完成，像emacs一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
+2018年 Windows 10 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机Windows接口的字符显示接口，参见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]，下列三个程序估计用处不大了
 
-    https://github.com/chrisant996/clink
-        不再更新了 https://github.com/mridgers/clink
+    clink 辅助工具，在 cmd 下模仿 bash，按 tab 键自动完成，像 emacs 一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
 
-winpty 辅助工具，提供了 unix pty 接口与 cmd conhost 接口的互通，是 mintty 这种 MSYS2 环境下执行 Windows CMD/PowerShell 程序的中介，参见章节 [winpty 运行 cmd 字符终端程序]
+        https://github.com/chrisant996/clink
+            不再更新了 https://github.com/mridgers/clink
 
-    https://github.com/rprichard/winpty
+    winpty 辅助工具，提供了 unix pty 接口与 cmd conhost 接口的互通，是 mintty 这种 MSYS2 环境下执行 Windows CMD/PowerShell 程序的中介，参见章节 [winpty 运行 cmd 字符终端程序]
 
-wslbridge 辅助工具，使用 Windows ConPty 接口 以支持 WSL(Windows Subsystem for Linux)，很多支持终端多路复用的软件在 Windows 下都通过该组件使用 WSL 会话
+        https://github.com/rprichard/winpty
 
-    wslbridge2 https://github.com/Biswa96/wslbridge2
-        wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
+    wslbridge 辅助工具，提供了 unix pty 接口与 WSL(Windows Subsystem for Linux) 的互通，很多支持终端多路复用的软件在 Windows 下都通过该组件使用 WSL 会话
 
-    后续不知道发展如何：2018年 Windows 10 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机。参见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]。
+        wslbridge2 https://github.com/Biswa96/wslbridge2
+            wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
 
 ### 终端多路复用器
 
