@@ -7698,9 +7698,11 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
     Linux 桌面要禁用屏幕空白和自动屏幕锁定以实现无缝的远程桌面会话。
 
-    如果是无人值守（HEADLESS）模式，记得拔下显示器之前，在Linux 桌面启用自动登录。
+    如果是无人值守（HEADLESS）模式，记得拔下显示器之前，在Linux 桌面启用自动登录
+
         # 必须有密码
         sudo passwd ubuntu
+
         # 因为默认情况下，xRDP 使用的是自签发的证书，这个证书保存在 /etc/ssl/private/ssl-cert-snakeoil目录下。证书的密钥文件只能由 “ssl-cert” 用户组的成员读取。
         sudo adduser ubuntu ssl-cert
 
