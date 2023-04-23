@@ -7662,9 +7662,13 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
 ### 远程桌面 vnc/rdp/mstsc
 
-    Linux 下的远程桌面工具是 VNC(RFB协议)、X11、wayland 等
+    Linux 下的远程桌面体系很多 VNC(TigerVnc)等，底层有 XWindow(X11)、wayland 等
 
     Windows 下的远程桌面工具是 mstsc，使用 Microsoft RDP(Remote Desktop) 协议
+
+如果使用 VNC 体系，注意用 ssh 隧道包装下，因为 VNC 的协议加密方面考虑的非常少，密钥可能会明文传输。
+
+现在比较流行在 Windows 和 Linux 桌面都安装使用 RDP 协议 的工具：
 
 ·rdesktop 是在 Linux 上实现 rdp 协议的客户端程序，Linux 桌面用户使用该工具可以连接到使用 Windows 远程桌面协议的计算机。
 
@@ -7681,6 +7685,8 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
 ·xrdp 是在 Linux 上实现 rdp 协议的服务端程序。
 
+        https://aws.amazon.com/cn/blogs/china/vnc-or-rdp-how-to-choose-a-remote-desktop-on-the-cloud/
+
     sudo apt install xrdp
 
     sudo ufw allow from any to any port 3389 proto tcp
@@ -7693,6 +7699,10 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
     Linux 桌面要禁用屏幕空白和自动屏幕锁定以实现无缝的远程桌面会话。
 
     如果是无人值守（HEADLESS）模式，记得拔下显示器之前，在Linux 桌面启用自动登录。
+        # 必须有密码
+        sudo passwd ubuntu
+        # 因为默认情况下，xRDP 使用的是自签发的证书，这个证书保存在 /etc/ssl/private/ssl-cert-snakeoil目录下。证书的密钥文件只能由 “ssl-cert” 用户组的成员读取。
+        sudo adduser ubuntu ssl-cert
 
     注销您的 Linux 桌面登录，否则在使用 XRDP 远程连接 Linux 时，您将在 Windows 上遇到黑屏问题。
 
