@@ -7366,9 +7366,7 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
 ### 使用 gnome 扩展
 
-    https://extensions.gnome.org/
-
-    https://wiki.gnome.org/Projects/GnomeShell
+新版 Gnome 桌面向手机风格转换：没有任务栏，默认只显示当前任务窗口，查看打开的任务/切换任务要按 alt+tab。桌面只能展示壁纸，不能放文件，桌面顶部一个状态条，用户交互操作非常少。
 
     GNOME-4X 入坑指南 https://zhuanlan.zhihu.com/p/545083349
 
@@ -7380,23 +7378,29 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
 先装 GNOME 扩展，在软件管理里搜索 “Extensions” 即可，一般都自带了。
 
-GNOME 桌面增强功能，至少有个任务栏，少点几次鼠标，在软件管理里搜索 “GNOME Tweaks” 即可。
+GNOME 桌面增强功能的组件在软件管理里搜索 “GNOME Tweaks” 即可。
 
     sudo apt install gnome-tweak-tool
 
     sudo apt install gnome-shell-extensions
 
-或者安装类似苹果的浮动任务栏
+安装 Tweaks 后在控制面板里找它，官方自带的扩展很少，至少要装个任务栏，少点几次鼠标。
 
-    https://github.com/micheleg/dash-to-dock
+如果想使用其它各种扩展，只能使用网站浏览安装
 
-如果想以后使用网站浏览安装
+    先用 浏览器访问如下网址，点击顶部提示，安装浏览器组件
 
-    先用 浏览器访问 https://extensions.gnome.org/，点击顶部提示，安装浏览器组件
+        https://extensions.gnome.org/
+
+            https://wiki.gnome.org/Projects/GnomeShell
 
     然后安装本地消息组件
 
         sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
+
+推荐安装类似苹果的浮动任务栏
+
+    https://github.com/micheleg/dash-to-dock
 
 Gnome 主题乐园
 
@@ -7404,7 +7408,13 @@ Gnome 主题乐园
 
 ### 使用 KDE
 
-软件管理器是 “Discovery”
+KDE 因为多年保持桌面环境的稳定不变，所以应用软件的丰富程度比 GNOME 多太多了。
+
+KDE 的桌面定制选项非常多，慢慢研究吧
+
+    https://itsfoss.com/kde-customization/
+
+KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏览器中添加扩展的那种不方便的方式（使用另一个浏览器扩展），你可以使用 KDE 的软件管理器 “发现（Discovery）”，直接访问 KDE 的附加组件。
 
 ### 使用窗口管理器
 
@@ -7650,9 +7660,13 @@ Gnome 主题乐园
 
     HandBrake
 
-### 远程桌面 rdesktop
+### 远程桌面 vnc/rdp/mstsc
 
-这个是连接 Windows 远程桌面用的工具
+    Linux 下的远程桌面工具是 VNC(RFB协议)、X11、wayland 等
+
+    Windows 下的远程桌面工具是 mstsc，使用 Microsoft RDP(Remote Desktop) 协议
+
+·rdesktop 是在 Linux 上实现 rdp 协议的客户端程序，Linux 桌面用户使用该工具可以连接到使用 Windows 远程桌面协议的计算机。
 
     rdesktop <ip>
 
@@ -7664,6 +7678,25 @@ Gnome 主题乐园
     rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
 
 按 `ctrl + alt +回车` 退出或进入全屏模式。
+
+·xrdp 是在 Linux 上实现 rdp 协议的服务端程序。
+
+    sudo apt install xrdp
+
+    sudo ufw allow from any to any port 3389 proto tcp
+
+    sudo systemctl start xrdp
+    sudo systemctl enable xrdp
+
+安装完成后
+
+    Linux 桌面要禁用屏幕空白和自动屏幕锁定以实现无缝的远程桌面会话。
+
+    如果是无人值守（HEADLESS）模式，记得拔下显示器之前，在Linux 桌面启用自动登录。
+
+    注销您的 Linux 桌面登录，否则在使用 XRDP 远程连接 Linux 时，您将在 Windows 上遇到黑屏问题。
+
+然后其它计算机的桌面用户（Windows 使用 mstsc，Linux 使用 rdesktop）都可以用 RDP 协议远程连接这台计算机的 Linux 桌面了。
 
 ### Linux 桌面死机怎么办 --- reisub“登录控制台”
 

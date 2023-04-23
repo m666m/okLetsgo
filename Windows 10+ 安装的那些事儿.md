@@ -1189,11 +1189,13 @@ Microsoft 出品的工具包
 
     powertoys https://learn.microsoft.com/en-us/windows/powertoys/
 
-WinSW 把任意程序配置为开机自启动的服务
+把任意程序配置为开机自启动的服务
 
-    https://github.com/winsw/winsw
+    WinSW https://github.com/winsw/winsw
         配置文件说明 https://github.com/winsw/winsw/blob/v3/docs/xml-config-file.md
         配置文件样例 https://github.com/winsw/winsw/tree/v3/samples
+
+    竞品 nssm https://nssm.cc/download
 
 在线流程图
 
