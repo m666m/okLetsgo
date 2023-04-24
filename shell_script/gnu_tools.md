@@ -6018,7 +6018,7 @@ bc - An arbitrary precision calculator language
     j5FLQkXqH3m1c
 
     # 14个ascii字符
-    $ gpg --armor --gen-random 1 16
+    $ gpg --armor --gen-random 2 16
     k524BASHzHmg1JFtDLHaqg==
 
     # base64编码的14个字符
