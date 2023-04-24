@@ -81,9 +81,9 @@ if [ -x /usr/bin/dircolors ]; then
 
     # openssl 常用命令
     # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件
-    alias ssle='openssl enc -e -aes-256-cbc -iter 5000 -salt'
+    alias ssle='openssl enc -e -aes-256-cbc -iter 50000 -salt'
     # 对称算法解密，如 `cat 1.txt.asc |ssld` 输出到屏幕，`ssld -in 1.txt.asc -out 1.txt`操作文件
-    alias ssld='openssl enc -d -aes-256-cbc -iter 5000 -salt'
+    alias ssld='openssl enc -d -aes-256-cbc -iter 50000 -salt'
 
     # git 常用命令
     alias gs='echo "git status:" && git status'
