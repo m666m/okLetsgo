@@ -69,20 +69,24 @@ if [ -x /usr/bin/dircolors ]; then
     alias curls='curl -fsSL'
     # 16 字符随机数作为密码
     alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
+    # 256字节作为密钥文件
+    alias passf='dd if=/dev/random of=symmetric.key bs=1 count=256'
 
     # gpg 常用命令
     alias ggk='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
     # 使用临时钥匙圈校验文件签名，如 `ggvs ./fedora.gpg xxxx.checksum`
     alias ggvs='echo "[使用临时钥匙圈校验文件签名]" && gpgv --keyring'
-    # 对称算法加密，自动选择当前可用的私钥签名，需要给出文件名，生成的文件默认后缀 .gpg
+    # gpg 的 pinentry 经常弹不出密码提示框
+    alias ggt='export GPG_TTY=$(tty)'
+    # 对称算法加密，自动选择当前可用的私钥签名，如 `ggcs 1.txt`，默认生成的文件添加后缀 .gpg。
     alias ggcs='echo "[对称算法加密文件]" && gpg -s --cipher-algo AES-256 -c'
     # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
     alias ggd='gpg -d'
 
     # openssl 常用命令
-    # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件
+    # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件，-kfile 指定密钥文件
     alias ssle='openssl enc -e -aes-256-cbc -md sha512 -pbkdf2 -iter 10000000 -salt'
-    # 对称算法解密，如 `cat 1.txt.asc |ssld` 输出到屏幕，`ssld -in 1.txt.asc -out 1.txt`操作文件
+    # 对称算法解密，如 `cat 1.txt.asc |ssld` 输出到屏幕，`ssld -in 1.txt.asc -out 1.txt`操作文件，-kfile 指定密钥文件
     alias ssld='openssl enc -d -aes-256-cbc -md sha512 -pbkdf2 -iter 10000000 -salt'
 
     # git 常用命令

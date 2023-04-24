@@ -3058,20 +3058,24 @@ if [ -x /usr/bin/dircolors ]; then
     alias curls='curl -fsSL'
     # 16 字符随机数作为密码
     alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
+    # 256字节作为密钥文件
+    alias passf='dd if=/dev/random of=symmetric.key bs=1 count=256'
 
     # gpg 常用命令
     alias ggk='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
     # 使用临时钥匙圈校验文件签名，如 `ggvs ./fedora.gpg xxxx.checksum`
     alias ggvs='echo "[使用临时钥匙圈校验文件签名]" && gpgv --keyring'
-    # 对称算法加密，自动选择当前可用的私钥签名，需要给出文件名，生成的文件默认后缀 .gpg
+    # gpg 的 pinentry 经常弹不出密码提示框
+    alias ggt='export GPG_TTY=$(tty)'
+    # 对称算法加密，自动选择当前可用的私钥签名，如 `ggcs 1.txt`，默认生成的文件添加后缀 .gpg。
     alias ggcs='echo "[对称算法加密文件]" && gpg -s --cipher-algo AES-256 -c'
     # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
     alias ggd='gpg -d'
 
     # openssl 常用命令
-    # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件
+    # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件，-kfile 指定密钥文件
     alias ssle='openssl enc -e -aes-256-cbc -md sha512 -pbkdf2 -iter 10000000 -salt'
-    # 对称算法解密，如 `cat 1.txt.asc |ssld` 输出到屏幕，`ssld -in 1.txt.asc -out 1.txt`操作文件
+    # 对称算法解密，如 `cat 1.txt.asc |ssld` 输出到屏幕，`ssld -in 1.txt.asc -out 1.txt`操作文件，-kfile 指定密钥文件
     alias ssld='openssl enc -d -aes-256-cbc -md sha512 -pbkdf2 -iter 10000000 -salt'
 
     # git 常用命令
@@ -5724,9 +5728,13 @@ dd 命令是基于块（block）的复制，用途很多。
 
 ### 快速清理文件和快速建立文件
 
-最快建立大文件的方式是用 truncate 命令
+指定大小，用全零填充，速度慢
 
-    # dd if=/dev/zero of=fs.img bs=1M count=1M seek=1024
+    # 换成 /dev/urandom 随机值填充，速度更慢
+    dd if=/dev/zero of=fs.img bs=1M count=1M seek=1024
+
+指定大小，用 truncate 命令更快，文件是空的，瞬间建成
+
     truncate --size 10G test.db.bak
 
     预创建块文件，有个更快的命令
@@ -5990,6 +5998,9 @@ bc - An arbitrary precision calculator language
     $ cat /dev/urandom | tr -cd 'a-zA-Z0-9' | fold -w 9 | head -n 1
     DPTDA9W29
 
+    # 生成16字节的随机数据
+    dd if=/dev/urandom bs=1 count=16
+
     # 对随机数取哈希，用 cksum 取 crc 校验和，还可以用 sha256sum、md5sum 等
     $ head /dev/random | cksum
     3768469767 1971
@@ -6002,6 +6013,14 @@ bc - An arbitrary precision calculator language
     $ cat /dev/urandom |base64 |head -n 1
     H7k6xRGGGzHoipYg0IpGgxAc7wLQeHVGsLMxjNUrhP2uCS1kV4CmEQvi2PoDehJqB7GcTsklker/
 
+    # 每次都不一样
+    $ openssl passwd 1234
+    j5FLQkXqH3m1c
+
+    # 14个ascii字符
+    $ gpg --armor --gen-random 1 16
+    k524BASHzHmg1JFtDLHaqg==
+
     # base64编码的14个字符
     $ openssl rand -base64 14
     lPIm1hobPBr+iaUXLSk=
@@ -6009,14 +6028,6 @@ bc - An arbitrary precision calculator language
     # 16进制编码的20个字符
     $ openssl rand -hex 20
     f231202787c01502287c420a8a05e960ec8f5129
-
-    # 每次都不一样
-    $ openssl passwd 1234
-    j5FLQkXqH3m1c
-
-    # 14个ascii字符
-    $ gpg --gen-random --armor 1 14
-    LtybfVoRF2Lc/Vw8tag=
 
     # 生成一个uuid，这个也是随机的
     $ cat /proc/sys/kernel/random/uuid
@@ -6029,7 +6040,7 @@ bc - An arbitrary precision calculator language
 
 补充熵池
 
-随机数生成的这些工具，通过 /dev/random 依赖系统的熵池，而服务器在运行时，既没有键盘事件，也没有鼠标事件，那么就会导致噪声源减少。很多发行版本中存在一个 rngd 程序，用来增加系统的熵池（用 urandom 给 random 灌数据），详见章节 [给random()增加熵] <init_a_server.md think>。
+随机数生成的这些工具，通过 /dev/random 依赖系统的熵池，而服务器在运行时，既没有键盘事件，也没有鼠标事件，那么就会导致噪声源减少。很多发行版本中存在一个 rngd 程序，用来增加系统的熵池（用 urandom 给 random 灌数据），详见章节 [给random()增加熵](init_a_server think)。
 
 ### 按数制显示内容 od
 
