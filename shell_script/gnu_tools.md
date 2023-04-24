@@ -5651,11 +5651,7 @@ dd 过时了
 
         https://unix.stackexchange.com/questions/224277/is-it-better-to-use-cat-dd-pv-or-another-procedure-to-copy-a-cd-dvd/224314#224314
 
-    预创建块文件，有个更快的命令
-
-        fallocate -l 10G test_file2.img
-
-NOTE: dd 有个毛病，会静默的跳过某些字节数，必须 iflag=fullblock
+NOTE: dd 有个毛病，调用read()等函数的命令在管道操作后会静默的跳过某些字节数，必须 iflag=fullblock
 
     # https://wiki.archlinux.org/title/Dd#Partial_read:_copied_data_is_smaller_than_requested
 
@@ -5664,70 +5660,67 @@ NOTE: dd 有个毛病，会静默的跳过某些字节数，必须 iflag=fullblo
     # 丢数据，看看你的文件字节数
     yes | dd of=out bs=1024k count=10
 
-    #
-    dd if=/dev/random of=/media/usbstick/mykeyfile bs=512 count=4
+    # 必须 iflag=fullblock
+    dd if=/dev/random of=/media/usbstick/mykeyfile bs=512 count=4 iflag=fullblock
 
 dd 命令是基于块（block）的复制，用途很多。
 
 读取挂载在存储设备上的 iso 文件，进行 gpg 校验
 
     # 注意使用了管道操作默认的标准输入和标准输出，gpg 最后用的 -
-    dd if=/dev/sdb | gpg --keyid-format 0xlong --verify my_signature.sig -
+    # dd if=/dev/sdb |gpg --keyid-format 0xlong --verify my_signature.sig -
+    cat /dev/sdb |gpg --keyid-format 0xlong --verify my_signature.sig -
 
 设备级互拷：将本地的 /dev/hdb 整盘备份到 /dev/hdd
 
-    dd if=/dev/hdb of=/dev/hdd
+    # dd if=/dev/hdb of=/dev/hdd
+    cat /dev/sda >/dev/sdb
+    cp /dev/sda /dev/sdb
 
 设备到文件：将 /dev/hdb 全盘数据备份到指定路径的 image 文件
 
-    dd if=/dev/hdb of=/root/image
+    # dd if=/dev/hdb of=/root/image
+    cat /dev/hdb >/root/image
 
     # 备份的同时压缩
-    dd if=/dev/hdb | gzip > /root/image.gz
+    #dd if=/dev/hdb |gzip >/root/image.gz
+    cat /dev/hdb |gzip >/root/image.gz
 
-    # 拷贝内存内容到磁盘上的文件
-    dd if=/dev/mem of=/root/mem.bin bs=1024 (指定块大小为1k)
+    # 拷贝内存到磁盘上的文件
+    # dd if=/dev/mem of=/root/mem.bin bs=1024
+    cat /dev/mem >/root/mem.bin
 
     # 拷贝光盘内容到指定文件夹，并保存为 cd.iso 文件
-    dd if=/dev/cdrom(hdc) of=/root/cd.iso
+    # dd if=/dev/cdrom(hdc) of=/root/cd.iso
+    cat /dev/cdrom(hdc) >/root/cd.iso
 
 文件到设备：将备份文件恢复到指定盘
 
-    dd if=/root/image of=/dev/hdb
+    # dd if=/root/image of=/dev/hdb
+    cat /root/image >/dev/hdb
 
     # 解压并恢复备份文件到指定盘
-    gzip -dc /root/image.gz | dd of=/dev/hdb
+    # gzip -dc /root/image.gz | dd of=/dev/hdb
+    gzip -dc /root/image.gz >/dev/hdb
 
 备份与恢复 MBR：利用 dd 时顺序读写的特点，从磁盘设备的开头开始，恰好就是启动扇区
 
     # 备份磁盘开始的 512 个字节大小的 MBR 信息到指定文件
-    dd if=/dev/hda of=/root/image count=1 bs=512
+    dd if=/dev/hda of=/root/image bs=512 count=1 iflag=fullblock
 
-    # 用 boot.img 制作启动盘，其实用 cat boot.img >/dev/fd0 即可
-    dd if=boot.img of=/dev/fd0 bs=1440k
+    # 用 boot.img 制作启动盘
+    # dd if=boot.img of=/dev/fd0 bs=1440k
+    cat boot.img >/dev/fd0
 
     恢复：
 
     # 将上面备份的MBR信息写到磁盘开始部分
-    dd if=/root/image of=/dev/had
+    #dd if=/root/image of=/dev/had
+    cat /root/image >/dev/had
 
     备份软盘
-
-    dd if=/dev/fd0 of=disk.img count=1 bs=1440k (即块大小为1.44M)
-
-注：选择合适的 bs 参数需要考虑多个因素，包括源设备、目标设备、数据块大小、文件系统等。
-
-    对于较小的文件，可以选择较小的块大小，如 512 字节或 1KB，这样可以提高复制速度。
-
-    对于较大的文件，可以选择较大的块大小，如 4KB 或 8KB，这样可以减少 I/O 操作的次数，提高复制效率。
-
-    对于使用 USB 设备进行复制的情况，可以选择较小的块大小，因为 USB 设备通常具有较慢的传输速度。
-
-    对于使用网络设备进行复制的情况，可以选择较大的块大小，以利用网络带宽。
-
-    需要注意的是，在选择 bs 参数时，需要同时考虑源设备和目标设备的块大小。
-
-    如果源设备和目标设备的块大小不同，可以选择一个介于两者之间的块大小，以达到最佳效果。
+    #dd if=/dev/fd0 of=disk.img bs=1440k count=1 iflag=fullblock
+    cat /dev/fd0 >disk.img
 
 ### 快速清理文件和快速建立文件
 
@@ -5735,6 +5728,10 @@ dd 命令是基于块（block）的复制，用途很多。
 
     # dd if=/dev/zero of=fs.img bs=1M count=1M seek=1024
     truncate --size 10G test.db.bak
+
+    预创建块文件，有个更快的命令
+
+        fallocate -l 10G test_file2.img
 
 快速清理文件
 
