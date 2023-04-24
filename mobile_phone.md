@@ -1093,3 +1093,9 @@ apt命令大家应该都比较熟悉了，这里直接简单的介绍下pkg命�
 长期使用 Linux 的朋友可能会发现，这个 HOME 路径看上去和我们电脑端的不太一样，这是为了方便 Termux 提供的特殊的环境变量。
 
 #### Termux:API
+
+## postmarketos 旧手机的新生
+
+postmarketos 把你的旧手机作为一个低功耗平台
+
+    https://postmarketos.org/
