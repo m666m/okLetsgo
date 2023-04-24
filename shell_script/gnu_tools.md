@@ -5645,9 +5645,27 @@ hhighlighter 给终端输出的自定义字符串加颜色，非常适合监控�
 
     https://wiki.archlinux.org/title/Dd
 
-预创建块文件，有个更快的命令
+dd 过时了
 
-    fallocate -l 10G test_file2.img
+    文件到设备，设备到文件的大部分用途，如果不是需要限制写入字节数，用 cat/cp 命令就足够了，用 dd 反而因为参数保守而过时
+
+        https://unix.stackexchange.com/questions/224277/is-it-better-to-use-cat-dd-pv-or-another-procedure-to-copy-a-cd-dvd/224314#224314
+
+    预创建块文件，有个更快的命令
+
+        fallocate -l 10G test_file2.img
+
+NOTE: dd 有个毛病，会静默的跳过某些字节数，必须 iflag=fullblock
+
+    # https://wiki.archlinux.org/title/Dd#Partial_read:_copied_data_is_smaller_than_requested
+
+    https://unix.stackexchange.com/questions/17295/when-is-dd-suitable-for-copying-data-or-when-are-read-and-write-partial
+
+    # 丢数据，看看你的文件字节数
+    yes | dd of=out bs=1024k count=10
+
+    #
+    dd if=/dev/random of=/media/usbstick/mykeyfile bs=512 count=4
 
 dd 命令是基于块（block）的复制，用途很多。
 
@@ -5685,7 +5703,7 @@ dd 命令是基于块（block）的复制，用途很多。
     # 备份磁盘开始的 512 个字节大小的 MBR 信息到指定文件
     dd if=/dev/hda of=/root/image count=1 bs=512
 
-    # 用 boot.img 制作启动盘
+    # 用 boot.img 制作启动盘，其实用 cat boot.img >/dev/fd0 即可
     dd if=boot.img of=/dev/fd0 bs=1440k
 
     恢复：
