@@ -6144,7 +6144,79 @@ od :按数制显示内容
     https://transmissionbt.com/
         https://github.com/transmission/transmission
 
-    简单点直接 docker https://registry.hub.docker.com/r/linuxserver/transmission/
+    安装配置说明
+        https://trac.transmissionbt.com/wiki/UnixServer/Debian
+        https://github.com/transmission/transmission/wiki/Editing-Configuration-Files
+
+    简单点直接 docker
+
+        https://registry.hub.docker.com/r/linuxserver/transmission/
+
+        https://registry.hub.docker.com/r/andrewmhub/transmission-tracker-add/
+
+    https://blog.csdn.net/slimmm/article/details/115720184
+
+开源的下载工具，都是有个后台进程负责下载，前台负责任务管理。
+
+    transmission-gtk: GTK+界面客户端。
+
+    transmission-qt: QT界面客户端。
+
+    transmission-cli: 命令行BT客户端。
+
+    transmission-daemon: 是一个Transmission的后台守护程序，本身不具备操作指令，只能通过Web客户端或者transmission-remote-cli来进行控制。这个程序特别适合安装在服务器上或者嵌入式系统中，以及一些没有显示器的设备上。
+
+    transmission-remote-cli: 用来控制transmission-daemon的命令套件，本身不具备下载BT的功能，只能够配合daemon使用。
+
+1、主要安装服务端
+
+    apt install transmission-daemon
+
+系统级配置文件目录： /var/lib/transmission-daemon/info/
+
+    settings.json    主要配置文件，设置daemon的各项参数，包括RPC的用户名密码配置。其软链接指向/etc/transmission-daemon/settings.json。配置说明
+
+    torrents/    用户存放.torrent种子文件的目录,凡是添加到下载任务的种子，都存放在这里。.torrent的命名包含,种子文件本身的名字和种子的SHA1 HASH值。
+
+    resume/    该存放了.resume文件，.resume文件包含了一个种子的信息，例如该文件哪些部分被下载了，下载的数据存储的位置等等。
+
+    blocklists/    存储被屏蔽的peer的地址。
+
+    注意：在编辑Transmission的配置文件的时候，需要先关闭daemon进程。
+
+默认创建一个用户来专门运行transmission-daemon，用户名为：debian-transmission。
+
+注意： 如果使用另外一个用户来运行transmission-daemon的话，会在该用户的目录下，创建一个.config/transmission-daemon的文件夹，在这个文件夹里有单独的settings.json配置文件来配置这个用户对应的daemon进程，下载目录也会变为$HOME/Download。
+
+    # 启动
+    sudo service transmission-daemon start
+
+    # 停止
+    sudo service transmission-daemon stop
+
+2、修改配置文件 settings.json
+
+    {
+        ......
+        "rpc-authentication-required": true
+        "rpc-bind-address": "0.0.0.0",
+        "rpc-enabled": true,
+        "rpc-password": "123456",     # 这里明文写入登录密码，初次启动后会自动被替换为 hash 值
+        "rpc-port": 9091,     #端口
+        "rpc-url": "/transmission/",
+        "rpc-username": "transmission",     #用户名
+        "rpc-whitelist": "*",             #白名单，也可以指定IP
+        "rpc-whitelist-enabled": true,
+        ......
+    }
+
+3、经过上述配置后，我们就可以通过Web界面来访问和控制Transmission daemon了。在浏览器里面输入以下地址
+
+    http://<your.server.ip.addr>:9091/
+
+浏览器提示你输入刚才配置的用户名和密码，就可以成功登陆Web管理界面。
+
+一般安装浏览器插件 Aria2 for Edge，实现拦截浏览器的下载，弹窗添加到transmission。
 
 #### Aria2
 
@@ -6188,7 +6260,9 @@ od :按数制显示内容
 
 1、使用官方 Aria2 v1.36.0 ，配置文件原样复用 Motrix 的 aria2.conf ，使用 WinSW 将 Aria2 安装成用户服务来开机自启，配合 Aria2 for Edge 插件拦截浏览器下载，使用该插件附带的 AirNG 进行图形化交互。<https://github.com/agalwood/Motrix/issues/1379>。
 
-2、使用 p3terx 的 tracker.sh 把最新的 bt-tracker 地址更新到配置文件。
+2、执行 p3terx 的 tracker.sh 把最新的 bt-tracker 地址更新到配置文件。
+
+    https://github.com/P3TERX/aria2.conf/raw/master/tracker.sh
 
 3、修改 Motrix 生成的启动命令行，
 
@@ -7525,13 +7599,25 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
 #### i3
 
+    https://i3wm.org/docs/userguide.html
+
+通过键盘操作的 i3 平铺窗口管理器使用 Linux 桌面，当您开始使用 i3 时，您需要记住其中的一些快捷方式才能使用。
+
+    自定义参考
+
+        https://github.com/Karmenzind/dotfiles-and-scripts/blob/master/home_k/.config/i3/common
+
+        https://github.com/Karmenzind/dotfiles-and-scripts/blob/master/home_k/.config/i3status/config
+
     https://zhuanlan.zhihu.com/p/44783017
 
     https://zhuanlan.zhihu.com/p/51077654
 
     https://segmentfault.com/a/1190000022083424
 
-通过键盘操作的 i3 平铺窗口管理器使用 Linux 桌面，当您开始使用 i3 时，您需要记住其中的一些快捷方式才能使用。mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
+mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
+
+    <SUPER> 在 Windows 键盘下 是 WIN 键，在 MacOS 键盘下是 CMD 键。
 
     要打开终端 urxvt，请按 <SUPER>+<ENTER>。
 
@@ -8273,7 +8359,9 @@ journalctl 功能强大，用法非常多
 不确定：
 
     Systemd 的配置文件存放在目录 /lib/systemd/system/，
+
     用 systemctl start 启动后出现在 /usr/lib/systemd/system/
+
     用 systemctl enable 设置为自启动后添加连接文件在 /etc/systemd/system/ 。
 
 也可直接存放在 /etc/systemd/system/ 下，暂不知道区别
@@ -8382,9 +8470,18 @@ systemctl cat 命令可以查看配置文件的内容
 
     https://www.freedesktop.org/software/systemd/man/systemd.unit.html#%5BInstall%5D%20Section%20Options
 
-    WantedBy：它的值是一个或多个 Target，当前 Unit 激活时（enable）符号链接会放入/etc/systemd/system目录下面以 Target 名 + .wants后缀构成的子目录中
+    WantedBy：它的值是一个或多个 Target，当前 Unit 激活时（enable）符号链接会放入/etc/systemd/system 目录下面以 Target 名 + .wants 后缀构成的子目录中
+
+        用户级 unit 与系统级 unit 相互独立，不能互相关联或依赖
+
+            用户级 unit 运行环境用 default.target，
+
+            系统级通常用 multi-user.target，即使用户不登陆，其定制的服务依然会启动
+
     RequiredBy：它的值是一个或多个 Target，当前 Unit 激活时，符号链接会放入/etc/systemd/system目录下面以 Target 名 + .required后缀构成的子目录中
+
     Alias：当前 Unit 可用于启动的别名
+
     Also：当前 Unit 激活（enable）时，会被同时激活的其他 Unit
 
 [Service]区块用来 Service 的配置，只有 Service 类型的 Unit 才有这个区块。它的主要字段如下
@@ -8414,10 +8511,13 @@ Unit 配置文件的完整字段清单，请参考[systemd官方文档](https://
 
 ##### 普通用户定义的 unit
 
+unit 默认都是系统级不必显式添加 --system 选项
+
     https://www.cnblogs.com/hadex/p/6571278.html
+
         https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
 
-unit 默认都是系统级不必显式添加 --system 选项
+用户级的 unit 在 systemd 管理和使用时只需要加上 --user 参数即可，其它完全一致
 
     $  systemctl --user status gpg-agent.socket
     ● gpg-agent.socket - GnuPG cryptographic agent and passphrase cache
@@ -8427,7 +8527,9 @@ unit 默认都是系统级不必显式添加 --system 选项
     Listen: /run/user/1000/gnupg/S.gpg-agent (Stream)
     CGroup: /user.slice/user-1000.slice/user@1000.service/gpg-agent.socket
 
-用户自定义的 unit[s] 可以放置在如下四个位置
+    $ systemctl --user list-unit-files | grep aria2
+
+systemd 搜索的用户自定义的 unit[s] 可以放置在如下四个位置
 
     /usr/lib/systemd/user：优先级最低，会被高优先级的同名 unit 覆盖
 
@@ -8436,12 +8538,6 @@ unit 默认都是系统级不必显式添加 --system 选项
     /etc/systemd/user：全局共享的用户级 unit[s]
 
     ~/.config/systemd/user：优先级最高
-
-注：
-
-    用户级 unit 与系统级 unit 相互独立，不能互相关联或依赖
-    用户级 unit 运行环境用 default.target，系统级通常用 multi-user.target
-    即使用户不登陆，其定制的服务依然会启动
 
 ##### Target 就是一个 Unit 组
 
