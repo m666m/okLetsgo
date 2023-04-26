@@ -7597,7 +7597,7 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
     xmonad - 动态平铺 X11 窗口管理器，用 Haskell 编写和配置。
 
-#### i3
+#### TODO: i3
 
     https://i3wm.org/docs/userguide.html
 
