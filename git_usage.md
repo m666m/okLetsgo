@@ -163,24 +163,34 @@ git 对文件内容的修改，在撤销和重做方面有些使用不便，详�
     # 登陆问题排查
     ssh -vvv git@github.com
 
-拉取远程仓库，在本地建立项目
+可以直接查看自己的公钥
 
-    git clone https://xxx.git
+    # ssh
+    https://github.com/m666m.keys
 
-查看是否此项目使用 https 协议
+    # gpg，参见章节 [使用 GPG 签名 Github 提交]
+    https://github.com/m666m.gpg
 
-    $ git remote -v
-    origin  https://github.com:m666m/okLetsgo.git (fetch)
-    origin  https://github.com:m666m/okLetsgo.git (push)
+然后就可以 ssh 方式使用 github 了：
 
-    # 可改为使用 git 协议
-    git remote set-url origin git@github.com:m666m/okLetsgo.git
+    先拉取远程仓库，在本地建立项目
 
-在拉取远程时直接使用 git 协议，就不用修改了
+        git clone https://xxx.git
 
-    git clone git@github.com:m666m/okLetsgo.git
+    查看是否此项目使用 https 协议
 
-因为本地持有 ssh 密钥，你可以编辑这个仓库的文件，然后提交推送到 github 上的远程仓库，然后可以刷新 github 的网页看是否有变动了。
+        $ git remote -v
+        origin  https://github.com:m666m/okLetsgo.git (fetch)
+        origin  https://github.com:m666m/okLetsgo.git (push)
+
+        # 可改为使用 git 协议
+        git remote set-url origin git@github.com:m666m/okLetsgo.git
+
+    在拉取远程时直接使用 git 协议，就不用修改了
+
+        git clone git@github.com:m666m/okLetsgo.git
+
+    因为本地持有 ssh 密钥，你可以编辑这个仓库的文件，然后提交推送到 github 上的远程仓库，然后可以刷新 github 的网页看是否有变动了。
 
 #### github 提供基于 https 端口的 ssh 连接方式
 
