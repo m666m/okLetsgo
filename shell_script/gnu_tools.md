@@ -8152,7 +8152,7 @@ loginctl 命令用于查看当前登录的用户
     # 列出显示指定用户的信息
     $ loginctl show-user ruanyf
 
-#### systemctl系统资源管理命令
+#### systemctl 系统资源管理命令
 
 Systemd 可以管理所有系统资源。不同的资源统称为 Unit（单位）。
 
@@ -8261,7 +8261,7 @@ systemctl list-dependencies 命令列出一个 Unit 的所有依赖
 
     systemctl list-dependencies --all nginx.service
 
-#### journalctl日志管理命令
+#### journalctl 日志管理命令
 
 Systemd 统一管理所有 Unit 的日志，可以只用 journalctl 一个命令，查看所有日志（内核日志和应用日志）。
 
