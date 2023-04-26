@@ -7777,6 +7777,8 @@ mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
 
 如果使用 VNC 体系，注意用 ssh 隧道包装下，因为 VNC 的协议加密方面考虑的非常少，密钥可能会明文传输。
 
+如果需要使用老式的 x11（XDMCP协议）图形窗口连接到 Xserver(X.org)，建议安装使用 MobaXterm/Xshell 的免费版。
+o
 现在比较流行在 Windows 和 Linux 桌面都安装使用 RDP 协议 的工具：
 
 ·rdesktop 是在 Linux 上实现 rdp 协议的客户端程序，Linux 桌面用户使用该工具可以连接到使用 Windows 远程桌面协议的计算机。

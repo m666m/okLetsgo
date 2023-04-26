@@ -1756,9 +1756,9 @@ QQ、微信、钉钉、360啥的很多cn软件很多都添加到系统级驱动�
 
 #### RemoteApp 隔离国内 Windows 毒瘤应用运行方案
 
-    https://bbs.letitfly.me/d/1199
+    https://github.com/kimmknight/remoteapptool
 
-        https://github.com/kimmknight/remoteapptool
+    https://bbs.letitfly.me/d/1199
 
 RemoteAppTool 要求必须安装 .NET Framework 4.x 才能使用。
 
