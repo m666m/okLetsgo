@@ -8265,7 +8265,7 @@ systemctl list-dependencies 命令列出一个 Unit 的所有依赖
 
 Systemd 统一管理所有 Unit 的日志，可以只用 journalctl 一个命令，查看所有日志（内核日志和应用日志）。
 
-日志的配置文件是/etc/systemd/journald.conf。
+日志的配置文件是 /etc/systemd/journald.conf。
 
 journalctl 功能强大，用法非常多
 
@@ -8321,25 +8321,24 @@ journalctl 功能强大，用法非常多
     $ journalctl _UID=33 --since today
 
     # 查看指定优先级（及其以上级别）的日志，共有8级
-    # 0: emerg
-    # 1: alert
-    # 2: crit
-    # 3: err
-    # 4: warning
-    # 5: notice
-    # 6: info
-    # 7: debug
+    #   0: emerg
+    #   1: alert
+    #   2: crit
+    #   3: err
+    #   4: warning
+    #   5: notice
+    #   6: info
+    #   7: debug
     $ journalctl -p err -b
 
     # 日志默认分页输出，--no-pager 改为正常的标准输出
     $ journalctl --no-pager
 
     # 以 JSON 格式（单行）输出
-    $ journalctl -b -u nginx.service -o json
+    $ journalctl -b -u nginx.service -o json |jq
 
     # 以 JSON 格式（多行）输出，可读性更好
-    $ journalctl -b -u nginx.serviceqq
-    -o json-pretty
+    $ journalctl -b -u nginx.serviceqq -o json-pretty
 
     # 显示日志占据的硬盘空间
     $ journalctl --disk-usage
@@ -8389,9 +8388,9 @@ systemctl enable 命令用于在上面两个目录之间，建立符号链接关
 
     sudo systemctl disable clamd@scan.service
 
-配置文件的后缀名，就是该 Unit 的种类，比如sshd.socket。如果省略，Systemd 默认后缀名为.service，所以sshd会被理解成sshd.service。
+配置文件的后缀名，就是该 Unit 的种类，比如 sshd.socket。如果省略，Systemd 默认后缀名为 .service，所以 sshd 会被理解成 sshd.service。
 
-systemctl list-unit-files 命令用于列出所有配置文件
+列出所有配置文件
 
     # 列出所有配置文件
     $ systemctl list-unit-files
@@ -8411,6 +8410,7 @@ systemctl list-unit-files 命令用于列出所有配置文件
 一旦修改配置文件，就要让 SystemD 重新加载配置文件，然后重新启动，否则修改不会生效
 
     sudo systemctl daemon-reload
+
     sudo systemctl restart httpd.service
 
 配置文件就是普通的文本文件，可以用文本编辑器打开。
@@ -8442,18 +8442,21 @@ systemctl cat 命令可以查看配置文件的内容
     WantedBy=multi-user.target
     Alias=sshd.service
 
-配置文件分成几个区块。每个区块的第一行，是用方括号表示的区别名，比如[Unit]，每个区块内部是一些等号连接的键值对。
-注意，配置文件的区块名和字段名，都是大小写敏感的，键值对的等号两侧不能有空格。
+配置文件分成几个区块。每个区块的第一行，是用方括号表示的区别名，比如 [Unit]，每个区块内部是一些等号连接的键值对。
+
+注意：配置文件的区块名和字段名，都是大小写敏感的，键值对的等号两侧不能有空格。
 
 示例参见：
 
-    [用 systemd-networkd 配置策略路由] <vnn.md>
+    [用 systemd-networkd 配置策略路由](vnn.md think)
 
-    [设置为 systemd 的服务] <org03k.md>
+    [设置为 systemd 的服务](org03k.md think)
 
 ##### 配置文件的区块
 
-[Unit]区块通常是配置文件的第一个区块，用来定义 Unit 的元数据，以及配置与其他 Unit 的关系。它的主要字段如下
+    https://www.freedesktop.org/software/systemd/man/systemd.unit.html
+
+[Unit] 区块通常是配置文件的第一个区块，用来定义 Unit 的元数据，以及配置与其他 Unit 的关系。它的主要字段如下
 
     Description：简短描述
     Documentation：文档地址
@@ -8466,11 +8469,11 @@ systemctl cat 命令可以查看配置文件的内容
     Condition...：当前 Unit 运行必须满足的条件，否则不会运行
     Assert...：当前 Unit 运行必须满足的条件，否则会报启动失败
 
-[Install]通常是配置文件的最后一个区块，用来定义如何启动，以及是否开机启动。它的主要字段如下。
+[Install] 通常是配置文件的最后一个区块，用来定义如何启动，以及是否开机启动。它的主要字段如下。
 
     https://www.freedesktop.org/software/systemd/man/systemd.unit.html#%5BInstall%5D%20Section%20Options
 
-    WantedBy：它的值是一个或多个 Target，当前 Unit 激活时（enable）符号链接会放入/etc/systemd/system 目录下面以 Target 名 + .wants 后缀构成的子目录中
+    WantedBy：它的值是一个或多个 Target，当前 Unit 激活时（enable）符号链接会放入 /etc/systemd/system 目录下面以 Target 名 + .wants 后缀构成的子目录中
 
         用户级 unit 与系统级 unit 相互独立，不能互相关联或依赖
 
@@ -8478,13 +8481,13 @@ systemctl cat 命令可以查看配置文件的内容
 
             系统级通常用 multi-user.target，即使用户不登陆，其定制的服务依然会启动
 
-    RequiredBy：它的值是一个或多个 Target，当前 Unit 激活时，符号链接会放入/etc/systemd/system目录下面以 Target 名 + .required后缀构成的子目录中
+    RequiredBy：它的值是一个或多个 Target，当前 Unit 激活时，符号链接会放入 /etc/systemd/system 目录下面以 Target 名 + .required 后缀构成的子目录中
 
     Alias：当前 Unit 可用于启动的别名
 
     Also：当前 Unit 激活（enable）时，会被同时激活的其他 Unit
 
-[Service]区块用来 Service 的配置，只有 Service 类型的 Unit 才有这个区块。它的主要字段如下
+[Service] 区块用来 Service 的配置，只有 Service 类型的 Unit 才有这个区块。它的主要字段如下
 
     https://www.freedesktop.org/software/systemd/man/systemd.service.html
 
@@ -8506,8 +8509,6 @@ systemctl cat 命令可以查看配置文件的内容
     Restart：定义何种情况 Systemd 会自动重启当前服务，可能的值包括always（总是重启）、on-success、on-failure、on-abnormal、on-abort、on-watchdog
     TimeoutSec：定义 Systemd 停止当前服务之前等待的秒数
     Environment：指定环境变量
-
-Unit 配置文件的完整字段清单，请参考[systemd官方文档](https://www.freedesktop.org/software/systemd/man/systemd.unit.html)。
 
 ##### 普通用户定义的 unit
 
@@ -8541,7 +8542,7 @@ systemd 搜索的用户自定义的 unit[s] 可以放置在如下四个位置
 
 ##### Target 就是一个 Unit 组
 
-包含许多相关的 Unit 。启动某个 Target 的时候，Systemd 就会启动里面所有的 Unit。
+包含许多相关的 Unit。启动某个 Target 的时候，Systemd 就会启动里面所有的 Unit。
 
 传统的init启动模式里面，有 RunLevel 的概念，跟 Target 的作用很类似。不同的是，RunLevel 是互斥的，不可能多个 RunLevel 同时启动，但是多个 Target 可以同时启动。
 
@@ -8574,13 +8575,13 @@ Target 与 传统 RunLevel 的对应关系如下
     Runlevel 5           |    runlevel5.target -> graphical.target
     Runlevel 6           |    runlevel6.target -> reboot.target
 
-它与init进程的主要差别如下
+它与 init 进程的主要差别如下
 
-（1）默认的 RunLevel（在/etc/inittab文件设置）现在被默认的 Target 取代，位置是/etc/systemd/system/default.target，通常符号链接到graphical.target（图形界面）或者multi-user.target（多用户命令行）。
+（1）默认的 RunLevel（在 /etc/inittab 文件设置）现在被默认的 Target 取代，位置是 /etc/systemd/system/default.target，通常符号链接到 graphical.target（图形界面）或者 multi-user.target（多用户命令行）。
 
-（2）启动脚本的位置，以前是/etc/init.d目录，符号链接到不同的 RunLevel 目录 （比如/etc/rc3.d、/etc/rc5.d等），现在则存放在/lib/systemd/system和/etc/systemd/system目录。
+（2）启动脚本的位置，以前是 /etc/init.d 目录，符号链接到不同的 RunLevel 目录 （比如/etc/rc3.d、/etc/rc5.d等），现在则存放在 /lib/systemd/system 和 /etc/systemd/system 目录。
 
-（3）配置文件的位置，以前init进程的配置文件是/etc/inittab，各种服务的配置文件存放在/etc/sysconfig目录。现在的配置文件主要存放在/lib/systemd目录，在/etc/systemd目录里面的修改可以覆盖原始设置。
+（3）配置文件的位置，以前 init 进程的配置文件是 /etc/inittab，各种服务的配置文件存放在 /etc/sysconfig 目录。现在的配置文件主要存放在 /lib/systemd 目录，在 /etc/systemd 目录里面的修改可以覆盖原始设置。
 
 ##### 设置 systemd 开机自启动脚本
 
@@ -8589,7 +8590,7 @@ Target 与 传统 RunLevel 的对应关系如下
 
 示例一：
 
-自制的shell脚本，想让 systemd 用兼容 SystemV 的方式进行启动管理。
+自制的 shell 脚本，想让 systemd 用兼容 SystemV 的方式进行启动管理。
 
 先确认 systemd 已经开启了 systemV 启动脚本 rc.local 的兼容服务
 
@@ -8611,11 +8612,11 @@ Target 与 传统 RunLevel 的对应关系如下
 
 示例二：
 
-    https://www.freedesktop.org/software/systemd/man/systemd.unit.html
-
     https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
 
-自制一个 systemd 服务，使用systemd的格式要求。
+各区块的释义参见章节 [配置文件的区块]。
+
+自制一个 systemd 服务，使用 systemd 的格式要求。
 
 创建 /etc/systemd/system/tproxyrule.service 文件
 
@@ -8653,7 +8654,7 @@ Target 与 传统 RunLevel 的对应关系如下
 
 原理
 
-    TODO:顺序是不是反了：systemd 在开机后执行的是 /etc/systemd/system/ 目录下的启动脚本，而我们安装的服务的启动脚本文件放在 /usr/lib/systemd/system/ 下。
+    TODO: 顺序是不是反了：systemd 在开机后执行的是 /etc/systemd/system/ 目录下的启动脚本，而我们安装的服务的启动脚本文件放在 /usr/lib/systemd/system/ 下。
 
     需要通过手工执行 `systemctl enable xxx` 命令，将 /usr/lib/systemd/system/ 目录下的服务启动脚本挂载到 /etc/systemd/system/ 目录下，实现开机自动运行。
 
