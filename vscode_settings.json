@@ -117,9 +117,9 @@
         "[Nord Deep]": {
             "activityBar.foreground": "#56bbff",
             // 文字亮度低点
-            "editor.foreground": "#c2d1dd",
-            "sideBar.foreground": "#c2d1dd",
-            "terminal.foreground": "#c2d1dd",
+            "editor.foreground": "#bac9d6",
+            "sideBar.foreground": "#a7b4be",
+            "terminal.foreground": "#bbcad6",
             // 双击高亮和同类高亮颜色无区分
             "editor.selectionBackground": "#1474acad",
             "editor.selectionHighlightBackground": "#08537eb4",
