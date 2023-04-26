@@ -473,7 +473,7 @@ Windows 安装完成后，运行 msinfo32，在 “系统摘要” 界面找 “
 
 ## 主板开启待机状态 USB 口供电功能和定时自动开机功能
 
-BIOS 中的“Erp”(ErP 为 Energy-related Products 欧洲能耗有关联的产品节能要求）选项选择开启
+BIOS 中的 “Erp” 节能选项，选择开启
 
     usb 口功能设置选择供电。
 
