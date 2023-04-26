@@ -3900,7 +3900,7 @@ HEAD 的 第三个父级
     $ git show HEAD^3~2 / git show HEAD^3^^
     master foo 2
 
-TODO:常用场景是：对两分支分叉的合并点，如果执行 git reset --hard HEAD^，会退回到第一个分支的最后一个提交记录。
+一般用于指向两分支分叉的合并点之前的某分支的点，参见章节 [git reset commit] 中的 --hard 部分内容。
 
 #### 示例
 

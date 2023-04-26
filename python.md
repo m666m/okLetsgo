@@ -1894,8 +1894,8 @@ Visual Studio Code Remote Development 允许您连接使用如下方式到远程
         https://www.cnblogs.com/pdysb/p/17067042.html
 
     配置自启动文件，自建 /etc/systemd/system/vscode-tunnel.service 文件，填写以下配置
-    TODO:路径好像写错了，见 [设置 systemd 开机自启动脚本](gnu_tools.md)。
 
+        ```conf
         [Unit]
         Description=Visual Studio Code Tunneli2
         After=network.target
@@ -1910,6 +1910,7 @@ Visual Studio Code Remote Development 允许您连接使用如下方式到远程
 
         [Install]
         WantedBy=multi-user.target
+        ```
 
     ⚠ 注意
         your-user-name 是指你希望tunnel以什么用户身份运行
@@ -2026,7 +2027,7 @@ Prettier - Code formatter
 
     esbenp.prettier-vscode
 
-#### TODO TREE
+#### 常变参数TODO TREE
 
     Gruntfuggly.todo-tree
 
