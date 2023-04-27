@@ -5405,6 +5405,8 @@ grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
 grep -w 匹配单词，用于搜索结果中类似字母组合太多的情况。
 
+grep -e 可以多个连写，如 `grep -e abc -e def` 查找 abc 或 def 。
+
 ripgrep 替代 grep，解决了不带文件名挂住的问题，rg 会默认查找所有文件。更推荐 ack，参见章节 [ackg 给终端输出的自定义关键字加颜色]。
 
 从当前目录及子目录列出所有目录名和文件名，排除目录 .git 和 __pycache__，逐个文件的查找文件内容包含字符串 “logg” 的行，列出文件名、行号、内容
@@ -7059,6 +7061,14 @@ NFS 一般用来存储共享视频，图片等静态数据。
 
         自建私有 API https://p3terx.com/archives/rclone-connect-onedrive-with-selfbuilt-api.html
 
+### 为移动硬盘安装 udisks2 软件包
+
+关机时需要同步移动硬盘的缓存，Linux 居然默认不带这个服务
+
+    apt install udisks2
+
+不需要显式启用udisksd，它由 D-Bus 按需启动，也就是说，在你插上移动硬盘的时候才会自动启动。
+
 ### 在当前目录启动一个简单的http服务器
 
     # Python 2，使用端口 7777
@@ -8173,7 +8183,7 @@ Unit 一共分成12种
     Swap Unit：swap 文件
     Timer Unit：定时器
 
-systemctl list-units 命令可以查看当前系统的所有 Unit
+systemctl list-units 命令可以查看当前系统的正在运行的所有 Unit
 
     # 列出正在运行的 Unit
     $ systemctl list-units
@@ -8189,6 +8199,10 @@ systemctl list-units 命令可以查看当前系统的所有 Unit
 
     # 列出所有正在运行的、类型为 service 的 Unit
     $ systemctl list-units --type=service
+
+systemctl list-unit-files 命令列出所有已经安装的 unit 文件
+
+systemd 默认启用的系统级组件配置在 /usr/lib/systemd/system-preset/下
 
 systemctl status 命令用于查看系统状态和单个 Unit 的状态
 
@@ -8240,6 +8254,8 @@ systemctl status 命令用于查看系统状态和单个 Unit 的状态
 
     # 设置某个 Unit 的指定属性
     $ sudo systemctl set-property httpd.service CPUShares=500
+
+systemctl list-jobs 列出当前正在执行的任务，比如关机/重启需要很长时间，看看咋回事
 
 systemctl list-dependencies 命令列出一个 Unit 的所有依赖
 
@@ -8333,7 +8349,7 @@ journalctl 功能强大，用法非常多
     #   7: debug
     $ journalctl -p err -b
 
-    # 日志默认分页输出，--no-pager 改为正常的标准输出
+    # 日志默认分页输出，比较别扭，在屏幕上不换行，使用 --no-pager 改为正常的标准输出
     $ journalctl --no-pager
 
     # 以 JSON 格式（单行）输出
@@ -8353,44 +8369,32 @@ journalctl 功能强大，用法非常多
 
 #### TODO: xxx.service系统资源配置文件
 
+    https://wiki.archlinux.org/title/Systemd#Writing_unit_files
+
     https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 
 每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit 。
 
-不确定：
+systemd 支持 unit 多个位置存放，最主要的存放位置是：
 
-    Systemd 的配置文件存放在目录 /lib/systemd/system/，
+    /usr/lib/systemd/system/: units provided by installed packages
 
-    用 systemctl start 启动后出现在 /usr/lib/systemd/system/
+    /etc/systemd/system/: units installed by the system administrator 在执行 systemctl enable 启动服务后会自动在这里放置链接文件，或子目录
 
-    用 systemctl enable 设置为自启动后添加连接文件在 /etc/systemd/system/ 。
+    查看全部位置：
 
-也可直接存放在 /etc/systemd/system/ 下，暂不知道区别
+        systemctl show --property=UnitPath --no-pager
 
-     (--system)
-    /etc/systemd/system             System units created by the administrator
-    /usr/local/lib/systemd/system   System units installed by the administrator
-    /usr/lib/systemd/system         System units installed by the distribution package manager
+        (--system)
+        /etc/systemd/system             System units created by the administrator
+        /usr/local/lib/systemd/system   System units installed by the administrator
+        /usr/lib/systemd/system         System units installed by the distribution package manager
 
-    (--user)
-    $HOME/.config/systemd/user  User configuration
-    /etc/systemd/user           User units created by the administrator
-    /usr/local/lib/systemd/user User units installed by the administrator
-    /usr/lib/systemd/user       User units installed by the distribution package manager
-
-systemctl enable 命令用于在上面两个目录之间，建立符号链接关系
-
-    $ sudo systemctl enable clamd@scan.service
-    # 等同于
-    $ sudo ln -s '/lib/systemd/system/clamd@scan.service' '/etc/systemd/system/multi-user.target.wants/clamd@scan.service'
-
-如果配置文件里面设置了开机启动，systemctl enable 命令相当于激活指定服务的开机启动。
-
-与之对应的，systemctl disable 命令用于在两个目录之间，撤销符号链接关系，相当于撤销指定服务的开机启动
-
-    sudo systemctl disable clamd@scan.service
-
-配置文件的后缀名，就是该 Unit 的种类，比如 sshd.socket。如果省略，Systemd 默认后缀名为 .service，所以 sshd 会被理解成 sshd.service。
+        (--user)
+        $HOME/.config/systemd/user  User configuration
+        /etc/systemd/user           User units created by the administrator
+        /usr/local/lib/systemd/user User units installed by the administrator
+        /usr/lib/systemd/user       User units installed by the distribution package manager
 
 列出所有配置文件
 
@@ -8400,22 +8404,95 @@ systemctl enable 命令用于在上面两个目录之间，建立符号链接关
     # 列出指定类型的配置文件
     $ systemctl list-unit-files --type=service
 
-这个命令会输出一个列表，表示每个配置文件的状态，一共有四种
+    这个命令会输出一个列表，表示每个配置文件的状态，一共有四种
 
-    enabled：已建立启动链接
-    disabled：没建立启动链接
-    static：该配置文件没有[Install]部分（无法执行），只能作为其他配置文件的依赖
-    masked：该配置文件被禁止建立启动链接
+        enabled：已建立启动链接
 
-从配置文件的状态无法看出，该 Unit 是否正在运行。这必须执行前面提到的 systemctl status 命令。
+        disabled：没建立启动链接
 
-一旦修改配置文件，就要让 SystemD 重新加载配置文件，然后重新启动，否则修改不会生效
+        static：该配置文件没有[Install]部分（无法执行），只能作为其他配置文件的依赖
+
+        masked：该配置文件被禁止建立启动链接
+
+    从配置文件的状态无法看出，该 Unit 是否正在运行。这必须执行前面提到的 systemctl status 命令。
+
+一旦修改配置文件，就要让 systemd 重新加载配置文件，然后重新启动，否则修改不会生效
 
     sudo systemctl daemon-reload
 
     sudo systemctl restart httpd.service
 
-配置文件就是普通的文本文件，可以用文本编辑器打开。
+unit 通常包括但不限于服务（.service）、挂载点（.mount）、设备（.device）和套接字（.socket）。
+
+unit 的配置文件就是普通的文本文件，可以用文本编辑器打开。
+
+配置文件的后缀名，就是该 Unit 的种类
+
+    如果不指定后缀，systemctl 将默认采用 .service。
+
+        `systemctl enable sshd` 会被理解成 sshd.service
+
+        `systemctl enable sshd.socket` 显示指明才可以启动 sshd.socket
+
+    挂载点将自动转换为相应的 .mount 单元。例如，指定 /home 等效于 home.mount。
+
+    与挂载点类似，设备会自动转换为相应的 .device 单元，因此指定 /dev/sda2 等效于 dev-sda2.device。
+
+unit 文件支持创建插入(drop-in)文件，请创建于 unit 同名后缀.d的目录，将 .conf 文件放在其中以覆盖或添加新选项。systemd 将先处理 unit 文件，然后再处理该新增文件
+
+    unit 文件 /usr/lib/systemd/system/your_unit
+
+    unit 文件的插入文件 /etc/systemd/system/your_unit.d/10.abc.conf，用 10，11，12 来确保加载顺序
+
+    适用于在原始配置之上，想自定义参数的场景，把你要添加或覆盖的其他依赖项放到该 .conf 文件即可
+
+##### 用户级 unit
+
+    https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
+
+    https://www.cnblogs.com/hadex/p/6571278.html
+
+systemd 的 unit 默认都是系统级不必显式添加 --system 选项，但是需要 root 用户权限才能管理执行。
+
+用户级的 unit 不需要 root 用户权限，只限于为当前用户执行
+
+    用户级 unit 与系统级 unit 相互独立，不能互相关联或依赖
+
+    即使用户不登陆，其定制的服务也可以启动
+
+        loginctl enable-linger username
+
+        等效于 touch /var/lib/systemd/linger/$USER
+
+    使用 root 权限执行 `systemctl --global enable unit` 同样可以为所有用户执行该单元
+
+在 systemd 管理和使用时用户级的 unit 只需要加上 --user 参数即可，其它完全一致
+
+    $  systemctl --user status gpg-agent.socket
+    ● gpg-agent.socket - GnuPG cryptographic agent and passphrase cache
+    Loaded: loaded (/usr/lib/systemd/user/gpg-agent.socket; disabled; vendor preset: enabled)
+    Active: active (running) since Tue 2023-02-07 22:49:38 +08; 2 months 8 days ago
+        Docs: man:gpg-agent(1)
+    Listen: /run/user/1000/gnupg/S.gpg-agent (Stream)
+    CGroup: /user.slice/user-1000.slice/user@1000.service/gpg-agent.socket
+
+    $ systemctl --user list-unit-files | grep aria2
+
+systemd 搜索的用户自定义的 unit[s] 可以放置在如下四个位置
+
+    /usr/lib/systemd/user：优先级最低，会被高优先级的同名 unit 覆盖
+
+    ~/.local/share/systemd/user
+
+    /etc/systemd/user：全局共享的用户级 unit[s]
+
+    ~/.config/systemd/user：优先级最高
+
+##### 配置文件的区块
+
+配置文件字段最大的优点是可以明确的写出依赖关系，由 systemd 在启动时根据情况处理
+
+    https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 
 systemctl cat 命令可以查看配置文件的内容
 
@@ -8448,28 +8525,30 @@ systemctl cat 命令可以查看配置文件的内容
 
 注意：配置文件的区块名和字段名，都是大小写敏感的，键值对的等号两侧不能有空格。
 
-示例参见：
-
-    [用 systemd-networkd 配置策略路由](vnn.md think)
-
-    [设置为 systemd 的服务](org03k.md think)
-
-##### 配置文件的区块
-
-    https://www.freedesktop.org/software/systemd/man/systemd.unit.html
-
 [Unit] 区块通常是配置文件的第一个区块，用来定义 Unit 的元数据，以及配置与其他 Unit 的关系。它的主要字段如下
 
     Description：简短描述
     Documentation：文档地址
+
     Requires：当前 Unit 依赖的其他 Unit，如果它们没有运行，当前 Unit 会启动失败
+
     Wants：与当前 Unit 配合的其他 Unit，如果它们没有运行，当前 Unit 不会启动失败
+
     BindsTo：与Requires类似，它指定的 Unit 如果退出，会导致当前 Unit 停止运行
+
     Before：如果该字段指定的 Unit 也要启动，那么必须在当前 Unit 之后启动
+
     After：如果该字段指定的 Unit 也要启动，那么必须在当前 Unit 之前启动
+
     Conflicts：这里指定的 Unit 不能与当前 Unit 同时运行
+
     Condition...：当前 Unit 运行必须满足的条件，否则不会运行
+
     Assert...：当前 Unit 运行必须满足的条件，否则会报启动失败
+
+    # 如 将服务延迟到网络启动后（可以管理网络还有 NetworkManager.service 或 systemd-networkd.service，比较乱，酌情处理）
+    Wants=network-online.target
+    After=network-online.target
 
 [Install] 通常是配置文件的最后一个区块，用来定义如何启动，以及是否开机启动。它的主要字段如下。
 
@@ -8493,13 +8572,19 @@ systemctl cat 命令可以查看配置文件的内容
 
     https://www.freedesktop.org/software/systemd/man/systemd.service.html
 
+    Environment=SYSTEMD_LOG_LEVEL=debug 在日志中打印调试信息
+
     Type：定义启动时的进程行为。它有以下几种值。
-    Type=simple：默认值，执行ExecStart指定的命令，启动主进程
-    Type=forking：以 fork 方式从父进程创建子进程，创建后父进程会立即退出
-    Type=oneshot：一次性进程，Systemd 会等当前服务退出，再继续往下执行
-    Type=dbus：当前服务通过D-Bus启动
-    Type=notify：当前服务启动完毕，会通知Systemd，再继续往下执行
-    Type=idle：若有其他任务执行完毕，当前服务才会运行
+
+        Type=simple：默认值，执行ExecStart指定的命令，启动主进程
+
+        Type=forking：以 fork 方式从父进程创建子进程，创建后父进程会立即退出，用于启动守护进程
+
+        Type=oneshot：一次性进程，用于执行定时任务如备份检查等
+
+        Type=dbus：当前服务通过D-Bus启动
+        Type=notify：当前守护进程启动完毕，会通知 systemd，再继续往下执行
+        Type=idle：延迟到其它任务执行完毕，systemd 才会调度当前 unit
 
     ExecStart：启动当前服务的命令
     ExecStartPre：启动当前服务之前执行的命令
@@ -8512,35 +8597,10 @@ systemctl cat 命令可以查看配置文件的内容
     TimeoutSec：定义 Systemd 停止当前服务之前等待的秒数
     Environment：指定环境变量
 
-##### 普通用户定义的 unit
+    CapabilityBoundingSet：沙盒化运行，利用 Linux 的 Namespace 命名空间实现进程隔离
 
-unit 默认都是系统级不必显式添加 --system 选项
-
-    https://www.cnblogs.com/hadex/p/6571278.html
-
-        https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
-
-用户级的 unit 在 systemd 管理和使用时只需要加上 --user 参数即可，其它完全一致
-
-    $  systemctl --user status gpg-agent.socket
-    ● gpg-agent.socket - GnuPG cryptographic agent and passphrase cache
-    Loaded: loaded (/usr/lib/systemd/user/gpg-agent.socket; disabled; vendor preset: enabled)
-    Active: active (running) since Tue 2023-02-07 22:49:38 +08; 2 months 8 days ago
-        Docs: man:gpg-agent(1)
-    Listen: /run/user/1000/gnupg/S.gpg-agent (Stream)
-    CGroup: /user.slice/user-1000.slice/user@1000.service/gpg-agent.socket
-
-    $ systemctl --user list-unit-files | grep aria2
-
-systemd 搜索的用户自定义的 unit[s] 可以放置在如下四个位置
-
-    /usr/lib/systemd/user：优先级最低，会被高优先级的同名 unit 覆盖
-
-    ~/.local/share/systemd/user
-
-    /etc/systemd/user：全局共享的用户级 unit[s]
-
-    ~/.config/systemd/user：优先级最高
+        定义允许或拒绝设备的功能列表
+            https://man.archlinux.org/man/systemd.exec.5#CAPABILITIES
 
 ##### Target 就是一个 Unit 组
 
@@ -8569,13 +8629,13 @@ Target 与 传统 RunLevel 的对应关系如下
 
     Traditional runlevel      New target name     Symbolically linked to...
 
-    Runlevel 0           |    runlevel0.target -> poweroff.target
-    Runlevel 1           |    runlevel1.target -> rescue.target
-    Runlevel 2           |    runlevel2.target -> multi-user.target
-    Runlevel 3           |    runlevel3.target -> multi-user.target
-    Runlevel 4           |    runlevel4.target -> multi-user.target
-    Runlevel 5           |    runlevel5.target -> graphical.target
-    Runlevel 6           |    runlevel6.target -> reboot.target
+    Runlevel 0           |    runlevel0.target -> poweroff.target       停止系统
+    Runlevel 1           |    runlevel1.target -> rescue.target         单用户模式
+    Runlevel 2           |    runlevel2.target -> multi-user.target     用户定义
+    Runlevel 3           |    runlevel3.target -> multi-user.target     多用户，非图形
+    Runlevel 4           |    runlevel4.target -> multi-user.target     用户定义
+    Runlevel 5           |    runlevel5.target -> graphical.target      多用户，图形化
+    Runlevel 6           |    runlevel6.target -> reboot.target         重新启动
 
 它与 init 进程的主要差别如下
 
@@ -8585,10 +8645,31 @@ Target 与 传统 RunLevel 的对应关系如下
 
 （3）配置文件的位置，以前 init 进程的配置文件是 /etc/inittab，各种服务的配置文件存放在 /etc/sysconfig 目录。现在的配置文件主要存放在 /lib/systemd 目录，在 /etc/systemd 目录里面的修改可以覆盖原始设置。
 
-##### 设置 systemd 开机自启动脚本
+##### 设置 systemd 开机自启动你的单元脚本
 
     https://zhuanlan.zhihu.com/p/620849909
     https://blog.csdn.net/bandaoyu/article/details/124358513
+
+启动 unit 后有处理：
+
+    用 systemctl start 启动后出现在 /run/systemd/ 下
+
+    /usr/lib/systemd/system/ 用 `systemctl enable` 设置为自启动后添加连接文件在 /etc/systemd/system/
+
+如果配置文件里 [Install] 部分设置了开机启动，`systemctl enable` 命令相当于激活指定服务的开机启动。
+
+        如果是开机自启动，一般都是挂载到 /etc/systemd/system/multi-user.target.wants/ 目录下，该目录表示启动了 multi-user.target 之后（即系统启动且运行级别为 3，为系统的默认启动 target）这个目录下的文件都会跟着启动。
+
+systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd/system/ 之间，建立符号链接关系
+
+    $ systemctl enable clamd@scan.service
+
+    等同于
+    $ ln -s '/usr/lib/systemd/system/clamd@scan.service' '/etc/systemd/system/multi-user.target.wants/clamd@scan.service'
+
+与之对应的，`systemctl disable` 命令用于在两个目录之间，撤销符号链接关系，相当于撤销指定服务的开机启动
+
+    systemctl disable clamd@scan.service
 
 示例一：
 
@@ -8615,8 +8696,6 @@ Target 与 传统 RunLevel 的对应关系如下
 示例二：
 
     https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
-
-各区块的释义参见章节 [配置文件的区块]。
 
 自制一个 systemd 服务，使用 systemd 的格式要求。
 
@@ -8654,13 +8733,11 @@ Target 与 传统 RunLevel 的对应关系如下
 
     systemctl list-unit-files |grep tproxy
 
-原理
+其它示例参见：
 
-    TODO: 顺序是不是反了：systemd 在开机后执行的是 /etc/systemd/system/ 目录下的启动脚本，而我们安装的服务的启动脚本文件放在 /usr/lib/systemd/system/ 下。
+    [用 systemd-networkd 配置策略路由](vnn.md think)
 
-    需要通过手工执行 `systemctl enable xxx` 命令，将 /usr/lib/systemd/system/ 目录下的服务启动脚本挂载到 /etc/systemd/system/ 目录下，实现开机自动运行。
-
-    一般都是挂载到 /etc/systemd/system/multi-user.target.wants/ 目录下，该目录表示启动了 multi-user.target 之后（即系统启动且运行级别为 3，为系统的默认启动 target）这个目录下的文件都会跟着启动。
+    [设置为 systemd 的服务](org03k.md think)
 
 ## 定时任务 crontab
 
