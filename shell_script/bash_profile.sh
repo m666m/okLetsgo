@@ -267,8 +267,22 @@ function PS1git-branch-prompt {
     fi
 }
 
-# linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
+# Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
 PS1="\n$PS1Cmagenta╭─$PS1Cred\$(PS1exit-code)$PS1Cmagenta[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cmagenta]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cmagenta╰──$PS1Cwhite\$ $PS1Cnormal"
+
+#################################
+# Linux bash - Fedora Silverblue
+# 在上面的基础上增加 toolbox 环境的检测
+# https://docs.fedoraproject.org/en-US/fedora-silverblue/tips-and-tricks/#_working_with_toolbx
+function PS1_fedora_is_toolbox {
+    if [ -f "/run/.toolboxenv" ]; then
+        TOOLBOX_NAME=$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")
+        echo "<${TOOLBOX_NAME}>"
+    fi
+}
+
+# Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox环境名> \w当前路径 git分支及状态
+PS1="\n$PS1Cmagenta╭─$PS1Cred\$(PS1exit-code)$PS1Cmagenta[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$(PS1_fedora_is_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cmagenta]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cmagenta╰──$PS1Cwhite\$ $PS1Cnormal"
 
 #################################
 # Linux bash - raspberrypi
