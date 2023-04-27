@@ -8367,7 +8367,7 @@ journalctl 功能强大，用法非常多
     # 指定日志文件保存多久
     $ journalctl --vacuum-time=1years
 
-#### TODO: xxx.service系统资源配置文件
+#### Unit 单元配置文件
 
     https://wiki.archlinux.org/title/Systemd#Writing_unit_files
 
@@ -8438,11 +8438,11 @@ unit 的配置文件就是普通的文本文件，可以用文本编辑器打开
 
     与挂载点类似，设备会自动转换为相应的 .device 单元，因此指定 /dev/sda2 等效于 dev-sda2.device。
 
-unit 文件支持创建插入(drop-in)文件，请创建于 unit 同名后缀.d的目录，将 .conf 文件放在其中以覆盖或添加新选项。systemd 将先处理 unit 文件，然后再处理该新增文件
+unit 文件支持创建插入(drop-in)文件，只需要创建与 unit 文件同名后缀 .d 的目录，将 .conf 文件放在其中以覆盖或添加新选项。systemd 将先处理 unit 文件，然后再处理该新增文件
 
     unit 文件 /usr/lib/systemd/system/your_unit
 
-    unit 文件的插入文件 /etc/systemd/system/your_unit.d/10.abc.conf，用 10，11，12 来确保加载顺序
+    unit 文件的插入文件 /etc/systemd/system/your_unit.d/10.abc.conf，文件名前缀用 10，11，12 等数字来确保加载顺序
 
     适用于在原始配置之上，想自定义参数的场景，把你要添加或覆盖的其他依赖项放到该 .conf 文件即可
 
@@ -8458,7 +8458,8 @@ systemd 的 unit 默认都是系统级不必显式添加 --system 选项，但�
 
     用户级 unit 与系统级 unit 相互独立，不能互相关联或依赖
 
-    即使用户不登陆，其定制的服务也可以启动
+例外：
+    使用如下方法，即使用户不登陆，其定制的服务也可以在计算机启动时自动启动
 
         loginctl enable-linger username
 
@@ -8468,15 +8469,9 @@ systemd 的 unit 默认都是系统级不必显式添加 --system 选项，但�
 
 在 systemd 管理和使用时用户级的 unit 只需要加上 --user 参数即可，其它完全一致
 
-    $  systemctl --user status gpg-agent.socket
-    ● gpg-agent.socket - GnuPG cryptographic agent and passphrase cache
-    Loaded: loaded (/usr/lib/systemd/user/gpg-agent.socket; disabled; vendor preset: enabled)
-    Active: active (running) since Tue 2023-02-07 22:49:38 +08; 2 months 8 days ago
-        Docs: man:gpg-agent(1)
-    Listen: /run/user/1000/gnupg/S.gpg-agent (Stream)
-    CGroup: /user.slice/user-1000.slice/user@1000.service/gpg-agent.socket
+    systemctl --user status gpg-agent.socket
 
-    $ systemctl --user list-unit-files | grep aria2
+    systemctl --user list-unit-files | grep aria2
 
 systemd 搜索的用户自定义的 unit[s] 可以放置在如下四个位置
 
@@ -8487,6 +8482,87 @@ systemd 搜索的用户自定义的 unit[s] 可以放置在如下四个位置
     /etc/systemd/user：全局共享的用户级 unit[s]
 
     ~/.config/systemd/user：优先级最高
+
+用户级 unit 运行时不会继承 .bashrc 等文件中设置的环境变量，可以单独在 ~/.config/environment.d/xxx.conf 中，写入 NAME=VAL；或者插入式设置 unit 文件，如 /etc/systemd/system/user@.service.d/local.conf
+
+    ```conf
+    [Service]
+    Environment="PATH=/usr/lib/ccache/bin:/usr/local/bin:/usr/bin:/bin"
+    Environment="EDITOR=nano -c"
+    Environment="BROWSER=firefox"
+    Environment="NO_AT_BRIDGE=1"
+    ```
+对 PATH 变量，单独设置你的 ~/.bash_profile，添加语句 `systemctl --user import-environment PATH`
+
+用户级自启动脚本示例：
+
+持久终端多路复用器
+
+    您可能希望在后台自动运行终端多路复用器（如屏幕或 tmux），而不是默认登录到用户会话的窗口管理器会话。
+
+    ~/.config/systemd/user/multiplexer.target
+
+    ```conf
+    [Unit]
+    Description=Terminal multiplexer
+    Documentation=info:screen man:screen(1) man:tmux(1)
+    After=cruft.target
+    Wants=cruft.target
+
+    [Install]
+    Alias=default.target
+    ```
+
+将窗口管理器作为 systemd 服务运行
+
+    ~/.config/systemd/user/awesome.service
+
+    ```conf
+    [Unit]
+    Description=Awesome window manager
+    After=xorg.target
+    Requires=xorg.target
+
+    [Service]
+    ExecStart=/usr/bin/awesome
+    Restart=always
+    RestartSec=10
+
+    [Install]
+    WantedBy=wm.target
+    ```
+
+每次开机后执行备份
+
+    backup-work.timer
+
+    ```conf
+    [Unit]
+    Description=daily backup work
+    RefuseManualStart=no
+    RefuseManualStop=no
+
+    [Timer]＃系统异常关机错过的定时任务，是否后续补救
+    Persistent=false
+    ＃每次开机 10 分钟之后开始生效OnBootSec=10min＃每天 11：30 执行OnCalendar=Mon-Fri *-*-* 11:30:00
+    Unit=backup-work.service
+
+    [Install]
+    WantedBy=default.target
+    ```
+
+    配套的 backup-work.service
+
+    ```conf
+    [Unit]
+    Description=daily backup work
+    RefuseManualStart=no
+    RefuseManualStop=yes
+
+    [Service]
+    Type=oneshot
+    ExecStart=/home/<user>/scripts/backup-work.sh
+    ```
 
 ##### 配置文件的区块
 
