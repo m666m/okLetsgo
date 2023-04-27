@@ -7547,11 +7547,21 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
     Gamescope - Gamescope 是一款微合成器，提供一个带有独立输入，分辨率和刷新率的沙盒 Xwayland 桌面。
 
-    Sway - Sway 是平铺 Wayland 合成器和 X11 下 i3 窗口管理器的新替代。
+    Sway - Sway 是平铺 Wayland 合成器和 X11 下 i3 窗口管理器的新替代（sway明确说明不支持英伟达）。
+
+        https://swaywm.org/
+
+        https://wiki.archlinux.org/title/Sway
+
+        https://cloud-atlas.readthedocs.io/zh_CN/latest/linux/desktop/sway/run_sway.html
+        https://zhuanlan.zhihu.com/p/441251646
+        https://blog.tiantian.cool/wayland/
+        https://zhuanlan.zhihu.com/p/462322143
+        https://www.fosskers.ca/en/blog/wayland
 
     Xcompmgr - Xcompmgr 是一个简单的合成管理器，能够渲染下拉阴影，使用 transset 工具的话，还可以实现简单的窗口透明。
 
-    Compiz：OpenGL 窗口和合成管理器
+    Compiz：OpenGL 窗口和合成管理器，能实现三维的切换窗口
 
         http://wiki.compiz.org/CommonKeyboardShortcuts
 
