@@ -108,7 +108,7 @@
             // 搜索高亮看不清
             "editor.findMatchBackground": "#0ffad36c",
             "editor.findMatchHighlightBackground": "#03bd9e6c",
-            // 光标所在词高亮
+            // 光标所在词同类高亮
             "editor.wordHighlightBackground": "#267dd45b",
             // 双击高亮和同类高亮颜色无区分
             "editor.selectionBackground": "#1474acad",
@@ -141,7 +141,7 @@
             "editor.foreground": "#95a3a8",
             "sideBar.foreground": "#8c989c",
             "terminal.foreground": "#a6b9be",
-            // 光标所在行、光标所在词高亮
+            // 光标所在行、光标所在词同类高亮
             "editor.lineHighlightBackground": "#293450b0",
             "editor.wordHighlightBackground": "#3572af4d",
             // 双击高亮和同类高亮颜色无区分
