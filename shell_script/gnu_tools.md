@@ -5680,7 +5680,6 @@ NOTE: dd 有个毛病，调用read()等函数的命令在管道操作后会静�
     # 所以必须添加 iflag=fullblock
     yes |dd of=dd_ok.txt bs=1024k count=10 iflag=fullblock
 
-
 读取挂载在存储设备上的 iso 文件，进行 gpg 校验
 
     # 注意使用了管道操作默认的标准输入和标准输出，gpg 最后用的 -
