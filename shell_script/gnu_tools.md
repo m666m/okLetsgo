@@ -5669,6 +5669,8 @@ NOTE: dd 有个毛病，系统调用函数read()在管道操作后会静默的�
 
     # https://wiki.archlinux.org/title/Dd#Partial_read:_copied_data_is_smaller_than_requested
 
+    https://unix.stackexchange.com/questions/12532/dd-vs-cat-is-dd-still-relevant-these-days/12538#12538
+
     https://unix.stackexchange.com/questions/17295/when-is-dd-suitable-for-copying-data-or-when-are-read-and-write-partial
 
     # dd 丢数据，看看你的文件字节数是不是 10M
