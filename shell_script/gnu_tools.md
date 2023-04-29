@@ -5724,7 +5724,7 @@ NOTE: dd 有个毛病，系统调用函数read()在管道操作后会静默的�
 
     # 备份磁盘开始的 512 个字节大小的 MBR 信息到指定文件
     # dd if=/dev/hda of=/root/image bs=512 count=1 iflag=fullblock
-    cat /dev/hda |head -c 512 >/root/image
+    head -c 512 /dev/hda >/root/boot.image
 
     # 用 boot.img 制作启动盘
     # dd if=boot.img of=/dev/fd0 bs=1440k
@@ -5738,7 +5738,7 @@ NOTE: dd 有个毛病，系统调用函数read()在管道操作后会静默的�
 
     备份软盘
     #dd if=/dev/fd0 of=disk.img bs=1440k count=1 iflag=fullblock
-    cat /dev/fd0 |head -c 1440K >disk.img
+    head -c 1440K /dev/fd0 >disk.img
 
 ### 快速清理文件和快速建立文件
 
