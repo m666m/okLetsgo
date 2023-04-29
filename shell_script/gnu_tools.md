@@ -5665,7 +5665,7 @@ dd 过时了
 
         pv </dev/zero |head -c 1024M >my.txt
 
-NOTE: dd 有个毛病，调用read()等函数的命令在管道操作后会静默的跳过某些字节数，必须 iflag=fullblock
+NOTE: dd 有个毛病，系统调用函数read()在管道操作后会静默的跳过某些字节数，尤其是输入数据的缓冲不足比如网络或输入源使用 /dev/random 而系统的熵不足的时候，所以只要指定了 count，那就必须用 iflag=fullblock
 
     # https://wiki.archlinux.org/title/Dd#Partial_read:_copied_data_is_smaller_than_requested
 
