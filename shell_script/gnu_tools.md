@@ -5653,7 +5653,7 @@ hhighlighter 给终端输出的自定义字符串加颜色，非常适合监控�
 
 dd 过时了
 
-    文件到设备，设备到文件的大部分用途，如果不是需要限制写入字节数，用 cat/cp 命令就足够了，用 dd 反而因为参数保守而过时
+    文件到设备，设备到文件的大部分用途，用 cat/cp 命令就足够了，如果要限制字节数用 head -c 处理即可，除了指明必须用 dd 按块大小写入等场合，尽量避免用 dd。
 
         https://unix.stackexchange.com/questions/224277/is-it-better-to-use-cat-dd-pv-or-another-procedure-to-copy-a-cd-dvd/224314#224314
 
@@ -5663,11 +5663,14 @@ NOTE: dd 有个毛病，调用read()等函数的命令在管道操作后会静�
 
     https://unix.stackexchange.com/questions/17295/when-is-dd-suitable-for-copying-data-or-when-are-read-and-write-partial
 
-    # 丢数据，看看你的文件字节数
-    yes | dd of=out bs=1024k count=10
+    # dd 丢数据，看看你的文件字节数是不是 10M
+    yes |dd of=dd_miss.txt bs=1024k count=10
 
-    # 必须 iflag=fullblock
-    dd if=/dev/random of=/media/usbstick/mykeyfile bs=512 count=4 iflag=fullblock
+    yes |head -c 10M >head_ok1.txt
+    head -c 10M /dev/zero >head_ok2.txt
+
+    # 所以必须添加 iflag=fullblock
+    yes |dd of=dd_ok.txt bs=1024k count=10 iflag=fullblock
 
 dd 命令是基于块（block）的复制，用途很多。
 
@@ -5733,7 +5736,8 @@ dd 命令是基于块（block）的复制，用途很多。
 指定大小，用全零填充，速度慢
 
     # 换成 /dev/urandom 随机值填充，速度更慢
-    dd if=/dev/zero of=fs.img bs=1M count=1M seek=1024
+    # dd if=/dev/zero of=fs.img bs=1M count=1M seek=1024
+    head -c 1024M /dev/zero >fs.img
 
 指定大小，用 truncate 命令更快，文件是空的，瞬间建成
 
