@@ -60,6 +60,7 @@
     "python.terminal.activateEnvironment": false,  // 打开终端自动执行切换到指定环境，在cmd下使用conda可以设为True，如果在bash下使用conda会报错windows路径
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
+    "python.analysis.exclude": ["dist/python","env_py37"], // 屏蔽项目内私有python环境目录误报 “overriding the stdlib module”
     "python.languageServer": "Pylance",
     "python.analysis.packageIndexDepths": [
         {
