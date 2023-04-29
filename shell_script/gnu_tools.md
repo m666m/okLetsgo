@@ -5649,6 +5649,8 @@ hhighlighter 给终端输出的自定义字符串加颜色，非常适合监控�
 
 ### 写入文件 dd
 
+dd 命令是基于块（block）的复制，用途很多。
+
     https://wiki.archlinux.org/title/Dd
 
 dd 过时了
@@ -5656,6 +5658,12 @@ dd 过时了
     文件到设备，设备到文件的大部分用途，用 cat/cp 命令就足够了，如果要限制字节数用 head -c 处理即可，除了指明必须用 dd 按块大小写入等场合，尽量避免用 dd。
 
         https://unix.stackexchange.com/questions/224277/is-it-better-to-use-cat-dd-pv-or-another-procedure-to-copy-a-cd-dvd/224314#224314
+
+    gnu 版的 dd 有个可以查看进度的参数 status=progress，可以用 pv 代替
+
+        sudo apt install pv
+
+        pv </dev/zero |head -c 1024M >my.txt
 
 NOTE: dd 有个毛病，调用read()等函数的命令在管道操作后会静默的跳过某些字节数，必须 iflag=fullblock
 
@@ -5672,7 +5680,6 @@ NOTE: dd 有个毛病，调用read()等函数的命令在管道操作后会静�
     # 所以必须添加 iflag=fullblock
     yes |dd of=dd_ok.txt bs=1024k count=10 iflag=fullblock
 
-dd 命令是基于块（block）的复制，用途很多。
 
 读取挂载在存储设备上的 iso 文件，进行 gpg 校验
 
@@ -5715,7 +5722,8 @@ dd 命令是基于块（block）的复制，用途很多。
 备份与恢复 MBR：利用 dd 时顺序读写的特点，从磁盘设备的开头开始，恰好就是启动扇区
 
     # 备份磁盘开始的 512 个字节大小的 MBR 信息到指定文件
-    dd if=/dev/hda of=/root/image bs=512 count=1 iflag=fullblock
+    # dd if=/dev/hda of=/root/image bs=512 count=1 iflag=fullblock
+    cat /dev/hda |head -c 512 >/root/image
 
     # 用 boot.img 制作启动盘
     # dd if=boot.img of=/dev/fd0 bs=1440k
@@ -5729,7 +5737,7 @@ dd 命令是基于块（block）的复制，用途很多。
 
     备份软盘
     #dd if=/dev/fd0 of=disk.img bs=1440k count=1 iflag=fullblock
-    cat /dev/fd0 >disk.img
+    cat /dev/fd0 |head -c 1440K >disk.img
 
 ### 快速清理文件和快速建立文件
 
