@@ -1050,6 +1050,8 @@ sudo 和 su 常用法
         [root@your_server:/home/uu] # su - git
         [git@your_server:~] $
 
+        或一行 `sudo su - git`
+
 su 命令是 switch user 切换用户的简写，普通用户切换到其它用户均需要校验密码。
 
 一般使用 `su - username`，还有 `su username`：
