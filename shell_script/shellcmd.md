@@ -1016,7 +1016,7 @@ fi
 
     `sudo` 命令是单独的命令，需要安装 sudo 软件包才能使用。
 
-引入 sudo 命令的目的是让普通用户无需切换到 root 用户即可执行系统维护类命令。其原理是 “借用 root 用户的权限”，详见章节 [进程的用户权限 uid 和 euid](init_a_server think)。
+引入 sudo 命令的目的是让普通用户无需切换到 root 用户即可执行系统维护类命令。其原理是 “借用 root 用户的权限”，详见章节 [进程的用户权限 uid 和 euid](init_a_server think)。使用 sudo 执行命令的一大好处是：如果当前用户是密钥登录的就不会提示输入 root 密码了。
 
 一般在操作系统安装后，如果默认没有安装 sudo 软件包，用命令 `su -` 切换到 root 用户，先安装 sudo 软件包。日后的使用就不需要切换到 root 用户了，用普通用户使用 sudo 来安装软件包即可。
 
@@ -1028,15 +1028,18 @@ fi
 
 sudo 和 su 常用法
 
-    以 sudo 执行命令，临时提权到 root 用户的权限来执行命令
+    使用 sudo 如果当前用户是密钥登录的就不会提示输入 root 密码
 
+    普通用户提权到 root 用户的权限来执行命令
+
+        # su -c 'apt update'
         sudo apt update
 
         临时切换到其它用户的权限来执行命令
 
             sudo -H -u otheruser bash -c 'command'
 
-    普通用户切换到 root 用户并执行登录脚本（普通用户需要有sudo组）
+    普通用户切换到 root 用户并执行其登录脚本（普通用户需要有sudo组）
 
         sudo -i
 
@@ -1044,7 +1047,7 @@ sudo 和 su 常用法
 
         su - uu
 
-    有 sudo 权限的用户免密码（需要该用户是密钥登陆）切换到其它用户，组合使用 sudo 和 su 即可
+    有 sudo 权限的用户切换到其它用户，组合使用 sudo 和 su 即可
 
         [uu@your_server:~] $ sudo su
         [root@your_server:/home/uu] # su - git
