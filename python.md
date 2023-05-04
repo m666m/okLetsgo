@@ -1780,6 +1780,18 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
     从源码构建 vscode https://cloud.tencent.com/developer/article/1588399
 
+    历史记录保存位置
+
+        %APPDATA%\Code\User\History
+
+    配置文件
+
+        %APPDATA%\Code\User\settings.json
+
+    插件安装位置
+
+        %USERPROFILE%\.vscode
+
 ### vscode 插件
 
 插件的安装位置为 C:\Users\你的用户名\.vscode\extensions
