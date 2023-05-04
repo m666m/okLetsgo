@@ -1012,34 +1012,41 @@ fi
 
 因为 Linux、Unix 下安装的很多软件，都给自己建立专门的用户进行权限保护，所以为了执行该软件的某些操作，需要切换到有权限的用户去做，比如切换到数据库用户，以便使用数据库管理工具进行数据库维护；切换到 root 用户，修改操作系统配置。
 
-    `su` 是 Linux 内置的命令用于切换用户
+    `su` 是 Linux 内置包 coreutils 的命令，用于切换用户
 
-    `sudo` 命令是单独的命令，需要安装 sudo 软件包才能使用。
+引入 sudo 命令的目的是让普通用户无需切换到 root 用户即可执行系统维护类命令，只需要把该用户配置到专用的 sudo 用户组即可。其原理是 “借用 root 用户的权限”，详见章节 [进程的用户权限 uid 和 euid](init_a_server think)。
 
-引入 sudo 命令的目的是让普通用户无需切换到 root 用户即可执行系统维护类命令。其原理是 “借用 root 用户的权限”，详见章节 [进程的用户权限 uid 和 euid](init_a_server think)。使用 sudo 执行命令的一大好处是：如果当前用户是密钥登录的就不会提示输入 root 密码了。
+    `sudo` 命令需要安装 sudo 软件包才能使用
 
-一般在操作系统安装后，如果默认没有安装 sudo 软件包，用命令 `su -` 切换到 root 用户，先安装 sudo 软件包。日后的使用就不需要切换到 root 用户了，用普通用户使用 sudo 来安装软件包即可。
+使用 sudo 执行命令需要输入当前用户的密码（不是root用户密码），有个好处是：如果当前用户是密钥登录的就不会提示输入密码了。
 
-如果不安装 sudo 软件包，除了用 su 命令切换到 root，就只能依赖可执行文件设置特殊权限位了，参见章节 [设定文件的特殊权限](init_a_server think)。一般这种情况都是关注安全性比较高的系统，普通使用为了方便还是安装 sudo 包比较好。
+一般在操作系统安装后，如果默认没有安装 sudo 软件包，用命令 `su -` 切换到 root 用户，先安装 sudo 软件包。日后的使用就不需要切换到 root 用户了，用普通用户使用 `sudo` 命令来安装软件包即可。
+
+如果不安装 sudo 软件包，除了用 su 命令切换到 root，就只能依赖可执行文件设置特殊权限位了，参见章节 [设定文件的特殊权限](init_a_server think)。一般这种情况都是关注安全性比较高的系统，普通使用为了方便还是安装 sudo 包。
 
 小提示：
 
-    在输入密码、切换到非 bash 环境等字符输入状态可能单纯用 Backspace 退格键没效果。你可以同时按着 Ctrl+Backspace 退格键来删除或者按着 Ctrl+u 键，直接清除所有已输入的字符。
+    在输入密码、切换到非 bash 环境等字符输入状态可能单纯用 Backspace 退格键没效果。你可以同时按着 Ctrl+Backspace 退格键来删除单个字符，或按 Ctrl+u 键，直接清除所有已输入的字符。
 
-sudo 和 su 常用法
+    要返回上一个用户时，执行退出命令 `exit` 或 `logout` 或 Ctrl+d 即可。
 
-    使用 sudo 如果当前用户是密钥登录的就不会提示输入 root 密码
+### sudo 和 su 常用法
 
     普通用户提权到 root 用户的权限来执行命令
 
-        # su -c 'apt update'
-        sudo apt update
+        su -c 'apt update'  # 需要输入 root 密码
 
-        临时切换到其它用户的权限来执行命令
+        sudo apt update  # 需要输入当前用户密码，如果当前用户是密钥登录的就不会提示输入密码
 
-            sudo -H -u otheruser bash -c 'command'
+    临时切换到其它用户的权限来执行命令
+
+        su -l -c 'command' otheruser
+
+        sudo -H -u otheruser bash -c 'command'
 
     普通用户切换到 root 用户并执行其登录脚本（普通用户需要有sudo组）
+
+        su -
 
         sudo -i
 
@@ -1047,29 +1054,45 @@ sudo 和 su 常用法
 
         su - uu
 
-    有 sudo 权限的用户切换到其它用户，组合使用 sudo 和 su 即可
+        有 sudo 权限的用户切换到其它用户，组合使用 sudo 和 su 即可
 
-        [uu@your_server:~] $ sudo su
-        [root@your_server:/home/uu] # su - git
-        [git@your_server:~] $
+            [uu@your_server:~] $ sudo su
+            [root@your_server:/home/uu] # su - git
+            [git@your_server:~] $
 
-        或一行 `sudo su - git`
+            或一行 `sudo su - git`
 
-su 命令是 switch user 切换用户的简写，普通用户切换到其它用户均需要校验密码。
+### su
 
-一般使用 `su - username`，还有 `su username`：
+su 命令是 switch user 切换用户的简写
 
-    `su - username` 切换用户，进入一个新shell，执行新用户的登录脚本。是 `su --login username` 或 `su -l username` 的简写，等同于该用户登录shell：变更 PWD 工作目录，执行用户的登录脚本，相关的变量都变成新用户的了如 $HOME，$SHELL，$USER，$PATH $LOGNAME 等等。需要输入新用户的登录密码，如果是从 root 用户切换到其它用户，不需要输入密码。
+    普通用户使用 su 命令切换到其它用户，需要输入该用户的登录密码
 
-        `su -` ，忽略用户名则默认切换到 root 用户登录，会提示输入 root 用户的密码。
+    如果是 root 用户使用 su 命令切换到其它用户，不需要输入密码
 
-    `su username` 仅切换用户，进入一个新shell，但不执行新用户的登录脚本，保留原用户的工作目录及环境变量。如果是两个普通权限的用户切换，需要输入新用户的登录密码，而且切换后的目录下未必有权限，因为这个目录是切换前的用户可以操作的路径。
+使用 `su - username` 和 `su username` 的区别：
 
-        应用场景示例：当前是数据库用户，需要修改操作系统配置，用 `su root` 切换到 root 用户但是保留数据库用户的环境，以便可以继续使用数据库工具。
+`su - username` 切换用户，进入一个新shell，执行新用户的登录脚本。
+
+    是 `su --login username` 或 `su -l username` 的简写，等同于该用户登录shell：变更 PWD 工作目录，执行用户的登录脚本，相关的变量都变成新用户的了如 $HOME，$SHELL，$USER，$PATH $LOGNAME 等等。
+
+    `su -` ，忽略用户名则默认切换到 root 用户登录，会提示输入 root 用户的密码。
+
+`su username` 仅切换用户，进入一个新shell，但不执行新用户的登录脚本，保留原用户的工作目录及环境变量。
+
+    如果是两个普通权限的用户切换，需要输入新用户的登录密码，而且切换后的目录下未必有权限，因为这个目录是切换前的用户可以操作的路径。
+
+    应用场景示例：当前是数据库用户，需要修改操作系统配置，用 `su root` 切换到 root 用户但是保留数据库用户的环境，以便可以继续使用数据库工具。
+
+### sudo
 
 sudo 命令是利用权限管理机制，授权某些普通用户能够以 root 用户的权限执行命令
 
-    因为是当前用户临时申请 root 权限，所以要输入的不是 root 用户密码，而是当前用户的密码，而且有个好处：如果当前用户是密钥登录的就不会提示输入密码了。用于非 root 用户登陆 tty 后，临时执行某些只有 root 用户才有权限的命令。
+    因为是当前用户临时申请 root 权限，所以要输入的不是 root 用户密码，而是当前用户的密码
+
+    有个好处：如果当前用户是密钥登录的就不会提示输入密码了。
+
+sudo 命令主要用于非 root 用户登陆 tty 后，临时执行某些只有 root 用户才有权限的命令。
 
 一般用法是 `sudo your_command` 以 root 用户的权限执行命令。
 
@@ -1084,8 +1107,6 @@ sudo 命令也可以用于切换到 root 用户：
     如果用 sudo 切换到 root 用户还是出现执行命令权限不足的情况，老老实实的用 `su -` 切换到 root 用户登录再执行你的操作即可。
 
 用 sudo 命令切换 root 用户，等同于执行 su 命令，但是享受 sudo 命令的好处：如果当前用户是密钥登录的就不会提示输入密码了。
-
-要返回上一个用户时，执行退出命令 `exit` 或 `logout` 或 Ctrl+d 即可。
 
 查看区别
 
@@ -1111,6 +1132,9 @@ sudo 命令也可以用于切换到 root 用户：
 
     $ cat /proc/cmdline
     coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_compat_alsa=0 snd_bcm2835.enable_hdmi=1 video=HDMI-A-1:640x480M@60 smsc95xx.macaddr=E4:5F:01:B6:A0:E5 vc_mem.mem_base=0x3ec00000 vc_mem.mem_size=0x40000000  console=ttyS0,115200 console=tty1 root=PARTUUID=3ae3e753-02 rootfstype=ext4 fsck.repair=yes rootwait
+
+    $ cat /proc/cmdline
+    BOOT_IMAGE=(hd0,gpt2)/ostree/fedora-db6d3f1ccfb861e20e7838bf677e7966074e45ad8616322f73b830d5972be032/vmlinuz-6.2.12-200.fc37.x86_64 rd.luks.uuid=luks-a9f05992-7dcc-4d02-ad78-1221e8beac35 rhgb quiet root=UUID=5b2d9971-5a35-474b-acf3-81a32bf98bfd rootflags=subvol=root rw ostree=/ostree/boot.1/fedora/db6d3f1ccfb861e20e7838bf677e7966074e45ad8616322f73b830d5972be032/0
 
 hostnamectl 查看主机名及操作系统信息 (依赖安装了 systemd)
 

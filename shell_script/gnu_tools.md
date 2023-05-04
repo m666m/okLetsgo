@@ -7724,9 +7724,11 @@ mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
 
     https://linux.cn/article-13761-1.html
 
-虚拟机 Gnome Box
+虚拟机
 
-    底层调用 virt-manager 操作 kvm 虚拟机，详见章节 [GNOME Boxes](virtualization think)。
+    Gnome Box 底层调用 virt-manager 操作 kvm 虚拟机，详见章节 [GNOME Boxes](virtualization think)。
+
+    Toolbox 是 Fedora 系统的容器化管理工具，调用 podman 来完成容器的操作，详见章节 [Fedora toolbox](virtualization think)。
 
 浏览器
 
