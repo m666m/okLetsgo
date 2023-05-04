@@ -268,7 +268,7 @@ function PS1git-branch-prompt {
 }
 
 # Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
-PS1="\n$PS1Cmagenta╭─$PS1Cred\$(PS1exit-code)$PS1Cmagenta[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cmagenta]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cmagenta╰──$PS1Cwhite\$ $PS1Cnormal"
+PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue╰──$PS1Cwhite\$ $PS1Cnormal"
 
 #################################
 # Linux bash - Fedora Silverblue
@@ -282,7 +282,7 @@ function PS1_fedora_is_toolbox {
 }
 
 # Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox环境名> \w当前路径 git分支及状态
-PS1="\n$PS1Cmagenta╭─$PS1Cred\$(PS1exit-code)$PS1Cmagenta[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$(PS1_fedora_is_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cmagenta]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cmagenta╰──$PS1Cwhite\$ $PS1Cnormal"
+PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cmagenta$(PS1_fedora_is_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue╰──$PS1Cwhite\$ $PS1Cnormal"
 
 #################################
 # Linux bash - raspberrypi
@@ -325,7 +325,7 @@ function PS1raspi-warning-prompt {
 }
 
 # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 树莓派温度告警 git分支及状态
-PS1="\n$PS1Cmagenta╭─$PS1Cred\$(PS1exit-code)$PS1Cmagenta[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cmagenta]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cmagenta╰──$PS1Cwhite\$ $PS1Cnormal"
+PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue╰──$PS1Cwhite\$ $PS1Cnormal"
 
 #################################
 # Windows git bash(mintty)
@@ -334,7 +334,7 @@ PS1="\n$PS1Cmagenta╭─$PS1Cred\$(PS1exit-code)$PS1Cmagenta[$PS1Cwhite\t $PS1C
 # 目前 git bash(mintty) 有点bug：
 # 在\$(函数名)后直接用换行\n就冲突
 # 规避办法是或者把换行\n放在引用函数前面，或者拼接凑合用
-#   PS1="\n$PS1Cmagenta┌──── $PS1Cwhite\t ""$PS1""$PS1Cmagenta───┘ $PS1Cnormal"
+#   PS1="\n$PS1Cblue┌──── $PS1Cwhite\t ""$PS1""$PS1Cblue───┘ $PS1Cnormal"
 #
 # 新的解决办法：
 # 用新增子函数 PS1git-bash-new-line 实现跟上面完全一致的显示效果。
