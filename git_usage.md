@@ -483,6 +483,16 @@ git revert 在合并冲突时使用`core.editor`的设置，没有单独的设�
 
 之后任何在工作区的修改，都会被 git 识别，需要重复上面的过程提交到本地仓库。
 
+注：git 会默认创建一个分支名为 'master'，但是这名称居然废弃了，以后的 git 版本可能改用 'main'
+
+    设置默认分支名
+
+        git config --global init.defaultBranch <name>
+
+    把刚创建的分支改名
+
+        git branch -m <name>
+
 3、暂存区（stage 或 index）：暂存区实质是 .git 目录下的index文件，所以暂存区也称为索引（index）。
 
 有了本地仓库之后，在工作区对文件的修改，都需要先添加到暂存区，然后才能提交到本地仓库。
