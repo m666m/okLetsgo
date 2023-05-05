@@ -7733,7 +7733,9 @@ mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
 
     https://linuxhitchhiker.github.io/THGLG/solution/software/
 
-    https://theevilskeleton.gitlab.io/2022/05/16/response-to-flatpak-is-not-the-future.html
+    商业软件替代品 https://alternativeto.net/
+
+    参考下它装的软件 https://theevilskeleton.gitlab.io/2022/05/16/response-to-flatpak-is-not-the-future.html
 
 虚拟机
 
