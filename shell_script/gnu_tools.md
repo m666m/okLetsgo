@@ -6151,6 +6151,7 @@ od :按数制显示内容
         https://github.com/ngosang/trackerslist
 
         https://github.com/XIU2/TrackersListCollection
+            https://trackerslist.com/
 
 #### Transmission
 
@@ -6170,6 +6171,8 @@ od :按数制显示内容
         https://registry.hub.docker.com/r/andrewmhub/transmission-tracker-add/
 
     https://blog.csdn.net/slimmm/article/details/115720184
+
+    竞品 qBittorrent https://www.qbittorrent.org/
 
 开源的下载工具，都是有个后台进程负责下载，前台负责任务管理。
 
@@ -7728,6 +7731,10 @@ mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
 
     https://linux.cn/article-13761-1.html
 
+    https://linuxhitchhiker.github.io/THGLG/solution/software/
+
+    https://theevilskeleton.gitlab.io/2022/05/16/response-to-flatpak-is-not-the-future.html
+
 虚拟机
 
     Gnome Box 底层调用 virt-manager 操作 kvm 虚拟机，详见章节 [GNOME Boxes](virtualization think)。
@@ -7740,7 +7747,15 @@ mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
 
     浏览器尽量使用容器化、匿名化访问，不同用途的浏览分开，多个虚拟机打开多个浏览器。
 
+    浏览器安装后，最好去除内置的 CN 证书、Certum 证书！或导入为 “不信任的证书”。
+
+        测试：访问网站 https://www.xycq.gov.cn/，提示不安全的数字证书
+
     FireFox
+
+        中文版的 FireFox 等浏览器由cn公司开发，不要下载安装！
+
+        FireFox 只在 mozila 官方网站下载“英文版”使用。
 
         多帐户容器：通过使用容器，你在一个容器中的浏览活动不会与其他容器共享。这种隔离意味着你可以在不同容器中登录同一网站上的两个不同帐户。你的登录会话、网站偏好和跟踪数据将被限制在你使用某个网站的容器中。你的登录会话、网站偏好和跟踪数据将被限制在你使用某个网站的容器中。Firefox 默认情况下提供的容器包括 Facebook、Messenger 和 Instagram 网站，当你打开这三个网站中的任何一个时，它们都只会在 “Facebook 容器” 中打开。因此，Facebook 将无法跟踪你在其他网站上的活动。Firefox 附加组件网站上的 扩展程序页面，找到 “Firefox Multi-Account Containers”。之后你唯一需要做的就是单击 “添加到 Firefox” 按钮。
 
@@ -7748,18 +7763,100 @@ mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
 
         Firefox 的 “插件”（plugin）和“扩展”（extension）是两种不同的东西：插件以动态库（Windows 上就是 DLL 文件）的方式，加载到浏览器的进程内。扩展可以调用浏览器自身的 API，但是大部分扩展【不能】调用操作系统的 API。
 
-        中文版的 FireFox 等浏览器由cn公司开发，不要下载安装！
-
-        FireFox 只在 mozila 官方网站下载“英文版”使用，去除内置的 CN 证书、Certum 证书！或导入为 “不信任的证书”。
-
-            测试：访问网站，提示不安全的数字证书
-
-                https://www.xycq.gov.cn/
-
     GNOME Web 是 GNOME 桌面（Fedora 工作站的默认桌面环境）的一个浏览器。如果你使用 GNOME 作为默认桌面环境的 Fedora 工作站，它可能非常适合作为你的主浏览器。这个浏览器有一个简单、干净、漂亮的外观。GNOME Web 的功能比 Firefox 少，但对于普通用途来说已经足够了。
 
-    Chromium 是一个来自 Chromium 项目的开源 Web 浏览器，它有一个极简的用户界面。它的外观与 Chrome 相似，因为它实际上是作为 Chrome 和其他几个浏览器的基础。许多人使用 Chromium 是因为他们已经习惯了 Chrome。
-        https://www.chromium.org/Home
+    通过 Flatpak 安装 chrome/chromium：
+
+            flatpak install flathub com.google.Chrome # 稳定版
+
+            flatpak install flathub com.google.ChromeDev # 开发版
+
+        安装 chromium：
+
+
+            flatpak install flathub org.chromium.Chromium
+
+        安装 ungoogled-chromium：
+
+        ungoogled-chromium 是一个由社区维护，默认禁用谷歌隐私追踪的开源浏览器。
+
+            https://github.com/Eloston/ungoogled-chromium/blob/master/README.md。
+
+            flatpak install flathub com.github.Eloston.UngoogledChromium
+
+    Chromium
+
+        来自 Chromium 项目的开源 Web 浏览器，它有一个极简的用户界面。它的外观与 Chrome 相似，因为它实际上是作为 Chrome 和其他几个浏览器的基础。许多人使用 Chromium 是因为他们已经习惯了 Chrome。
+
+        谷歌已经禁止 chromium 和基于 chromium 的第三方浏览器读取谷歌的数据，所以 chromium 不能同步你原有的谷歌浏览器数据。
+
+            https://www.chromium.org/Home
+
+        在 openSUSE 上安装 chromium：
+
+                sudo zypper in chromium
+
+            安装闭源组件（可选）：
+
+                sudo zypper in chromium-bsu chromium-ffmpeg-extra chromium-plugin-widevinecdm
+
+        在 Fedora 上安装 chromium：
+
+            sudo dnf in chromium
+
+            安装由 RPMFusion 提供，适用于 Fedora 的完整版 chromium（可选）：
+
+                sudo dnf in chromium-freeworld
+
+    Chrome
+
+        基于开源浏览器 chromium 而搭建的闭源浏览器
+
+        在 Fedora 上安装谷歌 chrome：
+
+            添加第三方仓库：
+
+                sudo dnf install fedora-workstation-repositories
+
+            激活 Google Chrome 仓库：
+
+                sudo dnf config-manager --set-enabled google-chrome
+
+            安装 chrome 稳定版：
+
+                sudo dnf install google-chrome-stable
+
+        在 openSUSE 上安装谷歌 chrome：
+
+            添加仓库：
+
+                sudo zypper ar http://dl.google.com/linux/chrome/rpm/stable/x86_64 google-chrome
+
+            获取公钥：
+
+                wget https://dl.google.com/linux/linux_signing_key.pub
+
+            导入公钥：
+
+                sudo rpm --import linux_signing_key.pub
+
+            安装 Google chrome 稳定版。
+
+                sudo zypper ref && sudo zypper in google-chrome-stable
+
+    Tor 浏览器
+
+        通过 Flatpak 安装：
+
+            flatpak install flathub com.github.micahflee.torbrowser-launcher
+
+        在 Fedora 上安装：
+
+            sudo dnf install torbrowser-launcher
+
+        在 openSUSE 上安装：
+
+            sudo zypper install torbrowser-launcher
 
 办公套件
 
@@ -7779,7 +7876,29 @@ mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
 
 邮件
 
-    Thunderbird 支持 gpg 加密
+    Mozilla Thunderbird 支持 gpg 加密
+
+    Gnome Evolution
+
+即时通信
+
+    matrix 服务器列表 https://tatsumoto-ren.github.io/blog/list-of-matrix-servers.html
+
+        https://element.linuxdelta.com/
+
+        https://element.fedibird.com/
+
+        https://webchat.kde.org/
+
+        https://chat.fedoraproject.org/
+
+        https://chat.opensuse.org/
+
+        最次选则才在官网注册 https://matrix.org/
+
+    IRC
+
+        https://zh.opensuse.org/openSUSE:IRC_for_newbies
 
 画图工具
 
@@ -7793,6 +7912,9 @@ mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
         https://krita.org/en/
 
 截屏
+
+    OBS 是一款用于视频录制和直播推流的开源软件
+        https://obsproject.com/
 
     Shutter
 
@@ -7808,6 +7930,10 @@ mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
 
     Audacity 是一个流行的多轨音频编辑器和录音机，可用于对所有类型的音频进行后期处理。
 
+    Deadbeef 是一个在 HiFi 社区中流行，可自定义的开源音频播放器。
+
+    Audacious 是一个开源的音频播放器。
+
 视频播放
 
     vlc player
@@ -7819,7 +7945,8 @@ mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
             Windows build
                 https://oss.netfarm.it/mplayer/
 
-        新发展 mpv player，支持播放 youtube
+        新的发展 MPV player，支持播放 youtube
+
             https://mpv.io/installation/
                 https://github.com/mpv-player/mpv/
                 https://sourceforge.net/projects/mpv-player-windows/files/
@@ -7827,20 +7954,35 @@ mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
             配置 https://github.com/thisisshihan/mpv-player-config-snad
 
         smplayer 使用 以上两者做作为播放引擎的 GUI 外壳程序，也支持播放 youtube
+
             https://www.smplayer.info/
                 https://github.com/smplayer-dev/smplayer
 
+    Aegisub 是一个跨平台的高级字幕编辑工具。
+        https://github.com/Aegisub/Aegisub
+
 视频编辑
 
-    Kdenlive
+    Blender 是一个集动画电影制作、视觉特效、3D 打印、三维/二维建模、动态图形、交互式 3D 应用和 VR 等多项领域为一体的知名开源软件。
+        https://www.blender.org/
 
-    Shotcut
+    Kdenlive 基于 Qt 和 MIT 多媒体框架开发的非线性视频编辑软件
+        https://kdenlive.org/
+
+    Shotcut 是由 MIT 多媒体框架开发者开发的一款基于 MIT 多媒体框架的非线性视频编辑软件。
+        https://www.shotcut.org/
 
 图片和视频转换
 
     XnConvert
 
     HandBrake
+
+游戏平台
+
+    Steam 你需要在 steam 的设置中启动 Proton 来游玩 Windows 游戏。
+
+        sudo dnf in steam
 
 ### 远程桌面 vnc/rdp/mstsc
 
