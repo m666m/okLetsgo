@@ -5341,13 +5341,33 @@ GNU Screen 的默认前导键是 Ctrl+A。
 
 这个命令会将你朋友的终端 Attach 到你的 Screen 会话上，并且你的终端不会被 Detach。这样你就可以和朋友共享同一个会话了，如果你们当前又处于同一个窗口，那就相当于坐在同一个显示器前面，你的操作会同步演示给你朋友，你朋友的操作也会同步演示给你。当然，如果你们切换到这个会话的不同窗口中去，那还是可以分别进行不同的操作的。
 
-### 命令行下的文件资源管理器 Midnight Commander
+### 进程守护工具 Supervisor
 
-    # https://midnight-commander.org/ https://github.com/MidnightCommander/mc
-    # https://sourceforge.net/projects/mcwin32/files/
-    sudo apt install mc
+使用 python 实现的进程监控和启动管理工具，不过目前都转向用 systemd 管理进程了
 
-命令行下使用两个面板来处理文件和目录，类似 [Far Manager](https://conemu.github.io/en/FarManager.html)。
+    http://supervisord.org/
+
+    https://zhuanlan.zhihu.com/p/52233518
+
+各大发行版都支持了
+
+    apt install supervisor
+
+可以直接通过pip来安装
+
+    pip install supervisor
+
+目前所知缺陷：
+
+    1.Supervisor管理的进程必须由supervisord启动，即已启动的程序是无法使用supervisord进行管理的。
+
+    2.Supervisor要求管理的程序是非后台式的程序(not daemon program)，因为Supervisord会自动帮你将要管理的进程转为后台进程，如果原本就是后台进程就存在问题，比如要使用Supervisor管理nginx，nginx就需要在配置文件中添加daemon off让nginx以非后台运行形式启动。
+
+    3.Supervisor不支持windows，只支持类UNIX系统，如Centos、Ubuntu、MacOS
+
+一个类似的监控工具：Monit
+
+    Monit可以对系统状态、进程、文件、目录和设备进行监控，适用于Linux平台，可以自动重启已挂掉的程序，比较适合监控系统的关键进程和资源，如nginx、apache、mysql和cpu占有率等。
 
 ### 通过 pid 把后台任务调回前台 reptyr
 
@@ -7058,7 +7078,7 @@ TODO:restic：使用 ssh 密钥方式连接备份服务器，在存储池中加�
 
 estic 备份原理跟其他简单的备份程序略有不同，它基于存储池和快照的概念，每次备份就相当于一份快照，快照存储在存储池中。存储池中的数据用AES加密，当您备份敏感数据并将备份放在不受自己管辖服务器（例如，云提供商）时，这一点尤其重要。
 
-### nfs server 网络存储
+### 网络存储 nfs server
 
     https://www.cnblogs.com/f-ck-need-u/p/7305755.html
 
@@ -7111,6 +7131,14 @@ NFS 一般用来存储共享视频，图片等静态数据。
 一般使用 nvme-cli 工具即可。
 
 注意：不同的主控对这个算法是不同的。像铠侠，三星直接在自家控制软件中操作就可以，而有些硬盘并不会认为预留空间就是 OP，所以还是得看具体品牌。
+
+### 命令行下的文件资源管理器 Midnight Commander
+
+    # https://midnight-commander.org/ https://github.com/MidnightCommander/mc
+    # https://sourceforge.net/projects/mcwin32/files/
+    sudo apt install mc
+
+命令行下使用两个面板来处理文件和目录，类似 [Far Manager](https://conemu.github.io/en/FarManager.html)。
 
 ### 在当前目录启动一个简单的http服务器
 
