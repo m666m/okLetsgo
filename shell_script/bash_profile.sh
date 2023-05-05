@@ -391,6 +391,18 @@ fi
 unset env
 
 ####################################################################
+# Mac OS
+# 如果你要在 OS-X 上使用 GPG，记得将下面的命令填入你的 Shell 的默认配置中。
+
+# Add the following to your shell init to set up gpg-agent automatically for every shell
+if [ -f ~/.gnupg/.gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
+    source ~/.gnupg/.gpg-agent-info
+    export GPG_AGENT_INFO
+else
+    eval $(gpg-agent --daemon --write-env-file ~/.gnupg/.gpg-agent-info)
+fi
+
+####################################################################
 # Windows git bash(mintty)
 # 多会话复用 ssh-pageant 及运行gpg钥匙圈更新
 #
@@ -428,5 +440,8 @@ source /usr/local/bin/ackg.sh
 # 手动配置插件
 
 alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
+
+# ssh 命令时候能够自动补全 hostname
+complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
 
 ####################################################################
