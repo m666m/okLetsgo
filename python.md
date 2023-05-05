@@ -1830,6 +1830,18 @@ Trailing Spaces
 
     shardulm94.trailing-spaces
 
+#### hex颜色代码下用底色显示该颜色
+
+Color Highlight
+
+    naumovs.color-highlight
+
+#### 预览 svg 图片
+
+SVG 图片语法高亮和预览
+
+    jock.svg
+
 #### 正则表达式预览
 
 Regexp Explain
@@ -2028,6 +2040,16 @@ Material Neutral 深色看文字比较养眼
     bernardodsanderson.theme-material-neutral
 
 Solarized Light（vscode 自带），这个是羊皮纸底色，但是语法高亮浅蓝色太多，视物不清，需要自改。
+
+#### 图标
+
+产品主题图标
+
+    davidbwaters.macos-modern-theme 自带的就好
+
+文件图标
+
+    vscode-icons-team.vscode-icons
 
 #### JScript/Json的格式化，比系统自带的好用
 
