@@ -1501,6 +1501,46 @@ git checkout 命令是在同一个文件夹中切换不同分支，当一个分�
     cd -
     git rebase hotfix
 
+### 合并两个不相干的本地仓库
+
+    https://www.morfans.cn/archives/3373
+
+不使用拷贝文件的方式，目的是能够保留提交记录，让一个仓库合并另一个仓库的文件和提交记录。
+
+方法是添加一个远程对象，地址是另一个仓库，然后把它拉取下来，以此创建一个分支，然后合并到主干，使用参数允许不相关历史。
+
+假设仓库 A 要合并仓库 B，仓库 B 使用本地地 “..\repo_b”，如果你的是远程，把这里改成网址即可
+
+    cd repo_a
+
+    git remote -v
+
+添加远程对象，地址是仓库 B
+
+    git remote add repob ..\repo_b\
+
+拉取远程 repob 地址的内容
+
+    git fetch repob
+
+分支操作
+
+    $ git branch -a
+    *master
+    remotes/origin/master
+
+创建新分支 tobe
+
+    git checkout -b tobe repob/master
+
+合并到主干分支 master
+
+    git checkout master
+
+    git merge --allow-unrelated-histories tobe
+
+这样仓库 A 的主干分支 master 里就有了仓库 B 的内容，并且提交记录也合并进来了。
+
 ## -------- 分支管理：针对已经提交的历史记录链条的折腾 --------
 
 ## 分支切换 switch
