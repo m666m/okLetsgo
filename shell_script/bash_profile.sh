@@ -74,9 +74,11 @@ if [ -x /usr/bin/dircolors ]; then
 
     # gpg 常用命令
     alias ggk='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
+    # 查看公钥的指纹以便跟跟网站发布的核对
+    alias ggf='echo "[查看指定公钥的指纹]" && gpg --with-fingerprint --show-keys --keyid-format long '
     # 使用临时钥匙圈校验文件签名，如 `ggvs ./fedora.gpg xxxx.checksum`
     alias ggvs='echo "[使用临时钥匙圈校验文件签名]" && gpgv --keyring'
-    # gpg 的 pinentry 经常弹不出密码提示框
+    # 解决 gpg 的 pinentry 弹不出密码提示框
     alias ggt='export GPG_TTY=$(tty)'
     # 对称算法加密，自动选择当前可用的私钥签名，如 `ggcs 1.txt`，默认生成的文件添加后缀 .gpg。
     alias ggcs='echo "[对称算法加密文件]" && gpg -s --cipher-algo AES-256 -c'
