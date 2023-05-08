@@ -8247,23 +8247,9 @@ gpg 密码管理
     systemctl status xrdp
     systemctl status xrdp-sesman
 
-可选配置 ssl 证书，否则系统会默认使用安装时生成的 /etc/xrdp下的
+配置文件 /etc/xrdp/xrdp.ini 可配置 ssl 证书。
 
-    openssl req -x509 -newkey rsa:2048 -nodes -keyout ~/key.pem -out ~/cert.pem -days 365
-
-    编辑  /etc/xrdp/xrdp.ini
-
-        # 将[Globals]字段下的 poart=  配置为你自己想要的端口
-        [Globals]
-        ini_version=1
-        fork=true
-        port=56789
-
-        # 将生成的证书配置到下列字段
-        ; X.509 certificate and private key
-        ; openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 365
-        certificate=/var/home/uu/cert.pem
-        key_file=/var/home/uu/key.pem
+支持 2FA 登陆 <https://github.com/neutrinolabs/xrdp/wiki/Using-Authy-or-Google-Authenticator-for-2FA-with-XRDP>。
 
 xrdp 安装完成后的几个设置：
 
