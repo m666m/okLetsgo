@@ -7630,16 +7630,6 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
     Sway - Sway 是平铺 Wayland 合成器和 X11 下 i3 窗口管理器的新替代（sway明确说明不支持英伟达）。
 
-        https://swaywm.org/
-
-        https://wiki.archlinux.org/title/Sway
-
-        https://cloud-atlas.readthedocs.io/zh_CN/latest/linux/desktop/sway/run_sway.html
-        https://zhuanlan.zhihu.com/p/441251646
-        https://blog.tiantian.cool/wayland/
-        https://zhuanlan.zhihu.com/p/462322143
-        https://www.fosskers.ca/en/blog/wayland
-
     Xcompmgr - Xcompmgr 是一个简单的合成管理器，能够渲染下拉阴影，使用 transset 工具的话，还可以实现简单的窗口透明。
 
     Compiz：OpenGL 窗口和合成管理器，能实现三维的切换窗口
@@ -7716,12 +7706,6 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
     https://segmentfault.com/a/1190000022083424
 
-    sway 是 i3 的 wayland 实现
-
-        https://github.com/swaywm/sway/wiki
-
-        https://zhuanlan.zhihu.com/p/462322143
-
 mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
 
     <SUPER> 在 Windows 键盘下 是 WIN 键，在 MacOS 键盘下是 CMD 键。
@@ -7766,6 +7750,107 @@ mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
     assign [class="Gvim"] $WS4
     assign [class="Ise"] $WS5
     assign [class="VirtualBox"] $WS6
+
+#### sway
+
+是 i3 的 wayland 实现，据说 wayland 是以后的方向，替换 xserver
+
+    https://swaywm.org/
+
+    https://github.com/swaywm/sway/wiki
+    https://wiki.archlinux.org/title/Sway
+
+    探索linux桌面全面wayland化（基于swaywm） https://zhuanlan.zhihu.com/p/462322143
+
+    Sway: 从尝试到放弃 https://coda.world/sway-explore-and-giveup
+
+    https://cloud-atlas.readthedocs.io/zh_CN/latest/linux/desktop/sway/run_sway.html
+    https://zhuanlan.zhihu.com/p/441251646
+    https://blog.tiantian.cool/wayland/
+    https://zhuanlan.zhihu.com/p/462322143
+    https://www.fosskers.ca/en/blog/wayland
+
+起因
+之前重装系统时把桌面环境换成了 Wayland Gnome，经过一段时间的使用，感觉自己对 Gnome 这种寒酸大道至简的风格还是很满意的，不过它的窗口管理实在是有些混乱，于是萌生了试用一下平铺式窗口管理器的想法。由于难以接受倒退回 X Server，所以 Sway 自然成了首选。然后相对于 Gnome 这种完整的桌面环境，Sway 就真的只是个窗口管理器而已，所以需要进行大量配置才能满足日常需求其实说白了我真正需要的是一个使用平铺式窗口管理器的桌面环境。
+
+对比
+虽然我个人单纯是为了更好的管理窗口而试用 Sway，不过实际上在选择平铺式/堆叠式窗口管理器的原因上确实存在更多考量。
+
+平铺式窗口管理器
+窗口被摆放的整整齐齐，强迫症狂喜！
+屏幕太大了，放眼望去全是屏幕，完全没必要堆叠窗口，只要直接铺开就行了。
+往往更加轻量化，对硬件的需求较低。
+喜欢使用固定的布局显示窗口。
+不喜欢碰鼠标，希望通过键盘进行大部分的操作。
+堆叠式窗口管理器
+堆叠式窗口管理器往往伴随着成熟的桌面环境，省时省力，开箱即用！
+跟随主流，符合大多数人的使用习惯，也意味着碰到冷门问题的情况更少。
+可以自由的摆放窗口，这点在小屏幕上优势很明显。
+配置
+如前文所言，Sway 只是一个单纯的窗口管理器，需要进行各种配置才能勉强达到可用的状态，由于配置太过琐碎，这里只简单的提一下其实是单纯的懒，以后有时间可能会更新详细配置。
+
+Sway 本身
+快捷键
+默认的 Terminal Emulator
+字体
+分辨率以及刷新率
+壁纸
+利用 swayidle 实现自动锁屏
+Application Launcher/Status Bar 所调用的程序
+窗口间距
+鼠标主题 xcursor_theme
+其他需要随 Sway 运行的命令(exec_always{ ... })，例如
+    启动 exec /usr/bin/foo
+    设置 gtk 程序主题 gsettings set org.gnome.desktop.interface foo bar
+    设置 XDG_SESSION_TYPE 以及 DESKTOP_SESSION 环境变量
+
+状态栏
+Sway 有自带的状态栏 swaybar，不过目前比较热门的是 waybar，可以实现额外的功能，例如通过调用 `curl 'https://wttr.in/?format=1'` 来显示天气、调用自己写的脚本定期检查更新等。
+
+Application Launcher
+一般使用 wofi，不过也可以自己写脚本配合 fzf 来实现。关机菜单也可以通过类似的方式进行生成和调用。
+
+Display Manager
+可以直接从终端启动 sway，不过我仍然使用了 GDM 作为 Display Manager，首先是因为可以自动读取 ~/.config/environment.d/*.conf 里的环境变量，其次是为了自动解锁 gnome-keyring。也不需要进行额外的设定，可以直接从登录界面选择进入 Sway。
+
+锁屏
+目前可以使用 swaylock 或者 swaylock-effects(AUR)，没有什么高级的设定，目前就显得很简陋。我也尝试过调用 GDM，不过以失败而告终。
+
+GTK 主题
+设置主题时不但要对 $XDG_CONFIG_HOME/gtk-*.0/settings.ini 进行设置，同时需要运行 gsettings set ...，总而言之就是能设置的地方都设置一遍，从而防止程序只读取特定位置的配置文件。
+
+QT 主题
+由于我没有使用任何基于 QT 的程序，所以直接省略了这个步骤。
+
+鼠标主题
+以我使用的 Breeze 主题为例，需要在多个地方进行设置，从而保证覆盖所有程序：
+
+环境变量 XCURSOR_THEME="Breeze"
+seat seat0 xcursor_theme Breeze 24
+GTK: settings.ini 中 cursor-theme='Breeze'，以及运行 gsettings set org.gnome.desktop.interface cursor-theme 'Breeze'。
+QT: 我没设置。
+如果缺少设置可能会导致鼠标指针在部分程序、或者部分位置(例如标题栏)变成默认样式。
+剪贴板
+Sway 下默认关闭窗口时会清空剪贴板，其实我还挺喜欢这种模式的，如果希望在窗口关闭后仍旧保留剪贴板中的内容，可以通过 clipman 实现。
+
+截图
+使用 grim 实现截图功能。
+
+系统通知
+使用 mako 实现简单的系统通知。
+
+Autostart
+Sway 并不会自动运行 $XDG_CONFIG_DIRS/autostart 里的程序，需要自己写相应的 systemd user unit 实现。
+
+结局
+实际上平铺式窗口管理模式本身还是令我相当满意的，但是我还是最终放弃了把 Sway 当作主力的想法，主要原因：
+
+窗口特效
+Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何特效，并且开发者已经坚决表示 Sway 的主要目标是稳定所以不会去支持高级特效。虽然我个人对窗口特效的要求是简短、简约，但是 Sway 只能用简陋来形容，而明明添加一些简单的特效就能使窗口的视觉效果提升很多。另外众所周知 X Server 走上了与混成器通信的畸形道路的原因之一就是对特效、透明、圆角边框的需求。而如今站在 wayland 的肩膀上，却不使用任何窗口特效未免显得无法物尽其用。最后不知道是否和这个有关，同样的鼠标主题在 Gnome 和 KDE 下显示效果是一致的，但是在 Sway 下颜色就深得有点不自然。
+集成度太低
+就如文中反复提及的那样，Sway 仅仅是个窗口管理器而已，所以很多东西不能像使用高集成度的桌面环境时那样方便，例如很多设置需要在多个地方进行重复配置，不支持 XDG Autostart, 插上优盘后自动挂载，更别提在通知中心里面直接通过单击消息打开相应的程序这类体验了。当然这些问题都可以通过自己写代码解决，但是这种感觉真的就是 GNU/Car。
+冷门
+不像 i3 之类的那样热门，这直接导致了可以偷参考的配置更少，同时生态圈内的各种工具也开发缓慢。同时平铺式窗口管理器本身也相对冷门，导致在部分“喜欢弹小窗”的程序上面体验较差，当然这种体验可以通过修改配置进行改善，不过始终是多了一个步骤。
 
 ### 常用桌面工具
 
