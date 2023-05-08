@@ -3072,13 +3072,23 @@ if [ -x /usr/bin/dircolors ]; then
 
     # gpg 常用命令
     alias ggk='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
-    # 查看公钥的指纹以便跟跟网站发布的核对
-    alias ggf='echo "[查看指定公钥的指纹]" && gpg --with-fingerprint --show-keys --keyid-format long '
-    # 使用临时钥匙圈校验文件签名，如 `ggvs ./fedora.gpg xxxx.checksum`
-    alias ggvs='echo "[使用临时钥匙圈校验文件签名]" && gpgv --keyring'
+    # 查看公钥的指纹以便跟跟网站发布的核对，如 `ggf fedora.gpg`
+    alias ggf='echo "[查看指定公钥的指纹]" && gpg --with-fingerprint --show-keys --keyid-format long'
+    # 签名，生成二进制.gpg签名文件，默认选择当前可用的私钥签名，可用 -u 指定
+    alias ggsb='echo "[签名，生成二进制.gpg签名文件]" && gpg --sign'
+    # 签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定
+    alias ggst='echo "[签名，生成文本.asc签名文件]" && gpg --clearsign'
+    # 分离式签名，生成二进制.sig签名文件，默认选择当前可用的私钥签名，可用 -u 指定
+    alias ggsdb='echo "[分离式签名，生成二进制.sig签名文件]" && gpg --detach-sign'
+    # 分离式签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定
+    alias ggsdt='echo "[分离式签名，生成文本.asc签名文件]" && gpg --armor --detach-sign'
+    # 使用临时钥匙圈验证文件签名，如 `ggvs ./fedora.gpg xxxx.checksum`
+    alias ggvs='echo "[使用临时钥匙圈验证文件签名]" && gpgv --keyring'
     # 解决 gpg 的 pinentry 弹不出密码提示框
     alias ggt='export GPG_TTY=$(tty)'
-    # 对称算法加密，自动选择当前可用的私钥签名，如 `ggcs 1.txt`，默认生成的文件添加后缀 .gpg。
+    # 非对称算法加密并签名，参数太多，只给出提示
+    alias gges='echo "gpg -s -u 'my_sign' -r 'reciver' -e msg.txt"'
+    # 对称算法加密，默认选择当前可用的私钥签名，可用 -u 指定，默认生成的.gpg文件。如 `ggcs 1.txt`
     alias ggcs='echo "[对称算法加密文件]" && gpg -s --cipher-algo AES-256 -c'
     # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
     alias ggd='gpg -d'
