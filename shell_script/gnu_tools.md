@@ -8206,6 +8206,8 @@ gpg 密码管理
 
 ·xrdp 是在 Linux 上实现 rdp 协议的开源的服务端程序，它兼容各种 rdp 客户端如 rdesktop、mstsc、gnome boxes、remmina 等
 
+    https://github.com/neutrinolabs/xrdp/wiki
+
     https://aws.amazon.com/cn/blogs/china/vnc-or-rdp-how-to-choose-a-remote-desktop-on-the-cloud/
 
     Debian11+xorg+i3+xrdp 桌面环境搭建
