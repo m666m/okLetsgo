@@ -8223,32 +8223,47 @@ gpg 密码管理
     Debian11+xorg+i3+xrdp 桌面环境搭建
         https://blog.csdn.net/lggirls/article/details/129748427
 
-    安装
+    https://www.cnblogs.com/Ansing/p/16788086.html
 
-        sudo apt install xrdp
+组件
 
-        sudo ufw allow from any to any port 3389 proto tcp
+    xrdp:远程桌面协议 （RDP） 服务器。
 
-        sudo systemctl start xrdp
-        sudo systemctl enable xrdp
+    xrdp-sesman: 会话管理器它通过对用户进行身份验证并启动相应的 X 服务器来管理用户会话。
 
-    可选配置 ssl 证书，否则系统会默认使用安装时生成的 /etc/xrdp下的
+    xrdp-dis: 运行 xrdp-dis 时不带任何参数来断开 xrdp 会话的连接。
 
-        openssl req -x509 -newkey rsa:2048 -nodes -keyout ~/key.pem -out ~/cert.pem -days 365
+    xrdp-sesadmin:是一个控制台程序来管理正在运行的 XRDP 会话。
 
-        编辑  /etc/xrdp/xrdp.ini
+安装
 
-            # 将[Globals]字段下的 poart=  配置为你自己想要的端口
-            [Globals]
-            ini_version=1
-            fork=true
-            port=56789
+    sudo apt install xrdp
 
-            # 将生成的证书配置到下列字段
-            ; X.509 certificate and private key
-            ; openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 365
-            certificate=/var/home/uu/cert.pem
-            key_file=/var/home/uu/key.pem
+    sudo ufw allow from any to any port 3389 proto tcp
+
+    sudo systemctl start xrdp
+    sudo systemctl enable xrdp
+
+    systemctl status xrdp
+    systemctl status xrdp-sesman
+
+可选配置 ssl 证书，否则系统会默认使用安装时生成的 /etc/xrdp下的
+
+    openssl req -x509 -newkey rsa:2048 -nodes -keyout ~/key.pem -out ~/cert.pem -days 365
+
+    编辑  /etc/xrdp/xrdp.ini
+
+        # 将[Globals]字段下的 poart=  配置为你自己想要的端口
+        [Globals]
+        ini_version=1
+        fork=true
+        port=56789
+
+        # 将生成的证书配置到下列字段
+        ; X.509 certificate and private key
+        ; openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 365
+        certificate=/var/home/uu/cert.pem
+        key_file=/var/home/uu/key.pem
 
 xrdp 安装完成后的几个设置：
 
@@ -8864,24 +8879,24 @@ journalctl 功能强大，用法非常多
 
 systemd 支持 unit 多个位置存放，最主要的存放位置是：
 
-    /usr/lib/systemd/system/: units provided by installed packages
+    /usr/lib/systemd/system/: units provided by installed packages 各种配置文件都放在这里。
 
-    /etc/systemd/system/: units installed by the system administrator 在执行 systemctl enable 启动服务后会自动在这里放置链接文件，或子目录
+    /etc/systemd/system/: units installed by the system administrator 在执行 `systemctl enable` 启动服务后，会自动在这里放置链接文件指向上面的配置文件，以及子目录。
 
-    查看全部位置：
+查看全部位置：
 
-        systemctl show --property=UnitPath --no-pager
+    systemctl show --property=UnitPath --no-pager
 
-        (--system)
-        /etc/systemd/system             System units created by the administrator
-        /usr/local/lib/systemd/system   System units installed by the administrator
-        /usr/lib/systemd/system         System units installed by the distribution package manager
+    (--system)
+    /etc/systemd/system             System units created by the administrator
+    /usr/local/lib/systemd/system   System units installed by the administrator
+    /usr/lib/systemd/system         System units installed by the distribution package manager
 
-        (--user)
-        $HOME/.config/systemd/user  User configuration
-        /etc/systemd/user           User units created by the administrator
-        /usr/local/lib/systemd/user User units installed by the administrator
-        /usr/lib/systemd/user       User units installed by the distribution package manager
+    (--user)
+    $HOME/.config/systemd/user  User configuration
+    /etc/systemd/user           User units created by the administrator
+    /usr/local/lib/systemd/user User units installed by the administrator
+    /usr/lib/systemd/user       User units installed by the distribution package manager
 
 列出所有配置文件
 
