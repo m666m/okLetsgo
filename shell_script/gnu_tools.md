@@ -2463,6 +2463,10 @@ Nerd fonts 是 Powerline fonts 的超集，建议直接使用 Nerd font，参见
     $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \uf70f \ue20a \ue350 \uf2c8"
      ±  ➦ ✘ ⚡ ⚙ ❃    
 
+#### Font Awesome
+
+    https://fontawesome.com/v5/cheatsheet
+
 ### 使用 zsh
 
 单纯的 zsh 并不慢，只要别装 ohmyzsh，没有任何功能性插件的使用场景依赖这个 ohmyzsh。
@@ -7696,9 +7700,9 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
 #### TODO: i3
 
-    https://i3wm.org/docs/userguide.html
-
 通过键盘操作的 i3 平铺窗口管理器使用 Linux 桌面，当您开始使用 i3 时，您需要记住其中的一些快捷方式才能使用。
+
+    https://i3wm.org/docs/userguide.html
 
     自定义参考
 
@@ -7711,6 +7715,12 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
     https://zhuanlan.zhihu.com/p/51077654
 
     https://segmentfault.com/a/1190000022083424
+
+    sway 是 i3 的 wayland 实现
+
+        https://github.com/swaywm/sway/wiki
+
+        https://zhuanlan.zhihu.com/p/462322143
 
 mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
 
