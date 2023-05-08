@@ -71,6 +71,11 @@ if [ -x /usr/bin/dircolors ]; then
     alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
     # 256字节作为密钥文件
     alias passf='dd if=/dev/random of=symmetric.key bs=1 count=256'
+    # 快捷进入从windows复制过来的绝对路径，注意要在路径前后添加双引号
+    # cdw "[Windows Path]"
+    function cdw {
+        cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
+    }
 
     # gpg 常用命令
     alias ggk='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'

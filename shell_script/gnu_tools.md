@@ -3064,6 +3064,11 @@ if [ -x /usr/bin/dircolors ]; then
     alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
     # 256字节作为密钥文件
     alias passf='dd if=/dev/random of=symmetric.key bs=1 count=256'
+    # 快捷进入从windows复制过来的绝对路径，注意要在路径前后添加双引号
+    # cdw "[Windows Path]"
+    function cdw {
+        cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
+    }
 
     # gpg 常用命令
     alias ggk='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
@@ -4309,7 +4314,7 @@ map <C-n> :NERDTreeToggle<CR>
         3.SHIFT + i (I) 输入要插入的内容。
         4.按 Esc 键两次，会在每行的选定的区域出现插入的内容
 
-    用 `c`将删除高亮选中的文本并进入插入模式，在你输入文本并点击Esc返回之后，输入的文本将插入到块选中的每一行里。
+    用 `c` 将删除高亮选中的文本并进入插入模式，在你输入文本并按 Esc 键返回之后，输入的文本将插入到块选中的每一行里。
 
     用 `C` 会删除从选中文本到行尾的所有字符并进入插入状态。
 
@@ -4338,8 +4343,6 @@ map <C-n> :NERDTreeToggle<CR>
     :x      保存修改并退出
     :q      退出，如果对缓冲区进行过修改，则会提示
     :q!     强制退出，放弃修改
-
-    :w !sudo tee %      用于 vim /etc 内的文件，等保存时才发现没权限。曲线方法是先保存个临时文件，退出后再sudo cp回去。实际上在vim里面可以直接完成这个过程的。:w!{cmd}，让vim执行一个外部命令{cmd}，然后把当前缓冲区的内容从stdin传入。tee是一个把stdin保存到文件的小工具。%，是vim当中一个只读寄存器的名字，总保存着当前编辑文件的文件路径。
 
 ##### 自定义快捷键
 
@@ -4421,6 +4424,16 @@ vim中有五种基本的重复类型，分别是：
 内置插件 netrw 的快捷键，参见章节 [vim 内置的树形文件夹插件 netrw]
 
 文件夹树形展示插件 nerdtree 的快捷键，参见章节 [nerdtree 树形文件夹插件]。
+
+小技巧：
+
+vim /etc 内的文件，等保存时才发现没权限。曲线方法是先保存个临时文件，退出后再 sudo cp 回去。
+
+实际上在 vim 里面可以直接完成这个过程的
+
+    :w !sudo tee %
+
+:w !{cmd}，让 vim 执行一个外部命令 {cmd}，然后把当前缓冲区的内容从 stdin 传入。tee 是一个把 stdin 保存到文件的小工具。%，是 vim 当中一个只读寄存器的名字，总保存着当前编辑文件的文件路径。
 
 #### 理解vim的多文件操作（缓冲buffer）
 
@@ -7548,9 +7561,39 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
 ## Linux 桌面环境
 
+### GNOME，Xorg，X Window，X Server，Wayland是什么关系
+
+    https://www.zhihu.com/question/503270852
+
+    GNOME 设置默认 wayland 或 xorg https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
+
+GNOME：是一套桌面环境（前端）。
+
+现在大多时候，X11、Xorg、X Server说的都是一个东西就是Linux桌面的X11后端服务器，也就是Xorg。
+
+    X window，又叫 X 窗口系统，最初起源于1984年，是为了解决类 unix 系统的图形显示问题而推出的显示接口。它使用 unix 套接字式的 c/s 模式，从而分离出了前端和后端两部分，天生就分为了客户端和服务器两部分。也就是说，应用程序和显示器不必在同一台计算机上。
+
+    X11(X Window System)：Linux 桌面显示的协议
+
+    Xorg：是 Linux 上通用的桌面环境（后端）服务器（X11的一种具体开源实现）。它使用 X11 协议与客户端应用程序进行交互的应用程序，用于在显示器上绘制内容并发送输入事件，例如鼠标移动，单击和击键。现在一般把 x11 和 xorg 视作同一个服务。
+
+    X server：又叫 Xorg xserver 或 X11 server，是 Xorg 的前端实现，用来处理用户输入和系统输出的指令。X server 运行在工作站上，而用户在具有更强处理能力的远程计算机上运行应用程序是很常见的。
+
+    GNOME、KDE、Xfce 是基于 Xorg 基础之上开发的桌面环境，也就是桌面软件（或者是图形软件）的集合。
+
+    通用命令： startx 在命令行下启动桌面环境
+
+Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的在于替代 X Window。
+
+    Wayland 只是提供一个协议的基础抽象，参考实现叫 Weston
+
+    Gnome、KDE 等都有对应的 Wayland 实现。
+
 ### 使用 gnome 扩展
 
     gnome 桌面软件手册 https://help.gnome.org/users/
+
+    https://docs.fedoraproject.org/en-US/quick-docs/gnome-shell-extensions/
 
 新版 Gnome 桌面向手机风格转换：没有任务栏，默认只显示当前任务窗口，查看打开的任务/切换任务要按 alt+tab。桌面只能展示壁纸，不能放文件，桌面顶部一个状态条，用户交互操作非常少。
 
@@ -7700,27 +7743,37 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
         https://github.com/Karmenzind/dotfiles-and-scripts/blob/master/home_k/.config/i3status/config
 
+        从零开始配置 i3-wm https://obster-y.github.io/zh-cn/posts/c4304786-bbc2-11eb-8847-0772b2ac4cf2/
+
     https://zhuanlan.zhihu.com/p/44783017
 
     https://zhuanlan.zhihu.com/p/51077654
 
     https://segmentfault.com/a/1190000022083424
 
-mod 键可以由用户设定，可以是 alt(Mod1) 或者是 win(Mod4)。
+安装
 
-    <SUPER> 在 Windows 键盘下 是 WIN 键，在 MacOS 键盘下是 CMD 键。
+    dnf install -y i3 i3-ipc i3status i3lock dmenu terminator --exclude=rxvt-unicode
 
-    要打开终端 urxvt，请按 <SUPER>+<ENTER>。
-
-    按 <SUPER>+num 切换到工作区 num
-
-在 i3 中，工作区是对窗口进行分组的一种简单方法。您可以根据您的工作流以不同的方式对它们进行分组。例如，您可以将浏览器放在一个工作区上，终端放在另一个工作区上，将电子邮件客户端放在第三个工作区上等等。
+TODO: 在 xrdp 下使用 i3 登录。
 
 下载 font-awesome:开源的图标字体
 
     https://fontawesome.com/v5/cheatsheet
 
-配置文件 /etc/i3/config，或命令 i3-config-wizard
+前导键叫 mod 键，可以由用户设定，可以是 Mod1(alt键) 或者是 Mod4(Super/Win)。
+    # ++++++=定义按键变量=++++++#
+    # (Mod1 = Alt, Mod4 = Super/Win)
+    set $mod Mod4
+    set $m_alt Mod1
+
+    打开终端 urxvt          <mod>+<ENTER>
+
+    切换到工作区 num        <mod>+num
+
+在 i3 中，工作区是对窗口进行分组的一种简单方法。您可以根据您的工作流以不同的方式对它们进行分组。例如，您可以将浏览器放在一个工作区上，终端放在另一个工作区上，将电子邮件客户端放在第三个工作区上等等。
+
+配置文件 /etc/i3/config 及 ~/.config/i3/config，或命令 i3-config-wizard
 
     # 先把屏保功能关了：
     exec --no-startup-id xset s 0
@@ -8001,6 +8054,12 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
     Okular 主要用于查看 pdf 并添加批注
 
+gpg 密码管理
+
+    Gnome Passwords and Keys（原名 Seahorse）
+
+    KDE KGpg
+
 邮件
 
     Mozilla Thunderbird 支持 gpg 加密
@@ -8117,11 +8176,20 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
     Windows 下的远程桌面工具是 mstsc，使用 Microsoft RDP(Remote Desktop) 协议
 
-如果使用 VNC 体系，注意用 ssh 隧道包装下，因为 VNC 的协议加密方面考虑的非常少，密钥可能会明文传输。
-
 如果需要使用老式的 x11（XDMCP协议）图形窗口连接到 Xserver(X.org)，建议安装使用 MobaXterm/Xshell 的免费版。
 
+如果使用 VNC 体系，注意用 ssh 隧道包装下，因为 VNC 的协议加密方面考虑的非常少，密钥可能会明文传输。一般在服务器安装 TigerVNC Server 软件包，客户端使用 TigerVNC Viwer 软件包。
+
+    man xvnc
+
+    Debian11.6配置noVNC做远程桌面服务
+        https://blog.csdn.net/lggirls/article/details/129024338
+
+因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
+
 现在比较流行在 Windows 和 Linux 桌面都安装使用 RDP 协议 的工具：
+
+    输入你要连接的机器的 IP 地址，一般前缀为 rdp://
 
 ·rdesktop 是在 Linux 上实现 rdp 协议的客户端程序，Linux 桌面用户使用该工具可以连接到使用 Windows 远程桌面协议的计算机。
 
@@ -8138,18 +8206,39 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
 ·xrdp 是在 Linux 上实现 rdp 协议的开源的服务端程序，它兼容各种 rdp 客户端如 rdesktop、mstsc、gnome boxes、remmina 等
 
-        https://aws.amazon.com/cn/blogs/china/vnc-or-rdp-how-to-choose-a-remote-desktop-on-the-cloud/
+    https://aws.amazon.com/cn/blogs/china/vnc-or-rdp-how-to-choose-a-remote-desktop-on-the-cloud/
 
-    sudo apt install xrdp
+    Debian11+xorg+i3+xrdp 桌面环境搭建
+        https://blog.csdn.net/lggirls/article/details/129748427
 
-    sudo ufw allow from any to any port 3389 proto tcp
+    安装
 
-    sudo systemctl start xrdp
-    sudo systemctl enable xrdp
+        sudo apt install xrdp
 
-    输入你要连接的机器的 IP 地址，前缀为 rdp://
+        sudo ufw allow from any to any port 3389 proto tcp
 
-安装完成后
+        sudo systemctl start xrdp
+        sudo systemctl enable xrdp
+
+    可选配置 ssl 证书，否则系统会默认使用安装时生成的 /etc/xrdp下的
+
+        openssl req -x509 -newkey rsa:2048 -nodes -keyout ~/key.pem -out ~/cert.pem -days 365
+
+        编辑  /etc/xrdp/xrdp.ini
+
+            # 将[Globals]字段下的 poart=  配置为你自己想要的端口
+            [Globals]
+            ini_version=1
+            fork=true
+            port=56789
+
+            # 将生成的证书配置到下列字段
+            ; X.509 certificate and private key
+            ; openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 365
+            certificate=/var/home/uu/cert.pem
+            key_file=/var/home/uu/key.pem
+
+xrdp 安装完成后的几个设置：
 
     Linux 桌面要禁用屏幕空白和自动屏幕锁定以实现无缝的远程桌面会话。
 
@@ -8165,7 +8254,49 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
     如果安装 Linux 时启用了磁盘加密选项，则必须本地连接计算机，输入密码启动操作系统后，才可以使用远程桌面登录。
 
-然后其它计算机的桌面用户（Windows 使用 mstsc，Linux 使用 rdesktop）都可以用 RDP 协议远程连接这台计算机的 Linux 桌面了。
+然后其它计算机的桌面用户（Windows 使用 mstsc，Linux 使用 rdesktop）都可以用 RDP 协议远程连接这台计算机的 Linux 桌面了：
+
+    如果上面安装 xrdp 的时候配置了证书，则 mstsc 会提示证书信息，接受确认即可。
+
+    运行 `mstsc.exe`，在 “Computer” 区域输入远程服务器 IP 地址，然后点击“Connect”。
+
+    在连接到远程后，会出现登录屏幕，Session 选 xorg 或 vnc，输入你的用户名和密码，点击 “OK”。
+
+        Xrdp 搭配 vnc 服务也可以实现远程桌面
+
+    一旦登录，你将看到默认的桌面环境，根据你操作系统的设置是 Gnome 或 Xfce、i3 等。
+
+### 设置登录后的桌面环境
+
+目前都使用 systemctl 进行控制了，登录时桌面启动优先
+
+    $ systemctl get-default
+    graphical.target
+
+显示管理器用于用户登录时的提示窗口，提供图形登录并处理用户身份验证。
+
+    如果是本地登录，在显示管理器界面，点击右下方的小齿轮可以选择使用何种桌面环境
+
+    如果是 xrdp 远程登陆，在 “session” 处选择
+
+gdm3 是 GNOME 显示管理器
+
+     apt-get install gdm3
+
+kdm 或 SDDM 是  KDE的显示管理器
+
+    apt-get install sddm
+
+LightDM 是 Canonical 的显示管理器解决方案
+
+    apt-get install lightdm
+
+    sudo systemctl disable gdm
+    sudo systemctl enable lightdm
+
+安装了多个显示管理器，则可以使用以下方法在它们之间进行选择
+
+    sudo dpkg-reconfigure gdm3
 
 ### Linux 桌面死机怎么办 --- reisub“登录控制台”
 
@@ -8386,6 +8517,8 @@ systemd 保持对 SystemV 的兼容性使用的控制文件
         https://www.freedesktop.org/software/systemd/man/
 
         https://fedoramagazine.org/series/systemd-series/
+
+        https://docs.fedoraproject.org/en-US/quick-docs/understanding-and-administering-systemd/
 
     systemd 中文手册
 
