@@ -7577,27 +7577,49 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     GNOME 设置默认 wayland 或 xorg https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
 
-GNOME：是一套桌面环境（前端）。
+X window
 
-现在大多时候，X11、Xorg、X Server说的都是一个东西就是Linux桌面的X11后端服务器，也就是Xorg。
+    又叫 X 窗口系统，最初起源于1984年，是为了解决类 unix 系统的图形显示问题而推出的显示接口。它使用 unix 套接字式的 c/s 模式，从而分离出了前端和后端两部分，天生就支持远程分布。
 
-    X window，又叫 X 窗口系统，最初起源于1984年，是为了解决类 unix 系统的图形显示问题而推出的显示接口。它使用 unix 套接字式的 c/s 模式，从而分离出了前端和后端两部分，天生就分为了客户端和服务器两部分。也就是说，应用程序和显示器不必在同一台计算机上。
+        也就是说，应用程序和显示器不必在同一台计算机上，每一个窗口应用程序对应一个（或多个？）X Client，用户的显示界面上运行的是 X Server。
 
     X11(X Window System)：Linux 桌面显示的协议
 
-    Xorg：是 Linux 上通用的桌面环境（后端）服务器（X11的一种具体开源实现）。它使用 X11 协议与客户端应用程序进行交互的应用程序，用于在显示器上绘制内容并发送输入事件，例如鼠标移动，单击和击键。现在一般把 x11 和 xorg 视作同一个服务。
+    Xorg：是 Linux 上通用的桌面环境（后端）服务器（X11的一种具体开源实现）。它使用 X11 协议与 X client端应用程序进行交互的应用程序，X Server 在显示器上绘制内容并发送输入事件，例如鼠标移动，单击和击键。因为它不直接传送图像数据，所以比较节约带宽。
 
-    X server：又叫 Xorg xserver 或 X11 server，是 Xorg 的前端实现，用来处理用户输入和系统输出的指令。X server 运行在工作站上，而用户在具有更强处理能力的远程计算机上运行应用程序是很常见的。
+    现在一般把 x11 和 xorg 视作同一个服务。
 
-    GNOME、KDE、Xfce 是基于 Xorg 基础之上开发的桌面环境，也就是桌面软件（或者是图形软件）的集合。
+GNOME、KDE、Xfce 等都是基于 Xorg 基础之上开发的桌面环境，也就是桌面软件（或者是图形软件）的集合
 
     通用命令： startx 在命令行下启动桌面环境
+
+现在大多时候，X11、Xorg、X Server 说的都是一个东西，就是 Linux 桌面的 X11 后端服务器，也就是 Xorg。
+
+    X server：又叫 Xorg xserver 或 X11 server，是 Xorg 的前端实现，用来处理用户输入和系统输出的指令。X server 运行在工作站上，而用户在具有更强处理能力的远程计算机上运行应用程序是很常见的。
 
 Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的在于替代 X Window。
 
     Wayland 只是提供一个协议的基础抽象，参考实现叫 Weston
 
     Gnome、KDE 等都有对应的 Wayland 实现。
+
+    目前发展太慢，叫好好多年了，进展不大
+
+VNC 是区别于 X Window 的 c/s 的另一种，以桌面为单位进行远程操作的，连上就一个桌面。
+
+    它在实现上其实是基于 x server 的，一般是在服务端运行，直接给客户端传输图像数据。
+
+    Xvnc： 是一种 X11 server，它能独立运行，它已经包含了 X server，无需系统安装 X server 库，但需要一个桌面端去操作它。
+
+    x11vnc：Xvnc 包含自己的 XServer, x11vnc 却不包含. x11vnc 也是一种 VNC server，它需要一个正在运行的 X server，如 Xvnc，或 Xvfb。
+
+远程桌面：当你从另一台电脑上上想要通过图形化界面操作远程Linux 时需要用到。常见的图形化远程桌面连接协议是RDP和VNC。Windows远程桌面用的就是RDP。
+
+    VNC 主要传图像，适用于瘦客户端。
+
+    RDP 主要传指令，适用于低速网络。此外微软还有一项针对RDP的增强技术RemoteFX。
+
+    就 X windows桌面来说，本来就没有不远程的，XServer和XClient放在一台电脑上就是本地桌面，通过SSH连接就远程了，没有本质区别。
 
 ### 使用 gnome 扩展
 
@@ -8195,6 +8217,8 @@ gpg 密码管理
     Debian11.6配置noVNC做远程桌面服务
         https://blog.csdn.net/lggirls/article/details/129024338
 
+常见的VNC服务器软件有 vnc4server、TightVNC，RealVNC 等。常见的 VNC 客户端有 RealVNC Viewer、Ultra VNC 等。
+
 因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
 
 现在比较流行在 Windows 和 Linux 桌面都安装使用 RDP 协议 的工具：
@@ -8214,9 +8238,13 @@ gpg 密码管理
 
 按 `ctrl + alt +回车` 退出或进入全屏模式。
 
-·xrdp 是在 Linux 上实现 rdp 协议的开源的服务端程序，它兼容各种 rdp 客户端如 rdesktop、mstsc、gnome boxes、remmina 等
+#### xrdp
+
+xrdp 是在 Linux 上实现 rdp 协议的开源的服务端程序，它兼容各种 rdp 客户端如 rdesktop、mstsc、gnome boxes、remmina 等
 
     https://github.com/neutrinolabs/xrdp/wiki
+
+    xrdp 支持 2FA 登陆 <https://github.com/neutrinolabs/xrdp/wiki/Using-Authy-or-Google-Authenticator-for-2FA-with-XRDP>。
 
     https://aws.amazon.com/cn/blogs/china/vnc-or-rdp-how-to-choose-a-remote-desktop-on-the-cloud/
 
@@ -8237,7 +8265,8 @@ gpg 密码管理
 
 安装
 
-    sudo apt install xrdp
+    # 如果不安装 xorgxrdp，那么你的远程桌面连接 xrdp 默认是 vnc 方式
+    sudo apt install xrdp xorgxrdp
 
     sudo ufw allow from any to any port 3389 proto tcp
 
@@ -8247,9 +8276,7 @@ gpg 密码管理
     systemctl status xrdp
     systemctl status xrdp-sesman
 
-配置文件 /etc/xrdp/xrdp.ini 可配置 ssl 证书。
-
-支持 2FA 登陆 <https://github.com/neutrinolabs/xrdp/wiki/Using-Authy-or-Google-Authenticator-for-2FA-with-XRDP>。
+配置文件 /etc/xrdp/xrdp.ini 可配置自己的 ssl 证书。
 
 xrdp 安装完成后的几个设置：
 
