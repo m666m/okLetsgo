@@ -3064,8 +3064,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
     # 256字节作为密钥文件
     alias passf='dd if=/dev/random of=symmetric.key bs=1 count=256'
-    # 快捷进入从windows复制过来的绝对路径，注意要在路径前后添加双引号
-    # cdw "[Windows Path]"
+    # vi 后悔药：等保存了才发现是只读
+    alias viw='echo "[vi 后悔药：等保存了才发现是只读]" && echo ":w !sudo tee %"'
+    # wsl或git bash下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "[Windows Path]"
     function cdw {
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
@@ -8257,7 +8258,6 @@ noVNC 通过在网页上 html5 的 Canvas，访问机器上vncserver提供的vnc
     下载novnc：http://github.com/kanaka/noVNC/zipball/master
 
 noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及参数修改直接在 lauch.sh 中设置
-
 
     –listen 后面加noVNC运行时的端口，默认为6080(⻅2.2.3)
     –vnc 后面跟vnc会话的信息，如172.16.0.56:5901

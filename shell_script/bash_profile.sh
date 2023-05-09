@@ -69,10 +69,11 @@ if [ -x /usr/bin/dircolors ]; then
     alias curls='curl -fsSL'
     # 16 字符随机数作为密码
     alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
-    # 256字节作为密钥文件
+    # 256 字节作为密钥文件
     alias passf='dd if=/dev/random of=symmetric.key bs=1 count=256'
-    # 快捷进入从windows复制过来的绝对路径，注意要在路径前后添加双引号
-    # cdw "[Windows Path]"
+    # vi 后悔药：等保存了才发现是只读
+    alias viw='echo "[vi 后悔药：等保存了才发现是只读]" && echo ":w !sudo tee %"'
+    # wsl或git bash下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "[Windows Path]"
     function cdw {
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
