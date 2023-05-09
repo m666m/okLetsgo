@@ -7785,7 +7785,9 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
 安装
 
-    dnf install -y i3 i3-ipc i3status i3lock dmenu terminator --exclude=rxvt-unicode
+    # dnf install -y i3 i3-ipc i3status i3lock dmenu terminator --exclude=rxvt-unicode
+
+    dnf group install "i3 desktop" "Window Managers"
 
 TODO: 在 xrdp 下使用 i3 登录。
 
