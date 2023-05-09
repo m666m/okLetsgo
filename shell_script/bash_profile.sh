@@ -308,29 +308,29 @@ PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\
 # 告警条件：
 #   CPU 温度的单位是千分位提权 1000
 #   系统 throttled 不是零
-#   CPU Load Average 的值应该小于CPU核数的70%，取5分钟平均负载
+#   CPU Load Average 的值应该小于CPU核数的70%，取1分钟平均负载
 function PS1raspi-warning-info {
 
     # [[ $(which vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
 
     local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
-    if [ "$CPUTEMP" -gt  "65000" ] && [ "$CPUTEMP" -lt  "70000" ]; then
-        local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ！HIGH TEMPERATURE! ="
+    if [ "$CPUTEMP" -gt  "60000" ] && [ "$CPUTEMP" -lt  "70000" ]; then
+        local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ="
     elif [ "$CPUTEMP" -gt  "70000" ];  then
-        local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` IS VERY HIGH! PLEASE SHUTDOWN! ="
+        local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` IS VERY HIGH! SHUTDOWN NOW! ="
     fi
 
     local THROTT=`vcgencmd get_throttled| tr -d "throttled="`
     if [ "$THROTT" != "0x0" ];  then
-        local THROTT_WARN="= System throttled $THROTT ！PLEASE check RASPBERRYPI:https://www.raspberrypi.com/documentation/computers/os.html#get_throttled ="
+        local THROTT_WARN="= System throttled [$THROTT], check https://www.raspberrypi.com/documentation/computers/os.html#get_throttled ="
     fi
 
     local CPU_CORES=`grep 'model name' /proc/cpuinfo | wc -l`
     local LOAD_AVG_CAP=`echo | awk -v cores="$CPU_CORES" '{printf("%.2f",cores*0.7)}'`
-    local LOAD_AVG_5=`cat /proc/loadavg | cut -d' ' -f 2`
-    local LOAD_AVG_THLOD=`echo | awk -v avg="$LOAD_AVG_5" -v cap="$LOAD_AVG_CAP" '{if (avg>cap) {print "1"} else {print "0"}}'`
-    (($LOAD_AVG_THLOD > 0)) && local LOAD_AVG_WARN="= AVG_LOAD 5min: $LOAD_AVG_5 ="
+    local LOAD_AVG=`cat /proc/loadavg | cut -d' ' -f 1`
+    local LOAD_AVG_THLOD=`echo | awk -v avg="$LOAD_AVG" -v cap="$LOAD_AVG_CAP" '{if (avg>cap) {print "1"} else {print "0"}}'`
+    (($LOAD_AVG_THLOD > 0)) && local LOAD_AVG_WARN="= AVG_LOAD 1min: $LOAD_AVG ="
 
     printf "%s%s%s" "$CPUTEMP_WARN" "$THROTT_WARN" "$LOAD_AVG_WARN"
 }
