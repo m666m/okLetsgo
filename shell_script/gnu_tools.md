@@ -8216,12 +8216,7 @@ gpg 密码管理
 
     man xvnc
 
-    Debian11.6配置noVNC做远程桌面服务
-        https://blog.csdn.net/lggirls/article/details/129024338
-
 常见的VNC服务器软件有 vnc4server、TightVNC，RealVNC 等。常见的 VNC 客户端有 RealVNC Viewer、Ultra VNC 等。
-
-因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
 
 现在比较流行在 Windows 和 Linux 桌面都安装使用 RDP 协议 的工具：
 
@@ -8239,6 +8234,61 @@ gpg 密码管理
     rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
 
 按 `ctrl + alt +回车` 退出或进入全屏模式。
+
+因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
+
+#### noVnc
+
+    https://blog.csdn.net/jgku/article/details/127832459
+
+    Debian11.6配置 noVNC 做远程桌面服务
+        https://blog.csdn.net/lggirls/article/details/129024338
+
+novnc提供了一种云桌面方案。noVNC 被普遍用在各大云计算、虚拟机控制面板中，比如 OpenStack Dashboard 和 OpenNebula Sunstone 都用的是 noVNC。
+
+noVNC 通过在网页上 html5 的 Canvas，访问机器上vncserver提供的vnc服务，需要做tcp到websocket的转化，才能在html5中显示出来。网页就是一个客户端，类似win下面的vncviewer，只是此时填的不是裸露的vnc服务的ip+port，而是由noVNC提供的websockets的代理，在noVNC代理服务器上要配置每个vnc服务，noVNC提供一个标识，去反向代理所配置的vnc服务。
+
+搭建 novnc
+
+    安装vncserver: yum install tigervnc -y
+
+    安装Node.js：https://nodejs.org/en/download/（用于执行Websockify.js）
+
+    下载novnc：http://github.com/kanaka/noVNC/zipball/master
+
+noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及参数修改直接在 lauch.sh 中设置
+
+
+    –listen 后面加noVNC运行时的端口，默认为6080(⻅2.2.3)
+    –vnc 后面跟vnc会话的信息，如172.16.0.56:5901
+
+    –cert 指定证书(⻅2.2.4)
+
+    –web 用来查找vnc.html的目录.根据代码逻辑，在noVNC目录或者noVNC/utils目录下执行时都无需设置此参 数，web变量会自动在当前目录或者上一级目录查找vnc.html。
+
+    –ssl-only 限制只能用https进行vnc远程会话，此时http访问失效。装载安全证书后，此参数才会生效，否则 noVNC进程无法运行
+
+安装 Websockify：
+
+    https://github.com/novnc/websockify/archive/master.zip,
+
+启动:
+
+    nohup python /root/noVNC/utils/websockify --web /root/noVNC --target-config=/srv/nfs4/vnc_tokens 6080 >> /root/noVNC/novnc.log &
+
+当然，最好是直接采用已有的docker镜像:
+
+    docker pull dorowu/ubuntu-desktop-lxde-vnc
+
+相关软件
+
+    MobaXterm: 默认有X Window 服务，可以直接弹出GUI
+
+    vncviewer: 最常用的vnc客户端
+
+    xming: 开源X Server，搭配Putty使用。参见：http://www.straightrunning.com/XmingNotes/
+
+    UltraVNC：http://www.uvnc.com/（Windows环境下的VNC Server，还有TightVNC、TigerVNC、RealVNC等，其中RealVNC不能通过noVNC）
 
 #### xrdp
 
