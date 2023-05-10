@@ -3123,6 +3123,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias gpush='git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 fi
 
+# ssh 命令时候能够自动补全 hostname
+[[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
+
 ############# 加载插件
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
 # 手动安装的插件，位置在 ~/.zsh/plugins/ 目录

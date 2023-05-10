@@ -130,6 +130,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias gpush='git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 fi
 
+# ssh 命令时候能够自动补全 hostname
+[[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
+
 ####################################################################
 # Windows git bash(mintty)
 # 在 mintty 下使用普通的 Windows 控制台程序
@@ -465,8 +468,5 @@ source /usr/local/bin/ackg.sh
 # 手动配置插件
 
 alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
-
-# ssh 命令时候能够自动补全 hostname
-complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
 
 ####################################################################
