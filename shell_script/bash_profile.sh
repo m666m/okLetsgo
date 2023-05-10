@@ -94,6 +94,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias ggf='echo "[查看指定公钥的指纹]" && gpg --with-fingerprint --show-keys --keyid-format=long'
     # 使用临时钥匙圈验证文件签名，如 `ggvs ./fedora.gpg xxxx.checksum`
     alias ggvs='echo "[使用临时钥匙圈验证文件签名]" && gpgv --keyring'
+    # 验证签名
+    alias ggv='echo "[验证签名]" && gpg --verify'
     # 解决 gpg 的 pinentry 弹不出密码提示框
     alias ggt='export GPG_TTY=$(tty)'
     # 非对称算法加密并签名，参数太多，只给出提示
