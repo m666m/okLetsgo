@@ -7629,6 +7629,46 @@ VNC 是区别于 X Window 的 c/s 的另一种，以桌面为单位进行远程�
 
     就 X windows桌面来说，本来就没有不远程的，XServer和XClient放在一台电脑上就是本地桌面，通过SSH连接就远程了，没有本质区别。
 
+### TODO:X 启动过程
+
+    https://faq.i3wm.org/question/18/how-do-xsession-xinitrc-and-i3config-play-together.1.html
+
+        https://tldp.org/HOWTO/XWindow-User-HOWTO/runningx.html
+
+        https://dev.leiyanhui.com/c/arch-install-xrdp/
+
+基于 X 窗口用户 HOWTO：
+
+startx 将通过首先调用 xinit 来启动 X。
+
+xinit 将在用户的主目录中查找一个 ~/.xinitrc 文件，以作为 shell 脚本运行。
+xinitrc 用于设置合适的 X 环境，并启动其他程序，即我们可能希望在 X 启动后立即可用的“客户端”。
+窗口管理器或桌面环境通常是最后一个启动的应用程序。
+
+另一种更常见的方法是 “GUI 登录”，其中 X 在登录之前运行。X包括xdm（X显示管理器）用于此目的。
+~/.xsession是使用登录管理器（如GDM，KDM，XDM）时要走的方法。
+现在，xdm 的 ~/.xsession 大致相当于 startx 的 ~/.xinitrc。
+根据您启动 X 的方式，服务器将执行 ~/.xinitrc 或 ~/.xsession 文件。
+最后，如果你从 ~/.xinitrc 或 ~/.xsession 执行 i3wm，那么 i3wm 将从 ~/.i3/config 读取其初始配置。
+做。
+鉴于此，您可能希望为 X 维护个人启动脚本的单个版本：
+
+使用初始设置创建脚本 ~/.xinitrc。
+
+    exec i3
+
+为xdm等效的符号链接：
+
+    ln -s $HOME/.xinitrc $HOME/.xsession
+
+此外，Fluxbox手册还包括一个重要的解释：
+
+启动 X11 时，将运行 .xinitrc 或 .xsession 脚本，并且 脚本完成后，X11 会下降。让我再说一遍， 它很重要：当.xinitrc完成时，也就是X结束的时候。 不是当你的窗口管理器退出时。
+
+评论
+
+实际上，GDM 登录似乎忽略了“~/.xsession”，因此这并不能使其成为 Ubuntu 用户的选项。
+
 ### 使用 gnome 扩展
 
     gnome 桌面软件手册 https://help.gnome.org/users/
