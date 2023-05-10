@@ -8324,7 +8324,10 @@ xrdp 是在 Linux 上实现 rdp 协议的开源的服务端程序，它兼容各
     # 如果不安装 xorgxrdp，那么你的远程桌面连接 xrdp 默认是 vnc 方式
     sudo apt install xrdp xorgxrdp
 
+    # 如果有防火墙，记得开放端口
     sudo ufw allow from any to any port 3389 proto tcp
+
+安装后要启动服务，并设置为开机自启动
 
     sudo systemctl start xrdp
     sudo systemctl enable xrdp
