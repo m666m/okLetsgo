@@ -7797,21 +7797,35 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
     dnf group install "i3 desktop" "Window Managers"
 
+    # 高分辨率小屏需要调整一下dpi
+    echo 'Xft.dpi: 192' > ~/.Xresources
+
 TODO: 在 xrdp 下使用 i3 登录。
 
-下载 font-awesome:开源的图标字体
-
-    https://fontawesome.com/v5/cheatsheet
-
 前导键叫 mod 键，可以由用户设定，可以是 Mod1(alt键) 或者是 Mod4(Super/Win)。
+
     # ++++++=定义按键变量=++++++#
     # (Mod1 = Alt, Mod4 = Super/Win)
     set $mod Mod4
     set $m_alt Mod1
 
-    打开终端 urxvt          <mod>+<ENTER>
+    打开终端 urxvt          <mod> + <ENTER>
 
-    切换到工作区 num        <mod>+num
+    使用命令区              <mod> + d
+
+    切换到工作区 num        <mod> + num
+
+    把窗口移到工作区 num    $mod+Shift+num
+
+    切换窗口                Super+h或j或k或l 或者 Super+上下左右箭头
+
+    杀掉窗口                Super+Shift+q
+
+    窗口在层叠、 标签和平铺之间来回切换    Super+s、w、e
+
+    切换平铺模式                super+v、h，再开新窗口就可以看到变化了
+
+    退出 i3                 Super+Shift+e
 
 在 i3 中，工作区是对窗口进行分组的一种简单方法。您可以根据您的工作流以不同的方式对它们进行分组。例如，您可以将浏览器放在一个工作区上，终端放在另一个工作区上，将电子邮件客户端放在第三个工作区上等等。
 
@@ -7823,7 +7837,7 @@ TODO: 在 xrdp 下使用 i3 登录。
     # 黑屏、睡眠、断电时间分别设为6000s，8000s，9000s，也可以只写前一个，不必三个都写
     exec --no-startup-id xset dpms 6000 8000 9000
 
-    # win+c可以调出选项，你可以选择锁屏(L)，注销(O)，重启(R)，关机(S)，退出选项(Esc)。
+    # win+c 可以调出选项，你可以选择锁屏(L)，注销(O)，重启(R)，关机(S)，退出选项(Esc)。
     set $mode_system  lock(L) logout(O) reboot(R) shutdown(S) exit(Esc)
     bindsym $mod+c mode "$mode_system"
     mode "$mode_system" {
@@ -8370,8 +8384,13 @@ xrdp 安装完成先做几个设置：
 
 ### 设置登录后的桌面环境
 
-目前都使用 systemctl 进行控制了，登录时桌面启动优先
+显示管理器负责显示图形化登陆页面，在你输入用户名和密码后，立即启动显示服务器并加载桌面环境。
 
+    https://zhuanlan.zhihu.com/p/272740410
+
+前提是登录时桌面启动优先
+
+    # 一般都使用 systemctl 进行控制了
     $ systemctl get-default
     graphical.target
 
@@ -8385,11 +8404,11 @@ gdm3 是 GNOME 显示管理器
 
      apt-get install gdm3
 
-kdm 或 SDDM 是  KDE的显示管理器
+kdm 或 SDDM 是 KDE 的显示管理器
 
     apt-get install sddm
 
-LightDM 是 Canonical 的显示管理器解决方案
+LightDM 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
 
     apt-get install lightdm
 
