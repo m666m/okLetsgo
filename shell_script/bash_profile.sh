@@ -159,7 +159,7 @@ alias ping='winpty ping'
 #  MSYS_NT-10.0-19044 MY-PC 3.3.5-341.x86_64 2022-11-08 19:41 UTC x86_64 Msys
 #
 #  ┌─[13:18:18 user@MY-PC:/usr/share/vim/vim82/autoload/dist]
-#  └──$ ls
+#  └──$
 
 # https://zhuanlan.zhihu.com/p/570148970
 # https://zhuanlan.zhihu.com/p/566797565
@@ -289,12 +289,9 @@ function PS1git-branch-prompt {
     fi
 }
 
-# Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
-PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue╰──$PS1Cwhite\$ $PS1Cnormal"
-
 #################################
-# Linux bash - Fedora Silverblue
-# 在上面的基础上增加 toolbox 环境的检测
+# Linux bash - Fedora Silverblue、CoreOS
+# 提示当前在 toolbox 环境
 # https://docs.fedoraproject.org/en-US/fedora-silverblue/tips-and-tricks/#_working_with_toolbx
 function PS1_fedora_is_toolbox {
     if [ -f "/run/.toolboxenv" ]; then
@@ -303,12 +300,9 @@ function PS1_fedora_is_toolbox {
     fi
 }
 
-# Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox环境名> \w当前路径 git分支及状态
-PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cmagenta$(PS1_fedora_is_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue╰──$PS1Cwhite\$ $PS1Cnormal"
-
 #################################
-# Linux bash - raspberrypi
-# 在上面的基础上增加 raspberry pi 的状态检测
+# Linux bash - raspberry pi os (debian)
+# raspberry pi 的状态检测
 # 告警条件：
 #   CPU 温度的单位是千分位提权 1000
 #   系统 throttled 不是零
@@ -346,12 +340,21 @@ function PS1raspi-warning-prompt {
     fi
 }
 
+#################################
+# 设置命令行提示符
+
+# 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
+PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue╰──$PS1Cwhite\$ $PS1Cnormal"
+
+# Fedora bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox环境名> \w当前路径 git分支及状态
+PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cmagenta$(PS1_fedora_is_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue╰──$PS1Cwhite\$ $PS1Cnormal"
+
 # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 树莓派温度告警 git分支及状态
 PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue╰──$PS1Cwhite\$ $PS1Cnormal"
 
 #################################
 # Windows git bash(mintty)
-# 命令行提示符显示： 在上面的基础上修改了两个兼容性函数
+# 命令行提示符显示： 在上面的基础上修改了个兼容性函数
 #
 # 目前 git bash(mintty) 有点bug：
 # 在\$(函数名)后直接用换行\n就冲突
