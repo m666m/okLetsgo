@@ -8337,9 +8337,13 @@ xrdp 是在 Linux 上实现 rdp 协议的开源的服务端程序，它兼容各
 
 配置文件 /etc/xrdp/xrdp.ini 可配置自己的 ssl 证书。
 
-xrdp 安装完成后的几个设置：
+xrdp 安装完成先做几个设置：
+
+    如果安装 Linux 时启用了磁盘加密选项，则必须先本地连接计算机，输入密码启动操作系统后，才可以使用远程桌面登录。
 
     Linux 桌面要禁用屏幕空白和自动屏幕锁定以实现无缝的远程桌面会话。
+
+    注销您本地的 Linux 桌面登录，否则在使用 XRDP 远程连接时，您将在 Windows 上遇到黑屏闪退。
 
     如果是无人值守（HEADLESS）模式，记得拔下显示器之前，在 Linux 桌面启用自动登录
 
@@ -8348,10 +8352,6 @@ xrdp 安装完成后的几个设置：
 
         # 因为默认情况下，xRDP 使用的是自签发的证书，这个证书保存在 /etc/ssl/private/ssl-cert-snakeoil/ 目录下。证书的密钥文件只能由 “ssl-cert” 用户组的成员读取。
         sudo adduser ubuntu ssl-cert
-
-    注销您的 Linux 桌面登录，否则在使用 XRDP 远程连接 Linux 时，您将在 Windows 上遇到黑屏问题。
-
-    如果安装 Linux 时启用了磁盘加密选项，则必须本地连接计算机，输入密码启动操作系统后，才可以使用远程桌面登录。
 
 然后其它计算机的桌面用户（Windows 使用 mstsc，Linux 使用 rdesktop）都可以用 RDP 协议远程连接这台计算机的 Linux 桌面了：
 
