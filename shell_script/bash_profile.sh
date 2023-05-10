@@ -51,21 +51,21 @@ if [ -x /usr/bin/dircolors ]; then
 
     # 各命令的惯用法
     #
-    # 列出目录下的文件清单，查找指定关键字，如 `lsg txt`。因为ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便。
+    # 列出目录下的文件清单，查找指定关键字，如 `lsg fnwithstr`。因为ls列出的目录颜色被grep覆盖，用 ls -l 查看更方便。
     alias lsg='ls -lFA |grep -i'
-    # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findg txt`
+    # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findg fnwithstr`
     alias findg='find ./ |grep -i'
     #
-    # 在当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps echo *`
+    # 在当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
     alias greps='grep --color=auto -d skip -in'
-    # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过 .git 等目录，如 `finds error`
+    # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过.git等目录，如 `finds strinfile`
     alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
     #
-    # 目录树，最多2级，显示目录和可执行文件的标识，跳过 .git 等目录
+    # 目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录
     alias trees='tree -a -CF -I ".git|__pycache__" -L 2'
-    # 进程树，列出 pid，全部子进程
+    # 进程树，列出pid，全部子进程
     alias pstrees='pstree -p -s'
-    # curl 跟踪重定向，不显示进度条，静默错误信息但要报错失败，默认打印到屏幕，用 -O 保存为默认文件名
+    # curl 跟踪重定向，不显示进度条，静默错误信息但要报错失败，默认打印到屏幕，加 -O 保存到默认文件
     alias curls='curl -fsSL'
     # 16 字符随机数作为密码
     alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
