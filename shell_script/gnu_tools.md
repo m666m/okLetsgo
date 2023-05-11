@@ -3123,8 +3123,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias gpush='git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 fi
 
-# ssh 命令时候能够自动补全 hostname
-[[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
+# ssh 命令时候能够自动补全 hostname 。使用 zsh 自带的吧
+# [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
 
 ############# 加载插件
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
@@ -7579,6 +7579,8 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
 ## Linux 桌面环境
 
+老老实实用最多人用的 GNOME 吧，其它桌面环境坑更多，随便就有软件运行不起来
+
 ### 常用桌面工具
 
     https://linux.cn/article-13761-1.html
@@ -7773,7 +7775,8 @@ gpg 密码管理
 
 截屏
 
-    OBS 是一款用于视频录制和直播推流的开源软件
+    OBS Stduio 是一款用于视频录制和直播推流的开源软件
+
         https://obsproject.com/
 
     Shutter
@@ -7944,7 +7947,7 @@ Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的�
 
     不再是 Client-Server 模式，天生远程功能差（可以用wayvnc）
 
-    Wayland，它使用 xwayland 兼容 X window 程序。
+    Wayland 使用 xwayland 兼容 X window 程序。
 
 远程桌面：当你从另一台电脑上上想要通过图形化界面操作远程 Linux 时需要用到。常见的图形化远程桌面连接协议是RDP 和 VNC。Windows 远程桌面 mstsc 用的就是 RDP 协议。
 
@@ -7992,7 +7995,21 @@ xinitrc 用于设置合适的 X 环境，并启动其他程序，即我们可能
 
 实际上，GDM 登录似乎忽略了“~/.xsession”，因此这并不能使其成为 Ubuntu 用户的选项。
 
+#### Wayland
+
+    https://docs.freebsd.org/en/books/handbook/wayland/
+
+    用 Wayland 开启 Linux https://zhuanlan.zhihu.com/p/531205278
+
+Wayland 环境使用 QT 应用，需要修改 /etc/environment
+
+    QT_QPA_PLATFORM=wayland
+
 ### 设置登录后的桌面环境
+
+    Wayland Login Manager -- ly
+
+        https://docs.freebsd.org/en/books/handbook/wayland/#wayland-ly
 
 显示管理器负责显示图形化登陆页面，在你输入用户名和密码后，立即启动显示服务器并加载桌面环境。
 
@@ -8208,14 +8225,23 @@ LightDM 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
 
     https://swaywm.org/
 
-    https://github.com/swaywm/sway/wiki
-    https://wiki.archlinux.org/title/Sway
+        https://github.com/swaywm/sway/wiki
 
-    探索linux桌面全面wayland化（基于swaywm） https://zhuanlan.zhihu.com/p/462322143
+        https://wiki.archlinux.org/title/Sway
 
-    Sway: 从尝试到放弃 https://coda.world/sway-explore-and-giveup
+    freebsd 全面介绍
 
-    https://cloud-atlas.readthedocs.io/zh_CN/latest/linux/desktop/sway/run_sway.html
+        https://docs.freebsd.org/en/books/handbook/wayland/#wayland-sway
+
+    sway - i3兼容Wayland compositor
+        https://cloud-atlas.readthedocs.io/zh_CN/latest/linux/desktop/sway/index.html#sway
+
+    探索 Linux 桌面全面 wayland化（基于swaywm）
+        https://zhuanlan.zhihu.com/p/462322143
+
+    Sway: 从尝试到放弃
+        https://coda.world/sway-explore-and-giveup
+
     https://zhuanlan.zhihu.com/p/441251646
     https://blog.tiantian.cool/wayland/
     https://zhuanlan.zhihu.com/p/462322143
@@ -8350,26 +8376,11 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
     man xvnc
 
-常见的VNC服务器软件有 vnc4server、TightVNC，RealVNC 等。常见的 VNC 客户端有 RealVNC Viewer、Ultra VNC 等。
+常见的 VNC 服务器软件有 vnc4server、TightVNC，RealVNC 等。常见的 VNC 客户端有 RealVNC Viewer、Ultra VNC 等。
 
 现在比较流行在 Windows 和 Linux 桌面都安装使用 RDP 协议 的工具：
 
     输入你要连接的机器的 IP 地址，一般前缀为 rdp://
-
-·rdesktop 是在 Linux 上实现 rdp 协议的客户端程序，Linux 桌面用户使用该工具可以连接到使用 Windows 远程桌面协议的计算机。
-
-    rdesktop <ip>
-
-    -f 全屏
-    -r clipboard:PRIMARYCLIPBOARD 是实现剪切板共享，也就是物理机复制虚拟机粘贴。
-    -r disk:mydisk=/device 实现文件夹共享，mydisk是名字，可以随便取，/device是物理机上用于共享的文件夹
-    ip ： 虚拟机的IP
-
-    rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
-
-按 `ctrl + alt +回车` 退出或进入全屏模式。
-
-因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
 
 #### xrdp
 
@@ -8439,6 +8450,21 @@ xrdp 安装完成先做几个设置：
 
     一旦登录，你将看到默认的桌面环境，根据你操作系统的设置是 Gnome 或 Xfce、i3 等。
 
+·rdesktop 是在 Linux 上实现 rdp 协议的客户端程序，Linux 桌面用户使用该工具可以连接到使用 Windows 远程桌面协议的计算机。
+
+    rdesktop <ip>
+
+    -f 全屏
+    -r clipboard:PRIMARYCLIPBOARD 是实现剪切板共享，也就是物理机复制虚拟机粘贴。
+    -r disk:mydisk=/device 实现文件夹共享，mydisk是名字，可以随便取，/device是物理机上用于共享的文件夹
+    ip ： 虚拟机的IP
+
+    rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
+
+按 `ctrl + alt +回车` 退出或进入全屏模式。
+
+因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
+
 ##### xorgxrdp
 
 xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作
@@ -8467,16 +8493,138 @@ xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作
 
 #### WayVNC
 
-如果 Linux 顯示協定是使用 Wayland，傳統的 x11 VNC Server 可能就行不通，此時要改用 WayVNC 這個新技術 (詳細資訊)。
+    使用 vnc 远程连接 Wayland
 
-    https://github.com/any1/wayvnc
-        https://github.com/any1/wayvnc/blob/master/FAQ.md
+        https://docs.freebsd.org/en/books/handbook/wayland/#wayland-remotedesktop
 
-    用Wayland开启linux https://zhuanlan.zhihu.com/p/531205278
+        中文版 https://freebsd.gitbook.io/freebsd-handbook/di-6-zhang-freebsd-zhong-de-wayland/6.1.-wayland-gai-shu
 
-    https://ivonblog.com/posts/linux-wayvnc/
+wayvnc 不支持 Gnome 和 KDE。好在我目前主要使用 sway - i3 兼容 Wayland compositor ，所以使用 wayvnc 正好。
 
-如果你的 Linux 系统如 Fedora 使用了 Wayland，它使用 xwayland 兼容 X window 程序。
+    服务器端
+
+        https://github.com/any1/wayvnc
+            https://github.com/any1/wayvnc/blob/master/FAQ.md
+
+    Wayland 环境 VNC
+
+        https://cloud-atlas.readthedocs.io/zh_CN/latest/linux/desktop/wayland/index.html
+
+    WayVNC 使用教學 https://ivonblog.com/posts/linux-wayvnc/
+
+如果你的 Linux 系统如 Fedora 使用了 Wayland 而不是传统的 X11/Xorg，它使用 xwayland 兼容 X window 程序。
+
+   使用 xrdp 等软件连接到 Fedora 桌面，其实是基于 xvnc 或 xorg 技术，通过 xwayland 兼容在 Fedora 上使用的桌面环境。
+
+如果 Linux 顯示協定是使用 Wayland，傳統的 x11 VNC Server 可能就行不通，此時要改用 WayVNC 這個新技術。
+
+由于 Wayland 不再是 X window 系统的 cs 工作模式，WayVNC 通过 wlroots-based Wayland compositors 的 VNC server，通过附加到一个运行的 Wayland 会话，创建虚拟输入设备，以及通过 RFB 协议输出一个单一显示，来实现 VNC。
+
+##### 服务器端安装配置
+
+    dnf install wayvnc
+
+检查 sshd 配置文件 /etc/ssh/sshd_config 参数
+
+    AllowTcpForwarding yes
+
+    X11Forwarding yes
+
+最好使用密钥文件 ~/.config/wayvnc/config
+
+    # https://docs.freebsd.org/en/books/handbook/wayland/#wayland-remotedesktop
+    address=0.0.0.0
+    enable_auth=true
+    username=username
+    password=password
+    private_key_file=/path/to/key.pem
+    certificate_file=/path/to/cert.pem
+
+有2种方式启动 wayvnc 服务器:
+
+1、简单的服务器端启动方法就是:
+
+    # wayvnc localhost 5901
+    # wayvnc 0.0.0.0
+    % wayvnc -C ~/.config/wayvnc/config
+
+WayVNC啟動後不會有任何輸出，要關閉請用CTRL+C
+
+在终端启动无头模式(headless)
+
+    # https://wiki.archlinux.org/title/OpenGL#Mesa
+    #   https://docs.mesa3d.org/envvars.html
+    LIBGL_ALWAYS_SOFTWARE=true
+    GALLIUM_DRIVER=driver  # driver 可以是 softpipe , llvmpipe 或者 swr
+    export MESA_LOADER_DRIVER_OVERRIDE=zink  # 看你的显卡驱动
+
+    XDG_RUNTIME_DIR=/tmp/ WLR_BACKENDS=headless WLR_LIBINPUT_NO_DEVICES=1 sway
+
+2、在sway内部启动 wayvnc
+
+    swaymsg --socket /tmp/sway-ipc.*.sock exec 'WAYLAND_DISPLAY=wayland-1 wayvnc -C ~/.config/wayvnc/config 0.0.0.0'
+
+##### 客户端安装配置
+
+如果服务器端启动正常，可以在客户端使用:
+
+    ssh -FL 9901:localhost:5900 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
+
+如果一步一步操作
+
+    ssh -L 5901:localhost:5901 user@192.168.0.243  不要关闭这个窗口
+
+    在本機開啟 RealVNC VNC Viewer，輸入連線IP：
+
+        localhost:5901
+
+·支持 sway 的客户端软件 wlvncc
+
+    https://github.com/any1/wlvncc
+
+Wayland 的 VNC 客户端可以采用 wlvncc 。WayVNC 0.5 支持使用 OpenH268 RFB 协议扩展的 H.264 编码。
+
+编译依赖:
+
+    GCC/clang
+    meson
+    ninja
+    pkg-config
+    wayland-protocols
+
+编译和运行:
+
+    git clone https://github.com/any1/aml.git
+    git clone https://github.com/any1/wlvncc.git
+
+    mkdir wlvncc/subprojects
+    cd wlvncc/subprojects
+    ln -s ../../aml .
+    cd ..  # 在wlvncc目录
+
+    meson build
+    ninja -C build
+
+    ./build/wlvncc <address>
+
+·支持 sway 客户端软件 waypipe
+
+    https://gitlab.freedesktop.org/mstoeckl/waypipe
+        https://mstoeckl.com/notes/gsoc/blog.html
+
+最大的好处是支持 ssh -X 的使用方式
+
+    waypipe ssh user@theserver weston-terminal
+
+上述命令 ssh 连接到 theserver，远程执行 weston-terminal 程序。
+
+本地化使用
+
+    /usr/bin/waypipe -s /tmp/socket-local client &
+    ssh -R /tmp/socket-remote:/tmp/socket-local -t user@theserver \
+        /usr/bin/waypipe -s /tmp/socket-remote server -- \
+        /usr/bin/weston-terminal
+    kill %1
 
 #### noVnc
 
@@ -8487,7 +8635,7 @@ novnc提供了一种云桌面方案。noVNC 被普遍用在各大云计算、虚
     Debian11.6配置 noVNC 做远程桌面服务
         https://blog.csdn.net/lggirls/article/details/129024338
 
-noVNC 通过在网页上 html5 的 Canvas，访问机器上vncserver提供的vnc服务，需要 websockfy 做tcp到websocket的转化，才能在html5中显示出来。网页就是一个客户端，类似win下面的vncviewer，只是此时填的不是裸露的vnc服务的ip+port，而是由noVNC提供的websockets的代理，在noVNC代理服务器上要配置每个vnc服务，noVNC提供一个标识，去反向代理所配置的vnc服务。
+noVNC 通过在网页上 html5 的 Canvas，访问机器上vncserver提供的vnc服务，需要 websockfy 做 tcp 到websocket的转化，才能在html5中显示出来。网页就是一个客户端，类似win下面的vncviewer，只是此时填的不是裸露的vnc服务的ip+port，而是由noVNC提供的websockets的代理，在noVNC代理服务器上要配置每个vnc服务，noVNC提供一个标识，去反向代理所配置的vnc服务。
 
 搭建 novnc
 
