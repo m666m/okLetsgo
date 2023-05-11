@@ -31,6 +31,9 @@ export TERM=xterm-256color
 # 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
 # curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 if [ -x /usr/bin/dircolors ]; then
+    # 使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令
+    # [[ -f ~/.dircolors ]] ||curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
+
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 
     # 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题

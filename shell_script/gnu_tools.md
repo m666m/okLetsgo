@@ -1924,14 +1924,14 @@ True color(24bit) 综合测试 terminal-testdrive.sh
     *.tgz=01;31
     *.arc=01;31
 
-    ls、tree 等命令颜色方案-北极
+推荐使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令
 
-        https://www.nordtheme.com/docs/ports/dircolors/type-support
-            https://github.com/arcticicestudio/nord-dircolors
+    https://www.nordtheme.com/docs/ports/dircolors/type-support
+        https://github.com/arcticicestudio/nord-dircolors
 
-        curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
+    curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 
-    这些颜色整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示。
+这些颜色整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示。
 
 有些软件支持自定义颜色方案，色彩效果超越终端模拟器设置：
 
@@ -3024,6 +3024,9 @@ export TERM=xterm-256color
 # 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
 # curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 if [ -x /usr/bin/dircolors ]; then
+    # 使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令
+    # [[ -f ~/.dircolors ]] ||curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
+
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 
     # 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题
@@ -3123,7 +3126,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias gpush='git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 fi
 
-# ssh 命令时候能够自动补全 hostname 。使用 zsh 自带的吧
+# ssh 命令时候能够自动补全 hostname，这里我们使用 zsh 自带的吧
 # [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
 
 ############# 加载插件
@@ -7591,6 +7594,36 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     参考下它装的软件 https://theevilskeleton.gitlab.io/2022/05/16/response-to-flatpak-is-not-the-future.html
 
+Gnome Terminal
+
+    安装 Nerd Font --- Meslo LGS
+
+        # 先下载 https://github.com/ryanoasis/nerd-fonts/releases
+
+        # 安装 https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
+        $ sudo mkdir -p /usr/local/share/fonts/NerdFont
+        $ sudo cp ~/Downloads/robofont.ttf /usr/local/share/fonts/NerdFont/
+
+        # Set permissions and update SELinux labels
+        $ sudo chown -R root: /usr/local/share/fonts/NerdFont
+        $ sudo chmod 644 /usr/local/share/fonts/NerdFont/*
+        $ sudo restorecon -vFr /usr/local/share/fonts/NerdFont
+
+        # Update the font cache
+        $ sudo fc-cache -v
+
+    主题颜色使用 Nord theme
+
+        git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git
+
+        cd nord-gnome-terminal/src; ./nord.sh
+
+        然后新建终端窗口时就多了个 Nord 选项，设为默认即可
+
+    dir_colors 使用 Nord
+
+        curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
+
 虚拟机
 
     Gnome Box 底层调用 virt-manager 操作 kvm 虚拟机，详见章节 [GNOME Boxes](virtualization think)。
@@ -7887,8 +7920,6 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
     https://www.zhihu.com/question/503270852
 
-    GNOME 设置默认 wayland 或 xorg https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
-
 X window
 
     又叫 X 窗口系统，最初起源于1984年，是为了解决类 unix 系统的图形显示问题而推出的显示接口。它使用 unix 套接字式的 c/s 模式，从而分离出了前端和后端两部分，天生就支持远程分布。
@@ -7977,22 +8008,22 @@ xinitrc 用于设置合适的 X 环境，并启动其他程序，即我们可能
 
     https://docs.freebsd.org/en/books/handbook/wayland/
 
-    用 Wayland 开启 Linux https://zhuanlan.zhihu.com/p/531205278
+    用 Wayland 开启 Linux
+        https://zhuanlan.zhihu.com/p/531205278
+
+    GNOME 设置默认 wayland 或 xorg
+        https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
 
 Wayland 自带的 terminal emulator 叫 foot
 
     https://man.archlinux.org/man/foot.1.en
         https://codeberg.org/dnkl/foot
 
-Wayland 环境使用 QT 应用，需要修改 /etc/environment
+Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
     QT_QPA_PLATFORM=wayland
 
-### 设置登录后的桌面环境
-
-    Wayland Login Manager -- ly
-
-        https://docs.freebsd.org/en/books/handbook/wayland/#wayland-ly
+### 显示管理器（DisplayManager）设置登录后的桌面环境
 
 显示管理器负责显示图形化登陆页面，在你输入用户名和密码后，立即启动显示服务器并加载桌面环境。
 
@@ -8025,6 +8056,10 @@ LightDM 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
     sudo systemctl disable gdm
     sudo systemctl enable lightdm
 
+ wayland-lyl 是 Wayland Login Manager
+
+    https://docs.freebsd.org/en/books/handbook/wayland/#wayland-ly
+
 安装了多个显示管理器，则可以使用以下方法在它们之间进行选择
 
     sudo dpkg-reconfigure gdm3
@@ -8055,7 +8090,7 @@ LightDM 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
 
     Gamescope - Gamescope 是一款微合成器，提供一个带有独立输入，分辨率和刷新率的沙盒 Xwayland 桌面。
 
-    Sway - Sway 是平铺 Wayland 合成器和 X11 下 i3 窗口管理器的新替代（sway明确说明不支持英伟达）。
+    Sway - Sway 是平铺 Wayland 合成器，替代X11 下 i3 窗口管理器（sway明确说不支持英伟达显卡）。
 
     Xcompmgr - Xcompmgr 是一个简单的合成管理器，能够渲染下拉阴影，使用 transset 工具的话，还可以实现简单的窗口透明。
 
@@ -8115,7 +8150,7 @@ LightDM 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
 
     xmonad - 动态平铺 X11 窗口管理器，用 Haskell 编写和配置。
 
-#### i3
+#### i3 wm
 
 通过键盘操作的 i3 平铺窗口管理器使用 Linux 桌面，当您开始使用 i3 时，您需要记住其中的一些快捷方式才能使用。
 
@@ -8384,7 +8419,11 @@ xrdp 是在 Linux 上实现 rdp 协议的开源的服务端程序，它兼容各
 
     https://www.cnblogs.com/Ansing/p/16788086.html
 
-组件
+如果你的 Linux 系统的桌面环境如 Fedora 使用了 Wayland 而不是传统的 X11/Xorg，它使用 xwayland 模块兼容 xrdp 这样的软件来使用 X window 程序
+
+   在使用 xrdp 等软件连接到 Fedora 时，其实是基于 xvnc 或 xorg 技术，通过 Wayland 的 xwayland 兼容模块使用 Fedora 桌面。
+
+xrdp 的组件
 
     xrdp:远程桌面协议 （RDP） 服务器。
 
@@ -8394,7 +8433,7 @@ xrdp 是在 Linux 上实现 rdp 协议的开源的服务端程序，它兼容各
 
     xrdp-sesadmin:是一个控制台程序来管理正在运行的 XRDP 会话。
 
-安装
+安装 xrdp
 
     sudo apt install xrdp
 
@@ -8482,11 +8521,13 @@ xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作
 
 #### WayVNC
 
-使用 vnc 远程连接 Wayland
+使用 vnc 的方式远程连接 Wayland 桌面
 
     https://docs.freebsd.org/en/books/handbook/wayland/#wayland-remotedesktop
 
     中文版 https://freebsd.gitbook.io/freebsd-handbook/di-6-zhang-freebsd-zhong-de-wayland/6.1.-wayland-gai-shu
+
+如果你想使用 vnc 的方式连接桌面，因为 Linux 顯示協定是使用 Wayland，傳統的 x11 VNC Server 可能就无法使用，此時要改用 WayVNC 這個新技術。
 
 wayvnc 不支持 Gnome 和 KDE。好在我目前主要使用 sway - i3 兼容 Wayland compositor ，所以使用 wayvnc 正好。
 
@@ -8501,12 +8542,6 @@ wayvnc 不支持 Gnome 和 KDE。好在我目前主要使用 sway - i3 兼容 Wa
         https://cloud-atlas.readthedocs.io/zh_CN/latest/linux/desktop/wayland/index.html
 
     WayVNC 使用教學 https://ivonblog.com/posts/linux-wayvnc/
-
-如果你的 Linux 系统如 Fedora 使用了 Wayland 而不是传统的 X11/Xorg，它使用 xwayland 兼容 X window 程序。
-
-   使用 xrdp 等软件连接到 Fedora 桌面，其实是基于 xvnc 或 xorg 技术，通过 xwayland 兼容在 Fedora 上使用的桌面环境。
-
-如果 Linux 顯示協定是使用 Wayland，傳統的 x11 VNC Server 可能就行不通，此時要改用 WayVNC 這個新技術。
 
 由于 Wayland 不再是 X window 系统的 cs 工作模式，WayVNC 通过 wlroots-based Wayland compositors 的 VNC server，通过附加到一个运行的 Wayland 会话，创建虚拟输入设备，以及通过 RFB 协议输出一个单一显示，来实现 VNC。
 
