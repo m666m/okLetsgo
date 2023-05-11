@@ -8001,6 +8001,11 @@ xinitrc 用于设置合适的 X 环境，并启动其他程序，即我们可能
 
     用 Wayland 开启 Linux https://zhuanlan.zhihu.com/p/531205278
 
+Wayland terminal emulator 叫 foot
+
+    https://man.archlinux.org/man/foot.1.en
+        https://codeberg.org/dnkl/foot
+
 Wayland 环境使用 QT 应用，需要修改 /etc/environment
 
     QT_QPA_PLATFORM=wayland
@@ -8047,6 +8052,8 @@ LightDM 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
     sudo dpkg-reconfigure gdm3
 
 ### 使用窗口管理器
+
+使用窗口管理器，需要自己配置软件源，自己安装字体，firefox 假死问题自己解决。
 
     https://zhuanlan.zhihu.com/p/47526909
 
@@ -8180,11 +8187,15 @@ LightDM 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
 
     杀掉窗口                Super+Shift+q
 
+    退出 i3                 Super+Shift+e
+
+窗口模式
+
     窗口在层叠、 标签和平铺之间来回切换    Super+s、w、e
 
     平铺模式切换水平或垂直               super+v、h，再开新窗口就可以看到变化了
 
-    退出 i3                 Super+Shift+e
+切换模式后，新开窗口是在当前窗口区域执行你的模式，不断的在子窗口套娃。
 
 在 i3 中，工作区是对窗口进行分组的一种简单方法。您可以根据您的工作流以不同的方式对它们进行分组。例如，您可以将浏览器放在一个工作区上，终端放在另一个工作区上，将电子邮件客户端放在第三个工作区上等等。
 
@@ -8221,7 +8232,7 @@ LightDM 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
 
 #### sway
 
-是 i3 的 wayland 实现
+是 i3 的 wayland 实现，操作热键参考 i3
 
     https://swaywm.org/
 
@@ -8531,9 +8542,18 @@ wayvnc 不支持 Gnome 和 KDE。好在我目前主要使用 sway - i3 兼容 Wa
 
     X11Forwarding yes
 
-最好使用密钥文件 ~/.config/wayvnc/config
+为确保安全，需要使用自签名 ssl 证书
 
-    # https://docs.freebsd.org/en/books/handbook/wayland/#wayland-remotedesktop
+    # https://github.com/any1/wayvnc#encryption--authentication
+    openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes \
+        -keyout key.pem -out cert.pem -subj /CN=localhost \
+        -addext subjectAltName=DNS:localhost,DNS:localhost,IP:127.0.0.1
+
+上面的格式只用于本机测试，内网使用需要把 localhost 和 127.0.0.1 改为你的主机名和ip
+
+然后添加到配置文件 ~/.config/wayvnc/config
+
+    # https://github.com/any1/wayvnc#encryption--authentication
     address=0.0.0.0
     enable_auth=true
     username=username
@@ -8565,7 +8585,9 @@ WayVNC啟動後不會有任何輸出，要關閉請用CTRL+C
 
     swaymsg --socket /tmp/sway-ipc.*.sock exec 'WAYLAND_DISPLAY=wayland-1 wayvnc -C ~/.config/wayvnc/config 0.0.0.0'
 
-##### 客户端安装配置
+##### 使用客户端
+
+为了安全，应该在 ssh 隧道里使用，所以要做本地端口转发。
 
 如果服务器端启动正常，可以在客户端使用:
 
