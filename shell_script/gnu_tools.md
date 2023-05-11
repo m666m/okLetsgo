@@ -1909,9 +1909,9 @@ True color(24bit) 综合测试 terminal-testdrive.sh
 
 #### 软件支持真彩色
 
-终端模拟器定义的颜色方案，默认只影响 shell 下基本的文字显示效果，如 ls、grep、systemctl 等命令输出标准的16色文字修饰代码都可以正常显示。
+终端模拟器定义的颜色方案，影响的是 shell 下 16 种基本颜色的显示，如 ls、grep、systemctl 等命令输出标准的 16 色文字修饰代码。
 
-命令 ls 对子目录显示蓝色，可执行sh文件显示绿色，对特定类型的文件用不同的颜色显示。通过变量 $LS_COLORS 获取颜色值，该值由 ls 程序所在的服务器端设置，参见 `man dir_colors`。如果你发现在不同的 Linux 下 ls 命令的结果对特定类型的文件显示不同的颜色，就是这里的设置不同导致
+但各命令对自己的输出使用何种颜色，有自己的方案，如 ls 命令对子目录显示蓝色，可执行 .sh 文件显示绿色，对特定类型的文件用不同的颜色显示，都可以设置为方案：这些命令通过变量 $LS_COLORS 获取颜色值，由命令所在的服务器端的 dir_colors 文件设置，参见 `man dir_colors`。如果你发现登录不同的 Linux 主机后，使用 ls 等命令对特定类型的文件显示颜色有差别，就是 dir_colors 方案不同导致的，并不是你的终端模拟器设置的 16 种基本颜色有问题。
 
     $ dircolors | tr ":" "\n"
     LS_COLORS='rs=0
@@ -1924,24 +1924,24 @@ True color(24bit) 综合测试 terminal-testdrive.sh
     *.tgz=01;31
     *.arc=01;31
 
-推荐使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令
+dir_colors 颜色方案推荐使用 Nord 北极，可影响 ls、tree 等命令
 
     https://www.nordtheme.com/docs/ports/dircolors/type-support
         https://github.com/arcticicestudio/nord-dircolors
 
     curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 
-这些颜色整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示。
+注意这些颜色方案虽然统一，但整体仍然受终端模拟器对 16 种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，可以覆盖 dir_colors ，比如 dir_colors 定义 .tar 文件为红色，但终端根据 16 种颜色方案来呈现具体何种红色。
 
 有些软件支持自定义颜色方案，色彩效果超越终端模拟器设置：
 
-tmux、vim 有自己的色彩方案设置：
+    比如，tmux、vim 有自己的色彩方案设置。
 
-要开启软件自己的 256color 和 RGB 真彩色两个选项。两个选项都要开启，否则在使用这两个软件时，还是无法呈现真彩色。
+    要开启这些软件自己的 256color 和 RGB 真彩色两个选项，最好两个选项都开启，否则在使用这两个软件时，还是无法呈现真彩色。
 
 详见下面章节中的各软件自己的配置文件样例，可参考 <https://lotabout.me/2018/true-color-for-tmux-and-vim/>。
 
-而且，基于跟前面章节所述同样的原因，不要使用 tmux、vim 默认的主题颜色，自定义设置，选用颜色更丰富的其它主题效果更好。
+而且，基于跟前面章节所述同样的原因，不要使用 tmux、vim 默认的主题颜色，应该自定义设置，选用颜色更丰富的其它主题，这样才能看出来真彩效果。
 
 #### base16 颜色方案
 
