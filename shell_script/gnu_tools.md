@@ -8493,11 +8493,11 @@ xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作
 
 #### WayVNC
 
-    使用 vnc 远程连接 Wayland
+使用 vnc 远程连接 Wayland
 
-        https://docs.freebsd.org/en/books/handbook/wayland/#wayland-remotedesktop
+    https://docs.freebsd.org/en/books/handbook/wayland/#wayland-remotedesktop
 
-        中文版 https://freebsd.gitbook.io/freebsd-handbook/di-6-zhang-freebsd-zhong-de-wayland/6.1.-wayland-gai-shu
+    中文版 https://freebsd.gitbook.io/freebsd-handbook/di-6-zhang-freebsd-zhong-de-wayland/6.1.-wayland-gai-shu
 
 wayvnc 不支持 Gnome 和 KDE。好在我目前主要使用 sway - i3 兼容 Wayland compositor ，所以使用 wayvnc 正好。
 
@@ -8505,6 +8505,7 @@ wayvnc 不支持 Gnome 和 KDE。好在我目前主要使用 sway - i3 兼容 Wa
 
         https://github.com/any1/wayvnc
             https://github.com/any1/wayvnc/blob/master/FAQ.md
+            https://www.mankier.com/1/wayvnc
 
     Wayland 环境 VNC
 
