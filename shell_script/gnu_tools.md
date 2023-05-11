@@ -7607,6 +7607,10 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
         测试：访问网站 https://www.xycq.gov.cn/，提示不安全的数字证书
 
+    GNOME Web
+
+        GNOME 桌面（Fedora 工作站的默认桌面环境）的一个浏览器。如果你使用 GNOME 作为默认桌面环境的 Fedora 工作站，它可能非常适合作为你的主浏览器。这个浏览器有一个简单、干净、漂亮的外观。GNOME Web 的功能比 Firefox 少，但对于普通用途来说已经足够了。
+
     FireFox
 
         中文版的 FireFox 等浏览器由cn公司开发，不要下载安装！
@@ -7619,26 +7623,23 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
         Firefox 的 “插件”（plugin）和“扩展”（extension）是两种不同的东西：插件以动态库（Windows 上就是 DLL 文件）的方式，加载到浏览器的进程内。扩展可以调用浏览器自身的 API，但是大部分扩展【不能】调用操作系统的 API。
 
-    GNOME Web 是 GNOME 桌面（Fedora 工作站的默认桌面环境）的一个浏览器。如果你使用 GNOME 作为默认桌面环境的 Fedora 工作站，它可能非常适合作为你的主浏览器。这个浏览器有一个简单、干净、漂亮的外观。GNOME Web 的功能比 Firefox 少，但对于普通用途来说已经足够了。
-
-    通过 Flatpak 安装 chrome/chromium：
-
-            flatpak install flathub com.google.Chrome # 稳定版
-
-            flatpak install flathub com.google.ChromeDev # 开发版
+    用 Flatpak 安装 chromium 系：
 
         安装 chromium：
-
 
             flatpak install flathub org.chromium.Chromium
 
         安装 ungoogled-chromium：
 
-        ungoogled-chromium 是一个由社区维护，默认禁用谷歌隐私追踪的开源浏览器。
+            ungoogled-chromium 是一个由社区维护，默认禁用谷歌隐私追踪的开源浏览器。
 
             https://github.com/Eloston/ungoogled-chromium/blob/master/README.md。
 
             flatpak install flathub com.github.Eloston.UngoogledChromium
+
+        安装 Chrome
+
+            flatpak install flathub com.google.Chrome # 稳定版
 
     Chromium
 
@@ -7647,14 +7648,6 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
         谷歌已经禁止 chromium 和基于 chromium 的第三方浏览器读取谷歌的数据，所以 chromium 不能同步你原有的谷歌浏览器数据。
 
             https://www.chromium.org/Home
-
-        在 openSUSE 上安装 chromium：
-
-                sudo zypper in chromium
-
-            安装闭源组件（可选）：
-
-                sudo zypper in chromium-bsu chromium-ffmpeg-extra chromium-plugin-widevinecdm
 
         在 Fedora 上安装 chromium：
 
@@ -7666,9 +7659,9 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     Chrome
 
-        基于开源浏览器 chromium 而搭建的闭源浏览器
+        google 基于开源浏览器 chromium 而搭建的闭源浏览器
 
-        在 Fedora 上安装谷歌 chrome：
+        在 Fedora 上安装 google chrome：
 
             添加第三方仓库：
 
@@ -7682,23 +7675,12 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
                 sudo dnf install google-chrome-stable
 
-        在 openSUSE 上安装谷歌 chrome：
+            NOTE: 安装 Chrome 后要删除 Fedora 托管
 
-            添加仓库：
+                # Chrome浏览器突然出现“由贵单位管理”
+                # https://forums.fedoraforum.org/showthread.php?326178-Why-manage-my-personal-Google-Chrome-browser
 
-                sudo zypper ar http://dl.google.com/linux/chrome/rpm/stable/x86_64 google-chrome
-
-            获取公钥：
-
-                wget https://dl.google.com/linux/linux_signing_key.pub
-
-            导入公钥：
-
-                sudo rpm --import linux_signing_key.pub
-
-            安装 Google chrome 稳定版。
-
-                sudo zypper ref && sudo zypper in google-chrome-stable
+                sudo dnf remove fedora-chromium-config
 
     Tor 浏览器
 
@@ -7709,10 +7691,6 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
         在 Fedora 上安装：
 
             sudo dnf install torbrowser-launcher
-
-        在 openSUSE 上安装：
-
-            sudo zypper install torbrowser-launcher
 
 办公套件
 
@@ -8001,7 +7979,7 @@ xinitrc 用于设置合适的 X 环境，并启动其他程序，即我们可能
 
     用 Wayland 开启 Linux https://zhuanlan.zhihu.com/p/531205278
 
-Wayland terminal emulator 叫 foot
+Wayland 自带的 terminal emulator 叫 foot
 
     https://man.archlinux.org/man/foot.1.en
         https://codeberg.org/dnkl/foot
