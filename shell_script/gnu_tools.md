@@ -2016,7 +2016,12 @@ for m in range(16):
     mintty_rgb = mintty_template[m] + ','.join(rgb)
     print(mintty_rgb)
 
-print('\nThen restart mintty to take effect, you can run `curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash` to see the color scheme.')
+print('''\n
+Then restart mintty to take effect, you can run
+
+    `curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash`
+
+to see the color scheme.''')
 
 ```
 
