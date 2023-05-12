@@ -7633,68 +7633,6 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
 老老实实用最多人用的 GNOME 吧，其它桌面环境坑更多，随便就有软件运行不起来。
 
-### 桌面环境的开机自启动自己的程序
-
-    https://blog.csdn.net/weixin_29702195/article/details/116886216
-
-RHEL 6 和 ubuntu 採用了 FreeDesktop.org 的規格,官方網站 <http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html> 定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境.主要是為了增加 free software desktop environments 的互通性,而這環境簡稱為 XDG(X Desktop Group).
-
-如果要用 x-window 開啟後自動啟動應用程式,請自行修改或是新增 .desktop 檔案.
-
-System-wide autostart directories:
-
-    /etc/xdg/autostart
-
-    /usr/share/autostart
-
-    User specific autostart directories:
-
-    ~/.config/autostart
-
-    ~/.kde/share/autostart (KDE specific)
-
-    ~/.kde/Autostart (KDE specific)
-
-我們來看看基本的 .desktop 檔案內容有哪些
-
-    [root@benjr ~]# cat ~/.config/autostart/gnome-terminal.desktop
-
-    [Desktop Entry]
-
-    Type=Application
-
-    Exec=gnome-terminal
-
-    Hidden=false
-
-    X-GNOME-Autostart-enabled=true
-
-    Name[en_US]=test
-
-    Name=test
-
-    Comment[en_US]=xdg testing
-
-    Comment=xdg testing
-
-    Type=Application
-
-    Exec=gnome-terminal
-
-最重要的就是指定要執行哪一個程式.
-
-    Hidden=false
-
-    X-GNOME-Autostart-enabled=true
-
-    Name[en_US]=test
-
-    Name=test
-
-    Comment[en_US]=xdg testing
-
-    Comment=xdg testing
-
 ### 常用桌面工具
 
     https://linux.cn/article-13761-1.html
@@ -8180,6 +8118,97 @@ LightDM 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
 安装了多个显示管理器，则可以使用以下方法在它们之间进行选择
 
     sudo dpkg-reconfigure gdm3
+
+#### 桌面环境的开机自启动
+
+    https://blog.csdn.net/weixin_29702195/article/details/116886216
+
+    https://blog.csdn.net/u014025444/article/details/94029895
+
+RHEL 6 和 ubuntu 採用了 FreeDesktop.org 的規格,官方網站 <http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html> 定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境.主要是為了增加 free software desktop environments 的互通性,而這環境簡稱為 XDG(X Desktop Group).
+
+如果要用 x-window 開啟後自動啟動應用程式,請自行修改或是新增 .desktop 檔案.
+
+System-wide autostart directories:
+
+    /etc/xdg/autostart
+
+    /usr/share/autostart
+
+    User specific autostart directories:
+
+    ~/.config/autostart
+
+    ~/.kde/share/autostart (KDE specific)
+
+    ~/.kde/Autostart (KDE specific)
+
+我們來看看基本的 .desktop 檔案內容有哪些
+
+    [root@benjr ~]# cat ~/.config/autostart/gnome-terminal.desktop
+
+    [Desktop Entry]
+
+    Type=Application
+
+    Exec=gnome-terminal
+
+    Hidden=false
+
+    X-GNOME-Autostart-enabled=true
+
+    Name[en_US]=test
+
+    Name=test
+
+    Comment[en_US]=xdg testing
+
+    Comment=xdg testing
+
+    Type=Application
+
+    Exec=gnome-terminal
+
+最重要的就是指定要執行哪一個程式.
+
+    Hidden=false
+
+    X-GNOME-Autostart-enabled=true
+
+    Name[en_US]=test
+
+    Name=test
+
+    Comment[en_US]=xdg testing
+
+    Comment=xdg testing
+
+XDG基本目录规范基于以下概念：
+
+    有一个用于写入特定用户数据文件的基本目录。$XDG_DATA_HOME。
+    有一个用于写入特定用户的配置文件基本目录。$XDG_CONFIG_HOME。
+    有一组首选的基本数据目录。$XDG_DATA_DIRS。
+    有一组首选的基本配置目录。$XDG_CONFIG_DIRS。
+    有一个用于写入用户特定的非必要（缓存）数据的基本目录。$XDG_CACHE_HOME。
+    有一个用户放置特定于用户的运行时文件和其他文件对象。$XDG_RUNTIME_DIR。
+
+环境变量
+
+    XDG 环境变量                默认值
+
+    $XDG_DATA_HOME        $HOME/.local/share
+    $XDG_CONFIG_HOME        $HOME/.config
+    $XDG_DATA_DIRS        /usr/local/share/:/usr/share/
+    $XDG_CONFIG_DIRS        /etc/xdg
+    $XDG_CACHE_HOME        $HOME/.cache
+
+$XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对象（例如套接字，命名管道…）存储的基本目录。该目录必须由用户拥有，并且他必须是唯一具有读写访问权限的目录。它的Unix访问模式必须是 0700。
+
+目录的生命周期必须绑定到登录用户。必须在用户首次登录时创建，如果用户完全注销，则必须删除该目录。如果用户多次登录，他应该指向同一目录，并且必须从第一次登录到他在系统上的最后一次登出时继续存在，而不是在两者之间删除。目录中的文件必须不能在重新启动或完全注销/登录循环后继续存在。
+
+该目录必须位于本地文件系统上，不与任何其他系统共享。该目录必须完全按照操作系统的标准进行。更具体地说，在类Unix操作系统上，AF_UNIX套接字，符号链接，硬链接，适当的权限，文件锁定，稀疏文件，内存映射，文件更改通知，必须支持可靠的硬链接计数，并且对文件名没有限制应该强加字符集。此目录中的文件可能需要定期清理。为确保不删除您的文件，他们应至少每6小时单调时间修改一次访问时间戳记，或者在文件上设置“粘滞”位。
+
+如果 $XDG_RUNTIME_DIR 未设置，应用程序应回退到具有类似功能的替换目录并打印警告消息。应用程序应使用此目录进行通信和同步，并且不应在其中放置较大的文件，因为它可能驻留在运行时内存中，并且不一定可以交换到磁盘。
 
 ### 使用窗口管理器
 
