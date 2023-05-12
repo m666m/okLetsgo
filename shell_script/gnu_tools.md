@@ -5613,7 +5613,7 @@ tee 对程序的输出同时打印到文件和屏幕
 
     ls -al | tee -a file.txt
 
-column 把文本表格整齐化
+column 把文本表格整齐化，也用于有些程序的输出太宽字符被省略的展开
 
     openssl ciphers -V |column -t
 
@@ -7631,7 +7631,69 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
 ## Linux 桌面环境
 
-老老实实用最多人用的 GNOME 吧，其它桌面环境坑更多，随便就有软件运行不起来
+老老实实用最多人用的 GNOME 吧，其它桌面环境坑更多，随便就有软件运行不起来。
+
+### 桌面环境的开机自启动自己的程序
+
+    https://blog.csdn.net/weixin_29702195/article/details/116886216
+
+RHEL 6 和 ubuntu 採用了 FreeDesktop.org 的規格,官方網站 <http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html> 定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境.主要是為了增加 free software desktop environments 的互通性,而這環境簡稱為 XDG(X Desktop Group).
+
+如果要用 x-window 開啟後自動啟動應用程式,請自行修改或是新增 .desktop 檔案.
+
+System-wide autostart directories:
+
+    /etc/xdg/autostart
+
+    /usr/share/autostart
+
+    User specific autostart directories:
+
+    ~/.config/autostart
+
+    ~/.kde/share/autostart (KDE specific)
+
+    ~/.kde/Autostart (KDE specific)
+
+我們來看看基本的 .desktop 檔案內容有哪些
+
+    [root@benjr ~]# cat ~/.config/autostart/gnome-terminal.desktop
+
+    [Desktop Entry]
+
+    Type=Application
+
+    Exec=gnome-terminal
+
+    Hidden=false
+
+    X-GNOME-Autostart-enabled=true
+
+    Name[en_US]=test
+
+    Name=test
+
+    Comment[en_US]=xdg testing
+
+    Comment=xdg testing
+
+    Type=Application
+
+    Exec=gnome-terminal
+
+最重要的就是指定要執行哪一個程式.
+
+    Hidden=false
+
+    X-GNOME-Autostart-enabled=true
+
+    Name[en_US]=test
+
+    Name=test
+
+    Comment[en_US]=xdg testing
+
+    Comment=xdg testing
 
 ### 常用桌面工具
 
@@ -8068,15 +8130,37 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
     $ systemctl get-default
     graphical.target
 
+设置开机启动到桌面还是命令行，被 systemctl 接管了
+
+    https://docs.fedoraproject.org/en-US/quick-docs/understanding-and-administering-systemd/index.html#mapping-runlevels-to-targets
+
+    见 /etc/inittab 文件的说明：
+
+        Ctrl-Alt-Delete is handled by /usr/lib/systemd/system/ctrl-alt-del.target
+
+        systemd uses 'targets' instead of runlevels. By default, there are two main targets:
+
+            multi-user.target: analogous to runlevel 3
+
+            graphical.target: analogous to runlevel 5
+
+        To view current default target, run:
+
+            systemctl get-default
+
+        To set a default target, run:
+
+            systemctl set-default TARGET.target
+
 显示管理器用于用户登录时的提示窗口，提供图形登录并处理用户身份验证。
 
     如果是本地登录，在显示管理器界面，点击右下方的小齿轮可以选择使用何种桌面环境
 
     如果是 xrdp 远程登陆，在 “session” 处选择
 
-gdm3 是 GNOME 显示管理器
+gdm 是 GNOME 显示管理器
 
-     apt-get install gdm3
+     apt-get install gdm
 
 kdm 或 SDDM 是 KDE 的显示管理器
 
@@ -8892,7 +8976,7 @@ noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及
 
 接下来我们要做的是进入 tty 终端直接注销用户重新登录。
 
-在大多数 Linux 发行版中，你可以使用以下键盘快捷键来得到 TTY 屏幕：
+在大多数 Linux 发行版中，在桌面环境你可以使用以下键盘快捷键来得到 TTY 控制台：
 
     CTRL + ALT + F1 – 锁屏
     CTRL + ALT + F2 – 桌面环境
@@ -8901,9 +8985,17 @@ noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及
     CTRL + ALT + F5 – TTY5
     CTRL + ALT + F6 – TTY6
 
-输入用户名和密码登录
+    等一会儿，才会切换到 tty，我都是左手安装 ctl+alt，右手食指从 F3一溜划到F10，随便谁出来。。。
 
-此时会打印出一串信息，此时输入命令 `sudo pkill Xorg` 或者 `sudo restart lightdm` 注销桌面重新登录系统
+输入用户名和密码登录，此时输入命令，说法太多待验证
+
+    重启显示管理器服务： `sudo systemctl restart gdm/kdm/lightdm`
+
+    `ps -t tty1` 找到进程中 xinit/xwindow… 或 gnome-session-bin... 的 pid， 然后 `kill -9 pid` 即可
+
+    `sudo pkill Xorg` 或者 `sudo restart lightdm` 注销桌面重新登录系统
+
+    输入 init 3 即可停止 X window，输入 startx 重新启动桌面
 
 操作完成之后等待一会儿就会重新进入桌面，系统可以正常使用了。
 
@@ -8994,6 +9086,10 @@ Linux 启动阶段始于内核加载了 init 或 systemd（取决于具体发行
 
 unix systemV以来的习惯是使用 Bash 脚本来完成启动。
 
+    service foobar start
+
+    service foobar stop
+
 内核启动 init 程序（这是一个编译后的二进制）后，init 启动 rc.sysinit 脚本，该脚本执行许多系统初始化任务。
 
 rc.sysinit 执行完后，init 启动 /etc/rc.d/rc 脚本，该脚本依次启动 /etc/rc.d/rcX.d 中由 SystemV 启动脚本定义的各种服务。其中 X 是待启动的运行级别号。这些级别在/etc/inittab 文件里指定。
@@ -9010,7 +9106,7 @@ rc.sysinit 执行完后，init 启动 /etc/rc.d/rc 脚本，该脚本依次启�
 
     4 - 系统保留
 
-    5 - X11 （xwindow)
+    5 - X11 (xwindow)
 
     6 - 重新启动
 
