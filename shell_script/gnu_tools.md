@@ -914,22 +914,25 @@ terminfo 问题
 
     https://ttys3.dev/post/kitty/
 
-    如果你尝试ssh到远程机器, 可能会发现你本机的zsh报错:
+    如果你尝试 ssh 到远程机器, 可能会发现你本机的 zsh 报错:
 
     /home/user007/.zsh_compatible:bindkey:2: cannot bind to an empty key sequence
 
     这个问题其实不只存在于 kitty, 任何有自己独立的 terminfo 的 terminal (且其信息没有在 ncurses 中内置), 基本上都会有这个问题. 比如 Alacritty 也有这个问题.
 
-    这个问题官方faq文档里面也有说明: I get errors about the terminal being unknown or opening the terminal failing when SSHing into a different computer?
+    这个问题在官方faq文档里面也有说明:
+
+    I get errors about the terminal being unknown or opening the terminal failing when SSHing into a different computer?
 
     This happens because the kitty terminfo files are not available on the server. You can ssh in using the following command which will automatically copy the terminfo files to the server:
 
-    kitty +kitten ssh myserver
+        kitty +kitten ssh myserver
+
     This ssh kitten takes all the same command line arguments as ssh, you can alias it to ssh in your shell’s rc files to avoid having to type it each time:
 
-    alias ssh="kitty +kitten ssh"
+        alias ssh="kitty +kitten ssh"
 
-WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装。速度快，兼容性较好，左侧就是文件夹树方便sftp，支持 lrzsz 的文件拖放传送，命令行输出还支持标签折叠
+WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装。速度快，兼容性较好，左侧就是文件夹树方便 sftp，支持 lrzsz 的文件拖放传送，命令行输出还支持标签折叠
 
     https://github.com/kingToolbox/WindTerm
         https://kingtoolbox.github.io/
@@ -951,13 +954,14 @@ WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用，至今�
     https://github.com/wez/wezterm
         https://wezfurlong.org/
 
-Linux 桌面下的终端模拟器感觉没啥意义，用自带的就行了
+Linux 桌面下的终端模拟器一般用自带的就行了
 
     Gnome 桌面自带 Xterm
     KDE 桌面自带 Konsole
     Xfce 桌面自带 xfce
     gtk 桌面自带 terminator
     i3 窗口管理器自带 urxvt(rxvt-unicode)
+    sway 窗口管理器自带 foot
 
     guake
 
@@ -2285,9 +2289,11 @@ powerline 最大的优点是它的各种符号字体可以图形化的显示文�
 
 缺点是它的代码 python2、3 混杂，安装和使用都很难配置，所以现在有些插件不使用它了。
 
-使用这个插件，先确定你当前操作系统的命令 `python` 指向的是 python2 还是 python3，我的 Debian 10 默认是 python2。如果从 github 安装最新版的 powerline 只支持 python3，所以得改设置。简单点，安装发行版自带的就可以了。
+最好用发行版自带的，一步到位，默认的安装到 /usr/share/powerline/ 目录下了
 
-基础安装
+    sudo apt install powerline
+
+手工安装最新版，需要先确定你当前操作系统的命令 `python` 指向的是 python2 还是 python3，我的 Debian 10 默认是 python2。如果从 github 安装最新版的 powerline 只支持 python3，所以得改设置
 
     # https://askubuntu.com/questions/283908/how-can-i-install-and-use-powerline-plugin
     # https://powerline.readthedocs.io/en/latest/installation.html
@@ -2297,10 +2303,8 @@ powerline 最大的优点是它的各种符号字体可以图形化的显示文�
     # pip install powerline-status 这个是python2的一堆坑
     # python3 -m pip install --user git+https://github.com/powerline/powerline
     #
-    # 最好用发行版自带的，一步到位，默认的安装到 /usr/share/powerline/ 目录下了
-    sudo apt install powerline
 
-安装后有个后台进程，
+安装后有个后台进程
 
     # 由 systemd 调度管理 /etc/systemd/user/default.target.wants/powerline-daemon.service
     $ ps -ef|grep powerline
@@ -2308,7 +2312,7 @@ powerline 最大的优点是它的各种符号字体可以图形化的显示文�
 
     TODO: 研究下用 python 实现的 select()
 
-你使用的终端工具的 Terminal 相关参数设置中设置 xterm-256color，防止用户登陆脚本未设置变量TERM，以保证命令行显示的颜色更丰富
+你使用的终端工具的 Terminal 相关参数设置中设置 xterm-256color，防止用户登陆脚本未设置变量 $TERM，以保证命令行显示的颜色更丰富
 
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
@@ -2386,6 +2390,8 @@ zsh 下推荐使用 powerlevle10k，这个状态栏工具的兼容性和显示�
 
 ### 图标字体
 
+bash、vim、tmux 的状态栏主题等插件，为了使用图标字体，都依赖 powerline fonts 等补丁字体。
+
     https://juejin.cn/post/6844904054322102285
 
 作为程序员，和命令行打交道很频繁，设置一个赏心悦目的命行行 prompt 或者 Vim 的 status line 主题就很有必要了，不过一般这些漂亮的主题都会用到一些 icon 字符，这些 icon 字符一般的字体里是没有的。
@@ -2400,8 +2406,6 @@ Powerline fonts 或者 Nerd fonts 这些字体集，他们对已有的一些 (�
 
     你在 MacOS 下使用 iTerm2 终端工具，则要在你的苹果电脑上安装这些字体。
 
-如果你的计算机使用的是 Linux 就比较省事，直接 apt install 安装到本机，很多发行版如 Debian 都带 powerline 字体。
-
 然后设置在终端模拟器或编辑器使用该字体，这样才能正确显示。
 
 简单测试几个unicode字符
@@ -2411,18 +2415,22 @@ Powerline fonts 或者 Nerd fonts 这些字体集，他们对已有的一些 (�
 
 #### Powerline fonts
 
+Nerd fonts 是 Powerline fonts 的超集，建议直接使用 Nerd font，参见下面章节 [Nerd font]。
+
     https://github.com/powerline/fonts
 
-Powerline发展到后来，为了显示各种好看的图标使用了特殊的 icon 字符。powerline fonts 就是给 Powerline 配套的字体集，本质是对一些现有的字体打 patch，把 powerline icon 字符添加到这些现有的字体里去，目前对非常多的编程字体打了 patch。Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 for Powerline 的后缀，比如 Source Code Pro 打完 patch 后名字改为了 Source Code Pro for Powerline。
+Powerline 在 bash 时期非常流行，为了显示各种好看的图标使用了特殊的 icon 字符。powerline fonts 就是给 Powerline 配套的字体集，本质是对一些现有的字体打 patch，把 powerline icon 字符添加到这些现有的字体里去，目前对非常多的编程字体打了 patch。
 
-很多状态栏插件等工具，为了使用图标字体，都依赖 powerline fonts 的字体。
+Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 for Powerline 的后缀，比如 Source Code Pro 打完 patch 后名字改为了 Source Code Pro for Powerline。
+
+很多 Linux 发行版如 Debian 都带 powerline 字体，直接 apt install 安装到本机
 
     # Debian 等发行版自带
-    # https://github.com/caiogondim/bullet-train.zsh
     sudo apt install fonts-powerline
     sudo apt install ttf-ancient-fonts
 
-    # 最新版
+手动安装最新版
+
     git clone --depth=1 https://github.com/powerline/fonts.git
 
     # install
@@ -2431,8 +2439,6 @@ Powerline发展到后来，为了显示各种好看的图标使用了特殊的 i
 
     cd ..
     rm -rf fonts/
-
-Nerd fonts 是 Powerline fonts 的超集，建议直接使用 Nerd font，参见下面章节 [Nerd font]。
 
 #### Nerd font
 
@@ -2467,6 +2473,22 @@ Nerd fonts 是 Powerline fonts 的超集，建议直接使用 Nerd font，参见
 
     $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \uf70f \ue20a \ue350 \uf2c8"
      ±  ➦ ✘ ⚡ ⚙ ❃    
+
+Fedora 下安装 Nerd Font --- Meslo LGS
+
+    # 先下载 https://github.com/ryanoasis/nerd-fonts/releases
+
+    # 安装 https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
+    $ sudo mkdir -p /usr/local/share/fonts/NerdFont
+    $ sudo cp ~/Downloads/robofont.ttf /usr/local/share/fonts/NerdFont/
+
+    # Set permissions and update SELinux labels
+    $ sudo chown -R root: /usr/local/share/fonts/NerdFont
+    $ sudo chmod 644 /usr/local/share/fonts/NerdFont/*
+    $ sudo restorecon -vFr /usr/local/share/fonts/NerdFont
+
+    # Update the font cache
+    $ sudo fc-cache -v
 
 #### Font Awesome
 
@@ -2944,7 +2966,7 @@ ohmyzsh 目前是从 github 安装
 
 内置主题 bira 比较简洁，可手工修改添加时间提示 `RPROMPT="[%*]%B${return_code}%b"` 图例 ![bira](https://user-images.githubusercontent.com/49100982/108254762-7a77a480-716c-11eb-8665-b4f459fd8920.jpg)。
 
-额外主题 [Bullet train](https://github.com/caiogondim/bullet-train.zsh)，可手工修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta`，目前还没找到合适的字体显示各种图标，安装了 Powerline Vim plugin 没见效果。
+额外主题 [Bullet train](https://github.com/caiogondim/bullet-train.zsh)，可手工修改主机名字段颜色`BULLETTRAIN_CONTEXT_BG=magenta` 。
 
 内置插件在 $ZSH/plugins/ 目录下（默认 ~/.oh-my-zsh/plugins/），兼容zsh插件。
 
@@ -3256,7 +3278,7 @@ vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
 光标控制
 
     移动光标：使用用方向键移动。
-    选择文字：按住鼠标左键拖到。
+    选择文字：按住鼠标左键拖动。
 
 复制、剪贴和粘贴
 
@@ -5118,7 +5140,7 @@ tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServe
 
     https://github.com/tmux-plugins/list
 
-要设置状态栏彩色，包括tmux中vim使用彩色，需要编辑 ~/.tmux.conf 文件，添加如下行
+要设置tmux界面使用彩色，比如 tmux 的状态栏彩色，在 tmux 环境种调用 vim 能够使用彩色，需要编辑 ~/.tmux.conf 文件，添加如下行
 
     # 设置状态栏工具显示256彩色
     # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
@@ -5185,11 +5207,13 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 }
 ```
 
-###### 替换 powerline 状态栏显示
+##### 状态栏显示不使用 powerline
 
-安装 nord 主题，使用这个主题的好处是它支持 <https://github.com/tmux-plugins> 的所有插件，可以在状态栏显示图标字符，启动速度也比 powerline 快。
+1、安装 nord 主题
 
-注意终端工具也需要启用 nord 主题，否则颜色方案会不一致
+使用这个主题的好处是它支持 <https://github.com/tmux-plugins> 的所有插件，可以在状态栏显示图标字符，启动速度也比 powerline 快。
+
+最好终端工具也启用 nord 主题，否则颜色方案会不一致
 
     https://www.nordtheme.com/ports/tmux
         https://github.com/arcticicestudio/nord-tmux
@@ -5208,7 +5232,9 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
     tmux source-file ~/.tmux.conf
 
-还可以安装 tmux-powerline，这个只使用 bash 脚本实现
+2、安装 tmux-powerline
+
+这个只使用 bash 脚本实现，保持你的环境更干净
 
     https://github.com/erikw/tmux-powerline
 
@@ -7600,22 +7626,6 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
     参考下它装的软件 https://theevilskeleton.gitlab.io/2022/05/16/response-to-flatpak-is-not-the-future.html
 
 Gnome Terminal
-
-    安装 Nerd Font --- Meslo LGS
-
-        # 先下载 https://github.com/ryanoasis/nerd-fonts/releases
-
-        # 安装 https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
-        $ sudo mkdir -p /usr/local/share/fonts/NerdFont
-        $ sudo cp ~/Downloads/robofont.ttf /usr/local/share/fonts/NerdFont/
-
-        # Set permissions and update SELinux labels
-        $ sudo chown -R root: /usr/local/share/fonts/NerdFont
-        $ sudo chmod 644 /usr/local/share/fonts/NerdFont/*
-        $ sudo restorecon -vFr /usr/local/share/fonts/NerdFont
-
-        # Update the font cache
-        $ sudo fc-cache -v
 
     主题颜色使用 Nord theme
 

@@ -6,6 +6,8 @@
 
 参考
 
+    bash 内置命令 `man command`
+
     bash 系列教程 https://www.junmajinlong.com/shell/index/
 
     Debian 参考手册
