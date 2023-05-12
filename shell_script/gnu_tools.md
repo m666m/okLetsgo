@@ -3518,11 +3518,12 @@ powerline 为保证多样性，使用python实现的。现在的问题是操作�
 
     https://github.com/vim-airline/vim-airline
 
-省事了，不仅是状态栏和标签栏，而且能配合很多常用插件如目录树的显示，普通字体也可以正常显示，开箱即用。
+开箱即用，不仅是状态栏和标签栏，而且能配合很多常用插件如 nerdtree 目录树的显示，普通字体也可以正常显示。
 
 没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
-    # 会自动安装插件管理器 vim-addon-manager，然后把自己安装到插件目录中
+发行版自带安装，会自动安装依赖的插件管理器 vim-addon-manager，然后把自己安装到其插件目录中
+
     apt install vim-airline
     apt install vim-airline-themes
 
@@ -3582,7 +3583,7 @@ let g:airline_theme='papercolor'
 
 Why yet another clone of powerline?
 
-    [vim-powerline](https://github.com/Lokaltog/vim-powerline)  is a nice plugin, but deprecated.
+    https://github.com/Lokaltog/vim-powerline is a nice plugin, but deprecated.
 
     powerline is a nice plugin, but difficult to configure.
 
