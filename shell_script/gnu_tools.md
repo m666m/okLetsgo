@@ -7475,6 +7475,18 @@ There are three different implementations:
 
     https://github.com/dreampuf/GraphvizOnline
 
+### TODO:使用 doxygen 从源码注释生成帮助文档
+
+    https://www.cnblogs.com/arnoldlu/p/11552271.html
+
+主要包括三部分：在代码中添加 doxygen 规则注释；生成 doxygen 配置文档 doxyfile；graphviz 的 dot 布局可视化配置。
+
+    sudo apt install doxygen
+    sudo apt install doxygen-gui
+    sudo apt install graphviz graphviz-doc
+
+使用 graphviz 的 dot 功能，可以生成详细的函数调用关系图、include关系图等，提高阅读效率。
+
 ### 压力测试
 
 dd 可用于做 i/o 速率测试：
