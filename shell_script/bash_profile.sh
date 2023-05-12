@@ -76,6 +76,17 @@ if [ -x /usr/bin/dircolors ]; then
     alias passf='dd if=/dev/random of=symmetric.key bs=1 count=256'
     # vi 后悔药：等保存了才发现是只读，只给出提示
     alias viw='echo "[vi 后悔药：等保存了才发现是只读]" && echo ":w !sudo tee %"'
+    # dnf
+    alias dnfp='echo "[dnf搜索包含指定命令的软件包]" && dnf provides'
+    alias dnfq='echo "[dnf查找指定的软件包在哪些存储库]" && dnf repoquery -i'
+    alias dnfr='echo "[dnf查看当前有哪些存储库]" && dnf repolist'
+    alias dnfd='echo "[dnf卸载软件]" && dnf remove'
+    # flatpak
+    alias fpkr='echo "[flatpak查看当前有哪些存储库]" && flatpak remotes'
+    alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-list'
+    alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
+    alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
+
     # wsl或git bash下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "[Windows Path]"
     function cdw {
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"

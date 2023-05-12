@@ -73,6 +73,19 @@ node + npm 都要装
 
     npm -v
 
+### Nvm Yarn
+
+Npm：与 node.js 一起安装的包管理工具
+
+Yarn：一款新的JavaScript包管理工具。
+
+    如何在 Fedora 38/37/36 Linux 上安装 Yarn
+        https://www.linuxcapable.com/how-to-install-yarn-on-fedora-linux/
+
+Nvm：一个nodejs版本管理工具
+
+    https://github.com/nvm-sh/nvm
+
 ## web server：Apache服务器和tomcat服务器区别
 
     https://zhuanlan.zhihu.com/p/116605973
