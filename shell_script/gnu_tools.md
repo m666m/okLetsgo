@@ -7940,7 +7940,7 @@ X window
 
     又叫 X 窗口系统，最初起源于1984年，是为了解决类 unix 系统的图形显示问题而推出的显示接口。它使用 unix 套接字式的 c/s 模式，从而分离出了前端和后端两部分，天生就支持远程分布。
 
-        也就是说，应用程序和显示器不必在同一台计算机上，每一个窗口应用程序对应一个（或多个？）X Client，用户的显示界面上运行的是 X Server。
+        也就是说，应用程序和显示器不必在同一台计算机上，每一个窗口应用程序对应一个（或多个？）X Client，用户的显示界面上运行的是 X Server。注意这里本地运行的是 X server，远程服务器运行图形化程序使用的是 X client，这个概念只是程序实现时的术语，跟我们安装时本地安装称客户端，远程安装称服务端不同。
 
     X11(X Window System)：Linux 桌面显示的协议
 
@@ -8412,19 +8412,15 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
 如果需要使用老式的 x11（XDMCP协议）图形窗口连接到 Xserver(X.org)，建议安装使用 MobaXterm/Xshell 的免费版。
 
-如果使用 VNC 体系，注意用 ssh 隧道包装下，因为 VNC 的协议加密方面考虑的非常少，密钥可能会明文传输。一般在服务器安装 TigerVNC Server 软件包，客户端使用 TigerVNC Viwer 软件包。
-
-    man xvnc
-
-常见的 VNC 服务器软件有 vnc4server、TightVNC，RealVNC 等。常见的 VNC 客户端有 RealVNC Viewer、Ultra VNC 等。
-
-现在比较流行在 Windows 和 Linux 桌面都安装使用 RDP 协议 的工具：
+现在比较流行在 Windows 和 Linux 的远程桌面都使用 RDP 协议 的工具：
 
     输入你要连接的机器的 IP 地址，一般前缀为 rdp://
 
 #### xrdp
 
-xrdp 是在 Linux 上实现 rdp 协议的开源的服务端程序，它兼容各种 rdp 客户端如 rdesktop、mstsc、gnome boxes、remmina 等。
+远程桌面 RDP 协议体系由客户端（viewer）与服务端两部分构成。
+
+xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，xrdp 服务端兼容各种 rdp 客户端，如 rdesktop、mstsc、gnome boxes、remmina 等。
 
     https://github.com/neutrinolabs/xrdp/wiki
 
@@ -8435,7 +8431,7 @@ xrdp 是在 Linux 上实现 rdp 协议的开源的服务端程序，它兼容各
 
     https://www.cnblogs.com/Ansing/p/16788086.html
 
-如果你的 Linux 系统的桌面环境如 Fedora 使用了 Wayland 而不是传统的 X11/Xorg，它使用 xwayland 模块兼容 xrdp 这样的软件来使用 X window 程序
+如果你的 Linux 系统的桌面环境如 Fedora 使用了 Wayland 而不是传统的 X11/Xorg，它使用 xwayland 模块来兼容使用 X window 程序
 
    在使用 xrdp 等软件连接到 Fedora 时，其实是基于 xvnc 或 xorg 技术，通过 Wayland 的 xwayland 兼容模块使用 Fedora 桌面。
 
@@ -8496,7 +8492,7 @@ xrdp 安装完成先做几个设置：
 
     一旦登录，你将看到默认的桌面环境，根据你操作系统的设置是 Gnome 或 Xfce、i3 等。
 
-·rdesktop 是在 Linux 上实现 rdp 协议的客户端程序，Linux 桌面用户使用该工具可以连接到使用 Windows 远程桌面协议的计算机。
+·rdesktop 是实现 RDP 协议的 Linux 桌面客户端程序
 
     rdesktop <ip>
 
@@ -8537,15 +8533,146 @@ xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作
 
     Xorg :10 -config xrdp/xorg.conf
 
-#### WayVNC
+#### VNC
+
+VNC 体系由客户端（viewer）与服务端两部分构成
+
+    https://blog.csdn.net/sinolover/article/details/119735572
+
+安装 xrdp 时也会自带 xvnc --- X window 下的 vnc 服务端，用户使用 vncviwer 即可直接远程连接桌面
+
+    man xvnc
+
+建议：
+
+vnc 体系传输远程显示使用图像的方式，带宽消耗较大，大多数 vnc 使用的场合，一般都可以用其它方式代替
+
+    操作远程文件，使用 ssh 连接，或 sshfs 挂载远程文件系统即可
+
+    使用远程的图形化软件，建议换用 xrdp 这种节约带宽的方式
+
+安全性问题：
+
+注意用 ssh 本地端口转发包装 vnc 访问，因为 VNC 的协议加密方面考虑的非常少，密钥可能会明文传输。
+
+    ssh -FL 9901:localhost:5900 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
+
+VNC 是由英国剑桥大学 Olivetti & Oracle 实验室研发的一款超级瘦终端系统。它以 1998年 IEEE Internet Computing 一篇论文 《Virtual Network Computing》 的形式而问世。此研究室在 1999 年併入美國電話電報公司（AT&T）。AT&T 於 2002 年中止了此研究室的運作，並把 VNC 以 GPL 釋出，衍生出了幾個 VNC 軟體：
+
+    RealVNC：由 VNC 團隊部份成員開發，分為全功能商業版及免費版。http://www.realvnc.com/
+
+    TightVNC：強調節省頻寬使用。http://www.tightvnc.com/ 2001年俄罗斯一名研究生 Konstantin V Kaplinsky 在 Modern Technique and Technologies 上发表的 《VNC TIGHT ENCODER》 中创新性的提出了一种新的 VNC 编码方式:tight，并以开源 VNC 为基础加以代码实现，发布了开源版的 tightvnc。
+
+        TightVNC 的 Unix-like 平台的支持一直停留在十几年前的 1.3版，一直不停更新的是其 Windows 版。
+
+    TigerVNC：最初是基于 TightVNC 从未发布过的 VNC4 分支，由于 TightVNC 的工作重心放到了 Windows，对 Linux 的 X11/Xorg 架构的优化不够新，TigerVNC 注重 Unix-like 版本的开发，特别是对新版本的 X 桌面系统的强力支持，所以在 BSD、Linux 等 Unix-like 操作系统中实现远程虚拟桌面，最好的选择是 TigerVNC。
+
+        https://github.com/TigerVNC/tigervnc/releases
+
+    UltraVNC：加入了 TightVNC 的部份程式及加強效能的圖型映射驅動程式，並結合 Active Directory 及 NTLM 的帳號密碼認證，但僅有 Windows 版本。 http://ultravnc.com/
+
+    Vine Viewer：MacOSX的 VNC 用戶端。Mac OS 也自带 VNC 服务器。
+
+    TurboVNC：致力于优化图像、3d的 VirtualGL 体系 https://virtualgl.org/About/Background
+
+這些軟體間大多遵循基本的VNC協定，因此大多可互通使用。例如可以使用 Windows 平台上的 ultravnc 客户端连接 Linux 平台上的 tightvnc 服务端，但最好两侧版本一致以优化性能。
+
+一般在服务器安装 TigerVNC Server 软件包，客户端使用 TigerVNC Viwer 软件包。
+
+    https://tigervnc.org/
+        源码 https://github.com/TigerVNC/tigervnc
+        二进制发布 https://sourceforge.net/projects/tigervnc/files/
+
+    安装使用 Tiger VNC
+        https://blog.csdn.net/qlcheng2008/article/details/122421763
+        https://www.cnblogs.com/liyuanhong/articles/15487147.html
+
+    apt install tigervnc-standalone-server
+
+TigerVNC 服务器安装完成后，会自动进行 update-alternatives 的操作：
+
+    使用 tigervncconfig 来在自动模式中提供 vncconfig
+
+    使用 tigervncpasswd 来在自动模式中提供 vncpasswd
+
+    使用 tigervncserver 来在自动模式中提供 vncserver
+
+    使用 Xtigervnc 来在自动模式中提供 Xvnc
+
+实际上就是为这 5 个命令创建了一个链接，实际使用时用这两组命令都可以使用。
+
+    vncpasswd   设置用户密码，请勿使用 sudo 运行
+
+运行 VNC 服务器
+
+    vncserver -localhost no -geometry 1280x720 -depth 24
+
+初次运行 vncserver，会自动调用 vncpasswd 命令设置客户端访问此服务器时的密码，并询问是否要设置一个 “view-only” 密码。当然，使用 “只看” 密码登录后就只有看的份了，用户将无法使用鼠标和键盘与VNC实例进行交互。
+
+设置完密码后，vncserver 会自动选择一个空闲的显示器编号来启动桌面。这个编号一般从1开始，也可以在启动时指定虚拟桌面所用的显示器编号。
+
+    vncserver -list 获取所有当前正在运行的VNC会话的列表
+
+    vncserver -kill :1 停止VNC实例，其服务器在端口5901（:1）
+
+一般初次运行服务器时，由于没有提前配置 xstartup 配置文件，VNC 服务器会启动默认的桌管理程序，这与其他的 VNC 服务器只显示一个灰色背景的桌面有着很大的不同。
+
+如果系统中安装了多个桌面管理程序，那还要创建 ~/.vnc/xstartup 文件，并在文件中填入想要启动桌面管理程序。
+
+启动 GNOME 桌面
+
+    #!/bin/sh
+
+    xsetroot -solid grey
+    gnome-session &
+
+启动 XFCE 桌面
+
+    #!/bin/sh
+
+    # unset SESSION_MANAGER
+    # unset DBUS_SESSION_BUS_ADDRESS
+
+    xsetroot -solid grey
+    startxfce4 &
+
+然后赋予执行权限
+
+    chmod u+x ~/.vnc/xstartup
+
+每当您启动或重新启动 TigerVNC 服务器时，以上命令都会自动执行。
+
+为了操作方便，可以创建两个脚本，用来完成服务器的启动和停止工作。
+
+    启动服务器脚本 startvnc：
+
+        #!/bin/sh
+        vncserver -geometry 1280x1024 -localhost no :2
+
+    停止服务器脚本 stopvnc
+
+        #!/bin/sh
+        vncserver -kill :2
+
+Tiger VNC 的客户端使用，输入端口号时有点歪
+
+    在 “VNC服务器” 栏中输入 TigerVNC 服务的计算机的IP地址和端口号。
+
+    此处的端口号为 VNC 服务器启动时设置的显示器识别符加上 5900。如使用的是显示器 2 此端口号就为 5902。
+
+如果需要将其他选项传递给 VNC 服务器，请创建 ~/.vnc/config 文件，并在每行添加一个选项
+
+    geometry=1920x1080
+    dpi=96
+
+##### WayVNC
 
 使用 vnc 的方式远程连接 Wayland 桌面
 
     https://docs.freebsd.org/en/books/handbook/wayland/#wayland-remotedesktop
+        中文版 https://freebsd.gitbook.io/freebsd-handbook/di-6-zhang-freebsd-zhong-de-wayland/6.1.-wayland-gai-shu
 
-    中文版 https://freebsd.gitbook.io/freebsd-handbook/di-6-zhang-freebsd-zhong-de-wayland/6.1.-wayland-gai-shu
-
-如果你想使用 vnc 的方式连接桌面，因为 Linux 顯示協定是使用 Wayland，傳統的 x11 VNC Server 可能就无法使用，此時要改用 WayVNC 這個新技術。
+如果你想使用 vnc 的方式连接 Wayland 桌面，傳統的 x11 VNC Server 可能就无法使用，此時要改用 WayVNC 這個新技術。
 
 wayvnc 不支持 Gnome 和 KDE。好在我目前主要使用 sway - i3 兼容 Wayland compositor ，所以使用 wayvnc 正好。
 
@@ -8563,7 +8690,7 @@ wayvnc 不支持 Gnome 和 KDE。好在我目前主要使用 sway - i3 兼容 Wa
 
 由于 Wayland 不再是 X window 系统的 cs 工作模式，WayVNC 通过 wlroots-based Wayland compositors 的 VNC server，通过附加到一个运行的 Wayland 会话，创建虚拟输入设备，以及通过 RFB 协议输出一个单一显示，来实现 VNC。
 
-##### 服务器端安装配置
+###### 服务器端安装配置
 
     dnf install wayvnc
 
@@ -8616,7 +8743,7 @@ WayVNC啟動後不會有任何輸出，要關閉請用CTRL+C
 
     swaymsg --socket /tmp/sway-ipc.*.sock exec 'WAYLAND_DISPLAY=wayland-1 wayvnc -C ~/.config/wayvnc/config 0.0.0.0'
 
-##### 使用客户端
+###### 使用客户端
 
 为了安全，应该在 ssh 隧道里使用，所以要做本地端口转发。
 
@@ -8680,24 +8807,28 @@ Wayland 的 VNC 客户端可以采用 wlvncc 。WayVNC 0.5 支持使用 OpenH268
         /usr/bin/weston-terminal
     kill %1
 
-#### noVnc
+##### noVnc
 
-novnc提供了一种云桌面方案。noVNC 被普遍用在各大云计算、虚拟机控制面板中，比如 OpenStack Dashboard 和 OpenNebula Sunstone 都用的是 noVNC。
+novnc 提供了一种云桌面方案，使得用户登录网页即可使用远程服务器。noVNC 被普遍用在各大云计算、虚拟机控制面板中，比如 OpenStack Dashboard 和 OpenNebula Sunstone 都用的是 noVNC。
 
     https://blog.csdn.net/jgku/article/details/127832459
+
+    https://juejin.cn/post/6915679209692233735
 
     Debian11.6配置 noVNC 做远程桌面服务
         https://blog.csdn.net/lggirls/article/details/129024338
 
-noVNC 通过在网页上 html5 的 Canvas，访问机器上vncserver提供的vnc服务，需要 websockfy 做 tcp 到websocket的转化，才能在html5中显示出来。网页就是一个客户端，类似win下面的vncviewer，只是此时填的不是裸露的vnc服务的ip+port，而是由noVNC提供的websockets的代理，在noVNC代理服务器上要配置每个vnc服务，noVNC提供一个标识，去反向代理所配置的vnc服务。
+noVNC 通过在网页上 html5 的 Canvas，访问远程机器上 vncserver 提供的 vnc 服务，需要在远程机器上安装 websockfy 做 tcp 到 websocket 的转化，才能在 html5 中显示出来。
 
-搭建 novnc
+用户连接远程的网页就是一个客户端，类似 Windows 下面的 vncviewer，只是此时填的不是裸露的 vnc 服务的 ip+port，而是由 noVNC 提供的 websockets 的代理，在 noVNC 代理服务器上要配置每个 vnc 服务，noVNC 提供一个标识，去反向代理所配置的 vnc 服务。
 
-    安装vncserver: yum install tigervnc -y
+服务器搭建 novnc
 
-    安装Node.js：https://nodejs.org/en/download/（用于执行Websockify.js）
+    安装 vncserver: yum install tigervnc -y
 
-    下载novnc：http://github.com/kanaka/noVNC/zipball/master
+    安装 Node.js：https://nodejs.org/en/download/（用于执行Websockify.js）
+
+    下载 novnc：http://github.com/kanaka/noVNC/zipball/master
 
 noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及参数修改直接在 lauch.sh 中设置
 
@@ -8724,13 +8855,13 @@ noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及
 
 相关软件
 
-    MobaXterm: 默认有X Window 服务，可以直接弹出GUI
+    MobaXterm: 默认有X Window 服务，可以直接弹出 GUI
 
-    vncviewer: 最常用的vnc客户端
+    vncviewer: 最常用的 vnc 客户端
 
     xming: 开源X Server，搭配Putty使用。参见：http://www.straightrunning.com/XmingNotes/
 
-    UltraVNC：http://www.uvnc.com/（Windows环境下的VNC Server，还有TightVNC、TigerVNC、RealVNC等，其中RealVNC不能通过noVNC）
+    UltraVNC：http://www.uvnc.com/（Windows环境下的 VNC Server，还有 TightVNC、TigerVNC、RealVNC 等，其中 RealVNC 不能通过 noVNC）
 
 ### Linux 桌面死机怎么办 --- reisub“登录控制台”
 
