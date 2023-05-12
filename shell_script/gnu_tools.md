@@ -7440,7 +7440,8 @@ Ninja 还集成了 graphviz 等一些对开发非常有用的工具，执行 `./
 
     https://www.graphviz.org/
 
-<https://stackoverflow.com/questions/4366511/is-there-a-jquery-plugin-for-dot-language-file-visualization/>
+    https://stackoverflow.com/questions/4366511/is-there-a-jquery-plugin-for-dot-language-file-visualization/
+
 There are three different implementations:
 
 1.Render svg in simple js, no needs install of graphviz
@@ -7467,13 +7468,17 @@ There are three different implementations:
 
         pure js library from graphviz https://github.com/dagrejs/dagre
 
-3.server side call graphviz to generate svg file.
+3.server side call graphviz binary to generate svg file.
 
     http://viz-js.com/
 
         https://github.com/mdaines/viz.js
 
     https://github.com/dreampuf/GraphvizOnline
+
+命令行使用 dot 文件转为图片文件
+
+    dot -Tsvg xxx.dot -o xxx.svg
 
 ### TODO:使用 doxygen 从源码注释生成帮助文档
 
