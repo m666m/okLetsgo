@@ -7643,6 +7643,8 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     参考下它装的软件 https://theevilskeleton.gitlab.io/2022/05/16/response-to-flatpak-is-not-the-future.html
 
+快捷运行桌面工具，按 alt + F2，然后在弹出对话框输入可执行名如 firefox
+
 Gnome Terminal
 
     主题颜色使用 Nord theme
@@ -8090,6 +8092,8 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
             systemctl set-default TARGET.target
 
+    记得启用显示管理器 `sudo systemctl enable gdm/kdm/lightdm`
+
 显示管理器用于用户登录时的提示窗口，提供图形登录并处理用户身份验证。
 
     如果是本地登录，在显示管理器界面，点击右下方的小齿轮可以选择使用何种桌面环境
@@ -8120,6 +8124,8 @@ LightDM 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
     sudo dpkg-reconfigure gdm3
 
 #### 桌面环境的开机自启动
+
+    https://wiki.archlinux.org/title/Xdg-utils
 
     https://blog.csdn.net/weixin_29702195/article/details/116886216
 
@@ -9018,11 +9024,14 @@ noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及
 
 输入用户名和密码登录，此时输入命令，说法太多待验证
 
+    # https://stackoverflow.com/questions/46565019
+    如果是 GNOME X11 桌面，先试试按 ALT + F2，在弹出对话框里输入 r 然后回车试试， 可以在不关闭所有应用程序的情况下重新启动桌面。在 Wayland 桌面下不行。
+
     重启显示管理器服务： `sudo systemctl restart gdm/kdm/lightdm`
 
-    `ps -t tty1` 找到进程中 xinit/xwindow… 或 gnome-session-bin... 的 pid， 然后 `kill -9 pid` 即可
+    `ps -t tty1` 找到进程中 xinit/xwindow… 或 gnome-session-binary 的 pid， 然后 `kill -9 pid` 即可
 
-    `sudo pkill Xorg` 或者 `sudo restart lightdm` 注销桌面重新登录系统
+    `sudo pkill Xorg` 或者 `sudo systemctl restart systemd-logind` 注销桌面重新登录系统
 
     输入 init 3 即可停止 X window，输入 startx 重新启动桌面
 
