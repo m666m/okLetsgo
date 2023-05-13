@@ -7963,7 +7963,7 @@ X window
 
     X11(X Window System)：Linux 桌面显示的协议
 
-    Xorg：是 Linux 上通用的桌面环境（后端）服务器（X11的一种具体开源实现）。它使用 X11 协议与 X client端应用程序进行交互的应用程序，X Server 在显示器上绘制内容并发送输入事件，例如鼠标移动，单击和击键。因为它不直接传送图像数据，所以比较节约带宽。
+    Xorg：是 Linux 上通用的桌面环境（后端）服务器（X11的一种具体开源实现）。它使用 X11 协议与 X client 端应用程序进行交互的应用程序，X Server 在显示器上绘制内容并发送输入事件，例如鼠标移动，单击和击键。因为它不直接传送图像数据，所以比较节约带宽。
 
     现在一般把 x11 和 xorg 视作同一个服务。
 
@@ -8556,7 +8556,7 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
 #### TODO: Gnome 内置支持远程桌面
 
-Gnome 共享屏幕功能，以服务器为主，在计算机屏幕前的人，同步看到远程的人在自己的计算机上干什么，并可以随时干预中断远程会话。
+Gnome 共享屏幕功能，以服务器为主控，在主机屏幕前的人，可以同步看到远程的人在自己的计算机上干什么，并可以随时干预中断远程会话。
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/using_the_desktop_environment_in_rhel_8/accessing-the-desktop-remotely_using-the-desktop-environment-in-rhel-8
 
@@ -8564,13 +8564,13 @@ Gnome 共享屏幕功能，以服务器为主，在计算机屏幕前的人，�
 
     https://www.addictivetips.com/ubuntu-linux-tips/how-to-use-the-new-gnome-shell-remote-desktop-feature/
 
-目前同时支持 X11 和 Wayland 两种方式
+原 Gnome Xorg 桌面同时支持 X11 和 Wayland 两种方式，使用的 VNC 协议
 
     In an X11 session, it uses the vino component.
 
     In a Wayland session, it uses the gnome-remote-desktop component.
 
-Gnome 42 Wayland 之后不再使用 VNC 协议，改为 RDP 协议了，Gnome Xorg 可以使用 VNC 协议，但 Gnome Xorg 桌面稳定性不足。
+Gnome 42 桌面使用 Wayland 之后不再使用 VNC 协议，改为 RDP 协议了
 
     https://discussion.fedoraproject.org/t/how-to-share-fedora-36-gnome-desktop-with-another-machine-running-linux/76182
 
@@ -8582,17 +8582,17 @@ Gnome 42 Wayland 之后不再使用 VNC 协议，改为 RDP 协议了，Gnome Xo
 
 需要手动开启：
 
-    启动 Gnome 控制中心 Gnome Control Center
+    启动桌面设置 “Gnome 控制中心 Gnome Control Center”
 
-    点击 共享 Sharing 标签。
+    点击 “共享 Sharing” 标签。
 
     用右上角的滑块打开共享。
 
-    单击 屏幕共享Screen sharing。
+    单击 “屏幕共享 Screen sharing”。
 
     用窗口的滑块打开屏幕共享。
 
-    如果你希望能够从客户端控制屏幕，请勾选 “允许连接控制屏幕Allow connections to control the screen”。如果不勾选这个按钮，访问共享屏幕将只允许 “仅浏览view-only”。
+    如果你希望能够从客户端控制屏幕，请勾选 “允许连接控制屏幕 Allow connections to control the screen”。如果不勾选这个按钮，访问共享屏幕将只允许 “仅浏览 view-only”。
 
 客户端
 

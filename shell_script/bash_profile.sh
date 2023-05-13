@@ -84,6 +84,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias dnfp='echo "[dnf搜索包含指定命令的软件包]" && dnf provides'
     alias dnfq='echo "[dnf查找指定的软件包在哪些存储库]" && dnf repoquery -i'
     alias dnfr='echo "[dnf查看当前有哪些存储库]" && dnf repolist'
+    alias dnfrl='echo "[dnf查看存储库软件列表]" && dnf list --repo'
+    alias dnfl='echo "[dnf查看安装的软件]" && dnf list --installed'
     alias dnfd='echo "[dnf卸载软件]" && dnf remove'
 
     # flatpak
