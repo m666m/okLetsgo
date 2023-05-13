@@ -8679,7 +8679,7 @@ xrdp 的组件
     # 如果有防火墙，记得开放端口
     sudo ufw allow from any to any port 3389 proto tcp
 
-安装后要启动服务，并设置为开机自启动
+    # 安装后要启动服务，并设置为开机自启动
 
     sudo systemctl start xrdp
     sudo systemctl enable xrdp
@@ -8694,6 +8694,8 @@ xrdp 安装完成先做几个设置：
     如果安装 Linux 时启用了磁盘加密选项，则必须先本地连接计算机，输入密码启动操作系统后，才可以使用远程桌面登录。
 
     注销您本地的 Linux 桌面登录，否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。
+
+    关闭 Gnome 内置的远程桌面功能，两个现在都是 RDP 协议了避免冲突。
 
     Linux 桌面要禁用屏幕空白和自动屏幕锁定以实现无缝的远程桌面会话。
 
