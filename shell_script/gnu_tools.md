@@ -8001,7 +8001,7 @@ Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的�
 
     就 X windows桌面来说，本来就没有不远程的，XServer 和 XClient 放在一台电脑上就是本地桌面，通过 SSH 连接就远程了，没有本质区别。
 
-#### TODO:X11 启动过程
+#### X11 启动过程
 
     https://faq.i3wm.org/question/18/how-do-xsession-xinitrc-and-i3config-play-together.1.html
 
@@ -8009,35 +8009,38 @@ Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的�
 
         https://dev.leiyanhui.com/c/arch-install-xrdp/
 
-基于 X 窗口用户 HOWTO：
+基于 X Windo 的启动过程：
 
-startx 将通过首先调用 xinit 来启动 X。
+    在命令行执行 `startx` 将通过首先调用 xinit 来启动 X。
 
-xinit 将在用户的主目录中查找一个 ~/.xinitrc 文件，以作为 shell 脚本运行。
-xinitrc 用于设置合适的 X 环境，并启动其他程序，即我们可能希望在 X 启动后立即可用的“客户端”。
-窗口管理器或桌面环境通常是最后一个启动的应用程序。
+    xinit 将在用户的主目录中查找一个 ~/.xinitrc 文件，以作为 shell 脚本运行。
 
-另一种更常见的方法是 “GUI 登录”，其中 X 在登录之前运行。X包括xdm（X显示管理器）用于此目的。
-~/.xsession是使用登录管理器（如GDM，KDM，XDM）时要走的方法。
-现在，xdm 的 ~/.xsession 大致相当于 startx 的 ~/.xinitrc。
-根据您启动 X 的方式，服务器将执行 ~/.xinitrc 或 ~/.xsession 文件。
-最后，如果你从 ~/.xinitrc 或 ~/.xsession 执行 i3wm，那么 i3wm 将从 ~/.i3/config 读取其初始配置。
-做。
-鉴于此，您可能希望为 X 维护个人启动脚本的单个版本：
+    xinitrc 用于设置合适的 X 环境，并启动其他程序，即我们可能希望在 X 启动后立即可用的“客户端”。
 
-使用初始设置创建脚本 `echo "exec i3" >> ~/.xinitrc`。
+    窗口管理器或桌面环境通常是最后一个启动的应用程序。
 
-为xdm等效的符号链接：
+另一种更常见的方法是 “GUI 登录”：
 
+    X 在登录之前运行，其使用 xdm（显示管理器）用于此目的。
+
+    登录管理器（如GDM，KDM，XDM）会查找执行 ~/.xsession。
+
+    所以 xdm 的 ~/.xsession 大致相当于 startx 的 ~/.xinitrc。
+
+所以，根据您启动 X 的方式，计算机将执行 ~/.xinitrc 或 ~/.xsession 文件。
+
+在桌面启动的最后阶段，如果你从 ~/.xinitrc 或 ~/.xsession 执行 i3wm 窗口管理器，那么 i3wm 将从 ~/.i3/config 读取其初始配置。
+
+利用这点，用户可以创建一个统一两种登录方式的单个脚本：
+
+    `echo "exec i3" >> ~/.xinitrc`。
+
+    # 创建 xdm 等效的符号链接
     ln -s $HOME/.xinitrc $HOME/.xsession
 
-此外，Fluxbox手册还包括一个重要的解释：
+在启动 X11 时，将运行 .xinitrc 或 .xsession 脚本，并且脚本完成后，X11 会关闭：当 .xinitrc 完成时，也就是 X11 结束的时候，而不是当你的窗口管理器退出时才关闭。
 
-启动 X11 时，将运行 .xinitrc 或 .xsession 脚本，并且 脚本完成后，X11 会下降。让我再说一遍， 它很重要：当.xinitrc完成时，也就是X结束的时候。 不是当你的窗口管理器退出时。
-
-评论
-
-实际上，GDM 登录似乎忽略了“~/.xsession”，因此这并不能使其成为 Ubuntu 用户的选项。
+另外，GDM 登录似乎忽略了“~/.xsession”，因此这并不能使其成为 Ubuntu 用户的选项。
 
 #### Wayland
 
@@ -8554,7 +8557,7 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
     输入你要连接的机器的 IP 地址，一般前缀为 rdp://
 
-#### TODO: Gnome 内置支持远程桌面
+#### TODO: Gnome 内置的远程桌面功能
 
 Gnome 共享屏幕功能，以服务器为主控，在主机屏幕前的人，可以同步看到远程的人在自己的计算机上干什么，并可以随时干预中断远程会话。
 
@@ -8564,13 +8567,15 @@ Gnome 共享屏幕功能，以服务器为主控，在主机屏幕前的人，�
 
     https://www.addictivetips.com/ubuntu-linux-tips/how-to-use-the-new-gnome-shell-remote-desktop-feature/
 
-原 Gnome Xorg 桌面同时支持 X11 和 Wayland 两种方式，使用的 VNC 协议
+    https://www.linuxmi.com/ubuntu-22-04-rdp-remote-desktop.html
+
+Gnome 同时支持 X11 和 Wayland 两种方式，原 Xorg 桌面使用 VNC 协议
 
     In an X11 session, it uses the vino component.
 
     In a Wayland session, it uses the gnome-remote-desktop component.
 
-Gnome 42 桌面使用 Wayland 之后不再使用 VNC 协议，改为 RDP 协议了
+Gnome 42 桌面之后不再使用 VNC 协议，改为 RDP 协议了
 
     https://discussion.fedoraproject.org/t/how-to-share-fedora-36-gnome-desktop-with-another-machine-running-linux/76182
 
@@ -8598,7 +8603,7 @@ Gnome 42 桌面使用 Wayland 之后不再使用 VNC 协议，改为 RDP 协议�
 
 是一台连接到由服务器提供的服务（或内容）的计算机，使用 vnc 或 rdp 客户端。
 
-Linux 计算机推荐使用 Remmina，你可以用多种协议连接到远程服务器，如 VNC、Spice 或 RDP。Fedora 自带软件名为 “连接connects”，也是同时支持 VNC 和 RDP。
+Linux 计算机推荐使用 Remmina，或 Gnome 自带软件名为 “连接 connects”，同时支持 VNC 和 RDP。
 
 如果服务器和客户端之间有连接，请确保以下情况：
 
@@ -8636,12 +8641,6 @@ Linux 计算机推荐使用 Remmina，你可以用多种协议连接到远程服
 
     VNC 协议本身没有加密或保护，所以你通过它发送的任何东西都可能被泄露。日常使用都是用 ssh 本地端口转发的方式用 tunnel 封装起来。
 
-#### GNOME 混合支持 RDP
-
-    https://www.linuxmi.com/ubuntu-22-04-rdp-remote-desktop.html
-
-GNOME 42 采用 Microsoft RDP 协议作为其内置的远程桌面功能。由于混合 Gnome-control-center 和 Gnome-remote-desktop 版本.
-
 #### xrdp
 
 远程桌面 RDP 协议体系由客户端（viewer）与服务端两部分构成。
@@ -8659,7 +8658,7 @@ xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，xrdp 服务�
 
 如果你的 Linux 系统的桌面环境如 Fedora 使用了 Wayland 而不是传统的 X11/Xorg，它使用 xwayland 模块来兼容使用 X window 程序
 
-   在使用 xrdp 等软件连接到 Fedora 时，其实是基于 xvnc 或 xorg 技术，通过 Wayland 的 xwayland 兼容模块使用 Fedora 桌面。
+   在使用 xrdp 等软件连接到 Fedora 时，其实是后端基于 xvnc 或 xorg 技术，通过 Wayland 的 xwayland 兼容模块使用 Fedora 桌面。
 
     Fedora 使用 SELinux，您可能需要编辑以使会话过渡到正确的 SELinux 上下文。#2094 中埋藏着有关此的更多信息/etc/pam.d/xrdp-sesman <https://github.com/neutrinolabs/xrdp/issues/2094>
 
@@ -8694,7 +8693,7 @@ xrdp 安装完成先做几个设置：
 
     如果安装 Linux 时启用了磁盘加密选项，则必须先本地连接计算机，输入密码启动操作系统后，才可以使用远程桌面登录。
 
-    注销您本地的 Linux 桌面登录，否则在使用同名用户远程连接 XRDP 时，您将遇到黑屏闪退。
+    注销您本地的 Linux 桌面登录，否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。
 
     Linux 桌面要禁用屏幕空白和自动屏幕锁定以实现无缝的远程桌面会话。
 
@@ -8710,15 +8709,15 @@ xrdp 安装完成先做几个设置：
 
 然后其它计算机的桌面用户（Windows 使用 mstsc，Linux 使用 rdesktop）都可以用 RDP 协议远程连接这台计算机的 Linux 桌面了：
 
-    如果上面安装 xrdp 的时候配置了证书，则 mstsc 会提示证书信息，接受确认即可。
+    现在 xrdp 默认在安装的时候配置了证书，客户端 mstsc 连接时会提示证书信息，选择接受即可。
 
-    运行 `mstsc.exe`，在 “Computer” 区域输入远程服务器 IP 地址，然后点击“Connect”。
+    运行 `mstsc.exe`，在 “Computer” 区域输入远程服务器 IP 地址，然后点击 “Connect”。
 
-    在连接到远程后，会出现登录屏幕，Session 选 xorg 或 vnc，输入你的用户名和密码，点击 “OK”。
-
-        Xrdp 搭配 vnc 服务也可以实现远程桌面
+    在连接到远程后，会出现登录屏幕，Session 选 vnc 或 xorg，输入该机的登陆用户名和密码，点击 “OK”。
 
     一旦登录，你将看到默认的桌面环境，根据你操作系统的设置是 Gnome 或 Xfce、i3 等。
+
+Linux 计算机推荐使用 Remmina，或 Gnome 自带软件名为 “连接 connects”，同时支持 VNC 和 RDP。
 
 ·rdesktop 是实现 RDP 协议的 Linux 桌面客户端程序
 
