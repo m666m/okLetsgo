@@ -8599,6 +8599,8 @@ Gnome 42 桌面之后不再使用 VNC 协议，改为 RDP 协议了
 
     如果你希望能够从客户端控制屏幕，请勾选 “允许连接控制屏幕 Allow connections to control the screen”。如果不勾选这个按钮，访问共享屏幕将只允许 “仅浏览 view-only”。
 
+    需要设置专门的用户名和密码，不是使用你当前登录的用户
+
 客户端
 
 是一台连接到由服务器提供的服务（或内容）的计算机，使用 vnc 或 rdp 客户端。
@@ -8658,7 +8660,7 @@ xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，xrdp 服务�
 
 如果你的 Linux 系统的桌面环境如 Fedora 使用了 Wayland 而不是传统的 X11/Xorg，它使用 xwayland 模块来兼容使用 X window 程序
 
-   在使用 xrdp 等软件连接到 Fedora 时，其实是后端基于 xvnc 或 xorg 技术，通过 Wayland 的 xwayland 兼容模块使用 Fedora 桌面。
+    在使用 xrdp 等软件连接到 Fedora 时，其实是后端基于 xvnc 或 xorg 技术，通过 Wayland 的 xwayland 兼容模块使用 Fedora 桌面。
 
     Fedora 使用 SELinux，您可能需要编辑以使会话过渡到正确的 SELinux 上下文。#2094 中埋藏着有关此的更多信息/etc/pam.d/xrdp-sesman <https://github.com/neutrinolabs/xrdp/issues/2094>
 
@@ -8679,23 +8681,23 @@ xrdp 的组件
     # 如果有防火墙，记得开放端口
     sudo ufw allow from any to any port 3389 proto tcp
 
-    # 安装后要启动服务，并设置为开机自启动
+安装后要启动服务，并设置为开机自启动
 
-    sudo systemctl start xrdp
-    sudo systemctl enable xrdp
+    # sudo systemctl start xrdp
+    sudo systemctl enable xrdp --now
 
     systemctl status xrdp
     systemctl status xrdp-sesman
 
 配置文件 /etc/xrdp/xrdp.ini 可配置自己的 ssl 证书。
 
-xrdp 安装完成先做几个设置：
+xrdp 安装后要先做几个设置：
 
     如果安装 Linux 时启用了磁盘加密选项，则必须先本地连接计算机，输入密码启动操作系统后，才可以使用远程桌面登录。
 
-    注销您本地的 Linux 桌面登录，否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。
+    注销您本地的 Linux 桌面登录，否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。跟 Gnome 内置的远程桌面不同，xrdp 的屏幕前看不到远程连接过来的用户的操作。
 
-    关闭 Gnome 内置的远程桌面功能，两个现在都是 RDP 协议了避免冲突。
+    关闭 Gnome 内置的远程桌面功能，它和 xrdp 都是 RDP 协议要避免冲突。
 
     Linux 桌面要禁用屏幕空白和自动屏幕锁定以实现无缝的远程桌面会话。
 
@@ -8709,17 +8711,17 @@ xrdp 安装完成先做几个设置：
         # 因为默认情况下，xRDP 使用的是自签发的证书，这个证书保存在 /etc/ssl/private/ssl-cert-snakeoil/ 目录下。证书的密钥文件只能由 “ssl-cert” 用户组的成员读取。
         sudo adduser ubuntu ssl-cert
 
-然后其它计算机的桌面用户（Windows 使用 mstsc，Linux 使用 rdesktop）都可以用 RDP 协议远程连接这台计算机的 Linux 桌面了：
+然后其它计算机的桌面用户都可以用 RDP 协议远程连接这台计算机的 Linux 桌面了：
 
     现在 xrdp 默认在安装的时候配置了证书，客户端 mstsc 连接时会提示证书信息，选择接受即可。
 
     运行 `mstsc.exe`，在 “Computer” 区域输入远程服务器 IP 地址，然后点击 “Connect”。
 
-    在连接到远程后，会出现登录屏幕，Session 选 vnc 或 xorg，输入该机的登陆用户名和密码，点击 “OK”。
+    在连接到远程后，会出现登录屏幕，Session 选 vnc 或 xorg，输入该机的登陆用户名和密码，点击 “OK”。跟 Gnome 内置的远程桌面不同，xrdp 使用目标计算机的用户名和密码登录，不需要单独设置。
 
     一旦登录，你将看到默认的桌面环境，根据你操作系统的设置是 Gnome 或 Xfce、i3 等。
 
-Linux 计算机推荐使用 Remmina，或 Gnome 自带软件名为 “连接 connects”，同时支持 VNC 和 RDP。
+客户端工具，Windows 使用 mstsc，Linux 计算机推荐使用 Remmina，或 Gnome 自带软件名为 “连接 connections”，同时支持 VNC 和 RDP。
 
 ·rdesktop 是实现 RDP 协议的 Linux 桌面客户端程序
 
