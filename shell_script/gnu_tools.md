@@ -8043,6 +8043,8 @@ xinitrc 用于设置合适的 X 环境，并启动其他程序，即我们可能
 
     https://docs.freebsd.org/en/books/handbook/wayland/
 
+    https://wiki.archlinux.org/title/Wayland
+
     用 Wayland 开启 Linux
         https://zhuanlan.zhihu.com/p/531205278
 
@@ -8552,6 +8554,86 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
     输入你要连接的机器的 IP 地址，一般前缀为 rdp://
 
+#### Gnome 内置支持远程桌面
+
+Gnome 共享屏幕功能，以服务器为主，在计算机屏幕前的人，同步看到远程的人在自己的计算机上干什么，并可以随时干预中断远程会话。
+
+    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/using_the_desktop_environment_in_rhel_8/accessing-the-desktop-remotely_using-the-desktop-environment-in-rhel-8
+
+    https://linux.cn/article-14261-1.html
+
+目前同时支持 X11 和 Wayland 两种方式
+
+    In an X11 session, it uses the vino component.
+
+    In a Wayland session, it uses the gnome-remote-desktop component.
+
+服务端设置：
+
+默认情况下，Gnome 中共享计算机屏幕的功能是关闭的。
+
+需要手动开启：
+
+    启动 Gnome 控制中心 Gnome Control Center
+
+    点击 共享 Sharing 标签。
+
+    用右上角的滑块打开共享。
+
+    单击 屏幕共享Screen sharing。
+
+    用窗口的滑块打开屏幕共享。
+
+    如果你希望能够从客户端控制屏幕，请勾选 “允许连接控制屏幕Allow connections to control the screen”。如果不勾选这个按钮，访问共享屏幕将只允许 “仅浏览view-only”。
+
+客户端
+
+是一台连接到由服务器提供的服务（或内容）的计算机，使用 vnc 或 rdp 客户端。
+
+Linux 计算机推荐使用 Remmina，你可以用多种协议连接到远程服务器，如 VNC、Spice 或 RDP。Fedora 自带软件名为 “连接connects”，也是同时支持 VNC 和 RDP。
+
+如果服务器和客户端之间有连接，请确保以下情况：
+
+    计算机正在运行。
+
+    Gnome 会话正在运行。
+
+    启用了屏幕共享的用户已经登录。
+
+    会话 没有被锁定，也就是说，用户可以使用该会话。
+
+然后你可以尝试从客户端连接到该会话：
+
+启动 Remmina。
+
+    在地址栏左侧的下拉菜单中选择 VNC 协议。
+
+    在地址栏中输入服务器的IP地址，然后按下 回车。
+
+    当连接开始时，会打开另一个连接窗口。根据服务器的设置，你可能需要等待，直到服务器用户允许连接，或者你可能需要提供密码。
+
+    输入密码，然后按 OK。
+
+当处于全屏模式时，注意屏幕上边缘的白色窄条。那是 Remmina 菜单，当你需要离开全屏模式或改变一些设置时，你可以把鼠标移到它上面。
+
+当你回到服务器时，你会注意到现在在上栏有一个黄色的图标，这表明你正在 Gnome 中共享电脑屏幕。如果你不再希望共享屏幕，你可以进入菜单，点击 屏幕正在被共享Screen is being shared，然后再选择 关闭Turn off，立即停止共享屏幕。
+
+默认情况下，当会话锁定时，连接 将总是终止 will always terminate。在会话被解锁之前，不能建立新的连接。可以在 gnome 网站下载安装插件 “allow locked remote desktop”，这样远程计算机也可以解锁本地屏幕了。
+
+安全问题
+
+    服务器将始终保持其控制模式。任何在服务器会话中的人都将能够控制鼠标和键盘。
+
+    如果会话被锁定，从客户端解锁也会在服务器上解锁。它也会把显示器从待机模式中唤醒。任何能看到你的服务器屏幕的人都能看到你此刻正在做什么。
+
+    VNC 协议本身没有加密或保护，所以你通过它发送的任何东西都可能被泄露。日常使用都是用 ssh 本地端口转发的方式用 tunnel 封装起来。
+
+#### GNOME 混合支持 RDP
+
+    https://www.linuxmi.com/ubuntu-22-04-rdp-remote-desktop.html
+
+GNOME 42 采用 Microsoft RDP 协议作为其内置的远程桌面功能。由于混合 Gnome-control-center 和 Gnome-remote-desktop 版本.
+
 #### xrdp
 
 远程桌面 RDP 协议体系由客户端（viewer）与服务端两部分构成。
@@ -8573,13 +8655,13 @@ xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，xrdp 服务�
 
 xrdp 的组件
 
-    xrdp:远程桌面协议 （RDP） 服务器。
+    xrdp：远程桌面协议 （RDP） 服务器。
 
-    xrdp-sesman: 会话管理器它通过对用户进行身份验证并启动相应的 X 服务器来管理用户会话。
+    xrdp-sesman：会话管理器通过对用户进行身份验证并启动相应的 X 服务器来管理用户会话。
 
-    xrdp-dis: 运行 xrdp-dis 时不带任何参数来断开 xrdp 会话的连接。
+    xrdp-dis：运行 xrdp-dis 时不带任何参数来断开 xrdp 会话的连接。
 
-    xrdp-sesadmin:是一个控制台程序来管理正在运行的 XRDP 会话。
+    xrdp-sesadmin：是一个控制台程序来管理正在运行的 XRDP 会话。
 
 安装 xrdp
 
@@ -8659,7 +8741,7 @@ xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作
 
         https://blog.csdn.net/lggirls/article/details/129748427
 
-在 xrdp 登录界面 Session 选择 xorg，则 xrdp-sesman 会使用配置文件中的 xorg 段激活使用 xorgxrdp 模块。
+在 xrdp 登录界面 Session 选择 xorg，则 xrdp-sesman 会使用配置文件 /etc/xrdp/xrdp.ini 中的 xorg 段激活使用 xorgxrdp 模块。对 Fedora 使用基于 Wayland 的 Gnome 桌面，暂无法开启。
 
 确保你的系统安装了 X.Org server，一般是软件包 xserver-xorg-core 或 xorg-x11-server-Xorg
 
