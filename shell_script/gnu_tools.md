@@ -8562,11 +8562,19 @@ Gnome 共享屏幕功能，以服务器为主，在计算机屏幕前的人，�
 
     https://linux.cn/article-14261-1.html
 
+    https://www.addictivetips.com/ubuntu-linux-tips/how-to-use-the-new-gnome-shell-remote-desktop-feature/
+
 目前同时支持 X11 和 Wayland 两种方式
 
     In an X11 session, it uses the vino component.
 
     In a Wayland session, it uses the gnome-remote-desktop component.
+
+Gnome 42 Wayland 之后不再使用 VNC 协议，改为 RDP 协议了，Gnome Xorg 可以使用 VNC 协议，但 Gnome Xorg 桌面稳定性不足。
+
+    https://discussion.fedoraproject.org/t/how-to-share-fedora-36-gnome-desktop-with-another-machine-running-linux/76182
+
+    https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353?replies_to_post_number=12
 
 服务端设置：
 
@@ -8653,6 +8661,8 @@ xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，xrdp 服务�
 
    在使用 xrdp 等软件连接到 Fedora 时，其实是基于 xvnc 或 xorg 技术，通过 Wayland 的 xwayland 兼容模块使用 Fedora 桌面。
 
+    Fedora 使用 SELinux，您可能需要编辑以使会话过渡到正确的 SELinux 上下文。#2094 中埋藏着有关此的更多信息/etc/pam.d/xrdp-sesman <https://github.com/neutrinolabs/xrdp/issues/2094>
+
 xrdp 的组件
 
     xrdp：远程桌面协议 （RDP） 服务器。
@@ -8684,7 +8694,7 @@ xrdp 安装完成先做几个设置：
 
     如果安装 Linux 时启用了磁盘加密选项，则必须先本地连接计算机，输入密码启动操作系统后，才可以使用远程桌面登录。
 
-    注销您本地的 Linux 桌面登录，否则在使用 XRDP 远程连接时，您将在 Windows 上遇到黑屏闪退。
+    注销您本地的 Linux 桌面登录，否则在使用同名用户远程连接 XRDP 时，您将遇到黑屏闪退。
 
     Linux 桌面要禁用屏幕空白和自动屏幕锁定以实现无缝的远程桌面会话。
 
@@ -8941,7 +8951,7 @@ wayvnc 不支持 Gnome 和 KDE。好在我目前主要使用 sway - i3 兼容 Wa
 
 1、简单的服务器端启动方法就是:
 
-    # wayvnc localhost 5901
+    # wayvnc localhost 5900
     # wayvnc 0.0.0.0
     % wayvnc -C ~/.config/wayvnc/config
 
@@ -8967,11 +8977,11 @@ WayVNC啟動後不會有任何輸出，要關閉請用CTRL+C
 
 如果服务器端启动正常，可以在客户端使用:
 
-    ssh -FL 9901:localhost:5900 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
+    ssh -FL 5901:localhost:5900 <user>@<SERVER_IP> sleep 5; vncviewer localhost:5901
 
 如果一步一步操作
 
-    ssh -L 5901:localhost:5901 user@192.168.0.243  不要关闭这个窗口
+    ssh -L 5901:localhost:5900 user@192.168.0.243  不要关闭这个窗口
 
     在本機開啟 RealVNC VNC Viewer，輸入連線IP：
 
