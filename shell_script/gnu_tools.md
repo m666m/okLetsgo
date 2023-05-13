@@ -8557,7 +8557,7 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
     输入你要连接的机器的 IP 地址，一般前缀为 rdp://
 
-#### TODO: Gnome 内置的远程桌面功能
+#### Gnome 内置的远程桌面功能
 
 Gnome 共享屏幕功能，以服务器为主控，在主机屏幕前的人，可以同步看到远程的人在自己的计算机上干什么，并可以随时干预中断远程会话。
 
@@ -8645,7 +8645,7 @@ Linux 计算机推荐使用 Remmina，或 Gnome 自带软件名为 “连接 con
 
 远程桌面 RDP 协议体系由客户端（viewer）与服务端两部分构成。
 
-xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，xrdp 服务端兼容各种 rdp 客户端，如 rdesktop、mstsc、gnome boxes、remmina 等。
+xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，xrdp 服务端兼容各种 rdp 客户端，如 mstsc、gnome connections、remmina、rdesktop 等。
 
     https://github.com/neutrinolabs/xrdp/wiki
 
