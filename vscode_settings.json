@@ -352,7 +352,7 @@
     "gitlens.views.tags.branches.layout": "list",
     // vim airline 风格的状态栏变颜色
     "vim.statusBarColorControl": true,
-    "vim.statusBarColors.normal": ["#1b3953", "#45dfe7"],
+    "vim.statusBarColors.normal": ["#1b2730", "#45dfe7"],
     "vim.statusBarColors.insert": ["#0f6299","#e0bb3f"],
     "vim.statusBarColors.visual": "#27989c",
     "vim.statusBarColors.visualline": "#27989c",
