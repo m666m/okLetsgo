@@ -3045,8 +3045,9 @@ export TERM=xterm-256color
 
 ####################################################################
 # alias 本该放到 .bashrc 文件，为了方便统一在此了
+# 可直接把 alias 放到 .zshrc 中保持自己的使用习惯
 #
-# 参考自 dbian 的 .bashrc 脚本中，常用命令开启彩色选项
+# 参考自 Debian 的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
 # 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
 # curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
@@ -3074,68 +3075,73 @@ if [ -x /usr/bin/dircolors ]; then
 
     # 各命令的惯用法
     #
-    # 列出目录下的文件清单，查找指定关键字，如 `lsg txt`。因为ls 列出的目录颜色被 grep 覆盖，用 ls -l 查看更方便。
+    # 列出目录下的文件清单，查找指定关键字，如 `lsg fnwithstr`。因为ls列出的目录颜色被grep覆盖，用 ls -l 查看更方便。
     alias lsg='ls -lFA |grep -i'
-    # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findg txt`
+    # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findg fnwithstr`
     alias findg='find ./ |grep -i'
     #
-    # 在当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps echo *`
+    # 在当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
     alias greps='grep --color=auto -d skip -in'
-    # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过 .git 等目录，如 `finds error`
+    # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过.git等目录，如 `finds strinfile`
     alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
     #
-    # 目录树，最多2级，显示目录和可执行文件的标识，跳过 .git 等目录
+    # 目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录
     alias trees='tree -a -CF -I ".git|__pycache__" -L 2'
-    # 进程树，列出 pid，全部子进程
+    # 进程树，列出pid，全部子进程
     alias pstrees='pstree -p -s'
-    # curl 跟踪重定向，不显示进度条，静默错误信息但要报错失败，默认打印到屏幕，用 -O 保存为默认文件名
+    # curl 跟踪重定向，不显示进度条，静默错误信息但要报错失败，默认打印到屏幕，加 -O 保存到默认文件
     alias curls='curl -fsSL'
     # 16 字符随机数作为密码
     alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
-    # 256字节作为密钥文件
+    # 256 字节作为密钥文件
     alias passf='dd if=/dev/random of=symmetric.key bs=1 count=256'
-    # vi 后悔药：等保存了才发现是只读
-    alias viw='echo "[vi 后悔药：等保存了才发现是只读]" && echo ":w !sudo tee %"'
+
     # wsl或git bash下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "[Windows Path]"
     function cdw {
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
 
-    # gpg 常用命令
+    # dnf
+    alias dnfp='echo "[dnf搜索包含指定命令的软件包]" && dnf provides'
+    alias dnfq='echo "[dnf查找指定的软件包在哪些存储库]" && dnf repoquery -i'
+    alias dnfr='echo "[dnf查看当前有哪些存储库]" && dnf repolist'
+    alias dnfrl='echo "[dnf查看存储库软件列表]" && dnf list --repo'
+    alias dnfl='echo "[dnf查看安装的软件]" && dnf list --installed'
+    alias dnfd='echo "[dnf卸载软件]" && dnf remove'
+
+    # flatpak
+    alias fpkr='echo "[flatpak查看当前有哪些存储库]" && flatpak remotes'
+    alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
+    alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
+    alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
+
+    # vi
+    alias viw='echo "[vi 后悔药：等保存了才发现是只读，只给出提示]" && echo ":w !sudo tee %"'
+
+    # gpg 常用命令，一般用法都是后跟文件名即可
     alias ggk='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
-    # 签名，生成二进制.gpg签名文件，默认选择当前可用的私钥签名，可用 -u 指定
-    alias ggsb='echo "[签名，生成二进制.gpg签名文件]" && gpg --sign'
-    # 签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定
-    alias ggst='echo "[签名，生成文本.asc签名文件]" && gpg --clearsign'
-    # 分离式签名，生成二进制.sig签名文件，默认选择当前可用的私钥签名，可用 -u 指定
-    alias ggsdb='echo "[分离式签名，生成二进制.sig签名文件]" && gpg --detach-sign'
-    # 分离式签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定
-    alias ggsdt='echo "[分离式签名，生成文本.asc签名文件]" && gpg --armor --detach-sign'
-    # 从公钥服务器下载指定公钥到本地，参数太多，只给出提示
-    alias ggkd='echo "[从公钥服务器下载指定公钥到本地]" && echo "gpg --no-default-keyring --keyring ./xxx.gpg --recv-keys XXXX"'
-    # 查看公钥的指纹以便跟跟网站发布的核对，如 `ggf fedora.gpg`
-    alias ggf='echo "[查看指定公钥的指纹]" && gpg --with-fingerprint --show-keys --keyid-format=long'
-    # 使用临时钥匙圈验证文件签名，如 `ggvs ./fedora.gpg xxxx.checksum`
-    alias ggvs='echo "[使用临时钥匙圈验证文件签名]" && gpgv --keyring'
-    # 验证签名
+    alias ggsb='echo "[签名，生成二进制.gpg签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --sign'
+    alias ggst='echo "[签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --clearsign'
+    alias ggsdb='echo "[分离式签名，生成二进制.sig签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --detach-sign'
+    alias ggsdt='echo "[分离式签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --armor --detach-sign'
+    alias ggkd='echo "[从公钥服务器下载指定公钥到本地，参数太多，只给出提示]" && echo "gpg --no-default-keyring --keyring ./xxx.gpg --recv-keys XXXX"'
+    alias ggf='echo "[查看公钥的指纹以便跟跟网站发布的核对]" && gpg --with-fingerprint --show-keys --keyid-format=long'
+    alias ggvs='echo "[使用临时钥匙圈验证文件签名，如 ggvs ./fedora.gpg xxxx.checksum]" && gpgv --keyring'
     alias ggv='echo "[验证签名]" && gpg --verify'
-    # 解决 gpg 的 pinentry 弹不出密码提示框
-    alias ggt='export GPG_TTY=$(tty)'
-    # 非对称算法加密并签名，参数太多，只给出提示
-    alias gges='echo "[非对称算法加密并签名]" && echo "gpg -s -u 'sender@' -r 'reciver@' -e msg.txt"'
-    # 对称算法加密，默认选择当前可用的私钥签名，可用 -u 指定，默认生成的.gpg文件。如 `ggcs 1.txt`
-    alias ggcs='echo "[对称算法加密文件]" && gpg -s --cipher-algo AES-256 -c'
+    alias ggt='echo "[解决 tmux 下 gpg 的 pinentry 弹不出密码提示框]" && export GPG_TTY=$(tty)'
+    alias gges='echo "[非对称算法加密并签名，参数太多，只给出提示]" && echo "gpg -s -u 'sender@xxx.com' -r 'reciver@xxx.com' -e msg.txt"'
+    alias ggcs='echo "[对称算法加密，默认选择当前可用的私钥签名，可用 -u 指定，默认生成的.gpg文件。]" && gpg -s --cipher-algo AES-256 -c'
     # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
     alias ggd='gpg -d'
 
     # openssl 常用命令
-    # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件，-kfile 指定密钥文件
+    # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件，加 -kfile 指定密钥文件
     alias ssle='openssl enc -e -aes-256-cbc -md sha512 -pbkdf2 -iter 10000000 -salt'
-    # 对称算法解密，如 `cat 1.txt.asc |ssld` 输出到屏幕，`ssld -in 1.txt.asc -out 1.txt`操作文件，-kfile 指定密钥文件
+    # 对称算法解密，如 `cat 1.txt.asc |ssld` 输出到屏幕，`ssld -in 1.txt.asc -out 1.txt`操作文件，加 -kfile 指定密钥文件
     alias ssld='openssl enc -d -aes-256-cbc -md sha512 -pbkdf2 -iter 10000000 -salt'
 
     # git 常用命令
-    alias gs='echo "git status:" && git status'
+    alias gs='git status'
     alias gd='echo "[差异：工作区与暂存区]" && git diff'
     alias gds='echo "[差异：暂存区与仓库]" && git diff --staged'
     alias gdh='echo "[差异：工作区与仓库]" && git diff HEAD'
@@ -3147,10 +3153,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias gba='echo "[分支：全部分支及跟踪关系、最近提交及注释]" && git branch -avv'
     alias gro='echo "[远程信息]" && git remote show origin'
     alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
-
-    # git 经常断连，自动重试直至成功
-    alias gpull='git pull --rebase || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull --rebase; done'
-    alias gpush='git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
+    alias gpull='echo "[git 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull --rebase; done'
+    alias gpush='echo "[git 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 fi
 
 # ssh 命令时候能够自动补全 hostname，这里我们使用 zsh 自带的吧
