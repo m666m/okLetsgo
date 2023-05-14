@@ -7449,6 +7449,10 @@ Ninja 还集成了 graphviz 等一些对开发非常有用的工具，执行 `./
 
     https://stackoverflow.com/questions/4366511/is-there-a-jquery-plugin-for-dot-language-file-visualization/
 
+    竞品 Mermaid，支持特点的流行软件工程流程图等，语法结构类似
+
+        https://mermaid.js.org/intro/
+
 There are three different implementations:
 
 1.Render svg in simple js, no needs install of graphviz

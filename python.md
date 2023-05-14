@@ -1796,6 +1796,61 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
 插件的安装位置为 C:\Users\你的用户名\.vscode\extensions
 
+#### 护眼主题
+
+看代码和看md文字有些区别，一切以字体清晰可辨，眼睛不费力为原则。
+
+除了白天和黑夜，不同的光照条件下，没法只用一个主题，根据环境光亮度酌情切换即可。
+
+浅色
+
+|            看代码                              |          看文字            |
+|-----------------------------------------------|---------------------------|
+|   MacOS Modern Light：Xcode Default           |         <----             |
+|                                               | Solarized Light           |
+|   Winter is coming：Light                     | Winter is coming：Light    |
+
+深色
+
+|            看代码                             |           看文字              |
+|----------------------------------------------|-------------------------------|
+|   MacOS Modern Dark：Ventura Xcode Default   | MacOS Modern Dark：Xcode Modern|
+|   Nord                                       |          <----                |
+|                                              | Material Neutral              |
+|   Winter is coming：Dark Blue                | Winter is coming：Dark Black   |
+
+MacOS Modern Theme 看代码深色浅色都好，多选单选查找相关内容高亮颜色都有区分，而且不刺眼
+
+    davidbwaters.macos-modern-theme
+
+凛冬来临 Winter is coming，深浅主题都不刺眼，非常清晰。
+
+    johnpapa.winteriscoming
+
+北极 Nord。夏夜使用，凉爽的感觉，适合环境亮度高的时候使用
+
+    arcticicestudio.nord-visual-studio-code
+
+    marlosirapuan.nord-deep     深点的北极，适合暗光
+
+    dnlytras.nord-wave          最深的北极，适合无光
+
+Material Neutral 深色看文字比较养眼
+
+    bernardodsanderson.theme-material-neutral
+
+Solarized Light（vscode 自带），这个是羊皮纸底色，但是语法高亮浅蓝色太多，视物不清，需要自改。
+
+#### 图标
+
+产品主题图标
+
+    davidbwaters.macos-modern-theme 自带的就好
+
+文件图标
+
+    vscode-icons-team.vscode-icons
+
 #### 不要用AI代码完成的插件
 
 全都把你的代码上传服务器了，包括 kate、[Visual Studio IntelliCode](https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.vscodeintellicode) 等。
@@ -1813,56 +1868,6 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 java 软件包安装及默认安装 IntelliCode，注意禁用。
 
 python 软件包为兼容老版本不用 pylance 的习惯，所以默认不安装 IntelliCode，不代表以后不装。
-
-#### 快速解析python，代码自动完成更快
-
-pylance 目前是 python 插件默认安装了
-
-    ms-python.vscode-pylance
-
-自带这个插件对逐个排查 import 的使用方式来说没用，建议禁用
-
-    ms-python.isort
-
-#### 高亮空格并消除
-
-Trailing Spaces
-
-    shardulm94.trailing-spaces
-
-#### hex颜色代码下用底色显示该颜色
-
-Color Highlight
-
-    naumovs.color-highlight
-
-#### 预览 svg 图片
-
-SVG 图片语法高亮和预览
-
-    jock.svg
-
-#### 正则表达式预览
-
-Regexp Explain
-
-    LouisWT.regexp-preview
-
-RegExp Preview and Editor 废弃了
-
-    le0zh.vscode-regexp-preivew
-
-#### 查看sqllite数据库
-
-sqlite
-
-    alexcvzz.vscode-sqlite
-
-优选工具
-
-    DB Browser for SQLite  https://github.com/sqlitebrowser/sqlitebrowser
-
-    SQLiteStudio https://github.com/pawelsalawa/sqlitestudio
 
 #### 远程开发： Remote Development
 
@@ -1954,7 +1959,67 @@ Visual Studio Code Remote Development 允许您连接使用如下方式到远程
 
         systemctl staus vscode-tunnel  # 看看有无错误
 
-#### Python自动添加函数头说明
+#### GitLens
+
+干扰文件内容显示太多了，酌情考虑
+
+    eamodio.gitlens
+
+#### Git History
+
+非常实用，可惜不更新了
+
+    donjayamanne.githistory
+
+#### 高亮空格并消除
+
+Trailing Spaces
+
+    shardulm94.trailing-spaces
+
+#### hex 颜色代码下用底色显示该颜色
+
+vs code 1.76 之后内置了这个功能
+
+Color Highlight
+
+    naumovs.color-highlight
+
+#### 预览 svg 图片
+
+SVG 图片语法高亮和预览
+
+    jock.svg
+
+#### 正则表达式预览
+
+Regexp Explain
+
+    LouisWT.regexp-preview
+
+RegExp Preview and Editor 废弃了
+
+    le0zh.vscode-regexp-preivew
+
+#### 查看sqllite数据库
+
+sqlite
+
+    alexcvzz.vscode-sqlite
+
+优选工具
+
+    DB Browser for SQLite  https://github.com/sqlitebrowser/sqlitebrowser
+
+    SQLiteStudio https://github.com/pawelsalawa/sqlitestudio
+
+#### python 环境管理器
+
+比官方的更直观，在侧栏图标选择后用树形列表的方式列出你当前所有相关的 python 环境，支持 conda、virtualenv 等
+
+    donjayamanne.python-environment-manager
+
+#### Python Docstring Generator 自动添加函数头说明
 
 autoDocstring - Python Docstring Generator
 
@@ -1964,7 +2029,19 @@ autoDocstring - Python Docstring Generator
 
     "autoDocstring.docstringFormat": "numpy",
 
-#### MarkDown
+#### PYQT Integration
+
+在 qt 的 ui 文件上右键即可编译，非常方便
+
+    zhoufeng.pyqt-integration
+
+参数需要设置指向你的环境里安装的 pyqt5_tools 包里的工具
+
+    "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\designer.exe",
+    "pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
+    "pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
+
+#### MarkDown 文件格式
 
 markdownlint 语法检查、格式化
 
@@ -1982,75 +2059,6 @@ Markdown All in One 高亮，预览，给md文件加目录
 
     foxundermoon.shell-format
 
-#### PYQT Integration
-
-    "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\designer.exe",
-    "pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
-    "pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
-
-#### GitLens
-
-    eamodio.gitlens
-
-#### Git History
-
-    donjayamanne.githistory
-
-#### 护眼主题
-
-看代码和看md文字有些区别，一切以字体清晰可辨，眼睛不费力为原则。
-
-除了白天和黑夜，不同的光照条件下，没法只用一个主题，酌情切换即可。
-
-浅色
-
-|            看代码                              |          看文字            |
-|-----------------------------------------------|---------------------------|
-|   MacOS Modern Light：Xcode Default           |         <----             |
-|                                               | Solarized Light           |
-|   Winter is coming：Light                     | Winter is coming：Light    |
-
-深色
-
-|            看代码                             |           看文字              |
-|----------------------------------------------|-------------------------------|
-|   MacOS Modern Dark：Ventura Xcode Default   | MacOS Modern Dark：Xcode Modern|
-|   Nord                                       |          <----                |
-|                                              | Material Neutral              |
-|   Winter is coming：Dark Blue                | Winter is coming：Dark Black   |
-
-MacOS Modern Theme 看代码深色浅色都好，多选单选查找相关内容高亮颜色都有区分，而且不刺眼
-
-    davidbwaters.macos-modern-theme
-
-凛冬来临 Winter is coming，深浅主题都不刺眼，非常清晰。
-
-    johnpapa.winteriscoming
-
-北极 Nord。夏夜使用，凉爽的感觉，适合环境亮度高的时候使用
-
-    arcticicestudio.nord-visual-studio-code
-
-    marlosirapuan.nord-deep     深点的北极，适合暗光
-
-    dnlytras.nord-wave          最深的北极，适合无光
-
-Material Neutral 深色看文字比较养眼
-
-    bernardodsanderson.theme-material-neutral
-
-Solarized Light（vscode 自带），这个是羊皮纸底色，但是语法高亮浅蓝色太多，视物不清，需要自改。
-
-#### 图标
-
-产品主题图标
-
-    davidbwaters.macos-modern-theme 自带的就好
-
-文件图标
-
-    vscode-icons-team.vscode-icons
-
 #### JScript/Json的格式化，比系统自带的好用
 
 Prettify JSON，格式化json文件很好用，容错率高
@@ -2061,7 +2069,7 @@ Prettier - Code formatter
 
     esbenp.prettier-vscode
 
-#### 常变参数TODO TREE
+#### TODO TREE 记录你的待办
 
     Gruntfuggly.todo-tree
 
@@ -2181,9 +2189,9 @@ Rainbow CSV
     },
 ```
 
-#### vim
+#### 完整模拟了 vim 的各种操作
 
-完整模拟了 vim 的各种操作
+懒得用鼠标，就它了，缺点是偶尔会乱，常按 esc 吧。。。
 
     vscodevim.vim
 
@@ -2233,6 +2241,16 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 
     目前 flake8 被 vscode 做成插件(ms-python.flake8)了，已经不需要在各个环境下安装了，不知道 yapf 何时也这么处理。
 
+#### pylance 快速解析，代码自动完成更快
+
+pylance 目前是 python 插件默认安装了
+
+    ms-python.vscode-pylance
+
+自带这个插件对逐个排查 import 的使用方式来说没用，建议禁用
+
+    ms-python.isort
+
 #### 格式化 yapf
 
 用 conda 在指定环境中安装，这个直接带二进制包：
@@ -2258,10 +2276,12 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 
 #### 代码规范检查 flake8
 
+目前被 vscode 发展成扩展了 ms-python.flake8，不用在自己的 python 环境安装了。
+
+flake8 的规则非常规矩，好用
+
     https://gitlab.com/pycqa/flake8/
     # pip install flake8
-
-目前被 vscode 发展成扩展了 ms-python.flake8，不用在自己的 python 环境安装了。
 
 在要忽略 flake8 检查的那一行加上 # noqa 注释即可
 
@@ -2280,6 +2300,12 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 ],
 
 ```
+
+最近出来个竞品 Ruff，可以替换 flake 8
+
+     charliermarsh.ruff
+
+        各规则都实现了 https://beta.ruff.rs/docs/rules/#pyflakes-f
 
 #### 代码测试 unittest
 
