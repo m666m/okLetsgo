@@ -2204,6 +2204,12 @@ Windows 7 在 2023 年还提供虚拟机使用的版本
 
 ### Hyper-V
 
+建立检查点备份你的虚拟机的当前状态
+
+    最好关机后创建
+
+    在设置中注意关闭 “自动检查点”，选 “标准检查点”，否则 Windows 总是自动把当前状态合并到你手动建立的检查点。
+
 就像普通虚拟机操作，类似 VM Ware、Virtual Box
 
     https://docs.microsoft.com/zh-cn/virtualization/hyper-v-on-Windows/quick-start/enable-hyper-v
