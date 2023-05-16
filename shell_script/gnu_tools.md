@@ -8729,7 +8729,7 @@ xrdp 安装后要先做几个设置：
 
 然后其它计算机的桌面用户就可以用 RDP 协议远程连接这台计算机的 Linux 桌面了：
 
-    现在 xrdp 默认在安装的时候配置了证书，客户端 mstsc 连接时会提示证书信息，选择接受即可。
+    xrdp 安装的时候默认配置了证书，客户端 mstsc 连接时会提示证书信息，选择接受即可。
 
     运行 `mstsc.exe`，在 “Computer” 区域输入远程服务器 IP 地址，然后点击 “Connect”。
 
@@ -8737,7 +8737,7 @@ xrdp 安装后要先做几个设置：
 
     一旦登录，你将看到默认的桌面环境，根据你操作系统的设置是 Gnome 或 Xfce、i3 等。
 
-客户端工具，Windows 使用 mstsc，Linux 计算机推荐使用 Remmina，或 Gnome 自带软件名为 “连接 connections”，同时支持 VNC 和 RDP。
+客户端工具，Windows 使用 mstsc 即可，Linux 下推荐使用 Remmina，或 Gnome 自带软件名为 “连接 connections”，二者支持 VNC 和 RDP 等多种协议。
 
 ·rdesktop 是实现 RDP 协议的 Linux 桌面客户端程序
 
