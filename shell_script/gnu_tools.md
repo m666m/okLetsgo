@@ -9008,15 +9008,15 @@ wayvnc 啟動後不會有任何輸出，要關閉請用CTRL+C
 
 如果服务器端启动正常，可以在客户端使用:
 
-    ssh -FL 0901:localhost:5901 <user>@<SERVER_IP> sleep 5; vncviewer localhost:0901
+    ssh -FL 9901:localhost:5901 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
 
 如果一步一步操作
 
-    ssh -L 0901:localhost:5901 user@192.168.0.243  不要关闭这个窗口
+    ssh -L 9901:localhost:5901 user@192.168.0.243  不要关闭这个窗口
 
     在本機開啟 RealVNC VNC Viewer，輸入連線IP：
 
-        localhost:0901
+        localhost:9901
 
 ·支持 sway 的客户端软件 wlvncc
 
