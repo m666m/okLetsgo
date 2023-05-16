@@ -8674,7 +8674,7 @@ Linux 计算机推荐使用 Remmina，或 Gnome 自带软件名为 “连接 con
 
 现在主流 Linux 系统的桌面环境放弃了传统的 X11/Xorg，使用 Wayland 体系，它使用 xwayland 模块来兼容使用 X window 体系的程序
 
-    如果安装了 xrdp，其后端基于 xvnc 或 xorg 技术，通过 Wayland 的 xwayland 兼容模块使用 Fedora 桌面。
+    如果安装了 xrdp，其后端基于 xvnc 或 xorg 技术，Wayland 通过 xwayland 兼容模块响应其调用。
 
     对 Fedora 等使用 SELinux 技术的操作系统，您可能需要编辑 /etc/pam.d/xrdp-sesman 以使会话过渡到正确的 SELinux 上下文。[#2094](https://github.com/neutrinolabs/xrdp/issues/2094) 中埋藏着有关此的更多信息 。
 
@@ -8709,11 +8709,11 @@ xrdp 的组件
 
 xrdp 安装后要先做几个设置：
 
-    关闭 Gnome 内置的远程桌面功能：如果你的桌面默认使用 RDP,找到桌面里的设置，关闭屏幕共享。这样做是为了防止 RDP 服务默认端口 3389 的占用出现冲突。
+    关闭操作系统桌面环境内置的共享桌面功能：如果你的桌面默认使用 RDP,找到桌面里的设置，关闭屏幕共享。这样做是为了防止 RDP 服务默认端口 3389 的占用出现冲突。
 
     如果安装 Linux 时启用了磁盘加密选项，则必须先本地连接计算机，输入密码启动操作系统后，才可以使用远程桌面登录。
 
-    注销您本地的 Linux 桌面登录，否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。跟 Gnome 内置的远程桌面不同，xrdp 支持多用户连接，所以本地的屏幕前看不到远程连接过来的用户的操作。
+    注销您本地的 Linux 桌面登录，否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。跟 Gnome 内置的共享桌面不同，xrdp 支持多用户连接，所以本地的屏幕前看不到远程连接过来的用户的操作。
 
     Linux 桌面要禁用屏幕空白和自动屏幕锁定以实现无缝的远程桌面会话。
 
@@ -8770,7 +8770,7 @@ xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作
 
         https://blog.csdn.net/lggirls/article/details/129748427
 
-在 xrdp 登录界面 Session 选择 xorg，则 xrdp-sesman 会使用配置文件 /etc/xrdp/xrdp.ini 中的 xorg 段激活使用 xorgxrdp 模块。对 Fedora 使用基于 Wayland 的 Gnome 桌面，暂无法开启。
+在 xrdp 登录界面 Session 选择 xorg，则 xrdp-sesman 会使用配置文件 /etc/xrdp/xrdp.ini 中的 xorg 段激活使用 xorgxrdp 模块。对使用基于 Wayland 的 Gnome 桌面，不要开启 xorg，功能不正常。
 
 确保你的系统安装了 X.Org server，一般是软件包 xserver-xorg-core 或 xorg-x11-server-Xorg
 
@@ -8794,17 +8794,9 @@ VNC 体系由客户端（viewer）与服务端两部分构成
 
 安全性问题：
 
-    注意用 ssh 本地端口转发包装 vnc 访问，因为 VNC 的协议加密方面考虑的非常少，密钥可能会明文传输
+    因为 VNC 的协议加密方面考虑的非常少，密钥可能会明文传输,，务必用 ssh 本地端口转发功能包装 vnc 访问
 
-        ssh -FL 9901:localhost:5900 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
-
-Gnome 桌面默认的远程桌面程序是 vino，就是一个vnc 服务器端。
-
-安装 xrdp 时也会自带 xvnc，也是一个 vnc 服务器端
-
-    man xvnc
-
-用户在客户端使用 vnc viwer 即可直接远程连接桌面。
+        ssh -FL 9901:localhost:5901 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
 
 历史
 
@@ -8828,7 +8820,15 @@ Gnome 桌面默认的远程桌面程序是 vino，就是一个vnc 服务器端�
 
     這些軟體間大多遵循基本的 VNC 協定，因此大多可互通使用。例如可以使用 Windows 平台上的 ultravnc 客户端连接 Linux 平台上的 tightvnc 服务端，但最好两侧版本一致以优化性能。
 
-一般来说，不使用 Gnome 等桌面环境自带的 vnc 软件，功能太弱了，通常在服务器安装 TigerVNC Server 软件包，客户端使用 TigerVNC Viwer 软件包。
+一般来说，发行版的桌面环境内置远程桌面的服务器端，比如 Gnome 用 vino。
+
+安装 xrdp 时也会安装 xvnc，也是一个 vnc 服务器端
+
+    man xvnc
+
+用户在客户端使用 vnc viwer 即可直接远程连接桌面。
+
+Gnome 等桌面环境内置的 vnc 软件功能太弱了，通常在服务器安装第三方的 TigerVNC Server 软件包，客户端使用 TigerVNC Viwer 软件包。
 
     https://tigervnc.org/
         源码 https://github.com/TigerVNC/tigervnc
@@ -8854,7 +8854,7 @@ TigerVNC 服务器安装完成后，会自动进行 update-alternatives 的操�
 
     vncpasswd   设置用户密码，请勿使用 sudo 运行
 
-安装完第三方 vnc 服务器后，记得关闭桌面系统默认的共享桌面
+安装完第三方 vnc 服务器后，记得关闭操作系统桌面环境自带的共享桌面
 
     找到桌面里的设置，关闭屏幕共享。这样做是为了防止 vnc 服务默认端口 5900 的占用出现冲突。
 
@@ -8915,6 +8915,10 @@ Tiger VNC 的客户端使用，输入端口号时有点歪
 
     此处的端口号为 VNC 服务器启动时设置的显示器识别符加上 5900。如使用的是显示器 2 此端口号就为 5902。
 
+    并且要用 ssh 本地端口转发保护你的 vnc 连接
+
+        ssh -FL 9901:localhost:5902 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
+
 如果需要将其他选项传递给 VNC 服务器，请创建 ~/.vnc/config 文件，并在每行添加一个选项
 
     geometry=1920x1080
@@ -8929,7 +8933,7 @@ Tiger VNC 的客户端使用，输入端口号时有点歪
 
 如果你想使用 vnc 的方式连接 Wayland 桌面，傳統的 x11 VNC Server 可能就无法使用，此時要改用 WayVNC 這個新技術。
 
-wayvnc 不支持 Gnome 和 KDE。好在我目前主要使用 sway - i3 兼容 Wayland compositor ，所以使用 wayvnc 正好。
+wayvnc 要求桌面或窗口管理器支持 Wayland，所以可以使用 sway - i3 兼容 Wayland compositor。
 
     服务器端
 
@@ -8982,7 +8986,7 @@ wayvnc 不支持 Gnome 和 KDE。好在我目前主要使用 sway - i3 兼容 Wa
     # wayvnc 0.0.0.0
     % wayvnc -C ~/.config/wayvnc/config
 
-WayVNC啟動後不會有任何輸出，要關閉請用CTRL+C
+wayvnc 啟動後不會有任何輸出，要關閉請用CTRL+C
 
 在终端启动无头模式(headless)
 
@@ -9004,15 +9008,15 @@ WayVNC啟動後不會有任何輸出，要關閉請用CTRL+C
 
 如果服务器端启动正常，可以在客户端使用:
 
-    ssh -FL 5901:localhost:5900 <user>@<SERVER_IP> sleep 5; vncviewer localhost:5901
+    ssh -FL 0901:localhost:5901 <user>@<SERVER_IP> sleep 5; vncviewer localhost:0901
 
 如果一步一步操作
 
-    ssh -L 5901:localhost:5900 user@192.168.0.243  不要关闭这个窗口
+    ssh -L 0901:localhost:5901 user@192.168.0.243  不要关闭这个窗口
 
     在本機開啟 RealVNC VNC Viewer，輸入連線IP：
 
-        localhost:5901
+        localhost:0901
 
 ·支持 sway 的客户端软件 wlvncc
 
