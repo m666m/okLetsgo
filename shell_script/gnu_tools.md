@@ -8659,7 +8659,7 @@ Linux 计算机推荐使用 Remmina，或 Gnome 自带软件名为 “连接 con
 
 #### xrdp
 
- Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的远程桌面功能太弱了，通常在服务器安装 xrdp 软件包，客户端使用 mstsc、remmina 软件包。
+ Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的远程桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包，客户端使用 mstsc、remmina 软件包。
 
     https://github.com/neutrinolabs/xrdp/wiki
 
@@ -8924,9 +8924,69 @@ Tiger VNC 的客户端使用，输入端口号时有点歪
     geometry=1920x1080
     dpi=96
 
-##### WayVNC
+##### noVnc
 
-使用 vnc 的方式远程连接 Wayland 桌面
+novnc 提供了一种云桌面方案，使得用户登录网页即可使用远程服务器。noVNC 被普遍用在各大云计算、虚拟机控制面板中，比如 OpenStack Dashboard 和 OpenNebula Sunstone 都用的是 noVNC。
+
+    https://blog.csdn.net/jgku/article/details/127832459
+
+    https://juejin.cn/post/6915679209692233735
+
+    Debian11.6配置 noVNC 做远程桌面服务
+        https://blog.csdn.net/lggirls/article/details/129024338
+
+noVNC 通过在网页上 html5 的 Canvas，访问远程机器上 vncserver 提供的 vnc 服务，需要在远程机器上安装 websockfy 做 tcp 到 websocket 的转化，才能在 html5 中显示出来。
+
+用户连接远程的网页就是一个客户端，类似 Windows 下面的 vncviewer，只是此时填的不是裸露的 vnc 服务的 ip+port，而是由 noVNC 提供的 websockets 的代理，在 noVNC 代理服务器上要配置每个 vnc 服务，noVNC 提供一个标识，去反向代理所配置的 vnc 服务。
+
+服务器搭建 novnc
+
+    安装 vncserver: yum install tigervnc -y
+
+    安装 Node.js：https://nodejs.org/en/download/（用于执行Websockify.js）
+
+    下载 novnc：http://github.com/kanaka/noVNC/zipball/master
+
+noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及参数修改直接在 lauch.sh 中设置
+
+    –listen 后面加noVNC运行时的端口，默认为6080(⻅2.2.3)
+    –vnc 后面跟vnc会话的信息，如172.16.0.56:5901
+
+    –cert 指定证书(⻅2.2.4)
+
+    –web 用来查找vnc.html的目录.根据代码逻辑，在noVNC目录或者noVNC/utils目录下执行时都无需设置此参 数，web变量会自动在当前目录或者上一级目录查找vnc.html。
+
+    –ssl-only 限制只能用https进行vnc远程会话，此时http访问失效。装载安全证书后，此参数才会生效，否则 noVNC进程无法运行
+
+安装 Websockify：
+
+    https://github.com/novnc/websockify/archive/master.zip,
+
+启动:
+
+    nohup python /root/noVNC/utils/websockify --web /root/noVNC --target-config=/srv/nfs4/vnc_tokens 6080 >> /root/noVNC/novnc.log &
+
+当然，最好是直接采用已有的docker镜像:
+
+    docker pull dorowu/ubuntu-desktop-lxde-vnc
+
+相关软件
+
+    MobaXterm: 默认有X Window 服务，可以直接弹出 GUI
+
+    vncviewer: 最常用的 vnc 客户端
+
+    xming: 开源X Server，搭配Putty使用。参见：http://www.straightrunning.com/XmingNotes/
+
+    UltraVNC：http://www.uvnc.com/（Windows环境下的 VNC Server，还有 TightVNC、TigerVNC、RealVNC 等，其中 RealVNC 不能通过 noVNC）
+
+#### Wayland 下的远程桌面
+
+完全使用 wayland 体系而不是兼容 xwaylan 的远程桌面比较少。
+
+##### 基于 VNC 的 WayVNC
+
+在服务器上安装后，客户端可以使用 vnc 的方式远程连接 Wayland 桌面
 
     https://docs.freebsd.org/en/books/handbook/wayland/#wayland-remotedesktop
         中文版 https://freebsd.gitbook.io/freebsd-handbook/di-6-zhang-freebsd-zhong-de-wayland/6.1.-wayland-gai-shu
@@ -9002,7 +9062,7 @@ wayvnc 啟動後不會有任何輸出，要關閉請用CTRL+C
 
     swaymsg --socket /tmp/sway-ipc.*.sock exec 'WAYLAND_DISPLAY=wayland-1 wayvnc -C ~/.config/wayvnc/config 0.0.0.0'
 
-###### 使用客户端
+###### 使用客户端 wlvncc
 
 为了安全，应该在 ssh 隧道里使用，所以要做本地端口转发。
 
@@ -9047,16 +9107,31 @@ Wayland 的 VNC 客户端可以采用 wlvncc 。WayVNC 0.5 支持使用 OpenH268
 
     ./build/wlvncc <address>
 
-·支持 sway 客户端软件 waypipe
+##### 基于 weston 的 waypipe
+
+WayPipe 是原生支持 Wayland 的桌面客户端工具，它借助 ssh 实现远程桌面，類似 SSH X11 forwarding的技術，支持 sway 窗口管理器。
 
     https://gitlab.freedesktop.org/mstoeckl/waypipe
         https://mstoeckl.com/notes/gsoc/blog.html
 
-最大的好处是支持 ssh -X 的使用方式
+    https://ivonblog.com/posts/waypipe-wayland-over-ssh/
 
-    waypipe ssh user@theserver weston-terminal
+安装时需要 openssh 和 weston
 
-上述命令 ssh 连接到 theserver，远程执行 weston-terminal 程序。
+    # dnf install openssh
+    # dnf install weston
+    dnf install waypipe
+
+ssh 连接到 theserver，远程执行 weston-terminal 程序
+
+    waypipe ssh -C user@theserver weston-terminal
+
+启动兼容方式
+
+    # KDE
+    waypipe ssh -C ivon@192.168.1.104 startplasma-wayland
+
+如此一來就能啟動其他不支援 Wayland 協定的舊版應用程式，但是該桌面視窗無法縮放。
 
 本地化使用
 
@@ -9066,61 +9141,63 @@ Wayland 的 VNC 客户端可以采用 wlvncc 。WayVNC 0.5 支持使用 OpenH268
         /usr/bin/weston-terminal
     kill %1
 
-##### noVnc
+Weston 是 Wayland 的合成器（compositor），一般和 Wayland 同步发布。
 
-novnc 提供了一种云桌面方案，使得用户登录网页即可使用远程服务器。noVNC 被普遍用在各大云计算、虚拟机控制面板中，比如 OpenStack Dashboard 和 OpenNebula Sunstone 都用的是 noVNC。
+    https://wiki.archlinux.org/title/Weston
 
-    https://blog.csdn.net/jgku/article/details/127832459
+    https://blog.csdn.net/hexiaolong2009/article/details/104852721
 
-    https://juejin.cn/post/6915679209692233735
+    https://cloud.tencent.com/developer/article/1445734
 
-    Debian11.6配置 noVNC 做远程桌面服务
-        https://blog.csdn.net/lggirls/article/details/129024338
+目前最新的 Weston 8.0.0 支持如下几种 backend：
 
-noVNC 通过在网页上 html5 的 Canvas，访问远程机器上 vncserver 提供的 vnc 服务，需要在远程机器上安装 websockfy 做 tcp 到 websocket 的转化，才能在 html5 中显示出来。
+    drm-backend
 
-用户连接远程的网页就是一个客户端，类似 Windows 下面的 vncviewer，只是此时填的不是裸露的 vnc 服务的 ip+port，而是由 noVNC 提供的 websockets 的代理，在 noVNC 代理服务器上要配置每个 vnc 服务，noVNC 提供一个标识，去反向代理所配置的 vnc 服务。
+        默认后端，在 Ctrl+Alt+F4 切换到虚拟终端后直接输入命令 wetson 即可启动
 
-服务器搭建 novnc
+    fbdev-backend
 
-    安装 vncserver: yum install tigervnc -y
+        不支持 OpenGL 硬件加速，因此只能使用 pixman 做 CPU 纯软绘操作，界面会比较卡顿。
+        weston --backend=fbdev-backend.so
 
-    安装 Node.js：https://nodejs.org/en/download/（用于执行Websockify.js）
+    headless-backend
 
-    下载 novnc：http://github.com/kanaka/noVNC/zipball/master
+        不带任何 UI 界面，主要用于 weston 自测试
 
-noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及参数修改直接在 lauch.sh 中设置
+    rdp-backend
 
-    –listen 后面加noVNC运行时的端口，默认为6080(⻅2.2.3)
-    –vnc 后面跟vnc会话的信息，如172.16.0.56:5901
+        用于远程桌面
 
-    –cert 指定证书(⻅2.2.4)
+    wayland-backend
 
-    –web 用来查找vnc.html的目录.根据代码逻辑，在noVNC目录或者noVNC/utils目录下执行时都无需设置此参 数，web变量会自动在当前目录或者上一级目录查找vnc.html。
+        先启动一个 weston
+        在 Weston 终端里，输入 weston 命令再启动一个 Weston 桌面
 
-    –ssl-only 限制只能用https进行vnc远程会话，此时http访问失效。装载安全证书后，此参数才会生效，否则 noVNC进程无法运行
+    x11-backend
 
-安装 Websockify：
+        直接在 GNOME 终端里执行 weston 命令，Weston 的界面输出，将被作为一个 X Window 送到 X Server 中去显示。
 
-    https://github.com/novnc/websockify/archive/master.zip,
+    xwayland
 
-启动:
+        它不是一个 backend，它只是 Wayland 的一个扩展功能，可以让你在 Weston 中运行 X 的程序。
+        操作步骤：
 
-    nohup python /root/noVNC/utils/websockify --web /root/noVNC --target-config=/srv/nfs4/vnc_tokens 6080 >> /root/noVNC/novnc.log &
+            sudo apt install xwayland，安装 /usr/bin/Xwayland 可执行程序；
+            weston --modules=xwayland.so，随便以哪种 backend 方式启动都可以；
 
-当然，最好是直接采用已有的docker镜像:
+        启动后，可以直接在 Weston 终端中运行 X 程序，如 x-terminal-emulator。
 
-    docker pull dorowu/ubuntu-desktop-lxde-vnc
+SSH远程启动
 
-相关软件
+    weston --tty=1
 
-    MobaXterm: 默认有X Window 服务，可以直接弹出 GUI
+ssh 启动方式需要明确指定使用哪个终端来显示。
 
-    vncviewer: 最常用的 vnc 客户端
+串口启动
 
-    xming: 开源X Server，搭配Putty使用。参见：http://www.straightrunning.com/XmingNotes/
+    sudo -E weston --tty=1
 
-    UltraVNC：http://www.uvnc.com/（Windows环境下的 VNC Server，还有 TightVNC、TigerVNC、RealVNC 等，其中 RealVNC 不能通过 noVNC）
+串口启动同样需要明确指定使用哪个VT来显示。
 
 ### Linux 桌面死机怎么办 --- reisub“登录控制台”
 
