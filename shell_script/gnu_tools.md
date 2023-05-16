@@ -7679,6 +7679,8 @@ Gnome Terminal
 
     Toolbox 是 Fedora 系统的容器化管理工具，调用 podman 来完成容器的操作，详见章节 [Fedora toolbox](virtualization think)。
 
+    Waydroid：在 Linux 容器化运行 Android app，只支持 wayland 桌面 <https://zhuanlan.zhihu.com/p/603603346>
+
 浏览器
 
     安装浏览器扩展要谨慎，只安装大家都用的扩展，装完后要设置它的访问权限尽量小，各大浏览器都支持设置。
