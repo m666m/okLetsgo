@@ -1099,3 +1099,8 @@ apt命令大家应该都比较熟悉了，这里直接简单的介绍下pkg命�
 postmarketos 把你的旧手机作为一个低功耗平台
 
     https://postmarketos.org/
+        https://wiki.postmarketos.org/wiki/Installation_guide
+
+    https://ivonblog.com/posts/postmarketos-general-installation/
+
+    https://ivonblog.com/posts/postmarketos-multiple-des/
