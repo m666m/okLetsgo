@@ -7158,6 +7158,53 @@ TODO:restic：使用 ssh 密钥方式连接备份服务器，在存储池中加�
 
 estic 备份原理跟其他简单的备份程序略有不同，它基于存储池和快照的概念，每次备份就相当于一份快照，快照存储在存储池中。存储池中的数据用AES加密，当您备份敏感数据并将备份放在不受自己管辖服务器（例如，云提供商）时，这一点尤其重要。
 
+### 操作系统时光机 timeshift
+
+Timeshift提供時光機一樣的時光倒流功能，方便用戶備份整個Linux系統到另外一個硬碟，並在系統出錯的時候一鍵還原，甚至可以在LiveUSB模式修復損壞的系統。Timeshift界面直觀易用，可以設定自動排程備份，備份檔案預設會壓縮以節省硬碟空間。
+
+    https://github.com/linuxmint/timeshift
+
+    https://ivonblog.com/posts/linux-timeshift-usage/
+
+Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔。備份檔建議放在其他硬碟，要還原的話比較容易，尤其是系統根本無法開機的狀況下。
+
+·用Timeshift備份系統
+
+選擇使用快照類型
+
+    RSYNC 快照類型，此選項適用大多數Linux發行版使用的檔案系統。
+
+    BTRFS 屬於較新的檔案系統，只有 Fedora 等少數發行版採用。
+
+選取快照儲存位置
+
+如圖所示，下面容量較大的vda2是我的系統碟，而我要將系統備份到另一個硬碟sda1。請放心，Timeshift的備份不會刪除整個硬碟，而是建立一個timeshift目錄專門放快照檔案。
+
+接著選取多久要自動建立快照。
+
+接著選取是否要備份使用者家目錄檔案，全部打勾。Timeshift不只備份使用者家目錄，連GRUB都一起備份。
+
+點選左上角建立快照
+
+輸入sudo密碼，等待快照製作完成。SSD寫入通常五分鐘就完成了。
+
+從檔案管理員可以看到Timeshift製作的快照，佔用的容量會比原始的系統小一些。當然這邊只是範例，實務上因為要儲存多份快照，用來備份的硬碟容量還是得比系統碟大。
+
+接著我在桌面新增一張相片和文字檔，等會還原系統的時候這些檔案就會不見。
+
+·用Timeshift還原系統
+
+點選Timeshift的備份檔，點選上方的「還原」。
+
+點選Timeshift的備份檔，點選上方的「還原」。
+
+選取要還原的硬碟
+
+所有選項全部同意，輸入sudo密碼，等待系統還原，接著它會重開機。
+
+重開機後系統回到製作快照前的樣子，桌面的檔案不見了。
+
+
 ### 网络存储 nfs server
 
     https://www.cnblogs.com/f-ck-need-u/p/7305755.html
@@ -7651,6 +7698,8 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     https://linuxhitchhiker.github.io/THGLG/solution/software/
 
+    https://ivonblog.com/posts/linux-recommended-application/
+
     商业软件替代品 https://alternativeto.net/
 
     参考下它装的软件 https://theevilskeleton.gitlab.io/2022/05/16/response-to-flatpak-is-not-the-future.html
@@ -7788,6 +7837,14 @@ Gnome Terminal
 
     Okular 主要用于查看 pdf 并添加批注
 
+    calibre：Okular進階版，是電子書閱讀器也是電子書庫管理軟體。
+
+    GNU PSPP：資料統計軟體。IBM SPSS的替代品。
+
+    FreePlane：繪製心智圖。
+    XMind【專有軟體】：繪製心智圖，支援上傳到雲端。
+    ImageMagick (無圖形界面)：用於圖片轉檔的純文字工具。
+
 gpg 密码管理
 
     Gnome Passwords and Keys（原名 Seahorse）
@@ -7847,6 +7904,11 @@ gpg 密码管理
 
     Darktable
 
+    Gwenview：KDE的看圖軟體，可簡單編輯圖片和加文字，支援讀取壓縮檔的圖片。
+    Nomacs：跨平台看圖軟體，可簡單調整圖片，支援批次圖片編輯操作。
+    DigiKam：攝影師整理相片的跨平台軟體，類似Adobe Lightroom。
+    Shotwell：GNOME附屬的相片管理程式。
+
 音频编辑器
 
     Audacity 是一个流行的多轨音频编辑器和录音机，可用于对所有类型的音频进行后期处理。
@@ -7858,10 +7920,12 @@ gpg 密码管理
 视频播放
 
     vlc player
+
         https://www.videolan.org/vlc/index.zh_CN.html
             https://github.com/videolan/vlc
 
     mplayer 原生 linux 下的播放器，不提供有效的GUI
+
         http://www.mplayerhq.hu/design7/info.html
             Windows build
                 https://oss.netfarm.it/mplayer/
@@ -7879,19 +7943,26 @@ gpg 密码管理
             https://www.smplayer.info/
                 https://github.com/smplayer-dev/smplayer
 
-    Aegisub 是一个跨平台的高级字幕编辑工具。
+    Aegisub 是一个跨平台的高级字幕编辑工具
+
         https://github.com/Aegisub/Aegisub
 
 视频编辑
 
-    Blender 是一个集动画电影制作、视觉特效、3D 打印、三维/二维建模、动态图形、交互式 3D 应用和 VR 等多项领域为一体的知名开源软件。
+    Blender 類似Maya、3DS Max。是一个集动画电影制作、视觉特效、3D 打印、三维/二维建模、动态图形、交互式 3D 应用和 VR 等多项领域为一体的知名开源软件。
+
         https://www.blender.org/
+
+        优秀作品展示区域，供大家学习交流 https://blender.bgteach.com/index.jsp
 
     Kdenlive 基于 Qt 和 MIT 多媒体框架开发的非线性视频编辑软件
         https://kdenlive.org/
 
     Shotcut 是由 MIT 多媒体框架开发者开发的一款基于 MIT 多媒体框架的非线性视频编辑软件。
         https://www.shotcut.org/
+
+    Autodesk Maya【專有軟體】：專業3D建模軟體。
+    FreeCAD：繪製CAD工程圖的軟體。
 
 图片和视频转换
 
