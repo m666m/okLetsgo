@@ -7967,11 +7967,13 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
     https://www.zhihu.com/question/503270852
 
-X window
+X window 是一个技术体系
 
     又叫 X 窗口系统，最初起源于1984年，是为了解决类 unix 系统的图形显示问题而推出的显示接口。它使用 unix 套接字式的 c/s 模式，从而分离出了前端和后端两部分，天生就支持远程分布。
 
-        也就是说，应用程序和显示器不必在同一台计算机上，每一个窗口应用程序对应一个（或多个？）X Client，用户的显示界面上运行的是 X Server。注意这里本地运行的是 X server，远程服务器运行图形化程序使用的是 X client，这个概念只是程序实现时的术语，跟我们安装时本地安装称客户端，远程安装称服务端不同。
+        也就是说，应用程序和显示器不必在同一台计算机上，每一个窗口应用程序对应一个（或多个？）X Client，用户的显示界面上运行的是 X Server。注意这里本地运行的是 X server，远程服务器运行图形化程序使用的是 X client。注意这个概念只是程序实现时的术语，跟我们安装应用时本地称客户端，远程称服务端不同。
+
+    Xserver：用来处理用户输入和系统输出的指令。X server 运行在工作站上，而用户在具有更强处理能力的远程计算机上运行应用程序是很常见的。
 
     X11(X Window System)：Linux 桌面显示的协议
 
@@ -7979,23 +7981,23 @@ X window
 
     现在一般把 x11 和 xorg 视作同一个服务。
 
-GNOME、KDE、Xfce 等都是基于 Xorg 基础之上开发的桌面环境，也就是桌面软件（或者是图形软件）的集合
+GNOME、KDE、Xfce 等使用 X Window 体系都是基于 Xorg 基础之上开发的桌面环境，也就是桌面软件（或者是图形软件）的集合
 
     通用命令： startx 在命令行下启动桌面环境
 
-现在大多时候，X11、Xorg、X Server 说的都是一个东西，就是 Linux 桌面的 X11 后端服务器，也就是 Xorg。
+现在大多时候，Xorg、X11、X Server 说的都是一个东西，就是 Linux 桌面的 X11 后端服务器
 
-    X server：又叫 Xorg xserver 或 X11 server，是 Xorg 的前端实现，用来处理用户输入和系统输出的指令。X server 运行在工作站上，而用户在具有更强处理能力的远程计算机上运行应用程序是很常见的。
+    Xorg 的前端实现就是 X server，所以又称 Xorg xserver 或 X11 server
 
-VNC 是区别于 X Window 的 c/s 的另一种，以桌面为单位进行远程操作的，连上就一个桌面。
+VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
-    它在实现上其实是基于 x server 的，一般是在服务端运行，直接给客户端传输图像数据。
+    在服务器端 Gnome 等桌面环境 X Window 的 vnc server 的实现是基于 x server 后端的，直接给客户端传输图像数据，在前端的 vnc viwer 进行展示。
 
     Xvnc： 是一种 X11 server，它能独立运行，它已经包含了 X server，无需系统安装 X server 库，但需要一个桌面端去操作它。
 
     x11vnc：Xvnc 包含自己的 XServer, x11vnc 却不包含. x11vnc 也是一种 VNC server，它需要一个正在运行的 X server，如 Xvnc，或 Xvfb。
 
-Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的在于替代 X Window。
+Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的在于替代 X Window
 
     Wayland 只是提供一个协议的基础抽象，参考实现叫 Weston
 
@@ -8571,7 +8573,7 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
 #### Gnome 内置的远程桌面功能
 
-Gnome 共享屏幕功能，以服务器为主控，在主机屏幕前的人，可以同步看到远程的人在自己的计算机上干什么，并可以随时干预中断远程会话。
+Gnome 共享屏幕功能，以服务器为主控，在主机屏幕前的人，可以同步看到远程的人在自己的计算机上干什么，并可以随时干预中断远程会话。发行版自带的远程桌面只支持共享给一个用户，如果需要多用户使用，需要安装第三方 vnc 或 rdp 软件。
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/using_the_desktop_environment_in_rhel_8/accessing-the-desktop-remotely_using-the-desktop-environment-in-rhel-8
 
@@ -8581,11 +8583,11 @@ Gnome 共享屏幕功能，以服务器为主控，在主机屏幕前的人，�
 
     https://www.linuxmi.com/ubuntu-22-04-rdp-remote-desktop.html
 
-Gnome 同时支持 X11 和 Wayland 两种方式，原 Xorg 桌面使用 VNC 协议
+Gnome 桌面同时支持 X11 和 Wayland 两种方式，原 Xorg 桌面使用 VNC 协议
 
-    In an X11 session, it uses the vino component.
+    In an X11 session, it uses the vino component 设置开关中的共享屏幕其实就是启用这个 VNC 服务端
 
-    In a Wayland session, it uses the gnome-remote-desktop component.
+    In a Wayland session, it uses the gnome-remote-desktop component 设置开关中的共享屏幕其实就是启用这个 RDP 服务端
 
 Gnome 42 桌面之后不再使用 VNC 协议，改为 RDP 协议了
 
@@ -8657,24 +8659,26 @@ Linux 计算机推荐使用 Remmina，或 Gnome 自带软件名为 “连接 con
 
 #### xrdp
 
-远程桌面 RDP 协议体系由客户端（viewer）与服务端两部分构成。
-
-xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，xrdp 服务端兼容各种 rdp 客户端，如 mstsc、gnome connections、remmina、rdesktop 等。
+ Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的远程桌面功能太弱了，通常在服务器安装 xrdp 软件包，客户端使用 mstsc、remmina 软件包。
 
     https://github.com/neutrinolabs/xrdp/wiki
 
-    xrdp 支持 2FA 登陆
+    配置 xrdp 支持 2FA 登陆
         https://github.com/neutrinolabs/xrdp/wiki/Using-Authy-or-Google-Authenticator-for-2FA-with-XRDP
 
     https://aws.amazon.com/cn/blogs/china/vnc-or-rdp-how-to-choose-a-remote-desktop-on-the-cloud/
 
     https://www.cnblogs.com/Ansing/p/16788086.html
 
-如果你的 Linux 系统的桌面环境如 Fedora 使用了 Wayland 而不是传统的 X11/Xorg，它使用 xwayland 模块来兼容使用 X window 程序
+远程桌面 RDP 协议体系由客户端（viewer）与服务端两部分构成。xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，它利用服务器桌面环境的 xorg 或 xvnc 组件实现自己的后端。所以如果你安装了 GNOME，那 xorg 就将 GNOME 桌面远程提供给你，如果你安装了 xfce，xorg 就将 xfce 桌面提供给你。
 
-    在使用 xrdp 等软件连接到 Fedora 时，其实是后端基于 xvnc 或 xorg 技术，通过 Wayland 的 xwayland 兼容模块使用 Fedora 桌面。
+现在主流 Linux 系统的桌面环境放弃了传统的 X11/Xorg，使用 Wayland 体系，它使用 xwayland 模块来兼容使用 X window 体系的程序
 
-    Fedora 使用 SELinux，您可能需要编辑以使会话过渡到正确的 SELinux 上下文。#2094 中埋藏着有关此的更多信息/etc/pam.d/xrdp-sesman <https://github.com/neutrinolabs/xrdp/issues/2094>
+    如果安装了 xrdp，其后端基于 xvnc 或 xorg 技术，通过 Wayland 的 xwayland 兼容模块使用 Fedora 桌面。
+
+    对 Fedora 等使用 SELinux 技术的操作系统，您可能需要编辑 /etc/pam.d/xrdp-sesman 以使会话过渡到正确的 SELinux 上下文。[#2094](https://github.com/neutrinolabs/xrdp/issues/2094) 中埋藏着有关此的更多信息 。
+
+xrdp 服务端兼容各种 RDP 客户端，如 mstsc、gnome connections、remmina、rdesktop 等。
 
 xrdp 的组件
 
@@ -8693,7 +8697,7 @@ xrdp 的组件
     # 如果有防火墙，记得开放端口
     sudo ufw allow from any to any port 3389 proto tcp
 
-安装后要启动服务，并设置为开机自启动
+安装后启动服务，并设置为开机自启动
 
     # sudo systemctl start xrdp
     sudo systemctl enable xrdp --now
@@ -8701,19 +8705,19 @@ xrdp 的组件
     systemctl status xrdp
     systemctl status xrdp-sesman
 
-配置文件 /etc/xrdp/xrdp.ini 可配置自己的 ssl 证书。
+在配置文件 /etc/xrdp/xrdp.ini，可以配置自己的 ssl 证书。
 
 xrdp 安装后要先做几个设置：
 
+    关闭 Gnome 内置的远程桌面功能：如果你的桌面默认使用 RDP,找到桌面里的设置，关闭屏幕共享。这样做是为了防止 RDP 服务默认端口 3389 的占用出现冲突。
+
     如果安装 Linux 时启用了磁盘加密选项，则必须先本地连接计算机，输入密码启动操作系统后，才可以使用远程桌面登录。
 
-    注销您本地的 Linux 桌面登录，否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。跟 Gnome 内置的远程桌面不同，xrdp 的屏幕前看不到远程连接过来的用户的操作。
-
-    关闭 Gnome 内置的远程桌面功能，它和 xrdp 都是 RDP 协议要避免冲突。
+    注销您本地的 Linux 桌面登录，否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。跟 Gnome 内置的远程桌面不同，xrdp 支持多用户连接，所以本地的屏幕前看不到远程连接过来的用户的操作。
 
     Linux 桌面要禁用屏幕空白和自动屏幕锁定以实现无缝的远程桌面会话。
 
-    TODO:如果是无人值守（HEADLESS）模式，记得拔下显示器之前，在 Linux 桌面启用自动登录
+    如果是无人值守（HEADLESS）模式，记得在本地拔下显示器之前，在 Linux 桌面启用自动登录
 
     以下两个未验证
 
@@ -8723,7 +8727,7 @@ xrdp 安装后要先做几个设置：
         # 因为默认情况下，xRDP 使用的是自签发的证书，这个证书保存在 /etc/ssl/private/ssl-cert-snakeoil/ 目录下。证书的密钥文件只能由 “ssl-cert” 用户组的成员读取。
         sudo adduser ubuntu ssl-cert
 
-然后其它计算机的桌面用户都可以用 RDP 协议远程连接这台计算机的 Linux 桌面了：
+然后其它计算机的桌面用户就可以用 RDP 协议远程连接这台计算机的 Linux 桌面了：
 
     现在 xrdp 默认在安装的时候配置了证书，客户端 mstsc 连接时会提示证书信息，选择接受即可。
 
@@ -8782,13 +8786,7 @@ VNC 体系由客户端（viewer）与服务端两部分构成
 
     https://blog.csdn.net/sinolover/article/details/119735572
 
-安装 xrdp 时也会自带 xvnc --- X window 下的 vnc 服务端，用户使用 vncviwer 即可直接远程连接桌面
-
-    man xvnc
-
-建议：
-
-vnc 体系传输远程显示使用图像的方式，带宽消耗较大，大多数 vnc 使用的场合，一般都可以用其它方式代替
+建议：vnc 体系传输远程显示使用图像的方式，带宽消耗较大，大多数使用 vnc 的场合，一般都可以用其它方式代替
 
     操作远程文件，使用 ssh 连接，或 sshfs 挂载远程文件系统即可
 
@@ -8796,31 +8794,41 @@ vnc 体系传输远程显示使用图像的方式，带宽消耗较大，大多�
 
 安全性问题：
 
-注意用 ssh 本地端口转发包装 vnc 访问，因为 VNC 的协议加密方面考虑的非常少，密钥可能会明文传输。
+    注意用 ssh 本地端口转发包装 vnc 访问，因为 VNC 的协议加密方面考虑的非常少，密钥可能会明文传输
 
-    ssh -FL 9901:localhost:5900 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
+        ssh -FL 9901:localhost:5900 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
 
-VNC 是由英国剑桥大学 Olivetti & Oracle 实验室研发的一款超级瘦终端系统。它以 1998年 IEEE Internet Computing 一篇论文 《Virtual Network Computing》 的形式而问世。此研究室在 1999 年併入美國電話電報公司（AT&T）。AT&T 於 2002 年中止了此研究室的運作，並把 VNC 以 GPL 釋出，衍生出了幾個 VNC 軟體：
+Gnome 桌面默认的远程桌面程序是 vino，就是一个vnc 服务器端。
+
+安装 xrdp 时也会自带 xvnc，也是一个 vnc 服务器端
+
+    man xvnc
+
+用户在客户端使用 vnc viwer 即可直接远程连接桌面。
+
+历史
+
+    VNC 是由英国剑桥大学 Olivetti & Oracle 实验室研发的一款超级瘦终端系统。它以 1998年 IEEE Internet Computing 一篇论文 《Virtual Network Computing》 的形式而问世。此研究室在 1999 年併入美國電話電報公司（AT&T）。AT&T 於 2002 年中止了此研究室的運作，並把 VNC 以 GPL 釋出，衍生出了幾個 VNC 軟體：
 
     RealVNC：由 VNC 團隊部份成員開發，分為全功能商業版及免費版。http://www.realvnc.com/
 
     TightVNC：強調節省頻寬使用。http://www.tightvnc.com/ 2001年俄罗斯一名研究生 Konstantin V Kaplinsky 在 Modern Technique and Technologies 上发表的 《VNC TIGHT ENCODER》 中创新性的提出了一种新的 VNC 编码方式:tight，并以开源 VNC 为基础加以代码实现，发布了开源版的 tightvnc。
 
-        TightVNC 的 Unix-like 平台的支持一直停留在十几年前的 1.3版，一直不停更新的是其 Windows 版。
+        TightVNC 的 Unix-like 平台的支持一直停留在十几年前的 1.3 版，一直不停更新的是其 Windows 版。
 
-    TigerVNC：最初是基于 TightVNC 从未发布过的 VNC4 分支，由于 TightVNC 的工作重心放到了 Windows，对 Linux 的 X11/Xorg 架构的优化不够新，TigerVNC 注重 Unix-like 版本的开发，特别是对新版本的 X 桌面系统的强力支持，所以在 BSD、Linux 等 Unix-like 操作系统中实现远程虚拟桌面，最好的选择是 TigerVNC。
+    TigerVNC：基于 TightVNC 从未发布过的 VNC4 分支而来，由于 TightVNC 的工作重心放到了 Windows，对 Linux 的 X11/Xorg 架构的优化不够新，TigerVNC 注重 Unix-like 版本的开发，对新版本的 X 桌面系统的强力支持，所以在 BSD、Linux 等 Unix-like 操作系统中实现远程虚拟桌面，最好的选择是 TigerVNC。
 
         https://github.com/TigerVNC/tigervnc/releases
 
     UltraVNC：加入了 TightVNC 的部份程式及加強效能的圖型映射驅動程式，並結合 Active Directory 及 NTLM 的帳號密碼認證，但僅有 Windows 版本。 http://ultravnc.com/
 
-    Vine Viewer：MacOSX的 VNC 用戶端。Mac OS 也自带 VNC 服务器。
+    Vine Viewer：Mac OS X 的 VNC 用戶端（Mac OS 自带 VNC 服务器）。
 
     TurboVNC：致力于优化图像、3d的 VirtualGL 体系 https://virtualgl.org/About/Background
 
-這些軟體間大多遵循基本的VNC協定，因此大多可互通使用。例如可以使用 Windows 平台上的 ultravnc 客户端连接 Linux 平台上的 tightvnc 服务端，但最好两侧版本一致以优化性能。
+    這些軟體間大多遵循基本的 VNC 協定，因此大多可互通使用。例如可以使用 Windows 平台上的 ultravnc 客户端连接 Linux 平台上的 tightvnc 服务端，但最好两侧版本一致以优化性能。
 
-一般在服务器安装 TigerVNC Server 软件包，客户端使用 TigerVNC Viwer 软件包。
+一般来说，不使用 Gnome 等桌面环境自带的 vnc 软件，功能太弱了，通常在服务器安装 TigerVNC Server 软件包，客户端使用 TigerVNC Viwer 软件包。
 
     https://tigervnc.org/
         源码 https://github.com/TigerVNC/tigervnc
@@ -8832,7 +8840,7 @@ VNC 是由英国剑桥大学 Olivetti & Oracle 实验室研发的一款超级瘦
 
     apt install tigervnc-standalone-server
 
-TigerVNC 服务器安装完成后，会自动进行 update-alternatives 的操作：
+TigerVNC 服务器安装完成后，会自动进行 update-alternatives 的操作替换系统的几个默认命令：
 
     使用 tigervncconfig 来在自动模式中提供 vncconfig
 
@@ -8845,6 +8853,10 @@ TigerVNC 服务器安装完成后，会自动进行 update-alternatives 的操�
 实际上就是为这 5 个命令创建了一个链接，实际使用时用这两组命令都可以使用。
 
     vncpasswd   设置用户密码，请勿使用 sudo 运行
+
+安装完第三方 vnc 服务器后，记得关闭桌面系统默认的共享桌面
+
+    找到桌面里的设置，关闭屏幕共享。这样做是为了防止 vnc 服务默认端口 5900 的占用出现冲突。
 
 运行 VNC 服务器
 
