@@ -8743,7 +8743,7 @@ Linux 计算机推荐使用 Remmina，或 Gnome 自带软件名为 “连接 con
 
 #### xrdp
 
- Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的远程桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包，客户端使用 mstsc、remmina 软件包。
+ Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包，客户端使用 mstsc、remmina 软件包。
 
     https://github.com/neutrinolabs/xrdp/wiki
 
@@ -8754,7 +8754,9 @@ Linux 计算机推荐使用 Remmina，或 Gnome 自带软件名为 “连接 con
 
     https://www.cnblogs.com/Ansing/p/16788086.html
 
-远程桌面 RDP 协议体系由客户端（viewer）与服务端两部分构成。xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，它利用服务器桌面环境的 xorg 或 xvnc 组件实现自己的后端。所以如果你安装了 GNOME，那 xorg 就将 GNOME 桌面远程提供给你，如果你安装了 xfce，xorg 就将 xfce 桌面提供给你。
+远程桌面 RDP 协议体系由客户端（viewer）与服务端两部分构成。xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，它利用服务器桌面环境的 xvnc 组件实现自己的后端，也就是说利用 xvnc 简单地将 vnc 位图流包装在 RDP 中。
+
+所以如果你安装了 GNOME，那 xorg 就将 GNOME 桌面远程提供给你，如果你安装了 xfce，xorg 就将 xfce 桌面提供给你。
 
 现在主流 Linux 系统的桌面环境放弃了传统的 X11/Xorg，使用 Wayland 体系，它使用 xwayland 模块来兼容使用 X window 体系的程序
 
@@ -8840,7 +8842,9 @@ xrdp 安装后要先做几个设置：
 
 ##### xorgxrdp
 
-在有些桌面环境下 xrdp 使用 xvnc 实现远程桌面，本模块可以给它添加 xorg 方式。xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作。
+xorgxrdp：为了充分利用 X window 的机制，只传递绘制命令，作为一个改进技术，X11rdp 尝试通过将 X11 绘制命令作为 RDP 绘制命令转发而不是简单地将 vnc 位图流包装在 RDP 中。
+
+xrdp 默认使用 xvnc 实现远程桌面，本模块可以给它添加 xorg 方式。xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作。
 
     https://github.com/neutrinolabs/xorgxrdp
 
