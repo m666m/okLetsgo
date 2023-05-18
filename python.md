@@ -1823,13 +1823,13 @@ MacOS Modern Theme 看代码深色浅色都好，多选单选查找相关内容�
 
     davidbwaters.macos-modern-theme
 
-凛冬来临 Winter is coming，深浅主题都不刺眼，非常清晰。
+凛冬来临 Winter is coming，对比度好清晰不刺眼，深浅主题都可以。
 
     johnpapa.winteriscoming
 
-北极 Nord。夏夜使用，凉爽的感觉，适合环境亮度高的时候使用
+北极 Nord，夏夜使用，凉爽的感觉
 
-    arcticicestudio.nord-visual-studio-code
+    arcticicestudio.nord-visual-studio-code 适合环境亮度高的时候使用
 
     marlosirapuan.nord-deep     深点的北极，适合暗光
 
