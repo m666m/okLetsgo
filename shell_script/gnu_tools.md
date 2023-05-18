@@ -7647,11 +7647,15 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
 ### 操作系统时光机 timeshift
 
-对标 Windows 系统映像备份或 MacOS 的操作系统备份功能。他会在你指定的硬盘（恢复驱动器）自动用一个目录保留各种安装好的程序和设置。
+基于快照的备份系统 timeshift
 
     https://github.com/linuxmint/timeshift
 
     https://ivonblog.com/posts/linux-timeshift-usage/
+
+    基于全盘镜像备份的 cloneZilla
+
+对标 Windows 系统映像备份或 MacOS 的操作系统备份功能。他会在你指定的硬盘（恢复驱动器）自动用一个目录保留各种安装好的程序和设置。
 
 Timeshift提供時光機一樣的時光倒流功能，方便用戶備份整個Linux系統到另外一個硬碟，並在系統出錯的時候一鍵還原，甚至可以在 LiveUSB 模式修復損壞的系統。Timeshift 界面直觀易用，可以設定自動排程備份，備份檔案預設會壓縮以節省硬碟空間。
 
