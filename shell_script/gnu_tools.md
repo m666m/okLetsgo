@@ -8047,47 +8047,21 @@ X window 是一个技术体系
 
         也就是说，应用程序和显示器不必在同一台计算机上，每一个窗口应用程序对应一个（或多个？）X Client，用户的显示界面上运行的是 X Server。注意这里本地运行的是 X server，远程服务器运行图形化程序使用的是 X client。注意这个概念只是程序实现时的术语，跟我们安装应用时本地称客户端，远程称服务端不同。
 
+        就 X windows 桌面来说，本来就没有不远程的，XServer 和 XClient 放在一台电脑上就是本地桌面，通过  ssh -x 连接就远程了，没有本质区别。
+
     Xserver：用来处理用户输入和系统输出的指令。X server 运行在工作站上，而用户在具有更强处理能力的远程计算机上运行应用程序是很常见的。
 
-    X11(X Window System)：Linux 桌面显示的协议
+    X11(X Window System)：Linux 桌面显示的协议。
 
     Xorg：是 Linux 上通用的桌面环境（后端）服务器（X11的一种具体开源实现）。它使用 X11 协议与 X client 端应用程序进行交互的应用程序，X Server 在显示器上绘制内容并发送输入事件，例如鼠标移动，单击和击键。因为它不直接传送图像数据，所以比较节约带宽。
 
-    现在一般把 x11 和 xorg 视作同一个服务。
+    现在大多时候，Xorg、X11、X Server 说的都是一个东西，就是 Linux 桌面的 X11 后端服务器
+
+        Xorg 的前端实现就是 X server，所以又称 Xorg xserver 或 X11 server
 
 GNOME、KDE、Xfce 等使用 X Window 体系都是基于 Xorg 基础之上开发的桌面环境，也就是桌面软件（或者是图形软件）的集合
 
     通用命令： startx 在命令行下启动桌面环境
-
-现在大多时候，Xorg、X11、X Server 说的都是一个东西，就是 Linux 桌面的 X11 后端服务器
-
-    Xorg 的前端实现就是 X server，所以又称 Xorg xserver 或 X11 server
-
-VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
-
-    在服务器端 Gnome 等桌面环境 X Window 的 vnc server 的实现是基于 x server 后端的，直接给客户端传输图像数据，在前端的 vnc viwer 进行展示。
-
-    Xvnc： 是一种 X11 server，它能独立运行，它已经包含了 X server，无需系统安装 X server 库，但需要一个桌面端去操作它。
-
-    x11vnc：Xvnc 包含自己的 XServer, x11vnc 却不包含. x11vnc 也是一种 VNC server，它需要一个正在运行的 X server，如 Xvnc，或 Xvfb。
-
-Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的在于替代 X Window
-
-    Wayland 只是提供一个协议的基础抽象，参考实现叫 Weston
-
-    Gnome、KDE 等都有对应的 Wayland 实现
-
-    不再是 Client-Server 模式，天生远程功能差（可以用wayvnc）
-
-    Wayland 使用 xwayland 兼容 X window 程序。
-
-远程桌面：当你从另一台电脑上上想要通过图形化界面操作远程 Linux 时需要用到。常见的图形化远程桌面连接协议是RDP 和 VNC。Windows 远程桌面 mstsc 用的就是 RDP 协议。
-
-    VNC 主要传图像，适用于瘦客户端。
-
-    RDP 主要传指令，适用于低速网络。此外微软还有一项针对 RDP 的增强技术 RemoteFX。
-
-    就 X windows桌面来说，本来就没有不远程的，XServer 和 XClient 放在一台电脑上就是本地桌面，通过 SSH 连接就远程了，没有本质区别。
 
 #### X11 启动过程
 
@@ -8141,6 +8115,16 @@ Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的�
 
     GNOME 设置默认 wayland 或 xorg
         https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
+
+Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的在于替代 X Window
+
+    Wayland 只是提供一个协议的基础抽象，参考实现叫 Weston
+
+    Gnome、KDE 等都有对应的 Wayland 实现
+
+    不再是 Client-Server 模式，天生远程功能差（可以用wayvnc）
+
+    Wayland 使用 xwayland 兼容 X window 程序。
 
 Wayland 自带的 terminal emulator 叫 foot
 
@@ -8635,9 +8619,29 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
 ### 远程桌面 vnc/rdp/mstsc
 
-    Linux 下的远程桌面体系很多 VNC(TigerVnc)等，底层有 XWindow(X11)、wayland 等
+    就 X windows 桌面来说，本来就没有不远程的，XServer 和 XClient 放在一台电脑上就是本地桌面，通过  ssh -x 连接就远程了，没有本质区别。
 
-    Windows 下的远程桌面工具是 mstsc，使用 Microsoft RDP(Remote Desktop) 协议
+远程桌面：当你从另一台电脑上想要通过图形化界面操作远程 Linux 时需要用到。常见的图形化远程桌面连接协议是RDP 和 VNC。
+
+    Linux 下的远程桌面体系很多 VNC(TigerVnc)等，适应 X Window(X11)、Wayland 等桌面体系
+
+    Windows 下的远程桌面工具是 mstsc，使用 Microsoft RDP(Remote Desktop) 体系
+
+VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
+
+    对服务器端基于 X Window 的桌面环境来说，vnc server 的实现是基于 Xserver 后端的，直接给前端的 vnc viwer 传输图像数据。
+
+    Xvnc： 是一种 X11 server，它能独立运行，它已经包含了 Xserver，无需系统安装 Xserver 库，但需要一个桌面端去操作它。
+
+    x11vnc：Xvnc 包含自己的 XServer, x11vnc 却不包含。x11vnc 也是一种 VNC server，它需要一个正在运行的 X server，如 Xvnc，或 Xvfb。
+
+技术上的差别
+
+    VNC 主要传图像，适用于瘦客户端。
+
+    RDP 主要传指令，适用于低速网络。此外微软还有一项针对 RDP 的增强技术 RemoteFX。
+
+    对 Wayland 桌面来说，其使用 xwayland 模块兼容 X window 程序
 
 如果需要使用老式的 x11（XDMCP协议）图形窗口连接到 Xserver(X.org)，建议安装使用 MobaXterm/Xshell 的免费版。
 
@@ -8830,7 +8834,7 @@ xrdp 安装后要先做几个设置：
 
 ##### xorgxrdp
 
-xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作
+在有些桌面环境下 xrdp 使用 xvnc 实现远程桌面，本模块可以给它添加 xorg 方式。xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作。
 
     https://github.com/neutrinolabs/xorgxrdp
 
