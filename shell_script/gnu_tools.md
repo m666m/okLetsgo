@@ -2474,7 +2474,7 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
     $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \uf70f \ue20a \ue350 \uf2c8"
      ±  ➦ ✘ ⚡ ⚙ ❃    
 
-Fedora 下安装 Nerd Font --- Meslo LGS
+Fedora(SELinux) 下安装 Nerd Font --- Meslo LGS
 
     # 先下载 https://github.com/ryanoasis/nerd-fonts/releases
     curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Meslo.zip
@@ -7645,7 +7645,55 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
 老老实实用最多人用的 GNOME 吧，其它桌面环境坑更多，随便就有软件运行不起来。
 
-### 常用桌面工具
+### 操作系统时光机 timeshift
+
+对标 Windows 系统映像备份或 MacOS 的操作系统备份功能。他会在你指定的硬盘（恢复驱动器）自动用一个目录保留各种安装好的程序和设置。
+
+    https://github.com/linuxmint/timeshift
+
+    https://ivonblog.com/posts/linux-timeshift-usage/
+
+Timeshift提供時光機一樣的時光倒流功能，方便用戶備份整個Linux系統到另外一個硬碟，並在系統出錯的時候一鍵還原，甚至可以在 LiveUSB 模式修復損壞的系統。Timeshift 界面直觀易用，可以設定自動排程備份，備份檔案預設會壓縮以節省硬碟空間。
+
+Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔。備份檔建議放在其他硬碟，要還原的話比較容易，尤其是系統根本無法開機的狀況下。
+
+·用Timeshift備份系統
+
+選擇使用快照類型
+
+    RSYNC 快照類型，此選項適用大多數Linux發行版使用的檔案系統。
+
+    BTRFS 屬於較新的檔案系統，只有 Fedora 等少數發行版採用。
+
+選取快照儲存位置
+
+如圖所示，下面容量較大的vda2是我的系統碟，而我要將系統備份到另一個硬碟sda1。請放心，Timeshift的備份不會刪除整個硬碟，而是建立一個timeshift目錄專門放快照檔案。
+
+接著選取多久要自動建立快照。
+
+接著選取是否要備份使用者家目錄檔案，全部打勾。Timeshift不只備份使用者家目錄，連GRUB都一起備份。
+
+點選左上角建立快照
+
+輸入sudo密碼，等待快照製作完成。SSD寫入通常五分鐘就完成了。
+
+從檔案管理員可以看到Timeshift製作的快照，佔用的容量會比原始的系統小一些。當然這邊只是範例，實務上因為要儲存多份快照，用來備份的硬碟容量還是得比系統碟大。
+
+接著我在桌面新增一張相片和文字檔，等會還原系統的時候這些檔案就會不見。
+
+·用Timeshift還原系統
+
+點選Timeshift的備份檔，點選上方的「還原」。
+
+點選Timeshift的備份檔，點選上方的「還原」。
+
+選取要還原的硬碟
+
+所有選項全部同意，輸入sudo密碼，等待系統還原，接著它會重開機。
+
+重開機後系統回到製作快照前的樣子，桌面的檔案不見了。
+
+### 常用桌面工具软件
 
     https://linux.cn/article-13761-1.html
 
@@ -7930,54 +7978,6 @@ gpg 密码管理
     Steam 你需要在 steam 的设置中启动 Proton 来游玩 Windows 游戏。
 
         sudo dnf in steam
-
-### 操作系统时光机 timeshift
-
-对标 Windows 系统映像备份或 MacOS 的操作系统备份功能。他会在你指定的硬盘（恢复驱动器）自动用一个目录保留各种安装好的程序和设置。
-
-    https://github.com/linuxmint/timeshift
-
-    https://ivonblog.com/posts/linux-timeshift-usage/
-
-Timeshift提供時光機一樣的時光倒流功能，方便用戶備份整個Linux系統到另外一個硬碟，並在系統出錯的時候一鍵還原，甚至可以在 LiveUSB 模式修復損壞的系統。Timeshift 界面直觀易用，可以設定自動排程備份，備份檔案預設會壓縮以節省硬碟空間。
-
-Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔。備份檔建議放在其他硬碟，要還原的話比較容易，尤其是系統根本無法開機的狀況下。
-
-·用Timeshift備份系統
-
-選擇使用快照類型
-
-    RSYNC 快照類型，此選項適用大多數Linux發行版使用的檔案系統。
-
-    BTRFS 屬於較新的檔案系統，只有 Fedora 等少數發行版採用。
-
-選取快照儲存位置
-
-如圖所示，下面容量較大的vda2是我的系統碟，而我要將系統備份到另一個硬碟sda1。請放心，Timeshift的備份不會刪除整個硬碟，而是建立一個timeshift目錄專門放快照檔案。
-
-接著選取多久要自動建立快照。
-
-接著選取是否要備份使用者家目錄檔案，全部打勾。Timeshift不只備份使用者家目錄，連GRUB都一起備份。
-
-點選左上角建立快照
-
-輸入sudo密碼，等待快照製作完成。SSD寫入通常五分鐘就完成了。
-
-從檔案管理員可以看到Timeshift製作的快照，佔用的容量會比原始的系統小一些。當然這邊只是範例，實務上因為要儲存多份快照，用來備份的硬碟容量還是得比系統碟大。
-
-接著我在桌面新增一張相片和文字檔，等會還原系統的時候這些檔案就會不見。
-
-·用Timeshift還原系統
-
-點選Timeshift的備份檔，點選上方的「還原」。
-
-點選Timeshift的備份檔，點選上方的「還原」。
-
-選取要還原的硬碟
-
-所有選項全部同意，輸入sudo密碼，等待系統還原，接著它會重開機。
-
-重開機後系統回到製作快照前的樣子，桌面的檔案不見了。
 
 ### 使用 gnome 扩展
 
@@ -9060,7 +9060,7 @@ noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及
 
 #### Wayland 下的远程桌面
 
-完全使用 wayland 体系而不是兼容 xwaylan 的远程桌面比较少。
+完全使用 wayland 体系而不是兼容 xwaylan 的远程桌面比较少，原理也不同，有基于 vnc 的，有基于原生 wayland 模块的。
 
 ##### 基于 VNC 的 WayVNC
 
