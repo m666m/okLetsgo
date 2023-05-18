@@ -2914,9 +2914,7 @@ antigen
 zinit（原 zplugin）插件管理器
 
     https://github.com/zdharma-continuum/zinit
-
     https://gist.github.com/laggardkernel/4a4c4986ccdcaf47b91e8227f9868ded
-
     https://zhuanlan.zhihu.com/p/98450570
 
     这个插件管理器在 ~/.zshrc 文件中的加载设置如下
@@ -7898,12 +7896,16 @@ gpg 密码管理
 截屏
 
     OBS Stduio 是一款用于视频录制和直播推流的开源软件
-
         https://obsproject.com/
 
     Shutter
 
     Kazam
+
+    maim 命令行截图
+        https://github.com/naelstrof/maim
+
+        ssh -t pi@<pi_ip_address> 'DISPLAY=:0 maim' >screenshot.png
 
 照片管理
 
