@@ -1908,7 +1908,7 @@ TODO: 先装 Windows 再装 Fedora
 
 #### Linux + Windows 双系统互相挂虚拟机
 
-第一块硬盘安装 Linux，然后虚拟机安装 Widnows，然后把该虚拟机转到第二块硬盘上作为实机可单独启动，而且在 Linux 里还可以作为虚拟机挂载使用！详见章节 [qcow2 虚拟机转为实体机]、[挂载实体机硬盘作为虚拟机开机](virtualization think)。
+第一块硬盘安装 Linux，然后虚拟机安装 Widnows，然后把该虚拟机转到第二块硬盘上作为实机可单独启动，而且在 Linux 里还可以作为虚拟机挂载使用！详见章节 [qcow2 虚拟机转为实体机]、[挂载实体机所在硬盘作为虚拟机](virtualization think)。
 
 #### 解决双系统安装 Windows 与 ubuntu 时间不一致的问题
 
