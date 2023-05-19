@@ -1906,6 +1906,10 @@ TODO: 先装 Windows 再装 Fedora
 
     Linux GRUB手动安装方法详解 http://c.biancheng.net/view/1035.html
 
+#### Linux + Windows 双系统互相挂虚拟机
+
+第一块硬盘安装 Linux，然后虚拟机安装 Widnows，然后把该虚拟机转到第二块硬盘上作为实机可单独启动，而且在 Linux 里还可以作为虚拟机挂载使用！详见章节 [qcow2 虚拟机转为实体机]、[挂载实体机硬盘作为虚拟机开机](virtualization think)。
+
 #### 解决双系统安装 Windows 与 ubuntu 时间不一致的问题
 
 Linux 与 Windows 对于本地硬件保存时间的理解方式不同：Linux 认为硬件时间为 GMT+0 时间，是世界标准时间，而中国上海是东八区时间，显示时间为 GMT+8；Windows 系统认为硬件时间就是本地时间，而这个时间已经被 Linux 设置为 GMT+0 时间。因此 Windows 系统下时间比正常时间慢 8 个小时。
