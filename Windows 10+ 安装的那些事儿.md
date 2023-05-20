@@ -1210,6 +1210,10 @@ Microsoft 出品的工具包
     https://pixlr.com/cn/
     https://www.photopea.com/
 
+人工智能的涌现
+
+    https://github.com/chrxh/alien
+
 ### 安装 Microsoft Edge 浏览器插件
 
 注意设置右键插件图标，选择扩展在哪些网站生效，尽量缩小插件的生效范围。
