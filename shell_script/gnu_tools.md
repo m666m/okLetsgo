@@ -10294,6 +10294,18 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     [设置为 systemd 的服务](org03k.md think)
 
+#### 分析启动过程
+
+如果感觉操作系统启动耗时过长，需要分析原因，systemd 有现成的工具
+
+按时间顺序列出启动的模块
+
+    systemd-analyze blame
+
+把各服务的启动情况用 svg 图形进行展示，便于分析
+
+    systemd-analyze plot
+
 ## 定时任务 crontab
 
     https://www.debian.org/doc/manuals/debian-handbook/sect.task-scheduling-cron-atd.zh-cn.html
