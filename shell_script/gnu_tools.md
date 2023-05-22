@@ -8046,15 +8046,13 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
 ### Linux 的 XDG（X Desktop Group）基本目录规范
 
-    https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-
 对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，称为 XDG。
+
+    https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 
     https://blog.csdn.net/u014025444/article/details/94029895
 
     https://winddoing.github.io/post/ef694e1f.html
-
-基本
 
 XDG基本目录规范基于以下概念：
 
