@@ -7964,13 +7964,14 @@ gpg 密码管理
 
         优秀作品展示区域，供大家学习交流 https://blender.bgteach.com/index.jsp
 
-    Kdenlive 基于 Qt 和 MIT 多媒体框架开发的非线性视频编辑软件
+    Kdenlive 基于 Qt 和 MIT 多媒体框架开发的非线性视频编辑软件，类似 Adobe premiere 或 Davinci Resolve
         https://kdenlive.org/
 
     Shotcut 是由 MIT 多媒体框架开发者开发的一款基于 MIT 多媒体框架的非线性视频编辑软件。
         https://www.shotcut.org/
 
     Autodesk Maya【專有軟體】：專業3D建模軟體。
+
     FreeCAD：繪製CAD工程圖的軟體。
 
 图片和视频转换
