@@ -8972,9 +8972,11 @@ xrdp 安装后要先做几个设置：
 
 ##### xorgxrdp
 
-xorgxrdp：为了充分利用 X window 的机制，只传递绘制命令，作为一个改进技术，X11rdp 尝试通过将 X11 绘制命令作为 RDP 绘制命令转发而不是简单地将 vnc 位图流包装在 RDP 中。
+xrdp 默认使用 xvnc 实现远程桌面，xorgxrdp 模块可以给它添加 xorg 方式。xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作。
 
-xrdp 默认使用 xvnc 实现远程桌面，本模块可以给它添加 xorg 方式。xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作。
+    https://github.com/neutrinolabs/xrdp/wiki/Tips-and-FAQ#how-to-choose-backend-xorgxrdp-vs-xvnc
+
+xorgxrdp：为了充分利用 X window 的机制，只传递绘制命令，作为一个改进技术，X11rdp 尝试通过将 X11 绘制命令作为 RDP 绘制命令转发而不是简单地将 vnc 位图流包装在 RDP 中，使 xrdp 的运行不再让 xvnc 转一手以提高效率。
 
     https://github.com/neutrinolabs/xorgxrdp
 
