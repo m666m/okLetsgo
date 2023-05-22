@@ -8953,6 +8953,8 @@ xrdp 安装后要先做几个设置：
 
 客户端工具，Windows 使用 mstsc 即可，Linux 下推荐使用 Remmina，或 Gnome 自带软件名为 “连接 connections”，二者支持 VNC 和 RDP 等多种协议。
 
+简单使用 ssh 隧道保护 xrdp，参见章节 [Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)。
+
 ·rdesktop 是实现 RDP 协议的 Linux 桌面客户端程序
 
     rdesktop <ip>
