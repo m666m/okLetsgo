@@ -9129,7 +9129,7 @@ TigerVNC 服务器安装完成后，会自动进行 update-alternatives 的操�
         #!/bin/sh
         vncserver -kill :2
 
-Tiger VNC 的客户端使用，输入端口号时有点歪
+注意：VNC 的客户端使用，输入端口号时有点歪
 
     在 “VNC服务器” 栏中输入 TigerVNC 服务的计算机的IP地址和端口号。
 
