@@ -3121,12 +3121,12 @@ if [ -x /usr/bin/dircolors ]; then
     alias viw='echo "[vi 后悔药：等保存了才发现是只读，只给出提示]" && echo ":w !sudo tee %"'
 
     # gpg 常用命令，一般用法都是后跟文件名即可
-    alias ggk='echo "[有私钥的gpg密钥]" && gpg -K --keyid-format=long'
+    alias ggk='echo "[查看有私钥的gpg密钥及其子密钥带指纹]" && gpg -K --keyid-format=long --with-subkey-fingerprint'
     alias ggsb='echo "[签名，生成二进制.gpg签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --sign'
     alias ggst='echo "[签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --clearsign'
     alias ggsdb='echo "[分离式签名，生成二进制.sig签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --detach-sign'
     alias ggsdt='echo "[分离式签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --armor --detach-sign'
-    alias ggkd='echo "[从公钥服务器下载指定公钥到本地，参数太多，只给出提示]" && echo "gpg --no-default-keyring --keyring ./xxx.gpg --recv-keys XXXX"'
+    alias ggkd='echo "[从公钥服务器下载指定公钥到本地]" && gpg --no-default-keyring --keyring ./pub_key.gpg --recv-keys'
     alias ggf='echo "[查看公钥的指纹以便跟跟网站发布的核对]" && gpg --with-fingerprint --show-keys --keyid-format=long'
     alias ggvs='echo "[使用临时钥匙圈验证文件签名，如 ggvs ./fedora.gpg xxxx.checksum]" && gpgv --keyring'
     alias ggv='echo "[验证签名]" && gpg --verify'
