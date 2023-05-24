@@ -5960,7 +5960,10 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
     tar cjf - dir1 dir2 file2 node.exe |gpg --output backup.tar.bz2.gpg --cipher-algo AES-256 -c -
 
         如果遇到报错：gpg: problem with the agent: Inappropriate ioctl for device
-        说明 gpg 获取不到当前的 tty 无法弹出密码输入框，手工执行 `export GPG_TTY=$(tty)` 再做（一般出现在使用 tmux 这种多个 tty 的场合，注意在同一个窗口面板下操作）
+
+        一般出现在使用 tmux 这种多个 tty 的场合，注意在同一个窗口面板下操作
+
+        说明 gpg 获取不到当前的 tty 无法弹出密码输入框，手工执行 `export GPG_TTY=$(tty)` 再重新执行你的 gpg 命令即可
 
         # 解密并解包
         # dd if=backup.tar.bz2.gpg |gpg -d - |tar xjf -
