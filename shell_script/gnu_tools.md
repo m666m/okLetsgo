@@ -5458,6 +5458,14 @@ reptyr
 
 ### 按内容查找文件：find + grep + xargs 组合
 
+在 $PATH 查找你的命令
+
+    which -a pwd
+
+在  $PATH 和 $MANPATH 查找匹配的文件名
+
+    whereis -l pwd
+
 查找指定文件
 
     find ./ -name 2.sql
