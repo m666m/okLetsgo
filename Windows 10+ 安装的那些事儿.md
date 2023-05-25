@@ -2025,13 +2025,27 @@ Windows 7 在 2023 年还提供虚拟机使用的版本
 
 ### Hyper-V
 
-建立检查点备份你的虚拟机的当前状态
+建立虚拟机时的几个注意事项：
 
-    最好关机后创建
+    https://learn.microsoft.com/zh-cn/windows-server/virtualization/hyper-v/learn-more/Generation-2-virtual-machine-security-settings-for-Hyper-V
 
-    在设置中注意关闭 “自动检查点”，选 “标准检查点”，否则 Windows 总是自动把当前状态合并到你手动建立的检查点。
+虚拟机选 “二代”，开启“安全启动” 时选择模板 “Microsoft UEFI 证书颁发机构”（安装Linux），若勾选“启用防护”选项会禁用控制台连接、无法迁移虚拟机等。
 
-就像普通虚拟机操作，类似 VM Ware、Virtual Box
+取消勾选 “自动检查点”
+
+    安装完成后手工建立检查点，以防 hyper-v 自动合并导致无法回到初始状态。
+
+第 2 代虚拟机上的 GRUB 菜单超时
+
+    由于第 2 代虚拟机的仿真中删除了旧硬件，导致 grub 菜单倒计时计时器的倒计时速度太快，无法显示 grub 菜单，因而会立即加载默认条目。 在 GRUB 固定为使用 EFI 支持的计时器之前，请修改 /boot/grub/grub.conf, /etc/default/grub 或等效条目，将其修改为“timeout=100000”而不是默认的“timeout=5”。
+
+用检查点备份你的虚拟机的当前状态
+
+    最好关机后创建建立
+
+    在设置中选 “标准检查点”，注意关闭 “自动检查点”，安装完成后手工建立检查点，否则 Windows 总是自动把当前状态合并到你手动建立的检查点。
+
+使用比较简单，就像普通虚拟机操作，类似 VM Ware、Virtual Box
 
     https://docs.microsoft.com/zh-cn/virtualization/hyper-v-on-Windows/quick-start/enable-hyper-v
 
@@ -2110,7 +2124,7 @@ Windows 10+ 在 2020 年代以来，体系架构类似 Xen，混合虚拟化：
 
     连接到虚拟机后，打开设备管理器，可以发现通用串行总线 USB 设备已经成功接入 Hyper-V 虚拟机。
 
-目前我的 Windows 10 Ltsc 2021 版，总是无法使用摄像头自带的麦克风，解决方法是直接使用 “远程桌面 mstsc.exe” 而不是在 Widnows 的虚拟机管理器（Hyper-V Manager）里选择连接到虚拟机。
+目前我的 Windows 10 Ltsc 2021 版，总是无法使用摄像头自带的麦克风，解决方法是直接使用 “远程桌面 mstsc.exe” 而不是在 Widnows 的虚拟机管理器（Hyper-V Manager）里使用本地控制台连接到虚拟机。
 
 5、运行 `mstsc` 远程登陆你的虚拟机，计算机处填写你的虚拟机的计算机名，用户名填写你的虚拟机的登陆用户名，其它选项设置跟第 4 步相同，把主机的设备都选择共享给虚拟机即可，并选择记住密码，以后使用就不需要登陆密码了。
 
