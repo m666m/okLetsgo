@@ -7780,73 +7780,15 @@ Gnome Terminal 终端
 
     Chromium
 
-        来自 Chromium 项目的开源 Web 浏览器，它有一个极简的用户界面。它的外观与 Chrome 相似，因为它实际上是作为 Chrome 和其他几个浏览器的基础。许多人使用 Chromium 是因为他们已经习惯了 Chrome。
+        来自 Chromium 项目的开源 Web 浏览器，它有一个极简的用户界面。 谷歌已经禁止 chromium 和基于 chromium 的第三方浏览器读取谷歌的数据，所以 chromium 不能同步你原有的谷歌浏览器数据。
 
-        谷歌已经禁止 chromium 和基于 chromium 的第三方浏览器读取谷歌的数据，所以 chromium 不能同步你原有的谷歌浏览器数据。
-
-            https://www.chromium.org/Home
-
-        在 Fedora 上安装 chromium：
-
-            sudo dnf in chromium
-
-            安装由 RPMFusion 提供，适用于 Fedora 的完整版 chromium（可选）：
-
-                sudo dnf in chromium-freeworld
-
-        用 Flatpak 安装 chromium 系：
-
-            安装 chromium：
-
-                flatpak install flathub org.chromium.Chromium
-
-            安装 ungoogled-chromium：
-
-                ungoogled-chromium 是一个由社区维护，默认禁用谷歌隐私追踪的开源浏览器。
-
-                https://github.com/Eloston/ungoogled-chromium/blob/master/README.md。
-
-                flatpak install flathub com.github.Eloston.UngoogledChromium
+        flatpak install flathub com.github.Eloston.UngoogledChromium
 
     Chrome
 
         google 基于开源浏览器 chromium 而搭建的闭源浏览器
 
-        在 Fedora 上安装 google chrome：
-
-            添加第三方仓库：
-
-                sudo dnf install fedora-workstation-repositories
-
-            激活 Google Chrome 仓库：
-
-                sudo dnf config-manager --set-enabled google-chrome
-
-            安装 chrome 稳定版：
-
-                sudo dnf install google-chrome-stable
-
-            NOTE: 安装 Chrome 后要删除 Fedora 托管
-
-                # Chrome浏览器突然出现“由贵单位管理”
-                # https://forums.fedoraforum.org/showthread.php?326178-Why-manage-my-personal-Google-Chrome-browser
-
-                sudo dnf remove fedora-chromium-config
-
-        用 Flatpak 安装 Chrome
-
-            # 稳定版
-            flatpak install flathub com.google.Chrome
-
-    Tor 浏览器
-
-        通过 Flatpak 安装：
-
-            flatpak install flathub com.github.micahflee.torbrowser-launcher
-
-        在 Fedora 上安装：
-
-            sudo dnf install torbrowser-launcher
+        flatpak install flathub com.google.Chrome
 
 办公套件
 
