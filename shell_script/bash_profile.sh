@@ -6,6 +6,8 @@
 ###################################################################
 # 自此开始都是自定义设置
 
+# 为防止变量名污染命令行环境，尽量使用奇怪点的名称
+
 # 兼容性设置，用于 .bash_profile 加载多种linux的配置文件
 test -f ~/.profile && . ~/.profile
 test -f ~/.bashrc && . ~/.bashrc
@@ -137,26 +139,130 @@ if [ -x /usr/bin/dircolors ]; then
     alias gpush='echo "[git 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 fi
 
-# ssh 命令时候能够自动补全 hostname
-[[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
-
 ####################################################################
 # Windows git bash(mintty)
 # 在 mintty 下使用普通的 Windows 控制台程序
-# 如满足以下条件可以不需要这些 alias 使用 winpty 来调用了
-#   Windows version >= 10 / 2019 1809 (build >= 10.0.17763)
-#   在 ~/.mintty.rc 中添加 `ConPTY=true`
-alias python="winpty python"
-alias ipython="winpty ipython"
-alias mysql="winpty mysql"
-alias psql="winpty psql"
-alias redis-cli="winpty redis-cli"
-alias node="winpty node"
-alias vue='winpty vue'
-# Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
-alias ping='winpty ping'
+# 如 mintty 使用 ConPty 接口则可以不需要这些 alias 使用 winpty 来调用了
+#   Windows version >= 10 / 2019 1809 (build >= 10.0.17763) 在 ~/.mintty.rc 中添加 `ConPTY=true`
+if [[ $(git --version |grep -i windows >/dev/null 2>&1;echo $?) = '0' ]] ;then
 
-# 为防止变量名污染命令行环境，尽量使用奇怪点的名称
+    alias python="winpty python"
+    alias ipython="winpty ipython"
+    alias mysql="winpty mysql"
+    alias psql="winpty psql"
+    alias redis-cli="winpty redis-cli"
+    alias node="winpty node"
+    alias vue='winpty vue'
+
+    # Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
+    alias ping='winpty ping'
+fi
+
+####################################################################
+# Linux bash / Windows git bash(mintty)
+# 适用于 tmux 等多终端程序下，配置 gpg pinentry 使用正确的 TTY
+# https://wiki.archlinux.org/title/GnuPG#Configure_pinentry_to_use_the_correct_TTY
+
+export GPG_TTY=$(tty)
+gpg-connect-agent updatestartuptty /bye >/dev/null
+
+#################################
+# Mac OS
+# 如果你要在 OS-X 上使用 GPG，记得将下面的命令填入你的 Shell 的默认配置中。
+
+# Add the following to your shell init to set up gpg-agent automatically for every shell
+if [ -f ~/.gnupg/.gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
+    source ~/.gnupg/.gpg-agent-info
+    export GPG_AGENT_INFO
+else
+    eval $(gpg-agent --daemon --write-env-file ~/.gnupg/.gpg-agent-info)
+fi
+
+####################################################################
+# Linux bash / Windows git bash(mintty)
+# 多会话复用 ssh-agent
+#
+# 代码来源 git bash auto ssh-agent
+# https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
+# 来自章节 [多会话复用 ssh-agent 进程] <ssh okletsgo>
+
+agent_env=~/.ssh/agent.env
+
+agent_load_env () { test -f "$agent_env" && . "$agent_env" >| /dev/null ; }
+
+agent_start () {
+    (umask 077; ssh-agent >| "$agent_env")
+    . "$agent_env" >| /dev/null ; }
+
+agent_load_env
+
+# 加载 ssh-agent 需要用户手工输入密钥的保护密码
+# 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
+#
+# agent_run_state:
+#   0=agent running w/ key;
+#   1=agent w/o key;
+#   2=agent not running
+agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
+
+if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
+    # 开机后第一次打开bash会话
+    echo "正在启动ssh-agent..."
+    agent_start
+
+    echo ''
+    echo "加载ssh密钥，注意根据提示输入保护密码"
+    ssh-add
+
+elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
+    # ssh-agent正在运行，但是没有加载过密钥
+    echo "加载ssh密钥,注意根据提示输入保护密码"
+    ssh-add
+fi
+
+unset agent_env
+
+####################################################################
+# Windows git bash(mintty) 取代上面多会话复用 ssh-agent 的段落
+# 多会话复用 ssh-pageant 及运行gpg钥匙圈更新，用它连接 putty 的 pagent.exe，
+# 来自章节 [使ssh鉴权统一调用putty的pageant](ssh.md think)
+
+# 利用检查 ssh-pageant 进程是否存在，判断是否开机后第一次打开bash会话，则运行gpg钥匙圈更新
+if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
+    echo ''
+    # echo "更新gpg钥匙圈需要点时间，请稍等..."
+    # gpg --refresh-keys
+
+    echo "更新TrustDB，跳过owner-trust未定义的导入公钥..."
+    gpg --check-trustdb
+
+    echo ''
+    echo "检查gpg签名情况..."
+    gpg --check-sigs
+
+fi
+
+echo ''
+echo '用 ssh-pageant 连接 putty pageant，复用已加载的ssh密钥'
+# ssh-pageant 使用以下参数来判断是否有已经运行的进程，不会多次运行自己
+eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
+ssh-add -l
+
+####################################################################
+# 加载插件或小工具
+
+# ssh 命令时候能够自动补全 hostname
+[[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
+
+# ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
+source /usr/local/bin/ackg.sh
+
+#################################
+# 手动配置插件
+
+alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
+
+####################################################################
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
@@ -323,7 +429,7 @@ function PS1raspi-warning-info {
 
     local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
-    if [ "$CPUTEMP" -gt  "60000" ] && [ "$CPUTEMP" -lt  "70000" ]; then
+    if [ "$CPUTEMP" -gt "60000" ] && [ "$CPUTEMP" -lt "70000" ]; then
         local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ="
     elif [ "$CPUTEMP" -gt  "70000" ];  then
         local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` IS VERY HIGH! SHUTDOWN NOW! ="
@@ -351,7 +457,7 @@ function PS1raspi-warning-prompt {
 }
 
 #################################
-# 设置命令行提示符
+# 设置命令行提示符 PS1
 
 # 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
 PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue╰──$PS1Cwhite\$ $PS1Cnormal"
@@ -380,100 +486,3 @@ function PS1git-bash-new-line {
 
 # git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
 PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
-
-####################################################################
-# Linux bash / Windows git bash(mintty)
-# 多会话复用 ssh-agent
-#
-# 代码来源 git bash auto ssh-agent
-# https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
-# 来自章节 [多会话复用 ssh-agent 进程] <ssh okletsgo>
-
-env=~/.ssh/agent.env
-
-agent_load_env () { test -f "$env" && . "$env" >| /dev/null ; }
-
-agent_start () {
-    (umask 077; ssh-agent >| "$env")
-    . "$env" >| /dev/null ; }
-
-agent_load_env
-
-# 加载 ssh-agent 需要用户手工输入密钥的保护密码
-# 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
-#
-# agent_run_state:
-#   0=agent running w/ key;
-#   1=agent w/o key;
-#   2=agent not running
-agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
-
-if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
-    # 开机后第一次打开bash会话
-    echo "正在启动ssh-agent..."
-    agent_start
-
-    echo ''
-    echo "加载ssh密钥，注意根据提示输入保护密码"
-    ssh-add
-
-elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
-    # ssh-agent正在运行，但是没有加载过密钥
-    echo "加载ssh密钥,注意根据提示输入保护密码"
-    ssh-add
-fi
-
-unset env
-
-####################################################################
-# Mac OS
-# 如果你要在 OS-X 上使用 GPG，记得将下面的命令填入你的 Shell 的默认配置中。
-
-# Add the following to your shell init to set up gpg-agent automatically for every shell
-if [ -f ~/.gnupg/.gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
-    source ~/.gnupg/.gpg-agent-info
-    export GPG_AGENT_INFO
-else
-    eval $(gpg-agent --daemon --write-env-file ~/.gnupg/.gpg-agent-info)
-fi
-
-####################################################################
-# Windows git bash(mintty)
-# 多会话复用 ssh-pageant 及运行gpg钥匙圈更新
-#
-# 用它连接 putty 的 pagent.exe，代替上面多会话复用 ssh-agent 的段落
-# 来自章节 [使ssh鉴权统一调用putty的pageant] <ssh.md think>
-
-# 利用检查 ssh-pageant 进程是否存在，判断是否开机后第一次打开bash会话，则运行gpg钥匙圈更新
-if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
-    echo ''
-    # echo "更新gpg钥匙圈需要点时间，请稍等..."
-    # gpg --refresh-keys
-
-    echo "更新TrustDB，跳过owner-trust未定义的导入公钥..."
-    gpg --check-trustdb
-
-    echo ''
-    echo "检查gpg签名情况..."
-    gpg --check-sigs
-
-fi
-
-echo ''
-echo '用 ssh-pageant 连接 putty pageant，复用已加载的ssh密钥'
-# ssh-pageant 使用以下参数来判断是否有已经运行的进程，不会多次运行自己
-eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
-ssh-add -l
-
-####################################################################
-# 加载插件
-
-# ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
-source /usr/local/bin/ackg.sh
-
-#################################
-# 手动配置插件
-
-alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
-
-####################################################################

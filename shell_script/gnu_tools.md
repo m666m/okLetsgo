@@ -3162,6 +3162,14 @@ fi
 # ssh 命令时候能够自动补全 hostname，这里我们使用 zsh 自带的吧
 # [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
 
+####################################################################
+# Linux bash / Windows git bash(mintty)
+# 适用于 tmux 等多终端程序下，配置 gpg pinentry 使用正确的 TTY
+# https://wiki.archlinux.org/title/GnuPG#Configure_pinentry_to_use_the_correct_TTY
+
+export GPG_TTY=$(tty)
+gpg-connect-agent updatestartuptty /bye >/dev/null
+
 ############# 加载插件
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
 # 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
@@ -7720,7 +7728,11 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 
 快捷运行桌面工具，按 alt + F2，然后在弹出对话框输入可执行名如 firefox
 
-Gnome Terminal
+GNOME Files（Nautilus）文件管理器
+
+    https://www.cnblogs.com/keatonlao/p/12717071.html
+
+Gnome Terminal 终端
 
     主题颜色使用 Nord theme
 
@@ -7754,7 +7766,7 @@ Gnome Terminal
 
     GNOME Web
 
-        GNOME 桌面（Fedora 工作站的默认桌面环境）的一个浏览器。如果你使用 GNOME 作为默认桌面环境的 Fedora 工作站，它可能非常适合作为你的主浏览器。这个浏览器有一个简单、干净、漂亮的外观。GNOME Web 的功能比 Firefox 少，但对于普通用途来说已经足够了。
+        GNOME 桌面自带的一个基于 WebKit 的浏览器，功能比 Firefox 少，但对于普通用途来说已经足够了。而且支持安装火狐和谷歌浏览器的扩展。
 
     FireFox
 
@@ -7767,24 +7779,6 @@ Gnome Terminal
             注意：你的浏览器历史记录本身之类的内容仍会暴露给你的正常浏览器会话，容器功能只是提供了一种方法来分离登录帐户等内容。
 
         Firefox 的 “插件”（plugin）和“扩展”（extension）是两种不同的东西：插件以动态库（Windows 上就是 DLL 文件）的方式，加载到浏览器的进程内。扩展可以调用浏览器自身的 API，但是大部分扩展【不能】调用操作系统的 API。
-
-    用 Flatpak 安装 chromium 系：
-
-        安装 chromium：
-
-            flatpak install flathub org.chromium.Chromium
-
-        安装 ungoogled-chromium：
-
-            ungoogled-chromium 是一个由社区维护，默认禁用谷歌隐私追踪的开源浏览器。
-
-            https://github.com/Eloston/ungoogled-chromium/blob/master/README.md。
-
-            flatpak install flathub com.github.Eloston.UngoogledChromium
-
-        安装 Chrome
-
-            flatpak install flathub com.google.Chrome # 稳定版
 
     Chromium
 
@@ -7801,6 +7795,20 @@ Gnome Terminal
             安装由 RPMFusion 提供，适用于 Fedora 的完整版 chromium（可选）：
 
                 sudo dnf in chromium-freeworld
+
+        用 Flatpak 安装 chromium 系：
+
+            安装 chromium：
+
+                flatpak install flathub org.chromium.Chromium
+
+            安装 ungoogled-chromium：
+
+                ungoogled-chromium 是一个由社区维护，默认禁用谷歌隐私追踪的开源浏览器。
+
+                https://github.com/Eloston/ungoogled-chromium/blob/master/README.md。
+
+                flatpak install flathub com.github.Eloston.UngoogledChromium
 
     Chrome
 
@@ -7827,6 +7835,11 @@ Gnome Terminal
 
                 sudo dnf remove fedora-chromium-config
 
+        用 Flatpak 安装 Chrome
+
+            # 稳定版
+            flatpak install flathub com.google.Chrome
+
     Tor 浏览器
 
         通过 Flatpak 安装：
@@ -7851,7 +7864,9 @@ Gnome Terminal
 
         https://www.freeoffice.com/en/
 
-    Okular 主要用于查看 pdf 并添加批注
+    Gnome Evince：支持 pdf 查看
+
+    Okular：主要用于查看 pdf 并添加批注
 
     calibre：Okular進階版，是電子書閱讀器也是電子書庫管理軟體。
 
@@ -7861,11 +7876,17 @@ Gnome Terminal
     XMind【專有軟體】：繪製心智圖，支援上傳到雲端。
     ImageMagick (無圖形界面)：用於圖片轉檔的純文字工具。
 
-gpg 密码管理
+密码管理器：使用你的登录身份免除ssh、gpg等密钥的密码，登录 web 网站也会自动填充密码
 
     Gnome Passwords and Keys（原名 Seahorse）
 
     KDE KGpg
+
+    KeePass 是一个免费的开源密码管理器，它可以帮助您以安全的方式管理您的密码。您可以将所有密码存储在一个用主密钥锁定的数据库中。因此，您只需记住一个主密钥即可解锁整个数据库。数据库文件使用加密算法（AES-256、ChaCha20和Twofish）进行加密。
+
+        https://keepass.info/
+
+        https://wiki.archlinux.org/title/KeePass
 
 邮件
 
