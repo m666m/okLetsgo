@@ -9,8 +9,8 @@
 # 为防止变量名污染命令行环境，尽量使用奇怪点的名称
 
 # 兼容性设置，用于 .bash_profile 加载多种linux的配置文件
-test -f ~/.profile && . ~/.profile
-test -f ~/.bashrc && . ~/.bashrc
+# test -f ~/.profile && . ~/.profile
+# test -f ~/.bashrc && . ~/.bashrc
 
 # exit for non-interactive shell
 [[ ! -t 1 ]] && return
@@ -188,11 +188,11 @@ fi
 
 agent_env=~/.ssh/agent.env
 
-agent_load_env () { test -f "$agent_env" && . "$agent_env" >| /dev/null ; }
+agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
 
 agent_start () {
     (umask 077; ssh-agent >| "$agent_env")
-    . "$agent_env" >| /dev/null ; }
+    source "$agent_env" >| /dev/null ; }
 
 agent_load_env
 
@@ -211,12 +211,12 @@ if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
     agent_start
 
     echo ''
-    echo "加载ssh密钥，注意根据提示输入保护密码"
+    echo "加载ssh密钥，请根据提示输入密钥的保护密码"
     ssh-add
 
 elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
     # ssh-agent正在运行，但是没有加载过密钥
-    echo "加载ssh密钥,注意根据提示输入保护密码"
+    echo "加载ssh密钥,加载ssh密钥，请根据提示输入密钥的保护密码"
     ssh-add
 fi
 

@@ -2994,7 +2994,7 @@ ohmyzsh的插件管理机制更智能，还会提示更新，建议用这种方�
 
 ```zsh
 
-##########################################################
+##############
 # powerlevel10k 自动生成的首行，不用动
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -3003,7 +3003,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-##########################################################
+##############
 # zsh 自己的内容，不用动
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
@@ -3024,7 +3024,7 @@ compinit
 # ...
 # ohmyzsh 自带插件管理，在 plugin=() 段落启用内置插件，可以在这里加载那些 source xxx 的插件
 
-##########################################################
+##############
 # powerlevel10k 安装程序添加，不用动
 
 source ~/powerlevel10k/powerlevel10k.zsh-theme
@@ -3032,7 +3032,7 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-##########################################################
+####################################################################
 # 从这里开始用户自己的设置
 
 # 命令行开启vi-mode模式，按esc后用vi中的上下键选择历史命令
@@ -3159,9 +3159,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias gpush='echo "[git 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 fi
 
-# ssh 命令时候能够自动补全 hostname，这里我们使用 zsh 自带的吧
-# [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
-
 ####################################################################
 # Linux bash / Windows git bash(mintty)
 # 适用于 tmux 等多终端程序下，配置 gpg pinentry 使用正确的 TTY
@@ -3170,7 +3167,8 @@ fi
 export GPG_TTY=$(tty)
 gpg-connect-agent updatestartuptty /bye >/dev/null
 
-############# 加载插件
+####################################################################
+# 加载插件
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
 # 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
 
@@ -3190,7 +3188,7 @@ source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
 source /usr/local/bin/ackg.sh
 
-##########################################################
+####################################################################
 # 手动配置插件
 
 alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
@@ -3203,7 +3201,7 @@ chpwd
 # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
-##########################################################
+####################################################################
 
 ```
 
