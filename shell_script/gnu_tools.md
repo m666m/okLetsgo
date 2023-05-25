@@ -7714,6 +7714,8 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 
 ### 常用桌面工具软件
 
+    https://www.freedesktop.org/wiki/Software/
+
     https://linux.cn/article-13761-1.html
 
     https://linuxhitchhiker.github.io/THGLG/solution/software/
