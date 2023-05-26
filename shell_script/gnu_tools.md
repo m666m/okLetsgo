@@ -7666,9 +7666,11 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     https://github.com/linuxmint/timeshift
 
+    https://www.makeuseof.com/use-timeshift-backup-and-restore-linux-snapshots/
+
     https://ivonblog.com/posts/linux-timeshift-usage/
 
-    基于全盘镜像备份的 cloneZilla
+    竞品：基于全盘镜像备份的 cloneZilla
 
 对标 Windows 系统映像备份或 MacOS 的操作系统备份功能。他会在你指定的硬盘（恢复驱动器）自动用一个目录保留各种安装好的程序和设置。
 
