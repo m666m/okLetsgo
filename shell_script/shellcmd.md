@@ -2009,6 +2009,55 @@ Perf 是 Linux kernel 自带的系统性能优化工具。
 
 执行成功后，使用浏览器打开 ksoftirqd.svg ，你就可以看到生成的火焰图了。
 
+### 使用 nmon 工具包
+
+跨平台的查看系统时实性能状态信息
+
+    https://nmon.sourceforge.net/pmwiki.php
+
+    https://www.kclouder.cn/posts/35478.html
+
+各大发行版都要这个软件包，安装后直接输入 nmon 命令即可启动.
+
+通过各种快捷键就可以启动不同的监控项目，比如按键 c 可以查看 CPU 相关信息、按键 d 可以查看磁盘信息、按键 t 可以查看系统的进程信息、m 对应内存、n 对应网络等等。再按一次为退出。
+
+按键 h 查看完整的快捷键。所有信息均为每隔2秒刷新一次，所以系统时实性能状态信息一目了然。
+
+采集监控数据
+
+如果我们要抓取或分析一段时间内的系统性能，可以使用nmon进行数据收集并生成图表报告。
+
+    mkdir -p ~/nmon # 创建一个保存报告文件的目录
+
+    nmon -s2 -c150 -f -m ~/nmon
+
+        -s2     每隔2秒采集一次数据
+
+        -c150   采集150次，即为采集5分钟的数据
+
+        -f      按标准格式生成的数据文件（包含主机名和时间）
+
+        -m      生成的数据文件的存放目录
+
+数据收集完成，将生成的文件转换为csv格式
+
+    sort 源文件 > 目标文件
+
+用 Nmonchart 生成 web 页报告，调用了 Google Chart 等 js 包，如果你的网页显示不正常，找 cdn 吧
+
+    https://nmon.sourceforge.net/pmwiki.php?n=Site.Nmonchart
+
+    默认生成同名的 .html 文件，通过指定文件名可以把.html直接放到你的网站上
+
+        nmonchart blue_150508_0800.nmon blue_150508_0800.html
+
+使用 nmon Analyser 生成 Excel 报告（需要安装 MS Office Excel）
+
+    https://nmon.sourceforge.net/pmwiki.php?n=Site.Nmon-Analyser
+        https://developer.ibm.com/articles/au-nmon_analyser/
+
+将 csv 文件拷贝出来，打开 nmon analyser，点击”Analyze nmon data” 导入csv文件，在图表报告中有详细的分类，例如系统详细信息、CPU利用率、内存利用率、磁盘写性能、磁盘读性能等等。
+
 ## 查看文件占用
 
 file 查看文件是shell类型、二进制类型，文本类型等
