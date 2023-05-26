@@ -1551,13 +1551,15 @@ ps 命令，注意伯克利写法的参数不用减号，与我们通常用减�
 
         https://blog.csdn.net/hehuyi_in/category_8883889.html
 
-    Linux 性能分析工具汇总 https://zhuanlan.zhihu.com/p/409237909
-
-    https://zhuanlan.zhihu.com/p/346630811
-
-    https://blog.csdn.net/sumengnan/article/details/109462795
+    Linux 自带的性能分析工具汇总 https://zhuanlan.zhihu.com/p/409237909
 
     大量网络、数据库、操作系统底层、cup 分析案例 https://plantegg.github.io/
+
+    60 秒 Linux 性能分析 https://zhuanlan.zhihu.com/p/346630811
+
+    linux查看磁盘io使用情况 https://blog.csdn.net/sumengnan/article/details/109462795
+
+    25 个 Linux 性能监控工具 https://zhuanlan.zhihu.com/p/432854684
 
 top 命令
 
