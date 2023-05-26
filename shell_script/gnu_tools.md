@@ -7714,15 +7714,18 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 
 ### 常用桌面工具软件
 
-    https://www.freedesktop.org/wiki/Software/
+    https://docs.fedoraproject.org/en-US/quick-docs/finding-and-installing-linux-applications/
 
-    https://linux.cn/article-13761-1.html
-
-    https://linuxhitchhiker.github.io/THGLG/solution/software/
-
-    https://ivonblog.com/posts/linux-recommended-application/
+    Linux 桌面环境软件套件介绍
+        https://www.freedesktop.org/wiki/Software/
 
     商业软件替代品 https://alternativeto.net/
+
+    软件推荐
+
+        https://linuxhitchhiker.github.io/THGLG/solution/software/
+
+        https://ivonblog.com/posts/linux-recommended-application/
 
     参考下它装的软件 https://theevilskeleton.gitlab.io/2022/05/16/response-to-flatpak-is-not-the-future.html
 

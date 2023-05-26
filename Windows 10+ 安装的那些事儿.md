@@ -1868,9 +1868,17 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
     https://docs.microsoft.com/zh-cn/windows/deployment/s-mode#%E4%BF%9D%E6%8C%81%E4%B8%9A%E5%8A%A1%E7%BA%BF%E5%BA%94%E7%94%A8%E4%B8%8E%E6%A1%8C%E9%9D%A2%E6%A1%A5%E4%B8%80%E8%B5%B7%E8%BF%90%E8%A1%8C
 
-### 双硬盘安装双系统
+### 安装双系统
 
-双硬盘的好处是在开机启动的时候即进行选择，隔离性比一个硬盘多个分区安装 Windows 的隔离性要好。不过无法保护 /boot 分区，在操作系统引导阶段对木马监控程序的防护差，建议开启 Secure Boot 功能。
+一个硬盘划分多个分区，可以安装多个操作系统：
+
+    建议先安装 Windows 10，再安装 Linux，这样 grub 引导加载器就能直接扫描到 Windows 10 系统，并将其添加到启动界面中。
+
+    不过无法保护 /boot 分区，在操作系统引导阶段对木马监控程序的防护差，建议开启 Secure Boot 功能。
+
+如果使用双硬盘，好处是在开机启动的时候即进行选择，隔离性比一个硬盘多个分区安装 Windows 的隔离性要好。冷机启动时先进入 BIOS 设置屏蔽一个硬盘，可以更好的实现使用隔离性。
+
+在每个系统内，利用虚拟机分类隔离使用你的软件，详见章节 [在虚拟机里使用你的日常软件]。
 
 硬盘A（分区A）
 
@@ -1886,13 +1894,17 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
         安装 Windows，对自己开启 Bitlocker 加密（防止硬盘A的操作系统启动后访问硬盘B，避免A上木马病毒程序的扫描和传播），只做升级维护等管理用途，不在这里做日常使用。
 
-        或安装 Qubes OS 等 Linux 系统，安装分区时使用 dm-luks 整盘加密，意味着你的整个系统是加密的（除了 /boot 分区）。
+        或安装 Linux 系统，安装分区时选择磁盘加密，意味着你的整个系统是加密的（除了 /boot 分区）。
 
     客户虚拟机：开发、办公
 
     客户虚拟机：上网冲浪
 
+    客户虚拟机：可以设置挂载分区 A 的操作系统临时使用，详见章节 [挂载实体机所在硬盘作为虚拟机](virtualiziation think)。
+
 TODO: 先装 Windows 再装 Fedora
+
+    https://linuxhitchhiker.github.io/THGLG/solution/config/dual-boot/
 
     https://zhuanlan.zhihu.com/p/488292819
 
