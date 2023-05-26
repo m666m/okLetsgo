@@ -9396,6 +9396,78 @@ ssh 启动方式需要明确指定使用哪个终端来显示。
 
 串口启动同样需要明确指定使用哪个VT来显示。
 
+#### 关闭 wayland 使用 xorg 桌面
+
+    https://www.kclouder.cn/posts/53908.html
+
+GDM (Gnome)在RHEL8中使用 Wayland 作为默认显示服务器，取代了在 RHEL7 中使用的 xorg 服务器。
+
+在 RHEL8 中，VNC 协议的地位似乎有所下降，因为 Wayland 并不支持屏幕共享和屏幕录制功能。但是，这个功能在xorg中仍然可用。因此，要使用VNC Server我们必须将GDM切换到xorg，使xorg成为RHEL8默认的显示服务器。
+
+修改 GDM 配置文件 /etc/gdm/custom.conf
+
+取消注释 waylandEnable=false
+
+安装配置 tigervnc
+
+    yum install -y tigervnc-server xorg-x11-fonts-Type1
+
+在 /etc/systemd/system/ 中创建配置文件，以便将VNC服务作为系统服务运行。默认情况下，VNC服务器使用端口5900，但是如果为VNC设置端口偏移量，则可以在默认端口5900的子端口上运行VNC服务器。例如我们使用9号端口，那么就是5909。
+
+    配置文件名就是 /etc/systemd/system/vncserver@:.service
+
+编辑配置文件如下，将用户名改为自己的用户名即可，这里的用户名是“jacky”，所以这里一共需要修
+改四处名称。
+
+    vi /etc/systemd/system/vncserver@:9.service
+
+``` ini
+[Unit]
+Description=Remote desktop service (VNC)
+After=syslog.target network.target
+[Service]
+Type=forking
+WorkingDirectory=/home/jacky
+User=jacky
+Group=jacky
+PIDFile=/home/jacky/.vnc/%H%i.pid
+ExecStartPre=/bin/sh -c ‘/usr/bin/vncserver -kill %i > /dev/null 2>&1 :’
+ExecStart=/usr/bin/vncserver -autokill %i
+ExecStop=/usr/bin/vncserver -kill %i
+Restart=on-success
+RestartSec=15
+[Install]
+WantedBy=multi-user.target
+```
+
+启动VNC Server。注意要切换到要使用VNC的账号，首次启动会提示输入用户名和密码。
+
+    vncserver
+
+禁用SELINUX
+
+    setenforce 0
+    sed -i ‘s/enforcing/disabled/g’ /etc/selinux/config2、禁用SELINUX
+
+执行以下命令在 systemctl 启用 VNC Server
+
+    systemctl daemon-reload
+    systemctl start vncserver@:9.service
+    systemctl enable vncserver@:9.service
+
+添加防火墙规则，或考虑直接禁用防火墙
+
+    firewall-cmd –permanent –add-port=5909/tcp
+    firewall-cmd –reload
+
+连接服务器
+
+这里我们使用VNC Viewer来连接RHEL8系统，输入VNC Server的IP地址，这里我使用的是9号端口，所以端口号可以使用5909或9，格式如下：
+
+    ip address:5909 或 ip address:9
+
+确认通过VNC Viewer可以正常登录到RHEL8系统桌面。
+
 ### Linux 桌面死机怎么办 --- reisub“登录控制台”
 
     https://blog.csdn.net/qq_39779233/article/details/114758689
