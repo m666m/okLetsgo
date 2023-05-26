@@ -7667,6 +7667,7 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
     https://github.com/linuxmint/timeshift
 
     https://www.makeuseof.com/use-timeshift-backup-and-restore-linux-snapshots/
+        https://discussion.fedoraproject.org/t/a-quick-guide-to-setting-up-btrfs-timeshift-on-fedora-33/27573
 
     https://ivonblog.com/posts/linux-timeshift-usage/
 
@@ -7684,7 +7685,7 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 
     RSYNC 快照類型，此選項適用大多數Linux發行版使用的檔案系統。
 
-    BTRFS 屬於較新的檔案系統，只有 Fedora 等少數發行版採用。
+    BTRFS 屬於較新的檔案系統，只有 Fedora 等少數發行版採用。注意 btrfs 快照需要建立子卷。
 
 選取快照儲存位置
 
