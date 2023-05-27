@@ -2481,7 +2481,8 @@ Fedora(SELinux) 下安装 Nerd Font --- Meslo LGS
 
     unzip Meslo.zip
 
-    # 安装 https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
+    方法来自 https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
+
     $ sudo mkdir -p /usr/local/share/fonts/NerdFont
     $ sudo cp MesloLGSNerdFont-*.ttf /usr/local/share/fonts/NerdFont/
 
