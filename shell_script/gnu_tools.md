@@ -10489,7 +10489,11 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
 把各服务的启动情况用 svg 图形进行展示，便于分析
 
-    systemd-analyze plot
+    systemd-analyze plot >file.svg
+
+命令打印严重消耗时间的服务树状表
+
+    systemd-analyze critical-chain
 
 ## 定时任务 crontab
 
