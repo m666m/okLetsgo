@@ -162,7 +162,7 @@ fi
 # Linux bash / Windows git bash(mintty)
 # 适用于 tmux 等多终端程序下，配置 gpg pinentry 使用正确的 TTY
 # https://wiki.archlinux.org/title/GnuPG#Configure_pinentry_to_use_the_correct_TTY
-
+echo "正在启动 gpg-agent..."
 export GPG_TTY=$(tty)
 gpg-connect-agent updatestartuptty /bye >/dev/null
 
@@ -207,16 +207,16 @@ agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
 
 if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
     # 开机后第一次打开bash会话
-    echo "正在启动ssh-agent..."
+    echo "正在启动 ssh-agent..."
     agent_start
 
     echo ''
-    echo "加载ssh密钥，请根据提示输入密钥的保护密码"
+    echo "加载 ssh 密钥，请根据提示输入密钥的保护密码"
     ssh-add
 
 elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
     # ssh-agent正在运行，但是没有加载过密钥
-    echo "加载ssh密钥,加载ssh密钥，请根据提示输入密钥的保护密码"
+    echo "加载 ssh 密钥，请根据提示输入密钥的保护密码"
     ssh-add
 fi
 
@@ -233,17 +233,17 @@ if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
     # echo "更新gpg钥匙圈需要点时间，请稍等..."
     # gpg --refresh-keys
 
-    echo "更新TrustDB，跳过owner-trust未定义的导入公钥..."
+    echo "更新 TrustDB，跳过 owner-trust 未定义的导入公钥..."
     gpg --check-trustdb
 
     echo ''
-    echo "检查gpg签名情况..."
+    echo "检查 gpg 签名情况..."
     gpg --check-sigs
 
 fi
 
 echo ''
-echo '用 ssh-pageant 连接 putty pageant，复用已加载的ssh密钥'
+echo '用 ssh-pageant 连接 putty pageant，复用已加载的 ssh 密钥'
 # ssh-pageant 使用以下参数来判断是否有已经运行的进程，不会多次运行自己
 eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
 ssh-add -l
