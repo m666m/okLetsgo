@@ -6,7 +6,11 @@
 
 参考
 
-    bash 内置命令 `man command`
+    bash 内置命令    `man command`
+
+    bash 语法        `man bash`
+
+    条件测试语句的用法  `man test`
 
     bash 系列教程 https://www.junmajinlong.com/shell/index/
 

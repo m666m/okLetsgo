@@ -411,10 +411,20 @@ function PS1git-branch-prompt {
 # https://docs.fedoraproject.org/en-US/fedora-silverblue/tips-and-tricks/#_working_with_toolbx
 function PS1_fedora_is_toolbox {
     if [ -f "/run/.toolboxenv" ]; then
-        TOOLBOX_NAME=$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")
-        echo "<${TOOLBOX_NAME}>"
+        echo "<$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
     fi
 }
+
+#################################
+# Linux bash - Fedora Silverblue、CoreOS
+# 提示当前在 distrobox 环境
+# 未测试
+# https://ublue.it/guide/toolbox/#using-the-hosts-xdg-open-inside-distrobox
+# function PS1_fedora_is_distrobox {
+#     if [ -e /run/.containerenv ] || [ -e /.dockerenv ]; then
+#         echo "<$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
+#     fi
+# }
 
 #################################
 # Linux bash - raspberry pi os (debian)
