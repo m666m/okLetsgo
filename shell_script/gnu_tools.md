@@ -7799,6 +7799,16 @@ Gnome Terminal 终端
 
         flatpak install flathub com.google.Chrome
 
+    Tor 浏览器
+
+        通过 Flatpak 安装：
+
+            flatpak install flathub com.github.micahflee.torbrowser-launcher
+
+        使用 dnf 安装官方仓库的：
+
+            sudo dnf install torbrowser-launcher
+
 办公套件
 
     LibreOffice 是 GNU/Linux 用户中最流行的办公套件。它的用户界面和用户体验类似于微软 Office。
