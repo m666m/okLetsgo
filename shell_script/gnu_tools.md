@@ -6117,9 +6117,13 @@ bc - An arbitrary precision calculator language
 
 ### 生成随机数做密码
 
+在 Linux 中，有两类用于生成随机数的设备，分别是 /dev/random 以及 /dev/urandom ，其中前者可能会导致阻塞，而读取 /dev/urandom 不会堵塞，不过此时 urandom 的随机性弱于 random 。 urandom 是 unblocked random 的简称，会重用内部池中的数据以产生伪随机数据，可用于安全性较低的应用
+
     https://huataihuang.gitbooks.io/cloud-atlas/content/os/linux/device/random_number_generator.html
 
-在 Linux 中，有两类用于生成随机数的设备，分别是 /dev/random 以及 /dev/urandom ，其中前者可能会导致阻塞，而读取 /dev/urandom 不会堵塞，不过此时 urandom 的随机性弱于 random 。 urandom 是 unblocked random 的简称，会重用内部池中的数据以产生伪随机数据，可用于安全性较低的应用。
+在 Linux 中生成强密码的不同方法有很多
+
+    https://ostechnix.com/4-easy-ways-to-generate-a-strong-password-in-linux/
 
     # 对随机数只取字符和数字，取前16个
     $ cat /dev/random | tr -cd '[:alnum:]' | head -c 16
@@ -6130,7 +6134,8 @@ bc - An arbitrary precision calculator language
     DPTDA9W29
 
     # 生成16字节的随机数据
-    dd if=/dev/urandom bs=1 count=16
+    # dd if=/dev/urandom bs=1 count=16
+    $ head -c 16 /dev/urandom
 
     # 对随机数取哈希，用 cksum 取 crc 校验和，还可以用 sha256sum、md5sum 等
     $ head /dev/random | cksum
@@ -6168,6 +6173,24 @@ bc - An arbitrary precision calculator language
     # 把数字 5-12 直接乱序排序，每行一个数字，输出1行
     $ shuf -i5-12 -n1
     9
+
+使用 cracklib 软件包检查口令的复杂度
+
+    $ echo 123654|cracklib-check
+    123654: it is too simplistic/systematic
+
+    $ echo 4aoqemo|cracklib-check
+    4aoqemo: OK
+
+使用 apg 软件包生成可发音的单词组合口令
+
+    $ apg -l
+    liwimthoa lima-india-whiskey-india-mike-tango-hotel-oscar-alfa
+    NadCuenUc November-alfa-delta-Charlie-uniform-echo-november-Uniform-charlie
+    clojyufdyt charlie-lima-oscar-juliett-yankee-uniform-foxtrot-delta-yankee-tango
+    ReutDybIj Romeo-echo-uniform-tango-Delta-yankee-bravo-India-juliett
+    OkAufwudAp Oscar-kilo-Alfa-uniform-foxtrot-whiskey-uniform-delta-Alfa-papa
+    fiworews? foxtrot-india-whiskey-oscar-romeo-echo-whiskey-sierra-QUESTION_MARK
 
 补充熵池
 
