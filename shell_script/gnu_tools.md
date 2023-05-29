@@ -6763,6 +6763,8 @@ peer-id-prefix=-TR2940-
 
 ### 跨机远程拷贝 scp
 
+    https://ostechnix.com/securely-transfer-files-with-scp-in-linux/
+
 前提条件
 
     可以 ssh 登陆才能 scp 文件

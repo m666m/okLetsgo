@@ -1348,6 +1348,24 @@ Linux 内核提供了一种通过 /proc 文件系统，在运行时访问内核�
     /proc/N/status 进程状态信息，比stat/statm更具可读性
     /proc/self 链接到当前正在运行的进程
 
+## 监视文件或目录变动
+
+安装使用 fswatch 软件包
+
+    https://github.com/emcrisostomo/fswatch
+
+列出当前可用的内核监视器
+
+    $ fswatch -M
+    inotify_monitor
+    poll_monitor
+
+监视目录
+
+    fswatch ~/mycode 可多写
+
+有变动就会输出该目录或文件名
+
 ## 进程查看
 
 显示进程的命令行
