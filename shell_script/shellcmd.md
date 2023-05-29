@@ -1136,11 +1136,19 @@ sudo 命令也可以用于切换到 root 用户：
 
 与 sudo 不同，PolKit 不会向整个会话授予 root 权限，而只向相关的操作授予该权限
 
+    https://www.freedesktop.org/software/polkit/docs/latest/polkit.8.html
+
+    https://www.freedesktop.org/software/polkit/docs/latest/pkexec.1.html
+
     https://wiki.archlinux.org/title/Polkit
 
     https://documentation.suse.com/zh-cn/sles/15-SP2/html/SLES-all/cha-security-policykit.html
 
+    https://segmentfault.com/a/1190000008063961
+
     https://coda.world/polkit
+
+    https://www.jianshu.com/p/aeb7f2f736a2
 
 比如当你运行 sudo hostnamectl set-hostname baka 时，系统会询问你密码，然后使用完整的 root 权限运行该命令。
 
