@@ -7971,6 +7971,8 @@ Gnome Terminal 终端
 
     HandBrake
 
+    Fondo：查找和设置Linux桌面壁纸，使用无版权图片网站 Unsplash 作为来源
+
 游戏平台
 
     Steam 你需要在 steam 的设置中启动 Proton 来游玩 Windows 游戏。
