@@ -1912,6 +1912,10 @@ TODO: 先装 Windows 再装 Fedora
 
     双系统全盘加密 https://www.cnblogs.com/xuanbjut/p/11796637.html
 
+    Fedora Silverblue使用 EFI 分区与 Windows 双启动
+
+        https://docs.fedoraproject.org/en-US/fedora-silverblue/troubleshooting/#_unable_to_install_fedora_silverblue_on_efi_systems
+
 先装 Ubuntu 再装 Windows
 
     https://zhuanlan.zhihu.com/p/609573337
