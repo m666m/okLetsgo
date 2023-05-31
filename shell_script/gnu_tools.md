@@ -9046,11 +9046,13 @@ VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
 #### Gnome 内置的远程桌面功能
 
-Gnome 共享屏幕功能，以服务器为主控，在主机屏幕前的人，可以同步看到远程的人在自己的计算机上干什么，并可以随时干预中断远程会话。发行版自带的远程桌面只支持共享给一个用户，如果需要多用户使用，需要安装第三方 vnc 或 rdp 软件。
+注意：发行版自带的远程桌面只支持共享给一个用户，如果需要多用户使用，需要安装第三方 vnc 或 rdp 软件。
+
+Gnome 共享屏幕功能，以服务器为主控，在主机屏幕前的人，可以同步看到远程的人在自己的计算机上干什么，并可以随时干预中断远程会话。
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
 
-    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/using_the_desktop_environment_in_rhel_8/accessing-the-desktop-remotely_using-the-desktop-environment-in-rhel-8
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/using_the_desktop_environment_in_rhel_8/accessing-the-desktop-remotely_using-the-desktop-environment-in-rhel-8
 
     https://linux.cn/article-14261-1.html
 
@@ -9060,9 +9062,9 @@ Gnome 共享屏幕功能，以服务器为主控，在主机屏幕前的人，�
 
 Gnome 桌面同时支持 X11 和 Wayland 两种方式，原 Xorg 桌面使用 VNC 协议
 
-    In an X11 session, it uses the vino component 设置开关中的共享屏幕其实就是启用这个 VNC 服务端
+    在 X11 会话中，它使用 vino 组件。
 
-    In a Wayland session, it uses the gnome-remote-desktop component 设置开关中的共享屏幕其实就是启用这个 RDP 服务端
+    在 Wayland 会话中，它使用 gnome-remote-desktop 组件。
 
 Gnome 42 桌面之后不再使用 VNC 协议，改为 RDP 协议了
 
@@ -9094,7 +9096,9 @@ Gnome 42 桌面之后不再使用 VNC 协议，改为 RDP 协议了
 
 是一台连接到由服务器提供的服务（或内容）的计算机，使用 vnc 或 rdp 客户端。
 
-Linux 计算机推荐使用 Remmina，或 Gnome 自带软件名为 “连接 connects”，同时支持 VNC 和 RDP。
+Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，GNOME Boxes 也支持远程桌面功能。
+
+Linux 计算机推荐使用 Remmina 同时支持 VNC 和 RDP。
 
 如果服务器和客户端之间有连接，请确保以下情况：
 
@@ -9318,7 +9322,11 @@ Gnome 等桌面环境内置的 vnc 软件功能太弱了，通常在服务器安
         二进制发布 https://sourceforge.net/projects/tigervnc/files/
 
     安装使用 Tiger VNC
+
+        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment#the-mapping-of-port-and-display-numbers-to-users-in-vnc_remotely-accessing-the-desktop-as-multiple-users
+
         https://blog.csdn.net/qlcheng2008/article/details/122421763
+
         https://www.cnblogs.com/liyuanhong/articles/15487147.html
 
     apt install tigervnc-standalone-server
