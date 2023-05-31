@@ -162,7 +162,7 @@ fi
 # Linux bash / Windows git bash(mintty)
 # 适用于 tmux 等多终端程序下，配置 gpg pinentry 使用正确的 TTY
 # https://wiki.archlinux.org/title/GnuPG#Configure_pinentry_to_use_the_correct_TTY
-echo "正在启动 gpg-agent..."
+echo "连接 gpg-agent..."
 export GPG_TTY=$(tty)
 gpg-connect-agent updatestartuptty /bye >/dev/null
 
@@ -207,7 +207,7 @@ agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
 
 if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
     # 开机后第一次打开bash会话
-    echo "正在启动 ssh-agent..."
+    echo "启动 ssh-agent..."
     agent_start
 
     echo ''
