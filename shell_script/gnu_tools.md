@@ -9867,7 +9867,17 @@ SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候�
 
     sudo sysctl -p
 
-## 开机启动 SystemV(init) 和 systemd
+## 使用 GRUB 管理操作系统启动引导
+
+基于 BIOS 的系统引导
+
+    https://docs.fedoraproject.org/en-US/quick-docs/installing-grub2/#installing-grub-2-on-a-bios-system
+
+基于 UEFI 的系统引导
+
+    https://docs.fedoraproject.org/en-US/quick-docs/installing-grub2/#installing-grub-2-configuration-on-uefi-system
+
+## 开机自启动 SystemV(init) 和 systemd
 
     https://www.debian.org/doc/manuals/debian-handbook/unix-services.zh-cn.html#sect.systemd
 
