@@ -1132,27 +1132,7 @@ sudo 命令也可以用于切换到 root 用户：
     [root@your_host:~] # pwd;exit
     /root
 
-### sudo 的替代方案 Polkit（PolicyKit）
-
-与 sudo 不同，PolKit 不会向整个会话授予 root 权限，而只向相关的操作授予该权限
-
-    https://www.freedesktop.org/software/polkit/docs/latest/polkit.8.html
-
-    https://www.freedesktop.org/software/polkit/docs/latest/pkexec.1.html
-
-    https://wiki.archlinux.org/title/Polkit
-
-    https://documentation.suse.com/zh-cn/sles/15-SP2/html/SLES-all/cha-security-policykit.html
-
-    https://segmentfault.com/a/1190000008063961
-
-    https://coda.world/polkit
-
-    https://www.jianshu.com/p/aeb7f2f736a2
-
-比如当你运行 sudo hostnamectl set-hostname baka 时，系统会询问你密码，然后使用完整的 root 权限运行该命令。
-
-然而假如 hostnamectl 配置了相应的 polkit 政策，用户就可以直接运行 hostnamectl set-hostname baka，然后进程会读取相应的政策文件，并按照进程中被访问的操作来进行相应的处理，例如询问密码、直接拒绝，或者按照认证规则（Authorization rules）里的政策来根据用户名和用户组等信息进行判断。
+另参见章节 [sudo 的替代方案 Polkit（PolicyKit）](init_a_server think)。
 
 ## 查看操作系统信息
 
