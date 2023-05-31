@@ -8047,6 +8047,8 @@ Gnome Terminal 终端
 
     FreeCAD：繪製CAD工程圖的軟體。
 
+    Vapoursynth： 视频压缩
+
 图片和视频转换
 
     XnConvert
