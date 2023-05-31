@@ -3164,9 +3164,62 @@ fi
 # Linux bash / Windows git bash(mintty)
 # 适用于 tmux 等多终端程序下，配置 gpg pinentry 使用正确的 TTY
 # https://wiki.archlinux.org/title/GnuPG#Configure_pinentry_to_use_the_correct_TTY
-
+echo "连接 gpg-agent..."
 export GPG_TTY=$(tty)
 gpg-connect-agent updatestartuptty /bye >/dev/null
+
+####################################################################
+# Linux bash / Windows git bash(mintty)
+# 多会话复用 ssh-agent
+#
+# 代码来源 git bash auto ssh-agent
+# https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
+# 来自章节 [多会话复用 ssh-agent 进程] <ssh okletsgo>
+
+agent_env=~/.ssh/agent.env
+
+agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
+
+agent_start () {
+    (umask 077; ssh-agent >| "$agent_env")
+    source "$agent_env" >| /dev/null ; }
+
+agent_load_env
+
+# 加载 ssh-agent 需要用户手工输入密钥的保护密码
+# 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
+#
+# agent_run_state:
+#   0=agent running w/ key;
+#   1=agent w/o key;
+#   2=agent not running
+agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
+
+if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
+    # 开机后第一次打开bash会话
+    echo "启动 ssh-agent..."
+    agent_start
+
+    echo ''
+    echo "加载 ssh 密钥，请根据提示输入密钥的保护密码"
+    ssh-add
+
+elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
+    # ssh-agent正在运行，但是没有加载过密钥
+    echo "加载 ssh 密钥，请根据提示输入密钥的保护密码"
+    ssh-add
+fi
+
+unset agent_env
+
+####################################################################
+# 加载插件或小工具
+
+# ssh 命令时候能够自动补全 hostname
+#[[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
+
+# ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
+source /usr/local/bin/ackg.sh
 
 ####################################################################
 # 加载插件
