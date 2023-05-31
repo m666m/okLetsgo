@@ -480,16 +480,13 @@ PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\
 
 #################################
 # Windows git bash(mintty)
-# 命令行提示符显示： 在上面的基础上修改了个兼容性函数
-#
-# 目前 git bash(mintty) 有点bug：
-# 在\$(函数名)后直接用换行\n就冲突
-# 规避办法是或者把换行\n放在引用函数前面，或者拼接凑合用
-#   PS1="\n$PS1Cblue┌──── $PS1Cwhite\t ""$PS1""$PS1Cblue───┘ $PS1Cnormal"
-#
-# 新的解决办法：
-# 用新增子函数 PS1git-bash-new-line 实现跟上面完全一致的显示效果。
-
+# 设置命令行提示符 PS1
+# 在上面的基础上修改了个兼容性函数，因为 目前 git bash(mintty) 有点bug：
+#   在\$(函数名)后直接用换行\n就冲突
+# 规避办法
+#   1. 把换行\n放在引用函数前面
+#   2. 重新拼接成新样式避开这个bug: PS1="\n$PS1Cblue┌──── $PS1Cwhite\t ""$PS1""$PS1Cblue───┘ $PS1Cnormal"
+#   3. 完美的解决办法：新增子函数 PS1git-bash-new-line 实现跟上面完全一致的显示效果。
 function PS1git-bash-new-line {
     printf "\n└"
 }
