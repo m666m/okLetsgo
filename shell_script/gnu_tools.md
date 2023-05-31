@@ -5651,29 +5651,33 @@ watch 对固定刷新屏幕的文本，可以高亮出变化的部分，非常�
 
     watch -d cat /proc/interrupts
 
-#### ackg 替代 grep 给自定义字符串加颜色
+#### ackg 给终端输出的自定义关键字加颜色
 
-hhighlighter 给终端输出的自定义字符串加颜色，非常适合监控日志输出调试程序使用
+hhighlighter 执行时调用 h()，太容易混淆了，我给他改名 ackg 了。
+
+hhighlighter 给终端输出的自定义字符串加颜色，支持多种颜色输出，替代 grep 给自定义字符串加颜色，非常适合监控日志输出调试程序使用
 
     https://github.com/paoloantinori/hhighlighter
-        主要封装的是 ack --passthru 的透传和着色
-            https://linux.die.net/man/1/ack
-                https://beyondgrep.com/
-                    https://github.com/beyondgrep/ack3/
+
+    主要封装的是 ack --passthru 的透传和着色
+
+        https://linux.die.net/man/1/ack
+            https://beyondgrep.com/
+                https://github.com/beyondgrep/ack3/
 
     竞品 https://github.com/Scopart/colorex/
 
     https://www.cnblogs.com/bamanzi/p/colorful-shell.html
 
-先安装依赖 ack，非常好的 grep 的替代品
+需要先安装软件包 ack，非常好的 grep 的替代品，使用 perl 正则表达式的语法
 
-        https://beyondgrep.com/
+    https://beyondgrep.com/
 
-        命令使用简介 https://wangchujiang.com/linux-command/c/ack.html
+    命令使用简介 https://wangchujiang.com/linux-command/c/ack.html
 
     sudo apt install ack
 
-脚本名和函数名都太简单了，都换成不易混淆的 ackg 吧
+hhighlighter 属于对 ack 的封装，但脚本名和函数名都太简单了，都换成不易混淆的 ackg 吧
 
     curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
 
@@ -5683,7 +5687,7 @@ hhighlighter 给终端输出的自定义字符串加颜色，非常适合监控�
 
 然后测试你感兴趣的文字，支持 -i 忽略大小写，支持 perl 形式的正则表达式
 
-    # 先 source 一下就可以在 shell 下使用它的同名函数了
+    # 先 source 一下就可以在 shell 下使用它导出的同名函数了
     source ackg.sh
 
     # 等效 echo abc | ack --flush --passthru --color --color-match=red a | ack --flush --passthru --color --color-match=yellow b
@@ -5691,7 +5695,7 @@ hhighlighter 给终端输出的自定义字符串加颜色，非常适合监控�
 
     ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
 
-    # \b 是perl正则表达式的单词限定符 https://perldoc.perl.org/perlre
+    # 使用 \b 是perl正则表达式的单词限定符 https://perldoc.perl.org/perlre
     cat /var/log/kern.log.1 |ackg -i 'Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled' '\bOk\b|Success|Good|Done|Finish|Enabled' 'Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart'
 
 ### 比较文件差异 diff
@@ -8004,6 +8008,10 @@ Gnome Terminal 终端
 
         sudo dnf in steam
 
+### 使用拼音输入法
+
+    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/assembly_enabling-chinese-japanese-or-korean-text-input_getting-started-with-the-gnome-desktop-environment#proc_switching-the-input-method-in-gnome_assembly_enabling-chinese-japanese-or-korean-text-input
+
 ### 使用 gnome 扩展
 
     gnome 桌面软件手册 https://help.gnome.org/users/
@@ -8217,6 +8225,8 @@ GNOME、KDE、Xfce 等使用 X Window 体系都是基于 Xorg 基础之上开发
 
 #### X11 启动过程
 
+    https://wiki.archlinux.org/title/Xinit#Autostart_X_at_login
+
     https://faq.i3wm.org/question/18/how-do-xsession-xinitrc-and-i3config-play-together.1.html
 
         https://tldp.org/HOWTO/XWindow-User-HOWTO/runningx.html
@@ -8232,6 +8242,33 @@ GNOME、KDE、Xfce 等使用 X Window 体系都是基于 Xorg 基础之上开发
     xinitrc 用于设置合适的 X 环境，并启动其他程序，即我们可能希望在 X 启动后立即可用的“客户端”。
 
     窗口管理器或桌面环境通常是最后一个启动的应用程序。
+
+设置登录终端后自动启动桌面，编辑 ~/.bash_profile 文件
+
+    if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+        exec startx
+    fi
+
+如果要自行选择多个桌面自行启动，先编辑 ~/.xinitrc 文件
+
+    # Here Xfce is kept as default
+    session=${1:-xfce}
+
+    case $session in
+        i3|i3wm           ) exec i3;;
+        kde               ) exec startplasma-x11;;
+        xfce|xfce4        ) exec startxfce4;;
+        # No known session, try to run it as command
+        *                 ) exec $1;;
+    esac
+
+然后手工启动
+
+    $ xinit session
+
+    或
+
+    $ startx ~/.xinitrc session
 
 另一种更常见的方法是 “GUI 登录”：
 
@@ -8288,6 +8325,8 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
     QT_QPA_PLATFORM=wayland
 
 ### 显示管理器（DisplayManager）设置登录后的桌面环境
+
+    https://wiki.archlinux.org/title/Display_manager
 
 显示管理器负责显示图形化登陆页面，在你输入用户名和密码后，立即启动显示服务器并加载桌面环境。
 
@@ -8444,6 +8483,155 @@ $XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对
 该目录必须位于本地文件系统上，不与任何其他系统共享。该目录必须完全按照操作系统的标准进行。更具体地说，在类Unix操作系统上，AF_UNIX套接字，符号链接，硬链接，适当的权限，文件锁定，稀疏文件，内存映射，文件更改通知，必须支持可靠的硬链接计数，并且对文件名没有限制应该强加字符集。此目录中的文件可能需要定期清理。为确保不删除您的文件，他们应至少每6小时单调时间修改一次访问时间戳记，或者在文件上设置“粘滞”位。
 
 如果 $XDG_RUNTIME_DIR 未设置，应用程序应回退到具有类似功能的替换目录并打印警告消息。应用程序应使用此目录进行通信和同步，并且不应在其中放置较大的文件，因为它可能驻留在运行时内存中，并且不一定可以交换到磁盘。
+
+#### TODO:关闭桌面环境开机自启动
+
+    https://askubuntu.com/questions/1242965/how-to-disable-gui-in-ubuntu
+
+    https://askubuntu.com/questions/76543/
+
+    https://superuser.com/questions/443997
+
+为了更便利的选择是否使用桌面，登录后进入命令行，手工启动 startx
+
+对使用 systemd 管理的显示管理器
+
+一、通用方法：
+
+    # 查看登录后启动的设置选项，启动到桌面是 graphical.target，启动到命令行是 multi-user.target
+    systemctl get-default
+
+    # 修改为登录后启动到命令行
+    sudo systemctl set-default multi-user.target
+
+    在系统运行时进行切换
+
+        # 切换到命令行模式
+        sudo systemctl isolate multi-user.target
+
+        # 切换到图形模式
+        sudo systemctl isolate graphical.target
+
+单独指定显示管理器服务是否开机自启动
+
+    # lightdm sddm
+    sudo systemctl disable gdm
+
+手工启动、停止指定的显示管理器服务
+
+    # lightdm sddm
+    systemctl start gdm
+
+二、针对显示管理器服务，编辑控制文件
+
+lightdm
+
+    https://wiki.debian.org/LightDM
+
+    # 又说  /etc/lightdm/lightdm.conf
+    echo 'manual' | sudo tee /etc/init/lightdm.override
+
+    手工启动、停止
+
+        startx
+
+    如果行不通那就是用 systemd 管理了
+
+gdm
+
+    https://wiki.debian.org/GDM#systemd
+
+    # 又说 /etc/gdm3/daemon.conf
+    或编辑  /etc/init/gdm.conf
+
+        stop on runlevel [0126]
+        #================================================================
+        #start on ((filesystem
+        #           and runlevel [!026]
+        #           and started dbus
+        #           and (drm-device-added card0 PRIMARY_DEVICE_FOR_DISPLAY=1
+        #                or stopped udev-fallback-graphics))
+        #          or runlevel PREVLEVEL=S)
+        #
+        #stop on runlevel [0126]
+        #================================================================
+
+    手工启动、停止
+
+        startx
+
+    如果行不通那就是用 systemd 管理了
+
+sddm
+
+    https://wiki.debian.org/SDDM
+
+    # 又说 /etc/sddm.conf
+    编辑 /etc/init/kdm.conf
+
+        stop on runlevel [0126]
+        #================================================================
+        #start on ((filesystem
+        #           and runlevel [!026]
+        #           and started dbus
+        #           and (drm-device-added card0 PRIMARY_DEVICE_FOR_DISPLAY=1
+        #                or stopped udev-fallback-graphics))
+        #          or runlevel PREVLEVEL=S)
+        #
+        #stop on runlevel [0126]
+        #================================================================
+
+    手工启动、停止
+
+        startx
+
+    如果行不通那就是用 systemd 管理了
+
+三、老式的 x 系统，参见章节 [X11 启动过程]
+
+四、如果操作系统无法开机启动
+
+直接编辑 grub 条目，在 'linux  ....' 行的末尾加 3 则等效于开机 init 3
+
+#### 不启动桌面环境，直接启动图形化应用程序
+
+可以在没有任何装饰、桌面或窗口管理的情况下启动应用程序
+
+一、老式的 x 系统
+
+    https://wiki.archlinux.org/title/Xinit#Starting_applications_without_a_window_manager
+
+在命令行手工执行应用程序
+
+    exec chromium
+
+    对老式的 x 系统
+
+        startx nautilus
+
+编辑 ~/.xinitrc 文件
+
+    exec chromium
+
+二、已经安装了显示管理器
+
+    https://wiki.archlinux.org/title/Display_manager#Starting_applications_without_a_window_manager
+
+设为桌面登录后，将立即启动设置的应用程序。当您关闭应用程序时，您将被带回登录管理器（与注销正常的桌面环境或窗口管理器相同），只需要编辑 /usr/share/xsessions/web-browser.desktop
+
+    [Desktop Entry]
+    Name=Web Browser
+    Comment=Use a web browser as your session
+    Exec=/usr/bin/google-chrome --auto-launch-at-startup
+    TryExec=/usr/bin/google-chrome --auto-launch-at-startup
+    Icon=google-chrome
+    Type=Application
+
+三、利用 systemd 单元，不使用显示管理器，直接登录 xorg 桌面
+
+    https://wiki.archlinux.org/title/Systemd/User#Automatic_login_into_Xorg_without_display_manager
+
+感觉这 systemd 管的越来越多，直接做一个 systemd 操作系统得了。
 
 ### 使用窗口管理器
 
@@ -8804,6 +8992,8 @@ VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 #### Gnome 内置的远程桌面功能
 
 Gnome 共享屏幕功能，以服务器为主控，在主机屏幕前的人，可以同步看到远程的人在自己的计算机上干什么，并可以随时干预中断远程会话。发行版自带的远程桌面只支持共享给一个用户，如果需要多用户使用，需要安装第三方 vnc 或 rdp 软件。
+
+    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/using_the_desktop_environment_in_rhel_8/accessing-the-desktop-remotely_using-the-desktop-environment-in-rhel-8
 
@@ -9348,6 +9538,8 @@ Wayland 的 VNC 客户端可以采用 wlvncc 。WayVNC 0.5 支持使用 OpenH268
 ##### 基于 weston 的 waypipe
 
 WayPipe 是原生支持 Wayland 的桌面客户端工具，它借助 ssh 实现远程桌面，類似 SSH X11 forwarding的技術，支持 sway 窗口管理器。
+
+    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-an-individual-application-wayland_getting-started-with-the-gnome-desktop-environment#doc-wrapper
 
     https://gitlab.freedesktop.org/mstoeckl/waypipe
         https://mstoeckl.com/notes/gsoc/blog.html
