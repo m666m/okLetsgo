@@ -26,6 +26,8 @@
 
         https://devhints.io/bash
 
+    https://zwischenzugs.com/2018/01/06/ten-things-i-wish-id-known-about-bash/
+
     Bash脚本指南
 
         https://linux.die.net/abs-guide/
