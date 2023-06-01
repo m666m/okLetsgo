@@ -8578,6 +8578,10 @@ $XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对
     # lightdm sddm
     sudo systemctl disable gdm
 
+    禁用开机会停留在控制台，按 ctl + alt + F1/F2/F3/F4，切换控制台使用即可。
+
+    执行命令 `startx` 会在当前控制台启动一个桌面环境，点击注销会退回到控制台。
+
 手工启动、停止指定的显示管理器服务
 
     # lightdm sddm
