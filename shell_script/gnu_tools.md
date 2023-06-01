@@ -9169,7 +9169,7 @@ Linux 计算机推荐使用 Remmina 同时支持 VNC 和 RDP。
 
 现在主流 Linux 系统的桌面环境放弃了传统的 X11/Xorg，使用 Wayland 体系，它使用 xwayland 模块来兼容使用 X window 体系的程序
 
-    如果安装了 xrdp，其后端基于 xvnc 或 xorgxrdp，Wayland 通过 xwayland 兼容模块响应其调用。
+    如果安装了 xrdp，其后端基于 xvnc 或 xorgxrdp，Wayland 通过 xwayland 兼容模块响应其调用。现在都不大使用 xorgxrdp 了，安装 tigervnc-standalone-server 提供优化的 vnc 服务端即可。
 
     对 Fedora 等使用 SELinux 技术的操作系统，您可能需要编辑 /etc/pam.d/xrdp-sesman 以使会话过渡到正确的 SELinux 上下文。[#2094](https://github.com/neutrinolabs/xrdp/issues/2094) 中埋藏着有关此的更多信息 。
 
