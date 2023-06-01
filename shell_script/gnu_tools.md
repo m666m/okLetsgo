@@ -5526,6 +5526,12 @@ reptyr
 
     whereis -l pwd
 
+列出所有文件
+
+    find 目录名
+
+    tree 目录名
+
 查找指定文件
 
     find ./ -name 2.sql
