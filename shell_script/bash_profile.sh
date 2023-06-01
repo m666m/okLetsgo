@@ -207,10 +207,9 @@ agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
 
 if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
     # 开机后第一次打开bash会话
-    echo "启动 ssh-agent..."
+    echo && echo "启动 ssh-agent..."
     agent_start
 
-    echo ''
     echo "加载 ssh 密钥，请根据提示输入密钥的保护密码"
     ssh-add
 
