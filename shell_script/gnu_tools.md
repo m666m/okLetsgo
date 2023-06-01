@@ -8545,7 +8545,7 @@ $XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对
 
 如果 $XDG_RUNTIME_DIR 未设置，应用程序应回退到具有类似功能的替换目录并打印警告消息。应用程序应使用此目录进行通信和同步，并且不应在其中放置较大的文件，因为它可能驻留在运行时内存中，并且不一定可以交换到磁盘。
 
-#### TODO:关闭桌面环境开机自启动
+#### 关闭桌面环境开机自启动
 
     https://askubuntu.com/questions/1242965/how-to-disable-gui-in-ubuntu
 
@@ -8563,7 +8563,7 @@ $XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对
 
     systemctl get-default
 
-修改为登录后启动到命令行
+修改为登录后启动到命令行（控制台）
 
     sudo systemctl set-default multi-user.target
 
@@ -8575,7 +8575,7 @@ $XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对
         # 切换到图形模式
         sudo systemctl isolate graphical.target
 
-单独指定显示管理器服务是否开机自启动
+单独指定显示管理器服务是否开机自启动（内存占用还是大，不如上面的方法）
 
     # lightdm sddm
     sudo systemctl disable gdm
