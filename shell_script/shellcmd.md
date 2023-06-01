@@ -1056,17 +1056,15 @@ fi
 
         sudo -i
 
-    从当前用户切换到其它用户（当前是非root用户会提示 root 用户密码）
+    从当前用户切换到其它用户
 
-        su - uu
+        su - git
 
-        有 sudo 权限的用户切换到其它用户，组合使用 sudo 和 su 即可
+        sudo su - git
 
             [uu@your_server:~] $ sudo su
             [root@your_server:/home/uu] # su - git
             [git@your_server:~] $
-
-            或一行 `sudo su - git`
 
 ### su
 
