@@ -1030,11 +1030,7 @@ fi
 
 如果不安装 sudo 软件包，除了用 su 命令切换到 root，就只能依赖可执行文件设置特殊权限位了，参见章节 [设定文件的特殊权限](init_a_server think)。一般这种情况都是关注安全性比较高的系统，普通使用为了方便还是安装 sudo 包。
 
-小提示：
-
-    在输入密码、切换到非 bash 环境等字符输入状态可能单纯用 Backspace 退格键没效果。你可以同时按着 Ctrl+Backspace 退格键来删除单个字符，或按 Ctrl+u 键，直接清除所有已输入的字符。
-
-    要返回上一个用户时，执行退出命令 `exit` 或 `logout` 或 Ctrl+d 即可。
+另参见章节 [sudo 的替代方案 Polkit（PolicyKit）](init_a_server think)。
 
 ### sudo 和 su 常用法
 
@@ -1065,6 +1061,12 @@ fi
             [uu@your_server:~] $ sudo su
             [root@your_server:/home/uu] # su - git
             [git@your_server:~] $
+
+小提示：
+
+    在输入密码、切换到非 bash 环境等字符输入状态可能单纯用 Backspace 退格键没效果。你可以同时按着 Ctrl+Backspace 退格键来删除单个字符，或按 Ctrl+u 键，直接清除所有已输入的字符。
+
+    要返回上一个用户时，执行退出命令 `exit` 或 `logout` 或 Ctrl+d 即可。
 
 ### su
 
@@ -1129,8 +1131,6 @@ sudo 命令也可以用于切换到 root 用户：
     $ sudo -i
     [root@your_host:~] # pwd;exit
     /root
-
-另参见章节 [sudo 的替代方案 Polkit（PolicyKit）](init_a_server think)。
 
 ## 查看操作系统信息
 
