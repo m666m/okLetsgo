@@ -9092,13 +9092,7 @@ Gnome 42 桌面之后不再使用 VNC 协议，改为 RDP 协议了
 
     启动桌面设置 “Gnome 控制中心 Gnome Control Center”
 
-    点击 “共享 Sharing” 标签。
-
-    用右上角的滑块打开共享。
-
-    单击 “屏幕共享 Screen sharing”。
-
-    用窗口的滑块打开屏幕共享。
+    点击 “共享 Sharing” 标签 --> 用右上角的滑块打开共享 --> 单击 “屏幕共享 Screen sharing” --> 用窗口的滑块打开屏幕共享。
 
     如果你希望能够从客户端控制屏幕，请勾选 “允许连接控制屏幕 Allow connections to control the screen”。如果不勾选这个按钮，访问共享屏幕将只允许 “仅浏览 view-only”。
 
@@ -9110,7 +9104,7 @@ Gnome 42 桌面之后不再使用 VNC 协议，改为 RDP 协议了
 
 Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，GNOME Boxes 也支持远程桌面功能。
 
-Linux 计算机推荐使用 Remmina 同时支持 VNC 和 RDP。
+推荐使用 Remmina 同时支持 VNC 和 RDP。
 
 如果服务器和客户端之间有连接，请确保以下情况：
 
@@ -9165,7 +9159,7 @@ Linux 计算机推荐使用 Remmina 同时支持 VNC 和 RDP。
 
 远程桌面 RDP 协议体系由客户端（viewer）与服务端两部分构成。xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，它利用服务器桌面环境的 xvnc 组件实现自己的后端，也就是说利用 xvnc 简单地将 vnc 位图流包装在 RDP 中。
 
-所以如果你安装了 GNOME，那 xorg 就将 GNOME 桌面远程提供给你，如果你安装了 xfce，xorg 就将 xfce 桌面提供给你。
+所以如果你安装了 GNOME，那 xnvc 就将 GNOME 桌面远程提供给你，如果你安装了 xfce，xvnc 就将 xfce 桌面提供给你。
 
 现在主流 Linux 系统的桌面环境放弃了传统的 X11/Xorg，使用 Wayland 体系，它使用 xwayland 模块来兼容使用 X window 体系的程序
 
@@ -9253,11 +9247,11 @@ xrdp 安装后要先做几个设置：
 
 ##### xorgxrdp
 
-xrdp 默认使用 xvnc 实现远程桌面，xorgxrdp 模块可以给它添加 xorg 方式。xorgxrdp 用于搭配 xrdp + X.Org Server，无法单独运作。
+xrdp 默认使用 xvnc 实现远程桌面，通过安装 xorgxrdp 可以给它添加 xorg 方式。xorgxrdp 模块用于搭配 xrdp + X.Org Server，无法单独运作。
 
     https://github.com/neutrinolabs/xrdp/wiki/Tips-and-FAQ#how-to-choose-backend-xorgxrdp-vs-xvnc
 
-xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，只传递绘制命令，X11rdp 尝试通过将 X11 绘制命令作为 RDP 绘制命令转发而不是简单地将 vnc 位图流包装在 RDP 中，以提高效率。目前看兼容性反而不好，一般用 xrdp 就够了。
+xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，只传递绘制命令，X11rdp 通过将 X11 绘制命令作为 RDP 绘制命令转发而不是简单地将 vnc 位图流包装在 RDP 中，以提高效率。目前看兼容性反而不好，一般用 xrdp 就够了。
 
     https://github.com/neutrinolabs/xorgxrdp
 
@@ -9271,7 +9265,7 @@ xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，�
 
         https://blog.csdn.net/lggirls/article/details/129748427
 
-在 xrdp 登录界面 Session 选择 xorg，则 xrdp-sesman 会使用配置文件 /etc/xrdp/xrdp.ini 中的 xorg 段激活使用 xorgxrdp 模块。对使用基于 Wayland 的 Gnome 桌面，不要开启 xorg，功能不正常。
+在 xrdp 登录界面 Session 选择 xorg，则 xrdp-sesman 会使用配置文件 /etc/xrdp/xrdp.ini 中的 xorg 段激活使用 xorgxrdp 模块（Fedora 38下默认是关闭的）。对使用基于 Wayland 的 Gnome 桌面，不要开启 xorg，功能不正常。
 
 确保你的系统安装了 X.Org server，一般是软件包 xserver-xorg-core 或 xorg-x11-server-Xorg
 
@@ -9712,7 +9706,7 @@ ssh 启动方式需要明确指定使用哪个终端来显示。
 
 GDM (Gnome)在RHEL8中使用 Wayland 作为默认显示服务器，取代了在 RHEL7 中使用的 xorg 服务器。
 
-在 RHEL8 中，VNC 协议的地位似乎有所下降，因为 Wayland 并不支持屏幕共享和屏幕录制功能。但是，这个功能在xorg中仍然可用。因此，要使用VNC Server我们必须将GDM切换到xorg，使xorg成为RHEL8默认的显示服务器。
+在 RHEL8 中，VNC 协议的地位似乎有所下降，因为 Wayland 并不支持屏幕共享和屏幕录制功能。但是，这个功能在 xorg 中仍然可用。因此，要使用VNC Server我们必须将 GDM 切换到 xorg，使 xorg 成为 RHEL8 默认的显示服务器。
 
 修改 GDM 配置文件 /etc/gdm/custom.conf
 
@@ -9722,7 +9716,7 @@ GDM (Gnome)在RHEL8中使用 Wayland 作为默认显示服务器，取代了在 
 
     yum install -y tigervnc-server xorg-x11-fonts-Type1
 
-在 /etc/systemd/system/ 中创建配置文件，以便将VNC服务作为系统服务运行。默认情况下，VNC服务器使用端口5900，但是如果为VNC设置端口偏移量，则可以在默认端口5900的子端口上运行VNC服务器。例如我们使用9号端口，那么就是5909。
+在 /etc/systemd/system/ 中创建配置文件，以便将 VNC 服务作为系统服务运行。默认情况下，VNC 服务器使用端口 5900，但是如果为 VNC 设置端口偏移量，则可以在默认端口 5900 的子端口上运行 VNC 服务器。例如我们使用 9 号端口，那么就是 5909。
 
     配置文件名就是 /etc/systemd/system/vncserver@:.service
 
