@@ -5691,6 +5691,18 @@ sleep 60
 
 ```
 
+### 现代化的查看文件列表 exa
+
+各大发行版都有提供名为 exa 的软件包，使用时加参数才出效果
+
+去掉 -a 可以不显示隐藏文件
+
+    $ exa -lhgia
+    inode Permissions Size User Group Date Modified Name
+    3767 drwxr-xr-x@    - uu   uu     3 Jun 04:59  .git
+    110635 .rw-r--r--@   18 uu   uu     3 Jun 00:09  1.txt
+    110627 .rw-r--r--@   16 uu   uu     3 Jun 00:09  a.txt
+
 ### 按内容查找文件：find + grep + xargs 组合
 
 在 $PATH 查找你的命令
@@ -6434,7 +6446,9 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 随机数生成的这些工具，通过 /dev/random 依赖系统的熵池，而服务器在运行时，既没有键盘事件，也没有鼠标事件，那么就会导致噪声源减少。很多发行版本中存在一个 rngd 程序，用来增加系统的熵池（用 urandom 给 random 灌数据），详见章节 [给random()增加熵](init_a_server think)。
 
-#### 使用 argon2 编码你的密码
+#### TODO:使用 argon2 编码你的密码
+
+    https://lindevs.com/install-argon2-on-raspberry-pi
 
 对密码加密保存一般使用 hash，但是防破解效果太差，有专门的 argon2 算法，通过加盐和多次迭代来增加破解难度，argon2id 算法还增加了内存使用量，给 GPU 并行破解增大难度
 
@@ -7632,22 +7646,6 @@ NFS 一般用来存储共享视频，图片等静态数据。
     # Python 3 http服务器的包名变了，使用端口 7777
     python3 -m http.server 7777
 
-### 简单监控你的网络流量 darkstat
-
-可以用 web 方式查看你的服务器的流量监控
-
-    https://openwrt.org/docs/guide-user/services/network_monitoring/darkstat
-
-    https://linux.cn/article-6033-1.html
-
-各大发行版都有这个软件包，安装后使用 systemd 控制它的后端
-
-    sudo apt install darkstat
-
-    sudo dnf install darkstat
-
-配置文件在 /etc/darkstat/init.cfg
-
 ### 字符终端下的一些小玩具如 figlet、cmatrix 等
 
     符号字符 https://www.webfx.com/tools/emoji-cheat-sheet/
@@ -7864,24 +7862,7 @@ Ninja 还集成了 graphviz 等一些对开发非常有用的工具，执行 `./
     # 运行ninja编译
     ninja
 
-### 查看可执行文件的依赖项 file、libtree
-
-命令 file 可以查看文件类型的说明
-
-    sudo dnf install file
-
-    $ file .git/*
-    .git/branches:       directory
-    .git/COMMIT_EDITMSG: ASCII text
-    .git/config:         ASCII text
-    .git/description:    ASCII text
-    .git/HEAD:           ASCII text
-    .git/hooks:          directory
-    .git/index:          Git index, version 2, 1 entries
-    .git/info:           directory
-    .git/logs:           directory
-    .git/objects:        directory
-    .git/refs:           directory
+### 查看可执行文件的依赖项 libtree
 
 命令 ldd 可以查看可执行程序或共享库依赖的库
 

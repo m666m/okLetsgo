@@ -2094,6 +2094,21 @@ file 查看文件是shell类型、二进制类型，文本类型等
 
 无论设备、端口、内存句柄等等，一切皆文件。
 
+命令 file 可以查看文件类型的说明 (sudo dnf install file)
+
+    $ file .git/*
+    .git/branches:       directory
+    .git/COMMIT_EDITMSG: ASCII text
+    .git/config:         ASCII text
+    .git/description:    ASCII text
+    .git/HEAD:           ASCII text
+    .git/hooks:          directory
+    .git/index:          Git index, version 2, 1 entries
+    .git/info:           directory
+    .git/logs:           directory
+    .git/objects:        directory
+    .git/refs:           directory
+
 lsof 查看指定进程号打开的文件（sudo apt install lsof）
 
     $ sudo lsof -p 28987
@@ -2307,6 +2322,36 @@ tcpdump、wireshark 的常见命令
 用 tcpdump 抓包
 
     https://zhuanlan.zhihu.com/p/74812069
+
+### 简单监控你的网络流量 iftop darkstat
+
+iftop 类似 top 命令查看当前各个连接的流量情况，各大发行版都有这个软件包
+
+    先看网卡名
+
+        ip addr
+
+    然后开启混杂模式
+
+        ip link set eth0 promisc on
+
+    然后才能看流量
+
+        sudo iftop -i eth0
+
+可以用 web 方式查看你的服务器的流量监控
+
+    https://openwrt.org/docs/guide-user/services/network_monitoring/darkstat
+
+    https://linux.cn/article-6033-1.html
+
+各大发行版都有这个软件包，安装后使用 systemd 控制它的后端
+
+    sudo apt install darkstat
+
+    sudo dnf install darkstat
+
+配置文件在 /etc/darkstat/init.cfg
 
 ## 查看日志
 
