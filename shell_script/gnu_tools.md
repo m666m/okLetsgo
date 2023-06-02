@@ -9228,7 +9228,7 @@ Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，
 
 现在主流 Linux 系统的桌面环境放弃了传统的 X11/Xorg，使用 Wayland 体系，它使用 xwayland 模块来兼容使用 X window 体系的程序
 
-    如果安装了 xrdp，其后端基于 xvnc 或 xorgxrdp，Wayland 通过 xwayland 兼容模块响应其调用。现在都不大使用 xorgxrdp 了，安装 tigervnc-standalone-server 提供优化的 vnc 服务端即可。
+    如果安装了 xrdp，其后端基于 xvnc（VNC） 或 xorgxrdp（XORG），Wayland 通过 xwayland 兼容模块响应其调用。
 
     对 Fedora 等使用 SELinux 技术的操作系统，您可能需要编辑 /etc/pam.d/xrdp-sesman 以使会话过渡到正确的 SELinux 上下文。[#2094](https://github.com/neutrinolabs/xrdp/issues/2094) 中埋藏着有关此的更多信息 。
 
@@ -9310,11 +9310,15 @@ xrdp 安装后要先做几个设置：
 
 因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
 
-##### xorgxrdp
+##### 后端依赖 xvnc/xorgxrdp
 
-xrdp 默认使用 xvnc 实现远程桌面，通过安装 xorgxrdp 可以给它添加 xorg 方式。xorgxrdp 模块用于搭配 xrdp + X.Org Server，无法单独运作。
+    https://github.com/neutrinolabs/xrdp/discussions/2619
 
     https://github.com/neutrinolabs/xrdp/wiki/Tips-and-FAQ#how-to-choose-backend-xorgxrdp-vs-xvnc
+
+xrdp 默认使用 xvnc 实现远程桌面的服务端后端（常用于 Fedora 系），一般操作系统都会自带如 xvnc，或者手动安装 tigervnc-standalone-server 提供优化的 VNC 服务端。
+
+通过安装 xorgxrdp 可以给它添加 XORG 方式（常用于 Debian 系）。xorgxrdp 模块用于搭配 xrdp + X.Org Server，无法单独运作。
 
 xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，只传递绘制命令，X11rdp 通过将 X11 绘制命令作为 RDP 绘制命令转发而不是简单地将 vnc 位图流包装在 RDP 中，以提高效率。目前看兼容性反而不好，一般用 xrdp 就够了。
 
