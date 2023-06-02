@@ -3054,12 +3054,12 @@ export TERM=xterm-256color
 # 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
 # curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 if [ -x /usr/bin/dircolors ]; then
-    # 使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令
-    # [[ -f ~/.dircolors ]] ||curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 
+    # 使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
+    # [[ -f ~/.dircolors ]] ||curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 
-    # 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题
+    # 注意基础命令不要搞太花哨，导致脚本里解析出现用法不一致的问题
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
     alias ls='ls --color=auto'
@@ -3081,45 +3081,32 @@ if [ -x /usr/bin/dircolors ]; then
     alias lsg='ls -lFA |grep -i'
     # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findg fnwithstr`
     alias findg='find ./ |grep -i'
-    #
     # 在当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
     alias greps='grep --color=auto -d skip -in'
     # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过.git等目录，如 `finds strinfile`
     alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
-    #
-    # 目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录
-    alias trees='tree -a -CF -I ".git|__pycache__" -L 2'
-    # 进程树，列出pid，全部子进程
-    alias pstrees='pstree -p -s'
+    alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]" && tree -a -CF -I ".git|__pycache__" -L 2'
+    alias pstrees='echo "[进程树，列出pid，及全部子进程]" && pstree -p -s'
     # curl 跟踪重定向，不显示进度条，静默错误信息但要报错失败，默认打印到屏幕，加 -O 保存到默认文件
     alias curls='curl -fsSL'
-    # 16 字符随机数作为密码
-    alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
-    # 256 字节作为密钥文件
-    alias passf='dd if=/dev/random of=symmetric.key bs=1 count=256'
+    alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
+    alias passf='echo "[256 字节作为密钥文件，随机数过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
 
-    # wsl或git bash下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "[Windows Path]"
-    function cdw {
-        cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
-    }
-
-    # dnf
-    alias dnfp='echo "[dnf搜索包含指定命令的软件包]" && dnf provides'
-    alias dnfq='echo "[dnf查找指定的软件包在哪些存储库]" && dnf repoquery -i'
-    alias dnfr='echo "[dnf查看当前有哪些存储库]" && dnf repolist'
-    alias dnfrl='echo "[dnf查看存储库软件列表]" && dnf list --repo'
-    alias dnfl='echo "[dnf查看安装的软件]" && dnf list --installed'
-    alias dnfd='echo "[dnf卸载软件]" && dnf remove'
-    alias dnft='echo "[在toolbox里运行dnf]" && toolbox run dnf'
-
-    # flatpak
-    alias fpkr='echo "[flatpak查看当前有哪些存储库]" && flatpak remotes'
-    alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
-    alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
-    alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
-
-    # vi
-    alias viw='echo "[vi 后悔药：等保存了才发现是只读，只给出提示]" && echo ":w !sudo tee %"'
+    # git 常用命令
+    alias gs='git status'
+    alias gd='echo "[差异：工作区与暂存区]" && git diff'
+    alias gds='echo "[差异：暂存区与仓库]" && git diff --staged'
+    alias gdh='echo "[差异：工作区与仓库]" && git diff HEAD'
+    alias gdh2='echo "[差异：最近的两次提交记录]" && git diff HEAD~ HEAD'
+    alias glog='echo "[提交记录：树形]" && git log --oneline --graph'
+    alias glb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]" && git log --left-right --oneline'
+    alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
+    alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
+    alias gba='echo "[分支：全部分支及跟踪关系、最近提交及注释]" && git branch -avv'
+    alias gro='echo "[远程信息]" && git remote show origin'
+    alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
+    alias gpull='echo "[git 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull --rebase; done'
+    alias gpush='echo "[git 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 
     # gpg 常用命令，一般用法都是后跟文件名即可
     alias ggk='echo "[查看有私钥的gpg密钥及其子密钥带指纹]" && gpg -K --keyid-format=long --with-subkey-fingerprint'
@@ -3143,21 +3130,29 @@ if [ -x /usr/bin/dircolors ]; then
     # 对称算法解密，如 `cat 1.txt.asc |ssld` 输出到屏幕，`ssld -in 1.txt.asc -out 1.txt`操作文件，加 -kfile 指定密钥文件
     alias ssld='openssl enc -d -aes-256-cbc -md sha512 -pbkdf2 -iter 10000000 -salt'
 
-    # git 常用命令
-    alias gs='git status'
-    alias gd='echo "[差异：工作区与暂存区]" && git diff'
-    alias gds='echo "[差异：暂存区与仓库]" && git diff --staged'
-    alias gdh='echo "[差异：工作区与仓库]" && git diff HEAD'
-    alias gdh2='echo "[差异：最近的两次提交记录]" && git diff HEAD~ HEAD'
-    alias glog='echo "[提交记录：树形]" && git log --oneline --graph'
-    alias glb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]" && git log --left-right --oneline'
-    alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
-    alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
-    alias gba='echo "[分支：全部分支及跟踪关系、最近提交及注释]" && git branch -avv'
-    alias gro='echo "[远程信息]" && git remote show origin'
-    alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
-    alias gpull='echo "[git 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull --rebase; done'
-    alias gpush='echo "[git 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
+    # dnf
+    alias dnfp='echo "[dnf搜索包含指定命令的软件包]" && dnf provides'
+    alias dnfq='echo "[dnf查找指定的软件包在哪些存储库]" && dnf repoquery -i'
+    alias dnfr='echo "[dnf查看当前有哪些存储库]" && dnf repolist'
+    alias dnfrl='echo "[dnf查看存储库软件列表]" && dnf list --repo'
+    alias dnfl='echo "[dnf查看安装的软件]" && dnf list --installed'
+    alias dnfd='echo "[dnf卸载软件]" && dnf remove'
+    alias dnft='echo "[在toolbox里运行dnf]" && toolbox run dnf'
+
+    # flatpak
+    alias fpkr='echo "[flatpak查看当前有哪些存储库]" && flatpak remotes'
+    alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
+    alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
+    alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
+
+    # vi
+    alias viw='echo "[vi 后悔药：等保存了才发现是只读，只给出提示]" && echo ":w !sudo tee %"'
+
+    # wsl 或 git bash下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "[Windows Path]"
+    function cdw {
+        cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
+    }
+
 fi
 
 ####################################################################
@@ -7250,7 +7245,7 @@ rsync 默许服务端口为 873。
 
 #### 竞品 restic
 
-TODO:restic：使用 ssh 密钥方式连接备份服务器，在存储池中加密你的快照
+适合使用公共云备份，它基于 “存储库(Repository)” 和快照的概念，每次备份就相当于一份快照，它用增量方式生成快照并用 AES 等方式加密，使用 ssh 密钥方式连接备份服务器的保存到云端的 “存储库”。当您备份敏感数据并将备份放在不受自己管辖服务器（例如，云提供商）时，这一点尤其重要。
 
     https://restic.net/
         https://github.com/restic/restic
@@ -7260,7 +7255,77 @@ TODO:restic：使用 ssh 密钥方式连接备份服务器，在存储池中加�
 
     https://blog.csdn.net/weixin_37714509/article/details/120090368
 
-estic 备份原理跟其他简单的备份程序略有不同，它基于存储池和快照的概念，每次备份就相当于一份快照，快照存储在存储池中。存储池中的数据用AES加密，当您备份敏感数据并将备份放在不受自己管辖服务器（例如，云提供商）时，这一点尤其重要。
+    https://juejin.cn/post/7014803100074672135
+
+Rclone 和 Restic 的相同点
+
+    两者都是基于命令行的开源文件同步和备份工具。
+
+    两者都支持将文件备份到本地、远程服务器或对象存储。
+
+不同点是
+
+    Rclone 面向的是文件同步，即保证两端文件的一致，也可以增量备份。
+    Restic 面向的是文件备份和加密，文件先加密再传输备份，而且是增量备份，即每次只备份变化的部分。
+
+    Rclone 仓库配置保存在本地，备份的文件会保持原样的同步于存储仓库中。
+    Restic 配置信息直接写在仓库，只要有仓库密码，在任何安装了 Restic 的计算机上都可以操作仓库。
+
+    Rclone 不记录文件版本，无法根据某一次备份找回特定时间点上的文件。
+    Restic 每次备份都会生成一个快照，记录当前时间点的文件结构，可以找回特定时间点的文件。
+
+    Rclone 可以在配置的多个存储端之间传输文件。
+
+总的来说，Rclone 和 Restic 各有所长，要根据不同的业务需求选择使用。比如：网站数据的增量备份，用 Resitc 就比较合适。而常规文件的远程备份归档，用 Rclone 就很合适。
+
+两种使用方式：
+
+一、支持 sftp 方式备份到服务器
+
+从主机 A 备份数据到主机 B，需要配置主机 A 到主机 B 的 ssh 免密钥登陆
+
+    ssh-copy-id -i ~/user_A/.ssh/id_rsa.pub bkuser@server_B
+
+在服务器 A 创建备份，目标是服务器 B 的 /data 目录
+
+    restic -r sftp:bkuser@server_B:/data init
+
+    需要给出存储库的密码，之后在任何客户端都可以使用该密码访问该存储库了
+
+    查看 B 服务器 du -sh 可以看到有了 /data 目录
+
+执行数据备份
+
+    restic -r sftp:bkuser@server_B:/data backup ./
+
+查看备份
+
+    restic -r sftp:bkuser@server_B:/data snapshots
+
+查看备份内容
+
+    restic -r sftp:bkuser@server_B:/data ls 875a2a32
+
+恢复快照
+
+    restic -r sftp:bkuser@server_B:/data restore 875a2a32 -t ./
+
+    restic -r sftp:bkuser@server_B:/data restore 875a2a32 --target ./
+
+删除备份
+
+    restic -r sftp:root@106.53.117.41:/data forget 875a2a32
+
+为实现自动备份，可使用 --password-file 参数来读取密码文件
+
+    echo 'Lf0uHG1wVpVzsgEi' > /root/resticpasswd
+
+二、支持云存储：基于s3协议的后端对象存储
+
+如果想自建，可以安装 Minio Server
+
+    https://zhuanlan.zhihu.com/p/148269321
+        https://zhuanlan.zhihu.com/p/148270691
 
 ### 网络存储 nfs server
 

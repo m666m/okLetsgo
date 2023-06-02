@@ -33,12 +33,12 @@ export TERM=xterm-256color
 # 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
 # curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 if [ -x /usr/bin/dircolors ]; then
-    # 使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令
-    # [[ -f ~/.dircolors ]] ||curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 
+    # 使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
+    # [[ -f ~/.dircolors ]] ||curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 
-    # 注意不要搞太花哨，导致脚本里解析出现用法不一致的问题
+    # 注意基础命令不要搞太花哨，导致脚本里解析出现用法不一致的问题
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
     alias ls='ls --color=auto'
@@ -60,45 +60,32 @@ if [ -x /usr/bin/dircolors ]; then
     alias lsg='ls -lFA |grep -i'
     # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findg fnwithstr`
     alias findg='find ./ |grep -i'
-    #
     # 在当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
     alias greps='grep --color=auto -d skip -in'
     # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过.git等目录，如 `finds strinfile`
     alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
-    #
-    # 目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录
-    alias trees='tree -a -CF -I ".git|__pycache__" -L 2'
-    # 进程树，列出pid，全部子进程
-    alias pstrees='pstree -p -s'
+    alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]" && tree -a -CF -I ".git|__pycache__" -L 2'
+    alias pstrees='echo "[进程树，列出pid，及全部子进程]" && pstree -p -s'
     # curl 跟踪重定向，不显示进度条，静默错误信息但要报错失败，默认打印到屏幕，加 -O 保存到默认文件
     alias curls='curl -fsSL'
-    # 16 字符随机数作为密码
-    alias passr='cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
-    # 256 字节作为密钥文件
-    alias passf='dd if=/dev/random of=symmetric.key bs=1 count=256'
+    alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
+    alias passf='echo "[256 字节作为密钥文件，随机数过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
 
-    # wsl或git bash下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "[Windows Path]"
-    function cdw {
-        cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
-    }
-
-    # dnf
-    alias dnfp='echo "[dnf搜索包含指定命令的软件包]" && dnf provides'
-    alias dnfq='echo "[dnf查找指定的软件包在哪些存储库]" && dnf repoquery -i'
-    alias dnfr='echo "[dnf查看当前有哪些存储库]" && dnf repolist'
-    alias dnfrl='echo "[dnf查看存储库软件列表]" && dnf list --repo'
-    alias dnfl='echo "[dnf查看安装的软件]" && dnf list --installed'
-    alias dnfd='echo "[dnf卸载软件]" && dnf remove'
-    alias dnft='echo "[在toolbox里运行dnf]" && toolbox run dnf'
-
-    # flatpak
-    alias fpkr='echo "[flatpak查看当前有哪些存储库]" && flatpak remotes'
-    alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
-    alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
-    alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
-
-    # vi
-    alias viw='echo "[vi 后悔药：等保存了才发现是只读，只给出提示]" && echo ":w !sudo tee %"'
+    # git 常用命令
+    alias gs='git status'
+    alias gd='echo "[差异：工作区与暂存区]" && git diff'
+    alias gds='echo "[差异：暂存区与仓库]" && git diff --staged'
+    alias gdh='echo "[差异：工作区与仓库]" && git diff HEAD'
+    alias gdh2='echo "[差异：最近的两次提交记录]" && git diff HEAD~ HEAD'
+    alias glog='echo "[提交记录：树形]" && git log --oneline --graph'
+    alias glb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]" && git log --left-right --oneline'
+    alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
+    alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
+    alias gba='echo "[分支：全部分支及跟踪关系、最近提交及注释]" && git branch -avv'
+    alias gro='echo "[远程信息]" && git remote show origin'
+    alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
+    alias gpull='echo "[git 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull --rebase; done'
+    alias gpush='echo "[git 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 
     # gpg 常用命令，一般用法都是后跟文件名即可
     alias ggk='echo "[查看有私钥的gpg密钥及其子密钥带指纹]" && gpg -K --keyid-format=long --with-subkey-fingerprint'
@@ -122,21 +109,29 @@ if [ -x /usr/bin/dircolors ]; then
     # 对称算法解密，如 `cat 1.txt.asc |ssld` 输出到屏幕，`ssld -in 1.txt.asc -out 1.txt`操作文件，加 -kfile 指定密钥文件
     alias ssld='openssl enc -d -aes-256-cbc -md sha512 -pbkdf2 -iter 10000000 -salt'
 
-    # git 常用命令
-    alias gs='git status'
-    alias gd='echo "[差异：工作区与暂存区]" && git diff'
-    alias gds='echo "[差异：暂存区与仓库]" && git diff --staged'
-    alias gdh='echo "[差异：工作区与仓库]" && git diff HEAD'
-    alias gdh2='echo "[差异：最近的两次提交记录]" && git diff HEAD~ HEAD'
-    alias glog='echo "[提交记录：树形]" && git log --oneline --graph'
-    alias glb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]" && git log --left-right --oneline'
-    alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
-    alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
-    alias gba='echo "[分支：全部分支及跟踪关系、最近提交及注释]" && git branch -avv'
-    alias gro='echo "[远程信息]" && git remote show origin'
-    alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
-    alias gpull='echo "[git 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull --rebase; done'
-    alias gpush='echo "[git 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
+    # dnf
+    alias dnfp='echo "[dnf搜索包含指定命令的软件包]" && dnf provides'
+    alias dnfq='echo "[dnf查找指定的软件包在哪些存储库]" && dnf repoquery -i'
+    alias dnfr='echo "[dnf查看当前有哪些存储库]" && dnf repolist'
+    alias dnfrl='echo "[dnf查看存储库软件列表]" && dnf list --repo'
+    alias dnfl='echo "[dnf查看安装的软件]" && dnf list --installed'
+    alias dnfd='echo "[dnf卸载软件]" && dnf remove'
+    alias dnft='echo "[在toolbox里运行dnf]" && toolbox run dnf'
+
+    # flatpak
+    alias fpkr='echo "[flatpak查看当前有哪些存储库]" && flatpak remotes'
+    alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
+    alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
+    alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
+
+    # vi
+    alias viw='echo "[vi 后悔药：等保存了才发现是只读，只给出提示]" && echo ":w !sudo tee %"'
+
+    # wsl 或 git bash下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "[Windows Path]"
+    function cdw {
+        cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
+    }
+
 fi
 
 ####################################################################
@@ -144,7 +139,7 @@ fi
 # 在 mintty 下使用普通的 Windows 控制台程序
 # 如 mintty 使用 ConPty 接口则可以不需要这些 alias 使用 winpty 来调用了
 #   Windows version >= 10 / 2019 1809 (build >= 10.0.17763) 在 ~/.mintty.rc 中添加 `ConPTY=true`
-if [[ $(git --version |grep -i windows >/dev/null 2>&1;echo $?) = '0' ]] ;then
+if [[ $(git --version |grep -i Windows >/dev/null 2>&1;echo $?) = '0' ]] ;then
 
     alias python="winpty python"
     alias ipython="winpty ipython"
