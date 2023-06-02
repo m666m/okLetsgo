@@ -121,6 +121,8 @@
             "editor.foreground": "#bac9d6",
             "sideBar.foreground": "#a7b4be",
             "terminal.foreground": "#bbcad6",
+            // 光标所在词同类高亮
+            "editor.wordHighlightBackground": "#3572af4d",
             // 双击高亮和同类高亮颜色无区分
             "editor.selectionBackground": "#1474acad",
             "editor.selectionHighlightBackground": "#08537eb4",
