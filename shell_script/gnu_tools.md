@@ -3281,7 +3281,15 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
         https://directory.fsf.org/wiki/GNU
 
+    有很多常用工具介绍
+
+        https://lindevs.com/category/embedded-system/raspberry-pi?page=1
+
 ### man/info 查看帮助信息
+
+先把基础命令的 man 章节安装完整
+
+    sudo apt install bash-doc
 
 man 查看各章节后缀用.数字即可
 
@@ -3299,6 +3307,8 @@ man 查看各章节后缀用.数字即可
     sysctl.d (5)         - Configure kernel parameters at boot
     systemd-sysctl (8)   - Configure kernel parameters at boot
     systemd-sysctl.service (8) - Configure kernel parameters at boot
+
+参见章节 [安装完整的 man 手册](init_a_server.md think)。
 
 ### Vim 和 nano
 
@@ -5038,29 +5048,33 @@ MacOS 下可以做映射 <https://www.joshmedeski.com/posts/macos-keyboard-short
     ?       显示所有快捷键，使用pgup和pgdown翻页，按q退出(其实是在vim里显示的，命令用vim的)
 
     :       进入命令行模式，可输入命令如：
+
                 show-options -g  # 显示所有选项设置的参数，使用pgup和pgdown翻页，按q退出
                 set-option -g display-time 5000 # 提示信息的持续时间；设置足够的时间以避免看不清提示，单位为毫秒
 
-    s       列出当前会话，通过上、下键切换，回车确认切换到该会话的默认窗口。
-            下面表示0号会话有2个窗口，是当前连接，1号会话有1个窗口
+    s       列出当前会话，通过上、下键切换，回车确认切换到该会话的默认窗口
+
+            下面表示 0 号会话有 2 个窗口，是当前连接，1 号会话有 1 个窗口
                 (0) + 0: 2 windows (attached)
                 (1) + 1: 1 windows
 
     w       列出当前会话的所有窗口，通过上、下键切换，回车确认连接到该窗口。
-            新版tmux按树图列出所有会话的所有窗口，切换更方便，不需要先s选择会话了。
+
+            新版tmux按树图列出所有会话的所有窗口，切换更方便，不需要先s选择会话了
 
     $       重命名当前会话；这样便于识别
 
-    [       copy-mode模式，用于查看历史输出（默认只显示一屏），使用pgup和pgdown翻页，按q退出
+    左中括号  copy-mode 模式，查看屏幕历史，使用 pgup 和 pgdown 翻页，按 q 退出
 
-    d       脱离当前会话返回你的Shell，tmux里面的所有会话在后台继续运行，会话里面的程序不会退出。
-            如果ssh突然断连，也是相同的效果，下次登陆后在命令行运行 `tmux a` 就能重新连接到之前的会话
+    d       脱离当前会话返回你的 shell，tmux 里面的所有会话在后台继续运行，会话里面的程序不会退出。
+            如果 ssh 突然断连，也是相同的效果，下次登陆后在命令行运行 `tmux a` 就能重新连接到之前的会话
 
 窗口（Window）
 
     c       创建新窗口，状态栏会显示窗口编号
 
     w       列出当前会话的所有窗口，通过上、下键切换，回车确认切换到该窗口。
+
             新版的按树图列出所有会话的所有窗口，切换更方便
 
     数字0-9  切换到指定窗口
@@ -5502,14 +5516,180 @@ GNU Screen 的默认前导键是 Ctrl+A。
 
     Monit可以对系统状态、进程、文件、目录和设备进行监控，适用于Linux平台，可以自动重启已挂掉的程序，比较适合监控系统的关键进程和资源，如nginx、apache、mysql和cpu占有率等。
 
-### 通过 pid 把后台任务调回前台 reptyr
+### 后台执行
 
-reptyr
+原理是利用所有的 linux 命令行程序连接 tty 设备，参见章节 [Linux 的 TTY 设备]。
+
+#### nohup
+
+    nohup sleep 3600 &
+
+一般情况下，后台任务不希望出现屏幕打印，需要把程序的输出和异常信息都重定向一下
+
+    nohup [需要执行的命令] >/dev/null 2>&1 &
+
+#### 后知后觉发现一个命令要执行很久，半路让它改成后台执行
+
+最好还是用 tmux 用一个守护进程打开多个终端窗口实现了一直在后台运行，详见章节 [tmux 不怕断连的多窗口命令行]。
+
+    https://www.ruanyifeng.com/blog/2016/02/linux-daemon.html
+
+如果程序的输出无所谓，你只要程序能继续执行下去就好，典型的例子是你压缩一个文件或者编译一个大软件，中途发现需要花很长时间.
+
+按下 Ctrl-z，让程序进入 suspend 挂起状态。这个时候你应该会回到shell下，看到提示：
+
+    [1]+  Stopped                 xxxx 这样的输出。
+
+上面那个 [] 里的数字，我们记为 n，然后执行：
+
+    # 让暂时停掉的进程在后台运行
+    bg %n
+
+    # 后悔了，让暂时停掉的进程在前台运行
+    fg %n  # 这样会把我们从shell带回到该程序的界面
+
+执行之前，如果不放心，想确认一下，可以用 jobs 命令看看被 suspend 的任务列表。严格地说，jobs 看的不仅仅是 suspend 的任务，所以，如果你有其他后台任务，也会列出来。
+
+然后再解除你现在的shell跟刚才这个进程的所属关系
+
+    disown
+
+这个时候再执行jobs，就看不到那个进程了，用 ps -ef 可以看到哦。现在就可以关掉终端，下班回家了。
+
+实例
+
+    # 要执行很久的命令，不等了，按下 Ctrl+z 切换回 shell 的命令提示符下
+    bash-3.2$ sleep 3600
+    ^Z
+    [1]+  Stopped                 sleep 3600
+    bash-3.2$
+
+    bash-3.2$ jobs
+    [1]+  Stopped                 sleep 3600
+
+    # 让后台任务继续运行
+    bash-3.2$ bg %1
+    [1]+ sleep 3600 &
+
+    bash-3.2$ jobs
+    [1]+  Running                 sleep 3600 &
+
+    # 解除当前会话跟后台任务的归属
+    bash-3.2$ disown
+
+    # 当前会话没有后台任务了
+    bash-3.2$ jobs
+
+    # 其实那个任务还在执行
+    bash-3.2$ ps -ef | grep sleep
+    501 30787 30419   0  6:00PM ttys000    0:00.00 sleep 3600
+    501 33681 30419   0  6:02PM ttys000    0:00.00 grep sleep
+
+    # 退出会话，后台任务不会再跟随关闭了
+    bash-3.2$ exit
+
+#### reptyr 通过 pid 把后台任务调回前台
 
     # https://github.com/nelhage/reptyr
     sudo apt install reptyr
 
+如果后续又想把这个任务调回前台，需要安装 reptyr 工具，比 screenify 好用
+
+最好在 tmux 里执行 reptyr，这样以后就不用担心遇到这种尴尬了
+
+    reptyr <pid>
+
 从你的当前终端连接指定的 pid，适用于把 Ctrl+Z 挂起到后台的任务重新调用回前台。
+
+#### 避免后台执行
+
+    https://www.cnblogs.com/f-ck-need-u/p/8661501.html
+
+shell脚本中的一个"疑难杂症"，CTRL+C 中止了脚本进程，这个脚本却还在后台不断运行，且时不时地输出点信息到终端(我这里是循环中的echo命令输出的)，只能手动 ps 列表自己找出来 kill。
+
+这是因为 shell 脚本中有一些后台任务会直接挂靠在init/systemd进程下，而不会随着脚本退出而停止。
+
+例如：
+
+    [root@mariadb ~]# cat test1.sh
+    #!/bin/bash
+    echo $BASHPID
+    sleep 50 &
+
+    [root@mariadb ~]# ps -elf | grep slee[p]
+    0 S root      10806      1  0  80   0 - 26973 hrtime 19:26 pts/1    00:00:00 sleep 50
+
+脚本退出后，sleep进程的父进程变为了1，也就是挂在了init/systemd进程下。
+
+可以在脚本中直接使用kill命令杀掉sleep进程。
+
+    [root@mariadb ~]# cat test1.sh
+    #!/bin/bash
+    echo $BASHPID
+    sleep 50 &
+    kill $!
+
+但是，如果这个sleep进程是在循环中(for、while、until均可)，那就麻烦了。
+
+例如下面的例子，直接将循环放入后台，杀掉sleep、或者exit、或者杀掉脚本自身进程、或者让脚本自动退出、甚至exec退出当前脚本shell都是无效的。
+
+    [root@mariadb ~]# cat test1.sh
+    #!/bin/bash
+    echo $BASHPID
+
+    while true;do
+        sleep 50
+        echo 1
+    done &
+
+    killall sleep
+    kill $BASHPID
+
+究其原因，是因为while/for/until等是bash内置命令，它们的特殊性在于它们有一个很替它们着想的爹：bash进程。bash进程对他们的孩子非常负责，所有能直接执行的内置命令都不会创建新进程，它们直接在当前bash进程内部调用执行，所以我们用ps/top等工具是捕捉不到cd、let、expr等等内置命令的。但正因为爹太负责，把孩子们宠坏了，这些bash内置命令的执行必须依赖于bash进程才能执行。
+
+内置命令中还有几个比较特殊的关键字：while、for、until、if、case等，它们无法直接执行，需要结合其他关键字(如do/done/then等)才能执行。非后台情况下，它们的爹会直接带它们执行，但当它们放进后台后，它们必须先找个bash爹提供执行环境：
+
+如果是在当前shell中放进后台，则这个爹是新生成的bash进程。这个新的bash进程只负责一件事，就是负责这个后台，为它的孩子们提供它们依赖的bash环境。
+
+如果是在脚本中放进后台，则这个爹就是脚本进程。由于脚本不是内置命令，它能直接负责这个后台(因为脚本进程也算是bash进程的特殊变体，也相当于一个新的bash进程)。
+
+无论它们的爹是脚本进程还是新的bash进程，它们都是当前shell下的子shell。如果某个子shell中有后台进程，当杀掉子shell，意味着杀掉了它们的爹。非内置bash命令不依赖于bash，所以直接挂在init/systemd下，而bash内置命令严重依赖于bash爹，没有爹就没法执行，所以在杀掉bash进程(上面pid=7008)的时候，bash爹(pid=13295)会立即带着它下面的进程(sleep)挂在init/systemd下。
+
+该bash和终端无关，你就是退出了当前连接也会被系统新建一个bash继续运行。
+
+解决方案
+
+```bash
+
+#!/bin/bash
+
+trap "pkill -f $(basename $0);exit 1" SIGINT SIGTERM EXIT ERR
+
+while true;do
+    sleep 1
+    echo "hello world!"
+done &
+
+# do something
+sleep 60
+
+```
+
+更方便更精确的自杀手段：man kill。在该man手册中解释了，如果kill的pid值为0，表示发送信号给当前进程组中所有进程，对shell脚本来说这意味着杀掉脚本中产生的所有进程。方案如下：
+
+```bash
+
+#!/bin/bash
+
+trap "echo 'signal_handled:';kill 0" SIGINT SIGTERM
+
+while true;do
+    sleep 5
+    echo "hello world! hello world!"
+done &
+sleep 60
+
+```
 
 ### 按内容查找文件：find + grep + xargs 组合
 
@@ -5826,7 +6006,7 @@ dd 命令是基于块（block）的复制，用途很多。
 
 dd 过时了
 
-    文件到设备，设备到文件的大部分用途，用 cat/cp 命令就足够了，如果要限制字节数用 head -c 处理即可，除了指明必须用 dd 按块大小写入等场合，尽量避免用 dd。
+    文件到设备，设备到文件的大部分用途，用 cat 或 cp 命令就足够了，如果要限制字节数用 head -c 处理即可，除了指明必须用 dd 按块大小写入等场合，尽量避免用 dd。
 
         https://unix.stackexchange.com/questions/224277/is-it-better-to-use-cat-dd-pv-or-another-procedure-to-copy-a-cd-dvd/224314#224314
 
@@ -6106,6 +6286,14 @@ ln 命令默认生成硬链接，但是我们通常使用软连接
     # 如果最后的目录给出的是一个文件名，则就是在当前目录下建立软链接文件
     ln -s /tmp/cmd_1 /tmp/cmd_2 /usr/bin/
 
+### 带精度的计算器 bc
+
+bc - An arbitrary precision calculator language
+
+    # sudo apt install bc
+    $ echo '1 / 6' |bc -l
+    .16666666666666666666
+
 ### 文件完整性校验 sha256sum
 
 Linux 下，每个算法都是单独的程序：cksum md5sum sha1sum sha256sum sha512sum
@@ -6164,14 +6352,6 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     certutil -hashfile cn_windows_7.iso MD5
     certutil -hashfile cn_windows_7.iso SHA1
     certutil -hashfile cn_windows_7.iso SHA256
-
-### 带精度的计算器 bc
-
-bc - An arbitrary precision calculator language
-
-    # sudo apt install jq
-    $ echo '1 / 6' |bc -l
-    .16666666666666666666
 
 ### 生成随机数做密码
 
@@ -6253,6 +6433,27 @@ bc - An arbitrary precision calculator language
 补充熵池
 
 随机数生成的这些工具，通过 /dev/random 依赖系统的熵池，而服务器在运行时，既没有键盘事件，也没有鼠标事件，那么就会导致噪声源减少。很多发行版本中存在一个 rngd 程序，用来增加系统的熵池（用 urandom 给 random 灌数据），详见章节 [给random()增加熵](init_a_server think)。
+
+#### 使用 argon2 编码你的密码
+
+对密码加密保存一般使用 hash，但是防破解效果太差，有专门的 argon2 算法，通过加盐和多次迭代来增加破解难度，argon2id 算法还增加了内存使用量，给 GPU 并行破解增大难度
+
+    sudo apt install -y argon2
+
+    -m  定义最大内存使用量，以千字节为单位，2 的 m 次方，如 1GB 为 20
+    -k  定义最大内存使用量，以千字节为单位
+    -t  定义迭代次数。
+    -p  定义线程数。
+
+Argon2i 变体用于生成哈希
+
+    $ echo -n "Hello" | argon2 mysalt0123456789 -t 4 -k 65536 -p 2
+    $argon2i$v=19$m=65536,t=4,p=2$bXlzYWx0MDEyMzQ1Njc4OQ$N59WxssOt4L/ylaGzZGrPXkwClGZMDxn1Q3UolMEBLw
+
+使用更高强度的 Argon2id 变体而不是 Argon2i，用选项 -id 指定应使用
+
+    $ echo -n "Hello" | argon2 mysalt0123456789 -id -t 4 -m 20  -p 2
+    $argon2id$v=19$m=65536,t=4,p=2$bXlzYWx0MDEyMzQ1Njc4OQ$ZsUGQIIXWEezlODlyPlzJU+DDD1k7kEbYMSlHqonMb4
 
 ### 按数制显示内容 od
 
@@ -6340,6 +6541,40 @@ od :按数制显示内容
 
     # 以 ASCII 码的形式显示文件aa.txt内容的，等效 -ta
     od -a aa.txt
+
+#### 查看 16 进制 hexyl
+
+    https://github.com/sharkdp/hexyl
+
+可以传递文件名，也可以接收管道传递过来的内容，注意 bash 中字符串是默认补位 0a 的
+
+    $ echo 'abcdefgh123456789' |hexyl
+    ┌────────┬─────────────────────────┬─────────────────────────┬────────┬────────┐
+    │00000000│ 61 62 63 64 65 66 67 68 ┊ 31 32 33 34 35 36 37 38 │abcdefgh┊12345678│
+    │00000010│ 39 0a                   ┊                         │9_      ┊        │
+    └────────┴─────────────────────────┴─────────────────────────┴────────┴────────┘
+
+可以限制位数
+
+    $ hexyl -n 256 /dev/random
+    ┌────────┬─────────────────────────┬─────────────────────────┬────────┬────────┐
+    │00000000│ e0 c9 0c 31 ab 31 34 5b ┊ 5d 2b 51 b2 d5 f8 db 85 │××_1×141┊1+Q×××××│
+    │00000010│ e1 da 43 57 35 88 33 d2 ┊ be 34 5c f5 d9 34 6f 31 │××CW5×3×┊×4\××4o1│
+    │00000020│ 0c d6 74 50 ff 90 1a e8 ┊ 21 84 60 fe 36 65 26 3b │_×tP××•×┊!×`×6e&;│
+    │00000030│ ac 8f dc a5 0e 70 8c d5 ┊ 68 cc 56 ef 54 d8 6e 60 │××××•p××┊h×V×T×n`│
+    │00000040│ 68 5f a4 6c 8d 76 1d eb ┊ 31 db 7d 3b 07 6b 7f da │h_×l×v•×┊1×1;•k•×│
+    │00000050│ 67 f6 3f ca 2c 6d 54 86 ┊ b1 e6 f0 33 67 55 55 c2 │g×?×,mT×┊×××3gUU×│
+    │00000060│ cc ee 15 6e c2 c9 9d f4 ┊ a0 41 4c e5 36 59 9a 80 │××•n××××┊×AL×6Y××│
+    │00000070│ 34 aa 55 d3 52 a3 90 a2 ┊ 27 a4 2e 43 3b a2 fb 2d │4×U×R×××┊'×.C;××-│
+    │00000080│ a4 57 a4 37 c3 68 ba b7 ┊ 1f 33 59 01 74 60 57 5f │×W×7×h××┊•3Y•t`W_│
+    │00000090│ e9 33 bb a8 dc 86 8a 17 ┊ c8 5e 88 b4 2b 09 1e e3 │×3×××××•┊×^××+_•×│
+    │000000a0│ 84 f4 62 6a e2 89 7d c6 ┊ 9c e4 9d d3 d0 ab 30 8f │××bj××1×┊××××××0×│
+    │000000b0│ a2 a3 90 1b 3e 1a 67 62 ┊ 07 53 50 8b a7 fa 20 46 │×××•>•gb┊•SP××× F│
+    │000000c0│ 12 ea 39 aa a4 79 6f 0c ┊ 84 5d 8d c5 e9 24 68 95 │•×9××yo_┊×1×××$h×│
+    │000000d0│ da 9d ba 7a 97 37 47 6d ┊ f1 27 08 64 31 e9 07 ce │×××z×7Gm┊×'•d1×•×│
+    │000000e0│ 56 54 d2 f6 c4 e4 00 2f ┊ c9 f3 79 8e 8b 1a de 0e │VT××××⋄/┊××y××•×•│
+    │000000f0│ 29 1c 09 0c 94 cb b5 40 ┊ 5a dc 29 e4 dc 01 5a 42 │1•__×××@┊Z×1××•ZB│
+    └────────┴─────────────────────────┴─────────────────────────┴────────┴────────┘
 
 ### 下载工具
 
@@ -7397,6 +7632,22 @@ NFS 一般用来存储共享视频，图片等静态数据。
     # Python 3 http服务器的包名变了，使用端口 7777
     python3 -m http.server 7777
 
+### 简单监控你的网络流量 darkstat
+
+可以用 web 方式查看你的服务器的流量监控
+
+    https://openwrt.org/docs/guide-user/services/network_monitoring/darkstat
+
+    https://linux.cn/article-6033-1.html
+
+各大发行版都有这个软件包，安装后使用 systemd 控制它的后端
+
+    sudo apt install darkstat
+
+    sudo dnf install darkstat
+
+配置文件在 /etc/darkstat/init.cfg
+
 ### 字符终端下的一些小玩具如 figlet、cmatrix 等
 
     符号字符 https://www.webfx.com/tools/emoji-cheat-sheet/
@@ -7612,6 +7863,48 @@ Ninja 还集成了 graphviz 等一些对开发非常有用的工具，执行 `./
 
     # 运行ninja编译
     ninja
+
+### 查看可执行文件的依赖项 file、libtree
+
+命令 file 可以查看文件类型的说明
+
+    sudo dnf install file
+
+    $ file .git/*
+    .git/branches:       directory
+    .git/COMMIT_EDITMSG: ASCII text
+    .git/config:         ASCII text
+    .git/description:    ASCII text
+    .git/HEAD:           ASCII text
+    .git/hooks:          directory
+    .git/index:          Git index, version 2, 1 entries
+    .git/info:           directory
+    .git/logs:           directory
+    .git/objects:        directory
+    .git/refs:           directory
+
+命令 ldd 可以查看可执行程序或共享库依赖的库
+
+libtree 树状展示更清晰
+
+    https://github.com/haampie/libtree/
+
+    sudo apt install libtree
+
+    sudo dnf install libtree-ldd
+
+标准设置给出的太少，还是得加参数使用
+
+    $ libtree -v -p /usr/bin/ls
+    /usr/bin/ls
+    ├── /lib64/libselinux.so.1 [default path]
+    │   ├── /lib64/libpcre2-8.so.0 [default path]
+    │   │   └── /lib64/libc.so.6 [default path]
+    │   ├── /lib64/ld-linux-x86-64.so.2 [default path]
+    │   └── /lib64/libc.so.6 [default path]
+    ├── /lib64/libc.so.6 [default path]
+    └── /lib64/libcap.so.2 [default path]
+        └── /lib64/libc.so.6 [default path]
 
 ### 文本生成流程图 graphviz
 
