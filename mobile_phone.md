@@ -530,6 +530,8 @@ google 自称安卓 app 都是在 java 沙箱运行，可以保证是隔离环�
 
     https://itsfoss.com/open-source-alternatives-android/
 
+    Android手機去Google化 https://ivonblog.com/posts/android-phone-degoogle/
+
 Android 自己就不怎么干净，哪怕是开放源代码的 Android Open Source Project，也有不少私有成分（例如 Linux 内核里到处乱飞的厂商 Blob，通常是一堆没有源代码只有二进制文件的部份，通常是固件和微码什么的）。
 
 虽然核心操作系统仍然作为 Android 开源项目的一部分发布，但大多数核心应用程序都没有开源。 情况变得更糟：越来越多的库和 API 仅在预装运行各种 Google 应用程序的手机上可用，有效地将第三方应用锁定在谷歌生态系统中。
