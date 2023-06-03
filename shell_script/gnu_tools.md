@@ -6461,13 +6461,20 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 Argon2i 变体用于生成哈希
 
-    $ echo -n "Hello" | argon2 mysalt0123456789 -t 4 -k 65536 -p 2
+    $ echo -n "Hello" | argon2 mysalt0123456789 -t 4 -k 65536 -p 2 -e
     $argon2i$v=19$m=65536,t=4,p=2$bXlzYWx0MDEyMzQ1Njc4OQ$N59WxssOt4L/ylaGzZGrPXkwClGZMDxn1Q3UolMEBLw
 
-使用更高强度的 Argon2id 变体而不是 Argon2i，用选项 -id 指定应使用
+现代加密应该使用对抗显卡并行运算强度更高的 Argon2id 变体而不是 Argon2i，用选项 -id 指定应使用
 
     $ echo -n "Hello" | argon2 mysalt0123456789 -id -t 4 -m 20  -p 2
-    $argon2id$v=19$m=65536,t=4,p=2$bXlzYWx0MDEyMzQ1Njc4OQ$ZsUGQIIXWEezlODlyPlzJU+DDD1k7kEbYMSlHqonMb4
+    Type:           Argon2id
+    Iterations:     4
+    Memory:         1048576 KiB
+    Parallelism:    2
+    Hash:           05a3be8590c5a4f1eb4ba86b3da0afa7a7830b827ad432f9285d329d48520ada
+    Encoded:        $argon2id$v=19$m=1048576,t=4,p=2$bXlzYWx0MDEyMzQ1Njc4OQ$BaO+hZDFpPHrS6hrPaCvp6eDC4J61DL5KF0ynUhSCto
+    3.792 seconds
+    Verification ok
 
 ### 按数制显示内容 od
 
