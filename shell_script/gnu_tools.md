@@ -8159,6 +8159,34 @@ Reboot
 
     sudo reboot
 
+### 控制笔记本电脑切换独显 EnvyControl
+
+    https://github.com/bayasdev/envycontrol
+
+    https://ivonblog.com/posts/linux-envycontrol-turn-off-nvidia-gpu/
+
+### 优化笔记本电脑的电池 tlp
+
+    # https://ostechnix.com/how-to-optimize-laptop-battery-life-with-tlp-in-linux/
+
+GNOME和KDE主流桌面環境都已內建 Power Profile Daemon 來調節耗電量，大部份發行版還會將 TLP 與 PPD 列為衝突套件。再根據 Reddit 的討論認為二者無明顯差距，我便沒有再刻意安裝 TLP。
+
+Fedora
+
+    sudo dnf install tlp tlp-rdw
+
+然后卸载有冲突的 power-profiles-daemon 软件包：
+
+    sudo dnf remove power-profiles-daemon
+
+设置开机启动 TLP 的服务：
+
+    sudo systemctl enable tlp.service
+
+您还应该屏蔽以下服务以避免冲突，确保 TLP 的无线设备（蓝牙、wifi等）切换选项的能够正确操作：
+
+    sudo systemctl mask systemd-rfkill.service systemd-rfkill.socket
+
 ## Linux 桌面环境
 
 老老实实用最多人用的 GNOME 吧，其它桌面环境坑更多，随便就有软件运行不起来。

@@ -669,6 +669,10 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
         https://f-droid.org/en/packages/is.xyz.mpv/
 
+    NewPipe
+
+        https://f-droid.org/zh_Hant/packages/org.schabi.newpipe/
+
 密钥管理:
 
     2FA 应用：Aegis
@@ -1093,6 +1097,12 @@ apt命令大家应该都比较熟悉了，这里直接简单的介绍下pkg命�
 长期使用 Linux 的朋友可能会发现，这个 HOME 路径看上去和我们电脑端的不太一样，这是为了方便 Termux 提供的特殊的环境变量。
 
 #### Termux:API
+
+### Termux X11：手機的X伺服器
+
+能在手机上安装 Linux 下的 X window 桌面了。。。
+
+    https://ivonblog.com/posts/termux-x11/
 
 ## TODO: postmarketos 旧手机的新生
 
