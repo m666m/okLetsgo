@@ -8091,6 +8091,74 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     update-alternatives --config vi
 
+### 控制笔记本电脑的风扇速度 thinkfan
+
+    https://blog.monosoul.dev/2021/10/17/how-to-control-thinkpad-p14s-fan-speed-in-linux/
+
+    https://github.com/vmatare/thinkfan
+
+Enable fan control
+
+    echo 'options thinkpad_acpi fan_control=1' | sudo tee /lib/modprobe.d/thinkpad_acpi.conf
+
+Install thinkfan package
+
+    sudo apt install thinkfan
+
+Create a new thinkfan configuration file
+
+    sudo touch /etc/thinkfan.conf
+
+Put the following lines into /etc/thinkfan.conf
+
+    sensors:
+    # GPU
+    - tpacpi: /proc/acpi/ibm/thermal
+        indices: [1]
+    # CPU
+    - hwmon: /sys/class/hwmon
+        name: coretemp
+        indices: [2, 3, 4, 5]
+    # Chassis
+    - hwmon: /sys/class/hwmon
+        name: thinkpad
+        indices: [3, 5, 6, 7]
+    # SSD
+    - hwmon: /sys/class/hwmon
+        name: nvme
+        indices: [1, 2, 3]
+        correction: [-5, 0, 0]
+    # MB
+    - hwmon: /sys/class/hwmon
+        name: acpitz
+        indices: [1]
+
+    fans:
+    - tpacpi: /proc/acpi/ibm/fan
+
+    levels:
+    - [0, 0, 37]
+    - [1, 35, 42]
+    - [2, 40, 45]
+    - [3, 43, 47]
+    - [4, 45, 52]
+    - [5, 50, 57]
+    - [6, 55, 72]
+    - [7, 70, 82]
+    - ["level full-speed", 77, 32767]
+
+Configure thinkfan to use the newly created file
+
+    echo 'THINKFAN_ARGS="-c /etc/thinkfan.conf"' | sudo tee -a /etc/default/thinkfan
+
+Enable thinkfan service
+
+    sudo systemctl enable thinkfan
+
+Reboot
+
+    sudo reboot
+
 ## Linux 桌面环境
 
 老老实实用最多人用的 GNOME 吧，其它桌面环境坑更多，随便就有软件运行不起来。
