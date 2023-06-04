@@ -8537,31 +8537,33 @@ Gnome Terminal 终端
 
     GNOME Linux — 一场彻底的灾难 https://zhuanlan.zhihu.com/p/490505981
 
-先装 GNOME 扩展，在软件管理里搜索 “Extensions” 即可，一般都自带了。
+GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱，如果想使用其它各种扩展，只能去网站 <https://extensions.gnome.org/> 下载。现在有了替代品 “GNOME Manager”，不需要去网站就可以搜索下载，在软件管理里搜索安装 “GNOME Manager” 即可。
 
-GNOME 桌面增强功能的组件在软件管理里搜索 “GNOME Tweaks” 即可。
+    推荐安装第三方组件：
 
-    sudo apt install gnome-tweak-tool
+        类似苹果的浮动任务栏 Dash to dock
 
-    sudo apt install gnome-shell-extensions
+        给 usb 设备添加菜单方便弹出 Removable drive menu
 
-安装 Tweaks 后在控制面板里找它，官方自带的扩展很少，至少要装个任务栏，少点几次鼠标。
+    如果还是想使用网站浏览安装的方式
 
-如果想使用其它各种扩展，只能使用网站浏览安装
-
-    先用 浏览器访问如下网址，点击顶部提示，安装浏览器组件
+       先浏览器访问如下网址，点击顶部提示，安装浏览器组件
 
         https://extensions.gnome.org/
 
             介绍 https://wiki.gnome.org/Projects/GnomeShell
 
-    然后安装本地消息组件
+        然后安装本地消息组件
 
-        sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
+            sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
 
-推荐安装类似苹果的浮动任务栏
+GNOME 桌面组件的自定义选项，在软件管理里搜索安装 “GNOME Tweaks”
 
-    https://github.com/micheleg/dash-to-dock
+    sudo apt install gnome-tweak-tool
+
+    sudo apt install gnome-shell-extensions
+
+    安装 Tweaks 后在控制面板里找它，官方自带的扩展很少，至少要装个任务栏，少点几次鼠标。
 
 Gnome 主题乐园
 
