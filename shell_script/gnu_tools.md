@@ -9019,10 +9019,10 @@ $XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对
 
     在系统运行时进行切换
 
-        # 切换到命令行模式
+        # 切换到命令行模式，等效 init 3
         sudo systemctl isolate multi-user.target
 
-        # 切换到图形模式
+        # 切换到图形模式，等效 init 5
         sudo systemctl isolate graphical.target
 
 单独指定显示管理器服务是否开机自启动（内存占用还是大，不如上面的方法）
