@@ -76,6 +76,7 @@ if [ -x /usr/bin/dircolors ]; then
 
     # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
     function cpbak {
+        # find . -max-depth 1 -name '$1*' -exec cp "{}" "{}.bak" \;
         echo "[复制一个备份，同名后缀.bak，如果是目录名不要后缀/]" && cp -a $1{,.bak}
     }
 
