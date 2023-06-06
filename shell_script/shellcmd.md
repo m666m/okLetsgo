@@ -947,26 +947,6 @@ case "$platform" in
   ;;
 esac
 
-#############################################
-#
-# cat 生成一段代码到文件，文本当中带有变量也会被解析，除非结束符用单引号包围 'EOFA'
-# EOFA 必须顶行写，前面不能有制表符或者空格，结束输入还得 ctrl+d
-# https://askubuntu.com/questions/858238/eof-in-cat-and-less
-cat >/etc/network/if-pre-up.d/restore_my_iptables_rule << EOFA
-#!/bin/sh
-iptables -F
-iptables-restore < /etc/iptables/rules.v4
-EOFA
-
-# 除非用 <<-
-if [ -e ~/.bash_profile ]; then
-    cat >abc.txt <<- EOF
-        ABC
-        DEF
-        G
-        EOF
-fi
-
 ```
 
 ## 当前shell和嵌套层数
@@ -2109,6 +2089,8 @@ file 查看文件是shell类型、二进制类型，文本类型等
     .git/objects:        directory
     .git/refs:           directory
 
+命令 stat 可以查看更详细的文件说明。
+
 lsof 查看指定进程号打开的文件（sudo apt install lsof）
 
     $ sudo lsof -p 28987
@@ -2323,7 +2305,7 @@ tcpdump、wireshark 的常见命令
 
     https://zhuanlan.zhihu.com/p/74812069
 
-### 简单监控你的网络流量 iftop darkstat
+### 简单监控你的网络流量 iftop darkstat tcpdump
 
 iftop 类似 top 命令查看当前各个连接的流量情况，各大发行版都有这个软件包
 
@@ -2352,6 +2334,18 @@ iftop 类似 top 命令查看当前各个连接的流量情况，各大发行版
     sudo dnf install darkstat
 
 配置文件在 /etc/darkstat/init.cfg
+
+查看 53 端口的报文内容
+
+    tcpdump -i eth0 port 53
+
+查看 HTTPS 流量内容
+
+    tcpdump -i eth0 -c 10 host www.google.com and port 443
+
+查看除 80 和 25 端口之外的所有流量内容
+
+    tcpdump -i eth0 port not 53 and not 25
 
 ## 查看日志
 

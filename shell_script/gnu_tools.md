@@ -3288,17 +3288,60 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
         https://lindevs.com/category/embedded-system/raspberry-pi?page=1
 
+    python 的一行命令
+
+        https://wiki.python.org/moin/Powerful%20Python%20One-Liners
+
 ### man/info 查看帮助信息
 
-先把基础命令的 man 章节安装完整
+    https://www.redhat.com/sysadmin/linux-command-documentation
 
-    sudo apt install bash-doc
+先把基础命令的 man 章节安装完整，参见章节 [安装完整的 man 手册](init_a_server.md think)。
 
-man 查看各章节后缀用.数字即可
+命令的 man 的内容可能存在于多个节中，一般归类分为以下几节：
+
+    用户命令（第 1 节）
+    系统调用（第 2 节）
+    C 库函数（第 3 节）
+    设备和特殊文件（第 4 节）
+    文件格式和约定（第 5 节）
+    游戏（第6节）
+    杂项（第7节）
+    系统管理工具和守护程序（第 8 节）
+
+    章节    名称                        描述
+
+    1   Standard commands(标准命令)    Executable programs or shell commands, 普通的命令
+
+    2   System calls(系统调用)          System calls (functions provided by the kernel)系统调用,如open,write之类的(通过这个，至少可以很方便的查到调用这个函数，需要加什么头文件)
+
+    3   Libraryfunctions(库函数)        Library calls (functions within program libraries), 库函数,如printf,fread
+
+    4   Specialdevices(设备说明)        Special files (usually found in /dev), 特殊文件,也就是/dev下的各种设备文件
+
+    5   File formats(文件格式)          File formats and conventions eg /etc/passwd, 指文件的格式,比如passwd, 就会说明这个文件中各个字段的含义
+
+    6   Games andtoys(游戏和娱乐)       给游戏留的,由各个游戏自己定义
+
+    7   Miscellaneous(杂项)             Miscellaneous (including macro packages and conventions), e.g. man(7), groff(7),附件还有一些变量,比如 environ 这种全局变量在这里就有说明
+
+    8   AdministrativeCommands(管理员命令)  System administration commands (usually only for root), 系统管理用的命令,这些命令只能由root使用,如ifconfig
+
+    Kernel routines [Non standard]
+
+man 查看命令的默认章节
+
+    man signal
+
+man 查看指定章节后缀用.数字即可
+
+    man 7 signal
 
     man signal.7
 
-    man 7 signal
+应用程序可能还提供了一些配置文件样例等，一般都跟 man 的内容保存在同一个目录下
+
+    /usr/share/doc
 
 用 `apropos` 命令来查找相关联的帮助
 
@@ -3311,7 +3354,13 @@ man 查看各章节后缀用.数字即可
     systemd-sysctl (8)   - Configure kernel parameters at boot
     systemd-sysctl.service (8) - Configure kernel parameters at boot
 
-参见章节 [安装完整的 man 手册](init_a_server.md think)。
+info 命令倾向于可读性和更深入的解释。信息页系统还支持文档之间的基本链接，以便于交叉引用。这提供了一个更有条理和可读性的文档集。
+
+    info ls
+
+    如果没有 info 内容，会转为 man 的内容，有提示 'Info: (*manpages*)ssh, 684 lines --Top'
+
+        info ssh
 
 ### Vim 和 nano
 
@@ -5694,6 +5743,18 @@ sleep 60
 
 ```
 
+### 记录命令执行的输出 script
+
+执行
+
+    script -a --t=your_time_log your_script_log -q
+
+会进入新的 shell 环境，这里执行你的命令行操作，都会被记录，连 vi 操作都能记录，然后执行 exit 退出shell即可。
+
+回放操作
+
+    scriptreplay --timing=your_time_log your_script_log
+
 ### 现代化的查看文件列表 exa
 
 各大发行版都有提供名为 exa 的软件包，使用时加参数才出效果
@@ -5883,7 +5944,7 @@ tee 对程序的输出同时打印到文件和屏幕
 
     ls -al | tee -a file.txt
 
-column 把文本表格整齐化，也用于有些程序的输出太宽字符被省略的展开
+column 把文本表格整齐化，也用于有些程序的输出太宽字符被省略的强制展开
 
     openssl ciphers -V |column -t
 
@@ -5896,9 +5957,14 @@ jq 格式化 JSON 数据，并彩色显示，也可用作格式检查
     # sudo apt install jq
     cat config.json |jq
 
+    # 常用于查看 json 输出的参数配置
+    lsblk --json | jq -c '.blockdevices[]|[.name,.size]'
+
 watch 对固定刷新屏幕的文本，可以高亮出变化的部分，非常适合监控
 
     watch -d cat /proc/interrupts
+
+    watch -n 5 -d '/bin/free -m'
 
 #### ackg 给终端输出的自定义关键字加颜色
 
@@ -6012,6 +6078,54 @@ hhighlighter 属于对 ack 的封装，但脚本名和函数名都太简单了�
     patch a.c <tes.diff
 
 这样 a.c 的内容就变成了 b.c 的内容了。
+
+### 写入即时文件 cat
+
+输入内容，输出到文件
+
+    $ cat <<DOC >/my/new/file
+    Line1
+    Line2
+    A $VARIABLE
+    DOC
+
+输入内容，完成编辑后按 Ctrl+D 结束，输出到文件
+
+    cat > file
+
+cat 生成一段代码到文件，文本当中带有变量也会被解析，除非结束符用单引号包围如 'EOFA'。
+
+    如果同一个文件中有多个 EOF 会混乱，所以每段 cat 用不同的 EOFX 来做结束标志。
+
+注意
+
+    EOFA 必须顶行写，前面不能有制表符或者空格，结束输入还得 ctrl+d。
+
+```bash
+
+cat >/etc/network/if-pre-up.d/restore_my_iptables_rule << EOFA
+#!/bin/sh
+iptables -F
+iptables-restore < /etc/iptables/rules.v4
+EOFA
+
+```
+
+除非用特殊的 <<-，才可以带格式控制了
+
+    https://askubuntu.com/questions/858238/eof-in-cat-and-less
+
+```bash
+
+if [ -e ~/.bash_profile ]; then
+    cat >abc.txt <<- EOF
+        ABC
+        DEF
+        G
+        EOF
+fi
+
+```
 
 ### 写入文件 dd
 
@@ -6185,12 +6299,13 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
         # 解包
         tar xf myarch.tar
 
-        # 大文件压缩后，应该做校验，如果目录或子目录的文件有变化，都会提示
-        $ tar df arc.tar.gz
-        dir1/file1: Mod time differs
-        dir1/file1: Contents differ
-        file2: Mod time differs
-        file2: Contents differ
+大文件打包后，应该做个事后校验，如果目录或子目录的文件有变化，都会提示
+
+    $ tar df arc.tar.gz
+    dir1/file1: Mod time differs
+    dir1/file1: Contents differ
+    file2: Mod time differs
+    file2: Contents differ
 
 但是我们最常用的是打包然后再压缩，所以 tar 扩展支持 .gz 和 .bz2，实质是调用现有的 gzip 程序把自己打包好的文件再压缩，但是节省了用户在命令行的输入。
 
@@ -6239,6 +6354,11 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
 
     # 不覆盖文件，提取文件权限信息
     tar -vkpf a.tar /tmp
+
+    # 把本地目录打包并直接用 ssh 传送远程服务器，注意这种用法无校验只适合于内网环境
+    tar --create --directory /home/josevnz/tmp/ --file - *| \
+        ssh raspberrypi "tar --directory /home/josevnz \
+        --verbose --list --file -"
 
 .gz 文件
 
@@ -6301,7 +6421,7 @@ ln 命令默认生成硬链接，但是我们通常使用软连接
     # 如果最后的目录给出的是一个文件名，则就是在当前目录下建立软链接文件
     ln -s /tmp/cmd_1 /tmp/cmd_2 /usr/bin/
 
-### 带精度的计算器 bc
+### 支持浮点运算的计算器 bc
 
 bc - An arbitrary precision calculator language
 
@@ -6410,19 +6530,21 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     $ gpg --armor --gen-random 2 16
     k524BASHzHmg1JFtDLHaqg==
 
-    # base64编码的14个字符
-    $ openssl rand -base64 14
-    lPIm1hobPBr+iaUXLSk=
+    # base64 编码的 12 个字符
+    # 如果使用 base64 编码，注意确保字节数可被三整除以避免填充（Base64 将三个字节编码为四个字符。不是3的整数倍，则以一个或两个“=”字符的形式填充。）
+    # https://blog.aaronlenoir.com/2017/11/10/get-original-length-from-base-64-string/
+    $ openssl rand -base64 9
+    os6bv7UOrjRh
 
-    # 16进制编码的20个字符
+    # 16 进制编码的 20 个字符
     $ openssl rand -hex 20
     f231202787c01502287c420a8a05e960ec8f5129
 
-    # 生成一个uuid，这个也是随机的
+    # 生成一个 uuid，这个也是随机的
     $ cat /proc/sys/kernel/random/uuid
     6ab4ef55-2501-4ace-b069-139855bea8dc
 
-    # 这个shuf不知道是否伪随机
+    # 这个 shuf 不知道是否伪随机
     # 把数字 5-12 直接乱序排序，每行一个数字，输出1行
     $ shuf -i5-12 -n1
     9
@@ -7666,6 +7788,10 @@ NFS 一般用来存储共享视频，图片等静态数据。
         unicode emoji https://unicode.org/emoji/charts/full-emoji-list.html
         git emoji https://blog.csdn.net/li1669852599/article/details/113336076
 
+显示天气
+
+    curl -s --connect-timeout 3 -m 5 http://wttr.in/newyork
+
 小火车sl
 
     sudo apt install sl
@@ -8560,13 +8686,13 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
             sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
 
-GNOME 桌面组件的自定义选项，在软件管理里搜索安装 “GNOME Tweaks”
+GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “GNOME Tweaks”
 
     sudo apt install gnome-tweak-tool
 
     sudo apt install gnome-shell-extensions
 
-    安装 Tweaks 后在控制面板里找它，官方自带的扩展很少，至少要装个任务栏，少点几次鼠标。
+    安装 Tweaks 后在控制面板里找它即可
 
 Gnome 主题乐园
 
@@ -8584,9 +8710,11 @@ KDE 的桌面定制选项非常多，慢慢研究吧
 
 KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏览器中添加扩展的那种不方便的方式（使用另一个浏览器扩展），你可以使用 KDE 的软件管理器 “发现（Discovery）”，直接访问 KDE 的附加组件。
 
-### Linux 的 XDG（X Desktop Group）基本目录规范
+### Linux 桌面的 XDG（X Desktop Group）基本目录规范
 
-对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，称为 XDG。
+对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境。
+
+目前最流行的 freedesktop 的规范称为 XDG
 
     https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 
@@ -8594,14 +8722,38 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
     https://winddoing.github.io/post/ef694e1f.html
 
-XDG基本目录规范基于以下概念：
+    https://wiki.archlinux.org/title/Xdg-utils
 
-    有一个用于写入特定用户数据文件的基本目录。$XDG_DATA_HOME。
-    有一个用于写入特定用户的配置文件基本目录。$XDG_CONFIG_HOME。
-    有一组首选的基本数据目录。$XDG_DATA_DIRS。
-    有一组首选的基本配置目录。$XDG_CONFIG_DIRS。
-    有一个用于写入用户特定的非必要（缓存）数据的基本目录。$XDG_CACHE_HOME。
-    有一个用户放置特定于用户的运行时文件和其他文件对象。$XDG_RUNTIME_DIR。
+    https://blog.csdn.net/weixin_29702195/article/details/116886216
+
+    https://blog.csdn.net/u014025444/article/details/94029895
+
+XDG 基本目录规范基于以下概念：
+
+    有一个用于写入特定用户数据文件的基本目录               $XDG_DATA_HOME
+    有一个用于写入特定用户的配置文件基本目录               $XDG_CONFIG_HOME
+    有一组首选的基本数据目录                            $XDG_DATA_DIRS
+    有一组首选的基本配置目录                            $XDG_CONFIG_DIRS
+    有一个用于写入用户特定的非必要（缓存）数据的基本目录。    $XDG_CACHE_HOME
+    有一个用户放置特定于用户的运行时文件和其他文件对象。      $XDG_RUNTIME_DIR
+
+环境变量
+
+    XDG 环境变量                默认值
+
+    $XDG_DATA_HOME          $HOME/.local/share
+    $XDG_CONFIG_HOME        $HOME/.config
+    $XDG_DATA_DIRS          /usr/local/share/:/usr/share/
+    $XDG_CONFIG_DIRS        /etc/xdg
+    $XDG_CACHE_HOME         $HOME/.cache
+
+$XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对象（例如套接字，命名管道…）存储的基本目录。该目录必须由用户拥有，并且他必须是唯一具有读写访问权限的目录。它的Unix访问模式必须是 0700。
+
+目录的生命周期必须绑定到登录用户。必须在用户首次登录时创建，如果用户完全注销，则必须删除该目录。如果用户多次登录，他应该指向同一目录，并且必须从第一次登录到他在系统上的最后一次登出时继续存在，而不是在两者之间删除。目录中的文件必须不能在重新启动或完全注销/登录循环后继续存在。
+
+该目录必须位于本地文件系统上，不与任何其他系统共享。该目录必须完全按照操作系统的标准进行。更具体地说，在类Unix操作系统上，AF_UNIX套接字，符号链接，硬链接，适当的权限，文件锁定，稀疏文件，内存映射，文件更改通知，必须支持可靠的硬链接计数，并且对文件名没有限制应该强加字符集。此目录中的文件可能需要定期清理。为确保不删除您的文件，他们应至少每6小时单调时间修改一次访问时间戳记，或者在文件上设置“粘滞”位。
+
+如果 $XDG_RUNTIME_DIR 未设置，应用程序应回退到具有类似功能的替换目录并打印警告消息。应用程序应使用此目录进行通信和同步，并且不应在其中放置较大的文件，因为它可能驻留在运行时内存中，并且不一定可以交换到磁盘。
 
 环境变量清单：用户层面变量（User-Level Variables）
 
@@ -8737,76 +8889,6 @@ GNOME、KDE、Xfce 等使用 X Window 体系都是基于 Xorg 基础之上开发
 
     通用命令： startx 在命令行下启动桌面环境
 
-#### X11 启动过程
-
-    https://wiki.archlinux.org/title/Xinit#Autostart_X_at_login
-
-    https://faq.i3wm.org/question/18/how-do-xsession-xinitrc-and-i3config-play-together.1.html
-
-        https://tldp.org/HOWTO/XWindow-User-HOWTO/runningx.html
-
-        https://dev.leiyanhui.com/c/arch-install-xrdp/
-
-基于 X Windo 的启动过程：
-
-    在命令行执行 `startx` 将通过首先调用 xinit 来启动 X。
-
-    xinit 将在用户的主目录中查找一个 ~/.xinitrc 文件，以作为 shell 脚本运行。
-
-    xinitrc 用于设置合适的 X 环境，并启动其他程序，即我们可能希望在 X 启动后立即可用的“客户端”。
-
-    窗口管理器或桌面环境通常是最后一个启动的应用程序。
-
-设置登录终端后自动启动桌面，编辑 ~/.bash_profile 文件
-
-    if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
-        exec startx
-    fi
-
-如果要自行选择多个桌面自行启动，先编辑 ~/.xinitrc 文件
-
-    # Here Xfce is kept as default
-    session=${1:-xfce}
-
-    case $session in
-        i3|i3wm           ) exec i3;;
-        kde               ) exec startplasma-x11;;
-        xfce|xfce4        ) exec startxfce4;;
-        # No known session, try to run it as command
-        *                 ) exec $1;;
-    esac
-
-然后手工启动
-
-    $ xinit session
-
-    或
-
-    $ startx ~/.xinitrc session
-
-另一种更常见的方法是 “GUI 登录”：
-
-    X 在登录之前运行，其使用 xdm（显示管理器）用于此目的。
-
-    登录管理器（如GDM，KDM，XDM）会查找执行 ~/.xsession。
-
-    所以 xdm 的 ~/.xsession 大致相当于 startx 的 ~/.xinitrc。
-
-所以，根据您启动 X 的方式，计算机将执行 ~/.xinitrc 或 ~/.xsession 文件。
-
-在桌面启动的最后阶段，如果你从 ~/.xinitrc 或 ~/.xsession 执行 i3wm 窗口管理器，那么 i3wm 将从 ~/.i3/config 读取其初始配置。
-
-利用这点，用户可以创建一个统一两种登录方式的单个脚本：
-
-    `echo "exec i3" >> ~/.xinitrc`。
-
-    # 创建 xdm 等效的符号链接
-    ln -s $HOME/.xinitrc $HOME/.xsession
-
-在启动 X11 时，将运行 .xinitrc 或 .xsession 脚本，并且脚本完成后，X11 会关闭：当 .xinitrc 完成时，也就是 X11 结束的时候，而不是当你的窗口管理器退出时才关闭。
-
-另外，GDM 登录似乎忽略了“~/.xsession”，因此这并不能使其成为 Ubuntu 用户的选项。
-
 #### Wayland
 
     https://docs.freebsd.org/en/books/handbook/wayland/
@@ -8905,255 +8987,7 @@ LightDM 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
 
     sudo dpkg-reconfigure gdm3
 
-#### 桌面环境的开机自启动
-
-    https://wiki.archlinux.org/title/Xdg-utils
-
-    https://blog.csdn.net/weixin_29702195/article/details/116886216
-
-    https://blog.csdn.net/u014025444/article/details/94029895
-
-RHEL 6 和 ubuntu 採用了 FreeDesktop.org 的規格,官方網站 <http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html> 定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境.主要是為了增加 free software desktop environments 的互通性,而這環境簡稱為 XDG(X Desktop Group).
-
-如果要用 x-window 開啟後自動啟動應用程式,請自行修改或是新增 .desktop 檔案.
-
-System-wide autostart directories:
-
-    /etc/xdg/autostart
-
-    /usr/share/autostart
-
-    User specific autostart directories:
-
-    ~/.config/autostart
-
-    ~/.kde/share/autostart (KDE specific)
-
-    ~/.kde/Autostart (KDE specific)
-
-我們來看看基本的 .desktop 檔案內容有哪些
-
-    [root@benjr ~]# cat ~/.config/autostart/gnome-terminal.desktop
-
-    [Desktop Entry]
-
-    Type=Application
-
-    Exec=gnome-terminal
-
-    Hidden=false
-
-    X-GNOME-Autostart-enabled=true
-
-    Name[en_US]=test
-
-    Name=test
-
-    Comment[en_US]=xdg testing
-
-    Comment=xdg testing
-
-    Type=Application
-
-    Exec=gnome-terminal
-
-最重要的就是指定要執行哪一個程式.
-
-    Hidden=false
-
-    X-GNOME-Autostart-enabled=true
-
-    Name[en_US]=test
-
-    Name=test
-
-    Comment[en_US]=xdg testing
-
-    Comment=xdg testing
-
-XDG基本目录规范基于以下概念：
-
-    有一个用于写入特定用户数据文件的基本目录。$XDG_DATA_HOME。
-    有一个用于写入特定用户的配置文件基本目录。$XDG_CONFIG_HOME。
-    有一组首选的基本数据目录。$XDG_DATA_DIRS。
-    有一组首选的基本配置目录。$XDG_CONFIG_DIRS。
-    有一个用于写入用户特定的非必要（缓存）数据的基本目录。$XDG_CACHE_HOME。
-    有一个用户放置特定于用户的运行时文件和其他文件对象。$XDG_RUNTIME_DIR。
-
-环境变量
-
-    XDG 环境变量                默认值
-
-    $XDG_DATA_HOME        $HOME/.local/share
-    $XDG_CONFIG_HOME        $HOME/.config
-    $XDG_DATA_DIRS        /usr/local/share/:/usr/share/
-    $XDG_CONFIG_DIRS        /etc/xdg
-    $XDG_CACHE_HOME        $HOME/.cache
-
-$XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对象（例如套接字，命名管道…）存储的基本目录。该目录必须由用户拥有，并且他必须是唯一具有读写访问权限的目录。它的Unix访问模式必须是 0700。
-
-目录的生命周期必须绑定到登录用户。必须在用户首次登录时创建，如果用户完全注销，则必须删除该目录。如果用户多次登录，他应该指向同一目录，并且必须从第一次登录到他在系统上的最后一次登出时继续存在，而不是在两者之间删除。目录中的文件必须不能在重新启动或完全注销/登录循环后继续存在。
-
-该目录必须位于本地文件系统上，不与任何其他系统共享。该目录必须完全按照操作系统的标准进行。更具体地说，在类Unix操作系统上，AF_UNIX套接字，符号链接，硬链接，适当的权限，文件锁定，稀疏文件，内存映射，文件更改通知，必须支持可靠的硬链接计数，并且对文件名没有限制应该强加字符集。此目录中的文件可能需要定期清理。为确保不删除您的文件，他们应至少每6小时单调时间修改一次访问时间戳记，或者在文件上设置“粘滞”位。
-
-如果 $XDG_RUNTIME_DIR 未设置，应用程序应回退到具有类似功能的替换目录并打印警告消息。应用程序应使用此目录进行通信和同步，并且不应在其中放置较大的文件，因为它可能驻留在运行时内存中，并且不一定可以交换到磁盘。
-
-#### 关闭桌面环境开机自启动
-
-    https://askubuntu.com/questions/1242965/how-to-disable-gui-in-ubuntu
-
-    https://askubuntu.com/questions/76543/
-
-    https://superuser.com/questions/443997
-
-为了更便利的选择是否使用桌面，登录后进入命令行，手工启动 startx
-
-对使用 systemd 管理的显示管理器
-
-一、通用方法：
-
-查看登录后启动的设置选项，启动到桌面是 graphical.target，启动到命令行是 multi-user.target
-
-    systemctl get-default
-
-修改为登录后启动到命令行（控制台）
-
-    sudo systemctl set-default multi-user.target
-
-    在系统运行时进行切换
-
-        # 切换到命令行模式，等效 init 3
-        sudo systemctl isolate multi-user.target
-
-        # 切换到图形模式，等效 init 5
-        sudo systemctl isolate graphical.target
-
-单独指定显示管理器服务是否开机自启动（内存占用还是大，不如上面的方法）
-
-    # lightdm sddm
-    sudo systemctl disable gdm
-
-    也可手工启动、停止指定的显示管理器服务
-
-        # lightdm sddm
-        systemctl start gdm
-
-关闭图形模式开机后会停留在控制台，按 ctl + alt + F1/F2/F3/F4，切换控制台使用即可：
-
-    执行命令 `startx` 会在当前控制台启动一个桌面环境，点击注销会退回到控制台
-
-二、针对显示管理器服务，编辑控制文件
-
-lightdm
-
-    https://wiki.debian.org/LightDM
-
-    # 又说  /etc/lightdm/lightdm.conf
-    echo 'manual' | sudo tee /etc/init/lightdm.override
-
-    手工启动、停止
-
-        startx
-
-    如果行不通那就是用 systemd 管理了
-
-gdm
-
-    https://wiki.debian.org/GDM#systemd
-
-    # 又说 /etc/gdm3/daemon.conf
-    或编辑  /etc/init/gdm.conf
-
-        stop on runlevel [0126]
-        #================================================================
-        #start on ((filesystem
-        #           and runlevel [!026]
-        #           and started dbus
-        #           and (drm-device-added card0 PRIMARY_DEVICE_FOR_DISPLAY=1
-        #                or stopped udev-fallback-graphics))
-        #          or runlevel PREVLEVEL=S)
-        #
-        #stop on runlevel [0126]
-        #================================================================
-
-    手工启动、停止
-
-        startx
-
-    如果行不通那就是用 systemd 管理了
-
-sddm
-
-    https://wiki.debian.org/SDDM
-
-    # 又说 /etc/sddm.conf
-    编辑 /etc/init/kdm.conf
-
-        stop on runlevel [0126]
-        #================================================================
-        #start on ((filesystem
-        #           and runlevel [!026]
-        #           and started dbus
-        #           and (drm-device-added card0 PRIMARY_DEVICE_FOR_DISPLAY=1
-        #                or stopped udev-fallback-graphics))
-        #          or runlevel PREVLEVEL=S)
-        #
-        #stop on runlevel [0126]
-        #================================================================
-
-    手工启动、停止
-
-        startx
-
-    如果行不通那就是用 systemd 管理了
-
-三、老式的 x 系统，参见章节 [X11 启动过程]
-
-四、如果操作系统无法开机启动
-
-直接编辑 grub 条目，在 'linux  ....' 行的末尾加 3 则等效于开机 init 3
-
-#### 不启动桌面环境，直接启动图形化应用程序
-
-可以在没有任何装饰、桌面或窗口管理的情况下启动应用程序
-
-一、老式的 x 系统
-
-    https://wiki.archlinux.org/title/Xinit#Starting_applications_without_a_window_manager
-
-在命令行手工执行应用程序
-
-    exec chromium
-
-    对老式的 x 系统
-
-        startx nautilus
-
-编辑 ~/.xinitrc 文件
-
-    exec chromium
-
-二、已经安装了显示管理器
-
-    https://wiki.archlinux.org/title/Display_manager#Starting_applications_without_a_window_manager
-
-设为桌面登录后，将立即启动设置的应用程序。当您关闭应用程序时，您将被带回登录管理器（与注销正常的桌面环境或窗口管理器相同），只需要编辑 /usr/share/xsessions/web-browser.desktop
-
-    [Desktop Entry]
-    Name=Web Browser
-    Comment=Use a web browser as your session
-    Exec=/usr/bin/google-chrome --auto-launch-at-startup
-    TryExec=/usr/bin/google-chrome --auto-launch-at-startup
-    Icon=google-chrome
-    Type=Application
-
-三、利用 systemd 单元，不使用显示管理器，直接登录 xorg 桌面
-
-    https://wiki.archlinux.org/title/Systemd/User#Automatic_login_into_Xorg_without_display_manager
-
-感觉这 systemd 管的越来越多，直接做一个 systemd 操作系统得了。
-
-### 使用窗口管理器
+### 窗口管理器（Windows Manager）
 
 使用窗口管理器，需要自己配置软件源，自己安装字体，firefox 假死问题自己解决。
 
@@ -9165,9 +8999,9 @@ sddm
 
 窗口管理器 vs 桌面环境
 
-窗口管理器(Windows Manager)，负责绘制窗口的边框，处理窗口运行比如移动、最小化之类的行为。
+窗口管理器（Windows Manager），负责绘制窗口的边框，处理窗口运行比如移动、最小化之类的行为。
 
-桌面(Desktop Environment)，是窗口管理器的超集，它使用合成器（Compositor）把多个程序窗口绘制出的内容，把它们合成出来并高效地增量更新用户界面 GUI。比如 compiz 这种基于 OpenGL 的混合型窗口管理器，用立体的方式显示窗口切换。
+桌面（Desktop Environment），是窗口管理器的超集，它使用合成器（Compositor）把多个程序窗口绘制出的内容，把它们合成出来并高效地增量更新用户界面 GUI。比如 compiz 这种基于 OpenGL 的混合型窗口管理器，用立体的方式显示窗口切换。
 
 我们常用的 Gnome 就是一个桌面环境，默认使用 Metacity 作为窗口管理器。
 
@@ -9477,6 +9311,302 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
 不像 i3 之类的那样热门，这直接导致了可以偷参考的配置更少，同时生态圈内的各种工具也开发缓慢。同时平铺式窗口管理器本身也相对冷门，导致在部分“喜欢弹小窗”的程序上面体验较差，当然这种体验可以通过修改配置进行改善，不过始终是多了一个步骤。
 
+### 桌面环境的开机自启动
+
+RHEL 和 Debian 系都採用了 XDG 规范，详见章节 [Linux 桌面的 XDG（X Desktop Group）基本目录规范].
+
+Fedora 的桌面环境同时支持 x-window 和 wayland，关闭图形模式开机后会停留在控制台，按 ctl + alt + F1/F2/F3/F4，切换控制台使用即可：
+
+    执行 `startx` 会在当前控制台启动一个 x-window 桌面环境，点击注销会退回到控制台
+
+    执行 `sudo systemctl isolate graphical.target` 会启动 waylan 桌面环境，执行 `sudo systemctl isolate multi-user.target` 会退回到命令行环境。
+
+#### X11 启动过程
+
+基于 x-window 的桌面环境的启动过程
+
+    https://wiki.archlinux.org/title/Xinit#Autostart_X_at_login
+
+    https://faq.i3wm.org/question/18/how-do-xsession-xinitrc-and-i3config-play-together.1.html
+
+        https://tldp.org/HOWTO/XWindow-User-HOWTO/runningx.html
+
+        https://dev.leiyanhui.com/c/arch-install-xrdp/
+
+具体启动过程：
+
+    在命令行执行 `startx` 将通过首先调用 xinit 来启动 X。
+
+    xinit 将在用户的主目录中查找一个 ~/.xinitrc 文件，以作为 shell 脚本运行。
+
+    xinitrc 用于设置合适的 X 环境，并启动其他程序，即我们可能希望在 X 启动后立即可用的“客户端”。
+
+    窗口管理器或桌面环境通常是最后一个启动的应用程序。
+
+一、设置登录终端后自动启动桌面，编辑 ~/.bash_profile 文件
+
+    if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+        exec startx
+    fi
+
+如果要自行选择多个桌面自行启动，先编辑 ~/.xinitrc 文件
+
+    # Here Xfce is kept as default
+    session=${1:-xfce}
+
+    case $session in
+        i3|i3wm           ) exec i3;;
+        kde               ) exec startplasma-x11;;
+        xfce|xfce4        ) exec startxfce4;;
+        # No known session, try to run it as command
+        *                 ) exec $1;;
+    esac
+
+然后手工启动
+
+    $ xinit session
+
+    或
+
+    $ startx ~/.xinitrc session
+
+二、更常见的方法是 “GUI 登录”：
+
+    X 在登录之前运行，其使用 xdm（显示管理器）用于此目的。
+
+    登录管理器（如GDM，KDM，XDM）会查找执行 ~/.xsession。
+
+    所以 xdm 的 ~/.xsession 大致相当于 startx 的 ~/.xinitrc。
+
+所以，根据您启动 X 的方式，计算机将执行 ~/.xinitrc 或 ~/.xsession 文件。
+
+在桌面启动的最后阶段，如果你从 ~/.xinitrc 或 ~/.xsession 执行 i3wm 窗口管理器，那么 i3wm 将从 ~/.i3/config 读取其初始配置。
+
+利用这点，用户可以创建一个统一两种登录方式的单个脚本：
+
+    `echo "exec i3" >> ~/.xinitrc`。
+
+    # 创建 xdm 等效的符号链接
+    ln -s $HOME/.xinitrc $HOME/.xsession
+
+在启动 X11 时，将运行 .xinitrc 或 .xsession 脚本，并且脚本完成后，X11 会关闭：当 .xinitrc 完成时，也就是 X11 结束的时候，而不是当你的窗口管理器退出时才关闭。
+
+另外，GDM 登录似乎忽略了“~/.xsession”，因此这并不能使其成为 Ubuntu 用户的选项。
+
+##### X11 在命令行手工执行图形化应用程序
+
+    https://wiki.archlinux.org/title/Xinit#Starting_applications_without_a_window_manager
+
+一、对老式的 x 系统
+
+    startx nautilus
+
+编辑 ~/.xinitrc 文件
+
+    exec chromium
+
+在命令行环境执行 `startx` 会进入 x11 的桌面环境，注意如果是 Fedora Silverblue 的 x11 桌面会无法从终端进入 toolbox
+
+在桌面选择 logout 即会退出到命令行环境。
+
+二、如果要用 x-window 開啟後自動啟動應用程式,請自行修改或是新增 .desktop 檔案：
+
+System-wide autostart directories:
+
+    /etc/xdg/autostart
+
+    /usr/share/autostart
+
+    User specific autostart directories:
+
+    ~/.config/autostart
+
+    ~/.kde/share/autostart (KDE specific)
+
+    ~/.kde/Autostart (KDE specific)
+
+我們來看看基本的 .desktop 檔案內容有哪些
+
+    [root@benjr ~]# cat ~/.config/autostart/gnome-terminal.desktop
+
+    [Desktop Entry]
+
+    Type=Application
+
+    Exec=gnome-terminal
+
+    Hidden=false
+
+    X-GNOME-Autostart-enabled=true
+
+    Name[en_US]=test
+
+    Name=test
+
+    Comment[en_US]=xdg testing
+
+    Comment=xdg testing
+
+    Type=Application
+
+    Exec=gnome-terminal
+
+最重要的就是指定要執行哪一個程式，这样实现在命令行直接启动图形化应用程序，无需进入桌面环境。
+
+    Hidden=false
+
+    X-GNOME-Autostart-enabled=true
+
+    Name[en_US]=test
+
+    Name=test
+
+    Comment[en_US]=xdg testing
+
+    Comment=xdg testing
+
+基于 wayland 的桌面环境基本都使用 systemd 进行管理了，见章节 [关闭桌面环境开机自启动]。
+
+#### systemd 关闭桌面环境开机自启动
+
+为了节约内存，可以设置成本地开机进入命令行模式，手工执行命令才进入桌面环境，或直接启动单独的图形化应用程序。
+
+    https://www.redhat.com/sysadmin/configure-systemd-startup-targets
+
+    https://askubuntu.com/questions/1242965/how-to-disable-gui-in-ubuntu
+
+    https://askubuntu.com/questions/76543/
+
+    https://superuser.com/questions/443997
+
+一、老式的 X-window 系统，关闭开机自启动参见章节 [X11 启动过程]。
+
+二、对使用 systemd 管理的桌面环境
+
+在系统运行时进行切换：
+
+    # 切换到命令行模式，等效 init 3
+    sudo systemctl isolate multi-user.target
+
+    # 切换到图形模式，等效 init 5
+    sudo systemctl isolate graphical.target
+
+设置开机自启动：
+
+    # 查看登录后启动的设置选项
+    systemctl get-default
+
+    启动到桌面是 graphical.target，启动到命令行是 multi-user.target
+
+    # 修改为登录后启动到命令行（控制台）
+    sudo systemctl set-default multi-user.target
+
+    然后重启即可
+    sudo systemctl reboot
+
+单独指定显示管理器服务是否开机自启动（内存占用还是大，不如上面的方法）：
+
+    # lightdm sddm
+    sudo systemctl disable gdm
+
+    也可手工启动、停止指定的显示管理器服务
+
+        # lightdm sddm
+        systemctl start gdm
+
+三、利用 systemd 管理的显示管理器也可单独控制启停，编辑控制文件
+
+lightdm
+
+    https://wiki.debian.org/LightDM
+
+    # 又说  /etc/lightdm/lightdm.conf
+    echo 'manual' | sudo tee /etc/init/lightdm.override
+
+    手工启动、停止
+
+        startx
+
+    如果行不通那就是用 systemd 管理了
+
+gdm
+
+    https://wiki.debian.org/GDM#systemd
+
+    # 又说 /etc/gdm3/daemon.conf
+    或编辑  /etc/init/gdm.conf
+
+        stop on runlevel [0126]
+        #================================================================
+        #start on ((filesystem
+        #           and runlevel [!026]
+        #           and started dbus
+        #           and (drm-device-added card0 PRIMARY_DEVICE_FOR_DISPLAY=1
+        #                or stopped udev-fallback-graphics))
+        #          or runlevel PREVLEVEL=S)
+        #
+        #stop on runlevel [0126]
+        #================================================================
+
+    手工启动、停止
+
+        startx
+
+    如果行不通那就是用 systemd 管理了
+
+sddm
+
+    https://wiki.debian.org/SDDM
+
+    # 又说 /etc/sddm.conf
+    编辑 /etc/init/kdm.conf
+
+        stop on runlevel [0126]
+        #================================================================
+        #start on ((filesystem
+        #           and runlevel [!026]
+        #           and started dbus
+        #           and (drm-device-added card0 PRIMARY_DEVICE_FOR_DISPLAY=1
+        #                or stopped udev-fallback-graphics))
+        #          or runlevel PREVLEVEL=S)
+        #
+        #stop on runlevel [0126]
+        #================================================================
+
+    手工启动、停止
+
+        startx
+
+    如果行不通那就是用 systemd 管理了
+
+四、在操作系统启动分区管理设置开机后进入何种环境
+
+直接编辑 grub 条目，在 'linux  ....' 行的末尾加 3 则等效于开机 init 3 进入命令行环境。
+
+##### systemd 命令行下直接启动图形化应用程序
+
+可以在没有任何装饰、桌面或窗口管理的情况下启动应用程序
+
+一、 利用显示管理器直接执行图形化应用程序
+
+    https://wiki.archlinux.org/title/Display_manager#Starting_applications_without_a_window_manager
+
+设为桌面登录后，将立即启动设置的应用程序。当您关闭应用程序时，您将被带回登录管理器（与注销正常的桌面环境或窗口管理器相同），只需要编辑 /usr/share/xsessions/web-browser.desktop
+
+    [Desktop Entry]
+    Name=Web Browser
+    Comment=Use a web browser as your session
+    Exec=/usr/bin/google-chrome --auto-launch-at-startup
+    TryExec=/usr/bin/google-chrome --auto-launch-at-startup
+    Icon=google-chrome
+    Type=Application
+
+二、利用 systemd 单元，不使用显示管理器，直接登录 xorg 桌面
+
+    https://wiki.archlinux.org/title/Systemd/User#Automatic_login_into_Xorg_without_display_manager
+
+感觉这 systemd 管的越来越多，直接做一个 systemd 操作系统得了。
+
 ### 远程桌面 vnc/rdp/mstsc
 
     就 X windows 桌面来说，本来就没有不远程的，XServer 和 XClient 放在一台电脑上就是本地桌面，通过  ssh -x 连接就远程了，没有本质区别。
@@ -9597,7 +9727,11 @@ Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，
 
 #### xrdp
 
- Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包，客户端使用 mstsc、remmina 软件包。
+建议只使用软件不要安装或进行系统管理
+
+    因为 xrdp 使用自己的用户进行登陆，用户组并未完全归属到本地用户，在权限方面会有区别，如果安装了软件，在本地登陆时使用不便。
+
+Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包，客户端使用 mstsc、remmina 软件包。
 
     https://wiki.archlinux.org/title/Xrdp
 
@@ -10156,6 +10290,14 @@ ssh 启动方式需要明确指定使用哪个终端来显示。
     sudo -E weston --tty=1
 
 串口启动同样需要明确指定使用哪个VT来显示。
+
+##### 基于 Weston 的 QT Wayland
+
+    https://runebook.dev/zh/docs/qt/wayland-and-qt
+
+    https://doc.qt.io/qt-6.2/wayland-and-qt.html
+
+Qt 客户端可以在任何 Wayland 合成器上运行，包括 Weston --- Wayland 项目的一部分而开发的参考合成器。任何 Qt 程序都可以作为 Wayland 客户端(作为多进程系统的一部分)或独立的客户端(单进程)运行。
 
 #### 关闭 wayland 使用 xorg 桌面
 
@@ -10721,6 +10863,9 @@ journalctl 功能强大，用法非常多
     # 查看所有日志（默认情况下 ，只保存本次启动以来的日志）
     $ journalctl
 
+    # 日志默认分页输出，比较别扭，在屏幕上不换行，使用 --no-pager 改为正常的标准输出
+    $ journalctl --no-pager
+
     # 实时滚动显示最新日志
     $ journalctl -f
 
@@ -10779,9 +10924,6 @@ journalctl 功能强大，用法非常多
     #   6: info
     #   7: debug
     $ journalctl -p err -b
-
-    # 日志默认分页输出，比较别扭，在屏幕上不换行，使用 --no-pager 改为正常的标准输出
-    $ journalctl --no-pager
 
     # 以 JSON 格式（单行）输出
     $ journalctl -b -u nginx.service -o json |jq
