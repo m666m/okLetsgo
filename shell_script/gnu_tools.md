@@ -3128,6 +3128,13 @@ if [ -x /usr/bin/dircolors ]; then
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
 
+    # systemctl 切换桌面图形模式和命令行模式
+    function swc {
+        [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] && \
+            sudo systemctl isolate graphical.target || \
+            sudo systemctl isolate multi-user.target
+    }
+
     # 命令行看天气 https://wttr.in/:help
     # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
     # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
@@ -3188,14 +3195,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
     alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
     alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
-
-    # systemctl 切换桌面图形模式和命令行模式
-    function swc {
-        [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] && \
-            sudo systemctl isolate graphical.target || \
-            sudo systemctl isolate multi-user.target
-    }
-
 fi
 
 ####################################################################

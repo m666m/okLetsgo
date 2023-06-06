@@ -155,7 +155,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
     alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
     alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
-
 fi
 
 ####################################################################
