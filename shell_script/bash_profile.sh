@@ -88,7 +88,10 @@ if [ -x /usr/bin/dircolors ]; then
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
 
-    # 命令行看天气
+    # 命令行看天气 https://wttr.in/:help
+    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
+    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
+    # 看月相 curl http://wttr.in/moon
     function weather {
         curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
     }
