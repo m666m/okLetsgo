@@ -9513,7 +9513,7 @@ System-wide autostart directories:
 
     sudo systemctl reboot
 
-单独指定显示管理器服务是否开机自启动（内存占用还是大，不如上面的方法）：
+三、单独指定显示管理器服务是否开机自启动（内存占用还是大，不如上面的方法）：
 
     # lightdm sddm
     sudo systemctl disable gdm
@@ -9523,7 +9523,7 @@ System-wide autostart directories:
         # lightdm sddm
         systemctl start gdm
 
-三、利用 systemd 管理的显示管理器也可单独控制启停，编辑控制文件
+四、利用 systemd 管理的显示管理器也可单独控制启停，编辑控制文件
 
 lightdm
 
@@ -9588,7 +9588,7 @@ sddm
 
     如果行不通那就是用 systemd 管理了
 
-四、在操作系统启动分区管理设置开机后进入何种环境
+五、在操作系统启动分区管理设置开机后进入何种环境
 
 直接编辑 grub 条目，在 'linux  ....' 行的末尾加 3 则等效于开机 init 3 进入命令行环境。
 
