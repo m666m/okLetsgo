@@ -9479,6 +9479,8 @@ System-wide autostart directories:
 
     https://superuser.com/questions/443997
 
+    https://www.tecmint.com/change-runlevels-targets-in-systemd/
+
 一、老式的 X-window 系统，关闭开机自启动参见章节 [X11 启动过程]。
 
 二、对使用 systemd 管理的桌面环境
