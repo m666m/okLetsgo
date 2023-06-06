@@ -3104,6 +3104,11 @@ if [ -x /usr/bin/dircolors ]; then
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
 
+    # 命令行看天气
+    function weather {
+        curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
+    }
+
     # git 常用命令
     alias gs='git status'
     alias gd='echo "[差异：工作区与暂存区]" && git diff'
