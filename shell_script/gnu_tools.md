@@ -9492,7 +9492,7 @@ System-wide autostart directories:
 
 在系统运行时进行切换：
 
-    # 切换到命令行模式，等效 init 3
+    # 切换到命令行模式，等效 init 3，在 Fedora 下会退出到控制台 ctl+alt+F2。
     sudo systemctl isolate multi-user.target
 
     # 切换到图形模式，等效 init 5
@@ -9503,12 +9503,14 @@ System-wide autostart directories:
     # 查看登录后启动的设置选项
     systemctl get-default
 
-    启动到桌面是 graphical.target，启动到命令行是 multi-user.target
+    启动到桌面是 graphical.target，启动到命令行是 multi-user.target。
 
-    # 修改为登录后启动到命令行（控制台）
+    修改为登录后启动到命令行（控制台）
+
     sudo systemctl set-default multi-user.target
 
     然后重启即可
+
     sudo systemctl reboot
 
 单独指定显示管理器服务是否开机自启动（内存占用还是大，不如上面的方法）：
