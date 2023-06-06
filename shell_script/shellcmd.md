@@ -335,10 +335,12 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     https://plantegg.github.io/2017/01/01/top_linux_commands/
 
-rm之前先ls试试，所谓 dry-run
+rm 之前先 ls 试试，所谓 dry-run
 
     ls to_be*
+
     确认没问题了
+
     rm to_be*
 
 清空或创建一个文件
@@ -1205,6 +1207,7 @@ hostnamectl 查看主机名及操作系统信息 (依赖安装了 systemd)
     lsusb -tv                       列出所有USB设备
     lsmod                           列出加载的内核模块
     env                             查看环境变量资源
+    set                             显示当前所有内置变量和函数定义，调试脚本方便
 
     crontab -l                      查看当前用户的计划任务服务
 

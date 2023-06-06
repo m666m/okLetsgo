@@ -1609,7 +1609,7 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 自 1978 年的 VT100 以来，Unix/Linux 一直通用 [ANSI escape codes 彩色字符方案](http://en.wikipedia.org/wiki/ANSI_escape_code)：使用固定的文本代码，对字符终端的文本进行修饰，由终端模拟器和软件解释并呈现对应的色彩。在我们使用终端模拟器软件时，设置 ssh 要连接的站点，一般选择终端类型为 xterm 即可。
 
-最古老的基本颜色板（basic colour palette），前景色和背景色分别有 8 种，合计16种如下，修饰文本的颜色代码 \033[0，参见终端登陆脚本中颜色设置的代码 <bash_profile.sh>，历史介绍见 <https://zhuanlan.zhihu.com/p/566797565>。
+最古老的基本颜色板（basic colour palette），前景色和背景色分别有 8 种，合计16种如下，修饰文本的颜色代码 \033中括号0 ，参见终端登陆脚本中颜色设置的代码 <bash_profile.sh>，历史介绍见 <https://zhuanlan.zhihu.com/p/566797565>。
 
     # https://blog.csdn.net/Dreamhai/article/details/103432525
     # https://zhuanlan.zhihu.com/p/570148970
@@ -1619,6 +1619,7 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 所以目前通用的前景颜色代码就是16种（基本8种、加亮8种）:
 
+    ```bash
     normal="\033[0m"
 
     black="\033[0;30m"
@@ -1645,9 +1646,11 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
     white="\033[0;37m"
     light_gray="\033[1;37m"
+    ```
 
 输出特效格式控制：
 
+    ```bash
     \033[0m 关闭所有属性
     \033[1m 设置高亮度
     \03[4m 下划线
@@ -1656,9 +1659,11 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
     \033[8m 消隐
     \033[30m -- \033[37m 设置前景色
     \033[40m -- \033[47m 设置背景色
+    ```
 
 光标位置等的格式控制：
 
+    ```bash
     \033[nA 光标上移n行
     \03[nB 光标下移n行
     \033[nC 光标右移n行
@@ -1670,18 +1675,28 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
     \033[u 恢复光标位置
     \033[?25l 隐藏光标
     \33[?25h 显示光标
+    ```
 
 如果你的终端模拟器支持彩色等效果，那么在 bash 下输入如下代码，会看到输出红色的文字
 
     # ascii表中 \e 或 \033 或 \x1b
     # 使用16色代码表 基本颜色板
+
+    ```bash
     echo -en "\033[0;31m I am red\033[0m\n"
+    ```
 
     # 使用256色代码表
+
+    ```bash
     echo -en "\033[38:5:88m I am red\033[0m\n"
+    ```
 
     # 使用RGB真彩色
+
+    ```bash
     echo -en "\033[38:2:168:28:38m I am red\033[0m\n"
+    ```
 
 所以，要能看到彩色的文本，终端模拟器应该至少在选项设置中设置为 xterm 类型。若终端工具能支持24位真彩色、开启透明选项，则显示的效果更好。
 
@@ -1761,7 +1776,10 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
         curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/colortest.sh |bash
 
     同上，简单脚本实现  # https://github.com/msys2/MSYS2-packages/issues/1684#issuecomment-570793998
+
+    ```bash
     for x in {0..8}; do for i in {30..37}; do for a in {40..47}; do echo -ne "\e[$x;$i;$a""m\\\e[$x;$i;$a""m\e[0;37;40m "; done; echo; done; done; echo ""
+    ```
 
 256 color 测试脚本
 
@@ -1894,21 +1912,23 @@ True color(24bit) 综合测试 terminal-testdrive.sh
 如果要测试刷新速度
 
     ```bash
+
     # 看谁刷的快 https://github.com/alacritty/alacritty/issues/289#issuecomment-340283908%29
     for i in {1..400000}; do
-    echo -e '\r'
-    echo -e '\033[0K\033[1mBold\033[0m \033[7mInvert\033[0m \033[4mUnderline\033[0m'
-    echo -e '\033[0K\033[1m\033[7m\033[4mBold & Invert & Underline\033[0m'
-    echo
-    echo -e '\033[0K\033[31m Red \033[32m Green \033[33m Yellow \033[34m Blue \033[35m Magenta \033[36m Cyan \033[0m'
-    echo -e '\033[0K\033[1m\033[4m\033[31m Red \033[32m Green \033[33m Yellow \033[34m Blue \033[35m Magenta \033[36m Cyan \033[0m'
-    echo
-    echo -e '\033[0K\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
-    echo -e '\033[0K\033[1m\033[4m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
-    echo
-    echo -e '\033[0K\033[30m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
-    echo -e '\033[0K\033[30m\033[1m\033[4m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+        echo -e '\r'
+        echo -e '\033[0K\033[1mBold\033[0m \033[7mInvert\033[0m \033[4mUnderline\033[0m'
+        echo -e '\033[0K\033[1m\033[7m\033[4mBold & Invert & Underline\033[0m'
+        echo
+        echo -e '\033[0K\033[31m Red \033[32m Green \033[33m Yellow \033[34m Blue \033[35m Magenta \033[36m Cyan \033[0m'
+        echo -e '\033[0K\033[1m\033[4m\033[31m Red \033[32m Green \033[33m Yellow \033[34m Blue \033[35m Magenta \033[36m Cyan \033[0m'
+        echo
+        echo -e '\033[0K\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+        echo -e '\033[0K\033[1m\033[4m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+        echo
+        echo -e '\033[0K\033[30m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+        echo -e '\033[0K\033[30m\033[1m\033[4m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
     done
+
     ```
 
 #### 软件支持真彩色
@@ -2125,6 +2145,7 @@ Nord theme
         bar:
         background: '#434c5e'
         foreground: '#d8dee9'
+
     这里是标准的8种颜色
     normal:
         black: '#3b4252'
@@ -2135,6 +2156,7 @@ Nord theme
         magenta: '#b48ead'
         cyan: '#88c0d0'
         white: '#e5e9f0'
+
     这里是上面8种颜色对应的 Bold 或 bright
     bright:
         black: '#4c566a'
@@ -2145,7 +2167,8 @@ Nord theme
         magenta: '#b48ead'
         cyan: '#8fbcbb'
         white: '#eceff4'
-    这里是一个暗淡风格的nord，其它地方未见
+
+    这里是一个暗淡风格的 nord theme，其它地方未见
     dim:
         black: '#373e4d'
         red: '#94545d'
@@ -2176,11 +2199,11 @@ Nord theme
     LC_IDENTIFICATION="en_US.UTF-8"
     LC_ALL=en_US.UTF-8
 
-在env设置，如
+在 env 设置，如
 
     LC_CTYPE=zh_CN.gbk; export LC_CTYPE
 
-中文Windows使用ansi gbk编码，设置变量：Locale 、 Charset
+中文 Windows 使用 ansi gbk 编码，设置变量：Locale、Charset
 
     Locale=zh_CN
     Charset=GB18030
@@ -3093,6 +3116,7 @@ if [ -x /usr/bin/dircolors ]; then
 
     # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
     function cpbak {
+        # find . -max-depth 1 -name '$1*' -exec cp "{}" "{}.bak" \;
         echo "[复制一个备份，同名后缀.bak，如果是目录名不要后缀/]" && cp -a $1{,.bak}
     }
 
@@ -3104,7 +3128,10 @@ if [ -x /usr/bin/dircolors ]; then
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
 
-    # 命令行看天气
+    # 命令行看天气 https://wttr.in/:help
+    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
+    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
+    # 看月相 curl http://wttr.in/moon
     function weather {
         curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
     }
@@ -3161,6 +3188,14 @@ if [ -x /usr/bin/dircolors ]; then
     alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
     alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
     alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
+
+    # systemctl 切换桌面图形模式和命令行模式
+    function swc {
+        [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] && \
+            sudo systemctl isolate graphical.target || \
+            sudo systemctl isolate multi-user.target
+    }
+
 fi
 
 ####################################################################
