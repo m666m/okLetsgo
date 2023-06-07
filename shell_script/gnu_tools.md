@@ -7151,7 +7151,7 @@ peer-id-prefix=-TR2940-
 
     现在一般用的是 GNU 项目维护的 GNU Netcat，维护目的是提升 nc 在其他平台的可移植性的同时保持对原始 nc 的兼容性，这里主要是给各大 Linux 发行版提供一个维护性的版本，也即 OpenBSD 版。安装 netcat后，nc 是 netcat 的 alias，命令行里输入 nc 等于输入 netcat。
 
-    Ncat 是 Nmap 项目的作者 Fyodor，在原始 Netcat 之上新增功能二次开发的另一款强大工具，也就是说 Netcat 有的功能 Ncat 都具备，并且 ncat还有更多强大的功能。安装了 ncat 后，nc、netcat 都成了 ncat 的 alias，命令行里输入这三者都是一样的。
+    Ncat 是 Nmap 项目的作者 Fyodor，在原始 Netcat 之上新增功能二次开发的另一款强大工具，也就是说 Netcat 有的功能 Ncat 都具备，并且 ncat 还有更多强大的功能。安装了 ncat 后，nc、netcat 都成了 ncat 的 alias，命令行里输入这三者都是一样的。
 
     这几个版本软件的使用方法是互相兼容的，建议用之前还是多查查 man。
 

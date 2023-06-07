@@ -398,11 +398,25 @@ rm 之前先 ls 试试，所谓 dry-run
 
     好处就是不会改变当前shell的目录，以及如果命令中涉及环境变量，也不会对当前shell有任何更改。
 
-用diff对比远程文件跟本地文件
+在 bash 中使用以下语法打开 TCP / UDP套接字
+
+    # https://www.xmodulo.com/tcp-udp-socket-bash-shell.html
+    # exec {file-descriptor}<>/dev/{protocol}/{host}/{port}
+
+    打开一个双向端口
+    $ exec 3<>/dev/tcp/xmodulo.com/80
+
+    关闭输入端口
+    $ exec {file-descriptor}<&-
+
+    关闭输出端口
+    $ exec {file-descriptor}>&-
+
+用 diff 对比远程文件跟本地文件
 
     ssh user@host 'cat /path/to/remotefile' |diff /path/to/localfile -
 
-diff通常的用法是从参数读入两个文件，而命令里面的-则是指从stdin读入了
+diff 通常的用法是从参数读入两个文件，而命令里面的-则是指从stdin读入了
 
 ## bash 内建命令
 
@@ -2349,6 +2363,24 @@ iftop 类似 top 命令查看当前各个连接的流量情况，各大发行版
 查看除 80 和 25 端口之外的所有流量内容
 
     tcpdump -i eth0 port not 53 and not 25
+
+### 调试网络的常用工具 nmap
+
+不要使用 telnet，用 netcat 或 nmap
+
+    https://www.redhat.com/sysadmin/stop-using-telnet-test-port
+
+Netcat 对于 TCP 连接测试非常方便，但是当涉及到具有强大选项的命令行工具时，您无法击败 Nmap。Nmap 提供比 Netcat 更高级别的自动化。
+
+使用 Nmap 检查所有这些主机的端口 80 和 443：
+
+    $ cat port_scan_nmap.csv
+    google.com
+    amazon.com
+    raspberrypi.home
+    dmaf5.home
+
+    $ nmap -iL port_scan_nmap.csv -p80,443
 
 ## 查看日志
 
