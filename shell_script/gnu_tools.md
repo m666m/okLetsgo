@@ -6561,23 +6561,19 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     $ cat /dev/urandom |base64 |head -n 1
     H7k6xRGGGzHoipYg0IpGgxAc7wLQeHVGsLMxjNUrhP2uCS1kV4CmEQvi2PoDehJqB7GcTsklker/
 
-    # 给你的密码加盐算hash值，注意 $1$...$ 段的内容是盐salt，后面的才是该密码的hash值
-    $ openssl passwd 1234
-    $1$7F4haqDH$cVSLoqMYiBp.rggAG21Hz0
-
-    # 14个ascii字符
+    # 14个 ascii 字符
     $ gpg --armor --gen-random 2 16
     k524BASHzHmg1JFtDLHaqg==
+
+    # 16 进制编码的 20 个字符
+    $ openssl rand -hex 20
+    f231202787c01502287c420a8a05e960ec8f5129
 
     # base64 编码的 12 个字符
     # 如果使用 base64 编码，注意确保字节数可被三整除以避免填充（Base64 将三个字节编码为四个字符。不是3的整数倍，则以一个或两个“=”字符的形式填充。）
     # https://blog.aaronlenoir.com/2017/11/10/get-original-length-from-base-64-string/
     $ openssl rand -base64 9
     os6bv7UOrjRh
-
-    # 16 进制编码的 20 个字符
-    $ openssl rand -hex 20
-    f231202787c01502287c420a8a05e960ec8f5129
 
     # 生成一个 uuid，这个也是随机的
     $ cat /proc/sys/kernel/random/uuid
@@ -6613,6 +6609,13 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 #### TODO:使用 argon2 编码你的密码
 
     https://lindevs.com/install-argon2-on-raspberry-pi
+
+openssl 也可以给你的密码加盐算 hash 值
+
+    $ openssl passwd 1234
+    $1$7F4haqDH$cVSLoqMYiBp.rggAG21Hz0
+
+    注意 $1$...$ 段的内容是盐salt，后面的才是该密码的 hash 值
 
 对密码加密保存一般使用 hash，但是防破解效果太差，有专门的 argon2 算法，通过加盐和多次迭代来增加破解难度，argon2id 算法还增加了内存使用量，给 GPU 并行破解增大难度
 
