@@ -6529,7 +6529,7 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 ### 生成随机数做密码
 
-在 Linux 中，有两类用于生成随机数的设备，分别是 /dev/random 以及 /dev/urandom ，其中前者可能会导致阻塞，而读取 /dev/urandom 不会堵塞，不过此时 urandom 的随机性弱于 random 。 urandom 是 unblocked random 的简称，会重用内部池中的数据以产生伪随机数据，可用于安全性较低的应用
+在 Linux 中，有两类用于生成随机数的设备，分别是 /dev/random 以及 /dev/urandom ，其中前者可能会导致阻塞，而读取 /dev/urandom 不会堵塞，不过此时 urandom 的随机性弱于 random。 urandom 是 unblocked random 的简称，会重用内部池中的数据以产生伪随机数据，可用于非密钥数据的生成。
 
     https://huataihuang.gitbooks.io/cloud-atlas/content/os/linux/device/random_number_generator.html
 
@@ -6538,27 +6538,30 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     https://ostechnix.com/4-easy-ways-to-generate-a-strong-password-in-linux/
 
     # 对随机数只取字符和数字，取前16个
-    $ cat /dev/random | tr -cd '[:alnum:]' | head -c 16
+    $ cat /dev/random |tr -cd '[:alnum:]' |head -c 16
     cFW4vaqucb4K4T
 
     # 对随机数只取字符和数字，9个一行，取第一行
-    $ cat /dev/urandom | tr -cd 'a-zA-Z0-9' | fold -w 9 | head -n 1
+    $ cat /dev/random |tr -cd 'a-zA-Z0-9' |fold -w 9 |head -n 1
     DPTDA9W29
 
-    # 生成16字节的随机数据
+    # 生成 16 字节的随机数据
     # dd if=/dev/urandom bs=1 count=16
-    $ head -c 16 /dev/urandom
+    $ head -c 16 /dev/random
+
+    # 生成随机数据，过滤掉回车字符，只取 64 字节
+    cat /dev/random |tr -d '\n' |head -c 64
 
     # 对随机数取哈希，用 cksum 取 crc 校验和，还可以用 sha256sum、md5sum 等
-    $ head /dev/random | cksum
+    $ head /dev/random |cksum
     3768469767 1971
 
     # 对随机数转化为16进制2字节一组，取第一行
-    $ cat /dev/urandom | od  -An -x | head -n 1
+    $ cat /dev/random |od  -An -x |head -n 1
     0637 34d5 16f5 f393 250e a2eb aac0 27c3
 
     # 对随机数使用 base64 编码，取第一行
-    $ cat /dev/urandom |base64 |head -n 1
+    $ cat /dev/random |base64 |head -n 1
     H7k6xRGGGzHoipYg0IpGgxAc7wLQeHVGsLMxjNUrhP2uCS1kV4CmEQvi2PoDehJqB7GcTsklker/
 
     # 14个 ascii 字符
@@ -6569,11 +6572,13 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     $ openssl rand -hex 20
     f231202787c01502287c420a8a05e960ec8f5129
 
-    # base64 编码的 12 个字符
-    # 如果使用 base64 编码，注意确保字节数可被三整除以避免填充（Base64 将三个字节编码为四个字符。不是3的整数倍，则以一个或两个“=”字符的形式填充。）
-    # https://blog.aaronlenoir.com/2017/11/10/get-original-length-from-base-64-string/
+    # 生成 256 字节的随机数据作为密钥文件
+    $ openssl rand 256 >symmetric_keyfile.key
+
+    # 使用 base64 编码
+    # 如果字节参数 9，则 base64 编码生成 12 个字符
     $ openssl rand -base64 9
-    os6bv7UOrjRh
+    BhE3zmV1ki6D
 
     # 生成一个 uuid，这个也是随机的
     $ cat /proc/sys/kernel/random/uuid
@@ -6586,10 +6591,10 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 使用 cracklib 软件包检查口令的复杂度
 
-    $ echo 123654|cracklib-check
+    $ echo 123654 |cracklib-check
     123654: it is too simplistic/systematic
 
-    $ echo 4aoqemo|cracklib-check
+    $ echo 4aoqemo |cracklib-check
     4aoqemo: OK
 
 使用 apg 软件包生成可发音的单词组合口令
