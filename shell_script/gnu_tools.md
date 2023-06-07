@@ -9779,9 +9779,9 @@ Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，
 
 #### xrdp
 
-建议只使用软件不要安装或进行系统管理
+在远程桌面下，建议只使用软件，不要安装软件或进行系统管理等操作
 
-    因为 xrdp 使用自己的用户进行登陆，用户组并未完全归属到本地用户，在权限方面会有区别，如果安装了软件，在本地登陆时使用不便。
+    不同的发行版和桌面环境区分远程桌面用户和本地桌面用户，在执行权限等方面是有区别的，但目前并未完全测试。所以如果使用远程桌面用户安装软件，在本地登陆时暂无法明确有何负面的不便影响。
 
 Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包，客户端使用 mstsc、remmina 软件包。
 
@@ -9800,11 +9800,9 @@ Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP �
 
 所以如果你安装了 GNOME，那 xnvc 就将 GNOME 桌面远程提供给你，如果你安装了 xfce，xvnc 就将 xfce 桌面提供给你。
 
-现在主流 Linux 系统的桌面环境放弃了传统的 X11/Xorg，使用 Wayland 体系，它使用 xwayland 模块来兼容使用 X window 体系的程序
+现在很多主流 Linux 系统的桌面环境放弃了传统的 X11/Xorg，使用 Wayland 体系，它使用 xwayland 模块来兼容使用 X window 体系的程序
 
-    如果安装了 xrdp，其后端基于 xvnc（VNC） 或 xorgxrdp（XORG），Wayland 通过 xwayland 兼容模块响应其调用。
-
-    对 Fedora 等使用 SELinux 技术的操作系统，您可能需要编辑 /etc/pam.d/xrdp-sesman 以使会话过渡到正确的 SELinux 上下文。[#2094](https://github.com/neutrinolabs/xrdp/issues/2094) 中埋藏着有关此的更多信息 。
+    如果安装了 xrdp，其后端基于 xvnc（VNC） 或 xorgxrdp（XORG），Wayland 通过 xwayland 兼容模块响应其调用。也就是说，使用 xrdp 远程桌面，系统会切换到 x11 的桌面环境，不是 Wayland 桌面。
 
 xrdp 服务端兼容各种 RDP 客户端，如 mstsc、gnome connections、remmina、rdesktop 等。
 
