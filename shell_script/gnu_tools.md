@@ -6561,9 +6561,9 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     $ cat /dev/urandom |base64 |head -n 1
     H7k6xRGGGzHoipYg0IpGgxAc7wLQeHVGsLMxjNUrhP2uCS1kV4CmEQvi2PoDehJqB7GcTsklker/
 
-    # 每次都不一样
+    # 给你的密码加盐算hash值，注意 $1$...$ 段的内容是盐salt，后面的才是该密码的hash值
     $ openssl passwd 1234
-    j5FLQkXqH3m1c
+    $1$7F4haqDH$cVSLoqMYiBp.rggAG21Hz0
 
     # 14个ascii字符
     $ gpg --armor --gen-random 2 16
