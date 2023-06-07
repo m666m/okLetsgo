@@ -6610,10 +6610,10 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
     https://lindevs.com/install-argon2-on-raspberry-pi
 
-openssl 也可以给你的密码加盐算 hash 值
+openssl 也可以给你的密码加盐生成 hash 值，详见章节 [OpenSSL 的常用功能](gpg think)。
 
-    $ openssl passwd 1234
-    $1$7F4haqDH$cVSLoqMYiBp.rggAG21Hz0
+    $ openssl passwd 123456
+    $1$XwOQ.ODK$siJl5hJtv7Fqs.jhBwpyb0
 
     注意 $1$...$ 段的内容是盐salt，后面的才是该密码的 hash 值
 
@@ -6623,15 +6623,16 @@ openssl 也可以给你的密码加盐算 hash 值
 
     -m  定义最大内存使用量，以千字节为单位，2 的 m 次方，如 1GB 为 20
     -k  定义最大内存使用量，以千字节为单位
-    -t  定义迭代次数。
-    -p  定义线程数。
+    -t  定义迭代次数
+    -p  定义线程数
+    -e  只输出 hash 的结果
 
 Argon2i 变体用于生成哈希
 
     $ echo -n "Hello" | argon2 mysalt0123456789 -t 4 -k 65536 -p 2 -e
     $argon2i$v=19$m=65536,t=4,p=2$bXlzYWx0MDEyMzQ1Njc4OQ$N59WxssOt4L/ylaGzZGrPXkwClGZMDxn1Q3UolMEBLw
 
-现代加密应该使用对抗显卡并行运算强度更高的 Argon2id 变体而不是 Argon2i，用选项 -id 指定应使用
+为对抗显卡的并行运算，使用强度更高的 Argon2id 变体，用选项 -id 指定
 
     $ echo -n "Hello" | argon2 mysalt0123456789 -id -t 4 -m 20  -p 2
     Type:           Argon2id
