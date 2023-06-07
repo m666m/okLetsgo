@@ -189,8 +189,9 @@
     // markdownlint
     "markdownlint.config": {
         "default": true,
-        "MD046": false, //代码块缩进或围栏起来都可以
-        "MD024": false  //不同标题下的子标题内容可以重复
+        "MD046": false, // 代码块缩进或围栏起来都可以
+        "MD024": false, // 不同标题下的子标题内容可以重复
+        "MD014": false  // $命令可以没有输出
     },
     // PYQT Integration 自行调整：
     // 根据你的 python、conda、virtunalenv 的不同，在哪个环境下安装了 pyqt5-tools，就在哪个环境下安装 PYQT Integration。
