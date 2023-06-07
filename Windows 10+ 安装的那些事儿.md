@@ -590,7 +590,7 @@ PBP分屏注意
 
 doom 服务器状态  <https://certb-status.bethesda.net/en>。
 
-在 Linux 上玩 doom，先装 Steam的 Flatpak 版本 <https://www.addictivetips.com/ubuntu-linux-tips/doom-eternal-on-linux/>。
+在 Linux 上玩 doom eternal，参见章节 [steam on Linux](init_a_server think)。
 
 ## 装完 Windows 后的一些设置
 
