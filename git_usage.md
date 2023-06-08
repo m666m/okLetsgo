@@ -163,13 +163,16 @@ git 对文件内容的修改，在撤销和重做方面有些使用不便，详�
     # 登陆问题排查
     ssh -vvv git@github.com
 
-可以直接查看自己的公钥
+你的 GitHub 密钥是公开的，可以直接查看自己的公钥
 
     # ssh
     https://github.com/m666m.keys
 
     # gpg，参见章节 [使用 GPG 签名 Github 提交]
     https://github.com/m666m.gpg
+
+    # https://words.filippo.io/dispatches/whoami-updated/
+    执行 ssh whoami.filippo.io，它能根据你的公钥查到你的 github 用户名
 
 然后就可以 ssh 方式使用 github 了：
 

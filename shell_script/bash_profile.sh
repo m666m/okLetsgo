@@ -138,12 +138,10 @@ if [ -x /usr/bin/dircolors ]; then
     function ggtty {
         # 如果遇到在 tmux 等多终端程序下，执行 gpg 弹不出密码提示框的情况
         # 执行此命令配置 gpg pinentry 使用当前的 tty，然后重新执行 gpg 命令即可
-        # https://wiki.archlinux.org/title/GnuPG#Configure_pinentry_to_use_the_correct_TTY
-        # 不要作为默认设置，仅在弹不出密码提示框时使用
-        #   https://superuser.com/questions/1660466/
+        # 不要作为默认设置，仅在弹不出密码提示框时使用：
         echo "以当前终端 tty 连接 gpg-agent..."
         export GPG_TTY=$(tty)
-        gpg-connect-agent updatestartuptty /bye >/dev/null
+        # gpg-connect-agent updatestartuptty /bye >/dev/null
     }
 
     # openssl 常用命令

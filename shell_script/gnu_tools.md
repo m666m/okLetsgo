@@ -11458,7 +11458,7 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     systemctl list-timers
 
-#### 阻止关机、睡眠
+#### 这货还可以负责阻止关机、睡眠
 
 提高了系统更新、CD 刻录过程中阻止关机的控制
 
