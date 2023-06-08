@@ -3131,8 +3131,8 @@ if [ -x /usr/bin/dircolors ]; then
     # systemctl 切换桌面图形模式和命令行模式
     function swc {
         [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] && \
-            (echo '[WAIT a second until desktop appears...]'; sudo systemctl isolate graphical.target) || \
-            (echo '[Shut down desktop and return to tty...]'; sleep 1; sudo systemctl isolate multi-user.target)
+            (echo -e "\033[0;33mWARN\033[0m: WAIT a second until desktop appears..."; sudo systemctl isolate graphical.target) || \
+            (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
     }
 
     # 命令行看天气 https://wttr.in/:help
