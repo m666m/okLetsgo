@@ -3160,7 +3160,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias gpush='echo "[git 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 
     # gpg 常用命令，一般用法都是后跟文件名即可
-    alias ggk='echo "[查看有私钥的gpg密钥及其子密钥带指纹]" && gpg -K --keyid-format=long --with-subkey-fingerprint'
+    alias ggk='echo "[查看有私钥的gpg密钥及其子密钥，带指纹和keygrip]" && gpg -K --keyid-format=long --with-subkey-fingerprint --with-keygrip'
+    alias ggl='echo "[查看密钥的可读性信息pgpdump]" && gpg --list-packets'
     alias ggsb='echo "[签名，生成二进制.gpg签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --sign'
     alias ggst='echo "[签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --clearsign'
     alias ggsdb='echo "[分离式签名，生成二进制.sig签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --detach-sign'
@@ -3169,11 +3170,19 @@ if [ -x /usr/bin/dircolors ]; then
     alias ggf='echo "[查看公钥的指纹以便跟跟网站发布的核对]" && gpg --with-fingerprint --show-keys --keyid-format=long'
     alias ggvs='echo "[使用临时钥匙圈验证文件签名，如 ggvs ./fedora.gpg xxxx.checksum]" && gpgv --keyring'
     alias ggv='echo "[验证签名]" && gpg --verify'
-    alias ggt='echo "[解决 tmux 下 gpg 的 pinentry 弹不出密码提示框]" && export GPG_TTY=$(tty)'
     alias gges='echo "[非对称算法加密并签名，参数太多，只给出提示]" && echo "gpg -s -u 'sender@xxx.com' -r 'reciver@xxx.com' -e msg.txt"'
     alias ggcs='echo "[对称算法加密，默认选择当前可用的私钥签名，可用 -u 指定，默认生成的.gpg文件。]" && gpg -s --cipher-algo AES-256 -c'
     # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
     alias ggd='gpg -d'
+    #
+    function ggtty {
+        # 如果遇到在 tmux 等多终端程序下，执行 gpg 弹不出密码提示框的情况
+        # 执行此命令配置 gpg pinentry 使用当前的 tty，然后重新执行 gpg 命令即可
+        # 不要作为默认设置，仅在弹不出密码提示框时使用：
+        echo "以当前终端 tty 连接 gpg-agent..."
+        export GPG_TTY=$(tty)
+        # gpg-connect-agent updatestartuptty /bye >/dev/null
+    }
 
     # openssl 常用命令
     # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件，加 -kfile 指定密钥文件
@@ -3196,14 +3205,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
     alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
 fi
-
-####################################################################
-# Linux bash / Windows git bash(mintty)
-# 适用于 tmux 等多终端程序下，配置 gpg pinentry 使用正确的 TTY
-# https://wiki.archlinux.org/title/GnuPG#Configure_pinentry_to_use_the_correct_TTY
-echo "连接 gpg-agent..."
-export GPG_TTY=$(tty)
-gpg-connect-agent updatestartuptty /bye >/dev/null
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
