@@ -11458,6 +11458,12 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     systemctl list-timers
 
+#### 阻止关机、睡眠
+
+提高了系统更新、CD 刻录过程中阻止关机的控制
+
+    https://www.freedesktop.org/wiki/Software/systemd/inhibit/
+
 ## 定时任务 crontab
 
     https://www.debian.org/doc/manuals/debian-handbook/sect.task-scheduling-cron-atd.zh-cn.html

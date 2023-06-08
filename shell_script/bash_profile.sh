@@ -130,7 +130,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias ggf='echo "[查看公钥的指纹以便跟跟网站发布的核对]" && gpg --with-fingerprint --show-keys --keyid-format=long'
     alias ggvs='echo "[使用临时钥匙圈验证文件签名，如 ggvs ./fedora.gpg xxxx.checksum]" && gpgv --keyring'
     alias ggv='echo "[验证签名]" && gpg --verify'
-    alias ggt='echo "[解决 tmux 下 gpg 的 pinentry 弹不出密码提示框]" && export GPG_TTY=$(tty)'
     alias gges='echo "[非对称算法加密并签名，参数太多，只给出提示]" && echo "gpg -s -u 'sender@xxx.com' -r 'reciver@xxx.com' -e msg.txt"'
     alias ggcs='echo "[对称算法加密，默认选择当前可用的私钥签名，可用 -u 指定，默认生成的.gpg文件。]" && gpg -s --cipher-algo AES-256 -c'
     # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
@@ -138,8 +137,10 @@ if [ -x /usr/bin/dircolors ]; then
     #
     function ggtty {
         # 如果遇到在 tmux 等多终端程序下，执行 gpg 弹不出密码提示框的情况
-        # 执行此命令配置 gpg pinentry 使用正确的 TTY，然后重新执行 gpg 命令即可
+        # 执行此命令配置 gpg pinentry 使用当前的 tty，然后重新执行 gpg 命令即可
         # https://wiki.archlinux.org/title/GnuPG#Configure_pinentry_to_use_the_correct_TTY
+        # 不要作为默认设置，仅在弹不出密码提示框时使用
+        #   https://superuser.com/questions/1660466/
         echo "以当前终端 tty 连接 gpg-agent..."
         export GPG_TTY=$(tty)
         gpg-connect-agent updatestartuptty /bye >/dev/null
