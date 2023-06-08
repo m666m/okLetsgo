@@ -120,7 +120,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias gpush='echo "[git 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 
     # gpg 常用命令，一般用法都是后跟文件名即可
-    alias ggk='echo "[查看有私钥的gpg密钥及其子密钥带指纹]" && gpg -K --keyid-format=long --with-subkey-fingerprint'
+    alias ggk='echo "[查看有私钥的gpg密钥及其子密钥，带指纹和keygrip]" && gpg -K --keyid-format=long --with-subkey-fingerprint --with-keygrip'
+    alias ggl='echo "[查看密钥的可读性信息pgpdump]" && gpg --list-packets'
     alias ggsb='echo "[签名，生成二进制.gpg签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --sign'
     alias ggst='echo "[签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --clearsign'
     alias ggsdb='echo "[分离式签名，生成二进制.sig签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --detach-sign'
@@ -134,6 +135,15 @@ if [ -x /usr/bin/dircolors ]; then
     alias ggcs='echo "[对称算法加密，默认选择当前可用的私钥签名，可用 -u 指定，默认生成的.gpg文件。]" && gpg -s --cipher-algo AES-256 -c'
     # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
     alias ggd='gpg -d'
+    #
+    function ggtty {
+        # 如果遇到在 tmux 等多终端程序下，执行 gpg 弹不出密码提示框的情况
+        # 执行此命令配置 gpg pinentry 使用正确的 TTY，然后重新执行 gpg 命令即可
+        # https://wiki.archlinux.org/title/GnuPG#Configure_pinentry_to_use_the_correct_TTY
+        echo "以当前终端 tty 连接 gpg-agent..."
+        export GPG_TTY=$(tty)
+        gpg-connect-agent updatestartuptty /bye >/dev/null
+    }
 
     # openssl 常用命令
     # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件，加 -kfile 指定密钥文件
@@ -175,14 +185,6 @@ if [[ $(git --version |grep -i Windows >/dev/null 2>&1;echo $?) = '0' ]] ;then
     # Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
     alias ping='winpty ping'
 fi
-
-####################################################################
-# Linux bash / Windows git bash(mintty)
-# 适用于 tmux 等多终端程序下，配置 gpg pinentry 使用正确的 TTY
-# https://wiki.archlinux.org/title/GnuPG#Configure_pinentry_to_use_the_correct_TTY
-# echo "连接 gpg-agent..."
-export GPG_TTY=$(tty)
-gpg-connect-agent updatestartuptty /bye >/dev/null
 
 #################################
 # Mac OS
