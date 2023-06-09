@@ -1843,14 +1843,16 @@ Solarized Light（vscode 自带），这个是羊皮纸底色，但是语法高�
 
 创·战纪
 
-    最好能把二者结合起来
+    有蓝、黄、橙三种配色，酷
 
-        Vaporizer.tron-theme 有蓝、黄、橙三种配色，酷
+        Vaporizer.tron-theme
 
-        这个语法文件好
+    这2个语法文件好
 
-            gerane.Theme-TronLight
-            gerane.Theme-TronLegacy
+        gerane.Theme-TronLight
+        gerane.Theme-TronLegacy
+
+    TODO:最好能把二者结合起来
 
 #### 图标
 
