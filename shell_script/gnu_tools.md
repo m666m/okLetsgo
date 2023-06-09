@@ -81,7 +81,7 @@ Cygwin 在编译时中间加了个翻译层 cygwin1.dll
 
     目前流行的 MSYS2 是 MSYS 的一个升级版，准确的说是集成了 pacman 和 Mingw-w64 的 Cygwin 升级版。
 
-    如果你只是想在Windows下使用一些linux小工具，建议用 MSYS2，把 /usr/bin 加进环境变量 path 以后，可以直接在命令行终端中使用 Linux 命令。
+    如果你只是想在 Windows 下使用一些 Linux 小工具，建议用 MSYS2，把 /usr/bin 加进环境变量 path 以后，可以直接在命令行中使用 Linux 命令。
 
 另有 Linux 下运行 Windows 程序的中间层 wine，也是这个思路
 
@@ -634,7 +634,7 @@ BoldWhite=253,246,227
 
 #### mintty 简单使用：Git for Windows
 
-Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是只编译了它自己需要的部分工具软件进行了集成，我们主要使用他的 mintty.exe 命令行终端模拟器和 git、ssh、gpg、winpty 等工具。
+Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是只编译了它自己需要的部分工具软件进行了集成，我们主要使用他的 mintty.exe 终端模拟器和 git、ssh、gpg、winpty 等工具。
 
 安装 git for Windows 或 MSYS2 后就有了
 
@@ -1023,7 +1023,7 @@ Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` �
 
 ### 终端多路复用器
 
-Windows 下的命令行终端类型很多，如果想统一在一个程序下标签化管理各个窗口，这样的程序称为终端多路复用器 terminal multiplexer。
+终端模拟器类型很多，如果想统一在一个程序下标签化管理各个窗口，这样的程序称为终端多路复用器 terminal multiplexer。
 
 #### Supper Putty
 
@@ -9152,13 +9152,14 @@ LightDM 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
 
     https://segmentfault.com/a/1190000022083424
 
-在 xrdp 下使用 i3，参见章节 [xorgxrdp]。
+在远程桌面 xrdp 下使用 i3，需要组件 xorgxrdp，参见章节 [xorgxrdp]。
 
 安装
 
-    # dnf install -y i3 i3-ipc i3status i3lock dmenu terminator --exclude=rxvt-unicode
+    # 不安装 urxvt，换为 terminator
+    sudo dnf install -y i3 i3-ipc i3status i3lock dmenu terminator --exclude=rxvt-unicode
 
-    dnf group install "i3 desktop" "Window Managers"
+    sudo dnf group install "i3 desktop" "Window Managers"
 
     # 高分辨率小屏需要调整一下dpi
     echo 'Xft.dpi: 192' > ~/.Xresources
