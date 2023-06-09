@@ -953,7 +953,7 @@ WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持�
 
         再找到 .wind/profiles/default.v10/terminal/user.sessions 文件删除 session.autoLogin， 就可以将主密码设置为空字符串了，之后再来修改主密码，就 OK 了。
 
-edex-ui 创·战纪 风格的终端模拟器，还带一个简单的文件浏览器，系统资源监视器
+edex-ui 创·战纪 风格的终端模拟器，还带一个简单的文件浏览器，系统资源监视器，虽然基于Electron的应用程序毕竟笨重，但效果太酷了
 
     https://github.com/GitSquared/edex-ui
 
