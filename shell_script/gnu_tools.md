@@ -953,6 +953,14 @@ WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持�
 
         再找到 .wind/profiles/default.v10/terminal/user.sessions 文件删除 session.autoLogin， 就可以将主密码设置为空字符串了，之后再来修改主密码，就 OK 了。
 
+edex-ui 创·战纪 风格的终端模拟器，还带一个简单的文件浏览器，系统资源监视器
+
+    https://github.com/GitSquared/edex-ui
+
+    配置文件说明 https://github.com/GitSquared/edex-ui/wiki/settings.json
+
+    自定义主题说明 https://github.com/GitSquared/edex-ui/wiki/Themes
+
 alacritty 使用 OpenGL 进行显示加速的终端模拟器，在 Windows 下使用 powershell
 
     https://github.com/alacritty/alacritty
@@ -961,10 +969,6 @@ WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用，至今�
 
     https://github.com/wez/wezterm
         https://wezfurlong.org/
-
-edex-ui 创·战纪 风格的终端模拟器，酷
-
-    https://github.com/GitSquared/edex-ui
 
 Linux 桌面下的终端模拟器一般用自带的就行了
 
@@ -3459,6 +3463,24 @@ info 命令倾向于可读性和更深入的解释。信息页系统还支持文
     如果没有 info 内容，会转为 man 的内容，有提示 'Info: (*manpages*)ssh, 684 lines --Top'
 
         info ssh
+
+### 命令行下的文件资源管理器
+
+ranger 使用 vi 键位操作，自动预览文本文件，还支持打开其它类型的文件，非常方便
+
+    https://ranger.github.io/
+        https://github.com/ranger/ranger
+
+Midnight Commander 命令行下使用两个面板来处理文件和目录
+
+     https://midnight-commander.org/ https://github.com/MidnightCommander/mc
+     https://sourceforge.net/projects/mcwin32/files/
+
+    sudo apt install mc
+
+Far Manager for Windows
+
+    https://conemu.github.io/en/FarManager.html
 
 ### Vim 和 nano
 
@@ -7868,24 +7890,6 @@ NFS 一般用来存储共享视频，图片等静态数据。
 一般使用 nvme-cli 工具即可。
 
 注意：不同的主控对这个算法是不同的。像铠侠，三星直接在自家控制软件中操作就可以，而有些硬盘并不会认为预留空间就是 OP，所以还是得看具体品牌。
-
-### 命令行下的文件资源管理器
-
-ranger 使用 vi 键位操作
-
-    https://ranger.github.io/
-        https://github.com/ranger/ranger
-
-Midnight Commander 命令行下使用两个面板来处理文件和目录
-
-     https://midnight-commander.org/ https://github.com/MidnightCommander/mc
-     https://sourceforge.net/projects/mcwin32/files/
-
-    sudo apt install mc
-
-Far Manager for Windows
-
-    https://conemu.github.io/en/FarManager.html
 
 ### 在当前目录启动一个简单的http服务器
 
