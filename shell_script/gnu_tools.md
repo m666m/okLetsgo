@@ -1312,7 +1312,7 @@ schemes 段设置配色方案，同样是一个数组，每种配色方案会有
 
 ```
 
-自定义 nord 方案，来自章节 [Nord 整套支持终端模拟器和各个软件的配色方案]的三种模式
+自定义 nord 方案，来自章节 [配色方案：整套支持终端模拟器和命令行软件的主题]的三种模式
 
 ```json
 
@@ -1931,7 +1931,7 @@ True color(24bit) 综合测试 terminal-testdrive.sh
 
     ```
 
-#### 软件支持真彩色
+#### 命令行软件支持真彩色 dir_colors
 
 终端模拟器定义的颜色方案，影响的是 shell 下 16 种基本颜色的显示，如 ls、grep、systemctl 等命令输出标准的 16 色文字修饰代码。
 
@@ -2049,7 +2049,7 @@ to see the color scheme.''')
 
 ```
 
-#### 整套支持终端模拟器和各个软件的配色方案
+#### 配色方案：整套支持终端模拟器和命令行软件的主题 Nord theme
 
 Dracula theme
 
@@ -2060,6 +2060,10 @@ Nord theme
 
     https://www.nordtheme.com/ports/
         https://github.com/arcticicestudio/
+
+支持的软件众多，详见各软件介绍的美化相关章节即可。至少使用章节 [命令行软件支持真彩色 dir_colors]、[mintty 美化]、[常用桌面工具软件]的 'Gnome Terminal 终端'。
+
+颜色方案：
 
 10进制
 
@@ -2413,25 +2417,27 @@ zsh 下推荐使用 powerlevle10k，这个状态栏工具的兼容性和显示�
 
 ### 图标字体
 
-bash、vim、tmux 的状态栏主题等插件，为了使用图标字体，都依赖 powerline fonts 等补丁字体。
-
     https://juejin.cn/post/6844904054322102285
 
-作为程序员，和命令行打交道很频繁，设置一个赏心悦目的命行行 prompt 或者 Vim 的 status line 主题就很有必要了，不过一般这些漂亮的主题都会用到一些 icon 字符，这些 icon 字符一般的字体里是没有的。
+作为程序员，使用终端模拟器跟命令行打交道，设置一个赏心悦目的命行行 bash prompt 或者 vim、tmux 的状态栏主题就很有必要了，一般这些漂亮的主题都会用到一些 icon 字符，比如 pythone 环境的小蛇，系统温度出现温度计等。
 
-如果使用的是没有打 patch 的字体，可以看到很多特殊字符都会显示不正确，这也是很多爱好者安装一些主题后，显示效果不理想的原因。
+而主流操作系统（Windows/Linux）中内置的普通字体，很多特殊字符都会显示不正确，这也是很多人在安装一些主题后，显示效果不理想的原因。
 
-Powerline fonts 或者 Nerd fonts 这些字体集，他们对已有的一些 (编程) 字体打了 patch，新增一些 icon 字符。
+所以，编程爱好者自行给流行的字体打补丁，补齐了图标字符（glyphs），称为 patch字体。最流行的有 Powerline fonts 或者 Nerd fonts 这些字体集，他们对大量的流行字体（尤其是编程用的等宽类）打了 patch，新增很多 icon 字符。
 
-字体要安装到你使用终端模拟器的计算机上
+只有你的操作系统安装了这些补丁字体，然后设置你的终端模拟器程序使用该补丁字体，那些漂亮的主题效果才会完美呈现出来。
 
-    你在 Windows 下使用 putty 或 mintty 等终端工具，则字体要安装到你的 Windows 系统中。
+补丁字体要安装到你本地使用的计算机上，设置你的终端模拟器或编辑器使用该字体
 
-    你在 MacOS 下使用 iTerm2 终端工具，则要在你的苹果电脑上安装这些字体。
+    不要把字体安装到远程服务器
 
-然后设置在终端模拟器或编辑器使用该字体，这样才能正确显示。
+    你在 Windows 下使用 putty 或 mintty 等终端工具，则补丁字体要安装到你的 Windows 系统中
 
-简单测试几个unicode字符
+    你在 Linux 下使用 Gnome 等桌面环境，则补丁字体要安装到你的 Linux 系统中
+
+    你在 MacOS 下使用 iTerm2 终端工具，则要在你的苹果电脑上安装这些补丁字体
+
+简单测试几个 unicode 字符看看能否显示为正确的图标
 
     $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699"
      ±  ➦ ✘ ⚡ ⚙
@@ -2472,25 +2478,31 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
 类似 Powerline fonts，字体 patch 后对名字加了后缀 NF，比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)，Fira Code 改名为 Fira Code NF。
 
-终端模拟器推荐使用 Meslo LGS NF 字体，如果还支持透明效果（如mintty），显示效果直接起飞 <https://github.com/romkatv/powerlevel10k#fonts>。
+· 终端模拟器推荐使用 Meslo LG-S NF 字体，如果你的终端模拟器还支持透明效果，显示效果直接起飞。
 
     快速下载地址
 
     https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k
 
-    原始地址，Windows 用户找带 Windows 字样的下载即可
+    原始地址，下载文件名最短的那个即可
 
-        https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S/Regular/complete
+        https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S
 
-        原版 Meslo 字体
-            https://github.com/andreberg/Meslo-Font
-                Windows 下用 Meslo LG S (行间距 小)
+        选 S 目录是要行间距小的，在终端显示的时候正好，如果需要增大行间距，不建议换字体，在终端模拟器或你的编辑器设置行距更好。
 
-代码编辑器推荐安装 FiraCode NF 字体，该字体支持连字符，Windows 用户找带 Windows 字样的下载即可
+        文件名加 Mono 字样的是等宽变形，显示时太挤了，加 Propo 字样的是多行连线优化，普通使用用不到
+
+它的上游来源是 Meslo 字体，没有补丁
+
+    https://github.com/andreberg/Meslo-Font
+
+    它的上游是 Apple’s Menlo-Regular，再上游是 Bitstream Vera Sans Mono
+
+· 代码编辑器推荐安装 FiraCode NF 字体，该字体支持连字符，Windows 用户找带 Windows 字样的下载即可
 
     https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
 
-字体名称的区别在于，“Code”变体包含连字，而“Mono”变体不包含连字，“PL”字样是支持PowerLine图形。
+    文件名加 Mono 字样的是等宽变形不包含连字。
 
 简单测试几个 unicode 扩展 NF 字符
 
@@ -2504,15 +2516,15 @@ Fedora(SELinux) 下安装 Nerd Font --- Meslo LGS
 
     unzip Meslo.zip
 
-    方法来自 https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
+    因为发行版的存储库没有，只能手动安装，方法来自 https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
 
-    $ sudo mkdir -p /usr/local/share/fonts/NerdFont
-    $ sudo cp MesloLGSNerdFont-*.ttf /usr/local/share/fonts/NerdFont/
+    $ sudo mkdir -p /usr/local/share/fonts/MesloLGSNF
+    $ sudo cp MesloLGSNerdFont-*.ttf /usr/local/share/fonts/MesloLGSNF/
 
     # Set permissions and update SELinux labels
-    $ sudo chown -R root: /usr/local/share/fonts/NerdFont
-    $ sudo chmod 644 /usr/local/share/fonts/NerdFont/*
-    $ sudo restorecon -vFr /usr/local/share/fonts/NerdFont
+    $ sudo chown -R root: /usr/local/share/fonts/MesloLGSNF
+    $ sudo chmod 644 /usr/local/share/fonts/MesloLGSNF/*
+    $ sudo restorecon -vFr /usr/local/share/fonts/MesloLGSNF
 
     # Update the font cache
     $ sudo fc-cache -v
@@ -8451,7 +8463,9 @@ Gnome Terminal 终端
 
     主题颜色使用 Nord theme
 
-        git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git
+        cd ~/your_github_dir/
+
+        git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
 
         cd nord-gnome-terminal/src; ./nord.sh
 
