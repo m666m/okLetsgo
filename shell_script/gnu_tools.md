@@ -956,7 +956,7 @@ WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用，至今�
 
 Linux 桌面下的终端模拟器一般用自带的就行了
 
-    Gnome 桌面自带 Xterm
+    Gnome 桌面自带 Xterm，现名 Gnome Terminal
     KDE 桌面自带 Konsole
     Xfce 桌面自带 xfce
     gtk 桌面自带 terminator
@@ -8467,13 +8467,9 @@ Gnome Terminal 终端
 
         git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
 
-        cd nord-gnome-terminal/src; ./nord.sh
+        cd gnome-terminal-nordtheme/src; ./nord.sh
 
-        然后新建终端窗口时就多了个 Nord 选项，设为默认即可
-
-    dir_colors 使用 Nord
-
-        curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
+        然后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
 
 虚拟机
 
