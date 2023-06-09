@@ -1796,7 +1796,19 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
 插件的安装位置为 C:\Users\你的用户名\.vscode\extensions
 
-#### 护眼主题
+#### TODO:护眼主题
+
+在 vscode 下按 F1 输入命令 'Generate Color Theme From Current Settings'，会自动新建一个 theme 文件，自己慢慢研究吧
+
+    开发指南
+
+    https://github.com/bcomnes/tron-legacy-vscode/blob/master/vsc-extension-quickstart.md
+
+        各种图形对象说明 https://code.visualstudio.com/api/references/theme-color
+
+        语法着色说明 https://code.visualstudio.com/api/extension-capabilities/theming#textmate-theme-rules
+
+        添加颜色主题 https://code.visualstudio.com/docs/extensions/themes-snippets-colorizers#_adding-a-new-color-theme
 
 看代码和看md文字有些区别，一切以字体清晰可辨，眼睛不费力为原则。
 
@@ -1847,12 +1859,15 @@ Solarized Light（vscode 自带），这个是羊皮纸底色，但是语法高�
 
         Vaporizer.tron-theme
 
-    这2个语法文件好
+    这2个语法文件好，只是蓝色的
 
         gerane.Theme-TronLight
         gerane.Theme-TronLegacy
 
     TODO:最好能把二者结合起来
+
+    风格来源
+        https://disneyworld.disney.go.com/attractions/magic-kingdom/tron-lightcycle-run/
 
 #### 图标
 

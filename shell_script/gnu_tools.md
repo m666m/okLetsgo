@@ -3355,7 +3355,7 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
 ```
 
-## Linux 常用工具
+## Linux 常用命令行工具
 
     Linux 命令速查
 
@@ -7869,13 +7869,23 @@ NFS 一般用来存储共享视频，图片等静态数据。
 
 注意：不同的主控对这个算法是不同的。像铠侠，三星直接在自家控制软件中操作就可以，而有些硬盘并不会认为预留空间就是 OP，所以还是得看具体品牌。
 
-### 命令行下的文件资源管理器 Midnight Commander
+### 命令行下的文件资源管理器
 
-    # https://midnight-commander.org/ https://github.com/MidnightCommander/mc
-    # https://sourceforge.net/projects/mcwin32/files/
+ranger 使用 vi 键位操作
+
+    https://ranger.github.io/
+        https://github.com/ranger/ranger
+
+Midnight Commander 命令行下使用两个面板来处理文件和目录
+
+     https://midnight-commander.org/ https://github.com/MidnightCommander/mc
+     https://sourceforge.net/projects/mcwin32/files/
+
     sudo apt install mc
 
-命令行下使用两个面板来处理文件和目录，类似 [Far Manager](https://conemu.github.io/en/FarManager.html)。
+Far Manager for Windows
+
+    https://conemu.github.io/en/FarManager.html
 
 ### 在当前目录启动一个简单的http服务器
 
@@ -7962,6 +7972,15 @@ NFS 一般用来存储共享视频，图片等静态数据。
         # watch -n1  "date '+%D %T ' && vcgencmd measure_temp |figlet -f future.tlf -w 80 "
         watch -n1  "(date '+%T'; vcgencmd measure_temp) |tr '\n' ' ' |figlet -f future.tlf -w 80 "
 
+hollywood 让你的 tmux 跑满各种夸张程序，就像好莱坞的科幻电影
+
+    sudo apt install hollywood
+
+    打开了很多小工具，刷太快 cpu 都飙起来了，自己看代码调吧。
+
+        小工具在 /usr/lib/hollywood/ 目录下，主脚本在 /usr/games/hollywood
+        https://github.com/dustinkirkland/hollywood
+
 + matrix 字符屏保
 
     参考
@@ -8034,6 +8053,26 @@ NFS 一般用来存储共享视频，图片等静态数据。
             ./configure
             make
             sudo make install
+
+类似 cmatrix，实现了电影 Sneakers 里字符效果
+
+    https://github.com/bartobri/no-more-secrets
+
+    把管道传过来的字符变换一番，然后才呈现给你
+
+        ls -l |nms -a
+
+        sneakers
+
+    需要自己编译，如果感觉转换速度太慢，自己改
+
+        $ git clone --depth=1 https://github.com/bartobri/no-more-secrets.git
+        $ cd ./no-more-secrets
+
+        $ make nms
+        $ make sneakers             ## Optional
+
+        $ sudo make install
 
 ### 项目构建工具 Make、Automake、CMake、Ninja
 
@@ -8769,11 +8808,13 @@ GNOME Files（Nautilus）文件管理器
 
 GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱，如果想使用其它各种扩展，只能去网站 <https://extensions.gnome.org/> 下载。现在有了替代品 “GNOME Manager”，不需要去网站就可以搜索下载，在软件管理里搜索安装 “GNOME Manager” 即可。
 
-    推荐安装第三方组件：
+    推荐安装的第三方组件：
 
-        类似苹果的浮动任务栏 Dash to dock
+        User Theme              允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开
 
-        给 usb 设备添加菜单方便弹出 Removable drive menu
+        Dash to dock            类似苹果的浮动任务栏
+
+        Removable drive menu    给 usb 设备添加菜单方便弹出
 
     如果还是想使用网站浏览安装的方式
 
@@ -8793,9 +8834,9 @@ GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “G
 
     sudo apt install gnome-shell-extensions
 
-    安装 Tweaks 后在控制面板里找它即可
+安装 Tweaks 后在 “Show Apps” 里找它打开即可使用。
 
-### Gnome 主题乐园
+#### Gnome 主题乐园
 
 搜一下 Gnome Shell Themes 类别，你的 Gnome 桌面就大变样了，不一样的感觉
 
@@ -8804,6 +8845,12 @@ GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “G
 创·战纪 风格的东京夜
 
     https://www.gnome-look.org/p/1681470
+
+如何使用主题：
+
+下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
+
+使用 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择你的主题扩展的文件夹
 
 ### 使用 KDE
 

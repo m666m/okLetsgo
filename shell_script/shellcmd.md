@@ -2322,6 +2322,8 @@ tcpdump、wireshark 的常见命令
 
 ### 简单监控你的网络流量 iftop darkstat tcpdump
 
+简单使用 bmon 软件包，查看你的网卡流量情况。
+
 iftop 类似 top 命令查看当前各个连接的流量情况，各大发行版都有这个软件包
 
     先看网卡名
