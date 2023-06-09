@@ -962,6 +962,10 @@ WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用，至今�
     https://github.com/wez/wezterm
         https://wezfurlong.org/
 
+edex-ui 创·战纪 风格的终端模拟器，酷
+
+    https://github.com/GitSquared/edex-ui
+
 Linux 桌面下的终端模拟器一般用自带的就行了
 
     KDE 桌面自带 Konsole
