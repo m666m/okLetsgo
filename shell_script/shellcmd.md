@@ -839,10 +839,10 @@ DATE_TIME() {
 
 # 给文字加颜色
 #   echo -e "${green}All done!${plain}"
-red='\033[0;31m'
-green="\033[0;32m"
-yellow="\033[0;33m"
-plain='\033[0m'
+Color_red='\033[0;31m'
+Color_green="\033[0;32m"
+Color_yellow="\033[0;33m"
+Color_plain='\033[0m'
 
 # 输出信息
 # 调用时注意区别，是否使用变量替换
@@ -852,15 +852,15 @@ plain='\033[0m'
 #   $ show_error 'aaaa is ${aaaa}'
 #   03/21 11:25:39 [ERROR] aaaa is ${aaaa}
 show_info() {
-    echo && echo -e "$(DATE_TIME) [${green}INFO${plain}] ${1}"
+    echo && echo -e "$(DATE_TIME) [${Color_green}INFO${Color_plain}] ${1}"
 }
 
 show_warn() {
-    echo && echo -e "$(DATE_TIME) [${yellow}WARN${plain}] ${1}"
+    echo && echo -e "$(DATE_TIME) [${Color_yellow}WARN${Color_plain}] ${1}"
 }
 
 show_error() {
-    echo && echo -e "$(DATE_TIME) [${red}ERROR${plain}] ${1}"
+    echo && echo -e "$(DATE_TIME) [${Color_red}ERROR${Color_plain}] ${1}"
 }
 
 # 设置变量
@@ -873,7 +873,7 @@ is_ipv4_address() {
 }
 
 # 判断返回值
-[ -z "$res" ] && ngstatus="${red}已停止${plain}" || ngstatus="${green}正在运行${plain}"
+[ -z "$res" ] && ngstatus="${Color_red}已停止${Color_plain}" || ngstatus="${Color_green}正在运行${Color_plain}"
 echo -e " nginx运行状态：${ngstatus}"
 
 # 更简洁的判断执行结果
@@ -884,7 +884,7 @@ echo -e " nginx运行状态：${ngstatus}"
 
 # 判断端口是否存在，否则打印
 [[ ${RPC_PORT} ]] || {
-    echo && echo -e "$(DATE_TIME) ${ERROR} Aria2 configuration file incomplete."
+    echo && echo -e "$(DATE_TIME) ${Color_red} Aria2 configuration file incomplete.{Color_plain}"
     exit 1
 }
 
@@ -895,9 +895,7 @@ fi
 
 # 尝试多个指令，成功一个即可
 TRACKER=$(
-    ${DOWNLOADER} https://trackerslist.com/all_aria2.txt ||
-        ${DOWNLOADER} https://cdn.staticaly.com/gh/XIU2/TrackersListCollection@master/all_aria2.txt ||
-        ${DOWNLOADER} https://trackers.p3terx.com/all_aria2.txt
+    wget $url1 ||wget $url2 ||wget $url3
 )
 
 # 按格式打印

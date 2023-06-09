@@ -210,13 +210,19 @@ X Window system
 
 Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安装支持多种符号的字体，见章节 [Nerd Font]。
 
-早期 Windows 操作系统下，终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost，类似于 Linux 的伪终端机制。因为 Windows 的 conhost 实现机制跟 Linux 伪终端实质上不同(一个是调用Windows API，一个是发送文本字符)，第三方终端应用程序其实无法连接 conhost，所以有来自 Msys2 项目的 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。详见章节 [Windows字符终端]。
+Windows 10（2018年之前的版本）之前的所有 Windows 版本自带的所谓 CMD 终端不同于 Linux 的伪终端机制：
+
+    终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost。
+
+    conhost 实现机制跟 Linux 伪终端不同，一个是调用 Windows API，一个是发送文本字符作为显示效果的控制，所以按照 Linux 终端原理工作的终端模拟器及各种终端应用程序其实无法连接 conhost。
+
+直到 Msys2 项目，基于 putty 制作了 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。详见章节 [mintty 终端模拟器]。
 
 直至 2018年 Windows 10 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机。参见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]。
 
 ### putty 远程终端模拟器
 
-PuTTY is a free implementation of SSH and Telnet for Windows and Unix platforms, along with an xterm terminal emulator.
+putty 完美的实现了在 Windows 下使用 ssh 远程连接 Linux 服务器，连接后用户使用体验跟 Linux 下的本地终端模拟器完全一致
 
     https://www.chiark.greenend.org.uk/~sgtatham/putty/
 
@@ -366,6 +372,8 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
 
 putty 美化
 
+    仿效本地终端模拟器根据变量 $TERM 自动模拟为指定的终端类型，putty 可以在站点选项里设置终端类型，这样在登陆远程服务器后就按照指定的类型显示了，一般默认为 xterm 就是彩色。
+
 开启Putty终端256色的支持: Putty->load你的session->Window->Colors->勾选 “General options for colour usage” 下的几个选项。
 
 即使你设置会话时勾选了使用 256color 和 true color 真彩色，putty 默认的主题比较保守，只使用 16 种颜色（用 rgb 设置，其实支持真彩色），你ssh登陆到服务器会发现文字色彩比较刺眼。
@@ -380,7 +388,7 @@ putty 美化
 
 双击该reg文件，会在你的putty会话列表里新增一个“NORD”会话，点击“load”按钮加载该会话，然后填写自己的ip地址和端口，连接看看，会发现颜色效果柔和多了。
 
-### mintty 本地终端模拟器
+### mintty 终端模拟器
 
     https://github.com/mintty/mintty
         https://github.com/mintty/mintty/wiki/Tips
@@ -908,7 +916,7 @@ pacman 命令较多，常用的命令如下：
 
 另外， Cygwin下还有 apt-cyg 命令行包管理器 <https://zhuanlan.zhihu.com/p/66930502>，操作软件仓库 <https://zhuanlan.zhihu.com/p/65482014>。
 
-### 其他本地终端模拟器
+### 其他终端模拟器
 
 terminfo 问题
 
@@ -945,7 +953,7 @@ WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持�
 
         再找到 .wind/profiles/default.v10/terminal/user.sessions 文件删除 session.autoLogin， 就可以将主密码设置为空字符串了，之后再来修改主密码，就 OK 了。
 
-alacritty 使用 OpenGL 进行显示加速的本地终端模拟器，在 Windows 下使用 powershell
+alacritty 使用 OpenGL 进行显示加速的终端模拟器，在 Windows 下使用 powershell
 
     https://github.com/alacritty/alacritty
 
@@ -956,14 +964,29 @@ WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用，至今�
 
 Linux 桌面下的终端模拟器一般用自带的就行了
 
-    Gnome 桌面自带 Xterm，现名 Gnome Terminal
     KDE 桌面自带 Konsole
     Xfce 桌面自带 xfce
-    gtk 桌面自带 terminator
+    gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal
     i3 窗口管理器自带 urxvt(rxvt-unicode)
     sway 窗口管理器自带 foot
 
-    guake
+    Gnome 桌面自带 Xterm，现名 Gnome Terminal
+
+        主题颜色使用 Nord theme
+
+            cd ~/your_github_dir/
+
+            git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
+
+            cd gnome-terminal-nordtheme/src; ./nord.sh
+
+            然后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
+
+    guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal
+
+    tilix 基于 gtk3 开放的一个平铺式终端模拟器，效果类似 tmux，但是支持各面板的自定义拖曳。
+
+        https://github.com/gnunn1/tilix/
 
     cool-retro-term
 
@@ -1023,7 +1046,7 @@ Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` �
 
 ### 终端多路复用器
 
-终端模拟器类型很多，如果想统一在一个程序下标签化管理各个窗口，这样的程序称为终端多路复用器 terminal multiplexer。
+终端模拟器类型很多，如果想统一在一个窗口程序下标签化管理各个连接，这样的程序称为终端多路复用器 terminal multiplexer。
 
 #### Supper Putty
 
@@ -1085,7 +1108,7 @@ Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` �
 
     因为是窗体嵌套的 mintty，所以在 mintty 窗口里，它的右键菜单依然是可用的。
 
-    关于 mintty 的详细介绍，参见章节 [mintty 本地终端模拟器]。
+    关于 mintty 的详细介绍，参见章节 [mintty 终端模拟器]。
 
 备份自己的站点设置
 
@@ -1484,6 +1507,8 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
 ## Linux 字符终端
 
+很多终端工具都是跨平台的，参见章节 [其他终端模拟器]。
+
 ### 终端的历史演进 --- 连接控制台 console
 
     https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/#in-the-beginning-was-the-tty
@@ -1589,7 +1614,9 @@ wayland 等基于图形化的框架成熟后，Linux 内核的 VT 子系统转�
 
 80年代通用计算机发展以来，主要的连接方式是用户使用通用计算机，通过串行电缆连接主机，利用通用计算机的显示器和键盘与主机交互，在主机上使用命令行界面进行操作。
 
-随着处理器能力发展强大，GUI 图形化操作系统的发展，带来了一个新的使用问题：如果用户使用图形化窗口的 Terminal，需要与本机上运行的另一个命令行应用程序交互，那么本机的程序需要营造出一个物理终端设备的仿真环境，以便通过命令行跟主机进行交互，即所谓终端模拟器（Terminal Emulator）。这种连接本机的终端可称为本地终端，或称软件进入“console mode”。
+随着处理器能力发展强大，GUI 图形化操作系统的发展，带来了一个新的使用问题：如果用户使用图形化窗口的 Terminal，需要与本机上运行的另一个命令行应用程序交互，那么本机的程序需要营造出一个物理终端设备的仿真环境，就像登陆了控制台一样的操作，以便通过命令行跟主机进行交互，即所谓终端模拟器（Terminal Emulator）。
+
+这种连接本机控制台的终端称为终端模拟器，或称软件进入 “console mode”。
 
 UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念，实现这个伪终端功能的程序即可把自己模拟成主机的终端。我们现在说的终端，不再是真实的硬件设备，一般都是指软件终端模拟器。目前流行的字符终端模拟器有 mintty、xterm、putty（远程）等，图形终端模拟器有使用 vnc、rdp 协议的 tiger vnc/Remmina/mstsc 等。在使用字符终端模拟器的时候，如果不清楚主机类型，终端类型可选择最常见的 xterm。
 
@@ -1607,20 +1634,29 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
     https://github.com/mintty/mintty/wiki/CtrlSeqs
 
-自 1978 年的 VT100 以来，Unix/Linux 一直通用 [ANSI escape codes 彩色字符方案](http://en.wikipedia.org/wiki/ANSI_escape_code)：使用固定的文本代码，对字符终端的文本进行修饰，由终端模拟器和软件解释并呈现对应的色彩。在我们使用终端模拟器软件时，设置 ssh 要连接的站点，一般选择终端类型为 xterm 即可。
+    历史介绍见 https://zhuanlan.zhihu.com/p/566797565
 
-最古老的基本颜色板（basic colour palette），前景色和背景色分别有 8 种，合计16种如下，修饰文本的颜色代码 \033中括号0 ，参见终端登陆脚本中颜色设置的代码 <bash_profile.sh>，历史介绍见 <https://zhuanlan.zhihu.com/p/566797565>。
+自 1978 年的 VT100 以来，Unix/Linux 一直通用 [ANSI escape codes 彩色字符方案](http://en.wikipedia.org/wiki/ANSI_escape_code)：使用固定的文本代码作为控制命令，对字符终端的文本进行修饰，由终端模拟器和软件解释并呈现对应的色彩。
 
-    # https://blog.csdn.net/Dreamhai/article/details/103432525
-    # https://zhuanlan.zhihu.com/p/570148970
-    # 色彩      黑    红    绿    黄    蓝    洋红    青    白
-    # 前景色    30    31    32    33   34    35    36    37
-    # 背景色    40    41    42    43   44    45    46    47
+因为终端都是本地使用的，就是 Linux/Unix 服务器开机时进入的命令行模式，如果我们在登陆后的命令行变量 $TERM 设置终端类型，终端模拟器会读取该变量自动模拟为指定类型的终端，一般默认 xterm。
 
-所以目前通用的前景颜色代码就是16种（基本8种、加亮8种）:
+在使用 ssh 命令行远程连接 Linux/Unix 服务器时，也是同样处理的。
+
+最古老的基本颜色板（basic colour palette），前景色和背景色分别有 8 种，合计16种如下
+
+    https://blog.csdn.net/Dreamhai/article/details/103432525
+    https://zhuanlan.zhihu.com/p/570148970
+    色彩      黑    红    绿    黄    蓝    洋红    青    白
+    前景色    30    31    32    33   34    35    36    37
+    背景色    40    41    42    43   44    45    46    47
+
+所以目前通用的前景颜色代码就是16种（基本8种、加亮8种），在 bash 下用如下字符表示：
 
     ```bash
-    normal="\033[0m"
+
+    # 修饰文本的颜色代码用 \033[0 开头
+
+    plain="\033[0m"
 
     black="\033[0;30m"
     dark_gray="\033[1;30m"
@@ -1646,6 +1682,10 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
     white="\033[0;37m"
     light_gray="\033[1;37m"
+
+    # 验证
+    echo -e "${red}Are you ${plain} ok?"
+
     ```
 
 输出特效格式控制：
@@ -1697,6 +1737,8 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
     ```bash
     echo -en "\033[38:2:168:28:38m I am red\033[0m\n"
     ```
+
+更多应用示例参见 (shellcmd.md) 中终端登陆脚本中颜色设置的代码
 
 所以，要能看到彩色的文本，终端模拟器应该至少在选项设置中设置为 xterm 类型。若终端工具能支持24位真彩色、开启透明选项，则显示的效果更好。
 
@@ -2061,7 +2103,7 @@ Nord theme
     https://www.nordtheme.com/ports/
         https://github.com/arcticicestudio/
 
-支持的软件众多，详见各软件介绍的美化相关章节即可。至少使用章节 [命令行软件支持真彩色 dir_colors]、[mintty 美化]、[常用桌面工具软件]的 'Gnome Terminal 终端'。
+支持的软件众多，详见各软件介绍的美化相关章节即可。至少使用章节 [命令行软件支持真彩色 dir_colors]、[mintty 美化]、[其他终端模拟器]的 'Gnome Terminal'。
 
 颜色方案：
 
@@ -8455,21 +8497,11 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 
 快捷运行桌面工具，按 alt + F2，然后在弹出对话框输入可执行名如 firefox
 
+Linux 桌面的终端工具参见章节 [其他终端模拟器]。
+
 GNOME Files（Nautilus）文件管理器
 
     https://www.cnblogs.com/keatonlao/p/12717071.html
-
-Gnome Terminal 终端
-
-    主题颜色使用 Nord theme
-
-        cd ~/your_github_dir/
-
-        git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
-
-        cd gnome-terminal-nordtheme/src; ./nord.sh
-
-        然后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
 
 虚拟机
 
@@ -8711,11 +8743,9 @@ Gnome Terminal 终端
 
 ### 使用 gnome 扩展
 
+新版 Gnome 桌面向手机风格转换：没有任务栏，默认只显示当前任务窗口，查看打开的任务/切换任务要按 win 键或 alt+tab。桌面只能展示壁纸，不能放文件，桌面顶部一个状态条，用户交互操作非常少。
+
     gnome 桌面软件手册 https://help.gnome.org/users/
-
-    https://docs.fedoraproject.org/en-US/quick-docs/gnome-shell-extensions/
-
-新版 Gnome 桌面向手机风格转换：没有任务栏，默认只显示当前任务窗口，查看打开的任务/切换任务要按 alt+tab。桌面只能展示壁纸，不能放文件，桌面顶部一个状态条，用户交互操作非常少。
 
     GNOME-4X 入坑指南 https://zhuanlan.zhihu.com/p/545083349
 
@@ -8724,6 +8754,14 @@ Gnome Terminal 终端
     https://opensource.com/article/19/8/extensions-gnome-desktop
 
     GNOME Linux — 一场彻底的灾难 https://zhuanlan.zhihu.com/p/490505981
+
+大量的功能等待你的定制
+
+    https://docs.fedoraproject.org/en-US/quick-docs/gnome-shell-extensions/
+
+    介绍一些最常用的扩展
+
+        https://www.cnblogs.com/keatonlao/p/12686234.html
 
 GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱，如果想使用其它各种扩展，只能去网站 <https://extensions.gnome.org/> 下载。现在有了替代品 “GNOME Manager”，不需要去网站就可以搜索下载，在软件管理里搜索安装 “GNOME Manager” 即可。
 
@@ -8753,11 +8791,15 @@ GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “G
 
     安装 Tweaks 后在控制面板里找它即可
 
-Gnome 主题乐园
+### Gnome 主题乐园
+
+搜一下 Gnome Shell Themes 类别，你的 Gnome 桌面就大变样了，不一样的感觉
 
     https://www.gnome-look.org/p/1275087/
 
-    介绍一些最常用的扩展 https://www.cnblogs.com/keatonlao/p/12686234.html
+创·战纪 风格的东京夜
+
+    https://www.gnome-look.org/p/1681470
 
 ### 使用 KDE
 

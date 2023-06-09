@@ -1841,6 +1841,21 @@ Material Neutral 深色看文字比较养眼
 
 Solarized Light（vscode 自带），这个是羊皮纸底色，但是语法高亮浅蓝色太多，视物不清，需要自改。
 
+创·战纪
+
+    风格
+
+    https://disneyworld.disney.go.com/attractions/magic-kingdom/tron-lightcycle-run/
+
+    最好能把二者结合起来
+
+        Vaporizer.tron-theme 有蓝、黄、橙三种配色，酷
+
+        这个语法文件好
+
+            gerane.Theme-TronLight
+            gerane.Theme-TronLegacy
+
 #### 图标
 
 产品主题图标

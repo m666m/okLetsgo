@@ -1362,6 +1362,31 @@ uBlock Origin
 
         https://google.com/*
 
+### 定制自己的主题
+
+关于自定义主题的说明
+
+    https://github.com/niivu/Windows-11-themes
+
+先安装软件 去除 Windows 对第三方主题的限制
+
+    UltraUXThemePatcher 它修改你的系统文件，使第三方的主题可用。
+
+        https://mhoefs.eu/software_uxtheme.php?lang=en
+
+    SecureUxTheme 不修改系统文件
+
+        https://github.com/namazso/SecureUxTheme
+
+从各种主题网站下载安装
+
+    创·战纪
+    https://vsthemes.org/en/themes/windows10/510-tron.html
+
+    https://www.deviantart.com/tag/windows10themes
+
+    https://7themes.su/load/windows_10_themes/32
+
 ## 备份和恢复选项
 
 详见 Windows 中的恢复选项 <https://support.microsoft.com/zh-cn/Windows/Windows-%E4%B8%AD%E7%9A%84%E6%81%A2%E5%A4%8D%E9%80%89%E9%A1%B9-31ce2444-7de3-818c-d626-e3b5a3024da5>
