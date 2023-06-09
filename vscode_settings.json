@@ -39,7 +39,7 @@
     },
     "outline.showVariables": false,
     "diffEditor.ignoreTrimWhitespace": false,
-    //"window.activeBorder": "#ff7b00c5",
+    "window.activeBorder": "#ff7b00c5",
     "window.newWindowDimensions": "offset", // "offset" maximized
     "window.autoDetectColorScheme": false,  // 深色背景下切换项目时会闪一下白，很烦人，关了
     "window.menuBarVisibility": "toggle",  // 按 alt 键显示系统菜单
