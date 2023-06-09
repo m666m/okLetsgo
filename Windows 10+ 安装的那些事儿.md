@@ -1364,6 +1364,11 @@ uBlock Origin
 
 ### 定制自己的主题
 
+这个主题好像都是微软签名的，不需要安装破解
+
+    创·战纪
+    https://expothemes.com/themes/tron-legacy-windows-theme
+
 关于自定义主题的说明
 
     https://github.com/niivu/Windows-11-themes
