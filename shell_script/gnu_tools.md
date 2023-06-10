@@ -9478,6 +9478,8 @@ Fedora 的桌面环境同时支持 x-window 和 wayland，关闭图形模式开�
 
     执行 `sudo systemctl isolate graphical.target` 会启动 waylan 桌面环境，执行 `sudo systemctl isolate multi-user.target` 会退回到命令行环境。
 
+    如果你的系统没有桌面环境， 只需要按下 Alt+Fn 键即可切换各个控制台，不需要按下 CTRL。
+
 #### X11 启动过程
 
 基于 x-window 的桌面环境的启动过程
