@@ -10059,7 +10059,7 @@ Fedora 已经标准化了 PulseAudio 作为首选的音频系统
 
 在 Windows 使用远程桌面 mstsc 登录运行 xrdp 的 Fedora 后，Gnomes “软件” 无法搜索 flatpak 软件包，设置里看不到 flathub 存储库，只能本地登录才能看到，但是用命令 `flatpak search` 可以搜到，而且也不影响执行 flatpak 程序
 
-需要修改 polkit，Polkit 知识参见章节 [sudo 的替代方案 Polkit（PolicyKit）]。
+这是因为远程桌面用户的权限被限制，需要修改 polkit，Polkit 知识参见章节 [sudo 的替代方案 Polkit（PolicyKit）]。
 
 以下是开发者给出的脚本化解决方案
 
