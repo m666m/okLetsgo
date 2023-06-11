@@ -8866,7 +8866,7 @@ KDE 的桌面定制选项非常多，慢慢研究吧
 
 KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏览器中添加扩展的那种不方便的方式（使用另一个浏览器扩展），你可以使用 KDE 的软件管理器 “发现（Discovery）”，直接访问 KDE 的附加组件。
 
-### Linux 桌面的 XDG（X Desktop Group）基本目录规范
+### Linux 桌面的基本目录规范 XDG（X Desktop Group）
 
 对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境。
 
@@ -8958,7 +8958,7 @@ $XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对
 
     $config，默认为 ~/.config : /etc
 
-        如果在尝试编写文件时，目标目录不存在，则应尝试使用权限创建目标目录0700。
+        如果在尝试编写文件时，目标目录不存在，则应尝试使用权限 0700 创建目标目录。
 
         如果目标目录已存在，则不应更改权限。
 
@@ -9124,18 +9124,18 @@ gdm 是 GNOME 显示管理器
 
      apt-get install gdm
 
-kdm 或 SDDM 是 KDE 的显示管理器
+kdm 或 sddm 是 KDE 的显示管理器
 
     apt-get install sddm
 
-LightDM 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
+lightdm 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
 
     apt-get install lightdm
 
     sudo systemctl disable gdm
     sudo systemctl enable lightdm
 
- wayland-lyl 是 Wayland Login Manager
+wayland-lyl 是 Wayland Login Manager 支持 x-window/wayland 环境的命令行下的显示管理器
 
     https://docs.freebsd.org/en/books/handbook/wayland/#wayland-ly
 
@@ -9470,7 +9470,7 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
 ### 桌面环境的开机自启动
 
-RHEL 和 Debian 系都採用了 XDG 规范，详见章节 [Linux 桌面的 XDG（X Desktop Group）基本目录规范].
+RHEL 系和 Debian 系都採用了 XDG 规范，详见章节 [Linux 桌面的基本目录规范 XDG（X Desktop Group）].
 
 Fedora 的桌面环境同时支持 x-window 和 wayland，关闭图形模式开机后会停留在控制台，按 ctl + alt + F1/F2/F3/F4，切换控制台使用即可：
 
@@ -10830,7 +10830,9 @@ systemd 保持对 SystemV 的兼容性使用的控制文件
 ### systemd
 
     https://systemd.io/
+
         https://www.freedesktop.org/software/systemd/man/
+        https://docs.freebsd.org/en/books/handbook/wayland/
 
         https://fedoramagazine.org/series/systemd-series/
 
