@@ -9758,7 +9758,7 @@ sddm
 
 ### 桌面环境统一密码管理器 keyring
 
-大多数 Linux 桌面环境，如 GNOME、KDE、Xfce 等都使用 “GNOME 密钥环（keyring）” 来统一管理你的各种密码。
+大多数 Linux 桌面环境，如 GNOME、KDE、Xfce 等都使用 “GNOME 密钥环（GNOME keyring）” 来统一管理你的各种密码。
 
 你的密匙环将使用你帐户的密码自动解锁，如果密钥环在你登录系统时未解锁，在登录后会弹框提示 “Enter password to unlock your key ring”，只要你输入了登录密码，则使用你的登录身份免除 ssh、gpg 等密钥的密码。
 
@@ -9772,19 +9772,21 @@ GNOME Keyring
 
 操作系统软件包 gnome-keyring 提供了各种组件实现该功能。
 
-用户使用桌面软件 Gnome Passwords and Keys（原名 Seahorse）进行管理。
+用户使用桌面软件进行管理
 
-KDE 上的叫 KDE 钱包（KWallet）
+    Gnome Passwords and Keys（原名 Seahorse）
 
-    https://userbase.kde.org/KDE_Wallet_Manager
+    KDE 上的叫 KDE 钱包（KWallet）
 
-    https://wiki.archlinux.org/title/KDE_Wallet
+        https://userbase.kde.org/KDE_Wallet_Manager
 
-    https://www.jwillikers.com/gnome-keyring-in-kde-plasma
+        https://wiki.archlinux.org/title/KDE_Wallet
 
-    KGpg 接管 gpg 的功能
+        https://www.jwillikers.com/gnome-keyring-in-kde-plasma
 
-        https://userbase.kde.org/KGpg
+        KGpg 接管 gpg 的功能
+
+            https://userbase.kde.org/KGpg
 
 第三方：
 
