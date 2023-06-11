@@ -9770,23 +9770,25 @@ GNOME Keyring
 
     https://zhuanlan.zhihu.com/p/128133025
 
-操作系统软件包 gnome-keyring 提供了各种组件实现该功能。
+    操作系统软件包 gnome-keyring 提供了各种组件实现该功能。
 
 用户使用桌面软件进行管理
 
-    Gnome Passwords and Keys（原名 Seahorse）
+最常用的是 Gnome Passwords and Keys（原名 Seahorse）
 
-    KDE 上的叫 KDE 钱包（KWallet）
+    如果你修改了账户密码，记得还得重设密钥环密码。假如你不记得仍然被密钥环使用的老的账户密码：只能移除老的密钥环
 
-        https://userbase.kde.org/KDE_Wallet_Manager
+KDE 上的叫 KDE 钱包（KWallet）
 
-        https://wiki.archlinux.org/title/KDE_Wallet
+    https://userbase.kde.org/KDE_Wallet_Manager
 
-        https://www.jwillikers.com/gnome-keyring-in-kde-plasma
+    https://wiki.archlinux.org/title/KDE_Wallet
 
-        KGpg 接管 gpg 的功能
+    https://www.jwillikers.com/gnome-keyring-in-kde-plasma
 
-            https://userbase.kde.org/KGpg
+    KGpg 接管 gpg 的功能
+
+        https://userbase.kde.org/KGpg
 
 第三方：
 
