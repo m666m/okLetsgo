@@ -534,6 +534,10 @@ linux下shell终端里有行编辑功能，在命令提示符下默认可以像 
 
 ## 环境变量的说明
 
+分系统级生效或用户级，shell 或 gui 各有不同
+
+    https://wiki.archlinux.org/title/Environment_variables
+
 执行 `set` 可以查看当前shell的环境变量和函数设置，便于调试。
 
 系统级
