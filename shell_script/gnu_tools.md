@@ -8446,7 +8446,9 @@ Reboot
 
 ### 优化笔记本电脑的电池 tlp
 
-    # https://ostechnix.com/how-to-optimize-laptop-battery-life-with-tlp-in-linux/
+    https://ostechnix.com/how-to-optimize-laptop-battery-life-with-tlp-in-linux/
+
+    https://www.jwillikers.com/power-management-on-linux-with-tlp
 
 GNOME和KDE主流桌面環境都已內建 Power Profile Daemon 來調節耗電量，大部份發行版還會將 TLP 與 PPD 列為衝突套件。再根據 Reddit 的討論認為二者無明顯差距，我便沒有再刻意安裝 TLP。
 
