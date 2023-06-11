@@ -10027,6 +10027,63 @@ xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，�
 
     Xorg :10 -config xrdp/xorg.conf
 
+##### 用 plusaudio 播放远程桌面的音频
+
+1、在远程服务器安装 Pulse Audio，该软件可实现在设备间传输声音，安装后操作系统的声音设备会多出一个远端输出设备，各软件连接该设备即可。
+
+Fedora 已经标准化了 PulseAudio 作为首选的音频系统
+
+    https://fedoraproject.org/wiki/Audio#PulseAudio
+
+    https://discussion.fedoraproject.org/t/how-to-install-pulseaudio-in-fedora-34-silverblue/29310
+
+    https://zhuanlan.zhihu.com/p/107695979
+
+2、xrdp 使用 PulseAudio 实现音频输出重定向，遵守服务器到客户端音频重定向是根据远程桌面实现的相关协议
+
+    https://github.com/neutrinolabs/pulseaudio-module-xrdp
+
+目前需要手动编译
+
+    https://github.com/neutrinolabs/pulseaudio-module-xrdp/wiki/README
+
+安装该模块后，远程连接到服务器即可在运行远程桌面客户端的机器上播放服务器上的声音了。
+
+##### xrdp 远程桌面用户相对本地登陆用户有权限区别
+
+·对 Fedora 等使用 SELinux 技术的操作系统，您可能需要编辑 /etc/pam.d/xrdp-sesman 以使会话过渡到正确的 SELinux 上下文。[#2094](https://github.com/neutrinolabs/xrdp/issues/2094) 中埋藏着有关此的更多信息 。
+
+·解决 xrdp 远程桌面连接后在 Gnome software 无法搜索 flatpak 程序的问题
+
+    https://github.com/neutrinolabs/xrdp/issues/2700
+
+在 Windows 使用远程桌面 mstsc 登录运行 xrdp 的 Fedora 后，Gnomes “软件” 无法搜索 flatpak 软件包，设置里看不到 flathub 存储库，只能本地登录才能看到，但是用命令 `flatpak search` 可以搜到，而且也不影响执行 flatpak 程序
+
+需要修改 polkit，Polkit 知识参见章节 [sudo 的替代方案 Polkit（PolicyKit）]。
+
+以下是开发者给出的脚本化解决方案
+
+    先创建一个本地用户组 pk-local，然后把你的 xrdp 用户添加进去
+
+    $ sudo groupadd pk-local
+    $ sudo usermod -aG pk-local uu
+
+    安装自定义 polkit 策略
+
+    $ git clone --depth https://github.com/matt335672/pk-local
+    $ cd pk-local
+
+    $ sudo ./setup-pk-local --enable
+
+    验证：The polkit actions above should be using auth_admin for an xrdp session (e.g.):-
+
+    $ pkaction --verbose --action-id org.freedesktop.Flatpak.appstream-update
+    org.freedesktop.Flatpak.appstream-update:
+    . . .
+    implicit any:      auth_admin
+    . . .
+    implicit active:   yes
+
 #### VNC
 
 VNC 体系由客户端（viewer）与服务端两部分构成
