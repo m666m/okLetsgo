@@ -9756,7 +9756,7 @@ sddm
 
 感觉这 systemd 管的越来越多，直接做一个 systemd 操作系统得了。
 
-### 桌面环境统一密码管理器 keyring
+### 桌面环境统一密码管理器
 
 大多数 Linux 桌面环境，如 GNOME、KDE、Xfce 等都使用 “GNOME 密钥环（GNOME keyring）” 来统一管理你的各种密码。
 
