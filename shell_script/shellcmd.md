@@ -568,13 +568,17 @@ fi
 
 ## Linux 目录和分区
 
-    https://www.debian.org/releases/stable/amd64/apcs02.zh-cn.html
+Linux 的目录，有些个是固定用途的，有些是文件系统挂载在这个目录上，有官方的 “文件系统层次结构标准”
 
-linux的目录，有几个固定用途的，有些是文件系统挂载在这个目录上
+    https://www.debian.org/releases/stable/amd64/apcs02.zh-cn.html
 
     https://refspecs.linuxfoundation.org/fhs.shtml
 
+    https://www.freedesktop.org/software/systemd/man/file-hierarchy.html
+
     https://zhuanlan.zhihu.com/p/107263805
+
+桌面环境也有官方标准，见章节 [Linux 桌面的基本目录规范 XDG（X Desktop Group）](gnu_tools.md)。
 
     $ df -h
     Filesystem      Size  Used Avail Use% Mounted on

@@ -8856,9 +8856,13 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
 ### Linux 桌面的基本目录规范 XDG（X Desktop Group）
 
+Linux 操作系统的基本目录结构参见章节 [Linux 目录和分区](shellcmd.md)。
+
 对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境。
 
 目前最流行的 freedesktop 的规范称为 XDG
+
+    https://www.freedesktop.org/software/systemd/man/file-hierarchy.html
 
     https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 
