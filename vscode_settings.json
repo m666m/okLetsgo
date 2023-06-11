@@ -141,9 +141,10 @@
         "[Nord Wave]": {
             "activityBar.foreground": "#93ceff",
             // 文字亮度低点
-            "editor.background":"#1f1f20",
+            "editor.background":"#18181a",
             "editor.foreground": "#95a3a8",
             "sideBar.foreground": "#8c989c",
+            "sideBar.background": "#18181a",
             "terminal.foreground": "#a6b9be",
             // 光标所在行、光标所在词同类高亮
             "editor.lineHighlightBackground": "#293450b0",
@@ -186,7 +187,7 @@
             "activityBarBadge.background": "#00BADB",
             "activityBar.border": "#00BADB",
             "sideBar.background": "#000000",
-            "sideBar.foreground": "#11aeca",
+            "sideBar.foreground": "#98bdc4",
             "sideBarSectionHeader.background": "#00000000",
             "sideBarSectionHeader.foreground": "#cccccc",
             "sideBarSectionHeader.border": "#00BADB",
@@ -227,7 +228,7 @@
             "minimapSlider.hoverBackground": "#5faabe7a",
             "minimapSlider.activeBackground": "#3dafcf94",
             // 编辑器的行选择等高亮也都得自己调整
-            "editor.foreground": "#b4bec5",
+            "editor.foreground": "#98bdc4",
             "editor.background": "#000000",
             "editor.lineHighlightBorder": "#1fbeda8f",
             "editor.selectionBackground": "#1f83bdad",
