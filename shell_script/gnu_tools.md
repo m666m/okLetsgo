@@ -8632,20 +8632,6 @@ GNOME Files（Nautilus）文件管理器
     XMind【專有軟體】：繪製心智圖，支援上傳到雲端。
     ImageMagick (無圖形界面)：用於圖片轉檔的純文字工具。
 
-密码管理器：使用你的登录身份免除ssh、gpg等密钥的密码，登录 web 网站也会自动填充密码
-
-    Gnome Passwords and Keys（原名 Seahorse）
-
-    KDE KGpg
-
-    KeePass 是一个免费的开源密码管理器，它可以帮助您以安全的方式管理您的密码。您可以将所有密码存储在一个用主密钥锁定的数据库中。因此，您只需记住一个主密钥即可解锁整个数据库。数据库文件使用加密算法（AES-256、ChaCha20和Twofish）进行加密。
-
-        https://keepass.info/
-
-        https://wiki.archlinux.org/title/KeePass
-
-    Bitwarden
-
 邮件
 
     Mozilla Thunderbird 支持 gpg 加密
@@ -9769,6 +9755,48 @@ sddm
     https://wiki.archlinux.org/title/Systemd/User#Automatic_login_into_Xorg_without_display_manager
 
 感觉这 systemd 管的越来越多，直接做一个 systemd 操作系统得了。
+
+### 桌面环境统一密码管理器 keyring
+
+大多数 Linux 桌面环境，如 GNOME、KDE、Xfce 等都使用 “GNOME 密钥环（keyring）” 来统一管理你的各种密码。
+
+你的密匙环将使用你帐户的密码自动解锁，如果密钥环在你登录系统时未解锁，在登录后会弹框提示 “Enter password to unlock your key ring”，只要你输入了登录密码，则使用你的登录身份免除 ssh、gpg 等密钥的密码。
+
+比如在使用 ssh、gpg、git 等鉴权时自动接管原 ssh-agent、pinentry、git 凭据管理器 credential.helper 的工作，浏览器登录 web 网站时也会自动填充密码。
+
+GNOME Keyring
+
+    https://wiki.archlinux.org/title/GNOME/Keyring
+
+    https://zhuanlan.zhihu.com/p/128133025
+
+操作系统软件包 gnome-keyring 提供了各种组件实现该功能。
+
+用户使用桌面软件 Gnome Passwords and Keys（原名 Seahorse）进行管理。
+
+KDE 上的叫 KDE 钱包（KWallet）
+
+    https://userbase.kde.org/KDE_Wallet_Manager
+
+    https://wiki.archlinux.org/title/KDE_Wallet
+
+    https://www.jwillikers.com/gnome-keyring-in-kde-plasma
+
+    KGpg 接管 gpg 的功能
+
+        https://userbase.kde.org/KGpg
+
+第三方：
+
+KeePass 是一个免费的开源密码管理器，它可以帮助您以安全的方式管理您的密码。您可以将所有密码存储在一个用主密钥锁定的数据库中。因此，您只需记住一个主密钥即可解锁整个数据库。数据库文件使用加密算法（AES-256、ChaCha20和Twofish）进行加密。
+
+    https://keepass.info/
+
+    https://wiki.archlinux.org/title/KeePass
+
+Bitwarden 可 docker 部署实现自托管
+
+    https://zhuanlan.zhihu.com/p/130492433
 
 ### 远程桌面 vnc/rdp/mstsc
 
