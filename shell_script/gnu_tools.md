@@ -3183,14 +3183,17 @@ if [ -x /usr/bin/dircolors ]; then
     }
 
     # vi
-    alias viw='echo "[vi 后悔药：等保存了才发现是只读，只给出提示]" && echo ":w !sudo tee %"'
+    alias viw='echo "[只给出提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
+
+    # systemd
+    alias sded='echo "[只给出提示： systemd 手工编辑文件，切换到 root 环境运行以下命令。另：vi 换为 tee 可实现EOF式的命令行直接写入]" && echo "env SYSTEMD_EDITOR=vi systemctl edit --force --full xxx.service"'
 
     # wsl 或 git bash下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "[Windows Path]"
     function cdw {
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
 
-    # systemctl 切换桌面图形模式和命令行模式
+    # 切换桌面图形模式和命令行模式 --- systemctl 模式
     function swc {
         [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] && \
             (echo -e "\033[0;33mWARN\033[0m: WAIT a second until desktop appears..."; sudo systemctl isolate graphical.target) || \
@@ -10917,6 +10920,8 @@ systemd 并不是一个命令，而是一组命令，涉及到系统管理的方
 
 #### 基本管理命令
 
+    https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units
+
 systemctl 是 Systemd 的主命令，用于管理系统
 
     # 重启系统
@@ -11014,7 +11019,9 @@ Unit 一共分成12种
     Swap Unit：swap 文件
     Timer Unit：定时器
 
-systemctl list-units 命令可以查看当前系统的正在运行的所有 Unit
+systemd 默认启用的系统级组件配置在 /usr/lib/systemd/system-preset/ 下
+
+查看当前系统的正在运行的所有 Unit
 
     # 列出正在运行的 Unit
     $ systemctl list-units
@@ -11031,9 +11038,25 @@ systemctl list-units 命令可以查看当前系统的正在运行的所有 Unit
     # 列出所有正在运行的、类型为 service 的 Unit
     $ systemctl list-units --type=service
 
-systemctl list-unit-files 命令列出所有已经安装的 unit 文件
+列出所有已经安装的 unit 文件
 
-systemd 默认启用的系统级组件配置在 /usr/lib/systemd/system-preset/下
+    systemctl list-unit-files
+
+显示指定的 unit 文件内容
+
+    systemctl cat xxx.service
+
+编辑指定的 unit 文件
+
+    新文件默认放置在目录 /etc/systemd/system/ 下
+    $ sudo systemctl edit --force --full xxx.service
+
+    脚本化直接写入 https://unix.stackexchange.com/questions/459942/using-systemctl-edit-via-bash-script
+    $ sudo su
+    # env SYSTEMD_EDITOR=tee systemctl edit --force --full xxx.service <<EOF
+    [Service]
+    ExecStartPre=/bin/sleep 5
+    EOF
 
 systemctl status 命令用于查看系统状态和单个 Unit 的状态
 
@@ -11666,9 +11689,11 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     systemctl list-timers
 
+参见章节 [自動更新Flatpak應用程式](init_a_server thnik)。
+
 #### 这货还可以负责阻止关机、睡眠
 
-提高了系统更新、CD 刻录过程中阻止关机的控制
+提供了在系统更新、CD 刻录过程中阻止关机的控制
 
     https://www.freedesktop.org/wiki/Software/systemd/inhibit/
 

@@ -81,14 +81,17 @@ if [ -x /usr/bin/dircolors ]; then
     }
 
     # vi
-    alias viw='echo "[vi 后悔药：等保存了才发现是只读，只给出提示]" && echo ":w !sudo tee %"'
+    alias viw='echo "[只给出提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
+
+    # systemd
+    alias sded='echo "[只给出提示： systemd 手工编辑文件，切换到 root 环境运行以下命令。另：vi 换为 tee 可实现EOF式的命令行直接写入]" && echo "env SYSTEMD_EDITOR=vi systemctl edit --force --full xxx.service"'
 
     # wsl 或 git bash下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "[Windows Path]"
     function cdw {
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
 
-    # systemctl 切换桌面图形模式和命令行模式
+    # 切换桌面图形模式和命令行模式 --- systemctl 模式
     function swc {
         [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] && \
             (echo -e "\033[0;33mWARN\033[0m: WAIT a second until desktop appears..."; sudo systemctl isolate graphical.target) || \
