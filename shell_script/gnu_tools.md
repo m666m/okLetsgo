@@ -9033,7 +9033,7 @@ X window 是一个技术体系
 
         也就是说，应用程序和显示器不必在同一台计算机上，每一个窗口应用程序对应一个（或多个？）X Client，用户的显示界面上运行的是 X Server。注意这里本地运行的是 X server，远程服务器运行图形化程序使用的是 X client。注意这个概念只是程序实现时的术语，跟我们安装应用时本地称客户端，远程称服务端不同。
 
-        就 X windows 桌面来说，本来就没有不远程的，XServer 和 XClient 放在一台电脑上就是本地桌面，通过  ssh -x 连接就远程了，没有本质区别。
+        就 X windows 桌面体系来说，天生就支持远程，XServer 和 XClient 在同一台电脑上就是连接本地桌面，通过  ssh -x 连接就是远程桌面了，没有本质区别。
 
     Xserver：用来处理用户输入和系统输出的指令。X server 运行在工作站上，而用户在具有更强处理能力的远程计算机上运行应用程序是很常见的。
 
@@ -9041,13 +9041,13 @@ X window 是一个技术体系
 
     Xorg：是 Linux 上通用的桌面环境（后端）服务器（X11的一种具体开源实现）。它使用 X11 协议与 X client 端应用程序进行交互的应用程序，X Server 在显示器上绘制内容并发送输入事件，例如鼠标移动，单击和击键。因为它不直接传送图像数据，所以比较节约带宽。
 
-    现在大多时候，Xorg、X11、X Server 说的都是一个东西，就是 Linux 桌面的 X11 后端服务器
+    现在大多时候，可以把 Xorg、X11、X Server 说成 x-window 体系的同一个东西，就是 Linux 桌面的 X 后端服务器
 
         Xorg 的前端实现就是 X server，所以又称 Xorg xserver 或 X11 server
 
-GNOME、KDE、Xfce 等使用 X Window 体系都是基于 Xorg 基础之上开发的桌面环境，也就是桌面软件（或者是图形软件）的集合
+现在主流的 GNOME、KDE、Xfce 等桌面环境，使用的 X Window 体系都是基于 Xorg 基础之上开发，也就是桌面软件（或者是图形软件）的集合
 
-    通用命令： startx 在命令行下启动桌面环境
+    x window 体系的通用命令： startx 在命令行下启动桌面环境
 
 #### Wayland
 
@@ -9067,7 +9067,7 @@ Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的�
 
     Gnome、KDE 等都有对应的 Wayland 实现
 
-    不再是 Client-Server 模式，天生远程功能差（可以用wayvnc）
+    不再是 Client-Server 模式，远程桌面的实现方式不同
 
     Wayland 使用 xwayland 兼容 X window 程序。
 
@@ -10077,21 +10077,19 @@ xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，�
 
     Xorg :10 -config xrdp/xorg.conf
 
-##### 用 plusaudio 播放远程桌面的音频
+##### 播放远程桌面的音频
 
-1、在远程服务器安装 Pulse Audio，该软件可实现在设备间传输声音，安装后操作系统的声音设备会多出一个远端输出设备，各软件连接该设备即可。
+1、Fedora 内置的 PipeWire 是一个新的底层多媒体框架，支持所有接入PulseAudio，JACK，ALSA和GStreamer的程序，也支持内置的远程共享功能。
 
-Fedora 已经标准化了 PulseAudio 作为首选的音频系统
+    https://wiki.archlinux.org/title/PipeWire
 
-    https://fedoraproject.org/wiki/Audio#PulseAudio
+    https://fedoramagazine.org/pipewire-the-new-audio-and-video-daemon-in-fedora-linux-34/
 
-    https://discussion.fedoraproject.org/t/how-to-install-pulseaudio-in-fedora-34-silverblue/29310
-
-    https://zhuanlan.zhihu.com/p/107695979
-
-2、xrdp 使用 PulseAudio 实现音频输出重定向，遵守服务器到客户端音频重定向是根据远程桌面实现的相关协议
+2、 目前 xrdp 仍使用 PulseAudio 实现音频输出重定向，遵守服务器到客户端音频重定向是根据远程桌面实现的相关协议
 
     https://github.com/neutrinolabs/pulseaudio-module-xrdp
+
+在远程服务器安装 Pulse Audio，该软件可实现在设备间传输声音，安装后操作系统的声音设备会多出一个远端输出设备，各软件连接该设备即可。
 
 目前需要手动编译
 
