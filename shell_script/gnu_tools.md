@@ -11700,6 +11700,10 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     https://www.freedesktop.org/software/systemd/man/systemd.timer.html
 
+    https://wiki.archlinux.org/title/Systemd/Timers
+
+    https://zhuanlan.zhihu.com/p/365756485
+
     https://zhuanlan.zhihu.com/p/51357835
 
 查看当前的定时器
