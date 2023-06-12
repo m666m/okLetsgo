@@ -228,7 +228,7 @@
             "minimapSlider.hoverBackground": "#5faabe7a",
             "minimapSlider.activeBackground": "#3dafcf94",
             // 编辑器的行选择等高亮也都得自己调整
-            "editor.foreground": "#98bdc4",
+            "editor.foreground": "#94cbd6",
             "editor.background": "#000000",
             "editor.lineHighlightBorder": "#1fbeda8f",
             "editor.selectionBackground": "#1f83bdad",
