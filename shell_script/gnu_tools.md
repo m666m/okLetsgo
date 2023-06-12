@@ -3469,21 +3469,26 @@ info 命令倾向于可读性和更深入的解释。信息页系统还支持文
 
 ### 命令行下的文件资源管理器
 
+Midnight Commander 命令行下使用两个面板来处理文件和目录
+
+     https://midnight-commander.org/
+        https://github.com/MidnightCommander/mc
+        https://sourceforge.net/projects/mcwin32/files/
+
+    中文说明
+
+        https://www.debian.org/doc/manuals/debian-reference/ch01.zh-cn.html#_midnight_commander_mc
+
+    sudo apt install mc
+
+Far Manager for Windows 类似 mc，命令行下使用两个面板来处理文件和目录
+
+    https://conemu.github.io/en/FarManager.html
+
 ranger 使用 vi 键位操作，自动预览文本文件，还支持打开其它类型的文件，非常方便
 
     https://ranger.github.io/
         https://github.com/ranger/ranger
-
-Midnight Commander 命令行下使用两个面板来处理文件和目录
-
-     https://midnight-commander.org/ https://github.com/MidnightCommander/mc
-     https://sourceforge.net/projects/mcwin32/files/
-
-    sudo apt install mc
-
-Far Manager for Windows
-
-    https://conemu.github.io/en/FarManager.html
 
 ### Vim 和 nano
 
@@ -6204,6 +6209,8 @@ hhighlighter 属于对 ack 的封装，但脚本名和函数名都太简单了�
 
 ### 写入即时文件 cat
 
+    https://www.gnu.org/software/bash/manual/bash.html#Here-Documents
+
 输入内容，输出到文件
 
     $ cat <<DOC >/my/new/file
@@ -8538,6 +8545,8 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
         https://www.freedesktop.org/wiki/Software/
 
     商业软件替代品 https://alternativeto.net/
+
+    Minetest：一个开源的 Minecraft 替代品 https://zhuanlan.zhihu.com/p/535401331
 
     软件推荐
 
@@ -11685,11 +11694,101 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     systemd-analyze critical-chain
 
-#### TODO: 使用 systemd 配置定时任务
+#### 使用 systemd 配置定时任务
+
+定时器文件跟服务同名，后缀不是 .service 而是 .timer
+
+    https://www.freedesktop.org/software/systemd/man/systemd.timer.html
+
+    https://zhuanlan.zhihu.com/p/51357835
+
+字段 OnCalendar= 的定时格式
+
+    https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events
+
+    简写 OnCalendar=daily 等效于 OnCalendar= *-*-* 00:00:00
+
+字段 Persistent=true 指如果错过，开机后会立刻运行
+
+字段 OnActiveSec= 1 m 指延迟 1 分钟后执行
+
+查看当前的定时器
 
     systemctl list-timers
 
-参见章节 [自動更新Flatpak應用程式](init_a_server thnik)。
+简单示例参见章节 [自動更新Flatpak應用程式](init_a_server think)。
+
+在每天的特定时刻启停服务：
+
+    https://zhuanlan.zhihu.com/p/51357835
+
+因为 systemd 的单元词汇表中没有明显的命令来停止或禁用正在运行的服务，所以只能订制。
+
+假设安装了 Minetest 服务器，服务名为 minetest.service
+
+```ini
+# minetest.service
+
+[Unit]
+Description= 运行 Minetest 服务器
+Conflicts= minetest.timer  # 在这里增加限制只运行一次，即启动服务时杀死启动它的计时器
+
+[Service]
+Type= simple
+User= <your user name>
+
+ExecStart= /usr/bin/minetest --server
+ExecStop= /bin/kill -2 $MAINPID
+
+[Install]
+WantedBy= multi-user.targe
+```
+
+新增启动 minetest 的定时器
+
+```ini
+# minetest.timer
+
+[Unit]
+Description= 在下午五到七点内的每分钟都运行 minetest.service
+
+[Timer]
+OnCalendar= *-*-* 17..19:*:00
+Unit= minetest.service
+
+[Install]
+WantedBy= basic.target
+```
+
+新增停止 minetest 的服务
+
+```ini
+# stopminetest.service
+
+[Unit]
+Description= 关闭 Minetest 服务
+Conflicts= minetest.service
+
+[Service]
+Type= oneshot
+ExecStart= /bin/echo "Closing down minetest.service"
+```
+
+新增停止 minetest 的定时器
+
+```ini
+# stopminetest.timer
+
+[Unit]
+Description= 每天晚上七点停止 minetest.service
+
+[Timer]
+OnCalendar= *-*-* 19:05:00
+Unit= stopminetest.service
+
+[Install]
+WantedBy= basic.target
+```
 
 #### 这货还可以负责阻止关机、睡眠
 

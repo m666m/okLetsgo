@@ -12,11 +12,13 @@
 
     条件测试语句的用法  `man test`
 
+    GNU Bash 官方文档
+
+        https://www.gnu.org/software/bash/manual/bash.html
+
+        Debian 把常用的脚本命令都介绍了 https://www.debian.org/doc/manuals/debian-reference/index.zh-cn.html
+
     bash 系列教程 https://www.junmajinlong.com/shell/index/
-
-    Debian 参考手册
-
-        https://www.debian.org/doc/manuals/debian-reference/index.zh-cn.html
 
     Advanced Bash-Scripting Guide
 
