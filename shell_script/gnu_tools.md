@@ -11702,6 +11702,12 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     https://zhuanlan.zhihu.com/p/51357835
 
+查看当前的定时器
+
+    systemctl list-timers
+
+控制单元中几个常用字段的介绍：
+
 字段 OnCalendar= 的定时格式
 
     https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events
@@ -11712,13 +11718,9 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
 字段 OnActiveSec= 1 m 指延迟 1 分钟后执行
 
-查看当前的定时器
-
-    systemctl list-timers
-
 简单示例参见章节 [自動更新Flatpak應用程式](init_a_server think)。
 
-在每天的特定时刻启停服务：
+实现在每天的特定时刻启停服务：
 
     https://zhuanlan.zhihu.com/p/51357835
 
