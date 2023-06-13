@@ -106,14 +106,16 @@
         },
         "[Nord]": {
             "activityBar.foreground": "#45f4fa",
-            // 搜索高亮看不清
-            "editor.findMatchBackground": "#0ffad36c",
-            "editor.findMatchHighlightBackground": "#03bd9e6c",
             // 光标所在词同类高亮
-            "editor.wordHighlightBackground": "#267dd45b",
+            "editor.wordHighlightBackground": "#1863ad5b",
             // 双击高亮和同类高亮颜色无区分
-            "editor.selectionBackground": "#1474acad",
-            "editor.selectionHighlightBackground": "#08537eb4"
+            "editor.selectionBackground": "#117fbead",
+            "editor.selectionHighlightBackground": "#08537eb4",
+            // 查找的高亮设置
+		    "editor.findMatchBackground": "#117fbe36",
+		    "editor.findMatchBorder": "#F86307",
+		    "editor.findMatchHighlightBackground": "#08537e11",
+		    "editor.findMatchHighlightBorder": "#F86307"
         },
         "[Nord Deep]": {
             "activityBar.foreground": "#56bbff",
@@ -126,6 +128,11 @@
             // 双击高亮和同类高亮颜色无区分
             "editor.selectionBackground": "#1474acad",
             "editor.selectionHighlightBackground": "#08537eb4",
+            // 查找的高亮设置
+		    "editor.findMatchBackground": "#d1611c9f",
+		    "editor.findMatchBorder": "#F86307",
+		    "editor.findMatchHighlightBackground": "#F8630702",
+		    "editor.findMatchHighlightBorder": "#F86307",
             // minimap 滑块看不清
             "minimapSlider.background": "#25446679",
             "minimapSlider.hoverBackground": "#33527a77",
@@ -152,6 +159,11 @@
             // 双击高亮和同类高亮颜色无区分
             "editor.selectionBackground": "#1474acad",
             "editor.selectionHighlightBackground": "#08537eb4",
+            // 查找的高亮设置
+		    "editor.findMatchBackground": "#d1611c9f",
+		    "editor.findMatchBorder": "#F86307",
+		    "editor.findMatchHighlightBackground": "#F8630702",
+		    "editor.findMatchHighlightBorder": "#F86307",
             // 光标悬停提示框颜色跟底色无法区分
 		    "editorHoverWidget.background": "#2d3135",
 		    "editorHoverWidget.border": "#ffffff15",
@@ -228,7 +240,7 @@
             "minimapSlider.hoverBackground": "#5faabe7a",
             "minimapSlider.activeBackground": "#3dafcf94",
             // 编辑器的行选择等高亮也都得自己调整
-            "editor.foreground": "#94cbd6",
+            "editor.foreground": "#b1d0d6",
             "editor.background": "#000000",
             "editor.lineHighlightBorder": "#1fbeda8f",
             "editor.selectionBackground": "#1f83bdad",

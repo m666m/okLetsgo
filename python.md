@@ -2097,7 +2097,7 @@ Prettier - Code formatter
 
     esbenp.prettier-vscode
 
-#### TODO TREE 记录你的待办
+#### todo tree 记录你的待办
 
     Gruntfuggly.todo-tree
 

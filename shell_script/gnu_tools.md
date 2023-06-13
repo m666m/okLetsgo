@@ -4260,7 +4260,7 @@ filetype plugin indent on    " required
 
 结合我自己使用的插件和 airline 的配置，vim 编辑后无需退出，运行命令 `:source ~/.vimrc` 重新加载即可。
 
-```vim
+``` vim
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim 的默认设置
