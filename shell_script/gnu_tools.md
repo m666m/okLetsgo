@@ -9082,70 +9082,41 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
 ### 显示管理器（DisplayManager）设置登录后的桌面环境
 
-    https://wiki.archlinux.org/title/Display_manager
+显示管理器负责显示图形化的用户登录页面，在输入用户名和密码后处理用户身份验证，立即启动显示服务器并加载桌面环境
 
-显示管理器负责显示图形化登陆页面，在你输入用户名和密码后，立即启动显示服务器并加载桌面环境。
+    https://wiki.archlinux.org/title/Display_manager
+        https://wiki.archlinux.org/title/GDM
 
     https://zhuanlan.zhihu.com/p/272740410
 
-前提是登录时桌面启动优先
+设置开机启动到桌面还是命令行，主流的桌面环境都用 systemctl 接管了，有专门的控制命令，参见章节 [桌面环境的开机自启动]。如果是启动到桌面，systemctl 会自动调度到显示管理器进行用户登录。
+
+所以首先要确保 systemd 设置开机时启动到桌面
 
     # 一般都使用 systemctl 进行控制了
     $ systemctl get-default
     graphical.target
 
-设置开机启动到桌面还是命令行，被 systemctl 接管了
+然后确保 systemd 的显示管理器服务也是启动的。
 
-    https://docs.fedoraproject.org/en-US/quick-docs/understanding-and-administering-systemd/index.html#mapping-runlevels-to-targets
+如果安装了多个桌面环境，可以在显示管理器选择启动到哪个桌面环境
 
-    见 /etc/inittab 文件的说明：
-
-        Ctrl-Alt-Delete is handled by /usr/lib/systemd/system/ctrl-alt-del.target
-
-        systemd uses 'targets' instead of runlevels. By default, there are two main targets:
-
-            multi-user.target: analogous to runlevel 3
-
-            graphical.target: analogous to runlevel 5
-
-        To view current default target, run:
-
-            systemctl get-default
-
-        To set a default target, run:
-
-            systemctl set-default TARGET.target
-
-    记得启用显示管理器 `sudo systemctl enable gdm/kdm/lightdm`
-
-显示管理器用于用户登录时的提示窗口，提供图形登录并处理用户身份验证。
-
-    如果是本地登录，在显示管理器界面，点击右下方的小齿轮可以选择使用何种桌面环境
+    如果是本地登录，在显示管理器的用户登录界面，点击右下方的小齿轮可以选择使用何种桌面环境
 
     如果是 xrdp 远程登陆，在 “session” 处选择
 
-gdm 是 GNOME 显示管理器
-
-     apt-get install gdm
-
-kdm 或 sddm 是 KDE 的显示管理器
-
-    apt-get install sddm
-
-lightdm 是 Canonical 的 Ubuntu Unity 桌面显示管理器解决方案
-
-    apt-get install lightdm
-
-    sudo systemctl disable gdm
-    sudo systemctl enable lightdm
-
-wayland-lyl 是 Wayland Login Manager 支持 x-window/wayland 环境的命令行下的显示管理器
-
-    https://docs.freebsd.org/en/books/handbook/wayland/#wayland-ly
-
-安装了多个显示管理器，则可以使用以下方法在它们之间进行选择
+如果安装了多个显示管理器，则可以使用以下方法在它们之间进行选择
 
     sudo dpkg-reconfigure gdm3
+
+    GNOME 显示管理器 gdm
+
+    KDE 的显示管理器 sddm
+
+    Ubuntu Unity 桌面显示管理器 lightdm
+
+    Wayland Login Manager 支持 x-window/wayland 环境的命令行下的显示管理器 wayland-lyl
+    https://docs.freebsd.org/en/books/handbook/wayland/#wayland-ly
 
 ### 窗口管理器（Windows Manager）
 
@@ -9636,6 +9607,8 @@ System-wide autostart directories:
 
     https://www.redhat.com/sysadmin/configure-systemd-startup-targets
 
+    https://docs.fedoraproject.org/en-US/quick-docs/understanding-and-administering-systemd/index.html#mapping-runlevels-to-targets
+
     https://askubuntu.com/questions/1242965/how-to-disable-gui-in-ubuntu
 
     https://askubuntu.com/questions/76543/
@@ -9643,6 +9616,24 @@ System-wide autostart directories:
     https://superuser.com/questions/443997
 
     https://www.tecmint.com/change-runlevels-targets-in-systemd/
+
+/etc/inittab 文件的说明：
+
+    Ctrl-Alt-Delete is handled by /usr/lib/systemd/system/ctrl-alt-del.target
+
+    systemd uses 'targets' instead of runlevels. By default, there are two main targets:
+
+        multi-user.target: analogous to runlevel 3
+
+        graphical.target: analogous to runlevel 5
+
+    To view current default target, run:
+
+        systemctl get-default
+
+    To set a default target, run:
+
+        systemctl set-default TARGET.target
 
 一、老式的 X-window 系统，关闭开机自启动参见章节 [X11 启动过程]。
 
@@ -9659,19 +9650,27 @@ System-wide autostart directories:
 设置开机自启动：
 
     # 查看登录后启动的设置选项
-    systemctl get-default
+    $ systemctl get-default
 
     启动到桌面是 graphical.target，启动到命令行是 multi-user.target。
 
-    修改为登录后启动到命令行（控制台）
+    设置为登录后启动到命令行（控制台）
 
-    sudo systemctl set-default multi-user.target
+        $ sudo systemctl set-default multi-user.target
 
-    然后重启即可
+    设置为登录后启动到图形界面
 
-    sudo systemctl reboot
+        $ sudo systemctl set-default graphical.target
 
-三、单独指定显示管理器服务是否开机自启动（内存占用还是大，不如上面的方法）：
+    然后重启计算机即可
+
+        $ sudo systemctl reboot
+
+显示管理器也应该是启用状态
+
+    sudo systemctl enable gdm/kdm/lightdm
+
+三、利用 systemd 管理的显示管理器也可单独控制启停（内存占用还是大，不如上面的方法）
 
     # lightdm sddm
     sudo systemctl disable gdm
@@ -9681,7 +9680,7 @@ System-wide autostart directories:
         # lightdm sddm
         systemctl start gdm
 
-四、利用 systemd 管理的显示管理器也可单独控制启停，编辑控制文件
+四、单独设置显示管理器服务是否开机自启动，编辑控制文件
 
 lightdm
 

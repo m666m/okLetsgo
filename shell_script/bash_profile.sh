@@ -94,7 +94,7 @@ if [ -x /usr/bin/dircolors ]; then
     # 切换桌面图形模式和命令行模式 --- systemctl 模式
     function swc {
         [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] && \
-            (echo -e "\033[0;33mWARN\033[0m: WAIT a second until desktop appears..."; sudo systemctl isolate graphical.target) || \
+            (echo -e "\033[0;33mWARN\033[0m: Start Desktop, wait until login shows..."; sudo systemctl isolate graphical.target) || \
             (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
     }
 
