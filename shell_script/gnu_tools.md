@@ -1255,7 +1255,13 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
     # https://github.com/microsoft/terminal/releases
     winget install --id=Microsoft.WindowsTerminal -e
 
-直接安装从 github 下载的 .msixbundle 文件安装后，无法正常启动 Windows Terminal。经过一顿操作，终于找到了解决方法，用魔法打败了魔法！<https://www.cnblogs.com/albelt/p/15253147.html>
+直接安装从 github 下载的 .msixbundle 文件，在 powershell 下运行如下命令从文件安装
+
+    Add-AppxPackage .\xxx.msixbundle
+
+如果提示无法安装，缺少框架，下载 github 发布页的那个 xxxx_Windows10_PreinstallKit.zip，解压，先安装 Microsoft.UI.Xaml 和 Microsoft.VCLibs.140 等包。
+
+如果安装后无法正常启动 Windows Terminal，经过一顿操作，终于找到了解决方法，用魔法打败了魔法！<https://www.cnblogs.com/albelt/p/15253147.html>
 
 要求：
 
@@ -9109,7 +9115,7 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
     sudo dpkg-reconfigure gdm3
 
-    GNOME 显示管理器 gdm
+    GNOME 显示管理器 gdm，在 flatpak 搜 “Login Manager Settings” 可以定制呈现界面
 
     KDE 的显示管理器 sddm
 
