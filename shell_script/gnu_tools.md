@@ -2528,7 +2528,7 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
 类似 Powerline fonts，字体 patch 后对名字加了后缀 NF，比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)，Fira Code 改名为 Fira Code NF。
 
-· 终端模拟器推荐使用 Meslo LG-S NF 字体，如果你的终端模拟器还支持透明效果，显示效果直接起飞。
+> 终端模拟器推荐使用 Meslo LG-S NF 字体，如果你的终端模拟器还支持透明效果，显示效果直接起飞。
 
     快速下载地址
 
@@ -2548,7 +2548,7 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
     它的上游是 Apple’s Menlo-Regular，再上游是 Bitstream Vera Sans Mono
 
-· 代码编辑器推荐安装 FiraCode NF 字体，该字体支持连字符，Windows 用户找带 Windows 字样的下载即可
+> 代码编辑器推荐安装 FiraCode NF 字体，该字体支持连字符，Windows 用户找带 Windows 字样的下载即可
 
     https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
 
@@ -2559,7 +2559,7 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
     $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \uf70f \ue20a \ue350 \uf2c8"
      ±  ➦ ✘ ⚡ ⚙ ❃    
 
-Fedora(SELinux) 下安装 Nerd Font --- Meslo LGS
+> Fedora(SELinux) 下安装 Nerd Font --- Meslo LGS
 
     # 先下载 https://github.com/ryanoasis/nerd-fonts/releases
     curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Meslo.zip
@@ -8501,7 +8501,7 @@ Timeshift提供時光機一樣的時光倒流功能，方便用戶備份整個Li
 
 Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔。備份檔建議放在其他硬碟，要還原的話比較容易，尤其是系統根本無法開機的狀況下。
 
-·用Timeshift備份系統
+> 用Timeshift備份系統
 
 選擇使用快照類型
 
@@ -8525,7 +8525,7 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 
 接著我在桌面新增一張相片和文字檔，等會還原系統的時候這些檔案就會不見。
 
-·用Timeshift還原系統
+> 用Timeshift還原系統
 
 點選Timeshift的備份檔，點選上方的「還原」。
 
@@ -10023,22 +10023,26 @@ xrdp 安装后要先做几个设置：
 
     一旦登录，你将看到默认的桌面环境，根据你操作系统的设置是 Gnome 或 Xfce、i3 等。
 
-客户端工具，Windows 使用 mstsc 即可，Linux 下推荐使用 Remmina，或 Gnome 自带软件名为 “连接 connections”，二者支持 VNC 和 RDP 等多种协议。
+客户端工具
 
-简单使用 ssh 隧道保护 xrdp，参见章节 [Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)。
+    Windows 使用 mstsc 即可
 
-·rdesktop 是实现 RDP 协议的 Linux 桌面客户端程序
+    Linux 下推荐使用 Remmina，或 Gnome 自带软件名为 “连接 connections”，二者支持 VNC 和 RDP 等多种协议。
 
-    rdesktop <ip>
+    rdesktop 是实现 RDP 协议的 Linux 桌面客户端程序
 
-    -f 全屏
-    -r clipboard:PRIMARYCLIPBOARD 是实现剪切板共享，也就是物理机复制虚拟机粘贴。
-    -r disk:mydisk=/device 实现文件夹共享，mydisk是名字，可以随便取，/device是物理机上用于共享的文件夹
-    ip ： 虚拟机的IP
+        rdesktop <ip>
 
-    rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
+        -f 全屏
+        -r clipboard:PRIMARYCLIPBOARD 是实现剪切板共享，也就是物理机复制虚拟机粘贴。
+        -r disk:mydisk=/device 实现文件夹共享，mydisk是名字，可以随便取，/device是物理机上用于共享的文件夹
+        ip ： 虚拟机的IP
 
-按 `ctrl + alt +回车` 退出或进入全屏模式。
+        rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
+
+    按 `ctrl + alt +回车` 退出或进入全屏模式。
+
+简单使用 ssh 隧道保护 xrdp 通信，参见章节 [Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)。
 
 因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
 
@@ -10098,9 +10102,11 @@ xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，�
 
 ##### xrdp 远程桌面用户相对本地登陆用户有权限区别
 
-·对 Fedora 等使用 SELinux 技术的操作系统，您可能需要编辑 /etc/pam.d/xrdp-sesman 以使会话过渡到正确的 SELinux 上下文。[#2094](https://github.com/neutrinolabs/xrdp/issues/2094) 中埋藏着有关此的更多信息 。
+> 对 Fedora 等使用 SELinux 技术的操作系统
 
-·解决 xrdp 远程桌面连接后在 Gnome software 无法搜索 flatpak 程序的问题
+您可能需要编辑 /etc/pam.d/xrdp-sesman 以使会话过渡到正确的 SELinux 上下文。[#2094](https://github.com/neutrinolabs/xrdp/issues/2094) 中埋藏着有关此的更多信息 。
+
+> 解决 xrdp 远程桌面连接后在 Gnome software 无法搜索 flatpak 程序的问题
 
     https://github.com/neutrinolabs/xrdp/issues/2700
 
@@ -10419,21 +10425,7 @@ wayvnc 啟動後不會有任何輸出，要關閉請用CTRL+C
 
 ###### 使用客户端 wlvncc
 
-为了安全，应该在 ssh 隧道里使用，所以要做本地端口转发。
-
-如果服务器端启动正常，可以在客户端使用:
-
-    ssh -FL 9901:localhost:5901 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
-
-如果一步一步操作
-
-    ssh -L 9901:localhost:5901 user@192.168.0.243  不要关闭这个窗口
-
-    在本機開啟 RealVNC VNC Viewer，輸入連線IP：
-
-        localhost:9901
-
-·支持 sway 的客户端软件 wlvncc
+支持 sway 的客户端软件 wlvncc
 
     https://github.com/any1/wlvncc
 
@@ -10461,6 +10453,22 @@ Wayland 的 VNC 客户端可以采用 wlvncc 。WayVNC 0.5 支持使用 OpenH268
     ninja -C build
 
     ./build/wlvncc <address>
+
+###### 在 ssh 隧道里安全使用客户端
+
+    使用 ssh 做本地端口转发进行保护。
+
+    如果服务器端启动正常，可以在客户端使用:
+
+        ssh -FL 9901:localhost:5901 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
+
+    如果一步一步操作
+
+        ssh -L 9901:localhost:5901 user@192.168.0.243  不要关闭这个窗口
+
+        在本機開啟 RealVNC VNC Viewer，輸入連線IP：
+
+            localhost:9901
 
 ##### 基于 weston 的 waypipe
 
