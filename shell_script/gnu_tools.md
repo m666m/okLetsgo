@@ -3252,7 +3252,6 @@ if [ -x /usr/bin/dircolors ]; then
         # 不要作为默认设置，仅在弹不出密码提示框时使用：
         echo "以当前终端 tty 连接 gpg-agent..."
         export GPG_TTY=$(tty)
-        # gpg-connect-agent updatestartuptty /bye >/dev/null
     }
 
     # openssl 常用命令
