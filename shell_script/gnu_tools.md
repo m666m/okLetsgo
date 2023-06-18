@@ -8570,6 +8570,8 @@ GNOME Files（Nautilus）文件管理器
 
     https://www.cnblogs.com/keatonlao/p/12717071.html
 
+    显示隐藏文件的快捷键是 ctr+h
+
 虚拟机
 
     Gnome Box 底层调用 virt-manager 操作 kvm 虚拟机，详见章节 [GNOME Boxes](virtualization think)。
