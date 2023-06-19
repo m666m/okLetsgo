@@ -3202,7 +3202,7 @@ if [ -x /usr/bin/dircolors ]; then
     # 切换桌面图形模式和命令行模式 --- systemctl 模式
     function swc {
         [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] && \
-            (echo -e "\033[0;33mWARN\033[0m: WAIT a second until desktop appears..."; sudo systemctl isolate graphical.target) || \
+            (echo -e "\033[0;33mWARN\033[0m: Start Desktop, wait until login shows..."; sudo systemctl isolate graphical.target) || \
             (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
     }
 
@@ -3245,14 +3245,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias ggcs='echo "[对称算法加密，默认选择当前可用的私钥签名，可用 -u 指定，默认生成的.gpg文件。]" && gpg -s --cipher-algo AES-256 -c'
     # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
     alias ggd='gpg -d'
-    #
-    function ggtty {
-        # 如果遇到在 tmux 等多终端程序下，执行 gpg 弹不出密码提示框的情况
-        # 执行此命令配置 gpg pinentry 使用当前的 tty，然后重新执行 gpg 命令即可
-        # 不要作为默认设置，仅在弹不出密码提示框时使用：
-        echo "以当前终端 tty 连接 gpg-agent..."
-        export GPG_TTY=$(tty)
-    }
 
     # openssl 常用命令
     # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件，加 -kfile 指定密钥文件
@@ -3275,6 +3267,14 @@ if [ -x /usr/bin/dircolors ]; then
     alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
     alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
 fi
+
+####################################################################
+# 如果遇到在 tmux 等多终端程序下，执行 gpg 弹不出密码提示框的情况
+# 执行此命令配置 gpg pinentry 使用当前的 tty，然后重新执行 gpg 命令即可
+export GPG_TTY=$(tty)
+# gpg-agent 代替 ssh-agent 的时候也会出现类似情况，开启如下语句即可：
+# echo "以当前终端 tty 连接 gpg-agent..."
+# gpg-connect-agent updatestartuptty /bye >/dev/null
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
