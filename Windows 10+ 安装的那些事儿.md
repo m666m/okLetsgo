@@ -584,17 +584,39 @@ PBP分屏注意
 
 显示器分辨率切换到 60hz，全屏使用最佳，不然游戏容易死机。
 
-如果在游戏设置里开启 HDR，在开始游戏后，显示器会自动切换回标准模式以显示 HRD 内容，原开启的睿动光感、环境光、低蓝光模式、SmartImage 等等功能均被关闭，打完游戏需要手工调整显示器，把各节能功能再打开。
+如果在游戏设置里开启 HDR，在开始游戏后，显示器会自动切换回标准模式以显示 HRD 内容，原开启的睿动光感、环境光、低蓝光模式、SmartImage 等功能均被关闭，打完游戏需要手工调整显示器，把各功能再打开。
 
-把 doom 的可执行文件加到 Windows 防火墙，即可离线模式玩单机，不需要登陆 bethesda 网络 <https://steamah.com/doom-eternal-how-to-play-in-offline-mode-with-no-bethesda-net-account/>。
+把 doom 的可执行文件加到 Windows 防火墙，即可离线模式玩单机，不需要登陆 bethesda 网络
 
-doom 服务器状态  <https://certb-status.bethesda.net/en>。
+    https://steamah.com/doom-eternal-how-to-play-in-offline-mode-with-no-bethesda-net-account/
+
+    打开 Windows Defender 防火墙：按下 Win 键在键盘上搜索 "Windows Defender"，然后单击 “具有高级安全性的 Windows Defender 防火墙”
+
+    在防火墙中创建新规则：展开左侧树形列表，右键单击 "Outbound Rules" 并选择 "New Rule"
+
+    配置阻止规则
+
+        规则类型： 选择 “程序”
+
+        程序： 选择程序路径并导航到安装位置选择 DOOMEternalx64vk.exe。 例如： C:\Program Files (x86)\Steam\steamapps\common\DOOMEternal\DOOMEternalx64vk.exe
+
+        动作：选择 “阻止连接”
+
+        轮廓：选中所有框。
+
+        名称 ：为规则选择一个名称，例如 "__DOOM_Eternal_offline"。 下划线将把规则放在列表的顶部，使您的搜索更加容易。
+
+    单击完成，就完成了。
+
+    启动 Doom 程序，请等待几秒钟将看到弹出窗口提示无法连接 Bethesda 账户，单击 OK 即可继续了。
+
+查看 doom 服务器状态 <https://certb-status.bethesda.net/en>。
 
 在 Linux 上玩 doom eternal，参见章节 [steam on Linux](init_a_server think)。
 
 ## 装完 Windows 后的一些设置
 
-不要把你使用的计算机的账户，跟微软账户绑定，也不要跟你的微软邮箱绑定，或者什么手机认证，2FA认证啥的。这些账户之间不要建立联系。在cn无所谓，在法律很严的地方，这是合法的关联使用证据，认定标准不同，后果不同。
+不要把你使用的计算机的账户，跟微软账户绑定，也不要跟你的微软邮箱绑定，或者什么手机认证，2FA认证啥的。这些账户之间不要建立联系。在 cn 无所谓，在法律很严的国家，这是关联使用证据，认定标准不同，违法后果不同。
 
 基本设置
 
@@ -610,17 +632,17 @@ doom 服务器状态  <https://certb-status.bethesda.net/en>。
 
     设置：设备->自动播放->关闭自动运行。
 
-    设置：系统->多任务处理，按 ALT+TAB 将显示“仅打开的窗口”，不然开了一堆 edge 窗口都给你切换上，太乱了。
+    设置：系统->多任务处理，按 ALT+TAB 将显示 “仅打开的窗口”，不然开了一堆 edge 窗口都给你切换上，太乱了。
 
-    设置：个性化->任务栏，合并任务栏按钮，选择“任务栏已满时”，不然多开窗口非常不方便在任务栏上选择切换。
+    设置：个性化->任务栏，合并任务栏按钮，选择 “任务栏已满时”，不然多开窗口非常不方便在任务栏上选择切换。
 
     设置：轻松使用->键盘，那些 “粘滞键”、“切换键” 啥的热键统统关掉，特别是连按五次 shift，打 fps 游戏时给你个弹窗。。。
 
     设置：隐私策略各种关闭，有空的时候挨个琢磨吧。这个是针对 app 商店里的应用，属于 Windows 容器化管理应用商店的权限控制，控制不到普通的 Windows 应用程序。关闭这些隐私设置不会影响桌面应用程序。例如，自行下载安装的驱动程序的应用可以直接与摄像头或麦克风硬件交互，从而绕过 Windows 的访问控制功能。要更全面地保护个人数据，应该想办法禁用这些设备，例如物理断开或禁用摄像头或麦克风。<https://support.microsoft.com/en-us/windows/windows-desktop-apps-and-privacy-8b3b13bc-d8ff-5460-8423-7d5d5c1f6665>
 
-打开 Windows store，菜单选择“settings”，把“App updates”的“Update apps automatically”选项抓紧关闭了，太烦人了！
+打开 Windows store，菜单选择 “Settings”，把 “App updates” 的 “Update apps automatically” 选项抓紧关闭了，太烦人了！
 
-Windows 商店应用默认不提供卸载选项，解决办法见下面章节 [删除无关占用 cpu 时间的项目]
+Windows 商店应用默认不提供卸载选项，解决办法见下面章节 [删除无关占用 cpu 时间的项目]。
 
 如果有程序开机就启动挺烦人的，运行 “msconfig.exe”，在启动选项卡进行筛选
 
