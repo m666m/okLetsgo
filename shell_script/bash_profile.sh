@@ -253,11 +253,11 @@ if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
     # echo "更新gpg钥匙圈需要点时间，请稍等..."
     # gpg --refresh-keys
 
-    echo "更新 TrustDB，跳过 owner-trust 未定义的导入公钥..."
+    echo "gpg 更新 TrustDB，跳过 owner-trust 未定义的导入公钥..."
     gpg --check-trustdb
 
     echo ''
-    echo "检查 gpg 签名情况..."
+    echo "gpg 检查签名情况..."
     gpg --check-sigs
 
 fi

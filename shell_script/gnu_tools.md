@@ -6262,6 +6262,14 @@ fi
 
 ```
 
+在某文件的基础上追加内容，写入的新文件直接重定向作为 xxx 命令的参数内容
+
+    $ xxx -config <(cat /etc/ssl/openssl.cnf - <<- EOF
+    [notice]
+    explicitText = "UTF8:Notice An use of this Certificate "
+    EOF
+    )
+
 ### 写入文件 dd
 
 dd 命令是基于块（block）的复制，用途很多。
@@ -6280,7 +6288,7 @@ dd 过时了
 
         pv </dev/zero |head -c 1024M >my.txt
 
-NOTE: dd 有个毛病，系统调用函数read()在管道操作后会静默的跳过某些字节数，尤其是输入数据的缓冲不足比如网络或输入源使用 /dev/random 而系统的熵不足的时候，所以只要指定了 count，那就必须用 iflag=fullblock
+NOTE: dd 有个毛病，系统调用函数read()在管道操作后会静默的跳过某些字节数，尤其是输入数据的缓冲不足的情况下，比如网络或输入源使用 /dev/random 而系统的熵不足的时候，所以只要指定了 count，那就必须用 iflag=fullblock
 
     # https://wiki.archlinux.org/title/Dd#Partial_read:_copied_data_is_smaller_than_requested
 
@@ -6296,6 +6304,9 @@ NOTE: dd 有个毛病，系统调用函数read()在管道操作后会静默的�
 
     # 所以必须添加 iflag=fullblock
     yes |dd of=dd_ok.txt bs=1024k count=10 iflag=fullblock
+
+    # Fedora 介绍的安装 iso 写入 u 盘用的是 oflag
+    dd if=/path/to/image.iso of=/dev/sdX bs=8M status=progress oflag=direct
 
 读取挂载在存储设备上的 iso 文件，进行 gpg 校验
 
