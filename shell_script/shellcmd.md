@@ -1967,6 +1967,9 @@ sar 命令选项    功能
 
 #### 看内存占用
 
+    内存泄漏定位思路和方法
+        https://blog.csdn.net/xqjcool/article/details/105151549
+
     $ pmap -d 1033
     1033:   tmux
     Address   Kbytes Mode  Offset           Device    Mapping

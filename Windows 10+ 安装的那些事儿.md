@@ -2108,6 +2108,8 @@ Windows 7 在 2023 年还提供虚拟机使用的版本
 
 第 2 代虚拟机上的 GRUB 菜单超时
 
+    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/best-practices-for-running-linux-on-hyper-v#grub-menu-timeout-on-generation-2-virtual-machines
+
     由于第 2 代虚拟机的仿真中删除了旧硬件，导致 grub 菜单倒计时计时器的倒计时速度太快，无法显示 grub 菜单，因而会立即加载默认条目。 在 GRUB 固定为使用 EFI 支持的计时器之前，请修改 /boot/grub/grub.conf, /etc/default/grub 或等效条目，将其修改为“timeout=100000”而不是默认的“timeout=5”。
 
 用检查点备份你的虚拟机的当前状态
