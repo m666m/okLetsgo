@@ -283,8 +283,6 @@ source /usr/local/bin/ackg.sh
 alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
 
 ####################################################################
-
-####################################################################
 # Linux bash / Windows git bash(mintty)
 # 双行彩色命令行提示符，显示当前路径、git分支、python环境名等
 #
