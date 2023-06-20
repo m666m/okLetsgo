@@ -7357,6 +7357,8 @@ peer-id-prefix=-TR2940-
 
 ### 跨机远程拷贝 scp
 
+scp 本意是代替 rcp 的，但是命令行参数解析漏洞无法保证兼容性，只能废了：一般用 rsync 代替 scp ，或直接使用 sftp 传送文件。RedHat 直接用 sftp 替换掉了 scp
+
     https://ostechnix.com/securely-transfer-files-with-scp-in-linux/
 
 前提条件
@@ -7417,6 +7419,8 @@ scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了�
 
 ### 文件同步 rsync
 
+使用 `rsync -e ssh` 即可代替 scp 命令
+
     rsync 完全手册 https://www.junmajinlong.com/linux/index/#Linux%E5%9F%BA%E6%9C%AC%E6%9C%8D%E5%8A%A1
 
     https://blog.csdn.net/wanli245/article/details/80317255
@@ -7429,9 +7433,7 @@ scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了�
 
     默认设置是使用文件大小和修改时间来判断文件是否需要更新
 
-scp 不占资源，不会提高多少系统负荷，在这一点上，rsync就远远不及它了。虽然 rsync比scp会快一点，但当小文件众多的情况下，rsync会导致硬盘I/O非常高，而scp基本不影响系统正常使用。所以使用时根据自己的情况酌情决定选用哪个。
-
-使用 `rsync -e ssh` 就代替 scp 命令了。
+scp 不占资源，不会提高多少系统负荷，在这一点上，rsync 就远远不及它了。虽然 rsync 比 scp 会快一点，但当小文件众多的情况下，rsync 会导致硬盘 I/O 非常高，而 scp 基本不影响系统正常使用。所以使用时根据自己的情况酌情决定选用哪个。
 
 rsync 默认使用 SSH 进行远程登录和数据传输。
 
