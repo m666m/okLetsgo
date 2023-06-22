@@ -1778,19 +1778,34 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
 ## 配置 vs code
 
-    从源码构建 vscode https://cloud.tencent.com/developer/article/1588399
+从源码构建 vscode h
 
-    历史记录保存位置
+    ttps://cloud.tencent.com/developer/article/1588399
 
-        %APPDATA%\Code\User\History
+历史记录保存位置
 
-    配置文件
+    %APPDATA%\Code\User\History
 
-        %APPDATA%\Code\User\settings.json
+配置文件
 
-    插件安装位置
+    %APPDATA%\Code\User\settings.json
 
-        %USERPROFILE%\.vscode
+插件安装位置
+
+    %USERPROFILE%\.vscode
+
+Linux 下安装
+
+    https://code.visualstudio.com/docs/setup/linux
+
+对 flatpak scode、VSCodium 版本的终端下打印 'Warning: waitpid override ignores groups' 的说明
+
+    https://github.com/flathub/com.visualstudio.code/issues/370
+
+    另可集成到 toolbox 中
+
+        https://github.com/owtaylor/toolbox-vscode
+
 
 ### vscode 插件
 
