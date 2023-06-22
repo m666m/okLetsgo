@@ -2368,7 +2368,7 @@ Powerline 最初是一款 Vim statusline 的插件，后来发展到支持 bash�
 
     配置说明 https://powerline.readthedocs.io/en/master/configuration/reference.html
 
-powerline 最大的优点是它的各种符号字体可以图形化的显示文件夹、电池、git状态、进度等。
+powerline 最大的优点是它使用符号字体图形化的显示文件夹、电池、git状态、进度等，插件制度非常灵活。终端模拟器使用的字体推荐 MesloLGS NF，详见下面章节[图标字体]。
 
 缺点是它的代码 python2、3 混杂，安装和使用都很难配置，所以现在有些插件不使用它了。
 
@@ -2399,8 +2399,6 @@ powerline 最大的优点是它的各种符号字体可以图形化的显示文�
 
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
-
-终端模拟器字体推荐 MesloLGS NF，详见下面章节[图标字体]。
 
 #### 使用 powerline-config 命令行绑定到各软件
 
@@ -2556,7 +2554,7 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
 > 代码编辑器推荐安装 FiraCode NF 字体，该字体支持连字符，Windows 用户找带 Windows 字样的下载即可
 
-    https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
+    curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/FiraCode.zip
 
     文件名加 Mono 字样的是等宽变形不包含连字。
 
@@ -2567,8 +2565,7 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
 > Fedora(SELinux) 下安装 Nerd Font --- Meslo LGS
 
-    # 先下载 https://github.com/ryanoasis/nerd-fonts/releases
-    curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Meslo.zip
+    curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/Meslo.zip
 
     unzip Meslo.zip
 
@@ -5401,7 +5398,7 @@ tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServe
 
     https://github.com/tmux-plugins/list
 
-要设置tmux界面使用彩色，比如 tmux 的状态栏彩色，在 tmux 环境种调用 vim 能够使用彩色，需要编辑 ~/.tmux.conf 文件，添加如下行
+要设置 tmux 界面使用彩色，比如 tmux 的状态栏彩色，在 tmux 环境种调用 vim 能够使用彩色，需要编辑 ~/.tmux.conf 文件，添加如下行
 
     # 设置状态栏工具显示256彩色
     # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
@@ -5469,6 +5466,8 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 ```
 
 ##### 状态栏显示不使用 powerline
+
+需要安装图标字体，参加章节 [Nerd font]。
 
 1、安装 nord 主题
 
@@ -6127,13 +6126,19 @@ hhighlighter 给终端输出的自定义字符串加颜色，支持多种颜色�
 
 hhighlighter 属于对 ack 的封装，但脚本名和函数名都太简单了，都换成不易混淆的 ackg 吧
 
-    curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
-
-    sed -i 's/h()/ackg()/' ackg.sh
-
-    sudo mv ./ackg.sh /usr/local/bin/
+    # curl -fsSLo ackg.sh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh
+    # sed -i 's/h()/ackg()/' ackg.sh
+    # sudo mv ./ackg.sh /usr/local/bin/
+    curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh |sed 's/h()/ackg()/' |sudo tee /usr/local/bin/ackg.sh
 
 然后测试你感兴趣的文字，支持 -i 忽略大小写，支持 perl 形式的正则表达式
+
+    https://perldoc.perl.org/perlre
+    https://www.runoob.com/perl/perl-regular-expressions.html
+
+    https://www.cnblogs.com/dancheblog/p/3528000.html
+
+    perl中的单引号和双引号总结： 一、双中有双，单中有单都需要转义。 二、双中有单或单中有双均不需要转义。 三、单引号直接了当，引号内是什么就显示什么，双引号则需要考虑转义或变量替换等
 
     # 先 source 一下就可以在 shell 下使用它导出的同名函数了
     source ackg.sh
@@ -6143,8 +6148,8 @@ hhighlighter 属于对 ack 的封装，但脚本名和函数名都太简单了�
 
     ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
 
-    # 使用 \b 是perl正则表达式的单词限定符 https://perldoc.perl.org/perlre
-    cat /var/log/kern.log.1 |ackg -i 'Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled' '\bOk\b|Success|Good|Done|Finish|Enabled' 'Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart'
+    # 使用 \b 是 perl 正则表达式的单词限定符
+    dmesg |ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"
 
 ### 比较文件差异 diff
 
@@ -8806,6 +8811,8 @@ GNOME Files（Nautilus）文件管理器
 
 ### 使用拼音输入法
 
+如果使用的是 Gnome Software， 在类别 'input source' 搜索 'Pinyin'，安装即可，用 'Win+空格' 键即可切换输入法
+
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/assembly_enabling-chinese-japanese-or-korean-text-input_getting-started-with-the-gnome-desktop-environment#proc_switching-the-input-method-in-gnome_assembly_enabling-chinese-japanese-or-korean-text-input
 
 ### 使用 gnome 扩展
@@ -8834,11 +8841,31 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
     推荐安装的第三方组件：
 
-        User Theme              允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开
-
-        Dash to dock            类似苹果的浮动任务栏
+        Dash to dock            类似苹果的浮动任务栏，竞品 Dash2Dock Lite 动画效果响应更敏捷
 
         Removable drive menu    给 usb 设备添加菜单方便弹出
+
+        Clipboard Indicator     清理你的剪贴板
+
+        Show Desktop Button     增加显示桌面按钮
+
+        Dash to Panel           像 Windows 一样的任务栏
+
+        User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开
+
+            搜一下 Gnome Shell Themes 类别，你的 Gnome 桌面就大变样了，不一样的感觉
+
+                Gnome 主题乐园 https://www.gnome-look.org/p/1275087/
+
+            创·战纪 风格的东京夜
+
+                https://www.gnome-look.org/p/1681470
+
+            如何使用主题：
+
+            先下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
+
+            然后使用 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择你的主题扩展的文件夹
 
     如果还是想使用网站浏览安装的方式
 
@@ -8852,29 +8879,15 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
             sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
 
-GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “GNOME Tweaks”
+GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “GNOME Tweaks”，或使用命令行
 
     sudo apt install gnome-tweak-tool
 
     sudo apt install gnome-shell-extensions
 
-安装 Tweaks 后在 “Show Apps” 里找它打开即可使用。
+安装 Tweaks 后在 “Show Apps” 里找它打开即可，一般要调整
 
-#### Gnome 主题乐园
-
-搜一下 Gnome Shell Themes 类别，你的 Gnome 桌面就大变样了，不一样的感觉
-
-    https://www.gnome-look.org/p/1275087/
-
-创·战纪 风格的东京夜
-
-    https://www.gnome-look.org/p/1681470
-
-如何使用主题：
-
-下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
-
-使用 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择你的主题扩展的文件夹
+    center new window   新窗口居中打开
 
 ### 使用 KDE
 
