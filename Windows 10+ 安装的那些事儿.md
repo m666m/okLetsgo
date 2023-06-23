@@ -1213,6 +1213,16 @@ Microsoft 出品的工具包
 
     sysinternals https://learn.microsoft.com/en-us/sysinternals/
 
+        Autologon       自动登录
+
+        Autorunsc       列出所有的开机自启动
+
+        ProcessExplorer 更强大的任务管理器
+
+        PsTools 套件     在命令行控制你的进程
+
+        sysmon          监视系统活动记录
+
     powertoys https://learn.microsoft.com/en-us/windows/powertoys/
 
 把任意程序配置为开机自启动的服务
