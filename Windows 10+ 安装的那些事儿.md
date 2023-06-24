@@ -250,13 +250,17 @@ Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 开源的u盘制作工具
 
     rufus
+
         https://rufus.ie/
             https://github.com/pbatard/rufus
 
-    balenaEtcher https://www.balena.io/etcher
-                    https://github.com/balena-io/etcher/
+    balenaEtcher
 
-    ventoy
+        https://etcher.balena.io/
+            https://github.com/balena-io/etcher/
+
+    ventoy 原无忧启动
+
         https://www.ventoy.net/
             https://github.com/ventoy/Ventoy
 
