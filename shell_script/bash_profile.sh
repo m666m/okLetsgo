@@ -275,7 +275,7 @@ ssh-add -l
 [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
 
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
-source /usr/local/bin/ackg.sh
+[[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh
 
 #################################
 # 手动配置插件
@@ -424,25 +424,18 @@ function PS1git-branch-prompt {
 }
 
 #################################
-# Linux bash - Fedora Silverblue、CoreOS
-# 提示当前在 toolbox 环境
+# Linux bash
+# 提示当前在 toolbox 或 distrobox 等交互式容器环境
 # https://docs.fedoraproject.org/en-US/fedora-silverblue/tips-and-tricks/#_working_with_toolbx
-function PS1_fedora_is_toolbox {
-    if [ -f "/run/.toolboxenv" ]; then
+# https://ublue.it/guide/toolbox/#using-the-hosts-xdg-open-inside-distrobox
+# https://github.com/docker/cli/issues/3037
+function PS1_is_in_toolbox {
+    if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
         echo "<$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
+    elif  [ -e /.dockerenv ]; then
+        echo "<$(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")>"
     fi
 }
-
-#################################
-# Linux bash - Fedora Silverblue、CoreOS
-# 提示当前在 distrobox 环境
-# 未测试
-# https://ublue.it/guide/toolbox/#using-the-hosts-xdg-open-inside-distrobox
-# function PS1_fedora_is_distrobox {
-#     if [ -e /run/.containerenv ] || [ -e /.dockerenv ]; then
-#         echo "<$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
-#     fi
-# }
 
 #################################
 # Linux bash - raspberry pi os (debian)
@@ -487,11 +480,8 @@ function PS1raspi-warning-prompt {
 #################################
 # 设置命令行提示符 PS1
 
-# 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
-PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue╰──$PS1Cwhite\$ $PS1Cnormal"
-
-# Fedora bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox环境名> \w当前路径 git分支及状态
-PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cmagenta\$(PS1_fedora_is_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue╰──$PS1Cwhite\$ $PS1Cnormal"
+# 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 python环境 git分支及状态
+PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cmagenta\$(PS1_is_in_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue╰──$PS1Cwhite\$ $PS1Cnormal"
 
 # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 树莓派温度告警 git分支及状态
 PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue╰──$PS1Cwhite\$ $PS1Cnormal"

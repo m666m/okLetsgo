@@ -1798,7 +1798,7 @@ Linux 下安装
 
     https://code.visualstudio.com/docs/setup/linux
 
-对 flatpak scode、VSCodium 版本的终端下打印 'Warning: waitpid override ignores groups' 的说明
+对 flatpak 版 VSCode、VSCodium 终端下打印 'Warning: waitpid override ignores groups' 的说明
 
     https://github.com/flathub/com.visualstudio.code/issues/370
 

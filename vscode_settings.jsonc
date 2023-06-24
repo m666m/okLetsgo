@@ -39,6 +39,7 @@
     },
     "outline.showVariables": false,
     "diffEditor.ignoreTrimWhitespace": false,
+    "window.titleBarStyle": "custom", // 整合菜单栏和标题栏
     "window.activeBorder": "#ff7b00c5",
     "window.newWindowDimensions": "offset", // "offset" maximized
     "window.autoDetectColorScheme": false,  // 深色背景下切换项目时会闪一下白，很烦人，关了
@@ -461,5 +462,5 @@
     //
     // 下面这些是vscode自己加的，随时变
     //
-    "workbench.colorTheme": "Nord",
+    "workbench.colorTheme": "Nord"
 }
