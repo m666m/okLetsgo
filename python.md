@@ -1806,6 +1806,17 @@ Linux 下安装
 
         https://github.com/owtaylor/toolbox-vscode
 
+    在 distrobox 里使用 vscode
+
+        https://ublue.it/guide/toolbox/#integrating-vscode-with-distrobox
+
+        https://distrobox.privatedns.org/posts/integrate_vscode_distrobox.html
+
+        两种方式：
+
+            在 distrobox 里安装 vscode，然后用 distrobox-export 导出到主机下使用。这样 vscode 集成的终端及插件都在 distrobox 里运行。
+
+            或者在主机安装 vscode，使用插件 Dev Containers 来连接使用 distrobox。
 
 ### vscode 插件
 
