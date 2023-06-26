@@ -831,6 +831,14 @@ edge 浏览器->设置->外观->整体外观：选择“系统默认”则跟随
 
     选择 enable，点击选择重启浏览器，除图片以外的所有部分进入夜间模式
 
+### 右键菜单“发送到”
+
+右键点击系统桌面左下角的【开始】，在开始菜单中点击【运行】，在运行对话框中输入：
+
+    shell:sendto
+
+点击确定或者回车，打开SendTo（发送到）窗口 C:\Users\your_user_name\AppData\Roaming\Microsoft\Windows\SendTo
+
 ### 关闭附件管理器检查
 
 为什么要关闭？
