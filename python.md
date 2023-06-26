@@ -1822,6 +1822,10 @@ Linux 下安装
 
 插件的安装位置为 C:\Users\你的用户名\.vscode\extensions
 
+#### 中文语言包
+
+    MS-CEINTL.vscode-language-pack-zh-hans
+
 #### 护眼主题
 
 在 vscode 下按 F1 输入命令 'Generate Color Theme From Current Settings'，会自动新建一个 theme 文件，自己慢慢研究吧
@@ -1836,9 +1840,9 @@ Linux 下安装
 
         添加颜色主题 https://code.visualstudio.com/docs/extensions/themes-snippets-colorizers#_adding-a-new-color-theme
 
-看代码和看md文字有些区别，一切以字体清晰可辨，眼睛不费力为原则。
+看代码和看文字有些区别，一切以字体清晰可辨，段落分隔明显，长时间看眼睛不费力为原则。
 
-除了白天和黑夜，不同的光照条件下，没法只用一个主题，根据环境光亮度酌情切换即可。
+除了白天和黑夜，不同的光照条件下，没法只用一个主题，根据环境光亮度酌情切换即可，下为建议：
 
 浅色
 
@@ -1881,19 +1885,20 @@ Solarized Light（vscode 自带），这个是羊皮纸底色，但是语法高�
 
 创·战纪
 
-    有蓝、黄、橙三种配色，酷
-
-        Vaporizer.tron-theme
-
-    这2个语法文件好，只是蓝色的
-
-        gerane.Theme-TronLight
-        gerane.Theme-TronLegacy
-
-    最好能把二者结合起来
-
     风格来源
         https://disneyworld.disney.go.com/attractions/magic-kingdom/tron-lightcycle-run/
+
+
+    Tron Dark Themes 有蓝、黄、橙三种配色，酷
+        Vaporizer.tron-theme
+
+        TronLight Theme 语法文件好，只是蓝色的，不刺眼
+            gerane.Theme-TronLight
+
+        Tron Legacy 语法文件好，蓝色加红橙
+            gerane.Theme-TronLegacy
+
+    我安装了 TronLight Theme，根据 Tron Dark Themes 的边框颜色进行了结合
 
 #### 图标
 
