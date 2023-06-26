@@ -628,9 +628,9 @@ PBP分屏注意
 
     激活
 
-    把电源计划调整为 “高性能” 或 “卓越性能”，省的它各种乱省电，系统反应不正常的时候你根本猜不出啥原因导致的。
-
     做一次 Windows 更新，有一大堆的包要装，装完了再改设置吧，不然会给改回去。。。
+
+    把电源计划调整为 “卓越性能”或“高性能”，省的它各种乱省电，系统反应不正常的时候你根本猜不出啥原因导致的。
 
     关闭 Windows 搜索，这玩意非常没用，但是总是在闲时扫描硬盘，太浪费硬盘和电了。
 
@@ -760,13 +760,19 @@ Windows 10 默认没有安装的某些增强性安全功能组件是依赖虚拟
 
 中文版 Windows 10 默认唯一键盘是中文，而且中文键盘的默认输入法是微软拼音的中文状态。原 Windows 7、XP 的 “Ctrl+空格” 切换中英文的热键，被微软拼音输入法占用为切换中英文，按 shift 键也是切换中英文，而且默认各个应用的窗口统一使用这个状态。
 
-问题是 桌面/资源管理器/炒股/游戏/网页浏览器 等软件的默认热键是响应英文的键盘输入，所以仅对文本编辑软件启用中文输入才是最优方案。在实际使用中，各个软件只要切换窗口，或者输入个字母就弹出中文候选字对话框，按 shift 键就来回切换中英文，实际输入的过程中，非常非常非常的繁琐。尤其在打 fps 游戏的时候，一按 shift 就切出来中文输入法，再按 asdw 就变成打字到中文输入法的输入栏了。
+问题是
+
+    桌面/资源管理器/炒股/游戏/网页浏览器 等软件的默认热键是响应英文的键盘输入，所以仅对文本编辑软件启用中文输入才是最优方案。在实际使用中，各个软件只要切换窗口，或者输入个字母就弹出中文候选字对话框，按 shift 键就来回切换中英文，实际输入的过程中，非常非常非常的繁琐。在使用 Windows 资源管理器时，无法用按键快速导航到指定开头字母的文件；在打 fps 游戏的时候，一按 shift 就切出来中文输入法，再按 asdw 就变成打字到中文输入法的输入栏了。
 
 所以需要再添加一个“英文键盘”，使用它的英文输入法状态，并把这个键盘作为默认状态。两种键盘间切换使用热键“Win+空格”。这样做的好处是，切换键盘的同时中英文输入法也跟着切换了（不需要依赖在中文键盘下微软拼音输入法的 shift 键切换），而且有了多种输入法，不同的窗口还可以选择记住不同的输入法状态，非常方便。
 
-设置->搜索“语言”，“首选语言”选择添加"英语(美国)"，注意取消选择“设置为默认的界面语言”，语言包的选项中，记得选择添加“美式键盘”，下载语言包什么的。
+设置->搜索“语言”，“首选语言”
 
-点击右侧按钮“拼写、键入和键盘设置”（设置->设备->输入），把输入提示、输入建议什么的都去掉，不然你按 Ctrl+空格 的时候会给你好看。
+    选择添加 "英语(美国)"，注意取消选择“设置为默认的界面语言”，语言包的选项中，记得选择添加“美式键盘”，下载语言包什么的。
+
+    如果是英文版 Windows， 选择添加语言包 “简体中文（新加坡）”。然后选择该语言包，点击按钮“选项”，在弹出窗口中选中“键盘”下面的“微软拼音输入法”，设置候选字词限制最多 5 个。
+
+点击右侧按钮“拼写、键入和键盘设置”（跳转到了设置->设备->输入），把输入提示、输入建议什么的都去掉，不然你按 Ctrl+空格 的时候会给你好看。
 
 点击下面的“高级键盘设置”（设置->搜索“keyboard”，“高级键盘设置”），操作如下步骤：
 
@@ -839,6 +845,8 @@ edge 浏览器->设置->外观->整体外观：选择“系统默认”则跟随
 
 点击确定或者回车，打开SendTo（发送到）窗口 C:\Users\your_user_name\AppData\Roaming\Microsoft\Windows\SendTo
 
+上一级目录还可以配置 “启动”，可以把自己希望开机自动启动的程序的快捷方式放到这里。
+
 ### 关闭附件管理器检查
 
 为什么要关闭？
@@ -853,6 +861,7 @@ edge 浏览器->设置->外观->整体外观：选择“系统默认”则跟随
     1. 文件附件值中不保留区域信息，设置为“启用” （光这步就够了）
 
     2. 文件类型的默认风险级别，设置为“启用”，“低风险”。
+
     3. 低风险文件类型的包含列表，设置为“启用”，扩展名增加比如：.docx;.doc;.xls;.xlsx
 
 第二种是增加一个全局的环境变量 SEE_MASK_NOZONECHECKS，设置值为 1.
@@ -948,15 +957,16 @@ Windows 10 下发现取消这个组件，居然有 Windows 更新的安装包报
 
 ### 取消输入用户登录密码
 
-1、
-运行“regedit.exe”，打开注册表 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\PasswordLess\Device
+以下方法
+    1、
+    运行“regedit.exe”，打开注册表 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\PasswordLess\Device
 
-将 DevicePasswordLessBuildVersion 值设置为0，即可出现复选框。
+    将 DevicePasswordLessBuildVersion 值设置为0，即可出现复选框。
 
-2、
-运行“netplwiz.exe”，取消勾选复选框“用户必须输入密码”，这时会提示需要记住的密码免密登录的用户名及密码
+    2、
+    运行“netplwiz.exe”，取消勾选复选框“用户必须输入密码”，这时会提示需要记住的密码免密登录的用户名及密码
 
-3、重启计算机验证
+    3、重启计算机验证
 
 ### 关闭 Windows defender杀毒软件
 
@@ -2118,32 +2128,6 @@ Windows 7 在 2023 年还提供虚拟机使用的版本
 
 ### Hyper-V
 
-建立虚拟机时的几个注意事项：
-
-    https://learn.microsoft.com/zh-cn/windows-server/virtualization/hyper-v/learn-more/Generation-2-virtual-machine-security-settings-for-Hyper-V
-
-虚拟机选 “二代”，开启“安全启动” 时选择模板 “Microsoft UEFI 证书颁发机构”（安装Linux），若勾选“启用防护”选项会禁用控制台连接、无法迁移虚拟机等。
-
-取消勾选 “自动检查点”
-
-    安装完成后手工建立检查点，以防 hyper-v 自动合并导致无法回到初始状态。
-
-第 2 代虚拟机上的 GRUB 菜单超时
-
-    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/best-practices-for-running-linux-on-hyper-v#grub-menu-timeout-on-generation-2-virtual-machines
-
-    由于第 2 代虚拟机的仿真中删除了旧硬件，导致 grub 菜单倒计时计时器的倒计时速度太快，无法显示 grub 菜单，因而会立即加载默认条目。 在 GRUB 固定为使用 EFI 支持的计时器之前，请修改 /boot/grub/grub.conf, /etc/default/grub 或等效条目，将其修改为“timeout=100000”而不是默认的“timeout=5”。
-
-用检查点备份你的虚拟机的当前状态
-
-    最好关机后创建建立
-
-    在设置中选 “标准检查点”，注意关闭 “自动检查点”，安装完成后手工建立检查点，否则 Windows 总是自动把当前状态合并到你手动建立的检查点。
-
-使用比较简单，就像普通虚拟机操作，类似 VM Ware、Virtual Box
-
-    https://docs.microsoft.com/zh-cn/virtualization/hyper-v-on-Windows/quick-start/enable-hyper-v
-
 如何在 Windows 10 上使用 Hypver-V
 
     https://www.tenforums.com/tutorials/2087-hyper-v-virtualization-setup-use-Windows-10-a.html
@@ -2165,6 +2149,59 @@ Windows 10+ 在 2020 年代以来，体系架构类似 Xen，混合虚拟化：
     用虚拟化技术把很多软件功能隔离出来，比如 Windows 安全中心里的 “隔离浏览（WDAG）”、“内核保护” 等，这样在用户使用无感的前提下，很多容易被外部攻破的功能点都被隔离运行，操作系统整体的安全性大大提高。详见章节 [设置 Windows 安全中心]。
 
 至 Windows 11 强制开启 TPM 2.0 和 安全启动，可以用微软和硬件厂商的密钥把计算机启动部分也进行保护，防止木马程序隐藏在系统引导区开机启动即加载运行。
+
+#### 建立 Hyper-V 虚拟机
+
+使用比较简单，就像普通虚拟机操作，类似 VM Ware、Virtual Box
+
+    https://docs.microsoft.com/zh-cn/virtualization/hyper-v-on-Windows/quick-start/enable-hyper-v
+    https://learn.microsoft.com/zh-cn/windows-server/virtualization/hyper-v/learn-more/Generation-2-virtual-machine-security-settings-for-Hyper-V
+
+> 虚拟机选 “二代”，开启“安全启动”
+
+    客户机要安装支持安全启动的 Windows，选择模板 “Microsoft Windows”
+
+    客户机要按照支持安全启动的 Linux，选择模板 “Microsoft UEFI 证书颁发机构”（安装Linux）
+
+    若勾选“启用防护”选项会禁用控制台连接、无法迁移虚拟机等。
+
+> 取消勾选 “自动检查点”
+
+    安装完成后手工建立检查点，以防 hyper-v 自动合并导致无法回到初始状态。
+
+> 用检查点备份你的虚拟机的当前状态
+
+    最好关机后创建建立
+
+    在设置中选 “标准检查点”，注意关闭 “自动检查点”，安装完成后手工建立检查点，否则 Windows 总是自动把当前状态合并到你手动建立的检查点。
+
+    建议在完全安装好操作系统后手工建立一个检查点，安装软件后再建立一个，不要再多了。这样即不会占用你大量的硬盘空间，也方便出现问题时回退到干净的系统状态。
+
+> 虚拟机访问外网需要设置 “虚拟交换机”
+
+默认创建的虚拟机，都没有绑定网络，需要手动设置网络，给虚拟机的网卡分配一个虚拟交换机，使其可以访问网络
+
+    https://learn.microsoft.com/zh-cn/windows-server/virtualization/hyper-v/get-started/create-a-virtual-switch-for-hyper-v-virtual-machines?tabs=hyper-v-manager
+
+虚拟交换机设置一个就够了，所有需要访问外网的虚拟机都可以使用它
+
+    打开 hyper-v 管理器，在右侧栏目选择 “虚拟交换机管理器”
+
+    在弹出窗口的栏目选择 “新建虚拟网络交换机”，选择“外部”，点击创建 “创建虚拟交换机”
+
+    在弹出窗口中，“外部网络” 默认选择的是你的网卡，根据实际情况选择，把名称改为 “外网虚拟交换机”
+
+打开 hyper-v 管理器，选择你的各个虚拟机，右键菜单选择 “设置”，选择 “网络适配器”，选择 “外网虚拟交换机” 即可上外网了。
+
+后遗症
+
+    控制面板\网络和 Internet\网络连接，你的网卡无法设置 ip 了，在另一个名为 “vEthernet (外网虚拟交换机)”的网卡上设置 ip
+
+> 第 2 代虚拟机上的 GRUB 菜单超时
+
+    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/best-practices-for-running-linux-on-hyper-v#grub-menu-timeout-on-generation-2-virtual-machines
+
+    由于第 2 代虚拟机的仿真中删除了旧硬件，导致 grub 菜单倒计时计时器的倒计时速度太快，无法显示 grub 菜单，因而会立即加载默认条目。 在 GRUB 固定为使用 EFI 支持的计时器之前，请修改 /boot/grub/grub.conf, /etc/default/grub 或等效条目，将其修改为“timeout=100000”而不是默认的“timeout=5”。
 
 #### 开启 hyper-v 的负面影响
 
