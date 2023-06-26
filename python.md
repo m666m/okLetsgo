@@ -530,13 +530,13 @@ python-xy 不再更新维护了，废弃
 
     用户指南 https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#
 
-理解Anaconda版本管理的特殊性
+理解 Anaconda 版本管理的特殊性
 
-    当我们创建新的环境的时候，Anaconda 对相同的python版本指向为一个打包文件的链接。
+    当我们创建新的环境的时候，Anaconda 对相同的 python 版本指向为一个打包文件的链接。
 
-    所以如果你改变了第一个python版本的环境，则后续新建同版本的环境会跟着变。。。
+    所以如果你改变了第一个 python 版本的环境，则后续新建同版本的环境会跟着变。。。
 
-    对pip包默认下载路径，conda库更新，都会同步这个影响。
+    对 pip 包默认下载路径，conda 库更新，都会同步这个影响。
 
     <https://www.anaconda.com/blog/using-pip-in-a-conda-environment>
 
@@ -559,49 +559,53 @@ python-xy 不再更新维护了，废弃
 
 #### 初始化
 
-0.先安装git，后续使用它自带的bash、ssh比较方便，不装也行
+0.先安装 git for Windows，后续使用它自带的 bash、ssh 比较方便，不装也行
 
-1.如果想让vscode自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”或“set Anaconda3 the system default python”。如果你想使用路径名的虚拟环境，可以不勾选。
+1.如果想让 vscode 自动找到，安装时的选项记得勾选“add Anaconda3 to the system PATH environment variable”或“set Anaconda3 the system default python”。如果你想使用路径名的虚拟环境，可以不勾选。
 
-2.选择了“给所有用户安装”时，新建环境如[p37]会保存在C:\ProgramData\Anaconda3\envs\p37，不选则保存在 C:\Users\xxxx\.conda\envs\p37，相应的python、pip位置也会跟随变化。
+2.选择了 “给所有用户安装”时，程序会安装到 C:\ProgramData\anaconda3，新建环境如[p37]会保存在C:\ProgramData\Anaconda3\envs\p37，不选则保存在 C:\Users\xxxx\.conda\envs\p37，相应的python、pip位置也会跟随变化。
 
-3.安装完毕后，换清华源，参见下面章节[conda频道和源配置]，然后打开anaconda-navigator，切换到base环境，界面反应很慢，多等等，不要着急切换。后台脚本一直在远程下载处理，要执行一堆初始化工作，不是光setup.exe安装完了就可以了。。。
+3.安装完毕后，换清华源，参见下面章节 [conda频道和源配置]，然后打开 anaconda-navigator，切换到 [base] 环境，界面反应很慢，多等等，不要着急切换。后台脚本一直在远程下载处理，要执行一堆初始化工作，不是光 setup.exe 安装完了就可以了。。。
 
-4.初始化conda的那些管理类命令，要使用cmd窗口执行
+4.不推荐更新 conda。如果想更新包，仅在自己的虚拟环境里更新指定的包。
 
-初始化conda的的操作修改变量等，实质执行的 conda 命令在Windows下是各种bat文件，所以应该在cmd窗口里，在base环境下执行初始化的相关命令。
+5.初始化conda的那些管理类命令，要使用 cmd 窗口执行
 
-如果在安装时选择了给所有用户安装，则要操作的默认根环境在C:\ProgramData\Anaconda3这个目录，在环境列表中名叫[base]（不要往base环境里添加包），所以要用管理员权限执行Anaconda在开始菜单的快捷方式'Anaconda Prompt'的cmd窗口。如果单独打开windows的cmd窗口，也要用管理员权限执行，进入cmd窗口后，还要先执行`conda activate`进入[base]环境，然后执行那些 conda 初始化相关的命令。
+    初始化conda的的操作修改变量等，实质执行的 conda 命令在Windows下是各种bat文件，所以应该在cmd窗口里，在base环境下执行初始化的相关命令。
 
-5.pip更换国内源，详见上面章节 [PyPI使用国内源]。
+如果在安装时选择了给所有用户安装，则要操作的默认根环境在 C:\ProgramData\Anaconda3 这个目录，在环境列表中名叫[base]（不要往base环境里添加包）。
 
-x.不推荐更新 conda。如果想更新包，仅在自己的虚拟环境里更新指定的包。
+初次使用的初始化操作，最好执行 Anaconda 在开始菜单的快捷方式'Anaconda Prompt' 的 cmd 窗口。
+
+    如果单独打开 Windows 的 cmd 窗口，要用管理员权打开 cmd 窗口，首先要执行 `conda activate` 以进入 [base] 环境，然后执行conda 初始化相关的命令。
 
 管理员权限打开命令行工具
 
     conda activate
 
-    # conda 默认 base 环境下自带的直接用就行，基础环境更新了容易乱。
+    # conda 默认 base 环境下自带的直接用就行，基础环境更新了容易乱，不要乱动 base 环境
     conda update -n base conda
     conda update anaconda
     conda update anaconda-navigator
 
+6.pip更换国内源，详见上面章节 [PyPI使用国内源]。
+
 x. 不推荐更新pip。仅在自己的虚拟环境里更新pip和指定的包，详见下面章节[Anaconda环境中使用pip]
 
-6.设置conda在哪个shell下使用（windows默认是cmd），详见下面章节 [conda init 命令设置命令行工具]
+7.设置conda在哪个shell下使用（windows默认是cmd），详见下面章节 [conda init 命令设置命令行工具]
 
-7.vscode配置默认终端，选择“Git Bash”
+8.vscode配置默认终端，选择“Git Bash”
 
-8.anaconda-navigator 逐个python版本的新建环境，作为标准环境，这些环境建了之后不要更新、下载包，不要做任何改动！
+9.anaconda-navigator 逐个python版本的新建环境，作为标准环境，这些环境建了之后不要更新、下载包，不要做任何改动！
 
 NOTE:后续建立的同版本的python环境都会复用最早建立的那个环境！原因是Anaconda节省空间使用文件的链接，但是无法区分pip。
 
 所以，稳妥的办法是，如果你的系统里要使用多个python版本，先逐个建立各个版本的环境，什么都不要改。
 然后针对具体的项目建路径名的虚拟环境，在这个虚拟环境里面安装pip，然后改路径。
 
-9.建立你自己项目的虚拟环境（见下面的章节 [使用路径名，在你的项目目录下建立虚拟环境]），在这个虚拟环境里面安装pip，然后改路径（详见下面章节[更改conda环境下pip包默认下载路径]）。
+10.建立你自己项目的虚拟环境（见下面的章节 [使用路径名，在你的项目目录下建立虚拟环境]），在这个虚拟环境里面安装pip，然后改路径（详见下面章节[更改conda环境下pip包默认下载路径]）。
 
-10.详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
+11.详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
 
 #### 填坑
 
@@ -723,9 +727,9 @@ Anaconda 安装完毕后，默认的环境base是最新的一个python版本如p
     # 操作是在 ~/.bash_profile 中添加代码，自动激活[base]环境
     conda init bash
 
-    # 用cmd，不推荐
-    # 建议把cmd留给单独安装的python环境，这样可以并行使用 virtualenv
-    # Windows开始菜单里的 Anaconda Prompt (Anaconda3)，也可以进入cmd
+    # 用 cmd，不推荐
+    # 建议把 cmd 留给单独安装的 python 环境，这样可以并行使用 virtualenv
+    # Windows 开始菜单里的 Anaconda Prompt (Anaconda3)，也可以进入 cmd
     conda init cmd.exe
 
     # powershell，微软来回改版本，不推荐
