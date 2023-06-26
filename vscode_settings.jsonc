@@ -8,8 +8,8 @@
     // 带补丁字体下载 https://github.com/ryanoasis/nerd-fonts/releases
     // 编程字体预览大全 https://www.programmingfonts.org/#cascadia-code
     // 注意顺序：优先正式字体，回落到带补丁的字体以显示图标，最后是保底的系统自带字体
-    "editor.fontFamily": "'Fira Code', 'FiraCode NF', Consolas", // 'Cascadia Code','JetBrains Mono','Source Code Pro', monospace
-    "terminal.integrated.fontFamily": "'MesloLGS NF', Consolas",
+    "editor.fontFamily": "'Fira Code', 'FiraCode Nerd Font', Consolas", // 'Cascadia Code','JetBrains Mono','Source Code Pro', monospace
+    "terminal.integrated.fontFamily": "'MesloLGS Nerd Font', Consolas",
     //"editor.fontLigatures": true,
     // https://github.com/tonsky/FiraCode/wiki/How-to-enable-stylistic-sets
     "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'zero', 'onum'",
