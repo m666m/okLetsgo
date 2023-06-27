@@ -3602,16 +3602,6 @@ Git 管理仓库中的文件，是根据文件名来跟踪文件的
     # 重命名之后正常 commit push 就可以了
     $ git commit -m "rename oldfile to newfile"
 
-如果你从 windows 下拷贝了一个 git 仓库到 Linux 下使用，所有文件都被 git 视作修改了，用比对还看不出区别。用 vi 打开一个文件才能看到提示 dos 文件格式：Windows 下默认的文件格式是 dos（CRLF），而 Linux 下默认的文件格式是 unix（LF）。简单快捷的处理办法不是使用命令 dos2unix逐个转换
-
-    $ cd your_code_path
-
-    $ rm *.*
-
-    $ git restore .
-
-    $ git status
-
 ## 使用储藏 stash
 
 当在一个分支的开发工作未完成，却又要切换到另外一个 hotfix 分支进行开发的时候，当前的分支不 commit 的话 git 不允许 checkout 到别的分支，而代码功能不完整随便 commit 是没有意义的。
@@ -4579,6 +4569,28 @@ git revert 新增的提交点，是对 rebase 那个提交点的反向执行，�
 ## git 常用法
 
     https://git-scm.com/docs/gitfaq
+
+### Windows 直接拷贝代码目录到 Linux 下使用
+
+如果你从 windows 下拷贝了一个 git 仓库到 Linux 下使用，所有文件都被 git 视作修改了，要求提交，用图形化的文本编辑器看不出文件内容的差异。
+
+用 `git diff xxx.py` 可以看到每行都多出了特殊字符 ^M，用 vi 打开一个文件能看到提示是 dos 文件格式：
+
+    Windows 下默认的文件格式是 dos（CRLF）
+
+    Linux 下默认的文件格式是 unix（LF）
+
+简单快捷的处理办法不是使用命令 dos2unix 逐个转换
+
+    $ cd your_code_path
+
+    $ git status
+
+    $ rm -rf $(ls)
+
+    $ git restore .
+
+    $ git status
 
 ### 快速定位故障版本
 
