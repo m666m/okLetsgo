@@ -241,6 +241,8 @@ Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
 安装 Windows 11 在 Secure Boot 的基础上，还要求主板 BIOS 开启 TPM2.0
 
+    https://support.microsoft.com/en-us/windows/enable-tpm-2-0-on-your-pc-1fd5a332-360d-4f46-a1e7-ae6b0c90645c
+
     进入主板 BIOS 设置的 “Settings”，选择 “Intel Platform Trust Technology(PTT)”，选择 “Enable”，下面的选项 “Trusted Computing” 回车，进入的设置界面，找 “Security Device Support” 选择 “Enable”。
 
 ### 一、制作支持 UEFI + GPT 的启动u盘
@@ -560,7 +562,7 @@ USB 2.0
 
     显示器画面才能达到满血的3440*1440@100Hz 8bit。如果你不外挂硬盘的话，那么这也不会成为缺点。
 
-PBP分屏
+PBP 分屏
 
     usb-tpyec 的线连接笔记本电脑后，可以分隔一半屏幕显示笔记本电脑的桌面内容
 
@@ -568,17 +570,17 @@ PBP分屏
 
     显示器设置 kvm usb up，开启 基础的usb-hub。
 
-PIP功能
+PIP 功能
 
     画中画，另一个设备的桌面用小窗显示
 
-KVM功能
+KVM 功能
 
     显示器可以根据信号源自动调整KVM，信号源切换到笔记本，HUB上的设备也都全部切到PS5上。信号源切回电脑，HUB上的设备自然也就全部切回电脑。这个功能真的非常棒，直接将有线键鼠当成多模键鼠使用。
 
     也可设置在OSD中切换，一套鼠标键盘，操作笔记本和台式机，适用于PBP分屏功能
 
-PBP分屏注意
+PBP 分屏的一个副作用
 
     如果用三星 Galaxy 手机 DEX 连接显示器集成的 usb-hub，关机会黑屏，拔下来手机之后 Windows 才能继续关机
 
