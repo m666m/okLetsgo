@@ -2565,11 +2565,11 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
 > Fedora(SELinux) 下安装 Nerd Font --- Meslo LGS
 
-    curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/Meslo.zip
+    $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/Meslo.zip
 
-    unzip Meslo.zip
+    $ unzip Meslo.zip
 
-    因为发行版的存储库没有，只能手动安装，方法来自 https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
+    因为发行版的存储库没有 nerd font，只能手动安装，方法来自 https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
 
     $ sudo mkdir -p /usr/local/share/fonts/MesloLGSNF
     $ sudo cp MesloLGSNerdFont-*.ttf /usr/local/share/fonts/MesloLGSNF/
