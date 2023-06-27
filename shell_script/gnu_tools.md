@@ -8353,7 +8353,7 @@ done
 
     网络时间的那些事及 ntpq 详解  https://www.cnblogs.com/GYoungBean/p/4225465.html
 
-一般都使用 systemd 自带的时间同步服务
+TODO: 一般都使用 systemd 自带的时间同步服务
 
     $ systemctl status systemd-timesyncd.service
     Warning: The unit file, source configuration file or drop-ins of systemd-timesyncd.service changed on disk. Run 'systemctl daemon-reload' to reload units.
