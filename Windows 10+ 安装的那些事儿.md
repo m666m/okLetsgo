@@ -2254,7 +2254,9 @@ Windows 10+ 在 2020 年代以来，体系架构类似 Xen，混合虚拟化：
 
 默认创建的虚拟机，都没有绑定网络，需要手动设置网络，给虚拟机的网卡分配一个虚拟交换机，使其可以访问网络
 
-    https://learn.microsoft.com/zh-cn/windows-server/virtualization/hyper-v/get-started/create-a-virtual-switch-for-hyper-v-virtual-machines?tabs=hyper-v-manager
+    创建和配置虚拟交换机 https://learn.microsoft.com/zh-cn/windows-server/virtualization/hyper-v/get-started/create-a-virtual-switch-for-hyper-v-virtual-machines?tabs=hyper-v-manager
+
+    创建虚拟网络 https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/quick-start/connect-to-network
 
     https://www.cnblogs.com/Mopee/p/14696481.html
 
@@ -2286,7 +2288,7 @@ Windows 10+ 在 2020 年代以来，体系架构类似 Xen，混合虚拟化：
 
 > 宿主机使用无线网卡上网
 
-使用桥接的方式，更加稳定
+使用桥接的方式，hyper-v 一直没做好支持
 
     打开 hyper-v 管理器，在右侧栏目选择 “虚拟交换机管理器”，在弹出窗口的栏目选择 “新建虚拟网络交换机”，选择 “内部网络”，把名称改为 “无线_网桥”
 
@@ -2297,6 +2299,14 @@ Windows 10+ 在 2020 年代以来，体系架构类似 Xen，混合虚拟化：
     确认后生效，此时虚拟机即完成了桥接，可以通过无线网卡上网。
 
     最好重启计算机。
+
+如果不行，尝试设置网卡共享连接的方式
+
+    https://blog.csdn.net/tototuzuoquan/article/details/121025526
+
+    控制面板\网络和 Internet\网络连接，可以看到其中新增了一个未识别的网络，名字一般叫做vEthernet(xxxxx)，括号中的xxxxx是你刚才创建的内部网络虚拟交换机名字。
+
+    选择可以上网的WLAN网络连接，右键 -> 属性 -> 共享选项卡，勾选允许其他网络用户通过此计算机的Internet连接来连接(N)，并在下面的家庭网络连接(H)中选择对应的、刚才新增的vEthernet(xxxxx)网络。
 
 NAT 模式：
 
@@ -2317,6 +2327,37 @@ NAT 模式：
     确认后生效，此时虚拟机即完成，可以通过网卡上网。
 
     最好重启计算机。
+
+故障排除：
+
+在 cmd 窗口执行命令
+
+    `ipconfig /all` 查看是否给分配了ip地址，一般是 192.168.0.x
+
+    `route print` 查看接口网关的 ip 地址，一般是 192.168.0.1
+
+    如果是 169.254.x.x 说明不成功
+
+实在不行，清了重建
+
+    https://www.jianshu.com/p/0338bda7d75b
+
+    以管理员权限执行“命令提示符”，然后运行下面的命令以清理所有的网络设备，注意这将将几乎所有的网络连接都删除（除了可能有几个顽固连接无法删除）：
+
+        netcfg -d
+
+    打开“计算机管理”并选中左边的节点“设备管理器”，点菜单“查看”然后选中“显示隐藏的设备”，在右边找到“网络适配器”节点，并把里面所有的设备全卸载掉（正常情况下，执行上面的一步后不会有网络适配器残留，这一步只是确保会把某些顽固的设备手工移除掉）。
+
+    重启电脑。正常情况下所有的网络适配器在电脑重启后会被自动驱动，如果有没有自动驱动的，手动安装驱动程序，并连接到各自的网络。
+    这时候再去配置虚拟交换机应该就能成功了。
+
+如果上面的方法无效，可以试下重试重置 winsock 或 TCP/UDP 堆栈，两条命令分别如下（需要管理员权限）：
+
+    netsh winsock reset
+
+    netsh int ip reset
+
+这里只是提供一个可能的解决方法，因为我没办法验证上面的操作能否实际有效。
 
 #### 开启 hyper-v 的负面影响
 
