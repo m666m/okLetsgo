@@ -2040,20 +2040,6 @@ Trailing Spaces
 
     shardulm94.trailing-spaces
 
-#### hex 颜色代码下用底色显示该颜色
-
-vs code 1.76 之后内置了这个功能
-
-Color Highlight
-
-    naumovs.color-highlight
-
-#### 预览 svg 图片
-
-SVG 图片语法高亮和预览
-
-    jock.svg
-
 #### 正则表达式预览
 
 Regexp Explain
@@ -2265,6 +2251,20 @@ Rainbow CSV
 vim 脚本语言语法高亮
 
     fallenwood.vimL
+
+#### hex 颜色代码下用底色显示该颜色
+
+vs code 1.76 之后内置了这个功能
+
+Color Highlight
+
+    naumovs.color-highlight
+
+#### 预览 svg 图片
+
+SVG 图片语法高亮和预览
+
+    jock.svg
 
 #### Draw.io Integration
 
