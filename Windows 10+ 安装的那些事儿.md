@@ -2041,17 +2041,18 @@ TODO: 先装 Windows 再装 Fedora
 
 第一块硬盘安装 Linux，然后虚拟机安装 Widnows，然后把该虚拟机转到第二块硬盘上作为实机可单独启动，而且在 Linux 里还可以作为虚拟机挂载使用！详见章节 [qcow2 虚拟机转为实体机]、[挂载实体机所在硬盘作为虚拟机](virtualization think)。
 
-#### TODO: 解决双系统安装 Windows 与 ubuntu 时间不一致的问题
+#### 解决双系统安装 Windows 与 Linux 时间不一致的问题
 
-Linux 与 Windows 对于本地硬件保存时间的理解方式不同：Linux 认为硬件时间为 GMT+0 时间，是世界标准时间，而中国上海是东八区时间，显示时间为 GMT+8；Windows 系统认为硬件时间就是本地时间，而这个时间已经被 Linux 设置为 GMT+0 时间。因此 Windows 系统下时间比正常时间慢 8 个小时。
+Linux 与 Windows 对于本地 RTC 硬件保存时间的理解方式不同：Linux 认为硬件时间为 GMT+0 时间，即世界标准时间UTC，中国本地时间是东八区时间，显示时间为 GMT+8；而 Windows 系统认为硬件时间就是中国本地时间。
 
-解决办法：让 Ubuntu 按照 Windows 的方式管理时间
+因此，如果用户分别使用过两个系统，则每个操作系统的时间校准服务都会按自己的理解把从网络时间服务器上获取的时间保存到本机 RTC 硬件，导致 Windows 系统下时间比正常时间慢 8 个小时。
 
-    sudo apt-get install ntpdate // 在ubuntu下更新本地时间
+解决办法：让 Linux 按照 Windows 的方式管理时间
 
-    sudo ntpdate time.windows.com
+    # 硬件 RTC 保存的时间是本地时间
+    sudo hwclock --localtime --systohc
 
-    sudo hwclock --localtime --systohc //将本地时间更新到硬件上
+设置时间服务参见章节 [操作时间时区 timedatectl](gnu_tools.md)。
 
 ### Bitlocker 加密
 
