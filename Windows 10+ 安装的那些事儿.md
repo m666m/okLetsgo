@@ -636,7 +636,13 @@ PBP 分屏的一个副作用
 
     关闭 Windows 搜索，这玩意非常没用，但是总是在闲时扫描硬盘，太浪费硬盘和电了。
 
-    设置：设备->自动播放->关闭自动运行。
+    设置：设备->自动播放->关闭自动运行。但是双击还是会执行自动播放指向的程序！
+
+        https://learn.microsoft.com/zh-cn/windows/win32/shell/autoplay-reg
+
+        https://zhuanlan.zhihu.com/p/352538274
+
+        打开 注册表,随后进入 "计算机\HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer "主键下，双击 “NoDriveTypeAutoRun”，修改其值为十进制的 221
 
     设置：系统->多任务处理，按 ALT+TAB 将显示 “仅打开的窗口”，不然开了一堆 edge 窗口都给你切换上，太乱了。
 
