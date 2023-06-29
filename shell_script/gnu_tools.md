@@ -9896,11 +9896,13 @@ VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
     输入你要连接的机器的 IP 地址，一般前缀为 rdp://
 
+具体实现上，差别很大，大多数都要在远程主机安装服务端
+
+    https://zhuanlan.zhihu.com/p/630641235
+
 #### Gnome 内置的远程桌面功能
 
-注意：发行版自带的远程桌面只支持共享给一个用户，如果需要多用户使用，需要安装第三方 vnc 或 rdp 软件。
-
-Gnome 共享屏幕功能，以服务器为主控，在主机屏幕前的人，可以同步看到远程的人在自己的计算机上干什么，并可以随时干预中断远程会话。
+注意：Gnome 自带的远程桌面实质是 “共享屏幕”，只支持实时共享给一个用户：以服务器为主控，在主机屏幕前的人，可以同步看到远程的人在自己的计算机上干什么，并可以随时干预中断远程会话。
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
 
@@ -9912,13 +9914,15 @@ Gnome 共享屏幕功能，以服务器为主控，在主机屏幕前的人，�
 
     https://www.linuxmi.com/ubuntu-22-04-rdp-remote-desktop.html
 
+如果需要多用户使用，主机屏幕不显示远程连接者的操作，需要安装第三方 vnc 或 rdp 软件，见章节 [使用第三方远程桌面软件]。
+
 Gnome 桌面同时支持 X11 和 Wayland 两种方式，原 Xorg 桌面使用 VNC 协议
 
     在 X11 会话中，它使用 vino 组件。
 
     在 Wayland 会话中，它使用 gnome-remote-desktop 组件。
 
-Gnome 42 桌面之后不再使用 VNC 协议，改为 RDP 协议了
+目前 Gnome 桌面不再使用 VNC 协议，改为 RDP 协议了
 
     https://discussion.fedoraproject.org/t/how-to-share-fedora-36-gnome-desktop-with-another-machine-running-linux/76182
 
@@ -9942,9 +9946,9 @@ Gnome 42 桌面之后不再使用 VNC 协议，改为 RDP 协议了
 
 是一台连接到由服务器提供的服务（或内容）的计算机，使用 vnc 或 rdp 客户端。
 
-Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，GNOME Boxes 也支持远程桌面功能。
+Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，同时支持 rdp 和 vnc 协议。
 
-推荐使用 Remmina 同时支持 VNC 和 RDP。
+推荐使用 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
 
 如果服务器和客户端之间有连接，请确保以下情况：
 
@@ -9954,21 +9958,9 @@ Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，
 
     启用了屏幕共享的用户已经登录。
 
-    会话 没有被锁定，也就是说，用户可以使用该会话。
+    会话没有被锁定，也就是说，用户可以使用该会话。
 
-然后你可以尝试从客户端连接到该会话：
-
-启动 Remmina
-
-    在地址栏左侧的下拉菜单中选择 VNC 协议。
-
-    在地址栏中输入服务器的IP地址，然后按下 回车。
-
-    当连接开始时，会打开另一个连接窗口。根据服务器的设置，你可能需要等待，直到服务器用户允许连接，或者你可能需要提供密码。
-
-    输入密码，然后按 OK。
-
-当处于全屏模式时，注意屏幕上边缘的白色窄条。那是 Remmina 菜单，当你需要离开全屏模式或改变一些设置时，你可以把鼠标移到它上面。
+然后你可以尝试从客户端连接到该会话。
 
 当你回到服务器时，你会注意到现在在上栏有一个黄色的图标，这表明你正在 Gnome 中共享电脑屏幕。如果你不再希望共享屏幕，你可以进入菜单，点击 屏幕正在被共享Screen is being shared，然后再选择 关闭Turn off，立即停止共享屏幕。
 
@@ -9981,6 +9973,86 @@ Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，
     如果会话被锁定，从客户端解锁也会在服务器上解锁。它也会把显示器从待机模式中唤醒。任何能看到你的服务器屏幕的人都能看到你此刻正在做什么。
 
     VNC 协议本身没有加密或保护，所以你通过它发送的任何东西都可能被泄露。日常使用都是用 ssh 本地端口转发的方式用 tunnel 封装起来。
+
+#### 使用第三方远程桌面软件
+
+RDP 协议
+
+    RDP 客户端软件
+
+        Linux 下使用内置的 gnome-connections，或安装 Remmina
+
+        Windows 下使用内置的 mstsc.exe
+
+    RDP 服务器端软件
+
+        Linux 下安装 xrdp
+
+        Windows 内置支持
+
+VNC 协议
+
+    VNC 客户端软件
+
+        Linux 下使用内置的 gnome-connections，或安装 Remmina
+
+        Windows 下安装 TigerVnc 软件的客户端
+
+    VNC 服务器端软件
+
+        Linux 内置支持
+
+        Windows 下安装 TigerVnc 软件的服务端
+
+##### 使用 Remmina
+
+    https://zhuanlan.zhihu.com/p/26879292
+
+快捷使用
+
+    在地址栏左侧的下拉菜单中选择 RDP/VNC 协议。
+
+    在地址栏中输入服务器的IP地址，然后按下 回车。
+
+    当连接开始时，会打开另一个连接窗口。根据服务器的设置，你可能需要等待，直到服务器用户允许连接，或者你可能需要提供密码。
+
+    输入密码，然后按 OK。
+
+当处于全屏模式时，注意屏幕上边缘的白色窄条，鼠标划过会显示工具栏，当你需要离开全屏模式或改变一些设置时，你可以把鼠标移到它上面。
+
+    点击 grub 按钮，可以实现 alt+tab 的热键
+
+如果需要调整配置如共享文件夹、播放声音等功能，给你的远程连接建立一个配置文件保存比较好：
+
+    点击左上角的 + 号，弹出一个新窗口，输入名称
+
+    在 “Protocol” 列表选择 “RDP”
+
+    在 “Server” 填入要连接的远程服务器的 ip
+
+    在 “Username” 和 “Password” 填入登录该服务器的用户名和密码
+
+    注意这里有个坑，没有其它选项可选，先点击保存以关闭该窗口。
+
+在 Remmina 中开启共享文件夹、剪贴板共享等功能，编辑你的远程桌面配置：
+
+    基本:
+
+        共享文件夹:"host_dl,/home/user/Downloads;host_vd,/home/user/Videos;" 这样就实现了在远程服务器映射本地的两个文件夹，名为 host_dl 和 host_vd。共享文件夹应显示在远程计算机资源管理器的 other devices and drives（本地磁盘的右下方C:），实质是映射的 Windows 网络邻居里的 \\tsclient\host_dl\ 目录，所以先在资源管理区里点击网络，提示开启网络发现时选择确定，这样才能确保映射成功。
+
+    高级:
+
+        声音：本地
+
+        安全性：rdp
+
+        剪贴板：默认就是放开的，可以复制文字，不支持文件和文件夹，只能使用共享文件夹的方式
+
+    确保单击save。
+
+然后就可以连接该远程服务器了，在 Remmina 窗口的下半部分列表中，选择你的刚才建立的文件，双击即可开启远程桌面窗口了。
+
+修改了配置文件之后，在远程 Windows 桌面上的 Remmina 工具栏单击 refresh 可以立即生效。
 
 #### xrdp
 
