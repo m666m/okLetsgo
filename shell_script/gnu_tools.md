@@ -10020,7 +10020,7 @@ VNC 协议
 
 当处于全屏模式时，注意屏幕上边缘的白色窄条，鼠标划过会显示工具栏，当你需要离开全屏模式或改变一些设置时，你可以把鼠标移到它上面。
 
-    点击 grub 按钮，可以实现 alt+tab 的热键
+    点击按钮 “grub all keyborad events”，可以实现在远程桌面计算机的 alt+tab 热键切换窗口
 
 如果需要调整配置如共享文件夹、播放声音等功能，给你的远程连接建立一个配置文件保存比较好：
 
@@ -10038,11 +10038,11 @@ VNC 协议
 
     基本:
 
-        共享文件夹:"host_dl,/home/user/Downloads;host_vd,/home/user/Videos;" 这样就实现了在远程服务器映射本地的两个文件夹，名为 host_dl 和 host_vd。共享文件夹应显示在远程计算机资源管理器的 other devices and drives（本地磁盘的右下方C:），实质是映射的 Windows 网络邻居里的 \\tsclient\host_dl\ 目录，所以先在资源管理区里点击网络，提示开启网络发现时选择确定，这样才能确保映射成功。
+        共享文件夹: "host_dl,/home/user/Downloads;host_vd,/home/user/Videos;" 这样就实现了在远程服务器映射本地的两个文件夹，名为 host_dl 和 host_vd。共享文件夹应显示在远程计算机资源管理器的 other devices and drives（本地磁盘C:图标的下方），实质是映射的 Windows 网络邻居里的 \\tsclient\host_dl\ 目录，所以先在资源管理区里点击网络，提示开启网络发现时选择确定，这样才能确保映射成功。
 
     高级:
 
-        声音：本地
+        声音：local
 
         安全性：rdp
 
