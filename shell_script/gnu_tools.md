@@ -8845,7 +8845,7 @@ Gnome:
 
         https://www.cnblogs.com/keatonlao/p/12686234.html
 
-GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱，如果想使用其它各种扩展，只能去网站 <https://extensions.gnome.org/> 下载。现在有了替代品 “GNOME Manager”，不需要去网站就可以搜索下载，在软件管理里搜索安装 “GNOME Manager” 即可。
+GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱，如果想使用其它各种扩展，只能去网站 <https://extensions.gnome.org/> 下载。现在有了替代品 “Extension Manager”，不需要去网站就可以搜索下载，在软件管理里搜索安装 “Extension Manager” 即可。
 
     推荐安装的第三方组件：
 
@@ -8887,7 +8887,7 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
             sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
 
-GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “GNOME Tweaks”，或使用命令行
+GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “Tweaks”，或使用命令行
 
     sudo apt install gnome-tweak-tool
 
