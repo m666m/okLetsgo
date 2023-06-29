@@ -9896,7 +9896,7 @@ VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
     输入你要连接的机器的 IP 地址，一般前缀为 rdp://
 
-具体实现上，差别很大，大多数都要在远程主机安装服务端
+具体实现上，差别很大，远程主机安装服务端，客户机使用客户端软件进行连接
 
     https://zhuanlan.zhihu.com/p/630641235
 
@@ -9944,11 +9944,7 @@ Gnome 桌面同时支持 X11 和 Wayland 两种方式
 
 > 客户端
 
-使用支持 rdp 或 vnc 协议的客户端软件。
-
-Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，同时支持 rdp 和 vnc 协议。
-
-推荐使用 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
+使用支持 rdp 或 vnc 协议的客户端软件，参见章节 [使用第三方远程桌面软件]。
 
 如果服务器和客户端之间有连接，请确保以下情况：
 
@@ -9964,7 +9960,7 @@ Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，
 
 当你回到服务器时，你会注意到现在在上栏有一个黄色的图标，这表明你正在 Gnome 中共享电脑屏幕。如果你不再希望共享屏幕，你可以进入菜单，点击 屏幕正在被共享Screen is being shared，然后再选择 关闭Turn off，立即停止共享屏幕。
 
-默认情况下，当会话锁定时，连接 将总是终止 will always terminate。在会话被解锁之前，不能建立新的连接。可以在 gnome 网站下载安装插件 “allow locked remote desktop”，这样远程计算机也可以解锁本地屏幕了。
+默认情况下，当会话锁定时，连接将总是终止。在会话被解锁之前，不能建立新的连接。可以在 gnome 网站下载安装插件 “allow locked remote desktop”，这样远程计算机也可以解锁本地屏幕了。
 
 安全问题
 
@@ -9978,19 +9974,25 @@ Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，
 
 RDP 协议
 
-    RDP 客户端软件
-
-        Linux 使用内置的 gnome-connections，或安装 Remmina
-
-        Windows 使用内置的 mstsc.exe
-
     RDP 服务器端软件
 
         Linux 安装 xrdp，参见章节 [xrdp]
 
         Windows 内置支持
 
+    RDP 客户端软件
+
+        Linux 使用内置的 gnome-connections，或安装 Remmina
+
+        Windows 使用内置的 mstsc.exe
+
 VNC 协议
+
+    VNC 服务器端软件
+
+        Linux 内置支持
+
+        Windows 安装 TigerVnc 软件的服务端，参见章节 [VNC]
 
     VNC 客户端软件
 
@@ -9998,11 +10000,30 @@ VNC 协议
 
         Windows 安装 TigerVnc 软件的客户端，参见章节 [VNC]
 
-    VNC 服务器端软件
+注意保护你的连接
 
-        Linux 内置支持
+    简单使用 ssh 隧道保护远程桌面双方的通信，参见章节 [Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)。
 
-        Windows 安装 TigerVnc 软件的服务端，参见章节 [VNC]
+Linux 下的客户端工具
+
+1、Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，同时支持 rdp 和 vnc 协议。
+
+2、推荐使用 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
+
+3、rdesktop 是实现 RDP 协议的 Linux 桌面客户端程序
+
+    rdesktop <ip>
+
+    -f 全屏
+    -r clipboard:PRIMARYCLIPBOARD 是实现剪切板共享，也就是物理机复制虚拟机粘贴。
+    -r disk:mydisk=/device 实现文件夹共享，mydisk是名字，可以随便取，/device是物理机上用于共享的文件夹
+    ip ： 虚拟机的IP
+
+    rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
+
+    按 `ctrl + alt +回车` 退出或进入全屏模式。
+
+因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
 
 ##### 使用 Remmina
 
@@ -10140,28 +10161,7 @@ xrdp 安装后要先做几个设置：
 
     一旦登录，你将看到默认的桌面环境，根据你操作系统的设置是 Gnome 或 Xfce、i3 等。
 
-客户端工具
-
-    Windows 使用 mstsc 即可
-
-    Linux 下推荐使用 Remmina，或 Gnome 自带软件名为 “连接 connections”，二者支持 VNC 和 RDP 等多种协议。
-
-    rdesktop 是实现 RDP 协议的 Linux 桌面客户端程序
-
-        rdesktop <ip>
-
-        -f 全屏
-        -r clipboard:PRIMARYCLIPBOARD 是实现剪切板共享，也就是物理机复制虚拟机粘贴。
-        -r disk:mydisk=/device 实现文件夹共享，mydisk是名字，可以随便取，/device是物理机上用于共享的文件夹
-        ip ： 虚拟机的IP
-
-        rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
-
-    按 `ctrl + alt +回车` 退出或进入全屏模式。
-
-简单使用 ssh 隧道保护 xrdp 通信，参见章节 [Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)。
-
-因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
+客户端工具参见章节 [使用第三方远程桌面软件]。
 
 ##### 后端依赖 xvnc/xorgxrdp
 
