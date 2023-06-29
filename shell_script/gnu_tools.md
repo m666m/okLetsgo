@@ -9916,19 +9916,19 @@ VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
 如果需要多用户使用，主机屏幕不显示远程连接者的操作，需要安装第三方 vnc 或 rdp 软件，见章节 [使用第三方远程桌面软件]。
 
-Gnome 桌面同时支持 X11 和 Wayland 两种方式，原 Xorg 桌面使用 VNC 协议
+Gnome 桌面同时支持 X11 和 Wayland 两种方式
 
     在 X11 会话中，它使用 vino 组件。
 
     在 Wayland 会话中，它使用 gnome-remote-desktop 组件。
 
-目前 Gnome 桌面不再使用 VNC 协议，改为 RDP 协议了
+原 Xorg 桌面使用 VNC 协议，目前 Gnome 桌面默认改为 RDP 协议了，但也提供 VNC 协议的支持
 
     https://discussion.fedoraproject.org/t/how-to-share-fedora-36-gnome-desktop-with-another-machine-running-linux/76182
 
     https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353?replies_to_post_number=12
 
-服务端设置：
+> 服务端
 
 默认情况下，Gnome 中共享计算机屏幕的功能是关闭的。
 
@@ -9942,9 +9942,9 @@ Gnome 桌面同时支持 X11 和 Wayland 两种方式，原 Xorg 桌面使用 VN
 
     需要设置专门的用户名和密码，不是使用你当前登录的用户
 
-客户端
+> 客户端
 
-是一台连接到由服务器提供的服务（或内容）的计算机，使用 vnc 或 rdp 客户端。
+使用支持 rdp 或 vnc 协议的客户端软件。
 
 Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，同时支持 rdp 和 vnc 协议。
 
@@ -9980,13 +9980,13 @@ RDP 协议
 
     RDP 客户端软件
 
-        Linux 下使用内置的 gnome-connections，或安装 Remmina
+        Linux 使用内置的 gnome-connections，或安装 Remmina
 
-        Windows 下使用内置的 mstsc.exe
+        Windows 使用内置的 mstsc.exe
 
     RDP 服务器端软件
 
-        Linux 下安装 xrdp
+        Linux 安装 xrdp，参见章节 [xrdp]
 
         Windows 内置支持
 
@@ -9994,15 +9994,15 @@ VNC 协议
 
     VNC 客户端软件
 
-        Linux 下使用内置的 gnome-connections，或安装 Remmina
+        Linux 使用内置的 gnome-connections，或安装 Remmina
 
-        Windows 下安装 TigerVnc 软件的客户端
+        Windows 安装 TigerVnc 软件的客户端，参见章节 [VNC]
 
     VNC 服务器端软件
 
         Linux 内置支持
 
-        Windows 下安装 TigerVnc 软件的服务端
+        Windows 安装 TigerVnc 软件的服务端，参见章节 [VNC]
 
 ##### 使用 Remmina
 
