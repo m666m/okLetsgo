@@ -8853,15 +8853,17 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         Removable drive menu    在任务栏给 usb 设备添加菜单方便访问，不然只能在文件管理器操作
 
+        Dash to Panel           像 Windows 一样的任务栏，这样就不需要 Application Menu 了
+
         Clipboard Indicator     清理你的剪贴板
 
         Show Desktop Button     增加显示桌面按钮
 
-        Dash to Panel           像 Windows 一样的任务栏，这样就不需要 Application Menu 了
+        Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸
 
         quake-mode              设置热键快捷，用 drop down 方式调出你的程序，我设置的 alt+enter 调出 terminal
 
-        Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸
+        Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
 
         User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开
 
