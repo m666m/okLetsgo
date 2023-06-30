@@ -8849,15 +8849,17 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
     推荐安装的第三方组件：
 
-        Dash to dock            类似苹果的浮动任务栏，竞品 Dash2Dock Lite 动画效果响应更敏捷
+        Dash to Dock            类似苹果的浮动任务栏，竞品 Dash2Dock Lite 动画效果响应更敏捷
 
-        Removable drive menu    给 usb 设备添加菜单方便弹出
+        Removable drive menu    在任务栏给 usb 设备添加菜单方便访问，不然只能在文件管理器操作
 
         Clipboard Indicator     清理你的剪贴板
 
         Show Desktop Button     增加显示桌面按钮
 
-        Dash to Panel           像 Windows 一样的任务栏
+        Dash to Panel           像 Windows 一样的任务栏，这样就不需要 Application Menu 了
+
+        quake-mode              设置热键快捷，用 drop down 方式调出你的程序，我设置的 alt+enter 调出 terminal
 
         User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开
 
