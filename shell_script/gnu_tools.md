@@ -8865,13 +8865,15 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开
 
-            搜一下 Gnome Shell Themes 类别，你的 Gnome 桌面就大变样了，不一样的感觉
+            Gnome 主题乐园，在这里搜一下 Gnome Shell Themes 类别，你的 Gnome 桌面就大变样了
 
-                Gnome 主题乐园 https://www.gnome-look.org/p/1275087/
+                https://www.gnome-look.org/
 
-            创·战纪 风格的东京夜
+                https://www.pling.com/
 
-                https://www.gnome-look.org/p/1681470
+                创·战纪 风格的东京夜
+
+                    https://www.gnome-look.org/p/1681470
 
             如何使用主题：
 

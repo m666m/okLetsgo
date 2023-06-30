@@ -1892,14 +1892,13 @@ Solarized Light（vscode 自带），这个是羊皮纸底色，但是语法高�
     风格来源
         https://disneyworld.disney.go.com/attractions/magic-kingdom/tron-lightcycle-run/
 
-
     Tron Dark Themes 有蓝、黄、橙三种配色，酷
         Vaporizer.tron-theme
 
         TronLight Theme 语法文件好，只是蓝色的，不刺眼
             gerane.Theme-TronLight
 
-        Tron Legacy 语法文件好，蓝色加红橙
+        Tron Legacy 语法文件好，蓝色配红橙
             gerane.Theme-TronLegacy
 
     我安装了 TronLight Theme，根据 Tron Dark Themes 的边框颜色进行了结合
