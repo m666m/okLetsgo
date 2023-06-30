@@ -8861,6 +8861,8 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         quake-mode              设置热键快捷，用 drop down 方式调出你的程序，我设置的 alt+enter 调出 terminal
 
+        Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸
+
         User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开
 
             搜一下 Gnome Shell Themes 类别，你的 Gnome 桌面就大变样了，不一样的感觉
