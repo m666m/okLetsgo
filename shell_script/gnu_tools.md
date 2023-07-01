@@ -8851,6 +8851,8 @@ Gnome:
 
     临时离开电脑，用 win+l 锁屏，跟 Windows 相同
 
+    按 Alt+F2 并输入 r 重新启动 GNOME Shell。
+
 #### 使用 gnome 扩展
 
 大量的功能等待你的定制
