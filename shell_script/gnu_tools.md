@@ -8314,6 +8314,8 @@ stress-ng 压测 cpu 的著名工具
 
 lm-sensors 查看计算机传感器的著名工具
 
+    https://wiki.archlinux.org/title/Fan_speed_control
+
     $ sudo apt install lm-sensors
 
     安装后运行 `sensor-detect` 来检测传感器
@@ -9241,7 +9243,7 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
     Gamescope - Gamescope 是一款微合成器，提供一个带有独立输入，分辨率和刷新率的沙盒 Xwayland 桌面。
 
-    Sway - Sway 是平铺 Wayland 合成器，替代X11 下 i3 窗口管理器（sway明确说不支持英伟达显卡）。
+    Sway - Sway 是平铺 Wayland 合成器，替代 X11 下 i3 窗口管理器（sway明确说不支持英伟达显卡）。
 
     Xcompmgr - Xcompmgr 是一个简单的合成管理器，能够渲染下拉阴影，使用 transset 工具的话，还可以实现简单的窗口透明。
 

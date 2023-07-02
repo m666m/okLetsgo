@@ -1355,6 +1355,22 @@ QR码生成与识别
 
 ### 安装 Google Chrome 浏览器插件
 
+国内可用的 Chrome 扩展下载网站
+
+    https://www.crx4chrome.com
+
+    离线安装 Chrome 扩展程序的方法
+
+    最新版的 Chrome 已经不支持将 CRX 扩展文件拖入浏览器直接安装了。
+
+    点击“下载”，下载格式为 zip 压缩包，解压后可以得到 CRX 离线安装包。
+
+    下载好 CRX 离线安装包后，我们需要先把文件的后缀名由 .crx 修改为 .zip，然后解压到文件夹中。
+
+    打开 Chrome，菜单 → 更多工具 → 扩展程序，进入扩展管理页面。
+
+    打开开发者模式 → 加载已解压的扩展程序 → 选择刚刚解压的文件夹，
+
 改善 google 搜索质量，过滤某些国家
 
     打开 Chrome 的 偏好设置 - 搜索引擎，选择管理搜索引擎：
@@ -1370,9 +1386,19 @@ QR码生成与识别
 
     导航到搜索语言设置，将 Google 产品的语言设置为 English，将显示搜索结果的语言设置为：English, 한국어, 中文 (简体), 中文 (繁體), 日本語
 
+uBlock Origin
+
+    chrome://extensions/?id=cjpalhdlnbpafiamejdnhcphjbkeiagm
+
+    https://github.com/gorhill/uBlock/releases
+
+读取网站数据权限：在所有网站上
+
 Aria2 for Chrome
 
     chrome://extensions/?id=mpkodccbngfoacfalldjimigbofkhgjn
+
+    https://github.com/alexhua/Aria2-Explorer
 
 配合开源的aria2的下载程序 [Motrix](https://github.com/agalwood/Motrix/)，选项 `Aria2-RPC-Server`，端口统一16800，设置相同的 api key，监听地址 <http://localhost:16800/jsonrpcAria2-RPC-Server>。
 
@@ -1408,13 +1434,7 @@ APK Downloader
 
 读取网站数据权限：无
 
-uBlock Origin
-
-    chrome://extensions/?id=cjpalhdlnbpafiamejdnhcphjbkeiagm
-
-读取网站数据权限：在所有网站上
-
-+ uBlacklist
+uBlacklist
 
     自从谷歌退出中国市场后，其搜索结果质量日渐下降。壹读、每日头条、热备资讯、兰州养生网、代码日志等网站，多为复制抄袭、机器翻译的垃圾内容网站，在谷歌搜索中反而占据前排位置。
 
