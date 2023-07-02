@@ -8839,6 +8839,7 @@ Gnome:
     gnome 桌面软件手册 https://help.gnome.org/users/
 
     GNOME-4X 入坑指南 https://zhuanlan.zhihu.com/p/545083349
+                    https://jedsek.xyz/posts/desktop-beautify/gnome
 
     GNOME Linux — 一场彻底的灾难 https://zhuanlan.zhihu.com/p/490505981
 
@@ -8896,7 +8897,7 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸
 
-        quake-mode              设置热键快捷，用 drop down 方式调出你的程序，我设置的 alt+enter 调出 terminal
+        quake-mode              设置热键快捷，用 drop down 方式调出你的程序，所有工作区共享该程序，一般设置热键 alt+enter 调出 terminal
 
         Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
 
