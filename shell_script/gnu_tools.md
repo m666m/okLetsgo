@@ -8947,6 +8947,12 @@ GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “T
 
     选择任务栏主题，参见前面的 “User Themes”
 
+命令行方式进行管理
+
+    dconf
+
+    gsettings
+
 ### 使用 KDE 桌面
 
 KDE 因为多年保持桌面环境的稳定不变，所以应用软件的丰富程度比 GNOME 多太多了。
@@ -9250,6 +9256,15 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
         compizconfig设置 https://blog.csdn.net/ysynhtt/article/details/44948989
 
         使用compiz https://blog.csdn.net/kewen_123/article/details/115871744
+
+    Hyprland: 一个基于 wlroots 的动态平铺 Wayland 合成器
+
+        https://wiki.hyprland.org/Getting-Started/Master-Tutorial/
+
+        https://www.bilibili.com/read/cv22707313/
+
+        不使用 wayland 的 Hypr --- 使用 Xorg 的窗口管理器
+            https://github.com/vaxerski/Hypr
 
 叠加式窗口管理器：
 
