@@ -8300,14 +8300,23 @@ dd 可用于做 i/o 速率测试：
 
 如果要防止硬盘缓存优化，写入量要加大，比如 1 GB 的文件写入速率更客观 bs=64k count=16k
 
-有个现成的工具测试 cpu
+s-tui 整合 stress-ng 的测试工具，更方便查看实时 cpu 占用情况
 
-    # sudo apt install stress-ng
-    stress-ng -c 2 --cpu-method pi --timeout 60
-    stress-ng -i 1 --timeout 60
-    stress-ng -m 1 --timeout 60
+    $ sudo apt install s-tui -y
+    $ s-tui
 
-下面是个简单的脚本用于 cpu 加热，入参是cpu的核心数
+    stress-ng 压测 cpu 的著名工具
+
+        # sudo apt install stress-ng
+        stress-ng -c 2 --cpu-method pi --timeout 60
+        stress-ng -i 1 --timeout 60
+        stress-ng -m 1 --timeout 60
+
+lm-sensors 查看计算机传感器的著名工具
+
+    sudo apt install lm-sensors
+
+简单的脚本用于 cpu 加热，入参是cpu的核心数
 
 ```shell
 
@@ -8890,6 +8899,8 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
         quake-mode              设置热键快捷，用 drop down 方式调出你的程序，我设置的 alt+enter 调出 terminal
 
         Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
+
+        Vitals、Freon            在任务栏显示你的cpu、内存使用情况
 
         User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开
 
