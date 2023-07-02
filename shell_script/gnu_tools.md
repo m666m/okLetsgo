@@ -8305,21 +8305,21 @@ s-tui 整合 stress-ng 的测试工具，更方便查看实时 cpu 占用情况
     $ sudo apt install s-tui -y
     $ s-tui
 
-    stress-ng 压测 cpu 的著名工具
+stress-ng 压测 cpu 的著名工具
 
-        # sudo apt install stress-ng
-        stress-ng -c 2 --cpu-method pi --timeout 60
-        stress-ng -i 1 --timeout 60
-        stress-ng -m 1 --timeout 60
+    # sudo apt install stress-ng
+    stress-ng -c 2 --cpu-method pi --timeout 60
+    stress-ng -i 1 --timeout 60
+    stress-ng -m 1 --timeout 60
 
 lm-sensors 查看计算机传感器的著名工具
 
-    sudo apt install lm-sensors
+    $ sudo apt install lm-sensors
 
-简单的脚本用于 cpu 加热，入参是cpu的核心数
+    安装后运行 `sensor-detect` 来检测传感器
 
 ```shell
-
+# 简单的脚本用于 cpu 加热，入参是cpu的核心数
 #!/bin/bash
 # Destription: testing cpu usage performance
 # Example    : sh cpu_usage.sh 12
