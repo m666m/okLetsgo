@@ -2404,9 +2404,15 @@ NAT 模式：
 
 开启了 Hyper-V 可能会影响待机功能，进而使笔记本电脑待机时间缩短，参见章节 [设备不是 InstantGo]。
 
-#### TODO:远程桌面显卡加速
+#### 虚拟机启用显卡加速
 
-    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/deploy/deploy-graphics-devices-using-remotefx-vgpu#enable-remotefx-vgpu
+    https://zhuanlan.zhihu.com/p/59086305
+
+RemoteFX vGPU 被 替换为 DDA 功能了，只支持客户机独占显卡，且主机不能休眠或关机自动保存虚拟机状态
+
+    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/deploy/deploying-graphics-devices-using-dda
+
+目前看是企业级应用优先，在 Windows Sever 上才好部署，忙着收费 AI 计算呢。
 
 ### docker (Hyper-V)
 
