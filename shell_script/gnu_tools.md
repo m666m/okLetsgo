@@ -8948,13 +8948,13 @@ GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “T
 
     sudo apt install gnome-shell-extensions
 
-安装 Tweaks 后在 “Show Apps” 里找它打开即可，一般要调整
+    安装 Tweaks 后在 “Show Apps” 里找它打开即可，一般要调整
 
-    center new window   新窗口居中打开
+        center new window   新窗口居中打开
 
-    勾选添加最大化最小化按钮
+        勾选添加最大化最小化按钮
 
-    选择任务栏主题，参见前面的 “User Themes”
+        选择任务栏主题，参见前面的 “User Themes”
 
 命令行方式进行管理
 
