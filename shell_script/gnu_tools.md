@@ -9000,12 +9000,12 @@ Linux 操作系统的基本目录结构参见章节 [Linux 目录和分区](shel
 
 XDG 基本目录规范基于以下概念：
 
-    有一个用于写入特定用户数据文件的基本目录               $XDG_DATA_HOME
-    有一个用于写入特定用户的配置文件基本目录               $XDG_CONFIG_HOME
-    有一组首选的基本数据目录                            $XDG_DATA_DIRS
-    有一组首选的基本配置目录                            $XDG_CONFIG_DIRS
-    有一个用于写入用户特定的非必要（缓存）数据的基本目录。    $XDG_CACHE_HOME
-    有一个用户放置特定于用户的运行时文件和其他文件对象。      $XDG_RUNTIME_DIR
+    $XDG_DATA_HOME      用于写入特定用户数据文件的基本目录
+    $XDG_CONFIG_HOME    用于写入特定用户的配置文件基本目录
+    $XDG_DATA_DIRS      首选的基本数据目录
+    $XDG_CONFIG_DIRS    首选的基本配置目录
+    $XDG_CACHE_HOME     用于写入用户特定的非必要（缓存）数据的基本目录
+    $XDG_RUNTIME_DIR    用户放置特定于用户的运行时文件和其他文件对象
 
 环境变量
 
