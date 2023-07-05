@@ -8899,9 +8899,16 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸
 
+            https://github.com/neffo/bing-wallpaper-gnome-extension
+                https://github.com/utkarshgpta/bing-desktop-wallpaper-changer
+
+        NASA APOD               自动从 NASA 网站下载它的漂亮图片作为你的壁纸
+
+            https://github.com/Elinvention/gnome-shell-extension-nasa-apod
+
         quake-mode              设置热键快捷，用 drop down 方式调出你的程序，所有工作区共享该程序，一般设置热键 alt+enter 调出 terminal
 
-        Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
+        Coverflow Alt-Tab       把 gnome 默认的切换窗口列表的方式改为像 Windows 的 win + tab 形式的立体式切换窗口
 
         Vitals、Freon            在任务栏显示你的cpu、内存使用情况
 

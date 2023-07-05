@@ -1464,9 +1464,9 @@ uBlacklist
 
         https://google.com/*
 
-### 定制自己的主题
+### 定制 Windows 10+ 的主题
 
-这个主题好像都是微软签名的，不需要安装破解
+这个网站的主题好像都是微软签名的，不需要安装破解
 
     创·战纪
     https://expothemes.com/themes/tron-legacy-windows-theme
@@ -1474,11 +1474,11 @@ uBlacklist
         风格来源
         https://disneyworld.disney.go.com/attractions/magic-kingdom/tron-lightcycle-run/
 
-关于自定义主题的说明
+关于第三方自定义主题的说明
 
     https://github.com/niivu/Windows-11-themes
 
-先安装软件 去除 Windows 对第三方主题的限制
+先安装软件去除 Windows 对第三方主题的限制
 
     UltraUXThemePatcher 它修改你的系统文件，使第三方的主题可用。
 
