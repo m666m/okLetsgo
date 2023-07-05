@@ -2167,8 +2167,6 @@ NOTE：ssd 硬盘不要开启厂商自带的硬件加密功能，这样 Bitlocke
 
 如何开启虚拟化功能参见章节 [选择开启虚拟化功能]。
 
-虚拟机技术详见章节 [虚拟机技术](init_a_server.md think)。
-
 WSL2 内的 container 是 Linux 提供的，不算 Windows 的容器。Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-V 隔离，process 只在 server 版提供 <https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/hyperv-container>。
 
 Windows 7 在 2023 年还提供虚拟机使用的版本
@@ -2406,7 +2404,7 @@ NAT 模式：
 
 开启了 Hyper-V 可能会影响待机功能，进而使笔记本电脑待机时间缩短，参见章节 [设备不是 InstantGo]。
 
-#### 远程桌面显卡加速
+#### TODO:远程桌面显卡加速
 
     https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/deploy/deploy-graphics-devices-using-remotefx-vgpu#enable-remotefx-vgpu
 
