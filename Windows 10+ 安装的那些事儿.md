@@ -2406,6 +2406,10 @@ NAT 模式：
 
 开启了 Hyper-V 可能会影响待机功能，进而使笔记本电脑待机时间缩短，参见章节 [设备不是 InstantGo]。
 
+#### 远程桌面显卡加速
+
+    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/deploy/deploy-graphics-devices-using-remotefx-vgpu#enable-remotefx-vgpu
+
 ### docker (Hyper-V)
 
 Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7 上的 docker 是安装了 virtual box 虚拟机。

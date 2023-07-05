@@ -8912,7 +8912,9 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         quake-mode              设置热键快捷，用 drop down 方式调出你的程序，所有工作区共享该程序，一般设置热键 alt+enter 调出 terminal
 
-        Coverflow Alt-Tab       把 gnome 默认的切换窗口列表的方式改为像 Windows 的 win + tab 形式的立体式切换窗口
+        Auto Move Windows       把你常用的程序归类在指定桌面打开，适合开很多窗口的场景
+
+        Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
 
         Vitals、Freon            在任务栏显示你的cpu、内存使用情况
 
