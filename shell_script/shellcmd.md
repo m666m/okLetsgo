@@ -977,6 +977,7 @@ case $OS in
     OS='FreeBSD'
     alias ls='ls -G'
     ;;
+  # MSYS_NT
   'WindowsNT')
     OS='Windows'
     ;;

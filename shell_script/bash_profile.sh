@@ -205,7 +205,7 @@ fi
 
 if $(pgrep gnome-keyring >/dev/null 2>&1) ;then
 
-    # if [[ "$OSTYPE" =~ linux ]]; then
+    # if [[ $(uname) == 'Linux' ]]; then
 
     # GNOME 桌面环境，使用 GNOME 接管了全系统的密码和密钥，用 seahorse 进行管理
     # https://blog.csdn.net/asdfgh0077/article/details/104121479
@@ -213,7 +213,7 @@ if $(pgrep gnome-keyring >/dev/null 2>&1) ;then
     export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
     export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
-elif [[ $(uname) == 'WindowsNT' ]]; then
+elif  [[ "$OSTYPE" =~ msys ]]; then
 
     # Windows git bash(mintty)
     # 多会话复用 ssh-pageant，用它连接 putty 的 pagent.exe，稍带运行gpg钥匙圈更新
@@ -231,7 +231,6 @@ elif [[ $(uname) == 'WindowsNT' ]]; then
         echo ''
         echo "gpg 检查签名情况..."
         gpg --check-sigs
-
     fi
 
     echo ''
@@ -282,7 +281,6 @@ else
     fi
 
     unset agent_env
-
 fi
 
 ####################################################################

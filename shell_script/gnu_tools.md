@@ -3273,47 +3273,87 @@ export GPG_TTY=$(tty)
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
-# 多会话复用 ssh-agent
-#
-# 代码来源 git bash auto ssh-agent
-# https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
-# 来自章节 [多会话复用 ssh-agent 进程] <ssh okletsgo>
+# 多会话复用 ssh 密钥代理
 
-agent_env=~/.ssh/agent.env
+if $(pgrep gnome-keyring >/dev/null 2>&1) ;then
 
-agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
+    # if [[ $(uname) == 'Linux' ]]; then
 
-agent_start () {
-    (umask 077; ssh-agent >| "$agent_env")
-    source "$agent_env" >| /dev/null ; }
+    # GNOME 桌面环境，使用 GNOME 接管了全系统的密码和密钥，用 seahorse 进行管理
+    # https://blog.csdn.net/asdfgh0077/article/details/104121479
+    eval `gnome-keyring-daemon --start >/dev/null 2>&1`
+    export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
+    export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
-agent_load_env
+elif  [[ "$OSTYPE" =~ msys ]]; then
 
-# 加载 ssh-agent 需要用户手工输入密钥的保护密码
-# 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
-#
-# agent_run_state:
-#   0=agent running w/ key;
-#   1=agent w/o key;
-#   2=agent not running
-agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
+    # Windows git bash(mintty)
+    # 多会话复用 ssh-pageant，用它连接 putty 的 pagent.exe，稍带运行gpg钥匙圈更新
+    # 来自章节 [使ssh鉴权统一调用putty的pageant](ssh.md think)
 
-if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
-    # 开机后第一次打开bash会话
-    echo "启动 ssh-agent..."
-    agent_start
+    # 利用检查 ssh-pageant 进程是否存在，判断是否开机后第一次打开bash会话，则运行gpg钥匙圈更新
+    if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
+        echo ''
+        # echo "更新gpg钥匙圈需要点时间，请稍等..."
+        # gpg --refresh-keys
+
+        echo "gpg 更新 TrustDB，跳过 owner-trust 未定义的导入公钥..."
+        gpg --check-trustdb
+
+        echo ''
+        echo "gpg 检查签名情况..."
+        gpg --check-sigs
+    fi
 
     echo ''
-    echo "加载 ssh 密钥，请根据提示输入密钥的保护密码"
-    ssh-add
+    echo '用 ssh-pageant 连接 putty pageant，复用已加载的 ssh 密钥'
+    # ssh-pageant 使用以下参数来判断是否有已经运行的进程，不会多次运行自己
+    eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
+    ssh-add -l
 
-elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
-    # ssh-agent正在运行，但是没有加载过密钥
-    echo "加载 ssh 密钥，请根据提示输入密钥的保护密码"
-    ssh-add
+else
+
+    # Linux bash / Windows git bash(mintty)
+    # 多会话复用 ssh-agent
+    # 代码来源 git bash auto ssh-agent
+    # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
+    # 来自章节 [多会话复用 ssh-agent 进程] <ssh okletsgo>
+
+    agent_env=~/.ssh/agent.env
+
+    agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
+
+    agent_start () {
+        (umask 077; ssh-agent >| "$agent_env")
+        source "$agent_env" >| /dev/null ; }
+
+    agent_load_env
+
+    # 加载 ssh-agent 需要用户手工输入密钥的保护密码
+    # 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
+    #
+    # agent_run_state:
+    #   0=agent running w/ key;
+    #   1=agent w/o key;
+    #   2=agent not running
+    agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
+
+    if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
+        # 开机后第一次打开bash会话
+        echo && echo "启动 ssh-agent..."
+        agent_start
+
+        echo "加载 ssh 密钥，请根据提示输入密钥的保护密码"
+        ssh-add
+
+    elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
+        # ssh-agent正在运行，但是没有加载过密钥
+        echo "加载 ssh 密钥，请根据提示输入密钥的保护密码"
+        ssh-add
+    fi
+
+    unset agent_env
 fi
-
-unset agent_env
 
 ####################################################################
 # 加载插件或小工具
