@@ -202,16 +202,6 @@ Windows 10 在 2022 年后，已经比较完整的提供了对 Linux 的字符�
 
 目前已经可以支持命令行启动运行 Linux GUI 程序了，如： gvim、gedit 等，甚至支持 GPU 加速的 3D 程序。WSLg 其实是个部署了 X Server 的 Linux，添加了支持 Windows 远程桌面的 FreeRDP 服务，即作为 X-window 应用和 windows 窗口应用的桥梁存在。通过 Windows 远程桌面的接口实现了用户在 Windows 桌面直接使用 Linux GUI 程序： Windows 用户界面 <-> RDP <-> X Server <-> Linux GUI 程序。而且 WSLg 用到的其实是替代 X Window System 的 Wayland Compositor，就是 Wayland 官方给出的参考实现 Weston。这种类似于添加了个中间代理的解决方式，有利于完美适配各大 Linux 发行版和各种 Linux GUI 程序。
 
-X Window system
-
-    https://zhuanlan.zhihu.com/p/134325713
-
-    https://zhuanlan.zhihu.com/p/427637159
-
-    最著名的GUI客户端是 xterm，至今大多数字符终端模拟器的彩色文本方案支持的还是 xterm。
-
-    替代品 Wayland 体系见 https://zhuanlan.zhihu.com/p/503627248
-
 ## Windows字符终端
 
 终端概念参见章节 [Linux 字符终端]。
@@ -9147,6 +9137,10 @@ xdg-utils 从 utils 后缀我们可以知道这是一组工具，目的就是能
 
     https://www.zhihu.com/question/503270852
 
+    https://zhuanlan.zhihu.com/p/134325713
+
+    https://zhuanlan.zhihu.com/p/427637159
+
 X window 是一个技术体系
 
     又叫 X 窗口系统，最初起源于1984年，是为了解决类 unix 系统的图形显示问题而推出的显示接口。它使用 unix 套接字式的 c/s 模式，从而分离出了前端和后端两部分，天生就支持远程分布。
@@ -9174,6 +9168,8 @@ X window 是一个技术体系
     https://docs.freebsd.org/en/books/handbook/wayland/
 
     https://wiki.archlinux.org/title/Wayland
+
+    https://zhuanlan.zhihu.com/p/503627248
 
     用 Wayland 开启 Linux
         https://zhuanlan.zhihu.com/p/531205278
