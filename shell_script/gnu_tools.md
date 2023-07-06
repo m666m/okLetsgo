@@ -115,15 +115,17 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
     如果只是需要一个编译器的话，可以用MinGW64。
 
-    如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman (ArcLinux)作为包管理器。
+    如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了 cygwin、mingw64 以及 mingw32（不等于老版的那个MinGW），shell、git、多种环境的 gcc（适用于 cygwin 环境或原生 Windows），而且有 pacman(ArcLinux) 作为包管理器。
 
 #### WSL 环境实现跟 Windows 的交互
+
+Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发可以使用 WSL2。
 
     https://learn.microsoft.com/zh-cn/windows/wsl/about
 
     https://zhuanlan.zhihu.com/p/377263437
 
-Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发可以使用 WSL2。
+WSL 使用参见章节 [WSL 适用于 Linux 的 Windows 子系统](Windows 10+ 安装的那些事儿.md)。
 
 WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 Linux，但是实现了 Linux 程序可以在 Windows 上运行，但是有些功能如 GUI 实现的有限。可以理解成使用了 MingW/Cygwin 的中间模拟层思路，但不在编译时实现，而是 QEMU 这种运行时转码的实现思路。后来发现坑太大填不满，就搞了个新思路 WSL2
 
