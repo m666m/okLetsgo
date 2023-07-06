@@ -776,7 +776,7 @@ Fedora 的分区方案
             Filename            Type            Size    Used    Priority
             /dev/zram0         partition        102396  0       100
 
-## shell 脚本示例
+## 常用 shell 脚本代码片段
 
 目录 shell_script 下是写的不错的脚本示例
 
@@ -955,6 +955,41 @@ readonly IPV6_RESERVED_IPADDRS=(
 for private_addr in "${IPV6_RESERVED_IPADDRS[@]}" ; do $(ip6tables -t mangle -A VVTAB -d $private_addr -j RETURN); done
 
 #################################################
+
+# 判断当前操作系统环境
+
+case "$OSTYPE" in
+    solaris*) echo "SOLARIS" ;;
+    darwin*)  echo "OSX" ;;
+    linux*)   echo "LINUX" ;;
+    bsd*)     echo "BSD" ;;
+    msys*)    echo "WINDOWS" ;;
+    *)        echo "unknown: $OSTYPE" ;;
+esac
+
+OS="`uname`"
+case $OS in
+  'Linux')
+    OS='Linux'
+    alias ls='ls --color=auto'
+    ;;
+  'FreeBSD')
+    OS='FreeBSD'
+    alias ls='ls -G'
+    ;;
+  'WindowsNT')
+    OS='Windows'
+    ;;
+  'Darwin')
+    OS='Mac'
+    ;;
+  'SunOS')
+    OS='Solaris'
+    ;;
+  'AIX') ;;
+  *) ;;
+esac
+
 # case
 case "$platform" in
   'darwin arm64');;
