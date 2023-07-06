@@ -117,23 +117,29 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
     如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了cygwin、mingw64以及mingw32（不等于老版的那个MinGW），shell、git、多种环境的gcc（适用于cygwin环境或原生Windows），而且有pacman (ArcLinux)作为包管理器。
 
-#### WSL 适用于 Linux 的 Windows 子系统
+#### WSL 环境实现跟 Windows 的交互
+
+    https://learn.microsoft.com/zh-cn/windows/wsl/about
 
     https://zhuanlan.zhihu.com/p/377263437
 
 Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发可以使用 WSL2。
 
-WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 Linux，但是实现了 Linux 程序可以在 Windows 上运行，但是有些功能如 GUI 实现的有限。可以理解成使用了 MingW/Cygwin 的中间模拟层思路，但不在编译时实现，而是 QEMU 这种运行时转码的实现思路。 <https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility>。后来发现坑太大填不满，就搞了个新思路 WSL2。
+WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 Linux，但是实现了 Linux 程序可以在 Windows 上运行，但是有些功能如 GUI 实现的有限。可以理解成使用了 MingW/Cygwin 的中间模拟层思路，但不在编译时实现，而是 QEMU 这种运行时转码的实现思路。后来发现坑太大填不满，就搞了个新思路 WSL2
+
+    https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility
 
 WSL 2 在底层使用虚拟机（Hyper-V）同时运行 Linux 内核和 Windows 内核，并且把 Linux 完全集成到了 Windows 中，使用起来就像在 Windows 中直接运行 Linux 程序。
 
-##### 连接 WSL
+> 连接 WSL
 
 配置 WSL 环境
 
     https://github.com/hsab/WSL-config
 
-PowerShell 通过函数包装器，实现在 Windows 命令行使用 Linux 命令，实质是指向了 wsl 虚拟机去执行。<https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/>
+PowerShell 通过函数包装器，实现在 Windows 命令行使用 Linux 命令，实质是指向了 wsl 虚拟机去执行
+
+    https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/
 
 PowerShell 可以配置命令提示符等，参见章节 [PowerShell 7+ 命令提示符工具及美化]。
 
@@ -142,7 +148,7 @@ PowerShell 可以配置命令提示符等，参见章节 [PowerShell 7+ 命令�
     mintty 支持连接 WSL
 
         # https://github.com/mintty/mintty/wiki/Tips#supporting-linuxposix-subsystems
-        # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin/下安装了 wslbridge2
+        # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin 下安装了 wslbridge2
         mintty --WSL=Ubuntu
 
     独立的 WSLtty，调用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用 WSL 会话
@@ -153,15 +159,15 @@ PowerShell 可以配置命令提示符等，参见章节 [PowerShell 7+ 命令�
 
         https://github.com/antonioCoco/ConPtyShell
 
-##### Windows 10 对 Linux 的字符程序和 GUI 程序的支持
+#### Windows 10 本地化 Linux 编程接口
 
-Windows 10 在 2022 年后已经比较完整的对外提供了相应编程接口
+Windows 10 在 2022 年后，已经比较完整的提供了对 Linux 的字符程序和 GUI 程序的相应编程接口
 
     对 Linux 字符程序，通过 ConPty 接口支持 unix pty 应用
 
     对 Linux GUI 程序，通过 WSLg 接口支持 x-window 应用
 
-ConPty
+> ConPty
 
     https://zhuanlan.zhihu.com/p/102393122
 
@@ -173,7 +179,7 @@ ConPty
 
     https://www.zhihu.com/question/303307670
 
-基于 ConPTY 的终端，既能运行 POSIX 命令行程序，也能运行基于 Windows ConHost 的命令行程序。需要 Windows version >= 10 / 2019 1809 (build >= 10.0.17763)。
+基于 ConPTY 的终端，既能运行 POSIX 命令行程序，也能运行基于 Windows ConHost 的命令行程序，需要 Windows version >= 10 / 2019 1809 (build >= 10.0.17763)。
 
 目前支持 Conpty 接口的终端主要有
 
@@ -184,11 +190,13 @@ ConPty
     PowerShell 7+ 使用 conpty 接口运行 cmd 字符程序
 
     在 2022-10-28 MSYS2 mintty 支持使用 ConPty 接口了：
-    在 MSYS2 的配置文件 /etc/git-bash.config 中设置变量 `MSYS=enable_pcon`，或 mintty 配置文件 .minttyrc 中设置 `ConPTY=true` 即可。这样调用普通 cmd 字符程序，不再需要借助 winpty 去加载调用了 <https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs>。
+    在 MSYS2 的配置文件 /etc/git-bash.config 中设置变量 `MSYS=enable_pcon`，或 mintty 配置文件 .minttyrc 中设置 `ConPTY=true` 即可。这样调用普通 cmd 字符程序，不再需要借助 winpty 去加载调用了 https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs
 
-有个性能对比测试 <https://kichwacoders.com/2021/05/24/conpty-performance-in-eclipse-terminal/>
+有个性能对比测试
 
-WSLg
+    https://kichwacoders.com/2021/05/24/conpty-performance-in-eclipse-terminal
+
+> WSLg
 
     https://github.com/microsoft/wslg
 
@@ -198,11 +206,11 @@ X Window system
 
     https://zhuanlan.zhihu.com/p/134325713
 
-    https://zhuanlan.zhihu.com/p/427637159>
+    https://zhuanlan.zhihu.com/p/427637159
 
     最著名的GUI客户端是 xterm，至今大多数字符终端模拟器的彩色文本方案支持的还是 xterm。
 
-    替代品 Wayland 体系见 <https://zhuanlan.zhihu.com/p/503627248>。
+    替代品 Wayland 体系见 https://zhuanlan.zhihu.com/p/503627248
 
 ## Windows字符终端
 
