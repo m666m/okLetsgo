@@ -2436,10 +2436,11 @@ WSL2 的兼容性比 WSL1 好，仅 IO 性能不如 WSL1 快，见下面章节 [
 
 #### 默认使用 Ubuntu
 
+    https://docs.microsoft.com/Windows/wsl/install
+
 简单使用 Ubuntu 就一条命令
 
     # 安装 ubuntu，已经安装过了忽略这条
-    # 详见 <https://docs.microsoft.com/Windows/wsl/install>
     wsl --install   # -d Ubuntu 默认不需要打
 
 在 Windows 命令提示符或 PowerShell 中，可以在当前命令行中使用默认的 Linux 发行版，直接输入 bash 或 ubuntu 回车就可以了。
