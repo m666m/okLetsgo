@@ -207,9 +207,9 @@ if $(pgrep gnome-keyring >/dev/null 2>&1) ;then
 
     # if [[ $(uname) == 'Linux' ]]; then
 
-    # GNOME 桌面环境，使用 GNOME 接管了全系统的密码和密钥，用 seahorse 进行管理
+    # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
     # https://blog.csdn.net/asdfgh0077/article/details/104121479
-    eval `gnome-keyring-daemon --start >/dev/null 2>&1`
+    eval `gnome-keyring-daemon --start >/dev/null 2>&1`  # 不会多次运行自己
     export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
     export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
@@ -221,6 +221,8 @@ elif  [[ "$OSTYPE" =~ msys ]]; then
 
     # 利用检查 ssh-pageant 进程是否存在，判断是否开机后第一次打开bash会话，则运行gpg钥匙圈更新
     if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
+        # 开机后第一次打开bash会话
+
         echo ''
         # echo "更新gpg钥匙圈需要点时间，请稍等..."
         # gpg --refresh-keys
@@ -268,6 +270,18 @@ else
 
     if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
         # 开机后第一次打开bash会话
+
+        echo ''
+        # echo "更新gpg钥匙圈需要点时间，请稍等..."
+        # gpg --refresh-keys
+
+        echo "gpg 更新 TrustDB，跳过 owner-trust 未定义的导入公钥..."
+        gpg --check-trustdb
+
+        echo ''
+        echo "gpg 检查签名情况..."
+        gpg --check-sigs
+
         echo && echo "启动 ssh-agent..."
         agent_start
 
