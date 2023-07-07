@@ -211,7 +211,9 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 从制作安装u盘，到主板 BIOS 设置，都要进行设置
 
-    https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot
+    https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot
+
+    https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/secure-boot-landing
 
     嵌入式 CPU 安全启动的说明 https://www.zhihu.com/question/57346559/answer/2895463445
 
@@ -1507,7 +1509,7 @@ uBlacklist
 
 ## 备份和恢复选项
 
-详见 Windows 中的恢复选项 <https://support.microsoft.com/zh-cn/Windows/Windows-%E4%B8%AD%E7%9A%84%E6%81%A2%E5%A4%8D%E9%80%89%E9%A1%B9-31ce2444-7de3-818c-d626-e3b5a3024da5>
+    https://support.microsoft.com/en-us/windows/recovery-options-in-windows-31ce2444-7de3-818c-d626-e3b5a3024da5
 
 ### 备份
 
