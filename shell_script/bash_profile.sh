@@ -161,14 +161,6 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 ####################################################################
-# 如果遇到在 tmux 等多终端程序下，执行 gpg 弹不出密码提示框的情况
-# 执行此命令配置 gpg pinentry 使用当前的 tty，然后重新执行 gpg 命令即可
-export GPG_TTY=$(tty)
-# gpg-agent 代替 ssh-agent 的时候也会出现类似情况，开启如下语句即可：
-# echo "以当前终端 tty 连接 gpg-agent..."
-# gpg-connect-agent updatestartuptty /bye >/dev/null
-
-####################################################################
 # Windows git bash(mintty)
 # 在 mintty 下使用普通的 Windows 控制台程序
 # 如 mintty 使用 ConPty 接口则可以不需要这些 alias 使用 winpty 来调用了
@@ -186,6 +178,14 @@ if [[ $(git --version |grep -i Windows >/dev/null 2>&1;echo $?) = '0' ]] ;then
     # Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
     alias ping='winpty ping'
 fi
+
+####################################################################
+# 如果遇到在 tmux 等多终端程序下，执行 gpg 弹不出密码提示框的情况
+# 执行此命令配置 gpg pinentry 使用当前的 tty，然后重新执行 gpg 命令即可
+export GPG_TTY=$(tty)
+# gpg-agent 代替 ssh-agent 的时候也会出现类似情况，开启如下语句即可：
+# echo "以当前终端 tty 连接 gpg-agent..."
+# gpg-connect-agent updatestartuptty /bye >/dev/null
 
 #################################
 # Mac OS
@@ -303,11 +303,11 @@ alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Succ
 #
 # 效果示例：
 #
-#  ┌─[13:18:06 user@MY-PC:/usr/share/vim/vim82/autoload/dist]
-#  └──$ uname -a
+#  ╭─[13:18:18 user@MY-PC::~/yourproject](conda:p37) git:<?>master|MERGING
+#  ╰──$ uname -a
 #  MSYS_NT-10.0-19044 MY-PC 3.3.5-341.x86_64 2022-11-08 19:41 UTC x86_64 Msys
 #
-#  ┌─[13:18:18 user@MY-PC:/usr/share/vim/vim82/autoload/dist]
+#  ┌─[13:18:06 user@YOURhost:/usr]
 #  └──$
 
 # https://zhuanlan.zhihu.com/p/570148970
