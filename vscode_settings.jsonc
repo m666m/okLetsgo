@@ -271,7 +271,7 @@
     },
     //////////////////////////////////////////////////////////////////
     // 下面是插件设置
-    "extensions.autoUpdate": false,  // 如果有插件升级后出问题，阻止自动升级
+    "extensions.autoUpdate": true,  // 如果有插件经常升级后出问题，改为 flase 阻止自动升级
     // Trailing Spaces
     // "trailing-spaces.trimOnSave": true,
     "files.trimTrailingWhitespace": true,
