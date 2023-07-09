@@ -9934,7 +9934,20 @@ sddm
     Icon=google-chrome
     Type=Application
 
-二、利用 systemd 单元，不使用显示管理器，直接登录 xorg 桌面
+二、开机启动到命令行，直接调用显示管理器
+
+```bash
+# https://github.com/martinpitt/pitti-workstation-oci
+if [ "$(tty)" = "/dev/tty1" ]; then
+    export `gnome-keyring-daemon --start --components=ssh`
+    export BROWSER=firefox-wayland
+    export XDG_CURRENT_DESKTOP=sway
+    exec sway > $XDG_RUNTIME_DIR/sway.log 2>&1
+fi
+
+```
+
+三、利用 systemd 单元，不使用显示管理器，直接登录 xorg 桌面
 
     https://wiki.archlinux.org/title/Systemd/User#Automatic_login_into_Xorg_without_display_manager
 
