@@ -9768,6 +9768,20 @@ System-wide autostart directories:
 
 基于 wayland 的桌面环境基本都使用 systemd 进行管理了，见章节 [关闭桌面环境开机自启动]。
 
+#### 开机启动到命令行，直接启动显示管理器
+
+```bash
+
+# https://github.com/martinpitt/pitti-workstation-oci
+if [ "$(tty)" = "/dev/tty1" ]; then
+    export `gnome-keyring-daemon --start --components=ssh`
+    export BROWSER=firefox-wayland
+    export XDG_CURRENT_DESKTOP=sway
+    exec sway > $XDG_RUNTIME_DIR/sway.log 2>&1
+fi
+
+```
+
 #### systemd 关闭桌面环境开机自启动
 
 为了节约内存，可以设置成本地开机进入命令行模式，手工执行命令才进入桌面环境，或直接启动单独的图形化应用程序。
@@ -9916,7 +9930,7 @@ sddm
 
 直接编辑 grub 条目，在 'linux  ....' 行的末尾加 3 则等效于开机 init 3 进入命令行环境。
 
-##### systemd 命令行下直接启动图形化应用程序
+##### 命令行下不启动窗口管理器直接启动图形化应用程序
 
 可以在没有任何装饰、桌面或窗口管理的情况下启动应用程序
 
@@ -9926,28 +9940,17 @@ sddm
 
 设为桌面登录后，将立即启动设置的应用程序。当您关闭应用程序时，您将被带回登录管理器（与注销正常的桌面环境或窗口管理器相同），只需要编辑 /usr/share/xsessions/web-browser.desktop
 
-    [Desktop Entry]
-    Name=Web Browser
-    Comment=Use a web browser as your session
-    Exec=/usr/bin/google-chrome --auto-launch-at-startup
-    TryExec=/usr/bin/google-chrome --auto-launch-at-startup
-    Icon=google-chrome
-    Type=Application
-
-二、开机启动到命令行，直接调用显示管理器
-
-```bash
-# https://github.com/martinpitt/pitti-workstation-oci
-if [ "$(tty)" = "/dev/tty1" ]; then
-    export `gnome-keyring-daemon --start --components=ssh`
-    export BROWSER=firefox-wayland
-    export XDG_CURRENT_DESKTOP=sway
-    exec sway > $XDG_RUNTIME_DIR/sway.log 2>&1
-fi
-
+```ini
+[Desktop Entry]
+Name=Web Browser
+Comment=Use a web browser as your session
+Exec=/usr/bin/google-chrome --auto-launch-at-startup
+TryExec=/usr/bin/google-chrome --auto-launch-at-startup
+Icon=google-chrome
+Type=Application
 ```
 
-三、利用 systemd 单元，不使用显示管理器，直接登录 xorg 桌面
+二、利用 systemd 单元，不使用显示管理器，直接登录 xorg 桌面
 
     https://wiki.archlinux.org/title/Systemd/User#Automatic_login_into_Xorg_without_display_manager
 
