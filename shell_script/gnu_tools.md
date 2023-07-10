@@ -10209,6 +10209,7 @@ Linux 下的客户端工具
 
         共享文件夹: "host_dl,/home/user/Downloads;host_vd,/home/user/Videos;" 这样就实现了在远程服务器映射本地的两个文件夹，名为 host_dl 和 host_vd。共享文件夹应显示在远程计算机资源管理器的 other devices and drives（本地磁盘C:图标的下方），实质是映射的 Windows 网络邻居里的 \\tsclient\host_dl\ 目录，所以先在资源管理区里点击网络，提示开启网络发现时选择确定，这样才能确保映射成功。
 
+            目前 Windows 10 的安全策略对从 smb 共享文件夹执行文件有限制，所以如果要从共享文件夹安装程序，先拷贝到远程计算机的本地再执行该安装程序
 
     Advance:
 
