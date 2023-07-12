@@ -34,50 +34,51 @@ Python 之禅
 
 我们经常会遇见这样的场景：
 
-1、各个项目使用的python版本不相同
+1、各个项目使用的 python 版本不相同
 
-由于Python的解释器版本众多，各版本之间差异非常大。特别是python2和python3，互不兼容。
+由于 Python 的解释器版本众多，各版本之间差异非常大。特别是 python2 和 python3，互不兼容。
 
-有些项目可能用的python2.7，有些项目可能用的是python3.6，有些则使用的3.8等，但是它们却需要运行在同一个服务器环境中。（docker除外，docker容器可以隔离不同的项目环境。）
+有些项目可能用的 python2.7，有些项目可能用的是 python3.6，有些则使用的 python 3.8 等，但是它们却需要运行在同一个服务器中。（docker除外，docker容器可以隔离不同的项目环境）。
 
-2、系统依赖自带的解释器
+2、操作系统依赖自带的 python 解释器
 
-系统的一些服务组件一般也会依赖Python环境。不同的Linux发行版自带的Python也不同。如ubuntu16自带2.7和3.5版本, Centos7依赖python2.7。而系统很多组件都依赖自带的解释器，比如yum等，你不能轻易删除这个版本，一旦删除或者更改都可能造成系统出问题。
+操作系统的一些服务组件一般也会依赖 Python 环境。不同的 Linux 发行版自带的 Python 也不同。如 ubuntu16 自带 2.7 和 3.5 版本, Centos7 依赖 python2.7。你不能轻易删除这个版本，一旦删除或者更改都可能造成系统出问题，比如 yum/dnf 等操作系统的命令都是使用 python 进行解释的。
 
 3、依赖默认的解释器路径冲突
 
-比如Centos7系统自带的python是2.7，系统很多组件比如yum依赖的都是2.7这个版本，这些工具脚本开头使用的都是：#!/usr/bin/python。
+很多 python 脚本用python这一个引用，却没有使用python2、python3这样分开，这就很容易导致它们的一些python引用冲突。
 
-而一些新的使用python开发的服务组件，它们依赖python3.6以上的版本，但是它们一些代码开头也是这样的写法：#!/usr/bin/python。
+    比如 Centos7 系统自带的 python 是 2.7，系统很多组件比如 yum 依赖的都是 2.7 这个版本，这些工具脚本开头使用的都是：`#!/usr/bin/python`
 
-它们都是用python这一个引用，却没有使用python2、python3这样分开，这就很容易导致它们的一些python引用冲突。
+    而一些新的使用 python 开发的服务组件，它们依赖 python 3.6 以上的版本，但是它们一些代码开头也是这样的写法：`#!/usr/bin/python`
 
-对 Debian 11之前的发行版同时带有python 2 和 python 3，命令 `python` 默认是python 2，如果要使用python 3，则使用命令 `python3`：
+对 Debian 11之前的发行版同时带有 python 2 和 python 3，命令 `python` 默认是python 2，如果要使用 python 3，则使用命令 `python3`：
 
     python  指向 python2，.py代码文件开头写 #!/usr/bin/python
+
     python3 指向 python3，.py代码文件开头写 #!/usr/bin/python3
 
-开源系统各家的处理方式有差别，导致你使用软件时不一定能完整适配，所以一般安装使用发行版组件，尽量不自行下载安装。
+开源系统各家的处理方式有差别，导致你使用软件时不一定能完整适配，所以尽量安装使用发行版的软件包，这些都是测试过可以正常运行的，实在不行再从第三方下载安装。
 
 4、依赖冲突。（最常见）
 
-我们都知道python的软件包依赖经常是个很头疼的问题，经常因为这个问题导致到家在安装一些python环境或者服务组件时失败。
+    由于 Python 的依赖库管理是中心化的，而且大版本上的不兼容且长期并行，就出现了这么一个独特的话题
 
-而不同的python解释器版本，对软件包依赖库的管理也是个问题。
+我们都知道 python 的软件包依赖经常是个很头疼的问题，经常因为这个问题导致到家在安装一些 python 环境或者服务组件时失败。
 
-比如sqlalchemy这个包，有些项目使用的python2.7版本，它需要依赖这个库，有些项目使用的python3.6版本，它也需要依赖这个库，有些项目使用的python3.8版本，它同样也需要依赖这个库，
+而不同的 python 解释器版本，对软件包依赖库的管理也是个问题。
 
-但是头疼的是，这三者它们依赖的这个包版本还不一致。sqlalchemy从0.1-2.0有众多版本。
+比如 sqlalchemy 这个包，有些项目使用的 python2.7 版本，它需要依赖这个库，有些项目使用的 python3.6 版本，它也需要依赖这个库，有些项目使用的 python3.8 版本，它同样也需要依赖这个库，
 
-这时候如果你在系统上直接使用pip install sqlalchemy的话，它只能选择安装一个版本，但是这样其他两个项目是无法使用这个版本，就会出现依赖冲突的问题。
+但是头疼的是，这三者它们依赖的这个包版本还不一致。sqlalchemy 从 0.1-2.0 有众多版本。
 
-由于 Python 的依赖库管理是中心化的，而且大版本上的不兼容且长期并行，就出现了这么一个独特的话题。
+这时候如果你在系统上直接使用 `pip install sqlalchemy` 的话，它只能选择安装一个版本，但是这样其他两个项目是无法使用这个版本，就会出现依赖冲突的问题。
 
 常用的隔离方案比较多
 
-    venv是python3自带的，只能在3.3版本以后，2.x用不了，只能创建个虚拟环境，不能指定系统不存在的python环境版本，不能查看环境列表。
+    venv 是 python3 自带的，只能在 3.3 以后的版本使用，2.x 用不了。env 用于创建一个虚拟环境，与当前的操作系统的 pytyhon 环境隔离。但是它不能创建当前系统上不存在的 python 版本的虚拟环境，不能查看环境列表。
 
-    virtualenv 同时支持 python2 和 python3，可通过 pip 安装和更新，会自动查找当前操作系统内的不同python版本，为每个虚拟环境指定某版本的 python 解释器，可选择继承父环境的包。
+    virtualenv 同时支持 python2 和 python3，可通过 pip 安装和更新，会自动查找当前操作系统内的不同 python 版本，为每个虚拟环境指定某版本的 python 解释器，可选择继承父环境的包。virtualenv 也不能创建当前系统上不存在的 python 版本的虚拟环境。
 
     conda 虚拟环境是独立于操作系统解释器环境的，可以建立当前操作系统不存在的 python 版本，conda 可以安装编译版，所以可以安装一些工具软件，即使这些软件不是基于Python开发的。
 
@@ -95,45 +96,45 @@ Windows下推荐使用 cmd 命令行执行conda操作。
 
 ## pip
 
-pip不像conda/virtualenv一样，他不知道环境！pip install 就扔到 python 的基础环境下，后来弄了个 --user 扔当前用户的目录下，所以在conda/virtualenv下使用pip需要调整参数，参见章节[确认pip下载的包的保存位置]。
+pip 不像 conda/virtualenv 一样，他不知道环境！执行命令 `pip install` 就扔到 python 的基础环境下，后来弄了个 --user 扔当前用户的目录下，所以在 conda/virtualenv 下使用 pip 需要调整参数，参见章节 [确认pip下载的包的保存位置]。
 
-pip install 的各种问题 <https://www.cnblogs.com/feixiablog/p/8320602.html>。
+    https://www.cnblogs.com/feixiablog/p/8320602.html
 
-如果要在conda下使用pip，见下面章节[Anaconda环境中使用pip]。
+如果要在 conda 下使用 pip，见下面章节[Anaconda环境中使用pip]。
 
-Debian/Ubuntu 下默认安装python 2和3，pip命令是python2的pip, pip3命令才是python3的pip。不过使用命令python3 -m 执行包的方式时，用 pip ，如 `python3 -m pip install xxx`
+Debian/Ubuntu 下默认安装 python 2 以及 python 3，python 命令指向 python 2，python3 命令指向 python3。pip 命令是 python2 的 pip, pip3 命令才是 python3 的 pip。不过使用命令 python3 -m 执行包的方式时，用包名 pip ，如 `python3 -m pip install xxx`
 
     # 安装 pip3 给 python3 使用
     sudo apt install python3-pip
 
 ### 操作系统发行版的基础python环境不要变更
 
-仅在虚拟环境中使用pip
+仅在虚拟环境中使用 pip
 
     https://github.com/pypa/pip/issues/5599
         https://blog.csdn.net/cangye0504/article/details/104905616
 
-只用系统管理包去升级操作系统的pip，系统的包是发行版，自行升级pip或pip install各种包就会出现各种奇怪的问题。
+只用系统管理升级操作系统的包，确保一直是发行版，自行升级 pip 或 pip install 各种包经常会出现各种奇怪的问题。
 
-在操作系统发行版的基础环境里，不要更新pip `pip install --upgrade pip`
+    在操作系统发行版的基础环境里，不要更新pip `pip install --upgrade pip`
 
-如果实在需要升级pip
-
-    使用 virtualenv 等建立虚拟环境，在虚拟环境里可自由升级pip，执行 pip install 等
-
-如果一定要在操作系统发行版的基础环境里使用pip
-
-    # https://snarky.ca/why-you-should-use-python-m-pip/
-    优先使用`python3 -m pip install xxxx`， 不要用 `pip3 install`，因为你用`python -m pip`运行pip时环境是确定的。
-
-    不要根据pip的提示使用 sudo 执行 或 --user 参数，因为pip命令不像conda/virtualenv一样，他不知道环境。
-
-在操作系统发行版的基础环境中，即使某些工具可以用pip安装新版，也要优先安装系统发行版
+在操作系统发行版的基础环境中，即使某些工具可以用 pip 安装新版，也要优先安装系统发行版
 
     # 不要 pip3 install yapf
     sudo apt install yapf
 
-验证pip环境路径，在操作系统发行版的基础环境里也不要改动
+如果一定要在操作系统发行版的基础环境里使用 pip 安装各种包
+
+    # https://snarky.ca/why-you-should-use-python-m-pip/
+    优先使用`python3 -m pip install xxxx`， 不要用 `pip3 install`，因为你用`python -m pip`运行pip时环境是确定的，包名也是确定的。
+
+    不要根据 pip 的提示使用 sudo 执行 或 --user 参数，因为 pip 命令不像 conda/virtualenv一样，他不知道虚拟环境，会直接写入你的操作系统的基础环境，即使你已经切换到了 python 的虚拟环境中
+
+如果需要升级 pip，也是在你的虚拟环境里升级
+
+    使用 virtualenv 等建立虚拟环境，在虚拟环境里可自由升级pip，执行 pip install 等
+
+验证 pip 环境路径，在操作系统发行版的基础环境里也不要改动
 
     $ python -m site
     sys.path = [
@@ -553,6 +554,7 @@ python-xy 不再更新维护了，废弃
 -搜索计算机： visual studio code 或 conda
  或 终端运行：spyder
 
+
 ### Windows 安装 anaconda
 
 官方介绍 <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>
@@ -752,6 +754,42 @@ Anaconda 安装完毕后，默认的环境base是最新的一个python版本如p
     对 bash 环境，如果 conda 命令不在系统变量 PATH 中，可以手动执行 `eval "$('/c/ProgramData/Anaconda3/Scripts/conda.exe' 'shell.bash' 'hook')"`，然后即可执行 `conda activate`。
 
     对 powershell 环境，如果 conda 命令不在系统变量 PATH 中，需要手动先执行 `C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1`，然后即可执行 `conda activate` 。
+
+填坑：运行 conda init bash 出现错误
+
+排错
+
+    $ conda init -d
+    modified      /usr/condabin/conda
+    modified      /usr/bin/conda
+    modified      /usr/bin/conda-env
+    modified      /usr/bin/activate
+    modified      /usr/bin/deactivate
+    modified      /usr/etc/profile.d/conda.sh
+    modified      /usr/etc/fish/conf.d/conda.fish
+    modified      /usr/shell/condabin/Conda.psm1
+    modified      /usr/shell/condabin/conda-hook.ps1
+    needs sudo    /usr/lib/python3.11/site-packages/xontrib/conda.xsh
+    modified      /usr/etc/profile.d/conda.csh
+    no change     /home/uu/.bashrc
+
+发现写入一个不存在的目录，不知道 conda 的脚本弄啥咧，我不用 xonsh 啊。不管了，给它装上，这样就有这个包了
+
+    $ sudo dnf install xonsh
+
+其它修改的文件都在 /usr/lib/python3.11/site-packages/conda/shell/condabin 下面。
+
+查看 conda-hook.ps1，发现有 ChangePs1 设置。回忆起，修改过~/.condarc文件，添加了提示符相关的设置。
+
+    https://zhuanlan.zhihu.com/p/584509576
+
+    注释掉 ~/.condarc 中的 changeps1 行
+
+根据提示，加 sudo 运行
+
+    sudo conda init bash
+
+    然后再改回去即可。
 
 ### Windows 下脚本化使用 conda 环境
 
