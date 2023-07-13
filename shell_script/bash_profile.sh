@@ -393,7 +393,6 @@ function PS1git-branch-name {
         #   来源 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
         #   如果自定义命令提示符，可以在PS1变量拼接中调用函数 $(__git_ps1 "(%s)") ，
         #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
-        #   或可考虑换用 https://github.com/magicmonty/bash-git-prompt
 
         # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，佛了
         _pp_git_pt=$(>/dev/null; __git_ps1 '%s' 2>/dev/null)
