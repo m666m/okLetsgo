@@ -9242,7 +9242,7 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
 ### 显示管理器（DisplayManager）设置登录后的桌面环境
 
-显示管理器负责显示图形化的用户登录页面，在输入用户名和密码后处理用户身份验证，立即启动显示服务器并加载桌面环境
+显示管理器又叫做 “登陆管理器”，如 gdm、sddm、lightdm 等，其作用仅仅只是在你开机后，让你输入用户名和密码处理用户身份验证登陆，然后引导进入桌面，至此任务完成，之后就交给桌面环境了。你可以不需要 DM，直接通过 startx脚本命令进入桌面。
 
     https://wiki.archlinux.org/title/Display_manager
         https://wiki.archlinux.org/title/GDM
@@ -9367,13 +9367,15 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
         awesome 窗口管理器使用备忘 https://blog.kelu.org/tech/2021/12/29/linux-awesome-wm.html
 
-    dwm - X 动态窗口管理器。它以平铺，单片镜以及浮动布局的方式管理窗口。
+    dwm - X 动态窗口管理器。它以平铺，单片镜以及浮动布局的方式管理窗口
+
+        https://zhuanlan.zhihu.com/p/183861786
 
     spectrwm - 小型动态平铺 X11 窗口管理器。主要受 xmonad 和 dwm 启发。
 
     xmonad - 动态平铺 X11 窗口管理器，用 Haskell 编写和配置。
 
-#### i3 wm
+#### i3
 
 通过键盘操作的 i3 平铺窗口管理器使用 Linux 桌面，当您开始使用 i3 时，您需要记住其中的一些快捷方式才能使用。
 
