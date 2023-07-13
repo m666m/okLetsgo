@@ -399,6 +399,7 @@ function PS1git-branch-name {
         if [ "$?" = "0" ]; then
             printf "%s" $_pp_git_pt
             unset _pp_git_pt
+            # 如果是有效的 git 信息，这里就直接打印并退出函数
             return
         else
             unset _pp_git_pt
@@ -412,26 +413,26 @@ function PS1git-branch-name {
     _pp_branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
     local exitcode="$?"
 
-    # 优先显示当前 head 指向的分支名
-    if [ $exitcode -eq 0 ]; then
-        printf "%s" $_pp_branch_name
-        unset _pp_branch_name
-        return
-    fi
-    unset _pp_branch_name
-
-    # 如果是 detached HEAD，则显示标签名或 commit id
-    if [ $exitcode -eq 1 ]; then
-
-        local headhash="$(git rev-parse HEAD)"
-        local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
-
-        # 有标签名就显示标签否则显示 commit id
-        [[ -n $tagname ]] && printf "%s" "@${tagname}" || printf "%s" "#${headhash}"
-
-    fi
-
-    # exitcode 是其它数字的，视为不在 git 环境中，不做任何打印输出
+    case "$exitcode" in
+        '0')
+            # 优先显示当前 head 指向的分支名
+            printf "%s" $_pp_branch_name
+            unset _pp_branch_name
+            ;;
+        '1')
+            # 如果是 detached HEAD，则显示标签名或 commit id
+            local headhash="$(git rev-parse HEAD)"
+            local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
+            # 有标签名就显示标签否则显示 commit id
+            [[ -n $tagname ]] && printf "%s" "@${tagname}" || printf "%s" "#${headhash}"
+            unset _pp_branch_name
+            ;;
+        *)
+            # exitcode 是其它数字的，视为不在 git 环境中，不做任何打印输出
+            unset _pp_branch_name
+            return
+            ;;
+    esac
 }
 
 function PS1git-branch-prompt {
