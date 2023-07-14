@@ -471,6 +471,28 @@ function PS1_is_in_toolbox {
 }
 
 #################################
+# 设置命令行提示符 PS1
+
+# 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 python环境 git分支及状态
+PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cmagenta\$(PS1_is_in_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
+
+#################################
+# Windows git bash(mintty)
+# 设置命令行提示符 PS1
+# 在上面的基础上修改了个兼容性函数，因为 目前 git bash(mintty) 有点bug：
+#   在\$(函数名)后直接用换行\n就冲突
+# 规避办法
+#   法1. 把换行\n放在引用函数前面
+#   法2. 重新拼接成新样式避开这个bug: PS1="\n$PS1Cblue┌──── $PS1Cwhite\t ""$PS1""$PS1Cblue───┘ $PS1Cnormal"
+#   法3. 完美的解决办法：新增子函数 PS1git-bash-new-line 实现跟上面完全一致的显示效果。
+function PS1git-bash-new-line {
+    printf "\n╰"
+}
+
+# git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
+PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
+
+#################################
 # Linux bash - raspberry pi os (debian)
 # raspberry pi 的状态检测
 # 告警条件：
@@ -510,27 +532,5 @@ function PS1raspi-warning-prompt {
     fi
 }
 
-#################################
-# 设置命令行提示符 PS1
-
-# 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 python环境 git分支及状态
-PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cmagenta\$(PS1_is_in_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
-
 # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 树莓派温度告警 git分支及状态
 PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
-
-#################################
-# Windows git bash(mintty)
-# 设置命令行提示符 PS1
-# 在上面的基础上修改了个兼容性函数，因为 目前 git bash(mintty) 有点bug：
-#   在\$(函数名)后直接用换行\n就冲突
-# 规避办法
-#   1. 把换行\n放在引用函数前面
-#   2. 重新拼接成新样式避开这个bug: PS1="\n$PS1Cblue┌──── $PS1Cwhite\t ""$PS1""$PS1Cblue───┘ $PS1Cnormal"
-#   3. 完美的解决办法：新增子函数 PS1git-bash-new-line 实现跟上面完全一致的显示效果。
-function PS1git-bash-new-line {
-    printf "\n╰"
-}
-
-# git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
-PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
