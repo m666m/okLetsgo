@@ -10241,6 +10241,8 @@ Linux 下的客户端工具
 
     不同的发行版和桌面环境区分远程桌面用户和本地桌面用户，在执行权限等方面是有区别的，但目前并未完全测试。所以如果使用远程桌面用户安装软件，在本地登陆时暂无法明确有何负面的不便影响。
 
+    树莓派内置 realvnc server，对 xrdp 的支持不大好，做不到开箱即用
+
 Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包，客户端使用 mstsc、remmina 软件包。
 
     https://wiki.archlinux.org/title/Xrdp
@@ -10417,19 +10419,6 @@ xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，�
     . . .
     implicit active:   yes
 
-    ##### 连接树莓派的坑
-
-    默认安装后无法连接桌面，查看日志：
-
-    `systemctl statux xrdp`` 提示 Can't open PID file /run/xrdp/xrdp.pid
-
-        https://github.com/neutrinolabs/xrdp/issues/2589
-        ListenAddress set to in /etc/xrdp/sesman.ini? If it's not 0.0.0.0, try setting it to that.
-
-    `systemctl status xrdp-sesman`` 提示 sesman_data_in: scp_process_msg failed
-
-    换回 32 位操作系统了，这个 64 位的坑太多，不玩了
-
 #### VNC
 
 VNC 体系由客户端（viewer）与服务端两部分构成
@@ -10472,7 +10461,7 @@ VNC 体系由客户端（viewer）与服务端两部分构成
 
 一般来说，发行版的桌面环境内置远程桌面的服务器端，比如 Gnome 用 vino。
 
-安装 xrdp 时也会安装 xvnc，也是一个 vnc 服务器端
+安装 xrdp 时也会连带安装 xvnc，也是一个 vnc 服务器端
 
     man xvnc
 
@@ -10512,9 +10501,39 @@ TigerVNC 服务器安装完成后，会自动进行 update-alternatives 的操�
 
     找到桌面里的设置，关闭屏幕共享。这样做是为了防止 vnc 服务默认端口 5900 的占用出现冲突。
 
-运行 VNC 服务器
+先运行 VNC 服务器，这样会启动一个虚拟桌面供客户端连接使用
 
-    vncserver -localhost no -geometry 1280x720 -depth 24
+    $ vncserver -localhost no -geometry 1280x720 -depth 24
+
+    树莓派自带的 realvnc server 输出信息较人性化，会给出明确的地址
+
+        $ vncserver
+        VNC(R) Server 7.0.1 (r49073) ARMv6 (Feb 13 2023 11:37:04)
+        Copyright (C) RealVNC Ltd.
+        RealVNC and VNC are trademarks of RealVNC Ltd and are protected by trademark
+        registrations and/or pending trademark applications in the European Union,
+        United States of America and other jurisdictions.
+        Protected by UK patent 2481870; US patent 8760366; EU patent 2652951.
+        See https://www.realvnc.com for information on VNC.
+        For third party acknowledgements see:
+        https://www.realvnc.com/docs/7/foss.html
+        OS: Raspbian GNU/Linux 11, Linux 6.1.21, aarch64
+
+        On some distributions (in particular Red Hat), you may get a better experience
+        by running vncserver-virtual in conjunction with the system Xorg server, rather
+        than the old version built-in to Xvnc. More desktop environments and
+        applications will likely be compatible. For more information on this alternative
+        implementation, please see: https://www.realvnc.com/doclink/kb-546
+
+        Running applications in /etc/vnc/xstartup
+
+        VNC Server catchphrase: "Lunar extend mono. Brown mineral Quebec."
+                    signature: 44-9f-46-4b-df-a5-2d-ff
+
+        Log file is /home/pi/.vnc/jn-zh:1.log
+        New desktop is jn-zh:1 (192.168.0.88:1)
+
+    缺点是只能使用 realvnc viwer 进行连接。
 
 初次运行 vncserver，会自动调用 vncpasswd 命令设置客户端访问此服务器时的密码，并询问是否要设置一个 “view-only” 密码。当然，使用 “只看” 密码登录后就只有看的份了，用户将无法使用鼠标和键盘与VNC实例进行交互。
 
