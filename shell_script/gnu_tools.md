@@ -10417,6 +10417,18 @@ xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，�
     . . .
     implicit active:   yes
 
+    ##### 连接树莓派的坑
+
+    默认安装后无法连接桌面，查看日志：
+
+    `systemctl statux xrdp`` 提示 Can't open PID file /run/xrdp/xrdp.pid
+
+        https://github.com/neutrinolabs/xrdp/issues/2589
+        ListenAddress set to in /etc/xrdp/sesman.ini? If it's not 0.0.0.0, try setting it to that.
+
+    `systemctl status xrdp-sesman`` 提示 Can't open PID file /run/xrdp/xrdp.pid
+
+
 #### VNC
 
 VNC 体系由客户端（viewer）与服务端两部分构成
