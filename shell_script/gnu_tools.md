@@ -10426,8 +10426,9 @@ xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，�
         https://github.com/neutrinolabs/xrdp/issues/2589
         ListenAddress set to in /etc/xrdp/sesman.ini? If it's not 0.0.0.0, try setting it to that.
 
-    `systemctl status xrdp-sesman`` 提示 Can't open PID file /run/xrdp/xrdp.pid
+    `systemctl status xrdp-sesman`` 提示 sesman_data_in: scp_process_msg failed
 
+    换回 32 位操作系统了，这个 64 位的坑太多，不玩了
 
 #### VNC
 
