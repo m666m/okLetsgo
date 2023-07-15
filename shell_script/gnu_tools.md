@@ -10276,7 +10276,7 @@ xrdp 的组件
 
 安装 xrdp
 
-    sudo apt install xrdp
+    $ sudo apt install xrdp
 
     # 如果有防火墙，记得开放端口
     sudo ufw allow from any to any port 3389 proto tcp
@@ -10288,6 +10288,9 @@ xrdp 的组件
 
     systemctl status xrdp
     systemctl status xrdp-sesman
+
+    # 验证端口已经放开，否则查看你的操作系统的防火墙设置
+    $ ss -antlp | grep 3389
 
 在配置文件 /etc/xrdp/xrdp.ini，可以配置自己的 ssl 证书。
 
