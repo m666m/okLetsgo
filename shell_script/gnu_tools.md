@@ -10533,7 +10533,11 @@ TigerVNC 服务器安装完成后，会自动进行 update-alternatives 的操�
         Log file is /home/pi/.vnc/jn-zh:1.log
         New desktop is jn-zh:1 (192.168.0.88:1)
 
-    缺点是只能使用 realvnc viwer 进行连接。
+    缺点
+
+        只能使用 realvnc viwer 进行连接，输入地址 192.168.0.88:1 注意是带虚拟桌面号的
+
+        第一次之后，单纯运行 vncserver 会有一堆提示，要运行 vncserver-virtual 才能启动
 
 初次运行 vncserver，会自动调用 vncpasswd 命令设置客户端访问此服务器时的密码，并询问是否要设置一个 “view-only” 密码。当然，使用 “只看” 密码登录后就只有看的份了，用户将无法使用鼠标和键盘与VNC实例进行交互。
 
