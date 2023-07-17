@@ -458,6 +458,13 @@ function PS1git-branch-prompt {
 
 #################################
 # Linux bash
+# 不同颜色的主机名，本地环境是绿色，ssh 登录的远程变为 洋红
+function PS1_host_name {
+[[ -n $SSH_TTY ]] && echo -e "\033[0;35m$(hostname)" || echo -e "\033[0;32m$(hostname)"
+}
+
+#################################
+# Linux bash
 # 提示当前在 toolbox 或 distrobox 等交互式容器环境
 # https://docs.fedoraproject.org/en-US/fedora-silverblue/tips-and-tricks/#_working_with_toolbx
 # https://ublue.it/guide/toolbox/#using-the-hosts-xdg-open-inside-distrobox
@@ -474,7 +481,7 @@ function PS1_is_in_toolbox {
 # 设置命令行提示符 PS1
 
 # 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 python环境 git分支及状态
-PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cmagenta\$(PS1_is_in_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
+PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)\$(PS1_is_in_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
 
 #################################
 # Windows git bash(mintty)
@@ -490,7 +497,7 @@ function PS1git-bash-new-line {
 }
 
 # git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
-PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
+PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
 
 #################################
 # Linux bash - raspberry pi os (debian)
@@ -542,4 +549,4 @@ function PS1raspi-warning-prompt {
 setterm --powerdown 0
 
 # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 树莓派温度告警 git分支及状态
-PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\h$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
+PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\$(PS1_host_name)\$(PS1_is_in_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
