@@ -460,7 +460,7 @@ function PS1git-branch-prompt {
 # Linux bash
 # 不同颜色的主机名，本地环境是绿色，ssh 登录的远程变为 洋红
 function PS1_host_name {
-[[ -n $SSH_TTY ]] && echo -e "\033[0;35m$(hostname)" || echo -e "\033[0;32m$(hostname)"
+    [[ -n $SSH_TTY ]] && echo -e "\033[0;35m$(hostname)" || echo -e "\033[0;32m$(hostname)"
 }
 
 #################################
