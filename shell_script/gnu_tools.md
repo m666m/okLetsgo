@@ -9213,6 +9213,10 @@ X window 是一个技术体系
 
     x window 体系的通用命令： startx 在命令行下启动桌面环境
 
+查看当前桌面环境是什么类型
+
+    $ echo $XDG_SESSION_TYPE
+
 #### Wayland
 
     https://docs.freebsd.org/en/books/handbook/wayland/
