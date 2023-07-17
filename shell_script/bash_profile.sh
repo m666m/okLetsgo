@@ -516,7 +516,7 @@ function PS1raspi-warning-info {
         local THROTT_WARN="= System throttled [$THROTT], check https://www.raspberrypi.com/documentation/computers/os.html#get_throttled ="
     fi
 
-    local CPU_CORES=`grep 'model name' /proc/cpuinfo | wc -l`
+    local CPU_CORES=`grep -e 'processor.*:' /proc/cpuinfo | wc -l`
     local LOAD_AVG_CAP=`echo | awk -v cores="$CPU_CORES" '{printf("%.2f",cores*0.7)}'`
     local LOAD_AVG=`cat /proc/loadavg | cut -d' ' -f 1`
     local LOAD_AVG_THLOD=`echo | awk -v avg="$LOAD_AVG" -v cap="$LOAD_AVG_CAP" '{if (avg>cap) {print "1"} else {print "0"}}'`
