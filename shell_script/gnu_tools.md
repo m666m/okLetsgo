@@ -8340,17 +8340,17 @@ dd 可用于做 i/o 速率测试：
 
 如果要防止硬盘缓存优化，写入量要加大，比如 1 GB 的文件写入速率更客观 bs=64k count=16k
 
-s-tui 整合 stress-ng 的测试工具，更方便查看实时 cpu 占用情况
-
-    $ sudo apt install s-tui -y
-    $ s-tui
-
 stress-ng 压测 cpu 的著名工具
 
     # sudo apt install stress-ng
     stress-ng -c 2 --cpu-method pi --timeout 60
     stress-ng -i 1 --timeout 60
     stress-ng -m 1 --timeout 60
+
+    s-tui 是 stress-ng 的命令行前端，用户只需要按键选择即可方便的测试和查看压测情况
+
+        $ sudo apt install s-tui -y
+        $ s-tui
 
 lm-sensors 查看计算机传感器的著名工具
 
