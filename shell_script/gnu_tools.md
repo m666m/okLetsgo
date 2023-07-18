@@ -11386,9 +11386,8 @@ systemd 默认启用的系统级组件配置在 /usr/lib/systemd/system-preset/ 
 
     systemctl cat xxx.service
 
-编辑指定的 unit 文件
+编辑指定的 unit 文件，新文件默认放置在目录 /etc/systemd/system/ 下
 
-    新文件默认放置在目录 /etc/systemd/system/ 下
     $ sudo systemctl edit --force --full xxx.service
 
     脚本化直接写入 https://unix.stackexchange.com/questions/459942/using-systemctl-edit-via-bash-script
@@ -11396,6 +11395,7 @@ systemd 默认启用的系统级组件配置在 /usr/lib/systemd/system-preset/ 
     # env SYSTEMD_EDITOR=tee systemctl edit --force --full xxx.service <<EOF
     [Service]
     ExecStartPre=/bin/sleep 5
+
     EOF
 
 systemctl status 命令用于查看系统状态和单个 Unit 的状态
@@ -11567,7 +11567,9 @@ journalctl 功能强大，用法非常多
 
     https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 
-每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit 。
+每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit。
+
+编辑单元文件有现成的命令，见章节 [systemctl 系统资源管理命令]。
 
 systemd 支持 unit 多个位置存放，最主要的存放位置是：
 
