@@ -594,6 +594,8 @@ PBP 分屏的一个副作用
 
 如果在游戏设置里开启 HDR，在开始游戏后，显示器会自动切换回标准模式以显示 HRD 内容，原开启的睿动光感、环境光、低蓝光模式、SmartImage 等功能均被关闭，打完游戏需要手工调整显示器，把各功能再打开。
 
+另参见章节 [显示器在 Win10 开启 HDR 变灰泛白的原因]。
+
 把 doom 的可执行文件加到 Windows 防火墙，即可离线模式玩单机，不需要登陆 bethesda 网络
 
     https://steamah.com/doom-eternal-how-to-play-in-offline-mode-with-no-bethesda-net-account/
