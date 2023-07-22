@@ -307,6 +307,13 @@ fi
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
 [[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh
 
+# Linux 安装 Anaconda 后要加入 bash 初始化才能使用 conda 命令
+# 禁止自动进入 conda base 环境 `conda config --set auto_activate_base false`
+# 禁止 conda 修改命令行提示符，以防止修改 PS1 变量 `conda config --set changeps1 False`
+# 关联 bash `conda init bash`
+# 详见 [bash 命令行提示符显示 python 环境名]
+eval "$(/home/uu/anaconda3/bin/conda shell.YOUR_SHELL_NAME hook)"
+
 #################################
 # 手动配置插件
 
