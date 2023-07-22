@@ -307,13 +307,6 @@ fi
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
 [[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh
 
-# Linux 安装 Anaconda 后要加入 bash 初始化才能使用 conda 命令
-# 禁止自动进入 conda base 环境 `conda config --set auto_activate_base false`
-# 禁止 conda 修改命令行提示符，以防止修改 PS1 变量 `conda config --set changeps1 False`
-# 关联 bash `conda init bash`
-# 详见 [bash 命令行提示符显示 python 环境名]
-#eval "$(/home/uu/anaconda3/bin/conda shell.YOUR_SHELL_NAME hook)"
-
 #################################
 # 手动配置插件
 
@@ -369,6 +362,9 @@ function PS1exit-code {
 }
 
 function PS1conda-env-name {
+    # Linux 安装 Anaconda 后要加入 bash 初始化才能使用 conda 命令
+    #eval "$(/home/uu/anaconda3/bin/conda shell.bash hook)"
+
     # 自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 命令修改 PS1 变量
     #
     # 在 Anaconda cmd 命令行下执行（或者cmd下手工激活base环境，执行命令 `conda activate`）做如下的设置，只做一次即可
@@ -378,6 +374,7 @@ function PS1conda-env-name {
     #       conda config --set changeps1 False
     #   禁止 conda 进入命令行提示符时自动激活base环境，以方便检测 $CONDA_DEFAULT_ENV 变量
     #       conda config --set auto_activate_base false
+    # 详见 [bash 命令行提示符显示 python 环境名]
     [[ -n $CONDA_DEFAULT_ENV ]] && printf "(conda:%s)" $CONDA_DEFAULT_ENV
 }
 
