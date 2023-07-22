@@ -312,7 +312,7 @@ fi
 # 禁止 conda 修改命令行提示符，以防止修改 PS1 变量 `conda config --set changeps1 False`
 # 关联 bash `conda init bash`
 # 详见 [bash 命令行提示符显示 python 环境名]
-eval "$(/home/uu/anaconda3/bin/conda shell.YOUR_SHELL_NAME hook)"
+#eval "$(/home/uu/anaconda3/bin/conda shell.YOUR_SHELL_NAME hook)"
 
 #################################
 # 手动配置插件
