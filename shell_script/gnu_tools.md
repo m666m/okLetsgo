@@ -8935,6 +8935,18 @@ Gnome 桌面只能展示壁纸，不能放文件，桌面顶部一个任务栏�
 
 GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱，如果想使用其它各种扩展，只能去网站 <https://extensions.gnome.org/> 自行搜索下载。现在有了替代品 “Extension Manager”，不需要去网站就可以搜索下载，在软件管理里搜索安装 “Extension Manager” 即可。
 
+    如果还是想使用网站浏览安装的方式
+
+       先浏览器访问如下网址，点击顶部提示，安装浏览器组件
+
+        https://extensions.gnome.org/
+
+            介绍 https://wiki.gnome.org/Projects/GnomeShell
+
+        然后安装本地消息组件
+
+            sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
+
     推荐打开的系统组件：
 
         Application Menu        系统默认的 win 键罗列所有的应用程序，多了之后太乱了。为应用程序添加基于类别的菜单
@@ -8982,21 +8994,9 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
             如何使用主题：
 
-            先下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
+                先下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
 
-            然后使用 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择你的主题扩展的文件夹
-
-    如果还是想使用网站浏览安装的方式
-
-       先浏览器访问如下网址，点击顶部提示，安装浏览器组件
-
-        https://extensions.gnome.org/
-
-            介绍 https://wiki.gnome.org/Projects/GnomeShell
-
-        然后安装本地消息组件
-
-            sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
+                然后打开 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择你的主题扩展的文件夹
 
 GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “Tweaks”，或使用命令行
 
