@@ -543,12 +543,11 @@ function PS1raspi-warning-prompt {
     fi
 }
 
-# 本机登录后禁用屏幕休眠
-# https://zhuanlan.zhihu.com/p/114716305
+# 本机登录后禁用屏幕休眠 https://zhuanlan.zhihu.com/p/114716305
 # 本机图形界面
-#/etc/profile.d/hibernate.sh
-#xset s off
-#xset dpms 0 0 0
+#   /etc/profile.d/hibernate.sh
+#   xset s off
+#   xset dpms 0 0 0
 # 本机命令行
 setterm --powerdown 0
 
