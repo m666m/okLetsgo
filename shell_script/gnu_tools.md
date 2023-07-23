@@ -990,7 +990,9 @@ Linux 桌面下的终端模拟器一般用自带的就行了
 
             然后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
 
-    guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal
+        可设置窗口透明度，但不再支持设置背景图片（怪）
+
+    guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个了， gnome 桌面的插件有这个功能，启用即可，参见章节 [使用 gnome 扩展] 的 quake-mode。
 
     tilix 基于 gtk3 开放的一个平铺式终端模拟器，效果类似 tmux，但是支持各面板的自定义拖曳。
 

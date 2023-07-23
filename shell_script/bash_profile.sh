@@ -9,6 +9,12 @@
 # 为防止变量名污染命令行环境，尽量使用奇怪点的名称
 
 # 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件
+#   ~/.bashrc: executed by bash(1) for non-login shells.
+#       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
+#   ~/.profile: executed by the command interpreter for login shells.
+#     This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login exists.
+#     see /usr/share/doc/bash/examples/startup-files for examples.
+#     the files are located in the bash-doc package.
 # test -f ~/.profile && . ~/.profile
 # test -f ~/.bashrc && . ~/.bashrc
 
@@ -363,6 +369,7 @@ function PS1exit-code {
 
 function PS1conda-env-name {
     # Linux 下安装 Anaconda 后要加入如下 bash 初始化语句才能在 bash 中使用 conda 命令
+    # `conda init bash` 已经加入了 ~/.bashrc 文件，这里应该不需要多次执行
     #eval "$(/home/uu/anaconda3/bin/conda shell.bash hook)"
 
     # 自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 命令修改 PS1 变量
