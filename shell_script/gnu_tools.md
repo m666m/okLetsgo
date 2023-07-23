@@ -8988,7 +8988,7 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
                 https://www.pling.com/
 
-                创·战纪 风格的东京夜
+                推荐：创·战纪 风格的东京夜
 
                     https://www.gnome-look.org/p/1681470
 
