@@ -40,10 +40,10 @@
     "outline.showVariables": false,
     "diffEditor.ignoreTrimWhitespace": false,
     "window.titleBarStyle": "custom", // 整合菜单栏和标题栏
+    "window.menuBarVisibility": "toggle",  // 按 alt 键显示系统菜单
     "window.activeBorder": "#ff7b00c5",
     "window.newWindowDimensions": "offset", // "offset" maximized
     "window.autoDetectColorScheme": false,  // 深色背景下切换项目时会闪一下白，很烦人，关了
-    "window.menuBarVisibility": "toggle",  // 按 alt 键显示系统菜单
     "workbench.editor.wrapTabs": true,
     "jupyter.exportWithOutputEnabled": true,
     "jupyter.sendSelectionToInteractiveWindow": true,
@@ -54,10 +54,6 @@
     "git.autofetch": true,
     "git.confirmSync": false,
     "git.rebaseWhenSync": true,  // 远程拉到本地用变基，注意合并主干的时候别用这个，git bash下手动
-    "remote.SSH.remotePlatform": {
-        "hostwind": "linux",
-        "bandwa": "linux"
-    },
     "python.terminal.activateEnvironment": true,  // 打开终端自动执行切换到指定环境，对 conda 自定义路径的环境有错误：在cmd下使用conda可以设为True，如果在bash下使用conda会报错windows路径
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
@@ -91,13 +87,40 @@
         "**/.pytest_cache": true,
         "**/.vscode": true
     },
-    // 终端自定义颜色 https://glitchbone.github.io/vscode-base16-term/#/oceanicnext
+    // 终端
     "terminal.integrated.defaultProfile.windows": "Git Bash",
-    //"workbench.preferredDarkColorTheme": "MacOS Modern Dark - Big Sur Xcode Default",
-    //"workbench.preferredLightColorTheme": "MacOS Modern Light - Big Sur Xcode Default",
-    // https://code.visualstudio.com/api/references/theme-color
-    // http://www.apeth.com/nonblog/stories/textmatebundle.html
-    // 在线编辑 https://tmtheme-editor.herokuapp.com/#!/editor/theme/Monokai
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.profiles.linux": {
+        "bash": {
+            "path": "bash",
+            "icon": "terminal-bash",
+            "args": [
+                "--login"  // 打开终端就自动执行登录脚本
+            ]
+        },
+        "zsh": {
+            "path": "zsh"
+        },
+        "fish": {
+            "path": "fish"
+        },
+        "tmux": {
+            "path": "tmux",
+            "icon": "terminal-tmux"
+        },
+        "pwsh": {
+            "path": "pwsh",
+            "icon": "terminal-powershell"
+        }
+    },
+    // 终端也可自定义颜色 https://glitchbone.github.io/vscode-base16-term/#/oceanicnext
+    // 默认的明暗主题
+    //  "workbench.preferredDarkColorTheme": "MacOS Modern Dark - Big Sur Xcode Default",
+    //  "workbench.preferredLightColorTheme": "MacOS Modern Light - Big Sur Xcode Default",
+    // 主题颜色
+    //  https://code.visualstudio.com/api/references/theme-color
+    //  http://www.apeth.com/nonblog/stories/textmatebundle.html
+    //  在线编辑主题 https://tmtheme-editor.herokuapp.com/#!/editor/theme/Monokai
     "workbench.colorCustomizations": {
         "[Solarized Light]": {
             "editor.foreground": "#2c353f",
@@ -462,5 +485,6 @@
     //
     // 下面这些是vscode自己加的，随时变
     //
-    "workbench.colorTheme": "Nord"
+    "workbench.colorTheme": "Nord",
+    "workbench.productIconTheme": "macos-modern"
 }
