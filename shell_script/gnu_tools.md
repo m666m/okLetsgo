@@ -8951,7 +8951,7 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         Show Desktop Button     增加显示桌面按钮
 
-        Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸
+        Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸，还可设置锁屏壁纸
 
             https://github.com/neffo/bing-wallpaper-gnome-extension
                 https://github.com/utkarshgpta/bing-desktop-wallpaper-changer
