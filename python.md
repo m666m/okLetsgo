@@ -409,9 +409,9 @@ virtualenv 依赖操作系统内安装好的 python，主要解决多个项目�
 
 ## virtualenv 配置python环境
 
-    https://docs.python-guide.org/dev/virtualenvs/
+适合标准的 python 安装到 Windows 上，原始 Python 的脚本更适合用 cmd 环境，而 pip 的有些脚本适合用 bash 做环境。
 
-适合标准的python安装到windows上，原始 Python 的脚本更适合用cmd环境，而pip的有些脚本适合用bash做环境。
+    https://docs.python-guide.org/dev/virtualenvs/
 
 激活环境命令：
 
@@ -420,6 +420,8 @@ virtualenv 依赖操作系统内安装好的 python，主要解决多个项目�
 
     # bash
     source c:/Users/xxxx/pyenvs/py38/Scripts/activate
+
+让命令行提示符显示当前 vritualenv 环境参见章节 [bash 命令行提示符显示 python 环境名](gnu_tools.md)。
 
 创建虚拟环境
 
@@ -711,6 +713,8 @@ Anaconda 安装完毕后，默认的环境base是最新的一个python版本如p
         conda activate p36
 
 #### conda init 命令设置命令行工具
+
+    让命令行提示符显示当前 conda 环境参见章节 [bash 命令行提示符显示 python 环境名](gnu_tools.md)
 
 设置在哪个 shell 下使用 conda，主要的操作其实是给该命令行的用户配置文件添加自动进入 [base] 环境的脚本，这样可以使conda 的各个命令在 bash、cmd、powershell 等命令行工具下直接使用。
 
