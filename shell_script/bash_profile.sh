@@ -362,25 +362,24 @@ function PS1exit-code {
 }
 
 function PS1conda-env-name {
-    # Linux 安装 Anaconda 后要加入 bash 初始化才能使用 conda 命令
+    # Linux 下安装 Anaconda 后要加入如下 bash 初始化语句才能在 bash 中使用 conda 命令
     #eval "$(/home/uu/anaconda3/bin/conda shell.bash hook)"
 
     # 自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 命令修改 PS1 变量
-    #
-    # 在 Anaconda cmd 命令行下执行（或者cmd下手工激活base环境，执行命令 `conda activate`）做如下的设置，只做一次即可
-    #   让 Anaconda 可以 hook 到 .bash_profile
-    #       conda init bash
-    #   禁止 conda 修改命令行提示符，以防止修改 PS1 变量
-    #       conda config --set changeps1 False
-    #   禁止 conda 进入命令行提示符时自动激活base环境，以方便检测 $CONDA_DEFAULT_ENV 变量
-    #       conda config --set auto_activate_base false
-    # 详见 [bash 命令行提示符显示 python 环境名]
+    # 做如下的设置，只做一次即可：
+    #   在 Anaconda cmd 命令行下执行（或者cmd下手工激活base环境，执行命令 `conda activate`）
+    #       让 Anaconda 可以 hook 到 .bash_profile
+    #           conda init bash
+    #       禁止 conda 修改命令行提示符，以防止修改 PS1 变量
+    #           conda config --set changeps1 False
+    #       禁止 conda 进入命令行提示符时自动激活base环境，以方便检测 $CONDA_DEFAULT_ENV 变量
+    #           conda config --set auto_activate_base false
+    # 详见 [bash 命令行提示符显示 python 环境名](gnu_tools)
     [[ -n $CONDA_DEFAULT_ENV ]] && printf "(conda:%s)" $CONDA_DEFAULT_ENV
 }
 
 # virtualenv 自定义环境名格式，禁止 activate 命令脚本中在 PS1 变量添加环境名称
 export VIRTUAL_ENV_DISABLE_PROMPT=1
-
 function PS1virtualenv-env-name {
     [[ -n $VIRTUAL_ENV ]] && printf "(venv:%s)" $(basename $VIRTUAL_ENV)
 }
