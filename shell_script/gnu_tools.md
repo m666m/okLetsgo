@@ -8885,6 +8885,24 @@ Gnome:
 
 ### 设置中文字体
 
+基础知识
+
+    https://zhuanlan.zhihu.com/p/32961737
+
+    Linux 下字体根据印刷专业的区分方法，设置了三种风格：sans、serif、mono
+
+        sans 在古希腊语言中是 without 的意思，现在英语里面也有这个词。在西方国家的罗马字母阵营中，字体分为两大种类：Sans Serif 和 Serif，打字机体虽然也属于 Sans Serif，但由于是等宽字体，所以另外独立出 Monospace 这一种类。
+
+        Serif 的意思是有衬线，比如 Times New Roma、宋体、楷体，适合正文阅读
+
+        Sans Serif 则没有这些额外的装饰，笔划粗细大致差不多，比如 Tahoma、黑体、幼圆，适合标题等醒目场合
+
+        Monospace 等宽字体，比如 Courier New、Consolas，适合编程写代码等格式严谨上下行的字符严格对齐的场合
+
+    这三种风格的字体又细分，对东亚字符来说支持中文、日文、韩文。
+
+    目前各大软件中，只有 Firefox 可在 about:config 中进行这三种展示情况的单独设置
+
 桌面环境下默认的中文字体不好看，需要调整。
 
     https://catcat.cc/post/2021-03-07/
