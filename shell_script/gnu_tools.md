@@ -2614,7 +2614,9 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
 > fontconfig 配置支持回落，使得中英文显示对应的字体
 
-z之前是编辑 /etc/fonts/local.conf 文件，现在是使用 fontconfig 配置修改 /etc/fonts/fonts.conf
+网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的微调效果，但是随着发行版的进步，现在安装字体已经无须设置 local.conf，除非你有特别的要求，强烈建议在没有阅读 fontconfig 用户手册和一定动手能力的情况下不要配置 local.conf，不正确的设置会导致一些奇怪的字体问题。
+
+之前是编辑 /etc/fonts/local.conf 文件，现在是使用 fontconfig 配置修改 /etc/fonts/fonts.conf
 
     https://github.com/zma/config_files/blob/master/others/local.conf
 
