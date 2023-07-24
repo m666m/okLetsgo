@@ -9104,8 +9104,6 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
 
-        Vitals、Freon            在任务栏显示你的cpu、内存使用情况
-
         User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开
 
             Gnome 主题乐园，在这里搜一下 Gnome Shell Themes 类别，你的 Gnome 桌面就大变样了
@@ -9123,6 +9121,8 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
                 先下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
 
                 然后打开 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择你的主题扩展的文件夹
+
+        Vitals                  在任务栏显示你的cpu、内存使用情况，竞品 Freon
 
 GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “Tweaks”，或使用命令行
 
