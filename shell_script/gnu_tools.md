@@ -8896,6 +8896,8 @@ Gnome:
 
     https://www.systutorials.com/fedora-%e4%b8%ad%e6%96%87%e5%ad%97%e4%bd%93%e8%ae%be%e7%bd%ae/
 
+    简体中文支持 https://wiki.archlinux.org/title/Localization/Simplified_Chinese
+
 使用 gnome-tweak-tool 更方便直观，其 Font 设置中有 “Hinting” 选项建议勾选 “Full” 拉高字体，否则显得扁
 
     也可使用命令：
