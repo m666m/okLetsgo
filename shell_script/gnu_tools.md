@@ -5620,6 +5620,12 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
     https://www.cnblogs.com/bamanzi/p/switch-tmux-to-gnu-screen.html
 
+特殊功能
+
+    Screen 支持 Zmodem 协议，也就是说，你可以用 rz、sz 命令方便的传输文件 <https://adammonsen.com/post/256/>。
+
+    Screen 可以通过串行连接进行连接，如运行命令 `screen 9600 /dev/ttyUSB0` 连接 usb 端口调试，通过按键绑定可以方便地发出 XON 和 XOFF 信号。
+
 安装发行版的即可
 
     sudo apt install screen
@@ -5628,17 +5634,11 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 用户可以通过快捷键在不同的窗口下切换，并可以自由的重定向各个窗口的输入和输出。GNU Screen的窗口与区域关系更接近Emacs里面buffer与window的关系：
 
-    gnu screen里面的region相当于tmux里面的pane，而screen的window更类似于跑在tmux pane里面的程序；与tmux不同的是，一般情况下程序/窗口是隐藏的，每次只把一个程序/窗口切换到当前region来（tmux里面一般情况下所有程序都会在某个window的某个pane里面显示者，除非有其它pane被最大化导致当前pane被隐藏了）
+    gnu screen 里面的 region 相当于 tmux 里面的 pane，而 screen 的 window 更类似于跑在 tmux pane 里面的程序；与 tmux 不同的是，一般情况下程序/窗口是隐藏的，每次只把一个程序/窗口切换到当前 region 来（tmux 里面一般情况下所有程序都会在某个 window 的某个 pane 里面显示者，除非有其它 pane 被最大化导致当前 pane 被隐藏了）
 
-    GNU Screen里面没有tmux里面的window那样的东西，它的layout倒是跟tmux的window有点像，虽然我们可以从一个layout切换到另外一个layout，但layout只是region的容器，而不是window的容器，两个layout里面是可以查看同一个应用(window)的．
+    GNU Screen 里面没有 tmux 里面的 window 那样的东西，它的 layout 倒是 跟 tmux 的 window 有点像，虽然我们可以从一个 layout 切换到另外一个 layout，但 layout 只是 region 的容器，而不是 window 的容器，两个 layout 里面是可以查看同一个应用(window)的．
 
-Screen实现了基本的文本操作，如复制粘贴等；还提供了类似滚动条的功能，可以查看窗口状况的历史记录。窗口还可以被分区和命名，还可以监视后台窗口的活动。
-
-特殊功能
-
-    Screen 支持 Zmodem 协议，也就是说，你可以用 rz、sz 命令方便的传输文件 <https://adammonsen.com/post/256/>。
-
-    Screen 可以通过串行连接进行连接，如运行命令 `screen 9600 /dev/ttyUSB0` 连接 usb 端口调试，通过按键绑定可以方便地发出 XON 和 XOFF 信号。
+Screen 实现了基本的文本操作，如复制粘贴等；还提供了类似滚动条的功能，可以查看窗口状况的历史记录。窗口还可以被分区和命名，还可以监视后台窗口的活动。
 
 命令行操作：
 
@@ -5653,23 +5653,23 @@ Screen实现了基本的文本操作，如复制粘贴等；还提供了类似�
 
 连接到已有的会话，用上面看到的系统给出的默认会话名或pid即可。
 
-    screen -r 29396
+    $ screen -r 29396
 
 创建一个名字为lamp的会话并连接到该会话
 
-    screen -S lamp
+    $ screen -S lamp
 
 连接到会话以后就可以执行操作了，在此期间，可以随时关闭SSH,或自己的电脑，会话中的程序不会关闭，仍在运行。
 
 特殊：如果你在另一台机器上没有分离一个Screen会话，就无从再次连接这个会话。
 
-    screen -d <作业名称> 　将指定的screen会话离线。
+    $ screen -d <作业名称> 　将指定的screen会话离线。
 
-    screen -m <作业名称> 　即使目前已在作业中的screen作业，仍强制建立新的screen会话。
+    $ screen -m <作业名称> 　即使目前已在作业中的screen作业，仍强制建立新的screen会话。
 
-    screen -R <作业名称> 　先试图恢复离线的会话。若找不到离线的作业，即建立新的screen会话。
+    $ screen -R <作业名称> 　先试图恢复离线的会话。若找不到离线的作业，即建立新的screen会话。
 
-    screen -wipe 　检查目前所有的screen作业，并删除已经无法使用的screen作业。
+    $ screen -wipe 　检查目前所有的screen作业，并删除已经无法使用的screen作业。
 
 GNU Screen 的默认前导键是 Ctrl+A。
 
@@ -5700,7 +5700,7 @@ GNU Screen 的默认前导键是 Ctrl+A。
 关闭 Screen 会话中的窗口
 
     # 在 Screen 会话里的shell执行 或热键 Ctrl+a k
-    exit
+    $ exit
 
 如果一个 Screen 会话中最后一个窗口被关闭了，那么整个 Screen 会话也就退出了，screen 进程会被终止。
 
@@ -5710,7 +5710,7 @@ GNU Screen 的默认前导键是 Ctrl+A。
 
 假设你在和朋友在不同地点以相同用户登录一台机器，然后你创建一个 Screen 会话，你朋友可以在他的终端上命令：
 
-    screen -x
+    $ screen -x
 
 这个命令会将你朋友的终端 Attach 到你的 Screen 会话上，并且你的终端不会被 Detach。这样你就可以和朋友共享同一个会话了，如果你们当前又处于同一个窗口，那就相当于坐在同一个显示器前面，你的操作会同步演示给你朋友，你朋友的操作也会同步演示给你。当然，如果你们切换到这个会话的不同窗口中去，那还是可以分别进行不同的操作的。
 
@@ -5724,23 +5724,23 @@ GNU Screen 的默认前导键是 Ctrl+A。
 
 各大发行版都支持了
 
-    apt install supervisor
+    $ apt install supervisor
 
 可以直接通过pip来安装
 
-    pip install supervisor
+    $ pip install supervisor
 
 目前所知缺陷：
 
-    1.Supervisor管理的进程必须由supervisord启动，即已启动的程序是无法使用supervisord进行管理的。
+    1.Supervisor 管理的进程必须由 supervisord 启动，即已启动的程序是无法使用 supervisord 进行管理的。
 
-    2.Supervisor要求管理的程序是非后台式的程序(not daemon program)，因为Supervisord会自动帮你将要管理的进程转为后台进程，如果原本就是后台进程就存在问题，比如要使用Supervisor管理nginx，nginx就需要在配置文件中添加daemon off让nginx以非后台运行形式启动。
+    2.Supervisor 要求管理的程序是非后台式的程序(not daemon program)，因为 Supervisord 会自动帮你将要管理的进程转为后台进程，如果原本就是后台进程就存在问题，比如要使用 Supervisor 管理 nginx，nginx 就需要在配置文件中添加 daemon off 让 nginx 以非后台运行形式启动。
 
     3.Supervisor不支持windows，只支持类UNIX系统，如Centos、Ubuntu、MacOS
 
 一个类似的监控工具：Monit
 
-    Monit可以对系统状态、进程、文件、目录和设备进行监控，适用于Linux平台，可以自动重启已挂掉的程序，比较适合监控系统的关键进程和资源，如nginx、apache、mysql和cpu占有率等。
+    Monit 可以对系统状态、进程、文件、目录和设备进行监控，适用于 Linux 平台，可以自动重启已挂掉的程序，比较适合监控系统的关键进程和资源，如 nginx、apache、mysql 和 cpu 占有率等。
 
 ### 后台执行
 
