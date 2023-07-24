@@ -2590,6 +2590,11 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
 #### Linux 中文字体
 
+    https://catcat.cc/post/2021-03-07/
+        https://catcat.cc/post/2020-10-31/
+
+        https://github.com/rydesun/myconf/tree/master/.config/fontconfig
+
     https://www.systutorials.com/fedora-%e4%b8%ad%e6%96%87%e5%ad%97%e4%bd%93%e8%ae%be%e7%bd%ae/
 
 使用 gnome-tweak-tool 更方便直观
@@ -2607,7 +2612,9 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
     $ fc-list :lang=zh
 
-> 配置中英文显示对应的字体，需要支持回落，编辑 /etc/fonts/local.conf 文件
+> fontconfig 配置支持回落，使得中英文显示对应的字体
+
+z之前是编辑 /etc/fonts/local.conf 文件，现在是使用 fontconfig 配置修改 /etc/fonts/fonts.conf
 
     https://github.com/zma/config_files/blob/master/others/local.conf
 
@@ -2618,7 +2625,7 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
     对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样实现显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
 
-Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），采用开源字体思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）
+Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），采用 Adobe 开源字体思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）
 
 ```xml
 <?xml version='1.0'?>
