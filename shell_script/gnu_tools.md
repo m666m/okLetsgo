@@ -8906,9 +8906,9 @@ Gnome:
 
 > fontconfig 配置支持回落，使得中英文显示对应的字体
 
-网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的微调效果，但是随着发行版的进步，现在安装字体已经无须设置 local.conf，除非你有特别的要求，强烈建议在没有阅读 fontconfig 用户手册和一定动手能力的情况下不要配置 local.conf，不正确的设置会导致一些奇怪的字体问题。
+网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的微调效果，但是随着发行版的进步，现在安装字体已经无须设置 local.conf，一般都是使用 fontconfig 配置修改 /etc/fonts/fonts.conf。除非你有特别的要求，强烈建议在没有阅读 fontconfig 用户手册和一定动手能力的情况下不要配置 local.conf，不正确的设置会导致一些奇怪的字体问题。
 
-之前是编辑 /etc/fonts/local.conf 文件，现在是使用 fontconfig 配置修改 /etc/fonts/fonts.conf
+直接编辑 /etc/fonts/local.conf 文件
 
     https://github.com/zma/config_files/blob/master/others/local.conf
 
@@ -8919,7 +8919,7 @@ Gnome:
 
     对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样实现显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
 
-Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），采用 Adobe 开源字体思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）
+Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的方案显示中文太丑了，需要手工改设置：对中文采用 Adobe 开源字体思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）
 
 ```xml
 <?xml version='1.0'?>
