@@ -9008,7 +9008,7 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
   </prefer>
  </alias>
  <!--
-  Monospace faces
+  Monospace faces，中文mono的字符间距太大，还是用普通的Sans即可
  -->
  <alias>
   <family>monospace</family>
