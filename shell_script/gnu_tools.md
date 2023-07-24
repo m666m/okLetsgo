@@ -2588,6 +2588,100 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
     https://fontawesome.com/v5/cheatsheet
 
+#### Linux 中文字体
+
+    https://www.systutorials.com/fedora-%e4%b8%ad%e6%96%87%e5%ad%97%e4%bd%93%e8%ae%be%e7%bd%ae/
+
+使用 gnome-tweak-tool 更方便直观
+
+    查询桌面环境使用的字体:
+
+        $ gsettings get org.gnome.desktop.interface font-name
+
+    设置桌面环境的字体
+
+        #
+        $ gsettings set org.gnome.desktop.interface font-name 'Cantarell 10'
+
+查看当前系统安装的中文字体
+
+    $ fc-list :lang=zh
+
+安装中文字体
+
+    $ sudo dnf install cjkuni-ukai-fonts cjkuni-uming-fonts
+
+
+配置中英文显示对应的字体，需要支持回落，编辑 /etc/fonts/local.conf 文件
+
+    https://github.com/zma/config_files/blob/master/others/local.conf
+
+    对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样实现显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
+
+```xml
+<?xml version='1.0'?>
+<!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
+<fontconfig>
+ <!--
+    Begin user preferred fonts config:
+    Created by: Eric Zhiqiang Ma (zma [at] ericzma.com)
+    https://github.com/zma/config_files/blob/master/fonts/local.noto.conf
+    To use this, put it into /etc/fonts/loca.conf for system wide configuration
+    or ~/.fonts.conf for user-specific configuration
+ -->
+ <!--
+  Preferred fonts:
+    Noto fonts
+    liberation fonts (for Monospace fonts)
+ -->
+ <!--
+  Serif faces
+ -->
+ <alias>
+  <family>serif</family>
+  <prefer>
+   <family>Noto Serif</family>
+   <family>Noto Sans CJK SC</family>
+   <family>Noto Sans CJK TC</family>
+   <!--
+   <family>Source Han Sans CN Normal</family>
+   <family>Source Han Sans TWHK Normal</family>
+   -->
+  </prefer>
+ </alias>
+ <!--
+  Sans-serif faces
+ -->
+ <alias>
+  <family>sans-serif</family>
+  <prefer>
+   <family>Noto Sans</family>
+   <family>Noto Sans CJK SC</family>
+   <family>Noto Sans CJK TC</family>
+   <!--
+   <family>Source Han Sans CN Normal</family>
+   <family>Source Han Sans TWHK Normal</family>
+   -->
+  </prefer>
+ </alias>
+ <!--
+  Monospace faces
+ -->
+ <alias>
+  <family>monospace</family>
+  <prefer>
+   <family>Liberation Mono</family>
+   <family>Noto Sans CJK SC</family>
+   <family>Noto Sans CJK TC</family>
+   <!--
+   <family>Source Han Sans CN Normal</family>
+   <family>Source Han Sans TWHK Normal</family>
+   -->
+  </prefer>
+ </alias>
+</fontconfig>
+```
+
 ### 使用 zsh
 
 单纯的 zsh 并不慢，只要别装 ohmyzsh，没有任何功能性插件的使用场景依赖这个 ohmyzsh。
