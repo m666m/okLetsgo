@@ -8885,24 +8885,6 @@ Gnome:
 
 ### 设置中文字体
 
-基础知识
-
-    https://zhuanlan.zhihu.com/p/32961737
-
-    Linux 下字体根据印刷专业的区分方法，设置了三种风格：sans、serif、mono
-
-        sans 在古希腊语言中是 without 的意思，现在英语里面也有这个词。在西方国家的罗马字母阵营中，字体分为两大种类：Sans Serif 和 Serif，打字机体虽然也属于 Sans Serif，但由于是等宽字体，所以另外独立出 Monospace 这一种类。
-
-        Serif 的意思是有衬线，比如 Times New Roma、宋体、楷体，适合正文阅读
-
-        Sans Serif 则没有这些额外的装饰，笔划粗细大致差不多，比如 Tahoma、黑体、幼圆，适合标题等醒目场合
-
-        Monospace 等宽字体，比如 Courier New、Consolas，适合编程写代码等格式严谨上下行的字符严格对齐的场合
-
-    这三种风格的字体又细分，对东亚字符来说支持中文、日文、韩文。
-
-    目前各大软件中，只有 Firefox 可在 about:config 中进行这三种展示情况的单独设置
-
 桌面环境下默认的中文字体不好看，需要调整。
 
     https://catcat.cc/post/2021-03-07/
@@ -8914,20 +8896,37 @@ Gnome:
 
     https://www.systutorials.com/fedora-%e4%b8%ad%e6%96%87%e5%ad%97%e4%bd%93%e8%ae%be%e7%bd%ae/
 
-使用 gnome-tweak-tool 更方便直观
+使用 gnome-tweak-tool 更方便直观，其 Font 设置中有 “Hinting” 选项建议勾选 “Full” 拉高字体，否则显得扁
 
-    查询桌面环境使用的字体:
+    也可使用命令：
 
+        # 查询桌面环境使用的字体
         $ gsettings get org.gnome.desktop.interface font-name
 
-    设置桌面环境的字体
-
-        #
+        # 设置桌面环境的字体
         $ gsettings set org.gnome.desktop.interface font-name 'Cantarell 10'
 
 查看当前系统安装的中文字体
 
     $ fc-list :lang=zh
+
+> 基础知识
+
+    https://zhuanlan.zhihu.com/p/32961737
+
+Linux 下字体根据印刷专业的区分方法，设置了三种风格：sans、serif、mono
+
+    sans 在古希腊语言中是 without 的意思，现在英语里面也有这个词。在西方国家的罗马字母阵营中，字体分为两大种类：Sans Serif 和 Serif，打字机体虽然也属于 Sans Serif，但由于是等宽字体，所以另外独立出 Monospace 这一种类。
+
+    Serif 的意思是有衬线，比如 Times New Roma、宋体、楷体，适合正文阅读
+
+    Sans Serif 则没有这些额外的装饰，笔划粗细大致差不多，比如 Tahoma、黑体、幼圆，适合标题等醒目场合
+
+    Monospace 等宽字体，比如 Courier New、Consolas，适合编程写代码等格式严谨上下行的字符严格对齐的场合
+
+这三种风格的字体又细分，对东亚字符 CJK 来说支持简体中文 SC、繁体中文 TC、日文 JP、韩文 KR。
+
+目前各大软件中，只有 Firefox 可在 about:config 中进行这三种展示情况的单独设置
 
 > fontconfig 配置支持回落，使得中英文显示对应的字体
 
@@ -8935,13 +8934,7 @@ Gnome:
 
 网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，但是随着发行版的进步，现在安装字体已经无须设置 local.conf，一般都是使用 fontconfig 配置修改 /etc/fonts/fonts.conf。
 
-更符合 XDG 规范的用法是写入如下文件目录
-
-    ~/.config/fontconfig/conf.d 和 ~/.config/fontconfig/fonts.conf
-
-    参见 https://github.com/rydesun/dotfiles/blob/master/.config/fontconfig/conf.d/
-
-简单起见，我们直接编辑 /etc/fonts/local.conf 文件
+法一：简单起见，我们直接编辑 /etc/fonts/local.conf 文件
 
     对版本比较老的不支持中文的 Linux，需要先安装中文字体
 
@@ -8952,9 +8945,19 @@ Gnome:
 
     对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样实现显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
 
-Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的方案显示中文太丑了，需要手工改设置：
+Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的方案显示中文太丑了，需要手工改设置，也是利用回落：
 
-    对中文采用 Adobe 开源字体思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）
+    https://github.com/notofonts/noto-cjk
+
+    https://aur.archlinux.org/packages/noto-fonts-cjk-hk-vf
+
+    三种风格，默认字体是系统英文字体，对中文采用 Adobe/Google 的开源字体：思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK），思源字体也内置了西文，其西文部分使用的是 Adobe Source 家族字体，即思源黑体集成 Source Sans Pro、思源宋体集成 Source Serif。详见 <https://sspai.com/post/38705>。
+
+    Fedora 发行部自带默认的中文字体好像只安装了 Sans，没有 Serif，手动安装下
+
+        # https://fedoraproject.org/wiki/Changes/Noto_CJK_Variable_Fonts#Detailed_Description
+        # google-noto-sans-sc-fonts
+        $ sudo dnf install google-noto-serif-sc-fonts
 
 ```xml
 <?xml version='1.0'?>
@@ -8979,8 +8982,8 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
   <family>serif</family>
   <prefer>
    <family>Noto Serif</family>
-   <family>Noto Sans CJK SC</family>
-   <family>Noto Sans CJK TC</family>
+   <family>Noto Serif CJK SC Black</family>
+   <family>Noto Serif CJK TC</family>
    <!--
    <family>Source Han Sans CN Normal</family>
    <family>Source Han Sans TWHK Normal</family>
@@ -9018,6 +9021,57 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
   </prefer>
  </alias>
 </fontconfig>
+```
+
+法二：更符合 XDG 规范的用法是写入如下文件目录
+
+    ~/.config/fontconfig/conf.d 和 ~/.config/fontconfig/fonts.conf
+
+    另一个例子 https://github.com/rydesun/dotfiles/blob/master/.config/fontconfig/conf.d/
+
+来自 tinywrkb <https://aur.archlinux.org/packages/noto-fonts-cjk-hk-vf> 的例子，编辑 $XDG_CONFIG_HOME/fontconfig/fonts.conf 文件：
+
+```xml
+<alias>
+   <family>sans-serif</family>
+   <prefer>
+     <family>Noto Sans</family>
+     <family>Noto Sans CJK SC</family>
+     <family>Noto Color Emoji</family>
+     <family>Noto Emoji</family>
+   </prefer>
+</alias>
+
+<alias>
+   <family>serif</family>
+   <prefer>
+     <family>Noto Serif</family>
+     <family>Noto Serif CJK SC</family>
+     <family>Noto Color Emoji</family>
+     <family>Noto Emoji</family>
+   </prefer>
+</alias>
+
+<alias>
+  <family>monospace</family>
+  <prefer>
+    <family>Noto Sans Mono</family>
+    <family>Noto Sans Mono CJK SC</family>
+    <family>Noto Color Emoji</family>
+    <family>Noto Emoji</family>
+   </prefer>
+</alias>
+
+<alias>
+  <family>Source Code Pro</family>
+  <prefer>
+    <family>monospace</family>
+    <family>Noto Sans Mono</family>
+    <family>Noto Sans Mono CJK SC</family>
+    <family>Noto Color Emoji</family>
+    <family>Noto Emoji</family>
+  </prefer>
+</alias>
 ```
 
 ### 使用 Gnome 桌面
