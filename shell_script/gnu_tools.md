@@ -2595,6 +2595,8 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
         https://github.com/rydesun/myconf/tree/master/.config/fontconfig
 
+    https://blog.csdn.net/linuxgroup/article/details/4162867
+
     https://www.systutorials.com/fedora-%e4%b8%ad%e6%96%87%e5%ad%97%e4%bd%93%e8%ae%be%e7%bd%ae/
 
 使用 gnome-tweak-tool 更方便直观
