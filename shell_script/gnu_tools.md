@@ -953,7 +953,7 @@ WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持�
 
         再找到 .wind/profiles/default.v10/terminal/user.sessions 文件删除 session.autoLogin， 就可以将主密码设置为空字符串了，之后再来修改主密码，就 OK 了。
 
-edex-ui 创·战纪 风格的终端模拟器，还带一个简单的文件浏览器，系统资源监视器，虽然基于Electron的应用程序毕竟笨重，但效果太酷了
+edex-ui 创·战纪 风格的终端模拟器，还带一个简单的文件浏览器，系统资源监视器，虽然基于 Electron 的应用程序比较笨重，但效果太酷了
 
     https://github.com/GitSquared/edex-ui
 
@@ -961,7 +961,7 @@ edex-ui 创·战纪 风格的终端模拟器，还带一个简单的文件浏览
 
     自定义主题说明 https://github.com/GitSquared/edex-ui/wiki/Themes
 
-alacritty 使用 OpenGL 进行显示加速的终端模拟器，在 Windows 下使用 powershell
+Alacritty 使用 OpenGL 进行显示加速的终端模拟器，在 Windows 下使用 powershell
 
     https://github.com/alacritty/alacritty
 
@@ -1002,7 +1002,7 @@ Linux 桌面下的终端模拟器一般用自带的就行了
 
     terminology
 
-    kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/MacOS 桌面下使用
+    kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/MacOS 桌面下使用，目前中文支持还是不大好
 
         https://github.com/kovidgoyal/kitty
             https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
@@ -1548,9 +1548,9 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 最简单的统一实现字符输入输出的设备是 1930 年代出现的 “电传打字机（Teletype, tty）”。借助于电传打字机技术，“用户登录控制台” 演变成了用户在电传打字机上打字作为输入，主机把执行结果用字符作为输出，被电传打字机打印在纸上。
 
                键盘
-             /
-    user --->    tty  <---> console --- 主机
-             \
+             /     \
+    user --->       tty  <---> console --- 主机
+             \     /
                打印纸
 
 tty 的这种以字符进行交互的方式，称为 “命令行模式（console mode）”。
@@ -1564,9 +1564,9 @@ tty 的这种以字符进行交互的方式，称为 “命令行模式（consol
 随着电子技术的发展，tty 功能的输出设备从打字机的纸带发展到到不同分辨率的电子显示屏，种类繁多。
 
                键盘
-             /
-    user --->    终端  <---> console --- 主机
-             \
+             /     \
+    user --->       终端  <---> console --- 主机
+             \     /
                显示器
 
 具备 tty 功能，给用户提供字符输入和显示输出结果的设备，被称为 “终端 Terminal”。
@@ -2460,9 +2460,9 @@ zsh:
 
     https://github.com/agnoster/agnoster-zsh-theme
 
-#### 替代品
+#### 竞品 starship
 
-startship 通用的状态栏工具，支持 bash、zsh、PowerShell、cmd 等 shell
+starship 通用的状态栏工具，支持 bash、zsh、PowerShell、cmd 等 shell
 
     https://starship.rs/zh-CN/
         https://github.com/starship/starship
@@ -5616,9 +5616,16 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
     tmux source-file ~/.tmux.conf
 
-#### 类似 tmux 的工具 screen
+#### 竞品 screen/Zellij
 
     https://www.cnblogs.com/bamanzi/p/switch-tmux-to-gnu-screen.html
+
+    竞品 Zellij
+
+        https://zellij.dev/
+            https://github.com/zellij-org/zellij
+
+        https://zhuanlan.zhihu.com/p/600682580
 
 特殊功能
 
@@ -8906,9 +8913,17 @@ Gnome:
 
 > fontconfig 配置支持回落，使得中英文显示对应的字体
 
-网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，但是随着发行版的进步，现在安装字体已经无须设置 local.conf，一般都是使用 fontconfig 配置修改 /etc/fonts/fonts.conf。除非你有特别的要求，强烈建议在没有阅读 fontconfig 用户手册和一定动手能力的情况下不要配置 local.conf，不正确的设置会导致一些奇怪的字体问题。
+强烈建议在没有阅读 fontconfig 用户手册和一定动手能力的情况下不要配置 local.conf，不正确的设置会导致一些奇怪的字体问题。
 
-直接编辑 /etc/fonts/local.conf 文件
+网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，但是随着发行版的进步，现在安装字体已经无须设置 local.conf，一般都是使用 fontconfig 配置修改 /etc/fonts/fonts.conf。
+
+更符合 XDG 规范的用法是写入如下文件目录
+
+    ~/.config/fontconfig/conf.d 和 ~/.config/fontconfig/fonts.conf
+
+    参见 https://github.com/rydesun/dotfiles/blob/master/.config/fontconfig/conf.d/
+
+简单起见，我们直接编辑 /etc/fonts/local.conf 文件
 
     对版本比较老的不支持中文的 Linux，需要先安装中文字体
 
@@ -9141,44 +9156,35 @@ KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏
 
 ### Linux 桌面的基本目录规范 XDG（X Desktop Group）
 
-Linux 操作系统的基本目录结构参见章节 [Linux 目录和分区](shellcmd.md)。
-
-对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境。
-
-目前最流行的 freedesktop 的规范称为 XDG
+对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境。目前最流行的 freedesktop 的规范称为 XDG
 
     https://www.freedesktop.org/software/systemd/man/file-hierarchy.html
 
     https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 
+    https://wiki.archlinux.org/index.php/XDG_Base_Directory
+    https://wiki.archlinux.org/title/Xdg-utils
+
     https://blog.csdn.net/u014025444/article/details/94029895
 
     https://winddoing.github.io/post/ef694e1f.html
-
-    https://wiki.archlinux.org/title/Xdg-utils
 
     https://blog.csdn.net/weixin_29702195/article/details/116886216
 
     https://blog.csdn.net/u014025444/article/details/94029895
 
+Linux 操作系统的基本目录结构参见章节 [Linux 目录和分区](shellcmd.md)。
+
 XDG 基本目录规范基于以下概念：
 
-    $XDG_DATA_HOME      用于写入特定用户数据文件的基本目录
-    $XDG_CONFIG_HOME    用于写入特定用户的配置文件基本目录
-    $XDG_DATA_DIRS      首选的基本数据目录
-    $XDG_CONFIG_DIRS    首选的基本配置目录
-    $XDG_CACHE_HOME     用于写入用户特定的非必要（缓存）数据的基本目录
+    XDG 环境变量             说明                                    默认值
+
+    $XDG_DATA_HOME      用于写入特定用户数据文件的基本目录              $HOME/.local/share
+    $XDG_CONFIG_HOME    用于写入特定用户的配置文件基本目录              $HOME/.config
+    $XDG_DATA_DIRS      首选的基本数据目录                           /usr/local/share/:/usr/share/
+    $XDG_CONFIG_DIRS    首选的基本配置目录                           /etc/xdg
+    $XDG_CACHE_HOME     用于写入用户特定的非必要（缓存）数据的基本目录    $HOME/.cache
     $XDG_RUNTIME_DIR    用户放置特定于用户的运行时文件和其他文件对象
-
-环境变量
-
-    XDG 环境变量                默认值
-
-    $XDG_DATA_HOME          $HOME/.local/share
-    $XDG_CONFIG_HOME        $HOME/.config
-    $XDG_DATA_DIRS          /usr/local/share/:/usr/share/
-    $XDG_CONFIG_DIRS        /etc/xdg
-    $XDG_CACHE_HOME         $HOME/.cache
 
 $XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对象（例如套接字，命名管道…）存储的基本目录。该目录必须由用户拥有，并且他必须是唯一具有读写访问权限的目录。它的Unix访问模式必须是 0700。
 
@@ -9192,17 +9198,17 @@ $XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对
 
     $XDG_DATA_HOME          $HOME/.local/share/
 
-        储用户特定的数据文件的基准目录。
+        储用户特定的数据文件的基准目录。通常来说文件较大，有反复使用的价值，建议备份里面的文件。
 
         使用场景：
 
             用户下载的插件；
-            程序产生的数据库；
+            程序产生的日志、历史记录、离线资源等数据文件；
             用户输入历史、书签、邮件等。
 
     $XDG_CONFIG_HOME        $HOME/.config/
 
-        存储用户特定的配置文件的基准目录
+        存储用户特定的配置文件的基准目录，建议备份里面的文件。
 
         使用场景：
 
@@ -9212,7 +9218,7 @@ $XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对
 
     $XDG_CACHE_HOME         $HOME/.cache/
 
-        应存储用户特定的非重要性数据文件的基准目录
+        应存储用户特定的非重要性数据文件的基准目录，建议备份里面的文件。
 
         使用场景：
 
