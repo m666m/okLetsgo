@@ -2607,16 +2607,18 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
     $ fc-list :lang=zh
 
-安装中文字体
-
-    $ sudo dnf install cjkuni-ukai-fonts cjkuni-uming-fonts
-
-
-配置中英文显示对应的字体，需要支持回落，编辑 /etc/fonts/local.conf 文件
+> 配置中英文显示对应的字体，需要支持回落，编辑 /etc/fonts/local.conf 文件
 
     https://github.com/zma/config_files/blob/master/others/local.conf
 
-    对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样实现显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
+    对不支持中文的 Linux，需要先安装中文字体
+
+        # uming 和 ukai字体，即 AR PL UMing CN 等
+        $ sudo dnf install cjkuni-ukai-fonts cjkuni-uming-fonts
+
+    对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样实现显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
+
+Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），采用开源字体思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）
 
 ```xml
 <?xml version='1.0'?>
@@ -2626,7 +2628,7 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
     Begin user preferred fonts config:
     Created by: Eric Zhiqiang Ma (zma [at] ericzma.com)
     https://github.com/zma/config_files/blob/master/fonts/local.noto.conf
-    To use this, put it into /etc/fonts/loca.conf for system wide configuration
+    To use this, put it into /etc/fonts/local.conf for system wide configuration
     or ~/.fonts.conf for user-specific configuration
  -->
  <!--
@@ -2641,8 +2643,8 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
   <family>serif</family>
   <prefer>
    <family>Noto Serif</family>
-   <family>Noto Sans CJK SC</family>
-   <family>Noto Sans CJK TC</family>
+   <family>Noto Serif CJK SC</family>
+   <family>Noto Serif CJK TC</family>
    <!--
    <family>Source Han Sans CN Normal</family>
    <family>Source Han Sans TWHK Normal</family>
