@@ -69,7 +69,7 @@ if [ -x /usr/bin/dircolors ]; then
     # 列出目录下的文件清单，查找指定关键字，如 `lsg fnwithstr`。因为ls列出的目录颜色被grep覆盖，用 ls -l 查看更方便。
     alias lsg='ls -lFA |grep -i'
     # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findg fnwithstr`
-    alias findg='find ./ |grep -i'
+    alias findf='find ./ |grep -i'
     # 在当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
     alias greps='grep --color=auto -d skip -in'
     # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过.git等目录，如 `finds strinfile`
