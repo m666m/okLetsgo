@@ -8902,7 +8902,7 @@ Gnome:
 
     简体中文支持 https://wiki.archlinux.org/title/Localization/Simplified_Chinese
 
-使用 gnome-tweak-tool 更方便直观，其 Font 设置中有 “Hinting” 选项建议勾选 “Full” 拉高字体，否则显得扁
+使用 gnome-tweak-tool 直观方便，在 “Font” 设置中可以给界面和文本分别设置不同的字体，在 “Hinting” 选项建议勾选 “Full” 拉高字体，否则显得扁
 
     也可使用命令：
 
@@ -8932,13 +8932,20 @@ Linux 下字体根据印刷专业的区分方法，设置了三种风格：sans�
 
 这三种风格的字体又细分，对东亚字符 CJK 来说支持简体中文 SC、繁体中文 TC、日文 JP、韩文 KR。
 
-目前各大软件中，只有 Firefox 可在 about:config 中进行这三种展示情况的单独设置
+目前各大软件中，只有 Firefox 可在 about:config 中进行这三种风格的单独设置，其它的软件都自动处理这些细节了。
 
 > fontconfig 配置支持回落，使得中英文显示对应的字体
 
-强烈建议在没有阅读 fontconfig 用户手册和一定动手能力的情况下不要配置 local.conf，不正确的设置会导致一些奇怪的字体问题。
+Linux 一般使用 fontconfig 程序
 
-网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，但是随着发行版的进步，现在安装字体已经无须设置 local.conf，一般都是使用 fontconfig 配置修改 /etc/fonts/fonts.conf。
+    https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
+        https://www.freedesktop.org/wiki/Software/fontconfig/
+
+配置文件的位置比较乱
+
+    $ fc-conflist
+
+    网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，但是随着发行版的进步，现在安装字体已经无须设置 local.conf，一般都是使用 /etc/fonts/fonts.conf。
 
 法一：简单起见，我们直接编辑 /etc/fonts/local.conf 文件
 
