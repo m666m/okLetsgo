@@ -7927,7 +7927,7 @@ Rclone 和 Restic 的相同点
 
 NFS就是Network File System的缩写，它最大的功能就是可以通过网络，让不同的机器、不同的操作系统可以共享彼此的文件。
 
-​ NFS服务器可以让PC将网络中的NFS服务器共享的目录挂载到本地端的文件系统中，而在本地端的系统中来看，那个远程主机的目录就好像是自己的一个磁盘分区一样，在使用上相当便利；
+NFS服务器可以让 PC 将网络中的 NFS 服务器共享的目录挂载到本地端的文件系统中，而在本地端的系统中来看，那个远程主机的目录就好像是自己的一个磁盘分区一样，在使用上相当便利。
 
 NFS 一般用来存储共享视频，图片等静态数据。
 
@@ -7959,11 +7959,15 @@ NFS 一般用来存储共享视频，图片等静态数据。
 
 ### 为移动硬盘安装 udisks2 软件包
 
+    https://freedesktop.org/wiki/Software/udisks/
+
+    https://wiki.archlinux.org/title/Udisks
+
 关机时需要同步移动硬盘的缓存，Linux 居然默认不带这个服务
 
     apt install udisks2
 
-不需要显式启用udisksd，它由 D-Bus 按需启动，也就是说，在你插上移动硬盘的时候才会自动启动。
+不需要显式启用守护进程 udisksd，它由 D-Bus 按需启动，也就是说，在你插上移动硬盘的时候才会自动启动。
 
 ### ssd 硬盘设置预留空间OP(Over-Provision)
 
