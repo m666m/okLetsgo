@@ -467,15 +467,11 @@ function PS1git-branch-prompt {
     fi
 }
 
-#################################
-# Linux bash
 # 不同颜色的主机名，本地环境是绿色，ssh 登录的远程变为 洋红
 function PS1_host_name {
     [[ -n $SSH_TTY ]] && echo -e "\033[0;35m$(hostname)" || echo -e "\033[0;32m$(hostname)"
 }
 
-#################################
-# Linux bash
 # 提示当前在 toolbox 或 distrobox 等交互式容器环境
 # https://docs.fedoraproject.org/en-US/fedora-silverblue/tips-and-tricks/#_working_with_toolbx
 # https://ublue.it/guide/toolbox/#using-the-hosts-xdg-open-inside-distrobox
