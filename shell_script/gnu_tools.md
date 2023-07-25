@@ -8960,7 +8960,8 @@ Linux 一般使用 fontconfig 程序
 
 Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的方案显示中文太丑了，需要手工改设置，也是利用回落：
 
-    https://github.com/notofonts/noto-cjk
+    https://github.com/notofonts/noto-cjk/tree/main/Sans
+    https://github.com/notofonts/noto-cjk/tree/main/Serif
 
     https://aur.archlinux.org/packages/noto-fonts-cjk-hk-vf
 
