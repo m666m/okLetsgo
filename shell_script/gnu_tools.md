@@ -10314,6 +10314,152 @@ Bitwarden 可 docker 部署实现自托管
 
     https://zhuanlan.zhihu.com/p/130492433
 
+### Linux 下的 “Windows Hello” 人脸识别认证 --- Howdy
+
+    “Windows Hello” 标准是你的摄像头应该是支持带红外发射器的摄像头 IR camera，howdy 不强制要求
+
+基于人脸识别和指纹识别的认证解锁功能，使用摄像头识别面部，直接解锁登录、sudo 等需要手工密码的场合
+
+    https://github.com/boltgolt/howdy
+
+        Fedora 下的安装和设置说明 https://copr.fedorainfracloud.org/coprs/principis/howdy/
+
+    这里说了红外发射器的调试 https://wiki.archlinux.org/title/Howdy
+
+    中文 https://www.sysgeek.cn/howdy-face-unlock-linux/
+
+Howdy 通过 OpenCV 和 Python 构建，使用内置红外发射器的摄像头来识别用户面部。通过调用 Linux 的 PAM 身份验证系统，意味着不仅可以人脸识别登录，还可以将其用于 sudo、su 以及大多数需要使用其他帐户密码的场景。
+
+Fedora 下安装 howdy
+
+    $ sudo dnf copr enable principis/howdy
+    $ sudo dnf --refresh install howdy
+
+    可选：如果 Linux 不支持你的红外发射器，在这里安装驱动
+
+        https://github.com/EmixamPP/linux-enable-ir-emitter
+
+1、确定红外摄像头设备
+
+    普通摄像头是 /dev/video0 ，打开红外传感器的摄像头是 /dev/video2
+
+    列出当前所有的摄像头设备
+
+        $ ls /dev/video*
+
+    用 VLC 中的 媒体 - 打开捕获设备 - 高级选项（advance options），选择视频捕获设备是 /dev/video0， 确定 - 播放 之后确实显示的摄像头的画面，因此确定了摄像头标识就是 /dev/video0
+
+    可选安装 摄像头管理软件包 v4l-utils
+
+        $ sudo dnf install v4l-utils
+
+        列出当前所有的摄像头设备
+
+            $ v4l2-ctl --list-devices
+            UVC Camera (046d:0825) (usb-0000:00:14.0-9):
+                /dev/video0
+                /dev/video1
+                /dev/media0
+
+        查看当前摄像头支持的像素尺寸，如果有的摄像头不工作，尝试在 howdy config 里设置下合适的分辨率
+
+            $ v4l2-ctl -d /dev/video0 --list-formats-ext
+
+2、配置摄像头
+
+注意要配置打开红外发射器的那个摄像头，一般是 /dev/video2
+
+    $ env EDITOR=vi sudo howdy config
+
+    或编辑 /lib64/security/howdy/config.ini 文件
+
+        device_path = /dev/video2
+
+验证摄像头配置
+
+    $ sudo howdy test
+
+    会打开一个窗口显示摄像头的内容
+
+3、配置 PAM
+
+解锁 sudo，编辑 /etc/pam.d/sudo 文件，在排除注释语句后的首行加入如下内容
+
+    #%PAM-1.0
+    auth       sufficient   pam_python.so /lib64/security/howdy/pam.py  <--要保证在最前
+    auth       include      system-auth
+    account    include      system-auth
+    ...
+
+解锁登录密码，编辑 /etc/pam.d/gdm-password
+
+    auth     [success=done ignore=ignore default=bad] pam_selinux_permit.so
+    auth        sufficient    pam_python.so /lib64/security/howdy/pam.py  <-- 添加在这两行之间
+    auth        substack      password-auth
+
+解锁锁屏密码
+
+    ...
+
+4、手工调整
+
+改个权限
+
+    chmod o+x /lib64/security/howdy/dlib-data
+
+避免 sudo 认证成功后总是打印调试信息：
+
+    编辑 /etc/profile.d/howdy.sh 和 /etc/profile.d/howdy.csh 文件，查找如下内容
+
+        OPENCV_VIDEOIO_PRIORITY_INTEL_MFX
+
+    取消找到的语句的注释
+
+避免自动拍照存档，编辑 /lib64/security/howdy/config.ini
+
+    https://wiki.archlinux.org/title/Howdy#Secure_the_installation
+
+    [snapshots]
+    capture_failed = false
+    capture_successful = false
+
+    否则默认扔到 /lib64/security/howdy/snapshots 下面
+
+5、配置 SELinux，编辑一个 howdy.te 文件
+
+    https://github.com/boltgolt/howdy/issues/711#issuecomment-1306559496
+
+```conf
+module howdy 1.0;
+
+require {
+    type lib_t;
+    type xdm_t;
+    type v4l_device_t;
+    type sysctl_vm_t;
+    class chr_file map;
+    class file { create getattr open read write };
+    class dir add_name;
+}
+
+#============= xdm_t ==============
+allow xdm_t lib_t:dir add_name;
+allow xdm_t lib_t:file { create write };
+allow xdm_t sysctl_vm_t:file { getattr open read };
+allow xdm_t v4l_device_t:chr_file map;
+
+```
+
+然后执行如下命令：
+
+    $ checkmodule -M -m -o howdy.mod howdy.te
+    $ semodule_package -o howdy.pp -m howdy.mod
+    $ sudo semodule -i howdy.pp
+
+6、添加一个面部模型：
+
+    $ sudo howdy add
+
 ### 远程桌面 vnc/rdp/mstsc
 
     就 X windows 桌面来说，本来就没有不远程的，XServer 和 XClient 放在一台电脑上就是本地桌面，通过  ssh -x 连接就远程了，没有本质区别。

@@ -25,6 +25,9 @@
 # zsh 命令行用 bindkey -v 来设置 vi 操作模式令
 set -o vi
 
+# 有些软件默认使用变量 EDITOR 指定的编辑器，一般是nano
+export EDITOR=/usr/bin/vi
+
 # 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存哪些不常用的命令
 # 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以 在新行中输入密钥。
 # export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
