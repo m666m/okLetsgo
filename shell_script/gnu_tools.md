@@ -8976,16 +8976,18 @@ OpenType 标准将是未来字体显示技术的主流
 
 #### 使中英文分别使用一种字体
 
-Linux 操作系统一般都内置 fontconfig 程序选择字体，默认无需用户干预，该程序支持配置字体的回落（fallback）
+Linux 操作系统一般都内置 fontconfig 程序选择字体，默认无需用户干预
 
     https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
         https://www.freedesktop.org/wiki/Software/fontconfig/
 
-配置文件的位置比较乱
+该程序支持字体的回落（fallback），可以实现中英文分别使用不同的字体，但需要用户手工配置，且配置文件的位置比较乱
 
     $ fc-conflist
 
-    网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，但是随着发行版的进步，现在安装字体已经无须设置 local.conf，一般都是使用 /etc/fonts/fonts.conf。
+网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，实现见下面 “法一”。
+
+随着发行版的进步，一般都是使用 /etc/fonts/fonts.conf，实现见下面 “法二”。
 
 Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的 Cantarell 字体显示中文太丑了，需要手工改设置，利用回落：
 
@@ -9093,11 +9095,11 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 
 法二：更符合 XDG 规范的用法是写入如下文件
 
-    ~/.config/fontconfig/conf.d 和 ~/.config/fontconfig/fonts.conf
+    $XDG_CONFIG_HOME/fontconfig/conf.d 和 $XDG_CONFIG_HOME/fontconfig/fonts.conf
 
     另一个例子 https://github.com/rydesun/dotfiles/blob/master/.config/fontconfig/conf.d/
 
-来自 tinywrkb <https://aur.archlinux.org/packages/noto-fonts-cjk-hk-vf> 的例子，编辑 $XDG_CONFIG_HOME/fontconfig/fonts.conf 文件：
+来自 tinywrkb <https://aur.archlinux.org/packages/noto-fonts-cjk-vf> 的例子，编辑 $XDG_CONFIG_HOME/fontconfig/fonts.conf 文件：
 
 ```xml
 <alias>
