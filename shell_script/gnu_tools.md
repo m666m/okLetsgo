@@ -10290,7 +10290,7 @@ GNOME Keyring
 
     如果你修改了账户密码，记得还得重设钥匙圈密码。假如你不记得仍然被钥匙圈使用的老的账户密码：只能移除老的钥匙圈，也就是说你保存的那些密码也都删掉了
 
-KDE 上的叫 KDE 钱包（KWallet）
+KDE 上的叫 KDE 钱包（KWallet），终于在 22 版后改为更贴切的 KDE 密码库了。
 
     https://userbase.kde.org/KDE_Wallet_Manager
 
@@ -10316,19 +10316,21 @@ Bitwarden 可 docker 部署实现自托管
 
 ### Linux 下的 “Windows Hello” 人脸识别认证 --- Howdy
 
-    “Windows Hello” 标准是你的摄像头应该是支持带红外发射器的摄像头 IR camera，howdy 不强制要求
-
 基于人脸识别和指纹识别的认证解锁功能，使用摄像头识别面部，直接解锁登录、sudo 等需要手工密码的场合
 
     https://github.com/boltgolt/howdy
 
         Fedora 下的安装和设置说明 https://copr.fedorainfracloud.org/coprs/principis/howdy/
 
+    评论很全面 https://linuxreviews.org/Howdy
+
     这里说了红外发射器的调试 https://wiki.archlinux.org/title/Howdy
 
-    中文 https://www.sysgeek.cn/howdy-face-unlock-linux/
+    中文最全面的 https://wszqkzqk.github.io/2021/08/17/%E5%9C%A8Manjaro%E4%B8%8B%E9%85%8D%E7%BD%AE%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB/
 
-Howdy 通过 OpenCV 和 Python 构建，使用内置红外发射器的摄像头来识别用户面部。通过调用 Linux 的 PAM 身份验证系统，意味着不仅可以人脸识别登录，还可以将其用于 sudo、su 以及大多数需要使用其他帐户密码的场景。
+“Windows Hello” 标准是内置红外发射器的摄像头 IR camera，但 howdy 不强制要求。
+
+Howdy 通过 OpenCV 和 Python 构建，使用内置红外发射器的摄像头来识别用户面部。通过调用 Linux 的 PAM 身份验证系统，意味着不仅可以人脸识别登录，还可以将其用于 sudo、su、polkit-1 以及大多数需要使用其他帐户密码的场景。
 
 Fedora 下安装 howdy
 
@@ -10339,7 +10341,7 @@ Fedora 下安装 howdy
 
         https://github.com/EmixamPP/linux-enable-ir-emitter
 
-1、确定红外摄像头设备
+1、确定摄像头设备
 
     普通摄像头是 /dev/video0 ，打开红外传感器的摄像头是 /dev/video2
 
@@ -10347,7 +10349,9 @@ Fedora 下安装 howdy
 
         $ ls /dev/video*
 
-    用 VLC 中的 媒体 - 打开捕获设备 - 高级选项（advance options），选择视频捕获设备是 /dev/video0， 确定 - 播放 之后确实显示的摄像头的画面，因此确定了摄像头标识就是 /dev/video0
+    可以用 VLC 进行确认
+
+        vlc 菜单中的 媒体 - 打开捕获设备 - 高级选项（advance options），选择视频捕获设备 /dev/video0， 确定 - 播放 之后确实显示的摄像头的画面，因此确定了摄像头标识就是 /dev/video0
 
     可选安装 摄像头管理软件包 v4l-utils
 
@@ -10367,11 +10371,13 @@ Fedora 下安装 howdy
 
 2、配置摄像头
 
-注意要配置打开红外发射器的那个摄像头，一般是 /dev/video2
+    开启红外发射功能提高识别的准确度与安全性，而且红外发射式还支持全黑暗状态下的人脸识别
 
-    $ env EDITOR=vi sudo howdy config
+如果要配置打开红外发射器的那个摄像头，一般是 /dev/video2，否则是 /dev/video0
 
-    或编辑 /lib64/security/howdy/config.ini 文件
+    $ sudo howdy config 会调用 nano 打开配置文件
+
+    或直接手工编辑 /lib64/security/howdy/config.ini 文件
 
         device_path = /dev/video2
 
@@ -10382,6 +10388,8 @@ Fedora 下安装 howdy
     会打开一个窗口显示摄像头的内容
 
 3、配置 PAM
+
+默认优先使用人脸识别进行验证，若验证失败，也可输入密码进行验证。
 
 解锁 sudo，编辑 /etc/pam.d/sudo 文件，在排除注释语句后的首行加入如下内容
 
@@ -10401,19 +10409,11 @@ Fedora 下安装 howdy
 
     ...
 
+    锁屏界面中，人脸识别都并非是像 Windows Hello™ 中那样自动启动，若需要使用人脸识别登录，需要敲击回车键或点击登录按钮（无需输入密码）
+
+polkit-1 这样的 GUI 授权验证工具会在使用人脸识别时同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，若人脸识别失败，同样可以使用密码验证
+
 4、手工调整
-
-改个权限
-
-    chmod o+x /lib64/security/howdy/dlib-data
-
-避免 sudo 认证成功后总是打印调试信息：
-
-    编辑 /etc/profile.d/howdy.sh 和 /etc/profile.d/howdy.csh 文件，查找如下内容
-
-        OPENCV_VIDEOIO_PRIORITY_INTEL_MFX
-
-    取消找到的语句的注释
 
 避免自动拍照存档，编辑 /lib64/security/howdy/config.ini
 
@@ -10424,6 +10424,20 @@ Fedora 下安装 howdy
     capture_successful = false
 
     否则默认扔到 /lib64/security/howdy/snapshots 下面
+
+避免 sudo 认证成功后总是打印调试信息：
+
+    编辑 /etc/profile.d/howdy.sh 和 /etc/profile.d/howdy.csh 文件，查找如下内容
+
+        OPENCV_VIDEOIO_PRIORITY_INTEL_MFX
+
+    取消找到的语句的注释
+
+改个权限：
+
+因为大多数桌面环境内置的锁屏界面（不是指DM的登录界面）并未以root身份运行，而howdy的文件在默认状态下对非root用户不可读，故此时锁屏界面无法启用人脸识别
+
+    chmod o+x /lib64/security/howdy/dlib-data
 
 5、配置 SELinux，编辑一个 howdy.te 文件
 
@@ -10458,7 +10472,25 @@ allow xdm_t v4l_device_t:chr_file map;
 
 6、添加一个面部模型：
 
+给当前用户添加，会提示给个标签，即一个用户可以有多个面部模型
+
     $ sudo howdy add
+
+给其它用户添加
+
+    $ sudo howdy -U other_user add
+
+其它命令
+
+    sudo howdy list             查看记录的面部模型列表
+    sudo howdy remove face_ID   删除指定 ID 的面部记录
+    sudo howdy clear            清除所有面部模型记录
+    sudo howdy disable 1        禁用 Howdy 功能
+    sudo howdy disable 0        启用 Howdy 功能
+
+7、验证功能
+
+    $ sudo whoami
 
 ### 远程桌面 vnc/rdp/mstsc
 
