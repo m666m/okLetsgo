@@ -9011,7 +9011,8 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 我的 Fedora 发行版只安装了 Sans，没有 Serif，先手动安装下
 
     # https://fedoraproject.org/wiki/Changes/Noto_CJK_Variable_Fonts#Detailed_Description
-    # 合集：google-noto-serif-cjk-fonts 是 OTF 文件打包，google-noto-serif-cjk-ttc-fonts 是 OTC 格式打包
+    # 所有字体的完整版：google-noto-cjk-fonts
+    # Serif 合集：google-noto-serif-cjk-fonts 是 OTF 文件打包，google-noto-serif-cjk-ttc-fonts 是 OTC 格式打包
     #   也可以只安装简体中文 google-noto-serif-sc-fonts
     # $ sudo dnf install google-noto-serif-cjk-fonts
 
