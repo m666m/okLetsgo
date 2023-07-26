@@ -9250,6 +9250,8 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
 
+        Vitals                  在任务栏显示你的cpu、内存使用情况，竞品 Freon
+
         User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开
 
             Gnome 主题乐园，在这里搜一下 Gnome Shell Themes 类别，你的 Gnome 桌面就大变样了
@@ -9258,17 +9260,23 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
                 https://www.pling.com/
 
-                推荐：创·战纪 风格的东京夜
+                推荐：
 
-                    https://www.gnome-look.org/p/1681470
+                    创·战纪 风格的东京夜
+                        https://www.gnome-look.org/p/1681470
+
+                    北极
+                        https://www.pling.com/p/1267246
 
             如何使用主题：
 
-                先下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
+                安装 Murrine Engine
 
-                然后打开 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择你的主题扩展的文件夹
+                    sudo dnf install gtk-murrine-engine
 
-        Vitals                  在任务栏显示你的cpu、内存使用情况，竞品 Freon
+                下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
+
+                然后打开 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择刚才的zip文件即可
 
 GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “Tweaks”，或使用命令行
 
@@ -9481,6 +9489,10 @@ X window 是一个技术体系
 查看当前桌面环境是什么类型
 
     $ echo $XDG_SESSION_TYPE
+
+GTK+ and Qt
+
+    这两个是GUI toolkits，这两个是软件库，类似c语言的stdio.h，win32，java里import的各种外部包，可以任开发者调用（应该是C/C++使用的库）去创建一些图形界面里面的控件，例如button，下拉菜单，窗口等。我记得JAVA里面也有类似AWT和Swing库。用这一套库开发出的图形空间将会有一套统一的风格和标准，这就是不同系统安装的不同软件有的时候会有相同的样式，因为他们可能使用了GTK或者QT的库。KDE默认使用Qt库开发，Gnome默认使用GTK+库开发，而这两套库又是基于X window server的，需要遵守x11协议，在xwindow server上运行，作为client应用实现的基础类库。
 
 #### Wayland
 
