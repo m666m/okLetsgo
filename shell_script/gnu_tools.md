@@ -9250,33 +9250,11 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
 
+        blur my shell           透明模糊你的任务栏和概览窗口，注意有些主题的边缘会不透明
+
         Vitals                  在任务栏显示你的cpu、内存使用情况，竞品 Freon
 
         User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开
-
-            Gnome 主题乐园，在这里搜一下 Gnome Shell Themes 类别，你的 Gnome 桌面就大变样了
-
-                https://www.gnome-look.org/
-
-                https://www.pling.com/
-
-                推荐：
-
-                    创·战纪 风格的东京夜
-                        https://www.gnome-look.org/p/1681470
-
-                    北极
-                        https://www.pling.com/p/1267246
-
-            如何使用主题：
-
-                安装 Murrine Engine
-
-                    sudo dnf install gtk-murrine-engine
-
-                下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
-
-                然后打开 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择刚才的zip文件即可
 
 GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “Tweaks”，或使用命令行
 
@@ -9297,6 +9275,43 @@ GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “T
     dconf
 
     gsettings
+
+#### 使用 gnome 主题
+
+Gnome 主题乐园，在这里搜一下 Gnome Shell Themes 类别，你的 Gnome 任务栏就大变样了
+
+    https://www.gnome-look.org/
+
+    https://www.pling.com/
+
+    推荐：
+
+        创·战纪 风格的东京夜
+            https://www.gnome-look.org/p/1681470
+                https://github.com/Fausto-Korpsvart/Tokyo-Night-GTK-Theme
+
+        北极
+            https://www.pling.com/p/1267246
+                https://github.com/EliverLara/Nordic
+
+        Flat Remix，绿色的还行，只支持白底
+            https://www.pling.com/p/1013030
+                https://github.com/daniruiz/Flat-Remix-GNOME-theme
+
+        说明写的很清楚
+            https://github.com/vinceliuice/WhiteSur-gtk-theme
+
+如何使用主题：
+
+gnome 扩展要安装 User Themes
+
+安装 Murrine Engine 以兼容支持旧的 gtk2 标准
+
+    sudo dnf install gtk-murrine-engine
+
+下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
+
+然后打开 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择刚才的zip文件即可
 
 ### 使用 KDE 桌面
 
