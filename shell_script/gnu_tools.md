@@ -9250,6 +9250,8 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
 
+        GSConnect               操作局域网联网的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”
+
         blur my shell           透明模糊你的任务栏和概览窗口，注意有些主题的边缘会不透明
 
         Vitals                  在任务栏显示你的cpu、内存使用情况，竞品 Freon
