@@ -8922,7 +8922,7 @@ Gnome:
 
 如何利用 Windows、Linux 都默认支持的字体回落机制，选择多个中英文字体，使得显示英文使用一种字体，显示中文使用另一种字体，参见章节 [使中英文分别使用一种字体]。
 
-> 界面上的字体到底是怎么显示的
+> 前置知识：界面上的字体到底是怎么显示的
 
     https://zhuanlan.zhihu.com/p/32961737
 
@@ -8940,37 +8940,39 @@ Gnome:
 
 目前各大软件中，只有 Firefox 可在 about:config 中针对这三种风格的分别设置，其它的软件都自动处理这些细节了。
 
-    字体文件的格式跟印刷和显示器行业的发展紧密关联：
+> 前置知识；字体文件的格式
 
-        https://www.ottoli.cn/study/fonts
+    https://www.ottoli.cn/study/fonts
 
-        1970年代，西方的字体业界正在从照相排版（Photocomposition）转移到数码排版（Digital Publishing）。彼时技术非常不成熟，无论是行将就木的照排机，还是方兴未艾的电脑，印刷效果都非常差。
+字体文件的格式跟印刷和显示器行业的发展紧密关联
 
-        在 PostScript 出现之前，打印机多以点阵形式实现，也就是一种位图格式。有点类似于现在我们经常见到的各种购物小票或者电影票，喵喵机打印的也是这种点阵字符。这种打印方式打印的字符很不清晰，特别是放大后总是出现锯齿。
+    1970年代，西方的字体业界正在从照相排版（Photocomposition）转移到数码排版（Digital Publishing）。彼时技术非常不成熟，无论是行将就木的照排机，还是方兴未艾的电脑，印刷效果都非常差。
 
-        PostScript 是 Adobe 公司在 1984 年开发的页面描述语言。我们现在熟知的 PDF、XPS、SVG 都是同类型的东西。同时它也是个完备的编程语言，用函数的方式描述原本用点阵形式呈现的字符，实现了计算机时代任意球放大缩小字符都不会导致字体显示出现锯齿的效果。Type 1 是作为PostScript的一部分出现的一个配套字体文件，一般由 *.pfm，*.pfb，*.afm，*.inf 四个文件组成。
+    在 PostScript 出现之前，打印机多以点阵形式实现，也就是一种位图格式。有点类似于现在我们经常见到的各种购物小票或者电影票，喵喵机打印的也是这种点阵字符。这种打印方式打印的字符很不清晰，特别是放大后总是出现锯齿。
 
-        苹果公司为了对抗 Adobe 开发的 PostScript Type 1 字体，开发了 TrueType 字体。后来，微软也加入了 TrueType 的开发。相对于商业封闭严密的 PostScript 字体，TrueType 技术规范全部公开，不收取一分钱的授权费（No royalty）。TrueType 随后成为了应用最广泛的屏幕显示字体格式。TrueType 字体文件在 Windows 中的格式为 .ttf（TrueType Fonts）或 .ttc（TrueType Collection），在 MacOS 中为 .dfont。
+    PostScript 是 Adobe 公司在 1984 年开发的页面描述语言。我们现在熟知的 PDF、XPS、SVG 都是同类型的东西。同时它也是个完备的编程语言，用函数的方式描述原本用点阵形式呈现的字符，实现了计算机时代任意球放大缩小字符都不会导致字体显示出现锯齿的效果。Type 1 是作为PostScript的一部分出现的一个配套字体文件，一般由 *.pfm，*.pfb，*.afm，*.inf 四个文件组成。
 
-        Hinting（渲染微调）是为了防止在显示时出现的字体走形的修正程序，TrueType 对于字体中的每一个字符（glyph），都有一套与之相对应的 hint。这样看来，一套一套的 hint 就相当于高德纳 Metafont 中的一个个小程序。
+    苹果公司为了对抗 Adobe 开发的 PostScript Type 1 字体，开发了 TrueType 字体。后来，微软也加入了 TrueType 的开发。相对于商业封闭严密的 PostScript 字体，TrueType 技术规范全部公开，不收取一分钱的授权费（No royalty）。TrueType 随后成为了应用最广泛的屏幕显示字体格式。TrueType 字体文件在 Windows 中的格式为 .ttf（TrueType Fonts）或 .ttc（TrueType Collection），在 MacOS 中为 .dfont。
 
-        微软还在1994年开发了一个叫“智能字体”（TrueType Open）的技术，两年后与 Adobe 的 Type 1 技术合并，共同开发了新一代字体格式 OpenType，用来代替 TrueType 的地位。再之后，苹果和谷歌也陆续加入了 OpenType 的开发。
+    Hinting（渲染微调）是为了防止在显示时出现的字体走形的修正程序，TrueType 对于字体中的每一个字符（glyph），都有一套与之相对应的 hint。这样看来，一套一套的 hint 就相当于高德纳 Metafont 中的一个个小程序。
 
-    OpenType 标准将是未来字体显示技术的主流
+    微软还在1994年开发了一个叫“智能字体”（TrueType Open）的技术，两年后与 Adobe 的 Type 1 技术合并，共同开发了新一代字体格式 OpenType，用来代替 TrueType 的地位。再之后，苹果和谷歌也陆续加入了 OpenType 的开发。
 
-        OpenType 向下兼容 TrueType 以及 PostScript 字体，扩展名可能为 .otf、.otc、.ttf、.ttc 等。使用 PostScript 曲线的 OpenType 字体格式为 .otf、.otc，使用 TrueType 曲线的格式为 .ttf、.ttc。
+OpenType 标准将是未来字体显示技术的主流
 
-        OpenType 字体编码基于万国码（Unicode），可以支持任何文本，或者同时支持多种文本。一个 OpenType 字体可以带有最多 65,536 个字形，基本满足绝大多数地区的使用需求，OpenType 拥有良好的跨平台兼容性，能够在 Mac OS，Windows 和一些 Unix 系统中进行设置。
+    OpenType 向下兼容 TrueType 以及 PostScript 字体，扩展名可能为 .otf、.otc、.ttf、.ttc 等。使用 PostScript 曲线的 OpenType 字体格式为 .otf、.otc，使用 TrueType 曲线的格式为 .ttf、.ttc。
 
-        后续出现的 OpenType 可变字体（OpenType variable fonts）技术能够储存轮廓变化数据，在初始字形轮廓的基础上自动生成丰富的变化造型，高德纳（Donald Knuth）当年用 Metafont 创立的曲线自动调整技术发扬光大，无极字重成为现实 <https://mp.weixin.qq.com/s?__biz=MzA3MjM1MDUzMQ==&mid=2660341229&idx=1&sn=362723b69ae82aedd87689a5ab4b4c3a&chksm=847a9bc1b30d12d7e94a1d287dbe0774a3dd9405128ca4fb562f60d36d2b0260061d3798f51f&scene=21#wechat_redirect>。
+    OpenType 字体编码基于万国码（Unicode），可以支持任何文本，或者同时支持多种文本。一个 OpenType 字体可以带有最多 65,536 个字形，基本满足绝大多数地区的使用需求，OpenType 拥有良好的跨平台兼容性，能够在 Mac OS，Windows 和一些 Unix 系统中进行设置。
 
-        基于 TrueType 的 OpenType 字体使用 .ttf 扩展名
+    后续出现的 OpenType 可变字体（OpenType variable fonts）技术能够储存轮廓变化数据，在初始字形轮廓的基础上自动生成丰富的变化造型，高德纳（Donald Knuth）当年用 Metafont 创立的曲线自动调整技术发扬光大，无极字重成为现实 <https://mp.weixin.qq.com/s?__biz=MzA3MjM1MDUzMQ==&mid=2660341229&idx=1&sn=362723b69ae82aedd87689a5ab4b4c3a&chksm=847a9bc1b30d12d7e94a1d287dbe0774a3dd9405128ca4fb562f60d36d2b0260061d3798f51f&scene=21#wechat_redirect>。
 
-        基于 PostScript 的 OpenType 字体使用 .otf 扩展名
+    基于 TrueType 的 OpenType 字体使用 .ttf 扩展名
 
-        .otc 是字体合集（OpenType Collection）它是一个集成文件，在一单独文件结构中包含多种字体，OTC 字体安装后在字体列表中会看到两个以上的字体。当两个字体中大部分字都一样时，为共享笔划数据，可以将两种字体做成一个 OTC 文件，以便更有效地共享轮廓数据。主要是为了适应多种字体共享同一笔画，区别只是字符宽度不一样，以适应不同的版面排版要求，这时 OTC 技术可有效地减小字体文件的大小。而 OTF 字体则只包含一种字型。
+    基于 PostScript 的 OpenType 字体使用 .otf 扩展名
 
-        .ttc（TrueType Collection），它是TrueType字体集成文件(. TTC文件)
+    .otc 是字体合集（OpenType Collection）它是一个集成文件，在一单独文件结构中包含多种字体，OTC 字体安装后在字体列表中会看到两个以上的字体。当两个字体中大部分字都一样时，为共享笔划数据，可以将两种字体做成一个 OTC 文件，以便更有效地共享轮廓数据。主要是为了适应多种字体共享同一笔画，区别只是字符宽度不一样，以适应不同的版面排版要求，这时 OTC 技术可有效地减小字体文件的大小。而 OTF 字体则只包含一种字型。
+
+    .ttc（TrueType Collection），它是TrueType字体集成文件(. TTC文件)
 
 #### 使中英文分别使用一种字体
 
@@ -9008,7 +9010,7 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 
     上述配置文件对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样就实现了显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
 
-我的 Fedora 发行版只安装了 Sans，没有 Serif，先手动安装下
+我的 Fedora 38 发行版只安装了 Sans，没有 Serif，先手动安装下
 
     # https://fedoraproject.org/wiki/Changes/Noto_CJK_Variable_Fonts#Detailed_Description
     # 所有字体的完整版：google-noto-cjk-fonts
