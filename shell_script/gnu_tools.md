@@ -8902,7 +8902,11 @@ Gnome:
 
     简体中文支持 https://wiki.archlinux.org/title/Localization/Simplified_Chinese
 
-使用 gnome-tweak-tool 直观方便，在 “Font” 设置中可以给界面和文本分别设置不同的字体，在 “Hinting” 选项建议勾选 “Full” 拉高字体，否则显得扁
+查看当前系统安装的中文字体
+
+    $ fc-list :lang=zh
+
+使用 gnome-tweak-tool 直观方便，在 “Font” 设置中可以给界面和文本分别设置不同的字体，在 “Hinting”（渲染微调）选项建议勾选 “Full” 拉高字体，否则显得扁
 
     也可使用命令：
 
@@ -8912,29 +8916,63 @@ Gnome:
         # 设置桌面环境的字体
         $ gsettings set org.gnome.desktop.interface font-name 'Cantarell 10'
 
-查看当前系统安装的中文字体
+单一调整桌面环境的字体设置，比如选择中文字体，会默认使用该字体内置的英文字体。
 
-    $ fc-list :lang=zh
+而我们最需要的，是类似 MS Word 这样的，可以让用户明确指定一篇文章里的中、英文字体。
 
-> 基础知识
+以下介绍如何利用 Windows、Linux 都默认支持的字体回落机制，选择多个中英文字体，使得显示英文使用一种字体，显示中文使用另一种字体。
+
+> 界面上的字体到底是怎么显示的
 
     https://zhuanlan.zhihu.com/p/32961737
 
-Linux 下字体根据印刷专业的区分方法，设置了三种风格：sans、serif、mono
+根据印刷专业的区分方法，字体可以分别设置三种风格：sans、serif、mono，Windows 和 Linux 都支持同时设置此三种风格的字体，且可以设置多个
 
-    sans 在古希腊语言中是 without 的意思，现在英语里面也有这个词。在西方国家的罗马字母阵营中，字体分为两大种类：Sans Serif 和 Serif，打字机体虽然也属于 Sans Serif，但由于是等宽字体，所以另外独立出 Monospace 这一种类。
+    在西方国家的罗马字母阵营中，字体分为两大种类：Sans Serif 和 Serif，现代在机械打字机出现后，针对打字机的特点单独归类了字体：虽然也属于 Sans Serif，但由于是等宽字体，所以另外独立出 Monospace 这一种类。
 
-    Serif 的意思是有衬线，比如 Times New Roma、宋体、楷体，适合正文阅读
+    Serif 的意思是有衬线，即文字带笔锋，比如 Times New Roma、仿宋体、楷体，中规中具适合正文阅读，Windows 在文字处理软件中使用 Serif 风格的字体。Serif 是印刷行业最初的字体风格。
 
-    Sans Serif 则没有这些额外的装饰，笔划粗细大致差不多，比如 Tahoma、黑体、幼圆，适合标题等醒目场合
+    sans 在古希腊语中是 without 的意思，现在英语里面也有这个词。所以，Sans Serif 没有这些额外的装饰，笔划粗细大致差不多，比如 Tahoma、黑体、幼圆，适合标题等醒目场合，Windows 在窗口的标题栏等位置使用 san 风格的字体。宋体是明代为适应木版印刷的木纹特点发明的字体。Sans Serif 是近代点阵打印机、电子屏幕流行后为适应点阵化的显示出现的字体风格。
 
-    Monospace 等宽字体，比如 Courier New、Consolas，适合编程写代码等格式严谨上下行的字符严格对齐的场合
+    Monospace 等宽字体，比如 Courier New、Consolas，适合会计数字、编程写代码等格式严谨上下行的字符严格对齐的场合。
 
-这三种风格的字体又细分，对东亚字符 CJK 来说支持简体中文 SC、繁体中文 TC、日文 JP、韩文 KR。
+对东亚字符 CJK 来说，这三种风格的字体又细分出支持简体中文 SC、繁体中文 TC、日文 JP、韩文 KR的分支。有些异体字（Variable Font）三种文字中都有，需要三国统一设计方案，即一个字体即可显示三国的文字。
 
-目前各大软件中，只有 Firefox 可在 about:config 中进行这三种风格的单独设置，其它的软件都自动处理这些细节了。
+目前各大软件中，只有 Firefox 可在 about:config 中针对这三种风格的分别设置，其它的软件都自动处理这些细节了。
 
-> fontconfig 配置支持回落，使得中英文显示对应的字体
+    字体文件的格式跟印刷和显示器行业的发展紧密关联：
+
+        https://www.ottoli.cn/study/fonts
+
+        1970年代，西方的字体业界正在从照相排版（Photocomposition）转移到数码排版（Digital Publishing）。彼时技术非常不成熟，无论是行将就木的照排机，还是方兴未艾的电脑，印刷效果都非常差。
+
+        在 PostScript 出现之前，打印机多以点阵形式实现，也就是一种位图格式。有点类似于现在我们经常见到的各种购物小票或者电影票，喵喵机打印的也是这种点阵字符。这种打印方式打印的字符很不清晰，特别是放大后总是出现锯齿。
+
+        PostScript 是 Adobe 公司在 1984 年开发的页面描述语言。我们现在熟知的 PDF、XPS、SVG 都是同类型的东西。同时它也是个完备的编程语言，用函数的方式描述原本用点阵形式呈现的字符，实现了计算机时代任意球放大缩小字符都不会导致字体显示出现锯齿的效果。Type 1 是作为PostScript的一部分出现的一个配套字体文件，一般由 *.pfm，*.pfb，*.afm，*.inf 四个文件组成。
+
+        苹果公司为了对抗 Adobe 开发的 PostScript Type 1 字体，开发了 TrueType 字体。后来，微软也加入了 TrueType 的开发。相对于商业封闭严密的 PostScript 字体，TrueType 技术规范全部公开，不收取一分钱的授权费（No royalty）。TrueType 随后成为了应用最广泛的屏幕显示字体格式。TrueType 字体文件在 Windows 中的格式为 .ttf（TrueType Fonts）或 .ttc（TrueType Collection），在 MacOS 中为 .dfont。
+
+        Hinting（渲染微调）是为了防止在显示时出现的字体走形的修正程序，TrueType 对于字体中的每一个字符（glyph），都有一套与之相对应的 hint。这样看来，一套一套的 hint 就相当于高德纳 Metafont 中的一个个小程序。
+
+        微软还在1994年开发了一个叫“智能字体”（TrueType Open）的技术，两年后与 Adobe 的 Type 1 技术合并，共同开发了新一代字体格式 OpenType，用来代替 TrueType 的地位。再之后，苹果和谷歌也陆续加入了 OpenType 的开发。
+
+    OpenType 标准将是未来字体显示技术的主流
+
+        OpenType 向下兼容 TrueType 以及 PostScript 字体，扩展名可能为 .otf、.otc、.ttf、.ttc 等。使用 PostScript 曲线的 OpenType 字体格式为 .otf、.otc，使用 TrueType 曲线的格式为 .ttf、.ttc。
+
+        OpenType 字体编码基于万国码（Unicode），可以支持任何文本，或者同时支持多种文本。一个 OpenType 字体可以带有最多 65,536 个字形，基本满足绝大多数地区的使用需求，OpenType 拥有良好的跨平台兼容性，能够在 Mac OS，Windows 和一些 Unix 系统中进行设置。
+
+        后续出现的 OpenType 可变字体（OpenType variable fonts）技术能够储存轮廓变化数据，在初始字形轮廓的基础上自动生成丰富的变化造型，高德纳（Donald Knuth）当年用 Metafont 创立的曲线自动调整技术发扬光大，无极字重成为现实 <https://mp.weixin.qq.com/s?__biz=MzA3MjM1MDUzMQ==&mid=2660341229&idx=1&sn=362723b69ae82aedd87689a5ab4b4c3a&chksm=847a9bc1b30d12d7e94a1d287dbe0774a3dd9405128ca4fb562f60d36d2b0260061d3798f51f&scene=21#wechat_redirect>。
+
+        基于 TrueType 的 OpenType 字体使用 .ttf 扩展名
+
+        基于 PostScript 的 OpenType 字体使用 .otf 扩展名
+
+        .otc 是字体合集（OpenType Collection）它是一个集成文件，在一单独文件结构中包含多种字体，OTC 字体安装后在字体列表中会看到两个以上的字体。当两个字体中大部分字都一样时，为共享笔划数据，可以将两种字体做成一个 OTC 文件，以便更有效地共享轮廓数据。主要是为了适应多种字体共享同一笔画，区别只是字符宽度不一样，以适应不同的版面排版要求，这时 OTC 技术可有效地减小字体文件的大小。而 OTF 字体则只包含一种字型。
+
+        .ttc（TrueType Collection），它是TrueType字体集成文件(. TTC文件)
+
+> fontconfig 配置支持回落（fallback），使中英文分别使用一种字体
 
 Linux 一般使用 fontconfig 程序
 
@@ -8947,31 +8985,42 @@ Linux 一般使用 fontconfig 程序
 
     网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，但是随着发行版的进步，现在安装字体已经无须设置 local.conf，一般都是使用 /etc/fonts/fonts.conf。
 
+Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的方案显示中文太丑了，需要手工改设置，利用回落：
+
+        https://aur.archlinux.org/packages/noto-fonts-cjk-vf
+
+            https://github.com/notofonts/noto-cjk/tree/main/Sans
+
+            https://github.com/notofonts/noto-cjk/tree/main/Serif
+
+    针对三种风格的默认字体使用系统的英文字体，对中文回落到 Adobe/Google 的开源字体：思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）。其实思源字体也内置了西文，只设置该字体也可以。但其西文部分使用的是 Adobe Source 家族字体不大好看，即思源黑体集成 Source Sans Pro、思源宋体集成 Source Serif，详见 <https://sspai.com/post/38705>。
+
 法一：简单起见，我们直接编辑 /etc/fonts/local.conf 文件
 
-    对版本比较老的不支持中文的 Linux，需要先安装中文字体
+对版本比较老的不支持中文的 Linux
+
+    先安装中文字体
 
         # uming 和 ukai字体，即 AR PL UMing CN 等
         $ sudo dnf install cjkuni-ukai-fonts cjkuni-uming-fonts
 
-    使用该配置即可 https://github.com/zma/config_files/blob/master/others/local.conf
+    然后使用该配置即可 https://github.com/zma/config_files/blob/master/others/local.conf
 
-    对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样实现显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
+    上述配置文件对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样就实现了显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
 
-Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的方案显示中文太丑了，需要手工改设置，也是利用回落：
+我的 Fedora 发行版只安装了 Sans，没有 Serif，先手动安装下
 
-    https://github.com/notofonts/noto-cjk/tree/main/Sans
-    https://github.com/notofonts/noto-cjk/tree/main/Serif
+    # https://fedoraproject.org/wiki/Changes/Noto_CJK_Variable_Fonts#Detailed_Description
+    # 合集：google-noto-serif-cjk-fonts 是 OTF 文件打包，google-noto-serif-cjk-ttc-fonts 是 OTC 格式打包
+    #   也可以只安装简体中文 google-noto-serif-sc-fonts
+    # $ sudo dnf install google-noto-serif-cjk-fonts
 
-    https://aur.archlinux.org/packages/noto-fonts-cjk-hk-vf
+    # Fedora 支持异体字（Variable Font），装这个最省事，文件还小
+    $ sudo dnf install google-noto-serif-cjk-vf-fonts
 
-    三种风格，默认字体是系统英文字体，对中文采用 Adobe/Google 的开源字体：思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK），思源字体也内置了西文，其西文部分使用的是 Adobe Source 家族字体，即思源黑体集成 Source Sans Pro、思源宋体集成 Source Serif。详见 <https://sspai.com/post/38705>。
+    mono 不用单独安装，sans 自带了
 
-    Fedora 发行部自带默认的中文字体好像只安装了 Sans，没有 Serif，手动安装下
-
-        # https://fedoraproject.org/wiki/Changes/Noto_CJK_Variable_Fonts#Detailed_Description
-        # google-noto-sans-sc-fonts
-        $ sudo dnf install google-noto-serif-sc-fonts
+然后编辑 /etc/fonts/local.conf 文件
 
 ```xml
 <?xml version='1.0'?>
@@ -8996,6 +9045,7 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
   <family>serif</family>
   <prefer>
    <family>Noto Serif</family>
+   <!-- 我的 Fedora 下中文太轻，用加深的 Black-->
    <family>Noto Serif CJK SC Black</family>
    <family>Noto Serif CJK TC</family>
    <!--
@@ -9020,12 +9070,13 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
   </prefer>
  </alias>
  <!--
-  Monospace faces，中文mono的字符间距太大，还是用普通的Sans即可
+  Monospace faces
  -->
  <alias>
   <family>monospace</family>
   <prefer>
    <family>Liberation Mono</family>
+   <!-- 我的 Fedora 下中文mono的字符间距太大，还是用普通的Sans即可-->
    <family>Noto Sans CJK SC</family>
    <family>Noto Sans CJK TC</family>
    <!--
@@ -9037,7 +9088,7 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 </fontconfig>
 ```
 
-法二：更符合 XDG 规范的用法是写入如下文件目录
+法二：更符合 XDG 规范的用法是写入如下文件
 
     ~/.config/fontconfig/conf.d 和 ~/.config/fontconfig/fonts.conf
 
