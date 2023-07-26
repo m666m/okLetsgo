@@ -8972,9 +8972,9 @@ Gnome:
 
         .ttc（TrueType Collection），它是TrueType字体集成文件(. TTC文件)
 
-> fontconfig 配置支持回落（fallback），使中英文分别使用一种字体
+#### 使中英文分别使用一种字体
 
-Linux 一般使用 fontconfig 程序
+Linux 操作系统一般都内置 fontconfig 程序选择字体，默认无需用户干预，该程序支持配置字体的回落（fallback）
 
     https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
         https://www.freedesktop.org/wiki/Software/fontconfig/
@@ -8985,7 +8985,7 @@ Linux 一般使用 fontconfig 程序
 
     网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，但是随着发行版的进步，现在安装字体已经无须设置 local.conf，一般都是使用 /etc/fonts/fonts.conf。
 
-Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的方案显示中文太丑了，需要手工改设置，利用回落：
+Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的 Cantarell 字体显示中文太丑了，需要手工改设置，利用回落：
 
         https://aur.archlinux.org/packages/noto-fonts-cjk-vf
 
