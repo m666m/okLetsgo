@@ -975,9 +975,13 @@ edex-ui 创·战纪 风格的终端模拟器，还带一个简单的文件浏览
 
     自定义主题说明 https://github.com/GitSquared/edex-ui/wiki/Themes
 
-Alacritty 使用 OpenGL 进行显示加速的终端模拟器，在 Windows 下使用 powershell
+Alacritty 使用 OpenGL 进行显示加速的终端模拟器，在 Linux 下刷新速度极快，在 Windows 下使用 powershell 不推荐
 
     https://github.com/alacritty/alacritty
+
+    主题颜色使用 Nord theme
+
+        curl -fsSL https://github.com/nordtheme/alacritty/raw/main/src/nord.yaml | tee $HOME/.alacritty.toml
 
 WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用，至今未解决偶发的卡顿问题
 
@@ -994,7 +998,6 @@ Linux 桌面下的终端模拟器一般用自带的就行了
 
     Gnome 桌面自带 Xterm，现名 Gnome Terminal
 
-        主题颜色使用 Nord theme
 
             cd ~/your_github_dir/
 
