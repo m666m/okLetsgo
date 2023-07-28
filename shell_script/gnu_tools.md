@@ -10515,7 +10515,15 @@ allow xdm_t v4l_device_t:chr_file map;
 
 Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找，只要你的指纹设备被支持即可正常使用，默认只支持系统登录。可以安装 libpam-fprintd 包以实现 sudo 等鉴权免密码。
 
+    http://www.freedesktop.org/wiki/Software/fprint/fprintd
+
+    https://help.gnome.org/users/gnome-help/stable/session-fingerprint.html.en
+
     https://wiki.archlinux.org/title/Fingerprint_GUI
+
+    Debian 安装 pam-auth-update 包
+
+        https://wiki.debian.org/SecurityManagement/fingerprint%20authentication
 
     https://winq.gitee.io/fprint-fedora/
 
@@ -10529,7 +10537,8 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
 
 系统上得有软件包 fprintd,没有的话，就安装一个
 
-    dnf install fprintd
+    # sudo apt install fprintd libpam-fprintd
+    $ sudo dnf install fprintd fprintd-pam
 
 使用以下命令添加指定手指 指纹,一共要求扫描五次
 
