@@ -71,9 +71,9 @@ if [ -x /usr/bin/dircolors ]; then
     #
     # 列出目录下的文件清单，查找指定关键字，如 `lsg fnwithstr`。因为ls列出的目录颜色被grep覆盖，用 ls -l 查看更方便。
     alias lsg='ls -lFA |grep -i'
-    # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findg fnwithstr`
+    # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findf fnwithstr`
     alias findf='find ./ |grep -i'
-    # 在当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
+    # 在管道或当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
     alias greps='grep --color=auto -d skip -in'
     # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过.git等目录，如 `finds strinfile`
     alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
@@ -81,7 +81,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias pstrees='echo "[进程树，列出pid，及全部子进程]" && pstree -p -s'
     alias curls='echo "curl 跟踪重定向，不显示进度条，静默错误信息但要报错失败，默认打印到屏幕，加 -O 保存到默认文件" &&curl -fsSL'
     alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
-    alias passf='echo "[256 字节作为密钥文件，随机数过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
+    alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
 
     # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
     function cpbak {
@@ -167,6 +167,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
     alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
     alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
+
+    # podman
+    alias podmans='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
 fi
 
 ####################################################################
