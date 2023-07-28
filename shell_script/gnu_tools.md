@@ -10162,13 +10162,13 @@ fi
 
     启动到桌面是 graphical.target，启动到命令行是 multi-user.target。
 
-    设置为登录后启动到命令行（控制台）
+        设置为登录后启动到命令行（控制台）
 
-        $ sudo systemctl set-default multi-user.target
+            $ sudo systemctl set-default multi-user.target
 
-    设置为登录后启动到图形界面
+        设置为登录后启动到图形界面
 
-        $ sudo systemctl set-default graphical.target
+            $ sudo systemctl set-default graphical.target
 
     然后重启计算机即可
 
