@@ -998,6 +998,7 @@ Linux 桌面下的终端模拟器一般用自带的就行了
 
     Gnome 桌面自带 Xterm，现名 Gnome Terminal
 
+        主题颜色使用 Nord theme
 
             cd ~/your_github_dir/
 
