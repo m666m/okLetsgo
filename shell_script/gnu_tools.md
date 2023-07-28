@@ -541,7 +541,7 @@ BoldAsFont=yes
 Background=C:\tools\SuperPuTTY\111dark.jpg,225
 #0D1926
 BackgroundColour=13,25,38
-#839496 #BFDEE3
+#839496 #B6CDD0
 ForegroundColour=131,148,150
 CursorColour=236,255,255
 #353535
