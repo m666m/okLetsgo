@@ -10517,7 +10517,7 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
 
     https://wiki.archlinux.org/title/Fingerprint_GUI
 
-    https://winq.github.io/fprint-fedora/
+    https://winq.gitee.io/fprint-fedora/
 
     https://blog.csdn.net/weixin_31762925/article/details/116771481
 
