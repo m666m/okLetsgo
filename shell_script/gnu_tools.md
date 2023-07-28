@@ -386,7 +386,7 @@ putty 美化
 
     curl -fsSLO https://github.com/arcticicestudio/nord-putty/raw/develop/src/nord.reg
 
-双击该reg文件，会在你的putty会话列表里新增一个“NORD”会话，点击“load”按钮加载该会话，然后填写自己的ip地址和端口，连接看看，会发现颜色效果柔和多了。
+双击该 reg 文件，会在你的 putty 会话列表里新增一个 “NORD” 会话，点击 “load” 按钮加载该会话，然后填写自己的 ip 地址和端口，连接看看，会发现颜色效果柔和多了。
 
 ### mintty 终端模拟器
 
@@ -409,11 +409,7 @@ putty 美化
 
 mintty 可以在命令行显示图片，下载他的源代码下 utils 目录下的脚本 showimg 即可
 
-    cd /usr/local/bin/
-
-    curl -fsSLO https://github.com/mintty/utils/raw/master/showimg
-
-    chmod 755 ./showimg
+    curl -fsSL https://github.com/mintty/utils/raw/master/showimg |sudo tee /usr/local/bin/showimg && sudo chmod 755 /usr/local/bin/showimg
 
 建议放到本地 /usr/bin/ 下，以后执行 `showimg xxx.jpg` 就可以在 mintty 下显示本地图片；如果 ssh 登陆到服务器上，在服务器的 /usr/local/bin/ 下也安装这个脚本，则 mintty 也可以响应服务器上执行的 `showimg xxx.jpg`，显示服务器上的图片。
 
@@ -543,24 +539,42 @@ BoldAsFont=yes
 # 自定义颜色方案 https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
 # 根据图片生成颜色方案 https://github.com/thefryscorer/schemer2 参见章节 [base16颜色方案](gnu_tools.md okletsgo)
 Background=C:\tools\SuperPuTTY\111dark.jpg,225
+#0D1926
 BackgroundColour=13,25,38
+#839496 #BFDEE3
 ForegroundColour=131,148,150
 CursorColour=236,255,255
+#353535
 Black=53,53,53
+#5C5C5C
 BoldBlack=92,92,92
+#FD6666
 Red=253,102,102
+#F38F8D
 BoldRed=243,143,141
+#22CE70
 Green=34,206,112
+#00C884
 BoldGreen=0,200,132
+#CFBE74
 Yellow=207,190,116
+#DFD877
 BoldYellow=223,216,149
+#377AB0
 Blue=55,122,176
-BoldBlue=48,135,222
+#68A0CC
+BoldBlue=104,160,204
+#AD5136
 Magenta=173,81,54
+#CA7055
 BoldMagenta=202,112,85
+#4FC4B5
 Cyan=79,196,181
+#74CFBE
 BoldCyan=116,207,190
+#EEE8D5
 White=238,232,213
+#FDF6E3
 BoldWhite=253,246,227
 
 # 自定义颜色方案，跟深色背景搭配，nord 的暗淡方案
@@ -1833,9 +1847,10 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
         curl -fsSL https://github.com/robertknight/konsole/raw/master/tests/colortest.sh |bash
 
-    同上，简单脚本实现  # https://github.com/msys2/MSYS2-packages/issues/1684#issuecomment-570793998
+    跟上面的代码功能相同的一个简单脚本实现
 
     ```bash
+    # https://github.com/msys2/MSYS2-packages/issues/1684#issuecomment-570793998
     for x in {0..8}; do for i in {30..37}; do for a in {40..47}; do echo -ne "\e[$x;$i;$a""m\\\e[$x;$i;$a""m\e[0;37;40m "; done; echo; done; done; echo ""
     ```
 
