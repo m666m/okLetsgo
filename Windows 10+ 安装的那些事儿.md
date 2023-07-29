@@ -2801,7 +2801,7 @@ Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但�
 
         bcdedit
 
-   查看校对"Windows 启动加载器"中对应项目的 hypervisorlaunchtype 值是 Off
+    查看校对"Windows 启动加载器"中对应项目的 hypervisorlaunchtype 值是 Off
 
 4. 重启计算机，出现 Windows 10 启动选择， 就能选择是否启用 Hyper-v：
 
