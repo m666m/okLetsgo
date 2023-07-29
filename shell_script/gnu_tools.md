@@ -7435,6 +7435,7 @@ peer-id-prefix=-TR2940-
 scp 本意是代替 rcp 的，但是命令行参数解析漏洞无法保证兼容性，只能废了：一般用 rsync 代替 scp ，或直接使用 sftp 传送文件。RedHat 直接用 sftp 替换掉了 scp
 
     https://ostechnix.com/securely-transfer-files-with-scp-in-linux/
+        https://lists.mindrot.org/pipermail/openssh-unix-dev/2019-March/037672.html
 
 前提条件
 
@@ -7494,8 +7495,6 @@ scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了�
 
 ### 文件同步 rsync
 
-使用 `rsync -e ssh` 即可代替 scp 命令
-
     rsync 完全手册 https://www.junmajinlong.com/linux/index/#Linux%E5%9F%BA%E6%9C%AC%E6%9C%8D%E5%8A%A1
 
     https://blog.csdn.net/wanli245/article/details/80317255
@@ -7503,6 +7502,12 @@ scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了�
     https://www.ruanyifeng.com/blog/2020/08/rsync.html
 
     http://c.biancheng.net/view/6121.html
+
+使用 `rsync -e ssh` 即可代替 scp 命令，但是对目录的处理方式跟 scp/cp 方式不同
+
+    rsync source destination/ - would copy the source into the destination folder.
+
+    rsync source/ destination/ - would copy the contents of the source folder into the destination folder.
 
 用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器。
 
@@ -7568,7 +7573,7 @@ rsync 命令提供使用的 OPTION 及功能
 
     --size-only     只同步大小有变化的文件，不考虑文件修改时间的差异。
 
-以上也仅是列出了 async 命令常用的一些选项，对于初学者来说，记住最常用的几个即可，比如 -a、-v、-z、--delete 和 --exclude。
+以上也仅是列出了 rsync 命令常用的一些选项，对于初学者来说，记住最常用的几个即可，比如 -a、-v、-z、--delete 和 --exclude。
 
 rsync 有 5 种不同的工作模式：
 
