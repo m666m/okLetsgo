@@ -572,9 +572,9 @@ BoldMagenta=202,112,85
 Cyan=79,196,181
 #74CFBE
 BoldCyan=116,207,190
-#EEE8D5 FFFCF4
+#EEE8D5
 White=238,232,213
-#FDF6E3 F9F8F4
+#FDF6E3
 BoldWhite=253,246,227
 
 # 自定义颜色方案，跟深色背景搭配，nord 的暗淡方案
