@@ -5561,6 +5561,20 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
     https://github.com/erikw/tmux-powerline
 
+3、显示前导键
+
+在 tmux 时间栏显示你的 tmux 命令按键
+
+    https://github.com/tmux-plugins/tmux-prefix-highlight
+
+先从 github 下载
+
+    $ git clone --depth=1 https://github.com/tmux-plugins/tmux-prefix-highlight.git ~/.tmux/tmux-prefix-highlight
+
+将下述命令添加到.tmux.conf文件中
+
+    run-shell ~/.tmux/tmux-prefix-highlight//prefix_highlight.tmux
+
 ##### 插件管理
 
 感觉 tmux 就别折腾各种插件了。。。
@@ -5600,6 +5614,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 ##### .tmux.conf 配置文件样例
 
 ```conf
+
 # 可参考一个非常流行的配置 https://github.com/gpakosz/.tmux
 #
 # 按完前导 ctrl+B 后，再按冒号即可进入命令行模式
@@ -5630,6 +5645,9 @@ set -as terminal-overrides ",xterm-256color:RGB"
 # 状态栏使用 nord 主题，替换掉 powerline
 # run-shell 'powerline-config tmux setup'
 run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
+
+# 显示前导键
+run-shell "~/.tmux/tmux-prefix-highlight//prefix_highlight.tmux"
 
 ```
 
