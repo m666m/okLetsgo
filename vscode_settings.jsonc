@@ -432,9 +432,9 @@
         },
         "NOTE": {
             "icon": "info",
-            "iconColour": "#3e58a0",
+            "iconColour": "#005f87",
             "foreground": "#e0bb3f",
-            "background": "#3e58a0",
+            "background": "#005f87",
             "type": "tag"
         }
         // "[x]":{
