@@ -5647,7 +5647,7 @@ set -as terminal-overrides ",xterm-256color:RGB"
 run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 # 显示前导键
-run-shell "~/.tmux/tmux-prefix-highlight//prefix_highlight.tmux"
+run-shell "~/.tmux/tmux-prefix-highlight/prefix_highlight.tmux"
 
 ```
 
