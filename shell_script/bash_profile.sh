@@ -90,8 +90,8 @@ if [ -x /usr/bin/dircolors ]; then
     }
 
     # scp rsync
-    alias scps='echo "[scp 源 目的。远程格式 -P 端口 user@host:/home/user/]"  && scp -r'
-    alias rsyncs='echo "[rsync 源 目的. 远程格式 端口用 -e 写 ssh 命令，user@host:/home/user/]"  && rsync -av --progress'
+    alias scps='echo "[scp 源 目的。远程格式 user@host:/home/user/ 端口用 -P]" && scp -r'
+    alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/home/user/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
 
     # vi
     alias viw='echo "[只给出提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
