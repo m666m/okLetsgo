@@ -2759,7 +2759,9 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 
 ### 使用 VM Ware、安卓模拟器等虚拟机提示需要关闭 Hyper-V
 
-    貌似该问题已经在2022版的 Windows 10 中解决了，开启功能：虚拟机平台VirtualMachinePlatform
+该问题已经在 2022 版的 Windows 10 中解决了
+
+    开启功能：虚拟机平台 VirtualMachinePlatform 即可支持各虚拟机软件正常运行
 
 Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但有限制：必须为 Windows 10 20H1（也叫 2004 版）或更高版本。
 
@@ -2785,7 +2787,7 @@ Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但�
 
 查看校对"Windows 启动加载器"中对应项目的 hypervisorlaunchtype 值
 
-#### 没有安装 hyper-V 时执行
+> 没有安装 hyper-V 时
 
 1. 管理员身份运行命令提示符 cmd（如果用 PowerShell，符号{}会导致报错）：
 
@@ -2809,21 +2811,19 @@ Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但�
 
 注意：这是在没有安装hyper-V时候执行的，{current}的hypervisorlaunchtype是off。
 
-#### 已经安装了hyper-V，或者 hypervisorlaunchtype 是 auto
+> 已经安装了 hyper-V 时
 
-在复制启动项的时候要注意哪一个启动项是要开启hyper-V的，“Windows10 no hyper-V”是新启动项的描述，有没有no不要弄混了。
+或者 hypervisorlaunchtype 是 auto
 
-在执行之后会得到新启动项的标识符，如果修改当前启动项，可以用bcdedit /set hypervisorlaunchtype off，
-如果修改非current启动项，则需要指明标识符，bcdedit /set {标识符} hypervisorlaunchtype off
+    https://www.zhihu.com/question/38841757/answer/294356882
 
-作者：风吹来的瓜
-链接：<https://www.zhihu.com/question/38841757/answer/294356882>
-来源：知乎
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+在复制启动项的时候要注意哪一个启动项是要开启 hyper-V 的，“Windows10 no hyper-V” 是新启动项的描述，有没有 no 不要弄混了。
+
+在执行之后会得到新启动项的标识符，如果修改当前启动项，可以用 bcdedit /set hypervisorlaunchtype off，如果修改非 current 启动项，则需要指明标识符，bcdedit /set {标识符} hypervisorlaunchtype off
 
 Hyper-V 其实也分1代2代，tenforums 的详细说明
 
-    <https://www.tenforums.com/tutorials/139405-run-hyper-v-virtualbox-vmware-same-computer.html>
+    https://www.tenforums.com/tutorials/139405-run-hyper-v-virtualbox-vmware-same-computer.html
 
 ### Windows安卓子系统WSA
 
