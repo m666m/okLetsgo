@@ -97,7 +97,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias viw='echo "[只给出提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
 
     # systemd
-    alias sded='echo "[只给出提示： systemd 手工编辑文件，切换到 root 环境运行以下命令。另：vi 换为 tee 可实现EOF式的命令行直接写入]" && echo "env SYSTEMD_EDITOR=vi systemctl edit --force --full xxx.service"'
+    alias stded='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
 
     # wsl 或 git bash下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "[Windows Path]"
     function cdw {
