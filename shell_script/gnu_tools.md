@@ -3656,42 +3656,60 @@ vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
 
 如果出现上述字样，说明当前系统只安装了兼容 vi 模式的精简版 vim.tiny，不支持彩色语法高亮、切分窗口等高级功能（vim 内置插件）
 
-    $ apt show vim.tiny
-    Description: Vi IMproved - enhanced vi editor - compact version
+Debian 的重装办法：
 
-    This package contains a minimal version of Vim compiled with no GUI and
-    a small subset of features. This package's sole purpose is to provide
-    the vi binary for base installations.
+    确认版本
 
-    If a vim binary is wanted, try one of the following more featureful
-    packages: vim, vim-nox, vim-athena, vim-gtk, or vim-gtk3.
+        $ vi --version
+        Small version without GUI.
 
-    $ vi --version
-    Small version without GUI.  Features included (+) or not (-):
-    +acl               -extra_search      -mouse_sgr         -tcl
-    -arabic            -farsi             -mouse_sysmouse    -termguicolors
-    +autocmd           -file_in_path      -mouse_urxvt       -terminal
+        $ apt list --installed |grep vi
+        vim-common/stable,now 2:8.2.2434-3+deb11u1 all [installed]
+        vim-tiny/stable,now 2:8.2.2434-3+deb11u1 armhf [installed]
 
-先删除 vim.tiny
+        $ apt show vim.tiny
 
-    $ sudo apt remove vim-common
-    The following packages will be REMOVED:
-        vim-common vim-tiny
+    先删除 vim.tiny
 
-然后安装 vim 的增强版
+        $ sudo apt remove vim-common
+        The following packages will be REMOVED:
+            vim-common vim-tiny
 
-    # https://askubuntu.com/questions/284957/vi-getting-multiple-sorry-the-command-is-not-available-in-this-version-af
-    # 不用单独装 sudo apt install vim-runtime
-    # 不用单独装 sudo apt install vim-gui-common 这个是给linux桌面用的
-    $ sudo apt install vim
-    The following NEW packages will be installed:
-        vim vim-common vim-runtime
+    然后安装 vim 的增强版
 
-    # 安装个文档
-    suodu apt install vim-doc
+        # https://askubuntu.com/questions/284957/vi-getting-multiple-sorry-the-command-is-not-available-in-this-version-af
+        # 不用单独装 sudo apt install vim-runtime
+        # 不用单独装 sudo apt install vim-gui-common 这个是给linux桌面用的
+        $ sudo apt install vim
+        The following NEW packages will be installed:
+            vim vim-common vim-runtime
 
-    # 可选安装各种脚本 https://github.com/vim-scripts
-    sudo apt install vim-scripts
+        # 安装个文档
+        suodu apt install vim-doc
+
+        # 可选安装各种脚本 https://github.com/vim-scripts
+        sudo apt install vim-scripts
+
+Fedora 重装增强版
+
+    确认版本
+
+        $ vi --version
+        Tiny version without GUI.
+
+        $ dnf list installed | grep vi
+        vim-data.noarch
+        vim-minimal.x86_64
+
+        $ dnf info vim-minimal
+
+    先删除 vim-minimal
+
+        $ sudo dnf remove vim-minimal vim-data
+
+    然后安装 vim 的增强版
+
+        $ sudo dnf install -y vim-enhanced vim-common
 
 然后在 vim 中运行命令 :version
 

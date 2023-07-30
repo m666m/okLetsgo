@@ -2055,7 +2055,9 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
     客户虚拟机：可以设置挂载分区 A 的操作系统临时使用，详见章节 [挂载实体机所在硬盘作为虚拟机](virtualiziation think)。
 
-TODO: 先装 Windows 再装 Fedora
+> 先装 Windows 再装 Fedora
+
+这样的方案最方便，只要在 Windows 里给 Fedora 留出一个空白未分区区域或空白磁盘，在 Fedora 安装时选择自动即可正确安装，而且自动安装 grub 在启动时出现菜单让你选择启动到 Fedora 还是 Windows
 
     https://linuxhitchhiker.github.io/THGLG/solution/config/dual-boot/
 
@@ -2069,15 +2071,15 @@ TODO: 先装 Windows 再装 Fedora
 
         https://docs.fedoraproject.org/en-US/fedora-silverblue/troubleshooting/#_unable_to_install_fedora_silverblue_on_efi_systems
 
-先装 Ubuntu 再装 Windows
+    先装 Ubuntu 再装 Windows
 
-    https://zhuanlan.zhihu.com/p/609573337
+        https://zhuanlan.zhihu.com/p/609573337
 
-适用 MBR 启动分区，UEFI 待研究
+    适用 MBR 启动分区，UEFI 待研究
 
-    Linux多系统并存的GRUB配置文件内容分析 http://c.biancheng.net/view/1033.html
+        Linux多系统并存的GRUB配置文件内容分析 http://c.biancheng.net/view/1033.html
 
-    Linux GRUB手动安装方法详解 http://c.biancheng.net/view/1035.html
+        Linux GRUB手动安装方法详解 http://c.biancheng.net/view/1035.html
 
 #### Linux + Windows 双系统互相挂虚拟机
 
