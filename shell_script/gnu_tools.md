@@ -12226,6 +12226,8 @@ journalctl 功能强大，用法非常多
 
     https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 
+    https://www.jinbuguo.com/systemd/systemd.service.html#
+
 每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit。
 
 编辑单元文件有现成的命令，见章节 [systemctl 系统资源管理命令]。
@@ -12602,7 +12604,25 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     systemctl disable clamd@scan.service
 
-示例一：
+> 调试：
+
+先看看配置文件是否有效
+
+    $ systemd-analyze verify xxx.service
+
+再看看服务启动的日志
+
+    $ journalctl -u xxx.service
+
+一般会发现问题，比如 start 后立即调用了 stop
+
+    https://blog.csdn.net/Peter_JJH/article/details/108446380
+
+    一般认为是 status 判断为 invalid 导致 systemctl 立刻调用了 stop，解决办法是
+
+        服务的配置文件添加： RemainAfterExit=yes
+
+配置文件示例一：
 
 自制的 shell 脚本，想让 systemd 用兼容 SystemV 的方式进行启动管理。
 
@@ -12617,6 +12637,7 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     [Service]
     Type=forking
+    EnvironmentFile=/etc/systemd/systemd/ros.env
     ExecStart=/etc/rc.local start
     TimeoutSec=0
     RemainAfterExit=yes
@@ -12624,7 +12645,7 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
 然后执行章节 [SystemV设置开机自启动] 的步骤即可。
 
-示例二：
+配置文件示例二：
 
     https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
 
@@ -12649,6 +12670,12 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
     # 如果是 nftables，则改为以下命令
     # ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/nft -f /etc/nftables/rules.v4
     # ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0/0 dev lo table 100 ; /sbin/nft flush ruleset
+
+    # 如果是执行了一个成功再执行另一个，需要借助外壳
+    ExecStart=/bin/bash -c 'sleep 45 && /bin/bash bin/eum.sh start'
+    或分开步骤
+    ExecStartPre=/usr/bin/sleep 45
+    ExecStart=/bin/bash bin/eum.sh start
 
     [Install] # 开机自启动必须要有这个字段
     WantedBy=multi-user.target
