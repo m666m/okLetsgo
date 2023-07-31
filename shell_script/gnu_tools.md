@@ -9042,7 +9042,9 @@ Gnome:
 
     https://www.ottoli.cn/study/fonts
 
-字体文件的格式跟印刷和显示器行业的发展紧密关联
+字体文件的格式跟印刷和显示器行业的发展紧密关联。
+
+PostScript Type 1
 
     1970年代，西方的字体业界正在从照相排版（Photocomposition）转移到数码排版（Digital Publishing）。彼时技术非常不成熟，无论是行将就木的照排机，还是方兴未艾的电脑，印刷效果都非常差。
 
@@ -9050,19 +9052,19 @@ Gnome:
 
     PostScript 是 Adobe 公司在 1984 年开发的页面描述语言。我们现在熟知的 PDF、XPS、SVG 都是同类型的东西。同时它也是个完备的编程语言，用函数的方式描述原本用点阵形式呈现的字符，实现了计算机时代任意球放大缩小字符都不会导致字体显示出现锯齿的效果。Type 1 是作为PostScript的一部分出现的一个配套字体文件，一般由 *.pfm，*.pfb，*.afm，*.inf 四个文件组成。
 
+TrueType
+
     苹果公司为了对抗 Adobe 开发的 PostScript Type 1 字体，开发了 TrueType 字体。后来，微软也加入了 TrueType 的开发。相对于商业封闭严密的 PostScript 字体，TrueType 技术规范全部公开，不收取一分钱的授权费（No royalty）。TrueType 随后成为了应用最广泛的屏幕显示字体格式。TrueType 字体文件在 Windows 中的格式为 .ttf（TrueType Fonts）或 .ttc（TrueType Collection），在 MacOS 中为 .dfont。
 
     Hinting（渲染微调）是为了防止在显示时出现的字体走形的修正程序，TrueType 对于字体中的每一个字符（glyph），都有一套与之相对应的 hint。这样看来，一套一套的 hint 就相当于高德纳 Metafont 中的一个个小程序。
 
-    微软还在1994年开发了一个叫“智能字体”（TrueType Open）的技术，两年后与 Adobe 的 Type 1 技术合并，共同开发了新一代字体格式 OpenType，用来代替 TrueType 的地位。再之后，苹果和谷歌也陆续加入了 OpenType 的开发。
-
 OpenType 标准将是未来字体显示技术的主流
+
+    微软还在1994年开发了一个叫“智能字体”（TrueType Open）的技术，两年后与 Adobe 的 Type 1 技术合并，共同开发了新一代字体格式 OpenType，用来代替 TrueType 的地位。再之后，苹果和谷歌也陆续加入了 OpenType 的开发。
 
     OpenType 向下兼容 TrueType 以及 PostScript 字体，扩展名可能为 .otf、.otc、.ttf、.ttc 等。使用 PostScript 曲线的 OpenType 字体格式为 .otf、.otc，使用 TrueType 曲线的格式为 .ttf、.ttc。
 
     OpenType 字体编码基于万国码（Unicode），可以支持任何文本，或者同时支持多种文本。一个 OpenType 字体可以带有最多 65,536 个字形，基本满足绝大多数地区的使用需求，OpenType 拥有良好的跨平台兼容性，能够在 Mac OS，Windows 和一些 Unix 系统中进行设置。
-
-    后续出现的 OpenType 可变字体（OpenType variable fonts）技术能够储存轮廓变化数据，在初始字形轮廓的基础上自动生成丰富的变化造型，高德纳（Donald Knuth）当年用 Metafont 创立的曲线自动调整技术发扬光大，无极字重成为现实 <https://mp.weixin.qq.com/s?__biz=MzA3MjM1MDUzMQ==&mid=2660341229&idx=1&sn=362723b69ae82aedd87689a5ab4b4c3a&chksm=847a9bc1b30d12d7e94a1d287dbe0774a3dd9405128ca4fb562f60d36d2b0260061d3798f51f&scene=21#wechat_redirect>。
 
     基于 TrueType 的 OpenType 字体使用 .ttf 扩展名
 
@@ -9075,6 +9077,16 @@ OpenType 标准将是未来字体显示技术的主流
         对于大陆地区的一般用户而言，选择 OTF 版本的字体能够满足界面字体、一般排版等需求了。而使用 InDesign、具有要求的用户，则可以使用 OTF 或 OTC 版本。在不支持多语言功能的程序中，要进行多语言排版，则要安装所要用语言的地区子集。
 
     .ttc（TrueType Collection），它是 TrueType 字体曲线的集成文件(. TTC文件)，目前操作系统对 OTF 的支持还不完善，会使用 ttc 格式的字体文件
+
+OpenType 可变字体（OpenType variable fonts）技术
+
+    https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Fonts/Variable_Fonts_Guide
+
+    https://mp.weixin.qq.com/s?__biz=MzA3MjM1MDUzMQ==&mid=2660341229&idx=1&sn=362723b69ae82aedd87689a5ab4b4c3a&chksm=847a9bc1b30d12d7e94a1d287dbe0774a3dd9405128ca4fb562f60d36d2b0260061d3798f51f&scene=21#wechat_redirect
+
+为了在一个单纯正文展示的页面中使用一个字体，你至少需要四个字体文件：常规Regular、斜体Italic、加粗Bold、斜体加粗Bold Italic。如果你想添加更多的字重，比如让题注更轻或让额外强调的地方更重，意味着你需要更多文件。
+
+可变字体属于 OpenType 字体规范上的演进，能够储存轮廓变化数据，在初始字形轮廓的基础上自动生成丰富的变化造型，它允许将同一字体的多个变体统合进单独的字体文件中。从而无需再将不同字宽、字重或不同样式的字体分割成不同的字体文件。高德纳（Donald Knuth）当年用 Metafont 创立的曲线自动调整技术发扬光大，无级字重成为现实
 
 #### 使中英文分别使用一种字体
 
