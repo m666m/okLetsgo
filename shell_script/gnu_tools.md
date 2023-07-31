@@ -12657,6 +12657,7 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     [Service]
     Type=oneshot
+    # https://blog.csdn.net/Peter_JJH/article/details/108446380
     RemainAfterExit=yes
 
     # 注意分号前后要有空格
