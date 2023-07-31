@@ -8985,6 +8985,8 @@ Gnome:
 
 ### 设置中文字体
 
+如果是 Fedora，记得先添加 RpmFusion 源。
+
 桌面环境下默认的中文字体不好看，需要调整。
 
     https://catcat.cc/post/2021-03-07/
