@@ -3892,10 +3892,17 @@ powerline 为保证多样性，使用python实现的。现在的问题是操作�
 
 没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
-发行版自带安装，会自动安装依赖的插件管理器 vim-addon-manager，然后把自己安装到其插件目录中
+Debian 发行版自带安装，会自动安装依赖的插件管理器 vim-addon-manager，然后把自己安装到其插件目录中
 
-    apt install vim-airline
-    apt install vim-airline-themes
+    $ sudo apt install vim-airline
+
+    $ sudo apt install vim-airline-themes
+
+Fedora 发行版只带一个，另一个需要手动。。。
+
+    $ sudo dnf install vim-airline
+
+    为了省事直接配置到 vim-plug 里加载了
 
 注意 vim.tinny 版是无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
 
@@ -4227,8 +4234,12 @@ call plug#begin()
 "   - Avoid using standard Vim directory names like 'plugin'
 
 " Unmanaged plugin (manually installed and updated)
-Plug '/usr/share/vim/addons/plugin/vim-airline'
-Plug '/usr/share/vim/addons/plugin/vim-airline-themes'
+" Debian: 加载发行版安装的
+"Plug '/usr/share/vim/addons/plugin/vim-airline'
+"Plug '/usr/share/vim/addons/plugin/vim-airline-themes'
+"Fedora: 发行版安装的不需要显式加载
+"Plug '/usr/share/vim/vimfiles/plugin/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 " On-demand loading
 "Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
