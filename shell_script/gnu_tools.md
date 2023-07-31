@@ -3755,7 +3755,7 @@ Fedora 重装增强版
 
 要启用彩色语法高亮、状态栏彩色，包括tmux中vim使用彩色，需要编辑 ~/.vimrc 文件，添加如下行
 
-```vim
+```python
 
 " 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
 " 如果在 tmux 下使用 vim ，防止 tmux 默认设置 TERM=screen，应该保留此设置
@@ -3892,19 +3892,19 @@ powerline 为保证多样性，使用python实现的。现在的问题是操作�
 
 没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
-Debian 发行版自带安装，会自动安装依赖的插件管理器 vim-addon-manager，然后把自己安装到其插件目录中
+直接配置到插件管理器 vim-plug 里加载是最省事的，否则：
 
-    $ sudo apt install vim-airline
+    Debian 发行版自带，会自动安装依赖的插件管理器 vim-addon-manager，然后把自己安装到其插件目录中
 
-    $ sudo apt install vim-airline-themes
+        $ sudo apt install vim-airline
 
-Fedora 发行版只带一个，另一个需要手动。。。
+        $ sudo apt install vim-airline-themes
 
-    $ sudo dnf install vim-airline
+    Fedora 发行版只带一个，另一个需要手动，还是得依赖插件管理器
 
-    为了省事直接配置到 vim-plug 里加载了
+        $ sudo dnf install vim-airline
 
-注意 vim.tinny 版是无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
+注意 vim.tinny 版无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
 
 查看帮助
 
