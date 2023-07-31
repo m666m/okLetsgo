@@ -12041,7 +12041,7 @@ systemd 默认启用的系统级组件配置在 /usr/lib/systemd/system-preset/ 
 
     EOF
 
-systemctl status 命令用于查看系统状态和单个 Unit 的状态
+查看系统状态和单个 Unit 的状态
 
     # 显示系统状态
     $ systemctl status
@@ -12567,13 +12567,13 @@ Target 与 传统 RunLevel 的对应关系如下
 
 启动 unit 后有处理：
 
-    用 systemctl start 启动后出现在 /run/systemd/ 下
+    用 `systemctl start` 启动后出现在 /run/systemd/ 下
 
     /usr/lib/systemd/system/ 用 `systemctl enable` 设置为自启动后添加连接文件在 /etc/systemd/system/
 
 如果配置文件里 [Install] 部分设置了开机启动，`systemctl enable` 命令相当于激活指定服务的开机启动。
 
-        如果是开机自启动，一般都是挂载到 /etc/systemd/system/multi-user.target.wants/ 目录下，该目录表示启动了 multi-user.target 之后（即系统启动且运行级别为 3，为系统的默认启动 target）这个目录下的文件都会跟着启动。
+    如果是开机自启动，一般都是挂载到 /etc/systemd/system/multi-user.target.wants/ 目录下，该目录表示启动了 multi-user.target 之后（即系统启动且运行级别为 3，为系统的默认启动 target）这个目录下的文件都会跟着启动。
 
 systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd/system/ 之间，建立符号链接关系
 
