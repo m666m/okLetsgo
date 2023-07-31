@@ -3778,6 +3778,8 @@ endif
 
 ##### 配置扩展插件
 
+下面的这些原理看看得了，vim 各个版本的配置目录变化太多，还是用插件管理器最省事，参见章节 [推荐：插件管理器 vim-plug]。
+
 vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
 各种扩展插件使用的目录
@@ -3825,321 +3827,47 @@ vim 配置文件在 ~/.vimrc 或 /etc/vim/vimrc
 
     ~/.vim/spell/ 拼写检查脚本。
 
-##### 不推荐状态栏工具 powerline
+###### 推荐：插件管理器 vim-plug
 
-    推荐使用替代品 vim-airline，状态栏和标签栏都有，而且可以配合很多知名插件的显示
+Vundle不更新了，这个项目取代之，用法神似，只需要编辑 ~/.vimrc，便于用户自定义，安装使用 github 来源的插件非常简单
 
-powerline 介绍，参见章节 [状态栏工具 powerline]。
+    https://github.com/junegunn/vim-plug
 
-使用 powerline 在 vim 下的插件需要 Vim 在编译时添加 python 支持，而一般的用于嵌入式设备的操作系统如树莓派自带的是 vim 精简版 vim.tinny，这个版本是无法使用该插件的，如何解决见上面的“使用状态栏工具等扩展插件的先决条件”。
+先从 github 下载
 
-powerline 为保证多样性，使用python实现的。现在的问题是操作系统自带的 python 指的 python2 还是 python3 版本
+    # vim 使用时加载     ~/.vim/autoload/
+    # vim-plug 存放插件  ~/.vim/plugged/
 
-    搞清 操作系统安装的包 python-pip 和 python3-pip 的使用区别
-    搞清 powerline 有 python 和 python3 两个发行版本
-    搞清 操作系统默认的 python 环境是 python 还是 python3
-    搞清 你安装的 powerline 到底是用 python 还是 python3 执行的？如果是用 apt install 安装的是使用发行版环境的。
-    搞清 所有的 powerline 的插件，安装前都要先看看到底支持哪个python版本？
-    搞清 前面这堆 python 到底是指 python2 还是 python3 ？如果是python3，最低要求 3.6 还是 3.7 ？
-    搞清 在 virtualenv/conda 下使用vim会否影响其使用python的插件？
+    curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-    不是迫不得已，更不要自行编译 vim，尽量用发行版自带的。
+然后修改  ~/.vimrc，
 
-    建议安装 debian 发行版自带的 powerline，用 `sudo apt install powerline`即可
+然后重新加载配置文件 `:source ~/.vimrc`，命令行执行 `:PlugInstall` 按提示操作即可安装插件。
 
-        如果，你在 Debian 10 用 `pip install powerline-status`，那么安装的应该是 python 2.7 版本的 powerline-status。
+常用命令
 
-        新版用 pypi 安装 `python3 -m pip install powerline-status`
+然后进入vim，运行命令安装插件，会新建拆分窗口根据你编辑的 .vimrc 文件内容列出可选操作
 
-        最新版用 github 安装 `python3 -m pip install --user git+git://github.com/powerline/powerline`
+    :PlugInstall
 
-        然后继续，所有的 powerline 的插件，安装前都要先看看到底支持哪个python版本？
+卸载插件只需编辑 .vimrc 配置文件中删除欲卸载插件的配置，保存，然后在Vim中执行下述命令即可完成卸载
 
-如果确定你的 vim 可以使用 powerline，做如下设置：
+    :PlugClean
 
-    先查看 powerline 的安装位置，找到 bindings 目录
+更新插件
 
-        如果是用 pip 安装的 powerline，就是如下这种的路径
+    :PlugUpdate
 
-            # pip show powerline-status
-            # /usr/lib/python3/dist-packages/powerline/bindings/vim/
-            /usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
+列出当前插件
 
-        如果是用 apt 安装的 powerline，就是这种路径
+    :PlugList
 
-            /usr/share/powerline/bindings/vim/
+搜索插件，选择一个你想要安装的插件，并敲击键盘 i 来安装这个插件，完成后选中这个插件的名称，并粘贴到 .vimrc 文件中去
 
-    将上述路径添加到配置文件 ~/.vimrc 或 /etc/vim/vimrc 中
+    :PlugSearch colorscheme
 
-        set rtp+=/usr/share/powerline/bindings/vim/
-
-        " Always show statusline
-        set laststatus=2
-
-        " Always show tabline
-        set showtabline=2
-
-        " Use 256 colours (Use this setting only if your terminal supports 256 colours)
-        set t_Co=256
-
-##### 推荐 vim 状态栏工具 vim-airline
-
-完美替换掉 powerline
-
-    https://github.com/vim-airline/vim-airline
-
-开箱即用，不仅是状态栏和标签栏，而且能配合很多常用插件如 nerdtree 目录树的显示，普通字体也可以正常显示。
-
-没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
-
-直接配置到插件管理器 vim-plug 里加载是最省事的，否则：
-
-    Debian 发行版自带，会自动安装依赖的插件管理器 vim-addon-manager，然后把自己安装到其插件目录中
-
-        $ sudo apt install vim-airline
-
-        $ sudo apt install vim-airline-themes
-
-    Fedora 发行版只带一个，另一个需要手动，还是得依赖插件管理器
-
-        $ sudo dnf install vim-airline
-
-注意 vim.tinny 版无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
-
-查看帮助
-
-    :help airline
-
-Airline 扩展支持适配 tabline、nerdtree 等插件的颜色方案，在 ~/.vimrc 中配置
-
-```vim
-
-" 内置扩展的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
-" 内置扩展保存在：
-" apt install [vim-addon-manager] /usr/share/vim/addons/autoload/airline/extensions/ 下
-" [Vundle]   ~/.vim/bundle/vim-airline/autoload/airline/extensions/ 下
-" [vim-plug] ~/.vim/plugged/ 下
-" 自定义 ~/.vim/autoload/ 和 ~/.vim/plugin/
-" 命令 :AirlineExtensions 查看当前自动启用的内置插件
-
-" 需要启用 powerline 的字体，状态栏显示的效果才能起飞
-let g:airline_powerline_fonts = 1
-
-" 启用 airline 内置扩展：标签式显示多个打开的文件的状态栏
-" 在说明文件中搜 airline-tabline
-let g:airline#extensions#tabline#enabled = 1
-
-" 启用 airline 内置扩展：nerdtree插件左侧显示文件树内容的状态栏效果
-let g:airline#extensions#nerdtree_statusline = 1
-
-```
-
-AirlineTheme 自有主题，在 ~/.vimrc 中配置
-
-```vim
-
-" AirlineTheme 需要启用 powerline 的字体才能起飞
-let g:airline_powerline_fonts = 1
-
-" airline_theme内置的插件主题大部分都只是状态栏的，居然不同步设置语法高亮
-" 建议自行安装vim插件 PaperColor 或 nord，状态栏和语法高亮颜色都有了,不需要用 airline_theme 内置的同名主题
-" https://github.com/vim-airline/vim-airline-themes/tree/master/autoload/airline/themes
-" 列表见 https://github.com/vim-airline/vim-airline/wiki/Screenshots
-" 保存在 ~/.vim/bundle/vim-airline-themes/autoload/airline/themes
-" 使用说明 ~/.vim/bundle/vim-airline-themes/README.md
-" 在vi中切换主题 :AirlineTheme night_owl
-let g:airline_theme='papercolor'
-
-```
-
-##### 更简洁的状态栏工具 lightline.vim
-
-    https://github.com/itchyny/lightline.vim
-
-如果你想只安装个干净的工具栏，其它插件自己配置自己玩的话，状态栏工具用这个 lightline.vim 就足够了。
-
-Why yet another clone of powerline?
-
-    https://github.com/Lokaltog/vim-powerline is a nice plugin, but deprecated.
-
-    powerline is a nice plugin, but difficult to configure.
-
-    vim-airline is a nice plugin, but it uses too many functions of other plugins, which should be done by users in .vimrc.
-
-这个比较简洁，只有状态栏工具和颜色方案。也是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
-
-vim.tinny 版是无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
-
-配置主题
-
-    let g:lightline = { 'colorscheme': 'PaperColor' }
-
-##### nerdtree 树形文件夹插件
-
-如果感觉插件太多太麻烦，可以使用 vim 自带的树形文件夹插件 netrw，见章节 [vim 内置的树形文件夹管理 netrw]。
-
-nerdtree 以在当前窗口的左侧垂直新建窗口的方式，树形展示当前路径下的文件列表，方便用户操作。
-
-所以，在左侧目录树窗口和右侧文件窗口间切换使用 vim 的窗口切换热键
-
-    前导 ctrl + w ，然后方向键左或 h 光标跳到左侧树形目录
-    前导 ctrl + w ，然后方向键右或 l 光标跳到右侧文件显示窗口
-
-窗口操作详见章节 [多窗口(Window)操作]。
-
-自定义个 vim 中的热键 Ctrl-n，方便切换显示目录树，在 ~/.vimrc 配置文件中定义
-
-    " NERDTree
-    map <C-n> :NERDTreeToggle<CR>
-    let NERDTreeShowHidden=1 "在打开时默认显示隐藏文件
-    " map 是快捷键映射命令
-    " <C-n> 定义了快捷键，表示 Ctrl-n
-    " 后面是对应的命令以及回车键 <CR>
-
-nerdtree 在左侧树形目录中的热键
-
-    ?   切换是否显示 nerdtree 的快捷帮助
-
-    回车 打开的的文件默认是vim的多个文件模式，即添加到缓冲中
-    o   在已有窗口中打开文件、目录或书签，并跳到该窗口，或命令 :NERDTree-o
-    go  在已有窗口中打开文件、目录或书签，但不跳到该窗口，或命令 :NERDTree-go
-
-    缓冲区列表需要用命令 :ls 来显示， :b<编号> 切换。详见章节[理解vim的多文件操作（缓冲buffer）]。
-
-    i   水平切割一个新窗口打开选中文件，并跳到该窗口，或命令 :NERDTree-i
-    gi  水平分割一个新窗口打开选中文件，但不跳到该窗口，或命令 :NERDTree-gi
-
-    s   垂直分割一个新窗口打开选中文件，并跳到该窗口，或命令 :NERDTree-s
-    gs  垂直分割一个新窗口打开选中文件，但不跳到该窗口，或命令 :NERDTree-gs
-
-    t   在新 Tab 中打开选中文件/书签，并跳到新 Tab，或命令 :NERDTree-t
-    T   在新 Tab 中打开选中文件/书签，但不跳到新 Tab，或命令 :NERDTree-T
-
-    切换 tab 的热键详见章节 [多标签页(Tab)操作]
-
-    e   在目录树上按e，则在右侧窗口显示目录内容，光标键进行选择操作即可，再次按e退出
-
-    K   跳到当前目录下同级的第一个结点
-    J   跳到当前目录下同级的最后一个结点
-
-    !   执行当前文件，或命令 :NERDTree-!
-
-一般再搭配个显示每个文件 git 状态的插件
-
-    https://github.com/Xuyuanp/nerdtree-git-plugin
-
-    在 .vimrc 中配置用 plug 安装几个nerdtree配合的常用插件
-
-        Plug 'preservim/nerdtree' |
-                \ Plug 'Xuyuanp/nerdtree-git-plugin' |
-                \ Plug 'ryanoasis/vim-devicons'
-
-    还可以搭配比较醒目的图标
-
-        " nerdtree-git-plugin 启用带图标的字体
-        let g:NERDTreeGitStatusUseNerdFonts = 1 " you should install nerdfonts by yourself. default: 0
-
-        let g:NERDTreeIndicatorMapCustom = {
-            \ "Modified"  : "✹",
-            \ "Staged"    : "✚",
-            \ "Untracked" : "✭",
-            \ "Renamed"   : "➜",
-            \ "Unmerged"  : "═",
-            \ "Deleted"   : "✖",
-            \ "Dirty"     : "✗",
-            \ "Clean"     : "✔︎",
-            \ "Unknown"   : "?"
-            \ }
-
-###### vim 内置的树形文件夹插件 netrw
-
-netrw 是 vim 自带的插件, 不需要额外安装, 其提供的功能非常强大, 相比与 nerdtree 这些第三方插件来说速度更快, 体量更轻, 设计更简洁。
-
-默认情况下，netrw 将在当前窗口中打开目录树列表，选择文件后回车即可在当前窗口打开文件。
-
-在 vim 中打开 netrw 窗口
-
-    :E       全屏进入 netrw, 全称是 :Explorer 或 :Ex
-    :Se      水平分割进入 netrw
-    :Ve      垂直分割进入 netrw
-
-退出
-
-    :q  关闭 netrw 窗口（保持回车打开文件的窗口），如果 netrw 是唯一打开的窗口，那么将同时退出Vim。
-
-    :bd 我们可以将 netrw 理解为，使用编辑命令对于目录进行操作的特殊缓冲区。也就是说，我们可以使用 :bdelete 命令，来关闭 netrw 打开的缓冲区，但不会退出 Vim。
-
-可设置打开文件的方式
-
-        let g:netrw_browse_split = n
-
-    其中，参数 n 的值可以为以下四种
-
-        1   在目录树列表窗口，水平拆分新窗口打开文件
-        2   在目录树列表窗口，垂直拆分新窗口打开文件
-        3   用新建标签页打开文件
-        4   用前一个窗口打开文件
-
-拆分窗口的切换，使用 vim 多窗口操作的前导键 ctrl+w，参见章节 [多窗口(Window)操作]
-
-几个设置命令，可放到 .vimrc 配置文件中
-
-```vim
-
-" 设置 netrw 的显示风格
-"let g:netrw_hide = 1 " 设置默认隐藏
-"let g:netrw_banner = 0  " 隐藏 netrw 顶端的横幅（Banner）
-let g:netrw_browse_split = 4  " 用前一个窗口打开文件
-let g:netrw_liststyle = 3  " 目录树的显示风格，可以用 i 键来回切换
-let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
-"let g:netrw_altv = 1 " 控制垂直拆分的窗口位于右边
-
-```
-
-netrw窗口内的操作快捷键
-
-    <F1>      在 netrw 界面弹出帮助信息
-    I         显示/隐藏顶部 banner
-
-    o         在目录树列表窗口，水平拆分新窗口打开文件
-    v         在目录树列表窗口，垂直拆分新窗口打开文件
-
-    t         新 tab 中打开当前光标所在的文件
-
-    p         预览当前文件(光标保持不动)
-    qf        显示当前文件详细信息
-    <C-w>z    关闭预览窗口
-    P         打开文件, 会在上一个使用的窗口一侧的第一个窗口打开文件
-
-    %         在当前目录下新建一个文件并编辑
-
-    <C-l>     更新 netrw 列表内容
-    i         文件列表的风格：在 thin, long, wide, tree listings 状态之间切换
-
-    gh        快速隐藏/取消隐藏.开头的文件或目录，如.vim
-    s         切换文件的排序，在 name, time 和 file size 之间轮换
-    r         翻转文件的排序方式
-
-    gn        使光标下的目录作为目录树最顶部, 在 tree style 下与 <CR> 是不同的
-    cd        change 工作目录到当前路径
-    -         进入上一级目录
-    u         跳到之前访问过的目录
-    U         跳到之后访问过的目录
-
-    d         创建文件夹
-    D         移除文件/夹
-    R         重命名文件/文件夹
-
-    qb        列出书签目录和历史目录
-    mb        添加当前目录到书签
-    mB        取消当前目录作为书签
-    gb        跳转到书签目录（3gb跳转到第3个书签）
-
-    u         跳转到上一次浏览的目录
-    x         使用系统中与之关联的程序打开光标下文件
-    X         执行光标下的文件
-
-##### 插件管理器 vim-addon-manager
+###### 插件管理器 vim-addon-manager
 
     https://github.com/MarcWeber/vim-addon-manager
 
@@ -4198,47 +3926,7 @@ netrw窗口内的操作快捷键
 
     vim-addons show xxx
 
-##### 推荐：插件管理器 vim-plug
-
-Vundle不更新了，这个项目取代之，用法神似，只需要编辑 ~/.vimrc，便于用户自定义，安装使用 github 来源的插件非常简单
-
-    https://github.com/junegunn/vim-plug
-
-先从 github 下载
-
-    # vim 使用时加载     ~/.vim/autoload/
-    # vim-plug 存放插件  ~/.vim/plugged/
-
-    curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-然后修改  ~/.vimrc，
-
-然后重新加载配置文件 `:source ~/.vimrc`，命令行执行 `:PlugInstall` 按提示操作即可安装插件。
-
-常用命令
-
-然后进入vim，运行命令安装插件，会新建拆分窗口根据你编辑的 .vimrc 文件内容列出可选操作
-
-    :PlugInstall
-
-卸载插件只需编辑 .vimrc 配置文件中删除欲卸载插件的配置，保存，然后在Vim中执行下述命令即可完成卸载
-
-    :PlugClean
-
-更新插件
-
-    :PlugUpdate
-
-列出当前插件
-
-    :PlugList
-
-搜索插件，选择一个你想要安装的插件，并敲击键盘 i 来安装这个插件，完成后选中这个插件的名称，并粘贴到 .vimrc 文件中去
-
-    :PlugSearch colorscheme
-
-##### 插件管理器 Vundle
+###### 插件管理器 Vundle
 
 优点是只需要编辑 ~/.vimrc，便于用户自定义，可惜自2019年之后不更新了
 
@@ -4254,7 +3942,7 @@ Vundle不更新了，这个项目取代之，用法神似，只需要编辑 ~/.v
 
 然后修改  ~/.vimrc 如下
 
-```vim
+```python
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " VundleVim 插件管理器官方配置
@@ -4553,6 +4241,320 @@ let NERDTreeShowHidden=1
 map <C-n> :NERDTreeToggle<CR>
 
 ```
+
+##### 不推荐状态栏工具 powerline
+
+    推荐使用替代品 vim-airline，状态栏和标签栏都有，而且可以配合很多知名插件的显示
+
+powerline 介绍，参见章节 [状态栏工具 powerline]。
+
+使用 powerline 在 vim 下的插件需要 Vim 在编译时添加 python 支持，而一般的用于嵌入式设备的操作系统如树莓派自带的是 vim 精简版 vim.tinny，这个版本是无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
+
+powerline 为保证多样性，使用 python 实现的。现在的问题是操作系统自带的 python 指的 python2 还是 python3 版本
+
+    搞清 操作系统安装的包 python-pip 和 python3-pip 的使用区别
+    搞清 powerline 有 python 和 python3 两个发行版本
+    搞清 操作系统默认的 python 环境是 python 还是 python3
+    搞清 你安装的 powerline 到底是用 python 还是 python3 执行的？如果是用 apt install 安装的是使用发行版环境的。
+    搞清 所有的 powerline 的插件，安装前都要先看看到底支持哪个python版本？
+    搞清 前面这堆 python 到底是指 python2 还是 python3 ？如果是python3，最低要求 3.6 还是 3.7 ？
+    这个比较难受：搞清在 virtualenv/conda 下使用 vim 会否影响其使用 python 的插件？折腾半天装上了激活个 python 环境就废了？
+
+    不是迫不得已，更不要自行编译 vim，尽量用发行版自带的。
+
+    建议安装 debian 发行版自带的 powerline，用 `sudo apt install powerline`即可
+
+        如果，你在 Debian 10 用 `pip install powerline-status`，那么安装的应该是 python 2.7 版本的 powerline-status。
+
+        新版用 pypi 安装 `python3 -m pip install powerline-status`
+
+        最新版用 github 安装 `python3 -m pip install --user git+git://github.com/powerline/powerline`
+
+        然后继续，所有的 powerline 的插件，安装前都要先看看到底支持哪个python版本？
+
+如果确定你的 vim 可以使用 powerline，做如下设置：
+
+    先查看 powerline 的安装位置，找到 bindings 目录
+
+        如果是用 pip 安装的 powerline，就是如下这种的路径
+
+            # pip show powerline-status
+            # /usr/lib/python3/dist-packages/powerline/bindings/vim/
+            /usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
+
+        如果是用 apt 安装的 powerline，就是这种路径
+
+            /usr/share/powerline/bindings/vim/
+
+    将上述路径添加到配置文件 ~/.vimrc 或 /etc/vim/vimrc 中
+
+        set rtp+=/usr/share/powerline/bindings/vim/
+
+        " Always show statusline
+        set laststatus=2
+
+        " Always show tabline
+        set showtabline=2
+
+        " Use 256 colours (Use this setting only if your terminal supports 256 colours)
+        set t_Co=256
+
+##### 推荐 vim 状态栏工具 vim-airline
+
+完美替换掉 powerline
+
+    https://github.com/vim-airline/vim-airline
+
+开箱即用，不仅是状态栏和标签栏，而且能配合很多常用插件如 nerdtree 目录树的显示，普通字体也可以正常显示。
+
+没使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
+
+直接配置到插件管理器 vim-plug 里加载是最省事的，否则：
+
+    Debian 发行版自带，会自动安装依赖的插件管理器 vim-addon-manager，然后把自己安装到其插件目录中
+
+        $ sudo apt install vim-airline
+
+        $ sudo apt install vim-airline-themes
+
+    Fedora 发行版只带一个，另一个需要手动，还是得依赖插件管理器
+
+        $ sudo dnf install vim-airline
+
+注意 vim.tinny 版无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
+
+查看帮助
+
+    :help airline
+
+Airline 扩展支持适配 tabline、nerdtree 等插件的颜色方案，在 ~/.vimrc 中配置
+
+```vim
+
+" 内置扩展的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
+" 内置扩展保存在：
+" apt install [vim-addon-manager] /usr/share/vim/addons/autoload/airline/extensions/ 下
+" [Vundle]   ~/.vim/bundle/vim-airline/autoload/airline/extensions/ 下
+" [vim-plug] ~/.vim/plugged/ 下
+" 自定义 ~/.vim/autoload/ 和 ~/.vim/plugin/
+" 命令 :AirlineExtensions 查看当前自动启用的内置插件
+
+" 需要启用 powerline 的字体，状态栏显示的效果才能起飞
+let g:airline_powerline_fonts = 1
+
+" 启用 airline 内置扩展：标签式显示多个打开的文件的状态栏
+" 在说明文件中搜 airline-tabline
+let g:airline#extensions#tabline#enabled = 1
+
+" 启用 airline 内置扩展：nerdtree插件左侧显示文件树内容的状态栏效果
+let g:airline#extensions#nerdtree_statusline = 1
+
+```
+
+AirlineTheme 自有主题，在 ~/.vimrc 中配置
+
+```vim
+
+" AirlineTheme 需要启用 powerline 的字体才能起飞
+let g:airline_powerline_fonts = 1
+
+" airline_theme内置的插件主题大部分都只是状态栏的，居然不同步设置语法高亮
+" 建议自行安装vim插件 PaperColor 或 nord，状态栏和语法高亮颜色都有了,不需要用 airline_theme 内置的同名主题
+" https://github.com/vim-airline/vim-airline-themes/tree/master/autoload/airline/themes
+" 列表见 https://github.com/vim-airline/vim-airline/wiki/Screenshots
+" 保存在 ~/.vim/bundle/vim-airline-themes/autoload/airline/themes
+" 使用说明 ~/.vim/bundle/vim-airline-themes/README.md
+" 在vi中切换主题 :AirlineTheme night_owl
+let g:airline_theme='papercolor'
+
+```
+
+##### 更简洁的状态栏工具 lightline.vim
+
+    https://github.com/itchyny/lightline.vim
+
+如果你想只安装个干净的工具栏，其它插件自己配置自己玩的话，状态栏工具用这个 lightline.vim 就足够了。
+
+Why yet another clone of powerline?
+
+    https://github.com/Lokaltog/vim-powerline is a nice plugin, but deprecated.
+
+    powerline is a nice plugin, but difficult to configure.
+
+    vim-airline is a nice plugin, but it uses too many functions of other plugins, which should be done by users in .vimrc.
+
+这个比较简洁，只有状态栏工具和颜色方案。也是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
+
+vim.tinny 版是无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
+
+配置主题
+
+    let g:lightline = { 'colorscheme': 'PaperColor' }
+
+##### nerdtree 树形文件夹插件
+
+如果感觉插件太多太麻烦，可以使用 vim 自带的树形文件夹插件 netrw，见章节 [vim 内置的树形文件夹管理 netrw]。
+
+nerdtree 以在当前窗口的左侧垂直新建窗口的方式，树形展示当前路径下的文件列表，方便用户操作。
+
+所以，在左侧目录树窗口和右侧文件窗口间切换使用 vim 的窗口切换热键
+
+    前导 ctrl + w ，然后方向键左或 h 光标跳到左侧树形目录
+    前导 ctrl + w ，然后方向键右或 l 光标跳到右侧文件显示窗口
+
+窗口操作详见章节 [多窗口(Window)操作]。
+
+自定义个 vim 中的热键 Ctrl-n，方便切换显示目录树，在 ~/.vimrc 配置文件中定义
+
+    " NERDTree
+    map <C-n> :NERDTreeToggle<CR>
+    let NERDTreeShowHidden=1 "在打开时默认显示隐藏文件
+    " map 是快捷键映射命令
+    " <C-n> 定义了快捷键，表示 Ctrl-n
+    " 后面是对应的命令以及回车键 <CR>
+
+nerdtree 在左侧树形目录中的热键
+
+    ?   切换是否显示 nerdtree 的快捷帮助
+
+    回车 打开的的文件默认是vim的多个文件模式，即添加到缓冲中
+    o   在已有窗口中打开文件、目录或书签，并跳到该窗口，或命令 :NERDTree-o
+    go  在已有窗口中打开文件、目录或书签，但不跳到该窗口，或命令 :NERDTree-go
+
+    缓冲区列表需要用命令 :ls 来显示， :b<编号> 切换。详见章节[理解vim的多文件操作（缓冲buffer）]。
+
+    i   水平切割一个新窗口打开选中文件，并跳到该窗口，或命令 :NERDTree-i
+    gi  水平分割一个新窗口打开选中文件，但不跳到该窗口，或命令 :NERDTree-gi
+
+    s   垂直分割一个新窗口打开选中文件，并跳到该窗口，或命令 :NERDTree-s
+    gs  垂直分割一个新窗口打开选中文件，但不跳到该窗口，或命令 :NERDTree-gs
+
+    t   在新 Tab 中打开选中文件/书签，并跳到新 Tab，或命令 :NERDTree-t
+    T   在新 Tab 中打开选中文件/书签，但不跳到新 Tab，或命令 :NERDTree-T
+
+    切换 tab 的热键详见章节 [多标签页(Tab)操作]
+
+    e   在目录树上按e，则在右侧窗口显示目录内容，光标键进行选择操作即可，再次按e退出
+
+    K   跳到当前目录下同级的第一个结点
+    J   跳到当前目录下同级的最后一个结点
+
+    !   执行当前文件，或命令 :NERDTree-!
+
+一般再搭配个显示每个文件 git 状态的插件
+
+    https://github.com/Xuyuanp/nerdtree-git-plugin
+
+    在 .vimrc 中配置用 plug 安装几个nerdtree配合的常用插件
+
+        Plug 'preservim/nerdtree' |
+                \ Plug 'Xuyuanp/nerdtree-git-plugin' |
+                \ Plug 'ryanoasis/vim-devicons'
+
+    还可以搭配比较醒目的图标
+
+        " nerdtree-git-plugin 启用带图标的字体
+        let g:NERDTreeGitStatusUseNerdFonts = 1 " you should install nerdfonts by yourself. default: 0
+
+        let g:NERDTreeIndicatorMapCustom = {
+            \ "Modified"  : "✹",
+            \ "Staged"    : "✚",
+            \ "Untracked" : "✭",
+            \ "Renamed"   : "➜",
+            \ "Unmerged"  : "═",
+            \ "Deleted"   : "✖",
+            \ "Dirty"     : "✗",
+            \ "Clean"     : "✔︎",
+            \ "Unknown"   : "?"
+            \ }
+
+###### vim 内置的树形文件夹插件 netrw
+
+netrw 是 vim 自带的插件, 不需要额外安装, 其提供的功能非常强大, 相比与 nerdtree 这些第三方插件来说速度更快, 体量更轻, 设计更简洁。
+
+默认情况下，netrw 将在当前窗口中打开目录树列表，选择文件后回车即可在当前窗口打开文件。
+
+在 vim 中打开 netrw 窗口
+
+    :E       全屏进入 netrw, 全称是 :Explorer 或 :Ex
+    :Se      水平分割进入 netrw
+    :Ve      垂直分割进入 netrw
+
+退出
+
+    :q  关闭 netrw 窗口（保持回车打开文件的窗口），如果 netrw 是唯一打开的窗口，那么将同时退出Vim。
+
+    :bd 我们可以将 netrw 理解为，使用编辑命令对于目录进行操作的特殊缓冲区。也就是说，我们可以使用 :bdelete 命令，来关闭 netrw 打开的缓冲区，但不会退出 Vim。
+
+可设置打开文件的方式
+
+        let g:netrw_browse_split = n
+
+    其中，参数 n 的值可以为以下四种
+
+        1   在目录树列表窗口，水平拆分新窗口打开文件
+        2   在目录树列表窗口，垂直拆分新窗口打开文件
+        3   用新建标签页打开文件
+        4   用前一个窗口打开文件
+
+拆分窗口的切换，使用 vim 多窗口操作的前导键 ctrl+w，参见章节 [多窗口(Window)操作]
+
+几个设置命令，可放到 .vimrc 配置文件中
+
+```vim
+
+" 设置 netrw 的显示风格
+"let g:netrw_hide = 1 " 设置默认隐藏
+"let g:netrw_banner = 0  " 隐藏 netrw 顶端的横幅（Banner）
+let g:netrw_browse_split = 4  " 用前一个窗口打开文件
+let g:netrw_liststyle = 3  " 目录树的显示风格，可以用 i 键来回切换
+let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
+"let g:netrw_altv = 1 " 控制垂直拆分的窗口位于右边
+
+```
+
+netrw窗口内的操作快捷键
+
+    <F1>      在 netrw 界面弹出帮助信息
+    I         显示/隐藏顶部 banner
+
+    o         在目录树列表窗口，水平拆分新窗口打开文件
+    v         在目录树列表窗口，垂直拆分新窗口打开文件
+
+    t         新 tab 中打开当前光标所在的文件
+
+    p         预览当前文件(光标保持不动)
+    qf        显示当前文件详细信息
+    <C-w>z    关闭预览窗口
+    P         打开文件, 会在上一个使用的窗口一侧的第一个窗口打开文件
+
+    %         在当前目录下新建一个文件并编辑
+
+    <C-l>     更新 netrw 列表内容
+    i         文件列表的风格：在 thin, long, wide, tree listings 状态之间切换
+
+    gh        快速隐藏/取消隐藏.开头的文件或目录，如.vim
+    s         切换文件的排序，在 name, time 和 file size 之间轮换
+    r         翻转文件的排序方式
+
+    gn        使光标下的目录作为目录树最顶部, 在 tree style 下与 <CR> 是不同的
+    cd        change 工作目录到当前路径
+    -         进入上一级目录
+    u         跳到之前访问过的目录
+    U         跳到之后访问过的目录
+
+    d         创建文件夹
+    D         移除文件/夹
+    R         重命名文件/文件夹
+
+    qb        列出书签目录和历史目录
+    mb        添加当前目录到书签
+    mB        取消当前目录作为书签
+    gb        跳转到书签目录（3gb跳转到第3个书签）
+
+    u         跳转到上一次浏览的目录
+    x         使用系统中与之关联的程序打开光标下文件
+    X         执行光标下的文件
 
 #### vim 快捷键
 
