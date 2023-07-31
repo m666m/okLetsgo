@@ -5615,6 +5615,32 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
     run-shell ~/.tmux/tmux-prefix-highlight//prefix_highlight.tmux
 
+##### 保存 tmux 会话
+
+每天开机得先调整半天 tmux 烦不烦，关机前保存当前的各种会话和布局最方便了
+
+安装
+
+    $ cd ~/.tmux
+    $ git clone --depth=1 https://github.com/tmux-plugins/tmux-resurrect
+
+编辑 ~/.tmux.conf 文件
+
+    # 保存会话
+    run-shell "~/.tmux/tmux-resurrect/resurrect.tmux"
+
+关闭 tmux 前保存当前会话
+
+    前导键 ctrl + b，然后 ctrl + s，会在状态栏闪现提示保存完成的消息
+
+打开 tmux 后恢复之前的会话
+
+    前导键 ctrl + b，然后 ctrl + r，会在状态栏闪现提示恢复完成的消息
+
+默认只恢复面板布局和几个指定的程序，想恢复更多的程序要再进行设置
+
+    https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_programs.md
+
 ##### 插件管理
 
 感觉 tmux 就别折腾各种插件了。。。
