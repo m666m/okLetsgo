@@ -316,7 +316,7 @@ else
 fi
 
 ####################################################################
-# 加载插件或小工具
+# Bash：加载插件或小工具
 
 # ssh 命令时候能够自动补全 hostname
 [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
@@ -325,8 +325,9 @@ fi
 [[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh
 
 #################################
-# 手动配置插件
+# Bash：手动配置插件
 
+# 从上面的 ackg.sh 扩展看日志的快捷命令
 alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
 
 ####################################################################

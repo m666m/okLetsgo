@@ -3147,9 +3147,16 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 ####################################################################
 # 从这里开始用户自己的设置
 
-# 命令行开启vi-mode模式，按esc后用vi中的上下键选择历史命令
-# zsh 命令行用 bindkey -v 来设置 vi 操作模式
-#set -o vi
+# 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命
+# zsh 命令行用 bindkey -v 来设置 vi 操作模式令
+set -o vi
+
+# 有些软件默认使用变量 EDITOR 指定的编辑器，一般是nano
+export EDITOR=/usr/bin/vi
+
+# 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存哪些不常用的命令
+# 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以 在新行中输入密钥。
+# export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 
 ####################################################################
 # 命令行的字符可以显示彩色，依赖这个设置
@@ -3190,9 +3197,9 @@ if [ -x /usr/bin/dircolors ]; then
     #
     # 列出目录下的文件清单，查找指定关键字，如 `lsg fnwithstr`。因为ls列出的目录颜色被grep覆盖，用 ls -l 查看更方便。
     alias lsg='ls -lFA |grep -i'
-    # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findg fnwithstr`
-    alias findg='find ./ |grep -i'
-    # 在当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
+    # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findf fnwithstr`
+    alias findf='find ./ |grep -i'
+    # 在管道或当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
     alias greps='grep --color=auto -d skip -in'
     # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过.git等目录，如 `finds strinfile`
     alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
@@ -3200,7 +3207,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias pstrees='echo "[进程树，列出pid，及全部子进程]" && pstree -p -s'
     alias curls='echo "curl 跟踪重定向，不显示进度条，静默错误信息但要报错失败，默认打印到屏幕，加 -O 保存到默认文件" &&curl -fsSL'
     alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
-    alias passf='echo "[256 字节作为密钥文件，随机数过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
+    alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
 
     # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
     function cpbak {
@@ -3208,11 +3215,15 @@ if [ -x /usr/bin/dircolors ]; then
         echo "[复制一个备份，同名后缀.bak，如果是目录名不要后缀/]" && cp -a $1{,.bak}
     }
 
+    # scp rsync
+    alias scps='echo "[scp 源 目的。远程格式 user@host:/home/user/ 端口用 -P]" && scp -r'
+    alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/home/user/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
+
     # vi
     alias viw='echo "[只给出提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
 
     # systemd
-    alias sded='echo "[只给出提示： systemd 手工编辑文件，切换到 root 环境运行以下命令。另：vi 换为 tee 可实现EOF式的命令行直接写入]" && echo "env SYSTEMD_EDITOR=vi systemctl edit --force --full xxx.service"'
+    alias stded='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
 
     # wsl 或 git bash下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "[Windows Path]"
     function cdw {
@@ -3286,6 +3297,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
     alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
     alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
+
+    # podman
+    alias podmans='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
 fi
 
 ####################################################################
@@ -3304,9 +3318,11 @@ if $(pgrep gnome-keyring >/dev/null 2>&1) ;then
 
     # if [[ $(uname) == 'Linux' ]]; then
 
-    # GNOME 桌面环境，使用 GNOME 接管了全系统的密码和密钥，用 seahorse 进行管理
+    # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
+    # 如果有时候没有启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh 会导致无法读取ssh代理的密钥
+    # 干脆手工指定
     # https://blog.csdn.net/asdfgh0077/article/details/104121479
-    eval `gnome-keyring-daemon --start >/dev/null 2>&1`
+    eval `gnome-keyring-daemon --start >/dev/null 2>&1`  # 不会多次运行自己
     export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
     export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
@@ -3318,6 +3334,8 @@ elif  [[ "$OSTYPE" =~ msys ]]; then
 
     # 利用检查 ssh-pageant 进程是否存在，判断是否开机后第一次打开bash会话，则运行gpg钥匙圈更新
     if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
+        # 开机后第一次打开bash会话
+
         echo ''
         # echo "更新gpg钥匙圈需要点时间，请稍等..."
         # gpg --refresh-keys
@@ -3365,6 +3383,18 @@ else
 
     if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
         # 开机后第一次打开bash会话
+
+        echo ''
+        # echo "更新gpg钥匙圈需要点时间，请稍等..."
+        # gpg --refresh-keys
+
+        echo "gpg 更新 TrustDB，跳过 owner-trust 未定义的导入公钥..."
+        gpg --check-trustdb
+
+        echo ''
+        echo "gpg 检查签名情况..."
+        gpg --check-sigs
+
         echo && echo "启动 ssh-agent..."
         agent_start
 
@@ -3381,7 +3411,7 @@ else
 fi
 
 ####################################################################
-# 加载插件或小工具
+# Bash：加载插件或小工具
 
 # ssh 命令时候能够自动补全 hostname
 #[[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
@@ -3389,8 +3419,15 @@ fi
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
 source /usr/local/bin/ackg.sh
 
+#################################
+# Bash：手动配置插件
+
+# 从上面的 ackg.sh 扩展看日志的快捷命令
+alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
+
 ####################################################################
-# 加载插件
+# Zsh：加载插件或小工具
+#
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
 # 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
 
@@ -3407,15 +3444,10 @@ source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
-source /usr/local/bin/ackg.sh
+#################################
+# Zsh：手动配置插件
 
-####################################################################
-# 手动配置插件
-
-alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
-
-# 执行 cd 命令后自动执行下 ls 列出当前文件
+# zsh 执行 cd 命令后自动执行下 ls 列出当前文件
 chpwd() ls -A
 chpwd
 
