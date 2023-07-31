@@ -3682,9 +3682,11 @@ vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
 
 ##### 使用状态栏工具等扩展插件的先决条件
 
-检查 vim 的版本，进入 vim 执行命令 :version
+检查 vim 的版本，执行命令 `vi --version` 或 进入 vim 执行命令 :version
 
     Small version without GUI.
+
+    Tiny version without GUI.
 
 如果出现上述字样，说明当前系统只安装了兼容 vi 模式的精简版 vim.tiny，不支持彩色语法高亮、切分窗口等高级功能（vim 内置插件）
 
@@ -3737,15 +3739,17 @@ Fedora 重装增强版
 
     先删除 vim-minimal
 
-        $ sudo dnf remove vim-minimal vim-data
+        $ sudo dnf remove vim-minimal
 
     然后安装 vim 的增强版
 
-        $ sudo dnf install -y vim-enhanced vim-common
+        $ sudo dnf install -y vim-enhanced
 
-然后在 vim 中运行命令 :version
+        $ cd /usr/bin; sudo ln -s vim vi
 
-    Huge version without GUI.
+    检查 vim 的版本，执行命令 `vi --version` 或 进入 vim 执行命令 :version
+
+        Huge version without GUI.
 
 确认如上字样即可。
 
@@ -3893,7 +3897,7 @@ powerline 为保证多样性，使用python实现的。现在的问题是操作�
     apt install vim-airline
     apt install vim-airline-themes
 
-vim.tinny 版是无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
+注意 vim.tinny 版是无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
 
 查看帮助
 
@@ -4193,7 +4197,7 @@ Vundle不更新了，这个项目取代之，用法神似，只需要编辑 ~/.v
 
     https://github.com/junegunn/vim-plug
 
-先github下载
+先从 github 下载
 
     # vim 使用时加载     ~/.vim/autoload/
     # vim-plug 存放插件  ~/.vim/plugged/
@@ -4203,7 +4207,7 @@ Vundle不更新了，这个项目取代之，用法神似，只需要编辑 ~/.v
 
 然后修改  ~/.vimrc
 
-```vim
+```python
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-plug 插件管理器官方配置
@@ -4227,7 +4231,7 @@ Plug '/usr/share/vim/addons/plugin/vim-airline'
 Plug '/usr/share/vim/addons/plugin/vim-airline-themes'
 
 " On-demand loading
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+"Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
 " 在侧边显示git修改状态
 Plug 'airblade/vim-gitgutter',
@@ -4237,10 +4241,9 @@ Plug 'airblade/vim-gitgutter',
 " Peekaboo extends " and @ in normal mode and <CTRL-R> in insert mode so you can see the contents of the registers.
 Plug 'junegunn/vim-peekaboo'
 
-" 注意颜色主题需要使用命令 colorscheme xxx 才能启用
+" 注意这里只是加载颜色主题，启用主题要使用命令 colorscheme xxx，见下
 " 颜色主题 https://www.nordtheme.com/ports/vim
 Plug 'arcticicestudio/nord-vim'
-
 " 颜色主题 https://github.com/NLKNguyen/papercolor-theme
 Plug 'NLKNguyen/papercolor-theme'
 
@@ -4253,6 +4256,7 @@ call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " 在下面增加自己的设置
+
 ```
 
 然后重新加载配置文件 `:source ~/.vimrc`，命令行执行 `:PlugInstall` 按提示操作即可安装插件。
@@ -4375,7 +4379,7 @@ filetype plugin indent on    " required
 
 结合我自己使用的插件和 airline 的配置，vim 编辑后无需退出，运行命令 `:source ~/.vimrc` 重新加载即可。
 
-``` vim
+``` python
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim 的默认设置
@@ -4451,8 +4455,8 @@ set pastetoggle=<F2>
 "
 " 插件管理器二选一：
 "
-"   见章节 [插件管理器 vim-plug] 里的示例配置
 "   见章节 [插件管理器 vim-addon-manager]，用命令的方式对插件进行管理，不需要配置文件
+"   来自章节 [插件管理器 vim-plug] 里的示例配置
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " 插件设置：vim-airline 内置扩展设置
@@ -4521,11 +4525,11 @@ endif
 "colorscheme PaperColor  " 支持设置背景色
 colorscheme nord
 
-" 设置背景色(需要主题支持)，切换语法颜色方案使用亮色还是暗色
+" 设置背景色(需要主题支持)，切换语法颜色方案使用亮色还是暗色，PaperColor 支持该切换
 "set background=dark
 "set background=light
 
-" 如果终端工具设置了背景图片，而你的colorscheme背景色挡住了图片，开启这个设置强制透明
+" 如果终端工具设置了背景图片，而你的colorscheme背景色挡住了图片，开启这个设置强制透明，比如 PaperColor
 "hi Normal guibg=#111111 ctermbg=black
 "hi Normal guibg=NONE ctermbg=NONE
 
