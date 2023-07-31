@@ -12622,7 +12622,7 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
         服务的配置文件添加： RemainAfterExit=yes
 
-##### 自制的 shell 脚本 让 systemd 用兼容 SystemV 的方式进行启动管理
+##### 自制的 shell 脚本 让 systemd 用兼容 SystemV 的方式进行自启动
 
 先确认 systemd 已经开启了 systemV 启动脚本 rc.local 的兼容服务
 
@@ -12642,7 +12642,7 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
 然后执行章节 [SystemV设置开机自启动] 的步骤即可。
 
-##### 自制脚本由 systemd 服务调度自启动
+##### 自制的 shell 脚本由 systemd 服务调度自启动
 
     https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
 
