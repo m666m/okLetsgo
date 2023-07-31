@@ -4212,63 +4212,7 @@ Vundle不更新了，这个项目取代之，用法神似，只需要编辑 ~/.v
     curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-然后修改  ~/.vimrc
-
-```python
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim-plug 插件管理器官方配置
-"
-" 不需要设置rtp，因为引导程序plug.vim放到autoload目录里了
-
-" airline 安装后可屏蔽原配置的 powerline
-" set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
-
-call plug#begin()
-" The default plugin directory will be as follows:
-"   - Vim (Linux/macOS): '~/.vim/plugged'
-"   - Vim (Windows): '~/vimfiles/plugged'
-"   - Neovim (Linux/macOS/Windows): stdpath('data') . '/plugged'
-" You can specify a custom plugin directory by passing it as the argument
-"   - e.g. `call plug#begin('~/.vim/plugged')`
-"   - Avoid using standard Vim directory names like 'plugin'
-
-" Unmanaged plugin (manually installed and updated)
-" Debian: 加载发行版安装的
-"Plug '/usr/share/vim/addons/plugin/vim-airline'
-"Plug '/usr/share/vim/addons/plugin/vim-airline-themes'
-"Fedora: 发行版安装的不需要显式加载
-"Plug '/usr/share/vim/vimfiles/plugin/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-
-" On-demand loading
-"Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-
-" 在侧边显示git修改状态
-Plug 'airblade/vim-gitgutter',
-
-" 显示 vim 寄存器的内容
-" 在 vis mode 有点小问题 https://github.com/junegunn/vim-peekaboo/issues/22
-" Peekaboo extends " and @ in normal mode and <CTRL-R> in insert mode so you can see the contents of the registers.
-Plug 'junegunn/vim-peekaboo'
-
-" 注意这里只是加载颜色主题，启用主题要使用命令 colorscheme xxx，见下
-" 颜色主题 https://www.nordtheme.com/ports/vim
-Plug 'arcticicestudio/nord-vim'
-" 颜色主题 https://github.com/NLKNguyen/papercolor-theme
-Plug 'NLKNguyen/papercolor-theme'
-
-" Initialize plugin system
-" - Automatically executes `filetype plugin indent on` and `syntax enable`.
-call plug#end()
-" You can revert the settings after the call like so:
-"   filetype indent off   " Disable file-type-specific indentation
-"   syntax off            " Disable syntax highlighting
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 在下面增加自己的设置
-
-```
+然后修改  ~/.vimrc，
 
 然后重新加载配置文件 `:source ~/.vimrc`，命令行执行 `:PlugInstall` 按提示操作即可安装插件。
 
@@ -4468,6 +4412,58 @@ set pastetoggle=<F2>
 "
 "   见章节 [插件管理器 vim-addon-manager]，用命令的方式对插件进行管理，不需要配置文件
 "   来自章节 [插件管理器 vim-plug] 里的示例配置
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-plug 插件管理器官方配置
+"
+" 不需要设置rtp，因为引导程序plug.vim放到autoload目录里了
+
+" airline 安装后可屏蔽原配置的 powerline
+" set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
+
+call plug#begin()
+" The default plugin directory will be as follows:
+"   - Vim (Linux/macOS): '~/.vim/plugged'
+"   - Vim (Windows): '~/vimfiles/plugged'
+"   - Neovim (Linux/macOS/Windows): stdpath('data') . '/plugged'
+" You can specify a custom plugin directory by passing it as the argument
+"   - e.g. `call plug#begin('~/.vim/plugged')`
+"   - Avoid using standard Vim directory names like 'plugin'
+
+" Unmanaged plugin (manually installed and updated)
+" Debian: 加载发行版安装的
+"Plug '/usr/share/vim/addons/plugin/vim-airline'
+"Plug '/usr/share/vim/addons/plugin/vim-airline-themes'
+"Fedora: 发行版安装的不需要显式加载
+"Plug '/usr/share/vim/vimfiles/plugin/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" On-demand loading
+"Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+
+" 在侧边显示git修改状态
+Plug 'airblade/vim-gitgutter',
+
+" 显示 vim 寄存器的内容
+" 在 vis mode 有点小问题 https://github.com/junegunn/vim-peekaboo/issues/22
+" Peekaboo extends " and @ in normal mode and <CTRL-R> in insert mode so you can see the contents of the registers.
+Plug 'junegunn/vim-peekaboo'
+
+" 注意这里只是加载颜色主题，启用主题要使用命令 colorscheme xxx，见下
+" 颜色主题 https://www.nordtheme.com/ports/vim
+Plug 'arcticicestudio/nord-vim'
+" 颜色主题 https://github.com/NLKNguyen/papercolor-theme
+Plug 'NLKNguyen/papercolor-theme'
+
+" Initialize plugin system
+" - Automatically executes `filetype plugin indent on` and `syntax enable`.
+call plug#end()
+" You can revert the settings after the call like so:
+"   filetype indent off   " Disable file-type-specific indentation
+"   syntax off            " Disable syntax highlighting
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 在下面增加自己的设置
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " 插件设置：vim-airline 内置扩展设置
