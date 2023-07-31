@@ -8971,6 +8971,8 @@ GNOME Files（Nautilus）文件管理器
 
 Gnome:
 
+如果是 Fedora，记得先添加 RpmFusion 源。
+
 打开 Gnome Software， 在类别 'input source' 搜索 'Pinyin'，安装
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/assembly_enabling-chinese-japanese-or-korean-text-input_getting-started-with-the-gnome-desktop-environment#proc_switching-the-input-method-in-gnome_assembly_enabling-chinese-japanese-or-korean-text-input
@@ -8979,7 +8981,7 @@ Gnome:
 
 用 'Win+空格' 键即可切换输入法。
 
-切换到拼音输入法之后，右键点击输入法在任务栏的图标，弹出菜单选择 “Perference”，设置用逗号句号翻页。
+切换到拼音输入法之后，右键点击输入法在任务栏的图标，弹出菜单选择 “Perference”，设置用逗号句号翻页等选项。
 
 ### 设置中文字体
 
