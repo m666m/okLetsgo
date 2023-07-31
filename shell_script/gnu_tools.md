@@ -3564,29 +3564,6 @@ info 命令倾向于可读性和更深入的解释。信息页系统还支持文
 
         info ssh
 
-### 命令行下的文件资源管理器
-
-Midnight Commander 命令行下使用两个面板来处理文件和目录
-
-     https://midnight-commander.org/
-        https://github.com/MidnightCommander/mc
-        https://sourceforge.net/projects/mcwin32/files/
-
-    中文说明
-
-        https://www.debian.org/doc/manuals/debian-reference/ch01.zh-cn.html#_midnight_commander_mc
-
-    sudo apt install mc
-
-Far Manager for Windows 类似 mc，命令行下使用两个面板来处理文件和目录
-
-    https://conemu.github.io/en/FarManager.html
-
-ranger 使用 vi 键位操作，自动预览文本文件，还支持打开其它类型的文件，非常方便
-
-    https://ranger.github.io/
-        https://github.com/ranger/ranger
-
 ### Vim 和 nano
 
     https://vim-jp.org/vimdoc-en/scroll.html
@@ -6049,6 +6026,33 @@ sleep 60
     3767 drwxr-xr-x@    - uu   uu     3 Jun 04:59  .git
     110635 .rw-r--r--@   18 uu   uu     3 Jun 00:09  1.txt
     110627 .rw-r--r--@   16 uu   uu     3 Jun 00:09  a.txt
+
+### 命令行下的文件资源管理器
+
+ranger 使用 vi 键位操作，自动预览文本文件，还支持打开其它类型的文件，非常方便
+
+    https://ranger.github.io/
+        https://github.com/ranger/ranger
+
+    按 ctl+h 切换是否显示隐藏文件
+
+    左中右三屏：中间屏幕保持显示当前目录，左屏显示上一级的目录树，右屏显示下一级的目录列表或文件预览，用 vi 键在各个窗口中移动
+
+Midnight Commander 命令行下使用两个面板来处理文件和目录
+
+     https://midnight-commander.org/
+        https://github.com/MidnightCommander/mc
+        https://sourceforge.net/projects/mcwin32/files/
+
+    中文说明
+
+        https://www.debian.org/doc/manuals/debian-reference/ch01.zh-cn.html#_midnight_commander_mc
+
+    sudo apt install mc
+
+Far Manager for Windows 类似 mc，命令行下使用两个面板来处理文件和目录
+
+    https://conemu.github.io/en/FarManager.html
 
 ### 按内容查找文件：find + grep + xargs 组合
 
