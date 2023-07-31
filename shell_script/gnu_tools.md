@@ -12578,7 +12578,7 @@ Target 与 传统 RunLevel 的对应关系如下
 
 （3）配置文件的位置，以前 init 进程的配置文件是 /etc/inittab，各种服务的配置文件存放在 /etc/sysconfig 目录。现在的配置文件主要存放在 /lib/systemd 目录，在 /etc/systemd 目录里面的修改可以覆盖原始设置。
 
-##### 设置 systemd 开机自启动你的单元脚本
+#### 设置 systemd 开机自启动你的单元脚本
 
     https://zhuanlan.zhihu.com/p/620849909
     https://blog.csdn.net/bandaoyu/article/details/124358513
@@ -12604,13 +12604,13 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     systemctl disable clamd@scan.service
 
-> 调试：
+##### 调试 systemd 启动服务的过程
 
 先看看配置文件是否有效
 
     $ systemd-analyze verify xxx.service
 
-再看看服务启动的日志
+再看看服务启动的日志，给出你的服务名即可
 
     $ journalctl -u xxx.service
 
@@ -12622,9 +12622,7 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
         服务的配置文件添加： RemainAfterExit=yes
 
-配置文件示例一：
-
-自制的 shell 脚本，想让 systemd 用兼容 SystemV 的方式进行启动管理。
+##### 自制的 shell 脚本 让 systemd 用兼容 SystemV 的方式进行启动管理
 
 先确认 systemd 已经开启了 systemV 启动脚本 rc.local 的兼容服务
 
@@ -12640,16 +12638,15 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
     EnvironmentFile=/etc/systemd/systemd/ros.env
     ExecStart=/etc/rc.local start
     TimeoutSec=0
-    RemainAfterExit=yes
     GuessMainPID=no
 
 然后执行章节 [SystemV设置开机自启动] 的步骤即可。
 
-配置文件示例二：
+##### 自制脚本由 systemd 服务调度自启动
 
     https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
 
-自制一个 systemd 服务，使用 systemd 的格式要求。
+自制一个 systemd 服务，使用 systemd 的格式要求，可以实现开机自启动。
 
 创建 /etc/systemd/system/tproxyrule.service 文件
 
@@ -12659,7 +12656,6 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
     Wants=network.target
 
     [Service]
-
     Type=oneshot
     RemainAfterExit=yes
 
