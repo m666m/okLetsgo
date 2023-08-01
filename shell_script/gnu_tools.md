@@ -3995,230 +3995,6 @@ filetype plugin indent on    " required
 
     :PluginSearch colorscheme
 
-##### .vimrc 配置文件样例
-
-结合我自己使用的插件和 airline 的配置，vim 编辑后无需退出，运行命令 `:source ~/.vimrc` 重新加载即可。
-
-``` python
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim 的默认设置
-"   全局配置文件 /etc/vim/vimrc
-"   启动脚本 /usr/share/vim/vim81/default.vim
-"
-" 查看当前设置值 :verbose set showcmd?
-
-" 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
-" 如果在 tmux 下使用 vim ，防止 tmux 默认设置 TERM=screen，应该保留此设置
-" https://www.codenong.com/15375992/
-"if &term =~? 'mlterm\|xterm'
-if &term =="screen"
-  set t_Co=256
-endif
-" 真彩色
-" https://github.com/tmux/tmux/issues/1246
-if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
-endif
-
-" 打开文件自动定位到上次离开的位置，从vim默认的配置里摘出来的
-if has("autocmd")
-  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
-
-" 显示行号 :set nonumber
-set number
-
-" 显示正在输入的命令按键
-set showcmd
-
-" 使用 vim-airline 并开启 tabline 设置后，就不需要这两个设置了
-"set laststatus=2   " 始终显示状态栏
-"set showtabline=2  " 始终显示标签页
-set noshowmode      " 状态栏工具显示当前模式更明晰，不使用vim的了
-
-" 设置 netrw 的显示风格
-"let g:netrw_hide = 1 " 设置默认隐藏
-"let g:netrw_banner = 0  " 隐藏 netrw 顶端的横幅（Banner）
-let g:netrw_browse_split = 4  " 用前一个窗口打开文件
-let g:netrw_liststyle = 3  " 目录树的显示风格，可以用 i 键来回切换
-let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
-"let g:netrw_altv = 1 " 控制垂直拆分的窗口位于右边
-
-" 用鼠标滚轮滚屏
-set mouse=a
-map <ScrollWheelUp> <C-Y>
-map <ScrollWheelDown> <C-E>
-
-" 设置前导键为空格键，需要利用转义符“\”，这个前导键在后面的 airline 设置用到了
-let mapleader="\<space>"
-
- " 删除行尾空格，普通模式下连续按3次空格
- nmap <leader><Space><Space> :%s/\s\+$//<cr>
-
-" 开启了自动注释和自动缩进对粘帖代码不方便
-"set fo-=r  "关闭自动注释
-"set smartindent "识别花括号、c语言格式的自动缩进
-"set noautoindent  "关闭自动缩进（新增加的行和前一行使用相同的缩进，这个对C/C++代码好像无效） :set autoindent
-"set nocindent  "关闭C语言缩进  :set cindent
-"
-" 粘贴的代码（shift+insert）会自动缩进，导致格式非常混乱
-" 输入命令 ：set paste 再进行粘贴，就不会乱码了，自动缩进也没了，所以在粘贴之后输入 ：set nopaste，恢复缩进模式。
-" 把<F2>就设置为改变paste模式的快捷键
-"nnoremap <F2> :set invpaste paste?<CR>  " 按下后提示当前paset的状态，使用了状态栏工具无需用此
-set pastetoggle=<F2>
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 加载插件 vim-airline vim-airline-themes nerdtree 等
-"
-" 插件管理器二选一：
-"
-"   见章节 [插件管理器 vim-addon-manager]，用命令的方式对插件进行管理，不需要配置文件
-"   来自章节 [插件管理器 vim-plug] 里的示例配置
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim-plug 插件管理器官方配置
-"
-" 不需要设置rtp，因为引导程序plug.vim放到autoload目录里了
-
-" airline 安装后可屏蔽原配置的 powerline
-" set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
-
-call plug#begin()
-" The default plugin directory will be as follows:
-"   - Vim (Linux/macOS): '~/.vim/plugged'
-"   - Vim (Windows): '~/vimfiles/plugged'
-"   - Neovim (Linux/macOS/Windows): stdpath('data') . '/plugged'
-" You can specify a custom plugin directory by passing it as the argument
-"   - e.g. `call plug#begin('~/.vim/plugged')`
-"   - Avoid using standard Vim directory names like 'plugin'
-
-" Unmanaged plugin (manually installed and updated)
-" Debian: 加载发行版安装的
-"Plug '/usr/share/vim/addons/plugin/vim-airline'
-"Plug '/usr/share/vim/addons/plugin/vim-airline-themes'
-"Fedora: 发行版安装的不需要显式加载
-"Plug '/usr/share/vim/vimfiles/plugin/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-
-" On-demand loading
-"Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-
-" 在侧边显示git修改状态
-Plug 'airblade/vim-gitgutter',
-
-" 显示 vim 寄存器的内容
-" 在 vis mode 有点小问题 https://github.com/junegunn/vim-peekaboo/issues/22
-" Peekaboo extends " and @ in normal mode and <CTRL-R> in insert mode so you can see the contents of the registers.
-Plug 'junegunn/vim-peekaboo'
-
-" 注意这里只是加载颜色主题，启用主题要使用命令 colorscheme xxx，见下
-" 颜色主题 https://www.nordtheme.com/ports/vim
-Plug 'arcticicestudio/nord-vim'
-" 颜色主题 https://github.com/NLKNguyen/papercolor-theme
-Plug 'NLKNguyen/papercolor-theme'
-
-" Initialize plugin system
-" - Automatically executes `filetype plugin indent on` and `syntax enable`.
-call plug#end()
-" You can revert the settings after the call like so:
-"   filetype indent off   " Disable file-type-specific indentation
-"   syntax off            " Disable syntax highlighting
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 在下面增加自己的设置
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 插件设置：vim-airline 内置扩展设置
-"
-" 内置扩展的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
-" 内置扩展保存在：
-"   apt install [vim-addon-manager] /usr/share/vim/addons/autoload/airline/extensions/ 下
-"   [Vundle]   ~/.vim/bundle/vim-airline/autoload/airline/extensions/ 下
-"   [vim-plug] ~/.vim/plugged/ 下
-"   自定义 ~/.vim/autoload/ 和 ~/.vim/plugin/
-" 命令 :AirlineExtensions 查看当前自动启用的内置插件
-
-" an empty list disables all extensions
-"let g:airline_extensions = []
-" or only load what you want
-"let g:airline_extensions = ['branch', 'tabline']
-
-" 启用 powerline 的字体，状态栏显示的效果才能起飞
-let g:airline_powerline_fonts = 1
-
-" 启用 airline 内置扩展：标签式显示多个tab、window或缓冲区里的文件
-" 在说明文件中搜 airline-tabline 查看具体功能说明
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#tab_nr_type = 2
-let g:airline#extensions#tabline#show_tab_nr = 1
-
-let g:airline#extensions#tabline#formatter = 'default'
-let g:airline#extensions#tabline#buffer_nr_show = 0  " 有一个就够了
-let g:airline#extensions#tabline#fnametruncate = 16
-let g:airline#extensions#tabline#fnamecollapse = 2
-
-" 使用 airline 自带功能进行标签之间的切换
-let g:airline#extensions#tabline#buffer_idx_mode = 1
-
-" 定义切换标签的快捷键
-nmap <leader>1 <Plug>AirlineSelectTab1
-nmap <leader>2 <Plug>AirlineSelectTab2
-nmap <leader>3 <Plug>AirlineSelectTab3
-nmap <leader>4 <Plug>AirlineSelectTab4
-nmap <leader>5 <Plug>AirlineSelectTab5
-nmap <leader>6 <Plug>AirlineSelectTab6
-nmap <leader>7 <Plug>AirlineSelectTab7
-nmap <leader>8 <Plug>AirlineSelectTab8
-nmap <leader>9 <Plug>AirlineSelectTab9
-nmap <leader>0 <Plug>AirlineSelectTab0
-nmap <leader>- <Plug>AirlineSelectPrevTab
-nmap <leader>+ <Plug>AirlineSelectNextTab
-
-" 启用 airline 内置扩展：左侧显示nerdtree插件文件树内容的状态栏效果
-let g:airline#extensions#nerdtree_statusline = 1
-
-" airline 启用内置主题：只影响状态栏颜色，没有配套的 colorscheme
-" 如果再指定 colorscheme 方案，就可以使用不同的语法高亮和状态栏的色彩
-let g:airline_theme='papercolor'
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 语法高亮的彩色方案设置
-
-" 防止某次关闭了语法高亮，下次打开vi则自动再打开
-if !exists('g:syntax_on')
-  syntax enable
-endif
-
-" 不使用自定义的 colorscheme 会使 vim 背景跟随终端模拟器背景图片
-" 使用下载的主题插件自带的语法高亮的色彩方案
-"colorscheme PaperColor  " 支持设置背景色
-colorscheme nord
-
-" 设置背景色(需要主题支持)，切换语法颜色方案使用亮色还是暗色，PaperColor 支持该切换
-"set background=dark
-"set background=light
-
-" 如果终端工具设置了背景图片，而你的colorscheme背景色挡住了图片，开启这个设置强制透明，比如 PaperColor
-"hi Normal guibg=#111111 ctermbg=black
-"hi Normal guibg=NONE ctermbg=NONE
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 插件设置：：NERDTree
-
-" NERDTree 显示隐藏文件
-let NERDTreeShowHidden=1
-
-" 切换目录树显示的热键定义为 Ctrl-n
-" map 是 vim 的快捷键映射命令
-" <C-n> 定义了快捷键，表示 Ctrl-n
-" 后面是对应的命令以及回车键 <CR>
-map <C-n> :NERDTreeToggle<CR>
-
-```
-
 ##### 不推荐状态栏工具 powerline
 
     推荐使用替代品 vim-airline，状态栏和标签栏都有，而且可以配合很多知名插件的显示
@@ -4532,6 +4308,230 @@ netrw窗口内的操作快捷键
     u         跳转到上一次浏览的目录
     x         使用系统中与之关联的程序打开光标下文件
     X         执行光标下的文件
+
+##### .vimrc 配置文件样例
+
+结合我自己使用的插件和 airline 的配置，vim 编辑后无需退出，运行命令 `:source ~/.vimrc` 重新加载即可。
+
+``` python
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim 的默认设置
+"   全局配置文件 /etc/vim/vimrc
+"   启动脚本 /usr/share/vim/vim81/default.vim
+"
+" 查看当前设置值 :verbose set showcmd?
+
+" 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
+" 如果在 tmux 下使用 vim ，防止 tmux 默认设置 TERM=screen，应该保留此设置
+" https://www.codenong.com/15375992/
+"if &term =~? 'mlterm\|xterm'
+if &term =="screen"
+  set t_Co=256
+endif
+" 真彩色
+" https://github.com/tmux/tmux/issues/1246
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
+
+" 打开文件自动定位到上次离开的位置，从vim默认的配置里摘出来的
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+" 显示行号 :set nonumber
+set number
+
+" 显示正在输入的命令按键
+set showcmd
+
+" 使用 vim-airline 并开启 tabline 设置后，就不需要这两个设置了
+"set laststatus=2   " 始终显示状态栏
+"set showtabline=2  " 始终显示标签页
+set noshowmode      " 状态栏工具显示当前模式更明晰，不使用vim的了
+
+" 设置 netrw 的显示风格
+"let g:netrw_hide = 1 " 设置默认隐藏
+"let g:netrw_banner = 0  " 隐藏 netrw 顶端的横幅（Banner）
+let g:netrw_browse_split = 4  " 用前一个窗口打开文件
+let g:netrw_liststyle = 3  " 目录树的显示风格，可以用 i 键来回切换
+let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
+"let g:netrw_altv = 1 " 控制垂直拆分的窗口位于右边
+
+" 用鼠标滚轮滚屏
+set mouse=a
+map <ScrollWheelUp> <C-Y>
+map <ScrollWheelDown> <C-E>
+
+" 设置前导键为空格键，需要利用转义符“\”，这个前导键在后面的 airline 设置用到了
+let mapleader="\<space>"
+
+ " 删除行尾空格，普通模式下连续按3次空格
+ nmap <leader><Space><Space> :%s/\s\+$//<cr>
+
+" 开启了自动注释和自动缩进对粘帖代码不方便
+"set fo-=r  "关闭自动注释
+"set smartindent "识别花括号、c语言格式的自动缩进
+"set noautoindent  "关闭自动缩进（新增加的行和前一行使用相同的缩进，这个对C/C++代码好像无效） :set autoindent
+"set nocindent  "关闭C语言缩进  :set cindent
+"
+" 粘贴的代码（shift+insert）会自动缩进，导致格式非常混乱
+" 输入命令 ：set paste 再进行粘贴，就不会乱码了，自动缩进也没了，所以在粘贴之后输入 ：set nopaste，恢复缩进模式。
+" 把<F2>就设置为改变paste模式的快捷键
+"nnoremap <F2> :set invpaste paste?<CR>  " 按下后提示当前paset的状态，使用了状态栏工具无需用此
+set pastetoggle=<F2>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 加载插件 vim-airline vim-airline-themes nerdtree 等
+"
+" 插件管理器二选一：
+"
+"   见章节 [插件管理器 vim-addon-manager]，用命令的方式对插件进行管理，不需要配置文件
+"   来自章节 [插件管理器 vim-plug] 里的示例配置
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-plug 插件管理器官方配置
+"
+" 不需要设置rtp，因为引导程序plug.vim放到autoload目录里了
+
+" airline 安装后可屏蔽原配置的 powerline
+" set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
+
+call plug#begin()
+" The default plugin directory will be as follows:
+"   - Vim (Linux/macOS): '~/.vim/plugged'
+"   - Vim (Windows): '~/vimfiles/plugged'
+"   - Neovim (Linux/macOS/Windows): stdpath('data') . '/plugged'
+" You can specify a custom plugin directory by passing it as the argument
+"   - e.g. `call plug#begin('~/.vim/plugged')`
+"   - Avoid using standard Vim directory names like 'plugin'
+
+" Unmanaged plugin (manually installed and updated)
+" Debian: 加载发行版安装的
+"Plug '/usr/share/vim/addons/plugin/vim-airline'
+"Plug '/usr/share/vim/addons/plugin/vim-airline-themes'
+"Fedora: 发行版安装的不需要显式加载 /usr/share/vim/vimfiles/plugin/vim-airline
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" On-demand loading
+"Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+
+" 在侧边显示git修改状态
+Plug 'airblade/vim-gitgutter',
+
+" 显示 vim 寄存器的内容
+" 在 vis mode 有点小问题 https://github.com/junegunn/vim-peekaboo/issues/22
+" Peekaboo extends " and @ in normal mode and <CTRL-R> in insert mode so you can see the contents of the registers.
+Plug 'junegunn/vim-peekaboo'
+
+" 注意这里只是加载颜色主题，启用主题要使用命令 colorscheme xxx，见下
+" 颜色主题 https://www.nordtheme.com/ports/vim
+Plug 'arcticicestudio/nord-vim'
+" 颜色主题 https://github.com/NLKNguyen/papercolor-theme
+Plug 'NLKNguyen/papercolor-theme'
+
+" Initialize plugin system
+" - Automatically executes `filetype plugin indent on` and `syntax enable`.
+call plug#end()
+" You can revert the settings after the call like so:
+"   filetype indent off   " Disable file-type-specific indentation
+"   syntax off            " Disable syntax highlighting
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 在下面增加自己的设置
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 插件设置：vim-airline 内置扩展设置
+"
+" 内置扩展的挨个说明使用命令 :help airline 或 https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
+" 内置扩展保存在：
+"   apt install [vim-addon-manager] /usr/share/vim/addons/autoload/airline/extensions/ 下
+"   [Vundle]   ~/.vim/bundle/vim-airline/autoload/airline/extensions/ 下
+"   [vim-plug] ~/.vim/plugged/ 下
+"   自定义 ~/.vim/autoload/ 和 ~/.vim/plugin/
+" 命令 :AirlineExtensions 查看当前自动启用的内置插件
+
+" an empty list disables all extensions
+"let g:airline_extensions = []
+" or only load what you want
+"let g:airline_extensions = ['branch', 'tabline']
+
+" 启用 powerline 的字体，状态栏显示的效果才能起飞
+let g:airline_powerline_fonts = 1
+
+" 启用 airline 内置扩展：标签式显示多个tab、window或缓冲区里的文件
+" 在说明文件中搜 airline-tabline 查看具体功能说明
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#tab_nr_type = 2
+let g:airline#extensions#tabline#show_tab_nr = 1
+
+let g:airline#extensions#tabline#formatter = 'default'
+let g:airline#extensions#tabline#buffer_nr_show = 0  " 有一个就够了
+let g:airline#extensions#tabline#fnametruncate = 16
+let g:airline#extensions#tabline#fnamecollapse = 2
+
+" 使用 airline 自带功能进行标签之间的切换
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+
+" 定义切换标签的快捷键
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
+nmap <leader>6 <Plug>AirlineSelectTab6
+nmap <leader>7 <Plug>AirlineSelectTab7
+nmap <leader>8 <Plug>AirlineSelectTab8
+nmap <leader>9 <Plug>AirlineSelectTab9
+nmap <leader>0 <Plug>AirlineSelectTab0
+nmap <leader>- <Plug>AirlineSelectPrevTab
+nmap <leader>+ <Plug>AirlineSelectNextTab
+
+" 启用 airline 内置扩展：左侧显示nerdtree插件文件树内容的状态栏效果
+let g:airline#extensions#nerdtree_statusline = 1
+
+" airline 启用内置主题：只影响状态栏颜色，没有配套的 colorscheme
+" 如果再指定 colorscheme 方案，就可以使用不同的语法高亮和状态栏的色彩
+let g:airline_theme='papercolor'
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 语法高亮的彩色方案设置
+
+" 防止某次关闭了语法高亮，下次打开vi则自动再打开
+if !exists('g:syntax_on')
+  syntax enable
+endif
+
+" 不使用自定义的 colorscheme 会使 vim 背景跟随终端模拟器背景图片
+" 使用下载的主题插件自带的语法高亮的色彩方案
+"colorscheme PaperColor  " 支持设置背景色
+colorscheme nord
+
+" 设置背景色(需要主题支持)，切换语法颜色方案使用亮色还是暗色，PaperColor 支持该切换
+"set background=dark
+"set background=light
+
+" 如果终端工具设置了背景图片，而你的colorscheme背景色挡住了图片，开启这个设置强制透明，比如 PaperColor
+"hi Normal guibg=#111111 ctermbg=black
+"hi Normal guibg=NONE ctermbg=NONE
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 插件设置：：NERDTree
+
+" NERDTree 显示隐藏文件
+let NERDTreeShowHidden=1
+
+" 切换目录树显示的热键定义为 Ctrl-n
+" map 是 vim 的快捷键映射命令
+" <C-n> 定义了快捷键，表示 Ctrl-n
+" 后面是对应的命令以及回车键 <CR>
+map <C-n> :NERDTreeToggle<CR>
+
+```
 
 #### vim 快捷键
 
