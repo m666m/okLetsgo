@@ -5572,7 +5572,13 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
 需要安装图标字体，参加章节 [Nerd font]。
 
-1、安装 nord 主题
+> 安装 tmux-powerline
+
+这个只使用 bash 脚本实现，保持你的环境更干净
+
+    https://github.com/erikw/tmux-powerline
+
+> 安装 nord 主题
 
 使用这个主题的好处是它支持 <https://github.com/tmux-plugins> 的所有插件，可以在状态栏显示图标字符，启动速度也比 powerline 快。
 
@@ -5595,13 +5601,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
     tmux source-file ~/.tmux.conf
 
-2、安装 tmux-powerline
-
-这个只使用 bash 脚本实现，保持你的环境更干净
-
-    https://github.com/erikw/tmux-powerline
-
-3、显示前导键
+> 显示前导键
 
 在 tmux 时间栏显示你的 tmux 命令按键
 
@@ -5621,21 +5621,22 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
 安装
 
-    $ cd ~/.tmux
-    $ git clone --depth=1 https://github.com/tmux-plugins/tmux-resurrect
+    $ git clone --depth=1 https://github.com/tmux-plugins/tmux-resurrect ~/.tmux/tmux-resurrect
 
 编辑 ~/.tmux.conf 文件
 
     # 保存会话
     run-shell "~/.tmux/tmux-resurrect/resurrect.tmux"
 
-关闭 tmux 前保存当前会话
+操作快捷键
 
-    前导键 ctrl + b，然后 ctrl + s，会在状态栏闪现提示保存完成的消息
+    关闭 tmux 前保存当前会话
 
-打开 tmux 后恢复之前的会话
+        前导键 ctrl + b，然后 ctrl + s，会在状态栏闪现提示保存完成的消息
 
-    前导键 ctrl + b，然后 ctrl + r，会在状态栏闪现提示恢复完成的消息
+    打开 tmux 后恢复之前的会话
+
+        前导键 ctrl + b，然后 ctrl + r，会在状态栏闪现提示恢复完成的消息
 
 默认只恢复面板布局和几个指定的程序，想恢复更多的程序要再进行设置
 
@@ -5714,6 +5715,9 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 # 显示前导键
 run-shell "~/.tmux/tmux-prefix-highlight/prefix_highlight.tmux"
+
+# 保存会话
+run-shell "~/.tmux/tmux-resurrect/resurrect.tmux"
 
 ```
 
