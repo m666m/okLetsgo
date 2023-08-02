@@ -7620,6 +7620,10 @@ scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了�
 
     http://c.biancheng.net/view/6121.html
 
+    使用 rsync 备份操作系统
+
+        https://wiki.archlinux.org/title/Rsync#Full_system_backup
+
 使用 `rsync -e ssh` 即可代替 scp 命令，但是对目录的处理方式跟 scp/cp 方式不同
 
     rsync source destination/ - would copy the source into the destination folder.
