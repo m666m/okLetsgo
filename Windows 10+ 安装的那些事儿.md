@@ -2846,13 +2846,13 @@ UEFI 操作显卡的方式也有变化，需要显卡支持 “UEFI GOP VBIOS”
 
 最简单的识别方法就是使用 gpu z 软件，查看 uefi 选项有没有打勾
 
-GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需要做 2D，3D 运算。主要就是bitblt 动作，在 framebuffer 里面贴贴图和与显示器商量一下分辨率。现代主板的 UEFI BIOS 会内置 GOP 显卡驱动。
+GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需要做 2D，3D 运算。主要就是 bitblt 动作，在 framebuffer 里面贴贴图和与显示器商量一下分辨率，现代主板的 UEFI BIOS 会内置 GOP 显卡驱动。
 
 如果是外插的显卡，分为两种情况：
 
-    显卡带老式 OpRom，只要主板的 UEFI BIOS 使用 CSM 模式，就可以驱动 opROM
+    显卡带老式 OpRom，只要主板的 UEFI BIOS 使用 CSM 模式，就可以驱动 opROM，我的 Nvidia Geforce 1080 只能接 HDMI 口。
 
-    显卡带有新式 GOP 驱动的 VBIOS。和板载一样处理即可。
+    显卡带有新式 GOP 驱动的 VBIOS 则没有问题，开机时不会黑屏。
 
 #### 简单方案：连接 HDMI 口安装 Windows
 
