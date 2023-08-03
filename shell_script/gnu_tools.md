@@ -4146,6 +4146,8 @@ vim.tinny 版是无法使用该插件的，如何解决见章节 [使用状态�
 
 ##### 使用 vim 内置的树形文件夹插件 netrw
 
+    https://vonheikemen.github.io/devlog/tools/using-netrw-vim-builtin-file-explorer/
+
 netrw 是 vim 自带的插件, 不需要额外安装, 其提供的功能非常强大, 相比与 nerdtree 这些第三方插件来说速度更快, 体量更轻, 设计更简洁。
 
 默认情况下，netrw 将在当前窗口中打开目录树列表，选择文件后回车即可在当前窗口打开文件。
