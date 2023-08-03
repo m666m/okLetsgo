@@ -5516,6 +5516,10 @@ tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServe
 
 多彩色设置的其它依赖项，详见章节 [终端模拟器和软件的真彩色设置]。
 
+tmux 在 OSX 下水土不服
+
+    https://www.economyofeffort.com/2013/07/29/reattach-to-user-namespace-the-fix-for-your-tmux-in-os-x-woes/
+
 ##### 状态栏显示使用 powerline
 
     https://bobbyhadz.com/blog/tmux-powerline-ubuntu
@@ -5642,9 +5646,31 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
         前导键 ctrl + b，然后 ctrl + r，会在状态栏闪现提示恢复完成的消息
 
-默认只恢复面板布局和几个指定的程序，想恢复更多的程序要再进行设置
+默认只恢复面板布局和指定的程序，想恢复更多的程序要再进行设置
 
     https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_programs.md
+
+    https://github.com/jimeh/tmuxifier
+    https://github.com/tmuxinator/tmuxinator
+
+```bash
+#!/bin/zsh
+
+SESSIONNAME="script"
+tmux has-session -t $SESSIONNAME &> /dev/null
+
+if [ $? != 0 ]
+ then
+    tmux new-session -s $SESSIONNAME -n script -d
+    tmux send-keys -t $SESSIONNAME "~/bin/script" C-m
+fi
+
+tmux attach -t $SESSIONNAME
+这就是它的作用。首先，它使用tmux has-session检查该名称是否已经存在任何会话（在这种情况下，原始名称为“ script”）。它检查返回码。如果已经有一个具有该名称的正在进行的会话，则它将跳过“ if”循环，而直接转到最后一行，它将附加到会话上。否则，它将创建一个会话并向其发送一些密钥（目前仅运行随机脚本）。然后退出“ if”块并附加。
+
+这是一个非常琐碎的示例。附加之前，您可以创建多个窗口，窗格等。
+
+```
 
 ##### 插件管理
 
