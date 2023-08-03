@@ -9423,7 +9423,7 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开
 
-GNOME 桌面组件扩展的自定义选项，在软件管理里搜索安装 “Tweaks”，或使用命令行
+GNOME 桌面组件扩展的自定义选项 “Gnome Tweaks”，在软件管理里搜索安装 “tweaks” 即可找到，或使用命令行
 
     sudo apt install gnome-tweak-tool
 
