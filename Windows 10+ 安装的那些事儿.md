@@ -9,15 +9,15 @@
 
 现在的 app 来自于安卓、ios 操作系统，俗称应用。
 
-微软自 Windows 10 以来，为了打通手机和桌面操作系统，把 app 商店这一套都移植到 Windows 了， 而且开发工具也在打通，一套 API 可以在多个 os 平台无缝自适应运行，所以在 Windows 10+ 里的“应用”这个词，特指商店里安装的那些 “app”。
+微软自 Windows 10 以来，为了打通手机和桌面操作系统，把 app 商店这一套都移植到 Windows 了， 而且开发工具也在打通，一套 API 可以在多个 os 平台无缝自适应运行，所以在 Windows 10+ 里的 “应用” 这个词，特指商店里安装的那些 “app”。
 
 ### 目标系统类型 UEFI/CSM
 
 UEFI 模式是 Windows 7 之后出现的新型操作系统启动引导方式，可以优化硬件驱动的加载方式，加速了开机步骤，缺点是跟 Windows 7 之前的传统系统启动过程不兼容。
 
-主板加载操作系统的方式在“传统 BIOS(Leagcy)”模式、“UEFI CSM” 模式（兼容传统(Leagcy)模式）和原生 UEFI 模式之间完全不同。为区别于原生 UEFI，主板 BIOS 设置中提供了兼容传统(Leagcy)模式的 “UEFI CSM” 模式，一般简称 CSM 模式。CSM 模式可以让不兼容原生 UEFI 方式启动的老显卡和存储设备等可以正常的工作。
+主板加载操作系统的方式在“传统 BIOS(Leagcy)”模式、“UEFI CSM” 模式（兼容传统(Leagcy)）和原生 UEFI 模式之间完全不同。为区别于原生 UEFI，主板 BIOS 设置中提供了兼容传统(Leagcy)模式的 “UEFI CSM” 模式，一般简称 CSM 模式。CSM 模式可以在 UEFI 启动时让不兼容原生 UEFI 方式启动的老显卡和存储设备等可以正常的工作。
 
-具体来说，CSM 模式启动时主板 BIOS 可以选择使用传统(Leagcy)模式引导 UEFI 设备和非 UEFI 设备：比如硬盘 MBR 引导和传统 PCI opROM 加载支持，后者可以让没有 GOP 的显卡在操作系统启动前（例如 BIOS 设置和 OS 引导器）可以使用并固定使用 VGA 分辨率（如果开机后显示的主板厂商 logo 基本满屏就说明可能是 CSM 模式）。存储或 PCIE 设备只要其中一个用到该功能就需要主板打开 CSM 模式。支持 WinXP/Win7 的 Intel z170 之前的主板还提供使用非 UEFI 的传统(Leagcy)模式的选项。
+具体来说，CSM 模式启动时主板 BIOS 可以选择使用 “传统(Leagcy)“ 模式引导 UEFI 设备和非 UEFI 设备：比如硬盘 MBR 引导和传统 PCI opROM 加载支持，后者可以让没有支持 UEFI GOP VBIOS 的显卡在操作系统启动前（例如 BIOS 设置和 OS 引导器）可以使用并固定使用 VGA 分辨率（如果开机后显示的主板厂商 logo 基本满屏就说明可能是 CSM 模式）。存储或 PCIE 设备只要其中一个用到该功能就需要主板打开 CSM 模式。支持  WinXP/Win7 的 Intel z170 之前的主板还提供使用非 UEFI 的传统(Leagcy)模式的选项。
 
 有些如 Nvidia gtx 1080 时代的显卡，用 HDMI 口可以在 UEFI 模式显示画面，而 DP 口则不兼容（只能在 CSM 模式进行显示），需要根据连接该口开机后显示器是否出现画面来调整 BIOS 的选项。
 
@@ -209,7 +209,7 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 ## 安装 Windows 启用 Secure Boot 功能
 
-从制作安装u盘，到主板 BIOS 设置，都要进行设置
+从制作安装 u 盘，到主板 BIOS 设置，都要进行设置
 
     https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot
 
@@ -223,15 +223,17 @@ NOTE: Windows 10+ 取消了对非 ssd 硬盘做系统盘的优化，SATA 硬盘�
 
 Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
-    安装u盘在制作时要选择 “GPT+UEFI” 方式：见下面的一。
+    安装 u 盘在制作时要选择 “GPT+UEFI” 方式：见下面的一
 
-    主板 BIOS 设置启动模式为原生 UEFI：见下面的二。
+    主板 BIOS 设置启动模式为原生 UEFI：见下面的二
 
-    主板 BIOS 设置开启 Secure Boot 功能：见下面的三。
+    主板 BIOS 设置开启 Secure Boot 功能：见下面的三
 
-    安装u盘启动计算机时要选择 UEFI 模式：见下面的四。
+    安装u盘启动计算机时要选择 UEFI 模式：见下面的四
 
-    硬盘是 GPT 类型：见下面的五。
+    硬盘分区格式化时使用 GPT 类型：见下面的五。
+
+    旧显卡如果不是连接 HDMI 口而是 DP 口，参见章节 [老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）]
 
 只要系统引导时不是原生 UEFI+GPT，比如使用 UEFI CSM 兼容模式，这样安装的 Windows 无法开启 Secure Boot 功能。
 
@@ -2840,24 +2842,30 @@ Windows Subsystem for Android 在Windows Store[安装apk时默认安装](https:/
 
 ### 老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）
 
+UEFI 操作显卡的方式也有变化，需要显卡支持 “UEFI GOP VBIOS”。
+
 #### 简单方案：连接 HDMI 口安装 Windows
 
 主板 BIOS 设置为 GPT + UEFI 的情况下只能连接 HDMI 口安装系统。
 
-新出技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动u盘制作时也要选择一致的模式，这样才符合 Windows 11 的安装要求。
+我的技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动u盘制作时也要选择一致的模式，这样才符合 Windows 11 的安装要求。
 
 用 Rufus 制作 Windows 10 安装u盘，选择分区类型是 GPT（右侧的选项自动选择“UEFI(非CSM)”）而不能是 MBR，这样的启动u盘才能顺利启动。
 
-有些如 Nvidia gtx 1080 时代的显卡，连接 HDMI 口可以兼容 UEFI 方式，而 DP 口则不兼容，应该是主板的UEFI兼容CSM模式。这样制作的安装u盘可以启动系统，但是 DP 口在开机的时候不显示，只能连接 HDMI 口安装系统。这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。
+有些如 Nvidia gtx 1080 时代的显卡，连接 HDMI 口可以兼容 UEFI 方式，而 DP 口则不兼容，应该是主板使用了 UEFI 兼容 CSM 模式。这样制作的安装 u 盘可以启动系统，但是 DP 口在开机的时候不显示，只能连接 HDMI 口安装系统。这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。
+
+这种情况出现的最大特点就是开机后长时间黑屏等待，然后才出现 Windows 开机画面，原因在于主板在 UEFI 启动引导超时后自动调整为 UEFI CSM 模式重新引导操作系统。所以在主板的 BIOS 设置中改为  UEFI CMS 模式后开机启动就很快，不会出现这个现象。但这样安装的 Windows 不是纯 UEFI 模式， 无法开启 Secure Boot 功能，参见章节 [安装 Windows 启用 Secure Boot 功能]。
 
 #### 一劳永逸方案：Nvidia 显卡可以升级固件解决这个问题
 
 先把显卡挂到别的能显示的机器上（或先连接 HDMI 口安装 Windows 能进入系统后），升级下固件，以后就可以实现连接 DP 口安装 Windows 10 了
 
-    <https://www.tenforums.com/graphic-cards/144258-latest-nvidia-geforce-graphics-drivers-Windows-10-2-a.html>
-        <https://www.tenforums.com/Windows-10-news/111671-nvidia-graphics-firmware-update-tool-displayport-1-3-1-4-a.html>
-            Geforce 1080 系 <https://www.nvidia.com/en-us/drivers/nv-uefi-update-x64/>
-            Geforce 3080 系 <https://nvidia.custhelp.com/app/answers/detail/a_id/5233/>
+    https://www.tenforums.com/graphic-cards/144258-latest-nvidia-geforce-graphics-drivers-Windows-10-2-a.html
+
+        https://www.tenforums.com/Windows-10-news/111671-nvidia-graphics-firmware-update-tool-displayport-1-3-1-4-a.html
+
+            Geforce 1080 系 https://www.nvidia.com/en-us/drivers/nv-uefi-update-x64/
+            Geforce 3080 系 https://nvidia.custhelp.com/app/answers/detail/a_id/5233/
 
 #### 凑合方案：主板 BIOS 设置为 CSM 方式安装 Windows 可以连接 DP 口
 
