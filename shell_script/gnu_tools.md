@@ -4144,84 +4144,7 @@ vim.tinny 版是无法使用该插件的，如何解决见章节 [使用状态�
 
     let g:lightline = { 'colorscheme': 'PaperColor' }
 
-##### nerdtree 树形文件夹插件
-
-如果感觉插件太多太麻烦，可以使用 vim 自带的树形文件夹插件 netrw，见章节 [vim 内置的树形文件夹管理 netrw]。
-
-nerdtree 以在当前窗口的左侧垂直新建窗口的方式，树形展示当前路径下的文件列表，方便用户操作。
-
-所以，在左侧目录树窗口和右侧文件窗口间切换使用 vim 的窗口切换热键
-
-    前导 ctrl + w ，然后方向键左或 h 光标跳到左侧树形目录
-    前导 ctrl + w ，然后方向键右或 l 光标跳到右侧文件显示窗口
-
-窗口操作详见章节 [多窗口(Window)操作]。
-
-自定义个 vim 中的热键 Ctrl-n，方便切换显示目录树，在 ~/.vimrc 配置文件中定义
-
-    " NERDTree
-    map <C-n> :NERDTreeToggle<CR>
-    let NERDTreeShowHidden=1 "在打开时默认显示隐藏文件
-    " map 是快捷键映射命令
-    " <C-n> 定义了快捷键，表示 Ctrl-n
-    " 后面是对应的命令以及回车键 <CR>
-
-nerdtree 在左侧树形目录中的热键
-
-    ?   切换是否显示 nerdtree 的快捷帮助
-
-    回车 打开的的文件默认是vim的多个文件模式，即添加到缓冲中
-    o   在已有窗口中打开文件、目录或书签，并跳到该窗口，或命令 :NERDTree-o
-    go  在已有窗口中打开文件、目录或书签，但不跳到该窗口，或命令 :NERDTree-go
-
-    缓冲区列表需要用命令 :ls 来显示， :b<编号> 切换。详见章节[理解vim的多文件操作（缓冲buffer）]。
-
-    i   水平切割一个新窗口打开选中文件，并跳到该窗口，或命令 :NERDTree-i
-    gi  水平分割一个新窗口打开选中文件，但不跳到该窗口，或命令 :NERDTree-gi
-
-    s   垂直分割一个新窗口打开选中文件，并跳到该窗口，或命令 :NERDTree-s
-    gs  垂直分割一个新窗口打开选中文件，但不跳到该窗口，或命令 :NERDTree-gs
-
-    t   在新 Tab 中打开选中文件/书签，并跳到新 Tab，或命令 :NERDTree-t
-    T   在新 Tab 中打开选中文件/书签，但不跳到新 Tab，或命令 :NERDTree-T
-
-    切换 tab 的热键详见章节 [多标签页(Tab)操作]
-
-    e   在目录树上按e，则在右侧窗口显示目录内容，光标键进行选择操作即可，再次按e退出
-
-    K   跳到当前目录下同级的第一个结点
-    J   跳到当前目录下同级的最后一个结点
-
-    !   执行当前文件，或命令 :NERDTree-!
-
-一般再搭配个显示每个文件 git 状态的插件
-
-    https://github.com/Xuyuanp/nerdtree-git-plugin
-
-    在 .vimrc 中配置用 plug 安装几个nerdtree配合的常用插件
-
-        Plug 'preservim/nerdtree' |
-                \ Plug 'Xuyuanp/nerdtree-git-plugin' |
-                \ Plug 'ryanoasis/vim-devicons'
-
-    还可以搭配比较醒目的图标
-
-        " nerdtree-git-plugin 启用带图标的字体
-        let g:NERDTreeGitStatusUseNerdFonts = 1 " you should install nerdfonts by yourself. default: 0
-
-        let g:NERDTreeIndicatorMapCustom = {
-            \ "Modified"  : "✹",
-            \ "Staged"    : "✚",
-            \ "Untracked" : "✭",
-            \ "Renamed"   : "➜",
-            \ "Unmerged"  : "═",
-            \ "Deleted"   : "✖",
-            \ "Dirty"     : "✗",
-            \ "Clean"     : "✔︎",
-            \ "Unknown"   : "?"
-            \ }
-
-###### vim 内置的树形文件夹插件 netrw
+##### 使用 vim 内置的树形文件夹插件 netrw
 
 netrw 是 vim 自带的插件, 不需要额外安装, 其提供的功能非常强大, 相比与 nerdtree 这些第三方插件来说速度更快, 体量更轻, 设计更简洁。
 
@@ -4308,6 +4231,83 @@ netrw窗口内的操作快捷键
     u         跳转到上一次浏览的目录
     x         使用系统中与之关联的程序打开光标下文件
     X         执行光标下的文件
+
+###### nerdtree 树形文件夹插件
+
+如果不想安装单独的插件，可以使用 vim 自带的树形文件夹插件 netrw，见章节 [使用 vim 内置的树形文件夹插件 netrw]。
+
+nerdtree 以在当前窗口的左侧垂直新建窗口的方式，树形展示当前路径下的文件列表，方便用户操作。
+
+所以，在左侧目录树窗口和右侧文件窗口间切换使用 vim 的窗口切换热键
+
+    前导 ctrl + w ，然后方向键左或 h 光标跳到左侧树形目录
+    前导 ctrl + w ，然后方向键右或 l 光标跳到右侧文件显示窗口
+
+窗口操作详见章节 [多窗口(Window)操作]。
+
+自定义个 vim 中的热键 Ctrl-n，方便切换显示目录树，在 ~/.vimrc 配置文件中定义
+
+    " NERDTree
+    map <C-n> :NERDTreeToggle<CR>
+    let NERDTreeShowHidden=1 "在打开时默认显示隐藏文件
+    " map 是快捷键映射命令
+    " <C-n> 定义了快捷键，表示 Ctrl-n
+    " 后面是对应的命令以及回车键 <CR>
+
+nerdtree 在左侧树形目录中的热键
+
+    ?   切换是否显示 nerdtree 的快捷帮助
+
+    回车 打开的的文件默认是vim的多个文件模式，即添加到缓冲中
+    o   在已有窗口中打开文件、目录或书签，并跳到该窗口，或命令 :NERDTree-o
+    go  在已有窗口中打开文件、目录或书签，但不跳到该窗口，或命令 :NERDTree-go
+
+    缓冲区列表需要用命令 :ls 来显示， :b<编号> 切换。详见章节[理解vim的多文件操作（缓冲buffer）]。
+
+    i   水平切割一个新窗口打开选中文件，并跳到该窗口，或命令 :NERDTree-i
+    gi  水平分割一个新窗口打开选中文件，但不跳到该窗口，或命令 :NERDTree-gi
+
+    s   垂直分割一个新窗口打开选中文件，并跳到该窗口，或命令 :NERDTree-s
+    gs  垂直分割一个新窗口打开选中文件，但不跳到该窗口，或命令 :NERDTree-gs
+
+    t   在新 Tab 中打开选中文件/书签，并跳到新 Tab，或命令 :NERDTree-t
+    T   在新 Tab 中打开选中文件/书签，但不跳到新 Tab，或命令 :NERDTree-T
+
+    切换 tab 的热键详见章节 [多标签页(Tab)操作]
+
+    e   在目录树上按e，则在右侧窗口显示目录内容，光标键进行选择操作即可，再次按e退出
+
+    K   跳到当前目录下同级的第一个结点
+    J   跳到当前目录下同级的最后一个结点
+
+    !   执行当前文件，或命令 :NERDTree-!
+
+一般再搭配个显示每个文件 git 状态的插件
+
+    https://github.com/Xuyuanp/nerdtree-git-plugin
+
+    在 .vimrc 中配置用 plug 安装几个nerdtree配合的常用插件
+
+        Plug 'preservim/nerdtree' |
+                \ Plug 'Xuyuanp/nerdtree-git-plugin' |
+                \ Plug 'ryanoasis/vim-devicons'
+
+    还可以搭配比较醒目的图标
+
+        " nerdtree-git-plugin 启用带图标的字体
+        let g:NERDTreeGitStatusUseNerdFonts = 1 " you should install nerdfonts by yourself. default: 0
+
+        let g:NERDTreeIndicatorMapCustom = {
+            \ "Modified"  : "✹",
+            \ "Staged"    : "✚",
+            \ "Untracked" : "✭",
+            \ "Renamed"   : "➜",
+            \ "Unmerged"  : "═",
+            \ "Deleted"   : "✖",
+            \ "Dirty"     : "✗",
+            \ "Clean"     : "✔︎",
+            \ "Unknown"   : "?"
+            \ }
 
 ##### .vimrc 配置文件样例
 
