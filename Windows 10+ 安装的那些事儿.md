@@ -2844,17 +2844,19 @@ Windows Subsystem for Android 在Windows Store[安装apk时默认安装](https:/
 
 UEFI 操作显卡的方式也有变化，需要显卡支持 “UEFI GOP VBIOS”。
 
+最简单的识别方法就是使用 gpu z 软件，查看 uefi 选项有没有打勾
+
 #### 简单方案：连接 HDMI 口安装 Windows
 
 主板 BIOS 设置为 GPT + UEFI 的情况下只能连接 HDMI 口安装系统。
 
-我的技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动u盘制作时也要选择一致的模式，这样才符合 Windows 11 的安装要求。
+我的技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动u盘制作时也要选择一致的模式，这样才符合 Windows 11 的安装要求。用 rufus 制作 Windows 10 安装 u 盘，选择分区类型是 GPT（右侧的选项自动选择“UEFI(非CSM)”）而不能是 MBR，这样的启动u盘才能顺利启动。
 
-用 Rufus 制作 Windows 10 安装u盘，选择分区类型是 GPT（右侧的选项自动选择“UEFI(非CSM)”）而不能是 MBR，这样的启动u盘才能顺利启动。
+有些如 Nvidia gtx 1080 时代的显卡，连接 HDMI 口可以兼容 UEFI 方式，而 DP 口则不兼容，很多主板在 UEFI 模式引导失败时会自动切换到使用 CSM 模式。这样安装 u 盘可以启动系统，但是 DP 口在开机的时候不显示，只能连接 HDMI 口安装系统。
 
-有些如 Nvidia gtx 1080 时代的显卡，连接 HDMI 口可以兼容 UEFI 方式，而 DP 口则不兼容，应该是主板使用了 UEFI 兼容 CSM 模式。这样制作的安装 u 盘可以启动系统，但是 DP 口在开机的时候不显示，只能连接 HDMI 口安装系统。这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。
+这种情况出现的最大特点就是开机后长时间黑屏等待，然后才出现 Windows 开机画面。原因在于主板在 UEFI 启动引导超时后自动调整为 UEFI CSM 模式继续引导操作系统启动。所以在主板的 BIOS 设置中改为 UEFI CMS 模式后开机启动就很快，不会出现这个现象。
 
-这种情况出现的最大特点就是开机后长时间黑屏等待，然后才出现 Windows 开机画面，原因在于主板在 UEFI 启动引导超时后自动调整为 UEFI CSM 模式重新引导操作系统。所以在主板的 BIOS 设置中改为  UEFI CMS 模式后开机启动就很快，不会出现这个现象。但这样安装的 Windows 不是纯 UEFI 模式， 无法开启 Secure Boot 功能，参见章节 [安装 Windows 启用 Secure Boot 功能]。
+这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能，参见章节 [安装 Windows 启用 Secure Boot 功能]。
 
 #### 一劳永逸方案：Nvidia 显卡可以升级固件解决这个问题
 
