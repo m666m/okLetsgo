@@ -9490,6 +9490,12 @@ KDE 的桌面定制选项非常多，慢慢研究吧
 
 KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏览器中添加扩展的那种不方便的方式（使用另一个浏览器扩展），你可以使用 KDE 的软件管理器 “发现（Discovery）”，直接访问 KDE 的附加组件。
 
+KDE 自带的软件也有很多精品比如 KDE connect 等
+
+    https://apps.kde.org/kdeconnect/
+
+    已经延展到了多个平台 https://apps.kde.org/platforms/windows/
+
 ### Linux 桌面的基本目录规范 XDG（X Desktop Group）
 
 对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境。目前最流行的 freedesktop 的规范称为 XDG
@@ -10448,6 +10454,10 @@ GNOME Keyring
     https://zhuanlan.zhihu.com/p/128133025
 
     操作系统软件包 gnome-keyring 提供了各种组件实现该功能。
+
+KDE Wallet - KWalletManager
+
+    https://apps.kde.org/zh-cn/kwalletmanager5/
 
 用户使用桌面软件进行管理
 
