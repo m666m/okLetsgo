@@ -935,9 +935,9 @@ edge 浏览器->设置->外观->整体外观：选择 “系统默认” 则跟�
 
 ### 打开任务栏毛玻璃效果
 
-2022年的 Windows 10 已经默认打开了。
+2022年版的 Windows 10 已经默认打开了。
 
-<https://bbs.pcbeta.com/viewthread-1899753-1-1.html>
+    https://bbs.pcbeta.com/viewthread-1899753-1-1.html
 
 高斯模糊：
 支持深、浅色模式
@@ -2846,17 +2846,27 @@ UEFI 操作显卡的方式也有变化，需要显卡支持 “UEFI GOP VBIOS”
 
 最简单的识别方法就是使用 gpu z 软件，查看 uefi 选项有没有打勾
 
+GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需要做 2D，3D 运算。主要就是bitblt 动作，在 framebuffer 里面贴贴图和与显示器商量一下分辨率。现代主板的 UEFI BIOS 会内置 GOP 显卡驱动。
+
+如果是外插的显卡，分为两种情况：
+
+    显卡带老式 OpRom，只要主板的 UEFI BIOS 使用 CSM 模式，就可以驱动 opROM
+
+    显卡带有新式 GOP 驱动的 VBIOS。和板载一样处理即可。
+
 #### 简单方案：连接 HDMI 口安装 Windows
 
 主板 BIOS 设置为 GPT + UEFI 的情况下只能连接 HDMI 口安装系统。
 
-我的技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区+UEFI 引导，这样的启动u盘制作时也要选择一致的模式，这样才符合 Windows 11 的安装要求。用 rufus 制作 Windows 10 安装 u 盘，选择分区类型是 GPT（右侧的选项自动选择“UEFI(非CSM)”）而不能是 MBR，这样的启动u盘才能顺利启动。
+我的技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区 + UEFI 引导，制作启动 u 盘时也选择一致的模式，这样才符合 Windows 11 的安装要求（用 rufus 制作 Windows 10 安装 u 盘，选择分区类型是 GPT（右侧的选项自动选择 “UEFI(非CSM)”）而不能是 MBR，这样的启动 u 盘才能顺利启动）。
 
-有些如 Nvidia gtx 1080 时代的显卡，连接 HDMI 口可以兼容 UEFI 方式，而 DP 口则不兼容，很多主板在 UEFI 模式引导失败时会自动切换到使用 CSM 模式。这样安装 u 盘可以启动系统，但是 DP 口在开机的时候不显示，只能连接 HDMI 口安装系统。
+有些如 Nvidia gtx 1080 时代的显卡，如果主板设置为 UEFI 模式，则连接 HDMI 口可以正常显示，而连接 DP 口则不兼容，很多主板在 UEFI 模式引导失败时会自动切换到使用 CSM 模式
 
-这种情况出现的最大特点就是开机后长时间黑屏等待，然后才出现 Windows 开机画面。原因在于主板在 UEFI 启动引导超时后自动调整为 UEFI CSM 模式继续引导操作系统启动。所以在主板的 BIOS 设置中改为 UEFI CMS 模式后开机启动就很快，不会出现这个现象。
+    这样安装 u 盘可以启动系统，但是重新连接 DP 口在开机的时候会黑屏无显示，安装操作系统时只能连接 HDMI 口。
 
-这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能，参见章节 [安装 Windows 启用 Secure Boot 功能]。
+    这种情况出现的最大特点就是开机后长时间黑屏等待，然后才出现 Windows 开机画面。原因在于主板在 UEFI 启动引导超时后自动调整为 UEFI CSM 模式继续引导操作系统启动。所以在主板的 BIOS 设置中改为 UEFI CMS 模式后开机启动就很快，不会再出现这个现象。
+
+    这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能，参见章节 [安装 Windows 启用 Secure Boot 功能]。
 
 #### 一劳永逸方案：Nvidia 显卡可以升级固件解决这个问题
 
@@ -2873,7 +2883,7 @@ UEFI 操作显卡的方式也有变化，需要显卡支持 “UEFI GOP VBIOS”
 
 用 Rufus 制作 Windows 10 安装u盘，如果分区类型选择 MBR（右侧选项自动选择“BIOS+UEFI(CSM)”），则也只能连接 HDMI 口安装系统。
 
-这时如果想使用 DP 口开机显示，则主板 BIOS 要更改设置，CSM Support（Windows 10 之前 Windows 版本安装的兼容模式，事关识别 usb 键盘鼠标和 UEFI 显卡）要选“Enable”，并设置兼容模式：
+这时如果想使用 DP 口开机显示，则主板 BIOS 要更改设置，CSM 模式要选 “Enable”，并设置兼容模式：
 
     重启开机后按 F2 进入 bios，选 BOOT 选项卡，找到 Window 10 Features，选 “other os”
 
@@ -2881,7 +2891,7 @@ UEFI 操作显卡的方式也有变化，需要显卡支持 “UEFI GOP VBIOS”
 
     之后下面出现的三项，除了网卡启动的那个选项不用管，其它两个关于存储和 PCIe 设备的选项要确认选的是“UEFI”，这样在“other os”模式下可以实现 DP 口的开机显示，要是还不行，那两个选项直接选非 UEFI 的选项。
 
-这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能。
+这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能，Windows 11 的默认安装会进行不下去。
 
 关于主板 BIOS 设置 CSM 模式可以启动 DP 口的解释 <https://nvidia.custhelp.com/app/answers/detail/a_id/3156/kw/doom/related/1>
 
