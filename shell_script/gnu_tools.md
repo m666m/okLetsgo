@@ -5649,7 +5649,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
         前导键 ctrl + b，然后 ctrl + r，会在状态栏闪现提示恢复完成的消息
 
-默认只恢复面板布局和指定的程序，想恢复更多的程序要再进行设置
+默认只恢复面板布局和指定的程序，想恢复更多的程序要再进行设置，代码功能实现的不好，而且跟说明文档对不上，需要自行分析源代码
 
     https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_programs.md
 
@@ -5657,6 +5657,11 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
     https://github.com/tmuxinator/tmuxinator
 
     https://blog.csdn.net/u013670453/article/details/116296687
+
+保存的会话配置文件位于
+
+    # tmux-resurrect/scripts/helper.sh
+    $HOME/.tmux/resurrect 或 "${XDG_DATA_HOME:-$HOME/.local/share}"/tmux/resurrect
 
 或者使用脚本自行恢复
 
@@ -5776,8 +5781,8 @@ run-shell "~/.tmux/tmux-prefix-highlight/prefix_highlight.tmux"
 run-shell "~/.tmux/tmux-resurrect/resurrect.tmux"
 
 # 恢复会话中的程序
- set -g @resurrect-processes '～btop nmon'
- set -g @resurrect-processes '"journalctl -f" "cmatrix -ba"'
+#set -g @resurrect-capture-pane-contents 'on'
+set -g @resurrect-processes 'btop nmon watch "journalctl -f" "cmatrix -ba"'
 
 ```
 
