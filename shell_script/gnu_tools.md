@@ -5748,7 +5748,15 @@ set-window-option -g mode-keys vi
 #set-option -g mouse on # v2.1 之前的老版本 set-option -g mode-mouse on
 set -g mouse on
 
+# Ensure window index numbers get reordered on delete.
+#set-option -g renumber-windows on
+
+# Allow opening multiple terminals to view the same session at different sizes.
+#setw -g aggressive-resize on
+
 # 设置状态栏工具显示256彩色
+#set -g default-terminal "xterm-256color"
+#set -ga terminal-overrides ",*256col*:Tc"
 # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
 set -g default-terminal screen-256color
 # 真彩色
