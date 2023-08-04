@@ -6109,7 +6109,7 @@ sleep 60
     110635 .rw-r--r--@   18 uu   uu     3 Jun 00:09  1.txt
     110627 .rw-r--r--@   16 uu   uu     3 Jun 00:09  a.txt
 
-### 命令行下的文件资源管理器
+### 命令行下的文件资源管理器 ranger / Midnight Commander
 
 ranger 使用 vi 键位操作，自动预览文本文件，还支持打开其它类型的文件，非常方便
 
