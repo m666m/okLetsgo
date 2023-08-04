@@ -5326,7 +5326,10 @@ tmux 可以保持多个会话 session，每次在命令行运行 `tmux` 就会�
 
 #### 快捷键
 
-MacOS 下可以做映射 <https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/>
+    https://ruanyifeng.com/blog/2019/10/tmux.html
+
+    MacOS 下可以做映射
+        https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/
 
 前导键是个组合键 ctrl+b，松开后再按其它键：
 
@@ -5653,22 +5656,37 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
     https://github.com/jimeh/tmuxifier
     https://github.com/tmuxinator/tmuxinator
 
+    https://blog.csdn.net/u013670453/article/details/116296687
+
+或者使用脚本自行恢复
+
 ```bash
-#!/bin/zsh
 
-SESSIONNAME="script"
-tmux has-session -t $SESSIONNAME &> /dev/null
+#!/bin/bash
 
-if [ $? != 0 ]
- then
-    tmux new-session -s $SESSIONNAME -n script -d
-    tmux send-keys -t $SESSIONNAME "~/bin/script" C-m
-fi
+SESSIONNAME="monitor"
 
-tmux attach -t $SESSIONNAME
-这就是它的作用。首先，它使用tmux has-session检查该名称是否已经存在任何会话（在这种情况下，原始名称为“ script”）。它检查返回码。如果已经有一个具有该名称的正在进行的会话，则它将跳过“ if”循环，而直接转到最后一行，它将附加到会话上。否则，它将创建一个会话并向其发送一些密钥（目前仅运行随机脚本）。然后退出“ if”块并附加。
+# $1:SESSIONNAME
+function UUDF_TMUX_ATTACH_SESSION {
 
-这是一个非常琐碎的示例。附加之前，您可以创建多个窗口，窗格等。
+    tmux has-session -t $1 &> /dev/null
+
+    if [ $? != 0 ]
+    then
+        tmux new-session -s $1 -n script -d
+    fi
+
+    tmux attach -t $1
+}
+
+# $1:SESSIONNAME
+function UUDF_TMUX_SEND_TO_SESSION {
+
+    tmux send-keys -t $1 "~/bin/script" C-m
+
+}
+
+# select-window -t :=0 \; select-pane \; send-keys -X
 
 ```
 
@@ -5748,6 +5766,10 @@ run-shell "~/.tmux/tmux-prefix-highlight/prefix_highlight.tmux"
 
 # 保存会话
 run-shell "~/.tmux/tmux-resurrect/resurrect.tmux"
+
+# 恢复会话中的程序
+ set -g @resurrect-processes '～btop nmon'
+ set -g @resurrect-processes '"journalctl -f" "cmatrix -ba"'
 
 ```
 
