@@ -5649,7 +5649,9 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
         前导键 ctrl + b，然后 ctrl + r，会在状态栏闪现提示恢复完成的消息
 
-默认只恢复面板布局和指定的程序，想恢复更多的程序要再进行设置，代码功能实现的不好，而且跟说明文档对不上，需要自行分析源代码
+默认只恢复面板布局和指定的程序，想恢复更多的程序要再进行设置，详见下面章节 [.tmux.conf 配置文件样例]
+
+代码功能实现的不好，而且跟说明文档对不上，复杂点的使用需要自行分析源代码
 
     https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_programs.md
 
@@ -5782,7 +5784,7 @@ run-shell "~/.tmux/tmux-resurrect/resurrect.tmux"
 
 # 恢复会话中的程序
 #set -g @resurrect-capture-pane-contents 'on'
-set -g @resurrect-processes 'btop nmon watch "journalctl -f" "cmatrix -ba"'
+set -g @resurrect-processes 'btop nmon watch autossh "journalctl -f" "cmatrix -ba"'
 
 ```
 
