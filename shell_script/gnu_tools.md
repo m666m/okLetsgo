@@ -9105,13 +9105,13 @@ GNOME Files（Nautilus）文件管理器
 
     $ zenity --info --text="這是訊息內容" --title="這是標題"
 
-·newt 库的 whiptail
+·newt 库的 whiptail 不需要桌面图形环境
 
     https://www.redhat.com/sysadmin/use-whiptail
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/6.2_technical_notes/newt
 
-显示的内容采用基于文本的用户界面 （TUI） 格式，并使用 Tab 键进行导航。选择是使用空格键选择的
+显示的内容采用基于文本的用户界面 （TUI） 格式，并使用 Tab 键进行导航，使用空格键选择。如树莓派的 raspi-config 配置程序就是用 whiptail 实现的。
 
 ### 使用拼音输入法
 
