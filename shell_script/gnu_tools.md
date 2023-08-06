@@ -9085,20 +9085,33 @@ GNOME Files（Nautilus）文件管理器
 
         sudo dnf in steam
 
-命令行下的图形界面 zenity
+### 命令行下的图形界面
+
+·zenity
 
 安装桌面环境的操作系统可以在命令行执行图形化程序，比如命令行版本的树莓派执行 stemalink 播放串流视频，参见章节 [Steam on Linux：steam play/ steam link](init_a_server think)。
 
     https://help.gnome.org/users/zenity/stable/
 
     KDE 桌面项目也有类似的工具——KDialog
+
         https://develop.kde.org/docs/administration/kdialog/
+
+    https://ostechnix.com/zenity-create-gui-dialog-boxes-in-bash-scripts/
 
     https://blog.gtwang.org/programming/zenity-gui-utility/
 
 简单显示消息
 
     $ zenity --info --text="這是訊息內容" --title="這是標題"
+
+·newt 库的 whiptail
+
+    https://www.redhat.com/sysadmin/use-whiptail
+
+    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/6.2_technical_notes/newt
+
+显示的内容采用基于文本的用户界面 （TUI） 格式，并使用 Tab 键进行导航。选择是使用空格键选择的
 
 ### 使用拼音输入法
 
