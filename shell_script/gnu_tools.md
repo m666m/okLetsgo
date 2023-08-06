@@ -10152,6 +10152,12 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
 不像 i3 之类的那样热门，这直接导致了可以偷参考的配置更少，同时生态圈内的各种工具也开发缓慢。同时平铺式窗口管理器本身也相对冷门，导致在部分“喜欢弹小窗”的程序上面体验较差，当然这种体验可以通过修改配置进行改善，不过始终是多了一个步骤。
 
+### 不使用桌面环境的命令行下的图形界面 zenity
+
+让你的没有安装桌面环境的操作系统可以执行图形化程序，比如命令行版本的树莓派执行 stemalink 播放串流视频，参见章节 [Steam on Linux：steam play/ steam link](init_a_server think)。
+
+    https://help.gnome.org/users/zenity/stable/
+
 ### 桌面环境的开机自启动
 
 RHEL 系和 Debian 系都採用了 XDG 规范，详见章节 [Linux 桌面的基本目录规范 XDG（X Desktop Group）].
