@@ -9089,7 +9089,7 @@ GNOME Files（Nautilus）文件管理器
 
 ·zenity
 
-安装桌面环境的操作系统可以在命令行执行图形化程序，比如命令行版本的树莓派执行 stemalink 播放串流视频，参见章节 [Steam on Linux：steam play/ steam link](init_a_server think)。
+在命令行执行实现与 shell 脚本交互的各种弹出式对话框，基于 gtk 库实现，需要操作系统有桌面图形化环境
 
     https://help.gnome.org/users/zenity/stable/
 
@@ -9105,7 +9105,7 @@ GNOME Files（Nautilus）文件管理器
 
     $ zenity --info --text="這是訊息內容" --title="這是標題"
 
-·newt 库的 whiptail 不需要桌面图形环境
+·newt 库的 whiptail 纯字符环境不需要桌面图形界面做支撑
 
     https://www.redhat.com/sysadmin/use-whiptail
 
