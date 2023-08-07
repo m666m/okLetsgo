@@ -10763,6 +10763,8 @@ allow xdm_t v4l_device_t:chr_file map;
 
     $ sudo howdy add
 
+    建议多个，比如不带眼镜、带眼镜
+
 给其它用户添加
 
     $ sudo howdy -U other_user add
