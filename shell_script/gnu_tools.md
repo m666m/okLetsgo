@@ -10692,15 +10692,17 @@ polkit-1 这样的 GUI 授权验证工具会在使用人脸识别时同步弹出
 
     拍的照片默认会扔到 /lib64/security/howdy/snapshots/ 目录
 
-下面这俩新版的好像不需要调整了，视情况而定
+避免 Interl 显卡 MFX 消息，在 sudo 认证成功后总是打印调试信息：
 
-    避免 sudo 认证成功后总是打印调试信息：
+    如果不使用 Intel 显卡，不需要修改。
 
-        编辑 /etc/profile.d/howdy.sh 和 /etc/profile.d/howdy.csh 文件，查找如下内容
+    编辑 /etc/profile.d/howdy.sh 和 /etc/profile.d/howdy.csh 文件，查找如下内容
 
-            OPENCV_VIDEOIO_PRIORITY_INTEL_MFX
+        OPENCV_VIDEOIO_PRIORITY_INTEL_MFX
 
-        取消找到的语句的注释
+    取消该语句的注释即可。
+
+下面这个新版的 howdy 不需要调整了
 
     改个权限：
 
