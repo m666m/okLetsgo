@@ -5786,6 +5786,8 @@ run-shell "~/.tmux/tmux-resurrect/resurrect.tmux"
 # 恢复会话中的程序
 #set -g @resurrect-capture-pane-contents 'on'
 set -g @resurrect-processes 'btop nmon watch autossh "journalctl -f" "cmatrix -ba"'
+# 恢复会话中面板的内容
+set -g @resurrect-capture-pane-contents 'on'
 
 ```
 
