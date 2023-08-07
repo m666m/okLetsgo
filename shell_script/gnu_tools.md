@@ -6662,7 +6662,7 @@ NOTE: dd 有个毛病，系统调用函数read()在管道操作后会静默的�
 
         mkdir empty && rsync -r --delete empty/ some-dir && rmdir some-dir
 
-### 压缩解压缩 tar gz bz2
+### 压缩解压缩 tar gz bz2 tbz
 
     tar [选项] [选项参数] [生成文件名] [源文件1 源文件2 ...]
 
@@ -6711,14 +6711,14 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
     file2: Mod time differs
     file2: Contents differ
 
-但是我们最常用的是打包然后再压缩，所以 tar 扩展支持 .gz 和 .bz2，实质是调用现有的 gzip 程序把自己打包好的文件再压缩，但是节省了用户在命令行的输入。
+但是我们最常用的是打包然后再压缩，所以 tar 扩展支持 .gz 和 .bz2(.tbz)，实质是调用现有的 gzip 程序把自己打包好的文件再压缩，但是节省了用户在命令行的输入。
 
 最常用的 .tar.gz 文件
 
     # 用 c 打包并 z 压缩，v 是显示明细，生成 .tar.gz 文件，源可以是多个文件或目录名
     tar vczf arc.tar.gz file1 file2
 
-    # 把 z 换成 j 就是压缩为 .bz2 文件，而不是 .gz 文件了
+    # 把 z 换成 j 就是压缩为 .bz2(.tbz) 文件，而不是 .gz 文件了
     tar vcjf arc.tar.bz2 file1 file2
 
     # 解包并解压缩
@@ -10758,6 +10758,7 @@ allow xdm_t v4l_device_t:chr_file map;
 7、验证功能
 
     $ sudo whoami
+    root
 
 ### 开启指纹登录
 
