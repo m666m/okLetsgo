@@ -10583,7 +10583,12 @@ Bitwarden 可 docker 部署实现自托管
 
 ### Linux 下的 “Windows Hello” 人脸识别认证 --- Howdy
 
+提示：
+
+    人脸识别和指纹识别的安全性不如密码、密钥、yubi-key 等认证方式，更容易被造假，建议只用于个人电脑的宽松使用场景
+
 基于人脸识别和指纹识别的认证解锁功能，使用摄像头识别面部，直接解锁登录、sudo 等需要手工密码的场合
+
 
     https://github.com/boltgolt/howdy
 
@@ -10612,33 +10617,44 @@ Fedora 下安装 howdy
 
     普通摄像头是 /dev/video0 ，打开红外传感器的摄像头是 /dev/video2
 
+列出当前所有的摄像头设备，即使只有一个摄像头，也会列出多个设备，其实是对应了不同的功能，我们主要关注 video0 和 video2
+
+    $ ls /dev/video*
+
+可以用 VLC 进行确认
+
+    vlc 菜单中的 媒体 - 打开捕获设备 - 高级选项（advance options），选择视频捕获设备 /dev/video0， 确定 - 播放 之后确实显示的摄像头的画面，因此确定了摄像头标识就是 /dev/video0
+
+可选安装：摄像头管理软件包 v4l-utils
+
+    $ sudo dnf install v4l-utils
+
     列出当前所有的摄像头设备
 
-        $ ls /dev/video*
+        $ v4l2-ctl --list-devices
+        UVC Camera (046d:0825) (usb-0000:00:14.0-9):
+            /dev/video0
+            /dev/video1
+            /dev/media0
 
-    可以用 VLC 进行确认
+    支持红外发射器的摄像头的设备更多
 
-        vlc 菜单中的 媒体 - 打开捕获设备 - 高级选项（advance options），选择视频捕获设备 /dev/video0， 确定 - 播放 之后确实显示的摄像头的画面，因此确定了摄像头标识就是 /dev/video0
+        $ v4l2-ctl --list-devices
+        USB2.0 FHD UVC WebCam: USB2.0 F (usb-0000:00:14.0-5.4):
+            /dev/video0
+            /dev/video1
+            /dev/video2
+            /dev/video3
+            /dev/media0
+            /dev/media1
 
-    可选安装 摄像头管理软件包 v4l-utils
+    查看当前摄像头支持的像素尺寸，如果有的摄像头不工作，尝试在 howdy config 里设置下合适的分辨率
 
-        $ sudo dnf install v4l-utils
-
-        列出当前所有的摄像头设备
-
-            $ v4l2-ctl --list-devices
-            UVC Camera (046d:0825) (usb-0000:00:14.0-9):
-                /dev/video0
-                /dev/video1
-                /dev/media0
-
-        查看当前摄像头支持的像素尺寸，如果有的摄像头不工作，尝试在 howdy config 里设置下合适的分辨率
-
-            $ v4l2-ctl -d /dev/video0 --list-formats-ext
+        $ v4l2-ctl -d /dev/video0 --list-formats-ext
 
 2、配置摄像头
 
-    开启红外发射功能提高识别的准确度与安全性，而且红外发射式还支持全黑暗状态下的人脸识别
+    开启红外发射功能可以提高识别的准确度与安全性，而且红外发射式摄像头支持全黑暗状态下的人脸识别
 
 普通摄像头是 /dev/video0，如果你的摄像头支持红外发射器，应该选择 /dev/video2，如果选择 /dev/video0 不会打开红外发射器
 
