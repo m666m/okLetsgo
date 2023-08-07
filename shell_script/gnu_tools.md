@@ -10529,57 +10529,73 @@ Type=Application
 
 ### 桌面环境统一密码管理器
 
-现在流行的大多数 Linux 桌面环境，如 GNOME、KDE、Xfce 等都使用 “GNOME 钥匙圈（GNOME keyring）” 来统一管理你的各种密码。
-
-    这个钥匙圈默认使用你本地帐户的登录密码自动解锁，如果钥匙圈在你登录系统时未解锁，在登录后会弹框提示 “Enter password to unlock your key ring”
-
-    初次使用的密钥，如果提示输入保护密码，会被 GNOME 钥匙圈加密保存，以后的使用中，只要你输入了登录密码，则使用你的登录身份免除输入 ssh、gpg 等密钥的密码
-
-“GNOME 钥匙圈（GNOME keyring）” 支持在用户使用 ssh、gpg、git 等应用的鉴权时自动接管原 ssh-agent、pinentry、git 凭据管理器 credential.helper 的工作：以 ssh 密钥登录为例，在初次使用 ssh 密钥时会弹框要求输入该密钥的保护密码，注意不是钥匙圈的密码（用户登录密码），在用户确认后这些密码都会被钥匙圈加密保存，在以后的使用中会自动使用。对用户来说，只要在第一次使用密钥时，在提示要求输入密钥的保护密码时选择加入钥匙圈，则以后只要登录计算机桌面，解锁了钥匙圈，在任何使用密钥的场景下都不会需要输入密钥的保护密码了，后台替你填写了密码的钥匙圈大大提升了使用的方便。
-
-另外在用户使用浏览器登录 web 网站时也会自动填充密码：初次使用时会提示保存秘密，用户确认后会被钥匙圈加密保存，以后在该页面自动填写。
-
-GNOME Keyring
+密钥管理器：使用你的登录身份免除 ssh、gpg 等密钥的密码，登录 web 网站也会自动填充密码
 
     https://wiki.archlinux.org/title/GNOME/Keyring
 
-    https://zhuanlan.zhihu.com/p/128133025
+现在流行的大多数 Linux 桌面环境现在都引入了密钥管理器这一工具，叫 keyring 钥匙圈（注意区别于 gpg keyring 钥匙圈，那个是维护密钥的信任关系的），统一把 ssh、gpg 等密钥的保护密码代理起来，用户登陆后输入密码或手机扫码等二次认证后，即识别为本人使用本机，再使用其它密钥，甚至登录网站，都会免除输入密码了。
+
+    这个钥匙圈默认使用你本地帐户的登录密码自动解锁，如果钥匙圈在你登录系统时未解锁，在登录后会弹框提示 “Enter password to unlock your key ring”
+
+    初次使用的密钥，如果提示输入保护密码，会被 GNOME 钥匙圈加密保存，以后的使用中，只要你输入了登录密码，则使用你的登录身份免除输入 ssh、gpg 等密钥的密码，这样在用户使用 ssh、gpg、git 等应用的鉴权时自动接管原 ssh-agent、pinentry、git 凭据管理器 credential.helper 的工作：
+
+        以 ssh 密钥登录为例，在初次使用 ssh 密钥时会弹框要求输入该密钥的保护密码，注意不是钥匙圈的密码（用户登录密码），在用户确认后这些密码都会被钥匙圈加密保存，在以后的使用中会自动使用。对用户来说，只要在第一次使用密钥时，在提示要求输入密钥的保护密码时选择加入钥匙圈，则以后只要登录计算机桌面，解锁了钥匙圈，在任何使用密钥的场景下都不会需要输入密钥的保护密码了，后台替你填写了密码的钥匙圈大大提升了使用的方便。
+
+    另外支持流行的软件自动保存的密码，比如浏览器等，在用户使用浏览器登录 web 网站时也会自动填充密码：初次使用时会提示保存秘密，用户确认后会被钥匙圈加密保存，以后在该页面自动填写。
+
+GNOME Keyring（gnome-keyring）钥匙圈
+
+        https://wiki.gnome.org/action/show/Projects/GnomeKeyring
+
+        https://wiki.archlinux.org/title/GNOME/Keyring
+
+        https://zhuanlan.zhihu.com/p/128133025
 
     操作系统软件包 gnome-keyring 提供了各种组件实现该功能。
 
-KDE Wallet - KWalletManager
+    支持控制台登陆（pam 使用 pam_gnome_keyring.so）
 
-    https://apps.kde.org/zh-cn/kwalletmanager5/
+    因为代替了 ssh-agent、gpg-agent 的功能，所以不能与之共存，使用一个即可
 
-用户使用桌面软件进行管理
+keyring 的桌面应用程序，用户使用桌面软件进行管理即可：
 
-最常用的是 Gnome Passwords and Keys（原名 Seahorse）
+    MacOS 用自己的密钥管理器
 
-    如果你修改了账户密码，记得还得重设钥匙圈密码。假如你不记得仍然被钥匙圈使用的老的账户密码：只能移除老的钥匙圈，也就是说你保存的那些密码也都删掉了
+    GNOME
 
-KDE 上的叫 KDE 钱包（KWallet），终于在 22 版后改为更贴切的 KDE 密码库了。
+        Passwords and Keys（原名 Seahorse）
 
-    https://userbase.kde.org/KDE_Wallet_Manager
+        如果你修改了账户密码，记得还得重设钥匙圈密码。假如你不记得仍然被钥匙圈使用的老的账户密码：只能移除老的钥匙圈，也就是说你保存的那些密码也都删掉了
 
-    https://wiki.archlinux.org/title/KDE_Wallet
+    KDE
 
-    https://www.jwillikers.com/gnome-keyring-in-kde-plasma
+        KDE Wallet - KWalletManager 原名 KDE 钱包（KWallet），在 22 版后改名为更贴切的 KDE 密码库了
 
-    KGpg 接管 gpg 的功能
+            https://apps.kde.org/zh-cn/kwalletmanager5/
 
-        https://userbase.kde.org/KGpg
+            https://userbase.kde.org/KDE_Wallet_Manager
 
-第三方：
+            https://wiki.archlinux.org/title/KDE_Wallet
 
-KeePass 是一个免费的开源密码管理器，它可以帮助您以安全的方式管理您的密码。您可以将所有密码存储在一个用主密钥锁定的数据库中。因此，您只需记住一个主密钥即可解锁整个数据库。数据库文件使用加密算法（AES-256、ChaCha20和Twofish）进行加密。
+            https://www.jwillikers.com/gnome-keyring-in-kde-plasma
 
-    https://keepass.info/
+        KGpg 接管 gpg 的功能
 
-    https://wiki.archlinux.org/title/KeePass
+            https://userbase.kde.org/KGpg
 
-Bitwarden 可 docker 部署实现自托管
+            https://apps.kde.org/kgpg/
 
-    https://zhuanlan.zhihu.com/p/130492433
+    第三方桌面应用程序：
+
+        KeePass 是一个免费的开源密码管理器，它可以帮助您以安全的方式管理您的密码。您可以将所有密码存储在一个用主密钥锁定的数据库中。因此，您只需记住一个主密钥即可解锁整个数据库。数据库文件使用加密算法（AES-256、ChaCha20和Twofish）进行加密。
+
+            https://keepass.info/
+
+            https://wiki.archlinux.org/title/KeePass
+
+        Bitwarden 可 docker 部署实现自托管
+
+            https://zhuanlan.zhihu.com/p/130492433
 
 ### Linux 下的 “Windows Hello” 人脸识别认证 --- Howdy
 
