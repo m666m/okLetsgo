@@ -10656,7 +10656,7 @@ Fedora 下安装 howdy
 
 3、配置 PAM
 
-默认优先使用人脸识别进行验证，若验证失败，也可输入密码进行验证。
+默认优先使用人脸识别进行验证，若人脸识别验证失败，会回落到输入密码进行验证。
 
 解锁 sudo，编辑 /etc/pam.d/sudo 文件，在排除注释语句后的首行加入如下内容
 
@@ -10680,31 +10680,33 @@ Fedora 下安装 howdy
 
 polkit-1 这样的 GUI 授权验证工具会在使用人脸识别时同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，若人脸识别失败，同样可以使用密码验证
 
-4、手工调整
+4、手工调整，保护你的隐私
 
 避免自动拍照存档，编辑 /lib64/security/howdy/config.ini
 
     https://wiki.archlinux.org/title/Howdy#Secure_the_installation
 
     [snapshots]
-    capture_failed = false
+    capture_failed = false   <----- 这个酌情放开
     capture_successful = false
 
-    否则默认扔到 /lib64/security/howdy/snapshots 下面
+    拍的照片默认会扔到 /lib64/security/howdy/snapshots/ 目录
 
-避免 sudo 认证成功后总是打印调试信息：
+下面这俩新版的好像不需要调整了，视情况而定
 
-    编辑 /etc/profile.d/howdy.sh 和 /etc/profile.d/howdy.csh 文件，查找如下内容
+    避免 sudo 认证成功后总是打印调试信息：
 
-        OPENCV_VIDEOIO_PRIORITY_INTEL_MFX
+        编辑 /etc/profile.d/howdy.sh 和 /etc/profile.d/howdy.csh 文件，查找如下内容
 
-    取消找到的语句的注释
+            OPENCV_VIDEOIO_PRIORITY_INTEL_MFX
 
-改个权限：
+        取消找到的语句的注释
 
-因为大多数桌面环境内置的锁屏界面（不是指DM的登录界面）并未以root身份运行，而howdy的文件在默认状态下对非root用户不可读，故此时锁屏界面无法启用人脸识别
+    改个权限：
 
-    chmod o+x /lib64/security/howdy/dlib-data
+        因为大多数桌面环境内置的锁屏界面（不是指DM的登录界面）并未以root身份运行，而howdy的文件在默认状态下对非root用户不可读，故此时锁屏界面无法启用人脸识别
+
+        chmod o+x /lib64/security/howdy/dlib-data
 
 5、配置 SELinux，编辑一个 howdy.te 文件
 
