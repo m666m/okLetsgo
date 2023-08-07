@@ -10599,12 +10599,17 @@ keyring 的桌面应用程序，用户使用桌面软件进行管理即可：
 
 ### Linux 下的 “Windows Hello” 人脸识别认证 --- Howdy
 
+目前发现的问题：
+
+自动解锁 gnome keyring 有问题，重启计算机登录后会提示解锁密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），解决办法：
+
+    手工解锁：安装 gnome passwords and keys (seahorse)，手工解锁当前的密钥环即可
+
 提示：
 
     人脸识别和指纹识别的安全性不如密码、密钥、yubi-key 等认证方式，更容易被造假，建议只用于个人电脑的宽松使用场景
 
 基于人脸识别的认证解锁功能，使用摄像头识别面部，直接解锁登录、sudo 等需要手工密码的场合
-
 
     https://github.com/boltgolt/howdy
 
@@ -10802,12 +10807,6 @@ allow xdm_t v4l_device_t:chr_file map;
     $ win + l 测试锁屏
 
     $ sudo reboot 测试登录
-
-目前发现的问题：
-
-自动解锁 gnome keyring 有问题，重启计算机登录后重复提示解锁密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），解决办法：
-
-    手工解锁，安装 gnome passwords and keys (seahorse)，手工解锁当前的密钥环即可
 
 ### 开启指纹登录
 
