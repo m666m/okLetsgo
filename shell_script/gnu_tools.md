@@ -10771,9 +10771,11 @@ pam 控制文件说明参见章节 [PAM --- Linux 使用的安全验证方式](i
     auth        sufficient    pam_python.so /lib64/security/howdy/pam.py  <-- 添加在这两行之间
     auth        substack      password-auth
 
-在 sudo 和登录界面，会自动启动人脸识别，如果人脸识别失败，会回落到使用密码验证。
+使用说明：
 
-在锁屏界面中，人脸识别不会像 Windows Hello 那样自动启动，但是不需要输入密码，只需点击登录按钮或按回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
+    在 sudo 和登录界面，会自动启动人脸识别，如果人脸识别失败，会回落到使用密码验证。
+
+    在锁屏界面中，人脸识别不会像 Windows Hello 那样自动启动，但是不需要输入密码，只需点击登录按钮或按回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
 
 4、对 Redhat 系等开启 SELinux 的操作系统如 Fedora，需要配置 SELinux
 
