@@ -183,7 +183,7 @@ fi
 # 在 mintty 下使用普通的 Windows 控制台程序
 # 如 mintty 使用 ConPty 接口则可以不需要这些 alias 使用 winpty 来调用了
 #   Windows version >= 10 / 2019 1809 (build >= 10.0.17763) 在 ~/.mintty.rc 中添加 `ConPTY=true`
-if [[ $(git --version |grep -i Windows >/dev/null 2>&1;echo $?) = '0' ]] ;then
+if $(git --version |grep -i Windows >/dev/null 2>&1) then
 
     alias python="winpty python"
     alias ipython="winpty ipython"
