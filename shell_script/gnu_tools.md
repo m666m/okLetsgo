@@ -10583,398 +10583,6 @@ Type=Application
 
 感觉这 systemd 管的越来越多，直接做一个 systemd 操作系统得了。
 
-### 桌面环境统一密码管理器
-
-密钥管理器：使用你的登录身份免除 ssh、gpg 等密钥的密码，登录 web 网站也会自动填充密码
-
-    https://wiki.archlinux.org/title/GNOME/Keyring
-
-现在流行的大多数 Linux 桌面环境现在都引入了密钥管理器这一工具，叫 keyring 钥匙圈（注意区别于 gpg keyring 钥匙圈，那个是维护密钥的信任关系的），统一把 ssh、gpg 等密钥的保护密码代理起来，用户登陆后输入密码或手机扫码等二次认证后，即识别为本人使用本机，再使用其它密钥，甚至登录网站，都会免除输入密码了。
-
-    这个钥匙圈默认使用你本地帐户的登录密码自动解锁，如果钥匙圈在你登录系统时未解锁，在登录后会弹框提示 “Enter password to unlock your key ring”
-
-    初次使用的密钥，如果提示输入保护密码，会被 GNOME 钥匙圈加密保存，以后的使用中，只要你输入了登录密码，则使用你的登录身份免除输入 ssh、gpg 等密钥的密码，这样在用户使用 ssh、gpg、git 等应用的鉴权时自动接管原 ssh-agent、pinentry、git 凭据管理器 credential.helper 的工作：
-
-        以 ssh 密钥登录为例，在初次使用 ssh 密钥时会弹框要求输入该密钥的保护密码，注意不是钥匙圈的密码（用户登录密码），在用户确认后这些密码都会被钥匙圈加密保存，在以后的使用中会自动使用。对用户来说，只要在第一次使用密钥时，在提示要求输入密钥的保护密码时选择加入钥匙圈，则以后只要登录计算机桌面，解锁了钥匙圈，在任何使用密钥的场景下都不会需要输入密钥的保护密码了，后台替你填写了密码的钥匙圈大大提升了使用的方便。
-
-        GNOME 桌面环境下的终端需要给 ssh-agent 设置变量指向 gnome-keyring-daemon，详见 [多会话复用 ssh 密钥代理](bash_profile.sh)。
-
-    另外支持流行的软件自动保存的密码，比如浏览器等，在用户使用浏览器登录 web 网站时也会自动填充密码：初次使用时会提示保存秘密，用户确认后会被钥匙圈加密保存，以后在该页面自动填写。
-
-GNOME Keyring（gnome-keyring）钥匙圈
-
-        https://wiki.gnome.org/action/show/Projects/GnomeKeyring
-
-        https://wiki.archlinux.org/title/GNOME/Keyring
-
-        https://zhuanlan.zhihu.com/p/128133025
-
-    操作系统软件包 gnome-keyring 提供了各种组件实现该功能。
-
-    支持控制台登陆（pam 使用 pam_gnome_keyring.so）
-
-    因为代替了 ssh-agent、gpg-agent 的功能，所以不能与之共存，使用一个即可
-
-keyring 的桌面应用程序，用户使用桌面软件进行管理即可：
-
-    MacOS 用自己的密钥管理器
-
-    GNOME
-
-        Passwords and Keys（原名 Seahorse）
-
-        如果你修改了账户密码，记得还得重设钥匙圈密码。假如你不记得仍然被钥匙圈使用的老的账户密码：只能移除老的钥匙圈，也就是说你保存的那些密码也都删掉了
-
-    KDE
-
-        KDE Wallet - KWalletManager 原名 KDE 钱包（KWallet），在 22 版后改名为更贴切的 KDE 密码库了
-
-            https://apps.kde.org/zh-cn/kwalletmanager5/
-
-            https://userbase.kde.org/KDE_Wallet_Manager
-
-            https://wiki.archlinux.org/title/KDE_Wallet
-
-            https://www.jwillikers.com/gnome-keyring-in-kde-plasma
-
-        KGpg 接管 gpg 的功能
-
-            https://userbase.kde.org/KGpg
-
-            https://apps.kde.org/kgpg/
-
-    第三方桌面应用程序：
-
-        KeePass 是一个免费的开源密码管理器，它可以帮助您以安全的方式管理您的密码。您可以将所有密码存储在一个用主密钥锁定的数据库中。因此，您只需记住一个主密钥即可解锁整个数据库。数据库文件使用加密算法（AES-256、ChaCha20和Twofish）进行加密。
-
-            https://keepass.info/
-
-            https://wiki.archlinux.org/title/KeePass
-
-        Bitwarden 可 docker 部署实现自托管
-
-            https://zhuanlan.zhihu.com/p/130492433
-
-### Linux 下的 “Windows Hello” 人脸识别认证 --- Howdy
-
-提示：
-
-    人脸识别和指纹识别的安全性不如密码、密钥、yubi-key 等认证方式，更容易被造假，建议只用于个人电脑的宽松使用场景
-
-基于人脸识别的认证解锁功能，使用摄像头识别面部，直接解锁登录、sudo 等需要手工输入密码的场合
-
-    https://github.com/boltgolt/howdy
-
-        Fedora 下的安装和设置说明 https://copr.fedorainfracloud.org/coprs/principis/howdy/
-
-    评论很全面 https://linuxreviews.org/Howdy
-
-    这里说了红外发射器的调试 https://wiki.archlinux.org/title/Howdy
-
-    中文最全面的 https://wszqkzqk.github.io/2021/08/17/%E5%9C%A8Manjaro%E4%B8%8B%E9%85%8D%E7%BD%AE%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB/
-
-“Windows Hello” 标准是内置红外发射器的摄像头 IR camera，但 howdy 不强制要求。
-
-Howdy 通过 OpenCV 和 Python 构建，支持使用内置红外发射器的摄像头来识别用户面部。通过调用 Linux 的 PAM 身份验证系统，意味着不仅可以使用人脸识别登录桌面环境，还可以将其用于 sudo、su、polkit-1 以及大多数需要使用其他帐户密码的场景。
-
-Fedora 下安装 howdy
-
-    $ sudo dnf copr enable principis/howdy
-    $ sudo dnf --refresh install howdy
-
-    可选：如果 Linux 不支持你的红外发射器，在这里安装驱动
-
-        https://github.com/EmixamPP/linux-enable-ir-emitter
-
-1、确定摄像头设备
-
-一般都是 usb 设备，系统可以自动识别
-
-    $ lsusb
-    Bus 001 Device 011: ID 04f2:b612 Chicony Electronics Co., Ltd USB2.0 FHD UVC WebCam
-
-然后查看系统是否识别出摄像头设备
-
-列出当前所有的摄像头设备，即使只有一个摄像头，也会列出多个设备，其实是对应了不同的功能，我们主要关注 video0 和 video2
-
-    $ ls /dev/video*
-
-    普通摄像头是 /dev/video0 ，可以打开红外传感器的摄像头是 /dev/video2
-
-用 VLC 确认所选摄像头设备工作正常
-
-    vlc 菜单中的 媒体 - 打开捕获设备 - 高级选项（advance options），选择视频捕获设备 /dev/video0， 确定 - 播放 之后显示的摄像头捕捉到的画面。如果是带红外传感器的摄像头还可以选 /dev/video2。
-
-可选安装：摄像头管理软件包 v4l-utils
-
-    $ sudo dnf install v4l-utils
-
-    列出当前所有的摄像头设备，对普通摄像头我们使用 video0
-
-        $ v4l2-ctl --list-devices
-        UVC Camera (046d:0825) (usb-0000:00:14.0-9):
-            /dev/video0
-            /dev/video1
-            /dev/media0
-
-        支持红外发射器的摄像头的设备更多，我们使用 video2
-        $ v4l2-ctl --list-devices
-        USB2.0 FHD UVC WebCam: USB2.0 F (usb-0000:00:14.0-5.4):
-            /dev/video0
-            /dev/video1
-            /dev/video2
-            /dev/video3
-            /dev/media0
-            /dev/media1
-
-    后面如果运行 howdy 出现摄像头不工作，可以查看当前摄像头支持的像素尺寸，然后在 howdy 的配置文件里设置合适的分辨率
-
-        $ v4l2-ctl -d /dev/video0 --list-formats-ext
-
-        找一个合适的分辨率填写到配置文件中的 frame_width 和 frame_height 字段即可。
-
-2、配置摄像头
-
-    开启红外发射功能可以提高识别的准确度与安全性，而且红外发射式摄像头支持全黑暗状态下的人脸识别
-
-普通摄像头是 /dev/video0，如果你的摄像头支持红外发射器，应该选择 /dev/video2，如果选择 /dev/video0 不会打开红外发射器
-
-    $ sudo howdy config 会调用 nano 打开配置文件
-
-    或直接手工编辑 /lib64/security/howdy/config.ini 文件
-
-        device_path = /dev/video2
-
-验证摄像头配置
-
-    $ sudo howdy test
-
-    会打开一个窗口显示摄像头的内容，如果摄像头开启了红外发射器其指示灯会闪烁，停止运行可在命令行窗口按 ctrl+c
-
-3、配置 PAM 实现鉴权时调用人脸识别
-
-调整 PAM 配置为优先使用人脸识别进行验证，若人脸识别验证失败，回落到原输入密码进行验证。
-
-pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式](init_a_server think)。
-
-解锁 sudo，编辑 /etc/pam.d/sudo 文件，在排除注释语句后的首行加入如下内容
-
-    #%PAM-1.0
-    auth       sufficient   pam_python.so /lib64/security/howdy/pam.py  <--要保证在最前
-    auth       include      system-auth
-    account    include      system-auth
-    ...
-
-解锁登录密码和锁屏密码，编辑 /etc/pam.d/gdm-password
-
-    auth     [success=done ignore=ignore default=bad] pam_selinux_permit.so
-    auth        sufficient    pam_python.so /lib64/security/howdy/pam.py  <-- 添加在这两行之间
-    auth        substack      password-auth
-
-使用说明：
-
-    在 sudo 会自动启动人脸识别，如果人脸识别失败，会回落到使用密码验证。
-
-    在登录界面和锁屏界面中，人脸识别不会像 Windows Hello 那样自动启动，但是不需要输入密码，只需点击登录按钮或按回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
-
-4、对 Redhat 系等开启 SELinux 的操作系统如 Fedora，需要配置 SELinux
-
-    https://github.com/boltgolt/howdy/issues/711#issuecomment-1306559496
-
-编辑一个 howdy.te 文件
-
-```conf
-module howdy 1.0;
-
-require {
-    type lib_t;
-    type xdm_t;
-    type v4l_device_t;
-    type sysctl_vm_t;
-    class chr_file map;
-    class file { create getattr open read write };
-    class dir add_name;
-}
-
-#============= xdm_t ==============
-allow xdm_t lib_t:dir add_name;
-allow xdm_t lib_t:file { create write };
-allow xdm_t sysctl_vm_t:file { getattr open read };
-allow xdm_t v4l_device_t:chr_file map;
-
-```
-
-然后执行如下命令：
-
-    $ checkmodule -M -m -o howdy.mod howdy.te
-    $ semodule_package -o howdy.pp -m howdy.mod
-    $ sudo semodule -i howdy.pp
-
-5、配置 polkit
-
-gnome 的密钥环管理、设置系统参数的某些选项的解锁都调用了 polkit-1 这样的 GUI 授权验证工具。
-
-如果不配置 polkit，登录后不会解锁 gnome keyring ：重启计算机登录后会提示输入密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），如果使用 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
-
-手工添加 polkit 策略，编辑 /etc/pam.d/polkit-1 文件
-
-    https://github.com/boltgolt/howdy/issues/630
-
-```conf
-#%PAM-1.0
-
-auth       sufficient   pam_python.so /lib64/security/howdy/pam.py  <--- 添加在首行
-auth       include      system-auth
-account    include      system-auth
-password   include      system-auth
-session    include      system-auth
-```
-
-配置后，会在调用到 polkit 的场景下使用人脸识别。如果同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，如果人脸识别失败，才会回落到使用密码验证。
-
-我发现配置了 polkit 后，登录界面要点击用户，不输入密码直接回车，锁屏界面的解锁可以实现自动登录，不知道为啥。
-
-6、手工调整，保护你的隐私
-
-避免自动拍照存档，编辑 /lib64/security/howdy/config.ini
-
-    https://wiki.archlinux.org/title/Howdy#Secure_the_installation
-
-    [snapshots]
-    capture_failed = false   <----- 这个酌情放开
-    capture_successful = false
-
-    拍的照片默认会扔到 /lib64/security/howdy/snapshots/ 目录
-
-避免 Interl 显卡 MFX 消息，在 sudo 认证成功后总是打印调试信息：
-
-    如果不使用 Intel 显卡，不需要修改。
-
-    编辑 /etc/profile.d/howdy.sh 和 /etc/profile.d/howdy.csh 文件，查找如下内容
-
-        OPENCV_VIDEOIO_PRIORITY_INTEL_MFX
-
-    取消该语句的注释即可。
-
-改个权限：
-
-    新版的 howdy 不需要调整了
-
-    因为大多数桌面环境内置的锁屏界面（不是指DM的登录界面）并未以root身份运行，而howdy的文件在默认状态下对非root用户不可读，故此时锁屏界面无法启用人脸识别
-
-        # sudo chmod -R 755 /lib/security/howdy/
-        $ chmod o+x /lib64/security/howdy/dlib-data
-
-7、添加一个面部模型：
-
-给当前用户添加一个面部模型，会提示给出标签，即一个用户可以有多个面部模型，多次运行即可
-
-    $ sudo howdy add
-
-    建议多个，比如 noglasses、withglasses
-
-给其它用户添加
-
-    $ sudo howdy -U other_user add
-
-其它命令
-
-    sudo howdy list             查看记录的面部模型列表
-    sudo howdy remove face_ID   删除指定 ID 的面部记录
-    sudo howdy clear            清除所有面部模型记录
-    sudo howdy disable 1        禁用 Howdy 功能
-    sudo howdy disable 0        启用 Howdy 功能
-
-7、验证功能
-
-    测试 sudo
-    $ sudo whoami
-    Identified face as your_user_name
-    root
-
-    $ win + l 测试锁屏
-
-    桌面->设置-> Users，点击 unlock，测试 Polkit 解锁
-
-    $ sudo reboot 测试登录
-
-### 开启指纹登录
-
-Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找，只要你的指纹设备被支持即可正常使用，默认只支持系统登录，可以安装 libpam-fprintd 包以实现 sudo 等鉴权免密码。
-
-    http://www.freedesktop.org/wiki/Software/fprint/fprintd
-
-    https://help.gnome.org/users/gnome-help/stable/session-fingerprint.html.en
-
-    https://wiki.archlinux.org/title/Fingerprint_GUI
-
-    Debian 安装 pam-auth-update 包
-
-        https://wiki.debian.org/SecurityManagement/fingerprint%20authentication
-
-    https://winq.gitee.io/fprint-fedora/
-
-    https://blog.csdn.net/weixin_31762925/article/details/116771481
-
-确认是否支持设备
-
-    $ lsusb
-
-    在网址 https://fprint.freedesktop.org/supported-devices.html 查询
-
-系统上得有软件包 fprintd，没有的话，就安装一个
-
-    # sudo apt install fprintd libpam-fprintd
-    $ sudo dnf install fprintd fprintd-pam
-
-使用以下命令添加指定手指的指纹,一共要求扫描五次
-
-    sudo fprintd-enroll 用户名
-
-    # 命令执行后提示如下与扫描指纹反馈如下
-    Using device /net/reactivated/Fprint/Device/0
-    Enrolling right-index-finger finger.
-    Enroll result: enroll-stage-passed
-    Enroll result: enroll-stage-passed
-    Enroll result: enroll-stage-passed
-    Enroll result: enroll-stage-passed
-    Enroll result: enroll-stage-passed
-    Enroll result: enroll-completed
-
-列出本机指定用户下已注测的指纹信息
-
-    sudo fprintd-list winq
-
-验证您本机刚注册过的指纹信息是否正确
-
-    sudo fprintd-verify winq
-
-    # 命令执行后提示如下信息,表示指纹信息验证通过
-    Using device /net/reactivated/Fprint/Device/0
-    Listing enrolled fingers:
-    - #0: right-index-finger
-    Verify started!
-    Verifying: right-index-finger
-    Verify result: verify-match (done)
-
-安装 libpam-fprintd 包后可以选择给更多的 pam 功能开启指纹验证：
-
-    $ sudo pam-auth-update
-
-    [*] Fingerprint authentication
-
-    [*] Unix authentication
-
-    [*] Register user sessions in the systemd control group hierarchy
-
-    [ ] Create home directory on login
-
-    [*] GNOME Keyring Daemon – Login keyring management
-
-    [*] eCryptfs Key/Mount Management
-
-    [*] Inheritable Capabilities Management
-
 ### 远程桌面 vnc/rdp/mstsc
 
     就 X windows 桌面来说，本来就没有不远程的，XServer 和 XClient 放在一台电脑上就是本地桌面，通过  ssh -x 连接就远程了，没有本质区别。
@@ -12028,7 +11636,399 @@ SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候�
 
     sudo sysctl -p
 
-### Linux 的注册表编辑器 --- 使用 GSettings 和 dconf 配置桌面
+### 桌面环境统一密码管理器
+
+密钥管理器：使用你的登录身份免除 ssh、gpg 等密钥的密码，登录 web 网站也会自动填充密码
+
+    https://wiki.archlinux.org/title/GNOME/Keyring
+
+现在流行的大多数 Linux 桌面环境现在都引入了密钥管理器这一工具，叫 keyring 钥匙圈（注意区别于 gpg keyring 钥匙圈，那个是维护密钥的信任关系的），统一把 ssh、gpg 等密钥的保护密码代理起来，用户登陆后输入密码或手机扫码等二次认证后，即识别为本人使用本机，再使用其它密钥，甚至登录网站，都会免除输入密码了。
+
+    这个钥匙圈默认使用你本地帐户的登录密码自动解锁，如果钥匙圈在你登录系统时未解锁，在登录后会弹框提示 “Enter password to unlock your key ring”
+
+    初次使用的密钥，如果提示输入保护密码，会被 GNOME 钥匙圈加密保存，以后的使用中，只要你输入了登录密码，则使用你的登录身份免除输入 ssh、gpg 等密钥的密码，这样在用户使用 ssh、gpg、git 等应用的鉴权时自动接管原 ssh-agent、pinentry、git 凭据管理器 credential.helper 的工作：
+
+        以 ssh 密钥登录为例，在初次使用 ssh 密钥时会弹框要求输入该密钥的保护密码，注意不是钥匙圈的密码（用户登录密码），在用户确认后这些密码都会被钥匙圈加密保存，在以后的使用中会自动使用。对用户来说，只要在第一次使用密钥时，在提示要求输入密钥的保护密码时选择加入钥匙圈，则以后只要登录计算机桌面，解锁了钥匙圈，在任何使用密钥的场景下都不会需要输入密钥的保护密码了，后台替你填写了密码的钥匙圈大大提升了使用的方便。
+
+        GNOME 桌面环境下的终端需要给 ssh-agent 设置变量指向 gnome-keyring-daemon，详见 [多会话复用 ssh 密钥代理](bash_profile.sh)。
+
+    另外支持流行的软件自动保存的密码，比如浏览器等，在用户使用浏览器登录 web 网站时也会自动填充密码：初次使用时会提示保存秘密，用户确认后会被钥匙圈加密保存，以后在该页面自动填写。
+
+GNOME Keyring（gnome-keyring）钥匙圈
+
+        https://wiki.gnome.org/action/show/Projects/GnomeKeyring
+
+        https://wiki.archlinux.org/title/GNOME/Keyring
+
+        https://zhuanlan.zhihu.com/p/128133025
+
+    操作系统软件包 gnome-keyring 提供了各种组件实现该功能。
+
+    支持控制台登陆（pam 使用 pam_gnome_keyring.so）
+
+    因为代替了 ssh-agent、gpg-agent 的功能，所以不能与之共存，使用一个即可
+
+keyring 的桌面应用程序，用户使用桌面软件进行管理即可：
+
+    MacOS 用自己的密钥管理器
+
+    GNOME
+
+        Passwords and Keys（原名 Seahorse）
+
+        如果你修改了账户密码，记得还得重设钥匙圈密码。假如你不记得仍然被钥匙圈使用的老的账户密码：只能移除老的钥匙圈，也就是说你保存的那些密码也都删掉了
+
+    KDE
+
+        KDE Wallet - KWalletManager 原名 KDE 钱包（KWallet），在 22 版后改名为更贴切的 KDE 密码库了
+
+            https://apps.kde.org/zh-cn/kwalletmanager5/
+
+            https://userbase.kde.org/KDE_Wallet_Manager
+
+            https://wiki.archlinux.org/title/KDE_Wallet
+
+            https://www.jwillikers.com/gnome-keyring-in-kde-plasma
+
+        KGpg 接管 gpg 的功能
+
+            https://userbase.kde.org/KGpg
+
+            https://apps.kde.org/kgpg/
+
+    第三方桌面应用程序：
+
+        KeePass 是一个免费的开源密码管理器，它可以帮助您以安全的方式管理您的密码。您可以将所有密码存储在一个用主密钥锁定的数据库中。因此，您只需记住一个主密钥即可解锁整个数据库。数据库文件使用加密算法（AES-256、ChaCha20和Twofish）进行加密。
+
+            https://keepass.info/
+
+            https://wiki.archlinux.org/title/KeePass
+
+        Bitwarden 可 docker 部署实现自托管
+
+            https://zhuanlan.zhihu.com/p/130492433
+
+### Linux 下的 “Windows Hello” 人脸识别认证 --- Howdy
+
+提示：
+
+    人脸识别和指纹识别的安全性不如密码、密钥、yubi-key 等认证方式，更容易被造假，建议只用于个人电脑的宽松使用场景
+
+基于人脸识别的认证解锁功能，使用摄像头识别面部，直接解锁登录、sudo 等需要手工输入密码的场合
+
+    https://github.com/boltgolt/howdy
+
+        Fedora 下的安装和设置说明 https://copr.fedorainfracloud.org/coprs/principis/howdy/
+
+    评论很全面 https://linuxreviews.org/Howdy
+
+    这里说了红外发射器的调试 https://wiki.archlinux.org/title/Howdy
+
+    中文最全面的 https://wszqkzqk.github.io/2021/08/17/%E5%9C%A8Manjaro%E4%B8%8B%E9%85%8D%E7%BD%AE%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB/
+
+“Windows Hello” 标准是内置红外发射器的摄像头 IR camera，但 howdy 不强制要求。
+
+Howdy 通过 OpenCV 和 Python 构建，支持使用内置红外发射器的摄像头来识别用户面部。通过调用 Linux 的 PAM 身份验证系统，意味着不仅可以使用人脸识别登录桌面环境，还可以将其用于 sudo、su、polkit-1 以及大多数需要使用其他帐户密码的场景。
+
+Fedora 下安装 howdy
+
+    $ sudo dnf copr enable principis/howdy
+    $ sudo dnf --refresh install howdy
+
+    可选：如果 Linux 不支持你的红外发射器，在这里安装驱动
+
+        https://github.com/EmixamPP/linux-enable-ir-emitter
+
+1、确定摄像头设备
+
+一般都是 usb 设备，系统可以自动识别
+
+    $ lsusb
+    Bus 001 Device 011: ID 04f2:b612 Chicony Electronics Co., Ltd USB2.0 FHD UVC WebCam
+
+然后查看系统是否识别出摄像头设备
+
+列出当前所有的摄像头设备，即使只有一个摄像头，也会列出多个设备，其实是对应了不同的功能，我们主要关注 video0 和 video2
+
+    $ ls /dev/video*
+
+    普通摄像头是 /dev/video0 ，可以打开红外传感器的摄像头是 /dev/video2
+
+用 VLC 确认所选摄像头设备工作正常
+
+    vlc 菜单中的 媒体 - 打开捕获设备 - 高级选项（advance options），选择视频捕获设备 /dev/video0， 确定 - 播放 之后显示的摄像头捕捉到的画面。如果是带红外传感器的摄像头还可以选 /dev/video2。
+
+可选安装：摄像头管理软件包 v4l-utils
+
+    $ sudo dnf install v4l-utils
+
+    列出当前所有的摄像头设备，对普通摄像头我们使用 video0
+
+        $ v4l2-ctl --list-devices
+        UVC Camera (046d:0825) (usb-0000:00:14.0-9):
+            /dev/video0
+            /dev/video1
+            /dev/media0
+
+        支持红外发射器的摄像头的设备更多，我们使用 video2
+        $ v4l2-ctl --list-devices
+        USB2.0 FHD UVC WebCam: USB2.0 F (usb-0000:00:14.0-5.4):
+            /dev/video0
+            /dev/video1
+            /dev/video2
+            /dev/video3
+            /dev/media0
+            /dev/media1
+
+    后面如果运行 howdy 出现摄像头不工作，可以查看当前摄像头支持的像素尺寸，然后在 howdy 的配置文件里设置合适的分辨率
+
+        $ v4l2-ctl -d /dev/video0 --list-formats-ext
+
+        找一个合适的分辨率填写到配置文件中的 frame_width 和 frame_height 字段即可。
+
+2、配置摄像头
+
+    开启红外发射功能可以提高识别的准确度与安全性，而且红外发射式摄像头支持全黑暗状态下的人脸识别
+
+普通摄像头是 /dev/video0，如果你的摄像头支持红外发射器，应该选择 /dev/video2，如果选择 /dev/video0 不会打开红外发射器
+
+    $ sudo howdy config 会调用 nano 打开配置文件
+
+    或直接手工编辑 /lib64/security/howdy/config.ini 文件
+
+        device_path = /dev/video2
+
+验证摄像头配置
+
+    $ sudo howdy test
+
+    会打开一个窗口显示摄像头的内容，如果摄像头开启了红外发射器其指示灯会闪烁，停止运行可在命令行窗口按 ctrl+c
+
+3、配置 PAM 实现鉴权时调用人脸识别
+
+调整 PAM 配置为优先使用人脸识别进行验证，若人脸识别验证失败，回落到原输入密码进行验证。
+
+pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式](init_a_server think)。
+
+解锁 sudo，编辑 /etc/pam.d/sudo 文件，在排除注释语句后的首行加入如下内容
+
+    #%PAM-1.0
+    auth       sufficient   pam_python.so /lib64/security/howdy/pam.py  <--要保证在最前
+    auth       include      system-auth
+    account    include      system-auth
+    ...
+
+解锁登录密码和锁屏密码，编辑 /etc/pam.d/gdm-password
+
+    auth     [success=done ignore=ignore default=bad] pam_selinux_permit.so
+    auth        sufficient    pam_python.so /lib64/security/howdy/pam.py  <-- 添加在这两行之间
+    auth        substack      password-auth
+
+使用说明：
+
+    在 sudo 会自动启动人脸识别，如果人脸识别失败，会回落到使用密码验证。
+
+    在登录界面和锁屏界面中，人脸识别不会像 Windows Hello 那样自动启动，但是不需要输入密码，只需点击登录按钮或按回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
+
+4、对 Redhat 系等开启 SELinux 的操作系统如 Fedora，需要配置 SELinux
+
+    https://github.com/boltgolt/howdy/issues/711#issuecomment-1306559496
+
+编辑一个 howdy.te 文件
+
+```conf
+module howdy 1.0;
+
+require {
+    type lib_t;
+    type xdm_t;
+    type v4l_device_t;
+    type sysctl_vm_t;
+    class chr_file map;
+    class file { create getattr open read write };
+    class dir add_name;
+}
+
+#============= xdm_t ==============
+allow xdm_t lib_t:dir add_name;
+allow xdm_t lib_t:file { create write };
+allow xdm_t sysctl_vm_t:file { getattr open read };
+allow xdm_t v4l_device_t:chr_file map;
+
+```
+
+然后执行如下命令：
+
+    $ checkmodule -M -m -o howdy.mod howdy.te
+    $ semodule_package -o howdy.pp -m howdy.mod
+    $ sudo semodule -i howdy.pp
+
+5、配置 polkit
+
+gnome 的密钥环管理、设置系统参数的某些选项的解锁都调用了 polkit-1 这样的 GUI 授权验证工具。
+
+如果不配置 polkit，登录后不会解锁 gnome keyring ：重启计算机登录后会提示输入密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），如果使用 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
+
+手工添加 polkit 策略，编辑 /etc/pam.d/polkit-1 文件
+
+    https://github.com/boltgolt/howdy/issues/630
+
+```conf
+#%PAM-1.0
+
+auth       sufficient   pam_python.so /lib64/security/howdy/pam.py  <--- 添加在首行
+auth       include      system-auth
+account    include      system-auth
+password   include      system-auth
+session    include      system-auth
+```
+
+配置后，会在调用到 polkit 的场景下使用人脸识别。如果同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，如果人脸识别失败，才会回落到使用密码验证。
+
+我发现配置了 polkit 后，登录界面要点击用户，不输入密码直接回车，锁屏界面的解锁可以实现自动登录，不知道为啥。
+
+6、手工调整，保护你的隐私
+
+避免自动拍照存档，编辑 /lib64/security/howdy/config.ini
+
+    https://wiki.archlinux.org/title/Howdy#Secure_the_installation
+
+    [snapshots]
+    capture_failed = false   <----- 这个酌情放开
+    capture_successful = false
+
+    拍的照片默认会扔到 /lib64/security/howdy/snapshots/ 目录
+
+避免 Interl 显卡 MFX 消息，在 sudo 认证成功后总是打印调试信息：
+
+    如果不使用 Intel 显卡，不需要修改。
+
+    编辑 /etc/profile.d/howdy.sh 和 /etc/profile.d/howdy.csh 文件，查找如下内容
+
+        OPENCV_VIDEOIO_PRIORITY_INTEL_MFX
+
+    取消该语句的注释即可。
+
+改个权限：
+
+    新版的 howdy 不需要调整了
+
+    因为大多数桌面环境内置的锁屏界面（不是指DM的登录界面）并未以root身份运行，而howdy的文件在默认状态下对非root用户不可读，故此时锁屏界面无法启用人脸识别
+
+        # sudo chmod -R 755 /lib/security/howdy/
+        $ chmod o+x /lib64/security/howdy/dlib-data
+
+7、添加一个面部模型：
+
+给当前用户添加一个面部模型，会提示给出标签，即一个用户可以有多个面部模型，多次运行即可
+
+    $ sudo howdy add
+
+    建议多个，比如 noglasses、withglasses
+
+给其它用户添加
+
+    $ sudo howdy -U other_user add
+
+其它命令
+
+    sudo howdy list             查看记录的面部模型列表
+    sudo howdy remove face_ID   删除指定 ID 的面部记录
+    sudo howdy clear            清除所有面部模型记录
+    sudo howdy disable 1        禁用 Howdy 功能
+    sudo howdy disable 0        启用 Howdy 功能
+
+7、验证功能
+
+    测试 sudo
+    $ sudo whoami
+    Identified face as your_user_name
+    root
+
+    $ win + l 测试锁屏
+
+    桌面->设置-> Users，点击 unlock，测试 Polkit 解锁
+
+    $ sudo reboot 测试登录
+
+### 开启指纹登录
+
+Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找，只要你的指纹设备被支持即可正常使用，默认只支持系统登录，可以安装 libpam-fprintd 包以实现 sudo 等鉴权免密码。
+
+    http://www.freedesktop.org/wiki/Software/fprint/fprintd
+
+    https://help.gnome.org/users/gnome-help/stable/session-fingerprint.html.en
+
+    https://wiki.archlinux.org/title/Fingerprint_GUI
+
+    Debian 安装 pam-auth-update 包
+
+        https://wiki.debian.org/SecurityManagement/fingerprint%20authentication
+
+    https://winq.gitee.io/fprint-fedora/
+
+    https://blog.csdn.net/weixin_31762925/article/details/116771481
+
+确认是否支持设备
+
+    $ lsusb
+
+    在网址 https://fprint.freedesktop.org/supported-devices.html 查询
+
+系统上得有软件包 fprintd，没有的话，就安装一个
+
+    # sudo apt install fprintd libpam-fprintd
+    $ sudo dnf install fprintd fprintd-pam
+
+使用以下命令添加指定手指的指纹,一共要求扫描五次
+
+    sudo fprintd-enroll 用户名
+
+    # 命令执行后提示如下与扫描指纹反馈如下
+    Using device /net/reactivated/Fprint/Device/0
+    Enrolling right-index-finger finger.
+    Enroll result: enroll-stage-passed
+    Enroll result: enroll-stage-passed
+    Enroll result: enroll-stage-passed
+    Enroll result: enroll-stage-passed
+    Enroll result: enroll-stage-passed
+    Enroll result: enroll-completed
+
+列出本机指定用户下已注测的指纹信息
+
+    sudo fprintd-list winq
+
+验证您本机刚注册过的指纹信息是否正确
+
+    sudo fprintd-verify winq
+
+    # 命令执行后提示如下信息,表示指纹信息验证通过
+    Using device /net/reactivated/Fprint/Device/0
+    Listing enrolled fingers:
+    - #0: right-index-finger
+    Verify started!
+    Verifying: right-index-finger
+    Verify result: verify-match (done)
+
+安装 libpam-fprintd 包后可以选择给更多的 pam 功能开启指纹验证：
+
+    $ sudo pam-auth-update
+
+    [*] Fingerprint authentication
+
+    [*] Unix authentication
+
+    [*] Register user sessions in the systemd control group hierarchy
+
+    [ ] Create home directory on login
+
+    [*] GNOME Keyring Daemon – Login keyring management
+
+    [*] eCryptfs Key/Mount Management
+
+    [*] Inheritable Capabilities Management
+
+### Linux 下的 “注册表编辑器” --- 使用 GSettings 和 dconf 配置桌面
 
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/profiles
 
