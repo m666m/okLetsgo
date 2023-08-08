@@ -8624,31 +8624,54 @@ done
 
 ```
 
-### 操作时间时区 timedatectl
+### 操作时间 timedatectl/chronyc
 
-很多发行版用 timedatectl 代替了 ntpd 等服务
+    https://www.cnblogs.com/pipci/p/12833228.html
 
-    用timedatectl命令操作时间时区  https://www.cnblogs.com/zhi-leaf/p/6282301.html
+    用 timedatectl 命令操作时间时区  https://www.cnblogs.com/zhi-leaf/p/6282301.html
 
     网络时间的那些事及 ntpq 详解  https://www.cnblogs.com/GYoungBean/p/4225465.html
 
-TODO: 一般都使用 systemd 自带的时间同步服务
+以前 Linux 时间同步基本是使用 ntpdate 和 ntpd 这两个工具实现的，但是这两个工具已经很古老了，大多数系统都不再安装它们
 
-    $ systemctl status systemd-timesyncd.service
-    Warning: The unit file, source configuration file or drop-ins of systemd-timesyncd.service changed on disk. Run 'systemctl daemon-reload' to reload units.
-    ● systemd-timesyncd.service - Network Time Synchronization
-    Loaded: loaded (/lib/systemd/system/systemd-timesyncd.service; enabled; vendor preset: enabled)
-    Drop-In: /usr/lib/systemd/system/systemd-timesyncd.service.d
-            └─disable-with-time-daemon.conf
-    Active: active (running) since Sat 2023-01-21 00:14:58 +08; 6 days ago
-        Docs: man:systemd-timesyncd.service(8)
-    Main PID: 338 (systemd-timesyn)
-    Status: "Synchronized to time server for the first time [2406:da1e:2b8:7e32:e92a:3c4b:358e:2dfb]:123 (2.debian.pool.ntp.org)."
-        Tasks: 2 (limit: 4915)
-    CGroup: /system.slice/systemd-timesyncd.service
-            └─338 /lib/systemd/systemd-timesyncd
+    $ ntpstat
 
-timedatectl 查看时间同步服务器状态
+现在的 Linux 系统一般都使用 systemd 自带的时间同步服务 systemd-timesyncd，如 ，而 Fedora 使用 chrony 作为默认时间同步工具。要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐 chrony。
+
+Fedora 等 Redhat 系使用 chrony
+
+    $ chronyc tracking
+    Reference ID    : 54104921 (tick.ntp.infomaniak.ch)
+    Stratum         : 2
+    Ref time (UTC)  : Tue Aug 08 07:14:06 2023
+    System time     : 0.003024213 seconds fast of NTP time
+    Last offset     : -0.000142650 seconds
+    RMS offset      : 0.009726741 seconds
+    Frequency       : 1.493 ppm slow
+    Residual freq   : -0.003 ppm
+    Skew            : 4.812 ppm
+    Root delay      : 0.192027435 seconds
+    Root dispersion : 0.018389940 seconds
+    Update interval : 1035.0 seconds
+    Leap status     : Normal
+
+Debian，openSUSE 使用 systemd 自带的时间同步服务 systemd-timesyncd
+
+    $ timedatectl status
+                Local time: 二 2023-08-08 15:30:53 +08
+            Universal time: 二 2023-08-08 07:30:53 UTC
+                    RTC time: 二 2023-08-08 15:30:53
+                    Time zone: Asia/Singapore (+08, +0800)
+    System clock synchronized: yes
+                NTP service: active
+            RTC in local TZ: yes
+
+    Warning: The system is configured to read the RTC time in the local time zone.
+            This mode cannot be fully supported. It will create various problems
+            with time zone changes and daylight saving time adjustments. The RTC
+            time is never updated, it relies on external facilities to maintain it.
+            If at all possible, use RTC in UTC by calling
+            'timedatectl set-local-rtc 0'.
 
     $ timedatectl timesync-status
     Server: 2406:da1e:2b8:7e32:e92a:3c4b:358e:2dfb (2.debian.pool.ntp.org)
@@ -8664,6 +8687,19 @@ timedatectl 查看时间同步服务器状态
         Jitter: 2.817ms
     Packet count: 263
         Frequency: -1.446ppm
+
+    $ systemctl status systemd-timesyncd.service
+    ● systemd-timesyncd.service - Network Time Synchronization
+    Loaded: loaded (/lib/systemd/system/systemd-timesyncd.service; enabled; vendor preset: enabled)
+    Drop-In: /usr/lib/systemd/system/systemd-timesyncd.service.d
+            └─disable-with-time-daemon.conf
+    Active: active (running) since Sat 2023-01-21 00:14:58 +08; 6 days ago
+        Docs: man:systemd-timesyncd.service(8)
+    Main PID: 338 (systemd-timesyn)
+    Status: "Synchronized to time server for the first time [2406:da1e:2b8:7e32:e92a:3c4b:358e:2dfb]:123 (2.debian.pool.ntp.org)."
+        Tasks: 2 (limit: 4915)
+    CGroup: /system.slice/systemd-timesyncd.service
+            └─338 /lib/systemd/systemd-timesyncd
 
 ### 设置替换命令 update-alternatives
 
