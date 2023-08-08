@@ -10701,6 +10701,8 @@ Fedora 下安装 howdy
 
 默认优先使用人脸识别进行验证，若人脸识别验证失败，会回落到输入密码进行验证。
 
+pam 控制文件说明参见章节 [PAM --- Linux 使用的安全验证方式](init_a_server think)。
+
 解锁 sudo，编辑 /etc/pam.d/sudo 文件，在排除注释语句后的首行加入如下内容
 
     #%PAM-1.0
@@ -10717,29 +10719,9 @@ Fedora 下安装 howdy
 
 在 sudo 和登录界面，会自动启动人脸识别，如果人脸识别失败，会回落到使用密码验证。
 
-在锁屏界面中，如果没有配置 polkit，则人脸识别不会像 Windows Hello 那样自动启动，不需要输入密码，直接点击登录按钮或敲击回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
+在锁屏界面中，人脸识别不会像 Windows Hello 那样自动启动，但是不需要输入密码，只需点击登录按钮或按回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
 
-4、配置 polkit
-
-polkit-1 这样的 GUI 授权验证工具会在使用人脸识别时同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，如果人脸识别失败，会回落到使用密码验证。
-
-手工添加 polkit 策略，编辑 /etc/pam.d/polkit-1 文件
-
-    https://github.com/boltgolt/howdy/issues/630
-
-```conf
-#%PAM-1.0
-
-auth       sufficient   pam_python.so /lib64/security/howdy/pam.py  <--- 添加在首行
-auth       include      system-auth
-account    include      system-auth
-password   include      system-auth
-session    include      system-auth
-```
-
-如果不开启 polkit，登录后不会解锁 gnome keyring ：重启计算机登录后会提示输入密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），如果使用 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
-
-5、配置 SELinux，编辑一个 howdy.te 文件
+4、配置 SELinux，编辑一个 howdy.te 文件
 
     https://github.com/boltgolt/howdy/issues/711#issuecomment-1306559496
 
@@ -10769,6 +10751,28 @@ allow xdm_t v4l_device_t:chr_file map;
     $ checkmodule -M -m -o howdy.mod howdy.te
     $ semodule_package -o howdy.pp -m howdy.mod
     $ sudo semodule -i howdy.pp
+
+5、配置 polkit
+
+gnome 的密钥环管理、设置系统参数的某些选项的解锁都调用了 polkit-1 这样的 GUI 授权验证工具，会在使用人脸识别时同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，如果人脸识别失败，会回落到使用密码验证。
+
+    如果不开启 polkit，登录后不会解锁 gnome keyring ：重启计算机登录后会提示输入密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），如果使用 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
+
+手工添加 polkit 策略，编辑 /etc/pam.d/polkit-1 文件
+
+    https://github.com/boltgolt/howdy/issues/630
+
+```conf
+#%PAM-1.0
+
+auth       sufficient   pam_python.so /lib64/security/howdy/pam.py  <--- 添加在首行
+auth       include      system-auth
+account    include      system-auth
+password   include      system-auth
+session    include      system-auth
+```
+
+如果配置了 polkit，登录界面要点击用户，不输入密码直接回车，锁屏界面的解锁会自动登录，不知道为啥。
 
 6、手工调整，保护你的隐私
 
