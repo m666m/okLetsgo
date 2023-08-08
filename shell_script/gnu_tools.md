@@ -10601,12 +10601,6 @@ keyring 的桌面应用程序，用户使用桌面软件进行管理即可：
 
 ### Linux 下的 “Windows Hello” 人脸识别认证 --- Howdy
 
-目前发现的问题：
-
-自动解锁 gnome keyring 有问题，重启计算机登录后会提示解锁密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），解决办法：
-
-    手工解锁：安装 gnome passwords and keys (seahorse)，手工解锁当前的密钥环即可
-
 提示：
 
     人脸识别和指纹识别的安全性不如密码、密钥、yubi-key 等认证方式，更容易被造假，建议只用于个人电脑的宽松使用场景
@@ -10675,6 +10669,8 @@ Fedora 下安装 howdy
 
         $ v4l2-ctl -d /dev/video0 --list-formats-ext
 
+        找一个合适的分辨率填写到配置文件中的 frame_width 和 frame_height 字段即可。
+
 2、配置摄像头
 
     开启红外发射功能可以提高识别的准确度与安全性，而且红外发射式摄像头支持全黑暗状态下的人脸识别
@@ -10717,7 +10713,11 @@ Fedora 下安装 howdy
 
     锁屏界面中，人脸识别都并非是像 Windows Hello™ 中那样自动启动，若需要使用人脸识别登录，无需输入密码，直接点击登录按钮或敲击回车键即可。
 
-polkit-1 这样的 GUI 授权验证工具会在使用人脸识别时同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，若人脸识别失败，同样可以使用密码验证
+polkit-1 这样的 GUI 授权验证工具会在使用人脸识别时同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，若人脸识别失败，同样可以使用密码验证。
+
+目前自动解锁 gnome keyring 有问题：重启计算机登录后会提示解锁密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），解决办法：
+
+    安装 gnome passwords and keys (seahorse)，每次登录系统后手工解锁当前的密钥环
 
 4、手工调整，保护你的隐私
 
@@ -11271,7 +11271,7 @@ xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，�
 
 在 Windows 使用远程桌面 mstsc 登录运行 xrdp 的 Fedora 后，Gnomes “软件” 无法搜索 flatpak 软件包，设置里看不到 flathub 存储库，只能本地登录才能看到，但是用命令 `flatpak search` 可以搜到，而且也不影响执行 flatpak 程序
 
-这是因为远程桌面用户的权限被限制，需要修改 polkit，Polkit 知识参见章节 [sudo 的替代方案 Polkit（PolicyKit）]。
+这是因为远程桌面用户的权限被限制，需要修改 polkit，Polkit 知识参见章节 [sudo 的替代方案 Polkit（PolicyKit）](init_a_server think)。
 
 以下是开发者给出的脚本化解决方案
 
