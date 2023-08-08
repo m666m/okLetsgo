@@ -221,19 +221,20 @@ fi
 # Linux bash / Windows git bash(mintty)
 # 多会话复用 ssh 密钥代理
 
-if $(pgrep gnome-keyring >/dev/null 2>&1) ;then
-
+# GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
+if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
     # if [[ $(uname) == 'Linux' ]]; then
 
-    # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
     # 如果有时候没有启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh 会导致无法读取ssh代理的密钥
     # 干脆手工指定
     # https://blog.csdn.net/asdfgh0077/article/details/104121479
-    eval `gnome-keyring-daemon --start >/dev/null 2>&1`  # 不会多次运行自己
+    $(pgrep gnome-keyring >/dev/null 2>&1) || eval `gnome-keyring-daemon --start >/dev/null 2>&1`  # 不会多次运行自己
+
     export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
     export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
-elif  [[ "$OSTYPE" =~ msys ]]; then
+# Windows git bash 环境
+elif [[ "$OSTYPE" =~ msys ]]; then
 
     # Windows git bash(mintty)
     # 多会话复用 ssh-pageant，用它连接 putty 的 pagent.exe，稍带运行gpg钥匙圈更新
@@ -261,6 +262,7 @@ elif  [[ "$OSTYPE" =~ msys ]]; then
     eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
     ssh-add -l
 
+# 默认Linux 命令行环境
 else
 
     # Linux bash / Windows git bash(mintty)
