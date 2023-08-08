@@ -8626,8 +8626,6 @@ done
 
 ### 操作时间 timedatectl/chronyc
 
-    https://www.cnblogs.com/pipci/p/12833228.html
-
     用 timedatectl 命令操作时间时区  https://www.cnblogs.com/zhi-leaf/p/6282301.html
 
     网络时间的那些事及 ntpq 详解  https://www.cnblogs.com/GYoungBean/p/4225465.html
@@ -8636,10 +8634,15 @@ done
 
     $ ntpstat
 
-现在的 Linux 系统一般都使用 systemd 自带的时间同步服务 systemd-timesyncd，如 ，而 Fedora 使用 chrony 作为默认时间同步工具。要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐 chrony。
+现在的 Linux 系统一般都使用 systemd 自带的时间同步服务 systemd-timesyncd，而 Fedora 使用 chrony 作为默认时间同步工具。要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐 chrony。
 
-Fedora 等 Redhat 系使用 chrony
+> Fedora 等 Redhat 系使用 chrony
 
+        https://www.cnblogs.com/pipci/p/12871993.html
+
+        https://wiki.archlinux.org/title/Chrony
+
+    查看时间同步的状态
     $ chronyc tracking
     Reference ID    : 54104921 (tick.ntp.infomaniak.ch)
     Stratum         : 2
@@ -8655,24 +8658,21 @@ Fedora 等 Redhat 系使用 chrony
     Update interval : 1035.0 seconds
     Leap status     : Normal
 
-Debian，openSUSE 使用 systemd 自带的时间同步服务 systemd-timesyncd
+chronyd是一个在系统后台运行的守护进程。主要用于调整内核中运行的系统时间和时间服务器同步，他根据网络上其他时间服务器时间来测量本机时间的偏移量从而调整系统时钟。对于孤立系统，用户可以手动周期性的输入正确时间（通过chronyc）。在这两种情况下，chronyd决定计算机快慢的比例，并加以纠正。chronyd实现了NTP协议并且可以作为服务器或客户端。
 
-    $ timedatectl status
-                Local time: 二 2023-08-08 15:30:53 +08
-            Universal time: 二 2023-08-08 07:30:53 UTC
-                    RTC time: 二 2023-08-08 15:30:53
-                    Time zone: Asia/Singapore (+08, +0800)
-    System clock synchronized: yes
-                NTP service: active
-            RTC in local TZ: yes
+chronyc是用来监控chronyd性能和配置其参数的用户界面。他可以控制本机及其他计算机上运行的chronyd进程。
 
-    Warning: The system is configured to read the RTC time in the local time zone.
-            This mode cannot be fully supported. It will create various problems
-            with time zone changes and daylight saving time adjustments. The RTC
-            time is never updated, it relies on external facilities to maintain it.
-            If at all possible, use RTC in UTC by calling
-            'timedatectl set-local-rtc 0'.
+    服务unit文件： /usr/lib/systemd/system/chronyd.service
+    监听端口： 323/udp，123/udp
+    配置文件： /etc/chrony.conf
 
+> Debian，openSUSE 使用 systemd 自带的时间同步服务 systemd-timesyncd
+
+        https://www.cnblogs.com/pipci/p/12833228.html
+
+        https://wiki.archlinux.org/title/Systemd-timesyncd
+
+    查看时间同步的状态
     $ timedatectl timesync-status
     Server: 2406:da1e:2b8:7e32:e92a:3c4b:358e:2dfb (2.debian.pool.ntp.org)
     Poll interval: 34min 8s (min: 32s; max 34min 8s)
@@ -8688,6 +8688,22 @@ Debian，openSUSE 使用 systemd 自带的时间同步服务 systemd-timesyncd
     Packet count: 263
         Frequency: -1.446ppm
 
+    $ timedatectl status
+                Local time: 二 2023-08-08 15:30:53 +08
+            Universal time: 二 2023-08-08 07:30:53 UTC
+                    RTC time: 二 2023-08-08 15:30:53
+                    Time zone: Asia/Singapore (+08, +0800)
+    System clock synchronized: yes   <--------  时间同步正常
+                NTP service: active   <-------- 使用 chrony 服务也可以被这个命令识别到
+            RTC in local TZ: yes
+
+    Warning: The system is configured to read the RTC time in the local time zone.
+            This mode cannot be fully supported. It will create various problems
+            with time zone changes and daylight saving time adjustments. The RTC
+            time is never updated, it relies on external facilities to maintain it.
+            If at all possible, use RTC in UTC by calling
+            'timedatectl set-local-rtc 0'.
+
     $ systemctl status systemd-timesyncd.service
     ● systemd-timesyncd.service - Network Time Synchronization
     Loaded: loaded (/lib/systemd/system/systemd-timesyncd.service; enabled; vendor preset: enabled)
@@ -8700,6 +8716,8 @@ Debian，openSUSE 使用 systemd 自带的时间同步服务 systemd-timesyncd
         Tasks: 2 (limit: 4915)
     CGroup: /system.slice/systemd-timesyncd.service
             └─338 /lib/systemd/systemd-timesyncd
+
+systemd-timesyncd 只专注于从远程服务器查询然后同步到本地时钟。在/etc/systemd/timesyncd.conf 中配置你的（时间）服务器。大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd只会更改系统时间不会更改硬件时间，可以通过hwclock -w命令将系统时间同步到硬件时间。
 
 ### 设置替换命令 update-alternatives
 
