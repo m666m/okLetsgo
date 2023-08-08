@@ -221,14 +221,15 @@ fi
 # Linux bash / Windows git bash(mintty)
 # 多会话复用 ssh 密钥代理
 
-# GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
+# GNOME 桌面环境下的终端需要给 ssh-agent 设置变量指向 gnome-keyring-daemon
 if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
     # if [[ $(uname) == 'Linux' ]]; then
 
+    # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
     # 如果有时候没有启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh 会导致无法读取ssh代理的密钥
     # 干脆手工指定
     # https://blog.csdn.net/asdfgh0077/article/details/104121479
-    $(pgrep gnome-keyring >/dev/null 2>&1) || eval `gnome-keyring-daemon --start >/dev/null 2>&1`  # 不会多次运行自己
+    $(pgrep gnome-keyring >/dev/null 2>&1) || eval `gnome-keyring-daemon --start >/dev/null 2>&1`
 
     export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
     export SSH_AGENT_PID="$(pgrep gnome-keyring)"
