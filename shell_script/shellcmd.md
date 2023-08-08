@@ -387,13 +387,6 @@ rm 之前先 ls 试试，所谓 dry-run
 
 如果你试过不小心cat了某个二进制文件，很可能整个终端模拟器就傻掉了，可能不会换行，没法回显，大堆乱码之类的，这时候敲入 reset 回车，不管命令有没有显示，就能回复正常了。
 
-映射一个内存目录
-
-    mount -t tmpfs -o size=1024m tmpfs /mnt/ram
-
-    多数发行版都会在fstab内预留了一个内存目录，挂载在 /dev/shm，直接使用即可
-    最常见的用途是用内存空间来放Firefox的配置，可以让慢吞吞的FF快很多
-
 在一个子shell中运行一个命令
 
     (cd /tmp && ls)
@@ -419,6 +412,15 @@ rm 之前先 ls 试试，所谓 dry-run
     ssh user@host 'cat /path/to/remotefile' |diff /path/to/localfile -
 
 diff 通常的用法是从参数读入两个文件，而命令里面的-则是指从stdin读入了
+
+查找当前系统是否有某个命令，支持 alias、shell 函数等
+
+    which ls
+
+    command -v ls
+
+    type ls
+
 
 ## bash 内建命令
 
@@ -604,8 +606,8 @@ Linux 的目录，有些个是固定用途的，有些是文件系统挂载在�
     Linux 里的设备 https://www.debian.org/releases/stable/amd64/apds01.zh-cn.html
     Linux 的许多特殊文件可以在 /dev 目录下找到。这些文件称为设备文件，其行为与普通文件不同。大多数设备文件的类型是块设备和字符设备。这些文件是访问硬件的驱动程序(Linux 内核的一部分)的接口。另外一些，不那么常见的类型，是命名管道(pipe)。下表中列出了最重要的设备文件。
 
-    sda    第一块硬盘
-    sdb    第一块硬盘
+    sda    主板第一个硬盘接口上的硬盘
+    sdb    主板第二个硬盘接口上的硬盘
     sda1    第一块硬盘上的第一个分区
     sdb7    第二块硬盘上的第七个分区
     sr0    第一个 CD-ROM
@@ -618,6 +620,8 @@ Linux 的目录，有些个是固定用途的，有些是文件系统挂载在�
     mouse    指向鼠标设备文件的符号链接
     null    所有写入该设备的东西都会消失
     zero    可以从该设备永无休止地读出零
+
+    /dev/shm 现在的大多数发行版都会在启动后生成一个内存目录，使用虚拟内存文件系统 tmpfs，挂载在 /dev/shm，用户可以直接使用。tmpfs 在内存不足时会使用 swap 空间，如果安全要求高书记不允许写入持久化存储，不要使用这个目录 和 tmpfs 的分区，使用 ramfs 代替它。详见章节 [映射内存目录](init_a_server think)。
 
 /sys：这个目录是一个虚拟文件系统，主要记录与内核相关的信息，与 /proc 目录十分相似
 
