@@ -10713,41 +10713,28 @@ Fedora 下安装 howdy
 
     锁屏界面中，人脸识别都并非是像 Windows Hello™ 中那样自动启动，若需要使用人脸识别登录，无需输入密码，直接点击登录按钮或敲击回车键即可。
 
+4、配置 polkit
+
 polkit-1 这样的 GUI 授权验证工具会在使用人脸识别时同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，若人脸识别失败，同样可以使用密码验证。
 
 目前自动解锁 gnome keyring 有问题：重启计算机登录后会提示解锁密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），解决办法：
 
     安装 gnome passwords and keys (seahorse)，每次登录系统后手工解锁当前的密钥环
 
-4、手工调整，保护你的隐私
+或手工添加 polkit 策略，编辑 /etc/pam.d/polkit-1 文件
 
-避免自动拍照存档，编辑 /lib64/security/howdy/config.ini
+    # https://github.com/boltgolt/howdy/issues/630
 
-    https://wiki.archlinux.org/title/Howdy#Secure_the_installation
+```conf
+#%PAM-1.0
 
-    [snapshots]
-    capture_failed = false   <----- 这个酌情放开
-    capture_successful = false
+auth       sufficient   pam_python.so /lib64/security/howdy/pam.py  <--- 添加在首行
+auth       include      system-auth
+account    include      system-auth
+password   include      system-auth
+session    include      system-auth
 
-    拍的照片默认会扔到 /lib64/security/howdy/snapshots/ 目录
-
-避免 Interl 显卡 MFX 消息，在 sudo 认证成功后总是打印调试信息：
-
-    如果不使用 Intel 显卡，不需要修改。
-
-    编辑 /etc/profile.d/howdy.sh 和 /etc/profile.d/howdy.csh 文件，查找如下内容
-
-        OPENCV_VIDEOIO_PRIORITY_INTEL_MFX
-
-    取消该语句的注释即可。
-
-下面这个新版的 howdy 不需要调整了
-
-    改个权限：
-
-        因为大多数桌面环境内置的锁屏界面（不是指DM的登录界面）并未以root身份运行，而howdy的文件在默认状态下对非root用户不可读，故此时锁屏界面无法启用人脸识别
-
-        chmod o+x /lib64/security/howdy/dlib-data
+```
 
 5、配置 SELinux，编辑一个 howdy.te 文件
 
@@ -10780,7 +10767,38 @@ allow xdm_t v4l_device_t:chr_file map;
     $ semodule_package -o howdy.pp -m howdy.mod
     $ sudo semodule -i howdy.pp
 
-6、添加一个面部模型：
+6、手工调整，保护你的隐私
+
+避免自动拍照存档，编辑 /lib64/security/howdy/config.ini
+
+    https://wiki.archlinux.org/title/Howdy#Secure_the_installation
+
+    [snapshots]
+    capture_failed = false   <----- 这个酌情放开
+    capture_successful = false
+
+    拍的照片默认会扔到 /lib64/security/howdy/snapshots/ 目录
+
+避免 Interl 显卡 MFX 消息，在 sudo 认证成功后总是打印调试信息：
+
+    如果不使用 Intel 显卡，不需要修改。
+
+    编辑 /etc/profile.d/howdy.sh 和 /etc/profile.d/howdy.csh 文件，查找如下内容
+
+        OPENCV_VIDEOIO_PRIORITY_INTEL_MFX
+
+    取消该语句的注释即可。
+
+改个权限：
+
+    新版的 howdy 不需要调整了
+
+    因为大多数桌面环境内置的锁屏界面（不是指DM的登录界面）并未以root身份运行，而howdy的文件在默认状态下对非root用户不可读，故此时锁屏界面无法启用人脸识别
+
+        # sudo chmod -R 755 /lib/security/howdy/
+        $ chmod o+x /lib64/security/howdy/dlib-data
+
+7、添加一个面部模型：
 
 给当前用户添加，会提示给个标签，即一个用户可以有多个面部模型
 
@@ -10807,6 +10825,8 @@ allow xdm_t v4l_device_t:chr_file map;
     root
 
     $ win + l 测试锁屏
+
+    桌面->设置-> Users，点击 unlock，测试解锁 Polkit
 
     $ sudo reboot 测试登录
 
