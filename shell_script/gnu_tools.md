@@ -10801,11 +10801,11 @@ allow xdm_t v4l_device_t:chr_file map;
 
 7、添加一个面部模型：
 
-给当前用户添加，会提示给个标签，即一个用户可以有多个面部模型
+给当前用户添加一个面部模型，会提示给出标签，即一个用户可以有多个面部模型，多次运行即可
 
     $ sudo howdy add
 
-    建议多个，比如不带眼镜、带眼镜
+    建议多个，比如 noglasses、withglasses
 
 给其它用户添加
 
@@ -10823,6 +10823,7 @@ allow xdm_t v4l_device_t:chr_file map;
 
     测试 sudo
     $ sudo whoami
+    Identified face as your_user_name
     root
 
     $ win + l 测试锁屏
