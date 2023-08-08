@@ -12028,6 +12028,24 @@ SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候�
 
     sudo sysctl -p
 
+### Linux 的注册表编辑器 --- 使用 GSettings 和 dconf 配置桌面
+
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/profiles
+
+GSettings 实际上是一套可使用多个 storage backends 的 API ，其文件是 xml 格式的，可以理解为 Linux 桌面环境的注册表数据库文件。
+
+GSettings 是应用设置的高级 API，是 dconf 的前端。
+
+    gsettings 命令行工具用于查看和更改用户设置，把它理解为命令行版的注册表编辑器
+
+dconf 是一个基于键的配置系统，用于管理用户设置。它是 Red Hat Enterprise Linux 7 中使用的 GSettings 的后端。dconf 管理一系列不同的设置，包括 GDM、应用程序和代理设置，可以理解为 Linux 桌面环境的注册表数据库。
+
+    dconf 命令行工具用于从/向 dconf 数据库读写单个值或整个目录，把它理解为命令行版的注册表编辑器的底层工具。
+
+dconf 是 dconf 数据库的命令行管理工具，详细用法请查看 man 手册。
+
+我们可以使用图形化工具 dconf editor 修改系统的配置参数，把它理解为图形版的注册表编辑器。
+
 ## 使用 GRUB 管理操作系统启动引导
 
 基于 BIOS 的系统引导
