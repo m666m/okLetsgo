@@ -10898,7 +10898,7 @@ session    include      system-auth
 
 ### 开启指纹登录
 
-Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找，只要你的指纹设备被支持即可正常使用，默认只支持系统登录。可以安装 libpam-fprintd 包以实现 sudo 等鉴权免密码。
+Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找，只要你的指纹设备被支持即可正常使用，默认只支持系统登录，可以安装 libpam-fprintd 包以实现 sudo 等鉴权免密码。
 
     http://www.freedesktop.org/wiki/Software/fprint/fprintd
 
@@ -10920,12 +10920,12 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
 
     在网址 https://fprint.freedesktop.org/supported-devices.html 查询
 
-系统上得有软件包 fprintd,没有的话，就安装一个
+系统上得有软件包 fprintd，没有的话，就安装一个
 
     # sudo apt install fprintd libpam-fprintd
     $ sudo dnf install fprintd fprintd-pam
 
-使用以下命令添加指定手指 指纹,一共要求扫描五次
+使用以下命令添加指定手指的指纹,一共要求扫描五次
 
     sudo fprintd-enroll 用户名
 
@@ -10955,7 +10955,7 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
     Verifying: right-index-finger
     Verify result: verify-match (done)
 
-安装 libpam-fprintd 包后会更多的功能开启指纹验证：
+安装 libpam-fprintd 包后可以选择给更多的 pam 功能开启指纹验证：
 
     $ sudo pam-auth-update
 
