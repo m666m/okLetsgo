@@ -10701,9 +10701,9 @@ Fedora 下安装 howdy
 
     普通摄像头是 /dev/video0 ，可以打开红外传感器的摄像头是 /dev/video2
 
-可以用 VLC 进行确认
+用 VLC 确认所选摄像头设备工作正常
 
-    vlc 菜单中的 媒体 - 打开捕获设备 - 高级选项（advance options），选择视频捕获设备 /dev/video0， 确定 - 播放 之后显示的摄像头捕捉到的画面
+    vlc 菜单中的 媒体 - 打开捕获设备 - 高级选项（advance options），选择视频捕获设备 /dev/video0， 确定 - 播放 之后显示的摄像头捕捉到的画面。如果是带红外传感器的摄像头还可以选 /dev/video2。
 
 可选安装：摄像头管理软件包 v4l-utils
 
@@ -10727,7 +10727,7 @@ Fedora 下安装 howdy
             /dev/media0
             /dev/media1
 
-    如果有的摄像头不工作，查看当前摄像头支持的像素尺寸，然后在 howdy 的配置文件里设置合适的分辨率
+    后面如果运行 howdy 出现摄像头不工作，可以查看当前摄像头支持的像素尺寸，然后在 howdy 的配置文件里设置合适的分辨率
 
         $ v4l2-ctl -d /dev/video0 --list-formats-ext
 
@@ -10749,11 +10749,11 @@ Fedora 下安装 howdy
 
     $ sudo howdy test
 
-    会打开一个窗口显示摄像头的内容，如果摄像头开启了红外发射器其指示灯会闪烁，在命令行窗口按 ctrl+c 终止
+    会打开一个窗口显示摄像头的内容，如果摄像头开启了红外发射器其指示灯会闪烁，停止运行可在命令行窗口按 ctrl+c
 
 3、配置 PAM
 
-默认优先使用人脸识别进行验证，若人脸识别验证失败，会回落到输入密码进行验证。
+配置为优先使用人脸识别进行验证，若人脸识别验证失败，会回落到输入密码进行验证。
 
 pam 控制文件说明参见章节 [PAM --- Linux 使用的安全验证方式](init_a_server think)。
 
@@ -10775,9 +10775,11 @@ pam 控制文件说明参见章节 [PAM --- Linux 使用的安全验证方式](i
 
 在锁屏界面中，人脸识别不会像 Windows Hello 那样自动启动，但是不需要输入密码，只需点击登录按钮或按回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
 
-4、配置 SELinux，编辑一个 howdy.te 文件
+4、对 Redhat 系等开启 SELinux 的操作系统如 Fedora，需要配置 SELinux
 
     https://github.com/boltgolt/howdy/issues/711#issuecomment-1306559496
+
+编辑一个 howdy.te 文件
 
 ```conf
 module howdy 1.0;
@@ -10808,9 +10810,9 @@ allow xdm_t v4l_device_t:chr_file map;
 
 5、配置 polkit
 
-gnome 的密钥环管理、设置系统参数的某些选项的解锁都调用了 polkit-1 这样的 GUI 授权验证工具，会在使用人脸识别时同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，如果人脸识别失败，会回落到使用密码验证。
+gnome 的密钥环管理、设置系统参数的某些选项的解锁都调用了 polkit-1 这样的 GUI 授权验证工具。
 
-    如果不开启 polkit，登录后不会解锁 gnome keyring ：重启计算机登录后会提示输入密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），如果使用 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
+如果不配置 polkit，登录后不会解锁 gnome keyring ：重启计算机登录后会提示输入密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），如果使用 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
 
 手工添加 polkit 策略，编辑 /etc/pam.d/polkit-1 文件
 
@@ -10826,7 +10828,9 @@ password   include      system-auth
 session    include      system-auth
 ```
 
-如果配置了 polkit，登录界面要点击用户，不输入密码直接回车，锁屏界面的解锁会自动登录，不知道为啥。
+配置后，会在调用到 polkit 的场景下使用人脸识别。如果同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，如果人脸识别失败，才会回落到使用密码验证。
+
+我发现配置了 polkit 后，登录界面要点击用户，不输入密码直接回车，锁屏界面的解锁可以实现自动登录，不知道为啥。
 
 6、手工调整，保护你的隐私
 
