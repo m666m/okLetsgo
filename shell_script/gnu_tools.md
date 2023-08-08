@@ -10632,21 +10632,28 @@ Fedora 下安装 howdy
 
 1、确定摄像头设备
 
-    普通摄像头是 /dev/video0 ，打开红外传感器的摄像头是 /dev/video2
+一般都是 usb 设备，系统可以自动识别
+
+    $ lsusb
+    Bus 001 Device 011: ID 04f2:b612 Chicony Electronics Co., Ltd USB2.0 FHD UVC WebCam
+
+然后查看系统是否识别出摄像头设备
 
 列出当前所有的摄像头设备，即使只有一个摄像头，也会列出多个设备，其实是对应了不同的功能，我们主要关注 video0 和 video2
 
     $ ls /dev/video*
 
+    普通摄像头是 /dev/video0 ，可以打开红外传感器的摄像头是 /dev/video2
+
 可以用 VLC 进行确认
 
-    vlc 菜单中的 媒体 - 打开捕获设备 - 高级选项（advance options），选择视频捕获设备 /dev/video0， 确定 - 播放 之后确实显示的摄像头的画面，因此确定了摄像头标识就是 /dev/video0
+    vlc 菜单中的 媒体 - 打开捕获设备 - 高级选项（advance options），选择视频捕获设备 /dev/video0， 确定 - 播放 之后显示的摄像头捕捉到的画面
 
 可选安装：摄像头管理软件包 v4l-utils
 
     $ sudo dnf install v4l-utils
 
-    列出当前所有的摄像头设备
+    列出当前所有的摄像头设备，对普通摄像头我们使用 video0
 
         $ v4l2-ctl --list-devices
         UVC Camera (046d:0825) (usb-0000:00:14.0-9):
@@ -10654,8 +10661,7 @@ Fedora 下安装 howdy
             /dev/video1
             /dev/media0
 
-    支持红外发射器的摄像头的设备更多
-
+        支持红外发射器的摄像头的设备更多，我们使用 video2
         $ v4l2-ctl --list-devices
         USB2.0 FHD UVC WebCam: USB2.0 F (usb-0000:00:14.0-5.4):
             /dev/video0
@@ -10665,7 +10671,7 @@ Fedora 下安装 howdy
             /dev/media0
             /dev/media1
 
-    查看当前摄像头支持的像素尺寸，如果有的摄像头不工作，尝试在 howdy config 里设置下合适的分辨率
+    如果有的摄像头不工作，查看当前摄像头支持的像素尺寸，然后在 howdy 的配置文件里设置合适的分辨率
 
         $ v4l2-ctl -d /dev/video0 --list-formats-ext
 
@@ -10701,17 +10707,15 @@ Fedora 下安装 howdy
     account    include      system-auth
     ...
 
-解锁登录密码，编辑 /etc/pam.d/gdm-password
+解锁登录密码和锁屏密码，编辑 /etc/pam.d/gdm-password
 
     auth     [success=done ignore=ignore default=bad] pam_selinux_permit.so
     auth        sufficient    pam_python.so /lib64/security/howdy/pam.py  <-- 添加在这两行之间
     auth        substack      password-auth
 
-解锁锁屏密码
+在登录界面，会自动启动人脸识别。
 
-    ...
-
-    锁屏界面中，人脸识别都并非是像 Windows Hello™ 中那样自动启动，若需要使用人脸识别登录，无需输入密码，直接点击登录按钮或敲击回车键即可。
+在锁屏界面中，人脸识别都并非是像 Windows Hello™ 中那样自动启动，若需要使用人脸识别登录，无需输入密码，直接点击登录按钮或敲击回车键即可。
 
 4、配置 polkit
 
