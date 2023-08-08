@@ -262,7 +262,7 @@ elif [[ "$OSTYPE" =~ msys ]]; then
     eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
     ssh-add -l
 
-# 默认Linux 命令行环境
+# 默认 tty 命令行环境
 else
 
     # Linux bash / Windows git bash(mintty)
