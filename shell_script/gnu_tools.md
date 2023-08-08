@@ -10713,21 +10713,17 @@ Fedora 下安装 howdy
     auth        sufficient    pam_python.so /lib64/security/howdy/pam.py  <-- 添加在这两行之间
     auth        substack      password-auth
 
-在登录界面，会自动启动人脸识别。
+在 sudo 和登录界面，会自动启动人脸识别，若人脸识别失败，同样可以使用密码验证。
 
-在锁屏界面中，人脸识别都并非是像 Windows Hello™ 中那样自动启动，若需要使用人脸识别登录，无需输入密码，直接点击登录按钮或敲击回车键即可。
+在锁屏界面中，人脸识别不会像 Windows Hello 那样自动启动，直接点击登录按钮或敲击回车键会优先调用人脸识别，不需要输入密码。
 
 4、配置 polkit
 
 polkit-1 这样的 GUI 授权验证工具会在使用人脸识别时同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，若人脸识别失败，同样可以使用密码验证。
 
-目前自动解锁 gnome keyring 有问题：重启计算机登录后会提示解锁密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），解决办法：
+手工添加 polkit 策略，编辑 /etc/pam.d/polkit-1 文件
 
-    安装 gnome passwords and keys (seahorse)，每次登录系统后手工解锁当前的密钥环
-
-或手工添加 polkit 策略，编辑 /etc/pam.d/polkit-1 文件
-
-    # https://github.com/boltgolt/howdy/issues/630
+    https://github.com/boltgolt/howdy/issues/630
 
 ```conf
 #%PAM-1.0
@@ -10737,8 +10733,9 @@ auth       include      system-auth
 account    include      system-auth
 password   include      system-auth
 session    include      system-auth
-
 ```
+
+如果不开启 polkit，登录后不会解锁 gnome keyring ：重启计算机登录后会提示输入密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），如果使用 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
 
 5、配置 SELinux，编辑一个 howdy.te 文件
 
