@@ -13423,8 +13423,8 @@ pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式
     如果是你本人本机使用，可以对 su 文件做相同的修改，这样执行 su 命令也可以使用面部识别了（需要在 howdy 给 root 用户添加面部模型，见下面）
 
         #%PAM-1.0
-        auth		sufficient	pam_rootok.so
-        auth       sufficient   pam_python.so /lib64/security/howdy/pam.py <-- 添加为第二行
+        auth    sufficient  pam_rootok.so
+        auth    sufficient  pam_python.so /lib64/security/howdy/pam.py <-- 添加为第二行
         ...
 
 解锁登录密码和锁屏密码，编辑 /etc/pam.d/gdm-password
