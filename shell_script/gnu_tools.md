@@ -8580,14 +8580,6 @@ stress-ng 压测 cpu 的著名工具
         $ sudo apt install s-tui -y
         $ s-tui
 
-lm-sensors 查看计算机传感器的著名工具
-
-    https://wiki.archlinux.org/title/Fan_speed_control
-
-    $ sudo apt install lm-sensors
-
-    安装后运行 `sensor-detect` 来检测传感器
-
 ```shell
 # 简单的脚本用于 cpu 加热，入参是cpu的核心数
 #!/bin/bash
@@ -8623,6 +8615,18 @@ for i in "${pid_array[@]}"; do
 done
 
 ```
+
+### 查看计算机的传感器如温度、风扇
+
+lm-sensors 查看计算机传感器的著名工具
+
+    https://wiki.archlinux.org/title/Fan_speed_control
+
+    $ sudo apt install lm-sensors
+
+安装后运行 `sensors-detect` 来检测传感器。
+
+如果使用桌面环境，还可安装图形化工具 xsensors 来展现这些传感器。
 
 ### 操作时间 timedatectl/chronyc
 
@@ -11737,28 +11741,28 @@ Fedora 下安装 howdy
     $ sudo dnf copr enable principis/howdy
     $ sudo dnf --refresh install howdy
 
-    可选：如果 Linux 不支持你的红外发射器，在这里安装驱动
+    可选：如果 Linux 内核不支持你的红外发射器，在这里查找安装驱动
 
         https://github.com/EmixamPP/linux-enable-ir-emitter
 
 1、确定摄像头设备
 
-一般都是 usb 设备，系统可以自动识别
+摄像头一般都是 usb 设备，系统会自动识别
 
     $ lsusb
     Bus 001 Device 011: ID 04f2:b612 Chicony Electronics Co., Ltd USB2.0 FHD UVC WebCam
 
-然后查看系统是否识别出摄像头设备
+然后查看系统是否识别出摄像头设备：
 
 列出当前所有的摄像头设备，即使只有一个摄像头，也会列出多个设备，其实是对应了不同的功能，我们主要关注 video0 和 video2
 
     $ ls /dev/video*
 
-    普通摄像头是 /dev/video0 ，可以打开红外传感器的摄像头是 /dev/video2
+一般来说，普通摄像头是 /dev/video0 ，可以打开红外发射器的摄像头是 /dev/video2。如果你的摄像头是带红外发射器的，操作 video0 会只使用普通摄像头，操作 video2 才会自动开启红外发射器。
 
 用 VLC 确认所选摄像头设备工作正常
 
-    vlc 菜单中的 媒体 - 打开捕获设备 - 高级选项（advance options），选择视频捕获设备 /dev/video0， 确定 - 播放 之后显示的摄像头捕捉到的画面。如果是带红外传感器的摄像头还可以选 /dev/video2。
+    vlc 菜单中的 媒体 - 打开捕获设备 - 高级选项（advance options），选择视频捕获设备 /dev/video0， 确定 - 播放 之后显示的摄像头捕捉到的画面。如果是带红外发射器的摄像头还可以选 /dev/video2 进行测试。
 
 可选安装：摄像头管理软件包 v4l-utils
 
