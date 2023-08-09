@@ -11847,7 +11847,7 @@ pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式
 
     在使用到密钥环里的加密密钥时会提示该密钥的密码（不是解锁密钥环的密码），使用图形化工具 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
 
-    原因在于 gnome-keyring 使用你的密码作为加密密钥保存其它各种密钥和密码，不输入密码就无法解锁 gnome-keyring。
+    原因在于 gnome-keyring 使用你的密码作为加密密钥保存其它各种密钥和密码，不输入密码就无法解锁 gnome-keyring，即必须使用登录密码才能解锁，不支持面部识别、指纹识别。
 
     解决办法：给 gnome-keyring 设置空密码，或参照指纹登录的解决办法，使用 u 盘等设备单独保存你的 gnome-keyring 密码 <https://wiki.archlinux.org/title/Fingerprint_GUI#Password>。
 
@@ -11892,7 +11892,7 @@ allow xdm_t v4l_device_t:chr_file map;
 
 本修改方法可能不够完善：
 
-    面部识别跳过了 polkit-1 文件中其它的 system-auth 策略，不知道是否还有哪些受限于输入密码的开关未解锁
+    面部识别跳过了 polkit-1 文件中其它的 system-auth 策略，不知道是否还有哪些受限于输入密码的开关未解锁，这个用户干脆添加到 system-auth <https://github.com/boltgolt/howdy/issues/630#issuecomment-1014654035>，但是还会有密码提示弹出，应该都是类似 gnome-keyring 这样使用登录密码加密存储数据的场合，必须使用登录密码才能解锁，不支持面部识别、指纹识别。
 
     感觉 howdy 应该像 xrdp 那样单独申请权限响应 polkit 策略，参见章节 [xrdp 远程桌面用户相对本地登陆用户有权限区别]。
 
