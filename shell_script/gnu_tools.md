@@ -11820,7 +11820,7 @@ pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式
     account    include      system-auth
     ...
 
-    如果是你本人本机使用，可以对 su 文件做相同的修改，这样执行 su 命令也可以使用面部识别了（需要在 howdy 给 root 用户添加面部模型）
+    如果是你本人本机使用，可以对 su 文件做相同的修改，这样执行 su 命令也可以使用面部识别了（需要在 howdy 给 root 用户添加面部模型，见下面）
 
         #%PAM-1.0
         auth		sufficient	pam_rootok.so
@@ -11839,15 +11839,15 @@ pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式
 
 在登录界面，人脸识别不会像 Windows Hello 那样自动启动，但是不需要输入密码，只需点击登录按钮或按回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
 
-在锁屏界面中
+在锁屏界面中点击鼠标即可自动解锁，如果人脸识别失败，会回落到使用密码验证。
 
-如果不输入密码，面部识别登录后不会解锁 gnome-keyring：
+面部识别登录无法解锁 gnome-keyring：
 
         https://github.com/boltgolt/howdy/issues/438
 
     在使用到密钥环里的加密密钥时会提示该密钥的密码（不是解锁密钥环的密码），使用图形化工具 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
 
-    原因在于 gnome-keyring 使用你的密码作为加密密钥保存其它各种密钥和密码，不输入密码就无法解锁 gnome-keyring，即必须使用登录密码才能解锁，不支持面部识别、指纹识别。
+    原因在于 gnome-keyring 使用你的密码作为加密密钥保存其它各种密钥和密码，不输入密码就无法解锁 gnome-keyring，即目前 gnome-keyring 不支持面部识别、指纹识别的数据作为加密密钥，必须使用登录密码才能解锁。
 
     解决办法：给 gnome-keyring 设置空密码，或参照指纹登录的解决办法，使用 u 盘等设备单独保存你的 gnome-keyring 密码 <https://wiki.archlinux.org/title/Fingerprint_GUI#Password>。
 
@@ -11886,13 +11886,15 @@ allow xdm_t v4l_device_t:chr_file map;
 
 5、配置 polkit
 
-设置系统参数的某些选项的解锁都调用了 polkit-1 这样的 GUI 授权验证工具，我们可以手工修改 polkit 策略
+设置系统参数的某些选项的解锁都调用了 polkit-1 这样的 GUI 授权验证工具，会弹出一个密码输入窗口。添加面部识别后可以自动通过验证，不会再弹出密码输入窗口了。
+
+需要手工修改 polkit 策略
 
     https://github.com/boltgolt/howdy/issues/630
 
 本修改方法可能不够完善：
 
-    面部识别跳过了 polkit-1 文件中其它的 system-auth 策略，不知道是否还有哪些受限于输入密码的开关未解锁，这个用户干脆添加到 system-auth <https://github.com/boltgolt/howdy/issues/630#issuecomment-1014654035>，但是还会有密码提示弹出，应该都是类似 gnome-keyring 这样使用登录密码加密存储数据的场合，必须使用登录密码才能解锁，不支持面部识别、指纹识别。
+    面部识别跳过了 polkit-1 文件中其它的 system-auth 策略，不知道是否还有哪些受限于输入密码的开关未解锁。这个用户干脆添加到 system-auth <https://github.com/boltgolt/howdy/issues/630#issuecomment-1014654035>，但是还会弹出密码提示，应该是类似 gnome-keyring 使用登录密码加密存储数据的场合，必须使用登录密码才能解锁。
 
     感觉 howdy 应该像 xrdp 那样单独申请权限响应 polkit 策略，参见章节 [xrdp 远程桌面用户相对本地登陆用户有权限区别]。
 
@@ -11910,7 +11912,7 @@ session    include      system-auth
 
 配置后，会在调用到 polkit 的场景下使用人脸识别。如果同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，如果人脸识别失败，才会回落到使用密码验证。
 
-我的系统上配置了 polkit 后，登录界面点击用户即可登录，锁屏界面点击鼠标即可登录。
+我的系统上配置了 polkit 后，登录界面点击用户即可登录。
 
 6、手工调整，保护你的隐私
 
@@ -11975,7 +11977,7 @@ session    include      system-auth
 
     桌面->设置-> Users，点击 unlock，测试 Polkit 解锁
 
-    $ gpg --sign some.file  测试 Polkit 解锁 gnome-keyring 我的在这里过不去，只能手动
+    $ gpg --sign some.file  测试解锁 gnome-keyring，这里会提示 gpg 密钥的密码（不是解锁 gnome-keyring 的密码）
 
     $ sudo reboot 测试登录
 
