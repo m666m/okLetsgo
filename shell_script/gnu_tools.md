@@ -8616,67 +8616,6 @@ done
 
 ```
 
-### 查看计算机的传感器如温度、风扇
-
-简单看 cpu 温度使用 btop 即可，展示又全面又准确。
-
-lm-sensors 查看计算机传感器的的内核工具，支持温度、pwm风扇转速等
-
-    https://wiki.archlinux.org/title/Fan_speed_control
-
-    # sudo dnf install lm_sensors
-    $ sudo apt install lm-sensors
-
-安装后先运行一次 `sudo sensors-detect` 来检测传感器，注意提示，有时候 YES 有时候 yes 有时候按回车（槽！），输错就跳过检测项目了。
-
-然后就可以查看传感器数据了
-
-    $ sensors
-    nouveau-pci-0100
-    Adapter: PCI adapter
-    fan1:           0 RPM
-    temp1:        +43.0°C  (high = +95.0°C, hyst =  +3.0°C)
-                        (crit = +105.0°C, hyst =  +5.0°C)
-                        (emerg = +135.0°C, hyst =  +5.0°C)
-
-    acpitz-acpi-0
-    Adapter: ACPI interface
-    temp1:        +16.8°C  (crit = +20.8°C)
-    temp2:        +16.8°C  (crit = +20.8°C)
-    temp3:        +27.8°C  (crit = +105.0°C)
-
-    coretemp-isa-0000
-    Adapter: ISA adapter
-    Package id 0:  +46.0°C  (high = +100.0°C, crit = +100.0°C)
-    Core 0:        +45.0°C  (high = +100.0°C, crit = +100.0°C)
-    Core 1:        +45.0°C  (high = +100.0°C, crit = +100.0°C)
-    Core 2:        +46.0°C  (high = +100.0°C, crit = +100.0°C)
-    Core 3:        +43.0°C  (high = +100.0°C, crit = +100.0°C)
-    Core 4:        +43.0°C  (high = +100.0°C, crit = +100.0°C)
-    Core 5:        +43.0°C  (high = +100.0°C, crit = +100.0°C)
-
-    nvme-pci-0200
-    Adapter: PCI adapter
-    Composite:    +46.9°C  (low  = -273.1°C, high = +81.8°C)
-                        (crit = +84.8°C)
-    Sensor 1:     +46.9°C  (low  = -273.1°C, high = +65261.8°C)
-    Sensor 2:     +54.9°C  (low  = -273.1°C, high = +65261.8°C)
-
-看风扇转速，比较新的主板接口统统不支持。。。
-
-    $ sudo pwmconfig
-
-控制风扇转速，不支持主板接口就没有配置文件，啥也干不了
-
-    $ fancontrol
-
-    # 安装成 systemd 服务了
-    $ systemctl status fancontrol.service
-
-如果使用桌面环境，还可安装图形化工具 xsensors 来展现这些传感器和风扇
-
-    $ sudo dnf install xsensors fancontrol-gui
-
 ### 操作时间 timedatectl/chronyc
 
     用 timedatectl 命令操作时间时区  https://www.cnblogs.com/zhi-leaf/p/6282301.html
@@ -8789,7 +8728,78 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
     update-alternatives --config vi
 
-### 控制笔记本电脑的风扇速度 thinkfan
+### 查看计算机的传感器如温度、风扇
+
+简单看 cpu 温度使用 btop 即可，展示又全面又准确。
+
+lm-sensors 查看计算机传感器的的内核工具，支持温度、pwm风扇转速等
+
+    https://wiki.archlinux.org/title/Fan_speed_control
+
+    # sudo dnf install lm_sensors
+    $ sudo apt install lm-sensors
+
+安装后先运行一次 `sudo sensors-detect` 来检测传感器，注意提示，有时候 YES 有时候 yes 有时候按回车（槽！），输错就跳过检测项目了。
+
+然后就可以查看传感器数据了
+
+    $ sensors
+    nouveau-pci-0100
+    Adapter: PCI adapter
+    fan1:           0 RPM
+    temp1:        +43.0°C  (high = +95.0°C, hyst =  +3.0°C)
+                        (crit = +105.0°C, hyst =  +5.0°C)
+                        (emerg = +135.0°C, hyst =  +5.0°C)
+
+    acpitz-acpi-0
+    Adapter: ACPI interface
+    temp1:        +16.8°C  (crit = +20.8°C)
+    temp2:        +16.8°C  (crit = +20.8°C)
+    temp3:        +27.8°C  (crit = +105.0°C)
+
+    coretemp-isa-0000
+    Adapter: ISA adapter
+    Package id 0:  +46.0°C  (high = +100.0°C, crit = +100.0°C)
+    Core 0:        +45.0°C  (high = +100.0°C, crit = +100.0°C)
+    Core 1:        +45.0°C  (high = +100.0°C, crit = +100.0°C)
+    Core 2:        +46.0°C  (high = +100.0°C, crit = +100.0°C)
+    Core 3:        +43.0°C  (high = +100.0°C, crit = +100.0°C)
+    Core 4:        +43.0°C  (high = +100.0°C, crit = +100.0°C)
+    Core 5:        +43.0°C  (high = +100.0°C, crit = +100.0°C)
+
+    nvme-pci-0200
+    Adapter: PCI adapter
+    Composite:    +46.9°C  (low  = -273.1°C, high = +81.8°C)
+                        (crit = +84.8°C)
+    Sensor 1:     +46.9°C  (low  = -273.1°C, high = +65261.8°C)
+    Sensor 2:     +54.9°C  (low  = -273.1°C, high = +65261.8°C)
+
+看风扇转速，比较新的主板接口统统不支持。。。
+
+    $ sudo pwmconfig
+
+控制风扇转速，不支持主板接口就没有配置文件，啥也干不了
+
+    $ fancontrol
+
+    # 安装成 systemd 服务了
+    $ systemctl status fancontrol.service
+
+如果使用桌面环境，还可安装图形化工具 xsensors 来展现这些传感器和风扇
+
+    $ sudo dnf install xsensors fancontrol-gui
+
+#### 控制笔记本电脑的风扇速度 thinkfan
+
+    Thinkpad
+
+        https://wiki.archlinux.org/title/Fan_speed_control#ThinkPad_laptops
+
+    Dell/Lenovo_Legions/ASUS
+
+        https://wiki.archlinux.org/title/Fan_speed_control#Dell_laptops
+        https://wiki.archlinux.org/title/Fan_speed_control#Lenovo_Legions_laptops
+        https://wiki.archlinux.org/title/Fan_speed_control#ASUS_laptops
 
     https://blog.monosoul.dev/2021/10/17/how-to-control-thinkpad-p14s-fan-speed-in-linux/
 
@@ -8865,11 +8875,11 @@ Reboot
 
 ### 优化笔记本电脑的电池 tlp
 
+GNOME 和 KDE 主流桌面環境都已內建 Power Profile Daemon 來調節耗電量，大部份發行版還會將 TLP 與 PPD 列為衝突套件。再根據 Reddit 的討論認為二者無明顯差距，我便沒有再刻意安裝 TLP
+
     https://ostechnix.com/how-to-optimize-laptop-battery-life-with-tlp-in-linux/
 
     https://www.jwillikers.com/power-management-on-linux-with-tlp
-
-GNOME和KDE主流桌面環境都已內建 Power Profile Daemon 來調節耗電量，大部份發行版還會將 TLP 與 PPD 列為衝突套件。再根據 Reddit 的討論認為二者無明顯差距，我便沒有再刻意安裝 TLP。
 
 Fedora
 
