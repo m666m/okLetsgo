@@ -8618,15 +8618,18 @@ done
 
 ### 查看计算机的传感器如温度、风扇
 
-    推荐安装使用 btop，展示又全面又准确
+简单看温度使用 btop 即可，展示又全面又准确。
 
-lm-sensors 查看计算机传感器的著名工具
+lm-sensors 查看计算机传感器的的内核工具，支持稳定、pwm风扇等
 
     https://wiki.archlinux.org/title/Fan_speed_control
 
+    # sudo dnf install lm_sensors
     $ sudo apt install lm-sensors
 
-安装后先运行一次 `sudo sensors-detect` 来检测传感器，然后就可以查看传感器数据了
+安装后先运行一次 `sudo sensors-detect` 来检测传感器，注意提示，有时候 YES 有时候 yes 有时候按回车（槽！），输错就跳过检测项目了。
+
+然后就可以查看传感器数据了
 
     $ sensors
     nouveau-pci-0100
@@ -8642,15 +8645,36 @@ lm-sensors 查看计算机传感器的著名工具
     temp2:        +16.8°C  (crit = +20.8°C)
     temp3:        +27.8°C  (crit = +105.0°C)
 
+    coretemp-isa-0000
+    Adapter: ISA adapter
+    Package id 0:  +46.0°C  (high = +100.0°C, crit = +100.0°C)
+    Core 0:        +45.0°C  (high = +100.0°C, crit = +100.0°C)
+    Core 1:        +45.0°C  (high = +100.0°C, crit = +100.0°C)
+    Core 2:        +46.0°C  (high = +100.0°C, crit = +100.0°C)
+    Core 3:        +43.0°C  (high = +100.0°C, crit = +100.0°C)
+    Core 4:        +43.0°C  (high = +100.0°C, crit = +100.0°C)
+    Core 5:        +43.0°C  (high = +100.0°C, crit = +100.0°C)
+
     nvme-pci-0200
     Adapter: PCI adapter
-    Composite:    +47.9°C  (low  = -273.1°C, high = +81.8°C)
+    Composite:    +46.9°C  (low  = -273.1°C, high = +81.8°C)
                         (crit = +84.8°C)
-    Sensor 1:     +47.9°C  (low  = -273.1°C, high = +65261.8°C)
-    Sensor 2:     +53.9°C  (low  = -273.1°C, high = +65261.8°C)
+    Sensor 1:     +46.9°C  (low  = -273.1°C, high = +65261.8°C)
+    Sensor 2:     +54.9°C  (low  = -273.1°C, high = +65261.8°C)
 
+看风扇转速，比较新的主板接口统统不支持。。。
 
-如果使用桌面环境，还可安装图形化工具 xsensors 来展现这些传感器。
+    $ sudo pwmconfig
+
+控制风扇转速
+
+    $ fancontrol 不支持主板接口就没有配置文件，啥也干不了
+
+    $ systemctl status fancontrol.service  安装成 systemd 服务了
+
+如果使用桌面环境，还可安装图形化工具 xsensors 来展现这些传感器和风扇
+
+    $ sudo dnf install xsensors fancontrol-gui
 
 ### 操作时间 timedatectl/chronyc
 
