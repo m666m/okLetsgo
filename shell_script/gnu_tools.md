@@ -11835,13 +11835,21 @@ pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式
 
 使用说明：
 
-    在 sudo 会自动启动人脸识别，如果人脸识别失败，会回落到使用密码验证。
+在 sudo 会自动启动人脸识别，如果人脸识别失败，会回落到使用密码验证。
 
-    在登录界面，人脸识别不会像 Windows Hello 那样自动启动，但是不需要输入密码，只需点击登录按钮或按回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
+在登录界面，人脸识别不会像 Windows Hello 那样自动启动，但是不需要输入密码，只需点击登录按钮或按回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
 
-    在锁屏界面中
+在锁屏界面中
 
-    如果不输入密码，登录后不会解锁 gnome keyring：在使用到密钥环里的加密密钥时会提示该密钥的密码（不是解锁密钥环的密码），使用图形化工具 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
+如果不输入密码，面部识别登录后不会解锁 gnome-keyring：
+
+        https://github.com/boltgolt/howdy/issues/438
+
+    在使用到密钥环里的加密密钥时会提示该密钥的密码（不是解锁密钥环的密码），使用图形化工具 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
+
+    原因在于 gnome-keyring 使用你的密码作为加密密钥保存其它各种密钥和密码，不输入密码就无法解锁 gnome-keyring。
+
+    解决办法：给 gnome-keyring 设置空密码，或参照指纹登录的解决办法，使用 u 盘等设备单独保存你的 gnome-keyring 密码 <https://wiki.archlinux.org/title/Fingerprint_GUI#Password>。
 
 4、对 Redhat 系等开启 SELinux 的操作系统如 Fedora，需要配置 SELinux
 
