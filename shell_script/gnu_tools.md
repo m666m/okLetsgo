@@ -13326,7 +13326,7 @@ keyring 的桌面应用程序，用户使用桌面软件进行管理即可：
 
     中文最全面的 https://wszqkzqk.github.io/2021/08/17/%E5%9C%A8Manjaro%E4%B8%8B%E9%85%8D%E7%BD%AE%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB/
 
-“Windows Hello” 标准是内置红外发射器的摄像头 IR camera，但 howdy 不强制要求。
+首先你要有一个支持 “Windows Hello” 标准的内置红外发射器的摄像头 IR camera。
 
 Howdy 通过 OpenCV 和 Python 构建，支持使用内置红外发射器的摄像头来识别用户面部。通过调用 Linux 的 PAM 身份验证系统，意味着不仅可以使用人脸识别登录桌面环境，还可以将其用于 sudo、su、polkit-1 以及大多数需要使用其他帐户密码的场景。
 
@@ -13429,9 +13429,9 @@ pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式
 
 解锁登录密码和锁屏密码，编辑 /etc/pam.d/gdm-password
 
-    auth     [success=done ignore=ignore default=bad] pam_selinux_permit.so
-    auth        sufficient    pam_python.so /lib64/security/howdy/pam.py  <-- 添加在这两行之间
-    auth        substack      password-auth
+    auth    [success=done ignore=ignore default=bad] pam_selinux_permit.so
+    auth    sufficient    pam_python.so /lib64/security/howdy/pam.py  <-- 添加在这两行之间
+    auth    substack      password-auth
 
 使用说明：
 
@@ -13445,9 +13445,9 @@ pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式
 
         https://github.com/boltgolt/howdy/issues/438
 
-    在使用到密钥环里的加密密钥时会提示该密钥的密码（不是解锁密钥环的密码），使用图形化工具 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
+    在使用到密钥环里的加密密钥时会提示该密钥的密码（不是解锁密钥环的密码），比如使用 gpg 进行签名。使用图形化工具 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
 
-    原因在于 gnome-keyring 使用你的密码作为加密密钥保存其它各种密钥和密码，不输入密码就无法解锁 gnome-keyring，即目前 gnome-keyring 不支持面部识别、指纹识别的数据作为加密密钥，必须使用登录密码才能解锁。
+    原因在于 gnome-keyring 使用你的登录密码作为加密密钥以保存其它各种密钥和密码，不输入登录密码就无法解锁 gnome-keyring。即目前 gnome-keyring 不支持面部识别、指纹识别的数据作为加密密钥，必须使用登录密码才能解锁。
 
     解决办法：给 gnome-keyring 设置空密码，或参照指纹登录的解决办法，使用 u 盘等设备单独保存你的 gnome-keyring 密码 <https://wiki.archlinux.org/title/Fingerprint_GUI#Password>。
 
@@ -13494,7 +13494,7 @@ allow xdm_t v4l_device_t:chr_file map;
 
 本修改方法可能不够完善：
 
-    面部识别跳过了 polkit-1 文件中其它的 system-auth 策略，不知道是否还有哪些受限于输入密码的开关未解锁。这个用户干脆添加到 system-auth <https://github.com/boltgolt/howdy/issues/630#issuecomment-1014654035>，但是还会弹出密码提示，应该是类似 gnome-keyring 使用登录密码加密存储数据的场合，必须使用登录密码才能解锁。
+    面部识别跳过了 polkit-1 文件中其它的 system-auth 策略，不知道是否还有哪些受限于输入密码的开关未解锁。这个 github 用户干脆添加到 system-auth <https://github.com/boltgolt/howdy/issues/630#issuecomment-1014654035>，但是还会弹出密码提示，应该是类似 gnome-keyring 使用登录密码加密存储数据的场合，必须使用登录密码才能解锁。
 
     感觉 howdy 应该像 xrdp 那样单独申请权限响应 polkit 策略，参见章节 [xrdp 远程桌面用户相对本地登陆用户有权限区别]。
 
