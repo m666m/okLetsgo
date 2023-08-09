@@ -8897,6 +8897,1543 @@ Fedora
 
     sudo systemctl mask systemd-rfkill.service systemd-rfkill.socket
 
+## 使用 GRUB 管理启动引导操作系统
+
+基于 BIOS 的系统引导
+
+    https://docs.fedoraproject.org/en-US/quick-docs/installing-grub2/#installing-grub-2-on-a-bios-system
+
+基于 UEFI 的系统引导
+
+    https://docs.fedoraproject.org/en-US/quick-docs/installing-grub2/#installing-grub-2-configuration-on-uefi-system
+
+## 开机自启动 SystemV(init) 和 systemd
+
+    https://www.debian.org/doc/manuals/debian-handbook/unix-services.zh-cn.html#sect.systemd
+
+    https://zhuanlan.zhihu.com/p/140273445
+
+    http://ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
+
+Linux 引导
+
+Linux 主机从关机状态到运行状态的完整启动过程很复杂，但它是开放的并且是可知的。在详细介绍之前，我将简要介绍一下从主机硬件被上电到系统准备好用户登录的过程。大多数时候，“引导过程”被作为一个整体来讨论，但这是不准确的。实际上，完整的引导和启动过程包含三个主要部分：
+
+    硬件引导：初始化系统硬件
+    Linux 引导(boot)：加载 Linux 内核和 systemd
+    Linux 启动(startup)：systemd 为主机的生产性工作做准备
+
+Linux 启动阶段始于内核加载了 init 或 systemd（取决于具体发行版使用的是旧的方式还是还是新的方式）之后。init 和 systemd 程序启动并管理所有其它进程，它们在各自的系统上都被称为“所有进程之母”。
+
+### SystemV
+
+unix systemV以来的习惯是使用 Bash 脚本来完成启动。
+
+    service foobar start
+
+    service foobar stop
+
+内核启动 init 程序（这是一个编译后的二进制）后，init 启动 rc.sysinit 脚本，该脚本执行许多系统初始化任务。
+
+rc.sysinit 执行完后，init 启动 /etc/rc.d/rc 脚本，该脚本依次启动 /etc/rc.d/rcX.d 中由 SystemV 启动脚本定义的各种服务。其中 X 是待启动的运行级别号。这些级别在/etc/inittab 文件里指定。
+
+比如，在命令行进入单机模式的命令是 `init 1`
+
+    0 - 停机
+
+    1 - 单用户模式
+
+    2 - 多用户，没有 NFS
+
+    3 - 完全多用户模式(标准的运行级)
+
+    4 - 系统保留
+
+    5 - X11 (xwindow)
+
+    6 - 重新启动
+
+init 程序最先运行的服务是放在 /etc/rc.d/ 目录下的文件。
+
+在大多数的Linux 发行版本中，启动脚本都是位于 /etc/rc.d/init.d/ 中的，这些脚本被用 ln 命令连接到 /etc/rc.d/rcX.d/ 目录。(这里的X 就是运行级0-6) ,每个不同级别的目录都链接了 /etc/rc.d/init.d/ 中的一个脚本。
+
+所有这些程序都是可读的shell脚本，SystemV 服务是串行启动的，一次只能启动一个服务，每个启动脚本都被编了号，以便按特定顺序启动预期的服务。可以通读这些脚本确切了解整个启动过程中发生的事情。
+
+注：在较新版本的 Linux 系统中，目录 /etc/rc.d/init.d/ 和 /etc/rc.d/rcX.d/ 简化为 /etc/init.d/ 和 /etc/rcX.d/。
+
+#### SystemV 设置开机自启动
+
+1、在 /etc/init.d/ 目录下添加需要执行的 .sh 脚本，脚本里调用需要开机启动的程序（shell文件格式参考目录下其它文件）
+
+```shell
+
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:       nginx
+# Required-Start:    $local_fs $remote_fs $network $syslog $named
+# Required-Stop:     $local_fs $remote_fs $network $syslog $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts the nginx web server
+# Description:       starts nginx using start-stop-daemon
+### END INIT INFO
+
+your_cmd_here
+
+exit 0
+
+```
+
+Provides 的名字是唯一的，也就是在所有的开机启动项中，Provides不能有任何同名冲突。
+
+需要执行的命令，按照正常的Bash Shell书写方式书写即可。
+
+需要后台静默运行的程序，请使用 `nohup [需要执行的命令] >/dev/null 2>&1 &` 方式来启动！
+
+2、给shell脚本test.sh添加执行权限
+
+    chmod 755 test.sh
+
+3、添加自启动命令
+
+    update-rc.d test.sh defaults
+
+4、删除自启动的命令
+
+    update-rc.d -f test.sh remove
+
+简单的命令脚本调用，可以直接修改 /etc/rc.local 文件，在exit 0之前增加需要运行的脚本
+
+    1.vi /etc/rc.local
+
+        #!/bin/sh -e
+
+        nohup /usr/local/bin/your_shell_script.sh >/dev/null 2>&1 &
+
+        exit 0
+
+    2、给文件添加执行权限
+
+        sudo chmod 755 rc.local
+
+        chmod 755 /usr/local/bin/your_shell_script.sh
+
+    3、重启计算机，程序会被root用户调用起来。
+
+#### systemd 对 SystemV 的兼容性
+
+    /etc/init.d/ 下的脚本，有不少是对 systemd 兼容的，写法参见具体文件，如 nginx、rng-tools
+
+    /etc/rc.local 文件，在systemd中也添加了控制文件，可以保持对 SystemV 的兼容性
+
+systemd 保持对 SystemV 的兼容性使用的控制文件
+
+    /usr/lib/systemd/system/systemd-initctl.service
+
+    /usr/lib/systemd/system/rc-local.service
+
+### systemd
+
+    https://systemd.io/
+
+        https://www.freedesktop.org/software/systemd/man/
+        https://docs.freebsd.org/en/books/handbook/wayland/
+
+        https://fedoramagazine.org/series/systemd-series/
+
+        https://docs.fedoraproject.org/en-US/quick-docs/understanding-and-administering-systemd/
+
+    systemd 中文手册
+
+        http://www.jinbuguo.com/systemd/systemd.index.html
+
+        https://www.junmajinlong.com/linux/index/#systemd%E7%B3%BB%E5%88%97
+            开机自启动 https://www.junmajinlong.com/linux/systemd/auto_tasks_on_boot/
+
+大多数 Linux 发行版都过渡到使用 systemd 管理系统了，但还是有讨厌 systemd 的发行版：Devuan 是使用 SysV init 软件代替 Debian systemd 包的 Debian 分支，提供了多种初始化系统供用户选择，其中包括 SysV init、sinit、openrc、runit、s6 和 shepherd
+
+    https://www.devuan.org/
+
+systemd 工具是编译后的二进制文件，但该工具包是开放的，因为所有配置文件都是 ASCII 文本文件。可以通过各种 GUI 和命令行工具来修改启动配置，也可以添加或修改各种配置文件来满足特定的本地计算环境的需求。几乎可以管理正在运行的 Linux 系统的各个方面。它可以管理正在运行的服务，同时提供比 SystemV 多得多的状态信息。它还管理硬件、进程和进程组、文件系统挂载等。systemd 几乎涉足于现代 Linux 操作系统的每方面，使其成为系统管理的一站式工具。
+
+    systemd 在启动阶段并行地启动尽可能多的服务。这样可以加快整个的启动速度，使得主机系统比 SystemV 更快地到达登录屏幕。
+
+systemd 并不是一个命令，而是一组命令，涉及到系统管理的方方面面。根据编译过程中使用的选项（不在本系列中介绍），systemd 可以有多达 69 个二进制可执行文件执行以下任务，其中包括：
+
+    提供基本的系统配置工具，例如主机名、日期、语言环境、已登录用户的列表，正在运行的容器和虚拟机、系统帐户、运行时目录及设置，用于简易网络配置、网络时间同步、日志转发和名称解析的守护进程。
+
+    提供套接字管理。
+
+    能感知分层的文件系统挂载和卸载功能可以更安全地级联挂载的文件系统。
+
+    允许主动的创建和管理临时文件，包括删除。
+
+    D-Bus 的接口提供了在插入或移除设备时运行脚本的能力。这允许将所有设备（无论是否可插拔）都被视为即插即用，从而大大简化了设备的处理。
+
+    分析启动环节的工具可用于查找耗时最多的服务。
+
+    它包括用于存储系统消息的日志以及管理日志的工具。
+
+    systemctl 服务管理和报告提供了比 SystemV 更多的服务状态数据。
+
+对之前系统的兼容性
+
+    systemd 会检查老的 SystemV init 目录，以确认是否存在任何启动文件。如果有，systemd 会将它们作为配置文件以启动它们描述的服务，参见章节 [systemd 对 SystemV 的兼容性]。
+
+    systemd 定时器提供类似 cron 的高级功能，包括在相对于系统启动、systemd 启动时间、定时器上次启动时间的某个时间点运行脚本。它提供了一个工具来分析定时器规范中使用的日期和时间。
+
+#### 基本管理命令
+
+    https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units
+
+systemctl 是 Systemd 的主命令，用于管理系统
+
+    # 重启系统
+    $ sudo systemctl reboot
+
+    # 关闭系统，切断电源
+    $ sudo systemctl poweroff
+
+    # CPU停止工作
+    $ sudo systemctl halt
+
+    # 暂停系统
+    $ sudo systemctl suspend
+
+    # 让系统进入休眠状态
+    $ sudo systemctl hibernate
+
+    # 让系统进入交互式休眠状态
+    $ sudo systemctl hybrid-sleep
+
+    # 启动进入救援状态（单用户状态）
+    $ sudo systemctl rescue
+
+systemd-analyze 命令用于查看启动耗时
+
+    # 查看启动耗时
+    $ systemd-analyze
+
+    # 查看每个服务的启动耗时
+    $ systemd-analyze blame
+
+    # 显示瀑布状的启动过程流
+    $ systemd-analyze critical-chain
+
+    # 显示指定服务的启动流
+    $ systemd-analyze critical-chain atd.service
+
+hostnamectl 命令用于查看当前主机的信息
+
+    # 显示当前主机的信息
+    $ hostnamectl
+
+    # 设置主机名。
+    $ sudo hostnamectl set-hostname rhel7
+
+localectl 命令用于查看本地化设置
+
+    # 查看本地化设置
+    $ localectl
+
+    # 设置本地化参数。
+    $ sudo localectl set-locale LANG=en_GB.utf8
+    $ sudo localectl set-keymap en_GB
+
+timedatectl 命令用于查看当前时区设置
+
+    # 查看当前时区设置
+    $ timedatectl
+
+    # 显示所有可用的时区
+    $ timedatectl list-timezones
+
+    # 设置当前时区
+    $ sudo timedatectl set-timezone America/New_York
+    $ sudo timedatectl set-time YYYY-MM-DD
+    $ sudo timedatectl set-time HH:MM:SS
+
+loginctl 命令用于查看当前登录的用户
+
+    # 列出当前session
+    $ loginctl list-sessions
+
+    # 列出当前登录用户
+    $ loginctl list-users
+
+    # 列出显示指定用户的信息
+    $ loginctl show-user ruanyf
+
+#### systemctl 系统资源管理命令
+
+Systemd 可以管理所有系统资源。不同的资源统称为 Unit（单位）。
+
+Unit 一共分成12种
+
+    Service unit：系统服务
+    Target unit：多个 Unit 构成的一个组
+    Device Unit：硬件设备
+    Mount Unit：文件系统的挂载点
+    Automount Unit：自动挂载点
+    Path Unit：文件或路径
+    Scope Unit：不是由 Systemd 启动的外部进程
+    Slice Unit：进程组
+    Snapshot Unit：Systemd 快照，可以切回某个快照
+    Socket Unit：进程间通信的 socket
+    Swap Unit：swap 文件
+    Timer Unit：定时器
+
+systemd 默认启用的系统级组件配置在 /usr/lib/systemd/system-preset/ 下
+
+查看当前系统的正在运行的所有 Unit
+
+    # 列出正在运行的 Unit
+    $ systemctl list-units
+
+    # 列出所有Unit，包括没有找到配置文件的或者启动失败的
+    $ systemctl list-units --all
+
+    # 列出所有没有运行的 Unit
+    $ systemctl list-units --all --state=inactive
+
+    # 列出所有加载失败的 Unit
+    $ systemctl list-units --failed
+
+    # 列出所有正在运行的、类型为 service 的 Unit
+    $ systemctl list-units --type=service
+
+列出所有已经安装的 unit 文件
+
+    systemctl list-unit-files
+
+显示指定的 unit 文件内容
+
+    systemctl cat xxx.service
+
+编辑指定的 unit 文件，新文件默认放置在目录 /etc/systemd/system/ 下
+
+    $ sudo systemctl edit --force --full xxx.service
+
+    脚本化直接写入 https://unix.stackexchange.com/questions/459942/using-systemctl-edit-via-bash-script
+    $ sudo su
+    # env SYSTEMD_EDITOR=tee systemctl edit --force --full xxx.service <<EOF
+    [Service]
+    ExecStartPre=/bin/sleep 5
+
+    EOF
+
+查看系统状态和单个 Unit 的状态
+
+    # 显示系统状态
+    $ systemctl status
+
+    # 显示单个 Unit 的状态
+    $ sysystemctl status bluetooth.service
+
+    # 显示远程主机的某个 Unit 的状态
+    $ systemctl -H root@rhel7.example.com status httpd.service
+
+三个查询状态的简单方法，主要供脚本内部的判断语句使用
+
+    # 显示某个 Unit 是否正在运行
+    $ systemctl is-active application.service
+
+    # 显示某个 Unit 是否处于启动失败状态
+    $ systemctl is-failed application.service
+
+    # 显示某个 Unit 服务是否建立了启动链接
+    $ systemctl is-enabled application.service
+
+启动和停止 Unit（主要是 service）
+
+    # 立即启动一个服务
+    $ sudo systemctl start apache.service
+
+    # 立即停止一个服务
+    $ sudo systemctl stop apache.service
+
+    # 重启一个服务
+    $ sudo systemctl restart apache.service
+
+    # 杀死一个服务的所有子进程
+    $ sudo systemctl kill apache.service
+
+    # 重新加载一个服务的配置文件
+    $ sudo systemctl reload apache.service
+
+    # 重载所有修改过的配置文件
+    $ sudo systemctl daemon-reload
+
+    # 显示某个 Unit 的所有底层参数
+    $ systemctl show httpd.service
+
+    # 显示某个 Unit 的指定属性的值
+    $ systemctl show -p CPUShares httpd.service
+
+    # 设置某个 Unit 的指定属性
+    $ sudo systemctl set-property httpd.service CPUShares=500
+
+systemctl list-jobs 列出当前正在执行的任务，比如关机/重启需要很长时间，看看咋回事
+
+systemctl list-dependencies 命令列出一个 Unit 的所有依赖
+
+    $ systemctl list-dependencies nginx.service
+    nginx.service
+    ● ├─system.slice
+    ● └─sysinit.target
+    ●   ├─dev-hugepages.mount
+    ●   ├─keyboard-setup.service
+    ●   ├─systemd-update-utmp.service
+    ...
+    ●   ├─cryptsetup.target
+    ●   ├─local-fs.target
+    ●   │ ├─-.mount
+    ●   │ ├─boot.mount
+    ●   │ ├─systemd-fsck-root.service
+    ●   │ └─systemd-remount-fs.service
+    ●   └─swap.target
+
+上面命令的输出结果之中，有些依赖是 Target 类型，默认不会展开显示。如果要展开 Target，就需要使用--all参数
+
+    systemctl list-dependencies --all nginx.service
+
+#### journalctl 日志管理命令
+
+Systemd 统一管理所有 Unit 的日志，可以只用 journalctl 一个命令，查看所有日志（内核日志和应用日志）。
+
+日志的配置文件是 /etc/systemd/journald.conf。
+
+journalctl 功能强大，用法非常多
+
+    # 查看所有日志（默认情况下 ，只保存本次启动以来的日志）
+    $ journalctl
+
+    # 日志默认分页输出，比较别扭，在屏幕上不换行，使用 --no-pager 改为正常的标准输出
+    $ journalctl --no-pager
+
+    # 实时滚动显示最新日志
+    $ journalctl -f
+
+    # 查看某个 Unit 的日志
+    $ journalctl -u nginx.service
+    $ journalctl -u nginx.service --since today
+
+    # 实时滚动显示某个 Unit 的最新日志
+    $ journalctl -u nginx.service -f
+
+    # 合并显示多个 Unit 的日志
+    $ journalctl -u nginx.service -u php-fpm.service --since today
+
+    # 查看内核日志（不显示应用日志）
+    $ journalctl -k
+
+    # 查看系统本次启动的日志
+    $ journalctl -b
+    $ journalctl -b -0
+
+    # 查看上一次启动的日志（需更改设置）
+    $ journalctl -b -1
+
+    # 查看指定时间的日志
+    $ journalctl --since="2012-10-30 18:17:16"
+    $ journalctl --since "20 min ago"
+    $ journalctl --since yesterday
+    $ journalctl --since "2015-01-10" --until "2015-01-11 03:00"
+    $ journalctl --since 09:00 --until "1 hour ago"
+
+    # 显示尾部的最新10行日志
+    $ journalctl -n
+
+    # 显示尾部指定行数的日志
+    $ journalctl -n 20
+
+    # 查看指定服务的日志
+    $ journalctl /usr/lib/systemd/systemd
+
+    # 查看指定进程的日志
+    $ journalctl _PID=1
+
+    # 查看某个路径的脚本的日志
+    $ journalctl /usr/bin/bash
+
+    # 查看指定用户的日志
+    $ journalctl _UID=33 --since today
+
+    # 查看指定优先级（及其以上级别）的日志，共有8级
+    #   0: emerg
+    #   1: alert
+    #   2: crit
+    #   3: err
+    #   4: warning
+    #   5: notice
+    #   6: info
+    #   7: debug
+    $ journalctl -p err -b
+
+    # 以 JSON 格式（单行）输出
+    $ journalctl -b -u nginx.service -o json |jq
+
+    # 以 JSON 格式（多行）输出，可读性更好
+    $ journalctl -b -u nginx.serviceqq -o json-pretty
+
+    # 显示日志占据的硬盘空间
+    $ journalctl --disk-usage
+
+    # 指定日志文件占据的最大空间
+    $ journalctl --vacuum-size=1G
+
+    # 指定日志文件保存多久
+    $ journalctl --vacuum-time=1years
+
+#### Unit 单元配置文件
+
+    https://wiki.archlinux.org/title/Systemd#Writing_unit_files
+
+    https://www.freedesktop.org/software/systemd/man/systemd.unit.html
+
+    https://www.jinbuguo.com/systemd/systemd.service.html#
+
+每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit。
+
+编辑单元文件有现成的命令，见章节 [systemctl 系统资源管理命令]。
+
+systemd 支持 unit 多个位置存放，最主要的存放位置是：
+
+    /usr/lib/systemd/system/: units provided by installed packages 各种配置文件都放在这里。
+
+    /etc/systemd/system/: units installed by the system administrator 在执行 `systemctl enable` 启动服务后，会自动在这里放置链接文件指向上面的配置文件，以及子目录。
+
+查看全部位置：
+
+    systemctl show --property=UnitPath --no-pager
+
+    (--system)
+    /etc/systemd/system             System units created by the administrator
+    /usr/local/lib/systemd/system   System units installed by the administrator
+    /usr/lib/systemd/system         System units installed by the distribution package manager
+
+    (--user)
+    $HOME/.config/systemd/user  User configuration
+    /etc/systemd/user           User units created by the administrator
+    /usr/local/lib/systemd/user User units installed by the administrator
+    /usr/lib/systemd/user       User units installed by the distribution package manager
+
+列出所有配置文件
+
+    # 列出所有配置文件
+    $ systemctl list-unit-files
+
+    # 列出指定类型的配置文件
+    $ systemctl list-unit-files --type=service
+
+    这个命令会输出一个列表，表示每个配置文件的状态，一共有四种
+
+        enabled：已建立启动链接
+
+        disabled：没建立启动链接
+
+        static：该配置文件没有[Install]部分（无法执行），只能作为其他配置文件的依赖
+
+        masked：该配置文件被禁止建立启动链接
+
+    从配置文件的状态无法看出，该 Unit 是否正在运行。这必须执行前面提到的 systemctl status 命令。
+
+一旦修改配置文件，就要让 systemd 重新加载配置文件，然后重新启动，否则修改不会生效
+
+    sudo systemctl daemon-reload
+
+    sudo systemctl restart httpd.service
+
+unit 通常包括但不限于服务（.service）、挂载点（.mount）、设备（.device）和套接字（.socket）。
+
+unit 的配置文件就是普通的文本文件，可以用文本编辑器打开。
+
+配置文件的后缀名，就是该 Unit 的种类
+
+    如果不指定后缀，systemctl 将默认采用 .service。
+
+        `systemctl enable sshd` 会被理解成 sshd.service
+
+        `systemctl enable sshd.socket` 显示指明才可以启动 sshd.socket
+
+    挂载点将自动转换为相应的 .mount 单元。例如，指定 /home 等效于 home.mount。
+
+    与挂载点类似，设备会自动转换为相应的 .device 单元，因此指定 /dev/sda2 等效于 dev-sda2.device。
+
+unit 文件支持创建插入(drop-in)文件，只需要创建与 unit 文件同名后缀 .d 的目录，将 .conf 文件放在其中以覆盖或添加新选项。systemd 将先处理 unit 文件，然后再处理该新增文件
+
+    unit 文件 /usr/lib/systemd/system/your_unit
+
+    unit 文件的插入文件 /etc/systemd/system/your_unit.d/10.abc.conf，文件名前缀用 10，11，12 等数字来确保加载顺序
+
+    适用于在原始配置之上，想自定义参数的场景，把你要添加或覆盖的其他依赖项放到该 .conf 文件即可
+
+##### 用户级 unit
+
+    https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
+
+    https://www.cnblogs.com/hadex/p/6571278.html
+
+systemd 的 unit 默认都是系统级不必显式添加 --system 选项，但是需要 root 用户权限才能管理执行。
+
+用户级的 unit 不需要 root 用户权限，只限于为当前用户执行
+
+    用户级 unit 与系统级 unit 相互独立，不能互相关联或依赖
+
+例外：
+    使用如下方法，即使用户不登陆，其定制的服务也可以在计算机启动时自动启动
+
+        loginctl enable-linger username
+
+        等效于 touch /var/lib/systemd/linger/$USER
+
+    使用 root 权限执行 `systemctl --global enable unit` 同样可以为所有用户执行该单元
+
+在 systemd 管理和使用时用户级的 unit 只需要加上 --user 参数即可，其它完全一致
+
+    systemctl --user status gpg-agent.socket
+
+    systemctl --user list-unit-files | grep aria2
+
+systemd 搜索的用户自定义的 unit[s] 可以放置在如下四个位置
+
+    /usr/lib/systemd/user：优先级最低，会被高优先级的同名 unit 覆盖
+
+    ~/.local/share/systemd/user
+
+    /etc/systemd/user：全局共享的用户级 unit[s]
+
+    ~/.config/systemd/user：优先级最高
+
+用户级 unit 运行时不会继承 .bashrc 等文件中设置的环境变量，可以单独在 ~/.config/environment.d/xxx.conf 中，写入 NAME=VAL；或者插入式设置 unit 文件，如 /etc/systemd/system/user@.service.d/local.conf
+
+    ```conf
+    [Service]
+    Environment="PATH=/usr/lib/ccache/bin:/usr/local/bin:/usr/bin:/bin"
+    Environment="EDITOR=nano -c"
+    Environment="BROWSER=firefox"
+    Environment="NO_AT_BRIDGE=1"
+    ```
+对 PATH 变量，单独设置你的 ~/.bash_profile，添加语句 `systemctl --user import-environment PATH`
+
+用户级自启动脚本示例：
+
+持久终端多路复用器
+
+    您可能希望在后台自动运行终端多路复用器（如屏幕或 tmux），而不是默认登录到用户会话的窗口管理器会话。
+
+    ~/.config/systemd/user/multiplexer.target
+
+    ```conf
+    [Unit]
+    Description=Terminal multiplexer
+    Documentation=info:screen man:screen(1) man:tmux(1)
+    After=cruft.target
+    Wants=cruft.target
+
+    [Install]
+    Alias=default.target
+    ```
+
+将窗口管理器作为 systemd 服务运行
+
+    ~/.config/systemd/user/awesome.service
+
+    ```conf
+    [Unit]
+    Description=Awesome window manager
+    After=xorg.target
+    Requires=xorg.target
+
+    [Service]
+    ExecStart=/usr/bin/awesome
+    Restart=always
+    RestartSec=10
+
+    [Install]
+    WantedBy=wm.target
+    ```
+
+每次开机后执行备份
+
+    backup-work.timer
+
+    ```conf
+    [Unit]
+    Description=daily backup work
+    RefuseManualStart=no
+    RefuseManualStop=no
+
+    [Timer]＃系统异常关机错过的定时任务，是否后续补救
+    Persistent=false
+    ＃每次开机 10 分钟之后开始生效OnBootSec=10min＃每天 11：30 执行OnCalendar=Mon-Fri *-*-* 11:30:00
+    Unit=backup-work.service
+
+    [Install]
+    WantedBy=default.target
+    ```
+
+    配套的 backup-work.service
+
+    ```conf
+    [Unit]
+    Description=daily backup work
+    RefuseManualStart=no
+    RefuseManualStop=yes
+
+    [Service]
+    Type=oneshot
+    ExecStart=/home/<user>/scripts/backup-work.sh
+    ```
+
+##### 配置文件的区块
+
+配置文件字段最大的优点是可以明确的写出依赖关系，由 systemd 在启动时根据情况处理
+
+    https://www.freedesktop.org/software/systemd/man/systemd.unit.html
+
+systemctl cat 命令可以查看配置文件的内容
+
+    $ systemctl cat sshd
+    # /lib/systemd/system/ssh.service
+    [Unit]
+    Description=OpenBSD Secure Shell server
+    Documentation=man:sshd(8) man:sshd_config(5)
+    After=network.target auditd.service
+    ConditionPathExists=!/etc/ssh/sshd_not_to_be_run
+
+    [Service]
+    EnvironmentFile=-/etc/default/ssh
+    ExecStartPre=/usr/sbin/sshd -t
+    ExecStart=/usr/sbin/sshd -D $SSHD_OPTS
+    ExecReload=/usr/sbin/sshd -t
+    ExecReload=/bin/kill -HUP $MAINPID
+    KillMode=process
+    Restart=on-failure
+    RestartPreventExitStatus=255
+    Type=notify
+    RuntimeDirectory=sshd
+    RuntimeDirectoryMode=0755
+
+    [Install]
+    WantedBy=multi-user.target
+    Alias=sshd.service
+
+配置文件分成几个区块。每个区块的第一行，是用方括号表示的区别名，比如 [Unit]，每个区块内部是一些等号连接的键值对。
+
+注意：配置文件的区块名和字段名，都是大小写敏感的，键值对的等号两侧不能有空格。
+
+[Unit] 区块通常是配置文件的第一个区块，用来定义 Unit 的元数据，以及配置与其他 Unit 的关系。它的主要字段如下
+
+    Description：简短描述
+    Documentation：文档地址
+
+    Requires：当前 Unit 依赖的其他 Unit，如果它们没有运行，当前 Unit 会启动失败
+
+    Wants：与当前 Unit 配合的其他 Unit，如果它们没有运行，当前 Unit 不会启动失败
+
+    BindsTo：与Requires类似，它指定的 Unit 如果退出，会导致当前 Unit 停止运行
+
+    Before：如果该字段指定的 Unit 也要启动，那么必须在当前 Unit 之后启动
+
+    After：如果该字段指定的 Unit 也要启动，那么必须在当前 Unit 之前启动
+
+    Conflicts：这里指定的 Unit 不能与当前 Unit 同时运行
+
+    Condition...：当前 Unit 运行必须满足的条件，否则不会运行
+
+    Assert...：当前 Unit 运行必须满足的条件，否则会报启动失败
+
+    # 如 将服务延迟到网络启动后（可以管理网络还有 NetworkManager.service 或 systemd-networkd.service，比较乱，酌情处理）
+    Wants=network-online.target
+    After=network-online.target
+
+[Install] 通常是配置文件的最后一个区块，用来定义如何启动，以及是否开机启动。它的主要字段如下。
+
+    https://www.freedesktop.org/software/systemd/man/systemd.unit.html#%5BInstall%5D%20Section%20Options
+
+    WantedBy：它的值是一个或多个 Target，当前 Unit 激活时（enable）符号链接会放入 /etc/systemd/system 目录下面以 Target 名 + .wants 后缀构成的子目录中
+
+        用户级 unit 与系统级 unit 相互独立，不能互相关联或依赖
+
+            用户级 unit 运行环境用 default.target，
+
+            系统级通常用 multi-user.target，即使用户不登陆，其定制的服务依然会启动
+
+    RequiredBy：它的值是一个或多个 Target，当前 Unit 激活时，符号链接会放入 /etc/systemd/system 目录下面以 Target 名 + .required 后缀构成的子目录中
+
+    Alias：当前 Unit 可用于启动的别名
+
+    Also：当前 Unit 激活（enable）时，会被同时激活的其他 Unit
+
+[Service] 区块用来 Service 的配置，只有 Service 类型的 Unit 才有这个区块。它的主要字段如下
+
+    https://www.freedesktop.org/software/systemd/man/systemd.service.html
+
+    Environment=SYSTEMD_LOG_LEVEL=debug 在日志中打印调试信息
+
+    Type：定义启动时的进程行为。它有以下几种值。
+
+        Type=simple：默认值，执行ExecStart指定的命令，启动主进程
+
+        Type=forking：以 fork 方式从父进程创建子进程，创建后父进程会立即退出，用于启动守护进程
+
+        Type=oneshot：一次性进程，用于执行定时任务如备份检查等
+
+        Type=dbus：当前服务通过D-Bus启动
+        Type=notify：当前守护进程启动完毕，会通知 systemd，再继续往下执行
+        Type=idle：延迟到其它任务执行完毕，systemd 才会调度当前 unit
+
+    ExecStart：启动当前服务的命令
+    ExecStartPre：启动当前服务之前执行的命令
+    ExecStartPost：启动当前服务之后执行的命令
+    ExecReload：重启当前服务时执行的命令
+    ExecStop：停止当前服务时执行的命令
+    ExecStopPost：停止当其服务之后执行的命令
+    RestartSec：自动重启当前服务间隔的秒数
+    Restart：定义何种情况 Systemd 会自动重启当前服务，可能的值包括always（总是重启）、on-success、on-failure、on-abnormal、on-abort、on-watchdog
+    TimeoutSec：定义 Systemd 停止当前服务之前等待的秒数
+    Environment：指定环境变量
+
+    CapabilityBoundingSet：沙盒化运行，利用 Linux 的 Namespace 命名空间实现进程隔离
+
+        定义允许或拒绝设备的功能列表
+            https://man.archlinux.org/man/systemd.exec.5#CAPABILITIES
+
+##### Target 就是一个 Unit 组
+
+包含许多相关的 Unit。启动某个 Target 的时候，Systemd 就会启动里面所有的 Unit。
+
+传统的init启动模式里面，有 RunLevel 的概念，跟 Target 的作用很类似。不同的是，RunLevel 是互斥的，不可能多个 RunLevel 同时启动，但是多个 Target 可以同时启动。
+
+    # 查看当前系统的所有 Target
+    $ systemctl list-unit-files --type=target
+
+    # 查看一个 Target 包含的所有 Unit
+    $ systemctl list-dependencies multi-user.target
+
+    # 查看启动时的默认 Target
+    $ systemctl get-default
+
+    # 设置启动时的默认 Target
+    $ sudo systemctl set-default multi-user.target
+
+    # 切换 Target 时，默认不关闭前一个 Target 启动的进程，
+    # systemctl isolate 命令改变这种行为，
+    # 关闭前一个 Target 里面所有不属于后一个 Target 的进程
+    $ sudo systemctl isolate multi-user.target
+
+Target 与 传统 RunLevel 的对应关系如下
+
+    Traditional runlevel      New target name     Symbolically linked to...
+
+    Runlevel 0           |    runlevel0.target -> poweroff.target       停止系统
+    Runlevel 1           |    runlevel1.target -> rescue.target         单用户模式
+    Runlevel 2           |    runlevel2.target -> multi-user.target     用户定义
+    Runlevel 3           |    runlevel3.target -> multi-user.target     多用户，非图形
+    Runlevel 4           |    runlevel4.target -> multi-user.target     用户定义
+    Runlevel 5           |    runlevel5.target -> graphical.target      多用户，图形化
+    Runlevel 6           |    runlevel6.target -> reboot.target         重新启动
+
+它与 init 进程的主要差别如下
+
+（1）默认的 RunLevel（在 /etc/inittab 文件设置）现在被默认的 Target 取代，位置是 /etc/systemd/system/default.target，通常符号链接到 graphical.target（图形界面）或者 multi-user.target（多用户命令行）。
+
+（2）启动脚本的位置，以前是 /etc/init.d 目录，符号链接到不同的 RunLevel 目录 （比如/etc/rc3.d、/etc/rc5.d等），现在则存放在 /lib/systemd/system 和 /etc/systemd/system 目录。
+
+（3）配置文件的位置，以前 init 进程的配置文件是 /etc/inittab，各种服务的配置文件存放在 /etc/sysconfig 目录。现在的配置文件主要存放在 /lib/systemd 目录，在 /etc/systemd 目录里面的修改可以覆盖原始设置。
+
+#### 设置 systemd 开机自启动你的单元脚本
+
+    https://zhuanlan.zhihu.com/p/620849909
+    https://blog.csdn.net/bandaoyu/article/details/124358513
+
+启动 unit 后有处理：
+
+    用 `systemctl start` 启动后出现在 /run/systemd/ 下
+
+    /usr/lib/systemd/system/ 用 `systemctl enable` 设置为自启动后添加连接文件在 /etc/systemd/system/
+
+如果配置文件里 [Install] 部分设置了开机启动，`systemctl enable` 命令相当于激活指定服务的开机启动。
+
+    如果是开机自启动，一般都是挂载到 /etc/systemd/system/multi-user.target.wants/ 目录下，该目录表示启动了 multi-user.target 之后（即系统启动且运行级别为 3，为系统的默认启动 target）这个目录下的文件都会跟着启动。
+
+systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd/system/ 之间，建立符号链接关系
+
+    $ systemctl enable clamd@scan.service
+
+    等同于
+    $ ln -s '/usr/lib/systemd/system/clamd@scan.service' '/etc/systemd/system/multi-user.target.wants/clamd@scan.service'
+
+与之对应的，`systemctl disable` 命令用于在两个目录之间，撤销符号链接关系，相当于撤销指定服务的开机启动
+
+    systemctl disable clamd@scan.service
+
+##### 调试 systemd 启动服务的过程
+
+先看看配置文件是否有效
+
+    $ systemd-analyze verify xxx.service
+
+再看看服务启动的日志，给出你的服务名即可
+
+    $ journalctl -u xxx.service
+
+一般会发现问题，比如 start 后立即调用了 stop
+
+    https://blog.csdn.net/Peter_JJH/article/details/108446380
+
+    一般认为是 status 判断为 invalid 导致 systemctl 立刻调用了 stop，解决办法是
+
+        服务的配置文件添加： RemainAfterExit=yes
+
+##### 自制的 shell 脚本 让 systemd 用兼容 SystemV 的方式进行自启动
+
+先确认 systemd 已经开启了 systemV 启动脚本 rc.local 的兼容服务
+
+    $ cat /lib/systemd/system/rc-local.service
+    [Unit]
+    Description=/etc/rc.local Compatibility
+    Documentation=man:systemd-rc-local-generator(8)
+    ConditionFileIsExecutable=/etc/rc.local
+    After=network.target
+
+    [Service]
+    Type=forking
+    EnvironmentFile=/etc/systemd/systemd/ros.env
+    ExecStart=/etc/rc.local start
+    TimeoutSec=0
+    GuessMainPID=no
+
+然后执行章节 [SystemV设置开机自启动] 的步骤即可。
+
+##### 自制的 shell 脚本由 systemd 服务调度自启动
+
+    https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
+
+自制一个 systemd 服务，使用 systemd 的格式要求，可以实现开机自启动。
+
+创建 /etc/systemd/system/tproxyrule.service 文件
+
+    [Unit]
+    Description=Tproxy rule
+    After=network.target
+    Wants=network.target
+
+    [Service]
+    Type=oneshot
+    # https://blog.csdn.net/Peter_JJH/article/details/108446380
+    RemainAfterExit=yes
+
+    # 注意分号前后要有空格
+    ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/iptables-restore /etc/iptables/rules.v4
+    ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0/0 dev lo table 100 ; /sbin/iptables -t mangle -F
+
+    # 如果是 nftables，则改为以下命令
+    # ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/nft -f /etc/nftables/rules.v4
+    # ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0/0 dev lo table 100 ; /sbin/nft flush ruleset
+
+    # 如果是执行了一个成功再执行另一个，需要借助外壳
+    ExecStart=/bin/bash -c 'sleep 45 && /bin/bash bin/eum.sh start'
+    或分开步骤
+    ExecStartPre=/usr/bin/sleep 45
+    ExecStart=/bin/bash bin/eum.sh start
+
+    [Install] # 开机自启动必须要有这个字段
+    WantedBy=multi-user.target
+
+执行下面的命令设置 tproxyrule.service 可以开机自动运行
+
+    systemctl daemon-reload
+
+    systemctl start  tproxyrule
+    systemctl enable tproxyrule
+
+验证
+
+    systemctl list-unit-files |grep tproxy
+
+其它示例参见：
+
+    [用 systemd-networkd 配置策略路由](vnn.md think)
+
+    [设置为 systemd 的服务](org03k.md think)
+
+#### 分析启动过程
+
+如果感觉操作系统启动耗时过长，需要分析原因，systemd 有现成的工具
+
+按时间顺序列出启动的模块
+
+    systemd-analyze blame
+
+把各服务的启动情况用 svg 图形进行展示，便于分析
+
+    systemd-analyze plot >file.svg
+
+命令打印严重消耗时间的服务树状表
+
+    systemd-analyze critical-chain
+
+#### 使用 systemd 配置定时任务
+
+定时器文件跟服务同名，后缀不是 .service 而是 .timer
+
+    https://www.freedesktop.org/software/systemd/man/systemd.timer.html
+
+    https://wiki.archlinux.org/title/Systemd/Timers
+
+    https://zhuanlan.zhihu.com/p/365756485
+
+    https://zhuanlan.zhihu.com/p/51357835
+
+查看当前的定时器
+
+    systemctl list-timers
+
+控制单元中几个常用字段的介绍：
+
+字段 OnCalendar= 的定时格式
+
+    https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events
+
+    简写 OnCalendar=daily 等效于 OnCalendar= *-*-* 00:00:00
+
+字段 Persistent=true 指如果错过，开机后会立刻运行
+
+字段 OnActiveSec= 1 m 指延迟 1 分钟后执行
+
+简单示例参见章节 [自動更新Flatpak應用程式](init_a_server think)。
+
+实现在每天的特定时刻启停服务：
+
+    https://zhuanlan.zhihu.com/p/51357835
+
+因为 systemd 的单元词汇表中没有明显的命令来停止或禁用正在运行的服务，所以只能订制。
+
+假设安装了 Minetest 服务器，服务名为 minetest.service
+
+```ini
+# minetest.service
+
+[Unit]
+Description= 运行 Minetest 服务器
+Conflicts= minetest.timer  # 在这里增加限制只运行一次，即启动服务时杀死启动它的计时器
+
+[Service]
+Type= simple
+User= <your user name>
+
+ExecStart= /usr/bin/minetest --server
+ExecStop= /bin/kill -2 $MAINPID
+
+[Install]
+WantedBy= multi-user.targe
+```
+
+新增启动 minetest 的定时器
+
+```ini
+# minetest.timer
+
+[Unit]
+Description= 在下午五到七点内的每分钟都运行 minetest.service
+
+[Timer]
+OnCalendar= *-*-* 17..19:*:00
+Unit= minetest.service
+
+[Install]
+WantedBy= basic.target
+```
+
+新增停止 minetest 的服务
+
+```ini
+# stopminetest.service
+
+[Unit]
+Description= 关闭 Minetest 服务
+Conflicts= minetest.service
+
+[Service]
+Type= oneshot
+ExecStart= /bin/echo "Closing down minetest.service"
+```
+
+新增停止 minetest 的定时器
+
+```ini
+# stopminetest.timer
+
+[Unit]
+Description= 每天晚上七点停止 minetest.service
+
+[Timer]
+OnCalendar= *-*-* 19:05:00
+Unit= stopminetest.service
+
+[Install]
+WantedBy= basic.target
+```
+
+#### 这货还可以负责阻止关机、睡眠
+
+提供了在系统更新、CD 刻录过程中阻止关机的控制
+
+    https://www.freedesktop.org/wiki/Software/systemd/inhibit/
+
+## 定时任务 crontab
+
+    https://www.debian.org/doc/manuals/debian-handbook/sect.task-scheduling-cron-atd.zh-cn.html
+
+    http://c.biancheng.net/view/1092.html
+
+    https://www.cnblogs.com/GavinSimons/p/9132966.html
+
+    各种不能执行的原因 https://segmentfault.com/a/1190000020850932
+                        https://github.com/tony-yin/Why-Cronjob-Not-Work
+
+    https://www.cnblogs.com/pengdonglin137/p/3625018.html
+    https://www.cnblogs.com/utopia68/p/12221769.html
+    https://blog.csdn.net/zhubin215130/article/details/43271835
+    https://developer.aliyun.com/article/541971
+
+### 1、crontab 与 anacron
+
+crontab
+
+    crontab命令被用来提交和管理用户的需要周期性执行的任务，与windows下的计划任务类似，当安装完成操作系统后，默认会安装此服务工具，并且会自动启动crond服务，crond进程每分钟会定期检查是否有要执行的任务，如果有则自动执行该任务。依赖于crond服务
+
+anacron
+
+    cron的补充，能够实现让cron因为各种原因在过去的时间该执行而未执行的任务在恢复正常执行一次。依赖于nancron服务
+
+    debian 中安装 anacron 软件包会禁用 cron 在/etc/cron.{daily，weekly，monthly} 目录中的脚本，仅由 anacron 调用，以避免 anacron 和 cron 重复运行这些脚本。 cron 命令仍然可用并处理其他计划任务（特别是用户安排的计划任务）。
+
+### 2、Crontab任务种类及格式定义
+
+cron分为系统cron和用户cron，用户cron指 /var/spool/cron/crontabs/$USER 文件，系统cron指
+/etc/crontab 文件 以及 /etc/cron.{daily，weekly，monthly}/ 目录 ，这两者是存在部分差异的。
+
+系统cron 在命令行运行之前有一个额外的字段user。
+
+(1)、系统cron任务：/etc/crontab 文件
+
+一般配置系统级任务，开机即可启动，注意格式比用户级多了个执行的user。
+
+    cd /etc
+
+    $ ls -l|grep cron
+    drwxr-xr-x 2 root root    4096 May 13 17:28 cron.d
+    drwxr-xr-x 2 root root    4096 May 27 06:49 cron.daily
+    drwxr-xr-x 2 root root    4096 Jul 12  2021 cron.hourly
+    drwxr-xr-x 2 root root    4096 Jul 12  2021 cron.monthly
+    drwxr-xr-x 2 root root    4096 Jul 12  2021 cron.weekly
+    -rw-r--r-- 1 root root    1042 Oct 11  2019 crontab
+
+    $ cat crontab
+    # /etc/crontab: system-wide crontab
+    # Unlike any other crontab you don't have to run the `crontab'
+    # command to install the new version when you edit this file
+    # and files in /etc/cron.d. These files also have username fields,
+    # that none of the other crontabs do.
+
+    SHELL=/bin/sh
+    PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+    # Example of job definition:
+    # .---------------- minute (0 - 59)
+    # |  .------------- hour (0 - 23)
+    # |  |  .---------- day of month (1 - 31)
+    # |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+    # |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+    # |  |  |  |  |
+    # *  *  *  *  * user-name command to be executed
+    17 *    * * *   root    cd / && run-parts --report /etc/cron.hourly
+    25 6    * * *   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+    47 6    * * 7   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+    52 6    1 * *   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
+    # 分钟 小时 天 月 周 用户 任务
+
+run-parts 参数运行指定目录中的所有脚本。
+
+(2)、用户cron任务：/var/spool/cron/$USER 文件
+
+编辑指定用户的crontab设置
+
+    # 显示当前用户的定时任务
+    $ crontab -l
+    no crontab for user
+
+    # 显示指定用户的定时任务
+    $ sudo crontab -u root -l
+    no crontab for root
+
+    # 编辑指定用户的定时任务
+    sudo crontab -u root -e
+
+命令行格式
+
+    # 分钟 小时 天 月 周 任务
+
+(3)、anacron：/etc/anacrontab 检查频率 分钟 任务注释信息 运行的任务
+
+(4)、在启动时运行命令
+
+只是在系统启动后，单次执行一个命令，可以使用 @reboot 宏（仅仅重启 cron 命令不会触发使用@reboot调度的命令）。该宏表示了 crontab条目的前五个区段。
+
+### 3、时间的有效取值
+
+    代表意义    分钟    小时    日    月    周    命令
+    ------------------------------------------------
+    数字范围    0~59    0~23    1~31    1~12    0~7    就命令啊
+
+    周的数字为0或7时，都代表“星期天”的意思。另外，还有一些辅助的字符，大概有下面这些：
+
+    特殊字符      代表意义
+    ------------------------
+    *(星号)    代表任何时刻都接受的意思。举例来说，范例一内那个日、月、周都是*，就代表着不论何月、何日的礼拜几的12：00都执行后续命令的意思。
+
+    ,(逗号)    代表都使用的时段。举例来说，如果要执行的工作是3：00与6：00时： 0 3,6 * * * command
+
+    -(减号)    代表一段时间范围内，举例来说，8点到12点之间的每小时的20分都进行一项工作：20 8-12 * * * command
+
+    /n(斜线)   n代表数字，即是每隔n单位间隔的意思，例如每五分钟进行一次，则： */5 * * * * command
+
+    用*与/5来搭配，也可以写成0-59/5，意思相同
+
+### 4、时间通配表示
+
+1)对应时间的所有有效取值
+
+    3 * * * *         # 每天每小时的第三分钟执行一次
+
+    3 * * * 7         # 每周日每小时的第三分钟执行一次
+
+    13 12 6 7 *        # 每年的7月6日12点13分执行一次
+
+2)离散时间点：
+
+    10,40 02 * * 2,5            # 每周二和周五的凌晨2点10分和40分执行一次
+
+3)连续时间点：
+
+    10 02 * * 1-5                # 周一至周五的凌晨2点10分执行一次
+
+4)对应取值范围内每多久一次
+
+    */3 * * * *                   # 每三分钟执行一次
+
+注意：比所要求小的时间单位必须要给定时间点(每天执行 那么分钟 小时都要给定时间 不能用*)
+
+如：
+
+    08 */2 * * *                  # 每两小时执行一次
+
+    10 04 */2 * *                 # 每两天执行一次
+
+### 5、cron的环境变量
+
+cron 启动任务时，环境变量非常少，即使是用户级任务，也不会执行用户的 .profile 文件，所以，如果需要操作数据库等跟用户相关的脚本或命令，一般采用在用户脚本中执行环境变量文件，然后再执行相关操作。
+
+cron 在 crontab 文件中的默认 PATH=/usr/bin:/bin，cron 执行所有命令都用该PATH环境变量指定的路径下去找。
+
+详见章节 [坑：环境变量是单独的跟用户登陆后的环境变量不一样]
+
+### 6、执行结果将以邮件形式发送
+
+    */3 * * * * /bin/cat /etc/fstab > /dev/null         # 错误信息仍然发送给管理员
+
+    */3 * * * * /bin/cat /etc/fstab &> /dev/null         # 所有信息都不发送给管理员，无论是否正确执行
+
+在 /var/mail/ 目录下查看邮件
+
+在 /var/log/syslog 文件查看系统日志，debian默认的 rsyslog 不记录 cron 日志，需要手动开启
+
+注意 /var 的空间不要被填满了
+
+### 坑：区分crontab命令和crontab文件
+
+用 crontab -e 命令配置是针对当前用户的定时任务，而编辑 /etc/crontab 文件是针对系统的任务。
+
+cron服务每分钟不仅要读一次 /var/spool/cron/crontabs/ 内的所有文件，还读一次 /etc/crontab 文件。
+
+使用下面的命令，会在 vi 里打开crontab的内容以供编辑：
+
+    crontab -e
+
+如果你只想看看，不需要编辑，可以使用以下的命令
+
+    crontab -l
+
+要删除crontab的内容，就是删除所有的计划任务，可以这样：
+
+    crontab -r
+
+/etc/crontab 文件的内容如下
+
+```shell
+
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名文件中
+
+# For details see man 4 crontabs
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+0 3 1 */2 0 root systemctl stop nginx; /usr/local/bin/certbot renew; systemctl restart nginx
+
+```
+
+星号  如果某个部分出现的是星号而不是数字，就是说明这个部分表示的时间全部会执行。
+
+    1.分钟（0-59）
+    2.小时（0-23）
+    3.一个月的哪一天（1-31）
+    4.一年中的哪个月（1-12）
+    5.星期几（0是星期天）
+
+每小时运行3次，在0分，10分，和20分时
+
+    0,10,20 * * * * user-name  command
+
+每5分钟运行一次
+
+    */5 * * * * user-name  command
+
+每2小时的零分运行一次
+
+    00 */2 * * * user-name  command
+
+5到10点的每个整点运行一次
+
+    0 5-10 * * * user-name  command
+
+### 坑：crontab文件最后要有个空行
+
+    crontab要求cron中的每个条目都要以换行符结尾
+
+对crontab文件的最后一行任务设置来说，如果后面没有一个空白行，那说明它没有换行符，不会被crotnab执行。。。
+
+解决方案
+
+    养成给cron中每个条目后面都添加一个空行的习惯
+
+如果你用Windows编辑的crontab文件，注意必须改为 unix格式保存。
+
+这也算unix文本文件的通病了，很多linux命令的执行都以行结束为标志，从文件中读取的最后一行如果直接结束时没有换行符的，导致永远无法执行。。。
+
+所以，确保您的crontab文件在末尾有一个空白行。
+
+最好养成习惯，给crontab文件的中每个条目下面添加一个空行，文件的最后一行多敲一个回车再保存。
+
+另外文件格式注意，各个操作系统的行结束符是不一样的，linux下 不能是 Windows 文本格式的 ^M、macOS 文本格式的 \r 等，必须是unix格式，这样的换行符才是 \n。
+
+很多编辑软件编辑ftp上的文件，或上传到ftp时，默认都做格式转换，其实容易混淆，还不如直接设置，保留原文件格式，不要自动转换。这样查看文件的时候非常方便，一目了然，unix下的vi显示Windows文件会出现很多乱码。在Windows下编辑unix文件，现在流行的编辑软件也都支持正确显示这个格式了，不要让他来回的转。
+
+### 坑：修改 /etc/crontab 文件后要加载到cron服务
+
+命令和文件名相同，注意区分
+
+    crontab /etc/crontab
+
+debian 不需要这么做了
+
+    $ cat /etc/crontab
+    # /etc/crontab: system-wide crontab
+    # Unlike any other crontab you don't have to run the `crontab'
+    # command to install the new version when you edit this file
+    # and files in /etc/cron.d. These files also have username fields,
+    # that none of the other crontabs do.
+
+### 坑：环境变量是单独的跟用户登陆后的环境变量不一样
+
+root用户登陆后的PATH
+
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+普通用户登陆后的PATH
+
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
+
+调测：将cron中的环境变量打印出来：
+
+    * * * * * env > /tmp/env.output
+
+一分钟后查看
+
+    $ cat /tmp/env.output
+    HOME=/root
+    LOGNAME=root
+    PATH=/usr/bin:/bin
+    LANG=C.UTF-8
+    SHELL=/bin/sh
+    LC_ALL=C.UTF-8
+    PWD=/root
+
+cron中的环境变量与用户登陆系统后的env环境变量不一样（cron会忽略 /etc/environment 文件），尤其是PATH，只有/usr/bin:/bin，也就是说在cron中运行shell命令，如果不是全路径，只能运行/usr/bin或/bin这两个目录中的标准命令，而像/usr/sbin、/usr/local/bin等目录中的非标准命令是不能运行的。详见章节 [环境变量文件的说明] <shellcmd.md>。
+
+所以定时任务的命令行一般都要先执行下 profile、bash_profile等用户环境的变量文件，然后才能执行用户脚本。或者在cron脚本文件头部声明PATH，或者在用户脚本中执行环境变量文件
+
+    . /etc/profile
+
+配置定时任务的格式
+
+    01 03    * * * . /etc/profile; /bin/bash /usapce/code/test1.sh
+
++ 否则你就会遇到一个经典问题：
+
+    手动输入：
+
+        /bin/bash /usapce/code/test1.sh
+
+    可以执行，但放在crontab里就总是不起作用。
+
+### 坑：命令解释器默认是sh而不是bash
+
+从坑一的变量 SHELL=/bin/sh 可以看到默认的解释器不是bash，而大多数命令脚本都是用bash来解释执行的。所以配置定时任务时，要明确的指定执行命令的解释器
+
+    bash -c "mybashcommand"
+
+    或
+    /bin/bash /usapce/code/test1.sh
+
+或在脚本内的第一行指定：
+
+    #!/bin/bash
+
+### 坑：需要执行权限
+
+如果设置了非root用户的定时任务，需要注意很多权限问题，比如该用户对操作的文件或目录是否存在权限等。
+
+解决方案
+
+    # correct permission
+    sudo chmod 600 /var/spool/cron/crontabs/user
+
+    # signal crond to reload the file
+    sudo touch /var/spool/cron/crontabs
+
+### 坑：防止屏幕打印
+
+把脚本的输出和报错信息都打印到空
+
+    xxx.sh >/dev/null 2>&1
+
+### 坑：定时时间的书写格式不统一
+
+一些特殊选项各个平台支持不一样，有的支持，有的不支持，例如2/3、1-5、1,3,5
+
+这个只能试一下才知道。
+
+### 坑：corn服务默认不启动
+
+查看当前系统是否有进程
+
+    $ ps -ef|grep cron
+    root       398     1  0 May08 ?        00:00:07 /usr/sbin/cron -f
+
+Debian 等现在用 systemd 配置 cron 服务，拉起来的 cron 进程
+
+    $ systemctl status cron
+    ● cron.service - Regular background program processing daemon
+    Loaded: loaded (/lib/systemd/system/cron.service; enabled; vendor preset: enabled)
+    Active: active (running) since Sun 2022-05-08 09:10:43 UTC; 1 months 27 days ago
+        Docs: man:cron(8)
+    Main PID: 398 (cron)
+        Tasks: 1 (limit: 1148)
+    Memory: 2.3M
+    CGroup: /system.slice/cron.service
+            └─398 /usr/sbin/cron -f
+
+### 坑：百分号需要转义字符
+
+    https://unix.stackexchange.com/questions/29578/how-can-i-execute-date-inside-of-a-cron-tab-job
+
+当cron定时执行命令中，有百分号并且没有转义的时候，cron执行会出错，比如执行以下cron：
+
+    0 * * * * echo hello >> ~/cron-logs/hourly/test`date "+%d"`.log
+
+会有如下报错：
+
+    /bin/sh: -c: line 0: unexpected EOF while looking for matching ``'
+    /bin/sh: -c: line 1: syntax error: unexpected end of file
+
+即cron中换行符或%前的命令会被shell解释器执行，但是%会被认为新一行的字符，并且%后所有的数据都会以标准输出的形式发送给命令。
+
+解决方案：为百分号做转义，即在%前添加反斜杠\
+
+    0 * * * * echo hello >> ~/cron-logs/hourly/test`date "+\%d"`.log
+
+### 坑：crontab文件里的变量使用有限制
+
+因为在 crontable 里面只能声明变量，不能对变量进行操作或者执行其他任何shell命令的，所以下述的shell字符串拼接是不会成功的，所以只能声明变量，然后在命令中引用变量。
+
+    SOME_DIR=/var/log
+    MY_LOG_FILE=${SOME_DIR}/some_file.log
+
+    BIN_DIR=/usr/local/bin
+    MY_EXE=${BIN_DIR}/some_executable_file
+
+    0 10 * * * ${MY_EXE} some_param >> ${MY_LOG_FILE}
+
+解决方案：
+
+方案1： 直接声明一个变量，值是完整拼接好的字符串
+
+    SOME_DIR=/var/log
+    MY_LOG_FILE=/var/log/some_file.log
+
+    BIN_DIR=/usr/local/bin
+    MY_EXE=/usr/local/bin/some_executable_file
+
+    0 10 * * * ${MY_EXE} some_param >> ${MY_LOG_FILE}
+
+方案2： 声明多个变量，在命令中引用可以拼接变量
+
+    SOME_DIR=/var/log
+    MY_LOG_FILE=some_file.log
+
+    BIN_DIR=/usr/local/bin
+    MY_EXE=some_executable_file
+
+    0 10 * * * ${BIN_DIR}/${MY_EXE} some_param >> ${SOME_DIR}/${MY_LOG_FILE}
+
+### 坑：用户密码过期也不会启动定时任务
+
+当用户密码过期也会导致cron脚本执行失败。
+
+Linux下新建用户密码过期时间是从/etc/login.defs文件中PASS_MAX_DAYS提取的，普通系统默认就是99999，而有些安全操作系统是90天，这个参数只影响新建用户的密码过期时效，如果之前该用户已经密码过期了，该这个参数没用。
+
+将用户密码有效期设置成永久有效期或者延长有效期
+
+    chage -M <expire> <username>
+
+    或
+    passwd -x -1 <username>
+
+### 坑：切换时区后要重启cron服务
+
+当修改系统时区后，无论是之前已经存在的cron还是之后新创建的cron，脚本中设置的定时时间都以旧时区为准，比如原来时区是Asia/Shanghai，时间为10:00，然后修改时区为Europe/Paris，时间变为3:00，此时你设置11:00的定时时间，cron会在Asia/Shanghai时区的11:00执行。
+
+解决方案1：
+
+重启crond服务
+
+    sudo systemctl restart cron
+
+解决方案2：
+
+    kill cron进程，因为cron进程是自动重生的
+
 ## Linux 桌面环境
 
 老老实实用最多人用的 GNOME 吧，其它桌面环境坑更多，随便就有软件运行不起来。
@@ -12136,1540 +13673,3 @@ dconf 是一个基于键的配置系统，用于管理用户设置。它是 Red 
     dconf 命令行工具用于从/向 dconf 数据库读写单个值或整个目录，把它理解为注册表数据维护用的底层管理工具。
 
 如果需要修改桌面环境下的系统的配置参数，一般可以使用图形化工具 dconf editor，或 gsettings 命令行工具。
-
-## 使用 GRUB 管理操作系统启动引导
-
-基于 BIOS 的系统引导
-
-    https://docs.fedoraproject.org/en-US/quick-docs/installing-grub2/#installing-grub-2-on-a-bios-system
-
-基于 UEFI 的系统引导
-
-    https://docs.fedoraproject.org/en-US/quick-docs/installing-grub2/#installing-grub-2-configuration-on-uefi-system
-
-## 开机自启动 SystemV(init) 和 systemd
-
-    https://www.debian.org/doc/manuals/debian-handbook/unix-services.zh-cn.html#sect.systemd
-
-    https://zhuanlan.zhihu.com/p/140273445
-
-    http://ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
-
-Linux 引导
-
-Linux 主机从关机状态到运行状态的完整启动过程很复杂，但它是开放的并且是可知的。在详细介绍之前，我将简要介绍一下从主机硬件被上电到系统准备好用户登录的过程。大多数时候，“引导过程”被作为一个整体来讨论，但这是不准确的。实际上，完整的引导和启动过程包含三个主要部分：
-
-    硬件引导：初始化系统硬件
-    Linux 引导(boot)：加载 Linux 内核和 systemd
-    Linux 启动(startup)：systemd 为主机的生产性工作做准备
-
-Linux 启动阶段始于内核加载了 init 或 systemd（取决于具体发行版使用的是旧的方式还是还是新的方式）之后。init 和 systemd 程序启动并管理所有其它进程，它们在各自的系统上都被称为“所有进程之母”。
-
-### SystemV
-
-unix systemV以来的习惯是使用 Bash 脚本来完成启动。
-
-    service foobar start
-
-    service foobar stop
-
-内核启动 init 程序（这是一个编译后的二进制）后，init 启动 rc.sysinit 脚本，该脚本执行许多系统初始化任务。
-
-rc.sysinit 执行完后，init 启动 /etc/rc.d/rc 脚本，该脚本依次启动 /etc/rc.d/rcX.d 中由 SystemV 启动脚本定义的各种服务。其中 X 是待启动的运行级别号。这些级别在/etc/inittab 文件里指定。
-
-比如，在命令行进入单机模式的命令是 `init 1`
-
-    0 - 停机
-
-    1 - 单用户模式
-
-    2 - 多用户，没有 NFS
-
-    3 - 完全多用户模式(标准的运行级)
-
-    4 - 系统保留
-
-    5 - X11 (xwindow)
-
-    6 - 重新启动
-
-init 程序最先运行的服务是放在 /etc/rc.d/ 目录下的文件。
-
-在大多数的Linux 发行版本中，启动脚本都是位于 /etc/rc.d/init.d/ 中的，这些脚本被用 ln 命令连接到 /etc/rc.d/rcX.d/ 目录。(这里的X 就是运行级0-6) ,每个不同级别的目录都链接了 /etc/rc.d/init.d/ 中的一个脚本。
-
-所有这些程序都是可读的shell脚本，SystemV 服务是串行启动的，一次只能启动一个服务，每个启动脚本都被编了号，以便按特定顺序启动预期的服务。可以通读这些脚本确切了解整个启动过程中发生的事情。
-
-注：在较新版本的 Linux 系统中，目录 /etc/rc.d/init.d/ 和 /etc/rc.d/rcX.d/ 简化为 /etc/init.d/ 和 /etc/rcX.d/。
-
-#### SystemV 设置开机自启动
-
-1、在 /etc/init.d/ 目录下添加需要执行的 .sh 脚本，脚本里调用需要开机启动的程序（shell文件格式参考目录下其它文件）
-
-```shell
-
-#!/bin/sh
-### BEGIN INIT INFO
-# Provides:       nginx
-# Required-Start:    $local_fs $remote_fs $network $syslog $named
-# Required-Stop:     $local_fs $remote_fs $network $syslog $named
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Short-Description: starts the nginx web server
-# Description:       starts nginx using start-stop-daemon
-### END INIT INFO
-
-your_cmd_here
-
-exit 0
-
-```
-
-Provides 的名字是唯一的，也就是在所有的开机启动项中，Provides不能有任何同名冲突。
-
-需要执行的命令，按照正常的Bash Shell书写方式书写即可。
-
-需要后台静默运行的程序，请使用 `nohup [需要执行的命令] >/dev/null 2>&1 &` 方式来启动！
-
-2、给shell脚本test.sh添加执行权限
-
-    chmod 755 test.sh
-
-3、添加自启动命令
-
-    update-rc.d test.sh defaults
-
-4、删除自启动的命令
-
-    update-rc.d -f test.sh remove
-
-简单的命令脚本调用，可以直接修改 /etc/rc.local 文件，在exit 0之前增加需要运行的脚本
-
-    1.vi /etc/rc.local
-
-        #!/bin/sh -e
-
-        nohup /usr/local/bin/your_shell_script.sh >/dev/null 2>&1 &
-
-        exit 0
-
-    2、给文件添加执行权限
-
-        sudo chmod 755 rc.local
-
-        chmod 755 /usr/local/bin/your_shell_script.sh
-
-    3、重启计算机，程序会被root用户调用起来。
-
-#### systemd 对 SystemV 的兼容性
-
-    /etc/init.d/ 下的脚本，有不少是对 systemd 兼容的，写法参见具体文件，如 nginx、rng-tools
-
-    /etc/rc.local 文件，在systemd中也添加了控制文件，可以保持对 SystemV 的兼容性
-
-systemd 保持对 SystemV 的兼容性使用的控制文件
-
-    /usr/lib/systemd/system/systemd-initctl.service
-
-    /usr/lib/systemd/system/rc-local.service
-
-### systemd
-
-    https://systemd.io/
-
-        https://www.freedesktop.org/software/systemd/man/
-        https://docs.freebsd.org/en/books/handbook/wayland/
-
-        https://fedoramagazine.org/series/systemd-series/
-
-        https://docs.fedoraproject.org/en-US/quick-docs/understanding-and-administering-systemd/
-
-    systemd 中文手册
-
-        http://www.jinbuguo.com/systemd/systemd.index.html
-
-        https://www.junmajinlong.com/linux/index/#systemd%E7%B3%BB%E5%88%97
-            开机自启动 https://www.junmajinlong.com/linux/systemd/auto_tasks_on_boot/
-
-大多数 Linux 发行版都过渡到使用 systemd 管理系统了，但还是有讨厌 systemd 的发行版：Devuan 是使用 SysV init 软件代替 Debian systemd 包的 Debian 分支，提供了多种初始化系统供用户选择，其中包括 SysV init、sinit、openrc、runit、s6 和 shepherd
-
-    https://www.devuan.org/
-
-systemd 工具是编译后的二进制文件，但该工具包是开放的，因为所有配置文件都是 ASCII 文本文件。可以通过各种 GUI 和命令行工具来修改启动配置，也可以添加或修改各种配置文件来满足特定的本地计算环境的需求。几乎可以管理正在运行的 Linux 系统的各个方面。它可以管理正在运行的服务，同时提供比 SystemV 多得多的状态信息。它还管理硬件、进程和进程组、文件系统挂载等。systemd 几乎涉足于现代 Linux 操作系统的每方面，使其成为系统管理的一站式工具。
-
-    systemd 在启动阶段并行地启动尽可能多的服务。这样可以加快整个的启动速度，使得主机系统比 SystemV 更快地到达登录屏幕。
-
-systemd 并不是一个命令，而是一组命令，涉及到系统管理的方方面面。根据编译过程中使用的选项（不在本系列中介绍），systemd 可以有多达 69 个二进制可执行文件执行以下任务，其中包括：
-
-    提供基本的系统配置工具，例如主机名、日期、语言环境、已登录用户的列表，正在运行的容器和虚拟机、系统帐户、运行时目录及设置，用于简易网络配置、网络时间同步、日志转发和名称解析的守护进程。
-
-    提供套接字管理。
-
-    能感知分层的文件系统挂载和卸载功能可以更安全地级联挂载的文件系统。
-
-    允许主动的创建和管理临时文件，包括删除。
-
-    D-Bus 的接口提供了在插入或移除设备时运行脚本的能力。这允许将所有设备（无论是否可插拔）都被视为即插即用，从而大大简化了设备的处理。
-
-    分析启动环节的工具可用于查找耗时最多的服务。
-
-    它包括用于存储系统消息的日志以及管理日志的工具。
-
-    systemctl 服务管理和报告提供了比 SystemV 更多的服务状态数据。
-
-对之前系统的兼容性
-
-    systemd 会检查老的 SystemV init 目录，以确认是否存在任何启动文件。如果有，systemd 会将它们作为配置文件以启动它们描述的服务，参见章节 [systemd 对 SystemV 的兼容性]。
-
-    systemd 定时器提供类似 cron 的高级功能，包括在相对于系统启动、systemd 启动时间、定时器上次启动时间的某个时间点运行脚本。它提供了一个工具来分析定时器规范中使用的日期和时间。
-
-#### 基本管理命令
-
-    https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units
-
-systemctl 是 Systemd 的主命令，用于管理系统
-
-    # 重启系统
-    $ sudo systemctl reboot
-
-    # 关闭系统，切断电源
-    $ sudo systemctl poweroff
-
-    # CPU停止工作
-    $ sudo systemctl halt
-
-    # 暂停系统
-    $ sudo systemctl suspend
-
-    # 让系统进入休眠状态
-    $ sudo systemctl hibernate
-
-    # 让系统进入交互式休眠状态
-    $ sudo systemctl hybrid-sleep
-
-    # 启动进入救援状态（单用户状态）
-    $ sudo systemctl rescue
-
-systemd-analyze 命令用于查看启动耗时
-
-    # 查看启动耗时
-    $ systemd-analyze
-
-    # 查看每个服务的启动耗时
-    $ systemd-analyze blame
-
-    # 显示瀑布状的启动过程流
-    $ systemd-analyze critical-chain
-
-    # 显示指定服务的启动流
-    $ systemd-analyze critical-chain atd.service
-
-hostnamectl 命令用于查看当前主机的信息
-
-    # 显示当前主机的信息
-    $ hostnamectl
-
-    # 设置主机名。
-    $ sudo hostnamectl set-hostname rhel7
-
-localectl 命令用于查看本地化设置
-
-    # 查看本地化设置
-    $ localectl
-
-    # 设置本地化参数。
-    $ sudo localectl set-locale LANG=en_GB.utf8
-    $ sudo localectl set-keymap en_GB
-
-timedatectl 命令用于查看当前时区设置
-
-    # 查看当前时区设置
-    $ timedatectl
-
-    # 显示所有可用的时区
-    $ timedatectl list-timezones
-
-    # 设置当前时区
-    $ sudo timedatectl set-timezone America/New_York
-    $ sudo timedatectl set-time YYYY-MM-DD
-    $ sudo timedatectl set-time HH:MM:SS
-
-loginctl 命令用于查看当前登录的用户
-
-    # 列出当前session
-    $ loginctl list-sessions
-
-    # 列出当前登录用户
-    $ loginctl list-users
-
-    # 列出显示指定用户的信息
-    $ loginctl show-user ruanyf
-
-#### systemctl 系统资源管理命令
-
-Systemd 可以管理所有系统资源。不同的资源统称为 Unit（单位）。
-
-Unit 一共分成12种
-
-    Service unit：系统服务
-    Target unit：多个 Unit 构成的一个组
-    Device Unit：硬件设备
-    Mount Unit：文件系统的挂载点
-    Automount Unit：自动挂载点
-    Path Unit：文件或路径
-    Scope Unit：不是由 Systemd 启动的外部进程
-    Slice Unit：进程组
-    Snapshot Unit：Systemd 快照，可以切回某个快照
-    Socket Unit：进程间通信的 socket
-    Swap Unit：swap 文件
-    Timer Unit：定时器
-
-systemd 默认启用的系统级组件配置在 /usr/lib/systemd/system-preset/ 下
-
-查看当前系统的正在运行的所有 Unit
-
-    # 列出正在运行的 Unit
-    $ systemctl list-units
-
-    # 列出所有Unit，包括没有找到配置文件的或者启动失败的
-    $ systemctl list-units --all
-
-    # 列出所有没有运行的 Unit
-    $ systemctl list-units --all --state=inactive
-
-    # 列出所有加载失败的 Unit
-    $ systemctl list-units --failed
-
-    # 列出所有正在运行的、类型为 service 的 Unit
-    $ systemctl list-units --type=service
-
-列出所有已经安装的 unit 文件
-
-    systemctl list-unit-files
-
-显示指定的 unit 文件内容
-
-    systemctl cat xxx.service
-
-编辑指定的 unit 文件，新文件默认放置在目录 /etc/systemd/system/ 下
-
-    $ sudo systemctl edit --force --full xxx.service
-
-    脚本化直接写入 https://unix.stackexchange.com/questions/459942/using-systemctl-edit-via-bash-script
-    $ sudo su
-    # env SYSTEMD_EDITOR=tee systemctl edit --force --full xxx.service <<EOF
-    [Service]
-    ExecStartPre=/bin/sleep 5
-
-    EOF
-
-查看系统状态和单个 Unit 的状态
-
-    # 显示系统状态
-    $ systemctl status
-
-    # 显示单个 Unit 的状态
-    $ sysystemctl status bluetooth.service
-
-    # 显示远程主机的某个 Unit 的状态
-    $ systemctl -H root@rhel7.example.com status httpd.service
-
-三个查询状态的简单方法，主要供脚本内部的判断语句使用
-
-    # 显示某个 Unit 是否正在运行
-    $ systemctl is-active application.service
-
-    # 显示某个 Unit 是否处于启动失败状态
-    $ systemctl is-failed application.service
-
-    # 显示某个 Unit 服务是否建立了启动链接
-    $ systemctl is-enabled application.service
-
-启动和停止 Unit（主要是 service）
-
-    # 立即启动一个服务
-    $ sudo systemctl start apache.service
-
-    # 立即停止一个服务
-    $ sudo systemctl stop apache.service
-
-    # 重启一个服务
-    $ sudo systemctl restart apache.service
-
-    # 杀死一个服务的所有子进程
-    $ sudo systemctl kill apache.service
-
-    # 重新加载一个服务的配置文件
-    $ sudo systemctl reload apache.service
-
-    # 重载所有修改过的配置文件
-    $ sudo systemctl daemon-reload
-
-    # 显示某个 Unit 的所有底层参数
-    $ systemctl show httpd.service
-
-    # 显示某个 Unit 的指定属性的值
-    $ systemctl show -p CPUShares httpd.service
-
-    # 设置某个 Unit 的指定属性
-    $ sudo systemctl set-property httpd.service CPUShares=500
-
-systemctl list-jobs 列出当前正在执行的任务，比如关机/重启需要很长时间，看看咋回事
-
-systemctl list-dependencies 命令列出一个 Unit 的所有依赖
-
-    $ systemctl list-dependencies nginx.service
-    nginx.service
-    ● ├─system.slice
-    ● └─sysinit.target
-    ●   ├─dev-hugepages.mount
-    ●   ├─keyboard-setup.service
-    ●   ├─systemd-update-utmp.service
-    ...
-    ●   ├─cryptsetup.target
-    ●   ├─local-fs.target
-    ●   │ ├─-.mount
-    ●   │ ├─boot.mount
-    ●   │ ├─systemd-fsck-root.service
-    ●   │ └─systemd-remount-fs.service
-    ●   └─swap.target
-
-上面命令的输出结果之中，有些依赖是 Target 类型，默认不会展开显示。如果要展开 Target，就需要使用--all参数
-
-    systemctl list-dependencies --all nginx.service
-
-#### journalctl 日志管理命令
-
-Systemd 统一管理所有 Unit 的日志，可以只用 journalctl 一个命令，查看所有日志（内核日志和应用日志）。
-
-日志的配置文件是 /etc/systemd/journald.conf。
-
-journalctl 功能强大，用法非常多
-
-    # 查看所有日志（默认情况下 ，只保存本次启动以来的日志）
-    $ journalctl
-
-    # 日志默认分页输出，比较别扭，在屏幕上不换行，使用 --no-pager 改为正常的标准输出
-    $ journalctl --no-pager
-
-    # 实时滚动显示最新日志
-    $ journalctl -f
-
-    # 查看某个 Unit 的日志
-    $ journalctl -u nginx.service
-    $ journalctl -u nginx.service --since today
-
-    # 实时滚动显示某个 Unit 的最新日志
-    $ journalctl -u nginx.service -f
-
-    # 合并显示多个 Unit 的日志
-    $ journalctl -u nginx.service -u php-fpm.service --since today
-
-    # 查看内核日志（不显示应用日志）
-    $ journalctl -k
-
-    # 查看系统本次启动的日志
-    $ journalctl -b
-    $ journalctl -b -0
-
-    # 查看上一次启动的日志（需更改设置）
-    $ journalctl -b -1
-
-    # 查看指定时间的日志
-    $ journalctl --since="2012-10-30 18:17:16"
-    $ journalctl --since "20 min ago"
-    $ journalctl --since yesterday
-    $ journalctl --since "2015-01-10" --until "2015-01-11 03:00"
-    $ journalctl --since 09:00 --until "1 hour ago"
-
-    # 显示尾部的最新10行日志
-    $ journalctl -n
-
-    # 显示尾部指定行数的日志
-    $ journalctl -n 20
-
-    # 查看指定服务的日志
-    $ journalctl /usr/lib/systemd/systemd
-
-    # 查看指定进程的日志
-    $ journalctl _PID=1
-
-    # 查看某个路径的脚本的日志
-    $ journalctl /usr/bin/bash
-
-    # 查看指定用户的日志
-    $ journalctl _UID=33 --since today
-
-    # 查看指定优先级（及其以上级别）的日志，共有8级
-    #   0: emerg
-    #   1: alert
-    #   2: crit
-    #   3: err
-    #   4: warning
-    #   5: notice
-    #   6: info
-    #   7: debug
-    $ journalctl -p err -b
-
-    # 以 JSON 格式（单行）输出
-    $ journalctl -b -u nginx.service -o json |jq
-
-    # 以 JSON 格式（多行）输出，可读性更好
-    $ journalctl -b -u nginx.serviceqq -o json-pretty
-
-    # 显示日志占据的硬盘空间
-    $ journalctl --disk-usage
-
-    # 指定日志文件占据的最大空间
-    $ journalctl --vacuum-size=1G
-
-    # 指定日志文件保存多久
-    $ journalctl --vacuum-time=1years
-
-#### Unit 单元配置文件
-
-    https://wiki.archlinux.org/title/Systemd#Writing_unit_files
-
-    https://www.freedesktop.org/software/systemd/man/systemd.unit.html
-
-    https://www.jinbuguo.com/systemd/systemd.service.html#
-
-每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit。
-
-编辑单元文件有现成的命令，见章节 [systemctl 系统资源管理命令]。
-
-systemd 支持 unit 多个位置存放，最主要的存放位置是：
-
-    /usr/lib/systemd/system/: units provided by installed packages 各种配置文件都放在这里。
-
-    /etc/systemd/system/: units installed by the system administrator 在执行 `systemctl enable` 启动服务后，会自动在这里放置链接文件指向上面的配置文件，以及子目录。
-
-查看全部位置：
-
-    systemctl show --property=UnitPath --no-pager
-
-    (--system)
-    /etc/systemd/system             System units created by the administrator
-    /usr/local/lib/systemd/system   System units installed by the administrator
-    /usr/lib/systemd/system         System units installed by the distribution package manager
-
-    (--user)
-    $HOME/.config/systemd/user  User configuration
-    /etc/systemd/user           User units created by the administrator
-    /usr/local/lib/systemd/user User units installed by the administrator
-    /usr/lib/systemd/user       User units installed by the distribution package manager
-
-列出所有配置文件
-
-    # 列出所有配置文件
-    $ systemctl list-unit-files
-
-    # 列出指定类型的配置文件
-    $ systemctl list-unit-files --type=service
-
-    这个命令会输出一个列表，表示每个配置文件的状态，一共有四种
-
-        enabled：已建立启动链接
-
-        disabled：没建立启动链接
-
-        static：该配置文件没有[Install]部分（无法执行），只能作为其他配置文件的依赖
-
-        masked：该配置文件被禁止建立启动链接
-
-    从配置文件的状态无法看出，该 Unit 是否正在运行。这必须执行前面提到的 systemctl status 命令。
-
-一旦修改配置文件，就要让 systemd 重新加载配置文件，然后重新启动，否则修改不会生效
-
-    sudo systemctl daemon-reload
-
-    sudo systemctl restart httpd.service
-
-unit 通常包括但不限于服务（.service）、挂载点（.mount）、设备（.device）和套接字（.socket）。
-
-unit 的配置文件就是普通的文本文件，可以用文本编辑器打开。
-
-配置文件的后缀名，就是该 Unit 的种类
-
-    如果不指定后缀，systemctl 将默认采用 .service。
-
-        `systemctl enable sshd` 会被理解成 sshd.service
-
-        `systemctl enable sshd.socket` 显示指明才可以启动 sshd.socket
-
-    挂载点将自动转换为相应的 .mount 单元。例如，指定 /home 等效于 home.mount。
-
-    与挂载点类似，设备会自动转换为相应的 .device 单元，因此指定 /dev/sda2 等效于 dev-sda2.device。
-
-unit 文件支持创建插入(drop-in)文件，只需要创建与 unit 文件同名后缀 .d 的目录，将 .conf 文件放在其中以覆盖或添加新选项。systemd 将先处理 unit 文件，然后再处理该新增文件
-
-    unit 文件 /usr/lib/systemd/system/your_unit
-
-    unit 文件的插入文件 /etc/systemd/system/your_unit.d/10.abc.conf，文件名前缀用 10，11，12 等数字来确保加载顺序
-
-    适用于在原始配置之上，想自定义参数的场景，把你要添加或覆盖的其他依赖项放到该 .conf 文件即可
-
-##### 用户级 unit
-
-    https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
-
-    https://www.cnblogs.com/hadex/p/6571278.html
-
-systemd 的 unit 默认都是系统级不必显式添加 --system 选项，但是需要 root 用户权限才能管理执行。
-
-用户级的 unit 不需要 root 用户权限，只限于为当前用户执行
-
-    用户级 unit 与系统级 unit 相互独立，不能互相关联或依赖
-
-例外：
-    使用如下方法，即使用户不登陆，其定制的服务也可以在计算机启动时自动启动
-
-        loginctl enable-linger username
-
-        等效于 touch /var/lib/systemd/linger/$USER
-
-    使用 root 权限执行 `systemctl --global enable unit` 同样可以为所有用户执行该单元
-
-在 systemd 管理和使用时用户级的 unit 只需要加上 --user 参数即可，其它完全一致
-
-    systemctl --user status gpg-agent.socket
-
-    systemctl --user list-unit-files | grep aria2
-
-systemd 搜索的用户自定义的 unit[s] 可以放置在如下四个位置
-
-    /usr/lib/systemd/user：优先级最低，会被高优先级的同名 unit 覆盖
-
-    ~/.local/share/systemd/user
-
-    /etc/systemd/user：全局共享的用户级 unit[s]
-
-    ~/.config/systemd/user：优先级最高
-
-用户级 unit 运行时不会继承 .bashrc 等文件中设置的环境变量，可以单独在 ~/.config/environment.d/xxx.conf 中，写入 NAME=VAL；或者插入式设置 unit 文件，如 /etc/systemd/system/user@.service.d/local.conf
-
-    ```conf
-    [Service]
-    Environment="PATH=/usr/lib/ccache/bin:/usr/local/bin:/usr/bin:/bin"
-    Environment="EDITOR=nano -c"
-    Environment="BROWSER=firefox"
-    Environment="NO_AT_BRIDGE=1"
-    ```
-对 PATH 变量，单独设置你的 ~/.bash_profile，添加语句 `systemctl --user import-environment PATH`
-
-用户级自启动脚本示例：
-
-持久终端多路复用器
-
-    您可能希望在后台自动运行终端多路复用器（如屏幕或 tmux），而不是默认登录到用户会话的窗口管理器会话。
-
-    ~/.config/systemd/user/multiplexer.target
-
-    ```conf
-    [Unit]
-    Description=Terminal multiplexer
-    Documentation=info:screen man:screen(1) man:tmux(1)
-    After=cruft.target
-    Wants=cruft.target
-
-    [Install]
-    Alias=default.target
-    ```
-
-将窗口管理器作为 systemd 服务运行
-
-    ~/.config/systemd/user/awesome.service
-
-    ```conf
-    [Unit]
-    Description=Awesome window manager
-    After=xorg.target
-    Requires=xorg.target
-
-    [Service]
-    ExecStart=/usr/bin/awesome
-    Restart=always
-    RestartSec=10
-
-    [Install]
-    WantedBy=wm.target
-    ```
-
-每次开机后执行备份
-
-    backup-work.timer
-
-    ```conf
-    [Unit]
-    Description=daily backup work
-    RefuseManualStart=no
-    RefuseManualStop=no
-
-    [Timer]＃系统异常关机错过的定时任务，是否后续补救
-    Persistent=false
-    ＃每次开机 10 分钟之后开始生效OnBootSec=10min＃每天 11：30 执行OnCalendar=Mon-Fri *-*-* 11:30:00
-    Unit=backup-work.service
-
-    [Install]
-    WantedBy=default.target
-    ```
-
-    配套的 backup-work.service
-
-    ```conf
-    [Unit]
-    Description=daily backup work
-    RefuseManualStart=no
-    RefuseManualStop=yes
-
-    [Service]
-    Type=oneshot
-    ExecStart=/home/<user>/scripts/backup-work.sh
-    ```
-
-##### 配置文件的区块
-
-配置文件字段最大的优点是可以明确的写出依赖关系，由 systemd 在启动时根据情况处理
-
-    https://www.freedesktop.org/software/systemd/man/systemd.unit.html
-
-systemctl cat 命令可以查看配置文件的内容
-
-    $ systemctl cat sshd
-    # /lib/systemd/system/ssh.service
-    [Unit]
-    Description=OpenBSD Secure Shell server
-    Documentation=man:sshd(8) man:sshd_config(5)
-    After=network.target auditd.service
-    ConditionPathExists=!/etc/ssh/sshd_not_to_be_run
-
-    [Service]
-    EnvironmentFile=-/etc/default/ssh
-    ExecStartPre=/usr/sbin/sshd -t
-    ExecStart=/usr/sbin/sshd -D $SSHD_OPTS
-    ExecReload=/usr/sbin/sshd -t
-    ExecReload=/bin/kill -HUP $MAINPID
-    KillMode=process
-    Restart=on-failure
-    RestartPreventExitStatus=255
-    Type=notify
-    RuntimeDirectory=sshd
-    RuntimeDirectoryMode=0755
-
-    [Install]
-    WantedBy=multi-user.target
-    Alias=sshd.service
-
-配置文件分成几个区块。每个区块的第一行，是用方括号表示的区别名，比如 [Unit]，每个区块内部是一些等号连接的键值对。
-
-注意：配置文件的区块名和字段名，都是大小写敏感的，键值对的等号两侧不能有空格。
-
-[Unit] 区块通常是配置文件的第一个区块，用来定义 Unit 的元数据，以及配置与其他 Unit 的关系。它的主要字段如下
-
-    Description：简短描述
-    Documentation：文档地址
-
-    Requires：当前 Unit 依赖的其他 Unit，如果它们没有运行，当前 Unit 会启动失败
-
-    Wants：与当前 Unit 配合的其他 Unit，如果它们没有运行，当前 Unit 不会启动失败
-
-    BindsTo：与Requires类似，它指定的 Unit 如果退出，会导致当前 Unit 停止运行
-
-    Before：如果该字段指定的 Unit 也要启动，那么必须在当前 Unit 之后启动
-
-    After：如果该字段指定的 Unit 也要启动，那么必须在当前 Unit 之前启动
-
-    Conflicts：这里指定的 Unit 不能与当前 Unit 同时运行
-
-    Condition...：当前 Unit 运行必须满足的条件，否则不会运行
-
-    Assert...：当前 Unit 运行必须满足的条件，否则会报启动失败
-
-    # 如 将服务延迟到网络启动后（可以管理网络还有 NetworkManager.service 或 systemd-networkd.service，比较乱，酌情处理）
-    Wants=network-online.target
-    After=network-online.target
-
-[Install] 通常是配置文件的最后一个区块，用来定义如何启动，以及是否开机启动。它的主要字段如下。
-
-    https://www.freedesktop.org/software/systemd/man/systemd.unit.html#%5BInstall%5D%20Section%20Options
-
-    WantedBy：它的值是一个或多个 Target，当前 Unit 激活时（enable）符号链接会放入 /etc/systemd/system 目录下面以 Target 名 + .wants 后缀构成的子目录中
-
-        用户级 unit 与系统级 unit 相互独立，不能互相关联或依赖
-
-            用户级 unit 运行环境用 default.target，
-
-            系统级通常用 multi-user.target，即使用户不登陆，其定制的服务依然会启动
-
-    RequiredBy：它的值是一个或多个 Target，当前 Unit 激活时，符号链接会放入 /etc/systemd/system 目录下面以 Target 名 + .required 后缀构成的子目录中
-
-    Alias：当前 Unit 可用于启动的别名
-
-    Also：当前 Unit 激活（enable）时，会被同时激活的其他 Unit
-
-[Service] 区块用来 Service 的配置，只有 Service 类型的 Unit 才有这个区块。它的主要字段如下
-
-    https://www.freedesktop.org/software/systemd/man/systemd.service.html
-
-    Environment=SYSTEMD_LOG_LEVEL=debug 在日志中打印调试信息
-
-    Type：定义启动时的进程行为。它有以下几种值。
-
-        Type=simple：默认值，执行ExecStart指定的命令，启动主进程
-
-        Type=forking：以 fork 方式从父进程创建子进程，创建后父进程会立即退出，用于启动守护进程
-
-        Type=oneshot：一次性进程，用于执行定时任务如备份检查等
-
-        Type=dbus：当前服务通过D-Bus启动
-        Type=notify：当前守护进程启动完毕，会通知 systemd，再继续往下执行
-        Type=idle：延迟到其它任务执行完毕，systemd 才会调度当前 unit
-
-    ExecStart：启动当前服务的命令
-    ExecStartPre：启动当前服务之前执行的命令
-    ExecStartPost：启动当前服务之后执行的命令
-    ExecReload：重启当前服务时执行的命令
-    ExecStop：停止当前服务时执行的命令
-    ExecStopPost：停止当其服务之后执行的命令
-    RestartSec：自动重启当前服务间隔的秒数
-    Restart：定义何种情况 Systemd 会自动重启当前服务，可能的值包括always（总是重启）、on-success、on-failure、on-abnormal、on-abort、on-watchdog
-    TimeoutSec：定义 Systemd 停止当前服务之前等待的秒数
-    Environment：指定环境变量
-
-    CapabilityBoundingSet：沙盒化运行，利用 Linux 的 Namespace 命名空间实现进程隔离
-
-        定义允许或拒绝设备的功能列表
-            https://man.archlinux.org/man/systemd.exec.5#CAPABILITIES
-
-##### Target 就是一个 Unit 组
-
-包含许多相关的 Unit。启动某个 Target 的时候，Systemd 就会启动里面所有的 Unit。
-
-传统的init启动模式里面，有 RunLevel 的概念，跟 Target 的作用很类似。不同的是，RunLevel 是互斥的，不可能多个 RunLevel 同时启动，但是多个 Target 可以同时启动。
-
-    # 查看当前系统的所有 Target
-    $ systemctl list-unit-files --type=target
-
-    # 查看一个 Target 包含的所有 Unit
-    $ systemctl list-dependencies multi-user.target
-
-    # 查看启动时的默认 Target
-    $ systemctl get-default
-
-    # 设置启动时的默认 Target
-    $ sudo systemctl set-default multi-user.target
-
-    # 切换 Target 时，默认不关闭前一个 Target 启动的进程，
-    # systemctl isolate 命令改变这种行为，
-    # 关闭前一个 Target 里面所有不属于后一个 Target 的进程
-    $ sudo systemctl isolate multi-user.target
-
-Target 与 传统 RunLevel 的对应关系如下
-
-    Traditional runlevel      New target name     Symbolically linked to...
-
-    Runlevel 0           |    runlevel0.target -> poweroff.target       停止系统
-    Runlevel 1           |    runlevel1.target -> rescue.target         单用户模式
-    Runlevel 2           |    runlevel2.target -> multi-user.target     用户定义
-    Runlevel 3           |    runlevel3.target -> multi-user.target     多用户，非图形
-    Runlevel 4           |    runlevel4.target -> multi-user.target     用户定义
-    Runlevel 5           |    runlevel5.target -> graphical.target      多用户，图形化
-    Runlevel 6           |    runlevel6.target -> reboot.target         重新启动
-
-它与 init 进程的主要差别如下
-
-（1）默认的 RunLevel（在 /etc/inittab 文件设置）现在被默认的 Target 取代，位置是 /etc/systemd/system/default.target，通常符号链接到 graphical.target（图形界面）或者 multi-user.target（多用户命令行）。
-
-（2）启动脚本的位置，以前是 /etc/init.d 目录，符号链接到不同的 RunLevel 目录 （比如/etc/rc3.d、/etc/rc5.d等），现在则存放在 /lib/systemd/system 和 /etc/systemd/system 目录。
-
-（3）配置文件的位置，以前 init 进程的配置文件是 /etc/inittab，各种服务的配置文件存放在 /etc/sysconfig 目录。现在的配置文件主要存放在 /lib/systemd 目录，在 /etc/systemd 目录里面的修改可以覆盖原始设置。
-
-#### 设置 systemd 开机自启动你的单元脚本
-
-    https://zhuanlan.zhihu.com/p/620849909
-    https://blog.csdn.net/bandaoyu/article/details/124358513
-
-启动 unit 后有处理：
-
-    用 `systemctl start` 启动后出现在 /run/systemd/ 下
-
-    /usr/lib/systemd/system/ 用 `systemctl enable` 设置为自启动后添加连接文件在 /etc/systemd/system/
-
-如果配置文件里 [Install] 部分设置了开机启动，`systemctl enable` 命令相当于激活指定服务的开机启动。
-
-    如果是开机自启动，一般都是挂载到 /etc/systemd/system/multi-user.target.wants/ 目录下，该目录表示启动了 multi-user.target 之后（即系统启动且运行级别为 3，为系统的默认启动 target）这个目录下的文件都会跟着启动。
-
-systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd/system/ 之间，建立符号链接关系
-
-    $ systemctl enable clamd@scan.service
-
-    等同于
-    $ ln -s '/usr/lib/systemd/system/clamd@scan.service' '/etc/systemd/system/multi-user.target.wants/clamd@scan.service'
-
-与之对应的，`systemctl disable` 命令用于在两个目录之间，撤销符号链接关系，相当于撤销指定服务的开机启动
-
-    systemctl disable clamd@scan.service
-
-##### 调试 systemd 启动服务的过程
-
-先看看配置文件是否有效
-
-    $ systemd-analyze verify xxx.service
-
-再看看服务启动的日志，给出你的服务名即可
-
-    $ journalctl -u xxx.service
-
-一般会发现问题，比如 start 后立即调用了 stop
-
-    https://blog.csdn.net/Peter_JJH/article/details/108446380
-
-    一般认为是 status 判断为 invalid 导致 systemctl 立刻调用了 stop，解决办法是
-
-        服务的配置文件添加： RemainAfterExit=yes
-
-##### 自制的 shell 脚本 让 systemd 用兼容 SystemV 的方式进行自启动
-
-先确认 systemd 已经开启了 systemV 启动脚本 rc.local 的兼容服务
-
-    $ cat /lib/systemd/system/rc-local.service
-    [Unit]
-    Description=/etc/rc.local Compatibility
-    Documentation=man:systemd-rc-local-generator(8)
-    ConditionFileIsExecutable=/etc/rc.local
-    After=network.target
-
-    [Service]
-    Type=forking
-    EnvironmentFile=/etc/systemd/systemd/ros.env
-    ExecStart=/etc/rc.local start
-    TimeoutSec=0
-    GuessMainPID=no
-
-然后执行章节 [SystemV设置开机自启动] 的步骤即可。
-
-##### 自制的 shell 脚本由 systemd 服务调度自启动
-
-    https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
-
-自制一个 systemd 服务，使用 systemd 的格式要求，可以实现开机自启动。
-
-创建 /etc/systemd/system/tproxyrule.service 文件
-
-    [Unit]
-    Description=Tproxy rule
-    After=network.target
-    Wants=network.target
-
-    [Service]
-    Type=oneshot
-    # https://blog.csdn.net/Peter_JJH/article/details/108446380
-    RemainAfterExit=yes
-
-    # 注意分号前后要有空格
-    ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/iptables-restore /etc/iptables/rules.v4
-    ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0/0 dev lo table 100 ; /sbin/iptables -t mangle -F
-
-    # 如果是 nftables，则改为以下命令
-    # ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/nft -f /etc/nftables/rules.v4
-    # ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0/0 dev lo table 100 ; /sbin/nft flush ruleset
-
-    # 如果是执行了一个成功再执行另一个，需要借助外壳
-    ExecStart=/bin/bash -c 'sleep 45 && /bin/bash bin/eum.sh start'
-    或分开步骤
-    ExecStartPre=/usr/bin/sleep 45
-    ExecStart=/bin/bash bin/eum.sh start
-
-    [Install] # 开机自启动必须要有这个字段
-    WantedBy=multi-user.target
-
-执行下面的命令设置 tproxyrule.service 可以开机自动运行
-
-    systemctl daemon-reload
-
-    systemctl start  tproxyrule
-    systemctl enable tproxyrule
-
-验证
-
-    systemctl list-unit-files |grep tproxy
-
-其它示例参见：
-
-    [用 systemd-networkd 配置策略路由](vnn.md think)
-
-    [设置为 systemd 的服务](org03k.md think)
-
-#### 分析启动过程
-
-如果感觉操作系统启动耗时过长，需要分析原因，systemd 有现成的工具
-
-按时间顺序列出启动的模块
-
-    systemd-analyze blame
-
-把各服务的启动情况用 svg 图形进行展示，便于分析
-
-    systemd-analyze plot >file.svg
-
-命令打印严重消耗时间的服务树状表
-
-    systemd-analyze critical-chain
-
-#### 使用 systemd 配置定时任务
-
-定时器文件跟服务同名，后缀不是 .service 而是 .timer
-
-    https://www.freedesktop.org/software/systemd/man/systemd.timer.html
-
-    https://wiki.archlinux.org/title/Systemd/Timers
-
-    https://zhuanlan.zhihu.com/p/365756485
-
-    https://zhuanlan.zhihu.com/p/51357835
-
-查看当前的定时器
-
-    systemctl list-timers
-
-控制单元中几个常用字段的介绍：
-
-字段 OnCalendar= 的定时格式
-
-    https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events
-
-    简写 OnCalendar=daily 等效于 OnCalendar= *-*-* 00:00:00
-
-字段 Persistent=true 指如果错过，开机后会立刻运行
-
-字段 OnActiveSec= 1 m 指延迟 1 分钟后执行
-
-简单示例参见章节 [自動更新Flatpak應用程式](init_a_server think)。
-
-实现在每天的特定时刻启停服务：
-
-    https://zhuanlan.zhihu.com/p/51357835
-
-因为 systemd 的单元词汇表中没有明显的命令来停止或禁用正在运行的服务，所以只能订制。
-
-假设安装了 Minetest 服务器，服务名为 minetest.service
-
-```ini
-# minetest.service
-
-[Unit]
-Description= 运行 Minetest 服务器
-Conflicts= minetest.timer  # 在这里增加限制只运行一次，即启动服务时杀死启动它的计时器
-
-[Service]
-Type= simple
-User= <your user name>
-
-ExecStart= /usr/bin/minetest --server
-ExecStop= /bin/kill -2 $MAINPID
-
-[Install]
-WantedBy= multi-user.targe
-```
-
-新增启动 minetest 的定时器
-
-```ini
-# minetest.timer
-
-[Unit]
-Description= 在下午五到七点内的每分钟都运行 minetest.service
-
-[Timer]
-OnCalendar= *-*-* 17..19:*:00
-Unit= minetest.service
-
-[Install]
-WantedBy= basic.target
-```
-
-新增停止 minetest 的服务
-
-```ini
-# stopminetest.service
-
-[Unit]
-Description= 关闭 Minetest 服务
-Conflicts= minetest.service
-
-[Service]
-Type= oneshot
-ExecStart= /bin/echo "Closing down minetest.service"
-```
-
-新增停止 minetest 的定时器
-
-```ini
-# stopminetest.timer
-
-[Unit]
-Description= 每天晚上七点停止 minetest.service
-
-[Timer]
-OnCalendar= *-*-* 19:05:00
-Unit= stopminetest.service
-
-[Install]
-WantedBy= basic.target
-```
-
-#### 这货还可以负责阻止关机、睡眠
-
-提供了在系统更新、CD 刻录过程中阻止关机的控制
-
-    https://www.freedesktop.org/wiki/Software/systemd/inhibit/
-
-## 定时任务 crontab
-
-    https://www.debian.org/doc/manuals/debian-handbook/sect.task-scheduling-cron-atd.zh-cn.html
-
-    http://c.biancheng.net/view/1092.html
-
-    https://www.cnblogs.com/GavinSimons/p/9132966.html
-
-    各种不能执行的原因 https://segmentfault.com/a/1190000020850932
-                        https://github.com/tony-yin/Why-Cronjob-Not-Work
-
-    https://www.cnblogs.com/pengdonglin137/p/3625018.html
-    https://www.cnblogs.com/utopia68/p/12221769.html
-    https://blog.csdn.net/zhubin215130/article/details/43271835
-    https://developer.aliyun.com/article/541971
-
-### 1、crontab 与 anacron
-
-crontab
-
-    crontab命令被用来提交和管理用户的需要周期性执行的任务，与windows下的计划任务类似，当安装完成操作系统后，默认会安装此服务工具，并且会自动启动crond服务，crond进程每分钟会定期检查是否有要执行的任务，如果有则自动执行该任务。依赖于crond服务
-
-anacron
-
-    cron的补充，能够实现让cron因为各种原因在过去的时间该执行而未执行的任务在恢复正常执行一次。依赖于nancron服务
-
-    debian 中安装 anacron 软件包会禁用 cron 在/etc/cron.{daily，weekly，monthly} 目录中的脚本，仅由 anacron 调用，以避免 anacron 和 cron 重复运行这些脚本。 cron 命令仍然可用并处理其他计划任务（特别是用户安排的计划任务）。
-
-### 2、Crontab任务种类及格式定义
-
-cron分为系统cron和用户cron，用户cron指 /var/spool/cron/crontabs/$USER 文件，系统cron指
-/etc/crontab 文件 以及 /etc/cron.{daily，weekly，monthly}/ 目录 ，这两者是存在部分差异的。
-
-系统cron 在命令行运行之前有一个额外的字段user。
-
-(1)、系统cron任务：/etc/crontab 文件
-
-一般配置系统级任务，开机即可启动，注意格式比用户级多了个执行的user。
-
-    cd /etc
-
-    $ ls -l|grep cron
-    drwxr-xr-x 2 root root    4096 May 13 17:28 cron.d
-    drwxr-xr-x 2 root root    4096 May 27 06:49 cron.daily
-    drwxr-xr-x 2 root root    4096 Jul 12  2021 cron.hourly
-    drwxr-xr-x 2 root root    4096 Jul 12  2021 cron.monthly
-    drwxr-xr-x 2 root root    4096 Jul 12  2021 cron.weekly
-    -rw-r--r-- 1 root root    1042 Oct 11  2019 crontab
-
-    $ cat crontab
-    # /etc/crontab: system-wide crontab
-    # Unlike any other crontab you don't have to run the `crontab'
-    # command to install the new version when you edit this file
-    # and files in /etc/cron.d. These files also have username fields,
-    # that none of the other crontabs do.
-
-    SHELL=/bin/sh
-    PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
-    # Example of job definition:
-    # .---------------- minute (0 - 59)
-    # |  .------------- hour (0 - 23)
-    # |  |  .---------- day of month (1 - 31)
-    # |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
-    # |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
-    # |  |  |  |  |
-    # *  *  *  *  * user-name command to be executed
-    17 *    * * *   root    cd / && run-parts --report /etc/cron.hourly
-    25 6    * * *   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
-    47 6    * * 7   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
-    52 6    1 * *   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
-    # 分钟 小时 天 月 周 用户 任务
-
-run-parts 参数运行指定目录中的所有脚本。
-
-(2)、用户cron任务：/var/spool/cron/$USER 文件
-
-编辑指定用户的crontab设置
-
-    # 显示当前用户的定时任务
-    $ crontab -l
-    no crontab for user
-
-    # 显示指定用户的定时任务
-    $ sudo crontab -u root -l
-    no crontab for root
-
-    # 编辑指定用户的定时任务
-    sudo crontab -u root -e
-
-命令行格式
-
-    # 分钟 小时 天 月 周 任务
-
-(3)、anacron：/etc/anacrontab 检查频率 分钟 任务注释信息 运行的任务
-
-(4)、在启动时运行命令
-
-只是在系统启动后，单次执行一个命令，可以使用 @reboot 宏（仅仅重启 cron 命令不会触发使用@reboot调度的命令）。该宏表示了 crontab条目的前五个区段。
-
-### 3、时间的有效取值
-
-    代表意义    分钟    小时    日    月    周    命令
-    ------------------------------------------------
-    数字范围    0~59    0~23    1~31    1~12    0~7    就命令啊
-
-    周的数字为0或7时，都代表“星期天”的意思。另外，还有一些辅助的字符，大概有下面这些：
-
-    特殊字符      代表意义
-    ------------------------
-    *(星号)    代表任何时刻都接受的意思。举例来说，范例一内那个日、月、周都是*，就代表着不论何月、何日的礼拜几的12：00都执行后续命令的意思。
-
-    ,(逗号)    代表都使用的时段。举例来说，如果要执行的工作是3：00与6：00时： 0 3,6 * * * command
-
-    -(减号)    代表一段时间范围内，举例来说，8点到12点之间的每小时的20分都进行一项工作：20 8-12 * * * command
-
-    /n(斜线)   n代表数字，即是每隔n单位间隔的意思，例如每五分钟进行一次，则： */5 * * * * command
-
-    用*与/5来搭配，也可以写成0-59/5，意思相同
-
-### 4、时间通配表示
-
-1)对应时间的所有有效取值
-
-    3 * * * *         # 每天每小时的第三分钟执行一次
-
-    3 * * * 7         # 每周日每小时的第三分钟执行一次
-
-    13 12 6 7 *        # 每年的7月6日12点13分执行一次
-
-2)离散时间点：
-
-    10,40 02 * * 2,5            # 每周二和周五的凌晨2点10分和40分执行一次
-
-3)连续时间点：
-
-    10 02 * * 1-5                # 周一至周五的凌晨2点10分执行一次
-
-4)对应取值范围内每多久一次
-
-    */3 * * * *                   # 每三分钟执行一次
-
-注意：比所要求小的时间单位必须要给定时间点(每天执行 那么分钟 小时都要给定时间 不能用*)
-
-如：
-
-    08 */2 * * *                  # 每两小时执行一次
-
-    10 04 */2 * *                 # 每两天执行一次
-
-### 5、cron的环境变量
-
-cron 启动任务时，环境变量非常少，即使是用户级任务，也不会执行用户的 .profile 文件，所以，如果需要操作数据库等跟用户相关的脚本或命令，一般采用在用户脚本中执行环境变量文件，然后再执行相关操作。
-
-cron 在 crontab 文件中的默认 PATH=/usr/bin:/bin，cron 执行所有命令都用该PATH环境变量指定的路径下去找。
-
-详见章节 [坑：环境变量是单独的跟用户登陆后的环境变量不一样]
-
-### 6、执行结果将以邮件形式发送
-
-    */3 * * * * /bin/cat /etc/fstab > /dev/null         # 错误信息仍然发送给管理员
-
-    */3 * * * * /bin/cat /etc/fstab &> /dev/null         # 所有信息都不发送给管理员，无论是否正确执行
-
-在 /var/mail/ 目录下查看邮件
-
-在 /var/log/syslog 文件查看系统日志，debian默认的 rsyslog 不记录 cron 日志，需要手动开启
-
-注意 /var 的空间不要被填满了
-
-### 坑：区分crontab命令和crontab文件
-
-用 crontab -e 命令配置是针对当前用户的定时任务，而编辑 /etc/crontab 文件是针对系统的任务。
-
-cron服务每分钟不仅要读一次 /var/spool/cron/crontabs/ 内的所有文件，还读一次 /etc/crontab 文件。
-
-使用下面的命令，会在 vi 里打开crontab的内容以供编辑：
-
-    crontab -e
-
-如果你只想看看，不需要编辑，可以使用以下的命令
-
-    crontab -l
-
-要删除crontab的内容，就是删除所有的计划任务，可以这样：
-
-    crontab -r
-
-/etc/crontab 文件的内容如下
-
-```shell
-
-SHELL=/bin/bash
-PATH=/sbin:/bin:/usr/sbin:/usr/bin
-MAILTO=root  # 任务执行时的输出保存在/var/mail下的用户名同名文件中
-
-# For details see man 4 crontabs
-
-# Example of job definition:
-# .---------------- minute (0 - 59)
-# |  .------------- hour (0 - 23)
-# |  |  .---------- day of month (1 - 31)
-# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
-# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
-# |  |  |  |  |
-# *  *  *  *  * user-name  command to be executed
-0 3 1 */2 0 root systemctl stop nginx; /usr/local/bin/certbot renew; systemctl restart nginx
-
-```
-
-星号  如果某个部分出现的是星号而不是数字，就是说明这个部分表示的时间全部会执行。
-
-    1.分钟（0-59）
-    2.小时（0-23）
-    3.一个月的哪一天（1-31）
-    4.一年中的哪个月（1-12）
-    5.星期几（0是星期天）
-
-每小时运行3次，在0分，10分，和20分时
-
-    0,10,20 * * * * user-name  command
-
-每5分钟运行一次
-
-    */5 * * * * user-name  command
-
-每2小时的零分运行一次
-
-    00 */2 * * * user-name  command
-
-5到10点的每个整点运行一次
-
-    0 5-10 * * * user-name  command
-
-### 坑：crontab文件最后要有个空行
-
-    crontab要求cron中的每个条目都要以换行符结尾
-
-对crontab文件的最后一行任务设置来说，如果后面没有一个空白行，那说明它没有换行符，不会被crotnab执行。。。
-
-解决方案
-
-    养成给cron中每个条目后面都添加一个空行的习惯
-
-如果你用Windows编辑的crontab文件，注意必须改为 unix格式保存。
-
-这也算unix文本文件的通病了，很多linux命令的执行都以行结束为标志，从文件中读取的最后一行如果直接结束时没有换行符的，导致永远无法执行。。。
-
-所以，确保您的crontab文件在末尾有一个空白行。
-
-最好养成习惯，给crontab文件的中每个条目下面添加一个空行，文件的最后一行多敲一个回车再保存。
-
-另外文件格式注意，各个操作系统的行结束符是不一样的，linux下 不能是 Windows 文本格式的 ^M、macOS 文本格式的 \r 等，必须是unix格式，这样的换行符才是 \n。
-
-很多编辑软件编辑ftp上的文件，或上传到ftp时，默认都做格式转换，其实容易混淆，还不如直接设置，保留原文件格式，不要自动转换。这样查看文件的时候非常方便，一目了然，unix下的vi显示Windows文件会出现很多乱码。在Windows下编辑unix文件，现在流行的编辑软件也都支持正确显示这个格式了，不要让他来回的转。
-
-### 坑：修改 /etc/crontab 文件后要加载到cron服务
-
-命令和文件名相同，注意区分
-
-    crontab /etc/crontab
-
-debian 不需要这么做了
-
-    $ cat /etc/crontab
-    # /etc/crontab: system-wide crontab
-    # Unlike any other crontab you don't have to run the `crontab'
-    # command to install the new version when you edit this file
-    # and files in /etc/cron.d. These files also have username fields,
-    # that none of the other crontabs do.
-
-### 坑：环境变量是单独的跟用户登陆后的环境变量不一样
-
-root用户登陆后的PATH
-
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-普通用户登陆后的PATH
-
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
-
-调测：将cron中的环境变量打印出来：
-
-    * * * * * env > /tmp/env.output
-
-一分钟后查看
-
-    $ cat /tmp/env.output
-    HOME=/root
-    LOGNAME=root
-    PATH=/usr/bin:/bin
-    LANG=C.UTF-8
-    SHELL=/bin/sh
-    LC_ALL=C.UTF-8
-    PWD=/root
-
-cron中的环境变量与用户登陆系统后的env环境变量不一样（cron会忽略 /etc/environment 文件），尤其是PATH，只有/usr/bin:/bin，也就是说在cron中运行shell命令，如果不是全路径，只能运行/usr/bin或/bin这两个目录中的标准命令，而像/usr/sbin、/usr/local/bin等目录中的非标准命令是不能运行的。详见章节 [环境变量文件的说明] <shellcmd.md>。
-
-所以定时任务的命令行一般都要先执行下 profile、bash_profile等用户环境的变量文件，然后才能执行用户脚本。或者在cron脚本文件头部声明PATH，或者在用户脚本中执行环境变量文件
-
-    . /etc/profile
-
-配置定时任务的格式
-
-    01 03    * * * . /etc/profile; /bin/bash /usapce/code/test1.sh
-
-+ 否则你就会遇到一个经典问题：
-
-    手动输入：
-
-        /bin/bash /usapce/code/test1.sh
-
-    可以执行，但放在crontab里就总是不起作用。
-
-### 坑：命令解释器默认是sh而不是bash
-
-从坑一的变量 SHELL=/bin/sh 可以看到默认的解释器不是bash，而大多数命令脚本都是用bash来解释执行的。所以配置定时任务时，要明确的指定执行命令的解释器
-
-    bash -c "mybashcommand"
-
-    或
-    /bin/bash /usapce/code/test1.sh
-
-或在脚本内的第一行指定：
-
-    #!/bin/bash
-
-### 坑：需要执行权限
-
-如果设置了非root用户的定时任务，需要注意很多权限问题，比如该用户对操作的文件或目录是否存在权限等。
-
-解决方案
-
-    # correct permission
-    sudo chmod 600 /var/spool/cron/crontabs/user
-
-    # signal crond to reload the file
-    sudo touch /var/spool/cron/crontabs
-
-### 坑：防止屏幕打印
-
-把脚本的输出和报错信息都打印到空
-
-    xxx.sh >/dev/null 2>&1
-
-### 坑：定时时间的书写格式不统一
-
-一些特殊选项各个平台支持不一样，有的支持，有的不支持，例如2/3、1-5、1,3,5
-
-这个只能试一下才知道。
-
-### 坑：corn服务默认不启动
-
-查看当前系统是否有进程
-
-    $ ps -ef|grep cron
-    root       398     1  0 May08 ?        00:00:07 /usr/sbin/cron -f
-
-Debian 等现在用 systemd 配置 cron 服务，拉起来的 cron 进程
-
-    $ systemctl status cron
-    ● cron.service - Regular background program processing daemon
-    Loaded: loaded (/lib/systemd/system/cron.service; enabled; vendor preset: enabled)
-    Active: active (running) since Sun 2022-05-08 09:10:43 UTC; 1 months 27 days ago
-        Docs: man:cron(8)
-    Main PID: 398 (cron)
-        Tasks: 1 (limit: 1148)
-    Memory: 2.3M
-    CGroup: /system.slice/cron.service
-            └─398 /usr/sbin/cron -f
-
-### 坑：百分号需要转义字符
-
-    https://unix.stackexchange.com/questions/29578/how-can-i-execute-date-inside-of-a-cron-tab-job
-
-当cron定时执行命令中，有百分号并且没有转义的时候，cron执行会出错，比如执行以下cron：
-
-    0 * * * * echo hello >> ~/cron-logs/hourly/test`date "+%d"`.log
-
-会有如下报错：
-
-    /bin/sh: -c: line 0: unexpected EOF while looking for matching ``'
-    /bin/sh: -c: line 1: syntax error: unexpected end of file
-
-即cron中换行符或%前的命令会被shell解释器执行，但是%会被认为新一行的字符，并且%后所有的数据都会以标准输出的形式发送给命令。
-
-解决方案：为百分号做转义，即在%前添加反斜杠\
-
-    0 * * * * echo hello >> ~/cron-logs/hourly/test`date "+\%d"`.log
-
-### 坑：crontab文件里的变量使用有限制
-
-因为在 crontable 里面只能声明变量，不能对变量进行操作或者执行其他任何shell命令的，所以下述的shell字符串拼接是不会成功的，所以只能声明变量，然后在命令中引用变量。
-
-    SOME_DIR=/var/log
-    MY_LOG_FILE=${SOME_DIR}/some_file.log
-
-    BIN_DIR=/usr/local/bin
-    MY_EXE=${BIN_DIR}/some_executable_file
-
-    0 10 * * * ${MY_EXE} some_param >> ${MY_LOG_FILE}
-
-解决方案：
-
-方案1： 直接声明一个变量，值是完整拼接好的字符串
-
-    SOME_DIR=/var/log
-    MY_LOG_FILE=/var/log/some_file.log
-
-    BIN_DIR=/usr/local/bin
-    MY_EXE=/usr/local/bin/some_executable_file
-
-    0 10 * * * ${MY_EXE} some_param >> ${MY_LOG_FILE}
-
-方案2： 声明多个变量，在命令中引用可以拼接变量
-
-    SOME_DIR=/var/log
-    MY_LOG_FILE=some_file.log
-
-    BIN_DIR=/usr/local/bin
-    MY_EXE=some_executable_file
-
-    0 10 * * * ${BIN_DIR}/${MY_EXE} some_param >> ${SOME_DIR}/${MY_LOG_FILE}
-
-### 坑：用户密码过期也不会启动定时任务
-
-当用户密码过期也会导致cron脚本执行失败。
-
-Linux下新建用户密码过期时间是从/etc/login.defs文件中PASS_MAX_DAYS提取的，普通系统默认就是99999，而有些安全操作系统是90天，这个参数只影响新建用户的密码过期时效，如果之前该用户已经密码过期了，该这个参数没用。
-
-将用户密码有效期设置成永久有效期或者延长有效期
-
-    chage -M <expire> <username>
-
-    或
-    passwd -x -1 <username>
-
-### 坑：切换时区后要重启cron服务
-
-当修改系统时区后，无论是之前已经存在的cron还是之后新创建的cron，脚本中设置的定时时间都以旧时区为准，比如原来时区是Asia/Shanghai，时间为10:00，然后修改时区为Europe/Paris，时间变为3:00，此时你设置11:00的定时时间，cron会在Asia/Shanghai时区的11:00执行。
-
-解决方案1：
-
-重启crond服务
-
-    sudo systemctl restart cron
-
-解决方案2：
-
-    kill cron进程，因为cron进程是自动重生的
