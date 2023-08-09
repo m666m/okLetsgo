@@ -8618,9 +8618,9 @@ done
 
 ### 查看计算机的传感器如温度、风扇
 
-简单看温度使用 btop 即可，展示又全面又准确。
+简单看 cpu 温度使用 btop 即可，展示又全面又准确。
 
-lm-sensors 查看计算机传感器的的内核工具，支持稳定、pwm风扇等
+lm-sensors 查看计算机传感器的的内核工具，支持温度、pwm风扇转速等
 
     https://wiki.archlinux.org/title/Fan_speed_control
 
@@ -8666,11 +8666,12 @@ lm-sensors 查看计算机传感器的的内核工具，支持稳定、pwm风扇
 
     $ sudo pwmconfig
 
-控制风扇转速
+控制风扇转速，不支持主板接口就没有配置文件，啥也干不了
 
-    $ fancontrol 不支持主板接口就没有配置文件，啥也干不了
+    $ fancontrol
 
-    $ systemctl status fancontrol.service  安装成 systemd 服务了
+    # 安装成 systemd 服务了
+    $ systemctl status fancontrol.service
 
 如果使用桌面环境，还可安装图形化工具 xsensors 来展现这些传感器和风扇
 
