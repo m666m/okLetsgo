@@ -8618,13 +8618,37 @@ done
 
 ### 查看计算机的传感器如温度、风扇
 
+    推荐安装使用 btop，展示又全面又准确
+
 lm-sensors 查看计算机传感器的著名工具
 
     https://wiki.archlinux.org/title/Fan_speed_control
 
     $ sudo apt install lm-sensors
 
-安装后运行 `sensors-detect` 来检测传感器。
+安装后先运行一次 `sudo sensors-detect` 来检测传感器，然后就可以查看传感器数据了
+
+    $ sensors
+    nouveau-pci-0100
+    Adapter: PCI adapter
+    fan1:           0 RPM
+    temp1:        +43.0°C  (high = +95.0°C, hyst =  +3.0°C)
+                        (crit = +105.0°C, hyst =  +5.0°C)
+                        (emerg = +135.0°C, hyst =  +5.0°C)
+
+    acpitz-acpi-0
+    Adapter: ACPI interface
+    temp1:        +16.8°C  (crit = +20.8°C)
+    temp2:        +16.8°C  (crit = +20.8°C)
+    temp3:        +27.8°C  (crit = +105.0°C)
+
+    nvme-pci-0200
+    Adapter: PCI adapter
+    Composite:    +47.9°C  (low  = -273.1°C, high = +81.8°C)
+                        (crit = +84.8°C)
+    Sensor 1:     +47.9°C  (low  = -273.1°C, high = +65261.8°C)
+    Sensor 2:     +53.9°C  (low  = -273.1°C, high = +65261.8°C)
+
 
 如果使用桌面环境，还可安装图形化工具 xsensors 来展现这些传感器。
 
