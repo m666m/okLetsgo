@@ -10963,13 +10963,13 @@ xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，�
 
 > 解决 xrdp 远程桌面连接后在 Gnome software 无法搜索 flatpak 程序的问题
 
-    https://github.com/neutrinolabs/xrdp/issues/2700
+在 Windows 使用远程桌面 mstsc 登录运行 xrdp 的 Fedora 后，Gnomes “软件” 无法搜索 flatpak 软件包，设置里看不到 flathub 存储库，只能本地登录才能看到，但是用命令 `flatpak search` 可以搜到，而且也不影响执行 flatpak 程序。
 
-在 Windows 使用远程桌面 mstsc 登录运行 xrdp 的 Fedora 后，Gnomes “软件” 无法搜索 flatpak 软件包，设置里看不到 flathub 存储库，只能本地登录才能看到，但是用命令 `flatpak search` 可以搜到，而且也不影响执行 flatpak 程序
-
-这是因为远程桌面用户的权限被限制，需要修改 polkit，Polkit 知识参见章节 [sudo 的替代方案 Polkit（PolicyKit）](init_a_server think)。
+这是因为 xrdp 会话的远程桌面用户的权限被限制，需要修改 polkit，Polkit 知识参见章节 [sudo 的替代方案 Polkit（PolicyKit）](init_a_server think)。
 
 以下是开发者给出的脚本化解决方案
+
+        https://github.com/neutrinolabs/xrdp/issues/2700
 
     先创建一个本地用户组 pk-local，然后把你的 xrdp 用户添加进去
 
@@ -11730,6 +11730,8 @@ keyring 的桌面应用程序，用户使用桌面软件进行管理即可：
 
 Howdy 通过 OpenCV 和 Python 构建，支持使用内置红外发射器的摄像头来识别用户面部。通过调用 Linux 的 PAM 身份验证系统，意味着不仅可以使用人脸识别登录桌面环境，还可以将其用于 sudo、su、polkit-1 以及大多数需要使用其他帐户密码的场景。
 
+因为 howdy 操作 pam，所以它的程序执行和设置都需要 root 权限，添加面部模型时可以指定用户名。
+
 Fedora 下安装 howdy
 
     $ sudo dnf copr enable principis/howdy
@@ -11818,6 +11820,13 @@ pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式
     account    include      system-auth
     ...
 
+    如果是你本人本机使用，可以对 su 文件做相同的修改，这样执行 su 命令也可以使用面部识别了（需要在 howdy 给 root 用户添加面部模型）
+
+        #%PAM-1.0
+        auth		sufficient	pam_rootok.so
+        auth       sufficient   pam_python.so /lib64/security/howdy/pam.py <-- 添加为第二行
+        ...
+
 解锁登录密码和锁屏密码，编辑 /etc/pam.d/gdm-password
 
     auth     [success=done ignore=ignore default=bad] pam_selinux_permit.so
@@ -11828,7 +11837,11 @@ pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式
 
     在 sudo 会自动启动人脸识别，如果人脸识别失败，会回落到使用密码验证。
 
-    在登录界面和锁屏界面中，人脸识别不会像 Windows Hello 那样自动启动，但是不需要输入密码，只需点击登录按钮或按回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
+    在登录界面，人脸识别不会像 Windows Hello 那样自动启动，但是不需要输入密码，只需点击登录按钮或按回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
+
+    在锁屏界面中
+
+    如果不输入密码，登录后不会解锁 gnome keyring：在使用到密钥环里的加密密钥时会提示该密钥的密码（不是解锁密钥环的密码），使用图形化工具 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
 
 4、对 Redhat 系等开启 SELinux 的操作系统如 Fedora，需要配置 SELinux
 
@@ -11865,13 +11878,17 @@ allow xdm_t v4l_device_t:chr_file map;
 
 5、配置 polkit
 
-gnome 的密钥环管理、设置系统参数的某些选项的解锁都调用了 polkit-1 这样的 GUI 授权验证工具。
-
-如果不配置 polkit，登录后不会解锁 gnome keyring ：重启计算机登录后会提示输入密钥环里的 gpg 密码（我设置了在 bash 登录脚本中启动 gpg 代理），如果使用 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
-
-手工添加 polkit 策略，编辑 /etc/pam.d/polkit-1 文件
+设置系统参数的某些选项的解锁都调用了 polkit-1 这样的 GUI 授权验证工具，我们可以手工修改 polkit 策略
 
     https://github.com/boltgolt/howdy/issues/630
+
+本修改方法可能不够完善：
+
+    面部识别跳过了 polkit-1 文件中其它的 system-auth 策略，不知道是否还有哪些受限于输入密码的开关未解锁
+
+    感觉 howdy 应该像 xrdp 那样单独申请权限响应 polkit 策略，参见章节 [xrdp 远程桌面用户相对本地登陆用户有权限区别]。
+
+编辑 /etc/pam.d/polkit-1 文件
 
 ```conf
 #%PAM-1.0
@@ -11885,7 +11902,7 @@ session    include      system-auth
 
 配置后，会在调用到 polkit 的场景下使用人脸识别。如果同步弹出密码框，此时人脸识别已经启用，不需要任何输入即可完成验证，也无需点击确认密码的按钮，如果人脸识别失败，才会回落到使用密码验证。
 
-我发现配置了 polkit 后，登录界面要点击用户，不输入密码直接回车，锁屏界面的解锁可以实现自动登录，不知道为啥。
+我的系统上配置了 polkit 后，登录界面点击用户即可登录，锁屏界面点击鼠标即可登录。
 
 6、手工调整，保护你的隐私
 
@@ -11928,7 +11945,8 @@ session    include      system-auth
 
 给其它用户添加
 
-    $ sudo howdy -U other_user add
+    # 不建议给 root 用户添加面部识别，用 sudo su 就挺好 https://github.com/boltgolt/howdy/issues/180
+    $ sudo howdy -U root add
 
 其它命令
 
@@ -11948,6 +11966,8 @@ session    include      system-auth
     $ win + l 测试锁屏
 
     桌面->设置-> Users，点击 unlock，测试 Polkit 解锁
+
+    $ gpg --sign some.file  测试 Polkit 解锁 gnome-keyring 我的在这里过不去，只能手动
 
     $ sudo reboot 测试登录
 
