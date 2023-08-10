@@ -10906,7 +10906,7 @@ Linux 操作系统一般都内置 fontconfig 程序选择字体，默认无需�
 
 随着发行版的进步，一般都是使用 /etc/fonts/fonts.conf，实现见下面 “法二”。
 
-Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的 Cantarell 字体显示中文太丑了，需要手工改设置，利用回落：
+Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的 Cantarell 字体显示中文太丑了，需要手工改设置，利用回落使得中英文分别使用不同的字体：
 
         https://aur.archlinux.org/packages/noto-fonts-cjk-vf
 
@@ -10914,7 +10914,7 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 
             https://github.com/notofonts/noto-cjk/tree/main/Serif
 
-    针对三种风格的默认字体使用系统的英文字体，对中文回落到 Adobe/Google 的开源字体：思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）。其实思源字体也内置了西文，只设置该字体也可以。但其西文部分使用的是 Adobe Source 家族字体不大好看，即思源黑体集成 Source Sans Pro、思源宋体集成 Source Serif，详见 <https://sspai.com/post/38705>。
+    针对三种风格的默认字体使用系统的英文字体，对中文回落到 Adobe/Google 的开源字体：思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）。其实思源中文字体也内置了西文，只设置该中文字体也可以，但其西文部分使用的是 Adobe Source 家族字体不大好看我们不去使用它（思源黑体集成 Source Sans Pro、思源宋体集成 Source Serif，详见 <https://sspai.com/post/38705>）。
 
 法一：简单起见，我们直接编辑 /etc/fonts/local.conf 文件
 
@@ -10936,7 +10936,7 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
     # Serif 合集：google-noto-serif-cjk-fonts 是 OTF 文件打包，google-noto-serif-cjk-ttc-fonts 是 OTC 格式打包
     #   也可以只安装简体中文 google-noto-serif-sc-fonts
     # $ sudo dnf install google-noto-serif-cjk-fonts
-
+    #
     # Fedora 支持异体字（Variable Font），装这个最省事，文件还小
     $ sudo dnf install google-noto-serif-cjk-vf-fonts
 
