@@ -13280,7 +13280,7 @@ SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候�
 
         操作系统软件包 gnome-keyring 提供了各种组件实现该功能。
 
-        支持控制台登陆（pam 使用 pam_gnome_keyring.so）
+        支持登录解锁，pam 使用 pam_gnome_keyring.so
 
         因为代替了 ssh-agent、gpg-agent 的功能，所以 gnome-keyring-daemon 不能与之共存，使用一个即可
 
