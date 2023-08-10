@@ -9811,43 +9811,46 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
 
-自制一个 systemd 服务，使用 systemd 的格式要求，可以实现开机自启动。
+自制的 shell 脚本如果需要由 systemd 调度实现开机自启动，需要自制一个 systemd 服务
 
-创建 /etc/systemd/system/tproxyrule.service 文件
+1、创建 /etc/systemd/system/tproxyrule.service 文件，内容如下：
 
-    [Unit]
-    Description=Tproxy rule
-    After=network.target
-    Wants=network.target
+``` ini
 
-    [Service]
-    Type=oneshot
-    # https://blog.csdn.net/Peter_JJH/article/details/108446380
-    RemainAfterExit=yes
+[Unit]
+Description=Tproxy rule
+After=network.target
+Wants=network.target
 
-    # 注意分号前后要有空格
-    ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/iptables-restore /etc/iptables/rules.v4
-    ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0/0 dev lo table 100 ; /sbin/iptables -t mangle -F
+[Service]
+Type=oneshot
+# 这里一定要有不然闪退 https://blog.csdn.net/Peter_JJH/article/details/108446380
+RemainAfterExit=yes
 
-    # 如果是 nftables，则改为以下命令
-    # ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/nft -f /etc/nftables/rules.v4
-    # ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0/0 dev lo table 100 ; /sbin/nft flush ruleset
+# 注意分号前后要有空格
+ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/iptables-restore /etc/iptables/rules.v4
+ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0/0 dev lo table 100 ; /sbin/iptables -t mangle -F
 
-    # 如果是执行了一个成功再执行另一个，需要借助外壳
-    ExecStart=/bin/bash -c 'sleep 45 && /bin/bash bin/eum.sh start'
-    或分开步骤
-    ExecStartPre=/usr/bin/sleep 45
-    ExecStart=/bin/bash bin/eum.sh start
+# 如果是 nftables，则改为以下命令
+# ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/nft -f /etc/nftables/rules.v4
+# ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0/0 dev lo table 100 ; /sbin/nft flush ruleset
 
-    [Install] # 开机自启动必须要有这个字段
-    WantedBy=multi-user.target
+# 如果是执行了一个成功再执行另一个，需要借助外壳
+ExecStart=/bin/bash -c 'sleep 45 && /bin/bash bin/eum.sh start'
+或分开步骤
+ExecStartPre=/usr/bin/sleep 45
+ExecStart=/bin/bash bin/eum.sh start
 
-执行下面的命令设置 tproxyrule.service 可以开机自动运行
+[Install] # 开机自启动必须要有这个字段
+WantedBy=multi-user.target
 
-    systemctl daemon-reload
+```
 
-    systemctl start  tproxyrule
-    systemctl enable tproxyrule
+2、执行下面的命令设置 tproxyrule.service 可以开机自动运行
+
+    $ sudo systemctl daemon-reload
+
+    $ sudo systemctl enable tproxyrule --now
 
 验证
 
@@ -9855,9 +9858,9 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
 其它示例参见：
 
-    [用 systemd-networkd 配置策略路由](vnn.md think)
+    [用 systemd-networkd 配置策略路由](vnn think)
 
-    [设置为 systemd 的服务](org03k.md think)
+    [设置为 systemd 的服务](org03k think)
 
 #### 分析启动过程
 
