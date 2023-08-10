@@ -2345,6 +2345,8 @@ Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成H
 
     目前 flake8 被 vscode 做成插件(ms-python.flake8)了，已经不需要在各个环境下安装了，不知道 yapf 何时也这么处理。
 
+用 python 安装这些包的问题是你的每个 python 环境都得安装，微软现在正在开发 vscode 的扩展引入这些包，免除 python 环境依赖。
+
 #### pylance 快速解析，代码自动完成更快
 
 pylance 目前是 python 插件默认安装了
@@ -2356,6 +2358,8 @@ pylance 目前是 python 插件默认安装了
     ms-python.isort
 
 #### 格式化 yapf
+
+    微软整合了代码格式化及代码规范检查 lint 工具，python 包 yapf 被弃用，用户在扩展里选择微软官方的 black 或 autopep8，建议 black
 
 用 conda 在指定环境中安装，这个直接带二进制包：
 
@@ -2375,12 +2379,13 @@ pylance 目前是 python 插件默认安装了
     "python.formatting.provider": "yapf",
     "python.formatting.yapfArgs": [
         // "--sytle=yapf_style.cfg"
+    //"python.formatting.autopep8Args": ["--ignore","E402"],
     ],
 ```
 
 #### 代码规范检查 flake8
 
-目前被 vscode 发展成扩展了 ms-python.flake8，不用在自己的 python 环境安装了。
+    微软整合了代码格式化及代码规范检查 lint 工具，python 包 flake8 被弃用，用户在扩展里选择微软官方的 ms-python.flake8 即可。
 
 flake8 的规则非常规矩，好用
 

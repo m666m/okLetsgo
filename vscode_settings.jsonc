@@ -33,11 +33,7 @@
     // "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs":  "active",
     "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize而自行决定
-    "editor.autoIndent": "keep",  // 自动缩进只跟随上一行未知就可以了，乱跳挺烦的。
-    "[python]": {
-        "editor.formatOnType": true,
-        "editor.autoIndent": "full"
-    },
+    "editor.autoIndent": "keep",  // 自动缩进只跟随上一行位置就可以了，乱跳挺烦的。各个语言还可以单独设置选项
     "outline.showVariables": false,
     "diffEditor.ignoreTrimWhitespace": false,
     "window.titleBarStyle": "custom", // 整合菜单栏和标题栏
@@ -55,6 +51,12 @@
     "git.autofetch": true,
     "git.confirmSync": false,
     "git.rebaseWhenSync": true,  // 远程拉到本地用变基，注意合并主干的时候别用这个，git bash下手动
+    // 各个语言还可以单独设置选项
+    "[python]": {
+        "editor.formatOnType": true,
+        "editor.autoIndent": "full",
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
     "python.terminal.activateEnvironment": true,  // 打开终端自动执行切换到指定环境，对 conda 自定义路径的环境有错误：在cmd下使用conda可以设为True，如果在bash下使用conda会报错windows路径
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
