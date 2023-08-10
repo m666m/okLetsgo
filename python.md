@@ -2361,7 +2361,15 @@ pylance 目前是 python 插件默认安装了
 
     微软整合了代码格式化及代码规范检查 lint 工具，python 包 yapf 被弃用，用户在扩展里选择微软官方的 black 或 autopep8，建议 black
 
-用 conda 在指定环境中安装，这个直接带二进制包：
+black 的简单用法
+
+    https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html
+
+    禁用一行：某行后面的注释  # fmt: skip
+
+    禁用代码块： # fmt: off 开头，结尾用 # fmt: on，也兼容 yapf 的用法。
+
+用 conda 在指定环境中安装 yapf，这个直接带二进制包：
 
     conda install --name p37 yapf -y
 
@@ -2373,7 +2381,7 @@ pylance 目前是 python 插件默认安装了
 
 禁用一行
 
-    某行后面的注释 # yapf:disable
+    某行后面的注释  # yapf:disable
 
 ```json
     "python.formatting.provider": "yapf",

@@ -73,17 +73,18 @@
             "includeAllSymbols": true
         }
     ],
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true,
-    "python.linting.flake8Args": [
-        "--max-line-length=100"
-        // "--ignore=E501, E262",
-    ],
-    "python.formatting.provider": "yapf",
-    "python.formatting.yapfArgs": [
-        // "--sytle=yapf_style.cfg"
-    ],
-    "python.formatting.autopep8Args": ["--ignore","E402"],
+    // 微软提供了扩展替换了以下python包安装代码整理和检查的方式
+    //// "python.linting.pylintEnabled": false,
+    //// "python.linting.flake8Enabled": true,
+    //// "python.linting.flake8Args": [
+    ////     "--max-line-length=100"
+    ////     // "--ignore=E501, E262",
+    //// ],
+    //// "python.formatting.provider": "yapf",
+    //// "python.formatting.yapfArgs": [
+    ////     // "--sytle=yapf_style.cfg"
+    //// ],
+    //// "python.formatting.autopep8Args": ["--ignore","E402"],
     "files.exclude": {
         "**/__pycache__": true,
         "**/.ipynb_checkpoints":true,
