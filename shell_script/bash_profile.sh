@@ -221,7 +221,7 @@ fi
 # Linux bash / Windows git bash(mintty)
 # 多会话复用 ssh 密钥代理
 
-# GNOME 桌面环境下的终端需要给 ssh-agent 设置变量指向 gnome-keyring-daemon
+# GNOME 桌面环境下的终端需要给 ssh 密钥代理 ssh-agent 设置变量指向 gnome-keyring-daemon
 if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
     # if [[ $(uname) == 'Linux' ]]; then
 
