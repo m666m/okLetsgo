@@ -10747,9 +10747,17 @@ GNOME Files（Nautilus）文件管理器
 
 ### 命令行下的图形界面
 
+·newt 库的 whiptail 纯字符环境不需要桌面图形界面做支撑
+
+    https://www.redhat.com/sysadmin/use-whiptail
+
+    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/6.2_technical_notes/newt
+
+显示的内容采用基于文本的用户界面（TUI）格式，并使用 Tab 键进行导航，使用空格键选择。如树莓派的 raspi-config 配置程序就是用 whiptail 实现的。
+
 ·zenity
 
-在命令行执行实现与 shell 脚本交互的各种弹出式对话框，基于 gtk 库实现，需要操作系统有桌面图形化环境
+在桌面环境的终端里，执行 shell 脚本时实现弹出式对话框，用户的选择可以用返回值方式被 shell 脚本读取以实现交互，基于 gtk 库实现，需要操作系统有桌面图形化环境
 
     https://help.gnome.org/users/zenity/stable/
 
@@ -10764,14 +10772,6 @@ GNOME Files（Nautilus）文件管理器
 简单显示消息
 
     $ zenity --info --text="這是訊息內容" --title="這是標題"
-
-·newt 库的 whiptail 纯字符环境不需要桌面图形界面做支撑
-
-    https://www.redhat.com/sysadmin/use-whiptail
-
-    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/6.2_technical_notes/newt
-
-显示的内容采用基于文本的用户界面 （TUI） 格式，并使用 Tab 键进行导航，使用空格键选择。如树莓派的 raspi-config 配置程序就是用 whiptail 实现的。
 
 ### 使用拼音输入法
 
@@ -10933,6 +10933,8 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
     上述配置文件对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样就实现了显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
 
 我的 Fedora 38 发行版只安装了 Sans，没有 Serif，先手动安装下
+
+    如果启用了 RPMFusion 存储库，在 Gnome Software 的首页分类里，就可以选择中文字体安装了，更加方便
 
     # https://fedoraproject.org/wiki/Changes/Noto_CJK_Variable_Fonts#Detailed_Description
     # 所有字体的完整版：google-noto-cjk-fonts
