@@ -73,7 +73,8 @@
             "includeAllSymbols": true
         }
     ],
-    // 微软提供了扩展替换了以下python包安装代码整理和检查的方式
+    // 微软提供了扩展替换了以下python包安装代码格式化和PEP规范检查的方式
+    // https://github.com/microsoft/vscode-python/wiki/Migration-to-Python-Tools-Extensions#alternatives
     //// "python.linting.pylintEnabled": false,
     //// "python.linting.flake8Enabled": true,
     //// "python.linting.flake8Args": [
@@ -87,7 +88,14 @@
     //// "python.formatting.autopep8Args": ["--ignore","E402"],
     // python 的 lint 工具 black
     "black-formatter.args": [
+        // https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html
         "--skip-string-normalization"  // 双引号字符串太乱了
+    ],
+    "flake8.args": [
+        // compatible with black
+        "max-line-length = 88",
+        "--ignore",
+        "E203"
     ],
     "files.exclude": {
         "**/__pycache__": true,
