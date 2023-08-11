@@ -556,7 +556,6 @@ python-xy 不再更新维护了，废弃
 -搜索计算机： visual studio code 或 conda
  或 终端运行：spyder
 
-
 ### Windows 安装 anaconda
 
 官方介绍 <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>
@@ -2367,7 +2366,14 @@ black 的简单用法
 
     禁用一行：某行后面的注释  # fmt: skip
 
-    禁用代码块： # fmt: off 开头，结尾用 # fmt: on，也兼容 yapf 的用法。
+    禁用代码块： # fmt: off 开头，结尾用 # fmt: on，也兼容 yapf 的禁用用法。
+
+```json
+// python 的 lint 工具 black
+"black-formatter.args": [
+    "--skip-string-normalization"  // 双引号字符串太乱了
+],
+```
 
 用 conda 在指定环境中安装 yapf，这个直接带二进制包：
 

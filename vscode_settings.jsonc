@@ -85,6 +85,10 @@
     ////     // "--sytle=yapf_style.cfg"
     //// ],
     //// "python.formatting.autopep8Args": ["--ignore","E402"],
+    // python 的 lint 工具 black
+    "black-formatter.args": [
+        "--skip-string-normalization"  // 双引号字符串太乱了
+    ],
     "files.exclude": {
         "**/__pycache__": true,
         "**/.ipynb_checkpoints":true,
