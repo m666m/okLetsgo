@@ -1895,7 +1895,7 @@ Linux 下安装
 |-----------------------------------------------|---------------------------|
 |   MacOS Modern Light：Xcode Default           |         <----             |
 |                                               | Solarized Light           |
-|   Winter is coming：Light                     | Winter is coming：Light    |
+|   Barret PaperColor                           | Winter is coming：Light    |
 
 深色
 
@@ -1918,9 +1918,13 @@ MacOS Modern Theme 看代码深色浅色都好，多选单选查找相关内容�
 
     arcticicestudio.nord-visual-studio-code 适合环境亮度高的时候使用
 
-    marlosirapuan.nord-deep     深点的北极，适合暗光
+    marlosirapuan.nord-deep     深点的北极，适合低光
 
     dnlytras.nord-wave          最深的北极，适合无光
+
+Barret PaperColor Theme 适合浅色看代码
+
+    barretren.papercolor-vscode
 
 Material Neutral 深色看文字比较养眼
 
