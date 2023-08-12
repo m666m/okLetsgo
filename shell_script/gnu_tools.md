@@ -11155,58 +11155,56 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
     推荐安装的第三方组件：
 
-        Dash to Dock            类似苹果的浮动任务栏，竞品 Dash2Dock Lite 动画效果响应更敏捷
+        Dash to Dock            把工具栏变成类似苹果的浮动工具栏，鼠标在屏幕的底边中部碰碰就会弹出。竞品 Dash2Dock Lite 动画效果好响应更敏捷。
 
-        Removable drive menu    在任务栏给 usb 设备添加菜单方便访问，不然只能在文件管理器操作
+        Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，点击名称即以文件管理器打开 u 盘，点击三角即安全弹出 u 盘
 
-        Dash to Panel           把浮动任务栏变成像 Windows 一样的任务栏，这样就不需要 Application Menu 了
-
-        Clipboard Indicator     清理你的剪贴板
-
-        Show Desktop Button     增加显示桌面按钮
+        Dash to Panel           把工具栏变成像 Windows 一样的任务栏，这样就不需要那个内置的 Application Menu 扩展了
 
         Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸，还可设置锁屏壁纸
 
             https://github.com/neffo/bing-wallpaper-gnome-extension
                 https://github.com/utkarshgpta/bing-desktop-wallpaper-changer
 
-        NASA APOD               自动从 NASA 网站下载它的漂亮图片作为你的壁纸
+            竞品 NASA APOD，自动从 NASA 网站下载它的漂亮图片作为你的壁纸
 
-            https://github.com/Elinvention/gnome-shell-extension-nasa-apod
+                https://github.com/Elinvention/gnome-shell-extension-nasa-apod
 
-        quake-mode              设置热键快捷，用 drop down 方式调出你的程序，所有工作区共享该程序，一般设置热键 alt+enter 调出 terminal
+        quake-mode              设置热键快捷，用 drop down 方式调出你的程序，所有工作区共享该程序，再次按热键即隐藏该窗口。对程序员来说，设置热键 alt+enter 调出 terminal 极其方便实用。
 
-        Auto Move Windows       把你常用的程序归类在指定桌面打开，适合开很多窗口的场景，竞品 put windows
+        Auto Move Windows       把你常用的程序归类在指定桌面打开窗口，适合经常同时打开很多应用程序的场景，竞品 put windows
 
         Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
 
+        Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口
+
         GSConnect               操作局域网联网的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”
 
-        blur my shell           透明模糊你的任务栏和概览窗口的背景，支持 Dash to Dock 等扩展，注意跟有些主题兼容性不好边缘无法透明，锁屏界面模糊效果使用上面 Bing Wallpaper 自带的那个即可。
+        Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用
 
-        Vitals                  在任务栏显示你的cpu、内存使用情况，竞品 Freon
+        blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持 Dash to Dock 等扩展的透明化，注意跟有些主题兼容性不好边缘无法透明，锁屏界面模糊效果使用上面 Bing Wallpaper 自带的那个即可。
 
-        User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开
+        Vitals                  在任务栏显示你的cpu、内存使用情况，竞品 Freon，我觉得不如在终端使用 btop 更全面直观。
 
-GNOME 桌面组件扩展的自定义选项 “Gnome Tweaks”，在软件管理里搜索安装 “tweaks” 即可找到，或使用命令行
+        User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开主题并切换显示了
 
-    sudo apt install gnome-tweak-tool
+GNOME 桌面组件扩展的自定义选项 “Gnome Tweaks”，在软件管理里搜索安装 “tweaks” 即可找到
 
-    sudo apt install gnome-shell-extensions
+    或使用命令行
+
+        sudo apt install gnome-tweak-tool
+
+        sudo apt install gnome-shell-extensions
 
     安装 Tweaks 后在 “Show Apps” 里找它打开即可，一般要调整
 
-        center new window   新窗口居中打开
+        center new window   新窗口居中打开，不然每次都是歪在当前屏幕的左上，而且互相覆盖，太不方便了
 
-        勾选添加最大化最小化按钮
+        给窗口的任务栏添加最大化最小化按钮，方便鼠标操作
 
-        选择任务栏主题，参见前面的 “User Themes”
+        选择任务栏主题，需要先安装 “User Themes” 扩展
 
-命令行方式进行管理
-
-    dconf
-
-    gsettings
+命令行方式进行管理，参见章节 [Linux 下的 “注册表编辑器” --- 使用 GSettings 和 dconf 配置桌面]。
 
 #### 使用 gnome 主题
 
