@@ -11170,7 +11170,7 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         GSConnect               操作局域网联网的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”
 
-        blur my shell           透明模糊你的任务栏和概览窗口，支持 Dash to Dock 等扩展，注意跟有些主题兼容性不好边缘无法透明
+        blur my shell           透明模糊你的任务栏和概览窗口的背景，支持 Dash to Dock 等扩展，注意跟有些主题兼容性不好边缘无法透明，锁屏界面模糊效果使用上面 Bing Wallpaper 自带的那个即可。
 
         Vitals                  在任务栏显示你的cpu、内存使用情况，竞品 Freon
 
@@ -11214,7 +11214,7 @@ Gnome 主题乐园，在这里搜一下 Gnome Shell Themes 类别，你的 Gnome
             https://www.pling.com/p/1267246
                 https://github.com/EliverLara/Nordic
 
-        Flat Remix，绿色的还行，只支持白底，自带透明效果，支持 dash to dock 等 gnome 扩展的透明
+        Flat Remix，绿色的还行，只支持白底，自带透明效果，支持流行的一些 gnome 扩展如 dash to dock 等也变透明
             https://www.pling.com/p/1013030
                 https://github.com/daniruiz/Flat-Remix-GNOME-theme
 
