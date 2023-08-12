@@ -11218,6 +11218,9 @@ Gnome 主题乐园，在这里搜一下 Gnome Shell Themes 类别，你的 Gnome
             https://www.pling.com/p/1013030
                 https://github.com/daniruiz/Flat-Remix-GNOME-theme
 
+        Graphite gnome-shell theme multicolor 多种颜色搭配比较明显，只支持白底
+            https://www.pling.com/p/2014493/
+
         说明写的很清楚
             https://github.com/vinceliuice/WhiteSur-gtk-theme
 
