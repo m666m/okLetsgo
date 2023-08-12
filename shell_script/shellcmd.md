@@ -2170,6 +2170,8 @@ lsof 查看指定进程号打开的文件（sudo apt install lsof）
     nginx   28987 root  mem    REG      179,2    82872  129283 /usr/lib/nginx/modules/ngx_mail_module.so
     ...
 
+    这个命令经常用于查找已经擅长但仍被程序使用的文件，这些文件因为 Linux 文件系统索引和数据分离的工作方式，即使删除了系统也仍旧没有释放磁盘空间，所以有 unlink 命令，慎用。
+
 stat 查看文件的 inode 情况
 
     $ stat showimg
