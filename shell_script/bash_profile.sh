@@ -497,9 +497,9 @@ function PS1_host_name {
 # https://github.com/docker/cli/issues/3037
 function PS1_is_in_toolbox {
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
-        echo "\033[0;45m<$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
+        echo -e "\033[0;45m<$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
     elif  [ -e /.dockerenv ]; then
-        echo "\033[0;45m<$(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")>"
+        echo -e "\033[0;45m<$(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")>"
     fi
 }
 
