@@ -3146,10 +3146,15 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 ####################################################################
 # 从这里开始用户自己的设置
+#
+# 为防止变量名污染命令行环境，尽量使用奇怪点的名称
+
+# 有些版本的 Linux 默认不支持的标准目录给它补上
+PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 
 # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命
-# zsh 命令行用 bindkey -v 来设置 vi 操作模式令
-set -o vi
+# zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
+# 不需要这个了 set -o vi
 
 # 有些软件默认使用变量 EDITOR 指定的编辑器，一般是nano
 export EDITOR=/usr/bin/vi
@@ -3258,8 +3263,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias gba='echo "[分支：全部分支及跟踪关系、最近提交及注释]" && git branch -avv'
     alias gro='echo "[远程信息]" && git remote show origin'
     alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
-    alias gpull='echo "[git 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull --rebase; done'
-    alias gpush='echo "[git 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
+    alias gpull='echo "[github 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull --rebase; done'
+    alias gpush='echo "[github 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 
     # gpg 常用命令，一般用法都是后跟文件名即可
     alias ggk='echo "[查看有私钥的gpg密钥及其子密钥，带指纹和keygrip]" && gpg -K --keyid-format=long --with-subkey-fingerprint --with-keygrip'
@@ -3285,7 +3290,8 @@ if [ -x /usr/bin/dircolors ]; then
 
     # dnf
     alias dnfp='echo "[dnf搜索包含指定命令的软件包]" && dnf provides'
-    alias dnfq='echo "[dnf查找指定的软件包在哪些存储库]" && dnf repoquery -i'
+    alias dnfqi='echo "[dnf查找指定的软件包在哪些存储库]" && dnf repoquery -i'
+    alias dnfqr='echo "[dnf查看软件包依赖]" && dnf repoquery --requires'
     alias dnfr='echo "[dnf查看当前有哪些存储库]" && dnf repolist'
     alias dnfrl='echo "[dnf查看存储库软件列表]" && dnf list --repo'
     alias dnfl='echo "[dnf查看安装的软件]" && dnf list --installed'
@@ -3314,19 +3320,21 @@ export GPG_TTY=$(tty)
 # Linux bash / Windows git bash(mintty)
 # 多会话复用 ssh 密钥代理
 
-if $(pgrep gnome-keyring >/dev/null 2>&1) ;then
-
+# GNOME 桌面环境下的终端需要给 ssh 密钥代理 ssh-agent 设置变量指向 gnome-keyring-daemon
+if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
     # if [[ $(uname) == 'Linux' ]]; then
 
     # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
     # 如果有时候没有启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh 会导致无法读取ssh代理的密钥
     # 干脆手工指定
     # https://blog.csdn.net/asdfgh0077/article/details/104121479
-    eval `gnome-keyring-daemon --start >/dev/null 2>&1`  # 不会多次运行自己
+    $(pgrep gnome-keyring >/dev/null 2>&1) || eval `gnome-keyring-daemon --start >/dev/null 2>&1`
+
     export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
     export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
-elif  [[ "$OSTYPE" =~ msys ]]; then
+# Windows git bash 环境
+elif [[ "$OSTYPE" =~ msys ]]; then
 
     # Windows git bash(mintty)
     # 多会话复用 ssh-pageant，用它连接 putty 的 pagent.exe，稍带运行gpg钥匙圈更新
@@ -3354,6 +3362,7 @@ elif  [[ "$OSTYPE" =~ msys ]]; then
     eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
     ssh-add -l
 
+# 默认 tty 命令行环境
 else
 
     # Linux bash / Windows git bash(mintty)
@@ -3414,10 +3423,10 @@ fi
 # Bash：加载插件或小工具
 
 # ssh 命令时候能够自动补全 hostname
-#[[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
+# zsh 自带不需要 bash 的了 [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
 
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
-source /usr/local/bin/ackg.sh
+[[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh
 
 #################################
 # Bash：手动配置插件
@@ -3447,7 +3456,7 @@ source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 #################################
 # Zsh：手动配置插件
 
-# zsh 执行 cd 命令后自动执行下 ls 列出当前文件
+# zsh 执行 cd xxx 命令后自动执行 ls 列出当前文件
 chpwd() ls -A
 chpwd
 
@@ -6129,14 +6138,18 @@ sleep 60
 
 ### 命令行下的文件资源管理器 ranger / Midnight Commander
 
-ranger 使用 vi 键位操作，自动预览文本文件，还支持打开其它类型的文件，非常方便
+ranger 使用热键操作，自动预览文本文件，还支持打开其它类型的文件，非常方便
 
     https://ranger.github.io/
         https://github.com/ranger/ranger
 
     按 ctl+h 切换是否显示隐藏文件
 
-    左中右三屏：中间屏幕保持显示当前目录，左屏显示上一级的目录树，右屏显示下一级的目录列表或文件预览，用 vi 键在各个窗口中移动
+    按 ? 显示快捷键
+
+    左中右三屏：中间屏幕保持显示当前目录，左屏显示上一级的目录树，右屏显示下一级的目录列表或文件预览，用方向键或 vi 的方向键在各个窗口中移动
+
+    操作都是在中间屏幕上的，对文本类型的文件会在右屏预览，如果回车选择该文件会自动调用对应的编辑器打开，非常方便。如果ranger不知道如何处理该文件，则会显示该文件的信息，按 q 键退出。
 
 Midnight Commander 命令行下使用两个面板来处理文件和目录
 
@@ -10810,7 +10823,11 @@ Gnome:
 
     $ fc-list :lang=zh
 
-使用 gnome-tweak-tool 直观方便，在 “Font” 设置中可以给界面和文本分别设置不同的字体，在 “Hinting”（渲染微调）选项建议勾选 “Full” 拉高字体，否则显得扁
+使用 gnome-tweak-tool 直观方便，在 “Font” 设置中可以给界面和文本分别设置不同的字体
+
+    在 “Hinting”（渲染微调）选项建议勾选 “Full” 拉高字体，否则显得扁
+
+    对等宽字体，建议设置 “”。
 
     也可使用命令：
 

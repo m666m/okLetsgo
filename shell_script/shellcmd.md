@@ -276,17 +276,17 @@ test 和 [] 是等价的，[] 注意两边留空格
 从本质上讲，if 检测的是命令的退出状态，下面的判断跳转就无法使用 test 命令（或许 zsh 支持）
 
     # 如果命令存在则执行
-    if $(which vcgencmd >/dev/null 2>&1) ; then vcgencmd measure_temp; fi
+    if $(command -v vcgencmd >/dev/null 2>&1) ; then vcgencmd measure_temp; fi
     # 等价
-    which vcgencmd >/dev/null 2>&1 && vcgencmd measure_temp
+    command -v vcgencmd >/dev/null 2>&1 && vcgencmd measure_temp
 
     # 如果命令不存在则退出
-    which vcgencmd >/dev/null 2>&1 || return 0
+    command -v vcgencmd >/dev/null 2>&1 || return 0
 
     # 如果执行命令的结果是失败，则打印
-    if ! $(which vcgencmd >/dev/null 2>&1) ; then printf "%s" 'error cmd'; fi
+    if ! $(command -v vcgencmd >/dev/null 2>&1) ; then printf "%s" 'error cmd'; fi
 
-    which vcgencmd >/dev/null 2>&1 || echo "不是树莓派，exit,终止执行之后的语句"
+    command -v vcgencmd >/dev/null 2>&1 || echo "不是树莓派，exit,终止执行之后的语句"
 
     # 执行命令，如果成功则执行xxx，否则执行yyy
     $(lscpu |grep -q arm) && echo "xxx" || echo "yyy"
@@ -415,12 +415,11 @@ diff 通常的用法是从参数读入两个文件，而命令里面的-则是�
 
 查找当前系统是否有某个命令，支持 alias、shell 函数等
 
+    command -v ls  # 这个用法的兼容性最好
+
     which ls
 
-    command -v ls
-
     type ls
-
 
 ## bash 内建命令
 
@@ -826,7 +825,7 @@ Fedora 的分区方案
 # -o pipefail ： 只要管道中的一个子命令失败，整个管道命令就失败，这样可以捕获到其退出代码
 set -xeuo pipefail
 
-# 防止重叠运行
+# 防止重复运行
 exec 123<>lock_myscript   # 把lock_myscript打开为文件描述符123
 flock  --wait 5  123 || { echo 'cannot get lock, exit'; exit 1; }
 
@@ -849,7 +848,7 @@ DATE_TIME() {
 ####################################################################
 #
 # 文字颜色生成模板 https://ciembor.github.io/4bit
-#
+# 详见章节 [终端模拟器和软件的彩色设置](gnu_tools.md)
 
 # 给文字加颜色
 #   echo -e "${green}All done!${plain}"

@@ -6,7 +6,7 @@
 
 ###################################################################
 # 自此开始都是自定义设置
-
+#
 # 为防止变量名污染命令行环境，尽量使用奇怪点的名称
 
 # 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件
@@ -21,6 +21,9 @@
 
 # exit for non-interactive shell
 [[ ! -t 1 ]] && return
+
+# 有些版本的 Linux 默认不支持的标准目录给它补上
+PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 
 # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命
 # zsh 命令行用 bindkey -v 来设置 vi 操作模式令
@@ -134,7 +137,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias gro='echo "[远程信息]" && git remote show origin'
     alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
     alias gpull='echo "[github 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull --rebase; done'
-    alias gpush='echo "[gitjib 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
+    alias gpush='echo "[github 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
 
     # gpg 常用命令，一般用法都是后跟文件名即可
     alias ggk='echo "[查看有私钥的gpg密钥及其子密钥，带指纹和keygrip]" && gpg -K --keyid-format=long --with-subkey-fingerprint --with-keygrip'
@@ -410,7 +413,7 @@ function PS1virtualenv-env-name {
 
 function PS1git-branch-name {
 
-    if $(which __git_ps1 >/dev/null 2>&1); then
+    if $(command -v __git_ps1 >/dev/null 2>&1); then
         # 优先使用 __git_ps1 取分支名信息
         #
         #   如果使用git for Windows自带的mintty bash，它自带git状态脚本(貌似Debian系的bash都有)
@@ -483,20 +486,20 @@ function PS1git-branch-prompt {
     fi
 }
 
-# 不同颜色的主机名，本地环境是绿色，ssh 登录的远程变为 洋红
+# 不同颜色的主机名，本地环境是绿色，ssh 登录的远程变为洋红
 function PS1_host_name {
     [[ -n $SSH_TTY ]] && echo -e "\033[0;35m$(hostname)" || echo -e "\033[0;32m$(hostname)"
 }
 
-# 提示当前在 toolbox 或 distrobox 等交互式容器环境
+# 提示当前在 toolbox 或 distrobox 等交互式容器环境，背景变为洋红
 # https://docs.fedoraproject.org/en-US/fedora-silverblue/tips-and-tricks/#_working_with_toolbx
 # https://ublue.it/guide/toolbox/#using-the-hosts-xdg-open-inside-distrobox
 # https://github.com/docker/cli/issues/3037
 function PS1_is_in_toolbox {
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
-        echo "<$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
+        echo "\033[0;45m<$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
     elif  [ -e /.dockerenv ]; then
-        echo "<$(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")>"
+        echo "\033[0;45m<$(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")>"
     fi
 }
 
@@ -531,7 +534,7 @@ PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\
 #   CPU Load Average 的值应该小于CPU核数的70%，取1分钟平均负载
 function PS1raspi-warning-info {
 
-    # [[ $(which vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
+    # [[ $(command -v vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
 
     local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
