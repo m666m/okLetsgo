@@ -11195,7 +11195,7 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         GSConnect               操作局域网联网的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”
 
-        Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，点击名称即以文件管理器打开 u 盘，点击三角即安全弹出 u 盘
+        Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘
 
         Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用
 
