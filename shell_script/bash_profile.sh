@@ -509,6 +509,8 @@ function PS1_is_in_toolbox {
     fi
 }
 
+# Windows 下的 wsl 环境，wsl 下的 docker，暂未研究
+
 #################################
 # 设置命令行提示符 PS1
 
