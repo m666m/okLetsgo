@@ -3198,8 +3198,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias ll='ls -l'
     alias la='ls -lA'
 
-    # 各命令的惯用法
-    #
+    # 其它常用命令的惯用法：
+
     # 列出目录下的文件清单，查找指定关键字，如 `lsg fnwithstr`。因为ls列出的目录颜色被grep覆盖，用 ls -l 查看更方便。
     alias lsg='ls -lFA |grep -i'
     # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findf fnwithstr`
@@ -3224,13 +3224,13 @@ if [ -x /usr/bin/dircolors ]; then
     alias scps='echo "[scp 源 目的。远程格式 user@host:/home/user/ 端口用 -P]" && scp -r'
     alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/home/user/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
 
-    # vi
+    # vi 后悔药
     alias viw='echo "[只给出提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
 
     # systemd
     alias stded='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
 
-    # wsl 或 git bash下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "[Windows Path]"
+    # wsl 或 git bash 下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "C:\Windows\Path"
     function cdw {
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
@@ -3240,14 +3240,6 @@ if [ -x /usr/bin/dircolors ]; then
         [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] && \
             (echo -e "\033[0;33mWARN\033[0m: Start Desktop, wait until login shows..."; sudo systemctl isolate graphical.target) || \
             (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
-    }
-
-    # 命令行看天气 https://wttr.in/:help
-    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
-    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
-    # 看月相 curl http://wttr.in/moon
-    function weather {
-        curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
     }
 
     # git 常用命令
@@ -3306,6 +3298,18 @@ if [ -x /usr/bin/dircolors ]; then
 
     # podman
     alias podmans='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
+
+    # distrobox 这词打不快
+    alias dbox='distrobox'
+
+    # 命令行看天气 https://wttr.in/:help
+    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
+    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
+    # 看月相 curl http://wttr.in/moon
+    function weather {
+        curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
+    }
+
 fi
 
 ####################################################################
@@ -3334,7 +3338,7 @@ if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
     export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
 # Windows git bash 环境
-elif [[ "$OSTYPE" =~ msys ]]; then
+elif [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
 
     # Windows git bash(mintty)
     # 多会话复用 ssh-pageant，用它连接 putty 的 pagent.exe，稍带运行gpg钥匙圈更新
@@ -3362,7 +3366,7 @@ elif [[ "$OSTYPE" =~ msys ]]; then
     eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
     ssh-add -l
 
-# 默认 tty 命令行环境
+# 默认用 tty 命令行环境通用的设置
 else
 
     # Linux bash / Windows git bash(mintty)
