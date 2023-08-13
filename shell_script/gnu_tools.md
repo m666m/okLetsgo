@@ -11215,6 +11215,8 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
         Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用
 
+        Power Profile Switcher  接电源时能源策略使用高性能，接电池时能源策略使用节能，自动切换省的你手动。
+
         Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
 
         Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口
@@ -12270,9 +12272,34 @@ VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
     https://zhuanlan.zhihu.com/p/630641235
 
+#### 新装系统的节能策略太挠人了
+
+Linux 桌面环境不定什么时候就睡过去，能源策略里关关关，自动锁屏关关关
+
+Setting -> Power：
+
+    禁用屏幕空白 Screen Blank: Never
+
+    禁用自动挂起 AutoSuspend: off
+
+    严重怀疑节能策略不是高性能而是均衡、节能啥的，还会自动休眠
+
+        # https://wiki.debian.org/Suspend
+        $ sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+
+        $ systemctl status hibernate.target
+        ...
+        Loaded: Masked
+        ...
+
+Setting -> Privacy -> Screen Lock:
+
+    关闭自动锁屏延迟 Blank Screen Delay: Never
+    禁用自动屏幕锁定 Automatic Screen Lock: Off
+
 #### Gnome 内置的远程桌面功能
 
-注意：Gnome 自带的远程桌面实质是 “共享屏幕”，只支持实时共享给一个用户：以服务器为主控，在主机屏幕前的人，可以同步看到远程的人在自己的计算机上干什么，并可以随时干预中断远程会话。
+注意：Gnome 自带的远程桌面实质是 “共享屏幕”，只支持实时共享给一个用户：必须本地登录主机桌面，然后远程才可以连接，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时干预中断远程会话。
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
 
