@@ -190,8 +190,9 @@ fi
 # 在 mintty 下使用普通的 Windows 控制台程序
 # 如 mintty 使用 ConPty 接口则可以不需要这些 alias 使用 winpty 来调用了
 #   Windows version >= 10 / 2019 1809 (build >= 10.0.17763) 在 ~/.mintty.rc 中添加 `ConPTY=true`
-if $(git --version |grep -i Windows >/dev/null 2>&1); then
 
+#if $(git --version |grep -i Windows >/dev/null 2>&1); then
+if [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
     alias python="winpty python"
     alias ipython="winpty ipython"
     alias mysql="winpty mysql"
@@ -243,7 +244,7 @@ if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
     export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
 # Windows git bash 环境
-elif [[ "$OSTYPE" =~ msys ]]; then
+elif [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
 
     # Windows git bash(mintty)
     # 多会话复用 ssh-pageant，用它连接 putty 的 pagent.exe，稍带运行gpg钥匙圈更新
