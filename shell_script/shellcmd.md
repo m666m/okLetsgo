@@ -1073,6 +1073,8 @@ esac
 
 一般在操作系统安装后，如果默认没有安装 sudo 软件包，用命令 `su -` 切换到 root 用户，先安装 sudo 软件包。日后的使用就不需要切换到 root 用户了，用普通用户使用 `sudo` 命令来安装软件包即可。
 
+如何设置 sudo 用户参见章节 [添加用户 uu 并赋予 sudo 权限](init_a_server think)。
+
 如果不安装 sudo 软件包，除了用 su 命令切换到 root，就只能依赖可执行文件设置特殊权限位了，参见章节 [设定文件的特殊权限](init_a_server think)。一般这种情况都是关注安全性比较高的系统，普通使用为了方便还是安装 sudo 包。
 
 另参见章节 [sudo 的替代方案 Polkit（PolicyKit）](init_a_server think)。
