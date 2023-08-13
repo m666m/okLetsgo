@@ -147,6 +147,11 @@ if [ -x /usr/bin/dircolors ]; then
     # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
     alias ggd='gpg -d'
 
+    # 只下载了一个文件，从校验和文件中抽出单个文件进行校验 `sha256sumf abc.iso SHA256SUMS.txt`
+    function sha256sumf {
+        sha256sum -c <(grep $1 $2)
+    }
+
     # openssl 常用命令
     # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件，加 -kfile 指定密钥文件
     alias ssle='openssl enc -e -aes-256-cbc -md sha512 -pbkdf2 -iter 10000000 -salt'
