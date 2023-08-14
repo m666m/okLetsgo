@@ -2590,7 +2590,11 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
 安装为系统字体，方法比较复杂
 
-    因为发行版的存储库没有 nerd font，只能手动安装，方法来自 https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
+    因为发行版的存储库没有 nerd font，只能手动安装，方法来自
+
+        https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
+
+        https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts
 
     $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/Meslo.zip
     $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/FiraCode.zip
@@ -10981,6 +10985,10 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
             https://github.com/notofonts/noto-cjk/tree/main/Serif
 
     针对三种风格的默认字体使用系统的英文字体，对中文回落到 Adobe/Google 的开源字体：思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）。其实思源中文字体也内置了西文，只设置该中文字体也可以，但其西文部分使用的是 Adobe Source 家族字体不大好看我们不去使用它（思源黑体集成 Source Sans Pro、思源宋体集成 Source Serif，详见 <https://sspai.com/post/38705>）。
+
+有个图形化工具 Fonts Tweak Tool，简化了下面的配置步骤
+
+    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts
 
 法一：简单起见，我们直接编辑 /etc/fonts/local.conf 文件
 
