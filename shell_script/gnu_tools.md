@@ -10972,6 +10972,8 @@ Linux 操作系统一般都内置 fontconfig 程序选择字体，默认无需�
 
 Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的 Cantarell 字体显示中文太丑了，需要手工改设置，利用回落使得中英文分别使用不同的字体：
 
+        https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description
+
         https://aur.archlinux.org/packages/noto-fonts-cjk-vf
 
             https://github.com/notofonts/noto-cjk/tree/main/Sans
