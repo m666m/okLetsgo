@@ -11182,46 +11182,53 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
             sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
 
-    推荐打开的系统组件：
+推荐打开的系统组件：
 
-        Application Menu        系统默认的 win 键罗列所有的应用程序，多了之后太乱了。为应用程序添加基于类别的菜单
+    Application Menu        系统默认的 win 键会罗列所有的应用程序，多了之后太乱了。在任务栏为应用程序添加基于类别的菜单
 
-    推荐安装的第三方组件：
+推荐安装的第三方组件：
 
-        Dash to Dock            把工具栏变成类似苹果的浮动工具栏，鼠标在屏幕的底边中部碰碰就会弹出。竞品 Dash2Dock Lite 动画效果好响应更敏捷。
+    Dash to Dock            把工具栏变成类似苹果的浮动工具栏，鼠标在屏幕的底边中部碰碰就会弹出。竞品 Dash2Dock Lite 动画效果好响应更敏捷。
 
-        Dash to Panel           把工具栏变成像 Windows 一样的任务栏，这样就不需要那个内置的 Application Menu 扩展了
+    Dash to Panel           把工具栏变成像旧风格的 Windows 一样的任务栏，这样就不需要那个内置的 Application Menu 扩展了，感觉不如 Dash to Dock。
 
-        Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸，还可设置锁屏壁纸
+    Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸，还可设置锁屏背景模糊。
 
-            https://github.com/neffo/bing-wallpaper-gnome-extension
-                https://github.com/utkarshgpta/bing-desktop-wallpaper-changer
+        https://github.com/neffo/bing-wallpaper-gnome-extension
+            https://github.com/utkarshgpta/bing-desktop-wallpaper-changer
 
-            竞品 NASA APOD，自动从 NASA 网站下载它的漂亮图片作为你的壁纸
+        竞品 NASA APOD，自动从 NASA 网站下载它的漂亮图片作为你的壁纸
 
-                https://github.com/Elinvention/gnome-shell-extension-nasa-apod
+            https://github.com/Elinvention/gnome-shell-extension-nasa-apod
 
-        blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持 Dash to Dock 等扩展的透明化，注意跟有些主题兼容性不好边缘无法透明，锁屏界面模糊效果使用上面 Bing Wallpaper 自带的那个即可。
+    Nigh Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗（壁纸跟随），这个扩展实现自动定时切换
 
-        User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开主题并切换显示了
+    blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持 Dash to Dock 等扩展的透明化，注意跟有些主题兼容性不好边缘无法透明，锁屏背景模糊效果使用上面 Bing Wallpaper 的，不用本扩展的。
 
-        quake-mode              设置热键快捷，用 drop down 方式调出你的程序，所有工作区共享该程序，再次按热键即隐藏该窗口。对程序员来说，设置热键 alt + enter 调出 terminal 极其方便实用。
+    User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开主题并切换显示了
 
-        Auto Move Windows       把你常用的程序归类，在指定桌面打开窗口，适合经常同时打开很多应用程序的场景，竞品 put windows
+    Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能
 
-        GSConnect               操作局域网联网的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”
+    Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
 
-        Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘
+    Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口
 
-        Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用
+    Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘
 
-        Power Profile Switcher  接电源时能源策略使用高性能，接电池时能源策略使用节能，自动切换省的你手动。
+    allow locked remote desktop
+                            对远程桌面功能，允许在本地桌面未解锁的情况下远程桌面连接登录本机
 
-        Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
+    quake-mode              设置热键快捷，用 drop down 方式调出你的程序，所有工作区共享该程序，再次按热键即隐藏该窗口。对程序员来说，设置热键 alt + enter 调出 terminal 极其方便实用。
 
-        Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口
+    Auto Move Windows       把你常用的程序归类，在指定桌面打开窗口，适合经常同时打开很多应用程序的场景，竞品 put windows
 
-        Vitals                  在任务栏显示你的cpu、内存使用情况，竞品 Freon，我觉得不如在终端使用 btop 更全面直观。
+    GSConnect               操作局域网联网的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”
+
+    Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用
+
+    Power Profile Switcher  接电源时能源策略使用高性能，接电池时能源策略使用节能，自动切换省的你手动。
+
+    Vitals                  在任务栏显示你的cpu、内存使用情况，竞品 Freon，我觉得不如在终端使用 btop 更全面直观。
 
 GNOME 桌面组件扩展的自定义选项 “Gnome Tweaks”，在软件管理里搜索安装 “tweaks” 即可找到
 
@@ -12299,7 +12306,7 @@ Setting -> Privacy -> Screen Lock:
 
 #### Gnome 内置的远程桌面功能
 
-注意：Gnome 自带的远程桌面实质是 “共享屏幕”，只支持实时共享给一个用户：必须先本地登录主机桌面，然后远程才可以连接，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时干预中断远程会话。
+内置的这个功能叫 “共享屏幕” 更贴切。类似 Windows 的 “远程协助”。
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
 
@@ -12311,7 +12318,13 @@ Setting -> Privacy -> Screen Lock:
 
     https://www.linuxmi.com/ubuntu-22-04-rdp-remote-desktop.html
 
-如果需要多用户使用，远程连接不需要本地主机登录桌面，需要安装第三方 vnc 或 rdp 软件，见章节 [使用第三方远程桌面软件]。
+功能受限：
+
+    Gnome 自带的远程桌面实质是 “共享屏幕”，只支持实时共享给一个用户：必须先本地登录主机桌面，然后远程才可以连接，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时干预中断远程会话。
+
+    可以在 gnome 网站下载安装插件 “allow locked remote desktop”，这样远程计算机就可以在服务端本地未解锁桌面的情况下使用远程桌面登录服务端计算机了。
+
+如果需要支持多个远程桌面用户同时登录，而且远程连接不需要本地主机先登录桌面，可以安装第三方 vnc 或 rdp 软件，见章节 [xrdp]。
 
 Gnome 桌面同时支持 X11 和 Wayland 两种方式
 
@@ -12327,7 +12340,7 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
     https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353?replies_to_post_number=12
 
-> 服务端
+> 服务端设置
 
 默认情况下，Gnome 中共享计算机屏幕的功能是关闭的。
 
@@ -12341,7 +12354,7 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
     需要设置专门的用户名和密码，不是使用你当前登录的用户名的密码，我为了方便改成一致了。
 
-> 客户端
+> 客户端设置
 
 使用支持 rdp 或 vnc 协议的客户端软件，参见章节 [使用第三方远程桌面软件]。
 
@@ -12357,15 +12370,13 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
 然后你可以尝试从客户端连接到该会话。
 
-当你回到服务器时，你会注意到现在在上栏有一个黄色的图标，这表明你正在 Gnome 中共享电脑屏幕。如果你不再希望共享屏幕，你可以进入菜单，点击 屏幕正在被共享Screen is being shared，然后再选择 关闭Turn off，立即停止共享屏幕。
+如果在服务端屏幕查看当前桌面，你会注意到现在在上栏有一个黄色的图标，这表明你正在 Gnome 中共享电脑屏幕。如果你不再希望共享屏幕，你可以进入菜单，点击 屏幕正在被共享Screen is being shared，然后再选择 关闭Turn off，立即停止共享屏幕。
 
-默认情况下，当会话锁定时，连接将总是终止。在会话被解锁之前，不能建立新的连接。可以在 gnome 网站下载安装插件 “allow locked remote desktop”，这样远程计算机也可以解锁本地屏幕了。
-
-安全问题
+安全性受限
 
     服务器将始终保持其控制模式。任何在服务器会话中的人都将能够控制鼠标和键盘。
 
-    如果会话被锁定，从客户端解锁也会在服务器上解锁。它也会把显示器从待机模式中唤醒。任何能看到你的服务器屏幕的人都能看到你此刻正在做什么。
+    如果会话被锁定，从客户端解锁也会在服务器上解锁。它也会把显示器从待机模式中唤醒。任何能看到你的服务器屏幕的人都能看到客户端此刻正在做什么，这不是 bug，因为这个功能设计上就是本地用户优先的。
 
     VNC 协议本身没有加密或保护，所以你通过它发送的任何东西都可能被泄露。日常使用都是用 ssh 本地端口转发的方式用 tunnel 封装起来。
 
