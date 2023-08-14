@@ -11150,7 +11150,7 @@ Gnome 桌面只能展示壁纸，不能放文件，桌面顶部一个任务栏�
 
     切换各个应用的窗口按 alt + tab，跟 Windows 相同：一按即放就是切换到前一个程序窗口，按住 alt 点按 tab 会在窗口间切换，放开 alt 即切换到该窗口。
 
-    切换一个应用打开的多个实例的窗口按 alt + ~ 或 win + ~，否则只能鼠标再次点击工具栏图标，或点击任务栏图标在弹出菜单的窗口列表中选择切换。
+    切换一个应用打开的多个实例的窗口按 alt + ~ 或 win + ~，否则只能鼠标再次点击工具栏图标，或点击任务栏图标在弹出菜单的窗口列表中选择切换。如果不习惯这种方式，切换应用列出所有窗口，可以安装扩展 “Alt+Tab Scroll Workaround”
 
     临时离开电脑，用 win + l 锁屏，跟 Windows 相同。
 
@@ -11178,17 +11178,17 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，在 gnome 43 开始甚�
 
 如果想使用其它各种扩展，只能去网站 <https://extensions.gnome.org/> 自行搜索下载。现在的 GNOME 桌面组件自带的扩展管理器 “Extension Manager” 替换掉了之前的 “GNOME Extensions”，不需要去网站就可以搜索下载，在软件管理里搜索安装 “Extension Manager” 即可。
 
-如果还是想使用网站浏览然后安装的方式
+    如果仍然想使用网站浏览然后安装的方式
 
-    先浏览器访问如下网址，点击顶部提示，安装浏览器组件
+        先浏览器访问如下网址，点击顶部提示，安装浏览器组件
 
-    https://extensions.gnome.org/
+        https://extensions.gnome.org/
 
-        介绍 https://wiki.gnome.org/Projects/GnomeShell
+            介绍 https://wiki.gnome.org/Projects/GnomeShell
 
-    然后安装本地消息组件
+        然后安装本地消息组件
 
-        sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
+            sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
 
 推荐打开的内置扩展：
 
@@ -11225,6 +11225,9 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，在 gnome 43 开始甚�
 
     Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口
 
+    Alt+Tab Scroll Workaround
+                            按 alt+tab 时在所有窗口中循环，而不是一个应用只显示最近实例的窗口
+
     allow locked remote desktop
                             解除内置的远程桌面的本地锁定限制，允许在本地桌面未解锁的情况下以远程桌面登录本机
 
@@ -11236,7 +11239,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，在 gnome 43 开始甚�
 
     Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用。竞品 Pano Clipboard Manager 可以显示复制的媒体内容。
 
-    Power Profile Switcher  接电源时能源策略使用高性能，接电池时能源策略使用节能，自动切换省的你手动。
+    Power Profile Switcher  用电源时能源策略使用高性能，用电池时能源策略使用节能，自动切换省的你手动。在我的台式机上不准，总是切换到均衡。
 
     Vitals                  在任务栏显示你的cpu、内存使用情况，竞品 Freon，我觉得不如在终端使用 btop 更全面直观。
 
