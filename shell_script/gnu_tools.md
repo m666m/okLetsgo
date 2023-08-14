@@ -6137,8 +6137,6 @@ sleep 60
 
 各大发行版都有提供名为 exa 的软件包，使用时加参数才出效果
 
-去掉 -a 可以不显示隐藏文件
-
     $ exa -lhgia
     inode Permissions Size User Group Date Modified Name
     3767 drwxr-xr-x@    - uu   uu     3 Jun 04:59  .git
@@ -6146,6 +6144,12 @@ sleep 60
     110627 .rw-r--r--@   16 uu   uu     3 Jun 00:09  a.txt
 
 ### 命令行下的文件资源管理器 ranger / Midnight Commander
+
+nnn
+
+    https://github.com/jarun/nnn
+
+    vi 键位操作，用方向键或 vi 的方向键在各个列表项移动，空格即选择，p 是粘贴。
 
 ranger 使用热键操作，自动预览文本文件，还支持打开其它类型的文件，非常方便
 
@@ -6157,17 +6161,17 @@ ranger 使用热键操作，自动预览文本文件，还支持打开其它类�
 
     操作都是在中间屏幕上的，对文本类型的文件会在右屏预览，如果回车选择该文件会自动调用对应的编辑器打开，非常方便。如果ranger不知道如何处理该文件，则会显示该文件的信息，按 q 键退出。
 
-    竞品 nnn https://github.com/jarun/nnn
+    操作热键
 
-ranger 操作热键
+        按 ? 显示快捷键，然后根据屏幕提示按键选择即可
 
-    按 ? 显示快捷键，然后根据屏幕提示按键选择即可
+        按 ctl+h 切换是否显示隐藏文件
 
-    按 ctl+h 切换是否显示隐藏文件
+        用空格选择文件，按 y 复制它，然后导航到目标目录再按 p 粘贴
 
-    用空格选择文件，按 y 复制它，然后导航到目标目录再按 p 粘贴
+        按 delete 键删除当前被选中的文件
 
-    按 delete 键删除当前被选中的文件
+    这 ranger 我用它选择了几个文件复制到别处，居然复制了其它文件，按删除还没反应，不敢用了。
 
 Midnight Commander 命令行下使用两个面板来处理文件和目录
 
