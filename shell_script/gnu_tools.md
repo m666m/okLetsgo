@@ -2588,22 +2588,35 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
 > Fedora(SELinux) 下安装 Nerd Font --- Meslo LGS
 
-    $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/Meslo.zip
-
-    $ unzip Meslo.zip
+安装为系统字体，方法比较复杂
 
     因为发行版的存储库没有 nerd font，只能手动安装，方法来自 https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
 
+    $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/Meslo.zip
+    $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/FiraCode.zip
+
+    $ unzip Meslo.zip
+    $ unzip FiraCode.zip
+
     $ sudo mkdir -p /usr/local/share/fonts/MesloLGSNF
+    $ sudo mkdir -p /usr/local/share/fonts/FiraCodeNF
+
     $ sudo cp MesloLGSNerdFont-*.ttf /usr/local/share/fonts/MesloLGSNF/
+    $ sudo cp FiraCodeNerdFont-*.ttf /usr/local/share/fonts/FiraCodeNF
 
     # Set permissions and update SELinux labels
     $ sudo chown -R root: /usr/local/share/fonts/MesloLGSNF
     $ sudo chmod 644 /usr/local/share/fonts/MesloLGSNF/*
     $ sudo restorecon -vFr /usr/local/share/fonts/MesloLGSNF
 
+    $ sudo chown -R root: /usr/local/share/fonts/FiraCodeNF
+    $ sudo chmod 644 /usr/local/share/fonts/FiraCodeNF/*
+    $ sudo restorecon -vFr /usr/local/share/fonts/FiraCodeNF
+
     # Update the font cache
     $ sudo fc-cache -v
+
+Gnome 桌面环境下的 GNOME Font Viewer 程序只是给当前用户安装字体。
 
 #### Font Awesome
 
@@ -5602,7 +5615,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
 ##### 状态栏显示不使用 powerline
 
-需要安装图标字体，参加章节 [Nerd font]。
+需要安装图标字体，参见章节 [Nerd font]。
 
 > 安装 tmux-powerline
 
@@ -10832,6 +10845,8 @@ Gnome:
 切换到拼音输入法之后，右键点击输入法在任务栏的图标，弹出菜单选择 “Perference”，设置用逗号句号翻页等选项。
 
 ### 设置中文字体
+
+如何安装自己下载的字体参见章节 [Nerd font]。
 
 如果是 Fedora，记得先添加 RpmFusion 源。
 
