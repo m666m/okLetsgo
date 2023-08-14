@@ -11156,6 +11156,8 @@ Gnome 桌面只能展示壁纸，不能放文件，桌面顶部一个任务栏�
 
 #### 使用 gnome 扩展
 
+    刚装完系统之后的 Gnome 桌面，会让你发楞，感觉什么都没有，也什么都不能设置
+
 Gnome 桌面强调简洁，聚焦于迅速投入工作，在 gnome 43 开始甚至把文件管理器的主题色彩定制都取消了。这与 kde 桌面预置大量功能供用户把玩不同，在 Gnome 桌面很多定制功能需要用户自行安装扩展才能使用
 
     https://zhuanlan.zhihu.com/p/34608388
@@ -11168,25 +11170,25 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，在 gnome 43 开始甚�
 
         https://www.cnblogs.com/keatonlao/p/12686234.html
 
-GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱，如果想使用其它各种扩展，只能去网站 <https://extensions.gnome.org/> 自行搜索下载。现在有了替代品 “Extension Manager”，不需要去网站就可以搜索下载，在软件管理里搜索安装 “Extension Manager” 即可。
+如果想使用其它各种扩展，只能去网站 <https://extensions.gnome.org/> 自行搜索下载。现在的 GNOME 桌面组件自带的扩展管理器 “Extension Manager” 替换掉了之前的 “GNOME Extensions”，不需要去网站就可以搜索下载，在软件管理里搜索安装 “Extension Manager” 即可。
 
-    如果还是想使用网站浏览安装的方式
+如果还是想使用网站浏览然后安装的方式
 
-       先浏览器访问如下网址，点击顶部提示，安装浏览器组件
+    先浏览器访问如下网址，点击顶部提示，安装浏览器组件
 
-        https://extensions.gnome.org/
+    https://extensions.gnome.org/
 
-            介绍 https://wiki.gnome.org/Projects/GnomeShell
+        介绍 https://wiki.gnome.org/Projects/GnomeShell
 
-        然后安装本地消息组件
+    然后安装本地消息组件
 
-            sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
+        sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
 
-推荐打开的系统组件：
+推荐打开的内置扩展：
 
-    Application Menu        系统默认的 win 键会罗列所有的应用程序，多了之后太乱了。在任务栏为应用程序添加基于类别的菜单
+    Application Menu        系统默认的 win 键-> “Show Apps” 会罗列所有的应用程序，软件安装多了之后太乱了，用这个给你在任务栏为应用程序添加基于类别的菜单。
 
-推荐安装的第三方组件：
+推荐安装的第三方扩展：
 
     Dash to Dock            把工具栏变成类似苹果的浮动工具栏，鼠标在屏幕的底边中部碰碰就会弹出。竞品 Dash2Dock Lite 动画效果好响应更敏捷。
 
@@ -11205,26 +11207,28 @@ GNOME 桌面组件自带的扩展管理器 “GNOME Extensions” 功能太弱�
 
     blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持 Dash to Dock 等扩展的透明化，注意跟有些主题兼容性不好边缘无法透明，锁屏背景模糊效果使用上面 Bing Wallpaper 的，不用本扩展的。
 
-    User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开主题并切换显示了
+    User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开主题并切换显示了，这居然不是内置功能。
 
     Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能
 
-    Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体式切换窗口
+    Date Menu Formater      在任务栏显示的时间没有星期，用这个补上，感觉这也是应该内置的功能
+
+    Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现一个大三角图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘。之前只能打开文件管理器卸载 u 盘。
+
+    Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口
 
     Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口
 
-    Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘
-
     allow locked remote desktop
-                            对远程桌面功能，允许在本地桌面未解锁的情况下远程桌面连接登录本机
+                            解除内置的远程桌面的本地锁定限制，允许在本地桌面未解锁的情况下以远程桌面登录本机
 
-    quake-mode              设置热键快捷，用 drop down 方式调出你的程序，所有工作区共享该程序，再次按热键即隐藏该窗口。对程序员来说，设置热键 alt + enter 调出 terminal 极其方便实用。
+    quake-mode              设置热键，以下拉方式调出你的程序窗口，所有工作区共享该程序，再次按热键即隐藏该窗口。对程序员来说，设置热键 alt + enter 调出一个半屏的 terminal 窗口极其方便实用。
 
     Auto Move Windows       把你常用的程序归类，在指定桌面打开窗口，适合经常同时打开很多应用程序的场景，竞品 put windows
 
     GSConnect               操作局域网联网的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”
 
-    Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用
+    Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用。竞品 Pano Clipboard Manager 可以显示复制的媒体内容。
 
     Power Profile Switcher  接电源时能源策略使用高性能，接电池时能源策略使用节能，自动切换省的你手动。
 
