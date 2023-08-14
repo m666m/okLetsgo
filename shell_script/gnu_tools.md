@@ -12299,7 +12299,7 @@ Setting -> Privacy -> Screen Lock:
 
 #### Gnome 内置的远程桌面功能
 
-注意：Gnome 自带的远程桌面实质是 “共享屏幕”，只支持实时共享给一个用户：必须本地登录主机桌面，然后远程才可以连接，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时干预中断远程会话。
+注意：Gnome 自带的远程桌面实质是 “共享屏幕”，只支持实时共享给一个用户：必须先本地登录主机桌面，然后远程才可以连接，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时干预中断远程会话。
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
 
@@ -12311,15 +12311,17 @@ Setting -> Privacy -> Screen Lock:
 
     https://www.linuxmi.com/ubuntu-22-04-rdp-remote-desktop.html
 
-如果需要多用户使用，主机屏幕不显示远程连接者的操作，需要安装第三方 vnc 或 rdp 软件，见章节 [使用第三方远程桌面软件]。
+如果需要多用户使用，远程连接不需要本地主机登录桌面，需要安装第三方 vnc 或 rdp 软件，见章节 [使用第三方远程桌面软件]。
 
 Gnome 桌面同时支持 X11 和 Wayland 两种方式
 
-    在 X11 会话中，它使用 vino 组件。
+    对 X11 会话中使用 vino 组件
 
-    在 Wayland 会话中，它使用 gnome-remote-desktop 组件。
+    对 Wayland 会话使用 gnome-remote-desktop 组件
 
-原 Xorg 桌面使用 VNC 协议，目前 Gnome 桌面默认改为 RDP 协议了，但也提供 VNC 协议的支持
+Gnome 桌面同时支持 VNC 和 RDP 两种协议
+
+    原 Xorg 体系使用 VNC 协议，在使用 Waylande 之后改为 RDP 协议了，但仍然通过 xvnc 提供对 VNC 协议的支持。也就是说，客户端使用 rdp 或 vnc 协议都可以连接到 Gnome 桌面，只是会话类型不同
 
     https://discussion.fedoraproject.org/t/how-to-share-fedora-36-gnome-desktop-with-another-machine-running-linux/76182
 
