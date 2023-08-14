@@ -2617,7 +2617,7 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
     https://www.zhihu.com/question/21418449/answer/300879747
 
-从语法上来说，zsh和bash是不兼容的；但是zsh有一个仿真模式，可以支持对 bash/sh 语法的仿真（也有对csh的仿真，但是支持不完善，不建议使用）：
+从语法上来说，zsh 和 bash 是不兼容的；但是 zsh 有一个仿真模式，可以支持对 bash/sh 语法的仿真（也有对 csh 的仿真，但是支持不完善，不建议使用）：
 
     $ emulate bash
     或
@@ -2625,7 +2625,8 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
 安装
 
-    sudo apt install zsh
+    # sudo dnf install zsh zsh-autosuggestions zsh-syntax-highlighting
+    $ sudo apt install zsh
 
 如果是用 apt install 安装的发行版，位置在 /usr/share/zsh
 
@@ -2633,11 +2634,11 @@ zsh 默认使用的用户插件位置，在 ~/.zsh/plugin/
 
 可设置当前用户默认登陆使用 zsh
 
-    # 用户修改自己的登陆shell
-    sudo chsh -s /bin/zsh
+    # 当前用户修改自己的登陆 shell
+    $ sudo chsh -s /bin/zsh
 
     # 修改指定用户的登陆shell
-    sudo usermod -s /bin/zsh username
+    $ sudo usermod -s /bin/zsh username
 
 插件和主题太多了容易搞乱环境，保守点的用法是登陆环境默认还是用 bash，登陆后手动执行 `exec zsh` 切换到zsh（如果执行 `zsh` 则在 bash 的基础上进入 zsh，执行 exit 退出时会先退出到 bash，然后再次 exit 才是断开连接）。
 
@@ -2646,13 +2647,15 @@ zsh 默认使用的用户插件位置，在 ~/.zsh/plugin/
         exec zsh
     fi
 
-如果是初次运行zsh，有个引导程序设置zsh读取的配置文 ~/.zshrc 文件，也可以手动调用
+如果是安装后初次运行 zsh，有个引导程序设置 zsh 的配置文 ~/.zshrc 文件，也可以手动调用
 
-    autoload -Uz zsh-newuser-install
+    $ zsh
 
-    zsh-newuser-install -f
+    $ autoload -Uz zsh-newuser-install
 
-如果之前使用bash，在 ~/.zshrc 文件中加上 `source ~/.bash_profile`，可以继承执行 bash 的配置文件。
+    $ zsh-newuser-install -f
+
+如果之前使用 bash，在 ~/.zshrc 文件中加上 `source ~/.bash_profile`，可以继承执行 bash 的配置文件。
 
 有些插件和主题依赖 python 和 git，注意提前安装好。
 
@@ -2678,11 +2681,13 @@ zsh 自带功能
 
     命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按 TAB 键快速进入下一级，或直接按右方向键确认该提示。最方便的用法是按 alt+m 或 alt+l(vi的右方向键)自动接受结果，回车即执行，更方便。
 
+        # 著名插件，发行版仓库收录了
         # git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
         sudo apt install zsh-autosuggestions
 
     命令语法高亮：根据你输入的命令是否正确的色彩高亮，比如输入date查看时间，错为data，字体的颜色会跟随你的输入一个字母一个字母的变化，错误会直接变红。
 
+        # 著名插件，发行版仓库收录了
         # git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zsh-syntax-highlighting
         sudo apt install zsh-syntax-highlighting
 
@@ -2757,14 +2762,14 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
 终端模拟器最好明确设置 $TERM 变量，这样各个插件会自动使用更丰富的颜色
 
     # 或者在你的用户登陆脚本 .bash_profile 中显式设置
-    # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
+    # 显式设置终端启用 256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
 依赖多彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
 
 如果你的终端模拟器不支持透明效果，且未使用 MesloLGS NF 字体的话，显示风格会有差别，这是设计者做了兼容性考虑，以防止显示不正常。
 
-然后从github安装powerlevel10k
+然后从 github 安装 powerlevel10k
 
     # https://github.com/romkatv/powerlevel10k#manual
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
@@ -3298,7 +3303,7 @@ if [ -x /usr/bin/dircolors ]; then
     # flatpak
     alias fpkr='echo "[flatpak查看当前有哪些存储库]" && flatpak remotes'
     alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
-    alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime --user'
+    alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime'
     alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
 
     # podman
@@ -9924,6 +9929,8 @@ WantedBy=multi-user.target
     https://zhuanlan.zhihu.com/p/365756485
 
     https://zhuanlan.zhihu.com/p/51357835
+
+    https://www.insidentally.com/articles/000022/
 
 查看当前的定时器
 
