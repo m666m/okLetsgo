@@ -988,12 +988,18 @@ WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用，至今�
     https://github.com/wez/wezterm
         https://wezfurlong.org/
 
-Linux 桌面下的终端模拟器一般用自带的就行了
+#### Linux 桌面下的终端模拟器
+
+一般用系统内置的就够了
 
     KDE 桌面自带 Konsole
+
     Xfce 桌面自带 xfce
+
     gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal
+
     i3 窗口管理器自带 urxvt(rxvt-unicode)
+
     sway 窗口管理器自带 foot
 
     Gnome 桌面自带 Xterm，现名 Gnome Terminal
@@ -1006,11 +1012,13 @@ Linux 桌面下的终端模拟器一般用自带的就行了
 
             cd gnome-terminal-nordtheme/src; ./nord.sh
 
-            然后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
+            执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
 
         怪1：不再支持设置背景图片，但仍可设置窗口透明度
 
-        怪2：新建标签继承前一个标签的环境，比如当前标签进入了 toolbox 容器，在它上面点击新建的标签打开就是进入 toolbox 容器的，除非找个默认没进入容器的标签，在它上面点击新建。。。
+        怪2：新建标签继承当前一个标签的环境，比如当前标签进入了 toolbox 容器，这时点击新建的标签打开就是进入 toolbox 容器的，切换到默认没进入容器的标签，这时点击新建新建标签就跟这个标签的环境一致。。。
+
+        怪3：默认不执行 .bash_profile，需要手工改配置文件：Profile-->command：勾选 Run command as a login shell 会自动执行你的 ~/.bash_profile
 
     guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个了， gnome 桌面的插件有这个功能，启用即可，参见章节 [使用 gnome 扩展] 的 quake-mode。
 
