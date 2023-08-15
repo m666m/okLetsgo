@@ -2617,6 +2617,8 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
     $ sudo chmod 644 /usr/local/share/fonts/FiraCodeNF/*
     $ sudo restorecon -vFr /usr/local/share/fonts/FiraCodeNF
 
+    权限存疑：/usr/share/fonts/ 下的目录里字体文件是 644，而 /usr/local/share/fonts/ 下的字体文件改成 755 才行。
+
     # Update the font cache
     $ sudo fc-cache -v
 
