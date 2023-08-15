@@ -2514,6 +2514,8 @@ zsh 下推荐使用 powerlevle10k，这个状态栏工具的兼容性和显示�
 
     你在 MacOS 下使用 iTerm2 终端工具，则要在你的苹果电脑上安装这些补丁字体
 
+这些补丁字体都是优化的英文和数字符号的显示，对中文字符会回落到当前系统的默认中文字体，详见 [设置中文字体]。
+
 简单测试几个 unicode 字符看看能否显示为正确的图标
 
     $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699"
@@ -2617,12 +2619,12 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
     $ sudo chmod 644 /usr/local/share/fonts/FiraCodeNF/*
     $ sudo restorecon -vFr /usr/local/share/fonts/FiraCodeNF
 
-    权限存疑：/usr/share/fonts/ 下的目录里字体文件是 644，而 /usr/local/share/fonts/ 下的字体文件改成 755 才行。
+    权限存疑：/usr/share/fonts/ 下的目录里字体文件是 644，而我拷贝到 /usr/local/share/fonts/ 下的字体文件改成 755 才行。
 
     # Update the font cache
     $ sudo fc-cache -v
 
-Gnome 桌面环境下的 GNOME Font Viewer 程序只是给当前用户安装字体。
+Gnome 桌面环境下的图形界面 GNOME Font Viewer 程序安装字体，在当前用户目录 ~/.local/share/fonts 下，字体文件的权限也是 644。
 
 #### Font Awesome
 
@@ -10873,7 +10875,7 @@ Gnome:
 
     $ fc-list :lang=zh
 
-使用 gnome-tweak-tool 直观方便，在 “Font” 设置中可以给界面和文本分别设置不同的字体
+使用图形界面程序 gnome-tweak-tool 直观方便，在 “Font” 设置中可以给界面和文本分别设置不同的字体
 
     在 “Hinting”（渲染微调）选项建议勾选 “Full” 拉高字体，否则显得扁
 
@@ -10887,11 +10889,9 @@ Gnome:
         # 设置桌面环境的字体
         $ gsettings set org.gnome.desktop.interface font-name 'Cantarell 10'
 
-单一调整桌面环境的字体设置，比如选择中文字体，会默认使用该字体内置的英文字体。
+使用图形界面程序 Fonts Tweak Tool 可以直观的预览字体效果，而且可以设置更多的 truetype 选项。
 
-而我们最需要的，是类似 MS Word 这样的，可以让用户明确指定一篇文章里的中、英文字体。
-
-如何利用 Windows、Linux 都默认支持的字体回落机制，选择多个中英文字体，使得显示英文使用一种字体，显示中文使用另一种字体，参见章节 [使中英文分别使用一种字体]。
+单一调整桌面环境的字体设置，比如选择中文字体，会默认使用该字体内置的英文字体。而我们最需要的，是类似 MS Word 这样的，可以让用户明确指定一篇文章里的中、英文字体。如何利用 Windows、Linux 都默认支持的字体回落机制，选择多个中英文字体，使得显示英文使用一种字体，显示中文使用另一种字体，参见章节 [使中英文分别使用一种字体]。
 
 > 前置知识：界面上的字体到底是怎么显示的
 
