@@ -2016,14 +2016,13 @@ Visual Studio Code Remote Development 允许您连接使用如下方式到远程
 
 服务端配置远程隧道开机自启(需要管理员权限)
 
-    没有 systemd 的计算机执行下述命令使得code以用户服务守护运行
+    没有 systemd 的计算机执行下述命令使得 code 以用户服务守护运行
 
         code tunnel service install --accept-server-license-terms --disable-telemetry
 
-    使用systemctl管理的linux服务器上，服务将可以使用systemctl进行管理，
+    使用 systemctl 管理的 linux 服务器上，服务将可以使用 systemctl 进行管理
 
-        systemctl start code-tunnel
-        systemctl enable code-tunnel
+        systemctl enable code-tunnel --now
 
     下列示例以 ubuntu 为例，手动创建 systemctl 配置文件，并以普通用户（但可以使用sudo）启动tunnel 。
 
@@ -2032,6 +2031,7 @@ Visual Studio Code Remote Development 允许您连接使用如下方式到远程
     配置自启动文件，自建 /etc/systemd/system/vscode-tunnel.service 文件，填写以下配置
 
         ```conf
+
         [Unit]
         Description=Visual Studio Code Tunneli2
         After=network.target
@@ -2046,12 +2046,14 @@ Visual Studio Code Remote Development 允许您连接使用如下方式到远程
 
         [Install]
         WantedBy=multi-user.target
+
         ```
 
     ⚠ 注意
-        your-user-name 是指你希望tunnel以什么用户身份运行
 
-        path-to-your-code 是指实例中vscode cli 的位置，即示例中解压的位置。
+        your-user-name 是指你希望 tunnel 以什么用户身份运行
+
+        path-to-your-code 是指实例中 vscode cli 的位置，即示例中解压的位置。
 
         path-to-your-root-dir 是指 cli 配置文件所在目录，一般是第一次运行示例时候自动产生的，如 ~/.vscode-cli 目录。
 
