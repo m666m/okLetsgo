@@ -10889,8 +10889,6 @@ Gnome:
         # 设置桌面环境的字体
         $ gsettings set org.gnome.desktop.interface font-name 'Cantarell 10'
 
-使用图形界面程序 Fonts Tweak Tool 可以直观的预览字体效果，而且可以设置更多的 truetype 选项。
-
 单一调整桌面环境的字体设置，比如选择中文字体，会默认使用该字体内置的英文字体。而我们最需要的，是类似 MS Word 这样的，可以让用户明确指定一篇文章里的中、英文字体。如何利用 Windows、Linux 都默认支持的字体回落机制，选择多个中英文字体，使得显示英文使用一种字体，显示中文使用另一种字体，参见章节 [使中英文分别使用一种字体]。
 
 > 前置知识：界面上的字体到底是怎么显示的
@@ -10988,7 +10986,7 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 
     针对三种风格的默认字体使用系统的英文字体，对中文回落到 Adobe/Google 的开源字体：思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）。其实思源中文字体也内置了西文，只设置该中文字体也可以，但其西文部分使用的是 Adobe Source 家族字体不大好看我们不去使用它（思源黑体集成 Source Sans Pro、思源宋体集成 Source Serif，详见 <https://sspai.com/post/38705>）。
 
-有个图形化工具 Fonts Tweak Tool，简化了下面的配置步骤
+使用图形界面程序 Fonts Tweak Tool 可以直观的预览中文字体的效果，而且可以设置更多的 truetype 选项
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts
 
@@ -11243,7 +11241,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，在 gnome 43 开始甚�
 
             https://github.com/Elinvention/gnome-shell-extension-nasa-apod
 
-    Nigh Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗（壁纸跟随），这个扩展实现自动定时切换
+    Nigh Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现自动定时切换，可惜该扩展目前不是很灵敏，待验证。
 
     blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持 Dash to Dock 等扩展的透明化，注意跟有些主题兼容性不好边缘无法透明，锁屏背景模糊效果使用上面 Bing Wallpaper 的，不用本扩展的。
 
