@@ -13285,7 +13285,7 @@ WantedBy=multi-user.target
 
     https://wiki.archlinux.org/title/Keyboard_shortcuts
 
-情况一、桌面的图形界面突然卡机且无法操作时
+情况一、桌面的图形界面突然卡住且无法操作时，尝试切换到 tty 控制台
 
 在进行下列步骤前，请回忆自己 ubuntu 系统的用户名和密码，接下来将会用到。
 
@@ -13300,12 +13300,12 @@ WantedBy=multi-user.target
     CTRL + ALT + F5 – TTY5
     CTRL + ALT + F6 – TTY6
 
-    等一会儿，才会切换到 tty，我都是左手安装 ctl+alt，右手食指从 F3一溜划到F10，随便谁出来。。。
+    等一会儿，才会切换到 tty，我都是左手安装 ctl+alt，右手食指从 F3 一溜划到 F10，随便谁出来。。。
 
 输入用户名和密码登录，此时输入命令，说法太多待验证
 
     # https://stackoverflow.com/questions/46565019
-    如果是 GNOME X11 桌面，先试试按 ALT + F2，在弹出对话框里输入 r 然后回车试试， 可以在不关闭所有应用程序的情况下重新启动桌面。在 Wayland 桌面下不行。
+    如果是 GNOME X11 桌面，先试试按 ALT + F2，在弹出对话框里输入 r 然后回车试试，可以在不关闭所有应用程序的情况下重新启动桌面，在 Wayland 桌面下不行。
 
     重启显示管理器服务： `sudo systemctl restart gdm/kdm/lightdm`
 
@@ -13317,9 +13317,9 @@ WantedBy=multi-user.target
 
 操作完成之后等待一会儿就会重新进入桌面，系统可以正常使用了。
 
-情况二、进入tty之后键盘无法输入任何内容，完全死机时
+情况二、进入 tty 之后键盘无法输入任何内容，彻底死机
 
-使用“魔法键”：按住Ctrl，Alt 和 PtrSc（SysRq），按住他们的同时，顺序按 r，e，i，s，u，b
+使用“魔法键”：按住Ctrl，Alt 和 PtrSc（SysRq），按住他们的同时，顺序按 r，e，i，s，u，b，手短够不到可以试试用鼻子。
 
 键盘上一般都有一个键 SysRq, 和 PrintScreen(截屏)在同一个键位上，这就是系统请求的键。
 
@@ -13337,7 +13337,7 @@ WantedBy=multi-user.target
 
         右手按一下 E。这时包括桌面在内，所有程序都会终止，你会看到一个黑乎乎的屏幕，稍微等一段时间
 
-        右手依次按下 I，S，U，B。每按一次都等那么几秒种，你会发现每按一次，屏幕上信息都会有所变化。最后按下B时，屏幕显示 reset，这时你的左手可以松开了，等几秒钟，计算机就会安全重启。
+        右手依次按下 I，S，U，B。每按一次都等那么几秒种，你会发现每按一次，屏幕上信息都会有所变化。最后按下 B 时，屏幕显示 reset，这时你的左手可以松开了，等几秒钟，计算机就会安全重启。
 
 SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候就相当于按住了 SysRq 键，这个时候输入的一切都会直接由 Linux 内核来处理，它可以进行许多低级操作。
 
