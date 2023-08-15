@@ -3132,7 +3132,7 @@ ohmyzsh的插件管理机制更智能，还会提示更新，建议用这种方�
 
 ```zsh
 
-##############
+####################################################################
 # powerlevel10k 自动生成的首行，不用动
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -3141,7 +3141,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-##############
+####################################################################
 # zsh 自己的内容，不用动
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
@@ -3150,25 +3150,20 @@ SAVEHIST=1000
 bindkey -v
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
-zstyle :compinstall filename '/home/pi/.zshrc'
+zstyle :compinstall filename '/home/uu/.zshrc'
 
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
-##############
+####################################################################
 # 如果安装了 ohmyzsh 会自动生成一堆设置，不用管他
 # ...
 # ...
 # ohmyzsh 自带插件管理，在 plugin=() 段落启用内置插件，可以在这里加载那些 source xxx 的插件
 
-##############
-# powerlevel10k 安装程序添加，不用动
-
-source ~/powerlevel10k/powerlevel10k.zsh-theme
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+##################################################################################################################
+# 以下的自定义快捷命令等部分来自 [bash_profile.sh]
 
 ####################################################################
 # 从这里开始用户自己的设置
@@ -3500,6 +3495,13 @@ chpwd
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
 ####################################################################
+
+# powerlevel10k 安装程序添加，不用动
+
+source ~/powerlevel10k/powerlevel10k.zsh-theme
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 ```
 
