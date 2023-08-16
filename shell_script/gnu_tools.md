@@ -2627,12 +2627,14 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
     $ sudo chmod 644 /usr/local/share/fonts/FiraCodeNF/*
     $ sudo restorecon -vFr /usr/local/share/fonts/FiraCodeNF
 
-    权限存疑：/usr/share/fonts/ 下的目录里字体文件是 644，而我拷贝到 /usr/local/share/fonts/ 下的字体文件改成 755 才行。
-
     # Update the font cache
     $ sudo fc-cache -v
 
-Gnome 桌面环境下的图形界面 GNOME Font Viewer 程序安装字体，在当前用户目录 ~/.local/share/fonts 下，字体文件的权限也是 644。
+权限存疑：
+
+    /usr/share/fonts/ 下的目录里字体文件是 644，而我拷贝到 /usr/local/share/fonts/ 下的字体文件改成 755 才行。
+
+    Gnome 桌面环境下的图形界面 GNOME Font Viewer 程序安装字体，在当前用户目录 ~/.local/share/fonts 下，字体文件的权限也是 644。
 
 #### Font Awesome
 
