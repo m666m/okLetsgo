@@ -3013,7 +3013,7 @@ git pull --rebase 自动使用 rebase，发现冲突后，会进入 rebase confi
 
     git fetch
 
-查看当前状态，提示有冲突，并建议用 pull，pull 是使用 merge 方法分叉合并，这里我们不用
+查看当前状态，提示有冲突，并建议用 pull
 
     $ git status
     On branch master
@@ -3023,7 +3023,7 @@ git pull --rebase 自动使用 rebase，发现冲突后，会进入 rebase confi
 
     nothing to commit, working tree clean
 
-查看具体差异，对比下本地和远程，其中 a 是本地，b 是远程，减号表示本地相对远程被删除的内容，+表示远程相对本地新增的内容，没有加减号的表示无差异。
+pull 是使用 merge 方法分叉合并，这里我们不用。先查看具体差异，对比下本地和远程，其中 a 是本地，b 是远程，减号表示本地相对远程被删除的内容，+表示远程相对本地新增的内容，没有加减号的表示无差异
 
     $ git diff ..origin/master
     diff --git a/newhot.txt b/newhot.txt
