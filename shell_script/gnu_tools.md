@@ -10612,13 +10612,13 @@ GNOME Files（Nautilus）文件管理器
 
     显示隐藏文件的快捷键是 ctr+h
 
-虚拟机
+虚拟机和容器
 
     Gnome Box 底层调用 virt-manager 操作 kvm 虚拟机，详见章节 [GNOME Boxes](virtualization think)。
 
     Toolbox 是 Fedora 系统的容器化管理工具，调用 podman 来完成容器的操作，详见章节 [Fedora toolbox](virtualization think)。
 
-    Waydroid：在 Linux 容器化运行 Android app，只支持 wayland 桌面 <https://zhuanlan.zhihu.com/p/603603346>
+    Waydroid：在 Linux 容器化运行 Android app，只支持 wayland 桌面 详见章节 [waydroid](virtualization think)。
 
 浏览器
 
@@ -12139,6 +12139,20 @@ if [ "$(tty)" = "/dev/tty1" ]; then
 fi
 
 ```
+
+#### 将会话限制为单个应用程序 --- kiosk 模式
+
+在 GNOME 登录屏幕中，从齿轮按钮菜单中选择你的 kiosk 应用
+
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/customizing_the_gnome_desktop_environment/assembly_restricting-the-session-to-a-single-application_customizing-the-gnome-desktop-environment
+
+单应用模式下启动 GNOME 会话，也称为 kiosk 模式。在此会话中，GNOME 只会显示您选择的应用程序的完整屏幕窗口。这样你的计算机就可以作为一台自助服务机提供公众服务了。
+
+    $ sudo dnf install gnome-kiosk gnome-kiosk-script-session
+
+甚至可以安装 remmina-gnome-session 软件包，实现开机自启动到远程桌面
+
+    $ sudo dnf install remmina-gnome-session
 
 #### systemd 关闭桌面环境开机自启动
 
