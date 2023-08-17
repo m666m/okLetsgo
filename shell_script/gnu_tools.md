@@ -5686,12 +5686,12 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
 安装
 
-    $ git clone --depth=1 https://github.com/tmux-plugins/tmux-resurrect ~/.tmux/tmux-resurrect
+    $ git clone --depth=1 https://github.com/tmux-plugins/tmux-resurrect ~/.tmux/resurrect
 
 编辑 ~/.tmux.conf 文件
 
     # 保存会话
-    run-shell "~/.tmux/tmux-resurrect/resurrect.tmux"
+    run-shell "~/.tmux/resurrect/resurrect.tmux"
 
 操作快捷键
 
@@ -5720,8 +5720,11 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
     保存的会话配置文件位于
 
-        # tmux-resurrect/scripts/helper.sh
+        # 源代码目录下的 scripts/helper.sh 分析得到
         $HOME/.tmux/resurrect 或 "${XDG_DATA_HOME:-$HOME/.local/share}"/tmux/resurrect
+
+        last 是面板布局和程序
+        pane_contents.tar.gz 是面板内容
 
 或者使用脚本自行恢复
 
@@ -5838,11 +5841,10 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 run-shell "~/.tmux/tmux-prefix-highlight/prefix_highlight.tmux"
 
 # 保存会话
-run-shell "~/.tmux/tmux-resurrect/resurrect.tmux"
-# 恢复会话中的程序
-#set -g @resurrect-capture-pane-contents 'on'
+run-shell "~/.tmux/resurrect/resurrect.tmux"
+# 恢复会话时恢复的程序
 set -g @resurrect-processes 'btop nmon watch autossh "journalctl -f" "cmatrix -ba"'
-# 恢复会话中面板的内容
+# 恢复会话时恢复面板的内容
 set -g @resurrect-capture-pane-contents 'on'
 
 ```
