@@ -9378,6 +9378,8 @@ Systemd 统一管理所有 Unit 的日志，可以只用 journalctl 一个命令
 
 journalctl 功能强大，用法非常多
 
+    https://zhuanlan.zhihu.com/p/410995772
+
     # 查看所有日志（默认情况下 ，只保存本次启动以来的日志）
     $ journalctl
 
@@ -9392,7 +9394,7 @@ journalctl 功能强大，用法非常多
     $ journalctl -u nginx.service --since today
 
     # 实时滚动显示某个 Unit 的最新日志
-    $ journalctl -u nginx.service -f
+    $ journalctl -f -u nginx.service
 
     # 合并显示多个 Unit 的日志
     $ journalctl -u nginx.service -u php-fpm.service --since today
