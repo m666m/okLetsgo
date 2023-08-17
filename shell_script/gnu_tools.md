@@ -3226,8 +3226,8 @@ if [ -x /usr/bin/dircolors ]; then
     # 常用的列文件的惯用法
     alias lsa='ls -A'
     alias l='ls -CFA'
-    alias ll='ls -l'
-    alias la='ls -lA'
+    alias ll='ls -lh'
+    alias la='ls -lAh'
 
     # 其它常用命令的惯用法：
 
