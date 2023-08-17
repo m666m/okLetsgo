@@ -8704,6 +8704,8 @@ done
 
 > Fedora 等 Redhat 系使用 chrony
 
+        https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/using-chrony_configuring-basic-system-settings
+
         https://www.cnblogs.com/pipci/p/12871993.html
 
         https://wiki.archlinux.org/title/Chrony
@@ -9116,6 +9118,8 @@ systemd 保持对 SystemV 的兼容性使用的控制文件
         https://fedoramagazine.org/series/systemd-series/
 
         https://docs.fedoraproject.org/en-US/quick-docs/understanding-and-administering-systemd/
+
+    12-17 章 https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/introduction-to-systemd_configuring-basic-system-settings
 
     systemd 中文手册
 
@@ -10858,11 +10862,9 @@ GNOME Files（Nautilus）文件管理器
 
 ### 使用拼音输入法
 
-Gnome:
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/assembly_enabling-chinese-japanese-or-korean-text-input_getting-started-with-the-gnome-desktop-environment
 
-打开 Gnome Software， 在类别 'input source' 搜索 'Pinyin'，安装
-
-    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/assembly_enabling-chinese-japanese-or-korean-text-input_getting-started-with-the-gnome-desktop-environment#proc_switching-the-input-method-in-gnome_assembly_enabling-chinese-japanese-or-korean-text-input
+打开 Gnome Software， 在类别 'input source' 搜索 'Pinyin' 安装即可。
 
 打开 Gnome 的 Settings -> Keyboard -> Input Source，点击添加，选择 Chinese -> Intelpinyin。
 
@@ -10870,7 +10872,7 @@ Gnome:
 
 切换到拼音输入法之后，右键点击输入法在任务栏的图标，弹出菜单选择 “Perference”，设置用逗号句号翻页等选项。
 
-GTK 程序默认支持表情符号，按热键 ctl + . 会弹出菜单。
+GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表情符号菜单。
 
 ### 设置中文字体
 
@@ -11160,6 +11162,8 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 ```
 
 ### 使用 Gnome 桌面
+
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/assembly_overview-of-gnome-environments_getting-started-with-the-gnome-desktop-environment
 
 为方便理解，为在这里使用的都是 Windows 词汇，基本对应如下：
 
@@ -11555,7 +11559,7 @@ X window 是一个技术体系
 
 GTK+ and Qt
 
-    这两个是GUI toolkits，这两个是软件库，类似c语言的stdio.h，win32，java里import的各种外部包，可以任开发者调用（应该是C/C++使用的库）去创建一些图形界面里面的控件，例如button，下拉菜单，窗口等。我记得JAVA里面也有类似AWT和Swing库。用这一套库开发出的图形空间将会有一套统一的风格和标准，这就是不同系统安装的不同软件有的时候会有相同的样式，因为他们可能使用了GTK或者QT的库。KDE默认使用Qt库开发，Gnome默认使用GTK+库开发，而这两套库又是基于X window server的，需要遵守x11协议，在xwindow server上运行，作为client应用实现的基础类库。
+    这两个是 GUI toolkits，这两个是软件库，类似 c 语言的 stdio.h，win32，java 里 import 的各种外部包，可以任开发者调用（应该是 C/C++ 使用的库）去创建一些图形界面里面的控件，例如 button，下拉菜单，窗口等。我记得 JAVA 里面也有类似 AWT 和 Swing 库。用这一套库开发出的图形空间将会有一套统一的风格和标准，这就是不同系统安装的不同软件有的时候会有相同的样式，因为他们可能使用了 GTK 或者 QT 的库。KDE 默认使用 Qt 库开发，Gnome 默认使用 GTK+ 库开发，而这两套库又是基于 X window server 的，需要遵守 x11 协议，在 xwindow server 上运行，作为 client 应用实现的基础类库。
 
 #### Wayland
 
@@ -12375,9 +12379,9 @@ Setting -> Privacy -> Screen Lock:
 
 内置的这个功能叫 “共享屏幕” 更贴切。类似 Windows 的 “远程协助”。
 
-    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-a-single-user_getting-started-with-the-gnome-desktop-environment
 
-    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/using_the_desktop_environment_in_rhel_8/accessing-the-desktop-remotely_using-the-desktop-environment-in-rhel-8
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/using_the_desktop_environment_in_rhel_8/accessing-the-desktop-remotely_using-the-desktop-environment-in-rhel-8#doc-wrapper
 
     https://linux.cn/article-14261-1.html
 
@@ -12391,7 +12395,11 @@ Setting -> Privacy -> Screen Lock:
 
     可以在 gnome 网站下载安装插件 “allow locked remote desktop”，这样远程计算机就可以在服务端本地未解锁桌面的情况下使用远程桌面登录服务端计算机了。
 
-如果需要支持多个远程桌面用户同时登录，而且远程连接不需要本地主机先登录桌面，可以安装第三方 vnc 或 rdp 软件，见章节 [xrdp]。
+如果需要支持多个远程桌面用户同时登录，而且远程连接不需要本地主机先登录桌面，可以安装第三方 vnc 或 rdp 软件
+
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
+
+推荐安装 RDP 协议的软件，详见章节 [xrdp]。
 
 Gnome 桌面同时支持 X11 和 Wayland 两种方式
 
