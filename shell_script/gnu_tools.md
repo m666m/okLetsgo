@@ -5842,7 +5842,7 @@ run-shell "~/.tmux/tmux-prefix-highlight/prefix_highlight.tmux"
 # 保存会话
 run-shell "~/.tmux/resurrect/resurrect.tmux"
 # 恢复会话时恢复的程序
-set -g @resurrect-processes 'btop nmon watch autossh "journalctl -f" "cmatrix -ba"'
+set -g @resurrect-processes 'btop nmon watch "journalctl -f" "cmatrix -ba" "podman container stats"'
 # 恢复会话时恢复面板的内容
 set -g @resurrect-capture-pane-contents 'on'
 
