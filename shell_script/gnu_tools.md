@@ -2603,8 +2603,7 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
     因为发行版的存储库没有 nerd font，只能手动安装，方法来自
 
         https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
-
-        https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts
+            https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#add-extra-fonts
 
     $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/Meslo.zip
     $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/FiraCode.zip
@@ -10859,8 +10858,6 @@ GNOME Files（Nautilus）文件管理器
 
 Gnome:
 
-如果是 Fedora，记得先添加 RpmFusion 源。
-
 打开 Gnome Software， 在类别 'input source' 搜索 'Pinyin'，安装
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/assembly_enabling-chinese-japanese-or-korean-text-input_getting-started-with-the-gnome-desktop-environment#proc_switching-the-input-method-in-gnome_assembly_enabling-chinese-japanese-or-korean-text-input
@@ -10870,6 +10867,8 @@ Gnome:
 用 'Win+空格' 键即可切换输入法。
 
 切换到拼音输入法之后，右键点击输入法在任务栏的图标，弹出菜单选择 “Perference”，设置用逗号句号翻页等选项。
+
+GTK 程序默认支持表情符号，按热键 ctl + . 会弹出菜单。
 
 ### 设置中文字体
 
@@ -10891,6 +10890,8 @@ Gnome:
     简体中文支持 https://wiki.archlinux.org/title/Localization/Simplified_Chinese
 
 查看当前系统安装的中文字体
+
+    $ fc-list : file
 
     $ fc-list :lang=zh
 
@@ -11007,7 +11008,7 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 
 使用图形界面程序 Fonts Tweak Tool 可以直观的预览中文字体的效果，而且可以设置更多的 truetype 选项
 
-    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts
+    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#substitute-font
 
 法一：简单起见，我们直接编辑 /etc/fonts/local.conf 文件
 
