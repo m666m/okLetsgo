@@ -3472,7 +3472,7 @@ fi
 # Bash：手动配置插件
 
 # 从上面的 ackg.sh 扩展看日志的快捷命令
-alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
+alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
 
 ####################################################################
 # Zsh：加载插件或小工具
@@ -6477,7 +6477,7 @@ hhighlighter 属于对 ack 的封装，但脚本名和函数名都太简单了�
     ps -ef |ackg 'root|ssh' "$(whoami)"  '\d{2}:\d{2}:\d{2}'
 
     # 使用 \b 是 perl 正则表达式的单词限定符
-    dmesg |ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"
+    dmesg |ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"
 
 ### 比较文件差异 diff
 

@@ -347,7 +347,7 @@ fi
 # Bash：手动配置插件
 
 # 从上面的 ackg.sh 扩展看日志的快捷命令
-alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
+alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
