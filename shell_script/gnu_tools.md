@@ -9427,6 +9427,9 @@ journalctl 功能强大，用法非常多
     # 查看指定服务的日志
     $ journalctl /usr/lib/systemd/systemd
 
+    $ sudo journalctl -af _TRANSPORT=audit
+    $ sudo journalctl -af _TRANSPORT=syslog
+
     # 查看指定进程的日志
     $ journalctl _PID=1
 
