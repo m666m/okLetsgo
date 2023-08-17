@@ -9866,6 +9866,8 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
         服务的配置文件添加： RemainAfterExit=yes
 
+        意思是在执行脚本后希望 systemd 服务保持活跃状态，一般与自动调用一次脚本的 Type=oneshot 连用
+
 ##### 自制的 shell 脚本 让 systemd 用兼容 SystemV 的方式进行自启动
 
 先确认 systemd 已经开启了 systemV 启动脚本 rc.local 的兼容服务
