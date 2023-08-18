@@ -2791,7 +2791,7 @@ git 修改了冲突文件的内容，同时列出的两种版本，是为了方�
     # 直接修改到文件
     sed -i '/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/d' your_conflict_file
 
-#### merge 对冲突的处理是分叉
+#### merge 对冲突的解决方式是分叉
 
     本地分支拉取或推送远程时，远程库上有新的提交，与本地的提交，在某个 commit 点之后出现了两种提交的延续，如果直接 git pull，会默认执行 merge，如果有冲突则自动进入一个 merge conflict 过程状态，需要手工解决冲突。
 
@@ -2978,7 +2978,7 @@ git pull 自动使用 merge，发现冲突后，会进入 merge confict 状态�
     Enumerating objects: 10, done.
     Counting objects: 100% (10/10), done.
 
-#### rebase 对冲突的处理是重写提交点
+#### rebase 对冲突的解决方式是重写提交点
 
     本地分支拉取或推送远程时，远程库上有新的提交，与本地的提交，在某个 commit 点之后出现了两种提交的延续，如果直接选择变基 git pull --rebase，会执行 rebase，如果有冲突则自动进入一个 rebase conflict 状态，需要手工解决冲突。
 
