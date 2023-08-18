@@ -5579,6 +5579,36 @@ tmux 在 OSX 下水土不服
 
     https://www.economyofeffort.com/2013/07/29/reattach-to-user-namespace-the-fix-for-your-tmux-in-os-x-woes/
 
+##### 插件管理
+
+感觉 tmux 需要的插件不多，不弄这个了
+
+插件管理器
+
+    https://github.com/tmux-plugins/tpm
+
+插件大全
+
+    https://github.com/tmux-plugins/list
+
+> 显示前导键
+
+在 tmux 时间栏显示你按下了引导键
+
+    https://github.com/tmux-plugins/tmux-prefix-highlight
+
+先从 github 下载
+
+    $ git clone --depth=1 https://github.com/tmux-plugins/tmux-prefix-highlight.git ~/.tmux/tmux-prefix-highlight
+
+将下述命令添加到.tmux.conf文件中
+
+    run-shell ~/.tmux/tmux-prefix-highlight//prefix_highlight.tmux
+
+> 如果遇到提示无法打开 display:0 的错误
+
+    https://github.com/lljbash/tmux-update-display
+
 ##### 状态栏显示使用 powerline
 
 powerline 过时了，推荐 nord 主题的状态栏，参见下面章节 [状态栏显示不使用 powerline]。
@@ -5667,20 +5697,6 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 重新加载配置文件
 
     tmux source-file ~/.tmux.conf
-
-> 显示前导键
-
-在 tmux 时间栏显示你按下了引导键
-
-    https://github.com/tmux-plugins/tmux-prefix-highlight
-
-先从 github 下载
-
-    $ git clone --depth=1 https://github.com/tmux-plugins/tmux-prefix-highlight.git ~/.tmux/tmux-prefix-highlight
-
-将下述命令添加到.tmux.conf文件中
-
-    run-shell ~/.tmux/tmux-prefix-highlight//prefix_highlight.tmux
 
 ##### 保存 tmux 会话
 
@@ -5806,12 +5822,6 @@ tmux 里 ssh 连接远程服务器再打开 tmux 会导致热键冲突，这个�
 使用：
 
     按 F12 将冻结本地的 tmux 响应热键，这样当前面板 pane 里的远程ssh 连接中的 tmux 就可以接收到你的热键了，再次按 F12 将取消冻结。
-
-##### 插件管理
-
-感觉 tmux 就别折腾各种插件了。。。
-
-    插件管理器 https://github.com/tmux-plugins/tpm
 
 ##### .tmux.conf 配置文件样例
 
@@ -6838,12 +6848,6 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
 
     # 打包并 gpg 加密
     tar cjf - dir1 dir2 file2 node.exe |gpg --output backup.tar.bz2.gpg --cipher-algo AES-256 -c -
-
-        如果遇到报错：gpg: problem with the agent: Inappropriate ioctl for device
-
-        一般出现在使用 tmux 这种多个 tty 的场合，注意在同一个窗口面板下操作
-
-        说明 gpg 获取不到当前的 tty 无法弹出密码输入框，手工执行 `export GPG_TTY=$(tty)` 再重新执行你的 gpg 命令即可
 
         # 解密并解包
         # dd if=backup.tar.bz2.gpg |gpg -d - |tar xjf -
