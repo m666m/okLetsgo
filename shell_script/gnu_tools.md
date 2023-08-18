@@ -7577,13 +7577,15 @@ ssh 连续跳转连接几个服务器后，sftp 传送命令不方便的时候�
 
     mintty 不支持 https://github.com/mintty/mintty/issues/235
 
-需要你的终端工具支持 zmodem 协议
+在远程设备里安装
+
+    $[iot@remote_ip] sudo apt install lrzsz
+
+本地也需要安装 lrzsz 软件包，而且需要你的终端工具支持 zmodem 协议
 
     如果终端工具如 putty、mintty、Gnome terminal 等不支持 zmodem 协议，但是支持从桌面拖放文件（变成路径名称）到终端工具，则可以安装 Gnu screen，使用 screen 来实现对 rz、sz 的支持，参见章节 [竞品 screen/Zellij]。
 
-安装
-
-    $ sudo apt install lrzsz
+    另一个办法是安装软件包：软件包 zzsh 通过包装 ssh 支持 zmodem 协议，使用 zssh 命令而不是 ssh 连接远程即可。另有软件包 ztelnet 包装 telnet 支持 zmodem 协议。
 
 发送：
 
@@ -7598,7 +7600,13 @@ ssh 连续跳转连接几个服务器后，sftp 传送命令不方便的时候�
 
          $[iot@remote_ip] sha1sum your_file
 
-接收更简单，远程发送方直接运行 sz 命令即可把文件传递到你终端工具设置的目录下
+接收：
+
+    本地接受方运行 rz 等待
+
+        $ rz
+
+    远程发送方直接运行 sz 命令即可把文件传递到你终端工具设置的目录下
 
         $[iot@remote_ip] sz you_need_this_file
 
