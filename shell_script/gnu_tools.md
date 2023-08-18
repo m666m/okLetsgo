@@ -5682,7 +5682,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
     run-shell ~/.tmux/tmux-prefix-highlight//prefix_highlight.tmux
 
-##### 保存 tmux 会话 tmux-resurrect
+##### 保存 tmux 会话
 
 每天开机得先调整半天 tmux 烦不烦，关机前保存当前的各种会话和布局最方便了
 
@@ -5785,7 +5785,7 @@ function UUDF_TMUX_SEND_TO_SESSION {
 
         tmux source-file ~/.tmux.conf
 
-##### 冻结本地 tmux 热键 tmux-suspend
+##### 冻结本地 tmux 热键
 
 tmux 里 ssh 连接远程服务器再打开 tmux 会导致热键冲突，这个插件可以冻结本地的 tmux 响应热键
 
