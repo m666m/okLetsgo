@@ -5321,7 +5321,7 @@ tmux 可以保持多个会话 session，每次在命令行运行 `tmux` 就会�
 
     按完前导 ctrl+B 后，再按冒号：进入命令行模式
 
-这些命令在tmn的:命令行模式一样可以使用
+这些命令在 tmux 的 : 命令行模式一样可以使用
 
     tmux
 
@@ -5376,7 +5376,7 @@ tmux 可以保持多个会话 session，每次在命令行运行 `tmux` 就会�
     # 列出当前所有 Tmux 的信息
     tmux info
 
-    # 重新加载当前的 Tmux 配置
+    # 重新加载当前的 Tmux 配置而无需重启 tmux 进程
     tmux source-file ~/.tmux.conf
 
 #### 快捷键
@@ -5390,11 +5390,12 @@ tmux 可以保持多个会话 session，每次在命令行运行 `tmux` 就会�
 
 会话（Session）
 
-    ?       显示所有快捷键，使用pgup和pgdown翻页，按q退出(其实是在vim里显示的，命令用vim的)
+    ?       显示所有快捷键，使用 pgup 和 pgdown 翻页，按 q 退出(其实是在 vim 里显示的，命令用 vim 的)
 
     :       进入命令行模式，可输入命令如：
 
-                show-options -g  # 显示所有选项设置的参数，使用pgup和pgdown翻页，按q退出
+                source-file ~/.tmux.conf
+                show-options -g  # 显示所有选项设置的参数，使用 pgup 和 pgdown 翻页，按 q 退出
                 set-option -g display-time 5000 # 提示信息的持续时间；设置足够的时间以避免看不清提示，单位为毫秒
 
     s       列出当前会话，通过上、下键切换，回车确认切换到该会话的默认窗口
@@ -5580,6 +5581,8 @@ tmux 在 OSX 下水土不服
 
 ##### 状态栏显示使用 powerline
 
+powerline 过时了，推荐 nord 主题的状态栏，参见下面章节 [状态栏显示不使用 powerline]。
+
     https://bobbyhadz.com/blog/tmux-powerline-ubuntu
 
 先安装 powerline，见章节 [状态栏工具 powerline]。
@@ -5644,7 +5647,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
 > 安装 nord 主题
 
-使用这个主题的好处是它支持 <https://github.com/tmux-plugins> 的所有插件，可以在状态栏显示图标字符，启动速度也比 powerline 快。
+使用这个主题的状态栏的好处是它支持 <https://github.com/tmux-plugins> 的所有插件，可以在状态栏显示图标字符，启动速度也比 powerline 快。
 
 最好终端工具也启用 nord 主题，否则颜色方案会不一致
 
@@ -5667,7 +5670,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
 > 显示前导键
 
-在 tmux 时间栏显示你的 tmux 命令按键
+在 tmux 时间栏显示你按下了引导键
 
     https://github.com/tmux-plugins/tmux-prefix-highlight
 
@@ -5679,7 +5682,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
     run-shell ~/.tmux/tmux-prefix-highlight//prefix_highlight.tmux
 
-##### 保存 tmux 会话
+##### 保存 tmux 会话 tmux-resurrect
 
 每天开机得先调整半天 tmux 烦不烦，关机前保存当前的各种会话和布局最方便了
 
@@ -5687,20 +5690,26 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
     $ git clone --depth=1 https://github.com/tmux-plugins/tmux-resurrect ~/.tmux/resurrect
 
-编辑 ~/.tmux.conf 文件
+编辑配置 ~/.tmux.conf 文件
 
     # 保存会话
     run-shell "~/.tmux/resurrect/resurrect.tmux"
+
+重载配置文件使之生效
+
+    tmux source-file ~/.tmux.conf
 
 操作快捷键
 
     建议先给会话命名以便查找， ctrl + b 然后 $ 输入会话的名称即可
 
-    关闭 tmux 前保存当前会话
+    关闭 tmux 前手动保存当前会话
 
-        前导键 ctrl + b，然后 ctrl + s，会在状态栏闪现提示保存完成的消息
+        前导键 ctrl + b，然后 ctrl + s，会在左下角 tmux 状态栏会显示 saving ... 字样 ， 完毕后会提示 Tmux environment saved 字样
 
-    打开 tmux 后恢复之前的会话
+        tmux-resurrect 会将 Tmux 会话的详细信息以文本文件形式保存到 ~/.tmux/resurrect 目录 。
+
+    打开 tmux 后手动还原tmux会话
 
         前导键 ctrl + b，然后 ctrl + r，会在状态栏闪现提示恢复完成的消息
 
@@ -5757,6 +5766,26 @@ function UUDF_TMUX_SEND_TO_SESSION {
 
 ```
 
+> 每隔 15 分钟自动备份一次会话 tmux-continuum
+
+        https://github.com/tmux-plugins/tmux-continuum
+
+安装
+
+    $ git clone --depth=1 https://github.com/tmux-plugins/tmux-continuum ~/.tmux/continuum
+
+配置
+
+    # 将下述命令添加到.tmux.conf文件中
+    run-shell ~/.tmux/tmux-continuum/continuum.tmux
+
+    # Tmux Continuum 默认每隔 15 分钟备份一次，如果你频率过高，可以设置为 1 小时一次：
+    set -g @continuum-save-interval '60'
+
+重载配置文件使之生效
+
+    tmux source-file ~/.tmux.conf
+
 ##### 插件管理
 
 感觉 tmux 就别折腾各种插件了。。。
@@ -5764,34 +5793,6 @@ function UUDF_TMUX_SEND_TO_SESSION {
     插件管理器 https://github.com/tmux-plugins/tpm
 
     高亮关键字 https://github.com/tmux-plugins/tmux-prefix-highlight
-
-+ 保存 tmux 会话设置，以便计算机重启后快速恢复
-
-        https://github.com/tmux-plugins/tmux-continuum
-
-        https://github.com/tmux-plugins/tmux-resurrect
-
-    配置
-
-        # 将下述命令添加到.tmux.conf文件中
-        run-shell ~/.tmux/tmux-resurrect/resurrect.tmux
-        run-shell ~/.tmux/tmux-continuum/continuum.tmux
-
-        # Tmux Continuum 默认每隔 15 分钟备份一次，如果你频率过高，可以设置为 1 小时一次：
-        set -g @continuum-save-interval '60'
-
-        # 重载配置文件使之生效
-        tmux source-file ~/.tmux.conf
-
-    使用方法
-
-    手动保存tmux会话
-
-        前缀键(Ctrl-b) + Ctrl-s 此时 ，左下角 tmux 状态栏会显示 saving ... 字样 ， 完毕后会提示 Tmux environment saved字样表示 tmux 环境已保存 。
-
-        Tmux Resurrect 会将 Tmux 会话的详细信息以文本文件形式保存到 ~/.tmux/resurrect 目录 。
-
-    手动还原tmux会话： 前缀键(Ctrl-b) + Ctrl-r，Tmux Continuum 会读取之前在 Tmux Resurrect 保存的会话配置并按此恢复 tmux
 
 ##### .tmux.conf 配置文件样例
 
