@@ -7585,8 +7585,11 @@ ssh 连续跳转连接几个服务器后，sftp 传送命令不方便的时候�
 
     如果终端工具如 putty、mintty、Gnome terminal 等不支持 zmodem 协议，但是支持从桌面拖放文件（变成路径名称）到终端工具，则可以安装 Gnu screen，使用 screen 来实现对 rz、sz 的支持，参见章节 [竞品 screen/Zellij]。
 
-    另一个办法是安装软件包：软件包 zzsh 通过包装 ssh 支持 zmodem 协议，使用 zssh 命令而不是 ssh 连接远程即可。另有软件包 ztelnet 包装 telnet 支持 zmodem 协议。
+    另一个办法是安装软件包：软件包 zzsh 通过包装 ssh 支持 zmodem 协议，使用 zssh 命令而不是 ssh 连接远程，热键 ctl+@ 即可切换到传送命令行（类似 sftp）。另有软件包 ztelnet 包装 telnet 支持 zmodem 协议
 
+        https://www.jianshu.com/p/dcd0111f3043
+
+        都 20 年不维护了。。。 https://zssh.sourceforge.net/
 发送：
 
     远程接收方运行 rz 命令后等待
