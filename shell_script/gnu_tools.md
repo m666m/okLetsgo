@@ -5607,7 +5607,11 @@ tmux 在 OSX 下水土不服
 
 > 如果遇到提示无法打开 display:0 的错误
 
+常见于 ssh -X 连接远程
+
     https://github.com/lljbash/tmux-update-display
+
+如果是 tmux 下执行命令 `glxinfo` 提示该错误，退回到普通的终端下重新执行 `glxinfo` 即可。
 
 ##### 状态栏显示使用 powerline
 
