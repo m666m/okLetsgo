@@ -10828,7 +10828,7 @@ GNOME Files（Nautilus）文件管理器
 
 视频播放
 
-    vlc player
+    vlc player，建议安装 flatpak 版本，这样闭源的编解码器都自带了，不需要单独安装
 
         https://www.videolan.org/vlc/index.zh_CN.html
             https://github.com/videolan/vlc
