@@ -7588,8 +7588,10 @@ ssh 连续跳转连接几个服务器后，sftp 传送命令不方便的时候�
     另一个办法是安装软件包：软件包 zzsh 通过包装 ssh 支持 zmodem 协议，使用 zssh 命令而不是 ssh 连接远程，热键 ctl+@ 即可切换到传送命令行（类似 sftp）。另有软件包 ztelnet 包装 telnet 支持 zmodem 协议
 
         https://www.jianshu.com/p/dcd0111f3043
+        https://www.cnblogs.com/pied/p/5813018.html
 
         都 20 年不维护了。。。 https://zssh.sourceforge.net/
+
 发送：
 
     远程接收方运行 rz 命令后等待
