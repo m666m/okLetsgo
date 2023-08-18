@@ -6022,9 +6022,9 @@ GNU Screen 的默认前导键是 Ctrl+A。
 
 #### 后知后觉发现一个命令要执行很久，半路让它改成后台执行
 
-最好还是用 tmux 用一个守护进程打开多个终端窗口实现了一直在后台运行，详见章节 [tmux 不怕断连的多窗口命令行]。
-
     https://www.ruanyifeng.com/blog/2016/02/linux-daemon.html
+
+ssh 连接到服务器，后知后觉发现一个命令要执行很久，到点下班了怎么办？后悔没在 tmux 里执行好尴尬。
 
 如果程序的输出无所谓，你只要程序能继续执行下去就好，典型的例子是你压缩一个文件或者编译一个大软件，中途发现需要花很长时间.
 
@@ -6080,18 +6080,20 @@ GNU Screen 的默认前导键是 Ctrl+A。
     # 退出会话，后台任务不会再跟随关闭了
     bash-3.2$ exit
 
-#### reptyr 通过 pid 把后台任务调回前台
+#### 后知后觉发现一个命令要执行很久，reptyr 通过 pid 切换进程的 tty 到 tmux
+
+ssh 连接到服务器，后知后觉发现一个命令要执行很久，到点下班了怎么办？后悔没在 tmux 里执行好尴尬。
+
+不需要改后台执行，把它切换到 tmux 里
 
     # https://github.com/nelhage/reptyr
     sudo apt install reptyr
 
-如果后续又想把这个任务调回前台，需要安装 reptyr 工具，比 screenify 好用
-
-最好在 tmux 里执行 reptyr，这样以后就不用担心遇到这种尴尬了
+在 tmux 里执行 reptyr，这样就把该进程切换到当前的 tmux 面板里执行了
 
     reptyr <pid>
 
-从你的当前终端连接指定的 pid，适用于把 Ctrl+Z 挂起到后台的任务重新调用回前台。
+然后就可以愉快的断开 ssh 关机回家了。
 
 #### 避免后台执行
 
