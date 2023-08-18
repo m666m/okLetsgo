@@ -5690,14 +5690,14 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
     $ git clone --depth=1 https://github.com/tmux-plugins/tmux-resurrect ~/.tmux/resurrect
 
-编辑配置 ~/.tmux.conf 文件
+    编辑 ~/.tmux.conf 文件
 
-    # 保存会话
-    run-shell "~/.tmux/resurrect/resurrect.tmux"
+        # 保存会话
+        run-shell "~/.tmux/resurrect/resurrect.tmux"
 
-重载配置文件使之生效
+    重载配置文件使之生效
 
-    tmux source-file ~/.tmux.conf
+        tmux source-file ~/.tmux.conf
 
 操作快捷键
 
@@ -5772,27 +5772,46 @@ function UUDF_TMUX_SEND_TO_SESSION {
 
 安装
 
-    $ git clone --depth=1 https://github.com/tmux-plugins/tmux-continuum ~/.tmux/continuum
+        $ git clone --depth=1 https://github.com/tmux-plugins/tmux-continuum ~/.tmux/tmux-continuum
 
-配置
+    编辑 ~/.tmux.conf 文件
 
-    # 将下述命令添加到.tmux.conf文件中
-    run-shell ~/.tmux/tmux-continuum/continuum.tmux
+        run-shell ~/.tmux/tmux-continuum/continuum.tmux
 
-    # Tmux Continuum 默认每隔 15 分钟备份一次，如果你频率过高，可以设置为 1 小时一次：
-    set -g @continuum-save-interval '60'
+        # Tmux Continuum 默认每隔 15 分钟备份一次，如果你频率过高，可以设置为 1 小时一次：
+        set -g @continuum-save-interval '60'
 
-重载配置文件使之生效
+    重载配置文件使之生效
 
-    tmux source-file ~/.tmux.conf
+        tmux source-file ~/.tmux.conf
+
+##### 冻结本地 tmux 热键 tmux-suspend
+
+tmux 里 ssh 连接远程服务器再打开 tmux 会导致热键冲突，这个插件可以冻结本地的 tmux 响应热键
+
+    https://github.com/MunifTanjim/tmux-suspend
+
+安装：
+
+    $ git clone --depth=1 https://github.com/MunifTanjim/tmux-suspend.git ~/.tmux/tmux-suspend
+
+    编辑 ~/.tmux.conf 文件
+
+        run-shell ~/.tmux/tmux-suspend/suspend.tmux
+
+    重载配置文件使之生效
+
+        tmux source-file ~/.tmux.conf
+
+使用：
+
+    按 F12 将冻结本地的 tmux 响应热键，这样当前面板 pane 里的远程ssh 连接中的 tmux 就可以接收到你的热键了，再次按 F12 将取消冻结。
 
 ##### 插件管理
 
 感觉 tmux 就别折腾各种插件了。。。
 
     插件管理器 https://github.com/tmux-plugins/tpm
-
-    高亮关键字 https://github.com/tmux-plugins/tmux-prefix-highlight
 
 ##### .tmux.conf 配置文件样例
 
@@ -5839,6 +5858,9 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 # 显示前导键
 run-shell "~/.tmux/tmux-prefix-highlight/prefix_highlight.tmux"
+
+# 冻结本地 tmux 热键
+run-shell ~/.tmux/tmux-suspend/suspend.tmux
 
 # 保存会话
 run-shell "~/.tmux/resurrect/resurrect.tmux"
