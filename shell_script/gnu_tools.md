@@ -5867,7 +5867,7 @@ set -g @resurrect-capture-pane-contents 'on'
 
     Screen 支持 Zmodem 协议，也就是说，你可以用 rz、sz 命令方便的传输文件 <https://adammonsen.com/post/256/>。
 
-    Screen 可以通过串行连接进行连接，如运行命令 `screen 9600 /dev/ttyUSB0` 连接 usb 端口调试，通过按键绑定可以方便地发出 XON 和 XOFF 信号。
+    Screen 可以通过串行连接进行连接，如运行命令 `screen 9600 /dev/ttyUSB0` 连接 usb 端口调试，通过按键绑定可以方便地发出 XON 和 XOFF 信号，Windows 下的 putty 也支持连接 COM 口登录。
 
 安装发行版的即可
 
@@ -7563,26 +7563,48 @@ peer-id-prefix=-TR2940-
     # 静默下载，输出到标准输出流
     wget -q -O - http://deb.opera.com/archive.key |gpg --import
 
-### ZModem 协议的文件传输协议工具 rs rz
+### ZModem 协议的文件传输工具 rs/rz
 
-需要你的终端工具支持 zmodem 协议，使用起来比较方便
+连接嵌入式设备传送文件，没有 sftp、ftp 时， 用 rs、rz 比较方便。
 
-    sudo apt install lrzsz
+ssh 连续跳转连接几个服务器后，sftp 传送命令不方便的时候，用 rz、sz 比较方便。不过这种情况下最方便的办法是直接设置 ssh 的 ProxyJump 参数，不管是 ssh 连接还是 sftp 都能无缝操作。
 
-    $ rz
-    **B0100000023be50eive.**B0100000023be50
+缺点是几十年前的老协议了，速率较慢误码率较高，大文件的传送需要自行做 hash 校验。
 
-    然后直接把你要发送的文件拖动到你的终端工具窗口
-
-    $ sha1sum your_file
-
-    记得比对下校验码，防止误码
-
-如果嵌入式设备传送文件，没有 sftp、ftp 时，用 rs rz，缺点是速率较慢误码率较高，大文件传送需要自行做 hash 校验。
+    https://github.com/tmux/tmux/issues/906#issuecomment-321890340
 
     https://blog.csdn.net/mynamepg/article/details/81118580
 
     mintty 不支持 https://github.com/mintty/mintty/issues/235
+
+需要你的终端工具支持 zmodem 协议
+
+    如果终端工具如 putty、mintty、Gnome terminal 等不支持 zmodem 协议，但是支持从桌面拖放文件（变成路径名称）到终端工具，则可以安装 Gnu screen，使用 screen 来实现对 rz、sz 的支持，参见章节 [竞品 screen/Zellij]。
+
+安装
+
+    $ sudo apt install lrzsz
+
+发送：
+
+    远程接收方运行 rz 命令后等待
+
+        $[iot@remote_ip] rz
+        **B0100000023be50eive.**B0100000023be50
+
+    然后在桌面直接把你要发送的文件拖动到你的终端工具窗口即可
+
+    记得比对下校验码，防止误码
+
+         $[iot@remote_ip] sha1sum your_file
+
+接收更简单，远程发送方直接运行 sz 命令即可把文件传递到你终端工具设置的目录下
+
+        $[iot@remote_ip] sz you_need_this_file
+
+    记得比对下校验码，防止误码
+
+         $[iot@remote_ip] sha1sum you_need_this_file
 
 ### 简单的端口通信 netcat (nc)
 
