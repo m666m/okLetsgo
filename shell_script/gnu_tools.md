@@ -10680,6 +10680,8 @@ GNOME Files（Nautilus）文件管理器
 
     显示隐藏文件的快捷键是 ctr+h
 
+    如果使用 meld，可以添加右键菜单，参见章节 [给资源管理器添加 meld 右键菜单]。
+
 虚拟机和容器
 
     Gnome Box 底层调用 virt-manager 操作 kvm 虚拟机，详见章节 [GNOME Boxes](virtualization think)。
