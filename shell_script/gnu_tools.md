@@ -10684,11 +10684,11 @@ GNOME Files（Nautilus）文件管理器
 
 虚拟机和容器
 
-    Gnome Box 底层调用 virt-manager 操作 kvm 虚拟机，详见章节 [GNOME Boxes](virtualization think)。
+    kvm 虚拟机推荐使用 virt-manager，详见章节 [虚拟机管理器 virt-manager](virtualization think)
 
-    Toolbox 是 Fedora 系统的容器化管理工具，调用 podman 来完成容器的操作，详见章节 [Fedora toolbox](virtualization think)。
+    交互式容器环境推荐使用 distrobox，详见章节 [使用 distrobox 代替 toolbox](virtualization think)
 
-    Waydroid：在 Linux 容器化运行 Android app，只支持 wayland 桌面 详见章节 [waydroid](virtualization think)。
+    在 Linux 容器化运行 Android apk，详见章节 [waydroid](virtualization think)
 
 浏览器
 
