@@ -6269,6 +6269,16 @@ Far Manager for Windows 类似 mc，命令行下使用两个面板来处理文�
 
     https://conemu.github.io/en/FarManager.html
 
+### 命令行下的仿图形界面库 whiptail
+
+newt 库的 whiptail 纯字符环境不需要桌面图形界面做支撑
+
+    https://www.redhat.com/sysadmin/use-whiptail
+
+    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/6.2_technical_notes/newt
+
+显示的内容采用基于文本的用户界面（TUI）格式，并使用 Tab 键进行导航，使用空格键选择。如树莓派的 raspi-config 配置程序就是用 whiptail 实现的。
+
 ### 按内容查找文件：find + grep + xargs 组合
 
 在 $PATH 查找你的命令
@@ -10910,17 +10920,7 @@ GNOME Files（Nautilus）文件管理器
 
     Steam：在 steam 的设置中启动 Proton 来游玩 Windows 游戏。
 
-### 命令行下的图形界面
-
-·newt 库的 whiptail 纯字符环境不需要桌面图形界面做支撑
-
-    https://www.redhat.com/sysadmin/use-whiptail
-
-    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/6.2_technical_notes/newt
-
-显示的内容采用基于文本的用户界面（TUI）格式，并使用 Tab 键进行导航，使用空格键选择。如树莓派的 raspi-config 配置程序就是用 whiptail 实现的。
-
-·zenity
+### 可与命令行交互的图形界面 zenity
 
 在桌面环境的终端里，执行 shell 脚本时实现弹出式对话框，用户的选择可以用返回值方式被 shell 脚本读取以实现交互，基于 gtk 库实现，需要操作系统有桌面图形化环境
 
