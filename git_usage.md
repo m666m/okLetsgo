@@ -297,11 +297,7 @@ git 默认使用 vim 作为编辑工具，diff 作为比较工具，但我们可
         https://blog.csdn.net/albertsh/article/details/106294095
         https://blog.csdn.net/LeonSUST/article/details/103565031
 
-    建议使用开源的 meld，基于 python
-
-        https://meldmerge.org/
-            https://gitlab.gnome.org/GNOME/meld
-            https://gitlab.gnome.org/GNOME/meld/-/wikis/home
+    建议使用开源的 meld，基于 python，参见章节 [给资源管理器添加 meld 右键菜单](gnu_tools.md)。
 
 配置 git 的默认编辑器为 vscode
 

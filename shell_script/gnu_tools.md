@@ -29,7 +29,7 @@ Windows C++ 开发环境配置
     WinSCP 同步本地和编译机代码
 
     BeyondCompare 合并代码
-        meld 基于python的开源合并工具，替换 BeyondCompare https://meldmerge.org/
+        推荐用 meld 替换 BeyondCompare，参见章节 [给资源管理器添加 meld 右键菜单]
 
     tmux + vim 直接在编译机写代码，方便随时ssh上去复原现场继续。
 
@@ -10896,9 +10896,7 @@ GNOME Files（Nautilus）文件管理器
 
 游戏平台
 
-    Steam 你需要在 steam 的设置中启动 Proton 来游玩 Windows 游戏。
-
-        sudo dnf in steam
+    Steam：在 steam 的设置中启动 Proton 来游玩 Windows 游戏。
 
 ### 命令行下的图形界面
 
@@ -11426,6 +11424,97 @@ gnome 扩展要安装 User Themes
 下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
 
 然后打开 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择刚才的zip文件即可
+
+#### 给资源管理器添加 meld 右键菜单
+
+meld 基于 python 的开源合并工具，替换 BeyondCompare
+
+    https://meldmerge.org/
+        https://gitlab.gnome.org/GNOME/meld
+        https://gitlab.gnome.org/GNOME/meld/-/wikis/home
+
+    https://www.cnblogs.com/onelikeone/p/17291936.html
+
+如果使用 GNOME桌面，其资源管理器可以添加右键菜单 “script”，在 ~/.local/share/nautilus/scripts 目录下建立如下两个文件：
+
+A-set-as-meld-left：
+
+```bash
+#!/bin/bash
+#
+# https://www.cnblogs.com/onelikeone/p/17291936.html
+# This script opens a compare tool with selected files/directory by
+# script "set-as-*-left".
+# so you should run "set-as-*-left" first
+# Copyright (C) 2010  ReV Fycd
+# Distributed under the terms of GNU GPL version 2 or later
+#
+# Install in ~/.gnome2/nautilus-scripts or ~/Nautilus/scripts
+# or ~/.local/share/nautilus/scripts (ubuntu 14.04 LTS)
+# You need to be running Nautilus 1.0.3+ to use scripts.
+# You also need to install one compare tools to use scripts(such like meld)
+# You can change the $compareTool to other compare tools(like "Kdiff3") that
+# you have already installed before.
+
+compareTool="meld"
+if [ -n "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" ]; then
+    set $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS
+    if [ $# -eq 1 ]; then
+        file1="$1"
+        echo "set-as-Meld-left Copyright (C) 2010  ReV Fycd"
+        echo "${compareTool} ${file1} \\"> ~/.startcompare
+    fi
+fi
+```
+
+注意：
+
+    如果是 flatpak 安装的 meld，把上面的 `compareTool="meld"` 命令行替换为 `compareTool="flatpak run org.gnome.Meld"`
+
+B-compare-to-left：
+
+```bash
+#!/bin/bash
+#
+# https://www.cnblogs.com/onelikeone/p/17291936.html
+# This script opens a compare tool with selected files/directory by
+# script "set-as-*-left".
+# so you should run "set-as-*-left" first
+#
+# Copyright (C) 2010  ReV Fycd
+# Distributed under the terms of GNU GPL version 2 or later
+#
+# Install in ~/.gnome2/nautilus-scripts or ~/Nautilus/scripts
+# or ~/.local/share/nautilus/scripts (ubuntu 14.04 LTS)
+# You need to be running Nautilus 1.0.3+ to use scripts.
+# You also need to install one compare tools to use scripts(such like meld)
+
+if [ -n "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" ]; then
+    set $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS
+fi
+if [ $# -eq 1 ]; then
+    file2="$1"
+    echo "Compare-to-left Copyright (C) 2010  ReV Fycd"
+    echo $file2 >> ~/.startcompare
+fi
+
+chmod +x ~/.startcompare
+exec ~/.startcompare
+```
+
+然后赋予执行权限即可：
+
+    $ chmod +x Meld-aset-as-left Meld-compare-to-left
+
+使用
+
+    在第一个文件点右键，弹出菜单选 “Scripts”-->“A-set-as-meld-left”，
+
+    然后在第二个文件上点右键，弹出菜单选 “Scripts”-->“B-compare-to-left”
+
+    这时 meld 会自动弹出窗口对这两个文件进行比较
+
+如果是多选，如同时选择了两个文件或文件夹，右键菜单选择 “Open With...”，然后选择 meld 即可。
 
 ### 使用 KDE 桌面
 
