@@ -10692,6 +10692,8 @@ GNOME Files（Nautilus）文件管理器
 
 浏览器
 
+    推荐用 flatpak 安装 UngoogledChromium。
+
     安装浏览器扩展要谨慎，只安装大家都用的扩展，装完后要设置它的访问权限尽量小，各大浏览器都支持设置。
 
     浏览器尽量使用容器化、匿名化访问，不同用途的浏览分开，多个虚拟机打开多个浏览器。
@@ -10700,27 +10702,35 @@ GNOME Files（Nautilus）文件管理器
 
         测试：访问网站 https://www.xycq.gov.cn/，提示不安全的数字证书
 
+    Chromium
+
+        推荐用 flatpak 安装 UngoogledChromium。
+
+        来自 Chromium 项目的开源 Web 浏览器，它有一个极简的用户界面。 谷歌已经禁止 chromium 和基于 chromium 的第三方浏览器读取谷歌的数据，所以 chromium 无法同步你原有的谷歌浏览器数据，也无法连接谷歌扩展商店，但它有自己的开源扩展商店，也支持本地安装你从 github 下载的开源扩展。
+
+        $ flatpak install flathub com.github.Eloston.UngoogledChromium
+
+        开启自动安装扩展
+
+            https://github.com/NeverDecaf/chromium-web-store
+
+            Go to chrome://flags and search for the #extension-mime-request-handling flag and set it to Always prompt for install.
+
     GNOME Web
 
-        GNOME 桌面自带的一个基于 WebKit 的浏览器，功能比 Firefox 少，但对于普通用途来说已经足够了。而且支持安装火狐和谷歌浏览器的扩展。
+        GNOME 桌面自带的一个基于 WebKit 的浏览器，功能比 Firefox 少，但对于普通用途来说已经足够了，而且支持安装火狐和谷歌浏览器的扩展。
 
     FireFox
 
         中文版的 FireFox 等浏览器由cn公司开发，不要下载安装！
 
-        FireFox 只在 mozila 官方网站下载“英文版”使用。
+        FireFox 只在 mozila 官方网站下载“英文版”使用，目前各大发行版内置 Firfox 安全性应该等于官方英文版。
 
         多帐户容器：通过使用容器，你在一个容器中的浏览活动不会与其他容器共享。这种隔离意味着你可以在不同容器中登录同一网站上的两个不同帐户。你的登录会话、网站偏好和跟踪数据将被限制在你使用某个网站的容器中。你的登录会话、网站偏好和跟踪数据将被限制在你使用某个网站的容器中。Firefox 默认情况下提供的容器包括 Facebook、Messenger 和 Instagram 网站，当你打开这三个网站中的任何一个时，它们都只会在 “Facebook 容器” 中打开。因此，Facebook 将无法跟踪你在其他网站上的活动。Firefox 附加组件网站上的 扩展程序页面，找到 “Firefox Multi-Account Containers”。之后你唯一需要做的就是单击 “添加到 Firefox” 按钮。
 
             注意：你的浏览器历史记录本身之类的内容仍会暴露给你的正常浏览器会话，容器功能只是提供了一种方法来分离登录帐户等内容。
 
         Firefox 的 “插件”（plugin）和“扩展”（extension）是两种不同的东西：插件以动态库（Windows 上就是 DLL 文件）的方式，加载到浏览器的进程内。扩展可以调用浏览器自身的 API，但是大部分扩展【不能】调用操作系统的 API。
-
-    Chromium
-
-        来自 Chromium 项目的开源 Web 浏览器，它有一个极简的用户界面。 谷歌已经禁止 chromium 和基于 chromium 的第三方浏览器读取谷歌的数据，所以 chromium 不能同步你原有的谷歌浏览器数据。
-
-        flatpak install flathub com.github.Eloston.UngoogledChromium
 
     Chrome
 
@@ -10746,7 +10756,7 @@ GNOME Files（Nautilus）文件管理器
 
         https://www.onlyoffice.com/zh/download-desktop.aspx
 
-        ONLYOFFICE 还有一个重磅功能，那就是它的多人协作功能，比如服务器安装使用 Nextcloud，而 ONLYOFFICE 文档我们可以直接通过Docker拉取即可。参见章节 [自建云盘](rasp think)。
+        ONLYOFFICE 还有一个重磅功能，那就是它的多人协作功能，比如服务器安装使用 Nextcloud，而 ONLYOFFICE 文档我们可以直接通过Docker拉取即可。参见章节 [自建云盘 Nextcloud](rasp think)。
 
     FreeOffice 包括 TextMaker（可替代 Word）、PlanMaker（可替代 Excel）以及 Presentations（可替代 PowerPoint）。
 
