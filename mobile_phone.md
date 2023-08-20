@@ -1116,3 +1116,25 @@ postmarketos 把你的旧手机作为一个低功耗平台
     https://ivonblog.com/posts/postmarketos-general-installation/
 
     https://ivonblog.com/posts/postmarketos-multiple-des/
+
+## s20
+
+屏幕保护膜
+
+    https://www.acfun.cn/v/ac32730905
+
+换电池
+
+    https://www.bilibili.com/video/BV1Rg4y1s7QX/
+
+    https://www.bilibili.com/video/BV1Bb4y127Kn/
+
+刷机
+
+    https://www.bilibili.com/video/BV1Q7411975T/
+
+    https://www.bilibili.com/video/BV1ob411V7vo/
+
+    https://www.bilibili.com/video/BV1UW411u71C/
+
+    https://www.bilibili.com/video/BV1TV411Y7y4/
