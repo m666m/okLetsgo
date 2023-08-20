@@ -407,9 +407,11 @@ putty 美化
 
     拖拽资源管理器里的文件/文件夹到 mintty 可以得到其路径
 
-mintty 可以在命令行显示图片，下载他的源代码下 utils 目录下的脚本 showimg 即可
+mintty 可以在终端显示图片，下载他的源代码下 utils 目录下的脚本 showimg 即可
 
     curl -fsSL https://github.com/mintty/utils/raw/master/showimg |sudo tee /usr/local/bin/showimg && sudo chmod 755 /usr/local/bin/showimg
+
+    另外还有 catimg/SDL2_image（showimage2） 等软件包支持在终端下显示图片
 
 建议放到本地 /usr/bin/ 下，以后执行 `showimg xxx.jpg` 就可以在 mintty 下显示本地图片；如果 ssh 登陆到服务器上，在服务器的 /usr/local/bin/ 下也安装这个脚本，则 mintty 也可以响应服务器上执行的 `showimg xxx.jpg`，显示服务器上的图片。
 

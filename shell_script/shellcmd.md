@@ -1191,20 +1191,25 @@ sudo 命令也可以用于切换到 root 用户：
 
 hostnamectl 查看主机名及操作系统信息 (依赖安装了 systemd)
 
-    $ hostnamectl
-    Static hostname: vmsos-1.localdomain
-            Icon name: computer-vm
-            Chassis: vm
-            Machine ID: xxxxxxxxx
-            Boot ID: xxxxxxxxx
-        Virtualization: kvm
-    Operating System: CentOS Linux 7 (Core)
-        CPE OS Name: cpe:/o:centos:centos:7
-                Kernel: Linux 5.6.11-1.el7.elrepo.x86_64
+   $ hostnamectl
+     Static hostname: myfedora
+           Icon name: computer-desktop
+             Chassis: desktop 🖥️
+          Machine ID: xxxxxxxxx
+             Boot ID: xxxxxxxxx
+    Operating System: Fedora Linux 38 (Workstation Edition)
+         CPE OS Name: cpe:/o:fedoraproject:fedora:38
+      OS Support End: Tue 2024-05-14
+OS Support Remaining: 8month 3w 2d
+              Kernel: Linux 6.4.10-200.fc38.x86_64
         Architecture: x86-64
+     Hardware Vendor: Gigabyte Technology Co., Ltd.
+      Hardware Model: Z170X-UD3
+    Firmware Version: F22
+       Firmware Date: Mon 2017-03-06
 
     $ hostnamectl
-    Static hostname: hxxxxcom
+    Static hostname: mydebianvm
             Icon name: computer-vm
             Chassis: vm
             Machine ID: xxxxxxxxx
@@ -1222,6 +1227,17 @@ hostnamectl 查看主机名及操作系统信息 (依赖安装了 systemd)
     Operating System: Raspbian GNU/Linux 10 (buster)
                 Kernel: Linux 5.10.103-v7l+
         Architecture: arm
+
+    $ hostnamectl
+   Static hostname: yourpi
+         Icon name: computer
+        Machine ID: xxxxxxxxx
+           Boot ID: xxxxxxxxx
+  Operating System: Raspbian GNU/Linux 11 (bullseye)
+            Kernel: Linux 6.1.41-v8+
+      Architecture: arm64
+
+或安装 neofetch 软件包。
 
 内核信息
 
