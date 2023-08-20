@@ -2591,7 +2591,7 @@ feature1 分支的 f'、g' 已经接续在 d、e 的后面了，master 分支这
 
 但是git无法完全解决合并冲突，有时候出现需要手工解决的情况：比如，文件有一行内容 '123456'，你修改为 '123'，别人修改为 '456'，谁先提交无所谓，后面的人在推送或拉取的时候就会被提示处理该合并冲突。
 
-最差的情况是：你把已经推送远程库的代码，在本地分支重新rebase了，再次推送就报错了，见章节 [拉shi往回缩：rebase本地分支以后报错了]。
+最差的情况是：对方把自己的本地远程库重新rebase并推送到了远程，或你把已经推送远程库的代码，在本地分支重新rebase了，再次推送就报错了，见章节 [拉shi往回缩：rebase本地分支以后报错了]。
 
 所以，如果多人共享开发经常出现合并冲突，更新分支应该先 `git fetch` 再操作，详见章节 [更新本地分支的操作步骤]。
 
@@ -2798,7 +2798,7 @@ merge 如果可以做分叉合入，会直接提示新增提交点的注释，�
     $ git pull
     merge: Merge branch 'master' of git://...
 
-merge 提示需要手工解决冲突
+merge 如果自动解决不了冲突，会提示需要手工解决冲突
 
     $ git pull
     Auto-merging mmm.py
@@ -2821,7 +2821,7 @@ merge 提示需要手工解决冲突
 
     no changes added to commit (use "git add" and/or "git commit -a")
 
-git pull 自动使用 merge，发现冲突后，会进入 merge confict 状态，给你准备好冲突文件，直接编辑解决冲突吧。
+git pull 自动使用 merge，发现冲突后，会进入 merge confict 状态，给你准备好冲突文件，直接编辑解决冲突，详见下面章节 [示例：merge 处理合并冲突]。
 
 ##### 示例：merge 处理合并冲突
 
@@ -2987,7 +2987,7 @@ rebase 如果没有冲突，会有提示信息，但无需任何操作，直接 
     First, rewinding head to replay your work on top of it ...
     Applying:1
 
-rebase 会提示需要手工解决冲突才能继续你当前的提交
+rebase 如果自动解决不了冲突，会提示需要手工解决冲突才能继续你当前的提交
 
     $ git pull --rebase
     Auto-merging band.py
@@ -2999,7 +2999,7 @@ rebase 会提示需要手工解决冲突才能继续你当前的提交
     hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
     Could not apply 94950e8... "提交点注释"
 
-git pull --rebase 自动使用 rebase，发现冲突后，会进入 rebase confict 状态，给你准备好冲突文件，直接编辑解决冲突吧。
+git pull --rebase 自动使用 rebase，发现冲突后，会进入 rebase confict 状态，给你准备好冲突文件，直接编辑解决冲突吧，详见下面章节 [示例：rebase 处理合并冲突]。
 
 ##### 示例：rebase 处理合并冲突
 
