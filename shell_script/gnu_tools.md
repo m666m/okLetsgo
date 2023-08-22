@@ -10670,8 +10670,7 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
     Linux 桌面环境软件套件介绍
         https://www.freedesktop.org/wiki/Software/
 
-    Gnome 软件圈
-
+    Gnome 软件
         https://apps.gnome.org/
 
     商业软件替代品 https://alternativeto.net/
