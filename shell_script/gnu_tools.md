@@ -11363,10 +11363,11 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，在 gnome 43 开始甚�
 
     Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口
 
-    Alt+Tab Scroll Workaround
-                            按 alt+tab 时在所有窗口中循环，而不是一个应用只显示最近实例的窗口
+        TODO:
+            Alt+Tab Scroll Workaround
+                                    按 alt+tab 时在所有窗口中循环，而不是一个应用只显示最近实例的窗口
 
-    VIM Atl-Tab             按 alt+tab 循环窗口时，用 vim 的热键 h,j,k,l 选择，适合平板等触摸屏等屏幕键盘太少键位的情况。
+            VIM Atl-Tab             按 alt+tab 循环窗口时，用 vim 的热键 h,j,k,l 选择，适合平板等触摸屏等屏幕键盘太少键位的情况。
 
     allow locked remote desktop
                             解除内置的远程桌面的本地锁定限制，允许在本地桌面未解锁的情况下以远程桌面登录本机
