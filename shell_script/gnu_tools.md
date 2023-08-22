@@ -13747,11 +13747,11 @@ Fedora 下安装 howdy
             /dev/media0
             /dev/media1
 
-    后面如果运行 howdy 出现摄像头不工作，可以查看当前摄像头支持的像素尺寸，然后在 howdy 的配置文件里设置合适的分辨率
+    后面如果运行 howdy 遇到摄像头不工作，用以下命令查看当前摄像头支持的像素尺寸
 
         $ v4l2-ctl -d /dev/video0 --list-formats-ext
 
-        找一个合适的分辨率填写到配置文件中的 frame_width 和 frame_height 字段即可。
+        然后找一个合适的分辨率填写到 howdy 的配置文件中的 frame_width 和 frame_height 字段即可。
 
 2、配置摄像头
 
