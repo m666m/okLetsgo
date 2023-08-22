@@ -620,7 +620,7 @@ File 协议
     remotes/origin/hotfix  7cabce4 res me
     remotes/origin/master  3384fb2 tea2 再改2
 
-#### 本地仓库关联远程仓库
+#### 本地仓库关联远程仓库（本地分支关联远程分支）
 
     如果只是建立本地仓库，只需要在一个目录下执行命令 `git init` 就可以以本地仓库的方式使用 git 了。
 
@@ -1743,6 +1743,12 @@ NOTE: 本地新建的分支没有对应到远程仓库，无法推送到远程�
 
         # 如果远程库对象是默认的 origin，该参数也可省略
         git push
+
+如果是本地建立的功能分支，第一次推送到远程时注意带参数 -u 设置远程分支关联
+
+    git push --set-upstream origin feature_name
+
+详见章节 [本地仓库关联远程仓库]。
 
 ### 重要：推送远程前的检查
 
