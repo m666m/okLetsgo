@@ -11366,24 +11366,26 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，在 gnome 43 开始甚�
 
     Date Menu Formater      如果在任务栏显示的时间没有星期，可以在 Gnome Tweak tools 中开启即可，这个扩展可以调整日期时间的格式。
 
-    Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现一个大三角图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘。之前只能打开文件管理器卸载 u 盘。
+    Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在系统设置的天气里的已经设置过位置了
 
     Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口
 
     Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口
 
-    allow locked remote desktop
-                            解除内置的远程桌面的本地锁定限制，允许在本地桌面未解锁的情况下以远程桌面登录本机
+    Auto Move Windows       把你常用的程序归类，在指定桌面打开窗口，适合经常同时打开很多应用程序的场景，竞品 put windows
 
     quake-mode              设置热键，以下拉方式调出你的程序窗口，所有工作区共享该程序，再次按热键即隐藏该窗口。对程序员来说，设置热键 alt + enter 调出一个半屏的 terminal 窗口极其方便实用。
 
-    Auto Move Windows       把你常用的程序归类，在指定桌面打开窗口，适合经常同时打开很多应用程序的场景，竞品 put windows
+    Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现一个大三角图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘。之前只能打开文件管理器卸载 u 盘。
 
     GSConnect               操作局域网联网的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”
 
     Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用。
 
         竞品 Pano Clipboard Manager 可以显示复制的媒体内容，需要安装依赖 `sudo dnf install libgda libgda-sqlite`。
+
+    allow locked remote desktop
+                            解除内置的远程桌面的本地锁定限制，允许在本地桌面未解锁的情况下以远程桌面登录本机
 
     Power Profile Switcher  用电源时能源策略使用高性能，用电池时能源策略使用节能，自动切换省的你手动。在我的台式机上不准，总是切换到均衡。
 
