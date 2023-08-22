@@ -13771,52 +13771,7 @@ Fedora 下安装 howdy
 
     会打开一个窗口显示摄像头的内容，如果摄像头开启了红外发射器其指示灯会闪烁，停止运行可在命令行窗口按 ctrl+c
 
-3、配置 PAM 实现鉴权时调用人脸识别
-
-调整 PAM 配置为优先使用人脸识别进行验证，若人脸识别验证失败，回落到原输入密码进行验证。
-
-pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式](init_a_server think)。
-
-解锁 sudo，编辑 /etc/pam.d/sudo 文件，在排除注释语句后的首行加入如下内容
-
-    #%PAM-1.0
-    auth       sufficient   pam_python.so /lib64/security/howdy/pam.py  <--要保证在最前
-    auth       include      system-auth
-    account    include      system-auth
-    ...
-
-    如果是你本人本机使用，可以对 su 文件做相同的修改，这样执行 su 命令也可以使用面部识别了（需要在 howdy 给 root 用户添加面部模型，见下面）
-
-        #%PAM-1.0
-        auth    sufficient  pam_rootok.so
-        auth    sufficient  pam_python.so /lib64/security/howdy/pam.py <-- 添加为第二行
-        ...
-
-解锁登录密码和锁屏密码，编辑 /etc/pam.d/gdm-password
-
-    auth    [success=done ignore=ignore default=bad] pam_selinux_permit.so
-    auth    sufficient    pam_python.so /lib64/security/howdy/pam.py  <-- 添加在这两行之间
-    auth    substack      password-auth
-
-使用说明：
-
-在 sudo 会自动启动人脸识别，如果人脸识别失败，会回落到使用密码验证。
-
-在登录界面，人脸识别不会像 Windows Hello 那样自动启动，但是不需要输入密码，只需点击登录按钮或按回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
-
-在锁屏界面中点击鼠标即可自动解锁，如果人脸识别失败，会回落到使用密码验证。
-
-面部识别登录无法解锁 gnome-keyring：
-
-        https://github.com/boltgolt/howdy/issues/438
-
-    在使用到密钥环里的加密密钥时会提示该密钥的密码（不是解锁密钥环的密码），比如使用 gpg 进行签名。使用图形化工具 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
-
-    原因在于 gnome-keyring 使用你的登录密码作为加密密钥以保存其它各种密钥和密码，不输入登录密码就无法解锁 gnome-keyring。即目前 gnome-keyring 不支持面部识别、指纹识别的数据作为加密密钥，必须使用登录密码才能解锁。
-
-    解决办法：给 gnome-keyring 设置空密码，或参照指纹登录的解决办法，使用 u 盘等设备单独保存你的 gnome-keyring 密码 <https://wiki.archlinux.org/title/Fingerprint_GUI#Password>。
-
-4、对 Redhat 系等开启 SELinux 的操作系统如 Fedora，需要配置 SELinux
+3、对 Redhat 系等开启 SELinux 的操作系统如 Fedora，需要配置 SELinux
 
     https://github.com/boltgolt/howdy/issues/711#issuecomment-1306559496
 
@@ -13849,7 +13804,58 @@ allow xdm_t v4l_device_t:chr_file map;
     $ semodule_package -o howdy.pp -m howdy.mod
     $ sudo semodule -i howdy.pp
 
-5、配置 polkit
+4、配置 PAM 实现鉴权时调用人脸识别
+
+调整 PAM 配置为优先使用人脸识别进行验证，若人脸识别验证失败，回落到原输入密码进行验证。
+
+pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式](init_a_server think)。
+
+解锁 sudo，编辑 /etc/pam.d/sudo 文件，在排除注释语句后的首行加入如下内容
+
+    #%PAM-1.0
+    auth       sufficient   pam_python.so /lib64/security/howdy/pam.py  <--要保证在最前
+    auth       include      system-auth
+    account    include      system-auth
+    ...
+
+    如果是你本人本机使用，可以对 su 文件做相同的修改，这样执行 su 命令也可以使用面部识别了（需要在 howdy 给 root 用户添加面部模型，见下面）
+
+        #%PAM-1.0
+        auth    sufficient  pam_rootok.so
+        auth    sufficient  pam_python.so /lib64/security/howdy/pam.py <-- 添加为第二行
+        ...
+
+解锁登录密码和锁屏密码，编辑 /etc/pam.d/gdm-password
+
+    auth    [success=done ignore=ignore default=bad] pam_selinux_permit.so
+    auth    sufficient    pam_python.so /lib64/security/howdy/pam.py  <-- 添加在这两行之间
+    auth    substack      password-auth
+
+使用说明：
+
+    在 sudo 会自动启动人脸识别，如果人脸识别失败，会回落到使用密码验证。
+
+    在登录界面，人脸识别不会像 Windows Hello 那样自动启动，但是不需要输入密码，只需点击登录按钮或按回车键会优先调用人脸识别，如果人脸识别失败，会回落到使用密码验证。
+
+    在锁屏界面中点击鼠标即可自动解锁，如果人脸识别失败，会回落到使用密码验证。
+
+无法解锁 gnome-keyring：
+
+        https://github.com/boltgolt/howdy/issues/438
+
+    在使用到密钥环里的加密密钥时会提示该密钥的密码（不是解锁密钥环的密码），比如使用 gpg 进行签名。使用图形化工具 gnome passwords and keys (seahorse) 可以看到密钥环是未解锁状态，只能手工点击解锁当前的密钥环。
+
+    原因在于 gnome-keyring 使用你的登录密码作为加密密钥以保存其它各种密钥和密码，不输入登录密码就无法解锁 gnome-keyring。即目前 gnome-keyring 不支持面部识别、指纹识别的数据作为加密密钥，必须使用登录密码才能解锁。
+
+    解决办法：给 gnome-keyring 设置空密码，或参照指纹登录的解决办法，使用 u 盘等设备单独保存你的 gnome-keyring 密码 <https://wiki.archlinux.org/title/Fingerprint_GUI#Password>。
+
+    验证：
+
+        $ gpg --sign some.file
+
+    如果未解锁 gnome-keyring，这里会提示 gpg 密钥的密码（不是解锁 gnome-keyring 的密码）
+
+5、（可选）配置 polkit
 
 gnome 桌面环境设置系统参数的某些选项时需要点击解锁按钮，会调用 polkit-1 这样的 GUI 授权验证工具，弹出一个密码输入窗口。这里也可以添加面部识别免除输入密码。
 
@@ -13939,8 +13945,6 @@ session    include      system-auth
     $ win + l 测试锁屏
 
     桌面->设置-> Users，点击 unlock，测试 Polkit 解锁
-
-    $ gpg --sign some.file  测试解锁 gnome-keyring，这里会提示 gpg 密钥的密码（不是解锁 gnome-keyring 的密码）
 
     $ sudo reboot 测试登录
 
