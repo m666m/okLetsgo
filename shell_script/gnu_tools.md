@@ -11355,7 +11355,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，在 gnome 43 开始甚�
 
     Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能
 
-    Date Menu Formater      在任务栏显示的时间没有星期，直接在 Gnome Tweak tools 中开启即可，这个是调整日期时间格式用的。
+    Date Menu Formater      如果在任务栏显示的时间没有星期，可以在 Gnome Tweak tools 中开启即可，这个扩展可以调整日期时间的格式。
 
     Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现一个大三角图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘。之前只能打开文件管理器卸载 u 盘。
 
@@ -11365,6 +11365,8 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，在 gnome 43 开始甚�
 
     Alt+Tab Scroll Workaround
                             按 alt+tab 时在所有窗口中循环，而不是一个应用只显示最近实例的窗口
+
+    VIM Atl-Tab             按 alt+tab 循环窗口时，用 vim 的热键 h,j,k,l 选择，适合平板等触摸屏等屏幕键盘太少键位的情况。
 
     allow locked remote desktop
                             解除内置的远程桌面的本地锁定限制，允许在本地桌面未解锁的情况下以远程桌面登录本机
