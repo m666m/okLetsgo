@@ -10670,6 +10670,10 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
     Linux 桌面环境软件套件介绍
         https://www.freedesktop.org/wiki/Software/
 
+    Gnome 软件圈
+
+        https://apps.gnome.org/
+
     商业软件替代品 https://alternativeto.net/
 
     Minetest：一个开源的 Minecraft 替代品 https://zhuanlan.zhihu.com/p/535401331
@@ -10686,14 +10690,6 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 
 Linux 桌面的终端工具参见章节 [其他终端模拟器]。
 
-GNOME Files（Nautilus）文件管理器
-
-    https://www.cnblogs.com/keatonlao/p/12717071.html
-
-    显示隐藏文件的快捷键是 ctr+h
-
-    如果使用 meld，可以添加右键菜单，参见章节 [给资源管理器添加 meld 右键菜单]。
-
 虚拟机和容器
 
     kvm 虚拟机推荐使用 virt-manager，详见章节 [虚拟机管理器 virt-manager](virtualization think)
@@ -10701,6 +10697,14 @@ GNOME Files（Nautilus）文件管理器
     交互式容器环境推荐使用 distrobox，详见章节 [使用 distrobox 代替 toolbox](virtualization think)
 
     在 Linux 容器化运行 Android apk，详见章节 [waydroid](virtualization think)
+
+文件管理器 GNOME Files（Nautilus）
+
+    https://www.cnblogs.com/keatonlao/p/12717071.html
+
+    显示隐藏文件的快捷键是 ctr+h
+
+    如果使用 meld，可以添加右键菜单，参见章节 [给资源管理器添加 meld 右键菜单]。
 
 浏览器
 
@@ -10785,6 +10789,8 @@ GNOME Files（Nautilus）文件管理器
     FreePlane：繪製心智圖。
     XMind【專有軟體】：繪製心智圖，支援上傳到雲端。
     ImageMagick (無圖形界面)：用於圖片轉檔的純文字工具。
+
+    Solanum：番茄时钟。采用番茄工作法，工作分 4 个时段，在每个时段之间休息，在全部 4 个时段之后有一次长时间休息。
 
 邮件
 
