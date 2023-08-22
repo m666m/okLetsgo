@@ -11364,7 +11364,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，在 gnome 43 开始甚�
 
     Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能
 
-    Date Menu Formater      如果在任务栏显示的时间没有星期，可以在 Gnome Tweak tools 中开启即可，这个扩展可以调整日期时间的格式。
+    Date Menu Formater      如果在任务栏显示的时间没有星期，可以在 Gnome Tweaks 中开启即可，这个扩展可以调整日期时间的格式。
 
     Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在系统设置的天气里的已经设置过位置了
 
