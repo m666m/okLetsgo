@@ -669,6 +669,8 @@ File 协议
     To have this happen automatically for branches without a tracking
     upstream, see 'push.autoSetupRemote' in 'git help config'.
 
+初次拉取远程仓库后也会遇到这种情况，本地默认只有 master 分支，如需使用其它分支，参见章节 [从远程库的某个分支建立一个本地分支]。
+
 4、设置本地分支和远程库关联，先把 master 分支搞好。
 
     # 将本地的 master 分支推送到 origin 主机，同时指定 origin 为默认主机
@@ -1636,6 +1638,7 @@ NOTE: 本地新建的分支没有对应到远程仓库，无法推送到远程�
 
     # 废弃： git checkout -b hotfix origin/hotfix
 
+    # 先建立远程仓库分支的本地分支
     $ git switch -c hotfix origin/hotfix
     Switched to a new branch 'hotfix'
     branch 'hotfix' set up to track 'origin/hotfix'.
@@ -1644,6 +1647,16 @@ NOTE: 本地新建的分支没有对应到远程仓库，无法推送到远程�
     # git branch newBrach a9c146a09505837ec03b
 
 如果 master 分支都跟远程仓库关联好了，那么这个分支不需要再手工建立与远程仓库的关联。
+
+如果只执行创建本地分支，则需要手工关联本地分支和远程分支，参见章节 [本地仓库关联远程仓库（本地分支关联远程分支）]
+
+    $ git switch -c hotfix
+
+    $ git branch --set-upstream-to=origin/hotfix hotfix
+
+验证：
+
+    切换到新建的本地分支，执行 git pull、git push 命令看是否正常
 
 ## 删除分支，远程/本地
 
