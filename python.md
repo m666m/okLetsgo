@@ -1471,9 +1471,9 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
 
 #### 操作步骤
 
-假设Anaconda3安装完成后建立的默认root环境[base]，python版本是3.9，路径在 C:\ProgramData\Anaconda3 ，下面的Scripts目录是pip等命令，Lib\site-packages保存下载包，配置文件在 Lib\site.py。
+假设 Anaconda3 安装完成后建立的默认 root环境 [base]，python 版本是 3.9，路径在 C:\ProgramData\Anaconda3 ，其下默认路径为：Scripts 目录是 pip 等命令，Lib\site-packages 目录保存下载包，配置文件在 Lib\site.py。
 
-新建个环境[p37]，python版本是3.7，路径在 C:\Users\xxxx\.conda\envs\p37（Anaconda安装时选择了“给所有用户安装”时在C:\ProgramData\Anaconda3\envs\p37）。
+新建个环境 [p37]，python 版本是 3.7，路径在 C:\Users\xxxx\.conda\envs\p37（Anaconda安装时选择了“给所有用户安装”时在 C:\ProgramData\Anaconda3\envs\p37）。
 
 先切换到你当前的环境
 
@@ -1490,12 +1490,14 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
     # 请根据  python -m site -help 里的路径决定。
     # 详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
 
-编辑该配置文件，修改下面两行
+复制路径，后面需要用到
+
+编辑该 site.py 配置文件，修改下面两行
 
     USER_SITE = None
     USER_BASE = None
 
-改为
+改为前面复制的 site.py 所在路径下的子目录：
 
     # 注意 USER_BASE 在Windows下的目录结构跟Linux不同
     # 参考
@@ -1506,28 +1508,31 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
     USER_SITE = "C:\\Users\\xxxx\\.conda\\envs\\p37\\Lib\\site-packages"
     USER_BASE = "C:\\Users\\xxxx\\.conda\\envs\\p37"
 
-    # 如果env指向的 C:\ProgramData\Anaconda3\envs 改为
+如果 env 指向系统路径 C:\ProgramData\Anaconda3\envs 改为
+
     USER_SITE = "C:\\ProgramData\\Anaconda3\\envs\\p37\\Lib\\site-packages"
     USER_BASE = "C:\\ProgramData\\Anaconda3\\envs\\p37"
 
-    # 如果你建立的路径名环境在项目目录下，如 D:\pycode\your_project
-    # 改为
+如果你建立的路径名环境在项目目录下，如 D:\pycode\your_project 改为
+
     USER_SITE = "D:\\pycode\\your_project\\env\\py37\\Lib\\site-packages"
     USER_BASE = "D:\\pycode\\your_project\\env\\py37"
 
-    Linux 下：
+Linux 下改为
+
         USER_SITE = "/home/xxxx/anaconda3/envs/p310/lib/python3.10/site-packages"
         USER_BASE = "/home/xxxx/anaconda3/envs/p310"
 
-如果你使用的命令行工具是bash，也不需要改为 /d/pycode/your_project/py37 的形式，因为 site.py 是 python 执行，python 根据当前操作系统识别路径格式。
+如果你使用的命令行工具是 bash，也不需要改为 /d/pycode/your_project/py37 的形式，因为 site.py 是 python 执行，python 根据当前操作系统自动识别路径格式。
 
 验证
 
     python -m site
 
-    # 查看后缀是否为 exists
     USER_BASE: '.....' (exists)
     USER_SITE: '.....' (exists)
+
+查看后缀是否为 exists，且路径指向了你的env所在目录下的子目录。
 
 ## anaconda怎么同时安装2.7和3.6？
 
