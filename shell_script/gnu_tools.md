@@ -2595,11 +2595,6 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
     文件名加 Mono 字样的是等宽变形不包含连字。
 
-简单测试几个 unicode 扩展 NF 字符
-
-    $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \uf70f \ue20a \ue350 \uf2c8"
-     ±  ➦ ✘ ⚡ ⚙ ❃    
-
 > Fedora(SELinux) 下安装 Nerd Font --- Meslo LGS
 
 安装为系统字体，方法比较复杂
@@ -2638,6 +2633,11 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
     /usr/share/fonts/ 下的目录里字体文件是 644，而我拷贝到 /usr/local/share/fonts/ 下的字体文件改成 755 才行。
 
     Gnome 桌面环境下的图形界面 GNOME Font Viewer 程序安装字体，在当前用户目录 ~/.local/share/fonts 下，字体文件的权限也是 644。
+
+验证：简单测试几个 unicode 扩展 NF 字符
+
+    $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \uf70f \ue20a \ue350 \uf2c8"
+     ±  ➦ ✘ ⚡ ⚙ ❃    
 
 #### Font Awesome
 

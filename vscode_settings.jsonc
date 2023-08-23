@@ -104,6 +104,7 @@
         "**/.vscode": true
     },
     // 终端
+    "terminal.integrated.inheritEnv":false,
     "terminal.integrated.defaultProfile.windows": "Git Bash",
     "terminal.integrated.defaultProfile.linux": "bash",
     "terminal.integrated.profiles.linux": {
