@@ -669,7 +669,7 @@ File 协议
     To have this happen automatically for branches without a tracking
     upstream, see 'push.autoSetupRemote' in 'git help config'.
 
-初次拉取远程仓库后也会遇到这种情况，本地默认只有 master 分支，如需使用其它分支，参见章节 [从远程库的某个分支建立一个本地分支]。
+初次拉取远程仓库后本地默认只有 master 分支，如需使用其它分支也会遇到这种情况，参见章节 [从远程库的某个分支建立一个本地分支]。
 
 4、设置本地分支和远程库关联，先把 master 分支搞好。
 
