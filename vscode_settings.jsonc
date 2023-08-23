@@ -86,11 +86,12 @@
     ////     // "--sytle=yapf_style.cfg"
     //// ],
     //// "python.formatting.autopep8Args": ["--ignore","E402"],
-    // python 的 lint 工具 black
+    // python 的格式化工具用 black
     "black-formatter.args": [
         // https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html
         "--skip-string-normalization"  // 双引号字符串太乱了
     ],
+    // python 的 lint 工具用 flake8，参数调整为配合 black
     "flake8.args": [
         // compatible with black
         "max-line-length = 88",
