@@ -10961,11 +10961,9 @@ GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表�
 
 ### 设置中文字体
 
-如何安装自己下载的字体参见章节 [Nerd font]。
+安装下载的字体的方法参见章节 [Nerd font]。
 
-如果是 Fedora，记得先添加 RpmFusion 源。
-
-桌面环境下默认的中文字体不好看，需要调整。
+桌面环境下默认的中文字体不好看，需要调整
 
     https://catcat.cc/post/2021-03-07/
         https://catcat.cc/post/2020-10-31/
@@ -10978,17 +10976,19 @@ GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表�
 
     简体中文支持 https://wiki.archlinux.org/title/Localization/Simplified_Chinese
 
-查看当前系统安装的中文字体
+查看当前系统安装的中文字体，
 
     $ fc-list : file
 
     $ fc-list :lang=zh
 
+这个命令还会列出该字体支持的浓淡，比如 “Noto Serif CJK SC:style=Black”，则设置字体时可以选择 “Noto Serif CJK SC Black”，这样字体会加重类似黑体的效果。
+
 使用图形界面程序 gnome-tweak-tool 直观方便，在 “Font” 设置中可以给界面和文本分别设置不同的字体
 
     在 “Hinting”（渲染微调）选项建议勾选 “Full” 拉高字体，否则显得扁
 
-    对等宽字体，建议设置 “”。
+    对等宽字体，如果感觉系统的太丑，可以选用 “Noto Serif Mono Regular”。
 
     也可使用命令：
 
@@ -11004,7 +11004,7 @@ GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表�
 
     https://zhuanlan.zhihu.com/p/32961737
 
-根据印刷专业的区分方法，字体可以分别设置三种风格：sans、serif、mono，Windows 和 Linux 都支持同时设置此三种风格的字体，且可以设置多个
+根据印刷专业的区分方法，字体可以分别设置三种风格：sans、serif、mono，操作系统如 Windows、Linux，office/firefox等软件都支持设置三种风格的字体，且每种风格都可以设置多个字体（前一个未找到就用下一个，所谓回落）
 
     在西方国家的罗马字母阵营中，字体分为两大种类：Sans Serif 和 Serif，近代在机械打字机出现后，针对打字机的特点单独归类了字体：虽然也属于 Sans Serif，但由于是等宽字体，所以另外独立出 Monospace 这一种类。
 
@@ -11014,9 +11014,11 @@ GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表�
 
     Monospace 等宽字体，比如 Courier New、Consolas，适合会计数字、编程写代码等格式严谨上下行的字符严格对齐的场合。
 
-对东亚字符 CJK 来说，这三种风格的字体又细分出支持简体中文 SC、繁体中文 TC、日文 JP、韩文 KR的分支。有些异体字（Variable Font）三种文字中都有，需要三国统一设计方案，即一个字体即可显示三国的文字
+很多程序有自己的字体配置。一般而言，将无衬线字体设置成 sans-serif, 将衬线字体设置成 serif, 将等宽字体设置成 monospace, 就会遵循 fontconfig 的设置了。
 
 目前各大软件中，只有 Firefox 可在 about:config 中针对这三种风格的分别设置，其它的软件都自动处理这些细节了。
+
+对东亚字符 CJK 来说，这三种风格的字体又细分出支持简体中文 SC、繁体中文 TC、日文 JP、韩文 KR的分支。有些异体字（Variable Font）三种文字中都有，需要三国统一设计方案，即一个字体即可显示三国的文字。
 
 > 前置知识；字体文件的格式
 
@@ -11075,13 +11077,15 @@ Linux 操作系统一般都内置 fontconfig 程序选择字体，默认无需�
     https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
         https://www.freedesktop.org/wiki/Software/fontconfig/
 
+    https://wiki.archlinux.org/title/Font_configuration
+
 该程序支持字体的回落（fallback），可以实现中英文分别使用不同的字体，但需要用户手工配置，且配置文件的位置比较乱
 
     $ fc-conflist
 
 网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，实现见下面 “法一”。
 
-随着发行版的进步，一般都是使用 /etc/fonts/fonts.conf，实现见下面 “法二”。
+随着发行版的进步，又开始使用 /etc/fonts/fonts.conf，实现见下面 “法二”。
 
 Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的 Cantarell 字体显示中文太丑了，需要手工改设置，利用回落使得中英文分别使用不同的字体：
 
@@ -11114,7 +11118,7 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 
 我的 Fedora 38 发行版只安装了 Sans，没有 Serif，先手动安装下
 
-    如果启用了 RPMFusion 存储库，在 Gnome Software 的首页分类里，就可以选择中文字体安装了，更加方便
+    在 Gnome Software 的首页分类里，就可以选择中文字体安装了，更加方便
 
     # https://fedoraproject.org/wiki/Changes/Noto_CJK_Variable_Fonts#Detailed_Description
     # 所有字体的完整版：google-noto-cjk-fonts
@@ -11195,11 +11199,18 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 </fontconfig>
 ```
 
-法二：更符合 XDG 规范的用法是写入如下文件
+法二：更符合 XDG 规范的用法
+
+写入如下文件
 
     $XDG_CONFIG_HOME/fontconfig/conf.d 和 $XDG_CONFIG_HOME/fontconfig/fonts.conf
 
-    另一个例子 https://github.com/rydesun/dotfiles/blob/master/.config/fontconfig/conf.d/
+    另一个例子
+
+        文章较详细 https://szclsya.me/zh-cn/posts/fonts/linux-config-guide/
+            https://github.com/szclsya/dotfiles/blob/master/fontconfig/fonts.conf
+
+        https://github.com/rydesun/dotfiles/blob/master/.config/fontconfig/conf.d/
 
 来自 tinywrkb <https://aur.archlinux.org/packages/noto-fonts-cjk-vf> 的例子，编辑 $XDG_CONFIG_HOME/fontconfig/fonts.conf 文件：
 
