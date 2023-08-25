@@ -9,7 +9,7 @@
     // 编程字体预览大全 https://www.programmingfonts.org/#cascadia-code
     // 注意顺序：优先正式字体，回落到带补丁的字体以显示图标，最后是保底的系统自带字体
     // 优先图标字体，然后回落到中文字体，参见章节 [设置中文字体](gun_tools.md)
-    "editor.fontFamily": "'FiraCode Nerd Font', 'Noto Serif CJK SC Black', Consolas", // 'Cascadia Code','JetBrains Mono','Source Code Pro', monospace
+    "editor.fontFamily": "'FiraCode Nerd Font Retina', 'Noto Serif CJK SC Light', Consolas", // 'Cascadia Code','JetBrains Mono','Source Code Pro', monospace
     "terminal.integrated.fontFamily": "'MesloLGS Nerd Font', Consolas",
     //"editor.fontLigatures": true,
     // https://github.com/tonsky/FiraCode/wiki/How-to-enable-stylistic-sets

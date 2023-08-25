@@ -10976,13 +10976,7 @@ GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表�
 
     简体中文支持 https://wiki.archlinux.org/title/Localization/Simplified_Chinese
 
-查看当前系统安装的中文字体，
-
-    $ fc-list : file
-
-    $ fc-list :lang=zh
-
-这个命令还会列出该字体支持的浓淡，比如 “Noto Serif CJK SC:style=Black”，则设置字体时可以选择 “Noto Serif CJK SC Black”，这样字体会加重类似黑体的效果。
+单一调整桌面环境的字体设置，比如选择中文字体，会默认使用该字体内置的英文字体。而我们最需要的，是类似 MS Word 这样的，可以让用户明确指定一篇文章里的中、英文字体。如何利用 Windows、Linux 都默认支持的字体回落机制，选择多个中英文字体，使得显示英文使用一种字体，显示中文使用另一种字体，参见章节 [使中英文分别使用一种字体]。
 
 使用图形界面程序 gnome-tweak-tool 直观方便，在 “Font” 设置中可以给界面和文本分别设置不同的字体
 
@@ -10997,8 +10991,6 @@ GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表�
 
         # 设置桌面环境的字体
         $ gsettings set org.gnome.desktop.interface font-name 'Cantarell 10'
-
-单一调整桌面环境的字体设置，比如选择中文字体，会默认使用该字体内置的英文字体。而我们最需要的，是类似 MS Word 这样的，可以让用户明确指定一篇文章里的中、英文字体。如何利用 Windows、Linux 都默认支持的字体回落机制，选择多个中英文字体，使得显示英文使用一种字体，显示中文使用另一种字体，参见章节 [使中英文分别使用一种字体]。
 
 > 前置知识：界面上的字体到底是怎么显示的
 
@@ -11070,16 +11062,28 @@ OpenType 可变字体（OpenType variable fonts）技术
 
 可变字体属于 OpenType 字体规范上的演进，能够储存轮廓变化数据，在初始字形轮廓的基础上自动生成丰富的变化造型，它允许将同一字体的多个变体统合进单独的字体文件中。从而无需再将不同字宽、字重或不同样式的字体分割成不同的字体文件。高德纳（Donald Knuth）当年用 Metafont 创立的曲线自动调整技术发扬光大，无级字重成为现实
 
-#### 使中英文分别使用一种字体
+#### 使中英文分别使用一种字体 fontconfig
 
-Linux 操作系统一般都内置 fontconfig 程序选择字体，默认无需用户干预
+Linux 操作系统一般都内置 fontconfig 软件包选择字体，默认无需用户干预
 
     https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
         https://www.freedesktop.org/wiki/Software/fontconfig/
 
     https://wiki.archlinux.org/title/Font_configuration
 
-该程序支持字体的回落（fallback），可以实现中英文分别使用不同的字体，但需要用户手工配置，且配置文件的位置比较乱
+使用图形界面程序 Fonts Tweak Tool 可以直观的预览中文字体的效果，而且可以设置更多的 truetype 选项
+
+    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#substitute-font
+
+fontconfig 查看当前系统安装的中文字体
+
+    $ fc-list : file
+
+    $ fc-list :lang=zh
+
+这个命令还会列出该字体支持的浓淡，比如 “Noto Serif CJK SC:style=Black”，则设置字体时可以选择 “Noto Serif CJK SC Black”，这样字体会加重类似黑体的效果。
+
+fontconfig 支持字体的回落（fallback），可以实现中英文分别使用不同的字体，但需要用户手工配置，且配置文件的位置比较乱
 
     $ fc-conflist
 
@@ -11098,10 +11102,6 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
             https://github.com/notofonts/noto-cjk/tree/main/Serif
 
     针对三种风格的默认字体使用系统的英文字体，对中文回落到 Adobe/Google 的开源字体：思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）。其实思源中文字体也内置了西文，只设置该中文字体也可以，但其西文部分使用的是 Adobe Source 家族字体不大好看我们不去使用它（思源黑体集成 Source Sans Pro、思源宋体集成 Source Serif，详见 <https://sspai.com/post/38705>）。
-
-使用图形界面程序 Fonts Tweak Tool 可以直观的预览中文字体的效果，而且可以设置更多的 truetype 选项
-
-    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#substitute-font
 
 法一：简单起见，我们直接编辑 /etc/fonts/local.conf 文件
 
