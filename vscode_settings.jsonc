@@ -329,6 +329,8 @@
     // PYQT Integration 自行调整：
     // 根据你的 python、conda、virtunalenv 的不同，在哪个环境下安装了 pyqt5-tools，就在哪个环境下安装 PYQT Integration。
     // 先激活你的环境，然后用命令 `where/which designer.exe` 找一下，记下路径，填写到下面
+    // 如果不想在每个环境都安装一次，可以考虑在 base 环境安装 `pip install qt6-tools`，独立于 PyQt 环境使用。https://github.com/altendky/pyqt-tools/issues/103#issuecomment-1483843262
+    // Wayland 下使用需要环境变量 env QT_QPA_PLATFORM=xcb qt6-tools designer https://github.com/NixOS/nixpkgs/issues/128485
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\Qt\\bin\\designer.exe",
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Library\\bin\\designer.exe",
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\envs\\p37\\Scripts\\designer.exe",
