@@ -547,34 +547,46 @@ python-xy 不再更新维护了，废弃
 
 推荐安装 miniconda，其余的包都用 pip 安装
 
-    https://docs.conda.io/en/latest/miniconda.html
+anaconda：
+
+        https://docs.conda.io/projects/conda/en/stable/user-guide/install/linux.html
+
+    1. 网站下载，验证hash https://docs.anaconda.com/free/anaconda/reference/hashes/all/
+    2. bash xxxx.sh
+    3. 注意选择：添加到路径中!!! 这个跟 Windows 下安装是不同的.
+    4. 安装完毕，重启Linux
+    5. python 看输出信息包含 anaconda 字样
+    conda info
+    conda list
+    6. 启动器终端运行：anaconda-navigator
+    -搜索计算机： visual studio code 或 conda
+    或 终端运行：spyder
 
 miniconda：
+
+    简单安装可以用发行版自带的 conda 包，但是我的 Fedora `dnf install conda` 后运行 `conda init bash` 就报错……
+
+        https://docs.conda.io/en/latest/miniconda.html
 
     $ mkdir -p ~/miniconda3
 
     $ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
 
+    # 验证 hash https://conda.io/en/latest/miniconda_hashes.html
+    $ sha256sum ~/miniconda3/miniconda.sh
+
     $ bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
     $ rm -rf ~/miniconda3/miniconda.sh
-
-    After installing, initialize your newly-installed Miniconda. The following commands initialize for bash and zsh shells:
 
     $ ~/miniconda3/bin/conda init bash
     $ ~/miniconda3/bin/conda init zsh
 
-anaconda：
+    # 重启命令行终端
+    $ exit
 
-1. 网站下载
-2. bash xxxx.sh
-3. 注意选择：添加到路径中!!! 这个跟 Windows 下安装是不同的.
-4. 安装完毕，重启Linux
-5. python 看输出信息包含 anaconda 字样
-   conda info
-   conda list
-6. 启动器终端运行：anaconda-navigator
--搜索计算机： visual studio code 或 conda
- 或 终端运行：spyder
+    更新 conda 和 pip
+    $ conda update conda
+    $ pip install --upgrade pip
 
 ### Windows 安装 anaconda
 
