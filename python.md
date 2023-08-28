@@ -545,6 +545,26 @@ python-xy 不再更新维护了，废弃
 
 ### Linux 安装 anaconda
 
+推荐安装 miniconda，其余的包都用 pip 安装
+
+    https://docs.conda.io/en/latest/miniconda.html
+
+miniconda：
+
+    $ mkdir -p ~/miniconda3
+
+    $ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+
+    $ bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+    $ rm -rf ~/miniconda3/miniconda.sh
+
+    After installing, initialize your newly-installed Miniconda. The following commands initialize for bash and zsh shells:
+
+    $ ~/miniconda3/bin/conda init bash
+    $ ~/miniconda3/bin/conda init zsh
+
+anaconda：
+
 1. 网站下载
 2. bash xxxx.sh
 3. 注意选择：添加到路径中!!! 这个跟 Windows 下安装是不同的.
