@@ -332,8 +332,9 @@
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\Qt\\bin\\designer.exe",
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Library\\bin\\designer.exe",
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\envs\\p37\\Scripts\\designer.exe",
-    "pyqt-integration.qtdesigner.path": "C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\designer.exe",
+    //"pyqt-integration.qtdesigner.path": "C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\designer.exe",
     // "pyqt-integration.qtdesigner.path": "c:\\tools\\pyenvs\\your_virtualenv\\Lib\\site-packages\\qt5_applications\\Qt\\bin\\designer.exe",
+    "pyqt-integration.qtdesigner.path": "/home/yourusername/anaconda3/envs/p310/lib/python3.10/site-packages/qt6_applications/Qt/bin/designer"
     //
     // "pyqt-integration.pyuic.cmd":"C:\\ProgramData\\Anaconda3\\Library\\bin\\pyuic5.bat",
     // "pyqt-integration.pyuic.cmd":"C:\\ProgramData\\Anaconda3\\envs\\p37\\Library\\bin\\pyuic5.bat",

@@ -5566,7 +5566,7 @@ tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServe
 
     https://github.com/tmux-plugins/list
 
-要设置 tmux 界面使用彩色，比如 tmux 的状态栏彩色，在 tmux 环境种调用 vim 能够使用彩色，需要编辑 ~/.tmux.conf 文件，添加如下行
+要设置 tmux 界面使用彩色，比如 tmux 的状态栏彩色，以及在 tmux 下使用 vim 能够支持它的插件的彩色显示，需要编辑 ~/.tmux.conf 文件，添加如下行
 
     # 设置状态栏工具显示256彩色
     # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
@@ -5579,21 +5579,17 @@ tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServe
 
 多彩色设置的其它依赖项，详见章节 [终端模拟器和软件的真彩色设置]。
 
-tmux 在 OSX 下水土不服
+> 插件管理
 
-    https://www.economyofeffort.com/2013/07/29/reattach-to-user-namespace-the-fix-for-your-tmux-in-os-x-woes/
+    感觉 tmux 需要的插件不多，就不用安装插件管理器了
 
-##### 插件管理
+    插件管理器
 
-感觉 tmux 需要的插件不多，不弄这个了
+        https://github.com/tmux-plugins/tpm
 
-插件管理器
+    插件大全
 
-    https://github.com/tmux-plugins/tpm
-
-插件大全
-
-    https://github.com/tmux-plugins/list
+        https://github.com/tmux-plugins/list
 
 > 显示前导键
 
@@ -5616,6 +5612,10 @@ tmux 在 OSX 下水土不服
     https://github.com/lljbash/tmux-update-display
 
 如果是 tmux 下执行命令 `glxinfo` 提示该错误，退回到普通的终端下重新执行 `glxinfo` 即可。
+
+> tmux 在 OSX 下水土不服
+
+    https://www.economyofeffort.com/2013/07/29/reattach-to-user-namespace-the-fix-for-your-tmux-in-os-x-woes/
 
 ##### 状态栏显示使用 powerline
 
@@ -5677,15 +5677,9 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
 需要安装图标字体，参见章节 [Nerd font]。
 
-> 安装 tmux-powerline
+> 安装 nord 状态栏主题插件
 
-这个只使用 bash 脚本实现，保持你的环境更干净
-
-    https://github.com/erikw/tmux-powerline
-
-> 安装 nord 主题
-
-使用这个主题的状态栏的好处是它支持 <https://github.com/tmux-plugins> 的所有插件，可以在状态栏显示图标字符，启动速度也比 powerline 快。
+使用这个插件的好处是它支持 <https://github.com/tmux-plugins> 的所有插件，可以在状态栏显示图标字符，启动速度也比 powerline 快。
 
 最好终端工具也启用 nord 主题，否则颜色方案会不一致
 
@@ -5705,6 +5699,12 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 重新加载配置文件
 
     tmux source-file ~/.tmux.conf
+
+> 安装 tmux-powerline
+
+这个只使用 bash 脚本实现，保持你的环境更干净
+
+    https://github.com/erikw/tmux-powerline
 
 ##### 保存 tmux 会话
 
@@ -5731,7 +5731,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
         前导键 ctrl + b，然后 ctrl + s，会在左下角 tmux 状态栏会显示 saving ... 字样 ， 完毕后会提示 Tmux environment saved 字样
 
-        tmux-resurrect 会将 Tmux 会话的详细信息以文本文件形式保存到 ~/.tmux/resurrect 目录 。
+        tmux-resurrect 会将 Tmux 会话的详细信息以文本文件形式保存到 ~/.tmux/resurrect 目录。
 
     打开 tmux 后手动还原tmux会话
 
@@ -5741,22 +5741,23 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
     详见下面章节 [.tmux.conf 配置文件样例]
 
-    代码功能实现的不好，而且跟说明文档对不上，复杂点的使用需要自行分析源代码
+这个扩展插件的代码功能实现的不好，而且跟说明文档对不上，复杂点的使用需要自行分析源代码
 
-        https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_programs.md
+    https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_programs.md
 
-        https://github.com/jimeh/tmuxifier
-        https://github.com/tmuxinator/tmuxinator
+    https://github.com/jimeh/tmuxifier
+    https://github.com/tmuxinator/tmuxinator
 
-        https://blog.csdn.net/u013670453/article/details/116296687
+    https://blog.csdn.net/u013670453/article/details/116296687
 
-    保存的会话配置文件位于
+保存的会话配置文件位于
 
-        # 源代码目录下的 scripts/helper.sh 分析得到
-        $HOME/.tmux/resurrect 或 "${XDG_DATA_HOME:-$HOME/.local/share}"/tmux/resurrect
+    # 源代码目录下的 scripts/helper.sh 分析得到
+    $HOME/.tmux/resurrect 或 "${XDG_DATA_HOME:-$HOME/.local/share}"/tmux/resurrect
 
-        last 是面板布局和程序
-        pane_contents.tar.gz 是面板内容
+    last 文件指向最后一次保存的面板布局和程序
+
+    pane_contents.tar.gz 是最后一次保存的面板内容
 
 或者使用脚本自行恢复
 
@@ -5792,7 +5793,9 @@ function UUDF_TMUX_SEND_TO_SESSION {
 
 > 每隔 15 分钟自动备份一次会话 tmux-continuum
 
-        https://github.com/tmux-plugins/tmux-continuum
+感觉没必要用这个插件
+
+    https://github.com/tmux-plugins/tmux-continuum
 
 安装
 
@@ -5811,7 +5814,7 @@ function UUDF_TMUX_SEND_TO_SESSION {
 
 ##### 冻结本地 tmux 热键
 
-tmux 里 ssh 连接远程服务器再打开 tmux 会导致热键冲突，这个插件可以冻结本地的 tmux 响应热键
+如果在 tmux 里使用 ssh 连接远程服务器，在 ssh 里运行 tmux 会导致热键冲突，这个插件可以冻结本地的 tmux 响应热键
 
     https://github.com/MunifTanjim/tmux-suspend
 
@@ -5829,7 +5832,7 @@ tmux 里 ssh 连接远程服务器再打开 tmux 会导致热键冲突，这个�
 
 使用：
 
-    按 F12 将冻结本地的 tmux 响应热键，这样当前面板 pane 里的远程ssh 连接中的 tmux 就可以接收到你的热键了，再次按 F12 将取消冻结。
+    按 F12 将冻结本地的 tmux 响应热键，这样当前面板 pane 里的远程 ssh 连接中的 tmux 就可以接收到你的热键了，再次按 F12 将取消冻结。
 
 ##### .tmux.conf 配置文件样例
 
@@ -5877,7 +5880,7 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 # 显示前导键
 run-shell "~/.tmux/tmux-prefix-highlight/prefix_highlight.tmux"
 
-# 冻结本地 tmux 热键
+# 冻结本地 tmux 热键，使用于 ssh 连接到远程使用 tmux 的场合，按 F12 切换
 run-shell ~/.tmux/tmux-suspend/suspend.tmux
 
 # 保存会话
