@@ -330,7 +330,7 @@
     // 根据你的 python、conda、virtunalenv 的不同，在哪个环境下安装了 pyqt5-tools，就在哪个环境下安装 PYQT Integration。
     // 先激活你的环境，然后用命令 `where/which designer.exe` 找一下，记下路径，填写到下面
     // 如果不想在每个环境都安装一次，可以考虑在 base 环境安装 `pip install qt5-tools`，独立于 PyQt 环境使用。https://github.com/altendky/pyqt-tools/issues/103#issuecomment-1483843262
-    // Wayland 下命令行使用需要环境变量 env QT_QPA_PLATFORM=xcb qt5-tools designer https://github.com/NixOS/nixpkgs/issues/128485
+    // Wayland 下命令行使用需要环境变量 env QT_QPA_PLATFORM=xcb qt6-tools designer https://github.com/NixOS/nixpkgs/issues/128485
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\Qt\\bin\\designer.exe",
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Library\\bin\\designer.exe",
     // "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\envs\\p37\\Scripts\\designer.exe",
@@ -343,7 +343,7 @@
     // "pyqt-integration.pyuic.cmd":"C:\\ProgramData\\Anaconda3\\envs\\p37\\Library\\bin\\pyuic5.bat",
     //"pyqt-integration.pyuic.cmd":"C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\pyuic5.bat",
     // "pyqt-integration.pyuic.cmd":"c:\\tools\\pyenvs\\your_virtualenv\\Scripts\\pyuic5.exe",
-    //"pyqt-integration.pyuic.cmd":"/home/yourusername/anaconda3/envs/p310/lib/python3.10/site-packages/qt6_applications/Qt/bin/pyuic5",
+    //"pyqt-integration.pyuic.cmd":"/home/yourusername/anaconda3/envs/p310/bin/pyuic6",
     "pyqt-integration.pyuic.cmd":"/home/yourusername/anaconda3/bin/pyuic5",
     //
     // "pyqt-integration.pyrcc.cmd":"C:\\ProgramData\\Anaconda3\\Library\\bin\\pyrcc5.bat",
