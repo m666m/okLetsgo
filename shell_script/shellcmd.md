@@ -1179,7 +1179,11 @@ sudo 命令也可以用于切换到 root 用户：
     [root@your_host:~] # pwd;exit
     /root
 
-## 查看操作系统信息
+## 查看系统信息
+
+可安装软件包 neofetch、inxi 显示系统信息
+
+    $ inxi -Fzxx
 
 在启动后查看内核启动时 U-boot 传入参数
 
@@ -1192,21 +1196,21 @@ sudo 命令也可以用于切换到 root 用户：
 hostnamectl 查看主机名及操作系统信息 (依赖安装了 systemd)
 
    $ hostnamectl
-     Static hostname: myfedora
-           Icon name: computer-desktop
-             Chassis: desktop 🖥️
-          Machine ID: xxxxxxxxx
-             Boot ID: xxxxxxxxx
-    Operating System: Fedora Linux 38 (Workstation Edition)
-         CPE OS Name: cpe:/o:fedoraproject:fedora:38
-      OS Support End: Tue 2024-05-14
-OS Support Remaining: 8month 3w 2d
-              Kernel: Linux 6.4.10-200.fc38.x86_64
-        Architecture: x86-64
-     Hardware Vendor: Gigabyte Technology Co., Ltd.
-      Hardware Model: Z170X-UD3
-    Firmware Version: F22
-       Firmware Date: Mon 2017-03-06
+        Static hostname: myfedora
+            Icon name: computer-desktop
+                Chassis: desktop 🖥️
+            Machine ID: xxxxxxxxx
+                Boot ID: xxxxxxxxx
+        Operating System: Fedora Linux 38 (Workstation Edition)
+            CPE OS Name: cpe:/o:fedoraproject:fedora:38
+        OS Support End: Tue 2024-05-14
+    OS Support Remaining: 8month 3w 2d
+                Kernel: Linux 6.4.10-200.fc38.x86_64
+            Architecture: x86-64
+        Hardware Vendor: Gigabyte Technology Co., Ltd.
+        Hardware Model: Z170X-UD3
+        Firmware Version: F22
+        Firmware Date: Mon 2017-03-06
 
     $ hostnamectl
     Static hostname: mydebianvm
@@ -1237,21 +1241,23 @@ OS Support Remaining: 8month 3w 2d
             Kernel: Linux 6.1.41-v8+
       Architecture: arm64
 
-或安装 neofetch、inxi 获取系统信息的软件包
-
-    $ inxi -Fzxx
-
-内核信息
+查看内核信息
 
     $ cat /proc/version
     Linux version 5.6.11-1.el7.elrepo.x86_64 (mockbuild@Build64R7) (gcc version 4.8.5 20150623 (Red Hat 4.8.5-39) (GCC)) #1 SMP Mon May 4 19:40:21 EDT 2020
 
-仅基本的cpu和内核信息
+查看基本的cpu和内核信息
 
     $ uname -a
     Linux yourhostname 5.6.11-1.el7.elrepo.x86_64 #1 SMP Mon May 4 19:40:21 EDT 2020 x86_64 x86_64 x86_64 GNU/Linux
 
-发行版信息：仅 debian 系
+查看发行版信息：
+
+通用
+
+    $ cat /etc/os-release
+
+debian 系
 
     $ cat /etc/issue
     Debian GNU/Linux 10 \n \l
@@ -1263,7 +1269,7 @@ OS Support Remaining: 8month 3w 2d
     Release:        10
     Codename:       buster
 
-发行版信息：仅 RedHat 系
+RedHat 系
 
     $ cat /etc/redhat-release
     CentOS Linux release 7.8.2003 (Core)
