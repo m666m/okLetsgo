@@ -1237,7 +1237,9 @@ OS Support Remaining: 8month 3w 2d
             Kernel: Linux 6.1.41-v8+
       Architecture: arm64
 
-或安装 neofetch 软件包。
+或安装 neofetch、inxi 获取系统信息的软件包
+
+    $ inxi -Fzxx
 
 内核信息
 
@@ -1434,6 +1436,8 @@ Linux 内核提供了一种通过 /proc 文件系统，在运行时访问内核�
     安装 htop 图形化查看cpu占用,可以横向或者纵向滚动浏览进程列表，以便看到所有的进程和完整的命令行
 
     安装 btop 更全面 https://github.com/aristocratos/btop
+
+    glances https://github.com/nicolargo/glances
 
     uptime 开机以来的平均负载统计
 
@@ -2090,7 +2094,7 @@ Perf 是 Linux kernel 自带的系统性能优化工具。
 
 ### 使用 nmon 工具包
 
-跨平台的查看系统时实性能状态信息
+跨平台的查看系统时实性能状态信息，比 btop 命令多了当前磁盘繁忙程度的指标
 
     https://nmon.sourceforge.net/pmwiki.php
 

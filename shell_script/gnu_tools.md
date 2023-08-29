@@ -10736,7 +10736,7 @@ Linux 桌面的终端工具参见章节 [其他终端模拟器]。
 
     GNOME Web
 
-        GNOME 桌面自带的一个基于 WebKit 的浏览器，功能比 Firefox 少，但对于普通用途来说已经足够了，而且支持安装火狐和谷歌浏览器的扩展。
+        GNOME 桌面自带的一个基于 WebKit 的浏览器代号 Epiphany，功能比 Firefox 少，但对于普通用途来说已经足够了，而且支持安装火狐和谷歌浏览器的扩展。
 
     FireFox
 
@@ -11754,7 +11754,9 @@ X window 是一个技术体系
 
 GTK+ and Qt
 
-    这两个是 GUI toolkits，这两个是软件库，类似 c 语言的 stdio.h，win32，java 里 import 的各种外部包，可以任开发者调用（应该是 C/C++ 使用的库）去创建一些图形界面里面的控件，例如 button，下拉菜单，窗口等。我记得 JAVA 里面也有类似 AWT 和 Swing 库。用这一套库开发出的图形空间将会有一套统一的风格和标准，这就是不同系统安装的不同软件有的时候会有相同的样式，因为他们可能使用了 GTK 或者 QT 的库。KDE 默认使用 Qt 库开发，Gnome 默认使用 GTK+ 库开发，而这两套库又是基于 X window server 的，需要遵守 x11 协议，在 xwindow server 上运行，作为 client 应用实现的基础类库。
+    这两个是 GUI toolkits 软件库，类似 c 语言的 stdio.h，win32，java 里 import 的各种外部包，可以任开发者调用（应该是 C/C++ 使用的库）去创建一些图形界面里面的控件，例如 button，下拉菜单，窗口等。我记得 JAVA 里面也有类似 AWT 和 Swing 库。用这一套库开发出的图形空间将会有一套统一的风格和标准，这就是不同系统安装的不同软件有的时候会有相同的样式，因为他们可能使用了 GTK 或者 QT 的库。
+
+    KDE 默认使用 Qt 库开发，Gnome 默认使用 GTK+ 库开发，而这两套库又是基于 X window server 的，需要遵守 x11 协议，在 xwindow server 上运行，作为 client 应用实现的基础类库。
 
 #### Wayland
 
@@ -11848,6 +11850,8 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 常见的窗口管理相关的工具如下：(来自alim0x - Awesome-Linux-Software-zh_CN)
 
 合成器：
+
+    Mutter  -   GNOME的窗口管理器和合成器
 
     Compton - Compton 是一款独立的合成管理器，适合同没有原生提供合成功能的窗口管理器一同使用。
 
