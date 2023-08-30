@@ -100,19 +100,9 @@ if [ -x /usr/bin/dircolors ]; then
     # vi 后悔药
     alias viw='echo "[只给出提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
 
-    # systemd
-    alias stded='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
-
     # wsl 或 git bash 下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "C:\Windows\Path"
     function cdw {
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
-    }
-
-    # 切换桌面图形模式和命令行模式 --- systemctl 模式
-    function swc {
-        [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] \
-            && (echo -e "\033[0;33mWARN\033[0m: Start Desktop, wait until login shows..."; sudo systemctl isolate graphical.target) \
-            || (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
     }
 
     # git 常用命令
@@ -179,6 +169,16 @@ if [ -x /usr/bin/dircolors ]; then
 
     # distrobox 这词打不快
     alias dbox='distrobox'
+
+    # systemd
+    alias stded='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
+
+    # 切换桌面图形模式和命令行模式 --- systemctl 模式
+    function swc {
+        [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] \
+            && (echo -e "\033[0;33mWARN\033[0m: Start Desktop, wait until login shows..."; sudo systemctl isolate graphical.target) \
+            || (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
+    }
 
     # 命令行看天气 https://wttr.in/:help
     # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
