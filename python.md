@@ -1552,8 +1552,8 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
 
 Linux 下改为
 
-        USER_SITE = "/home/xxxx/anaconda3/envs/p310/lib/python3.10/site-packages"
-        USER_BASE = "/home/xxxx/anaconda3/envs/p310"
+    USER_SITE = "/home/xxxx/anaconda3/envs/p310/lib/python3.10/site-packages"
+    USER_BASE = "/home/xxxx/anaconda3/envs/p310"
 
 如果你使用的命令行工具是 bash，也不需要改为 /d/pycode/your_project/py37 的形式，因为 site.py 是 python 执行，python 根据当前操作系统自动识别路径格式。
 
