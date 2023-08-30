@@ -40,7 +40,6 @@
     "window.menuBarVisibility": "toggle",  // 按 alt 键显示系统菜单
     "window.activeBorder": "#ff7b00c5",
     "window.newWindowDimensions": "offset", // "offset" maximized
-    "window.autoDetectColorScheme": false,  // 深色背景下切换项目时会闪一下白，很烦人，关了
     "workbench.editor.wrapTabs": true,
     "jupyter.exportWithOutputEnabled": true,
     "jupyter.sendSelectionToInteractiveWindow": true,
@@ -132,9 +131,10 @@
         }
     },
     // 终端也可自定义颜色 https://glitchbone.github.io/vscode-base16-term/#/oceanicnext
-    // 默认的明暗主题
-    //  "workbench.preferredDarkColorTheme": "MacOS Modern Dark - Big Sur Xcode Default",
-    //  "workbench.preferredLightColorTheme": "MacOS Modern Light - Big Sur Xcode Default",
+    // 默认的明暗主题，在 Gnome 下暂不能跟随系统
+    "window.autoDetectColorScheme": false,  // 深色背景下切换项目时会闪一下白，很烦人，关了
+    // "workbench.preferredDarkColorTheme": "Nord",
+    // "workbench.preferredLightColorTheme": "MacOS Modern Light - Xcode Default",
     // 主题颜色
     //  https://code.visualstudio.com/api/references/theme-color
     //  http://www.apeth.com/nonblog/stories/textmatebundle.html
