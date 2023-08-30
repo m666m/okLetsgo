@@ -11190,9 +11190,9 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
   <family>monospace</family>
   <prefer>
    <family>Liberation Mono</family>
-   <!-- 我的 Fedora 下中文mono的字符间距太大，还是用普通的Sans即可-->
-   <family>Noto Sans CJK SC</family>
-   <family>Noto Sans CJK TC</family>
+   <!-- 我的 Fedora 下中文mono的字符间距太大，还是用去掉 Mono 字样的普通的Sans即可-->
+   <family>Noto Sans Mono CJK SC</family>
+   <family>Noto Sans Mono CJK TC</family>
    <!--
    <family>Source Han Sans CN Normal</family>
    <family>Source Han Sans TWHK Normal</family>
