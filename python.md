@@ -554,13 +554,6 @@ anaconda：
     1. 网站下载，验证hash https://docs.anaconda.com/free/anaconda/reference/hashes/all/
     2. bash xxxx.sh
     3. 注意选择：添加到路径中!!! 这个跟 Windows 下安装是不同的.
-    4. 安装完毕，重启Linux
-    5. python 看输出信息包含 anaconda 字样
-    conda info
-    conda list
-    6. 启动器终端运行：anaconda-navigator
-    -搜索计算机： visual studio code 或 conda
-    或 终端运行：spyder
 
 miniconda：
 
@@ -581,12 +574,23 @@ miniconda：
     $ ~/miniconda3/bin/conda init bash
     $ ~/miniconda3/bin/conda init zsh
 
+安装后
+
     # 重启命令行终端
     $ exit
 
     更新 conda 和 pip
     $ conda update conda
     $ pip install --upgrade pip
+
+    查看 conda 信息：
+    $ conda info
+    $ conda list
+    $ conda env list
+
+    启动器终端运行：anaconda-navigator
+    -搜索计算机： visual studio code 或 conda
+    或 终端运行：spyder
 
 ### Windows 安装 anaconda
 
