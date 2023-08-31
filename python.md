@@ -588,8 +588,12 @@ miniconda：
     $ conda list
     $ conda env list
 
-    启动器终端运行：anaconda-navigator
-    -搜索计算机： visual studio code 或 conda
+    在终端运行启动器：
+
+        $ conda activate
+        $ anaconda-navigator
+
+    搜索计算机： visual studio code 或 conda
     或 终端运行：spyder
 
 ### Windows 安装 anaconda
