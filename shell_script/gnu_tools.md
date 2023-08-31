@@ -11378,9 +11378,13 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，在 gnome 43 开始甚�
 
     Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能
 
+    Alphabetical App Grid   应用程序列表 居然 是不按字母顺序排列的，而且没有调整的地方，用这个强制字母顺序
+
     Date Menu Formater      如果在任务栏显示的时间没有星期，可以在 Gnome Tweaks 中开启即可，这个扩展可以调整日期时间的格式。
 
     Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在系统设置的天气里的已经设置过位置了
+
+    Lock Keys               有些键盘的数字键盘和大写键没有指示灯，用这个做提示
 
     Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口
 
