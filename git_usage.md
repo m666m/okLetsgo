@@ -3294,7 +3294,7 @@ NOTE: rebase 变基注意**不要**删提交点，只做压缩合并
 
     edit：保留该commit, 但我要停下来修改该提交(不仅仅修改注释)（缩写:e）
 
-    squash：将该commit和前一个commit合并（缩写:s），也就是说最新的提交无法被压缩合并
+    squash：将该commit和前一个commit合并（缩写:s），也就是说远的提交无法被压缩合并
 
     fixup：将该commit和前一个commit合并，但我不要保留该提交的注释信息（缩写:f）
 
