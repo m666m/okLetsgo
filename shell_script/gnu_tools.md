@@ -12594,7 +12594,7 @@ Setting -> Privacy -> Screen Lock:
 
 #### Gnome 内置的远程桌面功能
 
-内置的这个功能叫 “共享屏幕” 更贴切。类似 Windows 的 “远程协助”。
+Gnome 内置的这个远程桌面功能叫 “共享屏幕” 更贴切，类似 Windows 的 “远程协助”
 
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-a-single-user_getting-started-with-the-gnome-desktop-environment
 
@@ -12608,15 +12608,15 @@ Setting -> Privacy -> Screen Lock:
 
 功能受限：
 
-    Gnome 自带的远程桌面实质是 “共享屏幕”，只支持实时共享给一个用户：必须先本地登录主机桌面，然后远程才可以连接，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时干预中断远程会话。
+    Gnome 自带的远程桌面实质是 “共享屏幕”，只支持实时共享给一个用户：必须本地主机先登录到桌面，然后远程才可以连接到该主机的桌面，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时本地操作干预或中断远程会话。
+
+    而且本机要是节能策略给你锁屏或休眠了，远程是没招的。解决办法见章节 [新装系统的节能策略太挠人了]。
 
     可以在 gnome 网站下载安装插件 “allow locked remote desktop”，这样远程计算机就可以在服务端本地未解锁桌面的情况下使用远程桌面登录服务端计算机了。
 
-如果需要支持多个远程桌面用户同时登录，而且远程连接不需要本地主机先登录桌面，可以安装第三方 vnc 或 rdp 软件
+    如果需要支持多个远程桌面用户同时登录，而且远程连接不需要本地主机先登录桌面，可以安装第三方 vnc 或 rdp 软件
 
-    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
-
-推荐安装 RDP 协议的软件，详见章节 [xrdp]。
+        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
 
 Gnome 桌面同时支持 X11 和 Wayland 两种方式
 
@@ -12631,6 +12631,8 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
     https://discussion.fedoraproject.org/t/how-to-share-fedora-36-gnome-desktop-with-another-machine-running-linux/76182
 
     https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353?replies_to_post_number=12
+
+推荐安装 RDP 协议的第三方软件，详见章节 [xrdp]。
 
 > 服务端设置
 
@@ -13217,6 +13219,10 @@ noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及
 
 完全使用 wayland 体系而不是兼容 xwaylan 的远程桌面比较少，原理也不同，有基于 vnc 的，有基于原生 wayland 模块的。
 
+目前的大多数远程桌面软件使用 rdp 协议 和 vnc 协议，其实现都是基于 xwindow 的，所以 wayland 环境有 xvnc 或 xwayland 组件进行兼容化的支撑，可以正常使用。
+
+纯基于 waylande 实现的远程桌面软件较少，见下。
+
 ##### 基于 VNC 的 WayVNC
 
 在服务器上安装后，客户端可以使用 vnc 的方式远程连接 Wayland 桌面
@@ -13448,9 +13454,9 @@ Qt 客户端可以在任何 Wayland 合成器上运行，包括 Weston --- Wayla
 
     https://www.kclouder.cn/posts/53908.html
 
-GDM (Gnome)在RHEL8中使用 Wayland 作为默认显示服务器，取代了在 RHEL7 中使用的 xorg 服务器。
+GDM (Gnome)在 RHEL8 中使用 Wayland 作为默认显示服务器，取代了在 RHEL7 中使用的 xorg 服务器。
 
-在 RHEL8 中，VNC 协议的地位似乎有所下降，因为 Wayland 并不支持屏幕共享和屏幕录制功能。但是，这个功能在 xorg 中仍然可用。因此，要使用VNC Server我们必须将 GDM 切换到 xorg，使 xorg 成为 RHEL8 默认的显示服务器。
+在 RHEL8 中，VNC 协议的地位似乎有所下降，因为 Wayland 并不支持屏幕共享和屏幕录制功能。但是，这个功能在 xorg 中仍然可用。因此，要使用 VNC Server 我们必须将 GDM 切换到 xorg，使 xorg 成为 RHEL8 默认的显示服务器。
 
 修改 GDM 配置文件 /etc/gdm/custom.conf
 
@@ -13488,11 +13494,11 @@ RestartSec=15
 WantedBy=multi-user.target
 ```
 
-启动VNC Server。注意要切换到要使用VNC的账号，首次启动会提示输入用户名和密码。
+启动 VNC Server。注意要切换到要使用 VNC 的账号，首次启动会提示输入用户名和密码。
 
     vncserver
 
-禁用SELINUX
+禁用 SELINUX
 
     setenforce 0
     sed -i ‘s/enforcing/disabled/g’ /etc/selinux/config2、禁用SELINUX
@@ -13510,11 +13516,11 @@ WantedBy=multi-user.target
 
 连接服务器
 
-这里我们使用VNC Viewer来连接RHEL8系统，输入VNC Server的IP地址，这里我使用的是9号端口，所以端口号可以使用5909或9，格式如下：
+这里我们使用 VNC Viewer 来连接 RHEL8 系统，输入 VNC Server 的 IP 地址，这里我使用的是 9 号端口，所以端口号可以使用 5909 或 9，格式如下：
 
     ip address:5909 或 ip address:9
 
-确认通过VNC Viewer可以正常登录到RHEL8系统桌面。
+确认通过 VNC Viewer 可以正常登录到 RHEL8 系统桌面。
 
 ### Linux 桌面死机怎么办 --- reisub“登录控制台”
 
