@@ -1934,9 +1934,9 @@ Linux 下安装
 
         添加颜色主题 https://code.visualstudio.com/docs/extensions/themes-snippets-colorizers#_adding-a-new-color-theme
 
-看代码和看文字有些区别，一切以字体清晰可辨，段落分隔明显，长时间看眼睛不费力为原则。
+看代码和看文字有些区别，对比度以字体清晰可辨，段落分隔明显，亮度以清晰长时间看眼睛不费力为原则。
 
-除了白天和黑夜，不同的光照条件下，没法只用一个主题，根据环境光亮度酌情切换即可，下为建议：
+整体的亮度很重要：除了白天和黑夜，不同的光照条件下，不要只用一个主题，根据环境光亮度酌情切换，下为建议：
 
 浅色
 
@@ -1944,7 +1944,7 @@ Linux 下安装
 |-----------------------------------------------|---------------------------|
 |   MacOS Modern Light：Xcode Default           |         <----             |
 |                                               | Solarized Light           |
-|   Barret PaperColor                           | Winter is coming：Light    |
+|                                               | Winter is coming：Light    |
 
 深色
 
@@ -1970,10 +1970,6 @@ MacOS Modern Theme 看代码深色浅色都好，多选单选查找相关内容�
     marlosirapuan.nord-deep     深点的北极，适合低光
 
     dnlytras.nord-wave          最深的北极，适合无光
-
-Barret PaperColor Theme 适合浅色看代码
-
-    barretren.papercolor-vscode
 
 Material Neutral 深色看文字比较养眼
 
@@ -2009,7 +2005,7 @@ Solarized Light（vscode 自带），这个是羊皮纸底色，但是语法高�
 
 #### 不要用AI代码完成的插件
 
-全都把你的代码上传服务器了，包括 kate、[Visual Studio IntelliCode](https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.vscodeintellicode) 等。
+全都把你的代码上传服务器了，包括 kate、IntelliCode、github copilot 等。
 
 原
 
