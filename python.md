@@ -1880,9 +1880,15 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
     %APPDATA%\Code\User\History
 
-配置文件
+配置文件是给调试模式用的
 
     %APPDATA%\Code\User\settings.json
+
+        https://code.visualstudio.com/docs/editor/debugging#_launch-configurations
+
+    调试模式可以在库中加断点 在.vscode\launch.json 中添加"justMyCode": false
+
+    添加环境变量："env": { "QT_QPA_PLATFORM": "xcb" }
 
 插件安装位置
 
