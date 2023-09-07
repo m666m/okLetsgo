@@ -2480,7 +2480,6 @@ black 的简单用法
 > python 包 flake8
 
 ```json
-// 适应 black 规则 https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#flake8
 "python.linting.enabled": true,
 "python.linting.pylintEnabled": false,
 "python.linting.flake8Enabled": true,
