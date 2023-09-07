@@ -68,7 +68,12 @@
         },
         {
             "name": "pyqtgraph",
-            "depth": 4,
+            "depth": 8,
+            "includeAllSymbols": true
+        },
+        {
+            "name": "PyQt6",
+            "depth": 6,
             "includeAllSymbols": true
         }
     ],
@@ -91,6 +96,7 @@
         "--skip-string-normalization"  // 双引号字符串太乱了
     ],
     // python 的 lint 工具用 flake8，参数调整为配合 black
+    // 适应 black 规则 https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#flake8
     "flake8.args": [
         // compatible with black
         "max-line-length = 88",

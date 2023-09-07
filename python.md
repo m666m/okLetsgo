@@ -2413,23 +2413,41 @@ pylance 目前是 python 插件默认安装了
 
     ms-python.isort
 
-#### 格式化 yapf
+#### 格式化 yapf、black
 
-    微软整合了代码格式化及代码规范检查 lint 工具，python 包 yapf 被弃用，用户在扩展里选择微软官方的 black 或 autopep8，建议 black
+微软整合了代码格式化及代码规范检查 lint 工具，不再使用 python 包 yapf，用户在扩展里选择微软官方的 black 或 autopep8，建议 black。
+
+    // python 的格式化工具用 black
+    "black-formatter.args": [
+        // https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html
+        "--skip-string-normalization"  // 双引号字符串太乱了
+    ],
 
 black 的简单用法
 
     https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html
 
-    禁用一行：某行后面的注释  # fmt: skip
+禁用一行：
 
-    禁用代码块： # fmt: off 开头，结尾用 # fmt: on，也兼容 yapf 的禁用用法。
+    某行后面的注释  # fmt: skip
+
+禁用代码块：
+
+    # fmt: off
+    你的代码块
+    # fmt: on
+
+    也兼容 yapf 的禁用用法。
+
+
+> python 包 yapf
 
 ```json
-// python 的 lint 工具 black
-"black-formatter.args": [
-    "--skip-string-normalization"  // 双引号字符串太乱了
-],
+    "python.formatting.provider": "yapf",
+    "python.formatting.yapfArgs": [
+        // "--sytle=yapf_style.cfg"
+    //"python.formatting.autopep8Args": ["--ignore","E402"],
+    ],
 ```
 
 用 conda 在指定环境中安装 yapf，这个直接带二进制包：
@@ -2446,17 +2464,31 @@ black 的简单用法
 
     某行后面的注释  # yapf:disable
 
-```json
-    "python.formatting.provider": "yapf",
-    "python.formatting.yapfArgs": [
-        // "--sytle=yapf_style.cfg"
-    //"python.formatting.autopep8Args": ["--ignore","E402"],
-    ],
-```
-
 #### 代码规范检查 flake8
 
-    微软整合了代码格式化及代码规范检查 lint 工具，python 包 flake8 被弃用，用户在扩展里选择微软官方的 ms-python.flake8 即可。
+微软整合了代码格式化及代码规范检查 lint 工具，不再使用 python 包 flake8 ，用户在扩展里选择微软官方的 ms-python.flake8 即可。
+
+    // python 的 lint 工具用 flake8，参数调整为配合 black
+    // 适应 black 规则 https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#flake8
+    "flake8.args": [
+        // compatible with black
+        "max-line-length = 88",
+        "--ignore",
+        "E203"
+    ],
+
+> python 包 flake8
+
+```json
+// 适应 black 规则 https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#flake8
+"python.linting.enabled": true,
+"python.linting.pylintEnabled": false,
+"python.linting.flake8Enabled": true,
+"python.linting.flake8Args": [
+    "--max-line-length=100",
+    // "--ignore=E501, E262",
+],
+```
 
 flake8 的规则非常规矩，好用
 
@@ -2468,18 +2500,6 @@ flake8 的规则非常规矩，好用
 整个文件禁用的话，在文件第一行
 
     # flake8: noqa
-
-```json
-
-"python.linting.enabled": true,
-"python.linting.pylintEnabled": false,
-"python.linting.flake8Enabled": true,
-"python.linting.flake8Args": [
-    "--max-line-length=100",
-    // "--ignore=E501, E262",
-],
-
-```
 
 最近出来个竞品 Ruff，可以替换 flake 8
 
