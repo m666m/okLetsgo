@@ -66,7 +66,7 @@
             "name": "matplotlib",
             "depth": 3
         },
-        {
+        {   // ~/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6/bindings
             "name": "pyqtgraph",
             "depth": 8,
             "includeAllSymbols": true
