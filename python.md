@@ -2415,13 +2415,15 @@ pylance 目前是 python 插件默认安装了
 
 #### 格式化 yapf、black
 
-微软整合了代码格式化及代码规范检查 lint 工具，不再使用 python 包 yapf，用户在扩展里选择微软官方的 black 或 autopep8，建议 black。
+ vscode 整合了代码格式化及代码规范检查 lint 工具，不再使用 python 包 yapf，用户在扩展里选择微软官方的 black 或 autopep8，建议 black。
 
+```json
     // python 的格式化工具用 black
     "black-formatter.args": [
         // https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html
         "--skip-string-normalization"  // 双引号字符串太乱了
     ],
+```
 
 black 的简单用法
 
@@ -2465,8 +2467,9 @@ black 的简单用法
 
 #### 代码规范检查 flake8
 
-微软整合了代码格式化及代码规范检查 lint 工具，不再使用 python 包 flake8 ，用户在扩展里选择微软官方的 ms-python.flake8 即可。
+ vscode 整合了代码格式化及代码规范检查 lint 工具，不再使用 python 包 flake8 ，用户在扩展里选择微软官方的 ms-python.flake8 即可。
 
+```json
     // python 的 lint 工具用 flake8，参数调整为配合 black
     // 适应 black 规则 https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#flake8
     "flake8.args": [
@@ -2475,6 +2478,7 @@ black 的简单用法
         "--ignore",
         "E203"
     ],
+```
 
 > python 包 flake8
 

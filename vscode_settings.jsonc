@@ -1,5 +1,6 @@
 {
     "json.schemaDownload.enable":true, // https://bobbyhadz.com/blog/unable-to-load-schema-from-vscode-cannot-open
+    // https://github.com/microsoft/vscode/issues/177142
     // 调试模式可以在库中加断点 在.vscode\launch.json 中添加"justMyCode": false
     // F1: open defualt setting 打开各选项详尽说明
     "gitlens.telemetry.enabled": false,
@@ -10,8 +11,7 @@
     // 带补丁字体预览 https://www.nerdfonts.com/font-downloads
     // 带补丁字体下载 https://github.com/ryanoasis/nerd-fonts/releases
     // 编程字体预览大全 https://www.programmingfonts.org/#cascadia-code
-    // 注意顺序：优先正式字体，回落到带补丁的字体以显示图标，最后是保底的系统自带字体
-    // 优先图标字体，然后回落到中文字体，参见章节 [设置中文字体](gun_tools.md)
+    // 注意顺序：优先带补丁的字体以显示图标，回落到中文正式字体，最后是保底的系统自带字体，参见章节 [设置中文字体](gun_tools.md)
     "editor.fontFamily": "'FiraCode Nerd Font', 'Noto Serif CJK SC Light', Consolas",
     "terminal.integrated.fontFamily": "'MesloLGS Nerd Font', 'Noto Sans Mono CJK SC'",
     //"editor.fontLigatures": true,
