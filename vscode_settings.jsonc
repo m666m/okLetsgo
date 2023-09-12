@@ -1,4 +1,5 @@
 {
+    "json.schemaDownload.enable":true, // https://bobbyhadz.com/blog/unable-to-load-schema-from-vscode-cannot-open
     // 调试模式可以在库中加断点 在.vscode\launch.json 中添加"justMyCode": false
     // F1: open defualt setting 打开各选项详尽说明
     "gitlens.telemetry.enabled": false,
