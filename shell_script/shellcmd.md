@@ -957,6 +957,10 @@ readonly IPV6_RESERVED_IPADDRS=(
 )
 for private_addr in "${IPV6_RESERVED_IPADDRS[@]}" ; do $(ip6tables -t mangle -A VVTAB -d $private_addr -j RETURN); done
 
+for fn in $(ls *.pyi |grep -v __init__); do
+    echo "import $fn as $(basename $fn .pyi)"
+done
+
 #################################################
 
 # 判断当前操作系统环境
