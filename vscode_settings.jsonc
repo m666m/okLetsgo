@@ -62,16 +62,20 @@
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
     "python.analysis.exclude": ["dist/python","env_py37"], // 屏蔽项目内私有python环境目录误报 “overriding the stdlib module”
-    "python.languageServer": "Jedi",  // Pylance
+    "python.languageServer": "Pylance",  // Jedi
+    // "python.analysis.logLevel":"Trace",
     // "python.analysis.include": [
-    //     "$HOME/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6"
+    //     "$HOME/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6",
+    //     "~/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6/bindings"
     // ],
+    // https://github.com/microsoft/pylance-release/issues/4823
+    "python.analysis.stubPath":"/home/username/yourcodebase/typestub_env_p310/typings",
     "python.analysis.packageIndexDepths": [
         {
             "name": "matplotlib",
             "depth": 3
         },
-        {   // ~/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6/bindings
+        {
             "name": "pyqtgraph",
             "depth": 8,
             "includeAllSymbols": true
