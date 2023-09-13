@@ -2193,6 +2193,10 @@ markdownlint 语法检查、格式化
 
     DavidAnson.vscode-markdownlint
 
+屏蔽当前行，添加如下内容即可
+
+    <!-- markdownlint-disable-line -->
+
 选装：
 
 Markdown All in One 高亮，预览，给md文件加目录
