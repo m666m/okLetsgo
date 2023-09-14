@@ -1519,7 +1519,20 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
 
      conda activate ./py37
 
-查看当前环境的配置文件 site.py 的位置
+查看当前环境的 python 的路径设置
+
+    $ python -m site
+
+可以看到 sys.path 变量至少有你当前 python 环境下保存包的 site-packages 位置，复制该路径后面会用到。
+
+    Windows: C:\Users\xxxx\.conda\envs\p37\Lib\site-packages
+    Linux: /home/username/anaconda3/envs/p37/lib/python3.10/site-packages
+
+而默认的 USER_SITE 和 USER_BASE 变量指向了当前操作系统用户的 .local 目录，而不是你当前 python 环境下的 site-packages 目录。
+
+如果需要详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
+
+然后查看当前环境的配置文件 site.py 的位置：
 
     $ python -m site -help
     C:\Users\xxxx\.conda\envs\p37\Lib\site.py
@@ -1527,19 +1540,17 @@ Anaconda安装时选择了“给所有用户安装”时，虚拟环境的保存
     # 如果 Anaconda 安装时选择了“给所有用户安装”，有时候是下面这个
     C:\ProgramData\Anaconda3\envs\p37\Lib\site.py
 
-    # 请根据  python -m site -help 里的路径决定。
-    # 详细配置信息请切换到自己的环境下，运行 conda info，观察多个env路径的查找顺序。
+    # Linux
+    /home/username/anaconda3/envs/p37/lib/python3.10/site.py
 
-复制路径，后面需要用到
-
-编辑该 site.py 配置文件，修改下面两行
+编辑该 site.py 文件，修改下面两行
 
     USER_SITE = None
     USER_BASE = None
 
-改为前面复制的 site.py 所在路径下的子目录：
+改为你干脆复制的当前 python 环境下保存包的 site-packages 位置：
 
-    # 注意 USER_BASE 在Windows下的目录结构跟Linux不同
+    # 注意 USER_BASE 在 Windows 下的目录结构跟 Linux 不同，而且要用 \\ 转义 \
     # 参考
     #       https://docs.python.org/3/library/site.html#site.USER_BASE
     #           https://docs.python.org/3/install/index.html#inst-alt-install-user
@@ -1572,7 +1583,7 @@ Linux 下改为
     USER_BASE: '.....' (exists)
     USER_SITE: '.....' (exists)
 
-查看后缀是否为 exists，且路径指向了你的env所在目录下的子目录。
+查看后缀是否为 exists，且路径指向了你当前 python 环境下保存包的 site-packages 位置。
 
 ## anaconda怎么同时安装2.7和3.6？
 
