@@ -2428,6 +2428,72 @@ pylance 目前是 python 插件默认安装了
 
     ms-python.isort
 
+##### typestub for VSCode pylance: Let pyqtgraph use PyQt6's pyi file
+
+    https://github.com/microsoft/pylance-release/issues/4823
+        https://github.com/pyqtgraph/pyqtgraph/issues/2409
+
+1.Copy "QtCore.pyi/QtGui.pyi/QtWidgets.pyi" from
+
+    ~/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6
+
+to
+
+    <your workspace root>/typings/pyqtgraph/Qt
+
+or make a link for the .pyi files
+
+You can set a separated dir for your environment in VSCode :
+
+    "python.analysis.stubPath":"your custom dir"
+
+2.To make aliasing work:
+
+    import pyqtgraph as pg
+    pg.Qt.QtWidgets.QPushButton('hello')
+
+add the following:
+
+typings\pyqtgraph\__init__.pyi:
+
+    from . import Qt as Qt
+
+typings\pyqtgraph\Qt\__init__.pyi:
+
+    from . import QtWidgets as QtWidgets
+
+3.bash shell for all above
+
+```bash
+# Modify here with your project dir
+Common_Base="${HOME}/ghcode/typestub_env_p310/typings"
+
+function typestub_for_pg {
+    # Modify here with your conda envs
+    Conda_pkgs_pyqtgraph="${HOME}/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6"
+    Common_Base_pyqtgraph="${Common_Base}/pyqtgraph/Qt"
+
+    mkdir -p $Common_Base_pyqtgraph
+
+    cd $Common_Base_pyqtgraph
+
+    echo "from . import Qt as Qt" > ../__init__.pyi
+
+    for fname in $(ls ${Conda_pkgs_pyqtgraph}/*.pyi); do
+        ln -s $fname
+    done
+
+    > __init__.pyi
+    for fname in $(ls *.pyi |grep -v __init__); do
+        ff=$(basename -s .pyi ${fname})
+        echo "from . import $ff as $ff" >>__init__.pyi
+    done
+}
+
+typestub_for_pg
+echo -e "\nAdd below to your VSCode settings: \n     \"python.analysis.stubPath\":\"${Common_Base}\","
+```
+
 #### 格式化 yapf、black
 
  vscode 整合了代码格式化及代码规范检查 lint 工具，不再使用 python 包 yapf，用户在扩展里选择微软官方的 black 或 autopep8，建议 black。
