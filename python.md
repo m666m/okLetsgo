@@ -2428,10 +2428,14 @@ pylance 目前是 python 插件默认安装了
 
     ms-python.isort
 
-##### typestub for VSCode pylance: Let pyqtgraph use PyQt6's pyi file
+##### use typestub for VSCode pylance
+
+Let pyqtgraph use PyQt6's .pyi file
 
     https://github.com/microsoft/pylance-release/issues/4823
         https://github.com/pyqtgraph/pyqtgraph/issues/2409
+
+    其它的流行的库的 typestub https://github.com/microsoft/python-type-stubs/tree/main/stubs
 
 1.Copy "QtCore.pyi/QtGui.pyi/QtWidgets.pyi" from
 
@@ -2466,7 +2470,7 @@ typings\pyqtgraph\Qt\__init__.pyi:
 
 ```bash
 # Modify here with your project dir
-Common_Base="${HOME}/ghcode/typestub_env_p310/typings"
+Common_Base="${HOME}/py_projects/typestub_env_p310/typings"
 
 function typestub_for_pg {
     # Modify here with your conda envs
