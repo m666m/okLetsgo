@@ -2469,6 +2469,7 @@ typings\pyqtgraph\Qt\__init__.pyi:
 3.bash shell for all above
 
 ```bash
+# https://github.com/microsoft/pylance-release/issues/4823
 # Modify here with your project dir
 Common_Base="${HOME}/py_projects/typestub_env_p310/typings"
 
