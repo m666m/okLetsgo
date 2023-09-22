@@ -3331,6 +3331,9 @@ if [ -x /usr/bin/dircolors ]; then
     # distrobox 这词打不快
     alias dbox='distrobox'
 
+    # podman
+    alias podmans='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
+
     # systemd
     alias stded='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
 
@@ -5885,9 +5888,9 @@ run-shell ~/.tmux/tmux-suspend/suspend.tmux
 
 # 保存会话
 run-shell "~/.tmux/resurrect/resurrect.tmux"
-# 恢复会话时恢复的程序
+# 恢复会话中运行的程序
 set -g @resurrect-processes 'btop nmon watch "journalctl -f" "cmatrix -ba" "podman container stats"'
-# 恢复会话时恢复面板的内容
+# 恢复会话中面板的内容
 set -g @resurrect-capture-pane-contents 'on'
 
 ```
