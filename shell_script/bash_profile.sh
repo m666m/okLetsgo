@@ -170,6 +170,9 @@ if [ -x /usr/bin/dircolors ]; then
     # distrobox 这词打不快
     alias dbox='distrobox'
 
+    # selinux 审计信息：ausearch -i
+    alias aud='sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
+
     # systemd
     alias stded='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
 
