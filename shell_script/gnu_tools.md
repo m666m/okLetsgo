@@ -7840,6 +7840,8 @@ scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了�
 
 ### 文件同步 rsync
 
+    http://rsync.samba.org
+
     rsync 完全手册 https://www.junmajinlong.com/linux/index/#Linux%E5%9F%BA%E6%9C%AC%E6%9C%8D%E5%8A%A1
 
     https://blog.csdn.net/wanli245/article/details/80317255
@@ -7928,13 +7930,13 @@ rsync 有 5 种不同的工作模式：
 
     rsync [OPTION] SRC DEST
 
-    rsync [OPTION] SRC [USER@]HOST:DEST
+    rsync [OPTION] SRC USER@HOST:DEST
 
-    rsync [OPTION] [USER@]HOST:SRC DEST
+    rsync [OPTION] USER@HOST:SRC DEST
 
-    rsync [OPTION] [USER@]HOST::SRC DEST
+    rsync [OPTION] USER@HOST::SRC DEST
 
-    rsync [OPTION] SRC [USER@]HOST::DEST
+    rsync [OPTION] SRC USER@HOST::DEST
 
 第一种用于仅在本地备份数据；
 
@@ -7967,6 +7969,7 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
 
     # 源目录 source 中的内容复制到了目标目录 destination 中，不建立source子目录的方式
 
+    # 理解为    source/*
     rsync -av  source/ destination
 
     # 源目录 source 被完整地复制到了目标目录 destination 下面，source成为子目录
@@ -8011,7 +8014,7 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
 
 #### 软硬链接文件的处理区别
 
-默认是保留软链接。
+默认是保留软链接
 
     https://zhuanlan.zhihu.com/p/365239653
 
@@ -8027,7 +8030,7 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
 
     如果是拷贝一个目录结构，内部的软链接指向目录内的文件实体，则应该保持软链接拷贝文件实体，如果内部的软链接指向外部目录的文件实体，应该拷贝文件实体，参数有区别。
 
-如果需要拷贝软链接对应的实体文件，用参数 -L 。
+如果需要拷贝软链接对应的实体文件，用参数 -L。
 
 示例：
 
@@ -8079,11 +8082,9 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 一、安装设置服务器端软件
 
-下载 rysnc 的主页地址为：<http://rsync.samba.org>
+下载 rysnc，在两台服务器中都要安装，主服务器上 rsync 以服务器模式运行 rsyn 守护进程，在同步上用 crond 定时任务以客户端方法运行 rsync，同步主服务器上需要同步的内容
 
-在两台服务器中都要安装，主服务器上 rsync 以服务器模式运行 rsyn 守护进程，在同步上用 crond 定时任务以客户端方法运行 rsync，同步主服务器上需要同步的内容
-
-    一般 Linux 发行版自带的就不必自行编译安装了
+一般 Linux 发行版自带的就不必自行编译安装了
 
     $ tar xvf rsync-2.6.3.tgz
 
@@ -8178,15 +8179,15 @@ rsync 默许服务端口为 873。
 
 上面这个指令行中：
 
--vzrtopg 里的 v 是代表 verbose(具体)，z 是代表 zip（压缩），r 是代表 recursive（递归），topg 都是保留文件原有特点如属主、时间的参数。
+    -vzrtopg 里的 v 是代表 verbose(具体)，z 是代表 zip（压缩），r 是代表 recursive（递归），topg 都是保留文件原有特点如属主、时间的参数。
 
---progress 是指显示出当前的进度，
+    --progress 是指显示出当前的进度，
 
---delete 是指假如服务器端删除了这一文件，那么客户端也相应把文件删除，保持一致。
+    --delete 是指假如服务器端删除了这一文件，那么客户端也相应把文件删除，保持一致。
 
-98syn@x.x.x.168::98html 是表明该指令是对服务器x .x.x.168 中的 98html 模块进行备份，其中 98syn 表明运用 98syn 用户来对该模块进行备份。
+    98syn@x.x.x.168::98html 是表明该指令是对服务器x .x.x.168 中的 98html 模块进行备份，其中 98syn 表明运用 98syn 用户来对该模块进行备份。
 
--- password-file=/etc/rsync98.scrt 来指定密码文件，这样就能够在脚本中调用而无需交互式地输入验证密码了，这里需要注意的是密码文件权限，要设得只能执行这个指令的用户可读，本例中是98syn 用户。
+    -- password-file=/etc/rsync98.scrt 来指定密码文件，这样就能够在脚本中调用而无需交互式地输入验证密码了，这里需要注意的是密码文件权限，要设得只能执行这个指令的用户可读，本例中是98syn 用户。
 
 备份的内容存放在备份机的/usr/local/apache/htdocs/pub/html/目录下。
 
@@ -8300,7 +8301,7 @@ Rclone 和 Restic 的相同点
 
     https://blog.csdn.net/qq_38265137/article/details/83146421
 
-NFS就是Network File System的缩写，它最大的功能就是可以通过网络，让不同的机器、不同的操作系统可以共享彼此的文件。
+NFS(Network File System)的功能就是通过网络，让不同的机器、不同的操作系统可以共享彼此的文件。
 
 NFS服务器可以让 PC 将网络中的 NFS 服务器共享的目录挂载到本地端的文件系统中，而在本地端的系统中来看，那个远程主机的目录就好像是自己的一个磁盘分区一样，在使用上相当便利。
 
