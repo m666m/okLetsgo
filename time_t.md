@@ -1355,6 +1355,8 @@ Timestamp对象常用的操作方法有：
 
 <https://pandas.pydata.org/pandas-docs/stable/reference/offset_frequency.html>
 
+<https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#dateoffset-objects>
+
     from pandas.tseries.offsets import DateOffset
     ts = pd.Timestamp('2017-01-01 09:10:11')
     ts + DateOffset(months=3, days=5)
