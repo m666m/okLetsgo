@@ -193,6 +193,10 @@ ${var}用于明确界定变量，与$var并没有区别，但是界定更清晰
     $ echo ${gaddr//https:\/\/github.com\//git@github.com:}
     git@github.com:jindaxiang/akshare.git
 
+    $ myurl='http://www.example.com/long/path/to/example/file.ext'
+    $ echo ${myurl##*/}
+    file.ext
+
 将整数运算表达式放在((和))之间，在 (( )) 中使用变量无需加$前缀
 
     ((b=a-15))  # 将 a-15 的运算结果赋值给变量 b
