@@ -1357,13 +1357,17 @@ Timestamp对象常用的操作方法有：
 
     from pandas.tseries.offsets import DateOffset
     ts = pd.Timestamp('2017-01-01 09:10:11')
-    ts + DateOffset(months=3)
-    Timestamp('2017-04-01 09:10:11')
+    ts + DateOffset(months=3, days=5)
+    Timestamp('2017-04-06 09:10:11')
+
+特别是 timedeltas 不支持月份的情况，只能用 DateOffset 加 x 个月。
 
 ### timedeltas，对标python标准库的 datetime.timedelta
 
 日期时间计算对应的对象和操作函数
 <https://pandas.pydata.org/pandas-docs/stable/user_guide/timedeltas.html>
+
+不支持月份，见 DateOffset
 
 #### pd.Timedelta()  → timedelta
 
