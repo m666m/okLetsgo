@@ -6364,6 +6364,20 @@ ripgrep 替代 grep，解决了不带文件名挂住的问题，rg 会默认查�
 
 ### 字符增删改 tr cut awk sed
 
+对常用的 . / 等分隔符的字符串进行截取
+
+    # 截取字符串的后面部分
+    $ dirname http://www.example.com/long/path/to/example/file.ext
+    http://www.example.com/long/path/to/example
+
+    # 截取字符串的后面部分
+    $ basename http://www.example.com/long/path/to/example/file.ext
+    file.ext
+
+    # 指定分隔符
+    $ basename -s '.gz' abc.txt.gz
+    abc.txt
+
 tr 功能1 -- 替换字符
 
     $ dircolors | tr ":" "\n"
@@ -6386,6 +6400,8 @@ cut 按分隔符打印指定的字段
     /usr/sbin/nologin
     /bin/sync
     /usr/sbin/nologin
+
+复杂点的正则表达式的字符串截取和替换，可以使用 bash 内置功能：echo ${url   }，详见 [bash 常见符号用法](shellcmd.md)。
 
 awk 指定分隔符，可以用简单的语句组合字段
 

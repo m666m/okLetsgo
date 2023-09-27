@@ -182,20 +182,19 @@ ${var}用于明确界定变量，与$var并没有区别，但是界定更清晰
 
 字符串截取
 
-    url="abcdefgh"
-    echo ${url: 2: 5}
+    $ url="abcdefgh"
+    $ echo ${url: 2: 5}
+    cdefg
 
-    显示 cdefg
+    $ myurl='http://www.example.com/long/path/to/example/file.ext'
+    $ echo ${myurl##*/}
+    file.ext
 
 字符串替换
 
     $ gaddr='https://github.com/jindaxiang/akshare.git'
     $ echo ${gaddr//https:\/\/github.com\//git@github.com:}
     git@github.com:jindaxiang/akshare.git
-
-    $ myurl='http://www.example.com/long/path/to/example/file.ext'
-    $ echo ${myurl##*/}
-    file.ext
 
 将整数运算表达式放在((和))之间，在 (( )) 中使用变量无需加$前缀
 
