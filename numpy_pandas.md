@@ -566,7 +566,7 @@ df_dti = df_from_db.set_index('stime').resample(
 
 在 groupby 之后，列名不是普通的 index 了，是个二级的带聚合时的算法
 
-agg_on_details()
+DataPf_stocks_agg_d.agg_on_details()
 
     stock_df = sdf.groupby(['portfolio_name', 'code', 'stimeday'],
                             as_index=False).agg({
@@ -585,7 +585,7 @@ agg_on_details()
     #                     for col in df.columns.to_numpy()]  # 列名的多级索引拼合成单索引
     stock_df.columns = stock_df.columns.get_level_values(0)
 
-## pandas 的拼接
+## pandas DataFrame 的拼接
 
 <https://www.cnblogs.com/keye/p/10791705.html> <https://blog.csdn.net/sc179/article/details/108169436>
 
@@ -885,7 +885,7 @@ concat方法是拼接函数，有行拼接和列拼接，默认是行拼接，�
 
     ValueError: Indexes have overlapping values: ['key']
 
-## DataFrame 大规模的数据拼接，用迭代器传递给concat()
+### 大规模的数据拼接，用迭代器传递给concat()
 
 拼接整理批量结果，普通的for循环速度太慢：
 
@@ -908,6 +908,20 @@ concat方法是拼接函数，有行拼接和列拼接，默认是行拼接，�
 
 ignore_index = True 并不意味忽略index然后连接，而是指连接后再重新赋值index(len(index))。
 如果两个df有重叠的索引还是可以自动合并的。
+
+### 利用索引比对新老数据，取新增的记录
+
+_Market_Base._get_result()
+
+    # 矢量化操作处理速度快
+    idx_from_db = pd.MultiIndex.from_arrays(
+        [df_from_db['code'], df_from_db['stime']])
+
+    idx_from_crawl = pd.MultiIndex.from_arrays(
+        [df_from_crawl['code'], df_from_crawl['stime']])
+
+    idx_to_db = ~idx_from_crawl.isin(idx_from_db)
+    df_to_db = df_from_crawl.loc[idx_to_db, ]
 
 ## pandas 优化
 
