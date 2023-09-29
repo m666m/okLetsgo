@@ -387,6 +387,31 @@ print('\n---apply3-每两行分组，操作第0列会导致第二行丢失--\n',
 
 GroupBy的结果，理解成拼块，后续操作是对每个块的批量处理
 
+#### 列名要处理二级索引
+
+在 groupby 之后，列名不是普通的 index 了，是个二级的带聚合时的算法。
+
+如果不处理，后续在使用各列数据涉及索引关联的操作时可能会报错不支持当前索引了，如 SinaFuture_Fetchor._wash()
+
+DataPf_stocks_agg_d.agg_on_details()
+
+    stock_df = sdf.groupby(['portfolio_name', 'code', 'stimeday'],
+                            as_index=False).agg({
+                                'volume_buy': ['sum'],
+                                'volume_sale': ['sum'],
+                                'cost_buy': ['sum'],
+                                'cost_sale': ['sum'],
+                                'amount_sale': ['sum']
+                            })  # stock_df['volume_buy']['sum']
+
+    # NOTE：groupby后的列名是二级索引 pd.MultiIndex，转换成单索引，有参数 as_index=False 就不需要这一步了
+    # https://stackoverflow.com/questions/14507794/pandas-how-to-flatten-a-hierarchical-index-in-columns/55757002
+    # https://stackoverflow.com/questions/32938060/reverting-from-multiindex-to-single-index-dataframe-in-pandas
+    # stock_df = stock_df.reset_index(level=[0,1])  # 把多级索引改成其中的一个字段做索引
+    # stock_df.columns = [' '.join(col).strip()
+    #                     for col in df.columns.to_numpy()]  # 列名的多级索引拼合成单索引
+    stock_df.columns = stock_df.columns.get_level_values(0)
+
 #### 接.apply()
 
 .apply(lambda block: block.iloc[0, 0] + block.iloc[1, 0])) 等效df[行号：行号]
@@ -491,7 +516,7 @@ df_dti = df_from_db.set_index('stime').resample(
     }).reset_index(drop=False)  # 原来的index变成数据列，保留
 ```
 
-### freq='W' 给出的是当周的周日而不是周一
+#### freq='W' 给出的是当周的周日而不是周一
 
 helper.df_agg_week()
 
@@ -509,29 +534,6 @@ helper.df_agg_week()
 只能手工把时间调整到当周的周一：
 
     ret_df.index = ret_df.index- DateOffset(days=6)
-
-### pd.MultiIndex 转换成单索引
-
-在 groupby 之后，列名不是普通的 index 了，是个二级的带聚合时的算法
-
-DataPf_stocks_agg_d.agg_on_details()
-
-    stock_df = sdf.groupby(['portfolio_name', 'code', 'stimeday'],
-                            as_index=False).agg({
-                                'volume_buy': ['sum'],
-                                'volume_sale': ['sum'],
-                                'cost_buy': ['sum'],
-                                'cost_sale': ['sum'],
-                                'amount_sale': ['sum']
-                            })  # stock_df['volume_buy']['sum']
-
-    # NOTE：groupby后的列名是二级索引 pd.MultiIndex，转换成单索引，有参数 as_index=False 就不需要这一步了
-    # https://stackoverflow.com/questions/14507794/pandas-how-to-flatten-a-hierarchical-index-in-columns/55757002
-    # https://stackoverflow.com/questions/32938060/reverting-from-multiindex-to-single-index-dataframe-in-pandas
-    # stock_df = stock_df.reset_index(level=[0,1])  # 把多级索引改成其中的一个字段做索引
-    # stock_df.columns = [' '.join(col).strip()
-    #                     for col in df.columns.to_numpy()]  # 列名的多级索引拼合成单索引
-    stock_df.columns = stock_df.columns.get_level_values(0)
 
 ## pandas DataFrame 的拼接
 
