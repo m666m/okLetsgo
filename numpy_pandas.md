@@ -491,6 +491,25 @@ df_dti = df_from_db.set_index('stime').resample(
     }).reset_index(drop=False)  # 原来的index变成数据列，保留
 ```
 
+### freq='W' 给出的是当周的周日而不是周一
+
+helper.df_agg_week()
+
+    # 加参数 freq='W-SUN'、origin='start' 都无效
+    #   pd.period_range('2023-10-04', '2023-11-13', freq='W-SUN')
+    #   pd.period_range('2023-10-04', '2023-11-13', freq='W-MON')
+    ret_df = ret_df.set_index('stime').groupby(pd.Grouper(freq='W')).agg({
+                            'open': ['first'],
+                            'high': ['max'],
+                            'low': ['min'],
+                            'close': ['last'],
+                            'volume': ['sum']
+                        })
+
+只能手工把时间调整到当周的周一：
+
+    ret_df.index = ret_df.index- DateOffset(days=6)
+
 ### pd.MultiIndex 转换成单索引
 
 在 groupby 之后，列名不是普通的 index 了，是个二级的带聚合时的算法
