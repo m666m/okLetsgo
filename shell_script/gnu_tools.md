@@ -2597,12 +2597,20 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
 > Fedora(SELinux) 下安装 Nerd Font --- Meslo LGS
 
-安装为系统字体，方法比较复杂
+在桌面环境双击字体文件，调用 gnome-font-viewer 图形化程序，选择安装后会自动保存在系统目录
 
-    因为发行版的存储库没有 nerd font，只能手动安装，方法来自
+    /usr/share/fonts
 
-        https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
-            https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#add-extra-fonts
+因为发行版的存储库没有 nerd font，只能手动安装，只是安装方法有点复杂：
+
+    https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
+        https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#add-extra-fonts
+
+手工安装下载的字体，推荐的保存目录是
+
+    /usr/local/share/fonts
+
+步骤如下：
 
     $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/Meslo.zip
     $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/FiraCode.zip
@@ -10994,9 +11002,7 @@ GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表�
 
 ### 设置中文字体
 
-安装下载的字体的方法参见章节 [Nerd font]。
-
-桌面环境下默认的中文字体不好看，需要调整
+桌面环境下系统内置的字体中文不好看，需要调整
 
     https://catcat.cc/post/2021-03-07/
         https://catcat.cc/post/2020-10-31/
@@ -11027,7 +11033,7 @@ Gnome 的图形界面设置程序 Gnome Tweaks Tool(gnome-tweaks) 有 “Font”
 
 而我们最需要的，是类似 MS Word 这样的，可以让用户明确指定一篇文章里的中、英文字体。利用 Windows、Linux 都默认支持的字体回落机制，选择多个中英文字体，使得显示英文使用一种字体，显示中文使用另一种字体，详见章节 [使中英文分别使用一种字体]。
 
-> 前置知识：界面上的字体到底是怎么显示的
+#### 前置知识：界面上的字体到底是怎么显示的
 
     https://zhuanlan.zhihu.com/p/32961737
 
@@ -11047,7 +11053,7 @@ Gnome 的图形界面设置程序 Gnome Tweaks Tool(gnome-tweaks) 有 “Font”
 
 对东亚字符 CJK 来说，这三种风格的字体又细分出支持简体中文 SC、繁体中文 TC、日文 JP、韩文 KR的分支。有些异体字（Variable Font）三种文字中都有，需要三国统一设计方案，即一个字体即可显示三国的文字。
 
-> 前置知识；字体文件的格式
+#### 前置知识；字体文件的格式
 
     https://www.ottoli.cn/study/fonts
 
@@ -11097,7 +11103,78 @@ OpenType 可变字体（OpenType variable fonts）技术
 
 可变字体属于 OpenType 字体规范上的演进，能够储存轮廓变化数据，在初始字形轮廓的基础上自动生成丰富的变化造型，它允许将同一字体的多个变体统合进单独的字体文件中。从而无需再将不同字宽、字重或不同样式的字体分割成不同的字体文件。高德纳（Donald Knuth）当年用 Metafont 创立的曲线自动调整技术发扬光大，无级字重成为现实
 
-#### 使中英文分别使用一种字体 fontconfig
+#### 安装官方仓库的中文字体包
+
+> 对版本比较老的不支持中文的 Linux
+
+    先安装中文字体
+
+        # uming 和 ukai字体，即 AR PL UMing CN 等
+        $ sudo dnf install cjkuni-ukai-fonts cjkuni-uming-fonts
+
+    然后使用该配置即可 https://github.com/zma/config_files/blob/master/others/local.conf
+
+    上述配置文件对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样就实现了显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
+
+> 目前流行的 Linux 发行版基本都支持 Google Noto 字体
+
+手工安装自行下载的字体的方法参见章节 [Nerd font]。
+
+添加中文输入法见章节 [使用拼音输入法]。
+
+图形化安装官方仓库的字体，在 Gnome Software 的首页分类里选择
+
+    Localization--> Simplified Chinese 有两个：
+
+        Core Localization support：中文字体，glibc 库都换成中文版，这样连命令行提示都会显示中文了
+
+        Localization support：给已安装软件添加中文语言包
+
+        注意这个是全界面的汉化，等同于你在系统设置的 Language 选择了 中国-中文
+
+    font：单独选择安装你需要的中文字体
+
+我们还可以在命令行手工安装 Google Noto 字体官方包，这个字体的显示效果比较好。
+
+Sans Serif 字体包：
+
+    $ dnf search google-noto-sans-cjk
+    google-noto-sans-cjk-fonts.noarch : Google Noto Sans CJK Fonts <---- 全部cjk字体 OTF 文件打包
+    google-noto-sans-cjk-hk-fonts.noarch : Traditional Chinese Multilingual Sans OTF font files for google-noto-cjk-fonts
+    google-noto-sans-cjk-jp-fonts.noarch : Japanese Multilingual Sans OTF font files for google-noto-cjk-fonts
+    google-noto-sans-cjk-kr-fonts.noarch : Korean Multilingual Sans OTF font files for google-noto-cjk-fonts
+    google-noto-sans-cjk-sc-fonts.noarch : Simplified Chinese Multilingual Sans OTF font files for google-noto-cjk-fonts  <---- 仅简体中文
+    google-noto-sans-cjk-tc-fonts.noarch : Traditional Chinese Multilingual Sans OTF font files for google-noto-cjk-fonts
+    google-noto-sans-cjk-ttc-fonts.noarch : Sans OTC font files for google-noto-cjk-fonts  <---- 仅简体中文的 OTC 格式打包
+    google-noto-sans-cjk-vf-fonts.noarch : Google Noto Sans CJK Variable Fonts <---- 异体字包，文件小，但是跟前面的 otf 包冲突，且其 otc 文件不一定所有软件都支持
+
+Serif 字体包：
+
+    $ dnf search google-noto-serif-cj
+    google-noto-serif-cjk-fonts.noarch : Google Noto Serif CJK Fonts  <---- 全部cjk字体 OTF 文件打包
+    google-noto-serif-cjk-jp-fonts.noarch : Japanese Multilingual Serif OTF font files for google-noto-cjk-fonts
+    google-noto-serif-cjk-kr-fonts.noarch : Korean Multilingual Serif OTF font files for google-noto-cjk-fonts
+    google-noto-serif-cjk-sc-fonts.noarch : Simplified Chinese Multilingual Serif OTF font files for google-noto-cjk-fonts  <---- 仅简体中文
+    google-noto-serif-cjk-tc-fonts.noarch : Traditional Chinese Multilingual Serif OTF font files for google-noto-cjk-fonts
+    google-noto-serif-cjk-ttc-fonts.noarch : Serif OTC font files for google-noto-cjk-fonts  <---- 仅简体中文的 OTC 格式打包
+    google-noto-serif-cjk-vf-fonts.noarch : Google Noto Serif CJK Variable Fonts <---- 异体字包，文件小，但是跟前面的 otf 包冲突，且其otc 文件不一定所有软件都支持
+
+我的 Fedora 38 发行版只安装了 Sans，没有 Serif，先手动安装下
+
+    在 Gnome Software 的首页分类里，就可以选择中文字体安装了，更加方便
+
+    # https://fedoraproject.org/wiki/Changes/Noto_CJK_Variable_Fonts#Detailed_Description
+    # 所有字体的完整版：google-noto-cjk-fonts
+    # Serif 合集：google-noto-serif-cjk-fonts 是 OTF 文件打包，google-noto-serif-cjk-ttc-fonts 是 OTC 格式打包
+    #   也可以只安装简体中文 google-noto-serif-sc-fonts
+    # $ sudo dnf install google-noto-serif-cjk-fonts
+    #
+    # Fedora 支持异体字（Variable Font），装这个最省事，文件还小
+    $ sudo dnf install google-noto-serif-cjk-vf-fonts
+
+    mono 不用单独安装，sans 自带了
+
+#### 设置中英文分别使用一种字体 fontconfig
 
 有个图形界面程序 Fonts Tweak Tool(fonts-tweak-tool) 可以直观的预览中文字体的效果，而且可以设置更多的 truetype 选项
 
@@ -11141,34 +11218,6 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
     针对三种风格的默认字体使用系统的英文字体，对中文回落到 Adobe/Google 的开源字体：思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）。其实思源中文字体也内置了西文，只设置该中文字体也可以，但其西文部分使用的是 Adobe Source 家族字体不大好看我们不去使用它（思源黑体集成 Source Sans Pro、思源宋体集成 Source Serif，详见 <https://sspai.com/post/38705>）。
 
 法一：简单起见，我们直接编辑 /etc/fonts/local.conf 文件
-
-对版本比较老的不支持中文的 Linux
-
-    先安装中文字体
-
-        # uming 和 ukai字体，即 AR PL UMing CN 等
-        $ sudo dnf install cjkuni-ukai-fonts cjkuni-uming-fonts
-
-    然后使用该配置即可 https://github.com/zma/config_files/blob/master/others/local.conf
-
-    上述配置文件对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样就实现了显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
-
-我的 Fedora 38 发行版只安装了 Sans，没有 Serif，先手动安装下
-
-    在 Gnome Software 的首页分类里，就可以选择中文字体安装了，更加方便
-
-    # https://fedoraproject.org/wiki/Changes/Noto_CJK_Variable_Fonts#Detailed_Description
-    # 所有字体的完整版：google-noto-cjk-fonts
-    # Serif 合集：google-noto-serif-cjk-fonts 是 OTF 文件打包，google-noto-serif-cjk-ttc-fonts 是 OTC 格式打包
-    #   也可以只安装简体中文 google-noto-serif-sc-fonts
-    # $ sudo dnf install google-noto-serif-cjk-fonts
-    #
-    # Fedora 支持异体字（Variable Font），装这个最省事，文件还小
-    $ sudo dnf install google-noto-serif-cjk-vf-fonts
-
-    mono 不用单独安装，sans 自带了
-
-然后编辑 /etc/fonts/local.conf 文件
 
 ```xml
 <?xml version='1.0'?>
