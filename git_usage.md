@@ -1667,37 +1667,38 @@ NOTE: 本地新建的分支没有对应到远程仓库，无法推送到远程�
 
 1、切换到其他分支再进行操作
 
-    git switch master
+    $ git switch master
 
 2、删除远程服务器仓库中的远程分支及本地的跟踪分支
 
-    git push origin --delete fea_xxx
+    $ git push origin --delete fea_xxx
     To ssh://11.22.33.44:2345/gitrepo/tea.git
     - [deleted]               fea_xxx
 
 该命令也会删除本地远程库对象 origin 中的跟踪分支 origin/fea_xxx。
 
-如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
+    如果省略本地分支名，则表示只删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支
 
-    git push origin :refs/fea_xxx
+        $ git push origin :refs/fea_xxx
 
-    甚至可以用本地分支 fea_-2 覆盖远程分支 fea_-1
+        甚至可以用本地分支 fea_-2 覆盖远程分支 fea_-1
 
-        git push -f origin fea_-2:refs/fea_-1
+            $ git push -f origin fea_-2:refs/fea_-1
 
 如果只删除本地的跟踪分支
 
-    git branch --delete --remotes <remote>/<branch>
+    $ git branch --delete --remotes <remote>/<branch>
 
-则还需要删除本地远程的跟踪分支
+    则还需要删除本地远程的跟踪分支
 
-    git remote prune origin
+        $ git remote prune origin
 
 执行 git status、git remote show origin 看提示操作即可。
 
 3、从本地库删除该分支
 
-    git branch -d fea_xxx
+    $ git branch -d fea_xxx
+    Deleted branch fea_xxx (was af83d).
 
 4、你删除远程后，其它人计算机的本地库也记录着这个远程分支
 
@@ -1710,16 +1711,13 @@ NOTE: 本地新建的分支没有对应到远程仓库，无法推送到远程�
     Remote branches:
         dev                            tracked
         master                         tracked
-        refs/remotes/origin/fea_xxx stale (use 'git remote prune' to remove)
+        refs/remotes/origin/fea_xxx stale (use 'git remote prune' to remove)  <--- 本地的远程分支在远程仓库上已经删除了
 
 可以看到提示：stale (use ‘git remote prune’ to remove)
 
 这代表远程服务器上已经删除当前这条分支 但是本地代码库和本地远程库并未同步这个状态。
 
-需要清理远程库对象 origin 中这些无效的跟踪分支
-
-    # 拉取新分支，同时删除远程已删除的分支
-    # git update origin --prune
+需要清理本地远程库对象 origin 中这些无效的跟踪分支
 
     $ git remote prune origin
     Pruning origin
@@ -1728,7 +1726,8 @@ NOTE: 本地新建的分支没有对应到远程仓库，无法推送到远程�
 
 如果本地也建立了 fea_xx 分支，可以删除掉
 
-    git branch -d fea_xxx
+    $ git branch -d fea_xxx
+    Deleted branch fea_xxx (was 25e8f5a).
 
 5、确认是否干净了
 
