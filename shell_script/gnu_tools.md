@@ -10730,7 +10730,9 @@ Linux 桌面的终端工具参见章节 [其他终端模拟器]。
 
     显示隐藏文件的快捷键是 ctrl + h
 
-    切换到地址栏输入 ctrl + l
+    切换到地址栏输入 ctrl + l，嫌麻烦直接改注册表
+        # https://askubuntu.com/questions/1248692/how-to-get-folder-windows-to-display-address-bars
+        $ gsettings set org.gnome.nautilus.preferences always-use-location-entry true
 
     如果使用 meld，可以添加右键菜单，参见章节 [给资源管理器添加 meld 右键菜单]。
 
