@@ -218,7 +218,25 @@ Windows 10（2018年之前的版本）之前的所有 Windows 版本自带的所
 
 直到 Msys2 项目，基于 putty 制作了 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。详见章节 [mintty 终端模拟器]。
 
-直至 2018年 Windows 10 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机。参见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]。
+直至 2018年 Windows 10 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机。参见章节 [Windows 10 本地化 Linux 编程接口]。
+
+终端模拟器类型很多，如果想统一在一个窗口程序下标签化管理各个连接，这样的程序称为终端多路复用器 terminal multiplexer。
+
+2018年 Windows 10 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机Windows接口的字符显示接口，参见章节 [Windows 10 本地化 Linux 编程接口]，下列三个常用工具程序估计用处不大了：
+
+    clink 辅助工具，在 cmd 下模仿 bash，按 tab 键自动完成，像 emacs 一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
+
+        https://github.com/chrisant996/clink
+            不再更新了 https://github.com/mridgers/clink
+
+    winpty 辅助工具，提供了 unix pty 接口与 cmd conhost 接口的互通，是 mintty 这种 MSYS2 环境下执行 Windows CMD/PowerShell 程序的中介，参见章节 [winpty 运行 cmd 字符终端程序]
+
+        https://github.com/rprichard/winpty
+
+    wslbridge 辅助工具，提供了 unix pty 接口与 WSL(Windows Subsystem for Linux) 的互通，很多支持终端多路复用的软件在 Windows 下都通过该组件使用 WSL 会话
+
+        wslbridge2 https://github.com/Biswa96/wslbridge2
+            wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
 
 ### putty 远程终端模拟器
 
@@ -459,7 +477,7 @@ mintty 可以在终端显示图片，下载他的源代码下 utils 目录下的
     # Windows 控制台程序都可以在 bash 下用 winpty 来调用
     alias ping='winpty ping'
 
-如果 Windows version >= 10.2019.1809，新增的 ConPty 接口兼容了老的控制台应用程序 ConHost 接口，支持 ConPty 接口的应用可以支持 unix pty，就不需要使用 winpty 做调度了，见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]。
+如果 Windows version >= 10.2019.1809，新增的 ConPty 接口兼容了老的控制台应用程序 ConHost 接口，支持 ConPty 接口的应用可以支持 unix pty，就不需要使用 winpty 做调度了，见章节 [Windows 10 本地化 Linux 编程接口]。
 
 #### mintty 美化
 
@@ -990,63 +1008,6 @@ WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用，至今�
     https://github.com/wez/wezterm
         https://wezfurlong.org/
 
-#### Linux 桌面下的终端模拟器
-
-一般用系统内置的就够了
-
-    KDE 桌面自带 Konsole
-
-    Xfce 桌面自带 xfce
-
-    gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal
-
-    i3 窗口管理器自带 urxvt(rxvt-unicode)
-
-    sway 窗口管理器自带 foot
-
-    Gnome 桌面自带 Xterm，现名 Gnome Terminal
-
-        主题颜色使用 Nord theme
-
-            cd ~/your_github_dir/
-
-            git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
-
-            cd gnome-terminal-nordtheme/src; ./nord.sh
-
-            执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
-
-        怪1：鼠标选择的自动复制只是内部剪贴板可用，右键菜单的复制才到系统剪贴板
-
-        怪2：新建标签会继承当前标签的环境。比如当前标签进入了 toolbox 容器，这时点击新建的标签打开就是进入 toolbox 容器的环境。切换到默认没进入容器的标签，点击新建标签进入的环境就跟当前标签的环境一致。
-
-        怪3：默认不执行 .bash_profile，需要手工改配置文件：Profile-->command：勾选 Run command as a login shell 会自动执行你的 ~/.bash_profile
-
-        怪4：不再支持设置背景图片，但仍可设置窗口透明度
-
-    guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个了， gnome 桌面的插件有这个功能，启用即可，参见章节 [使用 gnome 扩展] 的 quake-mode。
-
-    tilix 基于 gtk3 开放的一个平铺式终端模拟器，效果类似 tmux，但是支持各面板的自定义拖曳。
-
-        https://github.com/gnunn1/tilix/
-
-    cool-retro-term
-
-    terminology
-
-    kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/MacOS 桌面下使用，目前中文支持还是不大好
-
-        https://github.com/kovidgoyal/kitty
-            https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
-
-        常用插件挺好用 https://sw.kovidgoyal.net/kitty/kittens_intro/
-
-    Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
-
-        https://www.warp.dev/
-            https://github.com/warpdotdev/Warp
-            主题 https://github.com/warpdotdev/themes
-
 cmder 推荐了几个本地终端模拟器，可以嵌入 cmder 代替 ConEmu
 
     https://github.com/cmderdev/cmder/wiki/Seamless-Terminus-integration
@@ -1070,25 +1031,7 @@ Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` �
     https://github.com/nushell/nushell
         https://www.nushell.sh/zh-CN/book/thinking_in_nu.html
 
-2018年 Windows 10 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机Windows接口的字符显示接口，参见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]，下列三个程序估计用处不大了
-
-    clink 辅助工具，在 cmd 下模仿 bash，按 tab 键自动完成，像 emacs 一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
-
-        https://github.com/chrisant996/clink
-            不再更新了 https://github.com/mridgers/clink
-
-    winpty 辅助工具，提供了 unix pty 接口与 cmd conhost 接口的互通，是 mintty 这种 MSYS2 环境下执行 Windows CMD/PowerShell 程序的中介，参见章节 [winpty 运行 cmd 字符终端程序]
-
-        https://github.com/rprichard/winpty
-
-    wslbridge 辅助工具，提供了 unix pty 接口与 WSL(Windows Subsystem for Linux) 的互通，很多支持终端多路复用的软件在 Windows 下都通过该组件使用 WSL 会话
-
-        wslbridge2 https://github.com/Biswa96/wslbridge2
-            wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
-
-### 终端多路复用器
-
-终端模拟器类型很多，如果想统一在一个窗口程序下标签化管理各个连接，这样的程序称为终端多路复用器 terminal multiplexer。
+另见章节 [Linux 桌面下的终端模拟器]。
 
 #### Supper Putty
 
@@ -3532,6 +3475,65 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 ```
+
+### Linux 桌面下的终端模拟器
+
+一般用系统内置的就够了
+
+    KDE 桌面自带 Konsole
+
+    Xfce 桌面自带 xfce
+
+    gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal
+
+    i3 窗口管理器自带 urxvt(rxvt-unicode)
+
+    sway 窗口管理器自带 foot
+
+    Gnome 桌面自带 Xterm，现名 Gnome Terminal
+
+        主题颜色使用 Nord theme
+
+            cd ~/your_github_dir/
+
+            git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
+
+            cd gnome-terminal-nordtheme/src; ./nord.sh
+
+            执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
+
+        怪1：鼠标选择的自动复制只是内部剪贴板可用，右键菜单的复制才到系统剪贴板
+
+        怪2：新建标签会继承当前标签的环境。比如当前标签进入了 toolbox 容器，这时点击新建的标签打开就是进入 toolbox 容器的环境。切换到默认没进入容器的标签，点击新建标签进入的环境就跟当前标签的环境一致。
+
+        怪3：默认不执行 .bash_profile，需要手工改配置文件：Profile-->command：勾选 Run command as a login shell 会自动执行你的 ~/.bash_profile
+
+        怪4：不再支持设置背景图片，但仍可设置窗口透明度
+
+    guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个了， gnome 桌面的插件有这个功能，启用即可，参见章节 [使用 gnome 扩展] 的 quake-mode。
+
+    tilix 基于 gtk3 开放的一个平铺式终端模拟器，效果类似 tmux，但是支持各面板的自定义拖曳。
+
+        https://github.com/gnunn1/tilix/
+
+    cool-retro-term
+
+    terminology
+
+    kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/MacOS 桌面下使用，目前中文支持还是不大好
+
+        https://github.com/kovidgoyal/kitty
+            https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
+
+        常用插件挺好用 https://sw.kovidgoyal.net/kitty/kittens_intro/
+
+    Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
+
+        https://www.warp.dev/
+            https://github.com/warpdotdev/Warp
+            主题 https://github.com/warpdotdev/themes
+
+有些终端模拟器是跨平台的，见章节 [其他终端模拟器]。
 
 ## Linux 常用命令行工具
 
@@ -11354,7 +11356,7 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 
     GNOME Linux — 一场彻底的灾难 https://zhuanlan.zhihu.com/p/490505981
 
-为方便理解，为在这里使用的都是 Windows 词汇，基本对应如下：
+为方便理解，对比 Windows 词汇如下：
 
     Windows 桌面        --->    Gnome workspace 工作区
 
@@ -11362,11 +11364,11 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 
     Windows 桌面工具栏   --->    Gnome Dash
 
-Gnome 桌面只能展示壁纸，不能放文件，用户交互操作强调精简，在操作向手机风格转换的同时，优化宽屏、多桌面的使用方式。开机后，默认展示的是“任务概览”（Overview）列出桌面列表和桌面内容，需要用户点击选择一个桌面。
+Gnome 桌面默认只能展示壁纸，不能放文件，用户交互操作强调精简，在操作向手机风格转换的同时，优化宽屏、多桌面的使用方式。开机后，默认展示的是“任务概览”（Overview），列出桌面列表和桌面内容，需要用户点击选择一个桌面，会进入空白桌面：
 
-    进入桌面后，顶部是一个任务栏（Topbar）左侧只显示当前程序当前窗口的名称，右侧是系统指示区类似 Windows 任务栏的 taskbar tray。
+    顶部是任务栏（Topbar），左侧只显示当前程序当前窗口的名称，右侧是系统指示区类似 Windows 任务栏的 taskbar tray。
 
-    桌面空白时显示在底部的工具栏（Dash）点击最右按钮 “Show Apps” 才能查看所有程序列表，为方便用户选择桌面，也会在上部显示所有桌面的列表（最右侧的桌面是新增桌面），点击即可切换到指定桌面，便于启动程序
+    底部是工具栏（Dash），点击最右按钮 “Show Apps” 才能查看所有程序列表，为方便用户选择桌面，也会在上部显示所有桌面的列表（最右侧的桌面是新增桌面），点击即可切换到指定桌面，便于启动程序
 
     工具栏在用户打开的应用程序窗口覆盖该区域后就会自动隐藏，需要鼠标从屏幕的中部指向屏幕底部边缘才会自动弹出，现在的操作系统是鼠标滑到屏幕底部，撞几下就出来了。。。
 
