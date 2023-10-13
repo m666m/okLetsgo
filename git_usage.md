@@ -4172,8 +4172,11 @@ git的实际工作，修改的文件进入每个区域，都需要专门的命�
 
     git reset --hard HEAD~1
 
+    git reset --hard commitXXX
+
 不仅提交到仓库区了，还 git push 到远程仓库了
 
+    如果强制执行 `git reset --hard commitXXX` 那么会提示 `git push -f` 把远程仓库覆盖掉，
     参见章节 [远程仓库上有B先生新增提交了，然后你却回退了远程仓库到A1]
 
 从其他分支或者之前的提交中签出文件的不同版本：
