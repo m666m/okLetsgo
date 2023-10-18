@@ -1,4 +1,5 @@
 {
+    // VS Code 稳定版本选择，x.yz有个规律，z 在 0,1,2 时特别不稳定，z > 8 就比较稳定了，比如 1.69、1.79都不错
     "json.schemaDownload.enable":true, // https://bobbyhadz.com/blog/unable-to-load-schema-from-vscode-cannot-open
     // https://github.com/microsoft/vscode/issues/177142#issuecomment-1536548022
     // 调试模式可以在库中加断点 在.vscode\launch.json 中添加"justMyCode": false

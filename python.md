@@ -1883,7 +1883,7 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
 ## 配置 vs code
 
-从源码构建 vscode h
+从源码构建 vscode
 
     ttps://cloud.tencent.com/developer/article/1588399
 
