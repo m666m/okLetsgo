@@ -821,6 +821,20 @@ datetime 实质就是 date 对象和 time 对象的组合，表示完整的日�
 
 属性：year, month, day, hour, minute, second, microsecond, tzinfo.
 
+能理解以下写法说明你看懂了
+
+    import datetime
+    from datetime import datetime as datetime_obj
+
+    str_d = '2010-01-02'
+    str_t = '230000'
+
+    night_dt = datetime_obj.strptime(str_d, '%Y-%m-%d') + datetime.timedelta(hours=21)
+
+    real_dt = datetime_obj.strptime(str_d + ' ' + str_t, '%Y-%m-%d %H%M%S')
+
+    real_dt > night_dt
+
 ##### now()     → datetime
 
     返回表示当前地方时的 datetime 对象
@@ -936,7 +950,7 @@ __str__()
 
     datetime.tzname(datetime.now())
 
-##### class datetime.timedelta 日期时间运算对象
+##### class datetime.timedelta 日期时间运算对象（加减时间在这里）
 
 表示时间间隔，精确到微秒，两个 date 对象或者 time 对象,或者 datetime 对象之间的。
 
@@ -1101,6 +1115,8 @@ total_seconds()
     # ['2019-01-05T00:00' '2019-01-02T00:00' '2019-01-03T20:01'] datetime64[m]
 
 #### np.datetime64()  字符串日期时间 → datetime64
+
+字符串只支持 ISO 8601 的日期时间格式 '2022-09-27 18:00:00.000'
 
     a = np.datetime64('2019-10-01')  # dtype='datetime64[D]'
     a = np.datetime64('2019-10-01 20:00:05')  # dtype='datetime64[s]'
