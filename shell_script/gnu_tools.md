@@ -11919,7 +11919,7 @@ Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的�
 
     不再是 Client-Server 模式，远程桌面的实现方式不同
 
-    Wayland 使用 xwayland 兼容 X window 程序。
+    Wayland 使用 xwayland 兼容 X window 程序，也就是说，基于 X Window 的 VNC 远程桌面程序一样可以利用 xvnc 连接到 wayland 桌面环境。
 
 Wayland 自带的 terminal emulator 叫 foot
 
@@ -12745,9 +12745,9 @@ Gnome 内置的这个远程桌面功能叫 “共享屏幕” 更贴切，类似
 
     Gnome 自带的远程桌面实质是 “共享屏幕”，只支持实时共享给一个用户：必须本地主机先登录到桌面，然后远程才可以连接到该主机的桌面，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时本地操作干预或中断远程会话。
 
-    而且本机要是节能策略给你锁屏或休眠了，远程是没招的。解决办法见章节 [新装系统的节能策略太挠人了]。
+    而且本机要是节能策略给你自动锁屏或自动休眠了，远程是没招的。解决办法见章节 [新装系统的节能策略太挠人了]。
 
-    可以在 gnome 网站下载安装插件 “allow locked remote desktop”，这样远程计算机就可以在服务端本地未解锁桌面的情况下使用远程桌面登录服务端计算机了。
+    gnome 桌面环境可以通过下载安装插件 “allow locked remote desktop”，这样远程计算机就可以在服务端本地未解锁桌面的情况下使用远程桌面登录服务端计算机了。
 
     如果需要支持多个远程桌面用户同时登录，而且远程连接不需要本地主机先登录桌面，可以安装第三方 vnc 或 rdp 软件
 
@@ -12932,24 +12932,26 @@ Linux 下的客户端工具
 
 #### xrdp
 
-在远程桌面下，建议只使用软件，不要安装软件或进行系统管理等操作
-
-    不同的发行版和桌面环境区分远程桌面用户和本地桌面用户，在执行权限等方面是有区别的，但目前并未完全测试。所以如果使用远程桌面用户安装软件，在本地登陆时暂无法明确有何负面的不便影响。
-
-    树莓派内置 realvnc server，对 xrdp 的支持不大好，做不到开箱即用
-
-Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包，客户端使用 mstsc、remmina 软件包。
+Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包支持多种桌面环境，客户端使用 mstsc、remmina 软件包。
 
     https://wiki.archlinux.org/title/Xrdp
 
     https://github.com/neutrinolabs/xrdp/wiki
 
+    https://aws.amazon.com/cn/blogs/china/vnc-or-rdp-how-to-choose-a-remote-desktop-on-the-cloud/
+
+    https://learn.microsoft.com/en-us/azure/virtual-machines/linux/use-remote-desktop?tabs=azure-cli
+
     配置 xrdp 支持 2FA 登陆
         https://github.com/neutrinolabs/xrdp/wiki/Using-Authy-or-Google-Authenticator-for-2FA-with-XRDP
 
-    https://aws.amazon.com/cn/blogs/china/vnc-or-rdp-how-to-choose-a-remote-desktop-on-the-cloud/
-
     https://www.cnblogs.com/Ansing/p/16788086.html
+
+NOTE: 在远程桌面下，建议只使用软件，不要安装软件或进行系统管理等操作
+
+    不同的发行版和桌面环境区分远程桌面用户和本地桌面用户，在执行权限等方面是有区别的，但目前并未完全测试。所以如果使用远程桌面用户安装软件，在本地登陆时暂无法明确有何负面的不便影响。
+
+    树莓派内置 realvnc server，对 xrdp 的支持不大好，做不到开箱即用
 
 远程桌面 RDP 协议体系由客户端（viewer）与服务端两部分构成。xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，它利用服务器桌面环境的 xvnc 组件实现自己的后端，也就是说利用 xvnc 简单地将 vnc 位图流包装在 RDP 中。
 
