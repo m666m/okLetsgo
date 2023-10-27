@@ -9878,7 +9878,7 @@ systemctl cat 命令可以查看配置文件的内容
 
         Type=forking：以 fork 方式从父进程创建子进程，创建后父进程会立即退出，用于启动守护进程
 
-        Type=oneshot：一次性进程，用于执行定时任务如备份检查等
+        Type=oneshot：一次性进程，用于执行定时任务如备份检查等。注意 systemd 默认进程执行后都是持续运行的，如果你配置的是一个执行完就结束了的脚本，需要加参数RemainAfterExit配合，详见章节 [自制的 shell 脚本由 systemd 服务调度自启动]。
 
         Type=dbus：当前服务通过D-Bus启动
         Type=notify：当前守护进程启动完毕，会通知 systemd，再继续往下执行
@@ -9983,7 +9983,7 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     https://blog.csdn.net/Peter_JJH/article/details/108446380
 
-    一般认为是 status 判断为 invalid 导致 systemctl 立刻调用了 stop，解决办法是
+    一般认为是执行后 `systemd status`结果为 invalid 导致 systemctl 立刻调用了 stop，解决办法是
 
         服务的配置文件添加： RemainAfterExit=yes
 
