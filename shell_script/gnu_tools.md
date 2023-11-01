@@ -12827,7 +12827,7 @@ RDP 协议
 
     RDP 客户端软件
 
-        Linux 使用内置的 gnome-connections，或安装 Remmina
+        Linux 使用内置的 Connections(gnome-connections)，或安装 Remmina
 
         Windows 使用内置的 mstsc.exe
 
@@ -12841,7 +12841,7 @@ VNC 协议
 
     VNC 客户端软件
 
-        Linux 使用内置的 gnome-connections，或安装 Remmina
+        Linux 使用内置的 Connections(gnome-connections)，或安装 Remmina
 
         Windows 安装 TigerVnc 软件的客户端，参见章节 [VNC]
 
@@ -12851,7 +12851,7 @@ VNC 协议
 
 Linux 下的客户端工具
 
-1、Gnome 内置的客户端软件名为 “连接 connects(gnome-connections)”，同时支持 rdp 和 vnc 协议。
+1、Gnome 内置的客户端软件名为 “连接 Connections(gnome-connections)”，同时支持 rdp 和 vnc 协议。
 
 2、推荐使用 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
 
@@ -12871,8 +12871,6 @@ Linux 下的客户端工具
 因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
 
 ##### 使用 Remmina
-
-    https://gitlab.com/Remmina/Remmina/-/wikis/Usage/Remmina-debugging
 
     https://zhuanlan.zhihu.com/p/26879292
 
@@ -12904,7 +12902,7 @@ Linux 下的客户端工具
 
 注意这里有个坑，没有其它选项可选，先点击保存以关闭该窗口。
 
-然后在 Remmina 的主窗口列表中找到该配置文件，右键菜单选择编辑你的远程桌面配置：
+然后在 Remmina 的主窗口列表中找到刚建立的配置文件，右键菜单选择编辑：
 
     Basic:
 
@@ -12916,7 +12914,7 @@ Linux 下的客户端工具
 
             共享文件夹应显示在远程计算机资源管理器的 other devices and drives（本地磁盘C:图标的下方），实质是映射的 Windows 网络邻居里的 \\tsclient\host_dl\ 目录，所以先在资源管理区里点击网络，提示开启网络发现时选择确定，这样才能确保映射成功。
 
-            目前 Windows 10 的安全策略对从 smb 共享文件夹执行文件有限制，所以如果要从共享文件夹安装程序，先拷贝到远程计算机的本地再执行该安装程序
+            目前 Windows 10 的安全策略限制从 smb 共享文件夹执行文件，所以如果要从共享文件夹里安装程序，要先拷贝到远程计算机的本地磁盘然后再执行安装程序
 
     Advance:
 
@@ -12924,9 +12922,9 @@ Linux 下的客户端工具
 
         Audio output mode：local 可以把远程的声音转发到本地播放，质量不好，忍了
 
-        安全性：rdp
+        安全性：选择自动或rdp
 
-        共享剪贴板 turn off clipboard sync：默认不勾选就是放开的，可以复制文字，不支持文件和文件夹，只能使用上面共享文件夹的方式
+        共享剪贴板 turn off clipboard sync：默认不勾选就是放开的，可以复制粘贴文字，不支持粘贴文件和文件夹，只能使用上面共享文件夹的方式传输文件。
 
 单击 save 会自动关闭该窗口。
 
@@ -12935,6 +12933,16 @@ Linux 下的客户端工具
     连接后，在 Remmina 工具栏点击 “toggle dynamic resolution update”，这样远程桌面分辨率大小才会跟随你的窗口大小
 
 另外，运行过程中如果修改了配置文件，在远程 Windows 桌面上的 Remmina 工具栏单击 refresh 可以立即生效。
+
+如果连接失败，可以点击菜单栏的三个横线，选择“Debugging”，然后重新连接，查看“Debugging”窗口的输出内容。
+
+如果显示的信息偏少看不到具体报错原因，则需要用命令行启动 remmina：
+
+    https://gitlab.com/Remmina/Remmina/-/wikis/Usage/Remmina-debugging
+    $ G_MESSAGES_PREFIXED=all G_MESSAGES_DEBUG=all remmina
+
+    # flatpak安装的
+    $ G_MESSAGES_PREFIXED=all G_MESSAGES_DEBUG=all flatpak run org.remmina.Remmina
 
 #### xrdp
 
