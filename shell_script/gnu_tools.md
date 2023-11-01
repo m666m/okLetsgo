@@ -12731,9 +12731,78 @@ Setting -> Privacy -> Screen Lock:
     关闭自动锁屏延迟 Blank Screen Delay: Never
     禁用自动屏幕锁定 Automatic Screen Lock: Off
 
+#### 远程桌面软件体系
+
+RDP 协议
+
+    RDP 服务器端软件
+
+        Linux 的 Gnome 桌面内置 rdp 协议的服务端，或安装 xrdp，参见章节 [xrdp]
+
+        Windows 内置 rdp 协议的服务端
+
+    RDP 客户端软件
+
+        Linux 的 Gnome 桌面内置 Connections(gnome-connections)，或安装 Remmina
+
+        Windows 使用内置的 mstsc.exe
+
+VNC 协议
+
+    VNC 服务器端软件
+
+        Linux 内置 vnc 协议的服务端
+
+        Windows 安装 TigerVnc 软件的服务端，参见章节 [VNC]
+
+    VNC 客户端软件
+
+        Linux 的 Gnome 桌面内置 Connections(gnome-connections)，或安装 Remmina
+
+        Windows 安装 TigerVnc 软件的客户端，参见章节 [VNC]
+
+注意保护你的连接
+
+    简单使用 ssh 隧道保护远程桌面双方的通信，参见章节 [Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)。
+
+> Linux 下的客户端工具
+
+1、Gnome 内置的客户端软件名为 “连接 Connections(gnome-connections)”，同时支持 rdp 和 vnc 协议。
+
+2、推荐使用 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
+
+3、基于 FreeRDP 的软件
+
+    FreeRDP
+
+        https://docs.vmware.com/cn/VMware-Horizon-Client-for-Linux/2306/horizon-client-linux-installation/GUID-0B23875F-7BC2-4CFE-9ADD-0BF4039B12EB.html
+
+xfreerdp 是实现 FreeRDP 的 Linux 桌面客户端程序，替代了已不再开发的 rdesktop
+
+    https://zhuanlan.zhihu.com/p/75305464
+
+命令行方式使用
+
+    xfreerdp -f host:port -u username -p password /sound
+
+    rdesktop <ip>
+
+        -f 全屏
+        -r clipboard:PRIMARYCLIPBOARD 是实现剪切板共享，也就是物理机复制虚拟机粘贴。
+        -r disk:mydisk=/device 实现文件夹共享，mydisk是名字，可以随便取，/device是物理机上用于共享的文件夹
+        ip ： 虚拟机的IP
+
+    rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
+
+    按 `ctrl + alt +回车` 退出或进入全屏模式。
+
+因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
+
 #### Gnome 内置的远程桌面功能
 
-Gnome 内置的这个远程桌面功能叫 “共享屏幕” 更贴切，类似 Windows 的 “远程协助”
+Gnome 内置的远程桌面客户端软件名为 “连接 Connections(gnome-connections)”，同时支持 rdp 和 vnc 协议。
+
+Gnome 内置的这个远程桌面服务端功能叫 “共享屏幕” 更贴切，类似 Windows 的 “远程协助”
 
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-a-single-user_getting-started-with-the-gnome-desktop-environment
 
@@ -12815,62 +12884,7 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
     VNC 协议本身没有加密或保护，所以你通过它发送的任何东西都可能被泄露。日常使用都是用 ssh 本地端口转发的方式用 tunnel 封装起来。
 
-#### 使用第三方远程桌面软件
-
-RDP 协议
-
-    RDP 服务器端软件
-
-        Linux 安装 xrdp，参见章节 [xrdp]
-
-        Windows 内置支持
-
-    RDP 客户端软件
-
-        Linux 使用内置的 Connections(gnome-connections)，或安装 Remmina
-
-        Windows 使用内置的 mstsc.exe
-
-VNC 协议
-
-    VNC 服务器端软件
-
-        Linux 内置支持
-
-        Windows 安装 TigerVnc 软件的服务端，参见章节 [VNC]
-
-    VNC 客户端软件
-
-        Linux 使用内置的 Connections(gnome-connections)，或安装 Remmina
-
-        Windows 安装 TigerVnc 软件的客户端，参见章节 [VNC]
-
-注意保护你的连接
-
-    简单使用 ssh 隧道保护远程桌面双方的通信，参见章节 [Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)。
-
-Linux 下的客户端工具
-
-1、Gnome 内置的客户端软件名为 “连接 Connections(gnome-connections)”，同时支持 rdp 和 vnc 协议。
-
-2、推荐使用 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
-
-3、rdesktop 是实现 RDP 协议的 Linux 桌面客户端程序
-
-    rdesktop <ip>
-
-    -f 全屏
-    -r clipboard:PRIMARYCLIPBOARD 是实现剪切板共享，也就是物理机复制虚拟机粘贴。
-    -r disk:mydisk=/device 实现文件夹共享，mydisk是名字，可以随便取，/device是物理机上用于共享的文件夹
-    ip ： 虚拟机的IP
-
-    rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
-
-    按 `ctrl + alt +回车` 退出或进入全屏模式。
-
-因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
-
-##### 使用 Remmina
+#### 使用 Remmina 客户端软件
 
     https://zhuanlan.zhihu.com/p/26879292
 
@@ -12944,7 +12958,7 @@ Linux 下的客户端工具
     # flatpak安装的
     $ G_MESSAGES_PREFIXED=all G_MESSAGES_DEBUG=all flatpak run org.remmina.Remmina
 
-#### xrdp
+#### 使用 xrdp 服务端
 
 Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包支持多种桌面环境，客户端使用 mstsc、remmina 软件包。
 
