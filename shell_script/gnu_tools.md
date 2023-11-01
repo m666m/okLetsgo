@@ -12872,6 +12872,8 @@ Linux 下的客户端工具
 
 ##### 使用 Remmina
 
+    https://gitlab.com/Remmina/Remmina/-/wikis/Usage/Remmina-debugging
+
     https://zhuanlan.zhihu.com/p/26879292
 
 > 快捷使用
