@@ -12702,6 +12702,10 @@ VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
     https://zhuanlan.zhihu.com/p/630641235
 
+还有更多的方式比如 web 可以实现远程桌面
+
+    https://devicetests.com/share-linux-desktop-web-browser
+
 #### 新装系统的节能策略太挠人了
 
 Linux 桌面环境不定什么时候就睡过去，能源策略里关关关，自动锁屏关关关
