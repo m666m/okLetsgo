@@ -12706,9 +12706,9 @@ VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
     https://devicetests.com/share-linux-desktop-web-browser
 
-#### 新装系统的节能策略太挠人了
+#### 必须先调整下新装系统的节能策略
 
-Linux 桌面环境不定什么时候就睡过去，能源策略里关关关，自动锁屏关关关
+默认节能策略导致 Linux 桌面环境不定什么时候就睡过去，能源策略里关关关，自动锁屏关关关
 
 Setting -> Power：
 
@@ -12733,11 +12733,11 @@ Setting -> Privacy -> Screen Lock:
 
 #### 远程桌面软件体系
 
-RDP 协议
+RDP 协议(FreeRDP)
 
     RDP 服务器端软件
 
-        Linux 的 Gnome 桌面内置 rdp 协议的服务端，或安装 xrdp，参见章节 [xrdp]
+        Linux 内置 rdp 协议的服务端，或另行安装 xrdp，参见章节 [使用 xrdp 服务端]
 
         Windows 内置 rdp 协议的服务端
 
@@ -12769,19 +12769,17 @@ VNC 协议
 
 1、Gnome 内置的客户端软件名为 “连接 Connections(gnome-connections)”，同时支持 rdp 和 vnc 协议。
 
-2、推荐使用 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
+2、基于 FreeRDP 的客户端软件
 
-3、基于 FreeRDP 的软件
+推荐使用 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
 
-    FreeRDP
+FreeRDP
 
-        https://docs.vmware.com/cn/VMware-Horizon-Client-for-Linux/2306/horizon-client-linux-installation/GUID-0B23875F-7BC2-4CFE-9ADD-0BF4039B12EB.html
+    https://docs.vmware.com/cn/VMware-Horizon-Client-for-Linux/2306/horizon-client-linux-installation/GUID-0B23875F-7BC2-4CFE-9ADD-0BF4039B12EB.html
 
-xfreerdp 是实现 FreeRDP 的 Linux 桌面客户端程序，替代了已不再开发的 rdesktop
+xfreerdp 是实现 FreeRDP 的 Linux 桌面命令行客户端，替代了已不再开发的 rdesktop
 
     https://zhuanlan.zhihu.com/p/75305464
-
-命令行方式使用
 
     xfreerdp -f host:port -u username -p password /sound
 
@@ -12796,13 +12794,13 @@ xfreerdp 是实现 FreeRDP 的 Linux 桌面客户端程序，替代了已不再�
 
     按 `ctrl + alt +回车` 退出或进入全屏模式。
 
-因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面软件，登录后的默认桌面各不相同，详见各软件的说明。
+因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面的客户端软件，登录后的默认桌面各不相同，详见各软件的说明。
 
 #### Gnome 内置的远程桌面功能
 
 Gnome 内置的远程桌面客户端软件名为 “连接 Connections(gnome-connections)”，同时支持 rdp 和 vnc 协议。
 
-Gnome 内置的这个远程桌面服务端功能叫 “共享屏幕” 更贴切，类似 Windows 的 “远程协助”
+Gnome 内置的这个远程桌面服务端(gnome-remote-desktop)叫 “共享屏幕” 更贴切，类似 Windows 的 “远程协助”
 
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-a-single-user_getting-started-with-the-gnome-desktop-environment
 
@@ -12816,15 +12814,19 @@ Gnome 内置的这个远程桌面服务端功能叫 “共享屏幕” 更贴切
 
 功能受限：
 
-    Gnome 自带的远程桌面实质是 “共享屏幕”，只支持实时共享给一个用户：必须本地主机先登录到桌面，然后远程才可以连接到该主机的桌面，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时本地操作干预或中断远程会话。
-
-    而且本机要是节能策略给你自动锁屏或自动休眠了，远程是没招的。解决办法见章节 [新装系统的节能策略太挠人了]。
+    Gnome 自带的远程桌面服务端实质是 “共享屏幕”，只支持实时共享给一个用户：必须本地主机先登录到桌面，然后远程才可以连接到该主机的桌面，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时本地操作干预或中断远程会话。也就是说，本地不登录桌面，是无法远程桌面的，如果你有个云服务器想使用它的桌面，需要安装第三方 vnc 或 rdp 软件，见下面。
 
     gnome 桌面环境可以通过下载安装插件 “allow locked remote desktop”，这样远程计算机就可以在服务端本地未解锁桌面的情况下使用远程桌面登录服务端计算机了。
 
-    如果需要支持多个远程桌面用户同时登录，而且远程连接不需要本地主机先登录桌面，可以安装第三方 vnc 或 rdp 软件
+    本地主机要是节能策略给你自动锁屏或自动休眠了，远程是没招的。解决办法见章节 [必须先调整下新装系统的节能策略]。
 
-        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
+    如果需要支持多个远程桌面用户同时登录，而且远程连接不需要本地主机先登录桌面，则只能安装第三方 vnc 或 rdp 软件
+
+        推荐 xrdp，参见章节 [使用 xrdp 服务端]
+
+        tigervnc-server
+
+            https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
 
 Gnome 桌面同时支持 X11 和 Wayland 两种方式
 
@@ -12840,7 +12842,7 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
     https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353?replies_to_post_number=12
 
-推荐安装 RDP 协议的第三方软件，详见章节 [xrdp]。
+推荐安装 RDP 协议的第三方软件，详见章节 [使用 xrdp 服务端]。
 
 > 服务端设置
 
@@ -12860,7 +12862,7 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
 > 客户端设置
 
-使用支持 rdp 或 vnc 协议的客户端软件，参见章节 [使用第三方远程桌面软件]。
+使用支持 rdp 或 vnc 协议的客户端软件，参见章节 [远程桌面软件体系]。
 
 如果服务器和客户端之间有连接，请确保以下情况：
 
@@ -12960,7 +12962,7 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
 #### 使用 xrdp 服务端
 
-Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包支持多种桌面环境，客户端使用 mstsc、remmina 软件包。
+Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包支持多种桌面环境，客户端使用 mstsc、remmina 软件。
 
     https://wiki.archlinux.org/title/Xrdp
 
@@ -12979,7 +12981,7 @@ NOTE: 在远程桌面下，建议只使用软件，不要安装软件或进行�
 
     不同的发行版和桌面环境区分远程桌面用户和本地桌面用户，在执行权限等方面是有区别的，但目前并未完全测试。所以如果使用远程桌面用户安装软件，在本地登陆时暂无法明确有何负面的不便影响。
 
-    树莓派内置 realvnc server，对 xrdp 的支持不大好，做不到开箱即用
+    树莓派内置 realvnc server，对 xrdp 的支持不好，做不到开箱即用
 
 远程桌面 RDP 协议体系由客户端（viewer）与服务端两部分构成。xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，它利用服务器桌面环境的 xvnc 组件实现自己的后端，也就是说利用 xvnc 简单地将 vnc 位图流包装在 RDP 中。
 
@@ -13011,10 +13013,10 @@ xrdp 的组件
 安装后启动服务，并设置为开机自启动
 
     # sudo systemctl start xrdp
-    sudo systemctl enable xrdp --now
+    $ sudo systemctl enable xrdp --now
 
-    systemctl status xrdp
-    systemctl status xrdp-sesman
+    $ systemctl status xrdp
+    $ systemctl status xrdp-sesman
 
     # 验证端口已经放开，否则查看你的操作系统的防火墙设置
     $ ss -antlp | grep 3389
@@ -13034,10 +13036,10 @@ xrdp 安装后要先做几个设置：
     以下两个未验证
 
         # 必须有密码
-        sudo passwd ubuntu
+        $ sudo passwd ubuntu
 
         # 因为默认情况下，xRDP 使用的是自签发的证书，这个证书保存在 /etc/ssl/private/ssl-cert-snakeoil/ 目录下。证书的密钥文件只能由 “ssl-cert” 用户组的成员读取。
-        sudo adduser ubuntu ssl-cert
+        $ sudo adduser ubuntu ssl-cert
 
 然后远程计算机的桌面用户就可以用支持 RDP 协议的远程桌面软件连接这台计算机登录桌面了：
 
@@ -13049,7 +13051,7 @@ xrdp 安装后要先做几个设置：
 
     一旦登录，你将看到默认的桌面环境，根据你操作系统的 sddm 设置是 Gnome 或 Xfce、i3 等。
 
-远程桌面客户端工具参见章节 [使用第三方远程桌面软件]。
+远程桌面客户端工具参见章节 [远程桌面软件体系]。
 
 ##### 后端依赖 xvnc/xorgxrdp
 
