@@ -12828,6 +12828,8 @@ Gnome 内置的这个远程桌面服务端(gnome-remote-desktop)叫 “共享屏
 
             https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
 
+        先关闭操作系统内置的远程桌面服务，以防止端口冲突。
+
 Gnome 桌面同时支持 X11 和 Wayland 两种方式
 
     对 X11 会话中使用 vino 组件
@@ -12981,9 +12983,9 @@ Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP �
 
     https://www.cnblogs.com/Ansing/p/16788086.html
 
-NOTE: 在远程桌面下，建议只使用软件，不要安装软件或进行系统管理等操作
+NOTE: 在远程桌面环境下，建议只使用软件，不要安装软件或进行系统管理等操作
 
-    不同的发行版和桌面环境区分远程桌面用户和本地桌面用户，在执行权限等方面是有区别的，但目前并未完全测试。所以如果使用远程桌面用户安装软件，在本地登陆时暂无法明确有何负面的不便影响。
+    不同的发行版和桌面环境区分远程桌面用户和本地桌面用户，在执行权限等方面是有区别的，但目前并未完全测试。所以如果使用远程桌面用户安装软件，在本地登陆时暂无法明确有何负面的影响。
 
     树莓派内置 realvnc server，对 xrdp 的支持不好，做不到开箱即用
 
@@ -13015,6 +13017,8 @@ xrdp 的组件
     sudo ufw allow from any to any port 3389 proto tcp
 
 安装后启动服务，并设置为开机自启动
+
+    # 先关闭操作系统内置的远程桌面服务，以防止端口冲突。
 
     # sudo systemctl start xrdp
     $ sudo systemctl enable xrdp --now
