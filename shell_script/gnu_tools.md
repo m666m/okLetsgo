@@ -12688,7 +12688,7 @@ VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
     VNC 主要传图像，适用于瘦客户端。
 
-    RDP 主要传指令，适用于低速网络。此外微软还有一项针对 RDP 的增强技术 RemoteFX。
+    RDP 主要传指令，适用于低速网络。此外微软还有针对 RDP 的软件增强技术 RemoteFX 加速传输速度。
 
     对 Wayland 桌面来说，其使用 xwayland 模块兼容 X window 程序
 
@@ -12771,28 +12771,49 @@ VNC 协议
 
 2、基于 FreeRDP 的客户端软件
 
-推荐使用 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
+推荐使用图形化的 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
 
-FreeRDP
+xfreerdp 是命令行客户端，替代了已不再开发的 rdesktop
 
-    https://docs.vmware.com/cn/VMware-Horizon-Client-for-Linux/2306/horizon-client-linux-installation/GUID-0B23875F-7BC2-4CFE-9ADD-0BF4039B12EB.html
+    https://github.com/FreeRDP/FreeRDP/wiki
+        命令行参数比较独特 https://github.com/awakecoding/FreeRDP-Manuals/blob/master/User/FreeRDP-User-Manual.markdown
+        可以有配置文件 https://github.com/awakecoding/FreeRDP-Manuals/blob/master/Configuration/FreeRDP-Configuration-Manual.markdown
 
-xfreerdp 是实现 FreeRDP 的 Linux 桌面命令行客户端，替代了已不再开发的 rdesktop
+    有问题先看看 FAQ https://github.com/FreeRDP/FreeRDP/wiki/FAQ
+        连接 Win7 需要指定低级tls版本 https://github.com/FreeRDP/FreeRDP/wiki/FAQ#windows-7-errconnect_tls_connect_failed
 
-    https://zhuanlan.zhihu.com/p/75305464
+    xfreerdp /u:”username” /v::3389
 
-    xfreerdp -f host:port -u username -p password /sound
+        /d: 指定域
+        /u: 远程计算机的登录用户
+        /v: 远程计算机的ip 地址或主机名:端口
+        /w and /h: 设置远程桌面窗口的宽度和高度
+        /dynamic-resolution: 根据本地窗口大小动态调整远程桌面窗口的宽度和高度
+        /f: 全屏
+        /bpp: 桌面颜色位深，一般设置为32,低速网络改为 16、8
+        /sound: 开启声音设备重定向，值一般是 sys:pulse 或 sys:alsa，跟本地Linux系统的声音设备相关
+        +clipboard: 开启剪贴板
+        -wallpaper: 关闭显示远程壁纸
+        /a:drive,home,/home：重定向指定的设备，包括路径、打印机等
+            https://github.com/FreeRDP/FreeRDP/wiki/CommandLineInterface#plugins
+            /drives 或 /home-drive: 把所有本地驱动器重定向到远程
+            /printer: 把所有本地打印机重定向到远程
+            /usb: <usbid>is a string like dev:054c:0268 when use `lsusb`
 
-    rdesktop <ip>
+        也可以用 posix 命令行形式，但是会太长 https://github.com/awakecoding/FreeRDP-Manuals/blob/master/User/FreeRDP-User-Manual.markdown#alternate-syntax
+
+    $ xfreerdp /v:54.226.239.0:3389 /u:"Administrator" /cert:tofu /p:password +clipboard -wallpaper /w:800 /h:600 /dynamic-resolution /f /sound:sys:pulse
+
+原 rdesktop <ip>
+
+    rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
 
         -f 全屏
         -r clipboard:PRIMARYCLIPBOARD 是实现剪切板共享，也就是物理机复制虚拟机粘贴。
         -r disk:mydisk=/device 实现文件夹共享，mydisk是名字，可以随便取，/device是物理机上用于共享的文件夹
         ip ： 虚拟机的IP
 
-    rdesktop -f -r clipboard:PRIMARYCLIPBOARD -r disk:mydisk=/home/$(whoami)/win-share-dir <ip>
-
-    按 `ctrl + alt +回车` 退出或进入全屏模式。
+        按 `ctrl + alt +回车` 退出或进入全屏模式。
 
 因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面的客户端软件，登录后的默认桌面各不相同，详见各软件的说明。
 

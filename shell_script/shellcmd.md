@@ -2212,6 +2212,11 @@ lsof 查看指定进程号打开的文件（sudo apt install lsof）
 
     这个命令经常用于查找已经擅长但仍被程序使用的文件，这些文件因为 Linux 文件系统索引和数据分离的工作方式，即使删除了系统也仍旧没有释放磁盘空间，所以有 unlink 命令，慎用。
 
+    也可以查看端口占用
+    $ lsof -i :3389
+    COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+    remmina 6130   uu   53u  IPv4  89457      0t0  TCP fedws:48870->192.168.100.215:ms-wbt-server (ESTABLISHED)
+
 stat 查看文件的 inode 情况
 
     $ stat showimg
