@@ -3286,8 +3286,8 @@ if [ -x /usr/bin/dircolors ]; then
     # distrobox 这词打不快
     alias dbox='distrobox'
 
-    # podman
-    alias podmans='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
+    # selinux 审计信息：ausearch -i
+    alias aud='sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
 
     # systemd
     alias stded='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
@@ -3310,10 +3310,9 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 ####################################################################
-# 如果遇到在 tmux 等多终端程序下，执行 gpg 弹不出密码提示框的情况
-# 执行此命令配置 gpg pinentry 使用当前的 tty，然后重新执行 gpg 命令即可
+# gpg: problem with the agent: Inappropriate ioctl for device，
+# 参见章节 [命令行终端下 gpg 无法弹出密码输入框的问题](gpg think)
 export GPG_TTY=$(tty)
-# gpg-agent 代替 ssh-agent 的时候也会出现类似情况，开启如下语句即可：
 # echo "以当前终端 tty 连接 gpg-agent..."
 # gpg-connect-agent updatestartuptty /bye >/dev/null
 
