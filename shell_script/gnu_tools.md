@@ -11541,7 +11541,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date）
 
-    Vitals                  在任务栏显示你的cpu、内存使用情况，竞品 Freon，我觉得不如在终端使用 btop 更全面直观。
+    system-monitor-next     在任务栏显示你的cpu、内存使用情况，竞品 Vitals/Freon，我觉得不如在终端使用 btop 更全面直观。
 
 GNOME 桌面组件扩展的自定义选项 “Gnome Tweaks”，在软件管理里搜索安装 “tweaks” 即可找到
 
