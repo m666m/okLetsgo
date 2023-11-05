@@ -2501,7 +2501,7 @@ echo -e "\nAdd below to your VSCode settings: \n     \"python.analysis.stubPath\
 
 #### 格式化 yapf、black
 
- vscode 整合了代码格式化及代码规范检查 lint 工具，不再使用 python 包 yapf，用户在扩展里选择微软官方的 black 或 autopep8，建议 black。
+ vscode 整合了代码格式化及代码规范检查 lint 工具，不再使用 python 包 yapf，用户在扩展里选择微软官方的 ms-python.black-formatter 或 ms-python.autopep8，建议 black。
 
 ```json
     // python 的格式化工具用 black
