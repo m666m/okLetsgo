@@ -96,11 +96,30 @@ Windows下推荐使用 cmd 命令行执行conda操作。
 
 ## pip
 
+pip 是 python 的包管理程序，手工安装的 python 一般都带，但是 Linux 发行版不带这个模块，需要你自行安装
+
+    https://packaging.python.org/en/latest/tutorials/installing-packages/#id13
+
+    https://packaging.python.org/en/latest/guides/installing-using-linux-tools/#fedora
+
+    $ python -m pip --version
+    /usr/bin/python: No module named pip
+
+    $ sudo dnf install python3-pip python3-wheel
+
+pip 安装各种包时默认搜索的 python 仓库就是著名的 pypi
+
+    https://pypi.org/
+
 pip 不像 conda/virtualenv 一样，他不知道环境！执行命令 `pip install` 就扔到 python 的基础环境下，后来弄了个 --user 扔当前用户的目录下，所以在 conda/virtualenv 下使用 pip 需要调整参数，参见章节 [确认pip下载的包的保存位置]。
 
     https://www.cnblogs.com/feixiablog/p/8320602.html
 
-如果要在 conda 下使用 pip，见下面章节[Anaconda环境中使用pip]。
+pip --user install 和 virtualenv --no-site-packages 对 site_package 目录的处理异同
+
+    --user 到底为啥 https://pip.pypa.io/en/stable/user_guide/#user-installs
+
+    virtualenv从版本20开始，默认就是’--no-site-packages‘了，默认就是不继承父环境的包。创建的虚拟环境是一个不带任何第三方包的“干净”的Python运行环境。
 
 Debian/Ubuntu 下默认安装 python 2 以及 python 3，python 命令指向 python 2，python3 命令指向 python3。pip 命令是 python2 的 pip, pip3 命令才是 python3 的 pip。不过使用命令 python3 -m 执行包的方式时，用包名 pip ，如 `python3 -m pip install xxx`
 
@@ -411,7 +430,11 @@ virtualenv 依赖操作系统内安装好的 python，主要解决多个项目�
 
 适合标准的 python 安装到 Windows 上，原始 Python 的脚本更适合用 cmd 环境，而 pip 的有些脚本适合用 bash 做环境。
 
+    https://virtualenv.pypa.io/en/latest/
+
     https://docs.python-guide.org/dev/virtualenvs/
+
+    https://www.cnblogs.com/doublexi/p/15783355.html
 
 激活环境命令：
 
@@ -453,11 +476,11 @@ virtualenv 依赖操作系统内安装好的 python，主要解决多个项目�
 
     virtualenv -p /c/tools/Python38/python.exe e38
 
+    # 默认参数是 --no-site-packages 已经安装到系统python环境中的所有第三方包都不会复制过来
+    virtualenv myvenv
+
     # 参数 --system-site-packages 指定创建虚拟环境时继承系统三方库
     virtualenv --system-site-packages myvenv
-
-    # 已经安装到系统python环境中的所有第三方包都不会复制过来
-    virtualenv --no-site-packages myvenv
 
 3.激活/退出虚拟环境
 
