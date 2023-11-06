@@ -492,7 +492,19 @@ git revert 在合并冲突时使用`core.editor`的设置，没有单独的设�
 
         git branch -m <name>
 
-3、暂存区（stage 或 index）：暂存区实质是 .git 目录下的index文件，所以暂存区也称为索引（index）。
+3、暂存区（stage 或 index）：暂存区实质是 .git 目录下的 index 文件，所以暂存区也称为索引（index）。
+
+记住 “索引(index)”、“暂存区(stage)” 和 -cached 是一回事：
+
+    git 在提示信息的时候，对暂存区的称呼比较乱，估计是因为开源项目多人开发交替演进留下的毛病。
+
+    当你使用 git add 命令来暂存文件时，Git 在后台将文件添加到其对象数据库（在 .git/objects 目录下），并更新一个名为 .git/index 的文件以引用新添加的文件。
+
+    Git 中的这个“暂存区”事实上有 3 种不同的名称，但它们都指的是同一个东西（即 .git/index 文件）：
+
+        git diff --cached
+        git diff --staged
+        .git/index 文件
 
 有了本地仓库之后，在工作区对文件的修改，都需要先添加到暂存区，然后才能提交到本地仓库。
 
@@ -3651,6 +3663,10 @@ Git 管理仓库中的文件，是根据文件名来跟踪文件的
 
     （8）git stash clear ：删除所有缓存的stash
 
+当你运行 git stash 命令时，Git 会根据你的更改创建一些提交，并用一个名为 mystash 的引用来标记它们（在 .git/refs/stash 目录下），查看 mystash 引用的日志：
+
+    $ git log mystash --oneline
+
 ### 找回误删的 stash 数据
 
 本想 git stash pop ，但是输入成 git stash drop
@@ -3740,17 +3756,17 @@ Git 管理仓库中的文件，是根据文件名来跟踪文件的
 
     自上次提交以来工作区中的更改
 
-工作区与暂存区的差异
+比对工作区与暂存区的差异
 
     git diff
 
     在 vs code 里，就是你点击源代码管理树中 '更改' 项目下的文件，列出来的差异。
 
-工作区与仓库的差异
+比对工作区与仓库的差异
 
     git diff HEAD
 
-暂存区与仓库的差异
+比对暂存区与仓库的差异
 
     git diff --staged 或 git diff --cached
 

@@ -2115,7 +2115,12 @@ Perf 是 Linux kernel 自带的系统性能优化工具。
 
 跨平台的查看系统时实性能状态信息，比 btop 命令多了当前磁盘繁忙程度的指标
 
+    https://nmon.sourceforge.io/pmwiki.php
     https://nmon.sourceforge.net/pmwiki.php
+
+    https://www.redhat.com/sysadmin/monitor-linux-performance-nmon
+
+    https://www.ibm.com/docs/en/aix/7.2?topic=n-nmon-command
 
     https://www.kclouder.cn/posts/35478.html
 

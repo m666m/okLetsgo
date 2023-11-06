@@ -1936,6 +1936,11 @@ Linux 下安装
 
 对 flatpak 版 VSCode、VSCodium 终端下打印 'Warning: waitpid override ignores groups' 的说明
 
+    VSCodium 从 VS Code 中移除了遥测部分。除此之外，它就是这个微软项目的克隆版，在外观和功能上与著名的 VS Code 完全相同。不过插件商店也改为开源的了，这样无法使用微软的那些官方插件了。。。
+        https://www.roboleary.net/tools/2022/04/20/vscode-telemetry.html
+
+        https://zhuanlan.zhihu.com/p/71050663
+
     https://github.com/flathub/com.visualstudio.code/issues/370
 
     另可集成到 toolbox 中
