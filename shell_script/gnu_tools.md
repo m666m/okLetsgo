@@ -8983,6 +8983,20 @@ lm-sensors 查看计算机传感器的的内核工具，支持温度、pwm风扇
 
     $ sudo dnf install xsensors fancontrol-gui
 
+水冷都支持 Coolero
+
+    coolero https://gitlab.com/coolercontrol/coolercontrol
+        liquidctl https://github.com/liquidctl/liquidctl
+
+    flatpak 安装即可
+    $ sudo dnf install coolercontrol
+    $ sudo systemctl enable coolercontrold
+    $ sudo systemctl start coolercontrold
+
+显卡cpu超频工具
+
+    CoreCtrl https://gitlab.com/corectrl/corectrl
+
 #### 控制笔记本电脑的风扇速度 thinkfan
 
     Thinkpad
