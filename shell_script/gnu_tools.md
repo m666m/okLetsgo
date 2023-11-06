@@ -8928,6 +8928,8 @@ lm-sensors 查看计算机传感器的的内核工具，支持温度、pwm风扇
 
     https://wiki.archlinux.org/title/Fan_speed_control
 
+    https://www.cyberciti.biz/faq/how-to-find-fan-speed-in-linux-for-cpu-and-gpu/
+
     # sudo dnf install lm_sensors
     $ sudo apt install lm-sensors
 
