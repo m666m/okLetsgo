@@ -11024,11 +11024,11 @@ Linux 桌面的终端工具参见章节 [其他终端模拟器]。
 
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/assembly_enabling-chinese-japanese-or-korean-text-input_getting-started-with-the-gnome-desktop-environment
 
-打开 Gnome Software， 在类别 'input source' 搜索 'Pinyin' 安装即可。
+打开 Gnome 的 Settings -> Keyboard -> Input Source，点击添加，选择 “Chinese(Intelligent Pinyin)” 。
 
-打开 Gnome 的 Settings -> Keyboard -> Input Source，点击添加，选择 Chinese -> Intelpinyin。
+或打开 Gnome Software， 在类别 'input source' 搜索 'Pinyin' 安装即可。
 
-用 'Win+空格' 键即可切换输入法。
+用热键 'Win+空格' 即可切换输入法。
 
 切换到拼音输入法之后，右键点击输入法在任务栏的图标，弹出菜单选择 “Perference”，设置用逗号句号翻页等选项。
 
@@ -11160,7 +11160,7 @@ OpenType 可变字体（OpenType variable fonts）技术
 
     Localization--> Simplified Chinese 有两个：
 
-        Core Localization support：中文字体，glibc 库都换成中文版，这样连命令行提示都会显示中文了
+        Core Localization support：内核级的提示换为中文如 glibc 库等，这样连命令行提示都会显示中文
 
         Localization support：给已安装软件添加中文语言包
 
