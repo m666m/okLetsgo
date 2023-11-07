@@ -11150,13 +11150,11 @@ OpenType 可变字体（OpenType variable fonts）技术
 
     上述配置文件对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样就实现了显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
 
-> 目前流行的 Linux 发行版基本都支持 Google Noto 字体
+> 目前流行的 Linux 发行版基本都默认使用 Google Noto 字体
 
-手工安装自行下载的字体的方法参见章节 [Nerd font]。
+Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
 
-添加中文输入法见章节 [使用拼音输入法]。
-
-图形化安装官方仓库的字体，在 Gnome Software 的首页分类里选择
+在 Gnome Software 的首页分类里，就可以安装选择中文字体
 
     Localization--> Simplified Chinese 有两个：
 
@@ -11168,34 +11166,42 @@ OpenType 可变字体（OpenType variable fonts）技术
 
     font：单独选择安装你需要的中文字体
 
-我们还可以在命令行手工安装 Google Noto 字体官方包，这个字体的显示效果比较好。
+可直接手工下载安装，简单操作可以选 ttf -> 简体中文
 
-Sans Serif 字体包：
+    https://github.com/notofonts/noto-cjk/blob/main/Sans/README.md
 
-    $ dnf search google-noto-sans-cjk
-    google-noto-sans-cjk-fonts.noarch : Google Noto Sans CJK Fonts <---- 全部cjk字体 OTF 文件打包
-    google-noto-sans-cjk-hk-fonts.noarch : Traditional Chinese Multilingual Sans OTF font files for google-noto-cjk-fonts
-    google-noto-sans-cjk-jp-fonts.noarch : Japanese Multilingual Sans OTF font files for google-noto-cjk-fonts
-    google-noto-sans-cjk-kr-fonts.noarch : Korean Multilingual Sans OTF font files for google-noto-cjk-fonts
-    google-noto-sans-cjk-sc-fonts.noarch : Simplified Chinese Multilingual Sans OTF font files for google-noto-cjk-fonts  <---- 仅简体中文
-    google-noto-sans-cjk-tc-fonts.noarch : Traditional Chinese Multilingual Sans OTF font files for google-noto-cjk-fonts
-    google-noto-sans-cjk-ttc-fonts.noarch : Sans OTC font files for google-noto-cjk-fonts  <---- 仅简体中文的 OTC 格式打包
-    google-noto-sans-cjk-vf-fonts.noarch : Google Noto Sans CJK Variable Fonts <---- 异体字包，文件小，但是跟前面的 otf 包冲突，且其 otc 文件不一定所有软件都支持
+    https://github.com/notofonts/noto-cjk/blob/main/Serif/README.md
 
-Serif 字体包：
+    手工安装自行下载的字体的方法参见章节 [Nerd font]。
 
-    $ dnf search google-noto-serif-cj
-    google-noto-serif-cjk-fonts.noarch : Google Noto Serif CJK Fonts  <---- 全部cjk字体 OTF 文件打包
-    google-noto-serif-cjk-jp-fonts.noarch : Japanese Multilingual Serif OTF font files for google-noto-cjk-fonts
-    google-noto-serif-cjk-kr-fonts.noarch : Korean Multilingual Serif OTF font files for google-noto-cjk-fonts
-    google-noto-serif-cjk-sc-fonts.noarch : Simplified Chinese Multilingual Serif OTF font files for google-noto-cjk-fonts  <---- 仅简体中文
-    google-noto-serif-cjk-tc-fonts.noarch : Traditional Chinese Multilingual Serif OTF font files for google-noto-cjk-fonts
-    google-noto-serif-cjk-ttc-fonts.noarch : Serif OTC font files for google-noto-cjk-fonts  <---- 仅简体中文的 OTC 格式打包
-    google-noto-serif-cjk-vf-fonts.noarch : Google Noto Serif CJK Variable Fonts <---- 异体字包，文件小，但是跟前面的 otf 包冲突，且其otc 文件不一定所有软件都支持
+    添加中文输入法见章节 [使用拼音输入法]。
 
-我的 Fedora 38 发行版只安装了 Sans，没有 Serif，先手动安装下
+也可以在命令行安装，安装完成后都是 .ttc 字体
 
-    在 Gnome Software 的首页分类里，就可以选择中文字体安装了，更加方便
+    Sans Serif 字体包：
+
+        $ dnf search google-noto-sans-cjk
+        google-noto-sans-cjk-fonts.noarch : Google Noto Sans CJK Fonts <---- 全部cjk字体 OTF 文件打包
+        google-noto-sans-cjk-hk-fonts.noarch : Traditional Chinese Multilingual Sans OTF font files for google-noto-cjk-fonts
+        google-noto-sans-cjk-jp-fonts.noarch : Japanese Multilingual Sans OTF font files for google-noto-cjk-fonts
+        google-noto-sans-cjk-kr-fonts.noarch : Korean Multilingual Sans OTF font files for google-noto-cjk-fonts
+        google-noto-sans-cjk-sc-fonts.noarch : Simplified Chinese Multilingual Sans OTF font files for google-noto-cjk-fonts  <---- 仅简体中文
+        google-noto-sans-cjk-tc-fonts.noarch : Traditional Chinese Multilingual Sans OTF font files for google-noto-cjk-fonts
+        google-noto-sans-cjk-ttc-fonts.noarch : Sans OTC font files for google-noto-cjk-fonts  <---- 仅简体中文的 OTC 格式打包
+        google-noto-sans-cjk-vf-fonts.noarch : Google Noto Sans CJK Variable Fonts <---- 异体字包，文件小，不知为啥报告跟前面的 otf 包冲突。但是这个字体包里好像有 ttf 字体 https://github.com/notofonts/noto-cjk/tree/main/Sans/Variable/TTF
+
+    Serif 字体包：
+
+        $ dnf search google-noto-serif-cj
+        google-noto-serif-cjk-fonts.noarch : Google Noto Serif CJK Fonts  <---- 全部cjk字体 OTF 文件打包
+        google-noto-serif-cjk-jp-fonts.noarch : Japanese Multilingual Serif OTF font files for google-noto-cjk-fonts
+        google-noto-serif-cjk-kr-fonts.noarch : Korean Multilingual Serif OTF font files for google-noto-cjk-fonts
+        google-noto-serif-cjk-sc-fonts.noarch : Simplified Chinese Multilingual Serif OTF font files for google-noto-cjk-fonts  <---- 仅简体中文
+        google-noto-serif-cjk-tc-fonts.noarch : Traditional Chinese Multilingual Serif OTF font files for google-noto-cjk-fonts
+        google-noto-serif-cjk-ttc-fonts.noarch : Serif OTC font files for google-noto-cjk-fonts  <---- 仅简体中文的 OTC 格式打包
+        google-noto-serif-cjk-vf-fonts.noarch : Google Noto Serif CJK Variable Fonts <---- 异体字包，文件小，但是跟前面的 otf 包冲突，且其otc 文件不一定所有软件都支持
+
+我的 Fedora 38 发行版只安装了 Sans，没有 Serif，手动安装下
 
     # https://fedoraproject.org/wiki/Changes/Noto_CJK_Variable_Fonts#Detailed_Description
     # 所有字体的完整版：google-noto-cjk-fonts
