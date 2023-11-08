@@ -224,14 +224,30 @@ Pandas v0.23.4手册汉化
 
     df.loc[df['pname'] ==pname, ['position', 'c_rate']] = df_result[['position', 'c_rate']]
 
-### Pandas中关于reindex(), set_index()和reset_index()的用法
+#### 下标存取，列的某些部分赋值
+
+    https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+    https://blog.csdn.net/snail82/article/details/104584145
+
+    https://blog.csdn.net/learnstudy2/article/details/102643779
+
+首先要保证二者的索引一致
+
+    new_ser = do_something(df.loc[range_mask]['close_y'])
+
+错误写法
+
+    df.loc[range_mask]['close_y'] = new_ser
+
+正确写法
+
+    df.loc[range_mask, 'close_y']=new_ser
+
+### reindex(), set_index() 和 reset_index() 的用法
 
     https://blog.csdn.net/qq_42874547/article/details/89052864
     https://www.cnblogs.com/ljhdo/p/11556410.html
-
-### Pandas详解五之下标存取
-
-    https://blog.csdn.net/learnstudy2/article/details/102643779
 
 ### apply() 和 applymap()的区别
 
