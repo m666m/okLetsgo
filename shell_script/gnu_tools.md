@@ -13058,7 +13058,7 @@ Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP �
 
     https://wiki.archlinux.org/title/Xrdp
 
-    https://github.com/neutrinolabs/xrdp/wiki
+    很多使用经验和技巧都在 wiki https://github.com/neutrinolabs/xrdp/wiki
 
     https://aws.amazon.com/cn/blogs/china/vnc-or-rdp-how-to-choose-a-remote-desktop-on-the-cloud/
 
@@ -13238,7 +13238,7 @@ xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，�
     . . .
     implicit active:   yes
 
-#### Windows 远程桌面(mstsc.exe)连接 xrdp 提速
+##### Windows 远程桌面(mstsc.exe)连接 xrdp 提速
 
 在 mstsc 连接时选择高速网络会自动使用 RFX/GFX 技术
 

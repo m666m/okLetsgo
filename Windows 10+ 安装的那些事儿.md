@@ -2446,6 +2446,8 @@ NAT 模式：
 
         https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-rdpegfx/da5c75f9-cd99-450c-98c4-014a496942b0
 
+        https://github.com/neutrinolabs/xrdp/wiki/On-EGFX-architecture-and-Dynamic-Monitors#architecture
+
     给虚拟机添加和启用 RemoteFX，2019年的文章，过时了
 
         https://zhuanlan.zhihu.com/p/59086305
