@@ -13238,6 +13238,18 @@ xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，�
     . . .
     implicit active:   yes
 
+#### Windows 远程桌面(mstsc.exe)连接 xrdp 提速
+
+在 mstsc 连接时选择高速网络会自动使用 RFX/GFX 技术
+
+    https://github.com/neutrinolabs/xrdp/discussions/2136#discussioncomment-2080012
+
+xrdp 还未实现对 gfx 的支持
+
+    https://github.com/neutrinolabs/xrdp/issues/2506#issuecomment-1387172540
+
+RFX/GFX 技术参见章节 [虚拟机启用显卡加速](Windows 10+ 安装的那些事儿)。
+
 #### VNC
 
 VNC 体系由客户端（viewer）与服务端两部分构成

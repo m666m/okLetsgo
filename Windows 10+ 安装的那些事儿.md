@@ -2285,7 +2285,7 @@ Windows 10+ 在 2020 年代以来，体系架构类似 Xen，混合虚拟化：
 
 新建虚拟机，注意要选择 “第二代” 虚拟化，然后安装 Windows，来宾虚拟机操作系统版本至少为Windows Server 2012 或 Windows 8。
 
-2、在宿主电脑上开启 RemoteFX USB 重定向功能
+2、在宿主电脑上开启 RemoteFX(RFX) USB 重定向功能
 
     在宿主电脑上，按 `win+r` 组合键打开运行窗口，输入 `gpedit.msc` 打开组策略编辑器，依次点击 “计算机配置 -> 管理模板 -> Windows 组件 -> 远程桌面服务 -> 远程桌面会话客户端 -> RemoteFX USB 设备重定向”。
 
@@ -2440,13 +2440,23 @@ NAT 模式：
 
 #### 虚拟机启用显卡加速
 
-    https://zhuanlan.zhihu.com/p/59086305
+如果是远程桌面需要显卡加速，在 mstsc 连接时选择高速网络会自动使用 RFX/GFX 技术。
 
-RemoteFX vGPU 被 替换为 DDA 功能了，只支持客户机独占显卡，且主机不能休眠或关机自动保存虚拟机状态
+    Windows 远程桌面 从 RemoteFX(RFX) 演进出了 GFX
 
-    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/deploy/deploying-graphics-devices-using-dda
+        https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-rdpegfx/da5c75f9-cd99-450c-98c4-014a496942b0
 
-目前看是企业级应用优先，在 Windows Sever 上才好部署，忙着收费 AI 计算呢。
+    给虚拟机添加和启用 RemoteFX，2019年的文章，过时了
+
+        https://zhuanlan.zhihu.com/p/59086305
+
+虚拟机显卡直通 DDA 目前只支持 Windows Server
+
+    RemoteFX vGPU 被 替换为 DDA 功能了，只支持客户机独占显卡，且主机不能休眠或关机自动保存虚拟机状态
+
+        https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/deploy/deploying-graphics-devices-using-dda
+
+目前看是企业级应用优先，在 Windows Sever 上才有 DDA，M$ 忙着赚 AI 云计算的钱呢。
 
 ### docker (Hyper-V)
 
