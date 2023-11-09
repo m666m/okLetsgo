@@ -13054,7 +13054,7 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
     如果是互联网使用的服务器，务必使用 ssh 连接或 2FA 保护你的远程桌面连接，见章节 [xrdp 登陆使用 2FA](init_a_server think)。
 
-Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包支持多种桌面环境，客户端使用 mstsc、remmina 软件。
+Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包支持多种桌面环境，远程桌面连接本机无需本地用户登录，客户端使用支持 rdp 协议的 mstsc、remmina 等软件即可。
 
     https://wiki.archlinux.org/title/Xrdp
 
@@ -13123,7 +13123,10 @@ xrdp 安装后要先做几个设置：
 
     如果安装 Linux 时启用了磁盘加密选项，则必须先本地使用计算机，输入磁盘密码启动操作系统后，才可以使用远程桌面登录。
 
-    注销您本地的 Linux 桌面登录，否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。与 Linunx 发行版内置的 Gnome 共享桌面（实质是共享屏幕）不同，xrdp 支持多用户连接，所以本地的屏幕前看不到远程连接过来的用户的操作，本地屏幕可以是用户登录等待解锁的状态。
+    注销您本地的 Linux 桌面登录（logged in on the system graphical console），否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。与 Linunx 发行版内置的 Gnome 共享桌面（实质是共享屏幕）不同，xrdp 支持多用户连接，所以本地的屏幕前看不到远程连接过来的用户的操作，本地屏幕可以是用户登录等待解锁的状态。
+
+        基于 systemd 的操作系统，多个远程桌面会话使用同一个用户登录，会共享同一个桌面环境，这是 D-Bus 共享数据的设计
+            https://github.com/neutrinolabs/xrdp/wiki/Tips-and-FAQ#why-cant-i-log-the-same-user-on-on-the-graphical-console-and-over-xrdp-at-the-same-time
 
     如果是无人值守（HEADLESS）模式，记得在本地拔下显示器之前，在 Linux 桌面启用自动登录
 
@@ -13155,13 +13158,15 @@ xrdp 安装后要先做几个设置：
 
 xrdp 默认使用 xvnc 实现远程桌面的服务端后端（常用于 Fedora 系），一般操作系统都会自带如 xvnc，或者手动安装 tigervnc-standalone-server 提供优化的 VNC 服务端。
 
-通过安装 xorgxrdp 可以给它添加 XORG 方式（常用于 Debian 系）。xorgxrdp 模块用于搭配 xrdp + X.Org Server，无法单独运作。
+xorgxrdp：
 
-xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，只传递绘制命令，X11rdp 通过将 X11 绘制命令作为 RDP 绘制命令转发而不是简单地将 vnc 位图流包装在 RDP 中，以提高效率。目前看兼容性反而不好，一般用 xrdp 就够了。
+通过安装 xorgxrdp 可以给 xrdp 添加 Xorg 方式，用于使用 X Window 的桌面环境。xorgxrdp 模块用于搭配 xrdp + X.Org Server，无法单独运作。
+
+作为一个xrdp改进技术，为了充分利用 X window 的机制，只传递绘制命令，X11rdp 通过将 X11 绘制命令作为 RDP 绘制命令转发而不是简单地将 vnc 位图流包装在 RDP 中，以提高效率。目前看兼容性反而不好，一般用 xrdp 就够了。
 
     https://github.com/neutrinolabs/xorgxrdp
 
-    Fedora 使用 xorg 而不是 Wayland 作为默认的 GNOME 桌面环境
+    设置 Fedora 使用 xorg 而不是 Wayland 作为默认的 GNOME 桌面环境
 
         https://docs.fedoraproject.org/en-US/quick-docs/configuring-x-window-system-using-the-xorg-conf-file/
 
@@ -13240,11 +13245,15 @@ xorgxrdp：作为一个改进技术，为了充分利用 X window 的机制，�
 
 ##### Windows 远程桌面(mstsc.exe)连接 xrdp 提速
 
-在 mstsc 连接时选择高速网络会自动使用 RFX/GFX 技术
+在 mstsc 连接时选择高速网络，xrdp 会自动使用 RFX 技术
 
     https://github.com/neutrinolabs/xrdp/discussions/2136#discussioncomment-2080012
 
-xrdp 还未实现对 gfx 的支持
+微软从 Windows 11 开始 mstsc 不再支持 RFX，未来必须切换到 GFX 了
+
+    https://github.com/neutrinolabs/xrdp/issues/2400
+
+xrdp 还未实现对 GFX 的支持，对使用 xorgxrdp 的 X window 桌面用户来说,客户端使用 Windows 10 的 mstsc 才能实现提速
 
     https://github.com/neutrinolabs/xrdp/issues/2506#issuecomment-1387172540
 
