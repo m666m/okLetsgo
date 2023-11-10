@@ -8820,13 +8820,14 @@ done
 
 > Fedora 等 Redhat 系使用 chrony
 
-        https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/using-chrony_configuring-basic-system-settings
+    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/using-chrony_configuring-basic-system-settings
 
-        https://www.cnblogs.com/pipci/p/12871993.html
+    https://www.cnblogs.com/pipci/p/12871993.html
 
-        https://wiki.archlinux.org/title/Chrony
+    https://wiki.archlinux.org/title/Chrony
 
-    查看时间同步的状态
+查看时间同步的状态
+
     $ chronyc tracking
     Reference ID    : 54104921 (tick.ntp.infomaniak.ch)
     Stratum         : 2
@@ -8842,21 +8843,57 @@ done
     Update interval : 1035.0 seconds
     Leap status     : Normal
 
-chronyd是一个在系统后台运行的守护进程。主要用于调整内核中运行的系统时间和时间服务器同步，他根据网络上其他时间服务器时间来测量本机时间的偏移量从而调整系统时钟。对于孤立系统，用户可以手动周期性的输入正确时间（通过chronyc）。在这两种情况下，chronyd决定计算机快慢的比例，并加以纠正。chronyd实现了NTP协议并且可以作为服务器或客户端。
+chronyd 是一个在系统后台运行的守护进程。主要用于调整内核中运行的系统时间和时间服务器同步，他根据网络上其他时间服务器时间来测量本机时间的偏移量从而调整系统时钟。对于孤立系统，用户可以手动周期性的输入正确时间（通过chronyc）。在这两种情况下，chronyd 决定计算机快慢的比例，并加以纠正。chronyd 实现了 NTP 协议并且可以作为服务器或客户端
 
-chronyc是用来监控chronyd性能和配置其参数的用户界面。他可以控制本机及其他计算机上运行的chronyd进程。
+    $ systemctl status chronyd
+    ● chronyd.service - NTP client/server
+        Loaded: loaded (/usr/lib/systemd/system/chronyd.service; enabled; preset: enabled)
+        Drop-In: /usr/lib/systemd/system/service.d
+                └─10-timeout-abort.conf
+        Active: active (running) since Fri 2023-11-10 23:29:16 +08; 3h 38min ago
+        Docs: man:chronyd(8)
+                man:chrony.conf(5)
+        Process: 1245 ExecStart=/usr/sbin/chronyd $OPTIONS (code=exited, status=0/SUCCESS)
+    Main PID: 1303 (chronyd)
+        Tasks: 1 (limit: 57594)
+        Memory: 8.1M
+            CPU: 82ms
+        CGroup: /system.slice/chronyd.service
+                └─1303 /usr/sbin/chronyd -F 2
+
+chronyc 是用来监控 chronyd 性能和配置其参数的用户界面。他可以控制本机及其他计算机上运行的 chronyd 进程。
 
     服务unit文件： /usr/lib/systemd/system/chronyd.service
     监听端口： 323/udp，123/udp
     配置文件： /etc/chrony.conf
 
+查看时间同步源，出现^*表示成功
+
+    $ chronyc sources -v
+
+    .-- Source mode  '^' = server, '=' = peer, '#' = local clock.
+    / .- Source state '*' = current best, '+' = combined, '-' = not combined,
+    | /             'x' = may be in error, '~' = too variable, '?' = unusable.
+    ||                                                 .- xxxx [ yyyy ] +/- zzzz
+    ||      Reachability register (octal) -.           |  xxxx = adjusted offset,
+    ||      Log2(Polling interval) --.      |          |  yyyy = measured offset,
+    ||                                \     |          |  zzzz = estimated error.
+    ||                                 |    |           \
+    MS Name/IP address         Stratum Poll Reach LastRx Last sample
+    ===============================================================================
+    ^+ dns1.synet.edu.cn             2  10   377   194   +631us[ +631us] +/-   17ms
+    ^- a.chl.la                      2  10   377   124  -7151us[-7151us] +/-   97ms
+    ^* time.neu.edu.cn               1  10   377   237  +1129us[+1792us] +/-   16ms
+    ^- ntp1.flashdance.cx            2  10   277   372    -24ms[  -24ms] +/-  136ms
+
 > Debian，openSUSE 使用 systemd 自带的时间同步服务 systemd-timesyncd
 
-        https://www.cnblogs.com/pipci/p/12833228.html
+    https://www.cnblogs.com/pipci/p/12833228.html
 
-        https://wiki.archlinux.org/title/Systemd-timesyncd
+    https://wiki.archlinux.org/title/Systemd-timesyncd
 
-    查看时间同步的状态
+查看时间同步的状态
+
     $ timedatectl timesync-status
     Server: 2406:da1e:2b8:7e32:e92a:3c4b:358e:2dfb (2.debian.pool.ntp.org)
     Poll interval: 34min 8s (min: 32s; max 34min 8s)
@@ -8901,7 +8938,11 @@ chronyc是用来监控chronyd性能和配置其参数的用户界面。他可以
     CGroup: /system.slice/systemd-timesyncd.service
             └─338 /lib/systemd/systemd-timesyncd
 
-systemd-timesyncd 只专注于从远程服务器查询然后同步到本地时钟。在/etc/systemd/timesyncd.conf 中配置你的（时间）服务器。大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd只会更改系统时间不会更改硬件时间，可以通过hwclock -w命令将系统时间同步到硬件时间。
+systemd-timesyncd 只专注于从远程服务器查询然后同步到本地时钟。在/etc/systemd/timesyncd.conf 中配置你的（时间）服务器。
+
+大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd 只会更改系统时间不会更改硬件时间，可以通过 `hwclock -w` 命令将系统时间同步到硬件时间。
+
+Linux 处理 RTC 时间跟 Windows 的机制不同，参见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
 
 ### 设置替换命令 update-alternatives
 

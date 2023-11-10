@@ -2119,7 +2119,7 @@ Linux 与 Windows 对于本地 RTC 硬件保存时间的理解方式不同：Lin
 解决办法：让 Linux 按照 Windows 的方式管理时间
 
     # 硬件 RTC 保存的时间是本地时间
-    sudo hwclock --localtime --systohc
+    $ sudo hwclock --localtime --systohc
 
 设置时间服务参见章节 [操作时间时区 timedatectl](gnu_tools.md)。
 
