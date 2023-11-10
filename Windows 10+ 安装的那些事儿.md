@@ -177,7 +177,14 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 9、开启“UEFI Fast Boot”，这样关机后的再次开机很快。参见下面章节 [开启或关闭“快速启动”]
 
-10、寻找英特尔 SpeedStep 技术或 EIST（增强型英特尔 SpeedStep 技术），选择启用或禁用。
+10、寻找英特尔 SpeedStep 技术或增强型英特尔 SpeedStep 技术（EIST），选择启用或禁用。这个技术是2000年代英特尔为笔记本电脑处理器搞出来的节能技术，以能效比为优先策略导致状态切换明显卡顿，特别是激烈的枪战游戏能卡顿你会信？一般台式机玩家都会选择关掉。
+
+后来的 Speed Shift 技术没这么明显的问题了，Windows 10 等操作系统使用这个技术动态调整频率节能甚至睿频（短时超频），用户感知不明显，一般开启即可。或可用 Intel XTU、Throttlestop 软件手动调整 EPP 的设置，降低响应延迟。
+
+    https://zhuanlan.zhihu.com/p/42438026
+    https://zhuanlan.zhihu.com/p/109877021
+
+如果讨厌这种cpu级别频率变动技术带来的动态延迟变化，直接在 BIOS 关闭所有的这些相关选项，把cpu频率设置也定在固定频率即可。这样可以观察到你的cpu 频率和功耗不再动态变化，一直稳定在官方 TDP 值。
 
 ### 电源功耗 PL1/PL2
 
@@ -1193,6 +1200,10 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
     主板 BIOS 中的 FAST BOOT 选项也要关闭。
 
 ## 常用软件工具
+
+hwinfo 最好的系统传感器监控软件，没有之一，支持全球计算机传感器，比主板自带的监控软件可用性大多了
+
+    https://www.hwinfo.com/
 
 问题步骤记录器
 
@@ -2921,9 +2932,9 @@ GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需�
 
 ### 主板 Ultra Fast 启动无法再用键盘进入 BIOS 设置
 
-在操作系统中引导到 UEFI 固件设置。
+在操作系统的重启选项中选择引导到 UEFI 固件设置。
 
-很多支持 Fast Boot 的主板，在主板 BIOS 的“Fast Boot”项设置了“Ultra Fast”之后，开机过程中不能用键盘进入 BIOS 了，解决办法是在操作系统中指定下一次重启进入 BIOS。
+很多支持 Fast Boot 的主板，在主板 BIOS 的“Fast Boot”项设置了“Ultra Fast”之后，在开机过程中不能用按F1进入 BIOS 设置了，解决办法是在操作系统中指定下一次重启进入 BIOS设置。
 
 对技嘉 B560M AORUS PRO 主板来说，实际试了一下，没感觉到 Ultra Fast 比 Fast Boot 快。
 而且我的 usb 键盘鼠标网卡都挂在显示器集成的 usb hub 上，设备比较多，开机时 UEFI 加载这堆驱动没法跳过，没什么用的感觉。
@@ -2953,15 +2964,19 @@ Windows 10 重启之后你将会看到出现一个界面提供选项，选择“
 
 #### Linux 指定重启到 UEFI 固件的步骤
 
-    Linux 也可以在重启时告诉系统下一次启动进入 UEFI 设置。使用 systemd 的 Linux 系统有 systemctl 工具可以设置。
+Linux 也可以在重启时告诉系统下一次启动进入 UEFI 设置。使用 systemd 的 Linux 系统有 systemctl 工具可以设置。
 
-    可以查看帮助：systemctl --help|grep firmware-setup
+    https://www.freedesktop.org/software/systemd/man/systemctl.html#--firmware-setup
+
+可以查看帮助：
+
+    $ systemctl --help|grep firmware-setup
 
     --firmware-setup Tell the firmware to show the setup menu on next boot
-    直接在命令行执行下面命令即可在下一次启动后进入 UEFI 设置。
 
-    systemctl reboot --firmware-setup
-    参考资料：https://www.freedesktop.org/software/systemd/man/systemctl.html#--firmware-setup
+在命令行执行下面命令即可在下一次启动后进入 UEFI 设置:
+
+    $ systemctl reboot --firmware-setup
 
 ### 显示器在 Win10 开启 HDR 变灰泛白的原因
 
