@@ -7321,7 +7321,9 @@ od :按数制显示内容
 
     https://blog.csdn.net/slimmm/article/details/115720184
 
-    竞品 qBittorrent https://www.qbittorrent.org/
+竞品 qBittorrent
+
+    https://www.qbittorrent.org/
 
 开源的下载工具，都是有个后台进程负责下载，前台负责任务管理。
 
@@ -7387,12 +7389,30 @@ od :按数制显示内容
 
 #### Aria2
 
+支持 http、bt 等多种格式，可惜不更新了
+
     https://github.com/aria2/aria2
         https://aria2.github.io/
 
-支持 http、bt 等多种格式，可惜不更新了。
-
     Aria2 完美配置 https://github.com/P3TERX/aria2.conf
+
+替代品 uget，自动调用 aria2 支持bt下载
+
+    https://ugetdm.com/
+
+    $ sudo dnf install uget aria2
+
+    安装后设置选择，插件选 curl 和 aira2 即可。
+
+替代品 axel
+
+    https://github.com/axel-download-accelerator/axel
+
+    $ sudo dnf install axel
+
+替代品 xdm，这个有图形界面
+
+    https://github.com/subhra74/xdm/releases
 
 命令行传输各种参数，设置复杂，直接用 p3terx 做的 docker 得了
 
@@ -8569,243 +8589,6 @@ hollywood 让你的 tmux 跑满各种夸张程序，就像好莱坞的科幻电�
 
         $ sudo make install
 
-### 项目构建工具 Make、Automake、CMake、Ninja
-
-Make
-
-    http://www.gnu.org/software/make/manual/html_node/index.html#SEC_Contents
-
-Make的流行也带动起一批自动生成Makefile的工具，目的就是进一步减轻项目构建中的工作量，让我们程序员全身心投入到开发之中。在这些工具中，不得不提Automake和CMake。
-
-Automake
-
-Automake 其实是一系列工具集 Autotools 中的一员，要想发挥Automake的威力，需要配合使用 Autotools 中的其他工具，例如 autoscan、aclocal、autoconf 和 autoheader。在下面的 Automake 构建流程中，能看到这些工具的身影。
-
-    autoscan：生成 configure.scan
-
-    configure.in：将 configure.scan 重命名为 configure.in 后，修改内容。重点是 AM_INIT_AUTOMAKE 和 AC_CONFIG_FILES 两项，如果没配置的话，下一步的 aclocal 是无法产生 aclocal.m4 的
-
-    aclocal：生成 aclocal.m4
-
-    autoconf：生成 configure
-
-    autoheader：生成 config.h.in，使程序可移植
-
-    Makefile.am：手动编写 Makefile.am。bin_PROGRAMS 指定最终生成可执行文件的名称，helloworld_SOURCES 指定所有源文件
-
-    NEWS AUTHORS README ChangeLog：手动创建
-
-    automake：执行 `automake -a` 生成 Makefile.in
-
-    configure：执行 ./configure 生成Makefile
-
-CMake
-
-重新用CMake生成Makefile，Automake中的9步被压缩到了只需要2步！
-
-    编写CMakeLists.txt
-
-    执行cmake .
-
-Ninja
-
-Ninja通过将编译任务并行组织，大大提高了构建速度。
-
-    https://ninja-build.org/
-        https://github.com/ninja-build/ninja
-
-    https://www.cnblogs.com/sandeepin/p/ninja.html
-
-Ninja 还集成了 graphviz 等一些对开发非常有用的工具，执行 `./ninja -t list`
-
-    ninja subtools:
-
-        browse        # 在浏览器中浏览依赖关系图。（默认会在 8080 端口启动一个基于python的http服务）
-        clean         # 清除构建生成的文件
-        commands      # 罗列重新构建制定目标所需的所有命令
-        deps          # 显示存储在deps日志中的依赖关系
-        graph         # 为指定目标生成 graphviz dot 文件。
-                        如 ninja -t graph all |dot -Tpng -ograph.png
-        query         # 显示一个路径的inputs/outputs
-        targets       # 通过DAG中rule或depth罗列target
-        compdb        # dump JSON兼容的数据库到标准输出
-        recompact     # 重新紧凑化ninja内部数据结构
-
-可通过cmake来生成ninja的配置，进而进行编译
-
-    # 生成ninja工程
-    cmake -Bbuild -GNinja
-
-    # 运行ninja编译
-    ninja
-
-### 查看可执行文件的依赖项 libtree
-
-命令 ldd 可以查看可执行程序或共享库依赖的库
-
-libtree 树状展示更清晰
-
-    https://github.com/haampie/libtree/
-
-    sudo apt install libtree
-
-    sudo dnf install libtree-ldd
-
-标准设置给出的太少，还是得加参数使用
-
-    $ libtree -v -p /usr/bin/ls
-    /usr/bin/ls
-    ├── /lib64/libselinux.so.1 [default path]
-    │   ├── /lib64/libpcre2-8.so.0 [default path]
-    │   │   └── /lib64/libc.so.6 [default path]
-    │   ├── /lib64/ld-linux-x86-64.so.2 [default path]
-    │   └── /lib64/libc.so.6 [default path]
-    ├── /lib64/libc.so.6 [default path]
-    └── /lib64/libcap.so.2 [default path]
-        └── /lib64/libc.so.6 [default path]
-
-### 文本生成流程图 graphviz
-
-    https://www.graphviz.org/
-
-    https://stackoverflow.com/questions/4366511/is-there-a-jquery-plugin-for-dot-language-file-visualization/
-
-    竞品 Mermaid，支持特点的流行软件工程流程图等，语法结构类似
-
-        https://mermaid.js.org/intro/
-
-There are three different implementations:
-
-1.Render svg in simple js, no needs install of graphviz
-
-    jquery.graphviz.svg[DEPRECATED] https://github.com/mountainstorm/jquery.graphviz.svg
-
-        jQuery plugin to make Graphviz SVG output more interactive and easier to navigate. Makes it easy to have features like:
-
-        Highlight nodes/edges
-        Zoom in/out
-        Graph navigation - select linked nodes
-        Fancy UI tooltips; bootstrap supported out the box
-        Move things forward/back in the graph
-
-        Have a look at the demo: https://cdn.rawgit.com/mountainstorm/jquery.graphviz.svg/master/demo.html
-
-2.Based on d3.js
-
-    d3.js + hpcc-js-wasm https://github.com/magjac/d3-graphviz
-
-        build graphviz to wasm https://github.com/hpcc-systems/hpcc-js-wasm
-
-    d3.js + dagre https://github.com/dagrejs/dagre-d3
-
-        pure js library from graphviz https://github.com/dagrejs/dagre
-
-3.server side call graphviz binary to generate svg file.
-
-    http://viz-js.com/
-
-        https://github.com/mdaines/viz.js
-
-    https://github.com/dreampuf/GraphvizOnline
-
-命令行使用 dot 文件转为图片文件
-
-    dot -Tsvg xxx.dot -o xxx.svg
-
-### TODO:使用 doxygen 从源码注释生成帮助文档
-
-    https://www.cnblogs.com/arnoldlu/p/11552271.html
-
-主要包括三部分：在代码中添加 doxygen 规则注释；生成 doxygen 配置文档 doxyfile；graphviz 的 dot 布局可视化配置。
-
-    sudo apt install doxygen
-    sudo apt install doxygen-gui
-    sudo apt install graphviz graphviz-doc
-
-使用 graphviz 的 dot 功能，可以生成详细的函数调用关系图、include关系图等，提高阅读效率。
-
-### 压力测试
-
-dd 可用于做 i/o 速率测试：
-
-不执行 `sync` 的话，其实是生成数据到内存的速率
-
-    # 测试内存最大写入速率
-    $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000
-    3000+0 records in
-    3000+0 records out
-    24576000 bytes (25 MB, 23 MiB) copied, 0.0136067 s, 1.8 GB/s
-
-    # 测试当前系统的随机数生成能力
-    $ dd if=/dev/urandom of=/tmp/file_01.txt bs=8K count=3000
-    3000+0 records in
-    3000+0 records out
-    24576000 bytes (25 MB, 23 MiB) copied, 0.0276212 s, 890 MB/s
-
-读取到内存后，一次性同步到硬盘的速率
-
-    $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000 conv=fdatasync
-    3000+0 records in
-    3000+0 records out
-    24576000 bytes (25 MB, 23 MiB) copied, 0.0365097 s, 673 MB/s
-
-执行时每次都进行同步到硬盘的操作，下例是做了3000次8k写入硬盘
-
-    $ $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000 oflag=dsync
-    3000+0 records in
-    3000+0 records out
-    24576000 bytes (25 MB, 23 MiB) copied, 0.280321 s, 87.7 MB/s
-
-如果要防止硬盘缓存优化，写入量要加大，比如 1 GB 的文件写入速率更客观 bs=64k count=16k
-
-stress-ng 压测 cpu 的著名工具
-
-    # sudo apt install stress-ng
-    stress-ng -c 2 --cpu-method pi --timeout 60
-    stress-ng -i 1 --timeout 60
-    stress-ng -m 1 --timeout 60
-
-    s-tui 是 stress-ng 的命令行前端，用户只需要按键选择即可方便的测试和查看压测情况
-
-        $ sudo apt install s-tui -y
-        $ s-tui
-
-```shell
-# 简单的脚本用于 cpu 加热，入参是cpu的核心数
-#!/bin/bash
-# Destription: testing cpu usage performance
-# Example    : sh cpu_usage.sh 12
-# Remark     : cat /proc/cpuinfo | grep "processor"|wc -l    #12==>Get the number of processor
-# Date       : 2015-1-12
-# update     : 2015-1-12
-
-endless_loop()
-{
-  echo -ne "i=0;
-
-  while true
-  do
-    i=i+100;
-    i=100
-  done" | /bin/bash &
-}
-
-if [ $# != 1 ] ; then
-  echo "USAGE: $0 <CPUs>"
-  exit 1;
-fi
-for i in `seq $1`
-do
-  endless_loop
-  pid_array[$i]=$! ;
-done
-
-for i in "${pid_array[@]}"; do
-  echo 'kill ' $i ';';
-done
-
-```
-
 ### 操作时间 timedatectl/chronyc
 
     用 timedatectl 命令操作时间时区  https://www.cnblogs.com/zhi-leaf/p/6282301.html
@@ -8960,6 +8743,88 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 设置替换版本
 
     update-alternatives --config vi
+
+### 压力测试
+
+dd 可用于做 i/o 速率测试：
+
+不执行 `sync` 的话，其实是生成数据到内存的速率
+
+    # 测试内存最大写入速率
+    $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000
+    3000+0 records in
+    3000+0 records out
+    24576000 bytes (25 MB, 23 MiB) copied, 0.0136067 s, 1.8 GB/s
+
+    # 测试当前系统的随机数生成能力
+    $ dd if=/dev/urandom of=/tmp/file_01.txt bs=8K count=3000
+    3000+0 records in
+    3000+0 records out
+    24576000 bytes (25 MB, 23 MiB) copied, 0.0276212 s, 890 MB/s
+
+读取到内存后，一次性同步到硬盘的速率
+
+    $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000 conv=fdatasync
+    3000+0 records in
+    3000+0 records out
+    24576000 bytes (25 MB, 23 MiB) copied, 0.0365097 s, 673 MB/s
+
+执行时每次都进行同步到硬盘的操作，下例是做了3000次8k写入硬盘
+
+    $ $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000 oflag=dsync
+    3000+0 records in
+    3000+0 records out
+    24576000 bytes (25 MB, 23 MiB) copied, 0.280321 s, 87.7 MB/s
+
+如果要防止硬盘缓存优化，写入量要加大，比如 1 GB 的文件写入速率更客观 bs=64k count=16k
+
+stress-ng 压测 cpu 的著名工具
+
+    # sudo apt install stress-ng
+    stress-ng -c 2 --cpu-method pi --timeout 60
+    stress-ng -i 1 --timeout 60
+    stress-ng -m 1 --timeout 60
+
+    s-tui 是 stress-ng 的命令行前端，用户只需要按键选择即可方便的测试和查看压测情况
+
+        $ sudo apt install s-tui -y
+        $ s-tui
+
+```shell
+# 简单的脚本用于 cpu 加热，入参是cpu的核心数
+#!/bin/bash
+# Destription: testing cpu usage performance
+# Example    : sh cpu_usage.sh 12
+# Remark     : cat /proc/cpuinfo | grep "processor"|wc -l    #12==>Get the number of processor
+# Date       : 2015-1-12
+# update     : 2015-1-12
+
+endless_loop()
+{
+  echo -ne "i=0;
+
+  while true
+  do
+    i=i+100;
+    i=100
+  done" | /bin/bash &
+}
+
+if [ $# != 1 ] ; then
+  echo "USAGE: $0 <CPUs>"
+  exit 1;
+fi
+for i in `seq $1`
+do
+  endless_loop
+  pid_array[$i]=$! ;
+done
+
+for i in "${pid_array[@]}"; do
+  echo 'kill ' $i ';';
+done
+
+```
 
 ### 查看计算机的传感器如温度、风扇
 
