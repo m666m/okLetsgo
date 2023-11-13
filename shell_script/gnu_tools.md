@@ -7302,9 +7302,21 @@ od :按数制显示内容
         https://github.com/XIU2/TrackersListCollection
             https://trackerslist.com/
 
+uget 有图形界面，自动调用 aria2 支持bt下载
+
+    https://ugetdm.com/
+
+    $ sudo dnf install uget aria2
+
+    安装后设置选择，插件选 curl + aria2 即可，配置 aria2 参数见章节 [Aria2]。
+
+xdm 有图形界面
+
+    https://github.com/subhra74/xdm/releases
+
 #### Transmission
 
-是一种 BitTorrent 客户端，特点是一个跨平台的后端和其上的简洁的用户界面。
+一种 BitTorrent 客户端，特点是一个跨平台的后端和其上的简洁的用户界面。
 
     https://transmissionbt.com/
         https://github.com/transmission/transmission
@@ -7396,25 +7408,13 @@ od :按数制显示内容
 
     Aria2 完美配置 https://github.com/P3TERX/aria2.conf
 
-替代品 uget，自动调用 aria2 支持bt下载
-
-    https://ugetdm.com/
-
-    $ sudo dnf install uget aria2
-
-    安装后设置选择，插件选 curl 和 aira2 即可。
-
 替代品 axel
 
     https://github.com/axel-download-accelerator/axel
 
     $ sudo dnf install axel
 
-替代品 xdm，这个有图形界面
-
-    https://github.com/subhra74/xdm/releases
-
-命令行传输各种参数，设置复杂，直接用 p3terx 做的 docker 得了
+Aria2 的命令行传输各种参数，设置复杂，直接用 p3terx 做的 docker 得了
 
     Aria2 Pro: 基于 Aria2 完美配置和特殊定制优化的 Aria2 Docker
         https://p3terx.com/archives/docker-aria2-pro.html
