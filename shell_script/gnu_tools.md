@@ -7480,7 +7480,9 @@ Aria2 的命令行传输各种参数，设置复杂，直接用 p3terx 做的 do
         --header "Sec-WebSocket-Version: 13" \
         http://localhost:16800/jsonrpc
 
-配置为 systemd 自启动 ~/.config/systemd/user/aria2cd.service
+TODO: 配置在 distrobox 这种交互式容器里运行，只响应端口请求
+
+TODO:配置为 systemd 自启动 ~/.config/systemd/user/aria2cd.service
 
     ```conf
     [Unit]
@@ -7494,7 +7496,7 @@ Aria2 的命令行传输各种参数，设置复杂，直接用 p3terx 做的 do
     WantedBy=default.target
     ```
 
-命令行手动启动 start_rcp.bat 样例
+TODO:命令行手动启动 start_rcp.bat 样例
 
     ```bat
 
