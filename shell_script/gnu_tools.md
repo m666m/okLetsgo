@@ -7486,38 +7486,17 @@ TODO: 配置在 distrobox 这种交互式容器里运行，只响应端口请求
 
 TODO:配置为 systemd 自启动 ~/.config/systemd/user/aria2cd.service
 
-    ```conf
-    [Unit]
-    Description=aria2 Daemon
+```conf
+[Unit]
+Description=aria2 Daemon
 
-    [Service]
-    Type=forking
-    ExecStart=/usr/bin/aria2c --conf-path=/path/to/conf
+[Service]
+Type=forking
+ExecStart=/usr/bin/aria2c --conf-path=$HOME/.aria2/aria2.conf --save-session=$HOME/.aria2/download.session --input-file=$HOME/.aria2/download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=$HOME/.aria2/dht.dat --dht-file-path6=$HOME/.aria2/dht6.dat --dht-listen-port=26701 --dir=$HOME/Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
-    [Install]
-    WantedBy=default.target
-    ```
-
-TODO:命令行手动启动 start_rcp.bat 样例
-
-    ```bat
-
-    aria2c.exe --conf-path=C:\tools\aria2\aria2.conf --save-session=C:\tools\aria2\download.session --input-file=C:\tools\aria2\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=C:\tools\aria2\dht.dat --dht-file-path6=C:\tools\aria2\dht6.dat --dht-listen-port=26701 --dir=C:\Users\sweethome\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
-
-    ```
-
-命令行手动启动 start_rpc.ps1 样例
-
-    ```powershell
-
-    Start-Process -WindowStyle hidden -FilePath (C:\tools\aria2\aria2c.exe --conf-path=C:\tools\aria2\aria2.conf --save-session=C:\tools\aria2\download.session --input-file=C:\tools\aria2\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=C:\tools\aria2\dht.dat --dht-file-path6=C:\tools\aria2\dht6.dat --dht-listen-port=26701 --dir=C:\Users\sweethome\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94)
-
-    # PowerShell.exe -windowstyle hidden -FilePath xxx.ps1
-    #Start-Job -ScriptBlock {
-    #  C:\tools\aria2\aria2c.exe --conf-path=C:\tools\aria2\aria2.conf --save-session=C:\tools\aria2\download.session --input-file=C:\tools\aria2\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=C:\tools\aria2\dht.dat --dht-file-path6=C:\tools\aria2\dht6.dat --dht-listen-port=26701 --dir=C:\Users\sweethome\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
-    #}
-
-    ```
+[Install]
+WantedBy=default.target
+```
 
 配置文件 aira2.conf，以 Motrix 为例
 
