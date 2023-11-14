@@ -140,6 +140,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias ggcs='echo "[对称算法加密，默认选择当前可用的私钥签名，可用 -u 指定，默认生成的.gpg文件。]" && gpg -s --cipher-algo AES-256 -c'
     # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
     alias ggd='gpg -d'
+    # 映射内存目录
+    alias ggdrv='echo "[映射内存目录] mount --mkdir -t ramfs ramfs /root/tmp [用完了解除挂载即可] sync; umount /root/tmp"'
 
     # 只下载了一个文件，从校验和文件中抽出单个文件进行校验 `sha256sumf abc.iso SHA256SUMS.txt`
     function sha256sumf {
