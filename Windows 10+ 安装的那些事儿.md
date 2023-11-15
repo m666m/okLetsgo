@@ -479,14 +479,49 @@ Windows 安装完成后，运行 msinfo32，在 “系统摘要” 界面找 “
 
 ## 主板 BIOS 打开网络唤醒功能
 
+1、主板设置
+
+    https://www.gigabyte.cn/Motherboard/B560M-AORUS-PRO-rev-10/support#support-dl-driver
+
+    https://zhuanlan.zhihu.com/p/458830886
+
 根据产品规格指出，此产品有提供网络唤醒 (Wake On LAN) 的功能，但是找不到相关设定或是开关可以启用该选项。
 
+    注意，有些机器可能为Wake On Lan或Wake On PCI Card。Wake On Lan模式可以在完全关机状态下唤醒，而Wake On PCI Card模式要在深度休眠状态下唤醒。造成这样的区别主要是因为主板的设计不一样，现在的计算机一般都是Wake On PCI Card模式的。
+
 首先，请在开机时进入 BIOS 设定程序，在电源管理选项中，请启用 PME EVENT WAKEUP 功能，然后储存设定退出程序，再重新启动进入 Windows 后，请开启设备管理器窗口，检查网络卡内容并开启唤醒功能相关设定即可。
+
 如果使用的网络卡上有 WOL 接头，需配合主板上 WOL 接头；如果使用的网络卡上没有 WOL 接头，且它的规格是 PCI 2.3，则依上述的方法即可。
 
-<https://www.gigabyte.cn/Motherboard/B560M-AORUS-PRO-rev-10/support#support-dl-driver>
+2、 操作系统关闭快速启动
 
 注意：确认 Windows 10 快速启动功能是否关闭，参见下面章节 [开启或关闭“快速启动”]  <https://www.asus.com.cn/support/FAQ/1045950>
+
+3、操作系统设置网卡驱动程序的参数
+
+有些网卡支持的网络唤醒模式较多，还需要在操作系统里设置驱动程序参数才可以
+
+    https://www.intel.cn/content/www/cn/zh/support/articles/000059062/ethernet-products/intel-killer-ethernet-products.html
+
+    https://zhuanlan.zhihu.com/p/29100706
+
+Windows：
+
+设备管理器里找到网卡点击驱动程序设置参数，勾选允许网络唤醒，关闭“允许计算机关闭此设备以节省电源”
+
+Linux：
+
+    # 先查看网卡名称
+    $ ip addr
+
+    # 查看网卡有没有 wake 字样
+    $ ethtool -S enp0s31f6
+
+一般设置为 g 模式
+
+    $ ethtool -s enp0s31f6 wol g
+
+如果机器重启后，eth0的设置又会回复到Wake-on: d 状态，则需要自行写一个 systemd 任务即可。
 
 ## 主板开启待机状态 USB 口供电功能和定时自动开机功能
 
