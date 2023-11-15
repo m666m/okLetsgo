@@ -11316,7 +11316,7 @@ Gnome 桌面默认只展示壁纸，不能放文件，用户交互操作强调�
 
         不像 Windows，任务栏没有给让你选择切换打开的各个程序的方法，这个任务栏的交互功能有限，大多时候的用途只是展示当前的状态（目的是演变成无交互的状态栏？），单击程序的图标只是弹出一个菜单让你选择多个实例窗口。这导致我在日常使用中除了看时间和点关机按钮，基本很少看任务栏。
 
-开机后默认展示的是 “任务概览”（Overview），列出桌面列表和桌面内容，在底部有一个常用工具栏（Dash）快捷启动你的程序。
+开机后默认展示的是 “任务概览”（Overview），列出桌面列表和桌面内容，在底部有一个常用工具栏（Dash）快捷启动你的程序，当前打开的程序图标也显示在这里。
 
 目前的 Gnome 44 在用户点击选择一个桌面后，会进入空白桌面，除了壁纸，只有顶部的任务栏
 
@@ -11394,7 +11394,7 @@ Gnome 桌面默认只展示壁纸，不能放文件，用户交互操作强调�
 
 #### 使用 gnome 扩展
 
-    刚装完系统之后的 Gnome 桌面，会让你发楞，感觉什么都没有，也什么都不能设置
+    刚装完系统之后的 Gnome 桌面在用户使用引导方面很弱，会让你发楞，感觉什么都没有，也什么都不能设置
 
 Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚至把文件管理器的主题色彩定制都取消了。这与 kde 桌面预置大量功能供用户把玩不同，在 Gnome 桌面没有什么设置选项，大多数定制功能需要用户自行安装扩展才能使用
 
@@ -11428,15 +11428,23 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
 推荐安装的第三方扩展：
 
+提升效率类
+
     Dash to Dock            把常用工具栏变成一直可用的浮动工具栏，不需要进入“任务概览”才能找到了。浮动工具栏在用户打开的应用程序窗口覆盖该区域后就会自动隐藏，任何时候鼠标在屏幕的底边中部碰碰就会弹出（也可设置一直显示）。可以设置用多个点表示一个程序打开了几个实例，多次点击应用程序图标会在同一应用的多个窗口间切换。我最常用的操作就是鼠标撞几下屏幕底部，就撞出来浮动工具栏了。竞品 Dash2Dock Lite 类似苹果机的动画效果，响应更敏捷。
 
-    Dash to Panel           把常用工具栏变成底部的固定工具栏，类似 Windows 任务栏一样使用。这样就不需要那个内置的 Application Menu 扩展了，感觉不如 Dash to Dock 更灵动。
+    Dash to Panel           把常用工具栏变成底部的固定工具栏，类似 Windows 任务栏一样使用。这样就不需要内置的 Application Menu 扩展了，感觉不如 Dash to Dock 更灵动。
 
     上面这俩扩展必装一个，大大提升你的工作效率
 
-    Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以设置不再把窗口分组为应用和应用的实例，实现类似 Windows 的 “task switch”。
-
     quake-mode              设置热键，以下拉方式调出你的程序窗口，所有工作区共享该程序，再次按热键即隐藏该窗口。对程序员来说，设置热键 alt + enter 调出一个半屏的 terminal 窗口极其方便实用。
+
+    Grand Theft Focus       打开文件对话框显示在你的应用窗口后面，系统弹窗告诉你有个对话框打开了。。。这是病，得治！
+
+    Unblank lock screen     如果长时间在锁屏界面会自动黑屏，鼠标晃不醒就只能蒙着打密码了，这也是病，得治！
+
+    Alphabetical App Grid   应用程序列表“居然”是不按字母顺序排列的，而且无法拖放调整位置，这是不是该治的病！用这个扩展强制按字母顺序排列。
+
+    Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以设置不再把窗口分组为应用和应用的实例，实现类似 Windows 的 “task switch”。
 
     Auto Move Windows       把你常用的程序归类，在指定桌面打开窗口，适合经常同时打开很多应用程序的场景，竞品 put windows。
 
@@ -11446,16 +11454,24 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用。竞品 Pano Clipboard Manager 可以显示复制的富媒体内容，需要安装依赖 `sudo dnf install libgda libgda-sqlite`。
 
-    allow locked remote desktop
-                            解除内置的远程桌面的本地锁定限制，允许在本地桌面未解锁的情况下以远程桌面登录本机。
-
     Lock Keys               有些键盘的数字键盘和大写键没有指示灯，用这个在任务栏的系统区进行提示。
 
+    nothing to say          在任务栏可以看到你的麦克风状态并手动控制是否静音，大大改善你的隐私保护
+
     Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口。
+
+    system-monitor-next     在任务栏显示你的cpu、内存使用情况，就像在终端使用 btop 或 nmon 的效果。竞品 Vitals/Freon。
 
     Power Profile Switcher  使用AC电源时能源策略选择高性能，使用电池时能源策略使用节能，自动切换。在我的台式机上不准，总是切换到均衡。
 
     Prime Helper            让你方便的切换使用集成显卡或独立显卡，需要先安装支持 `prime-select` 的 prime 应用程序。竞品 GPU Profile Selector 需要先安装 envycontrol(https://github.com/geminis3/envycontrol)
+
+    allow locked remote desktop
+                            解除内置的远程桌面的本地锁定限制，允许在本地桌面未解锁的情况下以远程桌面登录本机，未验证是否有效。
+
+界面美化类
+
+    User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开主题并切换显示了，这居然不是内置功能。
 
     Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸，还可设置锁屏背景。
 
@@ -11470,19 +11486,13 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Nigh Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现自动定时切换。
 
-    User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开主题并切换显示了，这居然不是内置功能。
-
     Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能。
 
-    Alphabetical App Grid   应用程序列表“居然”是不按字母顺序排列的，而且无法拖放调整位置，用这个强制按字母顺序排列。
-
-    Date Menu Formater      如果在任务栏显示的时间没有星期，可以在 Gnome Tweaks 中开启即可，这个扩展可以调整日期时间的格式。
+    Date Menu Formater      如果在任务栏显示的时间没有星期，在 Gnome Tweaks 中开启即可，这个扩展可以调整日期时间的格式。
 
     Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在系统设置的天气里的已经设置过位置了，使用这个就不需要上面的 Date Menu Formater 扩展了。
 
     Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date）
-
-    system-monitor-next     在任务栏显示你的cpu、内存使用情况，竞品 Vitals/Freon，我觉得不如在终端使用 btop 更全面直观。
 
 GNOME 桌面组件扩展的自定义选项 “Gnome Tweaks”，在软件管理里搜索安装 “tweaks” 即可找到
 
