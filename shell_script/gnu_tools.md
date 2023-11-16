@@ -7306,17 +7306,15 @@ od :按数制显示内容
 
 uget 有图形界面，自动调用 aria2 支持bt下载
 
-    https://ugetdm.com/
-        https://github.com/ugetdm/uget
+    https://github.com/ugetdm/uget
 
     $ sudo dnf install uget aria2
 
-    安装后设置选择，插件选 curl + aria2 即可，配置 aria2 参数见章节 [Aria2]。
+    安装后设置选择，插件选 aria2 + curl 即可，配置 aria2 参数见章节 [Aria2]。
 
 xdm 有图形界面
 
-    https://xtremedownloadmanager.com/
-        https://github.com/subhra74/xdm/releases
+    https://github.com/subhra74/xdm/releases
 
 #### Aria2
 
