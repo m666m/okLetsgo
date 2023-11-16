@@ -7299,14 +7299,15 @@ od :按数制显示内容
 
 每日更新tracker
 
-        https://github.com/ngosang/trackerslist
+    https://github.com/ngosang/trackerslist
 
-        https://github.com/XIU2/TrackersListCollection
-            https://trackerslist.com/
+    https://github.com/XIU2/TrackersListCollection
+        https://trackerslist.com/
 
 uget 有图形界面，自动调用 aria2 支持bt下载
 
     https://ugetdm.com/
+        https://github.com/ugetdm/uget
 
     $ sudo dnf install uget aria2
 
@@ -7314,96 +7315,12 @@ uget 有图形界面，自动调用 aria2 支持bt下载
 
 xdm 有图形界面
 
-    https://github.com/subhra74/xdm/releases
-
-#### Transmission
-
-一种 BitTorrent 客户端，特点是一个跨平台的后端和其上的简洁的用户界面。
-
-    https://transmissionbt.com/
-        https://github.com/transmission/transmission
-
-    安装配置说明
-        https://trac.transmissionbt.com/wiki/UnixServer/Debian
-        https://github.com/transmission/transmission/wiki/Editing-Configuration-Files
-
-    简单点直接 docker
-
-        https://registry.hub.docker.com/r/linuxserver/transmission/
-
-        https://registry.hub.docker.com/r/andrewmhub/transmission-tracker-add/
-
-    https://blog.csdn.net/slimmm/article/details/115720184
-
-竞品 qBittorrent
-
-    https://www.qbittorrent.org/
-
-开源的下载工具，都是有个后台进程负责下载，前台负责任务管理。
-
-    transmission-gtk: GTK+界面客户端。
-
-    transmission-qt: QT界面客户端。
-
-    transmission-cli: 命令行BT客户端。
-
-    transmission-daemon: 是一个Transmission的后台守护程序，本身不具备操作指令，只能通过Web客户端或者transmission-remote-cli来进行控制。这个程序特别适合安装在服务器上或者嵌入式系统中，以及一些没有显示器的设备上。
-
-    transmission-remote-cli: 用来控制transmission-daemon的命令套件，本身不具备下载BT的功能，只能够配合daemon使用。
-
-1、主要安装服务端
-
-    apt install transmission-daemon
-
-系统级配置文件目录： /var/lib/transmission-daemon/info/
-
-    settings.json    主要配置文件，设置daemon的各项参数，包括RPC的用户名密码配置。其软链接指向/etc/transmission-daemon/settings.json。配置说明
-
-    torrents/    用户存放.torrent种子文件的目录,凡是添加到下载任务的种子，都存放在这里。.torrent的命名包含,种子文件本身的名字和种子的SHA1 HASH值。
-
-    resume/    该存放了.resume文件，.resume文件包含了一个种子的信息，例如该文件哪些部分被下载了，下载的数据存储的位置等等。
-
-    blocklists/    存储被屏蔽的peer的地址。
-
-    注意：在编辑Transmission的配置文件的时候，需要先关闭daemon进程。
-
-默认创建一个用户来专门运行transmission-daemon，用户名为：debian-transmission。
-
-注意： 如果使用另外一个用户来运行transmission-daemon的话，会在该用户的目录下，创建一个.config/transmission-daemon的文件夹，在这个文件夹里有单独的settings.json配置文件来配置这个用户对应的daemon进程，下载目录也会变为$HOME/Download。
-
-    # 启动
-    sudo service transmission-daemon start
-
-    # 停止
-    sudo service transmission-daemon stop
-
-2、修改配置文件 settings.json
-
-    {
-        ......
-        "rpc-authentication-required": true
-        "rpc-bind-address": "0.0.0.0",
-        "rpc-enabled": true,
-        "rpc-password": "123456",     # 这里明文写入登录密码，初次启动后会自动被替换为 hash 值
-        "rpc-port": 9091,     #端口
-        "rpc-url": "/transmission/",
-        "rpc-username": "transmission",     #用户名
-        "rpc-whitelist": "*",             #白名单，也可以指定IP
-        "rpc-whitelist-enabled": true,
-        ......
-    }
-
-3、经过上述配置后，我们就可以通过Web界面来访问和控制Transmission daemon了。在浏览器里面输入以下地址
-
-    http://<your.server.ip.addr>:9091/
-
-浏览器提示你输入刚才配置的用户名和密码，就可以成功登陆Web管理界面。
-
-一般安装浏览器插件 Aria2 for Edge，实现拦截浏览器的下载，弹窗添加到transmission。
+    https://xtremedownloadmanager.com/
+        https://github.com/subhra74/xdm/releases
 
 #### Aria2
 
-支持 http、bt 等多种格式，可惜不更新了
+支持 http、bt 等多种格式，速度奇快
 
     https://github.com/aria2/aria2
         https://aria2.github.io/
@@ -7580,7 +7497,109 @@ peer-id-prefix=-TR2940-
 
 ```
 
+#### Transmission
+
+一种 BitTorrent 客户端，特点是一个跨平台的后端和其上的简洁的用户界面。
+
+    https://transmissionbt.com/
+        https://github.com/transmission/transmission
+
+    安装配置说明
+        https://trac.transmissionbt.com/wiki/UnixServer/Debian
+        https://github.com/transmission/transmission/wiki/Editing-Configuration-Files
+
+    简单点直接 docker
+
+        https://registry.hub.docker.com/r/linuxserver/transmission/
+
+        https://registry.hub.docker.com/r/andrewmhub/transmission-tracker-add/
+
+    https://blog.csdn.net/slimmm/article/details/115720184
+
+竞品 qBittorrent
+
+    https://www.qbittorrent.org/
+
+开源的下载工具，都是有个后台进程负责下载，前台负责任务管理。
+
+    transmission-gtk: GTK+界面客户端。
+
+    transmission-qt: QT界面客户端。
+
+    transmission-cli: 命令行BT客户端。
+
+    transmission-daemon: 是一个Transmission的后台守护程序，本身不具备操作指令，只能通过Web客户端或者transmission-remote-cli来进行控制。这个程序特别适合安装在服务器上或者嵌入式系统中，以及一些没有显示器的设备上。
+
+    transmission-remote-cli: 用来控制transmission-daemon的命令套件，本身不具备下载BT的功能，只能够配合daemon使用。
+
+1、主要安装服务端
+
+    apt install transmission-daemon
+
+系统级配置文件目录： /var/lib/transmission-daemon/info/
+
+    settings.json    主要配置文件，设置daemon的各项参数，包括RPC的用户名密码配置。其软链接指向/etc/transmission-daemon/settings.json。配置说明
+
+    torrents/    用户存放.torrent种子文件的目录,凡是添加到下载任务的种子，都存放在这里。.torrent的命名包含,种子文件本身的名字和种子的SHA1 HASH值。
+
+    resume/    该存放了.resume文件，.resume文件包含了一个种子的信息，例如该文件哪些部分被下载了，下载的数据存储的位置等等。
+
+    blocklists/    存储被屏蔽的peer的地址。
+
+    注意：在编辑Transmission的配置文件的时候，需要先关闭daemon进程。
+
+默认创建一个用户来专门运行transmission-daemon，用户名为：debian-transmission。
+
+注意： 如果使用另外一个用户来运行transmission-daemon的话，会在该用户的目录下，创建一个.config/transmission-daemon的文件夹，在这个文件夹里有单独的settings.json配置文件来配置这个用户对应的daemon进程，下载目录也会变为$HOME/Download。
+
+    # 启动
+    sudo service transmission-daemon start
+
+    # 停止
+    sudo service transmission-daemon stop
+
+2、修改配置文件 settings.json
+
+    {
+        ......
+        "rpc-authentication-required": true
+        "rpc-bind-address": "0.0.0.0",
+        "rpc-enabled": true,
+        "rpc-password": "123456",     # 这里明文写入登录密码，初次启动后会自动被替换为 hash 值
+        "rpc-port": 9091,     #端口
+        "rpc-url": "/transmission/",
+        "rpc-username": "transmission",     #用户名
+        "rpc-whitelist": "*",             #白名单，也可以指定IP
+        "rpc-whitelist-enabled": true,
+        ......
+    }
+
+3、经过上述配置后，我们就可以通过Web界面来访问和控制Transmission daemon了。在浏览器里面输入以下地址
+
+    http://<your.server.ip.addr>:9091/
+
+浏览器提示你输入刚才配置的用户名和密码，就可以成功登陆Web管理界面。
+
+一般安装浏览器插件 Aria2 for Edge，实现拦截浏览器的下载，弹窗添加到transmission。
+
 #### curl 支持 http/https 等下载
+
+区别于之前流行的 wget 默认下载为文件，curl 默认输出到标准输出流
+
+    $ wget https://www.cloudflare.com/ips-v4
+    --2023-04-12 15:06:35--  https://www.cloudflare.com/ips-v4
+    Resolving www.cloudflare.com (www.cloudflare.com)... 2606:4700::6810:7c60, 2606:4700::6810:7b60, 104.16.123.96, ...
+    Connecting to www.cloudflare.com (www.cloudflare.com)|2606:4700::6810:7c60|:443... connected.
+    HTTP request sent, awaiting response... 200 OK
+    Length: 230 [text/plain]
+    Saving to: ‘ips-v4’
+
+    100%[======================================>] 230         --.-K/s   in 0s
+
+    2023-04-12 15:06:35 (24.9 MB/s) - ‘ips-v4’ saved [230/230]
+
+    # 静默下载，输出到标准输出流
+    wget -q -O - http://deb.opera.com/archive.key |gpg --import
 
     https://www.ruanyifeng.com/blog/2019/09/curl-reference.html
 
@@ -7630,23 +7649,6 @@ peer-id-prefix=-TR2940-
 直接上传，用 “-” 从标准输入流读取，如果换成 “.” 还可以显示服务器的输出
 
     gpg --export your_address@example.net |curl -T - https://keys.openpgp.org
-
-之前流行的 wget 功能类似，它默认是下载为文件，而不是输出到标准输出流
-
-    $ wget https://www.cloudflare.com/ips-v4
-    --2023-04-12 15:06:35--  https://www.cloudflare.com/ips-v4
-    Resolving www.cloudflare.com (www.cloudflare.com)... 2606:4700::6810:7c60, 2606:4700::6810:7b60, 104.16.123.96, ...
-    Connecting to www.cloudflare.com (www.cloudflare.com)|2606:4700::6810:7c60|:443... connected.
-    HTTP request sent, awaiting response... 200 OK
-    Length: 230 [text/plain]
-    Saving to: ‘ips-v4’
-
-    100%[======================================>] 230         --.-K/s   in 0s
-
-    2023-04-12 15:06:35 (24.9 MB/s) - ‘ips-v4’ saved [230/230]
-
-    # 静默下载，输出到标准输出流
-    wget -q -O - http://deb.opera.com/archive.key |gpg --import
 
 ### ZModem 协议的文件传输工具 rs/rz
 
