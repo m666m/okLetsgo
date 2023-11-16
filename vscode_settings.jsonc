@@ -2,7 +2,6 @@
     // VS Code 稳定版本选择，x.yz有个规律，z 在 0,1,2 时特别不稳定，z > 8 就比较稳定了，比如 1.69、1.79都不错
     "json.schemaDownload.enable":true, // https://bobbyhadz.com/blog/unable-to-load-schema-from-vscode-cannot-open
     // https://github.com/microsoft/vscode/issues/177142#issuecomment-1536548022
-    // 调试模式可以在库中加断点 在.vscode\launch.json 中添加"justMyCode": false
     // F1: open defualt setting 打开各选项详尽说明
     "gitlens.telemetry.enabled": false,
     "telemetry.telemetryLevel": "off",
@@ -60,10 +59,14 @@
         "editor.autoIndent": "full",
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
-    "python.terminal.activateEnvironment": true,  // 打开终端自动执行切换到指定环境，对 conda 自定义路径的环境有错误：在cmd下使用conda可以设为True，如果在bash下使用conda会报错windows路径
+    // 调试模式可以在库中加断点 在.vscode\launch.json 中添加"justMyCode": false
+    // debugpy.debugJustMyCode: false,
+    // 打开终端自动执行切换到指定环境，conda 自定义路径的环境有错误，酌情处理：在cmd下使用conda可以设为True，如果在bash下使用conda会报错windows路径
+    "python.terminal.activateEnvironment": true,
     "python.testing.unittestEnabled": true,
     "python.analysis.autoImportCompletions": false,
-    "python.analysis.exclude": ["dist/python","env_py37"], // 屏蔽项目内私有python环境目录误报 “overriding the stdlib module”
+    // 屏蔽项目内私有python环境目录误报 “overriding the stdlib module”
+    "python.analysis.exclude": ["dist/python","env_py37"],
     "python.languageServer": "Pylance",  // Jedi
     // "python.analysis.logLevel":"Trace",
     // "python.analysis.include": [
@@ -125,6 +128,7 @@
     "terminal.integrated.defaultProfile.linux": "bash",
     "terminal.integrated.hideOnStartup": "whenEmpty",
     "terminal.integrated.inheritEnv":false,  // 防止从终端启动的 code 继承其环境变量，确保使用本项目的环境变量
+    // Fedora38 Wayland 下执行 PyQt6 的 python 程序需要环境变量
     "terminal.integrated.env.linux": {"QT_QPA_PLATFORM":"xcb"},
     "terminal.integrated.profiles.linux": {
         "bash": {
