@@ -11034,6 +11034,10 @@ OpenType 可变字体（OpenType variable fonts）技术
 
 #### 安装官方仓库的中文字体包
 
+Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），默认 Cantarell 字体显示中文
+
+        https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description
+
 > 对版本比较老的不支持中文的 Linux
 
     先安装中文字体
@@ -11067,6 +11071,8 @@ Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
 
     https://github.com/notofonts/noto-cjk/blob/main/Serif/README.md
 
+    说明 https://aur.archlinux.org/packages/noto-fonts-cjk-vf
+
     手工安装自行下载的字体的方法参见章节 [Nerd font]。
 
     添加中文输入法见章节 [使用拼音输入法]。
@@ -11083,7 +11089,7 @@ Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
         google-noto-sans-cjk-sc-fonts.noarch : Simplified Chinese Multilingual Sans OTF font files for google-noto-cjk-fonts  <---- 仅简体中文
         google-noto-sans-cjk-tc-fonts.noarch : Traditional Chinese Multilingual Sans OTF font files for google-noto-cjk-fonts
         google-noto-sans-cjk-ttc-fonts.noarch : Sans OTC font files for google-noto-cjk-fonts  <---- 仅简体中文的 OTC 格式打包
-        google-noto-sans-cjk-vf-fonts.noarch : Google Noto Sans CJK Variable Fonts <---- 异体字包，文件小，不知为啥报告跟前面的 otf 包冲突。但是这个字体包里好像有 ttf 字体 https://github.com/notofonts/noto-cjk/tree/main/Sans/Variable/TTF
+        google-noto-sans-cjk-vf-fonts.noarch : Google Noto Sans CJK Variable Fonts <---- 异体字包，文件小，不知为啥报告跟前面的 otf 包冲突。
 
     Serif 字体包：
 
@@ -11096,7 +11102,7 @@ Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
         google-noto-serif-cjk-ttc-fonts.noarch : Serif OTC font files for google-noto-cjk-fonts  <---- 仅简体中文的 OTC 格式打包
         google-noto-serif-cjk-vf-fonts.noarch : Google Noto Serif CJK Variable Fonts <---- 异体字包，文件小，但是跟前面的 otf 包冲突，且其otc 文件不一定所有软件都支持
 
-我的 Fedora 38 发行版只安装了 Sans，没有 Serif，手动安装下
+我的 Fedora 38 发行版在安装了中文输入法后安装了 Sans，但没有 Serif，手动安装下
 
     # https://fedoraproject.org/wiki/Changes/Noto_CJK_Variable_Fonts#Detailed_Description
     # 所有字体的完整版：google-noto-cjk-fonts
@@ -11111,46 +11117,52 @@ Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
 
 #### 设置中英文分别使用一种字体 fontconfig
 
-有个图形界面程序 Fonts Tweak Tool(fonts-tweak-tool) 可以直观的预览中文字体的效果，而且可以设置更多的 truetype 选项
-
-    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#substitute-font
-
-    $ sudo dnf install fonts-tweak-tool
-
-Linux 操作系统一般都内置 fontconfig 软件包选择字体，默认无需用户干预
-
-    https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
-        https://www.freedesktop.org/wiki/Software/fontconfig/
-
-    https://wiki.archlinux.org/title/Font_configuration
-
-fontconfig 查看当前系统安装的中文字体
-
-    $ fc-list : file
-
-    $ fc-list :lang=zh
-
-这个命令还会列出该字体支持的浓淡，比如 “Noto Serif CJK SC:style=Black”，则设置字体时可以选择 “Noto Serif CJK SC Black”，这样字体会加重类似黑体的效果。
-
-fontconfig 支持字体的回落（fallback），可以实现中英文分别使用不同的字体，但需要用户手工配置，且配置文件的位置比较乱
-
-    $ fc-conflist
-
-网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，实现见下面 “法一”。
-
-随着发行版的进步，又开始使用 /etc/fonts/fonts.conf，实现见下面 “法二”。
-
-Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但默认的 Cantarell 字体显示中文太丑了，需要手工改设置，利用回落使得中英文分别使用不同的字体：
+Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言）：
 
         https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description
 
-        https://aur.archlinux.org/packages/noto-fonts-cjk-vf
+但其默认的 Cantarell 字体显示中文太丑了，需要手工改设置，利用回落使得中英文分别使用不同的字体。
 
-            https://github.com/notofonts/noto-cjk/tree/main/Sans
+操作系统需要设置针对三种风格的默认字体，对英文使用系统默认的英文字体，对中文回落到 Adobe/Google 的开源字体：
 
-            https://github.com/notofonts/noto-cjk/tree/main/Serif
+    Sans --> 思源黑体（Source Han Sans/Noto Sans CJK），自带 mono 风格了
 
-    针对三种风格的默认字体使用系统的英文字体，对中文回落到 Adobe/Google 的开源字体：思源宋体（Source Han Serif/ Noto Serif CJK）、思源黑体（Source Han Sans/Noto Sans CJK）。其实思源中文字体也内置了西文，只设置该中文字体也可以，但其西文部分使用的是 Adobe Source 家族字体不大好看我们不去使用它（思源黑体集成 Source Sans Pro、思源宋体集成 Source Serif，详见 <https://sspai.com/post/38705>）。
+    Serif --> 思源宋体（Source Han Serif/ Noto Serif CJK）
+
+    其实思源中文字体也内置了西文，只设置该中文字体也可以，但其西文部分使用的是 Adobe Source 家族字体不大好看我们不去使用它（思源黑体集成 Source Sans Pro、思源宋体集成 Source Serif，详见 <https://sspai.com/post/38705>）。
+
+查看字体效果
+
+    有个图形界面程序 Fonts Tweak Tool(fonts-tweak-tool) 可以直观的预览中文字体的效果，而且可以设置更多的 truetype 选项
+
+        https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#substitute-font
+
+        $ sudo dnf install fonts-tweak-tool
+
+使用 fontconfig 配置字体回落
+
+    Linux 操作系统一般都内置 fontconfig 软件包选择字体，默认无需用户干预
+
+        https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
+            https://www.freedesktop.org/wiki/Software/fontconfig/
+
+        https://wiki.archlinux.org/title/Font_configuration
+
+    查看当前系统安装的中文字体
+
+        $ fc-list : file
+
+        $ fc-list :lang=zh
+
+        该命令还会列出该字体支持的浓淡，比如 “Noto Serif CJK SC:style=Black”，则设置字体时可以选择 “Noto Serif CJK SC Black”，这样字体会加重类似黑体的效果。
+
+    查看配置后的最终字体选择
+
+        $ fc-conflist
+
+fontconfig 支持字体的回落（fallback），可以实现中英文分别使用不同的字体，但需要用户手工配置，且配置文件的位置比较乱，网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，实现见下面 “法一”。
+
+随着发行版的进步，又开始使用 /etc/fonts/fonts.conf，实现见下面 “法二”。
 
 法一：简单起见，我们直接编辑 /etc/fonts/local.conf 文件
 
