@@ -7401,11 +7401,17 @@ Aria2 的命令行传输各种参数，设置复杂，直接用 p3terx 做的 do
 
     https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
 
+    https://www.redhat.com/sysadmin/podman-run-pods-systemd-services
+
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/building_running_and_managing_containers/proc_automatically-generating-a-systemd-unit-file-using-podman_assembly_porting-containers-to-systemd-using-podman
 
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/building_running_and_managing_containers/proc_auto-starting-containers-using-systemd_assembly_porting-containers-to-systemd-using-podman
 
     https://www.zhihu.com/question/574555007
+
+    https://www.cnblogs.com/newtonsky/p/15491806.html
+
+    https://www.ctyun.cn/developer/article/374541565628485
 
 一般配置为用户级服务即可，在用户登录时启动，用户注销时退出
 
@@ -7413,11 +7419,12 @@ Aria2 的命令行传输各种参数，设置复杂，直接用 p3terx 做的 do
     $ mkdir -p $HOME/.config/systemd/user/
 
     # 先启动你的容器，然后使用 Podman 为现有容器自动生成一个单元文件
-    $ distrobox enter
-    $ podman generate systemd --name my-distrobox > $HOME/.config/systemd/user/container-aria2cd.service
+    $ distrobox enter downbt
+    $ podman generate systemd --name downbt > $HOME/.config/systemd/user/container-aria2cd.service
 
-    # 提示用 quadlet 来生成
+    # 上面的命令快过时了，提示用 quadlet 来生成
     # https://www.redhat.com/sysadmin/quadlet-podman
+    # https://github.com/containers/quadlet
 
 ```conf
 # container-my-distrobox.service
@@ -7444,6 +7451,9 @@ Type=forking
 [Install]
 WantedBy=default.target
 ```
+
+    # 在使用 systemd 管理之前，需要先停止该容器，不再使用容器的管理命令
+    $ distrobox stop downbt
 
     $ systemctl --user daemon-reload
 
