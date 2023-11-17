@@ -7408,6 +7408,7 @@ Description=aria2 Daemon
 [Service]
 Type=forking
 ExecStart=/usr/bin/aria2c --conf-path=$HOME/.aria2/aria2.conf --save-session=$HOME/.aria2/download.session --input-file=$HOME/.aria2/download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=$HOME/.aria2/dht.dat --dht-file-path6=$HOME/.aria2/dht6.dat --dht-listen-port=26701 --dir=$HOME/Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=16800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+ExecStop=/usr/bin/kill -HUP $MAINPID
 
 [Install]
 WantedBy=default.target
