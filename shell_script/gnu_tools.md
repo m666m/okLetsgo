@@ -11456,6 +11456,75 @@ Gnome 桌面默认只展示壁纸，不能放文件，用户交互操作强调�
 
     临时离开电脑，用 win + l 锁屏，跟 Windows 相同。
 
+#### 设置选项
+
+点击桌面右上角的声音电源图标的栏目，选择弹出菜单的“Settings”。
+
+刚装完系统后，一般进行如下设置：
+
+    Wi-Fi ：设置连接你的无线路由器
+
+    Privacy
+        Screen Lock：选择自动黑屏的延时，黑屏后是否锁屏
+        Location Services：如果选择关闭，桌面的天气组件需要手动设置你的当前城市
+        Microphone：不需要关闭，安装下面介绍的 gnome 扩展 nothing to say 手动控制即可
+        Diagnostics：关闭自动问题报告
+
+    Share：先点击窗口标题栏位置的开关，开启后才能开启下面的栏目
+        Remote Desktop：开启远程桌面服务，这样可以从远程连接本机使用桌面，无缝支持微软 mstsc。
+        Remote Login：开启sshd服务，这样可以远程ssh连接到本机，使用的用户名是你装系统时候给出的，注意不是那个用于显示的“友好名称”
+
+    Power:
+        Power Mode：尽可能选“Performance”，不然桌面反应慢，程序切换慢。
+        Power Saving Option：酌情选择
+
+    Keyborad：
+        Input Sources：建议两个输入法，英文和中文（拼音），英文顺序在上，这样在使用文件管理器时按键会自动成为热键定位文件首字母，方便。切换热键是 Win+空格。
+        Input Source Switching：建议选择不同的窗口单独保持自己的输入法状态。
+
+    Removable Media：勾选不许自动运行
+
+    Users：
+        Fingerprint Login：设置你的指纹识别登陆桌面，注意不会解锁 gnome 钥匙环，在使用它保存的 ssh 或 gpg 的密钥时还是需要输入登陆密码
+
+##### Gnome Tweaks
+
+桌面组件扩展的选项，在软件管理里搜索安装 “tweaks” ，或使用命令行
+
+    sudo apt install gnome-tweak-tool
+
+    sudo apt install gnome-shell-extensions
+
+安装 Tweaks 后在 “Show Apps” 里找它打开即可，一般要调整如下选项
+
+    center new window   新窗口居中打开，不然每次都是歪在当前屏幕的左上，而且互相覆盖，太不方便了
+
+    给窗口的任务栏添加最大化最小化按钮，方便鼠标操作
+
+    选择任务栏主题，需要先安装 “User Themes” 扩展，然后见章节 [使用 gnome 主题]
+
+    笔记本用户勾选“Mouse Click Emulatsion-->Finger”，否则触摸板操作不支持单指点击选中文字。这样一般的文本编辑操作就比较方便了，单指滑动移动鼠标，单指点击选择文字，双指移动滚动屏幕。
+
+##### GDM 的 “注册表编辑器” --- 使用 GSettings 和 dconf 配置桌面
+
+命令行方式调整选项，理解为Linux 下的 “注册表编辑器”
+
+    https://wiki.archlinux.org/title/GDM#dconf_configuration
+
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/profiles
+
+GSettings 实际上是一套可使用多个 storage backends 的 API ，其文件是 xml 格式的，可以理解为 Linux 桌面环境的注册表数据库文件。
+
+GSettings 是应用设置的高级 API，是 dconf 的前端。
+
+    gsettings 命令行工具用于查看和更改用户设置，把它理解为命令行版的注册表编辑器
+
+dconf 是一个基于键的配置系统，用于管理用户设置。它是 Red Hat Enterprise Linux 7 中使用的 GSettings 的后端。dconf 管理一系列不同的设置，包括 GDM、应用程序和代理设置，可以理解为 Linux 桌面环境的注册表数据库。
+
+    dconf 命令行工具用于从/向 dconf 数据库读写单个值或整个目录，把它理解为注册表数据维护用的底层管理工具。
+
+如果需要修改桌面环境下的系统的配置参数，一般可以使用图形化工具 dconf editor，或 gsettings 命令行工具。
+
 #### 使用 gnome 扩展
 
     刚装完系统之后的 Gnome 桌面在用户使用引导方面很弱，会让你发楞，感觉什么都没有，也什么都不能设置
@@ -11557,24 +11626,6 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
     Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在系统设置的天气里的已经设置过位置了，使用这个就不需要上面的 Date Menu Formater 扩展了。
 
     Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date）
-
-GNOME 桌面组件扩展的自定义选项 “Gnome Tweaks”，在软件管理里搜索安装 “tweaks” 即可找到
-
-    或使用命令行
-
-        sudo apt install gnome-tweak-tool
-
-        sudo apt install gnome-shell-extensions
-
-    安装 Tweaks 后在 “Show Apps” 里找它打开即可，一般要调整
-
-        center new window   新窗口居中打开，不然每次都是歪在当前屏幕的左上，而且互相覆盖，太不方便了
-
-        给窗口的任务栏添加最大化最小化按钮，方便鼠标操作
-
-        选择任务栏主题，需要先安装 “User Themes” 扩展，然后见章节 [使用 gnome 主题]。
-
-命令行方式进行管理，参见章节 [Linux 下的 “注册表编辑器” --- 使用 GSettings 和 dconf 配置桌面]。
 
 #### 使用 gnome 主题
 
@@ -11981,24 +12032,6 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
     Wayland Login Manager 支持 x-window/wayland 环境的命令行下的显示管理器 wayland-lyl
     https://docs.freebsd.org/en/books/handbook/wayland/#wayland-ly
-
-### GDM 的 “注册表编辑器” --- 使用 GSettings 和 dconf 配置桌面
-
-    https://wiki.archlinux.org/title/GDM#dconf_configuration
-
-    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/profiles
-
-GSettings 实际上是一套可使用多个 storage backends 的 API ，其文件是 xml 格式的，可以理解为 Linux 桌面环境的注册表数据库文件。
-
-GSettings 是应用设置的高级 API，是 dconf 的前端。
-
-    gsettings 命令行工具用于查看和更改用户设置，把它理解为命令行版的注册表编辑器
-
-dconf 是一个基于键的配置系统，用于管理用户设置。它是 Red Hat Enterprise Linux 7 中使用的 GSettings 的后端。dconf 管理一系列不同的设置，包括 GDM、应用程序和代理设置，可以理解为 Linux 桌面环境的注册表数据库。
-
-    dconf 命令行工具用于从/向 dconf 数据库读写单个值或整个目录，把它理解为注册表数据维护用的底层管理工具。
-
-如果需要修改桌面环境下的系统的配置参数，一般可以使用图形化工具 dconf editor，或 gsettings 命令行工具。
 
 ### 窗口管理器（Windows Manager）
 
