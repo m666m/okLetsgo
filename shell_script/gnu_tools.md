@@ -11520,7 +11520,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Grand Theft Focus       打开文件对话框显示在你的应用窗口后面，系统弹窗告诉你有个对话框打开了。。。这是病，得治！
 
-    Unblank lock screen     gnome的长时间空闲设置里没有单独的锁屏，只有黑屏并锁屏或黑屏不锁屏，鼠标晃不醒就只能蒙着打密码了，这也是病，得治！
+    Unblank lock screen     gnome的屏幕长时间空闲自动锁屏里没有单独的锁屏，只有黑屏并锁屏或黑屏不锁屏，鼠标晃不醒就只能蒙着打密码了，这也是病，得治！
 
     Alphabetical App Grid   应用程序列表“居然”是不按字母顺序排列的，而且无法拖放调整位置，这是不是该治的病！用这个扩展强制按字母顺序排列。
 
@@ -11572,7 +11572,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在系统设置的天气里的已经设置过位置了，使用这个就不需要上面的 Date Menu Formater 扩展了。
 
-    Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date）
+    Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date)
 
 #### 使用 gnome 主题
 
@@ -14221,7 +14221,7 @@ session    include      system-auth
 
 ### 开启指纹登录
 
-Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找，只要你的指纹设备被支持即可正常使用，默认只支持系统登录，可以安装 libpam-fprintd 包以实现 sudo 等鉴权免密码。
+Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找，只要你的指纹设备被支持即可正常使用，默认只支持系统登录和 sudo 等鉴权免密码。使用 gpg、ssh 等密钥的自动填写密码仍需要手工输入登录密码才能解锁 gnome 钥匙环，可以额外安装 libpam-fprintd 包以保存解锁 gnome 钥匙环的密码。
 
     http://www.freedesktop.org/wiki/Software/fprint/fprintd
 
