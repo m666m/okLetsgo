@@ -7362,19 +7362,21 @@ Aria2 的命令行传输各种参数，设置复杂，直接用 p3terx 做的 do
 
 建议用法：
 
-1、使用官方 Aria2 v1.36.0 ，配置文件原样复用 Motrix 的 aria2.conf ，使用 WinSW 将 Aria2 安装成用户服务来开机自启，配合 Aria2 for Edge 插件拦截浏览器下载，使用该插件附带的 AirNG 进行图形化交互。<https://github.com/agalwood/Motrix/issues/1379>。
+1、使用官方 Aria2，配置文件原样复用 Motrix 的 aria2.conf ，使用 WinSW 将 Aria2 安装成用户服务来开机自启，配合 Aria2 for Edge 插件拦截浏览器下载，使用该插件附带的 AirNG 进行图形化交互。<https://github.com/agalwood/Motrix/issues/1379>。
 
 2、执行 p3terx 的 tracker.sh 把最新的 bt-tracker 地址更新到配置文件。
 
     https://github.com/P3TERX/aria2.conf/raw/master/tracker.sh
 
-3、修改 Motrix 生成的启动命令行，
+3、启动命令行
 
-    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce  --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --rpc-secret=xxxxxx --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+    修改自 Motrix 生成的命令行
 
-    去掉 --bt-tracker=
-    去掉 --max-connection-per-server
-    修改 --rpc-secret 密码
+        去掉 --bt-tracker=
+        去掉 --max-connection-per-server
+        修改 --rpc-secret 密码
+
+    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true   --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --rpc-secret=xxxxxx --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94 --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce
 
 使用此命令行启动 aira，然后在浏览器中通过插件 Aria2 for Edge 进行下载即可。
 
@@ -7397,7 +7399,7 @@ Aria2 的命令行传输各种参数，设置复杂，直接用 p3terx 做的 do
         --header "Sec-WebSocket-Version: 13" \
         http://localhost:6800/jsonrpc
 
-配置文件 aira2.conf，改自 Motrix 使用的配置文件
+简单使用的配置文件 aira2.conf，改自 Motrix 使用的配置文件
 
 ```conf
 
@@ -7480,11 +7482,17 @@ peer-id-prefix=-TR2940-
 
 ```
 
-在容器里运行aria2，只需要使用 distrobox 这种交互式容器即可，使用方法参见章节 [与本地主机交互的轻量化容器化环境](virtualization think)。
+高级使用的配置文件见
 
-配置容器使用 systemd 参见章节 [把容器配置为 systemd 自启动](virtualization think)。
+    https://github.com/P3TERX/aria2.conf/blob/master/aria2.conf
 
-TODO:容器启动后自动运行脚本待研究。
+    可配置到docker容器中使用
+
+        https://github.com/P3TERX/Aria2-Pro-Docker
+
+        说明文章 https://p3terx.com/archives/docker-aria2-pro.html
+
+如果需要配置容器使用 systemd 自启动见章节 [把容器配置为 systemd 自启动](virtualization think)。
 
 #### Transmission
 
