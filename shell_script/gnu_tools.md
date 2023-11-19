@@ -7486,13 +7486,13 @@ peer-id-prefix=-TR2940-
 
     https://github.com/P3TERX/aria2.conf/blob/master/aria2.conf
 
-    可配置到docker容器中使用
+可配置到docker容器中使用
 
-        https://github.com/P3TERX/Aria2-Pro-Docker
+    https://github.com/P3TERX/Aria2-Pro-Docker
 
-        说明文章 https://p3terx.com/archives/docker-aria2-pro.html
+    说明文章 https://p3terx.com/archives/docker-aria2-pro.html
 
-如果需要配置容器使用 systemd 自启动见章节 [把容器配置为 systemd 自启动](virtualization think)。
+    最方便的用法是用 systemd 管理把该容器配置为自启动，见章节 [把容器配置为 systemd 自启动](virtualization think)。
 
 #### Transmission
 
