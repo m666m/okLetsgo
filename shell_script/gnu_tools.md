@@ -10943,7 +10943,7 @@ GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表�
 
     简体中文支持 https://wiki.archlinux.org/title/Localization/Simplified_Chinese
 
-Gnome 的图形界面设置程序 Gnome Tweaks Tool(gnome-tweaks) 有 “Font” 选项卡，可以给界面和文本分别设置不同的字体
+Gnome 的图形界面设置程序 Gnome Tweaks Tool(gnome-tweaks) 有 “Font” 选项卡，可以给界面和文本分别设置不同的字体，但不支持按三种风格分别设置字体及回落选项
 
     在 “Hinting”（渲染微调）选项建议勾选 “Full” 拉高字体，否则显得扁
 
@@ -11132,7 +11132,7 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 
 查看字体效果
 
-    有个图形界面程序 Fonts Tweak Tool(fonts-tweak-tool) 可以直观的预览中文字体的效果，而且可以设置更多的 truetype 选项
+    有个图形界面程序 Fonts Tweak Tool(fonts-tweak-tool) 可以直观的预览中文字体的效果，而且可以设置更多的 truetype 选项，支持按三种风格分别设置字体及回落选项
 
         https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#substitute-font
 
