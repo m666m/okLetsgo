@@ -13058,8 +13058,7 @@ xrdp 的组件
 
 安装后启动服务，并设置为开机自启动
 
-    # 先关闭操作系统内置的远程桌面服务，以防止端口冲突。
-
+    # 注意：先关闭操作系统内置的远程桌面服务，不然端口冲突
     # sudo systemctl start xrdp
     $ sudo systemctl enable xrdp --now
 
@@ -13073,16 +13072,16 @@ xrdp 的组件
 
 xrdp 安装后要先做几个设置：
 
-    关闭操作系统桌面环境内置的共享桌面功能：为了防止 RDP 服务默认端口 3389 的占用出现冲突，如果该共享桌面使用 RDP 协议，找到桌面设置里的共享桌面功能，选择关闭。
-
     如果安装 Linux 时启用了磁盘加密选项，则必须先本地使用计算机，输入磁盘密码启动操作系统后，才可以使用远程桌面登录。
+
+    关闭操作系统桌面环境内置的共享桌面功能：为了防止 RDP 服务默认端口 3389 的占用出现冲突，如果该共享桌面使用 RDP 协议，找到桌面设置里的共享桌面功能，选择关闭。
 
     注销您本地的 Linux 桌面登录（logged in on the system graphical console），否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。与 Linunx 发行版内置的 Gnome 共享桌面（实质是共享屏幕）不同，xrdp 支持多用户连接，所以本地的屏幕前看不到远程连接过来的用户的操作，本地屏幕可以是用户登录等待解锁的状态。
 
         基于 systemd 的操作系统，多个远程桌面会话使用同一个用户登录，会共享同一个桌面环境，这是 D-Bus 共享数据的设计
             https://github.com/neutrinolabs/xrdp/wiki/Tips-and-FAQ#why-cant-i-log-the-same-user-on-on-the-graphical-console-and-over-xrdp-at-the-same-time
 
-    如果是无人值守（HEADLESS）模式，记得在本地拔下显示器之前，在 Linux 桌面启用自动登录
+    TODO: 如果是无人值守（HEADLESS）模式，记得在本地拔下显示器之前，在 Linux 桌面启用自动登录
 
     以下两个未验证
 
