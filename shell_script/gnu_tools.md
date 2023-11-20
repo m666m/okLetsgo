@@ -12492,11 +12492,13 @@ fi
 
 ```
 
-#### 将会话限制为单个应用程序 --- kiosk 模式
+#### 将会话限制为单个应用程序 --- 自助服务机 Kiosk 模式
 
 在 GNOME 登录屏幕中，从齿轮按钮菜单中选择你的 kiosk 应用
 
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/customizing_the_gnome_desktop_environment/assembly_restricting-the-session-to-a-single-application_customizing-the-gnome-desktop-environment
+
+    Windows 也有 https://learn.microsoft.com/en-us/windows/configuration/kiosk-single-app
 
 单应用模式下启动 GNOME 会话，也称为 kiosk 模式。在此会话中，GNOME 只会显示您选择的应用程序的完整屏幕窗口。这样你的计算机就可以作为一台自助服务机提供公众服务了。
 
