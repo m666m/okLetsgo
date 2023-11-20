@@ -13161,6 +13161,12 @@ xorgxrdp：
 
 ##### xrdp 远程桌面用户相对本地登陆用户有权限区别
 
+使用远程桌面客户端软件连接后，虽然输入了用户名和密码，但不像本地用户登录那样某些操作不再提示密码
+
+    系统更新仍会提示输入密码
+
+    gnome-keyring 不会自动解锁自动保存的浏览器/ssh/gpg等密码，需要安装 seahorse，打开软件后手工点击解锁即可
+
 > 对 Fedora 等使用 SELinux 技术的操作系统
 
 您可能需要编辑 /etc/pam.d/xrdp-sesman 以使会话过渡到正确的 SELinux 上下文。[#2094](https://github.com/neutrinolabs/xrdp/issues/2094) 中埋藏着有关此的更多信息 。
