@@ -11573,7 +11573,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date)
 
-    burn my window          窗口的弹出和关闭各种特效化
+    burn my window          窗口的弹出和关闭各种特效化，推荐勾选 Apparition、Hexagon、TV Glitch
 
 #### 使用 gnome 主题
 
