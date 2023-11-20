@@ -11438,9 +11438,8 @@ Gnome 桌面默认只展示壁纸，不能放文件，用户交互操作强调�
 
 桌面组件扩展的选项，在软件管理里搜索安装 “tweaks” ，或使用命令行
 
-    sudo apt install gnome-tweak-tool
-
-    sudo apt install gnome-shell-extensions
+    # sudo dnf install gnome-tweaks
+    $sudo apt install gnome-tweak-tool gnome-shell-extensions
 
 安装 Tweaks 后在 “Show Apps” 里找它打开即可，一般要调整如下选项
 
@@ -11573,6 +11572,8 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
     Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在系统设置的天气里的已经设置过位置了，使用这个就不需要上面的 Date Menu Formater 扩展了。
 
     Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date)
+
+    burn my window          窗口的弹出和关闭各种特效化
 
 #### 使用 gnome 主题
 
