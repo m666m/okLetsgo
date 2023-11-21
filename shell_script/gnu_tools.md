@@ -12976,7 +12976,7 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
     Basic:
 
-        Group 设置分组，同组的远程桌面会共用一个 remmina 窗口，切换时会自动断开上一个。
+        Group 设置分组，同组的多个远程桌面会共用一个 remmina 窗口，切换时会自动断开上一个。
 
         桌面分辨率选 “use client solution”，不然默认显示超小的一个屏幕。
 
