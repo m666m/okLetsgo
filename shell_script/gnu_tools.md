@@ -12856,22 +12856,6 @@ Gnome 内置的这个远程桌面服务端(gnome-remote-desktop)叫 “共享屏
 
     https://www.linuxmi.com/ubuntu-22-04-rdp-remote-desktop.html
 
-功能受限： Gnome 自带的远程桌面服务端实质是 “共享屏幕”，只支持实时共享给一个用户：必须本地主机先登录到桌面，然后远程才可以连接到该主机的桌面，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时本地操作干预或中断远程会话。也就是说，本地不登录桌面，是无法远程桌面的，需要把当前用户配置为自动登录才可以。
-
-    本地主机要是节能策略自动锁屏或自动休眠了，远程桌面连接会无法登录。解决办法见章节 [使用远程桌面必须做的设置]。
-
-    如果是无人值守（HEADLESS）模式或虚拟机，记得在断开本地连接之前（本地拔下显示器之前），在用户设置里启用自动登录，这样只要开机启动就会自动使用该用户登录到桌面。
-
-如果需要登录云服务器，或支持多个远程桌面用户同时登录，这样的远程连接不需要本地主机先登录桌面，则只能安装第三方 vnc 或 rdp 软件
-
-    推荐 xrdp，参见章节 [使用 xrdp 服务端]
-
-    tigervnc-server
-
-        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
-
-    使用第三方 vnc 或 rdp 服务端，记得关闭操作系统内置的远程桌面服务，以防止端口冲突。
-
 Gnome 桌面同时支持 X11 和 Wayland 两种方式
 
     对 X11 会话中使用 vino 组件
@@ -12886,13 +12870,29 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
     https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353?replies_to_post_number=12
 
-推荐安装 RDP 协议的第三方软件，详见章节 [使用 xrdp 服务端]。
+##### 功能限制
 
-> 服务端设置
+Gnome 自带的远程桌面服务端实质是 “共享屏幕”，只支持实时共享给一个用户：必须本地主机先登录到桌面，然后远程才可以连接到该主机的桌面，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时本地操作干预或中断远程会话。也就是说，本地不登录桌面，是无法远程桌面的，需要把当前用户配置为自动登录才可以。
 
-默认情况下，Gnome 中共享计算机屏幕的功能是关闭的。
+    本地主机要是节能策略自动锁屏或自动休眠了，远程桌面连接会无法登录。解决办法见章节 [使用远程桌面必须做的设置]。
 
-需要手动开启：
+    如果是无人值守（HEADLESS）模式或虚拟机，记得在断开本地连接之前（本地拔下显示器之前），在用户设置里启用自动登录，这样只要开机启动就会自动使用该用户登录到桌面。
+
+如果需要登录云服务器，或支持多个远程桌面用户同时登录，这样的远程连接不需要本地主机先登录桌面，则只能安装第三方 vnc 或 rdp 软件
+
+    推荐安装使用 RDP 协议的第三方软件，见章节 [使用 xrdp 服务端]。
+
+    tigervnc-server
+
+        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
+
+    使用第三方 vnc 或 rdp 服务端，记得关闭操作系统内置的远程桌面服务，以防止端口冲突。
+
+##### 服务端设置
+
+先检查是否满足章节 [使用远程桌面登录 Linux 必须做的设置]。
+
+默认情况下，Gnome 中共享计算机屏幕的功能是关闭的，需要手动开启：
 
     启动桌面设置 “Gnome 控制中心 Gnome Control Center”
 
@@ -12900,11 +12900,11 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
     如果你希望能够从客户端控制屏幕，请勾选 “允许连接控制屏幕 Allow connections to control the screen”。如果不勾选这个按钮，访问共享屏幕将只允许 “仅浏览 view-only”。
 
-    需要设置专门的用户名和密码，不是使用你当前登录的用户名的密码，我为了方便改成一致了。
+    登录用户使用的当前用户名，但是密码是独立的，如果使用默认的随机密码，每次计算机重启后都会变更。所以最好手动设置密码，我为了方便改成一致了。
 
     桌面环境的系统设置里，禁止屏幕空白，禁止自动屏幕锁定，以实现无缝的远程桌面会话。
 
-> 客户端设置
+##### 客户端设置
 
 使用支持 rdp 或 vnc 协议的客户端软件，参见章节 [远程桌面软件体系]。
 
@@ -12918,11 +12918,11 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
     会话没有被锁定，也就是说，用户可以使用该会话。
 
-然后你可以尝试从客户端连接到该会话。
+然后你可以尝试从客户端连接到该会话，连接进入远程桌面后顶栏处有一个黄色的图标，这表明你正在 Gnome 中共享电脑屏幕。
 
-如果在服务端屏幕查看当前桌面，你会注意到现在在上栏有一个黄色的图标，这表明你正在 Gnome 中共享电脑屏幕。如果你不再希望共享屏幕，你可以进入菜单，点击 屏幕正在被共享Screen is being shared，然后再选择 关闭Turn off，立即停止共享屏幕。
+如果在服务端屏幕查看当前桌面，也可以看到在顶栏处有一个黄色的图标，这表明你正在 Gnome 中共享电脑屏幕。如果你不再希望共享屏幕，你可以进入菜单，点击 屏幕正在被共享Screen is being shared，然后再选择 关闭Turn off，立即停止共享屏幕。
 
-安全性受限
+##### 安全限制
 
     服务器将始终保持其控制模式。任何在服务器会话中的人都将能够控制鼠标和键盘。
 
@@ -13080,7 +13080,7 @@ xrdp 的组件
 
 ##### 安装 xrdp 后必做设置
 
-    先检查是否满足章节 [使用远程桌面必须做的设置]。
+    先检查是否满足章节 [使用远程桌面登录 Linux 必须做的设置]。
 
     关闭 Linunx 发行版内置的 Gnome 共享桌面功能：二者都使用默认端口 3389 会导致冲突无法连接，找到桌面设置里的共享桌面功能，选择关闭。
 
