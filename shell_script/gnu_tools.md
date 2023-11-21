@@ -12952,6 +12952,10 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
     点击按钮 “Grub all keyborad events”，实现可以在远程桌面计算机的 alt+tab 热键切换窗口
 
+    点击三个点可以在各个配置文件间切换选择
+
+    运行过程中如果修改了配置文件，单击 refresh 可以立即生效。
+
 当处于全屏模式时，注意屏幕上边缘的白色窄条，鼠标划过会显示 Remmina 工具栏，当你需要离开全屏模式或改变一些设置时，你可以把鼠标移到它上面。
 
 > 给你的远程连接建立一个配置文件
@@ -12971,6 +12975,8 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 然后在 Remmina 的主窗口列表中找到刚建立的配置文件，右键菜单选择编辑：
 
     Basic:
+
+        Group 设置分组，同组的远程桌面会共用一个 remmina 窗口，切换时会自动断开上一个。
 
         桌面分辨率选 “use client solution”，不然默认显示超小的一个屏幕。
 
@@ -12996,17 +13002,15 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
 然后就可以连接该远程服务器了，在 Remmina 窗口的下半部分列表中，选择你的刚才建立的配置文件，双击即可开启远程桌面窗口了。
 
-另外，运行过程中如果修改了配置文件，在远程 Windows 桌面上的 Remmina 工具栏单击 refresh 可以立即生效。
+如果连接失败，可以点工具栏的三个横线，选择“Debugging”，然后重新连接，查看“Debugging”窗口的输出内容。
 
-如果连接失败，可以点击菜单栏的三个横线，选择“Debugging”，然后重新连接，查看“Debugging”窗口的输出内容。
+    如果显示的信息偏少看不到具体报错原因，则需要用命令行启动 remmina：
 
-如果显示的信息偏少看不到具体报错原因，则需要用命令行启动 remmina：
+        https://gitlab.com/Remmina/Remmina/-/wikis/Usage/Remmina-debugging
+        $ G_MESSAGES_PREFIXED=all G_MESSAGES_DEBUG=all remmina
 
-    https://gitlab.com/Remmina/Remmina/-/wikis/Usage/Remmina-debugging
-    $ G_MESSAGES_PREFIXED=all G_MESSAGES_DEBUG=all remmina
-
-    # flatpak安装的
-    $ G_MESSAGES_PREFIXED=all G_MESSAGES_DEBUG=all flatpak run org.remmina.Remmina
+        # flatpak安装的
+        $ G_MESSAGES_PREFIXED=all G_MESSAGES_DEBUG=all flatpak run org.remmina.Remmina
 
 #### 使用 xrdp 服务端
 
