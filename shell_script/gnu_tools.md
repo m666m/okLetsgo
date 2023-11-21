@@ -11438,8 +11438,8 @@ Gnome 桌面默认只展示壁纸，不能放文件，用户交互操作强调�
 
 桌面组件扩展的选项，在软件管理里搜索安装 “tweaks” ，或使用命令行
 
-    # sudo dnf install gnome-tweaks
-    $sudo apt install gnome-tweak-tool gnome-shell-extensions
+    # sudo apt install gnome-tweak-tool gnome-shell-extensions
+    $ sudo dnf install gnome-tweaks
 
 安装 Tweaks 后在 “Show Apps” 里找它打开即可，一般要调整如下选项
 
@@ -11487,7 +11487,10 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
         https://www.cnblogs.com/keatonlao/p/12686234.html
 
-如果想使用其它各种扩展，只能去网站 <https://extensions.gnome.org/> 自行搜索下载。现在的 GNOME 桌面组件自带的扩展管理器 “Extension Manager” 替换掉了之前的 “GNOME Extensions”，不需要去网站就可以搜索下载，在软件管理里搜索安装 “Extension Manager” 即可。
+如果想使用其它各种扩展，只能去网站 <https://extensions.gnome.org/> 自行搜索下载。现在的 GNOME 桌面组件自带的扩展管理器 “Extension Manager” 替换掉了之前的 “GNOME Extensions”，不需要去网站就可以搜索下载，在软件管理里搜索安装 “Extension Manager” 即可，或使用命令行安装 flatpak 版本
+
+    # 命令行安装的好处是能看到细分的进度
+    $ flatpak install flathub com.mattjakeman.ExtensionManager
 
     如果仍然想使用网站浏览然后安装的方式
 
@@ -11499,7 +11502,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
         然后安装本地消息组件
 
-            sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
+            $ sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
 
 推荐打开的内置扩展：
 
