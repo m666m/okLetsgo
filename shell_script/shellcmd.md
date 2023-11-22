@@ -2296,7 +2296,7 @@ iproute2 软件包 代替了 net-tools 软件包，详见章节 [iproute2 软件
 
     ssh -vvv -p 443 127.0.0.1
 
-    telnet 127.0.0.1 443
+    nc 127.0.0.1 443
 
 查看当前的连接，可指定监听端口号
 
@@ -2475,7 +2475,13 @@ iftop 类似 top 命令查看当前各个连接的流量情况，各大发行版
 
     https://www.redhat.com/sysadmin/stop-using-telnet-test-port
 
-Netcat 对于 TCP 连接测试非常方便，但是当涉及到具有强大选项的命令行工具时，您无法击败 Nmap。Nmap 提供比 Netcat 更高级别的自动化。
+Netcat 对于 TCP 连接端口测试非常方便，用法参见章节 [简单的端口通信 netcat](gnu_tools.md)。
+
+    $ nc 127.0.0.1 5678
+
+Nmap 具有强大的命令行选项，提供比 Netcat 更高级别的自动化
+
+    https://www.redhat.com/sysadmin/introduction-nmap-troubleshooting
 
 使用 Nmap 检查所有这些主机的端口 80 和 443：
 

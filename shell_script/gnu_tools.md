@@ -7669,7 +7669,9 @@ ssh 连续跳转连接几个服务器后，sftp 传送命令不方便的时候�
 
     如果终端工具如 putty、mintty、Gnome terminal 等不支持 zmodem 协议，但是支持从桌面拖放文件（变成路径名称）到终端工具，则可以安装 Gnu screen，使用 screen 来实现对 rz、sz 的支持，参见章节 [竞品 screen/Zellij]。
 
-    另一个办法是安装软件包：软件包 zssh 通过包装 ssh 支持 zmodem 协议，使用 zssh 命令而不是 ssh 连接远程，热键 ctl+@ 即可切换到传送命令行（类似 sftp）。另有软件包 ztelnet 包装 telnet 支持 zmodem 协议
+    另有软件包 ztelnet 包装 telnet 支持 zmodem 协议
+
+    为解决明文传送的问题，可安装软件包：zssh 通过包装 ssh 支持 zmodem 协议，使用 zssh 命令而不是 ssh 连接远程，热键 ctl+@ 即可切换到传送命令行（类似 sftp）。
 
         https://www.jianshu.com/p/dcd0111f3043
         https://www.cnblogs.com/pied/p/5813018.html
@@ -7703,15 +7705,20 @@ ssh 连续跳转连接几个服务器后，sftp 传送命令不方便的时候�
 
 ### 简单的端口通信 netcat (nc)
 
+    https://www.redhat.com/sysadmin/ncat-security
+
 开源项目持续性不稳定，历史较复杂
 
     原始 nc(netcat)，在 2007 年发布 1.10 稳定版本之后，就不再更新了。它的原始版本是一个类 Unix 程序，原作者 Hobbit。此即 OpenBSD 版的代码来源。
 
-    现在一般用的是 GNU 项目维护的 GNU Netcat，维护目的是提升 nc 在其他平台的可移植性的同时保持对原始 nc 的兼容性，这里主要是给各大 Linux 发行版提供一个维护性的版本，也即 OpenBSD 版。安装 netcat后，nc 是 netcat 的 alias，命令行里输入 nc 等于输入 netcat。
+    现在一般用的是 GNU 项目维护的 GNU Netcat，维护目的是提升 nc 在其他平台的可移植性的同时保持对原始 nc 的兼容性，这里主要是给各大 Linux 发行版提供一个维护性的版本，也即 OpenBSD 版。安装 netcat 后，nc 是 netcat 的 alias，命令行里输入 nc 等于输入 netcat。
 
-    Ncat 是 Nmap 项目的作者 Fyodor，在原始 Netcat 之上新增功能二次开发的另一款强大工具，也就是说 Netcat 有的功能 Ncat 都具备，并且 ncat 还有更多强大的功能。安装了 ncat 后，nc、netcat 都成了 ncat 的 alias，命令行里输入这三者都是一样的。
+    Ncat(nmap-ncat) 是 Nmap 项目的作者 Fyodor，在原始 Netcat 之上新增功能二次开发的另一款强大工具，也就是说 Netcat 有的功能 Ncat 都具备，并且 ncat 还有更多强大的功能。
 
-    这几个版本软件的使用方法是互相兼容的，建议用之前还是多查查 man。
+    nmap 功能更强大，但命令行选项不再兼容了 nc 了
+        https://www.redhat.com/sysadmin/introduction-nmap-troubleshooting
+
+安装了 ncat 后，nc、netcat 都成了 ncat 的 alias，命令行里输入这三者都是一样的，这几个版本软件的使用方法是互相兼容的，建议用之前还是多查查 man。
 
 所以目前 nc 程序有 2 种 netcat 版本，分为 Nmap 版和 OpenBSD 版
 
