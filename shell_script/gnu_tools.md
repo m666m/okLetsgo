@@ -8409,6 +8409,8 @@ NFS 一般用来存储共享视频，图片等静态数据。
         unicode emoji https://unicode.org/emoji/charts/full-emoji-list.html
         git emoji https://blog.csdn.net/li1669852599/article/details/113336076
 
+给字符渲染颜色 lolcat/aafire
+
 显示天气
 
     curl -s --connect-timeout 3 -m 5 http://wttr.in/newyork
@@ -8416,6 +8418,10 @@ NFS 一般用来存储共享视频，图片等静态数据。
 小火车sl
 
     sudo apt install sl
+
+水族箱
+
+    asciiaquarium
 
 牛说
 
@@ -8475,6 +8481,10 @@ NFS 一般用来存储共享视频，图片等静态数据。
         # 温度及钟表
         # watch -n1  "date '+%D %T ' && vcgencmd measure_temp |figlet -f future.tlf -w 80 "
         watch -n1  "(date '+%T'; vcgencmd measure_temp) |tr '\n' ' ' |figlet -f future.tlf -w 80 "
+
+字符画 boxes
+
+    https://zhuanlan.zhihu.com/p/52558937
 
 hollywood 让你的 tmux 跑满各种夸张程序，就像好莱坞的科幻电影
 
