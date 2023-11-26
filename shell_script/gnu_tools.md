@@ -11067,7 +11067,7 @@ Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可�
 
 > 目前流行的 Linux 发行版基本都默认使用 Google Noto 字体
 
-Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
+注意 Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
 
 在 Gnome Software 的首页分类里，就可以安装选择中文字体
 
@@ -11081,7 +11081,7 @@ Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
 
     font：单独选择安装你需要的中文字体
 
-可直接手工下载安装，简单操作可以选 ttf -> 简体中文
+也可在以下页面下载手工安装，目录树选 ttf -> 简体中文
 
     https://github.com/notofonts/noto-cjk/blob/main/Sans/README.md
 
@@ -11118,7 +11118,7 @@ Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
         google-noto-serif-cjk-ttc-fonts.noarch : Serif OTC font files for google-noto-cjk-fonts  <---- 仅简体中文的 OTC 格式打包
         google-noto-serif-cjk-vf-fonts.noarch : Google Noto Serif CJK Variable Fonts <---- 异体字包，文件小，但是跟前面的 otf 包冲突，且其otc 文件不一定所有软件都支持
 
-我的 Fedora 38 发行版在安装了中文输入法后安装了 Sans，但没有 Serif，手动安装下
+我的 Fedora 38 发行版在安装了中文输入法后自动安装了 Sans，但没有 Serif，手动安装下
 
     # https://fedoraproject.org/wiki/Changes/Noto_CJK_Variable_Fonts#Detailed_Description
     # 所有字体的完整版：google-noto-cjk-fonts
@@ -11130,6 +11130,10 @@ Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
     $ sudo dnf install google-noto-serif-cjk-vf-fonts
 
     mono 不用单独安装，sans 自带了
+
+adobe 思源跟Google Noto 这俩字体是一回事
+
+    https://github.com/adobe-fonts/source-han-sans
 
 #### 设置中英文分别使用一种字体 fontconfig
 
