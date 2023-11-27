@@ -5730,6 +5730,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
 安装
 
+    # 注意目录名是 resurrect 可以保存到本目录下而不是 .local/share/，方便
     $ git clone --depth=1 https://github.com/tmux-plugins/tmux-resurrect ~/.tmux/resurrect
 
     编辑 ~/.tmux.conf 文件
@@ -5749,7 +5750,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
         前导键 ctrl + b，然后 ctrl + s，会在左下角 tmux 状态栏会显示 saving ... 字样 ， 完毕后会提示 Tmux environment saved 字样
 
-        tmux-resurrect 会将 Tmux 会话的详细信息以文本文件形式保存到 ~/.tmux/resurrect 目录。
+        会将 Tmux 会话的详细信息以文本文件形式保存到 ~/.tmux/resurrect 目录。
 
     打开 tmux 后手动还原tmux会话
 
