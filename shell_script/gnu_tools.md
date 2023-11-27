@@ -8590,9 +8590,17 @@ hollywood 让你的 tmux 跑满各种夸张程序，就像好莱坞的科幻电�
 
 ### 操作时间 timedatectl/chronyc
 
+ntp 时间同步的原理
+
+    https://learn.microsoft.com/zh-cn/windows-server/networking/windows-time-service/how-the-windows-time-service-works#ntp-algorithms
+
     用 timedatectl 命令操作时间时区  https://www.cnblogs.com/zhi-leaf/p/6282301.html
 
     网络时间的那些事及 ntpq 详解  https://www.cnblogs.com/GYoungBean/p/4225465.html
+
+最通用的查看时间控制的命令
+
+    $ timedatectl
 
 以前 Linux 时间同步基本是使用 ntpdate 和 ntpd 这两个工具实现的，但是这两个工具已经很古老了，大多数系统都不再安装它们
 
@@ -8648,6 +8656,22 @@ chronyc 是用来监控 chronyd 性能和配置其参数的用户界面。他可
     服务unit文件： /usr/lib/systemd/system/chronyd.service
     监听端口： 323/udp，123/udp
     配置文件： /etc/chrony.conf
+
+手动配置网络中的 NTP
+
+    https://documentation.suse.com/zh-cn/sles/15-SP4/html/SLES-all/cha-ntp.html#sec-net-xntp-netconf
+
+    chrony 从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持同步，您需要告诉 chrony 使用什么时间服务器。您可以使用特定的服务器名称或 IP 地址，例如：
+
+        server 0.europe.pool.ntp.org
+
+    还可以指定池名称，池名称会解析为若干个 IP 地址：
+
+        pool pool.ntp.org
+
+    要同步同一网络中的多台计算机的时间，建议不要通过一台外部服务器同步所有计算机。比较好的做法是将其中一台计算机作为时间服务器（它与外部时间服务器同步），其他计算机作为它的客户端。将 local 指令添加至该服务器的 /etc/chrony.conf，以将其与权威时间服务器区分开：
+
+        local stratum 10
 
 查看时间同步源，出现^*表示成功
 

@@ -2147,6 +2147,8 @@ Win + Linux 需要关闭主板的 “快速启动 FAST Boot”
 
 #### 解决双系统安装 Windows 与 Linux 时间不一致的问题
 
+    Linux 设置时间服务参见章节 [操作时间 timedatectl/chronyc](gnu_tools.md)
+
 Linux 与 Windows 对于本地 RTC 硬件保存时间的理解方式不同：Linux 认为硬件时间为 GMT+0 时间，即世界标准时间UTC，中国本地时间是东八区时间，显示时间为 GMT+8；而 Windows 系统认为硬件时间就是中国本地时间。
 
 因此，如果用户分别使用过两个系统，则每个操作系统的时间校准服务都会按自己的理解把从网络时间服务器上获取的时间保存到本机 RTC 硬件，导致 Windows 系统下时间比正常时间慢 8 个小时。
@@ -2156,7 +2158,16 @@ Linux 与 Windows 对于本地 RTC 硬件保存时间的理解方式不同：Lin
     # 硬件 RTC 保存的时间是本地时间
     $ sudo hwclock --localtime --systohc
 
-设置时间服务参见章节 [操作时间时区 timedatectl](gnu_tools.md)。
+缺点是无法适应夏令时等时区变化情况，不过只要我们的机器不在飞机上而且所在地区没有夏令时，无所谓了：
+
+    $ timedatectl
+    ...
+    Warning: The system is configured to read the RTC time in the local time zone.
+            This mode cannot be fully supported. It will create various problems
+            with time zone changes and daylight saving time adjustments. The RTC
+            time is never updated, it relies on external facilities to maintain it.
+            If at all possible, use RTC in UTC by calling
+            'timedatectl set-local-rtc 0'.
 
 ### Bitlocker 加密
 
