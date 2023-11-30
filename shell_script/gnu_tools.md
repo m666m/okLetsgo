@@ -14317,6 +14317,8 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
 
     https://blog.csdn.net/weixin_31762925/article/details/116771481
 
+如果是本地使用命令行登录，则必须使用命令进行设置：
+
 确认是否支持设备
 
     $ lsusb
@@ -14330,9 +14332,7 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
 
 使用以下命令添加指定手指的指纹,一共要求扫描五次
 
-    sudo fprintd-enroll 用户名
-
-    # 命令执行后提示如下与扫描指纹反馈如下
+    $ sudo fprintd-enroll 用户名
     Using device /net/reactivated/Fprint/Device/0
     Enrolling right-index-finger finger.
     Enroll result: enroll-stage-passed
@@ -14344,13 +14344,11 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
 
 列出本机指定用户下已注测的指纹信息
 
-    sudo fprintd-list winq
+    $ sudo fprintd-list winq
 
 验证您本机刚注册过的指纹信息是否正确
 
-    sudo fprintd-verify winq
-
-    # 命令执行后提示如下信息,表示指纹信息验证通过
+    $ sudo fprintd-verify winq
     Using device /net/reactivated/Fprint/Device/0
     Listing enrolled fingers:
     - #0: right-index-finger
