@@ -11618,7 +11618,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能。
 
-    blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持 Dash to Dock 等扩展的透明化，注意跟有些主题兼容性不好边缘无法透明。不需要使用它的锁屏背景模糊功能，使用上面 Bing Wallpaper 扩展的这个功能即可。
+    blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持 Dash to Panel 等扩展的透明化，注意跟有些主题兼容性不好边缘无法透明。不需要使用它的锁屏背景模糊功能，使用上面 Bing Wallpaper 扩展的这个功能即可。不需要使用它的 Dash to Dock 的透明化功能，不如 Dash to Dock 自己的透明化效果好。
 
     Date Menu Formater      如果在任务栏显示的时间没有星期，在 Gnome Tweaks 中开启即可，这个扩展可以调整日期时间的格式。
 
