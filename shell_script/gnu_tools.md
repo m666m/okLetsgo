@@ -10880,7 +10880,9 @@ Linux 桌面的终端工具参见章节 [其他终端模拟器]。
 
     至2023年，Linux 尚未实现支持 HDR 显示器
 
-        https://gitlab.freedesktop.org/wayland/weston/-/issues/467
+        https://wiki.archlinux.org/title/HDR_monitor_support
+            https://gitlab.freedesktop.org/xorg/xserver/-/issues/1037#note_521100
+            https://gitlab.freedesktop.org/wayland/weston/-/issues/467
 
     vlc player，建议安装 flatpak 版本，这样闭源的编解码器都自带了，不需要单独安装
 
@@ -10889,11 +10891,13 @@ Linux 桌面的终端工具参见章节 [其他终端模拟器]。
 
     mplayer 原生 linux 下的播放器，不提供有效的GUI
 
+        注意：以下播放器依赖操作系统安装h264等编码器，用起来不是开箱即用的，即使 flatpak 版本也不行
+
         http://www.mplayerhq.hu/design7/info.html
             Windows build
                 https://oss.netfarm.it/mplayer/
 
-        新的发展 MPV player，支持播放 youtube
+        MPV player --- mplayer 的新发展
 
             https://mpv.io/installation/
                 https://github.com/mpv-player/mpv/
