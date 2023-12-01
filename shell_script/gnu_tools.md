@@ -10878,6 +10878,10 @@ Linux 桌面的终端工具参见章节 [其他终端模拟器]。
 
 视频播放
 
+    至2023年，Linux 尚未实现支持 HDR 显示器
+
+        https://gitlab.freedesktop.org/wayland/weston/-/issues/467
+
     vlc player，建议安装 flatpak 版本，这样闭源的编解码器都自带了，不需要单独安装
 
         https://www.videolan.org/vlc/index.zh_CN.html
