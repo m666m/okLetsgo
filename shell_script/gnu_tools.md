@@ -7324,6 +7324,10 @@ xdm 有图形界面
     https://github.com/aria2/aria2
         https://aria2.github.io/
 
+    https://wiki.archlinux.org/title/Aria2
+
+    https://aria2.github.io/manual/en/html/aria2c.html#example
+
     Aria2 完美配置 https://github.com/P3TERX/aria2.conf
 
 替代品 axel
