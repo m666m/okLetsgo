@@ -11602,6 +11602,8 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     nothing to say          在任务栏可以看到你的麦克风状态并手动控制是否静音，大大改善你的隐私保护
 
+    Smartcard lock          登录用的智能卡如yubikey被拔出，即自动锁屏
+
     Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口。
 
     system-monitor-next     在任务栏显示你的cpu、内存使用情况，就像在终端使用 btop 或 nmon 的效果。竞品 Vitals/Freon。
