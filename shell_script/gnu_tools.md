@@ -6455,35 +6455,43 @@ sed 删除、替换文件中的字符串
 sed 示例：
 
 ```shell
-    在文件的匹配行前面加上#注释
-    #   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
-    #   s       替换
-    #   ^       开头匹配
-    #   [^#]    匹配非#
-    #   #&      用&来原封不动引用前面匹配到的行内容，在其前面加上#号
-    #   g       全部（只匹配特定行不加g）
-    sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
 
-    在文件的匹配行前面取消#注释
-    #   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
-    #   ^#//    去掉代表开头的#
-    sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
+打印文件内容，跳过第一行标题行
 
-    # 给所有没有#开头的行改为#开头
-    # sed '/[^#]/ s/^[^#]/#&/' /etc/dhcpcd.conf
-    sed 's/^[^#]/#&/' /etc/dhcpcd.conf
+    cat xxx.txt |sed 1d
 
-    # 模式匹配简写，替换满足条件行的回车为逗号
-    sed 'H;1h;$!d;x;y/\n/,/'
+    cat xxx.txt |sed -n '2,$p'
 
-    # 把字符串 'bt-tracker=' 后面的内容替换为变量 $TRACKER 的值
-    sed -i "s@^\(bt-tracker=\).*@\1${TRACKER}@" btconfig.txt
+在文件的匹配行前面加上#注释
+#   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+#   s       替换
+#   ^       开头匹配
+#   [^#]    匹配非#
+#   #&      用&来原封不动引用前面匹配到的行内容，在其前面加上#号
+#   g       全部（只匹配特定行不加g）
+sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
 
-    # 范围删除匹配模式行，只显示删除后的结果
-    sed -n '/start_line/,/end_line/!p' your_file
+在文件的匹配行前面取消#注释
+#   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+#   ^#//    去掉代表开头的#
+sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
 
-    # 范围删除匹配模式行，直接修改到文件
-    sed -i '/start_line/,/end_line/d' your_file
+# 给所有没有#开头的行改为#开头
+# sed '/[^#]/ s/^[^#]/#&/' /etc/dhcpcd.conf
+sed 's/^[^#]/#&/' /etc/dhcpcd.conf
+
+# 模式匹配简写，替换满足条件行的回车为逗号
+sed 'H;1h;$!d;x;y/\n/,/'
+
+# 把字符串 'bt-tracker=' 后面的内容替换为变量 $TRACKER 的值
+sed -i "s@^\(bt-tracker=\).*@\1${TRACKER}@" btconfig.txt
+
+# 范围删除匹配模式行，只显示删除后的结果
+sed -n '/start_line/,/end_line/!p' your_file
+
+# 范围删除匹配模式行，直接修改到文件
+sed -i '/start_line/,/end_line/d' your_file
+
 ```
 
 ### 终端输出字符的后处理工具
