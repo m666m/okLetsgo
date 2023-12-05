@@ -2522,7 +2522,7 @@ Nmap 具有强大的命令行选项，提供比 Netcat 更高级别的自动化
 查看关机、重启、死机记录
 
     # 执行等级的改变的时间点，初步排查问题
-    $ lastx
+    $ last
 
     $ last| grep -E -i "crash|down|reboot"
     pi       pts/0        192.168.0.106    Tue Aug  2 17:09 - crash (-19206+09:08)
@@ -2531,6 +2531,13 @@ Nmap 具有强大的命令行选项，提供比 Netcat 更高级别的自动化
     pi       pts/3        tmux(2151).%3    Tue Aug  2 04:29 - crash (-19205+20:29)
     pi       pts/2        tmux(2151).%0    Tue Aug  2 04:29 - crash (-19205+20:29)
     pi       pts/1        192.168.0.106    Tue Aug  2 04:09 - crash (-19205+20:09)
+
+查看所有日志(systemd)
+
+    # 使用 root 用户执行看的内容多
+    journalctl
+
+    https://docs.fedoraproject.org/en-US/quick-docs/viewing-logs/
 
 查看系统日志，查找内存溢出oom-kill导致的死机
 
@@ -2558,13 +2565,6 @@ Nmap 具有强大的命令行选项，提供比 Netcat 更高级别的自动化
 kernel 会将开机信息存储在 ring buffer 中。您若是开机时来不及查看信息，用命令 dmesg 来查看。
 
     dmesg | less
-
-查看本次启动日志(systemd)
-
-    # root 用户权限看的多
-    journalctl
-
-    https://docs.fedoraproject.org/en-US/quick-docs/viewing-logs/
 
 查看操作系统日志有没有报错
 
