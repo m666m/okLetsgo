@@ -11366,12 +11366,6 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
 
     GNOME Linux — 一场彻底的灾难 https://zhuanlan.zhihu.com/p/490505981
 
-查看日志
-
-    journalctl -f -o cat /usr/bin/gnome-shell
-
-如果桌面死住没关系，见章节 [Linux 桌面死机怎么办 --- reisub“登录控制台”]。
-
 为方便理解，对比 Windows 词汇如下：
 
     Windows 桌面        --->    Gnome Workspace 工作区，可以有多个
@@ -11381,7 +11375,7 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
     Windows 桌面工具栏   --->    Gnome Dash 常用工具栏
                                Gnome Dock 浮动工具栏
 
-为便于理解，以下尽量使用 Windows 词汇。
+以下尽量使用 Windows 词汇。
 
 Gnome 桌面默认只展示壁纸，不能放文件，用户交互操作强调精简，在操作向手机风格转换的同时，优化宽屏、多桌面的使用方式。
 
@@ -13868,6 +13862,10 @@ WantedBy=multi-user.target
     https://blog.csdn.net/qq_39779233/article/details/114758689
 
     https://wiki.archlinux.org/title/Keyboard_shortcuts
+
+查看日志
+
+    journalctl -f -o cat /usr/bin/gnome-shell
 
 情况一、桌面的图形界面突然卡住且无法操作时，尝试切换到 tty 控制台
 
