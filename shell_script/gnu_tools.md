@@ -8601,7 +8601,11 @@ hollywood 让你的 tmux 跑满各种夸张程序，就像好莱坞的科幻电�
 
         $ sudo make install
 
-### 操作时间 timedatectl/chronyc
+### 操作时间 timedatectl/chronyc 及 NTP 服务
+
+验证当前系统时间是否准确，访问如下网址比较你电脑/手机和此网站的差值，同步精确度±5ms，不准就刷新
+
+    https://time.is/
 
 ntp 时间同步的原理
 
@@ -8670,21 +8674,58 @@ chronyc 是用来监控 chronyd 性能和配置其参数的用户界面。他可
     监听端口： 323/udp，123/udp
     配置文件： /etc/chrony.conf
 
-手动配置网络中的 NTP
+手动配置公共 NTP 服务器
 
     https://documentation.suse.com/zh-cn/sles/15-SP4/html/SLES-all/cha-ntp.html#sec-net-xntp-netconf
 
-    chrony 从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持同步，您需要告诉 chrony 使用什么时间服务器。您可以使用特定的服务器名称或 IP 地址，例如：
+chrony 从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持同步，您需要告诉 chrony 使用什么时间服务器。您可以使用特定的服务器名称或 IP 地址，例如：
 
-        server 0.europe.pool.ntp.org
+    server 0.europe.pool.ntp.org
 
-    还可以指定池名称，池名称会解析为若干个 IP 地址：
+还可以指定池名称，池名称会解析为若干个 IP 地址：
 
-        pool pool.ntp.org
+    pool pool.ntp.org
 
-    要同步同一网络中的多台计算机的时间，建议不要通过一台外部服务器同步所有计算机。比较好的做法是将其中一台计算机作为时间服务器（它与外部时间服务器同步），其他计算机作为它的客户端。将 local 指令添加至该服务器的 /etc/chrony.conf，以将其与权威时间服务器区分开：
+要同步同一网络中的多台计算机的时间，建议不要通过一台外部服务器同步所有计算机。比较好的做法是将其中一台计算机作为时间服务器（它与外部时间服务器同步），其他计算机作为它的客户端。将 local 指令添加至该服务器的 /etc/chrony.conf，以将其与权威时间服务器区分开：
 
-        local stratum 10
+    local stratum 10
+
+国内的公共 NTP 服务器
+
+    # https://www.zhihu.com/question/30252609/answer/2276727955
+
+    # NTP项目国内时间服务器，CERNET 的一堆服务器就在那里面，这个应该比较靠谱
+    cn.pool.ntp.org
+
+    # NTP项目亚洲时间服务器，考虑到延迟，优先用国内的比较好
+    asia.pool.ntp.org
+
+    # 不建议使用中国科学院国家授时中心，精度不高，专业的人家有自己的协议，商业的有北斗，公共的没经费就凑合一个了
+    # https://www.cas.cn/tz/201809/t20180921_4664344.shtml
+    ntp.ntsc.ac.cn
+
+    # 不要使用国内的这个，自愿自费组织的，2023年12月发现 ntp.org.cn 域名都无法访问了
+    # cn.ntp.org.cn
+
+    # 教育网
+    time.edu.cn
+
+    # 清华
+    ntp.tuna.tsinghua.edu.cn
+
+    # 阿里云还是算了，2023年开始连自己的整个云服务平台都出现崩溃
+
+    # 微软
+    time.windows.com
+
+    # 苹果
+    time.asia.apple.com
+
+    # Cloudflare
+    time.cloudflare.com
+
+    # google
+    time.google.com
 
 查看时间同步源，出现^*表示成功
 
@@ -8757,11 +8798,27 @@ chronyc 是用来监控 chronyd 性能和配置其参数的用户界面。他可
     CGroup: /system.slice/systemd-timesyncd.service
             └─338 /lib/systemd/systemd-timesyncd
 
-systemd-timesyncd 只专注于从远程服务器查询然后同步到本地时钟。在/etc/systemd/timesyncd.conf 中配置你的（时间）服务器。
+systemd-timesyncd 只专注于从远程服务器查询然后同步到本地时钟。
+
+配置 NTP 服务器地址修改 /etc/systemd/timesyncd.conf 文件即可，地址列表同上。
 
 大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd 只会更改系统时间不会更改硬件时间，可以通过 `hwclock -w` 命令将系统时间同步到硬件时间。
 
 Linux 处理 RTC 时间跟 Windows 的机制不同，参见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
+
+> Windows 的同步时间功能默认每周只同步一次
+
+控制面板的时间设置里可以找到设置时间服务器的地址。
+
+如果你的计算机主板时钟连一周的准时都保证不了，可以把同步间隔改成24h或1h：
+
+    Win+R 输入“Regedit”进入注册表编辑器 展开 “计算机\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient” 双击 “SpecialPollInterval” 键值，将对话框中的“基数栏”选择到“十进制”上 对话框中显示的数字正是自动对时的间隔（以秒为单位），比如1天就是86400,1小时就是3600 在Parameters列表中，将 “NtpServer” 键值修改为相应服务器的IP地址，然后点击“确定”按钮保存。
+
+更细节的调整就是区分慢多少时间算慢了，正常情况下完全没必要改
+
+    运行“gpedit.msc”进入本地组策略编辑器 展开 “本地计算机 策略\计算机配置\管理模板\系统\Windows 时间服务”，双击 “全局配置设置” 选项 “FrequencyCorrectRate”和“PhaseCorrectRate”，以我的理解，“慢工出细活”，所以设置成了1。
+
+    MaxNegPhaseCorrection 和 MaxPosPhaseCorrection 分别控制本地时钟最多快/慢（-/+）多少秒，超过这个范围就会提示时间差过大，请手动调整时间。默认值：172800 秒 MaxPollInterval和MinPollInterval分别控制最大/最小轮询间隔，如果设置的是x，则实际的最大/最小轮询间隔为 秒，默认值分别为10和6，对应1024秒和64秒 就个人有限经验来看，时间误差大的时候，会连续间隔几个小的轮询间隔反复校准；而时间相对准确时，好像是按照最大轮询间隔和前面设置的那个秒数里面较小的为准，但最大轮询间隔数值不整，强迫症可能会有点难受~
 
 ### 设置替换命令 update-alternatives
 
