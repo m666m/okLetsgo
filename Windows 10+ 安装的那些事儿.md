@@ -2177,6 +2177,8 @@ Linux 与 Windows 对于本地 RTC 硬件保存时间的理解方式不同：Lin
 
 解决办法：让 Linux 按照 Windows 的方式管理时间
 
+大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd 只会更改系统时间不会更改硬件时间，可以通过 `hwclock -w` 命令将系统时间同步到硬件时间。
+
     # 硬件 RTC 保存的时间是本地时间
     $ sudo hwclock --localtime --systohc
 
