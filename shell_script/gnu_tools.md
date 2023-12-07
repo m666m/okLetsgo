@@ -8615,11 +8615,44 @@ ntp 时间同步的原理
 
     网络时间的那些事及 ntpq 详解  https://www.cnblogs.com/GYoungBean/p/4225465.html
 
-最通用的查看时间控制的命令
+通用的查看时间控制的命令
 
     $ timedatectl
 
-以前 Linux 时间同步基本是使用 ntpdate 和 ntpd 这两个工具实现的，但是这两个工具已经很古老了，大多数系统都不再安装它们
+查看时间同步的状态
+
+    $ timedatectl status
+                Local time: 二 2023-08-08 15:30:53 +08
+            Universal time: 二 2023-08-08 07:30:53 UTC
+                    RTC time: 二 2023-08-08 15:30:53
+                    Time zone: Asia/Singapore (+08, +0800)
+    System clock synchronized: yes   <--------  时间同步正常
+                NTP service: active   <-------- 使用 chrony、systemd-timesyncd 等服务可以被这个命令识别到
+            RTC in local TZ: yes
+
+    Warning: The system is configured to read the RTC time in the local time zone.
+            This mode cannot be fully supported. It will create various problems
+            with time zone changes and daylight saving time adjustments. The RTC
+            time is never updated, it relies on external facilities to maintain it.
+            If at all possible, use RTC in UTC by calling
+            'timedatectl set-local-rtc 0'.
+
+    $ timedatectl timesync-status
+    Server: 2406:da1e:2b8:7e32:e92a:3c4b:358e:2dfb (2.debian.pool.ntp.org)
+    Poll interval: 34min 8s (min: 32s; max 34min 8s)
+            Leap: normal
+        Version: 4
+        Stratum: 2
+        Reference: 875729E5
+        Precision: 1us (-25)
+    Root distance: 23.338ms (max: 5s)
+        Offset: -406us
+            Delay: 95.029ms
+        Jitter: 2.817ms
+    Packet count: 263
+        Frequency: -1.446ppm
+
+以前 Linux 时间同步服务基本是使用 ntpdate 和 ntpd 这两个工具实现的，但是这两个工具已经很古老了，大多数系统都不再安装它们
 
     $ ntpstat
 
@@ -8633,7 +8666,7 @@ ntp 时间同步的原理
 
     https://wiki.archlinux.org/title/Chrony
 
-查看时间同步的状态
+查看服务的状态
 
     $ chronyc tracking
     Reference ID    : 54104921 (tick.ntp.infomaniak.ch)
@@ -8686,7 +8719,7 @@ chrony 从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持�
 
     pool pool.ntp.org
 
-要同步同一网络中的多台计算机的时间，建议不要通过一台外部服务器同步所有计算机。比较好的做法是将其中一台计算机作为时间服务器（它与外部时间服务器同步），其他计算机作为它的客户端。将 local 指令添加至该服务器的 /etc/chrony.conf，以将其与权威时间服务器区分开：
+要同步同一网络中的多台计算机的时间，建议不要直接通过外部服务器同步所有计算机。比较好的做法是将其中一台计算机作为时间服务器（它与外部时间服务器同步），其他内网计算机作为它的客户端。将 local 指令添加至该服务器的 /etc/chrony.conf，以将其与权威时间服务器区分开：
 
     local stratum 10
 
@@ -8727,6 +8760,10 @@ chrony 从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持�
     # google
     time.google.com
 
+查看 NTP 服务器的质量：延迟、偏移
+
+    Windows: w32tm /stripchart /computer:cn.pool.ntp.org
+
 查看时间同步源，出现^*表示成功
 
     $ chronyc sources -v
@@ -8752,38 +8789,7 @@ chrony 从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持�
 
     https://wiki.archlinux.org/title/Systemd-timesyncd
 
-查看时间同步的状态
-
-    $ timedatectl timesync-status
-    Server: 2406:da1e:2b8:7e32:e92a:3c4b:358e:2dfb (2.debian.pool.ntp.org)
-    Poll interval: 34min 8s (min: 32s; max 34min 8s)
-            Leap: normal
-        Version: 4
-        Stratum: 2
-        Reference: 875729E5
-        Precision: 1us (-25)
-    Root distance: 23.338ms (max: 5s)
-        Offset: -406us
-            Delay: 95.029ms
-        Jitter: 2.817ms
-    Packet count: 263
-        Frequency: -1.446ppm
-
-    $ timedatectl status
-                Local time: 二 2023-08-08 15:30:53 +08
-            Universal time: 二 2023-08-08 07:30:53 UTC
-                    RTC time: 二 2023-08-08 15:30:53
-                    Time zone: Asia/Singapore (+08, +0800)
-    System clock synchronized: yes   <--------  时间同步正常
-                NTP service: active   <-------- 使用 chrony 服务也可以被这个命令识别到
-            RTC in local TZ: yes
-
-    Warning: The system is configured to read the RTC time in the local time zone.
-            This mode cannot be fully supported. It will create various problems
-            with time zone changes and daylight saving time adjustments. The RTC
-            time is never updated, it relies on external facilities to maintain it.
-            If at all possible, use RTC in UTC by calling
-            'timedatectl set-local-rtc 0'.
+查看服务的状态
 
     $ systemctl status systemd-timesyncd.service
     ● systemd-timesyncd.service - Network Time Synchronization
