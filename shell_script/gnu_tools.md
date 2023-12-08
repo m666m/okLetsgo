@@ -11510,6 +11510,8 @@ Gnome 桌面默认只展示壁纸，不能放文件，用户交互操作强调�
 
     也就是说，如果你打开了多个应用程序，每个应用程序打开了多个实例，想一步到位切换到某个实例只能按 win 键从 “任务概览” 里点选。不然只能先 alt + tab 切换到你的应用程序，然后 alt + ~ 切换到它打开的多个实例的某一个，这也太麻烦了。
 
+    gnome一直不能按Alt+Tab切换最近的两个窗口，必须安装扩展 “Alt+Tab Scroll Workaround”
+
     强烈推荐安装扩展 “Coverflow Alt-Tab”，可设置为类似 Windows 的 “task switch” 行为，不再区分应用和应用的窗口，所有的窗口列出供用户切换，见下面章节 [使用 gnome 扩展]。
 
 为适应现代流行的 16:9 宽屏，优化了分割多个窗口占满屏幕的操作：
@@ -11660,6 +11662,8 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
     Unblank lock screen     gnome的屏幕长时间空闲自动锁屏里没有单独的锁屏，只有黑屏并锁屏或黑屏不锁屏，鼠标晃不醒就只能蒙着打密码了，这也是病，得治！
 
     Alphabetical App Grid   应用程序列表“居然”是不按字母顺序排列的，而且无法拖放调整位置，这是不是该治的病！用这个扩展强制按字母顺序排列。
+
+    Alt+Tab Scroll Workaround   gnome目前不能按Alt+Tab切换最近的两个窗口，此病何时治愈
 
     Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以设置不再把窗口分组为应用和应用的实例，实现类似 Windows 的 “task switch”。
 
