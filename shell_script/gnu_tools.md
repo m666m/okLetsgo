@@ -11512,8 +11512,6 @@ Gnome 桌面默认只展示壁纸，不能放文件，用户交互操作强调�
 
     gnome一直不能按Alt+Tab切换最近的两个窗口，必须安装扩展 “Alt+Tab Scroll Workaround”
 
-    强烈推荐安装扩展 “Coverflow Alt-Tab”，可设置为类似 Windows 的 “task switch” 行为，不再区分应用和应用的窗口，所有的窗口列出供用户切换，见下面章节 [使用 gnome 扩展]。
-
 为适应现代流行的 16:9 宽屏，优化了分割多个窗口占满屏幕的操作：
 
     鼠标双击窗口标题栏的操作跟 Windows 一致，在最大化和恢复小窗口间切换。
@@ -11665,7 +11663,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Alt+Tab Scroll Workaround   gnome目前不能按Alt+Tab切换最近的两个窗口，此病何时治愈
 
-    Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以设置不再把窗口分组为应用和应用的实例，实现类似 Windows 的 “task switch”。
+    Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以设置不再把窗口分组为应用和应用的实例，实现类似 Windows 的 “task switch”。跟扩展 “Alt+Tab Scroll Workaround” 冲突，我就没启用之。
 
     Auto Move Windows       指定应用程序在指定桌面打开窗口。对经常同时打开很多应用程序的用户来说，按桌面归类查找各个应用程序的窗口，非常方便。竞品 put windows。
 
