@@ -7102,14 +7102,14 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     $ gpg --armor --gen-random 2 16
     k524BASHzHmg1JFtDLHaqg==
 
-    # 16 进制编码的 20 个字符
+    # 16 进制编码的 40 个字符
     $ openssl rand -hex 20
     f231202787c01502287c420a8a05e960ec8f5129
 
     # 生成 256 字节的随机数据作为密钥文件
     $ openssl rand 256 >symmetric_keyfile.key
 
-    # 使用 base64 编码
+    # 使用 base64 编码，注意确保字节数可被 3 整除以避免填充
     # 如果字节参数 9，则 base64 编码生成 12 个字符
     $ openssl rand -base64 9
     BhE3zmV1ki6D
