@@ -6968,6 +6968,18 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
     # 只查看文件列表
     unzip -l arc.zip
 
+    # 分卷压缩，把目录 win_font 打包为 wf.zip 和 wf.z01 ... 的 10mb大小的包
+    $ zip -r -s 10m wf.zip win_font/
+
+        # 解压分卷文件，需要先合并出一个大zip文件
+        $ zip -F wf.zip --out win_font.zip
+        $ unzip win_font.zip
+
+        # Windows 下的 7zip 分卷压缩后是 .zip.001 .zip.002 ...
+        # 需要先拼合再解压
+        $ cat wf.zip.* >wf.zip
+        $ unzip wf.zip
+
 对压缩过的文件进行查看等操作，使用 zless、zmore、zcat 和 zgrep 等。
 
 .xz 文件
