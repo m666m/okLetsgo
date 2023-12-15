@@ -7157,7 +7157,7 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 随机数生成的这些工具，通过 /dev/random 依赖系统的熵池，而服务器在运行时，既没有键盘事件，也没有鼠标事件，那么就会导致噪声源减少。很多发行版本中存在一个 rngd 程序，用来增加系统的熵池（用 urandom 给 random 灌数据），详见章节 [给random()增加熵](init_a_server think)。
 
-#### TODO:使用 argon2 编码你的密码
+#### 使用 argon2 编码你的密码
 
     https://lindevs.com/install-argon2-on-raspberry-pi
 
