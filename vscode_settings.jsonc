@@ -1,13 +1,13 @@
 {
-    // VS Code 稳定版本选择，x.yz有个规律，z 在 0,1,2 时特别不稳定，z > 8 就比较稳定了，比如 1.69、1.79都不错
-    "json.schemaDownload.enable":true, // https://bobbyhadz.com/blog/unable-to-load-schema-from-vscode-cannot-open
+    // VS Code 稳定版本选择，x.yz有个规律，z 在 0,1,2 时特别不稳定（包括官方配套插件），大于 8 就比较稳定了，y 大概 1 年升级一次
+    // 所以手动更新最稳定，使用 1.59、1.69、1.79……
+    "update.mode": "manual",
     // https://github.com/microsoft/vscode/issues/177142#issuecomment-1536548022
     // F1: open defualt setting 打开各选项详尽说明
-    "gitlens.telemetry.enabled": false,
     "telemetry.telemetryLevel": "off",
-    "update.mode": "manual",
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
+    "json.schemaDownload.enable":true, // https://bobbyhadz.com/blog/unable-to-load-schema-from-vscode-cannot-open
     // 带补丁字体预览 https://www.nerdfonts.com/font-downloads
     // 带补丁字体下载 https://github.com/ryanoasis/nerd-fonts/releases
     // 编程字体预览大全 https://www.programmingfonts.org/#cascadia-code
@@ -517,6 +517,8 @@
         ]
     },
     "todo-tree.general.statusBar": "tags",
+    // gitlens 注意关闭遥测
+    "gitlens.telemetry.enabled": false,
     "gitlens.views.tags.branches.layout": "list",
     // vim airline 风格的状态栏变颜色
     "vim.statusBarColorControl": true,
