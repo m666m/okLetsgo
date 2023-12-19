@@ -13413,7 +13413,7 @@ RFX/GFX 技术参见章节 [虚拟机启用显卡加速](Windows 10+ 安装的�
 
 ##### 避免客户端连接时提示“证书来自不信任的证书验证机构”
 
-需要你的客户端安装服务器的CA证书，详见章节 [远程桌面RDP添加服务器自签名证书](openssl think)。
+需要你的客户端安装服务器的CA证书，详见章节 [Linux xrdp 使用自签名 SSL 证书](openssl think)。
 
 #### VNC
 
@@ -14510,3 +14510,658 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
     [*] eCryptfs Key/Mount Management
 
     [*] Inheritable Capabilities Management
+
+### steam、wine 及 Moonlight/Sunshine 串流
+
+在 Linux 上运行 Windows 程序的几种方法
+
+    https://itsfoss.com/use-windows-applications-linux/
+
+最方便的是安装使用 steam 游戏平台，从下载到安装到运行，不管是玩 Windows 游戏还是串流到电视，统统搞定了。
+
+    https://www.linuxcapable.com/how-to-install-steam-on-fedora-linux/
+
+如果你是个游戏发烧友，在多个平台有众多游戏，还可以安装个 lutris 平台，把你的各个游戏平台和模拟器都综合起来了
+
+    https://lutris.net/about
+
+或者直接安装社区项目 Nobara，预装了游戏客户端 Lutris、Steam、OBS Studio 和 Kdenlive
+
+        https://nobaraproject.org/
+
+        https://zhuanlan.zhihu.com/p/469095571
+            https://itsfoss.com/linux-gaming-distributions/
+
+安装 mangohud 看 fps
+
+    $ sudo dnf install mangohud
+
+当前的 openGL 驱动版本
+
+    $ glxinfo -B
+    name of display: :0
+    display: :0  screen: 0
+    direct rendering: Yes
+    Extended renderer info (GLX_MESA_query_renderer):
+        Vendor: Intel (0x8086)
+        Device: Mesa Intel(R) HD Graphics 610
+        Version: 23.1.6
+        Accelerated: yes
+        Video memory: 64000MB
+        Unified memory: yes
+        Preferred profile: core (0x1)
+        Max core profile version: 4.6
+        Max compat profile version: 4.6
+        Max GLES1 profile version: 1.1
+        Max GLES[23] profile version: 3.2
+    OpenGL vendor string: Intel
+    OpenGL renderer string: Mesa Intel(R) HD Graphics 610
+    OpenGL core profile version string: 4.6 (Core Profile) Mesa 23.1.6
+    OpenGL core profile shading language version string: 4.60
+    OpenGL core profile context flags: (none)
+    OpenGL core profile profile mask: core profile
+
+    OpenGL version string: 4.6 (Compatibility Profile) Mesa 23.1.6
+    OpenGL shading language version string: 4.60
+    OpenGL context flags: (none)
+    OpenGL profile mask: compatibility profile
+
+    OpenGL ES profile version string: OpenGL ES 3.2 Mesa 23.1.6
+    OpenGL ES profile shading language version string: OpenGL ES GLSL ES 3.20
+
+#### Steam on Linux：steam play / steam link
+
+Steam 属于商业闭源软件，但是各大发行版都提供了安装 steam 的方式
+
+    Steam/GOG.com/gameshub.com
+        https://itsfoss.com/linux-gaming-guide/
+
+    在 FreeBSD 安装
+        https://ivonblog.com/posts/install-steam-proton-on-freebsd/
+
+    玩 doom eternal
+        https://www.addictivetips.com/ubuntu-linux-tips/doom-eternal-on-linux
+
+从桌面的 Gnome “软件(Software)” / Kde “发现(Discoery)” 里搜索 steam，从发行版内置的第三方存储库安装 steam，使用命令行 `dnf install steam` 安装也可以。推荐安装 flatpak 版的，容器隔离的安全性更好。
+
+##### Steam Play（原名 proton） 安裝 Windows 平台的遊戲
+
+    https://itsfoss.com/steam-play/
+
+    https://ivonblog.com/posts/install-steam-on-linux/
+
+    https://fedoramagazine.org/set-up-fedora-silverblue-gaming-station/
+
+Steam Play 這個計畫讓玩家在購買遊戲後能於 Linux、Windows、macOS 遊玩，背後使用的技術是  "Steam Proton"，基於 Wine 研發的轉譯層，Valve 自家的 Steam Deck 掌機也有用到 Steam Proton 技術。
+
+设置改了：點選 Steam 左上角 → Settings -> Compatibility，勾选所有选项，看来这个技术要隐入底层自动启用，不再需要用户干预
+
+    废弃：點選 Steam 左上角 → Steam Play，勾選 「為所有產品啟用 Steam Play」，之後選擇下載最新的 Proton，再按下確定。點選 Steam 左上角 → 離開 Steam，重新啟動 Steam。
+
+然後下載一个 Windows 平台的遊戲，它就會一併安裝 Proton 等相关兼容层的包。
+
+於是你就可以在 Linux 上玩 Windows 遊戲了！
+
+使用 Proton 安装非 Steam 游戏
+
+    简短的回答是，是的，你可以。Steam 应用程序允许您将非 Steam 游戏添加到库中。您需要做的就是打开 Steam > 添加游戏（在应用程序的左下角）> 添加非 Steam 游戏 > 导航到您的游戏的 .exe 文件 > 添加选定的程序。
+
+用 Flatpak 裝 Steam 的話，遊戲收藏庫位於 ~/.var/app/com.valvesoftware.Steam/data/Steam/steamapps/。
+
+為了安全性考量，Flatpak 版的 Steam 預設只能存取使用者的 $HOME 目录，無法存取其他硬碟。
+
+如果你想移動 Steam 收藏庫，或是沿用舊有的 Steam 收藏庫，就得開放存取電腦特定目錄的權限。
+
+例如，你的第二個硬碟已經有 Steam 這個目錄，而它的完整路徑是 /run/media/user/SSD2/Steam
+
+首先 使用 flatpak override 指令開放存取權限：
+
+    flatpak override com.valvesoftware.Steam --user --filesystem="/run/media/user/SSD2/Steam"
+
+然后點選 Steam左上角 → 離開 Steam。然後重新啟動 Steam，即可在左上角 → 設定 → 下載 → Steam 收藏庫資料夾，新增其他硬碟的收藏庫資料夾了。
+
+##### Steam Link 用另一部電腦串流遊玩 Linux 電腦的 Steam 遊戲
+
+    https://store.steampowered.com/app/353380/Steam_Link
+
+    https://help.steampowered.com/en/faqs/view/6424-467A-31D9-C6CB
+
+    https://behind-the-scenes.net/running-steam-link-on-a-raspberry-pi/
+
+假设有独立显卡的计算机作为服务端，安装 steam，设置串流到另一台设备上玩游戏，比如智能电视、机顶盒、树莓派、手机等。
+
+1、服务端电脑，安装 steam 并启动，登录 steam 账户。
+
+2、客户端树莓派安装 steamlink
+
+    $ sudo apt install steamlink
+
+Bullseye（撰写本文时的最新版本）不起作用，Raspbian Buster（32位）的完整版本工作正常。
+
+客户端 Linux 需要有桌面环境，如果是 X windows 环境用 ctl + alt + F1 在控制台执行命令 `steamlink`
+
+如果没有桌面环境，比如你的树莓派上运行的 Raspbian 版本是 “Raspbian Stretch Lite” 这样的纯命令行版本，那么你需要安装一个额外的包 “zenity”，以使 Steam Link 软件正常工作
+
+    $ sudo apt install zenity
+
+    zenity 的使用详见章节 [可与命令行交互的图形界面 zenity]
+
+3、连接服务端电脑和串流设备（客户端）
+
+在服务端电脑运行 steam，等待客户端。
+
+在客户端串流设备上运行 steamlink，可以登录你的 steam 账户
+
+    如果是局域网环境，不需要登录 steam 就会自动发现你的服务端，点选后会提示一个 “授权码”，需要在服务端输入该 pin 码
+
+        如果没有出现你的服务端电脑，请确保你在Steam上启用了 “家庭流媒体”，并且在服务端电脑上正在运行 Steam。在服务端电脑上执行 Steam 后，启用 “家庭流媒体”按 “重新扫描”。
+
+在服务端电脑，打开 steam 的左上角 -> 设置 -> 远程畅玩（Play），添加该授权码即添加了这个设备。现在的版本会自动弹出一个窗口，提示有设备申请连接，输入上面客户端提示的 pin 码即可。
+
+配置游戏控制器
+
+steamlink 支持很多游戏控制器，树莓派支持的游戏控制器参见下面
+
+    https://behind-the-scenes.net/raspberry-pi-compatible-game-controllers/
+
+主要就是把控制器对应的按钮设置好功能即可。
+
+4、玩游戏播视频
+
+在客户端的 Steam link 选择你的服务端电脑，点击选择 Play 即会出现新的页面，可选择执行服务端的 steam 上的游戏了
+
+    客户端 Steam link 要退出串流长按 Esc 即可，再次按 esc 则退出 Steam link，返回到命令行。
+
+若要在出门在外玩游戏，需要使电脑保持打开和联机状态，电脑可以处于睡眠模式，只要提前在客户端设备上配置过，可以选择唤醒。
+
+如果要播放影音，在服务端的 steam 选择 “非 steam 游戏”，然后选择你的播放器程序即可。
+
+    如果您在电脑上强制退出 Steam（ALT+F4），屏幕镜像将保持活动状态
+    您可以在电视上访问计算机
+    这使您可以在电视上查看电影，图片，文档或网站
+    如果您还没有智能电视，这对于在Raspberry Pi上带来Windows应用程序的强大功能可能很有用
+
+目前已经支持树莓派，所以家里电视机的树莓派只要安装 Steam link，用 hdmi 线连接电视即可玩你电脑上的游戏了。
+
+    https://www.bilibili.com/video/BV1Cs4y1B7zQ/
+
+    需要有桌面环境才能使用 steamlink
+
+        sudo apt install steamlink
+
+    安装中提示 GPU 显存要至少 128 MB，并安装一堆依赖包，调整树莓派 GPU 显存用量参见章节 [调整你的显存容量](raspberry-pi.md)。
+
+    在树莓派桌面上运行 steam link 提示不支持 x11，按 ctrl+alt+F1 切换到控制台运行即可。
+
+#### Moonlight/Sunshine for Linux
+
+开源的方案，雲端串流遊戲軟體，可讓你從另一部電腦串流玩遊戲
+
+    https://www.bilibili.com/read/cv24132717/
+
+    https://blog.csdn.net/qq_38836741/article/details/129045274
+
+    https://zhuanlan.zhihu.com/p/139160734
+    https://zhuanlan.zhihu.com/p/461015191
+    https://bbs.a9vg.com/thread-5365751-1-1.html
+
+Moonlight 是一款开源的利用 Nvidia GameStream 进行远程串流游戏的软件，常规来说使用 Nvidia GameStream 串流除需要一款支持 GameStream 的显卡以外，还需要 Nvidia Shield设 备的支持来接收串流，用 Moonlight 就是做了 Shield 的工作。使能安装 Moonlight 的设备都能成为 GameStream 串流客户端。
+
+因为在流发送端（游戏执行端）需要安装英伟达 GeForce 显卡（N卡），并安装 GeForce Experience 注册 nvidia 账户，所以没人用。Nvidia 这套串流方案已经退出市场了，现在的方案是
+
+    流发送端安装 sunshine ---- Nvidia/AMD/Intel 核显 三平台通用的串流服务端
+
+    在流接收端（电视、手机或平板）安装 Moonlight 的客户端应用程序。
+
+流接收端和发送端连接到同一个内网环境里即可实现串流。
+
+##### 流发送端
+
+服务端安装 sunshine
+
+    https://github.com/loki-47-6F-64/sunshine#usage
+
+Fedora 用 flatpak 安装即可
+
+    flatpak search sunshine
+
+Windows 操作系统下服务端安装
+
+    安装手柄驱动
+
+        https://github.com/ViGEm/ViGEmBus/releases
+
+        下载 ViGEmBusSetup_x64.msi 或 ViGEmBusSetup_x86.msi 后安装
+
+    安装 sunshine 服务端
+
+        https://github.com/loki-47-6F-64/sunshine/releases
+
+        下载 Sunshine-Windows.zip 并解压至任意位置
+
+##### 流接收端
+
+客户端安装 Moonlight，注意 Linux 平台需要有桌面环境
+
+    https://moonlight-stream.org/
+
+Windows, macOS, and Steam Link
+
+    https://github.com/moonlight-stream/moonlight-qt/releases
+
+android 客户端:
+
+    https://github.com/moonlight-stream/moonlight-android/releases
+
+    没 root 下 nonroot 版本
+
+iOS 客户端:
+
+    https://apps.apple.com/app/moonlight-game-streaming/id1000551566
+
+Fedora 用 flatpak 安装即可
+
+    # https://flathub.org/apps/details/com.moonlight_stream.Moonlight
+    flatpak search moonlight
+
+> 树莓派安装 moonlight
+
+    https://github.com/moonlight-stream/moonlight-docs/wiki/Installing-Moonlight-Qt-on-Raspberry-Pi-4
+
+步骤较多，按项目挨个做吧。
+
+编辑 /boot/config.txt and reboot your Pi
+
+    调整树莓派 GPU 显存用量的方法参见章节 [调整你的显存容量](raspberry-pi.md)。
+
+    要使用树莓派的 HEVC 解码（提示废弃了）
+
+        # https://github.com/moonlight-stream/moonlight-docs/wiki/Installing-Moonligdht-Qt-on-Raspberry-Pi-4#hevc-and-hdr-support
+        dtoverlay=rpivid-v4l2
+
+    Raspbian Bullseye 还得改
+
+        # https://github.com/moonlight-stream/moonlight-docs/wiki/Installing-Moonlight-Qt-on-Raspberry-Pi-4#raspbian-bullseye
+        dtoverlay=vc4-fkms-v3d
+
+在桌面按 ctrl+alt+F1 切换到控制台运行 `moonlight-qt`
+
+    # https://github.com/moonlight-stream/moonlight-docs/wiki/Installing-Moonlight-Qt-on-Raspberry-Pi-4#raspbian-bullseye
+    #  Qt Critical: Could not queue DRM page flip on screen HDMI1 (Permission denied)
+    env QT_QPA_EGLFS_KMS_ATOMIC=1 moonlight-qt
+
+    GUI 将出现在连接到最靠近 USB-C 电源线的 mini-HDMI 端口的显示器上。这是树莓派4的主显示输出端口，它标注了 HDMI0（可以以相同的方式连接第二个屏幕到 HDMI1）。如果从树莓派桌面环境外部启动 Moonlight 时没有看到 UI 出现，请确保您的显示器连接到正确的端口。
+
+    如果您的显示器已插入主 HDMI 输出，并且在从控制台启动 Moonlight 时仍然看不到 UI，请尝试使用以下命令启动 Moonlight：
+
+        QT_QPA_EGLFS_ALWAYS_SET_MODE=1 moonlight-qt
+
+界面中会自动显示当前局域网搜索到的发送端，点击图标即可连接，第一次会提示一个 pin 码，在发送端找 pin 码输入界面填入即可通过认证。
+
+##### 连接
+
+    确保客户端和服务端在同一局域网
+
+    客户端安装后打开应该会自动搜索到主机
+
+    如果没有的话在服务端设备运行ipconfig获取ip
+
+    然后在客户端点右上角加号输入 IP 即可
+
+    建立连接后，点击桌面（DESKTOP）将启动桌面串流。
+
+    退出 moonlight 按 alt + esc，Windows客户端要牢记Ctrl+shift+alt+q是退出串流的快捷方式，全屏状态下各种操作都会视为对远程电脑的操作。
+
+常见使用问题：
+
+    pin 码在哪:
+
+        https://127.0.0.1:47990 顶部 pin
+
+    手动打开sunshine命令:
+
+        net start sunshinesvc
+
+    内网穿透端口，在路由器侧设置端口转发可在互联网访问
+
+        TCP 47984,47989,48010
+        UDP 5353,47998,47999,48000,48002,48010
+
+    ipv6支持有问题 连接后出现画面立刻断掉:
+
+        audio-sink/virtual-sink设置有问题
+
+    除了玩steam的游戏，我还想串流各种模拟器怎么办？
+    A：建议直接串流整个桌面，方法是发送段的程序中添加 “mstsc.exe”，路径为：“C:\Windows\System32\mstsc.exe”，串流了桌面我想下面你该懂怎么做了！
+
+    目前UWP（WIN10商店）游戏比如《极限竞速：地平线3》在串流后手柄不认
+    A：请不要在 Moonlight 运行桌面再去打开游戏。请直接在 Moonlight 中运行 UWP 游戏
+
+    买个显卡欺骗器，hdmi的接头，让笔记本以为外接了走独显输出然后串流，这样可以解决一些游戏的异常黑屏问题。
+
+#### vlc player 串流视频
+
+    https://www.thewindowsclub.com/stream-videos-lan-vlc-media-player
+
+    https://www.thewindowsclub.com/how-to-play-rtsp-stream-in-vlc-media-player
+
+    https://fanrongbin.com/raspberrypi-autostart-vlc-autoplay-rtsp-stream/
+
+    https://blog.csdn.net/m0_60259116/article/details/126351373
+
+如果是 flatpak 安装的 vlc，需要在 flatseal 中开放 vlc 的端口权限。
+
+发送方，打开 vlc，菜单选择：
+
+    “Media” --> “Stream”，添加你要播放的视频文件，点击 “Add”，还可以选择字幕文件，也点击 “add”，然后点击下面的 “Stream” 按钮。
+
+    在弹出的新窗口选择 “Next”，在下一个页面，串流方式选择 RTP 和 http 点击 “add”，或选择 RSTP 点击 “add”，在后面的标签页设置对应的名称、路径、端口等，然后点击下一步
+
+    在新页面选择一个转码编码方式，注意要跟上面的串流方式对应，如 RSTP 方式我选择的是 “Vide-H.264+MP3(TS)”，点击下一步，然后点击 “Stream” 按钮。
+
+    这时推流已经开始了，可以看到 vlc 窗口下方时间栏的秒数变化。
+
+    注意如果是 flatpak 安装的 vlc，需要放开对应的端口权限，不然无法对外广播。
+
+接收方，局域网内的其他计算机上，打开 vlc，菜单选择：
+
+    RTP 流：
+
+        “View” ---> “Playlist”，在弹出窗口选择 “Local Network”，应该可以看到发送方设置的名称，双击即可播放了。
+
+    RTSP 流：
+
+        “Media” --> “Open network Stream”，在弹出窗口输入发送方的地址 rtsp://192.168.0.xx:8554/your_path
+
+        为防止网速不好播放有卡顿，勾选 “Show more options”，在新增的内容中给 “caching” 选项增加缓冲时间，比如 30 秒
+
+        点击 “play” 按钮即可播放。
+
+#### wine/Bottles
+
+推荐安装 Bottles，这个 wine 的前端更方便，见本章节的最后部分。
+
+wine 模拟 Win32 接口调用的中间层，类似 MGW 和 Cygwin 的实现思路，可以直接运行 Windows 的软件，这样就省去用虚拟机安装 Windows 了
+
+    https://docs.fedoraproject.org/en-US/quick-docs/wine/
+
+    https://www.winehq.org/
+        支持的软件列表，游戏居多哦 https://appdb.winehq.org/
+
+    wayland 下的 wine 不再使用 x11 体系
+        https://github.com/varmd/wine-wayland
+
+    https://www.cnblogs.com/garyw/p/13468491.html
+
+    https://zhuanlan.zhihu.com/p/108106453
+
+    https://www.linuxcapable.com/how-to-install-wine-on-fedora-linux/
+
+    https://zhuanlan.zhihu.com/p/60876915
+
+    https://bbs.deepin.org/en/post/179509
+
+    用 Vulkan 实现的 DirectX 驱动程序
+        https://github.com/doitsujin/dxvk#how-to-use
+
+    示例
+        https://github.com/shuvozula/steam-gta5-linux
+
+proton 是 Valve 为他们的 steam 弄的 wine 衍生版，部分 steam 游戏使用它；crossover 是 wine 的一个商业应用。
+
+> 从 Fedora 存储库安装 Wine
+
+可以从发行版自带的存储库 dnf 安装，或使用 wine 官方存储库安装 Wine 的最新稳定版
+
+目前大多数游戏和 Windows 应用程序是为 32 位体系结构系统开发的，为了更好的兼容性，应该安装 32 位的版本
+
+    # sudo dnf install wine
+    $ sudo dnf install wine.i686
+
+    $ wine --version
+
+> 使用 wine 官方存储库安装 Wine
+
+主要目的是从 Wine 官方存储库安装的稳定版本，比 Fedora 默认存储库中可用的版本更新。缺点是一旦你的操作系统大版本升级，要记得删除之前手动安装的第三方存储库，升级后换为对应的存储库。
+
+先安装官方存储库
+
+    # https://wiki.winehq.org/Fedora
+    # https://dl.winehq.org/wine-builds/fedora/
+    $ sudo dnf config-manager --add-repo https://dl.winehq.org/wine-builds/fedora/$(rpm -E %fedora)/winehq.repo
+
+如果使用 rpm-ostree 安装，参见章节 [添加 RPMFusion 存储库]，步骤一致，替换地址即可。
+
+然后再安装稳定版
+
+    sudo dnf install winehq-stable
+
+    如果喜欢尝鲜，等不及稳定版，可以试试暂存版
+
+        sudo dnf install winehq-staging
+
+    wine --version
+
+wine 的官方存储库为了区别于 Fedora 默认存储库，软件包的名称是不同的，比较容易区分。
+
+> 安装后的配置工作：
+
+    https://blog.csdn.net/Gerald_Jones/article/details/80781378
+
+安装 Wine 后，必须安装一些依赖包并设置必要的环境，一种方法是在终端中运行 “winecfg” 命令
+
+    在每次 Wine 升级或安装新的 Windows 应用程序后，都要运行 “winecfg” 命令重新设置环境。
+
+NOTE：不要以 `sudo` 执行 winecfg
+
+如果您希望将 Wine 环境作为“32 位”系统启动，则可以使用以下命令进行必要的调整
+
+    $ export WINEARCH=win32 export WINEPREFIX=~/.wine32 winecfg
+    wine: created the configuration directory '/home/uu/.wine32'
+    wine: '/home/uu/.wine32' is a 32-bit installation, it cannot support 64-bit applications.
+
+    $ WINEPREFIX=~/wine32 wine xxx.exe
+
+打开 winecfg
+
+    https://www.imooc.com/article/35491
+
+确保第一个标签页中的 Windows 版本已经设置成了 Windows 7。暴雪不再对之前的版本提供支持。然后进入 “Staging” 标签页。 这里根据你用的是 staging 版本的 Wine 还是打了 Gallium 补丁的 Wine 来进行选择。
+
+    不管是哪个版本的 Wine，都需要启用 VAAPI 以及 EAX。至于是否隐藏 Wine 的版本则由你自己决定。
+
+字体配置
+
+    https://blog.csdn.net/SHIGUANGTUJING/article/details/89291732
+
+模拟的 Windows 相关目录在 ~/.wine 下面，可以从 Windows 操作系统 windows/Fonts 拷贝 sim* 字体 到对应的目录
+
+    $ trees ~/.wine
+    [目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]
+    /home/uu/.wine/
+    ├── dosdevices/
+    │   ├── c: -> ../drive_c/
+    │   ├── lpt1 -> /dev/lp0
+    │   ├── lpt2 -> /dev/lp1
+    │   ├── lpt3 -> /dev/lp2
+    │   ├── lpt4 -> /dev/lp3
+    │   └── z: -> //
+    ├── drive_c/
+    │   ├── ProgramData/
+    │   ├── Program Files/
+    │   ├── Program Files (x86)/
+    │   ├── users/
+    │   └── windows/
+    ├── system.reg
+    ├── .update-timestamp
+    ├── userdef.reg
+    └── user.reg
+
+    10 directories, 8 files
+
+字体配置的 zh.reg
+
+```ini
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes]
+"Arial"="simsun"
+"Arial CE,238"="simsun"
+"Arial CYR,204"="simsun"
+"Arial Greek,161"="simsun"
+"Arial TUR,162"="simsun"
+"Courier New"="simsun"
+"Courier New CE,238"="simsun"
+"Courier New CYR,204"="simsun"
+"Courier New Greek,161"="simsun"
+"Courier New TUR,162"="simsun"
+"FixedSys"="simsun"
+"Helv"="simsun"
+"Helvetica"="simsun"
+"MS Sans Serif"="simsun"
+"MS Shell Dlg"="simsun"
+"MS Shell Dlg 2"="simsun"
+"System"="simsun"
+"Tahoma"="simsun"
+"Times"="simsun"
+"Times New Roman CE,238"="simsun"
+"Times New Roman CYR,204"="simsun"
+"Times New Roman Greek,161"="simsun"
+"Times New Roman TUR,162"="simsun""Tms Rmn"="simsun"
+```
+
+然后在终端执行 regedit zh.reg
+
+##### 如何使用 Wine
+
+对需要安装的 Windows 程序，下载并使用 Wine 打开 xxxInstall.exe 文件
+
+    在桌面环境的文件管理器中，右键单击.exe文件，选择 “使用 Wine Windows 程序加载器打开” 并选择 Wine 应用程序来运行该文件，剩下的就是安装和运行了，跟 Windows 下的使用体验是一致的。
+
+装好 Wine 以后，在终端输入 `regedit` 可以打开 wine 的注册表编辑器了
+
+    http://wiki.winehq.org/regedit
+
+    $ wine regedit xxx.reg 直接导入注册表
+
+在英文 Linux 下执行 win 7 时代的简体中文程序
+
+    # en_US.utf8
+    $ env LANG=zh_CN.GBK wine your_app.exe
+
+用 Winetricks 配置 WINE
+
+    https://wiki.winehq.org/Winetricks
+
+    https://www.cnblogs.com/jikexianfeng/p/5769430.html
+
+winecfg 让你可以改变 WINE 本身的设置，而 winetricks 则可以让你改造实际的 Windows 层，它可以让你安装 Windows 重要的系统组件，比如 .dll　文件和系统字体，还可以允许你修改 Windows 注册表的信息。它还有任务管理器、卸载工具和文件浏览器。 尽管 winetricks 可以做以上这些工作，但是大部分时间我们用到的功能也就是管理 dll 文件和　Windows　组件。
+
+wine 不需要窗口管理器（GNOME或KDE）也可以正常地运行，所以如果你在一个单独的 X server 下运行游戏，你会得到明显的性能提升。在运行游戏之前，关闭 GDM 或 KDM，还会得到更大的性能提升（只能通过控制（console）台来实现）。
+
+    https://blog.csdn.net/Gerald_Jones/article/details/80781378
+
+    1、首先，在终端下建立一个脚本 代码: nano launcher.sh（可以用vim替换nano）
+
+    2、复制下面的文字到终端里。如果你没有nVidia的显卡，就删除nvidia settings的那部分，然后用你的游戏的正确路径替换里面的路径 代码:
+
+    #!/bin/sh
+
+    # uncomment if launching from console session
+    #sudo /etc/init.d/gdm stop
+    # KDE use this instead
+    #sudo /etc/init.d/kdm stop
+
+    # Launches a new X session on display 3.
+    # If you don’t have an Nvidia card,take out the “& nvidia-settings –load-config-only” part
+    X :3 -ac & nvidia-settings –load-config-only
+
+    # Goto game dir (modify as needed)
+    cd “$HOME/.wine/drive_c/Program Files/Game/Directory/”
+
+    # Forces the system to have a break for 2 seconds, X doesn’t launch instantly
+    sleep 2
+
+    # Launches game (modify as needed)
+    DISPLAY=:3 WINEDEBUG=-all wine “C:/Program Files/Game/Directory/game.exe”
+
+    3、把文件保存到你的主文件夹
+    4、然后，给你的脚本加上可执行属性 代码: chmod +x ~/launcher.sh
+    5、运行脚本
+
+        ./launcher.sh
+
+    6、结束游戏后，用CTRL-ALT-BACKSPACE回到桌面
+
+##### 示例：用 wine 运行魔兽争霸3
+
+    https://blog.csdn.net/zhongdajiajiao/article/details/51635208
+        http://linux-wiki.cn/wiki/%E7%94%A8Wine%E8%BF%90%E8%A1%8C%E9%AD%94%E5%85%BD%E4%BA%89%E9%9C%B8III
+
+把 war3 放到某个目录下，比如放到 $HOME 目录下，如是 /home/abc/war3。
+
+导入 war3 的注册表文件
+
+    $ wine regedit initWar3.reg
+
+    $ wine regedit 1920x1080.reg
+
+    $ wine regedit 英文windows_转中文版本信息chn.reg
+
+直接使用 wine 的默认配置运行简体中文版 war3 即可
+
+    $ env LANG=zh_CN.GBK WINEDEBUG=-all wine war3.exe -opengl
+
+    如果显卡驱动不兼容，强制指定版本
+
+        $ env LANG=zh_CN.GBK MESA_GL_VERSION_OVERRIDE=4.5 wine war3.exe -opengl
+
+另外，如果你安装了多个程序，并需要不同的环境去运行：
+
+为了使 war3 的 wine 环境和默认的 wine 环境不相互污染，应该给它创建单独的配置文件，通过如下命令来启动
+
+    WINEPREFIX=~/.war3 wine ~/war3/war3.exe
+
+即 war3 的运行环境为 ~/.war3
+
+为了使用方便，我们可以给war3创建一个桌面快捷方式，鼠标右键桌面空白处，编辑 /usr/share/xsessions/war3.desktop
+
+输入以下内容：
+
+    [Desktop Entry]
+    Name=war3
+    Exec=env WINEPREFIX="/home/abc/.war3" wine Z:\\\\home\\\\abc\\\\war3\\\\war3.exe
+    Type=Application
+    StartupNotify=true
+    Comment=war3
+    Path=/home/abc/.war3/dosdevices/c:/Program Files/Common Files
+    Icon=/home/abc/war3/war3.jpg
+    StartupWMClass=war3.exe
+
+保存退出
+
+    chmod 755 war3.desktop
+
+现在可以双击图标打开 war3 了。
+
+##### 更方便的 Bottles
+
+更方便的图形界面配置你的 wine，自动安装各种依赖库，比 wine 自带的配置方便多了
+
+Wine 使用一个被称之为 “Wineprefix” 的配置目录来控制使用 Wine 运行的 Windows 程序，这个目录也被比喻作 “bottle”，而 “Bottles” 是一个基于此机制的软件。在此，我将 “Wineprefix” 和 “bottle” 尝试翻译为 “Wine 前置配置” 和 “前置瓶”。
+
+用 Wine 跑 Windows exe 通常需要打指令，而 Bottles 將過程簡化為只要點幾下就能執行 Windows 程式，用來跑小程式十分有用。
+
+    https://ivonblog.com/posts/setup-linux-bottles/
+
+用 gnome software 搜索 或 flatpak 就可以安装
+
+    https://docs.usebottles.com/
+        https://github.com/bottlesdevs/Bottles
+
+    https://www.linuxmi.com/bottles-linux-windows-app.html
+
+    https://linux.cn/article-16258-1.html
+        https://zhuanlan.zhihu.com/p/659723921
+
+    https://linux.cn/article-14285-1.html
+
+竞品还有 whisky
