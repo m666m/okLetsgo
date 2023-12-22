@@ -10796,29 +10796,35 @@ Linux 桌面的终端工具参见章节 [其他终端模拟器]。
 
 浏览器
 
-    推荐用 flatpak 安装 UngoogledChromium。
+    安全设置
 
-    安装浏览器扩展要谨慎，只安装大家都用的扩展，装完后要设置它的访问权限尽量小，各大浏览器都支持设置。
+        安装浏览器扩展要谨慎，只安装大家都用的扩展，装完后要设置它的访问权限尽量小，各大浏览器都支持设置。
 
-    浏览器尽量使用容器化、匿名化访问，不同用途的浏览分开，多个虚拟机打开多个浏览器。
+        浏览器尽量使用容器化、匿名化访问，不同用途的浏览分开，多个虚拟机打开多个浏览器。
 
-    浏览器安装后，最好去除内置的 CN 证书、Certum 证书！或导入为 “不信任的证书”。
+        浏览器安装后，最好检查下内置的证书，详见章节 [浏览器 CA 认证面对的挑战](Windows 10+ 安装的那些事儿)
 
-        测试：访问网站 https://www.xycq.gov.cn/，提示不安全的数字证书
+    推荐用 flatpak 安装 UngoogledChromium
 
-    Chromium
+        来自 Chromium 项目的开源 Web 浏览器，它有一个极简的用户界面。 谷歌已经禁止 chromium 和基于 chromium 的第三方浏览器读取谷歌的数据，所以 chromium 无法同步你原有的谷歌浏览器账户数据，也无法连接谷歌扩展商店，但它有自己的开源扩展商店，也支持本地安装你从 github 下载的开源扩展。
 
-        推荐用 flatpak 安装 UngoogledChromium。
+            $ flatpak install flathub com.github.Eloston.UngoogledChromium
 
-        来自 Chromium 项目的开源 Web 浏览器，它有一个极简的用户界面。 谷歌已经禁止 chromium 和基于 chromium 的第三方浏览器读取谷歌的数据，所以 chromium 无法同步你原有的谷歌浏览器数据，也无法连接谷歌扩展商店，但它有自己的开源扩展商店，也支持本地安装你从 github 下载的开源扩展。
+        手工下载浏览器官方商店的扩展文件并安装的方法
 
-        $ flatpak install flathub com.github.Eloston.UngoogledChromium
+                https://ungoogled-software.github.io/ungoogled-chromium-wiki/faq#can-i-install-extensions-or-themes-from-the-chrome-webstore
 
-        开启自动安装扩展
+            浏览器打开官方商店的页面，选择下载扩展，然后把下载的 .crx 文件改名为 .zip并解压，然后在 UngoogledChromium 的 Manage Extension 页面点击右上角的 “Develop mode” 按钮，选择 “load unpacked”，选择你刚才解压的目录即可安装该扩展了
 
-            https://github.com/NeverDecaf/chromium-web-store
+        强烈推荐必装扩展：让你可以直接使用浏览器官方商店的扩展 chromium-web-store
 
-            Go to chrome://flags and search for the #extension-mime-request-handling flag and set it to Always prompt for install.
+            安装这个扩展后，打开 ms edge/google chrome 等多个浏览器官方商店的网页，然后可以看到各个扩展的下载按钮都是可用的了，点击即可直接下载安装，不需要上面介绍的手动流程了。
+
+            先打开设置地址 chrome://flags/#extension-mime-request-handling，设置为 “Always prompt for install”。
+
+            下载 https://github.com/NeverDecaf/chromium-web-store/releases 中的 .crx 文件，然后使用上面介绍的手工安装扩展的方法安装该 .crx 文件。
+
+            访问 edge 官方商店页面选个扩展看是否可以直接下载了 https://microsoftedge.microsoft.com/addons/Microsoft-Edge-Extensions-Home，如果只是下载了 .crx 文件没有安装，可以尝试双击该文件，在提示使用哪个程序打开时选择 UngoogledChromium 即可直接安装。之后只要在商店页面点击 get 即可自动下载并安装扩展了。
 
     GNOME Web
 

@@ -1787,21 +1787,13 @@ NOTE：不要连接公共 wifi，特别是扫码认证让你安装证书才能�
 
     如果 github.com 用通配符 * 给申请的用户颁发的网站证书，使得 heike.github.com 被认定为官方网站，这会严重误导普通使用用户。
 
-Mozilla Firefox 自己维护一套可信任的 CA 证书列表，
-
 Chrome/Edge 使用操作系统厂商维护的可信任 CA 证书列表。
 
     Firefox Fusion 用洋葱来提升匿名性 https://wiki.mozilla.org/Security/Fusion。
 
     目前更先进的用于网络浏览器的匿名公钥认证体系是 [onion service](https://github.com/topics/onion-service)，例子见 https://ntzwrk.org/static/misc/onion-services.txt。
 
-滥发证书的实例：
-
-波兰认证机构 Certum 2万元就能做下线代理
-
-    https://zhuanlan.zhihu.com/p/612235572
-
-Mozilla 的 CA 认证出事不止一次了
+Mozilla Firefox 自己维护一套可信任的 CA 证书列表，但是信誉不佳出事不止一次了
 
     搜 “Firefox 证书”
 
@@ -1811,6 +1803,12 @@ Mozilla 的 CA 认证出事不止一次了
         https://zhuanlan.zhihu.com/p/34391770
         https://www.zhihu.com/question/49291684
         https://www.landian.vip/archives/15656.html
+
+滥发证书的实例：
+
+波兰认证机构 Certum 2万元就能做下线代理
+
+    https://zhuanlan.zhihu.com/p/612235572
 
 CNNIC(中国互联网信息中心)证书
 
@@ -1846,7 +1844,7 @@ WoSign(沃通)证书和 StartCom 证书
 
     Mozilla 对沃通的处罚仅仅是吊销证书一年，但是很显然，沃通以及 StartCom 已经无法得到信任。如果你在操作系统和浏览器中仍发现了存留的沃通(WoSign)和 StartCom 证书，请将其移除。
 
-StartCom 已经于2018年1月1日停止签发任何证书。
+    StartCom 已经于2018年1月1日停止签发任何证书。
 
 #### 务必检查当前操作系统的证书
 
