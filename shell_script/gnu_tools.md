@@ -7379,13 +7379,13 @@ Aria2 的命令行传输各种参数，设置复杂，直接用 p3terx 做的 do
 
 配置本机防火墙开放必要的入站端口，内网机器在路由器设置端口转发到相同端口。
 
-使用你喜欢的 WebUI 或 App 进行连接，强烈推荐 AriaNg。或在浏览器搜索插件：Aria2 for Edge，安装后设置 aip-key，可在浏览器中直接调用 Motrix 运行的 aria2 进程。
+使用你喜欢的 WebUI 或 App 进行连接，强烈推荐 AriaNg。或在浏览器搜索插件：Aria2 for Edge，安装后设置 aip-key，可在浏览器中直接调用aria2 进程。
 
 简单使用： Windows 使用开源的 GUI 程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳 dht 站点清单。
 
-因为 Motrix 使用的 Aria2 来源于他自己的专用 Fork 而非官方发行的预编译包。
+但是，因为 Motrix 使用的 Aria2 来源于他自己的专用 Fork 而非官方发行的预编译包。
 
-建议用法：
+建议谨慎使用：
 
 1、使用官方 Aria2，配置文件原样复用 Motrix 的 aria2.conf ，使用 WinSW 将 Aria2 安装成用户服务来开机自启，配合 Aria2 for Edge 插件拦截浏览器下载，使用该插件附带的 AirNG 进行图形化交互。<https://github.com/agalwood/Motrix/issues/1379>。
 
