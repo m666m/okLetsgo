@@ -14381,9 +14381,7 @@ session    include      system-auth
 
     拍的照片默认会扔到 /lib64/security/howdy/snapshots/ 目录
 
-避免 Interl 显卡 MFX 消息，在 sudo 认证成功后总是打印调试信息：
-
-    如果不使用 Intel 显卡，不需要修改。
+Interl 显卡避免  MFX 消息，在 sudo 认证成功后总是打印调试信息：
 
     编辑 /etc/profile.d/howdy.sh 和 /etc/profile.d/howdy.csh 文件，查找如下内容
 
@@ -14391,9 +14389,7 @@ session    include      system-auth
 
     取消该语句的注释即可。
 
-改个权限：
-
-    新版的 howdy 不需要调整了
+新版的 howdy 不需要调整以下权限了：
 
     因为大多数桌面环境内置的锁屏界面（不是指DM的登录界面）并未以root身份运行，而howdy的文件在默认状态下对非root用户不可读，故此时锁屏界面无法启用人脸识别
 
@@ -14428,7 +14424,8 @@ session    include      system-auth
     Identified face as your_user_name
     root
 
-    $ win + l 测试锁屏
+    测试锁屏
+    $ win + l
 
     桌面->设置-> Users，点击 unlock，测试 Polkit 解锁
 
