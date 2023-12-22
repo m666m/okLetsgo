@@ -10846,17 +10846,17 @@ Linux 桌面的终端工具参见章节 [其他终端模拟器]。
 
         google 基于开源浏览器 chromium 而搭建的闭源浏览器
 
-        flatpak install flathub com.google.Chrome
+        $ flatpak install flathub com.google.Chrome
 
     Tor 浏览器
 
         通过 Flatpak 安装：
 
-            flatpak install flathub com.github.micahflee.torbrowser-launcher
+            $ flatpak install flathub com.github.micahflee.torbrowser-launcher
 
         使用 dnf 安装官方仓库的：
 
-            sudo dnf install torbrowser-launcher
+            $ sudo dnf install torbrowser-launcher
 
 办公套件
 
