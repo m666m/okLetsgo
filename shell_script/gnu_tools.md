@@ -10826,6 +10826,14 @@ Linux 桌面的终端工具参见章节 [其他终端模拟器]。
 
             访问 edge 官方商店页面选个扩展看是否可以直接下载了 https://microsoftedge.microsoft.com/addons/Microsoft-Edge-Extensions-Home，如果只是下载了 .crx 文件没有安装，可以尝试双击该文件，在提示使用哪个程序打开时选择 UngoogledChromium 即可直接安装。之后只要在商店页面点击 get 即可自动下载并安装扩展了。
 
+        其它推荐扩展
+
+            Aria2 Explorer 把下载添加到aira2任务 https://microsoftedge.microsoft.com/addons/detail/aria2-explorer/jjfgljkjddpcpfapejfkelkbjbehagbh
+
+            uBlock Origin 广告屏蔽 https://microsoftedge.microsoft.com/addons/detail/ublock-origin/odfafepnkmbhccpbejgmiehpchacaeak
+
+            Superb Copy 解锁 csdn 右键复制 https://microsoftedge.microsoft.com/addons/detail/superb-copy/iaeijdamgmgkigibpoapgahideaobdde
+
     GNOME Web
 
         GNOME 桌面自带的一个基于 WebKit 的浏览器代号 Epiphany，功能比 Firefox 少，但对于普通用途来说已经足够了，而且支持安装火狐和谷歌浏览器的扩展。
