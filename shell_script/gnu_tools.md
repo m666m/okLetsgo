@@ -7325,14 +7325,6 @@ od :按数制显示内容
     https://github.com/XIU2/TrackersListCollection
         https://trackerslist.com/
 
-uget 有图形界面，自动调用 aria2 支持bt下载
-
-    https://github.com/ugetdm/uget
-
-    $ sudo dnf install uget aria2
-
-    安装后设置选择，插件选 aria2 + curl 即可，配置 aria2 参数见章节 [Aria2]。
-
 xdm 有图形界面
 
     https://github.com/subhra74/xdm/releases
@@ -7358,60 +7350,34 @@ xdm 有图形界面
 
         $ sudo dnf install axel
 
-    Motrix 是windows 下的 aira2 gui，该软件最大的优点是自动更新最佳 dht 站点清单，预先配置好了 aira2。
+    Motrix 是 Windows 下的 aria2 图形界面程序，该软件使用方便，预先配置好了 aria2，自动更新最佳 dht 站点清单。
 
         https://github.com/agalwood/Motrix
 
         注意：Motrix 自带的 Aria2 来源于他自己的专用 Fork（未开源） 而非官方发行的预编译包。
 
-Aria2 的命令行传输各种参数，设置复杂，可以考虑用 p3terx 做的 docker。
+Aria2 的命令行传输各种参数，设置复杂，一般都使用各种客户端发送下载请求给它。
 
-推荐浏览器扩展插件：Aria2 Explorer（内置AriaNg），安装后设置 aip-key，即可在浏览器中直接给 aria2 进程发下载请求了。
+可以使用 uget 有图形界面，自动调用 aria2 支持bt下载
 
-##### aria2 运行成后台进程
+    https://github.com/ugetdm/uget
 
-aria2 运行成后台进程，在指定端口监听请求，在浏览器安装扩展插件 Aria2 Explorer 进行下载，这样的方式最好用。
+    $ sudo dnf install uget aria2
 
-1、使用官方 Aria2，配置文件复用 Motrix 的 aria2.conf。
+    安装后设置选择，插件选 aria2 + curl 即可。
 
-Windows 下可使用 WinSW 将 Aria2 安装成用户服务来开机自启。
+浏览器扩展插件：Aria2 Explorer（内置AriaNg），安装后设置 aip-key，即可在浏览器中直接给 aria2 进程发下载请求了。
 
-省事的选择是 docker 运行 p3terx 做的容器，然后使用你喜欢的 WebUI 或 App 进行连接，强烈推荐 AriaNg。
+##### aria2 作为后台进程运行
 
-    Aria2 Pro: 基于 Aria2 完美配置和特殊定制优化的 Aria2 Docker
-        https://p3terx.com/archives/docker-aria2-pro.html
-            https://github.com/P3TERX/Aria2-Pro-Docker
-            https://hub.docker.com/r/p3terx/aria2-pro
+aria2 作为后台进程运行，在指定端口监听 RPC 请求，在浏览器安装扩展插件 Aria2 Explorer 进行下载，这样的方式最好用。
 
-        docker run -d \
-            --name aria2-pro \
-            --restart unless-stopped \
-            --log-opt max-size=1m \
-            --network host \
-            -e PUID=$UID \
-            -e PGID=$GID \
-            -e RPC_SECRET=<TOKEN> \
-            -e RPC_PORT=6800 \
-            -e LISTEN_PORT=6888 \
-            -v $PWD/aria2-config:/config \
-            -v $PWD/aria2-downloads:/downloads \
-            p3terx/aria2-pro
-
-    配置本机防火墙开放必要的入站端口，内网机器在路由器设置端口转发到相同端口。
-
-    还可以用 systemd 管理把该容器配置为自启动，见章节 [把容器配置为 systemd 自启动](virtualization think)。
-
-配置文件 aira2.conf，改自 Motrix 使用的配置文件
+1、先生成 Aria2 运行时依赖的配置文件 aria2.conf，可参考 Motrix 的 aria2.conf
 
 ```conf
-
-###############################
-# Motrix Windows Aria2 config file文件
-#
-# @see https://aria2.github.io/manual/en/html/aria2c.html
-#
-###############################
-
+################################################
+# aria2.conf
+# https://aria2.github.io/manual/en/html/aria2c.html
 log-level=warn
 
 ################ RPC ################
@@ -7481,26 +7447,56 @@ enable-peer-exchange=true
 peer-agent=Transmission/2.94
 # Specify the prefix of peer ID.
 peer-id-prefix=-TR2940-
+bt-tracker=http://1337.abcvg.info:80/announce
 
 ```
 
-2、执行 p3terx 的 tracker.sh 把最新的 bt-tracker 地址更新到配置文件。
+2、执行 p3terx 的 tracker.sh 把最新的 bt-tracker 地址更新到配置文件 aria2.conf。
 
     https://github.com/P3TERX/aria2.conf/raw/master/tracker.sh
 
-3、启动命令行
+3、启动 aria2 作为后台进程的命令行参数
 
-    修改自 Motrix 生成的命令行
+启动 aria2 后在浏览器中通过插件 Aria2 Explorer 进行下载即可。
 
-        去掉 --bt-tracker=
-        去掉 --max-connection-per-server
-        修改 --rpc-secret 密码
+Windows：
 
-    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true   --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --rpc-secret=xxxxxx --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94 --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce
+    aria2c.exe --conf-path=%USERPROFILE%\.aria2\aria2.conf --save-session=%USERPROFILE%\.aria2\download.session --input-file=%USERPROFILE%\.aria2\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=%USERPROFILE%\.aria2\dht.dat --dht-file-path6=%USERPROFILE%\.aria2\dht6.dat --dht-listen-port=26701 --dir=C:\Users\sweethome\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
-使用此命令行启动 aira，然后在浏览器中通过插件 Aria2 Explorer 进行下载即可。
+Linux：
 
-测试 rpc
+    aria2c --conf-path=$HOME/.aria2/aria2.conf --save-session=$HOME/.aria2/download.session --input-file=$HOME/.aria2/download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=$HOME/.aria2/dht.dat --dht-file-path6=$HOME/.aria2/dht6.dat --dht-listen-port=26701 --dir=$HOME/Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --rpc-secret=xxxxxx --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+
+注意修改 --rpc-secret 密码。
+
+Windows 下可使用 WinSW 将 Aria2 安装成用户服务来开机自启。
+
+或者用 docker 运行 p3terx 做的容器，省的做各种配置了
+
+    Aria2 Pro: 基于 Aria2 完美配置和特殊定制优化的 Aria2 Docker
+        https://p3terx.com/archives/docker-aria2-pro.html
+            https://github.com/P3TERX/Aria2-Pro-Docker
+            https://hub.docker.com/r/p3terx/aria2-pro
+
+        docker run -d \
+            --name aria2-pro \
+            --restart unless-stopped \
+            --log-opt max-size=1m \
+            --network host \
+            -e PUID=$UID \
+            -e PGID=$GID \
+            -e RPC_SECRET=<TOKEN> \
+            -e RPC_PORT=6800 \
+            -e LISTEN_PORT=6888 \
+            -v $PWD/aria2-config:/config \
+            -v $PWD/aria2-downloads:/downloads \
+            p3terx/aria2-pro
+
+    配置本机防火墙开放必要的入站端口，内网机器在路由器设置端口转发到相同端口。
+
+    可以把该容器配置为开机自启动，见章节 [systemd 自启动 podman 容器](virtualization think)。
+
+4、测试 rpc
 
     curl -vvv --no-buffer \
         -H 'Connection: keep-alive, Upgrade' \
@@ -7519,7 +7515,7 @@ peer-id-prefix=-TR2940-
         --header "Sec-WebSocket-Version: 13" \
         http://localhost:6800/jsonrpc
 
-    用浏览器插件 Aria2 Explorer 也可以看到状态是否可用。
+用浏览器插件 Aria2 Explorer 也可以看到状态是否可用。
 
 #### Transmission
 
@@ -10830,7 +10826,7 @@ Linux 桌面的终端工具参见章节 [其他终端模拟器]。
 
         其它推荐扩展
 
-            Aria2 Explorer 把下载添加到aira2任务 https://microsoftedge.microsoft.com/addons/detail/aria2-explorer/jjfgljkjddpcpfapejfkelkbjbehagbh
+            Aria2 Explorer 把下载添加到aria2任务 https://microsoftedge.microsoft.com/addons/detail/aria2-explorer/jjfgljkjddpcpfapejfkelkbjbehagbh
 
             uBlock Origin 广告屏蔽 https://microsoftedge.microsoft.com/addons/detail/ublock-origin/odfafepnkmbhccpbejgmiehpchacaeak
 
