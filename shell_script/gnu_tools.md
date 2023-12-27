@@ -7348,15 +7348,35 @@ xdm 有图形界面
 
     https://aria2.github.io/manual/en/html/aria2c.html#example
 
-    Aria2 完美配置 https://github.com/P3TERX/aria2.conf
+    Aria2 完美配置
+            https://github.com/P3TERX/aria2.conf
+            https://github.com/P3TERX/aria2.conf/blob/master/aria2.conf
 
-替代品 axel
+    替代品 axel
 
-    https://github.com/axel-download-accelerator/axel
+        https://github.com/axel-download-accelerator/axel
 
-    $ sudo dnf install axel
+        $ sudo dnf install axel
 
-Aria2 的命令行传输各种参数，设置复杂，直接用 p3terx 做的 docker 得了
+    Motrix 是windows 下的 aira2 gui，该软件最大的优点是自动更新最佳 dht 站点清单，预先配置好了 aira2。
+
+        https://github.com/agalwood/Motrix
+
+        注意：Motrix 自带的 Aria2 来源于他自己的专用 Fork（未开源） 而非官方发行的预编译包。
+
+Aria2 的命令行传输各种参数，设置复杂，可以考虑用 p3terx 做的 docker。
+
+推荐浏览器扩展插件：Aria2 Explorer（内置AriaNg），安装后设置 aip-key，即可在浏览器中直接给 aria2 进程发下载请求了。
+
+##### aria2 运行成后台进程
+
+aria2 运行成后台进程，在指定端口监听请求，在浏览器安装扩展插件 Aria2 Explorer 进行下载，这样的方式最好用。
+
+1、使用官方 Aria2，配置文件复用 Motrix 的 aria2.conf。
+
+Windows 下可使用 WinSW 将 Aria2 安装成用户服务来开机自启。
+
+省事的选择是 docker 运行 p3terx 做的容器，然后使用你喜欢的 WebUI 或 App 进行连接，强烈推荐 AriaNg。
 
     Aria2 Pro: 基于 Aria2 完美配置和特殊定制优化的 Aria2 Docker
         https://p3terx.com/archives/docker-aria2-pro.html
@@ -7377,54 +7397,11 @@ Aria2 的命令行传输各种参数，设置复杂，直接用 p3terx 做的 do
             -v $PWD/aria2-downloads:/downloads \
             p3terx/aria2-pro
 
-配置本机防火墙开放必要的入站端口，内网机器在路由器设置端口转发到相同端口。
+    配置本机防火墙开放必要的入站端口，内网机器在路由器设置端口转发到相同端口。
 
-使用你喜欢的 WebUI 或 App 进行连接，强烈推荐 AriaNg。或在浏览器搜索插件：Aria2 for Edge，安装后设置 aip-key，可在浏览器中直接调用aria2 进程。
+    还可以用 systemd 管理把该容器配置为自启动，见章节 [把容器配置为 systemd 自启动](virtualization think)。
 
-简单使用： Windows 使用开源的 GUI 程序 [Motrix](https://github.com/agalwood/Motrix) 即可，该软件最大的优点是自动更新最佳 dht 站点清单。
-
-但是，因为 Motrix 使用的 Aria2 来源于他自己的专用 Fork 而非官方发行的预编译包。
-
-建议谨慎使用：
-
-1、使用官方 Aria2，配置文件原样复用 Motrix 的 aria2.conf ，使用 WinSW 将 Aria2 安装成用户服务来开机自启，配合 Aria2 for Edge 插件拦截浏览器下载，使用该插件附带的 AirNG 进行图形化交互。<https://github.com/agalwood/Motrix/issues/1379>。
-
-2、执行 p3terx 的 tracker.sh 把最新的 bt-tracker 地址更新到配置文件。
-
-    https://github.com/P3TERX/aria2.conf/raw/master/tracker.sh
-
-3、启动命令行
-
-    修改自 Motrix 生成的命令行
-
-        去掉 --bt-tracker=
-        去掉 --max-connection-per-server
-        修改 --rpc-secret 密码
-
-    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true   --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --rpc-secret=xxxxxx --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94 --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce
-
-使用此命令行启动 aira，然后在浏览器中通过插件 Aria2 for Edge 进行下载即可。
-
-测试 rpc
-
-    curl -vvv --no-buffer \
-        -H 'Connection: keep-alive, Upgrade' \
-        -H 'Upgrade: websocket' \
-        -H 'Sec-WebSocket-Version: 13' \
-        -H 'Sec-WebSocket-Key: websocket' \
-        http://localhost:6800/jsonrpc ws | od -t c
-
-    curl -vvv --include \
-        --no-buffer \
-        --header "Connection: Upgrade" \
-        --header "Upgrade: websocket" \
-        --header "Host: example.com:80" \
-        --header "Origin: http://example.com:80" \
-        --header "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
-        --header "Sec-WebSocket-Version: 13" \
-        http://localhost:6800/jsonrpc
-
-简单使用的配置文件 aira2.conf，改自 Motrix 使用的配置文件
+配置文件 aira2.conf，改自 Motrix 使用的配置文件
 
 ```conf
 
@@ -7507,17 +7484,42 @@ peer-id-prefix=-TR2940-
 
 ```
 
-高级使用的配置文件见
+2、执行 p3terx 的 tracker.sh 把最新的 bt-tracker 地址更新到配置文件。
 
-    https://github.com/P3TERX/aria2.conf/blob/master/aria2.conf
+    https://github.com/P3TERX/aria2.conf/raw/master/tracker.sh
 
-可配置到docker容器中使用
+3、启动命令行
 
-    https://github.com/P3TERX/Aria2-Pro-Docker
+    修改自 Motrix 生成的命令行
 
-    说明文章 https://p3terx.com/archives/docker-aria2-pro.html
+        去掉 --bt-tracker=
+        去掉 --max-connection-per-server
+        修改 --rpc-secret 密码
 
-    最方便的用法是用 systemd 管理把该容器配置为自启动，见章节 [把容器配置为 systemd 自启动](virtualization think)。
+    aria2c.exe --conf-path=C:\tools\Motrix\resources\engine\aria2.conf --save-session=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --input-file=C:\Users\XXXX\AppData\Roaming\Motrix\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true   --continue=true --dht-file-path=C:\Users\XXXX\AppData\Roaming\Motrix\dht.dat --dht-file-path6=C:\Users\XXXX\AppData\Roaming\Motrix\dht6.dat --dht-listen-port=26701 --dir=C:\Users\XXXX\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-connection-per-server=64 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --rpc-secret=xxxxxx --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94 --bt-tracker=udp://93.158.213.92:1337/announce,udp://151.80.120.115:2810/announce
+
+使用此命令行启动 aira，然后在浏览器中通过插件 Aria2 Explorer 进行下载即可。
+
+测试 rpc
+
+    curl -vvv --no-buffer \
+        -H 'Connection: keep-alive, Upgrade' \
+        -H 'Upgrade: websocket' \
+        -H 'Sec-WebSocket-Version: 13' \
+        -H 'Sec-WebSocket-Key: websocket' \
+        http://localhost:6800/jsonrpc ws | od -t c
+
+    curl -vvv --include \
+        --no-buffer \
+        --header "Connection: Upgrade" \
+        --header "Upgrade: websocket" \
+        --header "Host: example.com:80" \
+        --header "Origin: http://example.com:80" \
+        --header "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+        --header "Sec-WebSocket-Version: 13" \
+        http://localhost:6800/jsonrpc
+
+    用浏览器插件 Aria2 Explorer 也可以看到状态是否可用。
 
 #### Transmission
 
@@ -7602,7 +7604,7 @@ peer-id-prefix=-TR2940-
 
 浏览器提示你输入刚才配置的用户名和密码，就可以成功登陆Web管理界面。
 
-一般安装浏览器插件 Aria2 for Edge，实现拦截浏览器的下载，弹窗添加到transmission。
+一般安装浏览器插件 Aria2 Explorer，实现拦截浏览器的下载，弹窗添加到transmission。
 
 #### curl 支持 http/https 等下载
 
