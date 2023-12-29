@@ -6091,34 +6091,34 @@ ssh 连接到服务器，后知后觉发现一个命令要执行很久，到点�
 实例
 
     # 要执行很久的命令，不等了，按下 Ctrl+z 切换回 shell 的命令提示符下
-    bash-3.2$ sleep 3600
+    user@host$ sleep 3600
     ^Z
     [1]+  Stopped                 sleep 3600
-    bash-3.2$
+    user@host$
 
-    bash-3.2$ jobs
+    user@host$ jobs
     [1]+  Stopped                 sleep 3600
 
     # 让后台任务继续运行
-    bash-3.2$ bg %1
+    user@host$ bg %1
     [1]+ sleep 3600 &
 
-    bash-3.2$ jobs
+    user@host$ jobs
     [1]+  Running                 sleep 3600 &
 
     # 解除当前会话跟后台任务的归属
-    bash-3.2$ disown
+    user@host$ disown
 
     # 当前会话没有后台任务了
-    bash-3.2$ jobs
+    user@host$ jobs
 
     # 其实那个任务还在执行
-    bash-3.2$ ps -ef | grep sleep
+    user@host$ ps -ef | grep sleep
     501 30787 30419   0  6:00PM ttys000    0:00.00 sleep 3600
     501 33681 30419   0  6:02PM ttys000    0:00.00 grep sleep
 
     # 退出会话，后台任务不会再跟随关闭了
-    bash-3.2$ exit
+    user@host$ exit
 
 #### 后知后觉发现一个命令要执行很久，reptyr 通过 pid 切换进程的 tty 到 tmux
 
