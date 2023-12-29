@@ -3206,8 +3206,8 @@ if [ -x /usr/bin/dircolors ]; then
     }
 
     # scp rsync
-    alias scps='echo "[scp 源 目的。远程格式 user@host:/home/user/ 端口用 -P]" && scp -r'
-    alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/home/user/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
+    alias scps='echo "[scp 源 目的。远程格式 :/home/user/ 端口用 -P]" && scp -r'
+    alias rsyncs='echo "[rsync 源 目的。远程格式 :/home/user/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
 
     # vi 后悔药
     alias viw='echo "[只给出提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
@@ -6075,10 +6075,10 @@ ssh 连接到服务器，后知后觉发现一个命令要执行很久，到点�
 上面那个 [] 里的数字，我们记为 n，然后执行：
 
     # 让暂时停掉的进程在后台运行
-    bg %n
+    $ bg %n
 
     # 后悔了，让暂时停掉的进程在前台运行
-    fg %n  # 这样会把我们从shell带回到该程序的界面
+    $ fg %n  # 这样会把我们从shell带回到该程序的界面
 
 执行之前，如果不放心，想确认一下，可以用 jobs 命令看看被 suspend 的任务列表。严格地说，jobs 看的不仅仅是 suspend 的任务，所以，如果你有其他后台任务，也会列出来。
 
@@ -6090,35 +6090,36 @@ ssh 连接到服务器，后知后觉发现一个命令要执行很久，到点�
 
 实例
 
-    # 要执行很久的命令，不等了，按下 Ctrl+z 切换回 shell 的命令提示符下
-    user@host$ sleep 3600
+    # 要执行很久的命令，不等了，按下 ctrl+z 切换回 shell 的命令提示符下
+    $ sleep 3600
     ^Z
     [1]+  Stopped                 sleep 3600
-    user@host$
 
-    user@host$ jobs
+    # 查看当前后台任务，可以看到一个挂起的
+    $ jobs
     [1]+  Stopped                 sleep 3600
 
     # 让后台任务继续运行
-    user@host$ bg %1
+    $ bg %1
     [1]+ sleep 3600 &
 
-    user@host$ jobs
+    # 查看当前后台任务，可以看到之前被挂起的任务现在是正常运行了
+    $ jobs
     [1]+  Running                 sleep 3600 &
 
     # 解除当前会话跟后台任务的归属
-    user@host$ disown
+    $ disown
 
     # 当前会话没有后台任务了
-    user@host$ jobs
+    $ jobs
 
-    # 其实那个任务还在执行
-    user@host$ ps -ef | grep sleep
+    # 其实那个任务还在执行，只是不归属当前会话了
+    $ ps -ef | grep sleep
     501 30787 30419   0  6:00PM ttys000    0:00.00 sleep 3600
     501 33681 30419   0  6:02PM ttys000    0:00.00 grep sleep
 
     # 退出会话，后台任务不会再跟随关闭了
-    user@host$ exit
+    $ exit
 
 #### 后知后觉发现一个命令要执行很久，reptyr 通过 pid 切换进程的 tty 到 tmux
 
@@ -6127,11 +6128,11 @@ ssh 连接到服务器，后知后觉发现一个命令要执行很久，到点�
 不需要改后台执行，把它切换到 tmux 里
 
     # https://github.com/nelhage/reptyr
-    sudo apt install reptyr
+    $ sudo apt install reptyr
 
 在 tmux 里执行 reptyr，这样就把该进程切换到当前的 tmux 面板里执行了
 
-    reptyr <pid>
+    $ reptyr <pid>
 
 然后就可以愉快的断开 ssh 关机回家了。
 
@@ -6141,7 +6142,7 @@ ssh 连接到服务器，后知后觉发现一个命令要执行很久，到点�
 
 shell脚本中的一个"疑难杂症"，CTRL+C 中止了脚本进程，这个脚本却还在后台不断运行，且时不时地输出点信息到终端(我这里是循环中的echo命令输出的)，只能手动 ps 列表自己找出来 kill。
 
-这是因为 shell 脚本中有一些后台任务会直接挂靠在init/systemd进程下，而不会随着脚本退出而停止。
+这是因为 shell 脚本中有一些后台任务会直接挂靠在 init/systemd 进程下，而不会随着脚本退出而停止。
 
 例如：
 
@@ -6153,9 +6154,9 @@ shell脚本中的一个"疑难杂症"，CTRL+C 中止了脚本进程，这个脚
     [root@mariadb ~]# ps -elf | grep slee[p]
     0 S root      10806      1  0  80   0 - 26973 hrtime 19:26 pts/1    00:00:00 sleep 50
 
-脚本退出后，sleep进程的父进程变为了1，也就是挂在了init/systemd进程下。
+脚本退出后，sleep进程的父进程变为了1，也就是挂在了 init/systemd 进程下。
 
-可以在脚本中直接使用kill命令杀掉sleep进程。
+可以在脚本中直接使用 kill 命令杀掉 sleep 进程。
 
     [root@mariadb ~]# cat test1.sh
     #!/bin/bash
@@ -6179,7 +6180,7 @@ shell脚本中的一个"疑难杂症"，CTRL+C 中止了脚本进程，这个脚
     killall sleep
     kill $BASHPID
 
-究其原因，是因为while/for/until等是bash内置命令，它们的特殊性在于它们有一个很替它们着想的爹：bash进程。bash进程对他们的孩子非常负责，所有能直接执行的内置命令都不会创建新进程，它们直接在当前bash进程内部调用执行，所以我们用ps/top等工具是捕捉不到cd、let、expr等等内置命令的。但正因为爹太负责，把孩子们宠坏了，这些bash内置命令的执行必须依赖于bash进程才能执行。
+究其原因，是因为while/for/until等是bash内置命令，它们的特殊性在于它们有一个很替它们着想的爹：bash进程。bash进程对他们的孩子非常负责，所有能直接执行的内置命令都不会创建新进程，它们直接在当前bash进程内部调用执行，所以我们用ps/top等工具是捕捉不到cd、let、expr等等内置命令的。
 
 内置命令中还有几个比较特殊的关键字：while、for、until、if、case等，它们无法直接执行，需要结合其他关键字(如do/done/then等)才能执行。非后台情况下，它们的爹会直接带它们执行，但当它们放进后台后，它们必须先找个bash爹提供执行环境：
 
@@ -6209,7 +6210,7 @@ sleep 60
 
 ```
 
-更方便更精确的自杀手段：man kill。在该man手册中解释了，如果kill的pid值为0，表示发送信号给当前进程组中所有进程，对shell脚本来说这意味着杀掉脚本中产生的所有进程。方案如下：
+更方便更精确的自杀手段 `man kill`。在该手册中解释了，如果kill的pid值为0，表示发送信号给当前进程组中所有进程，对shell脚本来说这意味着杀掉脚本中产生的所有进程。方案如下：
 
 ```bash
 
@@ -7991,13 +7992,13 @@ rsync 有 5 种不同的工作模式：
 
     rsync [OPTION] SRC DEST
 
-    rsync [OPTION] SRC USER@HOST:DEST
+    rsync [OPTION] SRC :DEST
 
-    rsync [OPTION] USER@HOST:SRC DEST
+    rsync [OPTION] :SRC DEST
 
-    rsync [OPTION] USER@HOST::SRC DEST
+    rsync [OPTION] ::SRC DEST
 
-    rsync [OPTION] SRC USER@HOST::DEST
+    rsync [OPTION] SRC ::DEST
 
 第一种用于仅在本地备份数据；
 
