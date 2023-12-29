@@ -1096,11 +1096,13 @@ esac
 
     https://blog.csdn.net/mutou990/article/details/107724302
 
+    https://zhuanlan.zhihu.com/p/519637081
+
 因为 Linux、Unix 下安装的很多软件，都给自己建立专门的用户进行权限保护，所以为了执行该软件的某些操作，需要切换到有权限的用户去做，比如切换到数据库用户，以便使用数据库管理工具进行数据库维护；切换到 root 用户，修改操作系统配置。
 
     `su` 是 Linux 内置包 coreutils 的命令，用于切换用户
 
-引入 sudo 命令的目的是让普通用户无需切换到 root 用户即可执行系统维护类命令，只需要把该用户配置到专用的 sudo 用户组即可。其原理是 “借用 root 用户的权限”，详见章节 [进程的用户权限 uid 和 euid](init_a_server think)。
+引入 sudo 命令的目的是让普通用户无需切换到 root 用户即可执行系统维护类命令，只需要把该用户配置到专用的 sudo 用户组即可。其原理是 “借用 root 用户的权限”，通过该命令使root用户的使用时间为执行时，从而避免root用户登录可能扩大的安全攻击面。sudo 命令的原理见章节 [进程的用户权限 uid 和 euid](init_a_server think)。
 
     `sudo` 命令需要安装 sudo 软件包才能使用
 
