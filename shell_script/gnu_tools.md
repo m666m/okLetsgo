@@ -12945,7 +12945,9 @@ VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
 #### 远程桌面软件体系
 
-RDP 协议(FreeRDP)
+如果舍弃图形管理界面而选择命令行界面，远程管理 Linux 服务器常使用基于 SSH 协议的命令行管理方式。
+
+RDP 协议(倾向于传输指令，适用于低速网络)
 
     RDP 服务器端软件
 
@@ -12959,19 +12961,33 @@ RDP 协议(FreeRDP)
 
         Windows 使用内置的 mstsc.exe
 
-VNC 协议
+VNC（基于 RFB 协议倾向于传输图像，适用于瘦客户端）
 
     VNC 服务器端软件
 
         Linux 内置 vnc 协议的服务端
 
-        Windows 安装 TigerVnc 软件的服务端，参见章节 [VNC]
+        Windows 安装 TigerVnc 软件的服务端，参见章节 [VNC 体系]
 
     VNC 客户端软件
 
         Linux 的 Gnome 桌面内置 Connections(gnome-connections)，或安装 Remmina
 
-        Windows 安装 TigerVnc 软件的客户端，参见章节 [VNC]
+        Windows 安装 TigerVnc 软件的客户端，参见章节 [VNC 体系]
+
+使用 NX 技术体系的 X2GO
+
+        https://wiki.x2go.org/doku.php/doc:newtox2go
+
+    X2Go 基于 NoMachine 的 NX 远程桌面协议，通过利用主动压缩和缓存解决低带宽和高延迟的网络连接问题
+
+    由远程桌面服务器和客户端组件组成
+
+        $ sudo dnf install x2goclient
+        $ sudo dnf install x2goserver
+
+    X2Go 的服务端目前只支持部署在 Linux 上，因为利用 ssh 加密，所以登录时要输入你的 SSH 登录名和密码。
+    X2Go 的客户端支持各个平台部署，而且可以把 rdp 客户端工具如 xfreerdp 作为自己的后端，这样就可以连接 rdp 协议的服务器了。
 
 注意保护你的连接
 
@@ -13428,7 +13444,7 @@ RFX/GFX 技术参见章节 [虚拟机启用显卡加速](Windows 10+ 安装的�
 
 需要你的客户端安装服务器的CA证书，详见章节 [Linux xrdp 使用自签名 SSL 证书](openssl think)。
 
-#### VNC
+#### VNC 体系
 
 VNC 体系由客户端（viewer）与服务端两部分构成
 
