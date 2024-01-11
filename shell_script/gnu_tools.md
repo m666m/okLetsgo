@@ -2378,7 +2378,7 @@ powerline 最大的优点是它使用符号字体图形化的显示文件夹、�
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
-#### 使用 powerline-config 命令行绑定到各软件
+#### 使用 powerline-config 命令行安装为各软件的状态栏插件
 
     $ powerline-config -h
     usage: powerline-config [-h] [-p PATH] {tmux,shell} ...
@@ -2392,13 +2392,13 @@ powerline 最大的优点是它使用符号字体图形化的显示文件夹、�
 
 tmux:
 
-    powerline-config tmux
+    $ powerline-config tmux
 
 其它的shell，我没弄出来效果呢？
 
-    powerline-config shell -s bash uses prompt
+    $ powerline-config shell -s bash uses prompt
 
-    powerline-config shell -s zsh uses prompt
+    $ powerline-config shell -s zsh uses prompt
 
 #### 手工配置各软件的绑定
 
@@ -3665,7 +3665,7 @@ vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
 
 如果你的 vim 打开汉字出现乱码的话，那么在 $HOME 目录(~)下，新建 .vimrc 文件
 
-    nano ~/.vimrc
+    $ nano ~/.vimrc
 
 添加内容如下：
 
@@ -3734,7 +3734,7 @@ vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
 
     https://vimawesome.com/
 
-##### 使用状态栏工具等扩展插件的先决条件
+##### 使用状态栏等扩展插件的先决条件
 
 检查 vim 的版本，执行命令 `vi --version` 或 进入 vim 执行命令 :version
 
@@ -4072,7 +4072,9 @@ filetype plugin indent on    " required
 
     :PluginSearch colorscheme
 
-##### 不推荐状态栏工具 powerline
+##### 不推荐 vim 状态栏插件 powerline
+
+状态栏工具 powerline 有供 vim 使用的插件，但是不推荐使用
 
     推荐使用替代品 vim-airline，状态栏和标签栏都有，而且可以配合很多知名插件的显示
 
@@ -4129,7 +4131,7 @@ powerline 为保证多样性，使用 python 实现的。现在的问题是操�
         " Use 256 colours (Use this setting only if your terminal supports 256 colours)
         set t_Co=256
 
-##### 推荐 vim 状态栏工具 vim-airline
+##### 推荐 vim 状态栏插件 vim-airline
 
 完美替换掉 powerline
 
@@ -4199,7 +4201,7 @@ let g:airline_theme='papercolor'
 
 ```
 
-##### 更简洁的状态栏工具 lightline.vim
+##### 更简洁的 vim 状态栏插件 lightline.vim
 
     https://github.com/itchyny/lightline.vim
 
