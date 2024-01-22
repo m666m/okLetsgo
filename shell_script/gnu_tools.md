@@ -7000,6 +7000,14 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
     # 占用最小内存的压缩用法
     xz --check=crc32 --lzma2=preset=6e,dict=64KiB foo
 
+.rar 文件
+
+    # 解压缩开源程序各大发行版都有
+    $ unrar x your.rar
+
+    # 压缩不是开源的
+    $ rar a your_dir_file
+
 ### 文件链接 ln
 
 ln 命令默认生成硬链接，但是我们通常使用软连接
