@@ -10784,7 +10784,7 @@ Linux 桌面的终端工具参见章节 [其他终端模拟器]。
 
     kvm 虚拟机推荐使用 virt-manager，详见章节 [虚拟机管理器 virt-manager](virtualization think)
 
-    交互式容器环境推荐使用 distrobox，详见章节 [使用 distrobox 代替 toolbox](virtualization think)
+    交互式容器环境推荐使用 distrobox，详见章节 [使用 distrobox 代替 toolbox](virtualization think)，推荐在这里使用 dnf install/ apt install 安装各种软件。
 
     在 Linux 容器化运行 Android apk，详见章节 [waydroid](virtualization think)
 
@@ -10929,6 +10929,8 @@ Linux 桌面的终端工具参见章节 [其他终端模拟器]。
             https://zhuanlan.zhihu.com/p/25085337
 
 即时通信
+
+    pidgin 支持各种聊天协议的客户端，甚至可通过插件支持qq/微信
 
     matrix 服务器列表 https://tatsumoto-ren.github.io/blog/list-of-matrix-servers.html
 
@@ -14004,6 +14006,72 @@ WantedBy=multi-user.target
     ip address:5909 或 ip address:9
 
 确认通过 VNC Viewer 可以正常登录到 RHEL8 系统桌面。
+
+#### Scrcpy --- 在 Linux 桌面显示和控制 Android 设备
+
+如果只是需要在桌面操作你的手机的基本功能，可以使用 gnome 扩展 GSConnect，可操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，详见上面章节 [使用 gnome 扩展]。
+
+还可以安装安卓虚拟机则可以实现在Linux桌面运行安卓apk，详见章节 [安卓虚拟化](virtualization think)。
+
+使用 Scrcpy，可以通过Linux桌面显示和控制Android 设备，类似 Samsung Dex 的使用方式，用电脑玩手机：
+
+    https://zhuanlan.zhihu.com/p/606448877
+
+在基于 Debian 的发行版（例如Ubuntu和Linux Mint系统）上，您可以从默认存储库安装scrcpy
+
+    $ sudo apt install scrcpy
+
+在 Fedora 上，可以从Cool Other Packages Repository ( COPR )安装它：
+
+    $ sudo dnf copr enable zeno/scrcpy
+    $ sudo dnf install scrcpy
+
+、在 Linux 中通过 USB 连接到 Android 设备
+
+安装完成后，请记得如前所述在您的 Android 设备中启用USB调试（转到设置=>开发人员–> 选项=>USB 调试），然后通过 USB 数据线将您的设备连接到 Linux 台式电脑。
+
+接下来，应在设备上打开一个弹出窗口以请求授权以允许从计算机进行 USB 调试，然后选择允许继续。
+
+然后从终端运行以下命令以启动scrcpy：
+
+    $ scrcpy
+
+如果命令成功运行，将打开一个窗口，显示您设备的活动屏幕，如以下屏幕截图所示
+
+2、在 Linux 桌面中通过 Wifi 连接到 Android 设备
+
+首先，在您的计算机上安装adb命令行工具，如下所示。如果您已经安装了adb工具，请跳过安装步骤：
+
+    $ sudo apt install adb  # 在Debian、Ubuntu 和 Mint上
+    $ sudo yum install adb  # 在RHEL/CentOS/Fedora和Rocky Linux/AlmaLinux上
+    $ sudo pacman -S adb  # 在Arch Linux上
+
+在您的计算机上安装adb工具后，将您的 Android 设备和计算机连接到公共 Wi-Fi 网络。然后使用 USB 数据线将 Android 设备连接到计算机。
+
+接下来，从目标设备上断开USB电缆并找到Android设备的 IP 地址（转到设置 –> 连接 –> Wi-Fi –> Wi-Fi 名称 –> 点击其设置）或运行以下命令以查看设备IP地址：
+
+    $ adb shell ip route
+
+查找 Android 设备 IP 地址
+
+然后通过运行以下命令将目标Android设备设置为在端口5555上侦听TCP/IP连接（检查设备上的任何提示）：
+
+    $ adb tcpip 5555
+
+接下来，断开USB电线并使用其 IP 地址连接目标设备，如下所示：
+
+    $ adb connect 192.168.1.4:5555
+
+最后但同样重要的是，运行scrcpy命令以在 Linux 桌面上镜像Android设备的屏幕：
+
+    $ scrcpy
+
+3、 要控制镜像的 Android 屏幕的宽度和高度，请使用--max-size或-m开关，如下所示：
+
+    # scrcpy --max-size=1024
+    $ scrcpy -m 1024
+
+要使用键盘和鼠标控制某些 Android 设备，需要启用其他选项。有关详细信息，请转到scrcpy Github 存储库。
 
 ### Linux 桌面死机怎么办 --- reisub“登录控制台”
 
