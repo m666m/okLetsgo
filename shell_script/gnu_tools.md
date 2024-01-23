@@ -11734,7 +11734,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现一个大三角图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘。之前只能打开文件管理器才能选择卸载 u 盘。
 
-    GSConnect               操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”。
+    GSConnect               操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”。如果需要完整操控你的手机，见章节 [Scrcpy --- 在 Linux 桌面显示和控制 Android 设备]。
 
     Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用。竞品 Pano Clipboard Manager 可以显示复制的富媒体内容，需要安装依赖 `sudo dnf install libgda libgda-sqlite`。
 
@@ -14007,7 +14007,7 @@ WantedBy=multi-user.target
 
 确认通过 VNC Viewer 可以正常登录到 RHEL8 系统桌面。
 
-#### Scrcpy --- 在 Linux 桌面显示和控制 Android 设备
+### Scrcpy --- 在 Linux 桌面显示和控制 Android 设备
 
 如果只是需要在桌面操作你的手机的基本功能，可以使用 gnome 扩展 GSConnect，可操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，详见上面章节 [使用 gnome 扩展]。
 
@@ -14026,47 +14026,47 @@ WantedBy=multi-user.target
     $ sudo dnf copr enable zeno/scrcpy
     $ sudo dnf install scrcpy
 
-、在 Linux 中通过 USB 连接到 Android 设备
+有两种连接方式：
 
-安装完成后，请记得如前所述在您的 Android 设备中启用USB调试（转到设置=>开发人员–> 选项=>USB 调试），然后通过 USB 数据线将您的设备连接到 Linux 台式电脑。
+    1、在 Linux 中通过 USB 连接到 Android 设备
 
-接下来，应在设备上打开一个弹出窗口以请求授权以允许从计算机进行 USB 调试，然后选择允许继续。
+    安装完成后，请记得如前所述在您的 Android 设备中启用USB调试（转到设置=>开发人员–> 选项=>USB 调试），然后通过 USB 数据线将您的设备连接到 Linux 台式电脑。
 
-然后从终端运行以下命令以启动scrcpy：
+    接下来，应在设备上打开一个弹出窗口以请求授权以允许从计算机进行 USB 调试，然后选择允许继续。
 
-    $ scrcpy
+    然后从终端运行以下命令以启动scrcpy：
 
-如果命令成功运行，将打开一个窗口，显示您设备的活动屏幕，如以下屏幕截图所示
+        $ scrcpy
 
-2、在 Linux 桌面中通过 Wifi 连接到 Android 设备
+    如果命令成功运行，将打开一个窗口，显示您设备的活动屏幕，如以下屏幕截图所示
 
-首先，在您的计算机上安装adb命令行工具，如下所示。如果您已经安装了adb工具，请跳过安装步骤：
+    2、在 Linux 桌面中通过 Wifi 连接到 Android 设备
 
-    $ sudo apt install adb  # 在Debian、Ubuntu 和 Mint上
-    $ sudo yum install adb  # 在RHEL/CentOS/Fedora和Rocky Linux/AlmaLinux上
-    $ sudo pacman -S adb  # 在Arch Linux上
+    首先，在您的计算机上安装adb命令行工具，如下所示。如果您已经安装了adb工具，请跳过安装步骤：
 
-在您的计算机上安装adb工具后，将您的 Android 设备和计算机连接到公共 Wi-Fi 网络。然后使用 USB 数据线将 Android 设备连接到计算机。
+        $ sudo apt install adb  # 在Debian、Ubuntu 和 Mint上
+        $ sudo yum install adb  # 在RHEL/CentOS/Fedora和Rocky Linux/AlmaLinux上
+        $ sudo pacman -S adb  # 在Arch Linux上
 
-接下来，从目标设备上断开USB电缆并找到Android设备的 IP 地址（转到设置 –> 连接 –> Wi-Fi –> Wi-Fi 名称 –> 点击其设置）或运行以下命令以查看设备IP地址：
+    在您的计算机上安装adb工具后，将您的 Android 设备和计算机连接到公共 Wi-Fi 网络。然后使用 USB 数据线将 Android 设备连接到计算机。
 
-    $ adb shell ip route
+    接下来，从目标设备上断开USB电缆并找到Android设备的 IP 地址（转到设置 –> 连接 –> Wi-Fi –> Wi-Fi 名称 –> 点击其设置）或运行以下命令以查看设备IP地址：
 
-查找 Android 设备 IP 地址
+        $ adb shell ip route
 
-然后通过运行以下命令将目标Android设备设置为在端口5555上侦听TCP/IP连接（检查设备上的任何提示）：
+    查找 Android 设备 IP 地址
 
-    $ adb tcpip 5555
+    然后通过运行以下命令将目标Android设备设置为在端口5555上侦听TCP/IP连接（检查设备上的任何提示）：
 
-接下来，断开USB电线并使用其 IP 地址连接目标设备，如下所示：
+        $ adb tcpip 5555
 
-    $ adb connect 192.168.1.4:5555
+    接下来，断开USB电线并使用其 IP 地址连接目标设备，如下所示：
 
-最后但同样重要的是，运行scrcpy命令以在 Linux 桌面上镜像Android设备的屏幕：
+        $ adb connect 192.168.1.4:5555
 
-    $ scrcpy
+然后就可以运行 scrcpy 实现在 Linux 桌面上镜像 Android 设备的屏幕。
 
-3、 要控制镜像的 Android 屏幕的宽度和高度，请使用--max-size或-m开关，如下所示：
+如果需要要控制镜像的 Android 屏幕的宽度和高度，请使用命令行 --max-size或-m开关，如下所示：
 
     # scrcpy --max-size=1024
     $ scrcpy -m 1024
