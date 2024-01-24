@@ -14032,7 +14032,13 @@ WantedBy=multi-user.target
 
     安装完成后，请记得如前所述在您的 Android 设备中启用USB调试（转到设置=>开发人员–> 选项=>USB 调试），然后通过 USB 数据线将您的设备连接到 Linux 台式电脑。
 
-    接下来，应在设备上打开一个弹出窗口以请求授权以允许从计算机进行 USB 调试，然后选择允许继续。
+    运行
+
+        $ scrcpy
+
+    手机上会弹出窗口以请求授权以允许从计算机进行 USB 调试，然后选择允许继续。然后再次运行 `scrcpy`
+
+    如果提示“libopenh264.so.7 is missing, openh264 support will be disabled” ，需要安装 完全版本的 ffmpeg，详见章节 [安装 full ffmpeg](init_a_server think)。
 
     2、在 Linux 桌面中通过 Wifi 连接到 Android 设备
 
@@ -14072,6 +14078,47 @@ WantedBy=multi-user.target
     $ scrcpy -m 1024
 
 要使用键盘和鼠标控制某些 Android 设备，需要启用其他选项。有关详细信息，请转到scrcpy Github 存储库。
+
+鼠标左键相当于单指操作，右键是返回键，息屏时点亮手机屏幕。
+
+如果操作中出现需要用户在手机上操作的内容，scrcpy会黑屏，按 esc 可取消。
+
+下表中的MOD表示修饰键，在Windows中对应win或ALT键，在Mac中对应cmd键。
+
+    快捷键	                实施的动作
+    MOD + f	            切换到全屏 / 取消全屏
+    MOD + 左	        往左旋转屏幕
+    MOD + 右	        往右旋转屏幕
+    MOD + g	            重置屏幕尺寸到 像素比1:1（一般都是变得硕大）
+    MOD + w	            重置屏幕尺寸消除黑色边框
+
+    MOD + h	            等同于 home 键
+    MOD + b	            等同于 返回 键
+    MOD + s	            等同于切换app操作
+
+    MOD + m	            对应解锁屏的按键，如果是锁屏的话，仅点亮屏幕
+    MOD + 下	        减少音量
+    MOD + 上	        增加音量
+    MOD + p	            等同于按电源键
+
+    右键点击	         等同于点亮屏幕
+    MOD + o	            把设备屏幕关闭但保持镜像同步
+    MOD + Shift + o     点亮设备屏幕
+    MOD + r	            旋转屏幕（测试好像不好用，不知道是不是快捷键冲突）
+    MOD + n	            打开消息面板
+    MOD + n + n	        双击n，打开顶部设置栏
+    MOD + shift + n     收起面板
+    MOD + c	            同步复制到电脑剪贴板
+    MOD + x	            同步剪贴到电脑剪贴板
+    MOD + v	            同步粘贴电脑剪贴板的内容（pc->手机或手机->pc均可）
+    MOD + i	            启用或禁用FPS计数
+    Ctrl + 点击和移动	  相当于多指捏合动作
+    安装APK	             拖拽APK文件到窗口
+    推送文件到手机	       拖拽非APK文件到窗口，默认放到 /sdcard/Movies 目录下
+
+修饰键可以在命令行参数进行修改，可选的键有 lctrl、rctrl、lalt、ralt、lsuper 和 rsuper
+
+    $ scrcpy --shortcut-mod=lalt
 
 ### Linux 桌面死机怎么办 --- reisub“登录控制台”
 
