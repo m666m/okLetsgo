@@ -3489,6 +3489,97 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
     i3 窗口管理器自带 urxvt(rxvt-unicode)，支持设置背景图片
 
+        $ sudo dnf install rxvt-unicode
+
+        https://segmentfault.com/a/1190000020859490
+        https://wiki.archlinux.org/title/Rxvt-unicode
+        urxvt 受 Xresources 控制:
+
+            编辑配置文件
+            $ vim ~/.Xresources
+
+            加载文件，使配置生效
+            $ xrdb ~/.Xresources
+
+            $ urxvt
+
+        terminfo 文件在 /usr/share/terminfo/r/rxvt-unicode，拷贝到远程主机的 ~/.terminfo/r/rxvt-unicode 下即可解决终端特殊字符无法识别报错的问题。
+
+        .Xresources配置文件示例:
+
+        ```
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        !
+        ! https://segmentfault.com/a/1190000020859490
+        ! https://wiki.archlinux.org/title/Rxvt-unicode
+
+        Xft.dpi: 96
+        !抗锯齿
+        Xft.antialias: true
+        Xft.rgba: rgb
+        Xft.hinting: true
+        Xft.hintstyle: hintslight
+
+        ! do not scroll with output
+        URxvt*scrollTtyOutput: false
+
+        ! scroll in relation to buffer (with mouse scroll or Shift+Page Up)
+        URxvt*scrollWithBuffer: true
+
+        ! scroll back to the bottom on keypress
+        URxvt*scrollTtyKeypress: true
+
+        !pager
+        URxvt.secondaryScreen: 1
+        URxvt.secondaryScroll: 0
+        URxvt.secondaryWheel: 1
+
+        URxvt.font: xft:MesloLGS Nerd Font:size=11
+        URxvt.letterSpace: -1
+
+        !作为登录 shell 启动
+        URxvt.loginShell: true
+        !使用的输入法框架名称，这样才可以输入中文
+        URxvt.inputMethod:IBus
+        !窗口大小：按字符数的列x行
+        URxvt.geometry: 110x30
+        URxvt.depth: 32
+
+        !标签式窗口
+        URxvt.perl-ext-common: tabbed
+
+        !URxvt.perl-ext-common:  ...,selection-to-clipboard,...
+        URxvt.clipboard.autocopy: true
+        URxvt.keysym.M-c: perl:clipboard:copy
+        URxvt.keysym.M-v: perl:clipboard:paste
+
+        !URxvt.keysym.F11: perl:fullscreen:switch
+        URxvt.multichar_encoding:gb #汉字编码
+        URxvt.boldFont:-*-SimHei-* #粗字体
+        URxvt.mfont: -*-simsun-medium-r-normal-*-14-*-*-*-c-*-gb*-* #汉字字体
+
+        URxvt.cursorBlink: true
+
+        URxvt.scrollstyle:rxvt
+        URxvt.scrollBar:True
+        URxvt.scrollBar_right:True
+
+        !屏幕缓冲1万行，足够了
+        URxvt.saveLines:10000
+
+        !背景 参见源代码 /usr/lib64/urxvt/perl/background
+        URxvt.background.expr: scale keep { load "/home/uu/Pictures/3eleph.png" }
+        !控制背景透明，变暗（0..99），变亮（101..200)，100 表示没有阴影
+        URxvt.transparent: true
+        URxvt.shading: 150
+
+        URxvt.background: #2E3440
+        URxvt.foreground: rgb:d8/de/e9
+
+        !可重新定义 xterm color0~15
+        URxvt.color12: rgb:5c/5c/ff
+
+        ```
     sway 窗口管理器自带 foot
 
     Gnome 桌面自带 Xterm，现名 Gnome Terminal
@@ -12312,12 +12403,12 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 安装
 
     # 不安装 urxvt，换为 terminator
-    sudo dnf install -y i3 i3-ipc i3status i3lock dmenu terminator --exclude=rxvt-unicode
+    $ sudo dnf install -y i3 i3-ipc i3status i3lock dmenu terminator --exclude=rxvt-unicode
 
-    sudo dnf group install "i3 desktop" "Window Managers"
+    $ sudo dnf group install "i3 desktop" "Window Managers"
 
     # 高分辨率小屏需要调整一下dpi
-    echo 'Xft.dpi: 192' > ~/.Xresources
+    $ echo 'Xft.dpi: 192' > ~/.Xresources
 
 前导键叫 mod 键，可以由用户设定，可以是 Mod1(alt键) 或者是 Mod4(Super/Win)。
 
