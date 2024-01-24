@@ -2161,17 +2161,20 @@ Nord theme
 
 ##### 根据图片生成相同风格的配色方案
 
-1、 pywal 一条命令实现把指定图片设置为桌面背景，并自动调整你的终端模拟器的颜色方案
+1、 pywal 一条命令实现根据指定图片自动调整你的终端模拟器的颜色方案
 
     https://itsfoss.com/pywal/
 
-支持多种终端模拟器，支持多种风格和主题，即时生效，极其方便
+支持多种终端模拟器，支持多种风格和主题，当前打开的终端即时生效，极其方便
 
+    # 默认你的Linux自带 python3
     $ pip install pywal
 
     $ wal -i /path/to/wallpaper_file
 
-使新打开的终端也可以生效，把入选语句加入登录脚本：
+只是在我的 Fedora 38 下没能自动设置为桌面背景。
+
+使新打开的终端也可以生效，把如下语句加入 .bashrc 登录脚本即可：
 
 ```bash
 # Import colorscheme from 'wal' asynchronously
