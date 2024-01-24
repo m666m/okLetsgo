@@ -1621,7 +1621,7 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
     ncurses 库被用于在 Linux 下生成基于文本的用户界面，你的终端模拟器必须被它内置的 terminfo 数据库接受，才能在 tty 下正常显示文本，一般都会把自己模拟成 xterm。
 
-### 终端模拟器和软件的彩色设置
+### 终端模拟器和软件的真彩色设置
 
     https://github.com/mintty/mintty/wiki/CtrlSeqs
 
@@ -1825,7 +1825,7 @@ True color(24bit) 色条测试脚本，如果色条出现明显的条带分隔�
 
     简单在 bash 下执行即可
 
-    ```shell
+    ```bash
 
     awk 'BEGIN{
         printf "\x1b[38;2;255;100;0mTRUECOLOR\x1b[0m\n";
@@ -2025,64 +2025,6 @@ base16 是语法高亮时的定义，但是也可以直接给终端模拟器的1
     base0E - Keywords, Storage, Selector, Markup Italic, Diff Changed
     base0F - Deprecated, Opening/Closing Embedded Language Tags, e.g. <?php ?>
 
-schemer2 可以用读取指定的图片，生成该图片用色风格的 base16 配色方案
-
-    https://github.com/thefryscorer/schemer2
-
-    # 普通使用生成 colors 即可，格式对应上面的 base16 在语法高亮时的定义
-    schemer2 -format img::colors -in 111dark2.jpg -out colors.txt
-
-给终端模拟器使用，转换为 mintty 的颜色方案使用如下 python 代码
-
-```python
-
-# https://github.com/thefryscorer/schemer2
-#   schemer2 -format img::colors -in 111dark2.jpg -out colors.txt
-#   python3 colors_to_mintty.py
-# 查看整体效果 curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash
-
-mintty_template=(
-    'Black=',
-    'BoldBlack=',
-    'Red=',
-    'BoldRed=',
-    'Green=',
-    'BoldGreen=',
-    'Yellow=',
-    'BoldYellow=',
-    'Blue=',
-    'BoldBlue=',
-    'Magenta=',
-    'BoldMagenta=',
-    'Cyan=',
-    'BoldCyan=',
-    'White=',
-    'BoldWhite='
-)
-
-with open('./colors.txt', encoding="utf-8") as f:
-    colorStringHex = f.readlines()
-
-print('\nPut below into your .minttyrc file:\n')
-
-for m in range(16):
-
-    # From https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
-    rgb = tuple(str(int(colorStringHex[m].strip('#')[i:i+2], 16)) for i in (0, 2, 4))
-    #print(rgb)
-
-    mintty_rgb = mintty_template[m] + ','.join(rgb)
-    print(mintty_rgb)
-
-print('''\n
-Then restart mintty to take effect, you can run
-
-    `curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash`
-
-to see the color scheme.''')
-
-```
-
 #### 配色方案：整套支持终端模拟器和命令行软件的主题 Nord theme
 
 Dracula theme
@@ -2216,6 +2158,76 @@ Nord theme
         magenta: '#8c738c'
         cyan: '#6d96a5'
         white: '#aeb3bb'
+
+##### 根据图片生成相同风格的配色方案
+
+1、 pywal 一条命令实现把指定图片设置为桌面背景，并自动调整你的终端模拟器的颜色方案
+
+    https://itsfoss.com/pywal/
+
+支持多种终端模拟器，支持多种风格和主题，极其方便
+
+    $ pip install pywal
+
+    $ wal -i path/to/wallpaper_file
+
+2、schemer2 可以用读取指定的图片，生成该图片用色风格的 base16 配色方案
+
+    https://github.com/thefryscorer/schemer2
+
+    # 普通使用生成 colors 即可，格式对应上面的 base16 在语法高亮时的定义
+    schemer2 -format img::colors -in 111dark2.jpg -out colors.txt
+
+给终端模拟器使用，转换为 mintty 的颜色方案使用如下 python 代码
+
+```python
+
+# https://github.com/thefryscorer/schemer2
+#   schemer2 -format img::colors -in 111dark2.jpg -out colors.txt
+#   python3 colors_to_mintty.py
+# 查看整体效果 curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash
+
+mintty_template=(
+    'Black=',
+    'BoldBlack=',
+    'Red=',
+    'BoldRed=',
+    'Green=',
+    'BoldGreen=',
+    'Yellow=',
+    'BoldYellow=',
+    'Blue=',
+    'BoldBlue=',
+    'Magenta=',
+    'BoldMagenta=',
+    'Cyan=',
+    'BoldCyan=',
+    'White=',
+    'BoldWhite='
+)
+
+with open('./colors.txt', encoding="utf-8") as f:
+    colorStringHex = f.readlines()
+
+print('\nPut below into your .minttyrc file:\n')
+
+for m in range(16):
+
+    # From https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
+    rgb = tuple(str(int(colorStringHex[m].strip('#')[i:i+2], 16)) for i in (0, 2, 4))
+    #print(rgb)
+
+    mintty_rgb = mintty_template[m] + ','.join(rgb)
+    print(mintty_rgb)
+
+print('''\n
+Then restart mintty to take effect, you can run
+
+    `curl -fsSL https://github.com/mintty/utils/raw/master/colourscheme |bash`
+
+to see the color scheme.''')
+
+```
 
 ### 字符终端的区域、编码、语言
 
