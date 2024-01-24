@@ -3487,7 +3487,7 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
     gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal
 
-    i3 窗口管理器自带 urxvt(rxvt-unicode)
+    i3 窗口管理器自带 urxvt(rxvt-unicode)，支持设置背景图片
 
     sway 窗口管理器自带 foot
 
@@ -3511,15 +3511,15 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
         怪4：不再支持设置背景图片，但仍可设置窗口透明度
 
-    guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个了， gnome 桌面的插件有这个功能，启用即可，参见章节 [使用 gnome 扩展] 的 quake-mode。
+    guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个了， gnome 桌面有个扩展即可实现该功能，参见章节 [使用 gnome 扩展] 的 quake-mode。
 
     tilix 基于 gtk3 开放的一个平铺式终端模拟器，效果类似 tmux，但是支持各面板的自定义拖曳。
 
         https://github.com/gnunn1/tilix/
 
-    cool-retro-term
+    cool-retro-term 显示效果是 CRT 显示器...
 
-    terminology
+    terminology 使用 EFL（不支持Wayland） 的 Linux/BSD/UNIX 系统的终端仿真器，尽可能地模仿 Xterm。
 
     kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/MacOS 桌面下使用，目前中文支持还是不大好
 
@@ -14085,36 +14085,36 @@ WantedBy=multi-user.target
 
 下表中的MOD表示修饰键，在Windows中对应win或ALT键，在Mac中对应cmd键。
 
-    快捷键	                实施的动作
-    MOD + f	            切换到全屏 / 取消全屏
-    MOD + 左	        往左旋转屏幕
-    MOD + 右	        往右旋转屏幕
-    MOD + g	            重置屏幕尺寸到 像素比1:1（一般都是变得硕大）
-    MOD + w	            重置屏幕尺寸消除黑色边框
+    快捷键                    实施的动作
+    MOD + f                切换到全屏 / 取消全屏
+    MOD + 左            往左旋转屏幕
+    MOD + 右            往右旋转屏幕
+    MOD + g                重置屏幕尺寸到 像素比1:1（一般都是变得硕大）
+    MOD + w                重置屏幕尺寸消除黑色边框
 
-    MOD + h	            等同于 home 键
-    MOD + b	            等同于 返回 键
-    MOD + s	            等同于切换app操作
+    MOD + h                等同于 home 键
+    MOD + b                等同于 返回 键
+    MOD + s                等同于切换app操作
 
-    MOD + m	            对应解锁屏的按键，如果是锁屏的话，仅点亮屏幕
-    MOD + 下	        减少音量
-    MOD + 上	        增加音量
-    MOD + p	            等同于按电源键
+    MOD + m                对应解锁屏的按键，如果是锁屏的话，仅点亮屏幕
+    MOD + 下            减少音量
+    MOD + 上            增加音量
+    MOD + p                等同于按电源键
 
-    右键点击	         等同于点亮屏幕
-    MOD + o	            把设备屏幕关闭但保持镜像同步
+    右键点击             等同于点亮屏幕
+    MOD + o                把设备屏幕关闭但保持镜像同步
     MOD + Shift + o     点亮设备屏幕
-    MOD + r	            旋转屏幕（测试好像不好用，不知道是不是快捷键冲突）
-    MOD + n	            打开消息面板
-    MOD + n + n	        双击n，打开顶部设置栏
+    MOD + r                旋转屏幕（测试好像不好用，不知道是不是快捷键冲突）
+    MOD + n                打开消息面板
+    MOD + n + n            双击n，打开顶部设置栏
     MOD + shift + n     收起面板
-    MOD + c	            同步复制到电脑剪贴板
-    MOD + x	            同步剪贴到电脑剪贴板
-    MOD + v	            同步粘贴电脑剪贴板的内容（pc->手机或手机->pc均可）
-    MOD + i	            启用或禁用FPS计数
-    Ctrl + 点击和移动	  相当于多指捏合动作
-    安装APK	             拖拽APK文件到窗口
-    推送文件到手机	       拖拽非APK文件到窗口，默认放到 /sdcard/Movies 目录下
+    MOD + c                同步复制到电脑剪贴板
+    MOD + x                同步剪贴到电脑剪贴板
+    MOD + v                同步粘贴电脑剪贴板的内容（pc->手机或手机->pc均可）
+    MOD + i                启用或禁用FPS计数
+    Ctrl + 点击和移动      相当于多指捏合动作
+    安装APK                 拖拽APK文件到窗口
+    推送文件到手机           拖拽非APK文件到窗口，默认放到 /sdcard/Movies 目录下
 
 修饰键可以在命令行参数进行修改，可选的键有 lctrl、rctrl、lalt、ralt、lsuper 和 rsuper
 
