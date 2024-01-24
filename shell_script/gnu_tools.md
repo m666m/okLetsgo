@@ -2165,11 +2165,30 @@ Nord theme
 
     https://itsfoss.com/pywal/
 
-支持多种终端模拟器，支持多种风格和主题，极其方便
+支持多种终端模拟器，支持多种风格和主题，即时生效，极其方便
 
     $ pip install pywal
 
-    $ wal -i path/to/wallpaper_file
+    $ wal -i /path/to/wallpaper_file
+
+使新打开的终端也可以生效，把入选语句加入登录脚本：
+
+```bash
+# Import colorscheme from 'wal' asynchronously
+# &   # Run the process in the background.
+# ( ) # Hide shell job control messages.
+(cat ~/.cache/wal/sequences &)
+
+# Alternative (blocks terminal for 0-3ms)
+cat ~/.cache/wal/sequences
+
+# To add support for TTYs this line can be optionally added.
+source ~/.cache/wal/colors-tty.sh
+```
+
+计算机重启后使用上次的颜色方案
+
+    wal -R
 
 2、schemer2 可以用读取指定的图片，生成该图片用色风格的 base16 配色方案
 
