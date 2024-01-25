@@ -3513,118 +3513,41 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 ### Linux 桌面下的终端模拟器
 
-一般用系统内置的就够了
+有些终端模拟器是跨平台的，见章节 [其他终端模拟器]。
 
-    KDE 桌面自带 Konsole
+推荐使用 pywal 让终端的文字颜色自动适配你的桌面图片，详见章节 [根据图片生成相同风格的配色方案]。
 
-    Xfce 桌面自带 xfce
+一般情况下使用桌面内置的终端模拟器足够了
 
-    gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal
+    KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片
 
-    i3 窗口管理器自带 urxvt(rxvt-unicode)，支持设置背景图片
+        主题配色方案建议使用 Nord theme
 
-        $ sudo dnf install rxvt-unicode
+            $ cd ~/your_github_dir/
 
-        https://segmentfault.com/a/1190000020859490
-        https://wiki.archlinux.org/title/Rxvt-unicode
-        urxvt 受 Xresources 控制:
+            $ git clone --depth=1 git@github.com:arcticicestudio/nord-konsole
 
-            编辑配置文件
-            $ vim ~/.Xresources
+            $ cd nord-konsole
 
-            加载文件，使配置生效
-            $ xrdb ~/.Xresources
+            # flatpak：export XDG_DATA_HOME=$HOME/.var/app/org.kde.konsole/data
+            $ export XDG_DATA_HOME=$HOME/.local/share
 
-            $ urxvt
+            $ mkdir -p $XDG_DATA_HOME/konsole
 
-        terminfo 文件在 /usr/share/terminfo/r/rxvt-unicode，拷贝到远程主机的 ~/.terminfo/r/rxvt-unicode 下即可解决终端特殊字符无法识别报错的问题。
+            $ cp src/nord.colorscheme $XDG_DATA_HOME/konsole
+            # 不需要再执行那个 .install.sh 了
 
-        .Xresources配置文件示例:
-
-        ```
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        !
-        ! https://segmentfault.com/a/1190000020859490
-        ! https://wiki.archlinux.org/title/Rxvt-unicode
-
-        Xft.dpi: 96
-        !抗锯齿
-        Xft.antialias: true
-        Xft.rgba: rgb
-        Xft.hinting: true
-        Xft.hintstyle: hintslight
-
-        ! do not scroll with output
-        URxvt*scrollTtyOutput: false
-
-        ! scroll in relation to buffer (with mouse scroll or Shift+Page Up)
-        URxvt*scrollWithBuffer: true
-
-        ! scroll back to the bottom on keypress
-        URxvt*scrollTtyKeypress: true
-
-        !pager
-        URxvt.secondaryScreen: 1
-        URxvt.secondaryScroll: 0
-        URxvt.secondaryWheel: 1
-
-        URxvt.font: xft:MesloLGS Nerd Font:size=11
-        URxvt.letterSpace: -1
-
-        !作为登录 shell 启动
-        URxvt.loginShell: true
-        !使用的输入法框架名称，这样才可以输入中文
-        URxvt.inputMethod:IBus
-        !窗口大小：按字符数的列x行
-        URxvt.geometry: 110x30
-        URxvt.depth: 32
-
-        !标签式窗口
-        URxvt.perl-ext-common: tabbed
-
-        !URxvt.perl-ext-common:  ...,selection-to-clipboard,...
-        URxvt.clipboard.autocopy: true
-        URxvt.keysym.M-c: perl:clipboard:copy
-        URxvt.keysym.M-v: perl:clipboard:paste
-
-        !URxvt.keysym.F11: perl:fullscreen:switch
-        URxvt.multichar_encoding:gb #汉字编码
-        URxvt.boldFont:-*-SimHei-* #粗字体
-        URxvt.mfont: -*-simsun-medium-r-normal-*-14-*-*-*-c-*-gb*-* #汉字字体
-
-        URxvt.cursorBlink: true
-
-        URxvt.scrollstyle:rxvt
-        URxvt.scrollBar:True
-        URxvt.scrollBar_right:True
-
-        !屏幕缓冲1万行，足够了
-        URxvt.saveLines:10000
-
-        !背景 参见源代码 /usr/lib64/urxvt/perl/background
-        URxvt.background.expr: scale keep { load "/home/uu/Pictures/3eleph.png" }
-        !控制背景透明，变暗（0..99），变亮（101..200)，100 表示没有阴影
-        URxvt.transparent: true
-        URxvt.shading: 150
-
-        URxvt.background: #2E3440
-        URxvt.foreground: rgb:d8/de/e9
-
-        !可重新定义 xterm color0~15
-        URxvt.color12: rgb:5c/5c/ff
-
-        ```
-    sway 窗口管理器自带 foot
+        然后新建Profile-->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，图片透明度设为 50%（根据你选择的背景图片调整）即可。
 
     Gnome 桌面自带 Xterm，现名 Gnome Terminal
 
-        主题颜色使用 Nord theme
+        主题配色方案建议使用 Nord theme
 
-            cd ~/your_github_dir/
+            $ cd ~/your_github_dir/
 
-            git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
+            $ git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
 
-            cd gnome-terminal-nordtheme/src; ./nord.sh
+            $ cd gnome-terminal-nordtheme/src; ./nord.sh
 
             执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
 
@@ -3634,7 +3557,13 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
         怪3：默认不执行 .bash_profile，需要手工改配置文件：Profile-->command：勾选 Run command as a login shell 会自动执行你的 ~/.bash_profile
 
-        怪4：不再支持设置背景图片，但仍可设置窗口透明度
+        怪4：不再支持设置背景图片，但仍可设置窗口透明度。
+
+    Xfce 桌面自带 Xfce Terminal
+
+    gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal
+
+    sway 窗口管理器自带 foot
 
     guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个了， gnome 桌面有个扩展即可实现该功能，参见章节 [使用 gnome 扩展] 的 quake-mode。
 
@@ -3659,7 +3588,102 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
             https://github.com/warpdotdev/Warp
             主题 https://github.com/warpdotdev/themes
 
-有些终端模拟器是跨平台的，见章节 [其他终端模拟器]。
+#### i3 窗口管理器自带 urxvt(rxvt-unicode)
+
+    https://segmentfault.com/a/1190000020859490
+    https://wiki.archlinux.org/title/Rxvt-unicode
+
+支持设置背景图片
+
+    $ sudo dnf install rxvt-unicode
+
+urxvt 受 Xresources 控制:
+
+    编辑配置文件
+    $ vim ~/.Xresources
+
+    加载文件，使配置生效
+    $ xrdb ~/.Xresources
+
+    $ urxvt
+
+terminfo 文件在 /usr/share/terminfo/r/rxvt-unicode，拷贝到远程主机的 ~/.terminfo/r/rxvt-unicode 下即可解决终端特殊字符无法识别报错的问题。
+
+.Xresources配置文件示例，太麻烦了，暂时还没配置利索，不弄了：
+
+```conf
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! https://segmentfault.com/a/1190000020859490
+! https://wiki.archlinux.org/title/Rxvt-unicode
+
+Xft.dpi: 96
+!抗锯齿
+Xft.antialias: true
+Xft.rgba: rgb
+Xft.hinting: true
+Xft.hintstyle: hintslight
+
+! do not scroll with output
+URxvt*scrollTtyOutput: false
+
+! scroll in relation to buffer (with mouse scroll or Shift+Page Up)
+URxvt*scrollWithBuffer: true
+
+! scroll back to the bottom on keypress
+URxvt*scrollTtyKeypress: true
+
+!pager
+URxvt.secondaryScreen: 1
+URxvt.secondaryScroll: 0
+URxvt.secondaryWheel: 1
+
+URxvt.font: xft:MesloLGS Nerd Font:size=11
+URxvt.letterSpace: -1
+
+!作为登录 shell 启动
+URxvt.loginShell: true
+!使用的输入法框架名称，这样才可以输入中文
+URxvt.inputMethod:IBus
+!窗口大小：按字符数的列x行
+URxvt.geometry: 110x30
+URxvt.depth: 32
+
+!标签式窗口
+URxvt.perl-ext-common: tabbed
+
+!URxvt.perl-ext-common:  ...,selection-to-clipboard,...
+URxvt.clipboard.autocopy: true
+URxvt.keysym.M-c: perl:clipboard:copy
+URxvt.keysym.M-v: perl:clipboard:paste
+
+!URxvt.keysym.F11: perl:fullscreen:switch
+URxvt.multichar_encoding:gb #汉字编码
+URxvt.boldFont:-*-SimHei-* #粗字体
+URxvt.mfont: -*-simsun-medium-r-normal-*-14-*-*-*-c-*-gb*-* #汉字字体
+
+URxvt.cursorBlink: true
+
+URxvt.scrollstyle:rxvt
+URxvt.scrollBar:True
+URxvt.scrollBar_right:True
+
+!屏幕缓冲1万行，足够了
+URxvt.saveLines:10000
+
+!背景 参见源代码 /usr/lib64/urxvt/perl/background
+URxvt.background.expr: scale keep { load "/home/uu/Pictures/3eleph.png" }
+!控制背景透明，变暗（0..99），变亮（101..200)，100 表示没有阴影
+URxvt.transparent: true
+URxvt.shading: 150
+
+URxvt.background: #2E3440
+URxvt.foreground: rgb:d8/de/e9
+
+!可重新定义 xterm color0~15
+URxvt.color12: rgb:5c/5c/ff
+
+```
 
 ## Linux 常用命令行工具
 
@@ -10903,7 +10927,7 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
 快捷运行桌面工具，按 alt + F2，然后在弹出对话框输入可执行名如 firefox
 
-Linux 桌面的终端工具参见章节 [其他终端模拟器]。
+终端工具参见章节 [Linux 桌面下的终端模拟器]。
 
 虚拟机和容器
 

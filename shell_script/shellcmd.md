@@ -837,6 +837,10 @@ Fedora 的分区方案
 # -o pipefail ： 只要管道中的一个子命令失败，整个管道命令就失败，这样可以捕获到其退出代码
 set -xeuo pipefail
 
+# nounset: Treat unset variables and parameters as an error when performing parameter expansion
+# errexit: Exit immediately if any command exits with a non-zero status
+set -o nounset -o errexit
+
 # 防止重复运行
 exec 123<>lock_myscript   # 把lock_myscript打开为文件描述符123
 flock  --wait 5  123 || { echo 'cannot get lock, exit'; exit 1; }
