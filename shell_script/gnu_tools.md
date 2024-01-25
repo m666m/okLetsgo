@@ -977,6 +977,7 @@ pacman 命令较多，常用的命令如下：
 Contour Terminal Emulator 这个是真正的速度极快，而且跨平台
 
     https://contour-terminal.org/configuration/
+    https://zhuanlan.zhihu.com/p/505530480
 
         $ sudo dnf install contour-terminal
 
