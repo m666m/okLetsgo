@@ -3529,15 +3529,16 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
             $ git clone --depth=1 git@github.com:arcticicestudio/nord-konsole
 
-            $ cd nord-konsole
+            $ cd nord-konsole; ./install.sh
 
-            # flatpak：export XDG_DATA_HOME=$HOME/.var/app/org.kde.konsole/data
-            $ export XDG_DATA_HOME=$HOME/.local/share
+            如果是 flatpak 下运行需要手动：
 
-            $ mkdir -p $XDG_DATA_HOME/konsole
+                # XDG_DATA_HOME=$HOME/.local/share
+                $ export XDG_DATA_HOME=$HOME/.var/app/org.kde.konsole/data
 
-            $ cp src/nord.colorscheme $XDG_DATA_HOME/konsole
-            # 不需要再执行那个 .install.sh 了
+                $ mkdir -p $XDG_DATA_HOME/konsole
+
+                $ cp src/nord.colorscheme $XDG_DATA_HOME/konsole
 
         然后新建Profile-->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，图片透明度设为 50%（根据你选择的背景图片调整）即可。
 
@@ -3560,6 +3561,21 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
         怪3：不再支持设置背景图片，但仍可设置窗口透明度。
 
     Xfce 桌面自带 Xfce Terminal
+
+        主题配色方案建议使用 Nord theme
+
+            $ cd ~/your_github_dir/
+
+            $ git clone --depth=1 git@github.com:arcticicestudio/nord-xfce-terminal
+
+            $ cd nord-xfce-terminal/
+
+            $ ./install.sh
+            [OK] Local installation completed
+
+        或可以手动把文件 `nord.theme` 拷贝到本地的配置目录 `~/.local/share/xfce4/terminal/colorschemes` 下即可。
+
+        然后运行 xfce4-terminal，选择菜单 Edit->Preference->Colors->Presets，选择 Nord 即可。
 
     gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal
 
@@ -11608,6 +11624,23 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
     <family>Noto Emoji</family>
   </prefer>
 </alias>
+```
+
+#### 给应用设置桌面图标
+
+进入如下目录，复制一个文件，改改就行：
+
+    /usr/share/applications/
+
+示例
+
+```ini
+[Desktop Entry]
+Type=Application
+Name=Xfce Terminal
+Exec=xfce4-terminal
+Icon=utilities-terminal
+Categories=GTK;System;TerminalEmulator;
 ```
 
 ### 使用 Gnome 桌面
