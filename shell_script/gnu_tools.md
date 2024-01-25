@@ -3519,6 +3519,8 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 一般情况下使用桌面内置的终端模拟器足够了
 
+    目前的终端模拟器的选择即复制功能细分了：鼠标选择的自动复制只是内部剪贴板可用，粘贴热键 shift+ins，右键菜单的复制才到系统剪贴板，在其它软件的可以粘贴。
+
     KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片
 
         主题配色方案建议使用 Nord theme
@@ -3551,13 +3553,11 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
             执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
 
-        怪1：鼠标选择的自动复制只是内部剪贴板可用，粘贴热键 shift+ins，右键菜单的复制才到系统剪贴板，右键菜单选粘贴
+        怪1：新建标签会继承当前标签的环境和路径。比如当前标签进入了 toolbox 容器，这时点击新建的标签打开就是进入 toolbox 容器的环境。切换到默认没进入容器的标签，点击新建标签进入的环境就跟当前标签的环境一致。
 
-        怪2：新建标签会继承当前标签的环境和路径。比如当前标签进入了 toolbox 容器，这时点击新建的标签打开就是进入 toolbox 容器的环境。切换到默认没进入容器的标签，点击新建标签进入的环境就跟当前标签的环境一致。
+        怪2：默认不执行 .bash_profile，需要手工改配置文件：Profile-->command：勾选 Run command as a login shell 会自动执行你的 ~/.bash_profile
 
-        怪3：默认不执行 .bash_profile，需要手工改配置文件：Profile-->command：勾选 Run command as a login shell 会自动执行你的 ~/.bash_profile
-
-        怪4：不再支持设置背景图片，但仍可设置窗口透明度。
+        怪3：不再支持设置背景图片，但仍可设置窗口透明度。
 
     Xfce 桌面自带 Xfce Terminal
 
