@@ -952,7 +952,7 @@ pacman 命令较多，常用的命令如下：
 
 ### 其他终端模拟器
 
-terminfo 问题
+不常用终端会遇到 terminfo 问题
 
     https://ttys3.dev/post/kitty/
 
