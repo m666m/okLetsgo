@@ -3604,7 +3604,9 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
             https://github.com/warpdotdev/Warp
             主题 https://github.com/warpdotdev/themes
 
-#### i3 窗口管理器自带 urxvt(rxvt-unicode)
+> i3 窗口管理器自带 urxvt(rxvt-unicode)
+
+配置复杂
 
     https://segmentfault.com/a/1190000020859490
     https://wiki.archlinux.org/title/Rxvt-unicode
