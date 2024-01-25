@@ -974,6 +974,73 @@ terminfo 问题
 
         alias ssh="kitty +kitten ssh"
 
+Contour Terminal Emulator 这个是真正的速度极快，而且跨平台
+
+    https://contour-terminal.org/configuration/
+
+        $ sudo dnf install contour-terminal
+
+    快捷操作
+
+        Ctrl+Shift+Space 当前屏幕进入vim模式，方便用键盘选择屏幕文字复制粘贴等操作。
+        按 a 或 i 进入编辑模式会自动退出到命令行进行普通的编辑。
+
+    配置文件在
+
+        # flatpak：~/.var/app/org.contourterminal.Contour/config/contour/contour.yml
+        ~/.config/contour/contour.yml
+
+    目前只能手动修改：
+
+```yml
+# 主配置
+profiles:
+    main:
+        # 打开终端后作为登录shell
+        shell: "/bin/bash"
+        arguments: ["-l"]
+
+        # 按字符数的窗口大小
+        terminal_size:
+            columns: 80
+            lines: 25
+
+        # 字体
+        font:
+            regular:
+                family: "MesloLGS Nerd Font"
+
+        # 光标样式和闪动
+        cursor:
+            blinking: true
+
+        # 背景透明和模糊
+        background:
+            opacity: 0.95
+            blur: false
+
+        # 颜色方案，在下面的 color_schemes 处配置
+        # Specifies a colorscheme to use (alternatively the colors can be inlined).
+        colors: "default"
+
+# 颜色方案
+color_schemes:
+    # 系统默认的颜色方案
+    default:
+
+        background_image:
+            # Full path to the image to use as background.
+            #
+            # Default: empty string (disabled)
+            path: '/Pictures/78883229_UHD.jpg'
+            opacity: 0.5
+            blur: false
+
+# 快捷键
+input_mapping:
+    # 选择文字后按 ctrl+c 是复制到内部剪贴板，中键可粘贴
+```
+
 WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装。速度快，兼容性较好，左侧就是文件夹树方便 sftp，支持 lrzsz 的文件拖放传送，命令行输出还支持标签折叠
 
     https://github.com/kingToolbox/WindTerm
@@ -995,7 +1062,7 @@ edex-ui 创·战纪 风格的终端模拟器，还带一个简单的文件浏览
 
     自定义主题说明 https://github.com/GitSquared/edex-ui/wiki/Themes
 
-Alacritty 使用 OpenGL 进行显示加速的终端模拟器，在 Linux 下刷新速度极快，在 Windows 下使用 powershell 不推荐
+Alacritty 使用 OpenGL 进行显示加速（速度一般）的终端模拟器，在 Linux 下刷新速度极快，在 Windows 下使用 powershell 不推荐
 
     https://github.com/alacritty/alacritty
 
@@ -1003,7 +1070,7 @@ Alacritty 使用 OpenGL 进行显示加速的终端模拟器，在 Linux 下刷�
 
         curl -fsSL https://github.com/nordtheme/alacritty/raw/main/src/nord.yaml | tee $HOME/.alacritty.toml
 
-WezTerm GPU 加速跨平台终端仿真器，支持终端多路复用，至今未解决偶发的卡顿问题
+WezTerm GPU 加速（其实不快）跨平台终端仿真器，支持终端多路复用，至今未解决偶发的卡顿问题
 
     https://github.com/wez/wezterm
         https://wezfurlong.org/
@@ -3519,7 +3586,7 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 一般情况下使用桌面内置的终端模拟器足够了
 
-    目前的终端模拟器的选择即复制功能细分了：鼠标选择的自动复制只是内部剪贴板可用，粘贴热键 shift+ins，右键菜单的复制才到系统剪贴板，在其它软件的可以粘贴。
+    目前的终端模拟器的选择即复制功能细分了：鼠标选择的自动复制只是内部剪贴板可用，粘贴热键 shift+ins 或鼠标中键。选择文字后，右键菜单里的复制选项才会到系统剪贴板，然后在其它软件的可以粘贴。
 
     KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片
 
