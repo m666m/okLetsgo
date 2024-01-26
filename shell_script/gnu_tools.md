@@ -12200,6 +12200,17 @@ KDE 自带的软件也有很多精品比如 KDE connect 等
 
     已经延展到了多个平台 https://apps.kde.org/platforms/windows/
 
+### 其它桌面环境
+
+enlightenment 桌面
+
+    https://www.enlightenment.org/
+
+wayfire 窗口管理器
+
+    https://github.com/WayfireWM/wayfire/wiki
+    配置文件位置：~/.config/wayfire.ini
+
 ### Linux 桌面的基本目录规范 XDG（X Desktop Group）
 
 对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境。目前最流行的 freedesktop 的规范称为 XDG
@@ -12461,6 +12472,10 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
 ### 窗口管理器（Windows Manager）
 
+一般都基于 wlroots --- 一个为基于wayland的各类wm/de（或者叫compositor）提供基础设施的项目
+
+    https://gitlab.freedesktop.org/wlroots/wlroots
+
 使用窗口管理器，需要自己配置软件源，自己安装字体，firefox 假死问题自己解决。
 
     https://zhuanlan.zhihu.com/p/47526909
@@ -12471,17 +12486,17 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
 窗口管理器 vs 桌面环境
 
-窗口管理器（Windows Manager），负责绘制窗口的边框，处理窗口运行比如移动、最小化之类的行为。
+    窗口管理器（Windows Manager），负责绘制窗口的边框，处理窗口运行比如移动、最小化之类的行为。
 
-桌面（Desktop Environment），是窗口管理器的超集，它使用合成器（Compositor）把多个程序窗口绘制出的内容，把它们合成出来并高效地增量更新用户界面 GUI。比如 compiz 这种基于 OpenGL 的混合型窗口管理器，用立体的方式显示窗口切换。
+    桌面（Desktop Environment），是窗口管理器的超集，它使用合成器（Compositor）把多个程序窗口绘制出的内容，把它们合成出来并高效地增量更新用户界面 GUI。比如 compiz 这种基于 OpenGL 的混合型窗口管理器，用立体的方式显示窗口切换。
 
 我们常用的 Gnome 就是一个桌面环境，默认使用 Metacity 作为窗口管理器。
 
-常见的窗口管理相关的工具如下：(来自alim0x - Awesome-Linux-Software-zh_CN)
+常见的窗口管理相关的工具如下：
 
-合成器：
+合成器（Compositor）：
 
-    Mutter  -   GNOME的窗口管理器和合成器
+    Mutter  -  GNOME的窗口管理器和合成器
 
     Compton - Compton 是一款独立的合成管理器，适合同没有原生提供合成功能的窗口管理器一同使用。
 
@@ -12503,7 +12518,7 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
         使用compiz https://blog.csdn.net/kewen_123/article/details/115871744
 
-    Hyprland: 一个基于 wlroots 的动态平铺 Wayland 合成器
+    Hyprland: 一个基于 wlroots 的动态平铺 Wayland 合成器，动态窗口的变换快速平滑
 
         https://wiki.hyprland.org/Getting-Started/Master-Tutorial/
 
