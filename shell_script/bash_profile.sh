@@ -40,6 +40,7 @@ export EDITOR=/usr/bin/vi
 # 命令行的字符可以显示彩色，依赖这个设置
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
+export COLORTERM=truecolor
 
 ####################################################################
 # alias 本该放到 .bashrc 文件，为了方便统一在此了

@@ -976,6 +976,8 @@ pacman 命令较多，常用的命令如下：
 
 Contour Terminal Emulator 这个是真正的速度极快，而且跨平台
 
+    还在发展中，不足较多：不支持中文字体回落
+
     https://contour-terminal.org/configuration/
     https://zhuanlan.zhihu.com/p/505530480
 
@@ -1006,9 +1008,13 @@ profiles:
             columns: 80
             lines: 25
 
+        scrollbar:
+            position: Right
+
         # 字体
         font:
             regular:
+                # 不支持中文字体回落 ["MesloLGS Nerd Font", "Noto Serif CJK SC"]
                 family: "MesloLGS Nerd Font"
 
         # 光标样式和闪动
@@ -1030,9 +1036,7 @@ color_schemes:
     default:
 
         background_image:
-            # Full path to the image to use as background.
-            #
-            # Default: empty string (disabled)
+            # flatpak 下不知道怎么找路径。。。
             path: '/Pictures/78883229_UHD.jpg'
             opacity: 0.5
             blur: false
@@ -3585,9 +3589,15 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 推荐使用 pywal 让终端的文字颜色自动适配你的桌面图片，详见章节 [根据图片生成相同风格的配色方案]。
 
-一般情况下使用桌面内置的终端模拟器足够了
+一些使用习惯的变化
+
+    新建的会话默认不执行 .bash_profile，需要设置执行登录脚本 `/bin/bash -l`。
+
+    新建标签会继承前一个标签的会话环境和路径。比如当前标签进入了 toolbox 容器，这时点击新建的标签打开就是进入 toolbox 容器的环境。切换到默认没进入容器的标签，点击新建标签进入的环境就跟当前标签的环境一致。
 
     目前的终端模拟器的选择即复制功能细分了：鼠标选择的自动复制只是内部剪贴板可用，粘贴热键 shift+ins 或鼠标中键。选择文字后，右键菜单里的复制选项才会到系统剪贴板，然后在其它软件的可以粘贴。
+
+一般情况下使用桌面内置的终端模拟器足够了
 
     KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片
 
@@ -3608,7 +3618,11 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
                 $ cp src/nord.colorscheme $XDG_DATA_HOME/konsole
 
-        然后新建Profile-->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，图片透明度设为 50%（根据你选择的背景图片调整）即可。
+        窗口菜单选 Setting-->Configure->Profiles，选New新建一个，然后Edit编辑：
+
+            -->General->command: 设置会话执行登录脚本 /bin/bash -l
+
+            -->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，图片透明度设为 50%（根据你选择的背景图片调整）即可。
 
     Gnome 桌面自带 Xterm，现名 Gnome Terminal
 
@@ -3622,11 +3636,11 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
             执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
 
-        怪1：新建标签会继承当前标签的环境和路径。比如当前标签进入了 toolbox 容器，这时点击新建的标签打开就是进入 toolbox 容器的环境。切换到默认没进入容器的标签，点击新建标签进入的环境就跟当前标签的环境一致。
+        窗口菜单选 Profile，选 Nord，设为默认即可，其它选项点击右侧项：
 
-        怪2：默认不执行 .bash_profile，需要手工改配置文件：Profile-->command：勾选 Run command as a login shell 会自动执行你的 ~/.bash_profile
+            -->command 勾选 Run command as a login shell 以设置会话执行登录脚本
 
-        怪3：不再支持设置背景图片，但仍可设置窗口透明度。
+            -->color：不再支持设置背景图片，但仍可设置窗口透明度。
 
     Xfce 桌面自带 Xfce Terminal
 
@@ -3639,21 +3653,26 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
             $ cd nord-xfce-terminal/
 
             $ ./install.sh
-            [OK] Local installation completed
 
         或可以手动把文件 `nord.theme` 拷贝到本地的配置目录 `~/.local/share/xfce4/terminal/colorschemes` 下即可。
 
-        然后运行 xfce4-terminal，选择菜单 Edit->Preference->Colors->Presets，选择 Nord 即可。
+        窗口菜单选 Edit->Preference:
+
+            -->Colors->Presets，选择 Nord 即可。
+
+            -->General-->Command，勾选 Run command as login shell 以设置会话执行登录脚本
+
+            -->Appeaerance-->Background，设置背景图片，目前不支持透明，只支持图片调暗
 
     gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal
+
+    Enlightenment 桌面自带 Terminology
 
     sway 窗口管理器自带 foot
 
     guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个了， gnome 桌面有个扩展即可实现该功能，参见章节 [使用 gnome 扩展] 的 quake-mode。
 
-    tilix 基于 gtk3 开放的一个平铺式终端模拟器，效果类似 tmux，但是支持各面板的自定义拖曳。
-
-        https://github.com/gnunn1/tilix/
+    tilix 基于 gtk3 开发的一个平铺式终端模拟器，效果类似 tmux，但是支持各面板的自定义拖曳。
 
     cool-retro-term 显示效果是 CRT 显示器...
 
