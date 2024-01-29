@@ -12043,7 +12043,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能。
 
-    blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持某些应用程序和扩展透明化，注意跟有些主题兼容性不好边缘无法透明。不需要使用它的锁屏背景模糊功能，使用 Bing Wallpaper 扩展的这个功能效果更好。建议关闭它的 Dash to Dock/Panel 的透明化功能，用扩展自己的透明化设置效果更好。
+    blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持某些应用程序和扩展透明化，注意跟有些主题兼容性不好边缘无法透明。不需要使用它的锁屏背景模糊功能，使用 Bing Wallpaper 扩展的这个功能效果更好。不需要使用它的 Dash to Dock/Panel 的透明化功能，用扩展自己的透明化设置效果更好。
 
     Date Menu Formater      如果在任务栏显示的时间没有星期，在 Gnome Tweaks 中开启即可，这个扩展可以调整日期时间的格式。
 
@@ -12051,9 +12051,11 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date)
 
-    burn my window          窗口的弹出和关闭各种特效化，推荐勾选 Apparition、Hexagon、TV Glitch。
+    burn my window          窗口的弹出和关闭各种特效化，推荐勾选 Apparition、Doom、Hexagon、TV Glitch。
 
 #### 使用 gnome 主题
+
+    Gnome 44 以后只能设置任务栏了，窗口的明暗主题无法变更，所以窗口的颜色和形状也无法自定义。
 
 Gnome 主题乐园，在这里搜一下 Gnome Shell Themes 类别，你的 Gnome 任务栏就大变样了
 
