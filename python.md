@@ -128,6 +128,14 @@ Debian/Ubuntu 下默认安装 python 2 以及 python 3，python 命令指向 pyt
 
 pip 安装的有些包调用c语言库，需要安装c开发环境和对应的头文件，见章节 [开发工具](raspberry-pi think)。
 
+新的可以自动创建环境的 pipx，适合命令行使用
+
+    pyenv
+
+    pipenv
+
+    pipx
+
 ### 操作系统发行版的基础python环境不要变更
 
 仅在虚拟环境中使用 pip
