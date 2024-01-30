@@ -12213,6 +12213,8 @@ wayfire 窗口管理器
     https://github.com/WayfireWM/wayfire/wiki
     配置文件位置：~/.config/wayfire.ini
 
+如果不想用桌面环境，但还需要在图形化的窗口下工作，见章节 [窗口管理器（Windows Manager）]。
+
 ### Linux 桌面的基本目录规范 XDG（X Desktop Group）
 
 对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境。目前最流行的 freedesktop 的规范称为 XDG
@@ -12474,7 +12476,15 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
 ### 窗口管理器（Windows Manager）
 
-一般都基于 wlroots --- 一个为基于wayland的各类wm/de（或者叫compositor）提供基础设施的项目
+窗口管理器 vs 桌面环境
+
+    窗口管理器（Windows Manager），负责绘制窗口的边框，处理窗口运行比如移动、最小化之类的行为。
+
+    桌面（Desktop Environment），是窗口管理器的超集，它使用合成器（Compositor）把多个程序窗口绘制出的内容，把它们合成出来并高效地增量更新用户界面 GUI。比如 compiz 这种基于 OpenGL 的混合型窗口管理器，用立体的方式显示窗口切换。
+
+我们常用的 Gnome 就是一个桌面环境，默认使用 Metacity 作为窗口管理器。
+
+常见的窗口管理器一般都基于 wlroots --- 一个为基于wayland的各类wm/de（或者叫compositor）提供基础设施的项目
 
     https://gitlab.freedesktop.org/wlroots/wlroots
 
@@ -12486,17 +12496,51 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
     https://zhongguo.eskere.club/%E9%80%82%E7%94%A8%E4%BA%8E-linux-%E7%9A%84-5-%E4%B8%AA%E6%9C%80%E4%BD%B3%E7%AA%97%E5%8F%A3%E7%AE%A1%E7%90%86%E5%99%A8/2021-10-03/
 
-窗口管理器 vs 桌面环境
+平铺式窗口管理器：自动排列窗口，以不重叠的方式占据整个屏幕，自动的被调整各个窗口大小。
 
-    窗口管理器（Windows Manager），负责绘制窗口的边框，处理窗口运行比如移动、最小化之类的行为。
+    i3 WM - 更好的平铺及动态窗口管理器。完全重写。目标平台是 GNU/Linux 和 BSD 操作系统。
 
-    桌面（Desktop Environment），是窗口管理器的超集，它使用合成器（Compositor）把多个程序窗口绘制出的内容，把它们合成出来并高效地增量更新用户界面 GUI。比如 compiz 这种基于 OpenGL 的混合型窗口管理器，用立体的方式显示窗口切换。
+    i3-gaps - i3-gaps 是拥有更多功能的 i3。
 
-我们常用的 Gnome 就是一个桌面环境，默认使用 Metacity 作为窗口管理器。
+    sway - i3 的 wayland 实现
 
-常见的窗口管理相关的工具如下：
+    Pop!_OS Shell - Pop Shell 是基于 GNOME shell 的窗口管理器，键盘驱动，自动平铺。
 
-合成器（Compositor）：
+    Bspwm - bspwm 是一个平铺式窗口管理器，将窗口以二叉树的叶结点的方式展现。
+
+    Herbstluftwm - 使用 Xlib 和 Glib 的手工平铺式窗口管理器。
+
+    Qtile - qtile 是一款全功能，可 hack 的平铺窗口管理器，使用 Python 编写和配置。
+
+叠加式窗口管理器：浮动式窗口管理器，由于屏幕空间有限，当前激活的窗口会浮在最上面，而遮住下面的窗口。
+
+    Openbox - 高度可配置，带有可扩展标准支持的下一代窗口管理器。
+
+    2bwm - 快速的浮动窗口管理，有两个特殊边界，基于 XCB 库，由 mcwm 衍生。
+
+    Blackbox - 快速，轻量化的 X 窗口系统窗口管理器，没有那些烦人的库依赖。
+
+    Fluxbox - 基于 Blackbox 0.61.1 代码的 X 窗口管理器。
+
+动态窗口管理器
+
+    awesome - 高度可配置，下一代 X 框架窗口管理器。
+
+        https://blog.kelu.org/tech/2021/12/29/linux-awesome-wm.html
+
+        https://blog.theerrorlog.com/switching-from-gnome-shell-to-awesome-wm-zh.html
+
+        awesome 窗口管理器使用备忘 https://blog.kelu.org/tech/2021/12/29/linux-awesome-wm.html
+
+    dwm - X 动态窗口管理器。它以平铺，单片镜以及浮动布局的方式管理窗口
+
+        https://zhuanlan.zhihu.com/p/183861786
+
+    spectrwm - 小型动态平铺 X11 窗口管理器。主要受 xmonad 和 dwm 启发。
+
+    xmonad - 动态平铺 X11 窗口管理器，用 Haskell 编写和配置。
+
+窗口管理器背后的工具 --- 合成器（Compositor）：
 
     Mutter  -  GNOME的窗口管理器和合成器
 
@@ -12528,52 +12572,6 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
         不使用 wayland 的 Hypr --- 使用 Xorg 的窗口管理器
             https://github.com/vaxerski/Hypr
-
-叠加式窗口管理器：
-
-浮动式窗口管理器，由于屏幕空间有限，当前激活的窗口会浮在最上面，而遮住下面的窗口。
-
-    2bwm - 快速的浮动窗口管理，有两个特殊边界，基于 XCB 库，由 mcwm 衍生。
-
-    Blackbox - 快速，轻量化的 X 窗口系统窗口管理器，没有那些烦人的库依赖。
-
-    Fluxbox - 基于 Blackbox 0.61.1 代码的 X 窗口管理器。
-
-    Openbox - 高度可配置，带有可扩展标准支持的下一代窗口管理器。
-
-平铺式窗口管理器：
-
-自动排列窗口，以不重叠的方式占据整个屏幕，自动的被调整各个窗口大小。
-
-    Bspwm - bspwm 是一个平铺式窗口管理器，将窗口以二叉树的叶结点的方式展现。
-
-    Herbstluftwm - 使用 Xlib 和 Glib 的手工平铺式窗口管理器。
-
-    i3 WM - 更好的平铺及动态窗口管理器。完全重写。目标平台是 GNU/Linux 和 BSD 操作系统。
-
-    i3-gaps - i3-gaps 是拥有更多功能的 i3。
-
-    Pop!_OS Shell - Pop Shell 是基于 GNOME shell 的窗口管理器，键盘驱动，自动平铺。
-
-    Qtile - qtile 是一款全功能，可 hack 的平铺窗口管理器，使用 Python 编写和配置。
-
-动态窗口管理器
-
-    awesome - 高度可配置，下一代 X 框架窗口管理器。
-
-        https://blog.kelu.org/tech/2021/12/29/linux-awesome-wm.html
-
-        https://blog.theerrorlog.com/switching-from-gnome-shell-to-awesome-wm-zh.html
-
-        awesome 窗口管理器使用备忘 https://blog.kelu.org/tech/2021/12/29/linux-awesome-wm.html
-
-    dwm - X 动态窗口管理器。它以平铺，单片镜以及浮动布局的方式管理窗口
-
-        https://zhuanlan.zhihu.com/p/183861786
-
-    spectrwm - 小型动态平铺 X11 窗口管理器。主要受 xmonad 和 dwm 启发。
-
-    xmonad - 动态平铺 X11 窗口管理器，用 Haskell 编写和配置。
 
 #### i3
 
