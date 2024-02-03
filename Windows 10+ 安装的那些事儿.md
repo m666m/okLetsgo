@@ -2953,6 +2953,12 @@ Windows Subsystem for Android 在Windows Store[安装apk时默认安装](https:/
 
 ## 其它常见问题
 
+### 操作系统对旧cpu的支持
+
+Windows 7 实体机安装，最后支持的cpu 是 Intel i7 7700k +z170芯片组主板，打上usb3.1的补丁才能安装，否则只能用 6700k。现在网络上改版的 Windows 8 支持到 8700k 和 9900k，只能在 CSM 模式下安装，需要适配的驱动才能安装。
+
+Intel i7 11700k 之后的cpu不再支持 Windows 98 虚拟机。
+
 ### 老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）
 
 UEFI 操作显卡的方式也有变化，需要显卡支持 “UEFI GOP VBIOS”。
