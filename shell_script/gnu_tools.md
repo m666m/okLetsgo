@@ -10948,6 +10948,24 @@ Linux下新建用户密码过期时间是从/etc/login.defs文件中PASS_MAX_DAY
 
 老老实实用最多人用的 GNOME 吧，其它桌面环境坑更多，随便就有软件运行不起来。
 
+Linux 下的桌面环境，除了提供 GUI 界面外，为了让用户开箱即用，都有一整套的软件包工具实现软件商店、系统更新等常见桌面功能，以及浏览器、办公软件、音视频播放器、日历、计算器、终端模拟器等常用工具
+
+    包管理底层库 packagekit https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/ch-packagekit
+
+官方源更多了，各个发行版针对桌面环境还有单独的图形化软件商店，跟命令行软件不是同一个官方源，以 Fedora 为例
+
+    图形化软件商店：rpm包的普通图形界面软件（很少，仅最常用） fedoraproject.org
+
+        图形化软件商店：rpm包驱动程序，非官方但权威  rpmfusion.org
+
+    图形化软件商店：flatpak包的图形界面软件（很少，仅最常用） registry.fedoraproject.org
+
+        图形化软件商店：flatpak包的图形界面软件（全） 非官方但权威 dl.flatpak.org
+
+        flatpak 命令：2个官方，一个是 fedora 源，一个是flathub过滤后的源，都很少
+
+    dnf 命令：默认一个官方源，命令行软件和图形界面软件都有，这里的软件是最多最全的
+
 ### 操作系统时光机 timeshift
 
 基于快照的备份系统 timeshift
