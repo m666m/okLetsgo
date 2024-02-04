@@ -10952,15 +10952,15 @@ Linux 下的桌面环境，除了提供 GUI 界面外，为了让用户开箱即
 
     包管理底层库 packagekit https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/ch-packagekit
 
-官方源更多了，各个发行版针对桌面环境还有单独的图形化软件商店，跟命令行软件不是同一个官方源，以 Fedora 为例
+官方源纷杂，搜软件会有多个来源，挑一个来源的用就行，有问题就换个源重装试试。原因是各个发行版针对桌面环境还有单独的图形化软件商店，跟命令行软件不使用同一个官方源，以 Fedora 为例：
 
-    图形化软件商店：rpm包的普通图形界面软件（很少，仅最常用） fedoraproject.org
+    图形化软件商店：rpm包的普通图形界面软件（少，仅最常用） fedoraproject.org
 
         图形化软件商店：rpm包驱动程序，非官方但权威  rpmfusion.org
 
     图形化软件商店：flatpak包的图形界面软件（很少，仅最常用） registry.fedoraproject.org
 
-        图形化软件商店：flatpak包的图形界面软件（全） 非官方但权威 dl.flatpak.org
+        图形化软件商店：flatpak包的图形界面软件（多） 非官方但权威 dl.flatpak.org
 
         flatpak 命令：2个官方，一个是 fedora 源，一个是flathub过滤后的源，都很少
 
