@@ -11253,10 +11253,10 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
     DigiKam：攝影師整理相片的跨平台軟體，類似Adobe Lightroom。自带sqlite数据库缓存缩略图，浏览处理大批量图片的常用功能快速方便，高级功能支持人脸模式、图片搜索除了相似度还支持画图搜索，根据绘画内容检索图片、根据照片信息显示地理位置等。还安装了单独的程序叫 showFoto，不缓存到数据库，功能简单只在界面上可选编辑。
 
-    Darktable
-
     Gwenview：KDE的看圖軟體，可簡單編輯圖片和加文字，支援讀取壓縮檔的圖片。
     Shotwell：GNOME附屬的相片管理程式。
+
+    Darktable: 照片调色软件
 
 音频编辑器
 
