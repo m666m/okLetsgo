@@ -11279,6 +11279,10 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
         https://www.videolan.org/vlc/index.zh_CN.html
             https://github.com/videolan/vlc
 
+        插件安装：VLSub，可以搜索下载字幕
+
+        调整字幕时间轴热键 g、h
+
     mplayer 原生 linux 下的播放器，不提供有效的GUI
 
         注意：以下播放器依赖操作系统安装h264等编码器，用起来不是开箱即用的，即使 flatpak 版本也不行
