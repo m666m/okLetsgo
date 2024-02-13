@@ -4654,6 +4654,7 @@ nerdtree 在左侧树形目录中的热键
 " vim 的默认设置
 "   全局配置文件 /etc/vim/vimrc
 "   启动脚本 /usr/share/vim/vim81/default.vim
+"   基础设置 https://www.zhihu.com/question/271926659/answer/2875834932
 "
 " 查看当前设置值 :verbose set showcmd?
 
