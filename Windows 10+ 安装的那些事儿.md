@@ -485,6 +485,9 @@ Windows 安装完成后，运行 msinfo32，在 “系统摘要” 界面找 “
 
     https://zhuanlan.zhihu.com/p/458830886
 
+    WOL各模式说明
+        https://www.zhihu.com/question/366699701/answer/3287840128
+
 根据产品规格指出，此产品有提供网络唤醒 (Wake On LAN) 的功能，但是找不到相关设定或是开关可以启用该选项。
 
     注意，有些机器可能为Wake On Lan或Wake On PCI Card。Wake On Lan模式可以在完全关机状态下唤醒，而Wake On PCI Card模式要在深度休眠状态下唤醒。造成这样的区别主要是因为主板的设计不一样，现在的计算机一般都是Wake On PCI Card模式的。
