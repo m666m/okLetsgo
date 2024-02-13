@@ -7361,7 +7361,11 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     $ head -c 16 /dev/random
 
     # 生成随机数据，过滤掉回车字符，只取 64 字节
-    cat /dev/random |tr -d '\n' |head -c 64
+    $ cat /dev/random |tr -d '\n' |head -c 64
+
+    # 生成14个字符的强密码
+    $ cat /dev/urandom |tr -dc '!@#$%^&*()-+=0-9a-zA-Z' | head -c14
+    2Lv^6crsT#3@Em
 
     # 对随机数取哈希，用 cksum 取 crc 校验和，还可以用 sha256sum、md5sum 等
     $ head /dev/random |cksum
