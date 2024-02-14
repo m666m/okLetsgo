@@ -8108,24 +8108,32 @@ ssh 连续跳转连接几个服务器后，sftp 传送命令不方便的时候�
 
 ### 跨机远程拷贝 scp
 
-scp 本意是代替 rcp 的，但是命令行参数解析漏洞无法保证兼容性，只能废了：一般用 rsync 代替 scp ，或直接使用 sftp 传送文件。RedHat 直接用 sftp 替换掉了 scp
+scp 本意是代替 rcp 的，但是命令行参数解析漏洞无法保证兼容性，只能废了：
+
+    用 rsync 代替 scp
+
+    或直接使用 sftp 传送文件，比如 RedHat 就是用 sftp 替换掉了 scp
 
     https://ostechnix.com/securely-transfer-files-with-scp-in-linux/
         https://lists.mindrot.org/pipermail/openssh-unix-dev/2019-March/037672.html
 
-前提条件
+    sftp 附加了远程文件管理功能如建立或删除文件、支持断点续传等，单纯看速度 scp 更快，但是 sftp 的安全性要高于 scp
+
+        https://goteleport.com/blog/sftp
+
+        https://goteleport.com/blog/scp-familiar-simple-insecure-slow/
+
+    在 Windows 下 scp 和 sftp 的开源软件是 WinSCP 和 FileZilla。
+
+使用 scp 的前提条件跟 sftp 一样
 
     可以 ssh 登陆才能 scp 文件
 
-scp 使用 rcp 传输文件，使用 ssh 进行身份验证和加密。所以命令行用法跟 rcp 一致。
+scp 是利用 ssh 协议的文件拷贝，所以实际工作时使用 ssh 进行身份验证和加密，使用 rcp 传输文件。所以 scp 的命令行用法跟 rcp 是一致的。
 
-scp 是利用 ssh 协议的文件拷贝，而 sftp 在此基础上还附加了远程文件管理功能如建立或删除文件、支持断点续传等，单纯看速度 scp 更快。而且 sftp 的安全性要高于 scp <https://goteleport.com/blog/sftp/> <https://goteleport.com/blog/scp-familiar-simple-insecure-slow/>。
+scp 基本用法
 
-在 Windows 下二者是 WinSCP 和 FileZilla。
-
-基本用法
-
-    后缀有没有目录标识‘/’导致拷贝为目录下或目录名
+    注意后缀有没有目录标识 ‘/’ 的行为是不同的，拷贝为目录下或拷贝为目录
 
 远程文件复制到本地：
 
