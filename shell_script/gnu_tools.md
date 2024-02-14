@@ -6702,13 +6702,13 @@ sed 删除、替换文件中的字符串
         p ：列印，亦即将某个选择的数据印出。通常 p 会与参数 sed -n 一起运行～
         s ：取代，可以直接进行取代的工作哩！通常这个 s 的动作可以搭配正规表示法！例如 1,20s/old/new/g
 
-    sed 的正则表达式能玩出花来
+sed 的正则表达式能玩出花来
 
-        https://www.gnu.org/software/sed/manual/html_node/Regexp-Addresses.html#Regexp-Addresses
+    https://www.gnu.org/software/sed/manual/html_node/Regexp-Addresses.html#Regexp-Addresses
 
-            https://www.gnu.org/software/sed/manual/html_node/BRE-syntax.html#BRE-syntax
+        https://www.gnu.org/software/sed/manual/html_node/BRE-syntax.html#BRE-syntax
 
-            https://www.gnu.org/software/sed/manual/html_node/ERE-syntax.html#ERE-syntax
+        https://www.gnu.org/software/sed/manual/html_node/ERE-syntax.html#ERE-syntax
 
 sed 示例：
 
@@ -6720,35 +6720,46 @@ sed 示例：
 
     cat xxx.txt |sed -n '2,$p'
 
+给所有没有#开头的行改为#开头
+
+    # sed '/[^#]/ s/^[^#]/#&/' /etc/dhcpcd.conf
+    sed 's/^[^#]/#&/' /etc/dhcpcd.conf
+
 在文件的匹配行前面加上#注释
-#   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
-#   s       替换
-#   ^       开头匹配
-#   [^#]    匹配非#
-#   #&      用&来原封不动引用前面匹配到的行内容，在其前面加上#号
-#   g       全部（只匹配特定行不加g）
-sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
+# 前面的两个斜线 // 是sed的模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+#     s       替换
+#     ^       开头匹配
+#     [^#]    匹配非#
+#     #&      用&来原封不动引用前面匹配到的行内容，在其前面加上#号
+#     g       全部（只匹配特定行不加g）
+
+    sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
 
 在文件的匹配行前面取消#注释
-#   // 模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
-#   ^#//    去掉代表开头的#
-sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
+# 前面的两个斜线 // 是sed的模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+#     s       替换，后面没有g则只做一次
+#     ^#      开头的#
+#     //      替换内容为空，即删除
 
-# 给所有没有#开头的行改为#开头
-# sed '/[^#]/ s/^[^#]/#&/' /etc/dhcpcd.conf
-sed 's/^[^#]/#&/' /etc/dhcpcd.conf
+    sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
 
-# 模式匹配简写，替换满足条件行的回车为逗号
-sed 'H;1h;$!d;x;y/\n/,/'
+模式匹配简写，替换满足条件行的回车为逗号
 
-# 把字符串 'bt-tracker=' 后面的内容替换为变量 $TRACKER 的值
-sed -i "s@^\(bt-tracker=\).*@\1${TRACKER}@" btconfig.txt
+    sed 'H;1h;$!d;x;y/\n/,/'
 
-# 范围删除匹配模式行，只显示删除后的结果
-sed -n '/start_line/,/end_line/!p' your_file
+把字符串 'bt-tracker=' 后面的内容替换为变量 $TRACKER 的值
 
-# 范围删除匹配模式行，直接修改到文件
-sed -i '/start_line/,/end_line/d' your_file
+    # 正则表达式应用：括号为正则表达式的模式匹配，@是模式区和操作区的分隔符
+    # \1表示第一个括号中的内容，${TRACKER}引用变量的内容
+    sed -i "s@^\(bt-tracker=\).*@\1${TRACKER}@" btconfig.txt
+
+范围删除匹配模式行，只显示删除后的结果
+
+    sed -n '/start_line/,/end_line/!p' your_file
+
+范围删除匹配模式行，直接修改到文件
+
+    sed -i '/start_line/,/end_line/d' your_file
 
 ```
 
