@@ -71,12 +71,12 @@ git 对文件内容的修改，在撤销和重做方面有些使用不便，详�
 
     如果是一个较大的项目，目录众多，管理权限设置分门别类，人员权限各有不同，用 svn。
 
-## git 客户端初始化
+## git 客户端支持鉴权初始化
 
 除了 github 这样的开源代码网站，git 私有仓库都需要用户鉴权才能读取文件，所以 git 通过调用 ssh 客户端操作 github 的远程仓库，实现用户鉴权。
 
-    https://git-scm.com/download/win
-        https://github.com/git-for-windows/git/
+    如果使用 https 鉴权，可使用 Credential 提高使用方便
+        https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage
 
     常见问题 https://github.com/git-for-windows/git/wiki/FAQ
 
@@ -87,6 +87,11 @@ git 对文件内容的修改，在撤销和重做方面有些使用不便，详�
 
         https://www.sourcetreeapp.com/
         https://tortoisegit.org/
+
+下载
+
+    https://git-scm.com/download/win
+        https://github.com/git-for-windows/git/
 
 命令 `git config` 操作的配置文件，在各个 Git 仓库里的 .git/config 文件
 
