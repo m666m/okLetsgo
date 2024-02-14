@@ -2317,27 +2317,27 @@ iproute2 软件包 代替了 net-tools 软件包，详见章节 [iproute2 软件
 网卡基本信息查看
 
     # 代替 ifconfig
-    ip a
+    $ ip addr
 
 端口是否可用
 
-    curl -vvv 127.0.0.1:443
+    $ curl -vvv 127.0.0.1:443
 
-    wget 127.0.0.1:443
+    $ wget 127.0.0.1:443
 
-    ssh -vvv -p 443 127.0.0.1
+    $ ssh -vvv -p 443 127.0.0.1
 
-    nc 127.0.0.1 443
+    $ nc 127.0.0.1 443
 
 查看当前的连接，可指定监听端口号
 
-    sudo ss -atp | grep -i ':22'
+    $ sudo ss -atp | grep -i ':22'
 
-    sudo lsof -i :22  -n -P
+    $ sudo lsof -i :22  -n -P
 
-    sudo lsof -i -n -P
+    $ sudo lsof -i -n -P
 
-    sudo netstat -antpl
+    $ sudo netstat -antpl
 
 ss 命令（sudo apt install iproute2），比 netstat 命令看的信息更多
 
@@ -2350,46 +2350,63 @@ ss 命令（sudo apt install iproute2），比 netstat 命令看的信息更多
     # ss -au 查看udp端口
 
     # 查看tcp端口 等效 `netstat -antlp`
-    sudo ss -atp
+    $ sudo ss -atp
 
     # 已经建立连接的http端口
-    sudo ss -o state established '( dport = :http or sport = :http )'
+    $ sudo ss -o state established '( dport = :http or sport = :http )'
 
     state FILTER-NAME-HERE, Where FILTER-NAME-HERE can be any one of the following
 
-    established
-    syn-sent
-    syn-recv
-    fin-wait-1
-    fin-wait-2
-    time-wait
-    closed
-    close-wait
-    last-ack
-    listen
-    closing
-    all : All of the above states
-    connected : All the states except for listen and closed
-    synchronized : All the connected states except for syn-sent
-    bucket : Show states, which are maintained as minisockets, i.e. time-wait and syn-recv.
-    big : Opposite to bucket state.
+        established
+        syn-sent
+        syn-recv
+        fin-wait-1
+        fin-wait-2
+        time-wait
+        closed
+        close-wait
+        last-ack
+        listen
+        closing
+        all : All of the above states
+        connected : All the states except for listen and closed
+        synchronized : All the connected states except for syn-sent
+        bucket : Show states, which are maintained as minisockets, i.e. time-wait and syn-recv.
+        big : Opposite to bucket state.
+
+扫描你的局域网设备及其开放端口
+
+    $ sudo nmap 192.168.0.0/24
 
 icmp测试网络连通情况
 
-    ping -t 192.168.0.1
+    $ ping -t 192.168.0.1
+
+dns域名信息
 
     # apt install dnsutils
-    whois
-    dig/nslookup
+    $ whois
+    # dig代替nslookup
+    $ dig -x baidu.com
 
-    $ nslookup baidu.com
-    Non-authoritative answer:
-    Server:  192.168.0.1
-    Address:  192.168.0.1
+    ; <<>> DiG 9.18.19-1~deb12u1-Debian <<>> -x baidu.com
+    ;; global options: +cmd
+    ;; Got answer:
+    ;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 45306
+    ;; flags: qr rd ra ad; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
 
-    Name:    baidu.com
-    Addresses:  220.181.38.148
-            220.181.38.251
+    ;; OPT PSEUDOSECTION:
+    ; EDNS: version: 0, flags:; udp: 512
+    ;; QUESTION SECTION:
+    ;com.baidu.in-addr.arpa.                IN      PTR
+
+    ;; AUTHORITY SECTION:
+    in-addr.arpa.           2599    IN      SOA     b.in-addr-servers.arpa. nstld.iana.org. 2022093339 1800 900 604800 3600
+
+    ;; Query time: 43 msec
+    ;; SERVER: 8.8.8.8#53(8.8.8.8) (UDP)
+    ;; WHEN: Thu Feb 15 00:39:44 +08 2024
+    ;; MSG SIZE  rcvd: 119
 
 traceroute 查看路由节点
 
@@ -2445,84 +2462,6 @@ traceroute 查看路由节点
         tx_errors: 0
         rx_dropped: 0
         tx_dropped: 0
-
-网络抓包
-
-tcpdump、wireshark 的常见命令
-
-    https://plantegg.github.io/2022/01/01/%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/
-
-用 tcpdump 抓包
-
-    https://zhuanlan.zhihu.com/p/74812069
-
-### 简单监控你的网络流量 iftop darkstat tcpdump
-
-简单使用 bmon 软件包，查看你的网卡流量情况。
-
-iftop 类似 top 命令查看当前各个连接的流量情况，各大发行版都有这个软件包
-
-    先看网卡名
-
-        ip addr
-
-    然后开启混杂模式
-
-        ip link set eth0 promisc on
-
-    然后才能看流量
-
-        sudo iftop -i eth0
-
-可以用 web 方式查看你的服务器的流量监控
-
-    https://openwrt.org/docs/guide-user/services/network_monitoring/darkstat
-
-    https://linux.cn/article-6033-1.html
-
-各大发行版都有这个软件包，安装后使用 systemd 控制它的后端
-
-    sudo apt install darkstat
-
-    sudo dnf install darkstat
-
-配置文件在 /etc/darkstat/init.cfg
-
-查看 53 端口的报文内容
-
-    tcpdump -i eth0 port 53
-
-查看 HTTPS 流量内容
-
-    tcpdump -i eth0 -c 10 host www.google.com and port 443
-
-查看除 80 和 25 端口之外的所有流量内容
-
-    tcpdump -i eth0 port not 53 and not 25
-
-### 调试网络的常用工具 nmap
-
-不要使用 telnet，用 netcat 或 nmap
-
-    https://www.redhat.com/sysadmin/stop-using-telnet-test-port
-
-Netcat 对于 TCP 连接端口测试非常方便，用法参见章节 [简单的端口通信 netcat](gnu_tools.md)。
-
-    $ nc 127.0.0.1 5678
-
-Nmap 具有强大的命令行选项，提供比 Netcat 更高级别的自动化
-
-    https://www.redhat.com/sysadmin/introduction-nmap-troubleshooting
-
-使用 Nmap 检查所有这些主机的端口 80 和 443：
-
-    $ cat port_scan_nmap.csv
-    google.com
-    amazon.com
-    raspberrypi.home
-    dmaf5.home
-
-    $ nmap -iL port_scan_nmap.csv -p80,443
 
 ## 查看日志
 
