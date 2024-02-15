@@ -10519,6 +10519,8 @@ WantedBy= basic.target
 
 ## 定时任务 crontab
 
+各个发行版都有自己的解释，用 crontab 之前最好把发行说明完整的看一遍
+
     https://www.debian.org/doc/manuals/debian-handbook/sect.task-scheduling-cron-atd.zh-cn.html
 
     http://c.biancheng.net/view/1092.html
@@ -10532,6 +10534,16 @@ WantedBy= basic.target
     https://www.cnblogs.com/utopia68/p/12221769.html
     https://blog.csdn.net/zhubin215130/article/details/43271835
     https://developer.aliyun.com/article/541971
+
+Debian 12 定时任务管理
+
+    https://www.debian.org/releases/stable/amd64/ch08s02.zh-cn.html#idm2799
+
+    任何系统管理员权限内的任务都必须位于 /etc 内，这是因为它们都是配置文件。如果您有一些需要以管理员身份每天(daily)、每周(weekly)或每月(monthly)运行的定时任务，请将它们放置在 /etc/cron.{daily,weekly,monthly} 中。它们将在 /etc/crontab 中被激活，然后按照文件名的字典顺序依次运行。
+
+    另一方面，如果您有某个定时任务 (a) 需要以某个特定的用户身份运行，或者 (b) 需要在某个特定时刻或以特定周期运行，您可以使用 /etc/crontab，或者更好的 /etc/cron.d/whatever。这些特殊的文件可以包含一个额外的域，允许您指定运行该定时任务的用户帐户。
+
+    在任何情况下，您只需编辑这些文件，cron 将会自动处理它们。没有必要再运行某个特殊的命令。欲了解更多的信息，请参阅 cron(8)、crontab(5) 和 /usr/share/doc/cron/README.Debian。
 
 ### 1、crontab 与 anacron
 
