@@ -5089,6 +5089,35 @@ tag命令后跟 -s 参数即可
 
     https://codeberg.org/
 
+## 无法访问 github 的解决方案
+
+主要针对阻断域名的情况，用 ip 地址解析到 dns 即可
+
+被 x 大体有两种：DNS污染，封杀IP。
+
+DNS污染则无法通过域名直接访问，一种方法就是修改DNS，这个最简单的就是修改hosts文件。
+封杀IP的话，只能通过 “反墙” 来解决。
+
+法一：访问以下网址，查询 github.com 的可用ip
+
+    https://tool.chinaz.com/dns
+
+把该ip更新到 /etc/hosts 文件：
+
+    20.205.243.166 github.com
+
+法二：全套替换，github上项目很多，直接拉取他们每日更新的文件内容填充到 hosts里即可
+
+    全 https://github.com/maxiaof/github-hosts/blob/master/hosts
+
+    全 https://github.com/jianboy/github-host/blob/master/hosts
+
+    代码使用简单，可惜不更新了 https://github.com/ovenx/github-hosts
+
+TODO:另可以仿效 p3terx 更新 bt-tracker 地址的做法更新本地 hosts 文件：
+
+    https://github.com/P3TERX/aria2.conf/raw/master/tracker.sh
+
 ## Github 创建 Pull Request
 
 Pull Request 是开发者使用 GitHub 进行协作的利器。这个功能为用户提供了友好的页面，让提议的更改在并入官方项目之前，可以得到充分的讨论。
