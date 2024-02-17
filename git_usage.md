@@ -5108,9 +5108,13 @@ DNS污染则无法通过域名直接访问，一种方法就是修改DNS，这�
 
 法二：全套替换，github上项目很多，直接拉取他们每日更新的文件内容填充到 hosts里即可
 
+缺点是调用的国外网站查询的ip地址，不是针对国内优化速度的，这个不如上面的法一速度好
+
     全 https://github.com/maxiaof/github-hosts/blob/master/hosts
+        查询网址 https://tools.tutorialspoint.com/ip_lookup_ajax.php?host=
 
     全 https://github.com/jianboy/github-host/blob/master/hosts
+        查询网址 https://whatismyipaddress.com//hostname-ip
 
     代码使用简单，可惜不更新了 https://github.com/ovenx/github-hosts
 
