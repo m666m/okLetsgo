@@ -8117,6 +8117,28 @@ ssh 连续跳转连接几个服务器后，sftp 传送命令不方便的时候�
 
 国内目前拨号路由器的端口都被屏蔽了，但是ipv6的端口是放开的。用 socat 简单的实现内网设备的端口转发到路由器对外开放。注意：你的内网设备对外开放端口，安全性由使用该端口的程序自行保障！酌情考虑用 openVPN 进行保护。
 
+### 安全传输文件 sftp
+
+sftp 支持的常用文件操作命令跟bash一致，比如 ls，pwd，cd 等，操作本地前缀字母l，如 lls，lcd，lpwd 等，全部命令输入 ? 即可。
+
+sftp 上传目录需要先建立好
+
+    sftp xxx.com
+    sftp> put -r your_dir/
+    Error：...
+    sftp> mkdir your_dir/
+    sftp> put -r -p your_dir/
+    Ok.
+
+下载目录
+
+    sftp xxx.com
+    sftp> get -r svr_dir/
+
+限制 sftp 连接用户可访问路径，使用 chroot Jail 将 sFTP 用户限制到其主目录中
+
+    https://www.tecmint.com/restrict-sftp-user-home-directories-using-chroot/
+
 ### 跨机远程拷贝 scp
 
 scp 本意是代替 rcp 的，但是命令行参数解析漏洞无法保证兼容性，只能废了：
