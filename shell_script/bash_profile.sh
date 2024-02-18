@@ -106,6 +106,8 @@ if [ -x /usr/bin/dircolors ]; then
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
 
+    alias nmaps='echo "nmap 列出当前局域网内ip及端口" && nmap 192.168.0.0/24'
+
     # git 常用命令
     alias gs='git status'
     alias gd='echo "[差异：工作区与暂存区]" && git diff'
