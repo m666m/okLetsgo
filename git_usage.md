@@ -5079,16 +5079,6 @@ tag命令后跟 -s 参数即可
 
         Initial commit
 
-## 如果 Github 完蛋了
-
-    https://gitlab.com/
-
-    https://bitbucket.org/
-
-    https://sourceforge.net/
-
-    https://codeberg.org/
-
 ## 无法访问 github 的解决方案
 
 主要针对阻断域名的情况，用 ip 地址解析到 dns 即可
@@ -5121,6 +5111,16 @@ DNS污染则无法通过域名直接访问，一种方法就是修改DNS，这�
 TODO:另可以仿效 p3terx 更新 bt-tracker 地址的做法更新本地 hosts 文件：
 
     https://github.com/P3TERX/aria2.conf/raw/master/tracker.sh
+
+## 如果 Github 完蛋了
+
+    https://gitlab.com/
+
+    https://bitbucket.org/
+
+    https://sourceforge.net/
+
+    https://codeberg.org/
 
 ## Github 创建 Pull Request
 

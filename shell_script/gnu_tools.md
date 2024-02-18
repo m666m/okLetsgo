@@ -3998,7 +3998,7 @@ vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
 
 如果出现上述字样，说明当前系统只安装了兼容 vi 模式的精简版 vim.tiny，不支持彩色语法高亮、切分窗口等高级功能（vim 内置插件）
 
-Debian 的重装办法：
+Debian 重装增强版:
 
     确认版本
 
@@ -4032,7 +4032,7 @@ Debian 的重装办法：
         # 可选安装各种脚本 https://github.com/vim-scripts
         sudo apt install vim-scripts
 
-Fedora 重装增强版
+Fedora 重装增强版:
 
     确认版本
 
@@ -4656,6 +4656,8 @@ nerdtree 在左侧树形目录中的热键
 "   启动脚本 /usr/share/vim/vim81/default.vim
 "   基础设置 https://www.zhihu.com/question/271926659/answer/2875834932
 "
+" 迁移到 vim 9.0 + 的格式类似 python 脚本 https://www.baeldung.com/linux/vim-script-upgrade https://vimhelp.org/version9.txt.html#new-9
+"
 " 查看当前设置值 :verbose set showcmd?
 
 " 如果终端工具已经设置了变量 export TERM=xterm-256color，那么这个参数可有可无
@@ -4842,6 +4844,7 @@ if !exists('g:syntax_on')
   syntax enable
 endif
 
+" 内置方案 https://github.com/vim/colorschemes
 " 不使用自定义的 colorscheme 会使 vim 背景跟随终端模拟器背景图片
 " 使用下载的主题插件自带的语法高亮的色彩方案
 "colorscheme PaperColor  " 支持设置背景色
@@ -5575,9 +5578,17 @@ tmux 可以保持多个会话 session，每次在命令行运行 `tmux` 就会�
 
     Zellij 是 rust 实现的竞品 https://github.com/zellij-org/zellij
 
-如果 tmux 开启的会话较多，希望重启后能一次性恢复
+> 如果遇到提示无法打开 display:0 的错误
 
-    https://github.com/tmux-python/tmuxp
+常见于 ssh -X 连接远程
+
+    https://github.com/lljbash/tmux-update-display
+
+如果是 tmux 下执行命令 `glxinfo` 提示该错误，退回到普通的终端下重新执行 `glxinfo` 即可。
+
+> tmux 在 OSX 下水土不服
+
+    https://www.economyofeffort.com/2013/07/29/reattach-to-user-namespace-the-fix-for-your-tmux-in-os-x-woes/
 
 #### 安装
 
@@ -5866,32 +5877,6 @@ tmux send -t "init:tool" "cd ~/data/tools/AriaNg/dist/;python -m SimpleHTTPServe
 
         https://github.com/tmux-plugins/list
 
-> 显示前导键
-
-在 tmux 时间栏显示你按下了引导键
-
-    https://github.com/tmux-plugins/tmux-prefix-highlight
-
-先从 github 下载
-
-    $ git clone --depth=1 https://github.com/tmux-plugins/tmux-prefix-highlight.git ~/.tmux/tmux-prefix-highlight
-
-将下述命令添加到.tmux.conf文件中
-
-    run-shell ~/.tmux/tmux-prefix-highlight//prefix_highlight.tmux
-
-> 如果遇到提示无法打开 display:0 的错误
-
-常见于 ssh -X 连接远程
-
-    https://github.com/lljbash/tmux-update-display
-
-如果是 tmux 下执行命令 `glxinfo` 提示该错误，退回到普通的终端下重新执行 `glxinfo` 即可。
-
-> tmux 在 OSX 下水土不服
-
-    https://www.economyofeffort.com/2013/07/29/reattach-to-user-namespace-the-fix-for-your-tmux-in-os-x-woes/
-
 ##### 状态栏显示使用 powerline
 
 powerline 过时了，推荐 nord 主题的状态栏，参见下面章节 [状态栏显示不使用 powerline]。
@@ -5975,7 +5960,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
     tmux source-file ~/.tmux.conf
 
-> 安装 tmux-powerline
+> 安装 tmux-powerline 状态栏主题插件
 
 这个只使用 bash 脚本实现，保持你的环境更干净
 
@@ -5983,7 +5968,11 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
 ##### 保存 tmux 会话
 
-每天开机得先调整半天 tmux 烦不烦，关机前保存当前的各种会话和布局最方便了
+如果 tmux 开启的会话较多，希望重启后能一次性恢复
+
+    https://github.com/tmux-plugins/tmux-resurrect
+
+    竞品 https://github.com/tmux-python/tmuxp
 
 安装
 
@@ -6109,6 +6098,20 @@ function UUDF_TMUX_SEND_TO_SESSION {
 使用：
 
     按 F12 将冻结本地的 tmux 响应热键，这样当前面板 pane 里的远程 ssh 连接中的 tmux 就可以接收到你的热键了，再次按 F12 将取消冻结。
+
+##### 显示前导键
+
+在 tmux 时间栏显示你按下了引导键
+
+    https://github.com/tmux-plugins/tmux-prefix-highlight
+
+先从 github 下载
+
+    $ git clone --depth=1 https://github.com/tmux-plugins/tmux-prefix-highlight.git ~/.tmux/tmux-prefix-highlight
+
+将下述命令添加到.tmux.conf文件中
+
+    run-shell ~/.tmux/tmux-prefix-highlight//prefix_highlight.tmux
 
 ##### .tmux.conf 配置文件样例
 
