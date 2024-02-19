@@ -14104,6 +14104,8 @@ wayvnc 要求桌面或窗口管理器支持 Wayland，所以可以使用 sway - 
 
 由于 Wayland 不再是 X window 系统的 cs 工作模式，WayVNC 通过 wlroots-based Wayland compositors 的 VNC server，通过附加到一个运行的 Wayland 会话，创建虚拟输入设备，以及通过 RFB 协议输出一个单一显示，来实现 VNC。
 
+客户端可以使用 TigerVNC 进行连接。
+
 ###### 服务器端安装配置
 
     dnf install wayvnc
@@ -14190,19 +14192,19 @@ Wayland 的 VNC 客户端可以采用 wlvncc 。WayVNC 0.5 支持使用 OpenH268
 
 ###### 在 ssh 隧道里安全使用客户端
 
-    使用 ssh 做本地端口转发进行保护。
+使用 ssh 做本地端口转发进行保护。
 
-    如果服务器端启动正常，可以在客户端使用:
+如果服务器端启动正常，可以在客户端使用:
 
-        ssh -FL 9901:localhost:5901 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
+    ssh -FL 9901:localhost:5901 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
 
-    如果一步一步操作
+如果一步一步操作
 
-        ssh -L 9901:localhost:5901 user@192.168.0.243  不要关闭这个窗口
+    ssh -L 9901:localhost:5901 user@192.168.0.243  不要关闭这个窗口
 
-        在本機開啟 RealVNC VNC Viewer，輸入連線IP：
+    在本機開啟 RealVNC VNC Viewer，輸入連線IP：
 
-            localhost:9901
+        localhost:9901
 
 ##### 基于 weston 的 waypipe
 
