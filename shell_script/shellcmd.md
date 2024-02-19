@@ -2182,6 +2182,10 @@ lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof），即
 
     https://ivanzz1001.github.io/records/post/linuxops/2018/04/10/linux-restart-log
 
+    https://docs.fedoraproject.org/en-US/fedora/latest/system-administrators-guide/monitoring-and-automation/Viewing_and_Managing_Log_Files/
+
+    https://docs.fedoraproject.org/en-US/quick-docs/viewing-logs/
+
 查看关机、重启、死机记录
 
     # 执行等级的改变的时间点，初步排查问题
