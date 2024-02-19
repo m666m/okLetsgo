@@ -8010,116 +8010,6 @@ ssh 连续跳转连接几个服务器后，sftp 传送命令不方便的时候�
 
          $[iot@remote_ip] sha1sum you_need_this_file
 
-### 简单的端口通信 netcat (nc)
-
-    https://www.redhat.com/sysadmin/ncat-security
-
-开源项目持续性不稳定，历史较复杂
-
-    原始 nc(netcat)，在 2007 年发布 1.10 稳定版本之后，就不再更新了。它的原始版本是一个类 Unix 程序，原作者 Hobbit。此即 OpenBSD 版的代码来源。
-
-    现在一般用的是 GNU 项目维护的 GNU Netcat，维护目的是提升 nc 在其他平台的可移植性的同时保持对原始 nc 的兼容性，这里主要是给各大 Linux 发行版提供一个维护性的版本，也即 OpenBSD 版。安装 netcat 后，nc 是 netcat 的 alias，命令行里输入 nc 等于输入 netcat。
-
-    Ncat(nmap-ncat) 是 Nmap 项目的作者 Fyodor，在原始 Netcat 之上新增功能二次开发的另一款强大工具，也就是说 Netcat 有的功能 Ncat 都具备，并且 ncat 还有更多强大的功能。
-
-    nmap 功能更强大，但命令行选项不再兼容了 nc 了
-        https://www.redhat.com/sysadmin/introduction-nmap-troubleshooting
-
-安装了 ncat 后，nc、netcat 都成了 ncat 的 alias，命令行里输入这三者都是一样的，这几个版本软件的使用方法是互相兼容的，建议用之前还是多查查 man。
-
-所以目前 nc 程序有 2 种 netcat 版本，分为 Nmap 版和 OpenBSD 版
-
-    如果是 OpenBSD 的版本，则 nc 命令与 macOS 相同
-
-    如果是 Nmap 版本的，nc 命令其实是指向 ncat 程序的符号链接。
-
-各 Linux 发行版本下 netcat 软件包名如下：
-
-    Linux 发行版本  netcat Nmap 版      netcat OpenBSD 版
-
-    Fedora 系列     nmap-ncat               netcat
-
-    Debian 系列     ncat                    netcat-openbsd
-
-    macOS                                   netcat
-
-对本机端口转发来说，nc是个临时的端口转发的好工具，永久的端口转发用iptables。
-
-    运行服务端
-
-        nc -l 5678
-
-    运行客户端
-
-        nc 127.0.0.1 5678 或 telnet 127.0.0.1 5678
-
-    客户端输入文字即可显示在服务端
-
-在远程节点上使用 nc 或 socat 监听一个端口，在本地端向该端口发送数据。
-
-    # 远程节点
-    nc -l -k 12345 | cat
-
-    # 本地节点
-    while true;do
-      echo $RANDOM
-      sleep 1
-    done >/dev/tcp/192.168.200.142/12345
-
-    或利用 ssh 也可实现
-
-        # 本地节点
-        while true;do
-          echo $RANDOM
-          sleep 1
-        done | ssh 192.168.200.142 'cat /dev/stdin >/tmp/x.log'
-
-        # 远程节点验证数据
-        tail -f /tmp/x.log
-
-利用netcat远程备份
-
-    # 在源主机上执行此命令备份/dev/hda
-    dd if=/dev/hda bs=16065b | netcat < targethost-IP > 1234
-
-    # 在目的主机上执行此命令来接收数据并写入/dev/hdc
-    netcat -l -p 1234 | dd of=/dev/hdc bs=16065b
-
-    # 在目的主机上执行此命令来采用bzip2、gzip对数据进行压缩，并将备份文件保存在当前目录。
-    netcat -l -p 1234 | bzip2 > partition.img
-
-加强版 socat(socket cat)
-
-    socat 使用手册 https://payloads.online/tools/socat/
-    新版瑞士军刀：socat https://zhuanlan.zhihu.com/p/347722248
-
-命令格式
-
-    socat [参数]  <地址1>  <地址2>
-
-使用 socat 需要提供两个地址，然后 socat 做的事情就是把这两个地址的数据流串起来，把左边地址的输出数据传给右边，同时又把右边输出的数据传到左边。
-
-最简单的地址就是一个减号“-”，代表标准输入输出，而在命令行输入：
-
-    socat - -
-
-把标准输入和标准输出对接，输入什么显示什么。除了减号地址外，socat 还支持：TCP, TCP-LISTEN, UDP, UDP-LISTEN, OPEN, EXEC, SOCKS, PROXY 等多种地址，用于端口监听、链接，文件和进程读写，代理桥接等等。
-
-类似 nc 的连通性测试，两台主机到底网络能否联通：
-
-    socat - TCP-LISTEN:8080               # 终端1 上启动 server 监听 TCP
-    socat - TCP:localhost:8080            # 终端2 上启动 client 链接 TCP
-
-在终端 1 上输入第一行命令作为服务端，并在终端 2 上输入第二行命令作为客户端去连接。
-
-做简易的端口转发
-
-    把局域网下设备(如Nas、监控摄像头、网络服务器)的IPv4地址的到路由器的IPv6地址上
-
-    socat TCP6-LISTEN:{IPv6端口,远程访问的端口},reuseaddr,fork TCP4:{IPv4地址}:{IPv4端口}
-
-国内目前拨号路由器的端口都被屏蔽了，但是ipv6的端口是放开的。用 socat 简单的实现内网设备的端口转发到路由器对外开放。注意：你的内网设备对外开放端口，安全性由使用该端口的程序自行保障！酌情考虑用 openVPN 进行保护。
-
 ### 安全传输文件 sftp
 
 sftp 支持的常用文件操作命令跟bash一致，比如 ls，pwd，cd 等，操作本地前缀字母l，如 lls，lcd，lpwd 等，全部命令输入 ? 即可。
@@ -8714,9 +8604,9 @@ NFS 一般用来存储共享视频，图片等静态数据。
 
     https://wiki.archlinux.org/title/Udisks
 
-关机时需要同步移动硬盘的缓存，Linux 居然默认不带这个服务
+关机时需要同步移动硬盘的缓存，确认你的发行版是否安装了这个软件包
 
-    apt install udisks2
+    $ sudo apt install udisks2
 
 不需要显式启用守护进程 udisksd，它由 D-Bus 按需启动，也就是说，在你插上移动硬盘的时候才会自动启动。
 
