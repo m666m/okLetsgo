@@ -4,11 +4,6 @@
 # 别人的配置文件参考大全 https://github.com/pseudoyu/dotfiles
 #                       https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
 
-###################################################################
-# 自此开始都是自定义设置
-#
-# 为防止变量名污染命令行环境，尽量使用奇怪点的名称
-
 # 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件
 #   ~/.bashrc: executed by bash(1) for non-login shells.
 #       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
@@ -21,6 +16,11 @@
 
 # exit for non-interactive shell
 [[ ! -t 1 ]] && return
+
+###################################################################
+# 自此开始都是自定义设置
+#
+# 为防止变量名污染命令行环境，尽量使用奇怪点的名称
 
 # 有些版本的 Linux 默认不支持的标准目录给它补上
 PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
