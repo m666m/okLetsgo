@@ -26,10 +26,10 @@
 PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 
 # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命
-# zsh 命令行用 bindkey -v 来设置 vi 操作模式令
+# zsh 命令行用 `bindkey -v` 来设置 vi 操作模式令
 set -o vi
 
-# 有些软件默认使用变量 EDITOR 指定的编辑器，一般是nano
+# 有些软件默认使用变量 EDITOR 指定的编辑器，一般是 nano，不习惯就换成 vi
 export EDITOR=/usr/bin/vi
 
 # 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存哪些不常用的命令
@@ -49,7 +49,6 @@ export COLORTERM=truecolor
 # 参考自 Debian 的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
 # 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
-# curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 if [ -x /usr/bin/dircolors ]; then
 
     # 使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
@@ -84,7 +83,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
     alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]" && tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='echo "[进程树，列出pid，及全部子进程]" && pstree -p -s'
-    alias curls='echo "curl 跟踪重定向，不显示进度条，静默错误信息但要报错失败，默认打印到屏幕，加 -O 保存到默认文件" &&curl -fsSL'
+    alias curls='echo "curl 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件" &&curl -fsSL'
     alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
     alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
 
@@ -348,7 +347,7 @@ fi
 ####################################################################
 # Bash：加载插件或小工具
 
-# ssh 命令时候能够自动补全 hostname
+# ssh 命令后面按tab键自动补全 hostname
 [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
 
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
@@ -436,7 +435,7 @@ function PS1virtualenv-env-name {
 function PS1git-branch-name {
 
     if $(command -v __git_ps1 >/dev/null 2>&1); then
-        # 优先使用 __git_ps1 取分支名信息
+        # 优先使用 __git_ps1() 取分支名信息
         #
         #   如果使用git for Windows自带的mintty bash，它自带git状态脚本(貌似Debian系的bash都有)
         #   只要启动bash ，其会自动 source C:\Program Files\Git\etc\profile.d\git-prompt.sh，
@@ -445,13 +444,13 @@ function PS1git-branch-name {
         #   来源 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
         #   如果自定义命令提示符，可以在PS1变量拼接中调用函数 $(__git_ps1 "(%s)") ，
         #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
-
+        #
         # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，佛了
         _pp_git_pt=$(>/dev/null; __git_ps1 '%s' 2>/dev/null)
         if [ "$?" = "0" ]; then
+            # 如果是有效的 git 信息，这里就直接打印并退出函数
             printf "%s" $_pp_git_pt
             unset _pp_git_pt
-            # 如果是有效的 git 信息，这里就直接打印并退出函数
             return
         else
             unset _pp_git_pt
@@ -508,15 +507,16 @@ function PS1git-branch-prompt {
     fi
 }
 
-# 不同颜色的主机名，本地环境是绿色，ssh 登录的远程变为洋红
+# 主机名用不同颜色提示本地或远程登录：本地登录是绿色，ssh 远程登录是洋红色
 function PS1_host_name {
     [[ -n $SSH_TTY ]] && echo -e "\033[0;35m$(hostname)" || echo -e "\033[0;32m$(hostname)"
 }
 
-# 提示当前在 toolbox 或 distrobox 等交互式容器环境，背景变为洋红
+# 提示当前在 toolbox 或 distrobox 等交互式容器环境，白色容器名配洋红背景
 # https://docs.fedoraproject.org/en-US/fedora-silverblue/tips-and-tricks/#_working_with_toolbx
 # https://ublue.it/guide/toolbox/#using-the-hosts-xdg-open-inside-distrobox
 # https://github.com/docker/cli/issues/3037
+# Windows 下的 wsl 环境，wsl 下的 docker，暂未研究
 function PS1_is_in_toolbox {
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
         echo -e "\033[0;45m<$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
@@ -524,14 +524,6 @@ function PS1_is_in_toolbox {
         echo -e "\033[0;45m<$(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")>"
     fi
 }
-
-# Windows 下的 wsl 环境，wsl 下的 docker，暂未研究
-
-#################################
-# 设置命令行提示符 PS1
-
-# 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 python环境 git分支及状态
-PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)\$(PS1_is_in_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
 
 ###################
 # Windows git bash(mintty)
@@ -545,9 +537,6 @@ PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\
 function PS1git-bash-new-line {
     printf "\n╰"
 }
-
-# git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 git分支及状态
-PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
 
 ###################
 # Linux bash - raspberry pi os (debian)
@@ -589,13 +578,26 @@ function PS1raspi-warning-prompt {
     fi
 }
 
-# 本机登录后禁用屏幕休眠 https://zhuanlan.zhihu.com/p/114716305
-# 本机图形界面
-#   /etc/profile.d/hibernate.sh
-#   xset s off
-#   xset dpms 0 0 0
-# 本机命令行
-setterm --powerdown 0
+#################################
+# 设置命令行提示符 PS1
+if [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
+    # Windows git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
+    PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
 
-# Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 树莓派温度告警 git分支及状态
-PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\$(PS1_host_name)\$(PS1_is_in_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
+elif $(cat /proc/cpuinfo |grep Model |grep Raspberry >/dev/null 2>&1); then
+    # 本机登录后禁用屏幕休眠 https://zhuanlan.zhihu.com/p/114716305
+    # 本机图形界面
+    #   /etc/profile.d/hibernate.sh
+    #   xset s off
+    #   xset dpms 0 0 0
+    # 本机命令行
+    setterm --powerdown 0
+
+    # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 树莓派温度告警 python环境 git分支及状态
+    PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\$(PS1_host_name)\$(PS1_is_in_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
+
+else
+    # 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 python环境 git分支及状态
+    PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)\$(PS1_is_in_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
+
+fi
