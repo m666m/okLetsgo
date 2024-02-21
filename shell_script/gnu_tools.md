@@ -6566,19 +6566,21 @@ newt 库的 whiptail 纯字符环境不需要桌面图形界面做支撑
 
 ### 按内容查找文件：find + grep + xargs 组合
 
+如果单纯的查找文件名，用 `locate` 命令最快，缺点是它每天定时更新一次数据库，最新的文件可能找不到。
+
 在 $PATH 查找你的命令
 
-    which -a pwd
+    $ which -a pwd
 
 在  $PATH 和 $MANPATH 查找匹配的文件名
 
-    whereis -l pwd
+    $ whereis -l pwd
 
 列出所有文件
 
-    find 目录名
+    $ find 目录名
 
-    tree 目录名
+    $ tree 目录名
 
 查找指定文件
 
