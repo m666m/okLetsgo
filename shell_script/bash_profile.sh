@@ -7,15 +7,15 @@
 # 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件
 #   ~/.bashrc: executed by bash(1) for non-login shells.
 #       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
+test -f ~/.bashrc && . ~/.bashrc
+# exit for non-interactive shell
+[[ ! -t 1 ]] && return
+
 #   ~/.profile: executed by the command interpreter for login shells.
 #     This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login exists.
 #     see /usr/share/doc/bash/examples/startup-files for examples.
 #     the files are located in the bash-doc package.
-# test -f ~/.profile && . ~/.profile
-# test -f ~/.bashrc && . ~/.bashrc
-
-# exit for non-interactive shell
-[[ ! -t 1 ]] && return
+#test -f ~/.profile && . ~/.profile
 
 ###################################################################
 # 自此开始都是自定义设置
