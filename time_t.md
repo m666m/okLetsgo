@@ -767,7 +767,9 @@ datetime 实质就是 date 对象和 time 对象的组合，表示完整的日�
 
     返回一个对应于 date_string，根据 format 进行解析得到的 datetime 对象。
 
-    字符串格式见 <https://docs.python.org/zh-cn/3/library/datetime.html#strftime-strptime-behavior>
+    字符串格式见
+
+        https://docs.python.org/zh-cn/3/library/datetime.html#strftime-strptime-behavior
 
     等价于 datetime(*(time.strptime(date_string, format)[0:6]))
 
