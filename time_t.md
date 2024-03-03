@@ -1221,6 +1221,12 @@ np.datetime64 转换为字符串的pd用法很特殊，实际应用中，都是�
 
     s['stimeday'] = pd.to_datetime(s['stime'].dt.strftime('%Y-%m-%d'), format='%Y-%m-%d')
 
+##### .dt 截取为日粒度
+
+对日期时间列，用 .dt 方法可以截取为日期、月等
+
+    netWorthdf['x'].dt.to_period('D')
+
 ### Timestamp()，对标 python datetime.datetime
 
 <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Timestamp.html>
@@ -1437,6 +1443,29 @@ Timestamp对象常用的操作方法有：
     5 days 02:00:00    98
     5 days 03:00:00    99
     Freq: H, Length: 100, dtype: int64
+
+### 日期时间重采样（聚合）
+
+对指定时间列操作，对相同周期的数据聚合操作
+
+    # n 指定把几个相同的周期聚合为一个
+    resample_period = pd.Timedelta(n, unit='d')
+
+    df = df.set_index('stime')
+        .resample(resample_period)
+        .agg(
+            {
+                'open': ['first'],
+                'high': ['max'],
+                'low': ['min'],
+                'close': ['last'],
+                'volume': ['sum'],
+            }
+        )
+
+    # 恢复stime列并整理数据
+    df.index.name = 'stime'
+    df.reset_index(drop=False, inplace=True)
 
 ### pd.to_datetime() 三义性的详细说明
 
