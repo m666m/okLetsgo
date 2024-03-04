@@ -2899,4 +2899,7 @@ python3 内置的 open() 函数的返回结果，默认使用当前操作系统�
     # list(itertools.chain(config_cc.values()))
     pos_arr_1d = list(itertools.chain.from_iterable(valid_pos_2dlist))
 
+    # 取第一个值，这里依赖Python3.7字典是有序的
+    code = next(iter(stock_dict.keys()))
+
 ```
