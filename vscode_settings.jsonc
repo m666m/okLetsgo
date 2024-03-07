@@ -1,5 +1,6 @@
 {
-    // VS Code 稳定版本选择，x.yz有个规律，z 在 0,1,2 时特别不稳定（包括官方配套插件），大于 8 就比较稳定了，y 大概 1 年升级一次
+    // VS Code 稳定版本选择策略：
+    // 版本号 x.yz 有个规律，z 在 0,1,2 时引入新功能多特别不稳定（包括官方配套插件），z 大于 8 就比较稳定了，y 大概 1 年升级一次
     // 所以手动更新最稳定，使用 1.59、1.69、1.79……
     "update.mode": "manual",
     // https://github.com/microsoft/vscode/issues/177142#issuecomment-1536548022
@@ -13,17 +14,14 @@
     // 编程字体预览大全 https://www.programmingfonts.org/#cascadia-code
     // 注意顺序：优先带补丁的字体以显示图标，回落到中文正式字体，最后是保底的系统自带字体，参见章节 [设置中文字体](gun_tools.md)
     "editor.fontFamily": "'FiraCode Nerd Font', 'Noto Serif CJK SC Light', Consolas",
-    "terminal.integrated.fontFamily": "'MesloLGS Nerd Font', 'Noto Sans Mono CJK SC'",
+    "terminal.integrated.fontFamily": "'MesloLGS Nerd Font', 'Noto Sans Mono CJK SC', Consolas",
     //"editor.fontLigatures": true,
     // https://github.com/tonsky/FiraCode/wiki/How-to-enable-stylistic-sets
     "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'zero', 'onum'",
-    "editor.fontSize": 14,
+    "editor.fontSize": 15,
     "editor.lineHeight":24, // 从0到你的字体大小计算行高
     //下面四行分别设置不同粗细的字体，选择一种
-    // "editor.fontWeight": "300", // Light
-    // "editor.fontWeight": "400", // Regular
-    // "editor.fontWeight": "500", // Medium
-    // "editor.fontWeight": "600", // Bold
+    "editor.fontWeight": "300", // "300" Light "400" Regular "500" Medium "600" Bold
     "editor.minimap.showSlider": "always",
     "editor.minimap.scale": 1,
     "editor.columnSelection": false,
@@ -33,11 +31,11 @@
     "editor.unicodeHighlight.allowedLocales": {
         "zh-hant": true
     },
-    // "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs":  "active",
     "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize而自行决定
     "editor.autoIndent": "keep",  // 自动缩进只跟随上一行位置就可以了，乱跳挺烦的。各个语言还可以单独设置选项
     "outline.showVariables": false,
+    "outline.showModules": false,
     "diffEditor.ignoreTrimWhitespace": false,
     "window.titleBarStyle": "custom", // 整合菜单栏和标题栏
     "window.menuBarVisibility": "toggle",  // 按 alt 键显示系统菜单

@@ -2614,13 +2614,15 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
     https://www.nerdfonts.com/font-downloads
         https://github.com/ryanoasis/nerd-fonts
 
+    在这里看字体效果 https://www.programmingfonts.org/#bitstream-vera
+
 原理和 Powerline fonts 是一样的，针对已有的字体打 patch，把一些 icon 字符插入进去。不过 Nerd font 就比较厉害了，是一个“集大成者”，他几乎把目前市面上主流的 icon 字符全打进去了，包括上面提到的 powerline icon 字符以及 Font Awesome 等几千个 icon 字符。
 
 类似 Powerline fonts，字体 patch 后对名字加了后缀 NF，比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)，Fira Code 改名为 Fira Code NF。
 
 > 终端模拟器推荐使用 Meslo LG-S NF 字体，如果你的终端模拟器还支持透明效果，显示效果直接起飞。
 
-    快速下载地址
+快速下载地址
 
     https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k
 
@@ -2628,15 +2630,9 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
         https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S
 
-        选 S 目录是要行间距小的，在终端显示的时候正好，如果需要增大行间距，不建议换字体，在终端模拟器或你的编辑器设置行距更好。
+下载的类别很多，推荐选 S 目录是要行间距小的，在终端显示的时候正好，如果需要增大行间距，不建议换字体，在终端模拟器或你的编辑器设置行距更好。文件名加 Mono 字样的是等宽变形，显示时太挤了，加 Propo 字样的是多行连线优化，普通使用用不到。
 
-        文件名加 Mono 字样的是等宽变形，显示时太挤了，加 Propo 字样的是多行连线优化，普通使用用不到
-
-它的上游来源是 Meslo 字体，没有补丁
-
-    https://github.com/andreberg/Meslo-Font
-
-    它的上游是 Apple’s Menlo-Regular，再上游是 Bitstream Vera Sans Mono
+它的上游来源是 Meslo 字体，没有补丁<https://github.com/andreberg/Meslo-Font>，再上游是 Apple’s Menlo-Regular，再上游是 Bitstream Vera Sans Mono。
 
 > 代码编辑器推荐安装 FiraCode NF 字体，该字体支持连字符，Windows 用户找带 Windows 字样的下载即可
 
@@ -3232,7 +3228,7 @@ compinit
 # ...
 # ohmyzsh 自带插件管理，在 plugin=() 段落启用内置插件，可以在这里加载那些 source xxx 的插件
 
-##################################################################################################################
+################################################################################
 # 以下的自定义快捷命令等部分来自 [bash_profile.sh]
 
 ####################################################################
@@ -3243,21 +3239,24 @@ compinit
 # 有些版本的 Linux 默认不支持的标准目录给它补上
 PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 
-# 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命
-# zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
-# 不需要这个了 set -o vi
+# 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
+# zsh 命令行用 `bindkey -v` 来设置 vi 操作模式令
+if [[ ! $0 = 'zsh' ]]; then
+    set -o vi
+fi
 
-# 有些软件默认使用变量 EDITOR 指定的编辑器，一般是nano
+# 有些软件默认使用变量 EDITOR 指定的编辑器，一般是 nano，不习惯就换成 vi
 export EDITOR=/usr/bin/vi
 
 # 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存哪些不常用的命令
-# 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以 在新行中输入密钥。
-# export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
+# 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以在新行中输入密钥。
+export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 
 ####################################################################
 # 命令行的字符可以显示彩色，依赖这个设置
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
+export COLORTERM=truecolor
 
 ####################################################################
 # alias 本该放到 .bashrc 文件，为了方便统一在此了
@@ -3266,7 +3265,6 @@ export TERM=xterm-256color
 # 参考自 Debian 的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
 # 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
-# curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
 if [ -x /usr/bin/dircolors ]; then
 
     # 使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
@@ -3295,13 +3293,13 @@ if [ -x /usr/bin/dircolors ]; then
     alias lsg='ls -lFA |grep -i'
     # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findf fnwithstr`
     alias findf='find ./* |grep -i'
-    # 在管道或当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
-    alias greps='grep --color=auto -d skip -in'
+    # 在管道或当前目录下的文件中（排除目录）查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
+    alias greps='grep -d skip -in'
     # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过.git等目录，如 `finds strinfile`
     alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
     alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]" && tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='echo "[进程树，列出pid，及全部子进程]" && pstree -p -s'
-    alias curls='echo "curl 跟踪重定向，不显示进度条，静默错误信息但要报错失败，默认打印到屏幕，加 -O 保存到默认文件" &&curl -fsSL'
+    alias curls='echo "curl 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件" &&curl -fsSL'
     alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
     alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
 
@@ -3312,8 +3310,8 @@ if [ -x /usr/bin/dircolors ]; then
     }
 
     # scp rsync
-    alias scps='echo "[scp 源 目的。远程格式 :/home/user/ 端口用 -P]" && scp -r'
-    alias rsyncs='echo "[rsync 源 目的。远程格式 :/home/user/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
+    alias scps='echo "[scp 源 目的。远程格式 user@host:/home/user/ 端口用 -P]" && scp -r'
+    alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/home/user/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
 
     # vi 后悔药
     alias viw='echo "[只给出提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
@@ -3322,6 +3320,8 @@ if [ -x /usr/bin/dircolors ]; then
     function cdw {
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
+
+    alias nmaps='echo "nmap 列出当前局域网192.168.x.x内ip及端口" && nmap 192.168.0.0/24'
 
     # git 常用命令
     alias gs='git status'
@@ -3418,11 +3418,44 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 ####################################################################
+# Windows git bash(mintty)
+# 在 mintty 下使用普通的 Windows 控制台程序
+# 如 mintty 使用 ConPty 接口则可以不需要这些 alias 使用 winpty 来调用了
+#   Windows version >= 10 / 2019 1809 (build >= 10.0.17763) 在 ~/.mintty.rc 中添加 `ConPTY=true`
+
+#if $(git --version |grep -i Windows >/dev/null 2>&1); then
+if [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
+    alias python="winpty python"
+    alias ipython="winpty ipython"
+    alias mysql="winpty mysql"
+    alias psql="winpty psql"
+    alias redis-cli="winpty redis-cli"
+    alias node="winpty node"
+    alias vue='winpty vue'
+
+    # Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
+    alias ping='winpty ping'
+fi
+
+####################################################################
 # gpg: problem with the agent: Inappropriate ioctl for device，
 # 参见章节 [命令行终端下 gpg 无法弹出密码输入框的问题](gpg think)
 export GPG_TTY=$(tty)
 # echo "以当前终端 tty 连接 gpg-agent..."
 # gpg-connect-agent updatestartuptty /bye >/dev/null
+
+#################################
+# Mac OS
+# 如果你要在 OS-X 上使用 gpg-agent，记得将下面的命令填入你的 Shell 的默认配置中。
+#
+if [[ $OSTYPE =~ darwin ]]; then
+    if [ -f ~/.gnupg/.gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
+        source ~/.gnupg/.gpg-agent-info
+        export GPG_AGENT_INFO
+    else
+        eval $(gpg-agent --daemon --write-env-file ~/.gnupg/.gpg-agent-info)
+    fi
+fi
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
@@ -3530,8 +3563,10 @@ fi
 ####################################################################
 # Bash：加载插件或小工具
 
-# ssh 命令时候能够自动补全 hostname
-# zsh 自带不需要 bash 的了 [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
+# ssh 命令后面按tab键自动补全 hostname，zsh 自带不需要
+if [[ ! $0 = 'zsh' ]]; then
+    [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
+fi
 
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
 [[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh
@@ -3552,14 +3587,14 @@ alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk
 # 如果是pip安装的查看路径用 pip show powerline-status
 # source /usr/share/powerline/bindings/zsh/powerline.zsh
 
-# 加载插件：命令自动完成
+# 加载插件：命令自动完成。如果是安装的发行版自带的，不需要在这里加载
 # source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+#source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-# 加载插件：命令语法高亮
+# 加载插件：命令语法高亮。如果是安装的发行版自带的，不需要在这里加载
 # 官网提示要在配置文件的最后一行
 # source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+#source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 #################################
 # Zsh：手动配置插件
@@ -3574,7 +3609,7 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
 ####################################################################
 
-# powerlevel10k 安装程序添加，不用动
+# powerlevel10k 安装程序自动添加的，不用动
 
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 

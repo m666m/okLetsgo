@@ -1,9 +1,11 @@
 ##################################################################################################################
-# 适用于 Linux bash、Windows mintty bash，每个段落用 ########## 分隔，根据说明自行选用搭配即可
+# 适用于 Linux bash/zsh、Windows git bash(mintty)、Mac OS 未测试
 #
-# 别人的配置文件参考大全 https://github.com/pseudoyu/dotfiles
-#                       https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
+# 别人的配置文件参考大全
+#   https://github.com/pseudoyu/dotfiles
+#   https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
 
+###################################################################
 # 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件
 #   ~/.bashrc: executed by bash(1) for non-login shells.
 #       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
@@ -25,16 +27,18 @@ test -f ~/.bashrc && . ~/.bashrc
 # 有些版本的 Linux 默认不支持的标准目录给它补上
 PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 
-# 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命
-# zsh 命令行用 `bindkey -v` 来设置 vi 操作模式令
-set -o vi
+# 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
+# zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
+if [[ ! $0 = 'zsh' ]]; then
+    set -o vi
+fi
 
 # 有些软件默认使用变量 EDITOR 指定的编辑器，一般是 nano，不习惯就换成 vi
 export EDITOR=/usr/bin/vi
 
 # 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存哪些不常用的命令
-# 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以 在新行中输入密钥。
-# export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
+# 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以在新行中输入密钥。
+export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 
 ####################################################################
 # 命令行的字符可以显示彩色，依赖这个设置
@@ -105,7 +109,7 @@ if [ -x /usr/bin/dircolors ]; then
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
 
-    alias nmaps='echo "nmap 列出当前局域网内ip及端口" && nmap 192.168.0.0/24'
+    alias nmaps='echo "nmap 列出当前局域网192.168.x.x内ip及端口" && nmap 192.168.0.0/24'
 
     # git 常用命令
     alias gs='git status'
@@ -347,8 +351,10 @@ fi
 ####################################################################
 # Bash：加载插件或小工具
 
-# ssh 命令后面按tab键自动补全 hostname
-[[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
+# ssh 命令后面按tab键自动补全 hostname，zsh 自带不需要
+if [[ ! $0 = 'zsh' ]]; then
+    [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
+fi
 
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
 [[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh
