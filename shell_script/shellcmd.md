@@ -145,7 +145,7 @@ Linux 命令行参数一个杠，俩杠，没杠，参见章节 [压缩解压缩
 
 管道操作，命令参数中文件名的位置使用 bash 的特殊符号 -（减号），代表标准输出/标准输入, 视命令而定
 
-    管道前的 - 表示输出到标准输入流，管道后的 - 表示输入为标准输出流
+    管道前的 - 表示输出到标准输入流，管道后的 - 表示输入为标准输出流，主要用于该命令需要用参数指定输入文件的情况下，如果该命令自带支持管道流，则命令前用管道符号即可。
 
     # 把 /home 目录打包，输出到标准输入流，管道后面的命令是从标准输出流读取数据解包
     tar cf - /home |tar -xf -
@@ -237,10 +237,9 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     [ ! -z "$a" -a "a$a" = "a7" ]  # a不为空且a=7时才为真
 
-[[ ]] 是 test 的升级版
+[[ ]] 是 test 的升级版，不需要对变量名加双引号，比较运算直接用 =、> 等更直观
 [[ ]] 注意两边留空格
 
-    # 不需要对变量名加双引号
     if [[ -z $str1 ]] || [[ -z $str2 ]]; then
         echo "字符串不能为空"
 
@@ -250,6 +249,7 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     else
         echo "str1 >= str2"
+
     fi
 
     # 判断命令执行结果的字符串比较
@@ -262,7 +262,7 @@ test 和 [] 是等价的，[] 注意两边留空格
     # 数值判断用 (( ))
     (($LOAD_AVG_THLOD > 10)) && echo "greater than" || echo "not..."
 
-    # 字符串判断用 [[ ]]
+字符串判断用 [[ ]]
 
     # 如果是判断字符串是否有值，则 -n 可以省略
     [[ $envname ]] && printf "conda:%s" $envname || echo "not..."
@@ -300,7 +300,7 @@ test 和 [] 是等价的，[] 注意两边留空格
     # 执行命令，如果成功则执行xxx，否则执行yyy
     $(lscpu |grep -q arm) && echo "xxx" || echo "yyy"
 
-使用逻辑运算符将多个 [[ ]] 连接起来依然是可以的，因为这是 Shell 本身提供的功能，跟 [[ ]] 或者 test 没有关系，如下所示：
+使用逻辑运算符将多个 [[ ]] 连接起来依然是可以的，这是 Shell 本身提供的功能，跟 [[ ]] 或者 test 没有关系，如下所示：
 
     [[ -z $str1 ]] || [[ -z $str2 ]]
 
@@ -315,32 +315,77 @@ test 和 [] 是等价的，[] 注意两边留空格
     $ ls {ex[1-3],ex4}.sh
     ex1.sh ex2.sh ex3.sh ex4.sh
 
-数组用法
+    数组用法
 
-    A="a b c def"   # 定义字符串
-    A=(a b c def)   # 定义字符数组
+        A="a b c def"   # 定义字符串
+        A=(a b c def)   # 定义字符数组
 
-    命令    解释    结果
-    ${A[@]}    返回数组全部元素    a b c def
-    ${A[*]}    同上    a b c def
-    ${A[0]}    返回数组第一个元素    a
-    ${#A[@]}    返回数组元素总个数    4
-    ${#A[*]}    同上    4
-    ${#A[3]}    返回第四个元素的长度，即def的长度    3
-    A[3]=xzy    则是将第四个组数重新定义为 xyz
+        命令    解释    结果
+        ${A[@]}    返回数组全部元素    a b c def
+        ${A[*]}    同上    a b c def
+        ${A[0]}    返回数组第一个元素    a
+        ${#A[@]}    返回数组元素总个数    4
+        ${#A[*]}    同上    4
+        ${#A[3]}    返回第四个元素的长度，即def的长度    3
+        A[3]=xzy    则是将第四个组数重新定义为 xyz
 
-    变量展开的用法见下面 ${变量名[@]}
+        变量展开的用法见下面 ${变量名[@]}
 
 不想有任何输出，或只想测试命令的退出码而不想有任何输出时
 
     cat $filename >/dev/null 2>/dev/null
 
-想让函数返回值
+想让函数返回字符串，无法使用 return int 的方式
 
     fff()
     {echo 'abc'}
 
     print fff
+
+## 当前shell和嵌套层数
+
+查看当前所使用的shell程序
+
+    $ echo $0
+    -bash
+
+不要被一个叫做 $SHELL 的单独的环境变量所迷惑，它被设置为你的默认 shell 的完整路径。因此，这个变量并不一定指向你当前使用的 shell。你在终端中调用不同的 shell，$SHELL 是保持不变的。
+
+    $ echo $SHELL
+    /bin/bash
+
+当前shell的嵌套层数
+
+    $ echo $SHLVL
+    1
+
+    $ bash
+
+    $ echo $SHLVL
+    2
+
+    $ exit
+    exit
+
+    echo $SHLVL
+    1
+
+组命令、管道、命令替换这几种写法都会进入子 Shell
+
+    $ echo "$SHLVL  $BASH_SUBSHELL"
+    1  0
+
+    $ (echo "$SHLVL  $BASH_SUBSHELL") # 组命令
+    1  1
+
+    $ echo "hello" | { echo "$SHLVL  $BASH_SUBSHELL"; }  # 管道
+    1  1
+
+    $ var=$(echo "$SHLVL  $BASH_SUBSHELL");echo $var  #命令替换
+    1 1
+
+    $ ( ( ( (echo "$SHLVL  $BASH_SUBSHELL") ) ) )  #四层组命令
+    1  4
 
 ## 常用 bash 技巧
 
@@ -350,7 +395,7 @@ rm 之前先 ls 试试，所谓 dry-run
 
     ls to_be*
 
-    确认没问题了
+    确认列出的是要删除的文件，然后再做删除
 
     rm to_be*
 
@@ -388,7 +433,7 @@ rm 之前先 ls 试试，所谓 dry-run
 
     这道命令把 filename 文件拷贝成 filename.bak
 
-    我常用 cp -p my{.txt,.txt.2001.1.1}
+    我常用 cp -a my{.txt,.txt.2001.1.1}
 
 重置终端的显示
 
@@ -1031,51 +1076,6 @@ case "$platform" in
 esac
 
 ```
-
-## 当前shell和嵌套层数
-
-查看当前所使用的shell程序
-
-    $ echo $0
-    -bash
-
-不要被一个叫做 $SHELL 的单独的环境变量所迷惑，它被设置为你的默认 shell 的完整路径。因此，这个变量并不一定指向你当前使用的 shell。你在终端中调用不同的 shell，$SHELL 是保持不变的。
-
-    $ echo $SHELL
-    /bin/bash
-
-当前shell的嵌套层数
-
-    $ echo $SHLVL
-    1
-
-    $ bash
-
-    $ echo $SHLVL
-    2
-
-    $ exit
-    exit
-
-    echo $SHLVL
-    1
-
-组命令、管道、命令替换这几种写法都会进入子 Shell
-
-    $ echo "$SHLVL  $BASH_SUBSHELL"
-    1  0
-
-    $ (echo "$SHLVL  $BASH_SUBSHELL") # 组命令
-    1  1
-
-    $ echo "hello" | { echo "$SHLVL  $BASH_SUBSHELL"; }  # 管道
-    1  1
-
-    $ var=$(echo "$SHLVL  $BASH_SUBSHELL");echo $var  #命令替换
-    1 1
-
-    $ ( ( ( (echo "$SHLVL  $BASH_SUBSHELL") ) ) )  #四层组命令
-    1  4
 
 ## 查看系统信息
 

@@ -77,8 +77,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias lsg='ls -lFA |grep -i'
     # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findf fnwithstr`
     alias findf='find ./* |grep -i'
-    # 在管道或当前目录下的文件中查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
-    alias greps='grep --color=auto -d skip -in'
+    # 在管道或当前目录下的文件中（排除目录）查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
+    alias greps='grep -d skip -in'
     # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过.git等目录，如 `finds strinfile`
     alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
     alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]" && tree -a -CF -I ".git|__pycache__" -L 2'
