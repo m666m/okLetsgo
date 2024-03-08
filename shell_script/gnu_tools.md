@@ -1784,24 +1784,15 @@ echo -e "${red}Are you ${plain} ok?"
 
     # ascii表中 \e 或 \033 或 \x1b
     # 使用16色代码表 基本颜色板
-
-    ```bash
-    echo -en "\033[0;31m I am red\033[0m\n"
-    ```
+    $ echo -en "\033[0;31m I am red\033[0m\n"
 
     # 使用256色代码表
-
-    ```bash
-    echo -en "\033[38:5:88m I am red\033[0m\n"
-    ```
+    $ echo -en "\033[38:5:88m I am red\033[0m\n"
 
     # 使用RGB真彩色
+    $ echo -en "\033[38:2:168:28:38m I am red\033[0m\n"
 
-    ```bash
-    echo -en "\033[38:2:168:28:38m I am red\033[0m\n"
-    ```
-
-更多应用示例参见 (shellcmd.md) 中终端登陆脚本中颜色设置的代码
+更多应用示例参见 (shellcmd.md) 中终端登陆脚本中颜色设置的代码。
 
 所以，要能看到彩色的文本，终端模拟器应该至少在选项设置中设置为 xterm 类型。若终端工具能支持24位真彩色、开启透明选项，则显示的效果更好。
 
@@ -1810,7 +1801,7 @@ echo -e "${red}Are you ${plain} ok?"
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能支持24位真彩色、开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
-如果终端模拟器支持真彩色，还可以对16色代码表的实际展现效果进行自定义，从 65536 种颜色中选取：比如把红色代码 31 的实际展现效果定义为 RGB(168,28,38)。这样做的目的是兼容性：绝大多数的 shell 脚本对文字进行颜色修饰都通用 16 色代码，除非脚本的代码改造为 RGB() 的形式才能呈现更丰富的色彩。所以，不需要修改脚本的折衷办法是，由用户设置自己的终端模拟器把这 16 种颜色解释为更丰富的颜色。
+如果终端模拟器支持真彩色，还可以对16色代码表的实际展现效果进行自定义设置，从 65536 种颜色中选取：比如把红色代码 31 的实际展现效果定义为 RGB(168,28,38)。这样做的目的是兼容性：绝大多数的 shell 脚本对文字进行颜色修饰都通用 16 色代码，除非脚本的代码改造为 RGB(x,x,x) 的形式才能呈现更丰富的色彩。所以，不需要修改脚本的折衷办法是，由用户设置自己的终端模拟器把这 16 种颜色解释为更丰富的颜色。
 
 基本颜色板的自定义，详见各终端模拟器的设置。
 
@@ -1821,7 +1812,7 @@ echo -e "${red}Are you ${plain} ok?"
 
 终端模拟器即使开启了 24 位真彩，出于兼容性考虑，默认的色彩主题，对16种颜色代码也只会选用 16/256 色中的颜色，导致看不出更好看的效果。所以，为了能看到更丰富的颜色，应该自定义设置，选择颜色更丰富的其它主题，或自定义这16种颜色代码的实际展现颜色，详见各终端模拟器的设置。
 
-#### 测试终端支持色彩的情况
+#### 测试终端模拟器支持色彩的情况
 
 使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）, 用 ssh 登陆同一个服务器， 分别进入 bash/zsh+powerlevel10k 、tmux 环境
 
@@ -1833,7 +1824,7 @@ echo -e "${red}Are you ${plain} ok?"
     $ tput colors
     256
 
-打开 vim 查看代码文件，在 vim 里执行 `:terminal` 进入新的终端，各种情况的组合测试：
+使用 vim 查看代码文件，在 vim 里执行 `:terminal` 进入新的终端，各种情况的组合测试：
 
 观察彩色文字的颜色、状态栏色条：如果彩色文字的颜色深且明亮、状态栏工具的色条颜色过渡断裂，说明只支持 256color。
 
@@ -2037,7 +2028,7 @@ True color(24bit) 综合测试 terminal-testdrive.sh
 
     ```
 
-#### 命令行软件支持真彩色 dir_colors
+#### shell内置命令的颜色方案 dir_colors
 
 终端模拟器定义的颜色方案，影响的是 shell 下 16 种基本颜色的显示，如 ls、grep、systemctl 等命令输出标准的 16 色文字修饰代码。
 
@@ -2113,7 +2104,7 @@ Dracula theme
 
     https://gogh-co.github.io/Gogh/
 
-Nord theme 支持的软件众多，详见各软件介绍的美化相关章节即可。至少使用章节 [命令行软件支持真彩色 dir_colors]、[mintty 美化]、[其他终端模拟器]的 'Gnome Terminal'。
+Nord theme 支持的软件众多，详见各软件介绍的美化相关章节即可。至少使用章节 [命令行软件支持真彩色 dir_colors]、[mintty 美化]、[vim 扩展插件]的颜色主题、[Linux 桌面下的终端模拟器]的主题设置。
 
 颜色方案：
 
@@ -4016,7 +4007,8 @@ vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
 
     推荐北极，作为插件安装即可 https://www.nordtheme.com/ports/vim
 
-    vim-airline 和 lightline 都内置的一个养眼主题
+    推荐 papercolor， vim-airline 和 lightline 都内置的一个养眼又清晰的主题
+
         papercolor https://github.com/NLKNguyen/papercolor-theme
 
     material https://github.com/material-theme/vsc-material-theme
