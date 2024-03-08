@@ -1916,6 +1916,8 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
 ## 配置 vs code
 
+    https://code.visualstudio.com/docs#vscode
+
 从源码构建 vscode
 
     ttps://cloud.tencent.com/developer/article/1588399
@@ -1938,34 +1940,42 @@ At the time of writing this article, the latest version of Pip is 9.0.1, but thi
 
     %USERPROFILE%\.vscode
 
-Linux 下安装
+### Linux 下安装 vs code
 
     https://code.visualstudio.com/docs/setup/linux
 
-对 flatpak 版 VSCode、VSCodium 终端下打印 'Warning: waitpid override ignores groups' 的说明
+比较安全又方便的是在 distrobox 里安装使用 vscode
+
+    https://ublue.it/guide/toolbox/#integrating-vscode-with-distrobox
+
+    https://distrobox.privatedns.org/posts/integrate_vscode_distrobox.html
+
+    两种方式：
+
+        在 distrobox 里安装 vscode，然后用 distrobox-export 导出到主机下使用。这样 vscode 集成的终端及插件都在 distrobox 里运行。
+
+        或者在主机安装 vscode，使用插件 Dev Containers 来连接使用 distrobox。
+
+也可集成安装到 toolbox 中
+
+    https://github.com/owtaylor/toolbox-vscode
+
+VSCodium
+
+    https://github.com/VSCodium/vscodium/blob/master/DOCS.md
 
     VSCodium 从 VS Code 中移除了遥测部分。除此之外，它就是这个微软项目的克隆版，在外观和功能上与著名的 VS Code 完全相同。不过插件商店也改为开源的了，这样无法使用微软的那些官方插件了。。。
         https://www.roboleary.net/tools/2022/04/20/vscode-telemetry.html
 
         https://zhuanlan.zhihu.com/p/71050663
 
-    https://github.com/flathub/com.visualstudio.code/issues/370
+不嫌麻烦可以安装 flatpak 版 VSCode、VSCodium
 
-    另可集成到 toolbox 中
+    https://github.com/flathub/com.vscodium.codium/
 
-        https://github.com/owtaylor/toolbox-vscode
+    终端下打印 'Warning: waitpid override ignores groups' 的说明
 
-    在 distrobox 里使用 vscode
-
-        https://ublue.it/guide/toolbox/#integrating-vscode-with-distrobox
-
-        https://distrobox.privatedns.org/posts/integrate_vscode_distrobox.html
-
-        两种方式：
-
-            在 distrobox 里安装 vscode，然后用 distrobox-export 导出到主机下使用。这样 vscode 集成的终端及插件都在 distrobox 里运行。
-
-            或者在主机安装 vscode，使用插件 Dev Containers 来连接使用 distrobox。
+        https://github.com/flathub/com.visualstudio.code/issues/370
 
 ### vscode 插件
 
