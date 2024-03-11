@@ -11109,7 +11109,7 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
     GNOME Web
 
-        GNOME 桌面自带的一个基于 WebKit 的浏览器代号 Epiphany，功能比 Firefox 少，但对于普通用途来说已经足够了，而且支持安装火狐和谷歌浏览器的扩展。
+        GNOME 桌面附带的一个基于 WebKit 的浏览器代号 Epiphany，功能比 Firefox 少，但对于普通用途来说已经足够了，而且支持安装火狐和谷歌浏览器的扩展。
 
     FireFox
 
@@ -11162,18 +11162,23 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
     GNU PSPP：資料統計軟體。IBM SPSS的替代品。
 
     FreePlane：繪製心智圖。
+
     XMind【專有軟體】：繪製心智圖，支援上傳到雲端。
+
     ImageMagick (無圖形界面)：用於圖片轉檔的純文字工具。
 
-    白板程序：可以又写又画，非常方便记笔记
+    白板程序：可以又写又画，非常适合记笔记
 
-        Xournal
-        Rnote
+        Rnote 方便的随手笔记
+
+        Xournal++ 这个更重量级一点
+
         Lorien https://github.com/mbrlabs/Lorien
 
     番茄时钟：采用番茄工作法，工作分 4 个时段，在每个时段之间休息，在全部 4 个时段之后有一次长时间休息
 
         Solanum
+
         Pomodoro
 
 邮件
