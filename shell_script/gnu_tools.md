@@ -10247,6 +10247,12 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 
     systemctl disable clamd@scan.service
 
+##### 简单脚本调度可以使用 Supervisor 进程管理工具
+
+    https://www.liaoxuefeng.com/article/895919885120064
+
+它可以很方便的监听、启动、停止、重启一个或多个进程。用 Supervisor 管理的进程，当一个进程意外被杀死，supervisort 监听到进程死后，会自动将它重新拉起，很方便的做到进程自动恢复的功能，不再需要自己写 shell 脚本来控制。
+
 ##### 调试 systemd 启动服务的过程
 
 先看看配置文件是否有效
