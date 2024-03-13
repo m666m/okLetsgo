@@ -513,9 +513,9 @@ function PS1git-branch-prompt {
     fi
 }
 
-# 主机名用不同颜色提示本地或远程登录：本地登录是绿色，ssh 远程登录是洋红色
+# 主机名用不同颜色提示本地或远程登录：本地登录是绿色，ssh 远程登录是洋红色。主机名只显示FQDN的最前段
 function PS1_host_name {
-    [[ -n $SSH_TTY ]] && echo -e "\033[0;35m$(hostname)" || echo -e "\033[0;32m$(hostname)"
+    [[ -n $SSH_TTY ]] && echo -e "\033[0;35m$(echo ${HOSTNAME%%.*})" || echo -e "\033[0;32m$(echo ${HOSTNAME%%.*})"
 }
 
 # 提示当前在 toolbox 或 distrobox 等交互式容器环境，白色容器名配洋红背景
@@ -586,7 +586,11 @@ function PS1raspi-warning-prompt {
 
 #################################
 # 设置命令行提示符 PS1
-if [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
+if [[ $0 = 'zsh' ]]; then
+    # zsh 有自己的命令行提示符设置
+    echo "zsh 有自己的 powerlevel10k 设置命令行提示符"
+
+elif [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
     # Windows git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
     PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
 
