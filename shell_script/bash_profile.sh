@@ -587,7 +587,6 @@ function PS1raspi-warning-prompt {
 #################################
 # 设置命令行提示符 PS1
 if [[ $0 = 'zsh' ]]; then
-    # zsh 有自己的命令行提示符设置
     echo "zsh 有自己的 powerlevel10k 设置命令行提示符"
 
 elif [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
