@@ -1595,13 +1595,13 @@ free 命令 显示主内存和交换空间的内存统计数据，默认情况�
 
 安装及启用
 
-    sudo apt install sysstat
+    $ sudo apt install sysstat
 
     # 启用数据收集功能
-    sudo vi /etc/default/sysstat　　# 把false修改为true
+    $ sudo vi /etc/default/sysstat　　# 把false修改为true
 
     # 重新启动 sysstat 服务
-    sudo systemctl restart sysstat
+    $ sudo systemctl restart sysstat
 
 sysstat 包含了许多商用 Unix 通用的各种工具，用于监视系统性能和活动情况：
 
@@ -1987,8 +1987,8 @@ Perf 是 Linux kernel 自带的系统性能优化工具。
     # sudo apt install linux-tools
 
     # 用 apt search 看看是否有这个版本的
-    sudo apt install linux-doc-"$(uname -r)"
-    sudo apt install linux-tools-"$(uname -r)"
+    $ sudo apt install linux-doc-"$(uname -r)"
+    $ sudo apt install linux-tools-"$(uname -r)"
 
 #### 火焰图辅助分析
 
