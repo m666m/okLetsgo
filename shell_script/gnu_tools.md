@@ -7396,47 +7396,50 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
     https://ostechnix.com/4-easy-ways-to-generate-a-strong-password-in-linux/
 
-    # 对随机数只取字符和数字，取前16个
-    $ cat /dev/random |tr -cd '[:alnum:]' |head -c 16
-    cFW4vaqucb4K4T
+    # 生成16个字符的强密码
+    $ cat /dev/random |tr -dc '!@#$%^&*()-+=0-9a-zA-Z' | head -c16
+    etGemrXR*sq=Yf&7
 
-    # 对随机数只取字符和数字，9个一行，取第一行
-    $ cat /dev/random |tr -cd 'a-zA-Z0-9' |fold -w 9 |head -n 1
-    DPTDA9W29
+    # 对随机数只取字符和数字，取前12个
+    # 等效 cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 12
+    # 等效 cat /dev/random |tr -cd 'a-zA-Z0-9' |fold -w 12 |head -n 1
+    $ cat /dev/random |tr -cd '[:alnum:]' |head -c 12
+    wS481zVrIjXH
 
-    # 生成 16 字节的随机数据
-    # dd if=/dev/urandom bs=1 count=16
-    $ head -c 16 /dev/random
+    以上生成的密码过短，强度未必够，多运行几次，挑一个大小写和数字都有的最杂乱的使用即可。
+    如果换成 /dev/urandom 特别明显，所以短密码还是尽量用 /dev/random 生成
 
-    # 生成随机数据，过滤掉回车字符，只取 64 字节
-    $ cat /dev/random |tr -d '\n' |head -c 64
+    ######################################################################
+    # 生成 32 字节的随机数据作为密钥文件
+    # dd if=/dev/random bs=1 count=32
+    $ head -c 32 /dev/random >symmetric_keyfile.key
 
-    # 生成14个字符的强密码
-    $ cat /dev/urandom |tr -dc '!@#$%^&*()-+=0-9a-zA-Z' | head -c14
-    2Lv^6crsT#3@Em
+    # 生成随机数据，过滤掉回车字符，只取 64 字节作为密钥文件
+    $ cat /dev/random |tr -d '\n' |head -c 64 >symmetric_keyfile.key
 
+    # 生成 256 字节的随机数据作为密钥文件
+    $ openssl rand 256 >symmetric_keyfile.key
+
+    ######################################################################
     # 对随机数取哈希，用 cksum 取 crc 校验和，还可以用 sha256sum、md5sum 等
-    $ head /dev/random |cksum
+    $ head /dev/urandom |cksum
     3768469767 1971
 
     # 对随机数转化为16进制2字节一组，取第一行
-    $ cat /dev/random |od  -An -x |head -n 1
+    $ cat /dev/urandom |od  -An -x |head -n 1
     0637 34d5 16f5 f393 250e a2eb aac0 27c3
 
-    # 对随机数使用 base64 编码，取第一行
-    $ cat /dev/random |base64 |head -n 1
-    H7k6xRGGGzHoipYg0IpGgxAc7wLQeHVGsLMxjNUrhP2uCS1kV4CmEQvi2PoDehJqB7GcTsklker/
+    # 对随机数使用 base64 编码，取第一行，76个字符
+    $ cat /dev/urandom |base64 |head -n 1
+    79lGC+/glAJl7u84xJSY3ukXtPmr9pJGssocTebvC7B2z5ObA/eSJ9ws9Ur8gDSsnpcdy7v7r2RS
 
-    # 14个 ascii 字符
+    # 22个 ascii 字符，注意这里的后面两个是base64的3字节规范填充了等号
     $ gpg --armor --gen-random 2 16
-    k524BASHzHmg1JFtDLHaqg==
+    1uR4Fpo/oTxez0C+ljapaA==
 
     # 16 进制编码的 40 个字符
     $ openssl rand -hex 20
     f231202787c01502287c420a8a05e960ec8f5129
-
-    # 生成 256 字节的随机数据作为密钥文件
-    $ openssl rand 256 >symmetric_keyfile.key
 
     # 使用 base64 编码，注意确保字节数可被 3 整除以避免填充
     # 如果字节参数 9，则 base64 编码生成 12 个字符
