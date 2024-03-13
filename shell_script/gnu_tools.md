@@ -7422,15 +7422,15 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
     ######################################################################
     # 对随机数取哈希，用 cksum 取 crc 校验和，还可以用 sha256sum、md5sum 等
-    $ head /dev/urandom |cksum
+    $ head /dev/random |cksum
     3768469767 1971
 
     # 对随机数转化为16进制2字节一组，取第一行
-    $ cat /dev/urandom |od  -An -x |head -n 1
+    $ cat /dev/random |od  -An -x |head -n 1
     0637 34d5 16f5 f393 250e a2eb aac0 27c3
 
     # 对随机数使用 base64 编码，取第一行，76个字符
-    $ cat /dev/urandom |base64 |head -n 1
+    $ cat /dev/random |base64 |head -n 1
     79lGC+/glAJl7u84xJSY3ukXtPmr9pJGssocTebvC7B2z5ObA/eSJ9ws9Ur8gDSsnpcdy7v7r2RS
 
     # 22个 ascii 字符，注意这里的后面两个是base64的3字节规范填充了等号
