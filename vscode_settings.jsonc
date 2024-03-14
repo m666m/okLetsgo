@@ -6,9 +6,31 @@
     // https://github.com/microsoft/vscode/issues/177142#issuecomment-1536548022
     // F1: open defualt setting 打开各选项详尽说明
     "telemetry.telemetryLevel": "off",
+    "json.schemaDownload.enable":true, // https://bobbyhadz.com/blog/unable-to-load-schema-from-vscode-cannot-open
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
-    "json.schemaDownload.enable":true, // https://bobbyhadz.com/blog/unable-to-load-schema-from-vscode-cannot-open
+    "outline.showVariables": false,
+    "outline.showModules": false,
+    "window.titleBarStyle": "custom", // 整合菜单栏和标题栏
+    "window.menuBarVisibility": "toggle",  // 按 alt 键显示系统菜单
+    "window.activeBorder": "#ff7b00c5",
+    "window.newWindowDimensions": "offset", // "offset" maximized
+    "workbench.editor.wrapTabs": true,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "jupyter.exportWithOutputEnabled": true,
+    "jupyter.interactiveWindow.textEditor.executeSelection": true,
+    "security.workspace.trust.emptyWindow": false,
+    "security.workspace.trust.untrustedFiles": "open",
+    "git.enableCommitSigning": true,
+    "git.enableSmartCommit": true,
+    "git.autofetch": true,
+    "git.confirmSync": false,
+    "git.rebaseWhenSync": true,  // 远程拉到本地用变基，注意合并主干的时候别用这个，git bash下手动
+    "git.openRepositoryInParentFolders": "never",
+    "remote.SSH.remotePlatform": {
+        "fedcor": "linux",
+        "bandw": "linux"
+    },
     // 带补丁字体预览 https://www.nerdfonts.com/font-downloads
     // 带补丁字体下载 https://github.com/ryanoasis/nerd-fonts/releases
     // 编程字体预览大全 https://www.programmingfonts.org/#cascadia-code
@@ -35,26 +57,6 @@
     "editor.guides.bracketPairs":  "active",
     "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize而自行决定
     "editor.autoIndent": "keep",  // 自动缩进只跟随上一行位置就可以了，乱跳挺烦的。各个语言还可以单独设置选项
-    "outline.showVariables": false,
-    "outline.showModules": false,
-    "diffEditor.ignoreTrimWhitespace": false,
-    "window.titleBarStyle": "custom", // 整合菜单栏和标题栏
-    "window.menuBarVisibility": "toggle",  // 按 alt 键显示系统菜单
-    "window.activeBorder": "#ff7b00c5",
-    "window.newWindowDimensions": "offset", // "offset" maximized
-    "workbench.editor.wrapTabs": true,
-    "jupyter.exportWithOutputEnabled": true,
-    "security.workspace.trust.emptyWindow": false,
-    "security.workspace.trust.untrustedFiles": "open",
-    "git.enableCommitSigning": true,
-    "git.enableSmartCommit": true,
-    "git.autofetch": true,
-    "git.confirmSync": false,
-    "git.rebaseWhenSync": true,  // 远程拉到本地用变基，注意合并主干的时候别用这个，git bash下手动
-    "remote.SSH.remotePlatform": {
-        "fedcor": "linux",
-        "bandw": "linux"
-    },
     // 各个语言还可以单独设置选项
     "[python]": {
         "editor.formatOnType": true,
@@ -127,6 +129,7 @@
     },
     // 终端
     "terminal.integrated.copyOnSelection": true,
+    "terminal.integrated.enableMultiLinePasteWarning": "never",
     "terminal.integrated.defaultProfile.windows": "Git Bash",
     "terminal.integrated.defaultProfile.linux": "bash",
     "terminal.integrated.hideOnStartup": "whenEmpty",
@@ -157,10 +160,10 @@
         }
     },
     // 终端也可自定义颜色 https://glitchbone.github.io/vscode-base16-term/#/oceanicnext
-    // 默认的明暗主题，在 Gnome 下暂不能跟随系统
-    "window.autoDetectColorScheme": false,  // 深色背景下切换项目时会闪一下白，很烦人，关了
-    // "workbench.preferredDarkColorTheme": "Nord",
-    // "workbench.preferredLightColorTheme": "MacOS Modern Light - Xcode Default",
+    // 默认的明暗主题
+    "window.autoDetectColorScheme": true,  // 深色背景下切换项目时会闪一下白，很烦人，关了
+    "workbench.preferredDarkColorTheme": "Nord",
+    "workbench.preferredLightColorTheme": "MacOS Modern Light - Xcode Default",
     // 主题颜色
     //  https://code.visualstudio.com/api/references/theme-color
     //  http://www.apeth.com/nonblog/stories/textmatebundle.html
@@ -536,15 +539,12 @@
     "vim.statusBarColors.easymotionmode": "#c52929",
     "vim.statusBarColors.easymotioninputmode": "#c52929",
     "vim.statusBarColors.surroundinputmode": "#c52929",
-    "workbench.sideBar.location": "right",
-    "git.openRepositoryInParentFolders": "never",
-    "jupyter.interactiveWindow.textEditor.executeSelection": true,
-    "terminal.integrated.enableMultiLinePasteWarning": "never",
     "C_Cpp.default.compilerPath": "/usr/lib64/ccache/gcc",
     //////////////////////////////////////////////////////////////////
     //
     // 下面这些是vscode自己加的，随时变
     //
     "workbench.productIconTheme": "macos-modern",
+    "workbench.sideBar.location": "right",
     "workbench.colorTheme": "MacOS Modern Light - Xcode Default"
 }
