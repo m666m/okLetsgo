@@ -31,7 +31,7 @@
         "fedcor": "linux",
         "bandw": "linux"
     },
-    // 开发容器使用 podman https://github.com/microsoft/vscode-remote-release/issues/5504
+    // 开发容器使用 podman https://blog.lifeishao.com/post/vscode-replace-docker-with-podman/
     "dev.containers.dockerPath": "podman",
     "dev.containers.dockerComposePath": "podman-compose",
     // 带补丁字体预览 https://www.nerdfonts.com/font-downloads
