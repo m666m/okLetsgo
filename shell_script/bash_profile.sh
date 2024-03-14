@@ -177,10 +177,11 @@ if [ -x /usr/bin/dircolors ]; then
     alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
 
     # podman
-    alias pms='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
-    alias pmip='echo "[podman列出所有容器的ip和端口]" && podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
-    alias pmdf='echo "[podman查看资源情况]" && podman system df -v'
-    function pmtty() {
+    alias docker="podman"
+    alias pdms='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
+    alias pdmip='echo "[podman列出所有容器的ip和端口]" && podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
+    alias pdmdf='echo "[podman查看资源情况]" && podman system df -v'
+    function pdmtty() {
         # 登录到容器内的tty
         podman exec -it $1 bash
     }
