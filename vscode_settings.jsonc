@@ -1,7 +1,7 @@
 {
     // VS Code 稳定版本选择策略：
-    // 版本号 x.yz 有个规律，z 在 0,1,2 时引入新功能多特别不稳定（包括官方配套插件），z 大于 8 就比较稳定了，y 大概 1 年升级一次
-    // 所以手动更新最稳定，使用 1.59、1.69、1.79……
+    // 版本号 x.yz 有个规律，z 在 0,1,2 时引入新功能多特别不稳定（包括官方配套插件），z 大于 7 就比较稳定了，y 大概 1 年升级一次
+    // 所以手动更新最稳定，使用 1.59、1.69、1.79…… 直至 1.67、1.77、1.87
     "update.mode": "manual",
     // https://github.com/microsoft/vscode/issues/177142#issuecomment-1536548022
     // F1: open defualt setting 打开各选项详尽说明
@@ -31,6 +31,7 @@
     "editor.unicodeHighlight.allowedLocales": {
         "zh-hant": true
     },
+    "editor.copyWithSyntaxHighlighting": false,
     "editor.guides.bracketPairs":  "active",
     "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize而自行决定
     "editor.autoIndent": "keep",  // 自动缩进只跟随上一行位置就可以了，乱跳挺烦的。各个语言还可以单独设置选项
@@ -122,6 +123,7 @@
         "**/.vscode": true
     },
     // 终端
+    "terminal.integrated.copyOnSelection": true,
     "terminal.integrated.defaultProfile.windows": "Git Bash",
     "terminal.integrated.defaultProfile.linux": "bash",
     "terminal.integrated.hideOnStartup": "whenEmpty",
