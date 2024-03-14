@@ -14977,9 +14977,13 @@ Scrcpy 支持 Windows/Linux/macOS 多个平台，需要你的手机打开 usb �
 
     如果操作中出现需要用户在手机上操作的内容，scrcpy 会黑屏，按 esc 可取消。
 
-下表中的MOD表示修饰键，在Windows中对应 win 或 alt 键，在 Mac中对应 cmd 键。
+下表中的 MOD 表示修饰键，在 Windows 中对应 win 或 alt 键，在 Mac中对应 cmd 键：
 
     快捷键                      实施的动作
+
+    右键点击                等同于点亮屏幕
+    Ctrl + 点击和移动        相当于多指捏合动作
+
     MOD + f                切换到全屏 / 取消全屏
     MOD + 左                往左旋转屏幕
     MOD + 右                往右旋转屏幕
@@ -14997,7 +15001,6 @@ Scrcpy 支持 Windows/Linux/macOS 多个平台，需要你的手机打开 usb �
     MOD + 下                减少音量
     MOD + 上                增加音量
 
-    右键点击                等同于点亮屏幕
     MOD + o                把设备屏幕关闭但保持镜像同步
     MOD + Shift + o        点亮设备屏幕
     MOD + r                旋转屏幕（测试好像不好用，不知道是不是快捷键冲突）
@@ -15008,7 +15011,7 @@ Scrcpy 支持 Windows/Linux/macOS 多个平台，需要你的手机打开 usb �
     MOD + x                同步剪贴到电脑剪贴板
     MOD + v                同步粘贴电脑剪贴板的内容（pc->手机或手机->pc均可）
     MOD + i                启用或禁用FPS计数
-    Ctrl + 点击和移动        相当于多指捏合动作
+
     安装APK                 拖拽APK文件到窗口
     推送文件到手机            拖拽非APK文件到窗口，默认放到 /sdcard/Movies 目录下
 
