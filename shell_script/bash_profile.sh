@@ -177,7 +177,13 @@ if [ -x /usr/bin/dircolors ]; then
     alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
 
     # podman
-    alias podmans='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
+    alias pms='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
+    alias pmip='echo "[podman列出所有容器的ip和端口]" && podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
+    alias pmdf='echo "[podman查看资源情况]" && podman system df -v'
+    function pmtty() {
+        # 登录到容器内的tty
+        podman exec -it $1 bash
+    }
 
     # distrobox 这词打不快
     alias dbox='distrobox'
@@ -523,11 +529,11 @@ function PS1_host_name {
 # https://ublue.it/guide/toolbox/#using-the-hosts-xdg-open-inside-distrobox
 # https://github.com/docker/cli/issues/3037
 # Windows 下的 wsl 环境，wsl 下的 docker，暂未研究
-function PS1_is_in_toolbox {
+function PS1_is_in_container {
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
-        echo -e "\033[0;45m<$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
+        echo -e "\033[0;45m<\U0001f4e6$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
     elif  [ -e /.dockerenv ]; then
-        echo -e "\033[0;45m<$(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")>"
+        echo -e "\033[0;45m<\U0001f4e6$(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")>"
     fi
 }
 
@@ -603,10 +609,10 @@ elif $(cat /proc/cpuinfo |grep Model |grep Raspberry >/dev/null 2>&1); then
     setterm --powerdown 0
 
     # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 树莓派温度告警 python环境 git分支及状态
-    PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\$(PS1_host_name)\$(PS1_is_in_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
+    PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\$(PS1_host_name)\$(PS1_is_in_container)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
 
 else
     # 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 python环境 git分支及状态
-    PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)\$(PS1_is_in_toolbox)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
+    PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)\$(PS1_is_in_container)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
 
 fi
