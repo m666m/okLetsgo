@@ -18,10 +18,10 @@
     //"editor.fontLigatures": true,
     // https://github.com/tonsky/FiraCode/wiki/How-to-enable-stylistic-sets
     "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'zero', 'onum'",
-    "editor.fontSize": 15,
+    "editor.fontSize": 14,
     "editor.lineHeight":24, // 从0到你的字体大小计算行高
     //下面四行分别设置不同粗细的字体，选择一种
-    "editor.fontWeight": "300", // "300" Light "400" Regular "500" Medium "600" Bold
+    "editor.fontWeight": "400", // "300" Light "400" Regular "500" Medium "600" Bold
     "editor.minimap.showSlider": "always",
     "editor.minimap.scale": 1,
     "editor.columnSelection": false,
@@ -44,7 +44,6 @@
     "window.newWindowDimensions": "offset", // "offset" maximized
     "workbench.editor.wrapTabs": true,
     "jupyter.exportWithOutputEnabled": true,
-    "jupyter.sendSelectionToInteractiveWindow": true,
     "security.workspace.trust.emptyWindow": false,
     "security.workspace.trust.untrustedFiles": "open",
     "git.enableCommitSigning": true,
@@ -52,6 +51,10 @@
     "git.autofetch": true,
     "git.confirmSync": false,
     "git.rebaseWhenSync": true,  // 远程拉到本地用变基，注意合并主干的时候别用这个，git bash下手动
+    "remote.SSH.remotePlatform": {
+        "fedcor": "linux",
+        "bandw": "linux"
+    },
     // 各个语言还可以单独设置选项
     "[python]": {
         "editor.formatOnType": true,
@@ -177,10 +180,10 @@
             "editor.selectionBackground": "#117fbead",
             "editor.selectionHighlightBackground": "#08537eb4",
             // 查找的高亮设置
-		    "editor.findMatchBackground": "#117fbe36",
-		    "editor.findMatchBorder": "#F86307",
-		    "editor.findMatchHighlightBackground": "#08537e11",
-		    "editor.findMatchHighlightBorder": "#F86307"
+            "editor.findMatchBackground": "#117fbe36",
+            "editor.findMatchBorder": "#F86307",
+            "editor.findMatchHighlightBackground": "#08537e11",
+            "editor.findMatchHighlightBorder": "#F86307"
         },
         "[Nord Deep]": {
             "activityBar.foreground": "#56bbff",
@@ -194,10 +197,10 @@
             "editor.selectionBackground": "#1474acad",
             "editor.selectionHighlightBackground": "#08537eb4",
             // 查找的高亮设置
-		    "editor.findMatchBackground": "#d1611c9f",
-		    "editor.findMatchBorder": "#F86307",
-		    "editor.findMatchHighlightBackground": "#F8630702",
-		    "editor.findMatchHighlightBorder": "#F86307",
+            "editor.findMatchBackground": "#d1611c9f",
+            "editor.findMatchBorder": "#F86307",
+            "editor.findMatchHighlightBackground": "#F8630702",
+            "editor.findMatchHighlightBorder": "#F86307",
             // minimap 滑块看不清
             "minimapSlider.background": "#25446679",
             "minimapSlider.hoverBackground": "#33527a77",
@@ -225,13 +228,13 @@
             "editor.selectionBackground": "#1474acad",
             "editor.selectionHighlightBackground": "#08537eb4",
             // 查找的高亮设置
-		    "editor.findMatchBackground": "#d1611c9f",
-		    "editor.findMatchBorder": "#F86307",
-		    "editor.findMatchHighlightBackground": "#F8630702",
-		    "editor.findMatchHighlightBorder": "#F86307",
+            "editor.findMatchBackground": "#d1611c9f",
+            "editor.findMatchBorder": "#F86307",
+            "editor.findMatchHighlightBackground": "#F8630702",
+            "editor.findMatchHighlightBorder": "#F86307",
             // 光标悬停提示框颜色跟底色无法区分
-		    "editorHoverWidget.background": "#2d3135",
-		    "editorHoverWidget.border": "#ffffff15",
+            "editorHoverWidget.background": "#2d3135",
+            "editorHoverWidget.border": "#ffffff15",
             // 进度条看不清
             "scrollbarSlider.background": "#268b946b",
             "scrollbarSlider.hoverBackground": "#45787cbe",
@@ -254,7 +257,7 @@
         },
         "[TronLight]":{
             // 没边框，自己挨个加吧
-		    "focusBorder": "#00BADB",
+            "focusBorder": "#00BADB",
             "selection.background": "#00BADB7a",
             "scrollbar.shadow": "#00BADB",
             "activityBar.foreground": "#00BADB",
@@ -280,7 +283,7 @@
             "statusBarItem.remoteBackground": "#00BADB",
             "statusBarItem.remoteForeground": "#000000",
             "titleBar.activeBackground": "#0f1a29",
-		    "titleBar.activeForeground": "#cccccc",
+            "titleBar.activeForeground": "#cccccc",
             "titleBar.inactiveBackground": "#132949d5",
             "titleBar.inactiveForeground": "#cccccc99",
             "titleBar.border": "#00BADB",
@@ -294,10 +297,10 @@
             "menu.selectionBorder": "#00BADB",
             "menu.separatorBackground": "#3d3d3d",
             "menu.border": "#00BADB",
-		    "panel.border": "#00BADB",
-		    "terminal.border": "#00BADB",
+            "panel.border": "#00BADB",
+            "terminal.border": "#00BADB",
             "tab.border": "#00BADB",
-		    "tab.hoverBorder": "#00BADB",
+            "tab.hoverBorder": "#00BADB",
             "notificationCenter.border": "#00BADB",
             // "notifications.border": "#00BADB",
             // minimap 滑块看不清
@@ -310,16 +313,16 @@
             "editor.lineHighlightBorder": "#1fbeda8f",
             "editor.selectionBackground": "#1f83bdad",
             "editor.selectionHighlightBackground": "#084264b4",
-		    "editor.findMatchBackground": "#d1611c9f",
-		    "editor.findMatchBorder": "#F86307",
-		    "editor.findMatchHighlightBackground": "#F8630702",
-		    "editor.findMatchHighlightBorder": "#F86307",
+            "editor.findMatchBackground": "#d1611c9f",
+            "editor.findMatchBorder": "#F86307",
+            "editor.findMatchHighlightBackground": "#F8630702",
+            "editor.findMatchHighlightBorder": "#F86307",
             "editor.wordHighlightStrongBackground": "#F8630700",
             "editor.wordHighlightStrongBorder": "#f863079f",
             "editor.wordHighlightBackground": "#57575700",
             "editor.wordHighlightBorder": "#d1611cbd",
-		    "editor.hoverHighlightBackground": "#1cd19534",
-		    "editorHoverWidget.border": "#11aeca",
+            "editor.hoverHighlightBackground": "#1cd19534",
+            "editorHoverWidget.border": "#11aeca",
             // 许多主题没有设置括号匹配的前景色，系统默认的太艳了
             "editorBracketHighlight.foreground1": "#67c5dd",
             "editorBracketHighlight.foreground2": "#3bc299",
@@ -533,10 +536,15 @@
     "vim.statusBarColors.easymotionmode": "#c52929",
     "vim.statusBarColors.easymotioninputmode": "#c52929",
     "vim.statusBarColors.surroundinputmode": "#c52929",
+    "workbench.sideBar.location": "right",
+    "git.openRepositoryInParentFolders": "never",
+    "jupyter.interactiveWindow.textEditor.executeSelection": true,
+    "terminal.integrated.enableMultiLinePasteWarning": "never",
+    "C_Cpp.default.compilerPath": "/usr/lib64/ccache/gcc",
     //////////////////////////////////////////////////////////////////
     //
     // 下面这些是vscode自己加的，随时变
     //
-    "workbench.colorTheme": "Nord",
-    "workbench.productIconTheme": "macos-modern"
+    "workbench.productIconTheme": "macos-modern",
+    "workbench.colorTheme": "MacOS Modern Light - Xcode Default"
 }
