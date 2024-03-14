@@ -14888,60 +14888,71 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
 
 ### Scrcpy --- 在 Linux 桌面显示和控制 Android 设备
 
-如果只是需要在桌面操作你的手机的基本功能，可以使用 gnome 扩展 GSConnect，可操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，详见上面章节 [使用 gnome 扩展]。
-
-还可以安装安卓虚拟机则可以实现在Linux桌面运行安卓apk，详见章节 [安卓虚拟化](virtualization think)。
-
-使用 Scrcpy，可以通过Linux桌面显示和控制Android 设备，类似 Samsung Dex 的使用方式，用电脑玩手机：
+Scrcpy，可以通过Linux桌面显示和控制 Android 设备，类似 Samsung Dex 的使用方式，用电脑玩手机：
 
     https://zhuanlan.zhihu.com/p/606448877
 
-在基于 Debian 的发行版（例如Ubuntu和Linux Mint系统）上，您可以从默认存储库安装scrcpy
+Scrcpy 支持 Windows/Linux/macOS 多个平台，需要你的手机打开 usb 调试模式，这样  Scrcpy 才可以操作你的手机屏幕。
 
-    $ sudo apt install scrcpy
+如果感觉不安全，只是需要在桌面操作你的手机的基本功能，安装 gnome 扩展 GSConnect 就够了。它可以操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，详见上面章节 [使用 gnome 扩展]。
 
-在 Fedora 上，可以从Cool Other Packages Repository ( COPR )安装它：
+还可以安装安卓虚拟机，实现在Linux桌面运行安卓apk，详见章节 [安卓虚拟化](virtualization think)。
 
-    $ sudo dnf copr enable zeno/scrcpy
-    $ sudo dnf install scrcpy
+安装
+
+    Debian 系可以从默认存储库安装 scrcpy
+
+        $ sudo apt install scrcpy
+
+    Fedora 系暂时还未收录到正式存储库，可以从 Cool Other Packages Repository (COPR)安装它：
+
+        $ sudo dnf copr enable zeno/scrcpy
+        $ sudo dnf install scrcpy
 
 有两种连接方式：
 
-    1、在 Linux 中通过 USB 连接到 Android 设备
+一、在 Linux 中通过 USB 连接到 Android 设备
 
-    安装完成后，请记得如前所述在您的 Android 设备中启用USB调试（转到设置=>开发人员–> 选项=>USB 调试），然后通过 USB 数据线将您的设备连接到 Linux 台式电脑。
+安装完成后，请记得如前所述在您的 Android 设备中启用USB调试（转到设置=>开发人员–> 选项=>USB 调试），然后通过 USB 数据线将您的设备连接到 Linux 台式电脑。
 
-    运行
+在 Linux 桌面下的命令行运行：
 
-        $ scrcpy
+    $ scrcpy
 
-    手机上会弹出窗口以请求授权以允许从计算机进行 USB 调试，然后选择允许继续。然后再次运行 `scrcpy`
+手机上会弹出窗口以请求授权以允许从计算机进行 USB 调试，然后选择允许继续。
 
-    如果提示“libopenh264.so.7 is missing, openh264 support will be disabled” ，需要安装 完全版本的 ffmpeg，详见章节 [安装 full ffmpeg](init_a_server think)。
+然后再次重新运行 `scrcpy`，会看到弹出一个窗口，显示您设备的活动屏幕，称 “镜像”，用鼠标模仿你的手指操作即可。
 
-    2、在 Linux 桌面中通过 Wifi 连接到 Android 设备
+如果运行 scrcpy 提示 “libopenh264.so.7 is missing, openh264 support will be disabled” ，说明你的 Linux 桌面环境需要安装完全版本的 ffmpeg，详见章节 [安装 full ffmpeg](init_a_server think)。
 
-    首先，在您的计算机上安装adb命令行工具，如下所示。如果您已经安装了adb工具，请跳过安装步骤：
+二、在 Linux 桌面中通过 Wifi 连接到 Android 设备
 
-        $ sudo apt install adb  # 在Debian、Ubuntu 和 Mint上
-        $ sudo yum install adb  # 在RHEL/CentOS/Fedora和Rocky Linux/AlmaLinux上
-        $ sudo pacman -S adb  # 在Arch Linux上
+首先，在您的计算机上安装 adb 命令行工具，这是安卓操作系统的开发工具。如果您已经安装了adb工具，请跳过下面的安装步骤：
 
-    在您的计算机上安装adb工具后，将您的 Android 设备和计算机连接到公共 Wi-Fi 网络。然后使用 USB 数据线将 Android 设备连接到计算机。
+    # 在Debian、Ubuntu 和 Mint上
+    $ sudo apt install adb
 
-    接下来，从目标设备上断开USB电缆并找到Android设备的 IP 地址（转到设置 –> 连接 –> Wi-Fi –> Wi-Fi 名称 –> 点击其设置）或运行以下命令以查看设备IP地址：
+    # 在RHEL/CentOS/Fedora和Rocky Linux/AlmaLinux上
+    $ sudo yum install adb
 
-        $ adb shell ip route
+    # 在Arch Linux上
+    $ sudo pacman -S adb
 
-    查找 Android 设备 IP 地址
+在您的计算机上安装 adb 工具后，将您的 Android 设备和计算机连接到公共 Wi-Fi 网络。然后使用 USB 数据线将 Android 设备连接到计算机。
 
-    然后通过运行以下命令将目标Android设备设置为在端口5555上侦听TCP/IP连接（检查设备上的任何提示）：
+接下来，从目标设备上断开USB电缆并找到Android设备的 IP 地址（转到设置 –> 连接 –> Wi-Fi –> Wi-Fi 名称 –> 点击其设置）或运行以下命令以查看设备IP地址：
 
-        $ adb tcpip 5555
+    $ adb shell ip route
 
-    接下来，断开USB电线并使用其 IP 地址连接目标设备，如下所示：
+查找 Android 设备 IP 地址
 
-        $ adb connect 192.168.1.4:5555
+然后通过运行以下命令将目标Android设备设置为在端口5555上侦听TCP/IP连接（检查设备上的任何提示）：
+
+    $ adb tcpip 5555
+
+接下来，断开USB电线并使用其 IP 地址连接目标设备，如下所示：
+
+    $ adb connect 192.168.1.4:5555
 
 然后就可以运行 scrcpy 实现在 Linux 桌面上镜像 Android 设备的屏幕。
 
@@ -14949,25 +14960,29 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
 
         $ scrcpy
 
-如果命令成功运行，将打开一个窗口，显示您设备的活动屏幕。
+如果命令成功运行，将打开一个窗口，显示您设备的活动屏幕，称 “镜像”。
 
-如果需要要控制镜像的 Android 屏幕的宽度和高度，请使用命令行 --max-size或-m开关，如下所示：
+如果需要要控制镜像的 Android 屏幕的宽度和高度，请使用命令行 --max-size或-m 开关，如下所示：
 
     # scrcpy --max-size=1024
     $ scrcpy -m 1024
 
-要使用键盘和鼠标控制某些 Android 设备，需要启用其他选项。有关详细信息，请转到scrcpy Github 存储库。
+使用键盘和鼠标控制某些 Android 设的详细信息，请转到scrcpy Github 存储库查看文档：
 
-鼠标左键相当于单指操作，右键是返回键，息屏时点亮手机屏幕。
+    https://github.com/Genymobile/scrcpy#user-documentation
 
-如果操作中出现需要用户在手机上操作的内容，scrcpy会黑屏，按 esc 可取消。
+简单来说：
 
-下表中的MOD表示修饰键，在Windows中对应win或ALT键，在Mac中对应cmd键。
+    鼠标左键相当于单指操作，右键是返回键，息屏时会点亮手机屏幕。
 
-    快捷键                    实施的动作
+    如果操作中出现需要用户在手机上操作的内容，scrcpy 会黑屏，按 esc 可取消。
+
+下表中的MOD表示修饰键，在Windows中对应 win 或 alt 键，在 Mac中对应 cmd 键。
+
+    快捷键                      实施的动作
     MOD + f                切换到全屏 / 取消全屏
-    MOD + 左            往左旋转屏幕
-    MOD + 右            往右旋转屏幕
+    MOD + 左                往左旋转屏幕
+    MOD + 右                往右旋转屏幕
     MOD + g                重置屏幕尺寸到 像素比1:1（一般都是变得硕大）
     MOD + w                重置屏幕尺寸消除黑色边框
 
@@ -14976,24 +14991,26 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
     MOD + s                等同于切换app操作
 
     MOD + m                对应解锁屏的按键，如果是锁屏的话，仅点亮屏幕
-    MOD + 下            减少音量
-    MOD + 上            增加音量
+
     MOD + p                等同于按电源键
 
-    右键点击             等同于点亮屏幕
+    MOD + 下                减少音量
+    MOD + 上                增加音量
+
+    右键点击                等同于点亮屏幕
     MOD + o                把设备屏幕关闭但保持镜像同步
-    MOD + Shift + o     点亮设备屏幕
+    MOD + Shift + o        点亮设备屏幕
     MOD + r                旋转屏幕（测试好像不好用，不知道是不是快捷键冲突）
     MOD + n                打开消息面板
     MOD + n + n            双击n，打开顶部设置栏
-    MOD + shift + n     收起面板
+    MOD + shift + n        收起面板
     MOD + c                同步复制到电脑剪贴板
     MOD + x                同步剪贴到电脑剪贴板
     MOD + v                同步粘贴电脑剪贴板的内容（pc->手机或手机->pc均可）
     MOD + i                启用或禁用FPS计数
-    Ctrl + 点击和移动      相当于多指捏合动作
+    Ctrl + 点击和移动        相当于多指捏合动作
     安装APK                 拖拽APK文件到窗口
-    推送文件到手机           拖拽非APK文件到窗口，默认放到 /sdcard/Movies 目录下
+    推送文件到手机            拖拽非APK文件到窗口，默认放到 /sdcard/Movies 目录下
 
 修饰键可以在命令行参数进行修改，可选的键有 lctrl、rctrl、lalt、ralt、lsuper 和 rsuper
 
