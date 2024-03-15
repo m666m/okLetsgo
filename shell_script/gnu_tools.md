@@ -6963,27 +6963,29 @@ hhighlighter 属于对 ack 的封装，但脚本名和函数名都太简单了�
 
 输入内容，输出到文件
 
-    $ cat <<DOC >/my/new/file
+    $ cat <<EOF >/my/new/file
     Line1
     Line2
     A $VARIABLE
-    DOC
+    EOF
 
 输入内容，完成编辑后按 Ctrl+D 结束，输出到文件
 
     cat > file
 
-cat 生成一段代码到文件，文本当中带有变量也会被解析，除非结束符用单引号包围如 'EOFA'。
+有几个限制：
 
-    如果同一个文件中有多个 EOF 会混乱，所以每段 cat 用不同的 EOFX 来做结束标志。
+    cat 生成一段代码到文件，文本当中带有变量也会被解析，除非用单引号包围，'\', '$', and '`'。
 
-注意
+    如果同一个内容中有多处 EOF 会混乱，所以每段 cat 用不同的 EOFX 来做结束标志。
 
-    EOFA 必须顶行写，前面不能有制表符或者空格，结束输入还得 ctrl+d。
+    EOFA 必须顶行写，前面不能有制表符或者空格，结束输入对应前面的 EOFA 或按 ctrl+d。
+
+在我们使用 `cat <<EOF` 时，下面的文本内容必须顶行写，前面不能有制表符或者空格。
 
 ```bash
 
-cat >/etc/network/if-pre-up.d/restore_my_iptables_rule << EOFA
+cat <<EOFA >/etc/network/if-pre-up.d/restore_my_iptables_rule
 #!/bin/sh
 iptables -F
 iptables-restore < /etc/iptables/rules.v4
@@ -6991,14 +6993,14 @@ EOFA
 
 ```
 
-除非用特殊的 <<-，才可以带格式控制了
+如果重定向的操作符是<<-，那么分界符（EOF）所在行的开头部分的制表符（Tab）都将被去除。这可以解决由于脚本中的自然缩进产生的制表符。
 
     https://askubuntu.com/questions/858238/eof-in-cat-and-less
 
 ```bash
 
 if [ -e ~/.bash_profile ]; then
-    cat >abc.txt <<- EOF
+    cat <<-EOF >abc.txt
         ABC
         DEF
         G
