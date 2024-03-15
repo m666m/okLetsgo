@@ -2765,20 +2765,20 @@ zsh 自带功能
 
         # 著名插件，发行版仓库收录了
         # git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
-        sudo apt install zsh-autosuggestions
+        $ sudo apt install zsh-autosuggestions
 
     命令语法高亮：根据你输入的命令是否正确的色彩高亮，比如输入date查看时间，错为data，字体的颜色会跟随你的输入一个字母一个字母的变化，错误会直接变红。
 
         # 著名插件，发行版仓库收录了
         # git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zsh-syntax-highlighting
-        sudo apt install zsh-syntax-highlighting
+        $ sudo apt install zsh-syntax-highlighting
 
         # 发现个替代品 https://github.com/zdharma-continuum/fast-syntax-highlighting
 
     命令模糊查找：输入错的也没关系，给你候选命令的提示，vi模式改良为按上下键进入搜索，直接输入关键字即可
 
         # https://github.com/junegunn/fzf#fuzzy-completion-for-bash-and-zsh
-        sudo apt install fzf
+        $ sudo apt install fzf
 
 简单启用插件就直接在 ~/.zshrc 文件里使用 source 命令即可，完整示例见章节 [.zshrc 配置文件样例]
 
@@ -3226,8 +3226,8 @@ compinit
 ################################################################################
 # 以下的自定义快捷命令等部分来自 [bash_profile.sh]
 
-####################################################################
-# 从这里开始用户自己的设置
+###################################################################
+# 自此开始都是自定义设置
 #
 # 为防止变量名污染命令行环境，尽量使用奇怪点的名称
 
@@ -3235,7 +3235,7 @@ compinit
 PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 
 # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
-# zsh 命令行用 `bindkey -v` 来设置 vi 操作模式令
+# zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
 if [[ ! $0 = 'zsh' ]]; then
     set -o vi
 fi
@@ -3384,7 +3384,14 @@ if [ -x /usr/bin/dircolors ]; then
     alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
 
     # podman
-    alias podmans='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
+    alias docker="podman"
+    alias pdms='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
+    alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]" && podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
+    alias pdmdf='echo "[podman查看资源情况]" && podman system df -v'
+    function pdmtty() {
+        # 登录到容器内的tty
+        podman exec -it $1 bash
+    }
 
     # distrobox 这词打不快
     alias dbox='distrobox'
