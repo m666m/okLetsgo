@@ -9188,6 +9188,10 @@ done
 
     $ df -h
 
+查看 inodes 节点占用情况
+
+    $ df -i
+
 找出驱动器上占用存储空间最大的前 10 个目录：
 
     du -a / | sort -n -r |head -n 10
@@ -11085,9 +11089,15 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
     如果使用 meld，可以添加右键菜单，参见章节 [给资源管理器添加 meld 右键菜单]。
 
+磁盘管理
+
+    gnome Disks
+
+        $ gnome-disks
+
 磁盘占用分析
 
-    gnome 自带的就比较好用，但是只支持查看当前用户的，查看全系统的需要用命令行，但还是不全
+    gnome Disk Usage Analyzer 分析起来很方便，只是只支持查看当前用户的，查看全系统的需要用命令行
 
         $ sudo baobab
 
