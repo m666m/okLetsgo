@@ -9194,7 +9194,8 @@ done
 
 找出驱动器上占用存储空间最大的前 10 个目录：
 
-    du -a / | sort -n -r |head -n 10
+    $ sudo su
+    # du -a / | sort -n -r |head -n 10
 
 ### 查看计算机的传感器如温度、风扇
 
