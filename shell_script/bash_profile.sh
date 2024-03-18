@@ -88,6 +88,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]" && tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='echo "[进程树，列出pid，及全部子进程]" && pstree -p -s'
     alias curls='echo "curl 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件" &&curl -fsSL'
+    alias passs='echo "[生成16个字符的强密码]" && cat /dev/random |tr -dc "!@#$%^&*()-+=0-9a-zA-Z" | head -c16'
     alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
     alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
 
@@ -132,7 +133,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias nmaps='echo "nmap 列出当前局域网192.168.x.x内ip及端口" && nmap 192.168.0.0/24'
 
     # du
-    function dua {
+    function dus {
         echo "存储空间最大的前 10 个目录"
         du -a $1 | sort -n -r |head -n 10
     }

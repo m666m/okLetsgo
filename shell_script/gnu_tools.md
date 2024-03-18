@@ -3295,6 +3295,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]" && tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='echo "[进程树，列出pid，及全部子进程]" && pstree -p -s'
     alias curls='echo "curl 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件" &&curl -fsSL'
+    alias passs='echo "[生成16个字符的强密码]" && cat /dev/random |tr -dc "!@#$%^&*()-+=0-9a-zA-Z" | head -c16'
     alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
     alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
 
@@ -3304,10 +3305,6 @@ if [ -x /usr/bin/dircolors ]; then
         echo "[复制一个备份，同名后缀.bak，如果是目录名不要后缀/]" && cp -a $1{,.bak}
     }
 
-    # scp rsync
-    alias scps='echo "[scp 源 目的。远程格式 user@host:/home/user/ 端口用 -P]" && scp -r'
-    alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/home/user/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
-
     # vi 后悔药
     alias viw='echo "[只给出提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
 
@@ -3316,7 +3313,46 @@ if [ -x /usr/bin/dircolors ]; then
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
 
+    # 只下载了一个文件，从校验和文件中抽出单个文件进行校验 `sha256sumf abc.iso SHA256SUMS.txt`
+    function sha256sumf {
+        sha256sum -c <(grep $1 $2)
+    }
+
+    # 切换桌面图形模式和命令行模式 --- systemctl 模式
+    function swc {
+        [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] \
+            && (echo -e "\033[0;33mWARN\033[0m: Start Desktop, wait until login shows..."; sudo systemctl isolate graphical.target) \
+            || (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
+    }
+
+    # 命令行看天气 https://wttr.in/:help
+    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
+    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
+    # 看月相 curl http://wttr.in/moon
+    function weather {
+        curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
+    }
+
+    # scp rsync
+    alias scps='echo "[scp 源 目的。远程格式 user@host:/path/to/ 端口用 -P]" && scp -r'
+    alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/path/to/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
+
     alias nmaps='echo "nmap 列出当前局域网192.168.x.x内ip及端口" && nmap 192.168.0.0/24'
+
+    # du
+    function dus {
+        echo "存储空间最大的前 10 个目录"
+        du -a $1 | sort -n -r |head -n 10
+    }
+
+    # 映射内存目录
+    alias ggdrv='echo "[映射内存目录] mount --mkdir -t ramfs ramfs /root/tmp [用完了解除挂载即可] sync; umount /root/tmp"'
+
+    # selinux 审计信息：ausearch -i
+    alias aud='sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
+
+    # systemd
+    alias stded='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
 
     # git 常用命令
     alias gs='git status'
@@ -3353,13 +3389,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias ggcs='echo "[对称算法加密，默认选择当前可用的私钥签名，可用 -u 指定，默认生成的.gpg文件。]" && gpg -s --cipher-algo AES-256 -c'
     # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
     alias ggd='gpg -d'
-    # 映射内存目录
-    alias ggdrv='echo "[映射内存目录] mount --mkdir -t ramfs ramfs /root/tmp [用完了解除挂载即可] sync; umount /root/tmp"'
-
-    # 只下载了一个文件，从校验和文件中抽出单个文件进行校验 `sha256sumf abc.iso SHA256SUMS.txt`
-    function sha256sumf {
-        sha256sum -c <(grep $1 $2)
-    }
 
     # openssl 常用命令
     # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件，加 -kfile 指定密钥文件
@@ -3395,27 +3424,6 @@ if [ -x /usr/bin/dircolors ]; then
 
     # distrobox 这词打不快
     alias dbox='distrobox'
-
-    # selinux 审计信息：ausearch -i
-    alias aud='sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
-
-    # systemd
-    alias stded='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
-
-    # 切换桌面图形模式和命令行模式 --- systemctl 模式
-    function swc {
-        [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] \
-            && (echo -e "\033[0;33mWARN\033[0m: Start Desktop, wait until login shows..."; sudo systemctl isolate graphical.target) \
-            || (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
-    }
-
-    # 命令行看天气 https://wttr.in/:help
-    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
-    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
-    # 看月相 curl http://wttr.in/moon
-    function weather {
-        curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
-    }
 
 fi
 
@@ -3488,19 +3496,19 @@ elif [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
         # 开机后第一次打开bash会话
 
         echo ''
-        # echo "更新gpg钥匙圈需要点时间，请稍等..."
+        # echo "update gpg keyrings, wait a second..."
         # gpg --refresh-keys
 
-        echo "gpg 更新 TrustDB，跳过 owner-trust 未定义的导入公钥..."
+        echo "GPG update TrustDB,跳过 owner-trust 未定义的导入公钥..."
         gpg --check-trustdb
 
         echo ''
-        echo "gpg 检查签名情况..."
+        echo "GPG check sigs..."
         gpg --check-sigs
     fi
 
     echo ''
-    echo '用 ssh-pageant 连接 putty pageant，复用已加载的 ssh 密钥'
+    echo 'ssh-pageant --> putty pageant，reuse ssh key loaded in the agent'
     # ssh-pageant 使用以下参数来判断是否有已经运行的进程，不会多次运行自己
     eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
     ssh-add -l
@@ -3540,22 +3548,22 @@ else
         # echo "更新gpg钥匙圈需要点时间，请稍等..."
         # gpg --refresh-keys
 
-        echo "gpg 更新 TrustDB，跳过 owner-trust 未定义的导入公钥..."
+        echo "GPG update TrustDB, 跳过 owner-trust 未定义的导入公钥..."
         gpg --check-trustdb
 
         echo ''
-        echo "gpg 检查签名情况..."
+        echo "GPG check sigs..."
         gpg --check-sigs
 
-        echo && echo "启动 ssh-agent..."
+        echo && echo "Start ssh-agent..."
         agent_start
 
-        echo "加载 ssh 密钥，请根据提示输入密钥的保护密码"
+        echo "Adding ssh key，input passphrase of the key if prompted"
         ssh-add
 
     elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
         # ssh-agent正在运行，但是没有加载过密钥
-        echo "加载 ssh 密钥，请根据提示输入密钥的保护密码"
+        echo "Adding ssh key，input passphrase of the key if prompted"
         ssh-add
     fi
 
