@@ -4836,7 +4836,7 @@ head当前是指向最新的那一条记录，所以我们看一下parent commit
 
     https://docs.github.com/cn/authentication/managing-commit-signature-verification/generating-a-new-gpg-key
 
-    https://www.dejavu.moe/posts/gpg-verified-github/
+    https://blog.dejavu.moe/posts/gpg-verified-github/
 
     https://www.zackwu.com/posts/2019-08-04-how-to-use-gpg-on-github/
 
