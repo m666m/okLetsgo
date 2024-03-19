@@ -7705,7 +7705,7 @@ Aria2 的命令行传输各种参数，设置复杂，一般都使用各种客�
 
 浏览器扩展插件：Aria2 Explorer（内置AriaNg），安装后设置 aip-key，即可在浏览器中直接给 aria2 进程发下载请求了。
 
-##### aria2 作为后台进程运行
+##### aria2 作为后台进程运行响应 RPC 请求
 
 aria2 作为后台进程运行，在指定端口监听 RPC 请求，用户在浏览器安装扩展插件 Aria2 Explorer 把下载请求发送给 aria2 去执行，这样的方式最好用。因为是 RPC 方式，aria2 可以单独部署到家用 NAS 等单独的下载机，用户连接家庭内网的机器都可以操作它。
 
@@ -7802,57 +7802,65 @@ Windows：
 
 Linux：
 
-    aria2c --conf-path=$HOME/.aria2/aria2.conf --save-session=$HOME/.aria2/download.session --input-file=$HOME/.aria2/download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=$HOME/.aria2/dht.dat --dht-file-path6=$HOME/.aria2/dht6.dat --dht-listen-port=26701 --dir=$HOME/Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --rpc-secret=xxxxxx --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+    $ aria2c --conf-path=$HOME/.aria2/aria2.conf --save-session=$HOME/.aria2/download.session --input-file=$HOME/.aria2/download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=$HOME/.aria2/dht.dat --dht-file-path6=$HOME/.aria2/dht6.dat --dht-listen-port=26701 --dir=$HOME/Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --rpc-secret=xxxxxx --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
 注意修改 --rpc-secret 密码。
 
 Windows 下可使用 WinSW 将 Aria2 安装成用户服务来开机自启。
 
-或者用 docker 运行 p3terx 做的容器，省的做各种配置了
-
-    Aria2 Pro: 基于 Aria2 完美配置和特殊定制优化的 Aria2 Docker
-        https://p3terx.com/archives/docker-aria2-pro.html
-            https://github.com/P3TERX/Aria2-Pro-Docker
-            https://hub.docker.com/r/p3terx/aria2-pro
-
-        docker run -d \
-            --name aria2-pro \
-            --restart unless-stopped \
-            --log-opt max-size=1m \
-            --network host \
-            -e PUID=$UID \
-            -e PGID=$GID \
-            -e RPC_SECRET=<TOKEN> \
-            -e RPC_PORT=6800 \
-            -e LISTEN_PORT=6888 \
-            -v $PWD/aria2-config:/config \
-            -v $PWD/aria2-downloads:/downloads \
-            p3terx/aria2-pro
-
-    配置本机防火墙开放必要的入站端口，内网机器在路由器设置端口转发到相同端口。
-
-    可以把该容器配置为开机自启动，见章节 [systemd 自启动 podman 容器](virtualization think)。
-
 4、测试 rpc
 
-    curl -vvv --no-buffer \
-        -H 'Connection: keep-alive, Upgrade' \
-        -H 'Upgrade: websocket' \
-        -H 'Sec-WebSocket-Version: 13' \
-        -H 'Sec-WebSocket-Key: websocket' \
-        http://localhost:6800/jsonrpc ws | od -t c
+    https://aria2.github.io/manual/en/html/aria2c.html#rpc-interface
 
-    curl -vvv --include \
-        --no-buffer \
-        --header "Connection: Upgrade" \
-        --header "Upgrade: websocket" \
-        --header "Host: example.com:80" \
-        --header "Origin: http://example.com:80" \
-        --header "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
-        --header "Sec-WebSocket-Version: 13" \
+    $ curl localhost:6800/jsonrpc
+    {"id":null,"jsonrpc":"2.0","error":{"code":-32600,"message":"Invalid Request."}}
+
+    $ curl -X POST -H "Content-Type: application/json" \
+        -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.getVersion", "params":["token:evhiwwwwwDiah"]}' \
         http://localhost:6800/jsonrpc
+    {"id":"test","jsonrpc":"2.0","result":{"enabledFeatures":["Async DNS","BitTorrent","Firefox3 Cookie","GZip","HTTPS","Message Digest","Metalink","XML-RPC"],"version":"1.36.0"}}
 
 用浏览器插件 Aria2 Explorer 也可以看到状态是否可用。
+
+##### 在容器中运行 aria2，省的做各种配置了
+
+参考自 Aria2 Pro: 基于 Aria2 完美配置和特殊定制优化的 Aria2 Docker
+
+    https://p3terx.com/archives/docker-aria2-pro.html
+        https://github.com/P3TERX/Aria2-Pro-Docker
+        https://hub.docker.com/r/p3terx/aria2-pro
+
+TODO:我用 podman，待调试
+
+    $ docker run -d \
+
+        --name aria2-pro \
+        --restart unless-stopped \
+        --log-opt max-size=1m \
+
+        -e PUID=$UID \
+        -e PGID=$GID \
+        -e UMASK_SET=022 \
+        -e RPC_SECRET=<TOKEN> \
+        -e RPC_PORT=6800 \
+        -e LISTEN_PORT=6888 \
+
+        --publish-all
+
+        -v $PWD/aria2-config:/config \
+        -v $PWD/aria2-downloads:/downloads \
+
+        --health-cmd="curl localhost:6800/jsonrpc |grep jsonrpc|grep -v grep || exit 1" \
+        --health-start-period=1m02s \
+        --health-interval=5s \
+        --health-timeout=2s \
+        --health-retries=3 \
+
+        p3terx/aria2-pro
+
+配置本机防火墙开放必要的入站端口，内网机器在路由器设置端口转发到相同端口。
+
+可以把该容器配置为开机自启动，见章节 [使用 systemd 单元文件配置自启动 podman 容器](virtualization think)。
 
 #### Transmission
 
@@ -7960,26 +7968,6 @@ Windows 下可使用 WinSW 将 Aria2 安装成用户服务来开机自启。
 
     https://www.ruanyifeng.com/blog/2019/09/curl-reference.html
 
-显示连接信息，一般用于调试的时候
-
-    curl -vvv
-
-    可以调试 ssh 站点，也支持 telnet、ftp 等站点
-    $ curl -vvv 11.22.33.44:1234
-    * About to connect() to 11.22.33.44 port 1234 (#0)
-    *   Trying 11.22.33.44...
-    * Connected to 11.22.33.44 (11.22.33.44) port 1234 (#0)
-    > GET / HTTP/1.1
-    > User-Agent: curl/7.29.0
-    > Host: 11.22.33.44:1234
-    > Accept: */*
-    >
-    SSH-2.0-OpenSSH_7.4
-    Protocol mismatch.
-    * Recv failure: Connection reset by peer
-    * Closing connection 0
-    curl: (56) Recv failure: Connection reset by peer
-
 无参数默认只把获取的内容输出到终端的默认标准输出流
 
     curl https://www.cloudflare.com/ips-v4
@@ -8003,9 +7991,60 @@ Windows 下可使用 WinSW 将 Aria2 安装成用户服务来开机自启。
     curl -fsSLo ~/.vim/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-直接上传，用 “-” 从标准输入流读取，如果换成 “.” 还可以显示服务器的输出
+##### curl 直接上传
+
+用 “-” 从标准输入流读取，如果换成 “.” 还可以显示服务器的输出
 
     gpg --export your_address@example.net |curl -T - https://keys.openpgp.org
+
+##### curl 调试 http/wss/json-rpc
+
+可以调试 ssh 站点，也支持 telnet、ftp 等站点，用参数 -vvv 显示服务器输出信息
+
+http
+
+    $ curl -vvv 11.22.33.44:1234
+    * About to connect() to 11.22.33.44 port 1234 (#0)
+    *   Trying 11.22.33.44...
+    * Connected to 11.22.33.44 (11.22.33.44) port 1234 (#0)
+    > GET / HTTP/1.1
+    > User-Agent: curl/7.29.0
+    > Host: 11.22.33.44:1234
+    > Accept: */*
+    >
+    SSH-2.0-OpenSSH_7.4
+    Protocol mismatch.
+    * Recv failure: Connection reset by peer
+    * Closing connection 0
+    curl: (56) Recv failure: Connection reset by peer
+
+ws
+
+    $ curl -vvv --no-buffer \
+        -H 'Connection: keep-alive, Upgrade' \
+        -H 'Upgrade: websocket' \
+        -H 'Sec-WebSocket-Version: 13' \
+        -H 'Sec-WebSocket-Key: websocket' \
+        http://echo.websocket.org | od -t c
+
+    $ curl -vvv --include \
+        --no-buffer \
+        --header "Connection: Upgrade" \
+        --header "Upgrade: websocket" \
+        --header "Host: websocket.org:80" \
+        --header "Origin: http://websocket.org:80" \
+        --header "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+        --header "Sec-WebSocket-Version: 13" \
+         https://echo.websocket.org
+
+json-rpc
+
+    $ curl -vvv localhost:6800/jsonrpc
+
+    $ curl -X POST -H "Content-Type: application/json" \
+        -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.getVersion", "params":["token:evhiwwwwwDiah"]}' \
+        http://localhost:6800/jsonrpc
+    {"id":"test","jsonrpc":"2.0","result":{"enabledFeatures":["Async DNS","BitTorrent","Firefox3 Cookie","GZip","HTTPS","Message Digest","Metalink","XML-RPC"],"version":"1.36.0"}}
 
 ### ZModem 协议的文件传输工具 rs/rz
 
