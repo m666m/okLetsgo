@@ -215,7 +215,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias pdmvp='echo "[podman清理空闲空间]" && podman volume prune'
     function pdmtty() {
         # 登录到容器内的tty
-        podman exec -it $1 bash
+        podman exec -it $1 sh
     }
 
     # distrobox 这词打不快
