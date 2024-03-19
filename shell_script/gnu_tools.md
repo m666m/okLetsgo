@@ -3263,8 +3263,8 @@ export COLORTERM=truecolor
 if [ -x /usr/bin/dircolors ]; then
 
     # 使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
-    # [[ -f ~/.dircolors ]] ||curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    [[ -f ~/.dir_colors ]] || (echo 'Get nord-dircolors from github...' && curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors)
+    test -r ~/.dir_colors && eval "$(dircolors -b ~/.dir_colors)" || eval "$(dircolors -b)"
 
     # 注意基础命令不要搞太花哨，导致脚本里解析出现用法不一致的问题
     #alias dir='dir --color=auto'
@@ -3415,8 +3415,11 @@ if [ -x /usr/bin/dircolors ]; then
     # podman
     alias docker="podman"
     alias pdms='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
+    alias pdmr='echo "[podman简单运行一个容器]" && podman run -it --rm -P'
     alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]" && podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
+    alias pdmlog='echo "[podman查看指定容器日志]" && docker logs -f --tail 30'
     alias pdmdf='echo "[podman查看资源情况]" && podman system df -v'
+    alias pdmvp='echo "[podman清理空闲空间]" && podman volume prune'
     function pdmtty() {
         # 登录到容器内的tty
         podman exec -it $1 bash

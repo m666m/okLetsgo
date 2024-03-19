@@ -56,8 +56,8 @@ export COLORTERM=truecolor
 if [ -x /usr/bin/dircolors ]; then
 
     # 使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
-    # [[ -f ~/.dircolors ]] ||curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    [[ -f ~/.dir_colors ]] || (echo 'Get nord-dircolors from github...' && curl -fsSLo ~/.dir_colors https://github.com/arcticicestudio/nord-dircolors/raw/develop/src/dir_colors)
+    test -r ~/.dir_colors && eval "$(dircolors -b ~/.dir_colors)" || eval "$(dircolors -b)"
 
     # 注意基础命令不要搞太花哨，导致脚本里解析出现用法不一致的问题
     #alias dir='dir --color=auto'
