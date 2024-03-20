@@ -8965,9 +8965,87 @@ ntp 时间同步的原理
 
     $ ntpstat
 
-现在的 Linux 系统一般都使用 systemd 自带的时间同步服务 systemd-timesyncd，而 Fedora 使用 chrony 作为默认时间同步工具。要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐 chrony。
+现代主流的 Linux 系统一般都使用 systemd 自带的时间同步服务 systemd-timesyncd，而 Fedora 使用 chrony 作为默认时间同步工具。要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐 chrony。
 
-> Fedora 等 Redhat 系使用 chrony
+#### 国内的公共 NTP 服务器
+
+    # https://www.zhihu.com/question/30252609/answer/2276727955
+
+    # NTP项目国内时间服务器，CERNET 的一堆服务器就在那里面，这个应该比较靠谱
+    cn.pool.ntp.org
+
+    # NTP项目亚洲时间服务器，考虑到延迟，优先用国内的比较好
+    asia.pool.ntp.org
+
+    # 不建议使用中国科学院国家授时中心，精度不高，专业的人家有自己的协议，商业的有北斗，公共的没经费就凑合一个了
+    # https://www.cas.cn/tz/201809/t20180921_4664344.shtml
+    ntp.ntsc.ac.cn
+
+    # 不要使用国内的这个，自愿自费组织的，2023年12月发现 ntp.org.cn 域名都无法访问了
+    # cn.ntp.org.cn
+
+    # 教育网
+    time.edu.cn
+
+    # 清华
+    ntp.tuna.tsinghua.edu.cn
+
+    # 阿里云还是算了，2023年开始连自己的整个云服务平台都出现崩溃
+
+    # 微软
+    time.windows.com
+
+    # 苹果
+    time.asia.apple.com
+
+    # Cloudflare
+    time.cloudflare.com
+
+    # google
+    time.google.com
+
+手动配置公共 NTP 服务器
+
+    https://documentation.suse.com/zh-cn/sles/15-SP4/html/SLES-all/cha-ntp.html#sec-net-xntp-netconf
+
+chrony 从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持同步，您需要告诉 chrony 使用什么时间服务器。您可以使用特定的服务器名称或 IP 地址，例如：
+
+    server 0.europe.pool.ntp.org
+
+还可以指定池名称，池名称会解析为若干个 IP 地址：
+
+    pool pool.ntp.org
+
+要同步同一网络中的多台计算机的时间，建议不要直接通过外部服务器同步所有计算机。比较好的做法是将其中一台计算机作为时间服务器（它与外部时间服务器同步），其他内网计算机作为它的客户端。将 local 指令添加至该服务器的 /etc/chrony.conf，以将其与权威时间服务器区分开：
+
+    local stratum 10
+
+查看 NTP 服务器的质量：延迟、偏移
+
+    Windows: w32tm /stripchart /computer:cn.pool.ntp.org
+
+查看时间同步源，出现^*表示成功
+
+    $ chronyc sources -v
+
+    .-- Source mode  '^' = server, '=' = peer, '#' = local clock.
+    / .- Source state '*' = current best, '+' = combined, '-' = not combined,
+    | /             'x' = may be in error, '~' = too variable, '?' = unusable.
+    ||                                                 .- xxxx [ yyyy ] +/- zzzz
+    ||      Reachability register (octal) -.           |  xxxx = adjusted offset,
+    ||      Log2(Polling interval) --.      |          |  yyyy = measured offset,
+    ||                                \     |          |  zzzz = estimated error.
+    ||                                 |    |           \
+    MS Name/IP address         Stratum Poll Reach LastRx Last sample
+    ===============================================================================
+    ^+ dns1.synet.edu.cn             2  10   377   194   +631us[ +631us] +/-   17ms
+    ^- a.chl.la                      2  10   377   124  -7151us[-7151us] +/-   97ms
+    ^* time.neu.edu.cn               1  10   377   237  +1129us[+1792us] +/-   16ms
+    ^- ntp1.flashdance.cx            2  10   277   372    -24ms[  -24ms] +/-  136ms
+
+Windows 设置时间服务器的地址，在控制面板的时间设置->Internet时间。
+
+#### Fedora 等 Redhat 系使用 chrony
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/using-chrony_configuring-basic-system-settings
 
@@ -9016,83 +9094,9 @@ chronyc 是用来监控 chronyd 性能和配置其参数的用户界面。他可
     监听端口： 323/udp，123/udp
     配置文件： /etc/chrony.conf
 
-手动配置公共 NTP 服务器
+#### Debian，openSUSE 使用 systemd-timesyncd
 
-    https://documentation.suse.com/zh-cn/sles/15-SP4/html/SLES-all/cha-ntp.html#sec-net-xntp-netconf
-
-chrony 从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持同步，您需要告诉 chrony 使用什么时间服务器。您可以使用特定的服务器名称或 IP 地址，例如：
-
-    server 0.europe.pool.ntp.org
-
-还可以指定池名称，池名称会解析为若干个 IP 地址：
-
-    pool pool.ntp.org
-
-要同步同一网络中的多台计算机的时间，建议不要直接通过外部服务器同步所有计算机。比较好的做法是将其中一台计算机作为时间服务器（它与外部时间服务器同步），其他内网计算机作为它的客户端。将 local 指令添加至该服务器的 /etc/chrony.conf，以将其与权威时间服务器区分开：
-
-    local stratum 10
-
-国内的公共 NTP 服务器
-
-    # https://www.zhihu.com/question/30252609/answer/2276727955
-
-    # NTP项目国内时间服务器，CERNET 的一堆服务器就在那里面，这个应该比较靠谱
-    cn.pool.ntp.org
-
-    # NTP项目亚洲时间服务器，考虑到延迟，优先用国内的比较好
-    asia.pool.ntp.org
-
-    # 不建议使用中国科学院国家授时中心，精度不高，专业的人家有自己的协议，商业的有北斗，公共的没经费就凑合一个了
-    # https://www.cas.cn/tz/201809/t20180921_4664344.shtml
-    ntp.ntsc.ac.cn
-
-    # 不要使用国内的这个，自愿自费组织的，2023年12月发现 ntp.org.cn 域名都无法访问了
-    # cn.ntp.org.cn
-
-    # 教育网
-    time.edu.cn
-
-    # 清华
-    ntp.tuna.tsinghua.edu.cn
-
-    # 阿里云还是算了，2023年开始连自己的整个云服务平台都出现崩溃
-
-    # 微软
-    time.windows.com
-
-    # 苹果
-    time.asia.apple.com
-
-    # Cloudflare
-    time.cloudflare.com
-
-    # google
-    time.google.com
-
-查看 NTP 服务器的质量：延迟、偏移
-
-    Windows: w32tm /stripchart /computer:cn.pool.ntp.org
-
-查看时间同步源，出现^*表示成功
-
-    $ chronyc sources -v
-
-    .-- Source mode  '^' = server, '=' = peer, '#' = local clock.
-    / .- Source state '*' = current best, '+' = combined, '-' = not combined,
-    | /             'x' = may be in error, '~' = too variable, '?' = unusable.
-    ||                                                 .- xxxx [ yyyy ] +/- zzzz
-    ||      Reachability register (octal) -.           |  xxxx = adjusted offset,
-    ||      Log2(Polling interval) --.      |          |  yyyy = measured offset,
-    ||                                \     |          |  zzzz = estimated error.
-    ||                                 |    |           \
-    MS Name/IP address         Stratum Poll Reach LastRx Last sample
-    ===============================================================================
-    ^+ dns1.synet.edu.cn             2  10   377   194   +631us[ +631us] +/-   17ms
-    ^- a.chl.la                      2  10   377   124  -7151us[-7151us] +/-   97ms
-    ^* time.neu.edu.cn               1  10   377   237  +1129us[+1792us] +/-   16ms
-    ^- ntp1.flashdance.cx            2  10   277   372    -24ms[  -24ms] +/-  136ms
-
-> Debian，openSUSE 使用 systemd 自带的时间同步服务 systemd-timesyncd
+使用 systemd 自带的时间同步服务 systemd-timesyncd
 
     https://www.cnblogs.com/pipci/p/12833228.html
 
@@ -9121,9 +9125,7 @@ systemd-timesyncd 只专注于从远程服务器查询然后同步到本地时�
 
 Linux 处理 RTC 时间跟 Windows 的机制不同，参见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
 
-> Windows 的同步时间功能默认每周只同步一次
-
-控制面板的时间设置里可以找到设置时间服务器的地址。
+#### Windows 的同步时间功能默认每周只同步一次
 
 如果你的计算机主板时钟连一周的准时都保证不了，可以把同步间隔改成24h或1h：
 

@@ -2242,7 +2242,7 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
 #### 解决双系统安装 Windows 与 Linux 时间不一致的问题
 
-    Linux 设置时间服务参见章节 [操作时间 timedatectl/chronyc](gnu_tools.md)
+    设置时间服务参见章节 [操作时间 timedatectl/chronyc 及 NTP 服务](gnu_tools.md)
 
 Linux 与 Windows 对于本地 RTC 硬件保存时间的理解方式不同：Linux 认为硬件时间为 GMT+0 时间，即世界标准时间UTC，中国本地时间是东八区时间，显示时间为 GMT+8；而 Windows 系统认为硬件时间就是中国本地时间。
 
