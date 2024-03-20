@@ -1310,23 +1310,25 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
 
 如果提示无法安装，缺少框架，下载 github 发布页的那个 xxxx_Windows10_PreinstallKit.zip，解压，先安装 Microsoft.UI.Xaml 和 Microsoft.VCLibs.140 等包。
 
-如果安装后无法正常启动 Windows Terminal，经过一顿操作，终于找到了解决方法，用魔法打败了魔法！<https://www.cnblogs.com/albelt/p/15253147.html>
+如果安装后无法正常启动 Windows Terminal，经过一顿操作，终于找到了解决方法，用魔法打败了魔法！
 
-要求：
+    https://www.cnblogs.com/albelt/p/15253147.html
 
-    Windows 10 1903 版本及以上
+    要求：
 
-步骤：
+        Windows 10 1903 版本及以上
 
-    到 Windows Terminal 的 Github 仓库下载最新的 release 包，即以 .msixbundle 为后缀的文件
+    步骤：
 
-    将文件后缀名改为 .zip 后解压缩文件
+        到 Windows Terminal 的 Github 仓库下载最新的 release 包，即以 .msixbundle 为后缀的文件
 
-    在解压后的文件夹中找到名为 CascadiaPackage***.msix 的文件，有 x86、x64 和 ARM64 版本的，选择 x64 那个文件，修改后缀名为 .zip，然后解压
+        将文件后缀名改为 .zip 后解压缩文件
 
-    在解压后的文件夹中，找到 WindowsTerminal.exe 的文件，直接双击就能运行了，还是绿色免安装版的，是不是很简单？
+        在解压后的文件夹中找到名为 CascadiaPackage***.msix 的文件，有 x86、x64 和 ARM64 版本的，选择 x64 那个文件，修改后缀名为 .zip，然后解压
 
-    可以把这个文件夹拷贝到安全的位置，然后将 .exe 文件添加到桌面快捷方式，就能愉快地使用 Windows Terminal 啦！
+        在解压后的文件夹中，找到 WindowsTerminal.exe 的文件，直接双击就能运行了，还是绿色免安装版的，是不是很简单？
+
+        可以把这个文件夹拷贝到安全的位置，然后将 .exe 文件添加到桌面快捷方式，就能愉快地使用 Windows Terminal 啦！
 
 ##### 配置 Windows Terminal
 
