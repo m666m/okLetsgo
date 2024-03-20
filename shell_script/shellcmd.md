@@ -427,13 +427,13 @@ rm 之前先 ls 试试，所谓 dry-run
 
 在需要重复运行调试一道长长的命令，需要测试某个参数时候，用这个命令会比较实用
 
-快速备份一个文件
+大括号展开多个字符串组合
 
+    $ mkdir -p -v /home/user/tmp/{dir1,anotherdir,similardir}
+
+    # 快速备份一个文件
     $ cp filename{,.bak}
-
-    这道命令把 filename 文件拷贝成 filename.bak
-
-    我常用 cp -a my{.txt,.txt.2001.1.1}
+    这道命令把 filename 文件拷贝成 filename.bak，我常用 cp -a my{.txt,.txt.2001.1.1}
 
 重置终端的显示
 
