@@ -3645,112 +3645,112 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
     目前的终端模拟器的选择即复制功能细分了：鼠标选择的自动复制只是内部剪贴板可用，粘贴热键 shift+ins 或鼠标中键。选择文字后，右键菜单里的复制选项才会到系统剪贴板，然后在其它软件的可以粘贴。
 
-一般情况下使用桌面内置的终端模拟器足够了
+一般情况下使用桌面内置的终端模拟器足够了，因为我的 Fedora 自带 Terminal 不支持背景图片，所以自行安装了 Konsole。
 
-    KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片
+KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
-        主题配色方案建议使用 Nord theme
+    主题配色方案建议使用 Nord theme
 
-            $ cd ~/your_github_dir/
+        $ cd ~/your_github_dir/
 
-            $ git clone --depth=1 git@github.com:arcticicestudio/nord-konsole
+        $ git clone --depth=1 git@github.com:arcticicestudio/nord-konsole
 
-            $ cd nord-konsole
+        $ cd nord-konsole
 
-            $ export XDG_DATA_HOME=$HOME/.local/share; ./install.sh
+        $ export XDG_DATA_HOME=$HOME/.local/share; ./install.sh
 
-            如果是 flatpak 安装的 Konsole：
+        如果是 flatpak 安装的 Konsole：
 
-                $ export XDG_DATA_HOME=$HOME/.var/app/org.kde.konsole/data
+            $ export XDG_DATA_HOME=$HOME/.var/app/org.kde.konsole/data
 
-                $ mkdir -p $XDG_DATA_HOME/konsole
+            $ mkdir -p $XDG_DATA_HOME/konsole
 
-                $ cp src/nord.colorscheme $XDG_DATA_HOME/konsole
+            $ cp src/nord.colorscheme $XDG_DATA_HOME/konsole
 
-        窗口主菜单栏选择 Setting-->Configure Konsole：
+    窗口主菜单栏选择 Setting-->Configure Konsole：
 
-            ->General，取消勾选 “Remember Window Size”
+        ->General，取消勾选 “Remember Window Size”
 
-            ->Profiles，选New新建 然后点击ok确定。
+        ->Profiles，选New新建 然后点击ok确定。
 
-            然后Edit编辑刚刚新建的Profile1：
+        然后Edit编辑刚刚新建的Profile1：
 
-                -->General Settings->command: 设置会话执行登录脚本 /bin/bash -l
+            -->General Settings->command: 设置会话执行登录脚本 /bin/bash -l
 
-                -->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，图片透明度设为 50%（根据你选择的背景图片调整）即可。
+            -->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，图片透明度设为 50%（根据你选择的背景图片调整）即可。
 
-        窗口主菜单栏选择 “Setting”，取消勾选 “Show Menubar”，这时主菜单成为窗口右上角的一个三个横线的图标，点击会显示主菜单栏。这样你的屏幕可用面积扩大了一行。
+    窗口主菜单栏选择 “Setting”，取消勾选 “Show Menubar”，这时主菜单成为窗口右上角的一个三个横线的图标，点击会显示主菜单栏。这样你的屏幕可用面积扩大了一行。
 
-    Gnome 桌面自带 Xterm，现名 Gnome Terminal
+Gnome 桌面自带 Xterm，现名 Gnome Terminal：
 
-        主题配色方案建议使用 Nord theme
+    主题配色方案建议使用 Nord theme
 
-            $ cd ~/your_github_dir/
+        $ cd ~/your_github_dir/
 
-            $ git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
+        $ git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
 
-            $ cd gnome-terminal-nordtheme/src; ./nord.sh
+        $ cd gnome-terminal-nordtheme/src; ./nord.sh
 
-            执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
+        执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
 
-        窗口菜单选 Profile，选 Nord，设为默认即可，其它选项点击右侧项：
+    窗口菜单选 Profile，选 Nord，设为默认即可，其它选项点击右侧项：
 
-            -->command 勾选 Run command as a login shell 以设置会话执行登录脚本
+        -->command 勾选 Run command as a login shell 以设置会话执行登录脚本
 
-            -->color：不再支持设置背景图片，但仍可设置窗口透明度。
+        -->color：不再支持设置背景图片，但仍可设置窗口透明度。
 
-    Xfce 桌面自带 Xfce Terminal
+Xfce 桌面自带 Xfce Terminal：
 
-        主题配色方案建议使用 Nord theme
+    主题配色方案建议使用 Nord theme
 
-            $ cd ~/your_github_dir/
+        $ cd ~/your_github_dir/
 
-            $ git clone --depth=1 git@github.com:arcticicestudio/nord-xfce-terminal
+        $ git clone --depth=1 git@github.com:arcticicestudio/nord-xfce-terminal
 
-            $ cd nord-xfce-terminal/
+        $ cd nord-xfce-terminal/
 
-            $ ./install.sh
+        $ ./install.sh
 
-        或可以手动把文件 `nord.theme` 拷贝到本地的配置目录 `~/.local/share/xfce4/terminal/colorschemes` 下即可。
+    或可以手动把文件 `nord.theme` 拷贝到本地的配置目录 `~/.local/share/xfce4/terminal/colorschemes` 下即可。
 
-        窗口菜单选 Edit->Preference:
+    窗口菜单选 Edit->Preference:
 
-            -->Colors->Presets，选择 Nord 即可。
+        -->Colors->Presets，选择 Nord 即可。
 
-            -->General-->Command，勾选 Run command as login shell 以设置会话执行登录脚本
+        -->General-->Command，勾选 Run command as login shell 以设置会话执行登录脚本
 
-            -->Appeaerance-->Background，设置背景图片，目前不支持透明，只支持图片调暗
+        -->Appeaerance-->Background，设置背景图片，目前不支持透明，只支持图片调暗
 
-    gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal
+gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal。
 
-    Enlightenment 桌面自带 Terminology
+Enlightenment 桌面自带 Terminology。
 
-    sway 窗口管理器自带 foot
+sway 窗口管理器自带 foot。
 
-    guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个了， gnome 桌面有个扩展即可实现该功能，参见章节 [使用 gnome 扩展] 的 quake-mode。
+guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个，gnome 桌面有个扩展即可实现该功能，参见章节 [使用 gnome 扩展] 的 quake-mode。
 
-    tilix 基于 gtk3 开发的一个平铺式终端模拟器，效果类似 tmux，但是支持各面板的自定义拖曳。
+tilix 基于 gtk3 开发的一个平铺式终端模拟器，效果类似 tmux，但是支持各面板的自定义拖曳。
 
-    cool-retro-term 显示效果是 CRT 显示器...
+cool-retro-term 显示效果是 CRT 显示器。
 
-    terminology 使用 EFL（不支持Wayland） 的 Linux/BSD/UNIX 系统的终端仿真器，尽可能地模仿 Xterm。
+terminology 使用 EFL（不支持Wayland） 的 Linux/BSD/UNIX 系统的终端仿真器，尽可能地模仿 Xterm。
 
-    kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/MacOS 桌面下使用，目前中文支持还是不大好
+kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/MacOS 桌面下使用，目前中文支持不好
 
-        https://github.com/kovidgoyal/kitty
-            https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
+    https://github.com/kovidgoyal/kitty
+        https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
 
-        常用插件挺好用 https://sw.kovidgoyal.net/kitty/kittens_intro/
+    常用插件挺好用 https://sw.kovidgoyal.net/kitty/kittens_intro/
 
-    Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
+Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
 
-        https://www.warp.dev/
-            https://github.com/warpdotdev/Warp
-            主题 https://github.com/warpdotdev/themes
+    https://www.warp.dev/
+        https://github.com/warpdotdev/Warp
+        主题 https://github.com/warpdotdev/themes
 
-> i3 窗口管理器自带 urxvt(rxvt-unicode)
+#### i3 窗口管理器自带 urxvt(rxvt-unicode)
 
-配置复杂
+配置复杂，不整了
 
     https://segmentfault.com/a/1190000020859490
     https://wiki.archlinux.org/title/Rxvt-unicode
