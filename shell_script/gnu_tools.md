@@ -3655,22 +3655,31 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
             $ git clone --depth=1 git@github.com:arcticicestudio/nord-konsole
 
-            $ cd nord-konsole; ./install.sh
+            $ cd nord-konsole
 
-            如果是 flatpak 下运行需要手动：
+            $ export XDG_DATA_HOME=$HOME/.local/share; ./install.sh
 
-                # XDG_DATA_HOME=$HOME/.local/share
+            如果是 flatpak 安装的 Konsole：
+
                 $ export XDG_DATA_HOME=$HOME/.var/app/org.kde.konsole/data
 
                 $ mkdir -p $XDG_DATA_HOME/konsole
 
                 $ cp src/nord.colorscheme $XDG_DATA_HOME/konsole
 
-        窗口菜单选 Setting-->Configure->Profiles，选New新建一个，然后Edit编辑：
+        窗口主菜单栏选择 Setting-->Configure Konsole：
 
-            -->General->command: 设置会话执行登录脚本 /bin/bash -l
+            ->General，取消勾选 “Remember Window Size”
 
-            -->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，图片透明度设为 50%（根据你选择的背景图片调整）即可。
+            ->Profiles，选New新建 然后点击ok确定。
+
+            然后Edit编辑刚刚新建的Profile1：
+
+                -->General Settings->command: 设置会话执行登录脚本 /bin/bash -l
+
+                -->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，图片透明度设为 50%（根据你选择的背景图片调整）即可。
+
+        窗口主菜单栏选择 “Setting”，取消勾选 “Show Menubar”，这时主菜单成为窗口右上角的一个三个横线的图标，点击会显示主菜单栏。这样你的屏幕可用面积扩大了一行。
 
     Gnome 桌面自带 Xterm，现名 Gnome Terminal
 
