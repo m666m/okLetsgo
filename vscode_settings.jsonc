@@ -44,9 +44,9 @@
     // https://github.com/tonsky/FiraCode/wiki/How-to-enable-stylistic-sets
     "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'zero', 'onum'",
     "editor.fontSize": 14,
-    "editor.lineHeight":24, // 从0到你的字体大小计算行高
+    "editor.lineHeight":23, // 从0到你的字体大小计算行高
     //下面四行分别设置不同粗细的字体，选择一种
-    "editor.fontWeight": "400", // "300" Light "400" Regular "500" Medium "600" Bold
+    "editor.fontWeight": "370", // "300" Light "400" Regular "500" Medium "600" Bold
     "editor.minimap.showSlider": "always",
     "editor.minimap.scale": 1,
     "editor.columnSelection": false,
