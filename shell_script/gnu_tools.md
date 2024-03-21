@@ -14,6 +14,14 @@
 
 ## Windows 下的 GNU/POSIX 环境
 
+如果只是想做 Windows、macOS 和 Linux 等多个操作系统跨平台应用程序，使用 QT(c++/python) 或基于 Chromium+Node.js 的 Electron 框架的应用程序是更好的选择。
+
+对 GNOME/GTK+ 环境可以考虑用 python 的 PyGObject 图形库，普通应用程序的界面用这个足够了，通过 mingw 也可在 Windows 下运行：
+
+    https://gnome.pages.gitlab.gnome.org/pygobject/getting_started.html
+
+    https://www.gtk.org/docs/installations/windows/
+
 ### 环境方案选择
 
 Windows 10+ 下使用 WSL 开发 GNU 环境设置
@@ -28,8 +36,8 @@ Windows C++ 开发环境配置
 
     WinSCP 同步本地和编译机代码
 
-    BeyondCompare 合并代码
-        推荐用 meld 替换 BeyondCompare，参见章节 [给资源管理器添加 meld 右键菜单]
+    BeyondCompare 图形化合并代码
+        推荐用 meld 或 Diffuse 替换 BeyondCompare，参见章节 [给资源管理器添加 meld 右键菜单]
 
     tmux + vim 直接在编译机写代码，方便随时ssh上去复原现场继续。
 
@@ -46,11 +54,11 @@ Windows C++ 开发环境配置
 
 MingW 在编译时对二进制代码转译
 
-    MingW (gcc 编译到mscrt)包含gcc和一系列工具，是Windows下的gnu环境。
+    MingW (gcc 编译到mscrt)包含 gcc 和一系列工具，是 Windows 下的 gnu 环境。
 
-    编译 linux c++ 源代码，生成 Windows 下的exe程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API，相比Cygwin体积更小，使用更方便。
+    编译 linux c++ 源代码，生成 Windows 下的 exe 程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API，相比 Cygwin 体积更小，使用更方便。
 
-    如 创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的mscrt CreateProcess()形式。
+    如创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的 mscrt CreateProcess() 形式。
 
 Cygwin 在编译时中间加了个翻译层 cygwin1.dll
 
@@ -12219,13 +12227,25 @@ gnome 扩展要安装 User Themes
 
 #### 给资源管理器添加 meld 右键菜单
 
-meld 基于 python 的开源合并工具，替换 BeyondCompare
+meld 基于 python 的开源合并工具，替换 BeyondCompare，缺点是在文件夹对比有大量文件时会卡住
 
     https://meldmerge.org/
         https://gitlab.gnome.org/GNOME/meld
         https://gitlab.gnome.org/GNOME/meld/-/wikis/home
 
     https://www.cnblogs.com/onelikeone/p/17291936.html
+
+其它考虑
+
+    Diffuse 文字对比不错，可惜不支持文件夹对比
+        https://github.com/MightyCreak/diffuse
+            原 https://github.com/MightyCreak/diffuse
+
+    KDiff3 偏向 merge 方向，文件夹对比的差异不够直观 https://apps.kde.org/kdiff3/
+
+    TkDiff https://sourceforge.net/projects/tkdiff/
+
+    DiffMerge 闭源的免费软件 https://www.sourcegear.com/diffmerge/downloads.html
 
 如果使用 GNOME桌面，其资源管理器可以添加右键菜单 “script”，在 ~/.local/share/nautilus/scripts 目录下建立如下两个文件：
 
