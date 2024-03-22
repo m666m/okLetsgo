@@ -11527,11 +11527,11 @@ Gnome 的图形界面设置程序 Gnome Tweaks Tool(gnome-tweaks) 有 “Font”
 
     Monospace 等宽字体，比如 Courier New、Consolas，适合会计数字、编程写代码等格式严谨上下行的字符严格对齐的场合。
 
-很多程序有自己的字体配置。一般而言，将无衬线字体设置成 sans-serif, 将衬线字体设置成 serif, 将等宽字体设置成 monospace, 就会遵循 fontconfig 的设置了。
+很多程序有自己的字体配置，至少三种归类：无衬线字体 sans-serif, 衬线字体 serif, 等宽字体 monospace, 就会遵循 fontconfig 的设置了。
 
-目前各大软件中，只有 Firefox 可在 about:config 中针对这三种风格的分别设置，其它的软件都自动处理这些细节了。
+比如 Firefox 可在 about:config 中针对这三种风格分别设置字体，大多数软件都自动处理这些细节不展示给用户设置。
 
-对东亚字符 CJK 来说，这三种风格的字体又细分出支持简体中文 SC、繁体中文 TC、日文 JP、韩文 KR的分支。有些异体字（Variable Font）三种文字中都有，需要三国统一设计方案，即一个字体即可显示三国的文字。
+对东亚字符 CJK 来说，这三种风格的字体又按字符集细分出支持简体中文 SC、繁体中文 TC、日文 JP、韩文 KR的分支。有些异体字（Variable Font）在三种文字中都有，需要统一设计方案，使得一个字体即可显示多国的文字。
 
 #### 前置知识；字体文件的格式
 
@@ -11581,7 +11581,7 @@ OpenType 可变字体（OpenType variable fonts）技术
 
 为了在一个单纯正文展示的页面中使用一个字体，你至少需要四个字体文件：常规Regular、斜体Italic、加粗Bold、斜体加粗Bold Italic。如果你想添加更多的字重，比如让题注更轻或让额外强调的地方更重，意味着你需要更多文件。
 
-可变字体属于 OpenType 字体规范上的演进，能够储存轮廓变化数据，在初始字形轮廓的基础上自动生成丰富的变化造型，它允许将同一字体的多个变体统合进单独的字体文件中。从而无需再将不同字宽、字重或不同样式的字体分割成不同的字体文件。高德纳（Donald Knuth）当年用 Metafont 创立的曲线自动调整技术发扬光大，无级字重成为现实
+可变字体属于 OpenType 字体规范上的演进，能够储存轮廓变化数据，在初始字形轮廓的基础上自动生成丰富的变化造型，它允许将同一字体的多个变体统合进单独的字体文件中。从而无需再将不同字宽、字重或不同样式的字体分割成不同的字体文件。高德纳（Donald Knuth）当年用 Metafont 创立的曲线自动调整技术发扬光大，无级字重成为现实。
 
 #### 安装官方仓库的中文字体包
 
@@ -11608,9 +11608,9 @@ Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可�
 
     Localization--> Simplified Chinese 有两个：
 
-        Core Localization support：内核级的提示换为中文如 glibc 库等，这样连命令行提示都会显示中文
+        Localization support：给内装软件添加中文字体、中文语言包，包括默认输入法
 
-        Localization support：给已安装软件添加中文语言包
+        Core Localization support：内核级的如 glibc 库的中文版，这样连命令行提示都会显示中文
 
         注意这个是全界面的汉化，等同于你在系统设置的 Language 选择了 中国-中文
 
@@ -11664,9 +11664,9 @@ Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可�
     # Fedora 支持异体字（Variable Font），装这个最省事，文件还小
     $ sudo dnf install google-noto-serif-cjk-vf-fonts
 
-    mono 不用单独安装，sans 自带了
+    mono 不用单独安装，sans 字体自带了
 
-adobe 思源跟Google Noto 这俩字体是一回事
+adobe 思源跟 Google Noto 这俩字体是一回事
 
     https://github.com/adobe-fonts/source-han-sans
 
