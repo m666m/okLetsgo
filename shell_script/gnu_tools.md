@@ -11480,6 +11480,27 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
 GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表情符号菜单。
 
+#### TODO:使用 Fcitx 5 + 维基百科中文拼音词库
+
+    https://zhuanlan.zhihu.com/p/508797663
+
+zhijie faxingban ruanjianzhongxin
+
+    https://github.com/fcitx/fcitx5
+
+Fcitx 把自己拆分的比较细，ming安装时需要分别安装多个包,zhi：框架、图形界面、中文输入法
+
+Debian
+
+    $ sudo apt install fcitx5 \
+        fcitx5-chinese-addons \
+        fcitx5-frontend-gtk4 fcitx5-frontend-gtk3 fcitx5-frontend-gtk2 \
+        fcitx5-frontend-qt5
+
+维基百科中文拼音词库
+
+    https://github.com/felixonmars/fcitx5-pinyin-zhwiki
+
 ### 设置中文字体
 
 桌面环境下系统内置的字体中文不好看，需要调整
