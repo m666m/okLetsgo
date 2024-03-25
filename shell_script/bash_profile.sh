@@ -94,6 +94,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
     alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
 
+    # man
+    alias mans='echo "[查找man手册]" && man -awWi'
+
     # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
     function cpbak {
         # find . -max-depth 1 -name '$1*' -exec cp "{}" "{}.bak" \;
