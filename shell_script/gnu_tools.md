@@ -3306,7 +3306,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
     alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]" && tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='echo "[进程树，列出pid，及全部子进程]" && pstree -p -s'
+
     alias curls='echo "curl 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件" &&curl -fsSL'
+
     alias passs='echo "[生成16个字符的强密码]" && cat /dev/random |tr -dc "!@#$%^&*()-+=0-9a-zA-Z" | head -c16'
     alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
     alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
@@ -3314,15 +3316,45 @@ if [ -x /usr/bin/dircolors ]; then
     # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
     function cpbak {
         # find . -max-depth 1 -name '$1*' -exec cp "{}" "{}.bak" \;
-        echo "[复制一个备份，同名后缀.bak，如果是目录名不要后缀/]" && cp -a $1{,.bak}
+        echo "[复制一个备份 $1.bak，如果是目录名不要后缀/传入]"
+        cp -a $1{,.bak}
     }
 
     # vi 后悔药
-    alias viw='echo "[只给出提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
+    alias viw='echo "[提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
 
     # wsl 或 git bash 下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "C:\Windows\Path"
     function cdw {
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
+    }
+
+    # scp rsync
+    alias scps='echo "[scp 源 目的。远程格式 user@host:/path/to/ 端口用 -P]" && scp -r'
+    alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/path/to/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
+
+    # nmap
+    alias nmaps='echo "[nmap 列出当前局域网 192.168.0.x 内ip及端口]" && nmap 192.168.0.0/24'
+
+    # selinux 人性化可读审计信息：ausearch -i
+    alias aud='sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
+
+    # systemd
+    alias stmed='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
+
+    # mount
+    function mntfat {
+        echo "[挂载 FAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
+        sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro $1 $2
+    }
+
+    function mntntfs {
+        echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
+        sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,umask=0000,windows_names,iocharset=utf8 $1 $2
+    }
+
+    function mntram {
+        echo "[映射内存目录 $1，用完了记得要解除挂载：sync; sudo umount $1]"
+        sudo mount --mkdir -t ramfs ramfs $1
     }
 
     # 只下载了一个文件，从校验和文件中抽出单个文件进行校验 `sha256sumf abc.iso SHA256SUMS.txt`
@@ -3337,6 +3369,12 @@ if [ -x /usr/bin/dircolors ]; then
             || (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
     }
 
+    # du
+    function dus {
+        echo "[列出 $1 占用空间最大的前 10 个目录]"
+        du -a $1 | sort -n -r |head -n 10
+    }
+
     # 命令行看天气 https://wttr.in/:help
     # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
     # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
@@ -3344,27 +3382,6 @@ if [ -x /usr/bin/dircolors ]; then
     function weather {
         curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
     }
-
-    # scp rsync
-    alias scps='echo "[scp 源 目的。远程格式 user@host:/path/to/ 端口用 -P]" && scp -r'
-    alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/path/to/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
-
-    alias nmaps='echo "nmap 列出当前局域网192.168.x.x内ip及端口" && nmap 192.168.0.0/24'
-
-    # du
-    function dus {
-        echo "存储空间最大的前 10 个目录"
-        du -a $1 | sort -n -r |head -n 10
-    }
-
-    # 映射内存目录
-    alias ggdrv='echo "[映射内存目录] mount --mkdir -t ramfs ramfs /root/tmp [用完了解除挂载即可] sync; umount /root/tmp"'
-
-    # selinux 审计信息：ausearch -i
-    alias aud='sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
-
-    # systemd
-    alias stded='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
 
     # git 常用命令
     alias gs='git status'
@@ -3432,8 +3449,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias pdmlog='echo "[podman查看指定容器日志]" && docker logs -f --tail 30'
     alias pdmdf='echo "[podman查看资源情况]" && podman system df -v'
     alias pdmvp='echo "[podman清理空闲空间]" && podman volume prune'
+
     function pdmtty() {
-        # 登录到容器内的tty
+        echo "[登录到容器 $1 内的tty]"
         podman exec -it $1 sh
     }
 
