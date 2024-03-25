@@ -138,6 +138,17 @@ if [ -x /usr/bin/dircolors ]; then
         du -a $1 | sort -n -r |head -n 10
     }
 
+    # mount
+    function mntfat {
+        echo "挂载 FAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限"
+        sudo mount -t vfat -o rw,noatime,uid=1000,gid=1000,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,errors=remount-ro $1 $2
+    }
+
+    function mntntfs {
+        echo "挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限"
+        sudo mount -t ntfs3 -o rw,utf8,nosuid,nodev,noatime,uid=1000,gid=1000,umask=0000,windows_names $1 $2
+    }
+
     # 映射内存目录
     alias ggdrv='echo "[映射内存目录] mount --mkdir -t ramfs ramfs /root/tmp [用完了解除挂载即可] sync; umount /root/tmp"'
 
