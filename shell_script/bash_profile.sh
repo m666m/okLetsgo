@@ -125,12 +125,22 @@ if [ -x /usr/bin/dircolors ]; then
     # mount
     function mntfat {
         echo "[挂载 FAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t vfat -o rw,noatime,uid=1000,gid=1000,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,errors=remount-ro $1 $2
+        sudo mount -t vfat \
+            -o rw,nosuid,nodev,noatime, \
+            uid=1000,gid=1000,umask=0000, \
+            codepage=437,iocharset=ascii, \
+            shortname=mixed,showexec, \
+            utf8,flush,errors=remount-ro \
+            $1 $2
     }
 
     function mntntfs {
         echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t ntfs3 -o rw,utf8,nosuid,nodev,noatime,uid=1000,gid=1000,umask=0000,windows_names $1 $2
+        sudo mount -t ntfs3 \
+            -o rw,nosuid,nodev,noatime, \
+            uid=1000,gid=1000,umask=0000, \
+            utf8,windows_names \
+            $1 $2
     }
 
     function mntram {
