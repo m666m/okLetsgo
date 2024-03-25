@@ -3344,10 +3344,15 @@ if [ -x /usr/bin/dircolors ]; then
     # systemd
     alias stmed='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
 
-    # mount
+    # mount 手动挂载 Windows 分区 U 盘，使用当前用户权限
     function mntfat {
         echo "[挂载 FAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
         sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro $1 $2
+    }
+
+    function mntexfat {
+        echo "[挂载 exFAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
+        sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro $1 $2
     }
 
     function mntntfs {
