@@ -7079,99 +7079,99 @@ fi
 
 ### 写入文件 dd
 
-dd 命令是基于块（block）的复制，用途很多。
+dd 命令是基于块（block）的复制，“裸读写”（直接越过文件系统对物理设备进行读写）用途很多，比如备份/恢复硬盘主引导扇区。
 
     https://wiki.archlinux.org/title/Dd
 
-dd 过时了
+用 dd 过时了
 
     文件到设备，设备到文件的大部分用途，用 cat 或 cp 命令就足够了，如果要限制字节数用 head -c 处理即可，除了指明必须用 dd 按块大小写入等场合，尽量避免用 dd。
 
         https://unix.stackexchange.com/questions/224277/is-it-better-to-use-cat-dd-pv-or-another-procedure-to-copy-a-cd-dvd/224314#224314
 
-    gnu 版的 dd 有个可以查看进度的参数 status=progress，可以用 pv 代替
+    gnu 版的 dd 有个可以查看进度的参数 status=progress，也可以用 pv 命令代替
 
-        sudo apt install pv
+        $ sudo apt install pv
 
-        pv </dev/zero |head -c 1024M >my.txt
+        $ pv </dev/zero |head -c 1024M >my.txt
 
-NOTE: dd 有个毛病，系统调用函数read()在管道操作后会静默的跳过某些字节数，尤其是输入数据的缓冲不足的情况下，比如网络或输入源使用 /dev/random 而系统的熵不足的时候，所以只要指定了 count，那就必须用 iflag=fullblock
+NOTE: dd 有个毛病，系统调用函数 read() 在管道操作后会静默的跳过某些字节数，尤其是输入数据的缓冲不足的情况下，比如网络或输入源使用 /dev/random 而系统的熵不足的时候，所以只要指定了 count，那就必须用 iflag=fullblock
 
-    # https://wiki.archlinux.org/title/Dd#Partial_read:_copied_data_is_smaller_than_requested
+        https://wiki.archlinux.org/title/Dd#Partial_read:_copied_data_is_smaller_than_requested
 
-    https://unix.stackexchange.com/questions/12532/dd-vs-cat-is-dd-still-relevant-these-days/12538#12538
+        https://unix.stackexchange.com/questions/12532/dd-vs-cat-is-dd-still-relevant-these-days/12538#12538
 
-    https://unix.stackexchange.com/questions/17295/when-is-dd-suitable-for-copying-data-or-when-are-read-and-write-partial
+        https://unix.stackexchange.com/questions/17295/when-is-dd-suitable-for-copying-data-or-when-are-read-and-write-partial
 
     # dd 丢数据，看看你的文件字节数是不是 10M
-    yes |dd of=dd_miss.txt bs=1024k count=10
+    $ yes |dd of=dd_miss.txt bs=1024k count=10
 
-    yes |head -c 10M >head_ok1.txt
-    head -c 10M /dev/zero >head_ok2.txt
+    $ yes |head -c 10M >head_ok1.txt
+    $ head -c 10M /dev/zero >head_ok2.txt
 
     # 所以必须添加 iflag=fullblock
-    yes |dd of=dd_ok.txt bs=1024k count=10 iflag=fullblock
+    $ yes |dd of=dd_ok.txt bs=1024k count=10 iflag=fullblock
 
     # Fedora 介绍的安装 iso 写入 u 盘用的是 oflag
-    dd if=/path/to/image.iso of=/dev/sdX bs=8M status=progress oflag=direct
+    $ dd if=/path/to/image.iso of=/dev/sdX bs=8M status=progress oflag=direct
 
 读取挂载在存储设备上的 iso 文件，进行 gpg 校验
 
     # 注意使用了管道操作默认的标准输入和标准输出，gpg 最后用的 -
     # dd if=/dev/sdb |gpg --keyid-format 0xlong --verify my_signature.sig -
-    cat /dev/sdb |gpg --keyid-format 0xlong --verify my_signature.sig -
+    $ cat /dev/sdb |gpg --keyid-format 0xlong --verify my_signature.sig -
 
 设备级互拷：将本地的 /dev/hdb 整盘备份到 /dev/hdd
 
     # dd if=/dev/hdb of=/dev/hdd
-    cat /dev/sda >/dev/sdb
-    cp /dev/sda /dev/sdb
+    $ cat /dev/sda >/dev/sdb
+    $ cp /dev/sda /dev/sdb
 
 设备到文件：将 /dev/hdb 全盘数据备份到指定路径的 image 文件
 
     # dd if=/dev/hdb of=/root/image
-    cat /dev/hdb >/root/image
+    $ cat /dev/hdb >/root/image
 
     # 备份的同时压缩
     #dd if=/dev/hdb |gzip >/root/image.gz
-    cat /dev/hdb |gzip >/root/image.gz
+    $ cat /dev/hdb |gzip >/root/image.gz
 
     # 拷贝内存到磁盘上的文件
     # dd if=/dev/mem of=/root/mem.bin bs=1024
-    cat /dev/mem >/root/mem.bin
+    $ cat /dev/mem >/root/mem.bin
 
     # 拷贝光盘内容到指定文件夹，并保存为 cd.iso 文件
     # dd if=/dev/cdrom(hdc) of=/root/cd.iso
-    cat /dev/cdrom(hdc) >/root/cd.iso
+    $ cat /dev/cdrom(hdc) >/root/cd.iso
 
 文件到设备：将备份文件恢复到指定盘
 
     # dd if=/root/image of=/dev/hdb
-    cat /root/image >/dev/hdb
+    $ cat /root/image >/dev/hdb
 
     # 解压并恢复备份文件到指定盘
     # gzip -dc /root/image.gz | dd of=/dev/hdb
-    gzip -dc /root/image.gz >/dev/hdb
+    $ gzip -dc /root/image.gz >/dev/hdb
 
 备份与恢复 MBR：利用 dd 时顺序读写的特点，从磁盘设备的开头开始，恰好就是启动扇区
 
     # 备份磁盘开始的 512 个字节大小的 MBR 信息到指定文件
     # dd if=/dev/hda of=/root/image bs=512 count=1 iflag=fullblock
-    head -c 512 /dev/hda >/root/boot.image
+    $ head -c 512 /dev/hda >/root/boot.image
 
     # 用 boot.img 制作启动盘
     # dd if=boot.img of=/dev/fd0 bs=1440k
-    cat boot.img >/dev/fd0
+    $ cat boot.img >/dev/fd0
 
     恢复：
 
     # 将上面备份的MBR信息写到磁盘开始部分
     #dd if=/root/image of=/dev/had
-    cat /root/image >/dev/had
+    $ cat /root/image >/dev/had
 
     备份软盘
     #dd if=/dev/fd0 of=disk.img bs=1440k count=1 iflag=fullblock
-    head -c 1440K /dev/fd0 >disk.img
+    $ head -c 1440K /dev/fd0 >disk.img
 
 ### 快速清理文件和快速建立文件
 
@@ -7179,15 +7179,15 @@ NOTE: dd 有个毛病，系统调用函数read()在管道操作后会静默的�
 
     # 换成 /dev/urandom 随机值填充，速度更慢
     # dd if=/dev/zero of=fs.img bs=1M count=1M seek=1024
-    head -c 1024M /dev/zero >fs.img
+    $ head -c 1024M /dev/zero >fs.img
 
 指定大小，用 truncate 命令更快，文件是空的，瞬间建成
 
-    truncate --size 10G test.db.bak
+    $ truncate --size 10G test.db.bak
 
     预创建块文件，有个更快的命令
 
-        fallocate -l 10G test_file2.img
+        $ fallocate -l 10G test_file2.img
 
 快速清理文件
 
@@ -7199,9 +7199,9 @@ NOTE: dd 有个毛病，系统调用函数read()在管道操作后会静默的�
 
     删除数量巨大的文件， rm * 报错，用 find 命令遍历目录挨个传参数的办法删除，虽然慢但是能做，注意用后台命令，不然挂好久
 
-        find /tmp -type f -exec rm {} \; &
+        $ find /tmp -type f -exec rm {} \; &
 
-        find /home -type f -size 0 -exec rm {} \;
+        $ find /home -type f -size 0 -exec rm {} \;
 
     最快方法
 
@@ -7209,7 +7209,7 @@ NOTE: dd 有个毛病，系统调用函数read()在管道操作后会静默的�
 
         http://linuxnote.net/jianingy/en/linux/a-fast-way-to-remove-huge-number-of-files.html
 
-        mkdir empty && rsync -r --delete empty/ some-dir && rmdir some-dir
+        $ mkdir empty && rsync -r --delete empty/ some-dir && rmdir some-dir
 
 ### 压缩解压缩 tar gz bz2 tbz
 
