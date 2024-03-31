@@ -7085,7 +7085,10 @@ dd 命令是基于块（block）的复制，“裸读写”（直接越过文件
 
 用 dd 过时了
 
-    文件到设备，设备到文件的大部分用途，用 cat 或 cp 命令就足够了，如果要限制字节数用 head -c 处理即可，除了指明必须用 dd 按块大小写入等场合，尽量避免用 dd。
+        https://www.vidarholen.net/contents/blog/?p=479
+
+    文件到设备，设备到文件的大部分用途，用 cat 或 cp 命令就足够了，除非该设备不支持 one-byte write。
+    如果要限制字节数用 head -c 处理即可，除了指明必须用 dd 按块大小写入等场合，尽量避免用 dd。
 
         https://unix.stackexchange.com/questions/224277/is-it-better-to-use-cat-dd-pv-or-another-procedure-to-copy-a-cd-dvd/224314#224314
 
