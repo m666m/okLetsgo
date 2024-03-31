@@ -7112,9 +7112,6 @@ NOTE: dd 有个毛病，系统调用函数 read() 在管道操作后会静默的
     # 所以必须添加 iflag=fullblock
     $ yes |dd of=dd_ok.txt bs=1024k count=10 iflag=fullblock
 
-    # Fedora 介绍的安装 iso 写入 u 盘用的是 oflag
-    $ dd if=/path/to/image.iso of=/dev/sdX bs=8M status=progress oflag=direct
-
 读取挂载在存储设备上的 iso 文件，进行 gpg 校验
 
     # 注意使用了管道操作默认的标准输入和标准输出，gpg 最后用的 -
