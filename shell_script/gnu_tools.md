@@ -11208,6 +11208,12 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
         $ sudo baobab
 
+全系统性能分析，支持火焰图查看各调用栈，功能类似 Windows 的系统性能分析工具
+
+    https://fedoramagazine.org/performance-profiling-in-fedora-linux/
+
+        $ sysprof
+
 浏览器
 
     安全设置
