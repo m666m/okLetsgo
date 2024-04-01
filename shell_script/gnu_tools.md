@@ -11917,7 +11917,17 @@ Categories=GTK;System;TerminalEmulator;
 
 ### 使用 Gnome 桌面
 
-    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/assembly_overview-of-gnome-environments_getting-started-with-the-gnome-desktop-environment
+    使用 GNOME 桌面环境
+
+        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/index
+
+    设置 GNOME 桌面环境
+
+        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/administering_the_system_using_the_gnome_desktop_environment/index
+
+    自定义 GNOME 桌面环境
+
+        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/customizing_the_gnome_desktop_environment/index
 
     gnome 桌面软件手册 https://help.gnome.org/users/
 
