@@ -279,7 +279,7 @@ N100 跑分对比 Intel 笔记本用低压CPU，不是hq那种：
 
     嵌入式 CPU 安全启动的说明 https://www.zhihu.com/question/57346559/answer/2895463445
 
-### 前提条件
+### 前提条件：原生 UEFI+GPT
 
 NOTE: Windows 10+ 取消了对非 ssd 硬盘做系统盘的优化，SATA 硬盘最多安装 Windows 8。
 
@@ -297,13 +297,11 @@ Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
     旧显卡如果不是连接 HDMI 口而是 DP 口，参见章节 [老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）]
 
-只要系统引导时不是原生 UEFI+GPT，比如使用 UEFI CSM 兼容模式，这样安装的 Windows 无法开启 Secure Boot 功能。
+只要系统引导时不是原生 UEFI+GPT，比如使用 UEFI CSM 兼容模式，这样安装的 Windows 无法开启 Secure Boot 功能
 
-最尴尬的是，在 Windows 安装时不会做任何提示，安装完成启动 Windows 后运行 msinfo32 才能确认 Secure Boot 功能是否成功开启。
+    比如安装 Windows 后发现 BIOS 启动模式不是原生 UEFI，把 BIOS 设置里的存储设备类型改回为 UEFI：该硬盘启动系统的时候会自动跳转主板 BIOS 的 CMS 模式的 UEFI，读取硬盘的 UEFI 分区引导系统。无法启用 Secure Boot 功能，只能重装系统 Windows。
 
-如果安装后发现 BIOS 启动模式不是原生 UEFI，想把 BIOS 设置里的存储设备类型改回为 UEFI：
-
-    该硬盘启动系统的时候会自动跳转主板 BIOS 的 CMS 模式的 UEFI，读取硬盘的 UEFI 分区引导系统。无法启用 Secure Boot 功能，只能重装系统 Windows。
+如果有条件不符合要求，Windows 10 安装程序不会做任何提示，会自动选择兼容的 CSM 模式，在安装完成启动 Windows 后运行 msinfo32 才能确认 Secure Boot 功能是否成功开启。
 
 安装 Windows 11 在 Secure Boot 的基础上，还要求主板 BIOS 开启 TPM2.0
 
@@ -311,18 +309,17 @@ Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
     进入主板 BIOS 设置的 “Settings”，选择 “Intel Platform Trust Technology(PTT)”，选择 “Enable”，下面的选项 “Trusted Computing” 回车，进入的设置界面，找 “Security Device Support” 选择 “Enable”。
 
-2024年的 Windows 7 如果需要支持 UEFI 需要打补丁，之前的数字签名都过期了
+2024年的 Windows 7 如果需要支持 UEFI 需要打补丁，之前的数字签名都过期了，安全启动功能会限制驱动程序导致 Windows 7 无法启动
 
     KB5017361 该补丁依赖 KB5017397
 
-    更新并重签名了引导文件 bootmgr.efi 和 bootmgfw.efi 及内核 winload.efi 文件
-    bootmgfw.efi 文件属性
+    更新并重签名了引导文件 bootmgr.efi 和 bootmgfw.efi 及内核 winload.efi 文件属性
 
-    虚拟机设置固件类型下，可选择UEFI并且勾选启用安全引导
+    虚拟机设置固件类型下，可选择 UEFI 并且勾选启用安全引导
 
 ### 一、制作支持 UEFI + GPT 的启动u盘
 
-建议使用英文版 Windows 的 iso 文件制作启动u盘，在安装 Windows 时，区域设置选择 “新加坡”，系统语言选择简体中文，安装后 “非unicode区域设置” 选择新加坡。或安装时直接选择区域为美国。安装完成后添加中文语言包，再更改界面提示语言为简体中文，原因不解释了。
+建议使用英文版 Windows 的 iso 文件制作启动u盘，在安装 Windows 时，区域设置选择 “新加坡”，系统语言选择简体中文，安装后 “非unicode区域设置” 选择新加坡。或安装时选择区域为美国。安装完成后添加中文语言包，再更改界面提示语言为简体中文，原因不解释了。
 
 开源的u盘制作工具
 
@@ -387,7 +384,7 @@ rufus 制作u盘时引导类型选择 “FreeDos” 就行了，完成后把 gho
 
 1、确保“启动模式”、“存储”和 “PCIe 设备” 等都是 UEFI 模式
 
-选 BOOT 选项卡：
+BOOT 选项卡：
 
     启动模式选项（Windows 10 Features）要选择 “Windows 10” 而不是 “other os”。
 
@@ -397,7 +394,7 @@ rufus 制作u盘时引导类型选择 “FreeDos” 就行了，完成后把 gho
 
 确认
 
-    当前系统内的 PCIe 设备应该是出现了一些选项可以进行设置，比如 “Advanced” 界面 “PCI  Subsystem setting” 下 RX30 系列显卡的支持 Resize Bar，三星 ssd 硬盘可以查看参数等。
+    主板 BIOS 设置界面可以直接加载 UEFI 驱动了（所以现在叫主板 UEFI 设置界面），可以给你的 PCIe 设备设置选项：在 “Advanced” 界面 “PCI  Subsystem setting” 下，可以看到你的设备多出了功能菜单，如 Nvidia RTX30 系列显卡设置支持 Resize Bar，三星 ssd 硬盘可以运行自检等。
 
 总结来说，Windows 10 的安装程序兼容各种老设备
 
@@ -503,7 +500,7 @@ UEFI 安全启动可以绕过，已经有常驻 UEFI 启动区的木马了
 
 NOTE：Windows 安装程序选择原生 UEFI 模式还是 CSM 兼容模式安装，都不会做出任何提示。
 
-所以不管新旧硬盘，在 Windows 安装程序到了划分磁盘这一步，都是建议把硬盘分区全删后重新建分区，然后全新安装 Windows。
+所以不管新旧硬盘，在 Windows 安装程序到了划分磁盘这一步，都是建议把硬盘分区全删后重新建分区，然后全新安装 Windows，这样可以避免很多不必要的麻烦。
 
 另外：安装完 Windows 后，三星 SSD 硬盘的管理程序 Samsung Magican 里，不要设置 Over Provisioning 功能。原因见章节 [踩坑经历]。
 
