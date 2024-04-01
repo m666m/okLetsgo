@@ -1300,46 +1300,6 @@ Linux 内核提供了一种通过 /proc 文件系统，在运行时访问内核�
     /proc/N/status 进程状态信息，比stat/statm更具可读性
     /proc/self 链接到当前正在运行的进程
 
-## 替换正在运行的文件
-
-    https://unix.stackexchange.com/questions/138214/how-is-it-possible-to-do-a-live-update-while-a-program-is-running
-
-策略1：直接写入内容会报错
-
-    echo 'new content' >somefile
-
-策略2：删除文件再写入，原文件其实在进程中存在
-
-    rm somefile
-    echo 'new content' >somefile
-
-策略3：新建文件然后用 mv 命令，这样原文件和新文件会在进程中同时存在，这样的兼容性最好
-
-    echo 'new content' >somefile.new
-    mv somefile.new somefile
-
-对可执行文件来说，采取策略2和策略3 都可以完美替换，原进程继续运行，杀掉原进程重启就会用新的可执行文件了。
-
-对应用程序升级来说，动态链接库和配置文件变化，可能对原进程有影响。
-
-## 监视文件或目录变动
-
-安装使用 fswatch 软件包
-
-    https://github.com/emcrisostomo/fswatch
-
-列出当前可用的内核监视器
-
-    $ fswatch -M
-    inotify_monitor
-    poll_monitor
-
-监视目录
-
-    fswatch ~/mycode 可多写
-
-有变动就会输出该目录或文件名
-
 ## 进程查看
 
 显示进程的命令行
@@ -2173,6 +2133,46 @@ lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof），即
     sshd     31856     uu   11u  IPv6 276013854      0t0  TCP *:22 (LISTEN)
     nginx    15882   root    6u  IPv4 275158656      0t0  TCP *:80 (LISTEN)
     nginx    15882   root   10u  IPv4 275158660      0t0  TCP *:443 (LISTEN)
+
+## 替换正在运行的文件
+
+    https://unix.stackexchange.com/questions/138214/how-is-it-possible-to-do-a-live-update-while-a-program-is-running
+
+策略1：直接写入内容会报错
+
+    echo 'new content' >somefile
+
+策略2：删除文件再写入，原文件在进程中存在，其实 somefile 的 inode 不释放，供打开它的进程使用
+
+    rm somefile
+    echo 'new content' >somefile
+
+策略3：新建文件然后用 mv 命令，这样原文件和新文件会在进程中同时存在，这样的兼容性最好
+
+    echo 'new content' >somefile.new
+    mv somefile.new somefile
+
+对可执行文件来说，采取策略2和策略3 都可以完美替换，原进程继续运行，杀掉原进程重启就会用新的可执行文件了。
+
+对应用程序升级来说，动态链接库和配置文件变化，可能对原进程有影响。
+
+## 监视文件或目录变动
+
+安装使用 fswatch 软件包
+
+    https://github.com/emcrisostomo/fswatch
+
+列出当前可用的内核监视器
+
+    $ fswatch -M
+    inotify_monitor
+    poll_monitor
+
+监视目录
+
+    fswatch ~/mycode 可多写
+
+有变动就会输出该目录或文件名
 
 ## 查看日志
 
