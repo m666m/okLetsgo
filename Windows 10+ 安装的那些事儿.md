@@ -421,15 +421,13 @@ UEFI 模式下显卡连接 DP 口刚开机时，显示器会自动使用物理�
 
 ### 三、主板开启 Secure Boot 功能
 
-Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用是主板 UEFI 启动时只加载经过认证的操作系统或者硬件驱动程序，从而防止恶意软件侵入。
+Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用是主板 UEFI 启动时只加载经过认证的操作系统或者硬件驱动程序，从而防止恶意软件侵入。 Linux 下参见章节 [在 Linux 使用安全启动（Secure Boot）--- mokutil](init_a_server think)。
 
-    如果你要装的 Linux 不支持 SecureBoot，记得关掉主板 BIOS 的 SecureBoot 设置。
+UEFI 安全启动可以绕过，已经有常驻 UEFI 启动区的木马了
 
-    Debian 包含一个由 Microsoft 签名的 “shim” 启动加载程序，因此可以在启用了 Secure Boot 的计算机上正常工作 <https://www.debian.org/releases/stable/amd64/ch03s06.en.html#secure-boot>。
+    https://arstechnica.com/information-technology/2023/03/unkillable-uefi-malware-bypassing-secure-boot-enabled-by-unpatchable-windows-flaw/
 
-    UEFI 安全启动可以绕过，已经有常驻 UEFI 启动区的木马了 <https://arstechnica.com/information-technology/2023/03/unkillable-uefi-malware-bypassing-secure-boot-enabled-by-unpatchable-windows-flaw/>。
-
-前提是确保 章节 [主板 BIOS 设置启动模式为原生 UEFI]。
+前提是确保实现了章节 [主板 BIOS 设置启动模式为原生 UEFI]。
 
 1、开启 “Secure Boot”
 
@@ -457,8 +455,6 @@ Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个�
 
     安全启动使用三种密钥：PK(platform key) 是平台的主密钥，KEK(key exchange keys) 是每次更新数据库时使用的密钥，DB(authorized signatures) 是直接对应bootloader的密钥。KEK 被 PK 签名，DB 被 KEK 签名，而 bootloader 被 DB 签名。
 
-    你可以用 archLinux 实现集成自己的公钥签名自己打包的内核到安全启动 https://www.bilibili.com/read/cv10788457
-
 2、“Secure Boot Mode” 导入出厂密钥后，再改回 “Standard”
 
 在主板 BIOS 底部显示的操作提示是再改回 “Standard”。
@@ -485,19 +481,25 @@ Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个�
 
 ### 四、Windows安装u盘使用 UEFI 模式启动计算机
 
-用第一步制作的 UEFI+GPT 的安装u盘开机启动，按快捷键 F8 进入 BIOS 的启动菜单，同一个启动u盘有两个选项，注意要选择带有 “UEFI” 字样的那个u盘启动。
+用第一步制作的 UEFI+GPT 的安装 U 盘开机启动，按快捷键 F8 进入 BIOS 的启动菜单，同一个启动 U 盘有两个选项，注意要选择带有 “UEFI” 字样的那个 U 盘启动。
 
-如果不明确选择使用 UEFI 驱动引导u盘启动，有可能导致主板使用 CMS 模式，从而影响 Windows 安装程序的条件判断。
+如果不明确选择使用 UEFI 驱动引导 U 盘启动，有可能导致主板使用 CMS 模式，从而影响 Windows 安装程序的条件判断。
 
 ### 五、确保硬盘格式化为 GPT 类型
 
 以上条件作为前提条件，如果都符合，Windows 安装程序才会认为计算机是启动于原生 UEFI 模式，接下来对硬盘的操作才会默认采用 GPT 类型。
 
-细分具体情况如下：
+如果是新硬盘，或用户选择对整个磁盘重新建立分区：
 
-如果是新硬盘，或用户选择对整个磁盘重新建立分区：前提条件都符合，Windows 安装程序会把硬盘格式化为 GPT 类型，并进行安装，这样能保证安装后的 Windows 启用 Secure Boot 功能。只要有前提条件不符，Windows 安装程序就会自动把硬盘格式化为 MBR 类型，并使用 CSM 兼容模式进行引导安装。
+    前提条件都符合，Windows 安装程序会把硬盘格式化为 GPT 类型，并进行安装，这样能保证安装后的 Windows 启用 Secure Boot 功能。
 
-如果是已经划分过分区的旧硬盘：如果硬盘是 GPT类型，但是其它前提条件不符，或硬盘不是 GPT 类型，且用户选择直接在原有分区上安装 Windows，都会导致 Windows 安装程序自动使用 CSM 兼容模式进行引导安装。所以，如果你的硬盘之前安装过的 Windows 是可以启用 Secure Boot 功能的，那它的分区设置是没有问题的，可以不用重新新建分区，选择把老的分区格式化清除即可继续安装 Windows 了。
+    只要有前提条件不符，Windows 安装程序就会自动把硬盘格式化为 MBR 类型，并使用 CSM 兼容模式进行引导安装。
+
+如果是已经划分过分区的旧硬盘：
+
+    如果硬盘是 GPT类型，但是其它前提条件不符，或硬盘不是 GPT 类型，且用户选择直接在原有分区上安装 Windows，都会导致 Windows 安装程序自动使用 CSM 兼容模式进行引导安装。
+
+    所以，如果你的硬盘之前安装过的 Windows 是可以启用 Secure Boot 功能的，那它的分区设置是没有问题的，可以不用重新新建分区，选择把老的分区格式化清除即可继续安装 Windows 了。
 
 NOTE：Windows 安装程序选择原生 UEFI 模式还是 CSM 兼容模式安装，都不会做出任何提示。
 
@@ -513,11 +515,11 @@ NOTE：Windows 安装程序选择原生 UEFI 模式还是 CSM 兼容模式安装
 
         >list disk
 
-    查看对应磁盘的 Gpt 那一列，是否有星号，有就是确认 GPT 磁盘了
+    查看对应磁盘的 GPT 那一列，是否有星号，有就是确认 GPT 磁盘了
 
 验证2
 
-    Windows安装完成后，在控制面板进入磁盘管理，在磁盘 0 上点击右键，看看“转换成 GPT 磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是 GPT 类型，大概率是 MBR 类型。真正的 GPT 磁盘，只提供“转换成 MBR 磁盘”选项。注意，那个 “转换成动态磁盘” 不要理它，微软都废弃了。
+    Windows 安装完成后，在控制面板进入磁盘管理，在磁盘 0 上点击右键，看看“转换成 GPT 磁盘”是可用的而不是灰色的不可用？如果是，那么说明当前磁盘的分区格式不是 GPT 类型，大概率是 MBR 类型。真正的 GPT 磁盘，只提供“转换成 MBR 磁盘”选项。注意，那个 “转换成动态磁盘” 不要理它，微软都废弃了。
 
 参考 <https://www.163.com/dy/article/FTJ5LN090531NEQA.html>
 
@@ -533,7 +535,7 @@ Windows 安装完成后，运行 msinfo32，在 “系统摘要” 界面找 “
 
 后来显卡升级了 BIOS，又关闭主板 CMS 模式，重新安装了 Windows 10 21H1，在主板 BIOS 设置里装载默认值 “Load optimized defaults”（默认把存储设备换回了 legacy），然后设置 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选 “Disable”，但没有提前把存储设备换回 UEFI 类型。该存储设备的选项在关闭 CMS 模式时屏蔽显示，没有自动改回为 UEFI 类型，而用户又看不到了。。。这就导致后续运行的 Windows 安装程序自动把硬盘格式化为 MBR 类型。
 
-这样装完 Windows 开机启动后，估计是主板尝试 UEFI 没有引导成功，自动转为 CSM 模式走 bios+UEFI 的过程，导致 Windows下无法开启 Secure Boot 功能。
+这样装完 Windows 开机启动后，主板尝试 UEFI 没有引导成功，自动转为 CSM 模式走 bios+UEFI，表现为开机时最初的黑屏时间较长，等待很久以为不能启动了，才出现 Windows 开机画面登录桌面，这样安装的 Windows 是无法开启 Secure Boot 功能的。
 
 后来升级了显卡 BIOS ，可以支持主板 UEFI 下的 DP 口显示后，我重装了 Windows，在主板 BIOS 设置中启动模式选项 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选项 “Disable” 后下面的三个选项自动隐藏了，我以为都是自动 UEFI 了，其实技嘉主板只是把选项隐藏了，硬盘模式保持了上次安装 Windows 时设置的 legacy 不是 UEFI……
 
