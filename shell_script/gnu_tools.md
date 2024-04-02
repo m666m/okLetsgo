@@ -7739,11 +7739,15 @@ xdm 有图形界面
 
         $ sudo dnf install axel
 
-    Motrix 是 Windows 下的 aria2 图形界面程序，该软件使用方便，预先配置好了 aria2，自动更新最佳 dht 站点清单。
+    [不推荐]Motrix 是 Windows 下的 aria2 图形界面程序，该软件使用方便，预先配置好了 aria2，自动更新最佳 dht 站点清单。
 
         https://github.com/agalwood/Motrix
 
         注意：Motrix 自带的 Aria2 来源于他自己的专用 Fork（未开源） 而非官方发行的预编译包。
+
+    不知道 NSA 蜜罐会搞镜像站点么
+
+        https://github.com/VPNSox/NSABlocklist
 
 Aria2 的命令行传输各种参数，设置复杂，一般都使用各种客户端发送下载请求给它。
 
