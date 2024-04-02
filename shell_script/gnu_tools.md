@@ -1003,56 +1003,56 @@ Contour Terminal Emulator 这个是真正的速度极快，而且跨平台
 
     目前只能手动修改：
 
-```yml
-# 主配置
-profiles:
-    main:
-        # 打开终端后作为登录shell
-        shell: "/bin/bash"
-        arguments: ["-l"]
+    ```yml
+    # 主配置
+    profiles:
+        main:
+            # 打开终端后作为登录shell
+            shell: "/bin/bash"
+            arguments: ["-l"]
 
-        # 按字符数的窗口大小
-        terminal_size:
-            columns: 80
-            lines: 25
+            # 按字符数的窗口大小
+            terminal_size:
+                columns: 80
+                lines: 25
 
-        scrollbar:
-            position: Right
+            scrollbar:
+                position: Right
 
-        # 字体
-        font:
-            regular:
-                # 不支持中文字体回落 ["MesloLGS Nerd Font", "Noto Serif CJK SC"]
-                family: "MesloLGS Nerd Font"
+            # 字体
+            font:
+                regular:
+                    # 不支持中文字体回落 ["MesloLGS Nerd Font", "Noto Serif CJK SC"]
+                    family: "MesloLGS Nerd Font"
 
-        # 光标样式和闪动
-        cursor:
-            blinking: true
+            # 光标样式和闪动
+            cursor:
+                blinking: true
 
-        # 背景透明和模糊
-        background:
-            opacity: 0.95
-            blur: false
+            # 背景透明和模糊
+            background:
+                opacity: 0.95
+                blur: false
 
-        # 颜色方案，在下面的 color_schemes 处配置
-        # Specifies a colorscheme to use (alternatively the colors can be inlined).
-        colors: "default"
+            # 颜色方案，在下面的 color_schemes 处配置
+            # Specifies a colorscheme to use (alternatively the colors can be inlined).
+            colors: "default"
 
-# 颜色方案
-color_schemes:
-    # 系统默认的颜色方案
-    default:
+    # 颜色方案
+    color_schemes:
+        # 系统默认的颜色方案
+        default:
 
-        background_image:
-            # flatpak 下不知道怎么找路径。。。
-            path: '/Pictures/78883229_UHD.jpg'
-            opacity: 0.5
-            blur: false
+            background_image:
+                # flatpak 下不知道怎么找路径。。。
+                path: '/Pictures/78883229_UHD.jpg'
+                opacity: 0.5
+                blur: false
 
-# 快捷键
-input_mapping:
-    # 选择文字后按 ctrl+c 是复制到内部剪贴板，中键可粘贴
-```
+    # 快捷键
+    input_mapping:
+        # 选择文字后按 ctrl+c 是复制到内部剪贴板，中键可粘贴
+    ```
 
 WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装。速度快，兼容性较好，左侧就是文件夹树方便 sftp，支持 lrzsz 的文件拖放传送，命令行输出还支持标签折叠
 
@@ -1067,6 +1067,12 @@ WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持�
 
         再找到 .wind/profiles/default.v10/terminal/user.sessions 文件删除 session.autoLogin， 就可以将主密码设置为空字符串了，之后再来修改主密码，就 OK 了。
 
+nyagos 类 Unix 终端，但是支持 Windows 格式的路径
+
+    https://github.com/nyaosorg/nyagos
+
+        nyagos增加zoxide的支持 https://wentao.org/post/2023-04-27-zoxide-with-nyagos/
+
 edex-ui 创·战纪 风格的终端模拟器，还带一个简单的文件浏览器，系统资源监视器，虽然基于 Electron 的应用程序比较笨重，但效果太酷了
 
     https://github.com/GitSquared/edex-ui
@@ -1075,7 +1081,7 @@ edex-ui 创·战纪 风格的终端模拟器，还带一个简单的文件浏览
 
     自定义主题说明 https://github.com/GitSquared/edex-ui/wiki/Themes
 
-Alacritty 使用 OpenGL 进行显示加速（速度一般）的终端模拟器，在 Linux 下刷新速度极快，在 Windows 下使用 powershell 不推荐
+Alacritty 使用 OpenGL 进行显示加速（速度一般）的终端模拟器，在 Linux 下刷新速度快，在 Windows 下使用 powershell 不推荐
 
     https://github.com/alacritty/alacritty
 
@@ -2791,6 +2797,11 @@ zsh 自带功能
 
         # https://github.com/junegunn/fzf#fuzzy-completion-for-bash-and-zsh
         $ sudo apt install fzf
+
+    快速进入目录 zoxide
+
+        # https://github.com/ajeetdsouza/zoxide
+        $ sudo apt install zoxide  # Debian 更新太慢，官方建议直接运行源代码的 install.sh 进行安装
 
 简单启用插件就直接在 ~/.zshrc 文件里使用 source 命令即可，完整示例见章节 [.zshrc 配置文件样例]
 
@@ -12183,13 +12194,13 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
 推荐打开的内置扩展：
 
-    Application Menu        常用工具栏的 “Show Apps” 按钮会罗列所有的应用程序，软件安装多了之后太乱了，用这个给你在任务栏为应用程序添加基于类别的菜单，方便你的选择，感觉再加上个打字即搜索列出结果的功能更好。
+    Application Menu        常用工具栏的 “Show Apps” 按钮会罗列所有的应用程序，软件安装多了之后太乱了，用这个给你在任务栏为应用程序添加基于类别的菜单，方便你的选择，感觉再加上个打字即搜索列出结果和列出刚打开的程序的功能更好。
 
 推荐安装的第三方扩展：
 
 提升效率类
 
-    Dash to Dock            把常用工具栏变成浮动工具栏，不需要进入“任务概览”才能找到了。浮动工具栏在用户打开的应用程序窗口覆盖该区域后就会自动隐藏，任何时候鼠标在屏幕的底边中部碰碰就会弹出（也可设置为总是显示）。我最常用的操作就是鼠标撞屏幕底部，就撞出来浮动工具栏了。对宽屏用户来说把浮动工具栏设置为显示在屏幕左右边更方便。竞品 Dash2Dock Lite，仿 MacOS 的动画效果，响应更敏捷。
+    Dash to Dock            把常用工具栏变成浮动工具栏，不需要进入“任务概览”才能找到了。浮动工具栏在用户打开的应用程序窗口覆盖该区域后就会自动隐藏，任何时候鼠标在屏幕的底边中部碰碰就会弹出（也可设置为总是显示）。我最常用的操作就是鼠标撞屏幕底部，就撞出来浮动工具栏了。对宽屏用户来说把浮动工具栏设置为显示在屏幕左边更方便。竞品 Dash2Dock Lite，仿 MacOS 的动画效果，响应更敏捷。
 
     Dash to Panel           使用习惯模仿 Windows 任务栏，把常用工具栏变成底部的固定工具栏，右键菜单很方便，也添加了按钮“显示桌面”。这样就不需要内置的 Application Menu 扩展了。
 
