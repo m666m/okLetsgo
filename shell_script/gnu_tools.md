@@ -11729,6 +11729,13 @@ adobe 思源跟 Google Noto 这俩字体是一回事
 
 #### 设置中英文分别使用一种字体 fontconfig
 
+    https://catcat.cc/post/2021-03-07/
+        https://catcat.cc/post/2020-10-31/
+
+    https://www.jinbuguo.com/gui/linux_fontconfig.html
+
+    https://www.insidentally.com/articles/000036/
+
 Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言）：
 
         https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description
@@ -12234,9 +12241,13 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
         https://github.com/neffo/bing-wallpaper-gnome-extension
             https://github.com/utkarshgpta/bing-desktop-wallpaper-changer
 
-        竞品 NASA APOD，自动从 NASA 网站下载它的漂亮图片作为你的壁纸
+    NASA APOD，自动从 NASA 网站下载它的漂亮图片作为你的壁纸
 
-            https://github.com/Elinvention/gnome-shell-extension-nasa-apod
+        https://github.com/Elinvention/gnome-shell-extension-nasa-apod
+
+    TODO:自写脚本指定壁纸目录随机更换
+
+        https://www.insidentally.com/articles/000037/
 
     Nigh Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现自动定时切换。
 
