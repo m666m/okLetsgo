@@ -11495,23 +11495,23 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
     Steam：在 steam 的设置中启动 Proton 来游玩 Windows 游戏。
 
-### 可与命令行交互的图形界面 zenity
+可与命令行交互的图形界面 zenity
 
-在桌面环境的终端里，执行 shell 脚本时实现弹出式对话框，用户的选择可以用返回值方式被 shell 脚本读取以实现交互，基于 gtk 库实现，需要操作系统有桌面图形化环境
+    在桌面环境的终端里，执行 shell 脚本时实现弹出式对话框，用户的选择可以用返回值方式被 shell 脚本读取以实现交互，基于 gtk 库实现，需要操作系统有桌面图形化环境
 
-    https://help.gnome.org/users/zenity/stable/
+        https://help.gnome.org/users/zenity/stable/
 
-    KDE 桌面项目也有类似的工具——KDialog
+        KDE 桌面项目也有类似的工具——KDialog
 
-        https://develop.kde.org/docs/administration/kdialog/
+            https://develop.kde.org/docs/administration/kdialog/
 
-    https://ostechnix.com/zenity-create-gui-dialog-boxes-in-bash-scripts/
+        https://ostechnix.com/zenity-create-gui-dialog-boxes-in-bash-scripts/
 
-    https://blog.gtwang.org/programming/zenity-gui-utility/
+        https://blog.gtwang.org/programming/zenity-gui-utility/
 
-简单显示消息
+    简单显示消息
 
-    $ zenity --info --text="這是訊息內容" --title="這是標題"
+        $ zenity --info --text="這是訊息內容" --title="這是標題"
 
 ### 使用拼音输入法
 
@@ -11527,15 +11527,21 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
 GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表情符号菜单。
 
-#### TODO:使用 Fcitx 5 + 维基百科中文拼音词库
+#### 使用 Fcitx 5 + 维基百科中文拼音词库
 
     https://zhuanlan.zhihu.com/p/508797663
 
-zhijie faxingban ruanjianzhongxin
+    Fcitx 5
 
-    https://github.com/fcitx/fcitx5
+        https://github.com/fcitx/fcitx5
 
-Fcitx 把自己拆分的比较细，ming安装时需要分别安装多个包,zhi：框架、图形界面、中文输入法
+    维基百科中文拼音词库
+
+        https://github.com/felixonmars/fcitx5-pinyin-zhwiki
+
+Fcitx 把自己拆分的比较细：框架、图形界面、中文输入法等，安装时需要分别安装多个包，dnf/flatpak 的版本更新状态未必一致，多试试吧。
+
+Fedora 的软件中心里就有，不过我安装了之后无法激活输入法，去官网主页看说明没搞定。
 
 Debian
 
@@ -11543,10 +11549,6 @@ Debian
         fcitx5-chinese-addons \
         fcitx5-frontend-gtk4 fcitx5-frontend-gtk3 fcitx5-frontend-gtk2 \
         fcitx5-frontend-qt5
-
-维基百科中文拼音词库
-
-    https://github.com/felixonmars/fcitx5-pinyin-zhwiki
 
 ### 设置中文字体
 
