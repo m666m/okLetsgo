@@ -467,13 +467,14 @@ rm 之前先 ls 试试，所谓 dry-run
 
 diff 通常的用法是从参数读入两个文件，而命令里面的-则是指从stdin读入了
 
-查找当前系统是否有某个命令，支持 alias、shell 函数等
+查找当前shell下是否可以找到某个命令，支持 alias、shell 函数等
 
     command -v ls  # 这个用法的兼容性最好
 
-    which ls
+    type ls  # 会把 shell 函数的内容也显示出来，方便调试
 
-    type ls
+    # 不支持 shell 函数
+    which ls
 
 ## bash 内建命令
 
