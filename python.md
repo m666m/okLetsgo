@@ -2056,8 +2056,6 @@ Solarized Light（vscode 自带），这个是羊皮纸底色，但是语法高�
         Tron Legacy 语法文件好，蓝色配红橙
             gerane.Theme-TronLegacy
 
-    我安装了 TronLight Theme，根据 Tron Dark Themes 的边框颜色进行了结合
-
 #### 图标
 
 产品主题图标
@@ -2410,7 +2408,7 @@ Rainbow CSV
 
 vim 脚本语言语法高亮
 
-    fallenwood.vimL
+    XadillaX.viml
 
 #### hex 颜色代码下用底色显示该颜色
 

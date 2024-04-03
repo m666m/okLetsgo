@@ -250,6 +250,9 @@ if [ -x /usr/bin/dircolors ]; then
     # distrobox 这词打不快
     alias dbox='distrobox'
 
+    # pip
+    alias pipiu='echo "[pip 跳过缓存更新指定包]" && pip install --upgrade --no-cache-dir'
+
 fi
 
 ####################################################################
