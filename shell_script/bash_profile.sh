@@ -104,6 +104,9 @@ if [ -x /usr/bin/dircolors ]; then
         cp -a $1{,.bak}
     }
 
+    # ssh 使用密码连接主机，用于内网测试机等不使用密钥连接的场合，跳过其它各种协商
+    alias sshs='echo "[使用密码连接主机]" && ssh -o "PreferredAuthentications password"'
+
     # vi 后悔药
     alias viw='echo "[提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
 
