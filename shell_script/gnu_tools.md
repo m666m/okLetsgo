@@ -14723,7 +14723,7 @@ SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候�
 
             KDE Wallet 支持 ssh、git，但是不支持 gpg
 
-        KGpg 自动保存和填写 gpg 的密码
+        用 KGpg 自动保存和填写 gpg 的密码
 
             https://userbase.kde.org/KGpg
 
