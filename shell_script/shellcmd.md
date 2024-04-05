@@ -128,6 +128,8 @@ dash 和 bash 语法上的主要的区别有:
 
 ## bash 常见符号用法
 
+    https://www.runoob.com/w3cnote/linux-shell-brackets-features.html
+
     https://linux.cn/article-5657-1.html
 
     http://c.biancheng.net/view/743.html
@@ -245,6 +247,16 @@ test 和 [] 是等价的，[] 注意两边留空格
 
 [[ ]] 是 test 的升级版，不需要对变量名加双引号，比较运算直接用 =、> 等更直观
 [[ ]] 注意两边留空格
+
+    https://www.cnblogs.com/aaron-agu/p/5700650.html
+
+    bash把双中括号中的表达式看作一个单独的元素，并返回一个退出状态码
+
+    [ ... ]为shell命令，所以在其中的表达式应是它的命令行参数，所以串比较操作符">" 与"<"必须转义，在[[]]中"<"与">"不需转义
+
+    [[ ... ]]进行算术扩展，而[ ... ]不做
+
+    [[ ... && ... && ...  ]] 和 [ ... -a ... -a ...] 不一样，[[ ]] 是逻辑短路操作，而 [ ] 不会进行逻辑短路
 
     if [[ -z $str1 ]] || [[ -z $str2 ]]; then
         echo "字符串不能为空"
