@@ -3246,7 +3246,7 @@ compinit
 # ...
 # ohmyzsh 自带插件管理，在 plugin=() 段落启用内置插件，可以在这里加载那些 source xxx 的插件
 
-################################################################################
+####################################################################
 # 以下的自定义快捷命令等部分来自 [bash_profile.sh]
 
 ###################################################################
@@ -3334,6 +3334,9 @@ if [ -x /usr/bin/dircolors ]; then
         cp -a $1{,.bak}
     }
 
+    # ssh 使用密码连接主机，用于内网测试机等不使用密钥连接的场合，跳过其它各种协商
+    alias sshs='echo "[使用密码连接主机]" && ssh -o "PreferredAuthentications password"'
+
     # vi 后悔药
     alias viw='echo "[提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
 
@@ -3368,7 +3371,7 @@ if [ -x /usr/bin/dircolors ]; then
 
     function mntntfs {
         echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,umask=0000,windows_names,iocharset=utf8 $1 $2
+        sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,windows_names,iocharset=utf8 $1 $2
     }
 
     function mntram {
@@ -3392,14 +3395,6 @@ if [ -x /usr/bin/dircolors ]; then
     function dus {
         echo "[列出 $1 占用空间最大的前 10 个目录]"
         du -a $1 | sort -n -r |head -n 10
-    }
-
-    # 命令行看天气 https://wttr.in/:help
-    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
-    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
-    # 看月相 curl http://wttr.in/moon
-    function weather {
-        curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
     }
 
     # git 常用命令
@@ -3476,6 +3471,17 @@ if [ -x /usr/bin/dircolors ]; then
 
     # distrobox 这词打不快
     alias dbox='distrobox'
+
+    # pip
+    alias pipiu='echo "[pip 跳过缓存更新指定包]" && pip install --upgrade --no-cache-dir'
+
+    # 命令行看天气 https://wttr.in/:help
+    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
+    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
+    # 看月相 curl http://wttr.in/moon
+    function weather {
+        curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
+    }
 
 fi
 

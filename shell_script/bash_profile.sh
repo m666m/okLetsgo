@@ -167,14 +167,6 @@ if [ -x /usr/bin/dircolors ]; then
         du -a $1 | sort -n -r |head -n 10
     }
 
-    # 命令行看天气 https://wttr.in/:help
-    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
-    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
-    # 看月相 curl http://wttr.in/moon
-    function weather {
-        curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
-    }
-
     # git 常用命令
     alias gs='git status'
     alias gd='echo "[差异：工作区与暂存区]" && git diff'
@@ -252,6 +244,14 @@ if [ -x /usr/bin/dircolors ]; then
 
     # pip
     alias pipiu='echo "[pip 跳过缓存更新指定包]" && pip install --upgrade --no-cache-dir'
+
+    # 命令行看天气 https://wttr.in/:help
+    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
+    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
+    # 看月相 curl http://wttr.in/moon
+    function weather {
+        curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
+    }
 
 fi
 
