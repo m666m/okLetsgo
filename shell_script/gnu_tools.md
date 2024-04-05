@@ -13285,28 +13285,29 @@ fi
 
 二、对使用 systemd 管理的桌面环境
 
-在系统运行时进行切换：
+查看登录后启动的设置选项
 
-    # 切换到命令行模式，等效 init 3，在 Fedora 下会退出到控制台 ctl+alt+F2。
-    sudo systemctl isolate multi-user.target
-
-    # 切换到图形模式，等效 init 5
-    sudo systemctl isolate graphical.target
-
-设置开机自启动：
-
-    # 查看登录后启动的设置选项
     $ systemctl get-default
 
     启动到桌面是 graphical.target，启动到命令行是 multi-user.target。
 
-        设置为登录后启动到命令行（控制台）
+在系统运行时进行切换：
 
-            $ sudo systemctl set-default multi-user.target
+    # 切换到命令行模式，等效 init 3，在 Fedora 下会退出到控制台 ctl+alt+F2。
+    $ sudo systemctl isolate multi-user.target
 
-        设置为登录后启动到图形界面
+    # 切换到图形模式，等效 init 5
+    $ sudo systemctl isolate graphical.target
 
-            $ sudo systemctl set-default graphical.target
+设置开机自启动：
+
+    设置为登录后启动到命令行（控制台）
+
+        $ sudo systemctl set-default multi-user.target
+
+    设置为登录后启动到图形界面
+
+        $ sudo systemctl set-default graphical.target
 
     然后重启计算机即可
 
@@ -13314,17 +13315,17 @@ fi
 
 显示管理器也应该是启用状态
 
-    sudo systemctl enable gdm/kdm/lightdm
+    $ sudo systemctl enable gdm/kdm/lightdm
 
 三、利用 systemd 管理的显示管理器也可单独控制启停（内存占用还是大，不如上面的方法）
 
     # lightdm sddm
-    sudo systemctl disable gdm
+    $ sudo systemctl disable gdm
 
     也可手工启动、停止指定的显示管理器服务
 
         # lightdm sddm
-        systemctl start gdm
+        $ sudo systemctl start gdm
 
 四、单独设置显示管理器服务是否开机自启动，编辑控制文件
 
