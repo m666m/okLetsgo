@@ -2097,7 +2097,8 @@ lsof 查看指定进程号打开的文件（sudo apt install lsof）
     nginx   28987 root  mem    REG      179,2    82872  129283 /usr/lib/nginx/modules/ngx_mail_module.so
     ...
 
-    这个命令经常用于查找已经擅长但仍被程序使用的文件，这些文件因为 Linux 文件系统索引和数据分离的工作方式，即使删除了系统也仍旧没有释放磁盘空间，所以有 unlink 命令，慎用。
+    $ sudo lsof | grep deleted
+    这个命令经常用于查找已经删除但仍被程序使用的文件，这些文件因为 Linux 文件系统索引和数据分离的工作方式，即使删除了系统也仍旧没有释放磁盘空间，所以有 unlink 命令，慎用。
 
     也可以查看端口占用
     $ lsof -i :3389
@@ -2116,30 +2117,6 @@ stat 查看文件的 inode 情况
     Change: 2022-11-25 02:00:21.824163803 +0800
     Birth: -
 
-df 查看磁盘占用
-
-    # 查看各个文件系统的空间占用情况，主要关注 Avail 段的可用空间
-    $ df -h
-
-    Filesystem                    Size  Used Avail Use% Mounted on
-    /dev/mapper/dev01-root         75G   58G   14G  82% /
-    udev                          2.0G  4.0K  2.0G   1% /dev
-    tmpfs                         396M  292K  396M   1% /run
-    none                          5.0M     0  5.0M   0% /run/lock
-    none                          2.0G  4.0K  2.0G   1% /run/shm
-    /dev/sda1                     228M  149M   68M  69% /boot
-
-    # 查看 inode 占用情况，如果小文件过多会看到 IFree 段 为 0，会导致该文件系统上无法新建文件
-    $ df -i
-
-    Filesystem                    Inodes   IUsed  IFree IUse% Mounted on
-    /dev/mapper/dev01-root       4964352 4964352      0  100% /
-    udev                          503779     440 503339    1% /dev
-    tmpfs                         506183     353 505830    1% /run
-    none                          506183       5 506178    1% /run/lock
-    none                          506183       2 506181    1% /run/shm
-    /dev/sda1                     124496     255 124241    1% /boot
-
 fuser 查看占用文件的进程号（sudo apt install psmisc）
 
     $ sudo fuser /usr/lib/nginx/modules/ngx_mail_module.so
@@ -2155,11 +2132,15 @@ lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof），即
 
 ## 替换正在运行的文件
 
+利用Linux 文件系统索引和数据分离的特点，可以实现在线升级
+
     https://unix.stackexchange.com/questions/138214/how-is-it-possible-to-do-a-live-update-while-a-program-is-running
 
-策略1：直接写入内容会报错
+策略1：直接写入内容会报错文件被占用
 
     echo 'new content' >somefile
+
+    其实重定向有个特殊用法，不先关闭文件而是利用已有句柄追加写入 `echo 'new content' >|somefile`
 
 策略2：删除文件再写入，原文件在进程中存在，其实 somefile 的 inode 不释放，供打开它的进程使用
 

@@ -6435,6 +6435,8 @@ GNU Screen 的默认前导键是 Ctrl+A。
 
     nohup [需要执行的命令] >/dev/null 2>&1 &
 
+如果不这样重定向，nohup 命令会持续把后台任务的标准输出写到当前目录的 nohup.out 下面，服务器长时间运行的情况下可能造成磁盘写满，参见章节 [分析存储空间 df/du]。
+
 #### 后知后觉发现一个命令要执行很久，半路让它改成后台执行
 
     https://www.ruanyifeng.com/blog/2016/02/linux-daemon.html
@@ -7100,7 +7102,7 @@ dd 命令是基于块（block）的复制，“裸读写”（直接越过文件
 
     https://wiki.archlinux.org/title/Dd
 
-用 dd 过时了
+大多数场景下用 dd 过时了
 
         https://www.vidarholen.net/contents/blog/?p=479
 
@@ -7114,23 +7116,6 @@ dd 命令是基于块（block）的复制，“裸读写”（直接越过文件
         $ sudo apt install pv
 
         $ pv </dev/zero |head -c 1024M >my.txt
-
-NOTE: dd 有个毛病，系统调用函数 read() 在管道操作后会静默的跳过某些字节数，尤其是输入数据的缓冲不足的情况下，比如网络或输入源使用 /dev/random 而系统的熵不足的时候，所以只要指定了 count，那就必须用 iflag=fullblock
-
-        https://wiki.archlinux.org/title/Dd#Partial_read:_copied_data_is_smaller_than_requested
-
-        https://unix.stackexchange.com/questions/12532/dd-vs-cat-is-dd-still-relevant-these-days/12538#12538
-
-        https://unix.stackexchange.com/questions/17295/when-is-dd-suitable-for-copying-data-or-when-are-read-and-write-partial
-
-    # dd 丢数据，看看你的文件字节数是不是 10M
-    $ yes |dd of=dd_miss.txt bs=1024k count=10
-
-    $ yes |head -c 10M >head_ok1.txt
-    $ head -c 10M /dev/zero >head_ok2.txt
-
-    # 所以必须添加 iflag=fullblock
-    $ yes |dd of=dd_ok.txt bs=1024k count=10 iflag=fullblock
 
 读取挂载在存储设备上的 iso 文件，进行 gpg 校验
 
@@ -7189,6 +7174,55 @@ NOTE: dd 有个毛病，系统调用函数 read() 在管道操作后会静默的
     备份软盘
     #dd if=/dev/fd0 of=disk.img bs=1440k count=1 iflag=fullblock
     $ head -c 1440K /dev/fd0 >disk.img
+
+dd 常用选项
+
+    conv=fsync 写入时提速，类似利用缓存，不是每个写操作都写文件系统数据，而是在 dd 执行完成之前再写入
+
+    bs=比特数   读取和写入都使用该数值，覆盖 ibs/obs 参数的设置
+
+输入：
+
+    ibs=比特数                            一次读取的比特数(默认：512)
+
+    skip=块数                             跳过第零个扇区，从第一个扇区开始读取
+
+    iflag=flag                           使用iflag来控制输入(读取数据)时的行为特征。
+
+        dsync       读写数据采用同步IO
+
+        fullblock   见子章节 [只要指定了 count 就必须用 iflag=fullblock]
+
+输出：
+
+    obs=比特数                            一次写入指定比特数(默认：512)
+
+    seek=1                              跳过第零个扇区，从第一个扇区开始写入
+
+    bs=512                              写入块大小为512字节（一般使用一个扇区的大小，用 sudo gdisk -l 查看）
+
+    count=1                             写入多少个块，这里只写入一个块
+
+    oflag=flag                          使用oflag来控制输出(写入数据)时的行为特征。
+
+#### 只要指定了 count 就必须用 iflag=fullblock
+
+NOTE: dd 有个毛病，系统调用函数 read() 在管道操作后会静默的跳过某些字节数，尤其是输入数据的缓冲不足的情况下，比如网络或输入源使用 /dev/random 而系统的熵不足的时候，所以只要指定了 count，那就必须用 iflag=fullblock 确保数据够了再写入
+
+        https://wiki.archlinux.org/title/Dd#Partial_read:_copied_data_is_smaller_than_requested
+
+        https://unix.stackexchange.com/questions/12532/dd-vs-cat-is-dd-still-relevant-these-days/12538#12538
+
+        https://unix.stackexchange.com/questions/17295/when-is-dd-suitable-for-copying-data-or-when-are-read-and-write-partial
+
+    # dd 丢数据，看看你的文件字节数是不是 10M
+    $ yes |dd of=dd_miss.txt bs=1024k count=10
+
+    $ yes |head -c 10M >head_ok1.txt
+    $ head -c 10M /dev/zero >head_ok2.txt
+
+    # 所以必须添加 iflag=fullblock
+    $ yes |dd of=dd_ok.txt bs=1024k count=10 iflag=fullblock
 
 ### 快速清理文件和快速建立文件
 
@@ -9308,9 +9342,18 @@ done
 
 ### 分析存储空间 df/du
 
-查看挂载的目录占用情况
+    https://cloud.tencent.com/developer/article/1721037
+
+1、先 df 查看挂载的目录占用情况，主要关注 Avail 段的可用空间
 
     $ df -h
+    Filesystem                    Size  Used Avail Use% Mounted on
+    /dev/mapper/dev01-root         75G   58G   14G  82% /
+    udev                          2.0G  4.0K  2.0G   1% /dev
+    tmpfs                         396M  292K  396M   1% /run
+    none                          5.0M     0  5.0M   0% /run/lock
+    none                          2.0G  4.0K  2.0G   1% /run/shm
+    /dev/sda1                     228M  149M   68M  69% /boot
 
 找出驱动器上占用存储空间最大的前 10 个目录：
 
@@ -9320,9 +9363,24 @@ done
 
     # du -a / | sort -n -r |head -n 10
 
-如果发现目录下所有文件的大小总和远远低于这个分区已用空间的大小，但是就是找不出占用磁盘最多的那个文件在哪里，那就要怀疑是分区文件系统的 inode 节点满了：
+2、如果发现目录下所有文件的大小总和远远低于这个分区已用空间的大小，但是就是找不出占用磁盘最多的那个文件在哪里，那就要怀疑是分区文件系统的 inode 节点满了：
 
-    $ df -i
+    $ df -ih
+
+    Filesystem     Inodes IUsed IFree IUse% Mounted on
+    devtmpfs         5.9M   721  5.9M    1% /dev
+    tmpfs            5.9M    54  5.9M    1% /dev/shm
+    tmpfs            800K  1.5K  799K    1% /run
+
+如果看到 IFree 段 为 0，会导致该文件系统上无法新建文件，这种情况常见于锁碎小文件特别多的场合，总容量不大但是把 inode 吃光了。
+
+3、文件删除时还被其它进程占用，此时文件并不会真正删除，只是标记为 deleted，只有进程结束后才会将文件真正从磁盘中清除。
+
+    $ sudo lsof | grep deleted
+
+这种情况常见于程序运行过程中对输出文件做删除，比如 nothup.out 或持续写入的日志文件，由于该文件被占用，所以操作系统只能先标记为 deleted，而未真正删除，最后导致磁盘爆满。
+
+所以在shell命令行将任务放到后台时要考虑输出，特别是使用 nohup 命令时，所有的输出都会被不断地添加到同一个文件中，如果该进程不会自己终止，就可能导致输出文件占满整个磁盘。规范的 nohup 命令用法见章节 [nohup]。
 
 ### 查看计算机的传感器如温度、风扇
 
