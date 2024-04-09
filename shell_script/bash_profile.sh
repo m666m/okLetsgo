@@ -563,9 +563,17 @@ function PS1git-branch-prompt {
     fi
 }
 
-# 主机名用不同颜色提示本地或远程登录：本地登录是绿色，ssh 远程登录是洋红色。主机名只显示FQDN的最前段
+# 主机名用不同颜色提示本地或远程登录：本地登录是绿色，ssh 远程登录是洋红色。
 function PS1_host_name {
-    [[ -n $SSH_TTY ]] && echo -e "\033[0;35m$(echo ${HOSTNAME%%.*})" || echo -e "\033[0;32m$(echo ${HOSTNAME%%.*})"
+    if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
+        # 在交互式容器的命令行中，主机名的值变为：容器名.真主机名，因为下面面有专门显示容器名的处理，所以这里还是要显示真主机名
+        local simphost=$(echo ${HOSTNAME} |cut -d. -f2)
+    else
+        # 默认不显示完整主机名，只显示 FQDN 的最前段如 zhuji.local 显示 zhuji
+        local simphost=$(echo ${HOSTNAME%%.*})
+    fi
+
+    [[ -n $SSH_TTY ]] && echo -e "\033[0;35m$(echo $simphost)" || echo -e "\033[0;32m$(echo $simphost)"
 }
 
 # 提示当前在 toolbox 或 distrobox 等交互式容器环境，白色容器名配洋红背景
@@ -573,7 +581,7 @@ function PS1_host_name {
 # https://ublue.it/guide/toolbox/#using-the-hosts-xdg-open-inside-distrobox
 # https://github.com/docker/cli/issues/3037
 # Windows 下的 wsl 环境，wsl 下的 docker，暂未研究
-function PS1_is_in_container {
+function PS1_container_name {
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
         echo -e "\033[0;45m<\U0001f4e6$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
     elif  [ -e /.dockerenv ]; then
@@ -653,11 +661,11 @@ elif $(cat /proc/cpuinfo |grep Model |grep Raspberry >/dev/null 2>&1); then
     setterm --powerdown 0
 
     # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 树莓派温度告警 python环境 git分支及状态
-    PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\$(PS1_host_name)\$(PS1_is_in_container)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
+    PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@$PS1Cgreen\$(PS1_host_name)\$(PS1_container_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
 
 else
     # 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 python环境 git分支及状态
-    PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)\$(PS1_is_in_container)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
+    PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)\$(PS1_container_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
 
 fi
 
