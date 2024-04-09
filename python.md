@@ -2911,3 +2911,35 @@ python3 内置的 open() 函数的返回结果，默认使用当前操作系统�
     code = next(iter(stock_dict.keys()))
 
 ```
+
+## 下载开发版的软件库以便调试问题
+
+    https://github.com/ranaroussi/yfinance/discussions/1080#discussioncomment-4778895
+
+1: Download from GitHub:
+
+    git clone https://github.com/ranaroussi/yfinance.git
+
+Or if a specific branch:
+
+    git clone -b dev https://github.com/ranaroussi/yfinance.git
+
+2: Add download location to Python search path
+
+Two different ways, choose one:
+
+    add path to PYTHONPATH environment variable
+    add to top of Python file: import sys ; sys.path.insert(0, "path/to/downloaded/yfinance")
+
+3: Verify
+
+    import yfinance
+    print(yfinance)
+
+Output should be:
+
+    <module 'yfinance' from 'path/to/downloaded/yfinance/yfinance/__init__.py'>
+
+If output looks like this then you did step 2 wrong
+
+    <module 'yfinance' from '.../lib/python3.10/site-packages/yfinance/__init__.py'>
