@@ -1104,7 +1104,10 @@ git cole 命令默认会把所有的提交记录都 clone 下来，对比较大�
 
     不 fetch 子仓库(submodules)。
 
-    即使你再使用 git fetch，也不能把完整仓库 fetch 下来(config文件可以看到,remote.origin.fetch的值是+refs/heads/master:refs/remotes/origin/master)
+    即使你再使用 git fetch，也不能把完整仓库 fetch 下来，从 config 文件可以看 config remote.origin.fetch
+
+    $ git config remote.origin.fetch
+    +refs/heads/main:refs/remotes/origin/main
 
 使用时注意其缺失功能
 
