@@ -8752,70 +8752,7 @@ Rclone 和 Restic 的相同点
 
     echo 'Lf0uHG1wVpVzsgEi' > /root/resticpasswd
 
-二、支持云存储：基于s3协议的后端对象存储
-
-如果想自建，可以安装 Minio Server
-
-    https://zhuanlan.zhihu.com/p/148269321
-        https://zhuanlan.zhihu.com/p/148270691
-
-### 网络存储 nfs server
-
-    https://www.cnblogs.com/f-ck-need-u/p/7305755.html
-
-    https://blog.csdn.net/qq_38265137/article/details/83146421
-
-NFS(Network File System)的功能就是通过网络，让不同的机器、不同的操作系统可以共享彼此的文件。
-
-NFS服务器可以让 PC 将网络中的 NFS 服务器共享的目录挂载到本地端的文件系统中，而在本地端的系统中来看，那个远程主机的目录就好像是自己的一个磁盘分区一样，在使用上相当便利。
-
-NFS 一般用来存储共享视频，图片等静态数据。
-
-客户端通过远程过程调用（Remote Procedure Call,RPC）协议来实现于服务端的通信。
-
-以下两种竞品都不如 nfs server 稳定：
-
-    sshfs：通过 ssh 来挂载远程目录
-
-        https://www.junmajinlong.com/linux/sshfs/
-
-        相比于 NFS，sshfs 更简洁，它是基于 fuse 模块来实现的，可以认为 sshfs 所挂载的文件系统是 fuse 文件系统的一种实现。但是 NFS 比 sshfs 要完整的多，nfs 毕竟是【小型】分布式文件系统，对数据的一致性、完整性实现的都比较完美，访问权限控制也比 sshfs 要丰富的多。
-
-        例如，挂载 192.168.100.150 上的根目录 "/usp" 到本地的 "/mnt" 上
-
-            sshfs root@192.168.100.150:/usp /mnt
-
-        注意：只能挂载远程目录，像普通文件、块设备 (如 /dev/sda2) 等无法挂载。
-
-        卸载挂载点，直接 umount 即可
-
-            umount /mnt
-
-    rclone：Rclone (rsync for cloud storage) 是一个命令行程序,用于同步文件和目录，支持常见的 Amazon Drive 、Google Drive 、OneDrive 、Dropbox 等云存储。一般在 Windows 平台下将 OneDrive 挂载为本地硬盘，并使用跨平台的 Rclone GUI 连接到云盘。
-
-        https://rclone.org/
-
-        自建私有 API https://p3terx.com/archives/rclone-connect-onedrive-with-selfbuilt-api.html
-
-### 为移动硬盘安装 udisks2 软件包
-
-    https://freedesktop.org/wiki/Software/udisks/
-
-    https://wiki.archlinux.org/title/Udisks
-
-关机时需要同步移动硬盘的缓存，确认你的发行版是否安装了这个软件包
-
-    $ sudo apt install udisks2
-
-不需要显式启用守护进程 udisksd，它由 D-Bus 按需启动，也就是说，在你插上移动硬盘的时候才会自动启动。
-
-### ssd 硬盘设置预留空间OP(Over-Provision)
-
-    https://zhuanlan.zhihu.com/p/90115929
-
-一般使用 nvme-cli 工具即可。
-
-注意：不同的主控对这个算法是不同的。像铠侠，三星直接在自家控制软件中操作就可以，而有些硬盘并不会认为预留空间就是 OP，所以还是得看具体品牌。
+支持云存储：参见章节 [网络存储](virtualization think)。
 
 ### 在当前目录启动一个简单的http服务器
 
