@@ -576,16 +576,16 @@ function PS1_host_name {
     [[ -n $SSH_TTY ]] && echo -e "\033[0;35m$(echo $simphost)" || echo -e "\033[0;32m$(echo $simphost)"
 }
 
-# 提示当前在 toolbox 或 distrobox 等交互式容器环境，白色容器名配洋红背景
+# 提示当前在 toolbox 或 distrobox 等交互式容器环境，白色容器名配蓝色背景
 # https://docs.fedoraproject.org/en-US/fedora-silverblue/tips-and-tricks/#_working_with_toolbx
 # https://ublue.it/guide/toolbox/#using-the-hosts-xdg-open-inside-distrobox
 # https://github.com/docker/cli/issues/3037
 # Windows 下的 wsl 环境，wsl 下的 docker，暂未研究
 function PS1_container_name {
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
-        echo -e "\033[0;45m<\U0001f4e6$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
+        echo -e "\033[0;44m<\U0001f4e6$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
     elif  [ -e /.dockerenv ]; then
-        echo -e "\033[0;45m<\U0001f4e6$(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")>"
+        echo -e "\033[0;44m<\U0001f4e6$(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")>"
     fi
 }
 
