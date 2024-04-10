@@ -279,9 +279,9 @@ N100 跑分对比 Intel 笔记本用低压CPU，不是hq那种：
 
     嵌入式 CPU 安全启动的说明 https://www.zhihu.com/question/57346559/answer/2895463445
 
-### 前提条件：原生 UEFI+GPT
+> 前提条件：原生 UEFI+GPT
 
-NOTE: Windows 10+ 取消了对非 ssd 硬盘做系统盘的优化，SATA 硬盘最多安装 Windows 8。
+NOTE: Windows 10+ 取消了对非 ssd 硬盘做系统盘的优化，SATA 硬盘做系统盘最多安装 Windows 8。
 
 Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
@@ -396,7 +396,7 @@ BOOT 选项卡：
 
 确认
 
-    主板 BIOS 设置界面可以直接加载 UEFI 驱动了（所以现在叫主板 UEFI 设置界面），可以给你的 PCIe 设备设置选项：在 “Advanced” 界面 “PCI  Subsystem setting” 下，可以看到你的设备多出了功能菜单，如 Nvidia RTX30 系列显卡设置支持 Resize Bar，三星 ssd 硬盘可以运行自检等。
+    主板 BIOS 设置界面可以直接加载 UEFI 驱动了（所以现在叫主板 UEFI 设置界面）：在 “Settings” 界面中的 “IO Ports” 选项里，查看对应的 PCIe 设备，比如网卡、nvme硬盘等，能正确显示设备名称，还可以选择查看信息或设置该设备选项。在 “Advanced” 界面 “PCI  Subsystem setting” 下，可以看到你的设备多出了功能菜单，如 Nvidia RTX30 系列显卡设置支持 Resize Bar，三星 ssd 硬盘可以运行自检等。
 
 总结来说，Windows 10 的安装程序兼容各种老设备
 
@@ -422,11 +422,11 @@ UEFI 模式下显卡连接 DP 口刚开机时，显示器会自动使用物理�
 
 Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用是主板 UEFI 启动时只加载经过认证的操作系统或者硬件驱动程序，从而防止恶意软件侵入。 Linux 下参见章节 [在 Linux 使用安全启动（Secure Boot）--- mokutil](init_a_server think)。
 
-UEFI 安全启动可以绕过，已经有常驻 UEFI 启动区的木马了
+UEFI 安全启动可以绕过，已经有常驻 UEFI 启动区的木马了，所以安全启动名字很吓人，其实意义不大
 
     https://arstechnica.com/information-technology/2023/03/unkillable-uefi-malware-bypassing-secure-boot-enabled-by-unpatchable-windows-flaw/
 
-前提是确保实现了章节 [主板 BIOS 设置启动模式为原生 UEFI]。
+首先要确保实现了上一个章节 [主板 BIOS 设置启动模式为原生 UEFI]。
 
 1、开启 “Secure Boot”
 
@@ -440,25 +440,21 @@ UEFI 安全启动可以绕过，已经有常驻 UEFI 启动区的木马了
 
     选择 “Secure Boot Mode” 为 “custom”，打开用户模式
 
-    下面的灰色选项 “Restore Factory keys” 可以点击了，弹出画面选择确认，以安装出厂默认密钥。
+    下面的灰色选项 “Key Management”界面可用了，进入后点击 “Restore Factory keys” ，弹出画面选择确认，以安装出厂默认密钥。
 
-    这时的 “Secure Boot” 下面会出现 “Active” 字样
+    返回上级菜单， 这时的 “Secure Boot” 下面会出现 “Active” 字样
+
+    “Secure Boot Mode” 再改回 “Standard”（在主板 BIOS 底部显示的操作提示是再改回 “Standard”），如果这次不能改就先不做。
 
     F10 储存并退出重启系统。
-
-确认
-
-    在 “Settings” 界面中的 “IO Ports” 选项里，查看对应的 PCIe 设备，比如网卡、nvme硬盘等。能正确显示设备名称，可以选择查看信息或设置该设备选项。这表示该设备的 UEFI 驱动，已经被 BIOS 正确加载了。
 
 原理：
 
     安全启动使用三种密钥：PK(platform key) 是平台的主密钥，KEK(key exchange keys) 是每次更新数据库时使用的密钥，DB(authorized signatures) 是直接对应bootloader的密钥。KEK 被 PK 签名，DB 被 KEK 签名，而 bootloader 被 DB 签名。
 
-2、“Secure Boot Mode” 导入出厂密钥后，再改回 “Standard”
+2、重启后再次进入BIOS设置
 
-在主板 BIOS 底部显示的操作提示是再改回 “Standard”。
-
-按 F10 保存重启计算机，再次进入 BIOS 设置，把 “Secure Boot Mode” 改回 “Standard”，这时 “Secure Boot” 依然是 “Active” 字样，说明密钥都导入成功了。
+把 “Secure Boot Mode” 改回 “Standard”，这时 “Secure Boot” 依然是 “Active” 字样，说明密钥都导入成功了。
 
 不大明白为嘛技嘉没提供个详细的操作说明呢？
 
