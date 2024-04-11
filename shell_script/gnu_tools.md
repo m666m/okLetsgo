@@ -11290,6 +11290,8 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
         Firefox 的 “插件”（plugin）和“扩展”（extension）是两种不同的东西：插件以动态库（Windows 上就是 DLL 文件）的方式，加载到浏览器的进程内。扩展可以调用浏览器自身的 API，但是大部分扩展【不能】调用操作系统的 API。
 
+        Firefox 的缓存指向内存目录可以大大提升你的浏览感受，见章节 [ramfs 映射内存目录](init_a_server think)。
+
     Chrome
 
         google 基于开源浏览器 chromium 而搭建的闭源浏览器
