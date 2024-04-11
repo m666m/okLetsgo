@@ -3379,7 +3379,10 @@ if [ -x /usr/bin/dircolors ]; then
         sudo mount --mkdir -t ramfs ramfs $1
     }
 
-    # 只下载了一个文件，从校验和文件中抽出单个文件进行校验 `sha256sumf abc.iso SHA256SUMS.txt`
+    # sha256sum
+    alias sha256sums='echo "[sha256sum 按校验和列表文件逐个校验，跳过缺失文件告警]" && sha256sum --ignore-missing -c'
+
+    # sha256sum，只下载了一个文件，从校验和列表文件中抽出单个文件进行校验 `sha256sumf abc.iso SHA256SUMS.txt`
     function sha256sumf {
         sha256sum -c <(grep $1 $2)
     }
@@ -3657,12 +3660,12 @@ alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk
 
 # 加载插件：命令自动完成。如果是安装的发行版自带的，不需要在这里加载
 # source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-#source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # 加载插件：命令语法高亮。如果是安装的发行版自带的，不需要在这里加载
 # 官网提示要在配置文件的最后一行
 # source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-#source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 #################################
 # Zsh：手动配置插件

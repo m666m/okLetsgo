@@ -149,7 +149,10 @@ if [ -x /usr/bin/dircolors ]; then
         sudo mount --mkdir -t ramfs ramfs $1
     }
 
-    # 只下载了一个文件，从校验和文件中抽出单个文件进行校验 `sha256sumf abc.iso SHA256SUMS.txt`
+    # sha256sum
+    alias sha256sums='echo "[sha256sum 按校验和列表文件逐个校验，跳过缺失文件告警]" && sha256sum --ignore-missing -c'
+
+    # sha256sum，只下载了一个文件，从校验和列表文件中抽出单个文件进行校验 `sha256sumf abc.iso SHA256SUMS.txt`
     function sha256sumf {
         sha256sum -c <(grep $1 $2)
     }
