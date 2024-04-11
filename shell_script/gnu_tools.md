@@ -11214,6 +11214,10 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
     如果使用 meld，可以添加右键菜单，参见章节 [给资源管理器添加 meld 右键菜单]。
 
+记事本
+
+    没想到 Gnome Text Editor 这么烂，打开时虽然会自动打开上次开着的文件包括未保存状态的文件，但是显示区域不能定位到当前光标位置，粘贴的时候显示区域直接乱跳，正常使用非常难受。推荐安装 Kde 的 KWrite。
+
 磁盘管理
 
     gnome Disks
