@@ -7484,7 +7484,9 @@ Linux 下，每个算法都是单独的程序：cksum md5sum sha1sum sha256sum s
     b.txt: OK
 
     # 只下载了一个文件，从校验和文件中抽出单个文件进行校验
-    sha256sum -c <(grep ubuntu-20.04.4-desktop-amd64.iso SHA256SUMS.txt)
+    $ sha256sum -c <(grep ubuntu-20.04.4-desktop-amd64.iso SHA256SUMS.txt)
+    # 或
+    $ sha256sum --ignore-missing -c SHA256SUMS.txt
 
 使用 OpenSSL 验证
 
