@@ -3358,7 +3358,7 @@ if [ -x /usr/bin/dircolors ]; then
     # systemd
     alias stmed='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
 
-    # mount 手动挂载 Windows 分区 U 盘，使用当前用户权限
+    # mount 使用当前用户权限挂载 Windows 分区 U 盘，用于防止默认参数使用 root 用户权限不方便当前用户读写
     function mntfat {
         echo "[挂载 FAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
         sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro $1 $2
@@ -3380,11 +3380,19 @@ if [ -x /usr/bin/dircolors ]; then
     }
 
     # sha256sum
-    alias sha256sums='echo "[sha256sum 按校验和列表文件逐个校验，跳过缺失文件告警]" && sha256sum --ignore-missing -c'
+    alias sha256sums='echo "[sha256sum 按校验和文件逐个校验，跳过缺失文件告警]" && sha256sum --ignore-missing -c'
 
-    # sha256sum，只下载了一个文件，从校验和列表文件中抽出单个文件进行校验 `sha256sumf abc.iso SHA256SUMS.txt`
     function sha256sumf {
+        # `sha256sumf abc.iso SHA256SUMS.txt`
+        echo "[sha256sum，只下载了一个文件 $1，从校验和文件 $2 中抽出单个文件进行校验]"
         sha256sum -c <(grep $1 $2)
+    }
+
+    function sha256sumd {
+        echo "[sha256sum，对目录 $1 下的所有文件及子目录文件生成一个校验和文件 $2]"
+        find $1 -type f |while read fname; do
+            sha256sum "$fname" >>$2
+        done
     }
 
     # 切换桌面图形模式和命令行模式 --- systemctl 模式
@@ -3415,8 +3423,10 @@ if [ -x /usr/bin/dircolors ]; then
     alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
     alias gpull='echo "[github 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull --rebase; done'
     alias gpush='echo "[github 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
+
+    # 番茄对 github 的 https 频繁阻断，用 ssh 协议拉代码还好点
     function gaddr {
-        # 把 github.com 的 https 地址转为 git@ 地址
+        echo "[把 github.com 的 https 地址转为 git@ 地址]"
         echo ${1//https:\/\/github.com\//git@github.com:}
     }
 
@@ -3463,7 +3473,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias pdms='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
     alias pdmr='echo "[podman简单运行一个容器]" && podman run -it --rm -P'
     alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]" && podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
-    alias pdmlog='echo "[podman查看指定容器日志]" && docker logs -f --tail 30'
+    alias pdmlog='echo "[podman查看指定容器日志]" && podman logs -f --tail 30'
     alias pdmdf='echo "[podman查看资源情况]" && podman system df -v'
     alias pdmvp='echo "[podman清理空闲空间]" && podman volume prune'
 
@@ -6739,6 +6749,28 @@ xargs 命令是给其他命令传递参数的一个过滤器，常作为组合�
         -I : 定义占位符
 
     定义占位符{}后，命令行后面的命令可以多次使用该占位符，一般是字符串处理 awk sed cut tr wc 等
+
+find 命令本身就提供了 -exec 选项来对找到的文件执行命令，这让人不禁疑惑为什么还要使用 xargs。实际上，-exec 在每次找到匹配的文件时都会启动一个新的进程来执行命令，而 xargs 会尽可能地将多个文件名作为参数传递给一个命令，从而减少了进程的创建。因此，在处理大量文件时，使用 xargs 会更有效率。
+
+遍历目录中的文件逐个处理，如果文件名有空格会导致处理的命令出现问题，解决办法：
+
+    # 这个用法最好 while read...
+    find your_dir -type f |while read fname; do
+        sha256sum "$fname" >>sums.txt
+    done
+
+    # 这个会把allsum.txt也带上
+    find . -type f -exec sha256sum "{}" >>allsum.txt \;
+
+    find . -name '*.txt' -exec ls -l "{}" \;
+
+    # Don't do this
+    # 下面这个用法使用命令缓冲区保存所有文件名，相当于 x=$(find . -name"*.txt")
+    # 文件特别多的时候会溢出丢数
+    for file in $(find . -name "*.txt")
+    do
+        …code using"$file"
+    done
 
 grep -n 显示要找的字符串所在的行号 -i 忽略大小写
 
