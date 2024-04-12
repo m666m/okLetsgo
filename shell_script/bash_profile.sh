@@ -141,7 +141,7 @@ if [ -x /usr/bin/dircolors ]; then
 
     function mntntfs {
         echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,windows_names,iocharset=utf8 $1 $2
+        sudo mount -t ntfs -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,windows_names,iocharset=utf8 $1 $2
     }
 
     function mntram {
