@@ -596,9 +596,9 @@ function PS1_host_name {
 # Windows 下的 wsl 环境，wsl 下的 docker，暂未研究
 function PS1_container_name {
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
-        echo -e "\033[0;44m<\U0001f4e6$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
+        echo -e "\033[0;44m\U0001f4e6<$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
     elif  [ -e /.dockerenv ]; then
-        echo -e "\033[0;44m<\U0001f4e6$(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")>"
+        echo -e "\033[0;44m\U0001f4e6<$(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")>"
     fi
 }
 
