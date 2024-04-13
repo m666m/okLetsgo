@@ -207,8 +207,11 @@ if [ -x /usr/bin/dircolors ]; then
     alias ggst='echo "[签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --clearsign'
     alias ggsdb='echo "[分离式签名，生成二进制.sig签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --detach-sign'
     alias ggsdt='echo "[分离式签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --armor --detach-sign'
-    alias ggkd='echo "[从公钥服务器下载指定公钥到本地]" && gpg --keyserver hkps://keys.openpgp.org --no-default-keyring --keyring ./pub_key.gpg --recv-keys'
     alias ggf='echo "[查看公钥的指纹以便跟跟网站发布的核对]" && gpg --with-fingerprint --show-keys --keyid-format=long'
+    function ggkd {
+        echo "[从公钥服务器下载指定公钥到本地 $1.gpg]"
+        gpg --keyserver hkps://keys.openpgp.org --no-default-keyring --keyring ./$1.gpg --recv-keys
+    }
     alias ggvs='echo "[使用临时钥匙圈验证文件签名，如 ggvs ./fedora.gpg xxx.checksum xxx.zip]" && gpgv --keyring'
     alias ggv='echo "[验证签名]" && gpg --verify'
     alias gges='echo "[非对称算法加密并签名，参数太多，只给出提示]" && echo "gpg -s -u 'sender@xxx.com' -r 'reciver@xxx.com' -e msg.txt"'
