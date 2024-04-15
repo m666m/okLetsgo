@@ -321,19 +321,19 @@ Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
 建议使用英文版 Windows 的 iso 文件制作启动u盘，在安装 Windows 时，区域设置选择 “新加坡”，系统语言选择简体中文，安装后 “非unicode区域设置” 选择新加坡。或安装时选择区域为美国。安装完成后添加中文语言包，再更改界面提示语言为简体中文，原因不解释了。
 
-开源的u盘制作工具
+u盘制作工具
 
-    rufus
+    开源的 rufus 这个最佳
 
         https://rufus.ie/
             https://github.com/pbatard/rufus
 
-    balenaEtcher
+    免费的 balena Etcher 支持多平台，Linux 下可用
 
         https://etcher.balena.io/
             https://github.com/balena-io/etcher/
 
-    ventoy 原无忧启动
+    ventoy 原无忧启动，优势是自定义多合一启动盘
 
         https://www.ventoy.net/
             https://github.com/ventoy/Ventoy
