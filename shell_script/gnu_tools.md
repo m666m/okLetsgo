@@ -9202,7 +9202,7 @@ systemd-timesyncd 只专注于从远程服务器查询然后同步到本地时�
 
 配置 NTP 服务器地址修改 /etc/systemd/timesyncd.conf 文件即可，地址列表同上。
 
-大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd 只会更改系统时间不会更改硬件时间，可以通过 `hwclock -w` 命令将系统时间同步到硬件时间。
+大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd 只会更改系统时间而不会更改 RTC 硬件时间，即系统时间是根据硬件 RTC 时间和当前时区设置计算得出的。可以改变这个机制，通过 `hwclock -w` 命令将系统时间同步到硬件时间。
 
 Linux 处理 RTC 时间跟 Windows 的机制不同，参见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
 
