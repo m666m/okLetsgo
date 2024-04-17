@@ -347,7 +347,7 @@ test 和 [] 是等价的，[] 注意两边留空格
         ${#A[3]}    返回第四个元素的长度，即def的长度    3
         A[3]=xzy    则是将第四个组数重新定义为 xyz
 
-        变量展开的用法见下面 ${变量名[@]}
+        变量展开的用法示例见下面 ${变量名[@]}
 
 不想有任何输出，或只想测试命令的退出码而不想有任何输出时
 
@@ -1037,6 +1037,13 @@ for fn in $(ls *.pyi |grep -v __init__); do
     echo "import $fn as $(basename $fn .pyi)"
 done
 
+# 拼接命令行参数
+IGNITION_CONFIG="/path/to/example.ign"
+IGNITION_DEVICE_ARG=(--disk path="${IGNITION_CONFIG}",format=raw,readonly=on,serial=ignition,startup_policy=optional)
+
+virt-install --name="${VM_NAME}" --os-variant="fedora-coreos-$STREAM" \
+        --import --graphics=none \
+        --network bridge=virbr0 "${IGNITION_DEVICE_ARG[@]}"
 #################################################
 
 # 判断当前操作系统环境
