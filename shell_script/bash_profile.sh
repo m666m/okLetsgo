@@ -9,23 +9,24 @@
 # 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件
 #   ~/.bashrc: executed by bash(1) for non-login shells.
 #       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
-test -f ~/.bashrc && . ~/.bashrc
-# exit for non-interactive shell
-[[ ! -t 1 ]] && return
+[[ $0 = 'zsh' ]] || (test -f ~/.bashrc && . ~/.bashrc)
 
+# bash 优先调用 .bash_profile，就不会调用 .profle，该文件是 Debian 等使用的
 #   ~/.profile: executed by the command interpreter for login shells.
 #     This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login exists.
 #     see /usr/share/doc/bash/examples/startup-files for examples.
 #     the files are located in the bash-doc package.
-#test -f ~/.profile && . ~/.profile
+# test -f ~/.profile && . ~/.profile
+# 这几个标准目录设置到 $PATH，在 Debian 等发行版放在 .profile 里了，这里要补上执行
+PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
+
+# exit for non-interactive shell
+[[ ! -t 1 ]] && return
 
 ###################################################################
 # 自此开始都是自定义设置
 #
 # 为防止变量名污染命令行环境，尽量使用奇怪点的名称
-
-# 有些版本的 Linux 默认不支持的标准目录给它补上
-PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 
 # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
 # zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
@@ -36,7 +37,7 @@ fi
 # 有些软件默认使用变量 EDITOR 指定的编辑器，一般是 nano，不习惯就换成 vi
 export EDITOR=/usr/bin/vi
 
-# 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存哪些不常用的命令
+# 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存那些不常用的命令
 # 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以在新行中输入密钥。
 export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 
@@ -45,6 +46,9 @@ export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
 export COLORTERM=truecolor
+
+# Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
+[[ -n $LANG ]] || export LANG=C.UTF-8
 
 ####################################################################
 # alias 本该放到 .bashrc 文件，为了方便统一在此了
@@ -579,13 +583,21 @@ function PS1git-branch-prompt {
     fi
 }
 
-# 主机名用不同颜色提示本地或远程登录：本地登录是绿色，ssh 远程登录是洋红色。
+# 主机名用不同颜色提示本地或 ssh 远程登录：本地登录是绿色，远程登录是洋红色，Fedora 进入交互式容器后无法判断是否远程登录，默认绿色
 function PS1_host_name {
+
+    # 如果是交互式容器，因为下面面有专门显示容器名的处理，所以这里要显示宿主机的主机名
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
-        # 在交互式容器的命令行中，主机名的值变为：容器名.真主机名，因为下面面有专门显示容器名的处理，所以这里还是要显示真主机名
-        local simphost=$(echo ${HOSTNAME} |cut -d. -f2)
+        # 在交互式容器 toolbox 中，${HOSTNAME}的值与宿主机一致，/etc/hostname 变为 toolbox
+        local etchostname=$(cat /etc/hostname)
+        if [[ ${etchostname} = 'toolbox' ]]; then
+            local simphost=$(echo ${HOSTNAME%%.*})
+        else
+            # 在交互式容器 distrobox 中，主机名的值变为：容器名.宿主机的主机名
+            local simphost=$(echo ${HOSTNAME} |cut -d. -f2)
+        fi
     else
-        # 默认不显示完整主机名，只显示 FQDN 的最前段如 zhuji.local 显示 zhuji
+        # 默认为不是交互式容器环境，显示主机名，适应 FQDN 只显示最前段如 host.local 显示 host
         local simphost=$(echo ${HOSTNAME%%.*})
     fi
 

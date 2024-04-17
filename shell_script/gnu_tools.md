@@ -2338,8 +2338,9 @@ to see the color scheme.''')
 
 ### 字符终端的区域、编码、语言
 
-变量依赖从大到小的顺序是：LC_ALL, LC_CTYPE, LANG
+用命令 locale 查看，变量依赖从大到小的顺序是：LC_ALL, LC_CTYPE, LANG
 
+    $ locale
     LANG=en_US.UTF-8
     LANGUAGE=en_US.UTF-8
     LC_CTYPE="en_US.UTF-8"
@@ -2355,6 +2356,12 @@ to see the color scheme.''')
     LC_MEASUREMENT="en_US.UTF-8"
     LC_IDENTIFICATION="en_US.UTF-8"
     LC_ALL=en_US.UTF-8
+
+    未添加语言包时操作系统只支持比较少的几个 POSIX 标准
+    $ locale -a
+    C
+    C.utf8
+    POSIX
 
 在 env 设置，如
 
@@ -3250,12 +3257,27 @@ compinit
 # 以下的自定义快捷命令等部分来自 [bash_profile.sh]
 
 ###################################################################
+# 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件
+#   ~/.bashrc: executed by bash(1) for non-login shells.
+#       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
+[[ $0 = 'zsh' ]] || (test -f ~/.bashrc && . ~/.bashrc)
+
+# bash 优先调用 .bash_profile，就不会调用 .profle，该文件是 Debian 等使用的
+#   ~/.profile: executed by the command interpreter for login shells.
+#     This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login exists.
+#     see /usr/share/doc/bash/examples/startup-files for examples.
+#     the files are located in the bash-doc package.
+# test -f ~/.profile && . ~/.profile
+# 这几个标准目录设置到 $PATH，在 Debian 等发行版放在 .profile 里了，这里要补上执行
+PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
+
+# exit for non-interactive shell
+[[ ! -t 1 ]] && return
+
+###################################################################
 # 自此开始都是自定义设置
 #
 # 为防止变量名污染命令行环境，尽量使用奇怪点的名称
-
-# 有些版本的 Linux 默认不支持的标准目录给它补上
-PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 
 # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
 # zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
@@ -3266,7 +3288,7 @@ fi
 # 有些软件默认使用变量 EDITOR 指定的编辑器，一般是 nano，不习惯就换成 vi
 export EDITOR=/usr/bin/vi
 
-# 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存哪些不常用的命令
+# 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存那些不常用的命令
 # 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以在新行中输入密钥。
 export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 
@@ -3275,6 +3297,9 @@ export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
 export COLORTERM=truecolor
+
+# Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
+[[ -n $LANG ]] || export LANG=C.UTF-8
 
 ####################################################################
 # alias 本该放到 .bashrc 文件，为了方便统一在此了
