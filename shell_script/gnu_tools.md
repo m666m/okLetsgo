@@ -9042,6 +9042,10 @@ ntp 时间同步的原理
     Packet count: 263
         Frequency: -1.446ppm
 
+如果修改了时区等导致系统时间偏差较大的设置，重启生效
+
+    $ sudo reboot
+
 以前 Linux 时间同步服务基本是使用 ntpdate 和 ntpd 这两个工具实现的，但是这两个工具已经很古老了，大多数系统都不再安装它们
 
     $ ntpstat
@@ -9183,6 +9187,8 @@ chronyc 是用来监控 chronyd 性能和配置其参数的用户界面。他可
 
     https://wiki.archlinux.org/title/Systemd-timesyncd
 
+    https://idroot.us/change-timezone-fedora-38
+
 查看服务的状态
 
     $ systemctl status systemd-timesyncd.service
@@ -9202,9 +9208,9 @@ systemd-timesyncd 只专注于从远程服务器查询然后同步到本地时�
 
 配置 NTP 服务器地址修改 /etc/systemd/timesyncd.conf 文件即可，地址列表同上。
 
-大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd 只会更改系统时间而不会更改 RTC 硬件时间，即系统时间是根据硬件 RTC 时间和当前时区设置计算得出的。可以改变这个机制，通过 `hwclock -w` 命令将系统时间同步到硬件时间。
+Linux 处理 RTC 时间跟 Windows 的机制不同，大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd 只会更改系统时间而不会更改 RTC 硬件时间，即系统时间是根据硬件 RTC 时间和当前时区设置计算得出的。
 
-Linux 处理 RTC 时间跟 Windows 的机制不同，参见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
+可以改变这个机制，通过 `hwclock -w` 命令将系统时间同步到硬件时间，参见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
 
 #### Windows 的同步时间功能默认每周只同步一次
 

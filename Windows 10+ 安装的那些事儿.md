@@ -2256,6 +2256,8 @@ Linux 与 Windows 对于本地 RTC 硬件保存时间的理解方式不同：
     # 设置硬件 RTC 保存的时间是本地时间
     $ sudo hwclock --localtime -w
 
+    $ sudo reboot
+
 缺点是无法适应夏令时等时区变化情况，不过只要我们的计算机不在飞机上而且所在地区没有夏令时，无所谓了：
 
     $ timedatectl
