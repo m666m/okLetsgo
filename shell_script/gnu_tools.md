@@ -3257,7 +3257,8 @@ compinit
 # 以下的自定义快捷命令等部分来自 [bash_profile.sh]
 
 ##################################################################################################################
-# 适用于 Linux bash/zsh、Windows git bash(mintty)，Mac OS 未测试
+# 适用于 Linux bash、Windows git bash(mintty)，Mac OS 未测试
+# 本该放到 .bashrc 文件，为了方便统一在此了，可放到 .zshrc 中保持自己的使用习惯
 #
 # 别人的配置文件参考大全
 #   https://github.com/pseudoyu/dotfiles
@@ -3309,9 +3310,6 @@ export COLORTERM=truecolor
 [[ -n $LANG ]] || export LANG=C.UTF-8
 
 ####################################################################
-# alias 本该放到 .bashrc 文件，为了方便统一在此了
-# 可放到 .zshrc 中保持自己的使用习惯
-#
 # 参考自 Debian 的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
 # 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
