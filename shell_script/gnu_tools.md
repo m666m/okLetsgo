@@ -6489,27 +6489,31 @@ GNU Screen 的默认前导键是 Ctrl+A。
 
 ssh 连接到服务器，后知后觉发现一个命令要执行很久，到点下班了怎么办？后悔没在 tmux 里执行好尴尬。
 
-如果程序的输出无所谓，你只要程序能继续执行下去就好，典型的例子是你压缩一个文件或者编译一个大软件，中途发现需要花很长时间.
+如果程序的输出无所谓，你只要程序能继续执行下去就好，典型的例子是你压缩一个文件或者编译一个大软件，中途发现需要花很长时间。
 
-按下 Ctrl-z，让程序进入 suspend 挂起状态。这个时候你应该会回到shell下，看到提示：
+按下 Ctrl-z，让程序进入 suspend 挂起状态。这个时候你应该会回到 shell 下，看到提示：
 
-    [1]+  Stopped                 xxxx 这样的输出。
+    [1]+  Stopped                 xxxx
 
-上面那个 [] 里的数字，我们记为 n，然后执行：
+上面那个 [] 里的数字，是任务的序号，由 `bg`、`fg` 命令用到，执行：
 
     # 让暂时停掉的进程在后台运行
-    $ bg %n
+    $ bg %1
 
     # 后悔了，让暂时停掉的进程在前台运行
-    $ fg %n  # 这样会把我们从shell带回到该程序的界面
+    $ fg %1  # 这样会把我们从shell带回到该程序的界面
 
-执行之前，如果不放心，想确认一下，可以用 jobs 命令看看被 suspend 的任务列表。严格地说，jobs 看的不仅仅是 suspend 的任务，所以，如果你有其他后台任务，也会列出来。
+执行之前，如果不放心，想确认一下，看看被 suspend 的任务列表
+
+    $ jobs
+
+严格地说，jobs 看的不仅仅是 suspend 的任务，所以，如果你有其他后台任务，也会列出来。
 
 然后再解除你现在的shell跟刚才这个进程的所属关系
 
-    disown
+    $ disown
 
-这个时候再执行jobs，就看不到那个进程了，用 ps -ef 可以看到哦。现在就可以关掉终端，下班回家了。
+这个时候再执行 `jobs`，就看不到那个进程了，用 `ps -ef` 可以看到哦。现在就可以关掉终端，下班回家了。
 
 实例
 
@@ -6563,35 +6567,35 @@ ssh 连接到服务器，后知后觉发现一个命令要执行很久，到点�
 
     https://www.cnblogs.com/f-ck-need-u/p/8661501.html
 
-shell脚本中的一个"疑难杂症"，CTRL+C 中止了脚本进程，这个脚本却还在后台不断运行，且时不时地输出点信息到终端(我这里是循环中的echo命令输出的)，只能手动 ps 列表自己找出来 kill。
+shell 脚本中的一个"疑难杂症"，CTRL+C 中止了脚本进程，这个脚本却还在后台不断运行，且时不时地输出点信息到终端(我这里是循环中的echo命令输出的)，只能手动 ps 列表自己找出来 kill。
 
 这是因为 shell 脚本中有一些后台任务会直接挂靠在 init/systemd 进程下，而不会随着脚本退出而停止。
 
 例如：
 
-    [root@mariadb ~]# cat test1.sh
+    $ cat test1.sh
     #!/bin/bash
     echo $BASHPID
     sleep 50 &
 
-    [root@mariadb ~]# ps -elf | grep slee[p]
+    $ ps -elf | grep slee[p]
     0 S root      10806      1  0  80   0 - 26973 hrtime 19:26 pts/1    00:00:00 sleep 50
 
 脚本退出后，sleep进程的父进程变为了1，也就是挂在了 init/systemd 进程下。
 
 可以在脚本中直接使用 kill 命令杀掉 sleep 进程。
 
-    [root@mariadb ~]# cat test1.sh
+    $ cat test1.sh
     #!/bin/bash
     echo $BASHPID
     sleep 50 &
     kill $!
 
-但是，如果这个sleep进程是在循环中(for、while、until均可)，那就麻烦了。
+但是，如果这个 sleep 进程是在循环中(for、while、until均可)，那就麻烦了。
 
 例如下面的例子，直接将循环放入后台，杀掉sleep、或者exit、或者杀掉脚本自身进程、或者让脚本自动退出、甚至exec退出当前脚本shell都是无效的。
 
-    [root@mariadb ~]# cat test1.sh
+    $ cat test1.sh
     #!/bin/bash
     echo $BASHPID
 
@@ -6600,20 +6604,38 @@ shell脚本中的一个"疑难杂症"，CTRL+C 中止了脚本进程，这个脚
         echo 1
     done &
 
-    killall sleep
-    kill $BASHPID
+    $ killall sleep
+    $ kill $BASHPID
 
-究其原因，是因为while/for/until等是bash内置命令，它们的特殊性在于它们有一个很替它们着想的爹：bash进程。bash进程对他们的孩子非常负责，所有能直接执行的内置命令都不会创建新进程，它们直接在当前bash进程内部调用执行，所以我们用ps/top等工具是捕捉不到cd、let、expr等等内置命令的。
+究其原因，是因为 while/for/until 等是 bash 内置命令，它们的特殊性在于 bash 进程。bash 进程对能直接执行的内置命令都不会创建新进程，它们直接在当前 bash 进程内部调用执行，所以我们用 ps/top 等进程查看工具是捕捉不到 cd、let、expr 等等内置命令的。
 
-内置命令中还有几个比较特殊的关键字：while、for、until、if、case等，它们无法直接执行，需要结合其他关键字(如do/done/then等)才能执行。非后台情况下，它们的爹会直接带它们执行，但当它们放进后台后，它们必须先找个bash爹提供执行环境：
+不止 bash 内置命令，还有几个比较特殊的关键字：while、for、until、if、case 等，它们无法直接执行，需要结合其他关键字(如 do/done/then 等)才能执行。非后台情况下，bash 进程会直接带它们执行，但当它们放进后台后，它们必须先连接到一个父进程提供执行环境：
 
-如果是在当前shell中放进后台，则这个爹是新生成的bash进程。这个新的bash进程只负责一件事，就是负责这个后台，为它的孩子们提供它们依赖的bash环境。
+    如果是在当前 shell 中放进后台，则父进程是新生成的 bash 进程。这个新的 bash 进程只负责一件事，就是提供后台运行的 bash 环境。
 
-如果是在脚本中放进后台，则这个爹就是脚本进程。由于脚本不是内置命令，它能直接负责这个后台(因为脚本进程也算是bash进程的特殊变体，也相当于一个新的bash进程)。
+    如果是在 .sh 脚本中放进后台，则父进程就是脚本进程。脚本进程也算是 bash 进程的特殊变体，也相当于一个新的 bash 进程。
 
-无论它们的爹是脚本进程还是新的bash进程，它们都是当前shell下的子shell。如果某个子shell中有后台进程，当杀掉子shell，意味着杀掉了它们的爹。非内置bash命令不依赖于bash，所以直接挂在init/systemd下，而bash内置命令严重依赖于bash爹，没有爹就没法执行，所以在杀掉bash进程(上面pid=7008)的时候，bash爹(pid=13295)会立即带着它下面的进程(sleep)挂在init/systemd下。
+    无论父进程是脚本进程还是新的 bash 进程，它们都是当前 shell 下的子 shell。如果某个子 shell 中有后台进程，当杀掉子 shell，意味着杀掉了其下运行进程的父进程。
 
-该bash和终端无关，你就是退出了当前连接也会被系统新建一个bash继续运行。
+举个例子说明下，目前 bash 进程信息为：
+
+    [root@xuexi ~]# pstree -p | grep bash
+            |-sshd(1142)-+-sshd(5396)---bash(5398)---mysql(5659)
+            |            `-sshd(7006)-+-bash(7008)
+            |                         `-bash(12280)-+-grep(13294)
+
+将 for、unitl、while、case、if 等语句放进后台
+
+    [root@xuexi ~]# if true;then sleep 10;fi &
+
+然后再查 bash 进程信息：
+
+    [root@xuexi ~]# pstree -p | grep bash
+            |-sshd(1142)-+-sshd(5396)---bash(5398)---mysql(5659)
+            |            `-sshd(7006)-+-bash(7008)---bash(13295)---sleep(13296)
+            |                         `-bash(12280)-+-grep(13298)
+
+对非内置 bash 命令来说，运行后不依赖于 bash 提供进程，而是直接挂在系统的 init/systemd 下，而 bash 内置命令会依赖其父进程，所以在杀掉 bash 进程(上面pid=7008)的时候，内置命令的父进程(pid=13295)会立即带着它下面的进程(sleep)挂在 init/systemd 下，此时该父进程和终端无关，即使你退出了当前连接，也会被系统新建一个 bash 继续运行。
 
 解决方案
 
@@ -6633,7 +6655,7 @@ sleep 60
 
 ```
 
-更方便更精确的自杀手段 `man kill`。在该手册中解释了，如果kill的pid值为0，表示发送信号给当前进程组中所有进程，对shell脚本来说这意味着杀掉脚本中产生的所有进程。方案如下：
+更方便更精确的自杀手段 `man kill`。在该手册中解释了，如果 kill 的 pid 值为0，表示发送信号给当前进程组中所有进程，对 shell 脚本来说这意味着杀掉脚本中产生的所有进程。方案如下：
 
 ```bash
 
@@ -6717,9 +6739,9 @@ Far Manager for Windows 类似 mc，命令行下使用两个面板来处理文�
 
     https://conemu.github.io/en/FarManager.html
 
-### 命令行下的仿图形界面库 whiptail
+### 基于文本的用户界面（TUI）库 whiptail
 
-newt 库的 whiptail 纯字符环境不需要桌面图形界面做支撑
+newt 库的 whiptail 在命令行环境下，不需要桌面图形界面即可显示简单的图形界面
 
     https://www.redhat.com/sysadmin/use-whiptail
 
