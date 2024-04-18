@@ -3256,6 +3256,13 @@ compinit
 ####################################################################
 # 以下的自定义快捷命令等部分来自 [bash_profile.sh]
 
+##################################################################################################################
+# 适用于 Linux bash/zsh、Windows git bash(mintty)，Mac OS 未测试
+#
+# 别人的配置文件参考大全
+#   https://github.com/pseudoyu/dotfiles
+#   https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
+
 ###################################################################
 # 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件
 #   ~/.bashrc: executed by bash(1) for non-login shells.

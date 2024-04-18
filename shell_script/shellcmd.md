@@ -409,6 +409,10 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     https://plantegg.github.io/2017/01/01/top_linux_commands/
 
+很多命令支持逐级的自动完成提示，输入命令后多按 tab 试试
+
+    $ ls /usr/share/bash-completion/completions
+
 rm 之前先 ls 试试，所谓 dry-run
 
     ls to_be*
@@ -433,6 +437,14 @@ rm 之前先 ls 试试，所谓 dry-run
     $ sudo !!
 
     通常出现的情况是，敲完命令执行后报错才发现忘了 sudo，这个用法比较实用。
+
+带环境变量执行某个命令，常用于程序需要以不同的环境参数执行
+
+    # env 可省
+    $ env QT_QPA_PLATFORM=xcb your_command your_param
+
+    # UNIX 写法：
+    $ QT_QPA_PLATFORM=xcb;your_command your_param
 
 替换上一条命令中的一个短语
 

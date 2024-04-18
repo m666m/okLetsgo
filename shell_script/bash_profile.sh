@@ -1,5 +1,5 @@
 ##################################################################################################################
-# 适用于 Linux bash/zsh、Windows git bash(mintty)、Mac OS 未测试
+# 适用于 Linux bash/zsh、Windows git bash(mintty)，Mac OS 未测试
 #
 # 别人的配置文件参考大全
 #   https://github.com/pseudoyu/dotfiles
@@ -583,14 +583,13 @@ function PS1git-branch-prompt {
     fi
 }
 
-# 主机名用不同颜色提示本地或 ssh 远程登录：本地登录是绿色，远程登录是洋红色，Fedora 进入交互式容器后无法判断是否远程登录，默认绿色
+# 主机名用不同颜色提示本地或 ssh 远程登录：本地登录是绿色，远程登录是洋红色，进入交互式容器 toolbox 后无法判断是否远程登录，默认绿色
 function PS1_host_name {
 
     # 如果是交互式容器，因为下面面有专门显示容器名的处理，所以这里要显示宿主机的主机名
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
         # 在交互式容器 toolbox 中，${HOSTNAME}的值与宿主机一致，/etc/hostname 变为 toolbox
-        local etchostname=$(cat /etc/hostname)
-        if [[ ${etchostname} = 'toolbox' ]]; then
+        if [[ $(cat /etc/hostname) = 'toolbox' ]]; then
             local simphost=$(echo ${HOSTNAME%%.*})
         else
             # 在交互式容器 distrobox 中，主机名的值变为：容器名.宿主机的主机名
@@ -601,7 +600,8 @@ function PS1_host_name {
         local simphost=$(echo ${HOSTNAME%%.*})
     fi
 
-    [[ -n $SSH_TTY ]] && echo -e "\033[0;35m$(echo $simphost)" || echo -e "\033[0;32m$(echo $simphost)"
+    # 变量 SSH_TTY 仅在交互式登录会话中被设置，变量 SSH_CLIENT 只要远程 ssh 登录即设置
+    ([[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]]) && echo -e "\033[0;35m$(echo $simphost)" || echo -e "\033[0;32m$(echo $simphost)"
 }
 
 # 提示当前在 toolbox 或 distrobox 等交互式容器环境，白色容器名配蓝色背景
