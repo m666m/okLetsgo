@@ -12319,7 +12319,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
         该扩展目前不支持 Gnome 45+，可以安装 ddterm 应急。
 
-    Grand Theft Focus       打开文件对话框显示在你的应用窗口后面，然后系统弹窗告诉你有个对话框打开了。。。这是病，得治！
+    Grand Theft Focus       打开文件对话框显示在你的应用窗口后面，然后系统弹窗告诉你有个对话框打开了。。。这是病，得治！ 竞品 window-is-ready-notification-remover，或直接运行命令 `gsettings set org.gnome.desktop.wm.preferences focus-new-windows 'smart'`
 
     Unblank lock screen     gnome的屏幕长时间空闲自动锁屏里没有单独的锁屏，只有黑屏并锁屏或黑屏不锁屏，鼠标晃不醒就只能蒙着打密码了，这也是病，得治！
 
@@ -12371,7 +12371,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
         https://www.insidentally.com/articles/000037/
 
-    Nigh Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现自动定时切换。
+    Nigh Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现定时自动切换。
 
     Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能。
 
