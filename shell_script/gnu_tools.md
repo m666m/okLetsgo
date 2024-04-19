@@ -9023,6 +9023,13 @@ hollywood 让你的 tmux 跑满各种夸张程序，就像好莱坞的科幻电�
             make
             sudo make install
 
+Windows 版
+
+    https://www.catch22.net/projects/matrix/
+        https://github.com/strobejb/matrix
+
+    https://github.com/OscarL/MatrixSS
+
 类似 cmatrix，实现了电影 Sneakers 里字符效果
 
     https://github.com/bartobri/no-more-secrets
