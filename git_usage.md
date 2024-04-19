@@ -4632,6 +4632,16 @@ git revert 新增的提交点，是对 rebase 那个提交点的反向执行，�
 
 简单快捷的处理办法不是使用命令 dos2unix 逐个转换，在代码目录下运行命令 `git restore .` 即可。
 
+在windows主機上，掛載Linux目錄後，接著準備將資料push到git server，豈料出現一大堆檔案呈現已修改狀態，提示我這些檔案要commit，但是實際上這些檔案沒有任何異動修改；我追查了一下，發現是換行字元搞的鬼，Linux換行只有\n ，windows則為\r\n；
+
+windows掛載Linux檔案，因為換行字元不同，當然會被誤認檔案被修改過。
+
+解決方式，在windows掛載linux情況下，執行以下git指令，就可以解決了。
+
+    $ git config --global core.autocrlf true
+    $ git config core.filemode false
+    $ git status
+
 ### 快速定位故障版本
 
 git bisect 使用分治算法查找出错版本号。
