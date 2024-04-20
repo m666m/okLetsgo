@@ -1222,7 +1222,8 @@ RedHat 系
     lscpu                           查看CPU信息
     cat /proc/cpuinfo               分核查看CPU信息
     hostname                        查看计算机名
-    lspci -tv                       列出所有PCI设备
+    lspci -tv                       树形列出所有PCI设备
+    lspci -nnk                      查看pci设备及相关端口，便于驱动安装
     lsusb -tv                       列出所有USB设备
     lsmod                           列出加载的内核模块
     env                             查看环境变量资源

@@ -9302,37 +9302,53 @@ linux 版本历经多年的使用，有些命令会出现各种变体，为保�
 
 ### 压力测试
 
-dd 可用于做 i/o 速率测试：
+测试 Linux 的磁盘读写能力，我们可以使用 FIO 来进行
 
-不执行 `sync` 的话，其实是生成数据到内存的速率
+    $ sudo apt install fio
 
-    # 测试内存最大写入速率
-    $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000
-    3000+0 records in
-    3000+0 records out
-    24576000 bytes (25 MB, 23 MiB) copied, 0.0136067 s, 1.8 GB/s
+测试顺序读写 10G 的文件，测试结果是大文件读写：
 
-    # 测试当前系统的随机数生成能力
-    $ dd if=/dev/urandom of=/tmp/file_01.txt bs=8K count=3000
-    3000+0 records in
-    3000+0 records out
-    24576000 bytes (25 MB, 23 MiB) copied, 0.0276212 s, 890 MB/s
+    # fio -filename=test -direct=1 -iodepth 1 -thread -rw=write -ioengine=psync -bs=16k -size=10G -numjobs=1 -runtime=600 -group_reporting -name=write
 
-读取到内存后，一次性同步到硬盘的速率
+测试文件顺序读取：
 
-    $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000 conv=fdatasync
-    3000+0 records in
-    3000+0 records out
-    24576000 bytes (25 MB, 23 MiB) copied, 0.0365097 s, 673 MB/s
+    # fio -filename=test -direct=1 -iodepth 1 -thread -rw=read -ioengine=psync -bs=16k -size=10G -numjobs=1 -runtime=600 -group_reporting -name=read
 
-执行时每次都进行同步到硬盘的操作，下例是做了3000次8k写入硬盘
+测试随机写入和读取：
 
-    $ $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000 oflag=dsync
-    3000+0 records in
-    3000+0 records out
-    24576000 bytes (25 MB, 23 MiB) copied, 0.280321 s, 87.7 MB/s
+    # fio -filename=test -direct=1 -iodepth 1 -thread -rw=randwrite -ioengine=psync -bs=16k -size=10G -numjobs=1 -runtime=600 -group_reporting -name=write
 
-如果要防止硬盘缓存优化，写入量要加大，比如 1 GB 的文件写入速率更客观 bs=64k count=16k
+dd 也可用于做 i/o 速率测试：
+
+    不执行 `sync` 的话，其实是生成数据到内存的速率
+
+        # 测试内存最大写入速率
+        $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000
+        3000+0 records in
+        3000+0 records out
+        24576000 bytes (25 MB, 23 MiB) copied, 0.0136067 s, 1.8 GB/s
+
+        # 测试当前系统的随机数生成能力
+        $ dd if=/dev/urandom of=/tmp/file_01.txt bs=8K count=3000
+        3000+0 records in
+        3000+0 records out
+        24576000 bytes (25 MB, 23 MiB) copied, 0.0276212 s, 890 MB/s
+
+    读取到内存后，一次性同步到硬盘的速率
+
+        $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000 conv=fdatasync
+        3000+0 records in
+        3000+0 records out
+        24576000 bytes (25 MB, 23 MiB) copied, 0.0365097 s, 673 MB/s
+
+    执行时每次都进行同步到硬盘的操作，下例是做了3000次8k写入硬盘
+
+        $ $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000 oflag=dsync
+        3000+0 records in
+        3000+0 records out
+        24576000 bytes (25 MB, 23 MiB) copied, 0.280321 s, 87.7 MB/s
+
+    如果要防止硬盘缓存优化，写入量要加大，比如 1 GB 的文件写入速率更客观 bs=64k count=16k
 
 stress-ng 压测 cpu 的著名工具
 
