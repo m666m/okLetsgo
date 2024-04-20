@@ -1340,6 +1340,8 @@ Linux 内核提供了一种通过 /proc 文件系统，在运行时访问内核�
 
 ## 进程查看
 
+TODO:   top 命令看什么 wa si hi 都什么意思
+
 显示进程的命令行
 
     假设程序名 hello，进程号8034，使用命令：
@@ -1858,6 +1860,62 @@ sar 命令选项    功能
     19:04:06     atmptf/s  estres/s retrans/s isegerr/s   orsts/s
     19:04:07         0.00      0.00      0.00      0.00      0.00
 
+#### 磁盘繁忙程度高导致的现象
+
+    https://zhuanlan.zhihu.com/p/458276937
+
+先看 cpu 的 %iowait 是否很高，`top/btop` 看到 load 虚高，实际利用率很低，cpu 并不热，进程的 wa 非常高，说明 cpu 一直在等 io
+
+然后看磁盘，用 `iostat -mxz 1` 也可以看到 %util 利用率非常高
+
+综合看，用 `nmon` ，按 c d，可以直观的看到 cpu 和 disk 相关统计中，cpu 高 wait，磁盘高 Busy，其实读写速率并不高
+
+出现这种情况，一般是磁盘或接口快坏了。。。
+
+不放心的话，详细看看到底是谁在干嘛：
+
+    先看进程，用 `pidstat -d  1` 看当前哪个进程在频繁读写磁盘，记录进程号
+
+    然后看线程，用 `pidstat -dt -p 进程号 1` 分析应用程序中哪一个线程占用的io比较高，记录线程号
+
+    分析这个线程在干什么？ `perf trace -t 线程号 -o /tmp/tmp_aa.pstrace`，看 write() 调用可知：目前这个线程在写入多个文件，fd为文件句柄，文件句柄号有64、159
+
+    查看这个文件句柄是什么 `lsof -p 进程号|grep 159u; lsof -p 73739|grep 64u`，可以看到具体的文件位置了。
+
+假设是 mysql 进程高磁盘占用，需要分析 sql 语句：
+
+    查看当前的会话列表
+
+        mysql> select * from information_schema.processlist where command !='sleep';
+
+    可知：目前这个sql已经执行了67s，且此sql使用了group by和order by，必然会产生io
+
+    通过线程号查询会话
+
+        mysql> select * from threads where thread_os_id=74770\G;
+
+    可知：通过查询threads表可以进行验证，该线程在频繁创建临时表的原因就来源于此sql
+
+    查看该sql语句的执行计划，进行进一步认证
+
+        mysql> explain select SQL_NO_CACHE b.id,a.k from sbtest_a a left join sbtest_b b on a
+
+    可知：该sql的执行计划用到了临时表及临时文件，符合
+
+    查看全局状态进一步进行确认
+
+        mysql> show global status like '%tmp%';
+
+    多执行几次，可以看出tmp_files和tmp_disk_tables的值在增长，证明在大量的创建临时文件及磁盘临时表，符合该线程的行为
+
+    分析出来，目前sda磁盘的io使用率最高，且mysqld程序占用的最多，通过排查有一个线程在频繁的创建临时表或临时文件且通过登录mysql排查会话及线程视图可以找到是由某一个慢sql导致的，查看此慢sql的执行计划也会创建临时表和临时文件符合我们之前排查的预期。 此时我们就需要针对此慢sql进行优化，优化步骤由DBA进行处理，此处进行忽略。慢sql优化完成后可以进行io的继续观察，看io是否有下降
+
+调试下它的代码
+
+    我们可以使用pstack进行跟踪线程号，获取当前的线程堆栈信息。切记pstack会调用gdb进行debug调试
+
+        shell> pstack 74770 >/tmp/74770.pstack
+
 #### 查找上下文切换过多导致高CPU占用
 
     https://blog.csdn.net/Hehuyi_In/article/details/108439078
@@ -2014,7 +2072,7 @@ Perf 是 Linux kernel 自带的系统性能优化工具。
 
 ### 使用 nmon 工具包
 
-跨平台的查看系统时实性能状态信息，比 btop 命令多了当前磁盘繁忙程度的指标
+跨平台的查看系统时实性能状态信息，比 top/btop 命令多了当前磁盘繁忙程度的指标，非常实用
 
     https://nmon.sourceforge.io/pmwiki.php
     https://nmon.sourceforge.net/pmwiki.php
@@ -2025,7 +2083,9 @@ Perf 是 Linux kernel 自带的系统性能优化工具。
 
     https://www.kclouder.cn/posts/35478.html
 
-各大发行版都要这个软件包，安装后直接输入 nmon 命令即可启动.
+图形化显示字符界面，感觉平时监控用 btop + nmon 就可掌握基本的 cpu 和 磁盘使用情况了。
+
+各大发行版都要这个软件包，安装后直接输入 nmon 命令即可启动。
 
 通过各种快捷键就可以启动不同的监控项目，比如按键 c 可以查看 CPU 相关信息、按键 d 可以查看磁盘信息、按键 t 可以查看系统的进程信息、m 对应内存、n 对应网络等等。再按一次为退出。
 
