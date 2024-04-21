@@ -3438,6 +3438,17 @@ if [ -x /usr/bin/dircolors ]; then
         du -a $1 | sort -n -r |head -n 10
     }
 
+    # 命令行看天气 https://wttr.in/:help
+    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
+    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
+    # 看月相 curl http://wttr.in/moon
+    function weather {
+        curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
+    }
+
+    # pip
+    alias pipi='echo "[pip 跳过缓存更新指定包]" && pip install --upgrade --no-cache-dir'
+
     # git 常用命令
     alias gs='git status'
     alias gd='echo "[差异：工作区与暂存区]" && git diff'
@@ -3453,10 +3464,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
     alias gpull='echo "[github 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull --rebase; done'
     alias gpush='echo "[github 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
-
-    # 番茄对 github 的 https 频繁阻断，用 ssh 协议拉代码还好点
     function gaddr {
-        echo "[把 github.com 的 https 地址转为 git@ 地址]"
+        echo "[把 github.com 的 https 地址转为 git@ 地址，方便鉴权登录github]"
         echo ${1//https:\/\/github.com\//git@github.com:}
     }
 
@@ -3505,11 +3514,11 @@ if [ -x /usr/bin/dircolors ]; then
     alias docker="podman"
     alias pdms='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
     alias pdmr='echo "[podman简单运行一个容器]" && podman run -it --rm -P'
+    alias pdme='echo "[podman在运行的容器里执行一个命令]" && podman exec'
     alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]" && podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
-    alias pdmlog='echo "[podman查看指定容器日志]" && podman logs -f --tail 30'
+    alias pdmlog='echo "[podman查看指定容器日志]" && podman logs -f --tail 100'
     alias pdmdf='echo "[podman查看资源情况]" && podman system df -v'
     alias pdmvp='echo "[podman清理空闲空间]" && podman volume prune'
-
     function pdmtty() {
         echo "[登录到容器 $1 内的tty]"
         podman exec -it $1 sh
@@ -3517,16 +3526,14 @@ if [ -x /usr/bin/dircolors ]; then
 
     # distrobox 这词打不快
     alias dbox='distrobox'
-
-    # pip
-    alias pipiu='echo "[pip 跳过缓存更新指定包]" && pip install --upgrade --no-cache-dir'
-
-    # 命令行看天气 https://wttr.in/:help
-    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
-    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
-    # 看月相 curl http://wttr.in/moon
-    function weather {
-        curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
+    alias dboxe='echo "[在distrobox里运行一个命令]" && distrobox-enter --'
+    function dboxstop() {
+        echo "Stop all distrobox container:"
+        container_name=$(distrobox list |sed 1d |cut -d '|' -f 2)
+        for cname in "${container_name[@]}"
+        do
+            distrobox-stop --yes $cname
+        done
     }
 
 fi
