@@ -279,6 +279,58 @@ git 对文件内容的修改，在撤销和重做方面有些使用不便，详�
 
     或为其设置 ProxyCommand 选项，通过代理建立连接，参见章节 [通过 socks/http 代理连接 ssh](ssh think)。
 
+#### GitHub 多帐号 SSH 密钥设置
+
+    https://p3terx.com/archives/github-multiaccount-ssh-key-settings.html
+
+生成第二个密钥
+
+    $ ssh-keygen -t rsa -C "name@email.com" //填写你的邮箱
+    Enter file in which to save the key (/Users/you/.ssh/id_rsa): /c/Users/P3TERX/.ssh/id_rsa_github2 // 这里不要 Enter ，手动填写保存路径
+
+    <剩下两个直接回车>
+
+完成之后，我们可以看到 ~/.ssh 目录下多了两个文件 ：
+
+    id_rsa_github2
+
+    id_rsa_github2.pub
+
+配置 ~/.ssh/config 文件添加一个主机别名配置：
+
+    Host github2
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/id_rsa_github2
+
+添加完成后，测试一下：
+
+    $ ssh -T github2
+
+使用时，将 GitHub SSH 仓库地址中的 <git@github.com> 替换成新建的 Host 别名
+
+    如原地址是：git@github.com:abc/xyz.git，替换后应该是：github2:abc/xyz.git
+
+如果是新建的仓库，直接使用替换后的 URL 克隆即可：
+
+    git clone github2:abc/xyz.git
+
+如果已经使用原地址克隆过了，可以使用命令修改：
+
+    git remote set-url origin github2:abc/xyz.git
+
+如果之前设置过全局用户名和邮箱，那么你需要将新添加的账户管理的 repos­i­tory 下设置局部用户名和邮箱。
+
+    git config user.name "yourname"
+    git config user.email "youremail"
+
+否则虽然能 push ，但 push 上去会显示你之前添加的全局用户的用户名，这可能会导致不必要的麻烦。
+
+或者 un­set 全局设置，把每个 repos­i­tory 分别设置局部用户名和邮箱。
+
+    git config --global --unset user.name
+    git config --global --unset user.email
+
 ### 配置git的编辑器和比较工具
 
     https://git-scm.com/docs/git-config
@@ -4641,6 +4693,33 @@ windows掛載Linux檔案，因為換行字元不同，當然會被誤認檔案�
     $ git config --global core.autocrlf true
     $ git config core.filemode false
     $ git status
+
+> 在 Git 中正确设置 CRLF、LF 换行符转换
+
+    https://p3terx.com/archives/how-to-choose-crlf-lf.html
+
+CRLF、LF 是用来表示文本换行的方式。CR (Car­riage Re­turn) 代表回车，对应字符 \r，LF (Line Feed) 代表换行，对应字符 \n。由于历史原因，不同的操作系统文本使用的换行符各不相同。主流的操作系统一般使用 CRLF 或者 LF 作为其文本的换行符。其中，Win­dows 系统使用的是 CRLF, Unix 系统 (包括 Linux、Ma­cOS 近些年的版本) 使用的是 LF。
+
+Git 提供了一个名为 core.autocrlf 的配置，可以自动完成标准化与转换。它的设置方式如下：
+
+    $ git config --global core.autocrlf  [true | input | false]  # 全局设置
+    $ git config --local core.autocrlf  [true | input | false] # 针对本项目设置
+
+    true 提交时转换为LF，检出时转换为CRLF
+    input 提交时转换为LF，检出时不转换
+    false 提交与检出的代码都保持文件原有的换行符不变（不转换）
+
+CRLF 与 LF 混合的文本文件不受此配置控制。
+
+Git 安装后默认为 false。
+
+由于没有一个绝对有效的算法来判断一个文件是否为文本，所以 Git 提供了一项禁止 / 警告不可逆转换的配置来防止错误的标准化与转换。它主要是影响到多种换行符混合的文件，我们可以手动将其转换为同一种换行符：
+
+    $ git config --global core.safecrlf [true | false | warn]
+
+    true 禁止提交混合换行符的文本文件(git add 的时候会被拦截，提示异常)
+    warn 提交混合换行符的文本文件的时候发出警告，但是不会阻止 git add 操作
+    false 不禁止提交混合换行符的文本文件（默认配置）
 
 ### 快速定位故障版本
 

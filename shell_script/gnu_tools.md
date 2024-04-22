@@ -7901,7 +7901,7 @@ xdm 有图形界面
 
 Aria2 的命令行传输各种参数，设置复杂，一般都使用各种客户端发送下载请求给它。
 
-可以使用 uget 有图形界面，自动调用 aria2 支持bt下载
+可以使用 uget 有图形界面，自动调用 aria2 支持bt下载，该软件目前仍然不完善，别用了
 
     https://github.com/ugetdm/uget
 
@@ -7909,7 +7909,7 @@ Aria2 的命令行传输各种参数，设置复杂，一般都使用各种客�
 
     安装后设置选择，插件选 aria2 + curl 即可。
 
-浏览器扩展插件：Aria2 Explorer（内置AriaNg），安装后设置 aip-key，即可在浏览器中直接给 aria2 进程发下载请求了。
+推荐使用浏览器扩展插件：Aria2 Explorer（内置AriaNg），安装后设置 aip-key，即可在浏览器中直接给 aria2 进程发下载请求了。
 
 ##### aria2 作为后台进程运行响应 RPC 请求
 
@@ -8028,7 +8028,11 @@ Windows 下可使用 WinSW 将 Aria2 安装成用户服务来开机自启。
 
 用浏览器插件 Aria2 Explorer 也可以看到状态是否可用。
 
-##### 在容器中运行 aria2，省的做各种配置了
+为什么在 AriaNg 中删除暂停的任务无法删除文件？
+
+    Aria2 本身没有通过 RPC 方式（比如 We­bUI ）删除文件的功能，目前你所看到的删除任务后删除文件的功能是通过下载完成后执行命令（on-download-stop）的接口去调用删除脚本实现的，只能删除正在下载的任务。Aria2 定义暂停状态的任务为未开始的任务，而 on-download-stop 这个选项的执行条件是并不包含未开始的任务。所以删除脚本没有触发，文件也就不会被删除。
+
+##### 在容器中运行 aria2
 
 参考自 Aria2 Pro: 基于 Aria2 完美配置和特殊定制优化的 Aria2 Docker
 
@@ -8067,6 +8071,531 @@ TODO:我用 podman，待调试
 配置本机防火墙开放必要的入站端口，内网机器在路由器设置端口转发到相同端口。
 
 可以把该容器配置为开机自启动，见章节 [使用 systemd 单元文件配置自启动 podman 容器](virtualization think)。
+
+##### Aria2 不会自己去删除文件
+
+太麻烦了，建议用现成的，见章节 [在容器中运行 aria2]。
+
+    https://p3terx.com/archives/solve-problems-encountered-in-using-aria2-and-rclone.html
+
+    https://github.com/P3TERX/aria2.conf
+
+这是官方的回答，所以下载完成后.aria2 文件会保留。这也导致在下载出错的时候即使你删掉了任务，下载的文件依然还在，且 Aria2 是预分配磁盘空间的，这是磁盘占满的原因之一。
+
+Aria2 有两个配置项 on-download-complete、on-download-stop，前者可以在下载完成后执行一个脚本，后者可以在停止后执行一个脚。Aria2 会给脚本传递 3 个变量 $1、$2、$3 分别为 gid 、文件数量、文件路径。利用这些配置项和这些变量就可以实现一些功能，比如在下载完成后调用 Rclone 上传、错误停止后对文件进行删除等操作。
+
+编辑 aria2.conf编辑配置文件，加上下面的配置项
+
+    ## 执行额外命令 ##
+
+    # 下载停止后执行的命令
+    # 从 正在下载 到 删除、错误、完成 时触发。暂停被标记为未开始下载，故与此项无关。
+    on-download-stop=/root/.aria2/delete.sh
+
+    # 下载完成后执行的命令
+    # 此项未定义则执行 下载停止后执行的命令 (on-download-stop)
+    on-download-complete=/root/.aria2/clean.sh
+
+    # 下载错误后执行的命令
+    # 此项未定义则执行 下载停止后执行的命令 (on-download-stop)
+    #on-download-error=
+
+    # 下载暂停后执行的命令
+    #on-download-pause=
+
+    # 下载开始后执行的命令
+    #on-download-start=
+
+    # BT 下载完成后执行的命令
+    #on-bt-download-complete=
+
+delete.sh：文件删除脚本。在下载停止后执行(on-download-stop)，当下载错误或删除正在下载的任务后自动删除相关文件，并自动清理控制文件(*.aria2)、种子文件(*.torrent)和空目录，防止不必要的磁盘空间占用。（默认启用）
+
+```bash
+#!/usr/bin/env bash
+#
+# https://github.com/P3TERX/aria2.conf
+# File name：delete.sh
+# Description: Delete files after Aria2 download error or task removed
+# Version: 3.0
+#
+# Copyright (c) 2018-2021 P3TERX <https://p3terx.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+CHECK_CORE_FILE() {
+    CORE_FILE="$(dirname $0)/core"
+    if [[ -f "${CORE_FILE}" ]]; then
+        . "${CORE_FILE}"
+    else
+        echo "!!! core file does not exist !!!"
+        exit 1
+    fi
+}
+
+CHECK_RPC_CONECTION() {
+    READ_ARIA2_CONF
+    if [[ "${RPC_SECRET}" ]]; then
+        RPC_PAYLOAD='{"jsonrpc":"2.0","method":"aria2.getVersion","id":"P3TERX","params":["token:'${RPC_SECRET}'"]}'
+    else
+        RPC_PAYLOAD='{"jsonrpc":"2.0","method":"aria2.getVersion","id":"P3TERX"}'
+    fi
+    (curl "${RPC_ADDRESS}" -fsSd "${RPC_PAYLOAD}" || curl "https://${RPC_ADDRESS}" -kfsSd "${RPC_PAYLOAD}") >/dev/null
+}
+
+DELETE_ON_STOP() {
+    if [[ "${TASK_STATUS}" = "error" && "${DELETE_ON_ERROR}" = "true" ]] || [[ "${TASK_STATUS}" = "removed" && "${DELETE_ON_REMOVED}" = "true" ]]; then
+        if [[ -f "${TASK_PATH}.aria2" ]]; then
+            echo -e "$(DATE_TIME) ${INFO} Download task ${TASK_STATUS}, deleting files..."
+            rm -vrf "${TASK_PATH}.aria2" "${TASK_PATH}"
+        else
+            [[ -e "${TASK_PATH}" ]] &&
+                echo -e "$(DATE_TIME) ${WARRING} Skip delete. Download completed files: ${TASK_PATH}" ||
+                echo -e "$(DATE_TIME) ${WARRING} Skip delete. File does not exist: ${TASK_PATH}"
+        fi
+    else
+        echo -e "$(DATE_TIME) ${WARRING} Skip delete. Task status invalid: ${TASK_STATUS}"
+    fi
+}
+
+DELETE_ON_UNKNOWN() {
+    if [[ -f "${FILE_PATH}.aria2" ]]; then
+        echo -e "$(DATE_TIME) ${INFO} Download task force removed, deleting files..."
+        rm -vrf "${FILE_PATH}.aria2" "${FILE_PATH}"
+    else
+        [[ -e "${FILE_PATH}" ]] &&
+            echo -e "$(DATE_TIME) ${WARRING} Skip delete. Download completed files: ${FILE_PATH}" ||
+            echo -e "$(DATE_TIME) ${WARRING} Skip delete. File does not exist: ${FILE_PATH}"
+    fi
+}
+
+DELETE_FILE() {
+    if GET_TASK_INFO; then
+        GET_DOWNLOAD_DIR
+        GET_TASK_STATUS
+        CONVERSION_PATH
+        DELETE_ON_STOP
+        DELETE_DOT_TORRENT
+        DELETE_EMPTY_DIR
+    elif CHECK_RPC_CONECTION && [[ "${DELETE_ON_UNKNOWN}" = "true" && ${FILE_NUM} -eq 1 ]]; then
+        DELETE_ON_UNKNOWN
+    else
+        echo -e "$(DATE_TIME) ${ERROR} Aria2 RPC interface error!"
+        exit 1
+    fi
+}
+
+CHECK_CORE_FILE "$@"
+CHECK_PARAMETER "$@"
+CHECK_FILE_NUM
+CHECK_SCRIPT_CONF
+DELETE_FILE
+exit 0
+```
+
+clean.sh：文件清理脚本。在下载完成后执行(on-download-complete)，自动清理控制文件(*.aria2)、种子文件(*.torrent)和空目录。（默认启用）
+
+```bash
+#!/usr/bin/env bash
+#
+# https://github.com/P3TERX/aria2.conf
+# File name：clean.sh
+# Description: Remove redundant files after Aria2 download is complete
+# Version: 3.0
+#
+# Copyright (c) 2018-2021 P3TERX <https://p3terx.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+CHECK_CORE_FILE() {
+    CORE_FILE="$(dirname $0)/core"
+    if [[ -f "${CORE_FILE}" ]]; then
+        . "${CORE_FILE}"
+    else
+        echo "!!! core file does not exist !!!"
+        exit 1
+    fi
+}
+
+CHECK_CORE_FILE "$@"
+CHECK_PARAMETER "$@"
+CHECK_FILE_NUM
+CHECK_SCRIPT_CONF
+GET_TASK_INFO
+GET_DOWNLOAD_DIR
+CONVERSION_PATH
+CLEAN_UP
+exit 0
+```
+
+core ：Aria2 附加功能脚本核心文件。所有脚本都依赖于此文件运行。
+
+```bash
+#
+# https://github.com/P3TERX/aria2.conf
+# File name：core
+# Description: Aria2 additional function script core file
+# Version: 3.3
+#
+# Copyright (c) 2018-2021 P3TERX <https://p3terx.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+TASK_GID=$1
+FILE_NUM=$2
+FILE_PATH=$3
+ARIA2_CONF_DIR="$(dirname $0)"
+ARIA2_CONF="${ARIA2_CONF_DIR}/aria2.conf"
+ARIA2_SESSION="${ARIA2_CONF_DIR}/aria2.session"
+SCRIPT_CONF="${ARIA2_CONF_DIR}/script.conf"
+RED_FONT_PREFIX="\033[31m"
+LIGHT_GREEN_FONT_PREFIX="\033[1;32m"
+YELLOW_FONT_PREFIX="\033[1;33m"
+LIGHT_PURPLE_FONT_PREFIX="\033[1;35m"
+FONT_COLOR_SUFFIX="\033[0m"
+INFO="[${LIGHT_GREEN_FONT_PREFIX}INFO${FONT_COLOR_SUFFIX}]"
+ERROR="[${RED_FONT_PREFIX}ERROR${FONT_COLOR_SUFFIX}]"
+WARRING="[${YELLOW_FONT_PREFIX}WARRING${FONT_COLOR_SUFFIX}]"
+
+DATE_TIME() {
+    date +"%m/%d %H:%M:%S"
+}
+
+CHECK_PARAMETER() {
+    [[ $# -eq 0 ]] && {
+        echo && echo -e "${ERROR} This script can only be used by passing parameters through Aria2."
+        exit 1
+    }
+}
+
+CHECK_FILE_NUM() {
+    [[ ${FILE_NUM} -eq 0 ]] && {
+        echo && echo -e "$(DATE_TIME) ${WARRING} Number of files is zero, maybe a Magnet Link."
+        exit 0
+    }
+}
+
+CHECK_SCRIPT_CONF() {
+    if [[ -f "${SCRIPT_CONF}" ]]; then
+        LOAD_SCRIPT_CONF
+    else
+        echo && echo "!!! '${SCRIPT_CONF}' does not exist !!!"
+        exit 1
+    fi
+}
+
+LOAD_SCRIPT_CONF() {
+    DRIVE_NAME="$(grep ^drive-name "${SCRIPT_CONF}" | cut -d= -f2-)"
+    DRIVE_DIR="$(grep ^drive-dir "${SCRIPT_CONF}" | cut -d= -f2-)"
+    UPLOAD_LOG_PATH="$(grep ^upload-log "${SCRIPT_CONF}" | cut -d= -f2-)"
+    DEST_DIR="$(grep ^dest-dir "${SCRIPT_CONF}" | cut -d= -f2-)"
+    MOVE_LOG_PATH="$(grep ^move-log "${SCRIPT_CONF}" | cut -d= -f2-)"
+    DELETE_ON_REMOVED="$(grep ^delete-on-removed "${SCRIPT_CONF}" | cut -d= -f2-)"
+    DELETE_ON_ERROR="$(grep ^delete-on-error "${SCRIPT_CONF}" | cut -d= -f2-)"
+    DELETE_ON_UNKNOWN="$(grep ^delete-on-unknown "${SCRIPT_CONF}" | cut -d= -f2-)"
+    DELETE_DOT_ARIA2="$(grep ^delete-dot-aria2 "${SCRIPT_CONF}" | cut -d= -f2-)"
+    DELETE_DOT_TORRENT="$(grep ^delete-dot-torrent "${SCRIPT_CONF}" | cut -d= -f2-)"
+    DELETE_EMPTY_DIR="$(grep ^delete-empty-dir "${SCRIPT_CONF}" | cut -d= -f2-)"
+    MIN_SIZE="$(grep ^min-size "${SCRIPT_CONF}" | cut -d= -f2-)"
+    INCLUDE_FILE="$(grep ^include-file "${SCRIPT_CONF}" | cut -d= -f2-)"
+    EXCLUDE_FILE="$(grep ^exclude-file "${SCRIPT_CONF}" | cut -d= -f2-)"
+    INCLUDE_FILE_REGEX="$(grep ^include-file-regex "${SCRIPT_CONF}" | cut -d= -f2-)"
+    EXCLUDE_FILE_REGEX="$(grep ^exclude-file-regex "${SCRIPT_CONF}" | cut -d= -f2-)"
+}
+
+READ_ARIA2_CONF() {
+    if [ ! -f "${ARIA2_CONF}" ]; then
+        echo -e "$(DATE_TIME) ${ERROR} '${ARIA2_CONF}' does not exist."
+        exit 1
+    else
+        ARIA2_DOWNLOAD_DIR=$(grep ^dir "${ARIA2_CONF}" | cut -d= -f2-)
+        RPC_PORT=$(grep ^rpc-listen-port "${ARIA2_CONF}" | cut -d= -f2-)
+        RPC_SECRET=$(grep ^rpc-secret "${ARIA2_CONF}" | cut -d= -f2-)
+        SAVE_SESSION_INTERVAL=$(grep ^save-session-interval "${ARIA2_CONF}" | cut -d= -f2-)
+        [[ ${ARIA2_DOWNLOAD_DIR} && ${RPC_PORT} && ${SAVE_SESSION_INTERVAL} ]] || {
+            echo -e "$(DATE_TIME) ${ERROR} Aria2 configuration file incomplete."
+            exit 1
+        }
+        RPC_ADDRESS="localhost:${RPC_PORT}/jsonrpc"
+    fi
+}
+
+RPC_TASK_INFO() {
+    if [[ "${RPC_SECRET}" ]]; then
+        RPC_PAYLOAD='{"jsonrpc":"2.0","method":"aria2.tellStatus","id":"P3TERX","params":["token:'${RPC_SECRET}'","'${TASK_GID}'"]}'
+    else
+        RPC_PAYLOAD='{"jsonrpc":"2.0","method":"aria2.tellStatus","id":"P3TERX","params":["'${TASK_GID}'"]}'
+    fi
+    curl "${RPC_ADDRESS}" -fsSd "${RPC_PAYLOAD}" || curl "https://${RPC_ADDRESS}" -kfsSd "${RPC_PAYLOAD}"
+}
+
+GET_TASK_INFO() {
+    READ_ARIA2_CONF
+    RPC_RESULT="$(RPC_TASK_INFO)"
+}
+
+GET_DOWNLOAD_DIR() {
+    [[ -z ${RPC_RESULT} ]] && {
+        echo -e "$(DATE_TIME) ${ERROR} Aria2 RPC interface error!"
+        exit 1
+    }
+    DOWNLOAD_DIR=$(echo "${RPC_RESULT}" | jq -r '.result.dir')
+    [[ -z "${DOWNLOAD_DIR}" || "${DOWNLOAD_DIR}" = "null" ]] && {
+        echo ${RPC_RESULT} | jq '.result'
+        echo -e "$(DATE_TIME) ${ERROR} Failed to get download directory!"
+        exit 1
+    }
+}
+
+GET_TASK_STATUS() {
+    TASK_STATUS=$(echo "${RPC_RESULT}" | jq -r '.result.status')
+    [[ -z "${TASK_STATUS}" || "${TASK_STATUS}" = "null" ]] && {
+        echo "${RPC_RESULT}" | jq '.result'
+        echo -e "$(DATE_TIME) ${ERROR} Failed to get task status!"
+        exit 1
+    }
+}
+
+GET_INFO_HASH() {
+    INFO_HASH=$(echo "${RPC_RESULT}" | jq -r '.result.infoHash')
+    if [[ -z "${INFO_HASH}" ]]; then
+        echo "${RPC_RESULT}" | jq '.result'
+        echo -e "$(DATE_TIME) ${ERROR} Failed to get Info Hash!"
+        exit 1
+    elif [[ "${INFO_HASH}" = "null" ]]; then
+        return 1
+    else
+        TORRENT_FILE="${DOWNLOAD_DIR}/${INFO_HASH}.torrent"
+    fi
+}
+
+CONVERSION_PATH() {
+    RELATIVE_PATH="${FILE_PATH#"${DOWNLOAD_DIR}/"}"
+    TASK_FILE_NAME="${RELATIVE_PATH%%/*}"
+    TASK_PATH="${DOWNLOAD_DIR}/${TASK_FILE_NAME}"
+    DEST_PATH_SUFFIX="${TASK_PATH#"${ARIA2_DOWNLOAD_DIR}"}"
+}
+
+OUTPUT_LOG() {
+    echo -e "${LOG}"
+    [[ "${LOG_PATH}" && -e "${LOG_PATH%/*}" ]] && echo -e "${LOG}" | sed "s,\x1B\[[0-9;]*m,,g" >>"${LOG_PATH}"
+}
+
+CHECK_DOT_ARIA2() {
+    if [ -f "${FILE_PATH}.aria2" ]; then
+        DOT_ARIA2_FILE="${FILE_PATH}.aria2"
+    elif [ -f "${TASK_PATH}.aria2" ]; then
+        DOT_ARIA2_FILE="${TASK_PATH}.aria2"
+    else
+        DOT_ARIA2_FILE='null'
+        echo -e "$(DATE_TIME) ${INFO} .aria2 file does not exist."
+        return 1
+    fi
+}
+
+DELETE_DOT_ARIA2() {
+    if [[ "${DELETE_DOT_ARIA2}" = "true" ]] && CHECK_DOT_ARIA2; then
+        echo -e "$(DATE_TIME) ${INFO} Deleting .aria2 file ..."
+        rm -vf "${DOT_ARIA2_FILE}"
+    fi
+}
+
+DELETE_TORRENT_FILES() {
+    sleep $(($SAVE_SESSION_INTERVAL + 1))
+    TORRENT_FILES=$(ls "${DOWNLOAD_DIR}" | grep '.*.torrent')
+    if [[ -f "${ARIA2_SESSION}" && -n "${TORRENT_FILES}" ]]; then
+        for TORRENT_FILE in "${TORRENT_FILES}"; do
+            if [[ -n "${TORRENT_FILE}" && -z $(cat "${ARIA2_SESSION}" | grep -i "${TORRENT_FILE%.*}") ]]; then
+                echo -e "$(DATE_TIME) ${INFO} Deleting .torrent file (enhanced) ..."
+                rm -vf ${DOWNLOAD_DIR}/${TORRENT_FILE}
+            fi
+        done
+    else
+        [[ ! -f "${ARIA2_SESSION}" ]] &&
+            echo -e "$(DATE_TIME) ${ERROR} '${ARIA2_SESSION}' does not exist." ||
+            echo -e "$(DATE_TIME) ${WARRING} .torrent file does not exist."
+    fi
+}
+
+DELETE_DOT_TORRENT() {
+    if GET_INFO_HASH; then
+        if [[ "${DELETE_DOT_TORRENT}" = "true" || "${DELETE_DOT_TORRENT}" = "normal" ]] && [[ -f "${TORRENT_FILE}" ]]; then
+            echo -e "$(DATE_TIME) ${INFO} Deleting .torrent file ..."
+            rm -vf ${TORRENT_FILE}
+        elif [[ "${DELETE_DOT_TORRENT}" = "true" || "${DELETE_DOT_TORRENT}" = "enhanced" ]]; then
+            DELETE_TORRENT_FILES
+        elif [[ "${DELETE_DOT_TORRENT}" = "normal" ]]; then
+            echo -e "$(DATE_TIME) ${WARRING} .torrent file may exist but cannot be found. Recommended to enable enhanced mode."
+        else
+            echo -e "$(DATE_TIME) ${INFO} Delete .torrent file function is disabled."
+        fi
+    else
+        echo -e "$(DATE_TIME) ${INFO} General download task, skipped delete .torrent file."
+    fi
+}
+
+DELETE_EMPTY_DIR() {
+    if [[ "${DELETE_EMPTY_DIR}" = "true" ]]; then
+        echo -e "$(DATE_TIME) ${INFO} Deleting empty directory ..."
+        if [[ "${DOWNLOAD_DIR}" =~ "${ARIA2_DOWNLOAD_DIR}" ]]; then
+            find "${ARIA2_DOWNLOAD_DIR}" ! -path "${ARIA2_DOWNLOAD_DIR}" -depth -type d -empty -exec rm -vrf {} \;
+        else
+            find "${DOWNLOAD_DIR}" -depth -type d -empty -exec rm -vrf {} \;
+        fi
+    fi
+}
+
+DELETE_EXCLUDE_FILE() {
+    if [[ ${FILE_NUM} -gt 1 ]] && [[ -n ${MIN_SIZE} || -n ${INCLUDE_FILE} || -n ${EXCLUDE_FILE} || -n ${EXCLUDE_FILE_REGEX} || -n ${INCLUDE_FILE_REGEX} ]]; then
+        echo -e "${INFO} Deleting excluded files ..."
+        [[ -n ${MIN_SIZE} ]] && find "${TASK_PATH}" -type f -size -${MIN_SIZE} -print0 | xargs -0 rm -vf
+        [[ -n ${EXCLUDE_FILE} ]] && find "${TASK_PATH}" -type f -regextype posix-extended -iregex ".*\.(${EXCLUDE_FILE})" -print0 | xargs -0 rm -vf
+        [[ -n ${INCLUDE_FILE} ]] && find "${TASK_PATH}" -type f -regextype posix-extended ! -iregex ".*\.(${INCLUDE_FILE})" -print0 | xargs -0 rm -vf
+        [[ -n ${EXCLUDE_FILE_REGEX} ]] && find "${TASK_PATH}" -type f -regextype posix-extended -iregex "${EXCLUDE_FILE_REGEX}" -print0 | xargs -0 rm -vf
+        [[ -n ${INCLUDE_FILE_REGEX} ]] && find "${TASK_PATH}" -type f -regextype posix-extended ! -iregex "${INCLUDE_FILE_REGEX}" -print0 | xargs -0 rm -vf
+    fi
+}
+
+CLEAN_UP() {
+    DELETE_DOT_ARIA2
+    DELETE_DOT_TORRENT
+    DELETE_EXCLUDE_FILE
+    DELETE_EMPTY_DIR
+}
+```
+
+script.conf：Aria2 附加功能脚本配置文件。
+
+```bash
+#
+# https://github.com/P3TERX/aria2.conf
+# File name：script.conf
+# Description: Aria2 additional function script configuration file
+# Version: 2021.07.04
+#
+
+## 文件上传设置(upload.sh) ##
+
+# 网盘名称(RCLONE 配置时填写的 name)
+drive-name=OneDrive
+
+# 网盘目录(上传目标目录，网盘中的文件夹路径)。注释或留空为网盘根目录，末尾不要有斜杠。
+#drive-dir=/DRIVEX/Download
+
+# 上传日志保存路径。注释或留空为不保存。
+#upload-log=/root/.aria2/upload.log
+
+
+## 文件移动设置(move.sh) ##
+
+# 移动目标目录
+dest-dir=/root/completed
+
+# 移动日志保存路径。注释或留空为不保存。
+#move-log=/root/.aria2/move.log
+
+
+## 文件删除设置(delete.sh) ##
+
+# 删除正在下载任务后删除文件
+delete-on-removed=true
+
+# 下载错误时删除文件
+delete-on-error=true
+
+# 删除正在下载任务后且任务信息无法读取时删除文件(第三方度盘工具)
+delete-on-unknown=true
+
+
+## 文件清理设置(全局) ##
+
+# 删除 .aria2 文件
+delete-dot-aria2=true
+
+# 删除 .torrent 文件。可选：normal | enhanced | true | false
+# normal: 删除相关任务的种子文件，但可能无法删除通过 RPC 方式(比如 WebUI、Bot)上传的种子文件(文件名无法确定)。
+# enhanced：在下载目录中查找非正在下载和暂停任务以外的其它种子文件并删除(非实时)。开启 强制保存(force-save) 后此项无效。
+# true：优先使用 normal 模式，在种子文件名无法确定的情况下使用 enhanced 模式。
+# false：不删除种子文件
+# 注意：通过 RPC 自定义临时下载目录的任务可能不会保存种子文件，与此功能无关。
+delete-dot-torrent=true
+
+# 删除空目录
+delete-empty-dir=true
+
+
+## 文件过滤设置(全局) ##
+
+# 仅 BT 多文件下载时有效，用于过滤无用文件。
+
+# 排除小文件。低于此大小的文件将在下载完成后被删除。
+#min-size=10M
+
+# 保留文件类型。其它文件类型将在下载完成后被删除。
+#include-file=mp4|mkv|rmvb|mov|avi
+
+# 排除文件类型。排除的文件类型将在下载完成后被删除。
+#exclude-file=html|url|lnk|txt|jpg|png
+
+# 保留文件(正则表达式)。其它文件类型将在下载完成后被删除。
+#include-file-regex=
+
+# 排除文件(正则表达式)。排除的文件类型将在下载完成后被删除。
+# 示例为排除比特彗星的 padding file
+#exclude-file-regex="(.*/)_+(padding)(_*)(file)(.*)(_+)"
+
+```
 
 #### Transmission
 
@@ -8774,19 +9303,40 @@ rsync 默许服务端口为 873。
 
 最好把命令写成批处理文件，放到 Windows 计划任务里定时执行。
 
-#### 竞品 restic
+#### 竞品 restic 增量备份工具
 
-适合使用公共云备份，它基于 “存储库(Repository)” 和快照的概念，每次备份就相当于一份快照，它用增量方式生成快照并用 AES 等方式加密，使用 ssh 密钥方式连接备份服务器的保存到云端的 “存储库”。当您备份敏感数据并将备份放在不受自己管辖服务器（例如，云提供商）时，这一点尤其重要。
+restic是一个强大的增量备份工具，可以把本地的文件备份到本地的另一地方，或云端。
+
+它基于 “存储库(Repository)” 和快照的概念，每次备份就相当于一份快照，它用增量方式生成快照并用 AES 等方式加密，使用 ssh 密钥方式连接备份服务器的保存到云端的 “存储库”。当您备份敏感数据并将备份放在不受自己管辖服务器（例如，云提供商）时，这一点尤其重要。
 
     https://restic.net/
         https://github.com/restic/restic
 
-    https://zhuanlan.zhihu.com/p/66324926
-        https://fedoramagazine.org/use-restic-encrypted-backups/
+    文档 https://restic.readthedocs.io/en/stable/
+        https://github.com/restic/restic/blob/master/doc/design.rst
 
-    https://blog.csdn.net/weixin_37714509/article/details/120090368
+    https://chariri.moe/archives/122/personal-backup-restic-rclone/
 
     https://juejin.cn/post/7014803100074672135
+
+    Using rclone as a restic Backend
+        https://restic.net/blog/2018-04-01/rclone-backend/
+
+    使用 restic 和 systemd 自动备份 https://zhuanlan.zhihu.com/p/66324926
+        https://fedoramagazine.org/use-restic-encrypted-backups/
+
+restic 支持类型
+
+    本地存储
+    SFTP
+    REST Server
+    Amazon S3
+    Minio Server
+    OpenStack Swift
+    Backblaze B2
+    Microsoft Azure Blob Storage
+    Google Cloud Storage
+    通过 Rclone 挂载的存储 (比如：Google Drive、OneDrive 等)
 
 Rclone 和 Restic 的相同点
 
@@ -8809,6 +9359,33 @@ Rclone 和 Restic 的相同点
 
 总的来说，Rclone 和 Restic 各有所长，要根据不同的业务需求选择使用。比如：网站数据的增量备份，用 Resitc 就比较合适。而常规文件的远程备份归档，用 Rclone 就很合适。
 
+服务端先初始化储存库，存储库可以存储在本地，也可以存储在远程服务器或服务器上。
+
+    $ restic init --repo /srv/restic-repo
+    enter password for new repository:
+    enter password again:
+    根据提示输入两次密码
+
+    或添加参数 --password-file= 指定密钥文件
+
+    # 可以用tree命令看下存储池的结构
+    $ tree /srv/restic-repo
+    /srv/restic-repo
+    ├── config
+    ├── data
+    │   ├── 00
+    │   ├── 01
+    │   [...]
+    │   ├── fe
+    │   └── ff
+    ├── index
+    ├── keys
+    │   └── f5793ac470614552a179964abc17e381b20c3039486e89bf39728079d210ec57
+    ├── locks
+    └── snapshots
+
+    261 directories, 2 files
+
 两种使用方式：
 
 一、支持 sftp 方式备份到服务器
@@ -8822,6 +9399,8 @@ Rclone 和 Restic 的相同点
     restic -r sftp:bkuser@server_B:/data init
 
     需要给出存储库的密码，之后在任何客户端都可以使用该密码访问该存储库了
+
+    使用 --password-file 参数可以读取密钥文件，这样就不需要每次执行都输入密码了
 
     查看 B 服务器 du -sh 可以看到有了 /data 目录
 
@@ -8851,7 +9430,611 @@ Rclone 和 Restic 的相同点
 
     echo 'Lf0uHG1wVpVzsgEi' > /root/resticpasswd
 
-支持云存储：参见章节 [网络存储](virtualization think)。
+二、对象存储备份
+
+支持基于s3协议的后端对象存储，例如minio或者腾讯/阿里对象存储。
+
+云存储参见章节 [云存储](office_great_wall think)。
+
+阿里云对象存储
+
+    $ export AWS_ACCESS_KEY_ID=<YOUR-OSS-ACCESS-KEY-ID>
+    $ export AWS_SECRET_ACCESS_KEY=<YOUR-OSS-SECRET-ACCESS-KEY>
+
+    $ ./restic -o s3.bucket-lookup=dns -o s3.region=<OSS-REGION> -r s3:https://<OSS-ENDPOINT>/<OSS-BUCKET-NAME> init
+    $ restic -o s3.bucket-lookup=dns -o s3.region=oss-eu-west-1 -r s3:https://oss-eu-west-1.aliyuncs.com/bucketname init
+
+    $ restic -o s3.bucket-lookup=dns -o oss-cn-beijing.aliyuncs.com -r s3:https://xueltestoss.oss-cn-beijing.aliyuncs.com init
+
+    创建repository
+
+    $ export AWS_ACCESS_KEY_ID=LTAIxxxxxxxdZa9
+    $ export AWS_SECRET_ACCESS_KEY=XvHxxxxxxxxxxxxxxxxxJt3wb7
+    $ restic -o s3.bucket-lookup=dns -o s3.region=oss-cn-beijing.aliyuncs.com -r s3:https://xueltestoss.oss-cn-beijing.aliyuncs.com/xueltestoss init
+
+在备份命令中加--password-file参数来读取文本中的密码，这里以sftp为例
+
+    $ restic -r s3:https://oss-cn-beijing.aliyuncs.com/xueltestoss --password-file /root/resticpasswd backup /data/
+
+其他恢复操作基本上和sftp的一致。
+
+##### forget 与 prune
+
+快照是会越积越多的，因此我们需要定期/不定期地执行 autorestic forget 命令根据我们的配置删除过期的快照，在执行的同时带上 --prune 参数可以一并删掉不再被用到的存储块。只有这些块被删掉，空间才真正被节约了！
+
+##### 使用 autorestic
+
+restic是一个CLI工具，但缺了一些关键的功能，如定时备份，且其所有设置都要通过命令行参数给定，很不方便。autorestic是restic的一个「包装器」，通过自动调用restic的方法，加上了配置文件、定时执行（伪）等功能。在看下面的教程前，我推荐您先看看restic的官方Quick Start文档，了解一下其基本概念和常用命令。
+
+简单地说，restic会把数据备份到称作「存储库」的地方，这个存储库就是一个有特定目录结构的一组文件，可以在本地也可以在云上。每次备份会创建一个「快照」，表示一个备份源的当前所有数据。随着时间推移，快照会越来越多，但快照间的数据是去重的，多个快照中的相同数据只会存一份，有效节约了空间。
+
+我们先按restic的文档初始化好三个存储库，设置好密码（备份数据会用这个加密）。
+
+autorestic还引入了一些不同的概念。「location」指一个备份源，而「backend」指一个 repository 的存储位置，以下配置中的locations和backends就反映了这一点。
+
+autorestic是用YAML编写配置的，结合我在上文写的我的备份目标，我写了以下的autorestic配置。下面的配置大幅简化了（如没有考虑外接硬盘和云的备份频度不同），您可以参照autorestic的文档进行复杂的配置。
+
+```yaml
+version: 2
+
+locations:
+  user_data:
+    from: 'C:\Users\charlie'
+    to:
+      - external_hdd
+      - onedrive_nju
+      - onedrive_e5
+    cron: '0 4 * * 0'    # 定时操作设置
+    options:             # 这些都是传给 restic 的参数
+      all:               # 这些会传给所有的 restic 命令
+        tag: home
+      forget:            # 会传给 restic forget 命令，下面的 backup 同理
+        keep-last: 15    # 指定保留快照的策略
+        keep-weekly: 4
+        keep-monthly: 6
+        keep-yearly: 2
+      backup:
+        use-fs-snapshot: true   # 在 Windows 上会用 Windows VSS 打一个临时的分区快照，这样不会受运行的进程占用、写入数据的影响
+        exclude-caches: true    # 一些个人的排除选项
+        exclude-larger-than: 2G
+        exclude:
+          - '*/AutoPCH'
+          - '*/.vs'
+          - '*/Tencent Files'
+          - '*/AppData'
+          - '*/NTDATA*'
+          - '*/OneDrive'
+
+backends:
+  external_hdd:
+    type: local                          # 本地的源，很直接
+    path: 'E:\Backups\UserDirectory_Restic'
+    key: ''                              # 您的源的密码，前面 restic init 时设置的，下同
+  onedrive_e5:
+    type: rclone
+    path: 'onedrive_e5:/Backup_UserData' # 注意这里和手动跑 restic 不同，不需要写 rclone:onedrive_e5:/path/xxxxxxxxxxxx 了
+    key: ''
+  onedrive_nju:
+    type: rclone
+    path: 'onedrive_nju:/Backup_UserData'#这种写法的意思是，存在这个 OneDrive 空间的 Backup_UserData 文件夹下
+    key: ''
+
+```
+
+执行 autorestic backup --config C:\您的autorestic配置文件路径 执行全面备份了。
+
+##### 填坑
+
+restic 的功能缺失和bug
+
+restic有一个bug没有解决。在接rclone做后端的时候，restic是开一个子进程并用stdin/stdout管道和其进行HTTP通信。然而，如果在一个控制台窗口执行restic，restic在Windows上开子进程的时候，子进程会被挂到亲进程所在的控制台上。在这个控制台上发Ctrl+C会把SIGINT信号发到所有的挂接的进程上！rclone接到信号会马上退出，但restic在退出的时候不能马上退出，还要删除备份目标上的锁等。
+
+问题就在于，此时rclone已经退出、stdio管道已经关了，restic的删除指令没法发送。restic会不断重试，把整个控制台卡住。
+
+同时，restic有一些我认为应该有而没有的功能，如压缩。但最重要的莫过于自定义数据包文件大小的选项。
+
+restic的备份方法是把文件拆成小片进行Hash，再把一堆小片打成一个个包传到云上，但默认的包大小是4M。这对本地备份还好，但对云端备份就是一个灾难——300G的数据至少要76800个文件！ 我调到了32M，显示出了良好的性能提升。
+
+目前autorestic在处理单个源备份到多个储存库的情况时，是通过对同一个源多次执行backup命令，每次带不同的repository实现的，这对资源的消耗有些大，也不节约时间。
+
+当 restic 被强制结束
+
+如果restic出了问题（如网络问题），造成其卡在那里一直运行，那Windows任务计划会在3d（我的配置）后把其强制结束。考虑到Windows上没有“优雅”地结束一个纯命令行程序的方法，这个基本就是直接结束进程了。那restic就来不及进行清理，造成：存储库上的锁没有释放；Windows VSS没有删除，这会造成VSS吃空间、降低性能，锁影响下次运行。
+
+#### 竞品 RClone 远程备份归档
+
+保护数据免受丢失的唯一方案就是备份。对于数据备份，我们应该遵守一些原则性的东西，比如业界较主流的3-2-1备份模式
+
+    3：一堆数据有总共三份，一份在工作目录上，另两份作为备份
+    2：数据应该至少有两种形式，如硬盘与云存储（上个世纪可能是磁带）
+    1：三份数据中的一份应该在异地（如在云上，或在家里）
+
+rclone 是一个云存储的「通用客户端」，可以连上云盘进行同步、上传、下载等操作 。当我们通过自动化访问各种云盘时，用rclone是很方便的 支持在不同对象存储、网盘间同步、上传、下载数据。并且通过一些设置可以实现离线下载、服务器备份等非常实用的功能。
+
+    https://rclone.org/docs/
+
+    https://blog.csdn.net/qq_34466488/article/details/124381783
+
+    https://p3terx.com/archives/rclone-installation-and-configuration-tutorial.html
+
+    https://p3terx.com/archives/rclone-advanced-user-manual-common-command-parameters.html
+
+Rclone 以挂载的方式使用不稳定
+
+    Rclone 以挂载方式使用会在本地缓存文件，往挂载盘移动文件只不过是本地转移了位置而已，依然占用着本地磁盘空间，所以当你不断的往挂载盘移动文件，你的本地磁盘就满了，移动文件的过程中内存占用也很大，这可能会导致进程终结和宕机。
+
+如果是备份到网盘，需要先设置网盘，见下面的两个子章节，然后再设置 rclone
+
+    rclone config - 进入交互式配置选项，进行添加、删除、管理网盘等操作。
+
+    rclone config file - 显示配置文件的路径，一般配置文件在 ~/.config/rclone/rclone.conf
+
+    rclone config show - 显示配置文件信息
+
+命令语法
+
+    # 本地到网盘
+    rclone [功能选项] <本地路径> <网盘名称:路径> [参数] [参数] ...
+
+    # 网盘到本地
+    rclone [功能选项] <网盘名称:路径> <本地路径> [参数] [参数] ...
+
+    # 网盘到网盘
+    rclone [功能选项] <网盘名称:路径> <网盘名称:路径> [参数] [参数] ...
+    用法示例
+    rclone move -v /Download Onedrive:/Download --transfers=1
+
+rclone通常同步或复制目录。但是，如果远程源指向一个文件，rclone将只复制该文件。目标远程必须指向一个目录-，不然rclone将给出为“Failed to create file system for "remote:file": is a file not a directory ”。
+
+例如，假设您有一个远程，其中有一个名为test.jpg，然后你可以像这样复制那个文件:
+
+    $ rclone copy remote:test.jpg /tmp/download
+
+文件test.jpg将被放置在/tmp/download下面。
+
+这相当于指定
+
+    $ rclone copy --files-from /tmp/files remote: /tmp/download
+
+当/tmp/files包含单个test.jpg
+
+建议在复制单个文件时使用copy，而不是sync。 他们有几乎相同的效果，但copy将使用更少的内存。
+
+将名为sync：me的目录同步到名为remote:的远程 就使用：
+
+    $ rclone sync ./sync:me remote:path
+
+或者
+
+    $ rclone sync /full/path/to/sync:me remote:path
+
+常用功能选项
+
+    rclone copy - 复制
+    rclone move - 移动，如果要在移动后删除空源目录，请加上 --delete-empty-src-dirs 参数
+    rclone sync - 同步：将源目录同步到目标目录，只更改目标目录。
+    rclone size - 查看网盘文件占用大小。
+    rclone delete - 删除路径下的文件内容。
+    rclone purge - 删除路径及其所有文件内容。
+    rclone mkdir - 创建目录。
+    rclone rmdir - 删除目录。
+    rclone rmdirs - 删除指定灵境下的空目录。如果加上 --leave-root 参数，则不会删除根目录。
+    rclone check - 检查源和目的地址数据是否匹配。
+    rclone ls - 列出指定路径下的所有的文件以及文件大小和路径。
+    rclone lsl - 比上面多一个显示上传时间。
+    rclone lsd 列出指定路径下的目录
+    rclone lsf - 列出指定路径下的目录和文件
+
+常用参数
+
+    -n = --dry-run - 测试运行，用来查看 rclone 在实际运行中会进行哪些操作。
+
+    -P = --progress - 显示实时传输进度，500mS 刷新一次，否则默认 1 分钟刷新一次。
+
+    --cache-chunk-size SizeSuffi - 块的大小，默认5M，理论上是越大上传速度越快，同时占用内存也越多。如果设置得太大，可能会导致进程中断。
+
+    --cache-chunk-total-size SizeSuffix - 块可以在本地磁盘上占用的总大小，默认10G。
+
+    --transfers=N - 并行文件数，默认为4。在比较小的内存的VPS上建议调小这个参数，比如128M的小鸡上使用建议设置为1。
+
+    --config string - 指定配置文件路径，string为配置文件路径。
+
+    --ignore-errors - 跳过错误。比如 OneDrive 在传了某些特殊文件后会提示Failed to copy: failed to open source object: malwareDetected: Malware detected，这会导致后续的传输任务被终止掉，此时就可以加上这个参数跳过错误。但需要注意 RCLONE 的退出状态码不会为0。
+
+    rclone 有 4 个级别的日志记录，ERROR，NOTICE，INFO 和 DEBUG。默认情况下，rclone 将生成 ERROR 和 NOTICE 级别消息。
+
+    -q - rclone将仅生成 ERROR 消息。
+    -v - rclone将生成 ERROR，NOTICE 和 INFO 消息，推荐此项。
+    -vv - rclone 将生成 ERROR，NOTICE，INFO和 DEBUG 消息。
+    --log-level LEVEL - 标志控制日志级别。
+
+输出日志到文件
+
+    使用 --log-file=FILE 选项，rclone 会将 Error，Info 和 Debug 消息以及标准错误重定向到 FILE，这里的 FILE 是你指定的日志文件路径。
+
+    另一种方法是使用系统的指向命令，比如：
+
+        $ rclone sync -v Onedrive:/DRIVEX Gdrive:/DRIVEX > "~/DRIVEX.log" 2>&1
+
+文件过滤
+
+    --exclude - 排除文件或目录。
+
+    --include - 包含文件或目录。
+
+    --filter - 文件过滤规则，相当于上面两个选项的其它使用方式。包含规则以 + 开头，排除规则以 - 开头。
+
+文件类型过滤
+
+    比如 --exclude "*.bak"、--filter "- *.bak"，排除所有 bak 文件。也可以写作。
+
+    比如 --include "*.{png,jpg}"、--filter "+ *.{png,jpg}"，包含所有 png 和 jpg 文件，排除其他文件。
+
+    --delete-excluded 删除排除的文件。需配合过滤参数使用，否则无效。
+
+目录过滤需要在目录名称后面加上 /，否则会被当做文件进行匹配。以 / 开头只会匹配根目录（指定目录下），否则匹配所目录。这同样适用于文件。
+
+    --exclude ".git/" 排除所有目录下的.git 目录。
+
+    --exclude "/.git/" 只排除根目录下的.git 目录。
+
+    --exclude "{Video,Software}/" 排除所有目录下的 Video 和 Software 目录。
+
+    --exclude "/{Video,Software}/" 只排除根目录下的 Video 和 Software 目录。
+
+    --include "/{Video,Software}/**" 仅包含根目录下的 Video 和 Software 目录的所有内容。
+
+过滤规则文件
+
+    https://rclone.org/filtering/
+
+命令行使用参数 --filter-from <规则文件> 从文件添加包含 / 排除规则。比如 --filter-from filter-file.txt。
+
+过滤规则文件示例：
+
+    - secret*.jpg
+    + *.jpg
+    + *.png
+    + file2.avi
+    - /dir/Trash/**
+    + /dir/**
+    - *
+
+rclone 中的每个命令行参数都可以通过环境变量设置：
+
+环境变量的名称可以通过长选项名称进行转换，删除 -- 前缀，更改 - 为_，大写并添加前缀 RCLONE_。环境变量的优先级会低于命令行选项，即通过命令行追加相应的选项时会覆盖环境变量设定的值。
+
+比如设置最小上传大小 --min-size 50，使用环境变量是 RCLONE_MIN_SIZE=50。当环境变量设置后，在命令行中使用 --min-size 100，那么此时环境变量的值就会被覆盖。
+
+常用环境变量
+
+    RCLONE_CONFIG - 自定义配置文件路径
+    RCLONE_CONFIG_PASS - 若 rclone 进行了加密设置，把此环境变量设置为密码，可自动解密配置文件。
+    RCLONE_RETRIES - 上传失败重试次数，默认 3 次
+    RCLONE_RETRIES_SLEEP - 上传失败重试等待时间，默认禁用，单位s、m、h分别代表秒、分钟、小时。
+    CLONE_TRANSFERS - 并行上传文件数。
+    RCLONE_CACHE_CHUNK_SIZE - 块的大小，默认5M，理论上是越大上传速度越快，同时占用内存也越多。如果设置得太大，可能会导致进程中断。
+    RCLONE_CACHE_CHUNK_TOTAL_SIZE - 块可以在本地磁盘上占用的总大小，默认10G。
+    RCLONE_IGNORE_ERRORS=true - 跳过错误。
+
+##### Rclone 连接 OneDrive
+
+获取 token
+
+在本地 Win­dows 电脑上下载 rclone，然后解压出来，解压后进入文件夹，在资源管理器地址栏输入 cmd，回车就会在当前路径打开命令提示符。输入以下命令：
+
+    rclone authorize "onedrive"
+
+接下来会弹出浏览器，要求你登录账号进行授权。授权完后命令提示符窗口会出现以下信息：
+
+    If your browser doesn't open automatically go to the following link: http://127.0.0.1:53682/auth
+    Log in and authorize rclone for access
+    Waiting for code...
+    Got code
+    Paste the following into your remote machine --->
+    {"access_token":"xxxxxxxx"}  # 注意!复制{xxxxxxxx}整个内容，并保存好，后面需要用到
+    <---End paste
+
+配置 Rclone
+
+输入 rclone config 命令，会出现以下信息，参照下面的注释进行操作。
+
+    e) Edit existing remote
+    n) New remote
+    d) Delete remote
+    r) Rename remote
+    c) Copy remote
+    s) Set configuration password
+    q) Quit config
+    e/n/d/r/c/s/q> n  # 选择n，新建
+    name> P3TERX   # 输入名称，类似于标签，用于区分不同的网盘。
+    Type of storage to configure.
+    Enter a string value. Press Enter for the default ("").
+    Choose a number from below, or type in your own value
+    1 / A stackable unification remote, which can appear to merge the contents of several remotes
+    \ "union"
+    2 / Alias for a existing remote
+    \ "alias"
+    3 / Amazon Drive
+    \ "amazon cloud drive"
+    4 / Amazon S3 Compliant Storage Providers (AWS, Ceph, Dreamhost, IBM COS, Minio)
+    \ "s3"
+    5 / Backblaze B2
+    \ "b2"
+    6 / Box
+    \ "box"
+    7 / Cache a remote
+    \ "cache"
+    8 / Dropbox
+    \ "dropbox"
+    9 / Encrypt/Decrypt a remote
+    \ "crypt"
+    10 / FTP Connection
+    \ "ftp"
+    11 / Google Cloud Storage (this is not Google Drive)
+    \ "google cloud storage"
+    12 / Google Drive
+    \ "drive"
+    13 / Hubic
+    \ "hubic"
+    14 / JottaCloud
+    \ "jottacloud"
+    15 / Local Disk
+    \ "local"
+    16 / Mega
+    \ "mega"
+    17 / Microsoft Azure Blob Storage
+    \ "azureblob"
+    18 / Microsoft OneDrive
+    \ "onedrive"
+    19 / OpenDrive
+    \ "opendrive"
+    20 / Openstack Swift (Rackspace Cloud Files, Memset Memstore, OVH)
+    \ "swift"
+    21 / Pcloud
+    \ "pcloud"
+    22 / QingCloud Object Storage
+    \ "qingstor"
+    23 / SSH/SFTP Connection
+    \ "sftp"
+    24 / Webdav
+    \ "webdav"
+    25 / Yandex Disk
+    \ "yandex"
+    26 / http Connection
+    \ "http"
+    Storage> 18  # 选择18，Microsoft OneDrive
+    ** See help for onedrive backend at: https://rclone.org/onedrive/ **
+
+    Microsoft App Client Id
+    Leave blank normally.
+    Enter a string value. Press Enter for the default ("").
+    client_id>   # 留空，回车
+    Microsoft App Client Secret
+    Leave blank normally.
+    Enter a string value. Press Enter for the default ("").
+    client_secret>   # 留空，回车
+    Edit advanced config? (y/n)
+    y) Yes
+    n) No
+    y/n> n  # 选n
+    Remote config
+    Use auto config?
+    * Say Y if not sure
+    * Say N if you are working on a remote or headless machine
+    y) Yes
+    n) No
+    y/n> n  # 选n
+    For this to work, you will need rclone available on a machine that has a web browser available.
+    Execute the following on your machine:
+        rclone authorize "onedrive"
+    Then paste the result below:
+    result> {"XXXXXXXX"}  # 上面保存的token复制到这里
+    2018/10/31 19:54:06 ERROR : Failed to save new token in config file: section 'P3TERX' not found
+    Choose a number from below, or type in an existing value
+    1 / OneDrive Personal or Business
+    \ "onedrive"
+    2 / Root Sharepoint site
+    \ "sharepoint"
+    3 / Type in driveID
+    \ "driveid"
+    4 / Type in SiteID
+    \ "siteid"
+    5 / Search a Sharepoint site
+    \ "search"
+    Your choice> 1  # 这里问你要选择的类型，选1
+    Found 1 drives, please select the one you want to use:
+    0: OneDrive (business)
+    Chose drive to use:> 0  # 程序找到网盘，这里编号是0，就选择0
+    Found drive 'root' of type 'business', URL: https://xxxxxx-my.sharepoint.com/personal/xxxxxxx/Documents
+    Is that okay?
+    y) Yes
+    n) No
+    y/n> y  # 选y
+    --------------------
+    [P3TERX]
+    type = onedrive
+    token = {"XXXXXXXX"}
+    drive_id = XXXXXXXXX
+    drive_type = business
+    --------------------
+    y) Yes this is OK
+    e) Edit this remote
+    d) Delete this remote
+    y/e/d> y  # 选y
+    Current remotes:
+
+    Name                 Type
+    ====                 ====
+    P3TERX               onedrive
+
+    e) Edit existing remote
+    n) New remote
+    d) Delete remote
+    r) Rename remote
+    c) Copy remote
+    s) Set configuration password
+    q) Quit config
+    e/n/d/r/c/s/q> q  # 选q，退出
+
+至此，Rclone 已成功连接到了 OneDrive 网盘。
+
+##### Rclone 连接 Google Drive
+
+与 OneDrive 不同的是，Google Drive 不需要本地 Win­dows 客户端预先进行授权获取 to­ken，而是在配置过程中进行授权。
+
+输入 rclone config 命令，会出现以下信息，参照下面的注释进行操作。
+
+    e) Edit existing remote
+    n) New remote
+    d) Delete remote
+    r) Rename remote
+    c) Copy remote
+    s) Set configuration password
+    q) Quit config
+    e/n/d/r/c/s/q> n  # 选择n，新建
+    name> Google  # 输入名称，类似于标签，用于区分不同的网盘。
+    Type of storage to configure.
+    Enter a string value. Press Enter for the default ("").
+    Choose a number from below, or type in your own value
+    1 / A stackable unification remote, which can appear to merge the contents of several remotes
+    \ "union"
+    2 / Alias for a existing remote
+    \ "alias"
+    3 / Amazon Drive
+    \ "amazon cloud drive"
+    4 / Amazon S3 Compliant Storage Providers (AWS, Ceph, Dreamhost, IBM COS, Minio)
+    \ "s3"
+    5 / Backblaze B2
+    \ "b2"
+    6 / Box
+    \ "box"
+    7 / Cache a remote
+    \ "cache"
+    8 / Dropbox
+    \ "dropbox"
+    9 / Encrypt/Decrypt a remote
+    \ "crypt"
+    10 / FTP Connection
+    \ "ftp"
+    11 / Google Cloud Storage (this is not Google Drive)
+    \ "google cloud storage"
+    12 / Google Drive
+    \ "drive"
+    13 / Hubic
+    \ "hubic"
+    14 / JottaCloud
+    \ "jottacloud"
+    15 / Local Disk
+    \ "local"
+    16 / Mega
+    \ "mega"
+    17 / Microsoft Azure Blob Storage
+    \ "azureblob"
+    18 / Microsoft OneDrive
+    \ "onedrive"
+    19 / OpenDrive
+    \ "opendrive"
+    20 / Openstack Swift (Rackspace Cloud Files, Memset Memstore, OVH)
+    \ "swift"
+    21 / Pcloud
+    \ "pcloud"
+    22 / QingCloud Object Storage
+    \ "qingstor"
+    23 / SSH/SFTP Connection
+    \ "sftp"
+    24 / Webdav
+    \ "webdav"
+    25 / Yandex Disk
+    \ "yandex"
+    26 / http Connection
+    \ "http"
+    Storage> 12  # 选择12，Google Drive
+    ** See help for drive backend at: https://rclone.org/drive/ **
+
+    Google Application Client Id
+    Leave blank normally.
+    Enter a string value. Press Enter for the default ("").
+    client_id>  # 留空，回车
+    Google Application Client Secret
+    Leave blank normally.
+    Enter a string value. Press Enter for the default ("").
+    client_secret>  # 留空，回车
+    Scope that rclone should use when requesting access from drive.
+    Enter a string value. Press Enter for the default ("").
+    Choose a number from below, or type in your own value
+    1 / Full access all files, excluding Application Data Folder.
+    \ "drive"
+    2 / Read-only access to file metadata and file contents.
+    \ "drive.readonly"
+    / Access to files created by rclone only.
+    3 | These are visible in the drive website.
+    | File authorization is revoked when the user deauthorizes the app.
+    \ "drive.file"
+    / Allows read and write access to the Application Data folder.
+    4 | This is not visible in the drive website.
+    \ "drive.appfolder"
+    / Allows read-only access to file metadata but
+    5 | does not allow any access to read or download file content.
+    \ "drive.metadata.readonly"
+    scope> 1
+    ID of the root folder
+    Leave blank normally.
+    Fill in to access "Computers" folders. (see docs).
+    Enter a string value. Press Enter for the default ("").
+    root_folder_id>  # 留空，回车
+    Service Account Credentials JSON file path
+    Leave blank normally.
+    Needed only if you want use SA instead of interactive login.
+    Enter a string value. Press Enter for the default ("").
+    service_account_file>
+    Edit advanced config? (y/n)
+    y) Yes
+    n) No
+    y/n> n
+    Remote config
+    Use auto config?
+    * Say Y if not sure
+    * Say N if you are working on a remote or headless machine or Y didn't work
+    y) Yes
+    n) No
+    y/n> n
+    If your browser doesn't open automatically go to the following link: https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=XXXXXXXXXXX.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive&state=XXXXXXXXXXXXXXXXXXXX
+    Log in and authorize rclone for access  # 会弹出浏览器，要求你登录账号进行授权。如果没有弹出，复制上面的链接到浏览器中打开进行授权。
+    Enter verification code>  # 在这里输入网页上显示的验证码
+
+    Configure this as a team drive?
+    y) Yes
+    n) No
+    y/n> y
+    Fetching team drive list...
+    No team drives found in your account--------------------
+    [Google]
+    type = drive
+    scope = drive
+    token = {"access_token":"XXXXXXXXXXXXXXXXXXXXX"}
+    --------------------
+    y) Yes this is OK
+    e) Edit this remote
+    d) Delete this remote
+    y/e/d> y
+    Current remotes:
+
+    Name                 Type
+    ====                 ====
+    Google               drive
+    P3TERX               onedrive
+
+    e) Edit existing remote
+    n) New remote
+    d) Delete remote
+    r) Rename remote
+    c) Copy remote
+    s) Set configuration password
+    q) Quit config
+    e/n/d/r/c/s/q> q
+
+至此，Rclone 已成功连接到了 Google Drive 网盘。
 
 ### 在当前目录启动一个简单的http服务器
 
