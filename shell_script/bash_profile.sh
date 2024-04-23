@@ -125,7 +125,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias nmaps='echo "[nmap 列出当前局域网 192.168.0.x 内ip及端口]" && nmap 192.168.0.0/24'
 
     # selinux 人性化可读审计信息：ausearch -i
-    alias aud='sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
+    alias audh='sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
+    alias auds='journalctl -fx'
 
     # systemd
     alias stmed='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'

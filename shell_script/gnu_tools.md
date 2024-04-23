@@ -3385,7 +3385,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias nmaps='echo "[nmap 列出当前局域网 192.168.0.x 内ip及端口]" && nmap 192.168.0.0/24'
 
     # selinux 人性化可读审计信息：ausearch -i
-    alias aud='sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
+    alias audh='sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
+    alias auds='journalctl -fx'
 
     # systemd
     alias stmed='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
@@ -8960,7 +8961,7 @@ scp 基本用法
 
 scp 不占资源，不会提高多少系统负荷，在这一点上，rsync 就远远不及它了。虽然 rsync 比 scp 会快一点，但当小文件众多的情况下，rsync 会导致硬盘 I/O 非常高，而 scp 基本不影响系统正常使用。所以使用时根据自己的情况酌情决定选用哪个。
 
-rsync 默认使用 SSH 进行远程登录和数据传输。
+rsync 默认使用 SSH 进行远程登录和数据传输。一般在目标设备上建立普通身份的用户，仅限制权限到指定备份文件夹读写，然后只通过SSH的公私钥认证一种方式登录，然后配置一个自动 rsync 的脚本定时运行备份数据到目标设备上。
 
 由于早期 rsync 不使用 SSH 协议，需要用 -e 参数指定协议，后来才改的。
 
@@ -9042,7 +9043,7 @@ rsync 有 5 种不同的工作模式：
 
 在 rsync 命令中的远程操作，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议。ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量，但优势是更加安全；反之，ssh 协议使用方便，无需进行配置，但有泄漏服务器密码的风险。
 
-远程操作的rsync协议
+远程操作的 rsync 协议
 
 rsync://协议（默认端口873）进行传输。具体写法是服务器与目标目录之间使用双冒号分隔`::`。
 
@@ -9140,7 +9141,7 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
     # 只是普通的文件去掉 -L 参数即可
     rsync -avL /etc/letsencrypt/live/your_dir_or_file/cert.pem root@remote:/etc/letsencrypt/live/your_dir_or_file
 
-#### 示例脚本：备份用户的主目录
+#### 示例：备份用户的主目录
 
 ```shell
 
@@ -9529,19 +9530,19 @@ backends:
 
 restic 的功能缺失和bug
 
-restic有一个bug没有解决。在接rclone做后端的时候，restic是开一个子进程并用stdin/stdout管道和其进行HTTP通信。然而，如果在一个控制台窗口执行restic，restic在Windows上开子进程的时候，子进程会被挂到亲进程所在的控制台上。在这个控制台上发Ctrl+C会把SIGINT信号发到所有的挂接的进程上！rclone接到信号会马上退出，但restic在退出的时候不能马上退出，还要删除备份目标上的锁等。
+restic 有一个 bug 没有解决。在接 rclone 做后端的时候，restic 是开一个子进程并用 stdin/stdout 管道和其进行 HTTP 通信。然而，如果在一个控制台窗口执行 restic，restic 在 Windows 上开子进程的时候，子进程会被挂到亲进程所在的控制台上。在这个控制台上发 Ctrl+C 会把 SIGINT 信号发到所有的挂接的进程上！rclone 接到信号会马上退出，但 restic 在退出的时候不能马上退出，还要删除备份目标上的锁等。
 
-问题就在于，此时rclone已经退出、stdio管道已经关了，restic的删除指令没法发送。restic会不断重试，把整个控制台卡住。
+问题就在于，此时 rclone 已经退出、stdio 管道已经关了，restic 的删除指令没法发送。restic 会不断重试，把整个控制台卡住。
 
-同时，restic有一些我认为应该有而没有的功能，如压缩。但最重要的莫过于自定义数据包文件大小的选项。
+同时，restic 有一些我认为应该有而没有的功能，如压缩。但最重要的莫过于自定义数据包文件大小的选项。
 
-restic的备份方法是把文件拆成小片进行Hash，再把一堆小片打成一个个包传到云上，但默认的包大小是4M。这对本地备份还好，但对云端备份就是一个灾难——300G的数据至少要76800个文件！ 我调到了32M，显示出了良好的性能提升。
+restic 的备份方法是把文件拆成小片进行H ash，再把一堆小片打成一个个包传到云上，但默认的包大小是 4M。这对本地备份还好，但对云端备份就是一个灾难 --- 300G 的数据至少要 76800 个文件！ 我调到了 32M，显示出了良好的性能提升。
 
-目前autorestic在处理单个源备份到多个储存库的情况时，是通过对同一个源多次执行backup命令，每次带不同的repository实现的，这对资源的消耗有些大，也不节约时间。
+目前 autorestic 在处理单个源备份到多个储存库的情况时，是通过对同一个源多次执行 backup 命令，每次带不同的 repository 实现的，这对资源的消耗有些大，也不节约时间。
 
 当 restic 被强制结束
 
-如果restic出了问题（如网络问题），造成其卡在那里一直运行，那Windows任务计划会在3d（我的配置）后把其强制结束。考虑到Windows上没有“优雅”地结束一个纯命令行程序的方法，这个基本就是直接结束进程了。那restic就来不及进行清理，造成：存储库上的锁没有释放；Windows VSS没有删除，这会造成VSS吃空间、降低性能，锁影响下次运行。
+如果 restic 出了问题（如网络问题），造成其卡在那里一直运行，那 Windows 任务计划会在 3d（我的配置）后把其强制结束。考虑到 Windows 上没有“优雅”地结束一个纯命令行程序的方法，这个基本就是直接结束进程了。那 restic 就来不及进行清理，造成：存储库上的锁没有释放；Windows VSS 没有删除，这会造成 VSS 吃空间、降低性能，锁影响下次运行。
 
 #### 竞品 RClone 远程备份归档
 
