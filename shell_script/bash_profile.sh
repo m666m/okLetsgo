@@ -254,7 +254,7 @@ if [ -x /usr/bin/dircolors ]; then
 
     # podman
     alias docker="podman"
-    alias pdms='echo "[podman搜索列出镜像版本]" && podman search --list-tags'
+    alias pdms='echo "[podman搜索列出镜像标签，非官方镜像需要完整的源地址]" && podman search --list-tags'
     alias pdmr='echo "[podman简单运行一个容器]" && podman run -it --rm -P'
     alias pdme='echo "[podman在运行的容器里执行一个命令]" && podman exec'
     alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]" && podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
