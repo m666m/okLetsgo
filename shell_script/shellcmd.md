@@ -663,11 +663,12 @@ fi
 
 ## Linux 目录和分区
 
-Linux 的目录，有些个是固定用途的，有些是文件系统挂载在这个目录上，有官方的 “文件系统层次结构标准”
+Linux 的目录，有些个是固定用途的，有些是文件系统挂载在这个目录上，有官方的 “文件系统层次结构标准” --- Filesystem Hierarchy Standard(FHS)
 
     https://www.debian.org/releases/stable/amd64/apcs02.zh-cn.html
 
     https://refspecs.linuxfoundation.org/fhs.shtml
+        https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html
 
     https://www.freedesktop.org/software/systemd/man/file-hierarchy.html
 
