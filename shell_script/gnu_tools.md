@@ -2338,6 +2338,8 @@ to see the color scheme.''')
 
 ### 字符终端的区域、编码、语言
 
+    https://perlgeek.de/en/article/set-up-a-clean-utf8-environment
+
 用命令 locale 查看，变量依赖从大到小的顺序是：LC_ALL, LC_CTYPE, LANG
 
     $ locale
