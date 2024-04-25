@@ -12517,7 +12517,7 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
     显示隐藏文件的快捷键是 ctrl + h
 
-    地址栏切换为输入粘贴地址没法鼠标操作，按 ctrl + l 才行，嫌麻烦直接改注册表
+    地址栏切换为输入模式需要按 ctrl + l ，才能输入或粘贴地址，嫌麻烦直接改注册表
 
         # https://askubuntu.com/questions/1248692/how-to-get-folder-windows-to-display-address-bars
         $ gsettings set org.gnome.nautilus.preferences always-use-location-entry true
@@ -12528,7 +12528,7 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
 记事本
 
-    没想到 Gnome Text Editor 这么烂，打开时虽然会自动打开上次开着的文件包括未保存状态的文件，但是显示区域不能定位到当前光标位置，粘贴的时候显示区域直接乱跳，正常使用非常难受。推荐安装 Kde 的 KWrite。
+    没想到 Gnome Text Editor 这么烂，打开时虽然会自动打开上次开着的文件包括未保存状态的文件，但是显示区域不能定位到当前光标位置，粘贴的时候显示区域直接乱跳，正常使用非常难受。推荐安装 LXQT 的 FeatherPad 或 Kde 的 KWrite。白板程序的推荐在下面。
 
 磁盘管理
 
