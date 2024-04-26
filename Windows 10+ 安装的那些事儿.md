@@ -1,7 +1,7 @@
 
 # Windows 10+ 安装的那些事儿
 
-## 必须了解的关键概念
+## UEFI 安全启动必须了解的关键概念
 
 ### 应用/APP
 
@@ -157,7 +157,7 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 ## 技嘉 B560M AORUS PRO 主板（BIOS 版本 F7） + Intel 11600KF CPU + DDR4 3600 内存的初始 BIOS 设置
 
-1、HDMI 口连接显示器（防止老显卡的 DP 口不支持默认的 UEFI），开机按 Del 键进入主板 BIOS 设置。
+1、HDMI 口连接显示器（防止 Nvidia 40 系以下显卡的 DP 口不支持默认的 UEFI），开机按 Del 键进入主板 BIOS 设置。
 
 2、F7 装载系统默认优化设置：BOOT->Load optimized defaults，F10 保存设置并立刻重启计算机。然后再重新进入主板 BIOS 设置做进一步设置。特别是在装机后第一次开机后、刷新bios后、主板更换电池后等情况下。
 
@@ -173,9 +173,9 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 7、F6 风扇设置：对各个风扇选静音模式，或手动，先选全速看看最大转速多少，再切换手动，先拉曲线到最低转速，然后再横向找不同的温度调整风扇转速挡位。
 
-8、BIOS开启UEFI + GPT 和 Secure Boot： 先 F10 保存之前的设置并重启计算机，然后再进行设置，详见下面相关章节[Windows 启用 Secure Boot 功能]
+8、BIOS 开启 UEFI + GPT 和 Secure Boot： 先 F10 保存之前的设置并重启计算机，然后再进行设置，详见章节[Windows 启用 Secure Boot 功能]
 
-9、开启“UEFI Fast Boot”，这样关机后的再次开机很快。参见下面章节 [开启或关闭“快速启动”]
+9、不需要开启 “UEFI Fast Boot”。参见章节 [开启或关闭“快速启动”]
 
 10、寻找英特尔 SpeedStep 技术或增强型英特尔 SpeedStep 技术（EIST），选择启用或禁用。这个技术是2000年代英特尔为笔记本电脑处理器搞出来的节能技术，以能效比为优先策略导致状态切换明显卡顿，特别是激烈的枪战游戏能卡顿你会信？一般台式机玩家都会选择关掉。
 
@@ -214,61 +214,6 @@ U 盘，格式化成 FAT32，然后把 Windows 安装盘的 ISO 里面的东西�
 
 3200 MHz、3600 MHz 频率内存最适合于 B560 主板 +11 代酷睿平台。这样的频率下并没有分频。当超频至 4000 MHz 时，虽然内存带宽有所增加，但是延迟却比 3600 MHz 高出不少，这是 Gear2 分频模式下带来的弊端。除非将内存超至 4400 MHz 或以上高频，同时保持较好的时序。那内存带宽提升的同时，延迟也会降下来。
 
-## Intel N100处理器搭建低功耗准系统
-
-树莓派5翻车了
-
-    https://www.zhihu.com/question/624165420/answer/3232723191
-
-几百块钱直接上英特尔准系统了
-
-    https://zhuanlan.zhihu.com/p/617183801
-
-适合mini主机、工控一体机等应用场合，在家里做个简易nas服务器也可以。最大的优点是功耗低，24 小时开着也没几个钱的电费。对散热要求也低，这些准系统部分配置的是笔记本级别的散热风扇，噪音不大。也有直接采用铝合金外壳散热，配合固态硬盘，整机真正做到零风噪。
-
-N100性能参数：
-
-    核心数：4C4T；
-    基础频率：1.8GHz；
-    单核最高睿频：3.40 GHz；
-    全部核心最高睿频：3.20 GHz；
-    CPU缓存：6 MB Intel® Smart Cache
-    TDP功耗：6W；
-
-N100核心显卡参数：
-
-    显卡型号：英特尔® 超核芯显卡
-    GPU最大频率：0.75 GHz；
-    运算单元：24EU单元；
-    最大显存：8 GB；
-    最大分辨率：4096 x 2160@60Hz
-
-N100内存支持参数：
-
-    内存频率：DDR4-3200, DDR5-4800, LPDDR5-4800；
-    最大内存：16 GB；
-    最大内存通道：1通道，只能用一条内存；
-
-N100 性能级别可以大概看成个奔腾 G7400 的缩水版，能干的事参考奔腾的评测就行。算是把低端 CPU 性能抬上来不少，能流畅运行 Win11 了。
-
-N100 跑分对比 Intel 笔记本用低压CPU，不是hq那种：
-
-    跑分超越了大部分i3七代CPU
-
-    可以达到i5六代低压CPU的水平
-
-    超越了i7五代所有常见的笔记本CPU，对比i7六代相对差一点
-
-主板带宽不高，一共有9条 PCIe 3.0 通道，零刻分别把它分配给了前置USB两条、后置USB一条、Type-C一条、2.5G网卡两条、SATA硬盘一条、WiFi一条，然后NVMe硬盘就剩下一条了。很多机子给 M2 硬盘的带宽就只有 x1。
-
-功耗对比
-
-    實測功耗跑Win11在20瓦左右, 如果換成Linux用的Ubuntu22.04LTS會下降很多大概10幾出頭大概12瓦, 沒有負載會回落到7瓦, 我之前用的樹莓派4B跑的網站和數據庫這些服務, 正常功耗3瓦, 高負載5瓦左右, 總體來説ARM功耗相比X86優勢還是很明顯的, 不過N100這顆性能確實要比樹莓派的强太多了
-
-软件兼容性-x86体系完美兼容
-
-    主要是arm架构编译安装很多东西都会有额外的问题，比如当时刚拿到树莓派，用来装Nginx和MySQL这些，跑一半报错然后又要去DeBug然后发现arm还需要先打上某某包，然后再重新跑，太多这样需要折腾的问题，换成x86基本都是闭眼装，而且N100比树莓派上博通那颗soc强大太多了，虽然说功耗可能多了两三倍但是性能的提升绝不止两三倍，再加上自带的核显也要比树莓派那个强太多太多，我还测试了装Win11正常去办公玩游戏，顺手测了一个StoryTeller，能30帧玩。
-
 ## 安装 Windows 启用 Secure Boot 功能
 
 从制作安装 u 盘，到主板 BIOS 设置，都要进行设置
@@ -278,6 +223,10 @@ N100 跑分对比 Intel 笔记本用低压CPU，不是hq那种：
     https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/secure-boot-landing
 
     嵌入式 CPU 安全启动的说明 https://www.zhihu.com/question/57346559/answer/2895463445
+
+    ARM 对安全启动 --- ATF https://zhuanlan.zhihu.com/p/391101179
+
+    苹果笔记本ARM版电脑不再使用UEFI启动 https://zhuanlan.zhihu.com/p/680420213
 
 > 前提条件：原生 UEFI+GPT
 
@@ -537,214 +486,6 @@ Windows 安装完成后，运行 msinfo32，在 “系统摘要” 界面找 “
 这样导致我的 Windows 引导还是走的老模式，UEFI 引导硬盘其实没用上，装完后 Windows 启动没有实现秒进桌面才发现的这个问题。
 
 另外，安装成功后我手贱，三星 SSD 硬盘的管理程序 Samsung Magican 里，设置 Over Provisioning 功能，重新调整了硬盘分区，结果 Secure Boot 又没了。。。
-
-## 主板 BIOS 打开网络唤醒功能
-
-1、主板设置
-
-    https://www.gigabyte.cn/Motherboard/B560M-AORUS-PRO-rev-10/support#support-dl-driver
-
-    https://zhuanlan.zhihu.com/p/458830886
-
-    WOL各模式说明
-        https://www.zhihu.com/question/366699701/answer/3287840128
-
-根据产品规格指出，此产品有提供网络唤醒 (Wake On LAN) 的功能，但是找不到相关设定或是开关可以启用该选项。
-
-    注意，有些机器可能为Wake On Lan或Wake On PCI Card。Wake On Lan模式可以在完全关机状态下唤醒，而Wake On PCI Card模式要在深度休眠状态下唤醒。造成这样的区别主要是因为主板的设计不一样，现在的计算机一般都是Wake On PCI Card模式的。
-
-首先，请在开机时进入 BIOS 设定程序，在电源管理选项中，请启用 PME EVENT WAKEUP 功能，然后储存设定退出程序，再重新启动进入 Windows 后，请开启设备管理器窗口，检查网络卡内容并开启唤醒功能相关设定即可。
-
-如果使用的网络卡上有 WOL 接头，需配合主板上 WOL 接头；如果使用的网络卡上没有 WOL 接头，且它的规格是 PCI 2.3，则依上述的方法即可。
-
-2、 操作系统关闭快速启动
-
-注意：确认 Windows 10 快速启动功能是否关闭，参见下面章节 [开启或关闭“快速启动”]  <https://www.asus.com.cn/support/FAQ/1045950>
-
-3、操作系统设置网卡驱动程序的参数
-
-有些网卡支持的网络唤醒模式较多，还需要在操作系统里设置驱动程序参数才可以
-
-    https://www.intel.cn/content/www/cn/zh/support/articles/000059062/ethernet-products/intel-killer-ethernet-products.html
-
-    https://zhuanlan.zhihu.com/p/29100706
-
-Windows：
-
-设备管理器里找到网卡点击驱动程序设置参数，勾选允许网络唤醒，关闭“允许计算机关闭此设备以节省电源”
-
-Linux：
-
-    # 先查看网卡名称
-    $ ip addr
-
-    # 查看网卡有没有 wake 字样
-    $ ethtool -S enp0s31f6
-
-一般设置为 g 模式
-
-    $ ethtool -s enp0s31f6 wol g
-
-如果机器重启后，eth0的设置又会回复到Wake-on: d 状态，则需要自行写一个 systemd 任务即可。
-
-## 主板开启待机状态 USB 口供电功能和定时自动开机功能
-
-BIOS 中的 “Erp” 节能选项，选择开启
-
-    usb 口功能设置选择供电。
-
-    RTC（定时开机）设置具体时间
-
-根据戴尔的文章进行设置 <https://www.dell.com/support/kbdoc/zh-cn/000132056/shut-down-sleep-hibernate-or-change-the-power-plan-in-Windows-10>
-
-    网络唤醒唤醒计算机：
-
-        打开 设备管理器（控制面板）。
-        单击睡眠左侧的加号 (+)。
-        单击网络适配器左侧的箭头。
-        右键单击无线或以太网，然后选择属性。
-        单击电源管理选项卡，并确保未选中“允许此设备唤醒计算机”复选框。
-
-        注：为无线适配器和以太网适配器均执行此操作。
-
-    电源计划允许唤醒计时器：
-
-        打开电源和睡眠设置（系统设置）。
-        单击其他电源设置。
-        单击更改计划设置。
-        单击更改高级电源设置。
-        单击睡眠左侧的加号 (+)。
-        单击允许唤醒计时器左侧的加号 (+)
-        单击使用电池，选中下拉菜单并切换至所需设置。
-        单击接通电源，选中下拉菜单并切换至所需设置。
-
-        注：在 Windows 10 中，“仅重要的唤醒计时器”选项仅在遇到重大的 Windows 系统事件时才会唤醒计算机。请尝试将您的唤醒计时器设置为“仅重要的唤醒计时器”，以查看是否能解决问题。当计算机的唤醒频率仍超过预期时，您始终可以将唤醒计时器设置为“禁用”。
-
-确认 Windows 10 快速启动功能是否关闭，参见下面章节 [关闭“快速启动”]
-
-    https://www.asus.com.cn/support/FAQ/1042220
-
-    https://www.asus.com.cn/support/FAQ/1043640
-
-## 设置带集成 usb-hub 拓展坞的显示器
-
-    https://www.philips.com.cn/c-p/346P1CRH_93/brilliance-curved-ultrawide-lcd-monitor-with-usb-c
-
-    https://zhuanlan.zhihu.com/p/368732076
-
-    https://zhuanlan.zhihu.com/p/405582769
-
-Philips 346P1CRH 基本参数
-
-    VA带鱼屏，分辨率为 3440X1440（21:9）
-
-    刷新率 100hz，支持 HDR400
-
-    最高亮度有 500nit，日常使用建议调到20%-25%亮度
-
-    灰阶响应时间 9.0ms
-
-    最大色深 8bit
-
-    PowerSensor 睿动光感，屏幕前检测不到人时调低背光板亮度。
-
-    环境光，夜间使用会自动调低显示器亮度，强光环境下会自动调高显示器亮度，类似手机、笔记本电脑屏幕的功能。
-
-    自带 windows hello 摄像头，为了保证隐私安全，在摄像头工作的时候，旁边会亮起白色的LED灯。
-
-    自带两个 5W 的音响
-
-    拓展坞带 1Ghz 网卡接口
-
-    OSD按键具有独立的信号源切换按键、独立的SmartImage按键、独立的自定义按键，你可以将这个自定义按键设置成切换音源、调出音量菜单、调节睿动光感灵敏度、调出亮度条、选择PIP/PBP模式、选择KVM设备。简直是效率神器，不用再OSD菜单里慢慢找了，一个按键就能完事。
-
-以下功能，都需要连接到集成 usb-hub
-
-90W typeC
-
-    笔记本电脑连接只需要一根线，同时提供图像显示和供电。
-
-USB 3.2
-
-    显示器画面可以输出3440*1440@60Hz 8bit、3440*1440@100Hz 6bit
-
-USB 2.0
-
-    显示器画面才能达到满血的3440*1440@100Hz 8bit。如果你不外挂硬盘的话，那么这也不会成为缺点。
-
-PBP 分屏
-
-    usb-tpyec 的线连接笔记本电脑后，可以分隔一半屏幕显示笔记本电脑的桌面内容
-
-    配合 sumsung dex 外接三星Galaxy手机，windows10下装好驱动，可以显示手机桌面
-
-    显示器设置 kvm usb up，开启 基础的usb-hub。
-
-PIP 功能
-
-    画中画，另一个设备的桌面用小窗显示
-
-KVM 功能
-
-    显示器可以根据信号源自动调整KVM，信号源切换到笔记本，HUB上的设备也都全部切到PS5上。信号源切回电脑，HUB上的设备自然也就全部切回电脑。这个功能真的非常棒，直接将有线键鼠当成多模键鼠使用。
-
-    也可设置在OSD中切换，一套鼠标键盘，操作笔记本和台式机，适用于PBP分屏功能
-
-PBP 分屏的一个副作用
-
-    如果用三星 Galaxy 手机 DEX 连接显示器集成的 usb-hub，关机会黑屏，拔下来手机之后 Windows 才能继续关机
-
-在 Windows 操作系统的设置里不要开启 HDR 效果，即使用桌面应用不要开启 HDR 效果，只在相关视频软件和游戏内找设置开启 HDR，原因参见章节 [显示器在 Win10 开启 HDR 变灰泛白的原因]。
-
-### 开启 HDR 玩 Doom
-
-    显示器分辨率切换到 60hz，全屏使用最佳，不然游戏容易死机
-
-一旦进入 HDR 模式，显示器的亮度控制会自动拉至最高，原开启的睿动光感、环境光、低蓝光模式、SmartImage 等功能均被关闭，黑暗房间中的屏幕会像个大光球，为了你的眼睛健康，显示器后面最好有个背景灯给个暗光。
-
-所以，不要在 Windows 桌面环境开启 HDR 模式，仅在相关应用中设置开启即可：
-
-    VLC 等播放器在播放 HDR 内容时会自动通知显示器切换状态。
-
-    游戏设置里选择开启 HDR，在开始游戏后，显示器会自动切换回标准模式以显示 HDR 内容
-
-Windows 现在不支持应用程序关闭后也关闭 HDR 模式，所以打完游戏后，需要手工调整显示器，把睿动光感、环境光、低蓝光模式、SmartImage 等功能再打开，把显示器亮度降下来歇歇眼。。。
-
-如果是普通 sdr 显示器播放 hdr 视频太暗
-
-    用 MPC-BE 播放器安装 MadVR 滤镜，勾选HDR转SDR
-
-    VLC Player 自动在SDR环境下进行HDR-SDR转换，自动在HDR开启后以HDR显示
-
-不推荐  Windows 桌面环境开启 HDR 模式的原因见章节 [显示器在 Win10 开启 HDR 变灰泛白的原因]。
-
-把 doom 的可执行文件加到 Windows 防火墙，即可离线模式玩单机，不需要登陆 bethesda 网络
-
-    https://steamah.com/doom-eternal-how-to-play-in-offline-mode-with-no-bethesda-net-account/
-
-    打开 Windows Defender 防火墙：按下 Win 键在键盘上搜索 "Windows Defender"，然后单击 “具有高级安全性的 Windows Defender 防火墙”
-
-    在防火墙中创建新规则：展开左侧树形列表，右键单击 "Outbound Rules" 并选择 "New Rule"
-
-    配置阻止规则
-
-        规则类型： 选择 “程序”
-
-        程序： 选择程序路径并导航到安装位置选择 DOOMEternalx64vk.exe。 例如： C:\Program Files (x86)\Steam\steamapps\common\DOOMEternal\DOOMEternalx64vk.exe
-
-        动作：选择 “阻止连接”
-
-        轮廓：选中所有框。
-
-        名称 ：为规则选择一个名称，例如 "__DOOM_Eternal_offline"。 下划线将把规则放在列表的顶部，使您的搜索更加容易。
-
-    单击完成，就完成了。
-
-    启动 Doom 程序，请等待几秒钟将看到弹出窗口提示无法连接 Bethesda 账户，单击 OK 即可继续了。
-
-查看 doom 服务器状态 <https://certb-status.bethesda.net/en>。
-
-在 Linux 上玩 doom eternal，参见章节 [steam on Linux](init_a_server think)。
 
 ## 装完 Windows 后的一些设置
 
@@ -1245,7 +986,7 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
 #### 开启或关闭“快速启动”
 
-“快速启动”跟上面的两个条目讨论的 InstantGo 和 WinRe 有依赖关系，所以不单独开章节。
+“快速启动” 跟上面的两个条目讨论的 InstantGo 和 WinRe 有依赖关系，所以不单独开章节。
 
 如果无法接受以下缺陷，建议关闭快速启动
 
@@ -1253,7 +994,11 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
 
     跟很多 usb 设备不兼容，关机再启动以后出现 usb 设备不可用，需要重新插拔。比如我的无线网卡、我的显示器集成的 usb-hub 连接的鼠标键盘网卡显示器等等，开机后偶发无响应需要重新插拔……
 
+    快速启动意味着你上次的关机并不是完全关机，所以笔记本电脑用户会发现关机的电脑没几天电池就没电了。该技术的早期还出现过笔记本电脑在关机状态下发热，其实在干活呢。。。；有些人的电脑开机后需要重启一次才能恢复正常。
+
     影响与 Linux 系统的双引导：<https://www.debian.org/releases/stable/amd64/ch03s06.zh-cn.html#disable-fast-boot>
+
+    这些都是因为上一次关机并不是真正的关机，而重启时反而会执行真正的硬件清零（也不保险，快速启动打开到 Ultra 档时重启操作相当于注销 Windows，秒登录）。解决办法是按 shift 键点关机或重启键，这样才会执行硬件清零的操作。
 
 验证当前是否处于快速启动状态：
 
@@ -1278,8 +1023,6 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
     引入原来的“休眠”功能，先结束掉所有用户进程（比如你开的word，浏览器之类的），内存里保留内核及系统相关的模块，还有一部分驱动。然后把它们写到硬盘里的一个文件里，这样下次开机直接把它们加载进内存。
 
     为了秒开，又引入原来的“睡眠”功能，在操作系统把内存里的内核部分写入休眠文件后，计算机进入「混合睡眠」模式，其实是低功耗待机状态。
-
-快速启动意味着你上次的关机并不是完全关机，所以笔记本电脑用户会发现关机的电脑没几天电池就没电了（该技术的早期还会出现笔记本在关机状态下发热）；有些人的电脑开机后需要重启一次才能恢复正常。这些都是因为上一次关机并不是真正的关机，而重启时执行的关机才是真正的关机。
 
 如果要添加或更换硬件
 
@@ -2846,11 +2589,120 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 它提供了完全的二进制兼容，用户可以自行升级 Linux 内核。
 
+#### WSL2 中修改家目录为原生 ext4
+
+在 WSL2 中修改家目录为原生 ext4 提升文件读写效率
+
+    https://zhuanlan.zhihu.com/p/693873421
+
+尽管微软推出了如 DevDrive 这般专为提升开发者文件系统效率的工具，然而对于 WSL2（Windows Subsystem for Linux 2）的用户而言，唯有原生的 Linux 文件系统方能无缝处理文件执行权限等诸多问题。
+
+本文将详细阐述在 WSL2 环境中如何利用原生的 Linux 文件系统，从而在诸如管理众多 Git 仓库等复杂场景下，实现更出色的文件读写性能。通过采用原生的 Linux 文件系统，用户不仅能够享受到更高的文件处理速度，还能更好地维护文件的权限和属性，从而提升整体的开发效率。
+
+本文假设：
+
+发行版: Ubuntu 22.04
+用户名: yanke
+映像存储位置：C:\WSL\data.img
+
+一、以 root 身份进入 WSL2 发行版
+
+打开 非 Windows 开发者深恶痛绝的 Powershell，执行以下命令
+
+    # 停止所有 WSL 发行版
+    wsl --shutdown
+
+    # 直接以 root 身份进入 WSL 发行版（不可以使用默认用户进入然后切换 sudo）
+    wsl -d ubuntu-22.04 --user root
+
+二、创建一个映像文件，并格式化为 ext4 格式
+
+    # 在 C:\WSL\data.img 位置，创建一个 128G 的文件
+    mkdir -p /mnt/c/WSL
+    dd if=/dev/zero bs=1M count=128000 of=/mnt/c/WSL/data.img
+
+格式化为 ext4
+
+    mkfs.ext4 /mnt/c/WSL/data.img
+
+三、使用 systemd 挂载映像文件
+
+由于 WSL2 启动顺序的特殊性，不能在 /etc/fstab 中挂载映像文件，只能用 systemd 的 mount 单元挂载
+
+1、挂载映像文件到 /data
+
+    # 创建挂载点
+    mkdir -p /data
+
+    # 写入 data.mount 单元文件（注意：单元文件名必须和挂载路径匹配，不然 systemd 会报错）
+    cat <<-EOF > /lib/systemd/system/data.mount
+    [Unit]
+    Description=Mount /data
+    Before=umount.target
+    After=swap.target
+
+    [Mount]
+    What=/mnt/c/WSL/data.img
+    Where=/data
+    Type=ext4
+    Options=defaults,noatime
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+
+立即挂载
+
+    systemctl daemon-reload
+    systemctl enable --now data.mount
+
+2、挂载用户目录 /home/yanke
+
+鉴于各种包管理器 (npm,pip,go) 的缓存文件都在用户目录下，最省心的方法是，通过 bind-mount 直接把 /data 的子目录挂载到家目录 /home/yanke
+
+相较于从 /data 子目录中软链接，bind-mount 更加优雅
+
+    # 移动家目录
+    mkdir -p /data/home
+    mv /home/yanke /data/home/yanke
+
+    # 写入 home-yanke.mount 文件（注意：单元文件名必须和挂载路径匹配，不然 systemd 会报错）
+    cat <<-EOF > /lib/systemd/system/home-yanke.mount
+    [Unit]
+    Description=Mount /home/yanke
+    Before=umount.target
+    After=swap.target data.mount
+    Requires=data.mount
+
+    [Mount]
+    Where=/home/yanke
+    What=/data/home/yanke
+    Type=none
+    Options=bind
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+
+立即挂载
+
+    systemctl daemon-reload
+    systemctl enable --now home-yanke.mount
+
+四、开始使用
+
+从此之后，使用默认用户进入 Ubuntu 22.04 WSL2 环境后，systemd会自动执行以下操作
+
+    从 C:\WSL\data.img 文件挂载 ext4 文件系统到 /data目录
+    挂载 /data/home/yanke 子目录到 /home/yanke，作为用户的家目录
+
 #### 可以在 WSL 2 的 Linux 里再运行 docker
 
     https://docs.microsoft.com/zh-cn/Windows/wsl/tutorials/wsl-containers
 
 这个 docker 也需要是微软发布的
+
+另外可以单独安装 podman，在 Windows 和 MacOs 上以虚拟机运行 Linux 容器，见章节 [在 Windows 或 MacOs 上运行 Linux 容器](virtualization think)。
 
 #### WSL 2 的 Linux 是放到当前用户目录下的，比较占用系统盘空间
 
@@ -3133,6 +2985,214 @@ Linux 也可以在重启时告诉系统下一次启动进入 UEFI 设置。使�
 在命令行执行下面命令即可在下一次启动后进入 UEFI 设置:
 
     $ systemctl reboot --firmware-setup
+
+### 主板 BIOS 打开网络唤醒功能
+
+1、主板设置
+
+    https://www.gigabyte.cn/Motherboard/B560M-AORUS-PRO-rev-10/support#support-dl-driver
+
+    https://zhuanlan.zhihu.com/p/458830886
+
+    WOL各模式说明
+        https://www.zhihu.com/question/366699701/answer/3287840128
+
+根据产品规格指出，此产品有提供网络唤醒 (Wake On LAN) 的功能，但是找不到相关设定或是开关可以启用该选项。
+
+    注意，有些机器可能为Wake On Lan或Wake On PCI Card。Wake On Lan模式可以在完全关机状态下唤醒，而Wake On PCI Card模式要在深度休眠状态下唤醒。造成这样的区别主要是因为主板的设计不一样，现在的计算机一般都是Wake On PCI Card模式的。
+
+首先，请在开机时进入 BIOS 设定程序，在电源管理选项中，请启用 PME EVENT WAKEUP 功能，然后储存设定退出程序，再重新启动进入 Windows 后，请开启设备管理器窗口，查看网卡设备的属性，开启唤醒功能相关设定即可。
+
+如果使用的网络卡上有 WOL 接头，需配合主板上 WOL 接头；如果使用的网络卡上没有 WOL 接头，且它的规格是 PCI 2.3，则依上述的方法即可。
+
+2、 操作系统关闭快速启动
+
+注意：确认 Windows 10 快速启动功能是否关闭，参见下面章节 [开启或关闭“快速启动”]  <https://www.asus.com.cn/support/FAQ/1045950>
+
+3、操作系统设置网卡驱动程序的参数
+
+有些网卡支持的网络唤醒模式较多，还需要在操作系统里设置驱动程序参数才可以
+
+    https://www.intel.cn/content/www/cn/zh/support/articles/000059062/ethernet-products/intel-killer-ethernet-products.html
+
+    https://zhuanlan.zhihu.com/p/29100706
+
+Windows：
+
+设备管理器里找到网卡点击驱动程序设置参数，勾选允许网络唤醒，关闭“允许计算机关闭此设备以节省电源”
+
+Linux：
+
+    # 先查看网卡名称
+    $ ip addr
+
+    # 查看网卡有没有 wake 字样
+    $ ethtool -S enp0s31f6
+
+一般设置为 g 模式
+
+    $ ethtool -s enp0s31f6 wol g
+
+如果机器重启后，eth0的设置又会回复到Wake-on: d 状态，则需要自行写一个 systemd 任务即可。
+
+### 主板开启待机状态 USB 口供电功能和定时自动开机功能
+
+BIOS 中的 “Erp” 节能选项，选择开启
+
+    usb 口功能设置选择供电。
+
+    RTC（定时开机）设置具体时间
+
+根据戴尔的文章进行设置 <https://www.dell.com/support/kbdoc/zh-cn/000132056/shut-down-sleep-hibernate-or-change-the-power-plan-in-Windows-10>
+
+    网络唤醒唤醒计算机：
+
+        打开 设备管理器（控制面板）。
+        单击睡眠左侧的加号 (+)。
+        单击网络适配器左侧的箭头。
+        右键单击无线或以太网，然后选择属性。
+        单击电源管理选项卡，并确保未选中“允许此设备唤醒计算机”复选框。
+
+        注：为无线适配器和以太网适配器均执行此操作。
+
+    电源计划允许唤醒计时器：
+
+        打开电源和睡眠设置（系统设置）。
+        单击其他电源设置。
+        单击更改计划设置。
+        单击更改高级电源设置。
+        单击睡眠左侧的加号 (+)。
+        单击允许唤醒计时器左侧的加号 (+)
+        单击使用电池，选中下拉菜单并切换至所需设置。
+        单击接通电源，选中下拉菜单并切换至所需设置。
+
+        注：在 Windows 10 中，“仅重要的唤醒计时器”选项仅在遇到重大的 Windows 系统事件时才会唤醒计算机。请尝试将您的唤醒计时器设置为“仅重要的唤醒计时器”，以查看是否能解决问题。当计算机的唤醒频率仍超过预期时，您始终可以将唤醒计时器设置为“禁用”。
+
+确认 Windows 10 快速启动功能是否关闭，参见下面章节 [关闭“快速启动”]
+
+    https://www.asus.com.cn/support/FAQ/1042220
+
+    https://www.asus.com.cn/support/FAQ/1043640
+
+### 设置带集成 usb-hub 拓展坞的显示器 Philips 346P1CRH
+
+    https://www.philips.com.cn/c-p/346P1CRH_93/brilliance-curved-ultrawide-lcd-monitor-with-usb-c
+
+    https://zhuanlan.zhihu.com/p/368732076
+
+    https://zhuanlan.zhihu.com/p/405582769
+
+Philips 346P1CRH 基本参数
+
+    VA带鱼屏，分辨率为 3440X1440（21:9）
+
+    刷新率 100hz，支持 HDR400
+
+    最高亮度有 500nit，日常使用建议调到20%-25%亮度
+
+    灰阶响应时间 9.0ms
+
+    最大色深 8bit
+
+    PowerSensor 睿动光感，屏幕前检测不到人时调低背光板亮度。
+
+    环境光，夜间使用会自动调低显示器亮度，强光环境下会自动调高显示器亮度，类似手机、笔记本电脑屏幕的功能。
+
+    自带 windows hello 摄像头，为了保证隐私安全，在摄像头工作的时候，旁边会亮起白色的LED灯。
+
+    自带两个 5W 的音响
+
+    拓展坞带 1Ghz 网卡接口
+
+    OSD按键具有独立的信号源切换按键、独立的SmartImage按键、独立的自定义按键，你可以将这个自定义按键设置成切换音源、调出音量菜单、调节睿动光感灵敏度、调出亮度条、选择PIP/PBP模式、选择KVM设备。简直是效率神器，不用再OSD菜单里慢慢找了，一个按键就能完事。
+
+以下功能，都需要连接到集成 usb-hub
+
+90W typeC
+
+    笔记本电脑连接只需要一根线，同时提供图像显示和供电。
+
+USB 3.2
+
+    显示器画面可以输出3440*1440@60Hz 8bit、3440*1440@100Hz 6bit
+
+USB 2.0
+
+    显示器画面才能达到满血的3440*1440@100Hz 8bit。如果你不外挂硬盘的话，那么这也不会成为缺点。
+
+PBP 分屏
+
+    usb-tpyec 的线连接笔记本电脑后，可以分隔一半屏幕显示笔记本电脑的桌面内容
+
+    配合 sumsung dex 外接三星Galaxy手机，windows10下装好驱动，可以显示手机桌面
+
+    显示器设置 kvm usb up，开启 基础的usb-hub。
+
+PIP 功能
+
+    画中画，另一个设备的桌面用小窗显示
+
+KVM 功能
+
+    显示器可以根据信号源自动调整KVM，信号源切换到笔记本，HUB上的设备也都全部切到PS5上。信号源切回电脑，HUB上的设备自然也就全部切回电脑。这个功能真的非常棒，直接将有线键鼠当成多模键鼠使用。
+
+    也可设置在OSD中切换，一套鼠标键盘，操作笔记本和台式机，适用于PBP分屏功能
+
+PBP 分屏的一个副作用
+
+    如果用三星 Galaxy 手机 DEX 连接显示器集成的 usb-hub，关机会黑屏，拔下来手机之后 Windows 才能继续关机
+
+在 Windows 操作系统的设置里不要开启 HDR 效果，即使用桌面应用不要开启 HDR 效果，只在相关视频软件和游戏内找设置开启 HDR，原因参见章节 [显示器在 Win10 开启 HDR 变灰泛白的原因]。
+
+#### 开启 HDR 玩 Doom
+
+    显示器分辨率切换到 60hz，全屏使用最佳，不然游戏容易死机
+
+一旦进入 HDR 模式，显示器的亮度控制会自动拉至最高，原开启的睿动光感、环境光、低蓝光模式、SmartImage 等功能均被关闭，黑暗房间中的屏幕会像个大光球，为了你的眼睛健康，显示器后面最好有个背景灯给个暗光。
+
+所以，不要在 Windows 桌面环境开启 HDR 模式，仅在相关应用中设置开启即可：
+
+    VLC 等播放器在播放 HDR 内容时会自动通知显示器切换状态。
+
+    游戏设置里选择开启 HDR，在开始游戏后，显示器会自动切换回标准模式以显示 HDR 内容
+
+Windows 现在不支持应用程序关闭后也关闭 HDR 模式，所以打完游戏后，需要手工调整显示器，把睿动光感、环境光、低蓝光模式、SmartImage 等功能再打开，把显示器亮度降下来歇歇眼。。。
+
+如果是普通 sdr 显示器播放 hdr 视频太暗
+
+    用 MPC-BE 播放器安装 MadVR 滤镜，勾选HDR转SDR
+
+    VLC Player 自动在SDR环境下进行HDR-SDR转换，自动在HDR开启后以HDR显示
+
+不推荐  Windows 桌面环境开启 HDR 模式的原因见章节 [显示器在 Win10 开启 HDR 变灰泛白的原因]。
+
+把 doom 的可执行文件加到 Windows 防火墙，即可离线模式玩单机，不需要登陆 bethesda 网络
+
+    https://steamah.com/doom-eternal-how-to-play-in-offline-mode-with-no-bethesda-net-account/
+
+    打开 Windows Defender 防火墙：按下 Win 键在键盘上搜索 "Windows Defender"，然后单击 “具有高级安全性的 Windows Defender 防火墙”
+
+    在防火墙中创建新规则：展开左侧树形列表，右键单击 "Outbound Rules" 并选择 "New Rule"
+
+    配置阻止规则
+
+        规则类型： 选择 “程序”
+
+        程序： 选择程序路径并导航到安装位置选择 DOOMEternalx64vk.exe。 例如： C:\Program Files (x86)\Steam\steamapps\common\DOOMEternal\DOOMEternalx64vk.exe
+
+        动作：选择 “阻止连接”
+
+        轮廓：选中所有框。
+
+        名称 ：为规则选择一个名称，例如 "__DOOM_Eternal_offline"。 下划线将把规则放在列表的顶部，使您的搜索更加容易。
+
+    单击完成，就完成了。
+
+    启动 Doom 程序，请等待几秒钟将看到弹出窗口提示无法连接 Bethesda 账户，单击 OK 即可继续了。
+
+查看 doom 服务器状态 <https://certb-status.bethesda.net/en>。
+
+在 Linux 上玩 doom eternal，参见章节 [steam on Linux](init_a_server think)。
 
 ### 显示器在 Win10 开启 HDR 变灰泛白的原因
 
@@ -3564,3 +3624,58 @@ Windows版本（通常是Windows 10及以后的版本）允许用户使用两种
 若是有線網路已取得ip, 可以拔除網路線, 或是使用以下指令清除網路設定
 
     ipconfig/release
+
+## Intel N100处理器搭建低功耗准系统
+
+树莓派5翻车了
+
+    https://www.zhihu.com/question/624165420/answer/3232723191
+
+几百块钱直接上英特尔准系统了
+
+    https://zhuanlan.zhihu.com/p/617183801
+
+适合mini主机、工控一体机等应用场合，在家里做个简易nas服务器也可以。最大的优点是功耗低，24 小时开着也没几个钱的电费。对散热要求也低，这些准系统部分配置的是笔记本级别的散热风扇，噪音不大。也有直接采用铝合金外壳散热，配合固态硬盘，整机真正做到零风噪。
+
+N100性能参数：
+
+    核心数：4C4T；
+    基础频率：1.8GHz；
+    单核最高睿频：3.40 GHz；
+    全部核心最高睿频：3.20 GHz；
+    CPU缓存：6 MB Intel® Smart Cache
+    TDP功耗：6W；
+
+N100核心显卡参数：
+
+    显卡型号：英特尔® 超核芯显卡
+    GPU最大频率：0.75 GHz；
+    运算单元：24EU单元；
+    最大显存：8 GB；
+    最大分辨率：4096 x 2160@60Hz
+
+N100内存支持参数：
+
+    内存频率：DDR4-3200, DDR5-4800, LPDDR5-4800；
+    最大内存：16 GB；
+    最大内存通道：1通道，只能用一条内存；
+
+N100 性能级别可以大概看成个奔腾 G7400 的缩水版，能干的事参考奔腾的评测就行。算是把低端 CPU 性能抬上来不少，能流畅运行 Win11 了。
+
+N100 跑分对比 Intel 笔记本用低压CPU，不是hq那种：
+
+    跑分超越了大部分i3七代CPU
+
+    可以达到i5六代低压CPU的水平
+
+    超越了i7五代所有常见的笔记本CPU，对比i7六代相对差一点
+
+主板带宽不高，一共有9条 PCIe 3.0 通道，零刻分别把它分配给了前置USB两条、后置USB一条、Type-C一条、2.5G网卡两条、SATA硬盘一条、WiFi一条，然后NVMe硬盘就剩下一条了。很多机子给 M2 硬盘的带宽就只有 x1。
+
+功耗对比
+
+    實測功耗跑Win11在20瓦左右, 如果換成Linux用的Ubuntu22.04LTS會下降很多大概10幾出頭大概12瓦, 沒有負載會回落到7瓦, 我之前用的樹莓派4B跑的網站和數據庫這些服務, 正常功耗3瓦, 高負載5瓦左右, 總體來説ARM功耗相比X86優勢還是很明顯的, 不過N100這顆性能確實要比樹莓派的强太多了
+
+软件兼容性-x86体系完美兼容
+
+    主要是arm架构编译安装很多东西都会有额外的问题，比如当时刚拿到树莓派，用来装Nginx和MySQL这些，跑一半报错然后又要去DeBug然后发现arm还需要先打上某某包，然后再重新跑，太多这样需要折腾的问题，换成x86基本都是闭眼装，而且N100比树莓派上博通那颗soc强大太多了，虽然说功耗可能多了两三倍但是性能的提升绝不止两三倍，再加上自带的核显也要比树莓派那个强太多太多，我还测试了装Win11正常去办公玩游戏，顺手测了一个StoryTeller，能30帧玩。
