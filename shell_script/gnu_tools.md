@@ -10837,13 +10837,21 @@ Fedora
 
     https://docs.fedoraproject.org/en-US/quick-docs/installing-grub2/#installing-grub-2-configuration-on-uefi-system
 
-## 开机自启动 SystemV(init) 和 systemd
+## Init System: 开机自启动 SystemV(init) 和 systemd
+
+    https://zhuanlan.zhihu.com/p/49556226
 
     https://www.debian.org/doc/manuals/debian-handbook/unix-services.zh-cn.html#sect.systemd
 
     https://zhuanlan.zhihu.com/p/140273445
 
     http://ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
+
+Linux 操作系统的启动首先从 BIOS 开始，接下来进入 boot loader，由 bootloader 载入内核，进行内核初始化。内核初始化的最后一步就是启动 pid 为 1 的 init 进程。这个进程是系统的第一个进程。它负责产生其他所有用户进程。
+
+Init 系统能够定义、管理和控制 init 进程的行为。它负责组织和运行许多独立的或相关的始化工作(因此被称为 init 系统)，从而让计算机系统进入某种用户预订的运行模式。
+
+不同的发行版采用了不同的 init 实现，三个主要的 Init 系统：SystemV(init)，UpStart 和 systemd。
 
 Linux 引导
 
