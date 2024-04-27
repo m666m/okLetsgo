@@ -6937,9 +6937,7 @@ sed 的正则表达式能玩出花来
 
         https://www.gnu.org/software/sed/manual/html_node/ERE-syntax.html#ERE-syntax
 
-sed 示例：
-
-```shell
+示例：
 
 打印文件内容，跳过第一行标题行
 
@@ -6952,23 +6950,23 @@ sed 示例：
     # sed '/[^#]/ s/^[^#]/#&/' /etc/dhcpcd.conf
     sed 's/^[^#]/#&/' /etc/dhcpcd.conf
 
-在文件的匹配行前面加上#注释
-# 前面的两个斜线 // 是sed的模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
-#     s       替换
-#     ^       开头匹配
-#     [^#]    匹配非#
-#     #&      用&来原封不动引用前面匹配到的行内容，在其前面加上#号
-#     g       全部（只匹配特定行不加g）
+    在文件的匹配行前面加上#注释
+    # 前面的两个斜线 // 是sed的模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+    #     s       替换
+    #     ^       开头匹配
+    #     [^#]    匹配非#
+    #     #&      用&来原封不动引用前面匹配到的行内容，在其前面加上#号
+    #     g       全部（只匹配特定行不加g）
 
-    sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
+        sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
 
-在文件的匹配行前面取消#注释
-# 前面的两个斜线 // 是sed的模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
-#     s       替换，后面没有g则只做一次
-#     ^#      开头的#
-#     //      替换内容为空，即删除
+    在文件的匹配行前面取消#注释
+    # 前面的两个斜线 // 是sed的模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+    #     s       替换，后面没有g则只做一次
+    #     ^#      开头的#
+    #     //      替换内容为空，即删除
 
-    sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
+        sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
 
 模式匹配简写，替换满足条件行的回车为逗号
 
@@ -6988,7 +6986,34 @@ sed 示例：
 
     sed -i '/start_line/,/end_line/d' your_file
 
-```
+多行范围匹配替换
+
+    sed 是按行扫描处理的，源内容按行进行处理
+        https://www.itbaoku.cn/post/313727/sed-or-awk-multiline-replace
+        https://www.itbaoku.cn/post/2761173.html
+        https://www.itbaoku.cn/post/2760950.html
+
+    不过其模式匹配支持范围选择：
+        sed -i "/start_pattern/,/end_pattern/ s/pattern_to_replace/replacement_text/g" filename
+
+    sed '/^why$/ {N; s/\<why\>\n\<huh\>/yo/g}' test.txt
+
+    awk 'match($0, start_pattern) {start=1; next} start==1 && match($0, end_pattern) {start=0; next} start==1 {gsub(pattern_to_replace, replacement_text)} 1' filename > temp && mv temp filename
+
+    gawk 'BEGIN{
+        RS="*/"
+        replace="<span style=\"color:#aaaaaa; font-weight:bold;\">"
+        }
+        /\/\* +TODO/{
+            gsub(/\/\* +TODO/,replace" /* TODO")
+            RT=RT "</span>"
+        }
+        { print $0RT}
+        ' file
+
+    perl -i -0 -pe '
+        s/type pulse.*PulseAudio Sound Server\)/  type plug\n    slave.pcm hw/s
+        ' file
 
 ### 终端输出字符的后处理工具
 

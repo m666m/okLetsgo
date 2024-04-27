@@ -5202,10 +5202,6 @@ DNS污染则无法通过域名直接访问，一种方法就是修改DNS，这�
 
     代码使用简单，可惜不更新了 https://github.com/ovenx/github-hosts
 
-TODO:另可以仿效 p3terx 更新 bt-tracker 地址的做法更新本地 hosts 文件：
-
-    https://github.com/P3TERX/aria2.conf/raw/master/tracker.sh
-
 ## 如果 Github 完蛋了
 
     https://gitlab.com/
