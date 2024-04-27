@@ -6996,7 +6996,19 @@ sed 的正则表达式能玩出花来
     不过其模式匹配支持范围选择：
         sed -i "/start_pattern/,/end_pattern/ s/pattern_to_replace/replacement_text/g" filename
 
-    sed '/^why$/ {N; s/\<why\>\n\<huh\>/yo/g}' test.txt
+        sed '/^why$/ {N; s/\<why\>\n\<huh\>/yo/g}' test.txt
+
+    sed 还有N是把下一行加入到当前的hold space模式空间里，还有循环功能 --- :a和ta是配套使用，实现跳转功能。t是test测试的意思。:a和ba的配套使用方式，也可以实现跳转功能。b是branch分支的意思。
+
+        https://blog.csdn.net/u011729865/article/details/71773840
+        https://blog.csdn.net/lovebyz/article/details/89377966
+
+        # 删除换行
+        sed ":a;N;s/\n//g;ba" a.txt     # while(1) { N; s/\n//g; }
+
+        sed ":a;N;s/\n//g;$!ba" a.txt   # $的意思是最后一行，不跳转到标记a处，即退出命令循环
+
+        sed ":a;N;s/\n//g;ta" a.txt
 
     awk 'match($0, start_pattern) {start=1; next} start==1 && match($0, end_pattern) {start=0; next} start==1 {gsub(pattern_to_replace, replacement_text)} 1' filename > temp && mv temp filename
 
