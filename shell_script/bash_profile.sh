@@ -235,9 +235,9 @@ if [ -x /usr/bin/dircolors ]; then
                 r _tmp_addrs.txt
             }
             /#Github Hosts End/!d
-        }' /etc/hosts | tee
+        }' /etc/hosts |awk '!a[$0]++' |sudo tee /etc/hosts
 
-        #rm _tmp_addrs.txt
+        rm _tmp_addrs.txt
     }
 
     # gpg 常用命令，一般用法都是后跟文件名即可

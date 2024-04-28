@@ -3266,6 +3266,20 @@ compinit
 #   https://github.com/pseudoyu/dotfiles
 #   https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
 
+####################################################################
+# 此部分作为普通脚本的默认头部内容，便于调测运行。
+#
+# declare -p PS1 打印指定变量的定义
+# set 显示当前所有内置变量和函数定义
+#
+# -x ： 在执行每一个命令之前把经过变量展开之后的命令打印出来。
+# -e ： 遇到一个命令失败（返回码非零）时，立即退出。
+# -u ：试图使用未定义的变量，就立即退出。
+# -o pipefail ： 只要管道中的一个子命令失败，整个管道命令就失败，这样可以捕获到其退出代码
+#set -xeuo pipefail
+# 意外退出时杀掉所有子进程
+# trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
+
 ###################################################################
 # 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件
 #   ~/.bashrc: executed by bash(1) for non-login shells.
@@ -3467,9 +3481,23 @@ if [ -x /usr/bin/dircolors ]; then
     alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
     alias gpull='echo "[github 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull --rebase; done'
     alias gpush='echo "[github 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
-    function gaddr {
+    function gadd {
         echo "[把 github.com 的 https 地址转为 git@ 地址，方便鉴权登录github]"
         echo ${1//https:\/\/github.com\//git@github.com:}
+    }
+    function gaddr {
+        echo "[更新本地 hosts 文件的 github.com 地址]"
+        #local addrs=$(curl baidu.com | tr '\n' '\\n')
+        >_tmp_addrs.txt && curl -o _tmp_addrs.txt https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts
+
+        [[ -s _tmp_addrs.txt ]] && sed '/#Github Hosts Start/,/#Github Hosts End/ {
+            /#Github Hosts Start/ {
+                r _tmp_addrs.txt
+            }
+            /#Github Hosts End/!d
+        }' /etc/hosts |awk '!a[$0]++' |sudo tee /etc/hosts
+
+        rm _tmp_addrs.txt
     }
 
     # gpg 常用命令，一般用法都是后跟文件名即可
@@ -6901,6 +6929,14 @@ cut 按分隔符打印指定的字段
 复杂点的正则表达式的字符串截取和替换，可以使用 bash 内置功能：echo ${url   }，详见 [bash 常见符号用法](shellcmd.md)。
 
 awk 指定分隔符，可以用简单的语句组合字段
+
+删除重复行
+
+    # 匹配相邻的重复行
+    awk '!a[$0]++' test.txt
+
+    # 文件顺序会乱
+    sort old_file | uniq > new_file
 
 sed 删除、替换文件中的字符串
 
