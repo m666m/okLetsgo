@@ -624,23 +624,32 @@ function PS1git-branch-prompt {
 
 # 主机名用不同颜色提示本地或 ssh 远程登录：本地登录是绿色，远程登录是洋红色，进入交互式容器 toolbox 后无法判断是否远程登录，默认绿色
 function PS1_host_name {
+    local is_remote=false
+
+    # 判断是否远程：变量 SSH_TTY 仅在交互式登录会话中被设置，变量 SSH_CLIENT 只要远程 ssh 登录即设置
+    # 此方法仅在主机环境或 distrobox 容器中有效，在 toolbox 容器中要用其它办法
+    ([[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]]) && is_remote=true
 
     # 如果是交互式容器，因为下面面有专门显示容器名的处理，所以这里要显示宿主机的主机名
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
         # 在交互式容器 toolbox 中，${HOSTNAME}的值与宿主机一致，/etc/hostname 变为 toolbox
         if [[ $(cat /etc/hostname) = 'toolbox' ]]; then
             local simphost=$(echo ${HOSTNAME%%.*})
+
+            # toolbox 容器中只能用这个方式判断是否远程连接中，不是很靠谱
+            [[ $(ps -ef |grep "sshd: $USER@pts" |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
+
         else
             # 在交互式容器 distrobox 中，主机名的值变为：容器名.宿主机的主机名
             local simphost=$(echo ${HOSTNAME} |cut -d. -f2)
         fi
+
     else
         # 默认为不是交互式容器环境，显示主机名，适应 FQDN 只显示最前段如 host.local 显示 host
         local simphost=$(echo ${HOSTNAME%%.*})
     fi
 
-    # 变量 SSH_TTY 仅在交互式登录会话中被设置，变量 SSH_CLIENT 只要远程 ssh 登录即设置
-    ([[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]]) && echo -e "\033[0;35m$(echo $simphost)" || echo -e "\033[0;32m$(echo $simphost)"
+    [[ $is_remote = true ]] && echo -e "\033[0;35m$(echo $simphost)" || echo -e "\033[0;32m$(echo $simphost)"
 }
 
 # 提示当前在 toolbox 或 distrobox 等交互式容器环境，白色容器名配蓝色背景
