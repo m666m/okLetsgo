@@ -1,5 +1,7 @@
 # unix/linux 常用 shell 编程
 
+shell 命令文档见章节 [Linux 常用命令行工具](gnu_tools.sh)。
+
 非常好用的 shell 语句分析器，输入语句就能给出说明
 
     https://explainshell.com/explain?cmd=join+-1+1+-2+5++%3C%28file+*+%7C+sed+%27s%2F%5B%3A%2C%5D%2F%2Fg%27%29+%3C%28ls+--full-time+-h+%7C+awk+%27%7Bprint+%245%22+%22%246%22+%22%247%22+%22%248%22+%22%249%7D%27%29+%7C+column+-t

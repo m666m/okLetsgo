@@ -3277,6 +3277,7 @@ compinit
 # -u ：试图使用未定义的变量，就立即退出。
 # -o pipefail ： 只要管道中的一个子命令失败，整个管道命令就失败，这样可以捕获到其退出代码
 #set -xeuo pipefail
+# trap "rm -f $temp_file" 0 2 3 15  # `trap -l` for all useble signal
 # 意外退出时杀掉所有子进程
 # trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
@@ -3488,16 +3489,18 @@ if [ -x /usr/bin/dircolors ]; then
     function gaddr {
         echo "[更新本地 hosts 文件的 github.com 地址]"
         #local addrs=$(curl baidu.com | tr '\n' '\\n')
-        >_tmp_addrs.txt && curl -o _tmp_addrs.txt https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts
+        tfile=$(mktemp)
+        curl -o $tfile https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts
 
-        [[ -s _tmp_addrs.txt ]] && sed '/#Github Hosts Start/,/#Github Hosts End/ {
+        [[ -s $tfile ]] && sed '/#Github Hosts Start/,/#Github Hosts End/ {
             /#Github Hosts Start/ {
-                r _tmp_addrs.txt
+                r '"$tfile"'
+                d
             }
             /#Github Hosts End/!d
         }' /etc/hosts |awk '!a[$0]++' |sudo tee /etc/hosts
 
-        rm _tmp_addrs.txt
+        rm $tfile
     }
 
     # gpg 常用命令，一般用法都是后跟文件名即可
@@ -4019,6 +4022,16 @@ URxvt.color12: rgb:5c/5c/ff
     带说明的 GUN 软件列表
 
         https://directory.fsf.org/wiki/GNU
+
+    debian 手册
+
+        https://manpages.debian.org/bullseye/procps/ps.1.en.html
+
+        https://www.debian.org/doc/
+
+        https://wiki.debian.org/ManualPage
+
+        其它各linux帮助手册 https://manpages.debian.org/about.html
 
     有很多常用工具介绍
 
