@@ -10532,6 +10532,10 @@ chronyc 是用来监控 chronyd 性能和配置其参数的用户界面。他可
 
     https://idroot.us/change-timezone-fedora-38
 
+TODO：该服务不依赖网络提供时间同步，用了它就不需要专门安装 NTP 服务了，除非你使用 NTP 服务器
+
+    https://wiki.debian.org/NTP
+
 查看服务的状态
 
     $ systemctl status systemd-timesyncd.service
