@@ -3551,8 +3551,7 @@ if [ -x /usr/bin/dircolors ]; then
         echo "[podman搜索列出镜像标签，非官方镜像需要完整的源地址]"
         podman search --list-tags --limit=5000 $1
     }
-
-    alias pdmr='echo "[podman简单运行一个容器]" && podman run -it --rm -P'
+    alias pdmrun='echo "[podman简单运行一个容器]" && podman run -it --rm -P'
     alias pdme='echo "[podman在运行的容器里执行一个命令]" && podman exec'
     alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]" && podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
     alias pdmlog='echo "[podman查看指定容器日志]" && podman logs -f --tail 100'
@@ -3561,6 +3560,19 @@ if [ -x /usr/bin/dircolors ]; then
     function pdmtty() {
         echo "[登录到容器 $1 内的tty]"
         podman exec -it $1 sh
+    }
+    alias pdmr='echo "[列出本地私有仓库 localhost:5000 的镜像]" && curl http://localhost:5000/v2/_catalog'
+    function pdmrt() {
+        echo "[给本地私有仓库的镜像 localhost/{$1} 打标签 localhost:5000/$1]"
+        podman tag localhost/$1 localhost:5000/$1
+    }
+    function pdmrh() {
+        echo "[向本地私有仓库推送镜像 localhost:5000/$1]"
+        podman push --tls-verify=false localhost:5000/$1
+    }
+    function pdmrl() {
+        echo "[从本地私有仓库拉取镜像 localhost:5000/$1]"
+        podman pull --tls-verify=false localhost:5000/$1
     }
 
     # distrobox 这词打不快
