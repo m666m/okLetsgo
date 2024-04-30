@@ -10348,9 +10348,7 @@ ntp 时间同步的原理
 
     网络时间的那些事及 ntpq 详解  https://www.cnblogs.com/GYoungBean/p/4225465.html
 
-通用的查看时间控制的命令
-
-    $ timedatectl
+通用的查看时间控制的命令 timedatectl。
 
 查看时间同步的状态
 
@@ -10359,8 +10357,8 @@ ntp 时间同步的原理
             Universal time: 二 2023-08-08 07:30:53 UTC
                     RTC time: 二 2023-08-08 15:30:53
                     Time zone: Asia/Singapore (+08, +0800)
-    System clock synchronized: yes   <--------  时间同步正常
-                NTP service: active   <-------- 使用 chrony、systemd-timesyncd 等服务可以被这个命令识别到
+    System clock synchronized: yes    <--------  时间同步正常
+                NTP service: active   <-------- 使用 chrony、systemd-timesyncd 等 NTP 服务可以被这个命令识别到
             RTC in local TZ: yes
 
     Warning: The system is configured to read the RTC time in the local time zone.
@@ -10370,32 +10368,39 @@ ntp 时间同步的原理
             If at all possible, use RTC in UTC by calling
             'timedatectl set-local-rtc 0'.
 
-    $ timedatectl timesync-status
-    Server: 2406:da1e:2b8:7e32:e92a:3c4b:358e:2dfb (2.debian.pool.ntp.org)
-    Poll interval: 34min 8s (min: 32s; max 34min 8s)
-            Leap: normal
-        Version: 4
-        Stratum: 2
-        Reference: 875729E5
-        Precision: 1us (-25)
-    Root distance: 23.338ms (max: 5s)
-        Offset: -406us
-            Delay: 95.029ms
-        Jitter: 2.817ms
-    Packet count: 263
-        Frequency: -1.446ppm
+    如果你看到 System clock synchronized: 值设置为 no，那么 systemd-timesyncd 服务可能处于非活动状态。因此，只需重启服务并看下是否正常。
 
-如果修改了时区等导致系统时间偏差较大的设置，重启生效
+        $ sudo systemctl restart systemd-timesyncd.service
+
+如果发现计算机时间偏差较大，那就重启计算机，即可自动对时
 
     $ sudo reboot
 
-以前 Linux 时间同步服务基本是使用 ntpdate 和 ntpd 这两个工具实现的，但是这两个工具已经很古老了，大多数系统都不再安装它们
+调整时区
 
-    $ ntpstat
+    $ timedatectl list-timezones |greps sing
+    313:Asia/Singapore
+    438:Europe/Busingen
+    578:Singapore
 
-现代主流的 Linux 系统一般都使用 systemd 自带的时间同步服务 systemd-timesyncd，而 Fedora 使用 chrony 作为默认时间同步工具。要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐 chrony。
+    $ sudo timedatectl set-timezone Asia/Singapore
 
-#### 国内的公共 NTP 服务器
+    # 可选：设置硬件 RTC 保存的时间是本地时间
+    # sudo hwclock --localtime -w
+
+推荐安装章节 [Fedora 等 Redhat 系使用 chrony]，ntp 软件包过时了：以前 Linux 时间同步基本是使用 ntpdate 和 ntpd 这两个工具实现的。ntpd 是步进式平滑的逐渐调整时间，而 ntpdate 是断点式更新时间。
+
+    https://wiki.debian.org/NTP
+
+    https://pan-xiao.gitbook.io/debian/config/ntp
+
+    ntpstat
+
+Debian 系一般都使用 systemd 自带的时间同步服务 systemd-timesyncd，而 Fedora 系使用 chrony 作为默认时间同步工具。要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐 chrony。
+
+Linux 处理 RTC 时间跟 Windows 的机制不同，大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd 只会更改系统时间而不会更改 RTC 硬件时间，即系统时间是根据硬件 RTC 时间和当前时区设置计算得出的。可以改变这个机制，通过 `hwclock -w` 命令将系统时间同步到硬件时间，参见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
+
+#### 配置国内的公共 NTP 服务器
 
     # https://www.zhihu.com/question/30252609/answer/2276727955
 
@@ -10405,11 +10410,11 @@ ntp 时间同步的原理
     # NTP项目亚洲时间服务器，考虑到延迟，优先用国内的比较好
     asia.pool.ntp.org
 
-    # 不建议使用中国科学院国家授时中心，精度不高，专业的人家有自己的协议，商业的有北斗，公共的没经费就凑合一个了
+    # 不建议使用中国科学院国家授时中心，精度不高，专业的人家有自己的协议，商业的有北斗，公共的没经费就凑合了一个
     # https://www.cas.cn/tz/201809/t20180921_4664344.shtml
     ntp.ntsc.ac.cn
 
-    # 不要使用国内的这个，自愿自费组织的，2023年12月发现 ntp.org.cn 域名都无法访问了
+    # 不要使用国内的这个，自愿自费组织，2023年12月发现 ntp.org.cn 域名都无法访问了
     # cn.ntp.org.cn
 
     # 教育网
@@ -10448,10 +10453,6 @@ chrony 从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持�
 
     local stratum 10
 
-查看 NTP 服务器的质量：延迟、偏移
-
-    Windows: w32tm /stripchart /computer:cn.pool.ntp.org
-
 查看时间同步源，出现^*表示成功
 
     $ chronyc sources -v
@@ -10471,15 +10472,27 @@ chrony 从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持�
     ^* time.neu.edu.cn               1  10   377   237  +1129us[+1792us] +/-   16ms
     ^- ntp1.flashdance.cx            2  10   277   372    -24ms[  -24ms] +/-  136ms
 
+查看 NTP 服务器的质量：延迟、偏移
+
+    Windows: w32tm /stripchart /computer:cn.pool.ntp.org
+
 Windows 设置时间服务器的地址，在控制面板的时间设置->Internet时间。
 
 #### Fedora 等 Redhat 系使用 chrony
+
+chronyd 实现了 NTP 协议并且可以作为服务器或客户端
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/using-chrony_configuring-basic-system-settings
 
     https://www.cnblogs.com/pipci/p/12871993.html
 
     https://wiki.archlinux.org/title/Chrony
+
+    https://idroot.us/change-timezone-fedora-38
+
+安装软件很简单
+
+    $ sudo apt install chrony
 
 查看服务的状态
 
@@ -10498,7 +10511,7 @@ Windows 设置时间服务器的地址，在控制面板的时间设置->Interne
     Update interval : 1035.0 seconds
     Leap status     : Normal
 
-chronyd 是一个在系统后台运行的守护进程。主要用于调整内核中运行的系统时间和时间服务器同步，他根据网络上其他时间服务器时间来测量本机时间的偏移量从而调整系统时钟。对于孤立系统，用户可以手动周期性的输入正确时间（通过chronyc）。在这两种情况下，chronyd 决定计算机快慢的比例，并加以纠正。chronyd 实现了 NTP 协议并且可以作为服务器或客户端
+chronyd 是一个在系统后台运行的守护进程。主要用于调整内核中运行的系统时间和时间服务器同步，他根据网络上其他时间服务器时间来测量本机时间的偏移量从而调整系统时钟。对于孤立系统，用户可以手动周期性的输入正确时间（通过chronyc）。在这两种情况下，chronyd 决定计算机快慢的比例，并加以纠正。
 
     $ systemctl status chronyd
     ● chronyd.service - NTP client/server
@@ -10519,22 +10532,31 @@ chronyd 是一个在系统后台运行的守护进程。主要用于调整内核
 chronyc 是用来监控 chronyd 性能和配置其参数的用户界面。他可以控制本机及其他计算机上运行的 chronyd 进程。
 
     服务unit文件： /usr/lib/systemd/system/chronyd.service
+
     监听端口： 323/udp，123/udp
-    配置文件： /etc/chrony.conf
 
-#### Debian，openSUSE 使用 systemd-timesyncd
+    配置文件： /etc/chrony.conf 或 /etc/chrony/chrony.conf，在这里添加你的 NTP 服务器的地址，地址列表见章节 [国内的公共 NTP 服务器]。
 
-使用 systemd 自带的时间同步服务 systemd-timesyncd
+#### Debian/openSUSE 使用 systemd-timesyncd
+
+systemd-timesyncd 只实现了简单的 NTP 协议 SNTP，专注于从远程服务器查询然后同步到本地时钟，即只是 NTP 客户端。
 
     https://www.cnblogs.com/pipci/p/12833228.html
 
+    https://itslinuxfoss.com/sync-time-debian-12/
+
+    https://www.freedesktop.org/software/systemd/man/latest/systemd-timesyncd.service.html
+
     https://wiki.archlinux.org/title/Systemd-timesyncd
 
-    https://idroot.us/change-timezone-fedora-38
+使用 systemd 自带的时间同步服务 systemd-timesyncd
 
-TODO：该服务不依赖网络提供时间同步，用了它就不需要专门安装 NTP 服务了，除非你使用 NTP 服务器
+    # 注意先卸载 ntp 软件包，二者不能共存
+    $ sudo apt purge ntp -y
 
-    https://wiki.debian.org/NTP
+    $ sudo apt install systemd-timesyncd
+
+    $ sudo systemctl start systemd-timesyncd --now
 
 查看服务的状态
 
@@ -10551,13 +10573,34 @@ TODO：该服务不依赖网络提供时间同步，用了它就不需要专门�
     CGroup: /system.slice/systemd-timesyncd.service
             └─338 /lib/systemd/systemd-timesyncd
 
-systemd-timesyncd 只专注于从远程服务器查询然后同步到本地时钟。
+查看 systemd-timesyncd 同步 NTP 服务器的状态
 
-配置 NTP 服务器地址修改 /etc/systemd/timesyncd.conf 文件即可，地址列表同上。
+    $ timedatectl timesync-status
+    Server: 2406:da1e:2b8:7e32:e92a:3c4b:358e:2dfb (2.debian.pool.ntp.org)
+    Poll interval: 34min 8s (min: 32s; max 34min 8s)
+            Leap: normal
+        Version: 4
+        Stratum: 2
+        Reference: 875729E5
+        Precision: 1us (-25)
+    Root distance: 23.338ms (max: 5s)
+        Offset: -406us
+            Delay: 95.029ms
+        Jitter: 2.817ms
+    Packet count: 263
+        Frequency: -1.446ppm
 
-Linux 处理 RTC 时间跟 Windows 的机制不同，大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd 只会更改系统时间而不会更改 RTC 硬件时间，即系统时间是根据硬件 RTC 时间和当前时区设置计算得出的。
+配置 NTP 服务器地址修改 /etc/systemd/timesyncd.conf 文件即可，默认虽然 NTP 的选项都处于注释状态，但是systemd-timesyncd还是会去默认的NTP服务器进行同步，地址列表见章节 [国内的公共 NTP 服务器]。
 
-可以改变这个机制，通过 `hwclock -w` 命令将系统时间同步到硬件时间，参见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
+推荐安装章节 [Fedora 等 Redhat 系使用 chrony]
+
+    systemd-timesyncd 是断点式更新时间，也就是时间不同立即更新，这样会对某些服务产生影响，所以在生产环境尽量不要用，在桌面环境或者是系统刚开机时来进行时间同步还是很好的。
+
+    timesyncd 替代了 ntpd 的客户端的部分。默认情况下 timesyncd 会定期检测并同步时间。它还会在本地存储更新的时间，以便在系统重启时做时间单步调整。
+
+    如果是虚拟机环境，应该把与主机时间同步功能关闭后再启用systemd-timesyncd，否则可能会有问题.
+
+systemd-timesyncd只能作为客户端，不能作为NTP服务器，但如果有多一点的需求，例如你需要连接一个硬件来提供时钟，或要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp。注意这些 ntp 包只能安装一个，否则会互相干扰。
 
 #### Windows 的同步时间功能默认每周只同步一次
 
