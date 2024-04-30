@@ -291,7 +291,6 @@ if [ -x /usr/bin/dircolors ]; then
         echo "[podman搜索列出镜像标签，非官方镜像需要完整的源地址]"
         podman search --list-tags --limit=5000 $1
     }
-
     alias pdmr='echo "[podman简单运行一个容器]" && podman run -it --rm -P'
     alias pdme='echo "[podman在运行的容器里执行一个命令]" && podman exec'
     alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]" && podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
@@ -301,6 +300,18 @@ if [ -x /usr/bin/dircolors ]; then
     function pdmtty() {
         echo "[登录到容器 $1 内的tty]"
         podman exec -it $1 sh
+    }
+    function pdmpl() {
+        echo "[从本地私有仓库拉取镜像$1]"
+        podman pull --tls-verify=false localhost:5000/$1
+    }
+    function pdmpt() {
+        echo "[给本地私有仓库的镜像{$1}打标签]"
+        podman tag docker.io/$1 localhost:5000/$1
+    }
+    function pdmph() {
+        echo "[向本地私有仓库推送镜像$1]"
+        podman push --tls-verify=false localhost:5000/$1
     }
 
     # distrobox 这词打不快
