@@ -301,18 +301,24 @@ if [ -x /usr/bin/dircolors ]; then
         echo "[登录到容器 $1 内的tty]"
         podman exec -it $1 sh
     }
-    alias pdmr='echo "[列出本地私有仓库 localhost:5000 的镜像]" && curl http://localhost:5000/v2/_catalog'
+    alias pdmrs='echo "[podman搜索包含本地无tls私有仓库]" && podman search --tls-verify=false'
+    alias pdmr='echo "[podman列出本地私有仓库 192.168.0.88:5000 的镜像]" && curl http://192.168.0.88:5000/v2/_catalog'
+    function pdmrm() {
+        echo "[podman列出本地私有仓库 192.168.0.88:5000 的${1}的manifests]"
+        curl http://192.168.0.88:5000/v2/${1}/manifests/latest
+    }
     function pdmrt() {
-        echo "[给本地私有仓库的镜像 localhost/{$1} 打标签 localhost:5000/$1]"
-        podman tag localhost/$1 localhost:5000/$1
+        local img=$(basename ${1})
+        echo "[给本地镜像 ${1} 打标签为私有仓库 192.168.0.88:5000/$img]"
+        podman tag $1 192.168.0.88:5000/$img
     }
     function pdmrh() {
-        echo "[向本地私有仓库推送镜像 localhost:5000/$1]"
-        podman push --tls-verify=false localhost:5000/$1
+        echo "[向本地私有仓库推送镜像 192.168.0.88:5000/$1]"
+        podman push --tls-verify=false 192.168.0.88:5000/$1
     }
     function pdmrl() {
-        echo "[从本地私有仓库拉取镜像 localhost:5000/$1]"
-        podman pull --tls-verify=false localhost:5000/$1
+        echo "[从本地私有仓库拉取镜像 192.168.0.88:5000/$1]"
+        podman pull --tls-verify=false 192.168.0.88:5000/$1
     }
 
     # distrobox 这词打不快
