@@ -10390,9 +10390,16 @@ ntp 时间同步的原理
 
         $ sudo systemctl restart systemd-timesyncd.service
 
-如果发现计算机时间偏差较大，那就重启计算机，即可自动对时
+如果发现计算机时间偏差较大，手动从硬件 RTC 更新一下系统时间（常见于虚拟机休眠后恢复，时间不准）
 
-    $ sudo reboot
+    # 默认 --utc，如果是 Windows/Linux 双系统的计算机，建议 --localtime 跟 Windows 保持一致
+    $ sudo hwclock --hctosys
+
+    或重启 NTP 服务，如 chrony 或 systemd-timesyncd
+
+    实在不行就重启计算机，会执行一次自动对时
+
+        $ sudo reboot
 
 调整时区
 
@@ -10416,7 +10423,7 @@ ntp 时间同步的原理
 
 Debian 系一般都使用 systemd 自带的时间同步服务 systemd-timesyncd，而 Fedora 系使用 chrony 作为默认时间同步工具。要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐 chrony。
 
-Linux 处理 RTC 时间跟 Windows 的机制不同，大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd 只会更改系统时间而不会更改 RTC 硬件时间，即系统时间是根据硬件 RTC 时间和当前时区设置计算得出的。可以改变这个机制，通过 `hwclock -w` 命令将系统时间同步到硬件时间，参见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
+Linux 处理 RTC 时间跟 Windows 的机制不同，大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd 只会更改系统时间而不会更改 RTC 硬件时间，即系统时间是根据硬件 RTC 时间和当前时区设置计算得出的。可以改变这个机制，通过 `hwclock -w` 命令将系统时间（受时区、夏令时影响）同步到硬件时间（默认 UTC），参见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
 
 #### 配置国内的公共 NTP 服务器
 
@@ -10557,7 +10564,7 @@ chronyc 是用来监控 chronyd 性能和配置其参数的用户界面。他可
 
 #### Debian/openSUSE 使用 systemd-timesyncd
 
-systemd-timesyncd 只实现了简单的 NTP 协议 SNTP，专注于从远程服务器查询然后同步到本地时钟，即只是 NTP 客户端。
+systemd-timesyncd 只实现了简单的 NTP 协议 SNTP，专注于从远程服务器查询然后同步到本地的系统时间，即只是 NTP 客户端。
 
     https://www.cnblogs.com/pipci/p/12833228.html
 
