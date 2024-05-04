@@ -298,9 +298,16 @@ if [ -x /usr/bin/dircolors ]; then
     }
     alias pdmrs='echo "[podman搜索包含本地无tls私有仓库]" && podman search --tls-verify=false'
     alias pdmr='echo "[podman列出本地私有仓库 192.168.0.88:5000 的镜像]" && curl http://192.168.0.88:5000/v2/_catalog'
+    function pdmrtag() {
+        echo "[podman列出本地私有仓库 192.168.0.88:5000 的 ${1} 的tag]"
+        local img=$(echo $1  |cut -d: -f1)
+        curl http://192.168.0.88:5000/v2/${img}/tags/list
+    }
     function pdmrm() {
-        echo "[podman列出本地私有仓库 192.168.0.88:5000 的${1}的manifests]"
-        curl http://192.168.0.88:5000/v2/${1}/manifests/latest
+        echo "[podman列出本地私有仓库 192.168.0.88:5000 的 ${1} 的manifests]"
+        local img=$(echo $1  |cut -d: -f1)
+        local tag=$(echo $1  |cut -d: -f2)
+        curl http://192.168.0.88:5000/v2/${img}/manifests/${tag}
     }
     function pdmrt() {
         local img=$(basename ${1})
@@ -314,6 +321,13 @@ if [ -x /usr/bin/dircolors ]; then
     function pdmrl() {
         echo "[从本地私有仓库拉取镜像 192.168.0.88:5000/$1]"
         podman pull --tls-verify=false 192.168.0.88:5000/$1
+    }
+    function pdmrd() {
+        local img=$(echo $1  |cut -d: -f1)
+        local tag=$(echo $1  |cut -d: -f2)
+        local sha=$2
+        echo "[从本地私有仓库删除镜像 192.168.0.88:5000/$img:$tag，sha256 自行查询摘要: ${sha}]"
+        curl  -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://192.168.0.88:5000/v2/${img}/manifests/sha256:${sha}
     }
 
     # distrobox 这词打不快
