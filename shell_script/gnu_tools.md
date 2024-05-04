@@ -3411,7 +3411,7 @@ if [ -x /usr/bin/dircolors ]; then
 
     alias mans='echo "[模糊查找man手册]" && man -k'
 
-    alias hwcs='echo "[虚拟机跟主机对时]" && sudo hwclock --hctosys'
+    alias chronys='echo "[虚拟机跟主机对时]" && sudo systemctl restart chronyd'
 
     alias sshs='echo "[跳过其它各种协商使用密码连接主机]" && ssh -o "PreferredAuthentications password"'
 
@@ -3557,10 +3557,17 @@ if [ -x /usr/bin/dircolors ]; then
         podman exec -it $1 sh
     }
     alias pdmrs='echo "[podman搜索包含本地无tls私有仓库]" && podman search --tls-verify=false'
-    alias pdmr='echo "[podman列出本地私有仓库 192.168.0.88:5000 的镜像]" && curl http://192.168.0.88:5000/v2/_catalog'
+    alias pdmr='echo "[podman列出本地私有仓库 192.168.0.88:5000 的所有镜像]" && curl http://192.168.0.88:5000/v2/_catalog'
+    function pdmrtag() {
+        echo "[podman列出本地私有仓库 192.168.0.88:5000 的 ${1} 的所有 tag]"
+        local img=$(echo $1  |cut -d: -f1)
+        curl http://192.168.0.88:5000/v2/${img}/tags/list
+    }
     function pdmrm() {
-        echo "[podman列出本地私有仓库 192.168.0.88:5000 的${1}的manifests]"
-        curl http://192.168.0.88:5000/v2/${1}/manifests/latest
+        echo "[podman列出本地私有仓库 192.168.0.88:5000 的 ${1} 的所有 manifests]"
+        local img=$(echo $1  |cut -d: -f1)
+        local tag=$(echo $1  |cut -d: -f2)
+        curl http://192.168.0.88:5000/v2/${img}/manifests/${tag}
     }
     function pdmrt() {
         local img=$(basename ${1})
@@ -3575,13 +3582,24 @@ if [ -x /usr/bin/dircolors ]; then
         echo "[从本地私有仓库拉取镜像 192.168.0.88:5000/$1]"
         podman pull --tls-verify=false 192.168.0.88:5000/$1
     }
+    function pdmrd() {
+        local img=$(echo $1  |cut -d: -f1)
+        local tag=$(echo $1  |cut -d: -f2)
+        local sha=$2
+        echo "[从本地私有仓库删除镜像 192.168.0.88:5000/$img:$tag，sha256 自行查询摘要: ${sha}]"
+        curl  -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://192.168.0.88:5000/v2/${img}/manifests/sha256:${sha}
+    }
 
     # distrobox 这词打不快
     alias dbox='distrobox'
     alias dboxe='echo "[在distrobox里运行一个命令]" && distrobox-enter --'
     function dboxstop() {
         echo "Stop all distrobox container:"
-        container_name=$(distrobox list |sed 1d |cut -d '|' -f 2)
+        #distrobox-list --no-color |sed 1d |cut -d '|' -f 2 |while read boxname
+        #do
+        #    distrobox-stop --yes $boxname
+        #done
+        local container_name=$(distrobox-list --no-color |sed 1d |cut -d '|' -f 2)
         for cname in "${container_name[@]}"
         do
             distrobox-stop --yes $cname
@@ -7923,10 +7941,24 @@ od :按数制显示内容
     0000067
 
     # 以 ASCII 码 和 16 进制的形式显示文件aa.txt内容
-    od -tcx aa.txt
+    $ od -tcx aa.txt
+    0000000   a   b   c   d   e   f   g   h   i   j   k   l   m   n   o   p
+                64636261        68676665        6c6b6a69        706f6e6d
+    0000020   q  \n   9   8   7   6   5   4   3   2   1   0   1   2   3   4
+                38390a71        34353637        30313233        34333231
+    0000040   5   6   7   8   9  \n   A   B   C  \n  \n
+                38373635        42410a39        000a0a43
+    0000053
 
     # 以 ASCII 码的形式显示文件aa.txt内容的，等效 -ta
-    od -a aa.txt
+    $ od -a aa.txt
+    0000000   a   b   c   d   e   f   g   h   i   j   k   l   m   n   o   p
+    0000020   q  nl   9   8   7   6   5   4   3   2   1   0   1   2   3   4
+    0000040   5   6   7   8   9  nl   A   B   C  nl  nl
+    0000053
+
+    $ echo 'abc' | od -An -t dC
+    97   98   99   10
 
 #### 查看 16 进制 hexyl
 
@@ -10387,10 +10419,8 @@ ntp 时间同步的原理
 
 如果发现计算机时间偏差较大，手动从硬件 RTC 更新一下系统时间（常见于虚拟机休眠后恢复，时间不准）
 
-    # 默认 --utc，如果是 Windows/Linux 双系统的计算机，建议 --localtime 跟 Windows 保持一致
-    $ sudo hwclock --hctosys
-
-    或重启 NTP 服务，如 chrony 或 systemd-timesyncd
+    重启 NTP 服务，如 chrony 或 systemd-timesyncd
+    $ sudo systemctl restart chronyd
 
     实在不行就重启计算机，会执行一次自动对时
 
@@ -10405,7 +10435,12 @@ ntp 时间同步的原理
 
     $ sudo timedatectl set-timezone Asia/Singapore
 
-    # 可选：设置硬件 RTC 保存的时间是本地时间
+设置硬件 RTC 或系统时间
+
+    # 使用硬件 RTC 设置系统时间，默认 --utc，如果是 Windows/Linux 双系统的计算机，建议 --localtime 跟 Windows 保持一致
+    $ sudo hwclock --hctosys
+
+    # Windows 机制：用系统时间设置硬件 RTC
     # sudo hwclock --localtime -w
 
 推荐安装章节 [Fedora 等 Redhat 系使用 chrony]，ntp 软件包过时了：以前 Linux 时间同步基本是使用 ntpdate 和 ntpd 这两个工具实现的。ntpd 是步进式平滑的逐渐调整时间，而 ntpdate 是断点式更新时间。
