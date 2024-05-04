@@ -105,32 +105,64 @@ if [ -x /usr/bin/dircolors ]; then
     alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]" && tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='echo "[进程树，列出pid，及全部子进程]" && pstree -p -s'
 
-    alias curls='echo "[curl 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]" && curl -fsSL'
-
-    alias passs='echo "[生成16个字符的强密码]" && cat /dev/random |tr -dc "!@#$%^&*()-+=0-9a-zA-Z" | head -c16'
-    alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
-    alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
-
-    # man
-    alias mans='echo "[模糊查找man手册]" && man -k'
-
     # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
     function cpbak {
         # find . -max-depth 1 -name '$1*' -exec cp "{}" "{}.bak" \;
-        echo "[复制一个备份 $1.bak，如果是目录名不要后缀/传入]"
+        echo "[复制一个备份 $1.bak，如果是目录名不要传入后缀/]"
         cp -a $1{,.bak}
     }
-
-    # ssh 使用密码连接主机，用于内网测试机等不使用密钥连接的场合，跳过其它各种协商
-    alias sshs='echo "[使用密码连接主机]" && ssh -o "PreferredAuthentications password"'
-
-    # vi 后悔药
-    alias viw='echo "[提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
 
     # wsl 或 git bash 下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "C:\Windows\Path"
     function cdw {
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
+
+    # vi 后悔药
+    alias viw='echo "[提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
+
+    # 命令行看天气 https://wttr.in/:help
+    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
+    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
+    # 看月相 curl http://wttr.in/moon
+    function weather {
+        curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
+    }
+
+    # pip
+    alias pipi='echo "[pip 跳过缓存更新指定包]" && pip install --upgrade --no-cache-dir'
+
+    alias passs='echo "[生成16个字符的强密码]" && cat /dev/random |tr -dc "!@#$%^&*()-+=0-9a-zA-Z" | head -c16'
+    alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
+    alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
+
+    # sha256sum
+    alias sha256sums='echo "[sha256sum 按校验和文件逐个校验，跳过缺失文件告警]" && sha256sum --ignore-missing -c'
+    function sha256sumf {
+        # `sha256sumf abc.iso SHA256SUMS.txt`
+        echo "[sha256sum，只下载了一个文件 $1，从校验和文件 $2 中抽出单个文件进行校验]"
+        sha256sum -c <(grep $1 $2)
+    }
+    function sha256sumd {
+        echo "[sha256sum，对目录 $1 下的所有文件及子目录文件生成一个校验和文件 $2]"
+        find $1 -type f |while read fname; do
+            sha256sum "$fname" >>$2
+        done
+    }
+
+    alias mans='echo "[模糊查找man手册]" && man -k'
+
+    alias hwcs='echo "[虚拟机跟主机对时]" && sudo hwclock --hctosys'
+
+    alias sshs='echo "[跳过其它各种协商使用密码连接主机]" && ssh -o "PreferredAuthentications password"'
+
+    # 切换桌面图形模式和命令行模式 --- systemctl 模式
+    function swc {
+        [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] \
+            && (echo -e "\033[0;33mWARN\033[0m: Start Desktop, wait until login shows..."; sudo systemctl isolate graphical.target) \
+            || (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
+    }
+
+    alias curls='echo "[curl 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]" && curl -fsSL'
 
     # scp rsync
     alias scps='echo "[scp 源 目的。远程格式 user@host:/path/to/ 端口用 -P]" && scp -r'
@@ -146,66 +178,29 @@ if [ -x /usr/bin/dircolors ]; then
     # systemd
     alias stmed='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
 
-    # mount 使用当前用户权限挂载 Windows 分区 U 盘，用于防止默认参数使用 root 用户权限不方便当前用户读写
-    function mntfat {
-        echo "[挂载 FAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro $1 $2
-    }
-
-    function mntexfat {
-        echo "[挂载 exFAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro $1 $2
-    }
-
-    function mntntfs {
-        echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,windows_names,iocharset=utf8 $1 $2
-    }
-
-    function mntram {
-        echo "[映射内存目录 $1，用完了记得要解除挂载：sync; sudo umount $1]"
-        sudo mount --mkdir -t ramfs ramfs $1
-    }
-
-    # sha256sum
-    alias sha256sums='echo "[sha256sum 按校验和文件逐个校验，跳过缺失文件告警]" && sha256sum --ignore-missing -c'
-
-    function sha256sumf {
-        # `sha256sumf abc.iso SHA256SUMS.txt`
-        echo "[sha256sum，只下载了一个文件 $1，从校验和文件 $2 中抽出单个文件进行校验]"
-        sha256sum -c <(grep $1 $2)
-    }
-
-    function sha256sumd {
-        echo "[sha256sum，对目录 $1 下的所有文件及子目录文件生成一个校验和文件 $2]"
-        find $1 -type f |while read fname; do
-            sha256sum "$fname" >>$2
-        done
-    }
-
-    # 切换桌面图形模式和命令行模式 --- systemctl 模式
-    function swc {
-        [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] \
-            && (echo -e "\033[0;33mWARN\033[0m: Start Desktop, wait until login shows..."; sudo systemctl isolate graphical.target) \
-            || (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
-    }
-
     # du
     function dus {
         echo "[列出 $1 占用空间最大的前 10 个目录]"
         du -a $1 | sort -n -r |head -n 10
     }
 
-    # 命令行看天气 https://wttr.in/:help
-    # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
-    # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
-    # 看月相 curl http://wttr.in/moon
-    function weather {
-        curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
+    # mount 使用当前用户权限挂载 Windows 分区 U 盘，用于防止默认参数使用 root 用户权限不方便当前用户读写
+    function mntfat {
+        echo "[挂载 FAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
+        sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro $1 $2
     }
-
-    # pip
-    alias pipi='echo "[pip 跳过缓存更新指定包]" && pip install --upgrade --no-cache-dir'
+    function mntexfat {
+        echo "[挂载 exFAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
+        sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro $1 $2
+    }
+    function mntntfs {
+        echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
+        sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,windows_names,iocharset=utf8 $1 $2
+    }
+    function mntram {
+        echo "[映射内存目录 $1，用完了记得要解除挂载：sync; sudo umount $1]"
+        sudo mount --mkdir -t ramfs ramfs $1
+    }
 
     # git 常用命令
     alias gs='git status'
