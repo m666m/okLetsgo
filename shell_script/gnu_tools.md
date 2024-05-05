@@ -15363,7 +15363,7 @@ xrdp 的组件
 
     关闭 Linunx 发行版内置的 Gnome 共享桌面功能：二者都使用默认端口 3389 会导致冲突无法连接，找到桌面设置里的共享桌面功能，选择关闭。
 
-    注销您本地的 Linux 桌面登录（logged in on the system graphical console），否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。与发行版内置的 Gnome 共享桌面（实质是共享屏幕）不同，xrdp 支持多用户连接，所以本地的屏幕前看不到远程连接过来的用户的操作，本地屏幕可以是用户登录等待解锁的状态。（原因是基于 systemd 的操作系统，多个远程桌面会话使用同一个用户登录，会共享同一个桌面环境，这是 D-Bus 共享数据的设计 https://github.com/neutrinolabs/xrdp/wiki/Tips-and-FAQ#why-cant-i-log-the-same-user-on-on-the-graphical-console-and-over-xrdp-at-the-same-time）
+    注销您本地的 Linux 桌面登录（logged in on the system graphical console），否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。与发行版内置的 Gnome 共享桌面（实质是共享屏幕）不同，xrdp 支持多用户连接，所以本地的屏幕前看不到远程连接过来的用户的操作，本地屏幕可以是用户登录等待解锁的状态。原因是基于 systemd 的操作系统，多个远程桌面会话使用同一个用户登录，会共享同一个桌面环境，这是 D-Bus 共享数据的设计 https://github.com/neutrinolabs/xrdp/wiki/Tips-and-FAQ#why-cant-i-log-the-same-user-on-on-the-graphical-console-and-over-xrdp-at-the-same-time
 
         如果本地计算机是无人值守（HEADLESS）模式或虚拟机，记得在断开本地连接之前（本地拔下显示器之前），在用户设置里“取消”自动登录，不然开机就本地登录了，无法从远程登录 xrdp 服务端了
 
@@ -15516,7 +15516,7 @@ VNC 体系由客户端（viewer）与服务端两部分构成
 
     https://blog.csdn.net/sinolover/article/details/119735572
 
-建议：vnc 体系传输远程显示使用图像的方式，带宽消耗较大，大多数使用 vnc 的场合，一般都可以用其它方式代替
+建议：VNC 体系传输远程显示使用图像的方式，带宽消耗较大，大多数使用 VNC 的场合，一般都可以用其它方式代替
 
     操作远程文件，使用 ssh 连接，或 sshfs 挂载远程文件系统即可
 
@@ -15524,7 +15524,7 @@ VNC 体系由客户端（viewer）与服务端两部分构成
 
 安全性问题：
 
-    因为 VNC 的协议加密方面考虑的非常少，密钥可能会明文传输,，务必用 ssh 本地端口转发功能包装 vnc 访问
+    因为 VNC 的协议加密方面考虑的非常少，密钥可能会明文传输，务必用 ssh 本地端口转发功能包装 VNC 访问
 
         ssh -FL 9901:localhost:5901 <user>@<SERVER_IP> sleep 5; vncviewer localhost:9901
 
@@ -15538,7 +15538,7 @@ VNC 体系由客户端（viewer）与服务端两部分构成
 
         TightVNC 的 Unix-like 平台的支持一直停留在十几年前的 1.3 版，一直不停更新的是其 Windows 版。
 
-    TigerVNC：基于 TightVNC 从未发布过的 VNC4 分支而来，由于 TightVNC 的工作重心放到了 Windows，对 Linux 的 X11/Xorg 架构的优化不够新，TigerVNC 注重 Unix-like 版本的开发，对新版本的 X 桌面系统的强力支持，所以在 BSD、Linux 等 Unix-like 操作系统中实现远程虚拟桌面，最好的选择是 TigerVNC。
+    推荐 TigerVNC：基于 TightVNC 从未发布过的 VNC4 分支而来，由于 TightVNC 的工作重心放到了 Windows，对 Linux 的 X11/Xorg 架构的优化不够新，TigerVNC 注重 Unix-like 版本的开发，对新版本的 X 桌面系统的强力支持，所以在 BSD、Linux 等 Unix-like 操作系统中实现远程虚拟桌面，最好的选择是 TigerVNC。
 
         https://github.com/TigerVNC/tigervnc/releases
 
@@ -15550,11 +15550,11 @@ VNC 体系由客户端（viewer）与服务端两部分构成
 
     這些軟體間大多遵循基本的 VNC 協定，因此大多可互通使用。例如可以使用 Windows 平台上的 ultravnc 客户端连接 Linux 平台上的 tightvnc 服务端，但最好两侧版本一致以优化性能。
 
-一般来说，发行版的桌面环境内置远程桌面的服务器端，比如 Gnome 用 vino。
+一般来说，发行版的桌面环境内置远程桌面功能的 VNC 服务器端，比如 Gnome 用 vino。
 
 安装 xrdp 时也会连带安装 xvnc，也是一个 vnc 服务器端
 
-    man xvnc
+    `man xvnc`
 
 用户在客户端使用 vnc viwer 即可直接远程连接桌面。
 
@@ -15572,7 +15572,7 @@ Gnome 等桌面环境内置的 vnc 软件功能太弱了，通常在服务器安
 
         https://www.cnblogs.com/liyuanhong/articles/15487147.html
 
-    apt install tigervnc-standalone-server
+    $ sudo apt install tigervnc-standalone-server
 
 TigerVNC 服务器安装完成后，会自动进行 update-alternatives 的操作替换系统的几个默认命令：
 
@@ -15586,7 +15586,7 @@ TigerVNC 服务器安装完成后，会自动进行 update-alternatives 的操�
 
 实际上就是为这 5 个命令创建了一个链接，实际使用时用这两组命令都可以使用。
 
-    vncpasswd   设置用户密码，请勿使用 sudo 运行
+    $ vncpasswd   设置用户密码，请勿使用 sudo 运行
 
 安装完第三方 vnc 服务器后，记得关闭操作系统桌面环境自带的共享桌面
 
@@ -15626,7 +15626,7 @@ TigerVNC 服务器安装完成后，会自动进行 update-alternatives 的操�
 
     缺点
 
-        只能使用 realvnc viwer 进行连接，输入地址 192.168.0.88:1 注意是带虚拟桌面号的
+        客户端只能使用 realvnc viwer 进行连接，输入地址 192.168.0.88:1 注意是带虚拟桌面号的
 
         第一次之后，单纯运行 vncserver 会有一堆提示，要运行 vncserver-virtual 才能启动
 
@@ -15709,7 +15709,7 @@ noVNC 通过在网页上 html5 的 Canvas，访问远程机器上 vncserver 提�
 
 服务器搭建 novnc
 
-    安装 vncserver: yum install tigervnc -y
+    安装 vncserver: yum install -y tigervnc
 
     安装 Node.js：https://nodejs.org/en/download/（用于执行Websockify.js）
 
@@ -15728,7 +15728,7 @@ noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及
 
 安装 Websockify：
 
-    https://github.com/novnc/websockify/archive/master.zip,
+    https://github.com/novnc/websockify/archive/master.zip
 
 启动:
 
@@ -15754,7 +15754,7 @@ noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及
 
 目前的大多数远程桌面软件使用 rdp 协议 和 vnc 协议，其实现都是基于 xwindow 的，所以 wayland 环境有 xvnc 或 xwayland 组件进行兼容化的支撑，可以正常使用。
 
-纯基于 waylande 实现的远程桌面软件较少，见下。
+完全基于 waylande 实现的远程桌面软件较少，见下。
 
 ##### 基于 VNC 的 WayVNC
 
