@@ -224,7 +224,7 @@ if [ -x /usr/bin/dircolors ]; then
     function gaddr {
         echo "[更新本地 hosts 文件的 github.com 地址]"
         #local addrs=$(curl baidu.com | tr '\n' '\\n')
-        tfile=$(mktemp)
+        local tfile=$(mktemp)
         curl -o $tfile https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts
 
         [[ -s $tfile ]] && sed '/#Github Hosts Start/,/#Github Hosts End/ {

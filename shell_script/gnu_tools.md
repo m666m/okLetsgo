@@ -3484,7 +3484,7 @@ if [ -x /usr/bin/dircolors ]; then
     function gaddr {
         echo "[更新本地 hosts 文件的 github.com 地址]"
         #local addrs=$(curl baidu.com | tr '\n' '\\n')
-        tfile=$(mktemp)
+        local tfile=$(mktemp)
         curl -o $tfile https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts
 
         [[ -s $tfile ]] && sed '/#Github Hosts Start/,/#Github Hosts End/ {
@@ -3556,15 +3556,15 @@ if [ -x /usr/bin/dircolors ]; then
         echo "[登录到容器 $1 内的tty]"
         podman exec -it $1 sh
     }
-    alias pdmrs='echo "[podman搜索包含本地无tls私有仓库]" && podman search --tls-verify=false'
-    alias pdmr='echo "[podman列出本地私有仓库 192.168.0.88:5000 的所有镜像]" && curl http://192.168.0.88:5000/v2/_catalog'
+    alias pdmrs='echo "[podman 搜索包含本地无tls私有仓库]" && podman search --tls-verify=false'
+    alias pdmr='echo "[podman 列出本地私有仓库 192.168.0.88:5000 的所有镜像]" && curl http://192.168.0.88:5000/v2/_catalog'
     function pdmrtag() {
-        echo "[podman列出本地私有仓库 192.168.0.88:5000 的 ${1} 的所有 tag]"
+        echo "[podman 列出本地私有仓库 192.168.0.88:5000 镜像 ${1} 的所有 tag]"
         local img=$(echo $1  |cut -d: -f1)
         curl http://192.168.0.88:5000/v2/${img}/tags/list
     }
     function pdmrm() {
-        echo "[podman列出本地私有仓库 192.168.0.88:5000 的 ${1} 的所有 manifests]"
+        echo "[podman 显示本地私有仓库 192.168.0.88:5000 镜像 ${1} 的 manifests]"
         local img=$(echo $1  |cut -d: -f1)
         local tag=$(echo $1  |cut -d: -f2)
         curl http://192.168.0.88:5000/v2/${img}/manifests/${tag}
@@ -3586,7 +3586,7 @@ if [ -x /usr/bin/dircolors ]; then
         local img=$(echo $1  |cut -d: -f1)
         local tag=$(echo $1  |cut -d: -f2)
         local sha=$2
-        echo "[从本地私有仓库删除镜像 192.168.0.88:5000/$img:$tag，sha256 自行查询摘要: ${sha}]"
+        echo "[从本地私有仓库删除镜像 192.168.0.88:5000/$img:$tag，manifests的sha256摘要: ${sha}]"
         curl  -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://192.168.0.88:5000/v2/${img}/manifests/sha256:${sha}
     }
 
@@ -3595,14 +3595,14 @@ if [ -x /usr/bin/dircolors ]; then
     alias dboxe='echo "[在distrobox里运行一个命令]" && distrobox-enter --'
     function dboxstop() {
         echo "Stop all distrobox container:"
-        #distrobox-list --no-color |sed 1d |cut -d '|' -f 2 |while read boxname
+        #local container_name=$(distrobox-list --no-color |sed 1d |cut -d '|' -f 2)
+        #for cname in "${container_name[@]}"
         #do
-        #    distrobox-stop --yes $boxname
+        #    distrobox-stop --yes $cname
         #done
-        local container_name=$(distrobox-list --no-color |sed 1d |cut -d '|' -f 2)
-        for cname in "${container_name[@]}"
+        distrobox-list --no-color |sed 1d |cut -d '|' -f 2 |while read boxname
         do
-            distrobox-stop --yes $cname
+            distrobox-stop --yes $boxname
         done
     }
 
