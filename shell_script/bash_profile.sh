@@ -488,6 +488,7 @@ else
         ssh-add
     fi
 
+    unset agent_run_state
     unset agent_env
 fi
 
