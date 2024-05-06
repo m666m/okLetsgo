@@ -603,6 +603,7 @@ function PS1git-branch-name {
             unset _pp_git_pt
             return
         else
+            # __git_ps1 没取到有效信息，由下面的补充获取
             unset _pp_git_pt
         fi
     fi
@@ -657,7 +658,7 @@ function PS1git-branch-prompt {
     fi
 }
 
-# 主机名用不同颜色提示本地或 ssh 远程登录：本地登录是绿色，远程登录是洋红色，进入交互式容器 toolbox 后无法判断是否远程登录，默认绿色
+# 主机名用不同颜色提示本地或 ssh 远程登录：本地登录是绿色，远程登录是洋红色
 function PS1_host_name {
     local is_remote=false
 
@@ -665,26 +666,29 @@ function PS1_host_name {
     # 此方法仅在主机环境或 distrobox 容器中有效，在 toolbox 容器中要用其它办法
     ([[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]]) && is_remote=true
 
-    # 如果是交互式容器，因为下面面有专门显示容器名的处理，所以这里要显示宿主机的主机名
+    # 如果进入了交互式容器，在这里处理显示宿主机的主机名，后面有单独的函数处理显示容器名
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
-        # 在交互式容器 toolbox 中，${HOSTNAME}的值与宿主机一致，/etc/hostname 变为 toolbox
+        # 如果是在交互式容器 toolbox 中，${HOSTNAME}的值与宿主机一致，但 /etc/hostname 变为 toolbox
         if [[ $(cat /etc/hostname) = 'toolbox' ]]; then
-            local simphost=$(echo ${HOSTNAME%%.*})
+            # 显示宿主机的主机名
+            local raw_host_name=$(echo ${HOSTNAME%%.*})
 
             # toolbox 容器中只能用这个方式判断是否远程连接中，不是很靠谱
             [[ $(ps -ef |grep "sshd: $USER@pts" |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
 
         else
-            # 在交互式容器 distrobox 中，主机名的值变为：容器名.宿主机的主机名
-            local simphost=$(echo ${HOSTNAME} |cut -d. -f2)
+            # 如果是在交互式容器 distrobox 中，主机名的值变为：容器名.宿主机的主机名
+            # distrobox 容器中不需要判断是否在远程连接中，它继承了宿主机的环境变量，前面的判断结果直接用
+            # 显示宿主机的主机名
+            local raw_host_name=$(echo ${HOSTNAME} |cut -d. -f2)
         fi
 
     else
-        # 默认为不是交互式容器环境，显示主机名，适应 FQDN 只显示最前段如 host.local 显示 host
-        local simphost=$(echo ${HOSTNAME%%.*})
+        # 默认处理，普通的主机环境，显示主机名，适应 FQDN 只显示最前段如 host.local 显示 host
+        local raw_host_name=$(echo ${HOSTNAME%%.*})
     fi
 
-    [[ $is_remote = true ]] && echo -e "\033[0;35m$(echo $simphost)" || echo -e "\033[0;32m$(echo $simphost)"
+    [[ $is_remote = true ]] && echo -e "\033[0;35m$(echo $raw_host_name)" || echo -e "\033[0;32m$(echo $raw_host_name)"
 }
 
 # 提示当前在 toolbox 或 distrobox 等交互式容器环境，白色容器名配蓝色背景

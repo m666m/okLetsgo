@@ -143,7 +143,7 @@ dash 和 bash 语法上的主要的区别有:
 
     unset variable_name
 
-    或在函数中使用 `local var="hell"` 来定义局部变量
+    如果是在函数中使用局部变量，用 `local var="hell"` 来定义
 
 Linux 命令行参数一个杠，俩杠，没杠，参见章节 [压缩解压缩] 中 tar 的说明，或 `man tar` 或 `info tar`。
 
