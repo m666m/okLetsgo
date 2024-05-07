@@ -13621,6 +13621,69 @@ Gnome 桌面默认只展示壁纸，不能放文件（临时下载文件没法�
 
     重启操作同样，如果在重启时选择安装更新，会在重启后安装更新，然后再次重启
 
+#### 使用桌面环境的特有命令 gio
+
+    `man gio`
+
+    GVFS URI  https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html-single/administering_the_system_using_the_gnome_desktop_environment/index#gvfs-uri-format-for-network-shares_browsing-files-on-a-network-share
+
+    可用的 GIO 命令 https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html-single/administering_the_system_using_the_gnome_desktop_environment/index#available-gio-commands_managing-storage-volumes-in-gnome
+
+基本概念
+
+    GVFS 提供完整的虚拟文件系统基础架构，并处理 GNOME 桌面中的存储。
+
+    GVFS URI（统一资源标识符） 字符串作为地址，语法上与 Web 浏览器中的 URL 地址类似。
+
+    GVFS 有助于挂载资源。这些挂载在多个应用之间共享。资源在运行的桌面会话中全局跟踪，这意味着即使您退出触发挂载的应用程序，挂载仍可用于任何其他应用程序。多个应用可以同时访问挂载，除非挂载被后端限制了。某些协议设计上仅允许一个通道。
+
+    GVFS 可挂载 /run/media/ 目录中的可移动介质。
+
+显示回收站
+
+    $ gio list trash://
+
+    $ gvfs-ls trash://
+
+    $ gio info trash://
+    display name: Trash
+    name: /
+    type: directory
+    uri: trash:///
+    attributes:
+    standard::type: 2
+    standard::name: /
+    standard::display-name: Trash
+    standard::icon: user-trash, user-trash-symbolic
+    standard::content-type: inode/directory
+    standard::symbolic-icon: user-trash-symbolic, user-trash
+    id::filesystem: trash:
+    trash::item-count: 0
+    metadata::nautilus-icon-view-sort-by: trashed_on
+    metadata::nautilus-icon-view-sort-reversed: true
+
+列出本地 /tmp 目录中的所有文件
+
+    $ gio list file:///tmp
+
+从远程系统列出文本文件的内容
+
+    # ftp://user@ftp.myserver.net/
+    # sftp://[2001:db8::1]
+    # smb://gnome.org
+    # nfs://server/path
+    $ gio cat ssh://joe@ftp.myserver.net/home/joe/todo.txt
+
+将之前的文本文件复制到本地 /tmp 目录中
+
+    $ gio copy ssh://joe@ftp.myserver.net/home/joe/todo.txt /tmp/
+
+如果远程文件系统经常断网，处理办法是：
+
+    卸载文件系统
+
+    再次挂载它
+
 #### 设置选项
 
 点击桌面右上角的声音电源图标的栏目，选择弹出菜单的“Settings”。
