@@ -10439,6 +10439,8 @@ ntp 时间同步的原理
 
     $ sudo timedatectl set-timezone Asia/Singapore
 
+    老方法：ln -s cp /usr/share/zoneinfo/Asia/Singapore /etc/localtime
+
 设置硬件 RTC 或系统时间
 
     # 使用硬件 RTC 设置系统时间，默认 --utc，如果是 Windows/Linux 双系统的计算机，建议 --localtime 跟 Windows 保持一致
