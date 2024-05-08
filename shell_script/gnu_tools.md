@@ -9637,17 +9637,17 @@ Rclone 和 Restic 的相同点
 
 快照是会越积越多的，因此我们需要定期/不定期地执行 autorestic forget 命令根据我们的配置删除过期的快照，在执行的同时带上 --prune 参数可以一并删掉不再被用到的存储块。只有这些块被删掉，空间才真正被节约了！
 
-##### 使用 autorestic
+##### 使用 autorestic 简化你的操作
 
-restic是一个CLI工具，但缺了一些关键的功能，如定时备份，且其所有设置都要通过命令行参数给定，很不方便。autorestic是restic的一个「包装器」，通过自动调用restic的方法，加上了配置文件、定时执行（伪）等功能。在看下面的教程前，我推荐您先看看restic的官方Quick Start文档，了解一下其基本概念和常用命令。
+restic 是一个 CLI 工具，但缺了一些关键的功能，如定时备份，且其所有设置都要通过命令行参数给定，很不方便。autorestic 是 restic 的一个「包装器」，通过自动调用 restic 的方法，加上了配置文件、定时执行（伪）等功能。在看下面的教程前，我推荐您先看看 restic 的官方 Quick Start 文档，了解一下其基本概念和常用命令。
 
-简单地说，restic会把数据备份到称作「存储库」的地方，这个存储库就是一个有特定目录结构的一组文件，可以在本地也可以在云上。每次备份会创建一个「快照」，表示一个备份源的当前所有数据。随着时间推移，快照会越来越多，但快照间的数据是去重的，多个快照中的相同数据只会存一份，有效节约了空间。
+简单地说，restic 会把数据备份到称作「存储库」的地方，这个存储库就是一个有特定目录结构的一组文件，可以在本地也可以在云上。每次备份会创建一个「快照」，表示一个备份源的当前所有数据。随着时间推移，快照会越来越多，但快照间的数据是去重的，多个快照中的相同数据只会存一份，有效节约了空间。
 
-我们先按restic的文档初始化好三个存储库，设置好密码（备份数据会用这个加密）。
+我们先按 restic 的文档初始化好三个存储库，设置好密码（备份数据会用这个加密）。
 
-autorestic还引入了一些不同的概念。「location」指一个备份源，而「backend」指一个 repository 的存储位置，以下配置中的locations和backends就反映了这一点。
+autorestic 还引入了一些不同的概念。「location」指一个备份源，而「backend」指一个 repository 的存储位置，以下配置中的locations和backends就反映了这一点。
 
-autorestic是用YAML编写配置的，结合我在上文写的我的备份目标，我写了以下的autorestic配置。下面的配置大幅简化了（如没有考虑外接硬盘和云的备份频度不同），您可以参照autorestic的文档进行复杂的配置。
+autorestic 的配置文件使用 YAML 格式，如下示例：
 
 ```yaml
 version: 2
@@ -9696,11 +9696,11 @@ backends:
 
 ```
 
-执行 autorestic backup --config C:\您的autorestic配置文件路径 执行全面备份了。
+执行 `autorestic backup --config C:\您的autorestic配置文件路径` 执行全面备份。
 
 ##### 填坑
 
-restic 的功能缺失和bug
+restic 的功能缺失和 bug
 
 restic 有一个 bug 没有解决。在接 rclone 做后端的时候，restic 是开一个子进程并用 stdin/stdout 管道和其进行 HTTP 通信。然而，如果在一个控制台窗口执行 restic，restic 在 Windows 上开子进程的时候，子进程会被挂到亲进程所在的控制台上。在这个控制台上发 Ctrl+C 会把 SIGINT 信号发到所有的挂接的进程上！rclone 接到信号会马上退出，但 restic 在退出的时候不能马上退出，还要删除备份目标上的锁等。
 
@@ -9708,23 +9708,17 @@ restic 有一个 bug 没有解决。在接 rclone 做后端的时候，restic �
 
 同时，restic 有一些我认为应该有而没有的功能，如压缩。但最重要的莫过于自定义数据包文件大小的选项。
 
-restic 的备份方法是把文件拆成小片进行H ash，再把一堆小片打成一个个包传到云上，但默认的包大小是 4M。这对本地备份还好，但对云端备份就是一个灾难 --- 300G 的数据至少要 76800 个文件！ 我调到了 32M，显示出了良好的性能提升。
+restic 的备份方法是把文件拆成小片进行 hash，再把一堆小片打成一个个包传到云上，但默认的包大小是 4M。这对本地备份还好，但对云端备份就是一个灾难 --- 300G 的数据至少要 76800 个文件！ 我调到了 32M，显示出了良好的性能提升。
 
 目前 autorestic 在处理单个源备份到多个储存库的情况时，是通过对同一个源多次执行 backup 命令，每次带不同的 repository 实现的，这对资源的消耗有些大，也不节约时间。
 
 当 restic 被强制结束
 
-如果 restic 出了问题（如网络问题），造成其卡在那里一直运行，那 Windows 任务计划会在 3d（我的配置）后把其强制结束。考虑到 Windows 上没有“优雅”地结束一个纯命令行程序的方法，这个基本就是直接结束进程了。那 restic 就来不及进行清理，造成：存储库上的锁没有释放；Windows VSS 没有删除，这会造成 VSS 吃空间、降低性能，锁影响下次运行。
+如果 restic 出了问题（如网络问题），造成其卡在那里一直运行，那 Windows 任务计划会在 3d（我的配置）后把其强制结束。考虑到 Windows 上没有“优雅”地结束一个纯命令行程序的方法，这个基本就是直接结束进程了。那 restic 就来不及进行清理，造成：存储库上的锁没有释放；Windows 卷影复制服务 (VSS) 没有删除，这会造成 VSS 吃空间、降低性能，锁影响下次运行。
 
 #### 竞品 RClone 远程备份归档
 
-保护数据免受丢失的唯一方案就是备份。对于数据备份，我们应该遵守一些原则性的东西，比如业界较主流的3-2-1备份模式
-
-    3：一堆数据有总共三份，一份在工作目录上，另两份作为备份
-    2：数据应该至少有两种形式，如硬盘与云存储（上个世纪可能是磁带）
-    1：三份数据中的一份应该在异地（如在云上，或在家里）
-
-rclone 是一个云存储的「通用客户端」，可以连上云盘进行同步、上传、下载等操作 。当我们通过自动化访问各种云盘时，用rclone是很方便的 支持在不同对象存储、网盘间同步、上传、下载数据。并且通过一些设置可以实现离线下载、服务器备份等非常实用的功能。
+Rclone (rsync for cloud storage) 是一个云存储的「通用客户端」命令行程序，用于同步文件和目录。支持常见的 Amazon Drive、Google Drive、OneDrive、Dropbox 等云存储。
 
     https://rclone.org/docs/
 
@@ -9733,6 +9727,12 @@ rclone 是一个云存储的「通用客户端」，可以连上云盘进行同�
     https://p3terx.com/archives/rclone-installation-and-configuration-tutorial.html
 
     https://p3terx.com/archives/rclone-advanced-user-manual-common-command-parameters.html
+
+    使用 REST API 访问 onedrive https://p3terx.com/archives/rclone-connect-onedrive-with-selfbuilt-api.html
+
+还支持在不同对象存储、网盘间同步、上传、下载数据。可以自动化访问各种云盘进行同步、上传、下载等操作，实现离线下载、服务器备份等非常实用的功能。
+
+一般在 Windows 平台下将 OneDrive 挂载为本地硬盘，并使用跨平台的 Rclone GUI 连接到云盘。
 
 Rclone 以挂载的方式使用不稳定
 

@@ -680,7 +680,7 @@ function PS1_host_name {
             [[ $(ps -ef |grep "sshd: $USER@pts" |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
 
         else
-            # 如果是在交互式容器 distrobox 中，主机名的值变为：容器名.宿主机的主机名
+            # 否则是在交互式容器 distrobox 中，主机名的值变为：容器名.宿主机的主机名
             # distrobox 容器中不需要判断是否在远程连接中，它继承了宿主机的环境变量，前面的 is_remote 判断结果直接用
             # 显示宿主机的主机名
             raw_host_name=$(echo ${HOSTNAME} |cut -d. -f2)
