@@ -177,6 +177,9 @@ if [ -x /usr/bin/dircolors ]; then
 
     # systemd
     alias stmed='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
+    alias stmv='echo "[systemd 验证单元文件]" && systemd-analyze verify'
+    alias stmr='echo "[systemd 重载单元文件]" && sudo systemctl daemon-reload'
+    alias stmab='echo "[systemd 分析计算机启动耗时]" && systemd-analyze blame'
 
     # du
     alias dus='echo "[降序列出当前目录下各个文件或目录的大小(MB)]" && (for fdfd in $(ls -aA); do  sudo du -sm $fdfd; done) |sort -n -r'

@@ -8088,7 +8088,7 @@ Aria2 的命令行传输各种参数，设置复杂，一般都使用各种客�
 
 ##### aria2 作为后台进程运行响应 RPC 请求
 
-aria2 作为后台进程运行，在指定端口监听 RPC 请求，用户在浏览器安装扩展插件 Aria2 Explorer 把下载请求发送给 aria2 去执行，这样的方式最好用。因为是 RPC 方式，aria2 可以单独部署到家用 NAS 等单独的下载机，用户连接家庭内网的机器都可以操作它。
+aria2 作为后台守护进程运行，在指定端口监听 RPC 请求，用户在浏览器安装扩展插件 Aria2 Explorer 把下载请求发送给 aria2 去执行，这样的方式最好用。因为是 RPC 方式，aria2 可以单独部署到家用 NAS 等单独的下载机，用户连接家庭内网的机器都可以操作它。
 
 1、先生成 Aria2 运行时依赖的配置文件 aria2.conf，可参考 Motrix 的 aria2.conf
 
@@ -8179,33 +8179,55 @@ bt-tracker=http://1337.abcvg.info:80/announce
 
 Windows：
 
-    aria2c.exe --conf-path=%USERPROFILE%\.aria2\aria2.conf --save-session=%USERPROFILE%\.aria2\download.session --input-file=%USERPROFILE%\.aria2\download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=%USERPROFILE%\.aria2\dht.dat --dht-file-path6=%USERPROFILE%\.aria2\dht6.dat --dht-listen-port=26701 --dir=C:\Users\sweethome\Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --rpc-secret=evhiwwwwwDiah --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+    aria2c.exe --conf-path=%USERPROFILE%\.aria2\aria2.conf --enable-rpc --rpc-secret=your_password --dir=%USERPROFILE%\Downloads --save-session=%USERPROFILE%\.aria2\download.session --input-file=%USERPROFILE%\.aria2\download.session --dht-file-path=%USERPROFILE%\.aria2\dht.dat --dht-file-path6=%USERPROFILE%\.aria2\dht6.dat --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-listen-port=26701 --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
 Linux：
 
-    $ aria2c --conf-path=$HOME/.aria2/aria2.conf --save-session=$HOME/.aria2/download.session --input-file=$HOME/.aria2/download.session --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-file-path=$HOME/.aria2/dht.dat --dht-file-path6=$HOME/.aria2/dht6.dat --dht-listen-port=26701 --dir=$HOME/Downloads --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --rpc-secret=xxxxxx --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+    $ aria2c --conf-path=$HOME/.aria2/aria2.conf --enable-rpc --rpc-secret=your_password --dir=$HOME/Downloads --save-session=$HOME/.aria2/download.session --input-file=$HOME/.aria2/download.session --dht-file-path=$HOME/.aria2/dht.dat --dht-file-path6=$HOME/.aria2/dht6.dat --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-listen-port=26701 --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
 注意修改 --rpc-secret 密码。
 
-Windows 下可使用 WinSW 将 Aria2 安装成用户服务来开机自启。
-
-4、测试 rpc
-
-    https://aria2.github.io/manual/en/html/aria2c.html#rpc-interface
-
-    $ curl localhost:6800/jsonrpc
-    {"id":null,"jsonrpc":"2.0","error":{"code":-32600,"message":"Invalid Request."}}
-
-    $ curl -X POST -H "Content-Type: application/json" \
-        -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.getVersion", "params":["token:evhiwwwwwDiah"]}' \
-        http://localhost:6800/jsonrpc
-    {"id":"test","jsonrpc":"2.0","result":{"enabledFeatures":["Async DNS","BitTorrent","Firefox3 Cookie","GZip","HTTPS","Message Digest","Metalink","XML-RPC"],"version":"1.36.0"}}
-
-用浏览器插件 Aria2 Explorer 也可以看到状态是否可用。
+验证：用浏览器插件 Aria2 Explorer 也可以看到 aria2 状态是否可用。或者见章节 [curl 调试 http/wss/json-rpc]。
 
 为什么在 AriaNg 中删除暂停的任务无法删除文件？
 
     Aria2 本身没有通过 RPC 方式（比如 We­bUI ）删除文件的功能，目前你所看到的删除任务后删除文件的功能是通过下载完成后执行命令（on-download-stop）的接口去调用删除脚本实现的，只能删除正在下载的任务。Aria2 定义暂停状态的任务为未开始的任务，而 on-download-stop 这个选项的执行条件是并不包含未开始的任务。所以删除脚本没有触发，文件也就不会被删除。
+
+4、配置为开机自启动服务
+
+Windows 下可使用 WinSW 将 Aria2 安装成用户服务来开机自启。
+
+Linux 配置为 systemd 服务，创建 /etc/systemd/system/aria2.service 文件，内容如下：
+
+```conf
+[Unit]
+Description=Aria2 Service
+After=network.target
+
+[Service]
+Type = simple
+#PIDFile = /run/aria2.pid
+#ExecReload=/bin/kill -s HUP $MAINPID
+#KillSignal=SIGQUIT
+#TimeoutStopSec=5
+#KillMode=process
+#ExecStartPre = /usr/bin/rm -f /run/aria2.pid
+ExecStart=/usr/bin/aria2c --conf-path=/usr/local/etc/aria2/aria2.conf --enable-rpc --rpc-secret=your_password --dir=your_dir --save-session=/usr/local/etc/aria2/download.session --input-file=/usr/local/etc/aria2/download.session --dht-file-path=/usr/local/etc/aria2/dht.dat --dht-file-path6=/usr/local/etc/aria2/dht6.dat --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-listen-port=26701 --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+上面内容替换 your_dir 和 your_password，在目录 /usr/local/etc/aria2/ 下保存 aria2.conf 配置文件。
+
+然后启动服务
+
+    $ sudo systemctl daemon-reload
+
+    $ sudo systemctl enable aria2.service --now
 
 ##### 在容器中运行 aria2
 
@@ -8949,10 +8971,13 @@ ws
 
 json-rpc
 
+        https://aria2.github.io/manual/en/html/aria2c.html#rpc-interface
+
     $ curl -vvv localhost:6800/jsonrpc
+    {"id":null,"jsonrpc":"2.0","error":{"code":-32600,"message":"Invalid Request."}}
 
     $ curl -X POST -H "Content-Type: application/json" \
-        -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.getVersion", "params":["token:evhiwwwwwDiah"]}' \
+        -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.getVersion", "params":["token:your_password"]}' \
         http://localhost:6800/jsonrpc
     {"id":"test","jsonrpc":"2.0","result":{"enabledFeatures":["Async DNS","BitTorrent","Firefox3 Cookie","GZip","HTTPS","Message Digest","Metalink","XML-RPC"],"version":"1.36.0"}}
 
@@ -11067,7 +11092,7 @@ Fedora
 
     https://docs.fedoraproject.org/en-US/quick-docs/installing-grub2/#installing-grub-2-configuration-on-uefi-system
 
-## Init System: 开机自启动 SystemV(init) 和 systemd
+## 开机自启动 SystemV(init) 和 systemd
 
     https://zhuanlan.zhihu.com/p/49556226
 
@@ -11992,9 +12017,9 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
     TimeoutSec=0
     GuessMainPID=no
 
-然后执行章节 [SystemV设置开机自启动] 的步骤即可。
+然后执行章节 [SystemV 设置开机自启动] 的步骤即可。
 
-##### 自制的 shell 脚本由 systemd 服务调度自启动
+##### 自制的 shell 脚本由 systemd 开机自启动
 
     https://wiki.archlinux.org/title/Systemd/User#Automatic_start-up_of_systemd_user_instances
 
@@ -12011,10 +12036,10 @@ Wants=network.target
 
 [Service]
 Type=oneshot
-# 这里一定要有不然闪退 https://blog.csdn.net/Peter_JJH/article/details/108446380
+# 这里一定要有不然闪退 https://blog.csdn.net/Peter_JJH/article/details/108446380 https://blog.csdn.net/icandoit_2014/article/details/121467310
 RemainAfterExit=yes
 
-# 注意分号前后要有空格
+# 如果执行多个命令，分号前后要有空格
 ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/iptables-restore /etc/iptables/rules.v4
 ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0/0 dev lo table 100 ; /sbin/iptables -t mangle -F
 
@@ -12024,11 +12049,12 @@ ExecStop=/sbin/ip rule del fwmark 1 table 100 ; /sbin/ip route del local 0.0.0.0
 
 # 如果是执行了一个成功再执行另一个，需要借助外壳
 ExecStart=/bin/bash -c 'sleep 45 && /bin/bash bin/eum.sh start'
-或分开步骤
+# 或分开步骤
 ExecStartPre=/usr/bin/sleep 45
 ExecStart=/bin/bash bin/eum.sh start
 
-[Install] # 开机自启动必须要有这个字段
+# 开机自启动必须要有这个字段
+[Install]
 WantedBy=multi-user.target
 
 ```
@@ -12045,7 +12071,7 @@ WantedBy=multi-user.target
 
 其它示例参见：
 
-    [用 systemd-networkd 配置策略路由](vnn think)
+    [设置 systemd 开机自动运行该脚本](vnn think)
 
     [设置为 systemd 的服务](org03k think)
 
@@ -14868,7 +14894,7 @@ fi
 
     $ sudo dnf install remmina-gnome-session
 
-#### systemd 关闭桌面环境开机自启动
+#### 关闭桌面环境开机自启动
 
 为了节约内存，可以设置成本地开机进入命令行模式，手工执行命令才进入桌面环境，或直接启动单独的图形化应用程序。
 
@@ -14883,6 +14909,10 @@ fi
     https://superuser.com/questions/443997
 
     https://www.tecmint.com/change-runlevels-targets-in-systemd/
+
+一、老式的 X-window 系统，关闭开机自启动参见章节 [X11 启动过程]。
+
+二、对使用 systemd 管理的桌面环境
 
 /etc/inittab 文件的说明：
 
@@ -14901,10 +14931,6 @@ fi
     To set a default target, run:
 
         systemctl set-default TARGET.target
-
-一、老式的 X-window 系统，关闭开机自启动参见章节 [X11 启动过程]。
-
-二、对使用 systemd 管理的桌面环境
 
 查看登录后启动的设置选项
 
