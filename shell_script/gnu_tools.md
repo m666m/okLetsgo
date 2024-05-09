@@ -15112,7 +15112,11 @@ VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
 #### 远程桌面软件体系
 
-如果舍弃图形管理界面而选择命令行界面，远程管理 Linux 服务器常使用基于 SSH 协议的命令行管理方式。
+注意保护你的连接
+
+    简单使用 ssh 隧道保护远程桌面双方的通信，参见章节 [Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)。
+
+命令行界面，远程管理 Linux 服务器常使用基于 SSH 协议的命令行管理方式，桌面环境的远程桌面体系大致有如下几种：
 
 RDP 协议(倾向于传输指令，适用于低速网络)
 
@@ -15156,9 +15160,13 @@ VNC（基于 RFB 协议倾向于传输图像，适用于瘦客户端）
     X2Go 的服务端目前只支持部署在 Linux 上，因为利用 ssh 加密，所以登录时要输入你的 SSH 登录名和密码。
     X2Go 的客户端支持各个平台部署，而且可以把 rdp 客户端工具如 xfreerdp 作为自己的后端，这样就可以连接 rdp 协议的服务器了。
 
-注意保护你的连接
+其它商业软件，自成体系
 
-    简单使用 ssh 隧道保护远程桌面双方的通信，参见章节 [Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)。
+    TeamViewer 商业版本，免费使用有期限
+
+    rustdesk，国人团队，可以自建开源服务器
+
+        https://rustdesk.com/docs/en/self-host/
 
 > Linux 下的客户端工具
 
@@ -15166,7 +15174,7 @@ VNC（基于 RFB 协议倾向于传输图像，适用于瘦客户端）
 
 2、基于 FreeRDP 的客户端软件
 
-推荐使用图形化的 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
+推荐使用图形化工具 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
 
 xfreerdp 是命令行客户端，替代了已不再开发的 rdesktop
 
