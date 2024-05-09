@@ -9734,7 +9734,7 @@ Rclone (rsync for cloud storage) 是一个云存储的「通用客户端」命�
 
 一般在 Windows 平台下将 OneDrive 挂载为本地硬盘，并使用跨平台的 Rclone GUI 连接到云盘。
 
-Rclone 以挂载的方式使用不稳定
+目前 rclone 对以 mount 挂载的使用方式支持不稳定
 
     Rclone 以挂载方式使用会在本地缓存文件，往挂载盘移动文件只不过是本地转移了位置而已，依然占用着本地磁盘空间，所以当你不断的往挂载盘移动文件，你的本地磁盘就满了，移动文件的过程中内存占用也很大，这可能会导致进程终结和宕机。
 
@@ -9759,13 +9759,13 @@ Rclone 以挂载的方式使用不稳定
     用法示例
     rclone move -v /Download Onedrive:/Download --transfers=1
 
-rclone通常同步或复制目录。但是，如果远程源指向一个文件，rclone将只复制该文件。目标远程必须指向一个目录-，不然rclone将给出为“Failed to create file system for "remote:file": is a file not a directory ”。
+rclone 通常同步或复制目录。但是，如果远程源指向一个文件，rclone 将只复制该文件。目标远程必须指向一个目录 -，不然 rclone 将给出为“Failed to create file system for "remote:file": is a file not a directory ”。
 
-例如，假设您有一个远程，其中有一个名为test.jpg，然后你可以像这样复制那个文件:
+例如，假设您有一个远程，其中有一个名为 test.jpg，然后你可以像这样复制那个文件:
 
     $ rclone copy remote:test.jpg /tmp/download
 
-文件test.jpg将被放置在/tmp/download下面。
+文件 test.jpg 将被放置在/tmp/download下面。
 
 这相当于指定
 
@@ -9773,9 +9773,9 @@ rclone通常同步或复制目录。但是，如果远程源指向一个文件�
 
 当/tmp/files包含单个test.jpg
 
-建议在复制单个文件时使用copy，而不是sync。 他们有几乎相同的效果，但copy将使用更少的内存。
+建议在复制单个文件时使用 copy，而不是 sync。 他们有几乎相同的效果，但 copy 将使用更少的内存。
 
-将名为sync：me的目录同步到名为remote:的远程 就使用：
+将名为 sync：me 的目录同步到名为 remote: 的远程：
 
     $ rclone sync ./sync:me remote:path
 
@@ -9785,20 +9785,20 @@ rclone通常同步或复制目录。但是，如果远程源指向一个文件�
 
 常用功能选项
 
-    rclone copy - 复制
-    rclone move - 移动，如果要在移动后删除空源目录，请加上 --delete-empty-src-dirs 参数
-    rclone sync - 同步：将源目录同步到目标目录，只更改目标目录。
-    rclone size - 查看网盘文件占用大小。
-    rclone delete - 删除路径下的文件内容。
-    rclone purge - 删除路径及其所有文件内容。
-    rclone mkdir - 创建目录。
-    rclone rmdir - 删除目录。
-    rclone rmdirs - 删除指定灵境下的空目录。如果加上 --leave-root 参数，则不会删除根目录。
-    rclone check - 检查源和目的地址数据是否匹配。
-    rclone ls - 列出指定路径下的所有的文件以及文件大小和路径。
-    rclone lsl - 比上面多一个显示上传时间。
-    rclone lsd 列出指定路径下的目录
-    rclone lsf - 列出指定路径下的目录和文件
+    rclone copy     - 复制
+    rclone move     - 移动，如果要在移动后删除空源目录，请加上 --delete-empty-src-dirs 参数
+    rclone sync     - 同步：将源目录同步到目标目录，只更改目标目录。
+    rclone size     - 查看网盘文件占用大小。
+    rclone delete   - 删除路径下的文件内容。
+    rclone purge    - 删除路径及其所有文件内容。
+    rclone mkdir    - 创建目录。
+    rclone rmdir    - 删除目录。
+    rclone rmdirs   - 删除指定灵境下的空目录。如果加上 --leave-root 参数，则不会删除根目录。
+    rclone check    - 检查源和目的地址数据是否匹配。
+    rclone ls       - 列出指定路径下的所有的文件以及文件大小和路径。
+    rclone lsl      - 比上面多一个显示上传时间。
+    rclone lsd      - 列出指定路径下的目录
+    rclone lsf      - 列出指定路径下的目录和文件
 
 常用参数
 
@@ -10213,10 +10213,12 @@ rclone 中的每个命令行参数都可以通过环境变量设置：
 
 ### 在当前目录启动一个简单的http服务器
 
-    # Python 2，使用端口 7777
+Python 2，使用端口 7777
+
     python -m SimpleHTTPServer 7777
 
-    # Python 3 http服务器的包名变了，使用端口 7777
+Python 3，注意包名变了，使用端口 7777
+
     python3 -m http.server 7777
 
 ### 字符终端下的一些小玩具如 figlet、cmatrix 等
@@ -10226,7 +10228,9 @@ rclone 中的每个命令行参数都可以通过环境变量设置：
     unicode编码 http://www.unicode.org/emoji/charts/full-emoji-list.html
 
     emoji 大全 https://emojipedia.org/
+
         unicode emoji https://unicode.org/emoji/charts/full-emoji-list.html
+
         git emoji https://blog.csdn.net/li1669852599/article/details/113336076
 
 给字符渲染颜色 lolcat/aafire
@@ -10346,7 +10350,7 @@ hollywood 让你的 tmux 跑满各种夸张程序，就像好莱坞的科幻电�
             ./configure
             make
 
-            # 不要sudo make install，尽量打包然后用包管理器安装
+            # 不要 sudo make install，尽量打包然后用包管理器安装
             $ sudo make install  # 这样装完了 cmatrix 文件是 root 属组
             make[1]: Entering directory '/pcode/cmatrix'
             /usr/bin/mkdir -p '/usr/local/bin'
