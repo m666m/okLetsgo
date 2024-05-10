@@ -8177,11 +8177,11 @@ bt-tracker=http://1337.abcvg.info:80/announce
 
 启动 aria2 后在浏览器中通过插件 Aria2 Explorer 进行下载即可。
 
-Windows：
+Windows cmd：
 
     aria2c.exe --conf-path=%USERPROFILE%\.aria2\aria2.conf --enable-rpc --rpc-secret=your_password --dir=%USERPROFILE%\Downloads --save-session=%USERPROFILE%\.aria2\download.session --input-file=%USERPROFILE%\.aria2\download.session --dht-file-path=%USERPROFILE%\.aria2\dht.dat --dht-file-path6=%USERPROFILE%\.aria2\dht6.dat --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-listen-port=26701 --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
-Linux：
+bash shell：
 
     $ aria2c --conf-path=$HOME/.aria2/aria2.conf --enable-rpc --rpc-secret=your_password --dir=$HOME/Downloads --save-session=$HOME/.aria2/download.session --input-file=$HOME/.aria2/download.session --dht-file-path=$HOME/.aria2/dht.dat --dht-file-path6=$HOME/.aria2/dht6.dat --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-listen-port=26701 --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
@@ -8211,7 +8211,7 @@ Type = simple
 #KillSignal=SIGQUIT
 #TimeoutStopSec=5
 #KillMode=process
-#ExecStartPre = /usr/bin/rm -f /run/aria2.pid
+ExecStartPre=/bin/bash /usr/local/etc/aria2/tracker.sh /usr/local/etc/aria2/aria2.conf
 ExecStart=/usr/bin/aria2c --conf-path=/usr/local/etc/aria2/aria2.conf --enable-rpc --rpc-secret=your_password --dir=your_dir --save-session=/usr/local/etc/aria2/download.session --input-file=/usr/local/etc/aria2/download.session --dht-file-path=/usr/local/etc/aria2/dht.dat --dht-file-path6=/usr/local/etc/aria2/dht6.dat --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-listen-port=26701 --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
@@ -8222,6 +8222,13 @@ WantedBy=multi-user.target
 ```
 
 上面内容替换 your_dir 和 your_password，在目录 /usr/local/etc/aria2/ 下保存 aria2.conf 配置文件。
+
+在 /usr/local/etc/aria2/ 下准备：
+
+    $ git clone --depth=1 git@github.com:P3TERX/Aria2-Pro-Docker
+
+    $ git clone --depth=1 git@github.com:P3TERX/aria2.conf p3terx_conf
+    从 p3terx_conf 子目录里拷贝 tracker.sh 到当前目录
 
 然后启动服务
 
