@@ -184,10 +184,11 @@ if [ -x /usr/bin/dircolors ]; then
     # du
     alias dus='echo "[降序列出当前目录下各个文件或目录的大小(MB)]" && (for fdfd in $(ls -aA); do  sudo du -sm $fdfd; done) |sort -n -r'
     function duh {
-        local target='.'
-        [[ -n $1 ]] && target=$1
-        echo "[列出占用 $target 空间最大的前 10 个文件或目录(MB)]"
-        sudo du -am $1 | sort -n -r |head -n 10
+        #local target='.'
+        #[[ -n $1 ]] && target=$1
+        local target=${1:-.}
+        echo "[列出 $target 空间占用最大的前 10 个文件或目录(MB)]"
+        sudo du -am "$target" | sort -n -r |head -n 10
     }
 
     # mount 使用当前用户权限挂载 Windows 分区 U 盘，用于防止默认参数使用 root 用户权限不方便当前用户读写
