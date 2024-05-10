@@ -209,6 +209,8 @@ if [ -x /usr/bin/dircolors ]; then
         sudo mount --mkdir -t ramfs ramfs $1
     }
 
+    alias udj='echo "[弹出 U 盘]" && sync && udisksctl power-off -b'
+
     # git 常用命令
     alias gs='git status'
     alias gd='echo "[差异：工作区与暂存区]" && git diff'
