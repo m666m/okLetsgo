@@ -12706,6 +12706,16 @@ Linux 下的桌面环境，除了提供 GUI 界面外，为了让用户开箱即
 
     竞品：基于全盘镜像备份的 cloneZilla
 
+    Redhat 的应急救援盘 ReaR
+
+        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-relax-and-recover_rear
+
+        https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/assembly_recovering-and-restoring-a-system_configuring-basic-system-settings#doc-wrapper
+
+        https://www.yisu.com/zixun/460393.html
+
+        `rear mkbackup` 命令不只创建救援系统了，还能完整备份操作系统
+
 对标 Windows 系统映像备份或 MacOS 的操作系统备份功能。他会在你指定的硬盘（恢复驱动器）自动用一个目录保留各种安装好的程序和设置。
 
 Timeshift提供時光機一樣的時光倒流功能，方便用戶備份整個Linux系統到另外一個硬碟，並在系統出錯的時候一鍵還原，甚至可以在 LiveUSB 模式修復損壞的系統。Timeshift 界面直觀易用，可以設定自動排程備份，備份檔案預設會壓縮以節省硬碟空間。
