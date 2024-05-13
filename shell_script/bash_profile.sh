@@ -515,7 +515,8 @@ fi
 #################################
 # Bash：手动配置插件
 
-# 从上面的 ackg.sh 扩展看日志的快捷命令
+# 从上面的 ackg.sh 扩展的看日志的快捷命令
+alias ackgs='ackg -i'
 alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
 
 ####################################################################

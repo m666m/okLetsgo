@@ -14037,7 +14037,7 @@ gnome 扩展要安装 User Themes
 
 1、Bash 脚本
 
-首先写一个 Bash 脚本，实现更换壁纸的目的，同时为了响应速度和硬盘寿命着想，所有相关文件都保存在 $XDG_RUNTIME_DIR。
+首先写一个 Bash 脚本，实现更换壁纸的目的，同时为了响应速度和硬盘寿命着想，所有相关文件都保存在 $XDG_RUNTIME_DIR，它其实是被桌面环境用 tmpfs 创建的内存目录。
 
 $XDG_RUNTIME_DIR 是一个变量，后面将使用 systemd 传入你存放壁纸文件夹的路径这个变量。
 
