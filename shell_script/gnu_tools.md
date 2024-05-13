@@ -7198,15 +7198,19 @@ hhighlighter 属于对 ack 的封装，但脚本名和函数名都太简单了�
 
 ### 比较文件差异 diff
 
+比较两个文件，用 vim 结合 diff 的命令看高亮的差异对比，更加直观
+
+    $ vimdiff file1.txt file2.txt
+
 比较两个目录
 
 方法一：使用 diff
 
     diff -r directory1 directory2
 
-但是diff会对每个文件中的每一行都做比较，所以文件较多或者文件较大的时候会非常慢。请谨慎使用。
+但是 diff 会对每个文件中的每一行都做比较，所以文件较多或者文件较大的时候会非常慢。请谨慎使用。
 
-方法二：使用diff结合tree
+方法二：使用 diff 结合 tree
 
     $ diff <(tree -Ci --noreport ./tea) <(tree -Ci --noreport ./tea_hot)
     1c1
@@ -7230,7 +7234,7 @@ hhighlighter 属于对 ack 的封装，但脚本名和函数名都太简单了�
 
 该方法效率很高。
 
-方法三：find结合diff
+方法三：find 结合 diff
 
     find directory1 -printf "%P\n" | sort > file1
     find directory2 -printf "%P\n" | sort | diff file1 -
