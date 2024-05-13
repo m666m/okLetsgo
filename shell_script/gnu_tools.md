@@ -8205,7 +8205,7 @@ Description=Aria2 Service
 After=network.target
 
 [Service]
-Type = simple
+Type=simple
 #PIDFile = /run/aria2.pid
 #ExecReload=/bin/kill -s HUP $MAINPID
 #KillSignal=SIGQUIT
@@ -11885,11 +11885,11 @@ systemctl cat 命令可以查看配置文件的内容
 
     Type：定义启动时的进程行为。它有以下几种值。
 
-        Type=simple：默认值，执行ExecStart指定的命令，启动主进程
+        Type=simple：默认值，执行ExecStart指定的命令，在后台执行主进程
 
         Type=forking：以 fork 方式从父进程创建子进程，创建后父进程会立即退出，用于启动守护进程
 
-        Type=oneshot：一次性进程，用于执行定时任务如备份检查等。注意 systemd 默认进程执行后都是持续运行的，如果你配置的是一个执行完就结束了的脚本，需要加参数RemainAfterExit配合，详见章节 [自制的 shell 脚本由 systemd 服务调度自启动]。
+        Type=oneshot：一次性进程，用于执行定时任务如备份检查等。注意 systemd 默认进程执行后都是持续运行的，如果你配置的是一个执行完就结束了的脚本，需要加参数 RemainAfterExit 配合，详见章节 [自制的 shell 脚本由 systemd 开机自启动]。
 
         Type=dbus：当前服务通过D-Bus启动
         Type=notify：当前守护进程启动完毕，会通知 systemd，再继续往下执行
@@ -11979,12 +11979,6 @@ systemctl enable 命令用于在目录 /etc/systemd/system/ 和 /usr/lib/systemd
 与之对应的，`systemctl disable` 命令用于在两个目录之间，撤销符号链接关系，相当于撤销指定服务的开机启动
 
     systemctl disable clamd@scan.service
-
-##### 简单脚本调度可以使用 Supervisor 进程管理工具
-
-    https://www.liaoxuefeng.com/article/895919885120064
-
-它可以很方便的监听、启动、停止、重启一个或多个进程。用 Supervisor 管理的进程，当一个进程意外被杀死，supervisort 监听到进程死后，会自动将它重新拉起，很方便的做到进程自动恢复的功能，不再需要自己写 shell 脚本来控制。
 
 ##### 调试 systemd 启动服务的过程
 
@@ -12076,23 +12070,33 @@ WantedBy=multi-user.target
 
     systemctl list-unit-files |grep tproxy
 
-其它示例参见：
+手动启动一下服务，看是否可以正常返回命令行，服务正常运行，具体示例参见：
 
-    [设置 systemd 开机自动运行该脚本](vnn think)
+    Type=simple： 转后台执行不返回命令行的程序，见章节 [aria2 作为后台进程运行响应 RPC 请求]
 
-    [设置为 systemd 的服务](org03k think)
+    Type=oneshot：执行普通脚本，见章节 [设置 systemd 开机自动运行该脚本](vnn think)
 
-#### 分析启动过程
+    Type=forking：执行守护进程，见章节 [设置为 systemd 的服务](org03k think)
+
+##### 其它进程管理工具
+
+简单脚本调度可以使用 Supervisor 进程管理工具
+
+    https://www.liaoxuefeng.com/article/895919885120064
+
+它可以很方便的监听、启动、停止、重启一个或多个进程。用 Supervisor 管理的进程，当一个进程意外被杀死，supervisort 监听到进程死后，会自动将它重新拉起，很方便的做到进程自动恢复的功能，不再需要自己写 shell 脚本来控制。
+
+#### systemd 分析操作系统启动过程
 
 如果感觉操作系统启动耗时过长，需要分析原因，systemd 有现成的工具
 
 按时间顺序列出启动的模块
 
-    systemd-analyze blame
+    $ systemd-analyze blame
 
-把各服务的启动情况用 svg 图形进行展示，便于分析
+把各服务的启动耗时用火焰图进行展示，导出到 svg 文件便于分析
 
-    systemd-analyze plot >file.svg
+    $ systemd-analyze plot >file.svg
 
 命令打印严重消耗时间的服务树状表
 
