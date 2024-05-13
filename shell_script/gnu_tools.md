@@ -7520,7 +7520,7 @@ NOTE: dd 有个毛病，系统调用函数 read() 在管道操作后会静默的
 
         $ mkdir empty && rsync -r --delete empty/ some-dir && rmdir some-dir
 
-### 压缩解压缩 tar gz bz2 tbz
+### 压缩解压缩 tar gz bz2 tbz lzo
 
     tar [选项] [选项参数] [生成文件名] [源文件1 源文件2 ...]
 
@@ -7584,7 +7584,7 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
     tar vxzf arc.tar.gz
     tar vxjf xx.tar.bz2
 
-管道操作，命令参数中文件名的位置使用 bash 的特殊符号 -（减号），代表标准输出/标准输入。
+tar 支持管道操作，在命令参数中文件名的位置使用 bash 的特殊符号 -（减号），代表标准输出/标准输入。
 下面的例子中不少示例，酌情参考。
 
     # 把 /home 目录打包，输出到标准输入流，管道后面的命令是从标准输出流读取数据解包
@@ -7687,6 +7687,28 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
 
     # 压缩不是开源的
     $ rar a your_dir_file
+
+.lzo 文件压缩，解压
+
+    $ sudo apt install lzop
+
+    lzop命令基本操作命令
+
+    $ lzop -v test # 创建test.lzo压缩文件，输出详细信息，保留test文件不变
+
+    $ lzop -Uv test # 创建test.lzo压缩文件，输出详细信息，删除test文件
+
+    $ lzop -t test.lzo # 测试test.lzo压缩文件的完整性
+
+    $ lzop –info test.lzo # 列出test.lzo中各个文件的文件头
+
+    $ lzop -l test.lzo # 列出test.lzo中各个文件的压缩信息
+
+    $ lzop –ls test.lzo # 列出test.lzo文件的内容，同ls -l功能
+
+    $ cat test | lzop > t.lzo # 压缩标准输入并定向到标准输出
+
+    $ lzop -dv test.lzo # 解压test.lzo得到test文件，输出详细信息，保留test.lzo不变
 
 ### 文件链接 ln
 
@@ -11687,7 +11709,7 @@ unit 文件支持创建插入(drop-in)文件，只需要创建与 unit 文件同
 
 systemd 的 unit 默认都是系统级不必显式添加 --system 选项，但是需要 root 用户权限才能管理执行。
 
-用户级的 unit 不需要 root 用户权限，只限于为当前用户执行
+用户级的 unit 不需要 root 用户权限，只限于为当前用户执行，所以服务调用的脚本和文件应该都在你的用户目录下。
 
     用户级 unit 与系统级 unit 相互独立，不能互相关联或依赖
 
@@ -12094,9 +12116,14 @@ WantedBy=multi-user.target
 
     $ systemd-analyze blame
 
-把各服务的启动耗时用火焰图进行展示，导出到 svg 文件便于分析
+把各服务的启动耗时用图形方式呈现
+
+    # 绘制火焰图，导出到 svg 文件便于分析
 
     $ systemd-analyze plot >file.svg
+
+    # 绘制 dot 流程图，导出到 svg 文件便于分析
+    $ systemd-analyze dot | dot -Tsvg >systemd.svg
 
 命令打印严重消耗时间的服务树状表
 
@@ -12896,7 +12923,7 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
         Firefox 的 “插件”（plugin）和“扩展”（extension）是两种不同的东西：插件以动态库（Windows 上就是 DLL 文件）的方式，加载到浏览器的进程内。扩展可以调用浏览器自身的 API，但是大部分扩展【不能】调用操作系统的 API。
 
-        Firefox 的缓存指向内存目录可以大大提升你的浏览感受，见章节 [ramfs 映射内存目录](init_a_server think)。
+        建议把 Firefox 的缓存指向内存目录，可以大大提升你的浏览感受，见章节 [tmpfs/ramfs 映射内存目录](init_a_server think)。
 
     Chrome
 
