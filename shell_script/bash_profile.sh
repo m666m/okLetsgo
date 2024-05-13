@@ -128,8 +128,35 @@ if [ -x /usr/bin/dircolors ]; then
         curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
     }
 
+    # 切换桌面图形模式和命令行模式 --- systemctl 模式
+    function swc {
+        [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] \
+            && (echo -e "\033[0;33mWARN\033[0m: Start Desktop, wait until login shows..."; sudo systemctl isolate graphical.target) \
+            || (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
+    }
+
+    alias mans='echo "[模糊查找man手册]" && man -k'
+
+    # 显示16进制内容及对应的ascii字符
+    alias hexdumps='hexdump -C'
+
+    alias udj='echo "[弹出 U 盘]" && sync && udisksctl power-off -b'
+
+    alias chronys='echo "[虚拟机跟主机对时]" && sudo systemctl restart chronyd'
+
+    alias sshs='echo "[跳过其它各种协商使用密码连接主机]" && ssh -o "PreferredAuthentications password"'
+
+    alias curls='echo "[curl 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]" && curl -fsSL'
+
     # pip
     alias pipi='echo "[pip 跳过缓存更新指定包]" && pip install --upgrade --no-cache-dir'
+
+    # scp rsync
+    alias scps='echo "[scp 源 目的。远程格式 user@host:/path/to/ 端口用 -P]" && scp -r'
+    alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/path/to/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
+
+    # nmap
+    alias nmaps='echo "[nmap 列出当前局域网 192.168.0.x 内ip及端口]" && nmap 192.168.0.0/24'
 
     alias passs='echo "[生成16个字符的强密码]" && cat /dev/random |tr -dc "!@#$%^&*()-+=0-9a-zA-Z" | head -c16'
     alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
@@ -148,28 +175,6 @@ if [ -x /usr/bin/dircolors ]; then
             sha256sum "$fname" >>$2
         done
     }
-
-    alias mans='echo "[模糊查找man手册]" && man -k'
-
-    alias chronys='echo "[虚拟机跟主机对时]" && sudo systemctl restart chronyd'
-
-    alias sshs='echo "[跳过其它各种协商使用密码连接主机]" && ssh -o "PreferredAuthentications password"'
-
-    # 切换桌面图形模式和命令行模式 --- systemctl 模式
-    function swc {
-        [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] \
-            && (echo -e "\033[0;33mWARN\033[0m: Start Desktop, wait until login shows..."; sudo systemctl isolate graphical.target) \
-            || (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
-    }
-
-    alias curls='echo "[curl 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]" && curl -fsSL'
-
-    # scp rsync
-    alias scps='echo "[scp 源 目的。远程格式 user@host:/path/to/ 端口用 -P]" && scp -r'
-    alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/path/to/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
-
-    # nmap
-    alias nmaps='echo "[nmap 列出当前局域网 192.168.0.x 内ip及端口]" && nmap 192.168.0.0/24'
 
     # selinux 人性化可读审计信息：ausearch -i
     alias audh='sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
@@ -208,8 +213,6 @@ if [ -x /usr/bin/dircolors ]; then
         echo "[映射内存目录 $1，用完了记得要解除挂载：sync; sudo umount $1]"
         sudo mount --mkdir -t ramfs ramfs $1
     }
-
-    alias udj='echo "[弹出 U 盘]" && sync && udisksctl power-off -b'
 
     # git 常用命令
     alias gs='git status'
