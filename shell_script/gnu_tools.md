@@ -13963,9 +13963,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
         https://github.com/Elinvention/gnome-shell-extension-nasa-apod
 
-    TODO:自写脚本指定壁纸目录随机更换
-
-        https://www.insidentally.com/articles/000037/
+    另见章节 [自写脚本指定壁纸目录随机更换]
 
     Nigh Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现定时自动切换。
 
@@ -14022,6 +14020,140 @@ gnome 扩展要安装 User Themes
 下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
 
 然后打开 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择刚才的zip文件即可
+
+#### 自写脚本指定壁纸目录随机更换
+
+    https://www.insidentally.com/articles/000037/
+
+换壁纸的思路
+
+使用 find 命令生成包含所有图片地址的列表。
+
+从列表中随机挑选一张图片。
+
+使用 gsettings 设置壁纸。
+
+使用 systemd 定期执行脚本。
+
+1、Bash 脚本
+
+首先写一个 Bash 脚本，实现更换壁纸的目的，同时为了响应速度和硬盘寿命着想，所有相关文件都保存在 $XDG_RUNTIME_DIR。
+
+$XDG_RUNTIME_DIR 是一个变量，后面将使用 systemd 传入你存放壁纸文件夹的路径这个变量。
+
+生成地址列表
+
+查找 $1 下面的图片，并且生成列表到 $XDG_RUNTIME_DIR/bg_db，如果已经生成过不需要重复生成。
+
+    if [[ ! -f "${XDG_RUNTIME_DIR}/bg_db" ]]; then
+        find "${1}" \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) -print > "${XDG_RUNTIME_DIR}/bg_db"
+    fi
+
+随机挑选一张图片
+
+使用 shuf 命令挑选一张图片，如果文件不存在则重新挑选，注意如果上一步没有找到任何图片会陷入死循环。
+
+    while [[ ! -f "${TARGET}" ]]; do
+        TARGET=$(shuf -n 1 "${XDG_RUNTIME_DIR}/bg_db")
+    done
+
+假如需要跳过重复壁纸只需要每次挑选图片后删掉相应的行，然后在地址列表为空时重新扫描即可。
+
+设置壁纸
+
+通过 gsettings 来进行设置
+
+    gsettings set org.gnome.desktop.background picture-uri "file://${TARGET}/" || true
+    gsettings set org.gnome.desktop.background picture-uri-dark "file://${TARGET}" || true
+
+picture-uri 是亮色模式下的壁纸，picture-uri-dark 是暗色模式下的壁纸。我这里将两个模式下的壁纸换为同一个。
+
+合体后的脚本 background.sh，运行这个脚本就可以自动更换壁纸了。
+
+```bash
+#!/usr/bin/env bash
+set -Eeo pipefail
+
+if [[ ! -f "${XDG_RUNTIME_DIR}/bg_db" ]]; then
+    find "${1}" \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) -print > "${XDG_RUNTIME_DIR}/bg_db"
+fi
+
+while [[ ! -f "${TARGET}" ]]; do
+    TARGET=$(shuf -n 1 "${XDG_RUNTIME_DIR}/bg_db")
+done
+
+gsettings set org.gnome.desktop.background picture-uri "file://${TARGET}/" || true
+gsettings set org.gnome.desktop.background picture-uri-dark "file://${TARGET}" || true
+```
+
+记得给这个文件添加可执行权限：chmod +x background.sh。
+
+运行时记得传入你壁纸文件夹的路径： background.sh ./your/background/PATH。
+
+2、使用 systemd --user 定期运行脚本。
+
+创建文件
+
+    background@.service
+
+```ini
+[Unit]
+Description=Select a random background from %I
+
+[Service]
+Type=oneshot
+ExecStart=%h/path/to/background.sh "%I"
+```
+
+其中 %h 对于 systemd --user 而言相当于 $HOME 的作用，而 %I 则用于传递参数也就是存储的图片文件夹路径。
+
+创建文件
+
+    background@.service
+
+```ini
+[Unit]
+Description=Select a random background from %I every 1 min
+PartOf=graphical-session.target
+
+[Timer]
+OnStartupSec=1
+OnUnitActiveSec=5min
+AccuracySec=1s
+
+[Install]
+WantedBy=gnome-session.target
+```
+
+使用 AccuracySec=1s 避免随机延迟，另外 PartOf 以及 WantedBy 确保了只有处于 Gnome 桌面环境时才会触发。
+
+启动 Timer
+
+    将 background@.service 和 background@.timer 放入 ~/.config/systemd/user/ 下，并启动 systemd 定时任务。
+
+    $ install -m640 background@.service background@.timer ~/.config/systemd/user/
+
+    $ systemctl --user daemon-reload
+
+    # BGPATH=$(systemd-escape "path/to/background/directory")
+
+    $ systemctl --user enable --now background@$BGPATH.timer
+
+第三行 path/to/background/directory 替换为你壁纸的路径。
+
+注意 @ 后面的路径 $BGPATH 变量需要使用 systemd-escape 进行转义。
+
+查看当前壁纸
+
+有时候需要知道当前壁纸的原图位置，只需要在 background.sh 相应位置添加：
+
+    echo "$TARGET" > "$XDG_RUNTIME_DIR/bg_path"
+
+    # 显示当前壁纸原图的位置
+    cat "$XDG_RUNTIME_DIR/bg_path"
+
+    # 在桌面环境打开原图
+    xdg-open $(cat "$XDG_RUNTIME_DIR/bg_path")
 
 #### 给资源管理器添加 meld 右键菜单
 
