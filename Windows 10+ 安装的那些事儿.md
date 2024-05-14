@@ -3218,7 +3218,11 @@ Windows 现在不支持应用程序关闭后也关闭 HDR 模式，所以打完�
 
 之前误把“动态磁盘”和“GPT 磁盘”混淆了，我的硬盘不幸改成了动态磁盘，Windows 不能操作他的各种分区了。
 
-微软自己都废弃了这个“动态磁盘” <https://docs.microsoft.com/en-us/Windows-server/storage/disk-management/change-a-dynamic-disk-back-to-a-basic-disk>
+微软自己都废弃了这个“动态磁盘” <https://docs.microsoft.com/en-us/Windows-server/storage/disk-management/change-a-dynamic-disk-back-to-a-basic-disk>。
+
+动态磁盘下，创建软RAID0 叫叫“带区卷”，在 Windows 跨区的条带卷叫“跨区卷”。
+
+在 Win10 之后，微软用新的存储管理方式：“存储空间” 来取代动态磁盘，有“存储池”的概念。将多个物理磁盘组合起来，形成一个虚拟的存储池，并从中创建出一个或多个虚拟磁盘。每个虚拟硬盘可以使用不同的虚拟磁盘布局，如简单、镜像（Raid1）、条带化（Raid0），奇偶校验（Raid5）。这些虚拟硬盘其实都是“软Raid”，不但可以各不相同，而且可以托管系统。比如：3台1T磁盘组成存储池，其中每块硬盘的前100G组成总容量300G的条带化（Raid0）虚拟硬盘，安装系统，用以加快系统启动。剩余空间组成容量1.8T（900*2）的，奇偶校验（Raid5）虚拟硬盘用于保存数据。
 
 取消步骤，需要进入 diskpart
 
