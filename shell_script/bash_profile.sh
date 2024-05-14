@@ -513,7 +513,7 @@ if [[ ! $0 = 'zsh' ]]; then
 fi
 
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
-[[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh
+[[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh  # || (echo 'Get ackg from github...' && curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh |sed 's/h()/ackg()/' |sudo tee /usr/local/bin/ackg.sh)
 
 #################################
 # Bash：手动配置插件
