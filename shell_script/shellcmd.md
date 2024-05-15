@@ -2283,10 +2283,11 @@ lsof 列出使用了TCP 或 UDP 协议的文件（sudo apt install lsof），即
 
 查看所有日志(systemd)
 
-    # 使用 root 用户执行看的内容多
-    journalctl
-
     https://docs.fedoraproject.org/en-US/quick-docs/viewing-logs/
+
+journalctl 查看 error 及以上级别的错误日志，或在 cocokpit 中 web 页查看
+
+    $ journalctl --no-tail --since=-24hours --priority=err --reverse
 
 查看系统日志，查找内存溢出oom-kill导致的死机
 
