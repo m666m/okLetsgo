@@ -8136,7 +8136,11 @@ xdm 有图形界面
 
 Aria2 的命令行传输各种参数，设置复杂，一般都使用各种客户端发送下载请求给它。
 
-可以使用 uget 有图形界面，自动调用 aria2 支持bt下载，该软件目前仍然不完善，别用了
+在 Fedora 下使用，发现 aria2 经常 coredump 呢，不如 transmission 稳定。
+
+    $ sudo apt install aria2
+
+图形界面 uget，自动调用 aria2 支持bt下载，该软件目前仍然不完善，别用了
 
     https://github.com/ugetdm/uget
 
@@ -8296,49 +8300,9 @@ WantedBy=multi-user.target
 
     $ sudo systemctl enable aria2.service --now
 
-##### 在容器中运行 aria2
+##### Aria2 服务端不会自己去删除文件
 
-参考自 Aria2 Pro: 基于 Aria2 完美配置和特殊定制优化的 Aria2 Docker
-
-    https://p3terx.com/archives/docker-aria2-pro.html
-        https://github.com/P3TERX/Aria2-Pro-Docker
-        https://hub.docker.com/r/p3terx/aria2-pro
-
-TODO:我用 podman，待调试
-
-    $ docker run -d \
-
-        --name aria2-pro \
-        --restart unless-stopped \
-        --log-opt max-size=1m \
-
-        -e PUID=$UID \
-        -e PGID=$GID \
-        -e UMASK_SET=022 \
-        -e RPC_SECRET=<TOKEN> \
-        -e RPC_PORT=6800 \
-        -e LISTEN_PORT=6888 \
-
-        --publish-all
-
-        -v $PWD/aria2-config:/config \
-        -v $PWD/aria2-downloads:/downloads \
-
-        --health-cmd="curl localhost:6800/jsonrpc |grep jsonrpc|grep -v grep || exit 1" \
-        --health-start-period=1m02s \
-        --health-interval=5s \
-        --health-timeout=2s \
-        --health-retries=3 \
-
-        p3terx/aria2-pro
-
-配置本机防火墙开放必要的入站端口，内网机器在路由器设置端口转发到相同端口。
-
-可以把该容器配置为开机自启动，见章节 [使用 systemd 单元文件配置自启动 podman 容器](virtualization think)。
-
-##### Aria2 不会自己去删除文件
-
-太麻烦了，建议用现成的，见章节 [在容器中运行 aria2]。
+太麻烦了，建议用现成的，见章节 [容器化使用 aria2 服务端](raspberry-pi.md think)。
 
     https://p3terx.com/archives/solve-problems-encountered-in-using-aria2-and-rclone.html
 
@@ -8996,6 +8960,19 @@ delete-empty-dir=true
 
     gpg --export your_address@example.net |curl -T - https://keys.openpgp.org
 
+命令行获取 web 内容
+
+    # http get 方法
+    $ curl -fsSL 11.22.33.44:1234
+
+    # http post 方法
+    $ curl -fsS -d '上传到服务器的负载内容' 11.22.33.44:1234
+
+其它常用选项
+
+    -o  指定保存为文件
+    -k  运行内网 https 无证书
+
 ##### curl 调试 http/wss/json-rpc
 
 可以调试 ssh 站点，也支持 telnet、ftp 等站点，用参数 -vvv 显示服务器输出信息
@@ -9043,9 +9020,10 @@ json-rpc
     $ curl -vvv localhost:6800/jsonrpc
     {"id":null,"jsonrpc":"2.0","error":{"code":-32600,"message":"Invalid Request."}}
 
+    # 内网 https 地址加 -k
     $ curl -X POST -H "Content-Type: application/json" \
         -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.getVersion", "params":["token:your_password"]}' \
-        http://localhost:6800/jsonrpc
+        localhost:6800/jsonrpc
     {"id":"test","jsonrpc":"2.0","result":{"enabledFeatures":["Async DNS","BitTorrent","Firefox3 Cookie","GZip","HTTPS","Message Digest","Metalink","XML-RPC"],"version":"1.36.0"}}
 
 ### ZModem 协议的文件传输工具 rs/rz
