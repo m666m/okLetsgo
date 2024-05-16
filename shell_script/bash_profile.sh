@@ -178,6 +178,7 @@ if [ -x /usr/bin/dircolors ]; then
     }
 
     # 看日志
+    alias audk='echo "[持续显示内核信息]" && sudo dmesg -w'
     alias audc='echo "[持续显示系统日志中 systemd-journald 分类信息]" && journalctl -fx'
     alias auds='echo "[持续显示系统日志中人性化可读审计信息-精简文本]" && sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
     alias audd='echo "[持续显示系统日志中人性化可读审计信息-详细文本]" && sudo tail -f /var/log/audit/audit.log |sudo ausearch -i'
