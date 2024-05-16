@@ -873,6 +873,50 @@ Fedora 的分区方案
             Filename            Type            Size    Used    Priority
             /dev/zram0         partition        102396  0       100
 
+### x86_64 Linux 文件名最长为 255 个字节
+
+    https://www.cnblogs.com/qjfoidnh/p/12248643.html
+
+在 x86_64 Linux 下，文件名的最大长度是255个字符(characters)，文件路径的最大长度是 4096 字符(characters)， 即可以包含 16 级的最大文件长度的路径。
+
+在 <limits.h> 头文件中，有定义
+
+    #define NAME_MAX 255
+
+一个字符 = N个字节(bytes)，取决与编码类型，utf-8 编码采用1-4个字节来编码，可以覆盖世界上所有的语言种类。
+
+utf-8 编码下一个汉字在 Windows 上是占两个字节，而在 Linux 上占三个字节。
+
+所以，x86_64 Linux 下纯汉字文件的最大长度：
+
+    最长汉字文件名 85 个汉字
+
+    全路径长度最大 1365 个汉字
+
+最近在使用 Python 的 wget 包下载文件时遭遇 OSError: filename too long 的异常，经检查下载的文件名确实很长，于是去查询 Linux x86_64 架构下最长文件名支持是多少。
+
+写了一个Python脚本验证一下：
+
+```python
+import os
+
+if __name__ == '__main__':
+    addname = '我'
+    basename = ''
+    while True:
+        basename += addname
+        try:
+            with open(basename, 'w') as f:
+                os.remove(basename)
+        except Exception as e:
+            print('length %d failed' % len(basename))
+            break
+```
+
+输出为 86，并不是 256。而考虑到大多数汉字的 utf-8 编码一般占 3 字节，显然 Linux 对目录名长度 255 的限制是字节数而不是字符数。出问题的文件名因为含有大量中日文，其用 bytes(str, encode='utf-8') 转换为字节格式后长度已经超过 255，尝试将文件名删减到 255 字节以下后成功保存。
+
+结论：x86_64 Linux 下文件名最长为 255 个字节，具体是多少个字符要看字符的 utf-8 编码，一般英文会比较长，中文和特殊符号等等比较短。
+
 ## 常用 shell 脚本代码片段
 
 目录 shell_script 下是写的不错的脚本示例
