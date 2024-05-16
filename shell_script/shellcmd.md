@@ -1159,439 +1159,6 @@ esac
 
 ```
 
-## 查看系统信息
-
-可安装软件包 neofetch、inxi 显示系统信息
-
-    $ inxi -Fzxx
-
-在启动后查看内核启动时 U-boot 传入参数
-
-    $ cat /proc/cmdline
-    coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_compat_alsa=0 snd_bcm2835.enable_hdmi=1 video=HDMI-A-1:640x480M@60 smsc95xx.macaddr=E4:5F:01:B6:A0:E5 vc_mem.mem_base=0x3ec00000 vc_mem.mem_size=0x40000000  console=ttyS0,115200 console=tty1 root=PARTUUID=3ae3e753-02 rootfstype=ext4 fsck.repair=yes rootwait
-
-    $ cat /proc/cmdline
-    BOOT_IMAGE=(hd0,gpt2)/ostree/fedora-db6d3f1ccfb861e20e7838bf677e7966074e45ad8616322f73b830d5972be032/vmlinuz-6.2.12-200.fc37.x86_64 rd.luks.uuid=luks-a9f05992-7dcc-4d02-ad78-1221e8beac35 rhgb quiet root=UUID=5b2d9971-5a35-474b-acf3-81a32bf98bfd rootflags=subvol=root rw ostree=/ostree/boot.1/fedora/db6d3f1ccfb861e20e7838bf677e7966074e45ad8616322f73b830d5972be032/0
-
-hostnamectl 查看主机名及操作系统信息 (依赖安装了 systemd)
-
-   $ hostnamectl
-        Static hostname: myfedora
-            Icon name: computer-desktop
-                Chassis: desktop 🖥️
-            Machine ID: xxxxxxxxx
-                Boot ID: xxxxxxxxx
-        Operating System: Fedora Linux 38 (Workstation Edition)
-            CPE OS Name: cpe:/o:fedoraproject:fedora:38
-        OS Support End: Tue 2024-05-14
-    OS Support Remaining: 8month 3w 2d
-                Kernel: Linux 6.4.10-200.fc38.x86_64
-            Architecture: x86-64
-        Hardware Vendor: Gigabyte Technology Co., Ltd.
-        Hardware Model: Z170X-UD3
-        Firmware Version: F22
-        Firmware Date: Mon 2017-03-06
-
-    $ hostnamectl
-    Static hostname: mydebianvm
-            Icon name: computer-vm
-            Chassis: vm
-            Machine ID: xxxxxxxxx
-            Boot ID: xxxxxxxxx
-        Virtualization: kvm
-    Operating System: Debian GNU/Linux 10 (buster)
-                Kernel: Linux 4.19.0-20-amd64
-        Architecture: x86-64
-
-    $ hostnamectl
-    Static hostname: yourpi
-            Icon name: computer
-            Machine ID: xxxxxxxxx
-            Boot ID: xxxxxxxxx
-    Operating System: Raspbian GNU/Linux 10 (buster)
-                Kernel: Linux 5.10.103-v7l+
-        Architecture: arm
-
-    $ hostnamectl
-   Static hostname: yourpi
-         Icon name: computer
-        Machine ID: xxxxxxxxx
-           Boot ID: xxxxxxxxx
-  Operating System: Raspbian GNU/Linux 11 (bullseye)
-            Kernel: Linux 6.1.41-v8+
-      Architecture: arm64
-
-查看内核信息
-
-    $ cat /proc/version
-    Linux version 5.6.11-1.el7.elrepo.x86_64 (mockbuild@Build64R7) (gcc version 4.8.5 20150623 (Red Hat 4.8.5-39) (GCC)) #1 SMP Mon May 4 19:40:21 EDT 2020
-
-查看基本的cpu和内核信息
-
-    $ uname -a
-    Linux yourhostname 5.6.11-1.el7.elrepo.x86_64 #1 SMP Mon May 4 19:40:21 EDT 2020 x86_64 x86_64 x86_64 GNU/Linux
-
-查看发行版信息：
-
-通用
-
-    $ cat /etc/os-release
-
-debian 系
-
-    $ cat /etc/issue
-    Debian GNU/Linux 10 \n \l
-
-    $ lsb_release -a
-    No LSB modules are available.
-    Distributor ID: Debian
-    Description:    Debian GNU/Linux 10 (buster)
-    Release:        10
-    Codename:       buster
-
-RedHat 系
-
-    $ cat /etc/redhat-release
-    CentOS Linux release 7.8.2003 (Core)
-
-查看系统信息命令，另参见章节 [Bash内建命令]
-
-    https://blog.csdn.net/qq_31278903/article/details/83146031
-
-    uptime                          查看系统运行时间、用户数、负载
-
-    cat /proc/uptime| awk -F. '{run_days=$1 / 86400;run_hour=($1 % 86400)/3600;run_minute=($1 % 3600)/60;run_second=$1 % 60;printf("系统已运行：%d天%d时%d分%d秒",run_days,run_hour,run_minute,run_second)}' 中文显示运行时间
-
-    date -d "$(awk -F. '{print $1}' /proc/uptime) second ago" +"%Y-%m-%d %H:%M:%S"  反算开机时间点
-
-    uname -a                        查看内核/操作系统/CPU信息
-    head -n 1 /etc/issue            查看操作系统版本
-    getconf LONG_BIT                查看当前操作系统是64还是32位
-    lscpu                           查看CPU信息
-    cat /proc/cpuinfo               分核查看CPU信息
-    hostname                        查看计算机名
-    lspci -tv                       树形列出所有PCI设备
-    lspci -nnk                      查看pci设备及相关端口，便于驱动安装
-    lsusb -tv                       列出所有USB设备
-    lsmod                           列出加载的内核模块
-    env                             查看环境变量资源
-    set                             显示当前所有内置变量和函数定义，调试脚本方便
-
-    crontab -l                      查看当前用户的计划任务服务
-
-    chkconfig –list                 列出所有系统服务
-    chkconfig –list | grep on       列出所有启动的系统服务程序
-    rpm -qa                         redhat查看所有安装的软件包
-    apt list --installed            debian查看所有安装的软件包
-
-    free -m                         查看内存使用量和交换区使用量
-    grep MemTotal /proc/meminfo     查看内存总量
-    grep MemFree /proc/meminfo      查看空闲内存量
-
-    df -h                           查看各硬盘分区使用情况
-    du -sh <目录名>                  查看指定目录的大小
-    cat /proc/loadavg               查看系统负载磁盘和分区
-    mount | column -t               查看挂接的分区状态
-    fdisk -l                        查看所有分区
-    swapon -s                       查看所有交换分区
-    lsblk                           查看磁盘信息 - 列出所有可用块设备的信息及依赖关系
-    hdparm -i /dev/hda              查看磁盘参数(仅适用于IDE设备)
-    dmesg | grep IDE                查看启动时IDE设备检测状况网络
-
-    ifconfig                        查看所有网络接口的属性
-    iptables -L                     查看防火墙设置
-    route -n                        查看路由表
-    netstat -lntp                   查看所有监听端口
-    netstat -antp                   查看所有已经建立的连接
-    netstat -s                      查看网络统计信息进程
-
-    ps -ef                          查看所有进程
-    top                             实时显示进程状态用户
-
-    w                               查看活动用户
-    id <用户名>                      查看指定用户信息
-    last                            查看用户登录日志
-    lastb                           查看用户登录失败日志
-    cut -d: -f1 /etc/passwd         查看系统所有用户
-    cut -d: -f1 /etc/group          查看系统所有组
-
-### /proc目录详解
-
-1./proc目录
-Linux 内核提供了一种通过 /proc 文件系统，在运行时访问内核内部数据结构、改变内核设置的机制。proc文件系统是一个伪文件系统，它只存在内存当中，而不占用外存空间。它以文件系统的方式为访问系统内核数据的操作提供接口。
-
-用户和应用程序可以通过proc得到系统的信息，并可以改变内核的某些参数。由于系统的信息，如进程，是动态改变的，所以用户或应用程序读取proc文件时，proc文件系统是动态从系统内核读出所需信息并提交的。下面列出的这些文件或子文件夹，并不是都是在你的系统中存在，这取决于你的内核配置和装载的模块。
-
-2./proc目录的子文件或子文件夹
-
-子目录Sys是可写的，可以通过它来访问或修改内核的参数，而net和scsi则依赖于内核配置。例如，如果系统不支持scsi，则scsi 目录不存在。
-
-    /proc/buddyinfo 每个内存区中的每个order有多少块可用，和内存碎片问题有关
-    /proc/cmdline 启动时传递给kernel的参数信息
-    /proc/cpuinfo cpu的信息
-    /proc/crypto 内核使用的所有已安装的加密密码及细节
-    /proc/devices 已经加载的设备并分类
-    /proc/dma 已注册使用的ISA DMA频道列表
-    /proc/execdomains Linux内核当前支持的execution domains
-    /proc/fb 帧缓冲设备列表，包括数量和控制它的驱动
-    /proc/filesystems 内核当前支持的文件系统类型
-    /proc/interrupts x86架构中的每个IRQ中断数
-    /proc/iomem 每个物理设备当前在系统内存中的映射
-    /proc/ioports 一个设备的输入输出所使用的注册端口范围
-    /proc/kcore 代表系统的物理内存，存储为核心文件格式，里边显示的是字节数，等于RAM大小加上4kb
-    /proc/kmsg 记录内核生成的信息，可以通过/sbin/klogd或/bin/dmesg来处理
-    /proc/loadavg 根据过去一段时间内CPU和IO的状态得出的负载状态，与uptime命令有关
-    /proc/locks 内核锁住的文件列表
-    /proc/mdstat 多硬盘，RAID配置信息(md=multiple disks)
-    /proc/meminfo RAM使用的相关信息
-    /proc/misc 其他的主要设备(设备号为10)上注册的驱动
-    /proc/modules 所有加载到内核的模块列表
-    /proc/mounts 系统中使用的所有挂载
-    /proc/mtrr 系统使用的Memory Type Range Registers (MTRRs)
-    /proc/partitions 分区中的块分配信息
-    /proc/pci 系统中的PCI设备列表
-    /proc/slabinfo 系统中所有活动的 slab 缓存信息
-    /proc/stat 所有的CPU活动信息
-    /proc/sysrq-trigger 使用echo命令来写这个文件的时候，远程root用户可以执行大多数的系统请求关键命令，就好像在本地终端执行一样。要写入这个文件，需要把/proc/sys/kernel/sysrq不能设置为0。这个文件对root也是不可读的
-    /proc/uptime 系统已经运行了多久
-    /proc/swaps 交换空间的使用情况
-    /proc/version Linux内核版本和gcc版本
-    /proc/bus 系统总线(Bus)信息，例如pci/usb等
-    /proc/driver 驱动信息
-    /proc/fs 文件系统信息
-    /proc/ide ide设备信息
-    /proc/irq 中断请求设备信息
-    /proc/net 网卡设备信息
-    /proc/scsi scsi设备信息
-    /proc/tty tty设备信息
-    /proc/net/dev 显示网络适配器及统计信息
-    /proc/vmstat 虚拟内存统计信息
-    /proc/vmcore 内核panic时的内存映像
-    /proc/diskstats 取得磁盘信息
-    /proc/schedstat kernel调度器的统计信息
-    /proc/zoneinfo 显示内存空间的统计信息，对分析虚拟内存行为很有用
-
-以下是/proc目录中进程N的信息
-
-    /proc/N pid为N的进程信息
-    /proc/N/cmdline 进程启动命令
-    /proc/N/cwd 链接到进程当前工作目录
-    /proc/N/environ 进程环境变量列表
-    /proc/N/exe 链接到进程的执行命令文件
-    /proc/N/fd 包含进程相关的所有的文件描述符
-    /proc/N/maps 与进程相关的内存映射信息
-    /proc/N/mem 指代进程持有的内存，不可读
-    /proc/N/root 链接到进程的根目录
-    /proc/N/stat 进程的状态
-    /proc/N/statm 进程使用的内存的状态
-    /proc/N/status 进程状态信息，比stat/statm更具可读性
-    /proc/self 链接到当前正在运行的进程
-
-## 进程查看
-
-TODO:   top 命令看什么 wa si hi 都什么意思
-
-显示进程的命令行
-
-    假设程序名 hello，进程号8034，使用命令：
-
-        $ cat /proc/8034/cmdline
-        ./hellocc
-
-    此时，可以看到该进程的命令行参数，包括进程的启动路径(argv[0])。
-
-显示cpu占用情况
-
-    top 按 1 显示各个核的占用，按 P 高亮活动进程，按 A 按资源使用情况排序
-
-    安装 htop 图形化查看cpu占用,可以横向或者纵向滚动浏览进程列表，以便看到所有的进程和完整的命令行
-
-    安装 btop 更全面 https://github.com/aristocratos/btop
-
-    glances https://github.com/nicolargo/glances
-
-    uptime 开机以来的平均负载统计
-
-    w 显示用户名下的进程
-
-cpu属性值说明：
-
-    %user：用于表示用户模式下消耗的 CPU 时间的比例；
-
-    %nice：通过 nice 改变了进程调度优先级的进程，在用户模式下消耗的 CPU 时间的比例；
-
-    %system：系统模式下消耗的 CPU 时间的比例；
-
-    %iowait：CPU 等待磁盘 I/O 导致空闲状态消耗的时间比例；
-
-    %steal：利用 Xen 等操作系统虚拟化技术，等待其它虚拟 CPU 计算占用的时间比例；
-
-    %idle：CPU 空闲时间比例。
-
-备注：
-
-    如果%iowait的值过高，表示硬盘存在I/O瓶颈，导致cpu等待的时间太长
-
-    如果%idle值高，表示CPU较空闲
-
-    如果%idle值高但系统响应慢时，可能是CPU等待分配内存，应检查内存和缓存的使用情况。
-
-    如果%idle值持续低于cpu核数，表明CPU处理能力相对较低，系统中最需要解决的资源是CPU。
-
-TODO: 查找不在 ps 命令中显示的隐藏进程
-
-有些木马病毒占用cpu使用率，但是用 ps、top 等命令显示不了该进程的信息。
-
-    https://codeantenna.com/a/XEnS4kwiB8
-
-    先用 `netstat -antp`列出可疑的对外监听端口，如发现可疑端口 7777。
-
-    挨个访问 /proc/pid/ 目录，其中，pid从1到到max_pid累加
-
-        如果目录不存在，跳过
-
-        如果是unhide自己的进程，跳过
-
-        如果在ps命令中能看到，跳过
-
-        剩下的，既不是自己，也不在ps命令输出中，则判定为隐藏进程
-
-    这是把所有的线程ID列举出来，随便挑选了一个看一下，在 /proc/pid/fd 目录下有进程打开的文件信息
-
-    进程打开了一个socket，后面的10212是inode id，再通过下面的命令看一下这个socket到底是什么：
-
-    cat /proc/net/tcp | grep 10212 确定它打开的端口就是对外开放的那个可疑端口 7777.
-
-    查看 cat /proc/pid/environ，定位到进程的可执行文件。
-
-木马入侵后一般使用如下方式
-
-    悄悄修改/root/.ssh/authorized_keys文件，添加了RSA密钥登录方式，留下这么一个后门，随时都能远程登录进来。
-
-    实现隐藏就有以下几个思路：
-
-    命令替换
-    直接替换系统中的ps、top命令工具。比如从GitHub上下载它们的源码，加入对应的过滤逻辑，在遍历进程的时候，剔除挖矿进程，实现隐藏的目的。
-
-    模块注入
-    编写一个动态链接库so文件，在应用层执行函数HOOK，遍历相关的函数(readdir/readdir64)过滤挖矿进程，隐藏挖矿进程。
-
-    通过修改 $LD_PRELOAD 环境变量或 /etc/ld.so.preload 文件，配置动态链接库，实现将其注入到目标进程中。
-
-    内核级隐藏
-    通过加载驱动程序的方式在内核空间 HOOK 相应的系统调用来实现隐藏。不过这对攻击者的技术要求也更高，遇到这样的病毒清理起来挑战也更大了。
-
-### 当前系统进程树
-
-ps 命令，注意伯克利写法的参数不用减号，与我们通常用减号的写法有区别，详见 man ps
-
-    # ps -ef 和 ps aux 类似
-    # ps axuf 显示cpu和内存占用
-    $ ps axjf
-    PPID   PID  PGID   SID TTY      TPGID STAT   UID   TIME COMMAND
-        0     2     0     0 ?           -1 S        0   0:00 [kthreadd]
-        2     3     0     0 ?           -1 I<       0   0:00  \_ [rcu_gp]
-        2     4     0     0 ?           -1 I<       0   0:00  \_ [rcu_par_gp]
-        2     8     0     0 ?           -1 I<       0   0:00  \_ [mm_percpu_wq]
-        2     9     0     0 ?           -1 S        0   0:00  \_ [rcu_tasks_rude_]
-        2    10     0     0 ?           -1 S        0   0:00  \_ [rcu_tasks_trace]
-        1  1033  1033  1033 ?           -1 Ss    1000   0:45 tmux
-    1033  1034  1034  1034 pts/1    27015 Ss    1000   0:00  \_ -bash
-    1034 27015 27015  1034 pts/1    27015 S+    1000   1:27  |   \_ watch -n1 (date '+%T'; vcgencmd measure_temp) |tr '\n' ' ' |figlet -f future.tlf -w 80
-    1033  1054  1054  1054 pts/2    28982 Ss    1000   0:00  \_ -bash
-    1054 23597 23597  1054 pts/2    28982 S     1000   0:00  |   \_ /bin/bash
-    23597 23598 23598 23598 ?           -1 Ss    1000   0:00 |       \_ ssh-agent /bin/bash
-    23597 28982 28982  1054 pts/2    28982 S+       0   0:00 |       \_ sudo rngd -r /dev/urandom -o /dev/random -f -t 1
-    28982 28983 28982  1054 pts/2    28982 SLl+     0   0:02 |           \_ rngd -r /dev/urandom -o /dev/random -f -t 1
-
-    # 进程信息，用x显示归属
-    $ ps -efx
-    PID TTY      STAT   TIME COMMAND
-    26577 ?        S      0:06 sshd: pi@pts/0
-    26578 pts/0    Ss     0:00  \_ -bash USER=pi LOGNAME=pi HOME=/home/pi PATH=/usr/local/bin:/usr/bin:/bin:/usr/games MAIL=/var/mail/pi SHE
-    12445 pts/0    R+     0:00      \_ ps -efx SHELL=/bin/bash NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi XDG_SESSION_TYPE=tty HOME=/home/pi LAN
-    10615 ?        Ss    89:40 tmux SHELL=/bin/bash NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi XDG_SESSION_TYPE=tty HOME=/home/pi LANG=en_GB.UTF
-    10819 pts/8    Ss     0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
-    26848 pts/8    S      0:00  |   \_ /bin/bash SHELL=/bin/bash TMUX=/tmp/tmux-1000/default,10615,1 NO_AT_BRIDGE=1 PWD=/home/pi LOGNAME=pi
-    26849 ?        Ss     0:00  |       \_ ssh-agent /bin/bash
-    26974 pts/8    S+     0:00  |       \_ /usr/lib/autossh/autossh -M ...
-    26977 pts/8    S+     0:00  |           \_ /usr/bin/ssh -L ...
-    21772 pts/3    Ss+    0:00  \_ -bash HOME=/home/pi LANG=en_GB.UTF-8 LOGNAME=pi LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:
-    9901 ?        Ss      0:00 /lib/systemd/systemd --user LANG=en_GB.UTF-8 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bi
-    9902 ?        S       0:00  \_ (sd-pam)
-
-或安装 pstree 工具
-
-    $ pstree -a
-    systemd
-    ├─agetty -o -p -- \\u --keep-baud 115200,38400,9600 ttyS0 vt220
-    ├─agetty -o -p -- \\u --noclear tty1 linux
-    ├─alsactl -E HOME=/run/alsa -s -n 19 -c rdaemon
-    ├─avahi-daemon
-    │   └─avahi-daemon
-    ├─bluetoothd
-    ├─cron -f
-    ├─tmux: server
-    │   ├─bash
-    │   │   └─cmatrix -ba
-    │   ├─bash
-    │   │   └─watch -n1 date '+%D%n%T'|figlet -k
-    │   ├─bash
-    │   ├─bash
-    │   │   └─top
-    │   ├─bash
-    │   │   └─bash
-    │   │       ├─autossh -M ...
-    │   │       │   └─ssh -L ...
-    │   │       └─ssh-agent /bin/bash
-    │   └─bash
-    ├─wpa_supplicant -u -s -O /run/wpa_supplicant
-    └─wpa_supplicant -B -c/etc/wpa_supplicant/wpa_supplicant.conf -iwlan0 -Dnl80211,wext
-
-    # 显示pid和命令行
-    $ pstree -pa
-    systemd,1
-    ├─agetty,575 -o -p -- \\u --keep-baud 115200,38400,9600 ttyS0 vt220
-    ├─agetty,576 -o -p -- \\u --noclear tty1 linux
-    ├─alsactl,385 -E HOME=/run/alsa -s -n 19 -c rdaemon
-    ├─avahi-daemon,378
-    │   └─avahi-daemon,398
-    ├─bluetoothd,515
-    ├─cron,369 -f
-    ├─dbus-daemon,395 --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
-    ├─dhcpcd,567 -q -w
-    ├─hciattach,508 /dev/serial1 bcm43xx 3000000 flow -
-    ├─polkitd,10843 --no-debug
-    │   ├─{polkitd},10844
-    │   └─{polkitd},10846
-    ├─rngd,380 -r /dev/hwrng
-    │   ├─{rngd},381
-    │   ├─{rngd},382
-    │   └─{rngd},383
-    ├─rsyslogd,375 -n -iNONE
-    │   ├─{rsyslogd},417
-    │   ├─{rsyslogd},418
-    │   └─{rsyslogd},419
-
-    # 展示指定用户的进程树
-    $ pstree pi
-    sshd───bash───zsh───tmux: client
-
-    systemd─┬─(sd-pam)
-            └─powerline-daemo
-
-    tmux: server─┬─2*[bash───watch]
-                ├─bash───htop
-                ├─bash───journalctl
-                ├─2*[bash───bash─┬─autossh───ssh]
-                │                └─ssh-agent]
-                ├─bash───cmatrix
-                ├─2*[bash]
-                ├─bash───zsh───pstree
-                └─bash───zsh
-
-    zsh───gitstatusd-linu───8*[{gitstatusd-linu}]
-
 ## 查看 io 情况
 
     系统的逐个讲解cpu、内存、网络的排查方法 《Linux性能优化实战》
@@ -1829,32 +1396,43 @@ sar 命令选项    功能
 
 按磁盘
 
-    $ iostat -d 2
-    Linux 5.10.103-v7l+ (your_host)     27/07/22        _armv7l_        (4 CPU)
+        使用 iostat https://www.redhat.com/sysadmin/io-reporting-linux
 
-    Device             tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
-    mmcblk0           0.11         3.15         0.76     291600      70233
+        https://blog.csdn.net/yiyeguzhou100/article/details/88019509
 
-    Device             tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
-    mmcblk0           0.00         0.00         0.00          0          0
+    $ iostat -dx 2
+    Linux 6.8.9-100.fc38.x86_64 (yourhost.local)   17/05/2024      _x86_64_        (8 CPU)
 
-    Device             tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
-    mmcblk0           0.00         0.00         0.00          0          0
+    Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await
+    dareq-sz     f/s f_await  aqu-sz  %util
 
-    $ iostat -mxz 15
-    Linux 5.10.103-v7l+ (jn-zh)     31/10/22        _armv7l_        (4 CPU)
+    nvme0n1          0.12      2.97     0.00   0.00    0.07    24.24    0.00      0.00     0.00   0.00    0.33     0.08    0.00      0.00     0.00   0.00    0.00
+        0.00    0.00    0.40    0.00   0.00
 
-    avg-cpu:  %user   %nice %system %iowait  %steal   %idle
-            2.72    0.00    3.90    0.05    0.00   93.33
+    sda              0.13      2.73     0.00   0.82   83.44    21.67    0.91    130.35     0.00   0.17    1.56   142.79    0.00      0.00     0.00   0.00    0.00
+        0.00    0.00    0.00    0.01   0.75
 
-    Device            r/s     w/s     rMB/s     wMB/s   rrqm/s   wrqm/s  %rrqm  %wrqm r_await w_await aqu-sz rareq-sz wareq-sz  svctm  %util
-    mmcblk0          0.01    0.10      0.00      0.00     0.01     0.14  45.41  57.09    9.18  251.38   0.03    37.24    31.96  22.27   0.25
+    $ iostat -mxz 2
+    Linux 6.8.9-100.fc38.x86_64 (yourhost.local)   17/05/2024      _x86_64_        (8 CPU)
 
     avg-cpu:  %user   %nice %system %iowait  %steal   %idle
-            2.39    0.00    3.45    0.02    0.00   94.14
+            5.46    0.02    2.64    0.68    0.00   91.21
 
-    Device            r/s     w/s     rMB/s     wMB/s   rrqm/s   wrqm/s  %rrqm  %wrqm r_await w_await aqu-sz rareq-sz wareq-sz  svctm  %util
-    mmcblk0          0.00    0.47      0.00      0.00     0.00     0.13   0.00  22.22    0.00    8.43   0.00     0.00     5.14   4.29   0.20
+    Device            r/s     rMB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wMB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dMB/s   drqm/s  %drqm d_await dareq-sz     f/s f_await  aqu-sz  %util
+
+    nvme0n1          0.12      0.00     0.00   0.00    0.07    24.24    0.00      0.00     0.00   0.00    0.33     0.08    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.40    0.00   0.00
+
+    sda              0.12      0.00     0.00   0.82   83.44    21.67    0.90      0.13     0.00   0.17    1.56   142.79    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.01   0.74
+
+持续查看磁盘
+
+        https://jrs-s.net/2019/06/04/continuously-updated-iostat/
+
+    # 去除 -s 参数显示更多的列
+    $ iostat -xys --human 1
+
+    # 显示高亮对比数据变动部分
+    $ watch -n 1 -d 'iostat -xys --human 1 1'
 
 按进程
 
@@ -1891,7 +1469,7 @@ sar 命令选项    功能
     Average:        wlan0      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
     Average:      docker0      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
 
-看tcp流量情况
+看 tcp 流量情况
 
     $ sar -n TCP,ETCP 1
     Linux 5.10.103-v7l+ (your_host)     28/07/22        _armv7l_        (4 CPU)
@@ -1909,11 +1487,13 @@ sar 命令选项    功能
     19:04:06     atmptf/s  estres/s retrans/s isegerr/s   orsts/s
     19:04:07         0.00      0.00      0.00      0.00      0.00
 
-#### 磁盘繁忙程度高导致的现象
+#### 磁盘繁忙程度高会导致程序响应慢
 
     https://zhuanlan.zhihu.com/p/458276937
 
-先看 cpu 的 %iowait 是否很高，`top/btop` 看到 load 虚高，实际利用率很低，cpu 并不热，进程的 wa 非常高，说明 cpu 一直在等 io
+    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/performance_tuning_guide/sect-red_hat_enterprise_linux-performance_tuning_guide-performance_monitoring_tools-iostat
+
+先看 cpu 的 %iowait 是否很高，`top` 看到 load 虚高，实际利用率很低，cpu 并不热，进程的 wa 非常高，说明 cpu 一直在等 io
 
 然后看磁盘，用 `iostat -mxz 1` 也可以看到 %util 利用率非常高
 

@@ -10841,7 +10841,7 @@ dd 也可用于做 i/o 速率测试：
 
     执行时每次都进行同步到硬盘的操作，下例是做了3000次8k写入硬盘
 
-        $ $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000 oflag=dsync
+        $ dd if=/dev/zero of=/tmp/file_01.txt bs=8K count=3000 oflag=dsync
         3000+0 records in
         3000+0 records out
         24576000 bytes (25 MB, 23 MiB) copied, 0.280321 s, 87.7 MB/s
