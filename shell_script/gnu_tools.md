@@ -16501,6 +16501,73 @@ SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候�
 
         sudo sysctl -p
 
+#### REISUB大法手工重启内核 SysRq
+
+    https://www.cnblogs.com/ylan2009/articles/2322950.html
+
+    https://www.cnblogs.com/klb561/p/11013746.html
+
+    https://wiki.ubuntu.com/Kernel/CrashdumpRecipe
+
+先要激活内核 sysrq 功能
+
+    # 修改 /etc/sysctl.conf 文件，设置 kernel.sysrq = 1
+    echo "1" > /proc/sys/kernel/sysrq
+
+键：Print Screen/SysRq
+
+系统异常时依次按下 alt+sysrq+{reisub} ，然后系统会自动重启。括号内的英文字母需要依次顺序按下，而且每次按下字母后需要间隔 5-10s 再执行下一个动作。（如 alt + SysRq + R，间隔10s 后再按 alt + SysRq + E，以此类推）切记不可快速按下 R-E-I-S-U-B ，否则后果和 扣电池拔电源线无异！
+
+使用 SysRq 重启计算机的方法：
+
+全尺寸键盘
+
+    Alt + SysRq + [R-E-I-S-U-B]
+
+笔记本键盘
+
+    Fn + Alt + SysRq + [R-E-I-S-U-B]
+
+reisub各个序列，需要留出执行时间：
+
+    unRaw – 把键盘设置为 ASCII 模式，使按键可以穿透 x server 捕捉传递给内核
+
+    tErminate – 向除 init 外进程发送 SIGTERM 信号，让其自行结束
+
+    kIll - 向除 init 以外所有进程发送 SIGKILL 信号，强制结束进程
+
+    Sync – 同步缓冲区数据到硬盘，避免数据丢失
+
+    Unmount – 将所有已经挂载的文件系统 重新挂载为只读
+
+    reBoot - 立即重启计算机
+
+拓展：
+
+    # 立即重新启动计算机
+    echo "b" > /proc/sysrq-trigger
+
+    # 立即关闭计算机
+    echo "o" > /proc/sysrq-trigger
+
+    # 导出内存分配的信息 （可以用/var/log/message 查看）
+    echo "m" > /proc/sysrq-trigger
+
+    # 导出当前CPU寄存器信息和标志位的信息
+    echo "p" > /proc/sysrq-trigger
+
+    # 导出线程状态信息
+    echo "t" > /proc/sysrq-trigger
+
+    # 故意让系统溃
+    echo "c" > /proc/sysrq-trigger
+
+    # 立即重新挂载所有的文件系统
+    echo "s" > /proc/sysrq-trigger
+
+    # 立即重新挂载所有的文件系统为只读
+    echo "u" > /proc/sysrq-trigger
+
 ### 桌面环境统一密码管理器 --- keyring-daemon
 
 密码管理器：使用你的登录身份免除输入 ssh、gpg 等密钥的密码，登录 web 网站也会自动填充密码，支持储存多种应用软件的密码。
