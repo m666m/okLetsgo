@@ -893,9 +893,7 @@ utf-8 编码下一个汉字在 Windows 上是占两个字节，而在 Linux 上�
 
     全路径长度最大 1365 个汉字
 
-最近在使用 Python 的 wget 包下载文件时遭遇 OSError: filename too long 的异常，经检查下载的文件名确实很长，于是去查询 Linux x86_64 架构下最长文件名支持是多少。
-
-写了一个Python脚本验证一下：
+最近在使用 Python 的 wget 包下载文件时遭遇 OSError: filename too long 的异常，经检查下载的文件名确实很长，于是去查询 Linux x86_64 架构下最长文件名支持是多少。写了一个Python脚本验证一下：
 
 ```python
 import os
