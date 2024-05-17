@@ -217,10 +217,10 @@ if [ -x /usr/bin/dircolors ]; then
     }
     function mntsmb {
         echo "[挂载samba目录 $1 到本地目录 $2，用户名为 $3]"
-        sudo mount -t cifs -o user=$3,uid=1000 $1 $2
+        sudo mount -t cifs -o user=$3 $1 $2
     }
     function mntnfs {
-        echo "[挂载nfs目录 $1 到本地目录]"
+        echo "[挂载nfs目录 $1 到本地目录 $2]"
         sudo mount -t nfs -o vers=4,rsize=1048576,wsize=1048576 $1 $2
     }
 
