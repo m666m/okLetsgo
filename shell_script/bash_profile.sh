@@ -64,7 +64,7 @@ export TERM=xterm-256color
 export COLORTERM=truecolor
 
 # Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
-[[ -n $LANG ]] || export LANG=C.UTF-8
+[[ -n $LANG ]] || export LANG=en_US.UTF-8
 
 ####################################################################
 # 参考自 Debian 的 .bashrc 脚本中，常用命令开启彩色选项
