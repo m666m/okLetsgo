@@ -215,6 +215,14 @@ if [ -x /usr/bin/dircolors ]; then
         echo "[映射内存目录 $1，用完了记得要解除挂载：sync; sudo umount $1]"
         sudo mount --mkdir -t ramfs ramfs $1
     }
+    function mntsmb {
+        echo "[挂载samba目录 $1 到本地目录 $2，用户名为 $3]"
+        sudo mount -t cifs -o user=$3,uid=$UID $1 $2
+    }
+    function mntnfs {
+        echo "[挂载nfs目录 $1 到本地目录]"
+        sudo mount -t nfs -o _netdev,vers=4,rsize=1048576,wsize=1048576 $1 $2
+    }
 
     # git 常用命令
     alias gs='git status'
