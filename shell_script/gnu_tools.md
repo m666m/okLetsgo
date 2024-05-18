@@ -1650,7 +1650,13 @@ tty 的这种以字符进行交互的方式，称为 “命令行模式（consol
 
     https://zhuanlan.zhihu.com/p/97018747
 
-在今天，类 unix 操作系统如 Linux/MacOS 还是在利用 tty 设备作为主机与用户之间使用字符操作交互的桥梁，主机上运行的程序，输入输出默认指向一个 tty 设备。用户使用终端软件如 ssh 登陆远程服务器，也需要由服务器分配一个 tty 设备才能进行命令行操作（ssh 可以设置不给连接用户 tty 设备以提高安全性）。
+在今天，类 unix 操作系统如 Linux/MacOS 还是在利用 tty 设备作为主机与用户之间使用字符操作交互的桥梁，主机上运行的程序，输入输出默认指向一个 tty 设备。
+
+    用户使用终端软件如 ssh 登陆远程服务器，也需要由服务器分配一个 tty 设备才能进行命令行操作（ssh 可以设置不给连接用户 tty 设备以提高安全性）。
+
+    桌面用户使用终端模拟器，由本地主机分配一个 tty 设备操作主机。
+
+    桌面环境一般还提供直接切换到控制台的操作，详见章节 [桌面环境下使用控制台 console]。
 
 为便于理解，查看以下示例：
 
@@ -11993,6 +11999,87 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
 </alias>
 ```
 
+#### 给控制台console设置中文字体
+
+桌面环境一般还提供直接切换到控制台的操作，详见章节 [桌面环境下使用控制台 console]。
+
+目前控制台默认字体只支持基本英文，没有使用桌面环境默认的支持中文的 Noto 字体。
+
+    如果您正在使用的是图形界面（GUI），并且使用的是支持中文的终端模拟器（如 GNOME Terminal 或 Konsole），则通常不需要进行这些步骤，因为终端模拟器会自动处理中文显示。
+
+    如果您在控制台中遇到中文显示问题，建议首先检查您的系统是否安装了中文语言包和字体。
+
+1、安装中文字体：
+
+如果你的操作系统中还没有安装中文字体，可以使用以下命令安装 Noto 字体系列，它支持多种语言，包括中文：
+
+    # sudo apt install fonts-noto-cjk
+    $ sudo dnf install noto-fonts-cjk
+
+2、配置控制台字体：
+
+控制台字体配置通常在 /etc/default/grub 文件中设置。您需要编辑这个文件来指定中文字体。使用文本编辑器打开它，例如：
+
+    $ sudo nano /etc/default/grub
+
+然后找到 GRUB_CMDLINE_LINUX 这一行，添加或者修改 consolefont 参数，指定中文字体。例如：
+
+    GRUB_CMDLINE_LINUX="consolefont=ter-v32n"
+
+ter-v32n 是 Noto Sans Mono CJK 的字体名称之一，您可以使用 ls /usr/share/consolefonts/ 来查看系统中可用的字体列表。
+
+修改 grub 配置后，需要更新 GRUB 以应用更改：
+
+    $ sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+
+注意：如果您的系统使用的是 BIOS，GRUB 配置文件可能位于 /boot/grub/grub.cfg。
+
+更新 GRUB 配置后，重启您的系统以使更改生效：
+
+    $ sudo reboot
+
+> Fedroa 特殊
+
+从 Fedora 15 开始，Fedora 引入了一个新的系统称为 console-setup，它使用 kbd 包来管理控制台的键盘和字体设置。
+
+要配置控制台以使用中文，您可以按照以下步骤操作：
+
+1、安装中文字体：
+
+安装 Noto Sans CJK 字体，这些字体通常已经预装在 Fedora 中。如果没有，可以使用以下命令安装：
+
+    $ sudo dnf install noto-fonts-cjk
+
+2、使用 kbd 工具配置控制台：
+
+Fedora 使用 kbd 包中的 kbd 命令来配置控制台。首先，您需要找出可用的中文字体。可以通过以下命令列出所有可用的控制台字体：
+
+    $ ls /lib/kbd/consolefonts
+
+这将列出所有可用的控制台字体文件。
+
+选择并设置中文字体：
+
+从上一步的输出中选择一个中文字体，例如 unifont 或 WenQuanYi Zen Hei，然后使用以下命令设置控制台字体：
+
+    $ sudo kbd -f /lib/kbd/consolefonts/your-chosen-font.psf
+
+请将 your-chosen-font.psf 替换为您选择的字体文件的实际路径。
+
+更新GRUB配置（如果需要）：
+
+    如果您需要永久更改控制台字体，可能需要编辑 /etc/default/grub 文件，并添加或修改 GRUB_CMDLINE_LINUX 行，包含 consolefont 参数。然后，使用 grub2-mkconfig 命令更新GRUB配置。
+
+重启系统：
+
+更改控制台字体设置后，您可能需要重启系统以使更改生效：
+
+    $ sudo reboot
+
+切换到控制台并测试中文显示：
+
+系统重启后，使用 Ctrl+Alt+F1 至 Ctrl+Alt+F6 切换到虚拟控制台，并测试中文字符的显示。
+
 ### 给应用设置桌面图标
 
 进入如下目录，复制一个文件，改改就行：
@@ -12719,6 +12806,25 @@ wayfire 窗口管理器
     配置文件位置：~/.config/wayfire.ini
 
 如果不想用桌面环境，但还需要在图形化的窗口下工作，见章节 [窗口管理器（Windows Manager）]。
+
+### 桌面环境下使用控制台 console
+
+在大多数 Linux 发行版中，在桌面环境使用以下键盘快捷键来得到控制台console：
+
+    CTRL + ALT + F1 – 锁屏
+    CTRL + ALT + F2 – 桌面环境
+    CTRL + ALT + F3 – TTY3
+    CTRL + ALT + F4 – TTY4
+    CTRL + ALT + F5 – TTY5
+    CTRL + ALT + F6 – TTY6
+
+稍微等一会儿就切换到过去了，当前桌面会挂起。
+
+各发行版的定义可能不大一样，所以我都是暴力切换：左手按住 ctl+alt，右手食指从 F3 一溜划到 F10，随便谁出来。。。
+
+这个控制台也是由本地主机分配的一个tty，可以直接使用命令行。
+
+另见章节 [给控制台console设置中文字体]。
 
 ### Linux 桌面的基本目录规范 XDG（X Desktop Group）
 
@@ -14819,24 +14925,13 @@ WantedBy=multi-user.target
 
     journalctl -f -o cat /usr/bin/gnome-shell
 
-情况一、桌面的图形界面突然卡住且无法操作时，尝试切换到 tty 控制台
+情况一、桌面的图形界面突然卡住且无法操作时，尝试切换到控制台console
 
 在进行下列步骤前，请回忆自己 ubuntu 系统的用户名和密码，接下来将会用到。
 
-接下来我们要做的是进入 tty 终端直接注销用户重新登录。
+接下来我们要做的是进入控制台console直接注销用户重新登录。
 
-在大多数 Linux 发行版中，在桌面环境你可以使用以下键盘快捷键来得到 TTY 控制台：
-
-    CTRL + ALT + F1 – 锁屏
-    CTRL + ALT + F2 – 桌面环境
-    CTRL + ALT + F3 – TTY3
-    CTRL + ALT + F4 – TTY4
-    CTRL + ALT + F5 – TTY5
-    CTRL + ALT + F6 – TTY6
-
-    稍微等一会儿就切换到 tty了。
-
-我都是暴力切换：左手按住 ctl+alt，右手食指从 F3 一溜划到 F10，随便谁出来。。。
+按 CTRL + ALT + F3，详见章节 [桌面环境下使用控制台 console]。
 
 输入用户名和密码登录，此时输入命令，说法太多待验证
 
@@ -14853,7 +14948,7 @@ WantedBy=multi-user.target
 
 操作完成之后等待一会儿就会重新进入桌面，系统可以正常使用了。
 
-情况二、进入 tty 之后键盘无法输入任何内容，彻底死机
+情况二、进入控制台console之后键盘无法输入任何内容，彻底死机
 
 使用“魔法键”：
 
