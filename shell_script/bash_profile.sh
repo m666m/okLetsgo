@@ -249,13 +249,20 @@ if [ -x /usr/bin/dircolors ]; then
         local tfile=$(mktemp)
         curl -o $tfile https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts
 
-        [[ -s $tfile ]] && sed '/#Github Hosts Start/,/#Github Hosts End/ {
-            /#Github Hosts Start/ {
-                r '"$tfile"'
-                d
-            }
-            /#Github Hosts End/!d
-        }' /etc/hosts |awk '!a[$0]++' |sudo tee /etc/hosts
+        [[ ! -s $tfile ]] && echo '获取 github 地址列表失败！' && return 0
+
+        $(grep 'Github Hosts Start' /etc/hosts >/dev/null 2>&1)
+        if [[ "$?" = "0" ]]; then
+            sed '/#Github Hosts Start/,/#Github Hosts End/ {
+                /#Github Hosts Start/ {
+                    r '"$tfile"'
+                    d
+                }
+                /#Github Hosts End/!d
+            }' /etc/hosts |awk '!a[$0]++' |sudo tee /etc/hosts
+        else
+            cat $tfile |sudo tee -a /etc/hosts
+        fi
 
         rm $tfile
     }

@@ -6464,7 +6464,7 @@ set -g @resurrect-capture-pane-contents 'on'
 
 重新加载配置文件
 
-    tmux source-file ~/.tmux.conf
+    $ tmux source-file ~/.tmux.conf
 
 #### 竞品 screen/Zellij
 
