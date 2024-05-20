@@ -1588,7 +1588,7 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
 很多终端工具都是跨平台的，参见章节 [其他终端模拟器]。
 
-### 终端的历史演进 --- 连接控制台 console
+### 终端的历史演进
 
     https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/#in-the-beginning-was-the-tty
 
@@ -1652,11 +1652,9 @@ tty 的这种以字符进行交互的方式，称为 “命令行模式（consol
 
 在今天，类 unix 操作系统如 Linux/MacOS 还是在利用 tty 设备作为主机与用户之间使用字符操作交互的桥梁，主机上运行的程序，输入输出默认指向一个 tty 设备。
 
-    用户使用终端软件如 ssh 登陆远程服务器，也需要由服务器分配一个 tty 设备才能进行命令行操作（ssh 可以设置不给连接用户 tty 设备以提高安全性）。
+    用户使用终端软件如 ssh 登陆服务器，由服务器分配一个 tty 设备才能进行命令行操作（ssh 支持设置不给连接用户分配 tty 设备以提高安全性）。
 
-    桌面用户使用终端模拟器，由本地主机分配一个 tty 设备操作主机。
-
-    桌面环境一般还提供直接切换到控制台的操作，详见章节 [桌面环境下使用控制台 console]。
+    桌面用户使用终端模拟器，由主机分配一个 tty 设备给终端模拟器，连接操作主机。
 
 为便于理解，查看以下示例：
 
@@ -1714,6 +1712,41 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
     reset 重置终端的显示，适用于 cat 了一个二进制命令，导致终端显示混乱的情况下。
 
     ncurses 库被用于在 Linux 下生成基于文本的用户界面，你的终端模拟器必须被它内置的 terminfo 数据库接受，才能在 tty 下正常显示文本，一般都会把自己模拟成 xterm。
+
+#### 登录控制台 tty login
+
+现代操作系统中，本地使用一般都支持登录控制台的功能，这样用户在主机前接个键盘显示器即可维护基本的操作系统（当然也可以设置开机引导到图形界面登录）。
+
+    对主机来说，由本地主机分配一个 “特殊的” tty 设备操作主机，用户最终在命令行界面里获得一个 login shell。类似但是跟普通的 ssh 登录是不一样的，这个根本不依赖 sshd 服务，而且也不需要你安装什么终端模拟器，这是操作系统自带的一个终端界面。
+
+    这样的登录方式一般会提供多个控制台，按下 Alt+Fn 键可切换各个控制台。各 Unix 系统和 Linux 发行版有区别，挨个试试即可。
+
+目前常用的登录控制台的方式：
+
+1、，开机启动后 [本地登录切换图形模式或控制台登录]。
+
+2、在大多数 Linux 发行版中，桌面环境下仍支持命令行下的键盘快捷键，来即时切换到各个控制台 console：
+
+    CTRL + ALT + F1 – 锁屏
+    CTRL + ALT + F2 – 桌面环境
+    CTRL + ALT + F3 – TTY3
+    CTRL + ALT + F4 – TTY4
+    CTRL + ALT + F5 – TTY5
+    CTRL + ALT + F6 – TTY6
+
+稍微等一会儿就切换过去了，当前桌面会保持。
+
+真正的控制台噢，跟图形界面下的那些终端模拟器比如 Gnome Terminal 之类的没关系。
+
+各发行版的定义可能不大一样，所以我都是暴力切换：左手按住 ctl+alt，右手食指从 F3 一溜划到 F10，随便谁出来。。。
+
+3、无头模式(Headless)开机直接串口登录控制台
+
+各大品牌服务器，包括树莓派等单板设备，都支持通过串口连接，由主机分配一个 “特殊的” tty 设备给串口，最终在连接串口的终端模拟器里获得一个 login shell。这个 Serial Console(UART) 方式跟 ssh 登录是不一样的，叫做 serial tty login，在 Linux 里执行登录的程序名一般是 getty。示例参见章节 [通过ttl串口登录树莓派](raspberry-pi think)。
+
+    使用虚拟机软件安装操作系统时，虚拟机软件提供的显示界面其实就是模拟的本地的控制台登录。利用本地控制台登录，即使远程连接故障，也可以连接操作你的虚拟机。
+
+另见章节 [给控制台console设置中文字体]。
 
 ### 终端模拟器和软件的真彩色设置
 
@@ -12001,7 +12034,7 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
 
 #### 给控制台console设置中文字体
 
-桌面环境一般还提供直接切换到控制台的操作，详见章节 [桌面环境下使用控制台 console]。
+桌面环境一般还提供直接切换到控制台的操作，详见章节 [使用控制台 console console]。
 
 目前控制台默认字体只支持基本英文，没有使用桌面环境默认的支持中文的 Noto 字体。
 
@@ -12807,25 +12840,6 @@ wayfire 窗口管理器
 
 如果不想用桌面环境，但还需要在图形化的窗口下工作，见章节 [窗口管理器（Windows Manager）]。
 
-### 桌面环境下使用控制台 console
-
-在大多数 Linux 发行版中，在桌面环境使用以下键盘快捷键来得到控制台console：
-
-    CTRL + ALT + F1 – 锁屏
-    CTRL + ALT + F2 – 桌面环境
-    CTRL + ALT + F3 – TTY3
-    CTRL + ALT + F4 – TTY4
-    CTRL + ALT + F5 – TTY5
-    CTRL + ALT + F6 – TTY6
-
-稍微等一会儿就切换到过去了，当前桌面会挂起。
-
-各发行版的定义可能不大一样，所以我都是暴力切换：左手按住 ctl+alt，右手食指从 F3 一溜划到 F10，随便谁出来。。。
-
-这个控制台也是由本地主机分配的一个tty，可以直接使用命令行。
-
-另见章节 [给控制台console设置中文字体]。
-
 ### Linux 桌面的基本目录规范 XDG（X Desktop Group）
 
 对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境。目前最流行的 freedesktop 的规范称为 XDG
@@ -13425,17 +13439,21 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 
 ### 桌面环境的开机自启动
 
-    如果要配置登录到桌面环境后自动启动图形化软件，打开 Gnome Tweaks，点击 " Startup Applications" 添加即可。
+    如果要配置登录到桌面后自动启动图形化软件，打开 Gnome Tweaks，点击 " Startup Applications" 添加即可。
 
 RHEL 系和 Debian 系都採用了 XDG 规范，详见章节 [Linux 桌面的基本目录规范 XDG（X Desktop Group）].
 
-Fedora 的桌面环境同时支持 x-window 和 wayland，关闭图形模式开机后会停留在控制台，按 ctl + alt + F1/F2/F3/F4，切换控制台使用即可：
+#### 本地登录切换图形模式或控制台登录
+
+Fedora 的桌面环境同时支持 x-window 和 wayland，关闭图形模式开机后会停留在控制台登录，按 ctl + alt + F1/F2/F3/F4，切换控制台使用即可：
 
     执行 `startx` 会在当前控制台启动一个 x-window 桌面环境，点击注销会退回到控制台
 
     执行 `sudo systemctl isolate graphical.target` 会启动 waylan 桌面环境，执行 `sudo systemctl isolate multi-user.target` 会退回到命令行环境。
 
     如果你的系统没有桌面环境， 只需要按下 Alt+Fn 键即可切换各个控制台，不需要按下 CTRL。
+
+另见章节 [登录控制台 tty login].
 
 #### X11 启动过程
 
@@ -14931,7 +14949,7 @@ WantedBy=multi-user.target
 
 接下来我们要做的是进入控制台console直接注销用户重新登录。
 
-按 CTRL + ALT + F3，详见章节 [桌面环境下使用控制台 console]。
+按 CTRL + ALT + F3，详见章节 [使用控制台 console console]。
 
 输入用户名和密码登录，此时输入命令，说法太多待验证
 
