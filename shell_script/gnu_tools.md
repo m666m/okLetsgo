@@ -8347,7 +8347,9 @@ WantedBy=multi-user.target
 
 ##### Aria2 服务端不会自己去删除文件
 
-太麻烦了，建议用现成的，见章节 [容器化使用 aria2 服务端](raspberry-pi.md think)。
+aira2 作为服务运行，各种使用配置上的小坑太麻烦了，建议用现成的容器，见章节 [容器化运行 aria2 服务端](raspberry-pi.md think)。
+
+Aria2 服务端不会自己去删除文件
 
     https://p3terx.com/archives/solve-problems-encountered-in-using-aria2-and-rclone.html
 
@@ -8355,9 +8357,9 @@ WantedBy=multi-user.target
 
 这是官方的回答，所以下载完成后.aria2 文件会保留。这也导致在下载出错的时候即使你删掉了任务，下载的文件依然还在，且 Aria2 是预分配磁盘空间的，这是磁盘占满的原因之一。
 
-Aria2 有两个配置项 on-download-complete、on-download-stop，前者可以在下载完成后执行一个脚本，后者可以在停止后执行一个脚。Aria2 会给脚本传递 3 个变量 $1、$2、$3 分别为 gid 、文件数量、文件路径。利用这些配置项和这些变量就可以实现一些功能，比如在下载完成后调用 Rclone 上传、错误停止后对文件进行删除等操作。
+Aria2 有两个配置项 on-download-complete、on-download-stop，前者可以在下载完成后执行一个脚本，后者可以在停止后执行一个脚本。Aria2 会给脚本传递 3 个变量 $1、$2、$3 分别为 gid 、文件数量、文件路径。利用这些配置项和这些变量就可以实现一些功能，比如在下载完成后调用 Rclone 上传、错误停止后对文件进行删除等操作。
 
-编辑 aria2.conf编辑配置文件，加上下面的配置项
+编辑 aria2.conf 编辑配置文件，加上下面的配置项
 
     ## 执行额外命令 ##
 
