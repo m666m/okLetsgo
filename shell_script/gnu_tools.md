@@ -7531,40 +7531,57 @@ dd 常用选项
 
 测试，逐个运行以下语句，看输出结果，有速率信息
 
-    $ sudo echo 3 > /proc/sys/vm/drop_caches  # 执行前要清理缓存
-    $ dd if=/dev/zero bs=512 count=8388608 of=./4096MB.bigfile status=progress
+    $ sudo su
 
-    $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=1024 count=4194304 of=./4096MB.bigfile status=progress
+    # echo 3 > /proc/sys/vm/drop_caches  # 执行前要清理缓存
+    # dd if=/dev/zero bs=512 count=8388608 of=./4096MB.bigfile status=progress
 
-    $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=4096 count=1048576  of=./4096MB.bigfile status=progress
+    ssd:4294967296 bytes (4.3 GB, 4.0 GiB) copied, 24.3043 s, 177 MB/s
 
-    $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=128K  count=32768  of=./4096MB.bigfile status=progress
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=1024 count=4194304 of=./4096MB.bigfile status=progress
 
-    $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=1M  count=4096  of=./4096MB.bigfile status=progress
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=4096 count=1048576  of=./4096MB.bigfile status=progress
 
-    $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=4M  count=1024  of=./4096MB.bigfile status=progress
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=128K  count=32768  of=./4096MB.bigfile status=progress
 
-    $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=16M  count=256  of=./4096MB.bigfile status=progress
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=1M  count=4096  of=./4096MB.bigfile status=progress
+
+    ssd:4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.28943 s, 3.3 GB/s
+
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=4M  count=1024  of=./4096MB.bigfile status=progress
+
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=16M  count=256  of=./4096MB.bigfile status=progress
 
 固态硬盘物理扇区大小 512 bytes，读写速度高
 
-    $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=512M  count=8  of=./4096MB.bigfile status=progress
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=512M  count=8  of=./4096MB.bigfile status=progress
+    2684354560 bytes (2.7 GB, 2.5 GiB) copied, 1 s, 2.5 GB/s
+    8+0 records in
+    8+0 records out
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.86441 s, 2.3 GB/s
 
-    $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=1G  count=4  of=./4096MB.bigfile status=progress
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=1G  count=4  of=./4096MB.bigfile status=progress
+    3221225472 bytes (3.2 GB, 3.0 GiB) copied, 1 s, 2.4 GB/s
+    4+0 records in
+    4+0 records out
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.81385 s, 2.4 GB/s
 
-    $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=5G  count=4  of=./20GB.bigfile status=progress
-
-    $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=10G  count=2  of=./20GB.bigfile status=progress
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=4G  count=3  of=./12GB.bigfile status=progress
+    2147479552 bytes (2.1 GB, 2.0 GiB) copied, 1 s, 1.9 GB/s
+    dd: warning: partial read (2147479552 bytes); suggest iflag=fullblock
+    4294959104 bytes (4.3 GB, 4.0 GiB) copied, 2 s, 2.1 GB/s
+    0+3 records in
+    0+3 records out
+    6442438656 bytes (6.4 GB, 6.0 GiB) copied, 2.93817 s, 2.2 GB/s
 
 > hdparm 可用于测试磁盘和磁盘缓存读取速度
 
