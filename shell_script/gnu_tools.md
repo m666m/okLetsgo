@@ -7405,36 +7405,63 @@ exec `man pwd`
 
 ### 写入文件 dd
 
-dd 命令是基于块（block）的复制，“裸读写”（直接越过文件系统对物理设备进行读写）用途很多，比如备份/恢复硬盘主引导扇区。
+dd 命令是基于块（block）的复制，“裸读写”（越过文件系统直接读写物理设备）用途很多，比如备份/恢复硬盘主引导扇区，克隆硬盘或分区。
 
     https://wiki.archlinux.org/title/Dd
 
-大多数场景下用 dd 过时了
+大多数场景下，比如从文件到设备或设备到文件，用 dd 过时了，换 cp、cat、head 命令的组合使用即可
 
         https://www.vidarholen.net/contents/blog/?p=479
 
-    文件到设备，设备到文件的大部分用途，用 cat 或 cp 命令就足够了，除非该设备不支持 one-byte write。
-    如果要限制字节数用 head -c 处理即可，除了指明必须用 dd 按块大小写入等场合，尽量避免用 dd。
+    文件到设备，设备到文件的大部分用途，用命令 `cat` 或 `cp` 就足够了，除非该设备不支持 one-byte write。
+
+    如果要限制字节数，组合 `head -c` 处理即可，除了指明必须用 dd 按块大小写入等场合，尽量避免用 dd。
 
         https://unix.stackexchange.com/questions/224277/is-it-better-to-use-cat-dd-pv-or-another-procedure-to-copy-a-cd-dvd/224314#224314
 
-    gnu 版的 dd 有个可以查看进度的参数 status=progress，也可以用 pv 命令代替
+gnu 版的 dd 有个可以查看进度的参数 status=progress，也可以用 pv 命令代替
 
-        $ sudo apt install pv
+    $ sudo apt install pv
 
-        $ pv </dev/zero |head -c 1024M >my.txt
+    $ pv </dev/zero |head -c 1024M >my.txt
 
-读取挂载在存储设备上的 iso 文件，进行 gpg 校验
+dd 常用选项
 
-    # 注意使用了管道操作默认的标准输入和标准输出，gpg 最后用的 -
-    # dd if=/dev/sdb |gpg --keyid-format 0xlong --verify my_signature.sig -
-    $ cat /dev/sdb |gpg --keyid-format 0xlong --verify my_signature.sig -
+    bs=比特数   一次读取和写入都使用该数值，覆盖 ibs/obs 参数的设置。克隆硬盘等大范围读写本地硬盘的场景下调大可以提速，比如设置为 4M 匹配物理硬盘的物理扇区尺寸 4096 的整数倍，如果是固态硬盘物理扇区是 512，可以设置成 10G。详见下面章节 [大范围写入使用最佳块大小]。
+
+    conv=fsync 写入时提速，类似利用缓存，不是每个写操作都写文件系统数据，而是在 dd 执行完成之前再写入
+
+输入：
+
+    ibs=比特数                            一次读取的比特数(默认：512)
+
+    skip=块数                             跳过第零个扇区，从第一个扇区开始读取
+
+    iflag=flag                           使用iflag来控制输入(读取数据)时的行为特征。
+
+        dsync       读写数据采用同步IO
+
+        fullblock   见子章节 [只要指定了 count 就必须用 iflag=fullblock]
+
+输出：
+
+    obs=比特数                            一次写入指定比特数(默认：512)
+
+    seek=1                              跳过第零个扇区，从第一个扇区开始写入
+
+    bs=512                              写入块大小为512字节（一般使用一个扇区的大小，用 sudo gdisk -l 查看）
+
+    count=1                             写入多少个块，这里只写入一个块
+
+    oflag=flag                          使用oflag来控制输出(写入数据)时的行为特征。
 
 设备级互拷：将本地的 /dev/hdb 整盘备份到 /dev/hdd
 
     # dd if=/dev/hdb of=/dev/hdd
     $ cat /dev/sda >/dev/sdb
     $ cp /dev/sda /dev/sdb
+
+    如果需要克隆故障硬盘，见章节 [使用 dd_rescue 克隆故障硬盘](init_a_server think)。
 
 设备到文件：将 /dev/hdb 全盘数据备份到指定路径的 image 文件
 
@@ -7482,54 +7509,133 @@ dd 命令是基于块（block）的复制，“裸读写”（直接越过文件
     #dd if=/dev/fd0 of=disk.img bs=1440k count=1 iflag=fullblock
     $ head -c 1440K /dev/fd0 >disk.img
 
-dd 常用选项
+读取挂载在存储设备上的 iso 文件，进行 gpg 校验
 
-    bs=比特数   一次读取和写入都使用该数值，覆盖 ibs/obs 参数的设置，如果是读写本地硬盘可以适当调大以提速，比如 1M
+    # 注意使用了管道操作默认的标准输入和标准输出，gpg 最后用的 -
+    # dd if=/dev/sdb |gpg --keyid-format 0xlong --verify my_signature.sig -
+    $ cat /dev/sdb |gpg --keyid-format 0xlong --verify my_signature.sig -
 
-    conv=fsync 写入时提速，类似利用缓存，不是每个写操作都写文件系统数据，而是在 dd 执行完成之前再写入
+#### 大范围写入磁盘使用最佳块大小
 
-输入：
+    https://wiki.archlinux.org/title/Dd#Disk_cloning_and_restore
 
-    ibs=比特数                            一次读取的比特数(默认：512)
+适用于克隆硬盘、克隆分区，拷贝大文件等顺序写入的场景，参数 bs 设置读写块大小，最好设置为硬盘的一个物理扇区大小的整数倍。
 
-    skip=块数                             跳过第零个扇区，从第一个扇区开始读取
+查看硬盘的物理扇区尺寸
 
-    iflag=flag                           使用iflag来控制输入(读取数据)时的行为特征。
+    $ sudo fdisk -l /dev/sda | grep "Sector size"
 
-        dsync       读写数据采用同步IO
+一般来说，普通硬盘是 4096 bytes，普通固态硬盘是 512 bytes。
 
-        fullblock   见子章节 [只要指定了 count 就必须用 iflag=fullblock]
+> 克隆硬盘
 
-输出：
+推荐最佳参数，分区设备改为 sdX1 sdY1
 
-    obs=比特数                            一次写入指定比特数(默认：512)
+    $ sudo dd if=/dev/sdX  of=/dev/sdY bs=64K conv=noerror,sync status=progress
 
-    seek=1                              跳过第零个扇区，从第一个扇区开始写入
+    noerror 跳过错误继续读写
+    sync    在块的剩余部分填充零，有读取错误的内容 `12ERROR89` 将变成 `128900000`，而不是 `120000089`
 
-    bs=512                              写入块大小为512字节（一般使用一个扇区的大小，用 sudo gdisk -l 查看）
+    如果您确信您的磁盘没有任何错误，您可以使用更大的块大小继续，这将使您的复制速度提高数倍。但请记住，源磁盘上的读取错误最终将成为目标磁盘上的块错误，即单个 512 字节的读取错误将扰乱整个64KiB输出块。所以克隆硬盘时块的大小还不能设置的太大，64K 应该比较折衷了。
 
-    count=1                             写入多少个块，这里只写入一个块
+> 写入大文件，尽可能提速
 
-    oflag=flag                          使用oflag来控制输出(写入数据)时的行为特征。
+测试，逐个运行以下语句，看输出结果，有速率信息
 
-#### 只要指定了 count 就必须用 iflag=fullblock
+    $ sudo echo 3 > /proc/sys/vm/drop_caches  # 执行前要清理缓存
+    $ dd if=/dev/zero bs=512 count=4000000 of=./4Gb.file status=progress
 
-NOTE: dd 有个毛病，系统调用函数 read() 在管道操作后会静默的跳过某些字节数，尤其是输入数据的缓冲不足的情况下，比如网络或输入源使用 /dev/random 而系统的熵不足的时候，所以只要指定了 count，那就必须用 iflag=fullblock 确保数据够了再写入
+    $ sudo echo 3 > /proc/sys/vm/drop_caches
+    $ dd if=/dev/zero bs=1024 count=4000000 of=./4Gb.file status=progress
 
-        https://wiki.archlinux.org/title/Dd#Partial_read:_copied_data_is_smaller_than_requested
+    $ sudo echo 3 > /proc/sys/vm/drop_caches
+    $ dd if=/dev/zero bs=4096 count=500000  of=./4Gb.file status=progress
+
+    $ sudo echo 3 > /proc/sys/vm/drop_caches
+    $ dd if=/dev/zero bs=128K  count=250000  of=./4Gb.file status=progress
+
+    $ sudo echo 3 > /proc/sys/vm/drop_caches
+    $ dd if=/dev/zero bs=1M  count=250000  of=./4Gb.file status=progress
+
+    $ sudo echo 3 > /proc/sys/vm/drop_caches
+    $ dd if=/dev/zero bs=4M  count=250000  of=./4Gb.file status=progress
+
+固态硬盘物理扇区大小 512 bytes，读写速度高
+
+    $ sudo echo 3 > /proc/sys/vm/drop_caches
+    $ dd if=/dev/zero bs=512M  count=250000  of=./4Gb.file status=progress
+
+    $ sudo echo 3 > /proc/sys/vm/drop_caches
+    $ dd if=/dev/zero bs=1G  count=250000  of=./4Gb.file status=progress
+
+    $ sudo echo 3 > /proc/sys/vm/drop_caches
+    $ dd if=/dev/zero bs=5G  count=250000  of=./4Gb.file status=progress
+
+    $ sudo echo 3 > /proc/sys/vm/drop_caches
+    $ dd if=/dev/zero bs=10G  count=250000  of=./4Gb.file status=progress
+
+> hdparm 可用于测试磁盘和磁盘缓存读取速度
+
+查看磁盘信息：
+
+    fdisk -l /dev/sdX
+
+    hdparm /dev/sdX
+
+评估磁盘读取速度：
+
+    hdparm -t /dev/sdX
+
+评估磁盘缓存读取速度：
+
+    hdparm -T /dev/sdX
+
+直接测试硬盘的读性能(绕过内核页缓存)：
+
+    hdparm -tT --direct /dev/sdX
+
+顺序写测试：
+
+    time -p  bash -c "dd if=/dev/urandom of=./dd.log bs=1M count=50000"
+
+随机写测试(使用direct标识，绕过页缓存)：
+
+    fio -filename=randw-singlethread -fallocate=none -direct=1 -iodepth 1 -thread -rw=randwrite -ioengine=libaio -bs=32k -size=1000M -runtime=30s -numjobs=1 -name=hdparm-randwsinglethread
+
+#### Partial read:只要指定了 count 就必须用 iflag=fullblock
+
+    https://wiki.archlinux.org/title/Dd#Partial_read:_copied_data_is_smaller_than_requested
+
+        https://unix.stackexchange.com/questions/556016/cat-dd-pipe-causes-partial-reads-without-iflag-fullblock-why-truncated-to-128
 
         https://unix.stackexchange.com/questions/12532/dd-vs-cat-is-dd-still-relevant-these-days/12538#12538
 
         https://unix.stackexchange.com/questions/17295/when-is-dd-suitable-for-copying-data-or-when-are-read-and-write-partial
 
-    # dd 丢数据，看看你的文件字节数是不是 10M
+NOTE: dd 的块式读写有个毛病，系统调用函数 read() 在管道操作后会静默的跳过某些字节数，特别是输入数据的缓冲不足的情况下，会不等数据直接写入数据块。最常见的场景是用 dd 接收来自管道的数据，或者使用系统设备 /dev/random 而系统的熵不足的时候，所以只要指定了 count，那就必须用 iflag=fullblock 确保数据够了再写入
+
+    dd 丢数据，看看你的文件字节数是不是 10M
     $ yes |dd of=dd_miss.txt bs=1024k count=10
 
     $ yes |head -c 10M >head_ok1.txt
     $ head -c 10M /dev/zero >head_ok2.txt
 
-    # 所以必须添加 iflag=fullblock
+所以必须添加 iflag=fullblock
+
     $ yes |dd of=dd_ok.txt bs=1024k count=10 iflag=fullblock
+
+实在不想加，就绕一层
+
+    $ LC_ALL=C tr -dc '[:alnum:]' </dev/urandom | dd of=passtext-5m.txt bs=4k count=1280
+
+如果添加 `iflag=fullblock` 选项后部分I/O块计数仍大于1，这意味着部分I/O发生了多次
+
+    $ yes 'x' | dd bs=4096 count=512400B | dd ibs=1 count=512200 status=none >/dev/null
+    125+1 records in  <---- 加号表示发生部分 IO 的块的个数
+    125+1 records out
+    512400 bytes (512 kB, 500 KiB) copied, 10.7137 s, 47.8 kB/s
+
+这说明，在网络连接不良的情况下写入时，请使用 dd_rescue 使用 “直接I/O” 的方式重新运行传输，参见章节 [使用 dd_rescue 克隆故障硬盘](think)。
 
 ### 快速清理文件和快速建立文件
 
@@ -12575,6 +12681,119 @@ gnome 扩展要安装 User Themes
 下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
 
 然后打开 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择刚才的zip文件即可
+
+#### 把浏览器缓存区指向内存目录
+
+映射内存目录见章节 [tmpfs/ramfs 映射内存目录](init_a_server think)。
+
+    https://www.insidentally.com/articles/000040/
+
+Linux 下不同浏览器缓存位置不同：
+
+    默认 Microsoft Edge 缓存位置在 ~/.cache/microsoft-edge
+    默认 Google Chrome 缓存位置在 ~/.cache/google-chrome
+    默认 Mozilla Firefox 缓存位置在 ~/.cache/mozilla/firefox/XXXXXXXX.default-release/cache2
+    本文以 Microsoft Edge 浏览器为例。
+
+    Firefox 浏览器缓存位置中 XXXXXXXX 为 8 位随机代码，请自行查找你缓存文件的位置。
+
+如果不需要保存缓存内容，在登出系统时直接清理，最简单的是直接使用 /dev/shm 预置好的内存目录
+
+    $ rm -rf $HOME/.cache/mozilla/firefox
+    $ mkdir -p /dev/shm/mozilla-firefox
+    $ ln -sf /dev/shm/mozilla-firefox $HOME/.cache/mozilla/firefox
+
+如果想需要保存登录信息相关的 cookie，在登出前打包保存这个目录，登录后恢复，用以下脚本组合：
+
+在你喜欢的位置建立核心脚本并添加可执行权限，建议将脚本建立在你的用户主目录下的某个位置，因为本文使用普通用户权限的 systemd 引用脚本。本文其他脚本同样如此。
+
+内容如下：
+
+1、缓存同步（打包解包）脚本，在登录和登出时调用，解压和打包你的浏览器缓存内容
+
+```bash
+#!/usr/bin/sh
+
+# 在登录后登出前执行此脚本
+# 确保你的系统已经安装 tar 和 lzop
+
+case "$1" in
+ import)
+   cd /dev/shm
+   tar vczf /home/你的用户名/.cache/edgecache-backup.tar.gz
+   ;;
+ dump)
+   cd /dev/shm
+   # 删除大于 5MB 的缓存文件
+   find ./microsoft-edge/ -size +5M -exec rm {} \;
+   tar vxzf /home/你的用户名/.cache/edgecache-backup.tar.gz microsoft-edge/
+   ;;
+ *)
+   echo -e "Usage: $(cd `dirname $0`; pwd)/edgecache {import|dump}"
+   exit 1
+   ;;
+esac
+
+exit 0
+```
+
+2、登录导入脚本，登录时设置缓存路径，及从压缩包导入缓存
+
+```bash
+#!/bin/sh
+
+# 将 microsoft edge 缓存路径到内存
+/bin/rm ~/.cache/microsoft-edge -R
+/bin/mkdir -p /dev/shm/microsoft-edge
+/bin/ln -sf /dev/shm/microsoft-edge ~/.cache/microsoft-edge
+
+# 将浏览器缓存同步到内存
+echo [`date +"%Y-%m-%d %H:%M"`] On login - Importing caches to ram >> /home/你的用户名/edgecache_sync.log
+/你/核心脚本/的位置 import >> /home/你的用户名/edgecache_sync.log
+echo [`date +"%Y-%m-%d %H:%M"`] On login - Caches imported to ram >> /home/你的用户名/edgecache_sync.log
+```
+
+3、 登出前导出缓存到硬盘
+
+```bash
+#!/bin/sh
+
+# 将浏览器缓存同步到磁盘
+echo [`date +"%Y-%m-%d %H:%M"`] On logout - Dumping caches to disk >> /home/你的用户名/edgecache_sync.log
+/你/核心脚本/的位置 dump >> /home/你的用户名/edgecache_sync.log
+echo [`date +"%Y-%m-%d %H:%M"`] On logout - Caches dumped to disk >> /home/你的用户名/edgecache_sync.log
+
+# 等待 4 秒
+ping -c 4 127.1 > /dev/null
+```
+
+4、让 systemd 在登录和登出时自动执行上述脚本：
+
+在 ~/.config/systemd/user/ 目录下创建文件 edgecache.service：
+
+```conf
+[Unit]
+Description=Synchronize edge caches to disk
+PartOf=graphical-session.target
+DefaultDependencies=no
+Before=umount.target shutdown.target reboot.target halt.target
+
+[Service]
+Type=simple
+RemainAfterExit=true
+ExecStart=/你/登录导入脚本/的位置
+ExecStop=/你/登出导出脚本/的位置
+
+[Install]
+WantedBy=graphical-session.target
+```
+
+5、启用你的 systemd 服务
+
+    $ systemctl --user daemon-reload
+    $ systemctl --user enable edgecache.service
+
+重新登录你的桌面，打开浏览器试试，速度是否有明显差别。
 
 #### 自写脚本指定壁纸目录随机更换
 
