@@ -7461,7 +7461,7 @@ dd 常用选项
     $ cat /dev/sda >/dev/sdb
     $ cp /dev/sda /dev/sdb
 
-    如果需要克隆故障硬盘，见章节 [使用 dd_rescue 克隆故障硬盘](init_a_server think)。
+    克隆硬盘见章节 [使用 dd 克隆硬盘](init_a_server think)。
 
 设备到文件：将 /dev/hdb 全盘数据备份到指定路径的 image 文件
 
@@ -7527,52 +7527,44 @@ dd 常用选项
 
 一般来说，普通硬盘是 4096 bytes，普通固态硬盘是 512 bytes。
 
-> 克隆硬盘
-
-推荐最佳参数，分区设备改为 sdX1 sdY1
-
-    $ sudo dd if=/dev/sdX  of=/dev/sdY bs=64K conv=noerror,sync status=progress
-
-    noerror 跳过错误继续读写
-    sync    在块的剩余部分填充零，有读取错误的内容 `12ERROR89` 将变成 `128900000`，而不是 `120000089`
-
-    如果您确信您的磁盘没有任何错误，您可以使用更大的块大小继续，这将使您的复制速度提高数倍。但请记住，源磁盘上的读取错误最终将成为目标磁盘上的块错误，即单个 512 字节的读取错误将扰乱整个64KiB输出块。所以克隆硬盘时块的大小还不能设置的太大，64K 应该比较折衷了。
-
 > 写入大文件，尽可能提速
 
 测试，逐个运行以下语句，看输出结果，有速率信息
 
     $ sudo echo 3 > /proc/sys/vm/drop_caches  # 执行前要清理缓存
-    $ dd if=/dev/zero bs=512 count=4000000 of=./4Gb.file status=progress
+    $ dd if=/dev/zero bs=512 count=8388608 of=./4096MB.bigfile status=progress
 
     $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=1024 count=4000000 of=./4Gb.file status=progress
+    $ dd if=/dev/zero bs=1024 count=4194304 of=./4096MB.bigfile status=progress
 
     $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=4096 count=500000  of=./4Gb.file status=progress
+    $ dd if=/dev/zero bs=4096 count=1048576  of=./4096MB.bigfile status=progress
 
     $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=128K  count=250000  of=./4Gb.file status=progress
+    $ dd if=/dev/zero bs=128K  count=32768  of=./4096MB.bigfile status=progress
 
     $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=1M  count=250000  of=./4Gb.file status=progress
+    $ dd if=/dev/zero bs=1M  count=4096  of=./4096MB.bigfile status=progress
 
     $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=4M  count=250000  of=./4Gb.file status=progress
+    $ dd if=/dev/zero bs=4M  count=1024  of=./4096MB.bigfile status=progress
+
+    $ sudo echo 3 > /proc/sys/vm/drop_caches
+    $ dd if=/dev/zero bs=16M  count=256  of=./4096MB.bigfile status=progress
 
 固态硬盘物理扇区大小 512 bytes，读写速度高
 
     $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=512M  count=250000  of=./4Gb.file status=progress
+    $ dd if=/dev/zero bs=512M  count=8  of=./4096MB.bigfile status=progress
 
     $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=1G  count=250000  of=./4Gb.file status=progress
+    $ dd if=/dev/zero bs=1G  count=4  of=./4096MB.bigfile status=progress
 
     $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=5G  count=250000  of=./4Gb.file status=progress
+    $ dd if=/dev/zero bs=5G  count=4  of=./20GB.bigfile status=progress
 
     $ sudo echo 3 > /proc/sys/vm/drop_caches
-    $ dd if=/dev/zero bs=10G  count=250000  of=./4Gb.file status=progress
+    $ dd if=/dev/zero bs=10G  count=2  of=./20GB.bigfile status=progress
 
 > hdparm 可用于测试磁盘和磁盘缓存读取速度
 
