@@ -7461,7 +7461,7 @@ dd 常用选项
     $ cat /dev/sda >/dev/sdb
     $ cp /dev/sda /dev/sdb
 
-    克隆硬盘见章节 [使用 dd 克隆硬盘](init_a_server think)。
+    克隆硬盘的操作，详见章节 [使用 dd 克隆硬盘](init_a_server think)。
 
 设备到文件：将 /dev/hdb 全盘数据备份到指定路径的 image 文件
 
