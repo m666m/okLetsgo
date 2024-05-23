@@ -7409,11 +7409,13 @@ dd 命令是基于块（block）的复制，“裸读写”（越过文件系统
 
     https://wiki.archlinux.org/title/Dd
 
-大多数场景下，比如从文件到设备或设备到文件，用 dd 过时了，换 cp、cat、head 命令的组合使用即可
+从裸设备读取，或写入到裸设备，只能用 dd，比如克隆硬盘、从镜像文件制作 U 盘、特定数据写入硬盘分区表 /dev/sdX 或 /dev/sdxx。
+
+大多数从文件读取或写入到文件的场景，用 dd 过时了
 
         https://www.vidarholen.net/contents/blog/?p=479
 
-    文件到设备，设备到文件的大部分用途，用命令 `cat` 或 `cp` 就足够了，除非该设备不支持 one-byte write。
+    从文件读取或写入到文件的场景，用命令 `cat` 或 `cp` 就足够了，除非该设备不支持 one-byte write。
 
     如果要限制字节数，组合 `head -c` 处理即可，除了指明必须用 dd 按块大小写入等场合，尽量避免用 dd。
 
@@ -7457,69 +7459,76 @@ dd 常用选项
 
 设备级互拷：将本地的 /dev/hdb 整盘备份到 /dev/hdd
 
-    # dd if=/dev/hdb of=/dev/hdd
-    $ cat /dev/sda >/dev/sdb
-    $ cp /dev/sda /dev/sdb
+    # 这种场景没法用 `cp /dev/sda /dev/sdb` 或 `cat /dev/sda >/dev/sdb`
+    $ sudo dd if=/dev/hdb of=/dev/hdd
 
     克隆硬盘的操作，详见章节 [使用 dd 克隆硬盘](init_a_server think)。
 
 设备到文件：将 /dev/hdb 全盘数据备份到指定路径的 image 文件
 
-    # dd if=/dev/hdb of=/root/image
-    $ cat /dev/hdb >/root/image
+    # 这种场景没法用 `cat /dev/hdb >/root/image`
+    $ sudo dd if=/dev/hdb of=/root/image
 
     # 备份的同时压缩
-    #dd if=/dev/hdb |gzip >/root/image.gz
-    $ cat /dev/hdb |gzip >/root/image.gz
+    # 这种场景没法用 `cat /dev/hdb |gzip >/root/image.gz`
+    $ sudo dd if=/dev/hdb |gzip >/root/image.gz
 
     # 拷贝内存到磁盘上的文件
-    # dd if=/dev/mem of=/root/mem.bin bs=1024
-    $ cat /dev/mem >/root/mem.bin
+    # 这种场景没法用 `cat /dev/mem >/root/mem.bin`
+    $ sudo dd if=/dev/mem of=/root/mem.bin bs=1024
 
     # 拷贝光盘内容到指定文件夹，并保存为 cd.iso 文件
-    # dd if=/dev/cdrom(hdc) of=/root/cd.iso
-    $ cat /dev/cdrom(hdc) >/root/cd.iso
+    # 这种场景没法用 `cat /dev/cdrom(hdc) >/root/cd.iso`
+    $ sudo dd if=/dev/cdrom(hdc) of=/root/cd.iso
 
 文件到设备：将备份文件恢复到指定盘
 
-    # dd if=/root/image of=/dev/hdb
-    $ cat /root/image >/dev/hdb
+    # 这种场景没法用 `cat /root/image >/dev/hdb`
+    $ sudo dd if=/root/image of=/dev/hdb
 
     # 解压并恢复备份文件到指定盘
-    # gzip -dc /root/image.gz | dd of=/dev/hdb
-    $ gzip -dc /root/image.gz >/dev/hdb
+    # 这种场景没法用 `gzip -dc /root/image.gz >/dev/hdb`
+    $ gzip -dc /root/image.gz |sudo dd of=/dev/hdb
 
 备份与恢复 MBR：利用 dd 时顺序读写的特点，从磁盘设备的开头开始，恰好就是启动扇区
 
     # 备份磁盘开始的 512 个字节大小的 MBR 信息到指定文件
-    # dd if=/dev/hda of=/root/image bs=512 count=1 iflag=fullblock
-    $ head -c 512 /dev/hda >/root/boot.image
+    # 这种场景没法用 `head -c 512 /dev/hda >/root/boot.image`
+    $ sudo dd if=/dev/hda of=/root/image bs=512 count=1 iflag=fullblock
 
     # 用 boot.img 制作启动盘
-    # dd if=boot.img of=/dev/fd0 bs=1440k
-    $ cat boot.img >/dev/fd0
+    # 这种场景没法用 `cat boot.img >/dev/fd0`
+    $ sudo dd if=boot.img of=/dev/fd0 bs=1440k
 
     恢复：
 
     # 将上面备份的MBR信息写到磁盘开始部分
-    #dd if=/root/image of=/dev/had
-    $ cat /root/image >/dev/had
+    # 这种场景没法用 `cat /root/image >/dev/had`
+    $ sudo dd if=/root/image of=/dev/had
 
     备份软盘
-    #dd if=/dev/fd0 of=disk.img bs=1440k count=1 iflag=fullblock
-    $ head -c 1440K /dev/fd0 >disk.img
+    # 这种场景没法用 `head -c 1440K /dev/fd0 >disk.img`
+    $ sudo dd if=/dev/fd0 of=disk.img bs=1440k count=1 iflag=fullblock
 
 读取挂载在存储设备上的 iso 文件，进行 gpg 校验
 
     # 注意使用了管道操作默认的标准输入和标准输出，gpg 最后用的 -
-    # dd if=/dev/sdb |gpg --keyid-format 0xlong --verify my_signature.sig -
-    $ cat /dev/sdb |gpg --keyid-format 0xlong --verify my_signature.sig -
+    # 这种场景没法用 `cat /dev/sdb`
+    $ sudo dd if=/dev/sdb |gpg --keyid-format 0xlong --verify my_signature.sig -
 
 #### 大范围写入磁盘使用最佳块大小
 
+适用于克隆硬盘、克隆分区，拷贝大文件等顺序写入的场景，参数 bs 设置读写块大小，最好设置为硬盘的一个物理扇区大小的整数倍
+
     https://wiki.archlinux.org/title/Dd#Disk_cloning_and_restore
 
-适用于克隆硬盘、克隆分区，拷贝大文件等顺序写入的场景，参数 bs 设置读写块大小，最好设置为硬盘的一个物理扇区大小的整数倍。
+写入大文件，尽可能提速，测试推荐的最优选择如下：
+
+    普通的 7200转 硬盘 on btrfs：bs=4M
+
+    固态硬盘 Sumsung 960 pro on btrfs: bs=512K，不用缓存(oflag=sync)：bs=1G
+
+    简单点，不管啥硬盘都用 bs=4M，这样的参数下固态硬盘的速度也不慢
 
 查看硬盘的物理扇区尺寸
 
@@ -7527,61 +7536,170 @@ dd 常用选项
 
 一般来说，普通硬盘是 4096 bytes，普通固态硬盘是 512 bytes。
 
-> 写入大文件，尽可能提速
+> 测试固态硬盘
 
-测试，逐个运行以下语句，看输出结果，有速率信息
+逐个运行以下语句，看输出结果，有速率信息
 
     $ sudo su
 
+    # rm -f 4GB.big
     # echo 3 > /proc/sys/vm/drop_caches  # 执行前要清理缓存
-    # dd if=/dev/zero bs=512 count=8388608 of=./4096MB.bigfile status=progress
+    # dd if=/dev/zero bs=512 count=8388608 of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 24.3043 s, 177 MB/s
 
-    ssd:4294967296 bytes (4.3 GB, 4.0 GiB) copied, 24.3043 s, 177 MB/s
-
+    # rm -f 4GB.big
     # echo 3 > /proc/sys/vm/drop_caches
-    # dd if=/dev/zero bs=1024 count=4194304 of=./4096MB.bigfile status=progress
+    # dd if=/dev/zero bs=1024 count=4194304 of=./4GB.big status=progress
+    2015528960 bytes (2.0 GB, 1.9 GiB) copied, 6 s, 336 MB/s
 
+    # rm -f 4GB.big
     # echo 3 > /proc/sys/vm/drop_caches
-    # dd if=/dev/zero bs=4096 count=1048576  of=./4096MB.bigfile status=progress
+    # dd if=/dev/zero bs=4096 count=1048576  of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 3.27255 s, 1.3 GB/s
 
+    # rm -f 4GB.big
     # echo 3 > /proc/sys/vm/drop_caches
-    # dd if=/dev/zero bs=128K  count=32768  of=./4096MB.bigfile status=progress
+    # dd if=/dev/zero bs=16k count=262144  of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.99471 s, 2.2 GB/s
 
+    # rm -f 4GB.big
     # echo 3 > /proc/sys/vm/drop_caches
-    # dd if=/dev/zero bs=1M  count=4096  of=./4096MB.bigfile status=progress
+    # dd if=/dev/zero bs=32k count=131072  of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.46653 s, 2.9 GB/s
 
-    ssd:4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.28943 s, 3.3 GB/s
-
+    # rm -f 4GB.big
     # echo 3 > /proc/sys/vm/drop_caches
-    # dd if=/dev/zero bs=4M  count=1024  of=./4096MB.bigfile status=progress
+    # dd if=/dev/zero bs=64K  count=65536  of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.33339 s, 3.2 GB/s
 
+    # rm -f 4GB.big
     # echo 3 > /proc/sys/vm/drop_caches
-    # dd if=/dev/zero bs=16M  count=256  of=./4096MB.bigfile status=progress
+    # dd if=/dev/zero bs=128K  count=32768  of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.27792 s, 3.4 GB/s
 
-固态硬盘物理扇区大小 512 bytes，读写速度高
-
+    # rm -f 4GB.big
     # echo 3 > /proc/sys/vm/drop_caches
-    # dd if=/dev/zero bs=512M  count=8  of=./4096MB.bigfile status=progress
-    2684354560 bytes (2.7 GB, 2.5 GiB) copied, 1 s, 2.5 GB/s
-    8+0 records in
-    8+0 records out
-    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.86441 s, 2.3 GB/s
+    # dd if=/dev/zero bs=256K  count=16384  of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.23632 s, 3.5 GB/s
 
+    # rm -f 4GB.big
     # echo 3 > /proc/sys/vm/drop_caches
-    # dd if=/dev/zero bs=1G  count=4  of=./4096MB.bigfile status=progress
-    3221225472 bytes (3.2 GB, 3.0 GiB) copied, 1 s, 2.4 GB/s
-    4+0 records in
-    4+0 records out
+    # dd if=/dev/zero bs=512K count=8192 of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.22599 s, 3.5 GB/s
+    加上 oflag=sync：156 MB/s
+
+    固态硬盘物理扇区大小 512 bytes，用缓存的的峰值就选 512k 吧，这样好记
+
+    # rm -f 4GB.big
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=1M  count=4096  of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.28943 s, 3.3 GB/s
+    加上 oflag=sync：283 MB/s
+
+    # rm -f 4GB.big
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=4M  count=1024  of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.48231 s, 2.9 GB/s
+    加上 oflag=sync：721 MB/s
+
+    # rm -f 4GB.big
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=16M  count=256  of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.61058 s, 2.7 GB/s
+    加上 oflag=sync：1.3 GB/s
+
+    # rm -f 4GB.big
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=512M  count=8  of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.81945 s, 2.4 GB/s
+    加上 oflag=sync：1.6 GB/s
+
+    # rm -f 4GB.big
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=1G  count=4  of=./4GB.big status=progress
     4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.81385 s, 2.4 GB/s
+    加上 oflag=sync：1.7 GB/s
 
+    固态硬盘物无缓存的的峰值就选 1G，这样好记
+
+    # rm -f 4GB.big
     # echo 3 > /proc/sys/vm/drop_caches
-    # dd if=/dev/zero bs=4G  count=3  of=./12GB.bigfile status=progress
+    # dd if=/dev/zero bs=2G  count=2  of=./4GB.big status=progress
+    dd: warning: partial read (2147479552 bytes); suggest iflag=fullblock
+    0+2 records in
+    0+2 records out
+    4294959104 bytes (4.3 GB, 4.0 GiB) copied, 1.97324 s, 2.2 GB/s
+    加上 oflag=sync：1.5 GB/s
+
+    到这里操作系统提供 /dev/zero 的速度跟不上固态硬盘了，开始提示数据丢失了。根据章节 [给random()增加熵，提升系统加密的速度](init_a_server think) 里的测试，我的 /dev/zero 生成速度在 2.7 GB/s。
+
+    # rm -f 4GB.big
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=4G  count=3  of=./12GB.big status=progress
     2147479552 bytes (2.1 GB, 2.0 GiB) copied, 1 s, 1.9 GB/s
     dd: warning: partial read (2147479552 bytes); suggest iflag=fullblock
     4294959104 bytes (4.3 GB, 4.0 GiB) copied, 2 s, 2.1 GB/s
     0+3 records in
     0+3 records out
     6442438656 bytes (6.4 GB, 6.0 GiB) copied, 2.93817 s, 2.2 GB/s
+    加上 oflag=sync：1.6 GB/s
+
+    # rm -f 12GB.big
+
+> 测试普通硬盘
+
+    $ sudo su
+
+用 dd 从 /dev/zero 写入 4TB 文件是瞬间完成的，关闭硬盘的缓存都不管用
+
+    # hdparm -W /dev/sda
+
+    /dev/sda:
+    write-caching =  1 (on)
+
+    # hdparm -W 0 /dev/sda
+
+    /dev/sda:
+    setting drive write-caching to 0 (off)
+    write-caching =  0 (off)
+
+没办法，在我的固态硬盘上生成一个 4GB 的文件，内容用随机数填充，让你没法优化
+
+    # cd /root/tmp
+    # dd if=/dev/urandom bs=512K  count=8192  of=./4GB.big status=progress
+
+测试用 dd 从固态硬盘拷贝该文件到普通硬盘，还是秒完成，看来不是这个原因。
+
+只能添加 oflag=sync 选项进行测试了，逐个运行以下语句，看输出结果，有速率信息
+
+    # cd /mnt/common1
+
+    # rm -f 4GB.big
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=512k count=8192 oflag=sync of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 44.9049 s, 95.6 MB/s
+
+    # rm -f 4GB.big
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=1M count=4096 oflag=sync of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 29.415 s, 146 MB/s
+
+    # rm -f 4GB.big
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=4M count=1024 oflag=sync of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 22.5178 s, 191 MB/s
+
+    普通硬盘物理扇区大小 4096 bytes，无缓冲写入的峰值就选 4M 吧，这样好记
+
+    # rm -f 4GB.big
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=8M count=512 oflag=sync of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 21.719 s, 198 MB/s
+
+    # rm -f 4GB.big
+    # echo 3 > /proc/sys/vm/drop_caches
+    # dd if=/dev/zero bs=16M count=256 oflag=sync of=./4GB.big status=progress
+    4294967296 bytes (4.3 GB, 4.0 GiB) copied, 25.5028 s, 168 MB/s
 
 > hdparm 可用于测试磁盘和磁盘缓存读取速度
 
@@ -7644,7 +7762,7 @@ NOTE: dd 的块式读写有个毛病，系统调用函数 read() 在管道操作
     125+1 records out
     512400 bytes (512 kB, 500 KiB) copied, 10.7137 s, 47.8 kB/s
 
-这说明，在网络连接不良的情况下写入时，请使用 dd_rescue 使用 “直接I/O” 的方式重新运行传输，参见章节 [使用 dd_rescue 克隆故障硬盘](think)。
+这种错误多发于网络连接不良，或读取光盘等场景，应该使用 `ddrescue` 多次重复读取，参见章节 [使用 dd_rescue 克隆故障硬盘](think)。
 
 ### 快速清理文件和快速建立文件
 
