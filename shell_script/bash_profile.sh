@@ -109,8 +109,10 @@ if [ -x /usr/bin/dircolors ]; then
     # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
     function cpbak {
         # find . -max-depth 1 -name '$1*' -exec cp "{}" "{}.bak" \;
-        echo "[复制一个备份 $1.bak，如果是目录名不要传入后缀/]"
-        cp -a $1{,.bak}
+        #cp -a $1{,.bak}
+        local DT=$(date  +"%Y-%m-%d_%H:%M:%S")
+        echo "[复制一个备份 $1.bak.${DT}，如果是目录名不要传入后缀/]"
+        cp -a $1{,.bak.${DT}}
     }
 
     # wsl 或 git bash 下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "C:\Windows\Path"
@@ -246,7 +248,6 @@ if [ -x /usr/bin/dircolors ]; then
     }
     function gaddr {
         echo "[更新本地 hosts 文件的 github.com 地址]"
-        #local addrs=$(curl baidu.com | tr '\n' '\\n')
         local tfile=$(mktemp)
         curl -o $tfile https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts
 
