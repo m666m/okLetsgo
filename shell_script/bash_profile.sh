@@ -87,10 +87,11 @@ if [ -x /usr/bin/dircolors ]; then
     alias tree='tree -a -C'
 
     # 常用的列文件的惯用法
-    alias lsa='ls -A'
     alias l='ls -CFA'
     alias ll='ls -lh'
     alias la='ls -lAh'
+    alias lsa='ls -A'
+    alias lss='ls -lhZ'
 
     # 其它常用命令的惯用法：
 
