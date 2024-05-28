@@ -7427,12 +7427,6 @@ dd 命令是基于块（block）的复制，“裸读写”（越过文件系统
 
         https://unix.stackexchange.com/questions/224277/is-it-better-to-use-cat-dd-pv-or-another-procedure-to-copy-a-cd-dvd/224314#224314
 
-gnu 版的 dd 有个可以查看进度的参数 status=progress，也可以用 pv 命令代替
-
-    $ sudo apt install pv
-
-    $ pv </dev/zero |head -c 1024M >my.txt
-
 dd 常用选项
 
     bs=比特数   一次读取和写入都使用该数值，覆盖 ibs/obs 参数的设置。克隆硬盘等大范围读写本地硬盘的场景下调大可以提速，比如设置为 4M 匹配物理硬盘的物理扇区尺寸 4096 的整数倍，如果是固态硬盘物理扇区是 512，可以设置成 10G。详见下面章节 [大范围写入使用最佳块大小]。
@@ -7522,13 +7516,45 @@ dd 常用选项
     # 这种场景没法用 `cat /dev/sdb`
     $ sudo dd if=/dev/sdb |gpg --keyid-format 0xlong --verify my_signature.sig -
 
+#### dd 命令查看进度
+
+只有 gnu 版的 dd 命令可以使用参数 status=progress 显示进度。普通版本的 `dd` 命令没有信息输出，只有最终结束时才显示出时间、拷贝速度。
+
+解决办法：dd 支持发信号的方式输出进度信息。
+
+为了查看 `dd` 的进度，可以在另一个终端执行如下命令
+
+    # killall 加参数是发送一个指定的信号到指定的进程
+    $ sudo watch -n 5 killall -USR1 dd
+
+不要关闭该终端窗口。
+
+之后，就能在执行 `dd` 的终端看到进度数据的输出了
+
+    1473905+0 records  in
+    1473905+0 records out
+    6037114880 bytes (6.0 GB, 5.6 GiB) copied, 28.8377 s, 209 MB/s
+    ...
+    976754646+0 records in
+    976754646+0 records out
+    4000787030016 bytes (4.0 TB, 3.6 TiB) copied, 26870.7 s, 149 MB/s
+
+另一个方法是在命令中调用管道查看器 pv，然后把 pv 命令和 dd 命令结合在一起：
+
+    $ sudo apt install pv
+
+    $ sudo dd if=/dev/sdb |pv |of=/dev/sda
+    4,14MB 0:00:05 [ 98kB/s] ==>
+
+经验证，秒退，暂未研究哪里错了。
+
 #### 大范围写入磁盘使用最佳块大小
 
-适用于克隆硬盘、克隆分区，拷贝大文件等顺序写入的场景，参数 bs 设置读写块大小，最好设置为硬盘的一个物理扇区大小的整数倍
+适用于克隆硬盘、克隆分区，拷贝大文件等顺序读写的场景，用参数 bs 设置读写块大小
 
     https://wiki.archlinux.org/title/Dd#Disk_cloning_and_restore
 
-写入大文件，尽可能提速，测试推荐的最优选择如下：
+大文件读写尽可能提速，测试推荐的最优选择如下：
 
     普通的 7200转 硬盘 on btrfs：bs=4M
 
@@ -7536,13 +7562,19 @@ dd 常用选项
 
     简单点，不管啥硬盘都用 bs=4M，这样的参数下固态硬盘的速度也不慢
 
-查看硬盘的物理扇区尺寸
+参数 bs 最少要设置为硬盘的一个物理扇区大小的整数倍:
+
+    查看硬盘的物理扇区尺寸
 
     $ sudo fdisk -l /dev/sda | grep "Sector size"
+    Sector size (logical/physical): 512 bytes / 4096 bytes
 
-一般来说，普通硬盘是 4096 bytes，普通固态硬盘是 512 bytes。
+    $ sudo fdisk -l /dev/sdb | grep "Sector size"
+    Sector size (logical/physical): 512 bytes / 4096 bytes
 
-> 测试固态硬盘
+一般来说，普通硬盘扇区的物理大小是 4096 bytes，固态硬盘是 512 bytes。在两个硬盘对拷的时候，因为磁盘完全是顺序读写，你不会听到任何磁头来回移动炒豆子的声音，两个硬盘会非常安静的全速读写数据。如果两个硬盘的物理扇区大小不一致，则用参数 ibs 和 obs 分别指定。
+
+> 测试固态硬盘最优 bs 参数
 
 逐个运行以下语句，看输出结果，有速率信息
 
@@ -7652,7 +7684,7 @@ dd 常用选项
 
     # rm -f 12GB.big
 
-> 测试普通硬盘
+> 测试普通硬盘最优 bs 参数
 
     $ sudo su
 

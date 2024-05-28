@@ -140,12 +140,9 @@ if [ -x /usr/bin/dircolors ]; then
 
     alias mans='echo "[模糊查找man手册]" && man -k'
 
-    # 显示16进制内容及对应的ascii字符
-    alias hexdumps='hexdump -C'
-
     alias udj='echo "[弹出 U 盘]" && sync && udisksctl power-off -b'
 
-    alias chronys='echo "[虚拟机跟主机对时]" && sudo systemctl restart chronyd'
+    alias chronys='echo "[虚拟机跟主机手动对时]" && sudo systemctl restart chronyd'
 
     alias sshs='echo "[跳过其它各种协商使用密码连接主机]" && ssh -o "PreferredAuthentications password"'
 
@@ -162,6 +159,13 @@ if [ -x /usr/bin/dircolors ]; then
     # nmap
     alias nmaps='echo "[nmap 列出当前局域网 192.168.0.x 内ip及端口]" && nmap 192.168.0.0/24'
 
+    # dd
+    alias ddp='echo "[给dd发信号显示进度信息]" && sudo watch -n 5 killall -USR1 dd'
+
+    # 显示16进制内容及对应的ascii字符
+    alias hexdumps='hexdump -C'
+
+    #
     alias passs='echo "[生成16个字符的强密码]" && cat /dev/random |tr -dc "!@#$%^&*()-+=0-9a-zA-Z" | head -c16'
     alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
     alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
