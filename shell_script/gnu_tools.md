@@ -9497,6 +9497,8 @@ scp 基本用法
 
     http://rsync.samba.org
 
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/selinux_users_and_administrators_guide/chap-managing_confined_services-rsync
+
     rsync 完全手册 https://www.junmajinlong.com/linux/index/#Linux%E5%9F%BA%E6%9C%AC%E6%9C%8D%E5%8A%A1
 
     https://blog.csdn.net/wanli245/article/details/80317255
