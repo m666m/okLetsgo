@@ -138,34 +138,72 @@ if [ -x /usr/bin/dircolors ]; then
             || (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
     }
 
+    # man
     alias mans='echo "[模糊查找man手册]" && man -k'
 
-    alias udj='echo "[弹出 U 盘]" && sync && udisksctl power-off -b'
-
+    # chrony
     alias chronys='echo "[虚拟机跟主机手动对时]" && sudo systemctl restart chronyd'
 
+    # ssh
     alias sshs='echo "[跳过其它各种协商使用密码连接主机]" && ssh -o "PreferredAuthentications password"'
 
+    # curl
     alias curls='echo "[curl http-get 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]" && curl -fsSL'
     alias curld='echo "[curl http-post 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕]" && curl -fsSd'
 
-    # pip
-    alias pipi='echo "[pip 跳过缓存更新指定包]" && pip install --upgrade --no-cache-dir'
+    # nmap
+    alias nmaps='echo "[nmap 列出当前局域网 192.168.0.x 内ip及端口]" && nmap 192.168.0.0/24'
 
     # scp rsync
     alias scps='echo "[scp 源 目的。远程格式 user@host:/path/to/ 端口用 -P]" && scp -r'
     alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/path/to/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
 
-    # nmap
-    alias nmaps='echo "[nmap 列出当前局域网 192.168.0.x 内ip及端口]" && nmap 192.168.0.0/24'
-
     # dd
     alias ddp='echo "[给dd发信号显示进度信息]" && sudo watch -n 5 killall -USR1 dd'
+
+    # du
+    alias dus='echo "[降序列出当前目录下各个文件或目录的大小(MB)]" && (for fdfd in $(ls -aA); do  sudo du -sm $fdfd; done) |sort -n -r'
+    function duh {
+        #local target='.'
+        #[[ -n $1 ]] && target=$1
+        local target=${1:-.}
+        echo "[列出 $target 空间占用最大的前 10 个文件或目录(MB)]"
+        sudo du -am "$target" | sort -n -r |head -n 10
+    }
+
+    # udisksctl
+    alias udj='echo "[弹出 U 盘]" && sync && udisksctl power-off -b'
+
+    # mount 使用当前用户权限挂载 Windows 分区 U 盘，用于防止默认参数使用 root 用户权限不方便当前用户读写
+    function mntfat {
+        echo "[挂载 FAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
+        sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro $1 $2
+    }
+    function mntexfat {
+        echo "[挂载 exFAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
+        sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro $1 $2
+    }
+    function mntntfs {
+        echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
+        sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,windows_names,iocharset=utf8 $1 $2
+    }
+    function mntram {
+        echo "[映射内存目录 $1，用完了记得要解除挂载：sync; sudo umount $1]"
+        sudo mount --mkdir -t ramfs ramfs $1
+    }
+    function mntsmb {
+        echo "[挂载samba目录 $1 到本地目录 $2，用户名为 $3]"
+        sudo mount -t cifs -o user=$3 $1 $2
+    }
+    function mntnfs {
+        echo "[挂载nfs目录 $1 到本地目录 $2]"
+        sudo mount -t nfs -o vers=4,rsize=1048576,wsize=1048576 $1 $2
+    }
 
     # 显示16进制内容及对应的ascii字符
     alias hexdumps='hexdump -C'
 
-    #
+    # 生成密码
     alias passs='echo "[生成16个字符的强密码]" && cat /dev/random |tr -dc "!@#$%^&*()-+=0-9a-zA-Z" | head -c16'
     alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
     alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
@@ -195,41 +233,10 @@ if [ -x /usr/bin/dircolors ]; then
     alias stmav='echo "[systemd 验证单元文件]" && systemd-analyze verify'
     alias stmab='echo "[systemd 分析计算机启动耗时]" && systemd-analyze blame'
 
-    # du
-    alias dus='echo "[降序列出当前目录下各个文件或目录的大小(MB)]" && (for fdfd in $(ls -aA); do  sudo du -sm $fdfd; done) |sort -n -r'
-    function duh {
-        #local target='.'
-        #[[ -n $1 ]] && target=$1
-        local target=${1:-.}
-        echo "[列出 $target 空间占用最大的前 10 个文件或目录(MB)]"
-        sudo du -am "$target" | sort -n -r |head -n 10
-    }
-
-    # mount 使用当前用户权限挂载 Windows 分区 U 盘，用于防止默认参数使用 root 用户权限不方便当前用户读写
-    function mntfat {
-        echo "[挂载 FAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro $1 $2
-    }
-    function mntexfat {
-        echo "[挂载 exFAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro $1 $2
-    }
-    function mntntfs {
-        echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,windows_names,iocharset=utf8 $1 $2
-    }
-    function mntram {
-        echo "[映射内存目录 $1，用完了记得要解除挂载：sync; sudo umount $1]"
-        sudo mount --mkdir -t ramfs ramfs $1
-    }
-    function mntsmb {
-        echo "[挂载samba目录 $1 到本地目录 $2，用户名为 $3]"
-        sudo mount -t cifs -o user=$3 $1 $2
-    }
-    function mntnfs {
-        echo "[挂载nfs目录 $1 到本地目录 $2]"
-        sudo mount -t nfs -o vers=4,rsize=1048576,wsize=1048576 $1 $2
-    }
+    # SELinux
+    alias selxr='echo "[SELinux 恢复目录的默认权限设置]" && sudo restorecon -R -v'
+    alias selxt='echo "[SELinux 临时关闭或打开]" && sudo setenforce'
+    alias selxs='echo "[SELinux 当前状态]" && getenforce'
 
     # git 常用命令
     alias gs='git status'
@@ -307,6 +314,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias dnfl='echo "[dnf查看安装的软件]" && dnf list --installed'
     alias dnfd='echo "[dnf卸载软件]" && dnf remove'
     alias dnft='echo "[在toolbox里运行dnf]" && toolbox run dnf'
+
+    # pip
+    alias pipi='echo "[pip 跳过缓存更新指定包]" && pip install --upgrade --no-cache-dir'
 
     # flatpak
     alias fpkr='echo "[flatpak查看当前有哪些存储库]" && flatpak remotes'
