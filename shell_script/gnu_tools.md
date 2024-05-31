@@ -16422,6 +16422,8 @@ Fedora 用 flatpak 安装即可
 
     https://blog.csdn.net/m0_60259116/article/details/126351373
 
+类似的串流视频还有 Jellyfin，详见章节 [自建 Jellyfin 私人影院](raspberry-pi think)。
+
 如果是 flatpak 安装的 vlc，需要在 flatseal 中开放 vlc 的端口权限。
 
 发送方，打开 vlc，菜单选择：
