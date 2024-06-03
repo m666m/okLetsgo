@@ -8567,7 +8567,11 @@ bash shell：
 
 注意修改 --rpc-secret 密码。
 
-验证：用浏览器插件 Aria2 Explorer 也可以看到 aria2 状态是否可用。或者见章节 [curl 调试 http/wss/json-rpc]。
+验证：
+
+用浏览器插件 Aria2 Explorer 也可以看到 aria2 状态是否可用。
+
+另见章节 [curl 调试 http/wss/json-rpc]。
 
 为什么在 AriaNg 中删除暂停的任务无法删除文件？
 
