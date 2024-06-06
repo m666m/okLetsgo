@@ -230,6 +230,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias audj='echo "[持续显示系统日志中人性化可读审计信息-精简文本]" && sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
 
     # systemd
+    alias stms='echo "[systemd 查找当前运行的单元，可 grep]" && systemctl list-units --no-pager'
     alias stmed='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full'
     alias stmr='echo "[systemd 重载单元文件]" && sudo systemctl daemon-reload'
     alias stmav='echo "[systemd 验证单元文件]" && systemd-analyze verify'
