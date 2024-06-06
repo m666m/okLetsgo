@@ -146,6 +146,8 @@ if [ -x /usr/bin/dircolors ]; then
 
     # ssh
     alias sshs='echo "[跳过其它各种协商使用密码连接主机]" && ssh -o "PreferredAuthentications password"'
+    alias sshme='echo "[断开ssh连接复用]" && ssh -O exit'
+    alias sshmn='echo "[不使用ssh连接复用]" && ssh -o "ControlPath=no"'
 
     # curl
     alias curls='echo "[curl http-get 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]" && curl -fsSL'
