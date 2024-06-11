@@ -11854,9 +11854,13 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
             https://www.smplayer.info/
                 https://github.com/smplayer-dev/smplayer
 
-    Aegisub 是一个跨平台的高级字幕编辑工具
+    跨平台的高级字幕编辑工具
 
-        https://github.com/Aegisub/Aegisub
+        Aegisub https://github.com/Aegisub/Aegisub
+
+        Subtitle editor https://github.com/SubtitleEdit/subtitleedit
+
+        gnome 也带一个字幕编辑软件 gnome-subtitles
 
 视频编辑
 
