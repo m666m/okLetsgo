@@ -15773,9 +15773,9 @@ pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式
 
     https://github.com/boltgolt/howdy/issues/438
 
-在通过人脸识别登录后，系统仍会提示输入登录密码解锁钥匙圈，现象同见章节 [桌面环境统一密码管理器 --- keyring-daemon] 里 “如果在初始登录桌面时没有输入登录密码解锁钥匙圈” 部分的解释。
+在通过人脸识别登录后，gnome 桌面环境会提示输入登录密码解锁 gnome 钥匙圈，现象同见章节 [桌面环境统一密码管理器 --- keyring-daemon] 里 “如果在初始登录桌面时没有输入登录密码解锁钥匙圈” 部分的解释。
 
-由于 gnome-keyring 使用登录密码作为加密密钥，所以不输入登录密码就无法解锁其保存的各种密钥和密码。而 gnome-keyring 暂不支持面部识别、指纹识别的数据作为加密密钥。
+这是因为 gnome-keyring 使用登录密码作为加密密钥，不输入登录密码就无法解锁其保存的各种密钥和密码，而 gnome-keyring 目前不支持面部识别、指纹识别的数据作为加密密钥。
 
 解决办法：给 gnome-keyring 设置空密码，或参照指纹登录的解决办法，使用 u 盘等设备单独保存你的 gnome-keyring 密码 <https://wiki.archlinux.org/title/Fingerprint_GUI#Password>。
 
