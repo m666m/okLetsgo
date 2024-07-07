@@ -8042,13 +8042,68 @@ ln 命令默认生成硬链接，但是我们通常使用软连接
     # 如果最后的目录给出的是一个文件名，则就是在当前目录下建立软链接文件
     ln -s /tmp/cmd_1 /tmp/cmd_2 /usr/bin/
 
-### 支持浮点运算的计算器 bc
+### 计算器 bc
 
-bc - An arbitrary precision calculator language
+Linux bash shell 中使用双括号即可简单的进行整数计算
+
+    $ ADD=$(( 1 + 2 ))
+    $ echo $ADD
+    3
+
+    $ MUL=$(( $ADD * 5 ))
+    $ echo $MUL
+    15
+
+使用 expr 命令，也是进行简单的整数计算
+
+    $ expr 3 + 5
+
+    $ expr 5 – 3
+
+    $ expr 5 * 3
+
+    $ expr 20 / 4
+
+    $ expr 15 % 4  这个是取余数
+    3
+
+expr 还支持比较操作，当表达式求值为 false 时，expr 将打印值0，否则打印1。
+
+
+    $ expr 5 = 3
+    0
+
+    $ expr 5 = 5
+    1
+
+    $ expr 8 != 5
+
+    $ expr 8 > 5
+
+    $ expr 8 < 5
+
+    $ expr 8 <= 5
+
+支持浮点运算的计算器 bc - An arbitrary precision calculator language
 
     # sudo apt install bc
     $ echo '1 / 6' |bc -l
     .16666666666666666666
+
+可以直接传算式给 bc
+
+    $ echo '3+5' | bc
+
+    $ echo '15 % 2' | bc
+
+    $ echo '15 / 2' | bc
+
+    $ echo '(6 * 2) - 5' | bc
+
+还可以用 awk
+
+    $ awk 'BEGIN { a = 6; b = 3; print "(a + b) = ", (a + b) }'
+    (a + b) =  9
 
 ### 文件完整性校验 sha256sum
 
