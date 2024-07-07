@@ -6982,17 +6982,20 @@ ripgrep 替代 grep，解决了不带文件名挂住的问题，rg 会默认查�
 
 ### 字符增删改 tr cut awk sed
 
-对常用的 . / 等分隔符的字符串进行截取
+对常用的 . / 等分隔符的字符串进行截取。
 
-    # 截取字符串的后面部分
+截取字符串的前面部分
+
     $ dirname http://www.example.com/long/path/to/example/file.ext
     http://www.example.com/long/path/to/example
 
-    # 截取字符串的后面部分
+截取字符串的后面部分
+
     $ basename http://www.example.com/long/path/to/example/file.ext
     file.ext
 
-    # 指定分隔符
+指定分隔符
+
     $ basename -s '.gz' abc.txt.gz
     abc.txt
 

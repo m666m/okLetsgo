@@ -242,6 +242,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias selxr='echo "[SELinux 恢复目录的默认权限设置]" && sudo restorecon -R -v'
     alias selxt='echo "[SELinux 临时关闭或打开]" && sudo setenforce'
     alias selxs='echo "[SELinux 当前状态]" && getenforce'
+    alias selxl='echo "[列出当前的 SELinux 规则]" && sudo semanage fcontext -l'
 
     # git 常用命令
     alias gs='git status'
