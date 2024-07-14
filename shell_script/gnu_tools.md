@@ -8644,7 +8644,10 @@ Linux 配置为 systemd 服务，创建 /etc/systemd/system/aria2.service 文件
 ```conf
 [Unit]
 Description=Aria2 Service
-After=network.target
+# 等待网络就绪，等待本地文件系统，等待挂载目录完毕
+After=network.target local-fs.target mnt-my_lv.mount
+# 等待目录挂载完毕见章节 [使用 systemd.mount 在开机后自动挂载目录](init_a_server think)
+Requires=mnt-my_lv.mount
 
 [Service]
 Type=simple
@@ -8653,7 +8656,7 @@ Type=simple
 #KillSignal=SIGQUIT
 #TimeoutStopSec=5
 #KillMode=process
-# 选择一个非 root 用户执行，方便后续操作下载到的文件，不需要切换到root用户
+# 非 root 用户执行，方便后续操作下载到的文件，不需要切换到root用户
 User=pi
 Group=pi
 WorkingDirectory=/home/pi
