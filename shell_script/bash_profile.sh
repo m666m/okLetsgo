@@ -777,6 +777,7 @@ function PS1git-bash-new-line {
 function PS1raspi-warning-info {
 
     [[ $(command -v vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
+    #[[ $(uname -m) = 'x86_64' ]] && return
 
     local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 

@@ -11262,7 +11262,7 @@ stress-ng 压测 cpu 的著名工具
 # 简单的脚本用于 cpu 加热，入参是cpu的核心数
 #!/bin/bash
 # Destription: testing cpu usage performance
-# Example    : sh cpu_usage.sh 12
+# Example    : bash heatcpu.sh 12
 # Remark     : cat /proc/cpuinfo | grep "processor"|wc -l    #12==>Get the number of processor
 # Date       : 2015-1-12
 # update     : 2015-1-12
