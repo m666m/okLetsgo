@@ -11720,9 +11720,13 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
             下载 https://github.com/NeverDecaf/chromium-web-store/releases 中的 .crx 文件，然后使用上面介绍的手工安装扩展的方法安装该 .crx 文件。
 
-            访问 edge 官方商店页面选个扩展看是否可以直接下载了 https://microsoftedge.microsoft.com/addons/Microsoft-Edge-Extensions-Home
+            访问官方商店页面选个扩展看是否可以直接下载了
 
-                如果只是下载了 .crx 文件没有安装，可以尝试双击该文件，在提示使用哪个程序打开时选择 UngoogledChromium 即可直接安装。之后只要在商店页面点击 get 即可自动下载并安装扩展了。
+                https://microsoftedge.microsoft.com/addons/Microsoft-Edge-Extensions-Home
+
+                https://chrome.google.com/webstore/
+
+            如果只是下载了 .crx 文件没有安装，可以尝试双击该文件，在提示使用哪个程序打开时选择 UngoogledChromium 即可直接安装。之后只要在商店页面点击 get 即可自动下载并安装扩展了。
 
         其它推荐扩展
 
