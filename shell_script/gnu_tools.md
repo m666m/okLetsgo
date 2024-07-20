@@ -12473,6 +12473,20 @@ Fedora 使用 kbd 包中的 kbd 命令来配置控制台。首先，您需要找
 
 系统重启后，使用 Ctrl+Alt+F1 至 Ctrl+Alt+F6 切换到虚拟控制台，并测试中文字符的显示。
 
+#### 转换 Windows 默认文件编码 GBK(GB-2132)
+
+Linux 文件默认编码是 UTF-8，所以 Windows 下的文件要正常在 Linux 下显示，需要转换，除非 Linux 下的软件支持显示 GBK
+
+可以使用如下命令转换
+
+    # 文本内容转换 iconv
+    yum install -y glibc-common
+    iconv -f gbk -t utf8 test.gbk -o test.utf8
+
+    # 文件名转换 convmv
+    yum install -y convmv
+    convmv -f gbk -t utf-8 -r --notest /your/文件名
+
 ### 给应用设置桌面图标
 
 进入如下目录，复制一个文件，改改就行：
