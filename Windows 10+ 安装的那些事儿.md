@@ -1045,7 +1045,7 @@ ACPI(Advanced Configuration and Power Interface)在运行中有以下几种模�
     shutdown /r     完全关闭并重启计算机。
     shutdown /r /o  完全关闭转到 WinRe 高级启动选项菜单并重新启动计算机。
 
-关闭“快速启动”
+关闭 “快速启动”
 
     打开 设置-系统-电源和睡眠-其他电源设置（或右击开始菜单 (win+x)，选择“电源选项”，弹出窗口的右侧选择“其它电源设置”），
 
@@ -2953,12 +2953,13 @@ UEFI 方式启动的操作系统是跟主板 BIOS 设置密切结合的，UEFI �
 
     主板 BIOS 设置的“Fast Boot”项如果开启“Ultra Fast”选项，之后就不能用键盘进入 BIOS 了，估计跟 Fast 模式一样把大部分不是必须的自检过程给禁用了，所以要想进 BIOS 只能清空 CMOS 或者在操作系统里选择“重启到 UEFI”。
 
-与此功能关联的是Windows 电源选项中的“快速启动” 见前面的章节 [开启或关闭“快速启动”]
+与此功能关联的是 Windows 电源选项中的 “快速启动”，详见章节 [开启或关闭“快速启动”]。
 
 参考说明
 
-    <https://www.expreview.com/22043.html>
-    <https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-Windows.html>
+    https://www.expreview.com/22043.html
+
+    https://www.tenforums.com/tutorials/21284-enable-disable-fast-boot-uefi-firmware-settings-Windows.html
 
 #### 在 Windows 10 中指定重启到 UEFI 固件的步骤
 
@@ -2986,9 +2987,13 @@ Linux 也可以在重启时告诉系统下一次启动进入 UEFI 设置。使�
 
     $ systemctl reboot --firmware-setup
 
-### 主板 BIOS 打开网络唤醒功能
+### 网络唤醒功能（WOL---WAKE ON LINE）
 
-1、主板设置
+家庭内网用一个低功耗 IOT 设备持续运行，响应外部指令，唤醒内网计算机。
+
+1、主板设置 BIOS
+
+    https://www.asus.com.cn/support/FAQ/1045950
 
     https://www.gigabyte.cn/Motherboard/B560M-AORUS-PRO-rev-10/support#support-dl-driver
 
@@ -3005,9 +3010,9 @@ Linux 也可以在重启时告诉系统下一次启动进入 UEFI 设置。使�
 
 如果使用的网络卡上有 WOL 接头，需配合主板上 WOL 接头；如果使用的网络卡上没有 WOL 接头，且它的规格是 PCI 2.3，则依上述的方法即可。
 
-2、 操作系统关闭快速启动
+2、操作系统关闭快速启动
 
-注意：确认 Windows 10 快速启动功能是否关闭，参见下面章节 [开启或关闭“快速启动”]  <https://www.asus.com.cn/support/FAQ/1045950>
+确认 Windows 10 快速启动功能是否关闭，见章节 [开启或关闭“快速启动”]。
 
 3、操作系统设置网卡驱动程序的参数
 
@@ -3019,7 +3024,15 @@ Linux 也可以在重启时告诉系统下一次启动进入 UEFI 设置。使�
 
 Windows：
 
-设备管理器里找到网卡点击驱动程序设置参数，勾选允许网络唤醒，关闭“允许计算机关闭此设备以节省电源”
+设置->系统→设备管理器→网络适配器→双击使用的网卡→选择“电源管理”标题页→
+
+    关闭“允许计算机关闭此设备以节约电源”
+
+    勾选“允许此设备唤醒计算机”
+
+->驱动程序，选择“高级”选项卡→选择“魔术封包唤醒”→设置值为"开启"，此设置根据 Intel 或 RealTek 芯片不同有差别，酌情处理。
+
+通过控制面板进入Windows Defender防火墙→点击左侧“高级设置”选项卡→选择左侧“入站规则”→点击右侧“新建规则”→选择“端口”→选择UDP，特定端口栏输入9，配置文件选择公用；
 
 Linux：
 
@@ -3033,7 +3046,7 @@ Linux：
 
     $ ethtool -s enp0s31f6 wol g
 
-如果机器重启后，eth0的设置又会回复到Wake-on: d 状态，则需要自行写一个 systemd 任务即可。
+如果机器重启后，eth0 的设置又会回复到Wake-on: d 状态，则需要自行写一个 systemd 任务。
 
 ### 主板开启待机状态 USB 口供电功能和定时自动开机功能
 
