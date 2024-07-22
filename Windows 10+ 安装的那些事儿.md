@@ -3048,6 +3048,17 @@ Linux：
 
 如果机器重启后，eth0 的设置又会回复到Wake-on: d 状态，则需要自行写一个 systemd 任务。
 
+4、配置执行唤醒的软件
+
+树莓派接入真实局域网并完成相关基础配置；
+
+    $ sudo apt install wakeonlan
+
+发送唤醒包对被控电脑进行真实局域网WOL测试
+
+    # xx代指被控电脑MAC地址
+    $ wakeonlan xx:xx:xx:xx:xx:xx
+
 ### 主板开启待机状态 USB 口供电功能和定时自动开机功能
 
 BIOS 中的 “Erp” 节能选项，选择开启
