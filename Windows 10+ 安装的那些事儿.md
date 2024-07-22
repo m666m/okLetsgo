@@ -2989,6 +2989,8 @@ Linux 也可以在重启时告诉系统下一次启动进入 UEFI 设置。使�
 
 ### 网络唤醒功能（WOL---WAKE ON LINE）
 
+    https://wiki.archlinux.org/title/Wake-on-LAN
+
 家庭内网用一个低功耗 IOT 设备持续运行，响应外部指令，唤醒内网计算机。
 
 1、主板设置 BIOS
@@ -3052,7 +3054,11 @@ Linux：
 
 树莓派接入真实局域网并完成相关基础配置；
 
+    # https://github.com/jpoliv/wakeonlan
     $ sudo apt install wakeonlan
+
+    # https://sourceforge.net/projects/wake-on-lan/
+    $ sudo dnf install wol
 
 发送唤醒包对被控电脑进行真实局域网WOL测试
 
