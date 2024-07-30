@@ -11942,7 +11942,11 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
         Kodi在4K显示器设置分辨率显示1920×1080P，是指软件界面1080P,而不是播放的视频1080P，播放时调用系统的GPU输出4K。
 
+        打开Kodi设置 - 播放器 - 视频，左下角切换为“专家”，开启“Allowed HDR dynamic metadata formats”，允许 HDR 动态元数据格式。使用显示HDR功能：开启（启用自动切换HDR模式和色彩空间，如果显示器不支持HDR则不会有这个功能项目）。Kodi在非HDR设备上播放HDR视频能自动变成SDR模式，不用担心颜色发灰发白。
+
         将电影/剧集文件夹添加到Kodi视频源里，就能在“电影”“剧集”菜单中以海报墙形式展示影视资源。显示影片演职员、上映时间、剧情简介等内容，提高观影体验。
+
+            http://www.kodiplayer.cn/course/2866.html
 
             打开Kodi,左侧菜单找到“视频”，右侧从“类别”里选择“文件”
 
