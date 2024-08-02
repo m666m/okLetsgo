@@ -6915,6 +6915,9 @@ newt 库的 whiptail 在命令行环境下，不需要桌面图形界面即可�
 
 组合执行 grep 命令查找文件内容：
 
+    # 养成好习惯，先列出来看看，到底操作了哪些文件
+    $ find ./ -name '*.mp4' -exec echo {} \;
+
 显示内容，但是带目录了
 
     find ./ -name "*" -exec grep "gitee" {} \;
@@ -6930,6 +6933,10 @@ newt 库的 whiptail 在命令行环境下，不需要桌面图形界面即可�
 在 jar 包中查找指定的类名，显示 jar 包名称和文件名称
 
     find ./ -name "*.jar" |xargs -I{} bash -c "unzip -l {} |grep LicenseUtil && echo {}"
+
+移动指定文件
+
+    find ./ -name '*.mp4' -exec mv {} /mnt/movies/ \;
 
 xargs 命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs 能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说 find 的结果经过 xargs 后，其实将 find 找出来的文件名逐个传递给 grep 做参数，grep 再在这些文件内容中查找关键字 test。
 
