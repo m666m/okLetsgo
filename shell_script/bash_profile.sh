@@ -466,6 +466,7 @@ elif [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
     # 利用检查 ssh-pageant 进程是否存在，判断是否开机后第一次打开bash会话，则运行gpg钥匙圈更新
     if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
         # 开机后第一次打开bash会话
+        rm -f /tmp/.ssh-pageant-$USERNAME
 
         echo ''
         # echo "update gpg keyrings, wait a second..."
@@ -488,7 +489,7 @@ elif [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
 # 默认用 tty 命令行环境通用的设置
 else
 
-    # Linux bash / Windows git bash(mintty)
+    # Linux bash
     # 多会话复用 ssh-agent
     # 代码来源 git bash auto ssh-agent
     # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
@@ -497,12 +498,11 @@ else
     agent_env=~/.ssh/agent.env
 
     agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
+    agent_load_env
 
     agent_start () {
         (umask 077; ssh-agent >| "$agent_env")
         source "$agent_env" >| /dev/null ; }
-
-    agent_load_env
 
     # 加载 ssh-agent 需要用户手工输入密钥的保护密码
     # 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
@@ -514,7 +514,7 @@ else
     agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
 
     if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
-        # 开机后第一次打开bash会话
+        # agent未加载密钥视作开机后第一次打开bash会话
 
         echo ''
         # echo "更新gpg钥匙圈需要点时间，请稍等..."
