@@ -514,7 +514,7 @@ else
     agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
 
     if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
-        # agent未加载密钥视作开机后第一次打开bash会话
+        # agent未运行视作开机后第一次打开bash会话
 
         echo ''
         # echo "更新gpg钥匙圈需要点时间，请稍等..."
