@@ -9805,7 +9805,7 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 #### 用 rsync 服务从 Linux 到 Windows 和 Linux 进行远程备份
 
-这里是使用的 rsync 协议，使用 ssh 协议的示例见章节 [使用 rsync 定时备份重要目录](init_a_server think)。
+> 使用 rsync 协议
 
     https://www.zhihu.com/question/20322405/answer/2874017681
 
@@ -9940,9 +9940,77 @@ rsync 默许服务端口为 873。
 
 最好把命令写成批处理文件，放到 Windows 计划任务里定时执行。
 
-#### 竞品 restic 增量备份工具
+> 使用 ssh 协议
 
-restic是一个强大的增量备份工具，可以把本地的文件备份到本地的另一地方，或云端。
+把 apache 的 html/ 下的所有目录和文件传送到 ssh 服务器的 /destination 目录下，同步删除源目录不存在的文件和目录
+
+    /usr/bin/rsync -avz --progress --delete /usr/local/apache/htdocs/pub/html/ user@remote_host:/destination
+
+说明：
+
+    -avz        里的 a 是递归方式传输文件并保持所有属性；v 是显示正在处理的文件详细信息；z 是传输中使用 zip 压缩。
+
+    --progress  显示出当前的进度，
+
+    --delete    源目录如果删除了一文件，那么目的目录也相应把文件删除，保持一致。
+
+可以考虑增加参数以提高数据准确性或速度
+
+    --checksum      使用校验和判断文件变更，等同参数 -c
+
+    --size-only     只同步大小有变化的文件，不考虑文件修改时间的差异。
+
+自制 systemd 单元文件：
+
+/usr/lib/systemd/system/rsync_bkup.service
+
+``` ini
+[Unit]
+Description=rsync backup your data
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+# 注意 --delete 的风险，如果存储没有挂载只有空目录，会导致目标目录的内容也都删除了
+ExecStart=/usr/bin/rsync -avz --progress --delete /sorce/path/ user@remote_host:/destination
+
+[Install]
+WantedBy=multi-user.target
+```
+
+定时器：跟单元文件同名，后缀改为 .timer
+
+/usr/lib/systemd/system/rsync_bkup.timer
+
+``` ini
+[Unit]
+Description=rsync backup your data daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+AccuracySec=1h
+RandomizedDelaySec=900
+
+[Install]
+WantedBy=timers.target
+```
+
+启动并设置开机自启动
+
+    $ sudo systemctl daemon-reload
+
+    $ sudo systemctl enable --now rsync_bkup.timer
+
+验证
+
+    systemctl list-timers
+
+#### 增量备份工具 Restic
+
+Restic 是一个强大的增量备份工具，可以把本地的文件备份到本地的另一地方，或云端。
 
 它基于 “存储库(Repository)” 和快照的概念，每次备份就相当于一份快照，它用增量方式生成快照并用 AES 等方式加密，使用 ssh 密钥方式连接备份服务器的保存到云端的 “存储库”。当您备份敏感数据并将备份放在不受自己管辖服务器（例如，云提供商）时，这一点尤其重要。
 
@@ -9952,8 +10020,6 @@ restic是一个强大的增量备份工具，可以把本地的文件备份到�
     文档 https://restic.readthedocs.io/en/stable/
         https://github.com/restic/restic/blob/master/doc/design.rst
 
-    https://chariri.moe/archives/122/personal-backup-restic-rclone/
-
     https://juejin.cn/post/7014803100074672135
 
     Using rclone as a restic Backend
@@ -9962,7 +10028,7 @@ restic是一个强大的增量备份工具，可以把本地的文件备份到�
     使用 restic 和 systemd 自动备份 https://zhuanlan.zhihu.com/p/66324926
         https://fedoramagazine.org/use-restic-encrypted-backups/
 
-restic 支持类型
+Restic 支持类型
 
     本地存储
     SFTP
@@ -10067,11 +10133,21 @@ Rclone 和 Restic 的相同点
 
     echo 'Lf0uHG1wVpVzsgEi' > /root/resticpasswd
 
+清理快照：forget 与 prune
+
+    快照是会越积越多的，因此我们需要定期/不定期地执行 autorestic forget 命令根据我们的配置删除过期的快照，在执行的同时带上 --prune 参数可以一并删掉不再被用到的存储块。只有这些块被删掉，空间才真正被节约了！
+
+还可以将备份仓库挂载为文件系统，以便于浏览和恢复文件：
+
+    restic mount -r rclone:mybackup:/backup/path /path/to/mount
+
 二、对象存储备份
 
-支持基于s3协议的后端对象存储，例如minio或者腾讯/阿里对象存储。
+支持基于 s3 协议的后端对象存储，例如 minio 或者腾讯/阿里对象存储。
 
 云存储参见章节 [云存储](office_great_wall think)。
+
+建议使用 rclone 作为后端存储，可以支持常见的各种云盘，见章节 [远程备份归档 RClone]。
 
 阿里云对象存储
 
@@ -10083,25 +10159,69 @@ Rclone 和 Restic 的相同点
 
     $ restic -o s3.bucket-lookup=dns -o oss-cn-beijing.aliyuncs.com -r s3:https://xueltestoss.oss-cn-beijing.aliyuncs.com init
 
-    创建repository
+    创建 repository
 
     $ export AWS_ACCESS_KEY_ID=LTAIxxxxxxxdZa9
     $ export AWS_SECRET_ACCESS_KEY=XvHxxxxxxxxxxxxxxxxxJt3wb7
     $ restic -o s3.bucket-lookup=dns -o s3.region=oss-cn-beijing.aliyuncs.com -r s3:https://xueltestoss.oss-cn-beijing.aliyuncs.com/xueltestoss init
 
-在备份命令中加--password-file参数来读取文本中的密码，这里以sftp为例
+在备份命令中加 --password-file 参数来读取文本中的密码，这里以sftp为例
 
     $ restic -r s3:https://oss-cn-beijing.aliyuncs.com/xueltestoss --password-file /root/resticpasswd backup /data/
 
-其他恢复操作基本上和sftp的一致。
+其他恢复操作基本上和 sftp 的一致。
 
-##### forget 与 prune
+##### Restic + RClone 实现将快照保存到远程存储
 
-快照是会越积越多的，因此我们需要定期/不定期地执行 autorestic forget 命令根据我们的配置删除过期的快照，在执行的同时带上 --prune 参数可以一并删掉不再被用到的存储块。只有这些块被删掉，空间才真正被节约了！
+restic 支持把 rclone 作为后端存储，二者结合进行备份时，restic 会创建数据的快照，然后这些快照存储在 rclone 配置的远程存储中。
+
+1、安装配置 RClone，配置远程存储比如云盘或 ssh 服务器
+
+    $ rclone config
+
+记下存储库的名称。
+
+2、初始化 Restic 存储库
+
+    $ restic init -r rclone:rc_repo:/backup/path
+
+这里 rc_repo 是你在 RClone 中配置的远程存储的名称，/backup/path 是你希望存储快照的路径。
+
+Restic 需要一些额外的配置，例如密码或密钥文件。你可以使用 --password-command 提供密码
+
+3、使用 restic 执行备份：
+
+    $ restic backup /path/to/backup -r rclone:mybackup:/backup/path
+
+这里 /path/to/backup 是你希望备份的目录，rclone:mybackup:/backup/path 是你的 RClone 存储路径。
+
+4、管理快照
+
+Restic 会为每次备份创建一个快照。
+
+列出所有快照：
+
+    restic snapshots -r rclone:mybackup:/backup/path
+
+恢复备份
+
+    restic restore latest -r rclone:mybackup:/backup/path --target /path/to/restore
+
+删除过时的快照
+
+    restic forget --keep-within 5 --keep-last 5 -r rclone:mybackup:/backup/path
+
+挂载为本地文件系统
+
+    restic mount -r rclone:mybackup:/backup/path /path/to/mount
+
+Restic 允许你将备份仓库挂载为文件系统，以便于浏览和恢复文件
 
 ##### 使用 autorestic 简化你的操作
 
-restic 是一个 CLI 工具，但缺了一些关键的功能，如定时备份，且其所有设置都要通过命令行参数给定，很不方便。autorestic 是 restic 的一个「包装器」，通过自动调用 restic 的方法，加上了配置文件、定时执行（伪）等功能。在看下面的教程前，我推荐您先看看 restic 的官方 Quick Start 文档，了解一下其基本概念和常用命令。
+    https://chariri.moe/archives/122/personal-backup-restic-rclone/
+
+restic 是一个 CLI 工具，但缺了一些关键的功能，如定时备份，且其所有设置都要通过命令行参数给定，很不方便。autorestic 是 restic 的一个「包装器」，通过自动调用 restic 的方法，加上了配置文件、定时执行（伪）等功能。
 
 简单地说，restic 会把数据备份到称作「存储库」的地方，这个存储库就是一个有特定目录结构的一组文件，可以在本地也可以在云上。每次备份会创建一个「快照」，表示一个备份源的当前所有数据。随着时间推移，快照会越来越多，但快照间的数据是去重的，多个快照中的相同数据只会存一份，有效节约了空间。
 
@@ -10178,9 +10298,11 @@ restic 的备份方法是把文件拆成小片进行 hash，再把一堆小片�
 
 如果 restic 出了问题（如网络问题），造成其卡在那里一直运行，那 Windows 任务计划会在 3d（我的配置）后把其强制结束。考虑到 Windows 上没有“优雅”地结束一个纯命令行程序的方法，这个基本就是直接结束进程了。那 restic 就来不及进行清理，造成：存储库上的锁没有释放；Windows 卷影复制服务 (VSS) 没有删除，这会造成 VSS 吃空间、降低性能，锁影响下次运行。
 
-#### 竞品 RClone 远程备份归档
+#### 远程备份归档 RClone
 
-Rclone (rsync for cloud storage) 是一个云存储的「通用客户端」命令行程序，用于同步文件和目录。支持常见的 Amazon Drive、Google Drive、OneDrive、Dropbox 等云存储。
+最佳使用方式见章节 [restic + rclone 实现将快照保存到远程存储]。
+
+Rclone (rsync for cloud storage) 是一个云存储的「通用客户端」命令行程序，用于同步文件和目录。支持常见的 Amazon Drive、Google Drive、OneDrive、Dropbox 等云存储，也支持传统的 ftp/smb/sftp/http。
 
     https://rclone.org/docs/
 
@@ -10196,9 +10318,11 @@ Rclone (rsync for cloud storage) 是一个云存储的「通用客户端」命�
 
 一般在 Windows 平台下将 OneDrive 挂载为本地硬盘，并使用跨平台的 Rclone GUI 连接到云盘。
 
-目前 rclone 对以 mount 挂载的使用方式支持不稳定
+rclone 支持以 mount 挂载的使用方式，非常方便，但是目前不稳定
 
     Rclone 以挂载方式使用会在本地缓存文件，往挂载盘移动文件只不过是本地转移了位置而已，依然占用着本地磁盘空间，所以当你不断的往挂载盘移动文件，你的本地磁盘就满了，移动文件的过程中内存占用也很大，这可能会导致进程终结和宕机。
+
+    $ rclone mount --daemon MyCloudServer:C:\ Z:
 
 如果是备份到网盘，需要先设置网盘，见下面的两个子章节，然后再设置 rclone
 
@@ -10237,7 +10361,7 @@ rclone 通常同步或复制目录。但是，如果远程源指向一个文件�
 
 建议在复制单个文件时使用 copy，而不是 sync。 他们有几乎相同的效果，但 copy 将使用更少的内存。
 
-将名为 sync：me 的目录同步到名为 remote: 的远程：
+将名为 sync:me 的目录同步到名为 remote: 的远程：
 
     $ rclone sync ./sync:me remote:path
 
