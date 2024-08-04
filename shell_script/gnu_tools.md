@@ -10179,7 +10179,7 @@ restic 支持把 rclone 作为后端存储，二者结合进行备份时，resti
 
     $ rclone config
 
-记下存储库的名称。
+记下远程存储的名称。
 
 2、初始化 Restic 存储库
 
