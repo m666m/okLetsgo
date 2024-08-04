@@ -9805,6 +9805,8 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 #### 用 rsync 服务从 Linux 到 Windows 和 Linux 进行远程备份
 
+这里是使用的 rsync 协议，使用 ssh 协议的示例见章节 [使用 rsync 定时备份重要目录](init_a_server think)。
+
     https://www.zhihu.com/question/20322405/answer/2874017681
 
 一、安装设置服务器端软件
