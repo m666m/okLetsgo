@@ -10191,9 +10191,9 @@ Restic 需要一些额外的配置，例如密码或密钥文件。你可以使�
 
 3、使用 restic 执行备份：
 
-    $ restic backup /path/to/backup -r rclone:mybackup:/backup/path
+    $ restic backup /path/to/backup -r rclone:rc_repo:/backup/path
 
-这里 /path/to/backup 是你希望备份的目录，rclone:mybackup:/backup/path 是你的 RClone 存储路径。
+这里 /path/to/backup 是你希望备份的目录，rclone:rc_repo:/backup/path 是你的 RClone 存储路径。
 
 4、管理快照
 
@@ -10201,19 +10201,19 @@ Restic 会为每次备份创建一个快照。
 
 列出所有快照：
 
-    restic snapshots -r rclone:mybackup:/backup/path
+    restic snapshots -r rclone:rc_repo:/backup/path
 
 恢复备份
 
-    restic restore latest -r rclone:mybackup:/backup/path --target /path/to/restore
+    restic restore latest -r rclone:rc_repo:/backup/path --target /path/to/restore
 
 删除过时的快照
 
-    restic forget --keep-within 5 --keep-last 5 -r rclone:mybackup:/backup/path
+    restic forget --keep-within 5 --keep-last 5 -r rclone:rc_repo:/backup/path
 
 挂载为本地文件系统
 
-    restic mount -r rclone:mybackup:/backup/path /path/to/mount
+    restic mount -r rclone:rc_repo:/backup/path /path/to/mount
 
 Restic 允许你将备份仓库挂载为文件系统，以便于浏览和恢复文件
 
