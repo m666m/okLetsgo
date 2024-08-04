@@ -15433,6 +15433,7 @@ GDM (Gnome)在 RHEL8 中使用 Wayland 作为默认显示服务器，取代了�
 [Unit]
 Description=Remote desktop service (VNC)
 After=syslog.target network.target
+
 [Service]
 Type=forking
 WorkingDirectory=/home/jacky
@@ -15444,6 +15445,7 @@ ExecStart=/usr/bin/vncserver -autokill %i
 ExecStop=/usr/bin/vncserver -kill %i
 Restart=on-success
 RestartSec=15
+
 [Install]
 WantedBy=multi-user.target
 ```
