@@ -13196,6 +13196,7 @@ Description=Select a random background from %I
 
 [Service]
 Type=oneshot
+RemainAfterExit=true
 ExecStart=%h/path/to/background.sh "%I"
 ```
 
