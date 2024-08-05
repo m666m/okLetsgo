@@ -10071,11 +10071,19 @@ Restic 不直接存储所有已配置的存储库的列表，当你初始化一�
     # https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html#sftp
     $ restic -r sftp:user@host:/srv/restic-repo init
 
-需要给出存储库的密码，之后在任何客户端都可以使用该密码访问该存储库。
+如果连接的 sftp 需要密码，会提示输入。
 
-如果连接的 sftp 需要密码，会在命令行提示输入。
+需要给出存储库的密码，之后在任何客户端连接到 sftp 服务器后，都可以使用该密码访问该存储库。
 
-另见章节 [restic命令行自动备份]。
+可使用 --password-file 参数来读取存储库的密码文件
+
+    echo 'Lf0uHG1wVpVzsgEi' > /root/resticpasswd
+
+或设置到环境变量 export RESTIC_PASSWORD='yourpassword'
+
+    https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables
+
+注意不支持 ssh 服务器的密码，只支持使用密钥文件。
 
 法二：在本地目录初始化存储库
 
@@ -10130,18 +10138,6 @@ Restic 不直接存储所有已配置的存储库的列表，当你初始化一�
 删除备份
 
     restic -r sftp:root@106.53.117.41:/data forget 875a2a32
-
-#### restic命令行自动备份
-
-可使用 --password-file 参数来读取存储库的密码文件
-
-    echo 'Lf0uHG1wVpVzsgEi' > /root/resticpasswd
-
-或设置到环境变量 export RESTIC_PASSWORD='yourpassword'
-
-    https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables
-
-注意不支持 ssh 服务器的密码，只支持使用密钥文件。
 
 清理快照：forget 与 prune
 
