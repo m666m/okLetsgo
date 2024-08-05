@@ -10062,13 +10062,17 @@ Rclone 和 Restic 的相同点
 
 总的来说，Rclone 和 Restic 各有所长，要根据不同的业务需求选择使用。比如：网站数据的增量备份，用 Resitc 就比较合适。而常规文件的远程备份归档，用 Rclone 就很合适。
 
-先初始化储存库，Restic 不直接存储所有已配置的存储库的列表，当你初始化一个新的存储库时，Restic 会在指定的位置创建存储库数据，但它不会在你的系统上创建一个全局列表来跟踪所有存储库，存储库可以存储在本地，也可以存储在远程服务器或服务器上
+#### 初始化储存库
 
-    # 在远程 ssh 服务器上初始化存储库
+Restic 不直接存储所有已配置的存储库的列表，当你初始化一个新的存储库时，Restic 会在指定的位置创建存储库数据，但它不会在你的系统上创建一个全局列表来跟踪所有存储库，存储库可以存储在本地，也可以存储在远程服务器或服务器上
+
+在远程 ssh 服务器上初始化存储库，如果连接的 sftp 需要密码，会在命令行提示
+
     # https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html#sftp
     $ restic -r sftp:user@host:/srv/restic-repo init
 
-    # 在本地目录初始化存储库
+在本地目录初始化存储库
+
     $ restic --repo /srv/restic-repo init
     enter password for new repository:
     enter password again:
@@ -10076,7 +10080,8 @@ Rclone 和 Restic 的相同点
 
     或添加参数 --password-file= 指定密钥文件
 
-    # 可以用tree命令看下存储池的结构
+可以用tree命令看下存储池的结构
+
     $ tree /srv/restic-repo
     /srv/restic-repo
     ├── config
@@ -10134,15 +10139,17 @@ Rclone 和 Restic 的相同点
 
     restic -r sftp:root@106.53.117.41:/data forget 875a2a32
 
-为实现命令行自动备份，可使用 --password-file 参数来读取密码文件
+#### 命令行自动备份
 
-    # 或设置到环境变量 export RESTIC_PASSWORD='yourpassword'
-    # https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables
+可使用 --password-file 参数来读取存储库的密码文件
+
     echo 'Lf0uHG1wVpVzsgEi' > /root/resticpasswd
 
-如果连接的 sftp 需要密码
+或设置到环境变量 export RESTIC_PASSWORD='yourpassword'
 
-    restic.exe -r sftp:my.host.name -o sftp.command “psftp -pw password -b ./putty.script” init
+    https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables
+
+注意不支持 ssh 服务器的密码，只支持使用密钥文件。
 
 清理快照：forget 与 prune
 
