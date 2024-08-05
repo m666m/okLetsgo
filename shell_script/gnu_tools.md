@@ -10062,9 +10062,13 @@ Rclone 和 Restic 的相同点
 
 总的来说，Rclone 和 Restic 各有所长，要根据不同的业务需求选择使用。比如：网站数据的增量备份，用 Resitc 就比较合适。而常规文件的远程备份归档，用 Rclone 就很合适。
 
-服务端先初始化储存库，存储库可以存储在本地，也可以存储在远程服务器或服务器上。
+先初始化储存库，Restic 不直接存储所有已配置的存储库的列表，当你初始化一个新的存储库时，Restic 会在指定的位置创建存储库数据，但它不会在你的系统上创建一个全局列表来跟踪所有存储库，存储库可以存储在本地，也可以存储在远程服务器或服务器上
 
-    $ restic init --repo /srv/restic-repo
+    # 在远程 ssh 服务器上初始化存储库
+    $ restic -r sftp:user@host:/srv/restic-repo init
+
+    # 在本地目录初始化存储库
+    $ restic --repo /srv/restic-repo init
     enter password for new repository:
     enter password again:
     根据提示输入两次密码
@@ -10179,21 +10183,34 @@ restic 支持把 rclone 作为后端存储，二者结合进行备份时，resti
 
     $ rclone config
 
-记下远程存储的名称，详见章节 [远程备份归档 RClone]。
+详见章节 [远程备份归档 RClone]，记下远程存储的名称如 ssh_rc1。
 
 2、初始化 Restic 存储库
 
-    $ restic init -r rclone:rc_repo:/backup/path
+Restic 不使用其他后端，则需要一些额外的配置连接服务器，例如密码或密钥文件。你可以使用 --password-command 提供密码。
 
-这里 rc_repo 是你在 RClone 中配置的远程存储的名称，/backup/path 是你希望存储快照的路径。
+后端使用 rclone
 
-Restic 需要一些额外的配置，例如密码或密钥文件。你可以使用 --password-command 提供密码
+    # restic init --repo rclone:ssh_jnzh:/mnt/universal/thin/sysbak
+    $ restic init --repo rclone:ssh_rc1:/backup/host1/home
+
+这里 ssh_rc1 是你在 RClone 中配置的远程存储的名称，/backup/path 是你希望存储快照的路径。
+
+3、配置后验证连接
+
+    $ restic check
+
+    $ restic snapshots
+
+    $ restic ls [snapshot-id]
+
+    $ restic stats
 
 3、使用 restic 执行备份：
 
-    $ restic backup /path/to/backup -r rclone:rc_repo:/backup/path
+    $ restic backup /path/to/backup -r rclone:ssh_rc1:/backup/path
 
-这里 /path/to/backup 是你希望备份的目录，rclone:rc_repo:/backup/path 是你的 RClone 存储路径。
+这里 /path/to/backup 是你希望备份的目录，rclone:ssh_rc1/backup/path 是你的 RClone 存储路径。
 
 4、管理快照
 
@@ -10201,19 +10218,19 @@ Restic 会为每次备份创建一个快照。
 
 列出所有快照：
 
-    restic snapshots -r rclone:rc_repo:/backup/path
+    restic snapshots -r rclone:ssh_rc1:/backup/path
 
 恢复备份
 
-    restic restore latest -r rclone:rc_repo:/backup/path --target /path/to/restore
+    restic restore latest -r rclone:ssh_rc1:/backup/path --target /path/to/restore
 
 删除过时的快照
 
-    restic forget --keep-within 5 --keep-last 5 -r rclone:rc_repo:/backup/path
+    restic forget --keep-within 5 --keep-last 5 -r rclone:ssh_rc1:/backup/path
 
 挂载为本地文件系统
 
-    restic mount -r rclone:rc_repo:/backup/path /path/to/mount
+    restic mount -r rclone:ssh_rc1:/backup/path /path/to/mount
 
 Restic 允许你将备份仓库挂载为文件系统，以便于浏览和恢复文件
 
@@ -10330,6 +10347,8 @@ rclone 支持以 mount 挂载的使用方式，非常方便，但是目前不稳
 
     rclone config - 进入交互式配置选项，进行添加、删除、管理网盘等操作
 
+        名称格式建议 '连接类型_服务器名'
+
         如果使用 ssh 密钥方式连接，注意选择使用 key_use_agent，否则默认 false。
 
         如果该 ssh 使用了 2FA，注意选择使用 ask_password，这样在连接时会提示输入验证码。
@@ -10338,16 +10357,19 @@ rclone 支持以 mount 挂载的使用方式，非常方便，但是目前不稳
 
     rclone config show - 显示配置文件信息
 
-配置后操作对象就是该远程存储的名称，比如 remote_rc1
+配置后操作对象就是该远程存储的名称，比如 ssh_rc1
 
-    $ rclone -vvv size remote_rc1:/download
+    # https://rclone.org/sftp/
+    # 相当于命令行参数 --sftp-pass='943590'
+    #   export RCLONE_SFTP_PASS='943590' 无效：对端使用2FA，把验证码设置到环境变量，连接的时候报错无法创建文件系统
+    $ rclone -vvv size ssh_rc1:/download
 
 该远程存储的配置文件位于
 
     $HOME/.config/rclone/rclone.conf
 
     ```ini
-    [remote_rc1]
+    [ssh_rc1]
     type = sftp
     host = 192.168.0.11
     user = ssss
