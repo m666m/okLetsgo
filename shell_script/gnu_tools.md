@@ -10008,7 +10008,7 @@ WantedBy=timers.target
 
     systemctl list-timers
 
-#### 增量备份工具 Restic
+### 增量备份工具 Restic
 
 Restic 是一个强大的增量备份工具，可以把本地的文件备份到本地的另一地方，或云端。
 
@@ -10171,7 +10171,7 @@ Rclone 和 Restic 的相同点
 
 其他恢复操作基本上和 sftp 的一致。
 
-##### Restic + RClone 实现将快照保存到远程存储
+#### Restic + RClone 实现将快照保存到远程存储
 
 restic 支持把 rclone 作为后端存储，二者结合进行备份时，restic 会创建数据的快照，然后这些快照存储在 rclone 配置的远程存储中。
 
@@ -10179,7 +10179,7 @@ restic 支持把 rclone 作为后端存储，二者结合进行备份时，resti
 
     $ rclone config
 
-记下远程存储的名称。
+记下远程存储的名称，详见章节 [远程备份归档 RClone]。
 
 2、初始化 Restic 存储库
 
@@ -10217,7 +10217,7 @@ Restic 会为每次备份创建一个快照。
 
 Restic 允许你将备份仓库挂载为文件系统，以便于浏览和恢复文件
 
-##### 使用 autorestic 简化你的操作
+#### 使用 autorestic 简化你的操作
 
     https://chariri.moe/archives/122/personal-backup-restic-rclone/
 
@@ -10280,7 +10280,7 @@ backends:
 
 执行 `autorestic backup --config C:\您的autorestic配置文件路径` 执行全面备份。
 
-##### 填坑
+#### 填坑
 
 restic 的功能缺失和 bug
 
@@ -10298,7 +10298,7 @@ restic 的备份方法是把文件拆成小片进行 hash，再把一堆小片�
 
 如果 restic 出了问题（如网络问题），造成其卡在那里一直运行，那 Windows 任务计划会在 3d（我的配置）后把其强制结束。考虑到 Windows 上没有“优雅”地结束一个纯命令行程序的方法，这个基本就是直接结束进程了。那 restic 就来不及进行清理，造成：存储库上的锁没有释放；Windows 卷影复制服务 (VSS) 没有删除，这会造成 VSS 吃空间、降低性能，锁影响下次运行。
 
-#### 远程备份归档 RClone
+### 远程备份归档 RClone
 
 最佳使用方式见章节 [restic + rclone 实现将快照保存到远程存储]。
 
@@ -10324,15 +10324,43 @@ rclone 支持以 mount 挂载的使用方式，非常方便，但是目前不稳
 
     $ rclone mount --daemon MyCloudServer:C:\ Z:
 
-如果是备份到网盘，需要先设置网盘，见下面的两个子章节，然后再设置 rclone
+如果是备份到网盘，需要先设置网盘，见下面的两个子章节，然后再设置 rclone。
 
-    rclone config - 进入交互式配置选项，进行添加、删除、管理网盘等操作。
+设置 rclone，以远程存储为单元建立的配置选项
+
+    rclone config - 进入交互式配置选项，进行添加、删除、管理网盘等操作
+
+        如果使用 ssh 密钥方式连接，注意选择使用 key_use_agent，否则默认 false。
+
+        如果该 ssh 使用了 2FA，注意选择使用 ask_password，这样在连接时会提示输入验证码。
 
     rclone config file - 显示配置文件的路径，一般配置文件在 ~/.config/rclone/rclone.conf
 
     rclone config show - 显示配置文件信息
 
+配置后操作对象就是该远程存储的名称，比如 remote_rc1
+
+    $ rclone -vvv size remote_rc1:/download
+
+该远程存储的配置文件位于
+
+    $HOME/.config/rclone/rclone.conf
+
+    ```ini
+    [remote_rc1]
+    type = sftp
+    host = 192.168.0.11
+    user = ssss
+    known_hosts_file = ~/.ssh/known_hosts
+    ask_password = true
+    key_use_agent = true
+    shell_type = unix
+    ```
+
 命令语法
+
+    # 查看可用命令
+    rclone --help
 
     # 本地到网盘
     rclone [功能选项] <本地路径> <网盘名称:路径> [参数] [参数] ...
@@ -10342,24 +10370,22 @@ rclone 支持以 mount 挂载的使用方式，非常方便，但是目前不稳
 
     # 网盘到网盘
     rclone [功能选项] <网盘名称:路径> <网盘名称:路径> [参数] [参数] ...
-    用法示例
     rclone move -v /Download Onedrive:/Download --transfers=1
 
-rclone 通常同步或复制目录。但是，如果远程源指向一个文件，rclone 将只复制该文件。目标远程必须指向一个目录 -，不然 rclone 将给出为“Failed to create file system for "remote:file": is a file not a directory ”。
+rclone 通常用于同步或复制目录。但是，如果远程源指向一个文件，rclone 将只复制该文件。目标远程必须指向一个目录 -，不然 rclone 将给出为“Failed to create file system for "remote:file": is a file not a directory ”。
 
 例如，假设您有一个远程，其中有一个名为 test.jpg，然后你可以像这样复制那个文件:
 
     $ rclone copy remote:test.jpg /tmp/download
 
-文件 test.jpg 将被放置在/tmp/download下面。
+文件 test.jpg 将被放置在 /tmp/download 下面。
 
 这相当于指定
 
+    # 当 /tmp/files 包含单个 test.jpg
     $ rclone copy --files-from /tmp/files remote: /tmp/download
 
-当/tmp/files包含单个test.jpg
-
-建议在复制单个文件时使用 copy，而不是 sync。 他们有几乎相同的效果，但 copy 将使用更少的内存。
+建议在复制单个文件时使用 copy，而不是 sync。他们有几乎相同的效果，但 copy 将使用更少的内存。
 
 将名为 sync:me 的目录同步到名为 remote: 的远程：
 
@@ -10478,7 +10504,7 @@ rclone 中的每个命令行参数都可以通过环境变量设置：
     RCLONE_CACHE_CHUNK_TOTAL_SIZE - 块可以在本地磁盘上占用的总大小，默认10G。
     RCLONE_IGNORE_ERRORS=true - 跳过错误。
 
-##### Rclone 连接 OneDrive
+#### Rclone 连接 OneDrive
 
 获取 token
 
@@ -10640,7 +10666,7 @@ rclone 中的每个命令行参数都可以通过环境变量设置：
 
 至此，Rclone 已成功连接到了 OneDrive 网盘。
 
-##### Rclone 连接 Google Drive
+#### Rclone 连接 Google Drive
 
 与 OneDrive 不同的是，Google Drive 不需要本地 Win­dows 客户端预先进行授权获取 to­ken，而是在配置过程中进行授权。
 
@@ -12062,13 +12088,13 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
             更换为清华源 https://mirrors.tuna.tsinghua.edu.cn/help/kodi/
 
-        文件列表支持中文：设置->界面->皮肤->字体，把默认字体改为 Arial 即可
+        界面和文件列表支持中文：设置->界面->皮肤->字体，把默认字体改为 Arial,然后就可以切换语言 Regional——language——Chinese（simple）。如果没有出现 Chinese 选项：使用 addon 里选择 repo 访问下网络，然后才可以设置“界面外观” 选择语言为中文，如果插件界面列不出来，多试几次，不行就换清华源。
 
-        界面改为中文：使用 addon 里选择 repo 访问下网络，然后才可以设置“界面外观” 选择语言为中文，如果插件界面列不出来，多试几次，不行就换清华源
+        建议把设置模式调为“专家”，这样设置选项会多出来很多。
 
-        Kodi在4K显示器设置分辨率显示1920×1080P，是指软件界面1080P,而不是播放的视频1080P，播放时会调用系统的GPU输出4K。
+        Kodi 在 4K 显示器设置分辨率显示 1920×1080P，是指软件界面 1080P，而不是播放的视频 1080P，播放时会调用系统的 GPU 输出 4K。
 
-        打开Kodi设置 - 播放器 - 视频，左下角切换为“专家”，开启 “Allowed HDR dynamic metadata formats”，允许 HDR 动态元数据格式。使用显示HDR功能：开启（启用自动切换HDR模式和色彩空间，如果显示器不支持HDR则不会有这个功能项目）。Kodi在非HDR设备上播放HDR视频能自动变成SDR模式，不用担心颜色发灰发白。
+        打开 Kodi 设置 - 播放器 - 视频，左下角切换为“专家”，开启 “Allowed HDR dynamic metadata formats”，允许 HDR 动态元数据格式。使用显示 HDR 功能：开启（启用自动切换 HDR 模式和色彩空间，如果显示器不支持 HDR 则不会有这个功能项目）。Kodi 在非 HDR 设备上播放 HDR 视频能自动变成 SDR 模式，不用担心颜色发灰发白。
 
         Kodi 最强大的地方是在你的电视上直接建立影视信息库，免除在 NAS 上安装 jellyfin
 
