@@ -10065,6 +10065,7 @@ Rclone 和 Restic 的相同点
 先初始化储存库，Restic 不直接存储所有已配置的存储库的列表，当你初始化一个新的存储库时，Restic 会在指定的位置创建存储库数据，但它不会在你的系统上创建一个全局列表来跟踪所有存储库，存储库可以存储在本地，也可以存储在远程服务器或服务器上
 
     # 在远程 ssh 服务器上初始化存储库
+    # https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html#sftp
     $ restic -r sftp:user@host:/srv/restic-repo init
 
     # 在本地目录初始化存储库
@@ -10133,9 +10134,15 @@ Rclone 和 Restic 的相同点
 
     restic -r sftp:root@106.53.117.41:/data forget 875a2a32
 
-为实现自动备份，可使用 --password-file 参数来读取密码文件
+为实现命令行自动备份，可使用 --password-file 参数来读取密码文件
 
+    # 或设置到环境变量 export RESTIC_PASSWORD='yourpassword'
+    # https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables
     echo 'Lf0uHG1wVpVzsgEi' > /root/resticpasswd
+
+如果连接的 sftp 需要密码
+
+    restic.exe -r sftp:my.host.name -o sftp.command “psftp -pw password -b ./putty.script” init
 
 清理快照：forget 与 prune
 
