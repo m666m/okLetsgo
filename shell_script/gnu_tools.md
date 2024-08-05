@@ -10066,21 +10066,27 @@ Rclone 和 Restic 的相同点
 
 Restic 不直接存储所有已配置的存储库的列表，当你初始化一个新的存储库时，Restic 会在指定的位置创建存储库数据，但它不会在你的系统上创建一个全局列表来跟踪所有存储库，存储库可以存储在本地，也可以存储在远程服务器或服务器上
 
-在远程 ssh 服务器上初始化存储库，如果连接的 sftp 需要密码，会在命令行提示
+法一：在远程 ssh 服务器上初始化存储库
 
     # https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html#sftp
     $ restic -r sftp:user@host:/srv/restic-repo init
 
-在本地目录初始化存储库
+需要给出存储库的密码，之后在任何客户端都可以使用该密码访问该存储库。
+
+如果连接的 sftp 需要密码，会在命令行提示输入。
+
+另见章节 [restic命令行自动备份]。
+
+法二：在本地目录初始化存储库
 
     $ restic --repo /srv/restic-repo init
     enter password for new repository:
     enter password again:
     根据提示输入两次密码
 
-    或添加参数 --password-file= 指定密钥文件
+    或添加参数 --password-file= 指定密码文件
 
-可以用tree命令看下存储池的结构
+创建成功后，可以用 tree 命令看下储存库的结构
 
     $ tree /srv/restic-repo
     /srv/restic-repo
@@ -10102,20 +10108,6 @@ Restic 不直接存储所有已配置的存储库的列表，当你初始化一�
 两种使用方式：
 
 一、支持 sftp 方式备份到服务器
-
-从主机 A 备份数据到主机 B，需要配置主机 A 到主机 B 的 ssh 免密钥登陆
-
-    ssh-copy-id -i ~/user_A/.ssh/id_rsa.pub bkuser@server_B
-
-在服务器 A 创建备份，目标是服务器 B 的 /data 目录
-
-    restic -r sftp:bkuser@server_B:/data init
-
-    需要给出存储库的密码，之后在任何客户端都可以使用该密码访问该存储库了
-
-    使用 --password-file 参数可以读取密钥文件，这样就不需要每次执行都输入密码了
-
-    查看 B 服务器 du -sh 可以看到有了 /data 目录
 
 执行数据备份
 
@@ -10139,7 +10131,7 @@ Restic 不直接存储所有已配置的存储库的列表，当你初始化一�
 
     restic -r sftp:root@106.53.117.41:/data forget 875a2a32
 
-#### 命令行自动备份
+#### restic命令行自动备份
 
 可使用 --password-file 参数来读取存储库的密码文件
 
