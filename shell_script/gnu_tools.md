@@ -16800,13 +16800,19 @@ Fedora 用 flatpak 安装即可
 
 使用 segment 过滤器来将视频流分割成多个较小的文件。这可以通过指定 -f segment 参数和输出文件的前缀来实现。
 
-    $ ffmpeg -rtsp_transport tcp -i rtsp://your_stream_url -c copy -f segment -segment_time 60 stream_piece_%03d.mp4
+    $ ffmpeg -rtsp_transport tcp -i rtsp://your_stream_url -c copy -f segment -segment_time 60 stream_piece_%02d.mp4
 
     -segment_time 60 表示每个视频文件的时长为 60 秒，但稍有误差，h256压缩的视频大概 5.4MB。
 
-    stream_piece_%03d.mp4 是输出文件的格式，%03d 是一个占位符，FFmpeg 会自动为每个文件编号。
+    stream_piece_%02d.mp4 是输出文件的格式，%02d 是一个占位符，FFmpeg 会自动为每个文件编号。
 
-    还可以使用 -limit_filesize 100MB 选项来限制输出文件的大小。当文件达到指定大小时，FFmpeg 将自动开始一个新的文件。
+所以，如果是每 15分钟(900秒) 一个文件，约 81MB，一天就是 96个文件。设置 %02d 会循环使用的文件名，如果只保留一天的视频文件，两位数文件名够用了。
+
+一天下来的容量需求大概 5.4MB * 1440 约 8GB。如果是 32GB 的存储卡，大概能保存 4 天的视频。
+
+如果使用 %3d 做文件名，则最多 1000 个文件，想保留 4 天的话，每个文件的时长最短 1440*60/(1000/4) 约 350 秒。
+
+还可以使用 -limit_filesize 100MB 选项来限制输出文件的大小。当文件达到指定大小时，FFmpeg 将自动开始一个新的文件。
 
 > 推送本地视频到流媒体服务器
 
