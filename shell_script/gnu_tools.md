@@ -16786,6 +16786,32 @@ Fedora 用 flatpak 安装即可
 
         点击 “play” 按钮即可播放。
 
+#### 使用 FFmpeg 录制流视频到文件
+
+分析视频流信息
+
+    $ ffprobe -i rtsp://your_stream_url -show_streams
+
+确认本机是否支持 h265:
+
+    $ ffmpeg -codecs | grep hevc
+
+> 分段录制 RTSP 视频流
+
+使用 segment 过滤器来将视频流分割成多个较小的文件。这可以通过指定 -f segment 参数和输出文件的前缀来实现。
+
+    $ ffmpeg -rtsp_transport tcp -i rtsp://your_stream_url -c copy -f segment -segment_time 60 stream_piece_%03d.mp4
+
+    -segment_time 60 表示每个视频文件的时长为 60 秒，但稍有误差，h256压缩的视频大概 5.4MB。
+
+    stream_piece_%03d.mp4 是输出文件的格式，%03d 是一个占位符，FFmpeg 会自动为每个文件编号。
+
+    还可以使用 -limit_filesize 100MB 选项来限制输出文件的大小。当文件达到指定大小时，FFmpeg 将自动开始一个新的文件。
+
+> 推送本地视频到流媒体服务器
+
+    $ ffmpeg -re -i "D:\test.mp4" -vcodec h264 -acodec aac -f rtsp -rtsp_transport tcp rtsp://192.168.0.110/live/test
+
 #### wine/Bottles
 
 推荐安装 Bottles，这个 wine 的前端更方便，见本章节的最后部分。
