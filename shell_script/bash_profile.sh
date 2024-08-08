@@ -239,7 +239,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias stmab='echo "[systemd 分析计算机启动耗时]" && systemd-analyze blame'
 
     # lvm
-    alias lvvlvs='echo "[lvm显示lv详情]" && sudo lvs -a -o+segtype -o+integritymismatches'
+    alias lvvlvs='echo "[lvm显示lv详情]" && sudo lvs -a -o+integritymismatches -o+devices -o+segtype'
 
     # SELinux
     alias selxr='echo "[SELinux 恢复目录的默认权限设置]" && sudo restorecon -R -v'
