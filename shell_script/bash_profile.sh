@@ -238,6 +238,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias stmav='echo "[systemd 验证单元文件]" && systemd-analyze verify'
     alias stmab='echo "[systemd 分析计算机启动耗时]" && systemd-analyze blame'
 
+    # lvm
+    alias lvvlvs='echo "[lvm显示lv详情]" && sudo lvs -a -o+segtype -o+integritymismatches'
+
     # SELinux
     alias selxr='echo "[SELinux 恢复目录的默认权限设置]" && sudo restorecon -R -v'
     alias selxt='echo "[SELinux 临时关闭或打开]" && sudo setenforce'
