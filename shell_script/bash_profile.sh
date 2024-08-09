@@ -103,8 +103,22 @@ if [ -x /usr/bin/dircolors ]; then
     alias greps='grep -d skip -in'
     # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过.git等目录，如 `finds strinfile`
     alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
+
     alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]" && tree -a -CF -I ".git|__pycache__" -L 2'
     alias pstrees='echo "[进程树，列出pid，及全部子进程]" && pstree -p -s'
+
+    function mvf {
+        if [ "$#" -ne 1 ]; then
+            echo "错误：需要提供一个参数。"
+            echo "使用方法: mvf <文件名模式>"
+            echo '把子目录下的文件都移动到当前目录 `mvf *.mp4`'
+            return 1
+        fi
+
+        local fnn=${1}
+        # find . -type f -name "*.mp4" -print0 | xargs -0 -I {} sh -c 'echo "$1" /mnt/movies/' _ {}
+        find . -type f -name ${fnn} -print0 | xargs -0 -I {} sh -c 'mv "$1" .' _ {}
+    }
 
     # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
     function cpbak {
@@ -164,7 +178,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias ddp='echo "[给dd发信号显示进度信息]" && sudo watch -n 5 killall -USR1 dd'
 
     # du
-    alias dus='echo "[降序列出当前目录下各个文件或目录的大小(MB)]" && (for fdfd in $(ls -aA); do  sudo du -sm $fdfd; done) |sort -n -r'
+    alias dus='echo "[降序列出各个文件的大小(MB)]" && (find . -type f -exec du -sh {} \;)|sort -n -r'
+    alias dud='echo "[降序列出各个子目录的大小]" && (find . -type d -exec du -sh {} \;)|sort -n -r'
     function duh {
         #local target='.'
         #[[ -n $1 ]] && target=$1

@@ -6934,9 +6934,13 @@ newt 库的 whiptail 在命令行环境下，不需要桌面图形界面即可�
 
     find ./ -name "*.jar" |xargs -I{} bash -c "unzip -l {} |grep LicenseUtil && echo {}"
 
-移动指定文件
+普通的移动文件命令，不支持文件名带特殊字符
 
     find ./ -name '*.mp4' -exec mv {} /mnt/movies/ \;
+
+移动指定文件，文件名可以是 'abc [def] :xyz.mp4' 这样特殊字符
+
+    find . -type f -name "*.mp4" -print0 | xargs -0 -I {} sh -c 'mv "$1" /mnt/movies/' _ {}
 
 xargs 命令是给其他命令传递参数的一个过滤器，常作为组合多个命令的一个工具。它主要用于将标准输入数据转换成命令行参数，xargs 能够处理管道或者标准输入并将其转换成特定命令的命令参数。也就是说 find 的结果经过 xargs 后，其实将 find 找出来的文件名逐个传递给 grep 做参数，grep 再在这些文件内容中查找关键字 test。
 
