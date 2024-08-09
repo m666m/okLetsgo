@@ -8142,7 +8142,7 @@ Linux 下，每个算法都是单独的程序：cksum md5sum sha1sum sha256sum s
     SHA256 (bing.jpg) = 90f9a057885b0d72ecca5d6708ca3e9c69419eb6dd46bc5071a4e17e31ed6178
 
     对当前目录下找到的所有文件，生成校验码
-    find . -type f -exec sha256sum \{\} \; > checksum-file
+    find . -type f -exec sha256sum \{\} \; >SHA256SUMS.txt
 
 校验
 

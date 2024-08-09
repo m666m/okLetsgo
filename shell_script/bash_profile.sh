@@ -226,15 +226,19 @@ if [ -x /usr/bin/dircolors ]; then
     alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
 
     # sha256sum
-    alias sha256sums='echo "[sha256sum 按校验和文件逐个校验，跳过缺失文件告警]" && sha256sum --ignore-missing -c'
-    function sha256sumf {
-        # `sha256sumf abc.iso SHA256SUMS.txt`
+    alias shasums='echo "[sha256sum 按校验和文件逐个校验，跳过缺失文件告警]" && sha256sum --ignore-missing -c'
+    function shasumc {
+        # `shasumc abc.iso SHA256SUMS.txt`
         echo "[sha256sum，只下载了一个文件 $1，从校验和文件 $2 中抽出单个文件进行校验]"
         sha256sum -c <(grep $1 $2)
     }
-    function sha256sumd {
-        echo "[sha256sum，对目录 $1 下的所有文件及子目录文件生成一个校验和文件 $2]"
+    function shasumf {
+        echo "[sha256sum 对目录 $1 下的所有文件及子目录文件生成一个校验和文件 $2]"
         find $1 -type f |while read fname; do
+            # if [[ "$fname" = "$1" ]]; then
+            #   continue
+            # fi
+            echo $fname
             sha256sum "$fname" >>$2
         done
     }
