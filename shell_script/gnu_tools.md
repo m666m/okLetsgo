@@ -16516,29 +16516,37 @@ Steam Play 這個計畫讓玩家在購買遊戲後能於 Linux、Windows、macOS
 
 為了安全性考量，Flatpak 版的 Steam 預設只能存取使用者的 $HOME 目录，無法存取其他硬碟。
 
+> 给 steam 增加额外的存储空间
+
+    https://github.com/flathub/com.valvesoftware.Steam/wiki#i-want-to-add-external-disk-for-steam-libraries
+
 如果你想移動 Steam 收藏庫，或是沿用舊有的 Steam 收藏庫，就得開放存取電腦特定目錄的權限。
 
 例如，你的第二個硬碟已經有 Steam 這個目錄，而它的完整路徑是 /run/media/user/SSD2/Steam
 
-首先 使用 flatpak override 指令開放存取權限：
+最简单的方法是使用 `flatseal`
 
-    flatpak override com.valvesoftware.Steam --user --filesystem="/run/media/user/SSD2/Steam"
+    Flatseal -> Steam -> "Filesystem" section -> Other files -> Enter /path/to/mountpoint/
+
+    或者使用 flatpak override 指令開放存取權限：
+
+        flatpak override com.valvesoftware.Steam --user --filesystem="/run/media/user/SSD2/Steam"
 
 然后點選 Steam左上角 → 離開 Steam。然後重新啟動 Steam，即可在左上角 → 設定 → 下載 → Steam 收藏庫資料夾，新增其他硬碟的收藏庫資料夾了。
 
-    如果报错提示无法访问，需要用命令添加
+如果报错提示无法访问，需要用命令添加
 
-        https://github.com/ValveSoftware/steam-for-linux/issues/9640#issuecomment-1887854957
+    https://github.com/ValveSoftware/steam-for-linux/issues/9640#issuecomment-1887854957
 
-    Open with
+Open with
 
-        $ steam steam://open/console
+    $ steam steam://open/console
 
-        Flatpak: use `flatseal` open host filesystem first then run `flatpak run com.valvesoftware.Steam steam://open/console`
+    Flatpak: use `flatseal` open host filesystem first then run `flatpak run com.valvesoftware.Steam steam://open/console`
 
-    Then type in：
+Then type in：
 
-        library_folder_add <path>
+    library_folder_add <path>
 
 ##### Steam Link 用另一部電腦串流遊玩 Linux 電腦的 Steam 遊戲
 
