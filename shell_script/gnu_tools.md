@@ -16534,6 +16534,8 @@ Steam Play 這個計畫讓玩家在購買遊戲後能於 Linux、Windows、macOS
 
         $ steam steam://open/console
 
+        Flatpak: use `flatseal` open host filesystem first then run `flatpak run com.valvesoftware.Steam steam://open/console`
+
     Then type in：
 
         library_folder_add <path>
