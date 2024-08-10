@@ -16530,7 +16530,11 @@ Steam Play 這個計畫讓玩家在購買遊戲後能於 Linux、Windows、macOS
 
         https://github.com/ValveSoftware/steam-for-linux/issues/9640#issuecomment-1887854957
 
-    Open with steam steam://open/console，Then type in：
+    Open with
+
+        $ steam steam://open/console
+
+    Then type in：
 
         library_folder_add <path>
 
