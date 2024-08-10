@@ -16526,6 +16526,14 @@ Steam Play 這個計畫讓玩家在購買遊戲後能於 Linux、Windows、macOS
 
 然后點選 Steam左上角 → 離開 Steam。然後重新啟動 Steam，即可在左上角 → 設定 → 下載 → Steam 收藏庫資料夾，新增其他硬碟的收藏庫資料夾了。
 
+    如果报错提示无法访问，需要用命令添加
+
+        https://github.com/ValveSoftware/steam-for-linux/issues/9640#issuecomment-1887854957
+
+    Open with steam steam://open/console，Then type in：
+
+        library_folder_add <path>
+
 ##### Steam Link 用另一部電腦串流遊玩 Linux 電腦的 Steam 遊戲
 
     https://store.steampowered.com/app/353380/Steam_Link
