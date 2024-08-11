@@ -109,8 +109,6 @@ if [ -x /usr/bin/dircolors ]; then
 
     function mvf {
         if [ "$#" -ne 1 ]; then
-            echo "错误：需要提供一个参数。"
-            echo "使用方法: mvf <文件名模式>"
             echo '把子目录下的文件都移动到当前目录 `mvf *.mp4`'
             return 1
         fi
