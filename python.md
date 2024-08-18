@@ -2516,21 +2516,22 @@ typings\pyqtgraph\Qt\__init__.pyi:
 
 ```bash
 # https://github.com/microsoft/pylance-release/issues/4823
-# Modify here with your project dir
-Common_Base="${HOME}/py_projects/typestub_env_p310/typings"
+# Modify here with your envs
+Envs_Base="${HOME}/pyenvs"
+Typings_Base="${Envs_Base}/typestub_env_p311/typings"
 
 function typestub_for_pg {
-    # Modify here with your conda envs
-    Conda_pkgs_pyqtgraph="${HOME}/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6"
-    Common_Base_pyqtgraph="${Common_Base}/pyqtgraph/Qt"
+    # Modify here with your pyqtgraph pkgs
+    Env_pkgs_pyqtgraph="${Envs_Base}/py311/lib64/python3.11/site-packages/PyQt6"
+    Typings_pyqtgraph="${Typings_Base}/pyqtgraph/Qt"
 
-    mkdir -p $Common_Base_pyqtgraph
+    mkdir -p $Typings_pyqtgraph
 
-    cd $Common_Base_pyqtgraph
+    cd $Typings_pyqtgraph
 
     echo "from . import Qt as Qt" > ../__init__.pyi
 
-    for fname in $(ls ${Conda_pkgs_pyqtgraph}/*.pyi); do
+    for fname in $(ls ${Env_pkgs_pyqtgraph}/*.pyi); do
         ln -s $fname
     done
 
@@ -2542,7 +2543,7 @@ function typestub_for_pg {
 }
 
 typestub_for_pg
-echo -e "\nAdd below to your VSCode settings: \n     \"python.analysis.stubPath\":\"${Common_Base}\","
+echo -e "\nAdd below to your VSCode settings: \n     \"python.analysis.stubPath\":\"${Typings_Base}\","
 ```
 
 #### 格式化 yapf、black
