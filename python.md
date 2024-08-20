@@ -157,7 +157,7 @@ pip 安装的有些包调用c语言库，需要安装c开发环境和对应的�
     # https://snarky.ca/why-you-should-use-python-m-pip/
     优先使用`python3 -m pip install xxxx`， 不要用 `pip3 install`，因为你用`python -m pip`运行pip时环境是确定的，包名也是确定的。
 
-    不要根据 pip 的提示使用 sudo 执行 或 --user 参数，因为 pip 命令不像 conda/virtualenv一样，他不知道虚拟环境，会直接写入你的操作系统的基础环境，即使你已经切换到了 python 的虚拟环境中
+    不要根据 pip 的提示使用 sudo 执行 或 --user 参数，因为 pip 命令不像 conda 或virtualenv，pip 不知道虚拟环境，会直接写入你的操作系统的基础环境，即使你已经切换到了 python 的虚拟环境中
 
 如果需要升级 pip，也是在你的虚拟环境里升级
 
@@ -461,17 +461,17 @@ virtualenv 依赖操作系统内安装好的 python，主要解决多个项目�
 1.安装虚拟环境的第三方包 virtualenv
 
     pip install virtualenv
-    pip install virtualenv -i https://pypi.python.org/simple/
 
+    pip install -i https://pypi.python.org/simple virtualenv
     # 使用清华源安装：
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple virtualenv
 
     # 升级 pip 到最新的版本 (>=10.0.0) 后进行配置：
     pip install pip -U
     # 临时使用本镜像站来升级 pip
     pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
 
-    # 设为默认
+    # 设清华源为默认
     pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
 2.创建虚拟环境
