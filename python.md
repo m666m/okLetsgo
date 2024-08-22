@@ -2517,14 +2517,17 @@ typings\pyqtgraph\Qt\__init__.pyi:
 ```bash
 # https://github.com/microsoft/pylance-release/issues/4823
 # Modify here with your envs
-Envs_Base="${HOME}/pyenvs"
-Typings_Base="${Envs_Base}/typestub_env_p311/typings"
+ENV_BASE="${HOME}/anaconda3/envs"
+ENV_DIR="${ENV_BASE}/p311"
+
+TYPINGS_BASE="${ENV_DIR}_typestub/typings"
+mkdir -p  $TYPINGS_BASE
 
 function typestub_for_pg {
     # Modify here with your pyqtgraph pkgs
-    Env_pkgs_pyqtgraph="${Envs_Base}/py311/lib64/python3.11/site-packages/PyQt6"
-    Typings_pyqtgraph="${Typings_Base}/pyqtgraph/Qt"
+    Env_pkgs_pyqtgraph="${ENV_DIR}/lib/python3.11/site-packages/PyQt6"
 
+    Typings_pyqtgraph="${TYPINGS_BASE}/pyqtgraph/Qt"
     mkdir -p $Typings_pyqtgraph
 
     cd $Typings_pyqtgraph
@@ -2543,7 +2546,9 @@ function typestub_for_pg {
 }
 
 typestub_for_pg
-echo -e "\nAdd below to your VSCode settings: \n     \"python.analysis.stubPath\":\"${Typings_Base}\","
+
+echo -e "\nAdd below to your VSCode settings: \n     \"python.analysis.stubPath\":\"${TYPINGS_BASE}\","
+
 ```
 
 #### 格式化 yapf、black
