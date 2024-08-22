@@ -8684,7 +8684,7 @@ Group=pi
 WorkingDirectory=/home/pi
 #
 ExecStartPre=/bin/bash /usr/local/etc/aria2/tracker.sh /usr/local/etc/aria2/aria2.conf
-ExecStart=/usr/bin/aria2c --conf-path=/usr/local/etc/aria2/aria2.conf --enable-rpc --rpc-secret=your_password --dir=your_dir --save-session=/usr/local/etc/aria2/download.session --input-file=/usr/local/etc/aria2/download.session --dht-file-path=/usr/local/etc/aria2/dht.dat --dht-file-path6=/usr/local/etc/aria2/dht6.dat --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-listen-port=26701 --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+ExecStart=/usr/bin/aria2c --conf-path=/usr/local/etc/aria2/aria2.conf --enable-rpc --rpc-secret=YOUR_PASS --dir=YOUR_DIR --save-session=/usr/local/etc/aria2/download.session --input-file=/usr/local/etc/aria2/download.session --dht-file-path=/usr/local/etc/aria2/dht.dat --dht-file-path6=/usr/local/etc/aria2/dht6.dat --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-listen-port=26701 --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
 Restart=always
@@ -8693,7 +8693,7 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
-上面内容替换 your_dir 和 your_password，在目录 /usr/local/etc/aria2/ 下保存 aria2.conf 配置文件
+上面内容替换 YOUR_DIR 和 YOUR_PASS，在目录 /usr/local/etc/aria2/ 下保存 aria2.conf 配置文件
 
     因为使用普通用户执行，注意你设置的 your_dir 目录对该用户是可写的
 
