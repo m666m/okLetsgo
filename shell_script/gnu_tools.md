@@ -10952,11 +10952,10 @@ Python 3，注意包名变了，使用端口 7777
     钟表
 
         # watch -n1 "date '+%D%n%T'|figlet -k"
-        watch -n1 "date '+%D %T'|figlet -f future.tlf -w 80"
+        $ watch -n1 "date '+%D %T'|figlet -f future.tlf -w 80"
 
-        # 温度及钟表
-        # watch -n1  "date '+%D %T ' && vcgencmd measure_temp |figlet -f future.tlf -w 80 "
-        watch -n1  "(date '+%T'; vcgencmd measure_temp) |tr '\n' ' ' |figlet -f future.tlf -w 80 "
+        # 温度及钟表：需要尝试0或1 /sys/class/hwmon/hwmon1/temp1_input
+        $ watch -n1 "(date '+%T'; (echo 'scale=1;' |tr '\n' ' '; (cat /sys/class/thermal/thermal_zone0/temp |tr '\n' ' '; echo '/ 1000') ) |bc; echo C) |tr '\n' ' '|figlet -f future.tlf -w 80"
 
 字符画 boxes
 
