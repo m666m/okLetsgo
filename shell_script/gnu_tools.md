@@ -14890,7 +14890,7 @@ VNC 协议本身没有加密或保护，所以你通过它发送的任何东西�
 
 然后就可以连接该远程服务器了，在 Remmina 窗口的下半部分列表中，选择你的刚才建立的配置文件，双击即可开启远程桌面窗口了。
 
-如果连接失败，可以点工具栏的三个横线，选择“Debugging”，然后重新连接，查看“Debugging”窗口的输出内容。
+如果连接失败，可以点工具栏的三个横线，选择“Debugging”，然后重新连接，查看“Debugging”窗口的输出内容
 
     如果显示的信息偏少看不到具体报错原因，则需要用命令行启动 remmina：
 
@@ -14899,6 +14899,8 @@ VNC 协议本身没有加密或保护，所以你通过它发送的任何东西�
 
         # flatpak安装的
         $ G_MESSAGES_PREFIXED=all G_MESSAGES_DEBUG=all flatpak run org.remmina.Remmina
+
+    我遇到的是缺少 ffmpeg，在命令行启动 remmina 才看到报错提示：Failed to create h264 codec context,libfreerdp returned code is 00000000。说明你的 Linux 桌面环境需要安装完全版本的 ffmpeg，详见章节 [安装 full ffmpeg](init_a_server think)。
 
 #### 使用 xrdp 服务端
 
