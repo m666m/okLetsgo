@@ -13924,6 +13924,8 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
         https://wiki.hyprland.org/Getting-Started/Master-Tutorial/
 
+        https://cascade.moe/posts/hyprland-configure/
+
         https://www.bilibili.com/read/cv22707313/
 
         不使用 wayland 的 Hypr --- 使用 Xorg 的窗口管理器
