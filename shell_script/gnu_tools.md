@@ -14902,7 +14902,7 @@ VNC 协议本身没有加密或保护，所以你通过它发送的任何东西�
         # flatpak安装的
         $ G_MESSAGES_PREFIXED=all G_MESSAGES_DEBUG=all flatpak run org.remmina.Remmina
 
-    我遇到的是缺少 ffmpeg，在命令行启动 remmina 才看到报错提示：Failed to create h264 codec context,libfreerdp returned code is 00000000。说明你的 Linux 桌面环境需要安装完全版本的 ffmpeg，详见章节 [安装 full ffmpeg](init_a_server think)。
+    我遇到的是缺少 openH264，在命令行启动 remmina 才看到报错提示：Failed to create h264 codec context,libfreerdp returned code is 00000000。发行版一般都提供这个软件的安装包或单独的存储库。
 
 #### 使用 xrdp 服务端
 
@@ -17144,4 +17144,6 @@ Wine 使用一个被称之为 “Wineprefix” 的配置目录来控制使用 Wi
 
     https://linux.cn/article-14285-1.html
 
-竞品还有 whisky
+竞品还有 Whisky，在Mac上运行Windows软件和游戏
+
+    https://github.com/Whisky-App/Whisky
