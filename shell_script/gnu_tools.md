@@ -16906,7 +16906,7 @@ proton 是 Valve 为他们的 steam 弄的 wine 衍生版，部分 steam 游戏�
 
 先安装官方存储库
 
-    # https://wiki.winehq.org/Fedora
+    # https://wiki.winehq.org/Category:Distributions
     # https://dl.winehq.org/wine-builds/fedora/
     $ sudo dnf config-manager --add-repo https://dl.winehq.org/wine-builds/fedora/$(rpm -E %fedora)/winehq.repo
 
@@ -16923,6 +16923,12 @@ proton 是 Valve 为他们的 steam 弄的 wine 衍生版，部分 steam 游戏�
     wine --version
 
 wine 的官方存储库为了区别于 Fedora 默认存储库，软件包的名称是不同的，比较容易区分。
+
+> 国内镜像
+
+    https://mirrors.tuna.tsinghua.edu.cn/help/wine-builds/
+
+    https://help.mirrors.cernet.edu.cn/wine-builds/
 
 > 安装后的配置工作：
 

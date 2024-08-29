@@ -637,6 +637,8 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
 3、也可添加清华源
 
+    https://help.mirrors.cernet.edu.cn/fdroid/
+
     https://mirrors.tuna.tsinghua.edu.cn/help/fdroid/
 
 如果需要添加清华源的 Archive 库，可以使用如下链接：
@@ -888,7 +890,9 @@ busybox跟它比，简直就是小弟 <https://stackoverflow.com/questions/40140
 
 ### Termux 替换官方源为 TUNA 镜像源
 
-    清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/termux/>
+    清华源 https://mirrors.tuna.tsinghua.edu.cn/help/termux
+
+    https://help.mirrors.cernet.edu.cn/termux/
 
 图形界面（TUI）
 在较新版的 Termux 中，官方提供了图形界面（TUI）来半自动替换镜像，推荐使用该种方式以规避其他风险。 在 Termux 中执行如下命令

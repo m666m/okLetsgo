@@ -372,7 +372,8 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 全局使用清华源
 
-    # <https://mirrors.tuna.tsinghua.edu.cn/help/pypi/>
+    # https://mirrors.tuna.tsinghua.edu.cn/help/pypi
+    # https://help.mirrors.cernet.edu.cn/pypi/
 
     # 切换到base环境(conda/virtualenv等)
     conda activate
