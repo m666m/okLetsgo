@@ -16889,20 +16889,20 @@ wine 模拟 Win32 接口调用的中间层，类似 MGW 和 Cygwin 的实现思�
 
 proton 是 Valve 为他们的 steam 弄的 wine 衍生版，部分 steam 游戏使用它；crossover 是 wine 的一个商业应用。
 
-> 从 Fedora 存储库安装 Wine
+可以从发行版自带的存储库 dnf 安装，或使用 wine 官方存储库安装 Wine 的最新稳定版：
 
-可以从发行版自带的存储库 dnf 安装，或使用 wine 官方存储库安装 Wine 的最新稳定版
+> 从 Fedora 存储库安装 Wine
 
 目前大多数游戏和 Windows 应用程序是为 32 位体系结构系统开发的，为了更好的兼容性，应该安装 32 位的版本
 
     # sudo dnf install wine
-    $ sudo dnf install wine.i686
+    $ sudo dnf install wine.i686 wine-mono
 
     $ wine --version
 
 > 使用 wine 官方存储库安装 Wine
 
-主要目的是从 Wine 官方存储库安装的稳定版本，比 Fedora 默认存储库中可用的版本更新。缺点是一旦你的操作系统大版本升级，要记得删除之前手动安装的第三方存储库，升级后换为对应的存储库。
+主要目的是从 Wine 官方存储库安装的稳定版本，比 Fedora 默认存储库中可用的版本新。缺点是一旦你的操作系统大版本升级，要记得删除之前手动安装的第三方存储库，升级后换为对应的存储库。而且 Fedora 下没有国内镜像，从这个库下载比较痛苦。
 
 先安装官方存储库
 
@@ -16914,13 +16914,13 @@ proton 是 Valve 为他们的 steam 弄的 wine 衍生版，部分 steam 游戏�
 
 然后再安装稳定版
 
-    sudo dnf install winehq-stable
+    $ sudo dnf install winehq-stable
 
     如果喜欢尝鲜，等不及稳定版，可以试试暂存版
 
-        sudo dnf install winehq-staging
+        $ sudo dnf install winehq-staging
 
-    wine --version
+    $ wine --version
 
 wine 的官方存储库为了区别于 Fedora 默认存储库，软件包的名称是不同的，比较容易区分。
 
@@ -17028,7 +17028,7 @@ NOTE：不要以 `sudo` 执行 winecfg
 
     $ wine regedit xxx.reg 直接导入注册表
 
-在英文 Linux 下执行 win 7 时代的简体中文程序
+在英文 Linux 下执行 Win 7/WinXp 时代的简体中文程序
 
     # en_US.utf8
     $ env LANG=zh_CN.GBK wine your_app.exe
