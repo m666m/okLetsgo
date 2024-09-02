@@ -12125,9 +12125,11 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
             中文资料比较多 https://www.kodi.org.cn/ http://www.kodiplayer.cn/
 
-            更换为清华源 https://mirrors.tuna.tsinghua.edu.cn/help/kodi/
+        界面和文件列表支持中文：设置->界面->皮肤->字体，把默认字体改为 Arial,然后就可以切换语言 Regional——language——Chinese（simple）。如果没有出现 Chinese 选项：使用 addon 里选择 repo 访问下网络，然后才可以设置“界面外观” 选择语言为中文。
 
-        界面和文件列表支持中文：设置->界面->皮肤->字体，把默认字体改为 Arial,然后就可以切换语言 Regional——language——Chinese（simple）。如果没有出现 Chinese 选项：使用 addon 里选择 repo 访问下网络，然后才可以设置“界面外观” 选择语言为中文，如果插件界面列不出来，多试几次，不行就换清华源。
+        如果插件界面列不出来，多试几次，不行就换清华源
+
+             https://mirrors.tuna.tsinghua.edu.cn/help/kodi/
 
         建议把设置模式调为“专家”，这样设置选项会多出来很多。
 
