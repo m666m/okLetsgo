@@ -9712,6 +9712,9 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
     # 除了使用双冒号，也可以直接用rsync://
     rsync -av source/ rsync://192.168.122.32/module/destination
 
+    # 断点续传：如果源文件在传的过程中变了，或一开始就断连了，续传是无效的
+    rsync -avth --ignore-existing --partial --progress --bwlimit=4000 --exclude='*.xxx' /path1/ xxx@192.111.11.111:/path2/
+
 #### 示例
 
 一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`。
