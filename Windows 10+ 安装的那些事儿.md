@@ -2362,6 +2362,74 @@ NAT 模式：
 
 目前看是企业级应用优先，在 Windows Sever 上才有 DDA，M$ 忙着赚 AI 云计算的钱呢。
 
+### 使用 VM Ware、安卓模拟器等虚拟机提示需要关闭 Hyper-V
+
+该问题已经在 2022 版的 Windows 10 中解决了
+
+    开启功能：虚拟机平台 VirtualMachinePlatform 即可支持各虚拟机软件正常运行
+
+Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但有限制：必须为 Windows 10 20H1（也叫 2004 版）或更高版本。
+
+当基于独占设计的 Hyper-V 启用后，会持续占用，造成其他基于同类技术的虚拟机将无法启动。且部分虚拟机产品在确认检测到相应情况后还要强行执行，就造成了 Windows 死机蓝屏。
+
+在“启用或关闭 Windows 功能”中卸载 hyper-v 功能后，依旧是提示无法安装或使用虚拟机，因为通常会启用 Hyper-V 的操作有如下几项：
+
+    Hyper-V 平台；
+
+    Windows Defender 应用程序防护，Windows 安全中心：“应用和浏览器保护”，关闭隔离浏览；
+
+    Windows 沙盒；
+
+    Windows 安全中心：设备安全性模块的的内核隔离（内存完整性）；
+
+    Visual Studio 内涉及到设备模拟的虚拟化方案；
+
+所以必须确保以上列表内所有项目被正确关闭后，Hyper-V 平台才能被真正关闭。单纯的进入主板 BIOS 将 Intel VT-x 设为 Disabled 是解决不了问题的。
+
+管理员身份运行命令提示符 cmd
+
+        bcdedit 或 bcdedit /enum all 显示全部
+
+查看校对"Windows 启动加载器"中对应项目的 hypervisorlaunchtype 值
+
+> 没有安装 hyper-V 时
+
+1. 管理员身份运行命令提示符 cmd（如果用 PowerShell，符号{}会导致报错）：
+
+        bcdedit /copy {current} /d "Windows10 No Hyper-V"
+
+2. 将上面命令得到的字符串替换掉下面{}中的 XXX 代码即可
+
+        bcdedit /set {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX} hypervisorlaunchtype OFF
+
+3. 提示成功后再次输入
+
+        bcdedit
+
+    查看校对"Windows 启动加载器"中对应项目的 hypervisorlaunchtype 值是 Off
+
+4. 重启计算机，出现 Windows 10 启动选择， 就能选择是否启用 Hyper-v：
+
+    Windows10 No Hyper-V”中，可以运行 Vmware 虚拟机，而另一个启动选项运行 Hyper-v。
+
+5. 以后想要删除，因为有了启动菜单，所以可以运行 msconfig 用图形界面来编辑选择了。
+
+注意：这是在没有安装hyper-V时候执行的，{current}的hypervisorlaunchtype是off。
+
+> 已经安装了 hyper-V 时
+
+或者 hypervisorlaunchtype 是 auto
+
+    https://www.zhihu.com/question/38841757/answer/294356882
+
+在复制启动项的时候要注意哪一个启动项是要开启 hyper-V 的，“Windows10 no hyper-V” 是新启动项的描述，有没有 no 不要弄混了。
+
+在执行之后会得到新启动项的标识符，如果修改当前启动项，可以用 bcdedit /set hypervisorlaunchtype off，如果修改非 current 启动项，则需要指明标识符，bcdedit /set {标识符} hypervisorlaunchtype off
+
+Hyper-V 其实也分1代2代，tenforums 的详细说明
+
+    https://www.tenforums.com/tutorials/139405-run-hyper-v-virtualbox-vmware-same-computer.html
+
 ### docker (Hyper-V)
 
 Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7 上的 docker 是安装了 virtual box 虚拟机。
@@ -2370,7 +2438,9 @@ Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7
 
     https://docs.docker.com/desktop/Windows/wsl/
 
-完整 Windows api 的是 Windows 和 Windows Server，其它的 Windows 版本仅支持 .net，注意不同映像的区别 <https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/container-base-images>
+完整 Windows api 的是 Windows 和 Windows Server，其它的 Windows 版本仅支持 .net，注意不同映像的区别
+
+    https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/container-base-images
 
 ### WSL 适用于 Linux 的 Windows 子系统
 
@@ -2795,74 +2865,6 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 最后要说明的一点是，这个系统是安装在 C:\Users\%user_name%\AppData\Local\lxss 中的，所以会占用 c 盘的空间，所以最好把数据之类的都保存在其他盘中，这样不至于使 c 盘急剧膨胀。
 
 后续关于如何更换国内源、配置 ubuntu 桌面并进行 vnc 连接，参见 <https://sspai.com/post/43813>
-
-### 使用 VM Ware、安卓模拟器等虚拟机提示需要关闭 Hyper-V
-
-该问题已经在 2022 版的 Windows 10 中解决了
-
-    开启功能：虚拟机平台 VirtualMachinePlatform 即可支持各虚拟机软件正常运行
-
-Vmware workstation 升级到 15.5.5 版本后就可以兼容 Hyper-V 了，但有限制：必须为 Windows 10 20H1（也叫 2004 版）或更高版本。
-
-当基于独占设计的 Hyper-V 启用后，会持续占用，造成其他基于同类技术的虚拟机将无法启动。且部分虚拟机产品在确认检测到相应情况后还要强行执行，就造成了 Windows 死机蓝屏。
-
-在“启用或关闭 Windows 功能”中卸载 hyper-v 功能后，依旧是提示无法安装或使用虚拟机，因为通常会启用 Hyper-V 的操作有如下几项：
-
-    Hyper-V 平台；
-
-    Windows Defender 应用程序防护，Windows 安全中心：“应用和浏览器保护”，关闭隔离浏览；
-
-    Windows 沙盒；
-
-    Windows 安全中心：设备安全性模块的的内核隔离（内存完整性）；
-
-    Visual Studio 内涉及到设备模拟的虚拟化方案；
-
-所以必须确保以上列表内所有项目被正确关闭后，Hyper-V 平台才能被真正关闭。单纯的进入主板 BIOS 将 Intel VT-x 设为 Disabled 是解决不了问题的。
-
-管理员身份运行命令提示符 cmd
-
-        bcdedit 或 bcdedit /enum all 显示全部
-
-查看校对"Windows 启动加载器"中对应项目的 hypervisorlaunchtype 值
-
-> 没有安装 hyper-V 时
-
-1. 管理员身份运行命令提示符 cmd（如果用 PowerShell，符号{}会导致报错）：
-
-        bcdedit /copy {current} /d "Windows10 No Hyper-V"
-
-2. 将上面命令得到的字符串替换掉下面{}中的 XXX 代码即可
-
-        bcdedit /set {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX} hypervisorlaunchtype OFF
-
-3. 提示成功后再次输入
-
-        bcdedit
-
-    查看校对"Windows 启动加载器"中对应项目的 hypervisorlaunchtype 值是 Off
-
-4. 重启计算机，出现 Windows 10 启动选择， 就能选择是否启用 Hyper-v：
-
-    Windows10 No Hyper-V”中，可以运行 Vmware 虚拟机，而另一个启动选项运行 Hyper-v。
-
-5. 以后想要删除，因为有了启动菜单，所以可以运行 msconfig 用图形界面来编辑选择了。
-
-注意：这是在没有安装hyper-V时候执行的，{current}的hypervisorlaunchtype是off。
-
-> 已经安装了 hyper-V 时
-
-或者 hypervisorlaunchtype 是 auto
-
-    https://www.zhihu.com/question/38841757/answer/294356882
-
-在复制启动项的时候要注意哪一个启动项是要开启 hyper-V 的，“Windows10 no hyper-V” 是新启动项的描述，有没有 no 不要弄混了。
-
-在执行之后会得到新启动项的标识符，如果修改当前启动项，可以用 bcdedit /set hypervisorlaunchtype off，如果修改非 current 启动项，则需要指明标识符，bcdedit /set {标识符} hypervisorlaunchtype off
-
-Hyper-V 其实也分1代2代，tenforums 的详细说明
-
-    https://www.tenforums.com/tutorials/139405-run-hyper-v-virtualbox-vmware-same-computer.html
 
 ### Windows安卓子系统WSA
 
