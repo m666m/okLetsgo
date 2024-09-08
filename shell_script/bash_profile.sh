@@ -105,6 +105,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
 
     alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]" && tree -a -CF -I ".git|__pycache__" -L 2'
+    alias treeh='echo "[树形列出目录及文件大小]" && tree --du -h'
     alias pstrees='echo "[进程树，列出pid，及全部子进程]" && pstree -p -s'
 
     function mvf {
