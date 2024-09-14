@@ -12093,6 +12093,8 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
         https://www.videolan.org/vlc/index.zh_CN.html
             https://github.com/videolan/vlc
 
+        Fedora: dnf group install 'VideoLAN Client'  # vlc vlc-plugin-ffmpeg vlc-plugin-gstreamer vlc-plugin-pipewire
+
         插件安装：VLSub，可以搜索下载字幕
 
         调整字幕时间轴热键 g、h
