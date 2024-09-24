@@ -9611,9 +9611,9 @@ scp 基本用法
 
     rsync source/ destination/ - would copy the contents of the source folder into the destination folder.
 
-用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器。
+用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器
 
-    默认设置是使用文件大小和修改时间来判断文件是否需要更新
+    默认的行为是，使用文件大小和修改时间来判断文件是否需要更新
 
 scp 不占资源，不会提高多少系统负荷，在这一点上，rsync 就远远不及它了。虽然 rsync 比 scp 会快一点，但当小文件众多的情况下，rsync 会导致硬盘 I/O 非常高，而 scp 基本不影响系统正常使用。所以使用时根据自己的情况酌情决定选用哪个。
 
@@ -9644,7 +9644,13 @@ rsync 命令提供使用的 OPTION 及功能
 
     -r    以递归模式处理子目录，它主要是针对同步目录来说的，如果单独传一个文件不需要加 -r 选项，但是传输目录时必须加。 --relative /var/www/uploads/abcd
 
+    -z    加上该选项，将会在传输过程中压缩。
+
     -v    打印一些信息，比如文件列表、文件数量等。
+
+    -h    让输出信息人性化可读
+
+    --progress    在同步的过程中可以看到同步的过程状态，比如统计要同步的文件数量、 同步的文件传输速度等。
 
     -n    模拟命令执行的结果，并不真的执行命令(--dry-run) 。
 
@@ -9662,22 +9668,33 @@ rsync 命令提供使用的 OPTION 及功能
 
     -D    保持设备文件信息。
 
-    -t    保持文件时间信息。
+    -t    保持文件的修改时间信息。
 
     --delete  多次备份时源目录中已经删除的文件也会在目标目录中删除，默认会保留。默认情况下，rsync 只确保源目录的所有内容（明确排除的文件除外）都复制到目标目录，它不会使两个目录保持相同，并且不会删除文件。如果要使得目标目录成为源目录的镜像副本，则必须使用--delete参数，这将删除只存在于目标目录、不存在于源目录的文件。
 
-    --exclude=PATTERN    指定排除不需要传输的文件，等号后面跟文件名，可以是通配符模式（如 *.txt）。
-
-    --progress    在同步的过程中可以看到同步的过程状态，比如统计要同步的文件数量、 同步的文件传输速度等。
+    --exclude=PATTERN   指定排除不需要传输的文件，等号后面跟文件名，可以是通配符模式（如 *.txt）。
 
     -u    把 DEST 中比 SRC 还新的文件排除掉，不会覆盖。
-    -z    加上该选项，将会在传输过程中压缩。
 
-    --append-verify 指定文件接着上次中断的地方，继续传输。对传输完成后的文件进行一次校验。如果校验失败，将重新发送整个文件。
-
-    --checksum      使用校验和判断文件变更，等同参数 -c
+    -c 或 --checksum    使用校验和判断文件变更，而不是默认的文件大小变化或文件修改时间变化
 
     --size-only     只同步大小有变化的文件，不考虑文件修改时间的差异。
+
+    --partial       告诉 rsync 保留那些未传输完成的文件，以便可以在下次传输时继续。部分传输的文件通常会被存放在目标目录中，但它们会被放置在一个以 .rsync-partial 命名的隐藏目录里。这个隐藏目录会在目标路径下自动创建，用于存放在传输过程中断时的部分文件。
+
+    --append-verify 与 --partial 类似，它也允许从中断的地方继续传输。但除此之外，它还会在传输完成后对文件进行校验，如果校验失败，则会重新传输该文件。这是对数据完整性更好的选择，但是会大大降低数据同步的速度。
+
+自动尝试断点续传的触发条件：
+
+    重新执行的命令必须与最初中断的命令完全相同，包括源文件、目标文件以及使用的参数。
+
+    rsync 会检查目标路径下是否存在未完成的文件部分，检查源文件的大小和修改时间，如果找到了这样的部分文件，rsync 会从上次中断的地方继续传输。
+
+    如果源文件在传的过程中改变了，或一开始就断连了，不会进行续传
+
+    如果使用了 --inplace 参数，rsync 会直接在目标位置更新文件，而不是首先将数据传输到临时文件然后再重命名。这种情况下，rsync 不会保留未完成的传输数据。
+
+    如果使用了 --whole-file 参数，rsync 会传输整个文件，而不是增量传输，因此不会进行断点续传。
 
 以上也仅是列出了 rsync 命令常用的一些选项，对于初学者来说，记住最常用的几个即可，比如 -a、-v、-z、--delete 和 --exclude。
 
@@ -9701,11 +9718,9 @@ rsync 有 5 种不同的工作模式：
 
 第四种和第三种是相对的，同样第五种和第二种是相对的，它们各自之间的区别在于登陆认证时使用的验证方式不同。
 
-在 rsync 命令中的远程操作，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议。ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量，但优势是更加安全；反之，ssh 协议使用方便，无需进行配置，但有泄漏服务器密码的风险。
+> 使用 rsync://协议
 
-远程操作的 rsync 协议
-
-rsync://协议（默认端口873）进行传输。具体写法是服务器与目标目录之间使用双冒号分隔`::`。
+在 rsync 命令中的远程操作，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议，默认端口873。ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量，但优势是更加安全；反之，ssh 协议使用方便，无需进行配置，但有泄漏服务器密码的风险。
 
     # module并不是实际路径名，而是 rsync 守护程序指定的一个资源名，由管理员分配
     rsync -av source/ 192.168.122.32::module/destination
@@ -9713,19 +9728,111 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
     # rsync 守护程序分配的所有 module 列表
     rsync rsync://192.168.122.32
 
-    # 除了使用双冒号，也可以直接用rsync://
+    # 除了使用双冒号，也可以直接用 rsync://
     rsync -av source/ rsync://192.168.122.32/module/destination
 
-    # 断点续传：如果源文件在传的过程中变了，或一开始就断连了，续传是无效的
-    rsync -avth --ignore-existing --partial --progress --bwlimit=4000 --exclude='*.xxx' /path1/ xxx@192.111.11.111:/path2/
+> rsyncd 守护进程
 
-#### 示例
+rsyncd 通常配置在源服务器上，它监听客户端的连接请求，并允许客户端同步（拷贝）文件。这里的“源服务器”是指拥有你想要同步的文件的服务器，而“目标服务器”可以是任何需要这些文件的服务器。
+
+源服务器的 rsyncd.conf 配置：
+
+```conf
+# rsyncd.conf
+
+# 用户和组
+uid = nobody
+gid = nogroup
+
+# 最大连接数
+max connections = 4
+
+# 守护进程模式
+use chroot = yes
+chroot = /path/to/chroot
+
+# 日志文件
+log file = /var/log/rsync.log
+
+# PID 文件
+pid file = /var/run/rsyncd.pid
+
+# 拒绝对 .sensitive 文件夹的访问
+read only = yes
+exclude = .sensitive/
+
+# [module_name] 定义了一个可以被同步的模块
+[module_name]
+path = /path/to/directory/on/server
+comment = This is a comment
+read only = no
+list = yes
+uid = nobody
+gid = nogroup
+
+# 可以添加更多的模块
+[another_module]
+path = /another/path/on/server
+comment = Another comment
+```
+
+在这个配置文件中：
+
+    uid 和 gid 指定了运行 rsync 守护进程的用户和组。
+
+    max connections 指定了同时可以有多少个连接。
+
+    use chroot = yes 和 chroot 指定了 rsync 守护进程将使用 chroot 监狱来限制访问。
+
+    log file 和 pid file 分别指定了日志文件和 PID 文件的位置。
+
+    read only = yes 和 exclude = .sensitive/ 指定了同步操作是只读的，并且排除了 .sensitive 文件夹。
+
+    [module_name] 是一个模块，它定义了客户端可以同步的文件和目录。
+
+    path 指定了服务器上的同步目录。
+
+    comment 是一个可选的描述。
+
+    read only 可以设置为 no 来允许写入操作。
+
+    list 设置为 yes 允许客户端列出模块中的文件。
+
+    uid 和 gid 指定了文件的拥有者和组。
+
+客户端执行同步：
+
+    rsync -avz rsync://remote_host::module_name /path/to/local/directory
+
+remote_host 是守护进程运行的服务器的主机名或 IP 地址。
+
+module_name 是你在 rsyncd.conf 中定义的模块名。
+
+/path/to/local/directory 是客户端的目标目录。
+
+注意事项
+
+    权限：确保源服务器上的 rsync 守护进程有权限访问指定的文件和目录。
+
+    安全性：如果使用非加密的连接，数据可能会被截获。使用 SSH 隧道或其他加密方法可以提高安全性。
+    如果你希望允许写入操作，确保 read only 设置为 no，并且服务器上的目录有适当的写入权限。
+
+    性能：rsync 守护进程可以配置为使用 chroot 监狱来限制进程的活动范围，提高安全性。
+
+    如果你使用 SSH 进行传输，可以在客户端命令中添加 -e ssh 选项。
+
+通过这种方式，rsync 守护进程允许客户端从源服务器同步文件，而客户端可以是任何需要这些文件的目标服务器。
+
+#### rsync 命令行示例
 
 一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`。
 
 如果不确定 rsync 执行后会产生什么结果，先 -n 模拟跑下看看输出
 
     rsync -anv source/ destination
+
+    # 断点续传
+    rsync -avth --partial --progress --bwlimit=4000 --exclude='*.xxx' /path1/ xxx@192.111.11.111:/path2/
 
 注意区分：源目录是否写'/'处理方式的不同
 
@@ -9742,7 +9849,7 @@ rsync://协议（默认端口873）进行传输。具体写法是服务器与目
     # 同步时排除某些文件或目录，可以用多个--exclude
     rsync -av --exclude='*.txt' source/ destination
 
-    # rsync 会同步以"点"开头的隐藏文件，如果要排除隐藏文件
+    # rsync 会同步 . 开头的隐藏文件，如果要排除隐藏文件
     rsync -av --exclude=".*" source/ destination
 
     # 排除某个目录里面的所有文件，但不希望排除目录本身
