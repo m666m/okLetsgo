@@ -9589,15 +9589,15 @@ scp 基本用法
 
 ### 文件同步 rsync
 
+rsync 用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器。其默认的行为是，使用文件大小和修改时间来判断目标文件是否需要更新
+
     http://rsync.samba.org
 
-    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/selinux_users_and_administrators_guide/chap-managing_confined_services-rsync
+    https://www.ruanyifeng.com/blog/2020/08/rsync.html
 
     rsync 完全手册 https://www.junmajinlong.com/linux/index/#Linux%E5%9F%BA%E6%9C%AC%E6%9C%8D%E5%8A%A1
 
     https://blog.csdn.net/wanli245/article/details/80317255
-
-    https://www.ruanyifeng.com/blog/2020/08/rsync.html
 
     http://c.biancheng.net/view/6121.html
 
@@ -9607,40 +9607,62 @@ scp 基本用法
 
 使用 `rsync -e ssh` 即可代替 scp 命令，但是对目录的处理方式跟 scp/cp 方式不同
 
-    rsync source destination/ - would copy the source into the destination folder.
+    源目录source被完整地复制到了目标目录 destination 下面，即形成了 destination/source 的目录结构
 
-    rsync source/ destination/ - would copy the contents of the source folder into the destination folder.
+        rsync source destination/
 
-用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器
+    只想同步源目录source里面的内容到目标目录destination，则需要在源目录后面加上斜杠
 
-    默认的行为是，使用文件大小和修改时间来判断文件是否需要更新
+        rsync source/ destination/
 
-scp 不占资源，不会提高多少系统负荷，在这一点上，rsync 就远远不及它了。虽然 rsync 比 scp 会快一点，但当小文件众多的情况下，rsync 会导致硬盘 I/O 非常高，而 scp 基本不影响系统正常使用。所以使用时根据自己的情况酌情决定选用哪个。
+增量备份的工作原理：
 
-rsync 默认使用 SSH 进行远程登录和数据传输。一般在目标设备上建立普通身份的用户，仅限制权限到指定备份文件夹读写，然后只通过SSH的公私钥认证一种方式登录，然后配置一个自动 rsync 的脚本定时运行备份数据到目标设备上。
+    首次同步：rsync 会复制源目录中的所有文件到目标目录，无论它们是否发生变化。
 
-    rsync在源服务器上运行：这种直接从源服务器复制文件到目标服务器的方式更直观，而且可以在源服务器上监控整个同步过程，包括进度和任何错误。
+    后续同步：
 
-    rsync在目标服务器上运行：需要在目标服务器上有权限访问源服务器。可以在目标服务器上监控同步过程，但可能需要额外的配置，如设置 SSH 密钥认证等。
+        rsync 会在同步前比较源目录和目标目录中的文件。
 
-由于早期 rsync 不使用 SSH 协议，需要用 -e 参数指定协议，后来才改的。
+        如果文件在源目录中被修改、删除或新增，rsync 会相应地更新目标目录。
 
-    # -e ssh 可以省略
-    $ rsync -av -e ssh source/ user@remote_host:/destination
+        如果文件没有变化，rsync 不会重新传输这些文件。
+
+所以，重复执行相同的 rsync 命令就可以实现只更新变化的文件，这就是 rsync 增量备份的基本原理
+
+一般要配合使用 ionice 来降低 rsync 进程的 io 优先级：
+
+    scp 不占资源，不会提高多少系统负荷，在这一点上，rsync 就远远不及它了。虽然 rsync 比 scp 会快一点，但当小文件众多的情况下，rsync 会导致硬盘 I/O 非常高，而 scp 基本不影响系统正常使用。
+
+    $ sudo ionice -c 2 -n 7 rsync -avz /source/ /destination/
+
+    -c 2 指定了 I/O 类（2 代表“best effort”），-n 7 指定了优先级级别（从 0 到 7，7 最低）。
+
+    所以使用时根据自己的情况酌情决定选用哪个。
+
+rsync 默认使用 SSH 进行远程登录和数据传输。一般在目标设备上建立普通身份的用户，ssh 中限制权限到指定备份文件夹读写，然后只通过 SSH 的公私钥认证一种方式登录，然后配置一个自动 rsync 的脚本定时运行备份数据到目标设备上。
+
+    rsync 在源服务器上运行：这种直接从源服务器复制文件到目标服务器的方式更直观，而且可以在源服务器上监控整个同步过程，包括进度和任何错误。
+
+    rsync 在目标服务器上运行：需要在目标服务器上有权限访问源服务器。可以在目标服务器上监控同步过程，但可能需要额外的配置，如设置 SSH 密钥认证等。
+
+   早期 rsync 不使用 SSH 协议，需要用 -e 参数指定协议，后来才改的。
+
+        # -e ssh 可以省略
+        $ rsync -av -e ssh source/ user@remote_host:/destination
 
 但是，如果 ssh 命令有附加的参数，则必须使用 -e 参数指定所要执行的 SSH 命令。
 
-    # -e 参数指定 SSH 使用2234端口
+    # -e 参数指定 SSH 使用 2234 端口
     $ rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
 
-    # 使用密钥文件登陆服务器，先删除掉服务器的文件，然后再上传本地的文件到服务器上
-    rsync -av  --delete -e "ssh -i /Users/hs/test.pem" {本地源文件夹路径}/* root@{服务器IP}:{服务器目标文件夹路径}
+    # 使用密钥文件登陆服务器
+    rsync -av -e "ssh -i /Users/hs/test.pem" {本地源文件夹路径}/* root@{服务器IP}:{服务器目标文件夹路径}
 
 rsync 命令提供使用的 OPTION 及功能
 
     OPTION选项    功能
 
-    -a    这是归档模式，表示以递归方式传输文件，并保持所有属性，它等同于-r、-l、-p、-t、-g、-o、-D 选项。 -a 选项后面可以跟一个 --no-OPTION，表示关闭 -r、-l、-p、-t、-g、-o、-D 中的某一个，比如-a --no-l 等同于 -r、-p、-t、-g、-o、-D 选项。
+    -a    这是归档模式，表示以递归方式传输文件，并保持所有属性，它等同于开启 -r、-l、-p、-t、-g、-o、-D 选项。 -a 选项后面可以跟一个 --no-OPTION，表示关闭 -r、-l、-p、-t、-g、-o、-D 中的某一个，比如-a --no-l 等同于 -r、-p、-t、-g、-o、-D 选项。
 
     -r    以递归模式处理子目录，它主要是针对同步目录来说的，如果单独传一个文件不需要加 -r 选项，但是传输目录时必须加。 --relative /var/www/uploads/abcd
 
@@ -9662,15 +9684,11 @@ rsync 命令提供使用的 OPTION 及功能
 
     -p    保持文件权限。
 
-    -o    保持文件属主信息。
-
-    -g    保持文件属组信息。
-
     -D    保持设备文件信息。
 
     -t    保持文件的修改时间信息。
 
-    --delete  多次备份时源目录中已经删除的文件也会在目标目录中删除，默认会保留。默认情况下，rsync 只确保源目录的所有内容（明确排除的文件除外）都复制到目标目录，它不会使两个目录保持相同，并且不会删除文件。如果要使得目标目录成为源目录的镜像副本，则必须使用--delete参数，这将删除只存在于目标目录、不存在于源目录的文件。
+    --delete  使两个目录保持相同。在多次备份时源目录中已经删除的文件也会在目标目录中删除。默认情况下，rsync 只确保源目录的所有内容（明确排除的文件除外）都复制到目标目录，它不会使两个目录保持相同，并且不会删除文件。如果要使得目标目录成为源目录的镜像副本，则必须使用 --delete 参数，这将删除只存在于目标目录、不存在于源目录的文件。
 
     --exclude=PATTERN   指定排除不需要传输的文件，等号后面跟文件名，可以是通配符模式（如 *.txt）。
 
@@ -9684,6 +9702,14 @@ rsync 命令提供使用的 OPTION 及功能
 
     --append-verify 断点续传。在 --partial 的基础上，它还会在传输完成后对文件进行校验，如果校验失败，则会重新传输该文件。这是对数据完整性更好的选择，但是会大大降低数据同步的速度，并增加cpu消耗。
 
+    --delete        增量备份时删除目标服务器上在源服务器不存在的文件，建议使用前先用 -n 参数干跑一下看看效果
+
+    --exclude       同步时排除某些文件或目录
+
+    --bwlimit=KBPS  最大传输速率，限制 rsync 的带宽使用
+
+以上也仅是列出了 rsync 命令常用的一些选项，对于初学者来说，记住最常用的几个即可，比如 -a、-v、-z、--delete 和 --exclude。
+
 自动尝试断点续传的触发条件：
 
     重新执行的命令必须与最初中断的命令完全相同，包括源文件、目标文件以及使用的参数。
@@ -9696,9 +9722,19 @@ rsync 命令提供使用的 OPTION 及功能
 
     如果使用了 --whole-file 参数，rsync 会传输整个文件，而不是增量传输，因此不会进行断点续传。
 
-以上也仅是列出了 rsync 命令常用的一些选项，对于初学者来说，记住最常用的几个即可，比如 -a、-v、-z、--delete 和 --exclude。
+因为使用 ssh 进行备份，所以实际使用中一般不指定属主和属组，只备份数据。如果要实现备份 /home 目录，支持多个用户和属主权限，则使用如下参数，但是注意限制：
 
-rsync 有 5 种不同的工作模式：
+    -o  参数 -a 已经包含，保持文件属主信息。如果源服务器上的文件属主在目标服务器上也存在，那么使用 -o 参数可以保留文件的属主信息。
+
+        如果目标服务器上不存在相应的属主，那么即使使用了 -o 参数，文件的属主也不会被设置为源服务器上的属主。在这种情况下，文件通常会被设置为目标服务器上执行 rsync 命令的用户的属主。
+
+    -g  参数 -a 已经包含，保持文件属组信息。如果源服务器上的文件属组在目标服务器上也存在，那么使用 -g 参数可以保留文件的属组信息。
+
+        如果目标服务器上不存在相应的属组，那么即使使用了 -g 参数，文件的属组也可能不会被保留。文件可能会被设置为目标服务器上执行 rsync 命令的用户的属组，或者根据目标服务器的配置被设置为其他默认属组。
+
+    --chown=john:users 参数来指定文件在目标服务器上的属主和属组。这个参数允许你指定一个用户名和属组名，即使这些用户在目标服务器上不存在，可能需要目标服务器上的用户有足够的权限来更改文件的属主和属组，如果目标服务器的安全策略不允许修改文件的属主和属组，那么即使使用了 --chown 参数，也可能无法实现预期的效果。
+
+rsync 的 5 种不同的工作模式：
 
     rsync [OPTION] SRC DEST
 
@@ -9734,6 +9770,10 @@ rsync 有 5 种不同的工作模式：
 > rsyncd 守护进程
 
 rsyncd 通常配置在源服务器上，它监听客户端的连接请求，并允许客户端同步（拷贝）文件。这里的“源服务器”是指拥有你想要同步的文件的服务器，而“目标服务器”可以是任何需要这些文件的服务器。
+
+在支持 SELinux 的服务器上，如果要使用 rsync 守护进程共享文件，您必须使用 `public_content_t` 类型标记文件和目录。
+
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/selinux_users_and_administrators_guide/chap-managing_confined_services-rsync
 
 源服务器的 rsyncd.conf 配置：
 
@@ -9800,6 +9840,10 @@ comment = Another comment
 
     uid 和 gid 指定了文件的拥有者和组。
 
+如果想知道 rsync 守护程序分配的所有 module 列表，可以执行下面命令。
+
+    $ rsync rsync://192.168.122.32
+
 客户端执行同步：
 
     rsync -avz rsync://remote_host::module_name /path/to/local/directory
@@ -9825,7 +9869,9 @@ module_name 是你在 rsyncd.conf 中定义的模块名。
 
 #### rsync 命令行示例
 
-一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`。
+一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`，这样就可以实现增量备份。
+
+在生产系统上运行，一般需要降低 io 优先级，前缀 `ionice -c 2 -n 7`
 
 如果不确定 rsync 执行后会产生什么结果，先 -n 模拟跑下看看输出
 
@@ -9834,7 +9880,7 @@ module_name 是你在 rsyncd.conf 中定义的模块名。
     # 断点续传
     rsync -avth --partial --progress --bwlimit=4000 --exclude='*.xxx' /path1/ xxx@192.111.11.111:/path2/
 
-注意区分：源目录是否写'/'处理方式的不同
+NOTE：rsync 命令源目录是否写 '/' 处理方式不同
 
     # 源目录 source 中的内容复制到了目标目录 destination 中，不建立source子目录的方式
 
@@ -9861,10 +9907,17 @@ module_name 是你在 rsyncd.conf 中定义的模块名。
     # 同步时，排除所有文件，但是不排除 txt 文件
     rsync -av --include="*.txt" --exclude='*' source/ destination
 
-使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录，注意这个是三方比对
+增量备份的高级用法：使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录，注意这个是三方比对
 
     # 目标目录中，也是包含所有文件，只有那些变动过的文件是存在于该目录，其他没有变动的文件都是指向基准目录文件的硬链接。
     rsync -a --delete --link-dest /compare/path /source/path /target/path
+
+集中备份：管理员需要保持不同用户的目录属组和权限到远程服务器
+
+    $ rsync -avz /home/ user@remote_host:/backups/
+
+    恢复时也需要保持属组和权限
+    $ rsync -avz user@remote_host:/backups/ /home/
 
 默认使用 SSH 进行远程登录和数据传输
 
