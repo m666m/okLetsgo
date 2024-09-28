@@ -13958,7 +13958,7 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
 我们常用的 Gnome 就是一个桌面环境，默认使用 Metacity 作为窗口管理器。
 
-常见的窗口管理器一般都基于 wlroots --- 一个为基于wayland的各类wm/de（或者叫compositor）提供基础设施的项目
+常见的窗口管理器一般都基于 wlroots 库：一个为基于 wayland 的各类 wm/de（或者叫compositor）提供基础设施的项目
 
     https://gitlab.freedesktop.org/wlroots/wlroots
 
@@ -13976,7 +13976,9 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
     i3-gaps - i3-gaps 是拥有更多功能的 i3。
 
-    sway - i3 的 wayland 实现
+    sway - i3 的 wayland 实现，SwayFX 动态壁纸实现了桌面背景添加各种特效和动画
+
+    Miracle-WM - 新出现的一个 wayland 下的平铺式窗口管理器，目标是超越 i3/sway
 
     Pop!_OS Shell - Pop Shell 是基于 GNOME shell 的窗口管理器，键盘驱动，自动平铺。
 
@@ -14023,6 +14025,8 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
     Gamescope - Gamescope 是一款微合成器，提供一个带有独立输入，分辨率和刷新率的沙盒 Xwayland 桌面。
 
     Sway - Sway 是平铺 Wayland 合成器，替代 X11 下 i3 窗口管理器（sway明确说不支持英伟达显卡）。
+
+    Mir - Miracle-WM 的合成器
 
     Xcompmgr - Xcompmgr 是一个简单的合成管理器，能够渲染下拉阴影，使用 transset 工具的话，还可以实现简单的窗口透明。
 
