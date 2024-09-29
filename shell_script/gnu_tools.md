@@ -9871,11 +9871,13 @@ module_name 是你在 rsyncd.conf 中定义的模块名。
 
 一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`，这样就可以实现增量备份。
 
-在生产系统上运行，一般需要降低 io 优先级，前缀 `ionice -c 2 -n 7`
+在生产系统上运行，一般要用 `ionice` 降低 IO 优先级，需要 root 权限
+
+    # ionice -c 2 -n 7 rsync -avz --progress source username@remote_host:destination
 
 如果不确定 rsync 执行后会产生什么结果，先 -n 模拟跑下看看输出
 
-    rsync -anv source/ destination
+    rsync -anv source destination
 
     # 断点续传
     rsync -avth --partial --progress --bwlimit=4000 --exclude='*.xxx' /path1/ xxx@192.111.11.111:/path2/
@@ -9892,42 +9894,35 @@ NOTE：rsync 命令源目录是否写 '/' 处理方式不同
 
 其它多个用法
 
-    # 同步时排除某些文件或目录，可以用多个--exclude
+    # 同步时排除某些文件或目录，可以用多个 --exclude
     rsync -av --exclude='*.txt' source/ destination
 
-    # rsync 会同步 . 开头的隐藏文件，如果要排除隐藏文件
+    # 同步时排除隐藏文件
     rsync -av --exclude=".*" source/ destination
 
     # 排除某个目录里面的所有文件，但不希望排除目录本身
     rsync -av --exclude 'dir1/*' source/ destination
 
-    # 排除一个文件列表里的内容，每个模式一行
-    rsync -av --exclude-from='exclude-file.txt' source/ destination
-
     # 同步时，排除所有文件，但是不排除 txt 文件
     rsync -av --include="*.txt" --exclude='*' source/ destination
 
-增量备份的高级用法：使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录，注意这个是三方比对
+    # 排除一个文件列表里的内容，每个模式一行
+    rsync -av --exclude-from='exclude-file.txt' source/ destination
+
+增量备份的三方比对用法：使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录
 
     # 目标目录中，也是包含所有文件，只有那些变动过的文件是存在于该目录，其他没有变动的文件都是指向基准目录文件的硬链接。
     rsync -a --delete --link-dest /compare/path /source/path /target/path
 
-集中备份：管理员需要保持不同用户的目录属组和权限到远程服务器
-
-    $ rsync -avz /home/ user@remote_host:/backups/
-
-    恢复时也需要保持属组和权限
-    $ rsync -avz user@remote_host:/backups/ /home/
-
-默认使用 SSH 进行远程登录和数据传输
+远程数据传输，默认使用 SSH
 
     # 将本地内容，同步到远程服务器
-    rsync -av source/ username@remote_host:destination
+    rsync -avz --progress source/ username@remote_host:destination
 
     # 将远程内容同步到本地
     rsync -av username@remote_host:source/ destination
 
-    # 如果 ssh 命令有附加的参数，则必须使用-e参数指定所要执行的 SSH 命令
+    # 如果 ssh 命令有附加的参数，则必须使用 -e 参数指定所要执行的 SSH 命令
     rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
 
 #### 软硬链接文件的处理区别
@@ -9942,14 +9937,15 @@ NOTE：rsync 命令源目录是否写 '/' 处理方式不同
     # 如果 your_dir_or_file 是个目录，会在目标目录下建立子目录，内容拷贝过去
     $ rsync -av /etc/letsencrypt/live/your_dir_or_file root@remote:/etc/letsencrypt/live
 
-如果目录结构内部的软链接指向外部目录的文件实体，需要拷贝软链接对应的实体文件，添加参数 -L:
+如果目录结构内部的软链接指向外部目录的文件实体，需要拷贝软链接对应的实体文件，则添加参数 -L
 
 拷贝一个目录结构，目录内的软链接文件处理为实体文件，拷贝到远程
 
     # -r 参数 在目的目录内递归的生成源目录结构的子目录，目的目录需要提前建好（`mkdir -p /etc/letsencrypt/live`），否则会报错
     # -L 参数 拷贝软链接对应的实体文件
     rsync -avrL /etc/letsencrypt/live/your_dir_or_file   root@remote:/etc/letsencrypt/live
-    # 等效-avrL .................live/your_dir_or_file/  remote.......................live/your_dir_or_file
+
+    等效于 -avrL .................live/your_dir_or_file/  remote.......................live/your_dir_or_file
 
 拷贝一个软链接文件处理为实体文件
 
