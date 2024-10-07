@@ -13768,10 +13768,13 @@ enlightenment 桌面
 
     https://www.enlightenment.org/
 
-wayfire 窗口管理器
+wayfire 基于 Wayland 的 3D 混成器
 
     https://github.com/WayfireWM/wayfire/wiki
+
     配置文件位置：~/.config/wayfire.ini
+
+    Wayfire 相关配置与美化方案 https://alancorn.github.io/blogs/2023/wayfire.html
 
 如果不想用桌面环境，但还需要在图形化的窗口下工作，见章节 [窗口管理器（Windows Manager）]。
 
