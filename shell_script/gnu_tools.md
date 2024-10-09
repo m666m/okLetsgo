@@ -12907,6 +12907,10 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
 </match>
 ```
 
+还可以开启一些诸如连字等特性，只需要设置特殊标志即可：
+
+    https://learn.microsoft.com/zh-cn/typography/opentype/spec/featurelist
+
 #### 给控制台console设置中文字体
 
 桌面环境一般还提供直接切换到控制台的操作，详见章节 [使用控制台 console console]。
