@@ -13768,14 +13768,6 @@ enlightenment 桌面
 
     https://www.enlightenment.org/
 
-wayfire 基于 Wayland 的 3D 混成器
-
-    https://github.com/WayfireWM/wayfire/wiki
-
-    配置文件位置：~/.config/wayfire.ini
-
-    Wayfire 相关配置与美化方案 https://alancorn.github.io/blogs/2023/wayfire.html
-
 如果不想用桌面环境，但还需要在图形化的窗口下工作，见章节 [窗口管理器（Windows Manager）]。
 
 ### Linux 桌面的基本目录规范 XDG（X Desktop Group）
@@ -14077,6 +14069,14 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
     Qtile - qtile 是一款全功能，可 hack 的平铺窗口管理器，使用 Python 编写和配置。
 
+    wayfire 基于 Wayland 的 3D 混成器
+
+        https://github.com/WayfireWM/wayfire/wiki
+
+        配置文件位置：~/.config/wayfire.ini
+
+        Wayfire 相关配置与美化方案 https://alancorn.github.io/blogs/2023/wayfire.html
+
 叠加式窗口管理器：浮动式窗口管理器，由于屏幕空间有限，当前激活的窗口会浮在最上面，而遮住下面的窗口。
 
     Openbox - 高度可配置，带有可扩展标准支持的下一代窗口管理器。
@@ -14089,7 +14089,7 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
 动态窗口管理器
 
-    awesome - 高度可配置，下一代 X 框架窗口管理器。
+    awesome - 高度可配置，下一代 X 框架窗口管理器
 
         https://blog.kelu.org/tech/2021/12/29/linux-awesome-wm.html
 
@@ -14238,7 +14238,7 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
 #### sway
 
-是 i3 的 wayland 实现，操作热键参考 i3
+i3 的 wayland 实现，操作热键参考 i3
 
     https://swaywm.org/
 
