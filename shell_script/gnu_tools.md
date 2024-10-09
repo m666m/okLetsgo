@@ -12471,11 +12471,6 @@ Debian
 
 桌面环境下系统内置的字体中文不好看，需要调整
 
-    https://catcat.cc/post/2021-03-07/
-        https://catcat.cc/post/2020-10-31/
-
-        https://github.com/rydesun/myconf/tree/master/.config/fontconfig
-
     https://blog.csdn.net/linuxgroup/article/details/4162867
 
     https://www.systutorials.com/fedora-%e4%b8%ad%e6%96%87%e5%ad%97%e4%bd%93%e8%ae%be%e7%bd%ae/
@@ -12572,11 +12567,11 @@ OpenType 可变字体（OpenType variable fonts）技术
 
 #### 安装官方仓库的中文字体包
 
-Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），默认 Cantarell 字体显示中文
-
-        https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description
+    https://blog.lilydjwg.me/2023/3/5/linux-fonts.216591.html
 
 > 对版本比较老的不支持中文的 Linux
+
+早些年还没有 Noto 和思源的时候，Linux 系统上通常使用文泉驿正黑或者文泉驿微米黑。后者是基于 Android 系统上的 Droid Sans Fallback 字体，体积较小。再之前是文鼎系列字体，也就是名字「AR PL」开头、包名叫 ttf-arphic-{uming,ukai} 的那些。
 
     先安装中文字体
 
@@ -12587,7 +12582,45 @@ Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可�
 
     上述配置文件对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样就实现了显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
 
-> 目前流行的 Linux 发行版基本都默认使用 Google Noto 字体
+> 目前流行的 Linux 发行版基本都默认使用 Noto 字体
+
+现在 Linux 上常用的、在维护的开源中文字体就一套，同时被 Noto 和思源两个项目收录。
+
+Noto 系列字体是 Google 主导的，名字的含义是「没有豆腐」（no tofu），因为缺字时显示的方框或者方框被叫作「tofu」。
+
+思源系列字体是 Adobe 主导的。其中汉字部分被称为「思源黑体」和「思源宋体」，是由这两家公司共同开发的，两个字体系列的汉字部分是一样的。
+
+Noto 字体在 Arch Linux 上位于以下软件包中：
+
+    noto-fonts: 大部分文字的常见样式，不包含汉字
+
+    noto-fonts-cjk: 汉字部分
+
+    noto-fonts-emoji: 彩色的表情符号字体
+
+    noto-fonts-extra: 提供额外的字重和宽度变种
+
+Noto 系列字族名只支持英文，命名规则是 Noto + Sans 或 Serif + 文字名称。其中汉字部分叫 Noto Sans/Serif CJK SC/TC/HK/JP/KR，最后一个词是地区变种。
+
+思源字体在 Arch Linux 上位于以下软件包中：
+
+    adobe-source-sans-fonts: 无衬线字体，不含汉字。字族名叫 Source Sans 3 和 Source Sans Pro，以及带字重的变体，加上 Source Sans 3 VF
+
+    adobe-source-serif-fonts: 衬线字体，不含汉字。字族名叫 Source Code Pro，以及带字重的变体
+
+    adobe-source-code-pro-fonts: 等宽字体，不含汉字。字族名叫 Source Code Pro，以及带字重的变体，加上 Source Code Variable。
+
+    adobe-source-han-{sans,serif,mono}-{cn,hk,jp,kr,tw}-fonts: 五个地区的汉字之黑体、宋体和等宽版本
+
+    adobe-source-han-{sans,serif,mono}-otc-fonts: 所有地区合体了的汉字之黑体、宋体和等宽版本
+
+    思源汉字字体的字族名有两种，「独立包装」的版本（非 OTC 版本），是「Source Han Sans/Serif」或本地化名称、空格、地区代码（CN/HK/TW/JP/KR）。比如「思源黑体 CN」、「源ノ角ゴシック JP」等。也有带字重的别名。
+
+    而全部打包的 OTC 版本，字族名是本地化名称或者英文的「Source Han Sans/Serif」空格再加上「HC/TC/HC/K」变种代码。如果没有变种代码，则是日文变种。为了区分，香港繁体的版本附带「香港」字样，比如黑体叫「思源黑體 香港」。这些字体也有不同字重的别名。另外有个半宽的版本，是在字族名的变种代码前加「HW」字样，仅有少数几个字符是半宽的。
+
+    OTC 版本有趣的地方在于，对于大多数软件来说，不管你叫它的哪个地区的名字，它都会以设定的语种来显示。比如网页声明语种为日文（<html lang=ja>），那么不管字体指定为「源ノ角ゴシック」还是「思源黑体」或者「본고딕」，它都会「门上插刀、直字拐弯、天顶加盖、船顶漏雨」。所以用这个字体的话，不妨一律写「Source Han Sans」，然后加好语种标记。我知道的唯一例外是 mpv 的 ass 字幕文件，里边指定本地化名称的话，会使用那个语种的变体显示。
+
+Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），默认 Cantarell 字体显示中文 [https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description]。
 
 注意 Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
 
@@ -12659,20 +12692,17 @@ adobe 思源跟 Google Noto 这俩字体是一回事
 
 #### 设置中英文分别使用一种字体 fontconfig
 
-    https://catcat.cc/post/2021-03-07/
-        https://catcat.cc/post/2020-10-31/
+    用 fontconfig 治理 Linux 中的字体 https://catcat.cc/post/2021-03-07/
+    Linux fontconfig 的字体匹配机制 https://catcat.cc/post/2020-10-31/
+    示例 https://github.com/rydesun/myconf/tree/master/.config/fontconfig
 
     https://www.jinbuguo.com/gui/linux_fontconfig.html
 
     https://www.insidentally.com/articles/000036/
 
-Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言）：
+Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖尽可能多的语言(https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description)，但其默认的 Cantarell 字体显示中文太丑了，需要手工改设置，利用“回落”使得中英文分别使用不同的字体。
 
-        https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description
-
-但其默认的 Cantarell 字体显示中文太丑了，需要手工改设置，利用回落使得中英文分别使用不同的字体。
-
-操作系统需要设置针对三种风格的默认字体，对英文使用系统默认的英文字体，对中文回落到 Adobe/Google 的开源字体：
+需要手工设置操作系统针对三种风格的默认字体，对英文使用系统默认的英文字体，对中文回落到 Google 的开源字体：
 
     Sans --> 思源黑体（Source Han Sans/Noto Sans CJK），自带 mono 风格了
 
@@ -12680,38 +12710,55 @@ Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖所有语言（或�
 
     其实思源中文字体也内置了西文，只设置该中文字体也可以，但其西文部分使用的是 Adobe Source 家族字体不大好看我们不去使用它（思源黑体集成 Source Sans Pro、思源宋体集成 Source Serif，详见 <https://sspai.com/post/38705>）。
 
-查看字体效果
+查看字体效果的工具
 
-    有个图形界面程序 Fonts Tweak Tool(fonts-tweak-tool) 可以直观的预览中文字体的效果，而且可以设置更多的 truetype 选项，支持按三种风格分别设置字体及回落选项
+    GNOME Character Map --- 原名 gucharmap ，可以检查所有字符使用指定的字体时的渲染效果，以及它回落到什么字体上了。找到要查看的字符，然后对着它按住右键即可。
+
+    Fonts Tweak Tool(fonts-tweak-tool) 可以直观的预览中文字体的效果，而且可以设置更多的 truetype 选项，支持按三种风格分别设置字体及回落选项
 
         https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#substitute-font
 
         $ sudo dnf install fonts-tweak-tool
 
-使用 fontconfig 配置字体回落
+##### 使用 fontconfig 软件配置字体回落
 
-    Linux 操作系统一般都内置 fontconfig 软件包选择字体，默认无需用户干预
+Linux 操作系统一般都内置 fontconfig 软件包选择字体，默认无需用户干预
 
-        https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
-            https://www.freedesktop.org/wiki/Software/fontconfig/
+    https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
+        https://www.freedesktop.org/wiki/Software/fontconfig/
 
-        https://wiki.archlinux.org/title/Font_configuration
+    https://wiki.archlinux.org/title/Font_configuration
 
-    查看当前系统安装的中文字体
+列出当前系统安装的字体文件
 
-        $ fc-list : file
+    $ fc-list : file
 
-        $ fc-list :lang=zh
+显示当前系统安装的中文字体
 
-        该命令还会列出该字体支持的浓淡，比如 “Noto Serif CJK SC:style=Black”，则设置字体时可以选择 “Noto Serif CJK SC Black”，这样字体会加重类似黑体的效果。
+    $ fc-list :lang=zh
 
-    查看配置后的最终字体选择
+该命令还会列出该字体支持的浓淡，比如 “Noto Serif CJK SC:style=Black”，则设置字体时可以选择 “Noto Serif CJK SC Black”，这样字体会加重类似黑体的效果。
 
-        $ fc-conflist
+查看配置后的最终字体选择
 
-fontconfig 支持字体的回落（fallback），可以实现中英文分别使用不同的字体，但需要用户手工配置，且配置文件的位置比较乱，网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，实现见下面 “法一”。
+    $ fc-conflist
 
-随着发行版的进步，又开始使用 /etc/fonts/fonts.conf，实现见下面 “法二”。
+查看针对指定字符的字体优先顺序
+
+    # 534E 是「华」字的 Unicode 码点之十六进制值，如果不加 -s 就是看指定的模式会匹配上的字体了
+    $ fc-match -s :charset=534E
+
+    # 查看在语种为日文的时候，使用 serif 字族名会使用哪个字体来显示「华」字
+    $ fc-match serif:charset=534E:lang=ja
+
+    # 查看包含「华」字的所有字体
+    $ fc-list :charset=534E
+
+fontconfig 支持字体的回落（fallback），可以实现中英文分别使用不同的字体，但需要用户手工配置，且配置文件的位置比较乱，目前有两种办法：
+
+    网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，实现见下面 “法一”。
+
+    随着发行版的进步，又开始使用 /etc/fonts/fonts.conf，实现见下面 “法二”。
 
 法一：简单起见，我们直接编辑 /etc/fonts/local.conf 文件
 
@@ -12783,7 +12830,7 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
 
 法二：更符合 XDG 规范的用法
 
-写入如下文件
+写入如下文件，系统级在 /etc/fonts/conf.d/ 下
 
     $XDG_CONFIG_HOME/fontconfig/conf.d 和 $XDG_CONFIG_HOME/fontconfig/fonts.conf
 
@@ -12837,6 +12884,27 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
     <family>Noto Emoji</family>
   </prefer>
 </alias>
+```
+
+来自依云的例子
+
+    https://github.com/lilydjwg/dotconfig/tree/master/fontconfig
+        https://blog.lilydjwg.me/2023/3/5/linux-fonts.216591.html
+
+```xml
+<match target="pattern">
+  <test qual="any" name="family">
+    <string>sans-serif</string>
+  </test>
+  <edit name="family" mode="prepend" binding="strong">
+    <string>DejaVu Sans</string>
+    <string>文泉驿正黑</string>
+    <string>Twemoji</string>
+    <string>Font Awesome 6 Free</string>
+    <string>Font Awesome 6 Brands</string>
+    <string>Source Han Sans</string>
+  </edit>
+</match>
 ```
 
 #### 给控制台console设置中文字体
@@ -13780,6 +13848,8 @@ enlightenment 桌面
 
     https://wiki.archlinux.org/index.php/XDG_Base_Directory
     https://wiki.archlinux.org/title/Xdg-utils
+
+    https://catcat.cc/post/wn3np/
 
     https://blog.csdn.net/u014025444/article/details/94029895
 
