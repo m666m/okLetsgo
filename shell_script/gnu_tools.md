@@ -8283,14 +8283,12 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
     https://lindevs.com/install-argon2-on-raspberry-pi
 
-openssl 也可以给你的密码加盐生成 hash 值，详见章节 [OpenSSL 的常用功能](gpg think)。
+openssl 也可以生成密码，这样生成的密码使用了一种通用的格式，详见章节 [生成通用的 Unix 格式密码](openssl think)
 
     $ openssl passwd 123456
     $1$XwOQ.ODK$siJl5hJtv7Fqs.jhBwpyb0
 
     注意 $1$...$ 段的内容是盐salt，后面的才是该密码的 hash 值
-
-这样生成的密码使用了一种通用的格式，详见章节 [gpg 生成通用的 Unix 格式密码](gpg think)。
 
 对密码加密保存一般使用 hash，但是防破解效果太差，有专门的 argon2 算法，通过加盐和多次迭代来增加破解难度，argon2id 算法还增加了内存使用量，给 GPU 并行破解增大难度
 
