@@ -8283,14 +8283,16 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
     https://lindevs.com/install-argon2-on-raspberry-pi
 
-openssl 也可以生成密码，这样生成的密码使用了一种通用的格式，详见章节 [生成通用的 Unix 格式密码](openssl think)
+openssl 可以 hash 你的密码以便明文保存，这使用了一种通用的格式，详见章节 [生成通用的 Unix 格式的密码hash](openssl think)
 
     $ openssl passwd 123456
     $1$XwOQ.ODK$siJl5hJtv7Fqs.jhBwpyb0
 
     注意 $1$...$ 段的内容是盐salt，后面的才是该密码的 hash 值
 
-对密码加密保存一般使用 hash，但是防破解效果太差，有专门的 argon2 算法，通过加盐和多次迭代来增加破解难度，argon2id 算法还增加了内存使用量，给 GPU 并行破解增大难度
+Argon2
+
+对密码加密保存一般使用加盐计算 hash 值的方式，但是常用的哈希算法防破解效果不好。所以有 argon2 算法专门用于存储密码。它通过加盐和多次迭代来增加破解难度，argon2id 算法还增加了内存使用量，针对使用 GPU 的并行破解增大难度
 
     $ sudo apt install -y argon2
 
@@ -8305,7 +8307,7 @@ Argon2i 变体用于生成哈希
     $ echo -n "Hello" | argon2 mysalt0123456789 -t 4 -k 65536 -p 2 -e
     $argon2i$v=19$m=65536,t=4,p=2$bXlzYWx0MDEyMzQ1Njc4OQ$N59WxssOt4L/ylaGzZGrPXkwClGZMDxn1Q3UolMEBLw
 
-为对抗显卡的并行运算，使用强度更高的 Argon2id 变体，用选项 -id 指定
+ Argon2id 变体，强度更高可以对抗使用显卡的并行运算，用选项 -id 指定
 
     $ echo -n "Hello" | argon2 mysalt0123456789 -id -t 4 -m 20  -p 2
     Type:           Argon2id
