@@ -2915,7 +2915,7 @@ GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需�
 
 #### 一劳永逸方案：Nvidia 显卡可以升级固件解决这个问题
 
-先把显卡挂到别的能显示的机器上（或先连接 HDMI 口安装 Windows 能进入系统后），升级下固件，以后就可以实现连接 DP 口安装 Windows 10 了
+先把显卡挂到别的能显示的机器上，或先连接 HDMI 口安装 Windows 能进入系统后，升级下固件，以后就可以实现连接 DP 口安装 Windows 10 了
 
     https://www.tenforums.com/graphic-cards/144258-latest-nvidia-geforce-graphics-drivers-Windows-10-2-a.html
 
@@ -2936,15 +2936,13 @@ GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需�
 
     之后下面出现的三项，除了网卡启动的那个选项不用管，其它两个关于存储和 PCIe 设备的选项要确认选的是“UEFI”，这样在“other os”模式下可以实现 DP 口的开机显示，要是还不行，那两个选项直接选非 UEFI 的选项。
 
-这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能，Windows 11 的默认安装会进行不下去。
+这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能，如果是安装 Windows 11 会进行不下去。
 
 关于主板 BIOS 设置 CSM 模式可以启动 DP 口的解释 <https://nvidia.custhelp.com/app/answers/detail/a_id/3156/kw/doom/related/1>
 
 ### 主板 Ultra Fast 启动无法再用键盘进入 BIOS 设置
 
-在操作系统的重启选项中选择引导到 UEFI 固件设置。
-
-很多支持 Fast Boot 的主板，在主板 BIOS 的“Fast Boot”项设置了“Ultra Fast”之后，在开机过程中不能用按F1进入 BIOS 设置了，解决办法是在操作系统中指定下一次重启进入 BIOS设置。
+很多支持 Fast Boot 的主板，在主板 BIOS 的“Fast Boot”项设置了“Ultra Fast”之后，在开机过程中不能用按F1进入 BIOS 设置了，解决办法是在操作系统的关机菜单中，重启选项中选择引导到 UEFI 固件设置，Windows 在点击重启时按住 shift 键即可。
 
 对技嘉 B560M AORUS PRO 主板来说，实际试了一下，没感觉到 Ultra Fast 比 Fast Boot 快。
 而且我的 usb 键盘鼠标网卡都挂在显示器集成的 usb hub 上，设备比较多，开机时 UEFI 加载这堆驱动没法跳过，没什么用的感觉。
