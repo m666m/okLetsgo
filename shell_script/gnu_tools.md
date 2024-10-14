@@ -11338,7 +11338,7 @@ ntp 时间同步的原理
     # Windows 机制：用系统时间设置硬件 RTC
     # sudo hwclock --localtime -w
 
-推荐安装章节 [Fedora 等 Redhat 系使用 chrony]，ntp 软件包过时了：以前 Linux 时间同步基本是使用 ntpdate 和 ntpd 这两个工具实现的。ntpd 是步进式平滑的逐渐调整时间，而 ntpdate 是断点式更新时间。
+推荐 [使用 chrony]，ntp 软件包过时了：以前 Linux 时间同步基本是使用 ntpdate 和 ntpd 这两个工具实现的。ntpd 是步进式平滑的逐渐调整时间，而 ntpdate 是断点式更新时间。
 
     https://wiki.debian.org/NTP
 
@@ -11434,7 +11434,9 @@ chrony 从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持�
 
 Windows 设置时间服务器的地址，在控制面板的时间设置->Internet时间。
 
-#### Fedora 等 Redhat 系使用 chrony
+#### 使用 chrony
+
+Fedora 等 Redhat 系目前使用这个机制。
 
 chronyd 实现了 NTP 协议并且可以作为服务器或客户端
 
@@ -11493,9 +11495,7 @@ chronyc 是用来监控 chronyd 性能和配置其参数的用户界面。他可
 
     配置文件： /etc/chrony.conf 或 /etc/chrony/chrony.conf，在这里添加你的 NTP 服务器的地址，地址列表见章节 [国内的公共 NTP 服务器]。
 
-#### Debian/openSUSE 使用 systemd-timesyncd
-
-systemd-timesyncd 只实现了简单的 NTP 协议 SNTP，专注于从远程服务器查询然后同步到本地的系统时间，即只是 NTP 客户端。
+#### 使用 systemd-timesyncd
 
     https://www.cnblogs.com/pipci/p/12833228.html
 
@@ -11504,6 +11504,20 @@ systemd-timesyncd 只实现了简单的 NTP 协议 SNTP，专注于从远程服�
     https://www.freedesktop.org/software/systemd/man/latest/systemd-timesyncd.service.html
 
     https://wiki.archlinux.org/title/Systemd-timesyncd
+
+Debian/openSUSE 目前使用这个机制。
+
+systemd-timesyncd 只实现了简单的 NTP 协议 SNTP，专注于从远程服务器查询然后同步到本地的系统时间，即只是 NTP 客户端。
+
+推荐 [使用 chrony]
+
+    systemd-timesyncd 是断点式更新时间，也就是时间不同立即更新，这样会对某些服务产生影响，所以在生产环境尽量不要用，在桌面环境或者是系统刚开机时来进行时间同步还是很好的。
+
+    timesyncd 替代了 ntpd 的客户端的部分。默认情况下 timesyncd 会定期检测并同步时间。它还会在本地存储更新的时间，以便在系统重启时做时间单步调整。
+
+    如果是虚拟机环境，应该把与主机时间同步功能关闭后再启用systemd-timesyncd，否则可能会有问题.
+
+systemd-timesyncd只能作为客户端，不能作为NTP服务器，但如果有多一点的需求，例如你需要连接一个硬件来提供时钟，或要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp。注意这些 ntp 包只能安装一个，否则会互相干扰。
 
 使用 systemd 自带的时间同步服务 systemd-timesyncd
 
@@ -11547,16 +11561,6 @@ systemd-timesyncd 只实现了简单的 NTP 协议 SNTP，专注于从远程服�
         Frequency: -1.446ppm
 
 配置 NTP 服务器地址修改 /etc/systemd/timesyncd.conf 文件即可，默认虽然 NTP 的选项都处于注释状态，但是systemd-timesyncd还是会去默认的NTP服务器进行同步，地址列表见章节 [国内的公共 NTP 服务器]。
-
-推荐安装章节 [Fedora 等 Redhat 系使用 chrony]
-
-    systemd-timesyncd 是断点式更新时间，也就是时间不同立即更新，这样会对某些服务产生影响，所以在生产环境尽量不要用，在桌面环境或者是系统刚开机时来进行时间同步还是很好的。
-
-    timesyncd 替代了 ntpd 的客户端的部分。默认情况下 timesyncd 会定期检测并同步时间。它还会在本地存储更新的时间，以便在系统重启时做时间单步调整。
-
-    如果是虚拟机环境，应该把与主机时间同步功能关闭后再启用systemd-timesyncd，否则可能会有问题.
-
-systemd-timesyncd只能作为客户端，不能作为NTP服务器，但如果有多一点的需求，例如你需要连接一个硬件来提供时钟，或要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp。注意这些 ntp 包只能安装一个，否则会互相干扰。
 
 #### Windows 的同步时间功能默认每周只同步一次
 
