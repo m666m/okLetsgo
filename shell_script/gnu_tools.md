@@ -12726,7 +12726,7 @@ adobe 思源跟 Google Noto 这俩字体是一回事
 
     https://www.insidentally.com/articles/000036/
 
-Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖尽可能多的语言(https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description)，但其默认的 Cantarell 字体显示中文太丑了，需要手工改设置，利用“回落”使得中英文分别使用不同的字体。
+Fedora 36 开始通过使用新的字体 Noto Fonts 来覆盖尽可能多的语言 <https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description>，但其默认的 Cantarell 字体显示中文太丑了，需要手工改设置，利用“回落”使得中英文分别使用不同的字体。
 
 需要手工设置操作系统针对三种风格的默认字体，对英文使用系统默认的英文字体，对中文回落到 Google 的开源字体：
 
