@@ -5966,6 +5966,26 @@ tmux 可以保持多个会话 session，每次在命令行运行 `tmux` 就会�
     # 重新加载当前的 Tmux 配置而无需重启 tmux 进程
     tmux source-file ~/.tmux.conf
 
+如果 tmux 显示的内容乱了，用 `reset` 命令也处理不了，退出所有的会话，包括后台进程 tmux server
+
+    $ tmux kill-server
+
+    然后重新执行 tmux 命令即可
+
+使用 `tmux kill-server` 命令后，再次执行 tmux 命令出现 `server exited unexpectedly` 的错误
+
+    https://github.com/tmux/tmux/wiki/FAQ#tmux-exited-with-server-exited-unexpectedly-or-lost-server-what-does-this-mean
+
+    $ cd /tmp
+    $ rm -rf tmux-$(id -u)
+
+    然后重新执行 tmux 命令即可
+
+tmux 进程正在运行，但是无法连接 “failed to connect to server: Connection refused”
+
+    $ kill -s USR1 <tmux进程id>
+    $ tmux ls
+
 #### 快捷键
 
     https://ruanyifeng.com/blog/2019/10/tmux.html
