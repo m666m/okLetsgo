@@ -8763,11 +8763,11 @@ aria2.conf 有两个配置项 on-download-complete、on-download-stop，前者�
 
     https://blog.csdn.net/slimmm/article/details/115720184
 
-竞品 qBittorrent
+    竞品 qBittorrent
 
-    https://www.qbittorrent.org/
+        https://www.qbittorrent.org/
 
-开源的下载工具，都是有个后台进程负责下载，前台负责任务管理。
+也是前后台分离的设计，后台进程负责下载，前台负责任务管理
 
     transmission-gtk: GTK+界面客户端。
 
@@ -8795,9 +8795,7 @@ aria2.conf 有两个配置项 on-download-complete、on-download-stop，前者�
 
     注意：在编辑Transmission的配置文件的时候，需要先关闭daemon进程。
 
-默认创建一个用户来专门运行transmission-daemon，用户名为：debian-transmission。
-
-注意： 如果使用另外一个用户来运行transmission-daemon的话，会在该用户的目录下，创建一个.config/transmission-daemon的文件夹，在这个文件夹里有单独的settings.json配置文件来配置这个用户对应的daemon进程，下载目录也会变为$HOME/Download。
+安装时会自动创建一个用户来专门运行 transmission-daemon，用户名为：debian-transmission。所以，如果使用另外一个用户来运行 transmission-daemon 的话，会在该用户的目录下，创建一个.config/transmission-daemon 的文件夹，在这个文件夹里有单独的 settings.json 配置文件，下载目录也会变为 $HOME/Download
 
     # 启动
     sudo service transmission-daemon start
