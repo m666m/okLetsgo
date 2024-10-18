@@ -584,9 +584,7 @@ Android 自己就不怎么干净，哪怕是开放源代码的 Android Open Sour
 
 ## 安卓的开源软件商店F-Droid
 
-    优先在 Fdoriod 软件仓库安装开源版的手机应用软件
-
-F-Droid 是一个 Android 应用程序的软件资源库（或应用商店）；其功能类似于 Google Play 商店，但只包含自由及开放源代码软件，即所谓免费开源（FOSS）。应用可从 F-Droid 网站或直接从 F-Droid 客户端应用浏览及安装。
+F-Droid 是一个 Android 应用程序的软件资源库（或应用商店）；其功能类似于 Google Play 商店，但只包含自由及开放源代码软件，即所谓免费开源（FOSS），可从 F-Droid 网站或直接从 F-Droid 客户端应用浏览及安装 app。
 
     https://f-droid.org/
 
@@ -595,7 +593,13 @@ F-Droid 是一个 Android 应用程序的软件资源库（或应用商店）；
 
         https://f-droid.org/zh_Hans/docs/
 
+    竞品Fossdroid
+        https://fossdroid.com/
+            https://github.com/SnaKKo
+
 F-Droid的软件虽然不多，但是很实用。
+
+    优先在 Fdoriod 软件仓库安装开源版的手机应用软件
 
 F-Droid 最大的特点在与其与Linux软件包管理高度吻合，采用的是源安装，和 Linux 必须添加软件源是一个道理。这些 repositories 源，类似于我们在 Linux 平台上在 /etc/apt/sources.list.d/（Debian 或 Ubuntu 系）或 /etc/yum.repos.d/（Fedora 系）放入源一样， 表示从此信任这个来源/市集/repository 里面的软件。
 
