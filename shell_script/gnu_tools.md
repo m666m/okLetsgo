@@ -8303,7 +8303,7 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
     https://lindevs.com/install-argon2-on-raspberry-pi
 
-openssl 可以 hash 你的密码以便明文保存，这使用了一种通用的格式，详见章节 [生成通用的 Unix 格式的密码hash](openssl think)
+openssl 可以 hash 你的密码使之可以不明文保存，这使用了一种通用的格式，详见章节 [生成通用的 Unix 格式的密码hash](openssl think)
 
     $ openssl passwd 123456
     $1$XwOQ.ODK$siJl5hJtv7Fqs.jhBwpyb0
