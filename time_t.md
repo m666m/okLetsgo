@@ -26,9 +26,9 @@ Calendar Time：日历时间，“从一个标准时间点到此时的时间经�
     https://www.iana.org/time-zones
         http://ftp.iana.org/tz/releases/
 
-## C标准库 <time.h>
+## C 标准库 <time.h>
 
-在标准c库中使用结构 time_t 和 tm，及操作这2个结构的几个函数，提供到字符串之间的转换（cpu时间的略）。
+在标准 C 库中使用结构 time_t 和 tm，及操作这2个结构的几个函数，提供到字符串之间的转换（cpu时间的略）。
 
 NOTE: 各种静态对象满天飞，各函数有隐含的依赖。多线程一定要躲着这块。
 
@@ -46,15 +46,18 @@ NOTE: time.h里各操作函数的入参和返回值类型，有的修改入参�
 
 ### 在标准C/C++中，最小的计时单位是一毫秒
 
-clock tick：时钟周期，是C/C++的一个基本计时单位，区别于cpu的计时周期。这是函数clock_t clock( void )使用的单位，时长转换倚赖一个常量。
+clock tick：时钟周期，是C/C++的一个基本计时单位，区别于cpu的计时周期。这是函数 clock_t clock( void ) 使用的单位，时长转换倚赖一个常量。
 
-    在time.h文件中，常量CLOCKS_PER_SEC，它用来表示一秒钟会有多少个时钟计时单元：
+在 time.h 文件中，常量CLOCKS_PER_SEC，它用来表示一秒钟会有多少个时钟计时单元：
+
     #define CLOCKS_PER_SEC ((clock_t)1000)
     说明每过千分之一秒（1毫秒），调用clock（）函数返回的值就加1
 
     printf("Elapsed time:%u secs.\n",clock()/CLOCKS_PER_SEC);
 
-### tm struct  及相关操作函数
+x86 Windows、Linux 等抢占式操作系统，时间片控制大概在几十毫秒，多线程程序不要依赖更精确的计时控制，除非用实时操作系统。
+
+### tm struct 及相关操作函数
 
 注意是系统静态对象，在 gmtime() 、 localtime() 及 ctime() 间共享
 
@@ -78,11 +81,12 @@ clock tick：时钟周期，是C/C++的一个基本计时单位，区别于cpu�
 
 提供从 tm 到 time_t 的转换，用的是本地时间进行的计算，不是 UTC!
 
-NOTE: 手动设置 tm 要注意，你的输入会被认为是本地时间进行处理，不是 UTC。
+NOTE: 手动设置 tm 要注意，你的输入会被认为是本地时间进行处理，不是 UTC
 
-<https://zh.cppreference.com/w/c/chrono/mktime>
+    <https://zh.cppreference.com/w/c/chrono/mktime>
 
 入参 struct tm
+
 返回 time_t
 
 一般指定时间的操作都是从tm结构或者字符串来的，转成time_t后再供其它时间计算函数调用。
@@ -104,15 +108,17 @@ t3 = mktime(t2);
 
     实际上这个函数在linux上是有的，windows上是用了_mkgmtime()来代替
 
-#### ~~asctime()~~
+#### ~~过时了 asctime()~~
 
 转换结构 tm 为以下固定的 25 字符表示形式： Www Mmm dd hh:mm:ss yyyy\n
 
 入参 struct tm
+
 返回 字符串
 
 将 struct tm 对象转换成文本表示，格式固定不够灵活。
-POSIX 标记此函数为过时并推荐用 strftime() 代替。
+
+POSIX 标记此函数为过时，并推荐用 strftime() 代替。
 
 示例代码
 
@@ -151,17 +157,17 @@ if (strftime(buff, sizeof buff, "%Y-%m-%d %H:%M:%S", &my_time)) {
 
 #### time()     time_t → time_t
 
-    取当前时间
+取当前时间
 
     <https://zh.cppreference.com/w/c/chrono/time>
 
     入参 time_t
-    返回纪元1970年1月1日0点（UTC）开始经过的当前系统日历时间。如果提供了入参，函数修改这个time_t的值。
 
-    下面的那些显示为字符串函数依赖这个值进行显示，
-    所以取系统时间并打印的过程，就是先time()一个time_t，然后调用各种字符串输出函数
+    返回纪元1970年1月1日0点（UTC）开始经过的当前系统日历时间。如果提供了入参，函数修改这个 time_t 的值。
 
-#### strftime()     struct tm → 字符串日期时间
+下面的那些显示为字符串函数依赖这个值进行显示，所以取系统时间并打印的过程，就是先 time() 获得一个 time_t，然后调用各种字符串输出函数。
+
+#### strftime()：struct tm → 字符串日期时间
 
     按照格式字符串 format ，转换来自给定的日历时间 time 的日期和时间信息
 
@@ -173,7 +179,7 @@ if (strftime(buff, sizeof buff, "%Y-%m-%d %H:%M:%S", &my_time)) {
     这个字符串转换函数是推荐使用的，代替 ctime() 和 asctime()
     format格式参见 <https://zh.cppreference.com/w/c/chrono/strftime>
 
-#### gmtime()       time_t → struct tm UTC
+#### gmtime()：time_t → struct tm UTC
 
     将从纪元开始的时间转换成以协调世界时（UTC）表示的日历时间。
 
@@ -182,7 +188,7 @@ if (strftime(buff, sizeof buff, "%Y-%m-%d %H:%M:%S", &my_time)) {
 
     提供从 time_t 到 struct tm 的转换
 
-#### localtime()    time_t → struct tm
+#### localtime()：time_t → struct tm
 
     将从纪元开始的时间转换成以本地时间表示的日历时间。
 
@@ -203,7 +209,7 @@ if (strftime(buff, sizeof buff, "%Y-%m-%d %H:%M:%S", &my_time)) {
 
     设置环境变量参见 <https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08>
 
-#### difftime()  time_t, time_t → int
+#### difftime()：time_t, time_t → int
 
     以秒数计算二个作为 time_t 对象的日历时间的差（ time_end - time_beg ）。若 time_end 代表先于 time_beg 的时间点，则结果为负。
 
@@ -212,7 +218,7 @@ if (strftime(buff, sizeof buff, "%Y-%m-%d %H:%M:%S", &my_time)) {
 
     计算两个日期之间的差值，只能用秒数
 
-#### ~~ctime()~~
+#### ~~过时了 ctime()~~
 
 转换从纪元起的给定时间为历法本地时间，再转换为固定格式文本表示，如同通过调用 asctime(localtime(ltime))
 
@@ -221,7 +227,7 @@ if (strftime(buff, sizeof buff, "%Y-%m-%d %H:%M:%S", &my_time)) {
 入参 time_t
 返回 字符串
 
-POSIX 标记此函数为过时并推荐 strftime() 代替。
+POSIX 标记此函数为过时，并推荐 strftime() 代替。
 
 示例代码
 
@@ -243,43 +249,44 @@ printf("ctime local: %s", ctime(&ltime));
 
 ```
 
-## Python标准库
+## Python 标准模块
 
-库 datetime 和 库 time 处理日期时间的运算，对应的数据结构和操作方式本质是c标准库的。
+模块 datetime 和 模块 time 处理日期时间的运算，对应的数据结构和操作方式本质是 C 标准库
 
     <https://docs.python.org/zh-cn/3/library/calendar.html>
     <https://dateutil.readthedocs.io/en/stable/>
 
-1. 常用的当前时间获取，时间转换字符串等操作，在库 time 里有现成的函数直接引用即可。
+1. 常用的当前时间获取，时间转换字符串等操作，在模块 time 里有现成的函数直接引用即可。
 
-2. 库 datetime 的对象 datetime 是最常用的，这个才是完整的日期时间对象，那个date对象和time对象是它为了组合datetime对象细分的，操作方法单一。
+2. 模块 datetime 的对象 datetime 是最常用的，这个才是完整的日期时间对象，那个date对象和time对象是它为了组合datetime对象细分的，操作方法单一。
 
-3. 库datetime里面操作的方法，有时候就转到库time上了，注意哦，虽然用的时候没有import time，但是实际返回值可能是库time的。
+3. 模块 datetime 里面操作的方法，有时候就转到模块 time 上了，注意哦，虽然用的时候没有import time，但是实际返回值可能是模块 time 的。
 
-4. 实际代码操作中，注意
+务必分清导入的是模块还是模块对象 `import datetime` 和 `import datetime.datetime`，根据导入模块或对象的不同，注意区分如下写法：
 
-    务必分清导入的是库还是库对象 import datetime 和 import datetime.datetime
-
-    datetime.time() 意义不一样，一个是datetime库里的time对象，一个是datetime库里datetime对象的time方法，名字来回重复，就怕你不晕！
+    datetime.time() ：一个是 datetime 模块里的 time 对象，一个是 datetime 模块里 datetime 对象的 time 方法，名字来回重复，就怕你不晕！
 
     datetime.datetime.time.time() 你能看懂返回值类型是啥不
 
 ### Timestamp 类型
 
-    文档中没有专门描述，注意这个timestamp类型就是c标准库中的time_t的一个秒数，
-    一般是从 epoch 开始的秒数。
+    文档中没有专门描述，注意这个 timestamp 类型就是 C 标准库中的time_t的一个秒数，一般是从 epoch 开始的秒数。
 
     python中对于时间的运算本质上都被转成Timestamp类型了，注意函数返回值类型！
 
-### 库time <https://docs.python.org/zh-cn/3/library/time.html>
+### 模块 time
 
-时间的访问和转换，依赖库datetime。
+    https://docs.python.org/zh-cn/3/library/time.html
 
-注意这个库的很多对象和操作是时间转换自C标准库的。
+时间的访问和转换，依赖模块 datetime。
 
-这个库的很多函数返回值是不一样的，注意区别
+注意这个模块的很多对象和操作是时间转换自 C 标准库的。
 
-字符串格式化为本库用的时间格式，格式跟库datetime的不同 <https://docs.python.org/zh-cn/3/library/time.html#time.strftime>
+这个模块的很多函数返回值是不一样的，有可能是 datetime 或 date 模块的类型，注意区别
+
+字符串格式化为本模块用的时间格式，其格式跟模块 datetime 的不同
+
+    https://docs.python.org/zh-cn/3/library/time.html#time.strftime
 
 术语解释
 
@@ -287,7 +294,7 @@ printf("ctime local: %s", ctime(&ltime));
 
     术语 Unix 纪元秒数 是指自国际标准时间 1970 年 1 月 1 日零时以来经过的总秒数，通常不包括 闰秒。 在所有符合 POSIX 标准的平台上，闰秒都会从总秒数中被扣除。
 
-    此模块中的功能可能无法处理纪元之前或将来的远期日期和时间。未来的截止点由C库决定；对于32位系统，它通常在2038年。
+    此模块中的功能可能无法处理纪元之前或将来的远期日期和时间。未来的截止点由 C 库决定；对于32位系统，它通常在2038年。
 
     函数 strptime() 在接收到 %y 格式代码时可以解析 2 位数的年份。 当解析 2 位数年份时，会按照 POSIX 和 ISO C 标准进行转换：数值 69--99 映射为 1969--1999，而数值 0--68 被映射为 2000--2068。
 
@@ -303,19 +310,19 @@ printf("ctime local: %s", ctime(&ltime));
 
 #### 内置数据类型
 
-添加了一点我的注解，timestamp类型是epoch点以来的秒数，很多函数返回的都是这样的秒数，如果单独说是整型或浮点型，体现不出时间意义。
+添加了一点我的注解，timestamp 类型是 epoch 点以来的秒数，很多函数返回的都是这样的秒数，如果单独说是整型或浮点型，体现不出时间意义。
 
-##### timestamp     对应 c 标准库的 time_t
+##### timestamp 对应 C 标准库的 time_t
 
-这是个能传递给别的库如库 datatime 使用的数据结构，其实就是个秒数，主要存在价值是在各个库直接传递方便。
+这是个能传递给别的模块如模块 datatime 使用的数据结构，其实就是个秒数，主要存在价值是在各个模块直接传递方便。
 
-##### struct_time   对应 c 标准库的struct tm
+##### struct_time 对应 C 标准库的 struct/tm
 
 class time.struct_time
 
     请注意，与C结构不同，月份值是 [1,12] 的范围，而不是 [0,11] 。
 
-    给函数gmtime(), localtime(), strptime()的返回值交换数据方便使用的
+    给函数 gmtime(), localtime(), strptime() 的返回值交换数据方便使用的
 
     time.struct_time(tm_year=2019, tm_mon=12, tm_mday=2, tm_hour=17, tm_min=25, tm_sec=0, tm_wday=0, tm_yday=336, tm_isdst=0)
 
@@ -345,8 +352,12 @@ class time.struct_time
 
     http://strftime.org/
 
-    datetime、date、time都提供了strftime()方法，该方法接收一个格式字符串，输出日期时间的字符串表示。
-    下表是从python手册中拉过来的，我对些进行了简单的翻译（翻译的有点噢口~~）。
+    https://docs.python.org/zh-cn/3/library/time.html#time.strftime
+    https://docs.python.org/zh-cn/3/library/datetime.html#datetime.date.strftime
+
+datetime、date、time 都提供了 strftime() 方法，该方法接收一个格式字符串，输出日期时间的字符串表示。
+
+下表是从python手册中拉过来的，我对些进行了简单的翻译
 
 格式字符  意义
 
@@ -375,7 +386,7 @@ class time.struct_time
     %Z  时区名称（如果是本地时间，返回空字符串）
     %%  %% => %
 
-#### 内置函数，不需要实例化对象直接用
+#### 模块 time 的内置函数，不需要实例化对象直接用
 
 ##### time.tzname 当前时区名
 
@@ -485,14 +496,14 @@ NOTE: mktime 输入的日期是带时区的，返回的值才是不带时区的�
 
     暂停执行调用线程达到给定的秒数。
 
-##### ~~time.asctime()~~
+##### ~~过时了 time.asctime()~~
 
     同c标准库的asctime()，转换为以下形式的字符串: 'Sun Jun 20 23:21:05 1993'。
 
     入参 struct_time
     返回 字符串时间
 
-##### ~~time.ctime()~~
+##### ~~过时了 time.ctime()~~
 
     同c标准库的ctime()，转换为以下形式的字符串: 'Sun Jun 20 23:21:05 1993'
 
@@ -507,11 +518,13 @@ NOTE: mktime 输入的日期是带时区的，返回的值才是不带时区的�
     >>> time.timezone / 3600.0
     -8.0
 
-### 库datetime <https://docs.python.org/zh-cn/3/library/datetime.html>
+### 模块 datetime
+
+    https://docs.python.org/zh-cn/3/library/datetime.htm
 
 在支持日期时间数学运算，实现的关注点更着重于如何能够更有效地解析其属性用于格式化输出和数据操作。
 
-注意这个库的很多对象和操作是时间转换自C标准库的。
+注意这个库的很多对象和操作是时间转换自 C 标准库的。
 
 字符串格式化为本库用的时间格式，格式跟库time的不同 <https://docs.python.org/zh-cn/3/library/datetime.html#strftime-and-strptime-behavior>
 
@@ -647,7 +660,7 @@ __str__()
 
 常用实例方法：
 
-~~ctime()~~
+~~过时了 ctime()~~
 
     返回一个固定格式字符串，格式同c标准库ctime()
 
@@ -692,9 +705,9 @@ __str__()
     >>> time_to_birthday.days
     202
 
-#### 库datetime的日期时间对象datetime
+#### 模块 datetime 的日期时间对象 datetime
 
-注意，是库里有个与库同名的共享对象，在 import 的时候写出来容易混淆，注意区别
+注意，模块里有个与模块同名的共享对象，在 import 的时候写出来容易混淆，注意区别
 
     import datetime         # 导入库
     datetime.date.today()   # 引用 date 对象的方法
@@ -823,7 +836,7 @@ datetime 实质就是 date 对象和 time 对象的组合，表示完整的日�
 __str__()
     同上
 
-~~ctime()~~
+~~过时了 ctime()~~
 
     返回一个表示日期和时间的字符串，格式固定不够灵活
 
@@ -948,11 +961,11 @@ total_seconds()
 
     每个实例都代表一个以与 UTC 的固定时差来定义的时区
 
-### 库 calendar
+### 模块 calendar
 
-输出像 Unix cal 那样的日历，它还提供了其它与日历相关的实用函数。
+输出像 Unix 标准工具`cal` 那样的日历，它还提供了其它与日历相关的实用函数。
 
-<https://docs.python.org/zh-cn/3/library/calendar.html>
+    https://docs.python.org/zh-cn/3/library/calendar.html
 
 常用方法：
 
@@ -981,11 +994,13 @@ total_seconds()
 
     返回当前设置的每星期的第一天的数值。 0 是星期一
 
-### 库 dateutil 包
+### 模块 dateutil 包
 
-具有扩展时区和解析支持的第三方库 <https://dateutil.readthedocs.io/en/stable/>
+具有扩展时区和解析支持的第三方库
 
-## Numpy的日期时间
+    https://dateutil.readthedocs.io/en/stable
+
+## Numpy 的日期时间
 
 在NumPy 1.7版本开始，它的核心数组（ndarray）对象支持datetime相关功能，由于’datetime’这个数据类型名称已经在Python自带的datetime模块中使用了， NumPy中时间数据的类型称为’datetime64’。
 
@@ -1101,7 +1116,7 @@ numpy也提供了datetime.timedelta类的功能，支持两个时间对象的运
 
     (dt64_arr - np.datetime64('1970-01-01T00:00:00Z')) / np.timedelta64(1, 's')
 
-## Pandas的日期时间
+## Pandas 的日期时间
 
     操作的类型是 numpy 的 datetime64 timedelta64，python的 datetime, timestamp
 
