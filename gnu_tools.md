@@ -2153,6 +2153,8 @@ base16 是语法高亮时的定义，但是也可以直接给终端模拟器的1
 
 #### 配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等
 
+强烈推荐 Nord theme，支持的软件众多，详见各软件介绍的美化相关章节即可。至少使用在章节 [命令行软件支持真彩色 dir_colors]、[mintty 美化]、[vim 扩展插件]的颜色主题、[Linux 桌面下的终端模拟器]的主题设置。
+
 Nord theme
 
     https://www.nordtheme.com/ports/
@@ -2166,8 +2168,6 @@ Dracula theme
 支持  Gnome Terminal, Pantheon Terminal, Tilix, and XFCE4 Terminal 的彩色方案
 
     https://gogh-co.github.io/Gogh/
-
-Nord theme 支持的软件众多，详见各软件介绍的美化相关章节即可。至少使用章节 [命令行软件支持真彩色 dir_colors]、[mintty 美化]、[vim 扩展插件]的颜色主题、[Linux 桌面下的终端模拟器]的主题设置。
 
 可以使用 pywal 让终端的文字颜色自动适配你的桌面图片，详见章节 [根据图片生成相同风格的配色方案]。
 
@@ -3876,7 +3876,7 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
-    主题配色方案建议使用 Nord theme
+    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
 
         $ cd ~/your_github_dir/
 
@@ -3912,7 +3912,7 @@ KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
 Gnome 桌面自带 Xterm，现名 Gnome Terminal：
 
-    主题配色方案建议使用 Nord theme
+    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
 
         $ cd ~/your_github_dir/
 
@@ -3930,7 +3930,7 @@ Gnome 桌面自带 Xterm，现名 Gnome Terminal：
 
 Xfce 桌面自带 Xfce Terminal：
 
-    主题配色方案建议使用 Nord theme
+    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
 
         $ cd ~/your_github_dir/
 
