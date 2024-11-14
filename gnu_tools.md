@@ -12793,7 +12793,7 @@ Gnome 桌面默认只展示壁纸，不能放文件（临时下载文件没法�
 
     给窗口的任务栏添加最大化最小化按钮，方便鼠标操作
 
-    选择任务栏主题，需要先安装 “User Themes” 扩展，然后见章节 [使用 gnome 主题]
+    在 “Appearance” 选择任务栏主题，需要先安装 “User Themes” 扩展，见章节 [使用 gnome 主题]
 
     笔记本用户勾选“Mouse Click Emulatsion-->Finger”，否则触摸板操作不支持单指点击选中文字。这样一般的文本编辑操作就比较方便了，单指滑动移动鼠标，单指点击选择文字，双指移动滚动屏幕。
 
@@ -12966,7 +12966,7 @@ Gnome 主题乐园，在这里搜一下 Gnome Shell Themes 类别，你的 Gnome
 
 如何使用主题：
 
-gnome 扩展要安装 User Themes
+安装一个 gnome 扩展 `User Themes`，然后启用 “用户主题 User Themes” 扩展，在扩展里面启用它。
 
 安装 Murrine Engine 以兼容支持旧的 gtk2 标准
 
@@ -12975,6 +12975,26 @@ gnome 扩展要安装 User Themes
 下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
 
 然后打开 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择刚才的zip文件即可
+
+以下内容过时了
+
+    然后你就可以在 GNOME Shell 扩展页面 挑选扩展了
+
+        https://extensions.gnome.org/
+
+    安装主题：
+
+        sudo dnf install flat-remix-theme
+
+    安装图标：
+
+        sudo dnf install numix-icon-theme-circle
+
+    安装光标：
+
+        sudo dnf install breeze-cursor-theme
+
+    再去 GNOME 优化(Tweaks)的 “外观” 设置里面修改刚刚安装的主题、图标和光标，还可以修改字体。
 
 #### 把浏览器缓存区指向内存目录
 
