@@ -2630,7 +2630,9 @@ zsh 下推荐使用 powerlevle10k，这个状态栏工具的兼容性和显示�
 
 而主流操作系统（Windows/Linux）中内置的普通字体，很多特殊字符都会显示不正确，这也是很多人在安装一些主题后，显示效果不理想的原因。
 
-所以，编程爱好者自行给流行的字体打补丁，补齐了图标字符（glyphs），称为 patch字体。最流行的有 Powerline fonts 或者 Nerd fonts 这些字体集，他们对大量的流行字体（尤其是编程用的等宽类）打了 patch，新增很多 icon 字符。
+所以，编程爱好者自行给流行的字体打补丁，补齐了图标字符（glyphs），称为 patch字体。
+
+最流行的有 Powerline fonts 或者 Nerd fonts 这些字体集，他们对大量的流行字体（尤其是编程用的等宽类）打了 patch，新增很多 icon 字符。
 
 只有你的操作系统安装了这些补丁字体，然后设置你的终端模拟器程序使用该补丁字体，那些漂亮的主题效果才会完美呈现出来。
 
@@ -2650,6 +2652,12 @@ zsh 下推荐使用 powerlevle10k，这个状态栏工具的兼容性和显示�
 
     $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699"
      ±  ➦ ✘ ⚡ ⚙
+
+在这里看常用字体效果，无 NF 图标
+
+    https://coding-fonts.pages.dev/fonts/fira-code/
+
+    https://www.programmingfonts.org/#meslo
 
 #### Powerline fonts
 
@@ -2683,33 +2691,42 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
     https://www.nerdfonts.com/font-downloads
         https://github.com/ryanoasis/nerd-fonts
 
-    在这里看字体效果 https://www.programmingfonts.org/#bitstream-vera
+原理和 Powerline fonts 是一样的，针对已有的字体打 patch，把一些 icon 字符插入进去。
+不过 Nerd font 就比较厉害了，是一个“集大成者”，他几乎把目前市面上主流的 icon 字符全打进去了，
+包括上面提到的 powerline icon 字符以及 Font Awesome 等几千个 icon 字符。
 
-原理和 Powerline fonts 是一样的，针对已有的字体打 patch，把一些 icon 字符插入进去。不过 Nerd font 就比较厉害了，是一个“集大成者”，他几乎把目前市面上主流的 icon 字符全打进去了，包括上面提到的 powerline icon 字符以及 Font Awesome 等几千个 icon 字符。
-
-类似 Powerline fonts，字体 patch 后对名字加了后缀 NF，比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)，Fira Code 改名为 Fira Code NF。
+类似 Powerline fonts，字体 patch 后对名字加了后缀 NF，
+比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)，
+Fira Code 改名为 Fira Code NF。
 
 > 终端模拟器推荐使用 Meslo LG-S NF 字体，如果你的终端模拟器还支持透明效果，显示效果直接起飞。
 
-快速下载地址
+这个是 Powerlevel10k 推荐的字体
 
     https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k
 
-    原始地址，下载文件名最短的那个即可
+原始地址，逐个目录选择文件名最短的下载，即不下载 Mono 和 Propo 类型的
 
-        https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S
+    https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S
 
-下载的类别很多，推荐选 S 目录是要行间距小的，在终端显示的时候正好，如果需要增大行间距，不建议换字体，在终端模拟器或你的编辑器设置行距更好。文件名加 Mono 字样的是等宽变形，显示时太挤了，加 Propo 字样的是多行连线优化，普通使用用不到。
+选 S 目录的原因是要行间距小的，在终端显示的时候正好，如果需要增大行间距，不建议换字体，在终端模拟器或你的编辑器设置行距更好。
+文件名加 Mono 字样的是等宽变形，显示时太挤了，加 Propo 字样的是多行连线优化，普通使用用不到。
 
-它的上游来源是 Meslo 字体，没有补丁<https://github.com/andreberg/Meslo-Font>，再上游是 Apple’s Menlo-Regular，再上游是 Bitstream Vera Sans Mono。
+它的上游字体来源
+
+    Meslo  https://github.com/andreberg/Meslo-Font
+        Apple’s Menlo-Regular
+            Bitstream Vera Sans Mono
 
 > 代码编辑器推荐安装 FiraCode NF 字体，该字体支持连字符，Windows 用户找带 Windows 字样的下载即可
 
-    curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/FiraCode.zip
+文件名加 Mono 字样的是等宽变形不包含连字。
 
-    文件名加 Mono 字样的是等宽变形不包含连字。
+它的上游字体来源
 
-> Fedora(SELinux) 下安装 Nerd Font --- Meslo LGS
+    FiraCode https://github.com/tonsky/FiraCode
+
+> Fedora(SELinux) 下安装 Meslo LG-S NF 字体
 
 在桌面环境双击字体文件，调用 gnome-font-viewer 图形化程序，选择安装后会自动保存在系统目录
 
@@ -2726,17 +2743,20 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 
 步骤如下：
 
-    $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/Meslo.zip
-    $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/FiraCode.zip
+    $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Meslo.tar.xz
+    $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.tar.xz
 
-    $ unzip Meslo.zip
-    $ unzip FiraCode.zip
+    $ xz -d Meslo.tar.xz
+    $ xz -d FiraCode.tar.xz
+
+    $ tar xf Meslo.tar
+    $ tar xf FiraCode.tar
 
     $ sudo mkdir -p /usr/local/share/fonts/MesloLGSNF
     $ sudo mkdir -p /usr/local/share/fonts/FiraCodeNF
 
     $ sudo cp MesloLGSNerdFont-*.ttf /usr/local/share/fonts/MesloLGSNF/
-    $ sudo cp FiraCodeNerdFont-*.ttf /usr/local/share/fonts/FiraCodeNF
+    $ sudo cp FiraCodeNerdFont-*.ttf /usr/local/share/fonts/FiraCodeNF/
 
     # Set permissions and update SELinux labels
     $ sudo chown -R root: /usr/local/share/fonts/MesloLGSNF
@@ -2761,7 +2781,9 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
     $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \uf70f \ue20a \ue350 \uf2c8"
      ±  ➦ ✘ ⚡ ⚙ ❃    
 
-#### Font Awesome
+#### Font Awesome 图标字体工具
+
+给字体添加图标的工具
 
     https://fontawesome.com/v5/cheatsheet
 
