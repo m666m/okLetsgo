@@ -2699,18 +2699,19 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
 比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)，
 Fira Code 改名为 Fira Code NF。
 
-> 终端模拟器推荐使用 Meslo LG-S NF 字体，如果你的终端模拟器还支持透明效果，显示效果直接起飞。
+> Meslo LG-S NF 字体，终端模拟器推荐使用，如果你的终端模拟器还支持透明效果，显示效果直接起飞。
 
 这个是 Powerlevel10k 推荐的字体
 
     https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k
 
-原始地址，逐个目录选择文件名最短的下载，即不下载 Mono 和 Propo 类型的
+开发版的地址
 
     https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S
 
 选 S 目录的原因是要行间距小的，在终端显示的时候正好，如果需要增大行间距，不建议换字体，在终端模拟器或你的编辑器设置行距更好。
-文件名加 Mono 字样的是等宽变形，显示时太挤了，加 Propo 字样的是多行连线优化，普通使用用不到。
+
+逐个目录选择文件名最短的下载，即不下载 Mono 和 Propo 类型的。文件名加 Mono 字样的是等宽变形，显示时太挤了，加 Propo 字样的是多行连线优化，普通使用用不到。
 
 它的上游字体来源
 
@@ -2718,7 +2719,11 @@ Fira Code 改名为 Fira Code NF。
         Apple’s Menlo-Regular
             Bitstream Vera Sans Mono
 
-> 代码编辑器推荐安装 FiraCode NF 字体，该字体支持连字符，Windows 用户找带 Windows 字样的下载即可
+> FiraCode NF 字体，代码编辑器推荐使用，该字体支持连字符，Windows 用户找带 Windows 字样的下载即可
+
+开发版的地址
+
+    https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
 
 文件名加 Mono 字样的是等宽变形不包含连字。
 
@@ -2728,16 +2733,16 @@ Fira Code 改名为 Fira Code NF。
 
 > Fedora(SELinux) 下安装 Meslo LG-S NF 字体
 
-在桌面环境双击字体文件，调用 gnome-font-viewer 图形化程序，选择安装后会自动保存在系统目录
-
-    /usr/share/fonts
-
 因为发行版的存储库没有 nerd font，只能手动安装，只是安装方法有点复杂：
 
     https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
         https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#add-extra-fonts
 
-手工安装下载的字体，推荐的保存目录是
+方法一：在桌面环境双击字体文件，调用 gnome-font-viewer 图形化程序，选择安装后会自动保存在系统目录
+
+    /usr/share/fonts
+
+方法二：放在系统推荐的保存目录
 
     /usr/local/share/fonts
 
