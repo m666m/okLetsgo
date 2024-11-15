@@ -11857,9 +11857,11 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
                 https://github.com/xbmc/xbmc/
                 https://kodi.wiki/view/Main_Page
 
-            如果在 NAS 上部署服务端，可以用 jellyfin https://jellyfin.org/
+            索尼电视安装KODI播放器并顺利点亮杜比视界的全过程 https://zhuanlan.zhihu.com/p/666340153
 
             中文资料比较多 https://www.kodi.org.cn/ http://www.kodiplayer.cn/
+
+            如果在 NAS 上部署服务端，可以用 jellyfin https://jellyfin.org/
 
         界面和文件列表支持中文：设置->界面->皮肤->字体，把默认字体改为 Arial,然后就可以切换语言 Regional——language——Chinese（simple）。如果没有出现 Chinese 选项：使用 addon 里选择 repo 访问下网络，然后才可以设置“界面外观” 选择语言为中文。
 
@@ -11876,6 +11878,8 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
         Kodi 最强大的地方是在你的电视上直接建立影视信息库，免除在 NAS 上安装 jellyfin
 
                 http://www.kodiplayer.cn/course/2866.html
+
+                插件库社区  https://www.kodinerds.net/   repo https://repo.kodinerds.net/
 
             打开 Kodi,左侧菜单找到 “视频”，右侧从“类别” 里选择 “文件”：“添加视频”-“浏览”，找到视频文件夹所在位置。
 
