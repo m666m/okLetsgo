@@ -10847,7 +10847,7 @@ ntp 时间同步的原理
 
         $ sudo reboot
 
-调整时区
+调整时区，查找你的时区的标准名称
 
     $ timedatectl list-timezones |greps sing
     313:Asia/Singapore
@@ -10857,6 +10857,8 @@ ntp 时间同步的原理
     $ sudo timedatectl set-timezone Asia/Singapore
 
     老方法：ln -s cp /usr/share/zoneinfo/Asia/Singapore /etc/localtime
+
+    时区标准参见章节 [时区标准tzinfo](time_t.md)
 
 设置硬件 RTC 或系统时间
 

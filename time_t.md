@@ -16,13 +16,17 @@ Calendar Time：日历时间，“从一个标准时间点到此时的时间经�
 
 ## 时区标准tzinfo
 
-    时区名称 https://timezonedb.com/time-zones
+时区名称
 
-    世界地图时区分布
-        https://www.timeanddate.com/time/map/
-        https://greenwichmeantime.com/time-zone/
+    https://timezonedb.com/time-zones
 
-    Time Zone Database
+世界地图时区分布
+
+    https://www.timeanddate.com/time/map/
+    https://greenwichmeantime.com/time-zone/
+
+IANA Time Zone Database 这个应该是世界标准
+
     https://www.iana.org/time-zones
         http://ftp.iana.org/tz/releases/
 
