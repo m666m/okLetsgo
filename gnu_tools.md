@@ -10814,18 +10814,18 @@ ntp 时间同步的原理
 
     网络时间的那些事及 ntpq 详解  https://www.cnblogs.com/GYoungBean/p/4225465.html
 
-通用的查看时间控制的命令 timedatectl。
+目前通用的查看时间控制的命令 timedatectl，来自 systemd 的配套工具。
 
-查看时间同步的状态
+查看当前时间相关的设置，包括时区、ntp设置等
 
     $ timedatectl status
                 Local time: 二 2023-08-08 15:30:53 +08
             Universal time: 二 2023-08-08 07:30:53 UTC
                     RTC time: 二 2023-08-08 15:30:53
                     Time zone: Asia/Singapore (+08, +0800)
-    System clock synchronized: yes    <--------  时间同步正常
+    System clock synchronized: yes    <-------- 时间同步正常
                 NTP service: active   <-------- 使用 chrony、systemd-timesyncd 等 NTP 服务可以被这个命令识别到
-            RTC in local TZ: yes
+            RTC in local TZ: yes      <-------- 兼容 Windows 设置了硬件 RTC保存本地时间，下面有警告信息
 
     Warning: The system is configured to read the RTC time in the local time zone.
             This mode cannot be fully supported. It will create various problems
@@ -10847,28 +10847,55 @@ ntp 时间同步的原理
 
         $ sudo reboot
 
-调整时区，查找你的时区的标准名称
+调整时区
 
-    $ timedatectl list-timezones |greps sing
-    313:Asia/Singapore
-    438:Europe/Busingen
-    578:Singapore
+    https://docs.fedoraproject.org/en-US/fedora-coreos/time-zone/
 
-    $ sudo timedatectl set-timezone Asia/Singapore
+    命令方法来自 https://docs.fedoraproject.org/en-US/fedora/latest/system-administrators-guide/basic-system-configuration/Configuring_the_Date_and_Time/
+
+    1、先更新下系统，以获取夏令时等最新的时区信息
+
+        $ sudo dnf update -y
+
+        $ timedatectl
+                    Local time: Mon 2021-05-17 20:10:20 UTC
+                Universal time: Mon 2021-05-17 20:10:20 UTC
+                        RTC time: Mon 2021-05-17 20:10:20
+                        Time zone: UTC (UTC, +0000)
+        System clock synchronized: yes
+                    NTP service: active
+                RTC in local TZ: no
+
+    2、查找你的时区的标准名称
+
+        $ timedatectl list-timezones |greps sing
+        313:Asia/Singapore
+        438:Europe/Busingen
+        578:Singapore
+
+    3、更改时区
+
+        $ sudo timedatectl set-timezone Asia/Singapore
 
     老方法：ln -s cp /usr/share/zoneinfo/Asia/Singapore /etc/localtime
 
+    4、时间变化较大，务必重启一次，防止相关服务错乱
+
+        $ sudo reboot
+
     时区标准参见章节 [时区标准tzinfo](time_t.md)
 
-设置硬件 RTC 或系统时间
+设置硬件 RTC 保存的时间标准
 
-    # 使用硬件 RTC 设置系统时间，默认 --utc，如果是 Windows/Linux 双系统的计算机，建议 --localtime 跟 Windows 保持一致
+    硬件 RTC 保存系统时间，默认 --utc，
     $ sudo hwclock --hctosys
 
-    # Windows 机制：用系统时间设置硬件 RTC
-    # sudo hwclock --localtime -w
+    硬件 RTC 保存本地时间
+    $ sudo hwclock --localtime -w
 
-推荐 [使用 chrony]，ntp 软件包过时了：以前 Linux 时间同步基本是使用 ntpdate 和 ntpd 这两个工具实现的。ntpd 是步进式平滑的逐渐调整时间，而 ntpdate 是断点式更新时间。
+    如果是 Windows/Linux 双系统的计算机，建议用参数 `--localtime` 以跟 Windows 保持一致，原因见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
+
+ntp 软件包过时了，推荐 [使用 chrony]：以前 Linux 时间同步基本是使用 ntpdate 和 ntpd 这两个工具实现的。ntpd 是步进式平滑的逐渐调整时间，而 ntpdate 是断点式更新时间。
 
     https://wiki.debian.org/NTP
 
@@ -10876,7 +10903,7 @@ ntp 时间同步的原理
 
     ntpstat
 
-Debian 系一般都使用 systemd 自带的时间同步服务 systemd-timesyncd，而 Fedora 系使用 chrony 作为默认时间同步工具。要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐 chrony。
+时间同步服务：Debian 系一般都使用 systemd 自带的 systemd-timesyncd，而 Fedora 系使用 chrony 作为默认时间同步工具。要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐 chrony。
 
 Linux 处理 RTC 时间跟 Windows 的机制不同，大多数 Linux 发行版都提供了一个默认配置，它指向发行版维护的时间服务器上。systemd-timesyncd 只会更改系统时间而不会更改 RTC 硬件时间，即系统时间是根据硬件 RTC 时间和当前时区设置计算得出的。可以改变这个机制，通过 `hwclock -w` 命令将系统时间（受时区、夏令时影响）同步到硬件时间（默认 UTC），参见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
 
