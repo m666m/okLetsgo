@@ -10802,21 +10802,21 @@ Windows 版
 
 ### 操作时间 timedatectl/chronyc 及 NTP 服务
 
-验证当前系统时间是否准确，访问如下网址比较你电脑/手机和此网站的差值，同步精确度±5ms，不准就刷新
+目前通用的查看时间控制的命令 timedatectl，来自 systemd 的配套工具。
 
-    https://time.is/
+    验证当前系统时间是否准确，访问如下网址比较你电脑/手机和此网站的差值，同步精确度±5ms，不准就刷新
 
-ntp 时间同步的原理
+        https://time.is/
 
-    https://learn.microsoft.com/zh-cn/windows-server/networking/windows-time-service/how-the-windows-time-service-works#ntp-algorithms
+    NTP 时间同步的原理
+
+        https://learn.microsoft.com/zh-cn/windows-server/networking/windows-time-service/how-the-windows-time-service-works#ntp-algorithms
 
     用 timedatectl 命令操作时间时区  https://www.cnblogs.com/zhi-leaf/p/6282301.html
 
     网络时间的那些事及 ntpq 详解  https://www.cnblogs.com/GYoungBean/p/4225465.html
 
-目前通用的查看时间控制的命令 timedatectl，来自 systemd 的配套工具。
-
-查看当前时间相关的设置，包括时区、ntp设置等
+查看当前时间相关的设置，包括时区、NTP 设置等
 
     $ timedatectl status
                 Local time: 二 2023-08-08 15:30:53 +08
