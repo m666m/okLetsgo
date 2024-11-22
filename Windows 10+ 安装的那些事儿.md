@@ -1982,15 +1982,33 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
 #### 解决双系统安装 Windows 与 Linux 时间不一致的问题
 
+如果是 KVM 虚拟机中的 Windows 时间经常不准，详见章节 [虚拟机在长时间运行后时间变慢](virtualization think)。
+
 Linux 与 Windows 对于本机 RTC 硬件保存时间的理解方式不同：
 
-    Linux 默认认硬件时间为 GMT+0 时间，即世界标准时间UTC。操作系统在显示系统时间时，用硬件时间加上当前的时区和夏令时偏移，显示出本地时间，如中国是东八区无夏令时，为 GMT+8-0。
+    Linux 默认认硬件时间为 GMT+0 时间，即世界标准时间 UTC。操作系统在显示系统时间时，用硬件时间加上当前的时区和夏令时偏移，显示出本地时间，如中国是东八区无夏令时，为 GMT+8-0。
 
     而 Windows 系统认为硬件时间就是中国本地时间。
 
 因此，如果用户在本机切换使用过两个系统，则每个操作系统的时间校准服务都会按自己的理解设置系统时间，即使主板上的 RTC 时钟并未变化，导致 Windows 系统下时间比正常时间慢 8 个小时。
 
-解决办法：让 Linux 按照 Windows 的方式管理时间
+解决办法：
+
+法一、让 Windows 按照 Linux 的方式管理时间
+
+登录Windows虚拟机内部，打开“开始-运行”，输入“regedit”打开注册表。
+
+进入 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TimeZoneInformation\ 中添加一项类型为REG_DWORD（64位系统为REG_QWORD）的值，名称为 RealTimeIsUniversal，值设为 1。这样可以将系统启动时对待硬件时间的方式从 localtime 改成 utc，改完后重启计算机生效。
+
+如果是 Windows 云主机：
+
+    以管理员身份运行terminal，运行bcdedit /set {default} USEPLATFORMCLOCK on命令，将时钟源从tsc改为rtc，这样可以尽可能确保时间精度
+
+还可以更改 Windows 系统时间更新频率：
+
+    默认Windows的时间更新频率为一星期一次，可以更改为更短的时间间隔，比如3分钟一次。通过注册表HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient分支，修改SpecialPollInterval键值，将其设置为更短的时间间隔（以秒为单位），例如180秒。
+
+法二、让 Linux 按照 Windows 的方式管理时间
 
 大多数 Linux 发行版都提供了一个默认配置 ntp 客户端自动对时，它指向发行版维护的时间服务器上。但默认只更改系统时间而不去更改 RTC 硬件时间。参见章节 [操作时间 timedatectl/chronyc 及 NTP 服务](gnu_tools.md)。
 
