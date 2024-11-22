@@ -1994,9 +1994,9 @@ Linux 与 Windows 对于本机 RTC 硬件保存时间的理解方式不同：
 
 解决办法：
 
-法一、让 Windows 按照 Linux 的方式管理时间
+法一、推荐：让 Windows 按照 Linux 的方式管理时间
 
-登录Windows虚拟机内部，打开“开始-运行”，输入“regedit”打开注册表。
+登录Windows，打开“开始-运行”，输入“regedit”打开注册表。
 
 进入 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TimeZoneInformation\ 中添加一项类型为REG_DWORD（64位系统为REG_QWORD）的值，名称为 RealTimeIsUniversal，值设为 1。这样可以将系统启动时对待硬件时间的方式从 localtime 改成 utc，改完后重启计算机生效。
 
