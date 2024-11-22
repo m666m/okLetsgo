@@ -2008,7 +2008,7 @@ Linux 与 Windows 对于本机 RTC 硬件保存时间的理解方式不同：
 
     默认Windows的时间更新频率为一星期一次，可以更改为更短的时间间隔，比如3分钟一次。通过注册表HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient分支，修改SpecialPollInterval键值，将其设置为更短的时间间隔（以秒为单位），例如180秒。
 
-Windows 虚拟机也适用这个方法。
+Windows 主机和 Windows 虚拟机也适用这个方法。
 
 法二、让 Linux 按照 Windows 的方式管理时间
 
