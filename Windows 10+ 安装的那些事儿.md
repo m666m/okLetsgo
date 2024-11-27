@@ -2000,15 +2000,15 @@ Linux 与 Windows 对于本机 RTC 硬件保存时间的理解方式不同：
 
 进入 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TimeZoneInformation\ 中添加一项类型为REG_DWORD（64位系统为REG_QWORD）的值，名称为 RealTimeIsUniversal，值设为 1。这样可以将系统启动时对待硬件时间的方式从 localtime 改成 utc，改完后重启计算机生效。
 
+Windows 主机和 Windows 虚拟机都适用这个方法。
+
 如果是 Windows 云主机：
 
     以管理员身份运行terminal，运行bcdedit /set {default} USEPLATFORMCLOCK on命令，将时钟源从tsc改为rtc，这样可以尽可能确保时间精度
 
 还可以更改 Windows 系统时间更新频率：
 
-    默认Windows的时间更新频率为一星期一次，可以更改为更短的时间间隔，比如3分钟一次。通过注册表HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient分支，修改SpecialPollInterval键值，将其设置为更短的时间间隔（以秒为单位），例如180秒。
-
-Windows 主机和 Windows 虚拟机也适用这个方法。
+    默认Windows的时间更新频率为一星期一次，可以更改为更短的时间间隔，比如3分钟一次。通过注册表 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient 分支，修改 SpecialPollInterval 键值，将其设置为更短的时间间隔（以秒为单位），例如 180秒。
 
 法二、让 Linux 按照 Windows 的方式管理时间
 

@@ -10825,7 +10825,7 @@ Windows 版
                     Time zone: Asia/Singapore (+08, +0800)
     System clock synchronized: yes    <-------- 时间同步正常
                 NTP service: active   <-------- 使用 chrony、systemd-timesyncd 等 NTP 服务可以被这个命令识别到
-            RTC in local TZ: yes      <-------- 兼容 Windows 设置了硬件 RTC保存本地时间，下面有详细的警告信息
+            RTC in local TZ: yes      <-------- 兼容 Windows 设置了硬件 RTC 保存本地时间，下面有详细的警告信息
 
     Warning: The system is configured to read the RTC time in the local time zone.
             This mode cannot be fully supported. It will create various problems
@@ -10833,6 +10833,7 @@ Windows 版
             time is never updated, it relies on external facilities to maintain it.
             If at all possible, use RTC in UTC by calling
             'timedatectl set-local-rtc 0'.
+
             解决办法见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
 
     如果你看到 System clock synchronized: 值设置为 no，那么 systemd-timesyncd 服务可能处于非活动状态。因此，只需重启服务并看下是否正常。
@@ -10845,8 +10846,7 @@ Windows 版
     $ sudo systemctl restart chronyd
 
     实在不行就重启计算机，会执行一次自动对时
-
-        $ sudo reboot
+    $ sudo reboot
 
 调整时区
 
