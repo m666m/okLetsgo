@@ -2901,15 +2901,15 @@ Windows Subsystem for Android 在Windows Store[安装apk时默认安装](https:/
 
 ### 操作系统对旧cpu的支持
 
-Windows 7 实体机安装，最后支持的 cpu 是 Intel i7 7700k +z170芯片组主板，Windows安装镜像文件需要打上usb3.1的补丁才能安装，否则只能用 6700k。现在网络上改版的 Windows 8 支持到 8700k 和 9900k，只能在 CSM 模式下安装，需要适配的驱动才能安装。
+实体机 UEFI 安装 Windows 7 ，最后支持的 cpu 是 Intel i7 7700k + z170 芯片组主板，而且 Windows 安装镜像文件需要打上 usb3.1 的补丁，否则只能用 Intel i7 6700k。现在网络上改版的 Windows 8 支持到 8700k 和 9900k，只能在 CSM 模式下安装，需要适配的驱动。
 
-Intel i7 11700k 之后的cpu不再支持 Windows 98 虚拟机。
+Intel i7 11700k 之后的 cpu 不再支持 Windows 98 虚拟机。
 
-12代酷睿处理器开始引入了大小核心混合架构，需要操作系统适应，自身也要根据具体的应用程序情况进行发展，预计至少到 15 代酷睿以后才能大致稳住技术架构。
+12 代酷睿处理器开始引入了大小核心混合架构，需要操作系统适应，自身也要根据具体的应用程序情况进行发展，预计至少到 15 代酷睿以后才能大致稳住技术架构。
 
 ### 老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）
 
-UEFI 操作显卡的方式也有变化，需要显卡支持 “UEFI GOP VBIOS”。
+UEFI 启动模式下，操作显卡的方式也有变化，需要显卡支持 “UEFI GOP VBIOS”。
 
 最简单的识别方法就是使用 gpu z 软件，查看 uefi 选项有没有打勾
 
@@ -2917,7 +2917,7 @@ GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需�
 
 如果是外插的显卡，分为两种情况：
 
-    显卡带老式 OpRom，只要主板的 UEFI BIOS 使用 CSM 模式，就可以驱动 opROM，我的 Nvidia Geforce 1080 只能接 HDMI 口。
+    显卡带老式 OpRom，只要主板的 UEFI BIOS 使用 CSM 模式，就可以驱动 opROM，我的 Nvidia Geforce 1080 接 HDMI 口可以安装 Windows，后来的解决方法见 [一劳永逸方案：Nvidia 显卡可以升级固件解决这个问题]。
 
     显卡带有新式 GOP 驱动的 VBIOS 则没有问题，开机时不会黑屏。
 
@@ -2937,7 +2937,7 @@ GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需�
 
 #### 一劳永逸方案：Nvidia 显卡可以升级固件解决这个问题
 
-先把显卡挂到别的能显示的机器上，或先连接 HDMI 口安装 Windows 能进入系统后，升级下固件，以后就可以实现连接 DP 口安装 Windows 10 了
+先把显卡挂到别的能显示的机器上，或先连接 HDMI 口安装 Windows，进入系统后，升级下固件，以后就可以实现连接 DP 口在 UEFI 模式下安装 Windows 10 了
 
     https://www.tenforums.com/graphic-cards/144258-latest-nvidia-geforce-graphics-drivers-Windows-10-2-a.html
 
@@ -2948,7 +2948,7 @@ GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需�
 
 #### 凑合方案：主板 BIOS 设置为 CSM 方式安装 Windows 可以连接 DP 口
 
-用 Rufus 制作 Windows 10 安装u盘，如果分区类型选择 MBR（右侧选项自动选择“BIOS+UEFI(CSM)”），则也只能连接 HDMI 口安装系统。
+用 Rufus 制作 Windows 10 安装 u 盘，如果分区类型选择 MBR（右侧选项自动选择“BIOS+UEFI(CSM)”），则也只能连接 HDMI 口安装系统。
 
 这时如果想使用 DP 口开机显示，则主板 BIOS 要更改设置，CSM 模式要选 “Enable”，并设置兼容模式：
 
@@ -2958,7 +2958,7 @@ GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需�
 
     之后下面出现的三项，除了网卡启动的那个选项不用管，其它两个关于存储和 PCIe 设备的选项要确认选的是“UEFI”，这样在“other os”模式下可以实现 DP 口的开机显示，要是还不行，那两个选项直接选非 UEFI 的选项。
 
-这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能，如果是安装 Windows 11 会进行不下去。
+这样安装 Windows 后是 CSM 模式的，不支持 UEFI SecureBoot 功能，如果是安装 Windows 11 会进行不下去。
 
 关于主板 BIOS 设置 CSM 模式可以启动 DP 口的解释 <https://nvidia.custhelp.com/app/answers/detail/a_id/3156/kw/doom/related/1>
 
