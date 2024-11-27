@@ -10924,7 +10924,7 @@ NTP项目亚洲时间服务器，考虑到延迟，优先用国内的比较好
 
 其它
 
-    # 不建议使用中国科学院国家授时中心，精度不高，专业的人家有自己的协议，商业的有北斗，公共的没经费就凑合了一个
+    # 不建议使用中国科学院国家授时中心，精度不高，专业的人家有自己的协议，商业的有北斗，对外开放的没经费就凑合了一个
     # https://www.cas.cn/tz/201809/t20180921_4664344.shtml
     ntp.ntsc.ac.cn
 
@@ -11055,6 +11055,16 @@ chronyc 是用来监控 chronyd 性能和配置其参数的用户界面。他可
 
 #### 使用 systemd-timesyncd
 
+推荐 [使用 chrony]
+
+    systemd-timesyncd 是断点式更新时间，也就是时间不同立即更新，这样会对某些服务产生影响，所以在生产环境尽量不要用，在桌面环境或者是系统刚开机时来进行时间同步还是很好的。
+
+    timesyncd 替代了 ntpd 的客户端的部分。默认情况下 timesyncd 会定期检测并同步时间。它还会在本地存储更新的时间，以便在系统重启时做时间单步调整。
+
+    如果是虚拟机环境，应该把与主机时间同步功能关闭后再启用 systemd-timesyncd，否则可能会有问题.
+
+目前 Debian/openSUSE 使用这个机制，systemd-timesyncd 只实现了简单的 NTP 协议 SNTP，专注于从远程服务器查询然后同步到本地的系统时间，即只是 NTP 客户端。
+
     https://www.cnblogs.com/pipci/p/12833228.html
 
     https://itslinuxfoss.com/sync-time-debian-12/
@@ -11063,19 +11073,7 @@ chronyc 是用来监控 chronyd 性能和配置其参数的用户界面。他可
 
     https://wiki.archlinux.org/title/Systemd-timesyncd
 
-Debian/openSUSE 目前使用这个机制。
-
-systemd-timesyncd 只实现了简单的 NTP 协议 SNTP，专注于从远程服务器查询然后同步到本地的系统时间，即只是 NTP 客户端。
-
-推荐 [使用 chrony]
-
-    systemd-timesyncd 是断点式更新时间，也就是时间不同立即更新，这样会对某些服务产生影响，所以在生产环境尽量不要用，在桌面环境或者是系统刚开机时来进行时间同步还是很好的。
-
-    timesyncd 替代了 ntpd 的客户端的部分。默认情况下 timesyncd 会定期检测并同步时间。它还会在本地存储更新的时间，以便在系统重启时做时间单步调整。
-
-    如果是虚拟机环境，应该把与主机时间同步功能关闭后再启用systemd-timesyncd，否则可能会有问题.
-
-systemd-timesyncd只能作为客户端，不能作为NTP服务器，但如果有多一点的需求，例如你需要连接一个硬件来提供时钟，或要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp。注意这些 ntp 包只能安装一个，否则会互相干扰。
+systemd-timesyncd 只能作为客户端，不能作为 NTP 服务器，但如果有多一点的需求，例如你需要连接一个硬件来提供时钟，或要成为 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp。注意这些 ntp 包只能安装一个，否则会互相干扰。
 
 使用 systemd 自带的时间同步服务 systemd-timesyncd
 
