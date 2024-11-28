@@ -3981,7 +3981,13 @@ Enlightenment 桌面自带 Terminology。
 
 sway 窗口管理器自带 foot。
 
-guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个，gnome 桌面有个扩展即可实现该功能，参见章节 [使用 gnome 扩展] 的 quake-mode。
+Ptyxis 适用于 GNOME 的新的以容器为中心的终端模拟器，原名 Prompt
+
+    它的特色是有一个小型的 ptyxis-agent 来管理 PTY、PID 跟踪和容器监控。
+    而且，即使在 Flatpak 中，它也支持本机“用户会话”，以及 Podman、Toolbox、Distrobox 和 JHBuild。
+    主题配色方案内置了 Nord theme，但是不支持背景图片，已经内置在 Fedora 41。
+
+guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个，gnome 桌面有扩展实现该功能，参见章节 [使用 gnome 扩展] 的 quake-mode。
 
 tilix 基于 gtk3 开发的一个平铺式终端模拟器，效果类似 tmux，但是支持各面板的自定义拖曳。
 
@@ -11567,7 +11573,17 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 
 ### 常用桌面工具软件
 
-Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install` 处理过程不同（因为不是一个开源子项目），目前桌面版的这个软件管理有时候会出么鹅子，换命令行的执行即可
+各大 Linux 发行版都自带图形化软件商店，一般都选自各大开源项目，发行版拉取源代码自行编译，在自己的软件商店提供。命令行下类似，如 apt 或 dnf 命令默认安装的软件，都指向发行版自己的软件仓库
+
+    最初只有命令行软件，所以发行版官方给 apt 或 dnf 命令建立了专门的软件仓库，Linux 桌面环境的图形化软件，也是放在这个软件仓库中。发行版官方的这个软件仓库最全，一般来说只要是正规的长期开源软件项目，就会被选入
+
+    近些年来 Linux 桌面环境软件发展较快，各发行版官方都给图形化软件单独建立一个软件仓库---仿效手机叫 “软件商店”，它不提供命令行下运行的软件
+
+    flatpak 类的图形化软件比较特殊，也放在软件商店提供，所以有些软件可以看到至少2个来源：发行版原生编译、flatpak编译
+
+    目前发行版对进入软件商店的图形化软件要求比较严格，所以很多软件并未选入，但可以从命令行的官方软件仓库安装
+
+Gnome Software 里提示软件更新与命令行运行 `dnf upgrade` 和 `flatpak install` 的处理过程不同（因为不是一个开源子项目），目前桌面版的这个软件管理有时候会出么鹅子，换命令行的执行即可
 
     https://docs.fedoraproject.org/en-US/quick-docs/finding-and-installing-linux-applications/
 
@@ -11591,8 +11607,6 @@ Gnome Software 里提示软件更新与命令行 `dnf upgrade` `flatpak install`
 
     游戏：
         即时战略 Warzone
-
-快捷运行桌面工具，按 alt + F2，然后在弹出对话框输入可执行名如 firefox
 
 终端工具参见章节 [Linux 桌面下的终端模拟器]。
 
