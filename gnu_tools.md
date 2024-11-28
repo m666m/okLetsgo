@@ -3935,25 +3935,7 @@ KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
     窗口主菜单栏选择 “Setting”，取消勾选 “Show Menubar”，这时主菜单成为窗口右上角的一个三个横线的图标，点击会显示主菜单栏。这样你的屏幕可用面积扩大了一行。
 
-Gnome 桌面自带 Xterm，现名 Gnome Terminal：
-
-    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
-
-        $ cd ~/your_github_dir/
-
-        $ git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
-
-        $ cd gnome-terminal-nordtheme/src; ./nord.sh
-
-        执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
-
-    窗口菜单选 Profile，选 Nord，设为默认即可，其它选项点击右侧项：
-
-        -->command 勾选 Run command as a login shell 以设置会话执行登录脚本
-
-        -->color：不再支持设置背景图片，但仍可设置窗口透明度。
-
-Xfce 桌面自带 Xfce Terminal：
+Xfce 桌面自带 Xfce Terminal，支持背景图片：
 
     主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
 
@@ -3975,17 +3957,35 @@ Xfce 桌面自带 Xfce Terminal：
 
         -->Appeaerance-->Background，设置背景图片，目前不支持透明，只支持图片调暗
 
-gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal。
+Gnome 桌面自带 Xterm，现名 Gnome Terminal，不支持背景图片：
 
-Enlightenment 桌面自带 Terminology。
+    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
 
-sway 窗口管理器自带 foot。
+        $ cd ~/your_github_dir/
+
+        $ git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
+
+        $ cd gnome-terminal-nordtheme/src; ./nord.sh
+
+        执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
+
+    窗口菜单选 Profile，选 Nord，设为默认即可，其它选项点击右侧项：
+
+        -->command 勾选 Run command as a login shell 以设置会话执行登录脚本
+
+        -->color：不再支持设置背景图片，但仍可设置窗口透明度。
 
 Ptyxis 适用于 GNOME 的新的以容器为中心的终端模拟器，原名 Prompt
 
     它的特色是有一个小型的 ptyxis-agent 来管理 PTY、PID 跟踪和容器监控。
     而且，即使在 Flatpak 中，它也支持本机“用户会话”，以及 Podman、Toolbox、Distrobox 和 JHBuild。
     主题配色方案内置了 Nord theme，但是不支持背景图片，已经内置在 Fedora 41。
+
+gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal。
+
+Enlightenment 桌面自带 Terminology。
+
+sway 窗口管理器自带 foot。
 
 guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个，gnome 桌面有扩展实现该功能，参见章节 [使用 gnome 扩展] 的 quake-mode。
 
