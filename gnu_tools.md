@@ -246,7 +246,7 @@ Windows 10（2018年之前的版本）之前的所有 Windows 版本自带的所
         wslbridge2 https://github.com/Biswa96/wslbridge2
             wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
 
-### putty 远程终端模拟器
+### putty 终端模拟器
 
 putty 完美的实现了在 Windows 下使用 ssh 远程连接 Linux 服务器，连接后用户使用体验跟 Linux 下的本地终端模拟器完全一致
 
