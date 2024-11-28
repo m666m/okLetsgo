@@ -3981,6 +3981,13 @@ Ptyxis 适用于 GNOME 的新的以容器为中心的终端模拟器，原名 Pr
     而且，即使在 Flatpak 中，它也支持本机“用户会话”，以及 Podman、Toolbox、Distrobox 和 JHBuild。
     主题配色方案内置了 Nord theme，但是不支持背景图片，已经内置在 Fedora 41。
 
+    使用 dconf 设置窗口透明度
+
+        $ dconf read /org/gnome/Ptyxis/default-profile-uuid
+        'ddb03e60e8d36dec96ef51fb67345f90'
+
+        $ dconf write /org/gnome/Ptyxis/Profiles/ddb03e60e8d36dec96ef51fb67345f90/opacity 0.95
+
 gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal。
 
 Enlightenment 桌面自带 Terminology。
@@ -12886,7 +12893,7 @@ dconf 是一个基于键的配置系统，用于管理用户设置。它是 Red 
 
     dconf 命令行工具用于从/向 dconf 数据库读写单个值或整个目录，把它理解为注册表数据维护用的底层管理工具。
 
-如果需要修改桌面环境下的系统的配置参数，一般可以使用图形化工具 dconf editor，或 gsettings 命令行工具。
+如果需要修改桌面环境下的系统的配置参数，一般可以使用图形化工具 Dconf Editor，或 gsettings 命令行工具。
 
 #### 使用 gnome 扩展
 
