@@ -3897,7 +3897,29 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
     目前的终端模拟器的选择即复制功能细分了：鼠标选择的自动复制只是内部剪贴板可用，粘贴热键 shift+ins 或鼠标中键。选择文字后，右键菜单里的复制选项才会到系统剪贴板，然后在其它软件的可以粘贴。
 
-一般情况下使用桌面内置的终端模拟器足够了，因为我的 Fedora 自带 Terminal 不支持背景图片，所以自行安装了 Konsole。
+一般情况下使用桌面内置的终端模拟器足够了，因为我的 Fedora 自带 Terminal 不支持背景图片，所以自行安装了 Xfce Terminal。
+
+Xfce 桌面自带 Xfce Terminal，支持背景图片：
+
+    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
+
+        $ cd ~/your_github_dir/
+
+        $ git clone --depth=1 git@github.com:arcticicestudio/nord-xfce-terminal
+
+        $ cd nord-xfce-terminal/
+
+        $ ./install.sh
+
+    或可以手动把文件 `nord.theme` 拷贝到本地的配置目录 `~/.local/share/xfce4/terminal/colorschemes` 下即可。
+
+    窗口菜单选 Edit->Preference:
+
+        -->Colors->Presets，选择 Nord 即可。
+
+        -->General-->Command，勾选 Run command as login shell 以设置会话执行登录脚本
+
+        -->Appeaerance-->Background，设置背景图片，目前不支持透明，只支持图片调暗
 
 KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
@@ -3935,47 +3957,7 @@ KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
     窗口主菜单栏选择 “Setting”，取消勾选 “Show Menubar”，这时主菜单成为窗口右上角的一个三个横线的图标，点击会显示主菜单栏。这样你的屏幕可用面积扩大了一行。
 
-Xfce 桌面自带 Xfce Terminal，支持背景图片：
-
-    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
-
-        $ cd ~/your_github_dir/
-
-        $ git clone --depth=1 git@github.com:arcticicestudio/nord-xfce-terminal
-
-        $ cd nord-xfce-terminal/
-
-        $ ./install.sh
-
-    或可以手动把文件 `nord.theme` 拷贝到本地的配置目录 `~/.local/share/xfce4/terminal/colorschemes` 下即可。
-
-    窗口菜单选 Edit->Preference:
-
-        -->Colors->Presets，选择 Nord 即可。
-
-        -->General-->Command，勾选 Run command as login shell 以设置会话执行登录脚本
-
-        -->Appeaerance-->Background，设置背景图片，目前不支持透明，只支持图片调暗
-
-Gnome 桌面自带 Xterm，现名 Gnome Terminal，不支持背景图片：
-
-    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
-
-        $ cd ~/your_github_dir/
-
-        $ git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
-
-        $ cd gnome-terminal-nordtheme/src; ./nord.sh
-
-        执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
-
-    窗口菜单选 Profile，选 Nord，设为默认即可，其它选项点击右侧项：
-
-        -->command 勾选 Run command as a login shell 以设置会话执行登录脚本
-
-        -->color：不再支持设置背景图片，但仍可设置窗口透明度。
-
-Ptyxis 适用于 GNOME 的新的以容器为中心的终端模拟器，原名 Prompt
+Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示速度快
 
     它的特色是有一个小型的 ptyxis-agent 来管理 PTY、PID 跟踪和容器监控。
     而且，即使在 Flatpak 中，它也支持本机“用户会话”，以及 Podman、Toolbox、Distrobox 和 JHBuild。
@@ -3987,6 +3969,24 @@ Ptyxis 适用于 GNOME 的新的以容器为中心的终端模拟器，原名 Pr
         'ddb03e60e8d36dec96ef51fb67345f90'
 
         $ dconf write /org/gnome/Ptyxis/Profiles/ddb03e60e8d36dec96ef51fb67345f90/opacity 0.95
+
+    替代的 Gnome 桌面自带 Xterm，现名 Gnome Terminal，不支持背景图片：
+
+        主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
+
+            $ cd ~/your_github_dir/
+
+            $ git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
+
+            $ cd gnome-terminal-nordtheme/src; ./nord.sh
+
+            执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
+
+        窗口菜单选 Profile，选 Nord，设为默认即可，其它选项点击右侧项：
+
+            -->command 勾选 Run command as a login shell 以设置会话执行登录脚本
+
+            -->color：不再支持设置背景图片，但仍可设置窗口透明度。
 
 gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal。
 
