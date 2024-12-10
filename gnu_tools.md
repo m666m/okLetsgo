@@ -12948,17 +12948,15 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
         该扩展目前不支持 Gnome 45+，可以安装 ddterm 应急。
 
-    Grand Theft Focus       打开文件对话框显示在你的应用窗口后面，然后系统弹窗告诉你有个对话框打开了。。。这是病，得治！ 竞品 window-is-ready-notification-remover，或直接运行命令 `gsettings set org.gnome.desktop.wm.preferences focus-new-windows 'smart'`
+    Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以治愈 gnome 目前不能按 Alt+Tab 切换最近的两个窗口。选 AppSwitch 设置页，点开 “Make ... Like the Windows ...” 按钮，这样就不再把窗口分组为应用和应用的多个实例，实现 Windows 的 “task switch” 习惯。如果不点开就是 gnome 的默认习惯，只能切换到应用：Alt+Tab 列表是应用窗口，按住 alt 持续点击 tab 循环到某个多实例的应用窗口时，会在上面再显示一个列表呈现该应用的多个实例。切换到应用后，按 Alt+` 在应用的多个实例间切换。
 
-    Unblank lock screen     gnome的屏幕长时间空闲自动锁屏里没有单独的锁屏，只有黑屏并锁屏或黑屏不锁屏，鼠标晃不醒就只能蒙着打密码了，这也是病，得治！
+    Grand Theft Focus       打开文件对话框显示在你的应用窗口后面，然后系统弹通知告诉你有个对话框打开了。。。这是病，得治！ 竞品 window-is-ready-notification-remover，或直接运行命令 `gsettings set org.gnome.desktop.wm.preferences focus-new-windows 'smart'`。
+
+    Unblank lock screen     gnome的屏幕长时间空闲自动锁屏里没有单独的锁屏，只有黑屏并锁屏或黑屏不锁屏，要是鼠标晃不醒就只能蒙着打密码了，这也是病，得治！
 
     Alphabetical App Grid   应用程序列表“居然”是不按字母顺序排列的，而且无法拖放调整位置，这是不是该治的病！用这个扩展强制按字母顺序排列。
 
-    Alt+Tab Scroll Workaround   gnome目前不能按Alt+Tab切换最近的两个窗口，此病何时治愈
-
-    Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以设置不再把窗口分组为应用和应用的实例，实现类似 Windows 的 “task switch”。跟扩展 “Alt+Tab Scroll Workaround” 冲突，我就没启用之。
-
-    Auto Move Windows       指定应用程序在指定桌面打开窗口。对经常同时打开很多应用程序的用户来说，按桌面归类查找各个应用程序的窗口，非常方便。竞品 put windows。
+    Auto Move Windows       指定应用程序在指定桌面打开窗口。对经常同时打开很多应用程序的用户来说，按桌面归类各个应用程序的窗口，非常方便。竞品 put windows。
 
     Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现一个大三角图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘。之前只能打开文件管理器才能选择卸载 u 盘。
 
@@ -12981,7 +12979,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
     Prime Helper            让你方便的切换使用集成显卡或独立显卡，需要先安装支持 `prime-select` 的 prime 应用程序。竞品 GPU Profile Selector 需要先安装 envycontrol(https://github.com/geminis3/envycontrol)
 
     allow locked remote desktop
-                            解除部分内置的远程桌面的本地锁定限制，允许在本地登录又锁定桌面的情况下以远程桌面登录本机，未验证是否有效。
+                            解除部分内置的远程桌面的本地锁定限制，允许在本地桌面锁定的情况下以远程桌面登录本机，未验证是否有效。
 
 界面美化类
 
@@ -13002,7 +13000,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能。
 
-    blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持某些应用程序和扩展透明化，注意跟有些主题兼容性不好边缘无法透明。不需要使用它的锁屏背景模糊功能，使用 Bing Wallpaper 扩展的这个功能效果更好。不需要使用它的 Dash to Dock/Panel 的透明化功能，用扩展自己的透明化设置效果更好。
+    blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持某些应用程序和扩展透明化，注意跟有些主题兼容性不好边缘无法透明。不需要使用它的锁屏背景模糊功能，使用 Bing Wallpaper 扩展的这个功能效果更好。不需要使用它的 Dash to Dock/Panel 的透明化功能，那些扩展自己有透明化设置。
 
     Date Menu Formater      如果在任务栏显示的时间没有星期，在 Gnome Tweaks 中开启即可，这个扩展可以调整日期时间的格式。
 
