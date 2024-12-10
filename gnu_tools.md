@@ -3895,9 +3895,11 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
     新建标签会继承前一个标签的会话环境和路径。比如当前标签进入了 toolbox 容器，这时点击新建的标签打开就是进入 toolbox 容器的环境。切换到默认没进入容器的标签，点击新建标签进入的环境就跟当前标签的环境一致。
 
-    目前的终端模拟器的选择即复制功能细分了：鼠标选择的自动复制只是内部剪贴板可用，粘贴热键 shift+ins 或鼠标中键。选择文字后，右键菜单里的复制选项才会到系统剪贴板，然后在其它软件的可以粘贴。
+    目前的终端模拟器的选择即复制功能细分了：鼠标选择的自动复制只是内部剪贴板可用，粘贴热键 shift+ins 或鼠标中键。选择文字后，右键菜单里的复制选项才会到系统剪贴板，然后在其它软件的可以粘贴。粘贴操作系统剪切板的内容需要用鼠标右键菜单的“粘贴”选项才可以。在 tmux 中需要按住 shift 键点右键才弹菜单出来。
 
-一般情况下使用桌面内置的终端模拟器足够了，因为我的 Fedora 自带 Terminal 不支持背景图片，所以自行安装了 Xfce Terminal。
+    手动打开光标闪动，设置缓存屏幕内容 10000 行。
+
+一般情况下使用桌面内置的终端模拟器足够了，因为我的 Fedora 自带的 Gnome Terminal 不支持背景图片，所以自行安装了 Xfce Terminal。
 
 Xfce 桌面自带 Xfce Terminal，支持背景图片：
 
@@ -3915,13 +3917,16 @@ Xfce 桌面自带 Xfce Terminal，支持背景图片：
 
     窗口菜单选 Edit->Preference:
 
-        -->Colors->Presets，选择 Nord 即可。
+        -->Colors->Presets，选择 Nord 颜色方案。
 
-        -->General-->Command，勾选 Run command as login shell 以设置会话执行登录脚本
+        -->General-->Command，勾选 `Run command as login shell` 以设置会话执行登录脚本
 
-        -->Appeaerance-->Background，设置背景图片，目前不支持透明，只支持图片调暗
+        -->Appeaerance-->Background，设置背景图片，目前不支持透明，只支持图片调明暗
+                      -->Open New Windows，只勾选 `Display toolbar ...`，这样打开的窗口不会有标题栏和菜单栏
 
 KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
+
+    显示刷新的速度有点慢，按住回车键看看就知道了。
 
     主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
 
@@ -3953,13 +3958,13 @@ KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
             -->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，图片透明度设为 50%（根据你选择的背景图片调整）即可。
 
-            -->keyboard，如果需要鼠标选择即复制的老习惯，勾选该选项即可。
+            -->keyboard，如果需要鼠标选择即复制到操作系统剪切板的老习惯，勾选该选项即可。
 
     窗口主菜单栏选择 “Setting”，取消勾选 “Show Menubar”，这时主菜单成为窗口右上角的一个三个横线的图标，点击会显示主菜单栏。这样你的屏幕可用面积扩大了一行。
 
-Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示速度快
+Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示刷新速度快
 
-    它的特色是有一个小型的 ptyxis-agent 来管理 PTY、PID 跟踪和容器监控。
+    它的特色是有一个小型的 ptyxis-agent 后台进程来管理 PTY、PID 跟踪和容器监控。
     而且，即使在 Flatpak 中，它也支持本机“用户会话”，以及 Podman、Toolbox、Distrobox 和 JHBuild。
     主题配色方案内置了 Nord theme，但是不支持背景图片，已经内置在 Fedora 41。
 
@@ -4000,9 +4005,9 @@ tilix 基于 gtk3 开发的一个平铺式终端模拟器，效果类似 tmux，
 
 cool-retro-term 显示效果是 CRT 显示器。
 
-terminology 使用 EFL（不支持Wayland） 的 Linux/BSD/UNIX 系统的终端仿真器，尽可能地模仿 Xterm。
+terminology 使用 EFL（不支持Wayland） 的终端仿真器，尽可能地模仿 Xterm。
 
-kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 linux/MacOS 桌面下使用，目前中文支持不好
+kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/MacOS 桌面下使用，目前中文支持不好
 
     https://github.com/kovidgoyal/kitty
         https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
