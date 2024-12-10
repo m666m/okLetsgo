@@ -52,7 +52,7 @@
     "editor.columnSelection": false,
     "editor.multiCursorModifier": "alt",
     "editor.unicodeHighlight.includeStrings": false,
-    "editor.unicodeHighlight.includeComments": false,
+    "editor.unicodeHighlight.includeComments": "inUntrustedWorkspace",
     "editor.unicodeHighlight.allowedLocales": {
         "zh-hant": true
     },
