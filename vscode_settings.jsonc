@@ -51,7 +51,7 @@
     "editor.minimap.scale": 1,
     "editor.columnSelection": false,
     "editor.multiCursorModifier": "alt",
-    "editor.unicodeHighlight.includeStrings": false,
+    "editor.unicodeHighlight.includeStrings": "inUntrustedWorkspace",
     "editor.unicodeHighlight.includeComments": "inUntrustedWorkspace",
     "editor.unicodeHighlight.allowedLocales": {
         "zh-hant": true
@@ -165,8 +165,9 @@
     // 终端也可自定义颜色 https://glitchbone.github.io/vscode-base16-term/#/oceanicnext
     // 默认的明暗主题
     "window.autoDetectColorScheme": true,  // 深色背景下切换项目时会闪一下白，很烦人，关了
-    "workbench.preferredDarkColorTheme": "Nord",
+    "workbench.preferredDarkColorTheme": "Nord Deep",
     "workbench.preferredLightColorTheme": "MacOS Modern Light - Xcode Default",
+    "workbench.colorTheme": "Nord",
     // 主题颜色
     //  https://code.visualstudio.com/api/references/theme-color
     //  http://www.apeth.com/nonblog/stories/textmatebundle.html
@@ -549,5 +550,4 @@
     //
     "workbench.productIconTheme": "macos-modern",
     "workbench.sideBar.location": "right",
-    "workbench.colorTheme": "MacOS Modern Light - Xcode Default"
 }
