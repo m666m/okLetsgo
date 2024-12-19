@@ -633,9 +633,10 @@ function PS1exit-code {
 }
 
 function PS1conda-env-name {
-    # Linux 下安装 Anaconda 后要加入如下 bash 初始化语句才能在 bash 中使用 conda 命令
-    # `conda init bash` 已经加入了 ~/.bashrc 文件，这里应该不需要多次执行
-    #eval "$(/home/uu/anaconda3/bin/conda shell.bash hook)"
+    # Linux 下安装 Anaconda 需要执行一次如下命令，才能在 bash 中使用 conda 命令
+    #   `conda init bash`
+    # 会自动在 ~/.bashrc 或 .bash_profile.sh 文件添加如下内容：
+    #   eval "$(/home/uu/anaconda3/bin/conda shell.bash hook)"
 
     # 自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 命令修改 PS1 变量
     # 做如下的设置，只做一次即可：
