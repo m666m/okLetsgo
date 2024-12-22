@@ -760,8 +760,8 @@ datetime 实质就是 date 对象和 time 对象的组合，表示完整的日�
     >>> datetime.fromtimestamp(time.time())
     datetime.datetime(2020, 9, 30, 18, 42, 25, 9402)
 
-    # 这样才能返回utc时间 不要使用 utcfromtimestamp() 而是传入timezone对象
-    >>> datetime.fromtimestamp(1571595618.0, tz=timezone.utc)
+    如果要返回utc时间 不要使用 utcfromtimestamp() 而是传入timezone对象
+    >>> datetime.fromtimestamp(1571595618.0, tz=datetime.timezone.utc)
 
 ##### combine()   date + time → datetime
 
