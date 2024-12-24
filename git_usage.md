@@ -5180,10 +5180,23 @@ tag命令后跟 -s 参数即可
 
     https://zhuanlan.zhihu.com/p/667649956
 
+    https://www.cnblogs.com/PeterJXL/p/18432978
+
 被 x 大体有两种：DNS污染，封杀IP。
 
-DNS污染则无法通过域名直接访问，一种方法就是修改DNS，这个最简单的就是修改hosts文件。
-封杀IP的话，只能通过 “反墙” 来解决。
+DNS污染则无法通过域名直接访问，一种方法就是修改DNS，这个最简单的就是修改hosts文件。如果IP被封杀的话，就只能通过 “蕃茄” 来解决了。
+
+hosts 文件在每个系统的位置不一：
+
+    Windows 系统：C:\Windows\System32\drivers\etc\hosts​
+
+    Linux 系统：/etc/hosts​
+
+    Mac（苹果电脑）系统：/etc/hosts​
+
+    Android（安卓）系统：/system/etc/hosts​
+
+    iPhone（iOS）系统：/etc/hosts​
 
 法一：访问以下网址，查询 github.com 的可用ip
 
@@ -5198,12 +5211,26 @@ DNS污染则无法通过域名直接访问，一种方法就是修改DNS，这�
 缺点是调用的国外网站查询的ip地址，不是针对国内优化速度的，这个不如上面的法一速度好
 
     全 https://github.com/maxiaof/github-hosts/blob/master/hosts
-        查询网址 https://tools.tutorialspoint.com/ip_lookup_ajax.php?host=
+        查询网址 https://tools.tutorialspoint.com/ip_lookup_ajax.php?host=github.com
 
     全 https://github.com/jianboy/github-host/blob/master/hosts
         查询网址 https://whatismyipaddress.com//hostname-ip
 
     代码使用简单，可惜不更新了 https://github.com/ovenx/github-hosts
+
+刷新 DNS 缓存
+
+修改完 hosts 文件后，如果还不能正常访问，那就试试刷新下 DNS 缓存，在命令行里执行：
+
+    Linux: sudo systemctl restart network​
+
+    Windows: ipconfig /flushdns​
+
+    Macos: sudo killall -HUP mDNSResponder​
+
+如果上述方法无效，那就再试试重启机器。
+
+如果还不行，那就只能换个方法了。
 
 ## 如果 Github 完蛋了
 
