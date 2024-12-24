@@ -285,8 +285,11 @@ if [ -x /usr/bin/dircolors ]; then
         echo ${1//https:\/\/github.com\//git@github.com:}
     }
     function gaddr {
+        # [无法访问 github 的解决方案](git_usage)
         echo "[更新本地 hosts 文件的 github.com 地址]"
         local tfile=$(mktemp)
+
+        # https://raw.githubusercontent.com/521xueweihan/GitHub520/refs/heads/main/hosts
         curl -o $tfile https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts
 
         [[ ! -s $tfile ]] && echo '获取 github 地址列表失败！' && return 0

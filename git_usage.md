@@ -5186,6 +5186,8 @@ tag命令后跟 -s 参数即可
 
 DNS污染则无法通过域名直接访问，一种方法就是修改DNS，这个最简单的就是修改hosts文件。如果IP被封杀的话，就只能通过 “蕃茄” 来解决了。
 
+1、修改 hosts 文件，使得本机知晓 github 的 dns
+
 hosts 文件在每个系统的位置不一：
 
     Windows 系统：C:\Windows\System32\drivers\etc\hosts​
@@ -5197,6 +5199,14 @@ hosts 文件在每个系统的位置不一：
     Android（安卓）系统：/system/etc/hosts​
 
     iPhone（iOS）系统：/etc/hosts​
+
+文件修改需要权限：
+
+    Windows 需要管理员权限运行记事本打开文件
+
+    Linux、Mac 使用 Root 权限：sudo vi /etc/hosts。
+
+    iPhone、iPad 须越狱、Android 必须要 root。
 
 法一：访问以下网址，查询 github.com 的可用ip
 
@@ -5218,13 +5228,13 @@ hosts 文件在每个系统的位置不一：
 
     代码使用简单，可惜不更新了 https://github.com/ovenx/github-hosts
 
-刷新 DNS 缓存
+2、修改 hosts 文件后，刷新 DNS 缓存
 
 修改完 hosts 文件后，如果还不能正常访问，那就试试刷新下 DNS 缓存，在命令行里执行：
 
     Linux: sudo systemctl restart network​
 
-    Windows: ipconfig /flushdns​
+    Windows: 在 CMD 窗口输入：ipconfig /flushdns​
 
     Macos: sudo killall -HUP mDNSResponder​
 
