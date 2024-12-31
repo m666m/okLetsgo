@@ -12044,6 +12044,8 @@ GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表�
 
         https://github.com/fcitx/fcitx5
 
+    Fcitx5配置详解 https://mephisto.cc/tech/fcitx5/
+
     维基百科中文拼音词库
 
         https://github.com/felixonmars/fcitx5-pinyin-zhwiki
@@ -17105,6 +17107,8 @@ shell 命令文档见章节 [man/info 查看帮助信息]。
         https://www.gnu.org/software/bash/manual/bash.html
 
         Debian 把常用的脚本命令都介绍了 https://www.debian.org/doc/manuals/debian-reference/index.zh-cn.html
+
+        Linux命令大全搜索 https://github.com/jaywcjlove/linux-command
 
     zsh 官方文档
 
