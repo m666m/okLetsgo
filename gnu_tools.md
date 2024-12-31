@@ -13452,6 +13452,10 @@ enlightenment 桌面
 
 如果不想用桌面环境，但还需要在图形化的窗口下工作，见章节 [窗口管理器（Windows Manager）]。
 
+### 多显示器调整显示
+
+xrandr 是 Linux 系统中用于配置显示器分辨率和布局的命令行工具，而 arandr 则提供了图形化的界面，可以指定主显示器、扩展多屏幕、动态调整（缩放、旋转、反转）屏幕等功能。
+
 ### Linux 桌面的基本目录规范 XDG（X Desktop Group）
 
 对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境。目前最流行的 freedesktop 的规范称为 XDG
@@ -13753,7 +13757,7 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
     Qtile - qtile 是一款全功能，可 hack 的平铺窗口管理器，使用 Python 编写和配置。
 
-    wayfire 基于 Wayland 的 3D 混成器
+    wayfire - 基于 Wayland 的 3D 混成器
 
         https://github.com/WayfireWM/wayfire/wiki
 
@@ -13762,6 +13766,13 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
         Wayfire 相关配置与美化方案 https://alancorn.github.io/blogs/2023/wayfire.html
 
 叠加式窗口管理器：浮动式窗口管理器，由于屏幕空间有限，当前激活的窗口会浮在最上面，而遮住下面的窗口。
+
+    labwc - 比 wayfire 更轻量级，树莓派 3 也可以使用
+
+        https://mephisto.cc/series/labwc/
+
+        窗口管理器labwc使用记 https://mephisto.cc/tech/labwc/
+            配置文件参考 https://github.com/kmephistoh/dotfiles/tree/main/.config/labwc
 
     Openbox - 高度可配置，带有可扩展标准支持的下一代窗口管理器。
 
@@ -13991,7 +14002,7 @@ Application Launcher/Status Bar 所调用的程序
 
 状态栏
 
-Sway 有自带的状态栏 swaybar，不过目前比较热门的是 waybar，可以实现额外的功能，例如通过调用 `curl 'https://wttr.in/?format=1'` 来显示天气、调用自己写的脚本定期检查更新等。
+Sway 有自带的状态栏 swaybar，不过目前比较热门的是 waybar
 
 Application Launcher
 
@@ -14064,6 +14075,30 @@ Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何
 冷门
 
 不像 i3 之类的那样热门，这直接导致了可以偷参考的配置更少，同时生态圈内的各种工具也开发缓慢。同时平铺式窗口管理器本身也相对冷门，导致在部分“喜欢弹小窗”的程序上面体验较差，当然这种体验可以通过修改配置进行改善，不过始终是多了一个步骤。
+
+#### 使用窗口管理器需要自装组件
+
+状态栏 waybar
+
+    可以实现额外的功能，例如通过调用 `curl 'https://wttr.in/?format=1'` 来显示天气、调用自己写的脚本定期检查更新等。
+
+        https://github.com/Alexays/Waybar/wiki
+
+        示例
+
+            https://github.com/Alexays/Waybar/wiki/Examples
+
+            https://github.com/kmephistoh/dotfiles
+
+锁屏 swaylock
+
+关机菜单 wlogout，防止窗口管理器默认的 exit 时，直接就退出系统回到登录界面
+
+壁纸软件
+
+    swaybg  https://github.com/swaywm/swaybg
+    swww    https://github.com/LGFae/swww
+    mpvpaper 用 mpv 播放视频作为壁纸 https://github.com/GhostNaN/mpvpaper
 
 ### 桌面环境的开机自启动
 
@@ -17070,6 +17105,10 @@ shell 命令文档见章节 [man/info 查看帮助信息]。
         https://www.gnu.org/software/bash/manual/bash.html
 
         Debian 把常用的脚本命令都介绍了 https://www.debian.org/doc/manuals/debian-reference/index.zh-cn.html
+
+    zsh 官方文档
+
+        https://zsh.sourceforge.io/Doc/Release/Shell-Builtin-Commands.html
 
     bash 系列教程 https://www.junmajinlong.com/shell/index/
 
