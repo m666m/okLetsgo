@@ -12095,13 +12095,13 @@ Gnome 的图形界面设置程序 Gnome Tweaks Tool(gnome-tweaks) 有 “Font”
 
 根据印刷专业的区分方法，字体可以分别设置三种风格：sans、serif、mono，操作系统如 Windows、Linux，office/firefox等软件都支持设置三种风格的字体，且每种风格都可以设置多个字体（前一个未找到就用下一个，所谓回落）
 
-    在西方国家的罗马字母阵营中，字体分为两大种类：Sans Serif 和 Serif，近代在机械打字机出现后，针对打字机的特点单独归类了字体：虽然也属于 Sans Serif，但由于是等宽字体，所以另外独立出 Monospace 这一种类。
+    在西方国家的罗马字母阵营中，字体分为两大种类：Sans Serif 和 Serif
 
-    Serif 的意思是有衬线，即文字带笔锋，比如 Times New Roma、仿宋体、楷体，中规中具适合正文阅读，Windows 在文字处理软件中使用 Serif 风格的字体。Serif 是印刷行业最初的字体风格。
+    Serif 的意思是有衬线，即文字带笔锋，来自自然的手写形态。比如 Times New Roma、仿宋体、楷体，中规中具适合正文阅读，Windows 在文字处理软件中使用 Serif 风格的字体。Serif 是印刷行业最初的字体风格。
 
-    sans 在古希腊语中是 without 的意思，现在英语里面也有这个词。所以，Sans Serif 没有这些额外的装饰，笔划粗细大致差不多，比如 Tahoma、黑体、幼圆，适合标题等醒目场合，Windows 在窗口的标题栏等位置使用 san 风格的字体。宋体是明代为适应木版印刷的木纹特点发明的字体。Sans Serif 是现代点阵打印机、电子屏幕流行后为适应点阵化的显示出现的字体风格。
+    Sans 在古希腊语中是 without 的意思，现在英语里面也有这个词。Sans Serif 指没有额外的装饰，笔划粗细大致差不多，比如 Tahoma、黑体、幼圆，用于标题、标语等醒目场合，Windows 在窗口的标题栏等位置使用 san 风格的字体。宋体 是明代为适应木版印刷的木纹特点发明的横细竖粗的字体，笔锋粗壮，也归类在 sans 类。Sans Serif 是现代点阵打印机、电子屏幕流行后为适应点阵化的显示出现的字体风格。
 
-    Monospace 等宽字体，比如 Courier New、Consolas，适合会计数字、编程写代码等格式严谨上下行的字符严格对齐的场合。
+    Monospace 等宽字体：近代在机械打字机出现后，针对打字机的特点单独类，虽然也属于 Sans Serif，但由于是等宽字体，所以细分出了 Monospace 这一种类。，比如 Courier New、Consolas，适合会计数字、编程写代码等格式严谨上下行的字符严格对齐的场合。
 
 很多程序有自己的字体配置，至少三种归类：无衬线字体 sans-serif, 衬线字体 serif, 等宽字体 monospace, 就会遵循 fontconfig 的设置了。
 
