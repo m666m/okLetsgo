@@ -66,6 +66,7 @@
         "editor.autoIndent": "full",
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
+    "[markdown]":{"editor.wordWrap": "on"},
     // 调试模式可以在库中加断点 在.vscode\launch.json 中添加"justMyCode": false
     // debugpy.debugJustMyCode: false,
     // 打开终端自动执行切换到指定环境，conda 自定义路径的环境有错误，酌情处理：在cmd下使用conda可以设为True，如果在bash下使用conda会报错windows路径
