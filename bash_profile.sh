@@ -525,9 +525,7 @@ else
     agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
     agent_load_env
 
-    agent_start () {
-        (umask 077; ssh-agent >| "$agent_env")
-        source "$agent_env" >| /dev/null ; }
+    agent_start () { test -d "$HOME/.ssh" && (umask 077; ssh-agent >| "$agent_env") && source "$agent_env" >| /dev/null ; }
 
     # 加载 ssh-agent 需要用户手工输入密钥的保护密码
     # 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
@@ -577,7 +575,7 @@ if [[ ! $0 = 'zsh' ]]; then
 fi
 
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
-[[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh || (echo 'Get ackg from github...' && curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh |sed 's/h()/ackg()/' |sudo tee /usr/local/bin/ackg.sh)
+[[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh || (echo 'Get ackg from github...' && curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh |sed -e 's/h()/ackg()/' |sudo tee /usr/local/bin/ackg.sh) && source /usr/local/bin/ackg.sh
 
 #################################
 # Bash：手动配置插件
