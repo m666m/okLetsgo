@@ -553,12 +553,12 @@ else
         echo && echo "Start ssh-agent..."
         agent_start
 
-        echo "Adding ssh key，input passphrase of the key if prompted"
+        echo "-->Adding ssh key，input passphrase of the key if prompted"
         ssh-add
 
     elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
         # ssh-agent正在运行，但是没有加载过密钥
-        echo "Adding ssh key，input passphrase of the key if prompted"
+        echo "-->Adding ssh key，input passphrase of the key if prompted"
         ssh-add
     fi
 
