@@ -6544,6 +6544,12 @@ grep -w 匹配单词，用于搜索结果中类似字母组合太多的情况。
 
 grep -e 可以多个连写，如 `grep -e abc -e def` 查找 abc 或 def 。
 
+grep 用如下参数替代了 egrep 和 fgrep 命令
+
+    egrep with grep -E
+
+    fgrep with grep -F
+
 ripgrep 替代 grep，解决了不带文件名挂住的问题，rg 会默认查找所有文件。更推荐 ack，参见章节 [ackg 给终端输出的自定义关键字加颜色]。
 
 从当前目录及子目录列出所有目录名和文件名，排除目录 .git 和 __pycache__，逐个文件的查找文件内容包含字符串 “logg” 的行，列出文件名、行号、内容

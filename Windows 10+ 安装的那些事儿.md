@@ -2016,6 +2016,8 @@ Windows 主机和 Windows 虚拟机都适用这个方法。
 
 可以改变这个机制，通过 `hwclock -w` 命令将系统时间同步到硬件时间。
 
+    # sudo timedatectl set-local-rtc 1
+
     # 设置硬件 RTC 保存的时间是本地时间 --systohc
     $ sudo hwclock -w --localtime
 
