@@ -4540,10 +4540,10 @@ let mapleader="\<space>"
  nmap <leader><Space><Space> :%s/\s\+$//<cr>
 
 " 开启了自动注释和自动缩进对粘帖代码不方便
-"set fo-=r  "关闭自动注释
+"set fo-=r  "关闭自动注释
 "set smartindent "识别花括号、c语言格式的自动缩进
 "set noautoindent  "关闭自动缩进（新增加的行和前一行使用相同的缩进，这个对C/C++代码好像无效） :set autoindent
-"set nocindent  "关闭C语言缩进  :set cindent
+"set nocindent  "关闭C语言缩进  :set cindent
 "
 " 粘贴的代码（shift+insert）会自动缩进，导致格式非常混乱
 " 输入命令 ：set paste 再进行粘贴，就不会乱码了，自动缩进也没了，所以在粘贴之后输入 ：set nopaste，恢复缩进模式。
@@ -13097,14 +13097,14 @@ xdg-utils 从 utils 后缀我们可以知道这是一组工具，目的就是能
 
 这组工具集包括：
 
-    xdg-desktop-menu - 安装桌面应用菜单项
-    xdg-desktop-icon - 在用户桌面安装图标
-    xdg-email - 使用用户默认电子邮件客户端写一封新邮件，可以使用参数指定主题、内容、附件等
-    xdg-icon-resource - 为应用程序的启动程序安装一个图片资源
-    xdg-mime - 查询关于文件类型处理的信息，并为新文件类型添加描述
-    xdg-open - 以用户首选的应用程序打开一个URL，用于分别处理各自的URL或文件类型
-    xdg-screensaver - 屏幕保护程序的控制工具，如：锁屏等
-    xdg-settings - 查看、设置默认web浏览器和URL处理程序
+    xdg-desktop-menu - 安装桌面应用菜单项
+    xdg-desktop-icon - 在用户桌面安装图标
+    xdg-email - 使用用户默认电子邮件客户端写一封新邮件，可以使用参数指定主题、内容、附件等
+    xdg-icon-resource - 为应用程序的启动程序安装一个图片资源
+    xdg-mime - 查询关于文件类型处理的信息，并为新文件类型添加描述
+    xdg-open - 以用户首选的应用程序打开一个URL，用于分别处理各自的URL或文件类型
+    xdg-screensaver - 屏幕保护程序的控制工具，如：锁屏等
+    xdg-settings - 查看、设置默认web浏览器和URL处理程序
 
 ### GNOME，Xorg，X Window，X Server，Wayland是什么关系
 
@@ -13690,80 +13690,6 @@ Fedora 的桌面环境同时支持 x-window 和 wayland，关闭图形模式开�
 
 另外，GDM 登录似乎忽略了“~/.xsession”，因此这并不能使其成为 Ubuntu 用户的选项。
 
-##### X11 在命令行手工执行图形化应用程序
-
-    https://wiki.archlinux.org/title/Xinit#Starting_applications_without_a_window_manager
-
-一、对老式的 x 系统
-
-    startx nautilus
-
-编辑 ~/.xinitrc 文件
-
-    exec chromium
-
-在命令行环境执行 `startx` 会进入 x11 的桌面环境，注意如果是 Fedora Silverblue 的 x11 桌面会无法从终端进入 toolbox
-
-在桌面选择 logout 即会退出到命令行环境。
-
-二、如果要用 x-window 開啟後自動啟動應用程式,請自行修改或是新增 .desktop 檔案：
-
-System-wide autostart directories:
-
-    /etc/xdg/autostart
-
-    /usr/share/autostart
-
-    User specific autostart directories:
-
-    ~/.config/autostart
-
-    ~/.kde/share/autostart (KDE specific)
-
-    ~/.kde/Autostart (KDE specific)
-
-我們來看看基本的 .desktop 檔案內容有哪些
-
-    [root@benjr ~]# cat ~/.config/autostart/gnome-terminal.desktop
-
-    [Desktop Entry]
-
-    Type=Application
-
-    Exec=gnome-terminal
-
-    Hidden=false
-
-    X-GNOME-Autostart-enabled=true
-
-    Name[en_US]=test
-
-    Name=test
-
-    Comment[en_US]=xdg testing
-
-    Comment=xdg testing
-
-    Type=Application
-
-    Exec=gnome-terminal
-
-最重要的就是指定要執行哪一個程式，这样实现在命令行直接启动图形化应用程序，无需进入桌面环境。
-
-    Hidden=false
-
-    X-GNOME-Autostart-enabled=true
-
-    Name[en_US]=test
-
-    Name=test
-
-    Comment[en_US]=xdg testing
-
-    Comment=xdg testing
-
-基于 wayland 的桌面环境基本都使用 systemd 进行管理了，见章节 [关闭桌面环境开机自启动]。
-
 #### 开机启动到命令行，直接启动显示管理器
 
 ```bash
@@ -13943,7 +13869,213 @@ sddm
 
 直接编辑 grub 条目，在 'linux  ....' 行的末尾加 3 则等效于开机 init 3 进入命令行环境。
 
-##### 命令行下不启动窗口管理器直接启动图形化应用程序
+### Linux 控制台执行图形化程序
+
+TODO:待整理，在 Linux 系统中，即使不进入桌面环境，也可以通过命令行在控制台（console）下执行图形化程序。
+
+#### 在 Wayland 环境控制台下执行图形化程序
+
+GNOME 使用 Wayland 作为默认显示服务器，运行图形化程序的方式与传统的 Xorg 有所不同。Wayland 的设计更加现代化，但它的工作方式与 Xorg 有显著区别，因此需要一些额外的步骤来在控制台下运行图形化程序。
+
+以下是在 Wayland 桌面环境（如 GNOME）中，不进入桌面环境，直接在控制台下运行图形化程序的方法：
+
+1. 确保 Wayland 会话已启动
+
+Wayland 需要一个运行的会话（session）来管理显示和输入。如果你没有进入桌面环境，可以通过以下方式启动一个 Wayland 会话：
+
+使用 gnome-shell 启动 Wayland 会话
+
+    gnome-shell --wayland --display-server
+
+这会启动一个 GNOME Shell 实例，并使用 Wayland 作为显示服务器。
+
+2. 设置 WAYLAND_DISPLAY 环境变量
+
+Wayland 使用 WAYLAND_DISPLAY 环境变量来指定显示器的连接。你需要设置这个变量，以便图形化程序知道如何连接到 Wayland 服务器。
+
+首先，查找当前运行的 Wayland 显示服务器的名称。通常，Wayland 显示服务器的名称类似于 wayland-0 或 wayland-1。你可以通过以下命令查找：
+
+    ls /run/user/$(id -u)/wayland-*
+
+假设输出是 /run/user/1000/wayland-0，那么你可以设置环境变量：
+
+    export WAYLAND_DISPLAY=wayland-0
+
+3. 运行图形化程序
+
+权限：你需要有权限访问 Wayland socket。这通常意味着你需要以启动 Wayland 会话的同一个用户身份运行图形化程序。
+
+    如果你不是以启动 Wayland 会话的用户身份登录，你可能需要给当前用户权限
+    注意：Wayland 更加安全，不提供像 X11 的 xhost 这样的简单权限机制
+    你可以考虑使用 machinectl shell 或者 systemd-run --user 来获得访问权限
+
+设置好 WAYLAND_DISPLAY 环境变量后，你可以直接在控制台中运行支持 Wayland 的图形化程序。例如，运行 gedit：
+
+    #  对于一些同时支持 Xorg 和 Wayland 的图形化程序，设置 GDK_BACKEND 指定使用 Wayland 后端
+    # export GDK_BACKEND=wayland
+
+    gedit
+
+如果程序支持 Wayland，它会在 Wayland 会话中显示出来。
+
+如果在运行图形化程序时遇到权限或会话相关的问题，可以使用dbus-run-session命令来启动程序，它会在一个新的 D-Bus 会话中运行指定的命令，确保程序能够正常访问所需的服务和资源。例如：
+
+    dbus-run-session gnome-calculator
+
+需要注意的是，直接从 TTY 启动图形化程序的方式在 Wayland 上不如在 X11 上常见或直接。如果你遇到困难，最简单的办法可能是切换到已有的 Wayland 会话中去启动应用，或者使用 XWayland（一种兼容层，允许你在 Wayland 会话中运行 X11 应用程序）
+
+    运行 Xwayland 来兼容一些只能在 Xorg 上运行的图形化程序。可以先确认 Xwayland 是否正在运行：
+
+        ps ax | grep xwayland
+
+    如果 Xwayland 正在运行，可通过设置DISPLAY环境变量来使用它运行图形化程序，例如：
+
+        export DISPLAY=:0
+        firefox
+
+要切换到现有的 Wayland 会话，可以使用类似 loginctl 或 machinectl 的工具，具体取决于你的系统配置。例如：
+
+    # 列出所有会话
+    loginctl list-sessions
+
+    # 假设你想切换到会话 ID 为 1 的会话
+    loginctl attach 1
+
+    # 或者使用 machinectl shell 直接进入会话
+    machinectl shell :1 /bin/bash
+
+4. 使用 weston 作为 Wayland 合成器
+
+如果你没有使用 GNOME Shell，而是希望启动一个轻量级的 Wayland 会话，可以使用 weston（一个独立的 Wayland 合成器）。首先安装 weston：
+
+    sudo apt install weston  # 对于 Debian/Ubuntu
+    sudo dnf install weston  # 对于 Fedora
+
+然后启动 weston：
+
+    weston
+
+启动后，weston 会创建一个新的 Wayland 会话。你可以在 weston 终端中运行图形化程序。
+
+5. 使用 sway 作为 Wayland 合成器
+
+sway 是一个兼容 Wayland 的平铺式窗口管理器，类似于 i3。你可以使用 sway 来启动一个 Wayland 会话：
+
+    sway
+
+在 sway 会话中，你可以直接运行支持 Wayland 的图形化程序。
+
+6. 检查程序是否支持 Wayland
+
+并非所有图形化程序都原生支持 Wayland。你可以通过以下方式检查程序是否支持 Wayland：
+
+查看程序的文档或官方网站。
+
+使用 env WAYLAND_DEBUG=1 <程序> 运行程序，观察输出中是否有 Wayland 相关的日志。
+
+如果程序不支持 Wayland，它可能会回退到 XWayland（Wayland 的 X11 兼容层）。XWayland 会自动处理 X11 程序的显示，因此你仍然可以运行这些程序。
+
+7. 使用 dbus-run-session 启动独立会话
+
+如果你希望在一个独立的会话中运行图形化程序，可以使用 dbus-run-session：
+
+    dbus-run-session -- gnome-shell --wayland --display-server
+
+然后在新会话中运行图形化程序。
+
+8. 远程运行 Wayland 程序
+
+如果你通过 SSH 连接到远程机器，并希望运行 Wayland 程序，可以使用 waypipe 或 ssh -X（通过 XWayland 运行程序）。
+
+使用 waypipe
+
+waypipe 是一个用于远程运行 Wayland 程序的工具。首先安装 waypipe：
+
+    sudo apt install waypipe  # 对于 Debian/Ubuntu
+    sudo dnf install waypipe  # 对于 Fedora
+
+然后在远程机器上运行：
+
+    waypipe ssh user@remote_host gedit
+
+另一个说法：
+
+    ssh -Y user@remotehost waypipe ssh xclock
+
+    这里的 -Y 参数启用了信任的 X11 转发，而 waypipe ssh 则确保了 Wayland 流量能够正确地被转发到客户端16。
+
+总结
+
+在 Wayland 环境下运行图形化程序的关键是：
+
+确保 Wayland 会话已启动（如 GNOME Shell、Weston 或 Sway）。
+
+设置 WAYLAND_DISPLAY 环境变量以连接到正确的 Wayland 显示服务器。
+
+运行支持 Wayland 的图形化程序。
+
+如果程序不支持 Wayland，它会通过 XWayland 运行，因此你仍然可以在 Wayland 会话中使用它。
+
+#### 在 Xorg 环境控制台下执行图形化程序
+
+1. 确保已安装图形化程序所需的依赖
+
+首先，确保系统中已安装所需的图形库和依赖项。例如，如果你要运行一个基于 GTK 或 Qt 的应用程序，需要确保这些库已安装。
+
+2. 设置 DISPLAY 环境变量
+
+图形化程序需要知道将图形输出到哪个显示器。通常，Xorg 服务器会管理显示器的连接。你需要设置 DISPLAY 环境变量来指定显示器。
+
+    export DISPLAY=:0
+
+这里的 :0 表示第一个显示器。如果你有多个显示器或 X 服务器实例，可能需要调整这个值。
+
+3. 启动 Xorg 服务器（如果未运行）
+
+如果 Xorg 服务器未运行，你需要手动启动它。可以使用 startx 命令来启动 Xorg 服务器：
+
+    startx
+
+启动后，Xorg 服务器会在后台运行，并准备好接收图形化程序的输出。
+
+4. 在控制台中运行图形化程序
+
+设置好 DISPLAY 环境变量后，你可以直接在控制台中运行图形化程序。例如，运行 gedit 文本编辑器：
+
+    gedit
+
+程序应该会在 Xorg 服务器管理的显示器上显示出来。
+
+5. 使用 xinit 启动单个程序
+
+如果你只想运行一个图形化程序而不启动完整的桌面环境，可以使用 xinit 命令。例如：
+
+    xinit /usr/bin/gedit -- :1
+
+这里的 :1 表示使用第二个显示器（如果 :0 已被占用）。
+
+6. 使用 xvfb 虚拟显示器（无头环境）
+
+如果你在没有物理显示器的服务器上运行图形化程序，可以使用 Xvfb（X Virtual Framebuffer）来创建一个虚拟显示器：
+
+    Xvfb :1 -screen 0 1024x768x24 &
+    export DISPLAY=:1
+    gedit
+
+7. 使用 ssh -X 远程运行图形化程序
+
+如果你通过 SSH 远程连接到 Linux 系统，可以使用 ssh -X 或 ssh -Y 来启用 X11 转发，然后在远程终端中运行图形化程序：
+
+    ssh -X user@remote_host
+    gedit
+
+图形化程序会在本地显示器上显示。
+
+总结
+
+通过设置 DISPLAY 环境变量并确保 Xorg 服务器正在运行，你可以在不进入桌面环境的情况下从控制台运行图形化程序。如果是在无头环境中，可以使用 Xvfb 来创建虚拟显示器。
+
+#### 命令行下不启动窗口管理器直接启动图形化应用程序
 
 可以在没有任何装饰、桌面或窗口管理的情况下启动应用程序
 
@@ -13968,6 +14100,80 @@ Type=Application
     https://wiki.archlinux.org/title/Systemd/User#Automatic_login_into_Xorg_without_display_manager
 
 感觉这 systemd 管的越来越多，直接做一个 systemd 操作系统得了。
+
+#### X11 在命令行手工执行图形化应用程序
+
+    https://wiki.archlinux.org/title/Xinit#Starting_applications_without_a_window_manager
+
+一、对老式的 x 系统
+
+    startx nautilus
+
+编辑 ~/.xinitrc 文件
+
+    exec chromium
+
+在命令行环境执行 `startx` 会进入 x11 的桌面环境，注意如果是 Fedora Silverblue 的 x11 桌面会无法从终端进入 toolbox
+
+在桌面选择 logout 即会退出到命令行环境。
+
+二、如果要用 x-window 開啟後自動啟動應用程式,請自行修改或是新增 .desktop 檔案：
+
+System-wide autostart directories:
+
+    /etc/xdg/autostart
+
+    /usr/share/autostart
+
+    User specific autostart directories:
+
+    ~/.config/autostart
+
+    ~/.kde/share/autostart (KDE specific)
+
+    ~/.kde/Autostart (KDE specific)
+
+我們來看看基本的 .desktop 檔案內容有哪些
+
+    [root@benjr ~]# cat ~/.config/autostart/gnome-terminal.desktop
+
+    [Desktop Entry]
+
+    Type=Application
+
+    Exec=gnome-terminal
+
+    Hidden=false
+
+    X-GNOME-Autostart-enabled=true
+
+    Name[en_US]=test
+
+    Name=test
+
+    Comment[en_US]=xdg testing
+
+    Comment=xdg testing
+
+    Type=Application
+
+    Exec=gnome-terminal
+
+最重要的就是指定要執行哪一個程式，这样实现在命令行直接启动图形化应用程序，无需进入桌面环境。
+
+    Hidden=false
+
+    X-GNOME-Autostart-enabled=true
+
+    Name[en_US]=test
+
+    Name=test
+
+    Comment[en_US]=xdg testing
+
+    Comment=xdg testing
+
+基于 wayland 的桌面环境基本都使用 systemd 进行管理了，见章节 [关闭桌面环境开机自启动]。
 
 ### 远程桌面 vnc/rdp/mstsc
 
@@ -16396,18 +16602,18 @@ NOTE：不要以 `sudo` 执行 winecfg
     [目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]
     /home/uu/.wine/
     ├── dosdevices/
-    │   ├── c: -> ../drive_c/
-    │   ├── lpt1 -> /dev/lp0
-    │   ├── lpt2 -> /dev/lp1
-    │   ├── lpt3 -> /dev/lp2
-    │   ├── lpt4 -> /dev/lp3
-    │   └── z: -> //
+    │   ├── c: -> ../drive_c/
+    │   ├── lpt1 -> /dev/lp0
+    │   ├── lpt2 -> /dev/lp1
+    │   ├── lpt3 -> /dev/lp2
+    │   ├── lpt4 -> /dev/lp3
+    │   └── z: -> //
     ├── drive_c/
-    │   ├── ProgramData/
-    │   ├── Program Files/
-    │   ├── Program Files (x86)/
-    │   ├── users/
-    │   └── windows/
+    │   ├── ProgramData/
+    │   ├── Program Files/
+    │   ├── Program Files (x86)/
+    │   ├── users/
+    │   └── windows/
     ├── system.reg
     ├── .update-timestamp
     ├── userdef.reg
