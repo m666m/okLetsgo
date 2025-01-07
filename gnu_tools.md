@@ -12696,17 +12696,17 @@ WantedBy=graphical-session.target
 
 换壁纸的思路
 
-使用 find 命令生成包含所有图片地址的列表。
+    使用 find 命令生成包含所有图片地址的列表。
 
-从列表中随机挑选一张图片。
+    从列表中随机挑选一张图片。
 
-使用 gsettings 设置壁纸。
+    使用 gsettings 设置壁纸。
 
-使用 systemd 定期执行脚本。
+    使用 systemd 定期执行脚本。
 
 1、Bash 脚本
 
-首先写一个 Bash 脚本，实现更换壁纸的目的，同时为了响应速度和硬盘寿命着想，所有相关文件都保存在 $XDG_RUNTIME_DIR，它其实是被桌面环境用 tmpfs 创建的内存目录。
+首先写一个 Bash 脚本，实现更换壁纸的目的，同时为了响应速度和硬盘寿命着想，所有相关文件都保存在 $XDG_RUNTIME_DIR，它其实是被 GNOME 桌面环境用 tmpfs 创建的内存目录。
 
 $XDG_RUNTIME_DIR 是一个变量，后面将使用 systemd 传入你存放壁纸文件夹的路径这个变量。
 
