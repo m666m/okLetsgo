@@ -13869,9 +13869,9 @@ sddm
 
 直接编辑 grub 条目，在 'linux  ....' 行的末尾加 3 则等效于开机 init 3 进入命令行环境。
 
-### Linux 控制台执行图形化程序
+### 不进入桌面环境，控制台执行图形化程序
 
-TODO:待整理，在 Linux 系统中，即使不进入桌面环境，也可以通过命令行在控制台（console）下执行图形化程序。
+在 Linux 系统中，即使不进入桌面环境，可以在没有任何装饰、桌面或窗口管理的情况下启动应用程序，即通过命令行在控制台（console）下执行图形化程序。
 
 #### 在 Wayland 环境控制台下执行图形化程序
 
@@ -14075,11 +14075,7 @@ waypipe 是一个用于远程运行 Wayland 程序的工具。首先安装 waypi
 
 通过设置 DISPLAY 环境变量并确保 Xorg 服务器正在运行，你可以在不进入桌面环境的情况下从控制台运行图形化程序。如果是在无头环境中，可以使用 Xvfb 来创建虚拟显示器。
 
-#### 命令行下不启动窗口管理器直接启动图形化应用程序
-
-可以在没有任何装饰、桌面或窗口管理的情况下启动应用程序
-
-一、 利用显示管理器直接执行图形化应用程序
+> 利用显示管理器直接执行图形化应用程序
 
     https://wiki.archlinux.org/title/Display_manager#Starting_applications_without_a_window_manager
 
@@ -14095,13 +14091,13 @@ Icon=google-chrome
 Type=Application
 ```
 
-二、利用 systemd 单元，不使用显示管理器，直接登录 xorg 桌面
+> 利用 systemd 单元，不使用显示管理器，直接登录 xorg 桌面
 
     https://wiki.archlinux.org/title/Systemd/User#Automatic_login_into_Xorg_without_display_manager
 
 感觉这 systemd 管的越来越多，直接做一个 systemd 操作系统得了。
 
-#### X11 在命令行手工执行图形化应用程序
+另一个说法：X11 在命令行手工执行图形化应用程序
 
     https://wiki.archlinux.org/title/Xinit#Starting_applications_without_a_window_manager
 
@@ -14172,8 +14168,6 @@ System-wide autostart directories:
     Comment[en_US]=xdg testing
 
     Comment=xdg testing
-
-基于 wayland 的桌面环境基本都使用 systemd 进行管理了，见章节 [关闭桌面环境开机自启动]。
 
 ### 远程桌面 vnc/rdp/mstsc
 
@@ -15310,7 +15304,7 @@ WantedBy=multi-user.target
 
 确认通过 VNC Viewer 可以正常登录到 RHEL8 系统桌面。
 
-### Linux 桌面死机怎么办 --- reisub“登录控制台”
+### Linux 桌面死机怎么办
 
     https://blog.csdn.net/qq_39779233/article/details/114758689
 
@@ -15318,38 +15312,95 @@ WantedBy=multi-user.target
 
 查看日志
 
-    journalctl -f -o cat /usr/bin/gnome-shell
+    $ journalctl -f -o cat /usr/bin/gnome-shell
 
-情况一、桌面的图形界面突然卡住且无法操作时，尝试切换到控制台console
+桌面的图形界面突然卡住且无法操作时，尝试“登录控制台”，注销当前用户重新登录
 
-在进行下列步骤前，请回忆自己 ubuntu 系统的用户名和密码，接下来将会用到。
-
-接下来我们要做的是进入控制台console直接注销用户重新登录。
-
-按 CTRL + ALT + F3，详见章节 [登录控制台 tty login]。
+按 CTRL + ALT + F3 会切换到控制台登陆的字符界面，关于控制台登陆参见章节 [登录控制台 tty login]。
 
 输入用户名和密码登录，此时输入命令，说法太多待验证
 
-    # https://stackoverflow.com/questions/46565019
-    如果是 GNOME X11 桌面，先试试按 ALT + F2，在弹出对话框里输入 r 然后回车试试，可以在不关闭所有应用程序的情况下重新启动桌面，在 Wayland 桌面下不行。
-
     重启显示管理器服务： `sudo systemctl restart gdm/kdm/lightdm`
+
+    注销桌面重新登录系统：`sudo pkill Xorg` 或者 `sudo systemctl restart systemd-logind`
 
     `ps -t tty1` 找到进程中 xinit/xwindow… 或 gnome-session-binary 的 pid， 然后 `kill -9 pid` 即可
 
-    `sudo pkill Xorg` 或者 `sudo systemctl restart systemd-logind` 注销桌面重新登录系统
-
-    输入 init 3 即可停止 X window，输入 startx 重新启动桌面
+    输入 `init 3` 即可停止 X window，输入 `startx` 重新启动桌面
 
 操作完成之后等待一会儿就会重新进入桌面，系统可以正常使用了。
 
-情况二、进入控制台console之后键盘无法输入任何内容，彻底死机
+#### reisub 大法手工重启内核
 
-使用“魔法键”：
+键盘无法输入任何内容，无法进入控制台注销当前用户，彻底死机，使用“魔法键”：reisub
+
+    https://www.cnblogs.com/ylan2009/articles/2322950.html
+
+    https://www.cnblogs.com/klb561/p/11013746.html
+
+    https://wiki.ubuntu.com/Kernel/CrashdumpRecipe
+
+要使用 Magic Sysrq Key，有三个基本条件：
+
+    1.键盘上有 Print Screen(SysRq) 键
+
+    2.系统使用的内核，在编译时打开了 CONFIG_MAGIC_KEY 选项
+
+        # y表示已开启
+        CONFIG_MAGIC_SYSRQ=y
+
+    验证
+
+        $ grep -F CONFIG_MAGIC_SYSRQ /boot/config-$(uname -r)
+
+    系统配置 Magic Sysrq Key 为可用
+
+        临时启用,设置/proc/sys/kernel/sysrq
+
+            sudo echo "1" > /proc/sys/kernel/sysrq
+
+        长期使用,查看 /etc/sysctl.conf，确认
+
+            kernel.sysrq = 1
+
+        如果先前为0，更改配置后使用以下方式激活
+
+            sudo sysctl -p
+
+系统异常时依次按下 alt+sysrq+{reisub} ，然后系统会自动重启。括号内的英文字母需要依次顺序按下，而且每次按下字母后需要间隔 5-10s 再执行下一个动作。（如 alt + SysRq + r，间隔10s 后再按 alt + SysRq + e，以此类推）切记不可快速按下 r-e-i-s-u-b ，否则后果和 扣电池拔电源线无异！
+
+使用 SysRq 重启计算机的方法：
+
+全尺寸键盘
+
+    Alt + SysRq + [R-E-I-S-U-B]
+
+笔记本键盘
+
+    Fn + Alt + SysRq + [R-E-I-S-U-B]
+
+
+这个时候 reisub 中的每一个字母都是一个独立操作，分别表示：
+
+    r : unRaw       将键盘控制从 X Server 那里抢回来，使按键可以穿透 x server 捕捉传递给内核
+
+    e : tErminate   向除 init 外进程发送 SIGTERM 信号，让其自行结束
+
+    i : kIll        向除 init 以外所有进程发送 SIGKILL 信号，强制结束进程
+
+    s : Sync        同步缓冲区数据到硬盘，避免数据丢失
+
+    u : Unmount     将所有已经挂载的文件系统 重新挂载为只读
+
+    b : reBoot      立即重启计算机
+
+TODO:另一个说法 使用“魔法键”：
 
     按住 Ctrl，Alt 和 PtrSc（SysRq）不放，按住他们的同时，顺序按 r，e，i，s，u，b，手指短够不到可以试试用鼻子（不要用舌头---太咸了）。
 
 键盘上一般都有一个键 SysRq, 和 PrintScreen(截屏)在同一个键位上，这就是系统请求的键。
+
+SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候就相当于按住了 SysRq 键，这个时候输入的一切都会直接由 Linux 内核来处理，它可以进行许多低级操作。
 
 首先，你的系统要支持这个功能，查看和开启的方法大家应该很熟悉了，网上也有很多说明，而且最幸运的是：Ubuntu 默认已经开启了这个功能。
 
@@ -15364,90 +15415,6 @@ WantedBy=multi-user.target
         右手按一下 E。这时包括桌面在内，所有程序都会终止，你会看到一个黑乎乎的屏幕，稍微等一段时间
 
         右手依次按下 I，S，U，B。每按一次都等那么几秒种，你会发现每按一次，屏幕上信息都会有所变化。最后按下 B 时，屏幕显示 reset，这时你的左手可以松开了，等几秒钟，计算机就会安全重启。
-
-SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候就相当于按住了 SysRq 键，这个时候输入的一切都会直接由 Linux 内核来处理，它可以进行许多低级操作。
-
-这个时候 reisub 中的每一个字母都是一个独立操作，分别表示：
-
-    r : unRaw 将键盘控制从 X Server 那里抢回来
-
-    e : tErminate 给所有进程发送 SIGTERM 信号，让它们自己解决善后
-
-    i : kIll 给所有进程发送 SIGKILL 信号，强制他们马上关闭
-
-    s : Sync 将所有数据同步至磁盘
-
-    u : Unmount 将所有分区挂载为只读模式
-
-    b : reBoot 重启
-
-要使用 Magic Sysrq Key，有三个基本条件：
-
-1.键盘上有 Sysrq 键
-
-2.系统使用的内核，在编译时打开了 CONFIG_MAGIC_KEY 选项
-
-    # y表示已开启
-    CONFIG_MAGIC_SYSRQ=y
-
-验证
-
-    $ grep -F CONFIG_MAGIC_SYSRQ /boot/config-$(uname -r)
-
-系统配置 Magic Sysrq Key 为可用
-
-    临时启用,设置/proc/sys/kernel/sysrq
-
-        sudo echo "1" > /proc/sys/kernel/sysrq
-
-    长期使用,查看 /etc/sysctl.conf，确认
-
-        kernel.sysrq = 1
-
-    如果先前为0，更改配置后使用以下方式激活
-
-        sudo sysctl -p
-
-#### REISUB大法手工重启内核 SysRq
-
-    https://www.cnblogs.com/ylan2009/articles/2322950.html
-
-    https://www.cnblogs.com/klb561/p/11013746.html
-
-    https://wiki.ubuntu.com/Kernel/CrashdumpRecipe
-
-先要激活内核 sysrq 功能
-
-    # 修改 /etc/sysctl.conf 文件，设置 kernel.sysrq = 1
-    echo "1" > /proc/sys/kernel/sysrq
-
-键：Print Screen/SysRq
-
-系统异常时依次按下 alt+sysrq+{reisub} ，然后系统会自动重启。括号内的英文字母需要依次顺序按下，而且每次按下字母后需要间隔 5-10s 再执行下一个动作。（如 alt + SysRq + R，间隔10s 后再按 alt + SysRq + E，以此类推）切记不可快速按下 R-E-I-S-U-B ，否则后果和 扣电池拔电源线无异！
-
-使用 SysRq 重启计算机的方法：
-
-全尺寸键盘
-
-    Alt + SysRq + [R-E-I-S-U-B]
-
-笔记本键盘
-
-    Fn + Alt + SysRq + [R-E-I-S-U-B]
-
-reisub各个序列，需要留出执行时间：
-
-    unRaw – 把键盘设置为 ASCII 模式，使按键可以穿透 x server 捕捉传递给内核
-
-    tErminate – 向除 init 外进程发送 SIGTERM 信号，让其自行结束
-
-    kIll - 向除 init 以外所有进程发送 SIGKILL 信号，强制结束进程
-
-    Sync – 同步缓冲区数据到硬盘，避免数据丢失
-
-    Unmount – 将所有已经挂载的文件系统 重新挂载为只读
-
-    reBoot - 立即重启计算机
 
 拓展：
 
