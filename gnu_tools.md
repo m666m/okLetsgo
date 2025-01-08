@@ -2800,14 +2800,14 @@ Fira Code 改名为 Fira Code NF。
 
     FiraCode https://github.com/tonsky/FiraCode
 
-> Fedora(SELinux) 下安装 Meslo LG-S NF 字体
+#### Fedora(SELinux) 下安装字体
 
 因为发行版的存储库没有 nerd font，只能手动安装，只是安装方法有点复杂：
 
     https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
         https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#add-extra-fonts
 
-方法一：保存在系统目录全局生效，需要手动操作
+方法一：保存在系统目录全局生效，需要手动操作，适合批量安装字体
 
     /usr/share/fonts/
 
@@ -2842,7 +2842,7 @@ Fira Code 改名为 Fira Code NF。
 
 方法二：放在用户目录，仅当前用户生效
 
-在桌面环境双击字体文件，调用 gnome-font-viewer 图形化程序，选择安装后会自动保存在
+Gnome 桌面环境下双击字体文件，会调用 gnome-font-viewer 图形化程序，选择安装后会自动保存在
 
     # /usr/local/share/fonts/ 这个目录没有被 SELinux 配置默认规则，RHEL 系不会生效。
     $HOME/.local/share/fonts/ 或 $HOME/.font/
@@ -2851,7 +2851,9 @@ Fira Code 改名为 Fira Code NF。
 
     /usr/share/fonts/ 下的目录里字体文件是 755
 
-    $HOME/.local/share/fonts 下的字体文件是 644。Gnome 桌面环境下的图形界面 GNOME Font Viewer 程序安装字体就是放到这里。
+    $HOME/.local/share/fonts 下的字体文件是 644
+
+gnome-font-viewer 图形化程序有个 bug 至今未改，字体安装不提示完成，总是 installing...，蒙着等一阵关了它就行。。。
 
 验证：简单测试几个 unicode 扩展 NF 字符
 
