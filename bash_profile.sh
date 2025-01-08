@@ -507,7 +507,7 @@ elif [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
     fi
 
     echo ''
-    echo 'ssh-pageant --> putty pageant，reuse ssh key loaded in the agent'
+    echo 'ssh-pageant reusing ssh key loaded in putty pageant'
     # ssh-pageant 使用以下参数来判断是否有已经运行的进程，不会多次运行自己
     eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
     ssh-add -l
@@ -554,12 +554,12 @@ else
         echo && echo "Start ssh-agent..."
         agent_start
 
-        echo "-->Adding ssh key，input passphrase of the key if prompted"
+        echo "-->Adding ssh key to agent，input passphrase of the key if prompted"
         ssh-add
 
     elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
         # ssh-agent正在运行，但是没有加载过密钥
-        echo "-->Adding ssh key，input passphrase of the key if prompted"
+        echo "-->Adding ssh key to agent，input passphrase of the key if prompted"
         ssh-add
     fi
 
@@ -751,7 +751,8 @@ function PS1_host_name {
         # 如果是在交互式容器 toolbox 中，$HOSTNAME 与宿主机一致，但 /etc/hostname 变为 toolbox
         if [[ $(uname -n) = 'toolbox' ]]; then
             # toolbox 容器中只能用这个方式判断是否远程连接中，不是很靠谱
-            [[ $(ps -ef |grep "sshd: $USER@pts" |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
+            #[[ $(ps -ef |grep "sshd: $USER@pts" |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
+            [[ $(pstree |grep sshd |grep toolbox |grep podman |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
 
         else
             # 否则是在交互式容器 distrobox 中，主机名的值变为：容器名.宿主机的主机名
