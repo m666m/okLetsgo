@@ -2807,9 +2807,9 @@ Fira Code 改名为 Fira Code NF。
     https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
         https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#add-extra-fonts
 
-方法一：在桌面环境双击字体文件，调用 gnome-font-viewer 图形化程序，选择安装后会自动保存在系统目录
+方法一：保存在系统目录全局生效，需要手动操作
 
-    /usr/share/fonts
+    /usr/share/fonts/
 
     手动操作步骤如下：
 
@@ -2830,27 +2830,28 @@ Fira Code 改名为 Fira Code NF。
 
         # Set permissions and update SELinux labels
         $ sudo chown -R root: /usr/share/fonts/MesloLGSNF
-        $ sudo chmod 644 /usr/share/fonts/MesloLGSNF/*
+        $ sudo chmod 755 /usr/share/fonts/MesloLGSNF/*
         $ sudo restorecon -vFr /usr/share/fonts/MesloLGSNF
 
         $ sudo chown -R root: /usr/share/fonts/FiraCodeNF
-        $ sudo chmod 644 /usr/share/fonts/FiraCodeNF/*
+        $ sudo chmod 755 /usr/share/fonts/FiraCodeNF/*
         $ sudo restorecon -vFr /usr/share/fonts/FiraCodeNF
 
         # Update the font cache
         $ sudo fc-cache -v
 
-方法二：放在系统推荐的保存目录
+方法二：放在用户目录，仅当前用户生效
 
-    /usr/local/share/fonts
+在桌面环境双击字体文件，调用 gnome-font-viewer 图形化程序，选择安装后会自动保存在
 
-    NOTE: /usr/local 下的这个目录没有被 SELinux 配置默认规则，别放这里了，RHEL 系不会生效的。
+    # /usr/local/share/fonts/ 这个目录没有被 SELinux 配置默认规则，RHEL 系不会生效。
+    $HOME/.local/share/fonts/ 或 $HOME/.font/
 
-    权限存疑：
+确认下字体文件设置权限
 
-        /usr/share/fonts/ 下的目录里字体文件是 644，而我拷贝到 /usr/local/share/fonts/ 下的字体文件改成 755 才行。
+    /usr/share/fonts/ 下的目录里字体文件是 755
 
-        Gnome 桌面环境下的图形界面 GNOME Font Viewer 程序安装字体，在当前用户目录 ~/.local/share/fonts 下，字体文件的权限也是 644。
+    $HOME/.local/share/fonts 下的字体文件是 644。Gnome 桌面环境下的图形界面 GNOME Font Viewer 程序安装字体就是放到这里。
 
 验证：简单测试几个 unicode 扩展 NF 字符
 
@@ -13058,7 +13059,8 @@ XDG 基本目录规范基于以下概念：
 
     $XDG_DATA_HOME      用于写入特定用户数据文件的基本目录              $HOME/.local/share
     $XDG_CONFIG_HOME    用于写入特定用户的配置文件基本目录              $HOME/.config
-    $XDG_DATA_DIRS      首选的基本数据目录                           /usr/local/share/:/usr/share/
+    $XDG_DATA_DIRS      首选的基本数据目录                           /usr/local/share/:/usr/share/ 等
+
     $XDG_CONFIG_DIRS    首选的基本配置目录                           /etc/xdg
     $XDG_CACHE_HOME     用于写入用户特定的非必要（缓存）数据的基本目录    $HOME/.cache
     $XDG_RUNTIME_DIR    用户放置特定于用户的运行时文件和其他文件对象
