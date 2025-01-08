@@ -2811,44 +2811,46 @@ Fira Code 改名为 Fira Code NF。
 
     /usr/share/fonts
 
+    手动操作步骤如下：
+
+        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Meslo.tar.xz
+        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.tar.xz
+
+        $ xz -d Meslo.tar.xz
+        $ xz -d FiraCode.tar.xz
+
+        $ tar xf Meslo.tar
+        $ tar xf FiraCode.tar
+
+        $ sudo mkdir -p /usr/share/fonts/MesloLGSNF
+        $ sudo mkdir -p /usr/share/fonts/FiraCodeNF
+
+        $ sudo cp MesloLGSNerdFont-*.ttf /usr/share/fonts/MesloLGSNF/
+        $ sudo cp FiraCodeNerdFont-*.ttf /usr/share/fonts/FiraCodeNF/
+
+        # Set permissions and update SELinux labels
+        $ sudo chown -R root: /usr/share/fonts/MesloLGSNF
+        $ sudo chmod 644 /usr/share/fonts/MesloLGSNF/*
+        $ sudo restorecon -vFr /usr/share/fonts/MesloLGSNF
+
+        $ sudo chown -R root: /usr/share/fonts/FiraCodeNF
+        $ sudo chmod 644 /usr/share/fonts/FiraCodeNF/*
+        $ sudo restorecon -vFr /usr/share/fonts/FiraCodeNF
+
+        # Update the font cache
+        $ sudo fc-cache -v
+
 方法二：放在系统推荐的保存目录
 
     /usr/local/share/fonts
 
-步骤如下：
+    NOTE: /usr/local 下的这个目录没有被 SELinux 配置默认规则，别放这里了，RHEL 系不会生效的。
 
-    $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Meslo.tar.xz
-    $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.tar.xz
+    权限存疑：
 
-    $ xz -d Meslo.tar.xz
-    $ xz -d FiraCode.tar.xz
+        /usr/share/fonts/ 下的目录里字体文件是 644，而我拷贝到 /usr/local/share/fonts/ 下的字体文件改成 755 才行。
 
-    $ tar xf Meslo.tar
-    $ tar xf FiraCode.tar
-
-    $ sudo mkdir -p /usr/local/share/fonts/MesloLGSNF
-    $ sudo mkdir -p /usr/local/share/fonts/FiraCodeNF
-
-    $ sudo cp MesloLGSNerdFont-*.ttf /usr/local/share/fonts/MesloLGSNF/
-    $ sudo cp FiraCodeNerdFont-*.ttf /usr/local/share/fonts/FiraCodeNF/
-
-    # Set permissions and update SELinux labels
-    $ sudo chown -R root: /usr/local/share/fonts/MesloLGSNF
-    $ sudo chmod 644 /usr/local/share/fonts/MesloLGSNF/*
-    $ sudo restorecon -vFr /usr/local/share/fonts/MesloLGSNF
-
-    $ sudo chown -R root: /usr/local/share/fonts/FiraCodeNF
-    $ sudo chmod 644 /usr/local/share/fonts/FiraCodeNF/*
-    $ sudo restorecon -vFr /usr/local/share/fonts/FiraCodeNF
-
-    # Update the font cache
-    $ sudo fc-cache -v
-
-权限存疑：
-
-    /usr/share/fonts/ 下的目录里字体文件是 644，而我拷贝到 /usr/local/share/fonts/ 下的字体文件改成 755 才行。
-
-    Gnome 桌面环境下的图形界面 GNOME Font Viewer 程序安装字体，在当前用户目录 ~/.local/share/fonts 下，字体文件的权限也是 644。
+        Gnome 桌面环境下的图形界面 GNOME Font Viewer 程序安装字体，在当前用户目录 ~/.local/share/fonts 下，字体文件的权限也是 644。
 
 验证：简单测试几个 unicode 扩展 NF 字符
 
