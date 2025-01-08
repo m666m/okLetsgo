@@ -37,7 +37,8 @@
 PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 
 # exit for non-interactive shell
-[[ ! -t 1 ]] && return
+# [[ ! -t 0 ]] && return
+[[ $- != *i* ]] && return
 
 ###################################################################
 # 自此开始都是自定义设置
@@ -835,7 +836,8 @@ function PS1raspi-warning-prompt {
 #################################
 # 设置命令行提示符 PS1
 if [[ $0 = 'zsh' ]]; then
-    echo "zsh 有自己的 powerlevel10k 设置命令行提示符"
+    # "zsh 有自己的 powerlevel10k 设置命令行提示符"
+    :
 
 elif [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
     # Windows git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态

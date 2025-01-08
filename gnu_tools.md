@@ -275,7 +275,7 @@ putty 连接远程服务器，实现了 ssh 的全部功能，使用 PUTTYGEN.EX
 
     因为功能是连接远程站点然后执行命令行操作，putty 把每个连接保存为会话，设置会话就是设置连接某站点的参数，除了终端显示的参数，还有各种连接协议的参数等多种设置
 
-putty 登陆站点后的使用很简单
+putty 登录站点后的使用很简单
 
     点击并拖动鼠标左键是选择文字并复制到操作系统剪贴板（运行 putty 的操作系统，不是远程站点的）
 
@@ -291,7 +291,7 @@ putty 的初始界面只有一个，选择会话和会话设置两个功能区�
 
     会话参数的各项设置界面在右侧，对应左侧界面“Category”的树形列表的其它各分支项
 
-    连接会话的“Open”按钮在最下方，选择一个已有会话后点击该按钮即可连接登陆站点
+    连接会话的“Open”按钮在最下方，选择一个已有会话后点击该按钮即可连接登录站点
 
     左侧界面“Category”的树形列表的其它部分，是当前选择的会话的参数，点击各个分支时右侧界面会切换为该会话各参数的设置界面（需要先在会话选择界面选择会话，点“Load”按钮，否则是默认的初始参数）
 
@@ -359,9 +359,9 @@ putty 的初始界面只有一个，选择会话和会话设置两个功能区�
 
         切换左侧选择树形列表的各个分支，则右侧界面跟随变为相关参数的设置，自行调整即可。
 
-        比如“Connection->Data”里预设该站点的登陆用户名，“Connection->SSH-Auth”里设置该站点密钥登陆的密钥文件等等。
+        比如“Connection->Data”里预设该站点的登录用户名，“Connection->SSH-Auth”里设置该站点密钥登录的密钥文件等等。
 
-        有些参数是影响终端呈现效果的，比如终端类型可以选择 xterm-256color 等效于在登陆站点后的shell里设置环境变量 Term=xterm-256color。
+        有些参数是影响终端呈现效果的，比如终端类型可以选择 xterm-256color 等效于在登录站点后的shell里设置环境变量 Term=xterm-256color。
 
         有些参数影响 putty 的窗口，比如窗口滚动条缓存屏幕内容12000行，酌情设置。
 
@@ -398,11 +398,11 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
 
 putty 美化
 
-    仿效本地终端模拟器根据变量 $TERM 自动模拟为指定的终端类型，putty 可以在站点选项里设置终端类型，这样在登陆远程服务器后就按照指定的类型显示了，一般默认为 xterm 就是彩色。
+    仿效本地终端模拟器根据变量 $TERM 自动模拟为指定的终端类型，putty 可以在站点选项里设置终端类型，这样在登录远程服务器后就按照指定的类型显示了，一般默认为 xterm 就是彩色。
 
 开启Putty终端256色的支持: Putty->load你的session->Window->Colors->勾选 “General options for colour usage” 下的几个选项。
 
-即使你设置会话时勾选了使用 256color 和 true color 真彩色，putty 默认的主题比较保守，只使用 16 种颜色（用 rgb 设置，其实支持真彩色），你ssh登陆到服务器会发现文字色彩比较刺眼。
+即使你设置会话时勾选了使用 256color 和 true color 真彩色，putty 默认的主题比较保守，只使用 16 种颜色（用 rgb 设置，其实支持真彩色），你ssh登录到服务器会发现文字色彩比较刺眼。
 
 可以自定义颜色，在设置会话时 custom color，如果感觉挨个设置太麻烦，试试别人做好的
 
@@ -439,7 +439,7 @@ mintty 可以在终端显示图片，下载他的源代码下 utils 目录下的
 
     另外还有 catimg/SDL2_image（showimage2） 等软件包支持在终端下显示图片
 
-建议放到本地 /usr/bin/ 下，以后执行 `showimg xxx.jpg` 就可以在 mintty 下显示本地图片；如果 ssh 登陆到服务器上，在服务器的 /usr/local/bin/ 下也安装这个脚本，则 mintty 也可以响应服务器上执行的 `showimg xxx.jpg`，显示服务器上的图片。
+建议放到本地 /usr/bin/ 下，以后执行 `showimg xxx.jpg` 就可以在 mintty 下显示本地图片；如果 ssh 登录到服务器上，在服务器的 /usr/local/bin/ 下也安装这个脚本，则 mintty 也可以响应服务器上执行的 `showimg xxx.jpg`，显示服务器上的图片。
 
 或安装个 lsix 脚本，因为 mintty 支持 Sixel 格式的图片显示
 
@@ -472,7 +472,7 @@ mintty 可以在终端显示图片，下载他的源代码下 utils 目录下的
 
 然后执行 `winpty python` 即可正常进入 python 解释器环境了
 
-最好在用户登陆脚本文件 ~/.bashrc、~/.zshrc 里添加 alias 方便使用
+最好在用户登录脚本文件 ~/.bashrc、~/.zshrc 里添加 alias 方便使用
 
     alias python="winpty python"
     alias ipython="winpty ipython"
@@ -1135,7 +1135,7 @@ Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` �
 
     putty/mintty 显示兼容性和反应速度满分
 
-    调用 mintty 相比直接执行 git-bash ，环境变量 PATH 缺少 /mingw64/bin 等几个，导致我设置 ssh ProxyCommand 时提示找不到 connect，需要在登陆脚本自行补充。
+    调用 mintty 相比直接执行 git-bash ，环境变量 PATH 缺少 /mingw64/bin 等几个，导致我设置 ssh ProxyCommand 时提示找不到 connect，需要在登录脚本自行补充。
 
     窗口切换有点问题，Windows 10+ 切换任务热键 alt+tab 要按两次才能切换成功
 
@@ -1149,25 +1149,25 @@ Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` �
 
     导入 putty 的 session。
 
-        选择菜单项 File->Import Sessions->From Putty Settings，导入putty session。导入后，在窗口侧栏的树状选择列表，双击即会打开 putty 窗口登陆该站点。
+        选择菜单项 File->Import Sessions->From Putty Settings，导入putty session。导入后，在窗口侧栏的树状选择列表，双击即会打开 putty 窗口登录该站点。
 
-设置自动登陆 putty 的用户名
+设置自动登录 putty 的用户名
 
-    点击想导入的session，右键菜单选“Edit”，弹出窗口选择“Login username”。这样设置了以后，打开该站点不需要在 putty 的 session 里保存登陆用户名了。
+    点击想导入的session，右键菜单选“Edit”，弹出窗口选择“Login username”。这样设置了以后，打开该站点不需要在 putty 的 session 里保存登录用户名了。
 
-    如果 putty 中该用户可以使用密钥登陆，在这里也跟单独使用 putty 同样效果。
+    如果 putty 中该用户可以使用密钥登录，在这里也跟单独使用 putty 同样效果。
 
     如果 pageant 代理程序在运行，在这里也跟单独使用 putty 同样效果。
 
 新建 mintty (git bash) 终端
 
-    快速连接工具栏，本地登陆协议选择 “mintty”，主机地址“localhost”即可，然后回车，就出现登陆窗口了。
+    快速连接工具栏，本地登录协议选择 “mintty”，主机地址“localhost”即可，然后回车，就出现登录窗口了。
 
     或会话列表上点击右键，选择“New”，填写“Session Name”，把“Connection type”选“Mintty”，“HOST Name”设置为 “localhost”即可。
 
     或编辑一个已导入的putty session，把“Connection type”选“Mintty”，“HOST Name”设置为 “localhost”即可。
 
-    如果需要mintty在调用bash登陆的时候执行用户脚本，则需要编辑会话的高级设置：
+    如果需要mintty在调用bash登录的时候执行用户脚本，则需要编辑会话的高级设置：
 
         注意选项 “Extra Arguments”
 
@@ -1602,6 +1602,8 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
 主机有一个给管理员提供交互式操作的工作台，称为 “控制台 console”。用户连接主机进行操作称为 “用户登录控制台(console login)”。
 
+    登录 login
+
 在计算机技术发展初期，跟计算机的交互很简陋，用户想执行命令要在一条纸带上打孔，打孔按规律进行编码，用户在控制台上把纸带输入给计算机。计算机识别这些编码，处理后在另一条纸带上打孔输出执行结果，用户按打孔规律解读
 
               输入纸带 -->
@@ -1650,7 +1652,7 @@ tty 的这种以字符跟主机进行交互的方式，称为 “控制台模式
 
 在今天，类 unix 操作系统如 Linux/MacOS 还是在利用 tty 设备作为主机与用户之间使用字符操作交互的桥梁，主机上运行的程序，输入输出默认指向一个 tty 设备。
 
-    用户使用终端软件如 ssh 登陆服务器，由服务器分配一个 tty 设备才能进行命令行操作（ssh 支持设置不给连接用户分配 tty 设备以提高安全性）。
+    用户使用终端软件如 ssh 登录服务器，由服务器分配一个 tty 设备才能进行命令行操作（ssh 支持设置不给连接用户分配 tty 设备以提高安全性）。
 
     桌面用户使用终端模拟器，由主机分配一个 tty 设备给终端模拟器，连接操作主机。
 
@@ -1695,7 +1697,7 @@ wayland 等基于图形化的框架成熟后，Linux 内核的 VT 子系统转�
 
 80年代通用计算机发展以来，主要的连接方式是用户使用通用计算机，通过串行电缆连接主机，利用通用计算机的显示器和键盘与主机交互，在主机上使用命令行界面进行操作。
 
-随着处理器能力发展强大，GUI 图形化操作系统的发展，带来了一个新的使用问题：如果用户使用图形化窗口的 Terminal，需要与本机上运行的另一个命令行应用程序交互，那么本机的程序需要营造出一个物理终端设备的仿真环境，就像登陆了控制台一样的操作，以便通过命令行跟主机进行交互，即所谓终端模拟器（Terminal Emulator）。
+随着处理器能力发展强大，GUI 图形化操作系统的发展，带来了一个新的使用问题：如果用户使用图形化窗口的 Terminal，需要与本机上运行的另一个命令行应用程序交互，那么本机的程序需要营造出一个物理终端设备的仿真环境，就像登录了控制台一样的操作，以便通过命令行跟主机进行交互，即所谓终端模拟器（Terminal Emulator）。
 
 这种连接本机控制台的终端称为终端模拟器，或称软件进入 “console mode”。
 
@@ -1728,8 +1730,8 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 2、本地桌面环境下，支持命令行下的键盘快捷键，来即时切换到各个控制台 console：
 
     CTRL + ALT + F1 – 锁屏
-    CTRL + ALT + F2 – TTY2，如果有用户登陆桌面，则切换到对应的桌面环境
-    CTRL + ALT + F3 – TTY3，如果有第2个用户登陆桌面，则切换到对应的桌面环境，以下类推
+    CTRL + ALT + F2 – TTY2，如果有用户登录桌面，则切换到对应的桌面环境
+    CTRL + ALT + F3 – TTY3，如果有第2个用户登录桌面，则切换到对应的桌面环境，以下类推
     CTRL + ALT + F4 – TTY4
     CTRL + ALT + F5 – TTY5
     CTRL + ALT + F6 – TTY6
@@ -1752,6 +1754,117 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 另见章节 [给控制台console设置中文字体]。
 
+### 字符终端的区域、编码、语言
+
+    https://perlgeek.de/en/article/set-up-a-clean-utf8-environment
+
+用命令 locale 查看，变量依赖从大到小的顺序是：LC_ALL, LC_CTYPE, LANG
+
+    $ locale
+    LANG=en_US.UTF-8
+    LANGUAGE=en_US.UTF-8
+    LC_CTYPE="en_US.UTF-8"
+    LC_NUMERIC="en_US.UTF-8"
+    LC_TIME="en_US.UTF-8"
+    LC_COLLATE="en_US.UTF-8"
+    LC_MONETARY="en_US.UTF-8"
+    LC_MESSAGES="en_US.UTF-8"
+    LC_PAPER="en_US.UTF-8"
+    LC_NAME="en_US.UTF-8"
+    LC_ADDRESS="en_US.UTF-8"
+    LC_TELEPHONE="en_US.UTF-8"
+    LC_MEASUREMENT="en_US.UTF-8"
+    LC_IDENTIFICATION="en_US.UTF-8"
+    LC_ALL=en_US.UTF-8
+
+    未添加语言包时操作系统只支持比较少的几个 POSIX 标准
+    $ locale -a
+    C
+    C.utf8
+    POSIX
+
+在 env 设置，如
+
+    LC_CTYPE=zh_CN.gbk; export LC_CTYPE
+
+中文 Windows 使用 ansi gbk 编码，设置变量：Locale、Charset
+
+    Locale=zh_CN
+    Charset=GB18030
+
+shell中的命令显示中文（如果支持的话）就设置 LANG
+
+    export LANG=zh_CN.UTF-8
+
+### 交互式登录 shell
+
+    https://www.cnblogs.com/pigwan7/p/9593540.html
+
+shell 是终端下用户与操作系统进行交互的媒介，bash 是目前 Linux 系统中最常用的 shell。
+
+可以从两个不同维度来划分 shell：是否交互式、是否登录。
+
+一、交互式 shell 和非交互式 shell
+
+    交互式模式：在终端上执行，shell 等待你的输入，并且立即执行你提交的命令。这种模式被称作交互式是因为 shell 与用户进行交互。这种模式也是大多数用户非常熟悉的：登录、执行一些命令、退出。当你退出后，shell也终止了。
+
+    非交互式模式：以 shell script 方式执行。在这种模式 下，shell 不与你进行交互，而是读取存放在脚本文件中的命令,并且执行它们。当它读到文件的结尾 EOF，shell 也就终止了。在管道中执行的脚本就属于非交互模式。
+
+可以通过打印 “$-” 变量的值（代表着当前shell的选项标志），查看其中是否有字母 “i” (interactive shel) 来区分交互式与非交互式 shell。
+
+    $ echo $-
+    himBHs
+
+用户在本地使用终端模拟器和 ssh 登录远程服务器，使用的 shell 都属于交互式。
+
+二、登录 shell 和非登录 shell
+
+    登录 shell：需要用户名、密码登录后才能进入的 shell，或者命令 `bash --login` 或 -l 选项生成的 shell
+
+    非登录shell：不需要输入用户名和密码即可打开的 Shell，例如：直接命令 `bash` 就是打开一个新的非登录shell
+
+读取登录脚本文件的区别
+
+    登录 shell：/etc/profile -> (~/.bash_profile | ~/.bash_login | ~/.profile) ->（ ~/.bashrc -> /etc/bashrc） -> ~/.bash_logout
+
+        .profile(由 Bourne Shell 和 Korn Shell 使用) 和 .bash_login (由 C Shell 使用)两个文件是 .bash_profile 的同义词，目的是为了兼容其它 Shell。目前 Debian 系使用 .profile，RHEL 系使用 .bash_profile。
+
+        .bash_profile 中一般会执行 .bashrc
+
+    非登录 shell： ~/.bashrc  -> /etc/bashrc
+
+使用区别
+
+    登录 shell，其 bash 进程名为 "-bash"
+
+    非登录 shell，其 bash 进程名为 "bash"
+
+    退出一个登录shell：exit 或者 logout；退出一个非登录shell：只能 exit。
+
+现在大多数终端模拟器，包括 Gnome 或 KDE 等桌面环境下打开的系统自带的 “终端”（terminal）窗口程序，默认都启动非登录 shell，不会执行你的 ~/.bash_profile 文件。
+
+三、讲人话
+
+登录本地终端：
+
+    需要在你的终端模拟器软件中开启设置，才能在登录时执行你的 ~/.bash_profile 文件：
+
+        指定执行命令 `/bin/bash -l`
+
+        勾选 'Use Login Shell'
+
+    否则只能在进入 shell 后手动执行 `source ~/.bash_profile`。
+
+ssh 登录远程服务器：
+
+    属于登录 shell，ssh 会自动执行远程服务器用户的 ~/.bash_profile 文件，除非在 ssh 命令行指定不执行登录脚本文件。
+
+四、crontab 中执行 shell，既不是交互式 shell，也不是登录 shell，不会执行上述的配置文件，有如下两种处理方法：
+
+    把 shebang 改为 `#!/bin/bash -l` 让脚本用登录 Shell 来解释执行，这个时候，执行脚本要采用路径执行的方式
+
+    调用 Bash 解释器，加 -l 参数，即 /bin/bash -l script
+
 ### 终端模拟器和软件的真彩色设置
 
     https://github.com/mintty/mintty/wiki/CtrlSeqs
@@ -1760,7 +1873,7 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 自 1978 年的 VT100 以来，Unix/Linux 一直通用 [ANSI escape codes 彩色字符方案](http://en.wikipedia.org/wiki/ANSI_escape_code)：使用固定的文本代码作为控制命令，对字符终端的文本进行修饰，由终端模拟器和软件解释并呈现对应的色彩。
 
-因为终端都是本地使用的，就是 Linux/Unix 服务器开机时进入的命令行模式，如果我们在登陆后的命令行变量 $TERM 设置终端类型，终端模拟器会读取该变量自动模拟为指定类型的终端，一般默认 xterm。
+因为终端都是本地使用的，就是 Linux/Unix 服务器开机时进入的命令行模式，如果我们在登录后的命令行变量 $TERM 设置终端类型，终端模拟器会读取该变量自动模拟为指定类型的终端，一般默认 xterm。
 
 在使用 ssh 命令行远程连接 Linux/Unix 服务器时，也是同样处理的。
 
@@ -1853,11 +1966,11 @@ echo -e "${red}Are you ${plain} ok?"
 
     #凑数的，vscode语法高亮往下匹配了，太乱]]]]]]
 
-更多应用示例参见 (shellcmd.md) 中终端登陆脚本中颜色设置的代码。
+更多应用示例参见 (shellcmd.md) 中终端登录脚本中颜色设置的代码。
 
 所以，要能看到彩色的文本，终端模拟器应该至少在选项设置中设置为 xterm 类型。若终端工具能支持24位真彩色、开启透明选项，则显示的效果更好。
 
-为防止终端模拟器软件中未设置终端类型，或软件默认使用的终端类型比较保守，一般可以在用户登陆脚本 .bash_profile 中设置环境变量，起到相同的效果
+为防止终端模拟器软件中未设置终端类型，或软件默认使用的终端类型比较保守，一般可以在用户登录脚本 .bash_profile 中设置环境变量，起到相同的效果
 
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能支持24位真彩色、开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
@@ -1875,7 +1988,7 @@ echo -e "${red}Are you ${plain} ok?"
 
 #### 测试终端模拟器支持色彩的情况
 
-使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）, 用 ssh 登陆同一个服务器， 分别进入 bash/zsh+powerlevel10k 、tmux 环境
+使用不同终端模拟器（mintty bash、putty、Windows Terminal bash）, 用 ssh 登录同一个服务器， 分别进入 bash/zsh+powerlevel10k 、tmux 环境
 
 查看终端设置是否配置好了基本的变量
 
@@ -2381,48 +2494,6 @@ to see the color scheme.''')
 
 ```
 
-### 字符终端的区域、编码、语言
-
-    https://perlgeek.de/en/article/set-up-a-clean-utf8-environment
-
-用命令 locale 查看，变量依赖从大到小的顺序是：LC_ALL, LC_CTYPE, LANG
-
-    $ locale
-    LANG=en_US.UTF-8
-    LANGUAGE=en_US.UTF-8
-    LC_CTYPE="en_US.UTF-8"
-    LC_NUMERIC="en_US.UTF-8"
-    LC_TIME="en_US.UTF-8"
-    LC_COLLATE="en_US.UTF-8"
-    LC_MONETARY="en_US.UTF-8"
-    LC_MESSAGES="en_US.UTF-8"
-    LC_PAPER="en_US.UTF-8"
-    LC_NAME="en_US.UTF-8"
-    LC_ADDRESS="en_US.UTF-8"
-    LC_TELEPHONE="en_US.UTF-8"
-    LC_MEASUREMENT="en_US.UTF-8"
-    LC_IDENTIFICATION="en_US.UTF-8"
-    LC_ALL=en_US.UTF-8
-
-    未添加语言包时操作系统只支持比较少的几个 POSIX 标准
-    $ locale -a
-    C
-    C.utf8
-    POSIX
-
-在 env 设置，如
-
-    LC_CTYPE=zh_CN.gbk; export LC_CTYPE
-
-中文 Windows 使用 ansi gbk 编码，设置变量：Locale、Charset
-
-    Locale=zh_CN
-    Charset=GB18030
-
-shell中的命令显示中文（如果支持的话）就设置 LANG
-
-    export LANG=zh_CN.UTF-8
-
 ### bash 命令提示符美化
 
 bash 下文字显示彩色有依赖，详见章节 [终端模拟器和软件的真彩色设置]。
@@ -2497,7 +2568,7 @@ conda 激活环境时，默认会修改命令行提示符，比较丑，Windows 
             禁止 conda 进入命令行提示符时自动激活base环境，以方便检测 $CONDA_DEFAULT_ENV 变量
                 conda config --set auto_activate_base false
 
-        这样在用户登陆进入bash环境后，执行 `conda activate` 后读取 $CONDA_DEFAULT_ENV 变量即可获取到当前环境名。
+        这样在用户登录进入bash环境后，执行 `conda activate` 后读取 $CONDA_DEFAULT_ENV 变量即可获取到当前环境名。
 
     2、virtualenv 的处理类似 conda
 
@@ -2505,7 +2576,7 @@ conda 激活环境时，默认会修改命令行提示符，比较丑，Windows 
 
             export VIRTUAL_ENV_DISABLE_PROMPT=1
 
-        这样在用户登陆进入bash环境后，执行 `source activate` 后读取 $VIRTUAL_ENV 变量即可获取到当前环境名。
+        这样在用户登录进入bash环境后，执行 `source activate` 后读取 $VIRTUAL_ENV 变量即可获取到当前环境名。
 
     3、在 PS1 变量的设置代码中读取二者的环境名变量，具体实现详见 [PS1conda-env-name 和 PS1virtualenv-env-name 代码段落](bash_profile.sh)。
 
@@ -2546,7 +2617,7 @@ powerline 最大的优点是它使用符号字体图形化的显示文件夹、�
 
     TODO: 研究下用 python 实现的 select()
 
-你使用的终端工具的 Terminal 相关参数设置中设置 xterm-256color，防止用户登陆脚本未设置变量 $TERM，以保证命令行显示的颜色更丰富
+你使用的终端工具的 Terminal 相关参数设置中设置 xterm-256color，防止用户登录脚本未设置变量 $TERM，以保证命令行显示的颜色更丰富
 
     # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
@@ -2813,17 +2884,17 @@ Fira Code 改名为 Fira Code NF。
 
 zsh 默认使用的用户插件位置，在 ~/.zsh/plugin/
 
-可设置当前用户默认登陆使用 zsh
+可设置当前用户默认登录使用 zsh
 
-    # 当前用户修改自己的登陆 shell
+    # 当前用户修改自己的登录 shell
     $ sudo chsh -s /bin/zsh
 
-    # 修改指定用户的登陆shell
+    # 修改指定用户的登录shell
     $ sudo usermod -s /bin/zsh username
 
-插件和主题太多了容易搞乱环境，保守点的用法是登陆环境默认还是用 bash，登陆后手动执行 `exec zsh` 切换到zsh（如果执行 `zsh` 则在 bash 的基础上进入 zsh，执行 exit 退出时会先退出到 bash，然后再次 exit 才是断开连接）。
+插件和主题太多了容易搞乱环境，保守点的用法是登录环境默认还是用 bash，登录后手动执行 `exec zsh` 切换到zsh（如果执行 `zsh` 则在 bash 的基础上进入 zsh，执行 exit 退出时会先退出到 bash，然后再次 exit 才是断开连接）。
 
-    # 如果在 .bash_profile 中，需要判断下是否在终端打开的（程序登陆时不是交互式shell）
+    # 如果在 .bash_profile 中，需要判断下是否在终端打开的（程序登录时不是交互式shell）
     if [ -t 1 ]; then
         exec zsh
     fi
@@ -2947,7 +3018,7 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
 
 终端模拟器最好明确设置 $TERM 变量，这样各个插件会自动使用更丰富的颜色
 
-    # 或者在你的用户登陆脚本 .bash_profile 中显式设置
+    # 或者在你的用户登录脚本 .bash_profile 中显式设置
     # 显式设置终端启用 256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
     export TERM="xterm-256color"
 
@@ -3114,7 +3185,7 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     z4h: cannot find usable zsh
     z4h: fetching zsh 5.8 installer
 
-    选择把 zsh 安装到home下，而且不作为默认登陆shell
+    选择把 zsh 安装到home下，而且不作为默认登录shell
     Choose installation directory for Zsh 5.8:
 
     (1)  /usr/local        <= uses sudo (recommended)
@@ -5555,7 +5626,7 @@ tmux 进程正在运行，但是无法连接 “failed to connect to server: Con
     左中括号  copy-mode 模式，查看屏幕历史，使用 pgup 和 pgdown 翻页，按 q 退出
 
     d       脱离当前会话返回你的 shell，tmux 里面的所有会话在后台继续运行，会话里面的程序不会退出。
-            如果 ssh 突然断连，也是相同的效果，下次登陆后在命令行运行 `tmux a` 就能重新连接到之前的会话
+            如果 ssh 突然断连，也是相同的效果，下次登录后在命令行运行 `tmux a` 就能重新连接到之前的会话
 
 窗口（Window）
 
@@ -8364,7 +8435,7 @@ aria2.conf 有两个配置项 on-download-complete、on-download-stop，前者�
 
     http://<your.server.ip.addr>:9091/
 
-浏览器提示你输入刚才配置的用户名和密码，就可以成功登陆Web管理界面。
+浏览器提示你输入刚才配置的用户名和密码，就可以成功登录Web管理界面。
 
 一般安装浏览器插件 Aria2 Explorer，实现拦截浏览器的下载，弹窗添加到transmission。
 
@@ -8583,7 +8654,7 @@ scp 本意是代替 rcp 的，但是命令行参数解析漏洞无法保证兼�
 
 使用 scp 的前提条件跟 sftp 一样
 
-    可以 ssh 登陆才能 scp 文件
+    可以 ssh 登录才能 scp 文件
 
 scp 是利用 ssh 协议的文件拷贝，所以实际工作时使用 ssh 进行身份验证和加密，使用 rcp 传输文件。所以 scp 的命令行用法跟 rcp 是一致的。
 
@@ -8701,7 +8772,7 @@ rsync 默认使用 SSH 进行远程登录和数据传输。一般在目标设备
     # -e 参数指定 SSH 使用 2234 端口
     $ rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
 
-    # 使用密钥文件登陆服务器
+    # 使用密钥文件登录服务器
     rsync -av -e "ssh -i /Users/hs/test.pem" {本地源文件夹路径}/* root@{服务器IP}:{服务器目标文件夹路径}
 
 rsync 命令提供使用的 OPTION 及功能
@@ -8798,7 +8869,7 @@ rsync 的 5 种不同的工作模式：
 
 第三种用于将远程机器上的数据备份到本地机器上；
 
-第四种和第三种是相对的，同样第五种和第二种是相对的，它们各自之间的区别在于登陆认证时使用的验证方式不同。
+第四种和第三种是相对的，同样第五种和第二种是相对的，它们各自之间的区别在于登录认证时使用的验证方式不同。
 
 > 使用 rsync://协议
 
@@ -12167,7 +12238,7 @@ Gnome 桌面默认只展示壁纸，不能放文件（临时下载文件没法�
 
     居中的展示面积最大，预览当前桌面的的窗口内容，左右边缘显示相邻的桌面内容，点击即可在各个桌面间切换。
 
-        多个桌面的好处是，对经常同时打开很多应用程序的用户，可以分类管理：比如浏览器和文件管理器显示在一个桌面，代码开发调试的相关程序在一个桌面，远程桌面登陆服务器在一个桌面全屏显示等等。
+        多个桌面的好处是，对经常同时打开很多应用程序的用户，可以分类管理：比如浏览器和文件管理器显示在一个桌面，代码开发调试的相关程序在一个桌面，远程桌面登录服务器在一个桌面全屏显示等等。
 
         如果拖动当前打开的程序窗口到其它桌面，那么这个程序就在那个桌面展示了。
 
@@ -12361,7 +12432,7 @@ Gnome 桌面默认只展示壁纸，不能放文件（临时下载文件没法�
     Removable Media：勾选不许自动运行
 
     Users：
-        Fingerprint Login：设置你的指纹识别登陆桌面，注意不会解锁 gnome 钥匙环，在使用它保存的 ssh 或 gpg 的密钥时还是需要输入登陆密码
+        Fingerprint Login：设置你的指纹识别登录桌面，注意不会解锁 gnome 钥匙环，在使用它保存的 ssh 或 gpg 的密钥时还是需要输入登录密码
 
 ##### Gnome Tweaks
 
@@ -13181,7 +13252,7 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
 ### 显示管理器（DisplayManager）设置登录后的桌面环境
 
-显示管理器又叫做 “登陆管理器”，如 gdm、sddm、lightdm 等，其作用仅仅只是在你开机后，让你输入用户名和密码处理用户身份验证登陆，然后引导进入桌面，至此任务完成，之后就交给桌面环境了。你可以不需要 DM，直接通过 startx脚本命令进入桌面。
+显示管理器又叫做 “登录管理器”，如 gdm、sddm、lightdm 等，其作用仅仅只是在你开机后，让你输入用户名和密码处理用户身份验证登录，然后引导进入桌面，至此任务完成，之后就交给桌面环境了。你可以不需要 DM，直接通过 startx脚本命令进入桌面。
 
     https://wiki.archlinux.org/title/Display_manager
         https://wiki.archlinux.org/title/GDM
@@ -13202,7 +13273,7 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
     如果是本地登录，在显示管理器的用户登录界面，点击右下方的小齿轮可以选择使用何种桌面环境
 
-    如果是 xrdp 远程登陆，在 “session” 处选择
+    如果是 xrdp 远程登录，在 “session” 处选择
 
 如果安装了多个显示管理器，则可以使用以下方法在它们之间进行选择
 
@@ -14536,9 +14607,9 @@ VNC 协议本身没有加密或保护，所以你通过它发送的任何东西�
 
 #### 使用 xrdp 服务端
 
-该软件实现 Windows Server 的远程桌面多终端服务，即一个无头服务器可以支持几十个远程登陆的用户同时使用桌面，适合教学、办公场景
+该软件实现 Windows Server 的远程桌面多终端服务，即一个无头服务器可以支持几十个远程登录的用户同时使用桌面，适合教学、办公场景
 
-    如果是互联网使用的服务器对外开启远程桌面，务必使用 ssh 连接或 2FA 保护你的远程桌面连接，见章节 [示例：Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think) 和 [xrdp 登陆使用 2FA](init_a_server think)。
+    如果是互联网使用的服务器对外开启远程桌面，务必使用 ssh 连接或 2FA 保护你的远程桌面连接，见章节 [示例：Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think) 和 [xrdp 登录使用 2FA](init_a_server think)。
 
 Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包支持多种桌面环境，远程桌面连接本机无需本地用户登录，客户端使用支持 rdp 协议的 mstsc、remmina 等软件即可。
 
@@ -14550,14 +14621,14 @@ Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP �
 
     https://learn.microsoft.com/en-us/azure/virtual-machines/linux/use-remote-desktop?tabs=azure-cli
 
-    配置 xrdp 支持 2FA 登陆
+    配置 xrdp 支持 2FA 登录
         https://github.com/neutrinolabs/xrdp/wiki/Using-Authy-or-Google-Authenticator-for-2FA-with-XRDP
 
     https://www.cnblogs.com/Ansing/p/16788086.html
 
 NOTE: 在远程桌面环境下，建议只使用软件，不要安装软件或进行系统管理等操作
 
-    不同的发行版和桌面环境区分远程桌面用户和本地桌面用户，在执行权限等方面是有区别的，但目前并未完全测试。所以如果使用远程桌面用户安装软件，在本地登陆时暂无法明确有何负面的影响。
+    不同的发行版和桌面环境区分远程桌面用户和本地桌面用户，在执行权限等方面是有区别的，但目前并未完全测试。所以如果使用远程桌面用户安装软件，在本地登录时暂无法明确有何负面的影响。
 
     树莓派内置 realvnc server，对 xrdp 的支持不好，做不到开箱即用
 
@@ -14628,7 +14699,7 @@ xrdp 的组件
 
     客户端运行 `mstsc.exe`，在 “Computer” 区域输入远程服务器 IP 地址，然后点击 “Connect”。
 
-    客户端在连接到主机后，会出现登录屏幕，Session 选 vnc 或 xorg，输入该主机的登陆用户名和密码，点击 “OK”。跟 Gnome 内置的远程桌面不同，xrdp 使用目标计算机的用户名和密码登录，不需要单独设置。
+    客户端在连接到主机后，会出现登录屏幕，Session 选 vnc 或 xorg，输入该主机的登录用户名和密码，点击 “OK”。跟 Gnome 内置的远程桌面不同，xrdp 使用目标计算机的用户名和密码登录，不需要单独设置。
 
     一旦登录，你将看到默认的桌面环境，根据你操作系统的 sddm 设置是 Gnome 或 Xfce、i3 等。
 
@@ -14690,7 +14761,7 @@ xorgxrdp：
 
 安装该模块后，远程连接到服务器即可在运行远程桌面客户端的机器上播放服务器上的声音了。
 
-##### xrdp 远程桌面用户相对本地登陆用户有权限区别
+##### xrdp 远程桌面用户相对本地登录用户有权限区别
 
 使用远程桌面客户端软件连接后，虽然输入了用户名和密码，但不像本地用户登录或gnome内置远程桌面那样某些操作不再提示密码
 
@@ -15316,7 +15387,7 @@ WantedBy=multi-user.target
 
 桌面的图形界面突然卡住且无法操作时，尝试“登录控制台”，注销当前用户重新登录
 
-按 CTRL + ALT + F3 会切换到控制台登陆的字符界面，关于控制台登陆参见章节 [登录控制台 tty login]。
+按 CTRL + ALT + F3 会切换到控制台登录的字符界面，关于控制台登录参见章节 [登录控制台 tty login]。
 
 输入用户名和密码登录，此时输入命令，说法太多待验证
 
@@ -15739,7 +15810,7 @@ gnome 桌面环境设置系统参数的某些选项时需要点击解锁按钮�
 
     面部识别跳过了 polkit-1 文件中其它的 system-auth 策略，不知道是否还有哪些受限于输入密码的开关未解锁。这个 github 用户干脆添加到 system-auth <https://github.com/boltgolt/howdy/issues/630#issuecomment-1014654035>，但是还会弹出密码提示，应该是类似 gnome-keyring 使用登录密码加密存储数据的场合，必须使用登录密码才能解锁。
 
-    感觉 howdy 应该像 xrdp 那样单独申请权限响应 polkit 策略，参见章节 [xrdp 远程桌面用户相对本地登陆用户有权限区别]。
+    感觉 howdy 应该像 xrdp 那样单独申请权限响应 polkit 策略，参见章节 [xrdp 远程桌面用户相对本地登录用户有权限区别]。
 
 编辑 /etc/pam.d/polkit-1 文件
 
@@ -17452,7 +17523,7 @@ fi
     /usr/bin/tmux
     /usr/bin/screen
 
-系统级默认/bin/sh，用户登陆默认/bin/bash，一般写脚本文件应该明确用哪个解释器执行，在第一行： #!/bin/bash 。
+系统级默认/bin/sh，用户登录默认/bin/bash，一般写脚本文件应该明确用哪个解释器执行，在第一行： #!/bin/bash 。
 
 ```bash
 
