@@ -13956,7 +13956,7 @@ GNOME 使用 Wayland 作为默认显示服务器，运行图形化程序的方�
 
 以下是在 Wayland 桌面环境（如 GNOME）中，不进入桌面环境，直接在控制台下运行图形化程序的方法：
 
-1. 确保 Wayland 会话已启动
+1、确保 Wayland 会话已启动
 
 Wayland 需要一个运行的会话（session）来管理显示和输入。如果你没有进入桌面环境，可以通过以下方式启动一个 Wayland 会话：
 
@@ -13966,7 +13966,7 @@ Wayland 需要一个运行的会话（session）来管理显示和输入。如�
 
 这会启动一个 GNOME Shell 实例，并使用 Wayland 作为显示服务器。
 
-2. 设置 WAYLAND_DISPLAY 环境变量
+2、设置 WAYLAND_DISPLAY 环境变量
 
 Wayland 使用 WAYLAND_DISPLAY 环境变量来指定显示器的连接。你需要设置这个变量，以便图形化程序知道如何连接到 Wayland 服务器。
 
@@ -13978,7 +13978,7 @@ Wayland 使用 WAYLAND_DISPLAY 环境变量来指定显示器的连接。你需�
 
     export WAYLAND_DISPLAY=wayland-0
 
-3. 运行图形化程序
+3、运行图形化程序
 
 权限：你需要有权限访问 Wayland socket。这通常意味着你需要以启动 Wayland 会话的同一个用户身份运行图形化程序。
 
@@ -14021,7 +14021,7 @@ Wayland 使用 WAYLAND_DISPLAY 环境变量来指定显示器的连接。你需�
     # 或者使用 machinectl shell 直接进入会话
     machinectl shell :1 /bin/bash
 
-4. 使用 weston 作为 Wayland 合成器
+4、使用 weston 作为 Wayland 合成器
 
 如果你没有使用 GNOME Shell，而是希望启动一个轻量级的 Wayland 会话，可以使用 weston（一个独立的 Wayland 合成器）。首先安装 weston：
 
@@ -14034,7 +14034,7 @@ Wayland 使用 WAYLAND_DISPLAY 环境变量来指定显示器的连接。你需�
 
 启动后，weston 会创建一个新的 Wayland 会话。你可以在 weston 终端中运行图形化程序。
 
-5. 使用 sway 作为 Wayland 合成器
+5、使用 sway 作为 Wayland 合成器
 
 sway 是一个兼容 Wayland 的平铺式窗口管理器，类似于 i3。你可以使用 sway 来启动一个 Wayland 会话：
 
@@ -14042,7 +14042,7 @@ sway 是一个兼容 Wayland 的平铺式窗口管理器，类似于 i3。你可
 
 在 sway 会话中，你可以直接运行支持 Wayland 的图形化程序。
 
-6. 检查程序是否支持 Wayland
+6、检查程序是否支持 Wayland
 
 并非所有图形化程序都原生支持 Wayland。你可以通过以下方式检查程序是否支持 Wayland：
 
@@ -14052,7 +14052,7 @@ sway 是一个兼容 Wayland 的平铺式窗口管理器，类似于 i3。你可
 
 如果程序不支持 Wayland，它可能会回退到 XWayland（Wayland 的 X11 兼容层）。XWayland 会自动处理 X11 程序的显示，因此你仍然可以运行这些程序。
 
-7. 使用 dbus-run-session 启动独立会话
+7、使用 dbus-run-session 启动独立会话
 
 如果你希望在一个独立的会话中运行图形化程序，可以使用 dbus-run-session：
 
@@ -14060,7 +14060,7 @@ sway 是一个兼容 Wayland 的平铺式窗口管理器，类似于 i3。你可
 
 然后在新会话中运行图形化程序。
 
-8. 远程运行 Wayland 程序
+8、远程运行 Wayland 程序
 
 如果你通过 SSH 连接到远程机器，并希望运行 Wayland 程序，可以使用 waypipe 或 ssh -X（通过 XWayland 运行程序）。
 
@@ -14095,11 +14095,11 @@ waypipe 是一个用于远程运行 Wayland 程序的工具。首先安装 waypi
 
 #### 在 Xorg 环境控制台下执行图形化程序
 
-1. 确保已安装图形化程序所需的依赖
+1、确保已安装图形化程序所需的依赖
 
 首先，确保系统中已安装所需的图形库和依赖项。例如，如果你要运行一个基于 GTK 或 Qt 的应用程序，需要确保这些库已安装。
 
-2. 设置 DISPLAY 环境变量
+2、设置 DISPLAY 环境变量
 
 图形化程序需要知道将图形输出到哪个显示器。通常，Xorg 服务器会管理显示器的连接。你需要设置 DISPLAY 环境变量来指定显示器。
 
@@ -14107,7 +14107,7 @@ waypipe 是一个用于远程运行 Wayland 程序的工具。首先安装 waypi
 
 这里的 :0 表示第一个显示器。如果你有多个显示器或 X 服务器实例，可能需要调整这个值。
 
-3. 启动 Xorg 服务器（如果未运行）
+3、启动 Xorg 服务器（如果未运行）
 
 如果 Xorg 服务器未运行，你需要手动启动它。可以使用 startx 命令来启动 Xorg 服务器：
 
@@ -14115,7 +14115,7 @@ waypipe 是一个用于远程运行 Wayland 程序的工具。首先安装 waypi
 
 启动后，Xorg 服务器会在后台运行，并准备好接收图形化程序的输出。
 
-4. 在控制台中运行图形化程序
+4、在控制台中运行图形化程序
 
 设置好 DISPLAY 环境变量后，你可以直接在控制台中运行图形化程序。例如，运行 gedit 文本编辑器：
 
@@ -14123,7 +14123,7 @@ waypipe 是一个用于远程运行 Wayland 程序的工具。首先安装 waypi
 
 程序应该会在 Xorg 服务器管理的显示器上显示出来。
 
-5. 使用 xinit 启动单个程序
+5、使用 xinit 启动单个程序
 
 如果你只想运行一个图形化程序而不启动完整的桌面环境，可以使用 xinit 命令。例如：
 
@@ -14131,7 +14131,7 @@ waypipe 是一个用于远程运行 Wayland 程序的工具。首先安装 waypi
 
 这里的 :1 表示使用第二个显示器（如果 :0 已被占用）。
 
-6. 使用 xvfb 虚拟显示器（无头环境）
+6、使用 xvfb 虚拟显示器（无头环境）
 
 如果你在没有物理显示器的服务器上运行图形化程序，可以使用 Xvfb（X Virtual Framebuffer）来创建一个虚拟显示器：
 
@@ -14139,7 +14139,7 @@ waypipe 是一个用于远程运行 Wayland 程序的工具。首先安装 waypi
     export DISPLAY=:1
     gedit
 
-7. 使用 ssh -X 远程运行图形化程序
+7、使用 ssh -X 远程运行图形化程序
 
 如果你通过 SSH 远程连接到 Linux 系统，可以使用 ssh -X 或 ssh -Y 来启用 X11 转发，然后在远程终端中运行图形化程序：
 
@@ -15455,7 +15455,6 @@ WantedBy=multi-user.target
 笔记本键盘
 
     Fn + Alt + SysRq + [R-E-I-S-U-B]
-
 
 这个时候 reisub 中的每一个字母都是一个独立操作，分别表示：
 

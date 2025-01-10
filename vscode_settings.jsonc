@@ -550,5 +550,5 @@
     // 下面这些是vscode自己加的，随时变
     //
     "workbench.productIconTheme": "macos-modern",
-    "workbench.sideBar.location": "right",
+    "workbench.sideBar.location": "right"
 }
