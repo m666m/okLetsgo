@@ -2695,13 +2695,23 @@ zsh 下推荐使用 powerlevle10k，这个状态栏工具的兼容性和显示�
 
     https://juejin.cn/post/6844904054322102285
 
-作为程序员，使用终端模拟器跟命令行打交道，设置一个赏心悦目的命行行 bash prompt 或者 vim、tmux 的状态栏主题就很有必要了，一般这些漂亮的主题都会用到一些 icon 字符，比如 pythone 环境的小蛇，系统温度出现温度计等。
+    Font Awesome 图标字体工具 给字体添加图标的工具
 
-而主流操作系统（Windows/Linux）中内置的普通字体，很多特殊字符都会显示不正确，这也是很多人在安装一些主题后，显示效果不理想的原因。
+        https://fontawesome.com/v5/cheatsheet
 
-所以，编程爱好者自行给流行的字体打补丁，补齐了图标字符（glyphs），称为 patch字体。
+    无图标字体的显示效果，在这里查看
 
-最流行的有 Powerline fonts 或者 Nerd fonts 这些字体集，他们对大量的流行字体（尤其是编程用的等宽类）打了 patch，新增很多 icon 字符。
+        https://coding-fonts.pages.dev/fonts/fira-code/
+
+        https://www.programmingfonts.org/#meslo
+
+作为程序员，使用终端模拟器跟命令行打交道，设置一个赏心悦目的命令行提示符 bash prompt 或 vim、tmux 的状态栏主题就很有必要了，一般这些漂亮的主题都会用到一些图标字符（glyphs），比如 pythone 环境的小蛇，系统温度的温度计等。
+
+而主流操作系统（Windows/Linux）中内置的普通字体，很多特殊字符不支持导致显示不正确，这也是很多人在安装一些主题后，显示效果不理想的原因。
+
+所以，编程爱好者自行给流行的字体打补丁，补齐了图标字符（glyphs），称为 patch 字体。
+
+最流行的有 Powerline fonts 或者 Nerd fonts 这些字体集，他们对大量的流行字体（尤其是编程用的等宽类）打了 patch，新增很多图标字符。
 
 只有你的操作系统安装了这些补丁字体，然后设置你的终端模拟器程序使用该补丁字体，那些漂亮的主题效果才会完美呈现出来。
 
@@ -2722,11 +2732,7 @@ zsh 下推荐使用 powerlevle10k，这个状态栏工具的兼容性和显示�
     $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699"
      ±  ➦ ✘ ⚡ ⚙
 
-在这里看常用字体效果，无 NF 图标
-
-    https://coding-fonts.pages.dev/fonts/fira-code/
-
-    https://www.programmingfonts.org/#meslo
+目前很多终端模拟器或文本编辑器，都内置支持 powerline glyphs。所以，如果显示的图标跟你的字体效果不符，一般是因为它们自行实现了字符效果，而会忽略你选择字体的字符效果。
 
 #### Powerline fonts
 
@@ -2738,33 +2744,30 @@ Powerline 在 bash 时期非常流行，为了显示各种好看的图标使用�
 
 Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 for Powerline 的后缀，比如 Source Code Pro 打完 patch 后名字改为了 Source Code Pro for Powerline。
 
-很多 Linux 发行版如 Debian 都带 powerline 字体，直接 apt install 安装到本机
+很多 Linux 发行版如 Debian 都带 powerline 字体
 
     # Debian 等发行版自带
-    sudo apt install fonts-powerline
-    sudo apt install ttf-ancient-fonts
+    $ sudo apt install fonts-powerline
+    $ sudo apt install ttf-ancient-fonts
 
 手动安装最新版
 
-    git clone --depth=1 https://github.com/powerline/fonts.git
+    $ git clone --depth=1 https://github.com/powerline/fonts.git
 
-    # install
-    cd fonts
-    ./install.sh
+    $ cd fonts
+    $ ./install.sh
 
-    cd ..
-    rm -rf fonts/
+    $ cd ..
+    $ rm -rf fonts/
 
 #### Nerd font
 
     https://www.nerdfonts.com/font-downloads
         https://github.com/ryanoasis/nerd-fonts
 
-原理和 Powerline fonts 是一样的，针对已有的字体打 patch，把一些 icon 字符插入进去。不过 Nerd font 就比较厉害了，是一个“集大成者”，他几乎把目前市面上主流的 icon 字符全打进去了，包括上面提到的 powerline icon 字符以及 Font Awesome 等几千个 icon 字符。
+Nerd font 是 Powerline fonts 的超集，他几乎把目前市面上主流的 icon 字符全打进去了，包括上面提到的 powerline icon 字符以及 Font Awesome 等几千个 icon 字符。
 
-类似 Powerline fonts，字体 patch 后对名字加了后缀 NF，比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)，Fira Code 改名为 Fira Code NF。
-
-目前很多终端模拟器内置支持 powerline glyphs，而会忽略你选择字体的图标，所以，如果显示的图标跟字体效果不符，一般是因为终端模拟器或编辑器自行替换实现的原因。
+字体名称在 patch 后对加了后缀 NF 以示区别，比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)，Fira Code 改名为 Fira Code NF。
 
 > Meslo LG-S NF 字体，用于终端模拟器，如果你的终端模拟器还支持透明效果，显示效果直接起飞。
 
@@ -2863,12 +2866,6 @@ gnome-font-viewer 图形化程序有个 bug 至今未改，字体安装不提示
 
     $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \uf70f \ue20a \ue350 \uf2c8"
      ±  ➦ ✘ ⚡ ⚙ ❃    
-
-#### Font Awesome 图标字体工具
-
-给字体添加图标的工具
-
-    https://fontawesome.com/v5/cheatsheet
 
 ### 使用 zsh
 
