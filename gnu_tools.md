@@ -15529,13 +15529,13 @@ SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候�
 
     https://wiki.archlinux.org/title/GNOME/Keyring
 
-现在流行的大多数 Linux 桌面环境现在都引入了密码管理器这一工具，称为 keyring 钥匙圈（注意区别于 gpg keyring 钥匙圈，那个是维护密钥的信任关系的），其后台进程 keyring-daemon，接管已知应用的输入密码请求，统一把用户输入的密码保存起来，在应用程序请求密码和用户输入密码之间成为一个代理。默认使用用户的登录密码加密保存这些密码到本地，只要用户使用本地账户的密码登录桌面，即认为是为本人使用本机，自然可以用登录密码解锁钥匙圈，从而实现浏览器登录网站甚至使用ssh、gpg都可以免除输入相关密码。
+现在流行的大多数 Linux 桌面环境现在都引入了密码管理器这一工具，称为 keyring 钥匙圈（注意区别于 gpg keyring 钥匙圈，那个是维护密钥间的信任关系），其后台进程 keyring-daemon，接管已知应用的输入密码请求，统一把用户输入的密码保存起来，在应用程序请求密码和用户输入密码之间成为一个代理。默认使用用户的登录密码加密保存这些密码到本地，只要用户使用本地账户的密码登录桌面，即认为是为本人使用本机，自然可以用登录密码解锁钥匙圈，从而实现浏览器登录网站甚至使用ssh、gpg都可以免除输入相关密码。
 
 密码管理器接管了多种密码的自动保存和自动填写：
 
-    支持流行的浏览器、办公软件、各种流行的商业软件等自动保存密码，比如在用户使用浏览器登录 web 网站时自动保存和填充密码：在初次输入密码时密码管理器会弹窗提示保存该密码，在用户确认后会被加密保存，以后在该页面需要填写密码时会自动填写。
+    支持流行的浏览器、办公软件、各种流行的商业软件等自动保存密码，比如在用户使用浏览器登录 web 网站时自动保存和填充密码：在初次输入密码时，系统的密码管理器会弹窗提示保存该密码，在用户确认后会被加密保存，以后在该页面需要填写密码时会自动填写。
 
-    支持 ssh、gpg、git 等应用在鉴权时自动接管原 ssh-agent、pinentry、git 凭据管理器 credential.helper 的工作：
+    支持 ssh、gpg、git 等应用在鉴权时自动接管原 ssh-agent、gpg pinentry、git 凭据管理器 credential.helper 的工作：
 
         以 ssh 密钥登录为例，在初次使用 ssh 密钥时，密码管理器会弹框要求输入该密钥的保护密码，注意不是钥匙圈的解锁密码（用户登录密码），在用户确认后该密码会被钥匙圈加密保存，在以后使用密钥时会自动调取保存的密码。对用户来说，只要第一次使用 ssh 密钥时，在密码管理器提示要求输入密钥的保护密码时选择加入钥匙圈，则以后使用该密钥的场景下，密码管理器会在后台直接给 ssh 应用返回该密钥的保护密码，不再需要用户手工输入。
 
@@ -15545,31 +15545,35 @@ SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候�
 
 原理：用户使用的应用程序，其读取密码的 API 调用会被密码管理器（keyring-daemon）接管：
 
-    用户在应用软件中输入密码，如浏览器登录 web 网站的密码，使用 ssh、gpg 、git 时输入的密钥的保护密码，只要首次遇到的密码都会被密码管理器识别，提示用户是否保存到钥匙圈。
+    用户在相关的应用软件中输入密码，如浏览器登录 web 网站的密码，使用 ssh、gpg 、git 时输入的密钥的保护密码，只要首次遇到的密码都会被密码管理器识别，提示用户是否保存到钥匙圈。
 
     保存到钥匙圈时，会使用用户本地帐户的登录密码对这些密码进行加密（用户可设置使用单独的密码）。
 
-    当用户再次遇到应用软件提示输入密码时，只要应用软件读取密码的 API 被再次调用，则密码管理器会先解锁钥匙圈（用户初次登录时需要输入登录密码）自动解密该密码（使用用户给出的登录密码）返回给相关应用的 API 调用。
+    当用户再次遇到应用软件提示输入密码时，只要应用软件读取密码的 API 被再次调用，则密码管理器会先解锁钥匙圈（用户初次登录时需要输入登录密码），也即解密该密码（使用用户给出的登录密码），返回给相关应用的 API 调用。
 
-为了使用方便，“钥匙圈”默认使用用户的登录密码进行加密，这样在用户使用密码登录系统后，密码管理器不需要提示用户输入密码解锁“钥匙圈”，这样大大方便了日常使用
+用户交互：
 
-    用户可以设置钥匙圈使用单独的密码，这样的话用户使用登录密码登录系统后“钥匙圈”是未解锁的，gnome 桌面环境会在用户登录进入桌面后弹窗提示 “Enter password to unlock your key ring”，用户需要输入自己设置的单独密码才能解锁“钥匙圈”。
+    为了使用方便，“钥匙圈”默认使用用户的登录密码进行加密，这样在用户使用密码登录系统后，密码管理器不需要提示用户输入密码解锁“钥匙圈”，这样大大方便了日常使用。
 
-    使用人脸识别或指纹登录功能，因其无法保存用户登录密码，所以在登录桌面后还是会提示解锁钥匙圈。
+        用户可以设置钥匙圈使用单独的密码，这样的话用户使用登录密码登录系统后“钥匙圈”是未解锁的，gnome 桌面环境会在用户登录进入桌面后弹窗提示 “Enter password to unlock your key ring”，用户需要输入自己设置的单独密码才能解锁“钥匙圈”。
 
-如果在初始登录桌面时没有输入登录密码解锁钥匙圈
+    如果在登录 gnome 桌面时没有输入登录密码，比如使用人脸识别或指纹登录了桌面，系统会弹窗提示解锁钥匙圈 “Enter password to unlock your key ring”，用户需要输入登录密码才能解锁“钥匙圈”。
 
-    那么 keyring-daemon 会把鉴权请求传回到各个应用程序，也就是自己不再接管密钥处理了。这样在应用程序需要输入密码的场合，就会像之前一样，各应用软件弹窗提示用户输入密码。密码管理器不会再弹出解锁钥匙圈的提示了，即便使用的是钥匙圈里保存过的加密密钥。
+        这是因为 gnome-keyring 使用登录密码作为加密密钥，不输入登录密码就无法解锁其保存的各种密钥和密码，而 gnome-keyring 目前不支持面部识别、指纹识别的数据作为加密密钥。
 
-    因为登录后选择了不解锁钥匙圈，系统弹窗时要仔细看下提示，到底是应用程序的密码输入界面，还是钥匙圈解锁的界面，二者的密码是不同的。
+    如果在登录桌面后，提示输入登录密码解锁钥匙圈时选择了取消：
 
-    使用图形化工具 gnome passwords and keys (seahorse) 可以方便的看到钥匙圈是否处于解锁状态，点击图标会提示解锁该钥匙圈。
+        则 keyring-daemon 会把鉴权请求传回到各个应用程序，也就是自己不再接管密钥处理了。这样在应用程序需要输入密码的场合，就会像之前一样，各应用软件弹窗提示用户输入密码。密码管理器不会再弹出解锁钥匙圈的提示了，即便使用的是钥匙圈里保存过的加密密钥。
+
+        因为登录后选择了不解锁钥匙圈，在系统弹窗时要仔细看下提示，到底是应用程序的密码输入界面，还是钥匙圈解锁的界面，二者的密码是不同的。
+
+    使用图形化工具 gnome passwords and keys (seahorse) 可以方便的看到钥匙圈是否处于解锁状态，点击图标会提示输入登录密码解锁该钥匙圈。
 
 密码管理器的桌面应用程序：
 
-    MacOS 用自己的密钥管理器
+    MacOS： 用自己的密钥管理器
 
-    GNOME Keyring（gnome-keyring）钥匙圈
+    Gnome 桌面 ：GNOME Keyring（gnome-keyring）钥匙圈
 
             https://wiki.gnome.org/action/show/Projects/GnomeKeyring
 
@@ -15627,7 +15631,7 @@ SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候�
 
     人脸识别和指纹识别的安全性不如密码、密钥、yubi-key 等认证方式，更容易被造假，建议只用于个人电脑的宽松使用场景
 
-基于人脸识别的认证解锁功能，使用摄像头识别面部，直接解锁登录、sudo 等需要手工输入密码的场合
+基于人脸识别的认证解锁功能，使用摄像头识别面部确认用户，可用于用户登录、sudo 等需要手工输入密码的场合
 
     https://github.com/boltgolt/howdy
 
@@ -15759,7 +15763,7 @@ allow xdm_t v4l_device_t:chr_file map;
 
 pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式](init_a_server think)。
 
->解锁 sudo
+> 解锁 sudo
 
 编辑 /etc/pam.d/sudo 文件，在排除注释语句后的首行加入如下内容
 
@@ -15796,9 +15800,7 @@ pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式
 
     https://github.com/boltgolt/howdy/issues/438
 
-在通过人脸识别登录后，gnome 桌面环境会提示输入登录密码解锁 gnome 钥匙圈，现象同见章节 [桌面环境统一密码管理器 --- keyring-daemon] 里 “如果在初始登录桌面时没有输入登录密码解锁钥匙圈” 部分的解释。
-
-这是因为 gnome-keyring 使用登录密码作为加密密钥，不输入登录密码就无法解锁其保存的各种密钥和密码，而 gnome-keyring 目前不支持面部识别、指纹识别的数据作为加密密钥。
+在通过人脸识别登录桌面后，gnome 桌面环境会弹窗提示输入登录密码解锁 gnome 钥匙圈，原因见章节 [桌面环境统一密码管理器 --- keyring-daemon] 里 “用户交互” 部分的解释。
 
 解决办法：给 gnome-keyring 设置空密码，或参照指纹登录的解决办法，使用 u 盘等设备单独保存你的 gnome-keyring 密码 <https://wiki.archlinux.org/title/Fingerprint_GUI#Password>。
 
@@ -15850,11 +15852,11 @@ session    include      system-auth
     capture_failed = false   <----- 这个酌情放开
     capture_successful = false
 
-    拍的照片默认会扔到 /lib64/security/howdy/snapshots/ 目录
+    每次被调用时拍的照片默认会扔到 /lib64/security/howdy/snapshots/ 目录
 
-> Interl 显卡避免频繁打印 MFX 消息
+> Intel 显卡避免频繁打印 MFX 消息
 
-默认在 sudo 认证成功后总是打印调试信息，太烦人。
+命令行下使用，默认在 sudo 认证成功后总是打印调试信息，太烦人。
 
 编辑 /etc/profile.d/howdy.sh 和 /etc/profile.d/howdy.csh 文件，查找如下内容
 
@@ -15862,7 +15864,9 @@ session    include      system-auth
 
 取消该语句的注释即可。
 
-> 新版的 howdy 不需要调整以下权限了
+> 调整howdy的权限
+
+    新版的 howdy 不需要调整以下权限了
 
 因为大多数桌面环境内置的锁屏界面（不是指DM的登录界面）并未以root身份运行，而howdy的文件在默认状态下对非root用户不可读，故此时锁屏界面无法启用人脸识别
 
@@ -15884,17 +15888,17 @@ session    include      system-auth
 
 其它命令
 
-    sudo howdy list             查看记录的面部模型列表
-    sudo howdy remove face_ID   删除指定 ID 的面部记录
-    sudo howdy clear            清除所有面部模型记录
-    sudo howdy disable 1        禁用 Howdy 功能
-    sudo howdy disable 0        启用 Howdy 功能
+    $ sudo howdy list             查看记录的面部模型列表
+    $ sudo howdy remove face_ID   删除指定 ID 的面部记录
+    $ sudo howdy clear            清除所有面部模型记录
+    $ sudo howdy disable 1        禁用 Howdy 功能
+    $ sudo howdy disable 0        启用 Howdy 功能
 
 8、验证功能
 
     测试 sudo
     $ sudo whoami
-    Identified face as your_user_name
+    Identified face as xxx
     root
 
     测试锁屏
@@ -15920,7 +15924,9 @@ session    include      system-auth
 
     https://blog.csdn.net/weixin_31762925/article/details/116771481
 
-Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找，只要你的指纹设备被支持即可正常使用，默认只支持系统登录和 sudo 等鉴权免密码。
+以下仅供参考：
+
+    Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找，只要你的指纹设备被支持即可正常使用，默认只支持系统登录和 sudo 等鉴权免密码。
 
 跟面部识别登录相同，目前不支持解锁 gnome-keyring，详见章节 [Linux 下的 “Windows Hello” 人脸识别认证 --- Howdy] 里“目前不支持解锁 gnome-keyring”的解释。
 
@@ -15944,7 +15950,7 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
 
     [*] Inheritable Capabilities Management
 
-> 如果本地使用命令行登录，则设置也都是用命令
+> 安装 fprintd 实现指纹登录
 
 先确认你的发行版是否支持该指纹设备
 
@@ -15969,7 +15975,7 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
     Enroll result: enroll-stage-passed
     Enroll result: enroll-completed
 
-列出本机指定用户下已注测的指纹信息
+列出本机指定用户下已注册的指纹信息
 
     $ sudo fprintd-list winq
 
@@ -15987,21 +15993,23 @@ Gnome 桌面已经内置该功能，在 Settings -> User 下面的选项找找�
 
 Scrcpy，可以通过Linux桌面显示和控制 Android 设备，类似 Samsung Dex 的使用方式，用电脑玩手机：
 
+    https://github.com/Genymobile/scrcpy
+
     https://zhuanlan.zhihu.com/p/606448877
 
 Scrcpy 支持 Windows/Linux/macOS 多个平台，需要你的手机打开 usb 调试模式，这样  Scrcpy 才可以操作你的手机屏幕。
 
 如果感觉不安全，只是需要在桌面操作你的手机的基本功能，安装 gnome 扩展 GSConnect 就够了。它可以操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，详见上面章节 [使用 gnome 扩展]。
 
-还可以安装安卓虚拟机，实现在Linux桌面运行安卓apk，详见章节 [安卓虚拟化](virtualization think)。
+还可以安装安卓虚拟机，实现在 Linux 桌面运行安卓 apk，详见章节 [安卓虚拟化](virtualization think)。
 
 安装
 
-    Debian 系可以从默认存储库安装 scrcpy
+    Debian 系可以从官方存储库安装 scrcpy
 
         $ sudo apt install scrcpy
 
-    Fedora 系暂时还未收录到正式存储库，可以从 Cool Other Packages Repository (COPR)安装它：
+    Fedora 系暂时还未收录到官方存储库，可以从 Cool Other Packages Repository (COPR)安装它：
 
         $ sudo dnf copr enable zeno/scrcpy
         $ sudo dnf install scrcpy
