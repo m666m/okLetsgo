@@ -2705,7 +2705,7 @@ zsh 下推荐使用 powerlevle10k，这个状态栏工具的兼容性和显示�
 
 只有你的操作系统安装了这些补丁字体，然后设置你的终端模拟器程序使用该补丁字体，那些漂亮的主题效果才会完美呈现出来。
 
-补丁字体要安装到你本地使用的计算机上，设置你的终端模拟器或编辑器使用该字体
+补丁字体要安装到你本地使用的计算机上，然后设置你的终端模拟器或编辑器使用该字体
 
     不要把字体安装到远程服务器
 
@@ -2760,43 +2760,49 @@ Powerline fonts 对打过 patch 的字体做了重命名，后面都加上了 fo
     https://www.nerdfonts.com/font-downloads
         https://github.com/ryanoasis/nerd-fonts
 
-原理和 Powerline fonts 是一样的，针对已有的字体打 patch，把一些 icon 字符插入进去。
-不过 Nerd font 就比较厉害了，是一个“集大成者”，他几乎把目前市面上主流的 icon 字符全打进去了，
-包括上面提到的 powerline icon 字符以及 Font Awesome 等几千个 icon 字符。
+原理和 Powerline fonts 是一样的，针对已有的字体打 patch，把一些 icon 字符插入进去。不过 Nerd font 就比较厉害了，是一个“集大成者”，他几乎把目前市面上主流的 icon 字符全打进去了，包括上面提到的 powerline icon 字符以及 Font Awesome 等几千个 icon 字符。
 
-类似 Powerline fonts，字体 patch 后对名字加了后缀 NF，
-比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)，
-Fira Code 改名为 Fira Code NF。
+类似 Powerline fonts，字体 patch 后对名字加了后缀 NF，比如 Source Code Font 会修改为 Sauce Code Nerd Font (Sauce Code 并非 typo，故意为之)，Fira Code 改名为 Fira Code NF。
 
-> Meslo LG-S NF 字体，终端模拟器推荐使用，如果你的终端模拟器还支持透明效果，显示效果直接起飞。
+目前很多终端模拟器内置支持 powerline glyphs，而会忽略你选择字体的图标，所以，如果显示的图标跟字体效果不符，一般是因为终端模拟器或编辑器自行替换实现的原因。
+
+> Meslo LG-S NF 字体，用于终端模拟器，如果你的终端模拟器还支持透明效果，显示效果直接起飞。
 
 这个是 Powerlevel10k 推荐的字体
 
     https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k
 
-开发版的地址
+    发布版
+        https://github.com/ryanoasis/nerd-fonts/releases 找 Meslo.tar.xz
 
-    https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S
+    开发版
+        https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo/S
 
-选 S 目录的原因是要行间距小的，在终端显示的时候正好，如果需要增大行间距，不建议换字体，在终端模拟器或你的编辑器设置行距更好。
+选 S 的原因是要行间距小的，在终端显示的时候正好，如果需要增大行间距，不建议换字体，在终端模拟器或你的编辑器设置行距更好。
 
-逐个目录选择文件名最短的下载，即不下载 Mono 和 Propo 类型的。文件名加 Mono 字样的是等宽变形，显示时太挤了，加 Propo 字样的是多行连线优化，普通使用用不到。
+逐个目录选择文件名最短的下载，即选 MesloLGSNerdFont-*.ttf，不下载 Mono 和 Propo 类型的
 
-它的上游字体来源
+    文件名加 Mono 字样的是等宽变形，显示时太挤了
+
+    文件名加 Propo 字样的是多行连线优化，普通场景不需要
+
+上游来源字体
 
     Meslo  https://github.com/andreberg/Meslo-Font
         Apple’s Menlo-Regular
             Bitstream Vera Sans Mono
 
-> FiraCode NF 字体，代码编辑器推荐使用，该字体支持连字符，Windows 用户找带 Windows 字样的下载即可
+> FiraCode NF 字体，用于代码编辑器，该字体支持连字符，Windows 用户找带 Windows 字样的下载即可
 
-开发版的地址
+    发布版
+        https://github.com/ryanoasis/nerd-fonts/releases 找 FiraCode.tar.xz
 
-    https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
+    开发版
+        https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode
 
 文件名加 Mono 字样的是等宽变形不包含连字。
 
-它的上游字体来源
+上游来源字体
 
     FiraCode https://github.com/tonsky/FiraCode
 
@@ -2807,20 +2813,18 @@ Fira Code 改名为 Fira Code NF。
     https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
         https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#add-extra-fonts
 
-方法一：保存在系统目录全局生效，需要手动操作，适合批量安装字体
+先下载并解压上述两个字体文件
 
-    /usr/share/fonts/
-
-    手动操作步骤如下：
-
-        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Meslo.tar.xz
-        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.tar.xz
+        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Meslo.tar.xz
+        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/FiraCode.tar.xz
 
         $ xz -d Meslo.tar.xz
         $ xz -d FiraCode.tar.xz
 
         $ tar xf Meslo.tar
         $ tar xf FiraCode.tar
+
+方法一：适合批量安装字体，保存在系统目录 /usr/share/fonts/，全局生效
 
         $ sudo mkdir -p /usr/share/fonts/MesloLGSNF
         $ sudo mkdir -p /usr/share/fonts/FiraCodeNF
@@ -2882,7 +2886,7 @@ gnome-font-viewer 图形化程序有个 bug 至今未改，字体安装不提示
 
 安装
 
-    # sudo dnf install zsh zsh-autosuggestions zsh-syntax-highlighting
+    $ sudo dnf install zsh
     $ sudo apt install zsh
 
 如果是用 apt install 安装的发行版，位置在 /usr/share/zsh
@@ -2938,17 +2942,21 @@ zsh 自带功能
 
     命令自动完成：输入完 “tar”命令，后面就用灰色给你提示 tar 命令的参数，而且是随着你动态输入完每一个字母不断修正变化，tar -c 还是 tar -x 跟随你的输入不断提示可用参数，这个命令提示是基于你的历史命令数据库进行分析的。按 TAB 键快速进入下一级，或直接按右方向键确认该提示。最方便的用法是按 alt+m 或 alt+l(vi的右方向键)自动接受结果，回车即执行，更方便。
 
-        # 著名插件，发行版仓库收录了
-        # git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
+        $ sudo dnf install zsh-autosuggestions zsh-syntax-highlighting
         $ sudo apt install zsh-autosuggestions
+
+        # 不使用发行版仓库收录的版本，也可自行安装
+        # git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
 
     命令语法高亮：根据你输入的命令是否正确的色彩高亮，比如输入date查看时间，错为data，字体的颜色会跟随你的输入一个字母一个字母的变化，错误会直接变红。
 
-        # 著名插件，发行版仓库收录了
-        # git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zsh-syntax-highlighting
+        $ sudo dnf install zsh-syntax-highlighting
         $ sudo apt install zsh-syntax-highlighting
 
-        # 发现个替代品 https://github.com/zdharma-continuum/fast-syntax-highlighting
+        # 不使用发行版仓库收录的版本，也可自行安装
+        # git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zsh-syntax-highlighting
+
+        竞品 https://github.com/zdharma-continuum/fast-syntax-highlighting
 
     命令模糊查找：输入错的也没关系，给你候选命令的提示，vi模式改良为按上下键进入搜索，直接输入关键字即可
 
