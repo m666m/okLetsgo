@@ -2917,11 +2917,6 @@ zsh 默认使用的用户插件位置，在 ~/.zsh/plugin/
 
 插件和主题太多了容易搞乱环境，保守点的用法是登录环境默认还是用 bash，登录后手动执行 `exec zsh` 切换到zsh（如果执行 `zsh` 则在 bash 的基础上进入 zsh，执行 exit 退出时会先退出到 bash，然后再次 exit 才是断开连接）。
 
-    # 如果在 .bash_profile 中，需要判断下是否在终端打开的（程序登录时不是交互式shell）
-    if [ -t 1 ]; then
-        exec zsh
-    fi
-
 如果是安装后初次运行 zsh，有个引导程序设置 zsh 的配置文 ~/.zshrc 文件，也可以手动调用
 
     $ zsh
@@ -2934,15 +2929,15 @@ zsh 默认使用的用户插件位置，在 ~/.zsh/plugin/
 
 有些插件和主题依赖 python 和 git，注意提前安装好。
 
-不需要安装 zsh 命令提示符主题默认使用简洁的 pure 主题
+zsh 命令提示符默认使用简洁的 pure 主题
 
     https://github.com/sindresorhus/pure
 
-安装 powerlevel10k 足够了，参见章节[推荐状态栏工具 powerlevel10k]，它也可设置为 pure 风格。
+    想要花哨的，安装 powerlevel10k 足够了，参见章节[推荐状态栏工具 powerlevel10k]，它也可设置为 pure 风格。
 
 zsh 自带功能
 
-    命令智能补全：相对于 bash，两次 TAB 键只能用于提示目录，在 zsh 中输入长命令，输入开头字母后连续敲击两次 TAB 键 zsh 给你一个可能的列表，用tab或方向键选择，回车确认。比如已经输入了 svn commit，但是有一个 commit 的参数我忘记了，我只记得两个减号开头的，在svn commit -- 后面按两次TAB，会列出所有命令。
+    命令和目录智能补全：相对于 bash，两次 TAB 键只能用于提示目录，在 zsh 中输入长命令，输入开头字母后连续敲击两次 TAB 键 zsh 给你一个可能的列表，用tab或方向键选择，回车确认。比如已经输入了 svn commit，但是有一个 commit 的参数我忘记了，我只记得两个减号开头的，在svn commit -- 后面按两次TAB，会列出所有命令。
 
     快速跳转：输入 cd - 按 TAB，会列出历史路径清单供选择。
 
@@ -3720,6 +3715,10 @@ URxvt.color12: rgb:5c/5c/ff
 
         按内容搜索包
             https://www.debian.org/distrib/packages#search_contents
+
+    Linux 内核工具包一般发行版都内置了
+
+      https://www.kernel.org/pub/linux/utils/util-linux/
 
     GNU 按软件包分类
 
@@ -17448,6 +17447,8 @@ diff 通常的用法是从参数读入两个文件，而命令里面的-则是�
     wait        等待指定的进程完成，并返回退出状态码
 
 ### bash 快捷键
+
+命令智能和目录补全：输入命令或目录时，不需要完整输入，给出开头字母后，按两次 TAB 键有提示和自动完成功能。
 
 linux下shell终端里有行编辑功能，在命令提示符下默认可以像 emacs 一样编辑输入的命令。
 
