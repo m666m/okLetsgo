@@ -17162,13 +17162,17 @@ Steam Play 這個計畫讓玩家在購買遊戲後能於 Linux、Windows、macOS
 
 例如，你的第二個硬碟已經有 Steam 這個目錄，而它的完整路徑是 /run/media/user/SSD2/Steam
 
-最简单的方法是使用图形化的 flatpak 软件权限工具 flatseal：选 Steam -> "Filesystem" section -> Other files -> Enter /path/to/mountpoint/
+目前 steam 已经支持 flatpake 门户访问申请目录了，直接操作选项设置即可：點選 Steam左上角 → 離開 Steam。然後重新啟動 Steam，在左上角菜单选：設定，在弹出窗口的左侧导航页面选择条目：存储(Storage)，在右侧页面上部默认的下拉列表点击 “Add Drive”，然后输入你的新存储空间的路径。然后再次点击下拉列表，选择已经成为条目的新路径，下面会列出新路径的详情，点击右侧的三个点的按钮，选择“Make Default”，这样以后安装的游戏都会保存到这里了。
 
-    或者使用 flatpak override 指令開放存取權限：
+    原来不支持的时候，需要先使用 override 的粗暴方式开启权限：
 
-        $ flatpak override com.valvesoftware.Steam --user --filesystem="/path/to/mountpoint/"
+        使用 flatpak override 指令開放存取權限：
 
-然后點選 Steam左上角 → 離開 Steam。然後重新啟動 Steam，在左上角菜单选：設定，在弹出窗口的左侧导航页面选择条目：存储(Storage)，在右侧页面上部默认的下拉列表点击 “Add Drive”，然后输入你的新存储空间的路径。然后再次点击下拉列表，选择已经成为条目的新路径，下面会列出新路径的详情，点击右侧的三个点的按钮，选择“Make Default”，这样以后安装的游戏都会保存到这里了。
+            $ flatpak override com.valvesoftware.Steam --user --filesystem="/path/to/mountpoint/"
+
+        或者使用图形化的 flatpak 软件权限工具 flatseal：选 Steam -> "Filesystem" section -> Other files -> Enter /path/to/mountpoint/
+
+    override 相关知识参见 [Flatpak 直接访问文件系统](init_a_server)。
 
 如果报错提示无法访问，需要用命令添加
 
