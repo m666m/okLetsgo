@@ -1823,25 +1823,39 @@ shell 是终端下用户与操作系统进行交互的媒介，bash 是目前 Li
 
     非登录shell：不需要输入用户名和密码即可打开的 Shell，例如：直接命令 `bash` 就是打开一个新的非登录shell
 
-读取登录脚本文件的区别
+> 读取登录脚本文件的区别
 
-    登录 shell：/etc/profile -> (~/.bash_profile | ~/.bash_login | ~/.profile) ->（ ~/.bashrc -> /etc/bashrc） -> ~/.bash_logout
+登录 shell：
 
-        .profile(由 Bourne Shell 和 Korn Shell 使用) 和 .bash_login (由 C Shell 使用)两个文件是 .bash_profile 的同义词，目的是为了兼容其它 Shell。目前 Debian 系使用 .profile，RHEL 系使用 .bash_profile。
+    系统级：
+    /etc/profile
+        --> /etc/bash.bashrc
+        --> /etc/profile.d
 
-        .bash_profile 中一般会执行 .bashrc
+            用户级：
+            --> ~/.bash_profile
+            --> ~/.bash_login
+            --> ~/.profile
 
-    非登录 shell： ~/.bashrc  -> /etc/bashrc
+                --> $HOME/.bashrc -> /etc/bashrc
+                    --> ~/.bash_logout
 
-使用区别
+    特殊的，.profile(由 Bourne Shell 和 Korn Shell 使用) 和 .bash_login (由 C Shell 使用)两个文件是 .bash_profile 的同义词，目的是为了兼容其它 Shell。目前 Debian 系使用 .profile，RHEL 系使用 .bash_profile。
+
+    .bash_profile 中一般会执行 .bashrc，Bash 默认的命令提示符、ls 和 grep 命令的彩色显示在 ~/.bashrc 的代码中进行了设置
+
+非登录 shell： $HOME/.bashrc -> /etc/bashrc
+
+> 运行时区别
 
     登录 shell，其 bash 进程名为 "-bash"
 
     非登录 shell，其 bash 进程名为 "bash"
 
-    退出一个登录shell：exit 或者 logout；退出一个非登录shell：只能 exit。
+    退出一个登录  shell 的命令：exit 或者 logout，
+    退出一个非登录 shell 的命令：只能 exit。
 
-现在大多数终端模拟器，包括 Gnome 或 KDE 等桌面环境下打开的系统自带的 “终端”（terminal）窗口程序，默认都启动非登录 shell，不会执行你的 ~/.bash_profile 文件。
+现在大多数终端模拟器，包括 Gnome 或 KDE 等桌面环境下打开的系统自带的 “终端”（terminal）窗口程序，默认都启动非登录 shell，即不会执行你的 ~/.bash_profile 文件。
 
 三、讲人话
 
@@ -1851,7 +1865,7 @@ shell 是终端下用户与操作系统进行交互的媒介，bash 是目前 Li
 
         指定执行命令 `/bin/bash -l`
 
-        勾选 'Use Login Shell'
+        或勾选 'Use Login Shell'
 
     否则只能在进入 shell 后手动执行 `source ~/.bash_profile`。
 
@@ -17488,37 +17502,7 @@ linux下shell终端里有行编辑功能，在命令提示符下默认可以像 
 
     https://wiki.archlinux.org/title/Environment_variables
 
-执行 `set` 可以查看当前shell的环境变量和函数设置，便于调试。
-
-系统级
-
-    /etc/profile
-        --> /etc/bash.bashrc
-        --> /etc/profile.d
-
-用户级
-
-    ~/.profile 或 ~/.bash_profile
-        --> $HOME/.bashrc
-                --> /etc/bashrc
-
-Bash 的命令提示符、ls 和 grep 命令的默认彩色显示在 ~/.bashrc 的代码中进行了设置
-
-```shell
-
-if [ -x /usr/bin/dircolors ]; then
-
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
-```
+执行 `set` 可以查看当前 shell 的环境变量和函数设置，便于调试。
 
 ### 常用 shell 脚本代码片段
 
