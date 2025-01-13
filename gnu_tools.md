@@ -3556,14 +3556,14 @@ Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示刷新速度
     而且，即使在 Flatpak 中，它也支持本机“用户会话”，以及 Podman、Toolbox、Distrobox 和 JHBuild。
     主题配色方案内置了 Nord theme，但是不支持背景图片，已经内置在 Fedora 41。
 
-    使用 dconf 设置窗口透明度
+    目前只能使用 dconf 设置窗口透明度
 
         $ dconf read /org/gnome/Ptyxis/default-profile-uuid
         'ddb03e60e8d36dec96ef51fb67345f90'
 
         $ dconf write /org/gnome/Ptyxis/Profiles/ddb03e60e8d36dec96ef51fb67345f90/opacity 0.95
 
-    替代的 Gnome 桌面自带 Xterm，现名 Gnome Terminal，不支持背景图片：
+    原：自 Fedora 41 开始被替代的 Gnome 桌面自带 Xterm，现名 Gnome Terminal，不支持背景图片：
 
         主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
 
