@@ -2915,6 +2915,8 @@ zsh 默认使用的用户插件位置，在 ~/.zsh/plugin/
     # 修改指定用户的登录shell
     $ sudo usermod -s /bin/zsh username
 
+    注销后重新登录生效
+
 插件和主题太多了容易搞乱环境，保守点的用法是登录环境默认还是用 bash，登录后手动执行 `exec zsh` 切换到zsh（如果执行 `zsh` 则在 bash 的基础上进入 zsh，执行 exit 退出时会先退出到 bash，然后再次 exit 才是断开连接）。
 
 如果是安装后初次运行 zsh，有个引导程序设置 zsh 的配置文 ~/.zshrc 文件，也可以手动调用
