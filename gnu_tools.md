@@ -2906,8 +2906,11 @@ zsh 默认使用的用户插件位置，在 ~/.zsh/plugin/
 
 可设置当前用户默认登录使用 zsh
 
+    先看下当前系统的各个shell的位置
+    $ cat /etc/shells
+
     # 当前用户修改自己的登录 shell
-    $ sudo chsh -s /bin/zsh
+    $ sudo chsh -s /usr/bin/zsh
 
     # 修改指定用户的登录shell
     $ sudo usermod -s /bin/zsh username
@@ -17511,9 +17514,9 @@ linux下shell终端里有行编辑功能，在命令提示符下默认可以像 
     https://github.com/jacyl4/de_GWD
     https://github.com/acmesh-official/acme.sh
 
-当前shell脚本解释器
+查看下当前的系统有哪些 shell 脚本解释器
 
-    $  cat /etc/shells
+    $ cat /etc/shells
     # /etc/shells: valid login shells
     /bin/sh
     /bin/bash
@@ -17524,8 +17527,7 @@ linux下shell终端里有行编辑功能，在命令提示符下默认可以像 
     /usr/bin/dash
     /usr/bin/tmux
     /usr/bin/screen
-
-系统级默认/bin/sh，用户登录默认/bin/bash，一般写脚本文件应该明确用哪个解释器执行，在第一行： #!/bin/bash 。
+系统级默认/bin/sh，用户登录默认/bin/bash，一般写脚本文件应该明确用哪个解释器执行，在第一行： `#!/bin/bash`。
 
 ```bash
 
