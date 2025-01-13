@@ -17250,50 +17250,6 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     print fff
 
-### 当前shell和嵌套层数
-
-查看当前所使用的shell程序
-
-    $ echo $0
-    -bash
-
-你在终端中调用不同的 shell，$SHELL 是保持不变的：不要被一个叫做 $SHELL 的单独的环境变量所迷惑，它被设置为你的默认 shell 的完整路径。因此，这个变量并不一定指向你当前使用的 shell。
-    $ echo $SHELL
-    /bin/bash
-
-当前shell的嵌套层数
-
-    $ echo $SHLVL
-    1
-
-    $ bash
-
-    $ echo $SHLVL
-    2
-
-    $ exit
-    exit
-
-    echo $SHLVL
-    1
-
-组命令、管道、命令替换这几种写法都会进入子 Shell
-
-    $ echo "$SHLVL  $BASH_SUBSHELL"
-    1  0
-
-    $ (echo "$SHLVL  $BASH_SUBSHELL") # 组命令
-    1  1
-
-    $ echo "hello" | { echo "$SHLVL  $BASH_SUBSHELL"; }  # 管道
-    1  1
-
-    $ var=$(echo "$SHLVL  $BASH_SUBSHELL");echo $var  #命令替换
-    1 1
-
-    $ ( ( ( (echo "$SHLVL  $BASH_SUBSHELL") ) ) )  #四层组命令
-    1  4
-
 ### 常用 bash 技巧
 
     https://plantegg.github.io/2017/01/01/top_linux_commands/
@@ -17517,20 +17473,65 @@ linux下shell终端里有行编辑功能，在命令提示符下默认可以像 
     tail -f 的时候冻结、解冻终端界面
     ^s（ctrl + s）将通过执行流量控制命令 XOFF 来停止终端输出内容，这会对 PuTTY 会话和桌面终端窗口产生影响。如果误输入了这个命令，可以使用 ^q（ctrl + q）让终端重新响应。所以只需要记住 ^q 这个组合键就可以了，毕竟这种情况并不多见。
 
-### 环境变量的说明
-
-分系统级生效或用户级，shell 或 gui 各有不同
-
-    https://wiki.archlinux.org/title/Environment_variables
-
-执行 `set` 可以查看当前 shell 的环境变量和函数设置，便于调试。
-
 ### 常用 shell 脚本代码片段
 
 目录 shell_script 下是写的不错的脚本示例
 
     https://github.com/jacyl4/de_GWD
     https://github.com/acmesh-official/acme.sh
+
+> 环境变量
+
+    分系统级生效或用户级，shell 或 gui 各有不同
+
+        https://wiki.archlinux.org/title/Environment_variables
+
+    执行 `set` 可以查看当前 shell 的环境变量和函数设置，便于调试。
+
+
+> 当前shell和嵌套层数
+
+查看当前所使用的shell程序
+
+    $ echo $0
+    -bash
+
+你在终端中调用不同的 shell，$SHELL 是保持不变的：不要被一个叫做 $SHELL 的单独的环境变量所迷惑，它被设置为你的默认 shell 的完整路径。因此，这个变量并不一定指向你当前使用的 shell。
+    $ echo $SHELL
+    /bin/bash
+
+当前shell的嵌套层数
+
+    $ echo $SHLVL
+    1
+
+    $ bash
+
+    $ echo $SHLVL
+    2
+
+    $ exit
+    exit
+
+    echo $SHLVL
+    1
+
+组命令、管道、命令替换这几种写法都会进入子 Shell
+
+    $ echo "$SHLVL  $BASH_SUBSHELL"
+    1  0
+
+    $ (echo "$SHLVL  $BASH_SUBSHELL") # 组命令
+    1  1
+
+    $ echo "hello" | { echo "$SHLVL  $BASH_SUBSHELL"; }  # 管道
+    1  1
+
+    $ var=$(echo "$SHLVL  $BASH_SUBSHELL");echo $var  #命令替换
+    1 1
+
+    $ ( ( ( (echo "$SHLVL  $BASH_SUBSHELL") ) ) )  #四层组命令
+    1  4
 
 查看下当前的系统有哪些 shell 脚本解释器
 
