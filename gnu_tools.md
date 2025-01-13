@@ -2885,6 +2885,8 @@ gnome-font-viewer 图形化程序有个 bug 至今未改，字体安装不提示
 
 单纯的 zsh 并不慢，只要别装 ohmyzsh，没有任何功能性插件的使用场景依赖这个 ohmyzsh。
 
+    zsh 手册 https://zsh.sourceforge.io/Doc/Release/Zsh-Line-Editor.html
+
     https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
 
     https://www.zhihu.com/question/21418449/answer/300879747
@@ -3458,7 +3460,8 @@ source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 chpwd() ls -A
 chpwd
 
-# 命令自动完成的颜色太暗  # ,bg=cyan
+# 命令自动完成的颜色太暗  # ,bg=cyan,bold,underline
+# zsh 手册的字符高亮部分：`man zshzle`
 # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
