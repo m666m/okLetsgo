@@ -22,10 +22,12 @@
 # trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
 ###################################################################
-# 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件
+# 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件，zsh不加载
 #   ~/.bashrc: executed by bash(1) for non-login shells.
 #       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
-[[ $0 = 'zsh' ]] || (test -f ~/.bashrc && . ~/.bashrc)
+#   用 $0 取当前shell是否为 -zsh 或 zsh，截取后三位得到 zsh
+__cur_shell=$(echo ${0:0-3})
+[[ $__cur_shell = 'zsh' ]] || (test -f ~/.bashrc && . ~/.bashrc)
 
 # bash 优先调用 .bash_profile，就不会调用 .profle，该文件是 Debian 等使用的
 #   ~/.profile: executed by the command interpreter for login shells.
@@ -47,7 +49,7 @@ PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 
 # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
 # zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
-if [[ ! $0 = 'zsh' ]]; then
+if [[ ! $__cur_shell = 'zsh' ]]; then
     set -o vi
 fi
 
@@ -571,7 +573,7 @@ fi
 # Bash：加载插件或小工具
 
 # ssh 命令后面按tab键自动补全 hostname，zsh 自带不需要
-if [[ ! $0 = 'zsh' ]]; then
+if [[ ! $__cur_shell = 'zsh' ]]; then
     [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
 fi
 
@@ -836,7 +838,7 @@ function PS1raspi-warning-prompt {
 
 #################################
 # 设置命令行提示符 PS1
-if [[ $0 = 'zsh' ]]; then
+if [[ $__cur_shell = 'zsh' ]]; then
     # "zsh 有自己的 powerlevel10k 设置命令行提示符"
     :
 

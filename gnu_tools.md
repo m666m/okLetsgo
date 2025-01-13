@@ -2910,7 +2910,7 @@ zsh 默认使用的用户插件位置，在 ~/.zsh/plugin/
     $ cat /etc/shells
 
     # 当前用户修改自己的登录 shell
-    $ sudo chsh -s /usr/bin/zsh
+    $ sudo chsh -s /bin/zsh
 
     # 修改指定用户的登录shell
     $ sudo usermod -s /bin/zsh username
@@ -17064,6 +17064,10 @@ ${var}用于明确界定变量，与$var并没有区别，但是界定更清晰
 
 字符串截取
 
+    从字符串的左边开始计数，那么截取字符串的具体格式如下：
+
+        ${string: start :length}
+
     $ url="abcdefgh"
     $ echo ${url: 2: 5}
     cdefg
@@ -17071,6 +17075,18 @@ ${var}用于明确界定变量，与$var并没有区别，但是界定更清晰
     $ myurl='http://www.example.com/long/path/to/example/file.ext'
     $ echo ${myurl##*/}
     file.ext
+
+    url="www.baidu.com"
+    echo ${url:4:5}
+    结果为：baidu     从下标为4开始，截取5个字符。
+
+    url="www.baidu.com"
+    echo ${url: 0-9:5}  # 如果想从字符串的右边开始计数，前面加个 0-
+    结果为：baidu    从右边数，b是第9个字符
+
+    url="www.baidu.com"
+    echo ${url:0-9}  # 省略 length，直接截取到字符串末尾
+    结果为：baidu.com
 
 字符串替换
 
@@ -17241,8 +17257,7 @@ test 和 [] 是等价的，[] 注意两边留空格
     $ echo $0
     -bash
 
-不要被一个叫做 $SHELL 的单独的环境变量所迷惑，它被设置为你的默认 shell 的完整路径。因此，这个变量并不一定指向你当前使用的 shell。你在终端中调用不同的 shell，$SHELL 是保持不变的。
-
+你在终端中调用不同的 shell，$SHELL 是保持不变的：不要被一个叫做 $SHELL 的单独的环境变量所迷惑，它被设置为你的默认 shell 的完整路径。因此，这个变量并不一定指向你当前使用的 shell。
     $ echo $SHELL
     /bin/bash
 
@@ -17530,6 +17545,7 @@ linux下shell终端里有行编辑功能，在命令提示符下默认可以像 
     /usr/bin/dash
     /usr/bin/tmux
     /usr/bin/screen
+
 系统级默认/bin/sh，用户登录默认/bin/bash，一般写脚本文件应该明确用哪个解释器执行，在第一行： `#!/bin/bash`。
 
 ```bash
