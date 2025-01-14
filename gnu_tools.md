@@ -2525,74 +2525,78 @@ bash 内置命令和快捷键见 (shellcmd.md) 的相关章节。
 
 完整的命令行提示符显示 conda/virtualenv 环境名，见代码段落 [命令行提示符显示当前路径、git分支、python环境名等](bash_profile.sh) 中设置变量 PS1 部分。
 
-Conda
-
     https://zhuanlan.zhihu.com/p/572716915
 
 conda 激活环境时，默认会修改命令行提示符，比较丑，Windows cmd 下还好，只是增加个前缀 (base) C:\>，在 mintty bash 下是个两行的怪物，而且默认不支持 utf-8。
 
-> mintty bash 下使用 conda 自定义 PS1 变量的尝试过程
+    仅供参考，bash 下使用 conda 自定义 PS1 变量的尝试过程：
 
-    mintty bash 使用 conda 自定义 PS1
+        bash 使用 conda 自定义 PS1
 
-        $ conda env config vars set PS1='($CONDA_DEFAULT_ENV)[\u@\h:\W]$'
+            $ conda env config vars set PS1='($CONDA_DEFAULT_ENV)[\u@\h:\W]$'
 
-    这样设置后，进入 mintty bash 后使用 conda 的效果如下：
+        这样设置后，进入 bash 后使用 conda 的效果如下：
 
-    1、如果先执行 conda activate，会导致激活其它环境的嵌套显示
+        1、如果先执行 conda activate，会导致激活其它环境的嵌套显示
 
-        ┌─[your_bash_PS1]
-        └──$ conda activate
-        (base)[user_name@host_name:current_dir]$
+            ┌─[your_bash_PS1]
+            └──$ conda activate
+            (base)[user_name@host_name:current_dir]$
 
-    再激活其它环境，会有俩环境名
+        再激活其它环境，会有俩环境名
 
-        (base)[user_name@host_name:current_dir]$conda activate p37
-        (p37) (p37)[user_name@host_name:current_dir]$
+            (base)[user_name@host_name:current_dir]$conda activate p37
+            (p37) (p37)[user_name@host_name:current_dir]$
 
-    退出环境时也需要执行两遍 conda deactivate
+        退出环境时也需要执行两遍 conda deactivate
 
-    2、如果不先执行 conda activate ，直接激活指定的环境，这样前缀了一个环境名，但是换行了。。。
+        2、如果不先执行 conda activate ，直接激活指定的环境，这样前缀了一个环境名，但是换行了。。。
 
-        ┌─[your_bash_PS1]
-        └──$ conda activate p37
-        (p37)
-        ����[16:32:37 user_name@host_name:current_dir]
-        ������$
+            ┌─[your_bash_PS1]
+            └──$ conda activate p37
+            (p37)
+            ����[16:32:37 user_name@host_name:current_dir]
+            ������$
 
-    3、太丑了，还是取消 conda 设置的命令行提示符吧
+        3、太丑了，还是取消 conda 设置的命令行提示符吧
 
-        # 需要进入 conda 环境再执行
-        conda env config vars unset PS1
+            # 需要进入 conda 环境再执行
+            conda env config vars unset PS1
 
-> 最终方案：还是用 mintty bash 自定义比较好
+最终方案：用 bash 自定义 PS1 变量显示 conda 环境名
 
-    1、把 conda 的自定义 PS1 变量关掉
+1、把 conda 的自定义 PS1 变量关掉
 
-        自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 命令修改 PS1 变量
+    自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 命令修改 PS1 变量
 
-        在 Anaconda cmd 命令行下执行（或者cmd下手工激活base环境，执行命令 `conda activate`）做如下的设置，只做一次即可
+    在 Anaconda cmd 命令行下执行（或者cmd下手工激活base环境，执行命令 `conda activate`）做如下的设置，只做一次即可
 
-            让 Anaconda 可以 hook 到 .bash_profile
-                conda init bash
+        让 Anaconda 可以 hook 到 .bash_profile
 
-            禁止 conda 修改命令行提示符，以防止修改 PS1 变量
-                conda config --set changeps1 False
+            $ conda init bash
 
-            禁止 conda 进入命令行提示符时自动激活base环境，以方便检测 $CONDA_DEFAULT_ENV 变量
-                conda config --set auto_activate_base false
+            会自动在 ~/.bashrc 或 .bash_profile.sh 文件添加如下内容：
+                eval "$(/home/uu/anaconda3/bin/conda shell.bash hook)"
 
-        这样在用户登录进入bash环境后，执行 `conda activate` 后读取 $CONDA_DEFAULT_ENV 变量即可获取到当前环境名。
+        禁止 conda 修改命令行提示符，以防止修改 PS1 变量
 
-    2、virtualenv 的处理类似 conda
+            $ conda config --set changeps1 False
 
-        先禁止 virtualenv 环境中的 activate 命令在 PS1 变量添加环境名称
+        禁止 conda 进入命令行提示符时自动激活base环境，以方便检测 $CONDA_DEFAULT_ENV 变量
 
-            export VIRTUAL_ENV_DISABLE_PROMPT=1
+            $ conda config --set auto_activate_base false
 
-        这样在用户登录进入bash环境后，执行 `source activate` 后读取 $VIRTUAL_ENV 变量即可获取到当前环境名。
+    这样在用户登录进入bash环境后，执行 `conda activate` 后读取 $CONDA_DEFAULT_ENV 变量即可获取到当前环境名。
 
-    3、在 PS1 变量的设置代码中读取二者的环境名变量，具体实现详见 [PS1conda-env-name 和 PS1virtualenv-env-name 代码段落](bash_profile.sh)。
+2、virtualenv 的处理类似 conda
+
+    先禁止 virtualenv 环境中的 activate 命令在 PS1 变量添加环境名称
+
+        export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+    这样在用户登录进入bash环境后，执行 `source activate` 后读取 $VIRTUAL_ENV 变量即可获取到当前环境名。
+
+3、在 PS1 变量的设置代码中读取二者的环境名变量，具体实现详见 [bash_profile.sh] 中的 PS1conda-env-name 和 PS1virtualenv-env-name 代码段落。
 
 ### 状态栏工具 powerline
 
