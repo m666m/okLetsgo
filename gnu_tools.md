@@ -2512,22 +2512,20 @@ to see the color scheme.''')
 
 bash 下文字显示彩色有依赖，详见章节 [终端模拟器和软件的真彩色设置]。
 
-命令提示符使用简单的双行状态栏，见代码段落 [命令行提示符显示当前路径、git分支、python环境名等](bash_profile.sh) 中设置变量 PS1 部分。
+使用 powerline 可实现在命令提示符显示各种状态，参见章节 [状态栏工具 powerline]
 
-或者命令提示符使用 powerline，参见章节 [状态栏工具 powerline]
-
-    # apt 安装的在 /usr/share 下，如果是 pip 安装的用 `pip show powerline-status` 查看路径
+    # 发行版安装的在 /usr/share 下，如果是 pip 安装的用 `pip show powerline-status` 查看路径
     source /usr/share/powerline/bindings/bash/powerline.sh
 
 bash 内置命令和快捷键见 (shellcmd.md) 的相关章节。
 
 #### bash 命令行提示符显示 python 环境名
 
-完整的命令行提示符显示 conda/virtualenv 环境名，见代码段落 [命令行提示符显示当前路径、git分支、python环境名等](bash_profile.sh) 中设置变量 PS1 部分。
+自行实现的在命令行提示符显示 conda/virtualenv 环境名，见 [bash_profile.sh] 中双行彩色命令行提示符，显示当前路径、git分支、python环境名部分的代码段落。
 
     https://zhuanlan.zhihu.com/p/572716915
 
-conda 激活环境时，默认会修改命令行提示符，比较丑，Windows cmd 下还好，只是增加个前缀 (base) C:\>，在 mintty bash 下是个两行的怪物，而且默认不支持 utf-8。
+使用 conda 命令激活环境时，默认会修改命令行提示符，比较丑，Windows cmd 下还好，只是增加个前缀 (base) C:\>，在 mintty bash 下是个两行的怪物，而且默认不支持 utf-8。
 
     仅供参考，bash 下使用 conda 自定义 PS1 变量的尝试过程：
 
@@ -2602,19 +2600,19 @@ conda 激活环境时，默认会修改命令行提示符，比较丑，Windows 
 
 bash 下文字显示彩色有依赖，详见章节 [终端模拟器和软件的真彩色设置]。
 
-Powerline 最初是一款 Vim statusline 的插件，后来发展到支持 bash、vim、tmux 等众多工具及插件，powerline 都可适配进行状态栏显示。
+Powerline 最初是一款 Vim statusline 的插件，后来发展到支持 bash、vim、tmux 等众多工具及插件，安装 powerline 后都可适配进行状态栏显示。
 
     https://github.com/powerline/powerline/
 
     配置说明 https://powerline.readthedocs.io/en/master/configuration/reference.html
 
-powerline 最大的优点是它使用符号字体图形化的显示文件夹、电池、git状态、进度等，插件制度非常灵活。终端模拟器使用的字体推荐 MesloLGS NF，详见下面章节[图标字体]。
+powerline 最大的优点是它使用符号字体图形化的显示文件夹、电池、git状态、进度等，插件制度非常灵活。这些字体需要单独安装，详见章节[图标字体]。
 
-缺点是它的代码 python2、3 混杂，安装和使用都很难配置，所以现在有些插件不使用它了。
+powerline 的缺点是它的代码 python2、3 混杂，安装和使用都很难配置，所以现在有些插件不使用它了。
 
-最好用发行版自带的，一步到位，默认的安装到 /usr/share/powerline/ 目录下了
+最简单的安装方法是用发行版自带的，一步到位，默认的安装到 /usr/share/powerline/ 目录下了
 
-    sudo apt install powerline
+    $ sudo apt install powerline
 
 手工安装最新版，需要先确定你当前操作系统的命令 `python` 指向的是 python2 还是 python3，我的 Debian 10 默认是 python2。如果从 github 安装最新版的 powerline 只支持 python3，所以得改设置
 
