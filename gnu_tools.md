@@ -1754,48 +1754,6 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 另见章节 [给控制台console设置中文字体]。
 
-### 字符终端的区域、编码、语言
-
-    https://perlgeek.de/en/article/set-up-a-clean-utf8-environment
-
-用命令 locale 查看，变量依赖从大到小的顺序是：LC_ALL, LC_CTYPE, LANG
-
-    $ locale
-    LANG=en_US.UTF-8
-    LANGUAGE=en_US.UTF-8
-    LC_CTYPE="en_US.UTF-8"
-    LC_NUMERIC="en_US.UTF-8"
-    LC_TIME="en_US.UTF-8"
-    LC_COLLATE="en_US.UTF-8"
-    LC_MONETARY="en_US.UTF-8"
-    LC_MESSAGES="en_US.UTF-8"
-    LC_PAPER="en_US.UTF-8"
-    LC_NAME="en_US.UTF-8"
-    LC_ADDRESS="en_US.UTF-8"
-    LC_TELEPHONE="en_US.UTF-8"
-    LC_MEASUREMENT="en_US.UTF-8"
-    LC_IDENTIFICATION="en_US.UTF-8"
-    LC_ALL=en_US.UTF-8
-
-    未添加语言包时操作系统只支持比较少的几个 POSIX 标准
-    $ locale -a
-    C
-    C.utf8
-    POSIX
-
-在 env 设置，如
-
-    LC_CTYPE=zh_CN.gbk; export LC_CTYPE
-
-中文 Windows 使用 ansi gbk 编码，设置变量：Locale、Charset
-
-    Locale=zh_CN
-    Charset=GB18030
-
-shell中的命令显示中文（如果支持的话）就设置 LANG
-
-    export LANG=zh_CN.UTF-8
-
 ### 交互式登录 shell
 
     https://www.cnblogs.com/pigwan7/p/9593540.html
@@ -1878,6 +1836,127 @@ ssh 登录远程服务器：
     把 shebang 改为 `#!/bin/bash -l` 让脚本用登录 Shell 来解释执行，这个时候，执行脚本要采用路径执行的方式
 
     调用 Bash 解释器，加 -l 参数，即 /bin/bash -l script
+
+### 字符终端的区域、编码、语言
+
+    https://perlgeek.de/en/article/set-up-a-clean-utf8-environment
+
+用命令 locale 查看，变量依赖从大到小的顺序是：LC_ALL, LC_CTYPE, LANG
+
+    $ locale
+    LANG=en_US.UTF-8
+    LANGUAGE=en_US.UTF-8
+    LC_CTYPE="en_US.UTF-8"
+    LC_NUMERIC="en_US.UTF-8"
+    LC_TIME="en_US.UTF-8"
+    LC_COLLATE="en_US.UTF-8"
+    LC_MONETARY="en_US.UTF-8"
+    LC_MESSAGES="en_US.UTF-8"
+    LC_PAPER="en_US.UTF-8"
+    LC_NAME="en_US.UTF-8"
+    LC_ADDRESS="en_US.UTF-8"
+    LC_TELEPHONE="en_US.UTF-8"
+    LC_MEASUREMENT="en_US.UTF-8"
+    LC_IDENTIFICATION="en_US.UTF-8"
+    LC_ALL=en_US.UTF-8
+
+    未添加语言包时操作系统只支持比较少的几个 POSIX 标准
+    $ locale -a
+    C
+    C.utf8
+    POSIX
+
+在 env 设置，如
+
+    LC_CTYPE=zh_CN.gbk; export LC_CTYPE
+
+中文 Windows 使用 ansi gbk 编码，设置变量：Locale、Charset
+
+    Locale=zh_CN
+    Charset=GB18030
+
+shell中的命令显示中文（如果支持的话）就设置 LANG
+
+    export LANG=zh_CN.UTF-8
+
+> stty 命令设置终端参数
+
+    https://www.cnblogs.com/goloving/p/15170646.html
+
+进程和终端间的数据传输和数据处理是由终端设备驱动程序来负责的，终端驱动程序是内核的一部分，stty 命令可以修改终端驱动程序里面的设置
+
+    $ stty -a
+    speed 38400 baud; rows 42; columns 176; line = 0;
+    intr = ^C; quit = ^\; erase = ^?; kill = ^U; eof = ^D; eol = <undef>; eol2 = <undef>; swtch = <undef>; start = ^Q; stop = ^S; susp = ^Z; rprnt = ^R; werase = ^W; lnext = ^V;
+    discard = ^O; min = 1; time = 0;
+    -parenb -parodd -cmspar cs8 -hupcl -cstopb cread -clocal -crtscts
+    -ignbrk -brkint -ignpar -parmrk -inpck -istrip -inlcr -igncr icrnl ixon -ixoff -iuclc -ixany -imaxbel iutf8
+    opost -olcuc -ocrnl onlcr -onocr -onlret -ofill -ofdel nl0 cr0 tab0 bs0 vt0 ff0
+    isig icanon iexten echo echoe echok -echonl -noflsh -xcase -tostop -echoprt echoctl echoke -flusho -extproc
+
+tostop 属性控制后台任务是否能写终端
+
+stty 命令不带参数可以打印终端行设置，加上 -a 参数可以打印得更详细些。
+
+　　stty size ：可以显示终端的大小，即行数和列数。
+
+　　stty 命令还可以更改终端行的设置，格式如下：stty SETTING CHAR
+
+　　其中，SETTING可以是如下：
+
+        eof : 输入结束，文件结束，默认为Ctrl+D。比如：用cat >file来创建文件时，按Ctrl+D来结束输入。
+
+        erase : 向后删除字符，擦除最后一个输入字符，默认为Ctrl+?。注意默认情况下退格键Backspace不是删除字符。
+
+        intr : 中断当前程序，默认为Ctrl+C。
+
+        kill : 删除整条命令，删除整行，默认为Ctrl+U。
+
+        quit :退出当前程序，默认为Ctrl+\或Ctrl+|。
+
+        start : 启动屏幕输出，默认为Ctrl+Q。
+
+        stop :停止屏幕输出，默认为Ctrl+S。
+
+        susp : terminal stop当前程序，默认为Ctrl+Z。这样当前进程就会变成后台进程了。
+
+        werase：删除最后一个单词，默认为Ctrl+W。
+
+stty 命令还有一些其他用法，如：stty -echo 关闭回显（比如在脚本中用于输入密码时），然后再用 stty echo 打开回显。
+
+    #在命令行下，禁止输出大写的方法：
+    stty iuclc     #开启
+    stty -iuclc    #恢复
+
+    #在命令行下禁止输出小写：
+    stty olcuc    #开启
+    stty -olcuc   #恢复
+
+    #打印出终端的行数和列数：
+    stty size
+
+    #改变Ctrl+D的方法:
+    stty eof "string"
+    #系统默认是Ctrl+D来表示文件的结束，而通过这种方法，可以改变！
+
+    #屏蔽显示：
+    stty -echo   #禁止回显
+    stty echo    #打开回显
+    #测试方法:
+    stty -echo;read;stty echo;read
+
+    #忽略回车符：
+    stty igncr     #开启
+    stty -igncr    #恢复
+
+> 设置退格键 Backspace 的删除行为
+
+　　在默认情况下，我们按退格键 Backspace时，会在屏幕上回显^H，而不是把前一个字符删除。比如使用 sftp/ftp/sqlplus/ij 等命令时，就会碰到这种情况。我们可以使用stty命令把退格键 Backspace 的行为变成删除前一个字符
+
+    sftp> get abc^H^H^H^H
+
+    #修改删除行为
+    [root@web ~]# stty erase ^H
 
 ### 终端模拟器和软件的真彩色设置
 
@@ -5889,7 +5968,7 @@ map <C-n> :NERDTreeToggle<CR>
 
     按 shift + v 键(即V)，是按行选择的多行模式，操作同上。
 
-    按 Ctrl + v 键，从光标位置开始进逐字符的列多选，操作同上。
+    按 Ctrl + v /Ctrl + q 键，从光标位置开始进逐字符的列多选，操作同上。
 
 示例
 
