@@ -3795,7 +3795,7 @@ URxvt.color12: rgb:5c/5c/ff
 
 ```
 
-### 常用 shell 编程
+## 常用 shell 编程
 
 shell 命令文档见章节 [man/info 查看帮助信息]。
 
@@ -3856,7 +3856,7 @@ shell 命令文档见章节 [man/info 查看帮助信息]。
                         ||----w |
                         ||     ||
 
-#### dash 和 bash
+### dash 和 bash
 
     https://www.cnblogs.com/macrored/p/11548347.html
 
@@ -3931,7 +3931,7 @@ dash 和 bash 语法上的主要的区别有:
     bash：支持 echo -e，支持 declare
     dash：不支持。
 
-#### bash 常见符号用法
+### bash 常见符号用法
 
     https://www.runoob.com/w3cnote/linux-shell-brackets-features.html
 
@@ -4181,7 +4181,7 @@ test 和 [] 是等价的，[] 注意两边留空格
 
     print fff
 
-#### 常用 bash 技巧
+### 常用 bash 技巧
 
     https://plantegg.github.io/2017/01/01/top_linux_commands/
 
@@ -4202,6 +4202,12 @@ rm 之前先 ls 试试，所谓 dry-run
     > file.txt
 
     touch file.txt
+
+生成临时文件或目录
+
+    tfile=$(mktemp)
+
+    tdir=$(mktemp -d)
 
 回到上次的目录
 
@@ -4285,7 +4291,7 @@ diff 通常的用法是从参数读入两个文件，而命令里面的-则是�
 
     which ls  # Debian 下不支持显示 shell 函数的内容
 
-#### bash 内建命令
+### bash 内建命令
 
 用 `type 命令` 来判断这个命令到底是可执行文件、shell 内置命令还是别名
 
@@ -4350,7 +4356,7 @@ diff 通常的用法是从参数读入两个文件，而命令里面的-则是�
     unset       刪除指定的环境变量或 shell 属性
     wait        等待指定的进程完成，并返回退出状态码
 
-#### bash 快捷键
+### bash 快捷键
 
 命令智能和目录补全：输入命令或目录时，不需要完整输入，给出开头字母后，按两次 TAB 键有提示和自动完成功能。
 
@@ -4404,7 +4410,7 @@ linux下shell终端里有行编辑功能，在命令提示符下默认可以像 
     tail -f 的时候冻结、解冻终端界面
     ^s（ctrl + s）将通过执行流量控制命令 XOFF 来停止终端输出内容，这会对 PuTTY 会话和桌面终端窗口产生影响。如果误输入了这个命令，可以使用 ^q（ctrl + q）让终端重新响应。所以只需要记住 ^q 这个组合键就可以了，毕竟这种情况并不多见。
 
-#### 常用 shell 脚本代码片段
+### 常用 shell 脚本代码片段
 
 目录 shell_script 下是写的不错的脚本示例
 
