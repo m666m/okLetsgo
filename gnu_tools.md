@@ -16470,38 +16470,38 @@ WantedBy=multi-user.target
 
     https://www.cnblogs.com/klb561/p/11013746.html
 
-要使用 Magic SysRq key，需要满足下面3个条件：
+使用 Magic SysRq key需要满足 3 个条件：
 
-    1、键盘上有 Print Screen(SysRq) 键
+1、键盘上有 Print Screen(SysRq) 键
 
-    2、系统使用的内核，在编译时打开了 CONFIG_MAGIC_KEY 选项
+2、系统使用的内核，在编译时打开了 CONFIG_MAGIC_KEY 选项
 
-        # y 表示已开启
-        CONFIG_MAGIC_SYSRQ=y
+    # y 表示已开启
+    CONFIG_MAGIC_SYSRQ=y
 
-    验证
+验证
 
-        $ grep -F CONFIG_MAGIC_SYSRQ /boot/config-$(uname -r)
+    $ grep -F CONFIG_MAGIC_SYSRQ /boot/config-$(uname -r)
 
-    3、系统配置 Magic Sysrq Key 为可用
+3、系统配置 Magic Sysrq Key 为可用
 
-        临时启用
+    临时启用
 
-            # sudo echo "1" > /proc/sys/kernel/sysrq
-            $ sudo sysctl -w kernel.sysrq=1
+        # sudo echo "1" > /proc/sys/kernel/sysrq  # Fedora 不支持这种用法
+        $ sudo sysctl -w kernel.sysrq=1
 
-        长期使用，编辑 /etc/sysctl.conf 添加如下：
+    长期使用，编辑 /etc/sysctl.conf 添加如下：
 
-            kernel.sysrq = 1
+        kernel.sysrq = 1
 
-            更改配置后使用以下方式激活
+        更改配置后使用以下方式激活
 
-                $ sudo sysctl -p
+            $ sudo sysctl -p
 
-    验证：
+验证：
 
-        $ cat /proc/sys/kernel/sysrq
-        1
+    $ cat /proc/sys/kernel/sysrq
+    1
 
 在系统异常时，按住 Alt 不放，顺次执行以下操作：
 
@@ -16527,7 +16527,7 @@ WantedBy=multi-user.target
 
         b : reBoot      立即重启计算机
 
-    每按一次都等那么几秒种，你会发现每按一次，屏幕上信息都会有所变化。最后按下 b 时，屏幕显示 reset，这时你的手可以松开了，等几秒钟，计算机就会安全重启。切记不可快速连按，否则后果和扣电池拔电源线无异。
+每按一次都等那么几秒种，你会发现每按一次，屏幕上信息都会有所变化。最后按下 b 时，屏幕显示 reset，这时你的手可以松开了，等几秒钟，计算机就会安全重启。切记不可快速连按，否则后果和扣电池拔电源线无异。
 
 拓展：
 
@@ -16607,7 +16607,7 @@ WantedBy=multi-user.target
 
     使用图形化工具 gnome passwords and keys (seahorse) 可以方便的看到钥匙圈是否处于解锁状态，点击图标会提示输入登录密码解锁该钥匙圈。
 
-#### 密码管理器的桌面应用程序
+#### 密码管理器应用程序
 
 MacOS： 用自己的密钥管理器
 
@@ -16631,7 +16631,7 @@ MacOS： 用自己的密钥管理器
 
     如果你修改了账户密码，记得还得重设钥匙圈密码。假如你不记得仍然被钥匙圈使用的老的账户密码：只能移除老的钥匙圈，也就是说你保存的那些密码也都删掉了
 
-> KDE 桌面：KDE Wallet - KWalletManager 原名 KDE 钱包（KWallet），在 22 版后改名为更贴切的 KDE 密码库了
+> KDE 桌面：KDE Wallet - KWalletManager
 
     https://apps.kde.org/zh-cn/kwalletmanager5/
 
@@ -16641,6 +16641,8 @@ MacOS： 用自己的密钥管理器
 
     https://www.jwillikers.com/gnome-keyring-in-kde-plasma
 
+图形界面管理程序，原名 KDE 钱包（KWallet），在 22 版后改名为更贴切的 KDE 密码库
+
 KDE Wallet 支持 ssh、git，但是不支持 gpg
 
 用 KGpg 自动保存和填写 gpg 的密码
@@ -16649,7 +16651,7 @@ KDE Wallet 支持 ssh、git，但是不支持 gpg
 
     https://apps.kde.org/kgpg/
 
-> 第三方
+> 第三方密码管理器
 
 KeePass 是一个免费的开源密码管理器，它可以帮助您以安全的方式管理您的密码。您可以将所有密码存储在一个用主密钥锁定的数据库中。因此，您只需记住一个主密钥即可解锁整个数据库。数据库文件使用加密算法（AES-256、ChaCha20和Twofish）进行加密。
 
@@ -16836,7 +16838,9 @@ pam 控制文件的说明参见章节 [PAM --- Linux 使用的安全验证方式
 
     https://github.com/boltgolt/howdy/issues/438
 
-在通过人脸识别登录桌面后，gnome 桌面环境会弹窗提示输入登录密码解锁 gnome 钥匙圈，原因见章节 [桌面环境统一密码管理器 --- keyring-daemon] 里 “用户交互” 部分的解释。
+在通过人脸识别登录桌面后，gnome 桌面环境会弹窗提示输入登录密码解锁 gnome 钥匙圈。
+
+原因：见章节 [桌面环境统一密码管理器 --- keyring-daemon] 里 “用户交互” 部分的解释。
 
 解决办法：给 gnome-keyring 设置空密码，或参照指纹登录的解决办法，使用 u 盘等设备单独保存你的 gnome-keyring 密码 <https://wiki.archlinux.org/title/Fingerprint_GUI#Password>。
 
@@ -16858,7 +16862,7 @@ gnome 桌面环境设置系统参数的某些选项时需要点击解锁按钮�
 
     面部识别跳过了 polkit-1 文件中其它的 system-auth 策略，不知道是否还有哪些受限于输入密码的开关未解锁。这个 github 用户干脆添加到 system-auth <https://github.com/boltgolt/howdy/issues/630#issuecomment-1014654035>，但是还会弹出密码提示，应该是类似 gnome-keyring 使用登录密码加密存储数据的场合，必须使用登录密码才能解锁。
 
-    感觉 howdy 应该像 xrdp 那样单独申请权限响应 polkit 策略，参见章节 [xrdp 远程桌面用户相对本地登录用户有权限区别]。
+    正规做法是，howdy 应该像 xrdp 那样单独申请权限响应 polkit 策略，参见章节 [xrdp 远程桌面用户相对本地登录用户有权限区别]。
 
 编辑 /etc/pam.d/polkit-1 文件
 
