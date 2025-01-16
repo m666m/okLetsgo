@@ -16456,9 +16456,9 @@ WantedBy=multi-user.target
 
 操作完成之后等待一会儿就会重新进入桌面，系统可以正常使用了。
 
-#### “魔法键” reisub 大法手工重启内核
+#### “魔法键” 大法手工重启内核
 
-键盘无法输入任何内容，无法进入控制台注销当前用户，彻底死机，使用“魔法键”：
+彻底死机，键盘无法输入任何内容，无法进入控制台注销当前用户，可以使用“魔法键”强制重启：
 
     https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html
 
@@ -16470,13 +16470,13 @@ WantedBy=multi-user.target
 
     https://www.cnblogs.com/klb561/p/11013746.html
 
-要使用 magic SysRq key，需要满足下面3个条件：
+要使用 Magic SysRq key，需要满足下面3个条件：
 
     1、键盘上有 Print Screen(SysRq) 键
 
     2、系统使用的内核，在编译时打开了 CONFIG_MAGIC_KEY 选项
 
-        # y表示已开启
+        # y 表示已开启
         CONFIG_MAGIC_SYSRQ=y
 
     验证
@@ -16485,51 +16485,49 @@ WantedBy=multi-user.target
 
     3、系统配置 Magic Sysrq Key 为可用
 
-        临时启用,设置/proc/sys/kernel/sysrq
+        临时启用
 
             # sudo echo "1" > /proc/sys/kernel/sysrq
-            sudo sysctl -w kernel.sysrq=1
+            $ sudo sysctl -w kernel.sysrq=1
 
-        长期使用,查看 /etc/sysctl.conf，确认
+        长期使用，编辑 /etc/sysctl.conf 添加如下：
 
             kernel.sysrq = 1
 
-        如果先前为0，更改配置后使用以下方式激活
+            更改配置后使用以下方式激活
 
-            sudo sysctl -p
+                $ sudo sysctl -p
 
     验证：
 
         $ cat /proc/sys/kernel/sysrq
         1
 
-在系统异常时，按住 Alt 不放，按以下操作：
+在系统异常时，按住 Alt 不放，顺次执行以下操作：
 
-    按 sysrq 键，笔记本键盘 Fn + SysRq
+    按 sysrq 键，如果是笔记本键盘可能需要组合键 Fn + SysRq
 
-    松开 sysrq 键，，笔记本键盘松开 Fn + SysRq
+    松开 sysrq 键，如果是笔记本键盘松开 Fn + SysRq
 
-        SysRq 是一种叫做系统请求的东西, 按住 Ctrl + Alt + SysRq 的时候就相当于按住了 SysRq 键，这个时候输入的一切都会直接由 Linux 内核来处理，它可以进行许多低级操作。
+        SysRq 叫做系统请求，这个时候输入的一切都会直接由 Linux 内核来处理，它可以进行许多低级操作。
 
-    依次按下字母 r e i s u b ，每个字母需要间隔 5-10s 再执行下一个动作。
+    依次按下字母 r e i s u b ，每个字母需要间隔 5-10s 再执行下一个动作。 reisub 中的每一个字母都是一个独立操作，分别表示：
 
-        reisub 中的每一个字母都是一个独立操作，分别表示：
+        r : unRaw       将键盘控制从 X Server 那里抢回来，使按键可以穿透 x server 捕捉传递给内核
 
-            r : unRaw       将键盘控制从 X Server 那里抢回来，使按键可以穿透 x server 捕捉传递给内核
+            k : Sak (Secure Access Key) 确保使用 init 进程启动的终端，防木马
 
-                k : Sak (Secure Access Key) 确保使用 init 进程启动的终端，防木马
+        e : tErminate   向除 init 外进程发送 SIGTERM 信号，让其自行结束
 
-            e : tErminate   向除 init 外进程发送 SIGTERM 信号，让其自行结束
+        i : kIll        向除 init 以外所有进程发送 SIGKILL 信号，强制结束进程
 
-            i : kIll        向除 init 以外所有进程发送 SIGKILL 信号，强制结束进程
+        s : Sync        同步缓冲区数据到硬盘，避免数据丢失
 
-            s : Sync        同步缓冲区数据到硬盘，避免数据丢失
+        u : Unmount     将所有已经挂载的文件系统 重新挂载为只读
 
-            u : Unmount     将所有已经挂载的文件系统 重新挂载为只读
+        b : reBoot      立即重启计算机
 
-            b : reBoot      立即重启计算机
-
-    每按一次都等那么几秒种，你会发现每按一次，屏幕上信息都会有所变化。最后按下 b 时，屏幕显示 reset，这时你的左手可以松开了，等几秒钟，计算机就会安全重启。切记不可快速连按，否则后果和扣电池拔电源线无异。
+    每按一次都等那么几秒种，你会发现每按一次，屏幕上信息都会有所变化。最后按下 b 时，屏幕显示 reset，这时你的手可以松开了，等几秒钟，计算机就会安全重启。切记不可快速连按，否则后果和扣电池拔电源线无异。
 
 拓展：
 
@@ -16559,11 +16557,17 @@ WantedBy=multi-user.target
 
 ### 桌面环境统一密码管理器 --- keyring-daemon
 
-密码管理器：使用你的登录身份免除输入 ssh、gpg 等密钥的密码，登录 web 网站也会自动填充密码，支持储存多种应用软件的密码。
+密码管理器：使用你的登录身份保存 ssh、gpg 等密钥的密码，包括浏览器中 web 网站的密码等，实现自动填充密码，支持接管多种应用软件的密码管理。
 
     https://wiki.archlinux.org/title/GNOME/Keyring
 
-现在流行的大多数 Linux 桌面环境现在都引入了密码管理器这一工具，称为 keyring 钥匙圈（注意区别于 gpg keyring 钥匙圈，那个是维护密钥间的信任关系），其后台进程 keyring-daemon，接管已知应用的输入密码请求，统一把用户输入的密码保存起来，在应用程序请求密码和用户输入密码之间成为一个代理。默认使用用户的登录密码加密保存这些密码到本地，只要用户使用本地账户的密码登录桌面，即认为是为本人使用本机，自然可以用登录密码解锁钥匙圈，从而实现浏览器登录网站甚至使用ssh、gpg都可以免除输入相关密码。
+现在流行的大多数 Linux 桌面环境现在都引入了密码管理器这一工具，称为 keyring 钥匙圈
+
+    注意区别于 GPG keyring 钥匙圈，那个是维护密钥间的信任关系
+
+    后台进程 keyring-daemon，接管已知应用的输入密码请求，统一把用户输入的密码保存起来，在应用程序请求密码和用户输入密码之间成为一个代理。
+
+    默认使用用户的登录密码加密保存这些密码到本地，只要用户使用本地账户的密码登录桌面，还会利用登录密码解锁钥匙圈，从而实现浏览器登录网站甚至使用 ssh、gpg 都可以免除输入相关密码。
 
 密码管理器接管了多种密码的自动保存和自动填写：
 
@@ -16571,17 +16575,17 @@ WantedBy=multi-user.target
 
     支持 ssh、gpg、git 等应用在鉴权时自动接管原 ssh-agent、gpg pinentry、git 凭据管理器 credential.helper 的工作：
 
-        以 ssh 密钥登录为例，在初次使用 ssh 密钥时，密码管理器会弹框要求输入该密钥的保护密码，注意不是钥匙圈的解锁密码（用户登录密码），在用户确认后该密码会被钥匙圈加密保存，在以后使用密钥时会自动调取保存的密码。对用户来说，只要第一次使用 ssh 密钥时，在密码管理器提示要求输入密钥的保护密码时选择加入钥匙圈，则以后使用该密钥的场景下，密码管理器会在后台直接给 ssh 应用返回该密钥的保护密码，不再需要用户手工输入。
+        以 ssh 密钥登录为例，在初次使用 ssh 密钥时，密码管理器会弹框要求输入该密钥的保护密码，在用户确认后该密码会被钥匙圈加密保存，在以后使用密钥时会自动调取保存的密码。对用户来说，只要第一次使用 ssh 密钥时，在密码管理器提示要求输入密钥的保护密码时选择加入钥匙圈，则以后使用该密钥的场景下，密码管理器会在后台直接给 ssh 应用返回该密钥的保护密码，不再需要用户手工输入。当然，前提是已经用密码登录了桌面，顺便解锁了钥匙圈
 
-            GNOME 桌面环境下的终端使用 ssh-agent 密钥代理，需要设置变量指向 gnome-keyring-daemon，详见 [多会话复用 ssh 密钥代理](bash_profile.sh)。
+            GNOME 桌面环境下的使用终端是，shell 环境下的 ssh-agent 密钥代理，需要设置变量指向 gnome-keyring-daemon，详见 [多会话复用 ssh 密钥代理](bash_profile.sh)。
 
             KDE 桌面环境也是类似情况。
 
-原理：用户使用的应用程序，其读取密码的 API 调用会被密码管理器（keyring-daemon）接管：
+原理：用户使用的应用程序，其读取密码的 API 调用会被密码管理器（keyring-daemon）接管
 
     用户在相关的应用软件中输入密码，如浏览器登录 web 网站的密码，使用 ssh、gpg 、git 时输入的密钥的保护密码，只要首次遇到的密码都会被密码管理器识别，提示用户是否保存到钥匙圈。
 
-    保存到钥匙圈时，会使用用户本地帐户的登录密码对这些密码进行加密（用户可设置使用单独的密码）。
+    保存到钥匙圈时，会使用用户本地帐户的登录密码对这些密码进行加密（也可为其设置单独的密码）。
 
     当用户再次遇到应用软件提示输入密码时，只要应用软件读取密码的 API 被再次调用，则密码管理器会先解锁钥匙圈（用户初次登录时需要输入登录密码），也即解密该密码（使用用户给出的登录密码），返回给相关应用的 API 调用。
 
@@ -16589,75 +16593,73 @@ WantedBy=multi-user.target
 
     为了使用方便，“钥匙圈”默认使用用户的登录密码进行加密，这样在用户使用密码登录系统后，密码管理器不需要提示用户输入密码解锁“钥匙圈”，这样大大方便了日常使用。
 
-        用户可以设置钥匙圈使用单独的密码，这样的话用户使用登录密码登录系统后“钥匙圈”是未解锁的，gnome 桌面环境会在用户登录进入桌面后弹窗提示 “Enter password to unlock your key ring”，用户需要输入自己设置的单独密码才能解锁“钥匙圈”。
+        用户可以设置钥匙圈使用单独的密码，这样的话用户使用登录密码登录系统后“钥匙圈”是未解锁的，gnome 桌面环境会在用户登录进入桌面后弹窗提示，解锁钥匙圈 “Enter password to unlock your key ring”，用户需要输入自己设置的单独密码才能解锁“钥匙圈”。
 
-    如果在登录 gnome 桌面时没有输入登录密码，比如使用人脸识别或指纹登录了桌面，系统会弹窗提示解锁钥匙圈 “Enter password to unlock your key ring”，用户需要输入登录密码才能解锁“钥匙圈”。
+    如果在登录 gnome 桌面时没有输入登录密码，比如使用人脸识别或指纹登录了桌面，系统同样会在用户登录进入桌面后弹窗提示，解锁钥匙圈 “Enter password to unlock your key ring”，用户需要输入登录密码才能解锁“钥匙圈”。
 
         这是因为 gnome-keyring 使用登录密码作为加密密钥，不输入登录密码就无法解锁其保存的各种密钥和密码，而 gnome-keyring 目前不支持面部识别、指纹识别的数据作为加密密钥。
 
-    如果在登录桌面后，提示输入登录密码解锁钥匙圈时选择了取消：
+    如果在登录桌面后，提示输入登录密码解锁钥匙圈时，选择了取消：
 
-        则 keyring-daemon 会把鉴权请求传回到各个应用程序，也就是自己不再接管密钥处理了。这样在应用程序需要输入密码的场合，就会像之前一样，各应用软件弹窗提示用户输入密码。密码管理器不会再弹出解锁钥匙圈的提示了，即便使用的是钥匙圈里保存过的加密密钥。
+        则 keyring-daemon 会把鉴权请求传回到各个应用程序，也就是自己不再接管密钥处理了。这样在应用程序需要输入密码的场合，就会像之前一样，各应用软件自行弹窗提示用户输入密码。密码管理器不会再弹出解锁钥匙圈的提示了，即便使用的是钥匙圈里保存过的加密密钥。
 
         因为登录后选择了不解锁钥匙圈，在系统弹窗时要仔细看下提示，到底是应用程序的密码输入界面，还是钥匙圈解锁的界面，二者的密码是不同的。
 
     使用图形化工具 gnome passwords and keys (seahorse) 可以方便的看到钥匙圈是否处于解锁状态，点击图标会提示输入登录密码解锁该钥匙圈。
 
-密码管理器的桌面应用程序：
+#### 密码管理器的桌面应用程序
 
-    MacOS： 用自己的密钥管理器
+MacOS： 用自己的密钥管理器
 
-    Gnome 桌面 ：GNOME Keyring（gnome-keyring）钥匙圈
+> Gnome 桌面：GNOME Keyring（gnome-keyring）钥匙圈
 
-            https://wiki.gnome.org/action/show/Projects/GnomeKeyring
+    https://wiki.gnome.org/action/show/Projects/GnomeKeyring
 
-            https://wiki.archlinux.org/title/GNOME/Keyring
+    https://wiki.archlinux.org/title/GNOME/Keyring
 
-            https://zhuanlan.zhihu.com/p/128133025
+    https://zhuanlan.zhihu.com/p/128133025
 
-        操作系统软件包 gnome-keyring 提供了各种组件实现该功能。
+操作系统软件包 gnome-keyring 提供了各种组件实现该功能。
 
-        支持登录解锁，pam 使用 pam_gnome_keyring.so
+支持登录解锁，pam 使用 pam_gnome_keyring.so
 
-        因为代替了 ssh-agent、gpg-agent 的功能，所以 gnome-keyring-daemon 不能与之共存，使用一个即可
+因为代替了 ssh-agent、gpg-agent 的功能，所以 gnome-keyring-daemon 不能与之共存，使用一个即可
 
-        图形界面管理程序叫 Passwords and Keys（命令行程序名 seahorse）
+图形界面管理程序叫 Passwords and Keys（命令行程序名 seahorse）
 
-            用户可以建立多个钥匙圈，普通使用为了方便保持一个就可以了。
+    用户可以建立多个钥匙圈，普通使用为了方便保持一个就可以了。
 
-            如果你修改了账户密码，记得还得重设钥匙圈密码。假如你不记得仍然被钥匙圈使用的老的账户密码：只能移除老的钥匙圈，也就是说你保存的那些密码也都删掉了
+    如果你修改了账户密码，记得还得重设钥匙圈密码。假如你不记得仍然被钥匙圈使用的老的账户密码：只能移除老的钥匙圈，也就是说你保存的那些密码也都删掉了
 
-    KDE
+> KDE 桌面：KDE Wallet - KWalletManager 原名 KDE 钱包（KWallet），在 22 版后改名为更贴切的 KDE 密码库了
 
-        KDE Wallet - KWalletManager 原名 KDE 钱包（KWallet），在 22 版后改名为更贴切的 KDE 密码库了
+    https://apps.kde.org/zh-cn/kwalletmanager5/
 
-            https://apps.kde.org/zh-cn/kwalletmanager5/
+    https://userbase.kde.org/KDE_Wallet_Manager
 
-            https://userbase.kde.org/KDE_Wallet_Manager
+    https://wiki.archlinux.org/title/KDE_Wallet
 
-            https://wiki.archlinux.org/title/KDE_Wallet
+    https://www.jwillikers.com/gnome-keyring-in-kde-plasma
 
-            https://www.jwillikers.com/gnome-keyring-in-kde-plasma
+KDE Wallet 支持 ssh、git，但是不支持 gpg
 
-            KDE Wallet 支持 ssh、git，但是不支持 gpg
+用 KGpg 自动保存和填写 gpg 的密码
 
-        用 KGpg 自动保存和填写 gpg 的密码
+    https://userbase.kde.org/KGpg
 
-            https://userbase.kde.org/KGpg
+    https://apps.kde.org/kgpg/
 
-            https://apps.kde.org/kgpg/
+> 第三方
 
-    第三方桌面应用程序：
+KeePass 是一个免费的开源密码管理器，它可以帮助您以安全的方式管理您的密码。您可以将所有密码存储在一个用主密钥锁定的数据库中。因此，您只需记住一个主密钥即可解锁整个数据库。数据库文件使用加密算法（AES-256、ChaCha20和Twofish）进行加密。
 
-        KeePass 是一个免费的开源密码管理器，它可以帮助您以安全的方式管理您的密码。您可以将所有密码存储在一个用主密钥锁定的数据库中。因此，您只需记住一个主密钥即可解锁整个数据库。数据库文件使用加密算法（AES-256、ChaCha20和Twofish）进行加密。
+    https://keepass.info/
 
-            https://keepass.info/
+    https://wiki.archlinux.org/title/KeePass
 
-            https://wiki.archlinux.org/title/KeePass
+Bitwarden 可 docker 部署实现自托管
 
-        Bitwarden 可 docker 部署实现自托管
-
-            https://zhuanlan.zhihu.com/p/130492433
+    https://zhuanlan.zhihu.com/p/130492433
 
 ### Linux 下的 “Windows Hello” 人脸识别认证 --- Howdy
 
