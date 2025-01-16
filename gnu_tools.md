@@ -16470,40 +16470,36 @@ WantedBy=multi-user.target
 
     https://www.cnblogs.com/klb561/p/11013746.html
 
-使用 Magic SysRq key需要满足 3 个条件：
+使用 Magic SysRq key 需要满足 3 个前置条件：
 
 1、键盘上有 Print Screen(SysRq) 键
 
 2、系统使用的内核，在编译时打开了 CONFIG_MAGIC_KEY 选项
 
-    # y 表示已开启
-    CONFIG_MAGIC_SYSRQ=y
-
-验证
-
     $ grep -F CONFIG_MAGIC_SYSRQ /boot/config-$(uname -r)
+    CONFIG_MAGIC_SYSRQ=y  # y 表示已开启
 
 3、系统配置 Magic Sysrq Key 为可用
 
     临时启用
 
-        # sudo echo "1" > /proc/sys/kernel/sysrq  # Fedora 不支持这种用法
+        # sudo echo "1" > /proc/sys/kernel/sysrq  # Fedora 不支持这样写入
         $ sudo sysctl -w kernel.sysrq=1
 
     长期使用，编辑 /etc/sysctl.conf 添加如下：
 
         kernel.sysrq = 1
 
-        更改配置后使用以下方式激活
+    更改配置后使用以下方式激活
 
-            $ sudo sysctl -p
+        $ sudo sysctl -p
 
 验证：
 
     $ cat /proc/sys/kernel/sysrq
     1
 
-在系统异常时，按住 Alt 不放，顺次执行以下操作：
+满足了前置条件，在系统死机异常时，按住 Alt 不放，顺次执行以下操作：
 
     按 sysrq 键，如果是笔记本键盘可能需要组合键 Fn + SysRq
 
