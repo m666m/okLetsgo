@@ -11535,6 +11535,9 @@ Windows 版
 
 修改日期时间：
 
+    $ date -s "YYYY-MM-DD HH:MM:SS"
+    待验证：使用 date 命令修改的时间是临时生效的，重启系统后失效，需要将当前时间和硬件时间同步后才可以持久生效。
+
     $ timedatectl set-time "2017-01-23 10:30:00" # YYYY-mm-dd HH-MM-SS
 
 #### NTP 时间同步服务
