@@ -11757,11 +11757,15 @@ systemd-timesyncd 只能作为客户端，不能作为 NTP 服务器，但如果
 
 配置 NTP 服务器地址修改 /etc/systemd/timesyncd.conf 文件即可，默认虽然 NTP 的选项都处于注释状态，但是systemd-timesyncd还是会去默认的NTP服务器进行同步，地址列表见章节 [国内的公共 NTP 服务器]。
 
-#### Windows 的同步时间功能默认每周只同步一次
+#### Windows加快 NTP 更新频率
 
-如果你的计算机主板时钟连一周的准时都保证不了，可以把同步间隔改成24h或1h：
+Windows 的 NTP 同步时间功能默认每周只同步一次。
 
-    Win+R 输入“Regedit”进入注册表编辑器 展开 “计算机\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient” 双击 “SpecialPollInterval” 键值，将对话框中的“基数栏”选择到“十进制”上 对话框中显示的数字正是自动对时的间隔（以秒为单位），比如1天就是86400,1小时就是3600 在Parameters列表中，将 “NtpServer” 键值修改为相应服务器的IP地址，然后点击“确定”按钮保存。
+如果你的计算机主板时钟连一周的准时都保证不了，或者你的 Windows 虚拟机需要强化时间同步的频率，可以把同步间隔改短：
+
+    Win+R 输入“Regedit”进入注册表编辑器 展开 “计算机\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient” 双击 “SpecialPollInterval” 键值，将对话框中的“基数栏”选择到“十进制”上 对话框中显示的数字正是自动对时的间隔（以秒为单位），比如1天就是 86400，1小时就是 3600，5 分钟是 150。
+
+    在 Parameters 列表中，还可将 “NtpServer” 键值修改为相应服务器的IP地址，然后点击 “确定” 按钮保存。
 
 更细节的调整就是区分慢多少时间算慢了，正常情况下完全没必要改
 
