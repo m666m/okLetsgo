@@ -11468,12 +11468,10 @@ Windows 版
                 NTP service: active   <-------- 使用 chrony、systemd-timesyncd 等 NTP 服务可以被这个命令识别到
             RTC in local TZ: no
 
-    如果看到 System clock synchronized: 值设置为 no，那么 systemd-timesyncd 服务可能处于非活动状态。因此，重启 NTP 服务，如 chrony 或 systemd-timesyncd，然后再看下是否正常。
+如果发现 `System clock synchronized` 值设置为 no（计算机时间的偏差较大常见于虚拟机从休眠中恢复后的时间不准），那么需要重启 NTP 服务，强制从 NTP 服务器校准一下系统时间，然后再看下是否正常
 
-    如果发现计算机时间偏差较大，强制从 NTP 服务器更新一下系统时间，常用于虚拟机从休眠中恢复后的时间不准
-
-        # 重启 NTP 服务，如 chrony 或 systemd-timesyncd
-        $ sudo systemctl restart chronyd
+    # 重启 NTP 服务，如 chrony 或 systemd-timesyncd
+    $ sudo systemctl restart chronyd
 
     实在不行就重启计算机，会执行一次 NTP 自动对时
 
@@ -11509,7 +11507,7 @@ Windows 版
 
         $ sudo timedatectl set-timezone Asia/Singapore
 
-    老方法：ln -s cp /usr/share/zoneinfo/Asia/Singapore /etc/localtime
+    老方法：ln -s /usr/share/zoneinfo/Asia/Singapore /etc/localtime
 
     4、时间变化较大，务必重启一次，防止相关服务错乱
 
@@ -11553,23 +11551,23 @@ Windows 版
 
 要自建 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐使用 chrony。
 
-#### 配置公共 NTP 服务器
+> 配置公共 NTP 服务器
 
 Debian、Fedora 等发行版都有自己的 NTP 服务器，开机后会自动对时，但如果你发现连接困难，可以更换
 
     https://www.zhihu.com/question/30252609/answer/2276727955
 
-NTP项目国内时间服务器，CERNET 的一堆服务器就在那里面，这个应该比较靠谱
+NTP 项目国内时间服务器，CERNET 的一堆服务器就在那里面，应该比较靠谱
 
     cn.pool.ntp.org
 
-NTP项目亚洲时间服务器，考虑到延迟，优先用国内的比较好
+NTP 项目亚洲时间服务器，延迟情况不如国内的
 
     asia.pool.ntp.org
 
 其它
 
-    # 不建议使用中国科学院国家授时中心，精度不高，专业的人家有自己的协议，商业的有北斗，对外开放的没经费就凑合了一个
+    # 不建议使用中国科学院国家授时中心，精度不高，专业的人家有自己的协议，商业的有北斗，对外开放的这个是免费凑合的
     # https://www.cas.cn/tz/201809/t20180921_4664344.shtml
     ntp.ntsc.ac.cn
 
@@ -11639,9 +11637,7 @@ Windows 设置时间服务器的地址，在控制面板的时间设置->Interne
 
 #### 使用 chrony
 
-Fedora 等 Redhat 系目前使用这个机制。
-
-chronyd 实现了 NTP 协议并且可以作为服务器或客户端
+Fedora 等 Redhat 系目前使用这个软件包，它实现了 NTP 协议并且可以作为服务器或客户端
 
     https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/using-chrony_configuring-basic-system-settings
 
@@ -11651,26 +11647,9 @@ chronyd 实现了 NTP 协议并且可以作为服务器或客户端
 
     https://idroot.us/change-timezone-fedora-38
 
-安装软件很简单
+安装
 
     $ sudo apt install chrony
-
-查看服务的状态
-
-    $ chronyc tracking
-    Reference ID    : 54104921 (tick.ntp.infomaniak.ch)
-    Stratum         : 2
-    Ref time (UTC)  : Tue Aug 08 07:14:06 2023
-    System time     : 0.003024213 seconds fast of NTP time
-    Last offset     : -0.000142650 seconds
-    RMS offset      : 0.009726741 seconds
-    Frequency       : 1.493 ppm slow
-    Residual freq   : -0.003 ppm
-    Skew            : 4.812 ppm
-    Root delay      : 0.192027435 seconds
-    Root dispersion : 0.018389940 seconds
-    Update interval : 1035.0 seconds
-    Leap status     : Normal
 
 chronyd 是一个在系统后台运行的守护进程。主要用于调整内核中运行的系统时间和时间服务器同步，他根据网络上其他时间服务器时间来测量本机时间的偏移量从而调整系统时钟。对于孤立系统，用户可以手动周期性的输入正确时间（通过chronyc）。在这两种情况下，chronyd 决定计算机快慢的比例，并加以纠正。
 
@@ -11690,13 +11669,28 @@ chronyd 是一个在系统后台运行的守护进程。主要用于调整内核
         CGroup: /system.slice/chronyd.service
                 └─1303 /usr/sbin/chronyd -F 2
 
-chronyc 是用来监控 chronyd 性能和配置其参数的用户界面。他可以控制本机及其他计算机上运行的 chronyd 进程。
+服务unit文件： /usr/lib/systemd/system/chronyd.service
 
-    服务unit文件： /usr/lib/systemd/system/chronyd.service
+监听端口： 323/udp，123/udp
 
-    监听端口： 323/udp，123/udp
+配置文件： /etc/chrony.conf 或 /etc/chrony/chrony.conf，在这里添加你的 NTP 服务器的地址，地址列表见章节 [国内的公共 NTP 服务器]。
 
-    配置文件： /etc/chrony.conf 或 /etc/chrony/chrony.conf，在这里添加你的 NTP 服务器的地址，地址列表见章节 [国内的公共 NTP 服务器]。
+chronyc  - 监控 chronyd 性能和配置其参数的用户界面，它可以控制本机及其他计算机上运行的 chronyd 进程
+
+    $ chronyc tracking
+    Reference ID    : 54104921 (tick.ntp.infomaniak.ch)
+    Stratum         : 2
+    Ref time (UTC)  : Tue Aug 08 07:14:06 2023
+    System time     : 0.003024213 seconds fast of NTP time
+    Last offset     : -0.000142650 seconds
+    RMS offset      : 0.009726741 seconds
+    Frequency       : 1.493 ppm slow
+    Residual freq   : -0.003 ppm
+    Skew            : 4.812 ppm
+    Root delay      : 0.192027435 seconds
+    Root dispersion : 0.018389940 seconds
+    Update interval : 1035.0 seconds
+    Leap status     : Normal
 
 #### 使用 systemd-timesyncd
 
