@@ -1982,23 +1982,23 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
 #### 解决双系统安装 Windows 与 Linux 时间差8个小时的问题
 
-如果是 KVM 虚拟机中的 Windows 时间经常不准，详见章节 [虚拟机在长时间运行后时间变慢](virtualization think)。
+如果是虚拟机中的 Windows 时间经常不准，详见章节 [虚拟机在长时间运行后时间变慢](virtualization think)。
 
-Linux 与 Windows 对于本机 RTC 硬件保存时间的理解方式不同：
+Linux 处理 RTC 时间跟 Windows 的机制不同：
 
     Linux 默认认硬件时间为 GMT+0 时间，即世界标准时间 UTC。操作系统在显示系统时间时，用硬件时间加上当前的时区和夏令时偏移，显示出本地时间，如中国是东八区无夏令时，为 GMT+8-0。
 
-    而 Windows 系统认为硬件时间就是中国本地时间。
+    而 Windows 认为硬件时间就是时间，即中国本地时间。
 
-因此，如果用户在本机切换使用两个系统，则每个操作系统的时间校准服务都会按自己的理解设置系统时间，即使主板上的 RTC 时钟并未变化，导致二者的时间差值是当地时间跟零时区的差值，比如中国的 Windows 时间比正常时间慢 8 个小时。
+因此，如果用户在一台计算机上切换使用两个操作系统，则每个操作系统的时间校准服务都会按自己的理解设置系统时间，继而使主板上的 RTC 时钟变化，导致二者的时间差值是当地时间跟零时区的差值，比如中国的 Windows 时间会比正常时间慢 8 个小时。
 
 解决办法：
 
 法一、让 Windows 按照 Linux 的方式管理时间
 
-登录 Windows，打开“开始-运行”，输入“regedit”打开注册表。
+登录 Windows，打开“开始-运行”，输入 “regedit” 打开注册表。
 
-进入 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TimeZoneInformation\ 中添加一项类型为REG_DWORD（64位系统为REG_QWORD）的值，名称为 RealTimeIsUniversal，值设为 1。这样可以将系统启动时对待硬件时间的方式从 localtime 改成 utc，改完后重启计算机生效。
+进入 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TimeZoneInformation\ 中添加一项类型为 REG_DWORD（64位系统为REG_QWORD）的值，名称为 RealTimeIsUniversal，值设为 1。这样可以将系统启动时对待硬件时间的方式从 localtime 改成 utc，改完后重启计算机生效。
 
 Windows 主机和 Windows 虚拟机都适用这个方法。
 
@@ -2006,9 +2006,7 @@ Windows 主机和 Windows 虚拟机都适用这个方法。
 
 法二、让 Linux 按照 Windows 的方式管理时间
 
-大多数 Linux 发行版都提供了一个默认配置 ntp 客户端自动对时，它指向发行版维护的时间服务器上。但默认只更改系统时间而不去更改 RTC 硬件时间。参见章节 [操作时间 timedatectl/chronyc 及 NTP 服务](gnu_tools.md)。
-
-可以改变这个机制，通过 `hwclock -w` 命令将系统时间同步到硬件时间。
+Linux 可以通过 `hwclock -w` 命令将系统时间同步到 RTC 硬件时间，使自己跟 Windows 的时间管理方式一致：
 
     # sudo timedatectl set-local-rtc 1
 
@@ -2019,8 +2017,15 @@ Windows 主机和 Windows 虚拟机都适用这个方法。
 
 缺点是无法适应夏令时等时区变化情况，不过只要我们的计算机不在飞机上而且所在地区没有夏令时，就没有关系：
 
-    $ timedatectl
-    ...
+    $ timedatectl status
+                Local time: 二 2023-08-08 15:30:53 +08
+            Universal time: 二 2023-08-08 07:30:53 UTC
+                    RTC time: 二 2023-08-08 15:30:53 <----- RTC 跟本地时间一致
+                    Time zone: Asia/Singapore (+08, +0800)
+    System clock synchronized: yes    <-------- 时间同步正常
+                NTP service: active   <-------- 使用 chrony、systemd-timesyncd 等 NTP 服务可以被这个命令识别到
+            RTC in local TZ: yes      <-------- 兼容 Windows 设置了硬件 RTC 保存本地时间，下面是详细的警告信息
+
     Warning: The system is configured to read the RTC time in the local time zone.
             This mode cannot be fully supported. It will create various problems
             with time zone changes and daylight saving time adjustments. The RTC
@@ -2028,7 +2033,7 @@ Windows 主机和 Windows 虚拟机都适用这个方法。
             If at all possible, use RTC in UTC by calling
             'timedatectl set-local-rtc 0'.
 
-另一个缺点是，主机 Linux 如果这样设置了，虚拟机如果是 Windows，其同步时间的速度太慢，而且经常失败，更换 ntp 服务器无效。
+hwclock 命令等 Linux 时间操作参见章节 [操作时间 timedatectl/chronyc 及 NTP 服务](gnu_tools.md)。
 
 ### Bitlocker 加密
 
