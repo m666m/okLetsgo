@@ -1980,7 +1980,7 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
 第一块硬盘安装 Linux，然后虚拟机安装 Widnows，然后把该虚拟机转到第二块硬盘上作为实机可单独启动，而且在 Linux 里还可以作为虚拟机挂载使用！详见章节 [qcow2 虚拟机转为实体机]、[挂载实体机所在硬盘作为虚拟机](virtualization think)。
 
-#### 解决双系统安装 Windows 与 Linux 时间不一致的问题
+#### 解决双系统安装 Windows 与 Linux 时间差8个小时的问题
 
 如果是 KVM 虚拟机中的 Windows 时间经常不准，详见章节 [虚拟机在长时间运行后时间变慢](virtualization think)。
 
@@ -1990,11 +1990,11 @@ Linux 与 Windows 对于本机 RTC 硬件保存时间的理解方式不同：
 
     而 Windows 系统认为硬件时间就是中国本地时间。
 
-因此，如果用户在本机切换使用过两个系统，则每个操作系统的时间校准服务都会按自己的理解设置系统时间，即使主板上的 RTC 时钟并未变化，导致 Windows 系统下时间比正常时间慢 8 个小时。
+因此，如果用户在本机切换使用两个系统，则每个操作系统的时间校准服务都会按自己的理解设置系统时间，即使主板上的 RTC 时钟并未变化，导致二者的时间差值是当地时间跟零时区的差值，比如中国的 Windows 时间比正常时间慢 8 个小时。
 
 解决办法：
 
-法一、推荐：让 Windows 按照 Linux 的方式管理时间
+法一、让 Windows 按照 Linux 的方式管理时间
 
 登录 Windows，打开“开始-运行”，输入“regedit”打开注册表。
 
@@ -2002,13 +2002,7 @@ Linux 与 Windows 对于本机 RTC 硬件保存时间的理解方式不同：
 
 Windows 主机和 Windows 虚拟机都适用这个方法。
 
-如果是 Windows 云主机：
-
-    以管理员身份运行terminal，运行bcdedit /set {default} USEPLATFORMCLOCK on命令，将时钟源从tsc改为rtc，这样可以尽可能确保时间精度
-
-还可以更改 Windows 系统时间更新频率：
-
-    默认Windows的时间更新频率为一星期一次，可以更改为更短的时间间隔，比如3分钟一次。通过注册表 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient 分支，修改 SpecialPollInterval 键值，将其设置为更短的时间间隔（以秒为单位），例如 180秒。
+推荐使用本方法。
 
 法二、让 Linux 按照 Windows 的方式管理时间
 
