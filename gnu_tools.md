@@ -11598,7 +11598,7 @@ NTP 项目亚洲时间服务器，延迟情况不如国内的
 
     https://documentation.suse.com/zh-cn/sles/15-SP4/html/SLES-all/cha-ntp.html#sec-net-xntp-netconf
 
-chrony 从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持同步，您需要告诉 chrony 使用什么时间服务器。您可以使用特定的服务器名称或 IP 地址，例如：
+chrony 服务从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持同步，您需要告诉 chrony 使用什么时间服务器。您可以使用特定的服务器名称或 IP 地址，例如：
 
     server 0.europe.pool.ntp.org
 
@@ -11610,7 +11610,7 @@ chrony 从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持�
 
     local stratum 10
 
-查看时间同步源，出现^*表示成功
+使用控制命令 chronyc 查看时间同步源，出现^*表示成功
 
     $ chronyc sources -v
 
