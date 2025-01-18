@@ -529,7 +529,9 @@ Windows 商店应用默认不提供卸载选项，解决办法见下面章节 [�
 
     dism /online /get-features
 
-更多的定制化见 tenforums 的各种教程 <https://www.tenforums.com/tutorials/id-Customization/>
+更多的定制化见 tenforums 的各种教程
+
+    https://www.tenforums.com/tutorials/id-Customization/
 
 ### 选择开启虚拟化功能
 
@@ -699,36 +701,36 @@ VS Code 安装了中文语言包，但是界面仍然是默认的英文
 
 最优选：设置->个性化->颜色：下面有个“更多选项”，对“选择默认应用模式”选择“暗”，整个 Windows 的主题配色方案都变成了暗色，各个软件窗口也跟着变了。这个办法最舒服，白天切换到“亮”也很方便。写到注册表里，在桌面点击右键实现方便切换，见下面
 
-    Add_App_Mode_to_desktop_context_menu.reg：
+Add_App_Mode_to_desktop_context_menu.reg：
 
-    ```ini
-    Windows Registry Editor Version 5.00
+```ini
+Windows Registry Editor Version 5.00
 
-    ; Created by: Shawn Brink
-    ; Created on: September 3rd 2017
-    ; Tutorial: https://www.tenforums.com/tutorials/92740-add-app-mode-context-menu-light-dark-theme-Windows-10-a.html
-    ; Tutorial: https://www.tenforums.com/tutorials/24038-change-default-app-mode-light-dark-theme-Windows-10-a.html
+; Created by: Shawn Brink
+; Created on: September 3rd 2017
+; Tutorial: https://www.tenforums.com/tutorials/92740-add-app-mode-context-menu-light-dark-theme-Windows-10-a.html
+; Tutorial: https://www.tenforums.com/tutorials/24038-change-default-app-mode-light-dark-theme-Windows-10-a.html
 
-    [HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode]
-    "Icon"="themecpl.dll,-1"
-    "MUIVerb"="App mode"
-    "Position"="Bottom"
-    "SubCommands"=""
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode]
+"Icon"="themecpl.dll,-1"
+"MUIVerb"="App mode"
+"Position"="Bottom"
+"SubCommands"=""
 
-    [HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\001flyout]
-    "MUIVerb"="Light theme"
-    "Icon"="imageres.dll,-5411"
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\001flyout]
+"MUIVerb"="Light theme"
+"Icon"="imageres.dll,-5411"
 
-    [HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\001flyout\command]
-    @="Reg Add HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize /v AppsUseLightTheme /t REG_DWORD /d 1 /f"
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\001flyout\command]
+@="Reg Add HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize /v AppsUseLightTheme /t REG_DWORD /d 1 /f"
 
-    [HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\002flyout]
-    "Icon"="imageres.dll,-5412"
-    "MUIVerb"="Dark theme"
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\002flyout]
+"Icon"="imageres.dll,-5412"
+"MUIVerb"="Dark theme"
 
-    [HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\002flyout\command]
-    @="Reg Add HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f"
-    ```
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\AppMode\shell\002flyout\command]
+@="Reg Add HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f"
+```
 
 edge 浏览器->设置->外观->整体外观：选择 “系统默认” 则跟随 Windows 系统的主题颜色变换，缺点是仅窗口标签外观变换。如果需要对网页内容开启夜间模式，需要强制开启：
 
