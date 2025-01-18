@@ -11542,11 +11542,13 @@ Windows 版
 
 #### NTP 时间同步服务
 
+    使用 ntpd 配置 NTP https://docs.redhat.com/zh-cn/documentation/red_hat_enterprise_linux/7/html-single/system_administrators_guide/index#ch-Configuring_NTP_Using_ntpd
+
     https://wiki.debian.org/NTP
 
     https://pan-xiao.gitbook.io/debian/config/ntp
 
-    ntpstat
+    `ntpstat`
 
 软件包 ntp 过时了，以前 Linux 时间同步基本是使用 ntpdate 和 ntpd 这两个工具实现的，其中 ntpd 是步进式平滑的逐渐调整时间，而 ntpdate 是断点式更新时间。推荐 [使用 chrony]。
 
@@ -11642,7 +11644,9 @@ Windows 设置时间服务器的地址，在控制面板的时间设置->Interne
 
 Fedora 等 Redhat 系目前使用这个软件包，它实现了 NTP 协议并且可以作为服务器或客户端
 
-    https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/using-chrony_configuring-basic-system-settings
+    https://docs.redhat.com/zh-cn/documentation/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/configuring-time-synchronization_configuring-basic-system-settings
+
+    使用 chrony 套件配置 NTP https://docs.redhat.com/zh-cn/documentation/red_hat_enterprise_linux/7/html-single/system_administrators_guide/index#ch-Configuring_NTP_Using_the_chrony_Suite
 
     https://www.cnblogs.com/pipci/p/12871993.html
 
