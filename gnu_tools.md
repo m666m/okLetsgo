@@ -13587,7 +13587,9 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
         该扩展目前不支持 Gnome 45+，可以安装 ddterm 应急。
 
-    Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以治愈 gnome 目前不能按 Alt+Tab 切换最近的两个窗口。选 AppSwitch 设置页，点开 “Make ... Like the Windows ...” 按钮，这样就不再把窗口分组为应用和应用的多个实例，实现 Windows 的 “task switch” 习惯。如果不点开就是 gnome 的默认习惯，只能切换到应用：Alt+Tab 列表是应用窗口，按住 alt 持续点击 tab 循环到某个多实例的应用窗口时，会在上面再显示一个列表呈现该应用的多个实例。切换到应用后，按 Alt+` 在应用的多个实例间切换。
+    Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以治愈 gnome 目前不能按 Alt+Tab 切换最近使用的两个窗口。gnome 的默认习惯，只能切换到应用：Alt+Tab 列表是应用窗口，按住 alt 持续点击 tab 循环到某个多实例的应用窗口时，会在上面再显示一个列表呈现该应用的多个实例。切换到应用后，按 Alt+` 在应用的多个实例间切换。
+
+        实现 Windows 任务栏切换的习惯：选 AppSwitch 设置页，点开 “Make ... Like the Windows ...” 按钮，这样就不再把窗口分组为应用和应用的多个实例，还要选 Windows 设置页点开 “Workspaces” 选 “All workspaces”，否则会优先循环当前工作区的窗口。
 
     Grand Theft Focus       打开文件对话框显示在你的应用窗口后面，然后系统弹通知告诉你有个对话框打开了。。。这是病，得治！ 竞品 window-is-ready-notification-remover，或直接运行命令 `gsettings set org.gnome.desktop.wm.preferences focus-new-windows 'smart'`。
 
