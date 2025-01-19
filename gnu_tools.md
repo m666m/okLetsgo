@@ -15346,56 +15346,66 @@ VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
     https://devicetests.com/share-linux-desktop-web-browser
 
-#### 使用远程桌面登录 Linux 必须做的设置
+#### 配置远程桌面服务端必做
 
 如果服务端计算机安装 Linux 时启用了磁盘加密选项，则每次开机时必须在本地手工输入密码才能启动操作系统，然后远程用户才可以使用远程桌面登录。
 
-> 新装的系统要调整节能策略：默认节能策略导致 Linux 桌面环境不定什么时候就锁屏或休眠，导致无法远程桌面登录。
+服务端要禁止桌面息屏、禁止休眠、禁止自动屏幕锁定
 
-    如果是使用 gnome 内置的远程桌面，可以通过下载安装插件 “allow locked remote desktop”，这样服务端本地登录后桌面锁定了，仍可以远程桌面登录服务端计算机了，这样能解决自动锁屏导致的无法连接问题，对计算机休眠无法解决。
+    操作系统的设置默认节能策略导致 Linux 桌面环境不定什么时候就锁屏或休眠，导致无法远程桌面登录。
 
-能源策略里关关关，自动锁屏关关关
+        Setting -> Power：
 
-    Setting -> Power：
+            禁用屏幕空白 Screen Blank: Never
 
-        禁用屏幕空白 Screen Blank: Never
+            禁用自动挂起 AutoSuspend: off
 
-        禁用自动挂起 AutoSuspend: off
+            严重怀疑节能策略不是高性能而是均衡、节能啥的，还会自动休眠
 
-        严重怀疑节能策略不是高性能而是均衡、节能啥的，还会自动休眠
+                # https://wiki.debian.org/Suspend
+                $ sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 
-            # https://wiki.debian.org/Suspend
-            $ sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+                $ systemctl status hibernate.target
+                ...
+                Loaded: Masked
+                ...
 
-            $ systemctl status hibernate.target
-            ...
-            Loaded: Masked
-            ...
+        Setting -> Privacy -> Screen Lock:
 
-    Setting -> Privacy -> Screen Lock:
+            关闭自动锁屏延迟 Blank Screen Delay: Never
+            禁用自动屏幕锁定 Automatic Screen Lock: Off
 
-        关闭自动锁屏延迟 Blank Screen Delay: Never
-        禁用自动屏幕锁定 Automatic Screen Lock: Off
+    如果是使用 gnome 内置的远程桌面，可以通过下载安装插件 “allow locked remote desktop”，这样服务端本地登录后桌面锁定了，仍可以远程桌面登录服务端计算机了，这样能解决自动锁屏导致的无法连接问题，但对计算机休眠无法解决。
+
+日常使用中，必须使用 ssh 本地端口转发的方式把远程桌面连接保护起来
+
+    VNC 协议本身没有加密或保护，所以你通过它发送的任何东西都可能被泄露
+
+    rdp 协议使用服务端自签名证书安全性不高，最好也用 ssh 连接进行保护。
+
+    如果是互联网使用的服务器对外开启远程桌面，则必须使用 ssh 连接或 2FA 保护你的远程桌面连接
+
+最简单的方式，就是用 ssh 隧道保护远程桌面双方的通信，参见章节 [Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)。
 
 #### 远程桌面软件体系
 
-注意保护你的连接
-
-    简单使用 ssh 隧道保护远程桌面双方的通信，参见章节 [Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)。
-
-命令行界面，远程管理 Linux 服务器常使用基于 SSH 协议的命令行管理方式，桌面环境的远程桌面体系大致有如下几种：
+在命令行界面下，远程管理 Linux 服务器都使用基于 SSH 协议的命令行管理方式。而 Linux 桌面环境下，有多种体系：
 
 RDP 协议(倾向于传输指令，适用于低速网络)
 
     RDP 服务器端软件
 
-        Linux 内置 rdp 协议的服务端，或另行安装 xrdp，参见章节 [使用 xrdp 服务端]
+        Linux 内置 rdp 协议的服务端，
+
+            可单独安装 xrdp 支持多个远程桌面用户同时登录，参见章节 [使用 xrdp 服务端]
 
         Windows 内置 rdp 协议的服务端
 
     RDP 客户端软件
 
-        Linux 的 Gnome 桌面内置 Connections(gnome-connections)，或安装 Remmina
+        Linux 的 Gnome 桌面内置 Connections(gnome-connections)
+
+            推荐安装 Remmina，支持剪切板、支持共享文件夹等高级功能
 
         Windows 使用内置的 mstsc.exe
 
@@ -15405,13 +15415,15 @@ VNC（基于 RFB 协议倾向于传输图像，适用于瘦客户端）
 
         Linux 内置 vnc 协议的服务端
 
-        Windows 安装 TigerVnc 软件的服务端，参见章节 [VNC 体系]
+            可单独安装 TigerVNC 支持多个远程桌面用户同时登录，参见章节 [使用 TigerVNC Server]
+
+        Windows 安装 TigerVNC 软件的服务端
 
     VNC 客户端软件
 
         Linux 的 Gnome 桌面内置 Connections(gnome-connections)，或安装 Remmina
 
-        Windows 安装 TigerVnc 软件的客户端，参见章节 [VNC 体系]
+        Windows 安装 TigerVNC 软件的客户端
 
 使用 NX 技术体系的 X2GO
 
@@ -15489,9 +15501,9 @@ xfreerdp 是命令行客户端，替代了已不再开发的 rdesktop
 
 因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面的客户端软件，登录后的默认桌面各不相同，详见各软件的说明。
 
-#### 使用 Gnome 内置的远程桌面功能
+#### 使用 Gnome 远程桌面
 
-Gnome 内置的远程桌面服务端(gnome-remote-desktop) 功能
+Gnome 自带远程桌面服务端，主要支持 RDP
 
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-a-single-user_getting-started-with-the-gnome-desktop-environment
 
@@ -15513,61 +15525,45 @@ Gnome 内置的远程桌面服务端(gnome-remote-desktop) 功能
 
     原 Xorg 体系使用 VNC 协议，在使用 Waylande 之后改为 RDP 协议了，但仍然通过 xvnc 提供对 VNC 协议的支持。也就是说，客户端使用 rdp 或 vnc 协议都可以连接到 Gnome 桌面，只是会话类型不同
 
-    https://discussion.fedoraproject.org/t/how-to-share-fedora-36-gnome-desktop-with-another-machine-running-linux/76182
+        https://discussion.fedoraproject.org/t/how-to-share-fedora-36-gnome-desktop-with-another-machine-running-linux/76182
 
-    https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353?replies_to_post_number=12
+        https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353?replies_to_post_number=12
 
-##### 功能限制
+GNOME “远程桌面” 服务端拆分为 2 个功能，应该是从安全性上考虑的
 
-Gnome 46(Fedora 40) 支持远程登录了，在系统设置的“远程桌面”中分为两个：
-
-    桌面共享（Desktop sharing）：原来的共享屏幕，限制本地必须登录桌面，可以设置对方无法操作鼠标，本地用户可以随时接管鼠标中断远程连接，所以叫 “共享屏幕” 更贴切，类似 Windows 的 “远程协助”
+    桌面共享（Desktop sharing）：原来叫“共享屏幕” ，使用上限制必须本地用户登录桌面，本地用户可以随时接管鼠标中断远程连接，类似 Windows 的 “远程协助”
 
     远程登录（Remote login）：不需要本机事先登录桌面就可以使用远程桌面，即支持无头会话 Headless session 模式。
 
-桌面共享（Desktop sharing），只支持当前登录桌面的用户把自己的屏幕实时共享给一个用户：
+客户端软件兼容性较好，只要支持 rdp 或 vnc 协议即可连接到服务端。
 
-    必须本地主机先登录到桌面，然后远程才可以连接到该主机的桌面，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时本地操作干预或中断远程会话。也就是说，本地不登录桌面，是无法远程桌面的
-
-    如果配置无人值守（HEADLESS）模式或虚拟机，记得在断开本地连接之前（本地拔下显示器之前），在用户设置里启用自动登录，这样只要开机启动就会自动使用该用户登录到桌面。
-
-    本地主机要是节能策略自动锁屏或自动休眠了，远程桌面连接会无法登录。解决办法见章节 [使用远程桌面必须做的设置]。
-
-远程桌面的登录密码在每次启动计算机后都会强制变化（手工设置无效）。只要本地计算机重启了，都要进入系统设置的共享桌面的设置里，复制新密码给客户端使用。
-
-如果需要登录云服务器，或支持多个远程桌面用户同时登录，这样的远程连接不需要本地主机先登录桌面，则只能安装第三方 vnc 或 rdp 软件
+如果需要登录云服务器，或支持多个远程桌面用户同时登录，则只能安装第三方 vnc 或 rdp 软件
 
     推荐安装使用 RDP 协议的第三方软件，见章节 [使用 xrdp 服务端]。
 
-    tigervnc-server
-
-        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
+    如果使用 vnc 协议，见章节 [使用 TigerVNC Server]。
 
     使用第三方 vnc 或 rdp 服务端，记得关闭操作系统内置的远程桌面服务，以防止端口冲突。
 
-##### 服务端设置
+参见章节 [远程桌面软件体系]。
 
-先检查是否满足章节 [使用远程桌面登录 Linux 必须做的设置]。
+##### 桌面共享（Desktop sharing）的服务端设置
 
-默认情况下，Gnome 中共享计算机屏幕的功能是关闭的，需要手动开启：
+桌面共享的使用上限制较多，不得不整理出来供查阅。
 
-    启动桌面设置 “Gnome 控制中心 Gnome Control Center”
+先检查是否满足章节 [配置远程桌面服务端必做]。
 
-    点击 “共享 Sharing” 标签 --> 用右上角的滑块打开共享 --> 单击 “屏幕共享 Screen sharing” --> 用窗口的滑块打开屏幕共享。
+默认情况下，Gnome 桌面共享功能是关闭的，需要手动开启：
+
+    在系统设置找到“远程桌面”，选择打开“屏幕共享“。
 
     如果你希望能够从客户端控制屏幕，请勾选 “允许连接控制屏幕 Allow connections to control the screen”。如果不勾选这个按钮，访问共享屏幕将只允许 “仅浏览 view-only”。
 
-    登录用户使用的当前用户名，但是密码是独立的，如果使用默认的随机密码，每次计算机重启后都会变更。所以最好手动设置密码，我为了方便改成一致了。
+    登录用户使用的当前用户名，但是密码是独立的，默认的随机密码，每次计算机重启后都会变更。只要本地计算机重启了，都要进入系统设置的共享桌面的设置里，复制新密码给客户端使用。
 
-    桌面环境的系统设置里，禁止屏幕空白，禁止自动屏幕锁定，以实现无缝的远程桌面会话。
+客户端可以连接服务器的先决条件：
 
-##### 客户端设置
-
-客户端软件只要支持 rdp 或 vnc 协议即可，参见章节 [远程桌面软件体系]。
-
-如果服务器和客户端之间有连接，请确保以下情况：
-
-    计算机正在运行。
+    服务器正在运行。
 
     Gnome 会话正在运行。
 
@@ -15575,21 +15571,27 @@ Gnome 46(Fedora 40) 支持远程登录了，在系统设置的“远程桌面”
 
     会话没有被锁定，也就是说，用户可以使用该会话。
 
-然后你可以尝试从客户端连接到该会话，连接进入远程桌面后顶栏处有一个黄色的图标，这表明你正在 Gnome 中共享电脑屏幕。
+    只支持当前登录桌面的用户把自己的屏幕实时共享给 1 个用户。
 
-如果在服务端屏幕查看当前桌面，也可以看到在顶栏处有一个黄色的图标，这表明你正在 Gnome 中共享电脑屏幕。如果你不再希望共享屏幕，你可以进入菜单，点击 屏幕正在被共享Screen is being shared，然后再选择 关闭Turn off，立即停止共享屏幕。
+也就是说，桌面共享的使用过程是严格受控的，功能设计上本地用户优先，只能一对一：
 
-##### 安全限制
+    用户在本地主机登录到桌面，然后远程才可以连接到该主机的桌面。
 
-功能设计上本地用户优先
+    本地主机屏幕上会同步显示远程在自己计算机上的操作，并可以随时本地操作干预或中断远程会话。
 
-    从服务器本地登录的会话将始终保持其控制模式，能够控制鼠标和键盘。
+        从服务器本地登录的会话将始终保持其控制模式，能够控制鼠标和键盘。
 
-    如果会话被锁定，从客户端解锁也会在服务器上解锁。它也会把显示器从待机模式中唤醒，任何能看到服务器屏幕的人都能看到远程桌面客户端此刻正在做什么。
+        如果会话被锁定，从客户端解锁也会在服务器上解锁。它也会把显示器从待机模式中唤醒，任何能看到服务器屏幕的人都能看到远程桌面客户端此刻正在做什么。
 
-VNC 协议本身没有加密或保护，所以你通过它发送的任何东西都可能被泄露
+        客户端远程连接进入远程桌面后，你的本地桌面顶栏处有一个黄色的图标，这表明你正在 Gnome 中共享电脑屏幕。如果你不再希望共享屏幕，你可以进入菜单，点击按钮“屏幕正在被共享Screen is being shared”，然后再选择 关闭 Turn off，立即停止共享屏幕。
 
-    日常使用中，必须使用 ssh 本地端口转发的方式把远程桌面连接保护起来，rdp 协议使用服务端自签名证书安全性不高，最好也用 ssh 连接进行保护。
+如果用桌面共享功能实现无人值守（HEADLESS）模式是比较繁琐的
+
+    必须在断开本地连接之前，在系统设置里开启用户自动登录，这样只要开机启动就会自动使用该用户登录到桌面。
+
+    防止本地主机的节能策略自动锁屏或自动休眠，详见章节 [使用远程桌面必须做的设置]。
+
+所以，远程桌面的“远程登录”功能，更适合远程使用。
 
 #### 使用 Remmina
 
@@ -15679,10 +15681,6 @@ VNC 协议本身没有加密或保护，所以你通过它发送的任何东西�
 
 #### 使用 xrdp 服务端
 
-该软件实现 Windows Server 的远程桌面多终端服务，即一个无头服务器可以支持几十个远程登录的用户同时使用桌面，适合教学、办公场景
-
-    如果是互联网使用的服务器对外开启远程桌面，务必使用 ssh 连接或 2FA 保护你的远程桌面连接，见章节 [示例：Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think) 和 [xrdp 登录使用 2FA](init_a_server think)。
-
 Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包支持多种桌面环境，远程桌面连接本机无需本地用户登录，客户端使用支持 rdp 协议的 mstsc、remmina 等软件即可。
 
     https://wiki.archlinux.org/title/Xrdp
@@ -15698,19 +15696,19 @@ Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP �
 
     https://www.cnblogs.com/Ansing/p/16788086.html
 
+远程桌面 RDP 协议体系由客户端（viewer）与服务端两部分构成。xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序。他可以实现 Windows Server 的远程桌面多终端服务，一个无头服务器支持几十个远程登录的用户同时使用桌面，适合教学、办公场景。
+
 NOTE: 在远程桌面环境下，建议只使用软件，不要安装软件或进行系统管理等操作
 
-    不同的发行版和桌面环境区分远程桌面用户和本地桌面用户，在执行权限等方面是有区别的，但目前并未完全测试。所以如果使用远程桌面用户安装软件，在本地登录时暂无法明确有何负面的影响。
+    不同的发行版和桌面环境区分远程桌面用户和本地桌面用户，在执行权限和polkit等方面是有区别的，但目前并未完全测试。所以如果使用远程桌面用户安装软件，在本地登录时暂无法明确有何负面的影响。
 
     树莓派内置 realvnc server，对 xrdp 的支持不好，做不到开箱即用
 
-远程桌面 RDP 协议体系由客户端（viewer）与服务端两部分构成。xrdp 是在 Linux 上实现 RDP 协议的开源的服务端程序，它利用服务器桌面环境的 xvnc 组件实现自己的后端，也就是说利用 xvnc 简单地将 vnc 位图流包装在 RDP 中。
+xrdp 利用服务器桌面环境的组件实现自己的后端，其后端基于 xvnc（VNC） 或 xorgxrdp（XORG），对 Wayland 通过 xwayland 兼容模块响应其调用
 
-所以如果你安装了 GNOME，那 xnvc 就将 GNOME 桌面远程提供给你，如果你安装了 xfce，xvnc 就将 xfce 桌面提供给你。
+    xvnc 简单地将 vnc 位图流包装在 RDP 中。所以如果你安装了 GNOME，那 xnvc 就将 GNOME 桌面远程提供给你，如果你安装了 xfce，xvnc 就将 xfce 桌面提供给你。
 
-现在很多主流 Linux 系统的桌面环境放弃了传统的 X11/Xorg，使用 Wayland 体系，它使用 xwayland 模块来兼容使用 X window 体系的程序
-
-    如果安装了 xrdp，其后端基于 xvnc（VNC） 或 xorgxrdp（XORG），Wayland 通过 xwayland 兼容模块响应其调用。也就是说，使用 xrdp 远程桌面，系统会切换到 x11 的桌面环境，不是 Wayland 桌面。
+    对 Wayland 体系，它使用 xwayland 模块来兼容使用 X window 体系的程序。也就是说，使用 xrdp 远程桌面，系统会切换到 x11 的桌面环境，不是 Wayland 桌面。
 
 xrdp 服务端兼容各种 RDP 客户端，如 mstsc、gnome connections、remmina、rdesktop 等。
 
@@ -15729,11 +15727,10 @@ xrdp 的组件
     $ sudo apt install xrdp
 
     # 如果有防火墙，记得开放端口
-    sudo ufw allow from any to any port 3389 proto tcp
+    $ sudo ufw allow from any to any port 3389 proto tcp
 
-安装后启动服务，并设置为开机自启动
+启动服务之前，记得先关闭操作系统内置的远程桌面服务，不然端口冲突
 
-    # 注意：先关闭操作系统内置的远程桌面服务，不然端口冲突
     # sudo systemctl start xrdp
     $ sudo systemctl enable xrdp --now
 
@@ -15747,15 +15744,15 @@ xrdp 的组件
 
 ##### 安装 xrdp 后必做设置
 
-    先检查是否满足章节 [使用远程桌面登录 Linux 必须做的设置]。
+先检查是否满足章节 [配置远程桌面服务端必做]。
 
-    关闭 Linunx 发行版内置的 Gnome 共享桌面功能：二者都使用默认端口 3389 会导致冲突无法连接，找到桌面设置里的共享桌面功能，选择关闭。
+关闭 Linunx 发行版内置的共享桌面功能：二者都使用 RDP 协议默认端口 3389，会导致冲突无法连接，找到桌面设置里的共享桌面功能，选择关闭。
 
-    注销您本地的 Linux 桌面登录（logged in on the system graphical console），否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。与发行版内置的 Gnome 共享桌面（实质是共享屏幕）不同，xrdp 支持多用户连接，所以本地的屏幕前看不到远程连接过来的用户的操作，本地屏幕可以是用户登录等待解锁的状态。原因是基于 systemd 的操作系统，多个远程桌面会话使用同一个用户登录，会共享同一个桌面环境，这是 D-Bus 共享数据的设计 https://github.com/neutrinolabs/xrdp/wiki/Tips-and-FAQ#why-cant-i-log-the-same-user-on-on-the-graphical-console-and-over-xrdp-at-the-same-time
+注销您本地的 Linux 桌面登录（logged in on the system graphical console），否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。与发行版内置的 Gnome 共享桌面（实质是共享屏幕）不同，xrdp 支持多用户连接，所以本地的屏幕前看不到远程连接过来的用户的操作，本地屏幕可以是用户登录等待解锁的状态。原因是基于 systemd 的操作系统，多个远程桌面会话使用同一个用户登录，会共享同一个桌面环境，这是 D-Bus 共享数据的设计 https://github.com/neutrinolabs/xrdp/wiki/Tips-and-FAQ#why-cant-i-log-the-same-user-on-on-the-graphical-console-and-over-xrdp-at-the-same-time
 
-        如果本地计算机是无人值守（HEADLESS）模式或虚拟机，记得在断开本地连接之前（本地拔下显示器之前），在用户设置里“取消”自动登录，不然开机就本地登录了，无法从远程登录 xrdp 服务端了
+    如果本地计算机是无人值守（HEADLESS）模式或虚拟机，记得在断开本地连接之前（本地拔下显示器之前），在用户设置里“取消”自动登录，不然开机就本地登录了，无法从远程登录 xrdp 服务端了
 
-        如果用远程桌面连接的是 xrdp 服务，断开前最好也选择注销，否则本地登录桌面也会遇到黑屏，只能用控制台方式在命令行下先停止 xrdp 服务才行。
+    如果用远程桌面连接的是 xrdp 服务，断开前最好也选择注销，否则本地登录桌面也会遇到黑屏，只能用控制台方式在命令行下先停止 xrdp 服务才行。
 
     以下两个未验证
 
@@ -15764,6 +15761,12 @@ xrdp 的组件
 
         # 因为默认情况下，xRDP 使用的是自签发的证书，这个证书保存在 /etc/ssl/private/ssl-cert-snakeoil/ 目录下。证书的密钥文件只能由 “ssl-cert” 用户组的成员读取。
         $ sudo adduser ubuntu ssl-cert
+
+NOTE: 如果是互联网使用的服务器对外开启远程桌面，务必使用 ssh 连接或 2FA 保护你的远程桌面连接
+
+    [示例：Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)
+
+    [xrdp 登录使用 2FA](init_a_server think)
 
 然后远程计算机的桌面用户就可以用支持 RDP 协议的远程桌面软件连接这台计算机登录桌面了：
 
@@ -15946,6 +15949,8 @@ VNC 体系由客户端（viewer）与服务端两部分构成
 
 用户在客户端使用 vnc viwer 即可直接远程连接桌面。
 
+##### 使用 TigerVNC Server
+
 Gnome 等桌面环境内置的 vnc 软件功能太弱了，通常在服务器安装第三方的 TigerVNC Server 软件包，客户端使用 TigerVNC Viwer 软件包。
 
     https://tigervnc.org/
@@ -15954,7 +15959,7 @@ Gnome 等桌面环境内置的 vnc 软件功能太弱了，通常在服务器安
 
     安装使用 Tiger VNC
 
-        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment#the-mapping-of-port-and-display-numbers-to-users-in-vnc_remotely-accessing-the-desktop-as-multiple-users
+        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-multiple-users_getting-started-with-the-gnome-desktop-environment
 
         https://blog.csdn.net/qlcheng2008/article/details/122421763
 
@@ -16138,7 +16143,7 @@ noVNC 运行时执行的脚本为 noVNC/utils 目录下的 launch.sh，配置及
 
 #### Wayland 下的远程桌面
 
-完全使用 wayland 体系而不是兼容 xwaylan 的远程桌面比较少，原理也不同，有基于 vnc 的，有基于原生 wayland 模块的。
+原生使用 wayland 体系而不是使用兼容模块 xwayland 的远程桌面比较少，原理也不同，有基于 vnc 的，有基于原生 wayland 模块的。
 
 目前的大多数远程桌面软件使用 rdp 协议 和 vnc 协议，其实现都是基于 xwindow 的，所以 wayland 环境有 xvnc 或 xwayland 组件进行兼容化的支撑，可以正常使用。
 
