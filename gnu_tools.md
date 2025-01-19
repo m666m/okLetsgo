@@ -14841,7 +14841,7 @@ fi
 
 ```
 
-#### 将会话限制为单个应用程序 --- 自助服务机 Kiosk 模式
+#### 自助机 Kiosk 模式 --- 将会话限制为单个应用程序
 
 在 GNOME 登录屏幕中，从齿轮按钮菜单中选择你的 kiosk 应用
 
@@ -14853,7 +14853,7 @@ fi
 
     $ sudo dnf install gnome-kiosk gnome-kiosk-script-session
 
-甚至可以安装 remmina-gnome-session 软件包，实现开机自启动到远程桌面
+还可以安装 remmina-gnome-session 软件包，实现开机自启动到远程桌面
 
     $ sudo dnf install remmina-gnome-session
 
@@ -15439,6 +15439,8 @@ VNC（基于 RFB 协议倾向于传输图像，适用于瘦客户端）
 
 1、Gnome 内置的客户端软件名为 “连接 Connections(gnome-connections)”，同时支持 rdp 和 vnc 协议。
 
+软件 virt-manager 自带 virt-viewer，在软件商店里叫 remote viewer。
+
 2、基于 FreeRDP 的客户端软件
 
 推荐使用图形化工具 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
@@ -15489,9 +15491,7 @@ xfreerdp 是命令行客户端，替代了已不再开发的 rdesktop
 
 #### 使用 Gnome 内置的远程桌面功能
 
-Gnome 内置的远程桌面客户端软件名为 “连接 Connections(gnome-connections)”，同时支持 rdp 和 vnc 协议。
-
-Gnome 内置的这个远程桌面服务端(gnome-remote-desktop)叫 “共享屏幕” 更贴切，类似 Windows 的 “远程协助”
+Gnome 内置的远程桌面服务端(gnome-remote-desktop) 功能
 
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-a-single-user_getting-started-with-the-gnome-desktop-environment
 
@@ -15503,13 +15503,13 @@ Gnome 内置的这个远程桌面服务端(gnome-remote-desktop)叫 “共享屏
 
     https://www.linuxmi.com/ubuntu-22-04-rdp-remote-desktop.html
 
-Gnome 桌面同时支持 X11 和 Wayland 两种方式
+同时支持 X11 和 Wayland 两种方式
 
     对 X11 会话中使用 vino 组件
 
     对 Wayland 会话使用 gnome-remote-desktop 组件
 
-Gnome 桌面同时支持 VNC 和 RDP 两种协议
+同时支持 VNC 和 RDP 两种协议
 
     原 Xorg 体系使用 VNC 协议，在使用 Waylande 之后改为 RDP 协议了，但仍然通过 xvnc 提供对 VNC 协议的支持。也就是说，客户端使用 rdp 或 vnc 协议都可以连接到 Gnome 桌面，只是会话类型不同
 
@@ -15519,13 +15519,17 @@ Gnome 桌面同时支持 VNC 和 RDP 两种协议
 
 ##### 功能限制
 
-    Gnome 46(Fedora 40) 支持远程登录了。在系统设置中分为两个：桌面共享（Desktop sharing）和远程登录（Remote login），前者是原来的共享屏幕，后者不需要本机事先登录桌面就可以使用远程桌面，即支持无头会话 Headless session 模式。
+Gnome 46(Fedora 40) 支持远程登录了，在系统设置的“远程桌面”中分为两个：
 
-Gnome 自带的远程桌面服务端实质是 “共享屏幕”，只支持当前登录桌面的用户把自己的屏幕实时共享给一个用户：
+    桌面共享（Desktop sharing）：原来的共享屏幕，限制本地必须登录桌面，可以设置对方无法操作鼠标，本地用户可以随时接管鼠标中断远程连接，所以叫 “共享屏幕” 更贴切，类似 Windows 的 “远程协助”
 
-    必须本地主机先登录到桌面，然后远程才可以连接到该主机的桌面，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时本地操作干预或中断远程会话。也就是说，本地不登录桌面，是无法远程桌面的，为了方便可以把当前用户配置为自动登录。
+    远程登录（Remote login）：不需要本机事先登录桌面就可以使用远程桌面，即支持无头会话 Headless session 模式。
 
-    如果是无人值守（HEADLESS）模式或虚拟机，记得在断开本地连接之前（本地拔下显示器之前），在用户设置里启用自动登录，这样只要开机启动就会自动使用该用户登录到桌面。
+桌面共享（Desktop sharing），只支持当前登录桌面的用户把自己的屏幕实时共享给一个用户：
+
+    必须本地主机先登录到桌面，然后远程才可以连接到该主机的桌面，本地主机屏幕会同步显示远程在自己计算机上的操作，并可以随时本地操作干预或中断远程会话。也就是说，本地不登录桌面，是无法远程桌面的
+
+    如果配置无人值守（HEADLESS）模式或虚拟机，记得在断开本地连接之前（本地拔下显示器之前），在用户设置里启用自动登录，这样只要开机启动就会自动使用该用户登录到桌面。
 
     本地主机要是节能策略自动锁屏或自动休眠了，远程桌面连接会无法登录。解决办法见章节 [使用远程桌面必须做的设置]。
 
@@ -15587,7 +15591,9 @@ VNC 协议本身没有加密或保护，所以你通过它发送的任何东西�
 
     日常使用中，必须使用 ssh 本地端口转发的方式把远程桌面连接保护起来，rdp 协议使用服务端自签名证书安全性不高，最好也用 ssh 连接进行保护。
 
-#### 使用 Remmina 客户端软件
+#### 使用 Remmina
+
+支持多种远程桌面/远程连接的客户端软件，必备软件
 
     https://zhuanlan.zhihu.com/p/26879292
 
