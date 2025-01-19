@@ -15346,47 +15346,6 @@ VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
     https://devicetests.com/share-linux-desktop-web-browser
 
-#### 配置远程桌面服务端必做
-
-如果服务端计算机安装 Linux 时启用了磁盘加密选项，则每次开机时必须在本地手工输入密码才能启动操作系统，然后远程用户才可以使用远程桌面登录。
-
-服务端要禁止桌面息屏、禁止休眠、禁止自动屏幕锁定
-
-    操作系统的设置默认节能策略导致 Linux 桌面环境不定什么时候就锁屏或休眠，导致无法远程桌面登录。
-
-        Setting -> Power：
-
-            禁用屏幕空白 Screen Blank: Never
-
-            禁用自动挂起 AutoSuspend: off
-
-            严重怀疑节能策略不是高性能而是均衡、节能啥的，还会自动休眠
-
-                # https://wiki.debian.org/Suspend
-                $ sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
-
-                $ systemctl status hibernate.target
-                ...
-                Loaded: Masked
-                ...
-
-        Setting -> Privacy -> Screen Lock:
-
-            关闭自动锁屏延迟 Blank Screen Delay: Never
-            禁用自动屏幕锁定 Automatic Screen Lock: Off
-
-    如果是使用 gnome 内置的远程桌面，可以通过下载安装插件 “allow locked remote desktop”，这样服务端本地登录后桌面锁定了，仍可以远程桌面登录服务端计算机了，这样能解决自动锁屏导致的无法连接问题，但对计算机休眠无法解决。
-
-日常使用中，必须使用 ssh 本地端口转发的方式把远程桌面连接保护起来
-
-    VNC 协议本身没有加密或保护，所以你通过它发送的任何东西都可能被泄露
-
-    rdp 协议使用服务端自签名证书安全性不高，最好也用 ssh 连接进行保护。
-
-    如果是互联网使用的服务器对外开启远程桌面，则必须使用 ssh 连接或 2FA 保护你的远程桌面连接
-
-最简单的方式，就是用 ssh 隧道保护远程桌面双方的通信，参见章节 [Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)。
-
 #### 远程桌面软件体系
 
 在命令行界面下，远程管理 Linux 服务器都使用基于 SSH 协议的命令行管理方式。而 Linux 桌面环境下，有多种体系：
@@ -15500,6 +15459,132 @@ xfreerdp 是命令行客户端，替代了已不再开发的 rdesktop
         按 `ctrl + alt +回车` 退出或进入全屏模式。
 
 因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面的客户端软件，登录后的默认桌面各不相同，详见各软件的说明。
+#### 使用 Remmina 客户端软件
+
+支持多种远程桌面/远程连接的客户端软件，必备软件
+
+    https://zhuanlan.zhihu.com/p/26879292
+
+> 快捷使用
+
+    在地址栏左侧的下拉菜单中选择 RDP/VNC 协议。
+
+    在地址栏中输入服务器的IP地址，然后按下 回车。
+
+    当连接开始时，会打开另一个连接窗口。初次连接会提示服务器端的 ssl 指纹，确认即可。根据服务器的设置，你可能需要等待，直到服务器用户允许连接，或者你可能需要提供密码。
+
+    输入登录用户名和密码，然后按 OK。该密码可以在服务器端的远程桌面设置里找到，对gnome内置的远程桌面功能，服务器重启后该密码会强制变化，也即有效性是受限的。
+
+连接后默认使用的分辨率是很低的，除了更改配置文件外，还有几个设置只能在工具栏点击设置：
+
+    点击按钮 “Toggle dynamic resolution update”，实现可以自动适应本机窗口大小调整远程桌面的分辨率
+
+    点击按钮 ““Toggle fullscreen mode”，实现全屏模式
+
+    点击按钮 “Grub all keyborad events”，实现可以在远程桌面计算机的 alt+tab 热键切换窗口
+
+    点击三个点可以在各个配置文件间切换选择
+
+    运行过程中如果修改了配置文件，单击 refresh 可以立即生效。
+
+当处于全屏模式时，注意屏幕上边缘的白色窄条，鼠标划过会显示 Remmina 工具栏，当你需要离开全屏模式或改变一些设置时，你可以把鼠标移到它上面。
+
+> 给你的远程连接建立一个配置文件
+
+如果需要调整配置如共享文件夹、播放声音等功能，需要给你的远程计算机新建一个配置文件
+
+    点击左上角的 + 号，弹出一个新窗口，输入名称
+
+    在 “Protocol” 列表选择 “RDP”
+
+    在 “Server” 填入要连接的远程服务器的 ip
+
+    在 “Username” 和 “Password” 填入登录该服务器的用户名和密码。注意如果服务器使用的是gnome内置的远程桌面功能，服务器重启后密码会强制变化，你的这个连接需要重新设置密码。
+
+注意这里有个坑，没有其它选项可选，先点击保存以关闭该窗口。
+
+然后在 Remmina 的主窗口列表中找到刚建立的配置文件，右键菜单选择编辑：
+
+    Basic:
+
+        Group 设置分组，同组的多个远程桌面会共用一个 remmina 窗口，切换时会自动断开上一个。
+
+        桌面分辨率选 “use client solution”，不然默认显示超小的一个屏幕。
+
+        Network Connect type 选 “auto-detect“，不然默认是低速网络
+
+        共享文件夹 Share folder: "host_dl,/home/user/Downloads;host_vd,/home/user/Videos;" 这样就实现了在远程服务器映射本地的两个文件夹，名为 host_dl 和 host_vd。
+
+            共享文件夹应显示在远程计算机资源管理器的 other devices and drives（本地磁盘C:图标的下方），实质是映射的 Windows 网络邻居里的 \\tsclient\host_dl\ 目录，所以先在资源管理区里点击网络，提示开启网络发现时选择确定，这样才能确保映射成功。
+
+            目前 Windows 10 的安全策略限制从 smb 共享文件夹执行文件，所以如果要从共享文件夹里安装程序，要先拷贝到远程计算机的本地磁盘然后再执行安装程序
+
+    Advance:
+
+        Quality：best，不然默认画质是低速网络下的传输速率，桌面背景是黑色的
+
+        Audio output mode：local 可以把远程的声音转发到本地播放，质量不好，忍了
+
+        安全性：选择自动或rdp
+
+        共享剪贴板 turn off clipboard sync：默认不勾选就是放开的，可以复制粘贴文字，不支持粘贴文件和文件夹，只能使用上面共享文件夹的方式传输文件。
+
+单击 save 会自动关闭该窗口。
+
+然后就可以连接该远程服务器了，在 Remmina 窗口的下半部分列表中，选择你的刚才建立的配置文件，双击即可开启远程桌面窗口了。
+
+如果连接失败，可以点工具栏的三个横线，选择“Debugging”，然后重新连接，查看“Debugging”窗口的输出内容
+
+    如果显示的信息偏少看不到具体报错原因，则需要用命令行启动 remmina：
+
+        https://gitlab.com/Remmina/Remmina/-/wikis/Usage/Remmina-debugging
+        $ G_MESSAGES_PREFIXED=all G_MESSAGES_DEBUG=all remmina
+
+        # flatpak安装的
+        $ G_MESSAGES_PREFIXED=all G_MESSAGES_DEBUG=all flatpak run org.remmina.Remmina
+
+    我遇到的是缺少 openH264，在命令行启动 remmina 才看到报错提示：Failed to create h264 codec context,libfreerdp returned code is 00000000。发行版一般都提供这个软件的安装包或单独的存储库。
+
+#### 配置远程桌面服务端必做
+
+如果服务端计算机安装 Linux 时启用了磁盘加密选项，则每次开机时必须在本地手工输入密码才能启动操作系统，然后远程用户才可以使用远程桌面登录。
+
+服务端要禁止桌面息屏、禁止休眠、禁止自动屏幕锁定
+
+    操作系统的设置默认节能策略导致 Linux 桌面环境不定什么时候就锁屏或休眠，导致无法远程桌面登录。
+
+        Setting -> Power：
+
+            禁用屏幕空白 Screen Blank: Never
+
+            禁用自动挂起 AutoSuspend: off
+
+            严重怀疑节能策略不是高性能而是均衡、节能啥的，还会自动休眠
+
+                # https://wiki.debian.org/Suspend
+                $ sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+
+                $ systemctl status hibernate.target
+                ...
+                Loaded: Masked
+                ...
+
+        Setting -> Privacy -> Screen Lock:
+
+            关闭自动锁屏延迟 Blank Screen Delay: Never
+            禁用自动屏幕锁定 Automatic Screen Lock: Off
+
+    如果是使用 gnome 内置的远程桌面，可以通过下载安装插件 “allow locked remote desktop”，这样服务端本地登录后桌面锁定了，仍可以远程桌面登录服务端计算机了，这样能解决自动锁屏导致的无法连接问题，但对计算机休眠无法解决。
+
+日常使用中，必须使用 ssh 本地端口转发的方式把远程桌面连接保护起来
+
+    VNC 协议本身没有加密或保护，所以你通过它发送的任何东西都可能被泄露
+
+    rdp 协议使用服务端自签名证书安全性不高，最好也用 ssh 连接进行保护。
+
+    如果是互联网使用的服务器对外开启远程桌面，则必须使用 ssh 连接或 2FA 保护你的远程桌面连接
+
+最简单的方式，就是用 ssh 隧道保护远程桌面双方的通信，参见章节 [Linux xrdp 远程桌面的 ssh 端口转发](home_great_wall think)。
 
 #### 使用 Gnome 远程桌面
 
@@ -15592,92 +15677,6 @@ GNOME “远程桌面” 服务端拆分为 2 个功能，应该是从安全性�
     防止本地主机的节能策略自动锁屏或自动休眠，详见章节 [使用远程桌面必须做的设置]。
 
 所以，远程桌面的“远程登录”功能，更适合远程使用。
-
-#### 使用 Remmina
-
-支持多种远程桌面/远程连接的客户端软件，必备软件
-
-    https://zhuanlan.zhihu.com/p/26879292
-
-> 快捷使用
-
-    在地址栏左侧的下拉菜单中选择 RDP/VNC 协议。
-
-    在地址栏中输入服务器的IP地址，然后按下 回车。
-
-    当连接开始时，会打开另一个连接窗口。初次连接会提示服务器端的 ssl 指纹，确认即可。根据服务器的设置，你可能需要等待，直到服务器用户允许连接，或者你可能需要提供密码。
-
-    输入登录用户名和密码，然后按 OK。该密码可以在服务器端的远程桌面设置里找到，对gnome内置的远程桌面功能，服务器重启后该密码会强制变化，也即有效性是受限的。
-
-连接后默认使用的分辨率是很低的，除了更改配置文件外，还有几个设置只能在工具栏点击设置：
-
-    点击按钮 “Toggle dynamic resolution update”，实现可以自动适应本机窗口大小调整远程桌面的分辨率
-
-    点击按钮 ““Toggle fullscreen mode”，实现全屏模式
-
-    点击按钮 “Grub all keyborad events”，实现可以在远程桌面计算机的 alt+tab 热键切换窗口
-
-    点击三个点可以在各个配置文件间切换选择
-
-    运行过程中如果修改了配置文件，单击 refresh 可以立即生效。
-
-当处于全屏模式时，注意屏幕上边缘的白色窄条，鼠标划过会显示 Remmina 工具栏，当你需要离开全屏模式或改变一些设置时，你可以把鼠标移到它上面。
-
-> 给你的远程连接建立一个配置文件
-
-如果需要调整配置如共享文件夹、播放声音等功能，需要给你的远程计算机新建一个配置文件
-
-    点击左上角的 + 号，弹出一个新窗口，输入名称
-
-    在 “Protocol” 列表选择 “RDP”
-
-    在 “Server” 填入要连接的远程服务器的 ip
-
-    在 “Username” 和 “Password” 填入登录该服务器的用户名和密码。注意如果服务器使用的是gnome内置的远程桌面功能，服务器重启后密码会强制变化，你的这个连接需要重新设置密码。
-
-注意这里有个坑，没有其它选项可选，先点击保存以关闭该窗口。
-
-然后在 Remmina 的主窗口列表中找到刚建立的配置文件，右键菜单选择编辑：
-
-    Basic:
-
-        Group 设置分组，同组的多个远程桌面会共用一个 remmina 窗口，切换时会自动断开上一个。
-
-        桌面分辨率选 “use client solution”，不然默认显示超小的一个屏幕。
-
-        Network Connect type 选 “auto-detect“，不然默认是低速网络
-
-        共享文件夹 Share folder: "host_dl,/home/user/Downloads;host_vd,/home/user/Videos;" 这样就实现了在远程服务器映射本地的两个文件夹，名为 host_dl 和 host_vd。
-
-            共享文件夹应显示在远程计算机资源管理器的 other devices and drives（本地磁盘C:图标的下方），实质是映射的 Windows 网络邻居里的 \\tsclient\host_dl\ 目录，所以先在资源管理区里点击网络，提示开启网络发现时选择确定，这样才能确保映射成功。
-
-            目前 Windows 10 的安全策略限制从 smb 共享文件夹执行文件，所以如果要从共享文件夹里安装程序，要先拷贝到远程计算机的本地磁盘然后再执行安装程序
-
-    Advance:
-
-        Quality：best，不然默认画质是低速网络下的传输速率，桌面背景是黑色的
-
-        Audio output mode：local 可以把远程的声音转发到本地播放，质量不好，忍了
-
-        安全性：选择自动或rdp
-
-        共享剪贴板 turn off clipboard sync：默认不勾选就是放开的，可以复制粘贴文字，不支持粘贴文件和文件夹，只能使用上面共享文件夹的方式传输文件。
-
-单击 save 会自动关闭该窗口。
-
-然后就可以连接该远程服务器了，在 Remmina 窗口的下半部分列表中，选择你的刚才建立的配置文件，双击即可开启远程桌面窗口了。
-
-如果连接失败，可以点工具栏的三个横线，选择“Debugging”，然后重新连接，查看“Debugging”窗口的输出内容
-
-    如果显示的信息偏少看不到具体报错原因，则需要用命令行启动 remmina：
-
-        https://gitlab.com/Remmina/Remmina/-/wikis/Usage/Remmina-debugging
-        $ G_MESSAGES_PREFIXED=all G_MESSAGES_DEBUG=all remmina
-
-        # flatpak安装的
-        $ G_MESSAGES_PREFIXED=all G_MESSAGES_DEBUG=all flatpak run org.remmina.Remmina
-
-    我遇到的是缺少 openH264，在命令行启动 remmina 才看到报错提示：Failed to create h264 codec context,libfreerdp returned code is 00000000。发行版一般都提供这个软件的安装包或单独的存储库。
 
 #### 使用 xrdp 服务端
 
@@ -16378,7 +16377,9 @@ ssh 启动方式需要明确指定使用哪个终端来显示。
 
 Qt 客户端可以在任何 Wayland 合成器上运行，包括 Weston --- Wayland 项目的一部分而开发的参考合成器。任何 Qt 程序都可以作为 Wayland 客户端(作为多进程系统的一部分)或独立的客户端(单进程)运行。
 
-#### 关闭 wayland 使用 xorg 桌面
+##### wayland 下切换使用 xorg 桌面
+
+wayland 下可以实现远程桌面，下面的操作过时了，仅供参考
 
     https://www.kclouder.cn/posts/53908.html
 
@@ -16441,8 +16442,8 @@ WantedBy=multi-user.target
 
 添加防火墙规则，或考虑直接禁用防火墙
 
-    firewall-cmd –permanent –add-port=5909/tcp
-    firewall-cmd –reload
+    firewall-cmd -permanent -add-port=5909/tcp
+    firewall-cmd -reload
 
 连接服务器
 
