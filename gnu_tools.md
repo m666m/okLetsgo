@@ -11479,10 +11479,6 @@ Windows 版
 
 调整时区
 
-    简单方法：
-
-        $ tzselect
-
     https://docs.fedoraproject.org/en-US/fedora-coreos/time-zone/
 
     命令方法来自 https://docs.fedoraproject.org/en-US/fedora/latest/system-administrators-guide/basic-system-configuration/Configuring_the_Date_and_Time/
@@ -11512,6 +11508,8 @@ Windows 版
         $ sudo timedatectl set-timezone Asia/Singapore
 
     老方法：
+
+        $ tzselect
 
         $ ln -s /usr/share/zoneinfo/Asia/Singapore /etc/localtime
 
