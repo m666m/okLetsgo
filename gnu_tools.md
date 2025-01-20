@@ -11463,8 +11463,8 @@ Windows 版
                 Local time: 二 2023-08-08 15:30:53 +08
             Universal time: 二 2023-08-08 07:30:53 UTC
                     RTC time: 二 2023-08-08 07:30:53 UTC  <----- RTC 跟 UTC 一致
-                    Time zone: Asia/Singapore (+08, +0800)
-    System clock synchronized: yes    <-------- 时间同步正常
+                    Time zone: Asia/Shanghai (+08, +0800)
+    System clock synchronized: yes    <-------- 系统时钟同步正常
                 NTP service: active   <-------- 使用 chrony、systemd-timesyncd 等 NTP 服务可以被这个命令识别到
             RTC in local TZ: no
 
@@ -11535,8 +11535,7 @@ Windows 版
 
 修改日期时间：
 
-    $ date -s "YYYY-MM-DD HH:MM:SS"
-    待验证：使用 date 命令修改的时间是临时生效的，重启系统后失效，需要将当前时间和硬件时间同步后才可以持久生效。
+    $ sudo date -s  "2017-01-23 10:30:00" # "YYYY-MM-DD HH:MM:SS"
 
     $ timedatectl set-time "2017-01-23 10:30:00" # YYYY-mm-dd HH-MM-SS
 
@@ -11639,6 +11638,8 @@ chrony 服务从 /etc/chrony.conf 文件读取其配置。要让计算机时钟�
     Windows: w32tm /stripchart /computer:cn.pool.ntp.org
 
 Windows 设置时间服务器的地址，在控制面板的时间设置->Internet时间。
+
+一般来说，如果发现系统时间不准，重启一下 ntp 服务就可以让它立即做一次对时了。
 
 #### 使用 chrony
 
