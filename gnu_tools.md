@@ -11449,13 +11449,7 @@ Windows 版
 
         https://time.is/
 
-    NTP 时间同步的原理
-
-        https://learn.microsoft.com/zh-cn/windows-server/networking/windows-time-service/how-the-windows-time-service-works#ntp-algorithms
-
     用 timedatectl 命令操作时间时区  https://www.cnblogs.com/zhi-leaf/p/6282301.html
-
-    网络时间的那些事及 ntpq 详解  https://www.cnblogs.com/GYoungBean/p/4225465.html
 
 查看当前时间相关的设置，包括时区、NTP 设置等
 
@@ -11538,6 +11532,12 @@ Windows 版
 
 #### NTP 时间同步服务
 
+    NTP 时间同步的原理
+
+        https://learn.microsoft.com/zh-cn/windows-server/networking/windows-time-service/how-the-windows-time-service-works#ntp-algorithms
+
+    网络时间的那些事及 ntpq 详解  https://www.cnblogs.com/GYoungBean/p/4225465.html
+
     使用 ntpd 配置 NTP https://docs.redhat.com/zh-cn/documentation/red_hat_enterprise_linux/7/html-single/system_administrators_guide/index#ch-Configuring_NTP_Using_ntpd
 
     https://wiki.debian.org/NTP
@@ -11554,7 +11554,7 @@ Windows 版
 
 > NTP 强制同步
 
-如果发现执行 `timedatectl status` 的输出 'System clock synchronized1 值设置为 no（计算机时间的偏差较大常见于虚拟机从休眠中恢复后的时间不准），需要立即调整时间，而不是等待 NTP 服务平滑的慢慢调整：
+如果发现执行命令 `timedatectl status` 的输出 'System clock synchronized1 值设置为 no（计算机时间的偏差较大常见于虚拟机从休眠中恢复后的时间不准），需要立即调整时间，而不是等待 NTP 服务平滑的慢慢调整：
 
     NOTE：NTP 服务是平滑式的调整时间，最好不要直接跳变式的设置一个时间,对数据库服务等可能有不利影响，生产环境下慎重！
 
@@ -11649,9 +11649,9 @@ chrony 服务从 /etc/chrony.conf 文件读取其配置。要让计算机时钟�
 
     Windows: w32tm /stripchart /computer:cn.pool.ntp.org
 
-Windows 设置时间服务器的地址，在控制面板的时间设置->Internet时间。
+    $ chronyc tracking
 
-一般来说，如果发现系统时间不准，重启一下 ntp 服务就可以让它立即做一次对时了。
+Windows 设置时间服务器的地址，在控制面板的时间设置->Internet时间。
 
 #### 使用 chrony
 
