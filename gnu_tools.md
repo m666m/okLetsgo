@@ -11468,14 +11468,18 @@ Windows 版
                 NTP service: active   <-------- 使用 chrony、systemd-timesyncd 等 NTP 服务可以被这个命令识别到
             RTC in local TZ: no
 
-如果发现 `System clock synchronized` 值设置为 no（计算机时间的偏差较大常见于虚拟机从休眠中恢复后的时间不准），那么需要重启 NTP 服务，强制从 NTP 服务器校准一下系统时间，然后再看下是否正常
+如果发现 `System clock synchronized` 值设置为 no（计算机时间的偏差较大常见于虚拟机从休眠中恢复后的时间不准），需要立即调整时间，而不是等待 NTP 服务平滑的慢慢调整：
 
-    # 重启 NTP 服务，如 chrony 或 systemd-timesyncd
-    $ sudo systemctl restart chronyd
+    NOTE：NTP 服务是平滑式的调整时间，最好不要直接跳变式的设置一个时间
 
-    实在不行就重启计算机，会执行一次 NTP 自动对时
+    # sudo ntpdate -u <NTP 服务器地址>  # 例如 ntp.ubuntu.com
+    $ sudo chronyc makestep
 
-        $ sudo reboot
+    还不行就试试重启 NTP 服务，如 chrony 或 systemd-timesyncd
+
+        $ sudo systemctl restart chronyd
+
+    实在不行就重启计算机。
 
 调整时区
 
@@ -11542,6 +11546,8 @@ Windows 版
     $ sudo date -s  "2017-01-23 10:30:00" # "YYYY-MM-DD HH:MM:SS"
 
     $ timedatectl set-time "2017-01-23 10:30:00" # YYYY-mm-dd HH-MM-SS
+
+另见章节 [虚拟机时间同步的常用方法](virtualization thnik)。
 
 #### NTP 时间同步服务
 
