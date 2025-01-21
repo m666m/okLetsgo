@@ -11468,19 +11468,6 @@ Windows 版
                 NTP service: active   <-------- 使用 chrony、systemd-timesyncd 等 NTP 服务可以被这个命令识别到
             RTC in local TZ: no
 
-如果发现 `System clock synchronized` 值设置为 no（计算机时间的偏差较大常见于虚拟机从休眠中恢复后的时间不准），需要立即调整时间，而不是等待 NTP 服务平滑的慢慢调整：
-
-    NOTE：NTP 服务是平滑式的调整时间，最好不要直接跳变式的设置一个时间
-
-    # sudo ntpdate -u <NTP 服务器地址>  # 例如 ntp.ubuntu.com
-    $ sudo chronyc makestep
-
-    还不行就试试重启 NTP 服务，如 chrony 或 systemd-timesyncd
-
-        $ sudo systemctl restart chronyd
-
-    实在不行就重启计算机。
-
 调整时区
 
     https://docs.fedoraproject.org/en-US/fedora-coreos/time-zone/
@@ -11564,6 +11551,21 @@ Windows 版
 现在的主流 Linux 发行版，Debian 系一般都使用 systemd 自带的 `systemd-timesyncd`，而 Fedora 系使用 `chrony` 作为默认时间同步工具。而且这些 Linux 发行版都提供了一个默认配置，它指向发行版维护的 NTP 时间服务器。
 
 要自建 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐使用 chrony。
+
+> NTP 强制同步
+
+如果发现执行 `timedatectl status` 的输出 'System clock synchronized1 值设置为 no（计算机时间的偏差较大常见于虚拟机从休眠中恢复后的时间不准），需要立即调整时间，而不是等待 NTP 服务平滑的慢慢调整：
+
+    NOTE：NTP 服务是平滑式的调整时间，最好不要直接跳变式的设置一个时间,对数据库服务等可能有不利影响，生产环境下慎重！
+
+    # sudo ntpdate -u <NTP 服务器地址>  # 例如 ntp.ubuntu.com
+    $ sudo chronyc makestep
+
+还不行就试试重启 NTP 服务，如 chrony 或 systemd-timesyncd
+
+    $ sudo systemctl restart chronyd
+
+实在不行就重启计算机。
 
 > 配置公共 NTP 服务器
 
