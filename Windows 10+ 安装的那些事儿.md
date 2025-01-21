@@ -317,6 +317,14 @@ u盘制作工具
 
         注意：主板 BIOS 的选项 Windows 10 feature 设置为 “win10” 后，原来用 MBR 方式安装的 Win7 或 Win10 就进不了系统了，除非还原为 “other os”。
 
+rufus 4.6 版本 检测到被吊销的 UEFI 引导加载器警告
+
+    老版本的 Windows 10/11 的 bootloader bootmgfw.efi（其实是2023年之前的所有版本）的哈希值，已经被加入UEFI 安全启动的黑名单了，也就是被吊销了（revoked）！因为2023年，一个叫做黑莲花（BlackLotus）的恶意软件，会利用CVE-2022-21894[2]，来攻击安全启动链条，注入恶意的代码。
+
+    可以忽略，新版本的 rufus 只不过是根据最新的dbx，发现 bootloader 有问题，提出警告而已
+
+    后果：有可能这个新作的 USB 安装盘无法 UEFI 启动！当使用者的主板 BIOS 升级到最新包含最新 dbx 的版本后，主板 BIOS 开启了安全启动的情况下，BIOS 会拒绝执行 U 盘中的 bootloader，因为已经被标记为不安全了。
+
 #### 用 Rufus 制作 ghost 启动盘
 
     https://qastack.cn/superuser/1228136/what-version-of-ms-dos-does-rufus-use-to-make-bootable-usbs
