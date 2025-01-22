@@ -11546,11 +11546,15 @@ Windows 版
 
     `ntpstat`
 
-软件包 ntp 过时了，以前 Linux 时间同步基本是使用 ntpdate 和 ntpd 这两个工具实现的，其中 ntpd 是步进式平滑的逐渐调整时间，而 ntpdate 是断点式更新时间。推荐 [使用 chrony]。
+软件包 ntp 过时了：
 
-现在的主流 Linux 发行版，Debian 系一般都使用 systemd 自带的 `systemd-timesyncd`，而 Fedora 系使用 `chrony` 作为默认时间同步工具。而且这些 Linux 发行版都提供了一个默认配置，它指向发行版维护的 NTP 时间服务器。
+    以前 Linux 时间同步基本是使用 ntpdate 和 ntpd 这两个工具实现的，其中 ntpd 是步进式平滑的逐渐调整时间，而 ntpdate 是断点式更新时间。
 
-要自建 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐使用 chrony。
+    现在的主流 Linux 发行版，Debian 系一般都使用 systemd 自带的 `systemd-timesyncd`，而 Fedora 系使用 `chrony` 作为默认时间同步工具。而且这些 Linux 发行版都提供了一个默认配置，它指向发行版维护的 NTP 时间服务器。
+
+    推荐 [使用 chrony]。
+
+要自建 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐 [使用 chrony]。
 
 > NTP 强制同步
 
@@ -11563,6 +11567,7 @@ Windows 版
 
 还不行就试试重启 NTP 服务，如 chrony 或 systemd-timesyncd
 
+    $ sudo systemctl restart systemd-timesyncd
     $ sudo systemctl restart chronyd
 
 实在不行就重启计算机。
@@ -11610,23 +11615,15 @@ NTP 项目亚洲时间服务器，延迟情况不如国内的
     # google
     time.google.com
 
-> 手动配置公共 NTP 服务器
+> 配置 NTP 服务器最佳方案
 
     https://documentation.suse.com/zh-cn/sles/15-SP4/html/SLES-all/cha-ntp.html#sec-net-xntp-netconf
-
-chrony 服务从 /etc/chrony.conf 文件读取其配置。要让计算机时钟保持同步，您需要告诉 chrony 使用什么时间服务器。您可以使用特定的服务器名称或 IP 地址，例如：
-
-    server 0.europe.pool.ntp.org
-
-还可以指定池名称，池名称会解析为若干个 IP 地址：
-
-    pool pool.ntp.org
 
 要同步同一网络中的多台计算机的时间，建议不要直接通过外部服务器同步所有计算机。比较好的做法是将其中一台计算机作为时间服务器（它与外部时间服务器同步），其他内网计算机作为它的客户端。将 local 指令添加至该服务器的 /etc/chrony.conf，以将其与权威时间服务器区分开：
 
     local stratum 10
 
-使用控制命令 chronyc 查看时间同步源，出现^*表示成功
+使用控制命令 chronyc 查看时间同步源，出现 ^* 表示当前最佳服务器
 
     $ chronyc sources -v
 
@@ -11693,7 +11690,15 @@ chronyd 是一个在系统后台运行的守护进程。主要用于调整内核
 
 监听端口： 323/udp，123/udp
 
-配置文件： /etc/chrony.conf 或 /etc/chrony/chrony.conf，在这里添加你的 NTP 服务器的地址，地址列表见章节 [国内的公共 NTP 服务器]。
+配置文件： /etc/chrony.conf 或 /etc/chrony/chrony.conf，在这里添加你的 NTP 服务器的地址
+
+    # 使用特定的服务器名称或 IP 地址
+    server 0.europe.pool.ntp.org
+
+    # 还可以指定池名称，池名称会解析为若干个 IP 地址
+    pool pool.ntp.org
+
+    地址列表见章节 [配置公共 NTP 服务器]。
 
 chronyc  - 监控 chronyd 性能和配置其参数的用户界面，它可以控制本机及其他计算机上运行的 chronyd 进程
 
@@ -11723,6 +11728,9 @@ chronyc  - 监控 chronyd 性能和配置其参数的用户界面，它可以控
     如果是虚拟机环境，应该把与主机时间同步功能关闭后再启用 systemd-timesyncd，否则可能会有问题.
 
 目前 Debian/openSUSE 使用这个机制，systemd-timesyncd 只实现了简单的 NTP 协议 SNTP，专注于从远程服务器查询然后同步到本地的系统时间，即只是 NTP 客户端。
+
+    `man systemctl status systemd-timesyncd.service`
+    `man timesyncd.conf`
 
     https://www.cnblogs.com/pipci/p/12833228.html
 
@@ -11775,7 +11783,15 @@ systemd-timesyncd 只能作为客户端，不能作为 NTP 服务器，但如果
     Packet count: 263
         Frequency: -1.446ppm
 
-配置 NTP 服务器地址修改 /etc/systemd/timesyncd.conf 文件即可，默认虽然 NTP 的选项都处于注释状态，但是systemd-timesyncd还是会去默认的NTP服务器进行同步，地址列表见章节 [国内的公共 NTP 服务器]。
+配置 NTP 服务器地址修改 /etc/systemd/timesyncd.conf 文件即可，默认虽然 NTP 的选项都处于注释状态，但是 systemd-timesyncd 还是会去默认的 NTP 服务器进行同步
+
+    [Time]
+    #NTP=
+    #FallbackNTP=0.debian.pool.ntp.org 1.debian.pool.ntp.org 2.debian.pool.ntp.org 3.debian.pool.ntp.org
+    NTP=ntp.ubuntu.com pool.ntp.org
+    FallbackNTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org
+
+    地址列表见章节 [配置公共 NTP 服务器]
 
 #### Windows加快 NTP 更新频率
 
