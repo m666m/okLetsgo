@@ -11578,15 +11578,92 @@ Debian、Fedora 等发行版都有自己的 NTP 服务器，开机后会自动�
 
     https://www.zhihu.com/question/30252609/answer/2276727955
 
-NTP 项目国内时间服务器，CERNET 的一堆服务器就在那里面，应该比较靠谱
+公共 NTP 服务器池
 
-    cn.pool.ntp.org
+    这些是由社区维护的 NTP 服务器池，支持全球用户：
 
-NTP 项目亚洲时间服务器，延迟情况不如国内的
+    pool.ntp.org（自动分配最近的服务器）
+
+    0.pool.ntp.org
+
+    1.pool.ntp.org
+
+    2.pool.ntp.org
+
+    3.pool.ntp.org
+
+根据所在地区选择更近的 NTP 服务器池：
+
+    亚洲：
+
+    NTP 项目亚洲时间服务器，延迟情况不如国内的
 
     asia.pool.ntp.org
 
-其它
+    0.asia.pool.ntp.org
+
+    1.asia.pool.ntp.org
+
+    欧洲：
+
+    europe.pool.ntp.org
+
+    0.europe.pool.ntp.org
+
+    1.europe.pool.ntp.org
+
+    北美：
+
+    north-america.pool.ntp.org
+
+    0.north-america.pool.ntp.org
+
+    1.north-america.pool.ntp.org
+
+    中国：
+
+    NTP 项目国内时间服务器，CERNET 的一堆服务器就在那里面，应该比较靠谱
+
+    cn.pool.ntp.org
+
+    0.cn.pool.ntp.org
+
+    1.cn.pool.ntp.org
+
+知名组织和机构提供的公共 NTP 服务器：
+
+    # Cloudflare
+    time.cloudflare.com
+
+    # Google 公共 NTP：
+
+    time.google.com
+
+    time1.google.com
+
+    time2.google.com
+
+    time3.google.com
+
+    time4.google.com
+
+    # 微软公共 NTP：
+
+    time.windows.com
+
+    # 苹果公共 NTP：
+
+    time.apple.com
+
+    time.asia.apple.com
+
+    # NIST 公共 NTP（美国国家标准与技术研究院）：
+
+    time.nist.gov
+
+    time-a.nist.gov
+
+    time-b.nist.gov
 
     # 不建议使用中国科学院国家授时中心，精度不高，专业的人家有自己的协议，商业的有北斗，对外开放的这个是免费凑合的
     # https://www.cas.cn/tz/201809/t20180921_4664344.shtml
@@ -11598,24 +11675,23 @@ NTP 项目亚洲时间服务器，延迟情况不如国内的
     # 教育网
     time.edu.cn
 
+    edu.ntp.org.cn
+
     # 清华
     ntp.tuna.tsinghua.edu.cn
 
     # 阿里云还是算了，2023年开始连自己的整个云服务平台都出现崩溃
+    ntp.aliyun.com
 
-    # 微软
-    time.windows.com
+    ntp1.aliyun.com
 
-    # 苹果
-    time.asia.apple.com
+    ntp2.aliyun.com
 
-    # Cloudflare
-    time.cloudflare.com
+    # 腾讯云
 
-    # google
-    time.google.com
+    ntp.tencent.com
 
-> 配置 NTP 服务器最佳方案
+> 使用 NTP 服务器最佳方案
 
     https://documentation.suse.com/zh-cn/sles/15-SP4/html/SLES-all/cha-ntp.html#sec-net-xntp-netconf
 
@@ -11623,7 +11699,7 @@ NTP 项目亚洲时间服务器，延迟情况不如国内的
 
     local stratum 10
 
-使用控制命令 chronyc 查看时间同步源，出现 ^* 表示当前最佳服务器
+查看时间同步源，出现 ^* 表示当前最佳服务器
 
     $ chronyc sources -v
 
