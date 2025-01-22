@@ -158,7 +158,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias mans='echo "[模糊查找man手册]" && man -k'
 
     # chrony
-    alias chronys='echo "[虚拟机跟宿主机对时]" && sudo systemctl restart chronyd'
+    alias chronys='echo "[虚拟机跟宿主机对时]" && sudo chronyc makestep'
 
     # ssh
     alias sshs='echo "[跳过其它各种协商使用密码连接主机]" && ssh -o "PreferredAuthentications password"'
