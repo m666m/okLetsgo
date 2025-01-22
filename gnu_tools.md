@@ -11691,13 +11691,17 @@ Debian、Fedora 等发行版都有自己的 NTP 服务器，开机后会自动�
 
     ntp.tencent.com
 
-> 使用 NTP 服务器最佳方案
+> 使用 NTP 服务器的最佳方案
 
     https://documentation.suse.com/zh-cn/sles/15-SP4/html/SLES-all/cha-ntp.html#sec-net-xntp-netconf
 
 要同步同一网络中的多台计算机的时间，建议不要直接通过外部服务器同步所有计算机。比较好的做法是将其中一台计算机作为时间服务器（它与外部时间服务器同步），其他内网计算机作为它的客户端。将 local 指令添加至该服务器的 /etc/chrony.conf，以将其与权威时间服务器区分开：
 
     local stratum 10
+
+选择离你地理位置较近的 NTP 服务器可以减少延迟，提高同步精度。
+
+如果需要高精度时间同步，建议使用多个 NTP 服务器作为备份。
 
 查看时间同步源，出现 ^* 表示当前最佳服务器
 
