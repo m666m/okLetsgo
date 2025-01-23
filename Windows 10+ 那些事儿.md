@@ -2395,6 +2395,22 @@ NAT 模式：
 
 目前看是企业级应用优先，在 Windows Sever 上才有 DDA，M$ 忙着赚 AI 云计算的钱呢。
 
+#### Hyper-V 安装 Linux 虚拟机
+
+通常情况下，Windows 宿主机使用 WSL2 即可，没必要单独装 Linux 虚拟机了，参见章节 [WSL 适用于 Linux 的 Windows 子系统]。
+
+如果用 Hyper-V 安装 Linux 虚拟机，最好安装客户机代理工具 hyperv-daemons，类似 vmware tools、virtualbox tools、qemu-guest-agent等，会大大提升系统 IO 速度，改善使用体验：
+
+    Debian：安装 hyperv-daemons 软件包
+
+        hv_fcopy_daemon 文件拷贝服务，主机拷贝文件到虚拟机
+
+        hv_kvp_daemon   KVP服务，主机设置虚拟机的ip网络
+
+        hv_vss_daemon   卷影复制服务 volume shadow copy service (VSS)，主机可以在快照时冻结虚拟机的文件系统
+
+    Fedora：安装 hyperv-daemons 软件包，还可以安装 hyperv-tools 工具包
+
 ### 使用 VM Ware、安卓模拟器等虚拟机提示需要关闭 Hyper-V
 
 该问题已经在 2022 版的 Windows 10 中解决了
