@@ -4428,7 +4428,6 @@ linux下shell终端里有行编辑功能，在命令提示符下默认可以像 
 
     执行 `set` 可以查看当前 shell 的环境变量和函数设置，便于调试。
 
-
 > 当前shell和嵌套层数
 
 查看当前所使用的shell程序
@@ -11513,9 +11512,9 @@ Windows 版
 
     hwclock 命令选项：
 
-        -s, --hctosys 	# 将硬件时间同步到系统时间：以硬件时钟为准，校正系统时钟
+        -s, --hctosys     # 将硬件时间同步到系统时间：以硬件时钟为准，校正系统时钟
 
-        -w, --systohc 	# 将系统时间同步到硬件时间：以系统时钟为准，校正硬件时钟
+        -w, --systohc     # 将系统时间同步到硬件时间：以系统时钟为准，校正硬件时钟
 
     # 以硬件时钟为准，校正系统时钟，默认 --utc
     $ sudo hwclock -s
@@ -15571,6 +15570,7 @@ xfreerdp 是命令行客户端，替代了已不再开发的 rdesktop
         按 `ctrl + alt +回车` 退出或进入全屏模式。
 
 因为 Linux 支持多种桌面环境如 gnome、ked、i3 等待，各个远程桌面的客户端软件，登录后的默认桌面各不相同，详见各软件的说明。
+
 #### 使用 Remmina 客户端软件
 
 支持多种远程桌面/远程连接的客户端软件，必备软件
@@ -15859,7 +15859,9 @@ xrdp 的组件
 
 关闭 Linunx 发行版内置的共享桌面功能：二者都使用 RDP 协议默认端口 3389，会导致冲突无法连接，找到桌面设置里的共享桌面功能，选择关闭。
 
-注销您本地的 Linux 桌面登录（logged in on the system graphical console），否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退。与发行版内置的 Gnome 共享桌面（实质是共享屏幕）不同，xrdp 支持多用户连接，所以本地的屏幕前看不到远程连接过来的用户的操作，本地屏幕可以是用户登录等待解锁的状态。原因是基于 systemd 的操作系统，多个远程桌面会话使用同一个用户登录，会共享同一个桌面环境，这是 D-Bus 共享数据的设计 https://github.com/neutrinolabs/xrdp/wiki/Tips-and-FAQ#why-cant-i-log-the-same-user-on-on-the-graphical-console-and-over-xrdp-at-the-same-time
+注销您本地的 Linux 桌面登录（logged in on the system graphical console），否则在同名用户远程连接 xrdp 时，您将遇到黑屏闪退
+
+    与发行版内置的 Gnome 共享桌面（实质是共享屏幕）不同，xrdp 支持多用户连接，所以本地的屏幕前看不到远程连接过来的用户的操作，本地屏幕可以是用户登录等待解锁的状态。原因是基于 systemd 的操作系统，多个远程桌面会话使用同一个用户登录，会共享同一个桌面环境，这是 D-Bus 共享数据的设计 <https://github.com/neutrinolabs/xrdp/wiki/Tips-and-FAQ#why-cant-i-log-the-same-user-on-on-the-graphical-console-and-over-xrdp-at-the-same-time>
 
     如果本地计算机是无人值守（HEADLESS）模式或虚拟机，记得在断开本地连接之前（本地拔下显示器之前），在用户设置里“取消”自动登录，不然开机就本地登录了，无法从远程登录 xrdp 服务端了
 
