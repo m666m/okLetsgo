@@ -753,7 +753,6 @@ function PS1_host_name {
         # 如果是在交互式容器 toolbox 中，$HOSTNAME 与宿主机一致，但 /etc/hostname 变为 toolbox
         if [[ $(uname -n) = 'toolbox' ]]; then
             # toolbox 容器中只能用这个方式判断是否远程连接中，不是很靠谱
-            #[[ $(ps -ef |grep "sshd: $USER@pts" |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
             [[ $(pstree |grep sshd |grep toolbox |grep podman |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
 
         else
@@ -804,8 +803,8 @@ function PS1git-bash-new-line {
 #   CPU Load Average 的值应该小于CPU核数的70%，取1分钟平均负载
 function PS1raspi-warning-info {
 
-    [[ $(command -v vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
-    #[[ $(uname -m) = 'x86_64' ]] && return
+    #[[ $(command -v vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
+    $(command -v vcgencmd >/dev/null 2>&1) ||return
 
     local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 

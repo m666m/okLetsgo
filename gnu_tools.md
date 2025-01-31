@@ -4142,6 +4142,9 @@ test 和 [] 是等价的，[] 注意两边留空格
     # 执行命令，如果成功则执行xxx，否则执行yyy
     $(lscpu |grep -q arm) && echo "xxx" || echo "yyy"
 
+    [[ $(command -v vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
+    等效 $(command -v vcgencmd >/dev/null 2>&1) ||return
+
 使用逻辑运算符将多个 [[ ]] 连接起来依然是可以的，这是 Shell 本身提供的功能，跟 [[ ]] 或者 test 没有关系，如下所示：
 
     [[ -z $str1 ]] || [[ -z $str2 ]]
