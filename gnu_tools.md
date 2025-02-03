@@ -15958,7 +15958,7 @@ xorgxrdp：
 
     系统更新仍会提示输入密码
 
-    gnome-keyring 不会自动解锁自动保存的浏览器/ssh/gpg等密码，需要安装 seahorse，打开软件后手工点击解锁即可
+    gnome-keyring 不会自动解锁自动保存的浏览器/ssh/gpg等密码，需要使用 seahorse，打开软件后手工点击解锁
 
     有些系统设置选项无法在远程桌面登录环境下设置，比如本地开机后用户自动登录等
 
@@ -16741,13 +16741,13 @@ WantedBy=multi-user.target
 
         因为登录后选择了不解锁钥匙圈，在系统弹窗时要仔细看下提示，到底是应用程序的密码输入界面，还是钥匙圈解锁的界面，二者的密码是不同的。
 
-    使用图形化工具 gnome passwords and keys (seahorse) 可以方便的看到钥匙圈是否处于解锁状态，点击图标会提示输入登录密码解锁该钥匙圈。
+使用图形化工具可以方便的看到钥匙圈是否处于解锁状态，点击图标会提示输入登录密码解锁该钥匙圈，详见下面子章节。
 
 #### 密码管理器应用程序
 
-MacOS： 用自己的密钥管理器
-
 > Gnome 桌面：GNOME Keyring（gnome-keyring）钥匙圈
+
+    https://cn.linux-terminal.com/?p=3195
 
     https://wiki.gnome.org/action/show/Projects/GnomeKeyring
 
@@ -16761,7 +16761,7 @@ MacOS： 用自己的密钥管理器
 
 因为代替了 ssh-agent、gpg-agent 的功能，所以 gnome-keyring-daemon 不能与之共存，使用一个即可
 
-图形界面管理程序叫 Passwords and Keys（命令行程序名 seahorse）
+图形界面管理程序叫 Passwords and Keys，其命令行程序名 seahorse
 
     用户可以建立多个钥匙圈，普通使用为了方便保持一个就可以了。
 
@@ -16786,6 +16786,10 @@ KDE Wallet 支持 ssh、git，但是不支持 gpg
     https://userbase.kde.org/KGpg
 
     https://apps.kde.org/kgpg/
+
+> MacOS： 也有自己的密钥管理器
+
+略
 
 > 第三方密码管理器
 
