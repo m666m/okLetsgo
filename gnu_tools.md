@@ -12651,65 +12651,6 @@ Gnome Software 里提示软件更新与命令行运行 `dnf upgrade` 和 `flatpa
             https://www.smplayer.info/
                 https://github.com/smplayer-dev/smplayer
 
-    Kodi 非常适合安装到你的 SONY TV 上的播放工具，支持多个平台
-
-            https://kodi.tv/
-                https://github.com/xbmc/xbmc/
-                https://kodi.wiki/view/Main_Page
-
-            索尼电视安装KODI播放器并顺利点亮杜比视界的全过程 https://zhuanlan.zhihu.com/p/666340153
-
-            中文资料比较多 https://www.kodi.org.cn/ http://www.kodiplayer.cn/
-
-            如果在 NAS 上部署服务端，可以用 jellyfin https://jellyfin.org/
-
-        界面和文件列表支持中文：设置->界面->皮肤->字体，把默认字体改为 Arial,然后就可以切换语言 Regional——language——Chinese（simple）。如果没有出现 Chinese 选项：使用 addon 里选择 repo 访问下网络，然后才可以设置“界面外观” 选择语言为中文。
-
-        如果插件界面列不出来，多试几次，不行就换清华源
-
-             https://mirrors.tuna.tsinghua.edu.cn/help/kodi/
-
-        建议把设置模式调为“专家”，这样设置选项会多出来很多。
-
-        Kodi 在 4K 显示器设置分辨率显示 1920×1080P，是指软件界面 1080P，而不是播放的视频 1080P，播放时会调用系统的 GPU 输出 4K。
-
-        打开 Kodi 设置 - 播放器 - 视频，左下角切换为“专家”，开启 “Allowed HDR dynamic metadata formats”，允许 HDR 动态元数据格式。使用显示 HDR 功能：开启（启用自动切换 HDR 模式和色彩空间，如果显示器不支持 HDR 则不会有这个功能项目）。Kodi 在非 HDR 设备上播放 HDR 视频能自动变成 SDR 模式，不用担心颜色发灰发白。
-
-        Kodi 最强大的地方是在你的电视上直接建立影视信息库，免除在 NAS 上安装 jellyfin
-
-                http://www.kodiplayer.cn/course/2866.html
-
-                插件库社区  https://www.kodinerds.net/   repo https://repo.kodinerds.net/
-
-            打开 Kodi,左侧菜单找到 “视频”，右侧从“类别” 里选择 “文件”：“添加视频”-“浏览”，找到视频文件夹所在位置。
-
-            本机就选对应的盘符；局域网共享的 Windows 系统选 SMB；Linux 系统(NAS 等设备)选 NFS。WebDAV、FTP 等协议的共享设备点击“添加网络位置……”,协议菜单可点击箭头切换，输入设备地址、用户名及密码信息。
-
-            注意权限问题，如果服务器上没有给读取权限，会无法选择文件夹。例如群晖 NAS 需要在共享文件夹里设置 NFS 权限。
-
-            找到视频所在目录，然后点“确定”，你可以对此视频源起名便于识别。
-
-            “该目录包含” 设置视频源的内容类型，如果该视频源是电影目录，就设置为 “电影”(在 Kodi “电影”里展示)；电视剧就选 “剧集”(在 Kodi “剧集”里展示)；选 “无”(在 Kodi “视频”文件里以文件浏览器展示)。
-
-            可选 “信息提供者”就是设置搜刮器来匹配电影资料，下载海报演职员等信息。默认是 The Movie Database，也可以去插件里安装更多刮削器。
-
-                在插件里设置 “电影信息”，将电影/剧集文件夹添加到Kodi视频源里，就能在“电影”“剧集”菜单中以海报墙形式展示影视资源，显示影片演职员、上映时间、剧情简介等内容，提高观影体验，可以使用 douban 和 mtime 的 scraper。
-
-            服务器上电影文件命名规则：英文名.中文名.年份，可以匹配到绝大多数电影。
-
-            一部电影被分割成了多个文件的话，命名方式是：
-
-                英文名.中文名-cd1.mp4
-
-                英文名.中文名-cd2.mp4
-
-                英文名.中文名-cd3.mp4
-                ……
-
-                这样就能识别为一部电影，播放的时候自动合并为一部完整的电影。
-
-            剧集命名规则：一部剧集建一个文件夹，名为英文名.中文名；文件命名为S01E01，包含季集信息。
-
     跨平台的高级字幕编辑工具
 
         Aegisub https://github.com/Aegisub/Aegisub
