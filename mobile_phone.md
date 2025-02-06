@@ -1221,11 +1221,94 @@ MU-MIMO 是基于多天线技术的，支持多用户通过使用不同的空间
 
     https://post.smzdm.com/p/az329xqo/
 
+    https://zhuanlan.zhihu.com/p/402691233
+
 作为一款采用博通CPU的路由器，最大的优点就可以刷固件，Koolshare 已经有了 RAX50 的梅林固件，直接下载就可以使用。
 
 固件下载地址：[网件移植固件](https://www.koolcenter.com/article/firmware/6_download/netgear_mod/)
 
-固件下载到 u 盘，插入路由器的 usb 端口之后，在 Chrome浏览器中访问网件路由器管理页面，然后依次进入【高级】 - 【管理】 - 【路由器升级】，点击【浏览】，选择下载好的 “**.chk” 的固件文件。然后点击【上传】即可。
+固件下载到 u 盘，插入路由器的 usb 端口之后，在 Chrome浏览器中访问网件路由器管理页面，然后依次进入【高级】 - 【管理】 - 【路由器升级】，点击【浏览】，选择下载好的 “**.chk” 的固件文件。然后点击【上传】即可。点击上传后，会用大概 2 分钟的时间上传。上传完毕后，点击【是】，进行固件升级，大概 1 分钟的时间，完成后会自动重启路由器。
+
+注意：重启完成后，需要用网线插到路由器 Lan 口，另一头插到电脑上，打开路由器进行设置。
+
+另外，刷完梅林后，路由器的网址变成了：192.168.50.1。
+
+打开设置页面后，首先跟着想到，设置网络名、密码。
+
+然后要想安装插件，还需要执行 2 个步骤。
+
+①、恢复梅林的出厂设置
+
+页面路径是： 【系统管理】 - 【恢复/导出/上传设置】- 【原⼚默认值】处，勾选【恢复】按钮右上⻆选框，点击 【恢复】后并确认操作。路由器会重启，重启完成后，固件就恢复到出⼚设置了。
+
+这里恢复的是「所刷梅林固件的出厂设置」，不是路由器的。
+
+②、打开 2 个设置。
+
+路径是：在【系统管理】 - 【系统设置】内，将持久化 JFFS 的两个选项勾选为“是”，选择【应⽤本⻚⾯设置】按钮，然后重启路由器。
+
+完成这 2 步后，恭喜你，梅林固件已经刷成功了。可以在软件中心安装插件啦~
+
+## entware 嵌入式平台软件仓库
+
+NAS、路由器等嵌入式设备，自带软件不多，通过安装 Entware 可以轻松的安装很多软件
+
+    https://github.com/Entware/Entware
+
+    https://www.xubo.wang/2021/12/29/entware%E4%BD%BF%E7%94%A8/
+
+新入手了一台Wd pr4100 西数的nas, 系统是 myclound os5,实质是 busybox 只有少数的第三方软件,很不方便。后来研究了下，可以安装 entware 来安装其他的软件。
+
+entware安装
+
+已笔者的wd pr4100 为例，在后台安装 最后,nas重启后会 清除用户的各种操作,在pr4100 做好的安装包会做软链/opt 和 /root。[wd源码地址](https://github.com/WDCommunity/wdpksrc/tree/master/wdpk/entware)
+
+Entware的包管理器是opkg，类似于apt-get和yum，只不过Entware独立于操作系统之外，不使用系统本身的依赖，现仓库提供的软件基于GCC 7.3和glibc 2.27构建，安装的软件根目录位于/opt目录，相当于一个chroot环境。
+
+[安装包地址](http://bin.entware.net/)
+
+根据系统版本 进行安装
+
+    uname -m on your device's default shell is one of: armv5, armv7l, aarch64, mips, mipsel, x86 or x86_64.
+
+
+aarch64安装：
+
+    wget http://bin.entware.net/x64-k3.2/installer/generic.sh
+    sh generic.sh
+entware 默认安装在 /opt nas的/opt 可能没有空间，就需要自己创建软链接
+
+将Entware安装软件的目录添加到系统PATH变量：
+
+    export PATH="$PATH:/opt/bin/:/opt/sbin/"
+    echo 'export PATH="$PATH:/opt/bin/:/opt/sbin/"' >> /root/.bashrc
+
+entware使用->包管理工具Opkg
+Opkg是一个轻量快速的套件管理系统，已成为 Opensource 界嵌入式系统标准。常用于路由、交换机等嵌入式设备中，用来管理软件包的安装升级与下载。
+
+OPKG 没有仅仅将软件安装到一个单独的路径（如：/opt），而是根文件系统上的一个完整的包管理器。它也包含了增加内核模块与驱动的可能性。OPKG 有时被称为 Entware ，但这主要是针对为嵌入式设备准备的 Entware 仓库
+
+使用opkg安装软件：
+
+    opkg find vim
+    opkg install vim
+
+常用命令
+
+    命令	        介绍
+    opkg update	    更新可以获取的软件包列表
+    opkg upgrade	对已经安装的软件包升级
+    opkg list	    获取软件列表
+    opkg install	安装指定的软件包
+    opkg remove	    卸载已经安装的指定的软件包
+    opkg list-installed	    列出已安装软件包
+    opkg list-upgradable	列出可升级的已安装软件包
+    opkg list-changed-conffiles	列出用户修改过的配置文件
+    opkg files	列出属于软件包 的文件 仅适用于已安装的软件包
+    opkg search	列出包含
+    opkg info [pkg globp]	显示软件包 的所有信息
+    opkg status [pkg globp]	显示软件包 的状态
+    opkg download	        下载软件包 到当前目录
 
 ## 找回索尼电视原生系统界面，索尼Pro模式
 
