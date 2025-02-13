@@ -291,17 +291,25 @@ u盘制作工具
 
 #### 用 Rufus 制作 Windows 10+ 安装u盘
 
+    https://rufus.ie/
+        https://github.com/pbatard/rufus
+
+    竞品 balenaEtcher 支持多平台
+
+        https://etcher.balena.io/
+            https://github.com/balena-io/etcher
+
 用 Rufus 制作安装u盘时，分区类型要选择 GPT，这时目标系统类型自动选择 UEFI。
 
 对 Windows 10 来说这是可选的，如果u盘用 MBR 模式启动，那主板 BIOS 也得设置存储设备为非 UEFI（或 CMS 兼容模式）才能引导，但这会导致 Windows 10 安装后无法开启 Secure Boot 功能。
 
 特殊之处在于 Rufus 3.17 版之前制作的启动u盘，初始引导启动需要临时关闭“Secure Boot”（3.17 之后的版本不用了，已经取得 Windows 的签名了）：
 
-    一、根据 Rufus 的要求 <https://github.com/pbatard/Rufus/wiki/FAQ#Windows_11_and_Secure_Boot>，见下面的章节 [老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）] 中的 [凑合方案：主板 BIOS 设置为 CSM 方式安装 Windows 可以连接 DP 口]。
+    一、根据 Rufus 的要求 <https://github.com/pbatard/rufus/wiki/FAQ#Windows_11_and_Secure_Boot>，见下面的章节 [老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）] 中的 [凑合方案：主板 BIOS 设置为 CSM 方式安装 Windows 可以连接 DP 口]。
 
     用 Rufus 制作的启动u盘（制作时的选项是“分区类型 GPT+目标系统类型 UEFI”）启动计算机，Windows 安装程序自动启动，按提示点选下一步，注意原硬盘分区建议全删，这时 Windows 安装程序开始拷贝文件，并未实质进入配置计算机硬件系统的过程，这时的 Windows 安装过程并不要求 Secure Boot。
 
-    注：觉得 Secure Boot 关闭就不安全了？ 不，它本来就不是什么安全措施，只是名字叫安全，其实做的工作就是数字签名验证，而且微软的密钥已经在 2016 年就泄露了…… 参见<https://github.com/pbatard/Rufus/wiki/FAQ#Why_do_I_need_to_disable_Secure_Boot_to_use_UEFINTFS>。也就是说，各个厂商制作的驱动，现在都需要给微软发申请得到数字签名，这样操作系统启动时才会加载该驱动，仅此而已。
+    注：觉得 Secure Boot 关闭就不安全了？ 不，它本来就不是什么安全措施，只是名字叫安全，其实做的工作就是数字签名验证，而且微软的密钥已经在 2016 年就泄露了…… 参见<https://github.com/pbatard/rufus/wiki/FAQ#Why_do_I_need_to_disable_Secure_Boot_to_use_UEFINTFS>。也就是说，各个厂商制作的驱动，现在都需要给微软发申请得到数字签名，这样操作系统启动时才会加载该驱动，仅此而已。
 
     至于 Linux，没参与微软的这个步骤的话，主板厂商不会内置它的公钥到主板中，安装的时候无法开启 Secure Boot 选项。后续如何解决还需要 Linux 跟微软的协调解决。
 
