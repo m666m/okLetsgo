@@ -272,12 +272,12 @@ Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
 u盘制作工具
 
-    开源的 rufus 这个最佳
+    开源的 rufus 这个最佳，可惜只支持 Windows 下使用
 
         https://rufus.ie/
             https://github.com/pbatard/rufus
 
-    免费的 balena Etcher 支持多平台，Linux 下可用
+    社区版 balena Etcher 支持多平台
 
         https://etcher.balena.io/
             https://github.com/balena-io/etcher/
@@ -290,14 +290,6 @@ u盘制作工具
         https://soulteary.com/2023/11/08/open-source-all-in-one-usb-flash-drive-maintenance-tool-ventoy.html
 
 #### 用 Rufus 制作 Windows 10+ 安装u盘
-
-    https://rufus.ie/
-        https://github.com/pbatard/rufus
-
-    竞品 balenaEtcher 支持多平台
-
-        https://etcher.balena.io/
-            https://github.com/balena-io/etcher
 
 用 Rufus 制作安装u盘时，分区类型要选择 GPT，这时目标系统类型自动选择 UEFI。
 
