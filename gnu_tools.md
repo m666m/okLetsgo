@@ -2689,7 +2689,7 @@ Powerline 最初是一款 Vim statusline 的插件，后来发展到支持 bash�
 
     配置说明 https://powerline.readthedocs.io/en/master/configuration/reference.html
 
-powerline 最大的优点是它使用符号字体图形化的显示文件夹、电池、git状态、进度等，插件制度非常灵活。这些字体需要单独安装，详见章节[图标字体]。
+powerline 最大的优点是它使用图标字体图形化的显示文件夹、电池、git状态、进度等，插件制度非常灵活。这些字体需要单独安装，详见章节[图标字体]。
 
 powerline 的缺点是它的代码 python2、3 混杂，安装和使用都很难配置，所以现在有些插件不使用它了。
 
@@ -2936,11 +2936,13 @@ Nerd font 是 Powerline fonts 的超集，他几乎把目前市面上主流的 i
 
         # Set permissions and update SELinux labels
         $ sudo chown -R root: /usr/share/fonts/MesloLGSNF
-        $ sudo chmod 755 /usr/share/fonts/MesloLGSNF/*
+        $ sudo chmod 755 /usr/share/fonts/MesloLGSNF/
+        $ sudo chmod 644 /usr/share/fonts/MesloLGSNF/*
         $ sudo restorecon -vFr /usr/share/fonts/MesloLGSNF
 
         $ sudo chown -R root: /usr/share/fonts/FiraCodeNF
-        $ sudo chmod 755 /usr/share/fonts/FiraCodeNF/*
+        $ sudo chmod 755 /usr/share/fonts/FiraCodeNF/
+        $ sudo chmod 644 /usr/share/fonts/FiraCodeNF/*
         $ sudo restorecon -vFr /usr/share/fonts/FiraCodeNF
 
         # Update the font cache
@@ -2955,7 +2957,7 @@ Gnome 桌面环境下双击字体文件，会调用 gnome-font-viewer 图形化�
 
 确认下字体文件设置权限
 
-    /usr/share/fonts/ 下的目录里字体文件是 755
+    /usr/share/fonts/ 下的目录是 755，字体文件是 644
 
     $HOME/.local/share/fonts 下的字体文件是 644
 
@@ -3129,7 +3131,7 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
         cd ~/powerlevel10k
         exec zsh'
 
-炫酷的符号字体，需要在你使用终端模拟器的计算机上安装 MesloLGS NF 字体，详见章节[图标字体]。
+要在字符界面显示炫酷的图标，需要在你使用终端模拟器的计算机上安装 MesloLGS NF 字体，详见章节[图标字体]。
 
 终端模拟器最好明确设置 $TERM 变量，这样各个插件会自动使用更丰富的颜色
 
@@ -12924,6 +12926,8 @@ OpenType 可变字体（OpenType variable fonts）技术
 
     https://blog.lilydjwg.me/2023/3/5/linux-fonts.216591.html
 
+    除了中文字体，还可以安装符号字体用于编程和控制台显示，见章节 [图标字体]
+
 > 对版本比较老的不支持中文的 Linux
 
 早些年还没有 Noto 和思源的时候，Linux 系统上通常使用文泉驿正黑或者文泉驿微米黑。后者是基于 Android 系统上的 Droid Sans Fallback 字体，体积较小。再之前是文鼎系列字体，也就是名字「AR PL」开头、包名叫 ttf-arphic-{uming,ukai} 的那些。
@@ -12939,18 +12943,18 @@ OpenType 可变字体（OpenType variable fonts）技术
 
 > 主流 Linux 发行版使用 Noto 字体
 
-现在 Linux 上常用的、在维护的开源中文字体就一套，同时被 Noto 和思源两个项目收录。
-
-也就是说，内置了支持汉语的字体：
+现在的主流发行版内置了支持汉语的字体 Noto Fonts：
 
     $ dnf list --installed |grep noto|grep cjk
     google-noto-sans-cjk-vf-fonts.noarch
     google-noto-sans-mono-cjk-vf-fonts.noarch
     google-noto-serif-cjk-vf-fonts.noarch
 
-Noto 系列字体是 Google 主导的，名字的含义是「没有豆腐」（no tofu），因为缺字时显示的方框或者方框被叫作「tofu」。
+其实开源中文字体就一套，同时被 Noto 和思源两个项目收录
 
-思源系列字体是 Adobe 主导的。其中汉字部分被称为「思源黑体」和「思源宋体」，是由这两家公司共同开发的，两个字体系列的汉字部分是一样的。
+    Noto 系列字体是 Google 主导的，名字的含义是「没有豆腐」（no tofu），因为缺字时显示的方框或者方框被叫作「tofu」。
+
+    思源系列字体是 Adobe 主导的。其中汉字部分被称为「思源黑体」和「思源宋体」，是由这两家公司共同开发的，两个字体系列的汉字部分是一样的。
 
 Noto 字体在 Arch Linux 上位于以下软件包中：
 
@@ -12962,7 +12966,7 @@ Noto 字体在 Arch Linux 上位于以下软件包中：
 
     noto-fonts-extra: 提供额外的字重和宽度变种
 
-Noto 系列字族名只支持英文，命名规则是 Noto + Sans 或 Serif + 文字名称。其中汉字部分叫 Noto Sans/Serif CJK SC/TC/HK/JP/KR，最后一个词是地区变种。
+Noto 系列字族名只支持英文，命名规则是 Noto + Sans 或 Serif + 文字名称。其中汉字部分叫 Noto Sans/Serif CJK SC/TC/HK/JP/KR，词 CJK 表示东亚字体中日韩，最后一个词是地区变种。
 
 思源字体在 Arch Linux 上位于以下软件包中：
 
