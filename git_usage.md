@@ -5222,7 +5222,7 @@ hosts 文件在每个系统的位置不一：
 这两个地址就基本满足使用要求了。
 
 2、为了使 github 的的各个功能都可用，有很多 ip 地址需要替换，而全套替换比较麻烦，好在 github 上有自动化项目，直接拉取他们每日更新的文件内容填充到 hosts里即可：
- 
+
     全 https://github.com/maxiaof/github-hosts/blob/master/hosts
         查询网址 https://tools.tutorialspoint.com/ip_lookup_ajax.php?host=github.com
 
@@ -5232,7 +5232,7 @@ hosts 文件在每个系统的位置不一：
     代码使用简单，可惜不更新了 https://github.com/ovenx/github-hosts
 
     缺点是调用的国外网站查询的ip地址，不是针对国内优化速度的
- 
+
 执行以下代码
 
 ```bash
@@ -5357,6 +5357,877 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 #### John 接受了 Pull Request
 
 最后，John 接受了这些修改，将 feature 分支并入了 master 分支，关闭了这个 Pull Request。功能现在已经整合到了项目中，其他在 master 分支上工作的开发者可以使用标准的 git pull 命令将这些修改拉取到自己的本地仓库。
+
+## 配置 vs code
+
+    https://code.visualstudio.com/docs#vscode
+
+从源码构建 vscode
+
+    ttps://cloud.tencent.com/developer/article/1588399
+
+历史记录保存位置
+
+    %APPDATA%\Code\User\History
+
+配置文件是给调试模式用的
+
+    %APPDATA%\Code\User\settings.json
+
+        https://code.visualstudio.com/docs/editor/debugging#_launch-configurations
+
+    调试模式可以在库中加断点 在.vscode\launch.json 中添加"justMyCode": false
+
+    添加环境变量："env": { "QT_QPA_PLATFORM": "xcb" }
+
+插件安装位置
+
+    %USERPROFILE%\.vscode
+
+### Linux 下安装 vs code
+
+    https://code.visualstudio.com/docs/setup/linux
+
+比较安全又方便的是在 distrobox 里安装使用 vscode
+
+    https://ublue.it/guide/toolbox/#integrating-vscode-with-distrobox
+
+    https://distrobox.privatedns.org/posts/integrate_vscode_distrobox.html
+
+    两种方式：
+
+        在 distrobox 里安装 vscode，然后用 distrobox-export 导出到主机下使用。这样 vscode 集成的终端及插件都在 distrobox 里运行。
+
+        或者在主机安装 vscode，使用插件 Dev Containers 来连接使用 distrobox。
+
+也可集成安装到 toolbox 中
+
+    https://github.com/owtaylor/toolbox-vscode
+
+VSCodium
+
+    https://github.com/VSCodium/vscodium/blob/master/DOCS.md
+
+    VSCodium 从 VS Code 中移除了遥测部分。除此之外，它就是这个微软项目的克隆版，在外观和功能上与著名的 VS Code 完全相同。不过插件商店也改为开源的了，这样无法使用微软的那些官方插件了。。。
+        https://www.roboleary.net/tools/2022/04/20/vscode-telemetry.html
+
+        https://zhuanlan.zhihu.com/p/71050663
+
+不嫌麻烦可以安装 flatpak 版 VSCode、VSCodium
+
+    https://github.com/flathub/com.vscodium.codium/
+
+    终端下打印 'Warning: waitpid override ignores groups' 的说明
+
+        https://github.com/flathub/com.visualstudio.code/issues/370
+
+### vscode 插件
+
+插件的安装位置为 C:\Users\你的用户名\.vscode\extensions
+
+#### 中文语言包
+
+    MS-CEINTL.vscode-language-pack-zh-hans
+
+#### 护眼主题
+
+在 vscode 下按 F1 输入命令 'Generate Color Theme From Current Settings'，会自动新建一个 theme 文件，自己慢慢研究吧
+
+    开发指南
+
+    https://github.com/bcomnes/tron-legacy-vscode/blob/master/vsc-extension-quickstart.md
+
+        各种图形对象说明 https://code.visualstudio.com/api/references/theme-color
+
+        语法着色说明 https://code.visualstudio.com/api/extension-capabilities/theming#textmate-theme-rules
+
+        添加颜色主题 https://code.visualstudio.com/docs/extensions/themes-snippets-colorizers#_adding-a-new-color-theme
+
+看代码和看文字有些区别，对比度以字体清晰可辨，段落分隔明显，亮度以清晰长时间看眼睛不费力为原则。
+
+整体的亮度很重要：除了白天和黑夜，不同的光照条件下，不要只用一个主题，根据环境光亮度酌情切换，下为建议：
+
+浅色
+
+|            看代码                              |          看文字            |
+|-----------------------------------------------|---------------------------|
+|   MacOS Modern Light：Xcode Default           |         <----             |
+|                                               | Solarized Light           |
+|                                               | Winter is coming：Light    |
+
+深色
+
+|            看代码                             |           看文字              |
+|----------------------------------------------|-------------------------------|
+|   MacOS Modern Dark：Ventura Xcode Default   | MacOS Modern Dark：Xcode Modern|
+|   Nord                                       |          <----                |
+|                                              | Material Neutral              |
+|   Winter is coming：Dark Blue                | Winter is coming：Dark Black   |
+
+MacOS Modern Theme 看代码深色浅色都好，多选单选查找相关内容高亮颜色都有区分，而且不刺眼
+
+    davidbwaters.macos-modern-theme
+
+凛冬来临 Winter is coming，对比度好清晰不刺眼，深浅主题都可以。
+
+    johnpapa.winteriscoming
+
+北极 Nord，夏夜使用，凉爽的感觉
+
+    arcticicestudio.nord-visual-studio-code 适合环境亮度高的时候使用
+
+    marlosirapuan.nord-deep     深点的北极，适合低光
+
+    dnlytras.nord-wave          最深的北极，适合无光
+
+Material Neutral 深色看文字比较养眼
+
+    bernardodsanderson.theme-material-neutral
+
+Solarized Light（vscode 自带），这个是羊皮纸底色，但是语法高亮浅蓝色太多，视物不清，需要自改。
+
+创·战纪
+
+    风格来源
+        https://disneyworld.disney.go.com/attractions/magic-kingdom/tron-lightcycle-run/
+
+    Tron Dark Themes 有蓝、黄、橙三种配色，酷
+        Vaporizer.tron-theme
+
+        TronLight Theme 语法文件好，只是蓝色的，不刺眼
+            gerane.Theme-TronLight
+
+        Tron Legacy 语法文件好，蓝色配红橙
+            gerane.Theme-TronLegacy
+
+#### 图标
+
+产品主题图标
+
+    davidbwaters.macos-modern-theme 自带的就好
+
+文件图标
+
+    vscode-icons-team.vscode-icons
+
+#### 不要用AI代码完成的插件
+
+全都把你的代码上传服务器了，包括 kate、IntelliCode、github copilot 等。
+
+原
+
+    "python.jediEnabled": True, // Falses
+
+现
+
+    https://docs.microsoft.com/zh-cn/visualstudio/intellicode/intellicode-visual-studio-code
+
+    "python.languageServer": "Jedi" // "Pylance"
+
+java 软件包安装及默认安装 IntelliCode，注意禁用。
+
+python 软件包为兼容老版本不用 pylance 的习惯，所以默认不安装 IntelliCode，不代表以后不装。
+
+> 不得不用 github copilot
+
+OpenAI 等人工智能助理是大势所趋了，不得不用了。会提示2个登录：
+
+    copilot 使用 github 账户登录，先登录网页版 github，然后点击授权第三方即可
+
+    然后 copilot 会申请读取 github 账户，同样在网页版 github 出点击授权同意即可
+
+#### 远程开发： Remote Development
+
+装这一个就会自动装一堆
+
+    ms-vscode-remote.vscode-remote-extensionpack
+
+远程开发最大的好处是你不需要在本地计算机保留代码了，省去每次在本地用 git 提交并推送远程仓库，然后 ssh 连接到远程开发机，再用 git 拉取同步代码，然后才能调试运行。当然了，开发机上的代码做了修改也要推送远程仓库的。
+
+Visual Studio Code Remote Development 允许您连接使用如下方式到远程服务器
+
+一、容器 container： vs code 直接编辑容器并使用
+
+二、连接到 Windows Linux 子系统 （WSL）：直接打开 wsl 环境下的文件夹
+
+三、ssh 连接到远程计算机：vs code 直接打开远程开发机上的文件夹进行编辑和调试运行
+
+首次连接到远程后需要等一下，vs code 会自动在远程服务器上安装 vs code server（在~/.vscode-server 目录下），此时打开的终端也是连接到远程后的tty了。
+
+需要在服务器上也安装扩展才能使用，点击 vs code 的侧栏“扩展”按钮，会看到你安装过的那些扩展都有了个提示 “Install in SSH：XXX”，酌情选择后点击安装即可。
+
+实质上是利用 ssh 端口转发在本地查看远程运行的 vs code server 的内容。
+
+打开远程ssh文件夹后，各插件不可用？
+
+    删除服务器上的 ~/.vscode-server 目录，重新安装插件
+    Extension not working on remote SSH?  Remove directory ~/.vscode-server
+    https://github.com/microsoft/vscode-remote-release/issues/1443
+
+四、远程隧道：微软提供中继服务的 SSH 端口转发，这样ssh连接内网计算机不需要有外网 ip 的 ssh中转服务器做反向端口转发了。
+
+    1、远程开发机下载安装 code cli，运行 `code tunnel --accept-server-license-terms --disable-telemetry`，根据提示登陆 github 网址，输入 user code。这样就在你的 github 账户中注册了这台开发机。
+
+    2、客户端或使用 https://vscode.dev/ 都可以，登录你的 gihub 账户或微软账户。点击 vscode 的用户账户图标，在弹出菜单中选择你的远程隧道，这就实现了从任何能连公网的地方连接到开发机上进行开发。
+
+利用远程隧道，你可以实现一次登录，处处运行，996 越玩越开心：
+
+    你可以无缝的从一台设备切换到另一台设备，代码保存在内网的开发机，你开会前在台式机上写代码，开会时拿起笔记本继续写刚才的代码，下班可以直接关掉公司的电脑，在回家路上用手机登陆网页版 https://vscode.dev/ 继续写代码，回到家打开家里的电脑还可以继续写代码。。。开发机上的代码环境，只要你打开 vs code 登陆 github 账户即可选择恢复。
+
+服务端配置远程隧道开机自启(需要管理员权限)
+
+    没有 systemd 的计算机执行下述命令使得 code 以用户服务守护运行
+
+        code tunnel service install --accept-server-license-terms --disable-telemetry
+
+    使用 systemctl 管理的 linux 服务器上，服务将可以使用 systemctl 进行管理
+
+        systemctl enable code-tunnel --now
+
+    下列示例以 ubuntu 为例，手动创建 systemctl 配置文件，并以普通用户（但可以使用sudo）启动tunnel 。
+
+        https://www.cnblogs.com/pdysb/p/17067042.html
+
+    配置自启动文件，自建 /etc/systemd/system/vscode-tunnel.service 文件，填写以下配置
+
+        ```conf
+
+        [Unit]
+        Description=Visual Studio Code Tunneli2
+        After=network.target
+        StartLimitIntervalSec=0
+
+        [Service]
+        Type=simple
+        Restart=always
+        User={{your-user-name}}
+        RestartSec=10
+        ExecStart= {{path-to-your-code}} "--verbose" "--cli-data-dir" "{{path-to-your-root-dir}}/.vscode-cli" "tunnel" "service" "internal-run"
+
+        [Install]
+        WantedBy=multi-user.target
+
+        ```
+
+    ⚠ 注意
+
+        your-user-name 是指你希望 tunnel 以什么用户身份运行
+
+        path-to-your-code 是指实例中 vscode cli 的位置，即示例中解压的位置。
+
+        path-to-your-root-dir 是指 cli 配置文件所在目录，一般是第一次运行示例时候自动产生的，如 ~/.vscode-cli 目录。
+
+    验证：
+
+        code --verbose --cli-data-dir ~/.vscode-cli tunnel service internal-run
+
+    设置开机自启动
+
+        systemctl daemon-reload
+        systemctl restart vscode-tunnel
+
+        systemctl staus vscode-tunnel  # 看看有无错误
+
+#### GitLens
+
+干扰文件内容显示太多了，酌情考虑
+
+    eamodio.gitlens
+
+#### Git History
+
+非常实用，可惜不更新了
+
+    donjayamanne.githistory
+
+#### 高亮空格并消除
+
+Trailing Spaces
+
+    shardulm94.trailing-spaces
+
+#### 正则表达式预览
+
+Regexp Explain
+
+    LouisWT.regexp-preview
+
+RegExp Preview and Editor 废弃了
+
+    le0zh.vscode-regexp-preivew
+
+#### 查看sqllite数据库
+
+sqlite
+
+    alexcvzz.vscode-sqlite
+
+优选工具
+
+    DB Browser for SQLite  https://github.com/sqlitebrowser/sqlitebrowser
+
+    SQLiteStudio https://github.com/pawelsalawa/sqlitestudio
+
+#### python 环境管理器
+
+比官方的更直观，在侧栏图标选择后用树形列表的方式列出你当前所有相关的 python 环境，支持 conda、virtualenv 等
+
+    donjayamanne.python-environment-manager
+
+#### Python Docstring Generator 自动添加函数头说明
+
+autoDocstring - Python Docstring Generator
+
+    njpwerner.autodocstring
+
+可配置文本风格
+
+    "autoDocstring.docstringFormat": "numpy",
+
+#### PYQT Integration
+
+在 qt 的 ui 文件上右键即可编译，非常方便
+
+    zhoufeng.pyqt-integration
+
+参数需要设置指向你的环境里安装的 pyqt5_tools 包里的工具
+
+    "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\designer.exe",
+    "pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
+    "pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
+
+#### MarkDown 文件格式
+
+markdownlint 语法检查、格式化
+
+    DavidAnson.vscode-markdownlint
+
+屏蔽当前行，添加如下内容即可
+
+    <!-- markdownlint-disable-line -->
+
+选装：
+
+Markdown All in One 高亮，预览，给md文件加目录
+
+中文英文之间加入空格，所谓“盘古空白”
+
+    xlthu.pangu-markdown
+
+#### shell 脚本格式化
+
+    foxundermoon.shell-format
+
+#### JScript/Json的格式化，比系统自带的好用
+
+Prettify JSON，格式化json文件很好用，容错率高
+
+    mohsen1.prettify-json
+
+Prettier - Code formatter
+
+    esbenp.prettier-vscode
+
+#### todo tree 记录你的待办
+
+    Gruntfuggly.todo-tree
+
+```json
+    "todo-tree.general.tags": [
+        "TODO:",
+        "FIXME",
+        "XXX",
+        "NOTE"
+    ],
+    "todo-tree.highlights.customHighlight": {
+        "TODO": {
+            "icon": "tasklist",
+            "iconColour": "magenta",
+            "background": "#D0FFFF",
+            "type": "tag"
+        },
+        "FIXME": {
+            "icon": "eye",
+            "iconColour": "red",
+            "background": "#D0FFFF",
+            "type": "tag"
+        },
+        "XXX": {
+            "icon": "beaker",
+            "iconColour": "pink",
+            "background": "#D0FFFF",
+            "type": "tag"
+        },
+        "NOTE": {
+            "icon": "info",
+            "iconColour": "blue",
+            "background": "#D0FFFF",
+            "type": "tag"
+        }
+    },
+    "todo-tree.general.statusBar": "tags",
+    "todo-tree.tree.grouped": true,
+```
+
+#### csv文件查看
+
+Rainbow CSV
+
+    mechatroner.rainbow-csv
+
+```json
+    Rainbow CSV 设置颜色区分：
+    // rainbowCsv https://github.com/mechatroner/vscode_rainbow_csv/blob/master/test/color_customization_example.md#colors-customization
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "rainbow1",
+                "settings": {
+                   "foreground": "#E6194B"
+                }
+            },
+            {
+                "scope": "keyword.rainbow2",
+                "settings": {
+                   "foreground": "#3CB44B",
+                   "fontStyle": "bold"
+                }
+            },
+            {
+                "scope": "entity.name.function.rainbow3",
+                "settings": {
+                   "foreground": "#ff9b19",
+                }
+            },
+            {
+                "scope": "comment.rainbow4",
+                "settings": {
+                   "foreground": "#0082C8",
+                   "fontStyle": "underline"
+                }
+            },
+            {
+                "scope": "string.rainbow5",
+                "settings": {
+                   "foreground": "#FABEBE"
+                }
+            },
+            {
+                "scope": "variable.parameter.rainbow6",
+                "settings": {
+                   "foreground": "#46F0F0",
+                   "fontStyle": "bold"
+                }
+            },
+            {
+                "scope": "constant.numeric.rainbow7",
+                "settings": {
+                   "foreground": "#F032E6",
+                }
+            },
+            {
+                "scope": "entity.name.type.rainbow8",
+                "settings": {
+                   "foreground": "#008080",
+                   "fontStyle": "underline"
+                }
+            },
+            {
+                "scope": "markup.bold.rainbow9",
+                "settings": {
+                   "foreground": "#F58231"
+                }
+            },
+            {
+                "scope": "invalid.rainbow10",
+                "settings": {
+                   "foreground": "#bace09"
+                }
+            }
+        ]
+    },
+```
+
+#### 完整模拟了 vim 的各种操作
+
+懒得用鼠标，就它了，缺点是偶尔会乱，常按 esc 吧。。。
+
+    vscodevim.vim
+
+    这个插件还可以配置模拟几个著名的插件
+
+        https://github.com/VSCodeVim/Vim#vim-airline
+
+vim 脚本语言语法高亮
+
+    XadillaX.viml
+
+#### hex 颜色代码下用底色显示该颜色
+
+vs code 1.76 之后内置了这个功能
+
+Color Highlight
+
+    naumovs.color-highlight
+
+#### 预览 svg 图片
+
+SVG 图片语法高亮和预览
+
+    jock.svg
+
+#### Draw.io Integration
+
+    hediet.vscode-drawio
+
+#### UMLet 简单好用的 UML 流程图
+
+Free UML Tool for Fast UML Diagrams 生成一个".uxf"文件打开即可使用
+
+    TheUMLetTeam.umlet
+
+#### vscode-mindmap 脑图
+
+json文件格式节点图。生成一个".km"文件打开即可使用
+
+    Souche.vscode-mindmap
+
+#### Graphviz Dot 文件查看
+
+Graphviz Interactive Preview 支持路线高亮
+
+    tintinweb.graphviz-interactive-preview
+
+    F1命令呼叫预览
+
+Graphviz (dot) language support for Visual Studio Code 语法高亮，可生成Html代码
+
+    joaompinto.vscode-graphviz
+
+    右键菜单呼叫预览
+
+### vscode 用的 Python 配套包
+
+    这些包需要在你当前环境下安装，如果按 vscode 提示安装，默认会安装到你的基础环境中，自动适应conda 或 virtualenv。
+
+    如果你远程连接服务器进行开发，则服务器上的对应环境下也需要安装这些包，否则无法使用该功能。
+
+    目前 flake8 被 vscode 做成插件(ms-python.flake8)了，已经不需要在各个环境下安装了，不知道 yapf 何时也这么处理。
+
+用 python 安装这些包的问题是你的每个 python 环境都得安装，微软现在正在开发 vscode 的扩展引入这些包，免除 python 环境依赖。
+
+#### pylance 快速解析，代码自动完成更快
+
+pylance 目前是 python 插件默认安装了
+
+    ms-python.vscode-pylance
+
+自带这个插件对逐个排查 import 的使用方式来说没用，建议禁用
+
+    ms-python.isort
+
+##### use typestub for VSCode pylance
+
+Let pyqtgraph use PyQt6's .pyi file
+
+    https://github.com/microsoft/pylance-release/issues/4823
+        https://github.com/pyqtgraph/pyqtgraph/issues/2409
+
+    其它的流行的库的 typestub https://github.com/microsoft/python-type-stubs/tree/main/stubs
+
+1.Copy "QtCore.pyi/QtGui.pyi/QtWidgets.pyi" from
+
+    ~/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6
+
+to
+
+    <your workspace root>/typings/pyqtgraph/Qt
+
+or make a link for the .pyi files
+
+You can set a separated dir for your environment in VSCode :
+
+    "python.analysis.stubPath":"your custom dir"
+
+2.To make aliasing work:
+
+    import pyqtgraph as pg
+    pg.Qt.QtWidgets.QPushButton('hello')
+
+add the following:
+
+typings\pyqtgraph\__init__.pyi:
+
+    from . import Qt as Qt
+
+typings\pyqtgraph\Qt\__init__.pyi:
+
+    from . import QtWidgets as QtWidgets
+
+3.bash shell for all above
+
+```bash
+# https://github.com/microsoft/pylance-release/issues/4823
+# Modify here with your envs
+ENV_BASE="${HOME}/anaconda3/envs"
+ENV_DIR="${ENV_BASE}/p311"
+
+TYPINGS_BASE="${ENV_DIR}_typestub/typings"
+mkdir -p  $TYPINGS_BASE
+
+function typestub_for_pg {
+    # Modify here with your pyqtgraph pkgs
+    Env_pkgs_pyqtgraph="${ENV_DIR}/lib/python3.11/site-packages/PyQt6"
+
+    Typings_pyqtgraph="${TYPINGS_BASE}/pyqtgraph/Qt"
+    mkdir -p $Typings_pyqtgraph
+
+    cd $Typings_pyqtgraph
+
+    echo "from . import Qt as Qt" > ../__init__.pyi
+
+    for fname in $(ls ${Env_pkgs_pyqtgraph}/*.pyi); do
+        ln -s $fname
+    done
+
+    > __init__.pyi
+    for fname in $(ls *.pyi |grep -v __init__); do
+        ff=$(basename -s .pyi ${fname})
+        echo "from . import $ff as $ff" >>__init__.pyi
+    done
+}
+
+typestub_for_pg
+
+echo -e "\nAdd below to your VSCode settings: \n     \"python.analysis.stubPath\":\"${TYPINGS_BASE}\","
+
+```
+
+#### 格式化 yapf、black
+
+ vscode 整合了代码格式化及代码规范检查 lint 工具，不再使用 python 包 yapf，用户在扩展里选择微软官方的 ms-python.black-formatter 或 ms-python.autopep8，建议 black。
+
+```json
+    // python 的格式化工具用 black
+    "black-formatter.args": [
+        // https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html
+        "--skip-string-normalization"  // 双引号字符串太乱了
+    ],
+```
+
+black 的简单用法
+
+    https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html
+
+禁用一行：
+
+    某行后面的注释  # fmt: skip
+
+禁用代码块：
+
+    # fmt: off
+    你的代码块
+    # fmt: on
+
+    也兼容 yapf 的禁用用法。
+
+> python 包 yapf
+
+```json
+    "python.formatting.provider": "yapf",
+    "python.formatting.yapfArgs": [
+        // "--sytle=yapf_style.cfg"
+    //"python.formatting.autopep8Args": ["--ignore","E402"],
+    ],
+```
+
+用 conda 在指定环境中安装 yapf，这个直接带二进制包：
+
+    conda install --name p37 yapf -y
+
+禁用代码块
+
+    # yapf:disable
+    你的代码块
+    # yapf:enable
+
+禁用一行
+
+    某行后面的注释  # yapf:disable
+
+#### 代码规范检查 flake8
+
+ vscode 整合了代码格式化及代码规范检查 lint 工具，不再使用 python 包 flake8 ，用户在扩展里选择微软官方的 ms-python.flake8 即可。
+
+```json
+    // python 的 lint 工具用 flake8，参数调整为配合 black
+    // 适应 black 规则 https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#flake8
+    "flake8.args": [
+        // compatible with black
+        "max-line-length = 88",
+        "--ignore",
+        "E203"
+    ],
+```
+
+> python 包 flake8
+
+```json
+"python.linting.enabled": true,
+"python.linting.pylintEnabled": false,
+"python.linting.flake8Enabled": true,
+"python.linting.flake8Args": [
+    "--max-line-length=100",
+    // "--ignore=E501, E262",
+],
+```
+
+flake8 的规则非常规矩，好用
+
+    https://gitlab.com/pycqa/flake8/
+    # pip install flake8
+
+在要忽略 flake8 检查的那一行加上 # noqa 注释即可
+
+整个文件禁用的话，在文件第一行
+
+    # flake8: noqa
+
+最近出来个竞品 Ruff，可以替换 flake 8
+
+     charliermarsh.ruff
+
+        各规则都实现了 https://beta.ruff.rs/docs/rules/#pyflakes-f
+
+#### 代码测试 unittest
+
+单元测试如果不使用 pytest，那就用最基础的 python 系统包 unittest。
+
+使用 pytest
+
+pytest 兼容 unittest，不写子类也可以用的。
+
+记得在项目跟目录放个空文件 conftest.py
+
+    https://stackoverflow.com/questions/10253826/path-issue-with-pytest-importerror-no-module-named-yadayadayada/50610630#50610630
+
+#### pylint 代码静态分析工具
+
+    https://github.com/PyCQA/pylint
+
+pyreverse 生成 UML 的包图和类图（pylint 自带）
+
+    pyreverse -ASmy -o png your/
+
+代码复杂度 Mccabe
+
+    https://github.com/PyCQA/mccabe
+
+整合上述多个代码分析工具 prospector
+
+    https://github.com/PyCQA/prospector
+        https://prospector.landscape.io/en/latest/supported_tools.html
+
+#### GitHub 用 cdn 加速
+
+jsdelivr  <https://cdn.jsdelivr.net/gh/xxx>
+
+#### 性能分析 runsnakerun
+
+runsnakerun 需要安装图形库 wxPython4
+
+    python3 导入版 https://github.com/venthur/snakerunner
+        一个动画地图库 https://github.com/jpenilla/squaremap
+
+使用说明
+
+    http://www.vrplumber.com/programming/runsnakerun/
+
+    https://cci.lbl.gov/docs/phenix/prog_runsnake/
+
+For Debian/Ubuntu distributions the prerequisite setup looks like this:
+
+    apt-get install python-profiler python-wxgtk2.8 python-setuptools
+
+RunSnakeRun and SquareMap will install well in a VirtualEnv.
+
+if you would like to keep them isolated (normally you do not want to use the --no-site-packages flag if you are doing this).
+
+I recommend this approach rather than using easy_install directly on your Linux/OS-X host.
+
+    virtualenv runsnake
+
+    source runsnake/bin/activate
+
+### vs code 填坑
+
+Visual Sutdio 2022 中使用 python 虚拟环境
+
+    https://docs.microsoft.com/zh-cn/visualstudio/python/managing-python-environments-in-visual-studio?view=vs-2022
+
+vscode 外网访问内网使用 ssh和远程桌面
+
+    https://github.com/microsoft/vscode-docs/blob/master/remote-release-notes/v1_37.md
+
+#### vscode 在 Windows 下不断提示输入 ssh 密钥的保护密码
+
+    https://stackoverflow.com/questions/42707896/vscode-keep-asking-for-passphrase-of-ssh-key
+
+前提
+
+    安装了 Git for Windows，使用 git 协议（底层是 ssh）操作你的项目，已经配置好可以用密钥 ssh 连接到服务器，已经配置好了 ssh-agent 缓存密钥，在 git-bash（mintty bash）下可以正常使用 git 的 push、pull 进行推送和拉取，不再提示密钥的保护密码。
+
+问题现象
+
+    在 vscode 下每次 pull 代码或 fetch 代码（点击按钮或在终端窗口手动执行命令），都会提问 ssh 密钥的保护密码。特别是如果 vscode 设置了选项：自动同步（"git.autofetch": true），界面会频繁弹窗提示输入密钥的保护密码。
+
+    点击 vscode 的 git 代码同步功能的按钮会报错 ssh 密钥验证失败。
+
+而你已经设置过 ssh 代理进程缓存密钥的保护密码
+
+    在 bash 窗口运行过 ssh-agent 并且已经添加了密钥，用 ssh 连接站点时，不需要再输入 ssh 密钥的保护密码了。
+
+    或在 cmd 窗口里运行过 start-ssh-agent.cmd 并且已经添加了密钥，用 ssh 连接站点时，不需要再输入 ssh 密钥的保护密码了。
+
+    或 在 bash 窗口已经运行过 ssh-pageant 代理进程，共享使用了 putty 的 pageant.exe 的 ssh-agent 功能，在 bash 或 putty 中，用 ssh 连接站点时，不需要再输入 ssh 密钥的保护密码了。
+
+    或在 cmd 窗口里运行过 start-ssh-pageant.cmd，共享使用了 putty 的 pageant.exe 的 ssh 代理功能，在 cmd 或 putty 中 ，用 ssh 连接站点时，不需要再输入 ssh 密钥的保护密码了。
+
+解决办法
+
+法一：
+
+    在已经运行过 ssh 代理进程缓存密钥的 git-bash（mintty bash）窗口里运行命令 `code` 打开 vscode。
+
+    这样 vscode 会继承该 git-bash 终端窗口下 ssh 代理进程设置的环境变量 SSH_AUTH_SOCK，vscode 就不会问密码了。如果是 cmd 执行 start-ssh-agent 缓存密钥使用 ssh，则 cmd 的窗口不能关。如果需要打开多个 vscode 实例，在任务栏的 vscode 图标右键选择“新窗口”。偶发问题：在退出 git bash 的最后一个实例前，要先关闭 vs code，否则再重新运行 git bash 时会报错打不开。
+
+法二：
+
+    使用 Windows 10 自带的 OpenSSH，启用服务 SSH-AGENT 的自动运行，设置 vscode 使用 Windows 10 自带的 OpenSSH，而不要用自行安装的 Git for Windows 的 ssh。开机后在 power shell 提示窗口执行一次 `ssh-add` 缓存你的密钥，后续也不会被提示输入密码了。
+
+法三：取消 ssh 密钥的保护密码：执行命令 `ssh-keygen -p` 提示新密码时直接回车即可。
+
+#### vscode python多线程调试的坑
+
+    # https://code.visualstudio.com/docs/python/debugging#_troubleshooting
+    # If you're working with a multi-threaded app that uses native thread APIs (such as the Win32 CreateThread function rather than the Python threading APIs), it's presently necessary to include the following source code at the top of whichever file you wish to debug:
+
+    # import debugpy
+    # debugpy.debug_this_thread()
+    # Next steps#
+
+    import ptvsd at the top and add this to the thread function, ptvsd.debug_this_thread()
+
+    schperplata commented on 11 Apr 2019
+    @karthiknadig Is there a plan to support such cases where the library uses native thread APIs (Kernel32!CreateThread, pthread_create, etc) instead of the python threading APIs. by default, or is this just the way it is going to be (or can't be different)?
+
+    Thanks for your solution anyway.
+
+    @karthiknadig
+    Member
+    karthiknadig commented on 11 Apr 2019
+    We have plans to support native threads. We have not gotten around to it yet :)
+    https://github.com/Microsoft/ptvsd/issues/305
 
 ## ------------ 基于 git 分支的各种工作流 ------------
 
