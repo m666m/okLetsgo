@@ -3616,7 +3616,7 @@ KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
         $ export XDG_DATA_HOME=$HOME/.local/share; ./install.sh
 
-        如果是 flatpak 安装的 Konsole：
+        如果是 flatpak 安装的 Konsole，建议用 fedora 官方仓库的版本：
 
             $ export XDG_DATA_HOME=$HOME/.var/app/org.kde.konsole/data
 
@@ -3632,11 +3632,11 @@ KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
         然后Edit编辑刚刚新建的Profile1：
 
-            -->General Settings->command: /bin/bash -l，这样设置会话执行登录脚本
+            -->General Settings->command: /bin/bash -l，这样设置会话执行登录脚本，并取消勾选“Start in same directory as current session”，这样新建标签的会话不会自动进入之前的工作目录。
 
             -->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，图片透明度设为 50%（根据你选择的背景图片调整）即可。
 
-            -->keyboard，如果需要鼠标选择即复制到操作系统剪切板的老习惯，勾选该选项即可。
+            -->Mouse，如果需要鼠标选择即复制到操作系统剪切板的老习惯，勾选“Copy on select”即可。
 
     窗口主菜单栏选择 “Setting”，取消勾选 “Show Menubar”，这时主菜单成为窗口右上角的一个三个横线的图标，点击会显示主菜单栏。这样你的屏幕可用面积扩大了一行。
 
@@ -3644,7 +3644,10 @@ Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示刷新速度
 
     它的特色是有一个小型的 ptyxis-agent 后台进程来管理 PTY、PID 跟踪和容器监控。
     而且，即使在 Flatpak 中，它也支持本机“用户会话”，以及 Podman、Toolbox、Distrobox 和 JHBuild。
+
     主题配色方案内置了 Nord theme，但是不支持背景图片，已经内置在 Fedora 41。
+
+    目前对 tmux 的支持不好，鼠标不听话。
 
     目前只能使用 dconf 设置窗口透明度
 
