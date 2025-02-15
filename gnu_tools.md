@@ -3632,7 +3632,7 @@ KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
         然后Edit编辑刚刚新建的Profile1：
 
-            -->General Settings->command: 设置会话执行登录脚本 /bin/bash -l
+            -->General Settings->command: /bin/bash -l，这样设置会话执行登录脚本
 
             -->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，图片透明度设为 50%（根据你选择的背景图片调整）即可。
 
