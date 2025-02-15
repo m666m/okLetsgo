@@ -12944,7 +12944,7 @@ OpenType 可变字体（OpenType variable fonts）技术
 也就是说，内置了支持汉语的字体：
 
     $ dnf list --installed |grep noto|grep cjk
-    google-noto-sans-cjk-vf-fonts.noarch 
+    google-noto-sans-cjk-vf-fonts.noarch
     google-noto-sans-mono-cjk-vf-fonts.noarch
     google-noto-serif-cjk-vf-fonts.noarch
 
@@ -13616,9 +13616,16 @@ Gnome 桌面默认只展示壁纸，不能放文件（临时下载文件没法�
         Microphone：不需要关闭，安装下面介绍的 gnome 扩展 nothing to say 手动控制即可
         Diagnostics：关闭自动问题报告
 
-    Share：先点击窗口标题栏位置的开关，开启后才能开启下面的栏目
-        Remote Desktop：开启远程桌面服务，这样可以从远程连接本机使用桌面，无缝支持微软 mstsc。
-        Remote Login：开启sshd服务，这样可以远程ssh连接到本机，使用的用户名是你装系统时候给出的，注意不是那个用于显示的“友好名称”
+    System:
+
+        Remote Desktop 远程桌面细分为两种，仿效 Windows：
+
+            Desktop Sharing：远程桌面共享，只能在本地用户登录的情况下使用桌面，本地用户随时可以观看到操作并接管鼠标。
+            Remote Login：远程桌面登陆，这样可以从远程连接本机使用桌面，无缝支持微软 mstsc。先点击窗口标题栏位置的开关，开启后才能开启下面的栏目
+
+            这两个功能默认都使用 3389 端口，所以如果同时开启需要手动调整为不一样。其实只开启其中一个就可以了，我使用 Remote Login。
+
+        Secure Shell: 开启 sshd 服务，这样可以远程ssh连接到本机，使用的用户名是你装系统时候给出的，注意不是那个用于显示的 “友好名称”
 
     Power:
         Power Mode：尽可能选“Performance”，不然桌面反应慢，程序切换慢。
