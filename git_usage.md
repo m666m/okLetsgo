@@ -5186,9 +5186,9 @@ tag命令后跟 -s 参数即可
 
 被 x 大体有两种：DNS污染，封杀IP。
 
-DNS污染则无法通过域名直接访问，一种方法就是修改DNS，这个最简单的就是修改hosts文件。如果IP被封杀的话，就只能通过 “蕃茄” 来解决了。
+DNS污染则无法通过域名直接访问，一种方法就是修改DNS，这个最简单的就是修改 hosts文件。如果IP被封杀的话，就只能通过 “蕃茄” 来解决了。
 
-1、修改 hosts 文件，使得本机知晓 github 的 dns
+一般情况下，修改 hosts 文件，使得本机知晓 github 的 dns 就可以使用 github 了。
 
 hosts 文件在每个系统的位置不一：
 
@@ -5210,18 +5210,19 @@ hosts 文件在每个系统的位置不一：
 
     iPhone、iPad 须越狱、Android 必须要 root。
 
-法一：访问以下网址，查询 github.com 的可用ip
+1、访问以下网址，逐个查询 github 的可用ip
 
     https://tool.chinaz.com/dns
 
 把该ip更新到 /etc/hosts 文件：
 
-    20.205.243.166 github.com
+    140.82.121.4 github.com
+    185.199.108.133 raw.githubusercontent.com
 
-法二：全套替换，github上项目很多，直接拉取他们每日更新的文件内容填充到 hosts里即可
+这两个地址就基本满足使用要求了。
 
-缺点是调用的国外网站查询的ip地址，不是针对国内优化速度的，这个不如上面的法一速度好
-
+2、为了使 github 的的各个功能都可用，有很多 ip 地址需要替换，而全套替换比较麻烦，好在 github 上有自动化项目，直接拉取他们每日更新的文件内容填充到 hosts里即可：
+ 
     全 https://github.com/maxiaof/github-hosts/blob/master/hosts
         查询网址 https://tools.tutorialspoint.com/ip_lookup_ajax.php?host=github.com
 
@@ -5230,9 +5231,32 @@ hosts 文件在每个系统的位置不一：
 
     代码使用简单，可惜不更新了 https://github.com/ovenx/github-hosts
 
-2、修改 hosts 文件后，刷新 DNS 缓存
+    缺点是调用的国外网站查询的ip地址，不是针对国内优化速度的
+ 
+执行以下代码
 
-修改完 hosts 文件后，如果还不能正常访问，那就试试刷新下 DNS 缓存，在命令行里执行：
+```bash
+echo "[更新本地 hosts 文件的 github.com 地址]";
+local tfile=$(mktemp);
+curl -o $tfile https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts;
+[[ ! -s $tfile ]] && echo '获取 github 地址列表失败！' && return 0;
+$(grep 'Github Hosts Start' /etc/hosts > /dev/null 2>&1);
+if [[ "$?" = "0" ]]; then
+    sed '/#Github Hosts Start/,/#Github Hosts End/ {
+            /#Github Hosts Start/ {
+                r '"$tfile"'
+                d
+            }
+            /#Github Hosts End/!d
+        }' /etc/hosts | awk '!a[$0]++' | sudo tee /etc/hosts;
+else
+    cat $tfile | sudo tee -a /etc/hosts;
+fi;
+rm $tfile
+
+```
+
+3、修改完 hosts 文件后，如果还不能正常访问，那就试试刷新下 DNS 缓存，在命令行里执行：
 
     Linux: sudo systemctl restart network​
 

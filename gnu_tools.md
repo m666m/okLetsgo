@@ -12713,20 +12713,31 @@ Gnome Software 里提示软件更新与命令行运行 `dnf upgrade` 和 `flatpa
 
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/assembly_enabling-chinese-japanese-or-korean-text-input_getting-started-with-the-gnome-desktop-environment
 
+1、确认已经安装了支持中文的字体，详见章节 [设置中文字体]。
+
+2、常用的输入法框架是 Fcitx 或 IBus
+
+    IBUS https://www.ibus.com/
+
+    Fcitx5  https://fcitx-im.org/wiki/Fcitx_5/zh-cn 之前的是 Fcitx
+
+主流发行版使用 IBUS 框架，比较成熟了。以 Gnome 桌面环境为例：
+
 打开 Gnome Software， 在类别 'input source' 搜索 'Pinyin' 安装输入法。
+
+3、设置输入法
 
 打开 Gnome 的 Settings -> Keyboard -> Input Source，点击添加，选择 “Chinese(Intelligent Pinyin)” ，这时时间栏出会出现en图标，用热键 'Win+空格' 即可切换输入法
 
-    建议勾选 “Switch input sources individually for each window”
+    务必勾选 “Switch input sources individually for each window”，这样方便在文件管理器等软件中保持默认英语，支持热键
 
-鼠标点击个可以输入文字的地方，然后切换到拼音输入法，右键点击输入法在时间栏处的图标，弹出菜单选择 “Perference”，设置用逗号句号翻页等选项。
+鼠标点击个可以输入文字的地方，然后切换到拼音输入法，右键点击输入法在时间栏处的“中”字图标，在弹出菜单选择 “Perference”，设置用逗号句号翻页(flip page)等选项。
 
 GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表情符号菜单。
 
-常用的输入法框架是 Fcitx 或 IBus。
+### 自己安装输入法框架及输入法
 
-    Fcitx 链接：https://fcitx-im.org/wiki/Fcitx_5/zh-cn
-    IBUS链接：https://www.ibus.com/
+非 Gnome 桌面环境比较复杂，逐步手工操作吧。
 
     安装中文输入法fcitx及Google拼音输入法
 
@@ -12926,9 +12937,16 @@ OpenType 可变字体（OpenType variable fonts）技术
 
     上述配置文件对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样就实现了显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
 
-> 目前流行的 Linux 发行版基本都默认使用 Noto 字体
+> 主流 Linux 发行版使用 Noto 字体
 
 现在 Linux 上常用的、在维护的开源中文字体就一套，同时被 Noto 和思源两个项目收录。
+
+也就是说，内置了支持汉语的字体：
+
+    $ dnf list --installed |grep noto|grep cjk
+    google-noto-sans-cjk-vf-fonts.noarch 
+    google-noto-sans-mono-cjk-vf-fonts.noarch
+    google-noto-serif-cjk-vf-fonts.noarch
 
 Noto 系列字体是 Google 主导的，名字的含义是「没有豆腐」（no tofu），因为缺字时显示的方框或者方框被叫作「tofu」。
 
