@@ -13791,7 +13791,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Date Menu Formater      如果在任务栏显示的时间没有星期，在 Gnome Tweaks 中开启即可，这个扩展可以调整日期时间的格式。
 
-    Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在系统设置的天气里的已经设置过位置了，使用这个就不需要上面的 Date Menu Formater 扩展了。
+    Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在系统设置的 Clock&Calendar 设置显示兴起，在任务栏的时间弹窗处设置了天气位置，使用这个就不需要上面的 Date Menu Formater 扩展了。
 
     Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date)
 
