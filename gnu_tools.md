@@ -12737,7 +12737,9 @@ GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表�
 
     由于树莓派4 Raspbian系统默认使用LXDE，fcitx和scim都没法用，可以使用ibus
 
-    。
+    Fedora
+
+        $ sudo dnf install fcitx5 fcitx5-configtool fcitx5-chinese-addons
 
     安装Ibus的命令是：
 
