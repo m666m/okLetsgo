@@ -12741,11 +12741,45 @@ GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表�
 
         $ sudo dnf install fcitx5 fcitx5-configtool fcitx5-chinese-addons
 
-    安装Ibus的命令是：
+    安装ibus中文输入法(Linux/Ubuntu)
+        1 安装中文语言包
 
-        sudo apt-get install ibus ibus-pinyin
+        安装中文语言包是为了让Input Sources
 
-        你的很复杂
+        里面出现Chinese这一项。
+
+        选择“Manage Installed Languages”，“Install/Remove Languages”，“Chinese(Simplified)”，“Apply”。
+
+        2 安装ibus输入法
+
+        然后可以安装ibus中文输入法了。
+
+        安装ibus框架。
+
+            sudo apt-get install ibus ibus-clutter ibus-gtk ibus-gtk3 ibus-qt4
+
+        切换到ibus框架。
+
+            # im-chooser
+            im-config -s ibus
+
+        安装拼音引擎。
+
+            sudo apt-get install ibus-pinyin
+
+        3 添加ibus中文输入法
+
+        把ibus输入法添加到输入法栏。
+
+        现在Input Source里面就有Chinese了，点进去。
+
+        选择Chinese(Intelligent Pinyin)。
+
+        右上角选择Chinese(Intelligent Pinyin)，中英文切换方式就是shift，Preferences里面可以选择7个选择项。
+
+        然后就可以愉快使用ibus中文输入法啦。
+
+        another 很复杂
 
             sudo apt install ibus ibus-clutter ibus-gtk ibus-gtk3 ibus-qt4
             im-config -s ibus
