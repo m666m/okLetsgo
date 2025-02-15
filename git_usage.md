@@ -5510,31 +5510,29 @@ Solarized Light（vscode 自带），这个是羊皮纸底色，但是语法高�
 
     vscode-icons-team.vscode-icons
 
-#### 不要用AI代码完成的插件
-
-全都把你的代码上传服务器了，包括 kate、IntelliCode、github copilot 等。
-
-原
-
-    "python.jediEnabled": True, // Falses
-
-现
-
-    https://docs.microsoft.com/zh-cn/visualstudio/intellicode/intellicode-visual-studio-code
-
-    "python.languageServer": "Jedi" // "Pylance"
-
-java 软件包安装及默认安装 IntelliCode，注意禁用。
-
-python 软件包为兼容老版本不用 pylance 的习惯，所以默认不安装 IntelliCode，不代表以后不装。
-
-> 不得不用 github copilot
+#### 不得不用 github copilot
 
 OpenAI 等人工智能助理是大势所趋了，不得不用了。会提示2个登录：
 
     copilot 使用 github 账户登录，先登录网页版 github，然后点击授权第三方即可
 
     然后 copilot 会申请读取 github 账户，同样在网页版 github 出点击授权同意即可
+
+之前为了代码安全，不使用 AI 代码完成的相关插件，因为可能会把你的代码上传服务器，包括 kate、IntelliCode、github copilot 等。
+
+    java 软件包安装会默认安装 IntelliCode，注意禁用。
+
+    python 软件包为兼容老版本不用 pylance 的习惯，所以默认不安装 IntelliCode，不代表以后不装。
+
+    python.languageServer 用 Pylance
+
+        原来用的 Jedi
+
+            https://docs.microsoft.com/zh-cn/visualstudio/intellicode/intellicode-visual-studio-code
+
+            "python.jediEnabled": True, // Falses
+
+            "python.languageServer": "Jedi" // "Pylance"
 
 #### 远程开发： Remote Development
 
