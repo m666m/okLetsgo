@@ -13728,6 +13728,9 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     quake-mode              设置热键，以下拉方式调出你的程序窗口，所有工作区共享该程序，再次按热键即收回该窗口。对程序员来说，设置热键 alt + enter 调出一个半屏的 terminal 窗口极其方便实用。
 
+        https://extensions.gnome.org/extension/1411/quake-mode/
+            https://github.com/repsac-by/gnome-shell-extension-quake-mode
+
         该扩展目前不支持 Gnome 45+，可以安装 ddterm 应急。
 
     Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以治愈 gnome 目前不能按 Alt+Tab 切换最近使用的两个窗口。gnome 的默认习惯，只能切换到应用：Alt+Tab 列表是应用窗口，按住 alt 持续点击 tab 循环到某个多实例的应用窗口时，会在上面再显示一个列表呈现该应用的多个实例。切换到应用后，按 Alt+` 在应用的多个实例间切换。
