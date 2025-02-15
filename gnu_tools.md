@@ -12723,6 +12723,33 @@ Gnome Software 里提示软件更新与命令行运行 `dnf upgrade` 和 `flatpa
 
 GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表情符号菜单。
 
+常用的输入法框架是 Fcitx 或 IBus。
+
+    Fcitx 链接：https://fcitx-im.org/wiki/Fcitx_5/zh-cn
+    IBUS链接：https://www.ibus.com/
+
+    安装中文输入法fcitx及Google拼音输入法
+
+        sudo apt-get install fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin
+
+        ling:https://blog.csdn.net/qq_63913621/article/details/144182178
+            https://blog.csdn.net/qq_45478359/article/details/113576252
+
+    由于树莓派4 Raspbian系统默认使用LXDE，fcitx和scim都没法用，可以使用ibus
+
+    。
+
+    安装Ibus的命令是：
+
+        sudo apt-get install ibus ibus-pinyin
+
+        你的很复杂
+
+            sudo apt install ibus ibus-clutter ibus-gtk ibus-gtk3 ibus-qt4
+            im-config -s ibus
+
+            sudo apt install ibus-pinyin ibus-sunpinyin
+
 #### 使用 Fcitx 5 + 维基百科中文拼音词库
 
     https://zhuanlan.zhihu.com/p/508797663
