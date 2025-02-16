@@ -12251,129 +12251,13 @@ Fedora
 
     sudo systemctl mask systemd-rfkill.service systemd-rfkill.socket
 
-## Linux 桌面环境
+## 使用 Linux 桌面环境
 
 老老实实用最多人用的 GNOME 吧，其它桌面环境坑更多，随便就有软件运行不起来。
 
-Linux 下的桌面环境，除了提供 GUI 界面外，为了让用户开箱即用，都有一整套的软件包工具实现软件商店、系统更新等常见桌面功能，以及浏览器、办公软件、音视频播放器、日历、计算器、终端模拟器等常用工具
-
-    包管理底层库 packagekit https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/ch-packagekit
-
-官方源纷杂，搜软件会有多个来源，挑一个来源的用就行，有问题就换个源重装试试。原因是各个发行版针对桌面环境还有单独的图形化软件商店，跟命令行软件不使用同一个官方源，以 Fedora 为例：
-
-    图形化软件商店：rpm包的普通图形界面软件（少，仅最常用） fedoraproject.org
-
-        图形化软件商店：rpm包驱动程序，非官方但权威  rpmfusion.org
-
-    图形化软件商店：flatpak包的图形界面软件（很少，仅最常用） registry.fedoraproject.org
-
-        图形化软件商店：flatpak包的图形界面软件（多） 非官方但权威 dl.flatpak.org
-
-        flatpak 命令：2个官方，一个是 fedora 源，一个是flathub过滤后的源，都很少
-
-    dnf 命令：默认一个官方源，命令行软件和图形界面软件都有，这里的软件是最多最全的
-
-### 操作系统时光机 timeshift
-
-基于快照的备份系统 timeshift
-
-    https://github.com/linuxmint/timeshift
-
-    https://www.makeuseof.com/use-timeshift-backup-and-restore-linux-snapshots/
-        https://discussion.fedoraproject.org/t/a-quick-guide-to-setting-up-btrfs-timeshift-on-fedora-33/27573
-
-    https://ivonblog.com/posts/linux-timeshift-usage/
-
-    竞品：基于全盘镜像备份的 cloneZilla
-
-    Redhat 的应急救援盘 ReaR
-
-        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-relax-and-recover_rear
-
-        https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/assembly_recovering-and-restoring-a-system_configuring-basic-system-settings#doc-wrapper
-
-        https://www.yisu.com/zixun/460393.html
-
-        `rear mkbackup` 命令不只创建救援系统了，还能完整备份操作系统
-
-对标 Windows 系统映像备份或 MacOS 的操作系统备份功能。他会在你指定的硬盘（恢复驱动器）自动用一个目录保留各种安装好的程序和设置。
-
-Timeshift提供時光機一樣的時光倒流功能，方便用戶備份整個Linux系統到另外一個硬碟，並在系統出錯的時候一鍵還原，甚至可以在 LiveUSB 模式修復損壞的系統。Timeshift 界面直觀易用，可以設定自動排程備份，備份檔案預設會壓縮以節省硬碟空間。
-
-Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔。備份檔建議放在其他硬碟，要還原的話比較容易，尤其是系統根本無法開機的狀況下。
-
-> 用Timeshift備份系統
-
-選擇使用快照類型
-
-    RSYNC 快照類型，此選項適用大多數Linux發行版使用的檔案系統。
-
-    BTRFS 屬於較新的檔案系統，只有 Fedora 等少數發行版採用。注意 btrfs 快照需要建立子卷。
-
-選取快照儲存位置
-
-如圖所示，下面容量較大的vda2是我的系統碟，而我要將系統備份到另一個硬碟sda1。請放心，Timeshift的備份不會刪除整個硬碟，而是建立一個timeshift目錄專門放快照檔案。
-
-接著選取多久要自動建立快照。
-
-接著選取是否要備份使用者家目錄檔案，全部打勾。Timeshift不只備份使用者家目錄，連GRUB都一起備份。
-
-點選左上角建立快照
-
-輸入sudo密碼，等待快照製作完成。SSD寫入通常五分鐘就完成了。
-
-從檔案管理員可以看到Timeshift製作的快照，佔用的容量會比原始的系統小一些。當然這邊只是範例，實務上因為要儲存多份快照，用來備份的硬碟容量還是得比系統碟大。
-
-接著我在桌面新增一張相片和文字檔，等會還原系統的時候這些檔案就會不見。
-
-> 用Timeshift還原系統
-
-點選Timeshift的備份檔，點選上方的「還原」。
-
-點選Timeshift的備份檔，點選上方的「還原」。
-
-選取要還原的硬碟
-
-所有選項全部同意，輸入sudo密碼，等待系統還原，接著它會重開機。
-
-重開機後系統回到製作快照前的樣子，桌面的檔案不見了。
+参见章节 [搜索和安装软件的途径：软件仓库和软件商店](init_a_server think)。
 
 ### 常用桌面工具软件
-
-各大 Linux 发行版都自带图形化软件商店，一般都选自各大开源项目，发行版拉取源代码自行编译，在自己的软件商店提供。命令行下类似，如 apt 或 dnf 命令默认安装的软件，都指向发行版自己的软件仓库
-
-    最初只有命令行软件，所以发行版官方给 apt 或 dnf 命令建立了专门的软件仓库，Linux 桌面环境的图形化软件，也是放在这个软件仓库中。发行版官方的这个软件仓库最全，一般来说只要是正规的长期开源软件项目，就会被选入
-
-    近些年来 Linux 桌面环境软件发展较快，各发行版官方都给图形化软件单独建立一个软件仓库---仿效手机叫 “软件商店”，它不提供命令行下运行的软件
-
-    flatpak 类的图形化软件比较特殊，也放在软件商店提供，所以有些软件可以看到至少2个来源：发行版原生编译、flatpak编译
-
-    目前发行版对进入软件商店的图形化软件要求比较严格，所以很多软件并未选入，但可以从命令行的官方软件仓库安装
-
-Gnome Software 里提示软件更新与命令行运行 `dnf upgrade` 和 `flatpak install` 的处理过程不同（因为不是一个开源子项目），目前桌面版的这个软件管理有时候会出么鹅子，换命令行的执行即可
-
-    https://docs.fedoraproject.org/en-US/quick-docs/finding-and-installing-linux-applications/
-
-    Linux 桌面环境软件套件介绍
-        https://www.freedesktop.org/wiki/Software/
-
-    Gnome 软件
-        https://apps.gnome.org/
-
-    商业软件替代品 https://alternativeto.net/
-
-    Minetest：一个开源的 Minecraft 替代品 https://zhuanlan.zhihu.com/p/535401331
-
-    软件推荐
-
-        https://linuxhitchhiker.github.io/THGLG/solution/software/
-
-        https://ivonblog.com/posts/linux-recommended-application/
-
-    参考下它装的软件 https://theevilskeleton.gitlab.io/2022/05/16/response-to-flatpak-is-not-the-future.html
-
-    游戏：
-        即时战略 Warzone
 
 终端工具参见章节 [Linux 桌面下的终端模拟器]。
 
@@ -12717,6 +12601,71 @@ Gnome Software 里提示软件更新与命令行运行 `dnf upgrade` 和 `flatpa
     简单显示消息
 
         $ zenity --info --text="這是訊息內容" --title="這是標題"
+
+#### 操作系统时光机 timeshift
+
+基于快照的备份系统 timeshift
+
+    https://github.com/linuxmint/timeshift
+
+    https://www.makeuseof.com/use-timeshift-backup-and-restore-linux-snapshots/
+        https://discussion.fedoraproject.org/t/a-quick-guide-to-setting-up-btrfs-timeshift-on-fedora-33/27573
+
+    https://ivonblog.com/posts/linux-timeshift-usage/
+
+    竞品：基于全盘镜像备份的 cloneZilla
+
+    Redhat 的应急救援盘 ReaR
+
+        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-relax-and-recover_rear
+
+        https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/assembly_recovering-and-restoring-a-system_configuring-basic-system-settings#doc-wrapper
+
+        https://www.yisu.com/zixun/460393.html
+
+        `rear mkbackup` 命令不只创建救援系统了，还能完整备份操作系统
+
+对标 Windows 系统映像备份或 MacOS 的操作系统备份功能。他会在你指定的硬盘（恢复驱动器）自动用一个目录保留各种安装好的程序和设置。
+
+Timeshift提供時光機一樣的時光倒流功能，方便用戶備份整個Linux系統到另外一個硬碟，並在系統出錯的時候一鍵還原，甚至可以在 LiveUSB 模式修復損壞的系統。Timeshift 界面直觀易用，可以設定自動排程備份，備份檔案預設會壓縮以節省硬碟空間。
+
+Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔。備份檔建議放在其他硬碟，要還原的話比較容易，尤其是系統根本無法開機的狀況下。
+
+> 用Timeshift備份系統
+
+選擇使用快照類型
+
+    RSYNC 快照類型，此選項適用大多數Linux發行版使用的檔案系統。
+
+    BTRFS 屬於較新的檔案系統，只有 Fedora 等少數發行版採用。注意 btrfs 快照需要建立子卷。
+
+選取快照儲存位置
+
+如圖所示，下面容量較大的vda2是我的系統碟，而我要將系統備份到另一個硬碟sda1。請放心，Timeshift的備份不會刪除整個硬碟，而是建立一個timeshift目錄專門放快照檔案。
+
+接著選取多久要自動建立快照。
+
+接著選取是否要備份使用者家目錄檔案，全部打勾。Timeshift不只備份使用者家目錄，連GRUB都一起備份。
+
+點選左上角建立快照
+
+輸入sudo密碼，等待快照製作完成。SSD寫入通常五分鐘就完成了。
+
+從檔案管理員可以看到Timeshift製作的快照，佔用的容量會比原始的系統小一些。當然這邊只是範例，實務上因為要儲存多份快照，用來備份的硬碟容量還是得比系統碟大。
+
+接著我在桌面新增一張相片和文字檔，等會還原系統的時候這些檔案就會不見。
+
+> 用Timeshift還原系統
+
+點選Timeshift的備份檔，點選上方的「還原」。
+
+點選Timeshift的備份檔，點選上方的「還原」。
+
+選取要還原的硬碟
+
+所有選項全部同意，輸入sudo密碼，等待系統還原，接著它會重開機。
+
+重開機後系統回到製作快照前的樣子，桌面的檔案不見了。
 
 ### 使用拼音输入法
 
