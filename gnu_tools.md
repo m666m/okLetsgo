@@ -3628,7 +3628,7 @@ KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
     窗口主菜单栏选择 Setting-->Configure Konsole：
 
-        ->General，取消勾选 “Remember Window Size”
+        ->General，取消勾选 “Remember Window Size”，勾选 “Remove windonw title bar and frame”，这样你的屏幕可用面积扩大了一行。
 
         ->Profiles，选New新建 然后点击ok确定。
 
@@ -3642,7 +3642,7 @@ KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
         别忘记给新建的Profile1的选择“Set as Default”，否则默认的配置文件还是 konsole 自带的。
 
-    窗口主菜单栏选择 “Setting”，取消勾选 “Show Menubar”，这时主菜单成为窗口右上角的一个三个横线的图标，点击会显示主菜单栏。这样你的屏幕可用面积扩大了一行。
+    窗口主菜单栏选择 “Setting”，取消勾选 “Show Menubar”，这时主菜单成为窗口右上角的一个三个横线的图标，点击才显示主菜单栏，这样你的屏幕可用面积又扩大了一行。
 
 Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示刷新速度快
 
