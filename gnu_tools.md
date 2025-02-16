@@ -12255,19 +12255,11 @@ Fedora
 
 老老实实用最多人用的 GNOME 吧，其它桌面环境坑更多，随便就有软件运行不起来。
 
-参见章节 [搜索和安装软件的途径：软件仓库和软件商店](init_a_server think)。
-
 ### 常用桌面工具软件
 
-终端工具参见章节 [Linux 桌面下的终端模拟器]。
+搜索和安装图形化软件的方法，参见章节 [软件商店](init_a_server think)。
 
-虚拟机和容器
-
-    kvm 虚拟机推荐使用 virt-manager，详见章节 [虚拟机管理器 virt-manager](virtualization think)
-
-    交互式容器环境推荐使用 distrobox，详见章节 [使用 distrobox 代替 toolbox](virtualization think)，推荐在这里使用 dnf install/ apt install 安装各种软件。
-
-    在 Linux 容器化运行 Android apk，详见章节 [waydroid](virtualization think)
+终端工具的选择，参见章节 [Linux 桌面下的终端模拟器]。
 
 文件管理器 GNOME Files（Nautilus）
 
