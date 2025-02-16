@@ -5644,7 +5644,7 @@ Visual Studio Code Remote Development 允许您连接使用如下方式到远程
 
 #### todo tree 记录你的待办
 
-分类显示常见的 TODO/FIXME 为标签。
+分类显示常见的 TODO/FIXME 为标签，缺点是在粘贴文本的时候 vscode 响应慢。
 
     Gruntfuggly.todo-tree
 
@@ -5715,7 +5715,7 @@ sqlite
 
 #### MarkDown 文件格式
 
-markdownlint 语法检查、格式化
+markdownlint 语法检查、格式化，缺点是在粘贴文本的时候 vscode 响应慢。
 
     DavidAnson.vscode-markdownlint
 
