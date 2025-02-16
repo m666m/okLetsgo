@@ -5638,7 +5638,13 @@ Visual Studio Code Remote Development 允许您连接使用如下方式到远程
 
     donjayamanne.githistory
 
+#### 书签
+
+    alefragnani.Bookmarks
+
 #### todo tree 记录你的待办
+
+分类显示常见的 TODO/FIXME 为标签。
 
     Gruntfuggly.todo-tree
 
