@@ -5638,94 +5638,6 @@ Visual Studio Code Remote Development 允许您连接使用如下方式到远程
 
     donjayamanne.githistory
 
-#### 高亮空格并消除
-
-Trailing Spaces
-
-    shardulm94.trailing-spaces
-
-#### 正则表达式预览
-
-Regexp Explain
-
-    LouisWT.regexp-preview
-
-RegExp Preview and Editor 废弃了
-
-    le0zh.vscode-regexp-preivew
-
-#### 查看sqllite数据库
-
-sqlite
-
-    alexcvzz.vscode-sqlite
-
-优选工具
-
-    DB Browser for SQLite  https://github.com/sqlitebrowser/sqlitebrowser
-
-    SQLiteStudio https://github.com/pawelsalawa/sqlitestudio
-
-#### python 环境管理器
-
-比官方的更直观，在侧栏图标选择后用树形列表的方式列出你当前所有相关的 python 环境，支持 conda、virtualenv 等
-
-    donjayamanne.python-environment-manager
-
-#### Python Docstring Generator 自动添加函数头说明
-
-autoDocstring - Python Docstring Generator
-
-    njpwerner.autodocstring
-
-可配置文本风格
-
-    "autoDocstring.docstringFormat": "numpy",
-
-#### PYQT Integration
-
-在 qt 的 ui 文件上右键即可编译，非常方便
-
-    zhoufeng.pyqt-integration
-
-参数需要设置指向你的环境里安装的 pyqt5_tools 包里的工具
-
-    "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\designer.exe",
-    "pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
-    "pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
-
-#### MarkDown 文件格式
-
-markdownlint 语法检查、格式化
-
-    DavidAnson.vscode-markdownlint
-
-屏蔽当前行，添加如下内容即可
-
-    <!-- markdownlint-disable-line -->
-
-选装：
-
-Markdown All in One 高亮，预览，给md文件加目录
-
-中文英文之间加入空格，所谓“盘古空白”
-
-    xlthu.pangu-markdown
-
-#### shell 脚本格式化
-
-    foxundermoon.shell-format
-
-#### JScript/Json的格式化，比系统自带的好用
-
-Prettify JSON，格式化json文件很好用，容错率高
-
-    mohsen1.prettify-json
-
-Prettier - Code formatter
-
-    esbenp.prettier-vscode
-
 #### todo tree 记录你的待办
 
     Gruntfuggly.todo-tree
@@ -5766,6 +5678,52 @@ Prettier - Code formatter
     "todo-tree.general.statusBar": "tags",
     "todo-tree.tree.grouped": true,
 ```
+
+#### 高亮空格并消除
+
+Trailing Spaces
+
+    shardulm94.trailing-spaces
+
+#### 正则表达式预览
+
+Regexp Explain
+
+    LouisWT.regexp-preview
+
+RegExp Preview and Editor 废弃了
+
+    le0zh.vscode-regexp-preivew
+
+#### 查看sqllite数据库
+
+sqlite
+
+    alexcvzz.vscode-sqlite
+
+优选工具
+
+    DB Browser for SQLite  https://github.com/sqlitebrowser/sqlitebrowser
+
+    SQLiteStudio https://github.com/pawelsalawa/sqlitestudio
+
+#### MarkDown 文件格式
+
+markdownlint 语法检查、格式化
+
+    DavidAnson.vscode-markdownlint
+
+屏蔽当前行，添加如下内容即可
+
+    <!-- markdownlint-disable-line -->
+
+选装：
+
+Markdown All in One 高亮，预览，给md文件加目录
+
+中文英文之间加入空格，所谓“盘古空白”
+
+    xlthu.pangu-markdown
 
 #### csv文件查看
 
@@ -5844,7 +5802,50 @@ Rainbow CSV
             }
         ]
     },
+
 ```
+
+#### JScript/Json的格式化，比系统自带的好用
+
+Prettify JSON，格式化json文件很好用，容错率高
+
+    mohsen1.prettify-json
+
+Prettier - Code formatter
+
+    esbenp.prettier-vscode
+
+#### shell 脚本格式化
+
+    foxundermoon.shell-format
+
+#### PYQT Integration
+
+在 qt 的 ui 文件上右键即可编译，非常方便
+
+    zhoufeng.pyqt-integration
+
+参数需要设置指向你的环境里安装的 pyqt5_tools 包里的工具
+
+    "pyqt-integration.qtdesigner.path": "C:\\ProgramData\\Anaconda3\\Lib\\site-packages\\pyqt5_tools\\designer.exe",
+    "pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
+    "pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
+
+#### python 环境管理器
+
+比官方的更直观，在侧栏图标选择后用树形列表的方式列出你当前所有相关的 python 环境，支持 conda、virtualenv 等
+
+    donjayamanne.python-environment-manager
+
+#### Python Docstring Generator 自动添加函数头说明
+
+autoDocstring - Python Docstring Generator
+
+    njpwerner.autodocstring
+
+可配置文本风格
+
+    "autoDocstring.docstringFormat": "numpy",
 
 #### 完整模拟了 vim 的各种操作
 
