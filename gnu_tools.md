@@ -17788,6 +17788,8 @@ wine 的官方存储库为了区别于 Fedora 默认存储库，软件包的名�
 
 > 国内镜像
 
+只支持 Debian/Ubuntu
+
     https://mirrors.tuna.tsinghua.edu.cn/help/wine-builds/
 
     https://help.mirrors.cernet.edu.cn/wine-builds/
