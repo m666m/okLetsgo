@@ -5294,6 +5294,8 @@ rm $tfile
 
     操作说明 https://github.com/settings/two_factor_authentication/setup/intro
 
+    https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/about-two-factor-authentication
+
 从【Two-factor authentication】区域中选择 “Authenticator app”。
 
 选择【Edit】，就会打开一个 页面显示 QR 码（二维码）， 请勿关闭此页面。
@@ -5303,6 +5305,10 @@ rm $tfile
 选择扫描二维码，扫一扫github页面上的这个 QR码。
 
 扫描完成之后，帐号就添加到Authenticator中了，下次打开切到 github 即可展示动态验证码。
+
+如果需要给别的设备添加 2FA，再次到这个页面下：Github-Personal Center-Settings-Password and Authentication
+
+    查看 Two-factor methods 栏目，下面有个 Authenticator app，点击 edit 即可查看 QR 码
 
 ## Github 创建 Pull Request
 
