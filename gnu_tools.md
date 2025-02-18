@@ -13693,7 +13693,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
             gnome-extensions pack quake-mode@repsac-by.github.com --extra-source={quakemodeapp,indicator,util}.js
 
-            gnome-extensions install quake-mode@repsac-by.github.com.shell-extension.zip
+            gnome-extensions install quake-mode@repsac-by.github.com.shell-extension.zip --force
 
     Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以治愈 gnome 目前不能按 Alt+Tab 切换最近使用的两个窗口。gnome 的默认习惯，只能切换到应用：Alt+Tab 列表是应用窗口，按住 alt 持续点击 tab 循环到某个多实例的应用窗口时，会在上面再显示一个列表呈现该应用的多个实例。切换到应用后，按 Alt+` 在应用的多个实例间切换。
 
