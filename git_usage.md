@@ -5280,7 +5280,7 @@ rm $tfile
 
 ## github 使用 2FA
 
-启用2FA之后，每次在不同设备上登录github都要输入验证码，建议在手机上安装【totp应用】。
+启用2FA之后，每次在不同设备上登录github都要输入验证码（密钥方式命令行 ssh 不受影响），建议在手机上安装【totp应用】。
 
     https://www.cnblogs.com/johnnyzen/p/17880870.html
 
