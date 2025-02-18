@@ -1147,7 +1147,7 @@ postmarketos 把你的旧手机作为一个低功耗平台
 
     https://www.bilibili.com/video/BV1TV411Y7y4/
 
-## Netgear Nighthawk rax50 路由器
+## Netgear Nighthawk rax50 无线路由器
 
 > 如何进入路由器管理页面
 
