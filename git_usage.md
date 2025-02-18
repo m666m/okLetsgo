@@ -5278,6 +5278,32 @@ rm $tfile
 
     https://codeberg.org/
 
+## github 使用 2FA
+
+启用2FA之后，每次在不同设备上登录github都要输入验证码，建议在手机上安装【totp应用】。
+
+    https://www.cnblogs.com/johnnyzen/p/17880870.html
+
+2FA 知识及手机【totp应用】软件安装参见章节 [双重认证 2FA（Two-Factor Authentication）](init_a_server.md)。
+
+先登录你的 github 账户
+
+然后在 Github 菜单路径：Github-Personal Center-Settings-Password and Authentication-(点击按钮: Enable Two-Factor Authentication)
+
+    对应地址 https://github.com/settings/security
+
+    操作说明 https://github.com/settings/two_factor_authentication/setup/intro
+
+从【Two-factor authentication】区域中选择 “Authenticator app”。
+
+选择【Edit】，就会打开一个 页面显示 QR 码（二维码）， 请勿关闭此页面。
+
+打开手机【totp应用】，从右上角的【+】号添加帐户， (Google、Facebook 等) 选择其他帐户。
+
+选择扫描二维码，扫一扫github页面上的这个 QR码。
+
+扫描完成之后，帐号就添加到Authenticator中了，下次打开切到 github 即可展示动态验证码。
+
 ## Github 创建 Pull Request
 
 Pull Request 是开发者使用 GitHub 进行协作的利器。这个功能为用户提供了友好的页面，让提议的更改在并入官方项目之前，可以得到充分的讨论。
@@ -5533,6 +5559,16 @@ OpenAI 等人工智能助理是大势所趋了，不得不用了。会提示2个
             "python.jediEnabled": True, // Falses
 
             "python.languageServer": "Jedi" // "Pylance"
+
+> 使用代理连接
+
+有些用户（比如中国大陆的用户）可能会遇到Copilot不工作的问题，原因是Copilot无法访问互联网或Github api。你可以在输出面板上看到以下错误信息：GitHub Copilot could not connect to server. Extension activation failed: "connect ETIMEDOUT xxx.xxx.xxx:443"。
+
+在这种情况下，你需要设置http代理。
+
+然后，打开VSCode的设置，搜索 'http.proxy'，并设置代理地址和端口。
+
+设置完成后，重新启动VSCode，Copilot应该可以正常工作。
 
 #### 远程开发： Remote Development
 
