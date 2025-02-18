@@ -13685,6 +13685,16 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
         该扩展目前不支持 Gnome 45+，可以安装 ddterm 应急。
 
+        目前支持Gnome 45+，但没有通过 gnome 扩展的审查规范，无法在网站安装，源码网站提供了手动安装的办法：
+
+            git clone --depth=1 https://github.com/repsac-by/gnome-shell-extension-quake-mode.git
+
+            cd gnome-shell-extension-quake-mode
+
+            gnome-extensions pack quake-mode@repsac-by.github.com --extra-source={quakemodeapp,indicator,util}.js
+
+            gnome-extensions install quake-mode@repsac-by.github.com.shell-extension.zip
+
     Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以治愈 gnome 目前不能按 Alt+Tab 切换最近使用的两个窗口。gnome 的默认习惯，只能切换到应用：Alt+Tab 列表是应用窗口，按住 alt 持续点击 tab 循环到某个多实例的应用窗口时，会在上面再显示一个列表呈现该应用的多个实例。切换到应用后，按 Alt+` 在应用的多个实例间切换。
 
         实现 Windows 任务栏切换的习惯：选 AppSwitch 设置页，点开 “Make ... Like the Windows ...” 按钮，这样就不再把窗口分组为应用和应用的多个实例，还要选 Windows 设置页点开 “Workspaces” 选 “All workspaces”，否则会优先循环当前工作区的窗口。
