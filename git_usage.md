@@ -5284,11 +5284,11 @@ rm $tfile
 
     https://www.cnblogs.com/johnnyzen/p/17880870.html
 
-2FA 知识及手机【totp应用】软件安装参见章节 [双重认证 2FA（Two-Factor Authentication）](init_a_server.md)。
+1、手机【totp应用】软件安装，参见章节 [手机端客户端使用 Google 身份验证器的替代方案](init_a_server.md)。
 
-先登录你的 github 账户
+2、浏览器操作，先在 github 网站登录你的账户。
 
-然后在 Github 菜单路径：Github-Personal Center-Settings-Password and Authentication-(点击按钮: Enable Two-Factor Authentication)
+然后在 Github 菜单路径：Github->Personal Center->Settings-Password and Authentication，点击按钮: Enable Two-Factor Authentication
 
     对应地址 https://github.com/settings/security
 
@@ -5298,17 +5298,23 @@ rm $tfile
 
 从【Two-factor authentication】区域中选择 “Authenticator app”。
 
-选择【Edit】，就会打开一个 页面显示 QR 码（二维码）， 请勿关闭此页面。
+选择【Edit】，就会打开一个页面显示 QR 码（二维码）， 请勿关闭此页面。
 
 打开手机【totp应用】，从右上角的【+】号添加帐户， (Google、Facebook 等) 选择其他帐户。
 
-选择扫描二维码，扫一扫github页面上的这个 QR码。
+选择扫描二维码，扫一扫 github 页面上 QR 码
 
-扫描完成之后，帐号就添加到Authenticator中了，下次打开切到 github 即可展示动态验证码。
+    如果不止一个设备需要添加，最好保存此 QR 码的图片，以备后用。因为 github 页面不会再展示这个 QR 码了，只能新建。忘记保存也没有关系，totp 应用都有展示现有账户 QR 码的功能，用其他设备扫描即可。
 
-如果需要给别的设备添加 2FA，再次到这个页面下：Github-Personal Center-Settings-Password and Authentication
+    提示的应急恢复码最好也保存备查
 
-    查看 Two-factor methods 栏目，下面有个 Authenticator app，点击 edit 即可查看 QR 码
+扫描完成之后，帐号就添加到 Authenticator 中了，下次打开切到即可展示 github 的动态验证码。
+
+如果想生成新的 QR 码，再次到这个页面下：Github->Personal Center->Settings-Password and Authentication
+
+    查看 Two-factor methods 栏目，下面有个 Authenticator app，点击 edit 即可查看 QR 码，用 2FA 应用扫描添加后，把计算出的一次性密码填入下面的输入框，即可点击保存生效了。
+
+    之前的 QR 码就被替换了，注意在所有你使用 totp 应用的软件里更新新的 QR 码，不然无法用它计算登录 github 的验证码了。
 
 ## Github 创建 Pull Request
 
