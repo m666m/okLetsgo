@@ -17993,8 +17993,8 @@ Exec=env LANG=zh_CN.GBK MESA_GL_VERSION_OVERRIDE=4.5 wine Z:/home/user/game/Warc
 Type=Application
 StartupNotify=true
 Comment=war3
-Path=/home/user/game/Warcraft III
-Icon=/home/user/game/Warcraft III/war3.jpg
+Path=/home/user/game/Warcraft\ III
+Icon=/home/user/game/Warcraft\ III/war3.jpg
 StartupWMClass=war3.exe
 
 ```
