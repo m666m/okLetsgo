@@ -71,11 +71,15 @@ git 对文件内容的修改，在撤销和重做方面有些使用不便，详�
 
     如果是一个较大的项目，目录众多，管理权限设置分门别类，人员权限各有不同，用 svn。
 
-## git 客户端支持鉴权初始化
+## git 客户端使用仓库设置身份验证
 
-除了 github 这样的开源代码网站，git 私有仓库都需要用户鉴权才能读取文件，所以 git 通过调用 ssh 客户端操作 github 的远程仓库，实现用户鉴权。
+除了 github 这样的开源代码网站，git 私有仓库都需要用户身份验证才能拉取和推送，github用户也是一样，如果想修改自己的仓库内容，需要使用 git 协议通过调用 ssh 客户端操作 github 的远程仓库。
 
-    如果使用 https 鉴权，可使用 Credential 提高使用方便
+    github 登陆身份验证
+
+        https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup
+
+    如果使用 https 身份验证，可使用 Credential 提高使用方便
         https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage
 
     常见问题 https://github.com/git-for-windows/git/wiki/FAQ
@@ -616,7 +620,7 @@ Git 协议：实质就是 ssh 协议的变体，格式为 “用户名@地址:�
     $ ssh -T git@github.com
     > Hi m666m! You've successfully authenticated...
 
-SSH 协议：一般用于需要用户鉴权的 git 仓库。
+SSH 协议：一般用于需要用户身份验证的 git 仓库。
 
     # 对 “用户名@地址” 开头，默认 ssh 22 端口
     git clone [user@]example.com/path/to/repo.git
@@ -634,7 +638,7 @@ SSH 协议：一般用于需要用户鉴权的 git 仓库。
     #   https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
     git clone ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
 
-Http、Https 协议，一般用于公众开放无需鉴权的项目
+Http、Https 协议，一般用于公众开放无需身份验证的项目
 
     # git clone http[s]://example.com/path/to/repo.git
     git clone http://git.oschina.net/yiibai/sample.git
