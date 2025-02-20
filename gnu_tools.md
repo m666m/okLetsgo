@@ -3636,9 +3636,13 @@ KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
             -->General Settings->command: /bin/bash -l，这样设置会话执行登录脚本，并取消勾选“Start in same directory as current session”，这样新建标签的会话不会自动进入之前的工作目录。
 
-            -->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，图片透明度设为 50%（根据你选择的背景图片调整）即可。
+            -->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，壁纸透明度设为 50%（根据你选择的背景图片调整）即可。
 
-            -->Mouse，如果需要鼠标选择即复制到操作系统剪切板的老习惯，勾选“Copy on select”即可。
+            -->Scrolling，给 Scrollback 设置到 10000 行，防止看不全输出内容。
+
+            -->Mouse，如果需要鼠标选择即复制到操作系统剪切板的老习惯，勾选“Copy on select”即可。鼠标右键菜单的复制和粘贴都是到操作系统剪切板。
+
+                其它很多终端模拟器软件使用自己的本地剪切板，鼠标选择默认到本地剪切板，shift+ins 热键也是从本地剪切板粘贴，只有使用鼠标右键菜单的复制和粘贴才是到操作系统剪切板。
 
         别忘记给新建的Profile1的选择“Set as Default”，否则默认的配置文件还是 konsole 自带的。
 
