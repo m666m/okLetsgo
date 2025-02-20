@@ -17986,15 +17986,18 @@ wine 不需要窗口管理器（GNOME或KDE）也可以正常地运行，所以�
 
 输入以下内容：
 
-    [Desktop Entry]
-    Name=war3
-    Exec=env WINEPREFIX="/home/abc/.war3" wine Z:\\\\home\\\\abc\\\\war3\\\\war3.exe
-    Type=Application
-    StartupNotify=true
-    Comment=war3
-    Path=/home/abc/.war3/dosdevices/c:/Program Files/Common Files
-    Icon=/home/abc/war3/war3.jpg
-    StartupWMClass=war3.exe
+```ini
+[Desktop Entry]
+Name=war3
+Exec=env WINEPREFIX="/home/abc/.war3" wine Z:\\\\home\\\\abc\\\\war3\\\\war3.exe
+Type=Application
+StartupNotify=true
+Comment=war3
+Path=/home/abc/.war3/dosdevices/c:/Program Files/Common Files
+Icon=/home/abc/war3/war3.jpg
+StartupWMClass=war3.exe
+
+```
 
 保存退出
 
