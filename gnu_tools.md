@@ -17982,14 +17982,14 @@ wine 不需要窗口管理器（GNOME或KDE）也可以正常地运行，所以�
 
 即 war3 的运行环境为 ~/.war3
 
-为了使用方便，我们可以给war3创建一个桌面快捷方式，鼠标右键桌面空白处，编辑 /usr/share/xsessions/war3.desktop
+为了使用方便，我们可以给war3创建一个桌面快捷方式，鼠标右键桌面空白处，编辑 /usr/share/applications/war3.desktop
 
 输入以下内容：
 
 ```ini
 [Desktop Entry]
 Name=war3
-Exec=env WINEPREFIX="/home/user/game/Warcraft III" wine Z:\\\\home\\\\user\\\\game\\\\Warcraft\\ III\\\\war3.exe
+Exec=env LANG=zh_CN.GBK MESA_GL_VERSION_OVERRIDE=4.5 wine Z:/home/user/game/Warcraft\ III/war3.exe -opengl
 Type=Application
 StartupNotify=true
 Comment=war3
