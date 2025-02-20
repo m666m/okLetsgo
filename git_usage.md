@@ -5220,10 +5220,16 @@ hosts 文件在每个系统的位置不一：
 
 把该ip更新到 /etc/hosts 文件：
 
-    140.82.121.4 github.com
+    20.205.243.166 github.com
     185.199.108.133 raw.githubusercontent.com
 
 这两个地址就基本满足使用要求了。
+
+解决 VSCODE 设置同步network Error 问题
+
+    185.199.110.153 vscode-auth.github.com
+    20.205.243.168 api.github.com
+    140.82.114.22 education.github.com
 
 2、为了使 github 的的各个功能都可用，有很多 ip 地址需要替换，而全套替换比较麻烦，好在 github 上有自动化项目，直接拉取他们每日更新的文件内容填充到 hosts里即可：
 
@@ -5262,11 +5268,11 @@ rm $tfile
 
 3、修改完 hosts 文件后，如果还不能正常访问，那就试试刷新下 DNS 缓存，在命令行里执行：
 
-    Linux: sudo systemctl restart network​
+    Linux: sudo systemctl restart network
 
-    Windows: 在 CMD 窗口输入：ipconfig /flushdns​
+    Windows: 在 CMD 窗口输入：ipconfig /flushdns
 
-    Macos: sudo killall -HUP mDNSResponder​
+    Macos: sudo killall -HUP mDNSResponder
 
 如果上述方法无效，那就再试试重启机器。
 
