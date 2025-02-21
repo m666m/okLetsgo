@@ -3725,10 +3725,10 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
     我使用的 $HOME$/.config/kitty/kitty.conf 配置文件如下：
 
-
+        #################################
         # 恢复默认配置 `cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/kitty.conf`
         #
-        ###########################################################
+        # `kitten choose-fonts`
         # BEGIN_KITTY_FONTS
         font_family      family="MesloLGS Nerd Font"
         bold_font        auto
