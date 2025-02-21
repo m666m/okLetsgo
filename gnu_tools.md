@@ -3682,6 +3682,47 @@ Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示刷新速度
 
             -->color：不再支持设置背景图片，但仍可设置窗口透明度。
 
+kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/MacOS 桌面下使用
+
+    我目前在用它，因为系统资源占用情况最少，基本功能都有。
+
+    https://sw.kovidgoyal.net/kitty/conf/
+        https://github.com/kovidgoyal/kitty
+            https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
+
+    常用插件挺好用 https://sw.kovidgoyal.net/kitty/kittens_intro/
+
+    设置 kitty 使用颜色主题，运行命令 `kitty +kitten themes`，会进入字符GUI界面，根据提示操作即可，推荐使用内置 Nord 主题。
+
+    新建选项卡：Ctrl+Shift+T，窗口最下一行就变成选项卡的标题栏了，鼠标点击即可切换。其他操作热键 Close Tab：Ctrl+Shift+Q，Next Tab：Ctrl+Shift+右，Previous Tab：Ctrl+Shift+左
+
+    拆分窗口，键盘快捷键 Ctrl+Shift+Enter，在不同窗口之间切换 Ctrl+Shift+[ 或 Ctrl+Shift+]，窗口排列为多种布局 Ctrl+Shift+L。
+
+    当前窗口内翻页：Line Up：Ctrl+Shift+向上，Line Down：Ctrl+Shift+向下，Page Up：Ctrl+Shift+Page_Up，Page Down：Ctrl+Shift+Page_Down，Top：Ctrl+Shift+home，Bottom：Ctrl+Shift+end
+
+    ssh问题：有时 ssh 连接到远程计算机时，可能会报错终端未知或打开终端失败。是因为 Kitty terminfo 文件（curses 库中处理特定终端功能的一组例程）在远程服务器上不可用。
+
+        alias sshk="kitty +kitten ssh" 以后使用 ssh 执行 `sshk user@host` 即可
+
+    我使用的 $HOME$/.config/kitty/kitty.conf 配置文件如下：
+
+        ###########################################################
+        # BEGIN_KITTY_FONTS
+        font_family      family="MesloLGS Nerd Font"
+        bold_font        auto
+        italic_font      auto
+        bold_italic_font auto
+        font_size 12.0
+        # END_KITTY_FONTS
+
+        scrollback_lines 10000
+
+        copy_on_select yes
+
+        background_opacity 0.95
+
+        shell /bin/bash --login
+
 gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal。
 
 Enlightenment 桌面自带 Terminology。
@@ -3695,13 +3736,6 @@ tilix 基于 gtk3 开发的一个平铺式终端模拟器，效果类似 tmux，
 cool-retro-term 显示效果是 CRT 显示器。
 
 terminology 使用 EFL（不支持Wayland） 的终端仿真器，尽可能地模仿 Xterm。
-
-kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/MacOS 桌面下使用，目前中文支持不好
-
-    https://github.com/kovidgoyal/kitty
-        https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
-
-    常用插件挺好用 https://sw.kovidgoyal.net/kitty/kittens_intro/
 
 Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
 
