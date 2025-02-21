@@ -1185,7 +1185,16 @@ postmarketos 把你的旧手机作为一个低功耗平台
 
 > 查看 Wifi 信道占用
 
-Windows 下使用 inSSIDer、netspot 等软件。
+在 Windows 中使用 netsh 作为无线频道扫描器的方法：
+
+    按键盘上的 Win + R。
+    输入“cmd”并按回车。
+    在命令提示符中输入“netsh wlan show all”并按回车。
+    向下滚动直到看到一个名为 “SHOW NETWORKS MODE=BSSID” 的部分。
+
+    图形化程序：在 Windows 上使用 NetSpot 找到最佳 WiFi 频道 https://www.netspotapp.com/cn/wifi-channel-scanner
+
+Windows 下使用 inSSIDer、netspot 等软件更方便全面。
 
 安卓使用 WiFi 魔盒。
 
