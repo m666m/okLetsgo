@@ -3696,7 +3696,7 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
     新建选项卡：Ctrl+Shift+T，窗口最下一行就变成选项卡的标题栏了，鼠标点击即可切换。其他操作热键 Close Tab：Ctrl+Shift+Q，Next Tab：Ctrl+Shift+右，Previous Tab：Ctrl+Shift+左
 
-    拆分窗口，键盘快捷键 Ctrl+Shift+Enter，在不同窗口之间切换 Ctrl+Shift+[ 或 Ctrl+Shift+]，窗口排列为多种布局 Ctrl+Shift+L。
+    拆分窗口，键盘快捷键 Ctrl+Shift+Enter，在不同窗口之间切换 Ctrl+Shift+[ 或 Ctrl+Shift+]，窗口排列为多种布局 Ctrl+Shift+L，关闭窗口 Ctrl+Shift+w，
 
     当前窗口内翻页：Line Up：Ctrl+Shift+向上，Line Down：Ctrl+Shift+向下，Page Up：Ctrl+Shift+Page_Up，Page Down：Ctrl+Shift+Page_Down，Top：Ctrl+Shift+home，Bottom：Ctrl+Shift+end
 
@@ -3715,6 +3715,9 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
     我使用的 $HOME$/.config/kitty/kitty.conf 配置文件如下：
 
+
+        # 复制默认配置 cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/kitty.conf
+
         ###########################################################
         # BEGIN_KITTY_FONTS
         font_family      family="MesloLGS Nerd Font"
@@ -3726,6 +3729,7 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
         remember_window_size no
         scrollback_lines 10000
+        scrollbar_visible always
         copy_on_select yes
         background_opacity 0.95
         shell /bin/bash --login
