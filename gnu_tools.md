@@ -3702,12 +3702,16 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
     复制和粘贴：因为没有右键菜单，所以只能用热键了：
 
-        ctrl+shift+c copy_to_clipboard
-        ctrl+shift+v paste_from_clipboard
+        shift+insert 粘贴自你的鼠标选择
 
-        shift+insert paste_from_selection
+        ctrl+shift+c 复制到操作系统剪切板
+        ctrl+shift+v 从操作系统剪切板粘贴
 
         如果需要鼠标选择即复制到操作系统剪切板的老习惯，配置文件中开启 “Copy on select”即可。
+
+    shell 集成：鼠标点击命令行文字即可移动光标到此等
+
+        https://sw.kovidgoyal.net/kitty/shell-integration/#shell-integration
 
     ssh问题：有时 ssh 连接到远程计算机时，可能会报错终端未知或打开终端失败。是因为 Kitty terminfo 文件（curses 库中处理特定终端功能的一组例程）在远程服务器上不可用。
 
@@ -3727,12 +3731,26 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
         font_size 12.0
         # END_KITTY_FONTS
 
-        remember_window_size no
-        scrollback_lines 10000
-        scrollbar_visible always
-        copy_on_select yes
-        background_opacity 0.95
+        copy_on_select clipboard
+
+        tab_bar_edge top
+
         shell /bin/bash --login
+
+        scrollback_lines 10000
+
+        # for use with quake mode drop-down window extension
+        remember_window_size no
+
+        background_image /home/user/Pictures/296772.jpg
+        # background_image_layout scaled
+        # background_opacity 0.9
+        # background_blur 64
+
+        cursor_blink_rate 500
+
+        shell_integration disabled
+        cursor_shape block
 
 gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal。
 
