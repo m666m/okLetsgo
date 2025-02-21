@@ -3577,7 +3577,7 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
     手动打开光标闪动，设置缓存屏幕内容 10000 行。
 
-一般情况下使用桌面内置的终端模拟器足够了，因为我的 Fedora 自带的 Gnome Terminal 不支持背景图片，所以自行安装了 Xfce Terminal。
+一般情况下使用桌面内置的终端模拟器足够了，因为我的 Fedora 自带的 Gnome Terminal 不支持背景图片，所以自行安装了 kitty Terminal。
 
 Xfce 桌面自带 Xfce Terminal，支持背景图片：
 
@@ -3650,6 +3650,8 @@ KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
 Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示刷新速度快
 
+    Fedora 41 用它代替了 Gnome Terminal
+
     它的特色是有一个小型的 ptyxis-agent 后台进程来管理 PTY、PID 跟踪和容器监控。
     而且，即使在 Flatpak 中，它也支持本机“用户会话”，以及 Podman、Toolbox、Distrobox 和 JHBuild。
 
@@ -3664,27 +3666,31 @@ Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示刷新速度
 
         $ dconf write /org/gnome/Ptyxis/Profiles/ddb03e60e8d36dec96ef51fb67345f90/opacity 0.95
 
-    原：自 Fedora 41 开始被替代的 Gnome 桌面自带 Xterm，现名 Gnome Terminal，不支持背景图片：
+Gnome Terminal，不支持背景图片：
 
-        主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
+    Gnome 桌面自带 Xterm，自 Fedora 41 开始被 Ptyxis 替换
 
-            $ cd ~/your_github_dir/
+    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
 
-            $ git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
+        $ cd ~/your_github_dir/
 
-            $ cd gnome-terminal-nordtheme/src; ./nord.sh
+        $ git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
 
-            执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
+        $ cd gnome-terminal-nordtheme/src; ./nord.sh
 
-        窗口菜单选 Profile，选 Nord，设为默认即可，其它选项点击右侧项：
+        执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
 
-            -->command 勾选 Run command as a login shell 以设置会话执行登录脚本
+    窗口菜单选 Profile，选 Nord，设为默认即可，其它选项点击右侧项：
 
-            -->color：不再支持设置背景图片，但仍可设置窗口透明度。
+        -->command 勾选 Run command as a login shell 以设置会话执行登录脚本
+
+        -->color：不再支持设置背景图片，但仍可设置窗口透明度。
 
 kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/MacOS 桌面下使用
 
-    我目前在用它，因为系统资源占用情况最少，基本功能都有。
+    kitty 的系统资源占用最少，基本功能全有
+
+        https://sw.kovidgoyal.net/kitty/performance/#energy-usage
 
     https://sw.kovidgoyal.net/kitty/conf/
         https://github.com/kovidgoyal/kitty
@@ -3720,8 +3726,8 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
     我使用的 $HOME$/.config/kitty/kitty.conf 配置文件如下：
 
 
-        # 复制默认配置 cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/kitty.conf
-
+        # 恢复默认配置 `cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/kitty.conf`
+        #
         ###########################################################
         # BEGIN_KITTY_FONTS
         font_family      family="MesloLGS Nerd Font"
