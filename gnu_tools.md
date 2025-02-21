@@ -3642,7 +3642,7 @@ KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
             -->Mouse，如果需要鼠标选择即复制到操作系统剪切板的老习惯，勾选“Copy on select”即可。鼠标右键菜单的复制和粘贴都是到操作系统剪切板。
 
-                其它很多终端模拟器软件使用自己的本地剪切板，鼠标选择默认到本地剪切板，shift+ins 热键也是从本地剪切板粘贴，只有使用鼠标右键菜单的复制和粘贴才是到操作系统剪切板。
+                其它很多终端模拟器软件使用自己的私有剪切板，鼠标选择默认到私有剪切板，shift+ins 热键也是从私有剪切板粘贴，只有使用鼠标右键菜单的复制和粘贴才是到操作系统剪切板。
 
         别忘记给新建的Profile1的选择“Set as Default”，这样才会生效。
 
@@ -3699,6 +3699,15 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
     拆分窗口，键盘快捷键 Ctrl+Shift+Enter，在不同窗口之间切换 Ctrl+Shift+[ 或 Ctrl+Shift+]，窗口排列为多种布局 Ctrl+Shift+L。
 
     当前窗口内翻页：Line Up：Ctrl+Shift+向上，Line Down：Ctrl+Shift+向下，Page Up：Ctrl+Shift+Page_Up，Page Down：Ctrl+Shift+Page_Down，Top：Ctrl+Shift+home，Bottom：Ctrl+Shift+end
+
+    复制和粘贴：因为没有右键菜单，所以只能用热键了：
+
+        ctrl+shift+c copy_to_clipboard
+        ctrl+shift+v paste_from_clipboard
+
+        shift+insert paste_from_selection
+
+        如果需要鼠标选择即复制到操作系统剪切板的老习惯，配置文件中开启 “Copy on select”即可。
 
     ssh问题：有时 ssh 连接到远程计算机时，可能会报错终端未知或打开终端失败。是因为 Kitty terminfo 文件（curses 库中处理特定终端功能的一组例程）在远程服务器上不可用。
 
