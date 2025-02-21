@@ -3715,12 +3715,10 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
         font_size 12.0
         # END_KITTY_FONTS
 
+        remember_window_size no
         scrollback_lines 10000
-
         copy_on_select yes
-
         background_opacity 0.95
-
         shell /bin/bash --login
 
 gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal。
