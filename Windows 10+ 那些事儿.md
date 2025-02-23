@@ -2203,6 +2203,22 @@ Windows 10+ 在 2020 年代以来，体系架构类似 Xen，混合虚拟化：
 
     由于第 2 代虚拟机的仿真中删除了旧硬件，导致 grub 菜单倒计时计时器的倒计时速度太快，无法显示 grub 菜单，因而会立即加载默认条目。 在 GRUB 固定为使用 EFI 支持的计时器之前，请修改 /boot/grub/grub.conf, /etc/default/grub 或等效条目，将其修改为“timeout=100000”而不是默认的“timeout=5”。
 
+#### Hyper-V 安装 Linux 虚拟机也要安装客户机代理工具
+
+通常情况下，Windows 宿主机使用 WSL2 即可，没必要单独装 Linux 虚拟机了，参见章节 [WSL 适用于 Linux 的 Windows 子系统]。
+
+如果用 Hyper-V 安装 Linux 虚拟机，最好安装客户机代理工具 hyperv-daemons，类似 vmware tools、virtualbox tools、qemu-guest-agent等，会大大提升系统 IO 速度，改善使用体验：
+
+    Debian：安装 hyperv-daemons 软件包
+
+        hv_fcopy_daemon 文件拷贝服务，主机拷贝文件到虚拟机
+
+        hv_kvp_daemon   KVP服务，主机设置虚拟机的ip网络
+
+        hv_vss_daemon   卷影复制服务 volume shadow copy service (VSS)，主机可以在快照时冻结虚拟机的文件系统
+
+    Fedora：安装 hyperv-daemons 软件包，还可以安装 hyperv-tools 工具包
+
 #### Hyper-V 直连主机USB设备
 
 简单的方法是使用远程桌面客户端 mstsc 时设置本地资源，勾选相关 usb 设备即可
@@ -2398,22 +2414,6 @@ NAT 模式：
         https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/deploy/deploying-graphics-devices-using-dda
 
 目前看是企业级应用优先，在 Windows Sever 上才有 DDA，M$ 忙着赚 AI 云计算的钱呢。
-
-#### Hyper-V 安装 Linux 虚拟机
-
-通常情况下，Windows 宿主机使用 WSL2 即可，没必要单独装 Linux 虚拟机了，参见章节 [WSL 适用于 Linux 的 Windows 子系统]。
-
-如果用 Hyper-V 安装 Linux 虚拟机，最好安装客户机代理工具 hyperv-daemons，类似 vmware tools、virtualbox tools、qemu-guest-agent等，会大大提升系统 IO 速度，改善使用体验：
-
-    Debian：安装 hyperv-daemons 软件包
-
-        hv_fcopy_daemon 文件拷贝服务，主机拷贝文件到虚拟机
-
-        hv_kvp_daemon   KVP服务，主机设置虚拟机的ip网络
-
-        hv_vss_daemon   卷影复制服务 volume shadow copy service (VSS)，主机可以在快照时冻结虚拟机的文件系统
-
-    Fedora：安装 hyperv-daemons 软件包，还可以安装 hyperv-tools 工具包
 
 ### 使用 VM Ware、安卓模拟器等虚拟机提示需要关闭 Hyper-V
 
