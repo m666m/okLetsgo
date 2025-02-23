@@ -268,7 +268,7 @@ Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
 ### 一、制作支持 UEFI + GPT 的启动u盘
 
-建议使用英文版 Windows 的 iso 文件制作启动u盘，在安装 Windows 时，区域设置选择 “新加坡”，系统语言选择简体中文，安装后 “非unicode区域设置” 选择新加坡。或安装时选择区域为美国。安装完成后添加中文语言包，再更改界面提示语言为简体中文，原因不解释了。
+建议使用英文版 Windows 的 iso 文件制作启动u盘，在安装 Windows 时，区域设置选择 “新加坡”，系统语言选择简体中文。或者选择区域为美国，安装完成后添加中文语言包，然后更改界面提示语言为简体中文，原因不解释。安装后在键盘选项的 “非unicode区域设置” 选择“中国”即可支持 Windows xp 时代的 gbk 编码的中文程序正常显示。
 
 u盘制作工具
 
@@ -335,7 +335,7 @@ rufus 制作u盘时引导类型选择 “FreeDos” 就行了，完成后把 gho
 
 如果引导类型选择 “grub”，那你得准备 menu.list 文件，引导到对应的 img 文件上。
 
-对 Windows 10 + 来说，不需要用 ghost 启动盘了，推荐直接使用 Windows 自带的系统映像备份，参见章节 [系统映像备份]。
+对 Windows 10 + 来说，不需要用 ghost 启动盘了，推荐直接使用 Windows 自带的 [系统映像备份]。
 
 ### 二、主板设置启动模式为原生 UEFI
 
@@ -377,11 +377,15 @@ UEFI 模式下显卡连接 DP 口刚开机时，显示器会自动使用物理�
 
 ### 三、主板开启 Secure Boot 功能
 
-Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用是主板 UEFI 启动时只加载经过认证的操作系统或者硬件驱动程序，从而防止恶意软件侵入。 Linux 下参见章节 [在 Linux 使用安全启动（Secure Boot）--- mokutil](init_a_server think)。
+Secure Boot 是 UEIF 设置中的一个子规格，简单的来说就是一个参数设置选项，它的作用是主板 UEFI 启动时只加载经过认证的操作系统或者硬件驱动程序，从而防止恶意软件侵入。
 
-UEFI 安全启动可以绕过，已经有常驻 UEFI 启动区的木马了，所以安全启动名字很吓人，其实意义不大
+UEFI 安全启动可以绕过，已经有常驻 UEFI 启动区的木马了，所以安全启动名字很吓人，其实意义不大，当年 DOS 时代就有常驻系统启动区的病毒，现在也没啥差别
 
     https://arstechnica.com/information-technology/2023/03/unkillable-uefi-malware-bypassing-secure-boot-enabled-by-unpatchable-windows-flaw/
+
+    手机安卓系统对安全启动的保护的就比较好，见 [Work Profile 隔离 ---- 三星 knox 安全文件夹](mobile_phone.md)。
+
+    Linux 下参见章节 [Linux 对安全启动的实现](init_a_server think)。
 
 首先要确保实现了上一个章节 [主板 BIOS 设置启动模式为原生 UEFI]。
 
@@ -391,7 +395,7 @@ UEFI 安全启动可以绕过，已经有常驻 UEFI 启动区的木马了，所
 
 但这只是开启，并没有激活。
 
-回车选择进入 “Secure Boot” 出现新界面，在这里可以看到，“Secure Boot” 为 “Enable”，但是出现 “Not Active” 字样。
+2、回车选择进入 “Secure Boot” 出现新界面，在这里可以看到，“Secure Boot” 为 “Enable”，但是出现 “Not Active” 字样。
 
 如果是 “Not Active”，则需要导入出厂密钥：
 
@@ -401,19 +405,19 @@ UEFI 安全启动可以绕过，已经有常驻 UEFI 启动区的木马了，所
 
     返回上级菜单， 这时的 “Secure Boot” 下面会出现 “Active” 字样
 
-    “Secure Boot Mode” 再改回 “Standard”（在主板 BIOS 底部显示的操作提示是再改回 “Standard”），如果这次不能改就先不做。
+    “Secure Boot Mode” 目前不能改回 “Standard”（虽然在主板 BIOS 底部显示的操作提示是再改回 “Standard”），如果这次不能改就先不做。
 
     F10 储存并退出重启系统。
 
-原理：
+3、重启后再次进入BIOS设置
 
-    安全启动使用三种密钥：PK(platform key) 是平台的主密钥，KEK(key exchange keys) 是每次更新数据库时使用的密钥，DB(authorized signatures) 是直接对应bootloader的密钥。KEK 被 PK 签名，DB 被 KEK 签名，而 bootloader 被 DB 签名。
+    把 “Secure Boot Mode” 改回 “Standard”，这时 “Secure Boot” 依然是 “Active” 字样，说明密钥都导入成功了。
 
-2、重启后再次进入BIOS设置
+    F10 储存并退出，再次重启系统。
 
-把 “Secure Boot Mode” 改回 “Standard”，这时 “Secure Boot” 依然是 “Active” 字样，说明密钥都导入成功了。
+主板厂商的操作说明
 
-不大明白为嘛技嘉没提供个详细的操作说明呢？
+    https://www.asus.com.cn/support/faq/1050047/
 
 参考1
 
@@ -529,7 +533,7 @@ Windows 安装完成后，运行 msinfo32，在 “系统摘要” 界面找 “
 
 打开 Windows store，菜单选择 “Settings”，把 “App updates” 的 “Update apps automatically” 选项抓紧关闭了，太烦人了！
 
-Windows 商店应用默认不提供卸载选项，解决办法见下面章节 [删除无关占用 cpu 时间的项目]。
+Windows 商店应用默认不提供卸载选项，解决办法见章节 [删除无关占用 cpu 时间的项目]。
 
 如果有程序开机就启动挺烦人的，运行 “msconfig.exe”，在启动选项卡进行筛选
 
@@ -543,7 +547,7 @@ Windows 商店应用默认不提供卸载选项，解决办法见下面章节 [�
 
 ### 选择开启虚拟化功能
 
-日常的使用习惯，应该**在虚拟机里使用你的日常软件**，参见章节 [在虚拟机里使用你的日常软件]。
+日常的使用习惯，应该**[在虚拟机里使用你的日常软件]** 。
 
 只要不涉及章节 [开启 hyper-v 的负面影响]，强烈建议开启虚拟化功能。
 
