@@ -3695,12 +3695,14 @@ Gnome Terminal，不支持背景图片：
 kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/MacOS 桌面下使用
 
     kitty 的系统资源占用最少，基本功能全有
-
         https://sw.kovidgoyal.net/kitty/performance/#energy-usage
 
-    https://sw.kovidgoyal.net/kitty/conf/
         https://github.com/kovidgoyal/kitty
             https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
+
+    配置说明
+
+        https://sw.kovidgoyal.net/kitty/conf/
 
     常用插件挺好用 https://sw.kovidgoyal.net/kitty/kittens_intro/
 
@@ -3733,7 +3735,13 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
         #################################
         # 恢复默认配置 `cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/kitty.conf`
-        #
+
+        # `kitty +kitten themes`
+        # BEGIN_KITTY_THEME
+        # Nord
+        include current-theme.conf
+        # END_KITTY_THEME
+
         # `kitten choose-fonts`
         # BEGIN_KITTY_FONTS
         font_family      family="MesloLGS Nerd Font"
@@ -3754,7 +3762,7 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
         # for use with quake mode drop-down window extension
         remember_window_size no
 
-        background_image /home/user/Pictures/296772.jpg
+        background_image /home/user/Pictures/40727.jpg
         # background_image_layout scaled
         # background_opacity 0.9
         # background_blur 64
