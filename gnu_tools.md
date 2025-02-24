@@ -8914,6 +8914,20 @@ expr 还支持比较操作，当表达式求值为 false 时，expr 将打印值
     $ awk 'BEGIN { a = 6; b = 3; print "(a + b) = ", (a + b) }'
     (a + b) =  9
 
+### 生成二维码 qrencode
+
+生成二维码到终端模拟器
+
+    $ echo abcd1234 | qrencode -t ANSIUTF8
+
+    $ qrencode -t ANSIUTF8 < your_config.cfg
+
+`-t ANSIUTF8` 表示生成的类型是文本字符画，这样在任何终端或文本编辑器里都可以正常显示。
+
+添加 -o 生成到文件
+
+    $ qrencode -t ansiutf8 -o kk.txt < your_config.cfg
+
 ### 文件完整性校验 sha256sum
 
 Linux 下，每个算法都是单独的程序：cksum md5sum sha1sum sha256sum sha512sum
