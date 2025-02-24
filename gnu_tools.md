@@ -2608,6 +2608,12 @@ bash 内置命令和快捷键见 (shellcmd.md) 的相关章节。
 
     https://zhuanlan.zhihu.com/p/572716915
 
+Anaconda 在安装时会配置你的 bash，当你进入命令行提示符即自动执行 `conda activate` 到默认的[base]环境，可以关掉这个特性：
+
+    $ conda config --set auto_activate_base false
+
+    以后进入环境手动执行 `conda activate` 即可。
+
 使用 conda 命令激活环境时，默认会修改命令行提示符，比较丑，Windows cmd 下还好，只是增加个前缀 (base) C:\>，在 mintty bash 下是个两行的怪物，而且默认不支持 utf-8。
 
     仅供参考，bash 下使用 conda 自定义 PS1 变量的尝试过程：
