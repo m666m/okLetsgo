@@ -12969,7 +12969,15 @@ Gnome 的图形界面设置程序 Gnome Tweaks Tool(gnome-tweaks) 有 “Font”
 
     https://zhuanlan.zhihu.com/p/32961737
 
-根据印刷专业的区分方法，字体可以分别设置三种风格：sans、serif、mono，操作系统如 Windows、Linux，office/firefox等软件都支持设置三种风格的字体，且每种风格都可以设置多个字体（前一个未找到就用下一个，所谓回落）
+根据印刷专业的区分方法，字体可以分别设置三种风格：
+
+    sans
+
+    serif
+
+    mono
+
+操作系统如 Windows、Linux，office/firefox 等软件都支持设置三种风格的字体，且每种风格都可以设置多个字体（前一个未找到就用下一个，所谓“回落”）
 
     在西方国家的罗马字母阵营中，字体分为两大种类：Sans Serif 和 Serif
 
@@ -13033,7 +13041,9 @@ OpenType 可变字体（OpenType variable fonts）技术
 
 为了在一个单纯正文展示的页面中使用一个字体，你至少需要四个字体文件：常规Regular、斜体Italic、加粗Bold、斜体加粗Bold Italic。如果你想添加更多的字重，比如让题注更轻或让额外强调的地方更重，意味着你需要更多文件。
 
-可变字体属于 OpenType 字体规范上的演进，能够储存轮廓变化数据，在初始字形轮廓的基础上自动生成丰富的变化造型，它允许将同一字体的多个变体统合进单独的字体文件中。从而无需再将不同字宽、字重或不同样式的字体分割成不同的字体文件。高德纳（Donald Knuth）当年用 Metafont 创立的曲线自动调整技术发扬光大，无级字重成为现实。
+可变字体属于 OpenType 字体规范上的演进，能够储存轮廓变化数据，在初始字形轮廓的基础上自动生成丰富的变化造型，允许在一个字体文件中包含多种字重（Weight）和样式（Style），而不是为每种字重和样式单独提供文件。从而无需再将不同字宽、字重或不同样式的字体分割成不同的字体文件。高德纳（Donald Knuth）当年用 Metafont 创立的曲线自动调整技术发扬光大，无级字重成为现实。
+
+可变字体是一种新型字体格式
 
 #### 安装官方仓库的中文字体包
 
@@ -13172,7 +13182,9 @@ adobe 思源跟 Google Noto 这俩字体是一回事
 #### 设置中英文分别使用一种字体 fontconfig
 
     用 fontconfig 治理 Linux 中的字体 https://catcat.cc/post/2021-03-07/
+
     Linux fontconfig 的字体匹配机制 https://catcat.cc/post/2020-10-31/
+
     示例 https://github.com/rydesun/myconf/tree/master/.config/fontconfig
 
     https://www.jinbuguo.com/gui/linux_fontconfig.html
@@ -13218,6 +13230,17 @@ Linux 操作系统一般都内置 fontconfig 软件包选择字体，默认无�
 
 该命令还会列出该字体支持的浓淡，比如 “Noto Serif CJK SC:style=Black”，则设置字体时可以选择 “Noto Serif CJK SC Black”，这样字体会加重类似黑体的效果。
 
+测试自己的选择是否能够匹配，可以运行：
+
+    $ fc-match "Noto Sans CJK SC"
+    NotoSansCJK-VF.ttc: "Noto Sans CJK SC" "Regular"
+
+    $ fc-match "Noto Serif CJK SC"
+    NotoSerifCJK-VF.ttc: "Noto Serif CJK SC" "Regular"
+
+    $ fc-match "Noto Serif CJK SC Black"
+    NotoSans[wght].ttf: "Noto Sans" "Regular"
+
 查看配置后的最终字体选择
 
     $ fc-conflist
@@ -13237,9 +13260,11 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
 
     网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，实现见下面 “法一”。
 
-    随着发行版的进步，又开始使用 /etc/fonts/fonts.conf，实现见下面 “法二”。
+    随着发行版的演进，又开始使用 /etc/fonts/fonts.conf，实现见下面 “法二”。
 
-法一：简单起见，我们直接编辑 /etc/fonts/local.conf 文件
+简单起见，我们直接编辑 /etc/fonts/local.conf 文件
+
+下面的示例比较合适，可以直接使用：
 
 ```xml
 <?xml version='1.0'?>
@@ -13296,8 +13321,8 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
   <prefer>
    <family>Liberation Mono</family>
    <!-- 我的 Fedora 下中文mono的字符间距太大，还是用去掉 Mono 字样的普通的Sans即可-->
-   <family>Noto Sans Mono CJK SC</family>
-   <family>Noto Sans Mono CJK TC</family>
+   <family>Noto Sans CJK SC</family>
+   <family>Noto Sans CJK TC</family>
    <!--
    <family>Source Han Sans CN Normal</family>
    <family>Source Han Sans TWHK Normal</family>
@@ -13307,18 +13332,143 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
 </fontconfig>
 ```
 
+把格式改造的更规范：
+
+    <alias> 转换为 <match> + <test> + <edit>：
+
+        每个 <alias> 块被转换为一个 <match> 块。
+
+        <family> 标签的内容被移动到 <test> 和 <edit> 中。
+
+    <prefer> 转换为 <edit>：
+
+        <prefer> 中的字体列表被移动到 <edit> 的 mode="prepend" 中。
+
+        mode="prepend" 表示将这些字体插入到匹配结果的最前面。
+
+```xml
+<?xml version='1.0'?>
+<!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
+<fontconfig>
+ <!--
+    Begin user preferred fonts config:
+    Created by: Eric Zhiqiang Ma (zma [at] ericzma.com)
+    https://github.com/zma/config_files/blob/master/fonts/local.noto.conf
+    To use this, put it into /etc/fonts/local.conf for system wide configuration
+    or ~/.fonts.conf for user-specific configuration
+ -->
+ <!--
+  Preferred fonts:
+    Noto fonts
+    liberation fonts (for Monospace fonts)
+ -->
+
+ <!--
+  Serif faces
+ -->
+ <match>
+  <test name="family">
+   <string>serif</string>
+  </test>
+  <edit name="family" mode="prepend" binding="strong">
+   <string>Noto Serif</string>
+   <!-- 我的 Fedora 下中文太轻，用加深的 Black-->
+   <string>Noto Serif CJK SC :style=Black</string>
+   <string>Noto Serif CJK TC</string>
+   <!--
+   <string>Source Han Sans CN Normal</string>
+   <string>Source Han Sans TWHK Normal</string>
+   -->
+  </edit>
+ </match>
+
+ <!--
+  Sans-serif faces
+ -->
+ <match>
+  <test name="family">
+   <string>sans-serif</string>
+  </test>
+  <edit name="family" mode="prepend" binding="strong">
+   <string>Noto Sans</string>
+   <string>Noto Sans CJK SC</string>
+   <string>Noto Sans CJK TC</string>
+   <!--
+   <string>Source Han Sans CN Normal</string>
+   <string>Source Han Sans TWHK Normal</string>
+   -->
+  </edit>
+ </match>
+
+ <!--
+  Monospace faces
+ -->
+ <match>
+  <test name="family">
+   <string>monospace</string>
+  </test>
+  <edit name="family" mode="prepend" binding="strong">
+   <!-- 我的 Fedora 下中文mono的字符间距太大，还是用去掉 Mono 字样的普通的Sans即可-->
+   <string>Liberation Mono</string>
+   <string>Noto Sans CJK SC</string>
+   <string>Noto Sans CJK TC</string>
+   <!--
+   <string>Source Han Sans CN Normal</string>
+   <string>Source Han Sans TWHK Normal</string>
+   -->
+  </edit>
+ </match>
+</fontconfig>
+
+```
+
+修改权限：
+
+    $ chmod 644 ~/.config/fontconfig/fonts.conf
+
+刷新字体缓存：
+
+    $ sudo fc-cache -fv
+
+测试字体配置是否生效：
+
+    $ fc-match serif
+    NotoSerifCJK-Black.ttc: "Noto Serif CJK SC" "Black"
+
+    $ fc-match sans-serif
+    NotoSansCJK-Regular.ttc: "Noto Sans CJK SC" "Regular"
+
+    $ fc-match monospace
+    NotoSansMono[wght].ttf: "Noto Sans Mono" "Regular"
+
 法二：更符合 XDG 规范的用法
 
-写入如下文件，系统级在 /etc/fonts/conf.d/ 下
+建立文件 fonts.conf
 
-    $XDG_CONFIG_HOME/fontconfig/conf.d 和 $XDG_CONFIG_HOME/fontconfig/fonts.conf
+    系统级在 /etc/fonts/conf.d/ 下
 
-    另一个例子
+    用户级在 ~/.config/fontconfig/conf.d 下
 
-        文章较详细 https://szclsya.me/zh-cn/posts/fonts/linux-config-guide/
-            https://github.com/szclsya/dotfiles/blob/master/fontconfig/fonts.conf
+    其实应该是 $XDG_CONFIG_HOME 指向 $HOME，但目前 Gnome 等桌面环境好像都不设置这个变量。
 
-        https://github.com/rydesun/dotfiles/blob/master/.config/fontconfig/conf.d/
+修改权限：
+
+    $ chmod 644 ~/.config/fontconfig/fonts.conf
+
+刷新字体缓存：
+
+    $ fc-cache -fv
+
+测试字体配置是否生效：
+
+    $ fc-match serif
+    NotoSerifCJK-Black.ttc: "Noto Serif CJK SC" "Black"
+
+    $ fc-match sans-serif
+    NotoSansCJK-Regular.ttc: "Noto Sans CJK SC" "Regular"
+
+    $ fc-match monospace
+    NotoSansMono[wght].ttf: "Noto Sans Mono" "Regular"
 
 来自 tinywrkb <https://aur.archlinux.org/packages/noto-fonts-cjk-vf> 的例子，编辑 $XDG_CONFIG_HOME/fontconfig/fonts.conf 文件：
 
@@ -13385,6 +13535,13 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
   </edit>
 </match>
 ```
+
+其它的例子
+
+    文章较详细 https://szclsya.me/zh-cn/posts/fonts/linux-config-guide/
+        https://github.com/szclsya/dotfiles/blob/master/fontconfig/fonts.conf
+
+    https://github.com/rydesun/dotfiles/blob/master/.config/fontconfig/conf.d/
 
 还可以开启一些诸如连字等特性，只需要设置特殊标志即可：
 
