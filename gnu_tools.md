@@ -8916,6 +8916,8 @@ expr 还支持比较操作，当表达式求值为 false 时，expr 将打印值
 
 ### 生成二维码 qrencode
 
+需要安装软件包 qrencode。
+
 生成二维码到终端模拟器
 
     $ echo abcd1234 | qrencode -t ANSIUTF8
@@ -9288,6 +9290,68 @@ hexyl
     │000000e0│ 56 54 d2 f6 c4 e4 00 2f ┊ c9 f3 79 8e 8b 1a de 0e │VT××××⋄/┊××y××•×•│
     │000000f0│ 29 1c 09 0c 94 cb b5 40 ┊ 5a dc 29 e4 dc 01 5a 42 │1•__×××@┊Z×1××•ZB│
     └────────┴─────────────────────────┴─────────────────────────┴────────┴────────┘
+
+### 查看自己的公网 IP 地址是多少
+
+只显示地址，方便脚本调用：
+
+    $ curl ipinfo.io/ip
+    11.22.33.44
+
+    $ curl http://members.3322.org/dyndns/getip
+    11.22.33.44
+
+    $ curl ipv4.icanhazip.com
+    11.22.33.44
+
+    $ curl ipv6.icanhazip.com
+    2409:xxxx
+
+    $ curl ifconfig.me
+    2409:xxxx
+
+    $ curl ifconfig.io
+    2409:xxxx
+
+显示结构化数据，需要解析：
+
+    $ curl httpbin.org/ip
+    {
+        "origin": "11.22.33.44"
+    }
+
+    $ curl -fsSL httpbin.org/ip | jq -r '.origin'
+    "11.22.33.44"
+
+    $ curl ipinfo.io
+    {
+        "ip": "11.22.33.44",
+        "city": "Shanghai",
+        "region": "Shanghai",
+        "country": "CN",
+        "loc": "11.22,33.44",
+        "org": "xxx Company Limited",
+        "postal": "100000",
+        "timezone": "Asia/Shanghai",
+        "readme": "https://ipinfo.io/missingauth"
+    }
+
+    $ curl -fsSL ipinfo.io | jq -r '.ip'
+    11.22.33.44
+
+    $ curl myip.ipip.net
+    当前 IP：11.22.33.44  来自于：中国
+
+    $ curl cip.cc
+    IP      : 11.22.33.44
+    地址    : 中国
+    运营商  : 移动
+
+    数据二  : 中国 | 移动/全省通用
+
+    数据三  : 中国  | 移动
+
+    URL     : http://www.cip.cc/11.22.33.44
 
 ### 下载工具
 
