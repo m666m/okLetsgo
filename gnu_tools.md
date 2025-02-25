@@ -9995,6 +9995,145 @@ scp 基本用法
 
     scp root@192.168.1.104:/usr/local/xx.txt root@192.168.1.105:/usr/local/webs/
 
+### 万兆光纤链路拷贝工具--bbcp
+
+数据中心光纤线路传输大文件或目录，需要加密多线程传输工具以充分利用带宽，商业版的有 IBM Aspera，开源产品中除了 rsync 开启多线程传输，还可以考虑 bbcp
+
+    http://www.slac.stanford.edu/~abh/bbcp/
+
+源服务器和目标服务器都需要安装 bbcp，源服务器执行 bbcp 时会用 ssh 连接到目标服务器自动调用 bbcp
+
+    下载 https://www.slac.stanford.edu/~abh/bbcp/bin/amd64_ubuntu22.04/bbcp
+
+    $ sudo cp bbcp /usr/bin/
+
+测试运行
+
+    在本机第一次会提示你登录 localhost 的 ssh 密钥，确认即可：
+
+        $ bbcp -P 2 /dev/zero localhost:/dev/null
+        The authenticity of host 'localhost (::1)' can't be established.
+        ED25519 key fingerprint is SHA256:xxxxxxx.
+        This key is not known by any other names.
+        Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+        Warning: Permanently added 'localhost' (ED25519) to the list of known hosts.
+        bbcp: Creating /dev/null/zero
+        bbcp: 250226 01:04:30  0% done; 2.4 GB/s
+        bbcp: 250226 01:04:32  0% done; 2.0 GB/s
+        bbcp: 250226 01:04:33  0% done; 2.1 GB/s
+        bbcp: 250226 01:04:35  0% done; 2.2 GB/s
+        bbcp: 250226 01:04:36  0% done; 2.2 GB/s
+        bbcp: 250226 01:04:37  0% done; 2.2 GB/s
+
+    网络上的主机，尝试使用大的 TCP 窗口
+
+        $ bbcp -P 2 -v -w 2M /dev/zero v10chi.datatag.org:/dev/null
+
+如果你的服务器启用防火墙了，注意目标服务器上需要开放 5031 端口。源服务器上不需要添加相应的规则。
+
+#### 参数调优
+
+正常调优之后，10G 光纤线路是可以跑满的
+
+    http://pcbunn.cithep.caltech.edu/bbcp/using_bbcp.htm
+
+1、操作系统参数
+
+Issue a "cat /proc/sys/net/ipv4/tcp_rmem" command, and verify that the numbers you see are large, for example:
+
+    1610612736      1610612736      1610612736
+
+(and not small, like 4360)
+
+Here are some typical settings that will allow high throughput in the WAN:
+
+    ### IPV4 specific settings
+    net.ipv4.tcp_timestamps = 0
+    net.ipv4.tcp_sack = 0
+
+    # on systems with a VERY fast bus -> memory interface this is the big gainer
+    net.ipv4.tcp_rmem = 536870912 536870912 536870912
+    net.ipv4.tcp_wmem = 536870912 536870912 536870912
+    net.ipv4.tcp_mem = 536870912 536870912 536870912
+
+    ### CORE settings (mostly for socket and UDP effect)
+    net.core.rmem_max = 536870912
+    net.core.wmem_max = 536870912
+    net.core.rmem_default = 536870912
+    net.core.wmem_default = 536870912
+    net.core.optmem_max = 536870912
+    net.core.netdev_max_backlog = 1000000
+
+In RHEL Linux, you can put these in /etc/sysctl.conf, or run `sysctl` from the command line (you'll need to be root).
+
+Note that, with default large windows like these, *every* user who starts a TCP connection will get a connection that is allocated the full window size, which might not be what you want on a multi-user system.
+
+There are many Web sites which describe how to tune TCP/IP, so we do not cover that here.
+
+2、网卡 MTU 要开启巨型帧
+
+如果有多块网卡，确认好传输使用的是 9000 MTU 或以上的网卡，默认 1500 MTU 的网卡速度快不起来。
+
+3、确认路由
+
+用 `tracepath`检查到目标服务器的路由，确认是两块巨型帧网卡之间的传输，且 MTU 没有被路由器降低。
+
+如果调整了路由设置，刷新下系统的：
+
+    $ sysctl -w net.ipv4.route.flush=1
+
+4、确认 -w 参数
+
+    https://www.slac.stanford.edu/~abh/bbcp/#_Toc392015142
+
+先用 ping 看下平均延迟，假设是 120msecs，线路是 10G 光纤，可得 `iperf` 工具的参数：
+
+    Window Size = 10Gbits/sec * 120msecs = 120 MBytes
+
+则 bbcp 的参数要除以 2，为 60M。
+
+5、避免名称查找
+
+如果给出的是 ip 地址，按规范会默认用 DNS 查找功能转为名称，然后又查找一次到具体的 ip 地址。用 -n 参数禁止这个用法。
+
+示例：
+
+    https://www.cnblogs.com/ddroot/p/7815552.html
+
+拷贝文件
+
+    $ /usr/local/bin/bbcp -4 -k -a -r -F -v -P 2 -w 9m -s 16 -T 'ssh -p 1222 -x -a -oFallBackToRsh=no %I -l %U %H /usr/local/bin/bbcp' test.tar.gz
+
+参数详解：
+
+    -4 使用ipv4 IP地进行传输
+    -k 保留所有未传输完成的文件，并允许在重试时进行覆盖，使用-f后即使加了-k也会全部重传，一般与-a一起使用，默认不使用-k时当传输未完成就中断传输时会删除没有传输完的目标文件
+    -a 保留checkpoint信息用于校验文件的完整性
+    -r 递归传输指定路径下的所有文件
+    -c 使用压缩减少网络上传输的字节但需要额外的CPU资源，如果CPU资源不足，性能会非常差。bbcp使用zip对数据进行压缩传输压缩级别1-9，1速度最快，9最大压缩率速度最慢
+    -d 多目录复制，可以使用多个源以空格隔开。如:/home/ddroot/data dir1/data1 dir2/data2
+    -P 2 每两秒显示传输的进程
+    -v 显示拷贝信息
+    -V 打印调试信息
+    -f 强制覆盖远端已经存在的文件
+    -F 不检查目标服务器的剩余空间
+    -w 设置Disk (I/O) buffers
+    算法为(window = netspeed/8*RTT = 1000Mb/8*74ms = 1000/1000/8*74 = 9.25 M)
+    对应链接：https://www.slac.stanford.edu/~abh/bbcp/#_Toc392015142
+    -s 16 设置并发数为16，默认4个
+    参考官方建议：https://www.slac.stanford.edu/~abh/bbcp/#_Toc392015143
+    -T "ssh -x -a -p 1222 -oFallBackToRsh=no -i /home/ddroot/.ssh/id_rsa -l ddroot 172.16.66.66 /usr/bin/bbcp"
+        指定远端主机的认证方式：
+        采用-p 1222指定端口；
+        设置-oFallBackToRsh=no减少ssh响应时间；
+        设置-i /home/ddroot/.ssh/id_rsa指定SSH Key；
+        -I 使用传输文件列表文件
+        设置-l ddroot指定登陆用户；
+        172.16.66.66为远程主机地址；
+        /usr/bin/bbcp为远程主机的bbcp路径；
+    --port pn1 指定接收数据端口，默认5031
+    -Z pn1:pn2 指定接收数据端口范围
+
 ### 文件同步 rsync
 
 rsync 用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器。其默认的行为是，使用文件大小和修改时间来判断目标文件是否需要更新
