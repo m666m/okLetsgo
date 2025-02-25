@@ -12981,9 +12981,9 @@ Gnome 的图形界面设置程序 Gnome Tweaks Tool(gnome-tweaks) 有 “Font”
 
     在西方国家的罗马字母阵营中，字体分为两大种类：Sans Serif 和 Serif
 
-    Serif 的意思是有衬线，即文字带笔锋，来自自然的手写形态。比如 Times New Roma、仿宋体、楷体，中规中具适合正文阅读，Windows 在文字处理软件中使用 Serif 风格的字体。Serif 是印刷行业最初的字体风格。
+    Serif 的意思是有衬线，即文字带笔锋，来自自然的手写形态。比如 Times New Roma、仿宋体、楷体，中规中具适合正文阅读，Windows 在文字处理软件中使用 Serif 风格的字体。Serif 是现代印刷行业最初的字体风格。
 
-    Sans 在古希腊语中是 without 的意思，现在英语里面也有这个词。Sans Serif 指没有额外的装饰，笔划粗细大致差不多，比如 Tahoma、黑体、幼圆，用于标题、标语等醒目场合，Windows 在窗口的标题栏等位置使用 san 风格的字体。宋体 是明代为适应木版印刷的木纹特点发明的横细竖粗的字体，笔锋粗壮，也归类在 sans 类。Sans Serif 是现代点阵打印机、电子屏幕流行后为适应点阵化的显示出现的字体风格。
+    Sans 在古希腊语中是 without 的意思，现在英语里面也有这个词。Sans Serif 指没有额外的装饰，笔划粗细大致差不多，比如 Tahoma、黑体、幼圆，用于报纸标题、标语等醒目场合，Windows 在窗口的标题栏等位置就使用 san 风格的字体。宋体 是明代为适应木版印刷的木纹特点发明的横细竖粗的字体，笔划粗壮，也归类在 sans 类。Sans Serif 是现代点阵打印机、电子屏幕流行后为适应点阵化的显示出现的字体风格。
 
     Monospace 等宽字体：近代在机械打字机出现后，针对打字机的特点单独类，虽然也属于 Sans Serif，但由于是等宽字体，所以细分出了 Monospace 这一种类。，比如 Courier New、Consolas，适合会计数字、编程写代码等格式严谨上下行的字符严格对齐的场合。
 
@@ -13066,14 +13066,20 @@ OpenType 可变字体（OpenType variable fonts）技术
 
 > 主流 Linux 发行版使用 Noto 字体
 
-现在的主流发行版内置了支持汉语的字体 Noto Fonts：
+Fedora 系统默认  Cantarell 字体支持显示中文，从 Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但需要用户单独安装设置 [https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description]。
+
+Noto 系列字族名只支持英文，命名规则是 Noto + Sans 或 Serif + 文字名称。其中汉字部分叫 Noto Sans/Serif CJK SC/TC/HK/JP/KR，词 CJK 表示东亚字体中日韩，最后一个词是地区变种。
+
+支持汉语的 Noto Fonts 字体是单独的 cjk 包，按关键字搜索可得：
 
     $ dnf list --installed |grep noto|grep cjk
     google-noto-sans-cjk-vf-fonts.noarch
     google-noto-sans-mono-cjk-vf-fonts.noarch
     google-noto-serif-cjk-vf-fonts.noarch
 
-其实开源中文字体就一套，同时被 Noto 和思源两个项目收录
+注意 Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
+
+其实这个开源中文字体就一套，只是同时被 Noto 和思源两个项目收录
 
     Noto 系列字体是 Google 主导的，名字的含义是「没有豆腐」（no tofu），因为缺字时显示的方框或者方框被叫作「tofu」。
 
@@ -13088,8 +13094,6 @@ Noto 字体在 Arch Linux 上位于以下软件包中：
     noto-fonts-emoji: 彩色的表情符号字体
 
     noto-fonts-extra: 提供额外的字重和宽度变种
-
-Noto 系列字族名只支持英文，命名规则是 Noto + Sans 或 Serif + 文字名称。其中汉字部分叫 Noto Sans/Serif CJK SC/TC/HK/JP/KR，词 CJK 表示东亚字体中日韩，最后一个词是地区变种。
 
 思源字体在 Arch Linux 上位于以下软件包中：
 
@@ -13108,10 +13112,6 @@ Noto 系列字族名只支持英文，命名规则是 Noto + Sans 或 Serif + �
     而全部打包的 OTC 版本，字族名是本地化名称或者英文的「Source Han Sans/Serif」空格再加上「HC/TC/HC/K」变种代码。如果没有变种代码，则是日文变种。为了区分，香港繁体的版本附带「香港」字样，比如黑体叫「思源黑體 香港」。这些字体也有不同字重的别名。另外有个半宽的版本，是在字族名的变种代码前加「HW」字样，仅有少数几个字符是半宽的。
 
     OTC 版本有趣的地方在于，对于大多数软件来说，不管你叫它的哪个地区的名字，它都会以设定的语种来显示。比如网页声明语种为日文（<html lang=ja>），那么不管字体指定为「源ノ角ゴシック」还是「思源黑体」或者「본고딕」，它都会「门上插刀、直字拐弯、天顶加盖、船顶漏雨」。所以用这个字体的话，不妨一律写「Source Han Sans」，然后加好语种标记。我知道的唯一例外是 mpv 的 ass 字幕文件，里边指定本地化名称的话，会使用那个语种的变体显示。
-
-Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），默认 Cantarell 字体显示中文 [https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description]。
-
-注意 Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
 
 在 Gnome Software 的首页分类里，就可以安装选择中文字体
 
@@ -13149,7 +13149,7 @@ Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可�
         google-noto-sans-cjk-sc-fonts.noarch : Simplified Chinese Multilingual Sans OTF font files for google-noto-cjk-fonts  <---- 仅简体中文
         google-noto-sans-cjk-tc-fonts.noarch : Traditional Chinese Multilingual Sans OTF font files for google-noto-cjk-fonts
         google-noto-sans-cjk-ttc-fonts.noarch : Sans OTC font files for google-noto-cjk-fonts  <---- 仅简体中文的 OTC 格式打包
-        google-noto-sans-cjk-vf-fonts.noarch : Google Noto Sans CJK Variable Fonts <---- 异体字包，文件小，不知为啥报告跟前面的 otf 包冲突。
+        google-noto-sans-cjk-vf-fonts.noarch : Google Noto Sans CJK Variable Fonts <---- 变体字包，文件小，不知为啥报告跟前面的 otf 包冲突。
 
     Serif 字体包：
 
@@ -13160,9 +13160,9 @@ Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可�
         google-noto-serif-cjk-sc-fonts.noarch : Simplified Chinese Multilingual Serif OTF font files for google-noto-cjk-fonts  <---- 仅简体中文
         google-noto-serif-cjk-tc-fonts.noarch : Traditional Chinese Multilingual Serif OTF font files for google-noto-cjk-fonts
         google-noto-serif-cjk-ttc-fonts.noarch : Serif OTC font files for google-noto-cjk-fonts  <---- 仅简体中文的 OTC 格式打包
-        google-noto-serif-cjk-vf-fonts.noarch : Google Noto Serif CJK Variable Fonts <---- 异体字包，文件小，但是跟前面的 otf 包冲突，且其otc 文件不一定所有软件都支持
+        google-noto-serif-cjk-vf-fonts.noarch : Google Noto Serif CJK Variable Fonts <---- 变体字包，文件小，但是跟前面的 otf 包冲突，且其otc 文件不一定所有软件都支持
 
-我的 Fedora 38 发行版在安装了中文输入法后自动安装了 Sans，但没有 Serif，手动安装下
+我的 Fedora 38 发行版在安装了中文输入法后自动安装了 Noto Sans CJK，但没有 Noto Serif CJK，手动安装下
 
     # https://fedoraproject.org/wiki/Changes/Noto_CJK_Variable_Fonts#Detailed_Description
     # 所有字体的完整版：google-noto-cjk-fonts
