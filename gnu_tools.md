@@ -10005,7 +10005,7 @@ scp 基本用法
 
     下载 https://www.slac.stanford.edu/~abh/bbcp/bin/amd64_ubuntu22.04/bbcp
 
-    $ sudo cp bbcp /usr/bin/
+    $ chmod +x bbcp && sudo cp bbcp /usr/bin/
 
 测试运行
 
