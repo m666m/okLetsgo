@@ -13256,15 +13256,23 @@ Linux 操作系统一般都内置 fontconfig 软件包选择字体，默认无�
     # 查看包含「华」字的所有字体
     $ fc-list :charset=534E
 
-fontconfig 支持字体的回落（fallback），可以实现中英文分别使用不同的字体，但需要用户手工配置，且配置文件的位置比较乱，目前有两种办法：
+fontconfig 支持字体的回落（fallback），可以实现中英文分别使用不同的字体，但需要用户手工配置，但是配置文件的位置比较乱：
 
-    网上很多的教程都提到要设置 local.conf，实际上是因为这个文件的内容会被 fontconfig 读取，从而获得比较理想的效果，实现见下面 “法一”。
+    设置 /etc/fonts/local.conf 文件，这是最初的实现，各大发行版都支持这个配置方式。
 
-    随着发行版的演进，又开始使用 /etc/fonts/fonts.conf，实现见下面 “法二”。
+    随着发行版的演进，又开始使用 /etc/fonts/fonts.conf，这是更符合 XDG 规范的用法
 
-简单起见，我们直接编辑 /etc/fonts/local.conf 文件
+        建立文件 fonts.conf
 
-下面的示例比较合适，可以直接使用：
+            系统级在 /etc/fonts/conf.d/ 下
+
+            用户级在 ~/.config/fontconfig/conf.d 下
+
+            其实应该是 $XDG_CONFIG_HOME 指向 $HOME，但目前 Gnome 等桌面环境好像都不设置这个变量。
+
+        但是，截止 2025 年 Fedora 41 上仍然只能使用 /etc/fonts/local.conf 文件。
+
+下面的示例是最初的格式，目前仍然可以直接使用：
 
 ```xml
 <?xml version='1.0'?>
@@ -13332,7 +13340,7 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
 </fontconfig>
 ```
 
-把格式改造的更规范：
+把格式改造的更规范，这个是新的兼容旧的规范：
 
     <alias> 转换为 <match> + <test> + <edit>：
 
@@ -13371,10 +13379,10 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
    <string>serif</string>
   </test>
   <edit name="family" mode="prepend" binding="strong">
-   <string>Noto Serif</string>
+   <string>Noto Serif</string> <!-- 优先使用 Noto Serif 渲染英文 -->
    <!-- 我的 Fedora 下中文太轻，用加深的 Black-->
-   <string>Noto Serif CJK SC :style=Black</string>
-   <string>Noto Serif CJK TC</string>
+   <string>Noto Serif CJK SC :style=Black</string> <!-- 中文回落到 Noto Serif CJK SC -->
+   <string>Noto Serif CJK TC</string> <!-- 繁体中文回落到 Noto Serif CJK TC -->
    <!--
    <string>Source Han Sans CN Normal</string>
    <string>Source Han Sans TWHK Normal</string>
@@ -13390,9 +13398,9 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
    <string>sans-serif</string>
   </test>
   <edit name="family" mode="prepend" binding="strong">
-   <string>Noto Sans</string>
-   <string>Noto Sans CJK SC</string>
-   <string>Noto Sans CJK TC</string>
+   <string>Noto Sans</string> <!-- 优先使用 Noto Sans 渲染英文 -->
+   <string>Noto Sans CJK SC</string> <!-- 中文回落到 Noto Sans CJK SC -->
+   <string>Noto Sans CJK TC</string> <!-- 繁体中文回落到 Noto Sans CJK TC -->
    <!--
    <string>Source Han Sans CN Normal</string>
    <string>Source Han Sans TWHK Normal</string>
@@ -13409,9 +13417,9 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
   </test>
   <edit name="family" mode="prepend" binding="strong">
    <!-- 我的 Fedora 下中文mono的字符间距太大，还是用去掉 Mono 字样的普通的Sans即可-->
-   <string>Liberation Mono</string>
-   <string>Noto Sans CJK SC</string>
-   <string>Noto Sans CJK TC</string>
+   <string>Liberation Mono</string> <!-- 优先使用 Liberation 渲染英文 -->
+   <string>Noto Sans CJK SC</string> <!-- 中文回落到 Noto Sans Mono CJK SC -->
+   <string>Noto Sans CJK TC</string> <!-- 繁体中文回落到 Noto Sans Mono CJK TC -->
    <!--
    <string>Source Han Sans CN Normal</string>
    <string>Source Han Sans TWHK Normal</string>
@@ -13433,42 +13441,13 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
 测试字体配置是否生效：
 
     $ fc-match serif
-    NotoSerifCJK-Black.ttc: "Noto Serif CJK SC" "Black"
+    NotoSerif[wght].ttf: "Noto Serif" "Regular"
 
     $ fc-match sans-serif
-    NotoSansCJK-Regular.ttc: "Noto Sans CJK SC" "Regular"
+    NotoSans[wght].ttf: "Noto Sans" "Regular"
 
     $ fc-match monospace
-    NotoSansMono[wght].ttf: "Noto Sans Mono" "Regular"
-
-法二：更符合 XDG 规范的用法
-
-建立文件 fonts.conf
-
-    系统级在 /etc/fonts/conf.d/ 下
-
-    用户级在 ~/.config/fontconfig/conf.d 下
-
-    其实应该是 $XDG_CONFIG_HOME 指向 $HOME，但目前 Gnome 等桌面环境好像都不设置这个变量。
-
-修改权限：
-
-    $ chmod 644 ~/.config/fontconfig/fonts.conf
-
-刷新字体缓存：
-
-    $ fc-cache -fv
-
-测试字体配置是否生效：
-
-    $ fc-match serif
-    NotoSerifCJK-Black.ttc: "Noto Serif CJK SC" "Black"
-
-    $ fc-match sans-serif
-    NotoSansCJK-Regular.ttc: "Noto Sans CJK SC" "Regular"
-
-    $ fc-match monospace
-    NotoSansMono[wght].ttf: "Noto Sans Mono" "Regular"
+    LiberationMono-Regular.ttf: "Liberation Mono" "Regular"
 
 来自 tinywrkb <https://aur.archlinux.org/packages/noto-fonts-cjk-vf> 的例子，编辑 $XDG_CONFIG_HOME/fontconfig/fonts.conf 文件：
 
