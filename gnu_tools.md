@@ -9295,23 +9295,23 @@ hexyl
 
 只显示地址，方便脚本调用：
 
-    $ curl ipinfo.io/ip
+    $ curl members.3322.org/dyndns/getip
     11.22.33.44
 
-    $ curl http://members.3322.org/dyndns/getip
+    $ curl ipinfo.io/ip
     11.22.33.44
 
     $ curl ipv4.icanhazip.com
     11.22.33.44
 
     $ curl ipv6.icanhazip.com
-    2409:xxxx
+    2409:xxxx:...
 
     $ curl ifconfig.me
-    2409:xxxx
+    2409:xxxx:...
 
     $ curl ifconfig.io
-    2409:xxxx
+    2409:xxxx:...
 
 显示结构化数据，需要解析：
 
