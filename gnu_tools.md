@@ -3708,20 +3708,64 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
     设置 kitty 使用颜色主题，运行命令 `kitty +kitten themes`，会进入字符GUI界面，根据提示操作即可，推荐使用内置 Nord 主题。
 
-    新建选项卡：Ctrl+Shift+T，窗口最下一行就变成选项卡的标题栏了，鼠标点击即可切换。其他操作热键 Close Tab：Ctrl+Shift+Q，Next Tab：Ctrl+Shift+右，Previous Tab：Ctrl+Shift+左
+    选项卡操作：
 
-    拆分窗口，键盘快捷键 Ctrl+Shift+Enter，在不同窗口之间切换 Ctrl+Shift+[ 或 Ctrl+Shift+]，窗口排列为多种布局 Ctrl+Shift+L，关闭窗口 Ctrl+Shift+w，
+        新建选项卡：Ctrl+Shift+T，窗口最下一行就变成选项卡的标题栏了，鼠标点击即可切换
 
-    当前窗口内翻页：Line Up：Ctrl+Shift+向上，Line Down：Ctrl+Shift+向下，Page Up：Ctrl+Shift+Page_Up，Page Down：Ctrl+Shift+Page_Down，Top：Ctrl+Shift+home，Bottom：Ctrl+Shift+end
+        Close Tab：Ctrl+Shift+Q
 
-    复制和粘贴：因为没有右键菜单，所以只能用热键了：
+        Next Tab：Ctrl+Shift+Right
 
-        shift+insert 粘贴自你的鼠标选择
+        Previous Tab：Ctrl+Shift+Left
+
+    窗口操作：
+
+        拆分窗口 Ctrl+Shift+Enter
+
+        在不同窗口之间切换 Ctrl+Shift+[ 或 Ctrl+Shift+]
+
+        窗口排列为多种布局 Ctrl+Shift+L
+
+        关闭窗口 Ctrl+Shift+w
+
+    浏览窗口内容不支持鼠标拖动滚动条，但可以通过键盘快捷键或触摸板手势实现滚动：
+
+        向上滚动：按下 Ctrl+Shift+Up
+
+        向下滚动：按下 Ctrl+Shift+Down
+
+        向上翻页：按下 Ctrl+Shift+Page_Up
+
+        向下翻页：按下 Ctrl+Shift+Page_Down
+
+        快速滚动到顶部：按下 Ctrl+Shift+Home
+
+        快速滚动到底部：按下 Ctrl+Shift+End
+
+        触摸板手势，双指上下滑动：可以滚动终端内容
+
+    复制和粘贴：因为没有右键菜单，所以只能用热键
 
         ctrl+shift+c 复制到操作系统剪切板
         ctrl+shift+v 从操作系统剪切板粘贴
 
-        如果需要鼠标选择即复制到操作系统剪切板的老习惯，配置文件中开启 “Copy on select”即可。
+        shift+insert 从你鼠标选择的内容粘贴
+
+        如果需要鼠标选择的内容自动复制到操作系统剪切板的老习惯，配置文件中开启“Copy on select”即可
+
+    查找窗口中的文字：
+
+        按下 ctrl+shift+h，会默认使用 `less` 打开滚动缓冲区（scrollback buffer），出现 : 提示符
+
+            按下 / 键后再输入要搜索的内容，按下回车键即可进行正向搜索
+
+            按下 ? 键后输入内容则进行反向搜索
+
+            按下 n 键或 N 键来向前或向后逐个查找匹配项
+
+            按下回车键重新进入 : 提示符号，进行新的搜索
+
+        也可安装插件 [kitty-search](https://github.com/trygveaa/kitty-kitten-search)
 
     shell 集成：鼠标点击命令行文字即可移动光标到此等
 
@@ -3730,6 +3774,19 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
     ssh问题：有时 ssh 连接到远程计算机时，可能会报错终端未知或打开终端失败。是因为 Kitty terminfo 文件（curses 库中处理特定终端功能的一组例程）在远程服务器上不可用。
 
         alias sshk="kitty +kitten ssh" 以后使用 ssh 执行 `sshk user@host` 即可
+
+    扩展插件
+
+        https://sw.kovidgoyal.net/kitty/integrations
+
+        列出插件
+
+            $  kitty +kitten
+            。。。
+
+        在配置文件中把插件设置为热键调用
+
+            map ctrl+shift+/ launch --type=overlay --allow-remote-control kitty +kitten scrollback
 
     我使用的 $HOME$/.config/kitty/kitty.conf 配置文件如下：
 
@@ -3769,6 +3826,7 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
         cursor_blink_rate 500
 
+        # 关掉 shell_integration 才能设置光标形状
         shell_integration disabled
         cursor_shape block
 
@@ -12487,7 +12545,9 @@ Fedora
 
         强烈推荐必装扩展：让你可以直接使用浏览器官方商店的扩展 chromium-web-store
 
-            安装这个扩展后，打开 ms edge/google chrome 等多个浏览器官方商店的网页，然后可以看到各个扩展的下载按钮都是可用的了，点击即可直接下载安装，不需要上面介绍的手动流程了。
+            插件设置中，打开 “Allow access to file URLs” 选项。
+
+            安装这个扩展后，打开 ms edge/google chrome 等多个浏览器官方商店的网页，然后可以看到各个扩展的下载按钮都是可用的了，点击即可直接下载安装，不需要上面介绍的手动流程了。如果不可用，点击鼠标右键，选择菜单项目 “Add to Chromium” 即可下载安装。
 
             先打开设置地址 chrome://flags/#extension-mime-request-handling，设置为 “Always prompt for install”。
 
@@ -12987,11 +13047,9 @@ Gnome 的图形界面设置程序 Gnome Tweaks Tool(gnome-tweaks) 有 “Font”
 
     Monospace 等宽字体：近代在机械打字机出现后，针对打字机的特点单独类，虽然也属于 Sans Serif，但由于是等宽字体，所以细分出了 Monospace 这一种类。，比如 Courier New、Consolas，适合会计数字、编程写代码等格式严谨上下行的字符严格对齐的场合。
 
-很多程序有自己的字体配置，至少三种归类：无衬线字体 sans-serif, 衬线字体 serif, 等宽字体 monospace, 就会遵循 fontconfig 的设置了。
+很多文字处理程序有自己的字体配置，至少三种归类：无衬线字体 sans-serif, 衬线字体 serif, 等宽字体 monospace, 就会遵循 fontconfig 的设置了。甚至 Firefox 浏览器也可在 about:config 中针对这三种风格分别设置字体，但是大多数软件都自动处理这些细节不让用户自行设置。
 
-比如 Firefox 可在 about:config 中针对这三种风格分别设置字体，大多数软件都自动处理这些细节不展示给用户设置。
-
-对东亚字符 CJK 来说，这三种风格的字体又按字符集细分出支持简体中文 SC、繁体中文 TC、日文 JP、韩文 KR的分支。有些异体字（Variable Font）在三种文字中都有，需要统一设计方案，使得一个字体即可显示多国的文字。
+对东亚字符 CJK 来说，这三种风格的字体又按字符集细分出支持简体中文 SC、繁体中文 TC、日文 JP、韩文 KR 的分支。有些异体字（Variable Font）在三种文字中都有，需要统一设计方案，使得一个字体即可显示多国的文字。
 
 #### 前置知识；字体文件的格式
 
