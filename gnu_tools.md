@@ -10009,7 +10009,7 @@ scp 基本用法
 
 测试运行
 
-    在本机第一次会提示你登录 localhost 的 ssh 密钥，确认即可：
+    本机测试，第一次运行会提示你登录 localhost 的 ssh 密钥，确认即可：
 
         $ bbcp -P 2 /dev/zero localhost:/dev/null
         The authenticity of host 'localhost (::1)' can't be established.
