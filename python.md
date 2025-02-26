@@ -421,6 +421,42 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     [install]
     trusted-host=mirrors.aliyun.com
 
+## uv 代替 pip
+
+借鉴 Rust cargo 的管理办法，代替 pip，目前的优势是速度快，环境管理 requirements.txt 也很方便移植
+
+    https://docs.astral.sh/uv/
+        https://github.com/astral-sh/uv
+
+    https://zhuanlan.zhihu.com/p/689976933
+
+uv是一个全局的二进制文件，只要在一个环境中安装就全局生效
+
+    $ pip install uv
+
+即使是在venv环境中安装的，uv也会复制自己的可执行文件也会被复制到系统的PATH目录中，保证退出或切换虚拟环境后，uv命令依然能够正常使用。
+
+目前不支持读取 `pip.conf`，只能手动设置镜像地址
+
+    # 镜像地址
+    export UV_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
+
+    # 额外镜像地址
+    export EXTRA_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
+
+    # 不用缓存
+    export UV_NO_CACHE=0
+
+    # 下载包时的超时时间，单位为秒
+    UV_HTTP_TIMEOUT=60
+
+创建环境
+
+    # --python 同 -p
+    $ uv venv --python 3.12
+
+uv 工具不会自动下载Python包，因此如果设置-p时指定系统不存在的Python版本，则会报错
+
 ## 何时用 conda/virtualenv/venv
 
 pip 只能安装 Python 的包，conda 可以安装一些工具软件，即使这些软件不是基于 Python 开发的。也就是说，pip 安装的时候，可能有需要源码编译的场景，而 conda 把二进制代码编译好了直接发布。
