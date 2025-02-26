@@ -174,7 +174,8 @@ if [ -x /usr/bin/dircolors ]; then
 
     # scp rsync
     alias scps='echo "[scp 源 目的。远程格式 user@host:/path/to/ 端口用 -P]" && scp -r'
-    alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/path/to/ 端口用 -e 写 ssh 命令]" && rsync -av --progress'
+    alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/path/to/]" && rsync -avur -e "ssh -p 22" --progress'
+    alias rsyncl='echo "[低io优先级运行 rsync 源 目的。远程格式 user@host:/path/to/]" && sudo ionice -c 2 -n 7 rsync -avr -e "ssh -p 22" --progress'
 
     # dd
     alias ddp='echo "[给dd发信号显示进度信息]" && sudo watch -n 5 killall -USR1 dd'

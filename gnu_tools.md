@@ -10152,9 +10152,11 @@ rsync 用于增量备份（只复制有变动的文件），同步文件或目�
 
         https://wiki.archlinux.org/title/Rsync#Full_system_backup
 
-使用 `rsync -e ssh` 即可代替 scp 命令，但是对目录的处理方式跟 scp/cp 方式不同
+最常用的就是代替 scp 命令
 
-    源目录source被完整地复制到了目标目录 destination 下面，即形成了 destination/source 的目录结构
+使用 `rsync -e ssh` 即可代替 scp 命令，但是注意其对目录的处理方式跟 scp/cp 方式有区别：
+
+    源目录 source 完整地复制到了目标目录 destination 下面，即形成了 destination/source 的目录结构
 
         rsync source destination/
 
@@ -10162,7 +10164,15 @@ rsync 用于增量备份（只复制有变动的文件），同步文件或目�
 
         rsync source/ destination/
 
-增量备份的工作原理：
+rsync的工作方式
+
+    主机本地间的数据传输数据（此时类似于cp命令的功能）
+
+    借助rcp,ssh等传输数据（此时类似于scp命令的功能）
+
+    以守护进程（socket）的方式传输数据（这个是rsync的重要的功能）
+
+rsync 实现增量备份：
 
     首次同步：rsync 会复制源目录中的所有文件到目标目录，无论它们是否发生变化。
 
@@ -10174,11 +10184,11 @@ rsync 用于增量备份（只复制有变动的文件），同步文件或目�
 
         如果文件没有变化，rsync 不会重新传输这些文件。
 
-所以，重复执行相同的 rsync 命令就可以实现只更新变化的文件，这就是 rsync 增量备份的基本原理
+    所以，重复执行相同的 rsync 命令就可以实现只更新变化的文件，简单方便
 
 一般要配合使用 ionice 来降低 rsync 进程的 io 优先级：
 
-    scp 不占资源，不会提高多少系统负荷，在这一点上，rsync 就远远不及它了。虽然 rsync 比 scp 会快一点，但当小文件众多的情况下，rsync 会导致硬盘 I/O 非常高，而 scp 基本不影响系统正常使用。
+    scp 不占资源，不会提高多少系统负荷，在这一点上，rsync 就远远不及它了。虽然 rsync 比 scp 会快一点，但当小文件众多的情况下，rsync 增量备份会导致硬盘 I/O 非常高，而 scp 基本不影响系统正常使用。
 
     $ sudo ionice -c 2 -n 7 rsync -avz /source/ /destination/
 
@@ -10204,6 +10214,9 @@ rsync 默认使用 SSH 进行远程登录和数据传输。一般在目标设备
 
     # 使用密钥文件登录服务器
     rsync -av -e "ssh -i /Users/hs/test.pem" {本地源文件夹路径}/* root@{服务器IP}:{服务器目标文件夹路径}
+
+    # 使用 rsync 之前把 ssh 相关连接参数设置到变量 RSYNC_RSH 更方便
+    export RSYNC_RSH ="ssh -T -c aes128-ctr -o Compression = no -x"
 
 rsync 命令提供使用的 OPTION 及功能
 
@@ -10303,7 +10316,7 @@ rsync 的 5 种不同的工作模式：
 
 > 使用 rsync://协议
 
-在 rsync 命令中的远程操作，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议，默认端口873。ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量，但优势是更加安全；反之，ssh 协议使用方便，无需进行配置，但有泄漏服务器密码的风险。
+在 rsync 命令中的远程操作，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议，默认端口873。ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量
 
     # module并不是实际路径名，而是 rsync 守护程序指定的一个资源名，由管理员分配
     rsync -av source/ 192.168.122.32::module/destination
@@ -10318,7 +10331,7 @@ rsync 的 5 种不同的工作模式：
 
 rsyncd 通常配置在源服务器上，它监听客户端的连接请求，并允许客户端同步（拷贝）文件。这里的“源服务器”是指拥有你想要同步的文件的服务器，而“目标服务器”可以是任何需要这些文件的服务器。
 
-在支持 SELinux 的服务器上，如果要使用 rsync 守护进程共享文件，您必须使用 `public_content_t` 类型标记文件和目录。
+NOTE: 在支持 SELinux 的服务器上，如果要使用 rsync 守护进程共享文件，您必须使用 `public_content_t` 类型标记文件和目录。
 
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/selinux_users_and_administrators_guide/chap-managing_confined_services-rsync
 
@@ -10418,9 +10431,21 @@ module_name 是你在 rsyncd.conf 中定义的模块名。
 
 一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`，这样就可以实现增量备份。
 
+    -a：存档模式（等于-rlptgoD）：递归，将符号链接复制为符号链接，保留权限，保留修改时间，保留组，保留所有者，保留设备文件和特殊文件
+
+    -v：在传输过程中增加详细信息
+
+    -u：跳过接收方上较新的文件
+
+    -r：递归到目录
+
+    --progress：显示传输过程中的进度
+
+    --delete：从远程服务器中删除多余的文件
+
 在生产系统上运行，一般要用 `ionice` 降低 IO 优先级，需要 root 权限
 
-    # ionice -c 2 -n 7 rsync -avz --progress source username@remote_host:destination
+    $ sudo ionice -c 2 -n 7 rsync -avr --progress source username@remote_host:destination
 
 如果不确定 rsync 执行后会产生什么结果，先 -n 模拟跑下看看输出
 
@@ -10537,21 +10562,11 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 一、安装设置服务器端软件
 
-下载 rysnc，在两台服务器中都要安装，主服务器上 rsync 以服务器模式运行 rsyn 守护进程，在同步上用 crond 定时任务以客户端方法运行 rsync，同步主服务器上需要同步的内容
+下载 rysnc，在两台服务器中都要安装，主服务器上 rsync 以服务器模式运行 rsyncd 守护进程，在同步上用 crond 定时任务以客户端方法运行 rsync，同步主服务器上需要同步的内容
 
-一般 Linux 发行版自带的就不必自行编译安装了
+一般 Linux 发行版自带的就不必自行编译安装了。
 
-    $ tar xvf rsync-2.6.3.tgz
-
-    $ cd rsync-2.6.3
-
-    $ ./configure
-
-    $ make
-
-    $ make install
-
- rsync服务器的设置文件为 /etc/rsyncd.conf，其操控认证、拜访、日志记载等。
+ rsync 服务器的设置文件为 /etc/rsyncd.conf，其操控认证、拜访、日志记载等。
 
  该文件是由一个或多个模块结构组成。一个模块定义以方括弧中的模块名开端，直到下一个模块定义开端或文件结束，模块中包含格式为 `name= value` 的参数定义。
 
@@ -10733,6 +10748,134 @@ WantedBy=timers.target
 验证
 
     systemctl list-timers
+
+#### rsync+inotify 实时增量备份
+
+使用 inotify 可以用来监控文件系统的各种变化情况，如文件存取、删除、移动、修改等，并做出通知响应。利用这一机制，可以非常方便地实现文件异动告警、增量备份，并针对目录或文件的变化及时作出响应
+
+    https://blog.51cto.com/u_16213651/10493107
+
+    https://github.com/inotify-tools/inotify-tools
+
+inotifywait（持续监控并实时输出监控结果的命令）
+
+    $ inotifywait [参数]
+
+    -m	  持续进行监控
+    -r	  递归监控所有子对象
+    -q	  简化输出信息
+    -e	  指定要监控哪些事件类型
+
+调整inotify内核参数（优化）/etc/sysctl.conf(内核参数配置文件)
+
+    inotifywait 			#用于持续监控，实时输出结果
+    inotifywatch 			#用于短期监控，任务完成后再输出结果
+    max_queue_events    	#监控事件队列大小
+    max_user_instances  	#最多监控实例数
+    max_user_watches    	#每个实例最多监控文件数
+
+一、 server配置
+
+安装 inotify
+
+    $ dnf install inotify-tools
+
+验证：
+
+监控 /abc 下，添加文件、移动文件等操作，并跟踪屏幕输出结果
+
+    $ sudo mkdir -p /abc
+
+    $ inotifywait -mrq -e modify,create,move,delete /abc
+
+然后另开一个终端,进行 创建、删除、重命名 等操作，会看到 inotifywait 屏幕的输出
+
+    touch 4.txt
+    touch 5.txt
+    rm -rf 4.txt
+    mv 5.txt 6.txt
+
+优化配置 inotify 内核参数 /etc/sysctl.conf
+
+    fs.inotify.max_queued_events = 32768      #监控事件队列，默认为16384
+    fs.inotify.max_user_instances = 1024	  #最多监控实例数，默认为128
+    fs.inotify.max_user_watches = 1048576	  #每个实例最多监控文件数，默认为8192
+
+    #当要监控的目录、文件数据量较多或者变化频繁时，建议加大参数值
+
+配置生效：
+
+    $ sudo sysctl -p
+
+二、 rsync服务器配置
+
+1、先关闭rsync进程
+
+    $ kill $(cat /var/run/rsyncd.pid)
+    $ netstat -natp | grep rsync
+
+2、修改rsync配置文件 /etc/rsyncd.conf
+
+```conf
+uid = root
+gid = root
+use chroot = yes
+address = 192.168.3.12
+port 873
+log file = /var/log/rsyncd.log
+pid file = /var/run/rsyncd.pid
+hosts allow = 192.168.3.0/24
+[wwwroot]
+path = /var/www/html
+comment = Document Root of www.ljm.com
+read only = no
+dont comperss = *.gz *.bz2 *.tgz *.zip *.rar *.z
+auth users = backuper
+secrets file = /etc/user.db
+
+```
+
+3、启动rsync
+
+    $ rsync --daemon
+    $ netstat -natp | grep rsync
+
+三、将 rsync+inotify 两个服务结合在一起
+
+1、脚本 /opt/inotify.sh
+
+```bash
+#!/bin/bash
+
+INOTIFY_CMD="inotifywait -mrq -e create,delete,move,modify,attrib /abc/"
+
+RSYNC_CMD="rsync -apzH --delete --password-file=/etc/server.pass /abc/ backuper@192.168.8.14::wwwroot/"
+
+$INOTIFY_CMD | while read DIRECTORY EVENT FILE
+do
+	if [ $(pgrep rsync | wc -l) -le 0 ]; then
+		$RSYNC_CMD
+	fi
+done
+
+```
+
+2、脚本赋权
+
+    chmod +x /opt/inotify.sh
+    chmod +x /etc/rc.d/rc.local
+
+3、设置开机自启动
+
+    echo "/opt/inotify.sh" >> /etc/rc.d/rc.local
+
+
+4、验证
+
+    $ cd /abc
+    touch 1.txt
+
+再回到 rsync 看，发现已经同步过去
 
 ### 增量备份工具 Restic
 
