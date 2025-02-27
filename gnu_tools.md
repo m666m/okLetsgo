@@ -3808,29 +3808,40 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
         font_size 12.0
         # END_KITTY_FONTS
 
+        # 鼠标选择即复制到操作系统剪切板
         copy_on_select clipboard
 
+        # 选项卡相关设置
         tab_bar_edge top
         tab_bar_style powerline
         tab_powerline_style round
 
+        # 新开窗口执行 shell 登录脚本
         shell /bin/bash --login
 
+        # 窗口内容保留的多些方便查看
         scrollback_lines 10000
 
         # for use with quake mode drop-down window extension
         remember_window_size no
 
-        background_image /home/user/Pictures/40727.jpg
-        # background_image_layout scaled
+        # 壁纸
+        background_image /home/user/Pictures/125103.jpg
+        background_image_layout scaled
         # background_opacity 0.9
         # background_blur 64
 
+        # 光标闪动
         cursor_blink_rate 500
 
-        # 关掉 shell_integration 才能设置光标形状
-        shell_integration disabled
+        # 关掉 shell_integration 设置光标形状
+        shell_integration no-cursor
         cursor_shape block
+
+        # shell_integration 功能可以实现定位每个命令输出的开始位置
+        map f1 scroll_to_prompt -1  # jump to previous
+        map f2 scroll_to_prompt 1   # jump to next
+        map f3 scroll_to_prompt 0   # jump to last visited
 
 gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal。
 
