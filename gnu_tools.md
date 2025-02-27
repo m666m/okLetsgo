@@ -3742,6 +3742,8 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
         快速滚动到顶/底部：Ctrl+Shift+Home Ctrl+Shift+End
 
+        滚动到前一个/下一个shell命令的输出: ctrl+shift+x, ctrl+shift+z
+
     复制和粘贴：因为没有右键菜单，所以只能用热键
 
         ctrl+shift+c 复制到操作系统剪切板
