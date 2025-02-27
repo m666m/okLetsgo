@@ -267,6 +267,8 @@ putty 完美的实现了在 Windows 下使用 ssh 远程连接 Linux 服务器�
 
         从 putty 拉的分支而来，是对 putty 的易用性改进，共用putty的站点配置，增加了背景透明、支持站点列表的文件夹、自动化操作脚本，可以给站点加注释，还有便携版
 
+        注意，区别于 https://sw.kovidgoyal.net/kitty，那个是 Linux 下的 GPU 加速终端模拟器
+
     竞品 bitvise https://www.bitvise.com/
 
 putty 连接远程服务器，实现了 ssh 的全部功能，使用 PUTTYGEN.EXE 生成并管理密钥，使用 PAGEANT.EXE 作为密钥代理，并在一个单一窗口下填写远程服务器的参数配置，远程服务器的终端显示也是一个单一窗口。
@@ -3708,41 +3710,37 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
     设置 kitty 使用颜色主题，运行命令 `kitty +kitten themes`，会进入字符GUI界面，根据提示操作即可，推荐使用内置 Nord 主题。
 
-    选项卡操作：
+    选项卡操作：每个选项卡对应一个窗口
 
         新建选项卡：Ctrl+Shift+T，窗口最下一行就变成选项卡的标题栏了，鼠标点击即可切换
 
+        切换到前一个/后一个选项卡：Ctrl+Shift+Left Ctrl+Shift+Right
+
+        当前选项卡左移/右移：ctrl+shift+, ctrl+shift+.
+
         Close Tab：Ctrl+Shift+Q
 
-        Next Tab：Ctrl+Shift+Right
+    窗口操作：每个选项卡下的窗口还可以拆分为多个窗口
 
-        Previous Tab：Ctrl+Shift+Left
+        拆分窗口： Ctrl+Shift+Enter
 
-    窗口操作：
+        在不同窗口之间切换： Ctrl+Shift+[ 或 Ctrl+Shift+]
 
-        拆分窗口 Ctrl+Shift+Enter
+        窗口排列为多种布局： Ctrl+Shift+L
 
-        在不同窗口之间切换 Ctrl+Shift+[ 或 Ctrl+Shift+]
+        关闭窗口： Ctrl+Shift+w
 
-        窗口排列为多种布局 Ctrl+Shift+L
+    滚动窗口内容
 
-        关闭窗口 Ctrl+Shift+w
+        鼠标滚轮，右侧出现的滚动条只显示进度但不支持拖动
 
-    浏览窗口内容不支持鼠标拖动滚动条，但可以通过键盘快捷键或触摸板手势实现滚动：
+        触摸板手势，双指上下滑动：等效于鼠标滚轮
 
-        向上滚动：按下 Ctrl+Shift+Up
+        向上/下滚动：Ctrl+Shift+Up Ctrl+Shift+Down
 
-        向下滚动：按下 Ctrl+Shift+Down
+        向上/下翻页：Ctrl+Shift+Page_Up Ctrl+Shift+Page_Down
 
-        向上翻页：按下 Ctrl+Shift+Page_Up
-
-        向下翻页：按下 Ctrl+Shift+Page_Down
-
-        快速滚动到顶部：按下 Ctrl+Shift+Home
-
-        快速滚动到底部：按下 Ctrl+Shift+End
-
-        触摸板手势，双指上下滑动：可以滚动终端内容
+        快速滚动到顶/底部：Ctrl+Shift+Home Ctrl+Shift+End
 
     复制和粘贴：因为没有右键菜单，所以只能用热键
 
@@ -3811,6 +3809,8 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
         copy_on_select clipboard
 
         tab_bar_edge top
+        tab_bar_style powerline
+        tab_powerline_style round
 
         shell /bin/bash --login
 
