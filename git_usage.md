@@ -2151,8 +2151,11 @@ git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相�
     # 如果远程主机名 origin，分支就是当前分支，可简写
     git pull
 
-    # 因为默认是 fetch + merge，所以需要用 rebase 的话，需要明确指定参数 --rebase
+因为默认的策略是 fetch + merge，所以需要用 rebase 的话，需要明确指定参数 --rebase
+
     git pull --rebase
+
+大多数场景下，本地分支拉取远程仓库，合并策略都应该用 rebase，所以 `git pull --rebase` 最常用。
 
 如果你介意合并策略，特别是执行 git pull 时会出现合并冲突，那么最好研究下 pull 如何处理合并策略。
 
