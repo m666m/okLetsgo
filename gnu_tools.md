@@ -10770,6 +10770,8 @@ WantedBy=timers.target
 
     https://github.com/inotify-tools/inotify-tools
 
+感觉比较适合备份配置文件等变化不频繁的静态资源，对重度任务的实时同步要慎重，比如日志、生产数据的实时备份，不能确定对文件系统和块设备 io 占用率的冲击有多大，在文件快速频繁变化的极端场景下，会不会产生备份任务的重复扫描和积压？
+
 inotifywait（持续监控并实时输出监控结果的命令）
 
     $ inotifywait [参数]
