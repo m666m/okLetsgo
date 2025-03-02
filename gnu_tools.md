@@ -10774,18 +10774,18 @@ inotifywait（持续监控并实时输出监控结果的命令）
 
     $ inotifywait [参数]
 
-    -m	  持续进行监控
-    -r	  递归监控所有子对象
-    -q	  简化输出信息
-    -e	  指定要监控哪些事件类型
+    -m      持续进行监控
+    -r      递归监控所有子对象
+    -q      简化输出信息
+    -e      指定要监控哪些事件类型
 
 调整inotify内核参数（优化）/etc/sysctl.conf(内核参数配置文件)
 
-    inotifywait 			#用于持续监控，实时输出结果
-    inotifywatch 			#用于短期监控，任务完成后再输出结果
-    max_queue_events    	#监控事件队列大小
-    max_user_instances  	#最多监控实例数
-    max_user_watches    	#每个实例最多监控文件数
+    inotifywait             #用于持续监控，实时输出结果
+    inotifywatch             #用于短期监控，任务完成后再输出结果
+    max_queue_events        #监控事件队列大小
+    max_user_instances      #最多监控实例数
+    max_user_watches        #每个实例最多监控文件数
 
 一、 server配置
 
@@ -10811,8 +10811,8 @@ inotifywait（持续监控并实时输出监控结果的命令）
 优化配置 inotify 内核参数 /etc/sysctl.conf
 
     fs.inotify.max_queued_events = 32768      #监控事件队列，默认为16384
-    fs.inotify.max_user_instances = 1024	  #最多监控实例数，默认为128
-    fs.inotify.max_user_watches = 1048576	  #每个实例最多监控文件数，默认为8192
+    fs.inotify.max_user_instances = 1024      #最多监控实例数，默认为128
+    fs.inotify.max_user_watches = 1048576      #每个实例最多监控文件数，默认为8192
 
     #当要监控的目录、文件数据量较多或者变化频繁时，建议加大参数值
 
@@ -10866,9 +10866,9 @@ RSYNC_CMD="rsync -apzH --delete --password-file=/etc/server.pass /abc/ backuper@
 
 $INOTIFY_CMD | while read DIRECTORY EVENT FILE
 do
-	if [ $(pgrep rsync | wc -l) -le 0 ]; then
-		$RSYNC_CMD
-	fi
+    if [ $(pgrep rsync | wc -l) -le 0 ]; then
+        $RSYNC_CMD
+    fi
 done
 
 ```
@@ -10881,7 +10881,6 @@ done
 3、设置开机自启动
 
     echo "/opt/inotify.sh" >> /etc/rc.d/rc.local
-
 
 4、验证
 
