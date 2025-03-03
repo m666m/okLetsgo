@@ -9810,7 +9810,7 @@ aria2.conf 有两个配置项 on-download-complete、on-download-stop，前者�
 
 可以调试 ssh 站点，也支持 telnet、ftp 等站点，用参数 -vvv 显示服务器输出信息
 
-http
+curl http-get
 
     $ curl -vvv 11.22.33.44:1234
     * About to connect() to 11.22.33.44 port 1234 (#0)
@@ -9826,6 +9826,18 @@ http
     * Recv failure: Connection reset by peer
     * Closing connection 0
     curl: (56) Recv failure: Connection reset by peer
+
+curl http-post
+
+    # 使用 HTTP Basic 认证
+    $ curl -u root:123456 -X POST -d "Reboot=Reboot" http://192.168.0.1/ADVANCED_home2.htm
+
+    wget -v --http-user root --http-password 123456 "http://192.168.0.1/ADVANCED_home2.htm"
+
+    # 填写表单字段
+    $ curl -X POST -d "Username=root" -d "Password=123456" -d "Reboot=Reboot" http://192.168.0.1/ADVANCED_home.htm
+
+    $ curl -v -XPOST -H "Content-Type:application/json"  http://172.24.7.63:36963/VIID/MotorVehicles -d  ' {"DataType" : "Face"} '
 
 ws
 
