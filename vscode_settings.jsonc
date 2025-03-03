@@ -62,6 +62,7 @@
     "editor.detectIndentation": false,  // 不让vscode跳过你设置的tabsize而自行决定
     "editor.autoIndent": "keep",  // 自动缩进只跟随上一行位置就可以了，乱跳挺烦的。各个语言还可以单独设置选项
     "editor.inlineSuggest.enabled": false,  // 粘贴文本、保存文件时长时间忙碌，暂时关闭內联建议功能。还有 todo tree、markdown linting 插件
+    "editor.acceptSuggestionOnEnter": "off", // 随打字随提示，不用回车确认选择，用 TAB 就够了
     // 各个语言还可以单独设置选项
     "[python]": {
         "editor.formatOnType": true,
