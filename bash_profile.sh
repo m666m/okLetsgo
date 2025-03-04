@@ -119,7 +119,7 @@ if [ -x /usr/bin/dircolors ]; then
 
         local fnn=${1}
         # find . -type f -name "*.mp4" -print0 | xargs -0 -I {} sh -c 'echo "$1" /mnt/movies/' _ {}
-        find . -type f -name ${fnn} -print0 | xargs -0 -I {} sh -c 'mv "$1" .' _ {}
+        find . -mindepth 2 -type f -name "${fnn}" -print0 | xargs -0 -I {} sh -c 'mv "$1" .' _ {}
     }
 
     # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
