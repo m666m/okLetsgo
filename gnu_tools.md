@@ -2994,8 +2994,8 @@ gnome-font-viewer 图形化程序有个 bug 至今未改，字体安装不提示
 
 安装
 
-    $ sudo dnf install zsh
-    $ sudo apt install zsh
+    $ sudo dnf install zsh zsh-autosuggestions zsh-syntax-highlighting distrobox
+    $ sudo apt install zsh zsh-autosuggestions zsh-syntax-highlighting distrobox
 
 如果是用 apt install 安装的发行版，位置在 /usr/share/zsh
 
