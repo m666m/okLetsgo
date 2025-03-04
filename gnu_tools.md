@@ -3585,30 +3585,7 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
     手动打开光标闪动，设置缓存屏幕内容 10000 行。
 
-一般情况下使用桌面内置的终端模拟器足够了，因为我的 Fedora 自带的 Gnome Terminal 不支持背景图片，所以自行安装了 kitty Terminal。
-
-Xfce 桌面自带 Xfce Terminal，支持背景图片：
-
-    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
-
-        $ cd ~/your_github_dir/
-
-        $ git clone --depth=1 git@github.com:arcticicestudio/nord-xfce-terminal
-
-        $ cd nord-xfce-terminal/
-
-        $ ./install.sh
-
-    或可以手动把文件 `nord.theme` 拷贝到本地的配置目录 `~/.local/share/xfce4/terminal/colorschemes` 下即可。
-
-    窗口菜单选 Edit->Preference:
-
-        -->Colors->Presets，选择 Nord 颜色方案。
-
-        -->General-->Command，勾选 `Run command as login shell` 以设置会话执行登录脚本
-
-        -->Appeaerance-->Background，设置背景图片，目前不支持透明，只支持图片调明暗
-                      -->Open New Windows，只勾选 `Display toolbar ...`，这样打开的窗口不会有标题栏和菜单栏
+一般情况下使用桌面内置的终端模拟器足够了，因为我的 Fedora 自带的 Gnome Terminal 不支持背景图片，所以自行安装了 kitty Terminal，兼容性和稳定性最好的是 Konsole，可惜速度太慢。
 
 KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
@@ -3655,6 +3632,29 @@ KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
         别忘记给新建的Profile1的选择“Set as Default”，这样才会生效。
 
     窗口主菜单栏选择 “Setting”，取消勾选 “Show Menubar”，这时主菜单成为窗口右上角的一个三个横线的图标，点击才显示主菜单栏，这样你的屏幕可用面积又扩大了一行。
+
+Xfce 桌面自带 Xfce Terminal，支持背景图片：
+
+    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
+
+        $ cd ~/your_github_dir/
+
+        $ git clone --depth=1 git@github.com:arcticicestudio/nord-xfce-terminal
+
+        $ cd nord-xfce-terminal/
+
+        $ ./install.sh
+
+    或可以手动把文件 `nord.theme` 拷贝到本地的配置目录 `~/.local/share/xfce4/terminal/colorschemes` 下即可。
+
+    窗口菜单选 Edit->Preference:
+
+        -->Colors->Presets，选择 Nord 颜色方案。
+
+        -->General-->Command，勾选 `Run command as login shell` 以设置会话执行登录脚本
+
+        -->Appeaerance-->Background，设置背景图片，目前不支持透明，只支持图片调明暗
+                      -->Open New Windows，只勾选 `Display toolbar ...`，这样打开的窗口不会有标题栏和菜单栏
 
 Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示刷新速度快
 
