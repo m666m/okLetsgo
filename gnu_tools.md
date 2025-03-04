@@ -3710,25 +3710,14 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
     设置 kitty 使用颜色主题，运行命令 `kitty +kitten themes`，会进入字符GUI界面，根据提示操作即可，推荐使用内置 Nord 主题。
 
-    选项卡操作：每个选项卡对应一个窗口
+    复制和粘贴：因为没有右键菜单，所以只能用热键
 
-        新建选项卡：Ctrl+Shift+T，窗口最下一行就变成选项卡的标题栏了，鼠标点击即可切换
+        ctrl+shift+c 复制到操作系统剪切板
+        ctrl+shift+v 从操作系统剪切板粘贴
 
-        切换到前一个/后一个选项卡：Ctrl+Shift+Left Ctrl+Shift+Right
+        shift+insert 从你鼠标选择的内容粘贴
 
-        当前选项卡左移/右移：ctrl+shift+, ctrl+shift+.
-
-        Close Tab：Ctrl+Shift+Q
-
-    窗口操作：每个选项卡下的窗口还可以拆分为多个窗口
-
-        拆分窗口： Ctrl+Shift+Enter
-
-        在不同窗口之间切换： Ctrl+Shift+[ 或 Ctrl+Shift+]
-
-        窗口排列为多种布局： Ctrl+Shift+L
-
-        关闭窗口： Ctrl+Shift+w
+        如果需要鼠标选择的内容自动复制到操作系统剪切板的老习惯，配置文件中开启“Copy on select”即可
 
     滚动窗口内容：
 
@@ -3744,15 +3733,6 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
         滚动到前一个/下一个shell命令的输出: ctrl+shift+x, ctrl+shift+z
 
-    复制和粘贴：因为没有右键菜单，所以只能用热键
-
-        ctrl+shift+c 复制到操作系统剪切板
-        ctrl+shift+v 从操作系统剪切板粘贴
-
-        shift+insert 从你鼠标选择的内容粘贴
-
-        如果需要鼠标选择的内容自动复制到操作系统剪切板的老习惯，配置文件中开启“Copy on select”即可
-
     查找窗口中的文字：
 
         按下 ctrl+shift+h，会默认使用 `less` 打开滚动缓冲区（scrollback buffer），出现 : 提示符
@@ -3766,6 +3746,26 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
             按下回车键重新进入 : 提示符号，进行新的搜索
 
         也可安装插件 [kitty-search](https://github.com/trygveaa/kitty-kitten-search)
+
+    选项卡操作：每个选项卡对应一个窗口
+
+        新建选项卡：Ctrl+Shift+T，窗口最下一行就变成选项卡的标题栏了，鼠标点击即可切换
+
+        切换到前一个/后一个选项卡：Ctrl+Shift+Left Ctrl+Shift+Right
+
+        当前选项卡左移/右移：ctrl+shift+, ctrl+shift+.
+
+        Close Tab：Ctrl+Shift+Q
+
+    窗口操作：每个选项卡下的窗口还可以拆分为多个窗口
+
+        纵向拆分窗口： Ctrl+Shift+Enter
+
+        在不同窗口之间切换：鼠标点击窗口或 Ctrl+Shift+[ 或 Ctrl+Shift+]
+
+        窗口排列为多种布局： Ctrl+Shift+L
+
+        关闭窗口： Ctrl+Shift+w
 
     shell 集成：鼠标点击命令行文字即可移动光标到此等
 
