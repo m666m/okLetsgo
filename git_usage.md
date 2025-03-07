@@ -5420,7 +5420,7 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 
 最后，John 接受了这些修改，将 feature 分支并入了 master 分支，关闭了这个 Pull Request。功能现在已经整合到了项目中，其他在 master 分支上工作的开发者可以使用标准的 git pull 命令将这些修改拉取到自己的本地仓库。
 
-## 配置 vs code
+## 配置 VS Code
 
     https://code.visualstudio.com/docs#vscode
 
@@ -5720,45 +5720,127 @@ Visual Studio Code Remote Development 允许您连接使用如下方式到远程
 
     jgclark.vscode-todo-highlight
 
+```json
+    // Todo Highlight
+    // "todohighlight.isCaseSensitive": true,
+    "todohighlight.keywords": [
+        "BUG:",
+        {
+            "text": "TODO:",
+            "regex": {
+                "pattern": "(?<=^|\"|\\s)TODO(\\(\\w+\\))?:"
+            },
+            "color": "#ffffff",
+            "backgroundColor": "#b96a03"
+        },
+        {
+            "text": "FIXME:",
+            "color": "#30fdfd",
+            "backgroundColor": "#e4136a",
+            "overviewRulerColor": "#e4136a"
+        },
+        {
+            "text": "XXX:",
+            "color": "#2b313d",
+            "backgroundColor": "#10dfdf",
+            "overviewRulerColor": "#10dfdf"
+        },
+        {
+            "text": "NOTE:",
+            "color": "#e0bb3f",
+            "backgroundColor": "#005f87",
+            "overviewRulerColor": "#005f87",
+            "isWholeLine": true
+        },
+    ],"todohighlight.include": [
+        "**/*.md",
+        "**/*.py",
+    ],
+    "todohighlight.exclude": [
+        "**/node_modules/**",
+        "**/bower_components/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/.vscode/**",
+        "**/.vscode-test/**",
+        "**/.github/**",
+        "**/_output/**",
+        "**/*.min.*",
+        "**/*.map",
+        "**/.next/**"
+    ],
+    "todohighlight.maxFilesForSearch": 5120,
+    "todohighlight.toggleURI": false,
+
+```
+
 2、备选 Todo Tree：分类显示常见的 TODO/FIXME 为标签，缺点是在粘贴文本的时候 vscode 响应慢。
 
     Gruntfuggly.todo-tree
 
 ```json
-    "todo-tree.general.tags": [
-        "TODO:",
-        "FIXME",
-        "XXX",
-        "NOTE"
-    ],
+     // Todo Tree
     "todo-tree.highlights.customHighlight": {
         "TODO": {
             "icon": "tasklist",
-            "iconColour": "magenta",
-            "background": "#D0FFFF",
+            "iconColour": "#b96a03",
+            "foreground": "#ffffff",
+            "background": "#b96a03",
             "type": "tag"
         },
         "FIXME": {
             "icon": "eye",
-            "iconColour": "red",
-            "background": "#D0FFFF",
+            "iconColour": "#e4136a",
+            "foreground": "#30fdfd",
+            "background": "#e4136a",
             "type": "tag"
         },
         "XXX": {
             "icon": "beaker",
-            "iconColour": "pink",
-            "background": "#D0FFFF",
+            "iconColour": "#10dfdf",
+            "foreground": "#2b313d",
+            "background": "#10dfdf",
             "type": "tag"
         },
         "NOTE": {
             "icon": "info",
-            "iconColour": "blue",
-            "background": "#D0FFFF",
+            "iconColour": "#005f87",
+            "foreground": "#e0bb3f",
+            "background": "#005f87",
             "type": "tag"
         }
+        // "[x]":{
+        //   "foreground": "#64dd17",
+        //   "background":"#008800"
+        // },
+        // "[ ]":{
+        //   "foreground": "#f44336",
+        //   "background": "#592c2c",
+        // },
+    },
+    // "todo-tree.regex.regex": "((//|#|<!--|;|/\\*|^)\\s*($TAGS)|^//\\s*\\[x\\]|^//\\s*\\[ \\])",
+    "todo-tree.general.tags": [
+        "TODO",
+        "FIXME",
+        "XXX",
+        "NOTE"
+        //"[ ]",
+        //"[x]"
+    ],
+    "todo-tree.general.tagGroups": {
+        "FIXME": [
+            "FIXME",
+            "FIXIT",
+            "FIX",
+            "BUG"
+        ],
+        "XXX": [
+            "XXX",
+            "HACK"
+        ]
     },
     "todo-tree.general.statusBar": "tags",
-    "todo-tree.tree.grouped": true,
+
 ```
 
 #### 高亮空格并消除

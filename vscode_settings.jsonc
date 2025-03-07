@@ -393,6 +393,7 @@
     //"pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
     "pyqt-integration.pyuic.compile.filepath": "../uicode/Ui_${ui_name}.py",
     "pyqt-integration.pyrcc.compile.filepath": "../uicode/${qrc_name}_rc.py",
+    //
     // Rainbow CSV https://github.com/mechatroner/vscode_rainbow_csv/blob/master/test/color_customization_example.md#colors-customization
     "editor.tokenColorCustomizations": {
         "textMateRules": [
@@ -470,67 +471,56 @@
             }
         ]
     },
-    // Todo Tree
-    "todo-tree.highlights.customHighlight": {
-        "TODO": {
-            "icon": "tasklist",
-            "iconColour": "#b96a03",
-            "foreground": "#ffffff",
-            "background": "#b96a03",
-            "type": "tag"
+    // Todo Highlight
+    // "todohighlight.isCaseSensitive": true,
+    "todohighlight.keywords": [
+        "BUG:",
+        {
+            "text": "TODO:",
+            "regex": {
+                "pattern": "(?<=^|\"|\\s)TODO(\\(\\w+\\))?:"
+            },
+            "color": "#ffffff",
+            "backgroundColor": "#b96a03"
         },
-        "FIXME": {
-            "icon": "eye",
-            "iconColour": "#e4136a",
-            "foreground": "#30fdfd",
-            "background": "#e4136a",
-            "type": "tag"
+        {
+            "text": "FIXME:",
+            "color": "#30fdfd",
+            "backgroundColor": "#e4136a",
+            "overviewRulerColor": "#e4136a"
         },
-        "XXX": {
-            "icon": "beaker",
-            "iconColour": "#10dfdf",
-            "foreground": "#2b313d",
-            "background": "#10dfdf",
-            "type": "tag"
+        {
+            "text": "XXX:",
+            "color": "#2b313d",
+            "backgroundColor": "#10dfdf",
+            "overviewRulerColor": "#10dfdf"
         },
-        "NOTE": {
-            "icon": "info",
-            "iconColour": "#005f87",
-            "foreground": "#e0bb3f",
-            "background": "#005f87",
-            "type": "tag"
-        }
-        // "[x]":{
-        //   "foreground": "#64dd17",
-        //   "background":"#008800"
-        // },
-        // "[ ]":{
-        //   "foreground": "#f44336",
-        //   "background": "#592c2c",
-        // },
-    },
-    // "todo-tree.regex.regex": "((//|#|<!--|;|/\\*|^)\\s*($TAGS)|^//\\s*\\[x\\]|^//\\s*\\[ \\])",
-    "todo-tree.general.tags": [
-        "TODO",
-        "FIXME",
-        "XXX",
-        "NOTE"
-        //"[ ]",
-        //"[x]"
+        {
+            "text": "NOTE:",
+            "color": "#e0bb3f",
+            "backgroundColor": "#005f87",
+            "overviewRulerColor": "#005f87",
+            "isWholeLine": true
+        },
+    ],"todohighlight.include": [
+        "**/*.md",
+        "**/*.py",
     ],
-    "todo-tree.general.tagGroups": {
-        "FIXME": [
-            "FIXME",
-            "FIXIT",
-            "FIX",
-            "BUG"
-        ],
-        "XXX": [
-            "XXX",
-            "HACK"
-        ]
-    },
-    "todo-tree.general.statusBar": "tags",
+    "todohighlight.exclude": [
+        "**/node_modules/**",
+        "**/bower_components/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/.vscode/**",
+        "**/.vscode-test/**",
+        "**/.github/**",
+        "**/_output/**",
+        "**/*.min.*",
+        "**/*.map",
+        "**/.next/**"
+    ],
+    "todohighlight.maxFilesForSearch": 5120,
+    "todohighlight.toggleURI": false,
     // gitlens 注意关闭遥测
     "gitlens.telemetry.enabled": false,
     "gitlens.views.tags.branches.layout": "list",
