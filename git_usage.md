@@ -2455,7 +2455,6 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
 菱形分叉最大的好处，除了便于观察之外，如果需要版本回退，很容易就可以退到feature合并之前的位置。
 
-
 #### `rebase <branch>` 拉直
 
 变基合并，修改你本地的提交记录的 hash 值，强行拉直，适用于大多数从远程仓库拉取到本地的场景。
@@ -5717,7 +5716,11 @@ Visual Studio Code Remote Development 允许您连接使用如下方式到远程
 
 #### todo tree 记录你的待办
 
-分类显示常见的 TODO/FIXME 为标签，缺点是在粘贴文本的时候 vscode 响应慢。
+1、TODO Highlight v2
+
+    jgclark.vscode-todo-highlight
+
+2、备选 Todo Tree：分类显示常见的 TODO/FIXME 为标签，缺点是在粘贴文本的时候 vscode 响应慢。
 
     Gruntfuggly.todo-tree
 

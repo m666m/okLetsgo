@@ -866,6 +866,66 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
     BuzzFeed
 
+## entware 嵌入式平台软件仓库
+
+NAS、路由器等嵌入式设备，自带软件不多，通过安装 Entware 可以轻松的安装很多软件
+
+    https://github.com/Entware/Entware
+
+    https://www.xubo.wang/2021/12/29/entware%E4%BD%BF%E7%94%A8/
+
+新入手了一台Wd pr4100 西数的nas, 系统是 myclound os5,实质是 busybox 只有少数的第三方软件,很不方便。后来研究了下，可以安装 entware 来安装其他的软件。
+
+entware安装
+
+已笔者的wd pr4100 为例，在后台安装 最后,nas重启后会 清除用户的各种操作,在pr4100 做好的安装包会做软链/opt 和 /root。[wd源码地址](https://github.com/WDCommunity/wdpksrc/tree/master/wdpk/entware)
+
+Entware的包管理器是opkg，类似于apt-get和yum，只不过Entware独立于操作系统之外，不使用系统本身的依赖，现仓库提供的软件基于GCC 7.3和glibc 2.27构建，安装的软件根目录位于/opt目录，相当于一个chroot环境。
+
+[安装包地址](http://bin.entware.net/)
+
+根据系统版本 进行安装
+
+    uname -m on your device's default shell is one of: armv5, armv7l, aarch64, mips, mipsel, x86 or x86_64.
+
+aarch64安装：
+
+    wget http://bin.entware.net/x64-k3.2/installer/generic.sh
+    sh generic.sh
+entware 默认安装在 /opt nas的/opt 可能没有空间，就需要自己创建软链接
+
+将Entware安装软件的目录添加到系统PATH变量：
+
+    export PATH="$PATH:/opt/bin/:/opt/sbin/"
+    echo 'export PATH="$PATH:/opt/bin/:/opt/sbin/"' >> /root/.bashrc
+
+entware使用->包管理工具Opkg
+Opkg是一个轻量快速的套件管理系统，已成为 Opensource 界嵌入式系统标准。常用于路由、交换机等嵌入式设备中，用来管理软件包的安装升级与下载。
+
+OPKG 没有仅仅将软件安装到一个单独的路径（如：/opt），而是根文件系统上的一个完整的包管理器。它也包含了增加内核模块与驱动的可能性。OPKG 有时被称为 Entware ，但这主要是针对为嵌入式设备准备的 Entware 仓库
+
+使用opkg安装软件：
+
+    opkg find vim
+    opkg install vim
+
+常用命令
+
+    命令            介绍
+    opkg update        更新可以获取的软件包列表
+    opkg upgrade    对已经安装的软件包升级
+    opkg list        获取软件列表
+    opkg install    安装指定的软件包
+    opkg remove        卸载已经安装的指定的软件包
+    opkg list-installed        列出已安装软件包
+    opkg list-upgradable    列出可升级的已安装软件包
+    opkg list-changed-conffiles    列出用户修改过的配置文件
+    opkg files    列出属于软件包 的文件 仅适用于已安装的软件包
+    opkg search    列出包含
+    opkg info [pkg globp]    显示软件包 的所有信息
+    opkg status [pkg globp]    显示软件包 的状态
+    opkg download            下载软件包 到当前目录
+
 ## 使用商业闭源软件
 
 最好在应用商店安装，不要单独下载为本地 apk 文件安装，可控程度不如在应用商店安装，只能由手机操作系统保证。
@@ -1123,7 +1183,7 @@ apt命令大家应该都比较熟悉了，这里直接简单的介绍下pkg命�
 
     https://ivonblog.com/posts/termux-x11/
 
-## TODO: postmarketos 旧手机的新生
+## postmarketos 旧手机的新生
 
 postmarketos 把你的旧手机作为一个低功耗平台
 
@@ -1335,67 +1395,6 @@ MU-MIMO 是基于多天线技术的，支持多用户通过使用不同的空间
 
 完成这 2 步后，恭喜你，梅林固件已经刷成功了。可以在软件中心安装插件啦~
 
-## entware 嵌入式平台软件仓库
-
-NAS、路由器等嵌入式设备，自带软件不多，通过安装 Entware 可以轻松的安装很多软件
-
-    https://github.com/Entware/Entware
-
-    https://www.xubo.wang/2021/12/29/entware%E4%BD%BF%E7%94%A8/
-
-新入手了一台Wd pr4100 西数的nas, 系统是 myclound os5,实质是 busybox 只有少数的第三方软件,很不方便。后来研究了下，可以安装 entware 来安装其他的软件。
-
-entware安装
-
-已笔者的wd pr4100 为例，在后台安装 最后,nas重启后会 清除用户的各种操作,在pr4100 做好的安装包会做软链/opt 和 /root。[wd源码地址](https://github.com/WDCommunity/wdpksrc/tree/master/wdpk/entware)
-
-Entware的包管理器是opkg，类似于apt-get和yum，只不过Entware独立于操作系统之外，不使用系统本身的依赖，现仓库提供的软件基于GCC 7.3和glibc 2.27构建，安装的软件根目录位于/opt目录，相当于一个chroot环境。
-
-[安装包地址](http://bin.entware.net/)
-
-根据系统版本 进行安装
-
-    uname -m on your device's default shell is one of: armv5, armv7l, aarch64, mips, mipsel, x86 or x86_64.
-
-
-aarch64安装：
-
-    wget http://bin.entware.net/x64-k3.2/installer/generic.sh
-    sh generic.sh
-entware 默认安装在 /opt nas的/opt 可能没有空间，就需要自己创建软链接
-
-将Entware安装软件的目录添加到系统PATH变量：
-
-    export PATH="$PATH:/opt/bin/:/opt/sbin/"
-    echo 'export PATH="$PATH:/opt/bin/:/opt/sbin/"' >> /root/.bashrc
-
-entware使用->包管理工具Opkg
-Opkg是一个轻量快速的套件管理系统，已成为 Opensource 界嵌入式系统标准。常用于路由、交换机等嵌入式设备中，用来管理软件包的安装升级与下载。
-
-OPKG 没有仅仅将软件安装到一个单独的路径（如：/opt），而是根文件系统上的一个完整的包管理器。它也包含了增加内核模块与驱动的可能性。OPKG 有时被称为 Entware ，但这主要是针对为嵌入式设备准备的 Entware 仓库
-
-使用opkg安装软件：
-
-    opkg find vim
-    opkg install vim
-
-常用命令
-
-    命令	        介绍
-    opkg update	    更新可以获取的软件包列表
-    opkg upgrade	对已经安装的软件包升级
-    opkg list	    获取软件列表
-    opkg install	安装指定的软件包
-    opkg remove	    卸载已经安装的指定的软件包
-    opkg list-installed	    列出已安装软件包
-    opkg list-upgradable	列出可升级的已安装软件包
-    opkg list-changed-conffiles	列出用户修改过的配置文件
-    opkg files	列出属于软件包 的文件 仅适用于已安装的软件包
-    opkg search	列出包含
-    opkg info [pkg globp]	显示软件包 的所有信息
-    opkg status [pkg globp]	显示软件包 的状态
-    opkg download	        下载软件包 到当前目录
-
 ## 找回索尼电视原生系统界面，索尼Pro模式
 
 20年之前的索尼电视还不是这样，当时界面还很原生，还很好用。后来不知道是怎么啦，变成了小米，海信，TCL等国内电视的那种系统UI啦
@@ -1531,3 +1530,60 @@ Kodi 在 4K 显示器设置分辨率显示 1920×1080P，是指软件界面 1080
     这样就能识别为一部电影，播放的时候自动合并为一部完整的电影。
 
 剧集命名规则：一部剧集建一个文件夹，名为英文名.中文名；文件命名为S01E01，包含季集信息。
+
+## 把你的 Garmin 手表给 Linux 做 GPS
+
+    https://northwestspatial.com/wp/?p=142
+    http://northwestspatial.com/wp/?p=162
+
+Interacting with your hiking/personal Garmin GPS unit in Linux can be simple and rewarding.  However, getting started takes a lot of work behind the scenes.  This tutorial requires you to execute terminal commands and modify read-only files, so it is for intermediate to expert users only.  Before beginning, make sure that the following packages are installed: gpsd, gpsbabel, and garmindev.
+
+The first thing to do is connect your GPS via USB, and make sure that Linux has recognized your GPS.  The easiest way to do that is to execute the following command:
+dmesg
+
+This command will show a list of system messages.  The last few on the list should be related to the connection of your GPS device.  My Garmin, an eTrex Venture HC, gives the following messages, indicating that it is connected to /dev/ttyUSB0:
+
+    [30206.209794] garmin_gps: v0.33:garmin gps driver
+    [30282.227125] usb 2-2: new full speed USB device using uhci_hcd and address 3
+    [30282.357447] usb 2-2: New USB device found, idVendor=091e, idProduct=0003
+    [30282.357455] usb 2-2: New USB device strings: Mfr=0, Product=0, SerialNumber=0
+    [30282.364664] garmin_gps 2-2:1.0: Garmin GPS usb/tty converter detected
+    [30282.365055] usb 2-2: Garmin GPS usb/tty converter now attached to ttyUSB0
+
+At this point, the GPS should be up and running.  Unfortunately, you don’t have permission yet to interact with the GPS.  So the next step is to set up device permissions.  Create a file in /etc/udev/rules.d called 51-garmin.rules which contains the following line:
+SYSFS{idVendor}==”091e”, SYSFS{idProduct}==”0003″, MODE=”666″
+
+Now disconnect your GPS device and run:
+udevadm control –reload-rules
+
+(that’s a double dash before reload, not an emdash – sorry for any confusion)
+The next time you connect your GPS, it should have the correct permissions, allowing you to interface with the GPS.
+
+Coming up in Part 2: enabling and disabling the Garmin kernel driver.
+
+In Part 1 of this tutorial, I wrote about getting Linux to recognize and manage your Garmin GPS unit.  Now that everything is set up, we can begin to explore how to make use of the GPS.
+
+Most of the work behind the scenes is made possible by the garmin_gps module, which is included by default in 2.6.x kernels.  This module acts as a ‘driver’ for the GPS.  You can verify its existence by executing the following command:
+lsmod | grep garmin
+
+One of the neat things you can do is have Linux read the position information from your GPS.  This is accomplished by gpsd, a background service which passes position information from the device to any program that can read it.  One such program is TangoGPS, which will display your current position overlaid over a basemap.  The basemap is constructed from tiles downloaded over the internet from a web mapping service (WMS) such as Google or OpenStreetMap.  With an internet connection, you can turn your Linux computer into a real-time navigation device.  Obviously, this has limited practical uses – but it is fun to play with.
+
+A better use of your GPS is to collect position information in the field, either as tracks or points, and then use them on the computer.  Unfortunately, the garmin_gps module doesn’t really help with this.  There is a program called gpsbabel which will allow you to read and write from your GPS, but it is blocked by the garmin_gps module.  In order to get gpsbabel working we have to remove the module from the kernel, using this command:
+modprobe -r garmin_gps
+
+This only works temporarily, though – the module will be reloaded the next time you restart your computer.  To prevent this, you need to blacklist the module.  Add the following two lines to the end of /etc/modprobe.d/blacklist.conf:
+
+    # prevent garmin_gps from being loaded
+    blacklist garmin_gps
+
+Once the module has been unloaded, gpsbabel should automatically take over the management of your GPS device.  This allows you to use a number of wonderful graphical GIS management programs, such as QLandkarte GT and Viking.  These programs can be used to transfer maps and data to and from your device, and are functionally similar to the proprietary Windows software provided by Garmin.
+
+One small problem – while gpsbabel is managing your device, gpsd won’t work.  Fortunately, if you want to use it again, just reinsert the module by running the following command:
+modprobe garmin_gps
+
+If you prefer to return the module permanently to the kernel, simply comment out the last line of the blacklist.conf file like so:
+
+    # prevent garmin_gps from being loaded
+    # blacklist garmin_gps
+
+Hopefully one of these solutions will help you on your way to happy GPSing.
