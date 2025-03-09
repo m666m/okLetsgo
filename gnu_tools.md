@@ -3702,6 +3702,8 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
         https://github.com/kovidgoyal/kitty
             https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
 
+    已知问题：关闭 kitty 后干扰中文输入法在其它软件中打不上字，需要再打开 kitty
+
     配置说明
 
         https://sw.kovidgoyal.net/kitty/conf/
