@@ -5288,6 +5288,12 @@ rm $tfile
 
 如果还不行，那就只能换个方法了。
 
+## github 加速
+
+下载个配置文件啥的，用 jsdelivr 即可
+
+    https://cdn.jsdelivr.net/gh/gravitl/netmaker@master/compose/docker-compose.yml
+
 ## 如果 Github 完蛋了
 
     https://gitlab.com/
