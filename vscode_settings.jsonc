@@ -478,31 +478,41 @@
         {
             "text": "TODO:",
             "regex": {
-                "pattern": "(?<=^|\"|\\s)TODO(\\(\\w+\\))?:"
+                "pattern": "(?<=^|\\#|\\s)TODO:"
             },
             "color": "#ffffff",
             "backgroundColor": "#b96a03"
         },
         {
             "text": "FIXME:",
+            "regex": {
+                "pattern": "(?<=^|\\#|\\s)FIXME:"
+            },
             "color": "#30fdfd",
             "backgroundColor": "#e4136a",
             "overviewRulerColor": "#e4136a"
         },
         {
             "text": "XXX:",
+            "regex": {
+                "pattern": "(?<=^|\\#|\\s)XXX:"
+            },
             "color": "#2b313d",
             "backgroundColor": "#10dfdf",
             "overviewRulerColor": "#10dfdf"
         },
         {
             "text": "NOTE:",
+            "regex": {
+                "pattern": "(?<=^|\\#|\\s)NOTE:"
+            },
             "color": "#e0bb3f",
             "backgroundColor": "#005f87",
             "overviewRulerColor": "#005f87",
             "isWholeLine": true
         },
-    ],"todohighlight.include": [
+    ],
+    "todohighlight.include": [
         "**/*.md",
         "**/*.py",
     ],
