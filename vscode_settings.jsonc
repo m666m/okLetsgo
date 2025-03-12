@@ -471,6 +471,67 @@
             }
         ]
     },
+    // Todo Tree
+    "todo-tree.highlights.customHighlight": {
+        "TODO": {
+            "icon": "tasklist",
+            "iconColour": "#b96a03",
+            "foreground": "#ffffff",
+            "background": "#b96a03",
+            "type": "tag"
+        },
+        "FIXME": {
+            "icon": "eye",
+            "iconColour": "#e4136a",
+            "foreground": "#30fdfd",
+            "background": "#e4136a",
+            "type": "tag"
+        },
+        "XXX": {
+            "icon": "beaker",
+            "iconColour": "#10dfdf",
+            "foreground": "#2b313d",
+            "background": "#10dfdf",
+            "type": "tag"
+        },
+        "NOTE": {
+            "icon": "info",
+            "iconColour": "#005f87",
+            "foreground": "#e0bb3f",
+            "background": "#005f87",
+            "type": "tag"
+        }
+        // "[x]":{
+        //   "foreground": "#64dd17",
+        //   "background":"#008800"
+        // },
+        // "[ ]":{
+        //   "foreground": "#f44336",
+        //   "background": "#592c2c",
+        // },
+    },
+    // "todo-tree.regex.regex": "((//|#|<!--|;|/\\*|^)\\s*($TAGS)|^//\\s*\\[x\\]|^//\\s*\\[ \\])",
+    "todo-tree.general.tags": [
+        "TODO",
+        "FIXME",
+        "XXX",
+        "NOTE"
+        //"[ ]",
+        //"[x]"
+    ],
+    "todo-tree.general.tagGroups": {
+        "FIXME": [
+            "FIXME",
+            "FIXIT",
+            "FIX",
+            "BUG"
+        ],
+        "XXX": [
+            "XXX",
+            "HACK"
+        ]
+    },
+    "todo-tree.general.statusBar": "tags",
     // Todo Highlight
     // "todohighlight.isCaseSensitive": true,
     "todohighlight.keywords": [
