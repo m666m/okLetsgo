@@ -9366,6 +9366,8 @@ hexyl
 
 ### 查看自己的公网 IP 地址是多少
 
+浏览器打开 <https://test.ustc.edu.cn/> 可看到自己的ip和测速。
+
 只显示地址，方便脚本调用：
 
     $ curl members.3322.org/dyndns/getip

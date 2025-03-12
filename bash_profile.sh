@@ -136,8 +136,9 @@ if [ -x /usr/bin/dircolors ]; then
         cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
     }
 
-    # vi 后悔药
-    alias viw='echo "[提示：vi 后悔药 --- 等保存了才发现是只读]" && echo ":w !sudo tee %"'
+    alias viw='echo "[vi 后悔药：等保存了才发现是只读，运行以下命令]" && echo ":w !sudo tee %"'
+
+    alias myip='echo "[浏览器打开 <https://test.ustc.edu.cn/> 可看到自己的ip和测速]" && curl ipv4.icanhazip.com 2>/dev/null;curl ipv6.icanhazip.com 2>/dev/null'
 
     # 命令行看天气 https://wttr.in/:help
     # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
