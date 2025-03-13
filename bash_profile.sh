@@ -27,6 +27,8 @@
 #       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
 #   用 $0 取当前shell是否为 -zsh 或 zsh，截取后三位得到 zsh
 __cur_shell=$(echo ${0:0-3})
+__is_windows=$([[ $OSTYPE =~ linux ]])
+
 [[ $__cur_shell = 'zsh' ]] || (test -f ~/.bashrc && . ~/.bashrc)
 
 # bash 优先调用 .bash_profile，就不会调用 .profle，该文件是 Debian 等使用的
@@ -581,7 +583,9 @@ if [[ ! $__cur_shell = 'zsh' ]]; then
 fi
 
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
-[[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh || (echo 'Get ackg from github...' && curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh |sed -e 's/h()/ackg()/' |sudo tee /usr/local/bin/ackg.sh) && source /usr/local/bin/ackg.sh
+if ! $(echo $__is_windows); then
+    [[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh || (echo 'Get ackg from github...' && curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh |sed -e 's/h()/ackg()/' |sudo tee /usr/local/bin/ackg.sh) && source /usr/local/bin/ackg.sh
+fi
 
 #################################
 # Bash：手动配置插件
@@ -844,7 +848,7 @@ if [[ $__cur_shell = 'zsh' ]]; then
     # "zsh 有自己的 powerlevel10k 设置命令行提示符"
     :
 
-elif [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
+elif $(echo $__is_windows); then
     # Windows git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
     PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
 
@@ -867,3 +871,4 @@ else
 fi
 
 unset __cur_shell
+unset __is_windows
