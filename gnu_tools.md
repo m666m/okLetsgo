@@ -686,11 +686,12 @@ BoldWhite=253,246,227
 
 #### mintty 简单使用：Git for Windows
 
-Git Bash 使用了 GNU tools 的 MinGW(Msys2)，但是只编译了它自己需要的部分工具软件进行了集成，我们主要使用他的 mintty.exe 终端模拟器和 git、ssh、gpg、winpty 等工具。
+Git 在 Windows 下运行，专门起了一个项目 git for Windows，主要是因为 git 在 Linux 下运行依赖 bash 环境，在 Windows 下使用了 GNU tools 的 MinGW(Msys2) 实现了 git bash，并集成了 git bash 需要的部分工具软件，我们主要使用他的 git bash、 mintty.exe 终端模拟器和 git、ssh、gpg、winpty 等命令行工具。
 
-安装 git for Windows 或 MSYS2 后就有了
+安装 git for Windows 或 MSYS2 后就有了，为了简单安装 git for windows 就可以了
 
     https://git-scm.com/download/win
+        https://gitforwindows.org/
 
 配置文件样例参见章节 [mintty 美化]
 
@@ -4142,7 +4143,7 @@ Linux 命令行参数一个杠，俩杠，没杠，参见章节 [压缩解压缩
     var1='say $var'
     var2="say $var"
 
-反引号``和$()的作用相同，用于命令替换（command substitution），即完成引用的命令的执行，将其结果替换出来
+反引号``和$()的作用相同，用于命令替换（command substitution），即完成引用的命令的执行，将其结果替换出来，这个是在子shell的进程中执行的。
 
     echo `date '--date=1 hour ago' +%Y-%m-%d-%H`
     echo $(date '--date=1 hour ago' +%Y-%m-%d-%H)
@@ -4151,6 +4152,24 @@ $()中只需要使用一个反斜杠进行转义，下列语句表示给var变�
 
     var2=`echo \\$HOME`
     var3=$(echo \$HOME)
+
+用命令组语法 {...} 将多个命令组合成一个代码块，而不是 $()，防止命令替换：
+
+    与 ( ... ) 不同，{ ... } 不会启动子 Shell，所有命令在当前 Shell 环境中执行。
+
+    {...} 将一组命令作为一个整体执行（类似于单行命令的复合操作）。
+
+        if { command1 && command2; } || { command3 || command4; }; then
+            echo "条件成立"
+        fi
+
+        if {
+            check_dependency &&
+            validate_input &&
+            prepare_environment
+        }; then
+            run_main_task
+        fi
 
 ${var}用于明确界定变量，与$var并没有区别，但是界定更清晰
 

@@ -26,10 +26,36 @@
 #   ~/.bashrc: executed by bash(1) for non-login shells.
 #       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
 #   用 $0 取当前shell是否为 -zsh 或 zsh，截取后三位得到 zsh
-__cur_shell=$(echo ${0:0-3})
-__is_windows=$($OS =~ Windows && "$OSTYPE" =~ msys)
+current_shell=$(echo ${0:0-3})
 
-[[ $__cur_shell = 'zsh' ]] || (test -f ~/.bashrc && . ~/.bashrc)
+os_name=$(uname -s)
+case "$os_name" in
+    Linux*)
+        # 判断是否为树莓派（多重条件校验）
+        if command -v vcgencmd >/dev/null 2>&1 ; then
+            os_type="raspi"
+        else
+            os_type="linux"
+        fi
+        ;;
+    Darwin*)
+        os_type="macos"
+        ;;
+    FreeBSD*)
+        os_type="freebsd"
+        ;;
+    MSYS_NT*|MINGW32_NT*|MINGW64_NT*|CYGWIN_NT*)
+        os_type="windows"
+        ;;
+    *)
+        echo "Warning: Unknown OS detected: $os_name" >&2
+        os_type="unknown"
+        ;;
+esac
+
+unset os_name
+
+[[ $current_shell = 'zsh' ]] || (test -f ~/.bashrc && . ~/.bashrc)
 
 # bash 优先调用 .bash_profile，就不会调用 .profle，该文件是 Debian 等使用的
 #   ~/.profile: executed by the command interpreter for login shells.
@@ -51,7 +77,7 @@ PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 
 # 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
 # zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
-if [[ ! $__cur_shell = 'zsh' ]]; then
+if [[ ! $current_shell = 'zsh' ]]; then
     set -o vi
 fi
 
@@ -578,12 +604,12 @@ fi
 # Bash：加载插件或小工具
 
 # ssh 命令后面按tab键自动补全 hostname，zsh 自带不需要
-if [[ ! $__cur_shell = 'zsh' ]]; then
+if [[ ! $current_shell = 'zsh' ]]; then
     [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
 fi
 
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
-if ! $(echo $__is_windows); then
+if [[ ! $os_name = 'windows' ]]; then
     [[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh || (echo 'Get ackg from github...' && curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh |sed -e 's/h()/ackg()/' |sudo tee /usr/local/bin/ackg.sh) && source /usr/local/bin/ackg.sh
 fi
 
@@ -844,15 +870,15 @@ function PS1raspi-warning-prompt {
 
 #################################
 # 设置命令行提示符 PS1
-if [[ $__cur_shell = 'zsh' ]]; then
+if [[ $current_shell = 'zsh' ]]; then
     # "zsh 有自己的 powerlevel10k 设置命令行提示符"
     :
 
-elif $(echo $__is_windows); then
+elif [[ $os_name = 'windows' ]]; then
     # Windows git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
     PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
 
-elif $(cat /proc/cpuinfo |grep Model |grep Raspberry >/dev/null 2>&1); then
+elif  [[ $os_name = 'raspi' ]]; then
     # 本机登录后禁用屏幕休眠 https://zhuanlan.zhihu.com/p/114716305
     # 本机图形界面
     #   /etc/profile.d/hibernate.sh
@@ -870,5 +896,5 @@ else
 
 fi
 
-unset __cur_shell
-unset __is_windows
+unset current_shell
+unset os_type
