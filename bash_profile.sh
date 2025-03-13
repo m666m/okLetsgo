@@ -27,7 +27,7 @@
 #       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
 #   用 $0 取当前shell是否为 -zsh 或 zsh，截取后三位得到 zsh
 __cur_shell=$(echo ${0:0-3})
-__is_windows=$([[ $OSTYPE =~ linux ]])
+__is_windows=$($OS =~ Windows && "$OSTYPE" =~ msys)
 
 [[ $__cur_shell = 'zsh' ]] || (test -f ~/.bashrc && . ~/.bashrc)
 
