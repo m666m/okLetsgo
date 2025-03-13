@@ -609,7 +609,7 @@ if [[ ! $current_shell = 'zsh' ]]; then
 fi
 
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
-if [[ ! $os_name = 'windows' ]]; then
+if [[ ! $os_type = 'windows' ]]; then
     [[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh || (echo 'Get ackg from github...' && curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh |sed -e 's/h()/ackg()/' |sudo tee /usr/local/bin/ackg.sh) && source /usr/local/bin/ackg.sh
 fi
 
@@ -874,11 +874,11 @@ if [[ $current_shell = 'zsh' ]]; then
     # "zsh 有自己的 powerlevel10k 设置命令行提示符"
     :
 
-elif [[ $os_name = 'windows' ]]; then
+elif [[ $os_type = 'windows' ]]; then
     # Windows git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
     PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
 
-elif  [[ $os_name = 'raspi' ]]; then
+elif  [[ $os_type = 'raspi' ]]; then
     # 本机登录后禁用屏幕休眠 https://zhuanlan.zhihu.com/p/114716305
     # 本机图形界面
     #   /etc/profile.d/hibernate.sh
