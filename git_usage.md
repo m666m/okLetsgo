@@ -5426,6 +5426,500 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 
 最后，John 接受了这些修改，将 feature 分支并入了 master 分支，关闭了这个 Pull Request。功能现在已经整合到了项目中，其他在 master 分支上工作的开发者可以使用标准的 git pull 命令将这些修改拉取到自己的本地仓库。
 
+## ------------ 基于 git 分支的各种工作流 ------------
+
+    https://www.zhihu.com/question/379545619/answer/1862411356
+
+根据自己实际情况，用法各有不同。
+
+### git工作流：类似 svn 的 TrunkBased 集中式工作流
+
+    remote master -- local master(开发人员工作在此)
+
+开发都在主干分支，拉出新的分支进行开发部署、修复BUG。
+
+主干仅 master 分支
+
+    适用场景：适合于单一稳定产品线，迭代排期稳定，需求边界完全可控的团队。
+    优点：模型简单
+    缺点：
+
+    线上修正：假设目前系统已经发布了12.1，下一个迭代也在开发中，线上发现了问题。由于Release分支是禁止修改的，而Trunk此时包含了新的特性代码无法发布，就造成了线上异常的修复需要在分离的hotfix分支上进行，变相的造成了多个master分支。
+
+    需求变更：无法支持，已经提交到Trunk的内容抽离很困难。
+
+    太多的团队同时工作在主干上，到发布的时候就可能出现灾难（尤其是多版本并行开发的情况）
+
+0、添加远程仓库
+
+    git remote add origin 远程仓库地址
+
+1、上班后，先确认本地无未提交未储存等等问题，处理后再继续
+
+    git status
+
+2、拉取远程，先看看是不是有别人提交了远程，防止互相merge新增commit
+
+    git fetch
+    git diff ..origin/master
+
+    git status
+
+3、从远程仓库同步本地仓库，以便同步hotfix进来。
+
+    # git pull <远程主机> <远程分支>:<本地分支>
+    git pull --rebase（从远程拉取到本地默认都是用拉直合并）
+
+    # 标签也同步过来，不分叉的合并
+    # git pull --tags --rebase origin master
+
+4、干活，自己的代码文件各种改动。
+
+5、下班前，提交本地仓库
+
+    git add .
+
+    git commit -m "提交的信息"
+
+6、开发告一段落，可以发布时，提交远程仓库
+
+    git pull --rebase
+    git push （默认远程origin本地master）
+
+### git工作流：改良版集中式工作流 master---dev
+
+    remote master -- local dev(开发人员工作在此)
+
+主干仅master分支。在本地新建其它分支，每天仅拉取远程master，更新本地dev分支。这种工作方式可以确保主干master的相对稳定。也可考虑单独添加远程 dev 分支以多人工作，参见章节 [分支推送 push]。
+
+0、添加远程仓库，从master分支新建dev分支
+
+    # git checkout master
+    git switch master
+
+    git pull --rebase
+
+    git switch -c dev
+
+1、每日工作，先确认本地无未提交未储存等等问题，处理后再继续
+
+    git status
+
+2、从远程仓库master同步本地仓库master
+
+    git pull --rebase （默认远程origin本地master）
+
+3、切换本地dev分支
+
+    # git checkout dev
+    git switch dev
+
+4、合并本地 master 到本地dev分支，以便同步hotfix进来。
+
+    git merge master
+
+本地只是远程的一个镜像，以远程为准。
+
+5、开发告一段落，可以发布时，提交dev分支，合并到master再上传远程仓库
+
+    git checkout dev
+    git add .
+    git commit -m "提交的信息"
+
+    git checkout master
+    git pull --rebase
+
+    git merge dev
+
+    git push -u origin master
+
+### 【推荐】git工作流： 功能分支工作流
+
+    master --- dev(开发人员工作在此)
+
+在上面的工作流基础上改良，把本地分支推送到远程，两个分支在本地和远程都存在，master分支保持稳定，开发工作放在dev分支，这俩都做主干分支。 CI/CD中持续集成部署在dev，持续交付部署在master。hotfix合并到远程的master分支和dev分支。
+
+主干分支和功能分支的合并原则，见章节 [分支合并：分叉还是拉直]。
+
+大家每日同步远程的dev分支即可工作：
+
+    每人的本地dev各自开发一个功能点，每天只拉取dev分支，完成一部分之后，上传到远程dev以便别人可以拉取，并进行测试。
+
+这种工作流适合多人交互式工作的复杂项目，每天dev分支都在变动，大家本地dev完成一个阶段后，就同步到远程dev分支。这样在dev分支上就可以实现每日集成测试，master分支和dev分支都可以保持相对稳定。
+
+上班第一件事：远程 dev_xxx上的内容merge 到自己的开发分支上
+
+    0、查看当前在git的哪个位置，是否有未提交未更新未暂存的，确保是干净的再继续
+
+        git status
+
+    1、切换到的本地开发分支，并查看状态
+
+        git checkout dev_xxx
+        git status
+
+    2、将远程的 dev_xxx 同步到本地
+
+        git pull --rebase origin dev_xxx
+
+工作告一段落（自测通过），推送本地 dev_xxx 分支到远程 dev_xxx，以便大家拉取测试：
+
+    0、查看当前在 git 的哪个位置，是否有未提交未更新未暂存的，确保是干净的再继续
+
+        git status
+
+    1、将远程的 dev_xxx 同步到本地，以保持跟大家的同步及hotfeix及时更新。
+
+        git checkout dev_xxx
+        git status
+
+        git pull --rebase origin dev_xxx
+
+    2、本地的修改都要做提交
+
+        git add .
+
+        git commit -m "@@@"
+
+       可将本地的多次提交合并为一个，以简化提交历史
+
+        git rebase -i
+
+    3、将本地 dev_xxx 推送到远程
+
+        git push origin dev_xxx
+
+dev代码测试完毕，合并到master，正式发布：
+
+    1、做上面的操作，先同步远程 dev_xxx
+
+    2、将远程的 master 同步到本地。
+
+        git checkout master
+        git status
+
+        git pull --rebase origin master
+
+    3、将本地的dev_xxx合并到本地master
+
+        git merge dev_xxx
+
+    4、本地master推送到远程master
+
+        git push origin master
+
+    PS:
+
+        每个git status后，根据实际情况进行处理，然后再做下一步。
+
+        只在关键tag点，把dev分支合并到master分支，平时的操作仅限dev分支。
+
+#### 开发分支的组织管理
+
+服务器
+
+    git 仓库服务器
+
+        master 主干分支，锁定尽量少的人可以提交的权限
+
+        dev_project_code 开发分支，开发人员自测通过的功能代码提交到这里，供测试服务器 TEST_DEV_QA 使用
+
+        name1_dev 开发人员个人代码的分支，每日工作代码提交一次，用于备份代码、度量工作量等
+
+    TEST_DEV 测试服务器，开发人员本机或一个单独的服务器，给开发人员自测使用，这里的 CI/CD 报告的变动是最大的
+
+    TEST_DEV_QA 联调测试服务器，单独的产品环境，定期拉取开发分支，CI/CD 的相关报告用于整体把控
+
+    TEST_MA_QA 产品测试服务器，单独的产品环境，定期拉取主干分支，CI/CD 的相关报告用于整体把控
+
+分支管理
+
+    在主干分支上选取一个节点，拉取开发分支
+
+           这里要打个起点标签，对应主干分支的commitid，如 ma_84F663B
+           dev -- ...
+        master -- ...
+
+主干分支除了合入新增功能点用菱形合并，日常只合并新的hotfix做拉直合并，如果之前的功能点又发现bug，走 hotfix 或者把问题列入版本引入bug清单，等下个版本再改。
+
+开发工作过程描述
+
+    在管理层级上，把代码变化缩小在个人：开发人员从开发分支拉取新建本地分支（在git仓库服务器建立 name1_dev 的远程分支），个人代码在本机虚拟机测试或TEST_DEV服务器测试，工作围绕 TEST_DEV 测试服务器的 CI/CD 流程。
+
+    如果各功能点互相有依赖，则初始的功能点的接口优先写好提交开发分支，先返回约定内容，以大家能正常开发本地代码、联调测试服务器不会出现接口错误报告为目标即可。
+
+    如果有依赖它人功能的需求，cherry-pick 个人分支 name2_dev 的变更到自己的分支，尽量缩小变化范围，自己的功能可以开发即可，其它留待后期的集成测试。
+
+    开发人员负责的功能点开发完成，自测通过后，建立本地的合并分支:
+
+        按功能点压缩 commit （必要时squash），拉直合并到开发分支，推送远程。各开发人员提交的功能点可以进行验证和联调，工作围绕 TEST_DEV_QA 测试服务器的 CI/CD 流程。
+
+        这一步用 beyondcompare 比对合入代码比较方便，目的是精简commit点，以功能点为单位提交，方便后续的维护。
+
+    开发分支的延展情况一般是如下形态
+
+        （起点标签）
+        dev -- fea1 -- _fea2 -- ... -- fea1_fix -- fea2_fix --...
+
+    所有人的功能点都开发完成，产品的集成测试通过后，锁定开发分支，建立合并分支：
+
+        由 QA 人员从开发分支的起点拉取一个单独合并用的分支 dev_merge，所有的开发人员从已经锁定的开发分支，按功能点压缩 commit （必要时squash），拉直合入。
+
+        这一步用 beyondcompare 比对合入代码比较方便，目的是精简commit点，以功能点为单位提交，方便后续的维护。
+
+            （dev起点标签）
+            dev_merge   -- fea_1 -- fea_2 -- fea_3 -- fea4 -- ...
+
+    开发人员以合并分支 dev_merge 作为基础，再次进行集成测试的修改工作，这个过程应该不耗费多少时间，因为需要做的修改已经很少了。
+
+    在完整的 CI/CD 流程走完后，由专人负责整理合并(菱形合并)到上层主干分支，发布版本
+
+                             fea_1 -- fea_2 -- patch1 -- ...
+                            /                               \
+        master --（起点标签） -- ...                         -- v1.1 -- hotfix -- ...
+
+    版本发布后，当前开发分支可以废弃，后续还是从主干分支选取节点拉开发分支，进行新的开发工作的循环
+
+如果功能众多
+
+    敏捷开发的迭代过程追求快速追求变化，最好不要太多功能，这样会把迭代周期拉长
+
+    可以把各功能点根据人力分配情况，按周划分完成点，从一个项目拆解成细化周期的多个项目的集合。
+
+    如果真的是一个人数众多的大工程，在管理层级上，把开发分支的变动分布在各功能小组：
+
+        各小组从开发分支（起点标签）拉取为小组级别的分支，各小组有自测服务器，套娃上面的开发过程
+
+### git工作流：开源代码
+
+如果一个代码经常重构，要考虑个问题
+
+    一个分支目录结构的稳定非常重要，配置文件的位置也不要经常变化
+
+开源代码由于参与人众多，虽然主要功能不变，但是项目的架构可能变化，适用条件和目录结构也会经常发生很大变化。
+
+而 git 的初始拉取操作，都是操作 master（main），即使你需要其它分支，git 初始目录建立后默认就是 master 分支，在 git clone 后再手工切换其它。
+
+通常的 master 分支用法，变动都在 master 分支，一直保持面向用户的最新。如果有大变化，就从 master 分支分叉出单独分支如老版本v1，稳定版本单独分支stable，测试版本单独分支testing。每次要搞新架构，master 分支就再分叉出一个老版本分支v2，而 master 分支自己一直保持最新。
+
+这样的 master 分支其实已经是另起炉灶，甚至整个代码的组织结构都可能变了。
+
+一年下来这么搞几次，master 分支的代码其实没有任何延续性可言了：当前代码跟 3 个月前的完全不一样，3 个月前的跟 6 个月前的也完全不一样…… 原因就在于 master 版本一直保持最新，虽然分叉后的老版本 v1、v2、v3 分支的变化相对稳定，但是他们之前的所有变化都在 master 分支里，实质上使得 master 分支的后向兼容基本没有，前后对比的可读性非常差。
+
+这样重复几次，master 分支的目录结构和配置文件**经常**发生较大变化，不仅使其它开发者混淆，而且会使之前引用该项目 master 分支的其他项目出现问题。而打标签tag的方法只适用于一条分支上的变更跟踪，不能直观的依赖其他分支的变化。对新手来说，使用起来更是一头雾水，半年前 git clone 还能直接使用的项目，现在怎么就不行了，怎么有些文件保存的位置变了，本地多出来相同的好几份？
+
+解决办法是：
+
+main 分支不保存主干代码，只存放 Redadme、License、安装脚本等稳定不变的文件，随时间延续带来的变化，把程序的主代码分离到并行的 v1、v2、v3 的分支上，这些分支都是主干，主要区别就是目录结构和文件位置等，其中有一个是最新的主打分支如v3。主代码放到非 master 分支的主要目的是把本分支的变化稳定住，可以随时间变迁而变化，但是基本组织结构一直不变，用法习惯一直不变。如果最新的 v3 分支需要做大的结构变动，直接分叉一个干净的 v4 分支。v3 分支成为老版本，v4 分支保持最新。
+
+一个分支本身尽量后向兼容，使本分支代码的延续性好，便于开发和使用者理解。不仅使老版本对老用户的友好度非常大，对新手使用也简单方便，对项目版本升级也更容易理解。开发方面，版本bug管理也非常方便，参与者 git colne 拉取代码后，想修改哪个版本的代码直接 git checkout 即可。
+
+参见 zsh4humans 的分支组织
+
+    https://github.com/romkatv/zsh4humans
+
+在线安装脚本中指定分支即可
+
+    if command -v curl >/dev/null 2>&1; then
+      sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
+    else
+      sh -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
+    fi
+
+写在 master 分支的 Readme.md 中如有大版本升级只需要变更几个字母，非常方便引导用户使用，也方便开发人员维护。
+
+或在 master 分支摆放安装、升级脚本，在脚本内部判断版本进行引导，只需要各分支代码都有一个专门的标识文件，标明自己的软件名称、分支、版本，便于安装脚本判断是否已经存在、是否需要升级。
+
+### git工作流： Gitflow工作流
+
+    汉化 https://zhuanlan.zhihu.com/p/38772378
+        https://zhuanlan.zhihu.com/p/36085631
+        原文 https://nvie.com/posts/a-successful-git-branching-model/
+
+    流程图片 https://nvie.com/img/git-model@2x.png
+
+    改进：抛弃 Git Flow 的 8 大理由 https://baijiahao.baidu.com/s?id=1661688354212771172&wfr=spider&for=pc
+
+这个流程是功能分支工作流的进一步扩展，适合长期稳定的商用项目，适合的是需要『多个版本并存』的场景。
+
+    master -- develop -- feature(开发人员工作在此)
+
+适用场景：处于前中期的大型项目，人员较多管理场景较复杂，但是迭代相对稳定，周期内不会频繁的变更需求，尽量不要开长需求分支。
+
+缺点
+
+    需求变更：不够灵活，由于主分支实际上是基于develop，那意味着一旦代码提交上去，一段时间后需要撤销（本次迭代不发布）就比较困难
+
+    Git flow 导致团队产生大量的、集中的 Pull request merge ，非常有限的优秀工程师把时间都浪费在了处理这些 merge 上面。
+
+    适合传统企业集中开发的情况，项目周期几个月的那种。对互联网企业的持续交付快速迭代，每天产生大量新代码，测试还没做几个，下一个版本的的部署又开始了，会应对不过来。
+
+版本格式：主版本号.次版本号.修订号，版本号递增规则如下：
+
+    主版本号：当你做了不兼容的 API 修改，
+    次版本号：当你做了向下兼容的功能性新增，
+    修订号：当你做了向下兼容的问题修正。
+    先行版本号及版本编译信息可以加到“主版本号.次版本号.修订号”的后面，作为延伸。
+
+master分支很少变动，head始终对应生产环境代码。由master分支v0.1拉出来develop分支v0.1（打tag），每个开发组在develop分支v0.1基础上做自己的feature分支v0.1。 版本演进策略是master上的修改用0.1，0.2……，小版本修改用0.1.x,0.2.x……感觉x可以用整个版本周期的第几周第几天小时分钟做编码。
+
+    开发状态时，功能组每人只负责feature分支v0.1.x（打tag），hotfix合并到master分支和develop分支，打tag v0.2。
+
+    功能开发完成时feature分支v0.1.x冻结，功能组把feature分支v0.1.x合并入develop分支v0.2.x，打tag v0.3，拉出release分支tag v0.3。可以删除相关的feature分支v0.1.x 。
+
+    这时就进入了测试除虫阶段，此时功能调整在release分支v0.3.x上，bug解决同时合并入release分支和develop分支（注意这里dev和release代码是有差异了），hotfix合并到master分支v0.4和develop分支v0.4（打tag）。
+
+    在这个阶段，如果有新功能需要在develop分支上演进，则从release分支v0.4.x合并入develop分支打tag v0.5，再拉出新feature分支v0.5，以保证当前release分支0.4.x不混入新feature。hotfix合并到master分支v0.6和develop分支v0.6（打tag）。
+
+    都完成后release分支v0.4.x合并入develop分支v0.6和master分支v.0.6，打tag v1，然后可以删除相关的release分支v0.4.x。
+
+    之前新feature分支v0.5.y已经开发一段时间了，到版本点的时候进入下一个v1.x的工作流程循环。这个对CI/CD的定制化要求就比较高了。
+
+注意 hotfix需要合入master和develop两个分支，其他分支只要同步这俩，就要更新大版本号。
+
+### git工作量：阿里巴巴 AoneFlow
+
+    从master上拉出feature分支，相关feature分支合并出release分支最终合入master
+
+只使用三种分支类型：主干master、特性分支feature、发布分支release，以及三条基本规则。
+
+    开始工作前，从master创建各个feature分支。
+
+    从master创建release分支，合并相关的feature分支。
+
+    发布到线上正式环境后，合并release分支到master，在master添加标签，同时删除该release分支关联的feature分支。
+
+![AoneFlow工作流](https://pic3.zhimg.com/80/v2-583eeedc612c4e0700a4e4dc003afd5e_720w.jpg)
+
+保证master分支可用和随时可发布，其他可能都是临时分支，所以取名的时候应该是Ali-One-Flow。临时分支的组装就有很多种玩法了，需要企业根据自己的需要来定制处理。
+
+master分支上的最新版本始终与线上版本一致，如果要回溯历史版本，只需在master分支上找到相应的版本标签即可。
+
+上线后的 Hotfix，正常的处理方法应该是，创建一条新的发布分支，对应线上环境（相当于 Hotfix 分支），同时为这个分支创建临时流水线，以保障必要的发布前检查和冒烟测试能够自动执行。但其实还有一种简便方法是，将线上正式环境对应的发布分支上关联的特性分支全部清退掉，在这个发布分支上直接进行修改，改完利用现成的流水线自动发布。如果非得修一个历史版本的 Bug 怎么办呢？那就老老实实的在主干分支找到版本标签位置，然后从那个位置创建 Hotfix 分支吧。
+
+优点
+
+    应对敏捷开发的功能删减等大变动，重建release非常简单，删除原release分支，重新合并多个feature分支即可。不需要从release分支逐个查找回退代码。
+
+    发布分支之间是松耦合的，这样就可以有多个集成环境分别进行不同的特性组合的集成测试，也能方便的管理各个特性进入到不同环境上部署的时机。
+
+    可用多release分支对应测试环境/生产环境/开发自测环境等，或一个release分支对应多个环境。
+
+    按迭代演进的计划，串联多个feature分支，实现流水线组装式的release分支，CI/CD在每个阶段都能顺利做起来。
+
+缺点
+
+    特性分支与发布分支的关联关系维护有点复杂。最好是在一个整体流程的自动化的平台下管理维护，该平台实现从需求提出，功能拆分，创建feature分支，组合release分支，生成部署环境，创建测试流水线，代码审查流水线，安全检查，在线部署等一系列步骤的自动化，最终实现端到端交付的研发自动化体系。
+
+## DevOps
+
+    https://www.zhihu.com/question/58702398
+
+一个软件从零开始到最终交付，大概包括以下几个阶段：产品规划、开发编码、构建、QA测试、发布、部署和维护。 对庞大项目的快速开发、快速部署、快速维护，使用敏捷开发快速迭代，在生命周期的各个阶段进行闭环处理流程，需要拆解各个过程，还得使之互相促进，实现一个端到端的自动化的联合流程，从而催生出了 DevOps。
+
+敏捷开发的闭环流程，在开发阶段即引入了运维过程，开发、测试、部署、运维持续优化。为需要将原来黑盒化的一个整体产品进行拆分（解耦），从一个提供多种服务的整体，拆成各自提供不同服务的多个个体，所以特别适合虚拟化、容器、微服务。
+
+拆分解耦是最终的出路，将项目拆成一个个小的服务单独部署，以电商项目为例，将整个项目拆分为用户服务，商品服务，订单服务，积分服务......每个服务单独部署，之间通过互相调用的方式来交互，而且可以将一些基础服务例如上传图片，发送短信等很多服务都需要的基础东西，抽象到一个单独的服务，也就是前些年流行的‘中台服务’。
+
+在DevOps的流程下，运维人员会在项目开发期间就介入到开发过程中，了解开发人员使用的系统架构和技术路线，从而制定适当的运维方案。而开发人员也会在运维的初期参与到系统部署中，并提供系统部署的优化建议。
+
+微服务: 微服务（英语：Microservices）是一种软件架构风格，它是以专注于单一责任与功能的小型功能区块 (Small Building Blocks) 为基础，利用模块化的方式组合出复杂的大型应用程序，各功能区块使用与语言无关 (Language-Independent/Language agnostic）的API集相互通信。对api的调用管理设计了专用的网关服务器，甚至还有路由功能哦。。。
+
+在微服务架构下，不同的工程师可以对各自负责的模块进行处理，例如开发、测试、部署、迭代。虚拟化，其实就是一种敏捷的云计算服务。它从硬件上，将一个系统“划分”为多个系统，系统之间相互隔离，为微服务提供便利。容器化就更彻底了，不是划分为不同的操作系统，而是在操作系统上划分为不同的“运行环境”（Container），占用资源更少，部署速度更快。开发、测试、部署的几个部分都可以非常快速的实现交互测试和闭环处理流程。
+
+这种架构下的开发模式DEVOPS，运维需要做的上线工作，主要就是将代码部署到对应的机器里面，微服务有那么多的服务，每个大点的公司几百个服务不算多，而且还可能随时搞一个服务出来，如果还按照原始的脚本部署方式，可能最后连是哪个脚本都找不到。
+
+运维需要做的事情，慢慢的都沉淀到了各个平台上面，例如监控，有专门的监控组件和可视化，基础服务例如服务器，CDN，负载均衡等基础服务可以外包到云服务厂商，日志也有专门的日志工具，链路追踪也有专门的组件和可视化，还有负责api调用指向的网关等，渐渐的，只要这些都配置好了，开发也可以做运维的部分工作，毕竟开发才是最了解代码的人，哪里出了问题看看监控日志，可以最快速度定位到问题，于是DEVOPS开发模式诞生了，开发也是运维。
+
+devops平台搭建工具
+
+    项目管理（PM）：jira + bitbucket。运营可以上去提问题，可以看到各个问题的完整的工作流，待解决未解决等；
+
+    代码管理：gitlab。jenkins或者K8S都可以集成gitlab，进行代码管理，上线，回滚等；集成了代码检测扫描，自动化测试，灰度，上线这一系列的操作。
+
+    持续集成CI（Continuous Integration）：gitlab ci。开发人员提交了新代码之后，立刻进行构建、（单元）测试。根据测试结果，我们可以确定新代码和原有代码能否正确地集成在一起。
+
+    持续交付CD（Continuous Delivery）：gitlab cd。完成单元测试后，可以把代码部署到连接数据库的 Staging 环境中更多的测试。如果代码没有问题，可以继续手动部署到生产环境中。
+
+    镜像仓库：VMware Harbor，私服nexus
+
+    容器：Docker
+
+    编排：K8S
+
+    服务治理：Consul、zookeeper、etcd
+
+    脚本语言：Python
+
+    日志管理：Cat+Sentry、ELK(Elasticsearch + Logstash + Kibana )
+
+    系统监控：Prometheus + 仪表盘 Grafana
+
+    负载均衡：Nginx。
+
+    API网关：Kong
+
+    链路追踪：Zipkin
+
+    产品和UI图：figma、蓝湖，Balsamiq、Mockplus和Axure RP的 原型设计派系、Sketch、Adobe XD、墨刀 组件细节派系。
+
+    公司内部文档：Confluence。
+
+    报警：推送到工作群。
+
+    上面的组件都是分离的，可以考虑微服务架构体系的组件合集 Spring Cloud: Eureka、Ribbon、Feign、Hystrix、Zuul
+
+有了这一套完整的流程工具，整个开发流程涉及到人员都可以无阻碍的进行协调工作了，开发每天到公司，先看看 jira,看看线上日志，出了问题看看监控日志，运营同学反馈问题不着急的去 jira，着急的群里吆喝，产品和 UI 的图直接蓝湖看，运维关注监控着大盘，改革春风开满地，互联网人民真高兴~。
+
+## 竞品 -- 基于文件差异(patch)的源代码管理系统
+
+当前流行的 svn/git/hg，都是基于 snapshot 而不是基于 patch 的。
+
+基于文件差异(patch)的源代码管理系统，可以随意加入、撤销、重排历史上任意没有依赖关系的改动，并且保持单个 Commit（Change）的 Hash 以及得到的结果不变。
+
+    pijul https://pijul.org/
+
+    darcs 不如 pijul http://darcs.net/
+
+    原理 https://jneem.github.io/merging/
+            https://arxiv.org/abs/1311.3903
+
+        https://segmentfault.com/a/1190000013648329
+
+处理方式不同，某些 git 上很繁琐的事情在这里就简化了。
+
+1、假设以下的场景：在开发 feature 分支上，发现 master 分支上有一个 bug，影响到新功能的开发，所以在 feature 分支上修了，然后 cherry-pick 到 master 分支上来。后来由于业务上的变动，master 分支去掉了这个修复。当我们合并 feature 分支后，这个修复又会重新出现在 master 分支。
+
+在基于 patch 的版本控制系统没有这个问题，在它们眼里，无论在哪个分支上，同样的修改都是同一个 patch。在合并时，它们比较的是 patch 的多寡，而非 snapshot 的异同。同样的道理，基于 patch 的版本控制系统，在处理 cherry-pick，revert 和 blame 时，也会更加简单。
+
+参见 <https://jneem.github.io/pijul/> 的 [Case study 1: reverting an old commit]。
+
+2、基于 snapshot 的版本控制系统，在合并时采用三路合并（three-way merge）。比如 Git 中合并就是采用递归三路合并。所谓的三路合并，就是 theirs(A) 和 ours(B) 两个版本先计算出公共祖先 merge_base(C)，接着分别做 theirs-merge_base 和 ours-merge_base 的 diff，然后合并这两个 diff。当两个 diff 修改了同样的地方时，就会产生合并冲突。
+
+如果是基于 patch 的版本控制系统，会把对方分支上多出来的 patch 添加到当前分支上，效果看上去就像 git rebase 一样。也就是说，某些在 git 中会出现冲突的合并，在 pijul 中不会出现。
+
+参见 <https://jneem.github.io/pijul/> 中 [Case study 2: parallel development]。
+
+3、如果添加过程中发生了冲突怎么办？
+
+patch 有两个重要的属性：
+
+    假设 patch B 依赖于 patch A，patch C 依赖于 patch B，B 可以在 A 和 C 之间自由移动而不改变最终结果。这种移动操作称之为 commute。
+
+    每个 patch 都有一个对应的 inverse patch，可以把这个 path 引入的修改去掉。
+
+darcs 在处理合并冲突时，会先添加若干个 inverse patch，回退到可以直接添加 patch 的时候。额外添加的 inverse patch 和之前有冲突的 patch 合并在一起，成为一个新的 patch。这其中可能还会有 commute 操作来移动 patch 到适当的位置。
+
+通常对于差别较大的 Git 分支，不建议用 rebase 操作，因为 rebase 过程中，可能会发生因为修复冲突带来的往后更多的冲突 - 冲突的滚雪球效应。darcs 的合并，也会有同样的问题，一个合并操作耗费的时间可能会遇上指数爆炸。
+
+pijul 通过引入名为有向图文件（directed graph file，以下简称为 digle）的数据结构，解决了这个问题。由 digle 表示的数据结构能够保证不会发生合并冲突。这意味着，我们可以用 digle 作为 patch 的内部实现，这样两个 patch 的合并就是两个 digle 的合并，而 digle 的合并是不会产生冲突的。这么一来，合并过程中就不会有滚雪球效应了，我们可以在最后把 digle 具象成实际的 patch 的时候，才开始解决合并冲突。
+
+pijul 的 merge 有两个优点：
+
+    最终结果跟用了 git rebase 一样，能够保证历史是单线条的。
+
+    由于 merge 过程中能够参考中间各个 patch 的信息，合并的效果理论上应该比简单粗暴的三路合并要好。
+
 ## 配置 VS Code
 
     https://code.visualstudio.com/docs#vscode
@@ -5617,6 +6111,8 @@ OpenAI 等人工智能助理是大势所趋了，不得不用了。会提示2个
 装这一个就会自动装一堆
 
     ms-vscode-remote.vscode-remote-extensionpack
+
+    ms-vscode.remote-explorer
 
 远程开发最大的好处是你不需要在本地计算机保留代码了，省去每次在本地用 git 提交并推送远程仓库，然后 ssh 连接到远程开发机，再用 git 拉取同步代码，然后才能调试运行。当然了，开发机上的代码做了修改也要推送远程仓库的。
 
@@ -6397,497 +6893,3 @@ vscode 外网访问内网使用 ssh和远程桌面
     karthiknadig commented on 11 Apr 2019
     We have plans to support native threads. We have not gotten around to it yet :)
     https://github.com/Microsoft/ptvsd/issues/305
-
-## ------------ 基于 git 分支的各种工作流 ------------
-
-    https://www.zhihu.com/question/379545619/answer/1862411356
-
-根据自己实际情况，用法各有不同。
-
-### git工作流：类似 svn 的 TrunkBased 集中式工作流
-
-    remote master -- local master(开发人员工作在此)
-
-开发都在主干分支，拉出新的分支进行开发部署、修复BUG。
-
-主干仅 master 分支
-
-    适用场景：适合于单一稳定产品线，迭代排期稳定，需求边界完全可控的团队。
-    优点：模型简单
-    缺点：
-
-    线上修正：假设目前系统已经发布了12.1，下一个迭代也在开发中，线上发现了问题。由于Release分支是禁止修改的，而Trunk此时包含了新的特性代码无法发布，就造成了线上异常的修复需要在分离的hotfix分支上进行，变相的造成了多个master分支。
-
-    需求变更：无法支持，已经提交到Trunk的内容抽离很困难。
-
-    太多的团队同时工作在主干上，到发布的时候就可能出现灾难（尤其是多版本并行开发的情况）
-
-0、添加远程仓库
-
-    git remote add origin 远程仓库地址
-
-1、上班后，先确认本地无未提交未储存等等问题，处理后再继续
-
-    git status
-
-2、拉取远程，先看看是不是有别人提交了远程，防止互相merge新增commit
-
-    git fetch
-    git diff ..origin/master
-
-    git status
-
-3、从远程仓库同步本地仓库，以便同步hotfix进来。
-
-    # git pull <远程主机> <远程分支>:<本地分支>
-    git pull --rebase（从远程拉取到本地默认都是用拉直合并）
-
-    # 标签也同步过来，不分叉的合并
-    # git pull --tags --rebase origin master
-
-4、干活，自己的代码文件各种改动。
-
-5、下班前，提交本地仓库
-
-    git add .
-
-    git commit -m "提交的信息"
-
-6、开发告一段落，可以发布时，提交远程仓库
-
-    git pull --rebase
-    git push （默认远程origin本地master）
-
-### git工作流：改良版集中式工作流 master---dev
-
-    remote master -- local dev(开发人员工作在此)
-
-主干仅master分支。在本地新建其它分支，每天仅拉取远程master，更新本地dev分支。这种工作方式可以确保主干master的相对稳定。也可考虑单独添加远程 dev 分支以多人工作，参见章节 [分支推送 push]。
-
-0、添加远程仓库，从master分支新建dev分支
-
-    # git checkout master
-    git switch master
-
-    git pull --rebase
-
-    git switch -c dev
-
-1、每日工作，先确认本地无未提交未储存等等问题，处理后再继续
-
-    git status
-
-2、从远程仓库master同步本地仓库master
-
-    git pull --rebase （默认远程origin本地master）
-
-3、切换本地dev分支
-
-    # git checkout dev
-    git switch dev
-
-4、合并本地 master 到本地dev分支，以便同步hotfix进来。
-
-    git merge master
-
-本地只是远程的一个镜像，以远程为准。
-
-5、开发告一段落，可以发布时，提交dev分支，合并到master再上传远程仓库
-
-    git checkout dev
-    git add .
-    git commit -m "提交的信息"
-
-    git checkout master
-    git pull --rebase
-
-    git merge dev
-
-    git push -u origin master
-
-### 【推荐】git工作流： 功能分支工作流
-
-    master --- dev(开发人员工作在此)
-
-在上面的工作流基础上改良，把本地分支推送到远程，两个分支在本地和远程都存在，master分支保持稳定，开发工作放在dev分支，这俩都做主干分支。 CI/CD中持续集成部署在dev，持续交付部署在master。hotfix合并到远程的master分支和dev分支。
-
-主干分支和功能分支的合并原则，见章节 [分支合并：分叉还是拉直]。
-
-大家每日同步远程的dev分支即可工作：
-
-    每人的本地dev各自开发一个功能点，每天只拉取dev分支，完成一部分之后，上传到远程dev以便别人可以拉取，并进行测试。
-
-这种工作流适合多人交互式工作的复杂项目，每天dev分支都在变动，大家本地dev完成一个阶段后，就同步到远程dev分支。这样在dev分支上就可以实现每日集成测试，master分支和dev分支都可以保持相对稳定。
-
-上班第一件事：远程 dev_xxx上的内容merge 到自己的开发分支上
-
-    0、查看当前在git的哪个位置，是否有未提交未更新未暂存的，确保是干净的再继续
-
-        git status
-
-    1、切换到的本地开发分支，并查看状态
-
-        git checkout dev_xxx
-        git status
-
-    2、将远程的 dev_xxx 同步到本地
-
-        git pull --rebase origin dev_xxx
-
-工作告一段落（自测通过），推送本地 dev_xxx 分支到远程 dev_xxx，以便大家拉取测试：
-
-    0、查看当前在 git 的哪个位置，是否有未提交未更新未暂存的，确保是干净的再继续
-
-        git status
-
-    1、将远程的 dev_xxx 同步到本地，以保持跟大家的同步及hotfeix及时更新。
-
-        git checkout dev_xxx
-        git status
-
-        git pull --rebase origin dev_xxx
-
-    2、本地的修改都要做提交
-
-        git add .
-
-        git commit -m "@@@"
-
-       可将本地的多次提交合并为一个，以简化提交历史
-
-        git rebase -i
-
-    3、将本地 dev_xxx 推送到远程
-
-        git push origin dev_xxx
-
-dev代码测试完毕，合并到master，正式发布：
-
-    1、做上面的操作，先同步远程 dev_xxx
-
-    2、将远程的 master 同步到本地。
-
-        git checkout master
-        git status
-
-        git pull --rebase origin master
-
-    3、将本地的dev_xxx合并到本地master
-
-        git merge dev_xxx
-
-    4、本地master推送到远程master
-
-        git push origin master
-
-    PS:
-
-        每个git status后，根据实际情况进行处理，然后再做下一步。
-
-        只在关键tag点，把dev分支合并到master分支，平时的操作仅限dev分支。
-
-#### 开发分支的组织管理
-
-服务器
-
-    git 仓库服务器
-
-        master 主干分支，锁定尽量少的人可以提交的权限
-
-        dev_project_code 开发分支，开发人员自测通过的功能代码提交到这里，供测试服务器 TEST_DEV_QA 使用
-
-        name1_dev 开发人员个人代码的分支，每日工作代码提交一次，用于备份代码、度量工作量等
-
-    TEST_DEV 测试服务器，开发人员本机或一个单独的服务器，给开发人员自测使用，这里的 CI/CD 报告的变动是最大的
-
-    TEST_DEV_QA 联调测试服务器，单独的产品环境，定期拉取开发分支，CI/CD 的相关报告用于整体把控
-
-    TEST_MA_QA 产品测试服务器，单独的产品环境，定期拉取主干分支，CI/CD 的相关报告用于整体把控
-
-分支管理
-
-    在主干分支上选取一个节点，拉取开发分支
-
-           这里要打个起点标签，对应主干分支的commitid，如 ma_84F663B
-           dev -- ...
-        master -- ...
-
-主干分支除了合入新增功能点用菱形合并，日常只合并新的hotfix做拉直合并，如果之前的功能点又发现bug，走 hotfix 或者把问题列入版本引入bug清单，等下个版本再改。
-
-开发工作过程描述
-
-    在管理层级上，把代码变化缩小在个人：开发人员从开发分支拉取新建本地分支（在git仓库服务器建立 name1_dev 的远程分支），个人代码在本机虚拟机测试或TEST_DEV服务器测试，工作围绕 TEST_DEV 测试服务器的 CI/CD 流程。
-
-    如果各功能点互相有依赖，则初始的功能点的接口优先写好提交开发分支，先返回约定内容，以大家能正常开发本地代码、联调测试服务器不会出现接口错误报告为目标即可。
-
-    如果有依赖它人功能的需求，cherry-pick 个人分支 name2_dev 的变更到自己的分支，尽量缩小变化范围，自己的功能可以开发即可，其它留待后期的集成测试。
-
-    开发人员负责的功能点开发完成，自测通过后，建立本地的合并分支:
-
-        按功能点压缩 commit （必要时squash），拉直合并到开发分支，推送远程。各开发人员提交的功能点可以进行验证和联调，工作围绕 TEST_DEV_QA 测试服务器的 CI/CD 流程。
-
-        这一步用 beyondcompare 比对合入代码比较方便，目的是精简commit点，以功能点为单位提交，方便后续的维护。
-
-    开发分支的延展情况一般是如下形态
-
-        （起点标签）
-        dev -- fea1 -- _fea2 -- ... -- fea1_fix -- fea2_fix --...
-
-    所有人的功能点都开发完成，产品的集成测试通过后，锁定开发分支，建立合并分支：
-
-        由 QA 人员从开发分支的起点拉取一个单独合并用的分支 dev_merge，所有的开发人员从已经锁定的开发分支，按功能点压缩 commit （必要时squash），拉直合入。
-
-        这一步用 beyondcompare 比对合入代码比较方便，目的是精简commit点，以功能点为单位提交，方便后续的维护。
-
-            （dev起点标签）
-            dev_merge   -- fea_1 -- fea_2 -- fea_3 -- fea4 -- ...
-
-    开发人员以合并分支 dev_merge 作为基础，再次进行集成测试的修改工作，这个过程应该不耗费多少时间，因为需要做的修改已经很少了。
-
-    在完整的 CI/CD 流程走完后，由专人负责整理合并(菱形合并)到上层主干分支，发布版本
-
-                             fea_1 -- fea_2 -- patch1 -- ...
-                            /                               \
-        master --（起点标签） -- ...                         -- v1.1 -- hotfix -- ...
-
-    版本发布后，当前开发分支可以废弃，后续还是从主干分支选取节点拉开发分支，进行新的开发工作的循环
-
-如果功能众多
-
-    敏捷开发的迭代过程追求快速追求变化，最好不要太多功能，这样会把迭代周期拉长
-
-    可以把各功能点根据人力分配情况，按周划分完成点，从一个项目拆解成细化周期的多个项目的集合。
-
-    如果真的是一个人数众多的大工程，在管理层级上，把开发分支的变动分布在各功能小组：
-
-        各小组从开发分支（起点标签）拉取为小组级别的分支，各小组有自测服务器，套娃上面的开发过程
-
-### git工作流：开源代码
-
-如果一个代码经常重构，要考虑个问题
-
-    一个分支目录结构的稳定非常重要，配置文件的位置也不要经常变化
-
-开源代码由于参与人众多，虽然主要功能不变，但是项目的架构可能变化，适用条件和目录结构也会经常发生很大变化。
-
-而 git 的初始拉取操作，都是操作 master（main），即使你需要其它分支，git 初始目录建立后默认就是 master 分支，在 git clone 后再手工切换其它。
-
-通常的 master 分支用法，变动都在 master 分支，一直保持面向用户的最新。如果有大变化，就从 master 分支分叉出单独分支如老版本v1，稳定版本单独分支stable，测试版本单独分支testing。每次要搞新架构，master 分支就再分叉出一个老版本分支v2，而 master 分支自己一直保持最新。
-
-这样的 master 分支其实已经是另起炉灶，甚至整个代码的组织结构都可能变了。
-
-一年下来这么搞几次，master 分支的代码其实没有任何延续性可言了：当前代码跟 3 个月前的完全不一样，3 个月前的跟 6 个月前的也完全不一样…… 原因就在于 master 版本一直保持最新，虽然分叉后的老版本 v1、v2、v3 分支的变化相对稳定，但是他们之前的所有变化都在 master 分支里，实质上使得 master 分支的后向兼容基本没有，前后对比的可读性非常差。
-
-这样重复几次，master 分支的目录结构和配置文件**经常**发生较大变化，不仅使其它开发者混淆，而且会使之前引用该项目 master 分支的其他项目出现问题。而打标签tag的方法只适用于一条分支上的变更跟踪，不能直观的依赖其他分支的变化。对新手来说，使用起来更是一头雾水，半年前 git clone 还能直接使用的项目，现在怎么就不行了，怎么有些文件保存的位置变了，本地多出来相同的好几份？
-
-解决办法是：
-
-main 分支不保存主干代码，只存放 Redadme、License、安装脚本等稳定不变的文件，随时间延续带来的变化，把程序的主代码分离到并行的 v1、v2、v3 的分支上，这些分支都是主干，主要区别就是目录结构和文件位置等，其中有一个是最新的主打分支如v3。主代码放到非 master 分支的主要目的是把本分支的变化稳定住，可以随时间变迁而变化，但是基本组织结构一直不变，用法习惯一直不变。如果最新的 v3 分支需要做大的结构变动，直接分叉一个干净的 v4 分支。v3 分支成为老版本，v4 分支保持最新。
-
-一个分支本身尽量后向兼容，使本分支代码的延续性好，便于开发和使用者理解。不仅使老版本对老用户的友好度非常大，对新手使用也简单方便，对项目版本升级也更容易理解。开发方面，版本bug管理也非常方便，参与者 git colne 拉取代码后，想修改哪个版本的代码直接 git checkout 即可。
-
-参见 zsh4humans 的分支组织
-
-    https://github.com/romkatv/zsh4humans
-
-在线安装脚本中指定分支即可
-
-    if command -v curl >/dev/null 2>&1; then
-      sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-    else
-      sh -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-    fi
-
-写在 master 分支的 Readme.md 中如有大版本升级只需要变更几个字母，非常方便引导用户使用，也方便开发人员维护。
-
-或在 master 分支摆放安装、升级脚本，在脚本内部判断版本进行引导，只需要各分支代码都有一个专门的标识文件，标明自己的软件名称、分支、版本，便于安装脚本判断是否已经存在、是否需要升级。
-
-### git工作流： Gitflow工作流
-
-    汉化 https://zhuanlan.zhihu.com/p/38772378
-        https://zhuanlan.zhihu.com/p/36085631
-        原文 https://nvie.com/posts/a-successful-git-branching-model/
-
-    流程图片 https://nvie.com/img/git-model@2x.png
-
-    改进：抛弃 Git Flow 的 8 大理由 https://baijiahao.baidu.com/s?id=1661688354212771172&wfr=spider&for=pc
-
-这个流程是功能分支工作流的进一步扩展，适合长期稳定的商用项目，适合的是需要『多个版本并存』的场景。
-
-    master -- develop -- feature(开发人员工作在此)
-
-适用场景：处于前中期的大型项目，人员较多管理场景较复杂，但是迭代相对稳定，周期内不会频繁的变更需求，尽量不要开长需求分支。
-
-缺点
-
-    需求变更：不够灵活，由于主分支实际上是基于develop，那意味着一旦代码提交上去，一段时间后需要撤销（本次迭代不发布）就比较困难
-
-    Git flow 导致团队产生大量的、集中的 Pull request merge ，非常有限的优秀工程师把时间都浪费在了处理这些 merge 上面。
-
-    适合传统企业集中开发的情况，项目周期几个月的那种。对互联网企业的持续交付快速迭代，每天产生大量新代码，测试还没做几个，下一个版本的的部署又开始了，会应对不过来。
-
-版本格式：主版本号.次版本号.修订号，版本号递增规则如下：
-
-    主版本号：当你做了不兼容的 API 修改，
-    次版本号：当你做了向下兼容的功能性新增，
-    修订号：当你做了向下兼容的问题修正。
-    先行版本号及版本编译信息可以加到“主版本号.次版本号.修订号”的后面，作为延伸。
-
-master分支很少变动，head始终对应生产环境代码。由master分支v0.1拉出来develop分支v0.1（打tag），每个开发组在develop分支v0.1基础上做自己的feature分支v0.1。 版本演进策略是master上的修改用0.1，0.2……，小版本修改用0.1.x,0.2.x……感觉x可以用整个版本周期的第几周第几天小时分钟做编码。
-
-    开发状态时，功能组每人只负责feature分支v0.1.x（打tag），hotfix合并到master分支和develop分支，打tag v0.2。
-
-    功能开发完成时feature分支v0.1.x冻结，功能组把feature分支v0.1.x合并入develop分支v0.2.x，打tag v0.3，拉出release分支tag v0.3。可以删除相关的feature分支v0.1.x 。
-
-    这时就进入了测试除虫阶段，此时功能调整在release分支v0.3.x上，bug解决同时合并入release分支和develop分支（注意这里dev和release代码是有差异了），hotfix合并到master分支v0.4和develop分支v0.4（打tag）。
-
-    在这个阶段，如果有新功能需要在develop分支上演进，则从release分支v0.4.x合并入develop分支打tag v0.5，再拉出新feature分支v0.5，以保证当前release分支0.4.x不混入新feature。hotfix合并到master分支v0.6和develop分支v0.6（打tag）。
-
-    都完成后release分支v0.4.x合并入develop分支v0.6和master分支v.0.6，打tag v1，然后可以删除相关的release分支v0.4.x。
-
-    之前新feature分支v0.5.y已经开发一段时间了，到版本点的时候进入下一个v1.x的工作流程循环。这个对CI/CD的定制化要求就比较高了。
-
-注意 hotfix需要合入master和develop两个分支，其他分支只要同步这俩，就要更新大版本号。
-
-### git工作量：阿里巴巴 AoneFlow
-
-    从master上拉出feature分支，相关feature分支合并出release分支最终合入master
-
-只使用三种分支类型：主干master、特性分支feature、发布分支release，以及三条基本规则。
-
-    开始工作前，从master创建各个feature分支。
-
-    从master创建release分支，合并相关的feature分支。
-
-    发布到线上正式环境后，合并release分支到master，在master添加标签，同时删除该release分支关联的feature分支。
-
-![AoneFlow工作流](https://pic3.zhimg.com/80/v2-583eeedc612c4e0700a4e4dc003afd5e_720w.jpg)
-
-保证master分支可用和随时可发布，其他可能都是临时分支，所以取名的时候应该是Ali-One-Flow。临时分支的组装就有很多种玩法了，需要企业根据自己的需要来定制处理。
-
-master分支上的最新版本始终与线上版本一致，如果要回溯历史版本，只需在master分支上找到相应的版本标签即可。
-
-上线后的 Hotfix，正常的处理方法应该是，创建一条新的发布分支，对应线上环境（相当于 Hotfix 分支），同时为这个分支创建临时流水线，以保障必要的发布前检查和冒烟测试能够自动执行。但其实还有一种简便方法是，将线上正式环境对应的发布分支上关联的特性分支全部清退掉，在这个发布分支上直接进行修改，改完利用现成的流水线自动发布。如果非得修一个历史版本的 Bug 怎么办呢？那就老老实实的在主干分支找到版本标签位置，然后从那个位置创建 Hotfix 分支吧。
-
-优点
-
-    应对敏捷开发的功能删减等大变动，重建release非常简单，删除原release分支，重新合并多个feature分支即可。不需要从release分支逐个查找回退代码。
-
-    发布分支之间是松耦合的，这样就可以有多个集成环境分别进行不同的特性组合的集成测试，也能方便的管理各个特性进入到不同环境上部署的时机。
-
-    可用多release分支对应测试环境/生产环境/开发自测环境等，或一个release分支对应多个环境。
-
-    按迭代演进的计划，串联多个feature分支，实现流水线组装式的release分支，CI/CD在每个阶段都能顺利做起来。
-
-缺点
-
-    特性分支与发布分支的关联关系维护有点复杂。最好是在一个整体流程的自动化的平台下管理维护，该平台实现从需求提出，功能拆分，创建feature分支，组合release分支，生成部署环境，创建测试流水线，代码审查流水线，安全检查，在线部署等一系列步骤的自动化，最终实现端到端交付的研发自动化体系。
-
-## DevOps
-
-    https://www.zhihu.com/question/58702398
-
-一个软件从零开始到最终交付，大概包括以下几个阶段：产品规划、开发编码、构建、QA测试、发布、部署和维护。 对庞大项目的快速开发、快速部署、快速维护，使用敏捷开发快速迭代，在生命周期的各个阶段进行闭环处理流程，需要拆解各个过程，还得使之互相促进，实现一个端到端的自动化的联合流程，从而催生出了 DevOps。
-
-敏捷开发的闭环流程，在开发阶段即引入了运维过程，开发、测试、部署、运维持续优化。为需要将原来黑盒化的一个整体产品进行拆分（解耦），从一个提供多种服务的整体，拆成各自提供不同服务的多个个体，所以特别适合虚拟化、容器、微服务。
-
-拆分解耦是最终的出路，将项目拆成一个个小的服务单独部署，以电商项目为例，将整个项目拆分为用户服务，商品服务，订单服务，积分服务......每个服务单独部署，之间通过互相调用的方式来交互，而且可以将一些基础服务例如上传图片，发送短信等很多服务都需要的基础东西，抽象到一个单独的服务，也就是前些年流行的‘中台服务’。
-
-在DevOps的流程下，运维人员会在项目开发期间就介入到开发过程中，了解开发人员使用的系统架构和技术路线，从而制定适当的运维方案。而开发人员也会在运维的初期参与到系统部署中，并提供系统部署的优化建议。
-
-微服务: 微服务（英语：Microservices）是一种软件架构风格，它是以专注于单一责任与功能的小型功能区块 (Small Building Blocks) 为基础，利用模块化的方式组合出复杂的大型应用程序，各功能区块使用与语言无关 (Language-Independent/Language agnostic）的API集相互通信。对api的调用管理设计了专用的网关服务器，甚至还有路由功能哦。。。
-
-在微服务架构下，不同的工程师可以对各自负责的模块进行处理，例如开发、测试、部署、迭代。虚拟化，其实就是一种敏捷的云计算服务。它从硬件上，将一个系统“划分”为多个系统，系统之间相互隔离，为微服务提供便利。容器化就更彻底了，不是划分为不同的操作系统，而是在操作系统上划分为不同的“运行环境”（Container），占用资源更少，部署速度更快。开发、测试、部署的几个部分都可以非常快速的实现交互测试和闭环处理流程。
-
-这种架构下的开发模式DEVOPS，运维需要做的上线工作，主要就是将代码部署到对应的机器里面，微服务有那么多的服务，每个大点的公司几百个服务不算多，而且还可能随时搞一个服务出来，如果还按照原始的脚本部署方式，可能最后连是哪个脚本都找不到。
-
-运维需要做的事情，慢慢的都沉淀到了各个平台上面，例如监控，有专门的监控组件和可视化，基础服务例如服务器，CDN，负载均衡等基础服务可以外包到云服务厂商，日志也有专门的日志工具，链路追踪也有专门的组件和可视化，还有负责api调用指向的网关等，渐渐的，只要这些都配置好了，开发也可以做运维的部分工作，毕竟开发才是最了解代码的人，哪里出了问题看看监控日志，可以最快速度定位到问题，于是DEVOPS开发模式诞生了，开发也是运维。
-
-devops平台搭建工具
-
-    项目管理（PM）：jira + bitbucket。运营可以上去提问题，可以看到各个问题的完整的工作流，待解决未解决等；
-
-    代码管理：gitlab。jenkins或者K8S都可以集成gitlab，进行代码管理，上线，回滚等；集成了代码检测扫描，自动化测试，灰度，上线这一系列的操作。
-
-    持续集成CI（Continuous Integration）：gitlab ci。开发人员提交了新代码之后，立刻进行构建、（单元）测试。根据测试结果，我们可以确定新代码和原有代码能否正确地集成在一起。
-
-    持续交付CD（Continuous Delivery）：gitlab cd。完成单元测试后，可以把代码部署到连接数据库的 Staging 环境中更多的测试。如果代码没有问题，可以继续手动部署到生产环境中。
-
-    镜像仓库：VMware Harbor，私服nexus
-
-    容器：Docker
-
-    编排：K8S
-
-    服务治理：Consul、zookeeper、etcd
-
-    脚本语言：Python
-
-    日志管理：Cat+Sentry、ELK(Elasticsearch + Logstash + Kibana )
-
-    系统监控：Prometheus + 仪表盘 Grafana
-
-    负载均衡：Nginx。
-
-    API网关：Kong
-
-    链路追踪：Zipkin
-
-    产品和UI图：figma、蓝湖，Balsamiq、Mockplus和Axure RP的 原型设计派系、Sketch、Adobe XD、墨刀 组件细节派系。
-
-    公司内部文档：Confluence。
-
-    报警：推送到工作群。
-
-    上面的组件都是分离的，可以考虑微服务架构体系的组件合集 Spring Cloud: Eureka、Ribbon、Feign、Hystrix、Zuul
-
-有了这一套完整的流程工具，整个开发流程涉及到人员都可以无阻碍的进行协调工作了，开发每天到公司，先看看 jira,看看线上日志，出了问题看看监控日志，运营同学反馈问题不着急的去 jira，着急的群里吆喝，产品和 UI 的图直接蓝湖看，运维关注监控着大盘，改革春风开满地，互联网人民真高兴~。
-
-## 竞品 -- 基于文件差异(patch)的源代码管理系统
-
-当前流行的 svn/git/hg，都是基于 snapshot 而不是基于 patch 的。
-
-基于文件差异(patch)的源代码管理系统，可以随意加入、撤销、重排历史上任意没有依赖关系的改动，并且保持单个 Commit（Change）的 Hash 以及得到的结果不变。
-
-    pijul https://pijul.org/
-
-    darcs 不如 pijul http://darcs.net/
-
-    原理 https://jneem.github.io/merging/
-            https://arxiv.org/abs/1311.3903
-
-        https://segmentfault.com/a/1190000013648329
-
-处理方式不同，某些 git 上很繁琐的事情在这里就简化了。
-
-1、假设以下的场景：在开发 feature 分支上，发现 master 分支上有一个 bug，影响到新功能的开发，所以在 feature 分支上修了，然后 cherry-pick 到 master 分支上来。后来由于业务上的变动，master 分支去掉了这个修复。当我们合并 feature 分支后，这个修复又会重新出现在 master 分支。
-
-在基于 patch 的版本控制系统没有这个问题，在它们眼里，无论在哪个分支上，同样的修改都是同一个 patch。在合并时，它们比较的是 patch 的多寡，而非 snapshot 的异同。同样的道理，基于 patch 的版本控制系统，在处理 cherry-pick，revert 和 blame 时，也会更加简单。
-
-参见 <https://jneem.github.io/pijul/> 的 [Case study 1: reverting an old commit]。
-
-2、基于 snapshot 的版本控制系统，在合并时采用三路合并（three-way merge）。比如 Git 中合并就是采用递归三路合并。所谓的三路合并，就是 theirs(A) 和 ours(B) 两个版本先计算出公共祖先 merge_base(C)，接着分别做 theirs-merge_base 和 ours-merge_base 的 diff，然后合并这两个 diff。当两个 diff 修改了同样的地方时，就会产生合并冲突。
-
-如果是基于 patch 的版本控制系统，会把对方分支上多出来的 patch 添加到当前分支上，效果看上去就像 git rebase 一样。也就是说，某些在 git 中会出现冲突的合并，在 pijul 中不会出现。
-
-参见 <https://jneem.github.io/pijul/> 中 [Case study 2: parallel development]。
-
-3、如果添加过程中发生了冲突怎么办？
-
-patch 有两个重要的属性：
-
-    假设 patch B 依赖于 patch A，patch C 依赖于 patch B，B 可以在 A 和 C 之间自由移动而不改变最终结果。这种移动操作称之为 commute。
-
-    每个 patch 都有一个对应的 inverse patch，可以把这个 path 引入的修改去掉。
-
-darcs 在处理合并冲突时，会先添加若干个 inverse patch，回退到可以直接添加 patch 的时候。额外添加的 inverse patch 和之前有冲突的 patch 合并在一起，成为一个新的 patch。这其中可能还会有 commute 操作来移动 patch 到适当的位置。
-
-通常对于差别较大的 Git 分支，不建议用 rebase 操作，因为 rebase 过程中，可能会发生因为修复冲突带来的往后更多的冲突 - 冲突的滚雪球效应。darcs 的合并，也会有同样的问题，一个合并操作耗费的时间可能会遇上指数爆炸。
-
-pijul 通过引入名为有向图文件（directed graph file，以下简称为 digle）的数据结构，解决了这个问题。由 digle 表示的数据结构能够保证不会发生合并冲突。这意味着，我们可以用 digle 作为 patch 的内部实现，这样两个 patch 的合并就是两个 digle 的合并，而 digle 的合并是不会产生冲突的。这么一来，合并过程中就不会有滚雪球效应了，我们可以在最后把 digle 具象成实际的 patch 的时候，才开始解决合并冲突。
-
-pijul 的 merge 有两个优点：
-
-    最终结果跟用了 git rebase 一样，能够保证历史是单线条的。
-
-    由于 merge 过程中能够参考中间各个 patch 的信息，合并的效果理论上应该比简单粗暴的三路合并要好。
