@@ -200,7 +200,7 @@ Windows 10 在 2022 年后，已经比较完整的提供了对 Linux 的字符�
     PowerShell 7+ 使用 conpty 接口运行 cmd 字符程序
 
     在 2022-10-28 MSYS2 mintty 支持使用 ConPty 接口了：
-    在 MSYS2 的配置文件 /etc/git-bash.config 中设置变量 `MSYS=enable_pcon`，或 mintty 配置文件 .minttyrc 中设置 `ConPTY=true` 即可。这样调用普通 cmd 字符程序，不再需要借助 winpty 去加载调用了 https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs
+    在 MSYS2 的配置文件 /etc/git-bash.config 中设置变量 `MSYS=enable_pcon`，或 mintty 配置文件 .minttyrc 中设置 `ConPTY=on` 即可。之后在 mintty 中执行 Windows 的 cmd 字符程序，不再需要借助 winpty 去加载调用了 https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs
 
 有个性能对比测试
 
@@ -562,7 +562,7 @@ BoldAsFont=yes
 
 # 2023.2 脚本执行速度慢于 mintty 本地处理
 # Windows version >= 10 / 2019 1809 (build >= 10.0.17763)
-#ConPTY=true
+#ConPTY=on
 
 # 自定义颜色方案，跟深色背景搭配
 # https://github.com/mintty/mintty/wiki/Tips#background-image

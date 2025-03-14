@@ -32,7 +32,7 @@ os_name=$(uname -s)
 case "$os_name" in
     Linux*)
         # 判断是否为树莓派（多重条件校验）
-        if command -v vcgencmd >/dev/null 2>&1 ; then
+        if command -v vcgencmd >/dev/null 2>&1; then
             os_type="raspi"
         else
             os_type="linux"
@@ -57,6 +57,7 @@ unset os_name
 
 [[ $current_shell = 'zsh' ]] || (test -f ~/.bashrc && . ~/.bashrc)
 
+###################################################################
 # bash 优先调用 .bash_profile，就不会调用 .profle，该文件是 Debian 等使用的
 #   ~/.profile: executed by the command interpreter for login shells.
 #     This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login exists.
@@ -68,7 +69,11 @@ PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 
 # exit for non-interactive shell
 # [[ ! -t 0 ]] && return
-[[ $- != *i* ]] && return
+[[ $- != *i* ]] && {
+unset current_shell
+unset os_type
+return
+}
 
 ###################################################################
 # 自此开始都是自定义设置
@@ -158,6 +163,14 @@ if [ -x /usr/bin/dircolors ]; then
         echo "[复制一个备份 $1.bak.${DT}，如果是目录名不要传入后缀/]"
         cp -a $1{,.bak.${DT}}
     }
+    # 系统目录备份文件没有 sudo 不方便
+    function cpbaks {
+        # find . -max-depth 1 -name '$1*' -exec cp "{}" "{}.bak" \;
+        #cp -a $1{,.bak}
+        local DT=$(date  +"%Y-%m-%d_%H:%M:%S")
+        echo "[复制一个备份 $1.bak.${DT}，如果是目录名不要传入后缀/]"
+        sudo cp -a $1{,.bak.${DT}}
+    }
 
     # wsl 或 git bash 下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "C:\Windows\Path"
     function cdw {
@@ -166,7 +179,7 @@ if [ -x /usr/bin/dircolors ]; then
 
     alias viw='echo "[vi 后悔药：等保存了才发现是只读，运行以下命令]" && echo ":w !sudo tee %"'
 
-    alias myip='echo "[浏览器打开 <https://test.ustc.edu.cn/> 可看到自己的ip和测速]" && curl ipv4.icanhazip.com 2>/dev/null;curl ipv6.icanhazip.com 2>/dev/null'
+    alias myip='echo "[浏览器打开 https://test.ustc.edu.cn/ 可看到自己的ip和测速]" && curl ipv4.icanhazip.com 2>/dev/null;curl ipv6.icanhazip.com 2>/dev/null'
 
     # 命令行看天气 https://wttr.in/:help
     # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
@@ -459,13 +472,11 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 ####################################################################
-# Windows git bash(mintty)
+# Windows git bash("C:\Program Files\Git\git-bash.exe" --cd-to-home) 其实调用的 mintty.exe
 # 在 mintty 下使用普通的 Windows 控制台程序
 # 如 mintty 使用 ConPty 接口则可以不需要这些 alias 使用 winpty 来调用了
-#   Windows version >= 10 / 2019 1809 (build >= 10.0.17763) 在 ~/.mintty.rc 中添加 `ConPTY=true`
-
-#if $(git --version |grep -i Windows >/dev/null 2>&1); then
-if [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
+#   Windows version >= 10.2019 1809 (build >= 10.0.17763) 在 ~/.minttyrc 中添加 `ConPTY=on`
+if [[ $os_type = 'windows' ]] && ! grep '^ConPTY=on' ~/.minttyrc >/dev/null 2>&1; then
     alias python="winpty python"
     alias ipython="winpty ipython"
     alias mysql="winpty mysql"
@@ -489,7 +500,7 @@ export GPG_TTY=$(tty)
 # Mac OS
 # 如果你要在 OS-X 上使用 gpg-agent，记得将下面的命令填入你的 Shell 的默认配置中。
 #
-if [[ $OSTYPE =~ darwin ]]; then
+if [[ $os_type = 'macos' ]]; then
     if [ -f ~/.gnupg/.gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
         source ~/.gnupg/.gpg-agent-info
         export GPG_AGENT_INFO
@@ -516,7 +527,7 @@ if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
     export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
 # Windows git bash 环境
-elif [[ $OS =~ Windows && "$OSTYPE" =~ msys ]]; then
+elif [[ $os_type = 'windows' ]]; then
 
     # Windows git bash(mintty)
     # 多会话复用 ssh-pageant，用它连接 putty 的 pagent.exe，稍带运行gpg钥匙圈更新
@@ -836,8 +847,9 @@ function PS1git-bash-new-line {
 #   CPU Load Average 的值应该小于CPU核数的70%，取1分钟平均负载
 function PS1raspi-warning-info {
 
-    #[[ $(command -v vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
-    $(command -v vcgencmd >/dev/null 2>&1) ||return
+    # [[ $(command -v vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
+    # command -v vcgencmd >/dev/null 2>&1 || return
+    [[ $os_type = 'raspi' ]] || return
 
     local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
