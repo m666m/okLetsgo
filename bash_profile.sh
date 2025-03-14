@@ -1,6 +1,6 @@
 ##################################################################################################################
-# 适用于 Linux bash、Windows git bash(mintty)，Mac OS 未测试
-# 本该放到 .bashrc 文件，为了方便统一在此了，可放到 .zshrc 中保持自己的使用习惯
+# 适用于 Linux bash、Linux zsh、Windows git bash(mintty.exe)，macOS 未测试
+# 本该放到 .bashrc 文件，为了方便统一在此了，可放到 .zshrc 中引用以保持自己的使用习惯
 #
 # 别人的配置文件参考大全
 #   https://github.com/pseudoyu/dotfiles
@@ -22,11 +22,21 @@
 # trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
 ###################################################################
-# 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件，zsh不加载
-#   ~/.bashrc: executed by bash(1) for non-login shells.
-#       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
-#   用 $0 取当前shell是否为 -zsh 或 zsh，截取后三位得到 zsh
-current_shell=$(echo ${0:0-3})
+# 准备环境信息，方便后面使用
+# os_type：当前操作系统类型，linux、macos、windows、freebsd
+# current_shell 当前脚本环境，bash、zsh、ksh、fish
+
+if [ -n "$BASH_VERSION" ]; then
+    current_shell="bash"
+elif [ -n "$ZSH_VERSION" ]; then
+    current_shell="zsh"
+elif [ -n "$KSH_VERSION" ]; then
+    current_shell="ksh"
+elif [ -n "$FISH_VERSION" ]; then
+    current_shell="fish"
+else
+    current_shell=$(ps -p $$ -o comm= | sed 's/^-//')
+fi
 
 os_name=$(uname -s)
 case "$os_name" in
@@ -55,7 +65,11 @@ esac
 
 unset os_name
 
-[[ $current_shell = 'zsh' ]] || (test -f ~/.bashrc && . ~/.bashrc)
+###################################################################
+# 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件，zsh不加载
+#   ~/.bashrc: executed by bash(1) for non-login shells.
+#       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
+[[ $current_shell = 'bash' ]] && (test -f ~/.bashrc && . ~/.bashrc)
 
 ###################################################################
 # bash 优先调用 .bash_profile，就不会调用 .profle，该文件是 Debian 等使用的

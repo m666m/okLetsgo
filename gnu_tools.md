@@ -3525,12 +3525,6 @@ compinit
 # ohmyzsh 自带插件管理，在 plugin=() 段落启用内置插件，可以在这里加载那些 source xxx 的插件
 
 ####################################################################
-#
-#
-#   复制 [bash_profile.sh] 的内容到此
-#
-#
-####################################################################
 # Zsh：加载插件或小工具
 #
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
@@ -3563,8 +3557,10 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
 ####################################################################
 
-# powerlevel10k 安装程序自动添加的，不用动
+# 如果有 .bash_profile，执行之
+source ~/.bash_profile
 
+# powerlevel10k 安装程序自动添加的，不用动
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
