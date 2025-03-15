@@ -2676,6 +2676,11 @@ Anaconda 在安装时会配置你的 bash，当你进入命令行提示符即自
 
             $ conda config --set auto_activate_base false
 
+    在 ~/.condarc 文件中可以看到设置生效：
+
+        changeps1: false
+        auto_activate_base: false
+
     这样在用户登录进入bash环境后，执行 `conda activate` 后读取 $CONDA_DEFAULT_ENV 变量即可获取到当前环境名。
 
 2、virtualenv 的处理类似 conda

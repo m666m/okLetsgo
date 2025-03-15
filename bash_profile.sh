@@ -69,7 +69,7 @@ unset os_name
 # 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件，zsh不加载
 #   ~/.bashrc: executed by bash(1) for non-login shells.
 #       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
-[[ $current_shell = 'bash' ]] && (test -f ~/.bashrc && . ~/.bashrc)
+[[ $current_shell = 'bash' ]] && test -f ~/.bashrc && . ~/.bashrc
 
 ###################################################################
 # bash 优先调用 .bash_profile，就不会调用 .profle，该文件是 Debian 等使用的
@@ -682,22 +682,20 @@ PS1Cwhite=$'\[\e[0;37m\]'
 
 PS1Cnormal=$'\[\e[m\]'
 
-# 注意：在执行判断退出码的函数前面不能执行别的函数，
-# 所以 PS1exit-code 要放在放在 PS1 变量赋值语句的最前面
-# 否则
-#   所有的函数都要实现 $? 变量的透传
+# 注意：判断命令返回值的函数 PS1exit-code 要放在放在 PS1 变量赋值语句的最前面，
+# 否则，它前面的函数要实现 $? 变量的透传
 #   { ret_code="$?"; your code...; return ret_code}
-#   这样的好处是 PS1exit-code 不必放在 PS1 变量赋值语句的最前面了
 function PS1exit-code {
     local exitcode="$?"
     #if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
-    (($exitcode != 0)) && printf "%s" ' -'$exitcode' '
+    #(($exitcode != 0)) && printf "%s" ' -'$exitcode' '
+    [[ ! $exitcode = 0 ]] && printf "%s" ' -'$exitcode' '
 }
 
 function PS1conda-env-name {
     # Linux 下安装 Anaconda 需要执行一次如下命令，才能在 bash 中使用 conda 命令
     #   `conda init bash`
-    # 会自动在 ~/.bashrc 或 .bash_profile.sh 文件添加如下内容：
+    # 会自动在 ~/.bashrc 或 .bash_profile 文件添加如下内容：
     #   eval "$(/home/uu/anaconda3/bin/conda shell.bash hook)"
 
     # 自定义 conda 的环境名格式，需要先修改 conda 的默认设置，不允许 conda 命令修改 PS1 变量
@@ -721,34 +719,33 @@ function PS1virtualenv-env-name {
 
 function PS1git-branch-name {
 
-    if $(command -v __git_ps1 >/dev/null 2>&1); then
-        # 优先使用 __git_ps1() 取分支名信息
-        #
-        #   如果使用git for Windows自带的mintty bash，它自带git状态脚本(貌似Debian系的bash都有)
-        #   只要启动bash ，其会自动 source C:\Program Files\Git\etc\profile.d\git-prompt.sh，
-        #   最终 source C:\Program Files\Git\mingw64\share\git\completion\git-prompt.sh。
-        #   这样实现了用户 cd 到git管理的目录就会显示git状态字符串。
-        #   来源 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
-        #   如果自定义命令提示符，可以在PS1变量拼接中调用函数 $(__git_ps1 "(%s)") ，
-        #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
-        #
-        # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，佛了
-        _pp_git_pt=$(>/dev/null; __git_ps1 '%s' 2>/dev/null)
-        if [ "$?" = "0" ]; then
-            # 如果是有效的 git 信息，这里就直接打印并退出函数
-            printf "%s" $_pp_git_pt
-            unset _pp_git_pt
-            return
-        else
-            # __git_ps1 没取到有效信息，由下面的补充获取
-            unset _pp_git_pt
-        fi
+    # 优先使用 __git_ps1() 取分支名信息，如果取到有效的 git 信息，就直接打印出来，然后退出函数
+    #
+    #   如果使用git for Windows自带的mintty bash，它自带git状态脚本(貌似Debian系的bash都有)
+    #   只要启动bash ，其会自动 source C:\Program Files\Git\etc\profile.d\git-prompt.sh，
+    #   最终 source C:\Program Files\Git\mingw64\share\git\completion\git-prompt.sh。
+    #   这样实现了用户 cd 到git管理的目录就会显示git状态字符串。
+    #   来源 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
+    #   如果自定义命令提示符，可以在PS1变量拼接中调用函数 $(__git_ps1 "(%s)") ，
+    #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
+    #
+    # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，后面也不能用它的返回值判断是否执行成功
+    # NOTE:如果用 local 声明变量，就无法取到执行语句的返回值了
+    _pp_git_pt=$(>/dev/null; __git_ps1 '%s' 2>/dev/null)
+    if [ "$?" = "0" ]; then
+        # 如果是有效的 git 信息，这里就直接打印并退出函数
+        printf "%s" $_pp_git_pt
+        unset _pp_git_pt
+        return
     fi
+
+    # __git_ps1 没取到有效信息，则自行获取git信息
+    unset _pp_git_pt
 
     # 一条命令取当前分支名
     # 命令 git symbolic-ref 在裸仓库或 .git 目录中运行不报错，都会打印出当前分支名，
     # 除非不在当前分支，返回 128，如果当前分支是分离的，返回 1
-    # 注意：如果用 local _pp_branch_name 则无法直接判断嵌入变量赋值语句的命令的失败状态
+    # NOTE:如果用 local 声明变量，就无法取到执行语句的返回值了
     _pp_branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
     local exitcode="$?"
 
@@ -756,7 +753,6 @@ function PS1git-branch-name {
         '0')
             # 优先显示当前 head 指向的分支名
             printf "%s" $_pp_branch_name
-            unset _pp_branch_name
             ;;
         '1')
             # 如果是 detached HEAD，则显示标签名或 commit id
@@ -764,7 +760,6 @@ function PS1git-branch-name {
             local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
             # 有标签名就显示标签否则显示 commit id
             [[ -n $tagname ]] && printf "%s" "@${tagname}" || printf "%s" "#${headhash}"
-            unset _pp_branch_name
             ;;
         *)
             # exitcode 是其它数字的，视为不在 git 环境中，不做任何打印输出
@@ -772,12 +767,14 @@ function PS1git-branch-name {
             return
             ;;
     esac
+
+    unset _pp_branch_name
 }
 
 function PS1git-branch-prompt {
     local branch=`PS1git-branch-name`
 
-    # branch 变量是空的说明不在 git 环境中
+    # branch 变量是空的说明不在 git 环境中，返回即可
     [[ $branch ]] || return
 
     # 在裸仓库或 .git 目录中，运行 git status 会报错，所以先判断下
