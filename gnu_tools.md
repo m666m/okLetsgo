@@ -1767,22 +1767,24 @@ shell 是终端下用户与操作系统进行交互的媒介，bash 是目前 Li
 
 一、交互式 shell 和非交互式 shell
 
-    交互式模式：在终端上执行，shell 等待你的输入，并且立即执行你提交的命令。这种模式被称作交互式是因为 shell 与用户进行交互。这种模式也是大多数用户非常熟悉的：登录、执行一些命令、退出。当你退出后，shell也终止了。
+    交互式模式（interactive）：在终端上执行，shell 等待你的输入，并且立即执行你提交的命令。这种模式被称作交互式是因为 shell 与用户进行交互。这种模式也是大多数用户非常熟悉的：登录、执行一些命令、退出。当你退出后，shell也终止了。
 
-    非交互式模式：以 shell script 方式执行。在这种模式 下，shell 不与你进行交互，而是读取存放在脚本文件中的命令,并且执行它们。当它读到文件的结尾 EOF，shell 也就终止了。在管道中执行的脚本就属于非交互模式。
+    非交互式模式（non-interactive）：以 shell script 方式执行。在这种模式 下，shell 不与你进行交互，而是读取存放在脚本文件中的命令,并且执行它们。当它读到文件的结尾 EOF，shell 也就终止了。在管道中执行的脚本就属于非交互模式。
 
 可以通过打印 “$-” 变量的值（代表着当前shell的选项标志），查看其中是否有字母 “i” (interactive shel) 来区分交互式与非交互式 shell。
 
     $ echo $-
     himBHs
 
+    $ [[ $- != *i* ]] && echo 'non-interactive' || echo 'interactive'
+
 用户在本地使用终端模拟器和 ssh 登录远程服务器，使用的 shell 都属于交互式。
 
 二、登录 shell 和非登录 shell
 
-    登录 shell：需要用户名、密码登录后才能进入的 shell，或者命令 `bash --login` 或 -l 选项生成的 shell
+    登录 shell（login）：需要用户名、密码登录后才能进入的 shell，或者命令 `bash --login` 或 -l 选项生成的 shell
 
-    非登录shell：不需要输入用户名和密码即可打开的 Shell，例如：直接命令 `bash` 就是打开一个新的非登录shell
+    非登录shell（non-login）：不需要输入用户名和密码即可打开的 Shell，例如：直接命令 `bash` 就是打开一个新的非登录shell
 
 > 读取登录脚本文件的区别
 
