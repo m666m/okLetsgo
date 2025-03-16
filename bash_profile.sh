@@ -728,19 +728,22 @@ function PS1git-branch-name {
     #   来源 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
     #   如果自定义命令提示符，可以在PS1变量拼接中调用函数 $(__git_ps1 "(%s)") ，
     #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
-    #
-    # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，后面也不能用它的返回值判断是否执行成功
-    # NOTE:如果用 local 声明变量，就无法取到执行语句的返回值了
-    _pp_git_pt=$(>/dev/null; __git_ps1 '%s' 2>/dev/null)
-    if [ "$?" = "0" ]; then
-        # 如果是有效的 git 信息，这里就直接打印并退出函数
-        printf "%s" $_pp_git_pt
+    # NOTE: 调用可能不存在的命令，必须先 `command -v` 判断一下，直接调用遇到命令不存在会卡顿
+    if $(command -v __git_ps1 >/dev/null 2>&1); then
+        # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，后面也不能用它的返回值判断是否执行成功
+        # NOTE:如果用 local 声明变量，就无法取到执行语句的返回值了
+        _pp_git_pt=$(>/dev/null; __git_ps1 '%s' 2>/dev/null)
+        if [ "$?" = "0" ]; then
+            # 如果是有效的 git 信息，这里就直接打印并退出函数
+            printf "%s" $_pp_git_pt
+            unset _pp_git_pt
+            return
+        fi
+
         unset _pp_git_pt
-        return
     fi
 
     # __git_ps1 没取到有效信息，则自行获取git信息
-    unset _pp_git_pt
 
     # 一条命令取当前分支名
     # 命令 git symbolic-ref 在裸仓库或 .git 目录中运行不报错，都会打印出当前分支名，
