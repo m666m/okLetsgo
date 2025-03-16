@@ -3037,44 +3037,44 @@ Let pyqtgraph use PyQt6's pyi file
 
     其它的流行的库的 typestub https://github.com/microsoft/python-type-stubs/tree/main/stubs
 
-1.Copy "QtCore.pyi/QtGui.pyi/QtWidgets.pyi" from
+1. Copy "QtCore.pyi/QtGui.pyi/QtWidgets.pyi" from
 
     ~/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6
 
 to
 
-    <your workspace root>/typings/pyqtgraph/Qt
+    /your/custom/dir/typings/pyqtgraph/Qt
 
 or make a link for the .pyi files
 
 You can set a separated dir for your environment in VSCode :
 
-    "python.analysis.stubPath":"your custom dir"
+    "python.analysis.stubPath":"/your/custom/dir"
 
-2.To make aliasing work:
+2. To make aliasing work，such as pyqtgraph:
 
     import pyqtgraph as pg
     pg.Qt.QtWidgets.QPushButton('hello')
 
 add the following:
 
-typings\pyqtgraph\__init__.pyi:
+/your/custom/dir/typings/pyqtgraph/__init__.pyi:
 
     from . import Qt as Qt
 
-typings\pyqtgraph\Qt\__init__.pyi:
+/your/custom/dir/typings/pyqtgraph/Qt/__init__.pyi:
 
     from . import QtWidgets as QtWidgets
 
-3.bash shell for all above
+3. bash shell for all above
 
 ```bash
 # Modify here with your project dir
-Common_Base="${HOME}/ghcode/typestub_env_p312/typings"
+Common_Base="${HOME}/ghcode/typestub_env_p310/typings"
 
 function typestub_for_pg {
     # Modify here with your conda envs
-    pyqt6_pyi="${HOME}/anaconda3/envs/p312/lib/python3.12/site-packages/PyQt6"
+    pyqt6_pyi="${HOME}/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6"
     typestub_pg="${Common_Base}/pyqtgraph/Qt"
 
     mkdir -p $typestub_pg
@@ -3095,7 +3095,8 @@ function typestub_for_pg {
 }
 
 typestub_for_pg
-echo -e "\nAdd below to your VSCode settings: \n     \"python.analysis.stubPath\":\"${Common_Base}\","
+echo -e "\n--------------------\nAdd below to your VSCode settings: \n     \"python.analysis.stubPath\":\"${Common_Base}\","
+
 ```
 
 ### vs code 填坑
