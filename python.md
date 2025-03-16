@@ -3099,6 +3099,29 @@ echo -e "\n--------------------\nAdd below to your VSCode settings: \n     \"pyt
 
 ```
 
+vs code 设置，酌情对 pyqtgraph 等封装比较深的库，把解析的深度也加大：
+
+```jsonc
+    "python.analysis.stubPath":"/your/path/to/typestub_env_p310/typings",
+    "python.analysis.packageIndexDepths": [
+        {
+            "name": "matplotlib",
+            "depth": 3
+        },
+        {
+            "name": "pyqtgraph",
+            "depth": 8,
+            "includeAllSymbols": true
+        },
+        {
+            "name": "PyQt6",
+            "depth": 6,
+            "includeAllSymbols": true
+        }
+    ],
+
+```
+
 ### vs code 填坑
 
 Visual Sutdio 2022 中使用 python 虚拟环境
