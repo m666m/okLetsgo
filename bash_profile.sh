@@ -351,7 +351,8 @@ if [ -x /usr/bin/dircolors ]; then
         local tfile=$(mktemp)
 
         # https://raw.githubusercontent.com/521xueweihan/GitHub520/refs/heads/main/hosts
-        curl -o $tfile https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts
+        curl -o $tfile https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts \
+          || curl -o $tfile https://cdn.jsdelivr.net/gh/maxiaof/github-hosts@master/hosts
 
         [[ ! -s $tfile ]] && echo '获取 github 地址列表失败！' && return 0
 
@@ -635,7 +636,7 @@ fi
 
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
 if [[ ! $os_type = 'windows' ]]; then
-    [[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh || (echo 'Get ackg from github...' && curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh |sed -e 's/h()/ackg()/' |sudo tee /usr/local/bin/ackg.sh) && source /usr/local/bin/ackg.sh
+    [[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh || (echo 'Get ackg from github...' && curl -fsSL https://cdn.jsdelivr.net/gh/paoloantinori/hhighlighter@master/h.sh |sed -e 's/h()/ackg()/' |sudo tee /usr/local/bin/ackg.sh) && source /usr/local/bin/ackg.sh
 fi
 
 #################################
