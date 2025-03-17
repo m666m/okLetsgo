@@ -9086,6 +9086,16 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
     certutil -hashfile cn_windows_7.iso SHA1
     certutil -hashfile cn_windows_7.iso SHA256
 
+### 字符串免转义就用 base64
+
+    Base32 编码每任意八位字节序列，生成全大写字母
+
+    Base64 编码每任意八位字节序列，生成区分大写字母和小写字母
+
+对脚本文件、复杂的正则表达式、含特殊字符的字符串等，先用 base32/base64 编码后再传递参数，使你的脚本更简洁
+
+    $ echo "${variable}" | base64 -w 0
+
 ### 生成随机数做密码
 
 在 Linux 中，有两类用于生成随机数的设备，分别是 /dev/random 以及 /dev/urandom ，其中前者可能会导致阻塞，而读取 /dev/urandom 不会堵塞，不过此时 urandom 的随机性弱于 random。 urandom 是 unblocked random 的简称，会重用内部池中的数据以产生伪随机数据，可用于非密钥数据的生成。
