@@ -576,6 +576,7 @@
     "todohighlight.include": [
         "**/*.md",
         "**/*.py",
+        "**/*.sh",
     ],
     "todohighlight.exclude": [
         "**/node_modules/**",
