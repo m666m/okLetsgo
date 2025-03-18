@@ -2731,13 +2731,13 @@ vim 脚本语言语法高亮
 
     XadillaX.viml
 
-#### hex 颜色代码下用底色显示该颜色
+#### 中文简繁转换
 
-vs code 1.76 之后内置了这个功能
+Chinese Translation
 
-Color Highlight
+    Compulim.vscode-chinese-translation
 
-    naumovs.color-highlight
+选择文字后，F1 输入命令：Chinese Translation，在列出的可用命令中选择一个即可，一般选 `Traditional Chinese to Simplified Chinese` 即可。
 
 #### 预览 svg 图片
 
