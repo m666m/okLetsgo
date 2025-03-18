@@ -514,7 +514,8 @@ mintty 默认的主题比较保守，只使用256色，如果你想看到真彩�
 # 可自定义表情标签 https://github.com/mintty/mintty/wiki/Tips#installing-emoji-resources
 # https://mintty.github.io/mintty.1.html
 # https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
-Font=MesloLGS NF
+# 只支持等宽字体
+Font=MesloLGS Nerd Font Mono
 FontHeight=11
 FontSmoothing=full
 # FontWeight=700
@@ -525,7 +526,7 @@ Rows=40
 ScrollbackLines=12000
 
 CursorType=block
-CursorBlinks=no
+CursorBlinks=yes
 
 # 语言设置
 # mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
