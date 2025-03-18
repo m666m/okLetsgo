@@ -2018,7 +2018,7 @@ Linux 处理 RTC 时间跟 Windows 的机制不同：
 
 登录 Windows，打开“开始-运行”，输入 “regedit” 打开注册表。
 
-进入 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TimeZoneInformation\ 中添加一项类型为 REG_DWORD（64位系统为REG_QWORD）的值，名称为 RealTimeIsUniversal，值设为 1。这样可以将系统启动时对待硬件时间的方式从 localtime 改成 utc，改完后重启计算机生效。
+进入 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TimeZoneInformation\ 中添加一项类型为 REG_DWORD（64位系统为REG_QWORD）的值，名称为 RealTimeIsUniversal ，值设为 1。这样可以将系统启动时对待硬件时间的方式从 localtime 改成 utc，改完后重启计算机生效。
 
 Windows 主机和 Windows 虚拟机都适用这个方法。
 
