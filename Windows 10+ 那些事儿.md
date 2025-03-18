@@ -3447,6 +3447,38 @@ KB4103718 如果运行时报告无法安装，先运行自带的那个 pciclears
         # 立刻重启
         shutdown -r -t 0
 
+### Windows 11 远程桌面无法使用已经保存好设置的 .rdp 文件
+
+用远程桌面程序打开已经保存好设置的 .rdp 文件，会遇到这个提示：
+
+    Microsoft Defender Credential Guard 不允许使用已保存的凭据，请输入你的凭据。
+
+这时只能输入用户的密码才能登录远程计算机的桌面，非常麻烦。
+
+原因是你在 Windows 系统设置的安全中心，打开了基于虚拟化的安全基线。打开安全中心->设备安全性：内核隔离，可以看到 “Microsoft Defender Credential Guard” 开启了。
+
+    https://support.microsoft.com/en-us/windows/device-security-in-the-windows-security-app-afa11526-de57-b1c5-599f-3a4c6a61c5e2#bkmk_credential-guard
+
+解决办法就是在组策略中，设置 “Microsoft Defender Credential Guard” 允许使用已经保存的凭据
+
+    https://www.anyviewer.com/how-to/rdp-windows-defender-credential-guard-2578.html
+
+1、开始->运行，或直接搜索：
+
+    gpedit.msc
+
+2、 Computer Configuration > Administrative Templates > System > Device Guard > Turn on Virtualization Based Security.
+
+3、双击以打开这个策略，选择 “已启用”
+
+4、这是下方的各个选项就可以设置了。
+
+在 “Credential Guard”，确保选择 “已禁用”。
+
+或者编辑注册表 regedit.exe：打开 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa，新建一个 DWORD 项目 LsaCfgFlags ，设置值为 0 。
+
+5、重启计算机生效。
+
 ### 乱七八糟的 .NET Framework 各版本安装
 
 .NET Framework 4.x 号称是互相覆盖的，版本继承性可以延续。
