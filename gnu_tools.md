@@ -510,7 +510,6 @@ mintty 默认的主题比较保守，只使用256色，如果你想看到真彩�
 #### .minttyrc 配置文件样例
 
 ```config
-
 # 可自定义表情标签 https://github.com/mintty/mintty/wiki/Tips#installing-emoji-resources
 # https://mintty.github.io/mintty.1.html
 # https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
