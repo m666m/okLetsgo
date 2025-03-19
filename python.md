@@ -3001,6 +3001,26 @@ pyreverse 生成 UML 的包图和类图（pylint 自带）
 
 jsdelivr  <https://cdn.jsdelivr.net/gh/xxx>
 
+比如，要获取
+
+    https://github.com/arcticicestudio/nord-dircolors/src/dir_colors
+
+其 develop 分支下的原始文件地址是
+
+    https://raw.githubusercontent.com/arcticicestudio/develop/nord-dircolors/src/dir_colors
+
+用 cdn 加速的地址是
+
+    https://cdn.jsdelivr.net/gh/arcticicestudio/nord-dircolors@develop/src/dir_colors
+
+一般都是 master 分支
+
+    https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts
+
+转换为
+
+    https://cdn.jsdelivr.net/gh/maxiaof/github-hosts@master/hosts
+
 #### 性能分析 runsnakerun
 
 runsnakerun 需要安装图形库 wxPython4
