@@ -2172,11 +2172,9 @@ TA-lib 只发布了 c 语言源代码，所以如果想调用，需要先自行�
 
     https://anaconda.org/quantopian/ta-lib
 
-如果要自己编译：
+如果要自己编译：用 Visual Studio 2022 社区版打开源码自行编译
 
     https://ta-lib.org/install/#windows-build-from-source
-
-用 Visual Studio 2022 社区版打开源码自行编译
 
     C:\ta-lib> "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
     C:\ta-lib> mkdir build
@@ -2244,6 +2242,7 @@ Linux 下只能从源代码自行编译安装
 
 这个封装依赖 ta-lib 的 c 运行库和 numpy，所以做完前面的第 1 步后，即可直接从 pypi 安装：
 
+    $ conda activate p37
     $ pip install numpy TA-Lib
 
 还可从 Conda Forge 安装：
@@ -2255,18 +2254,20 @@ Linux 下只能从源代码自行编译安装
 
     https://ta-lib.github.io/ta-lib-python/install.html
 
-前提条件：
+1、切换到你的环境下
 
-1、依赖你的环境中有 ta-lib 的 c 运行库，即先执行完前面的第 1 步。
+    $ conda activate p37
 
-2、依赖你的环境中有 numpy
+2、你的环境或操作系统中已经安装了 ta-lib 的 c 运行库，即先执行完前面的第 1 步。
+
+3、你的环境中安装了 numpy
 
     # https://github.com/TA-Lib/ta-lib-python/issues/661#issuecomment-2207912052
     $ pip install numpy
 
-3、然后才可以编译安装 python wrapper
+4、然后才可以从 python 源代码编译安装 python wrapper：
 
-先安装 python 的 c 头文件，否则从 python 源代码编译时会报错 'Python.h: No such file or directory'
+先安装 python 的 c 头文件，否则编译时会报错 'Python.h: No such file or directory'
 
     # https://blog.csdn.net/xk_xx/article/details/123166742
     $ sudo dnf install python3-devel  # Fedora
