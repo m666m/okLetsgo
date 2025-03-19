@@ -2124,6 +2124,164 @@ If output looks like this then you did step 2 wrong
 
     <module 'yfinance' from '.../lib/python3.10/site-packages/yfinance/__init__.py'>
 
+## 安装 TA-Lib 行情数据指标库
+
+    https://ta-lib.org/
+
+TA-lib 只发布了 c 语言源代码，所以如果想调用，需要先自行编译为操作系统使用的 c 运行库，即下面的步骤 1。
+
+如果使用 python 调用系统环境里的 talib c 运行库，还要安装它的 python 封装，即下面的步骤 2。
+
+如果嫌麻烦，可以换用 pandas 实现它的各种函数
+
+    https://github.com/twopirllc/pandas-ta
+
+### 1、安装 TA-lib c 运行库
+
+安装 TA-lib，其实安装的是从源代码编译的 c 运行库到你的操作系统或应用程序环境下。
+
+    https://github.com/TA-Lib/ta-lib
+
+        原 https://github.com/mrjbq7/ta-lib
+            https://ta-lib.github.io/
+
+            原 https://sourceforge.net/projects/ta-lib/
+            基于源代码 http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
+
+#### Windows 安装 TA-lib c 运行库
+
+简单使用的话，可以下载别人编译好的安装包：
+
+法一：直接下载 talib 维护者提供的编译好的二进制包
+
+    https://github.com/TA-Lib/ta-lib/releases
+
+安装：执行 .msi 安装包，会安装到你的 Windows 的系统目录下，这样所有的环境都可以调用它。
+
+法二：下载好心人编译好的二进制包 python .whl，这样可以只安装到你的 python 环境下
+
+    https://github.com/cgohlke/talib-build/releases
+        原 http://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib
+
+安装：在你的 python 环境下安装该 .whl 文件
+
+    $ conda activate p37
+    $ pip install TA_Lib-0.4.21-cp37-cp37m-win_amd64.whl
+
+法三：使用 anaconda quantopian 版本
+
+    https://anaconda.org/quantopian/ta-lib
+
+如果要自己编译：
+
+    https://ta-lib.org/install/#windows-build-from-source
+
+用 Visual Studio 2022 社区版打开源码自行编译
+
+    C:\ta-lib> "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+    C:\ta-lib> mkdir build
+    C:\ta-lib> cd build
+    C:\ta-lib\build> cmake ..
+    C:\ta-lib\build> cmake --build .
+
+You might need to adjust the vcvarsall.bat command depending on your VSCode installation and platform.
+
+#### Linux 安装 TA-lib  c 运行库
+
+Linux 下只能从源代码自行编译安装
+
+    https://github.com/TA-Lib/ta-lib/blob/main/docs/install.md#linux-build-from-source
+        https://ta-lib.org/install/#linux-build-from-source
+
+1、下载源代码
+
+    # wget http://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.4.0-src.tar.gz
+    # tar -xzf ta-lib-0.4.0-src.tar.gz
+
+    $ git clone --depth=1 https://github.com/TA-Lib/ta-lib
+    $ cd ta-lib
+    $ make clean
+
+2、自行编译为 c 运行库
+
+    # https://github.com/TA-Lib/ta-lib-python/issues/594#issuecomment-1523606397
+    # 如果你的应用中加密货币的单位特别小显示不出来后面的数，比如兑换 BTC 的货币对单位是 0.0000000001
+    # 修改下代码，把显示单位的长度放大即可：
+    $ sed -i 's/0.00000001/0.000000000000000000000000001/g' src/ta_func/ta_utility.h
+
+    # 然后设置编译参数，默认安装到操作系统 /usr/local/lib
+    $ ./configure
+    $ make
+
+可以给 `configure` 手动指定路径，添加参数 --prefix=/usr，则 `make install` 会安装到 /usr/lib64，注意指定路径注意不需要写 ./lib 这一级，`make install` 时会自行添加，比如写 /usr 会生成到 /usr/lib64 下。
+
+3、复制到你的运行环境中
+
+    # 这里安装到操作系统目录需要 sudo 执行，会提示生成到哪个目录下了
+    $ sudo make install
+    Libraries have been installed in:
+        /usr/local/lib
+
+也可以手动将编译好的库文件复制到你的 python 环境的虚拟目录中，这样就可以保持操作系统 /usr/lib 目录内容的纯净
+
+    $ ./configure --prefix=$HOME/pyenvs/py310
+    $ make
+    $ make install  # 会提示生成到哪个目录下了
+    Libraries have been installed in:
+        /home/user/pyenvs/py310/lib
+
+如果不想用 `make install`，也可以自行拷贝到自己想要的目录下：
+
+    $ cp /usr/lib/libta_lib* ~/py37/lib
+
+    # centos8:
+    $ cp /usr/lib64/libta_lib* ~/py37/lib
+
+### 2、安装 TA-lib python 封装
+
+    https://github.com/TA-Lib/ta-lib-python
+        https://pypi.org/project/ta-lib/
+
+这个封装依赖 ta-lib 的 c 运行库和 numpy，所以做完前面的第 1 步后，即可直接从 pypi 安装：
+
+    $ pip install numpy TA-Lib
+
+还可从 Conda Forge 安装：
+
+    # https://anaconda.org/conda-forge/ta-lib
+    $ conda install -c conda-forge ta-lib
+
+> 不嫌麻烦自行编译
+
+    https://ta-lib.github.io/ta-lib-python/install.html
+
+前提条件：
+
+1、依赖你的环境中有 ta-lib 的 c 运行库，即先执行完前面的第 1 步。
+
+2、依赖你的环境中有 numpy
+
+    # https://github.com/TA-Lib/ta-lib-python/issues/661#issuecomment-2207912052
+    $ pip install numpy
+
+3、然后才可以编译安装 python wrapper
+
+先安装 python 的 c 头文件，否则从 python 源代码编译时会报错 'Python.h: No such file or directory'
+
+    # https://blog.csdn.net/xk_xx/article/details/123166742
+    $ sudo dnf install python3-devel  # Fedora
+    $ sudo apt install python3-dev    # Debian
+
+然后才可以从 python 源代码编译了
+
+    # 如果前面安装 c 运行库时指定了生成的路径 `./configure --prefix=/usr`，则这里需要设置环境变量
+    $ export TA_LIBRARY_PATH=/usr/lib64
+    $ export TA_INCLUDE_PATH=/usr/include
+
+    $ git clone --depth=1 https://github.com/TA-Lib/ta-lib-python
+    $ cd ta-lib-python
+    $ python setup.py install
+
 ## 配置 VS Code
 
     https://code.visualstudio.com/docs#vscode
