@@ -10795,6 +10795,7 @@ OnCalendar=daily
 Persistent=true
 AccuracySec=1h
 RandomizedDelaySec=900
+Unit=rsync_bkup.service
 
 [Install]
 WantedBy=timers.target
@@ -14737,6 +14738,7 @@ PartOf=graphical-session.target
 OnStartupSec=1
 OnUnitActiveSec=5min
 AccuracySec=1s
+Unit=background@.service
 
 [Install]
 WantedBy=gnome-session.target
