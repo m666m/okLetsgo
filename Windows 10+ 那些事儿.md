@@ -880,16 +880,23 @@ Windows 10 下发现取消这个组件，居然有 Windows 更新的安装包报
 
 ### 取消输入用户登录密码
 
-以下方法
-    1、
-    运行“regedit.exe”，打开注册表 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\PasswordLess\Device
+不登录微软账户，只使用本地账户更方便。
 
-    将 DevicePasswordLessBuildVersion 值设置为0，即可出现复选框。
+最方便的是使用 Windows 操作系统的计算机管理中的用户管理：
 
-    2、
-    运行“netplwiz.exe”，取消勾选复选框“用户必须输入密码”，这时会提示需要记住的密码免密登录的用户名及密码
+    运行 Compmgmt.msc，选择 计算机管理（本地）-> 系统工具 -> 本地用户和组 -> 用户
 
-    3、重启计算机验证
+    在你想要管理的用户名点击右键，选择“设置密码”，连续两次输入空密码即可实现免密码登录；选择“属性”，勾选“密码永不过期”
+
+使用微软官方工具 sysinternals 的 autologon 工具帮你记住用户名和密码
+
+    https://learn.microsoft.com/zh-cn/sysinternals/downloads/autologon
+
+其它方法：
+
+    运行“netplwiz.exe”，选择要管理的用户，点击按钮重置密码，连续两次输入空密码即可实现免密码登录
+
+以上修改都是重启计算机生效。
 
 ### 关闭 Windows defender杀毒软件
 
