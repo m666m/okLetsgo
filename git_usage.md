@@ -5190,7 +5190,7 @@ tag命令后跟 -s 参数即可
 
         Initial commit
 
-## 无法访问 github 的解决方案
+## 妾内无法访问 github 的解决方案
 
 主要针对阻断域名的情况，用 ip 地址解析到 dns 即可
 
@@ -5228,7 +5228,9 @@ hosts 文件在每个系统的位置不一：
 
     https://tool.chinaz.com/dns
 
-把该ip更新到 /etc/hosts 文件：
+    https://www.ipaddress.com/
+
+把该ip更新到 hosts 文件：
 
     20.205.243.166 github.com
     185.199.108.133 raw.githubusercontent.com
@@ -5288,13 +5290,35 @@ rm $tfile
 
 如果还不行，那就只能换个方法了。
 
-## github 加速
+## GitHub 用 cdn 加速
+
+jsdelivr  <https://cdn.jsdelivr.net/gh/xxx>
 
 下载个配置文件啥的，用 jsdelivr 即可
 
     https://cdn.jsdelivr.net/gh/gravitl/netmaker@master/compose/docker-compose.yml
 
-## 如果 Github 完蛋了
+比如，要获取
+
+    https://github.com/arcticicestudio/nord-dircolors/src/dir_colors
+
+其 develop 分支下的原始文件地址是
+
+    https://raw.githubusercontent.com/arcticicestudio/develop/nord-dircolors/src/dir_colors
+
+用 cdn 加速的地址是
+
+    https://cdn.jsdelivr.net/gh/arcticicestudio/nord-dircolors@develop/src/dir_colors
+
+一般都是 master 分支
+
+    https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts
+
+转换为
+
+    https://cdn.jsdelivr.net/gh/maxiaof/github-hosts@master/hosts
+
+## 如果 Github 彻底完蛋了
 
     https://gitlab.com/
 

@@ -2007,17 +2007,19 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
 第一块硬盘安装 Linux，然后虚拟机安装 Widnows，然后把该虚拟机转到第二块硬盘上作为实机可单独启动，而且在 Linux 里还可以作为虚拟机挂载使用！详见章节 [qcow2 虚拟机转为实体机]、[挂载实体机所在硬盘作为虚拟机](virtualization think)。
 
-#### 解决双系统安装 Windows 与 Linux 时间差8个小时的问题
+#### 解决双系统安装 Windows 与 Linux 时间差8个小时
 
 如果是虚拟机中的 Windows 时间经常不准，详见章节 [虚拟机在长时间运行后时间变慢](virtualization think)。
 
-Linux 处理 RTC 时间跟 Windows 的机制不同：
+操作系统对时间的处理，依赖计算机主板上的 RTC 时钟硬件，这个硬件在关机时也可以保持系统时间，从而保证了开机后操作系统即有一个准确可用的系统时间。
 
-    Linux 默认认硬件时间为 GMT+0 时间，即世界标准时间 UTC。操作系统在显示系统时间时，用硬件时间加上当前的时区和夏令时偏移，显示出本地时间，如中国是东八区无夏令时，为 GMT+8-0。
+如何处理 RTC 硬件时间 Linux 跟 Windows 的机制不同：
 
-    而 Windows 认为硬件时间就是时间，即中国本地时间。
+    Linux 默认认硬件时间为 GMT+0 时间，即世界标准时间 UTC。Linux 在显示时间时，用硬件时间加上当前操作系统的时区和夏令时偏移，计算出本地时间进行显示，如中国是东八区无夏令时，为 GMT+8-0。
 
-因此，如果用户在一台计算机上切换使用两个操作系统，则每个操作系统的时间校准服务都会按自己的理解设置系统时间，继而使主板上的 RTC 时钟变化，导致二者的时间差值是当地时间跟零时区的差值，比如中国的 Windows 时间会比正常时间慢 8 个小时。
+    而 Windows 认为硬件时间就是保存的本地时间，比如在中国，硬件时间就是北京时间 GMT+8。
+
+因此，如果用户在一台计算机上切换使用两个操作系统，则每个操作系统的时间校准服务都会按自己的理解设置系统时间，继而修改了 RTC 时钟，二者的时间差值正好是当地时间跟零时区的差值，比如在中国，切换过 Linux 系统后，你使用 Windows 时会发现时间会比正常时间慢 8 个小时，过一阵系统的 NTP 服务才会纠正这个错误。
 
 解决办法：
 
@@ -2025,7 +2027,7 @@ Linux 处理 RTC 时间跟 Windows 的机制不同：
 
 登录 Windows，打开“开始-运行”，输入 “regedit” 打开注册表。
 
-进入 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TimeZoneInformation\ 中添加一项类型为 REG_DWORD（64位系统为REG_QWORD）的值，名称为 RealTimeIsUniversal ，值设为 1。这样可以将系统启动时对待硬件时间的方式从 localtime 改成 utc，改完后重启计算机生效。
+进入 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TimeZoneInformation\ 中添加一项类型为 REG_DWORD（64位系统为REG_QWORD）的值，名称为 RealTimeIsUniversal ，值设为 1。这样可以将 Windows 对待硬件时间的方式从 localtime 改成 utc，改完后重启计算机生效。
 
 Windows 主机和 Windows 虚拟机都适用这个方法。
 
@@ -2042,7 +2044,7 @@ Linux 可以通过 `hwclock -w` 命令将系统时间同步到 RTC 硬件时间�
 
     $ sudo reboot
 
-缺点是无法适应夏令时等时区变化情况，不过只要我们的计算机不在飞机上而且所在地区没有夏令时，就没有关系：
+缺点是无法适应时区变化的情况，不过只要我们的计算机不在飞机上而且所在地区没有夏令时，就没有关系：
 
     $ timedatectl status
                 Local time: 二 2023-08-08 15:30:53 +08
@@ -2050,8 +2052,8 @@ Linux 可以通过 `hwclock -w` 命令将系统时间同步到 RTC 硬件时间�
                     RTC time: 二 2023-08-08 15:30:53 <----- RTC 跟本地时间一致
                     Time zone: Asia/Singapore (+08, +0800)
     System clock synchronized: yes    <-------- 时间同步正常
-                NTP service: active   <-------- 使用 chrony、systemd-timesyncd 等 NTP 服务可以被这个命令识别到
-            RTC in local TZ: yes      <-------- 兼容 Windows 设置了硬件 RTC 保存本地时间，下面是详细的警告信息
+                NTP service: active   <-------- 正在使用 chrony、systemd-timesyncd 等 NTP 服务
+            RTC in local TZ: yes      <-------- 兼容 Windows 设置了硬件 RTC 保存本地时间，下面会显示详细的警告信息
 
     Warning: The system is configured to read the RTC time in the local time zone.
             This mode cannot be fully supported. It will create various problems
@@ -2532,16 +2534,48 @@ WSL2 的兼容性比 WSL1 好，仅 IO 性能不如 WSL1 快，见下面章节 [
 
 另外 Windows 10+ 也提供了本地化运行 Linux 的接口，参见章节 [Windows 10 本地化 Linux 编程接口](gnu_tools.md)。
 
-#### 默认使用 Ubuntu
+先查看当前可用的版本：
 
-    https://docs.microsoft.com/Windows/wsl/install
+    PS C:\> wsl --list  --online
+    无法从“https://raw.githubusercontent.com/microsoft/WSL/master/distributions/DistributionInfo.json”中提取列表分发。操作超时
+
+如果是上面这样就洗洗睡吧，什么也别想。
+
+    PS C:\> wsl --list --online
+    以下是可安装的有效分发的列表。
+    使用 'wsl.exe --install <Distro>' 安装。
+
+    NAME                            FRIENDLY NAME
+    AlmaLinux-8                     AlmaLinux OS 8
+    AlmaLinux-9                     AlmaLinux OS 9
+    AlmaLinux-Kitten-10             AlmaLinux OS Kitten 10
+    Debian                          Debian GNU/Linux
+    SUSE-Linux-Enterprise-15-SP5    SUSE Linux Enterprise 15 SP5
+    SUSE-Linux-Enterprise-15-SP6    SUSE Linux Enterprise 15 SP6
+    Ubuntu                          Ubuntu
+    Ubuntu-24.04                    Ubuntu 24.04 LTS
+    kali-linux                      Kali Linux Rolling
+    openSUSE-Tumbleweed             openSUSE Tumbleweed
+    openSUSE-Leap-15.6              openSUSE Leap 15.6
+    Ubuntu-18.04                    Ubuntu 18.04 LTS
+    Ubuntu-20.04                    Ubuntu 20.04 LTS
+    Ubuntu-22.04                    Ubuntu 22.04 LTS
+    OracleLinux_7_9                 Oracle Linux 7.9
+    OracleLinux_8_7                 Oracle Linux 8.7
+    OracleLinux_9_1                 Oracle Linux 9.1
+
+#### 默认安装的是 Ubuntu
+
+    https://learn.microsoft.com/en-us/Windows/wsl/install
+
+    FAQ https://learn.microsoft.com/zh-cn/windows/wsl/troubleshooting#installation-issues
 
 简单使用 Ubuntu 就一条命令
 
     # 安装 ubuntu，已经安装过了忽略这条
     wsl --install   # -d Ubuntu 默认不需要打
 
-在 Windows 命令提示符或 PowerShell 中，可以在当前命令行中使用默认的 Linux 发行版，直接输入 bash 或 ubuntu 回车就可以了。
+在 Windows 命令提示符或 PowerShell 中，可以在当前命令行中使用默认的 Linux 发行版，直接输入 `bash` 或 `ubuntu` 回车就可以看到提示。
 
     # 提供 Linux 系统中的日期。
     wsl date
