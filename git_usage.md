@@ -5300,11 +5300,11 @@ jsdelivr  <https://cdn.jsdelivr.net/gh/xxx>
 
 比如，要获取
 
-    https://github.com/arcticicestudio/nord-dircolors/src/dir_colors
+    https://github.com/nordtheme/dircolors/blob/develop/src/dir_colors
 
 其 develop 分支下的原始文件地址是
 
-    https://raw.githubusercontent.com/arcticicestudio/develop/nord-dircolors/src/dir_colors
+    https://raw.githubusercontent.com/nordtheme/dircolors/refs/heads/develop/src/dir_colors
 
 用 cdn 加速的地址是
 
