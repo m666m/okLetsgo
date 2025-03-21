@@ -123,7 +123,7 @@ export COLORTERM=truecolor
 if [ -x /usr/bin/dircolors ]; then
 
     # 使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
-    [[ -f ~/.dir_colors ]] || (echo 'Get nord-dircolors from github' && curl -fsSLo ~/.dir_colors https://cdn.jsdelivr.net/gh/arcticicestudio/nord-dircolors@develop/src/dir_colors)
+    [[ -f ~/.dir_colors ]] || (echo 'Get nord-dircolors from github' && curl -fsSLo ~/.dir_colors https://raw.githubusercontent.com/nordtheme/dircolors/refs/heads/develop/src/dir_colors || curl -fsSLo ~/.dir_colors https://cdn.jsdelivr.net/gh/arcticicestudio/nord-dircolors@develop/src/dir_colors)
     test -r ~/.dir_colors && eval "$(dircolors -b ~/.dir_colors)" || eval "$(dircolors -b)"
 
     # 注意基础命令不要搞太花哨，导致脚本里解析出现用法不一致的问题
@@ -636,7 +636,7 @@ fi
 
 # ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
 if [[ ! $os_type = 'windows' ]]; then
-    [[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh || (echo 'Get ackg from github...' && curl -fsSL https://cdn.jsdelivr.net/gh/paoloantinori/hhighlighter@master/h.sh |sed -e 's/h()/ackg()/' |sudo tee /usr/local/bin/ackg.sh) && source /usr/local/bin/ackg.sh
+    [[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh || (echo 'Get ackg from github...' && curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/refs/heads/master/h.sh  2>/dev/null || curl -fsSL https://cdn.jsdelivr.net/gh/paoloantinori/hhighlighter@master/h.sh | sed -e 's/h()/ackg()/' | sudo tee /usr/local/bin/ackg.sh) && source /usr/local/bin/ackg.sh
 fi
 
 #################################
