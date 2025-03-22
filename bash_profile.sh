@@ -512,8 +512,7 @@ export GPG_TTY=$(tty)
 # gpg-connect-agent updatestartuptty /bye >/dev/null
 
 #################################
-# Mac OS
-# 如果你要在 OS-X 上使用 gpg-agent，记得将下面的命令填入你的 Shell 的默认配置中。
+# macOS 使用 gpg-agent
 #
 if [[ $os_type = 'macos' ]]; then
     if [ -f ~/.gnupg/.gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
@@ -528,9 +527,8 @@ fi
 # Linux bash / Windows git bash(mintty)
 # 多会话复用 ssh 密钥代理
 
-# GNOME 桌面环境下的终端需要给 ssh 密钥代理 ssh-agent 设置变量指向 gnome-keyring-daemon
+# Linux GNOME 桌面环境下的终端需要给 ssh 密钥代理 ssh-agent 设置变量指向 gnome-keyring-daemon
 if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
-    # if [[ $(uname) == 'Linux' ]]; then
 
     # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
     # 如果有时候没有启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh 会导致无法读取ssh代理的密钥
@@ -541,25 +539,20 @@ if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
     export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
     export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
-# Windows git bash 环境
+# Windows git bash(mintty) 环境利用 ssh-pageant 连接到 putty 的 pagent.exe 进程，共用其缓存的密钥
+# 来自章节 [使ssh身份认证统一调用putty的pageant](ssh.md think)
 elif [[ $os_type = 'windows' ]]; then
 
-    # Windows git bash(mintty)
-    # 多会话复用 ssh-pageant，用它连接 putty 的 pagent.exe，稍带运行gpg钥匙圈更新
-    # 来自章节 [使ssh鉴权统一调用putty的pageant](ssh.md think)
-
-    # 利用检查 ssh-pageant 进程是否存在，判断是否开机后第一次打开bash会话，则运行gpg钥匙圈更新
     if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
-        # 开机后第一次打开bash会话
+        # 如果是第一次打开bash会话，先清理掉之前的临时文件，防止被使用
         rm -f /tmp/.ssh-pageant-$USERNAME
 
+        # 稍带运行个 gpg 钥匙圈更新
         echo ''
         # echo "update gpg keyrings, wait a second..."
         # gpg --refresh-keys
-
         echo "GPG update TrustDB,跳过 owner-trust 未定义的导入公钥..."
         gpg --check-trustdb
-
         echo ''
         echo "GPG check sigs..."
         gpg --check-sigs
@@ -571,10 +564,9 @@ elif [[ $os_type = 'windows' ]]; then
     eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
     ssh-add -l
 
-# 默认用 tty 命令行环境通用的设置
+# 默认是 Linux tty 命令行环境，这个设置最通用
 else
 
-    # Linux bash
     # 多会话复用 ssh-agent
     # 代码来源 git bash auto ssh-agent
     # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
