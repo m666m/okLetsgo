@@ -7772,6 +7772,7 @@ newt 库的 whiptail 在命令行环境下，不需要桌面图形界面即可�
 
     目前都符号链接指向 plocate 了，其配置文件在  /etc/updatedb.conf `man updatedb`
 
+    # apt install plocate
     $ locate libgcc
 
 在 $PATH 查找你的命令
