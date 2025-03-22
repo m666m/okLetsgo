@@ -544,7 +544,7 @@ if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
 elif [[ $os_type = 'windows' ]]; then
 
     if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
-        # 如果是第一次打开bash会话，先清理掉之前的临时文件，防止被使用
+        # agent未运行视作开机后第一次打开bash会话，先清理掉 ssh-pageant 上次使用过的临时文件，否则会被加载
         rm -f /tmp/.ssh-pageant-$USERNAME
 
         # 稍带运行个 gpg 钥匙圈更新
@@ -567,10 +567,9 @@ elif [[ $os_type = 'windows' ]]; then
 # 默认是 Linux tty 命令行环境，这个设置最通用
 else
 
-    # 多会话复用 ssh-agent
+    # 来自章节 [多会话复用 ssh-agent 进程](ssh.md think)
     # 代码来源 git bash auto ssh-agent
     # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
-    # 来自章节 [多会话复用 ssh-agent 进程] <ssh okletsgo>
 
     agent_env=~/.ssh/agent.env
 
@@ -591,13 +590,12 @@ else
     if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
         # agent未运行视作开机后第一次打开bash会话
 
+        # 稍带运行个 gpg 钥匙圈更新
         echo ''
         # echo "更新gpg钥匙圈需要点时间，请稍等..."
         # gpg --refresh-keys
-
         echo "GPG update TrustDB, 跳过 owner-trust 未定义的导入公钥..."
         gpg --check-trustdb
-
         echo ''
         echo "GPG check sigs..."
         gpg --check-sigs
@@ -605,12 +603,12 @@ else
         echo && echo "Start ssh-agent..."
         agent_start
 
-        echo "-->Adding ssh key to agent，input passphrase of the key if prompted"
+        echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
         ssh-add
 
     elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
         # ssh-agent正在运行，但是没有加载过密钥
-        echo "-->Adding ssh key to agent，input passphrase of the key if prompted"
+        echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
         ssh-add
     fi
 
