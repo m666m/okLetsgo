@@ -2598,6 +2598,26 @@ WSL2 的兼容性比 WSL1 好，仅 IO 性能不如 WSL1 快，见下面章节 [
 
     运行 cd /mnt/c 访问 c:\
 
+##### plocate 避坑
+
+plocate 会自动在每日凌晨扫描你硬盘上的文件，但对 wsl2 环境来说，扫宿主机硬盘 io 效率低而且其默认配置没有避开 Windows 系统目录，执行 `locate wow64` 看看它收集了多少宿主机上没有用处的文件吧
+
+    https://zhuanlan.zhihu.com/p/706874850
+
+Debian 系单独安装 plocate 软件包，安装时会自动执行 `updatedb`，就卡死在扫描宿主机硬盘上了。
+
+Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘，也会是个负担。
+
+确认下数据库不会很大
+
+    $ ls -lh /var/lib/plocate
+
+所以，必须修改配置文件 /etc/updatedb.conf，让 `updatedb` 不要去扫描 Windows 宿主机的目录。
+
+    PRUNEFS="drvfs NFS afs autofs binfmt_misc ..."
+
+[20240703.4a] 这 "drvfs", 指的是 /mnt/c, /mnt/d 这些路径用的 "file system type", 敲 mount 命令查询可知. 然而, 这么写却没有效果, 稍后 sudo updatedb 一运行, Procmon 依然看到巨量的 C: 扫描动作. 不知为何, 网搜无果. 只好先用 /mnt/c  ... /mnt/z 这 26 个路径加入 `PRUNEPATH` 配置项将就着。
+
 #### 混合使用 Windows 和 Linux 进行工作
 
     https://docs.microsoft.com/zh-cn/windows/wsl/filesystems
