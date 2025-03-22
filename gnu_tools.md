@@ -3566,7 +3566,7 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 ####################################################################
 
 # 如果有 .bash_profile，执行之
-source ~/.bash_profile
+[[ -f ~/.p10k.zsh ]] && source ~/.bash_profile
 
 # powerlevel10k 安装程序自动添加的，不用动
 source ~/powerlevel10k/powerlevel10k.zsh-theme
