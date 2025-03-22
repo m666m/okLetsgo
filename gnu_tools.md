@@ -560,8 +560,9 @@ UnderlineColour=153,241,219
 AllowBlinking=yes
 BoldAsFont=yes
 
-# 2023.2 脚本执行速度慢于 mintty 本地处理
 # Windows version >= 10 / 2019 1809 (build >= 10.0.17763)
+# 2023.2 脚本执行速度慢于 mintty 本地处理
+# 2025.3 进入 tmux 后打印乱码
 #ConPTY=on
 
 # 自定义颜色方案，跟深色背景搭配
