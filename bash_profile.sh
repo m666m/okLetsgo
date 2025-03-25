@@ -254,15 +254,15 @@ if [ -x /usr/bin/dircolors ]; then
     # mount 使用当前用户权限挂载 Windows 分区 U 盘，用于防止默认参数使用 root 用户权限不方便当前用户读写
     function mntfat {
         echo "[挂载 FAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro $1 $2
+        sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=$(id -u),gid=$(id -g),umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro $1 $2
     }
     function mntexfat {
         echo "[挂载 exFAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro $1 $2
+        sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=$(id -u),gid=$(id -g),fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro $1 $2
     }
     function mntntfs {
         echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=1000,gid=1000,windows_names,iocharset=utf8 $1 $2
+        sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=$(id -u),gid=$(id -g),windows_names,iocharset=utf8 $1 $2
     }
     function mntram {
         echo "[映射内存目录 $1，用完了记得要解除挂载：sync; sudo umount $1]"
