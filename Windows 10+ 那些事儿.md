@@ -2464,7 +2464,7 @@ hyper-v 虚拟机，使用宿主机的无线网卡建立虚拟交换机的，都
 
 ##### 强行开启 hyper-v 虚拟机显卡直通
 
-推荐 [在 WSL 中启用显卡加速]，在 hytper-v 虚拟机里直通显卡目前没有好的方案。
+推荐 [在 WSL 中启用显卡加速]，在 hytper-v 虚拟机里直通显卡目前没有好的方案，目前的非官方方案都是基于 WSL 改的。
 
     https://zhuanlan.zhihu.com/p/335338558
         https://forum.cfx.re/t/running-fivem-in-a-hyper-v-vm-with-full-gpu-performance-for-testing-gpu-partitioning/1281205
@@ -2527,7 +2527,7 @@ Set-VM -HighMemoryMappedIoSpace 8GB -VMName $vm
 
 ##### hyper-v 安装 linux 系统，GPU显卡“直通”虚拟机
 
-推荐 [在 WSL 中启用显卡加速]，在 hytper-v 虚拟机里直通显卡目前没有好的方案。
+推荐 [在 WSL 中启用显卡加速]，在 hytper-v 虚拟机里直通显卡目前没有好的方案，目前的非官方方案都是基于 WSL 改的。
 
     https://zhuanlan.zhihu.com/p/3003643165
 
@@ -2586,9 +2586,13 @@ Set-VM -HighMemoryMappedIoSpace 32GB -VMName $vm
 
 4、安装内核
 
-下载工具包
+其实在 Windows 更新的高级选项中，勾选“接收其它 Microsoft 产品的更新”，就可以把 wsl 内核保持最新了。
 
-    https://github.com/microsoft/WSL2-Linux-Kernel/releases?q=&expanded=true
+如果想手动更新内核：
+
+    https://learn.microsoft.com/zh-cn/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package
+
+        https://github.com/microsoft/WSL2-Linux-Kernel/releases?q=&expanded=true
 
 搜索你的内核版本，然后下载压缩包。
 
@@ -2848,6 +2852,20 @@ WSL2 的兼容性比 WSL1 好，仅 IO 性能不如 WSL1 快，见下面章节 [
     # 在 Debian 中运行 npm init 命令
     wsl npm init
 
+注意：  WSL 下安装的 Ubuntu 等发行版，其实是微软发布的 Linux 版本，不能是发行版的官方版本
+
+    https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-linux-kernel
+
+微软发布的基于 WSL 的 Linux 版本提供了完全的二进制兼容，并伴随 Widnows 更新提供：通过在设置应用的 Windows 更新部分中选择“检查更新”，确保你拥有最新的内核
+
+    确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。 可以在设置应用 Windows 更新部分的“高级”选项中找到该项。
+
+用户也可以自行升级微软发布的基于 WSL 的 Linux 内核
+
+    https://learn.microsoft.com/zh-cn/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package
+
+        https://github.com/microsoft/WSL2-Linux-Kernel/releases?q=&expanded=true
+
 #### 在 WSL 中如何访问我的 C: 驱动器
 
 系统会自动为本地计算机上的硬盘驱动器创建装入点，通过这些装入点可以轻松访问 Windows 文件系统。
@@ -2903,155 +2921,6 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
     而不使用 Windows 文件系统根目录：
 
         /mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
-
-#### WSL 1 和 WSL 2 的定制安装
-
-    https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual
-
-1、开启功能： WSL
-
-首选：
-Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出窗口选择“启用或关闭 Windows 功能”，
-在列表勾选“适用于 Linux 的 Windows 子系统”，确定。
-
-或
-
-```powershell
-
-    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-
-```
-
-验证
-
-```powershell
-
-    Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-
-```
-
-到这里已经安装了 WSL 1，如果只想安装 WSL 1，现在可以重新启动计算机，然后继续执行步骤5下载安装Linux发行版了。
-下面的描述都是为了安装 WSL 2 的。
-
-2、开启功能： 虚拟机平台
-
-```powershell
-
-    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-
-```
-
-3、下载 Linux 内核更新包，双击提权安装即可。
-
-<https://wslstorestorage.blob.core.Windows.net/wslblob/wsl_update_x64.msi>
-
-```powershell
-
-    wsl --update
-
-```
-
-4.将 WSL 2 设置为默认版本
-
-```powershell
-
-    wsl --set-default-version 2
-
-```
-
-5.下载 Linux 发行版并安装
-
-详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual#downloading-distributions>
-
-    <https://aka.ms/wslubuntu2004>
-    <https://aka.ms/wsl-ubuntu-1604>
-
-```powershell
-
-    Invoke-WebRequest -Uri https://aka.ms/wslubuntu2004 -OutFile Ubuntu.appx -UseBasicParsing
-
-```
-
-或
-
-```cmd
-
-    curl.exe -L -o ubuntu-2004.appx https://aka.ms/wsl-ubuntu-2004
-
-```
-
-安装：
-
-```powershell
-
-    Add-AppxPackage .\app_name.appx
-
-```
-
-注销并卸载 WSL 发行版：
-
-```powershell
-
-    wsl --unregister <DistributionName>
-
-```
-
-6.验证
-
-```powershell
-
-    # 更新 WSL 内核，需要管理员权限
-    wsl --update
-
-    # 查看当前 wsl 安装的版本及默认 linux 系统
-    wsl --status
-    默认分发：Ubuntu
-    默认版本：2
-
-    # 进入 ubuntu 系统
-    wsl 或 bash
-
-```
-
-```shell
-
-    # 更新下包
-    sudo apt update
-    # 建议更换国内源之后再做 apt-get update | apt-get upgrade
-
-    # 看看安装的什么版本的 linux
-    $ sudo lsb_release -a
-    [sudo] password for xx:
-    No LSB modules are available.
-    Distributor ID: Ubuntu
-    Description:    Ubuntu 20.04 LTS
-    Release:        20.04
-    Codename:       focal
-
-    # 安装小火车
-    sudo apt install sl
-
-    # 出现火车，说明安装成功
-    sl
-```
-
-7.配置多个 linux 系统
-
-详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/wsl-config>
-
-8.导入任何 Linux 发行版
-
-详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/use-custom-distro>
-
-9.WSL 命令行参考
-
-详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/basic-commands>
-
-#### 使用了 WSL2 就只能用微软发布的 Linux 版本
-
-    https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-linux-kernel
-
-它提供了完全的二进制兼容，用户可以自行升级 Linux 内核。
 
 #### WSL2 中修改家目录为原生 ext4
 
@@ -3208,6 +3077,149 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
 
+#### WSL 1 和 WSL 2 的定制安装
+
+    https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual
+
+1、开启功能： WSL
+
+首选：
+Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出窗口选择“启用或关闭 Windows 功能”，
+在列表勾选“适用于 Linux 的 Windows 子系统”，确定。
+
+或
+
+```powershell
+
+    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+
+```
+
+验证
+
+```powershell
+
+    Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+
+```
+
+到这里已经安装了 WSL 1，如果只想安装 WSL 1，现在可以重新启动计算机，然后继续执行步骤5下载安装Linux发行版了。
+下面的描述都是为了安装 WSL 2 的。
+
+2、开启功能： 虚拟机平台
+
+```powershell
+
+    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+```
+
+3、下载 Linux 内核更新包，双击提权安装即可。
+
+<https://wslstorestorage.blob.core.Windows.net/wslblob/wsl_update_x64.msi>
+
+```powershell
+
+    wsl --update
+
+```
+
+4.将 WSL 2 设置为默认版本
+
+```powershell
+
+    wsl --set-default-version 2
+
+```
+
+5.下载 Linux 发行版并安装
+
+详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual#downloading-distributions>
+
+    <https://aka.ms/wslubuntu2004>
+    <https://aka.ms/wsl-ubuntu-1604>
+
+```powershell
+
+    Invoke-WebRequest -Uri https://aka.ms/wslubuntu2004 -OutFile Ubuntu.appx -UseBasicParsing
+
+```
+
+或
+
+```cmd
+
+    curl.exe -L -o ubuntu-2004.appx https://aka.ms/wsl-ubuntu-2004
+
+```
+
+安装：
+
+```powershell
+
+    Add-AppxPackage .\app_name.appx
+
+```
+
+注销并卸载 WSL 发行版：
+
+```powershell
+
+    wsl --unregister <DistributionName>
+
+```
+
+6.验证
+
+```powershell
+
+    # 更新 WSL 内核，需要管理员权限
+    wsl --update
+
+    # 查看当前 wsl 安装的版本及默认 linux 系统
+    wsl --status
+    默认分发：Ubuntu
+    默认版本：2
+
+    # 进入 ubuntu 系统
+    wsl 或 bash
+
+```
+
+```shell
+
+    # 更新下包
+    sudo apt update
+    # 建议更换国内源之后再做 apt-get update | apt-get upgrade
+
+    # 看看安装的什么版本的 linux
+    $ sudo lsb_release -a
+    [sudo] password for xx:
+    No LSB modules are available.
+    Distributor ID: Ubuntu
+    Description:    Ubuntu 20.04 LTS
+    Release:        20.04
+    Codename:       focal
+
+    # 安装小火车
+    sudo apt install sl
+
+    # 出现火车，说明安装成功
+    sl
+```
+
+7.配置多个 linux 系统
+
+详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/wsl-config>
+
+8.导入任何 Linux 发行版
+
+详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/use-custom-distro>
+
+9.WSL 命令行参考
+
+详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/basic-commands>
+
 #### Windows Store 图形化安装 Ubuntu 子系统 (WSL)
 
 win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
@@ -3276,7 +3288,7 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 
 安装上述驱动程序后，请确保启用 WSL 并安装基于 glibc 的分发版，例如 Ubuntu 或 Debian。 通过在设置应用的 Windows 更新部分中选择“检查更新”，确保你拥有最新的内核。
 
-    确保启用“更新 Windows 时接收其他 Microsoft 产品的更新”。 可以在设置应用 Windows 更新部分的“高级”选项中找到该项。
+    确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。 可以在设置应用 Windows 更新部分的“高级”选项中找到该项。
 
 对于这些功能，需要 5.10.43.3 或更高版本的内核版本。 可以通过在 PowerShell 中运行以下命令来检查版本号。
 
@@ -3301,6 +3313,22 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
  WSL 上的 CUDA 社区论坛
 
     https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
+
+#### 在 WSL2 中使用 Docker
+
+    https://zhuanlan.zhihu.com/p/148511634
+
+1、下载安装 Docker Desktop for windows
+
+2、确认 Docker 使用你的 wsl2，启动Docker Desktop for Windows，点击“设置”按钮
+
+    确认勾选了 基于 WSL2 的引擎复选框 “Use the WSL 2 based engine”
+
+    在 Resources 的 WSL Integration 中设置要从哪个 WSL2 发行版中访问 Docker，确认勾选了 “Enable integration with my default WSL distro”，还可以勾选其它你安装的 distro，一般就是 Ubuntu。
+
+3、重启 Docker desktop for Windows
+
+重启完成后我们就可以在 WSL2 里面使用 docker 命令了
 
 ### Windows安卓子系统WSA
 

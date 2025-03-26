@@ -44,6 +44,8 @@ case "$os_name" in
         # 判断是否为树莓派（多重条件校验）
         if command -v vcgencmd >/dev/null 2>&1; then
             os_type="raspi"
+        elif uname -r | grep -i Microsoft >/dev/null 2>&1; then
+            os_type="wsl"
         else
             os_type="linux"
         fi
@@ -418,7 +420,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
 
     # podman
-    alias docker="podman"
+    [[ $os_type = 'linux' ]] && alias docker="podman"
     function pdms() {
         # https://stackoverflow.com/questions/28320134/how-can-i-list-all-tags-for-a-docker-image-on-a-remote-registry
         echo "[podman搜索列出镜像标签，非官方镜像需要完整的源地址]"
