@@ -12916,7 +12916,9 @@ Fedora
 
             uBlock Origin 广告屏蔽 https://microsoftedge.microsoft.com/addons/detail/ublock-origin/odfafepnkmbhccpbejgmiehpchacaeak
 
-            Superb Copy 解锁 csdn 右键复制 https://microsoftedge.microsoft.com/addons/detail/superb-copy/iaeijdamgmgkigibpoapgahideaobdde
+            Superb Copy 解锁 csdn/51cto 右键复制 https://microsoftedge.microsoft.com/addons/detail/superb-copy/iaeijdamgmgkigibpoapgahideaobdde
+
+            Sublime Copy 解锁 csdn/51cto 右键复制 https://microsoftedge.microsoft.com/addons/detail/sublime-copy/ligcjpcogfdnidfhkgcchmpheaeljakp
 
     GNOME Web
 
