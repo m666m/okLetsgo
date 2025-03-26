@@ -2442,7 +2442,7 @@ hyper-v 虚拟机，使用宿主机的无线网卡建立虚拟交换机的，都
 
 #### 虚拟机启用显卡加速
 
-如果是远程桌面需要显卡加速，在 mstsc 连接时选择高速网络会自动使用 RFX/GFX 技术。
+如果是远程桌面需要显卡加速， mstsc 在连接时选择高速网络，会自动使用 RFX/GFX 技术。
 
     Windows 远程桌面 从 RemoteFX(RFX) 演进出了 GFX
 
@@ -2461,6 +2461,234 @@ hyper-v 虚拟机，使用宿主机的无线网卡建立虚拟交换机的，都
         https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/deploy/deploying-graphics-devices-using-dda
 
 目前看是企业级应用优先，在 Windows Sever 上才有 DDA，M$ 忙着赚 AI 云计算的钱呢。
+
+##### 强行开启 hyper-v 虚拟机显卡直通
+
+推荐 [在 WSL 中启用显卡加速]，在 hytper-v 虚拟机里直通显卡目前没有好的方案。
+
+    https://zhuanlan.zhihu.com/p/335338558
+        https://forum.cfx.re/t/running-fivem-in-a-hyper-v-vm-with-full-gpu-performance-for-testing-gpu-partitioning/1281205
+
+首先，将显卡驱动升级到最新版。
+
+新建一个第二代 Hyper-V 虚拟机，设置核心数和内存容量，关闭检查点，打开增强会话模式，并装好 Windows 系统。
+
+为了不经过 Hyper-V 管理器而直接连接虚拟机，可以为以下目标创建快捷方式，今后直接通过快捷方式连接：
+
+    C:\Windows\System32\vmconnect.exe 你的计算机名称 你的虚拟机名称
+
+接着，新建内容如下的 Powershell 脚本，将“Your VM name” 替换成虚拟机的名称，并以管理员身份运行一次。注意，运行一次就够了，而且运行时虚拟机必须关机。
+
+```powershell
+param([switch]$Elevated)
+
+function Test-Admin {
+    $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
+    $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+}
+
+if ((Test-Admin) -eq $false)  {
+    if ($elevated) {
+        # tried to elevate, did not work, aborting
+    } else {
+        Start-Process powershell.exe -Verb RunAs -ArgumentList ('-noprofile -noexit -file "{0}" -elevated' -f ($myinvocation.MyCommand.Definition))
+    }
+    exit
+}
+
+'Running with full privileges!'
+'Setting GPU-PV...'
+
+$vm = "Your VM name"
+# replace the words in double quotation marks with your virtual machine's name
+Add-VMGpuPartitionAdapter -VMName $vm
+Set-VMGpuPartitionAdapter -VMName $vm -MinPartitionVRAM 80000000 -MaxPartitionVRAM 100000000 -OptimalPartitionVRAM 100000000 -MinPartitionEncode 80000000 -MaxPartitionEncode 100000000 -OptimalPartitionEncode 100000000 -MinPartitionDecode 80000000 -MaxPartitionDecode 100000000 -OptimalPartitionDecode 100000000 -MinPartitionCompute 80000000 -MaxPartitionCompute 100000000 -OptimalPartitionCompute 100000000
+Set-VM -GuestControlledCacheTypes $true -VMName $vm
+Set-VM -LowMemoryMappedIoSpace 128MB -VMName $vm
+Set-VM -HighMemoryMappedIoSpace 8GB -VMName $vm
+
+```
+
+关键代码复制自 Cfx.re Community，原代码最后一行写错了两个短横线，已经改正。如果提示禁止执行脚本，以管理员身份在 Powershell 中执行以下命令：
+
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+
+虚拟机开机，在宿主机的以下位置寻找显卡驱动文件夹：
+
+    C:\Windows\System32\DriverStore\FileRepository
+
+以 NVIDIA 为例，文件夹名为“nv_dispsi.inf_amd64_一串字符”，将它复制到虚拟机中的以下目录（如果不存在则手动创建该目录）：
+
+    C:\Windows\System32\HostDriverStore\FileRepository
+
+最后，关闭增强会话模式，重启虚拟机，虚拟显卡工作正常。
+
+    增强会话实际上相当于通过rdp连接虚拟机，rdp是本地渲染的，会提高性能，所以叫增强，但rdp这个本地渲染支持非常弱，不支持游戏那种复杂api，所以跑不了游戏，关掉增强会话就是普通vnc模式
+
+##### hyper-v 安装 linux 系统，GPU显卡“直通”虚拟机
+
+推荐 [在 WSL 中启用显卡加速]，在 hytper-v 虚拟机里直通显卡目前没有好的方案。
+
+    https://zhuanlan.zhihu.com/p/3003643165
+
+写在前面的话：
+
+    为什么不用wsl？因为 wsl 长期使用会占用大量空间，且不易删除。同时 wsl 的某些操作和虚拟机还是有些差异，不适合开发使用。
+
+    为什么不直接用虚拟机？虚拟机无论是vbox还是vmware都无法很好的使用显卡，尤其是在cpu没有核显的时候。
+
+    为什么不装双系统？双系统切换麻烦，大部分时间还是喜欢用 windows。期望 Linux 最好就是一个命令行的存在。
+
+    为什么直通打引号？因为专业来讲是GPU分区方案，并不是直通。
+
+新建二代虚拟机。按照常规方法安装虚拟机，注意设置：
+
+    关闭动态内存
+
+    关闭安全启动（即：不要勾选）
+
+    关闭检查点（即：不要勾选）
+
+配置显卡
+
+1、宿主机查看显卡，找到设备id。设备管理器->显示适配器
+
+如果有核显会列出多个，点击需要使用的GPU，右键选择【属性】。打开后在【详细信息】中选择【硬件Id】。再右键选择复制（后面要用到）。
+
+2、宿主机给虚拟机设置 GPU 设备
+
+管理员权限运行 powershell，输入 Get-VMHostPartitionableGpu 查看当前可分区的设备
+
+```powershell
+# 将这里 ubuntu 替换成 hyper-v 中虚拟机的名字（即你要使用GPU的系统）
+$vm = "ubuntu"
+# 将这里的路径替换成第1步复制的硬件id，或上面 Get-VMHostPartitionableGpu 列出的值
+$gpu_path = "\\?\PCI#VEN_10DE&DEV_1381&SUBSYS_84C81043&REV_A2#4&1d81e16&0&0019#{064092b3-625e-43bf-9eb5-dc845897dd59}\GPUPARAV"
+
+# 下面的依次执行即可
+Remove-VMGpuPartitionAdapter -VMName $vm
+Add-VMGpuPartitionAdapter -VMName $vm -InstancePath $gpu_path
+
+Set-VMGpuPartitionAdapter -VMName $vm -MinPartitionVRAM 80000000 -MaxPartitionVRAM 100000000 -OptimalPartitionVRAM 100000000 -MinPartitionEncode 80000000 -MaxPartitionEncode 100000000 -OptimalPartitionEncode 100000000 -MinPartitionDecode 80000000 -MaxPartitionDecode 100000000 -OptimalPartitionDecode 100000000 -MinPartitionCompute 80000000 -MaxPartitionCompute 100000000 -OptimalPartitionCompute 100000000
+
+Set-VM -GuestControlledCacheTypes $true -VMName $vm
+Set-VM -LowMemoryMappedIoSpace 1Gb -VMName $vm
+Set-VM -HighMemoryMappedIoSpace 32GB -VMName $vm
+
+```
+
+3、启动虚拟机，验证设备安装成功
+
+    $ sudo lspci -v
+    b7f0:00:00.0 3D controller: Microsoft Corporation Basic Render Driver
+
+应该可以看到显卡的信息
+
+4、安装内核
+
+下载工具包
+
+    https://github.com/microsoft/WSL2-Linux-Kernel/releases?q=&expanded=true
+
+搜索你的内核版本，然后下载压缩包。
+
+备注：如果没有完全一样的版本，选一个相近的也可以。或者将内核升级到这里有的版本。
+
+将压缩包解压
+
+    tar -xzf linux-msft-wsl-5.15.153.1.tar.gz
+
+创建一个文件 run.sh，内容如下：
+
+```bash
+#!/bin/bash -e
+if [ "$EUID" -ne 0 ]; then
+    echo "Swithing to root..."
+    exec sudo $0 "$@"
+fi
+
+apt-get install -y git dkms
+
+cd WSL2-Linux-Kernel-linux-msft-wsl-5.15.153.1
+VERSION=7a924ef
+
+cp -r drivers/hv/dxgkrnl /usr/src/dxgkrnl-$VERSION
+mkdir -p /usr/src/dxgkrnl-$VERSION/inc/{uapi/misc,linux}
+cp include/uapi/misc/d3dkmthk.h /usr/src/dxgkrnl-$VERSION/inc/uapi/misc/d3dkmthk.h
+cp include/linux/hyperv.h /usr/src/dxgkrnl-$VERSION/inc/linux/hyperv_dxgkrnl.h
+sed -i 's/\$(CONFIG_DXGKRNL)/m/' /usr/src/dxgkrnl-$VERSION/Makefile
+sed -i 's#linux/hyperv.h#linux/hyperv_dxgkrnl.h#' /usr/src/dxgkrnl-$VERSION/dxgmodule.c
+echo "EXTRA_CFLAGS=-I\$(PWD)/inc" >> /usr/src/dxgkrnl-$VERSION/Makefile
+
+cat > /usr/src/dxgkrnl-$VERSION/dkms.conf <<EOF
+PACKAGE_NAME="dxgkrnl"
+PACKAGE_VERSION="$VERSION"
+BUILT_MODULE_NAME="dxgkrnl"
+DEST_MODULE_LOCATION="/kernel/drivers/hv/dxgkrnl/"
+AUTOINSTALL="yes"
+EOF
+
+dkms add dxgkrnl/$VERSION
+dkms build dxgkrnl/$VERSION
+dkms install dxgkrnl/$VERSION
+
+```
+
+注意有两个地方需要替换
+
+    WSL2-Linux-Kernel-linux-msft-wsl-5.15.153.1 替换成你解压后的目录
+
+    VERSION 替换成 commit id
+
+执行上面脚本
+
+    bash run.sh
+
+5、安装驱动
+
+将宿主机中 C:\Windows\System32\lxss\lib 的文件拷贝到虚拟机中的 /usr/lib/wsl/lib/
+
+将宿主机中 C:\Windows\System32\DriverStore\FileRepository 的所有子目录拷贝到虚拟机中的 /usr/lib/wsl/drivers/
+
+然后设置权限：
+
+    sudo chmod 555 -R /usr/lib/wsl
+
+配置动态链接库搜索路径并更新
+
+    echo "/usr/lib/wsl/lib" > /etc/ld.so.conf.d/ld.wsl.conf
+
+    sudo ldconfig
+
+如果遇到提示软链接问题，就重新生成一下
+
+    sudo rm /usr/lib/wsl/lib/libcuda.so.1
+
+    sudo ln -s libcuda.so /usr/lib/wsl/lib/libcuda.so.1
+
+验证结果
+
+完成上面步骤，没有报错的话就重启虚拟机。
+
+在虚拟机的命令行运行如下命令：
+
+    # 查看能否正常输出
+    ls -l /dev/dxg
+
+    # 查看 GPU 信息
+    /usr/lib/wsl/lib/nvidia-smi
+
+创建一个软连接就可以直接使用 nvidia 命令了
+
+    sudo ln -s /usr/lib/wsl/lib/nvidia-smi /usr/local/bin/nvidia-smi
+
+如果报错
+
+    root@hdy-Virtual-Machine:~# nvidia-smi
+    Failed to initialize NVML: GPU access blocked by the operating system
+    Failed to properly shut down NVML: GPU access blocked by the operating system
+
+说明有三个dx12的核心库缺了，先开个wsl的虚拟机，内核接近的，然后去/usr/lib/wsl/lib里找到libd3d12.so libd3d12core.so libdxcore.so三个库还有libnvoptix.so.1这四个文件，拷进hyperv对应位置就可以了
 
 #### 迁移虚拟机
 
@@ -3031,6 +3259,48 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 最后要说明的一点是，这个系统是安装在 C:\Users\%user_name%\AppData\Local\lxss 中的，所以会占用 c 盘的空间，所以最好把数据之类的都保存在其他盘中，这样不至于使 c 盘急剧膨胀。
 
 后续关于如何更换国内源、配置 ubuntu 桌面并进行 vnc 连接，参见 <https://sspai.com/post/43813>
+
+#### 在 WSL 中启用显卡加速
+
+目前微软在 WSL 中已经支持 NVIDIA CUDA 了
+
+    https://learn.microsoft.com/zh-cn/windows/ai/directml/gpu-cuda-in-wsl
+
+1、下载并安装支持 NVIDIA CUDA 的 WSL 驱动程序
+
+    在 WSL 2 上开始使用 CUDA https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
+
+    适用于 Linux 的 Windows 子系统 (WSL) 上的 CUDA https://developer.nvidia.com/cuda/wsl
+
+2、安装 WSL
+
+安装上述驱动程序后，请确保启用 WSL 并安装基于 glibc 的分发版，例如 Ubuntu 或 Debian。 通过在设置应用的 Windows 更新部分中选择“检查更新”，确保你拥有最新的内核。
+
+    确保启用“更新 Windows 时接收其他 Microsoft 产品的更新”。 可以在设置应用 Windows 更新部分的“高级”选项中找到该项。
+
+对于这些功能，需要 5.10.43.3 或更高版本的内核版本。 可以通过在 PowerShell 中运行以下命令来检查版本号。
+
+    wsl cat /proc/version
+
+3、开始使用 NVIDIA CUDA
+
+按照 WSL 上的 NVIDIA CUDA 用户指南中的说明操作
+
+    https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
+
+你可以开始通过 NVIDIA Docker 使用现有的 Linux 工作流
+
+    https://github.com/NVIDIA/nvidia-docker
+
+或者在 WSL 中安装 PyTorch 或 TensorFlow
+
+    https://pytorch.org/get-started/locally/
+
+    https://www.tensorflow.org/install/gpu
+
+ WSL 上的 CUDA 社区论坛
+
+    https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
 
 ### Windows安卓子系统WSA
 
