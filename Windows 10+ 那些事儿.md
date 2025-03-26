@@ -2398,6 +2398,10 @@ NAT 模式：
 
 这里只是提供一个可能的解决方法，因为我没办法验证上面的操作能否实际有效。
 
+##### 虚拟机到宿主机拷贝速度慢
+
+常见于使用无线网卡联网的主机，解决办法见章节 [Windows 访问 samba 速度慢](init_a_server think)。
+
 #### 开启 hyper-v 的负面影响
 
     https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/about/#limitations
