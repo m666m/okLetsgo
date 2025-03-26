@@ -2400,7 +2400,33 @@ NAT 模式：
 
 ##### 虚拟机到宿主机拷贝速度慢
 
-常见于使用无线网卡联网的主机，解决办法见章节 [Windows 访问 samba 速度慢](init_a_server think)。
+hyper-v 虚拟机，使用宿主机的无线网卡建立虚拟交换机的，都有这个情况，打开网页卡顿、从虚拟机到宿主机拷贝速度慢等，只要用到虚拟交换机的，都有这个问题，而微软至今未优化无线网卡做虚拟交换机的性能问题。
+
+关联问题是章节 [Windows 访问 samba 速度慢](init_a_server think)。
+
+开启 Hyper-V 的虚拟外部网络交换机之后的内网上传速度长时间卡死在 100多Kbps 左右，最快的时候才 1Mbps，外网上传速度大概只剩下平时的一半。这个问题从 2018 年开始用 Windows10 系统上的 Hyper-V 虚拟机时就遇到了，当时的网卡是 Intel AC9260，后面陆续用过 Intel AX200 、Intel AX211 几款无线网卡的笔记本电脑，都存在同样的问题
+
+    https://zhuanlan.zhihu.com/p/625867441?utm_id=0
+
+    https://learn.microsoft.com/zh-cn/troubleshoot/windows-server/networking/slow-smb-file-transfer
+
+在电脑的设置中找到网络设置，点击高级网络设置，在在右侧界面的下方点击“更多网络设配器选项”，会打开网络连接设置窗口。
+
+选中 Hyper-V 创建的虚拟网卡，如“vEthernet (Ethernet)”，右击网卡，查看属性，然后点击配置按钮。
+
+如下两项设置
+
+    Large Send Offload Version 2(IPV4)
+
+    Large Send Offload Version 2(IPV6)
+
+尝试将这两项设置调整为 Disabled 之后进行测试，内外网的速度都回归正常了。
+
+这个问题的原因，其实就是因为 Hyper-V 创建出的虚拟网卡默认启用了这两个选项，但是我们的 Intel 无线网卡硬件实际上并不支持这两项功能，所以会造成这样一个副作用。可以看到 Intel 的无线网卡的配置界面并没有那两项的配置。顺便查看了台式机的有线网卡，就支持 Hyper-V 虚拟网卡需要的那两项功能。
+
+查看当前传输速度
+
+    任务栏右键，选择任务管理器，打开后选择“性能”选项卡，点击你的虚拟交换机，可以看到当前传输速度的详情。
 
 #### 开启 hyper-v 的负面影响
 
