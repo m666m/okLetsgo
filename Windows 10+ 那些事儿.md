@@ -319,6 +319,8 @@ u盘制作工具
 
 rufus 4.6 版本 检测到被吊销的 UEFI 引导加载器警告
 
+    https://www.zhihu.com/question/1897546762/answer/82801270588
+
     老版本的 Windows 10/11 的 bootloader bootmgfw.efi（其实是2023年之前的所有版本）的哈希值，已经被加入UEFI 安全启动的黑名单了，也就是被吊销了（revoked）！因为2023年，一个叫做黑莲花（BlackLotus）的恶意软件，会利用CVE-2022-21894[2]，来攻击安全启动链条，注入恶意的代码。
 
     可以忽略，新版本的 rufus 只不过是根据最新的dbx，发现 bootloader 有问题，提出警告而已
