@@ -5190,7 +5190,7 @@ tag命令后跟 -s 参数即可
 
         Initial commit
 
-## 妾内无法访问 github 的解决方案
+## 茄内无法访问 github 的解决方案
 
 主要针对阻断域名的情况，用 ip 地址解析到 dns 即可
 
@@ -5198,7 +5198,7 @@ tag命令后跟 -s 参数即可
 
     https://www.cnblogs.com/PeterJXL/p/18432978
 
-被 x 大体有两种：DNS污染，封杀IP。
+被 x 分两种：DNS污染，封杀IP。
 
 DNS污染则无法通过域名直接访问，一种方法就是修改DNS，这个最简单的就是修改 hosts文件。如果IP被封杀的话，就只能通过 “蕃茄” 来解决了。
 
@@ -5230,12 +5230,10 @@ hosts 文件在每个系统的位置不一：
 
     https://www.ipaddress.com/
 
-把该ip更新到 hosts 文件：
+github相关域名很多，至少添加两个 ip 地址到 hosts 文件就基本可以满足使用要求了：
 
     20.205.243.166 github.com
     185.199.108.133 raw.githubusercontent.com
-
-这两个地址就基本满足使用要求了。
 
 解决 VSCODE 设置同步network Error 问题
 

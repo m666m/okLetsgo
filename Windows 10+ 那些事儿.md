@@ -1897,7 +1897,7 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这�
 
     UWP 也要迁移到 Widnows App，理论上是容器化运行 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/desktop-to-uwp-extend>；
 
-    Android 应用现在借助微软的安卓虚拟机也可以在 Windows 11 上容器化运行，应该是类似 WSL 2 的思路，在 Windows 桌面可以使用其它操作系统的图形界面程序，估计是像 ConPty + WSLg 那样加了中间转换层，参见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]。
+    Android 应用现在借助微软的安卓虚拟机也可以在 Windows 11 上容器化运行，应该是类似 WSL2 的思路，在 Windows 桌面可以使用其它操作系统的图形界面程序，估计是像 ConPty + WSLg 那样加了中间转换层，参见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]。
 
 开发平台打包统一了，能再卖一波 Visual Studio，但是各类应用还是各搞各的，桌面应用的通用化没啥指望，后续看谁能流行起来再说吧。
 
@@ -2156,12 +2156,6 @@ NOTE：ssd 硬盘不要开启厂商自带的硬件加密功能，这样 Bitlocke
 更高层级的方案，参见章节 [安全使用方案](init_a_server think)。
 
 如何开启虚拟化功能参见章节 [选择开启虚拟化功能]。
-
-WSL2 内的 container 是 Linux 提供的，不算 Windows 的容器。Windows 容器提供了两种不同的运行时隔离模式：process 和 Hyper-V 隔离，process 只在 server 版提供 <https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/hyperv-container>。
-
-Windows 7 在 2023 年还提供虚拟机使用的版本
-
-    https://www.microsoft.com/en-us/download/details.aspx?id=11887
 
 ### Hyper-V
 
@@ -2776,18 +2770,6 @@ Hyper-V 其实也分1代2代，tenforums 的详细说明
 
     https://www.tenforums.com/tutorials/139405-run-hyper-v-virtualbox-vmware-same-computer.html
 
-### docker (Hyper-V)
-
-Windows 10+ 上的 docker 是  WSL 2 或 Hyper-V 实现的，之前的 Windows 7 上的 docker 是安装了 virtual box 虚拟机。
-
-    https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/about/
-
-    https://docs.docker.com/desktop/Windows/wsl/
-
-完整 Windows api 的是 Windows 和 Windows Server，其它的 Windows 版本仅支持 .net，注意不同映像的区别
-
-    https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/container-base-images
-
 ### WSL 适用于 Linux 的 Windows 子系统
 
 WSL 属于运行在操作系统上的托管的虚拟机，用户体验上注重跟主机的交互能力，类似 gnome toolbox 的交互式容器，用户可以无缝在 Windows 上运行 Linux 的程序，目前已经支持图形化应用了。
@@ -2798,14 +2780,13 @@ WSL2 的兼容性比 WSL1 好，仅 IO 性能不如 WSL1 快，见下面章节 [
 
 另外 Windows 10+ 也提供了本地化运行 Linux 的接口，参见章节 [Windows 10 本地化 Linux 编程接口](gnu_tools.md)。
 
-先查看当前可用的版本：
+WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，不能自行安装 Debian 等发行版的官方版本
+
+    https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-linux-kernel
+
+查看当前可用的版本：
 
     PS C:\> wsl --list  --online
-    无法从“https://raw.githubusercontent.com/microsoft/WSL/master/distributions/DistributionInfo.json”中提取列表分发。操作超时
-
-如果是上面这样就洗洗睡吧，什么也别想。
-
-    PS C:\> wsl --list --online
     以下是可安装的有效分发的列表。
     使用 'wsl.exe --install <Distro>' 安装。
 
@@ -2827,6 +2808,20 @@ WSL2 的兼容性比 WSL1 好，仅 IO 性能不如 WSL1 快，见下面章节 [
     OracleLinux_7_9                 Oracle Linux 7.9
     OracleLinux_8_7                 Oracle Linux 8.7
     OracleLinux_9_1                 Oracle Linux 9.1
+
+    如果运气不好：无法从“https://raw.githubusercontent.com/microsoft/WSL/master/distributions/DistributionInfo.json”中提取列表分发。操作超时。 解决办法见章节 [茄内无法访问 github 的解决方案](git_usage.md)。
+
+微软发布的基于 WSL 的 Linux 版本提供了完全的二进制兼容，并伴随 Widnows 更新提供：
+
+    Windows 更新->“高级”选项，确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。
+
+    然后点击“检查更新”，确保你拥有最新的内核
+
+用户也可以自行升级微软发布的基于 WSL 的 Linux 内核：
+
+    https://learn.microsoft.com/zh-cn/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package
+
+        https://github.com/microsoft/WSL2-Linux-Kernel/releases?q=&expanded=true
 
 #### 默认安装的是 Ubuntu
 
@@ -2851,20 +2846,6 @@ WSL2 的兼容性比 WSL1 好，仅 IO 性能不如 WSL1 快，见下面章节 [
     wsl --setdefault Debian 或 wsl -s Debian
     # 在 Debian 中运行 npm init 命令
     wsl npm init
-
-注意：  WSL 下安装的 Ubuntu 等发行版，其实是微软发布的 Linux 版本，不能是发行版的官方版本
-
-    https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-linux-kernel
-
-微软发布的基于 WSL 的 Linux 版本提供了完全的二进制兼容，并伴随 Widnows 更新提供：通过在设置应用的 Windows 更新部分中选择“检查更新”，确保你拥有最新的内核
-
-    确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。 可以在设置应用 Windows 更新部分的“高级”选项中找到该项。
-
-用户也可以自行升级微软发布的基于 WSL 的 Linux 内核
-
-    https://learn.microsoft.com/zh-cn/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package
-
-        https://github.com/microsoft/WSL2-Linux-Kernel/releases?q=&expanded=true
 
 #### 在 WSL 中如何访问我的 C: 驱动器
 
@@ -2910,17 +2891,19 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
 
     在 Windows 与 Windows 之间共享环境变量
 
-不要跨操作系统使用文件，比如在存储 WSL 项目文件时：
+不要跨操作系统使用文件
 
     https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems
 
-    使用 Linux 文件系统根目录：
+    比如在存储 WSL 项目文件时：
 
-        \\wsl$\Ubuntu-18.04\home\<user name>\Project
+        使用 Linux 文件系统根目录：
 
-    而不使用 Windows 文件系统根目录：
+            \\wsl$\Ubuntu-18.04\home\<user name>\Project
 
-        /mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
+        而不使用 Windows 文件系统根目录：
+
+            /mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
 
 #### WSL2 中修改家目录为原生 ext4
 
@@ -3029,7 +3012,7 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
     从 C:\WSL\data.img 文件挂载 ext4 文件系统到 /data目录
     挂载 /data/home/yanke 子目录到 /home/yanke，作为用户的家目录
 
-#### 可以在 WSL 2 的 Linux 里再运行 docker
+#### 可以在 WSL2 的 Linux 里再运行 docker
 
     https://docs.microsoft.com/zh-cn/Windows/wsl/tutorials/wsl-containers
 
@@ -3037,7 +3020,7 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
 
 另外可以单独安装 podman，在 Windows 和 MacOs 上以虚拟机运行 Linux 容器，见章节 [在 Windows 或 MacOs 上运行 Linux 容器](virtualization think)。
 
-#### WSL 2 的 Linux 是放到当前用户目录下的，比较占用系统盘空间
+#### WSL2 的 Linux 是放到当前用户目录下的，比较占用系统盘空间
 
 注意你的 c 盘空间
 
@@ -3077,7 +3060,7 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
 
 详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
 
-#### WSL 1 和 WSL 2 的定制安装
+#### WSL 1 和 WSL2 的定制安装
 
     https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual
 
@@ -3104,7 +3087,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 ```
 
 到这里已经安装了 WSL 1，如果只想安装 WSL 1，现在可以重新启动计算机，然后继续执行步骤5下载安装Linux发行版了。
-下面的描述都是为了安装 WSL 2 的。
+下面的描述都是为了安装 WSL2 的。
 
 2、开启功能： 虚拟机平台
 
@@ -3124,7 +3107,7 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 
 ```
 
-4.将 WSL 2 设置为默认版本
+4.将 WSL2 设置为默认版本
 
 ```powershell
 
@@ -3280,17 +3263,19 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 
 1、下载并安装支持 NVIDIA CUDA 的 WSL 驱动程序
 
-    在 WSL 2 上开始使用 CUDA https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
+    在 WSL2 上开始使用 CUDA https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
 
     适用于 Linux 的 Windows 子系统 (WSL) 上的 CUDA https://developer.nvidia.com/cuda/wsl
 
 2、安装 WSL
 
-安装上述驱动程序后，请确保启用 WSL 并安装基于 glibc 的分发版，例如 Ubuntu 或 Debian。 通过在设置应用的 Windows 更新部分中选择“检查更新”，确保你拥有最新的内核。
+安装上述驱动程序后，请确保启用 WSL 并安装基于 glibc 的分发版，例如 Ubuntu 或 Debian。
+
+通过在设置应用的 Windows 更新部分中选择“检查更新”，确保你拥有最新的内核：
 
     确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。 可以在设置应用 Windows 更新部分的“高级”选项中找到该项。
 
-对于这些功能，需要 5.10.43.3 或更高版本的内核版本。 可以通过在 PowerShell 中运行以下命令来检查版本号。
+需要 5.10.43.3 或更高版本的内核版本，可以通过在 PowerShell 中运行以下命令来检查版本号：
 
     wsl cat /proc/version
 
@@ -3302,7 +3287,8 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 
 你可以开始通过 NVIDIA Docker 使用现有的 Linux 工作流
 
-    https://github.com/NVIDIA/nvidia-docker
+    https://github.com/NVIDIA/nvidia-container-toolkit
+        之前是 https://github.com/NVIDIA/nvidia-docker 已废弃
 
 或者在 WSL 中安装 PyTorch 或 TensorFlow
 
@@ -3314,25 +3300,73 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 
     https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
 
-#### 在 WSL2 中使用 Docker
+### 使用 Docker
 
-    https://zhuanlan.zhihu.com/p/148511634
+> 区分 Windows 容器和 WSL 内的 Linux 容器
+
+Windows 容器提供了两种不同的运行时隔离模式：
+
+    https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/about/
+
+    Hyper-V 隔离
+
+    process 模式只在 Windows server 版提供 <https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/hyperv-container>
+
+Windows 家族的容器镜像有区别，具备完整 Windows api 的是 Windows 和 Windows Server，其它的 Windows 版本仅支持 .net，注意不同映像的区别
+
+    https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/container-base-images
+
+Windows 7 在 2023 年还提供了虚拟机使用的版本
+
+    https://www.microsoft.com/en-us/download/details.aspx?id=11887
+
+Windows 10+ 上的 docker 是基于 WSL2 或 Windows 容器模式(Hyper-V) 实现的，在 Windows 7 上 docker 是安装了 virtual box 虚拟机。
+
+WSL2 内的 container 是 Linux 容器，不是 Windows 的容器。
+
+对应的，在 Windows 下 docker 也有两种运行模式：
+
+    Windows container mode
+
+    Linux container mode，这个模式基于 WSL2 可以使用所有的 Linux 容器，兼容性满分
+
+#### 使用基于 WSL2 的 Docker
+
+安装使用 Docker Desktop for windows
+
+    https://docs.docker.com/desktop/features/wsl/
 
 1、下载安装 Docker Desktop for windows
 
-2、确认 Docker 使用你的 wsl2，启动Docker Desktop for Windows，点击“设置”按钮
+2、确认 Docker 使用你的 wsl2
 
-    确认勾选了 基于 WSL2 的引擎复选框 “Use the WSL 2 based engine”
+    https://docs.docker.com/desktop/features/wsl/#turn-on-docker-desktop-wsl-2
 
-    在 Resources 的 WSL Integration 中设置要从哪个 WSL2 发行版中访问 Docker，确认勾选了 “Enable integration with my default WSL distro”，还可以勾选其它你安装的 distro，一般就是 Ubuntu。
+启动 Docker Desktop for Windows，点击 “设置” 按钮，设置如下几个功能。
 
-3、重启 Docker desktop for Windows
+在 cmd 或 power shell 下可以使用 `docker` 命令：
 
-重启完成后我们就可以在 WSL2 里面使用 docker 命令了
+    General：确认勾选了基于 WSL2 的引擎复选框 “Use the WSL2 based engine”
+
+在 wsl 下可以使用 `docker` 命令：
+
+    Resources：WSL Integration，这是设置要从哪个 WSL2 发行版中可以访问 Docker，确认勾选了 “Enable integration with my default WSL distro”，还需要勾选 “Enable integration with additional distros”，选择你安装的 distro，一般就是 Ubuntu
+
+        如果 WSL integrations 不可用，那就是 docker 处于 “Windows container” 模式了，右键点击任务栏的 docker 图标，选择 “Switch to Linux containers” 即可解决这个问题。
+
+3、点击按钮 “Apply & restart”，重启 Docker desktop for Windows
+
+重启完成后我们就可以使用 docker 命令了：
+
+    在 Windows 终端中，执行 `docker` 命令
+
+    在 WSL 中如 Ubuntu，也可以执行 `docker` 命令
 
 ### Windows安卓子系统WSA
 
-Windows Subsystem for Android 在Windows Store[安装apk时默认安装](https://docs.microsoft.com/en-us/windows/android/wsa/)，Windows 11自带，目前Windows 10无法正常运行。
+    https://docs.microsoft.com/en-us/windows/android/wsa/
+
+`Windows Subsystem for Android(WSA)` 在 Windows Store 安装 apk 时会默认安装，Windows 11 自带，目前Windows 10 无法正常运行。
 
 免美区免亚马逊安装 Windows Subsystem for Android
 
