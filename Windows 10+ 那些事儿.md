@@ -3295,7 +3295,9 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 
     https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
 
-##### 使用 CUDA 容器
+最方便的使用方法就是章节 [WSL 下使用 CUDA 容器]。
+
+##### WSL 下使用 CUDA 容器
 
     https://blog.csdn.net/m0_63070489/article/details/145798161
 
