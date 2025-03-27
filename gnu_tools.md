@@ -14417,21 +14417,31 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Auto Move Windows       指定应用程序在指定桌面打开窗口。对经常同时打开很多应用程序的用户来说，按桌面归类各个应用程序的窗口，非常方便。竞品 put windows。
 
-    Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现一个大三角图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘。之前只能打开文件管理器才能选择卸载 u 盘。
-
-    GSConnect               操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”。如果需要完整操控你的手机，见章节 [Scrcpy --- 在 Linux 桌面显示和控制 Android 设备]。
-
-    Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用。竞品 Pano Clipboard Manager 可以显示复制的富媒体内容，需要安装依赖 `sudo dnf install libgda libgda-sqlite`。
-
     Lock Keys               有些键盘的数字键盘和大写键没有指示灯，用这个在任务栏的系统区进行提示。
 
     nothing to say          在任务栏可以看到你的麦克风状态并手动控制是否静音，大大改善你的隐私保护
 
-    Smartcard lock          登录用的智能卡如yubikey被拔出，即自动锁屏
-
     Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口。
 
     system-monitor-next     在任务栏显示你的cpu、内存使用情况，就像在终端使用 btop 或 nmon 的效果。竞品 Vitals/Freon。
+
+    GSConnect               操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”。如果需要完整操控你的手机，见章节 [Scrcpy --- 在 Linux 桌面显示和控制 Android 设备]。
+
+    Nigh Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现定时自动切换。
+
+    Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在任务栏的时间弹窗处先设置你的位置。
+
+    Date Menu Formater      如果在任务栏显示的时间没有星期，在 Gnome Tweaks 中开启即可。在系统设置的 Clock&Calendar 可以设置是否显示星期，这个扩展可以调整日期时间的格式。
+
+    Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date)
+
+    Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能。
+
+    Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现一个大三角图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘。之前只能打开文件管理器才能选择卸载 u 盘。
+
+    Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用。竞品 Pano Clipboard Manager 可以显示复制的富媒体内容，需要安装依赖 `sudo dnf install libgda libgda-sqlite`。
+
+    Smartcard lock          登录用的智能卡如yubikey被拔出，即自动锁屏
 
     Power Profile Switcher  使用AC电源时能源策略选择高性能，使用电池时能源策略使用节能，自动切换。在我的台式机上不准，总是切换到均衡。
 
@@ -14449,29 +14459,19 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
         https://github.com/neffo/bing-wallpaper-gnome-extension
             https://github.com/utkarshgpta/bing-desktop-wallpaper-changer
 
-    NASA APOD，自动从 NASA 网站下载它的漂亮图片作为你的壁纸
+    NASA APOD Wallpaper Changer自动从 NASA 网站下载它的漂亮图片作为你的壁纸
 
         https://github.com/Elinvention/gnome-shell-extension-nasa-apod
 
     另见章节 [自写脚本指定壁纸目录随机更换]
 
-    Nigh Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现定时自动切换。
-
-    Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能。
-
     blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持某些应用程序和扩展透明化，注意跟有些主题兼容性不好边缘无法透明。不需要使用它的锁屏背景模糊功能，使用 Bing Wallpaper 扩展的这个功能效果更好。不需要使用它的 Dash to Dock/Panel 的透明化功能，那些扩展自己有透明化设置。
-
-    Date Menu Formater      如果在任务栏显示的时间没有星期，在 Gnome Tweaks 中开启即可，这个扩展可以调整日期时间的格式。
-
-    Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在系统设置的 Clock&Calendar 设置显示兴起，在任务栏的时间弹窗处设置了天气位置，使用这个就不需要上面的 Date Menu Formater 扩展了。
-
-    Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date)
 
     burn my window          窗口的弹出和关闭各种特效化，推荐勾选 Apparition、Doom、Hexagon、TV Glitch。
 
 #### 使用 gnome 主题
 
-    Gnome 44 以后只能设置任务栏了，窗口的明暗主题无法变更，所以窗口的颜色和形状也无法自定义。
+    Gnome 44 以后只能设置任务栏了，窗口的明暗主题无法变更，窗口的颜色和形状也无法自定义。
 
 Gnome 主题乐园，在这里搜一下 Gnome Shell Themes 类别，你的 Gnome 任务栏就大变样了
 
