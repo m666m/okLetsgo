@@ -3285,9 +3285,9 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 
     https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
 
-你可以开始通过 NVIDIA Docker 使用现有的 Linux 工作流
+你可以通过 NVIDIA Docker 使用现有的 Linux 工作流，配置 docker 见章节 [使用基于 WSL2 的 Docker]
 
-    https://github.com/NVIDIA/nvidia-container-toolkit
+     NVIDIA Container Toolkit https://github.com/NVIDIA/nvidia-container-toolkit
         之前是 https://github.com/NVIDIA/nvidia-docker 已废弃
 
 或者在 WSL 中安装 PyTorch 或 TensorFlow
