@@ -2702,7 +2702,7 @@ Windows 10 下，建立了一个支持安全启动的 Windows 10 虚拟机，导
 
 4、重新启动虚拟机，可以进入操作系统正常使用了。
 
-### 使用 VM Ware、安卓模拟器等虚拟机提示需要关闭 Hyper-V
+#### 使用 VM Ware、安卓模拟器等虚拟机提示需要关闭 Hyper-V
 
 该问题已经在 2022 版的 Windows 10 中解决了
 
@@ -2847,7 +2847,35 @@ WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，不�
     # 在 Debian 中运行 npm init 命令
     wsl npm init
 
-#### 在 WSL 中如何访问我的 C: 驱动器
+#### 混合使用 Windows 和 Linux 进行工作
+
+    https://docs.microsoft.com/zh-cn/windows/wsl/filesystems
+
+    支持图形化 GUI 应用的混合使用了 https://learn.microsoft.com/zh-cn/windows/wsl/tutorials/gui-apps
+
+借助 WSL，Windows 和 Linux 工具和命令可互换使用
+
+    从 Linux 命令行（如 Ubuntu）运行 Windows 工具（如 notepad.exe ）
+
+    从 Windows 命令行（如 PowerShell）运行 Linux 工具（如 grep ）
+
+    在 Windows 与 Windows 之间共享环境变量
+
+不要跨操作系统使用文件
+
+    https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems
+
+    比如在存储 WSL 项目文件时：
+
+        使用 Linux 文件系统根目录：
+
+            \\wsl$\Ubuntu-18.04\home\<user name>\Project
+
+        而不使用 Windows 文件系统根目录：
+
+            /mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
+
+##### 在 WSL 中如何访问我的 C: 驱动器
 
 系统会自动为本地计算机上的硬盘驱动器创建装入点，通过这些装入点可以轻松访问 Windows 文件系统。
 
@@ -2876,34 +2904,6 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
     PRUNEFS="drvfs NFS afs autofs binfmt_misc ..."
 
 [20240703.4a] 这 "drvfs", 指的是 /mnt/c, /mnt/d 这些路径用的 "file system type", 敲 mount 命令查询可知. 然而, 这么写却没有效果, 稍后 sudo updatedb 一运行, Procmon 依然看到巨量的 C: 扫描动作. 不知为何, 网搜无果. 只好先用 /mnt/c  ... /mnt/z 这 26 个路径加入 `PRUNEPATH` 配置项将就着。
-
-#### 混合使用 Windows 和 Linux 进行工作
-
-    https://docs.microsoft.com/zh-cn/windows/wsl/filesystems
-
-    支持图形化 GUI 应用的混合使用了 https://learn.microsoft.com/zh-cn/windows/wsl/tutorials/gui-apps
-
-借助 WSL，Windows 和 Linux 工具和命令可互换使用
-
-    从 Linux 命令行（如 Ubuntu）运行 Windows 工具（如 notepad.exe ）
-
-    从 Windows 命令行（如 PowerShell）运行 Linux 工具（如 grep ）
-
-    在 Windows 与 Windows 之间共享环境变量
-
-不要跨操作系统使用文件
-
-    https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems
-
-    比如在存储 WSL 项目文件时：
-
-        使用 Linux 文件系统根目录：
-
-            \\wsl$\Ubuntu-18.04\home\<user name>\Project
-
-        而不使用 Windows 文件系统根目录：
-
-            /mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
 
 #### WSL2 中修改家目录为原生 ext4
 
@@ -3285,13 +3285,6 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 
     https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
 
-你可以通过 NVIDIA Docker 使用现有的 Linux 工作流，配置 docker 见章节 [使用基于 WSL2 的 Docker]
-
-    NVIDIA Container Toolkit https://github.com/NVIDIA/nvidia-container-toolkit
-        之前是 https://github.com/NVIDIA/nvidia-docker 已废弃
-
-    https://zhuanlan.zhihu.com/p/694392785
-
 或者在 WSL 中安装 PyTorch 或 TensorFlow
 
     https://pytorch.org/get-started/locally/
@@ -3301,6 +3294,27 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
  WSL 上的 CUDA 社区论坛
 
     https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
+
+##### 使用 CUDA 容器
+
+    https://blog.csdn.net/m0_63070489/article/details/145798161
+
+    https://zhuanlan.zhihu.com/p/694392785
+
+配置 docker 见章节 [使用基于 WSL2 的 Docker]。
+
+你可以通过 NVIDIA Docker 使用现有的 Linux 工作流
+
+    NVIDIA Container Toolkit https://github.com/NVIDIA/nvidia-container-toolkit
+        之前是 https://github.com/NVIDIA/nvidia-docker 已废弃
+
+docker 拉 nvidia/cuda 镜像时，拉取的 cuda 版本不能高于本地的 cuda 版本。
+
+我本地的 cuda 版本是 12.7，则我无法拉取镜像 docker pull nvidia/cuda:12.8-base-ubuntu24.04，因为这个镜像的 cuda 版本是 12.8
+
+执行以下命令，正常情况下会输出 nvidia 显卡信息【表示本机的Docker可使用GPU】，如图所示
+
+    docker run --rm --gpus all nvidia/cuda:12.6.3-base-ubuntu24.04 nvidia-smi
 
 ### 使用 Docker
 
@@ -3358,7 +3372,7 @@ WSL2 内的 container 是 Linux 容器，不是 Windows 的容器。
 
 3、点击按钮 “Apply & restart”，重启 Docker desktop for Windows
 
-重启完成后我们就可以使用 docker 命令了：
+重启完成后验证：
 
     在 Windows 终端中，执行 `docker` 命令
 
