@@ -712,6 +712,10 @@ function PS1virtualenv-env-name {
 
 function PS1git-branch-name {
 
+    if ! command -v git >/dev/null 2>&1; then
+        return
+    fi
+
     # 优先使用 __git_ps1() 取分支名信息，如果取到有效的 git 信息，就直接打印出来，然后退出函数
     #
     #   如果使用git for Windows自带的mintty bash，它自带git状态脚本(貌似Debian系的bash都有)
@@ -721,7 +725,7 @@ function PS1git-branch-name {
     #   来源 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
     #   如果自定义命令提示符，可以在PS1变量拼接中调用函数 $(__git_ps1 "(%s)") ，
     #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
-    # NOTE: 调用可能不存在的命令，必须先 `command -v` 判断一下，直接调用遇到命令不存在会卡顿
+    # NOTE: 调用可能不存在的命令，必须先 `command -v` 判断一下，否则不存在的命令Fedora会搜索软件仓库导致卡顿
     if $(command -v __git_ps1 >/dev/null 2>&1); then
         # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，后面也不能用它的返回值判断是否执行成功
         # NOTE:如果用 local 声明变量，就无法取到执行语句的返回值了
