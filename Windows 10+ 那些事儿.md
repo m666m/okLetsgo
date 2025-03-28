@@ -2813,6 +2813,15 @@ WSL 2 的兼容性比 WSL 1 好，仅 IO 性能不如 WSL 1 快，见下面章�
 
     C:\> wsl --set-version 2  # 确保使用 WSL 2
 
+安装后的日常维护：
+
+    更新 WSL 内核：
+    C:\> wsl --update
+
+    更新发行版的软件仓库：
+    C:\> wsl
+    $ sudo apt update && sudo apt upgrade -y
+
 WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，用户不能自行安装 Debian 等官方的发行版
 
     https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-linux-kernel
