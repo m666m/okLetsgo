@@ -2145,6 +2145,8 @@ NOTE：ssd 硬盘不要开启厂商自带的硬件加密功能，这样 Bitlocke
 
 ## 在虚拟机里使用你的日常软件
 
+如何开启虚拟化功能参见章节 [选择开启虚拟化功能]。
+
 如果喜欢下载各种软件，建议在 Windows Sandbox 沙盒里使用，这个是一次性的全隔离环境，不影响你的主机环境，详见章节 [用沙盒运行小工具等相对不靠谱的程序]。
 
 主机环境除了驱动程序不安装任何软件，只做系统更新。日常在虚拟机里使用桌面应用程序，安全性最高，在这里的桌面冲浪吧。
@@ -2155,9 +2157,9 @@ NOTE：ssd 硬盘不要开启厂商自带的硬件加密功能，这样 Bitlocke
 
 更高层级的方案，参见章节 [安全使用方案](init_a_server think)。
 
-如何开启虚拟化功能参见章节 [选择开启虚拟化功能]。
-
 ### Hyper-V
+
+计算机需要虚拟化功能，如何开启虚拟化功能参见章节 [选择开启虚拟化功能]。
 
 如何在 Windows 10 上使用 Hypver-V
 
@@ -2780,9 +2782,7 @@ WSL 属于运行在操作系统上的托管的虚拟机，用户体验上注重�
 
 开发工具可以使用 Virsual Studio Code，支持直接打开 WSL 虚机，就像连接 Docker 虚机或远程连接 SSH 服务器一样简单。其它开发工具如 git、docker、数据库、vGpu 加速（<https://developer.nvidia.com/cuda/wsl> ）等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/setup/environment>。
 
-利用 [Windows 10 本地化 Linux 编程接口](gnu_tools.md)，初始的实现就是最基本的命令行应用，各种终端模拟器都可以连接到本地的 WSL 实例，后来利用 WSLG 开始支持图形化应用。
-
-#### WSL 安装发行版
+利用 [Windows 10 本地化 Linux 编程接口](gnu_tools.md)，WSL 初始实现的是最基本的命令行应用，各种终端模拟器都可以连接到本地的 WSL 实例，后来利用 WSLg 支持运行图形化应用。
 
 Windows 10 在 2021 年后的版本更新中集成的 WSL 2 使用更方便，简单开发使用 WSL2 即可。
 
@@ -2802,6 +2802,14 @@ WSL 2 的兼容性比 WSL 1 好，仅 IO 性能不如 WSL 1 快，见下面章�
 
 以下讨论 WSL 术语除非特别指出，默认就是 WSL 2。
 
+#### WSL 安装发行版
+
+安装 WSL 2
+
+    计算机需要虚拟化功能，如何开启虚拟化功能参见章节 [选择开启虚拟化功能]
+
+    主机的 Windows 操作系统设置中，必须添加 “虚拟机平台” 可选功能。
+
 默认安装的发行版是 Ubuntu，管理员权限打开 PowerShell 或 Windows Command Prompt
 
     https://learn.microsoft.com/en-us/Windows/wsl/install
@@ -2812,15 +2820,6 @@ WSL 2 的兼容性比 WSL 1 好，仅 IO 性能不如 WSL 1 快，见下面章�
     C:\> wsl --install
 
     C:\> wsl --set-version 2  # 确保使用 WSL 2
-
-安装后的日常维护：
-
-    更新 WSL 内核：
-    C:\> wsl --update
-
-    更新发行版的软件仓库：
-    C:\> wsl
-    $ sudo apt update && sudo apt upgrade -y
 
 WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，用户不能自行安装 Debian 等官方的发行版
 
@@ -2887,9 +2886,37 @@ WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，用�
 
 更多的问题，详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/troubleshooting>
 
+##### 安装后的日常维护
+
+查看版本号
+
+    $ wsl --version
+    WSL 版本： 2.4.12.0
+    内核版本： 5.15.167.4-1
+    WSLg 版本： 1.0.65
+    MSRDC 版本： 1.2.5716
+    Direct3D 版本： 1.611.1-81528511
+    DXCore 版本： 10.0.26100.1-240331-1435.ge-release
+    Windows 版本： 10.0.26100.3476
+
+更新 WSL 内核：
+
+    C:\> wsl --update
+
+如果 wsl --update 进度太慢
+
+    可能是因为默认的wsl --update 是从微软商店下载的，微软应用商店就经常出现网络的问题。在wsl --update 后面加上 --web-download 就可以从 github 上进行下载
+
+    或者直接手动下载 <https://github.com/microsoft/WSL/releases> 下的 .msi，运行即可安装。
+
+更新发行版的软件仓库：
+
+    C:\> wsl
+    $ sudo apt update && sudo apt upgrade -y
+
 #### 命令行连接到你的 WSL 实例
 
-Windows 11 下彻底打通了，不需要做什么设置，不仅仅是在 Windows 命令提示符或 PowerShell 中，任何命令行终端中，运行 `wsl.exe` 就可以连接到本机 WSL 的默认实例启动 shell 并执行登录脚本。
+Windows 11 下彻底打通了，不需要做什么设置，不仅仅是在 Windows 命令提示符或 PowerShell 中，任何命令行终端中，运行 `wsl` 就可以连接到本机 WSL 的默认实例启动 shell 并执行登录脚本。
 
 在当前命令行终端中，直接输入 `wsl shell-command`，就是在本机 WSL 的默认实例中执行 shell-command，并把输出显示到当前的命令行终端。
 
@@ -2902,9 +2929,10 @@ Windows 11 下彻底打通了，不需要做什么设置，不仅仅是在 Windo
     Debian
 
     在本机 WSL 的实例中执行命令
-    C:\> wsl cat ~/.bash_profile
 
-    C:\> wsl date
+    C:\> wsl cd $HOME;ls
+
+    C:\> wsl cat ~/.bash_profile
 
     # 切换默认发行版到 Debian
      C:\> wsl --setdefault Debian 或 wsl -s Debian
@@ -2940,17 +2968,19 @@ Windows 11 下彻底打通了，不需要做什么设置，不仅仅是在 Windo
 
 #### 在 WSL 实例上运行完整的 Linux 桌面环境
 
-在 Windows Subsystem for Linux (WSL) 下使用 GNOME + WSLg 是一种更现代、更便捷的方式，可以直接在 Windows 上运行完整的 Linux 桌面环境，而无需额外配置 X Server。
+    WSLg 默认支持 GUI 应用，如果只是想在 WSL 下使用图形化应用，在 wsl 终端下直接运行该应用即可启动到 Windows 桌面下使用。
 
 WSLg（Windows Subsystem for Linux GUI） 是微软官方提供的功能，允许 WSL 2 直接运行 Linux GUI 应用程序（包括完整的桌面环境），并自动集成到 Windows 桌面。
 
     无需额外 X Server（如 VcXsrv/X410）。
 
-    支持 Wayland 和 X11（默认使用 Wayland）。
+    默认使用 Wayland，支持 X11，需要额外安装
 
-    剪贴板共享、音频、GPU 加速（适用于 OpenGL/Vulkan）。
+    支持剪贴板共享、音频、GPU 加速（适用于 OpenGL/Vulkan）。
 
     适用于 Windows 11（21H2+）或最新 Win10（需手动启用）。
+
+在 Windows Subsystem for Linux (WSL) 下使用 GNOME + WSLg 是一种更现代、更便捷的方式，可以直接在 Windows 上运行完整的 Linux 桌面环境，而无需额外配置 X Server。
 
 更新 WSL 内核：
 
@@ -3066,19 +3096,31 @@ WSL 不仅仅是在命令行终端可以执行 Linux 应用，对操作系统的
 
     在 Windows 与 Windows 之间共享环境变量
 
-不要跨操作系统使用文件
+验证下：
+
+    # 显示的是你主机的当前目录，在 Linux 下访问的路径
+    C:\ProgramData>wsl pwd
+    /mnt/c/ProgramData
+
+    # 显示的是 WSL 实例的用户目录，在 Linux 下访问的路径
+    C:\ProgramData>wsl cd $HOME;pwd
+    /home/your_user
+
+> 不要跨操作系统使用文件
+
+混用路径要使用 \\wsl$ 映射名，用网络的方式比本地 API 调用更快
 
     https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems
 
-    比如在存储 WSL 项目文件时：
+比如在存储 WSL 项目文件时：
 
-        使用 Linux 文件系统根目录：
+    使用 Linux 文件系统根目录：
 
-            \\wsl$\Ubuntu-18.04\home\<user name>\Project
+        \\wsl$\Ubuntu-18.04\home\<user name>\Project
 
-        而不使用 Windows 文件系统根目录：
+    而不使用 Windows 文件系统根目录：
 
-            /mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
+        /mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
 
 ##### 在 WSL 中如何访问我的 C: 驱动器
 
@@ -3465,7 +3507,7 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 
 #### 在 WSL 中启用显卡加速
 
-目前微软在 WSL 中已经支持 NVIDIA CUDA 了
+目前 WSL 中已经支持 NVIDIA CUDA 了，宿主机安装 nvidia 驱动即可。
 
     https://learn.microsoft.com/zh-cn/windows/ai/directml/gpu-cuda-in-wsl
 
@@ -3528,27 +3570,39 @@ docker 拉 nvidia/cuda 镜像时，拉取的 cuda 版本不能高于本地的 cu
 
 ### 使用 Docker
 
-> 区分 Windows 容器和 WSL 内的 Linux 容器
+    https://docs.microsoft.com/zh-cn/Windows/wsl/tutorials/wsl-containers
 
-Windows 容器提供了两种不同的运行时隔离模式：
-
-    https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/about/
-
-    Hyper-V 隔离
-
-    process 模式只在 Windows server 版提供 <https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/hyperv-container>
-
-Windows 家族的容器镜像有区别，具备完整 Windows api 的是 Windows 和 Windows Server，其它的 Windows 版本仅支持 .net，注意不同映像的区别
-
-    https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/container-base-images
+docker 现在可以运行在 WSL2 的 Linux 实例里：Windows 10+ 上的 docker 是基于 WSL2 或 Windows 容器模式(Hyper-V) 实现的，在 Windows 7 上 docker 是安装了 virtual box 虚拟机在其上运行的。
 
 Windows 7 在 2023 年还提供了虚拟机使用的版本
 
     https://www.microsoft.com/en-us/download/details.aspx?id=11887
 
-Windows 10+ 上的 docker 是基于 WSL2 或 Windows 容器模式(Hyper-V) 实现的，在 Windows 7 上 docker 是安装了 virtual box 虚拟机。
+另外可以单独安装 podman，在 Windows 和 MacOs 上以虚拟机运行 Linux 容器，见章节 [在 Windows 或 MacOs 上运行 podman 容器](virtualization think)。
 
-WSL2 内的 container 是 Linux 容器，不是 Windows 的容器。
+> 区分 Windows 容器和 WSL 内的 Linux 容器
+
+1、Windows 容器
+
+微软开发的初衷是用于企业级云部署，个人使用等于是 Windows 里装了个 Windows，不如在 WSL 下使用 Linux 容器
+
+    https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/about/
+
+Windows 容器提供了两种不同的运行时隔离模式：
+
+    Hyper-V 隔离模式
+
+    process 模式
+
+process 模式只在 Windows server 版提供 <https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/hyperv-container>。
+
+另外，Windows 容器的镜像有区别，具备完整 Windows API 的是 Windows 和 Windows Server，其它的 Windows 版本仅支持 .net，注意不同映像的区别
+
+    https://docs.microsoft.com/zh-cn/virtualization/Windowscontainers/manage-containers/container-base-images
+
+基于 Windows 容器的各种容器比较少，更适合企业级云部署等专用场合。
+
+2、WSL2 内的 container 是 Linux 容器，不是 Windows 容器
 
 对应的，在 Windows 下 docker 也有两种运行模式：
 
@@ -3557,12 +3611,6 @@ WSL2 内的 container 是 Linux 容器，不是 Windows 的容器。
     Linux container mode，这个模式基于 WSL2 可以使用所有的 Linux 容器，兼容性满分
 
 #### 使用基于 WSL2 的 Docker
-
-docker可以运行 在 WSL2 的 Linux 里
-
-    https://docs.microsoft.com/zh-cn/Windows/wsl/tutorials/wsl-containers
-
-另外可以单独安装 podman，在 Windows 和 MacOs 上以虚拟机运行 Linux 容器，见章节 [在 Windows 或 MacOs 上运行 podman 容器](virtualization think)。
 
 安装使用 Docker Desktop for windows
 
@@ -3576,15 +3624,15 @@ docker可以运行 在 WSL2 的 Linux 里
 
 启动 Docker Desktop for Windows，点击 “设置” 按钮，设置如下几个功能。
 
-在 cmd 或 power shell 下可以使用 `docker` 命令：
-
-    General：确认勾选了基于 WSL2 的引擎复选框 “Use the WSL2 based engine”
+安装后，在 cmd 或 power shell 下可以使用 `docker` 命令。
 
 在 wsl 下可以使用 `docker` 命令：
 
-    Resources：WSL Integration，这是设置要从哪个 WSL2 发行版中可以访问 Docker，确认勾选了 “Enable integration with my default WSL distro”，还需要勾选 “Enable integration with additional distros”，选择你安装的 distro，一般就是 Ubuntu
+    General：确认勾选了基于 WSL2 的引擎复选框 “Use the WSL2 based engine”
 
-        如果 WSL integrations 不可用，那就是 docker 处于 “Windows container” 模式了，右键点击任务栏的 docker 图标，选择 “Switch to Linux containers” 即可解决这个问题。
+    Resources：WSL Integration，这是设置要从哪个 WSL2 发行版中可以访问 Docker，确认勾选了 “Enable integration with my default WSL distro”，还需要勾选 “Enable integration with additional distros”，选择你安装的 distro，一般是 Ubuntu
+
+        如果 WSL integration 不可用，那就是 docker 处于 “Windows container” 模式了，右键点击任务栏的 docker 图标，选择 “Switch to Linux containers” 即可解决这个问题。
 
 3、点击按钮 “Apply & restart”，重启 Docker desktop for Windows
 
@@ -3592,7 +3640,7 @@ docker可以运行 在 WSL2 的 Linux 里
 
     在 Windows 终端中，执行 `docker` 命令
 
-    在 WSL 中如 Ubuntu，也可以执行 `docker` 命令
+    在 wsl 终端中，执行 `docker` 命令
 
 ### Windows安卓子系统WSA
 
