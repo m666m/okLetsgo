@@ -2904,11 +2904,13 @@ WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，不�
 
     $ sudo mount -t nfs -o vers=4,rsize=1048576,wsize=1048576 192.168.0.22:/remote/resource /mnt/22_nfs
 
-打开主机桌面的资源管理器，映射一个网络位置，填写 wsl 中的路径：
+打开主机桌面的资源管理器，添加一个网络位置或映射网络驱动器都可以，填写 wsl 中的路径：
 
     \\wsl$\Ubuntu\mnt\22_nfs
 
-Ubuntu 是前面获取当前 wsl 发行版的名称。
+    其中 Ubuntu 是前面获取当前 wsl 发行版的名称。
+
+然后在 Windows 资源管理器中就可以像访问本地硬盘一样访问远程服务器上的 nfs 文件系统的内容了。
 
 ##### plocate 避坑
 
