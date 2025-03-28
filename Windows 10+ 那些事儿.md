@@ -2804,7 +2804,11 @@ WSL 2 的兼容性比 WSL 1 好，仅 IO 性能不如 WSL 1 快，见下面章�
 
 以下讨论 WSL 术语除非特别指出，默认就是 WSL 2。
 
-#### WSL 安装发行版
+#### WSL 安装 Linux 发行版
+
+    https://learn.microsoft.com/en-us/Windows/wsl/install
+
+    FAQ https://learn.microsoft.com/zh-cn/windows/wsl/troubleshooting#installation-issues
 
 安装 WSL 2
 
@@ -2812,26 +2816,16 @@ WSL 2 的兼容性比 WSL 1 好，仅 IO 性能不如 WSL 1 快，见下面章�
 
     主机的 Windows 操作系统设置中，必须添加 “虚拟机平台” 可选功能。
 
-默认安装的发行版是 Ubuntu，管理员权限打开 PowerShell 或 Windows Command Prompt
-
-    https://learn.microsoft.com/en-us/Windows/wsl/install
-
-    FAQ https://learn.microsoft.com/zh-cn/windows/wsl/troubleshooting#installation-issues
+默认安装的 Linux 发行版是 Ubuntu，管理员权限打开 PowerShell 或 Windows Command Prompt，运行以下命令：
 
     # WSL 安装发行版，默认 ubuntu，所以不需要加参数指定 -d Ubuntu
     C:\> wsl --install
 
     C:\> wsl --set-version 2  # 确保使用 WSL 2
 
-WSL 下安装的 Linux 发行版，其实是微软发布的基于 WSL 的 Linux 版本，这个版本对 Windows 提供了完全的二进制兼容，用户不能自行安装 Debian 等官方的发行版
+WSL 下安装的 Linux 发行版比如 Ubuntu，其实是微软发布的适用于 WSL 的基于 glibc 的 Linux 版本，在 Windows 下对 Linux 提供了完全的二进制兼容，Ubuntu 等官方发布的发行版是无法直接使用的
 
     https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-linux-kernel
-
-用户也可以自行升级微软发布的基于 WSL 的 Linux 内核：
-
-    https://learn.microsoft.com/zh-cn/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package
-
-        https://github.com/microsoft/WSL2-Linux-Kernel/releases?q=&expanded=true
 
 查看当前可用的版本：
 
@@ -2905,6 +2899,20 @@ WSL 下安装的 Linux 发行版，其实是微软发布的基于 WSL 的 Linux 
 
     或者直接手动下载 <https://github.com/microsoft/WSL/releases> 下的 .msi，运行即可安装。
 
+更新 Linux 内核
+
+    通过在设置应用的 Windows 更新部分中选择“检查更新”，确保你拥有最新的内核：
+
+        Windows 更新->“高级”选项，确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。
+
+        然后点击“检查更新”，确保你拥有最新的内核
+
+    用户也可以自行升级微软发布的基于 WSL 的 Linux 内核：
+
+        https://learn.microsoft.com/zh-cn/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package
+
+            https://github.com/microsoft/WSL2-Linux-Kernel/releases?q=&expanded=true
+
 更新发行版的软件仓库：
 
     C:\> wsl
@@ -2922,15 +2930,9 @@ WSL 下安装的 Linux 发行版，其实是微软发布的基于 WSL 的 Linux 
 
     适用于 Linux 的 Windows 子系统 (WSL) 上的 CUDA https://developer.nvidia.com/cuda/wsl
 
-2、安装 WSL
+2、确认 WSL 实例的内核版本
 
 安装上述驱动程序后，请确保启用 WSL 并安装基于 glibc 的分发版，例如 Ubuntu 或 Debian。
-
-更新 Linux 内核，通过在设置应用的 Windows 更新部分中选择“检查更新”，确保你拥有最新的内核：
-
-    Windows 更新->“高级”选项，确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。
-
-    然后点击“检查更新”，确保你拥有最新的内核
 
 需要 5.10.43.3 或更高版本的内核版本，可以通过在 PowerShell 中运行以下命令来检查版本号：
 
