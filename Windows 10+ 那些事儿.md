@@ -2979,10 +2979,16 @@ docker 拉 nvidia/cuda 镜像时，拉取的 cuda 版本不能高于本地的 cu
 
 Windows 11 下彻底打通了，不需要做什么设置，不仅仅是在 Windows 命令提示符或 PowerShell 中，任何命令行终端中，运行 `wsl` 就可以连接到本机 WSL 的默认实例启动 shell 并执行登录脚本。
 
-在当前命令行终端中，直接输入 `wsl shell-command`，就是在本机 WSL 的默认实例中执行 shell-command，并把输出显示到当前的命令行终端。
+wsl 命令的详细用法说明
 
-    命令的详细用法说明
     C:\> wsl --help
+
+连接到本机 WSL 的默认实例启动 shell 并执行登录脚本
+
+    C:\> wsl
+    $ ls
+
+在当前命令行终端中，直接输入 `wsl shell-command`，就是在本机 WSL 的默认实例中执行 shell-command，并把输出显示到当前的命令行终端。
 
     查看已安装的 Linux 发行版的列表
     C:\> wsl --list 或 wsl -l -v
@@ -3029,15 +3035,15 @@ Windows 11 下彻底打通了，不需要做什么设置，不仅仅是在 Windo
 
 #### 在 WSL 实例上运行完整的 Linux 桌面环境
 
-WSLg 默认支持 GUI 应用，简单使用不需要安装 Linux 桌面环境：
+WSL 使用 WSLg 默认支持 GUI 应用，简单使用的场景下不需要安装 Linux 桌面环境。
 
-    在 wsl 终端下用命令安装后，直接运行该应用的命令，即可启动到 Windows 桌面下使用。
+比如，在 wsl 终端下用命令安装 firefox 后，直接运行 `firefox` 命令，即可启动到 Windows 桌面下使用。
 
-    另外还会自动在开始菜单创建快捷方式，如：
+另外还会自动在开始菜单创建快捷方式，如：
 
-        C:\Users\mm\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Ubuntu
+    C:\Users\mm\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Ubuntu
 
-            "C:\Program Files\WSL\wslg.exe" -d Ubuntu --cd "~" -- authenticator
+        "C:\Program Files\WSL\wslg.exe" -d Ubuntu --cd "~" -- firefox
 
 如果一定要使用 Gnome 桌面，安装过程如下：
 
@@ -3173,7 +3179,7 @@ WSL 不仅仅是在命令行终端可以执行 Linux 应用，对操作系统的
 
     $ ls
 
-wsl 显示你主机的当前目录，在 Linux 下访问的路径
+在 wsl 下显示你的当前目录，在 Linux 下访问的路径
 
     C:\ProgramData> wsl pwd
     /mnt/c/ProgramData
@@ -3183,11 +3189,11 @@ wsl 显示 WSL 实例的用户目录，在 Linux 下访问的路径
     C:\ProgramData> wsl cd $HOME;pwd
     /home/your_user
 
-虽然 wsl 实例可以同时使用自己的文件系统和 Windows 的文件系统，但是
-
-    尽量不要跨操作系统使用文件，因为 WSL 2 对跨操作系统的文件的 IO 效率低
+虽然 wsl 下可以同时使用 Linux 的文件系统和 Windows 的文件系统，但是
 
     https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems
+
+NOTE: 尽量不要跨操作系统使用文件，因为 WSL 2 对跨操作系统的文件的 IO 效率低。
 
 比如在 wsl 下存储文件时，尽量不使用 Windows 的文件系统：
 
