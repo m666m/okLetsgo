@@ -2886,6 +2886,14 @@ WSL 下安装的 Linux 发行版比如 Ubuntu，其实是微软发布的适用�
 
 更多的问题，详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/troubleshooting>
 
+> WSL2 的 Linux 是放到当前用户目录下的，占用操作系统盘空间
+
+注意你的 c 盘空间
+
+    %USERPROFILE%\AppData\Local\Packages\CanonicalGroupLimited...
+
+如果需要更改存储位置，打开“设置”->“系统”-->“存储”->“更多存储设置：更改新内容的保存位置”，选择项目“新的应用将保存到”。
+
 ##### 安装后的日常维护
 
 查看版本号
@@ -3125,11 +3133,9 @@ NOTE: 尽量不要跨操作系统使用文件，因为 WSL 2 对跨操作系统�
 
     \\wsl$\<wsl实例名>\your\directory
 
-然后就可以读写这个网络驱动器里的文件或目录了
+然后就可以在 Windows 下读写这个网络驱动器里的文件或目录了
 
     \\wsl$\ubuntu\home\<user name>\Project
-
-混用路径要使用 \\wsl$\<wsl实例名>\your\directory 地址的方式，用网络比本地 API 调用的 IO 速度更快
 
 ###### Windows 资源管理器通过 WSL 使用远程 nfs 文件系统
 
@@ -3137,9 +3143,9 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
 
     Windows 操作系统自带的 mount 命令，只支持 2010 年的 nfs v3 版本
 
-所以，应该在 wsl 实例中使用 Linux 的 mount 命令挂载远程 nfs 文件系统，这个是支持 nfs v4 版本的，然后在主机桌面上映射网络驱动器到 wsl 实例的路径即可。
+所以，应该在 wsl 实例中使用 Linux 的 mount 命令挂载远程 nfs 文件系统，利用 Linux 带的 mount 命令支持 nfs v4 版本的，然后在 Windows 桌面上映射网络驱动器到 wsl 实例的路径即可使用了。
 
-1、主机 cmd 或 power shell 终端下，获取当前 wsl 发行版的名称：
+1、主机 cmd 或 power shell 等终端下，获取当前 wsl 发行版的名称：
 
     C:\> wsl -l -v
     Ubuntu
@@ -3154,7 +3160,7 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
 
     $ sudo mount -t nfs -o vers=4,rsize=1048576,wsize=1048576 192.168.0.22:/remote/resource /mnt/22_nfs
 
-3、打开主机桌面的资源管理器，添加一个网络位置或映射网络驱动器都可以，填写 wsl 中的路径：
+3、打开 Windows 资源管理器，添加一个网络位置或映射网络驱动器都可以，填写 wsl 中的路径：
 
     \\wsl$\Ubuntu\mnt\22_nfs
 
@@ -3291,7 +3297,7 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
     从 C:\WSL\data.img 文件挂载 ext4 文件系统到 /data目录
     挂载 /data/home/yanke 子目录到 /home/yanke，作为用户的家目录
 
-#### 图形化 GUI 应用的混合使用
+##### 图形化 GUI 应用的混合使用
 
 WSL 使用 WSLg 默认支持 GUI 应用，简单使用的场景下不需要安装 Linux 桌面环境。
 
@@ -3303,7 +3309,7 @@ WSL 使用 WSLg 默认支持 GUI 应用，简单使用的场景下不需要安�
 
         "C:\Program Files\WSL\wslg.exe" -d Ubuntu --cd "~" -- firefox
 
-##### 运行完整的 Linux 桌面环境
+###### 运行完整的 Linux 桌面环境
 
 如果一定要使用 Gnome 桌面，安装过程如下：
 
@@ -3404,14 +3410,6 @@ WSLg 默认启用 OpenGL 加速，如需 Vulkan：
 
     sudo apt install mesa-vulkan-drivers -y
     vulkaninfo  # 验证支持
-
-#### WSL2 的 Linux 是放到当前用户目录下的，占用操作系统盘空间
-
-注意你的 c 盘空间
-
-    %USERPROFILE%\AppData\Local\Packages\CanonicalGroupLimited...
-
-如果需要更改存储位置，打开“设置”->“系统”-->“存储”->“更多存储设置：更改新内容的保存位置”，选择项目“新的应用将保存到”。
 
 ### 使用 Docker
 
