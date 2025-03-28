@@ -3159,25 +3159,23 @@ WSL 不仅仅是在命令行终端可以执行 Linux 应用，对操作系统的
 
     在 Windows 与 Windows 之间共享环境变量
 
-1、在 WSL 中如何访问我的本地驱动器
+##### 在 WSL 中如何访问我的本地驱动器
 
-系统会自动为本地计算机上的硬盘驱动器创建装入点，通过这些装入点可以轻松访问 Windows 文件系统。
+系统会自动为本地计算机上的硬盘驱动器创建装入点：
 
-    /mnt/驱动器号>/
+    /mnt/驱动器号/
+
+通过这些装入点，在 WSL 实例中可以轻松访问 Windows 文件系统。
 
 示例：
 
-wsl 下访问你主机的 c:\
+在 wsl 下访问你主机的 c:\
 
     C:\ProgramData> wsl
 
     $ cd /mnt/c
 
-在 wsl 中访问 Windows 里的文件或目录：
-
-    C:\ProgramData> wsl
-
-    $ cd /mnt/c/Users/<user name>/Project$
+    $ ls
 
 wsl 显示你主机的当前目录，在 Linux 下访问的路径
 
@@ -3189,40 +3187,46 @@ wsl 显示 WSL 实例的用户目录，在 Linux 下访问的路径
     C:\ProgramData> wsl cd $HOME;pwd
     /home/your_user
 
-2、在 Windows 中使用 wsl 实例里的文件或目录，要先映射网络地址
+虽然 wsl 实例可以同时使用自己的文件系统和 Windows 的文件系统，但是
 
-    \\wsl$\<wsl实例名>\your\directory
-
-然后就可以读写这个网络驱动器里的文件或目录了。
-
-##### 不要跨操作系统使用文件
-
-混用路径要使用 \\wsl$\<wsl实例名>\your\directory 地址的方式，用网络比本地 API 调用的 IO 速度更快
+    尽量不要跨操作系统使用文件，因为 WSL 2 对跨操作系统的文件的 IO 效率低
 
     https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems
 
-比如在存储 WSL 项目文件时：
+比如在 wsl 下存储文件时，尽量不使用 Windows 的文件系统：
 
-    使用 Linux 文件系统根目录：
+    $ touch /mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
 
-        \\wsl$\ubuntu\home\<user name>\Project
+而是使用 wsl 实例自己的文件系统：
 
-    而不使用 Windows 文件系统根目录：
+    $ touch /home/user/Project/xxx.txt
 
-        /mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
+##### 在 Windows 下使用 wsl 实例里的文件或目录
 
-##### 资源管理器通过 WSL 使用远程 nfs 文件系统
+使用映射网络地址的方式
 
-在 wsl 实例中挂载远程 nfs 文件系统，然后在主机桌面映射网络驱动器的方式使用
+    \\wsl$\<wsl实例名>\your\directory
 
-    不要使用 Windows 操作系统自带的 mount 命令挂载远程 nfs 文件系统，那个只支持 2010 年的 nfs v3 版本
+然后就可以读写这个网络驱动器里的文件或目录了
 
-主机 cmd 或 power shell 终端下，获取当前 wsl 发行版的名称：
+    \\wsl$\ubuntu\home\<user name>\Project
+
+混用路径要使用 \\wsl$\<wsl实例名>\your\directory 地址的方式，用网络比本地 API 调用的 IO 速度更快
+
+###### Windows 资源管理器通过 WSL 使用远程 nfs 文件系统
+
+nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文件系统，但是：
+
+    Windows 操作系统自带的 mount 命令，只支持 2010 年的 nfs v3 版本
+
+所以，应该在 wsl 实例中使用 Linux 的 mount 命令挂载远程 nfs 文件系统，这个是支持 nfs v4 版本的，然后在主机桌面上映射网络驱动器到 wsl 实例的路径即可。
+
+1、主机 cmd 或 power shell 终端下，获取当前 wsl 发行版的名称：
 
     C:\> wsl -l -v
     Ubuntu
 
-进入 wsl，挂载远程 nfs 路径 192.168.0.22:/remote/resource 到指定的本地目录 /mnt/22_nfs
+2、进入 wsl 实例，挂载远程 nfs 路径 192.168.0.22:/remote/resource 到指定的本地目录 /mnt/22_nfs
 
     C:\> wsl
 
@@ -3232,7 +3236,7 @@ wsl 显示 WSL 实例的用户目录，在 Linux 下访问的路径
 
     $ sudo mount -t nfs -o vers=4,rsize=1048576,wsize=1048576 192.168.0.22:/remote/resource /mnt/22_nfs
 
-打开主机桌面的资源管理器，添加一个网络位置或映射网络驱动器都可以，填写 wsl 中的路径：
+3、打开主机桌面的资源管理器，添加一个网络位置或映射网络驱动器都可以，填写 wsl 中的路径：
 
     \\wsl$\Ubuntu\mnt\22_nfs
 
