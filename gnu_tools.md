@@ -125,57 +125,13 @@ MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包�
 
     如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了 cygwin、mingw64 以及 mingw32（不等于老版的那个MinGW），shell、git、多种环境的 gcc（适用于 cygwin 环境或原生 Windows），而且有 pacman(ArcLinux) 作为包管理器。
 
-#### WSL 环境实现跟 Windows 的交互
-
-Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用比较方便，简单开发可以使用 WSL2。
-
-    https://learn.microsoft.com/zh-cn/windows/wsl/about
-
-    https://zhuanlan.zhihu.com/p/377263437
-
-WSL 使用参见章节 [WSL 适用于 Linux 的 Windows 子系统](Windows 10+ 安装的那些事儿.md)。
-
-WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 Linux，但是实现了 Linux 程序可以在 Windows 上运行，但是有些功能如 GUI 实现的有限。可以理解成使用了 MingW/Cygwin 的中间模拟层思路，但不在编译时实现，而是 QEMU 这种运行时转码的实现思路。后来发现坑太大填不满，就搞了个新思路 WSL2
-
-    https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility
-
-WSL 2 在底层使用虚拟机（Hyper-V）同时运行 Linux 内核和 Windows 内核，并且把 Linux 完全集成到了 Windows 中，使用起来就像在 Windows 中直接运行 Linux 程序。
-
-> 连接 WSL
-
-配置 WSL 环境
-
-    https://github.com/hsab/WSL-config
-
-PowerShell 通过函数包装器，实现在 Windows 命令行使用 Linux 命令，实质是指向了 wsl 虚拟机去执行
-
-    https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/
-
-PowerShell 可以配置命令提示符等，参见章节 [PowerShell 7+ 命令提示符工具及美化]。
-
-其它连接 wsl 的工具
-
-    mintty 支持连接 WSL
-
-        # https://github.com/mintty/mintty/wiki/Tips#supporting-linuxposix-subsystems
-        # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin 下安装了 wslbridge2
-        mintty --WSL=Ubuntu
-
-    独立的 WSLtty，调用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用 WSL 会话
-
-        https://github.com/mintty/wsltty
-
-    ConPtyShell 使用 Windows ConPty 接口利用 PowerShell 实现的 WSL 本地终端
-
-        https://github.com/antonioCoco/ConPtyShell
-
-#### Windows 10 本地化 Linux 编程接口
+#### Windows 10+ 本地化 Linux 编程接口
 
 Windows 10 在 2022 年后，已经比较完整的提供了对 Linux 的字符程序和 GUI 程序的相应编程接口
 
     对 Linux 字符程序，通过 ConPty 接口支持 unix pty 应用
 
-    对 Linux GUI 程序，通过 WSLg 接口支持 x-window 应用
+    对 Linux GUI 程序，通过 WSLg 接口支持 x-window/wayland 等框架下的应用
 
 > ConPty
 
@@ -210,7 +166,59 @@ Windows 10 在 2022 年后，已经比较完整的提供了对 Linux 的字符�
 
     https://github.com/microsoft/wslg
 
-目前已经可以支持命令行启动运行 Linux GUI 程序了，如： gvim、gedit 等，甚至支持 GPU 加速的 3D 程序。WSLg 其实是个部署了 X Server 的 Linux，添加了支持 Windows 远程桌面的 FreeRDP 服务，即作为 X-window 应用和 windows 窗口应用的桥梁存在。通过 Windows 远程桌面的接口实现了用户在 Windows 桌面直接使用 Linux GUI 程序： Windows 用户界面 <-> RDP <-> X Server <-> Linux GUI 程序。而且 WSLg 用到的其实是替代 X Window System 的 Wayland Compositor，就是 Wayland 官方给出的参考实现 Weston。这种类似于添加了个中间代理的解决方式，有利于完美适配各大 Linux 发行版和各种 Linux GUI 程序。
+目前已经可以支持命令行启动运行 Linux GUI 程序了，如： gvim、gedit 等，甚至支持 GPU 加速的 3D 程序。WSLg 其实是个部署了 X Server 的 Linux，添加了支持 Windows 远程桌面的 FreeRDP 服务，即作为 X-window 应用和  Windows 窗口应用的桥梁存在。
+
+通过 Windows 远程桌面的接口实现了用户在 Windows 桌面直接使用 Linux GUI 程序：
+
+    Windows 用户界面 <-> RDP <-> X Server <-> Linux GUI 程序。
+
+而且 WSLg 用到的其实是替代 X Window System 的 Wayland Compositor，也就是 Wayland 官方给出的参考实现 Weston。这种类似于添加了个中间代理的解决方式，有利于完美适配各大 Linux 发行版和各种 Linux GUI 程序。
+
+#### WSL 环境实现跟 Windows 的交互
+
+Windows 10 在 2021 年后的版本更新中集成的 WSL 2 使用比较方便，简单开发使用 WSL2 即可。
+
+    https://learn.microsoft.com/zh-cn/windows/wsl/about
+
+    https://zhuanlan.zhihu.com/p/377263437
+
+WSL 的使用见章节 [WSL 适用于 Linux 的 Windows 子系统](Windows 10+ 安装的那些事儿.md)。
+
+WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 Linux，但是实现了 Linux 程序可以在 Windows 上运行，但是有些功能如 GUI 实现的有限。可以理解成使用了 MingW/Cygwin 的中间模拟层思路，但不在编译时实现，而是 QEMU 这种运行时转码的实现思路。后来发现坑太大填不满，就搞了个新思路 --- WSL2
+
+    https://learn.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility
+
+WSL 2 在底层使用虚拟机（Hyper-V）同时运行 Linux 内核和 Windows 内核，并且把 Linux 完全集成到了 Windows 中，使用起来就像在 Windows 中直接运行 Linux 程序。
+
+> 连接 WSL
+
+Windows 11 下彻底打通了，不需要做设置，任何命令行终端只要运行 wsl.exe 就可以连接到本机 WSL 的实例（一般是 Ubuntu）。
+
+下面的内容可能过时了：
+
+    配置 WSL 环境
+
+        https://github.com/hsab/WSL-config
+
+    PowerShell 通过函数包装器，实现在 Windows 命令行使用 Linux 命令，实质是指向了 WSL 虚拟机去执行
+
+        https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/
+
+    其它连接 WSL 的工具
+
+        mintty 支持连接 WSL
+
+            # https://github.com/mintty/mintty/wiki/Tips#supporting-linuxposix-subsystems
+            # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin 下安装了 wslbridge2
+            mintty --WSL=Ubuntu
+
+        独立的 WSLtty，调用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用 WSL 会话
+
+            https://github.com/mintty/wsltty
+
+        ConPtyShell 使用 Windows ConPty 接口利用 PowerShell 实现的 WSL 本地终端
+
+            https://github.com/antonioCoco/ConPtyShell
 
 ## Windows字符终端
 
@@ -1458,7 +1466,7 @@ schemes 段设置配色方案，同样是一个数组，每种配色方案会有
 
     http://terminal.sexy/
 
-### PowerShell 7+ 命令提示符工具及美化
+#### PowerShell 7+ 命令提示符工具及美化
 
     https://yqc.im/windows-terminal-using-windows-terminal/
 
@@ -1552,7 +1560,7 @@ dircolors 是 Linux 下的命令，可以设置 ls 指令用彩色显示目录�
 
 内容见下。
 
-#### PowerShell 7 配置文件样例
+##### PowerShell 7 配置文件样例
 
 ```powershell
 

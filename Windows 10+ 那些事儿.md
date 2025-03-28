@@ -1889,15 +1889,15 @@ UWP 应用可以是本机应用，也可以是托管应用：
 
 <https://docs.microsoft.com/zh-cn/windows/apps/get-started/?tabs=cpp-win32#other-app-types>
 
-Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK。这次好像是想搞个大一统的开发平台：
+Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK，应该是想搞个大一统的开发平台：
 
-    原来的 Win32 API 升级成 WinRT API，对应的称呼就是变成了应用（APP）；
+    原来的 Win32 API 升级成 WinRT API，对应的使用这个 API 构建程序叫应用（APP）；
 
     原来的 wpf、.net、uwp 也都被大一统了 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/>；
 
     UWP 也要迁移到 Widnows App，理论上是容器化运行 <https://docs.microsoft.com/zh-cn/windows/apps/desktop/modernize/desktop-to-uwp-extend>；
 
-    Android 应用现在借助微软的安卓虚拟机也可以在 Windows 11 上容器化运行，应该是类似 WSL2 的思路，在 Windows 桌面可以使用其它操作系统的图形界面程序，估计是像 ConPty + WSLg 那样加了中间转换层，参见章节 [Windows 10 对 Linux 的字符程序和 GUI 程序的支持]。
+    Android 应用现在借助微软的安卓虚拟机也可以在 Windows 11 上容器化运行，应该是类似 WSL2 的思路，在 Windows 桌面可以使用其它操作系统的图形界面程序，估计是像 ConPty + WSLg 那样加了中间转换层，参见章节 [Windows 10+ 本地化 Linux 编程接口](gnu_tools.md)。
 
 开发平台打包统一了，能再卖一波 Visual Studio，但是各类应用还是各搞各的，桌面应用的通用化没啥指望，后续看谁能流行起来再说吧。
 
@@ -2772,21 +2772,51 @@ Hyper-V 其实也分1代2代，tenforums 的详细说明
 
 ### WSL 适用于 Linux 的 Windows 子系统
 
-WSL 属于运行在操作系统上的托管的虚拟机，用户体验上注重跟主机的交互能力，类似 gnome toolbox 的交互式容器，用户可以无缝在 Windows 上运行 Linux 的程序，目前已经支持图形化应用了。
-
-WSL2 的兼容性比 WSL1 好，仅 IO 性能不如 WSL1 快，见下面章节 [混合使用 Windows 和 Linux 进行工作]。
+WSL 属于运行在操作系统上的托管的虚拟机，用户体验上注重跟主机的交互能力，类似 gnome toolbox 的交互式容器，用户可以无缝在 Windows 上运行 Linux 的程序，目前已经开始支持运行 Linux 图形化应用了。
 
 开发工具可以使用 Virsual Studio Code，支持直接打开 WSL 虚机，就像连接 Docker 虚机或远程连接 SSH 服务器一样简单。其它开发工具如 git、docker、数据库、vGpu 加速（<https://developer.nvidia.com/cuda/wsl> ）等也都无缝支持，详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/setup/environment>。
 
-另外 Windows 10+ 也提供了本地化运行 Linux 的接口，参见章节 [Windows 10 本地化 Linux 编程接口](gnu_tools.md)。
+利用 [Windows 10 本地化 Linux 编程接口](gnu_tools.md)，初始的实现就是最基本的命令行应用，各种终端模拟器都可以连接到本地的 WSL 实例，后来利用 WSLG 开始支持图形化应用。
 
-WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，不能自行安装 Debian 等发行版的官方版本
+#### 安装 WSL
+
+Windows 10 在 2021 年后的版本更新中集成的 WSL 2 使用更方便，简单开发使用 WSL2 即可。
+
+    https://learn.microsoft.com/zh-cn/windows/wsl/about
+
+    https://zhuanlan.zhihu.com/p/377263437
+
+WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 Linux，但是实现了 Linux 程序可以在 Windows 上运行，但是有些功能如 GUI 实现的有限。可以理解成使用了 MingW/Cygwin 的中间模拟层思路，但不在编译时实现，而是 QEMU 这种运行时转码的实现思路。后来发现坑太大填不满，就搞了个新思路 --- WSL2
+
+    https://learn.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility
+
+    话说纳德拉领导的微软这个转型是真好，再不搞什么系千钧于一发的大工程，各功能各自演进，渐进式迭代开发再不玩什么大而全齐头并进。像这个 WSL 其实搞砸了，但没再现当年 Windows LongHorn 式的重大失败，而是另起炉灶开搞 WSL 2，原 WSL 改名叫 WSL 1 保持兼容就完事了，对 Windows 10 的其它体系开发没有任何大影响。
+
+WSL 2 在底层使用虚拟机（Hyper-V）同时运行 Linux 内核和 Windows 内核，并且把 Linux 完全集成到了 Windows 中，使用起来就像在 Windows 中直接运行 Linux 程序。
+
+WSL 2 的兼容性比 WSL 1 好，仅 IO 性能不如 WSL 1 快，见下面章节 [混合使用 Windows 和 Linux 进行工作]。
+
+以下讨论 WSL 术语除非特别指出，默认就是 WSL 2。
+
+WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，用户不能自行安装 Debian 等官方的发行版
 
     https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-linux-kernel
 
+微软发布的基于 WSL 的 Linux 版本提供了完全的二进制兼容，并伴随 Widnows 更新提供：
+
+    Windows 更新->“高级”选项，确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。
+
+    然后点击“检查更新”，确保你拥有最新的内核
+
+用户也可以自行升级微软发布的基于 WSL 的 Linux 内核：
+
+    https://learn.microsoft.com/zh-cn/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package
+
+        https://github.com/microsoft/WSL2-Linux-Kernel/releases?q=&expanded=true
+
 查看当前可用的版本：
 
-    PS C:\> wsl --list  --online
+    C:\> wsl --list  --online
     以下是可安装的有效分发的列表。
     使用 'wsl.exe --install <Distro>' 安装。
 
@@ -2811,19 +2841,7 @@ WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，不�
 
     如果运气不好：无法从“https://raw.githubusercontent.com/microsoft/WSL/master/distributions/DistributionInfo.json”中提取列表分发。操作超时。 解决办法见章节 [茄内无法访问 github 的解决方案](git_usage.md)。
 
-微软发布的基于 WSL 的 Linux 版本提供了完全的二进制兼容，并伴随 Widnows 更新提供：
-
-    Windows 更新->“高级”选项，确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。
-
-    然后点击“检查更新”，确保你拥有最新的内核
-
-用户也可以自行升级微软发布的基于 WSL 的 Linux 内核：
-
-    https://learn.microsoft.com/zh-cn/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package
-
-        https://github.com/microsoft/WSL2-Linux-Kernel/releases?q=&expanded=true
-
-#### 默认安装的是 Ubuntu
+> 默认安装的发行版是 Ubuntu
 
     https://learn.microsoft.com/en-us/Windows/wsl/install
 
@@ -2834,18 +2852,53 @@ WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，不�
     # 安装 ubuntu，已经安装过了忽略这条
     wsl --install   # -d Ubuntu 默认不需要打
 
-在 Windows 命令提示符或 PowerShell 中，可以在当前命令行中使用默认的 Linux 发行版，直接输入 `bash` 或 `ubuntu` 回车就可以看到提示。
+#### 命令行连接到你的 WSL 实例
 
-    # 提供 Linux 系统中的日期。
-    wsl date
+Windows 11 下彻底打通了，不需要做设置，不仅仅是在 Windows 命令提示符或 PowerShell 中，任何命令行终端中，运行 `wsl.exe` 就可以连接到本机 WSL 的默认实例启动 shell 并执行登录脚本。
+
+在当前命令行中，直接输入 `wsl shell-command` 直接在本机 WSL 的默认实例中执行 shell-command。
 
     查看已安装的 Linux 发行版的列表
-    wsl --list 或 wsl -l -v
+    C:\> wsl --list 或 wsl -l -v
+    Ubuntu
+    Debian
 
-    # 将默认发行版设置为 Debian
+    在本机 WSL 的实例中执行命令
+    C:\> wsl cat ~/.bash_profile
+
+    C:\> wsl date
+
+    # 切换默认发行版为 Debian
     wsl --setdefault Debian 或 wsl -s Debian
+
     # 在 Debian 中运行 npm init 命令
     wsl npm init
+
+下面的内容可能过时了：
+
+    配置 WSL 环境
+
+        https://github.com/hsab/WSL-config
+
+    PowerShell 通过函数包装器，实现在 Windows 命令行使用 Linux 命令，实质是指向了 WSL 虚拟机去执行
+
+        https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/
+
+    其它连接 WSL 的工具
+
+        mintty 支持连接 WSL
+
+            # https://github.com/mintty/mintty/wiki/Tips#supporting-linuxposix-subsystems
+            # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin 下安装了 wslbridge2
+            mintty --WSL=Ubuntu
+
+        独立的 WSLtty，调用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用 WSL 会话
+
+            https://github.com/mintty/wsltty
+
+        ConPtyShell 使用 Windows ConPty 接口利用 PowerShell 实现的 WSL 本地终端
+
+            https://github.com/antonioCoco/ConPtyShell
 
 #### 混合使用 Windows 和 Linux 进行工作
 
