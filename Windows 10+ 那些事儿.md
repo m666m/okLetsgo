@@ -2914,6 +2914,71 @@ WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，用�
     C:\> wsl
     $ sudo apt update && sudo apt upgrade -y
 
+#### 在 WSL 中启用显卡加速
+
+目前 WSL 中默认使用 WSLg 支持 NVIDIA CUDA 了，宿主机安装 nvidia 驱动即可。
+
+    https://learn.microsoft.com/zh-cn/windows/ai/directml/gpu-cuda-in-wsl
+
+1、下载并安装支持 NVIDIA CUDA 的 WSL 驱动程序
+
+    在 WSL2 上开始使用 CUDA https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
+
+    适用于 Linux 的 Windows 子系统 (WSL) 上的 CUDA https://developer.nvidia.com/cuda/wsl
+
+2、安装 WSL
+
+安装上述驱动程序后，请确保启用 WSL 并安装基于 glibc 的分发版，例如 Ubuntu 或 Debian。
+
+通过在设置应用的 Windows 更新部分中选择“检查更新”，确保你拥有最新的内核：
+
+    确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。 可以在设置应用 Windows 更新部分的“高级”选项中找到该项。
+
+需要 5.10.43.3 或更高版本的内核版本，可以通过在 PowerShell 中运行以下命令来检查版本号：
+
+    wsl cat /proc/version
+
+3、开始使用 NVIDIA CUDA
+
+最方便的使用方法就是章节 [WSL 下使用 CUDA 容器]。
+
+其它方法：
+
+按照 WSL 上的 NVIDIA CUDA 用户指南中的说明操作
+
+    https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
+
+或者在 WSL 中安装 PyTorch 或 TensorFlow
+
+    https://pytorch.org/get-started/locally/
+
+    https://www.tensorflow.org/install/gpu
+
+WSL 上的 CUDA 社区论坛
+
+    https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
+
+##### WSL 下使用 CUDA 容器
+
+    https://blog.csdn.net/m0_63070489/article/details/145798161
+
+    https://zhuanlan.zhihu.com/p/694392785
+
+配置 docker 见章节 [使用基于 WSL2 的 Docker]。
+
+你可以通过 NVIDIA Docker 使用现有的 Linux 工作流
+
+    NVIDIA Container Toolkit https://github.com/NVIDIA/nvidia-container-toolkit
+        之前是 https://github.com/NVIDIA/nvidia-docker 已废弃
+
+docker 拉 nvidia/cuda 镜像时，拉取的 cuda 版本不能高于本地的 cuda 版本。
+
+我本地的 cuda 版本是 12.7，则我无法拉取镜像 docker pull nvidia/cuda:12.8-base-ubuntu24.04，因为这个镜像的 cuda 版本是 12.8
+
+执行以下命令，正常情况下会输出 nvidia 显卡信息【表示本机的Docker可使用GPU】，如图所示
+
+    docker run --rm --gpus all nvidia/cuda:12.6.3-base-ubuntu24.04 nvidia-smi
+
 #### 命令行连接到你的 WSL 实例
 
 Windows 11 下彻底打通了，不需要做什么设置，不仅仅是在 Windows 命令提示符或 PowerShell 中，任何命令行终端中，运行 `wsl` 就可以连接到本机 WSL 的默认实例启动 shell 并执行登录脚本。
@@ -3504,69 +3569,6 @@ win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
 最后要说明的一点是，这个系统是安装在 C:\Users\%user_name%\AppData\Local\lxss 中的，所以会占用 c 盘的空间，所以最好把数据之类的都保存在其他盘中，这样不至于使 c 盘急剧膨胀。
 
 后续关于如何更换国内源、配置 ubuntu 桌面并进行 vnc 连接，参见 <https://sspai.com/post/43813>
-
-#### 在 WSL 中启用显卡加速
-
-目前 WSL 中已经支持 NVIDIA CUDA 了，宿主机安装 nvidia 驱动即可。
-
-    https://learn.microsoft.com/zh-cn/windows/ai/directml/gpu-cuda-in-wsl
-
-1、下载并安装支持 NVIDIA CUDA 的 WSL 驱动程序
-
-    在 WSL2 上开始使用 CUDA https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
-
-    适用于 Linux 的 Windows 子系统 (WSL) 上的 CUDA https://developer.nvidia.com/cuda/wsl
-
-2、安装 WSL
-
-安装上述驱动程序后，请确保启用 WSL 并安装基于 glibc 的分发版，例如 Ubuntu 或 Debian。
-
-通过在设置应用的 Windows 更新部分中选择“检查更新”，确保你拥有最新的内核：
-
-    确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。 可以在设置应用 Windows 更新部分的“高级”选项中找到该项。
-
-需要 5.10.43.3 或更高版本的内核版本，可以通过在 PowerShell 中运行以下命令来检查版本号：
-
-    wsl cat /proc/version
-
-3、开始使用 NVIDIA CUDA
-
-按照 WSL 上的 NVIDIA CUDA 用户指南中的说明操作
-
-    https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
-
-或者在 WSL 中安装 PyTorch 或 TensorFlow
-
-    https://pytorch.org/get-started/locally/
-
-    https://www.tensorflow.org/install/gpu
-
- WSL 上的 CUDA 社区论坛
-
-    https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
-
-最方便的使用方法就是章节 [WSL 下使用 CUDA 容器]。
-
-##### WSL 下使用 CUDA 容器
-
-    https://blog.csdn.net/m0_63070489/article/details/145798161
-
-    https://zhuanlan.zhihu.com/p/694392785
-
-配置 docker 见章节 [使用基于 WSL2 的 Docker]。
-
-你可以通过 NVIDIA Docker 使用现有的 Linux 工作流
-
-    NVIDIA Container Toolkit https://github.com/NVIDIA/nvidia-container-toolkit
-        之前是 https://github.com/NVIDIA/nvidia-docker 已废弃
-
-docker 拉 nvidia/cuda 镜像时，拉取的 cuda 版本不能高于本地的 cuda 版本。
-
-我本地的 cuda 版本是 12.7，则我无法拉取镜像 docker pull nvidia/cuda:12.8-base-ubuntu24.04，因为这个镜像的 cuda 版本是 12.8
-
-执行以下命令，正常情况下会输出 nvidia 显卡信息【表示本机的Docker可使用GPU】，如图所示
-
-    docker run --rm --gpus all nvidia/cuda:12.6.3-base-ubuntu24.04 nvidia-smi
 
 ### 使用 Docker
 
