@@ -2892,6 +2892,7 @@ WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，不�
 主机 cmd 或 power shell 终端下，获取当前 wsl 发行版的名称：
 
     C:\> wsl -l -v
+    Ubuntu
 
 进入 wsl，挂载远程 nfs 路径 192.168.0.22:/remote/resource 到指定的本地目录 /mnt/22_nfs
 
@@ -2906,6 +2907,8 @@ WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，不�
 打开主机桌面的资源管理器，映射一个网络位置，填写 wsl 中的路径：
 
     \\wsl$\Ubuntu\mnt\22_nfs
+
+Ubuntu 是前面获取当前 wsl 发行版的名称。
 
 ##### plocate 避坑
 
