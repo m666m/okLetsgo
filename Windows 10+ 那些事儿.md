@@ -2821,15 +2821,9 @@ WSL 2 的兼容性比 WSL 1 好，仅 IO 性能不如 WSL 1 快，见下面章�
 
     C:\> wsl --set-version 2  # 确保使用 WSL 2
 
-WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，用户不能自行安装 Debian 等官方的发行版
+WSL 下安装的 Linux 发行版，其实是微软发布的基于 WSL 的 Linux 版本，这个版本对 Windows 提供了完全的二进制兼容，用户不能自行安装 Debian 等官方的发行版
 
     https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-linux-kernel
-
-微软发布的基于 WSL 的 Linux 版本提供了完全的二进制兼容，并伴随 Widnows 更新提供：
-
-    Windows 更新->“高级”选项，确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。
-
-    然后点击“检查更新”，确保你拥有最新的内核
 
 用户也可以自行升级微软发布的基于 WSL 的 Linux 内核：
 
@@ -2899,13 +2893,13 @@ WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，用�
     DXCore 版本： 10.0.26100.1-240331-1435.ge-release
     Windows 版本： 10.0.26100.3476
 
-更新 WSL 内核：
+更新 WSL：
 
     C:\> wsl --update
 
 如果 wsl --update 进度太慢
 
-    可能是因为默认的wsl --update 是从微软商店下载的，微软应用商店就经常出现网络的问题。在wsl --update 后面加上 --web-download 就可以从 github 上进行下载
+    可能是因为默认的wsl --update 是从微软商店下载的，微软应用商店就经常出现网络的问题。在 wsl --update 后面加上 --web-download 就可以从 github 上进行下载
 
     或者直接手动下载 <https://github.com/microsoft/WSL/releases> 下的 .msi，运行即可安装。
 
@@ -2930,9 +2924,11 @@ WSL 下安装的 Linux 发行版，其实是微软发布的 Linux 版本，用�
 
 安装上述驱动程序后，请确保启用 WSL 并安装基于 glibc 的分发版，例如 Ubuntu 或 Debian。
 
-通过在设置应用的 Windows 更新部分中选择“检查更新”，确保你拥有最新的内核：
+更新 Linux 内核，通过在设置应用的 Windows 更新部分中选择“检查更新”，确保你拥有最新的内核：
 
-    确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。 可以在设置应用 Windows 更新部分的“高级”选项中找到该项。
+    Windows 更新->“高级”选项，确保启用 “更新 Windows 时接收其他 Microsoft 产品的更新”。
+
+    然后点击“检查更新”，确保你拥有最新的内核
 
 需要 5.10.43.3 或更高版本的内核版本，可以通过在 PowerShell 中运行以下命令来检查版本号：
 
