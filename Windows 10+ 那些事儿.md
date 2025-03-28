@@ -1995,9 +1995,11 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK，应�
 
         https://docs.fedoraproject.org/en-US/fedora-silverblue/troubleshooting/#_unable_to_install_fedora_silverblue_on_efi_systems
 
-    先装 Ubuntu 再装 Windows
+    先装 Ubuntu 再装 Windows，你痛苦吗？
 
         https://zhuanlan.zhihu.com/p/609573337
+
+        https://www.cnblogs.com/masbay/p/10745170.html
 
     适用 MBR 启动分区，UEFI 待研究
 
@@ -3266,7 +3268,9 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
 
 [20240703.4a] 这 "drvfs", 指的是 /mnt/c, /mnt/d 这些路径用的 "file system type", 敲 mount 命令查询可知. 然而, 这么写却没有效果, 稍后 sudo updatedb 一运行, Procmon 依然看到巨量的 C: 扫描动作. 不知为何, 网搜无果. 只好先用 /mnt/c  ... /mnt/z 这 26 个路径加入 `PRUNEPATH` 配置项将就着。
 
-#### WSL2 中修改家目录为原生 ext4
+##### 过时： WSL2 中修改家目录为原生 ext4
+
+目前已经是原生 ext4 文件系统了，以下内容仅供参考。
 
 在 WSL2 中修改家目录为原生 ext4 提升文件读写效率
 
@@ -3394,6 +3398,56 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
 设置->应用->应用和功能，里面有个“应用执行别名”，点击进去慢慢研究吧，微软净整些逻辑弯弯绕，真烦人啊。
 
 详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
+
+#### Windows Store 图形化安装 Ubuntu 子系统 (WSL)
+
+1.首先点击开始，然后点击设置
+
+2.选择更新和安全
+
+3.在左边点击开发者选项
+
+4.点击开发人员模式，选择打开
+
+5.会出现正在安装开发人员模式程序包
+
+6.稍等片刻，大概 2 分钟左右就可以安装成功
+
+7.然后返回，点击应用
+
+8.在应用和功能界面，选择程序和功能
+
+9.点击启用或关闭 Windows 功能
+
+10.弹出的窗口中拉到最下面，勾选上适用于 Linux 的 Windows 子系统
+
+11.然后会自动安装所需要的库
+
+12.大约 5 秒，安装完毕后需要重启电脑
+
+【废弃】13. 重启电脑后并没有安装 linux 系统，还需要输入 lxrun /install /y 来进行系统的下载 （win10 2020 版已经弃用此命令）
+
+13.在 Windows 搜索框中输入网址 <https://aka.ms/wslstore> ，然后回车，之后会先打开 edge 浏览器，然后自动跳转到 win10 应用商店。打开微软商店应用，在搜索框中输入“Linux”然后搜索，选择一个你喜欢的 Linux 发行版本然后安装。
+
+14.然后会弹出一个 shell 窗口，正在安装。
+
+15.安装完会提示输入用户名和密码，输入自己的就可以。
+
+16.然后安装完成后点击打开，等待启动
+
+17.初次使用 ubuntu
+
+打开 cmd，输入 bash。
+
+输入 sudo apt update 检测更新
+
+输入 sudo apt install sl 安装小火车
+
+输入 sl 出现火车，说明安装成功
+
+最后要说明的一点是，这个系统是安装在 C:\Users\%user_name%\AppData\Local\lxss 中的，所以会占用 c 盘的空间，所以最好把数据之类的都保存在其他盘中，这样不至于使 c 盘急剧膨胀。
+
+后续关于如何更换国内源、配置 ubuntu 桌面并进行 vnc 连接，参见 <https://sspai.com/post/43813>
 
 #### WSL 1 和 WSL2 的定制安装
 
@@ -3539,58 +3593,6 @@ Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出�
 9.WSL 命令行参考
 
 详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/basic-commands>
-
-#### Windows Store 图形化安装 Ubuntu 子系统 (WSL)
-
-win10+ubuntu 双系统见 <https://www.cnblogs.com/masbay/p/10745170.html>
-
-1.首先点击开始，然后点击设置
-
-2.选择更新和安全
-
-3.在左边点击开发者选项
-
-4.点击开发人员模式，选择打开
-
-5.会出现正在安装开发人员模式程序包
-
-6.稍等片刻，大概 2 分钟左右就可以安装成功
-
-7.然后返回，点击应用
-
-8.在应用和功能界面，选择程序和功能
-
-9.点击启用或关闭 Windows 功能
-
-10.弹出的窗口中拉到最下面，勾选上适用于 Linux 的 Windows 子系统
-
-11.然后会自动安装所需要的库
-
-12.大约 5 秒，安装完毕后需要重启电脑
-
-【废弃】13. 重启电脑后并没有安装 linux 系统，还需要输入 lxrun /install /y 来进行系统的下载 （win10 2020 版已经弃用此命令）
-
-13.在 Windows 搜索框中输入网址 <https://aka.ms/wslstore> ，然后回车，之后会先打开 edge 浏览器，然后自动跳转到 win10 应用商店。打开微软商店应用，在搜索框中输入“Linux”然后搜索，选择一个你喜欢的 Linux 发行版本然后安装。
-
-14.然后会弹出一个 shell 窗口，正在安装。
-
-15.安装完会提示输入用户名和密码，输入自己的就可以。
-
-16.然后安装完成后点击打开，等待启动
-
-17.初次使用 ubuntu
-
-打开 cmd，输入 bash。
-
-输入 sudo apt update 检测更新
-
-输入 sudo apt install sl 安装小火车
-
-输入 sl 出现火车，说明安装成功
-
-最后要说明的一点是，这个系统是安装在 C:\Users\%user_name%\AppData\Local\lxss 中的，所以会占用 c 盘的空间，所以最好把数据之类的都保存在其他盘中，这样不至于使 c 盘急剧膨胀。
-
-后续关于如何更换国内源、配置 ubuntu 桌面并进行 vnc 连接，参见 <https://sspai.com/post/43813>
 
 ### 使用 Docker
 
