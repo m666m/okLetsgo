@@ -2810,11 +2810,21 @@ WSL 2 的兼容性比 WSL 1 好，仅 IO 性能不如 WSL 1 快，见下面章�
 
     FAQ https://learn.microsoft.com/zh-cn/windows/wsl/troubleshooting#installation-issues
 
+    WSL 1 和 WSL2 的定制安装只适用于 Windows 10 的老旧版本
+
+        https://learn.microsoft.com/zh-cn/Windows/wsl/install-manual
+
+    Windows Store 图形化安装 Ubuntu 子系统 (WSL)
+
+        https://documentation.ubuntu.com/wsl/en/stable/howto/install-ubuntu-wsl2/#method-1-microsoft-store-application
+
 安装 WSL 2
 
     计算机需要虚拟化功能，如何开启虚拟化功能参见章节 [选择开启虚拟化功能]
 
     主机的 Windows 操作系统设置中，必须添加 “虚拟机平台” 可选功能。
+
+        Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出窗口选择“启用或关闭 Windows 功能”，在列表勾选“适用于 Linux 的 Windows 子系统”，确定。
 
 默认安装的 Linux 发行版是 Ubuntu，管理员权限打开 PowerShell 或 Windows Command Prompt，运行以下命令：
 
@@ -2918,7 +2928,7 @@ WSL 下安装的 Linux 发行版比如 Ubuntu，其实是微软发布的适用�
     C:\> wsl
     $ sudo apt update && sudo apt upgrade -y
 
-#### 在 WSL 中启用显卡加速
+##### 在 WSL 中启用显卡加速
 
 目前 WSL 中默认使用 WSLg 支持 NVIDIA CUDA 了，宿主机安装 nvidia 驱动即可。
 
@@ -2958,7 +2968,7 @@ WSL 上的 CUDA 社区论坛
 
     https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
 
-##### WSL 下使用 CUDA 容器
+###### WSL 下使用 CUDA 容器
 
     https://blog.csdn.net/m0_63070489/article/details/145798161
 
@@ -2981,7 +2991,7 @@ docker 拉 nvidia/cuda 镜像时，拉取的 cuda 版本不能高于本地的 cu
 
 #### 命令行连接到你的 WSL 实例
 
-Windows 11 下彻底打通了，不需要做什么设置，不仅仅是在 Windows 命令提示符或 PowerShell 中，任何命令行终端中，运行 `wsl` 就可以连接到本机 WSL 的默认实例启动 shell 并执行登录脚本。
+Windows 11 下彻底打通了，不需要做任何设置，在 Windows 命令提示符或 PowerShell 中，或任何其它命令行终端中，运行 `wsl` 就可以连接到本机 WSL 的默认实例启动 shell 并执行登录脚本。
 
 wsl 命令的详细用法说明
 
@@ -2994,21 +3004,23 @@ wsl 命令的详细用法说明
 
 在当前命令行终端中，直接输入 `wsl shell-command`，就是在本机 WSL 的默认实例中执行 shell-command，并把输出显示到当前的命令行终端。
 
-    查看已安装的 Linux 发行版的列表
+查看已安装的 Linux 发行版的列表
+
     C:\> wsl --list 或 wsl -l -v
     Ubuntu
     Debian
 
-    在本机 WSL 的实例中执行命令
+在本机 WSL 的实例中执行命令
 
     C:\> wsl cd $HOME;ls
 
     C:\> wsl cat ~/.bash_profile
 
-    # 切换默认发行版到 Debian
-     C:\> wsl --setdefault Debian 或 wsl -s Debian
+切换默认发行版到 Debian，如果安装了多个实例的话
 
-    # 在 Debian 中运行 npm init 命令
+    C:\> wsl --setdefault Debian 或 wsl -s Debian
+
+    在默认发行版 Debian 中运行 npm init 命令
     C:\>  wsl npm init
 
 下面的内容可能过时了：
@@ -3037,125 +3049,11 @@ wsl 命令的详细用法说明
 
             https://github.com/antonioCoco/ConPtyShell
 
-#### 在 WSL 实例上运行完整的 Linux 桌面环境
-
-WSL 使用 WSLg 默认支持 GUI 应用，简单使用的场景下不需要安装 Linux 桌面环境。
-
-比如，在 wsl 终端下用命令安装 firefox 后，直接运行 `firefox` 命令，即可启动到 Windows 桌面下使用。
-
-另外还会自动在开始菜单创建快捷方式，如：
-
-    C:\Users\mm\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Ubuntu
-
-        "C:\Program Files\WSL\wslg.exe" -d Ubuntu --cd "~" -- firefox
-
-如果一定要使用 Gnome 桌面，安装过程如下：
-
-更新 WSL 内核：
-
-    wsl --update
-
-更新并安装 GNOME
-
-在 WSL 终端运行：
-
-    # 更新发行版的软件仓库
-    $ sudo apt update && sudo apt upgrade -y
-
-    # 安装完整 GNOME 桌面
-    $ sudo apt install ubuntu-desktop -y
-    # 或最小化安装（仅核心组件）：
-    # sudo apt install gnome-session gdm3 -y
-
-配置 WSLg 自动启动 GNOME
-
-WSLg 默认支持 GUI 应用，但 GNOME 需要额外配置：
-
-（1）修改 ~/.bashrc 或 ~/.zshrc
-
-    if [[ -z "$DISPLAY" && "$(tty)" == "/dev/tty1" ]]; then
-    exec dbus-run-session -- gnome-session
-    fi
-    （这会在登录时自动启动 GNOME）
-
-（2）启动 GNOME
-
-方法 1：直接运行 gnome-session：
-
-    dbus-run-session -- gnome-session
-
-方法 2（推荐）：使用 systemd（需配置 systemd 支持，见下文）。
-
-GNOME 依赖 systemd 管理服务（如网络、声音等），但 WSL 默认不启用 systemd。
-
-解决方法：
-
-（1）手动启用 systemd
-在 /etc/wsl.conf 添加：
-
-    [boot]
-    systemd=true
-
-然后重启 WSL：
-
-    wsl --shutdown
-    wsl -t <发行版名称>  # 如 Ubuntu-22.04
-
-（2）验证 systemd
-
-    systemctl status  # 应显示运行状态
-    sudo service gdm start  # 启动 GNOME 显示管理器
-
-运行 GNOME 桌面
-
-（1）启动 GNOME
-
-在 WSL 终端运行：
-
-    dbus-run-session -- gnome-session
-
-或（如果已启用 systemd）：
-
-    sudo service gdm start  # 启动 GNOME 显示管理器
-
-GNOME 桌面会自动出现在 Windows 桌面上。
-
-（2）登录 GNOME
-
-如果使用 gdm，会显示登录界面（需 WSLg 支持）。
-
-默认情况下，GNOME 会直接启动。
-
-优化体验
-
-（1）音频支持
-
-WSLg 默认支持 PulseAudio，但可能需要额外配置：
-
-    sudo apt install pavucontrol -y  # 音量控制
-    pavucontrol  # 调整音频设备
-
-（2）输入法（如中文）
-
-安装 ibus 或 fcitx：
-
-    sudo apt install ibus ibus-libpinyin -y
-    ibus-setup  # 配置输入法
-
-（3）GPU 加速
-
-WSLg 默认启用 OpenGL 加速，如需 Vulkan：
-
-    sudo apt install mesa-vulkan-drivers -y
-    vulkaninfo  # 验证支持
-
 #### 混合使用 Windows 和 Linux 进行工作
 
 WSL 不仅仅是在命令行终端可以执行 Linux 应用，对操作系统的调用也打通了，也就是说，网络、存储、文件系统等都可以通用了。
 
-    https://docs.microsoft.com/zh-cn/windows/wsl/filesystems
-
-    支持图形化 GUI 应用的混合使用了 https://learn.microsoft.com/zh-cn/windows/wsl/tutorials/gui-apps
+    https://learn.microsoft.com/zh-cn/windows/wsl/filesystems
 
 借助 WSL，Windows 和 Linux 工具和命令可互换使用
 
@@ -3164,6 +3062,20 @@ WSL 不仅仅是在命令行终端可以执行 Linux 应用，对操作系统的
     从 Windows 命令行（如 PowerShell）运行 Linux 工具（如 grep ）
 
     在 Windows 与 Windows 之间共享环境变量
+
+WSL 下的 Linux 命令区别于某些 PowerShell 下的命令
+
+    PowerShell 对某些 linux 命令是使用了别名，而不是调用的真正的 exe 文件，有没有后缀 .exe 是有区别的！
+
+例如，使用 curl 命令行实用程序来下载 Ubuntu 20.04 控制台命令：
+
+    curl.exe -L -o ubuntu-2004.appx https://aka.ms/wsl-ubuntu-2004
+
+在本示例中，将执行 curl.exe（而不仅仅是 curl），以确保在 PowerShell 中调用真正的 curl 可执行文件，而不是调用 Invoke WebRequest 的 PowerShell curl 别名。<https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual#downloading-distributions>
+
+设置->应用->应用和功能，里面有个“应用执行别名”，点击进去慢慢研究吧，微软净整些逻辑弯弯绕，真烦人啊。
+
+详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
 
 ##### 在 WSL 中如何访问我的本地驱动器
 
@@ -3379,6 +3291,120 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
     从 C:\WSL\data.img 文件挂载 ext4 文件系统到 /data目录
     挂载 /data/home/yanke 子目录到 /home/yanke，作为用户的家目录
 
+#### 图形化 GUI 应用的混合使用
+
+WSL 使用 WSLg 默认支持 GUI 应用，简单使用的场景下不需要安装 Linux 桌面环境。
+
+    https://learn.microsoft.com/zh-cn/windows/wsl/tutorials/gui-apps
+
+比如，在 wsl 终端下用命令安装 firefox 后，直接运行 `firefox` 命令，即可启动到 Windows 桌面下使用。而且还会自动在主机的开始菜单创建快捷方式，方便用户使用，如：
+
+    C:\Users\mm\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Ubuntu
+
+        "C:\Program Files\WSL\wslg.exe" -d Ubuntu --cd "~" -- firefox
+
+##### 运行完整的 Linux 桌面环境
+
+如果一定要使用 Gnome 桌面，安装过程如下：
+
+更新 WSL 内核：
+
+    wsl --update
+
+更新并安装 GNOME
+
+在 WSL 终端运行：
+
+    # 更新发行版的软件仓库
+    $ sudo apt update && sudo apt upgrade -y
+
+    # 安装完整 GNOME 桌面
+    $ sudo apt install ubuntu-desktop -y
+    # 或最小化安装（仅核心组件）：
+    # sudo apt install gnome-session gdm3 -y
+
+配置 WSLg 自动启动 GNOME
+
+WSLg 默认支持 GUI 应用，但 GNOME 需要额外配置：
+
+（1）修改 ~/.bashrc 或 ~/.zshrc
+
+    if [[ -z "$DISPLAY" && "$(tty)" == "/dev/tty1" ]]; then
+    exec dbus-run-session -- gnome-session
+    fi
+    （这会在登录时自动启动 GNOME）
+
+（2）启动 GNOME
+
+方法 1：直接运行 gnome-session：
+
+    dbus-run-session -- gnome-session
+
+方法 2（推荐）：使用 systemd（需配置 systemd 支持，见下文）。
+
+GNOME 依赖 systemd 管理服务（如网络、声音等），但 WSL 默认不启用 systemd。
+
+解决方法：
+
+（1）手动启用 systemd
+在 /etc/wsl.conf 添加：
+
+    [boot]
+    systemd=true
+
+然后重启 WSL：
+
+    wsl --shutdown
+    wsl -t <发行版名称>  # 如 Ubuntu-22.04
+
+（2）验证 systemd
+
+    systemctl status  # 应显示运行状态
+    sudo service gdm start  # 启动 GNOME 显示管理器
+
+运行 GNOME 桌面
+
+（1）启动 GNOME
+
+在 WSL 终端运行：
+
+    dbus-run-session -- gnome-session
+
+或（如果已启用 systemd）：
+
+    sudo service gdm start  # 启动 GNOME 显示管理器
+
+GNOME 桌面会自动出现在 Windows 桌面上。
+
+（2）登录 GNOME
+
+如果使用 gdm，会显示登录界面（需 WSLg 支持）。
+
+默认情况下，GNOME 会直接启动。
+
+优化体验
+
+（1）音频支持
+
+WSLg 默认支持 PulseAudio，但可能需要额外配置：
+
+    sudo apt install pavucontrol -y  # 音量控制
+    pavucontrol  # 调整音频设备
+
+（2）输入法（如中文）
+
+安装 ibus 或 fcitx：
+
+    sudo apt install ibus ibus-libpinyin -y
+    ibus-setup  # 配置输入法
+
+（3）GPU 加速
+
+WSLg 默认启用 OpenGL 加速，如需 Vulkan：
+
+    sudo apt install mesa-vulkan-drivers -y
+    vulkaninfo  # 验证支持
+
 #### WSL2 的 Linux 是放到当前用户目录下的，占用操作系统盘空间
 
 注意你的 c 盘空间
@@ -3386,215 +3412,6 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
     %USERPROFILE%\AppData\Local\Packages\CanonicalGroupLimited...
 
 如果需要更改存储位置，打开“设置”->“系统”-->“存储”->“更多存储设置：更改新内容的保存位置”，选择项目“新的应用将保存到”。
-
-#### 注意：WSL 下的 Linux 命令区别于某些 PowerShell 下的命令
-
-注意 PowerShell 对某些 linux 命令是使用了别名，而不是调用的真正的 exe 文件，有没有后缀 .exe 是有区别的！
-
-例如，使用 curl 命令行实用程序来下载 Ubuntu 20.04 控制台命令：
-
-    curl.exe -L -o ubuntu-2004.appx https://aka.ms/wsl-ubuntu-2004
-
-在本示例中，将执行 curl.exe（而不仅仅是 curl），以确保在 PowerShell 中调用真正的 curl 可执行文件，而不是调用 Invoke WebRequest 的 PowerShell curl 别名。<https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual#downloading-distributions>
-
-设置->应用->应用和功能，里面有个“应用执行别名”，点击进去慢慢研究吧，微软净整些逻辑弯弯绕，真烦人啊。
-
-详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
-
-#### Windows Store 图形化安装 Ubuntu 子系统 (WSL)
-
-1.首先点击开始，然后点击设置
-
-2.选择更新和安全
-
-3.在左边点击开发者选项
-
-4.点击开发人员模式，选择打开
-
-5.会出现正在安装开发人员模式程序包
-
-6.稍等片刻，大概 2 分钟左右就可以安装成功
-
-7.然后返回，点击应用
-
-8.在应用和功能界面，选择程序和功能
-
-9.点击启用或关闭 Windows 功能
-
-10.弹出的窗口中拉到最下面，勾选上适用于 Linux 的 Windows 子系统
-
-11.然后会自动安装所需要的库
-
-12.大约 5 秒，安装完毕后需要重启电脑
-
-【废弃】13. 重启电脑后并没有安装 linux 系统，还需要输入 lxrun /install /y 来进行系统的下载 （win10 2020 版已经弃用此命令）
-
-13.在 Windows 搜索框中输入网址 <https://aka.ms/wslstore> ，然后回车，之后会先打开 edge 浏览器，然后自动跳转到 win10 应用商店。打开微软商店应用，在搜索框中输入“Linux”然后搜索，选择一个你喜欢的 Linux 发行版本然后安装。
-
-14.然后会弹出一个 shell 窗口，正在安装。
-
-15.安装完会提示输入用户名和密码，输入自己的就可以。
-
-16.然后安装完成后点击打开，等待启动
-
-17.初次使用 ubuntu
-
-打开 cmd，输入 bash。
-
-输入 sudo apt update 检测更新
-
-输入 sudo apt install sl 安装小火车
-
-输入 sl 出现火车，说明安装成功
-
-最后要说明的一点是，这个系统是安装在 C:\Users\%user_name%\AppData\Local\lxss 中的，所以会占用 c 盘的空间，所以最好把数据之类的都保存在其他盘中，这样不至于使 c 盘急剧膨胀。
-
-后续关于如何更换国内源、配置 ubuntu 桌面并进行 vnc 连接，参见 <https://sspai.com/post/43813>
-
-#### WSL 1 和 WSL2 的定制安装
-
-只适用于 Windows 10 的老旧版本
-
-    https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual
-
-1、开启功能： WSL
-
-首选：
-Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出窗口选择“启用或关闭 Windows 功能”，
-在列表勾选“适用于 Linux 的 Windows 子系统”，确定。
-
-或
-
-```powershell
-
-    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-
-```
-
-验证
-
-```powershell
-
-    Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-
-```
-
-到这里已经安装了 WSL 1，如果只想安装 WSL 1，现在可以重新启动计算机，然后继续执行步骤5下载安装Linux发行版了。
-下面的描述都是为了安装 WSL2 的。
-
-2、开启功能： 虚拟机平台
-
-```powershell
-
-    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-
-```
-
-3、下载 Linux 内核更新包，双击提权安装即可。
-
-<https://wslstorestorage.blob.core.Windows.net/wslblob/wsl_update_x64.msi>
-
-```powershell
-
-    wsl --update
-
-```
-
-4.将 WSL2 设置为默认版本
-
-```powershell
-
-    wsl --set-default-version 2
-
-```
-
-5.下载 Linux 发行版并安装
-
-详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/install-manual#downloading-distributions>
-
-    <https://aka.ms/wslubuntu2004>
-    <https://aka.ms/wsl-ubuntu-1604>
-
-```powershell
-
-    Invoke-WebRequest -Uri https://aka.ms/wslubuntu2004 -OutFile Ubuntu.appx -UseBasicParsing
-
-```
-
-或
-
-```cmd
-
-    curl.exe -L -o ubuntu-2004.appx https://aka.ms/wsl-ubuntu-2004
-
-```
-
-安装：
-
-```powershell
-
-    Add-AppxPackage .\app_name.appx
-
-```
-
-注销并卸载 WSL 发行版：
-
-```powershell
-
-    wsl --unregister <DistributionName>
-
-```
-
-6.验证
-
-```powershell
-
-    # 更新 WSL 内核，需要管理员权限
-    wsl --update
-
-    # 查看当前 wsl 安装的版本及默认 linux 系统
-    wsl --status
-    默认分发：Ubuntu
-    默认版本：2
-
-    # 进入 ubuntu 系统
-    wsl 或 bash
-
-```
-
-```shell
-
-    # 更新下包
-    sudo apt update
-    # 建议更换国内源之后再做 apt-get update | apt-get upgrade
-
-    # 看看安装的什么版本的 linux
-    $ sudo lsb_release -a
-    [sudo] password for xx:
-    No LSB modules are available.
-    Distributor ID: Ubuntu
-    Description:    Ubuntu 20.04 LTS
-    Release:        20.04
-    Codename:       focal
-
-    # 安装小火车
-    sudo apt install sl
-
-    # 出现火车，说明安装成功
-    sl
-```
-
-7.配置多个 linux 系统
-
-详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/wsl-config>
-
-8.导入任何 Linux 发行版
-
-详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/use-custom-distro>
-
-9.WSL 命令行参考
-
-详见 <https://docs.microsoft.com/zh-cn/Windows/wsl/basic-commands>
 
 ### 使用 Docker
 
