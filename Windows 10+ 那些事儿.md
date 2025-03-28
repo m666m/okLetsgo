@@ -3033,19 +3033,17 @@ Windows 11 下彻底打通了，不需要做什么设置，不仅仅是在 Windo
 
 #### 在 WSL 实例上运行完整的 Linux 桌面环境
 
-    WSLg 默认支持 GUI 应用，如果只是想在 WSL 下使用图形化应用，在 wsl 终端下直接运行该应用即可启动到 Windows 桌面下使用。
+WSLg 默认支持 GUI 应用，简单使用不需要安装 Linux 桌面环境：
 
-WSLg（Windows Subsystem for Linux GUI） 是微软官方提供的功能，允许 WSL 2 直接运行 Linux GUI 应用程序（包括完整的桌面环境），并自动集成到 Windows 桌面。
+    在 wsl 终端下用命令安装后，直接运行该应用的命令，即可启动到 Windows 桌面下使用。
 
-    无需额外 X Server（如 VcXsrv/X410）。
+    另外还会自动在开始菜单创建快捷方式，如：
 
-    默认使用 Wayland，支持 X11，需要额外安装
+        C:\Users\mm\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Ubuntu
 
-    支持剪贴板共享、音频、GPU 加速（适用于 OpenGL/Vulkan）。
+            "C:\Program Files\WSL\wslg.exe" -d Ubuntu --cd "~" -- authenticator
 
-    适用于 Windows 11（21H2+）或最新 Win10（需手动启用）。
-
-在 Windows Subsystem for Linux (WSL) 下使用 GNOME + WSLg 是一种更现代、更便捷的方式，可以直接在 Windows 上运行完整的 Linux 桌面环境，而无需额外配置 X Server。
+如果一定要使用 Gnome 桌面，安装过程如下：
 
 更新 WSL 内核：
 
@@ -3161,33 +3159,7 @@ WSL 不仅仅是在命令行终端可以执行 Linux 应用，对操作系统的
 
     在 Windows 与 Windows 之间共享环境变量
 
-验证下：
-
-    # 显示的是你主机的当前目录，在 Linux 下访问的路径
-    C:\ProgramData>wsl pwd
-    /mnt/c/ProgramData
-
-    # 显示的是 WSL 实例的用户目录，在 Linux 下访问的路径
-    C:\ProgramData>wsl cd $HOME;pwd
-    /home/your_user
-
-> 不要跨操作系统使用文件
-
-混用路径要使用 \\wsl$ 映射名，用网络的方式比本地 API 调用更快
-
-    https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems
-
-比如在存储 WSL 项目文件时：
-
-    使用 Linux 文件系统根目录：
-
-        \\wsl$\Ubuntu-18.04\home\<user name>\Project
-
-    而不使用 Windows 文件系统根目录：
-
-        /mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
-
-##### 在 WSL 中如何访问我的 C: 驱动器
+1、在 WSL 中如何访问我的本地驱动器
 
 系统会自动为本地计算机上的硬盘驱动器创建装入点，通过这些装入点可以轻松访问 Windows 文件系统。
 
@@ -3195,11 +3167,55 @@ WSL 不仅仅是在命令行终端可以执行 Linux 应用，对操作系统的
 
 示例：
 
-    运行 cd /mnt/c 访问 c:\
+wsl 下访问你主机的 c:\
+
+    C:\ProgramData> wsl
+
+    $ cd /mnt/c
+
+在 wsl 中访问 Windows 里的文件或目录：
+
+    C:\ProgramData> wsl
+
+    $ cd /mnt/c/Users/<user name>/Project$
+
+wsl 显示你主机的当前目录，在 Linux 下访问的路径
+
+    C:\ProgramData> wsl pwd
+    /mnt/c/ProgramData
+
+wsl 显示 WSL 实例的用户目录，在 Linux 下访问的路径
+
+    C:\ProgramData> wsl cd $HOME;pwd
+    /home/your_user
+
+2、在 Windows 中使用 wsl 实例里的文件或目录，要先映射网络地址
+
+    \\wsl$\<wsl实例名>\your\directory
+
+然后就可以读写这个网络驱动器里的文件或目录了。
+
+##### 不要跨操作系统使用文件
+
+混用路径要使用 \\wsl$\<wsl实例名>\your\directory 地址的方式，用网络比本地 API 调用的 IO 速度更快
+
+    https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems
+
+比如在存储 WSL 项目文件时：
+
+    使用 Linux 文件系统根目录：
+
+        \\wsl$\ubuntu\home\<user name>\Project
+
+    而不使用 Windows 文件系统根目录：
+
+        /mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
 
 ##### 资源管理器通过 WSL 使用远程 nfs 文件系统
 
-    不使用 Windows 自带的 mount 命令直接挂载，那个居然只支持 2010 年的 nfs v3 版本。
+在 wsl 实例中挂载远程 nfs 文件系统，然后在主机桌面映射网络驱动器的方式使用
+
+    不要使用 Windows 操作系统自带的 mount 命令挂载远程 nfs 文件系统，那个只支持 2010 年的 nfs v3 版本
 
 主机 cmd 或 power shell 终端下，获取当前 wsl 发行版的名称：
 

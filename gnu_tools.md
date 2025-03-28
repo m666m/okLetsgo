@@ -176,6 +176,20 @@ WSLg 其实是个部署了 X Server 的 Linux，添加了支持 Windows 远程�
 
 而且 WSLg 用到的其实是替代 X Window System 的 Wayland Compositor，也就是 Wayland 官方给出的参考实现 Weston。这种类似于添加了个中间代理的解决方式，有利于完美适配各大 Linux 发行版和各种 Linux GUI 程序。
 
+WSLg（Windows Subsystem for Linux GUI） 是微软官方提供的功能，允许 WSL 2 直接运行 Linux GUI 应用程序（包括完整的桌面环境），并自动集成到 Windows 桌面。
+
+    无需额外 X Server（如 VcXsrv/X410）。
+
+    默认使用 Wayland，支持 X11，需要额外安装
+
+    支持剪贴板共享、音频、GPU 加速（适用于 OpenGL/Vulkan）。
+
+    适用于 Windows 11（21H2+）或最新 Win10（需手动启用）。
+
+在 Windows Subsystem for Linux (WSL) 下使用 GNOME + WSLg 是一种更现代、更便捷的方式，可以直接在 Windows 上运行完整的 Linux 桌面环境，而无需额外配置 X Server。
+
+参见章节 [在 WSL 实例上运行完整的 Linux 桌面环境](Windows 10+ 那些事儿.md)。
+
 ## Windows字符终端
 
 终端概念参见章节 [Linux 字符终端]。
