@@ -8266,6 +8266,16 @@ fi
     EOF
     )
 
+ssh写入远程主机文件
+
+```bash
+cat <<EOF | ssh user@host "cat > /home/user/${HOSTNAME%%.*}_said.txt"
+# hi
+there.
+EOF
+
+```
+
 在远程主机输入文件内容 `cat >config.php <<EOF`，可以直接粘贴内容，但是
 
     1、cat 会转义特殊符号，得提前编辑要粘贴的内容，防止粘贴内容不一致
