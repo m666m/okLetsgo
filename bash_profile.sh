@@ -568,7 +568,6 @@ elif [[ $os_type = 'windows' ]]; then
     fi
 
     echo ''
-    echo 'ssh-pageant reusing ssh key loaded in putty pageant'
     # ssh-pageant 使用以下参数来判断是否有已经运行的进程，不会多次运行自己
     eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
     ssh-add -l
