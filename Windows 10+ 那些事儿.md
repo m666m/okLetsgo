@@ -3506,6 +3506,8 @@ Intel i7 11700k 之后的 cpu 不再支持 Windows 98 虚拟机。
 
 12 代酷睿处理器开始引入了大小核心混合架构，需要操作系统适应，自身也要根据具体的应用程序情况进行发展，预计至少到 15 代酷睿以后才能大致稳住技术架构。
 
+2025年更新，没有 15 代酷睿，英特尔至今只发布了笔记本专用的 酷睿 Ultra，品牌大更换。看来是要完。
+
 ### 老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）
 
 UEFI 启动模式下，操作显卡的方式也有变化，需要显卡支持 “UEFI GOP VBIOS”。
@@ -3995,13 +3997,15 @@ KB4103718 如果运行时报告无法安装，先运行自带的那个 pciclears
         # 立刻重启
         shutdown -r -t 0
 
-### Windows 11 远程桌面无法使用已经保存好设置的 .rdp 文件
+### Windows 11 远程桌面无法使用已经保存好用户名密码的 .rdp 文件
 
-用远程桌面程序打开已经保存好设置的 .rdp 文件，会遇到这个提示：
+远程桌面程序 mstsc.exe，打开已经保存好设置的 .rdp 文件，会遇到这个提示：
 
     Microsoft Defender Credential Guard 不允许使用已保存的凭据，请输入你的凭据。
 
 这时只能输入用户的密码才能登录远程计算机的桌面，非常麻烦。
+
+在 Windows 的 “设置” 中搜索 “凭据管理器”，点击 “Windows 凭据”，可以看到对端计算机远程桌面的用户名和密码已经保存了，之前使用的时候是没有问题的。
 
 原因是你在 Windows 系统设置的安全中心，打开了基于虚拟化的安全基线。打开安全中心->设备安全性：内核隔离，可以看到 “Microsoft Defender Credential Guard” 开启了。
 
@@ -4026,6 +4030,130 @@ KB4103718 如果运行时报告无法安装，先运行自带的那个 pciclears
 或者编辑注册表 regedit.exe：打开 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa，新建一个 DWORD 项目 LsaCfgFlags ，设置值为 0 。
 
 5、重启计算机生效。
+
+安全中心->设备安全性：内核隔离->固件保护，可以看到 “Microsoft Defender Credential Guard” 关闭了。
+
+### Windows 下利用登录用户凭据保存你的应用的密码
+
+目前好像这个用户凭据的用法在 Windows 11 时代不大受待见了
+
+    https://zhuanlan.zhihu.com/p/679219628
+
+Windows软件的话，最好的办法就是把用户密码保存到Windows的用户凭据区
+
+下面是C++代码：
+
+```c++
+#include <windows.h>
+#include <wincrypt.h>
+#include <wincred.h>
+#include <credentialprovider.h>
+#pragma comment(lib, "Advapi32.lib")
+
+std::wstring appName = L"yourApp";
+//保存或更新用户凭据
+bool Store(std::string& target)
+{
+    CREDENTIAL cred = { 0 };
+    cred.Type = CRED_TYPE_GENERIC;
+    cred.TargetName = appName.data();
+    cred.CredentialBlobSize = target.size();
+    cred.CredentialBlob = (LPBYTE)(target.data());
+    cred.Persist = CRED_PERSIST_LOCAL_MACHINE;
+    return CredWrite(&cred, 0) == TRUE;
+}
+//删除用户凭据
+bool Remove() {
+    return CredDelete(appName.data(), CRED_TYPE_GENERIC, 0) == TRUE;
+}
+//读取用户凭据
+std::string Read()
+{
+    CREDENTIAL* cred;
+    if (CredRead(appName.data(), CRED_TYPE_GENERIC, 0, &cred) == FALSE) {
+        return "";
+    }
+    std::string result(reinterpret_cast<char*>(cred->CredentialBlob),cred->CredentialBlobSize);
+    CredFree(cred);
+    return result;
+}
+
+std::string str = "abc123";
+bool flag = Store(str);
+std::cout << "Store Ok" << flag << std::endl;
+auto result = Read();
+std::cout << "Read Ok:" << result << std::endl;
+```
+
+这个API在Windows XP 时代就有了，所以兼容性还挺好的。
+
+密码写入用户凭据之后，本身就是加密的，而且这个密码不容易被轻易窃取，所以基本不用担心安全问题。
+
+如果黑客入侵了目标电脑，且黑客知道你的appName，那么黑客运行一下Read方法的代码，也是可以拿到密码的，所以，你不放心的话，就把一段密文存入用户凭据，用的时候，再在内存里解密一下。这样的话，就增加了黑客窃取用户密码的成本。
+
+注意：任何程序都无法做到绝对安全，只要能做到入侵的成本远高于收益就可以认为是安全的。
+
+如果你不想保存任何东西，只想用一下Windows操作系统提供的加密解密方案，可以使用如下C++代码：
+
+```c++
+#include <windows.h>
+#include <wincrypt.h>
+#include <wincred.h>
+#include <credentialprovider.h>
+#pragma comment(lib, "Crypt32.lib")
+
+//加密
+bool Encrypt(const std::wstring& plaintext, std::vector<BYTE>& encryptedData)
+{
+    DATA_BLOB inData, outData;
+    inData.pbData = reinterpret_cast<BYTE*>(const_cast<wchar_t*>(plaintext.c_str()));
+    inData.cbData = (plaintext.size() + 1) * sizeof(wchar_t);
+    if (!CryptProtectData(&inData, NULL, NULL, NULL, NULL, CRYPTPROTECT_LOCAL_MACHINE, &outData))
+    {
+        DWORD dwError = GetLastError();
+        return false;
+    }
+    encryptedData.resize(outData.cbData);
+    memcpy(encryptedData.data(), outData.pbData, outData.cbData);
+    LocalFree(outData.pbData);
+    return true;
+}
+//解密
+std::wstring Decrypt(const std::vector<BYTE>& encryptedData)
+{
+    DATA_BLOB inData, outData;
+    inData.pbData = const_cast<BYTE*>(encryptedData.data());
+    inData.cbData = static_cast<DWORD>(encryptedData.size());
+    outData.pbData = NULL;
+    outData.cbData = 0;
+    if (!CryptUnprotectData(&inData, NULL, NULL, NULL, NULL, CRYPTPROTECT_LOCAL_MACHINE, &outData))
+    {
+        DWORD dwError = GetLastError();
+        throw std::runtime_error("Failed to decrypt data.");
+    }
+    std::wstring plaintext(reinterpret_cast<wchar_t*>(outData.pbData), outData.cbData / sizeof(wchar_t) - 1);
+    LocalFree(outData.pbData);
+    return plaintext;
+}
+
+
+std::vector<BYTE> encryptedBytes;
+Encrypt(str, encryptedBytes);
+std::string encryptedStr(reinterpret_cast<char*>(encryptedBytes.data()), encryptedBytes.size());
+std::cout << "Encrypt Str:" << encryptedStr << std::endl;
+std::wstring decryptedStr = Decrypt(encryptedBytes);
+std::wcout << L"Decrypted str: " << decryptedStr << std::endl;
+```
+
+这里的加密解密，也用到了Windows当前登录人的用户凭据。
+
+只有与加密数据的用户具有相同登录凭据的用户才能解密数据。
+
+也就是说，密文失窃后，在另一台电脑上是无法解密的。
+
+显然这种办法无法用于客户端服务端交换信息（因为服务端解密不了）。
+
+当你客户端有加密需求，你又不想引入openssl时，也可以考虑这个方案，mac下要写其他代码。
 
 ### 乱七八糟的 .NET Framework 各版本安装
 
@@ -4191,7 +4319,7 @@ Windows版本（通常是Windows 10及以后的版本）允许用户使用两种
 
 本地账户是过去的经典账户类型，在Windows的旧版本中已经使用了多年。它不能用来与其他微软服务合作，但它可以使用空密码，不需要密码。值得注意的是，在其他方面，它对隐私的保护要好得多。一些Windows用户仍然喜欢这种传统的登录方式。
 
-    好像 rufus 在制作启动 U 盘时直接可以选择使用本地账户了
+    rufus 在制作启动 U 盘时直接可以选择使用本地账户了
 
 法一：在 Windows 安装程序开始之前就关闭互联网
 
