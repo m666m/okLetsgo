@@ -256,15 +256,21 @@ if [ -x /usr/bin/dircolors ]; then
     # mount 使用当前用户权限挂载 Windows 分区 U 盘，用于防止默认参数使用 root 用户权限不方便当前用户读写
     function mntfat {
         echo "[挂载 FAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=$(id -u),gid=$(id -g),umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro $1 $2
+        local _uid=$(id -u $USERNAME)
+        local _gid=$(id -g $USERNAME)
+        sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro $1 $2
     }
     function mntexfat {
         echo "[挂载 exFAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=$(id -u),gid=$(id -g),fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro $1 $2
+        local _uid=$(id -u $USERNAME)
+        local _gid=$(id -g $USERNAME)
+        sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro $1 $2
     }
     function mntntfs {
         echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-        sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=$(id -u),gid=$(id -g),windows_names,iocharset=utf8 $1 $2
+        local _uid=$(id -u $USERNAME)
+        local _gid=$(id -g $USERNAME)
+        sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,windows_names,iocharset=utf8 $1 $2
     }
     function mntram {
         echo "[映射内存目录 $1，用完了记得要解除挂载：sync; sudo umount $1]"
@@ -528,21 +534,22 @@ fi
 ####################################################################
 # Linux bash / Windows git bash(mintty)
 # 多会话复用 ssh 密钥代理
+# 来自章节 [多会话复用 ssh-agent 进程](ssh.md think)
 
-# Linux GNOME 桌面环境下的终端需要给 ssh 密钥代理 ssh-agent 设置变量指向 gnome-keyring-daemon
+# GNOME 桌面环境下使用 ssh，复用 gnome-keyring 即可
 if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
 
     # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
     # 如果有时候没有启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh 会导致无法读取ssh代理的密钥
-    # 干脆手工指定
-    # https://blog.csdn.net/asdfgh0077/article/details/104121479
+    # 干脆手工指定 https://blog.csdn.net/asdfgh0077/article/details/104121479
     $(pgrep gnome-keyring >/dev/null 2>&1) || eval `gnome-keyring-daemon --start >/dev/null 2>&1`
 
+    # 给 ssh 密钥代理 ssh-agent 设置变量指向 gnome-keyring-daemon
     export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
     export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
-# Windows git bash(mintty) 环境利用 ssh-pageant 连接到 putty 的 pagent.exe 进程，共用其缓存的密钥
-# 来自章节 [使ssh身份认证统一调用putty的pageant](ssh.md think)
+# Windows git bash(mintty) 环境利用 ssh-pageant 连接到 putty 的 pagent.exe 进程，复用其缓存的密钥
+# 来自章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
 elif [[ $os_type = 'windows' ]]; then
 
     if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
@@ -569,20 +576,30 @@ elif [[ $os_type = 'windows' ]]; then
 # 默认是 Linux tty 命令行环境，这个设置最通用
 else
 
-    # 来自章节 [多会话复用 ssh-agent 进程](ssh.md think)
     # 代码来源 git bash auto ssh-agent
     # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
+    #
+    # You can run ssh-agent automatically when you open bash or Git shell.
+    # Copy the following lines and paste them into one of your
+    #    ~/.bash_profile
+    #    ~/.profile
+    #    ~/.bashrc
+    # 说明：当你打开一个 bash 会话，自动调用 ssh-add 加载你的密钥
+    # 如果 ssh-agent 进程没启动，自动调用起来，若已经启动则复用已有的 ssh-agent 进程实例。
+    # 如果退出了当前 bash 会话，再次开启一个bash会话，也不会多次启动 ssh-agent 进程，
+    # 会始终保持当前系统只运行一个ssh-agent进程。
+    # 为提高使用安全性，在不使用 ssh-agent 的时候，从操作系统进程中找到该进程手工杀掉即可。
 
     agent_env=~/.ssh/agent.env
 
     agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
-    agent_load_env
 
-    agent_start () { test -d "$HOME/.ssh" && (umask 077; ssh-agent >| "$agent_env") && source "$agent_env" >| /dev/null ; }
+    agent_load_env
 
     # 加载 ssh-agent 需要用户手工输入密钥的保护密码
     # 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
-    #
+    agent_start () { test -d "$HOME/.ssh" && (umask 077; ssh-agent >| "$agent_env") && source "$agent_env" >| /dev/null ; }
+
     # agent_run_state:
     #   0=agent running w/ key;
     #   1=agent w/o key;
