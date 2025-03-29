@@ -4137,6 +4137,8 @@ $()中只需要使用一个反斜杠进行转义，下列语句表示给var变�
 
 用命令组语法 {...} 将多个命令组合成一个代码块，而不是 (...)，防止命令替换：
 
+    注意大括号两侧要留空格 { command1; command2 }
+
     与 ( ... ) 不同，{ ... } 不会启动子 Shell，所有命令在当前 Shell 环境中执行。
 
     {...} 将一组命令作为一个整体执行（类似于单行命令的复合操作）。
@@ -4177,17 +4179,20 @@ ${var}用于明确界定变量，与$var并没有区别，但是界定更清晰
     $ echo ${myurl##*/}
     file.ext
 
-    url="www.baidu.com"
-    echo ${url:4:5}
+    $ url="www.baidu.com"
+    $ echo ${url:4:5}
     结果为：baidu     从下标为4开始，截取5个字符。
 
-    url="www.baidu.com"
-    echo ${url: 0-9:5}  # 如果想从字符串的右边开始计数，前面加个 0-
+    $ url="www.baidu.com"
+    $ echo ${url: 0-9:5}  # 如果想从字符串的右边开始计数，前面加个 0-
     结果为：baidu    从右边数，b是第9个字符
 
-    url="www.baidu.com"
-    echo ${url:0-9}  # 省略 length，直接截取到字符串末尾
+    $ url="www.baidu.com"
+    $ echo ${url:0-9}  # 省略 length，直接截取到字符串末尾
     结果为：baidu.com
+
+    $ url="www.baidu.com"
+    $ echo ${url%%.*} 用于取代 basename 用法，截取前缀字符串 更方便
 
 字符串替换
 

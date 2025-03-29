@@ -797,7 +797,7 @@ function PS1_host_name {
 
     # 判断当前是否远程ssh会话：变量 SSH_TTY 仅在交互式登录会话中被设置，变量 SSH_CLIENT 只要远程 ssh 登录即设置
     # 此方法仅在主机环境或 distrobox 容器中有效，在 toolbox 容器中要用其它办法
-    ([[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]]) && is_remote=true
+    { [[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]] } && is_remote=true
 
     # 默认主机环境，显示的主机名适应 FQDN 只显示最前段，如 host.local 显示 host
     local raw_host_name=$(echo ${HOSTNAME%%.*})
