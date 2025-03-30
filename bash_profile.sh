@@ -288,6 +288,9 @@ if [ -x /usr/bin/dircolors ]; then
     # 显示16进制内容及对应的ascii字符
     alias hexdumps='hexdump -C'
 
+    # 生成二维码
+    alias qrs='qrencode -t ANSIUTF8'
+
     # 生成密码
     alias passs='echo "[生成16个字符的强密码]" && cat /dev/random |tr -dc "!@#$%^&*()-+=0-9a-zA-Z" | head -c16'
     alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
