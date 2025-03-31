@@ -3153,9 +3153,9 @@ NOTE: 尽量不要跨操作系统使用文件，因为 WSL 2 对跨操作系统�
 
 nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文件系统，但是：
 
-    Windows 操作系统自带的 mount 命令，只支持 2010 年的 nfs v3 版本
+    Windows 操作系统自带的 `mount` 命令，只支持 2010 年的 nfs v3 版本
 
-所以，应该在 wsl 实例中使用 Linux 的 mount 命令挂载远程 nfs 文件系统，利用 Linux 带的 mount 命令支持 nfs v4 版本的，然后在 Windows 桌面上映射网络驱动器到 wsl 实例的路径即可使用了。
+所以，应该在 wsl 实例中使用 Linux 自带的支持 nfs v4 版本的 `mount` 命令挂载远程 nfs 文件系统，然后在 Windows 资源管理器映射网络驱动器到 wsl 实例的路径即可使用了。
 
 1、主机 cmd 或 power shell 等终端下，获取当前 wsl 发行版的名称：
 
@@ -3179,6 +3179,10 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
     其中 Ubuntu 是前面获取当前 wsl 发行版的名称。
 
 然后在 Windows 资源管理器中就可以像访问本地硬盘一样访问远程服务器上的 nfs 文件系统的内容了。
+
+挂载命令执行时报错：mount.nfs: Operation not permitted for xxx
+
+    修改 nfs 服务器设置，增加选项
 
 ##### plocate 避坑
 
