@@ -3172,6 +3172,10 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
 
     $ sudo mount -t nfs -o vers=4,rsize=1048576,wsize=1048576 192.168.0.22:/remote/resource /mnt/22_nfs
 
+如果挂载命令执行时报错：mount.nfs: Operation not permitted for xxx
+
+    修改 nfs 服务器设置，增加选项 insecure
+
 3、打开 Windows 资源管理器，添加一个网络位置或映射网络驱动器都可以，填写 wsl 中的路径：
 
     \\wsl$\Ubuntu\mnt\22_nfs
@@ -3179,10 +3183,6 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
     其中 Ubuntu 是前面获取当前 wsl 发行版的名称。
 
 然后在 Windows 资源管理器中就可以像访问本地硬盘一样访问远程服务器上的 nfs 文件系统的内容了。
-
-挂载命令执行时报错：mount.nfs: Operation not permitted for xxx
-
-    修改 nfs 服务器设置，增加选项 insecure
 
 ##### plocate 避坑
 
