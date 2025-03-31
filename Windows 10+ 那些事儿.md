@@ -2997,7 +2997,7 @@ docker 拉 nvidia/cuda 镜像时，拉取的 cuda 版本不能高于本地的 cu
 
     docker run --rm --gpus all nvidia/cuda:12.6.3-base-ubuntu24.04 nvidia-smi
 
-#### 命令行连接到你的 WSL 实例
+#### 使用命令行连接到你的 WSL 实例
 
 Windows 11 下彻底打通了，不需要做任何设置，在 Windows 命令提示符或 PowerShell 中，或任何其它命令行终端中，运行 `wsl` 就可以连接到本机 WSL 的默认实例启动 shell 并执行登录脚本。
 
