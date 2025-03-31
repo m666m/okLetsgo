@@ -3182,7 +3182,7 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
 
 挂载命令执行时报错：mount.nfs: Operation not permitted for xxx
 
-    修改 nfs 服务器设置，增加选项
+    修改 nfs 服务器设置，增加选项 insecure
 
 ##### plocate 避坑
 
