@@ -162,13 +162,13 @@ if [ -x /usr/bin/dircolors ]; then
 
     function mvf {
         if [ "$#" -ne 1 ]; then
-            echo '把子目录下的文件都移动到当前目录 `mvf *.mp4`'
+            echo '用法：把子目录下的指定后缀的文件移动到当前目录 mvf mp4'
             return 1
         fi
 
         local fnn=${1}
-        # find . -type f -name "*.mp4" -print0 | xargs -0 -I {} sh -c 'echo "$1" /mnt/movies/' _ {}
-        find . -mindepth 2 -type f -name "${fnn}" -print0 | xargs -0 -I {} sh -c 'mv "$1" .' _ {}
+        # find . -mindepth 2 -type f -name "${fnn}" -print0 | xargs -0 -I {} mv "{}" .
+        find . -mindepth 2 -type f -name "*.${fnn}" -exec mv {} . \;
     }
 
     # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
