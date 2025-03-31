@@ -3176,6 +3176,8 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
 
     修改 nfs 服务器设置，增加选项 insecure
 
+原因见章节 [Window 下的 NFS 客户端](init_a_server.md think)。
+
 3、打开 Windows 资源管理器，添加一个网络位置或映射网络驱动器都可以，填写 wsl 中的路径：
 
     \\wsl$\Ubuntu\mnt\22_nfs
