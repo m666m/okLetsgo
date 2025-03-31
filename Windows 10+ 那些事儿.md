@@ -3029,7 +3029,19 @@ wsl 命令的详细用法说明
     C:\> wsl --setdefault Debian 或 wsl -s Debian
 
     在默认发行版 Debian 中运行 npm init 命令
-    C:\>  wsl npm init
+    C:\> wsl npm init
+
+停止 wsl：
+
+    # 在命令行终端下操作
+    C:\> wsl --shutdown Ubuntu
+
+    # 在wsl实例内部操作
+    $ sudo shutdown now
+
+进入 wsl 即自动启动，很快的：
+
+    C:\> wsl
 
 下面的内容可能过时了：
 
