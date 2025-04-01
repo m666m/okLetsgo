@@ -2936,66 +2936,114 @@ WSL 下安装的 Linux 发行版比如 Ubuntu，其实是微软发布的适用�
     C:\> wsl
     $ sudo apt update && sudo apt upgrade -y
 
-##### 在 WSL 中启用显卡加速
+##### 过时： WSL2 中修改家目录为原生 ext4
 
-目前 WSL 中默认使用 WSLg 支持 NVIDIA CUDA 了，宿主机安装 nvidia 驱动即可。
+目前已经是原生 ext4 文件系统了，以下内容仅供参考。
 
-    https://learn.microsoft.com/zh-cn/windows/ai/directml/gpu-cuda-in-wsl
+在 WSL2 中修改家目录为原生 ext4 提升文件读写效率
 
-1、下载并安装支持 NVIDIA CUDA 的 WSL 驱动程序
+    https://zhuanlan.zhihu.com/p/693873421
 
-    在 WSL2 上开始使用 CUDA https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
+尽管微软推出了如 DevDrive 这般专为提升开发者文件系统效率的工具，然而对于 WSL2（Windows Subsystem for Linux 2）的用户而言，唯有原生的 Linux 文件系统方能无缝处理文件执行权限等诸多问题。
 
-    适用于 Linux 的 Windows 子系统 (WSL) 上的 CUDA https://developer.nvidia.com/cuda/wsl
+本文将详细阐述在 WSL2 环境中如何利用原生的 Linux 文件系统，从而在诸如管理众多 Git 仓库等复杂场景下，实现更出色的文件读写性能。通过采用原生的 Linux 文件系统，用户不仅能够享受到更高的文件处理速度，还能更好地维护文件的权限和属性，从而提升整体的开发效率。
 
-2、确认 WSL 实例的内核版本
+本文假设：
 
-安装上述驱动程序后，请确保启用 WSL 并安装基于 glibc 的分发版，例如 Ubuntu 或 Debian。
+发行版: Ubuntu 22.04
+用户名: yanke
+映像存储位置：C:\WSL\data.img
 
-需要 5.10.43.3 或更高版本的内核版本，可以通过在 PowerShell 中运行以下命令来检查版本号：
+一、以 root 身份进入 WSL2 发行版
 
-    wsl cat /proc/version
+打开 非 Windows 开发者深恶痛绝的 Powershell，执行以下命令
 
-3、开始使用 NVIDIA CUDA
+    # 停止所有 WSL 发行版
+    wsl --shutdown
 
-最方便的使用方法就是章节 [WSL 下使用 CUDA 容器]。
+    # 直接以 root 身份进入 WSL 发行版（不可以使用默认用户进入然后切换 sudo）
+    wsl -d ubuntu-22.04 --user root
 
-其它方法：
+二、创建一个映像文件，并格式化为 ext4 格式
 
-按照 WSL 上的 NVIDIA CUDA 用户指南中的说明操作
+    # 在 C:\WSL\data.img 位置，创建一个 128G 的文件
+    mkdir -p /mnt/c/WSL
+    dd if=/dev/zero bs=1M count=128000 of=/mnt/c/WSL/data.img
 
-    https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
+格式化为 ext4
 
-或者在 WSL 中安装 PyTorch 或 TensorFlow
+    mkfs.ext4 /mnt/c/WSL/data.img
 
-    https://pytorch.org/get-started/locally/
+三、使用 systemd 挂载映像文件
 
-    https://www.tensorflow.org/install/gpu
+由于 WSL2 启动顺序的特殊性，不能在 /etc/fstab 中挂载映像文件，只能用 systemd 的 mount 单元挂载
 
-WSL 上的 CUDA 社区论坛
+1、挂载映像文件到 /data
 
-    https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
+    # 创建挂载点
+    mkdir -p /data
 
-###### WSL 下使用 CUDA 容器
+    # 写入 data.mount 单元文件（注意：单元文件名必须和挂载路径匹配，不然 systemd 会报错）
+    cat <<-EOF > /lib/systemd/system/data.mount
+    [Unit]
+    Description=Mount /data
+    Before=umount.target
+    After=swap.target
 
-    https://blog.csdn.net/m0_63070489/article/details/145798161
+    [Mount]
+    What=/mnt/c/WSL/data.img
+    Where=/data
+    Type=ext4
+    Options=defaults,noatime
 
-    https://zhuanlan.zhihu.com/p/694392785
+    [Install]
+    WantedBy=multi-user.target
+    EOF
 
-配置 docker 见章节 [使用基于 WSL2 的 Docker]。
+立即挂载
 
-你可以通过 NVIDIA Docker 使用现有的 Linux 工作流
+    systemctl daemon-reload
+    systemctl enable --now data.mount
 
-    NVIDIA Container Toolkit https://github.com/NVIDIA/nvidia-container-toolkit
-        之前是 https://github.com/NVIDIA/nvidia-docker 已废弃
+2、挂载用户目录 /home/yanke
 
-docker 拉 nvidia/cuda 镜像时，拉取的 cuda 版本不能高于本地的 cuda 版本。
+鉴于各种包管理器 (npm,pip,go) 的缓存文件都在用户目录下，最省心的方法是，通过 bind-mount 直接把 /data 的子目录挂载到家目录 /home/yanke
 
-我本地的 cuda 版本是 12.7，则我无法拉取镜像 docker pull nvidia/cuda:12.8-base-ubuntu24.04，因为这个镜像的 cuda 版本是 12.8
+相较于从 /data 子目录中软链接，bind-mount 更加优雅
 
-执行以下命令，正常情况下会输出 nvidia 显卡信息【表示本机的Docker可使用GPU】，如图所示
+    # 移动家目录
+    mkdir -p /data/home
+    mv /home/yanke /data/home/yanke
 
-    docker run --rm --gpus all nvidia/cuda:12.6.3-base-ubuntu24.04 nvidia-smi
+    # 写入 home-yanke.mount 文件（注意：单元文件名必须和挂载路径匹配，不然 systemd 会报错）
+    cat <<-EOF > /lib/systemd/system/home-yanke.mount
+    [Unit]
+    Description=Mount /home/yanke
+    Before=umount.target
+    After=swap.target data.mount
+    Requires=data.mount
+
+    [Mount]
+    Where=/home/yanke
+    What=/data/home/yanke
+    Type=none
+    Options=bind
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+
+立即挂载
+
+    systemctl daemon-reload
+    systemctl enable --now home-yanke.mount
+
+四、开始使用
+
+从此之后，使用默认用户进入 Ubuntu 22.04 WSL2 环境后，systemd会自动执行以下操作
+
+    从 C:\WSL\data.img 文件挂载 ext4 文件系统到 /data目录
+    挂载 /data/home/yanke 子目录到 /home/yanke，作为用户的家目录
 
 #### 使用命令行连接到你的 WSL 实例
 
@@ -3143,6 +3191,26 @@ NOTE: 尽量不要跨操作系统使用文件，因为 WSL 2 对跨操作系统�
 
     wsl 下读写 Windows 文件系统，只限小量文件临时用用，复杂的项目文件等最好在单独的存储上单独挂载使用。
 
+###### plocate 避坑
+
+plocate 会自动在每日凌晨扫描你硬盘上的文件，但对 wsl2 环境来说，扫宿主机硬盘 io 效率低而且其默认配置没有避开 Windows 系统目录，执行 `locate wow64` 看看它收集了多少宿主机上没有用处的文件吧
+
+    https://zhuanlan.zhihu.com/p/706874850
+
+Debian 系单独安装 plocate 软件包，安装时会自动执行 `updatedb`，就卡死在扫描宿主机硬盘上了。
+
+Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘，也会是个负担。
+
+确认下数据库不会很大
+
+    $ ls -lh /var/lib/plocate
+
+所以，必须修改配置文件 /etc/updatedb.conf，让 `updatedb` 不要去扫描 Windows 宿主机的目录。
+
+    PRUNEFS="drvfs NFS afs autofs binfmt_misc ..."
+
+[20240703.4a] 这 "drvfs", 指的是 /mnt/c, /mnt/d 这些路径用的 "file system type", 敲 mount 命令查询可知. 然而, 这么写却没有效果, 稍后 sudo updatedb 一运行, Procmon 依然看到巨量的 C: 扫描动作. 不知为何, 网搜无果. 只好先用 /mnt/c  ... /mnt/z 这 26 个路径加入 `PRUNEPATH` 配置项将就着。
+
 ##### 在 Windows 下使用 wsl 实例里的文件或目录
 
 使用映射网络地址的方式
@@ -3189,135 +3257,6 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
     其中 Ubuntu 是前面获取当前 wsl 发行版的名称。
 
 然后在 Windows 资源管理器中就可以像访问本地硬盘一样访问远程服务器上的 nfs 文件系统的内容了。
-
-##### plocate 避坑
-
-plocate 会自动在每日凌晨扫描你硬盘上的文件，但对 wsl2 环境来说，扫宿主机硬盘 io 效率低而且其默认配置没有避开 Windows 系统目录，执行 `locate wow64` 看看它收集了多少宿主机上没有用处的文件吧
-
-    https://zhuanlan.zhihu.com/p/706874850
-
-Debian 系单独安装 plocate 软件包，安装时会自动执行 `updatedb`，就卡死在扫描宿主机硬盘上了。
-
-Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘，也会是个负担。
-
-确认下数据库不会很大
-
-    $ ls -lh /var/lib/plocate
-
-所以，必须修改配置文件 /etc/updatedb.conf，让 `updatedb` 不要去扫描 Windows 宿主机的目录。
-
-    PRUNEFS="drvfs NFS afs autofs binfmt_misc ..."
-
-[20240703.4a] 这 "drvfs", 指的是 /mnt/c, /mnt/d 这些路径用的 "file system type", 敲 mount 命令查询可知. 然而, 这么写却没有效果, 稍后 sudo updatedb 一运行, Procmon 依然看到巨量的 C: 扫描动作. 不知为何, 网搜无果. 只好先用 /mnt/c  ... /mnt/z 这 26 个路径加入 `PRUNEPATH` 配置项将就着。
-
-##### 过时： WSL2 中修改家目录为原生 ext4
-
-目前已经是原生 ext4 文件系统了，以下内容仅供参考。
-
-在 WSL2 中修改家目录为原生 ext4 提升文件读写效率
-
-    https://zhuanlan.zhihu.com/p/693873421
-
-尽管微软推出了如 DevDrive 这般专为提升开发者文件系统效率的工具，然而对于 WSL2（Windows Subsystem for Linux 2）的用户而言，唯有原生的 Linux 文件系统方能无缝处理文件执行权限等诸多问题。
-
-本文将详细阐述在 WSL2 环境中如何利用原生的 Linux 文件系统，从而在诸如管理众多 Git 仓库等复杂场景下，实现更出色的文件读写性能。通过采用原生的 Linux 文件系统，用户不仅能够享受到更高的文件处理速度，还能更好地维护文件的权限和属性，从而提升整体的开发效率。
-
-本文假设：
-
-发行版: Ubuntu 22.04
-用户名: yanke
-映像存储位置：C:\WSL\data.img
-
-一、以 root 身份进入 WSL2 发行版
-
-打开 非 Windows 开发者深恶痛绝的 Powershell，执行以下命令
-
-    # 停止所有 WSL 发行版
-    wsl --shutdown
-
-    # 直接以 root 身份进入 WSL 发行版（不可以使用默认用户进入然后切换 sudo）
-    wsl -d ubuntu-22.04 --user root
-
-二、创建一个映像文件，并格式化为 ext4 格式
-
-    # 在 C:\WSL\data.img 位置，创建一个 128G 的文件
-    mkdir -p /mnt/c/WSL
-    dd if=/dev/zero bs=1M count=128000 of=/mnt/c/WSL/data.img
-
-格式化为 ext4
-
-    mkfs.ext4 /mnt/c/WSL/data.img
-
-三、使用 systemd 挂载映像文件
-
-由于 WSL2 启动顺序的特殊性，不能在 /etc/fstab 中挂载映像文件，只能用 systemd 的 mount 单元挂载
-
-1、挂载映像文件到 /data
-
-    # 创建挂载点
-    mkdir -p /data
-
-    # 写入 data.mount 单元文件（注意：单元文件名必须和挂载路径匹配，不然 systemd 会报错）
-    cat <<-EOF > /lib/systemd/system/data.mount
-    [Unit]
-    Description=Mount /data
-    Before=umount.target
-    After=swap.target
-
-    [Mount]
-    What=/mnt/c/WSL/data.img
-    Where=/data
-    Type=ext4
-    Options=defaults,noatime
-
-    [Install]
-    WantedBy=multi-user.target
-    EOF
-
-立即挂载
-
-    systemctl daemon-reload
-    systemctl enable --now data.mount
-
-2、挂载用户目录 /home/yanke
-
-鉴于各种包管理器 (npm,pip,go) 的缓存文件都在用户目录下，最省心的方法是，通过 bind-mount 直接把 /data 的子目录挂载到家目录 /home/yanke
-
-相较于从 /data 子目录中软链接，bind-mount 更加优雅
-
-    # 移动家目录
-    mkdir -p /data/home
-    mv /home/yanke /data/home/yanke
-
-    # 写入 home-yanke.mount 文件（注意：单元文件名必须和挂载路径匹配，不然 systemd 会报错）
-    cat <<-EOF > /lib/systemd/system/home-yanke.mount
-    [Unit]
-    Description=Mount /home/yanke
-    Before=umount.target
-    After=swap.target data.mount
-    Requires=data.mount
-
-    [Mount]
-    Where=/home/yanke
-    What=/data/home/yanke
-    Type=none
-    Options=bind
-
-    [Install]
-    WantedBy=multi-user.target
-    EOF
-
-立即挂载
-
-    systemctl daemon-reload
-    systemctl enable --now home-yanke.mount
-
-四、开始使用
-
-从此之后，使用默认用户进入 Ubuntu 22.04 WSL2 环境后，systemd会自动执行以下操作
-
-    从 C:\WSL\data.img 文件挂载 ext4 文件系统到 /data目录
-    挂载 /data/home/yanke 子目录到 /home/yanke，作为用户的家目录
 
 ##### 图形化 GUI 应用的混合使用
 
@@ -3432,6 +3371,67 @@ WSLg 默认启用 OpenGL 加速，如需 Vulkan：
 
     sudo apt install mesa-vulkan-drivers -y
     vulkaninfo  # 验证支持
+
+#### 在 WSL 中启用显卡加速
+
+目前 WSL 中默认使用 WSLg 支持 NVIDIA CUDA 了，宿主机安装 nvidia 驱动即可。
+
+    https://learn.microsoft.com/zh-cn/windows/ai/directml/gpu-cuda-in-wsl
+
+1、下载并安装支持 NVIDIA CUDA 的 WSL 驱动程序
+
+    在 WSL2 上开始使用 CUDA https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
+
+    适用于 Linux 的 Windows 子系统 (WSL) 上的 CUDA https://developer.nvidia.com/cuda/wsl
+
+2、确认 WSL 实例的内核版本
+
+安装上述驱动程序后，请确保启用 WSL 并安装基于 glibc 的分发版，例如 Ubuntu 或 Debian。
+
+需要 5.10.43.3 或更高版本的内核版本，可以通过在 PowerShell 中运行以下命令来检查版本号：
+
+    wsl cat /proc/version
+
+3、开始使用 NVIDIA CUDA
+
+最方便的使用方法就是章节 [WSL 下使用 CUDA 容器]。
+
+其它方法：
+
+按照 WSL 上的 NVIDIA CUDA 用户指南中的说明操作
+
+    https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
+
+或者在 WSL 中安装 PyTorch 或 TensorFlow
+
+    https://pytorch.org/get-started/locally/
+
+    https://www.tensorflow.org/install/gpu
+
+WSL 上的 CUDA 社区论坛
+
+    https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
+
+##### WSL 下使用 CUDA 容器
+
+    https://blog.csdn.net/m0_63070489/article/details/145798161
+
+    https://zhuanlan.zhihu.com/p/694392785
+
+配置 docker 见章节 [使用基于 WSL2 的 Docker]。
+
+你可以通过 NVIDIA Docker 使用现有的 Linux 工作流
+
+    NVIDIA Container Toolkit https://github.com/NVIDIA/nvidia-container-toolkit
+        之前是 https://github.com/NVIDIA/nvidia-docker 已废弃
+
+docker 拉 nvidia/cuda 镜像时，拉取的 cuda 版本不能高于本地的 cuda 版本。
+
+我本地的 cuda 版本是 12.7，则我无法拉取镜像 docker pull nvidia/cuda:12.8-base-ubuntu24.04，因为这个镜像的 cuda 版本是 12.8
+
+执行以下命令，正常情况下会输出 nvidia 显卡信息【表示本机的Docker可使用GPU】，如图所示
+
+    docker run --rm --gpus all nvidia/cuda:12.6.3-base-ubuntu24.04 nvidia-smi
 
 ### 使用 Docker
 
