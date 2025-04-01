@@ -3097,7 +3097,7 @@ WSL 下的 Linux 命令区别于某些 PowerShell 下的命令
 
 详细列表参见 <https://docs.microsoft.com/zh-cn/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2>
 
-##### 在 WSL 中如何访问我的本地驱动器
+##### 在 WSL 中访问 Windows 的本地驱动器
 
 系统会自动为本地计算机上的硬盘驱动器创建装入点：
 
@@ -3139,6 +3139,10 @@ NOTE: 尽量不要跨操作系统使用文件，因为 WSL 2 对跨操作系统�
 
     $ touch /home/user/Project/xxx.txt
 
+概况起来就一句话：
+
+    wsl 下读写 Windows 文件系统，只限小量文件临时用用，复杂的项目文件等最好在单独的存储上单独挂载使用。
+
 ##### 在 Windows 下使用 wsl 实例里的文件或目录
 
 使用映射网络地址的方式
@@ -3174,11 +3178,11 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
 
 如果挂载命令执行时报错：mount.nfs: Operation not permitted for xxx
 
-    修改 nfs 服务器设置，增加选项 insecure
+    修改 nfs 服务器设置，给你的导出目录增加选项 insecure
 
 原因见章节 [Window 下的 NFS 客户端](init_a_server.md think)。
 
-3、打开 Windows 资源管理器，添加一个网络位置或映射网络驱动器都可以，填写 wsl 中的路径：
+3、打开 Windows 资源管理器，添加一个网络位置或映射网络驱动器，填写 wsl 中的路径：
 
     \\wsl$\Ubuntu\mnt\22_nfs
 
