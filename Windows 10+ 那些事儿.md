@@ -1210,7 +1210,11 @@ Microsoft 出品的工具包
 
 注意设置右键插件图标，选择扩展在哪些网站生效，尽量缩小插件的生效范围。
 
-uBlock Origin
+    尽量设置 “读取和更改站点数据”配置为“单击扩展时”
+
+uBlock Origin 广告屏蔽
+
+    https://microsoftedge.microsoft.com/addons/detail/ublock-origin/odfafepnkmbhccpbejgmiehpchacaeak
 
     https://github.com/gorhill/uBlock
 
@@ -1221,13 +1225,29 @@ uBlock Origin
 
         https://github.com/xinggsf/Adblock-Plus-Rule
 
-最终启用右键单击：
+Aria2 Explorer 把下载添加到aria2任务
+
+    https://microsoftedge.microsoft.com/addons/detail/aria2-explorer/jjfgljkjddpcpfapejfkelkbjbehagbh
+
+QR码生成与识别
+
+    https://microsoftedge.microsoft.com/addons/detail/qr%E7%A0%81%E7%94%9F%E6%88%90%E4%B8%8E%E8%AF%86%E5%88%AB/nmddeihindhodaigflchmkmechmjjjbc
+
+    “读取和更改站点数据”配置为“单击扩展时”
+
+Superb Copy 解锁 csdn/51cto 右键复制
+
+    https://microsoftedge.microsoft.com/addons/detail/superb-copy/iaeijdamgmgkigibpoapgahideaobdde
+
+Sublime Copy 解锁 csdn/51cto 右键复制
+
+    https://microsoftedge.microsoft.com/addons/detail/sublime-copy/ligcjpcogfdnidfhkgcchmpheaeljakp
+
+最终启用右键单击，这个并未开源，github 上的只是骗人的一个页面，不要安装：
 
     https://microsoftedge.microsoft.com/addons/detail/%E6%9C%80%E7%BB%88%E5%90%AF%E7%94%A8%E5%8F%B3%E9%94%AE%E5%8D%95%E5%87%BB/ijopbbfjlehabpldjiaipgiiedhfhbad
 
     https://ultimate-enable-right-click.github.io/
-
-    “读取和更改站点数据”配置为“单击扩展时”
 
 Git Master 在 github web页面添加导航树：
 
@@ -1252,18 +1272,6 @@ smartUp 手势：配置中增加“摇杆手势”
     https://github.com/zimocode/smartup
 
     同类有个 clean crxMouse Gestures 但是没有开源且不更新了。
-
-Aria2 for Edge：配合开源的使用aria2的下载程序[Motrix](https://github.com/agalwood/Motrix/)，打开rpc，端口统一16800，设置相同的api key。
-
-    https://microsoftedge.microsoft.com/addons/detail/aria2-for-edge/jjfgljkjddpcpfapejfkelkbjbehagbh
-
-    “读取和更改站点数据”配置为“单击扩展时”
-
-QR码生成与识别
-
-    https://microsoftedge.microsoft.com/addons/detail/qr%E7%A0%81%E7%94%9F%E6%88%90%E4%B8%8E%E8%AF%86%E5%88%AB/nmddeihindhodaigflchmkmechmjjjbc
-
-    “读取和更改站点数据”配置为“单击扩展时”
 
 ### 安装 Google Chrome 浏览器插件
 

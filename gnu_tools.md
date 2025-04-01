@@ -12905,6 +12905,8 @@ Fedora
 
         其它推荐扩展
 
+            记得要设置选项，“读取和更改站点数据”配置为“单击扩展时”
+
             Aria2 Explorer 把下载添加到aria2任务 https://microsoftedge.microsoft.com/addons/detail/aria2-explorer/jjfgljkjddpcpfapejfkelkbjbehagbh
 
             uBlock Origin 广告屏蔽 https://microsoftedge.microsoft.com/addons/detail/ublock-origin/odfafepnkmbhccpbejgmiehpchacaeak
