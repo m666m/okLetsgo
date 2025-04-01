@@ -8071,6 +8071,23 @@ jq 格式化 JSON 数据，并彩色显示，也可用作格式检查
     # 常用于查看 json 输出的参数配置
     lsblk --json | jq -c '.blockdevices[]|[.name,.size]'
 
+crudini 读写 ini 格式的配置文件
+
+    语法格式：crudini [参数] 文件名
+
+    常用参数：
+
+        --del 删除变量
+        --existing 指定文件已存在
+        --format 设置输出格式
+        --get 显示变量值
+        --inplace 锁定并写入文件
+        --list 更新一个列表的值
+        --list-sep 设置自定义间隔符
+        --output 将输出内容写入指定文件
+        --set 增加或修改变量
+        --verbose 显示执行过程详细信息
+
 watch 对固定刷新屏幕的文本，可以高亮出变化的部分，非常适合监控
 
     watch -d cat /proc/interrupts
