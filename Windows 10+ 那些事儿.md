@@ -3260,11 +3260,11 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
 
 ##### 图形化 GUI 应用的混合使用
 
-WSL 使用 WSLg 默认支持 GUI 应用，简单使用的场景下不需要安装 Linux 桌面环境。
+WSL 默认使用 WSLg 支持 Linux GUI 应用，简单使用的场景下不需要安装 Linux 桌面环境。
 
     https://learn.microsoft.com/zh-cn/windows/wsl/tutorials/gui-apps
 
-比如，在 wsl 终端下用命令安装 firefox 后，直接运行 `firefox` 命令，即可启动到 Windows 桌面下使用。而且还会自动在主机的开始菜单创建快捷方式，方便用户使用，如：
+比如，在 wsl 终端下用命令安装 firefox 后，直接运行 `firefox` 命令，即可在 Windows 桌面下使用火狐浏览器。而且还会自动在 Windows 的开始菜单创建快捷方式，方便用户使用，如：
 
     C:\Users\mm\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Ubuntu
 
@@ -3272,7 +3272,7 @@ WSL 使用 WSLg 默认支持 GUI 应用，简单使用的场景下不需要安�
 
 ###### 运行完整的 Linux 桌面环境
 
-如果一定要使用 Gnome 桌面，安装过程如下：
+如果一定要在 Windows 下使用 Gnome 桌面，安装过程如下：
 
 更新 WSL 内核：
 
