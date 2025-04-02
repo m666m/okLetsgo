@@ -1760,11 +1760,15 @@ Windows 10的1607版本之后，内核模式代码似乎使用了独立的信任
 
     https://learn.microsoft.com/zh-cn/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview
 
+    微软官方推荐的一些方便你使用的小工具
+
+        https://github.com/microsoft/Windows-Sandbox-Utilities
+
 沙盒属于容器化技术，底层共用你当前操作系统的静态文件，系统资源的共享理解为进程争用即可，支持硬件直通
 
-开始菜单，选择“Windows sandbox”程序，将新开一个虚拟的 Windows 窗口，把你觉得危险的程序复制粘贴到这个虚拟的 Windows 系统里运行，格式化这里的硬盘都没关系，在这个系统里可以正常上网。
+Windows 沙盒属于无状态的操作系统，这个虚拟的 Windows 窗口一旦关闭，里面的任何操作都会清零，所以可以提前把运行结果复制粘贴到正常使用的 Windows 中。
 
-沙盒属于无状态的操作系统，这个虚拟的 Windows 窗口一旦关闭，里面的任何操作都会清零，所以可以提前把运行结果复制粘贴到正常使用的 Windows 中。
+使用：开始菜单，选择“Windows sandbox”程序，将新开一个虚拟的 Windows 窗口，把你觉得危险的程序复制粘贴到这个虚拟的 Windows 系统里运行，格式化这里的硬盘都没关系，在这个系统里可以正常上网。
 
 Windows 沙盒可以用配置文件的方式设置共享目录，并设置只读权限，方便使用。比如把 c:\tools 目录映射到 Windows 沙盒里运行网络下载的小程序，或者把 download 目录映射到沙盒的 download 目录以便在沙盒里浏览网页并下载程序。
 
@@ -1793,17 +1797,7 @@ tools.wsb 示例：
 
 ```
 
-其中，MappedFolder 可以有多个，默认映射到桌面，也可以单独指定。关于 Windows 沙盒的详细介绍，参见 <https://docs.microsoft.com/zh-cn/Windows/security/threat-protection/Windows-sandbox/Windows-sandbox-overview>
-
-开源的轻量化沙盒工具
-
-    https://github.com/sandboxie-plus/Sandboxie
-
-QQ、微信、钉钉、360啥的很多cn软件很多都添加到系统级驱动，在这种容器化沙盒里防不住，老老实实的用虚拟机吧。
-
-微软官方推荐的一些方便你使用的小工具
-
-    https://github.com/microsoft/Windows-Sandbox-Utilities
+其中，MappedFolder 可以有多个，默认映射到桌面，也可以单独指定。
 
 图形化编辑配置文件
 
@@ -1818,6 +1812,12 @@ QQ、微信、钉钉、360啥的很多cn软件很多都添加到系统级驱动�
         git clone --depth=1 https://github.com/damienvanrobaeys/Run-in-Sandbox.git
 
     然后用管理员权限运行 Add_Structure.ps1
+
+其它开源的轻量化沙盒工具
+
+    https://github.com/sandboxie-plus/Sandboxie
+
+    QQ、微信、钉钉、360啥的很多cn软件很多都添加到系统级驱动，在这种容器化沙盒里防不住，老老实实的用虚拟机吧。
 
 #### RemoteApp 隔离国内 Windows 毒瘤应用运行方案
 
