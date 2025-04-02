@@ -1821,11 +1821,15 @@ tools.wsb 示例：
 
 #### RemoteApp 隔离国内 Windows 毒瘤应用运行方案
 
+Microsoft 所开发的一种基于 RDC 协议的隔离运行任何应用的方案 —— RemoteApp。配合单独的电脑主机、或虚拟机应用或是 ESXi/Proxmox VE 这样的虚拟机服务器来运行。
+
+    https://techcommunity.microsoft.com/blog/microsoft-security-blog/introducing-remoteapp-and-desktop-connections/246803
+
+配置 RemoteApp 程序快捷方式可以使用一款叫做 RemoteAppTool 的开源应用完成。该应用要求必须安装 .NET Framework 4.x 才能使用。
+
     https://github.com/kimmknight/remoteapptool
 
     https://bbs.letitfly.me/d/1199
-
-RemoteAppTool 要求必须安装 .NET Framework 4.x 才能使用。
 
 1、给客户机安装符合以上条件的操作系统。如果客户机是虚拟机，这个虚拟机可以不使用声卡，不影响毒瘤应用发出声音。必要的话，请固定好这台客户机的局域网IP地址以便后续操作。
 
@@ -1833,7 +1837,7 @@ RemoteAppTool 要求必须安装 .NET Framework 4.x 才能使用。
 
 3、必须开启允许接受远程桌面连接。如果你打算把这个客户机暴露到公网且你确实有公网IP，选择“仅允许运行使用网络级别身份验证的远程桌面的计算机连接”。
 
-4、现在你可以安装RemoteAppTool以及你想托管的应用了。如果你想使用第三方输入法，也请在这个环境下安装好。
+4、现在你可以安装 RemoteAppTool 以及你想托管的应用了。如果你想使用第三方输入法，也请在这个环境下安装好。
 
 5、点击【+】图标添加应用，把你要的应用主程序添加进去。如果找不到相关的主程序，可以添加快捷方式。然后，点击列表内你想制作快捷方式的应用后再来点击Create Client Connection。
 
@@ -1851,7 +1855,7 @@ RemoteAppTool 要求必须安装 .NET Framework 4.x 才能使用。
 
 最后关于RemoteApp的客户机需求，微软官方给出的要求是必须要使用远程桌面客户端6.1或以上版本，能够支持该版本远程桌面客户端的最低版本是Windows XP SP3……
 
-stm322022年8月7日
+2022年8月7日
 
     感谢推荐，刚尝试了一下，在这分享一下目前使用体验：
 
