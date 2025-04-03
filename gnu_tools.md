@@ -9201,16 +9201,116 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
 随机数生成的这些工具，通过 /dev/random 依赖系统的熵池，而服务器在运行时，既没有键盘事件，也没有鼠标事件，那么就会导致噪声源减少。很多发行版本中存在一个 rngd 程序，用来增加系统的熵池（用 urandom 给 random 灌数据），详见章节 [给random()增加熵](init_a_server think)。
 
-#### 使用 argon2 编码你的密码
+#### 生成通用的 Unix 格式的密码hash
+
+在 Linux 中密码不是明文保存的，而是只保存它的 hash 值和盐，校验过程发生在用户输入密码后，由验证程序计算并与保存的 hash 值比对。
+
+格式
+
+    $1$...$ 段的内容是加密算法和盐salt，后面的才是该密码的 hash 值
+
+> 使用 mkpasswd 工具
+
+    # sudo dnf install mkpasswd
+    # sudo apt install whois
+
+    $ mkpasswd --method=SHA-512 --rounds=4096
+    Password: 123
+    $6$rounds=4096$qEZgm6JVSHwGTlZk$N9lWSeGJ/cFA2gZth8KZus2afjoA2wvbxvwN6OOLAy4SaBlwlGgMcx2ByqvuCf5PV46HK.GguJTN/5JFFjIdt0
+
+输入你的密码如 123，输出给出的是加密之后 Linux 可以识别格式的hash值
+
+> 使用 openssl
+
+    `openssl help passwd`
+
+使用 `openssl passwd <你的密码>` 命令，生成形如 `$5$your_salt$the_hashed_result` 的密码哈希格式，这是基于 Unix 系统的 crypt() 函数的密码哈希格式。这种格式通常用于 Unix/Linux 系统的密码存储，并且被多种应用程序和服务所支持，包括 Apache HTTP 服务器和 Nginx。
+
+具体组成部分如下：
+
+    $5$：这是一个固定的前缀，表示使用 SHA-256 加密算法。数字 5 是 crypt() 函数中用于 SHA-256 的标识符。
+
+    your_salt：这是盐值（salt），它是一个随机字符串，用于与密码一起哈希，以增加密码的复杂度和安全性。盐值可以防止使用彩虹表（预先计算好的哈希表）进行攻击。盐值的长度通常为 8 个字符。
+
+    the_hashed_result：这是密码和盐值经过 SHA-256 哈希算法处理后的结果。这个结果是一个 43 个字符的十六进制字符串。
+
+这种格式的优点是：
+
+    安全性：通过使用盐值，每个用户的密码哈希都是唯一的，即使两个用户使用了相同的密码。
+
+    兼容性：被多种应用程序和服务广泛支持，包括 Apache HTTP 服务器、Nginx、Postfix 等。
+
+    可配置性：支持不同的哈希算法，如 MD5、SHA-1、SHA-256 和 SHA-512。
+
+使用这种格式时，通常需要使用专门的工具（如 htpasswd 或 openssl passwd 命令）来生成密码哈希。
+
+openssl passwd 的常用选项
+
+    -salt string：加入随机数，目前不需要手动指定了，会自动使用系统随机数
+
+    -in file：对输入的文件内容进行加密
+
+    -stdion：对标准输入的内容进行加密
+
+默认用 MD5 算法哈希你的密码
+
+    $ openssl passwd 123456
+    $1$7F4haqDH$cVSLoqMYiBp.rggAG21Hz0
+
+输出字符串的格式：
+
+    开始的 $1$ 位为算法标志
+
+        $1$ 为 MD5
+
+        $5$ 为 SHA-256
+
+        $6$ 为 SHA-512
+
+        详见 crypt() 函数的说明
+
+    第二段 $1$...$ 包裹的内容是盐salt。
+
+    第三段 cVSLoqMYiBp.rggAG21Hz0 才是该密码的 hash 值，下同。
+
+示例：
+
+使用 sha256 对你的密码计算哈希
+
+    $ openssl passwd -5 password
+    $5$tVpwoB7k9wgI6QLu$P.RSnrktgV.ldMoONdlCLhC.WOp/jAH/Y7RlGoFZgl4
+
+使用 sha512 算法你的密码计算哈希
+
+    $ openssl passwd -6 password
+    $6$eTL1LNGrE3.hMH9T$0e4AGG1iOYOfWlJjwWcCgWVMCNFdwS8MW.0ee67zVNPO4Cd2o6fATx8lzI0OIaI0RzP/8wE7x2kbuQFEVl.2w.
+
+如果给出了盐salt，则hash值也就固定了，最好不给出，使用系统随机数即可
+
+    $ openssl passwd -1 -salt 1234567 'wodemima'
+    $1$1234567$T422txbws/GIfsRDYZ3.r.
+
+不写密码会提示输入
+
+    $ openssl passwd -1 -salt SALT
+    Password:
+
+这个不知道为何给出了3行
+
+    $ openssl passwd -1 –salt centos wodemima
+    $1$8Ch7O7sx$jyz2BwIvCbweTrnWDkIpU/
+    $1$6TzTaiVo$imX.dJcqZU7ThQWuRHVNS0
+    $1$a00Ku7MG$WVRs.DdeaIPaADJe7mZIo1
+
+如果还需要增加破解难度，见章节 [使用 argon2 编码你的密码]。
+
+##### 使用 argon2 编码你的密码
 
     https://lindevs.com/install-argon2-on-raspberry-pi
 
-openssl 可以 hash 你的密码使之可以不明文保存，这使用了一种通用的格式，详见章节 [生成通用的 Unix 格式的密码hash](openssl think)
+NOTE: 在密码散列函数已经到了足够的迭代次数后，使用更长的密码比增加迭代数更有用。
 
-    $ openssl passwd 123456
-    $1$XwOQ.ODK$siJl5hJtv7Fqs.jhBwpyb0
-
-    注意 $1$...$ 段的内容是盐salt，后面的才是该密码的 hash 值
+    密码管理器 1Password 的开发者这样表述：密码增加一个字符，相当于把迭代次数从 40,000 增加到 400,000，而两个字符就是 4,000,000。与其让自己的 SSH 密钥从默认的迭代 24 次改到 256 次，也不如把自己密码多写两位，反正增加的时间一样也是两秒。
 
 Argon2
 
@@ -12811,11 +12911,33 @@ Reboot
 
 ### 优化笔记本电脑的电池 tlp
 
-GNOME 和 KDE 主流桌面環境都已內建 Power Profile Daemon 來調節耗電量，大部份發行版還會將 TLP 與 PPD 列為衝突套件。再根據 Reddit 的討論認為二者無明顯差距，我便沒有再刻意安裝 TLP
+GNOME 和 KDE 主流桌面環境都已內建 PPD(Power Profile Daemon) 來調節耗電量，大部份發行版還會將 TLP 與 PPD 列為衝突套件。再根據 Reddit 的討論認為二者無明顯差距，我便沒有再刻意安裝 TLP
+
+    https://linrunner.de/tlp/
+
+    https://zhuanlan.zhihu.com/p/65546444
 
     https://ostechnix.com/how-to-optimize-laptop-battery-life-with-tlp-in-linux/
 
     https://www.jwillikers.com/power-management-on-linux-with-tlp
+
+    竞品 PowerTOP
+
+        https://github.com/fenrus75/powertop
+
+        tlp 文档说比 PowerTOP 好用 https://linrunner.de/tlp/faq/powertop.html
+
+    openSuse 上使用 TLP 管理电源，PowerTOP 仅作为监测工具使用
+
+        https://zh.opensuse.org/SDB:%E7%94%B5%E6%B1%A0%E7%AE%A1%E7%90%86
+
+        https://forum.suse.org.cn/t/topic/13067
+
+TLP的默认配置已针对电池寿命进行了优化，因此你可能只需要安装，然后就忘记它吧。
+
+TLP 是一个具有自动后台任务的纯命令行工具。它不包含GUI，它可以高度定制化，以满足你的特定要求。
+
+TLP 适用于各种品牌的笔记本电脑。设置电池充电阈值仅适用于 IBM/Lenovo ThinkPad
 
 Fedora
 
