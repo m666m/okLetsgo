@@ -1750,6 +1750,22 @@ Windows 10的1607版本之后，内核模式代码似乎使用了独立的信任
 
     执行 cpuz，提示被管理员禁用
 
+#### 除了 Firefox 没有浏览器检查吊销证书
+
+    https://zhul.in/2024/11/19/firefox-is-the-only-mainstream-brower-doing-online-certificate-revocation-checks/
+
+Google Chrome / Microsoft Edge 上，OCSP 是不被支持的，chromium 团队在 2014 年就禁用了 OCSP 校验，且目前没有设置项允许用户手动开启。
+
+验证，访问以下网址，看浏览器是否提示证书已经被吊销了：
+
+    https://digicert-tls-ecc-p384-root-g5-revoked.chain-demos.digicert.com/
+
+    https://revoked-isrgrootx1.letsencrypt.org/
+
+ssl 证书这个方式现在用到的估计就是所谓的有效性，但时效无法保证。
+
+这样也侧面印证了，微软主推的安全启动功能，其实没什么靠谱的。
+
 ### 浏览网页时防止网页偷偷改浏览器主页等坏行为
 
 在 edge 浏览器，点击菜单，选择“应用程序防护窗口”，这样新开的一个 edge 窗口，是在虚拟机进程启动的，感觉是容器化处理，任何网页操作都不会侵入到正常使用的 Windows 中。
