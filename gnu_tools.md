@@ -13002,86 +13002,6 @@ Fedora
 
         $ sysprof
 
-浏览器
-
-    安全设置
-
-        安装浏览器扩展要谨慎，只安装大家都用的扩展，装完后要设置它的访问权限尽量小，各大浏览器都支持设置。
-
-        浏览器尽量使用容器化、匿名化访问，不同用途的浏览分开，多个虚拟机打开多个浏览器。
-
-        浏览器安装后，最好检查下内置的证书，详见章节 [浏览器 CA 认证面对的挑战](Windows 10+ 安装的那些事儿)
-
-    推荐用 flatpak 安装 UngoogledChromium
-
-        来自 Chromium 项目的开源 Web 浏览器，它有一个极简的用户界面。 谷歌已经禁止 chromium 和基于 chromium 的第三方浏览器读取谷歌的数据，所以 chromium 无法同步你原有的谷歌浏览器账户数据，也无法连接谷歌扩展商店，但它有自己的开源扩展商店，也支持本地安装你从 github 下载的开源扩展。
-
-            $ flatpak install flathub com.github.Eloston.UngoogledChromium
-
-        手工下载浏览器官方商店的扩展文件并安装的方法
-
-                https://ungoogled-software.github.io/ungoogled-chromium-wiki/faq#can-i-install-extensions-or-themes-from-the-chrome-webstore
-
-            浏览器打开官方商店的页面，选择下载扩展，然后把下载的 .crx 文件改名为 .zip并解压，然后在 UngoogledChromium 的 Manage Extension 页面点击右上角的 “Develop mode” 按钮，选择 “load unpacked”，选择你刚才解压的目录即可安装该扩展了
-
-        强烈推荐必装扩展：让你可以直接使用浏览器官方商店的扩展 chromium-web-store
-
-            插件设置中，打开 “Allow access to file URLs” 选项。
-
-            安装这个扩展后，打开 ms edge/google chrome 等多个浏览器官方商店的网页，然后可以看到各个扩展的下载按钮都是可用的了，点击即可直接下载安装，不需要上面介绍的手动流程了。如果不可用，点击鼠标右键，选择菜单项目 “Add to Chromium” 即可下载安装。
-
-            先打开设置地址 chrome://flags/#extension-mime-request-handling，设置为 “Always prompt for install”。
-
-            下载 https://github.com/NeverDecaf/chromium-web-store/releases 中的 .crx 文件，然后使用上面介绍的手工安装扩展的方法安装该 .crx 文件。
-
-            访问官方商店页面选个扩展看是否可以直接下载了
-
-                https://microsoftedge.microsoft.com/addons/Microsoft-Edge-Extensions-Home
-
-                https://chrome.google.com/webstore/
-
-            如果只是下载了 .crx 文件没有安装，可以尝试双击该文件，在提示使用哪个程序打开时选择 UngoogledChromium 即可直接安装。之后只要在商店页面点击 get 即可自动下载并安装扩展了。
-
-        其它推荐扩展
-
-            见章节 [安装 Microsoft Edge 浏览器插件](Windows 10+ 那些事儿.md)，各浏览器都是通用的。
-
-            记得设置插件选项，“读取和更改站点数据”配置为“单击扩展时”
-
-    GNOME Web
-
-        GNOME 桌面附带的一个基于 WebKit 的浏览器代号 Epiphany，功能比 Firefox 少，但对于普通用途来说已经足够了，而且支持安装火狐和谷歌浏览器的扩展。
-
-    FireFox
-
-        中文版的 FireFox 等浏览器由cn公司开发，不要下载安装！
-
-        FireFox 只在 mozila 官方网站下载“英文版”使用，目前各大发行版内置 Firfox 安全性应该等于官方英文版。
-
-        多帐户容器：通过使用容器，你在一个容器中的浏览活动不会与其他容器共享。这种隔离意味着你可以在不同容器中登录同一网站上的两个不同帐户。你的登录会话、网站偏好和跟踪数据将被限制在你使用某个网站的容器中。你的登录会话、网站偏好和跟踪数据将被限制在你使用某个网站的容器中。Firefox 默认情况下提供的容器包括 Facebook、Messenger 和 Instagram 网站，当你打开这三个网站中的任何一个时，它们都只会在 “Facebook 容器” 中打开。因此，Facebook 将无法跟踪你在其他网站上的活动。Firefox 附加组件网站上的 扩展程序页面，找到 “Firefox Multi-Account Containers”。之后你唯一需要做的就是单击 “添加到 Firefox” 按钮。
-
-            注意：你的浏览器历史记录本身之类的内容仍会暴露给你的正常浏览器会话，容器功能只是提供了一种方法来分离登录帐户等内容。
-
-        Firefox 的 “插件”（plugin）和“扩展”（extension）是两种不同的东西：插件以动态库（Windows 上就是 DLL 文件）的方式，加载到浏览器的进程内。扩展可以调用浏览器自身的 API，但是大部分扩展【不能】调用操作系统的 API。
-
-        建议把 Firefox 的缓存指向内存目录，可以大大提升你的浏览感受，见章节 [tmpfs/ramfs 映射内存目录](init_a_server think)。
-
-    Chrome
-
-        google 基于开源浏览器 chromium 而搭建的闭源浏览器
-
-        $ flatpak install flathub com.google.Chrome
-
-    Tor 浏览器
-
-        通过 Flatpak 安装：
-
-            $ flatpak install flathub com.github.micahflee.torbrowser-launcher
-
-        使用 dnf 安装官方仓库的：
-
-            $ sudo dnf install torbrowser-launcher
-
 办公套件
 
     LibreOffice 是 GNU/Linux 用户中最流行的办公套件。它的用户界面和用户体验类似于微软 Office。
@@ -13297,6 +13217,178 @@ Fedora
     简单显示消息
 
         $ zenity --info --text="這是訊息內容" --title="這是標題"
+
+#### Linux 桌面使用浏览器
+
+安全设置
+
+    安装浏览器扩展要谨慎，只安装大家都用的扩展，装完后要设置它的访问权限尽量小，各大浏览器都支持设置。
+
+    浏览器尽量使用容器化、匿名化访问，不同用途的浏览分开，多个虚拟机打开多个浏览器。
+
+    浏览器安装后，最好检查下内置的证书，详见章节 [浏览器 CA 认证面对的挑战](Windows 10+ 安装的那些事儿)
+
+推荐用 flatpak 安装 UngoogledChromium
+
+    来自 Chromium 项目的开源 Web 浏览器，它有一个极简的用户界面。 谷歌已经禁止 chromium 和基于 chromium 的第三方浏览器读取谷歌的数据，所以 chromium 无法同步你原有的谷歌浏览器账户数据，也无法连接谷歌扩展商店，但它有自己的开源扩展商店，也支持本地安装你从 github 下载的开源扩展。
+
+        $ flatpak install flathub com.github.Eloston.UngoogledChromium
+
+    手工下载浏览器官方商店的扩展文件并安装的方法
+
+            https://ungoogled-software.github.io/ungoogled-chromium-wiki/faq#can-i-install-extensions-or-themes-from-the-chrome-webstore
+
+        浏览器打开官方商店的页面，选择下载扩展，然后把下载的 .crx 文件改名为 .zip并解压，然后在 UngoogledChromium 的 Manage Extension 页面点击右上角的 “Develop mode” 按钮，选择 “load unpacked”，选择你刚才解压的目录即可安装该扩展了
+
+    强烈推荐必装扩展：让你可以直接使用浏览器官方商店的扩展 chromium-web-store
+
+        插件设置中，打开 “Allow access to file URLs” 选项。
+
+        安装这个扩展后，打开 ms edge/google chrome 等多个浏览器官方商店的网页，然后可以看到各个扩展的下载按钮都是可用的了，点击即可直接下载安装，不需要上面介绍的手动流程了。如果不可用，点击鼠标右键，选择菜单项目 “Add to Chromium” 即可下载安装。
+
+        先打开设置地址 chrome://flags/#extension-mime-request-handling，设置为 “Always prompt for install”。
+
+        下载 https://github.com/NeverDecaf/chromium-web-store/releases 中的 .crx 文件，然后使用上面介绍的手工安装扩展的方法安装该 .crx 文件。
+
+        访问官方商店页面选个扩展看是否可以直接下载了
+
+            https://microsoftedge.microsoft.com/addons/Microsoft-Edge-Extensions-Home
+
+            https://chrome.google.com/webstore/
+
+        如果只是下载了 .crx 文件没有安装，可以尝试双击该文件，在提示使用哪个程序打开时选择 UngoogledChromium 即可直接安装。之后只要在商店页面点击 get 即可自动下载并安装扩展了。
+
+    其它推荐扩展
+
+        见章节 [安装 Microsoft Edge 浏览器插件](Windows 10+ 那些事儿.md)，各浏览器都是通用的。
+
+        记得设置插件选项，“读取和更改站点数据”配置为“单击扩展时”
+
+GNOME Web
+
+    GNOME 桌面附带的一个基于 WebKit 的浏览器代号 Epiphany，功能比 Firefox 少，但对于普通用途来说已经足够了，而且支持安装火狐和谷歌浏览器的扩展。
+
+FireFox
+
+    中文版的 FireFox 等浏览器由cn公司开发，不要下载安装！
+
+    FireFox 只在 mozila 官方网站下载“英文版”使用，目前各大发行版内置 Firfox 安全性应该等于官方英文版。
+
+    多帐户容器：通过使用容器，你在一个容器中的浏览活动不会与其他容器共享。这种隔离意味着你可以在不同容器中登录同一网站上的两个不同帐户。你的登录会话、网站偏好和跟踪数据将被限制在你使用某个网站的容器中。你的登录会话、网站偏好和跟踪数据将被限制在你使用某个网站的容器中。Firefox 默认情况下提供的容器包括 Facebook、Messenger 和 Instagram 网站，当你打开这三个网站中的任何一个时，它们都只会在 “Facebook 容器” 中打开。因此，Facebook 将无法跟踪你在其他网站上的活动。Firefox 附加组件网站上的 扩展程序页面，找到 “Firefox Multi-Account Containers”。之后你唯一需要做的就是单击 “添加到 Firefox” 按钮。
+
+        注意：你的浏览器历史记录本身之类的内容仍会暴露给你的正常浏览器会话，容器功能只是提供了一种方法来分离登录帐户等内容。
+
+    Firefox 的 “插件”（plugin）和“扩展”（extension）是两种不同的东西：插件以动态库（Windows 上就是 DLL 文件）的方式，加载到浏览器的进程内。扩展可以调用浏览器自身的 API，但是大部分扩展【不能】调用操作系统的 API。
+
+    建议把 Firefox 的缓存指向内存目录，可以大大提升你的浏览感受，见章节 [tmpfs/ramfs 映射内存目录](init_a_server think)。
+
+Chrome
+
+    google 基于开源浏览器 chromium 而搭建的闭源浏览器
+
+    $ flatpak install flathub com.google.Chrome
+
+Tor 浏览器
+
+    通过 Flatpak 安装：
+
+        $ flatpak install flathub com.github.micahflee.torbrowser-launcher
+
+    使用 dnf 安装官方仓库的：
+
+        $ sudo dnf install torbrowser-launcher
+
+##### 浏览器 “UA(User Agent)用户代理” 字符串的故事
+
+    https://imbearchild.cyou/archives/2024/04/yes-browser-are-faking-to-be-firefox/
+
+1、NCSA Mosaic 浏览器，历史上最早的浏览器之一
+
+    NCSA 是（美国）国家超级电脑应用中心的缩写，除了浏览器，他们还开发了 NCSA Telnet 和 NCSA HTTPd，这个 HTTPd 是 Apache HTTPd 的前身。
+
+Mosaic 还是很遵守标准的，他的 UA 长这样：
+
+    NCSA_Mosaic/2.7b6~flatpak4_(X11;Linux 6.6.24 x86_64) libwww/2.12 modified
+
+    这里使用的是以现代 Flatpak 格式重新编译打包的的 Mosaic。
+
+        https://flathub.org/apps/com.github.fries1234.ncsa-mosaic
+
+据说其 Windows 版的 UA 是这样：
+
+    NCSA_Mosaic/2.0 (Windows 3.1)
+
+2、Netscape
+
+Mosaic 的开发者创立了 Netscape 公司，开发 Netscape 浏览器，他们原来想延续 Mosaic 的名字，但是 NCSA 不让，所以新起了一个项目代号，叫“Mozilla”，基本上就是把“Mosaic”和“Godzilla”粘在一起。
+
+他的 UA 是：
+
+    Mozilla/1.0 (Win3.1)
+
+Netscape 开始变得和他的前辈 Mosaic 一样流行。可是 Netscape 与 Mosaic 功能并不一样，于是服务器软件和管理员开始利用 UA 来判断浏览器，并发送兼容的页面。所以，UA 以 Mozilla 开头的浏览器会获得更加高级的网页，因为 Netscape 支持高级特性，反之就是更加简单的网页。
+
+3、Internet Explorer
+
+微软打算插上一脚，他们开发了自己的浏览器，叫 Internet Explorer，并且功能和 Netscape 不相上下。但是，他们觉得没必要等服务器开发者和网络管理员熟悉自己，然后给自己发送高级网页。
+
+相反，他们选择假装自己是 Netscape，所以 UA 是这样：
+
+    Mozilla/1.22 (compatible; MSIE 2.0; Windows 95)
+
+之后的故事几乎是所有微软故事的翻版，垄断然后腐烂，全球人民用着 Internet Explorer 直到 Google Chrome 出现。
+
+4、Firefox Gecko
+
+微软打败了 Netscape，但是 Netscape 成立了 Mozilla 组织借尸还魂。他们开源了 Netscape，重写了不少代码。重写后的渲染引擎叫 Gecko，浏览器叫 Firefox。
+
+当时 Netscape 独立开发的浏览器版本号刚好走到 4.X，于是新的 Mozilla 浏览器套件的版本就变成了 5.0。
+
+所以火狐的 UA 长这样：
+
+    Mozilla/5.0 (X11; Linux i686; rv:2.0.1) Gecko/20101130 Firefox/4.0.1
+
+因为 Gecko 引擎不止 Firefox 一个应用，所以 Firefox/4.0.1 仅代表应用本身的版本，真正的 Gecko 版本在前面的 rv:2.0.1 里面。
+
+直到 Firefox 4 ，他们决定冻结 Gecko/yyyymmdd 为 Gecko/20100101，抛弃了在 UA 写编译日期的奇葩做法。
+
+5、Konqueror KHTML
+
+KDE 开源爱好者开发了自己的浏览器和渲染引擎。KDE 就是 Kool 桌面环境的缩写，然后他们开发的许多东西起名都要与 K 相关。
+
+浏览器叫 Konqueror，渲染引擎叫 KHTML。 Gecko 很好，IE 不好。然后 KDE 觉得自己的 KHTML 与 Gecko 差不多一样好，支持也差不多，他们和微软一样选择假装自己。于是 UA 就变成了：
+
+    Mozilla/5.0 (compatible; Konqueror/3.2; FreeBSD) (KHTML, like Gecko)
+
+6、Safari WebKit
+
+Apple 看了 KHTML，决定拿过来开发自己的浏览器和引擎。
+
+浏览器叫 Safari，引擎叫 WebKit。他们继承了 KHTML 的全部要素，假装自己是 KHTML，加上了自己的部分，于是 UA 就这样了：
+
+    Mozilla/5.0 (Macintosh; U; PPC Mac OS X; de-de) AppleWebKit/85.7 (KHTML, like Gecko) Safari/85.5
+
+7、Chrome Blink
+
+Google 看了 Apple Webkit，决定拿过来开发自己的浏览器和引擎。
+
+浏览器叫 Chrome，引擎叫 Blink。他们继承了 Webkit 的全部要素，假装自己是 Safari，加上了自己的部分，于是 UA 就这样了：
+
+    Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.2.149.27 Safari/525.13
+
+所以 UA 字符串就变成了这么大一块垃圾。
+
+目前现代的浏览器就三个流派
+
+    Blink（Chrome）
+
+    Webkit（Safari）
+
+    Gecko（Firefox）。
+
+套壳浏览器比如现在的 Edge 和现在的 Opera 基本上就是 Chrome 改皮肤，然后 Chrome 假装自己是 Webkit 和 Safari，Webkit 假装自己是 Gecko。
+
+所有人都在假装自己是别人，只有火狐不用假装，因为无论是他的前身 Netscape 还是现在的 Gecko，都是被假装的那个。
 
 #### 操作系统时光机 timeshift
 
