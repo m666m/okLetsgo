@@ -8055,6 +8055,10 @@ tee 对程序的输出同时打印到文件和屏幕
 
     ls -al | tee -a file.txt
 
+    更高级的用法是限制 root 权限命令的使用范围，比如下载文件后把文件内容更新到系统目录的文件：
+
+        $ curl xxx | sudo tee /etc/xxx.cfg
+
 column 把文本表格整齐化，也用于有些程序的输出太宽字符被省略的强制展开
 
     openssl ciphers -V |column -t
@@ -8062,31 +8066,6 @@ column 把文本表格整齐化，也用于有些程序的输出太宽字符被�
 fold 按字母拆分行
 
     fold -w 9
-
-jq 格式化 JSON 数据，并彩色显示，也可用作格式检查
-
-    # sudo apt install jq
-    cat config.json |jq
-
-    # 常用于查看 json 输出的参数配置
-    lsblk --json | jq -c '.blockdevices[]|[.name,.size]'
-
-crudini 读写 ini 格式的配置文件
-
-    语法格式：crudini [参数] 文件名
-
-    常用参数：
-
-        --del 删除变量
-        --existing 指定文件已存在
-        --format 设置输出格式
-        --get 显示变量值
-        --inplace 锁定并写入文件
-        --list 更新一个列表的值
-        --list-sep 设置自定义间隔符
-        --output 将输出内容写入指定文件
-        --set 增加或修改变量
-        --verbose 显示执行过程详细信息
 
 watch 对固定刷新屏幕的文本，可以高亮出变化的部分，非常适合监控
 
@@ -8152,6 +8131,137 @@ hhighlighter 属于对 ack 的封装，但脚本名和函数名都太简单了�
 
     # 使用 \b 是 perl 正则表达式的单词限定符
     dmesg |ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"
+
+
+### 配置文件读写
+
+> jq
+
+jq 功能非常强大，支持更复杂的操作如映射、过滤、字符串操作等。可以通过 man jq 或 jq --help 查看完整文档。
+
+    $ sudo apt install jq
+
+格式化 JSON 数据，并彩色显示，如果格式错误会没有输出
+
+    $ cat config.json |jq
+
+常用于查看 json 输出的参数配置
+
+    $ lsblk --json | jq -c '.blockdevices[]|[.name,.size]'
+
+1、读取 JSON 数据
+
+    读取整个文件
+    $ jq '.' file.json
+
+    读取特定字段
+    $ jq '.key' file.json
+
+    读取嵌套字段
+    $ jq '.parent.child' file.json
+
+    读取数组元素
+    $ jq '.array[0]' file.json
+    $ jq '.array[]' file.json  # 所有元素
+
+    读取多个字段
+    $ jq '{name: .name, age: .age}' file.json
+
+    条件查询
+    $ jq 'select(.age > 30)' file.json
+
+2、修改 JSON 数据
+
+    修改字段值 (不改变原文件)
+    $ jq '.key = "new value"' file.json
+
+    添加新字段
+    $ jq '.newKey = "value"' file.json
+
+    删除字段
+    $ jq 'del(.key)' file.json
+
+    修改数组元素
+    $ jq '.array[0] = "new value"' file.json
+
+    向数组添加元素
+    $ jq '.array += ["new item"]' file.json
+
+3、写入文件
+
+    使用 > 重定向或 --output/-o 选项保存修改：
+    $ jq '.key = "new value"' file.json > temp.json && mv temp.json file.json
+
+    或者使用 -i/--in-place 直接修改原文件（某些版本支持）：
+    $ jq -i '.key = "new value"' file.json
+
+示例，假设有 data.json 文件内容如下：
+
+    {
+      "name": "Alice",
+      "age": 30,
+      "hobbies": ["reading", "hiking"],
+      "address": {
+        "city": "New York",
+        "zip": "10001"
+      }
+    }
+
+获取姓名：
+
+    $ jq '.name' data.json
+    # 输出: "Alice"
+
+修改年龄并保存：
+
+    $ jq '.age = 31' data.json > new_data.json
+
+添加新字段：
+
+    $ jq '.country = "USA"' data.json
+
+获取所有爱好：
+
+    $ jq '.hobbies[]' data.json
+    # 输出:
+    # "reading"
+    # "hiking"
+
+修改嵌套字段：
+
+    $ jq '.address.city = "Boston"' data.json
+
+删除字段：
+
+    $ jq 'del(.address.zip)' data.json
+
+> crudini 读写 ini 格式的配置文件
+
+    语法格式：crudini [参数] 文件名
+
+    常用参数：
+
+        --del 删除变量
+        --existing 指定文件已存在
+        --format 设置输出格式
+        --get 显示变量值
+        --inplace 锁定并写入文件
+        --list 更新一个列表的值
+        --list-sep 设置自定义间隔符
+        --output 将输出内容写入指定文件
+        --set 增加或修改变量
+        --verbose 显示执行过程详细信息
+
+>yq (jq 的 YAML 版本)读写 YAML 的处理工具，语法类似于 jq
+
+    # 读取值
+    yq '.key.subkey' file.yaml
+
+    # 设置值
+    yq -i '.key.subkey = "new value"' file.yaml
+
+    # 添加新字段
+    yq -i '.newKey = "value"' file.yaml
 
 ### 比较文件差异 diff
 
