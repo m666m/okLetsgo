@@ -2197,10 +2197,6 @@ NOTE：ssd 硬盘不要开启厂商自带的硬件加密功能，这样 Bitlocke
 
     https://www.tenforums.com/tutorials/2087-hyper-v-virtualization-setup-use-Windows-10-a.html
 
-优化 hyper-v 运行 Linux
-
-    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/best-practices-for-running-linux-on-hyper-v
-
 Hyper-V 体系结构
 
     https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/reference/hyper-v-architecture
@@ -2275,19 +2271,103 @@ Hyper-V的“增强会话”功能是一项强大的技术，它极大地提升�
 
     建议在完全安装好操作系统后手工建立一个检查点，安装软件后再建立一个，不要再多了。这样即不会占用你大量的硬盘空间，也方便出现问题时回退到干净的系统状态。
 
-> 第 2 代虚拟机上的 GRUB 菜单超时
+#### Hyper-V 安装 Linux 虚拟机
 
-    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/best-practices-for-running-linux-on-hyper-v#grub-menu-timeout-on-generation-2-virtual-machines
+优化 hyper-v 运行 Linux
 
-    由于第 2 代虚拟机的仿真中删除了旧硬件，导致 grub 菜单倒计时计时器的倒计时速度太快，无法显示 grub 菜单，因而会立即加载默认条目。 在 GRUB 固定为使用 EFI 支持的计时器之前，请修改 /boot/grub/grub.conf, /etc/default/grub 或等效条目，将其修改为“timeout=100000”而不是默认的“timeout=5”。
+    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/best-practices-for-running-linux-on-hyper-v
 
-#### Hyper-V 安装 Linux 虚拟机也要安装客户机代理工具
+Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
 
-先启动“增强会话模式”：将 Fedora 关机，以管理员身份运行 powershell
+    https://learn.microsoft.com/en-gb/windows-server/virtualization/hyper-v/Supported-Linux-and-FreeBSD-virtual-machines-for-Hyper-V-on-Windows
 
-    Set-VM -VMName <your_vm_name> -EnhancedSessionTransportType HvSocket
+    Linux Integration Services (LIS)
 
-    Linux 好像必须安装 xrdp 才可以 https://github.com/secana/EnhancedSessionMode
+    FreeBSD Integration Services (BIS)
+
+##### Linux 虚拟机启动“增强会话模式”：
+
+客户机必须安装 xrdp 进行一些设置。
+
+    Fedora 下的自动脚本
+
+        https://matthewsanabria.dev/posts/fedora-linux-and-hyper-v-enhanced-session-mode/
+
+    Ubuntu下的自动脚本
+
+        https://github.com/Hinara/linux-vm-tools/blob/master/ubuntu/24.04/install.sh
+
+以 Fedora 为例，手工操作：
+
+    https://github.com/secana/EnhancedSessionMode
+
+安装 xrdp：
+
+修改配置文件 /etc/xrdp/xrdp.ini：
+
+```ini
+diff --git a/etc/xrdp/xrdp.ini b/etc/xrdp/xrdp.ini
+index 0351650..4a7d696 100755
+--- a/etc/xrdp/xrdp.ini
++++ b/etc/xrdp/xrdp.ini
+@@ -20,7 +20,7 @@ fork=true
+ ;   port=tcp6://:3389                           *:3389
+ ;   port=tcp6://{<any ipv6 format addr>}:3389   {FC00:0:0:0:0:0:0:1}:3389
+ ;   port=vsock://<cid>:<port>
+-port=3389
++port=vsock://-1:3389
+
+ ; 'port' above should be connected to with vsock instead of tcp
+ ; use this only with number alone in port above
+@@ -44,12 +44,12 @@ tcp_keepalive=true
+
+ ; security layer can be 'tls', 'rdp' or 'negotiate'
+ ; for client compatible layer
+-security_layer=negotiate
++security_layer=rdp
+
+ ; minimum security level allowed for client for classic RDP encryption
+ ; use tls_ciphers to configure TLS encryption
+ ; can be 'none', 'low', 'medium', 'high', 'fips'
+-crypt_level=high
++crypt_level=none
+
+ ; X.509 certificate and private key
+ ; openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 365
+@@ -81,7 +81,7 @@ autorun=
+ allow_channels=true
+ allow_multimon=true
+ bitmap_cache=true
+-bitmap_compression=true
++bitmap_compression=false
+
+ bulk_compression=true
+ #hidelogwindow=true
+
+```
+
+配置 xrdp 服务和放行防火墙：
+
+    sudo systemctl enable --now xrdp
+    sudo systemctl enable --now xrdp-sesman
+
+    sudo firewall-cmd --add-port=3389/tcp --permanent
+    sudo firewall-cmd --reload
+
+
+将 Fedora 关机，以管理员身份运行 powershell
+
+    C:\> Set-VM -VMName <your_vm_name> -EnhancedSessionTransportType HvSocket
+
+    C:\> Get-VM <VM_NAME> | select EnhancedSessionTransportType
+
+    EnhancedSessionTransportType
+    ----------------------------
+                        HvSocket
+
+然后再启动虚拟机，连接虚拟机，设置无误的话，应该可以看到自动弹出设置分辨率的对话框，然后使用 xrdp 登录到 Linux 桌面使用即可。
+
+##### 安装客户机代理工具
 
 普通使用 Linux 环境，在 Windows 宿主机上使用 WSL2 即可，没必要单独装 Linux 虚拟机了，参见章节 [WSL 适用于 Linux 的 Windows 子系统]。
 
@@ -2302,6 +2382,12 @@ Hyper-V的“增强会话”功能是一项强大的技术，它极大地提升�
         hv_vss_daemon   卷影复制服务 volume shadow copy service (VSS)，主机可以在快照时冻结虚拟机的文件系统
 
     Fedora：安装 hyperv-daemons 软件包，还可以安装 hyperv-tools 工具包
+
+##### 第 2 代虚拟机上的 GRUB 菜单超时
+
+    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/best-practices-for-running-linux-on-hyper-v#grub-menu-timeout-on-generation-2-virtual-machines
+
+    由于第 2 代虚拟机的仿真中删除了旧硬件，导致 grub 菜单倒计时计时器的倒计时速度太快，无法显示 grub 菜单，因而会立即加载默认条目。 在 GRUB 固定为使用 EFI 支持的计时器之前，请修改 /boot/grub/grub.conf, /etc/default/grub 或等效条目，将其修改为“timeout=100000”而不是默认的“timeout=5”。
 
 #### Hyper-V 直连主机USB设备
 
@@ -2356,9 +2442,15 @@ Hyper-V的“增强会话”功能是一项强大的技术，它极大地提升�
 
 默认创建的虚拟机，都没有绑定网络，需要在宿主机上手动设置网络，给虚拟机的网卡分配一个虚拟交换机，使其可以访问网络
 
-    创建和配置虚拟交换机 https://learn.microsoft.com/zh-cn/windows-server/virtualization/hyper-v/get-started/create-a-virtual-switch-for-hyper-v-virtual-machines?tabs=hyper-v-manager
+    Hyper-V 网络基础知识 https://learn.microsoft.com/zh-cn/windows-server/virtualization/hyper-v/plan/plan-hyper-v-networking-in-windows-server
+
+    Hyper-V 虚拟交换机 https://learn.microsoft.com/zh-cn/windows-server/virtualization/hyper-v-virtual-switch/hyper-v-virtual-switch
+
+    Hyper-V 创建和配置虚拟交换机 https://learn.microsoft.com/zh-cn/windows-server/virtualization/hyper-v/get-started/create-a-virtual-switch-for-hyper-v-virtual-machines?tabs=hyper-v-manager
 
     创建虚拟网络 https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/quick-start/connect-to-network
+
+    为 Hyper-V 配置虚拟局域网 https://learn.microsoft.com/zh-cn/windows-server/virtualization/hyper-v/deploy/configure-virtual-local-area-networks-for-hyper-v
 
     https://www.cnblogs.com/Mopee/p/14696481.html
 

@@ -16871,6 +16871,7 @@ xrdp 的组件
 
 安装 xrdp
 
+    $ sudo dnf install xrdp xrdp-selinux
     $ sudo apt install xrdp
 
     # 如果有防火墙，记得开放端口
