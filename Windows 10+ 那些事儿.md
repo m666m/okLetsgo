@@ -2287,11 +2287,17 @@ Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
 
 ##### Linux 虚拟机启动“增强会话模式”：
 
-客户机必须安装 xrdp 进行一些设置。
+微软对此事并不积极，搞了一阵子放弃了，仅在 Hyper-V 的创建界面提供的微软特供 Ubuntu 版本自带驱动，其它的不管了。。。
+
+    https://github.com/microsoft/linux-vm-tools
+
+所以，自己动手，客户机安装 xrdp 进行一些设置即可。
 
     Fedora 下的自动脚本
 
-        https://matthewsanabria.dev/posts/fedora-linux-and-hyper-v-enhanced-session-mode/
+        https://github.com/secana/EnhancedSessionMode
+
+        https://github.com/hu-ximing/Hyper-V-RHEL-Fedora-enhanced-session
 
     Ubuntu下的自动脚本
 
@@ -2299,7 +2305,11 @@ Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
 
 以 Fedora 为例，手工操作：
 
-    https://github.com/secana/EnhancedSessionMode
+    https://matthewsanabria.dev/posts/fedora-linux-and-hyper-v-enhanced-session-mode/
+
+    https://nat.io/blog/fedora-enhanced-hyperv
+
+    https://zahui.fan/posts/ssqj2c/
 
 安装 xrdp：
 
@@ -2353,7 +2363,6 @@ index 0351650..4a7d696 100755
 
     sudo firewall-cmd --add-port=3389/tcp --permanent
     sudo firewall-cmd --reload
-
 
 将 Fedora 关机，以管理员身份运行 powershell
 
