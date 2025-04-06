@@ -2215,6 +2215,39 @@ Windows 10+ 在 2020 年代以来，体系架构类似 Xen，混合虚拟化：
 
 自 Windows 11 强制开启 TPM 2.0 和 安全启动，可以用微软和硬件厂商的密钥把计算机启动部分也进行保护，防止木马程序隐藏在系统引导区，导致开机启动就加载木马程序运行。
 
+#### 开启Hyper-V的增强会话模式策略
+
+    https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/user-guide/enhanced-session-mode
+    https://learn.microsoft.com/en-us/virtualization/hyper-v-on-windows/user-guide/enhanced-session-mode
+
+    https://www.tenforums.com/tutorials/57136-turn-off-hyper-v-enhanced-session-mode-windows-10-a.html
+
+开启条件：
+
+    打开 hyper-v 管理器，右键点击本地虚拟化服务器，选择菜单 “Hyper-V设置”，寻找 “增强会话模式” 勾选确定。
+
+    创建虚拟机时要选择“第二代”，虚拟机操作系统安装完成后最好安装客户端代理，见章节 [Hyper-V 安装 Linux 虚拟机也要安装客户机代理工具]。
+
+    增强会话模式要求在 VM 中启用远程桌面。 在“设置”应用或“开始”菜单中，搜索 远程桌面设置。 打开 启用远程桌面 开关。
+
+验证：
+
+    打开Hyper-V管理器，并连接虚拟机，终于看到修改配置的对话框。在 VMConnect 工具栏上的增强会话模式图标检查连接类型。 还可以使用此按钮在基本会话模式和增强会话模式之间切换。
+
+    mstsc 选择要连接的虚拟机，选择“显示选项”。在增强会话模式下，VM 默认可以访问剪贴板和打印机，虚拟机被配置为将音频传输到主机的扬声器。VM 还有权在增强会话模式下访问智能卡和其他安全设备。 因此，可以从 VM 使用更安全的登录工具。 还可以共享其他设备如 USB 设备或驱动器
+
+Hyper-V的“增强会话”功能是一项强大的技术，它极大地提升了虚拟化环境中用户与虚拟机交互的体验。这一功能特别适用于需要高效管理和操作虚拟机的场景，为管理员和终端用户提供了前所未有的便利。
+
+在启用“增强会话”模式后，用户能够享受到一系列高级特性，这些特性显著地扩展了虚拟机与宿主机之间的互操作能力。首先，它支持拖放文件功能，这意味着用户可以简单地通过拖放操作在宿主机和虚拟机之间传输文件，无需使用额外的文件传输工具，从而大大提高了数据传输的效率和便捷性。
+
+此外，“增强会话”还实现了剪贴板的双向共享，使得用户可以在宿主机和虚拟机之间无缝复制和粘贴文本内容。这一功能在需要频繁交换信息的场景中尤为实用，能够显著提升工作效率。
+
+不仅如此，“增强会话”还带来了音频、打印、USB设备接入等多方面的支持。用户可以在宿主机上播放虚拟机中的声音，享受更加丰富的多媒体体验；同时，虚拟机也能访问连接到宿主机的打印机，实现打印作业的轻松完成。此外，USB设备的接入也得到了完美支持，用户可以像操作宿主机上的设备一样，方便地在虚拟机中使用这些设备。
+
+为了实现这些高级功能，“增强会话”模式基于远程桌面协议（RDP）进行连接，并通过VMBus进行数据传输。这种连接方式不仅保证了数据传输的稳定性和高效性，还确保了虚拟机与宿主机之间的安全隔离。
+
+正常情况下，我们启动的Hyper-V虚拟机是没有增强会话功能选项的。即使我们在设置中选择了开启，实则也没有开启。我们需要经过一些特殊手段的处理才能真正看到增强会话功能。
+
 #### 建立 Hyper-V 虚拟机
 
 使用比较简单，就像普通虚拟机操作，类似 VM Ware、Virtual Box
@@ -2226,7 +2259,7 @@ Windows 10+ 在 2020 年代以来，体系架构类似 Xen，混合虚拟化：
 
     客户机要安装支持安全启动的 Windows，选择模板 “Microsoft Windows”
 
-    客户机要安装支持安全启动的 Linux，选择模板 “Microsoft UEFI 证书颁发机构”（安装Linux）
+    客户机要安装支持安全启动的 Linux，选择模板 “Microsoft UEFI 证书颁发机构”(Microsoft UEFI Certificate Authority) <https://docs.fedoraproject.org/en-US/fedora-coreos/provisioning-hyperv/>
 
     若勾选“启用防护”选项会禁用控制台连接、无法迁移虚拟机等。
 
@@ -2249,6 +2282,12 @@ Windows 10+ 在 2020 年代以来，体系架构类似 Xen，混合虚拟化：
     由于第 2 代虚拟机的仿真中删除了旧硬件，导致 grub 菜单倒计时计时器的倒计时速度太快，无法显示 grub 菜单，因而会立即加载默认条目。 在 GRUB 固定为使用 EFI 支持的计时器之前，请修改 /boot/grub/grub.conf, /etc/default/grub 或等效条目，将其修改为“timeout=100000”而不是默认的“timeout=5”。
 
 #### Hyper-V 安装 Linux 虚拟机也要安装客户机代理工具
+
+先启动“增强会话模式”：将 Fedora 关机，以管理员身份运行 powershell
+
+    Set-VM -VMName <your_vm_name> -EnhancedSessionTransportType HvSocket
+
+    Linux 好像必须安装 xrdp 才可以 https://github.com/secana/EnhancedSessionMode
 
 普通使用 Linux 环境，在 Windows 宿主机上使用 WSL2 即可，没必要单独装 Linux 虚拟机了，参见章节 [WSL 适用于 Linux 的 Windows 子系统]。
 
