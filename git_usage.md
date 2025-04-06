@@ -69,6 +69,8 @@ git 的这套用法感觉比较别扭？很多人也这么觉得，有个 Jujuts
 
 jj 自己实现了一套简化的前端操作命令，把 git 隐藏到了后端，其实它还支持  [Mercurial](https://www.mercurial-scm.org/) 、[Darcs](https://darcs.net/)、[SVN](https://subversion.apache.org/) 等其它 scm 管理系统作为后端。
 
+还有基本概念都不一样的源代码管理体系，见章节 [竞品 -- 基于文件差异(patch)的源代码管理系统]。
+
 ### 何时使用git而不是svn
 
 因为git就是给开源准备的，适合开源方式开发的就适合用 git。
@@ -5922,7 +5924,7 @@ devops平台搭建工具
 
 在基于 patch 的版本控制系统没有这个问题，在它们眼里，无论在哪个分支上，同样的修改都是同一个 patch。在合并时，它们比较的是 patch 的多寡，而非 snapshot 的异同。同样的道理，基于 patch 的版本控制系统，在处理 cherry-pick，revert 和 blame 时，也会更加简单。
 
-参见 <https://jneem.github.io/pijul/> 的 [Case study 1: reverting an old commit]。
+参见 [Case study 1: reverting an old commit](https://jneem.github.io/pijul/)。
 
 2、基于 snapshot 的版本控制系统，在合并时采用三路合并（three-way merge）。比如 Git 中合并就是采用递归三路合并。所谓的三路合并，就是 theirs(A) 和 ours(B) 两个版本先计算出公共祖先 merge_base(C)，接着分别做 theirs-merge_base 和 ours-merge_base 的 diff，然后合并这两个 diff。当两个 diff 修改了同样的地方时，就会产生合并冲突。
 
