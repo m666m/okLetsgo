@@ -61,6 +61,14 @@ git 的很多命令操作都是区分这几个区的，如 git fetch、git diff�
 
 git 对文件内容的修改，在撤销和重做方面有些使用不便，详见章节 [竞品 -- 基于文件差异(patch)的源代码管理系统]。
 
+git 的这套用法感觉比较别扭？很多人也这么觉得，有个 Jujutsu 可以简化使用
+
+    https://github.com/jj-vcs/jj
+
+    https://jj-vcs.github.io/jj/latest/tutorial/
+
+jj 自己实现了一套简化的前端操作命令，把 git 隐藏到了后端，其实它还支持  [Mercurial](https://www.mercurial-scm.org/) 、[Darcs](https://darcs.net/)、[SVN](https://subversion.apache.org/) 等其它 scm 管理系统作为后端。
+
 ### 何时使用git而不是svn
 
 因为git就是给开源准备的，适合开源方式开发的就适合用 git。
