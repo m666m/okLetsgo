@@ -547,7 +547,7 @@ BoldAsFont=yes
 # https://github.com/mintty/mintty/wiki/Tips#background-image
 # 自定义颜色方案 https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
 # 根据图片生成颜色方案 https://github.com/thefryscorer/schemer2 参见章节 [base16颜色方案](gnu_tools.md okletsgo)
-Background=C:\tools\SuperPuTTY\111dark.jpg,225
+Background=C:\tools\111dark.jpg,225
 #0D1926
 BackgroundColour=13,25,38
 #839496 #B6CDD0
@@ -588,7 +588,7 @@ BoldWhite=253,246,227
 
 # 自定义颜色方案，跟深色背景搭配，nord 的暗淡方案
 # https://github.com/arcticicestudio/nord-alacritty/blob/main/src/nord.yml
-#Background=C:\tools\SuperPuTTY\DR_6.jpg
+#Background=C:\tools\DR_6.jpg
 #BackgroundColour=46,52,64
 #ForegroundColour=216,222,233
 #CursorColour=216,222,233
@@ -610,7 +610,7 @@ BoldWhite=253,246,227
 #BoldWhite=174,179,187
 
 # 自定义颜色方案，跟浅色背景搭配-黄色
-#Background=C:\tools\SuperPuTTY\222yellow.jpg,225
+#Background=C:\tools\222yellow.jpg,225
 #BackgroundColour=250,234,182
 #ForegroundColour=0,61,121
 #CursorColour=217,230,242
@@ -632,7 +632,7 @@ BoldWhite=253,246,227
 #BoldWhite=176,182,204
 
 # 自定义颜色方案，跟浅色背景搭配-绿色
-#Background=C:\tools\SuperPuTTY\333green.jpg,128
+#Background=C:\tools\333green.jpg,128
 #BackgroundColour=250,234,182
 #ForegroundColour=47,47,47
 #CursorColour=217,230,242
@@ -1103,7 +1103,9 @@ Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` �
 
 #### Supper Putty
 
-    可惜目前更新不大及时 https://github.com/jimradford/superputty
+别用了：在 Windows 11 下调用 git bash，粘贴脚本文件内容，随机添加字符（Windows 10 时代也有这个现象）。
+
+    https://github.com/jimradford/superputty
 
 本质上是给 putty 加了个多窗口的外壳，树形展示会话列表，方便管理和使用
 
@@ -17051,7 +17053,7 @@ xrdp 还未实现对 GFX 的支持，对使用 xorgxrdp 的 X window 桌面用�
 
     https://github.com/neutrinolabs/xrdp/issues/2506#issuecomment-1387172540
 
-RFX/GFX 技术参见章节 [虚拟机启用显卡加速](Windows 10+ 安装的那些事儿)。
+RFX/GFX 技术参见章节 [虚拟机启用显卡加速](Windows 10+ 安装的那些事儿.md)。
 
 ##### 避免客户端连接时提示“证书来自不信任的证书验证机构”
 
