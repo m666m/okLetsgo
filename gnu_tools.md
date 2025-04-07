@@ -16834,6 +16834,38 @@ GNOME “远程桌面” 服务端拆分为 2 个功能，应该是从安全性�
 
 所以，远程桌面的“远程登录”功能，更适合远程使用。
 
+##### 多用户同时使用远程桌面连接你的Linux服务器
+
+headless multi-user access
+
+    https://discourse.gnome.org/t/headless-remote-desktop-setup-process/20411/2?u=vgaetera
+        https://discussion.fedoraproject.org/t/how-do-i-setup-a-remote-access-solution-in-wayland/121232/3
+
+```bash
+# Server
+RDP_USER="${USER}"
+RDP_PASS="12345678"
+
+sudo dnf -y install gnome-remote-desktop freerdp
+
+sudo -u gnome-remote-desktop winpr-makecert \
+    -silent -rdp -path ~gnome-remote-desktop rdp-tls
+
+sudo grdctl --system rdp enable
+sudo grdctl --system rdp set-credentials "${RDP_USER}" "${RDP_PASS}"
+sudo grdctl --system rdp set-tls-key ~gnome-remote-desktop/rdp-tls.key
+sudo grdctl --system rdp set-tls-cert ~gnome-remote-desktop/rdp-tls.crt
+
+sudo systemctl --now enable gnome-remote-desktop.service
+
+sudo firewall-cmd --permanent --add-service=rdp
+sudo firewall-cmd --reload
+
+# Client
+sudo dnf -y install gnome-connections
+gnome-connections rdp://host
+```
+
 #### 使用 xrdp 服务端
 
 Gnome 等桌面环境远程桌面功能已经从使用 VNC 协议转向了 RDP 协议，但 Gnome 等桌面环境内置的共享桌面功能太弱了，通常在服务器安装第三方的 xrdp 软件包支持多种桌面环境，远程桌面连接本机无需本地用户登录，客户端使用支持 rdp 协议的 mstsc、remmina 等软件即可。
