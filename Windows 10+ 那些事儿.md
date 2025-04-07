@@ -2285,7 +2285,7 @@ Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
 
     FreeBSD Integration Services (BIS)
 
-##### Linux 虚拟机启动“增强会话模式”：
+##### Linux 虚拟机启动“增强会话模式”
 
 微软对此事并不积极，搞了一阵子放弃了，仅在 Hyper-V 的创建界面提供的微软特供 Ubuntu 版本自带驱动，其它的不管了。。。
 

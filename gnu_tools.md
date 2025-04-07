@@ -8139,8 +8139,7 @@ hhighlighter 属于对 ack 的封装，但脚本名和函数名都太简单了�
     # 使用 \b 是 perl 正则表达式的单词限定符
     dmesg |ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"
 
-
-### 配置文件读写
+### 读写配置文件 jq crudini yq
 
 > jq
 
