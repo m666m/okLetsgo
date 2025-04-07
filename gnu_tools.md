@@ -4167,6 +4167,10 @@ ${var}用于明确界定变量，与$var并没有区别，但是界定更清晰
 
 字符串截取
 
+    $ url="www.baidu.com"
+    $ echo ${url%%.*}  # 显示 www，用于取代 basename 用法，截取前缀
+    $ echo ${url##*.}  # 显示 com，用于取代 cut -d. -f2 用法，截取后缀
+
     从字符串的左边开始计数，那么截取字符串的具体格式如下：
 
         ${string: start :length}
@@ -4190,9 +4194,6 @@ ${var}用于明确界定变量，与$var并没有区别，但是界定更清晰
     $ url="www.baidu.com"
     $ echo ${url:0-9}  # 省略 length，直接截取到字符串末尾
     结果为：baidu.com
-
-    $ url="www.baidu.com"
-    $ echo ${url%%.*} 用于取代 basename 用法，截取前缀字符串 更方便
 
 字符串替换
 
@@ -4361,6 +4362,12 @@ test 和 [] 是等价的，[] 注意两边留空格
     {echo 'abc'}
 
     print fff
+
+### bash避坑
+
+    变量赋值别习惯性的加空格
+
+    在 Fedora 下 # 号写注释，不要用变量引用的那个货币符号，会进行解释，不知道为啥
 
 ### 常用 bash 技巧
 

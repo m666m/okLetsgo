@@ -7,6 +7,11 @@
 #   https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
 
 ####################################################################
+# 避坑
+#   变量赋值别习惯性的加空格
+#   在 Fedora 下 # 号写注释，不要用变量引用的那个货币符号，会进行解释，不知道为啥
+
+####################################################################
 # 此部分作为普通脚本的默认头部内容，便于调测运行。
 #
 # declare -p PS1 打印指定变量的定义
@@ -81,14 +86,19 @@ unset os_name
 #     the files are located in the bash-doc package.
 # test -f ~/.profile && . ~/.profile
 # 这几个标准目录设置到 $PATH，在 Debian 等发行版放在 .profile 里了，这里要补上执行
-PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
+# PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
+for dir in "$HOME/.local/bin" "$HOME/bin"; do
+  [[ -d "$dir" ]] && [[ ":$PATH:" != *":$dir:"* ]] && PATH="$PATH:$dir"
+done
+export PATH
 
+###################################################################
 # exit for non-interactive shell
 # [[ ! -t 0 ]] && return
 [[ $- != *i* ]] && {
 unset current_shell
 unset os_type
-return
+exit
 }
 
 ###################################################################
@@ -645,10 +655,25 @@ if [[ ! $current_shell = 'zsh' ]]; then
     [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ';) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
 fi
 
-# ackg 看日志最常用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)
-if [[ ! $os_type = 'windows' ]]; then
-    [[ -f /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh || (echo 'Get ackg from github...' && curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/refs/heads/master/h.sh  2>/dev/null || curl -fsSL https://cdn.jsdelivr.net/gh/paoloantinori/hhighlighter@master/h.sh | sed -e 's/h()/ackg()/' | sudo tee /usr/local/bin/ackg.sh) && source /usr/local/bin/ackg.sh
-fi
+function set_ackg() {
+    # 只适用于 Linux 类
+    [[ $os_type = 'windows' ]] && return
+
+    [[ -s /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh && return
+
+    echo "ackg 看日志比grep好用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)"
+    echo 'Get ackg from github...'
+
+    curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/refs/heads/master/h.sh 2>/dev/null | sed -e 's/h()/ackg()/' | sudo tee /usr/local/bin/ackg.sh
+
+    [[ -s /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh && return
+
+    # 如果 github 获取不到，尝试 CDN
+    curl -fsSL https://cdn.jsdelivr.net/gh/paoloantinori/hhighlighter@master/h.sh 2>/dev/null | sed -e 's/h()/ackg()/' | sudo tee /usr/local/bin/ackg.sh
+
+    [[ -s /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh
+}
+set_ackg
 
 #################################
 # Bash：手动配置插件
@@ -810,34 +835,35 @@ function PS1git-branch-prompt {
     fi
 }
 
-# 主机名用不同颜色提示本地或 ssh 远程登录：本地登录是绿色，远程登录是洋红色
+# 显示主机名，用不同颜色提示本地或 ssh 远程登录：本地登录是绿色，远程登录是洋红色
 function PS1_host_name {
     local is_remote=false
 
-    # 判断当前是否远程ssh会话：变量 SSH_TTY 仅在交互式登录会话中被设置，变量 SSH_CLIENT 只要远程 ssh 登录即设置
-    # 此方法仅在主机环境或 distrobox 容器中有效，在 toolbox 容器中要用其它办法
+    # 判断当前是否进入远程ssh会话：
+    # 远程会话检测变量 SSH_CLIENT，交互式登录检测变量 SSH_TTY
+    # 此方法仅在主机环境或 distrobox 容器中有效
     ([[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]]) && is_remote=true
 
-    # 默认主机环境，显示的主机名适应 FQDN 只显示最前段，如 host.local 显示 host
+    # FQDN 格式主机名只显示前段，如 host.local 显示 host
     local raw_host_name=$(echo ${HOSTNAME%%.*})
 
-    # 如果进入了交互式容器，在这里处理显示宿主机的主机名，后面有单独的函数处理显示容器名
+    # 在交互式容器中特殊处理，从 HOSTNAME 提取出宿主机的主机名
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
-        # 如果是在交互式容器 toolbox 中，$HOSTNAME 与宿主机一致，但 /etc/hostname 变为 toolbox
+        # 如果是在交互式容器 toolbox 中，HOSTNAME 的值与宿主机一致，但 /etc/hostname 变为 toolbox
         if [[ $(uname -n) = 'toolbox' ]]; then
-            # toolbox 容器中只能用这个方式判断是否远程连接中，不是很靠谱
+            # toolbox 容器中只能用这个方式判断是否进入远程ssh会话，不是很靠谱
             [[ $(pstree |grep sshd |grep toolbox |grep podman |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
 
+            # raw_host_name 使用前面设置过的
         else
-            # 否则是在交互式容器 distrobox 中，主机名的值变为：容器名.宿主机的主机名
+            # 否则是在交互式容器 distrobox 中，HOSTNAME 的值变为：容器名.宿主机的主机名
             # distrobox 容器中不需要判断是否在远程连接中，它继承了宿主机的环境变量，前面的 is_remote 判断结果直接用
-            # 显示宿主机的主机名
-            raw_host_name=$(echo ${HOSTNAME} |cut -d. -f2)
+            raw_host_name=$(echo ${HOSTNAME##*.})
         fi
-
     fi
 
     [[ $is_remote = true ]] && echo -e "\033[0;35m$(echo $raw_host_name)" || echo -e "\033[0;32m$(echo $raw_host_name)"
+
 }
 
 # 提示当前在 toolbox 或 distrobox 等交互式容器环境，白色容器名配蓝色背景
