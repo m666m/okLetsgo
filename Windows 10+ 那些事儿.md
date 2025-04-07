@@ -2287,11 +2287,13 @@ Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
 
 ##### Linux 虚拟机启动“增强会话模式”
 
-微软对此事并不积极，搞了一阵子放弃了，仅在 Hyper-V 的创建界面提供的微软特供 Ubuntu 版本自带驱动，其它的不管了。。。
+    估计都在等，wayland 实现对此的支持，大概3，5年后再看吧
+
+微软对此事并不积极，搞了一阵子放弃了，仅在 Hyper-V 的界面 “快速创建虚拟机”处选择微软特供的 Ubuntu 22.04LTS 自带该功能
 
     https://github.com/microsoft/linux-vm-tools
 
-所以，自己动手，客户机安装 xrdp 进行一些设置即可。
+只能自己解决：客户机安装 xrdp 并进行一些设置，即可开通对 Hyper-V 的增强会话模式的支持。
 
     Fedora 下的自动脚本
 
@@ -2303,7 +2305,7 @@ Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
 
         https://github.com/Hinara/linux-vm-tools/blob/master/ubuntu/24.04/install.sh
 
-以 Fedora 为例，手工操作：
+下面以 Fedora 为例，手工操作：
 
     https://matthewsanabria.dev/posts/fedora-linux-and-hyper-v-enhanced-session-mode/
 
@@ -2311,9 +2313,11 @@ Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
 
     https://zahui.fan/posts/ssqj2c/
 
-安装 xrdp：
+1、安装 xrdp：
 
-修改配置文件 /etc/xrdp/xrdp.ini：
+    [使用 xrdp 服务端](gnu_tools.md)
+
+2、修改配置文件 /etc/xrdp/xrdp.ini：
 
 ```ini
 diff --git a/etc/xrdp/xrdp.ini b/etc/xrdp/xrdp.ini
@@ -2356,7 +2360,7 @@ index 0351650..4a7d696 100755
 
 ```
 
-配置 xrdp 服务和放行防火墙：
+3、配置 xrdp 服务和放行防火墙：
 
     sudo systemctl enable --now xrdp
     sudo systemctl enable --now xrdp-sesman
@@ -2364,7 +2368,7 @@ index 0351650..4a7d696 100755
     sudo firewall-cmd --add-port=3389/tcp --permanent
     sudo firewall-cmd --reload
 
-将 Fedora 关机，以管理员身份运行 powershell
+4、将 Fedora 关机，以管理员身份运行 powershell
 
     C:\> Set-VM -VMName <your_vm_name> -EnhancedSessionTransportType HvSocket
 
@@ -2374,11 +2378,13 @@ index 0351650..4a7d696 100755
     ----------------------------
                         HvSocket
 
-然后再启动虚拟机，连接虚拟机，设置无误的话，应该可以看到自动弹出设置分辨率的对话框，然后使用 xrdp 登录到 Linux 桌面使用即可。
+5、验证：
+
+启动虚拟机，连接虚拟机，应该可以看到自动弹出设置分辨率的对话框，然后使用 xrdp 登录到 Linux 桌面使用即可。
 
 ##### 安装客户机代理工具
 
-普通使用 Linux 环境，在 Windows 宿主机上使用 WSL2 即可，没必要单独装 Linux 虚拟机了，参见章节 [WSL 适用于 Linux 的 Windows 子系统]。
+普通使用 Linux 环境，在 Windows 宿主机上使用 WSL2 即可，没必要单独装 Linux 虚拟机，参见章节 [WSL 适用于 Linux 的 Windows 子系统]。
 
 如果用 Hyper-V 安装 Linux 虚拟机，务必安装客户机代理工具 hyperv-daemons，类似 vmware tools、virtualbox tools、qemu-guest-agent 等，会大大提升系统 IO 速度，改善使用体验：
 
@@ -2394,9 +2400,9 @@ index 0351650..4a7d696 100755
 
 ##### 第 2 代虚拟机上的 GRUB 菜单超时
 
-    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/best-practices-for-running-linux-on-hyper-v#grub-menu-timeout-on-generation-2-virtual-machines
+由于第 2 代虚拟机的仿真中删除了旧硬件，导致 grub 菜单倒计时计时器的倒计时速度太快，无法显示 grub 菜单，因而会立即加载默认条目。 在 GRUB 固定为使用 EFI 支持的计时器之前，请修改 /boot/grub/grub.conf, /etc/default/grub 或等效条目，将其修改为“timeout=100000”而不是默认的“timeout=5”。
 
-    由于第 2 代虚拟机的仿真中删除了旧硬件，导致 grub 菜单倒计时计时器的倒计时速度太快，无法显示 grub 菜单，因而会立即加载默认条目。 在 GRUB 固定为使用 EFI 支持的计时器之前，请修改 /boot/grub/grub.conf, /etc/default/grub 或等效条目，将其修改为“timeout=100000”而不是默认的“timeout=5”。
+    https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/best-practices-for-running-linux-on-hyper-v#grub-menu-timeout-on-generation-2-virtual-machines
 
 #### Hyper-V 直连主机USB设备
 
