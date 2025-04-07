@@ -2382,6 +2382,12 @@ index 0351650..4a7d696 100755
 
 启动虚拟机，连接虚拟机，应该可以看到自动弹出设置分辨率的对话框，然后使用 xrdp 登录到 Linux 桌面使用即可。
 
+可以直接从虚拟机管理器的连接里复制粘贴文件，访问
+
+    https://webglsamples.org/aquarium/aquarium.html
+
+看看帧数，不是 1 帧了。
+
 ##### 安装客户机代理工具
 
 普通使用 Linux 环境，在 Windows 宿主机上使用 WSL2 即可，没必要单独装 Linux 虚拟机，参见章节 [WSL 适用于 Linux 的 Windows 子系统]。
