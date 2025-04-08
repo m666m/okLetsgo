@@ -549,103 +549,109 @@ fi
 # 多会话复用 ssh 密钥代理
 # 来自章节 [多会话复用 ssh-agent 进程](ssh.md think)
 
-# GNOME 桌面环境下使用 ssh，复用 gnome-keyring 即可
-if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
+mpl_sshagent() {
 
-    # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
-    # 如果有时候没有启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh 会导致无法读取ssh代理的密钥
-    # 干脆手工指定 https://blog.csdn.net/asdfgh0077/article/details/104121479
-    $(pgrep gnome-keyring >/dev/null 2>&1) || eval `gnome-keyring-daemon --start >/dev/null 2>&1`
+    test -d "$HOME/.ssh" || return
 
-    # 给 ssh 密钥代理 ssh-agent 设置变量指向 gnome-keyring-daemon
-    export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
-    export SSH_AGENT_PID="$(pgrep gnome-keyring)"
+    # GNOME 桌面环境下使用 ssh，复用 gnome-keyring 即可
+    if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
 
-# Windows git bash(mintty) 环境利用 ssh-pageant 连接到 putty 的 pagent.exe 进程，复用其缓存的密钥
-# 来自章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
-elif [[ $os_type = 'windows' ]]; then
+        # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
+        # 如果有时候没有启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh 会导致无法读取ssh代理的密钥
+        # 干脆手工指定 https://blog.csdn.net/asdfgh0077/article/details/104121479
+        $(pgrep gnome-keyring >/dev/null 2>&1) || eval `gnome-keyring-daemon --start >/dev/null 2>&1`
 
-    if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
-        # agent未运行视作开机后第一次打开bash会话，先清理掉 ssh-pageant 上次使用过的临时文件，否则会被加载
-        rm -f /tmp/.ssh-pageant-$USERNAME
+        # 给 ssh 密钥代理 ssh-agent 设置变量指向 gnome-keyring-daemon
+        export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
+        export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
-        # 稍带运行个 gpg 钥匙圈更新
+    # Windows git bash(mintty) 环境利用 ssh-pageant 连接到 putty 的 pagent.exe 进程，复用其缓存的密钥
+    # 来自章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
+    elif [[ $os_type = 'windows' ]]; then
+
+        if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
+            # agent未运行视作开机后第一次打开bash会话，先清理掉 ssh-pageant 上次使用过的临时文件，否则会被加载
+            rm -f /tmp/.ssh-pageant-$USERNAME
+
+            # 稍带运行个 gpg 钥匙圈更新
+            echo ''
+            # echo "update gpg keyrings, wait a second..."
+            # gpg --refresh-keys
+            echo "GPG update TrustDB,跳过 owner-trust 未定义的导入公钥..."
+            gpg --check-trustdb
+            echo ''
+            echo "GPG check sigs..."
+            gpg --check-sigs
+        fi
+
         echo ''
-        # echo "update gpg keyrings, wait a second..."
-        # gpg --refresh-keys
-        echo "GPG update TrustDB,跳过 owner-trust 未定义的导入公钥..."
-        gpg --check-trustdb
-        echo ''
-        echo "GPG check sigs..."
-        gpg --check-sigs
+        # ssh-pageant 使用以下参数来判断是否有已经运行的进程，不会多次运行自己
+        eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
+        ssh-add -l
+
+    # 默认是 Linux tty 命令行环境，这个设置最通用
+    else
+
+        # 代码来源 git bash auto ssh-agent
+        # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
+        #
+        # You can run ssh-agent automatically when you open bash or Git shell.
+        # Copy the following lines and paste them into one of your
+        #    ~/.bash_profile
+        #    ~/.profile
+        #    ~/.bashrc
+        # 说明：当你打开一个 bash 会话，自动调用 ssh-add 加载你的密钥
+        # 如果 ssh-agent 进程没启动，自动调用起来，若已经启动则复用已有的 ssh-agent 进程实例。
+        # 如果退出了当前 bash 会话，再次开启一个bash会话，也不会多次启动 ssh-agent 进程，
+        # 会始终保持当前系统只运行一个ssh-agent进程。
+        # 为提高使用安全性，在不使用 ssh-agent 的时候，从操作系统进程中找到该进程手工杀掉即可。
+
+        agent_env=~/.ssh/agent.env
+
+        agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
+
+        agent_load_env
+
+        # 加载 ssh-agent 需要用户手工输入密钥的保护密码
+        # 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
+        agent_start () { test -d "$HOME/.ssh" && (umask 077; ssh-agent >| "$agent_env") && source "$agent_env" >| /dev/null ; }
+
+        # agent_run_state:
+        #   0=agent running w/ key;
+        #   1=agent w/o key;
+        #   2=agent not running
+        agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
+
+        if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
+            # agent未运行视作开机后第一次打开bash会话
+
+            # 稍带运行个 gpg 钥匙圈更新
+            echo ''
+            # echo "更新gpg钥匙圈需要点时间，请稍等..."
+            # gpg --refresh-keys
+            echo "GPG update TrustDB, 跳过 owner-trust 未定义的导入公钥..."
+            gpg --check-trustdb
+            echo ''
+            echo "GPG check sigs..."
+            gpg --check-sigs
+
+            echo && echo "Start ssh-agent..."
+            agent_start
+
+            echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
+            ssh-add
+
+        elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
+            # ssh-agent正在运行，但是没有加载过密钥
+            echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
+            ssh-add
+        fi
+
+        unset agent_run_state
+        unset agent_env
     fi
-
-    echo ''
-    # ssh-pageant 使用以下参数来判断是否有已经运行的进程，不会多次运行自己
-    eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
-    ssh-add -l
-
-# 默认是 Linux tty 命令行环境，这个设置最通用
-else
-
-    # 代码来源 git bash auto ssh-agent
-    # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
-    #
-    # You can run ssh-agent automatically when you open bash or Git shell.
-    # Copy the following lines and paste them into one of your
-    #    ~/.bash_profile
-    #    ~/.profile
-    #    ~/.bashrc
-    # 说明：当你打开一个 bash 会话，自动调用 ssh-add 加载你的密钥
-    # 如果 ssh-agent 进程没启动，自动调用起来，若已经启动则复用已有的 ssh-agent 进程实例。
-    # 如果退出了当前 bash 会话，再次开启一个bash会话，也不会多次启动 ssh-agent 进程，
-    # 会始终保持当前系统只运行一个ssh-agent进程。
-    # 为提高使用安全性，在不使用 ssh-agent 的时候，从操作系统进程中找到该进程手工杀掉即可。
-
-    agent_env=~/.ssh/agent.env
-
-    agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
-
-    agent_load_env
-
-    # 加载 ssh-agent 需要用户手工输入密钥的保护密码
-    # 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
-    agent_start () { test -d "$HOME/.ssh" && (umask 077; ssh-agent >| "$agent_env") && source "$agent_env" >| /dev/null ; }
-
-    # agent_run_state:
-    #   0=agent running w/ key;
-    #   1=agent w/o key;
-    #   2=agent not running
-    agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
-
-    if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
-        # agent未运行视作开机后第一次打开bash会话
-
-        # 稍带运行个 gpg 钥匙圈更新
-        echo ''
-        # echo "更新gpg钥匙圈需要点时间，请稍等..."
-        # gpg --refresh-keys
-        echo "GPG update TrustDB, 跳过 owner-trust 未定义的导入公钥..."
-        gpg --check-trustdb
-        echo ''
-        echo "GPG check sigs..."
-        gpg --check-sigs
-
-        echo && echo "Start ssh-agent..."
-        agent_start
-
-        echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
-        ssh-add
-
-    elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
-        # ssh-agent正在运行，但是没有加载过密钥
-        echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
-        ssh-add
-    fi
-
-    unset agent_run_state
-    unset agent_env
-fi
+}
+mpl_sshagent
 
 ####################################################################
 # Bash：加载插件或小工具
@@ -944,6 +950,10 @@ if [[ $current_shell = 'zsh' ]]; then
 elif [[ $os_type = 'windows' ]]; then
     # Windows git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
     PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
+
+elif [[ $os_type = 'wsl' ]]; then
+    # Windows git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
+    PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@WSL_\$(PS1_host_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
 
 elif  [[ $os_type = 'raspi' ]]; then
     # 本机登录后禁用屏幕休眠 https://zhuanlan.zhihu.com/p/114716305
