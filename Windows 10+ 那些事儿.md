@@ -3400,15 +3400,15 @@ wsl 显示 WSL 实例的用户目录，在 Linux 下访问的路径
     C:\ProgramData> wsl cd $HOME;pwd
     /home/your_user
 
-虽然 wsl 下可以同时使用 Linux 的文件系统和 Windows 的文件系统，但是
+虽然在 wsl 下可以同时使用 Linux 的文件系统和 Windows 的文件系统，但是：
 
-    https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems
+    NOTE: 尽量不要跨操作系统使用文件，因为 WSL 2 对跨操作系统的文件的 IO 效率低。
 
-NOTE: 尽量不要跨操作系统使用文件，因为 WSL 2 对跨操作系统的文件的 IO 效率低。
+        https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems
 
 比如在 wsl 下存储文件时，尽量不使用 Windows 的文件系统：
 
-    $ touch /mnt/c/Users/<user name>/Project$ 或 C:\Users\<user name>\Project
+    $ touch /mnt/c/Users/<user name>/Project$   # 对应 Windows 下 C:\Users\<user name>\Project
 
 而是使用 wsl 实例自己的文件系统：
 
@@ -3416,7 +3416,7 @@ NOTE: 尽量不要跨操作系统使用文件，因为 WSL 2 对跨操作系统�
 
 概况起来就一句话：
 
-    wsl 下读写 Windows 文件系统，只限小量文件临时用用，复杂的项目文件等最好在单独的存储上单独挂载使用。
+    wsl 下读写 Windows 文件系统，只限小量文件临时用用，复杂的项目文件、大文件还是在各自操作系统下单独挂载使用。
 
 ###### plocate 避坑
 
@@ -3454,9 +3454,9 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
 
     Windows 操作系统自带的 `mount` 命令，只支持 2010 年的 nfs v3 版本
 
-变通的方法，在 wsl 实例中使用 Linux 自带的支持 nfs v4 版本的 `mount` 命令挂载远程 nfs 文件系统，然后在 Windows 资源管理器映射网络驱动器到 wsl 实例的路径使用：
+变通的方法，在 wsl 实例中操作，使用 Linux 自带的 `mount` 命令挂载远程 nfs 文件系统，然后在 Windows 资源管理器映射网络驱动器到 wsl 实例的路径使用：
 
-    2025.4 在 Windows 11 里的效果，大数据量拷贝，对链接文件处理不了，提示文件覆盖还是改名，如果选择改名会重复循环无穷尽的复制，没再试覆盖，估计会无穷尽的覆盖。下次试试选择“跳过”。
+    2025.4 我在 Windows 11 里大数据量拷贝，从 \\wsl$\ubuntu\mnt\nfs 到 Windows 本地驱动器，对链接文件处理不了，提示文件覆盖还是改名，如果选择改名会重复循环无穷尽的复制，我没再试选择覆盖会怎样，估计会无穷尽的覆盖。下次试试选择“跳过”。
 
 1、主机 cmd 或 power shell 等终端下，获取当前 wsl 发行版的名称：
 
@@ -3477,7 +3477,7 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
 
     修改 nfs 服务器设置，给你的导出目录增加选项 insecure
 
-原因见章节 [Window 下的 NFS 客户端](init_a_server.md think)。
+原因见章节 [Window 下的 NFS 客户端](init_a_server.md think)，看来 wsl 里使用的 Linux 发行版还是微软特色版，细节上跟普通的 Linux 发行版有差异。
 
 3、打开 Windows 资源管理器，添加一个网络位置或映射网络驱动器，填写 wsl 中的路径：
 
