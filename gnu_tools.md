@@ -50,6 +50,16 @@ Windows C++ 开发环境配置
 
     库 toft + chrome + leveldb + folly + zeromq
 
+#### 各框架对Windows本地资源的访问方式不同
+
+虽然都是使用 mintty.exe 作为本地终端模拟器，但各框架对 Windows 目录 C:\> 的解释不同，shell操作的位置不一样
+
+    Cygwin  /cygdrive/c
+
+    MSYS2   /c
+
+    wsl     /mnt/c
+
 #### MGW 和 Cygwin 的实现思路
 
 MingW 在编译时对二进制代码转译
@@ -105,8 +115,8 @@ Cygwin 在编译时中间加了个翻译层 cygwin1.dll
 
 MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接口协议是 win32，异常处理模型是 seh，Build revision 是 1 。
 
-简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了Mingw64。
-比如 CodeLite，CodeBlocks，Eclipse CDT，Apache NetBeans（JDK 8）。
+简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了Mingw64。比如 CodeLite，CodeBlocks，Eclipse CDT，Apache NetBeans（JDK 8）。
+
 收费的有JetBrains Clion，AppCode （mac）。
 
 #### MSYS、MSYS2
@@ -192,15 +202,13 @@ WSLg（Windows Subsystem for Linux GUI） 是微软官方提供的功能，允�
 
 ## Windows字符终端
 
-终端概念参见章节 [Linux 字符终端]。
-
-Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安装支持多种符号的字体，见章节 [Nerd Font]。
-
 Windows 10（2018年之前的版本）之前的所有 Windows 版本自带的所谓 CMD 终端不同于 Linux 的伪终端机制：
 
     终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost。
 
     conhost 实现机制跟 Linux 伪终端不同，一个是调用 Windows API，一个是发送文本字符作为显示效果的控制，所以按照 Linux 终端原理工作的终端模拟器及各种终端应用程序其实无法连接 conhost。
+
+    终端概念参见章节 [Linux 字符终端]。
 
 直到 Msys2 项目，基于 putty 制作了 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。详见章节 [mintty 终端模拟器]。
 
@@ -223,6 +231,8 @@ Windows 10（2018年之前的版本）之前的所有 Windows 版本自带的所
 
         wslbridge2 https://github.com/Biswa96/wslbridge2
             wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
+
+Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安装支持多种符号的字体，见章节 [Nerd Font]。
 
 ### putty 终端模拟器
 

@@ -3444,7 +3444,7 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
 
     \\wsl$\<wsl实例名>\your\directory
 
-然后就可以在 Windows 下读写这个网络驱动器里的文件或目录了
+在资源管理器里就可以打开这个网络驱动器里的文件或目录使用了，读写都可以
 
     \\wsl$\ubuntu\home\<user name>\Project
 
