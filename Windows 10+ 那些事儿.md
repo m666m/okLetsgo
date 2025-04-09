@@ -555,15 +555,25 @@ Windows 商店应用默认不提供卸载选项，解决办法见章节 [删除�
 
 ### 选择开启虚拟化功能
 
-日常的使用习惯，应该**[在虚拟机里使用你的日常软件]** 。
+开启虚拟化功能的重要性：
 
-只要不涉及章节 [开启 hyper-v 的负面影响]，强烈建议开启虚拟化功能。
+    日常的使用习惯，应该**[在虚拟机里使用你的日常软件]** 。
 
-Windows 系统安全在向虚拟化方面加强，所以本章跟下面的 [设置Windows安全中心] 并列。
+    只要不涉及章节 [开启 hyper-v 的负面影响]，强烈建议开启虚拟化功能。
+
+    Windows 系统安全在向虚拟化方面加强，所以本章跟下面的 [设置Windows安全中心] 并列。
+
+1、计算机主板开启虚拟化功能
 
 如果主板 BIOS 设置中关于 Intel CPU 虚拟化选项如 vt-d、hyper-threading 的设置没有打开，则可能有些依赖虚拟机的隔离浏览的选项不可用，需要去主板 BIOS 设置中打开。
 
-Windows 10 默认的虚拟化功能开放的较少，增强功能需要手动安装：设置->应用->应用和功能->可选功能，点击右侧的“更多 Windows 功能”，弹出窗口选择“启用和关闭 Windows 功能”：
+2、操作系统开启虚拟化功能，需要单独安装
+
+Windows 10：Windows 设置->应用->应用和功能，点击右上角的“程序和功能”，在弹出窗口选择 “启用或关闭 Windows 功能”，在列表勾选如下组件确定即可安装。
+
+Windows 11：Windows 设置—系统—可选功能，页面下面 “更多windows功能”，点击即弹出窗口“启用或关闭 Windows 功能”，在列表勾选如下组件确定即可安装。
+
+选择安装如下组件：
 
     Hyper-V (Windows Hypervisor) --- 微软的 Hyper-V 虚拟机及其管理工具
 
@@ -3013,21 +3023,21 @@ WSL 属于运行在操作系统上的托管的虚拟机，用户体验上注重�
 
 利用 [Windows 10 本地化 Linux 编程接口](gnu_tools.md)，WSL 初始实现的是最基本的命令行应用，各种终端模拟器都可以连接到本地的 WSL 实例，后来利用 WSLg 支持运行图形化应用。
 
-Windows 10 在 2021 年后的版本更新中集成的 WSL 2 使用更方便，简单开发使用 WSL2 即可。
+Windows 10 在 2021 年后的版本更新中集成的 WSL 2 使用更方便，原来的 WSL 改名为 WSL 1，基本是被废弃了。
 
     https://learn.microsoft.com/zh-cn/windows/wsl/about
 
     https://zhuanlan.zhihu.com/p/377263437
 
-WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 Linux，但是实现了 Linux 程序可以在 Windows 上运行，但是有些功能如 GUI 实现的有限。可以理解成使用了 MingW/Cygwin 的中间模拟层思路，但不在编译时实现，而是 QEMU 这种运行时转码的实现思路。后来发现坑太大填不满，就搞了个新思路 --- WSL2
+    WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 Linux，但是实现了 Linux 程序可以在 Windows 上运行，但是有些功能如 GUI 实现的有限。可以理解成使用了 MingW/Cygwin 的中间模拟层思路，但不在编译时实现，而是 QEMU 这种运行时转码的实现思路。后来发现坑太大填不满，就搞了个新思路 --- WSL2
 
-    https://learn.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility
+        https://learn.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility
 
-    话说纳德拉领导的微软这个转型是真好，再不搞什么系千钧于一发的大工程，各功能各自演进，渐进式迭代开发再不玩什么大而全齐头并进。像这个 WSL 其实搞砸了，但没再现当年 Windows LongHorn 式的重大失败，而是另起炉灶开搞 WSL 2，原 WSL 改名叫 WSL 1 保持兼容就完事了，对 Windows 10 的其它体系开发没有任何大影响。
+        话说纳德拉领导的微软这个转型是真好，再不搞什么系千钧于一发的大工程，各功能各自演进，渐进式迭代开发再不玩什么大而全齐头并进。像这个 WSL 其实搞砸了，但没再现当年 Windows LongHorn 式的重大失败，而是另起炉灶开搞 WSL 2，原 WSL 改名叫 WSL 1 保持兼容就完事了，对 Windows 10 的其它体系开发没有任何大影响。
 
-WSL 2 在底层使用虚拟机（Hyper-V）同时运行 Linux 内核和 Windows 内核，并且把 Linux 完全集成到了 Windows 中，使用起来就像在 Windows 中直接运行 Linux 程序。
+    WSL 2 在底层使用虚拟机（Hyper-V）同时运行 Linux 内核和 Windows 内核，并且把 Linux 完全集成到了 Windows 中，使用起来就像在 Windows 中直接运行 Linux 程序。
 
-WSL 2 的兼容性比 WSL 1 好，仅 IO 性能不如 WSL 1 快，见下面章节 [混合使用 Windows 和 Linux 进行工作]。
+    WSL 2 的兼容性比 WSL 1 好，仅 IO 性能不如 WSL 1 快，见下面章节 [混合使用 Windows 和 Linux 进行工作]。
 
 以下讨论 WSL 术语除非特别指出，默认就是 WSL 2。
 
@@ -3045,20 +3055,24 @@ WSL 2 的兼容性比 WSL 1 好，仅 IO 性能不如 WSL 1 快，见下面章�
 
         https://documentation.ubuntu.com/wsl/en/stable/howto/install-ubuntu-wsl2/#method-1-microsoft-store-application
 
-安装 WSL 2
+安装 WSL
 
-    计算机需要虚拟化功能，如何开启虚拟化功能参见章节 [选择开启虚拟化功能]
+1、先开启虚拟化功能，见章节 [选择开启虚拟化功能]
 
-    主机的 Windows 操作系统设置中，必须添加 “虚拟机平台” 可选功能。
+2、默认安装的 Linux 发行版是 Ubuntu
 
-        Windows 设置->应用和功能，点击右侧的“程序和功能”，弹出窗口选择“启用或关闭 Windows 功能”，在列表勾选“适用于 Linux 的 Windows 子系统”，确定。
-
-默认安装的 Linux 发行版是 Ubuntu，管理员权限打开 PowerShell 或 Windows Command Prompt，运行以下命令：
+管理员权限打开 PowerShell 或 Windows Command Prompt，运行以下命令：
 
     # WSL 安装发行版，默认 ubuntu，所以不需要加参数指定 -d Ubuntu
     C:\> wsl --install
 
     C:\> wsl --set-version 2  # 确保使用 WSL 2
+
+3、下次再运行 `wsl` 命令，就自动进入你安装的 wsl 实例的命令行了。
+
+`wsl` 命令用法见章节 [使用命令行连接到你的 WSL 实例]。
+
+可选安装其它 Linux 发行版：
 
 WSL 下安装的 Linux 发行版比如 Ubuntu，其实是微软发布的适用于 WSL 的基于 glibc 的 Linux 版本，在 Windows 下对 Linux 提供了完全的二进制兼容，Ubuntu 等官方发布的发行版是无法直接使用的
 
@@ -3286,7 +3300,9 @@ Windows 11 下彻底打通了，不需要做任何设置，在 Windows 命令提
 
     点击保存即可生效
 
-使用时新建选项卡选择 wsl 环境，就自动进入了你本机的 wsl 了。我现在把 .ssh .gnupg 目录都挪到 wsl 里了，用 vs code 编辑项目文件，非常方便。
+使用时新建选项卡选择 wsl 环境，就自动进入了你本机的 wsl 了。
+
+用 vs code 点击左下角的 "><" 打开远程连接按钮，选择 “连接到 WSL”，即可操作其中的项目文件夹了，使用非常方便。把 .ssh .gnupg 目录都挪到 wsl 里，操作 github 项目也没问题。
 
 ##### wsl 命令的用法
 
