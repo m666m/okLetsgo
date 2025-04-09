@@ -3330,31 +3330,33 @@ Windows 11 下彻底打通了，不需要做任何设置，在 Windows 命令提
 
     C:\> wsl
 
-下面的内容过时了：
+##### 其它连接 WSL 的工具
 
-    配置 WSL 环境
+以下内容过时了，保留仅供参考。
 
-        https://github.com/hsab/WSL-config
+配置 WSL 环境
 
-    PowerShell 通过函数包装器，实现在 Windows 命令行使用 Linux 命令，实质是指向了 WSL 虚拟机去执行
+    https://github.com/hsab/WSL-config
 
-        https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/
+PowerShell 通过函数包装器，实现在 Windows 命令行使用 Linux 命令，实质是指向了 WSL 虚拟机去执行
 
-    其它连接 WSL 的工具
+    https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/
 
-        mintty 支持连接 WSL
+其它连接 WSL 的工具
 
-            # https://github.com/mintty/mintty/wiki/Tips#supporting-linuxposix-subsystems
-            # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin 下安装了 wslbridge2
-            mintty --WSL=Ubuntu
+    mintty 支持连接 WSL
 
-        独立的 WSLtty，调用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用 WSL 会话
+        # https://github.com/mintty/mintty/wiki/Tips#supporting-linuxposix-subsystems
+        # mintty 直接使用WSL会话，需要 MSYS2 环境的 /bin 下安装了 wslbridge2
+        mintty --WSL=Ubuntu
 
-            https://github.com/mintty/wsltty
+    独立的 WSLtty，调用 Windows ConPty 接口开发的 mintty，通过 wslbridge 实现调用 WSL 会话
 
-        ConPtyShell 使用 Windows ConPty 接口利用 PowerShell 实现的 WSL 本地终端
+        https://github.com/mintty/wsltty
 
-            https://github.com/antonioCoco/ConPtyShell
+    ConPtyShell 使用 Windows ConPty 接口利用 PowerShell 实现的 WSL 本地终端
+
+        https://github.com/antonioCoco/ConPtyShell
 
 #### 混合使用 Windows 和 Linux 进行工作
 
