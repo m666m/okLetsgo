@@ -1338,7 +1338,9 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
 
 ##### 配置 Windows Terminal
 
-因为 Windows Terminal 有自己的主题，颜色方案背景等配置修改 setting.json。目前版本的 Windows Terminal 可以在用户界面选择设置，如选择背景图片、开启毛玻璃效果、开启复古的像素化终端效果等，下面的说明仅供参考。
+因为 Windows Terminal 有自己的主题，颜色方案背景等配置修改 setting.json。目前版本的 Windows Terminal 可以在用户界面选择设置，如选择背景图片、开启毛玻璃效果、开启复古的像素化终端效果等。
+
+复杂点的设置，需要手动修改配置文件，点击  Windows Terminal 窗口左下方的按钮 “打开json文件” 即可打开文本编辑，配置文件的位置一般在  %USERPROFILE%\AppData\Local\Microsoft\Windows Terminal。
 
 四部分：
 

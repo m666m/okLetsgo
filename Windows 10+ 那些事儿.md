@@ -3274,9 +3274,21 @@ WSL 下安装的 Linux 发行版比如 Ubuntu，其实是微软发布的适用�
 
 #### 使用命令行连接到你的 WSL 实例
 
-Windows 11 下彻底打通了，不需要做任何设置，在 Windows 命令提示符或 PowerShell 中，或任何其它命令行终端中，运行 `wsl` 就可以连接到本机 WSL 的默认实例启动 shell 并执行登录脚本。
+Windows 11 下彻底打通了，不需要做任何设置，在 Windows 命令提示符或 PowerShell 中，或任何其它命令行终端如 git bash(mintty) 中，运行 `wsl` 就可以连接到本机 WSL 的默认实例启动 shell 并执行登录脚本。
 
-wsl 命令的详细用法说明
+建议使用 [Windows Terminal](gnu_tools.md)，配置 wsl 环境使用：
+
+    新建配置文件，从现有的配置文件 "Command Prompt" 复制即可，这个原生Windows终端的刷屏速度是目前最快的
+
+    修改启动命令行： %SystemRoot%\System32\cmd.exe /c wsl --cd ~
+
+    其它可以设置字体、颜色等
+
+    点击保存即可生效
+
+使用时新建选项卡选择 wsl 环境，就自动进入了你本机的 wsl 了。我现在把 .ssh .gnupg 目录都挪到 wsl 里了，用 vs code 编辑项目文件，非常方便。
+
+##### wsl 命令的用法
 
     C:\> wsl --help
 
@@ -3318,7 +3330,7 @@ wsl 命令的详细用法说明
 
     C:\> wsl
 
-下面的内容可能过时了：
+下面的内容过时了：
 
     配置 WSL 环境
 
