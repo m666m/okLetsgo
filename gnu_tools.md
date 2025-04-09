@@ -1410,6 +1410,8 @@ schemes 段设置配色方案，同样是一个数组，每种配色方案会有
 
 自定义 nord 方案，来自章节 [配色方案：整套支持终端模拟器和命令行软件的主题]的三种模式
 
+    https://compiledexperience.com/blog/posts/windows-terminal-nord
+
 ```json
 
     "schemes": [
