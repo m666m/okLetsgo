@@ -3478,6 +3478,8 @@ NOTE: WSL 跟网络相关的功能都不稳定
 
     我的主机是无线连接，在 wsl 下 sftp 传输个 10GB 的 tar 包总是中断，cp -r 拷贝大批量文件到远程 nfs 各种卡住（断连了），最后用 u 盘解决的。。。
 
+    在 wsl 里连接外网也经常不稳定
+
 使用映射网络地址的方式
 
     \\wsl$\<wsl实例名>\your\directory
@@ -3533,17 +3535,35 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
 
     https://www.cnblogs.com/netWild/p/18503950
 
-默认情况下，WSL 使用基于 NAT 的体系结构，与宿主机处于不同的网段，这导致 WSL 无法直接访问 Windows 的内网。要将 WSL 接入局域网,并与宿主机位于同一网段内，比较麻烦
+默认情况下，WSL 使用基于 NAT 的体系结构，与宿主机处于不同的网段。
+
+在 Windows 10 18945 的改进是可以使用localhost, 访问 WSL 的网络服务
+
+    C:\> wsl
+
+    $ python3 -m http.server
+    Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+
+    本机打开浏览器访问 http:\\localhost:8000 即可
+
+这导致 WSL 无法直接访问 Windows 的内网。要将 WSL 接入局域网,并与宿主机位于同一网段内，实现局域网的其他主机上直接访问 WSL，比较麻烦
 
     https://blog.csdn.net/song19891121/article/details/138304972
+    https://zhuanlan.zhihu.com/p/425312804
 
     将 WSL 的网络模式设置为 bridge，分配给 WSL 的静态 IP 地址
 
     配置 WSL 内部的网络设置，给内部网卡分配静态地址和路由到 Windows 主机在局域网中的 IP 地址，并把 /etc/resolv.conf 指向 Windows 主机在局域网中的 IP 地址
 
-该方式微软实现的并不稳定，一个不高兴都能自动变回 NAT 模式，好像 WSL 跟网络相关的功能都不稳定。
+Windows 11+ 的 WSL 引入了镜像模式网络
 
-Windows 11+ 的 WSL 引入了镜像模式网络。启用镜像网络后，WSL 和 Windows 主机将使用相同的网络，并且可以通过 localhost 访问本机系统上的服务。实现在 WSL2 中访问本机系统上运行的应用程序，以及通过本机系统访问在 WSL2 中运行的应用程序：
+    https://learn.microsoft.com/zh-cn/windows/wsl/networking#mirrored-mode-networking
+
+启用镜像网络后，WSL 和 Windows 主机将使用相同的网络，并且可以通过 localhost 访问本机系统上的服务。实现在 WSL2 中访问本机系统上运行的应用程序，以及通过本机系统访问在 WSL2 中运行的应用程序。
+
+    NOTE: 该方式微软实现的并不稳定，一个不高兴都能自动变回 NAT 模式，好像 WSL 跟网络相关的功能都不稳定。
+
+目前实现的功能：
 
     IPv6 支持
     使用 localhost 地址 127.0.0.1 从 Linux 内部连接到 Windows 服务器。 不支持 IPv6 localhost 地址 ::1
