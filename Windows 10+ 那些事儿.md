@@ -3470,6 +3470,14 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
 
 ##### 在 Windows 下使用 wsl 实例里的文件或目录
 
+NOTE: WSL 跟网络相关的功能都不稳定
+
+    只传输小文本文件，可以肉眼发现文本有乱码的那种文本文件
+
+    可以用来看视频，不在乎网络质量
+
+    我的主机是无线连接，在 wsl 下 sftp 传输个 10GB 的 tar 包总是中断，cp -r 拷贝大批量文件到远程 nfs 各种卡住（断连了），最后用 u 盘解决的。。。
+
 使用映射网络地址的方式
 
     \\wsl$\<wsl实例名>\your\directory
@@ -3480,20 +3488,17 @@ Fedora 系内置了该软件，但每日凌晨 `updatedb` 扫描宿主机硬盘�
 
 ###### Windows 资源管理器通过 WSL 使用远程 nfs 文件系统
 
+    2025.4 我在 Windows 11 里大数据量拷贝，从 \\wsl$\ubuntu\mnt\nfs 到 Windows 本地驱动器，对链接文件处理不了，提示文件覆盖还是改名，如果选择改名会重复循环无穷尽的复制，我没再试选择覆盖会怎样，估计会无穷尽的覆盖。选择“跳过”，舍弃该链接文件就 ok 了。
+
+    2025.4 我在无线连接的计算机上拷贝大数据量文件到远程 NFS，总是卡住，其实是断连了
+
 nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文件系统，但是：
 
     Windows 操作系统自带的 `mount` 命令，只支持 2010 年的 nfs v3 版本
 
 变通的方法，在 wsl 实例中操作，使用 Linux 自带的 `mount` 命令挂载远程 nfs 文件系统，然后在 Windows 资源管理器映射网络驱动器到 wsl 实例的路径使用：
 
-    2025.4 我在 Windows 11 里大数据量拷贝，从 \\wsl$\ubuntu\mnt\nfs 到 Windows 本地驱动器，对链接文件处理不了，提示文件覆盖还是改名，如果选择改名会重复循环无穷尽的复制，我没再试选择覆盖会怎样，估计会无穷尽的覆盖。下次试试选择“跳过”。
-
-1、主机 cmd 或 power shell 等终端下，获取当前 wsl 发行版的名称：
-
-    C:\> wsl -l -v
-    Ubuntu
-
-2、进入 wsl 实例，挂载远程 nfs 路径 192.168.0.22:/remote/resource 到指定的本地目录 /mnt/22_nfs
+1、进入 wsl 实例，挂载远程 nfs 路径 192.168.0.22:/remote/resource 到指定的本地目录 /mnt/22_nfs
 
     C:\> wsl
 
@@ -3509,13 +3514,78 @@ nfs 文件系统比较特殊，虽然 Windows 原生支持挂载远程 nfs 文�
 
 原因见章节 [Window 下的 NFS 客户端](init_a_server.md think)，看来 wsl 里使用的 Linux 发行版还是微软特色版，细节上跟普通的 Linux 发行版有差异。
 
+2、在主机 cmd 或 power shell 等终端下，获取当前 wsl 发行版的名称：
+
+        C:\> wsl -l -v
+        Ubuntu
+
 3、打开 Windows 资源管理器，添加一个网络位置或映射网络驱动器，填写 wsl 中的路径：
 
     \\wsl$\Ubuntu\mnt\22_nfs
 
-    其中 Ubuntu 是前面获取当前 wsl 发行版的名称。
-
 然后在 Windows 资源管理器中就可以像访问本地硬盘一样访问远程服务器上的 nfs 文件系统的内容了。
+
+##### WSL 访问 Windows 的内网
+
+别给自己找麻烦，虚拟机装个 Linux 用得了
+
+    https://learn.microsoft.com/zh-cn/windows/wsl/networking
+
+    https://www.cnblogs.com/netWild/p/18503950
+
+默认情况下，WSL 使用基于 NAT 的体系结构，与宿主机处于不同的网段，这导致 WSL 无法直接访问 Windows 的内网。要将 WSL 接入局域网,并与宿主机位于同一网段内，比较麻烦
+
+    https://blog.csdn.net/song19891121/article/details/138304972
+
+    将 WSL 的网络模式设置为 bridge，分配给 WSL 的静态 IP 地址
+
+    配置 WSL 内部的网络设置，给内部网卡分配静态地址和路由到 Windows 主机在局域网中的 IP 地址，并把 /etc/resolv.conf 指向 Windows 主机在局域网中的 IP 地址
+
+该方式微软实现的并不稳定，一个不高兴都能自动变回 NAT 模式，好像 WSL 跟网络相关的功能都不稳定。
+
+Windows 11+ 的 WSL 引入了镜像模式网络。启用镜像网络后，WSL 和 Windows 主机将使用相同的网络，并且可以通过 localhost 访问本机系统上的服务。实现在 WSL2 中访问本机系统上运行的应用程序，以及通过本机系统访问在 WSL2 中运行的应用程序：
+
+    IPv6 支持
+    使用 localhost 地址 127.0.0.1 从 Linux 内部连接到 Windows 服务器。 不支持 IPv6 localhost 地址 ::1
+    改进了 VPN 的网络兼容性
+    多播支持
+    直接从局域网 (LAN) 连接到 WSL
+
+配置
+
+在Windows的资源管理器的地址栏输入： %UserProfile% ，即可打开当前用户的主目录，创建文件： .wslconfig
+
+```ini
+[wsl2]
+memory=4GB                        # 分配给 WSL 2 的内存大小
+processors=2                      # 分配给 WSL 2 的 CPU 核心数
+localhostForwarding=true          # 是否启用 localhost 转发
+
+[experimental]
+autoMemoryReclaim=gradual         # 开启自动回收内存，可在 gradual, dropcache, disabled 之间选择
+networkingMode=mirrored           # 开启镜像网络
+dnsTunneling=true                 # 开启 DNS Tunneling
+firewall=true                     # 开启 Windows 防火墙
+autoProxy=true                    # 开启自动同步代理
+sparseVhd=true                    # 开启自动释放 WSL2 虚拟硬盘空间
+
+```
+
+重启 WSL，管理员身份运行 PowerShell：
+
+    wsl --shutdown
+
+    wsl
+
+之后就可以在 wsl 中使用 localhost 的方式来访问宿主机上的服务了。
+
+    curl http://localhost
+
+宿主机访问 wsl服务需要配置 Hyper-V 防火墙设置，从而允许入站连接，使用管理员权限在 PowerShell 窗口中运行以下命令
+
+    Set-NetFirewallHyperVVMSetting -Name '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}' -DefaultInboundAction Allow
+
+    或 New-NetFirewallHyperVRule -Name "MyWebServer" -DisplayName "My Web Server" -Direction Inbound -VMCreatorId '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}' -Protocol TCP -LocalPorts 80。
 
 ##### 图形化 GUI 应用的混合使用
 
