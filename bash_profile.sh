@@ -651,7 +651,7 @@ fi
 
 # ssh 命令后面按tab键自动补全 hostname，zsh 自带不需要
 if [[ ! $current_shell = 'zsh' ]]; then
-    [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ' | grep -v \* ) $(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh
+    [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ' | grep -v \*) $(cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\[" | grep -v \|1\|)" ssh
 fi
 
 # ackg 只适用于 Linux 类
