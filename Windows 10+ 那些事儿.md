@@ -2294,6 +2294,8 @@ Hyper-V的“增强会话”功能是一项强大的技术，它极大地提升�
 
     https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/best-practices-for-running-linux-on-hyper-v
 
+    https://documentation.ubuntu.com/server/how-to/virtualisation/ubuntu-on-hyper-v/index.html
+
 Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
 
     https://learn.microsoft.com/en-gb/windows-server/virtualization/hyper-v/Supported-Linux-and-FreeBSD-virtual-machines-for-Hyper-V-on-Windows
@@ -2311,8 +2313,6 @@ Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
     https://github.com/microsoft/linux-vm-tools
         https://yanqiyu.info/2020/08/22/enhanced-hyperv-for-fedora/
 
-只能自己解决：客户机安装 xrdp 并进行一些设置，即可开通对 Hyper-V 的增强会话模式的支持。
-
     Fedora 下的自动脚本
 
         https://github.com/secana/EnhancedSessionMode
@@ -2322,6 +2322,9 @@ Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
     Ubuntu下的自动脚本
 
         https://github.com/Hinara/linux-vm-tools/blob/master/ubuntu/24.04/install.sh
+            https://www.nakivo.com/blog/install-ubuntu-20-04-on-hyper-v-with-enhanced-session/
+
+只能自己解决：客户机安装 xrdp 并进行一些设置，即可开通对 Hyper-V 的增强会话模式的支持。
 
 下面以 Fedora 为例，手工操作：
 
@@ -3034,7 +3037,7 @@ Windows 10 在 2021 年后的版本更新中集成的 WSL 2 使用更方便，�
 
         https://learn.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility
 
-        话说纳德拉领导的微软这个转型是真好，再不搞什么系千钧于一发的大工程，各功能各自演进，渐进式迭代开发再不玩什么大而全齐头并进。像这个 WSL 其实搞砸了，但没再现当年 Windows LongHorn 式的重大失败，而是另起炉灶开搞 WSL 2，原 WSL 改名叫 WSL 1 保持兼容就完事了，对 Windows 10 的其它体系开发没有任何大影响。
+        话说纳德拉领导的微软这个转型是真好，再不搞什么系千钧于一发的大工程，各功能各自演进，渐进式迭代开发 no 大而全 no 齐头并进。像这个 WSL 其实搞砸了，但没再现当年 Windows LongHorn 式的重大失败，而是另起炉灶开搞 WSL 2，原 WSL 改名叫 WSL 1 保持兼容就完事了，对 Windows 10 的其它体系开发没有任何大影响。
 
     WSL 2 在底层使用虚拟机（Hyper-V）同时运行 Linux 内核和 Windows 内核，并且把 Linux 完全集成到了 Windows 中，使用起来就像在 Windows 中直接运行 Linux 程序。
 
@@ -3078,6 +3081,8 @@ Windows 10 在 2021 年后的版本更新中集成的 WSL 2 使用更方便，�
 WSL 下安装的 Linux 发行版比如 Ubuntu，其实是微软发布的适用于 WSL 的基于 glibc 的 Linux 版本，在 Windows 下对 Linux 提供了完全的二进制兼容，Ubuntu 等官方发布的发行版是无法直接使用的
 
     https://docs.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-linux-kernel
+
+    https://github.com/WhitewaterFoundry/Fedora-Remix-for-WSL
 
 查看当前可用的版本：
 
