@@ -1111,79 +1111,9 @@ Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` �
 
 #### Supper Putty
 
-别用了：最新的版本调用 git bash，粘贴脚本文件内容，随机添加字符，在 tmux 下更频繁发生。
+别用了：最新的版本调用 git bash，粘贴脚本文件内容，随机添加字符，在 tmux 下发生的更频繁。
 
     https://github.com/jimradford/superputty
-
-本质上是给 putty 加了个多窗口的外壳，树形展示会话列表，方便管理和使用
-
-    支持嵌入其它的各种终端窗口: putty、mintty(bash)、cmd、powershell
-
-    只要安装了 git for Windows 和 putty 等软件即可直接配置使用，不需要做复杂的设置
-
-    可一键导入 putty 站点
-
-    可设置关联 WinScp/FileZilla 等软件的快捷调用，右键点选站点方便调用
-
-    putty/mintty 显示兼容性和反应速度满分
-
-    调用 mintty 相比直接执行 git-bash ，环境变量 PATH 缺少 /mingw64/bin 等几个，导致我设置 ssh ProxyCommand 时提示找不到 connect，需要在登录脚本自行补充。
-
-    窗口切换有点问题，Windows 10+ 切换任务热键 alt+tab 要按两次才能切换成功
-
-初次使用前的设置
-
-    先设置 Supper Putty 使用的各工具路径
-
-        选择菜单项 Tools->Options:General，至少要给出 putty.exe 的路径。还可以给出 mintty.exe 的路径，只要安装了 git for Windows 一般在 C:\Program Files\Git\usr\bin\mintty.exe 。
-
-        其它的工具类似，配置好了后在站点列表处点击右键，可以方便调用 winscp、filezila、vnc 等工具。
-
-    导入 putty 的 session。
-
-        选择菜单项 File->Import Sessions->From Putty Settings，导入putty session。导入后，在窗口侧栏的树状选择列表，双击即会打开 putty 窗口登录该站点。
-
-设置自动登录 putty 的用户名
-
-    点击想导入的session，右键菜单选“Edit”，弹出窗口选择“Login username”。这样设置了以后，打开该站点不需要在 putty 的 session 里保存登录用户名了。
-
-    如果 putty 中该用户可以使用密钥登录，在这里也跟单独使用 putty 同样效果。
-
-    如果 pageant 代理程序在运行，在这里也跟单独使用 putty 同样效果。
-
-新建 mintty (git bash) 终端
-
-    快速连接工具栏，本地登录协议选择 “mintty”，主机地址“localhost”即可，然后回车，就出现登录窗口了。
-
-    或会话列表上点击右键，选择“New”，填写“Session Name”，把“Connection type”选“Mintty”，“HOST Name”设置为 “localhost”即可。
-
-    或编辑一个已导入的putty session，把“Connection type”选“Mintty”，“HOST Name”设置为 “localhost”即可。
-
-    如果需要mintty在调用bash登录的时候执行用户脚本，则需要编辑会话的高级设置：
-
-        注意选项 “Extra Arguments”
-
-            /bin/bash --login -i
-
-        因为最终要实现调用命令行如下：
-
-            "C:\Program Files (x86)\Git\bin\mintty.exe" /bin/bash --login -i
-
-    因为是窗体嵌套的 mintty，所以在 mintty 窗口里，它的右键菜单依然是可用的。
-
-    关于 mintty 的详细介绍，参见章节 [mintty 终端模拟器]。
-
-备份自己的站点设置
-
-    除了putty的站点，用户还可以自建 cmd/power shell/rdp 等多种协议的站点，保存站点设置很有必要。
-
-    保存站点设置
-
-        选择菜单项 File->Emport Sessions，会给出默认的当前目录下的 Sessions.XML 文件，点击确定即可。
-
-    恢复站点设置
-
-        选择菜单项 File->Import Sessions->From File，选择之前备份的 Sessions.XML 文件，点击确定即可。
 
 #### ConEmu 和 Cmder
 
