@@ -543,11 +543,11 @@ fi
 
 ####################################################################
 # Linux bash / Windows git bash(mintty)
-# 多会话复用 ssh 密钥代理
+# 命令行使用 ssh 多会话复用 ssh 密钥代理
 # 来自章节 [多会话复用 ssh-agent 进程](ssh.md think)
 if test -d "$HOME/.ssh"; then
 
-    # GNOME 桌面环境下使用 ssh，复用 gnome-keyring 即可
+    # GNOME 桌面环境下，利用 gnome-keyring 实现复用
     if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
 
         # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
@@ -555,11 +555,11 @@ if test -d "$HOME/.ssh"; then
         # 干脆手工指定 https://blog.csdn.net/asdfgh0077/article/details/104121479
         $(pgrep gnome-keyring >/dev/null 2>&1) || eval `gnome-keyring-daemon --start >/dev/null 2>&1`
 
-        # 给 ssh 密钥代理 ssh-agent 设置变量指向 gnome-keyring-daemon
+        # gnome-keyring-daemon 还实现了 ssh 密钥代理功能，设置变量指向即可
         export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
         export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
-    # KDE 桌面环境下使用 ssh，复用 ssh-agent
+    # KDE 桌面环境下，利用 ssh-agent 服务实现复用
     elif [[ $XDG_CURRENT_DESKTOP = 'KDE' ]]; then
 
         # KDE 桌面环境用自己的 systemctl --user status ssh-agent.service
@@ -612,9 +612,9 @@ if test -d "$HOME/.ssh"; then
         echo ''
         # 使用以下参数来启动 ssh-pageant 会判断是否正在运行，不会多次运行自己
         eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
-        ssh-add -l
+        # ssh-add -l
 
-    # 默认是 Linux tty 命令行环境，这个设置最通用
+    # 默认 Linux tty 环境利用 ssh-agent 进程实现复用，这个设置最通用
     else
 
         # 代码来源 git bash auto ssh-agent
