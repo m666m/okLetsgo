@@ -579,7 +579,7 @@ if test -d "$HOME/.ssh"; then
         fi
 
         echo ''
-        # ssh-pageant 使用以下参数来判断是否有已经运行的进程，不会多次运行自己
+        # 使用以下参数来启动 ssh-pageant 会判断是否正在运行，不会多次运行自己
         eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
         ssh-add -l
 
@@ -639,6 +639,9 @@ if test -d "$HOME/.ssh"; then
             # ssh-agent正在运行，但是没有加载过密钥
             echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
             ssh-add
+        else
+            # ssh-agent正在运行，加载过密钥
+            ssh-add -l
         fi
 
         unset agent_run_state
