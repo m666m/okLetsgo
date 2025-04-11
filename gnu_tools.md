@@ -1109,9 +1109,9 @@ Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` �
 
 另见章节 [Linux 桌面下的终端模拟器]。
 
-#### Supper Putty
+Supper Putty
 
-别用了：最新的版本调用 git bash，粘贴脚本文件内容，随机添加字符，在 tmux 下发生的更频繁。
+    别用了：最新的版本调用 git bash，粘贴脚本文件内容，随机添加字符，在 tmux 下发生的更频繁。
 
     https://github.com/jimradford/superputty
 
