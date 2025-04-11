@@ -559,6 +559,35 @@ if test -d "$HOME/.ssh"; then
         export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
         export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
+    # KDE 桌面环境下使用 ssh，复用 ssh-agent
+    elif [[ $XDG_CURRENT_DESKTOP = 'KDE' ]]; then
+
+        # KDE 桌面环境用自己的 systemctl --user status ssh-agent.service
+        # 启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/ssh-agent.socket
+
+        # 给 ssh 密钥代理 ssh-agent 设置变量
+        # export SSH_AUTH_SOCK="$(ls $XDG_RUNTIME_DIR/ssh-agent.socket |head -1)"
+        # 获取服务进程的 PID
+        # export SSH_AGENT_PID="$(ps -ef | grep 'ssh-agent -D -a' | grep -v grep | awk '{print $2}')"
+        AGENT_PID=$(systemctl --user show ssh-agent.service --property=ExecMainPID | awk -F= '{print $2}')
+        # 通过进程树找到 ssh-agent 的实际 PID（需安装 pstree）
+        SSH_AGENT_PID=$(pstree -p $AGENT_PID | grep -oP 'ssh-agent\(\K\d+')
+        export SSH_AGENT_PID
+
+        # KDE 桌面环境用自己的 KWallet 管理接管了全系统的密码和密钥，图形化工具可使用 kwalletmanager5 进行管理
+        # systemctl --user status plasma-kwallet-pam.service
+        # $(/usr/bin/kwalletd6 >/dev/null 2>&1)
+
+        # https://github.com/KDE/ksshaskpass
+        # SSH_ASKPASS=/usr/bin/ksshaskpass
+
+        if ! ssh-add -l >| /dev/null 2>&1; then
+            echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
+            ssh-add
+        else
+            ssh-add -l
+        fi
+
     # Windows git bash(mintty) 环境利用 ssh-pageant 连接到 putty 的 pagent.exe 进程，复用其缓存的密钥
     # 来自章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
     elif [[ $os_type = 'windows' ]]; then
