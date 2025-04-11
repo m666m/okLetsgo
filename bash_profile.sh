@@ -585,7 +585,9 @@ if test -d "$HOME/.ssh"; then
             echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
             ssh-add
         else
-            ssh-add -l
+            # ssh-agent正在运行，加载过密钥
+            # ssh-add -l
+            :
         fi
 
     # Windows git bash(mintty) 环境利用 ssh-pageant 连接到 putty 的 pagent.exe 进程，复用其缓存的密钥
@@ -670,7 +672,8 @@ if test -d "$HOME/.ssh"; then
             ssh-add
         else
             # ssh-agent正在运行，加载过密钥
-            ssh-add -l
+            # ssh-add -l
+            :
         fi
 
         unset agent_run_state
