@@ -13519,19 +13519,21 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/assembly_enabling-chinese-japanese-or-korean-text-input_getting-started-with-the-gnome-desktop-environment
 
-1、确认已经安装了支持中文的字体，详见章节 [设置中文字体]。
+确认已经安装了支持中文的字体，详见章节 [设置中文字体]。
 
-2、常用的输入法框架是 Fcitx 或 IBus
+确认选择常用的输入法框架：Fcitx 或 IBus
 
     IBUS https://www.ibus.com/
 
     Fcitx5  https://fcitx-im.org/wiki/Fcitx_5/zh-cn 之前的是 Fcitx
 
-主流发行版使用 IBUS 框架，比较成熟了。以 Gnome 桌面环境为例：
+主流发行版使用 IBUS 框架，比较成熟了。
 
-打开 Gnome Software， 在类别 'input source' 搜索 'Pinyin' 安装输入法。
+> Gnome 桌面环境：
 
-3、设置输入法
+1、打开 Gnome Software， 在类别 'input source' 搜索 '  Pinyin' 安装输入法。
+
+2、设置输入法
 
 打开 Gnome 的 Settings -> Keyboard -> Input Source，点击添加，选择 “Chinese(Intelligent Pinyin)” ，这时时间栏出会出现en图标，用热键 'Win+空格' 即可切换输入法
 
@@ -13540,6 +13542,24 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 鼠标点击个可以输入文字的地方，然后切换到拼音输入法，右键点击输入法在时间栏处的“中”字图标，在弹出菜单选择 “Perference”，设置用逗号句号翻页(flip page)等选项。
 
 GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表情符号菜单。
+
+> KDE 桌面环境
+
+1、安装 IBus 及中文输入法
+
+    sudo dnf install ibus ibus-libpinyin  # 智能拼音
+
+2、打开系统设置
+
+KDE 菜单 > 系统设置 > 键盘 > 虚拟键盘：确保已选择 IBus（而非 Fcitx 或 XIM）。
+
+3、添加中文输入法
+
+在时间栏处的 ibus 图标，选择“首选项”，添加输入法，搜索并选择 中文 (Intelligent Pinyin) 或其他中文输入法。
+
+确认后退出设置。
+
+4、重启计算机生效
 
 ### 自己安装输入法框架及输入法
 
