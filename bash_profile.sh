@@ -560,7 +560,8 @@ if test -d "$HOME/.ssh"; then
         export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
         export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
-        # ssh 密钥的保护密码都被 keyring 接管了，用到的时候自动提交，全程用户无感知，不需要预加载
+        # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 服务缓存起来，后续用到时就会自动使用无需再次输入了
+        # ssh 密钥的保护密码都被 keyring 接管了，用到的时候自动提交，全程用户无感知，不需要执行 `ssh-add` 了
         # ssh-add
 
     # KDE 桌面环境，利用 systemd 单元文件 ssh-agent.service 实现复用
@@ -583,7 +584,7 @@ if test -d "$HOME/.ssh"; then
         # https://github.com/KDE/ksshaskpass
         # SSH_ASKPASS=/usr/bin/ksshaskpass
 
-        # 把 ssh 密钥的保护密码添加到 ssh-agent 服务缓存起来
+        # 预加载：把 ssh 密钥的保护密码添加到 ssh-agent 服务缓存起来，后续用到时就会自动使用无需再次输入了
         if ! ssh-add -l >| /dev/null 2>&1; then
             echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
             ssh-add
@@ -613,7 +614,9 @@ if test -d "$HOME/.ssh"; then
         fi
 
         echo ''
-        # 使用以下参数来启动 ssh-pageant 会判断是否正在运行，不会多次运行自己
+        # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 服务缓存起来，后续用到时就会自动使用无需再次输入了
+        # ssh-pageant 会连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要执行 `ssh-add` 了
+        # 使用以下参数启动的 ssh-pageant 会判断是否正在运行，不会多次运行自己
         eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
         # ssh-add -l
 
@@ -666,13 +669,17 @@ if test -d "$HOME/.ssh"; then
             echo && echo "Start ssh-agent..."
             agent_start
 
+            # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 服务缓存起来，后续用到时就会自动使用无需再次输入了
             echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
             ssh-add
 
         elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
             # ssh-agent正在运行，但是没有加载过密钥
+
+            # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 服务缓存起来，后续用到时就会自动使用无需再次输入了
             echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
             ssh-add
+
         else
             # ssh-agent正在运行，加载过密钥
             # ssh-add -l
