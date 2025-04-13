@@ -554,7 +554,7 @@ if test -d "$HOME/.ssh"; then
         # 其实现了 ssh 密钥代理功能，但有时候没有自动启动 gnome-keyring-daemon 守护进程，
         # 就没有 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh，导致无法读取ssh代理的密钥
         # 干脆手工拉起来  https://blog.csdn.net/asdfgh0077/article/details/104121479
-        $(pgrep gnome-keyring >/dev/null 2>&1) || eval `gnome-keyring-daemon --start >/dev/null 2>&1`
+        pgrep gnome-keyring >/dev/null 2>&1 || gnome-keyring-daemon --start >/dev/null 2>&1
 
         # 设置变量指向即可
         export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
