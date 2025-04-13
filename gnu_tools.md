@@ -1268,9 +1268,23 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
 
 ##### 配置 Windows Terminal
 
-因为 Windows Terminal 有自己的主题，颜色方案背景等配置修改 setting.json。目前版本的 Windows Terminal 可以在用户界面选择设置，如选择背景图片、开启毛玻璃效果、开启复古的像素化终端效果等。
+配置 wsl，启动参数
 
-复杂点的设置，需要手动修改配置文件，点击 Windows Terminal 窗口左下方的按钮 “打开json文件” 即可打开文本编辑，配置文件的位置一般在 %USERPROFILE%\AppData\Local\Microsoft\Windows Terminal。
+    %SystemRoot%\System32\cmd.exe /c wsl --cd ~
+
+配置 Git Bash，启动参数
+
+    "C:/Program Files/Git/bin/bash.exe" -i -l
+
+还可以复制 Anaconda 的命令行启动参数
+
+    %WINDIR%\System32\cmd.exe "/K" %USERPROFILE%\anaconda3\Scripts\activate.bat %USERPROFILE%\anaconda3
+
+> 配置 Windows Terminal 的主题、终端配色方案等
+
+Windows Terminal 有自己的主题，颜色方案背景等配置修改 setting.json。目前版本的 Windows Terminal 可以在用户界面选择设置，如选择背景图片、开启毛玻璃效果、开启复古的像素化终端效果等。
+
+复杂点的设置，比如终端配色方案，需要手动修改配置文件，点击 Windows Terminal 窗口左下方的按钮 “打开json文件” 即可打开文本编辑，配置文件的位置一般在 %USERPROFILE%\AppData\Local\Microsoft\Windows Terminal。
 
 四部分：
 
