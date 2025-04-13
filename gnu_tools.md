@@ -17868,11 +17868,9 @@ KDE6 默认使用 gpg-agent 与 KWallet 交互，无需额外配置：
 
 默认情况下，KWallet 不会自动拦截或存储 ssh 密钥的保护密码，用户只能自行使用 ssh-agent 进行缓存。
 
-    这个 ksshaskpass 没用
-
-        # https://github.com/KDE/ksshaskpass
-
-        SSH_ASKPASS=/usr/bin/ksshaskpass
+    # 这个 ksshaskpass 没用
+    # https://github.com/KDE/ksshaskpass
+    SSH_ASKPASS=/usr/bin/ksshaskpass
 
 KDE 桌面环境用自己的 systemd 单元文件 ssh-agent.service 服务实现复用 ssh-agent，初次使用 ssh 密钥需要手工输入SSH 密钥密码，用以下命令预加载起来即可：
 

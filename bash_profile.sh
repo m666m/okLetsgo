@@ -551,21 +551,26 @@ if test -d "$HOME/.ssh"; then
     if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
 
         # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
-        # 如果有时候没有启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh 会导致无法读取ssh代理的密钥
-        # 干脆手工指定 https://blog.csdn.net/asdfgh0077/article/details/104121479
+        # 其实现了 ssh 密钥代理功能，但有时候没有自动启动 gnome-keyring-daemon 守护进程，
+        # 就没有 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh，导致无法读取ssh代理的密钥
+        # 干脆手工拉起来  https://blog.csdn.net/asdfgh0077/article/details/104121479
         $(pgrep gnome-keyring >/dev/null 2>&1) || eval `gnome-keyring-daemon --start >/dev/null 2>&1`
 
-        # gnome-keyring-daemon 还实现了 ssh 密钥代理功能，设置变量指向即可
+        # 设置变量指向即可
         export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
         export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
-    # KDE 桌面环境下，利用 ssh-agent 服务实现复用
+        # ssh 密钥的保护密码都被 keyring 接管了，用到的时候自动提交，全程用户无感知，不需要预加载
+        # ssh-add
+
+    # KDE 桌面环境，利用 systemd 单元文件 ssh-agent.service 实现复用
     elif [[ $XDG_CURRENT_DESKTOP = 'KDE' ]]; then
 
         # KDE 桌面环境有自己的 `systemctl --user status ssh-agent.service`
         # 启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/ssh-agent.socket
 
-        # 手动给 ssh 密钥代理 ssh-agent 设置变量，因为服务 ssh-agent.service 没设置全！
+        # 设置变量指向即可
+        # 目前必须手动给 ssh 密钥代理 ssh-agent 设置变量，因为服务 ssh-agent.service 没设置全！
         # export SSH_AUTH_SOCK="$(ls $XDG_RUNTIME_DIR/ssh-agent.socket |head -1)"
         # 获取服务进程的 PID
         # export SSH_AGENT_PID="$(ps -ef | grep 'ssh-agent -D -a' | grep -v grep | awk '{print $2}')"
@@ -573,6 +578,10 @@ if test -d "$HOME/.ssh"; then
         # 通过进程树找到 ssh-agent 的实际 PID（需安装 pstree）
         SSH_AGENT_PID=$(pstree -p $AGENT_PID | grep -oP 'ssh-agent\(\K\d+')
         export SSH_AGENT_PID
+
+        # 这个 ksshaskpass 没用
+        # https://github.com/KDE/ksshaskpass
+        # SSH_ASKPASS=/usr/bin/ksshaskpass
 
         # 把 ssh 密钥的保护密码添加到 ssh-agent 服务缓存起来
         if ! ssh-add -l >| /dev/null 2>&1; then
