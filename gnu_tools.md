@@ -13772,13 +13772,13 @@ OpenType 可变字体（OpenType variable fonts）技术
 
     上述配置文件对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样就实现了显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
 
-> 主流 Linux 发行版使用 Noto 字体
+> 主流 Linux 发行版使用 Noto 字体内置支持中文
 
-Fedora 系统默认  Cantarell 字体支持显示中文，从 Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但需要用户单独安装设置 [https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description]。
+Fedora 系统默认的 Cantarell 字体支持显示中文，从 Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但需要用户单独安装设置 [https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description]。
 
-Noto 系列字族名只支持英文，命名规则是 Noto + Sans 或 Serif + 文字名称。其中汉字部分叫 Noto Sans/Serif CJK SC/TC/HK/JP/KR，词 CJK 表示东亚字体中日韩，最后一个词是地区变种。
+Noto 系列字族名只支持英文，命名规则是 Noto + Sans 或 Serif + 文字名称。其中东亚字符部分叫 Noto Sans/Serif CJK SC/TC/HK/JP/KR，词 CJK 表示东亚字体中日韩，最后一个词是地区变种。
 
-支持汉语的 Noto Fonts 字体是单独的 cjk 包，按关键字搜索可得：
+支持汉语的 Noto Fonts 字体拆出来单独的 cjk 包，按关键字搜索可得：
 
     $ dnf list --installed |grep noto|grep cjk
     google-noto-sans-cjk-vf-fonts.noarch
@@ -17760,27 +17760,43 @@ WantedBy=multi-user.target
 
     当用户再次遇到应用软件提示输入密码时，只要应用软件读取密码的 API 被再次调用，则密码管理器会先解锁钥匙圈（用户初次登录时需要输入登录密码），也即解密该密码（使用用户给出的登录密码），返回给相关应用的 API 调用。
 
-用户交互：
+密码管理与用户的交互方式：
 
-    为了使用方便，“钥匙圈”默认使用用户的登录密码进行加密，这样在用户使用密码登录系统后，密码管理器不需要提示用户输入密码解锁“钥匙圈”，这样大大方便了日常使用。
+为了使用方便，“钥匙圈”默认使用用户的登录密码进行加密，这样在用户使用密码登录系统后，密码管理器不需要提示用户输入密码解锁“钥匙圈”，这样大大方便了日常使用。
 
-        用户可以设置钥匙圈使用单独的密码，这样的话用户使用登录密码登录系统后“钥匙圈”是未解锁的，gnome 桌面环境会在用户登录进入桌面后弹窗提示，解锁钥匙圈 “Enter password to unlock your key ring”，用户需要输入自己设置的单独密码才能解锁“钥匙圈”。
+    用户可以设置钥匙圈使用单独的密码，这样的话用户使用登录密码登录系统后“钥匙圈”是未解锁的，gnome 桌面环境会在用户登录进入桌面后弹窗提示，解锁钥匙圈 “Enter password to unlock your key ring”，用户需要输入自己设置的单独密码才能解锁“钥匙圈”。
 
-    如果在登录 gnome 桌面时没有输入登录密码，比如使用人脸识别或指纹登录了桌面，系统同样会在用户登录进入桌面后弹窗提示，解锁钥匙圈 “Enter password to unlock your key ring”，用户需要输入登录密码才能解锁“钥匙圈”。
+如果在登录 gnome 桌面时没有输入登录密码，比如使用人脸识别或指纹登录了桌面，系统同样会在用户登录进入桌面后弹窗提示，解锁钥匙圈 “Enter password to unlock your key ring”，用户需要输入登录密码才能解锁“钥匙圈”。
 
-        这是因为 gnome-keyring 使用登录密码作为加密密钥，不输入登录密码就无法解锁其保存的各种密钥和密码，而 gnome-keyring 目前不支持面部识别、指纹识别的数据作为加密密钥。
+    这是因为 gnome-keyring 使用登录密码作为加密密钥，不输入登录密码就无法解锁其保存的各种密钥和密码，而 gnome-keyring 目前不支持面部识别、指纹识别的数据作为加密密钥。
 
-    如果在登录桌面后，提示输入登录密码解锁钥匙圈时，选择了取消：
+如果在登录桌面后，提示输入登录密码解锁钥匙圈时，选择了取消：
 
-        则 keyring-daemon 会把鉴权请求传回到各个应用程序，也就是自己不再接管密钥处理了。这样在应用程序需要输入密码的场合，就会像之前一样，各应用软件自行弹窗提示用户输入密码。密码管理器不会再弹出解锁钥匙圈的提示了，即便使用的是钥匙圈里保存过的加密密钥。
+    则 keyring-daemon 会把鉴权请求传回到各个应用程序，也就是自己不再接管密钥处理了。这样在应用程序需要输入密码的场合，就会像之前一样，各应用软件自行弹窗提示用户输入密码。密码管理器不会再弹出解锁钥匙圈的提示了，即便使用的是钥匙圈里保存过的加密密钥。
 
-        因为登录后选择了不解锁钥匙圈，在系统弹窗时要仔细看下提示，到底是应用程序的密码输入界面，还是钥匙圈解锁的界面，二者的密码是不同的。
+    因为登录后选择了不解锁钥匙圈，在系统弹窗时要仔细看下提示，到底是应用程序的密码输入界面，还是钥匙圈解锁的界面，二者的密码是不同的。
 
 使用图形化工具可以方便的看到钥匙圈是否处于解锁状态，点击图标会提示输入登录密码解锁该钥匙圈，详见下面子章节。
 
-#### 密码管理器应用程序
+> MacOS： 也有自己的密钥管理器
 
-> Gnome 桌面：GNOME Keyring（gnome-keyring）钥匙圈
+略
+
+> 第三方密码管理器
+
+KeePass 是一个免费的开源密码管理器，它可以帮助您以安全的方式管理您的密码。您可以将所有密码存储在一个用主密钥锁定的数据库中。因此，您只需记住一个主密钥即可解锁整个数据库。数据库文件使用加密算法（AES-256、ChaCha20和Twofish）进行加密。
+
+    https://keepass.info/
+
+    https://wiki.archlinux.org/title/KeePass
+
+Bitwarden 可 docker 部署实现自托管
+
+    https://zhuanlan.zhihu.com/p/130492433
+
+#### Gnome 桌面的密码管理器应用程序
+
+GNOME Keyring（gnome-keyring）钥匙圈
 
     https://cn.linux-terminal.com/?p=3195
 
@@ -17802,7 +17818,9 @@ WantedBy=multi-user.target
 
     如果你修改了账户密码，记得还得重设钥匙圈密码。假如你不记得仍然被钥匙圈使用的老的账户密码：只能移除老的钥匙圈，也就是说你保存的那些密码也都删掉了
 
-> KDE 桌面：KDE Wallet - KWalletManager
+#### KDE 桌面的密码管理器应用程序
+
+KDE Wallet - KWalletManager
 
     https://apps.kde.org/zh-cn/kwalletmanager5/
 
@@ -17822,21 +17840,7 @@ KDE Wallet 支持 ssh、git，但是不支持 gpg
 
     https://apps.kde.org/kgpg/
 
-> MacOS： 也有自己的密钥管理器
-
-略
-
-> 第三方密码管理器
-
-KeePass 是一个免费的开源密码管理器，它可以帮助您以安全的方式管理您的密码。您可以将所有密码存储在一个用主密钥锁定的数据库中。因此，您只需记住一个主密钥即可解锁整个数据库。数据库文件使用加密算法（AES-256、ChaCha20和Twofish）进行加密。
-
-    https://keepass.info/
-
-    https://wiki.archlinux.org/title/KeePass
-
-Bitwarden 可 docker 部署实现自托管
-
-    https://zhuanlan.zhihu.com/p/130492433
+kde 密码管理器可以设置独立的密码，或使用你现有的 gpg 密yao，加密保存你要自动填充的密码内容。建议为了方便设置独立的密码，跟你登录用户桌面的密码相同，这样登录桌面就自动解锁了你的 kde wallet。
 
 ### Linux 下的 “Windows Hello” 人脸识别认证 --- Howdy
 
