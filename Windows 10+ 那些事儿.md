@@ -3327,7 +3327,7 @@ Windows 11 下彻底打通了，不需要做任何设置，在 Windows 命令提
     Ubuntu
     Debian
 
-在本机 WSL 的实例中执行命令
+直接在本机 WSL 的实例中执行命令，输出是显示在当前命令行终端的
 
     C:\> wsl cd $HOME;ls
 

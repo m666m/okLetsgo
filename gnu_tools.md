@@ -1268,15 +1268,19 @@ Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，�
 
 ##### 配置 Windows Terminal
 
-配置 wsl，启动参数
+> 给各个终端生成配置文件
+
+点击按钮“添加新配置文件”，选择基于哪个现有的配置文件进行生成，然后修改启动参数就可以了。
+
+wsl，启动参数
 
     %SystemRoot%\System32\cmd.exe /c wsl --cd ~
 
-配置 Git Bash，启动参数
+Git Bash，启动参数
 
     "C:/Program Files/Git/bin/bash.exe" -i -l
 
-还可以复制 Anaconda 的命令行启动参数
+还可以复制 Anaconda 的命令行启动参数使用
 
     %WINDIR%\System32\cmd.exe "/K" %USERPROFILE%\anaconda3\Scripts\activate.bat %USERPROFILE%\anaconda3
 
