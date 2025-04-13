@@ -17838,6 +17838,8 @@ KDE Wallet 支持 ssh、git，以前不支持 gpg，需要用 KGpg 自动保存�
 
         https://apps.kde.org/kgpg/
 
+> 自动填写 gpg 密码
+
 现在的 KDE Wallet，可以设置独立的密码，或使用你现有的 gpg 密钥，以此加密保存你各种的密码。建议为了方便，设置独立的密码，跟你用户登录桌面的密码相同，这样用户登录桌面后就自动解锁了你的 kde wallet。
 
 KDE6 默认使用 gpg-agent 与 KWallet 交互，无需额外配置：
@@ -17855,6 +17857,34 @@ KDE6 默认使用 gpg-agent 与 KWallet 交互，无需额外配置：
     $ echo "test" | gpg --clearsign
 
     输入 ^d 退出
+
+> KDE Wallet 不支持自动填写 ssh 密钥的保护密码
+
+默认情况下，KWallet 不会自动拦截或存储 ssh 密钥的保护密码，用户只能自行使用 ssh-agent 进行缓存。
+
+    KDE 桌面环境用自己的 systemd 单元文件 ssh-agent.service 服务实现复用 ssh-agent，但初次使用仍需要手工输入SSH 密钥密码
+
+        $ ssh-add
+
+这个 ksshaskpass 没用
+
+    # https://github.com/KDE/ksshaskpass
+
+    SSH_ASKPASS=/usr/bin/ksshaskpass
+
+最多可以利用 kWallet 的自定义条目，记录或显示你的 ssh 密码
+
+    进入你的 KWallet，在 Passwords->Passwords 下 new 一个新条目，起名 ssh，输入密码的内容，点击 save
+
+验证，在命令行查看你添加的条目，最后的参数 ddd 是你的钱包的名字，默认钱包是 kdewallet
+
+    $ kwallet-query -r ssh ddd
+    your_password
+
+
+        # KDE 桌面环境用自己的 KWallet 管理接管了全系统的密码和密钥，图形化工具可使用 kwalletmanager5 进行管理
+        # systemctl --user status plasma-kwallet-pam.service
+        # $(/usr/bin/kwalletd6 >/dev/null 2>&1)
 
 ### Linux 下的 “Windows Hello” 人脸识别认证 --- Howdy
 

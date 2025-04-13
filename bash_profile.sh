@@ -547,7 +547,7 @@ fi
 # 来自章节 [多会话复用 ssh-agent 进程](ssh.md think)
 if test -d "$HOME/.ssh"; then
 
-    # GNOME 桌面环境下，利用 gnome-keyring 实现复用
+    # GNOME 桌面环境下，利用 gnome-keyring-daemon 实现了 ssh 密钥代理功能，设置变量指向即可
     if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
 
         # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
@@ -562,10 +562,10 @@ if test -d "$HOME/.ssh"; then
     # KDE 桌面环境下，利用 ssh-agent 服务实现复用
     elif [[ $XDG_CURRENT_DESKTOP = 'KDE' ]]; then
 
-        # KDE 桌面环境用自己的 systemctl --user status ssh-agent.service
+        # KDE 桌面环境有自己的 `systemctl --user status ssh-agent.service`
         # 启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/ssh-agent.socket
 
-        # 给 ssh 密钥代理 ssh-agent 设置变量
+        # 手动给 ssh 密钥代理 ssh-agent 设置变量，因为服务 ssh-agent.service 没设置全！
         # export SSH_AUTH_SOCK="$(ls $XDG_RUNTIME_DIR/ssh-agent.socket |head -1)"
         # 获取服务进程的 PID
         # export SSH_AGENT_PID="$(ps -ef | grep 'ssh-agent -D -a' | grep -v grep | awk '{print $2}')"
@@ -574,13 +574,7 @@ if test -d "$HOME/.ssh"; then
         SSH_AGENT_PID=$(pstree -p $AGENT_PID | grep -oP 'ssh-agent\(\K\d+')
         export SSH_AGENT_PID
 
-        # KDE 桌面环境用自己的 KWallet 管理接管了全系统的密码和密钥，图形化工具可使用 kwalletmanager5 进行管理
-        # systemctl --user status plasma-kwallet-pam.service
-        # $(/usr/bin/kwalletd6 >/dev/null 2>&1)
-
-        # https://github.com/KDE/ksshaskpass
-        # SSH_ASKPASS=/usr/bin/ksshaskpass
-
+        # 把 ssh 密钥的保护密码添加到 ssh-agent 服务缓存起来
         if ! ssh-add -l >| /dev/null 2>&1; then
             echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
             ssh-add
