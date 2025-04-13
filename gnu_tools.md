@@ -17738,7 +17738,7 @@ WantedBy=multi-user.target
 
     后台进程 keyring-daemon，接管已知应用的输入密码请求，统一把用户输入的密码保存起来，在应用程序请求密码和用户输入密码之间成为一个代理。
 
-    默认使用用户的登录密码加密保存这些密码到本地，只要用户使用本地账户的密码登录桌面，还会利用登录密码解锁钥匙圈，从而实现浏览器登录网站甚至使用 ssh、gpg 都可以免除输入相关密码。
+    默认使用用户的登录密码加密保存这些密码到本地，这样只要用户使用本地账户的密码登录桌面，会利用登录密码解锁钥匙圈，从而实现浏览器登录网站、使用 ssh、gpg 等都可以免除输入相关密码。
 
 密码管理器接管了多种密码的自动保存和自动填写：
 
@@ -17820,7 +17820,7 @@ GNOME Keyring（gnome-keyring）钥匙圈
 
 #### KDE 桌面的密码管理器应用程序
 
-KDE Wallet - KWalletManager
+KDE Wallet - 原名 KDE 钱包（KWallet），在 22 版后改名为更贴切的 KDE 密码库
 
     https://apps.kde.org/zh-cn/kwalletmanager5/
 
@@ -17830,17 +17830,29 @@ KDE Wallet - KWalletManager
 
     https://www.jwillikers.com/gnome-keyring-in-kde-plasma
 
-图形界面管理程序，原名 KDE 钱包（KWallet），在 22 版后改名为更贴切的 KDE 密码库
+图形界面管理程序 KWalletManager
 
 KDE Wallet 支持 ssh、git，但是不支持 gpg
 
-用 KGpg 自动保存和填写 gpg 的密码
+    用 KGpg 自动保存和填写 gpg 的密码
 
-    https://userbase.kde.org/KGpg
+        https://userbase.kde.org/KGpg
 
-    https://apps.kde.org/kgpg/
+        https://apps.kde.org/kgpg/
 
-kde 密码管理器可以设置独立的密码，或使用你现有的 gpg 密yao，加密保存你要自动填充的密码内容。建议为了方便设置独立的密码，跟你登录用户桌面的密码相同，这样登录桌面就自动解锁了你的 kde wallet。
+kde 密码管理器可以设置独立的密码，或使用你现有的 gpg 密钥，以此加密保存你各种的密码。建议为了方便，设置独立的密码，跟你登录用户桌面的密码相同，这样登录桌面就自动解锁了你的 kde wallet。
+
+KDE6 默认使用 gpg-agent 与 KWallet 交互，无需额外配置：
+
+检查 GPG 是否正常工作：
+
+    $ gpg --list-keys
+
+测试签名（应不再提示密码）：
+
+    $ echo "test" | gpg --clearsign
+
+    输入 ^d 退出
 
 ### Linux 下的 “Windows Hello” 人脸识别认证 --- Howdy
 
