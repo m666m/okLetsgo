@@ -223,6 +223,8 @@ Windows 下实现 Linux 伪终端机制的是 Msys2 项目，基于 putty 制作
 
         https://github.com/rprichard/winpty
 
+        https://gitforwindows.org/faq.html#some-native-console-programs-dont-work-when-run-from-git-bash-how-to-fix-it
+
     wslbridge 辅助工具，提供了 unix pty 接口与 WSL(Windows Subsystem for Linux) 的互通，很多支持终端多路复用的软件在 Windows 下都通过该组件使用 WSL 会话
 
         wslbridge2 https://github.com/Biswa96/wslbridge2
