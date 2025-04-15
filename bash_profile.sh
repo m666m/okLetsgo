@@ -560,11 +560,11 @@ if test -d "$HOME/.ssh"; then
         export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
         export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
-        # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 服务缓存起来，后续用到时就会自动使用无需再次输入了
+        # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
         # ssh 密钥的保护密码都被 keyring 接管了，用到的时候自动提交，全程用户无感知，不需要执行 `ssh-add` 了
         # ssh-add
 
-    # KDE 桌面环境，利用 systemd 单元文件 ssh-agent.service 实现复用
+    # KDE 桌面环境，自带 systemd 单元文件 ssh-agent.service
     elif [[ $XDG_CURRENT_DESKTOP = 'KDE' ]]; then
 
         # KDE 桌面环境有自己的 `systemctl --user status ssh-agent.service`
@@ -584,7 +584,7 @@ if test -d "$HOME/.ssh"; then
         # https://github.com/KDE/ksshaskpass
         # SSH_ASKPASS=/usr/bin/ksshaskpass
 
-        # 预加载：把 ssh 密钥的保护密码添加到 ssh-agent 服务缓存起来，后续用到时就会自动使用无需再次输入了
+        # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
         if ! ssh-add -l >| /dev/null 2>&1; then
             echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
             ssh-add
@@ -614,13 +614,13 @@ if test -d "$HOME/.ssh"; then
         fi
 
         echo ''
-        # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 服务缓存起来，后续用到时就会自动使用无需再次输入了
-        # ssh-pageant 会连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要执行 `ssh-add` 了
+        # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
+        # git bash 自带的工具 ssh-pageant 会连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要执行 `ssh-add` 了
         # 使用以下参数启动的 ssh-pageant 会判断是否正在运行，不会多次运行自己
         eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
         # ssh-add -l
 
-    # 默认 Linux tty 环境利用 ssh-agent 进程实现复用，这个设置最通用
+    # 默认 Linux tty 环境复用 ssh-agent 进程，这个设置最通用
     else
 
         # 代码来源 git bash auto ssh-agent
@@ -631,20 +631,19 @@ if test -d "$HOME/.ssh"; then
         #    ~/.bash_profile
         #    ~/.profile
         #    ~/.bashrc
-        # 说明：当你打开一个 bash 会话，自动调用 ssh-add 加载你的密钥
-        # 如果 ssh-agent 进程没启动，自动调用起来，若已经启动则复用已有的 ssh-agent 进程实例。
-        # 如果退出了当前 bash 会话，再次开启一个bash会话，也不会多次启动 ssh-agent 进程，
-        # 会始终保持当前系统只运行一个ssh-agent进程。
-        # 为提高使用安全性，在不使用 ssh-agent 的时候，从操作系统进程中找到该进程手工杀掉即可。
+        # 说明：当你打开一个 bash 会话，自动调用 ssh-add 加载你的密钥。
+        # 如果 ssh-agent 进程没启动，则自动调用起来，
+        # 若已经在其它会话调起来了，则复用该进程，保持你的用户会话中只运行一个ssh-agent进程。
+        # 如果要提高使用安全性，在不使用 ssh-agent 的时候，从操作系统进程中找到该进程手工杀掉即可。
 
+        # 保存已经启动的 ssh-agent 进程的变量指向
         agent_env=~/.ssh/agent.env
 
+        # 复用已经启动的 ssh-agent 进程，设置变量指向
         agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
-
         agent_load_env
 
-        # 加载 ssh-agent 需要用户手工输入密钥的保护密码
-        # 这里不能使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
+        # 启动 ssh-agent
         agent_start () { test -d "$HOME/.ssh" && (umask 077; ssh-agent >| "$agent_env") && source "$agent_env" >| /dev/null ; }
 
         # agent_run_state:
@@ -669,14 +668,16 @@ if test -d "$HOME/.ssh"; then
             echo && echo "Start ssh-agent..."
             agent_start
 
-            # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 服务缓存起来，后续用到时就会自动使用无需再次输入了
+            # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
+            # `ssh-add` 会读取 ssh-agent 进程启动时 export 出的环境变量，从而可以调用到 ssh-agent 进程
+            # 这里无法使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
             echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
             ssh-add
 
         elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
             # ssh-agent正在运行，但是没有加载过密钥
 
-            # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 服务缓存起来，后续用到时就会自动使用无需再次输入了
+            # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
             echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
             ssh-add
 
