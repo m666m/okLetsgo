@@ -210,9 +210,9 @@ Windows 10 2018年之前的版本 CMD 终端不同于 Linux 的伪终端机制�
 
     终端概念参见章节 [Linux 字符终端]。
 
-Windows 下实现 Linux 伪终端机制的是 Msys2 项目，基于 putty 制作了 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等。详见章节 [mintty 终端模拟器]。
+Windows 下实现 Linux 伪终端机制的是 Msys2 项目，基于 putty 制作了 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等，详见章节 [mintty 终端模拟器]。
 
-2018年 Windows 10 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得终端模拟器可以用文本的方式连接本机 Windows 接口的字符显示接口，参见章节 [Windows 10 本地化 Linux 编程接口]，下列三个常用工具程序估计用处不大了：
+2018年 Windows 10 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得各种终端模拟器可以用文本的方式连接本机 Windows 接口的字符显示接口，参见章节 [Windows 10 本地化 Linux 编程接口]，下列三个常用工具程序估计用处不大了：
 
     clink 辅助工具，在 cmd 下模仿 bash，按 tab 键自动完成，像 emacs 一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
 
@@ -230,7 +230,7 @@ Windows 下实现 Linux 伪终端机制的是 Msys2 项目，基于 putty 制作
         wslbridge2 https://github.com/Biswa96/wslbridge2
             wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
 
-终端模拟器类型很多，如果想统一在一个窗口程序下标签化管理各个连接，这样的程序称为终端多路复用器 terminal multiplexer。
+有很多图形化的终端模拟器，如果想统一在一个窗口程序下标签化管理各个连接，这样的程序称为终端多路复用器 terminal multiplexer，推荐使用 [Windows Terminal]。
 
 Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安装支持多种符号的字体，见章节 [Nerd Font]。
 
