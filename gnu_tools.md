@@ -166,7 +166,12 @@ Windows 10 在 2022 年后，已经比较完整的提供了对 Linux 的字符�
     PowerShell 7+ 使用 conpty 接口运行 cmd 字符程序
 
     在 2022-10-28 MSYS2 mintty 支持使用 ConPty 接口了：
-    在 MSYS2 的配置文件 /etc/git-bash.config 中设置变量 `MSYS=enable_pcon`，或 mintty 配置文件 .minttyrc 中设置 `ConPTY=on` 即可。之后在 mintty 中执行 Windows 的 cmd 字符程序，不再需要借助 winpty 去加载调用了 https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs
+
+        MSYS2 的配置文件 /etc/git-bash.config 中设置变量 `MSYS=enable_pcon`
+
+        mintty 配置文件 .minttyrc 中设置 `ConPTY=on`
+
+    最直接的好处是，在 mintty 中执行 Windows 的 cmd 字符程序，不再需要借助 winpty 去加载调用了 https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs
 
 有个性能对比测试
 
@@ -1284,6 +1289,14 @@ Git Bash，启动参数
 还可以复制 Anaconda 的命令行启动参数使用
 
     %WINDIR%\System32\cmd.exe "/K" %USERPROFILE%\anaconda3\Scripts\activate.bat %USERPROFILE%\anaconda3
+
+如果追求反应速度，使用 cmd 终端(conhost)目前是最快的
+
+    按住回车键不放对比下刷屏速度就知道了
+
+    cmd 利用 ConPTY 可以无缝支持 Linux 程序的显示，兼容性没问题了，我用 cmd 终端使用 git bash 自带的 `ssh` 连接远程服务器、运行 `wsl` 使用 WSL 实例，都非常快，未遇到错误。。
+
+    而且，可以在 Windows Terminal 中给 cmd 终端可以设置自定义背景和字体，使用起来跟 git bash 没有差别了。
 
 > 配置 Windows Terminal 的主题、终端配色方案等
 
