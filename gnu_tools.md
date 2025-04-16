@@ -1286,7 +1286,7 @@ Git Bash，启动参数
 
     "C:/Program Files/Git/bin/bash.exe" -i -l
 
-还可以复制 Anaconda 的命令行启动参数使用
+复制 Anaconda 的命令行启动参数，在 cmd 使用 anaconda
 
     %WINDIR%\System32\cmd.exe "/K" %USERPROFILE%\anaconda3\Scripts\activate.bat %USERPROFILE%\anaconda3
 
@@ -1294,9 +1294,9 @@ Git Bash，启动参数
 
     按住回车键不放对比下刷屏速度就知道了
 
-    cmd 利用 ConPTY 可以无缝支持 Linux 程序的显示，兼容性没问题了，我用 cmd 终端使用 git bash 自带的 `ssh` 连接远程服务器、运行 `wsl` 使用 WSL 实例，都非常快，未遇到错误。。
+    cmd 利用 ConPTY 可以无缝支持 Linux 程序的显示，兼容性没问题了，我用 cmd 终端运行 git bash 自带的 `ssh` 连接远程服务器、运行 `wsl` 使用 WSL 实例，都非常快，未遇到任何错误。
 
-    而且，可以在 Windows Terminal 中给 cmd 终端可以设置自定义背景和字体，使用起来跟 git bash 没有差别了。
+    而且，可以在 Windows Terminal 中给 cmd 终端可以设置自定义背景和字体，使用起来手感跟 git bash 没有差别了。
 
 > 配置 Windows Terminal 的主题、终端配色方案等
 
