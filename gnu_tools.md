@@ -240,17 +240,6 @@ putty 完美的实现了在 Windows 下使用 ssh 远程连接 Linux 服务器�
 
     https://www.chiark.greenend.org.uk/~sgtatham/putty/
 
-    北极主题颜色 https://github.com/arcticicestudio/nord-putty
-        导入后putty会话里多了一个只进行了颜色设置的 session：Nord，以此 session 打开各个ssh连接即可。
-
-    超多主题颜色，有 putty 的
-
-        https://github.com/mbadolato/iTerm2-Color-Schemes
-
-    自定义主题颜色，自己设计
-
-        https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
-
     竞品 KiTTY https://github.com/cyd01/KiTTY
 
         从 putty 拉的分支而来，是对 putty 的易用性改进，共用putty的站点配置，增加了背景透明、支持站点列表的文件夹、自动化操作脚本，可以给站点加注释，还有便携版
@@ -386,11 +375,11 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
 执行该 bat 文件，会在当前目录下生成一个名为 session.reg 的文件。
 如果需要恢复站点设置，直接双击该文件即会被 Windows 导入注册表。
 
-putty 美化
+> putty 美化
 
     仿效本地终端模拟器根据变量 $TERM 自动模拟为指定的终端类型，putty 可以在站点选项里设置终端类型，这样在登录远程服务器后就按照指定的类型显示了，一般默认为 xterm 就是彩色。
 
-开启Putty终端256色的支持: Putty->load你的session->Window->Colors->勾选 “General options for colour usage” 下的几个选项。
+开启 Putty 终端 256色 的支持: Putty->load你的session->Window->Colours->勾选 “General options for colour usage” 下的几个选项。
 
 即使你设置会话时勾选了使用 256color 和 true color 真彩色，putty 默认的主题比较保守，只使用 16 种颜色（用 rgb 设置，其实支持真彩色），你ssh登录到服务器会发现文字色彩比较刺眼。
 
@@ -398,11 +387,21 @@ putty 美化
 
     https://github.com/AlexAkulov/putty-color-themes
 
+    北极主题颜色 https://github.com/arcticicestudio/nord-putty
+
+    超多主题颜色，有 putty 的
+
+        https://github.com/mbadolato/iTerm2-Color-Schemes
+
+    自定义主题颜色，自己设计
+
+        https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
+
 推荐使用 nord 主题
 
     curl -fsSLO https://github.com/arcticicestudio/nord-putty/raw/develop/src/nord.reg
 
-双击该 reg 文件，会在你的 putty 会话列表里新增一个 “NORD” 会话，点击 “load” 按钮加载该会话，然后填写自己的 ip 地址和端口，连接看看，会发现颜色效果柔和多了。
+双击该 reg 文件，确认导入，然后你的 putty 会话列表里新增一个 “NORD” 会话，点击 “load” 按钮加载该会话，可以看到只设置了颜色，并没有站点 ip，填写自己的 ip 地址和端口，连接看看，会发现颜色效果柔和多了。如果满意，就另存该会话为你的站点名称即可。
 
 ### mintty 终端模拟器
 
