@@ -1273,6 +1273,16 @@ Superb Copy 解锁 csdn/51cto 右键复制
 
     https://microsoftedge.microsoft.com/addons/detail/superb-copy/iaeijdamgmgkigibpoapgahideaobdde
 
+Sublime Copy 解锁 csdn/51cto 右键复制
+
+    https://microsoftedge.microsoft.com/addons/detail/sublime-copy/ligcjpcogfdnidfhkgcchmpheaeljakp
+
+最终启用右键单击，这个并未开源，github 上的只是骗人的一个页面，不要安装：
+
+    https://microsoftedge.microsoft.com/addons/detail/%E6%9C%80%E7%BB%88%E5%90%AF%E7%94%A8%E5%8F%B3%E9%94%AE%E5%8D%95%E5%87%BB/ijopbbfjlehabpldjiaipgiiedhfhbad
+
+    https://ultimate-enable-right-click.github.io/
+
 防止 bilibili 利用 webrtc 偷偷上传
 
     https://www.zhihu.com/question/447119724/answer/1892411379094364951
@@ -1285,16 +1295,6 @@ QR码生成与识别
     https://microsoftedge.microsoft.com/addons/detail/qr%E7%A0%81%E7%94%9F%E6%88%90%E4%B8%8E%E8%AF%86%E5%88%AB/nmddeihindhodaigflchmkmechmjjjbc
 
     “读取和更改站点数据”配置为“单击扩展时”
-
-Sublime Copy 解锁 csdn/51cto 右键复制
-
-    https://microsoftedge.microsoft.com/addons/detail/sublime-copy/ligcjpcogfdnidfhkgcchmpheaeljakp
-
-最终启用右键单击，这个并未开源，github 上的只是骗人的一个页面，不要安装：
-
-    https://microsoftedge.microsoft.com/addons/detail/%E6%9C%80%E7%BB%88%E5%90%AF%E7%94%A8%E5%8F%B3%E9%94%AE%E5%8D%95%E5%87%BB/ijopbbfjlehabpldjiaipgiiedhfhbad
-
-    https://ultimate-enable-right-click.github.io/
 
 Git Master 在 github web页面添加导航树：
 
