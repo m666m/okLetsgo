@@ -13593,23 +13593,67 @@ KDE 菜单 > 系统设置 > 键盘 > 虚拟键盘：确保已选择 IBus（而�
 
 4、重启计算机生效
 
+> 命令行安装ibus中文输入法(Linux/Ubuntu)
+
+1 安装中文语言包
+
+安装中文语言包是为了让 Input Sources 里面出现 Chinese 这一项。
+
+选择 “Manage Installed Languages”-->“Install/Remove Languages”-->“Chinese(Simplified)”-->“Apply”。
+
+2 安装ibus输入法
+
+然后才可以安装 ibus 中文输入法。
+
+先安装 ibus 框架
+
+    sudo apt-get install ibus ibus-clutter ibus-gtk ibus-gtk3 ibus-qt4
+
+切换到 ibus 框架
+
+    # im-chooser
+    $ im-config -s ibus
+
+安装拼音引擎
+
+    $ sudo apt-get install ibus-pinyin
+
+3 添加ibus中文输入法
+
+把 ibus 输入法添加到输入法栏。
+
+现在 Input Source 里面就有 Chinese 了，点进去。
+
+选择 Chinese(Intelligent Pinyin)。
+
+右上角选择 Chinese(Intelligent Pinyin)，中英文切换方式就是 shift，Preferences 里面可以选择 7 个选择项。
+
+然后就可以愉快使用 ibus 中文输入法啦。
+
+另一个示例很复杂
+
+    sudo apt install ibus ibus-clutter ibus-gtk ibus-gtk3 ibus-qt4
+    im-config -s ibus
+
+    sudo apt install ibus-pinyin ibus-sunpinyin
+
 ### 安装 fcitx 输入法框架及输入法
 
 非 Gnome 桌面环境比较复杂，逐步手工操作吧。
 
-    https://zhuanlan.zhihu.com/p/508797663
+    Fedora KDE Plasma 上安装 fcitx5 rime https://www.usmacd.com/cn/fcitx5-rime/#
+
+    Ubuntu22.04安装Fcitx5中文输入法 https://zhuanlan.zhihu.com/p/508797663
 
     Fcitx 5
 
         https://github.com/fcitx/fcitx5
 
-    Fcitx5配置详解 https://mephisto.cc/tech/fcitx5/
+    Fcitx 5 配置详解 https://mephisto.cc/tech/fcitx5/
 
     维基百科中文拼音词库
 
         https://github.com/felixonmars/fcitx5-pinyin-zhwiki
-
-树莓派 Raspbian 系统默认使用 LXDE，fcitx 和 scim 都没法用，可以使用ibus.
 
 Fcitx 把自己拆分的比较细：框架、图形界面、中文输入法等，安装时需要分别安装多个包，dnf/flatpak 的版本更新状态未必一致，多试试吧。
 
@@ -13628,56 +13672,11 @@ Debian
 
 安装中文输入法 fcitx 及 Google 拼音输入法
 
-    sudo apt-get install fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin
+    $ sudo apt-get install fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin
 
-    ling:https://blog.csdn.net/qq_63913621/article/details/144182178
-        https://blog.csdn.net/qq_45478359/article/details/113576252
+    树莓派安装中文输入法-谷歌拼音  https://blog.csdn.net/qq_45478359/article/details/113576252
 
-> 安装ibus中文输入法(Linux/Ubuntu)
-
-1 安装中文语言包
-
-安装中文语言包是为了让Input Sources
-
-里面出现Chinese这一项。
-
-选择“Manage Installed Languages”，“Install/Remove Languages”，“Chinese(Simplified)”，“Apply”。
-
-2 安装ibus输入法
-
-然后可以安装ibus中文输入法了。
-
-安装ibus框架。
-
-    sudo apt-get install ibus ibus-clutter ibus-gtk ibus-gtk3 ibus-qt4
-
-切换到ibus框架。
-
-    # im-chooser
-    im-config -s ibus
-
-安装拼音引擎。
-
-    sudo apt-get install ibus-pinyin
-
-3 添加ibus中文输入法
-
-把ibus输入法添加到输入法栏。
-
-现在Input Source里面就有Chinese了，点进去。
-
-选择Chinese(Intelligent Pinyin)。
-
-右上角选择Chinese(Intelligent Pinyin)，中英文切换方式就是shift，Preferences里面可以选择7个选择项。
-
-然后就可以愉快使用ibus中文输入法啦。
-
-another 很复杂
-
-    sudo apt install ibus ibus-clutter ibus-gtk ibus-gtk3 ibus-qt4
-    im-config -s ibus
-
-    sudo apt install ibus-pinyin ibus-sunpinyin
+树莓派 Raspbian 系统默认使用 LXDE，如果 fcitx 和 scim 都没法用，就只能用 ibus。
 
 ### 设置中文字体
 
