@@ -751,23 +751,23 @@ alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk
 # 前景色    30    31    32    33   34    35    36    37
 # 背景色    40    41    42    43   44    45    46    47
 
-PS1Cblack=$'\[\e[0;30m\]'
+ccBLACK=$'\[\e[0;30m\]'
 
-PS1Cred=$'\[\e[0;31m\]'
+ccRED=$'\[\e[0;31m\]'
 
-PS1Cgreen=$'\[\e[0;32m\]'
+ccGREEN=$'\[\e[0;32m\]'
 
-PS1Cyellow=$'\[\e[0;33m\]'
+ccYELLOW=$'\[\e[0;33m\]'
 
-PS1Cblue=$'\[\e[0;34m\]'
+ccBLUE=$'\[\e[0;34m\]'
 
-PS1Cmagenta=$'\[\e[0;35m\]'
+ccMAGENTA=$'\[\e[0;35m\]'
 
-PS1Ccyan=$'\[\e[0;36m\]'
+ccCYAN=$'\[\e[0;36m\]'
 
-PS1Cwhite=$'\[\e[0;37m\]'
+ccWHITE=$'\[\e[0;37m\]'
 
-PS1Cnormal=$'\[\e[m\]'
+ccNORMAL=$'\[\e[m\]'
 
 # 注意：判断命令返回值的函数 PS1exit-code 要放在放在 PS1 变量赋值语句的最前面，
 # 否则，它前面的函数要实现 $? 变量的透传
@@ -937,7 +937,7 @@ function PS1_container_name {
 #   在\$(函数名)后直接用换行\n就冲突
 # 规避办法
 #   法1. 把换行\n放在引用函数前面
-#   法2. 重新拼接成新样式避开这个bug: PS1="\n$PS1Cblue┌──── $PS1Cwhite\t ""$PS1""$PS1Cblue───┘ $PS1Cnormal"
+#   法2. 重新拼接成新样式避开这个bug: PS1="\n$ccBLUE┌──── $ccWHITE\t ""$PS1""$ccBLUE───┘ $ccNORMAL"
 #   法3. 完美的解决办法：新增子函数 PS1git-bash-new-line 实现跟上面完全一致的显示效果。
 function PS1git-bash-new-line {
     printf "\n╰"
@@ -993,11 +993,11 @@ if [[ $current_shell = 'zsh' ]]; then
 
 elif [[ $os_type = 'windows' ]]; then
     # Windows git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
-    PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
+    PS1="\n$ccBLUE╭─$ccRED\$(PS1exit-code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$ccBLUE$(PS1git-bash-new-line)──$ccWHITE\$ $ccNORMAL"
 
 elif [[ $os_type = 'wsl' ]]; then
     # Windows git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
-    PS1="\n$PS1Cblue╭─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cyellow@WSL_\$(PS1_host_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$PS1Cblue$(PS1git-bash-new-line)──$PS1Cwhite\$ $PS1Cnormal"
+    PS1="\n$ccBLUE╭─$ccRED\$(PS1exit-code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccYELLOW@WSL_\$(PS1_host_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$ccBLUE$(PS1git-bash-new-line)──$ccWHITE\$ $ccNORMAL"
 
 elif  [[ $os_type = 'raspi' ]]; then
     # 本机登录后禁用屏幕休眠 https://zhuanlan.zhihu.com/p/114716305
@@ -1009,11 +1009,11 @@ elif  [[ $os_type = 'raspi' ]]; then
     setterm --powerdown 0
 
     # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 树莓派温度告警 python环境 git分支及状态
-    PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)\$(PS1_container_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cred\$(PS1raspi-warning-prompt)$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
+    PS1="\n$ccBLUE┌─$ccRED\$(PS1exit-code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccRED\$(PS1raspi-warning-prompt)$ccYELLOW\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$ccBLUE└──$ccWHITE\$ $ccNORMAL"
 
 else
     # 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 python环境 git分支及状态
-    PS1="\n$PS1Cblue┌─$PS1Cred\$(PS1exit-code)$PS1Cblue[$PS1Cwhite\t $PS1Cgreen\u$PS1Cwhite@\$(PS1_host_name)\$(PS1_container_name)$PS1Cwhite:$PS1Ccyan\w$PS1Cblue]$PS1Cyellow\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$PS1Cblue└──$PS1Cwhite\$ $PS1Cnormal"
+    PS1="\n$ccBLUE┌─$ccRED\$(PS1exit-code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$ccBLUE└──$ccWHITE\$ $ccNORMAL"
 
 fi
 
