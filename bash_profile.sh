@@ -443,7 +443,7 @@ alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime'
 alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
 
 # podman
-[[ $os_type = 'linux' ]] && alias docker="podman"
+#[[ $os_type = 'linux' ]] && alias docker="podman"
 function pdms() {
     # https://stackoverflow.com/questions/28320134/how-can-i-list-all-tags-for-a-docker-image-on-a-remote-registry
     echo "[podman搜索列出镜像标签，非官方镜像需要完整的源地址]"
