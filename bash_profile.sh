@@ -108,25 +108,29 @@ esac
 
 unset os_name
 
+#######################
 # 命令行开启 vi 模式，按esc后用vi中的上下左右键选择历史命令
 # zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
 if [[ ! $current_shell = 'zsh' ]]; then
     set -o vi
 fi
 
+#######################
 # 有些软件默认使用变量 EDITOR 指定的编辑器，一般是 nano，不习惯就换成 vi
 export EDITOR=/usr/bin/vi
 
+#######################
 # 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存那些不常用的命令
 # 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以在新行中输入密钥。
 export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 
 #######################
-# 命令行的字符可以显示彩色，依赖这个设置
+# 在终端模拟器中命令行的字符显示彩色
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
 export COLORTERM=truecolor
 
+#######################
 # Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
 [[ -n $LANG ]] || export LANG=en_US.UTF-8
 
@@ -160,7 +164,6 @@ fi
 
 #######################
 # 常用命令的惯用法用别名和函数封装起来，方便日常使用
-
 
 # 列出目录下的文件清单，查找指定关键字，如 `lsg fnwithstr`。因为ls列出的目录颜色被grep覆盖，用 ls -l 查看更方便。
 alias lsg='ls -lFA |grep -i'
