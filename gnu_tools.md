@@ -17452,7 +17452,7 @@ NOTE：不要以 `sudo` 执行 winecfg
 
     10 directories, 8 files
 
-字体配置的 zh.reg
+字体配置的 zh_font.reg
 
 ```ini
 [HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes]
@@ -17479,9 +17479,10 @@ NOTE：不要以 `sudo` 执行 winecfg
 "Times New Roman CYR,204"="simsun"
 "Times New Roman Greek,161"="simsun"
 "Times New Roman TUR,162"="simsun""Tms Rmn"="simsun"
+
 ```
 
-然后在终端执行 regedit zh.reg
+然后在终端执行 `wine regedit zh_font.reg`
 
 ##### 如何使用 Wine
 
