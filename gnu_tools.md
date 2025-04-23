@@ -1937,7 +1937,9 @@ stty 命令还有一些其他用法，如：stty -echo 关闭回显（比如在�
 最古老的基本颜色板（basic colour palette），前景色和背景色分别有 8 种，合计16种如下
 
     https://blog.csdn.net/Dreamhai/article/details/103432525
+
     https://zhuanlan.zhihu.com/p/570148970
+
     色彩      黑    红    绿    黄    蓝    洋红    青    白
     前景色    30    31    32    33   34    35    36    37
     背景色    40    41    42    43   44    45    46    47
@@ -17024,7 +17026,7 @@ xorgxrdp：
 
     系统更新仍会提示输入密码
 
-    gnome-keyring 不会自动解锁自动保存的浏览器/ssh/gpg等密码，需要使用 seahorse，打开软件后手工点击解锁
+    gnome-keyring 不会自动解锁自动保存的浏览器/ssh/gpg等密码，可使用 seahorse 图形化工具进行管理，打开软件后手工点击解锁
 
     有些系统设置选项无法在远程桌面登录环境下设置，比如本地开机后用户自动登录等
 

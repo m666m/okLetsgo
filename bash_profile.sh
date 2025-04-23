@@ -1,18 +1,17 @@
 # .bash_profile
-##################################################################################################################
+###################################################################
 # 适用于 Linux bash、Linux zsh、Windows git bash(mintty.exe)，macOS 未测试
 # 本该放到 .bashrc 文件，为了方便统一在此了，可放到 .zshrc 中引用以保持自己的使用习惯
 #
 # 别人的配置文件参考大全
 #   https://github.com/pseudoyu/dotfiles
 #   https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
-
-####################################################################
+#
 # 避坑
 #   变量赋值别习惯性的加空格
 #   在 Fedora 下 # 号写注释，不要用变量引用的那个货币符号，会进行解释，不知道为啥
 
-####################################################################
+#######################
 # 此部分作为普通脚本的默认头部内容，便于调测运行。
 #
 # declare -p PS1 打印指定变量的定义
@@ -27,7 +26,41 @@
 # 意外退出时杀掉所有子进程
 # trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
+#######################
+# 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件，zsh不加载
+#   ~/.bashrc: executed by bash(1) for non-login shells.
+#       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
+[[ -n "$BASH_VERSION" ]] && test -f ~/.bashrc && . ~/.bashrc
+
+#######################
+# bash 优先调用 .bash_profile，就不会调用 .profile，该文件是 Debian 等使用的
+#   ~/.profile: executed by the command interpreter for login shells.
+#     This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login exists.
+#     see /usr/share/doc/bash/examples/startup-files for examples.
+#     the files are located in the bash-doc package.
+# 本可以直接补上执行，但是这样不够通用
+# test -f ~/.profile && . ~/.profile
+# 其实只需要补上执行 Debian 等发行版放在 .profile 里的这几个标准目录设置到 $PATH 即可
+# PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
+for dir in "$HOME/.local/bin" "$HOME/bin"; do
+  [[ -d "$dir" ]] && [[ ":$PATH:" != *":$dir:"* ]] && PATH="$PATH:$dir"
+done
+export PATH
+
+#######################
+# exit for non-interactive shell
+# [[ ! -t 0 ]] && return
+[[ $- != *i* ]] && {
+exit
+}
+
 ###################################################################
+# User specific environment and startup programs
+# 自此开始都是用户为了使用习惯的自定义设置
+#
+# 为防止变量名污染命令行环境，尽量使用奇怪点的名称
+
+#######################
 # 准备环境信息，方便后面使用
 # os_type：当前操作系统类型，linux、macos、windows、freebsd
 # current_shell 当前脚本环境，bash、zsh、ksh、fish
@@ -47,7 +80,7 @@ fi
 os_name=$(uname -s)
 case "$os_name" in
     Linux*)
-        # 判断是否为树莓派（多重条件校验）
+        # linux 有特殊情况
         if command -v vcgencmd >/dev/null 2>&1; then
             os_type="raspi"
         elif uname -r | grep -i Microsoft >/dev/null 2>&1; then
@@ -73,42 +106,7 @@ esac
 
 unset os_name
 
-###################################################################
-# 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件，zsh不加载
-#   ~/.bashrc: executed by bash(1) for non-login shells.
-#       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
-[[ $current_shell = 'bash' ]] && test -f ~/.bashrc && . ~/.bashrc
-
-###################################################################
-# bash 优先调用 .bash_profile，就不会调用 .profle，该文件是 Debian 等使用的
-#   ~/.profile: executed by the command interpreter for login shells.
-#     This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login exists.
-#     see /usr/share/doc/bash/examples/startup-files for examples.
-#     the files are located in the bash-doc package.
-# test -f ~/.profile && . ~/.profile
-# 这几个标准目录设置到 $PATH，在 Debian 等发行版放在 .profile 里了，这里要补上执行
-# PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
-for dir in "$HOME/.local/bin" "$HOME/bin"; do
-  [[ -d "$dir" ]] && [[ ":$PATH:" != *":$dir:"* ]] && PATH="$PATH:$dir"
-done
-export PATH
-
-###################################################################
-# exit for non-interactive shell
-# [[ ! -t 0 ]] && return
-[[ $- != *i* ]] && {
-unset current_shell
-unset os_type
-exit
-}
-
-###################################################################
-# User specific environment and startup programs
-# 自此开始都是自定义设置
-#
-# 为防止变量名污染命令行环境，尽量使用奇怪点的名称
-
-# 命令行开启vi-mode模式，按esc后用vi中的上下左右键选择历史命令
+# 命令行开启 vi 模式，按esc后用vi中的上下左右键选择历史命令
 # zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
 if [[ ! $current_shell = 'zsh' ]]; then
     set -o vi
@@ -121,7 +119,7 @@ export EDITOR=/usr/bin/vi
 # 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以在新行中输入密钥。
 export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 
-####################################################################
+#######################
 # 命令行的字符可以显示彩色，依赖这个设置
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
@@ -130,7 +128,7 @@ export COLORTERM=truecolor
 # Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
 [[ -n $LANG ]] || export LANG=en_US.UTF-8
 
-####################################################################
+#######################
 # 参考自 Debian 的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
 # 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
@@ -158,9 +156,10 @@ if [ -x /usr/bin/dircolors ]; then
     alias lss='ls -lhZ'
 fi
 
-####################################################################
-# 其它常用命令的惯用法用别名和函数封装起来，方便日常使用
-#
+#######################
+# 常用命令的惯用法用别名和函数封装起来，方便日常使用
+
+
 # 列出目录下的文件清单，查找指定关键字，如 `lsg fnwithstr`。因为ls列出的目录颜色被grep覆盖，用 ls -l 查看更方便。
 alias lsg='ls -lFA |grep -i'
 # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findf fnwithstr`
@@ -511,9 +510,10 @@ function dboxstop() {
     done
 }
 
-####################################################################
-# Windows git bash("C:\Program Files\Git\git-bash.exe" --cd-to-home) 其实调用的 mintty.exe
-# 使 mintty（未开启`ConPTY=on`）下执行普通的 Windows 控制台程序可以正常显示
+#######################
+# 适用于 Windows git bash(mintty.exe)
+# 使 mintty 下执行普通的 Windows 控制台程序，用 winpty 辅助可以正常显示
+# 如果开启了 ConPTY=on 选项则不需要 winpty 辅助了
 if [[ $os_type = 'windows' ]] && ! grep '^ConPTY=on' ~/.minttyrc >/dev/null 2>&1; then
     alias python="winpty python"
     alias ipython="winpty ipython"
@@ -534,8 +534,8 @@ export GPG_TTY=$(tty)
 # echo "以当前终端 tty 连接 gpg-agent..."
 # gpg-connect-agent updatestartuptty /bye >/dev/null
 
-#################################
-# macOS 使用 gpg-agent
+#######################
+# 适用于 macOS 使用 gpg-agent
 if [[ $os_type = 'macos' ]]; then
     if [ -f ~/.gnupg/.gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
         source ~/.gnupg/.gpg-agent-info
@@ -545,22 +545,24 @@ if [[ $os_type = 'macos' ]]; then
     fi
 fi
 
-####################################################################
-# Linux bash / Windows git bash(mintty)
+#######################
+# 适用于 Linux bash / Windows git bash(mintty)
 # 命令行使用 ssh 多会话复用 ssh 密钥代理
-# 来自章节 [多会话复用 ssh-agent 进程](ssh.md think)
+# 设置变量指向ssh密钥代理的进程即可实现复用，参见章节 [多会话复用 ssh-agent 进程](ssh.md think)
 if test -d "$HOME/.ssh"; then
 
-    # GNOME 桌面环境下，利用 gnome-keyring-daemon 实现了 ssh 密钥代理功能，设置变量指向即可
+    # GNOME 桌面环境下，利用 gnome-keyring-daemon 实现了 ssh 密钥代理功能
     if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
 
-        # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，图形化工具可使用 seahorse 进行管理
-        # 其实现了 ssh 密钥代理功能，但有时候没有自动启动 gnome-keyring-daemon 守护进程，
+        # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，实现了 ssh 密钥代理功能，
+        # 它但有时候没有开机自启动 gnome-keyring-daemon 守护进程，
         # 就没有 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh，导致无法读取ssh代理的密钥
         # 干脆手工拉起来  https://blog.csdn.net/asdfgh0077/article/details/104121479
         pgrep gnome-keyring >/dev/null 2>&1 || gnome-keyring-daemon --start >/dev/null 2>&1
 
-        # 设置变量指向即可
+        # 设置变量指向ssh密钥代理的进程
+        # gnome-keyring 为何不自动设置这两个变量，既然接管了，又不声明，很有个性。。。
+        # 目前必须手动设置
         export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
         export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
@@ -568,17 +570,17 @@ if test -d "$HOME/.ssh"; then
         # ssh 密钥的保护密码都被 keyring 接管了，用到的时候自动提交，全程用户无感知，不需要执行 `ssh-add` 了
         # ssh-add
 
-    # KDE 桌面环境，自带 systemd 单元文件 ssh-agent.service
+    # KDE 桌面环境有 systemd 单元文件 ssh-agent.service 支持复用 ssh-agent 进程
     elif [[ $XDG_CURRENT_DESKTOP = 'KDE' ]]; then
 
         # KDE 桌面环境有自己的 `systemctl --user status ssh-agent.service`
         # 启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/ssh-agent.socket
 
-        # 设置变量指向即可
-        # 目前必须手动给 ssh 密钥代理 ssh-agent 设置变量，因为服务 ssh-agent.service 没设置全！
+        # 设置变量指向ssh密钥代理的进程
+        # 服务 ssh-agent.service 设置了一个，留了一个不设置，很有个性。。。
         # export SSH_AUTH_SOCK="$(ls $XDG_RUNTIME_DIR/ssh-agent.socket |head -1)"
-        # 获取服务进程的 PID
         # export SSH_AGENT_PID="$(ps -ef | grep 'ssh-agent -D -a' | grep -v grep | awk '{print $2}')"
+        # 所以，目前必须手动设置变量，获取服务进程的 PID
         AGENT_PID=$(systemctl --user show ssh-agent.service --property=ExecMainPID | awk -F= '{print $2}')
         # 通过进程树找到 ssh-agent 的实际 PID（需安装 pstree）
         SSH_AGENT_PID=$(pstree -p $AGENT_PID | grep -oP 'ssh-agent\(\K\d+')
@@ -606,23 +608,24 @@ if test -d "$HOME/.ssh"; then
             # agent未运行视作开机后第一次打开bash会话，先清理掉 ssh-pageant 上次使用过的临时文件，否则会被加载
             rm -f /tmp/.ssh-pageant-$USERNAME
 
-            # 稍带运行个 gpg 钥匙圈更新
+            # 搭车运行 gpg 钥匙圈更新
             echo ''
-            # echo "update gpg keyrings, wait a second..."
+            # echo "更新 gpg 钥匙圈需要点时间，请稍等..."
             # gpg --refresh-keys
-            echo "GPG update TrustDB,跳过 owner-trust 未定义的导入公钥..."
+            echo "更新 gpg TrustDB, 跳过 owner-trust 未定义的导入公钥..."
             gpg --check-trustdb
             echo ''
-            echo "GPG check sigs..."
+            echo "检查 gpg 签名..."
             gpg --check-sigs
         fi
 
         echo ''
         # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
-        # git bash 自带的工具 ssh-pageant 会连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要执行 `ssh-add` 了
+        # ssh-add
+        # 利用 git bash 自带的工具 ssh-pageant，连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要执行 `ssh-add` 了
         # 使用以下参数启动的 ssh-pageant 会判断是否正在运行，不会多次运行自己
+        # ssh-pageant 还会设置变量指向ssh密钥代理的进程，用户不需要操心
         eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
-        # ssh-add -l
 
     # 默认 Linux tty 环境复用 ssh-agent 进程，这个设置最通用
     else
@@ -643,11 +646,11 @@ if test -d "$HOME/.ssh"; then
         # 保存已经启动的 ssh-agent 进程的变量指向
         agent_env=~/.ssh/agent.env
 
-        # 复用已经启动的 ssh-agent 进程，设置变量指向
+        # 复用已经启动的 ssh-agent 进程，设置变量指向ssh密钥代理的进程
         agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
         agent_load_env
 
-        # 启动 ssh-agent
+        # 启动 ssh-agent，并保存指向ssh密钥代理进程的变量
         agent_start () { test -d "$HOME/.ssh" && (umask 077; ssh-agent >| "$agent_env") && source "$agent_env" >| /dev/null ; }
 
         # agent_run_state:
@@ -659,11 +662,11 @@ if test -d "$HOME/.ssh"; then
         if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
             # agent未运行视作开机后第一次打开bash会话
 
-            # 稍带运行个 gpg 钥匙圈更新
+            # 搭车运行 gpg 钥匙圈更新
             echo ''
-            # echo "更新gpg钥匙圈需要点时间，请稍等..."
+            # echo "Updating gpg keyrings, wait a second..."
             # gpg --refresh-keys
-            echo "GPG update TrustDB, 跳过 owner-trust 未定义的导入公钥..."
+            echo "GPG update TrustDB, skip owner-trust undefined keys..."
             gpg --check-trustdb
             echo ''
             echo "GPG check sigs..."
@@ -696,7 +699,7 @@ if test -d "$HOME/.ssh"; then
     fi
 fi
 
-####################################################################
+#######################
 # Bash：加载插件或小工具
 
 # ssh 命令后面按tab键自动补全 hostname，zsh 自带不需要
@@ -704,8 +707,8 @@ if [[ ! $current_shell = 'zsh' ]]; then
     [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ' | grep -v \*) $(cat ~/.ssh/known_hosts | grep -v ^\| | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq)" ssh
 fi
 
-# ackg 只适用于 Linux 类
-if ! [[ $os_type = 'windows' ]]; then
+# ack 命令下载个 hhighlighter 插件
+if command -v ack >/dev/null 2>&1; then
 
     if [[ -s /usr/local/bin/ackg.sh ]]; then
         source /usr/local/bin/ackg.sh
@@ -727,15 +730,15 @@ if ! [[ $os_type = 'windows' ]]; then
     fi
 fi
 
-#################################
+#######################
 # Bash：手动配置插件
 
 # 从上面的 ackg.sh 扩展的看日志的快捷命令
 alias ackgs='ackg -i'
 alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
 
-####################################################################
-# Linux bash / Windows git bash(mintty)
+###################################################################
+# 适用于 Linux bash / Windows git bash(mintty)
 # 双行彩色命令行提示符，显示当前路径、git分支、python环境名等
 #
 # 效果示例：
@@ -744,11 +747,6 @@ alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk
 #  ╰──$ uname -a
 #  MSYS_NT-10.0-19044 MY-PC 3.3.5-341.x86_64 2022-11-08 19:41 UTC x86_64 Msys
 #
-#  ┌─[13:18:06 user@YOURhost:/usr]
-#  └──$
-
-# https://zhuanlan.zhihu.com/p/570148970
-# https://zhuanlan.zhihu.com/p/566797565
 # 色彩      黑    红    绿    黄    蓝    洋红    青    白
 # 前景色    30    31    32    33   34    35    36    37
 # 背景色    40    41    42    43   44    45    46    47
@@ -820,7 +818,7 @@ function PS1git-branch-name {
     # NOTE: 调用可能不存在的命令，必须先 `command -v` 判断一下，否则不存在的命令Fedora会搜索软件仓库导致卡顿
     if $(command -v __git_ps1 >/dev/null 2>&1); then
         # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，后面也不能用它的返回值判断是否执行成功
-        # NOTE:如果用 local 声明变量，就无法取到执行语句的返回值了
+        # NOTE:如果用 local 声明变量 _pp_git_pt，就无法取到执行语句的返回值了
         _pp_git_pt=$(>/dev/null; __git_ps1 '%s' 2>/dev/null)
         if [ "$?" = "0" ]; then
             # 如果是有效的 git 信息，这里就直接打印并退出函数
@@ -840,7 +838,7 @@ function PS1git-branch-name {
     # 一条命令取当前分支名
     # 命令 git symbolic-ref 在裸仓库或 .git 目录中运行不报错，都会打印出当前分支名，
     # 除非不在当前分支，返回 128，如果当前分支是分离的，返回 1
-    # NOTE:如果用 local 声明变量，就无法取到执行语句的返回值了
+    # NOTE:如果用 local 声明变量 _pp_branch_name，就无法取到执行语句的返回值了
     _pp_branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
     local exitcode="$?"
 
