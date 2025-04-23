@@ -27,20 +27,20 @@
 # trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
 #######################
-# 兼容性设置，用于 .bash_profile 加载多种 Linux 的配置文件，zsh不加载
+# 兼容性设置：用于 .bash_profile 加载多种 Linux 的配置文件，zsh不加载
 #   ~/.bashrc: executed by bash(1) for non-login shells.
 #       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
 [[ -n "$BASH_VERSION" ]] && test -f ~/.bashrc && . ~/.bashrc
 
 #######################
-# bash 优先调用 .bash_profile，就不会调用 .profile，该文件是 Debian 等使用的
+# 兼容性设置：bash 优先调用 .bash_profile，就不会调用 .profile，该文件是 Debian 系使用的
 #   ~/.profile: executed by the command interpreter for login shells.
 #     This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login exists.
 #     see /usr/share/doc/bash/examples/startup-files for examples.
 #     the files are located in the bash-doc package.
-# 本可以直接补上执行，但是这样不够通用
+# 在 .profile 里的有几个标准目录设置到 $PATH，为保持兼容性这里不直接执行.profile
+# 单独设置这几个目录到 $PATH 就可以了
 # test -f ~/.profile && . ~/.profile
-# 其实只需要补上执行 Debian 等发行版放在 .profile 里的这几个标准目录设置到 $PATH 即可
 # PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 for dir in "$HOME/.local/bin" "$HOME/bin"; do
   [[ -d "$dir" ]] && [[ ":$PATH:" != *":$dir:"* ]] && PATH="$PATH:$dir"
@@ -48,6 +48,7 @@ done
 export PATH
 
 #######################
+# 如果是非交互式登录(ssh直接在服务器执行脚本)，这里就直接退出了，后面的设置统统不需要
 # exit for non-interactive shell
 # [[ ! -t 0 ]] && return
 [[ $- != *i* ]] && {
@@ -55,15 +56,15 @@ exit
 }
 
 ###################################################################
-# User specific environment and startup programs
 # 自此开始都是用户为了使用习惯的自定义设置
+# User specific environment and startup programs
 #
 # 为防止变量名污染命令行环境，尽量使用奇怪点的名称
 
 #######################
 # 准备环境信息，方便后面使用
-# os_type：当前操作系统类型，linux、macos、windows、freebsd
-# current_shell 当前脚本环境，bash、zsh、ksh、fish
+# current_shell：当前脚本环境
+# os_type：当前操作系统类型
 
 if [ -n "$BASH_VERSION" ]; then
     current_shell="bash"
@@ -80,7 +81,7 @@ fi
 os_name=$(uname -s)
 case "$os_name" in
     Linux*)
-        # linux 有特殊情况
+        # linux 再细分几个类型
         if command -v vcgencmd >/dev/null 2>&1; then
             os_type="raspi"
         elif uname -r | grep -i Microsoft >/dev/null 2>&1; then
@@ -96,6 +97,7 @@ case "$os_name" in
         os_type="freebsd"
         ;;
     MSYS_NT*|MINGW32_NT*|MINGW64_NT*|CYGWIN_NT*)
+        # Windows git bash(mintty)/MSYS2
         os_type="windows"
         ;;
     *)
@@ -1019,3 +1021,4 @@ fi
 
 unset current_shell
 unset os_type
+

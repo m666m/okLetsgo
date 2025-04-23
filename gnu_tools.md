@@ -12,1536 +12,6 @@
 
     内核相关工具和使用手册 https://docs.kernel.org/
 
-## Windows 下的 GNU/POSIX 环境
-
-如果只是想做 Windows、macOS 和 Linux 等多个操作系统跨平台应用程序，使用 QT(c++/python) 或基于 Chromium+Node.js 的 Electron 框架的应用程序是更好的选择。
-
-对 GNOME/GTK+ 环境可以考虑用 python 的 PyGObject 图形库，普通应用程序的界面用这个足够了，通过 mingw 也可在 Windows 下运行：
-
-    https://gnome.pages.gitlab.gnome.org/pygobject/getting_started.html
-
-    https://www.gtk.org/docs/installations/windows/
-
-### 环境方案选择
-
-Windows 10+ 下使用 WSL 开发 GNU 环境设置
-
-    https://github.com/hsab/WSL-config
-
-Windows C++ 开发环境配置
-
-    g++ 7.0 + git + cmake
-
-    code::block / vscode / SourceInsight
-
-    WinSCP 同步本地和编译机代码
-
-    BeyondCompare 图形化合并代码
-        推荐用 meld 或 Diffuse 替换 BeyondCompare，参见章节 [给资源管理器添加 meld 右键菜单]
-
-    tmux + vim 直接在编译机写代码，方便随时ssh上去复原现场继续。
-
-    静态代码分析工具 SourceInsight
-
-    Understand 王者没有之一
-        https://www.scitools.com
-        https://blog.csdn.net/jojozym/article/details/104722107
-        https://www.zhihu.com/question/19570229/answer/1626066191
-
-    库 toft + chrome + leveldb + folly + zeromq
-
-#### 各框架对Windows本地资源的访问方式不同
-
-虽然都是使用 mintty.exe 作为本地终端模拟器，但各框架对 Windows 目录 C:\> 的解释不同，shell操作的位置不一样
-
-    Cygwin  /cygdrive/c
-
-    MSYS2   /c
-
-    wsl     /mnt/c
-
-#### MGW 和 Cygwin 的实现思路
-
-MingW 在编译时对二进制代码转译
-
-    MingW (gcc 编译到mscrt)包含 gcc 和一系列工具，是 Windows 下的 gnu 环境。
-
-    编译 linux c++ 源代码，生成 Windows 下的 exe 程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API，相比 Cygwin 体积更小，使用更方便。
-
-    如创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的 mscrt CreateProcess() 形式。
-
-Cygwin 在编译时中间加了个翻译层 cygwin1.dll
-
-    https://zhuanlan.zhihu.com/p/56572298
-
-    Cygwin 生成的程序依然有 fork() 这样的 Linux 系统调用，但目标库是 cygwin1.dll。
-
-    Cygwin（POSIX接口转换后操作windows）在Windows中增加了一个中间层——兼容POSIX的模拟层，在此基础上构建了大量Linux-like的软件工具，由此提供了一个完整的 POSIX Linux 环境（以 GNU 工具为代表），模拟层对linux c++代码的接口如同 UNIX 一样， 对Windows由 win32 的 API 实现的cygwin1.dll，这就是 Cygwin 的做法。
-
-    Cygwin实现，不是 kvm 虚拟机环境，也不是 QEMU 那种运行时模拟，它提供的是程序编译时的模拟层环境：exe调用通过它的中间层dll转换为对windows操作系统的调用。
-
-    借助它不仅可以在 Windows 平台上使用 GCC 编译器，理论上可以在编译后运行 Linux 平台上所有的程序：GNU、UNIX、Linux软件的c++源代码几乎不用修改就可以在Cygwin环境中编译构建，从而在windows环境下运行。
-
-    对于Windows开发者，程序代码既可以调用Win32 API，又可以调用Cygwin API，甚至混合，借助Cygwin的交叉编译构建环境，Windows版的代码改动很少就可以编译后运行在Linux下。
-
-    用 MingW 编译的程序性能会高一点，而且也不用带着那个接近两兆的 cygwin1.dll 文件。
-    但 Cygwin 对 Linux 的模拟比较完整，甚至有一个 Cygwin X 的项目，可以直接用 Cygwin 跑 X。
-
-    另外 Cygwin 可以设置 -mno-cygwin 的 flag，来使用 MingW 编译。
-
-取舍：选 MSYS2
-
-    如果仅需要在 Windows 平台上使用 GCC，可以使用 MinGW 或者 Cygwin。
-
-    如果还有更高的需求（例如运行 POSIX 应用程序），就只能选择安装 Cygwin。
-
-    相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具。
-
-    目前流行的 MSYS2 是 MSYS 的一个升级版，准确的说是集成了 pacman 和 Mingw-w64 的 Cygwin 升级版。
-
-    如果你只是想在 Windows 下使用一些 Linux 小工具，建议用 MSYS2，把 /usr/bin 加进环境变量 path 以后，可以直接在命令行中使用 Linux 命令。
-
-另有 Linux 下运行 Windows 程序的中间层 wine，也是这个思路
-
-    https://www.winehq.org/
-
-#### MinGW
-
-此项目已停止维护
-
-    https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html
-
-#### MinGW64
-
-MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接口协议是 win32，异常处理模型是 seh，Build revision 是 1 。
-
-简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了Mingw64。比如 CodeLite，CodeBlocks，Eclipse CDT，Apache NetBeans（JDK 8）。
-
-收费的有JetBrains Clion，AppCode （mac）。
-
-#### MSYS、MSYS2
-
-    https://www.msys2.org/
-
-    https://msys2.github.io/
-
-MinGW 仅仅是工具链，Windows 下的 cmd 使用起来不够方便，MSYS 是用于辅助 Windows 版 MinGW 进行命令行开发的配套软件包：提供了部分 Unix 工具以使得 MinGW 的工具使用起来方便一些。相比基于庞大的 Cygwin 下的 MinGW 会轻巧不少。
-
-MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包管理器 pacman (Arch Linux)。
-
-在 Windows 上使用 Linux 程序
-
-    如果只是需要一个编译器的话，可以用MinGW64。
-
-    如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了 cygwin、mingw64 以及 mingw32（不等于老版的那个MinGW），shell、git、多种环境的 gcc（适用于 cygwin 环境或原生 Windows），而且有 pacman(ArcLinux) 作为包管理器。
-
-#### Windows 10+ 本地化 Linux 编程接口
-
-Windows 10 在 2022 年后，已经比较完整的提供了对 Linux 的字符程序和 GUI 程序的相应编程接口
-
-    对 Linux 字符程序，通过 ConPty 接口支持 unix pty 应用
-
-    对 Linux GUI 程序，通过 WSLg 接口支持 x-window/wayland 等框架下的应用
-
-> ConPty
-
-    https://zhuanlan.zhihu.com/p/102393122
-
-    https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/
-
-    https://learn.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
-    https://learn.microsoft.com/en-us/windows/terminal/samples
-            https://github.com/microsoft/terminal/tree/main/samples/ConPTY/EchoCon
-
-    https://www.zhihu.com/question/303307670
-
-基于 ConPTY 的终端，既能运行 POSIX 命令行程序，也能运行基于 Windows ConHost 的命令行程序，需要 Windows version >= 10 / 2019 1809 (build >= 10.0.17763)。
-
-目前支持 Conpty 接口的终端主要有
-
-    Windows Terminal (from the people who wrote conpty)
-
-    VSCode、IDEA、Eclipse 等 integrated terminal using ConPTY
-
-    PowerShell 7+ 使用 conpty 接口运行 cmd 字符程序
-
-    在 2022-10-28 MSYS2 mintty 支持使用 ConPty 接口了：
-
-        MSYS2 的配置文件 /etc/git-bash.config 中设置变量 `MSYS=enable_pcon`
-
-        mintty 配置文件 .minttyrc 中设置 `ConPTY=on`
-
-    最直接的好处是，在 mintty 中执行 Windows 的 cmd 字符程序，不再需要借助 winpty 去加载调用了 https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs
-
-有个性能对比测试
-
-    https://kichwacoders.com/2021/05/24/conpty-performance-in-eclipse-terminal
-
-> WSLg
-
-    https://github.com/microsoft/wslg
-
-目前已经可以支持在命令行启动运行 Linux GUI 程序了，如： gvim、gedit 等，甚至支持 GPU 加速的 3D 程序。
-
-WSLg 其实是个部署了 X Server 的 Linux，添加了支持 Windows 远程桌面的 FreeRDP 服务，即作为 X-window 应用和  Windows 窗口应用的桥梁存在。
-
-通过 Windows 远程桌面的接口实现了用户在 Windows 桌面直接使用 Linux GUI 程序：
-
-    Windows 用户界面 <-> RDP <-> X Server <-> Linux GUI 程序。
-
-而且 WSLg 用到的其实是替代 X Window System 的 Wayland Compositor，也就是 Wayland 官方给出的参考实现 Weston。这种类似于添加了个中间代理的解决方式，有利于完美适配各大 Linux 发行版和各种 Linux GUI 程序。
-
-WSLg（Windows Subsystem for Linux GUI） 是微软官方提供的功能，允许 WSL 2 直接运行 Linux GUI 应用程序（包括完整的桌面环境），并自动集成到 Windows 桌面。
-
-    无需额外 X Server（如 VcXsrv/X410）。
-
-    默认使用 Wayland，支持 X11，需要额外安装
-
-    支持剪贴板共享、音频、GPU 加速（适用于 OpenGL/Vulkan）。
-
-    适用于 Windows 11（21H2+）或最新 Win10（需手动启用）。
-
-在 Windows Subsystem for Linux (WSL) 下使用 GNOME + WSLg 是一种更现代、更便捷的方式，可以直接在 Windows 上运行完整的 Linux 桌面环境，而无需额外配置 X Server。
-
-参见章节 [在 WSL 实例上运行完整的 Linux 桌面环境](Windows 10+ 那些事儿.md)。
-
-## Windows字符终端
-
-Windows 10 2018年之前的版本 CMD 终端不同于 Linux 的伪终端机制：
-
-    终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost。
-
-    conhost 实现机制跟 Linux 伪终端不同，一个是调用 Windows API，一个是发送文本字符作为显示效果的控制，所以按照 Linux 终端原理工作的终端模拟器及各种终端应用程序其实无法连接 conhost。
-
-    终端概念参见章节 [Linux 字符终端]。
-
-Windows 下实现 Linux 伪终端机制的是 Msys2 项目，基于 putty 制作了 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等，详见章节 [mintty 终端模拟器]。
-
-2018年 Windows 10 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得各种终端模拟器可以用文本的方式连接本机 Windows 接口的字符显示接口，参见章节 [Windows 10 本地化 Linux 编程接口]，下列三个常用工具程序估计用处不大了：
-
-    clink 辅助工具，在 cmd 下模仿 bash，按 tab 键自动完成，像 emacs 一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
-
-        https://github.com/chrisant996/clink
-            不再更新了 https://github.com/mridgers/clink
-
-    winpty 辅助工具，提供了 unix pty 接口与 cmd conhost 接口的互通，是 mintty 这种 MSYS2 环境下执行 Windows CMD/PowerShell 程序的中介，参见章节 [winpty 运行 cmd 字符终端程序]
-
-        https://github.com/rprichard/winpty
-
-        https://gitforwindows.org/faq.html#some-native-console-programs-dont-work-when-run-from-git-bash-how-to-fix-it
-
-    wslbridge 辅助工具，提供了 unix pty 接口与 WSL(Windows Subsystem for Linux) 的互通，很多支持终端多路复用的软件在 Windows 下都通过该组件使用 WSL 会话
-
-        wslbridge2 https://github.com/Biswa96/wslbridge2
-            wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
-
-有很多图形化的终端模拟器，如果想统一在一个窗口程序下标签化管理各个连接，这样的程序称为终端多路复用器 terminal multiplexer，推荐使用 [Windows Terminal]。
-
-Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安装支持多种符号的字体，见章节 [Nerd Font]。
-
-### putty 终端模拟器
-
-putty 完美的实现了在 Windows 下使用 ssh 远程连接 Linux 服务器，连接后用户使用体验跟 Linux 下的本地终端模拟器完全一致
-
-    https://www.chiark.greenend.org.uk/~sgtatham/putty/
-
-    竞品 KiTTY https://github.com/cyd01/KiTTY
-
-        从 putty 拉的分支而来，是对 putty 的易用性改进，共用putty的站点配置，增加了背景透明、支持站点列表的文件夹、自动化操作脚本，可以给站点加注释，还有便携版
-
-        注意，区别于 https://sw.kovidgoyal.net/kitty，那个是 Linux 下的 GPU 加速终端模拟器
-
-    竞品 bitvise https://www.bitvise.com/
-
-putty 连接远程服务器，实现了 ssh 的全部功能，使用 PUTTYGEN.EXE 生成并管理密钥，使用 PAGEANT.EXE 作为密钥代理，并在一个单一窗口下填写远程服务器的参数配置，远程服务器的终端显示也是一个单一窗口。
-
-术语：会话 Session
-
-    因为功能是连接远程站点然后执行命令行操作，putty 把每个连接保存为会话，设置会话就是设置连接某站点的参数，除了终端显示的参数，还有各种连接协议的参数等多种设置
-
-putty 登录站点后的使用很简单
-
-    点击并拖动鼠标左键是选择文字并复制到操作系统剪贴板（运行 putty 的操作系统，不是远程站点的）
-
-    点击鼠标右键，从操作系统剪贴板粘贴到当前的命令提示符后面
-
-putty 的初始界面只有一个，选择会话和会话设置两个功能区混合，使用逻辑有点绕：
-
-    会话设置的类别界面“Category”在左侧树形展示
-
-    会话选择界面在右侧，对应左侧界面“Category”的树形列表第一项“Session”
-
-    会话选择界面的上半部分是站点的ip地址和端口等参数设置，下半部分是会话列表供选择
-
-    会话参数的各项设置界面在右侧，对应左侧界面“Category”的树形列表的其它各分支项
-
-    连接会话的“Open”按钮在最下方，选择一个已有会话后点击该按钮即可连接登录站点
-
-    左侧界面“Category”的树形列表的其它部分，是当前选择的会话的参数，点击各个分支时右侧界面会切换为该会话各参数的设置界面（需要先在会话选择界面选择会话，点“Load”按钮，否则是默认的初始参数）
-
-    如果右侧界面需要切换到会话选择界面，点击左侧界面“Category”的树形列表第一项“Session”
-
-简易连接站点：
-
-    在左侧界面“Category”，点击的树形列表第一项“Session”，右侧出现会话选择界面，这也是 putty 启动后的初始界面
-
-    右侧会话选择界面，在“Host Name(or IP address)”输入地址和端口，点击下方的“Open”按钮，这样会使用默认的初始参数进行连接
-
-    可点击左侧界面的树形列表，设置本次连接使用的参数，然后再点击“Open”按钮
-
-连接已有站点：
-
-    在左侧界面“Category”，点击的树形列表第一项“Session”，右侧出现会话选择界面，这也是 putty 启动后的初始界面
-
-    在右侧会话选择界面，操作如下：
-
-        在“Saved Sessions”列表选择一个会话，双击即可。
-
-        或在“Saved Sessions”列表点击一个会话，使其变为蓝色已选，然后点击下方的“Open”按钮
-
-        或在“Saved Sessions”下方的编辑框手动输入会话名称，然后点击下方的“Open”按钮
-
-建立新的会话
-
-    在左侧界面“Category”，点击的树形列表第一项“Session”，右侧出现会话选择界面，这也是 putty 启动后的初始界面
-
-    在右侧会话选择界面，操作如下：
-
-        在“Host Name(or IP address)”、“Port”输入地址和端口
-
-        在“Saved Sessions”输入新的会话名称
-
-        点击右侧的“Save”按钮
-
-    如果新会话有某些参数需要设置，执行下面的“编辑已有会话”步骤。
-
-编辑已有会话
-
-    在左侧界面“Category”，点击的树形列表第一项“Session”，右侧出现会话选择界面，这也是 putty 启动后的初始界面
-
-    1、在右侧会话选择界面，操作如下：
-
-    在 “Saved Sessions” 列表选择一个会话，点击右侧的 “Load” 按钮，这时会话名称会自动填充“Saved Sessions” 下方的编辑框，而且 “Host Name(or IP address)”、“Port” 和 “connection type” 栏目都会显示该会话的站点参数
-
-        如果想复制该会话，编辑新的会话名称，然后点击右侧的 “Save” 按钮，转下面第4步。
-
-        如果想删除该会话，点击右侧的 “Delete” 按钮，转下面第4步。
-
-    下面的第2、3步可都做，或只做一个。
-
-    2、基本会话参数的修改：
-
-    在右侧会话选择界面，可修改“Host Name(or IP address)”、“Port” 和 “connection type” 栏目。
-
-    点击右侧按钮 “Save” 保存你的修改。如果不保存，直接点击下方的 “Open” 按钮，相当于用你修改的参数临时连接当前站点。
-
-    然后可转下面第4步。
-
-    3、高级会话参数的修改：（这里比较绕，习惯习惯就好）
-
-    点击左侧 “Category” 界面的树形列表的各个分支，右侧界面会跟随改变，不再是会话选择界面了，变成了你当前选择会话的相关参数的设置界面。如果未选择会话，则是 putty 启动后使用的默认初始参数。
-
-        切换左侧选择树形列表的各个分支，则右侧界面跟随变为相关参数的设置，自行调整即可。
-
-        比如“Connection->Data”里预设该站点的登录用户名，“Connection->SSH-Auth”里设置该站点密钥登录的密钥文件等等。
-
-        有些参数是影响终端呈现效果的，比如终端类型可以选择 xterm-256color 等效于在登录站点后的shell里设置环境变量 Term=xterm-256color。
-
-        有些参数影响 putty 的窗口，比如窗口滚动条缓存屏幕内容12000行，酌情设置。
-
-    保存你的修改：调整完成后，点击左侧界面“Category”的树形列表第一项“Session”，右侧会重新出现你的会话选择界面
-
-        检查下“Saved Sessions”下方的编辑框，务必确认自动填充的还是你刚才选择的那个会话名称，如果是新的名称会被保存为新的会话。
-
-        点击右侧按钮“Save”保存你的修改。如果不保存，直接点击下方的“Open”按钮，相当于用你修改的参数临时连接当前站点。
-
-    如果改乱了不想保存，转第1步重新加载会话设置即可。
-
-    4、执行上面“连接已有会话”的步骤，连接你的会话。
-
-如果在右侧的会话选择界面，不选择已有会话，直接在左侧 “Category” 界面的树形列表进行了各种调整
-
-    不推荐这样做，可能会乱。
-
-    这样需要后续再输入ip地址和端口
-
-        点击Open按钮就是“简易连接”
-
-        如果给出站点名称后点击“Save”按钮，这样会保存一个会话。
-
-备份会话
-
-putty把会话的参数写入了 Windows 注册表，需要手工导入，新建一个 exp_session.bat
-
-```bat
-REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
-```
-
-执行该 bat 文件，会在当前目录下生成一个名为 session.reg 的文件。
-如果需要恢复站点设置，直接双击该文件即会被 Windows 导入注册表。
-
-> putty 美化
-
-    仿效本地终端模拟器根据变量 $TERM 自动模拟为指定的终端类型，putty 可以在站点选项里设置终端类型，这样在登录远程服务器后就按照指定的类型显示了，一般默认为 xterm 就是彩色。
-
-开启 Putty 终端 256色 的支持: Putty->load你的session->Window->Colours->勾选 “General options for colour usage” 下的几个选项。
-
-即使你设置会话时勾选了使用 256color 和 true color 真彩色，putty 默认的主题比较保守，只使用 16 种颜色（用 rgb 设置，其实支持真彩色），你ssh登录到服务器会发现文字色彩比较刺眼。
-
-可以自定义颜色，在设置会话时 custom color，如果感觉挨个设置太麻烦，试试别人做好的
-
-    https://github.com/AlexAkulov/putty-color-themes
-
-    北极主题颜色 https://github.com/arcticicestudio/nord-putty
-
-    超多主题颜色，有 putty 的
-
-        https://github.com/mbadolato/iTerm2-Color-Schemes
-
-    自定义主题颜色，自己设计
-
-        https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
-
-推荐使用 nord 主题
-
-    curl -fsSLO https://github.com/arcticicestudio/nord-putty/raw/develop/src/nord.reg
-
-双击该 reg 文件，确认导入，然后你的 putty 会话列表里新增一个 “NORD” 会话，点击 “load” 按钮加载该会话，可以看到只设置了颜色，并没有站点 ip，填写自己的 ip 地址和端口，连接看看，会发现颜色效果柔和多了。如果满意，就另存该会话为你的站点名称即可。
-
-### mintty 终端模拟器
-
-    https://github.com/mintty/mintty
-        https://github.com/mintty/mintty/wiki/Tips
-        http://mintty.github.io/
-        帮助 https://mintty.github.io/mintty.1.html
-
-源码来自 putty 拉分支，目前归属 MSYS2 项目，自带 bash， 模拟 unix pty 效果又快又好
-
-    如果运行 cmd 下的 Windows 字符命令，有些字符解释的显示效果不一致，建议与 cmd 分别使用，不在 mintty 下使用 cmd 的命令。或者使用 winpty 调度，参见章节 [winpty 运行 cmd 字符终端程序]。
-
-    ctrl/shift + ins 复制/粘贴，其实系统默认用鼠标拖动选择的文字复制到系统剪贴板
-
-    在 tmux 的鼠标模式下，按下 shift 就可以使用鼠标选择文字，自动复制到系统剪贴板
-
-    ctrl + plus/minus/zero 放大、缩小、还原
-
-    拖拽资源管理器里的文件/文件夹到 mintty 可以得到其路径
-
-mintty 可以在终端显示图片，下载他的源代码下 utils 目录下的脚本 showimg 即可
-
-    curl -fsSL https://github.com/mintty/utils/raw/master/showimg |sudo tee /usr/local/bin/showimg && sudo chmod 755 /usr/local/bin/showimg
-
-    另外还有 catimg/SDL2_image（showimage2） 等软件包支持在终端下显示图片
-
-建议放到本地 /usr/bin/ 下，以后执行 `showimg xxx.jpg` 就可以在 mintty 下显示本地图片；如果 ssh 登录到服务器上，在服务器的 /usr/local/bin/ 下也安装这个脚本，则 mintty 也可以响应服务器上执行的 `showimg xxx.jpg`，显示服务器上的图片。
-
-或安装个 lsix 脚本，因为 mintty 支持 Sixel 格式的图片显示
-
-        https://www.linuxprobe.com/sixel-linux.html
-
-    先在服务器端安装依赖包，会安装一堆的库
-
-        sudo apt install imagemagick
-
-    然后把脚本 lsix 拷贝到你的终端的 /usr/bin/ 目录下即可
-
-        # 只要你的终端支持 Sixel 图形格式即可
-        git clone --depth=1 https://github.com/hackerb9/lsix
-
-    就像 ls 命令那样使用 lsix。
-
-#### winpty 运行 cmd 字符程序
-
-    https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs
-
-    https://github.com/git-for-windows/git/wiki/FAQ#some-native-console-programs-dont-work-when-run-from-git-bash-how-to-fix-it
-
-在 mintty 或 Cygwin 的命令行环境下，如果执行Windows 控制台程序 （Windows CMD 程序或 PowerShell），如 python 会挂死无法进入。这是因为 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 unix pty，或称 Cygwin/MSYS pty。
-
-也就是说，Windows 控制台程序在 MSYS2 mintty 下直接执行会挂死，需要有个 Cygwin/MSYS adapter 提供类似 wslbridge 的角色。
-
-安装 winpty 作为 mintty 代理（git for windows 自带）
-
-    pacman -S winpty
-
-然后执行 `winpty python` 即可正常进入 python 解释器环境了
-
-最好在用户登录脚本文件 ~/.bashrc、~/.zshrc 里添加 alias 方便使用
-
-    alias python="winpty python"
-    alias ipython="winpty ipython"
-    alias mysql="winpty mysql"
-    alias psql="winpty psql"
-    alias redis-cli="winpty redis-cli"
-    alias node="winpty node"
-    alias vue='winpty vue'
-
-    # Windows 控制台程序都可以在 bash 下用 winpty 来调用
-    alias ping='winpty ping'
-
-如果 Windows version >= 10.2019.1809，新增的 ConPty 接口兼容了老的控制台应用程序 ConHost 接口，支持 ConPty 接口的应用可以支持 unix pty，就不需要使用 winpty 做调度了，见章节 [Windows 10 本地化 Linux 编程接口]。
-
-#### mintty 美化
-
-mintty 支持对 16 色代码表的实际展现效果进行自定义，在 mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
-
-    https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，弹出页面的链接上点右键选复制，在地址栏粘贴后回车
-
-主题颜色
-
-    https://github.com/hsab/WSL-config/tree/master/mintty/themes
-
-    https://github.com/oumu/mintty-color-schemes
-
-将主题文件保存到 mintty 安装目录的 msys64/usr/share/mintty/themes 目录下（C:\Program Files\Git\usr\share\mintty\themes），通过右键 mintty 窗口标题栏的 option 进行选择。
-
-mintty 默认的主题比较保守，只使用256色，如果你想看到真彩色的效果，尝试下选择自定义主题，会看到颜色柔和多了，推荐 nord 主题。文字彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
-
-也可以编辑 ~/.minttyrc 文件，自行设置各种颜色。
-
-#### .minttyrc 配置文件样例
-
-```config
-# 可自定义表情标签 https://github.com/mintty/mintty/wiki/Tips#installing-emoji-resources
-# https://mintty.github.io/mintty.1.html
-# https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
-# 只支持等宽字体
-Font=MesloLGS Nerd Font Mono
-FontHeight=11
-FontSmoothing=full
-# FontWeight=700
-# FontIsBold=yes
-
-Columns=130
-Rows=40
-ScrollbackLines=12000
-
-CursorType=block
-CursorBlinks=yes
-
-# 语言设置
-# mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
-Language=@
-
-# 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
-# https://www.cnblogs.com/LCcnblogs/p/6208110.html
-# bash下设置，这个变量设置区域，影响语言、词汇、日期格式等，参见章节 [字符终端的区域、编码、语言]
-
-# bash 下显示中文
-Locale=zh_CN
-
-# 中文版 Windows 使用 ansi 字符集，
-# 但使用 UTF-8 的命令如 tail、ls 会没法都设置完美显示中文，
-# 或使用 uinx pty 的命令如 python卡死，需要借助 winpty。
-# 设置为 UTF-8 还能正确展现那些带图标的字体
-#Charset=GBK
-Charset=UTF-8
-
-# LANG 只影响字符的显示语言
-# win7下显示utf-8文件内容, 可先执行命令 `locale` 查看ssh所在服务器是否支持
-#LANG=zh_CN.UTF-8
-
-# 窗体透明效果，不适用于嵌入多窗口终端工具
-# Transparency=low
-
-# 为了使用更多的颜色，确保终端设置恰当
-Term=xterm-256color
-
-# 非通用标准的项目
-UnderlineColour=153,241,219
-AllowBlinking=yes
-BoldAsFont=yes
-
-# Windows version >= 10 / 2019 1809 (build >= 10.0.17763)
-# 2023.2 脚本执行速度慢于 mintty 本地处理
-# 2025.3 进入 tmux 后打印乱码
-#ConPTY=on
-
-# 自定义颜色方案，跟深色背景搭配
-# https://github.com/mintty/mintty/wiki/Tips#background-image
-# 自定义颜色方案 https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
-# 根据图片生成颜色方案 https://github.com/thefryscorer/schemer2 参见章节 [base16颜色方案](gnu_tools.md okletsgo)
-Background=C:\tools\111dark.jpg,225
-#0D1926
-BackgroundColour=13,25,38
-#839496 #B6CDD0
-ForegroundColour=131,148,150
-CursorColour=236,255,255
-#353535
-Black=53,53,53
-#5C5C5C
-BoldBlack=92,92,92
-#FD6666
-Red=253,102,102
-#F38F8D
-BoldRed=243,143,141
-#3BC077
-Green=59,192,119
-#37B58B
-BoldGreen=55,181,139
-#CFBE74
-Yellow=207,190,116
-#DFD877
-BoldYellow=223,216,149
-#377AB0
-Blue=55,122,176
-#68A0CC
-BoldBlue=104,160,204
-#AD5136
-Magenta=173,81,54
-#CA7055
-BoldMagenta=202,112,85
-#4FC4B5
-Cyan=79,196,181
-#74CFBE
-BoldCyan=116,207,190
-#EEE8D5
-White=238,232,213
-#FDF6E3
-BoldWhite=253,246,227
-
-# 自定义颜色方案，跟深色背景搭配，nord 的暗淡方案
-# https://github.com/arcticicestudio/nord-alacritty/blob/main/src/nord.yml
-#Background=C:\tools\DR_6.jpg
-#BackgroundColour=46,52,64
-#ForegroundColour=216,222,233
-#CursorColour=216,222,233
-#Black=55,62,77
-#BoldBlack=55,62,77
-#Red=148,84,93
-#BoldRed=148,84,93
-#Green=128,149,117
-#BoldGreen=128,149,117
-#Yellow=178,158,117
-#BoldYellow=178,158,117
-#Blue=104,128,154
-#BoldBlue=104,128,154
-#Magenta=140,115,140
-#BoldMagenta=140,115,140
-#Cyan=109,150,165
-#BoldCyan=109,150,165
-#White=174,179,187
-#BoldWhite=174,179,187
-
-# 自定义颜色方案，跟浅色背景搭配-黄色
-#Background=C:\tools\222yellow.jpg,225
-#BackgroundColour=250,234,182
-#ForegroundColour=0,61,121
-#CursorColour=217,230,242
-#Black=80,80,80
-#BoldBlack=103,103,103
-#Red=243,37,20
-#BoldRed=238,83,83
-#Green=67,156,57
-#BoldGreen=91,191,80
-#Yellow=207,190,35
-#BoldYellow=220,203,48
-#Blue=3,82,139
-#BoldBlue=10,123,184
-#Magenta=133,41,39
-#BoldMagenta=176,38,38
-#Cyan=38,176,166
-#BoldCyan=80,191,180
-#White=205,175,175
-#BoldWhite=176,182,204
-
-# 自定义颜色方案，跟浅色背景搭配-绿色
-#Background=C:\tools\333green.jpg,128
-#BackgroundColour=250,234,182
-#ForegroundColour=47,47,47
-#CursorColour=217,230,242
-#Black=0,0,0
-#BoldBlack=38,38,38
-#Red=255,30,18
-#BoldRed=255,153,147
-#Green=82,173,58
-#BoldGreen=65,136,47
-#Yellow=193,117,40
-#BoldYellow=213,179,60
-#Blue=11,80,155
-#BoldBlue=17,120,234
-#Magenta=255,18,243
-#BoldMagenta=255,147,250
-#Cyan=32,138,115
-#BoldCyan=36,162,133
-#White=235,235,235
-#BoldWhite=255,255,255
-
-# 北极主题颜色 https://github.com/arcticicestudio/nord-mintty
-# papercolor https://github.com/NLKNguyen/papercolor-theme
-# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.light
-# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.dark
-#
-# 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
-# ThemeFile=nord
-
-```
-
-#### mintty 简单使用：Git for Windows
-
-Git 在 Windows 下运行，专门起了一个项目 git for Windows，主要是因为 git 在 Linux 下运行依赖 bash 环境，在 Windows 下使用了 GNU tools 的 MinGW(Msys2) 实现了 git bash，并集成了 git bash 需要的部分工具软件，我们主要使用他的 git bash、 mintty.exe 终端模拟器和 git、ssh、gpg、winpty 等命令行工具。
-
-安装 git for Windows 或 MSYS2 后就有了，为了简单安装 git for windows 就可以了
-
-    https://git-scm.com/download/win
-        https://gitforwindows.org/
-
-配置文件样例参见章节 [mintty 美化]
-
-    git for Windows 下的 mintty 配置文件在 ~\.minttyrc
-
-    MSYS2 的 mintty 的配置文件与 git for Windows 不同，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]
-
-如果使用 mintty.exe，需要添加额外的启动参数，指定使用何种shell
-
-    mintty.exe /bin/bash --login -i
-
-    --login 加载配置文件 ~/.bash_profile 等，不然你进入的是个干巴的 shell
-
-    -i      创建一个交互式的shell
-
-git-bash.exe
-
-    自称 git bash，其实是 `mintty.exe /bin/bash --login -i` 的封装，可直接双击执行。用于执行 unix pty 的命令，显示兼容性最好。
-
-    如果使用 git-bash.exe，一般使用 `git-bash.exe --cd-to-home` 打开即进入 $HOME 目录，比较方便
-
-git-cmd.exe
-
-    其实是 cmd 的一个封装，可直接双击执行。用于执行 cmd 下的命令，显示兼容性最好。路径 path 优先指向了 git for windows 的目录。
-
-对路径的表示有点特殊，如磁盘路径需要使用 /c/ 来代替 c：来访问具体路径
-
-    cd /c/tools 表示访问 Windows 的 c:\tools 目录
-
-其它的几个的 Linux 目录结构跟 Windows 目录的对应关系
-
-    $HOME 目录      %USERPROFILE%
-
-    / 目录          git安装目录 C:\Program Files\Git
-    /usr 目录       C:\Program Files\Git\usr
-    /bin 目录       C:\Program Files\Git\bin
-    /dev 目录       C:\Program Files\Git\dev
-    /etc 目录       C:\Program Files\Git\etc
-
-    /tmp 目录       C:\Users\%USERNAME%\AppData\Local\Temp
-
-    /proc 目录      这个是 git 自己虚出来的，只能在 git bash(mintty) 下看到
-
-    /cmd 目录       C:\Program Files\Git\cmd，用于 cmd 命令行窗口下运行 git 和 ssh 用的几个脚本
-
-退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不然会提示有进程未关闭。
-
-putty的退出也是同样的建议。
-
-#### mintty 组合使用：git for Windows + MSYS2
-
-拷贝 MSYS2 的工具到 git 里，这样只使用 git bash(mintty) 就可以了。
-
-二者混用是个凑合的解决办法，因为如果遇到二者的调用库版本不一致会导致报错，所以最好是安装 MSYS2，然后使用它自带的 mintty、git、ssh、zsh 等工具，详见下面章节 [mintty 全套使用]。
-
-假设 git 的安装目录在 D:\Git，可执行文件在 D:\Git\usr\bin\ 目录：
-
-以迁移 tmux.exe 为例，可执行文件放在 D:\Git\usr\bin\：
-
-    tmux.exe
-    event_rpcgen.py
-    msys-event-2-1-7.dll
-    msys-event_core-2-1-7.dll
-    msys-event_extra-2-1-7.dll
-    msys-event_openssl-2-1-7.dll
-    msys-event_pthreads-2-1-7.dll
-
-其它放在 D:\Git\usr\share\ 下：
-
-    licenses\libevent
-    licenses\tmux
-    man\man1\tmux.1.gz
-
-使二者共享一套 HOME 目录：
-
-MSYS2 的 mintty 的配置文件不使用操作系统当前用户的 home 目录，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]。
-
-git for windows 使用操作系统当前用户的 home 目录，默认为 %USERPROFILE% （C:\Users\%USERNAME%\）。
-
-home 目录的隔离虽然使两个软件的设置互不干扰，但也使得 ssh、gpg、git、vim、tmux 等工具的配置文件不能共享。
-
-    保持隔离的解决办法
-
-        如果在安装 MSYS2 之前已经安装了 git for windows，可以将之前 ssh、git 、vim、tmux 等工具的配置文件拷贝到 MSYS2 的 home 目录下。
-
-    共享的解决办法
-
-        在 Windows 上配置环境变量 HOME 为 C:\you-path\msys64\home\your-name，增加这个环境变量的目的是为了让 git for windows 的 home 目录指向 MSYS2 的 home 目录。
-
-#### mintty 全套使用：安装 MSYS2(Cygwin/Msys) + pacman
-
-参考文章
-
-    MSYS2 和 mintty 打造 Windows 下 Linux 工具体验
-        https://creaink.github.io/post/Computer/Windows/win-msys2.html
-
-    Windows 下 MSYS2 配置及填坑 https://hustlei.github.io/2018/11/msys2-for-win.html
-
-下载安装 MSYS2
-
-    https://www.msys2.org/
-
-    https://msys2.github.io/
-
-使用 pacman 安装各种包，详见下面章节 [软件仓库 pacman]。
-
-pacman 更换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，配置文件在 msys 的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
-
-依次添加
-
-    编辑 /etc/pacman.d/mirrorlist.msys，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/msys/$arch/
-        Server = http://mirrors.ustc.edu.cn/msys2/msys/$arch/
-
-    编辑 /etc/pacman.d/mirrorlist.mingw32，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/i686/
-        Server = http://mirrors.ustc.edu.cn/msys2/mingw/i686/
-
-    编辑 /etc/pacman.d/mirrorlist.mingw64，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/x86_64/
-        Server = http://mirrors.ustc.edu.cn/msys2/mingw/x86_64/
-
-    编辑 /etc/pacman.d/mirrorlist.ucrt64，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/ucrt64/
-        Server = http://mirrors.ustc.edu.cn/msys2/mingw/ucrt64/
-
-    编辑 /etc/pacman.d/mirrorlist.clang64，在文件开头添加：
-
-        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/clang64/
-        Server = http://mirrors.ustc.edu.cn/msys2/mingw/clang64/
-
-然后 Windows 执行开始菜单的快捷方式 "MSYS2 MSYS" 以打开命令行，更新软件包数据，之后可以使用 "MSYS2 MinGW X64"，
-
-    # pacman -Sy
-    :: Synchronizing package databases...
-    mingw32              1594.6 KiB   729 KiB/s 00:02 [#####################] 100%
-    mingw64              1604.5 KiB   494 KiB/s 00:03 [#####################] 100%
-    ucrt64               1663.1 KiB   985 KiB/s 00:02 [#####################] 100%
-    clang32              1556.7 KiB   400 KiB/s 00:04 [#####################] 100%
-    clang64              1587.3 KiB   532 KiB/s 00:03 [#####################] 100%
-    msys                  384.9 KiB   293 KiB/s 00:01 [#####################] 100%
-
-    # 更新核心软件包
-    # pacman -Su
-
-安装时给出了一些文件链接的提示
-
-    './.bashrc' -> '/home/%USERNAME%/.bashrc'
-    './.bash_logout' -> '/home/%USERNAME%/.bash_logout'
-    './.bash_profile' -> '/home/%USERNAME%/.bash_profile'
-    './.inputrc' -> '/home/%USERNAME%/.inputrc'
-    './.profile' -> '/home/%USERNAME%/.profile'
-
-    'C:\Windows\system32\drivers\etc\hosts' -> '/etc/hosts'
-    'C:\Windows\system32\drivers\etc\protocol' -> '/etc/protocols'
-    'C:\Windows\system32\drivers\etc\services' -> '/etc/services'
-    'C:\Windows\system32\drivers\etc\networks' -> '/etc/networks'
-
-该软件安装后，使用的Linux目录结构跟Windows目录的对应关系
-
-    home 目录      位于msys2的安装目录 msys64\ 下的 home\%USERNAME%
-
-    / 目录          位于msys2的安装目录 msys64\ 下
-    /usr 目录       同上
-    /tmp 目录       同上
-
-环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件
-
-    如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的 bash_profile、mintty 等配置文件，注意区分。
-
-msys2在开始菜单下的好几个版本的说明
-
-    是因为编译器和链接的windows的c库不同，而故意分开编译的。作为一个软件运行平台，为了适应不同编译器编译出来的程序（Windows 对 CRT 运行库的支持不一样），而不得不区分开来。
-
-    LLVM/Clang 和 MINGW(GCC) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个的话就用 mingw64。
-
-具体区别是：
-
-    mingw64 与 ucrt64 都是用 mingw64 编译器编译的 Windows 64位程序，只不过它们链接到的 crt（C runtime）不同， mingw64 是链接到了 msvcrt ，而 ucrt64 则是链接到了 Windows 10+ 上新的 ucrt 上。
-
-    而 clang64 很好理解，就是用 clang 而非 mingw 来编译各种库，另外它也是链接到了 ucrt 而非 msvcrt。
-
-    引自 <https://www.zhihu.com/question/463666011/answer/1927907983>
-
-    官方解释 <https://www.msys2.org/docs/environments/>
-
-msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递了变量 set MSYSTEM=xxxx，msys2_shell.cmd 启动时，都默认使用 mintty
-
-    # c:\msys64为msys2安装目录，bash 为默认 shell，可以用 zsh,csh 等替换
-    set MSYSTEM=MINGW64
-    "c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
-
-自己运行 Msys2 时可以不使用 mintty，直接运行如下命令就OK：
-
-```bat
-
-rem 启动MSYS2 MSYS
-set MSYSTEM=MSYS
-"c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
-
-rem 启动MSYS2 MINGW32
-set MSYSTEM=MINGW32
-"c:\msys64\usr\bin\bash" --login
-
-rem 启动MSYS2 MINGW64
-set MSYSTEM=MINGW64
-"c:\msys64\usr\bin\bash" --login
-
-```
-
-##### 软件仓库 pacman
-
-基于 Arch Linux 的 pacman 提供软件仓库，采用滚动升级模式，初始安装仅提供命令行环境：高手用户不需要删除大量不需要的软件包，而是可以从官方软件仓库成千上万的高质量软件包中进行选择，搭建自己的系统。
-
-pacman 命令较多，常用的命令如下：
-
-    pacman -Sy           更新软件包数据
-    pacman -Su           更新核心软件包
-    # pacman -Syu        升级系统及所有已经安装的软件。
-    pacman -S 软件名      安装软件。也可以同时安装多个包，只需以空格分隔包名即可。
-    pacman -Rs 软件名     删除软件，同时删除本机上只有该软件依赖的软件。
-    pacman -Ru 软件名     删除软件，同时删除不再被任何软件所需要的依赖。
-    pacman -Ssq 关键字    在仓库中搜索含关键字的软件包，并用简洁方式显示。
-    pacman -Qs 关键字     搜索已安装的软件包。
-    pacman -Qi 软件名     查看某个软件包信息，显示软件简介,构架,依赖,大小等详细信息。
-    pacman -Sg           列出软件仓库上所有的软件包组。
-    pacman -Sg 软件包组    查看某软件包组所包含的所有软件包。
-    pacman -Sc           清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
-    pacman -Scc          清理所有的缓存文件。
-
-安装常用软件
-
-    不要安装 msys2 版的 python，还是用 anaconda 最方便
-
-    pacman -S openssh opengpg vim git tmux winpty
-
-    pacman -S sed awk tree curl time nano tar gzip rsync
-
-    # netcat 的版本选择： gnu nc 没有 proxy 参数(-x), 因此我们要选择 openbsd 版
-    pacman -S openbsd-netcat
-
-    # 下面的命令大部分在 bash 中内置了
-
-    # 常用的系统命令 cat cut chmod echo mv tail 等，http://gnu.org/software/coreutils
-    pacman -S coreutils
-
-    # 进程管理 ps、kill、top、watch 等，https://gitlab.com/procps-ng/procps/
-    pacman -S procps-ng
-
-    # 常用的网络命令 ping, ping6, traceroute, whois, rsh 等，https://www.gnu.org/software/inetutils/
-    pacman -S inetutils
-
-    # find xargs
-    pacman -S Findutils
-
-    # diff
-    pacman -S diffutils
-
-    # 安装 zsh 主要是为了它多彩的命令行提示符等扩展插件，详见下面章节 [使用 zsh]
-    pacman -S zsh
-
-如果需要安装什么命令不知道输入何种包名，一般可以在搜索引擎里以 `MSYS2 xxx` 的形式得到结果。
-
-另外， Cygwin下还有 apt-cyg 命令行包管理器 <https://zhuanlan.zhihu.com/p/66930502>，操作软件仓库 <https://zhuanlan.zhihu.com/p/65482014>。
-
-### 其他终端模拟器
-
-不常用终端会遇到 terminfo 问题
-
-    https://ttys3.dev/post/kitty/
-
-    如果你尝试 ssh 到远程机器, 可能会发现你本机的 zsh 报错:
-
-    /home/user007/.zsh_compatible:bindkey:2: cannot bind to an empty key sequence
-
-    这个问题其实不只存在于 kitty, 任何有自己独立的 terminfo 的 terminal (且其信息没有在 ncurses 中内置), 基本上都会有这个问题. 比如 Alacritty 也有这个问题.
-
-    这个问题在官方faq文档里面也有说明:
-
-    I get errors about the terminal being unknown or opening the terminal failing when SSHing into a different computer?
-
-    This happens because the kitty terminfo files are not available on the server. You can ssh in using the following command which will automatically copy the terminfo files to the server:
-
-        kitty +kitten ssh myserver
-
-    This ssh kitten takes all the same command line arguments as ssh, you can alias it to ssh in your shell’s rc files to avoid having to type it each time:
-
-        alias ssh="kitty +kitten ssh"
-
-Contour Terminal Emulator 这个是真正的速度极快，而且跨平台
-
-    还在发展中，不足较多：不支持中文字体回落
-
-    https://contour-terminal.org/configuration/
-    https://zhuanlan.zhihu.com/p/505530480
-
-        $ sudo dnf install contour-terminal
-
-    快捷操作
-
-        Ctrl+Shift+Space 当前屏幕进入vim模式，方便用键盘选择屏幕文字复制粘贴等操作。
-        按 a 或 i 进入编辑模式会自动退出到命令行进行普通的编辑。
-
-    配置文件在
-
-        # flatpak：~/.var/app/org.contourterminal.Contour/config/contour/contour.yml
-        ~/.config/contour/contour.yml
-
-    目前只能手动修改：
-
-    ```yml
-    # 主配置
-    profiles:
-        main:
-            # 打开终端后作为登录shell
-            shell: "/bin/bash"
-            arguments: ["-l"]
-
-            # 按字符数的窗口大小
-            terminal_size:
-                columns: 80
-                lines: 25
-
-            scrollbar:
-                position: Right
-
-            # 字体
-            font:
-                regular:
-                    # 不支持中文字体回落 ["MesloLGS Nerd Font", "Noto Serif CJK SC"]
-                    family: "MesloLGS Nerd Font"
-
-            # 光标样式和闪动
-            cursor:
-                blinking: true
-
-            # 背景透明和模糊
-            background:
-                opacity: 0.95
-                blur: false
-
-            # 颜色方案，在下面的 color_schemes 处配置
-            # Specifies a colorscheme to use (alternatively the colors can be inlined).
-            colors: "default"
-
-    # 颜色方案
-    color_schemes:
-        # 系统默认的颜色方案
-        default:
-
-            background_image:
-                # flatpak 下不知道怎么找路径。。。
-                path: '/Pictures/78883229_UHD.jpg'
-                opacity: 0.5
-                blur: false
-
-    # 快捷键
-    input_mapping:
-        # 选择文字后按 ctrl+c 是复制到内部剪贴板，中键可粘贴
-    ```
-
-WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装。速度快，兼容性较好，左侧就是文件夹树方便 sftp，支持 lrzsz 的文件拖放传送，命令行输出还支持标签折叠
-
-    https://github.com/kingToolbox/WindTerm
-        https://kingtoolbox.github.io/
-
-    https://zhuanlan.zhihu.com/p/550149638
-
-    初次使用注意关闭主密码、关闭自动锁屏的功能。否则一旦锁屏了，只能编辑 user.config 文件：
-
-        干掉 application.fingerprint 和 application.masterPassword
-
-        再找到 .wind/profiles/default.v10/terminal/user.sessions 文件删除 session.autoLogin， 就可以将主密码设置为空字符串了，之后再来修改主密码，就 OK 了。
-
-nyagos 类 Unix 终端，但是支持 Windows 格式的路径
-
-    https://github.com/nyaosorg/nyagos
-
-        nyagos增加zoxide的支持 https://wentao.org/post/2023-04-27-zoxide-with-nyagos/
-
-edex-ui 创·战纪 风格的终端模拟器，还带一个简单的文件浏览器，系统资源监视器，虽然基于 Electron 的应用程序比较笨重，但效果太酷了
-
-    https://github.com/GitSquared/edex-ui
-
-    配置文件说明 https://github.com/GitSquared/edex-ui/wiki/settings.json
-
-    自定义主题说明 https://github.com/GitSquared/edex-ui/wiki/Themes
-
-Alacritty 使用 OpenGL 进行显示加速（速度一般）的终端模拟器，在 Linux 下刷新速度快，在 Windows 下使用 powershell 不推荐
-
-    https://github.com/alacritty/alacritty
-
-    主题颜色使用 Nord theme
-
-        curl -fsSL https://github.com/nordtheme/alacritty/raw/main/src/nord.yaml | tee $HOME/.alacritty.toml
-
-WezTerm GPU 加速（其实不快）跨平台终端仿真器，支持终端多路复用，至今未解决偶发的卡顿问题
-
-    https://github.com/wez/wezterm
-        https://wezfurlong.org/
-
-cmder 推荐了几个本地终端模拟器，可以嵌入 cmder 代替 ConEmu
-
-    https://github.com/cmderdev/cmder/wiki/Seamless-Terminus-integration
-
-        Tabby（原名Terminus）跨平台的终端模拟器，electron + nodejs 写的，支持终端多路复用，不支持导入 putty 的站点，目前使用sz传输大文件时文件会损坏，老老实实的用 sftp 吧
-            https://github.com/Eugeny/tabby
-            使用介绍 https://zhuanlan.zhihu.com/p/447977207
-
-    https://github.com/cmderdev/cmder/wiki/Seamless-Hyper-integration
-
-        hyper 基于 xterm.js 和 Electron 实现
-            https://hyper.is/
-
-    https://github.com/cmderdev/cmder/wiki/Seamless-FluentTerminal-Integration
-
-        FluentTerminal 基于 xterm.js 的 UWP 应用
-            https://github.com/felixse/FluentTerminal
-
-Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` 查看常用命令。自己的脚本语言可以基于自己的指令定义函数、基于函数定义脚本。可以开发 rust 插件给他扩展功能。
-
-    https://github.com/nushell/nushell
-        https://www.nushell.sh/zh-CN/book/thinking_in_nu.html
-
-另见章节 [Linux 桌面下的终端模拟器]。
-
-Supper Putty
-
-    别用了：最新的版本调用 git bash，粘贴脚本文件内容，随机添加字符，在 tmux 下发生的更频繁。
-
-    https://github.com/jimradford/superputty
-
-#### ConEmu 和 Cmder
-
-ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器。不止是个终端多路复用器，他还自己实现了对 cmd 和 unix pty 两种类型的终端模拟。
-
-    https://conemu.github.io/
-
-    console 类似ConEmu的软件
-        console2 不更新了2021 https://github.com/cbucher/console
-            console 不更新了2013 https://sourceforge.net/projects/console/
-
-ConEmu 最大的缺点是不稳定，反应速度偶尔很慢，估计跟它基于 Windows conhost，连带支持 unix pty 这样包打一切的实现机制有关。
-
-ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器。
-
-ConEmu\ConEmu 目录下集成了几个常用工具
-
-    clink 使 cmd 像 bash 按 tab 键自动完成
-
-    wslbridge 使 mintty 或 ConEmu 可以支持 WSL(Windows Subsystem for Linux)
-
-ConEmu 色彩方案
-
-    https://github.com/joonro/ConEmu-Color-Themes
-
-Cmder 是一个软件包，整合上述几个工具无需安装直接使用的软件包
-
-    https://github.com/cmderdev/cmder
-
-    它整合了：
-
-        本地终端模拟器：Conemu （它是Cmder的基础），可换为别的
-            https://zhuanlan.zhihu.com/p/71706782
-
-        clink 使 cmd 像 bash 按tab键自动完成
-
-        git for windows 使用它自带的 unix tools
-
-##### 基本的 ConEmu 任务配置示例
-
-ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列表
-
-    https://conemu.github.io/en/Tasks.html#add-default-tasks
-
-甚至 Windows 下的普通软件都可以嵌套到ConEmu的窗口下
-
-    选择新建任务的选项 'New console dialog'
-
-    在弹出窗口的栏目 'Startup command or {Task} name...'下输入： notepad
-
-    启动该任务会看到新建了一个标签打开了 Windows 的记事本。
-
-可以调用普通的 Windows 程序
-
-如果是调用 putty.exe、mintty.exe、notepad.exe 等 Windows 程序，ConEmu 会利用自己的 ChildGUI 功能，内嵌显示窗体，显示效果完美，但不能使用 ConEmu 的颜色和背景方案 <https://conemu.github.io/en/ChildGui.html>。
-
-对 bash.exe/tmux.exe 等 unix pty 的连接，Conemu 是通过 cmd 实现的，支持 ConEmu 的颜色和背景方案目前的实现方式，显示兼容性并不完美，见 Conemu 安装后生成的默认任务 {Bash::Git bash}。不知何时切换到 Windows 新的 Conpty 接口。
-
-1、关于 ConEmu 安装后自动生成的任务 {Bash::Git bash}
-
-    使用普通的 linux 命令显示效果正常，而且支持 ConEmu 的颜色和背景方案。但如果使用 tmux/zsh 状态栏工具，因为上面所述原因，显示效果有缺陷：在刷新后会出现底部栏重叠，还有光标错位的问题。这种情况下，建议见下面的示例 2。
-
-        set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-cmd.exe --no-cd --command=%ConEmuBaseDirShort%\conemu-msys2-64.exe /usr/bin/bash.exe -l -i -new_console:p
-
-    建议用下面的示例2配置原生的 git-bash.exe 任务
-
-2、配置 git-bash 任务
-
-    简单使用，安装 git for Windows，配置任务为直接调用 git-bash.exe，或直接调用 mintty.exe，用参数加载 bash，在 bash 中使用 ssh/tmux 效果是完美的。复杂点的可以安装 MSYS2（MinGW64)工具包，见下面示例 5。
-
-        点击+号，新建一个Task名为 {Bash::git-bash}，命令文本框输入
-
-        set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-bash.exe --cd-to-home
-
-        注：git-bash.exe 其实是封装执行 `mintty.exe /bin/bash -l`
-
-3、配置 Anaconda 任务
-
-    点击+号，新建一个Task名为 {cmd::Anaconda}，命令文本框输入
-
-    cmd /k "C:\ProgramData\Anaconda3\Scripts\activate.bat C:\ProgramData\Anaconda3"  -new_console:d:%USERPROFILE%
-
-4、配置 putty 任务
-
-    直接调用 putty.exe
-
-        点击+号，新建一个Task名为 {putty::your_putty_session}，命令文本框输入如下
-
-        C:\tools\PuTTY\putty.exe -load "your_putty_session_name"
-
-        如果不使用参数指定 putty 会话名，任务启动时会自动弹出 putty 的窗口供用户选择
-
-5、ConEmu 配置 MSYS2 任务
-
-    直接调用 mintty.exe，由它调用 shell 程序，这样显示效果由 mintty 决定，等效于上面的示例2。
-
-        C:\msys64\usr\bin\mintty.exe -i /msys2.ico -t "%CONTITLE%" "/usr/bin/zsh" -new_console:C:"%D%\msys2.ico"
-
-        C:\msys64\usr\bin\mintty.exe -i /msys2.ico -t "%CONTITLE%" "/usr/bin/bash -l" -new_console:C:"%D%\msys2.ico"
-
-    直接调用 bash.exe
-
-        显示会光标错行，估计也是因为 ConEmu 通过 cmd 实现对 bash.exe 的连接导致的。
-
-        打开 conemu 的 settings 对话框，选择 Startup>>Tasks 选项
-        点击+号，新建一个 Task 名字为 Msys2::MingGW64，在 commands 下文本框内输入如下代码：
-
-            set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
-
-        MSYS2_PATH_TYPE=inherit 表示合并 Windows 系统的 path 变量。注意修改变量值 `D=` 为你的msys2的安装目录。
-
-        打开后会自动把工作目录设置为 msys64/home/%user% 下。
-
-#### Windows Terminal
-
-    WIndows Terminal 文档
-        https://learn.microsoft.com/zh-cn/windows/terminal/
-
-    Windows Terminal 与 MSYS2 MinGW64 集成
-        https://ttys3.dev/post/windows-terminal-msys2-mingw64-setup/
-
-Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl、bash 等多个终端窗口，自动添加当前识别到的 git bash 等 mintty 应用（对 MSYS2 应用通过 ConPty 接口实现的兼容 <https://github.com/msys2/MSYS2-packages/issues/1684>）。
-
-    # https://github.com/microsoft/terminal/releases
-    winget install --id=Microsoft.WindowsTerminal -e
-
-直接安装从 github 下载的 .msixbundle 文件，在 powershell 下运行如下命令从文件安装
-
-    Add-AppxPackage .\xxx.msixbundle
-
-如果提示无法安装，缺少框架，下载 github 发布页的那个 xxxx_Windows10_PreinstallKit.zip，解压，先安装 Microsoft.UI.Xaml 和 Microsoft.VCLibs.140 等包。
-
-如果安装后无法正常启动 Windows Terminal，经过一顿操作，终于找到了解决方法，用魔法打败了魔法！
-
-    https://www.cnblogs.com/albelt/p/15253147.html
-
-    要求：
-
-        Windows 10 1903 版本及以上
-
-    步骤：
-
-        到 Windows Terminal 的 Github 仓库下载最新的 release 包，即以 .msixbundle 为后缀的文件
-
-        将文件后缀名改为 .zip 后解压缩文件
-
-        在解压后的文件夹中找到名为 CascadiaPackage***.msix 的文件，有 x86、x64 和 ARM64 版本的，选择 x64 那个文件，修改后缀名为 .zip，然后解压
-
-        在解压后的文件夹中，找到 WindowsTerminal.exe 的文件，直接双击就能运行了，还是绿色免安装版的，是不是很简单？
-
-        可以把这个文件夹拷贝到安全的位置，然后将 .exe 文件添加到桌面快捷方式，就能愉快地使用 Windows Terminal 啦！
-
-##### 配置 Windows Terminal
-
-> 给各个终端生成配置文件
-
-点击按钮“添加新配置文件”，选择基于哪个现有的配置文件进行生成，然后修改启动参数就可以了。
-
-wsl，启动参数
-
-    %SystemRoot%\System32\cmd.exe /c wsl --cd ~
-
-Git Bash，启动参数
-
-    "C:/Program Files/Git/bin/bash.exe" -i -l
-
-复制 Anaconda 的命令行启动参数，在 cmd 使用 anaconda
-
-    %WINDIR%\System32\cmd.exe "/K" %USERPROFILE%\anaconda3\Scripts\activate.bat %USERPROFILE%\anaconda3
-
-如果追求反应速度，使用 cmd 终端(conhost)目前是最快的
-
-    按住回车键不放对比下刷屏速度就知道了
-
-    cmd 利用 ConPTY 可以无缝支持 Linux 程序的显示，兼容性没问题了，我用 cmd 终端运行 git bash 自带的 `ssh` 连接远程服务器、运行 `wsl` 使用 WSL 实例，都非常快，未遇到任何错误。
-
-    而且，可以在 Windows Terminal 中给 cmd 终端可以设置自定义背景和字体，使用起来手感跟 git bash 没有差别了。
-
-> 配置 Windows Terminal 的主题、终端配色方案等
-
-Windows Terminal 有自己的主题，颜色方案背景等配置修改 setting.json。目前版本的 Windows Terminal 可以在用户界面选择设置，如选择背景图片、开启毛玻璃效果、开启复古的像素化终端效果等。
-
-复杂点的设置，比如终端配色方案，需要手动修改配置文件，点击 Windows Terminal 窗口左下方的按钮 “打开json文件” 即可打开文本编辑，配置文件的位置一般在 %USERPROFILE%\AppData\Local\Microsoft\Windows Terminal。
-
-四部分：
-
-    Global Windows Terminal APP 整体的配置，启动参数、样式等，对应下图的 Global Config
-
-    profiles 配置每个终端的样式
-
-    schemes 终端配色方案
-
-    actions 定义快捷键操作，一般默认即可
-
-如果不知道如何配置 setting.json，可以参考 default.json 每一个节点的 key-value 值。主题配置主要是 Global、profiles 和 schemes 节点。
-
-list 段是基本设置
-
-    "list":
-    [
-        {
-            "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
-            "hidden": false,
-            "name": "PowerShell",
-            "source": "Windows.Terminal.PowershellCore",
-            "colorScheme":"Zhuang B",
-            "fontFace":"Cascadia Code PL",
-            // 开启毛玻璃效果
-            "useAcrylic":true,
-            // 毛玻璃透明度
-            "acrylicOpacity":0.5
-            // 只要加上这一句，即可开启亮瞎眼的效果。
-            "experimental.retroTerminalEffect":true
-        }
-    ]
-
-schemes 段设置配色方案，同样是一个数组，每种配色方案会有一个名字 name，引用配色方案就是通过 name 的值。默认预设了几种配色方案，可在 default.json 查看
-
-```json
-
-    // 典型的 schemes 格式
-    {
-        "schemes":[
-            {
-                "name": "Campbell", // 配色方案名称，必须的
-                "foreground": "#CCCCCC", // 输出显示字体颜色
-                "background": "#0C0C0C", // 背景色
-                "cursorColor": "#FFFFFF", // 光标颜色
-                "black": "#0C0C0C", // 箭头左边三角，git 目录的 .git 目录下提示箭头背景提示文字
-                "red": "#C50F1F", // ssh 后 vim 打开文本文件已输入行普通字符显示文字
-                "green": "#13A10E", // git 目录的 .git 目录下提示箭头背景提示
-                "yellow": "#C19C00", // git 目录的分支箭头背景提示
-                "blue": "#0037DA", // 目录箭头本体
-                "purple": "#881798", // ssh 后 vim 等工具打开文件后的 { 和 }等符号本体，git 更新完后显示的分支箭头背景提示
-                "cyan": "#3A96DD", // 引号及内部字符
-                "white": "#CCCCCC", // 未知
-                "brightBlack": "#767676", // cd 等 命令后面的 .. 和 * 等特殊符号，以及命令参数字符颜色
-                "brightRed": "#E74856", // 系统提示字符颜色：错误的命令，git status 显示
-                "brightGreen": "#16C60C", // ssh 用户权限显示
-                "brightYellow": "#F9F1A5", // 输入的命令字符
-                "brightBlue": "#3B78FF", // ssh 文件夹等高亮显示，ssh 目录，vim 打开文本文件未输入行 ~ 字符显示
-                "brightPurple": "#B4009E", // 未知
-                "brightCyan": "#61D6D6", // ssh vim 等工具打开文件后的 { 和 } 等符号背景
-                "brightWhite": "#F2F2F2" // 目录箭头左边和中间的提示文字
-            }
-        ]
-    }
-
-```
-
-自定义 nord 方案，来自章节 [配色方案：整套支持终端模拟器和命令行软件的主题]的三种模式
-
-    https://compiledexperience.com/blog/posts/windows-terminal-nord
-
-```json
-
-    "schemes": [
-        {
-            "name": "Nord",
-            "foreground": "#d8dee9",
-            "background": "#2e3440",
-            "cursorColor": "#d8dee9",
-            "black": "#3b4252",
-            "red": "#bf616a",
-            "green": "#a3be8c",
-            "yellow": "#ebcb8b",
-            "blue": "#81a1c1",
-            "purple": "#b48ead",
-            "cyan": "#88c0d0",
-            "white": "#e5e9f0",
-            "brightBlack": "#4c566a",
-            "brightRed": "#bf616a",
-            "brightGreen": "#a3be8c",
-            "brightYellow": "#ebcb8b",
-            "brightBlue": "#81a1c1",
-            "brightPurple": "#b48ead",
-            "brightCyan": "#8fbcbb",
-            "brightWhite": "#eceff4",
-            "selectionBackground": "#FFFFFF"
-        },
-    ],
-
-```
-
-在如下几个网站别已有的颜色方案
-
-    https://github.com/mbadolato/iTerm2-Color-Schemes
-
-    https://windowsterminalthemes.dev/
-
-    http://terminal.sexy/
-
-#### PowerShell 7+ 命令提示符工具及美化
-
-    https://yqc.im/windows-terminal-using-windows-terminal/
-
-    https://zhuanlan.zhihu.com/p/352882990
-
-Windows 系统自带的 Windows PowerShell 5.x 和下载安装的 PowerShell 7.x 是两个独立的 Shell，注意到 5.x 带有 Windows 前缀，而 7.x 没有。两者的配置也是独立的，互不影响，所以如果你在 7.x 做配置，打开 5.x 并不会生效。
-
-一、先安装独立的 Powershell 7，从这个版本开始不跟随 Windows 发布了
-
-    https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3
-
-Powershell 7 有自己的软件包仓库
-
-        https://learn.microsoft.com/zh-cn/powershell/scripting/gallery/overview?view=powershell-7.3
-
-        https://www.powershellgallery.com/packages/
-
-其实使用 PowerShell 最大的问题是
-
-    执行 `ssh` 使用 Windows 自带的 C:\Windows\System32\OpenSSH，版本太老了
-
-    执行 `curl` 等工具被 alias 指向 wsl，也就是说，你得先在 wsl 里装个 Linux。
-
-为了减少疑惑，接下来将统一使用原生的 PowerShell 7.x。
-
-Powershell 优化
-
-    https://www.dejavu.moe/posts/windows-terminal/
-    一般我们不用 Azure 相关服务的话，建议禁用 Azure 账户模块
-
-    $env:AZ_ENABLE=$false
-
-PowerShell 美化：
-
-    更改整体配色，改变输出样式，提示符前显示用户名和计算机名等
-
-    增强 Git 命令功能和 Git 分支状态显示
-
-    自动补齐功能，可根据历史命令和当前目录补齐
-
-    ls 命令显示色彩
-
-1、安装图标字体，参见章节 [图标字体]。
-
-也可以用 scoop 安装
-
-    > scoop search FantasqueSansMono-NF
-    > scoop bucket add 'nerd-fonts'
-
-    # 下面一个命令要加 sudo 提权
-    > sudo scoop install FantasqueSansMono-NF
-
-2、安装 posh-git
-
-posh-git 可以实现命令提示符 Git 命令增强（命令别名和显示分支信息等）。
-
-可以通过 [PowerShell Gallery](https://www.powershellgallery.com) 安装，方法：打开 PowerShell 7（不是 Windows PowerShell），输入命令：
-
-    > Install-Module posh-git
-
-更改命令提示符显示的 oh-my-posh 配置复杂，不玩了
-
-    https://ohmyposh.dev/docs/installation/windows
-
-3、增强 PowerShell 的 ls 功能
-
-dircolors 是 Linux 下的命令，可以设置 ls 指令用彩色显示目录或文件。PowerShell 用插件 DirColors 实现同样的效果。
-
-    # 安装 DirColors
-    > Install-Module DirColors
-
-4、使用 ColorTool 更改 PowerShell 文字颜色，这个可以省略
-
-    # 安装更改文字颜色工具
-    > scoop install colortool
-
-    # 查看内置的配色方案，共有 8 种
-    > colortool --schemes
-
-    # 设置主题，后面是配色方案名称
-    > colortool OneHalfDark.itermcolors
-
-5、最后，把配置写入 PowerShell 的配置文件
-
-    # if (!(Test-Path -Path $PROFILE )) { New-Item -Type File -Path $PROFILE -Force } notepad $PROFILE
-
-    PS C:\Users\your_name> $PROFILE
-    C:\Users\your_name\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
-
-    > code $PROFILE
-
-内容见下。
-
-##### PowerShell 7 配置文件样例
-
-```powershell
-
-# 命令行提示符git增强
-Import-Module posh-git
-
-# ls 结果使用彩色
-Import-Module DirColors
-
-# 设置预测文本来源为历史记录
-Set-PSReadLineOption -PredictionSource History
-
-# 设置 Tab 键补全
-Set-PSReadlineKeyHandler -Key Tab -Function Complete
-
-# 设置 Ctrl+d 为菜单补全和 Intellisense
-Set-PSReadLineKeyHandler -Key "Ctrl+d" -Function MenuComplete
-
-# 设置 Ctrl+z 为撤销
-Set-PSReadLineKeyHandler -Key "Ctrl+z" -Function Undo
-
-# 设置向上键为后向搜索历史记录
-Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
-
-# 设置向下键为前向搜索历史纪录
-Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
-
-# 清除 scoop 缓存和软件旧版本 | 别名: scoopwipe
-#function scoopwipe{sudo scoop cleanup -gk * && sudo scoop cleanup * -g && scoop cache rm * && scoop cleanup * && Write-Host "Scoop 缓存清理完成啦~👌" }
-
-# 关联 conda 命令，来自 Ananconda 的开始菜单快捷方式
-C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
-
-```
-
 ## Linux 字符终端
 
 很多终端工具都是跨平台的，参见章节 [其他终端模拟器]。
@@ -19151,3 +17621,1533 @@ Wine 使用一个被称之为 “Wineprefix” 的配置目录来控制使用 Wi
 竞品还有 Whisky，在Mac上运行Windows软件和游戏
 
     https://github.com/Whisky-App/Whisky
+
+## Windows 下的 GNU/POSIX 环境
+
+如果只是想做 Windows、macOS 和 Linux 等多个操作系统跨平台应用程序，使用 QT(c++/python) 或基于 Chromium+Node.js 的 Electron 框架的应用程序是更好的选择。
+
+对 GNOME/GTK+ 环境可以考虑用 python 的 PyGObject 图形库，普通应用程序的界面用这个足够了，通过 mingw 也可在 Windows 下运行：
+
+    https://gnome.pages.gitlab.gnome.org/pygobject/getting_started.html
+
+    https://www.gtk.org/docs/installations/windows/
+
+### 环境方案选择
+
+Windows 10+ 下使用 WSL 开发 GNU 环境设置
+
+    https://github.com/hsab/WSL-config
+
+Windows C++ 开发环境配置
+
+    g++ 7.0 + git + cmake
+
+    code::block / vscode / SourceInsight
+
+    WinSCP 同步本地和编译机代码
+
+    BeyondCompare 图形化合并代码
+        推荐用 meld 或 Diffuse 替换 BeyondCompare，参见章节 [给资源管理器添加 meld 右键菜单]
+
+    tmux + vim 直接在编译机写代码，方便随时ssh上去复原现场继续。
+
+    静态代码分析工具 SourceInsight
+
+    Understand 王者没有之一
+        https://www.scitools.com
+        https://blog.csdn.net/jojozym/article/details/104722107
+        https://www.zhihu.com/question/19570229/answer/1626066191
+
+    库 toft + chrome + leveldb + folly + zeromq
+
+#### 各框架对Windows本地资源的访问方式不同
+
+虽然都是使用 mintty.exe 作为本地终端模拟器，但各框架对 Windows 目录 C:\> 的解释不同，shell操作的位置不一样
+
+    Cygwin  /cygdrive/c
+
+    MSYS2   /c
+
+    wsl     /mnt/c
+
+#### MGW 和 Cygwin 的实现思路
+
+MingW 在编译时对二进制代码转译
+
+    MingW (gcc 编译到mscrt)包含 gcc 和一系列工具，是 Windows 下的 gnu 环境。
+
+    编译 linux c++ 源代码，生成 Windows 下的 exe 程序，全部使用从 KERNEL32 导出的标准 Windows 系统 API，相比 Cygwin 体积更小，使用更方便。
+
+    如创建进程， Windows 用 CreateProcess() ，而 Linux 使用 fork()：修改编译器，让 Window 下的编译器把诸如 fork() 的调用翻译成等价的 mscrt CreateProcess() 形式。
+
+Cygwin 在编译时中间加了个翻译层 cygwin1.dll
+
+    https://zhuanlan.zhihu.com/p/56572298
+
+    Cygwin 生成的程序依然有 fork() 这样的 Linux 系统调用，但目标库是 cygwin1.dll。
+
+    Cygwin（POSIX接口转换后操作windows）在Windows中增加了一个中间层——兼容POSIX的模拟层，在此基础上构建了大量Linux-like的软件工具，由此提供了一个完整的 POSIX Linux 环境（以 GNU 工具为代表），模拟层对linux c++代码的接口如同 UNIX 一样， 对Windows由 win32 的 API 实现的cygwin1.dll，这就是 Cygwin 的做法。
+
+    Cygwin实现，不是 kvm 虚拟机环境，也不是 QEMU 那种运行时模拟，它提供的是程序编译时的模拟层环境：exe调用通过它的中间层dll转换为对windows操作系统的调用。
+
+    借助它不仅可以在 Windows 平台上使用 GCC 编译器，理论上可以在编译后运行 Linux 平台上所有的程序：GNU、UNIX、Linux软件的c++源代码几乎不用修改就可以在Cygwin环境中编译构建，从而在windows环境下运行。
+
+    对于Windows开发者，程序代码既可以调用Win32 API，又可以调用Cygwin API，甚至混合，借助Cygwin的交叉编译构建环境，Windows版的代码改动很少就可以编译后运行在Linux下。
+
+    用 MingW 编译的程序性能会高一点，而且也不用带着那个接近两兆的 cygwin1.dll 文件。
+    但 Cygwin 对 Linux 的模拟比较完整，甚至有一个 Cygwin X 的项目，可以直接用 Cygwin 跑 X。
+
+    另外 Cygwin 可以设置 -mno-cygwin 的 flag，来使用 MingW 编译。
+
+取舍：选 MSYS2
+
+    如果仅需要在 Windows 平台上使用 GCC，可以使用 MinGW 或者 Cygwin。
+
+    如果还有更高的需求（例如运行 POSIX 应用程序），就只能选择安装 Cygwin。
+
+    相对的 MingW 也有一个叫 MSYS（Minimal SYStem）的子项目，主要是提供了一个模拟 Linux 的 Shell 和一些基本的 Linux 工具。
+
+    目前流行的 MSYS2 是 MSYS 的一个升级版，准确的说是集成了 pacman 和 Mingw-w64 的 Cygwin 升级版。
+
+    如果你只是想在 Windows 下使用一些 Linux 小工具，建议用 MSYS2，把 /usr/bin 加进环境变量 path 以后，可以直接在命令行中使用 Linux 命令。
+
+另有 Linux 下运行 Windows 程序的中间层 wine，也是这个思路
+
+    https://www.winehq.org/
+
+#### MinGW
+
+此项目已停止维护
+
+    https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html
+
+#### MinGW64
+
+MinGW-w64 安装配置单，gcc 是 6.2.0 版本，系统架构是 64位，接口协议是 win32，异常处理模型是 seh，Build revision 是 1 。
+
+简单操作的话，安装开源的 gcc IDE开发环境即可，已经都捆绑了Mingw64。比如 CodeLite，CodeBlocks，Eclipse CDT，Apache NetBeans（JDK 8）。
+
+收费的有JetBrains Clion，AppCode （mac）。
+
+#### MSYS、MSYS2
+
+    https://www.msys2.org/
+
+    https://msys2.github.io/
+
+MinGW 仅仅是工具链，Windows 下的 cmd 使用起来不够方便，MSYS 是用于辅助 Windows 版 MinGW 进行命令行开发的配套软件包：提供了部分 Unix 工具以使得 MinGW 的工具使用起来方便一些。相比基于庞大的 Cygwin 下的 MinGW 会轻巧不少。
+
+MSYS2 是 MSYS 的第二代，有大量预编译的软件包，并且具有包管理器 pacman (Arch Linux)。
+
+在 Windows 上使用 Linux 程序
+
+    如果只是需要一个编译器的话，可以用MinGW64。
+
+    如果使用工具软件居多，还是 Msys2 能应付一切情况，它集合了 cygwin、mingw64 以及 mingw32（不等于老版的那个MinGW），shell、git、多种环境的 gcc（适用于 cygwin 环境或原生 Windows），而且有 pacman(ArcLinux) 作为包管理器。
+
+#### Windows 10+ 本地化 Linux 编程接口
+
+Windows 10 在 2022 年后，已经比较完整的提供了对 Linux 的字符程序和 GUI 程序的相应编程接口
+
+    对 Linux 字符程序，通过 ConPty 接口支持 unix pty 应用
+
+    对 Linux GUI 程序，通过 WSLg 接口支持 x-window/wayland 等框架下的应用
+
+> ConPty
+
+    https://zhuanlan.zhihu.com/p/102393122
+
+    https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/
+
+    https://learn.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
+    https://learn.microsoft.com/en-us/windows/terminal/samples
+            https://github.com/microsoft/terminal/tree/main/samples/ConPTY/EchoCon
+
+    https://www.zhihu.com/question/303307670
+
+基于 ConPTY 的终端，既能运行 POSIX 命令行程序，也能运行基于 Windows ConHost 的命令行程序，需要 Windows version >= 10 / 2019 1809 (build >= 10.0.17763)。
+
+目前支持 Conpty 接口的终端主要有
+
+    Windows Terminal (from the people who wrote conpty)
+
+    VSCode、IDEA、Eclipse 等 integrated terminal using ConPTY
+
+    PowerShell 7+ 使用 conpty 接口运行 cmd 字符程序
+
+    在 2022-10-28 MSYS2、mintty 支持使用 ConPty 接口了：
+
+        MSYS2 的配置文件 /etc/git-bash.config 中设置变量 `MSYS=enable_pcon`
+
+        mintty 配置文件 .minttyrc 中设置 `ConPTY=on`
+
+    最直接的好处是，在 mintty 中执行 Windows 的 cmd 字符程序，不再需要借助 winpty 去加载调用了 https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs
+
+有个性能对比测试
+
+    https://kichwacoders.com/2021/05/24/conpty-performance-in-eclipse-terminal
+
+> WSLg
+
+    https://github.com/microsoft/wslg
+
+目前已经可以支持在命令行启动运行 Linux GUI 程序了，如： gvim、gedit 等，甚至支持 GPU 加速的 3D 程序。
+
+WSLg 其实是个部署了 X Server 的 Linux，添加了支持 Windows 远程桌面的 FreeRDP 服务，即作为 X-window 应用和  Windows 窗口应用的桥梁存在。
+
+通过 Windows 远程桌面的接口实现了用户在 Windows 桌面直接使用 Linux GUI 程序：
+
+    Windows 用户界面 <-> RDP <-> X Server <-> Linux GUI 程序。
+
+而且 WSLg 用到的其实是替代 X Window System 的 Wayland Compositor，也就是 Wayland 官方给出的参考实现 Weston。这种类似于添加了个中间代理的解决方式，有利于完美适配各大 Linux 发行版和各种 Linux GUI 程序。
+
+WSLg（Windows Subsystem for Linux GUI） 是微软官方提供的功能，允许 WSL 2 直接运行 Linux GUI 应用程序（包括完整的桌面环境），并自动集成到 Windows 桌面。
+
+    无需额外 X Server（如 VcXsrv/X410）。
+
+    默认使用 Wayland，支持 X11，需要额外安装
+
+    支持剪贴板共享、音频、GPU 加速（适用于 OpenGL/Vulkan）。
+
+    适用于 Windows 11（21H2+）或最新 Win10（需手动启用）。
+
+在 Windows Subsystem for Linux (WSL) 下使用 GNOME + WSLg 是一种更现代、更便捷的方式，可以直接在 Windows 上运行完整的 Linux 桌面环境，而无需额外配置 X Server。
+
+参见章节 [在 WSL 实例上运行完整的 Linux 桌面环境](Windows 10+ 那些事儿.md)。
+
+## Windows字符终端
+
+Windows 10 2018年之前的版本 CMD 终端不同于 Linux 的伪终端机制：
+
+    终端模拟器的角色是 conhost.exe，通过外壳程序 cmd、powershell，他们在启动时连接本机的 conhost。
+
+    conhost 实现机制跟 Linux 伪终端不同，一个是调用 Windows API，一个是发送文本字符作为显示效果的控制，所以按照 Linux 终端原理工作的终端模拟器及各种终端应用程序其实无法连接 conhost。
+
+    终端概念参见章节 [Linux 字符终端]。
+
+Windows 下实现 Linux 伪终端机制的是 Msys2 项目，基于 putty 制作了 mintty.exe 作为本地终端模拟器，借助它就可以使用 unix pty 的程序如 bash、zsh 等，详见章节 [mintty 终端模拟器]。
+
+2018年 Windows 10 新的 ConPTY 接口实现了 *NIX 的伪终端功能，使得各种终端模拟器可以用文本的方式连接本机 Windows 接口的字符显示接口，参见章节 [Windows 10 本地化 Linux 编程接口]，下列三个常用工具程序估计用处不大了：
+
+    clink 辅助工具，在 cmd 下模仿 bash，按 tab 键自动完成，像 emacs 一样编辑输入的命令，很多支持终端多路复用的软件在 Windows 下调用 cmd 都使用了 clink
+
+        https://github.com/chrisant996/clink
+            不再更新了 https://github.com/mridgers/clink
+
+    winpty 辅助工具，提供了 unix pty 接口与 cmd conhost 接口的互通，是 mintty 这种 MSYS2 环境下执行 Windows CMD/PowerShell 程序的中介，参见章节 [winpty 运行 cmd 字符终端程序]
+
+        https://github.com/rprichard/winpty
+
+        https://gitforwindows.org/faq.html#some-native-console-programs-dont-work-when-run-from-git-bash-how-to-fix-it
+
+    wslbridge 辅助工具，提供了 unix pty 接口与 WSL(Windows Subsystem for Linux) 的互通，很多支持终端多路复用的软件在 Windows 下都通过该组件使用 WSL 会话
+
+        wslbridge2 https://github.com/Biswa96/wslbridge2
+            wslbridge 不更新了2018 https://github.com/rprichard/wslbridge/
+
+有很多图形化的终端模拟器，如果想统一在一个窗口程序下标签化管理各个连接，这样的程序称为终端多路复用器 terminal multiplexer，推荐使用 [Windows Terminal]。
+
+Windows 下的字符终端，如果要显示图标化字符，需要 Windows 安装支持多种符号的字体，见章节 [Nerd Font]。
+
+### putty 终端模拟器
+
+putty 完美的实现了在 Windows 下使用 ssh 远程连接 Linux 服务器，连接后用户使用体验跟 Linux 下的本地终端模拟器完全一致
+
+    https://www.chiark.greenend.org.uk/~sgtatham/putty/
+
+    竞品 KiTTY https://github.com/cyd01/KiTTY
+
+        从 putty 拉的分支而来，是对 putty 的易用性改进，共用putty的站点配置，增加了背景透明、支持站点列表的文件夹、自动化操作脚本，可以给站点加注释，还有便携版
+
+        注意，区别于 https://sw.kovidgoyal.net/kitty，那个是 Linux 下的 GPU 加速终端模拟器
+
+    竞品 bitvise https://www.bitvise.com/
+
+putty 连接远程服务器，实现了 ssh 的全部功能，使用 PUTTYGEN.EXE 生成并管理密钥，使用 PAGEANT.EXE 作为密钥代理，并在一个单一窗口下填写远程服务器的参数配置，远程服务器的终端显示也是一个单一窗口。
+
+术语：会话 Session
+
+    因为功能是连接远程站点然后执行命令行操作，putty 把每个连接保存为会话，设置会话就是设置连接某站点的参数，除了终端显示的参数，还有各种连接协议的参数等多种设置
+
+putty 登录站点后的使用很简单
+
+    点击并拖动鼠标左键是选择文字并复制到操作系统剪贴板（运行 putty 的操作系统，不是远程站点的）
+
+    点击鼠标右键，从操作系统剪贴板粘贴到当前的命令提示符后面
+
+putty 的初始界面只有一个，选择会话和会话设置两个功能区混合，使用逻辑有点绕：
+
+    会话设置的类别界面“Category”在左侧树形展示
+
+    会话选择界面在右侧，对应左侧界面“Category”的树形列表第一项“Session”
+
+    会话选择界面的上半部分是站点的ip地址和端口等参数设置，下半部分是会话列表供选择
+
+    会话参数的各项设置界面在右侧，对应左侧界面“Category”的树形列表的其它各分支项
+
+    连接会话的“Open”按钮在最下方，选择一个已有会话后点击该按钮即可连接登录站点
+
+    左侧界面“Category”的树形列表的其它部分，是当前选择的会话的参数，点击各个分支时右侧界面会切换为该会话各参数的设置界面（需要先在会话选择界面选择会话，点“Load”按钮，否则是默认的初始参数）
+
+    如果右侧界面需要切换到会话选择界面，点击左侧界面“Category”的树形列表第一项“Session”
+
+简易连接站点：
+
+    在左侧界面“Category”，点击的树形列表第一项“Session”，右侧出现会话选择界面，这也是 putty 启动后的初始界面
+
+    右侧会话选择界面，在“Host Name(or IP address)”输入地址和端口，点击下方的“Open”按钮，这样会使用默认的初始参数进行连接
+
+    可点击左侧界面的树形列表，设置本次连接使用的参数，然后再点击“Open”按钮
+
+连接已有站点：
+
+    在左侧界面“Category”，点击的树形列表第一项“Session”，右侧出现会话选择界面，这也是 putty 启动后的初始界面
+
+    在右侧会话选择界面，操作如下：
+
+        在“Saved Sessions”列表选择一个会话，双击即可。
+
+        或在“Saved Sessions”列表点击一个会话，使其变为蓝色已选，然后点击下方的“Open”按钮
+
+        或在“Saved Sessions”下方的编辑框手动输入会话名称，然后点击下方的“Open”按钮
+
+建立新的会话
+
+    在左侧界面“Category”，点击的树形列表第一项“Session”，右侧出现会话选择界面，这也是 putty 启动后的初始界面
+
+    在右侧会话选择界面，操作如下：
+
+        在“Host Name(or IP address)”、“Port”输入地址和端口
+
+        在“Saved Sessions”输入新的会话名称
+
+        点击右侧的“Save”按钮
+
+    如果新会话有某些参数需要设置，执行下面的“编辑已有会话”步骤。
+
+编辑已有会话
+
+    在左侧界面“Category”，点击的树形列表第一项“Session”，右侧出现会话选择界面，这也是 putty 启动后的初始界面
+
+    1、在右侧会话选择界面，操作如下：
+
+    在 “Saved Sessions” 列表选择一个会话，点击右侧的 “Load” 按钮，这时会话名称会自动填充“Saved Sessions” 下方的编辑框，而且 “Host Name(or IP address)”、“Port” 和 “connection type” 栏目都会显示该会话的站点参数
+
+        如果想复制该会话，编辑新的会话名称，然后点击右侧的 “Save” 按钮，转下面第4步。
+
+        如果想删除该会话，点击右侧的 “Delete” 按钮，转下面第4步。
+
+    下面的第2、3步可都做，或只做一个。
+
+    2、基本会话参数的修改：
+
+    在右侧会话选择界面，可修改“Host Name(or IP address)”、“Port” 和 “connection type” 栏目。
+
+    点击右侧按钮 “Save” 保存你的修改。如果不保存，直接点击下方的 “Open” 按钮，相当于用你修改的参数临时连接当前站点。
+
+    然后可转下面第4步。
+
+    3、高级会话参数的修改：（这里比较绕，习惯习惯就好）
+
+    点击左侧 “Category” 界面的树形列表的各个分支，右侧界面会跟随改变，不再是会话选择界面了，变成了你当前选择会话的相关参数的设置界面。如果未选择会话，则是 putty 启动后使用的默认初始参数。
+
+        切换左侧选择树形列表的各个分支，则右侧界面跟随变为相关参数的设置，自行调整即可。
+
+        比如“Connection->Data”里预设该站点的登录用户名，“Connection->SSH-Auth”里设置该站点密钥登录的密钥文件等等。
+
+        有些参数是影响终端呈现效果的，比如终端类型可以选择 xterm-256color 等效于在登录站点后的shell里设置环境变量 Term=xterm-256color。
+
+        有些参数影响 putty 的窗口，比如窗口滚动条缓存屏幕内容12000行，酌情设置。
+
+    保存你的修改：调整完成后，点击左侧界面“Category”的树形列表第一项“Session”，右侧会重新出现你的会话选择界面
+
+        检查下“Saved Sessions”下方的编辑框，务必确认自动填充的还是你刚才选择的那个会话名称，如果是新的名称会被保存为新的会话。
+
+        点击右侧按钮“Save”保存你的修改。如果不保存，直接点击下方的“Open”按钮，相当于用你修改的参数临时连接当前站点。
+
+    如果改乱了不想保存，转第1步重新加载会话设置即可。
+
+    4、执行上面“连接已有会话”的步骤，连接你的会话。
+
+如果在右侧的会话选择界面，不选择已有会话，直接在左侧 “Category” 界面的树形列表进行了各种调整
+
+    不推荐这样做，可能会乱。
+
+    这样需要后续再输入ip地址和端口
+
+        点击Open按钮就是“简易连接”
+
+        如果给出站点名称后点击“Save”按钮，这样会保存一个会话。
+
+备份会话
+
+putty把会话的参数写入了 Windows 注册表，需要手工导入，新建一个 exp_session.bat
+
+```bat
+REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
+```
+
+执行该 bat 文件，会在当前目录下生成一个名为 session.reg 的文件。
+如果需要恢复站点设置，直接双击该文件即会被 Windows 导入注册表。
+
+> putty 美化
+
+    仿效本地终端模拟器根据变量 $TERM 自动模拟为指定的终端类型，putty 可以在站点选项里设置终端类型，这样在登录远程服务器后就按照指定的类型显示了，一般默认为 xterm 就是彩色。
+
+开启 Putty 终端 256色 的支持: Putty->load你的session->Window->Colours->勾选 “General options for colour usage” 下的几个选项。
+
+即使你设置会话时勾选了使用 256color 和 true color 真彩色，putty 默认的主题比较保守，只使用 16 种颜色（用 rgb 设置，其实支持真彩色），你ssh登录到服务器会发现文字色彩比较刺眼。
+
+可以自定义颜色，在设置会话时 custom color，如果感觉挨个设置太麻烦，试试别人做好的
+
+    https://github.com/AlexAkulov/putty-color-themes
+
+    北极主题颜色 https://github.com/arcticicestudio/nord-putty
+
+    超多主题颜色，有 putty 的
+
+        https://github.com/mbadolato/iTerm2-Color-Schemes
+
+    自定义主题颜色，自己设计
+
+        https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
+
+推荐使用 nord 主题
+
+    curl -fsSLO https://github.com/arcticicestudio/nord-putty/raw/develop/src/nord.reg
+
+双击该 reg 文件，确认导入，然后你的 putty 会话列表里新增一个 “NORD” 会话，点击 “load” 按钮加载该会话，可以看到只设置了颜色，并没有站点 ip，填写自己的 ip 地址和端口，连接看看，会发现颜色效果柔和多了。如果满意，就另存该会话为你的站点名称即可。
+
+### mintty 终端模拟器
+
+    https://github.com/mintty/mintty
+        https://github.com/mintty/mintty/wiki/Tips
+        http://mintty.github.io/
+        帮助 https://mintty.github.io/mintty.1.html
+
+源码来自 putty 拉分支，目前归属 MSYS2 项目，自带 bash，模拟 unix pty 效果又快又好
+
+    如果运行 cmd 下的 Windows 字符命令，有些字符解释的显示效果不一致，建议与 cmd 分别使用，不在 mintty 下使用 cmd 的命令。或者使用 winpty 调度，参见章节 [winpty 运行 cmd 字符终端程序]。
+
+    ctrl/shift + ins 复制/粘贴，其实系统默认用鼠标拖动选择的文字复制到系统剪贴板
+
+    在 tmux 的鼠标模式下，按下 shift 就可以使用鼠标选择文字，自动复制到系统剪贴板
+
+    ctrl + plus/minus/zero 放大、缩小、还原
+
+    拖拽资源管理器里的文件/文件夹到 mintty 可以得到其路径
+
+mintty 可以在终端显示图片，下载他的源代码下 utils 目录下的脚本 showimg 即可
+
+    $ curl -fsSL https://github.com/mintty/utils/raw/master/showimg |sudo tee /usr/local/bin/showimg && sudo chmod 755 /usr/local/bin/showimg
+
+    另外还有 catimg/SDL2_image（showimage2） 等软件包支持在终端下显示图片
+
+建议放到本地 /usr/bin/ 下，以后执行 `showimg xxx.jpg` 就可以在 mintty 下显示本地图片；如果 ssh 登录到服务器上，在服务器的 /usr/local/bin/ 下也安装这个脚本，则 mintty 也可以响应服务器上执行的 `showimg xxx.jpg`，显示服务器上的图片。
+
+或安装个 lsix 脚本，因为 mintty 支持 Sixel 格式的图片显示
+
+        https://www.linuxprobe.com/sixel-linux.html
+
+    先在服务器端安装依赖包，会安装一堆的库
+
+        sudo apt install imagemagick
+
+    然后把脚本 lsix 拷贝到你的终端的 /usr/bin/ 目录下即可
+
+        # 只要你的终端支持 Sixel 图形格式即可
+        git clone --depth=1 https://github.com/hackerb9/lsix
+
+    就像 ls 命令那样使用 lsix。
+
+#### winpty 运行 cmd 字符程序
+
+    https://github.com/mintty/mintty/wiki/Tips#inputoutput-interaction-with-alien-programs
+
+    https://github.com/git-for-windows/git/wiki/FAQ#some-native-console-programs-dont-work-when-run-from-git-bash-how-to-fix-it
+
+在 mintty 或 Cygwin 的命令行环境下，如果执行Windows 控制台程序 （Windows CMD 程序或 PowerShell），如 python 会挂死无法进入。这是因为 python 使用的是 native Windows API for command-line user interaction，而 mintty 支持的是 unix pty，或称 Cygwin/MSYS pty。
+
+也就是说，Windows 控制台程序在 MSYS2 mintty 下直接执行会挂死，需要有个 Cygwin/MSYS adapter 提供类似 wslbridge 的角色。
+
+安装 winpty 作为 mintty 代理（git for windows 自带）
+
+    pacman -S winpty
+
+然后执行 `winpty python` 即可正常进入 python 解释器环境了
+
+最好在用户登录脚本文件 ~/.bashrc、~/.zshrc 里添加 alias 方便使用
+
+    alias python="winpty python"
+    alias ipython="winpty ipython"
+    alias mysql="winpty mysql"
+    alias psql="winpty psql"
+    alias redis-cli="winpty redis-cli"
+    alias node="winpty node"
+    alias vue='winpty vue'
+
+    # Windows 控制台程序都可以在 bash 下用 winpty 来调用
+    alias ping='winpty ping'
+
+如果 Windows version >= 10.2019.1809，新增的 ConPty 接口兼容了老的控制台应用程序 ConHost 接口，支持 ConPty 接口的应用可以支持 unix pty，就不需要使用 winpty 做调度了，见章节 [Windows 10 本地化 Linux 编程接口]。
+
+#### mintty 美化
+
+mintty 支持对 16 色代码表的实际展现效果进行自定义，在 mintty 窗口右键选项选择“外观->颜色样式设计工具”，会打开如下网址自定义即可
+
+    https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，弹出页面的链接上点右键选复制，在地址栏粘贴后回车
+
+主题颜色
+
+    https://github.com/hsab/WSL-config/tree/master/mintty/themes
+
+    https://github.com/oumu/mintty-color-schemes
+
+将主题文件保存到 mintty 安装目录的 msys64/usr/share/mintty/themes 目录下（C:\Program Files\Git\usr\share\mintty\themes），通过右键 mintty 窗口标题栏的 option 进行选择。
+
+mintty 默认的主题比较保守，只使用256色，如果你想看到真彩色的效果，尝试下选择自定义主题，会看到颜色柔和多了，推荐 nord 主题。文字彩色设置，详见章节 [终端模拟器和软件的真彩色设置]。
+
+也可以编辑 ~/.minttyrc 文件，自行设置各种颜色。
+
+#### .minttyrc 配置文件样例
+
+```config
+# 可自定义表情标签 https://github.com/mintty/mintty/wiki/Tips#installing-emoji-resources
+# https://mintty.github.io/mintty.1.html
+# https://github.com/mintty/mintty/wiki/Tips#configuring-mintty
+# 只支持等宽字体
+Font=MesloLGS Nerd Font Mono
+FontHeight=11
+FontSmoothing=full
+# FontWeight=700
+# FontIsBold=yes
+
+Columns=130
+Rows=40
+ScrollbackLines=12000
+
+CursorType=block
+CursorBlinks=yes
+
+# 语言设置
+# mintty界面的显示语言，zh_CN是中文，Language=@跟随Windows
+Language=@
+
+# 终端语言设置选项，在 Windows 10 下好像都不需要设置，下面的是 Windows 7 下的，是否因为操作系统默认编码是 ANSI ？
+# https://www.cnblogs.com/LCcnblogs/p/6208110.html
+# bash下设置，这个变量设置区域，影响语言、词汇、日期格式等，参见章节 [字符终端的区域、编码、语言]
+
+# bash 下显示中文
+Locale=zh_CN
+
+# 中文版 Windows 使用 ansi 字符集，
+# 但使用 UTF-8 的命令如 tail、ls 会没法都设置完美显示中文，
+# 或使用 uinx pty 的命令如 python卡死，需要借助 winpty。
+# 设置为 UTF-8 还能正确展现那些带图标的字体
+#Charset=GBK
+Charset=UTF-8
+
+# LANG 只影响字符的显示语言
+# win7下显示utf-8文件内容, 可先执行命令 `locale` 查看ssh所在服务器是否支持
+#LANG=zh_CN.UTF-8
+
+# 窗体透明效果，不适用于嵌入多窗口终端工具
+# Transparency=low
+
+# 为了使用更多的颜色，确保终端设置恰当
+Term=xterm-256color
+
+# 非通用标准的项目
+UnderlineColour=153,241,219
+AllowBlinking=yes
+BoldAsFont=yes
+
+# Windows version >= 10 / 2019 1809 (build >= 10.0.17763)
+# 2023.2 脚本执行速度慢于 mintty 本地处理
+# 2025.3 进入 tmux 后打印乱码
+#ConPTY=on
+
+# 自定义颜色方案，跟深色背景搭配
+# https://github.com/mintty/mintty/wiki/Tips#background-image
+# 自定义颜色方案 https://ciembor.github.io/4bit/ 点击右上角“Get Scheme”，选复制并粘贴
+# 根据图片生成颜色方案 https://github.com/thefryscorer/schemer2 参见章节 [base16颜色方案](gnu_tools.md okletsgo)
+Background=C:\tools\111dark.jpg,225
+#0D1926
+BackgroundColour=13,25,38
+#839496 #B6CDD0
+ForegroundColour=131,148,150
+CursorColour=236,255,255
+#353535
+Black=53,53,53
+#5C5C5C
+BoldBlack=92,92,92
+#FD6666
+Red=253,102,102
+#F38F8D
+BoldRed=243,143,141
+#3BC077
+Green=59,192,119
+#37B58B
+BoldGreen=55,181,139
+#CFBE74
+Yellow=207,190,116
+#DFD877
+BoldYellow=223,216,149
+#377AB0
+Blue=55,122,176
+#68A0CC
+BoldBlue=104,160,204
+#AD5136
+Magenta=173,81,54
+#CA7055
+BoldMagenta=202,112,85
+#4FC4B5
+Cyan=79,196,181
+#74CFBE
+BoldCyan=116,207,190
+#EEE8D5
+White=238,232,213
+#FDF6E3
+BoldWhite=253,246,227
+
+# 自定义颜色方案，跟深色背景搭配，nord 的暗淡方案
+# https://github.com/arcticicestudio/nord-alacritty/blob/main/src/nord.yml
+#Background=C:\tools\DR_6.jpg
+#BackgroundColour=46,52,64
+#ForegroundColour=216,222,233
+#CursorColour=216,222,233
+#Black=55,62,77
+#BoldBlack=55,62,77
+#Red=148,84,93
+#BoldRed=148,84,93
+#Green=128,149,117
+#BoldGreen=128,149,117
+#Yellow=178,158,117
+#BoldYellow=178,158,117
+#Blue=104,128,154
+#BoldBlue=104,128,154
+#Magenta=140,115,140
+#BoldMagenta=140,115,140
+#Cyan=109,150,165
+#BoldCyan=109,150,165
+#White=174,179,187
+#BoldWhite=174,179,187
+
+# 自定义颜色方案，跟浅色背景搭配-黄色
+#Background=C:\tools\222yellow.jpg,225
+#BackgroundColour=250,234,182
+#ForegroundColour=0,61,121
+#CursorColour=217,230,242
+#Black=80,80,80
+#BoldBlack=103,103,103
+#Red=243,37,20
+#BoldRed=238,83,83
+#Green=67,156,57
+#BoldGreen=91,191,80
+#Yellow=207,190,35
+#BoldYellow=220,203,48
+#Blue=3,82,139
+#BoldBlue=10,123,184
+#Magenta=133,41,39
+#BoldMagenta=176,38,38
+#Cyan=38,176,166
+#BoldCyan=80,191,180
+#White=205,175,175
+#BoldWhite=176,182,204
+
+# 自定义颜色方案，跟浅色背景搭配-绿色
+#Background=C:\tools\333green.jpg,128
+#BackgroundColour=250,234,182
+#ForegroundColour=47,47,47
+#CursorColour=217,230,242
+#Black=0,0,0
+#BoldBlack=38,38,38
+#Red=255,30,18
+#BoldRed=255,153,147
+#Green=82,173,58
+#BoldGreen=65,136,47
+#Yellow=193,117,40
+#BoldYellow=213,179,60
+#Blue=11,80,155
+#BoldBlue=17,120,234
+#Magenta=255,18,243
+#BoldMagenta=255,147,250
+#Cyan=32,138,115
+#BoldCyan=36,162,133
+#White=235,235,235
+#BoldWhite=255,255,255
+
+# 北极主题颜色 https://github.com/arcticicestudio/nord-mintty
+# papercolor https://github.com/NLKNguyen/papercolor-theme
+# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.light
+# https://github.com/mavnn/mintty-colors-solarized/blob/master/.minttyrc.dark
+#
+# 使用内置颜色方案，建议放在最下面以覆盖上面的颜色设置
+# ThemeFile=nord
+
+```
+
+#### mintty 简单使用：Git for Windows
+
+Git 在 Windows 下运行，专门起了一个项目 git for Windows，主要是因为 git 在 Linux 下运行依赖 bash 环境，在 Windows 下使用了 GNU tools 的 MinGW(Msys2) 实现了 git bash，并集成了 git bash 需要的部分工具软件，我们主要使用他的 git bash、 mintty.exe 终端模拟器和 git、ssh、gpg、winpty 等命令行工具。
+
+安装 git for Windows 或 MSYS2 后就有了，为了简单安装 git for windows 就可以了
+
+    https://git-scm.com/download/win
+        https://gitforwindows.org/
+
+配置文件样例参见章节 [mintty 美化]
+
+    git for Windows 下的 mintty 配置文件在 ~\.minttyrc
+
+    MSYS2 的 mintty 的配置文件与 git for Windows 不同，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]
+
+如果使用 mintty.exe，需要添加额外的启动参数，指定使用何种shell
+
+    mintty.exe /bin/bash --login -i
+
+    --login 加载配置文件 ~/.bash_profile 等，不然你进入的是个干巴的 shell
+
+    -i      创建一个交互式的shell
+
+git-bash.exe
+
+    自称 git bash，其实是 `mintty.exe /bin/bash --login -i` 的封装，可直接双击执行。用于执行 unix pty 的命令，显示兼容性最好。
+
+    如果使用 git-bash.exe，一般使用 `git-bash.exe --cd-to-home` 打开即进入 $HOME 目录，比较方便
+
+git-cmd.exe
+
+    其实是 cmd 的一个封装，可直接双击执行。用于执行 cmd 下的命令，显示兼容性最好。路径 path 优先指向了 git for windows 的目录。
+
+对路径的表示有点特殊，如磁盘路径需要使用 /c/ 来代替 c：来访问具体路径
+
+    cd /c/tools 表示访问 Windows 的 c:\tools 目录
+
+其它的几个的 Linux 目录结构跟 Windows 目录的对应关系
+
+    $HOME 目录      %USERPROFILE%
+
+    / 目录          git安装目录 C:\Program Files\Git
+    /usr 目录       C:\Program Files\Git\usr
+    /bin 目录       C:\Program Files\Git\bin
+    /dev 目录       C:\Program Files\Git\dev
+    /etc 目录       C:\Program Files\Git\etc
+
+    /tmp 目录       C:\Users\%USERNAME%\AppData\Local\Temp
+
+    /proc 目录      这个是 git 自己虚出来的，只能在 git bash(mintty) 下看到
+
+    /cmd 目录       C:\Program Files\Git\cmd，用于 cmd 命令行窗口下运行 git 和 ssh 用的几个脚本
+
+退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不然会提示有进程未关闭。
+
+putty的退出也是同样的建议。
+
+#### mintty 组合使用：git for Windows + MSYS2
+
+拷贝 MSYS2 的工具到 git 里，这样只使用 git bash(mintty) 就可以了。
+
+二者混用是个凑合的解决办法，因为如果遇到二者的调用库版本不一致会导致报错，所以最好是安装 MSYS2，然后使用它自带的 mintty、git、ssh、zsh 等工具，详见下面章节 [mintty 全套使用]。
+
+假设 git 的安装目录在 D:\Git，可执行文件在 D:\Git\usr\bin\ 目录：
+
+以迁移 tmux.exe 为例，可执行文件放在 D:\Git\usr\bin\：
+
+    tmux.exe
+    event_rpcgen.py
+    msys-event-2-1-7.dll
+    msys-event_core-2-1-7.dll
+    msys-event_extra-2-1-7.dll
+    msys-event_openssl-2-1-7.dll
+    msys-event_pthreads-2-1-7.dll
+
+其它放在 D:\Git\usr\share\ 下：
+
+    licenses\libevent
+    licenses\tmux
+    man\man1\tmux.1.gz
+
+使二者共享一套 HOME 目录：
+
+MSYS2 的 mintty 的配置文件不使用操作系统当前用户的 home 目录，详见章节[全套使用：安装 MSYS2(Cygwin/Msys)]。
+
+git for windows 使用操作系统当前用户的 home 目录，默认为 %USERPROFILE% （C:\Users\%USERNAME%\）。
+
+home 目录的隔离虽然使两个软件的设置互不干扰，但也使得 ssh、gpg、git、vim、tmux 等工具的配置文件不能共享。
+
+    保持隔离的解决办法
+
+        如果在安装 MSYS2 之前已经安装了 git for windows，可以将之前 ssh、git 、vim、tmux 等工具的配置文件拷贝到 MSYS2 的 home 目录下。
+
+    共享的解决办法
+
+        在 Windows 上配置环境变量 HOME 为 C:\you-path\msys64\home\your-name，增加这个环境变量的目的是为了让 git for windows 的 home 目录指向 MSYS2 的 home 目录。
+
+#### mintty 全套使用：安装 MSYS2(Cygwin/Msys) + pacman
+
+参考文章
+
+    MSYS2 和 mintty 打造 Windows 下 Linux 工具体验
+        https://creaink.github.io/post/Computer/Windows/win-msys2.html
+
+    Windows 下 MSYS2 配置及填坑 https://hustlei.github.io/2018/11/msys2-for-win.html
+
+下载安装 MSYS2
+
+    https://www.msys2.org/
+
+    https://msys2.github.io/
+
+使用 pacman 安装各种包，详见下面章节 [软件仓库 pacman]。
+
+pacman 更换清华源 <https://mirrors.tuna.tsinghua.edu.cn/help/msys2/> 中科大 <https://mirrors.ustc.edu.cn/help/msys2.html>，配置文件在 msys 的安装目录下的文件夹 msys64\etc\pacman.d\ 下。
+
+依次添加
+
+    编辑 /etc/pacman.d/mirrorlist.msys，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/msys/$arch/
+        Server = http://mirrors.ustc.edu.cn/msys2/msys/$arch/
+
+    编辑 /etc/pacman.d/mirrorlist.mingw32，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/i686/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/i686/
+
+    编辑 /etc/pacman.d/mirrorlist.mingw64，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/x86_64/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/x86_64/
+
+    编辑 /etc/pacman.d/mirrorlist.ucrt64，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/ucrt64/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/ucrt64/
+
+    编辑 /etc/pacman.d/mirrorlist.clang64，在文件开头添加：
+
+        Server = https://mirrors.tuna.tsinghua.edu.cn/msys2/mingw/clang64/
+        Server = http://mirrors.ustc.edu.cn/msys2/mingw/clang64/
+
+然后 Windows 执行开始菜单的快捷方式 "MSYS2 MSYS" 以打开命令行，更新软件包数据，之后可以使用 "MSYS2 MinGW X64"，
+
+    # pacman -Sy
+    :: Synchronizing package databases...
+    mingw32              1594.6 KiB   729 KiB/s 00:02 [#####################] 100%
+    mingw64              1604.5 KiB   494 KiB/s 00:03 [#####################] 100%
+    ucrt64               1663.1 KiB   985 KiB/s 00:02 [#####################] 100%
+    clang32              1556.7 KiB   400 KiB/s 00:04 [#####################] 100%
+    clang64              1587.3 KiB   532 KiB/s 00:03 [#####################] 100%
+    msys                  384.9 KiB   293 KiB/s 00:01 [#####################] 100%
+
+    # 更新核心软件包
+    # pacman -Su
+
+安装时给出了一些文件链接的提示
+
+    './.bashrc' -> '/home/%USERNAME%/.bashrc'
+    './.bash_logout' -> '/home/%USERNAME%/.bash_logout'
+    './.bash_profile' -> '/home/%USERNAME%/.bash_profile'
+    './.inputrc' -> '/home/%USERNAME%/.inputrc'
+    './.profile' -> '/home/%USERNAME%/.profile'
+
+    'C:\Windows\system32\drivers\etc\hosts' -> '/etc/hosts'
+    'C:\Windows\system32\drivers\etc\protocol' -> '/etc/protocols'
+    'C:\Windows\system32\drivers\etc\services' -> '/etc/services'
+    'C:\Windows\system32\drivers\etc\networks' -> '/etc/networks'
+
+该软件安装后，使用的Linux目录结构跟Windows目录的对应关系
+
+    home 目录      位于msys2的安装目录 msys64\ 下的 home\%USERNAME%
+
+    / 目录          位于msys2的安装目录 msys64\ 下
+    /usr 目录       同上
+    /tmp 目录       同上
+
+环境的隔离做的比较好，不会干扰Windows当前用户目录下的配置文件
+
+    如果你的系统中独立安装了如 git for Windows 、 Anaconda for Windows 等，他们使用 C:\Users\%USERNAME% 下的 bash_profile、mintty 等配置文件，注意区分。
+
+msys2在开始菜单下的好几个版本的说明
+
+    是因为编译器和链接的windows的c库不同，而故意分开编译的。作为一个软件运行平台，为了适应不同编译器编译出来的程序（Windows 对 CRT 运行库的支持不一样），而不得不区分开来。
+
+    LLVM/Clang 和 MINGW(GCC) 是两个不同的 C/C++ 编译器， mingw64、ucrt64、clang64 都是 Windows 原生程序（不依赖 cygwin.dll），不过 mingw64 是很早就有的，后两者是最近才新加的，所以只是选一个的话就用 mingw64。
+
+具体区别是：
+
+    mingw64 与 ucrt64 都是用 mingw64 编译器编译的 Windows 64位程序，只不过它们链接到的 crt（C runtime）不同， mingw64 是链接到了 msvcrt ，而 ucrt64 则是链接到了 Windows 10+ 上新的 ucrt 上。
+
+    而 clang64 很好理解，就是用 clang 而非 mingw 来编译各种库，另外它也是链接到了 ucrt 而非 msvcrt。
+
+    引自 <https://www.zhihu.com/question/463666011/answer/1927907983>
+
+    官方解释 <https://www.msys2.org/docs/environments/>
+
+msys2的启动方式都是通过调用 msys2_shell.cmd，不同仅在于传递了变量 set MSYSTEM=xxxx，msys2_shell.cmd 启动时，都默认使用 mintty
+
+    # c:\msys64为msys2安装目录，bash 为默认 shell，可以用 zsh,csh 等替换
+    set MSYSTEM=MINGW64
+    "c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
+
+自己运行 Msys2 时可以不使用 mintty，直接运行如下命令就OK：
+
+```bat
+
+rem 启动MSYS2 MSYS
+set MSYSTEM=MSYS
+"c:\msys64\usr\bin\mintty" "c:\msys64\usr\bin\bash" --login
+
+rem 启动MSYS2 MINGW32
+set MSYSTEM=MINGW32
+"c:\msys64\usr\bin\bash" --login
+
+rem 启动MSYS2 MINGW64
+set MSYSTEM=MINGW64
+"c:\msys64\usr\bin\bash" --login
+
+```
+
+##### 软件仓库 pacman
+
+基于 Arch Linux 的 pacman 提供软件仓库，采用滚动升级模式，初始安装仅提供命令行环境：高手用户不需要删除大量不需要的软件包，而是可以从官方软件仓库成千上万的高质量软件包中进行选择，搭建自己的系统。
+
+pacman 命令较多，常用的命令如下：
+
+    pacman -Sy           更新软件包数据
+    pacman -Su           更新核心软件包
+    # pacman -Syu        升级系统及所有已经安装的软件。
+    pacman -S 软件名      安装软件。也可以同时安装多个包，只需以空格分隔包名即可。
+    pacman -Rs 软件名     删除软件，同时删除本机上只有该软件依赖的软件。
+    pacman -Ru 软件名     删除软件，同时删除不再被任何软件所需要的依赖。
+    pacman -Ssq 关键字    在仓库中搜索含关键字的软件包，并用简洁方式显示。
+    pacman -Qs 关键字     搜索已安装的软件包。
+    pacman -Qi 软件名     查看某个软件包信息，显示软件简介,构架,依赖,大小等详细信息。
+    pacman -Sg           列出软件仓库上所有的软件包组。
+    pacman -Sg 软件包组    查看某软件包组所包含的所有软件包。
+    pacman -Sc           清理未安装的包文件，包文件位于 /var/cache/pacman/pkg/ 目录。
+    pacman -Scc          清理所有的缓存文件。
+
+安装常用软件
+
+    不要安装 msys2 版的 python，还是用 anaconda 最方便
+
+    pacman -S openssh opengpg vim git tmux winpty
+
+    pacman -S sed awk tree curl time nano tar gzip rsync
+
+    # netcat 的版本选择： gnu nc 没有 proxy 参数(-x), 因此我们要选择 openbsd 版
+    pacman -S openbsd-netcat
+
+    # 下面的命令大部分在 bash 中内置了
+
+    # 常用的系统命令 cat cut chmod echo mv tail 等，http://gnu.org/software/coreutils
+    pacman -S coreutils
+
+    # 进程管理 ps、kill、top、watch 等，https://gitlab.com/procps-ng/procps/
+    pacman -S procps-ng
+
+    # 常用的网络命令 ping, ping6, traceroute, whois, rsh 等，https://www.gnu.org/software/inetutils/
+    pacman -S inetutils
+
+    # find xargs
+    pacman -S Findutils
+
+    # diff
+    pacman -S diffutils
+
+    # 安装 zsh 主要是为了它多彩的命令行提示符等扩展插件，详见下面章节 [使用 zsh]
+    pacman -S zsh
+
+如果需要安装什么命令不知道输入何种包名，一般可以在搜索引擎里以 `MSYS2 xxx` 的形式得到结果。
+
+另外， Cygwin下还有 apt-cyg 命令行包管理器 <https://zhuanlan.zhihu.com/p/66930502>，操作软件仓库 <https://zhuanlan.zhihu.com/p/65482014>。
+
+### 其他终端模拟器
+
+不常用终端会遇到 terminfo 问题
+
+    https://ttys3.dev/post/kitty/
+
+    如果你尝试 ssh 到远程机器, 可能会发现你本机的 zsh 报错:
+
+    /home/user007/.zsh_compatible:bindkey:2: cannot bind to an empty key sequence
+
+    这个问题其实不只存在于 kitty, 任何有自己独立的 terminfo 的 terminal (且其信息没有在 ncurses 中内置), 基本上都会有这个问题. 比如 Alacritty 也有这个问题.
+
+    这个问题在官方faq文档里面也有说明:
+
+    I get errors about the terminal being unknown or opening the terminal failing when SSHing into a different computer?
+
+    This happens because the kitty terminfo files are not available on the server. You can ssh in using the following command which will automatically copy the terminfo files to the server:
+
+        kitty +kitten ssh myserver
+
+    This ssh kitten takes all the same command line arguments as ssh, you can alias it to ssh in your shell’s rc files to avoid having to type it each time:
+
+        alias ssh="kitty +kitten ssh"
+
+Contour Terminal Emulator 这个是真正的速度极快，而且跨平台
+
+    还在发展中，不足较多：不支持中文字体回落
+
+    https://contour-terminal.org/configuration/
+    https://zhuanlan.zhihu.com/p/505530480
+
+        $ sudo dnf install contour-terminal
+
+    快捷操作
+
+        Ctrl+Shift+Space 当前屏幕进入vim模式，方便用键盘选择屏幕文字复制粘贴等操作。
+        按 a 或 i 进入编辑模式会自动退出到命令行进行普通的编辑。
+
+    配置文件在
+
+        # flatpak：~/.var/app/org.contourterminal.Contour/config/contour/contour.yml
+        ~/.config/contour/contour.yml
+
+    目前只能手动修改：
+
+    ```yml
+    # 主配置
+    profiles:
+        main:
+            # 打开终端后作为登录shell
+            shell: "/bin/bash"
+            arguments: ["-l"]
+
+            # 按字符数的窗口大小
+            terminal_size:
+                columns: 80
+                lines: 25
+
+            scrollbar:
+                position: Right
+
+            # 字体
+            font:
+                regular:
+                    # 不支持中文字体回落 ["MesloLGS Nerd Font", "Noto Serif CJK SC"]
+                    family: "MesloLGS Nerd Font"
+
+            # 光标样式和闪动
+            cursor:
+                blinking: true
+
+            # 背景透明和模糊
+            background:
+                opacity: 0.95
+                blur: false
+
+            # 颜色方案，在下面的 color_schemes 处配置
+            # Specifies a colorscheme to use (alternatively the colors can be inlined).
+            colors: "default"
+
+    # 颜色方案
+    color_schemes:
+        # 系统默认的颜色方案
+        default:
+
+            background_image:
+                # flatpak 下不知道怎么找路径。。。
+                path: '/Pictures/78883229_UHD.jpg'
+                opacity: 0.5
+                blur: false
+
+    # 快捷键
+    input_mapping:
+        # 选择文字后按 ctrl+c 是复制到内部剪贴板，中键可粘贴
+    ```
+
+WindTerm 基于 C 开发的开源终端模拟器，支持多个平台，支持终端多路复用，绿色不需要安装。速度快，兼容性较好，左侧就是文件夹树方便 sftp，支持 lrzsz 的文件拖放传送，命令行输出还支持标签折叠
+
+    https://github.com/kingToolbox/WindTerm
+        https://kingtoolbox.github.io/
+
+    https://zhuanlan.zhihu.com/p/550149638
+
+    初次使用注意关闭主密码、关闭自动锁屏的功能。否则一旦锁屏了，只能编辑 user.config 文件：
+
+        干掉 application.fingerprint 和 application.masterPassword
+
+        再找到 .wind/profiles/default.v10/terminal/user.sessions 文件删除 session.autoLogin， 就可以将主密码设置为空字符串了，之后再来修改主密码，就 OK 了。
+
+nyagos 类 Unix 终端，但是支持 Windows 格式的路径
+
+    https://github.com/nyaosorg/nyagos
+
+        nyagos增加zoxide的支持 https://wentao.org/post/2023-04-27-zoxide-with-nyagos/
+
+edex-ui 创·战纪 风格的终端模拟器，还带一个简单的文件浏览器，系统资源监视器，虽然基于 Electron 的应用程序比较笨重，但效果太酷了
+
+    https://github.com/GitSquared/edex-ui
+
+    配置文件说明 https://github.com/GitSquared/edex-ui/wiki/settings.json
+
+    自定义主题说明 https://github.com/GitSquared/edex-ui/wiki/Themes
+
+Alacritty 使用 OpenGL 进行显示加速（速度一般）的终端模拟器，在 Linux 下刷新速度快，在 Windows 下使用 powershell 不推荐
+
+    https://github.com/alacritty/alacritty
+
+    主题颜色使用 Nord theme
+
+        curl -fsSL https://github.com/nordtheme/alacritty/raw/main/src/nord.yaml | tee $HOME/.alacritty.toml
+
+WezTerm GPU 加速（其实不快）跨平台终端仿真器，支持终端多路复用，至今未解决偶发的卡顿问题
+
+    https://github.com/wez/wezterm
+        https://wezfurlong.org/
+
+cmder 推荐了几个本地终端模拟器，可以嵌入 cmder 代替 ConEmu
+
+    https://github.com/cmderdev/cmder/wiki/Seamless-Terminus-integration
+
+        Tabby（原名Terminus）跨平台的终端模拟器，electron + nodejs 写的，支持终端多路复用，不支持导入 putty 的站点，目前使用sz传输大文件时文件会损坏，老老实实的用 sftp 吧
+            https://github.com/Eugeny/tabby
+            使用介绍 https://zhuanlan.zhihu.com/p/447977207
+
+    https://github.com/cmderdev/cmder/wiki/Seamless-Hyper-integration
+
+        hyper 基于 xterm.js 和 Electron 实现
+            https://hyper.is/
+
+    https://github.com/cmderdev/cmder/wiki/Seamless-FluentTerminal-Integration
+
+        FluentTerminal 基于 xterm.js 的 UWP 应用
+            https://github.com/felixse/FluentTerminal
+
+Nushell 既是一种编程语言，也是一种 Shell，执行 `help commands` 查看常用命令。自己的脚本语言可以基于自己的指令定义函数、基于函数定义脚本。可以开发 rust 插件给他扩展功能。
+
+    https://github.com/nushell/nushell
+        https://www.nushell.sh/zh-CN/book/thinking_in_nu.html
+
+另见章节 [Linux 桌面下的终端模拟器]。
+
+Supper Putty
+
+    别用了：最新的版本调用 git bash，粘贴脚本文件内容，随机添加字符，在 tmux 下发生的更频繁。
+
+    https://github.com/jimradford/superputty
+
+#### ConEmu 和 Cmder
+
+ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器。不止是个终端多路复用器，他还自己实现了对 cmd 和 unix pty 两种类型的终端模拟。
+
+    https://conemu.github.io/
+
+    console 类似ConEmu的软件
+        console2 不更新了2021 https://github.com/cbucher/console
+            console 不更新了2013 https://sourceforge.net/projects/console/
+
+ConEmu 最大的缺点是不稳定，反应速度偶尔很慢，估计跟它基于 Windows conhost，连带支持 unix pty 这样包打一切的实现机制有关。
+
+ConEmu 用配置 Task（任务）的形式，支持标签化窗口使用 cmd, powershell, msys2, bash, putty 等等终端模拟器。
+
+ConEmu\ConEmu 目录下集成了几个常用工具
+
+    clink 使 cmd 像 bash 按 tab 键自动完成
+
+    wslbridge 使 mintty 或 ConEmu 可以支持 WSL(Windows Subsystem for Linux)
+
+ConEmu 色彩方案
+
+    https://github.com/joonro/ConEmu-Color-Themes
+
+Cmder 是一个软件包，整合上述几个工具无需安装直接使用的软件包
+
+    https://github.com/cmderdev/cmder
+
+    它整合了：
+
+        本地终端模拟器：Conemu （它是Cmder的基础），可换为别的
+            https://zhuanlan.zhihu.com/p/71706782
+
+        clink 使 cmd 像 bash 按tab键自动完成
+
+        git for windows 使用它自带的 unix tools
+
+##### 基本的 ConEmu 任务配置示例
+
+ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列表
+
+    https://conemu.github.io/en/Tasks.html#add-default-tasks
+
+甚至 Windows 下的普通软件都可以嵌套到ConEmu的窗口下
+
+    选择新建任务的选项 'New console dialog'
+
+    在弹出窗口的栏目 'Startup command or {Task} name...'下输入： notepad
+
+    启动该任务会看到新建了一个标签打开了 Windows 的记事本。
+
+可以调用普通的 Windows 程序
+
+如果是调用 putty.exe、mintty.exe、notepad.exe 等 Windows 程序，ConEmu 会利用自己的 ChildGUI 功能，内嵌显示窗体，显示效果完美，但不能使用 ConEmu 的颜色和背景方案 <https://conemu.github.io/en/ChildGui.html>。
+
+对 bash.exe/tmux.exe 等 unix pty 的连接，Conemu 是通过 cmd 实现的，支持 ConEmu 的颜色和背景方案目前的实现方式，显示兼容性并不完美，见 Conemu 安装后生成的默认任务 {Bash::Git bash}。不知何时切换到 Windows 新的 Conpty 接口。
+
+1、关于 ConEmu 安装后自动生成的任务 {Bash::Git bash}
+
+    使用普通的 linux 命令显示效果正常，而且支持 ConEmu 的颜色和背景方案。但如果使用 tmux/zsh 状态栏工具，因为上面所述原因，显示效果有缺陷：在刷新后会出现底部栏重叠，还有光标错位的问题。这种情况下，建议见下面的示例 2。
+
+        set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-cmd.exe --no-cd --command=%ConEmuBaseDirShort%\conemu-msys2-64.exe /usr/bin/bash.exe -l -i -new_console:p
+
+    建议用下面的示例2配置原生的 git-bash.exe 任务
+
+2、配置 git-bash 任务
+
+    简单使用，安装 git for Windows，配置任务为直接调用 git-bash.exe，或直接调用 mintty.exe，用参数加载 bash，在 bash 中使用 ssh/tmux 效果是完美的。复杂点的可以安装 MSYS2（MinGW64)工具包，见下面示例 5。
+
+        点击+号，新建一个Task名为 {Bash::git-bash}，命令文本框输入
+
+        set "PATH=%ProgramFiles%\Git\usr\bin;%PATH%" & %ProgramFiles%\Git\git-bash.exe --cd-to-home
+
+        注：git-bash.exe 其实是封装执行 `mintty.exe /bin/bash -l`
+
+3、配置 Anaconda 任务
+
+    点击+号，新建一个Task名为 {cmd::Anaconda}，命令文本框输入
+
+    cmd /k "C:\ProgramData\Anaconda3\Scripts\activate.bat C:\ProgramData\Anaconda3"  -new_console:d:%USERPROFILE%
+
+4、配置 putty 任务
+
+    直接调用 putty.exe
+
+        点击+号，新建一个Task名为 {putty::your_putty_session}，命令文本框输入如下
+
+        C:\tools\PuTTY\putty.exe -load "your_putty_session_name"
+
+        如果不使用参数指定 putty 会话名，任务启动时会自动弹出 putty 的窗口供用户选择
+
+5、ConEmu 配置 MSYS2 任务
+
+    直接调用 mintty.exe，由它调用 shell 程序，这样显示效果由 mintty 决定，等效于上面的示例2。
+
+        C:\msys64\usr\bin\mintty.exe -i /msys2.ico -t "%CONTITLE%" "/usr/bin/zsh" -new_console:C:"%D%\msys2.ico"
+
+        C:\msys64\usr\bin\mintty.exe -i /msys2.ico -t "%CONTITLE%" "/usr/bin/bash -l" -new_console:C:"%D%\msys2.ico"
+
+    直接调用 bash.exe
+
+        显示会光标错行，估计也是因为 ConEmu 通过 cmd 实现对 bash.exe 的连接导致的。
+
+        打开 conemu 的 settings 对话框，选择 Startup>>Tasks 选项
+        点击+号，新建一个 Task 名字为 Msys2::MingGW64，在 commands 下文本框内输入如下代码：
+
+            set MSYS2_PATH_TYPE=inherit & set MSYSTEM=mingw64 & set "D=C:\msys64" & %D%\usr\bin\bash.exe --login -i -new_console:C:"%D%\msys2.ico"
+
+        MSYS2_PATH_TYPE=inherit 表示合并 Windows 系统的 path 变量。注意修改变量值 `D=` 为你的msys2的安装目录。
+
+        打开后会自动把工作目录设置为 msys64/home/%user% 下。
+
+#### Windows Terminal
+
+    WIndows Terminal 文档
+        https://learn.microsoft.com/zh-cn/windows/terminal/
+
+    Windows Terminal 与 MSYS2 MinGW64 集成
+        https://ttys3.dev/post/windows-terminal-msys2-mingw64-setup/
+
+Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl、bash 等多个终端窗口，自动添加当前识别到的 git bash 等 mintty 应用（对 MSYS2 应用通过 ConPty 接口实现的兼容 <https://github.com/msys2/MSYS2-packages/issues/1684>）。
+
+    # https://github.com/microsoft/terminal/releases
+    winget install --id=Microsoft.WindowsTerminal -e
+
+直接安装从 github 下载的 .msixbundle 文件，在 powershell 下运行如下命令从文件安装
+
+    Add-AppxPackage .\xxx.msixbundle
+
+如果提示无法安装，缺少框架，下载 github 发布页的那个 xxxx_Windows10_PreinstallKit.zip，解压，先安装 Microsoft.UI.Xaml 和 Microsoft.VCLibs.140 等包。
+
+如果安装后无法正常启动 Windows Terminal，经过一顿操作，终于找到了解决方法，用魔法打败了魔法！
+
+    https://www.cnblogs.com/albelt/p/15253147.html
+
+    要求：
+
+        Windows 10 1903 版本及以上
+
+    步骤：
+
+        到 Windows Terminal 的 Github 仓库下载最新的 release 包，即以 .msixbundle 为后缀的文件
+
+        将文件后缀名改为 .zip 后解压缩文件
+
+        在解压后的文件夹中找到名为 CascadiaPackage***.msix 的文件，有 x86、x64 和 ARM64 版本的，选择 x64 那个文件，修改后缀名为 .zip，然后解压
+
+        在解压后的文件夹中，找到 WindowsTerminal.exe 的文件，直接双击就能运行了，还是绿色免安装版的，是不是很简单？
+
+        可以把这个文件夹拷贝到安全的位置，然后将 .exe 文件添加到桌面快捷方式，就能愉快地使用 Windows Terminal 啦！
+
+##### 配置 Windows Terminal
+
+> 给各个终端生成配置文件
+
+点击按钮“添加新配置文件”，选择基于哪个现有的配置文件进行生成，然后修改启动参数就可以了。
+
+wsl，启动参数
+
+    %SystemRoot%\System32\cmd.exe /c wsl --cd ~
+
+Git Bash，启动参数
+
+    "C:/Program Files/Git/bin/bash.exe" -i -l
+
+复制 Anaconda 的命令行启动参数，在 cmd 使用 anaconda
+
+    %WINDIR%\System32\cmd.exe "/K" %USERPROFILE%\anaconda3\Scripts\activate.bat %USERPROFILE%\anaconda3
+
+如果追求反应速度，使用 cmd 终端(conhost)目前是最快的
+
+    按住回车键不放对比下刷屏速度就知道了
+
+    cmd 利用 ConPTY 可以无缝支持 Linux 程序的显示，兼容性没问题了，我用 cmd 终端运行 git bash 自带的 `ssh` 连接远程服务器、运行 `wsl` 使用 WSL 实例，都非常快，未遇到任何错误。
+
+    而且，可以在 Windows Terminal 中给 cmd 终端可以设置自定义背景和字体，使用起来手感跟 git bash 没有差别了。
+
+> 配置 Windows Terminal 的主题、终端配色方案等
+
+Windows Terminal 有自己的主题，颜色方案背景等配置修改 setting.json。目前版本的 Windows Terminal 可以在用户界面选择设置，如选择背景图片、开启毛玻璃效果、开启复古的像素化终端效果等。
+
+复杂点的设置，比如终端配色方案，需要手动修改配置文件，点击 Windows Terminal 窗口左下方的按钮 “打开json文件” 即可打开文本编辑，配置文件的位置一般在 %USERPROFILE%\AppData\Local\Microsoft\Windows Terminal。
+
+四部分：
+
+    Global Windows Terminal APP 整体的配置，启动参数、样式等，对应下图的 Global Config
+
+    profiles 配置每个终端的样式
+
+    schemes 终端配色方案
+
+    actions 定义快捷键操作，一般默认即可
+
+如果不知道如何配置 setting.json，可以参考 default.json 每一个节点的 key-value 值。主题配置主要是 Global、profiles 和 schemes 节点。
+
+list 段是基本设置
+
+    "list":
+    [
+        {
+            "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+            "hidden": false,
+            "name": "PowerShell",
+            "source": "Windows.Terminal.PowershellCore",
+            "colorScheme":"Zhuang B",
+            "fontFace":"Cascadia Code PL",
+            // 开启毛玻璃效果
+            "useAcrylic":true,
+            // 毛玻璃透明度
+            "acrylicOpacity":0.5
+            // 只要加上这一句，即可开启亮瞎眼的效果。
+            "experimental.retroTerminalEffect":true
+        }
+    ]
+
+schemes 段设置配色方案，同样是一个数组，每种配色方案会有一个名字 name，引用配色方案就是通过 name 的值。默认预设了几种配色方案，可在 default.json 查看
+
+```json
+
+    // 典型的 schemes 格式
+    {
+        "schemes":[
+            {
+                "name": "Campbell", // 配色方案名称，必须的
+                "foreground": "#CCCCCC", // 输出显示字体颜色
+                "background": "#0C0C0C", // 背景色
+                "cursorColor": "#FFFFFF", // 光标颜色
+                "black": "#0C0C0C", // 箭头左边三角，git 目录的 .git 目录下提示箭头背景提示文字
+                "red": "#C50F1F", // ssh 后 vim 打开文本文件已输入行普通字符显示文字
+                "green": "#13A10E", // git 目录的 .git 目录下提示箭头背景提示
+                "yellow": "#C19C00", // git 目录的分支箭头背景提示
+                "blue": "#0037DA", // 目录箭头本体
+                "purple": "#881798", // ssh 后 vim 等工具打开文件后的 { 和 }等符号本体，git 更新完后显示的分支箭头背景提示
+                "cyan": "#3A96DD", // 引号及内部字符
+                "white": "#CCCCCC", // 未知
+                "brightBlack": "#767676", // cd 等 命令后面的 .. 和 * 等特殊符号，以及命令参数字符颜色
+                "brightRed": "#E74856", // 系统提示字符颜色：错误的命令，git status 显示
+                "brightGreen": "#16C60C", // ssh 用户权限显示
+                "brightYellow": "#F9F1A5", // 输入的命令字符
+                "brightBlue": "#3B78FF", // ssh 文件夹等高亮显示，ssh 目录，vim 打开文本文件未输入行 ~ 字符显示
+                "brightPurple": "#B4009E", // 未知
+                "brightCyan": "#61D6D6", // ssh vim 等工具打开文件后的 { 和 } 等符号背景
+                "brightWhite": "#F2F2F2" // 目录箭头左边和中间的提示文字
+            }
+        ]
+    }
+
+```
+
+自定义 nord 方案，来自章节 [配色方案：整套支持终端模拟器和命令行软件的主题]的三种模式
+
+    https://compiledexperience.com/blog/posts/windows-terminal-nord
+
+```json
+
+    "schemes": [
+        {
+            "name": "Nord",
+            "foreground": "#d8dee9",
+            "background": "#2e3440",
+            "cursorColor": "#d8dee9",
+            "black": "#3b4252",
+            "red": "#bf616a",
+            "green": "#a3be8c",
+            "yellow": "#ebcb8b",
+            "blue": "#81a1c1",
+            "purple": "#b48ead",
+            "cyan": "#88c0d0",
+            "white": "#e5e9f0",
+            "brightBlack": "#4c566a",
+            "brightRed": "#bf616a",
+            "brightGreen": "#a3be8c",
+            "brightYellow": "#ebcb8b",
+            "brightBlue": "#81a1c1",
+            "brightPurple": "#b48ead",
+            "brightCyan": "#8fbcbb",
+            "brightWhite": "#eceff4",
+            "selectionBackground": "#FFFFFF"
+        },
+    ],
+
+```
+
+在如下几个网站别已有的颜色方案
+
+    https://github.com/mbadolato/iTerm2-Color-Schemes
+
+    https://windowsterminalthemes.dev/
+
+    http://terminal.sexy/
+
+#### PowerShell 7+ 命令提示符工具及美化
+
+    https://yqc.im/windows-terminal-using-windows-terminal/
+
+    https://zhuanlan.zhihu.com/p/352882990
+
+Windows 系统自带的 Windows PowerShell 5.x 和下载安装的 PowerShell 7.x 是两个独立的 Shell，注意到 5.x 带有 Windows 前缀，而 7.x 没有。两者的配置也是独立的，互不影响，所以如果你在 7.x 做配置，打开 5.x 并不会生效。
+
+一、先安装独立的 Powershell 7，从这个版本开始不跟随 Windows 发布了
+
+    https://learn.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3
+
+Powershell 7 有自己的软件包仓库
+
+        https://learn.microsoft.com/zh-cn/powershell/scripting/gallery/overview?view=powershell-7.3
+
+        https://www.powershellgallery.com/packages/
+
+其实使用 PowerShell 最大的问题是
+
+    执行 `ssh` 使用 Windows 自带的 C:\Windows\System32\OpenSSH，版本太老了
+
+    执行 `curl` 等工具被 alias 指向 wsl，也就是说，你得先在 wsl 里装个 Linux。
+
+为了减少疑惑，接下来将统一使用原生的 PowerShell 7.x。
+
+Powershell 优化
+
+    https://www.dejavu.moe/posts/windows-terminal/
+    一般我们不用 Azure 相关服务的话，建议禁用 Azure 账户模块
+
+    $env:AZ_ENABLE=$false
+
+PowerShell 美化：
+
+    更改整体配色，改变输出样式，提示符前显示用户名和计算机名等
+
+    增强 Git 命令功能和 Git 分支状态显示
+
+    自动补齐功能，可根据历史命令和当前目录补齐
+
+    ls 命令显示色彩
+
+1、安装图标字体，参见章节 [图标字体]。
+
+也可以用 scoop 安装
+
+    > scoop search FantasqueSansMono-NF
+    > scoop bucket add 'nerd-fonts'
+
+    # 下面一个命令要加 sudo 提权
+    > sudo scoop install FantasqueSansMono-NF
+
+2、安装 posh-git
+
+posh-git 可以实现命令提示符 Git 命令增强（命令别名和显示分支信息等）。
+
+可以通过 [PowerShell Gallery](https://www.powershellgallery.com) 安装，方法：打开 PowerShell 7（不是 Windows PowerShell），输入命令：
+
+    > Install-Module posh-git
+
+更改命令提示符显示的 oh-my-posh 配置复杂，不玩了
+
+    https://ohmyposh.dev/docs/installation/windows
+
+3、增强 PowerShell 的 ls 功能
+
+dircolors 是 Linux 下的命令，可以设置 ls 指令用彩色显示目录或文件。PowerShell 用插件 DirColors 实现同样的效果。
+
+    # 安装 DirColors
+    > Install-Module DirColors
+
+4、使用 ColorTool 更改 PowerShell 文字颜色，这个可以省略
+
+    # 安装更改文字颜色工具
+    > scoop install colortool
+
+    # 查看内置的配色方案，共有 8 种
+    > colortool --schemes
+
+    # 设置主题，后面是配色方案名称
+    > colortool OneHalfDark.itermcolors
+
+5、最后，把配置写入 PowerShell 的配置文件
+
+    # if (!(Test-Path -Path $PROFILE )) { New-Item -Type File -Path $PROFILE -Force } notepad $PROFILE
+
+    PS C:\Users\your_name> $PROFILE
+    C:\Users\your_name\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
+
+    > code $PROFILE
+
+内容见下。
+
+##### PowerShell 7 配置文件样例
+
+```powershell
+
+# 命令行提示符git增强
+Import-Module posh-git
+
+# ls 结果使用彩色
+Import-Module DirColors
+
+# 设置预测文本来源为历史记录
+Set-PSReadLineOption -PredictionSource History
+
+# 设置 Tab 键补全
+Set-PSReadlineKeyHandler -Key Tab -Function Complete
+
+# 设置 Ctrl+d 为菜单补全和 Intellisense
+Set-PSReadLineKeyHandler -Key "Ctrl+d" -Function MenuComplete
+
+# 设置 Ctrl+z 为撤销
+Set-PSReadLineKeyHandler -Key "Ctrl+z" -Function Undo
+
+# 设置向上键为后向搜索历史记录
+Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+
+# 设置向下键为前向搜索历史纪录
+Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+
+# 清除 scoop 缓存和软件旧版本 | 别名: scoopwipe
+#function scoopwipe{sudo scoop cleanup -gk * && sudo scoop cleanup * -g && scoop cache rm * && scoop cleanup * && Write-Host "Scoop 缓存清理完成啦~👌" }
+
+# 关联 conda 命令，来自 Ananconda 的开始菜单快捷方式
+C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
+
+```
