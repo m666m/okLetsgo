@@ -12035,11 +12035,9 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 
 > Gnome 桌面环境：
 
-1、打开 Gnome Software， 在类别 'input source' 搜索 'Pinyin' 安装拼音输入法。
+Fedora 可以 打开 Gnome Software， 在类别 'input source' 搜索 'Pinyin' 安装拼音输入法，会自动安装中文字体。
 
-2、设置输入法
-
-打开 Gnome 的 Settings -> Keyboard -> Input Source，点击添加，选择 “Chinese(Intelligent Pinyin)” ，这时时间栏出会出现en图标，用热键 'Win+空格' 即可切换输入法
+Debian 系 打开 Gnome 的 Settings -> Keyboard -> Input Source，点击添加，选择 “Chinese(Intelligent Pinyin)” ，这时时间栏出会出现en图标，用热键 'Win+空格' 即可切换输入法
 
     务必勾选 “Switch input sources individually for each window”，这样方便在文件管理器等软件中保持默认英语，支持热键
 
@@ -12159,6 +12157,10 @@ Debian
     https://www.systutorials.com/fedora-%e4%b8%ad%e6%96%87%e5%ad%97%e4%bd%93%e8%ae%be%e7%bd%ae/
 
     简体中文支持 https://wiki.archlinux.org/title/Localization/Simplified_Chinese
+
+Gnome 环境下安装中文字体比较方便
+
+    Settings-->Region & Languaes，点击添加 Language，勾选 Chinese 即可
 
 Gnome 的图形界面设置程序 Gnome Tweaks Tool(gnome-tweaks) 有 “Font” 选项卡，可以给界面和文本分别设置不同的字体，但不支持按三种风格分别设置字体及回落选项
 
