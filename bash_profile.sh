@@ -1001,8 +1001,8 @@ elif [[ $os_type = 'windows' ]]; then
     PS1="\n$ccBLUE╭─$ccRED\$(PS1exit-code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$ccBLUE$(PS1git-bash-new-line)──$ccWHITE\$ $ccNORMAL"
 
 elif [[ $os_type = 'wsl' ]]; then
-    # Windows git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
-    PS1="\n$ccBLUE╭─$ccRED\$(PS1exit-code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccYELLOW@WSL_\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$ccBLUE$(PS1git-bash-new-line)──$ccWHITE\$ $ccNORMAL"
+    # Windows wsl 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
+    PS1="\n$ccBLUE╭─$ccRED\$(PS1exit-code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccYELLOW@WSL_\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$ccBLUE╰─$ccWHITE\$ $ccNORMAL"
 
 elif  [[ $os_type = 'raspi' ]]; then
     # 本机登录后禁用屏幕休眠 https://zhuanlan.zhihu.com/p/114716305

@@ -849,6 +849,7 @@ Dracula theme
     foreground = #d8dee9
     foreground_bold = #d8dee9
     background = #2e3440
+    感觉太亮可以改为 #282C34，对应 RGB=40,44,52
 
     highlight = #4c566a
 
