@@ -17503,6 +17503,10 @@ NOTE：不要以 `sudo` 执行 winecfg
     # en_US.utf8
     $ env LANG=zh_CN.GBK wine your_app.exe
 
+如果是中文 Linux，则换成：
+
+    $ env LANG=zh_CN.UTF-8 wine your_app.exe
+
 用 Winetricks 配置 WINE
 
     https://wiki.winehq.org/Winetricks
