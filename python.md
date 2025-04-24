@@ -378,13 +378,13 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     # 切换到base环境(conda/virtualenv等)
     conda activate
 
-    # NOTE: 在Anancoda下的[base]环境，不要更新pip，不然其它conda环境默认共用这个pip！只在自己的conda环境下更新pip！
+    # NOTE: 在Anancoda下的[base]环境，更新pip其它conda环境默认共用这个pip！尽量只在自己的conda环境下更新pip！
 
     # 临时使用国内镜像，更新pip自身
-    # pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+    $ python -m pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple --upgrade pip
 
     # 设为全局默认
-    pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+    $ pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 
 验证
 
