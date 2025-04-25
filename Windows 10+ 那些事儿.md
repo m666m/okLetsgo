@@ -3761,7 +3761,7 @@ WSLg 默认启用 OpenGL 加速，如需 Vulkan：
 
 #### 在 WSL 中启用显卡加速 CUDA Toolkit
 
-通过 CUDA Toolkit 支持深度学习的训练，这样 pytorch 等才可以调用 cuda 相关函数进行加速
+深度学习起始自 Linux 平台，nvidia 通过 CUDA Toolkit 支持训练，这样 pytorch 等才可以调用 cuda 相关函数进行加速，因为这个历史原因，很多程序都是 Linux 专有的，在 Windows 上无法运行。微软通过 WSL 在 Windows 下给 Linux 提供了运行环境，nvidia 顺势实现了在 wsl 实例中可以运行的 CUDA Toolkit，这样你就可以在 Windows 的 wsl 实例下运行那些 Linux 专有的深度学习训练程序了。
 
     在 WSL 中启用 NVIDIA CUDA https://learn.microsoft.com/zh-cn/windows/ai/directml/gpu-cuda-in-wsl
 
@@ -3773,7 +3773,7 @@ WSLg 默认启用 OpenGL 加速，如需 Vulkan：
 
 1、下载并安装支持 CUDA 的 WSL 驱动程序
 
-目前 WSL 中默认通过 WSLg 支持 CUDA，在宿主机安装过 nvidia 显卡驱动程序即可，不需要在 WSL 中安装了。
+目前 WSL 中默认通过 WSLg 支持 CUDA，在宿主机的 Windows 操作系统中安装过 nvidia 显卡驱动程序即可，不需要在 wsl 实例中安装了。
 
 2、确认 WSL 实例的内核版本
 
@@ -3793,7 +3793,7 @@ WSL 版下载直达
 
     https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local
 
-会列出一堆命令，在命令行终端中你的 wsl 实例里，粘贴这些命令，执行即可。
+会列出一堆命令，在命令行终端中进入你的 wsl 实例，粘贴这些命令，执行即可。
 
 文件比较大，下载和安装需要一定的时间，耐心等待。
 
