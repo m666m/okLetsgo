@@ -3759,49 +3759,74 @@ WSLg 默认启用 OpenGL 加速，如需 Vulkan：
     sudo apt install mesa-vulkan-drivers -y
     vulkaninfo  # 验证支持
 
-#### 在 WSL 中启用显卡加速
+#### 在 WSL 中启用显卡加速 CUDA Toolkit
 
-目前 WSL 中默认使用 WSLg 支持 NVIDIA CUDA 了，宿主机安装 nvidia 驱动就可以了。
+通过 CUDA Toolkit 支持深度学习的训练，这样 pytorch 等才可以调用 cuda 相关函数进行加速
 
-    https://learn.microsoft.com/zh-cn/windows/ai/directml/gpu-cuda-in-wsl
-
-以下内容保留仅供参考：
-
-1、下载并安装支持 NVIDIA CUDA 的 WSL 驱动程序
-
-    在 WSL2 上开始使用 CUDA https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
+    在 WSL 中启用 NVIDIA CUDA https://learn.microsoft.com/zh-cn/windows/ai/directml/gpu-cuda-in-wsl
 
     适用于 Linux 的 Windows 子系统 (WSL) 上的 CUDA https://developer.nvidia.com/cuda/wsl
+
+    WSL 上的 CUDA 社区论坛
+
+        https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
+
+1、下载并安装支持 CUDA 的 WSL 驱动程序
+
+目前 WSL 中默认通过 WSLg 支持 CUDA，在宿主机安装过 nvidia 显卡驱动程序即可，不需要在 WSL 中安装了。
 
 2、确认 WSL 实例的内核版本
 
 安装上述驱动程序后，请确保启用 WSL 并安装基于 glibc 的分发版，例如 Ubuntu 或 Debian。
 
-需要 5.10.43.3 或更高版本的内核版本，可以通过在 PowerShell 中运行以下命令来检查版本号：
+需要 Linux 5.10.43.3 或更高版本的内核版本，可以通过在 PowerShell 中运行以下命令来检查版本号：
 
-    wsl cat /proc/version
+    $ wsl cat /proc/version
 
-3、开始使用 NVIDIA CUDA
+3、安装 WSL 上的 NVIDIA CUDA Toolkit
 
-最方便的使用方法就是章节 [WSL 下使用 CUDA 容器]。
+    https://docs.nvidia.com/cuda/wsl-user-guide/index.html#cuda-support-for-wsl-2
 
-其它方法：
+    https://developer.nvidia.com/cuda/wsl/download
 
-按照 WSL 上的 NVIDIA CUDA 用户指南中的说明操作
+WSL 版下载直达
 
-    https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl-2
+    https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local
 
-或者在 WSL 中安装 PyTorch 或 TensorFlow
+会列出一堆命令，在命令行终端中你的 wsl 实例里，粘贴这些命令，执行即可。
+
+文件比较大，下载和安装需要一定的时间，耐心等待。
+
+3、开始使用 CUDA
+
+在 WSL 中安装 PyTorch 或 TensorFlow
 
     https://pytorch.org/get-started/locally/
 
     https://www.tensorflow.org/install/gpu
 
-WSL 上的 CUDA 社区论坛
+注意事项
 
-    https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
+驱动、CUDA、cuDNN、框架四者版本必须严格匹配
 
-##### WSL 下使用 CUDA 容器
+    NVIDIA 驱动版本需支持目标 CUDA 版本（例如 CUDA 12.x 需要驱动版本≥525.60）。
+
+    cuDNN 必须与 CUDA 版本对应（例如 CUDA 11.8 对应 cuDNN 8.7.x）。
+
+    深度学习框架（如PyTorch/TensorFlow）可能仅支持特定 CUDA 版本（如 TensorFlow 2.15 仅支持CUDA 12.0）。
+
+    访问框架官网查看支持的CUDA版本（如TensorFlow版本表）。
+
+    通过NVIDIA文档确认CUDA与cuDNN的兼容性。
+
+CUDA 安装路径不要包含中文或空格
+
+    默认路径为：C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8 (11.8 为 CUDA 的版本）
+自定义路径可能导致环境变量配置错误
+
+##### WSL 下使用 NVIDIA Container Toolkit
+
+没有官方支持，都是网友自己写的
 
     https://blog.csdn.net/m0_63070489/article/details/145798161
 
