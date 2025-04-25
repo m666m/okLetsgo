@@ -3761,9 +3761,11 @@ WSLg 默认启用 OpenGL 加速，如需 Vulkan：
 
 #### 在 WSL 中启用显卡加速
 
-目前 WSL 中默认使用 WSLg 支持 NVIDIA CUDA 了，宿主机安装 nvidia 驱动即可。
+目前 WSL 中默认使用 WSLg 支持 NVIDIA CUDA 了，宿主机安装 nvidia 驱动就可以了。
 
     https://learn.microsoft.com/zh-cn/windows/ai/directml/gpu-cuda-in-wsl
+
+以下内容保留仅供参考：
 
 1、下载并安装支持 NVIDIA CUDA 的 WSL 驱动程序
 
@@ -3805,20 +3807,52 @@ WSL 上的 CUDA 社区论坛
 
     https://zhuanlan.zhihu.com/p/694392785
 
-配置 docker 见章节 [使用基于 WSL2 的 Docker]。
+1、宿主机需要安装 Docker Desktop，并配置它使用 WSL，详见章节 [使用基于 WSL2 的 Docker]。
 
-你可以通过 NVIDIA Docker 使用现有的 Linux 工作流
+2、在 wsl 实例中安装 NVIDIA Container Toolkit
 
-    NVIDIA Container Toolkit https://github.com/NVIDIA/nvidia-container-toolkit
+    https://github.com/NVIDIA/nvidia-container-toolkit
         之前是 https://github.com/NVIDIA/nvidia-docker 已废弃
 
-docker 拉 nvidia/cuda 镜像时，拉取的 cuda 版本不能高于本地的 cuda 版本。
+在 wsl 实例中的安装过程跟 Linux 中一致，参见章节 [使用 CUDA 容器 nvidia-container-toolkit](init_a_server think)。
 
-我本地的 cuda 版本是 12.7，则我无法拉取镜像 docker pull nvidia/cuda:12.8-base-ubuntu24.04，因为这个镜像的 cuda 版本是 12.8
+3、在 wsl 实例中给 docker 追加 NVIDIA runtime 配置：
+
+    $ sudo nvidia-ctk runtime configure --runtime=docker
+
+打开宿主机 Docker Desktop 的 Settings-->Docker Engine，将 NVIDIA runtime 配置添加到 docker 的配置中，新增如下部分：
+
+```json
+{
+// ...
+  "runtimes": {
+    "nvidia": {
+      "args": [],
+      "path": "nvidia-container-runtime"
+    }
+  }
+// ...
+}
+
+```
+
+然后重启 Docker Desktop。
+
+4、验证：命令行终端进入你的 wsl 实例
 
 执行以下命令，正常情况下会输出 nvidia 显卡信息【表示本机的Docker可使用GPU】，如图所示
 
-    docker run --rm --gpus all nvidia/cuda:12.6.3-base-ubuntu24.04 nvidia-smi
+    $ sudo docker run --rm --gpus all nvidia/cuda:12.6.3-base-ubuntu24.04 nvidia-smi
+
+运行带 NVidia 引擎的容器
+
+    $ sudo docker run --rm --runtime=nvidia --gpus all ubuntu nvidia-smi
+
+另外注意 docker 拉 nvidia/cuda 镜像时，拉取的 cuda 版本不能高于本地的 cuda 版本。
+
+    我本地的 cuda 版本是 12.7，则我无法拉取镜像 docker pull nvidia/cuda:12.8-base-ubuntu24.04，因为这个镜像的 cuda 版本是 12.8
+
+要是各种办法都不行，则只能不使用 Docker Desktop 了，在 wsl 实例的内部安装 Docker 和 nvidia container toolkit，这样是把 wsl 当虚拟机用法了。
 
 ### 使用 Docker
 
