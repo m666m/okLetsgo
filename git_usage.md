@@ -134,7 +134,7 @@ jj 自己实现了一套简化的前端操作命令，把 git 隐藏到了后端
 
 如果是 Windows 下的 git bash，防止找错路径，显式设置下消息编辑器
 
-    # /usr/bin/vi
+    # /usr/bin/vi --wait
     $ git config --global core.editor 'vi'
 
 ### 2、设置 ssh 客户端
