@@ -116,21 +116,25 @@ jj 自己实现了一套简化的前端操作命令，把 git 隐藏到了后端
 如果未设置过 git 用户名和邮箱，设置个默认的全局使用，如果是主用办公，设为办公用户名和电邮，个人自用，按自己的习惯设置即可。
 
     # 查看
-    git config --global --list
+    $ git config --global --list
 
     # 设置
-    git config --global user.name "m666m"
-    git config --global user.email "31643783+m666m@users.noreply.github.com"
+    $ git config --global user.name "m666m"
+    $ git config --global user.email "31643783+m666m@users.noreply.github.com"
 
 如果是在已有的项目文件夹里，注意检查是否需要更新用户名和电邮地址。比如 github 项目使用 github 用户名和电邮，填写前面复制的 github 的 noreply 电邮地址。
 
     # 查看
-    git config user.name
-    git config  user.email
+    $ git config user.name
+    $ git config  user.email
 
     # 设置
-    git config user.name "m666m"
-    git config user.email "31643783+m666m@users.noreply.github.com"
+    $ git config user.name "m666m"
+    $ git config user.email "31643783+m666m@users.noreply.github.com"
+
+如果是 Windows 下的 git bash，防止找错路径，显式设置下消息编辑器
+
+    $ git config --global core.editor 'vi'
 
 ### 2、设置 ssh 客户端
 
