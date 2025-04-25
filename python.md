@@ -2746,9 +2746,13 @@ sqlite
 
 #### MarkDown 文件格式
 
-markdownlint 语法检查、格式化，缺点是在粘贴文本的时候 vscode 响应慢。
+markdownlint 语法检查、格式化
 
     DavidAnson.vscode-markdownlint
+
+缺点是在粘贴文本的时候 vscode 响应慢，可以在配置文件中设置仅保存文件时进行检查以缓解：
+
+    "markdownlint.run": "onSave",
 
 屏蔽当前行，添加如下内容即可
 

@@ -364,6 +364,7 @@
         "MD014": false,  // $命令可以没有输出
         "MD033": false   // <abcdefg> 识别为内联 html 这不合理
     },
+    "markdownlint.run": "onSave",
     // PYQT Integration 自行调整：
     // 根据你的 python、conda、virtunalenv 的不同，在哪个环境下安装了 pyqt5-tools，就在哪个环境下安装 PYQT Integration。
     // 先激活你的环境，然后用命令 `where/which designer.exe` 找一下，记下路径，填写到下面
@@ -572,12 +573,12 @@
             "backgroundColor": "#005f87",
             "overviewRulerColor": "#005f87",
             "isWholeLine": true
-        },
+        }
     ],
     "todohighlight.include": [
         "**/*.md",
         "**/*.py",
-        "**/*.sh",
+        "**/*.sh"
     ],
     "todohighlight.exclude": [
         "**/node_modules/**",
