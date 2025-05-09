@@ -1250,24 +1250,19 @@ Microsoft 出品的工具包
 
 注意设置右键插件图标，选择扩展在哪些网站生效，尽量缩小插件的生效范围。
 
-    尽量设置 “读取和更改站点数据”配置为“单击扩展时”
+    尽量设置 “读取和更改站点数据” 配置为 “单击扩展时”
 
 uBlock Origin 广告屏蔽
 
     https://microsoftedge.microsoft.com/addons/detail/ublock-origin/odfafepnkmbhccpbejgmiehpchacaeak
 
-    https://github.com/gorhill/uBlock
-
-    增加以下规则
-
-        CJX's Annoyance List（反自我推广，移除Anti AdBlock，防跟踪补充）：
-        https://github.com/cjx82630/cjxlist
-
-        https://github.com/xinggsf/Adblock-Plus-Rule
+    edge 兼容 chrome 插件，该插件详情统一放在章节 [安装 Google Chrome 浏览器插件]
 
 Aria2 Explorer 把下载添加到aria2任务
 
     https://microsoftedge.microsoft.com/addons/detail/aria2-explorer/jjfgljkjddpcpfapejfkelkbjbehagbh
+
+    edge 兼容 chrome 插件，该插件详情统一放在章节 [安装 Google Chrome 浏览器插件]
 
 Superb Copy 解锁 csdn/51cto 右键复制
 
@@ -1358,6 +1353,13 @@ uBlock Origin
     chrome://extensions/?id=cjpalhdlnbpafiamejdnhcphjbkeiagm
 
     https://github.com/gorhill/uBlock/releases
+
+    增加以下规则
+
+        CJX's Annoyance List（反自我推广，移除Anti AdBlock，防跟踪补充）：
+        https://github.com/cjx82630/cjxlist
+
+        https://github.com/xinggsf/Adblock-Plus-Rule
 
 读取网站数据权限：在所有网站上
 
