@@ -4299,7 +4299,7 @@ IPS或TN面板，选有限，使得暗部细节能看的清楚，不至于糊成
 
 3、不要在 Windows 桌面环境开启 HDR 模式，仅在相关应用中单独设置开启，原因见章节 [显示器开启 HDR 后 Win10 桌面变灰泛白的原因]。
 
-    edge 浏览器里，设置 --> “系统和性能”，勾选 “在可用时使用图形加速” 和 “增强 Microsoft Edge 中的视频”。Nvidia 控制面板，打开 “RTX 视频增强” 选项：包含 “RTX视频超分辨率技术(Video Super Resolution)”和 HDR。这样在浏览器播放网络视频时可以进入 HDR 状态并增强画质。
+    edge 浏览器里，设置 --> “系统和性能”，勾选 “在可用时使用图形加速” 和 “增强 Microsoft Edge 中的视频”。Nvidia 控制面板，打开 “RTX 视频增强” 选项：包含 “RTX视频超分辨率技术(RTX Video Super Resolution)”和 HDR。这样在浏览器播放网络视频时可以进入 HDR 状态并增强画质。VLC 播放器也支持这个功能 <https://download.videolan.org/testing/vlc-rtx-upscaler/>。
 
         超分辨率技术用于把低于你显示器分辨率的视频用 GPU 的 AI 计算拉高到你显示器的分辨率。
 
