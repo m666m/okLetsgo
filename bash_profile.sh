@@ -774,17 +774,17 @@ ccWHITE=$'\[\e[0;37m\]'
 
 ccNORMAL=$'\[\e[m\]'
 
-# 注意：判断命令返回值的函数 PS1exit-code 要放在放在 PS1 变量赋值语句的最前面，
+# 注意：判断命令返回值的函数 PS1exit_code 要放在放在 PS1 变量赋值语句的最前面，
 # 否则，它前面的函数要实现 $? 变量的透传
 #   { ret_code="$?"; your code...; return ret_code}
-function PS1exit-code {
+function PS1exit_code {
     local exitcode="$?"
     #if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
     #(($exitcode != 0)) && printf "%s" ' -'$exitcode' '
     [[ ! $exitcode = 0 ]] && printf "%s" ' -'$exitcode' '
 }
 
-function PS1conda-env-name {
+function PS1conda_env_name {
     # Linux 下安装 Anaconda 需要执行一次如下命令，才能在 bash 中使用 conda 命令
     #   `conda init bash`
     # 会自动在 ~/.bashrc 或 .bash_profile 文件添加如下内容：
@@ -805,11 +805,11 @@ function PS1conda-env-name {
 
 # virtualenv 自定义环境名格式，禁止 activate 命令脚本中在 PS1 变量添加环境名称
 export VIRTUAL_ENV_DISABLE_PROMPT=1
-function PS1virtualenv-env-name {
+function PS1virtualenv_envname {
     [[ -n $VIRTUAL_ENV ]] && printf "(venv:%s)" $(basename $VIRTUAL_ENV)
 }
 
-function PS1git-branch-name {
+function PS1git_branch_name {
 
     if ! command -v git >/dev/null 2>&1; then
         return
@@ -869,8 +869,8 @@ function PS1git-branch-name {
     unset _pp_branch_name
 }
 
-function PS1git-branch-prompt {
-    local branch=`PS1git-branch-name`
+function PS1git_branch_prompt {
+    local branch=`PS1git_branch_name`
 
     # branch 变量是空的说明不在 git 环境中，返回即可
     [[ $branch ]] || return
@@ -943,8 +943,8 @@ function PS1_container_name {
 # 规避办法
 #   法1. 把换行\n放在引用函数前面
 #   法2. 重新拼接成新样式避开这个bug: PS1="\n$ccBLUE┌──── $ccWHITE\t ""$PS1""$ccBLUE───┘ $ccNORMAL"
-#   法3. 完美的解决办法：新增子函数 PS1git-bash-new-line 实现跟上面完全一致的显示效果。
-function PS1git-bash-new-line {
+#   法3. 完美的解决办法：新增子函数 PS1gitbash_newline 实现跟上面完全一致的显示效果。
+function PS1gitbash_newline {
     printf "\n╰"
 }
 
@@ -955,7 +955,7 @@ function PS1git-bash-new-line {
 #   CPU 温度的单位是千分位提权 1000
 #   系统 throttled 不是零
 #   CPU Load Average 的值应该小于CPU核数的70%，取1分钟平均负载
-function PS1raspi-warning-info {
+function PS1raspi_warn_info {
 
     # [[ $(command -v vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
     # command -v vcgencmd >/dev/null 2>&1 || return
@@ -983,8 +983,8 @@ function PS1raspi-warning-info {
     printf "%s%s%s" "$CPUTEMP_WARN" "$THROTT_WARN" "$LOAD_AVG_WARN"
 }
 
-function PS1raspi-warning-prompt {
-    local raspi_warning=`PS1raspi-warning-info`
+function PS1raspi_warn_prompt {
+    local raspi_warning=`PS1raspi_warn_info`
     if [ -n "$raspi_warning" ]; then
         printf "====%s====" "$raspi_warning"
     fi
@@ -998,11 +998,11 @@ if [[ $current_shell = 'zsh' ]]; then
 
 elif [[ $os_type = 'windows' ]]; then
     # Windows git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
-    PS1="\n$ccBLUE╭─$ccRED\$(PS1exit-code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)$ccBLUE$(PS1git-bash-new-line)──$ccWHITE\$ $ccNORMAL"
+    PS1="\n$ccBLUE╭─$ccRED\$(PS1exit_code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda_env_name)\$(PS1virtualenv_envname)\$(PS1git_branch_prompt)$ccBLUE$(PS1gitbash_newline)──$ccWHITE\$ $ccNORMAL"
 
 elif [[ $os_type = 'wsl' ]]; then
     # Windows wsl 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
-    PS1="\n$ccBLUE╭─$ccRED\$(PS1exit-code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccYELLOW@WSL_\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$ccBLUE╰─$ccWHITE\$ $ccNORMAL"
+    PS1="\n$ccBLUE╭─$ccRED\$(PS1exit_code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccYELLOW@WSL_\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda_env_name)\$(PS1virtualenv_envname)\$(PS1git_branch_prompt)\n$ccBLUE╰─$ccWHITE\$ $ccNORMAL"
 
 elif  [[ $os_type = 'raspi' ]]; then
     # 本机登录后禁用屏幕休眠 https://zhuanlan.zhihu.com/p/114716305
@@ -1014,11 +1014,11 @@ elif  [[ $os_type = 'raspi' ]]; then
     setterm --powerdown 0
 
     # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 树莓派温度告警 python环境 git分支及状态
-    PS1="\n$ccBLUE┌─$ccRED\$(PS1exit-code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccRED\$(PS1raspi-warning-prompt)$ccYELLOW\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$ccBLUE└──$ccWHITE\$ $ccNORMAL"
+    PS1="\n$ccBLUE┌─$ccRED\$(PS1exit_code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccRED\$(PS1raspi_warn_prompt)$ccYELLOW\$(PS1conda_env_name)\$(PS1virtualenv_envname)\$(PS1git_branch_prompt)\n$ccBLUE└──$ccWHITE\$ $ccNORMAL"
 
 else
     # 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 python环境 git分支及状态
-    PS1="\n$ccBLUE┌─$ccRED\$(PS1exit-code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda-env-name)\$(PS1virtualenv-env-name)\$(PS1git-branch-prompt)\n$ccBLUE└──$ccWHITE\$ $ccNORMAL"
+    PS1="\n$ccBLUE┌─$ccRED\$(PS1exit_code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda_env_name)\$(PS1virtualenv_envname)\$(PS1git_branch_prompt)\n$ccBLUE└──$ccWHITE\$ $ccNORMAL"
 
 fi
 
