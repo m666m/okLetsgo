@@ -2412,6 +2412,13 @@ shell 命令文档见章节 [man/info 查看帮助信息]。
 
     条件测试语句的用法  `man test`
 
+    POSIX Shell 规范
+
+        https://pubs.opengroup.org/onlinepubs/9799919799/
+            https://ieeexplore.ieee.org/document/10555529
+
+        左栏上部点击 'Shell & Utilities'，然后点击左栏下部出现的页面中的 '2. Shell Command Language'，内容呈现在右栏。
+
     GNU Bash 官方文档
 
         https://www.gnu.org/software/bash/manual/bash.html
