@@ -2090,12 +2090,9 @@ Windows 主机和 Windows 虚拟机都适用这个方法。
 
 法二、让 Linux 按照 Windows 的方式管理时间
 
-Linux 可以通过 `hwclock -w` 命令将系统时间同步到 RTC 硬件时间，使自己跟 Windows 的时间管理方式一致：
+Linux 可以通过 `timedatectl` 命令将系统时间同步到 RTC 硬件时间，使自己跟 Windows 的时间管理方式一致：
 
     # sudo timedatectl set-local-rtc 1
-
-    # 设置硬件 RTC 保存的时间是本地时间 --systohc
-    $ sudo hwclock -w --localtime
 
     $ sudo reboot
 
@@ -2117,7 +2114,9 @@ Linux 可以通过 `hwclock -w` 命令将系统时间同步到 RTC 硬件时间�
             If at all possible, use RTC in UTC by calling
             'timedatectl set-local-rtc 0'.
 
-hwclock 命令等 Linux 时间操作参见章节 [操作时间 timedatectl/chronyc 及 NTP 服务](gnu_tools.md)。
+hwclock 命令也可以实现上述功能.
+
+Linux 时间操作参见章节 [操作时间 timedatectl/chronyc 及 NTP 服务](gnu_tools.md) 中 '设置硬件 RTC 保存时间的标准' 部分。
 
 ### Bitlocker 加密
 

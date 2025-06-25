@@ -10770,9 +10770,13 @@ Windows 版
 
     时区标准参见章节 [时区标准tzinfo](time_t.md)
 
-设置硬件 RTC 保存的时间标准
+设置硬件 RTC 保存时间的标准
 
-    systemd-timesyncd/chrony 等修改时间，只会更改系统时间而不会更改 RTC 硬件时间，即系统时间是根据硬件 RTC 时间和当前时区计算得出的。可以改变这个机制，通过 `hwclock` 命令将系统时间（受时区、夏令时影响）同步到硬件时间（默认 UTC）。
+    在 Linux 中系统时间受时区、夏令时影响，而硬件时间默认 UTC。当前的系统时间都是计算出来的，读出硬件时间按 UTC 处理然后叠加时区、夏令时，得到最终结果。
+
+    systemd-timesyncd/chrony 等修改时间，只会更改系统时间而不会更改 RTC 硬件时间，即系统时间是根据硬件 RTC 时间和当前时区计算得出的。
+
+    可以改变这个机制，通过 `hwclock` 命令将系统时间（受时区、夏令时影响）同步到硬件时间（默认 UTC）。
 
     hwclock 命令选项：
 
@@ -10786,7 +10790,7 @@ Windows 版
     # 以系统时钟为准，校正硬件时钟，不使用默认的 UTC 时间，而是本地时间，这样硬件 RTC 保存本地时间
     $ sudo hwclock -w --localtime
 
-    timedatectl 命令也可以实现上述功能。
+    timedatectl 命令也可以实现上面的这两个功能。
 
     需要改这个标准的场景，常见于 Windows/Linux 双系统的计算机系统时间冲突，因为 Linux 处理 RTC 时间跟 Windows 的机制不同，详见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
 
