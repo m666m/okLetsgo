@@ -2233,6 +2233,20 @@ Windows 10+ 在 2020 年代以来，体系架构类似 Xen，混合虚拟化：
 
 自 Windows 11 强制开启 TPM 2.0 和 安全启动，可以用微软和硬件厂商的密钥把计算机启动部分也进行保护，防止木马程序隐藏在系统引导区，导致开机启动就加载木马程序运行。
 
+#### 开启 hyper-v 对宿主机的负面影响
+
+    https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/about/#limitations
+
+依赖于特定硬件的程序不能在虚拟机中良好运行
+
+    例如，需要使用 GPU 进行处理的游戏或应用程序可能无法良好运行。
+
+    依赖于子 10 毫秒计时器的应用程序（如实时音乐混合应用程序或高精度时间）在虚拟机中运行时也可能会出问题。
+
+此外，如果已启用了 Hyper-V，在主机中运行这些易受延迟影响的高精度应用程序时可能也会出问题。这是因为在启用了虚拟化后，主机操作系统也会在 Hyper-V 虚拟化层的顶部运行，就如来宾操作系统那样。但是，与来宾操作系统不同，主机操作系统在这点上很特殊，它是直接访问所有硬件，这意味着具有特殊硬件要求的应用程序仍然可以在主机操作系统中运行，而不会出问题。
+
+开启了 Hyper-V 可能会影响待机功能，进而使笔记本电脑待机时间缩短，参见章节 [设备不是 InstantGo]。
+
 #### 开启Hyper-V的增强会话模式策略
 
     https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/user-guide/enhanced-session-mode
@@ -2295,6 +2309,8 @@ Hyper-V的“增强会话”功能是一项强大的技术，它极大地提升�
 
 #### Hyper-V 安装 Linux 虚拟机
 
+普通使用 Linux 环境，在 Windows 宿主机上使用 WSL2 即可，没必要单独装 Linux 虚拟机，参见章节 [WSL 适用于 Linux 的 Windows 子系统]。
+
 优化 hyper-v 运行 Linux
 
     https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/best-practices-for-running-linux-on-hyper-v
@@ -2309,11 +2325,9 @@ Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
 
     FreeBSD Integration Services (BIS)
 
-#####  安装客户机代理工具
+##### 安装客户机代理工具
 
-普通使用 Linux 环境，在 Windows 宿主机上使用 WSL2 即可，没必要单独装 Linux 虚拟机，参见章节 [WSL 适用于 Linux 的 Windows 子系统]。
-
-如果用 Hyper-V 安装 Linux 虚拟机，务必安装客户机代理工具 hyperv-daemons，类似 vmware tools、virtualbox tools、qemu-guest-agent 等，会大大提升系统 IO 速度，改善使用体验：
+如果用 Hyper-V 安装 Linux 虚拟机，则虚拟机在安装完操作系统后一定要安装客户机代理工具 hyperv-daemons，类似 vmware tools、virtualbox tools、qemu-guest-agent 等，会大大提升系统 IO 速度，改善使用体验：
 
     Debian：安装 hyperv-daemons 软件包
 
@@ -2434,7 +2448,7 @@ index 0351650..4a7d696 100755
 
     https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/best-practices-for-running-linux-on-hyper-v#grub-menu-timeout-on-generation-2-virtual-machines
 
-#### Hyper-V 直连主机USB设备
+#### Hyper-V 虚拟机直连主机USB设备
 
 简单的方法是使用远程桌面客户端 mstsc 时点击设置本地资源，勾选相关 usb 设备即可
 
@@ -2671,20 +2685,6 @@ hyper-v 虚拟机，使用宿主机的无线网卡建立虚拟交换机的，都
 查看当前传输速度
 
     任务栏右键，选择任务管理器，打开后选择“性能”选项卡，点击你的虚拟交换机，可以看到当前传输速度的详情。
-
-#### 开启 hyper-v 对宿主机的负面影响
-
-    https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/about/#limitations
-
-依赖于特定硬件的程序不能在虚拟机中良好运行
-
-    例如，需要使用 GPU 进行处理的游戏或应用程序可能无法良好运行。
-
-    依赖于子 10 毫秒计时器的应用程序（如实时音乐混合应用程序或高精度时间）在虚拟机中运行时也可能会出问题。
-
-此外，如果已启用了 Hyper-V，在主机中运行这些易受延迟影响的高精度应用程序时可能也会出问题。这是因为在启用了虚拟化后，主机操作系统也会在 Hyper-V 虚拟化层的顶部运行，就如来宾操作系统那样。但是，与来宾操作系统不同，主机操作系统在这点上很特殊，它是直接访问所有硬件，这意味着具有特殊硬件要求的应用程序仍然可以在主机操作系统中运行，而不会出问题。
-
-开启了 Hyper-V 可能会影响待机功能，进而使笔记本电脑待机时间缩短，参见章节 [设备不是 InstantGo]。
 
 #### hyper-v 虚拟机启用显卡加速
 
