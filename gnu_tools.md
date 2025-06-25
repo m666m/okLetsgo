@@ -10778,17 +10778,17 @@ Windows 版
 
     可以改变这个机制，通过 `hwclock` 命令将系统时间（受时区、夏令时影响）同步到硬件时间（默认 UTC）。
 
+        # 以硬件时钟为准，校正系统时钟，默认 --utc
+        $ sudo hwclock -s
+
+        # 以系统时钟为准，校正硬件时钟，不使用默认的 UTC 时间，而是本地时间，这样硬件 RTC 保存本地时间
+        $ sudo hwclock -w --localtime
+
     hwclock 命令选项：
 
         -s, --hctosys     # 将硬件时间同步到系统时间：以硬件时钟为准，校正系统时钟
 
         -w, --systohc     # 将系统时间同步到硬件时间：以系统时钟为准，校正硬件时钟
-
-    # 以硬件时钟为准，校正系统时钟，默认 --utc
-    $ sudo hwclock -s
-
-    # 以系统时钟为准，校正硬件时钟，不使用默认的 UTC 时间，而是本地时间，这样硬件 RTC 保存本地时间
-    $ sudo hwclock -w --localtime
 
     timedatectl 命令也可以实现上面的这两个功能。
 
