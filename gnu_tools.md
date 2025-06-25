@@ -10786,7 +10786,9 @@ Windows 版
     # 以系统时钟为准，校正硬件时钟，不使用默认的 UTC 时间，而是本地时间，这样硬件 RTC 保存本地时间
     $ sudo hwclock -w --localtime
 
-    因为 Linux 处理 RTC 时间跟 Windows 的机制不同，如果是 Windows/Linux 双系统的计算机，详见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
+    timedatectl 命令也可以实现上述功能。
+
+    需要改这个标准的场景，常见于 Windows/Linux 双系统的计算机系统时间冲突，因为 Linux 处理 RTC 时间跟 Windows 的机制不同，详见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
 
 修改日期时间：
 
