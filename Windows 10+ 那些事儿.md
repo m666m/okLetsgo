@@ -2309,11 +2309,27 @@ Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
 
     FreeBSD Integration Services (BIS)
 
+#####  安装客户机代理工具
+
+普通使用 Linux 环境，在 Windows 宿主机上使用 WSL2 即可，没必要单独装 Linux 虚拟机，参见章节 [WSL 适用于 Linux 的 Windows 子系统]。
+
+如果用 Hyper-V 安装 Linux 虚拟机，务必安装客户机代理工具 hyperv-daemons，类似 vmware tools、virtualbox tools、qemu-guest-agent 等，会大大提升系统 IO 速度，改善使用体验：
+
+    Debian：安装 hyperv-daemons 软件包
+
+        hv_fcopy_daemon 文件拷贝服务，主机拷贝文件到虚拟机
+
+        hv_kvp_daemon   KVP服务，主机设置虚拟机的ip网络
+
+        hv_vss_daemon   卷影复制服务 volume shadow copy service (VSS)，主机可以在快照时冻结虚拟机的文件系统
+
+    Fedora：安装 hyperv-daemons 软件包，还可以安装 hyperv-tools 工具包
+
 ##### Linux 虚拟机启动“增强会话模式”
 
     估计都在等，wayland 实现对此的支持，大概3，5年后再看吧
 
-微软对此事并不积极，搞了一阵子放弃了，仅在 Hyper-V 的界面 “快速创建虚拟机”处选择微软特供的 Ubuntu 22.04LTS 自带该功能
+微软对此事并不积极，搞了一阵子放弃了，仅在 Hyper-V 的界面 “快速创建虚拟机”处选择微软特供版的 Ubuntu 22.04LTS 自带该功能
 
     https://github.com/microsoft/linux-vm-tools
         https://yanqiyu.info/2020/08/22/enhanced-hyperv-for-fedora/
@@ -2329,9 +2345,7 @@ Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
         https://github.com/Hinara/linux-vm-tools/blob/master/ubuntu/24.04/install.sh
             https://www.nakivo.com/blog/install-ubuntu-20-04-on-hyper-v-with-enhanced-session/
 
-只能自己解决：客户机安装 xrdp 并进行一些设置，即可开通对 Hyper-V 的增强会话模式的支持。
-
-下面以 Fedora 为例，手工操作：
+可以自己解决：客户机安装 xrdp 并进行一些设置，即可开通对 Hyper-V 的增强会话模式的支持。下面以 Fedora 虚拟机的设置为例：
 
     https://matthewsanabria.dev/posts/fedora-linux-and-hyper-v-enhanced-session-mode/
 
@@ -2413,22 +2427,6 @@ index 0351650..4a7d696 100755
     https://webglsamples.org/aquarium/aquarium.html
 
 看看帧数，不是 1 帧了。
-
-##### 安装客户机代理工具
-
-普通使用 Linux 环境，在 Windows 宿主机上使用 WSL2 即可，没必要单独装 Linux 虚拟机，参见章节 [WSL 适用于 Linux 的 Windows 子系统]。
-
-如果用 Hyper-V 安装 Linux 虚拟机，务必安装客户机代理工具 hyperv-daemons，类似 vmware tools、virtualbox tools、qemu-guest-agent 等，会大大提升系统 IO 速度，改善使用体验：
-
-    Debian：安装 hyperv-daemons 软件包
-
-        hv_fcopy_daemon 文件拷贝服务，主机拷贝文件到虚拟机
-
-        hv_kvp_daemon   KVP服务，主机设置虚拟机的ip网络
-
-        hv_vss_daemon   卷影复制服务 volume shadow copy service (VSS)，主机可以在快照时冻结虚拟机的文件系统
-
-    Fedora：安装 hyperv-daemons 软件包，还可以安装 hyperv-tools 工具包
 
 ##### 第 2 代虚拟机上的 GRUB 菜单超时
 
