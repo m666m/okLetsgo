@@ -2327,14 +2327,14 @@ Linux/FreeBSD 内核已经加入了做为 hyper-v 虚拟机时的驱动：
 
 ##### Linux 虚拟机启动“增强会话模式”
 
-    估计都在等，wayland 实现对此的支持，大概3，5年后再看吧
+    估计都在等 wayland 实现对此的支持，大概3,5年后再看吧
 
-微软对此事并不积极，搞了一阵子放弃了，仅在 Hyper-V 的界面 “快速创建虚拟机”处选择微软特供版的 Ubuntu 22.04LTS 自带该功能
+微软对此事并不积极，搞了一阵子放弃了，仅在 Hyper-V 的界面快速创建虚拟机”处选择微软特供版的 Ubuntu 22.04LTS 自带该功能
 
     https://github.com/microsoft/linux-vm-tools
         https://yanqiyu.info/2020/08/22/enhanced-hyperv-for-fedora/
 
-    Fedora 下的自动脚本
+    Fedora 下的自动化脚本
 
         https://github.com/secana/EnhancedSessionMode
 
