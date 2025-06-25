@@ -1352,7 +1352,7 @@ Nerd font 是 Powerline fonts 的超集，他几乎把目前市面上主流的 i
 
     FiraCode https://github.com/tonsky/FiraCode
 
-#### Fedora(SELinux) 下安装字体
+#### Fedora(SELinux) 下安装下载的字体
 
 因为发行版的存储库没有 nerd font，只能手动安装，只是安装方法有点复杂：
 
@@ -12314,7 +12314,7 @@ Noto 字体在 Arch Linux 上位于以下软件包中：
 
     noto-fonts: 大部分文字的常见样式，不包含汉字
 
-    noto-fonts-cjk: 汉字部分
+    noto-fonts-cjk: 汉字，中日韩三国字体
 
     noto-fonts-emoji: 彩色的表情符号字体
 
@@ -12397,6 +12397,7 @@ Noto 字体在 Arch Linux 上位于以下软件包中：
     #
     # Fedora 支持异体字（Variable Font），装这个最省事，文件还小
     $ sudo dnf install google-noto-serif-cjk-vf-fonts
+    $ sudo dnf install google-noto-sans-cjk-vf-fonts
 
     mono 不用单独安装，sans 字体自带了
 
@@ -12658,6 +12659,11 @@ fontconfig 支持字体的回落（fallback），可以实现中英文分别使�
 修改权限：
 
     $ chmod 644 ~/.config/fontconfig/fonts.conf
+
+    # RHEL 系需要重新设置 SELinux
+    $ restorecon -vFr /etc/fonts
+
+参见章节 [Fedora(SELinux) 下安装下载的字体]。
 
 刷新字体缓存：
 
