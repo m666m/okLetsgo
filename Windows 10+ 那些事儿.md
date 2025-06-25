@@ -2062,11 +2062,11 @@ Widnows App 的开发涵盖了 Windows App SDK、Windows SDK 和 .NET SDK，应�
 
 第一块硬盘安装 Linux，然后虚拟机安装 Widnows，然后把该虚拟机转到第二块硬盘上作为实机可单独启动，而且在 Linux 里还可以作为虚拟机挂载使用！详见章节 [qcow2 虚拟机转为实体机]、[挂载实体机所在硬盘作为虚拟机](virtualization think)。
 
-#### 解决双系统安装 Windows 与 Linux 时间差8个小时
+#### Linux + Windows 双系统时间差8个小时
 
 如果是虚拟机中的 Windows 时间经常不准，详见章节 [虚拟机在长时间运行后时间变慢](virtualization think)。
 
-操作系统对时间的处理，依赖计算机主板上的 RTC 时钟硬件，这个硬件在关机时也可以保持系统时间，从而保证了开机后操作系统即有一个准确可用的系统时间。
+操作系统对时间的处理，依赖计算机主板上的 RTC 时钟硬件，这个硬件在关机时也可以保持时间，从而保证了开机后操作系统即有一个准确可用的时间。
 
 如何处理 RTC 硬件时间 Linux 跟 Windows 的机制不同：
 
@@ -2089,6 +2089,8 @@ Windows 主机和 Windows 虚拟机都适用这个方法。
 推荐使用本方法。
 
 法二、让 Linux 按照 Windows 的方式管理时间
+
+    Fedora 安装时，如果检测到计算机上已经安装过 Windows，会自动设置自己按照 Windows 的方式管理时间，避免 Windows 下时间错误。其实它应该给个提示，按上面的方法一修改 Windows 管理时间的方式跟自己保持一致。
 
 Linux 可以通过 `timedatectl` 命令将系统时间同步到 RTC 硬件时间，使自己跟 Windows 的时间管理方式一致：
 

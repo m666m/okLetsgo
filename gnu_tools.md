@@ -10792,7 +10792,7 @@ Windows 版
 
     timedatectl 命令也可以实现上面的这两个功能。
 
-    需要改这个标准的场景，常见于 Windows/Linux 双系统的计算机系统时间冲突，因为 Linux 处理 RTC 时间跟 Windows 的机制不同，详见章节 [解决双系统安装 Windows 与 Linux 时间不一致的问题](Windows 10+ 安装的那些事儿.md)。
+    需要改这个标准的场景，常见于 Windows/Linux 双系统的计算机系统时间冲突，因为 Linux 处理 RTC 时间跟 Windows 的机制不同，详见章节 [Linux + Windows 双系统时间差8个小时](Windows 10+ 安装的那些事儿.md)。
 
 修改日期时间：
 
