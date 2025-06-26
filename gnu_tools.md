@@ -1361,8 +1361,8 @@ Nerd font 是 Powerline fonts 的超集，他几乎把目前市面上主流的 i
 
 先下载并解压上述两个字体文件
 
-        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Meslo.tar.xz
-        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/FiraCode.tar.xz
+        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/Meslo.tar.xz
+        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FiraCode.tar.xz
 
         $ xz -d Meslo.tar.xz
         $ xz -d FiraCode.tar.xz
