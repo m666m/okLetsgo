@@ -625,7 +625,7 @@ if test -d "$HOME/.ssh"; then
         echo ''
         # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
         # ssh-add
-        # 利用 git bash 自带的工具 ssh-pageant，连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要执行 `ssh-add` 了
+        # 改进：利用 git bash 自带的工具 ssh-pageant，连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要执行 `ssh-add` 了
         # 使用以下参数启动的 ssh-pageant 会判断是否正在运行，不会多次运行自己
         # ssh-pageant 还会设置变量指向ssh密钥代理的进程，用户不需要操心
         eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
