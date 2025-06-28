@@ -2896,7 +2896,7 @@ autoDocstring - Python Docstring Generator
 
     vscodevim.vim
 
-    用起来的习惯跟 vim 保持一致，但是保留了 vscode 保存文件的热键 ctrl+s，估计是为了方便
+    用起来的习惯跟 vim 保持一致，但是保留了 vscode 保存文件的热键 ctrl+s，在文本编辑状态也支持 Windows 热键比如复制粘贴 ctrl+c/ctrl+v，估计是为了方便
 
     这个插件还可以配置模拟几个著名的插件
 
