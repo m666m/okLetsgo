@@ -1372,27 +1372,31 @@ Nerd font 是 Powerline fonts 的超集，他几乎把目前市面上主流的 i
 
 方法一：适合批量安装字体，保存在系统目录 /usr/share/fonts/，全局生效
 
-        sudo su
+```bash
 
-        mkdir -p /usr/share/fonts/MesloLGSNF
-        mkdir -p /usr/share/fonts/FiraCodeNF
+sudo su
 
-        cp MesloLGSNerdFont-*.ttf /usr/share/fonts/MesloLGSNF/
-        cp FiraCodeNerdFont-*.ttf /usr/share/fonts/FiraCodeNF/
+mkdir -p /usr/share/fonts/MesloLGSNF
+mkdir -p /usr/share/fonts/FiraCodeNF
 
-        # Set permissions and update SELinux labels
-        chown -R root: /usr/share/fonts/MesloLGSNF
-        chmod 755 /usr/share/fonts/MesloLGSNF/
-        chmod 644 /usr/share/fonts/MesloLGSNF/*
-        restorecon -vFr /usr/share/fonts/MesloLGSNF
+cp MesloLGSNerdFont-*.ttf /usr/share/fonts/MesloLGSNF/
+cp FiraCodeNerdFont-*.ttf /usr/share/fonts/FiraCodeNF/
 
-        chown -R root: /usr/share/fonts/FiraCodeNF
-        chmod 755 /usr/share/fonts/FiraCodeNF/
-        chmod 644 /usr/share/fonts/FiraCodeNF/*
-        restorecon -vFr /usr/share/fonts/FiraCodeNF
+# Set permissions and update SELinux labels
+chown -R root: /usr/share/fonts/MesloLGSNF
+chmod 755 /usr/share/fonts/MesloLGSNF/
+chmod 644 /usr/share/fonts/MesloLGSNF/*
+restorecon -vFr /usr/share/fonts/MesloLGSNF
 
-        # Update the font cache
-        fc-cache -v
+chown -R root: /usr/share/fonts/FiraCodeNF
+chmod 755 /usr/share/fonts/FiraCodeNF/
+chmod 644 /usr/share/fonts/FiraCodeNF/*
+restorecon -vFr /usr/share/fonts/FiraCodeNF
+
+# Update the font cache
+fc-cache -v
+
+```
 
 方法二：放在用户目录，仅当前用户生效
 
