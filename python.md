@@ -2970,45 +2970,45 @@ pylance 目前是 python 插件默认安装了
 
     ms-python.isort
 
-##### use typestub for VSCode pylance
+#### use typestub for VSCode pylance
 
-Let pyqtgraph use PyQt6's .pyi file
+Let pyqtgraph use PyQt6's pyi file
 
     https://github.com/microsoft/pylance-release/issues/4823
         https://github.com/pyqtgraph/pyqtgraph/issues/2409
 
     其它的流行的库的 typestub https://github.com/microsoft/python-type-stubs/tree/main/stubs
 
-1.Copy "QtCore.pyi/QtGui.pyi/QtWidgets.pyi" from
+1. Copy "QtCore.pyi/QtGui.pyi/QtWidgets.pyi" from
 
     ~/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6
 
 to
 
-    <your workspace root>/typings/pyqtgraph/Qt
+    /your/custom/dir/typings/pyqtgraph/Qt
 
 or make a link for the .pyi files
 
 You can set a separated dir for your environment in VSCode :
 
-    "python.analysis.stubPath":"your custom dir"
+    "python.analysis.stubPath":"/your/custom/dir"
 
-2.To make aliasing work:
+2. To make aliasing work，such as pyqtgraph:
 
     import pyqtgraph as pg
     pg.Qt.QtWidgets.QPushButton('hello')
 
 add the following:
 
-typings\pyqtgraph\__init__.pyi:
+/your/custom/dir/typings/pyqtgraph/__init__.pyi:
 
     from . import Qt as Qt
 
-typings\pyqtgraph\Qt\__init__.pyi:
+/your/custom/dir/typings/pyqtgraph/Qt/__init__.pyi:
 
     from . import QtWidgets as QtWidgets
 
-3.bash shell for all above
+3. bash shell for all above
 
 ```bash
 # https://github.com/microsoft/pylance-release/issues/4823
@@ -3044,6 +3044,29 @@ function typestub_for_pg {
 typestub_for_pg
 
 echo -e "\nAdd below to your VSCode settings: \n     \"python.analysis.stubPath\":\"${TYPINGS_BASE}\","
+
+```
+
+vs code 设置，酌情对 pyqtgraph 等封装比较深的库，把解析的深度也加大：
+
+```jsonc
+    "python.analysis.stubPath":"/your/path/to/typestub_env_p310/typings",
+    "python.analysis.packageIndexDepths": [
+        {
+            "name": "matplotlib",
+            "depth": 3
+        },
+        {
+            "name": "pyqtgraph",
+            "depth": 8,
+            "includeAllSymbols": true
+        },
+        {
+            "name": "PyQt6",
+            "depth": 6,
+            "includeAllSymbols": true
+        }
+    ],
 
 ```
 
@@ -3198,100 +3221,6 @@ I recommend this approach rather than using easy_install directly on your Linux/
     virtualenv runsnake
 
     source runsnake/bin/activate
-
-### use typestub for VSCode pylance
-
-Let pyqtgraph use PyQt6's pyi file
-
-    https://github.com/microsoft/pylance-release/issues/4823
-        https://github.com/pyqtgraph/pyqtgraph/issues/2409
-
-    其它的流行的库的 typestub https://github.com/microsoft/python-type-stubs/tree/main/stubs
-
-1. Copy "QtCore.pyi/QtGui.pyi/QtWidgets.pyi" from
-
-    ~/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6
-
-to
-
-    /your/custom/dir/typings/pyqtgraph/Qt
-
-or make a link for the .pyi files
-
-You can set a separated dir for your environment in VSCode :
-
-    "python.analysis.stubPath":"/your/custom/dir"
-
-2. To make aliasing work，such as pyqtgraph:
-
-    import pyqtgraph as pg
-    pg.Qt.QtWidgets.QPushButton('hello')
-
-add the following:
-
-/your/custom/dir/typings/pyqtgraph/__init__.pyi:
-
-    from . import Qt as Qt
-
-/your/custom/dir/typings/pyqtgraph/Qt/__init__.pyi:
-
-    from . import QtWidgets as QtWidgets
-
-3. bash shell for all above
-
-```bash
-# Modify here with your project dir
-Common_Base="${HOME}/ghcode/typestub_env_p310/typings"
-
-function typestub_for_pg {
-    # Modify here with your conda envs
-    pyqt6_pyi="${HOME}/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6"
-    typestub_pg="${Common_Base}/pyqtgraph/Qt"
-
-    mkdir -p $typestub_pg
-
-    cd $typestub_pg
-
-    echo "from . import Qt as Qt" > ../__init__.pyi
-
-    for fname in $(ls ${pyqt6_pyi}/*.pyi); do
-        ln -s $fname
-    done
-
-    > __init__.pyi
-    for fname in $(ls *.pyi |grep -v __init__); do
-        ff=$(basename -s .pyi ${fname})
-        echo "from . import $ff as $ff" >>__init__.pyi
-    done
-}
-
-typestub_for_pg
-echo -e "\n--------------------\nAdd below to your VSCode settings: \n     \"python.analysis.stubPath\":\"${Common_Base}\","
-
-```
-
-vs code 设置，酌情对 pyqtgraph 等封装比较深的库，把解析的深度也加大：
-
-```jsonc
-    "python.analysis.stubPath":"/your/path/to/typestub_env_p310/typings",
-    "python.analysis.packageIndexDepths": [
-        {
-            "name": "matplotlib",
-            "depth": 3
-        },
-        {
-            "name": "pyqtgraph",
-            "depth": 8,
-            "includeAllSymbols": true
-        },
-        {
-            "name": "PyQt6",
-            "depth": 6,
-            "includeAllSymbols": true
-        }
-    ],
-
-```
 
 ### vs code 填坑
 
