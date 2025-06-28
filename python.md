@@ -2880,6 +2880,8 @@ Prettier - Code formatter
 
 #### Python Docstring Generator 自动添加函数头说明
 
+废弃，官方有这个功能了。
+
 autoDocstring - Python Docstring Generator
 
     njpwerner.autodocstring
@@ -2893,6 +2895,8 @@ autoDocstring - Python Docstring Generator
 懒得用鼠标，就它了，缺点是偶尔会乱，常按 esc 吧。。。
 
     vscodevim.vim
+
+    用起来的习惯跟 vim 保持一致，但是保留了 vscode 保存文件的热键 ctrl+s，估计是为了方便
 
     这个插件还可以配置模拟几个著名的插件
 

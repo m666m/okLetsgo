@@ -17,8 +17,6 @@
     "window.newWindowDimensions": "offset", // "offset" maximized
     "workbench.editor.wrapTabs": true,
     "diffEditor.ignoreTrimWhitespace": false,
-    "jupyter.exportWithOutputEnabled": true,
-    "jupyter.interactiveWindow.textEditor.executeSelection": true,
     "security.workspace.trust.emptyWindow": false,
     "security.workspace.trust.untrustedFiles": "open",
     "git.enableCommitSigning": true,
