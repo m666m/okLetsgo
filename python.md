@@ -2909,7 +2909,7 @@ autoDocstring - Python Docstring Generator
 
     注意：
 
-        撤销不支持 ctrl+z 了，只支持 vim 下的 u 热键，也就是说，只能撤销一次。
+        撤销改为 ctrl+Z，不是 ctrl+z，支持多次撤销。如果使用 vim 的 u 热键，只能撤销一次。
 
 vim 脚本语言语法高亮
 
