@@ -18052,6 +18052,8 @@ REG EXPORT HKEY_CURRENT_USER\Software\SimonTatham SESSION.REG
 
 ### mintty 终端模拟器
 
+简单使用建议直接安装 git for Windows，它的 git bash 就是 mintty，而且自带 git 运行需要的相关 gnu 工具程序，非常方便。详见章节 [mintty 简单使用：Git for Windows]。
+
     https://github.com/mintty/mintty
         https://github.com/mintty/mintty/wiki/Tips
         http://mintty.github.io/
