@@ -17123,6 +17123,38 @@ steamlink 支持很多游戏控制器，树莓派支持的游戏控制器参见�
 
     在树莓派桌面上运行 steam link 提示不支持 x11，按 ctrl+alt+F1 切换到控制台运行即可。
 
+##### Battle.Net on steam
+
+    https://mag37.org/posts/linux_gaming/#battlenet-on-steamproton
+
+Download the regular BattleNet-Setup.exe.
+
+    https://download.battle.net/en-us/?product=bnetdesk
+
+    Add it to steam as non-steam game.
+
+    Click properties -> compatibility -> Force specific … and choose latest proton/GE.
+
+Play! To launch the installer, follow the steps until its done then close it.
+
+Now Add the freshly installed Battle.net.
+
+    Add non-steam game
+
+    Browse to `home/user/.local/share/Steam/steamapps/compatdata/`
+
+    Make sure to have “all files” as file type.
+
+    Find the latest modified directory, 10-digit name and enter it.
+
+        Go to pfx/drive_c/Program Files (x86)/Battle.net
+
+        Select Battle.net Launcher.exe
+
+    Click properties -> compatibility -> Force specific … and choose latest proton/Proton-GE.
+
+Done - Now install your Battle.net games or browser for already installed ones.
+
 #### Moonlight/Sunshine for Linux
 
 开源的方案，雲端串流遊戲軟體，可讓你從另一部電腦串流玩遊戲
