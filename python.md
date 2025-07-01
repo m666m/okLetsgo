@@ -2201,12 +2201,16 @@ Linux 下只能从源代码自行编译安装
 
 1、下载源代码
 
+    # 早期的 sourceforge时代原作者 0.4.0 源代码，可以正常用的。
     # wget http://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.4.0-src.tar.gz
     # tar -xzf ta-lib-0.4.0-src.tar.gz
 
+    推荐直接下载迁移到 github 后的版本，下载后解压缩，可以直接编译的，这个最新最方便
+
+        https://github.com/TA-Lib/ta-lib/releases/download/v0.6.4/ta-lib-0.6.4-src.tar.gz
+
+    或者 git 下载最新的开发中代码，需要自行调试编译参数才能 make
     $ git clone --depth=1 https://github.com/TA-Lib/ta-lib
-    $ cd ta-lib
-    $ make clean
 
 2、自行编译为 c 运行库
 
@@ -3021,30 +3025,42 @@ add the following:
 
 ```bash
 # https://github.com/microsoft/pylance-release/issues/4823
-# ---> Modify here with your envs
-ENV_BASE="${HOME}/anaconda3/envs"
-ENV_DIR="${ENV_BASE}/p310"
 
-TYPINGS_BASE="${ENV_DIR}_typestub/typings"
+if uname -s |grep -i linux >/dev/null 2>&1; then
+    os='linux'
+else
+    os='windows'
+fi
+
+# ---> Modify here with your envs
+ENV_BASE="${HOME}/anaconda3/envs/p310"
+
+if [[ $os = 'linux' ]]; then
+    ENV_DIR="${ENV_BASE}/lib/python3.10"
+else
+    ENV_DIR="${ENV_BASE}/Lib"
+fi
+
+TYPINGS_BASE="${ENV_BASE}_typestub/typings"
 mkdir -p  $TYPINGS_BASE
 
 function typestub_for_pg {
-    # ---> Modify here with your pyqtgraph pkgs
-    if uname -s |grep -i linux >/dev/null 2>&1; then
-        Env_pkgs_pyqtgraph="${ENV_DIR}/lib/python3.10/site-packages/PyQt6"
-    else
-        Env_pkgs_pyqtgraph="${ENV_DIR}/Lib/site-packages/PyQt6"
-    fi
 
-    Typings_pyqtgraph="${TYPINGS_BASE}/pyqtgraph/Qt"
-    mkdir -p $Typings_pyqtgraph
+    typings_for_pg="${ENV_DIR}/site-packages/PyQt6"
 
-    cd $Typings_pyqtgraph
+    typings_pg="${TYPINGS_BASE}/pyqtgraph/Qt"
+    mkdir -p $typings_pg
+
+    cd $typings_pg
 
     echo "from . import Qt as Qt" > ../__init__.pyi
 
-    for fname in $(ls ${Env_pkgs_pyqtgraph}/*.pyi); do
-        ln -s $fname
+    for fname in $(ls ${typings_for_pg}/*.pyi); do
+        if [[ $os = 'linux' ]]; then
+            ln -s $fname
+        else
+            cp $name .
+        fi
     done
 
     > __init__.pyi

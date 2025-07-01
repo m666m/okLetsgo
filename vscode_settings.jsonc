@@ -83,7 +83,7 @@
     //     "~/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6/bindings"
     // ],
     // https://github.com/microsoft/pylance-release/issues/4823
-    "python.analysis.stubPath":"/home/username/yourcodebase/typestub_env_p310/typings",
+    "python.analysis.stubPath":"/home/username/yourcodebase/p310_typestub/typings",
     "python.analysis.packageIndexDepths": [
         {
             "name": "matplotlib",
