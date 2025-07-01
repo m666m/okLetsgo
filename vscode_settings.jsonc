@@ -82,6 +82,7 @@
     //     "$HOME/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6",
     //     "~/anaconda3/envs/p310/lib/python3.10/site-packages/PyQt6/bindings"
     // ],
+    // 类型提示文件的路径
     // https://github.com/microsoft/pylance-release/issues/4823
     "python.analysis.stubPath":"/home/username/yourcodebase/p310_typestub/typings",
     "python.analysis.packageIndexDepths": [
@@ -100,6 +101,10 @@
             "includeAllSymbols": true
         }
     ],
+    // 类型检查，老项目太多报错提示了，暂时关闭
+    // "python.analysis.typeCheckingMode": "basic",
+    // "python.analysis.diagnosticSeverityOverrides": {"reportAbstractUsage": "warning"},
+    //
     // 微软提供了扩展替换了以下python包安装代码格式化和PEP规范检查的方式
     // https://github.com/microsoft/vscode-python/wiki/Migration-to-Python-Tools-Extensions#alternatives
     //// "python.linting.pylintEnabled": false,
