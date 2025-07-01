@@ -291,13 +291,10 @@ Debian/Ubuntu 下有两个pip，如果是这种情况可以使用
 
     pip install --upgrade 要升级的包名
 
-### pip install 指定 github 位置
+### 使用 pip 进行安装的各种用法
 
-From PyPI:
+默认 PyPI，Last released version:
 
-    先切换到你自己的环境(conda/virtualenv等)
-
-    # Last released version:
     pip install pyqtgraph
 
     # Latest development version:
@@ -306,13 +303,25 @@ From PyPI:
     # Latest development version:
     pip install git+git://github.com/pyqtgraph/pyqtgraph@master
 
-From github:
-
-    先切换到你自己的环境(conda/virtualenv等)
+    pip install git+git://github.com/scrappy/scrappy@master  # 直接从GitHub中的master分支安装scrappy
 
     pip install git+ssh://git@github.com/seatgeek/fuzzywuzzy.git@0.17.0#egg=fuzzywuzzy
+
     pip install git+https://github.com/blampe/IbPy.git
+
     pip install https://github.com/blampe/IbPy/archive/master.zip
+
+    强制重装 pip install --force-reinstall https://github.com/mwaskom/seaborn/archive/refs/heads/master.tar.gz
+
+    强制更新 pip install --upgrade --no-cache-dir xxx
+
+    到pypi网站查找对应你python版本的历史版本，下载wheel文件用pip进行安装即可。
+
+    如果只有源代码和 setup.py 文件，进入到该文件的 setup.py 目录下 ，打开 cmd，并切换到该目录下：
+    先执行 `python setup.py build`
+    然后执行 `python setup.py install`
+
+    pip install -r requirements.txt
 
 特定版本签出：
 
