@@ -3024,6 +3024,7 @@ add the following:
 3. bash shell for all above
 
 ```bash
+#!/bin/sh
 # https://github.com/microsoft/pylance-release/issues/4823
 
 if uname -s |grep -i linux >/dev/null 2>&1; then
@@ -3059,7 +3060,7 @@ function typestub_for_pg {
         if [[ $os = 'linux' ]]; then
             ln -s $fname
         else
-            cp $name .
+            cp $fname .
         fi
     done
 
