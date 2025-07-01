@@ -3021,16 +3021,20 @@ add the following:
 
 ```bash
 # https://github.com/microsoft/pylance-release/issues/4823
-# Modify here with your envs
+# ---> Modify here with your envs
 ENV_BASE="${HOME}/anaconda3/envs"
-ENV_DIR="${ENV_BASE}/p311"
+ENV_DIR="${ENV_BASE}/p310"
 
 TYPINGS_BASE="${ENV_DIR}_typestub/typings"
 mkdir -p  $TYPINGS_BASE
 
 function typestub_for_pg {
-    # Modify here with your pyqtgraph pkgs
-    Env_pkgs_pyqtgraph="${ENV_DIR}/lib/python3.11/site-packages/PyQt6"
+    # ---> Modify here with your pyqtgraph pkgs
+    if uname -s |grep -i linux >/dev/null 2>&1; then
+        Env_pkgs_pyqtgraph="${ENV_DIR}/lib/python3.10/site-packages/PyQt6"
+    else
+        Env_pkgs_pyqtgraph="${ENV_DIR}/Lib/site-packages/PyQt6"
+    fi
 
     Typings_pyqtgraph="${TYPINGS_BASE}/pyqtgraph/Qt"
     mkdir -p $Typings_pyqtgraph
