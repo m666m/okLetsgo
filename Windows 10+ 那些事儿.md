@@ -3447,6 +3447,10 @@ wsl 显示 WSL 实例的用户目录，在 Linux 下访问的路径
 
         https://docs.microsoft.com/zh-cn/windows/wsl/filesystems#file-storage-and-performance-across-file-systems
 
+    使用的是 9P protocol file server 实现的两个操作系统的文件交互
+
+        https://devblogs.microsoft.com/commandline/whats-new-for-wsl-in-windows-10-version-1903/
+
 比如在 wsl 下存储文件时，尽量不使用 Windows 的文件系统：
 
     $ touch /mnt/c/Users/<user name>/Project$   # 对应 Windows 下 C:\Users\<user name>\Project
