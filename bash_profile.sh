@@ -314,12 +314,12 @@ alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" &&
 
 # sha256sum
 alias shasums='echo "[sha256sum 按校验和文件逐个校验，跳过缺失文件告警]" && sha256sum --ignore-missing -c'
-function shasumc {
+function shasumf {
     # `shasumc abc.iso SHA256SUMS.txt`
     echo "[sha256sum，只下载了一个文件 $1，从校验和文件 $2 中抽出单个文件进行校验]"
     sha256sum -c <(grep $1 $2)
 }
-function shasumf {
+function shasumd {
     echo "[sha256sum 对目录 $1 下的所有文件及子目录文件生成一个校验和文件 $2]"
     find $1 -type f |while read fname; do
         # if [[ "$fname" = "$1" ]]; then

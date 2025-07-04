@@ -2912,7 +2912,7 @@ autoDocstring - Python Docstring Generator
 
     这个插件还可以配置模拟几个著名的插件 https://github.com/VSCodeVim/Vim#vim-airline
 
-用起来的习惯跟 vim 基本保持一致，但是估计是为了保持Windows 下的操作习惯及方便：
+用起来的习惯跟 vim 基本保持一致，但是估计是为了保持 Windows 下的操作习惯及方便：
 
     非编辑方式下，可以鼠标操作：拖动选择、复制粘贴
 
@@ -2922,7 +2922,9 @@ autoDocstring - Python Docstring Generator
 
     注意：
 
-        撤销改为 ctrl+Z，不是 ctrl+z，支持多次撤销。如果使用 vim 的 u 热键，只能撤销一次。
+        撤销 ctrl+Z 只能在 vs code 的菜单或命令中执行，支持多次撤销。如果使用 vim 的热键 u，则只能撤销一次。
+
+        其他的常用编辑热键也都是这样，比如全选 ctrl+ A，只能在vs code 的菜单或命令中执行
 
 vim 脚本语言语法高亮
 
