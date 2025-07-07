@@ -2708,18 +2708,22 @@ hyper-v 虚拟机，使用宿主机的无线网卡建立虚拟交换机的，都
 
 目前看是企业级应用优先，在 Windows Sever 上才有 DDA，M$ 忙着赚 AI 云计算的钱呢。
 
+显卡共享，极客湾介绍远程控制软件 Parsec 作者提供的脚本实现单机多用户可以 N 卡运行
+
+    https://www.bilibili.com/video/BV1Ad4y1S7Aw/?share_source=copy_web&vd_source=05d8dc4a77ef9fa286c09977f5388ce1
+
+        https://github.com/jamesstringerparsec/Easy-GPU-PV
+
+        https://superuser.com/questions/1833989/how-to-share-a-single-gpu-among-multiple-vms-with-parsec-connectivity
+
+    建立 hyper-v 虚拟机时，注意不要开启共享内存，关闭快照功能
+
 ##### 强行开启 hyper-v 虚拟机显卡直通
 
 推荐 [在 WSL 中启用显卡加速]，目前在 hytper-v 虚拟机里直通显卡的方案，都是基于 WSL 改的非官方方案。
 
     https://zhuanlan.zhihu.com/p/335338558
         https://forum.cfx.re/t/running-fivem-in-a-hyper-v-vm-with-full-gpu-performance-for-testing-gpu-partitioning/1281205
-
-    显卡共享，极客湾介绍远程控制软件 Parsec 作者提供的脚本实现单机多用户可以 N 卡运行 https://www.bilibili.com/video/BV1Ad4y1S7Aw/?share_source=copy_web&vd_source=05d8dc4a77ef9fa286c09977f5388ce1
-
-        https://superuser.com/questions/1833989/how-to-share-a-single-gpu-among-multiple-vms-with-parsec-connectivity
-
-        建立 hyper-v 虚拟机时，注意不要开启共享内存，关闭快照功能
 
 首先，将显卡驱动升级到最新版。
 
