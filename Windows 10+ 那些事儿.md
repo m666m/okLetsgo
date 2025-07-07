@@ -2715,6 +2715,12 @@ hyper-v 虚拟机，使用宿主机的无线网卡建立虚拟交换机的，都
     https://zhuanlan.zhihu.com/p/335338558
         https://forum.cfx.re/t/running-fivem-in-a-hyper-v-vm-with-full-gpu-performance-for-testing-gpu-partitioning/1281205
 
+    显卡共享，极客湾介绍远程控制软件 Parsec 作者提供的脚本实现单机多用户可以 N 卡运行 https://www.bilibili.com/video/BV1Ad4y1S7Aw/?share_source=copy_web&vd_source=05d8dc4a77ef9fa286c09977f5388ce1
+
+        https://superuser.com/questions/1833989/how-to-share-a-single-gpu-among-multiple-vms-with-parsec-connectivity
+
+        建立 hyper-v 虚拟机时，注意不要开启共享内存，关闭快照功能
+
 首先，将显卡驱动升级到最新版。
 
 新建一个第二代 Hyper-V 虚拟机，设置核心数和内存容量，关闭检查点，打开增强会话模式，并装好 Windows 系统。
