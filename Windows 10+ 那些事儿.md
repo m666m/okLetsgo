@@ -4390,8 +4390,6 @@ Windows 现在不支持在 hdr 应用程序退出后自动关闭 HDR 模式，�
 
     https://steamah.com/doom-eternal-how-to-play-in-offline-mode-with-no-bethesda-net-account/
 
-    显示器分辨率切换到 60hz，全屏使用最佳，不然游戏容易死机
-
     打开 Windows Defender 防火墙：按下 Win 键在键盘上搜索 "Windows Defender"，然后单击 “具有高级安全性的 Windows Defender 防火墙”
 
     在防火墙中创建新规则：展开左侧树形列表，右键单击 "Outbound Rules" 并选择 "New Rule"
