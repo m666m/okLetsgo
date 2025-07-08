@@ -33,13 +33,13 @@
 [[ -n "$BASH_VERSION" ]] && test -f ~/.bashrc && . ~/.bashrc
 
 #######################
-# 兼容性设置：bash 优先调用 .bash_profile，就不会调用 .profile，该文件是 Debian 系使用的
+# 兼容性设置：bash 优先调用 .bash_profile，就不会调用 .profile
 #   ~/.profile: executed by the command interpreter for login shells.
 #     This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login exists.
 #     see /usr/share/doc/bash/examples/startup-files for examples.
 #     the files are located in the bash-doc package.
-# 在 .profile 里的有几个标准目录设置到 $PATH，为保持兼容性这里不直接执行.profile
-# 单独设置这几个目录到 $PATH 就可以了
+# 而 Debian 系在 .profile 里把某几个标准目录设置到变量 $PATH，不调用本文件会导致 bash 在执行某些命令时找不到。
+# 为保持兼容性，这里不直接执行 .profile 文件，而是单独补充，把这几个目录设置到 $PATH
 # test -f ~/.profile && . ~/.profile
 # PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 for dir in "$HOME/.local/bin" "$HOME/bin"; do
@@ -48,7 +48,7 @@ done
 export PATH
 
 #######################
-# 如果是非交互式登录(ssh直接在服务器执行脚本)，这里就直接退出了，后面的设置统统不需要
+# 如果是非交互式登录(ssh直接在服务器执行脚本等场景)，这里就直接退出了，后面的设置统统不需要
 # exit for non-interactive shell
 # [[ ! -t 0 ]] && return
 [[ $- != *i* ]] && return
@@ -114,7 +114,7 @@ if [[ ! $current_shell = 'zsh' ]]; then
 fi
 
 #######################
-# 有些软件默认使用变量 EDITOR 指定的编辑器，一般是 nano，不习惯就换成 vi
+# 有些软件默认使用变量 EDITOR 指定的编辑器，一般是 nano，不习惯就一律用 vi
 export EDITOR=/usr/bin/vi
 
 #######################
