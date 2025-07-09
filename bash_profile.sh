@@ -772,8 +772,8 @@ ccWHITE=$'\[\e[0;37m\]'
 
 ccNORMAL=$'\[\e[m\]'
 
-# 注意：判断命令返回值的函数 PS1exit_code 要放在放在 PS1 变量赋值语句的最前面，
-# 否则，它前面的函数要实现 $? 变量的透传
+# 注意：判断用户在命令行执行命令返回值的函数 PS1exit_code 要放在放在 PS1 变量赋值语句的最前面，
+# 或者它前面的函数要实现 $? 变量的透传，否则成了判断前面子函数的命令的返回值了
 #   { ret_code="$?"; your code...; return ret_code}
 function PS1exit_code {
     local exitcode="$?"
