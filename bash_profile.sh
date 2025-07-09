@@ -563,14 +563,14 @@ if test -d "$HOME/.ssh"; then
         # 干脆手工拉起来  https://blog.csdn.net/asdfgh0077/article/details/104121479
         pgrep gnome-keyring >/dev/null 2>&1 || gnome-keyring-daemon --start >/dev/null 2>&1
 
-        # 设置变量指向ssh密钥代理的进程
+        # 实现复用需要设置变量指向ssh密钥代理的进程
         # gnome-keyring 为何不自动设置这两个变量，既然接管了，又不声明，很有个性。。。
         # 目前必须手动设置
         export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
         export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
-        # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
-        # ssh 密钥的保护密码都被 keyring 接管了，用到的时候自动提交，全程用户无感知，不需要执行 `ssh-add` 了
+        # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
+        # 这里因为 gnome-keyring-daemon 接管了ssh 密钥的保护密码，用到的时候自动提交，全程用户无感知，不需要执行 `ssh-add` 了
         # ssh-add
 
     # KDE 桌面环境有 systemd 单元文件 ssh-agent.service 支持复用 ssh-agent 进程
@@ -579,11 +579,11 @@ if test -d "$HOME/.ssh"; then
         # KDE 桌面环境有自己的 `systemctl --user status ssh-agent.service`
         # 启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/ssh-agent.socket
 
-        # 设置变量指向ssh密钥代理的进程
-        # 服务 ssh-agent.service 设置了一个，留了一个不设置，很有个性。。。
+        # 实现复用需要设置变量指向ssh密钥代理的进程
+        # 需要两个变量，服务 ssh-agent.service 只设置了一个，很有个性
         # export SSH_AUTH_SOCK="$(ls $XDG_RUNTIME_DIR/ssh-agent.socket |head -1)"
         # export SSH_AGENT_PID="$(ps -ef | grep 'ssh-agent -D -a' | grep -v grep | awk '{print $2}')"
-        # 所以，目前必须手动设置变量，获取服务进程的 PID
+        # 所以，目前必须手动设置该变量，获取服务进程的 PID
         AGENT_PID=$(systemctl --user show ssh-agent.service --property=ExecMainPID | awk -F= '{print $2}')
         # 通过进程树找到 ssh-agent 的实际 PID（需安装 pstree）
         SSH_AGENT_PID=$(pstree -p $AGENT_PID | grep -oP 'ssh-agent\(\K\d+')
@@ -593,7 +593,7 @@ if test -d "$HOME/.ssh"; then
         # https://github.com/KDE/ksshaskpass
         # SSH_ASKPASS=/usr/bin/ksshaskpass
 
-        # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
+        # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
         if ! ssh-add -l >| /dev/null 2>&1; then
             echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
             ssh-add
@@ -623,14 +623,14 @@ if test -d "$HOME/.ssh"; then
         fi
 
         echo ''
-        # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
+        # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
         # ssh-add
         # 改进：利用 git bash 自带的工具 ssh-pageant，连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要执行 `ssh-add` 了
         # 使用以下参数启动的 ssh-pageant 会判断是否正在运行，不会多次运行自己
         # ssh-pageant 还会设置变量指向ssh密钥代理的进程，用户不需要操心
         eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
 
-    # 默认 Linux tty 环境复用 ssh-agent 进程，这个设置最通用
+    # 默认 Linux tty 环境复用 ssh-agent 进程，这个设置最通用， Windows git bash(mintty) 环境下也可以使用
     else
 
         # 代码来源 git bash auto ssh-agent
