@@ -4354,7 +4354,7 @@ DLSS 和 DLDSR
 
     在 Windows 系统设置中，选择“屏幕”-->“显示卡”，点开 “高级图形设置” 确认勾选了 “硬件加速GPU计划”。
 
-    Nvidia 控制面板，打开 “RTX 视频增强” 选项：包含 “RTX视频超分辨率技术(RTX Video Super Resolution)”和 HDR。这样在浏览器播放网络视频时可以进入 HDR 状态并增强画质。
+    Nvidia 控制面板，打开 “RTX 视频增强” 选项：包含 “RTX视频超分辨率技术(RTX Video Super Resolution)”和 HDR。这样浏览器在 全屏 播放网络视频时可以进入 HDR 状态并增强画质。
 
 目前支持该技术的应用软件太少：
 
@@ -4413,7 +4413,7 @@ DLSS 和 DLDSR
 
 目前支持 HDR 模式的应用：
 
-    edge 浏览器里，设置 --> “系统和性能”，勾选 “在可用时使用图形加速” 和 “增强 Microsoft Edge 中的视频”。Nvidia 控制面板，打开 “RTX 视频增强” 选项：包含 “RTX视频超分辨率技术(RTX Video Super Resolution)”和 HDR。这样在浏览器播放网络视频时可以进入 HDR 状态并增强画质。VLC 播放器也支持这个功能 <https://download.videolan.org/testing/vlc-rtx-upscaler/>。
+    edge 浏览器里，设置 --> “系统和性能”，勾选 “在可用时使用图形加速” 和 “增强 Microsoft Edge 中的视频”。Nvidia 控制面板，打开 “RTX 视频增强” 选项：包含 “RTX视频超分辨率技术(RTX Video Super Resolution)”和 HDR。这样浏览器在 全屏 播放网络视频时可以进入 HDR 状态并增强画质。VLC 播放器也支持这个功能 <https://download.videolan.org/testing/vlc-rtx-upscaler/>。
 
         超分辨率技术用于把低于你显示器分辨率的视频用 GPU 的 AI 计算拉高到你显示器的分辨率。
 
