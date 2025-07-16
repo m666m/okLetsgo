@@ -3620,7 +3620,7 @@ Fedora 重装增强版:
         $ vi --version
         Tiny version without GUI.
 
-        $ dnf list --installed | grep vi
+        $ dnf list installed | grep vi
         vim-data.noarch
         vim-minimal.x86_64
 
