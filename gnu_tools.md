@@ -4285,7 +4285,7 @@ map <ScrollWheelUp> <C-Y>
 map <ScrollWheelDown> <C-E>
 
 " 设置前导键为空格键，需要利用转义符“\”，这个前导键在后面的 airline 设置用到了
-" 这个前导键跟tmux不同，需要按住然后按其它键
+" 这个前导键跟tmux不同，可以按住然后按其它键
 let mapleader="\<space>"
 
  " 删除行尾空格，普通模式下连续按3次空格
