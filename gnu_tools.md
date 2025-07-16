@@ -3601,8 +3601,7 @@ Debian 重装增强版:
     然后安装 vim 的增强版
 
         # https://askubuntu.com/questions/284957/vi-getting-multiple-sorry-the-command-is-not-available-in-this-version-af
-        # 不用单独装 sudo apt install vim-runtime
-        # 不用单独装 sudo apt install vim-gui-common 这个是给linux桌面用的
+        # 不用装 vim-gui-common 这个是 Linux 桌面版的vim，不如桌面自带的记事本或vscode好用
         $ sudo apt install vim
         The following NEW packages will be installed:
             vim vim-common vim-runtime
@@ -3632,7 +3631,7 @@ Fedora 重装增强版:
 
     然后安装 vim 的增强版
 
-        $ sudo dnf install -y vim-enhanced
+        $ sudo dnf install -y vim-enhanced vim-common
 
         $ cd /usr/bin; sudo ln -s vim vi
 
