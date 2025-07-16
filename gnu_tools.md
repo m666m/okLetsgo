@@ -3483,7 +3483,7 @@ info 命令倾向于可读性和更深入的解释。信息页系统还支持文
 
 最基础的版本是类似 vi 的 vim tinny 版本，不支持语法高亮、窗口拆分等各种高级功能。
 
-vim 安装见章节 [使用状态栏工具等扩展插件的先决条件]。
+vim 安装见章节 [使用状态栏等扩展插件的先决条件]。
 
 > 如果 vim 的默认颜色方案太丑
 
@@ -3915,7 +3915,7 @@ filetype plugin indent on    " required
 
 powerline 介绍，参见章节 [状态栏工具 powerline]。
 
-使用 powerline 在 vim 下的插件需要 Vim 在编译时添加 python 支持，而一般的用于嵌入式设备的操作系统如树莓派自带的是 vim 精简版 vim.tinny，这个版本是无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
+使用 powerline 在 vim 下的插件需要 Vim 在编译时添加 python 支持，而一般的用于嵌入式设备的操作系统如树莓派自带的是 vim 精简版 vim.tinny，这个版本是无法使用该插件的，如何解决见章节 [使用状态栏等扩展插件的先决条件]。
 
 powerline 为保证多样性，使用 python 实现的。现在的问题是操作系统自带的 python 指的 python2 还是 python3 版本
 
@@ -3988,7 +3988,7 @@ powerline 为保证多样性，使用 python 实现的。现在的问题是操�
 
         $ sudo dnf install vim-airline
 
-注意 vim.tinny 版无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
+注意 vim.tinny 版无法使用该插件的，如何解决见章节 [使用状态栏等扩展插件的先决条件]。
 
 查看帮助
 
@@ -4052,7 +4052,7 @@ Why yet another clone of powerline?
 
 这个比较简洁，只有状态栏工具和颜色方案。也是不使用 python 代码，都用 vim script 写的，速度和兼容性都有保证。
 
-vim.tinny 版是无法使用该插件的，如何解决见章节 [使用状态栏工具等扩展插件的先决条件]。
+vim.tinny 版是无法使用该插件的，如何解决见章节 [使用状态栏等扩展插件的先决条件]。
 
 配置主题
 
