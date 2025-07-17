@@ -2904,9 +2904,9 @@ autoDocstring - Python Docstring Generator
 
     "autoDocstring.docstringFormat": "numpy",
 
-#### 完整模拟了 vim 的各种操作
+#### vi 完整模拟了 vim 的各种操作
 
-懒得用鼠标，就它了，缺点是偶尔会乱，常按 esc 吧。。。
+懒得用鼠标，就它了，缺点是偶尔会乱，常按 esc 吧。偶尔发现混入非空白字符的不可见字符，算了别用了。
 
     vscodevim.vim
 

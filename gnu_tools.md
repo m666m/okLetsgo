@@ -4227,7 +4227,6 @@ nerdtree 在左侧树形目录中的热键
 结合我自己使用的插件和 airline 的配置，vim 编辑后无需退出，运行命令 `:source ~/.vimrc` 重新加载即可。
 
 ``` vim
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim 的默认设置
 "   全局配置文件 /etc/vim/vimrc
@@ -4256,6 +4255,11 @@ endif
 " 打开文件自动定位到上次离开的位置，从vim默认的配置里摘出来的
 if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+" 退出 vi 后恢复方块光标闪烁
+if has("autocmd")
+  au VimLeave * :silent !echo -e "\033[?12h\033[1 q" && tput cnorm && stty sane
 endif
 
 " 显示行号 :set nonumber
@@ -4426,8 +4430,8 @@ endif
 " 内置方案 https://github.com/vim/colorschemes
 " 不使用自定义的 colorscheme 会使 vim 背景跟随终端模拟器背景图片
 " 使用下载的主题插件自带的语法高亮的色彩方案
-"colorscheme PaperColor  " 支持设置背景色
-colorscheme nord
+colorscheme PaperColor  " 支持设置背景色
+"colorscheme nord
 
 " 设置背景色(需要主题支持)，切换语法颜色方案使用亮色还是暗色，PaperColor 支持该切换
 "set background=dark
@@ -5732,7 +5736,6 @@ function UUDF_TMUX_SEND_TO_SESSION {
 ##### .tmux.conf 配置文件样例
 
 ```conf
-
 # 可参考一个非常流行的配置 https://github.com/gpakosz/.tmux
 #
 # 按完前导 ctrl+B 后，再按冒号即可进入命令行模式
@@ -5751,22 +5754,20 @@ set-window-option -g mode-keys vi
 #set-option -g mouse on # v2.1 之前的老版本 set-option -g mode-mouse on
 set -g mouse on
 
-# Ensure window index numbers get reordered on delete.
-#set-option -g renumber-windows on
-
-# Allow opening multiple terminals to view the same session at different sizes.
-#setw -g aggressive-resize on
-
 # 设置状态栏工具显示256彩色
-#set -g default-terminal "xterm-256color"
-#set -ga terminal-overrides ",*256col*:Tc"
 # 如果终端工具已经设置了变量 export TERM="xterm-256color"，那么这个参数可有可无
 set -g default-terminal screen-256color
 # 真彩色
 # https://github.com/tmux/tmux/wiki/FAQ#how-do-i-use-rgb-colour
 #   https://github.com/tmux/tmux/raw/master/tools/24-bit-color.sh
-#set -as terminal-features ",xterm-256color:RGB"  # tmux 3.2+
-set -as terminal-overrides ",xterm-256color:RGB"
+set -as terminal-features ",xterm-256color:RGB"  # tmux 3.2+
+#set -as terminal-overrides ",gnome*:Tc"
+
+# 退出 tmux 后恢复方块光标闪烁，未实现。手工执行 `reset` 规避吧
+#set-hook -g client-detached 'run-shell "tput cnorm; echo -e \"\\033[?12h\\033[1 q\""'
+#set-hook -g session-closed  'run-shell "tput cnorm; echo -e \"\\033[?12h\\033[1 q\""'
+# 上面两个无法影响父shell，干脆禁用光标修改
+#set -ga terminal-overrides ",xterm-256color:Tc:smcup@:rmcup@"
 
 # 状态栏使用 nord 主题，替换掉 powerline
 # run-shell 'powerline-config tmux setup'
