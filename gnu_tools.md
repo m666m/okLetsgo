@@ -4258,9 +4258,9 @@ if has("autocmd")
 endif
 
 " 退出 vi 后恢复方块光标闪烁
-if has("autocmd")
-  au VimLeave * :silent !echo -e "\033[?12h\033[1 q" && tput cnorm && stty sane
-endif
+"if has("autocmd")
+"  au VimLeave * :silent !echo -e "\033[?12h\033[1 q" && tput cnorm && stty sane
+"endif
 
 " 显示行号 :set nonumber
 set number
