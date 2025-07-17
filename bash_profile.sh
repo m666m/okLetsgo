@@ -130,6 +130,27 @@ export TERM=xterm-256color
 export COLORTERM=truecolor
 
 #######################
+# 在终端模拟器中设置了光标闪动有时候在ssh连接远程后或tmux中也不生效，强制开启
+tput cnorm
+echo -e '\033[?12h\033[1 q'
+
+# 如果遇到退出 vi 或 tmux 后又不闪动了，运行命令 reset 即可
+# 或者在bash每次命令执行后恢复光标
+#restore_cursor() {
+#    echo -e '\033[?12h\033[1 q' 2>/dev/null
+#}
+#PROMPT_COMMAND="restore_cursor;$PROMPT_COMMAND"
+#
+# tmux
+#set-hook -g client-detached 'run-shell "tput cnorm; echo -e \"\\033[?12h\\033[1 q\""'
+# vi
+#augroup RestoreCursorShapeOnExit
+#    autocmd!
+#    " 退出 Vim 时恢复方块光标（闪烁）
+#    autocmd VimLeave * call system('tput cnorm; echo -e "\033[?12h\033[1 q"')
+#augroup END
+
+#######################
 # Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
 [[ -n $LANG ]] || export LANG=en_US.UTF-8
 
