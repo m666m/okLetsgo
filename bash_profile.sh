@@ -107,16 +107,17 @@ esac
 unset os_name
 
 #######################
+# 删除 vi 安装 vim 后发现不能用 vi 命令了
+command -v vi >/dev/null || sudo ln -sf /usr/bin/vim /usr/bin/vi
+
+#######################
 # 命令行开启 vi 模式，按esc后用vi中的上下左右键选择历史命令
 # zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
-if [[ ! $current_shell = 'zsh' ]]; then
-    set -o vi
-fi
+[[ ! $current_shell = 'zsh' ]] && set -o vi
 
 #######################
 # 有些软件默认使用变量 EDITOR 指定的编辑器，一般是 nano，不习惯就一律用 vi
 export EDITOR=/usr/bin/vi
-alias vi='vim'
 
 #######################
 # 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存那些不常用的命令
