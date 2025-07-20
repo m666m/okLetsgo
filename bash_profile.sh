@@ -108,7 +108,7 @@ unset os_name
 
 #######################
 # 删除 vi 安装 vim 后发现不能用 vi 命令了
-command -v vi >/dev/null || sudo ln -sf /usr/bin/vim /usr/bin/vi
+command -v vi >/dev/null || echo 'link vim to vi' && sudo ln -sf /usr/bin/vim /usr/bin/vi
 
 #######################
 # 命令行开启 vi 模式，按esc后用vi中的上下左右键选择历史命令
