@@ -43,7 +43,9 @@
 # test -f ~/.profile && . ~/.profile
 # PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 for dir in "$HOME/.local/bin" "$HOME/bin"; do
-  [[ -d "$dir" ]] && [[ ":$PATH:" != *":$dir:"* ]] && PATH="$PATH:$dir"
+    if [[ -d "$dir" ]] && [[ ":$PATH:" != *":$dir:"* ]]; then
+        PATH="$PATH:$dir"
+    fi
 done
 export PATH
 
@@ -668,8 +670,11 @@ if test -d "$HOME/.ssh"; then
         agent_load_env
 
         # 启动 ssh-agent，并保存指向ssh密钥代理进程的变量
-        agent_start () { test -d "$HOME/.ssh" && (umask 077; ssh-agent >| "$agent_env") && source "$agent_env" >| /dev/null ; }
-
+        agent_start () {
+            if test -d "$HOME/.ssh"; then
+                (umask 077; ssh-agent >| "$agent_env") && source "$agent_env" >| /dev/null
+            fi
+        }
         # agent_run_state:
         #   0=agent running w/ key;
         #   1=agent w/o key;
@@ -727,24 +732,33 @@ fi
 # ack 命令下载个 hhighlighter 插件
 if command -v ack >/dev/null 2>&1; then
 
-    if [[ -s /usr/local/bin/ackg.sh ]]; then
-        source /usr/local/bin/ackg.sh
+    if [[ ! -s /usr/local/bin/ackg.sh ]]; then
 
-    else
         echo "ackg 看日志比grep好用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)"
+
+        tmpfile=$(mktemp)
         echo 'Get ackg from github...'
-
-        curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/refs/heads/master/h.sh 2>/dev/null | sed -e 's/h()/ackg()/' | sudo tee /usr/local/bin/ackg.sh
-
-        if [[ -s /usr/local/bin/ackg.sh ]]; then
-            source /usr/local/bin/ackg.sh
-
+        if curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh -o "$tmpfile"; then
+            sed -i.bak 's/^h()/ackg()/' "$tmpfile"
+            sudo mv "$tmpfile" /usr/local/bin/ackg.sh
         else
-            # 如果 github 获取不到，再尝试下 CDN
-            curl -fsSL https://cdn.jsdelivr.net/gh/paoloantinori/hhighlighter@master/h.sh 2>/dev/null | sed -e 's/h()/ackg()/' | sudo tee /usr/local/bin/ackg.sh
-            [[ -s /usr/local/bin/ackg.sh ]] && source /usr/local/bin/ackg.sh
+            echo "GitHub源失败，尝试CDN..." >&2
+            if curl -fsSL https://cdn.jsdelivr.net/gh/paoloantinori/hhighlighter@master/h.sh -o "$tmpfile"; then
+                sed -i.bak 's/^h()/ackg()/' "$tmpfile"
+                sudo mv "$tmpfile" /usr/local/bin/ackg.sh
+            fi
+        else
+            sed -i.bak 's/^h()/ackg()/' "$tmpfile"
+            sudo mv "$tmpfile" /usr/local/bin/ackg.sh
         fi
     fi
+
+    if [[ -f /usr/local/bin/ackg.sh ]]; then
+        source /usr/local/bin/ackg.sh
+    fi
+
+    rm -f "$tmpfile"
+    unset tmpfile
 fi
 
 #######################

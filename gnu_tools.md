@@ -2739,6 +2739,32 @@ test 和 [] 是等价的，[] 注意两边留空格
     # 数值判断用 (( ))
     (($LOAD_AVG_THLOD > 10)) && echo "greater than" || echo "not..."
 
+NOTE: 慎重使用链式逻辑运算
+
+    shell 解释执行是从左向右的，但是逻辑运算符优先级和短路求值会导致你没有料到的结果，特别是在使用如 curl | tee 这类管道操作，建议命令分组或拆分为多步或使用临时文件
+
+        $ true || echo "A" && echo "B"
+        B  <--- 这里短路求值跳过了 echo "A" && echo "B" 但是会因为 true 而执行 echo "B"
+
+        $ true || { echo "A" && echo "B"; } && echo "C"
+        C <--- 验证上面语句的观点
+
+    所以，尽量别连写逻辑运算，要用分组 ( ) 或 { } 来包裹，使得逻辑运算符的结果符合你的直观预期，以上两句的改写：
+
+        $ true || { echo "A" && echo "B"; }
+
+        $ true || ({ echo "A" && echo "B"; } && echo "C")
+
+    如果不用 ( ) 或 { } 来包裹，猜猜下面的输出结果是不是你想要的，或者再加长点呢：
+
+        $ true || echo "A" || echo "B"
+
+        $ false || echo "A" || echo "B"
+        A
+
+        $ false || false || echo "B"
+        B
+
 字符串判断用 [[ ]]
 
     # 如果是判断字符串是否有值，则 -n 可以省略
