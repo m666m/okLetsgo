@@ -747,9 +747,6 @@ if command -v ack >/dev/null 2>&1; then
                 sed -i.bak 's/^h()/ackg()/' "$tmpfile"
                 sudo mv "$tmpfile" /usr/local/bin/ackg.sh
             fi
-        else
-            sed -i.bak 's/^h()/ackg()/' "$tmpfile"
-            sudo mv "$tmpfile" /usr/local/bin/ackg.sh
         fi
     fi
 
