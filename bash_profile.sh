@@ -134,8 +134,7 @@ export COLORTERM=truecolor
 
 #######################
 # 在终端模拟器中设置了光标闪动有时候在ssh连接远程后或tmux中也不生效，强制开启
-tput cnorm
-echo -e '\033[?12h\033[1 q'
+tput cnorm && echo -e '\033[?12h\033[1 q'
 #
 # 如果遇到退出 vi 或 tmux 后又不闪动了，运行命令 reset 即可
 # 或者在bash每次命令执行后恢复光标
@@ -394,13 +393,12 @@ function gaddr {
     local tfile=$(mktemp)
 
     # https://raw.githubusercontent.com/521xueweihan/GitHub520/refs/heads/main/hosts
-    curl -o $tfile https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts \
-        || curl -o $tfile https://cdn.jsdelivr.net/gh/maxiaof/github-hosts@master/hosts
+    curl -o "$tfile" https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts \
+        || curl -o "$tfile" https://cdn.jsdelivr.net/gh/maxiaof/github-hosts@master/hosts
 
-    [[ ! -s $tfile ]] && echo '获取 github 地址列表失败！' && return 0
+    [[ ! -s "$tfile" ]] && echo '获取 github 地址列表失败！' && return 0
 
-    $(grep 'Github Hosts Start' /etc/hosts >/dev/null 2>&1)
-    if [[ "$?" = "0" ]]; then
+    if grep 'Github Hosts Start' /etc/hosts >/dev/null 2>&1; then
         sed '/#Github Hosts Start/,/#Github Hosts End/ {
             /#Github Hosts Start/ {
                 r '"$tfile"'
@@ -409,10 +407,10 @@ function gaddr {
             /#Github Hosts End/!d
         }' /etc/hosts |awk '!a[$0]++' |sudo tee /etc/hosts
     else
-        cat $tfile |sudo tee -a /etc/hosts
+        cat "$tfile" |sudo tee -a /etc/hosts
     fi
 
-    rm $tfile
+    rm "$tfile"
 }
 
 # gpg 常用命令，一般用法都是后跟文件名即可
@@ -671,9 +669,8 @@ if test -d "$HOME/.ssh"; then
 
         # 启动 ssh-agent，并保存指向ssh密钥代理进程的变量
         agent_start () {
-            if test -d "$HOME/.ssh"; then
-                (umask 077; ssh-agent >| "$agent_env") && source "$agent_env" >| /dev/null
-            fi
+            (umask 077; ssh-agent >| "$agent_env")
+            source "$agent_env" >| /dev/null
         }
         # agent_run_state:
         #   0=agent running w/ key;
@@ -920,7 +917,9 @@ function PS1_host_name {
     # 判断当前是否进入远程ssh会话：
     # 远程会话检测变量 SSH_CLIENT，交互式登录检测变量 SSH_TTY
     # 此方法仅在主机环境或 distrobox 容器中有效
-    ([[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]]) && is_remote=true
+    if [[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]]; then
+        is_remote=true
+    fi
 
     # FQDN 格式主机名只显示前段，如 host.local 显示 host
     local raw_host_name=$(echo ${HOSTNAME%%.*})
@@ -933,15 +932,21 @@ function PS1_host_name {
             [[ $(pstree |grep sshd |grep toolbox |grep podman |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
 
             # raw_host_name 使用前面设置过的
+
+        # 否则是在交互式容器 distrobox 中
         else
-            # 否则是在交互式容器 distrobox 中，HOSTNAME 的值变为：容器名.宿主机的主机名
             # distrobox 容器中不需要判断是否在远程连接中，它继承了宿主机的环境变量，前面的 is_remote 判断结果直接用
-            raw_host_name=$(echo ${HOSTNAME##*.})
+
+            # 之前distrobox 容器会把 HOSTNAME 的值变为：容器名.宿主机的主机名，用 raw_host_name=$(echo ${HOSTNAME##*.})
+            raw_host_name=$(echo ${HOSTNAME%%.*})
         fi
     fi
 
-    [[ $is_remote = true ]] && echo -e "\033[0;35m$(echo $raw_host_name)" || echo -e "\033[0;32m$(echo $raw_host_name)"
-
+    if [[ $is_remote = true ]]; then
+        echo -e "\033[0;35m${raw_host_name}\033[0m"
+    else
+        echo -e "\033[0;32m${raw_host_name}\033[0m"
+    fi
 }
 
 # 提示当前在 toolbox 或 distrobox 等交互式容器环境，白色容器名配蓝色背景
