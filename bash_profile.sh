@@ -926,16 +926,23 @@ function PS1_host_name {
 
     # 在交互式容器中特殊处理，从 HOSTNAME 提取出宿主机的主机名
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
-        # 如果是在交互式容器 toolbox 中，HOSTNAME 的值与宿主机一致，但 /etc/hostname 变为 toolbox
+        # 如果是在交互式容器 toolbox 中
         if [[ $(uname -n) = 'toolbox' ]]; then
-            # toolbox 容器中只能用这个方式判断是否进入远程ssh会话，不是很靠谱
-            [[ $(pstree |grep sshd |grep toolbox |grep podman |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
+
+            # 之前HOSTNAME 的值与宿主机一致，但 /etc/hostname 变为 toolbox
+            # 目前暂无法获取到宿主机的主机名
+            :
+
+            # 之前 toolbox 容器中只能用这个方式判断是否进入远程ssh会话，不是很靠谱
+            # [[ $(pstree |grep sshd |grep toolbox |grep podman |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
+            # 目前暂无法获取当前是否处于远程连接的状态
+            :
 
             # raw_host_name 使用前面设置过的
 
         # 否则是在交互式容器 distrobox 中
         else
-            # distrobox 容器中不需要判断是否在远程连接中，它继承了宿主机的环境变量，前面的 is_remote 判断结果直接用
+            # distrobox 容器继承了宿主机的环境变量，前面的 is_remote 判断结果可以直接用
 
             # 之前distrobox 容器会把 HOSTNAME 的值变为：容器名.宿主机的主机名，用 raw_host_name=$(echo ${HOSTNAME##*.})
             raw_host_name=$(echo ${HOSTNAME%%.*})
