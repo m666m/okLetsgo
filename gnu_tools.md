@@ -12104,7 +12104,7 @@ Debian 系 打开 Gnome 的 Settings -> Keyboard -> Input Source，点击添加�
 
     务必勾选 “Switch input sources individually for each window”，这样方便在文件管理器等软件中保持默认英语，支持热键
 
-鼠标点击个可以输入文字的地方，然后切换到拼音输入法，右键点击输入法在时间栏处的“中”字图标，在弹出菜单选择 “Perference”，设置用逗号句号翻页(flip page)等选项。
+鼠标点击个可以输入文字的地方，然后切换到拼音输入法，右键点击输入法在时间栏处的“中”字图标，在弹出菜单选择 “Preference”，设置用逗号句号翻页(flip page)等选项。
 
 GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表情符号菜单。
 
