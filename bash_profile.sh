@@ -934,7 +934,7 @@ function PS1_host_name {
 
             # 之前 toolbox 容器中只能用这个方式判断是否进入远程ssh会话，不是很靠谱
             # [[ $(pstree |grep sshd |grep toolbox |grep podman |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
-            # 目前暂无法获取当前是否处于远程连接的状态，除非在启动容器时 toolbox enter 传入参数 --env SSH_CLIENT="$SSH_CLIENT"
+            # 目前暂无法获取当前是否处于远程连接的状态，除非把环境变量 SSH_CLIENT 保存到 /tmp 等共享目录进行交换
             :
 
             # raw_host_name 使用前面设置过的
