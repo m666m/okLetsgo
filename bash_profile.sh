@@ -921,7 +921,7 @@ function PS1_host_name {
         is_remote=true
     fi
 
-    # FQDN 格式主机名只显示前段，如 host.local 显示 host
+    # FQDN 格式主机名只显示前段，如 abc.local 显示 abc
     local raw_host_name=$(echo ${HOSTNAME%%.*})
 
     # 在交互式容器中特殊处理，从 HOSTNAME 提取出宿主机的主机名
@@ -929,13 +929,12 @@ function PS1_host_name {
         # 如果是在交互式容器 toolbox 中
         if [[ $(uname -n) = 'toolbox' ]]; then
 
-            # 之前HOSTNAME 的值与宿主机一致，但 /etc/hostname 变为 toolbox
-            # 目前暂无法获取到宿主机的主机名
-            :
+            # 变量 HOSTNAME 的值与宿主机一致，但 /etc/hostname 变为 toolbox
+            # cat /run/host/etc/hostname | cut -d '.' -f 1
 
             # 之前 toolbox 容器中只能用这个方式判断是否进入远程ssh会话，不是很靠谱
             # [[ $(pstree |grep sshd |grep toolbox |grep podman |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
-            # 目前暂无法获取当前是否处于远程连接的状态
+            # 目前暂无法获取当前是否处于远程连接的状态，除非在启动容器时 toolbox enter 传入参数 --env SSH_CLIENT="$SSH_CLIENT"
             :
 
             # raw_host_name 使用前面设置过的
