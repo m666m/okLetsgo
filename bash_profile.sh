@@ -736,12 +736,12 @@ if command -v ack >/dev/null 2>&1; then
         tmpfile=$(mktemp)
         echo 'Get ackg from github...'
         if curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh -o "$tmpfile"; then
-            sed -i.bak 's/^h()/ackg()/' "$tmpfile"
+            sed -i 's/^h()/ackg()/' "$tmpfile"
             sudo mv "$tmpfile" /usr/local/bin/ackg.sh
         else
             echo "GitHub源失败，尝试CDN..." >&2
             if curl -fsSL https://cdn.jsdelivr.net/gh/paoloantinori/hhighlighter@master/h.sh -o "$tmpfile"; then
-                sed -i.bak 's/^h()/ackg()/' "$tmpfile"
+                sed -i 's/^h()/ackg()/' "$tmpfile"
                 sudo mv "$tmpfile" /usr/local/bin/ackg.sh
             fi
         fi

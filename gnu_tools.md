@@ -6508,6 +6508,8 @@ sed 的正则表达式能玩出花来
     # \1表示第一个括号中的内容，${TRACKER}引用变量的内容
     sed -i "s@^\(bt-tracker=\).*@\1${TRACKER}@" btconfig.txt
 
+    sed -i.bak xxx abc.txt 会备份文件到abc.txt.bak
+
 范围删除匹配模式行，只显示删除后的结果
 
     sed -n '/start_line/,/end_line/!p' your_file
