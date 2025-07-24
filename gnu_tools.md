@@ -17594,6 +17594,10 @@ NOTE：不要以 `sudo` 执行 winecfg
 
     在桌面环境的文件管理器中，右键单击.exe文件，选择 “使用 Wine Windows 程序加载器打开” 并选择 Wine 应用程序来运行该文件，剩下的就是安装和运行了，跟 Windows 下的使用体验是一致的。
 
+注意安全
+
+    因为下载的程序不知道来源是否正规，应该新建个用户安装并运行这些程序
+
 装好 Wine 以后，在终端输入 `regedit` 可以打开 wine 的注册表编辑器了
 
     http://wiki.winehq.org/regedit
