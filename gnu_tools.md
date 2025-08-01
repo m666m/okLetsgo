@@ -17613,7 +17613,7 @@ NOTE：不要以 `sudo` 执行 winecfg
 
     $ env LANG=zh_CN.UTF-8 wine your_app.exe
 
-用 Winetricks 配置 WINE
+> 用 Winetricks 配置 WINE
 
     https://wiki.winehq.org/Winetricks
 
@@ -17621,7 +17621,16 @@ NOTE：不要以 `sudo` 执行 winecfg
 
 winecfg 让你可以改变 WINE 本身的设置，而 winetricks 则可以让你改造实际的 Windows 层，它可以让你安装 Windows 重要的系统组件，比如 .dll　文件和系统字体，还可以允许你修改 Windows 注册表的信息。它还有任务管理器、卸载工具和文件浏览器。 尽管 winetricks 可以做以上这些工作，但是大部分时间我们用到的功能也就是管理 dll 文件和　Windows　组件。
 
-wine 不需要窗口管理器（GNOME或KDE）也可以正常地运行，所以如果你在一个单独的 X server 下运行游戏，你会得到明显的性能提升。在运行游戏之前，关闭 GDM 或 KDM，还会得到更大的性能提升（只能通过控制（console）台来实现）。
+    # 创建专用 Wine 前缀
+    $ WINEPREFIX=~/.wine-win7 winecfg
+    在弹出的窗口中，将 Windows 版本设置为 Windows 7
+
+    # 为特定 Wine 前缀安装
+    $ WINEPREFIX=~/.wine-win7 winetricks dxvk d3dx9 corefonts cjkfonts gdiplus vcrun2019
+
+> wine 不需要窗口管理器（GNOME或KDE）也可以正常地运行
+
+如果你在一个单独的 X server 下运行游戏，你会得到明显的性能提升。在运行游戏之前，关闭 GDM 或 KDM，还会得到更大的性能提升（只能通过控制（console）台来实现）。
 
     https://blog.csdn.net/Gerald_Jones/article/details/80781378
 
