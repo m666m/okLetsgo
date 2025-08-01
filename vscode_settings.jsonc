@@ -354,11 +354,14 @@
     //////////////////////////////////////////////////////////////////
     // 下面是插件设置
     "extensions.autoUpdate": true,  // 如果有插件经常升级后出问题，改为 flase 阻止自动升级
+    //
     // Trailing Spaces
     // "trailing-spaces.trimOnSave": true,
     "files.trimTrailingWhitespace": true,
+    //
     // Python Docstring Generator
     "autoDocstring.docstringFormat": "numpy",
+    //
     // markdownlint
     "markdownlint.config": {
         "default": true,
@@ -368,6 +371,7 @@
         "MD033": false   // <abcdefg> 识别为内联 html 这不合理
     },
     "markdownlint.run": "onSave",
+    //
     // PYQT Integration 自行调整：
     // 根据你的 python、conda、virtunalenv 的不同，在哪个环境下安装了 pyqt5-tools，就在哪个环境下安装 PYQT Integration。
     // 先激活你的环境，然后用命令 `where/which designer.exe` 找一下，记下路径，填写到下面
@@ -380,20 +384,17 @@
     // "pyqt-integration.qtdesigner.path": "c:\\tools\\pyenvs\\your_virtualenv\\Lib\\site-packages\\qt5_applications\\Qt\\bin\\designer.exe",
     //"pyqt-integration.qtdesigner.path": "/home/yourusername/anaconda3/envs/p310/lib/python3.10/site-packages/qt6_applications/Qt/bin/designer",
     "pyqt-integration.qtdesigner.path": "/home/yourusername/anaconda3/bin/designer",
-    //
     // "pyqt-integration.pyuic.cmd":"C:\\ProgramData\\Anaconda3\\Library\\bin\\pyuic5.bat",
     // "pyqt-integration.pyuic.cmd":"C:\\ProgramData\\Anaconda3\\envs\\p37\\Library\\bin\\pyuic5.bat",
     //"pyqt-integration.pyuic.cmd":"C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\pyuic5.bat",
     // "pyqt-integration.pyuic.cmd":"c:\\tools\\pyenvs\\your_virtualenv\\Scripts\\pyuic5.exe",
     //"pyqt-integration.pyuic.cmd":"/home/yourusername/anaconda3/envs/p310/bin/pyuic6",
     "pyqt-integration.pyuic.cmd":"/home/yourusername/anaconda3/bin/pyuic5",
-    //
     // "pyqt-integration.pyrcc.cmd":"C:\\ProgramData\\Anaconda3\\Library\\bin\\pyrcc5.bat",
     // "pyqt-integration.pyrcc.cmd":"C:\\ProgramData\\Anaconda3\\envs\\p37\\Library\\bin\\pyrcc5.bat",
     //"pyqt-integration.pyrcc.cmd":"C:\\Users\\yourusername\\.conda\\envs\\p37\\Library\\bin\\pyrcc5.bat",
     // "pyqt-integration.pyrcc.cmd":"c:\\tools\\pyenvs\\your_virtualenv\\Scripts\\pyrcc5.exe",
     "pyqt-integration.pyrcc.cmd":"/home/yourusername/anaconda3/bin/rcc",
-    //
     //"pyqt-integration.pyuic.compile.filepath": "..\\uicode\\Ui_${ui_name}.py",
     //"pyqt-integration.pyrcc.compile.filepath": "..\\uicode\\${qrc_name}_rc.py",
     "pyqt-integration.pyuic.compile.filepath": "../uicode/Ui_${ui_name}.py",
@@ -476,6 +477,7 @@
             }
         ]
     },
+    //
     // Todo Tree
     "todo-tree.highlights.customHighlight": {
         "TODO": {
@@ -537,6 +539,7 @@
         ]
     },
     "todo-tree.general.statusBar": "tags",
+    //
     // Todo Highlight
     // "todohighlight.isCaseSensitive": true,
     "todohighlight.keywords": [
@@ -598,9 +601,11 @@
     ],
     "todohighlight.maxFilesForSearch": 5120,
     "todohighlight.toggleURI": false,
+    //
     // gitlens 注意关闭遥测
     "gitlens.telemetry.enabled": false,
     "gitlens.views.tags.branches.layout": "list",
+    //
     // vim airline 风格的状态栏变颜色
     "vim.statusBarColorControl": true,
     "vim.statusBarColors.normal": ["#1b2730", "#45dfe7"],
