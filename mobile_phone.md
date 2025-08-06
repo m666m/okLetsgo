@@ -664,11 +664,21 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
     https://bbs.letitfly.me/d/1058
 
+推荐开源免费无广告类似 gnome 桌面的配套软件，安卓系统自带工具软件如日历、计算器、文件管理器、联系人、消息、相册等等都有
+
+    https://www.fossify.org/apps/
+
 安装应用软件，优先在 F-droid 开源软件仓库安装，没有的软件在应用商店安装，最次选才是下载 apk 文件安装。
 
 对商业闭源软件，务必在三星手机在 “安全文件夹” 中安装，或者用 Shelter 运行，详见章节 [安卓虚拟机 Shelter]。
 
 电话、短信和拍照的话，用系统自带的大概就够用了。（LineageOS 内置的应该也是自由的吧……）
+
+天气
+
+    Breezy Weather
+
+        https://github.com/breezy-weather/breezy-weather
 
 文件管理器：
 
