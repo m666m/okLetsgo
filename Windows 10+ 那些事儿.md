@@ -4632,45 +4632,39 @@ Windows 7 之后微软把远程桌面做了比较大的变动，因为 Windows �
 
 报错：“身份验证错误，要求的函数不受支持”
 
-这是由于本地客户端或远程服务器端只有一方更新了CVE-2018-0886 的 CredSSP 补丁 KB4103718、KB4103712 ，而另外一方未安装更新的原因导致的，详见：<https://msrc.microsoft.com/update-guide/zh-cn/vulnerability/CVE-2018-0886>，其它受影响的 Windows 版本详见<https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/credssp-encryption-oracle-remediation>。
+    这是由于本地客户端或远程服务器端只有一方更新了CVE-2018-0886 的 CredSSP 补丁 KB4103718、KB4103712 ，而另外一方未安装更新的原因导致的，详见：<https://msrc.microsoft.com/update-guide/zh-cn/vulnerability/CVE-2018-0886>，其它受影响的 Windows 版本详见<https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/credssp-encryption-oracle-remediation>。
 
-方法一（强烈推荐）：
+推荐方法一：
 
 本地客户端、远程服务器端都安装更新补丁，更新以后重启计算机。
 
-KB4103718 如果运行时报告无法安装，先运行自带的那个 pciclearstalecache_264c3460a3ee95d831aa512b80bc8cc6aaa2d218.exe，然后就可以安装了。
-
-微软搞的太乱了。。。
+    KB4103718 如果运行时报告无法安装，先运行自带的那个 pciclearstalecache_264c3460a3ee95d831aa512b80bc8cc6aaa2d218.exe，然后就可以安装了。
 
 方法二：
 
 强烈建议按方法一对本地客户端和远程服务器安装补丁，如果某些特殊情况远程服务器不能更新最新补丁，可按照以下方法设置本地客户端之后远程登录：
 
-在运行里面输入gpedit.msc打开组策略，找到该路径：“计算机配置”->“管理模板”->“系统”->“凭据分配” 在右边设置名称找到 “加密 Oracle 修正”，将保护级别更改为“易受攻击”。
+    在运行里面输入 gpedit.msc 打开组策略，找到该路径：“计算机配置”->“管理模板”->“系统”->“凭据分配” 在右边设置名称找到 “加密 Oracle 修正”，将保护级别更改为“易受攻击”。
 
-修改以后在运行里面输入gpupdate更新策略。
+    修改以后在运行里面输入 gpupdate 更新策略。
 
-如果客户端是 Windows 7，组策略里没有 【加密 Oracle 修正】 选项，先确认方法一的两个补丁是否没装全。
+如果客户端是 Windows 7，组策略里没有 【加密 Oracle 修正】 选项，先确认方法一的两个补丁是否没装全。如果都安装了还是没显示该选项，做如下操作：
 
-如果都安装了还是没显示该选项，做如下操作：
+    先创建一个add.txt文件，将如下代码添加到文件保存，保存后将txt后缀更改为reg，然后双击add.reg导入到注册表重启电脑即可
 
-请先创建一个add.txt文件,将如下代码添加到文件保存,保存后将txt后缀更改为reg,然后双击add.reg导入到注册表重启电脑即可。
+        Windows Registry Editor Version 5.00
 
-    Windows Registry Editor Version 5.00
+        [HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\CredSSP\Parameters]
 
-    [HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\CredSSP\Parameters]
+        "AllowEncryptionOracle"=dword:00000002
 
-    "AllowEncryptionOracle"=dword:00000002
+远程桌面的开始菜单没有关机键，就在 cmd 窗口执行命令
 
-远程桌面的开始菜单没有关机键
+    # 立刻关机
+    shutdown -s -t 0
 
-    cmd窗口执行命令
-
-        # 立刻关机
-        shutdown -s -t 0
-
-        # 立刻重启
-        shutdown -r -t 0
+    # 立刻重启
+    shutdown -r -t 0
 
 ### Windows 11 远程桌面无法使用已经保存好用户名密码的 .rdp 文件
 
@@ -4696,7 +4690,7 @@ KB4103718 如果运行时报告无法安装，先运行自带的那个 pciclears
 
 2、 Computer Configuration > Administrative Templates > System > Device Guard > Turn on Virtualization Based Security.
 
-3、双击以打开这个策略，选择 “已启用”
+3、双击以打开这个策略，选择 “已启用”。
 
 4、这是下方的各个选项就可以设置了。
 
