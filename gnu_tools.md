@@ -11198,22 +11198,6 @@ systemd-timesyncd 只能作为客户端，不能作为 NTP 服务器，但如果
 
     地址列表见章节 [配置公共 NTP 服务器]
 
-#### Windows加快 NTP 更新频率
-
-Windows 的 NTP 同步时间功能默认每周只同步一次。
-
-如果你的计算机主板时钟连一周的准时都保证不了，或者你的 Windows 虚拟机需要强化时间同步的频率，可以把同步间隔改短：
-
-    Win+R 输入“Regedit”进入注册表编辑器 展开 “计算机\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient” 双击 “SpecialPollInterval” 键值，将对话框中的“基数栏”选择到“十进制”上 对话框中显示的数字正是自动对时的间隔（以秒为单位），比如1天就是 86400，1小时就是 3600，5 分钟是 150。
-
-    在 Parameters 列表中，还可将 “NtpServer” 键值修改为相应服务器的IP地址，然后点击 “确定” 按钮保存。
-
-更细节的调整就是区分慢多少时间算慢了，正常情况下完全没必要改
-
-    运行“gpedit.msc”进入本地组策略编辑器 展开 “本地计算机 策略\计算机配置\管理模板\系统\Windows 时间服务”，双击 “全局配置设置” 选项 “FrequencyCorrectRate”和“PhaseCorrectRate”，以我的理解，“慢工出细活”，所以设置成了1。
-
-    MaxNegPhaseCorrection 和 MaxPosPhaseCorrection 分别控制本地时钟最多快/慢（-/+）多少秒，超过这个范围就会提示时间差过大，请手动调整时间。默认值：172800 秒 MaxPollInterval和MinPollInterval分别控制最大/最小轮询间隔，如果设置的是x，则实际的最大/最小轮询间隔为 秒，默认值分别为10和6，对应1024秒和64秒 就个人有限经验来看，时间误差大的时候，会连续间隔几个小的轮询间隔反复校准；而时间相对准确时，好像是按照最大轮询间隔和前面设置的那个秒数里面较小的为准，但最大轮询间隔数值不整，强迫症可能会有点难受~
-
 ### 设置替换命令 update-alternatives
 
 linux 版本历经多年的使用，有些命令会出现各种变体，为保持通用，用符号链接的方式统一进行管理
