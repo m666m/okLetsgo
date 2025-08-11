@@ -1228,11 +1228,9 @@ uBlock Origin 广告屏蔽
 
     edge 兼容 chrome 插件，该插件详情统一放在章节 [安装 Google Chrome 浏览器插件]
 
-Aria2 Explorer 把下载添加到aria2任务
+AriaNg 把下载添加到aria2任务
 
-    https://microsoftedge.microsoft.com/addons/detail/aria2-explorer/jjfgljkjddpcpfapejfkelkbjbehagbh
-
-    edge 兼容 chrome 插件，该插件详情统一放在章节 [安装 Google Chrome 浏览器插件]
+    https://github.com/mayswind/AriaNg-Native
 
 Superb Copy 解锁 csdn/51cto 右键复制
 

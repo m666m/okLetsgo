@@ -8255,11 +8255,13 @@ Aria2 的命令行传输各种参数，设置复杂，一般都使用各种客�
 
     安装后设置选择，插件选 aria2 + curl 即可。
 
-推荐使用浏览器扩展插件：Aria2 Explorer（内置AriaNg），安装后设置 api key，即可在浏览器中直接给 aria2 进程发下载请求了。
+推荐使用 AriaNg 把下载添加到aria2任务
+
+    https://github.com/mayswind/AriaNg-Native
 
 ##### aria2 作为后台进程运行响应 RPC 请求
 
-aria2 作为后台守护进程运行，在指定端口监听 RPC 请求，用户在浏览器安装扩展插件 Aria2 Explorer 把下载请求发送给 aria2 去执行，这样的方式最好用。因为是 RPC 方式，aria2 可以单独部署到家用 NAS 等单独的下载机，用户连接家庭内网的机器都可以操作它。
+aria2 作为后台守护进程运行，在指定端口监听 RPC 请求，使用 AriaNg 等应用把下载链接发送给 aria2 去执行，这样的方式最好用。因为是 RPC 方式，aria2 可以单独部署到家用 NAS 等单独的下载机，用户连接家庭内网的机器都可以操作它。
 
 1、先生成 Aria2 运行时依赖的配置文件 aria2.conf，可参考 Motrix 的 aria2.conf
 
@@ -8346,8 +8348,6 @@ bt-tracker=http://1337.abcvg.info:80/announce
 
 3、启动 aria2 作为后台进程的命令行参数
 
-启动 aria2 后在浏览器中通过插件 Aria2 Explorer 进行下载即可。
-
 Windows cmd：
 
     aria2c.exe --conf-path=%USERPROFILE%\.aria2\aria2.conf --enable-rpc --rpc-secret=your_password --dir=%USERPROFILE%\Downloads --save-session=%USERPROFILE%\.aria2\download.session --input-file=%USERPROFILE%\.aria2\download.session --dht-file-path=%USERPROFILE%\.aria2\dht.dat --dht-file-path6=%USERPROFILE%\.aria2\dht6.dat --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-listen-port=26701 --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
@@ -8360,7 +8360,9 @@ bash shell：
 
 验证：
 
-用浏览器插件 Aria2 Explorer 也可以看到 aria2 状态是否可用。
+AriaNg 把下载添加到aria2任务
+
+    https://github.com/mayswind/AriaNg-Native
 
 另见章节 [curl 调试 http/wss/json-rpc]。
 
@@ -8513,8 +8515,6 @@ aria2.conf 有两个配置项 on-download-complete、on-download-stop，前者�
     http://<your.server.ip.addr>:9091/
 
 浏览器提示你输入刚才配置的用户名和密码，就可以成功登录Web管理界面。
-
-一般安装浏览器插件 Aria2 Explorer，实现拦截浏览器的下载，弹窗添加到transmission。
 
 #### curl 支持 http/https 等下载
 
@@ -10881,11 +10881,13 @@ Windows 版
 
 要自建 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐 [使用 chrony]。
 
-> NTP 强制同步
+> NTP 强制立刻同步
 
-如果发现执行命令 `timedatectl status` 的输出 'System clock synchronized1 值设置为 no（计算机时间的偏差较大常见于虚拟机从休眠中恢复后的时间不准），需要立即调整时间，而不是等待 NTP 服务平滑的慢慢调整：
+如果执行命令 `timedatectl status` 的输出 'System clock synchronized' 值设置为 no，说明 NTP 不同步了，常见于虚拟机从休眠中恢复后，时间的偏差较大。
 
-    NOTE：NTP 服务是平滑式的调整时间，最好不要直接跳变式的设置一个时间,对数据库服务等可能有不利影响，生产环境下慎重！
+如果想要立即调整时间，而不是等待 NTP 服务平滑的慢慢调整：
+
+    NOTE: NTP 服务是平滑式的调整时间，最好不要直接跳变式的设置一个时间,对数据库服务等可能有不利影响，生产环境下慎重！
 
     # sudo ntpdate -u <NTP 服务器地址>  # 例如 ntp.ubuntu.com
     $ sudo chronyc makestep
@@ -18449,6 +18451,14 @@ git-cmd.exe
     /proc 目录      这个是 git 自己虚出来的，只能在 git bash(mintty) 下看到
 
     /cmd 目录       C:\Program Files\Git\cmd，用于 cmd 命令行窗口下运行 git 和 ssh 用的几个脚本
+
+    $HOME           C:\Users\%USERNAME%
+
+    C:\Users\用户名\AppData\Roaming，通过环境变量 %AppData% 可以访问，这里用来存放当前登录用户所产生的数据，对其他的用户不可见。如果你在公司网络，加入了域，这个文件夹会通过网路同步，让你的数据在不同的计算机上漫游。
+
+    C:\Users\用户名\AppData\Local，通过环境变量 %LocalAppData% 可以访问，这个目录和上面的基本一样，不过仅限本地，加入了域也不会同步。一般情况下，如果不加入域，Roaming和Local并没有什么区别
+
+    C:\ProgramData，和AppData的区别在于，这里存放的数据是公用的，如果你希望软件的数据在所有的用户之间保持一致，那么程序生成的数据应当存放在这里。
 
 退出bash时，最好不要直接关闭窗口，使用命令exit或^D，不然会提示有进程未关闭。
 
