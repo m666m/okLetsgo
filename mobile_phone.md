@@ -2,11 +2,11 @@
 
 安卓系统权限管理的 Google 官方说明
 
-    <https://developer.android.google.cn/guide/topics/permissions/overview?hl=zh-cn>
+    https://developer.android.google.cn/guide/topics/permissions/overview?hl=zh-cn
 
 安卓系统应用程序对用户数据发送给第三方的现状
 
-    <https://zhuanlan.zhihu.com/p/397453757>
+    https://zhuanlan.zhihu.com/p/397453757
 
 ## 安全使用的背景
 
@@ -273,11 +273,24 @@ sim卡的安全性是由私钥只可写入不可读出来保证的，在实体si
 
     另外优先安装使用开源的app，参见章节 [安卓的开源软件商店F-Droid]。
 
+### 工作空间 Work Profile
+
 Android 提供了 "Work Profile" 功能来提供一个隔离的空间，用户可以在其中安装应用程序或把当前手机环境中的应用添加到其中
 
     https://learn.microsoft.com/zh-cn/mem/intune/user-help/what-happens-when-you-create-a-work-profile-android
 
+    https://github.com/googlearchive/android-BasicManagedProfile
+
     https://blog.csdn.net/qq_35501560/article/details/105976660
+
+    https://zh-cn.todoandroid.es/%E5%A6%82%E4%BD%95%E5%9C%A8-Android-%E4%B8%8A%E5%88%9B%E5%BB%BA%E5%92%8C%E7%AE%A1%E7%90%86%E5%B7%A5%E4%BD%9C%E8%B5%84%E6%96%99/
+
+
+“Work Profile(工作空间)” 需要有 Work Profile owner 程序进行管理，一般情况下是公司统一进行设置。个人使用可以使用 google 账户，但这样会把自己工作空间的控制权交给 googoel。
+
+通常我们使用章节 [Work Profile 隔离 ---- 三星 knox 安全文件夹] 和 [Work Profile 隔离 --- 开源的 Shelter]。
+
+如果想自己搞定制的容器化，详见章节 [深度定制虚拟机套娃]。
 
 开启 Work Profile 之后，系统分为了两个空间，为方便描述，我们把安装普通应用的空间称为 personal profile（个人空间），安装图标上带有公文包徽章的应用的空间称为 work profile（工作空间）。
 
@@ -315,11 +328,7 @@ Android 提供了 "Work Profile" 功能来提供一个隔离的空间，用户�
 
     “工作空间” 提供的安全保证不可能超越实体机环境，即你的手机操作系统如果有安全问题比如获取你的隐私，你使用的 “工作空间” 是管控不了的。
 
-“Work Profile(工作空间)” 详见下面的章节 [Work Profile 隔离 ---- 三星 knox 安全文件夹] 和 [Work Profile 隔离 --- 开源的 Shelter]。
-
-如果自己搞定制的容器化，详见章节 [深度定制虚拟机套娃]。
-
-### Work Profile 隔离 ---- 三星 knox 安全文件夹
+#### Work Profile 隔离 ---- 三星 knox 安全文件夹
 
     https://zhuanlan.zhihu.com/p/66659414
 
@@ -352,7 +361,7 @@ Android 提供了 "Work Profile" 功能来提供一个隔离的空间，用户�
     来源：知乎
     著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
-### Work Profile 隔离 --- 开源的 Shelter
+#### Work Profile 隔离 --- 开源的 Shelter
 
 Shelter：利用安卓的 "Work Profile" 功能实现应用程序的套娃运行。
 
@@ -376,6 +385,48 @@ Shelter 的主要用例包括：
 请注意：Shelter 依赖于安卓系统的 "Work Profile" 功能，因此与您手机使用的安卓衍生系统中的 "Work Profile"相关的任何错误都会影响 Shelter，也就是说，主机操作系统的安全漏洞，用 shelter 是规避不了的。
 
 有关完整的说明，请阅读 Shelter 的 Git 存储库。
+
+The best Shelter alternative is Sandboxie Plus, which is both free and Open Source. Other great apps like Shelter are Island, Hail, Insular and Storage Isolation.
+
+如何卸载 Shelter?
+
+    1) 前往设置 -> 帐号，在里面移除工作帐号(Work Profile); 2) 前往设置 -> 安全 -> 高级 -> 设备管理员，把 Shelter 的管理员权限关闭; 3) 正常卸载 Shelter。
+
+### 私密空间 Private Space
+
+Android 15 新功能，无需使用第三方应用程序即可解锁和锁定私密空间来显示或隐藏设备上的敏感应用程序。私密空间允许用户在其设备上为敏感应用创建单独的空间，通过额外的身份验证来保护这些应用，用户可以选择对私密空间使用与设备屏锁相同的或单独的锁定方式。
+
+    https://source.android.google.cn/docs/security/features/private-space?hl=zh-cn
+
+    https://www.itmob.cn/archives/introduction-to-private-space-in-android-15
+
+    https://zh-cn.todoandroid.es/Android-15-%E4%B8%AD%E7%9A%84%E7%A7%81%E4%BA%BA%E7%A9%BA%E9%97%B4%EF%BC%9A%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AE%E5%AE%83%E4%BB%A5%E5%8F%8A%E5%AE%83%E7%9A%84%E4%BC%98%E7%82%B9/
+
+私密空间中的应用显示在 Launcher/启动器 中的单独空间中。在 Pixel Launcher 中将应用程序列表滚动到底部即可看到私密空间。点击锁定按钮使用您设置的锁定方式解锁即可。
+
+私密空间预装了相机、Chrome 浏览器、联系人、文件、照片、Play 商店等应用。
+
+可以在私密空间中点击顶部 + 按钮或直接打开 Play 商店 安装应用。也可以在私密空间解锁时，长按主空间中的应用会显示 “ 安装到私密个人资料中” 选项，点击后会打开 Play 商店提供安装。
+
+当私密空间被锁定时，私密应用将从最近程序页面、通知、设置等其他页面中隐藏。而且在私密空间中创建的文件、下载的内容、添加的帐户和主空间之间是分开。但可以通过系统的分享弹窗功能和照片选择器在私密空间解锁时跨空间访问内容。
+
+隐藏 私密空间
+
+在设置中可以选择在 Launcher/启动器 中隐藏私密空间，这样在应用列表的底部就不能看到私密空间的存在了，可以通过搜索 ”私密空间“ 重新找到和打开它。
+
+其他
+
+    当私密空间锁定时，私密应用不再处于活动状态。
+    通过 ADB 命令安装应用时，安装的应用将同时安装岛普通空间和私密空间。
+
+Android 隐私空间的主要优势
+高级安全性： 私人空间使用自己的身份验证，可能与设备的身份验证不同（PIN、图案、指纹等），提供 额外的保护层.
+应用程序和数据的完全分离： 隐私空间中安装的应用无法与主环境中的应用交互。你甚至可以使用不同的 Google 帐户，实现真正的应用与主环境中的应用分离。 个人和工作资料.
+隐藏私人空间： 可以进入私人空间 没有出现在应用程序抽屉中 也不在概览中，迫使您手动搜索才能访问它。
+灵活的通知和隐私管理： 仅当空间解锁时才会显示私人应用程序的通知，以防止意外泄露。
+复制应用程序的能力： 您可以拥有同一个应用程序的两个不同版本（例如，用于工作和个人的 WhatsApp、两个 Gmail 会话、两个银行应用程序等），一个在主区域，一个在私人区域。
+防止盗窃、丢失或未经授权的访问： 即使有人设法解锁您的手机，他们也需要使用 PrivateSpace 的附加方法来访问该内容。
+轻松移除和恢复： 您可以安全地删除隐私空间及其中的所有内容，而不会在主手机的备份中留下任何痕迹。
 
 ### xposed --- 强大的钩子框架
 
