@@ -381,15 +381,40 @@ Shelter 的主要用例包括：
 
     在一个手机上安装运行同一应用程序的两个副本
 
-请注意：Shelter 依赖于安卓系统的 "Work Profile" 功能，因此与您手机使用的安卓衍生系统中的 "Work Profile"相关的任何错误都会影响 Shelter，也就是说，主机操作系统的安全漏洞，用 shelter 是规避不了的。
+功能/用例
 
-有关完整的说明，请阅读 Shelter 的 Git 存储库。
+    在独立配置文件中运行应用程序，使其无法访问该配置文件之外的数据
 
-The best Shelter alternative is Sandboxie Plus, which is both free and Open Source. Other great apps like Shelter are Island, Hail, Insular and Storage Isolation.
+    “冻结”（禁用）后台运行繁重或很少使用的应用程序，比如 QQ、微信、拼多多等。
+
+    克隆应用程序以在一个设备上使用两个帐户
+
+Shelter 不是完整的沙箱实现，它不能保护您免受以下因素的侵害：
+
+    Android系统或Linux内核的安全漏洞。Shelter 依赖于安卓系统的 "Work Profile" 功能，因此与您手机使用的安卓衍生系统中的 "Work Profile"相关的任何错误都会影响 Shelter，也就是说，主机操作系统的安全漏洞，用 shelter 是规避不了的
+
+    Android系统中安装了后门程序（因此，请对此使用开源ROM）
+
+    固件中安装了后门程序（无法正常工作）解决此问题）
+
+    Android系统施加的任何其他错误或限制。
+
+    同样，Shelter不能在一个Android设备上创建多个工作资料，也不能与管理工作资料的任何其他应用程序共存。这是由于Android系统的限制，我对此无能为力。
 
 如何卸载 Shelter?
 
     1) 前往设置 -> 帐号，在里面移除工作帐号(Work Profile); 2) 前往设置 -> 安全 -> 高级 -> 设备管理员，把 Shelter 的管理员权限关闭; 3) 正常卸载 Shelter。
+
+竞品：
+
+    Island, Hail, Insular and Storage Isolation.
+
+    问：为什么不使用 Greenify 的创造者 OasisFeng 的 Island <https://island.oasisfeng.com/>？
+    答：因为它不是 FOSS 应用程序，并且捆绑了非免费的 SDK。 请注意，这并不一定意味着 Island 具有跟踪等反功能（我认为它也没有），只是我写了 Shelter 作为 FOSS 的替代品。 除了这个之外，没有其他原因可以让人们更喜欢 Shelter 而不是 Island。
+
+另外很多推荐在 google Pixel 手机上安装 GrapheneOS 的，这个开源的安卓操作系统号称绝对尊重隐私，对应用程序的隔离做得更到位
+
+    https://grapheneos.org/faq#supported-devices
 
 ### 私密空间 Private Space
 
