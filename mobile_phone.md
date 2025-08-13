@@ -285,12 +285,11 @@ Android 提供了 "Work Profile" 功能来提供一个隔离的空间，用户�
 
     https://zh-cn.todoandroid.es/%E5%A6%82%E4%BD%95%E5%9C%A8-Android-%E4%B8%8A%E5%88%9B%E5%BB%BA%E5%92%8C%E7%AE%A1%E7%90%86%E5%B7%A5%E4%BD%9C%E8%B5%84%E6%96%99/
 
-
-“Work Profile(工作空间)” 需要有 Work Profile owner 程序进行管理，一般情况下是公司统一进行设置。个人使用可以使用 google 账户，但这样会把自己工作空间的控制权交给 googoel。
+“Work Profile(工作空间)” 需要有 Work Profile owner 程序进行管理，比如安装应用和赋予访问宿主机的某些权限等。owner 这个角色设计上是由公司统一部署 owner 程序，如果个人用途使用 google 账户即可，但这样会把自己工作空间的控制权交给 google。
 
 通常我们使用章节 [Work Profile 隔离 ---- 三星 knox 安全文件夹] 和 [Work Profile 隔离 --- 开源的 Shelter]。
 
-如果想自己搞定制的容器化，详见章节 [深度定制虚拟机套娃]。
+如果想自己定制 owner，详见章节 [深度定制虚拟机套娃]。
 
 开启 Work Profile 之后，系统分为了两个空间，为方便描述，我们把安装普通应用的空间称为 personal profile（个人空间），安装图标上带有公文包徽章的应用的空间称为 work profile（工作空间）。
 
