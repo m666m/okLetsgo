@@ -13286,7 +13286,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     system-monitor-next     在任务栏显示你的cpu、内存使用情况，就像在终端使用 btop 或 nmon 的效果。竞品 Vitals/Freon。
 
-    GSConnect               操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”。如果需要完整操控你的手机，见章节 [Scrcpy --- 在 Linux 桌面显示和控制 Android 设备]。
+    GSConnect               操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”，使用说明 <https://lixuannan.github.io/posts/27832.html>。如果需要完整操控你的手机，见章节 [Scrcpy --- 在 Linux 桌面显示和控制 Android 设备]。
 
     Night Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现定时自动切换。
 
