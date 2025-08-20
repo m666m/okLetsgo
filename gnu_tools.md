@@ -8664,10 +8664,10 @@ json-rpc
         -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.addUri", "params":[["http://example.org/file"]]}'
 
     $ curl -X POST -H "Content-Type: application/json" \
-        -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.addTorrent", "params":[torrent]}'
+        -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.addTorrent", "params":"/btfiles/xyz.torrent"}'
 
     $ curl -X POST -H "Content-Type: application/json" \
-        -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.addMetalink", "params":[metalink]}'
+        -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.addMetalink", "params":"magnet:?xt=urn:btih:xyz"}'
 
 ### ZModem 协议的文件传输工具 rs/rz
 
