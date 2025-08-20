@@ -8222,8 +8222,8 @@ xdm 有图形界面
     https://aria2.github.io/manual/en/html/aria2c.html#example
 
     Aria2 完美配置
-            https://github.com/P3TERX/aria2.conf
-            https://github.com/P3TERX/aria2.conf/blob/master/aria2.conf
+        https://github.com/P3TERX/aria2.conf
+        https://github.com/P3TERX/aria2.conf/blob/master/aria2.conf
 
     替代品 axel
 
@@ -8362,13 +8362,26 @@ bash shell：
 
 AriaNg 把下载添加到aria2任务
 
-    https://github.com/mayswind/AriaNg-Native
+    https://ariang.mayswind.net/zh_Hans/
+        https://github.com/mayswind/AriaNg
 
-另见章节 [curl 调试 http/wss/json-rpc]。
+AriaNg 现在提供三种版本, 标准版、单文件版和 AriaNg Native
+
+    标准版适合在 Web 服务器中部署, 提供资源缓存和按需加载的功能.
+
+    单文件版适合本地使用, 您下载后只要在浏览器中打开唯一的 html 文件即可.
+
+    AriaNg Native 同样适合本地使用, 并且不需要使用浏览器.
 
 为什么在 AriaNg 中删除暂停的任务无法删除文件
 
     Aria2 本身没有通过 RPC 方式（比如 We­bUI ）删除文件的功能，目前你所看到的删除任务后删除文件的功能是通过下载完成后执行命令（on-download-stop）的接口去调用删除脚本实现的，只能删除正在下载的任务。Aria2 定义暂停状态的任务为未开始的任务，而 on-download-stop 这个选项的执行条件是并不包含未开始的任务。所以删除脚本没有触发，文件也就不会被删除。
+
+另可以使用 curl 直接发送 rpc 命令给 aria2
+
+    rpc 命令 https://aria2.github.io/manual/en/html/aria2c.html
+
+    curl 用法见章节 [curl 调试 http/wss/json-rpc]。
 
 4、配置为开机自启动服务
 
@@ -8636,13 +8649,25 @@ json-rpc
         https://aria2.github.io/manual/en/html/aria2c.html#rpc-interface
 
     $ curl -vvv localhost:6800/jsonrpc
-    {"id":null,"jsonrpc":"2.0","error":{"code":-32600,"message":"Invalid Request."}}
+    输出 {"id":null,"jsonrpc":"2.0","error":{"code":-32600,"message":"Invalid Request."}}
 
     # 内网 https 地址加 -k
     $ curl -X POST -H "Content-Type: application/json" \
         -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.getVersion", "params":["token:your_password"]}' \
         localhost:6800/jsonrpc
-    {"id":"test","jsonrpc":"2.0","result":{"enabledFeatures":["Async DNS","BitTorrent","Firefox3 Cookie","GZip","HTTPS","Message Digest","Metalink","XML-RPC"],"version":"1.36.0"}}
+    输出 {"id":"test","jsonrpc":"2.0","result":{"enabledFeatures":["Async DNS","BitTorrent","Firefox3 Cookie","GZip","HTTPS","Message Digest","Metalink","XML-RPC"],"version":"1.36.0"}}
+
+    # aria2.addUri          Add a new download by URI
+    # aria2.addTorrent*     Add a new BitTorrent download by torrent file
+    # aria2.addMetalink*    Add a new Metalink download by Metalink file
+    $ curl -X POST -H "Content-Type: application/json" \
+        -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.addUri", "params":[["http://example.org/file"]]}'
+
+    $ curl -X POST -H "Content-Type: application/json" \
+        -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.addTorrent", "params":[torrent]}'
+
+    $ curl -X POST -H "Content-Type: application/json" \
+        -d '{"jsonrpc":"2.0", "id":"test", "method":"aria2.addMetalink", "params":[metalink]}'
 
 ### ZModem 协议的文件传输工具 rs/rz
 
