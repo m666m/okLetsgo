@@ -15320,9 +15320,9 @@ Gnome 自带远程桌面服务端，主要支持 RDP
 
 GNOME “远程桌面” 服务端拆分为 2 个功能，应该是从安全性上考虑的
 
-    桌面共享（Desktop sharing）：原来叫“共享屏幕”，使用上限制必须本地用户登录桌面，本地用户可以随时接管鼠标中断远程连接，类似 Windows 的 “远程协助”
+    桌面共享（Desktop sharing）：原来叫“共享屏幕”，使用上限制必须本地用户登录桌面，本地用户可以随时接管鼠标中断远程连接，这个使用方式类似 Windows 的 “远程协助”。
 
-    远程登录（Remote login）：不需要本机事先登录桌面就可以使用远程桌面，即支持无头会话 Headless session 模式。
+    远程登录（Remote login）：不需要本机事先登录桌面就可以使用远程桌面，即支持无头会话 Headless session 模式，这个使用方式类似 Windows 的“远程桌面”。
 
 客户端软件兼容性较好，只要支持 rdp 或 vnc 协议即可连接到服务端。
 
@@ -15337,6 +15337,24 @@ GNOME “远程桌面” 服务端拆分为 2 个功能，应该是从安全性�
 参见章节 [远程桌面软件体系]。
 
 ##### 桌面共享（Desktop sharing）的服务端设置
+
+    Gnome48 目前对远程登录（Remote login）的支持不好，目前只能使用桌面共享（Desktop sharing），如果需要使用远程登陆，建议安装 [使用 xrdp 服务端]。
+
+查看 gnome 的远程桌面服务状态：
+
+    $ grdctl status
+    Overall:
+            Unit status: inactive
+    RDP:
+            Status: disabled
+            Port: 3389
+            TLS certificate: /home/uuu/.local/share/gnome-remote-desktop/certificates/rdp-tls.crt
+            TLS fingerprint: de:8b:49:ea:6
+            TLS key: /home/uuu/.local/share/gnome-remote-desktop/certificates/rdp-tls.key
+            View-only: yes
+            Negotiate port: yes
+            Username: (hidden)
+            Password: (hidden)
 
 桌面共享的使用上限制较多，不得不整理出来供查阅。
 
@@ -15383,6 +15401,8 @@ GNOME “远程桌面” 服务端拆分为 2 个功能，应该是从安全性�
 所以，远程桌面的“远程登录”功能，更适合远程使用。
 
 ##### 多用户同时使用远程桌面连接你的Linux服务器
+
+未验证，建议安装 [使用 xrdp 服务端]。
 
 headless multi-user access
 
