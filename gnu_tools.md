@@ -15292,7 +15292,7 @@ xfreerdp 是命令行客户端，替代了已不再开发的 rdesktop
 
 #### 使用 Gnome 远程桌面
 
-Gnome 自带远程桌面服务端，主要支持 RDP
+Gnome 自带远程桌面服务端，主要支持 Wayland 下实现 RDP 协议
 
     https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/administering_rhel_by_using_the_gnome_desktop_environment/remotely-accessing-the-desktop
 
@@ -15304,13 +15304,29 @@ Gnome 自带远程桌面服务端，主要支持 RDP
 
     https://www.linuxmi.com/ubuntu-22-04-rdp-remote-desktop.html
 
-GNOME “远程桌面” 服务端拆分为 2 个功能，应该是从安全性上考虑的
+GNOME “远程桌面” 服务端拆分为 2 个功能，应该是从使用安全性上考虑的
 
     桌面共享（Desktop sharing）：原来叫“共享屏幕”，使用上限制必须本地用户登录桌面，本地用户可以随时接管鼠标中断远程连接，这个使用方式类似 Windows 的 “远程协助”。
 
     远程登录（Remote login）：不需要本机事先登录桌面就可以使用远程桌面，即支持无头会话 Headless session 模式，这个使用方式类似 Windows 的“远程桌面”。
 
-客户端软件兼容性较好，只要支持 rdp 或 vnc 协议都可连接到服务端。
+NOTE: 目前（Gnome48） 对远程登录（Remote login）的支持不好，只能使用桌面共享（Desktop sharing），如果需要使用远程登陆，建议安装 [使用 xrdp 服务端] 或 [使用 TigerVNC Server]。
+
+查看 Gnome 的远程桌面服务状态：
+
+    $ grdctl status
+    Overall:
+            Unit status: inactive
+    RDP:
+            Status: disabled
+            Port: 3389
+            TLS certificate: /home/uuu/.local/share/gnome-remote-desktop/certificates/rdp-tls.crt
+            TLS fingerprint: de:8b:49:ea:6
+            TLS key: /home/uuu/.local/share/gnome-remote-desktop/certificates/rdp-tls.key
+            View-only: yes
+            Negotiate port: yes
+            Username: (hidden)
+            Password: (hidden)
 
 同时支持 X11 和 Wayland 两种方式
 
@@ -15326,7 +15342,7 @@ GNOME “远程桌面” 服务端拆分为 2 个功能，应该是从安全性�
 
         https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353?replies_to_post_number=12
 
-如果需要登录云服务器，或支持多个远程桌面用户同时登录，则只能安装第三方 vnc 或 xrdp 软件
+如果需要登录云服务器，或支持多个远程桌面用户同时登录，则服务端只能安装第三方 vnc 或 xrdp 软件
 
     推荐安装使用 RDP 协议的第三方软件，见章节 [使用 xrdp 服务端]。
 
@@ -15334,27 +15350,11 @@ GNOME “远程桌面” 服务端拆分为 2 个功能，应该是从安全性�
 
     使用第三方 vnc 或 rdp 服务端前记得关闭操作系统内置的远程桌面服务，以防止端口冲突。
 
-服务端和客户端软件的选择，参见章节 [远程桌面软件体系]。
+对客户端软件兼容性较好，只要支持 rdp 或 vnc 协议都可连接到服务端。
+
+关于服务端和客户端软件的选择，参见章节 [远程桌面软件体系]。
 
 ##### 桌面共享（Desktop sharing）的服务端设置
-
-    Gnome48 目前对远程登录（Remote login）的支持不好，目前只能使用桌面共享（Desktop sharing），如果需要使用远程登陆，建议安装 [使用 xrdp 服务端] 或 [使用 TigerVNC Server]。
-
-查看 gnome 的远程桌面服务状态：
-
-    $ grdctl status
-    Overall:
-            Unit status: inactive
-    RDP:
-            Status: disabled
-            Port: 3389
-            TLS certificate: /home/uuu/.local/share/gnome-remote-desktop/certificates/rdp-tls.crt
-            TLS fingerprint: de:8b:49:ea:6
-            TLS key: /home/uuu/.local/share/gnome-remote-desktop/certificates/rdp-tls.key
-            View-only: yes
-            Negotiate port: yes
-            Username: (hidden)
-            Password: (hidden)
 
 桌面共享的使用上限制较多，不得不整理出来供查阅。
 
