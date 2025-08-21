@@ -15294,15 +15294,23 @@ xfreerdp 是命令行客户端，替代了已不再开发的 rdesktop
 
 Gnome 自带远程桌面服务端，主要支持 RDP
 
-    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/remotely-accessing-the-desktop-as-a-single-user_getting-started-with-the-gnome-desktop-environment
+    https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/administering_rhel_by_using_the_gnome_desktop_environment/remotely-accessing-the-desktop
 
-    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/using_the_desktop_environment_in_rhel_8/accessing-the-desktop-remotely_using-the-desktop-environment-in-rhel-8#doc-wrapper
+    https://www.suse.com/c/headless-remote-sessions-in-gnome-part-1/
 
     https://linux.cn/article-14261-1.html
 
     https://www.addictivetips.com/ubuntu-linux-tips/how-to-use-the-new-gnome-shell-remote-desktop-feature/
 
     https://www.linuxmi.com/ubuntu-22-04-rdp-remote-desktop.html
+
+GNOME “远程桌面” 服务端拆分为 2 个功能，应该是从安全性上考虑的
+
+    桌面共享（Desktop sharing）：原来叫“共享屏幕”，使用上限制必须本地用户登录桌面，本地用户可以随时接管鼠标中断远程连接，这个使用方式类似 Windows 的 “远程协助”。
+
+    远程登录（Remote login）：不需要本机事先登录桌面就可以使用远程桌面，即支持无头会话 Headless session 模式，这个使用方式类似 Windows 的“远程桌面”。
+
+客户端软件兼容性较好，只要支持 rdp 或 vnc 协议都可连接到服务端。
 
 同时支持 X11 和 Wayland 两种方式
 
@@ -15318,27 +15326,19 @@ Gnome 自带远程桌面服务端，主要支持 RDP
 
         https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353?replies_to_post_number=12
 
-GNOME “远程桌面” 服务端拆分为 2 个功能，应该是从安全性上考虑的
-
-    桌面共享（Desktop sharing）：原来叫“共享屏幕”，使用上限制必须本地用户登录桌面，本地用户可以随时接管鼠标中断远程连接，这个使用方式类似 Windows 的 “远程协助”。
-
-    远程登录（Remote login）：不需要本机事先登录桌面就可以使用远程桌面，即支持无头会话 Headless session 模式，这个使用方式类似 Windows 的“远程桌面”。
-
-客户端软件兼容性较好，只要支持 rdp 或 vnc 协议即可连接到服务端。
-
-如果需要登录云服务器，或支持多个远程桌面用户同时登录，则只能安装第三方 vnc 或 rdp 软件
+如果需要登录云服务器，或支持多个远程桌面用户同时登录，则只能安装第三方 vnc 或 xrdp 软件
 
     推荐安装使用 RDP 协议的第三方软件，见章节 [使用 xrdp 服务端]。
 
     如果使用 vnc 协议，见章节 [使用 TigerVNC Server]。
 
-    使用第三方 vnc 或 rdp 服务端，记得关闭操作系统内置的远程桌面服务，以防止端口冲突。
+    使用第三方 vnc 或 rdp 服务端前记得关闭操作系统内置的远程桌面服务，以防止端口冲突。
 
-参见章节 [远程桌面软件体系]。
+服务端和客户端软件的选择，参见章节 [远程桌面软件体系]。
 
 ##### 桌面共享（Desktop sharing）的服务端设置
 
-    Gnome48 目前对远程登录（Remote login）的支持不好，目前只能使用桌面共享（Desktop sharing），如果需要使用远程登陆，建议安装 [使用 xrdp 服务端]。
+    Gnome48 目前对远程登录（Remote login）的支持不好，目前只能使用桌面共享（Desktop sharing），如果需要使用远程登陆，建议安装 [使用 xrdp 服务端] 或 [使用 TigerVNC Server]。
 
 查看 gnome 的远程桌面服务状态：
 
