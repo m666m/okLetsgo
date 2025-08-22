@@ -15172,7 +15172,13 @@ xfreerdp 是命令行客户端，替代了已不再开发的 rdesktop
 
 支持多种远程桌面/远程连接的客户端软件，必备软件
 
+    https://remmina.org
+
     https://zhuanlan.zhihu.com/p/26879292
+
+    竞品 Free RDP  http://www.freerdp.com/
+
+    竞品 Gnome connections
 
 > 快捷使用
 
@@ -15316,6 +15322,8 @@ GNOME “远程桌面” 服务端拆分为 2 个功能，应该是从使用安�
 
 NOTE: 目前（Gnome48） 对远程登录（Remote login）的支持不好，只能使用共享桌面（Desktop sharing），如果需要使用远程登陆，建议安装 [使用 xrdp 服务端] 或 [使用 TigerVNC Server]。
 
+    使用无头会话 Headless session 模式 https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/administering_rhel_by_using_the_gnome_desktop_environment/remotely-accessing-the-desktop#connecting-to-a-remote-desktop-session-on-a-headless-server-for-a-single-user
+
 查看 Gnome 的远程桌面服务状态：
 
     $ grdctl status
@@ -15413,6 +15421,8 @@ NOTE: 目前（Gnome48） 对远程登录（Remote login）的支持不好，只
 ##### 多用户同时使用远程桌面连接你的Linux服务器
 
 未验证，建议安装 [使用 xrdp 服务端]。
+
+    https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/administering_rhel_by_using_the_gnome_desktop_environment/remotely-accessing-the-desktop#connecting-to-a-remote-desktop-session-on-a-headless-server-for-multiple-users
 
 headless multi-user access
 
