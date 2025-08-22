@@ -15122,15 +15122,18 @@ VNC（基于 RFB 协议倾向于传输图像，适用于瘦客户端）
 
 2、基于 FreeRDP 的客户端软件
 
-推荐使用图形化工具 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina]。
+推荐使用图形化工具 Remmina，同时支持 rdp 和 vnc 协议，可配置项目很多，详见章节 [使用 Remmina 客户端软件]。
 
 xfreerdp 是命令行客户端，替代了已不再开发的 rdesktop
 
     https://github.com/FreeRDP/FreeRDP/wiki
+
         命令行参数比较独特 https://github.com/awakecoding/FreeRDP-Manuals/blob/master/User/FreeRDP-User-Manual.markdown
+
         可以有配置文件 https://github.com/awakecoding/FreeRDP-Manuals/blob/master/Configuration/FreeRDP-Configuration-Manual.markdown
 
-    有问题先看看 FAQ https://github.com/FreeRDP/FreeRDP/wiki/FAQ
+        有问题先看看 FAQ https://github.com/FreeRDP/FreeRDP/wiki/FAQ
+
         连接 Win7 需要指定低级tls版本 https://github.com/FreeRDP/FreeRDP/wiki/FAQ#windows-7-errconnect_tls_connect_failed
 
     xfreerdp /u:”username” /v::3389
