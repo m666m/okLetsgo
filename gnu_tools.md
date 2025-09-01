@@ -13991,6 +13991,8 @@ GTK+ and Qt
 
     KDE 默认使用 Qt 库开发，Gnome 默认使用 GTK+ 库开发，而这两套库又是基于 X window server 的，需要遵守 x11 协议，在 xwindow server 上运行，作为 client 应用实现的基础类库。
 
+Gnome 50(Fedora 43) 开始将彻底移除 x11 体系，完全切换到使用 wayland 体系，对 x11 将使用 xwayland 技术保持兼容。
+
 #### Wayland
 
     https://docs.freebsd.org/en/books/handbook/wayland/
@@ -17524,6 +17526,7 @@ proton 是 Valve 为他们的 steam 弄的 wine 衍生版，部分 steam 游戏�
     $ wine --version
 
 NOTE: 从 Fedora 46 开始取消 32 位程序的兼容性支持，注意 wine 的应对措施。
+
 > 使用 wine 官方存储库安装 Wine
 
 主要目的是从 Wine 官方存储库安装的稳定版本，比 Fedora 默认存储库中可用的版本新。缺点是一旦你的操作系统大版本升级，要记得删除之前手动安装的第三方存储库，升级后换为对应的存储库。而且没有国内镜像，从这个库下载比较痛苦。
