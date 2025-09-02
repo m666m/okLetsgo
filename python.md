@@ -2750,7 +2750,7 @@ RegExp Preview and Editor 废弃了
 
 sqlite
 
-    alexcvzz.vscode-sqlite
+    alexcvzz.vscode-sqlite  在Linux下需要操作系统安装sqlite3比如 `sudo dnf install sqlite`
 
 优选工具
 
