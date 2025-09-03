@@ -244,7 +244,7 @@ Secure Boot 功能是 Windows 在安装时自动确定是否可以开启的
 
     硬盘分区格式化时使用 GPT 类型：见下面的五。
 
-    旧显卡如果不是连接 HDMI 口而是 DP 口，参见章节 [老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）]
+    旧显卡如果不是连接 HDMI 口而是 DP 口，参见章节 [显卡不支持 DP 口开机显示]
 
 只要系统引导时不是原生 UEFI+GPT，比如使用 UEFI CSM 兼容模式，这样安装的 Windows 无法开启 Secure Boot 功能
 
@@ -297,7 +297,7 @@ u盘制作工具
 
 特殊之处在于 Rufus 3.17 版之前制作的启动u盘，初始引导启动需要临时关闭“Secure Boot”（3.17 之后的版本不用了，已经取得 Windows 的签名了）：
 
-    一、根据 Rufus 的要求 <https://github.com/pbatard/rufus/wiki/FAQ#Windows_11_and_Secure_Boot>，见下面的章节 [老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）] 中的 [凑合方案：主板 BIOS 设置为 CSM 方式安装 Windows 可以连接 DP 口]。
+    一、根据 Rufus 的要求 <https://github.com/pbatard/rufus/wiki/FAQ#Windows_11_and_Secure_Boot>，见下面的章节 [显卡不支持 DP 口开机显示] 中的 [凑合方案：CSM 方式安装 Windows 可以连接 DP 口]。
 
     用 Rufus 制作的启动u盘（制作时的选项是“分区类型 GPT+目标系统类型 UEFI”）启动计算机，Windows 安装程序自动启动，按提示点选下一步，注意原硬盘分区建议全删，这时 Windows 安装程序开始拷贝文件，并未实质进入配置计算机硬件系统的过程，这时的 Windows 安装过程并不要求 Secure Boot。
 
@@ -489,7 +489,7 @@ Windows 安装完成后，运行 msinfo32，在 “系统摘要” 界面找 “
 
 为什么要 CSM 模式又开又关这样操作呢？我安装 Windows 10 的时候踩了个坑：
 
-因为我的老显卡不支持在 UEFI 下连接 DP 口开机显示内容，初次安装用了 HDMI 线，而且为了兼容使用了 CSM 模式安装的 Windows：BIOS 设置里 “Windows 10 Features” 选择 “other os”，“CSM Support” 选 “Enable”，存储和 PCIe 设备都选择 “UEFI” ，然后安装了 Windows 10。见章节 [老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）]。
+因为我的 [显卡不支持 DP 口开机显示]，初次安装用了 HDMI 线，而且为了兼容使用了 CSM 模式安装的 Windows：BIOS 设置里 “Windows 10 Features” 选择 “other os”，“CSM Support” 选 “Enable”，存储和 PCIe 设备都选择 “UEFI” ，然后安装了 Windows 10。
 
 后来显卡升级了 BIOS，又关闭主板 CMS 模式，重新安装了 Windows 10 21H1，在主板 BIOS 设置里装载默认值 “Load optimized defaults”（默认把存储设备换回了 legacy），然后设置 “Windows 10 Features” 选择 “Windows 10”，“CSM Support” 选 “Disable”，但没有提前把存储设备换回 UEFI 类型。该存储设备的选项在关闭 CMS 模式时屏蔽显示，没有自动改回为 UEFI 类型，而用户又看不到了。。。这就导致后续运行的 Windows 安装程序自动把硬盘格式化为 MBR 类型。
 
@@ -3961,19 +3961,31 @@ Intel i7 11700k 之后的 cpu 不再支持 Windows 98 虚拟机。
 
 2025年更新：没有 15 代酷睿，英特尔至今只发布了笔记本专用的 酷睿 Ultra，品牌大更换，看来英特尔是要完。
 
-### 老显卡不支持 DP 口开机显示（Nvidia Geforce 1080 系）
+### 显卡不支持 DP 口开机显示
+
+这个问题覆盖了自 Nvidia Geforce 1080 系以来的所有显卡
+
+    开机后长时间黑屏等待，然后才出现 Windows 开机画面
+
+其原因在于显卡在 UEFI 下不兼容 DP 口显示，主板在 UEFI 启动引导超时后自动切换使用 UEFI CSM 模式，然后才结束黑屏显示进入操作系统启动的画面
+
+    如果在主板的 BIOS 设置中改为 UEFI CMS 模式后开机启动就很快，不会再出现这个现象，但操作系统就不支持 SecureBoot 功能了，参见章节 [安装 Windows 启用 Secure Boot 功能]
+
+    连接 HDMI 口是没有这个问题的，所以 [简单方案：连接 HDMI 口安装 Windows]
+
+    如果想在 UEFI 模式下使用 DP 口，则可以使用 [一劳永逸方案：升级显卡固件解决 DP 口开机显示]
+
+根源：
+
+GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需要做 2D，3D 运算。主要就是 bitblt 动作，在 framebuffer 里面贴贴图和与显示器商量一下分辨率，现代主板的 UEFI BIOS 会内置 GOP 显卡驱动。
 
 UEFI 启动模式下，操作显卡的方式也有变化，需要显卡支持 “UEFI GOP VBIOS”。
 
 最简单的识别方法就是使用 gpu z 软件，查看 uefi 选项有没有打勾
 
-GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需要做 2D，3D 运算。主要就是 bitblt 动作，在 framebuffer 里面贴贴图和与显示器商量一下分辨率，现代主板的 UEFI BIOS 会内置 GOP 显卡驱动。
+    显卡带老式 OpRom，只要主板的 UEFI BIOS 使用 CSM 模式，就可以驱动 opROM 进行显示不黑屏
 
-如果是外插的显卡，分为两种情况：
-
-    显卡带老式 OpRom，只要主板的 UEFI BIOS 使用 CSM 模式，就可以驱动 opROM，我的 Nvidia Geforce 1080 接 HDMI 口可以安装 Windows，后来的解决方法见 [一劳永逸方案：Nvidia 显卡可以升级固件解决这个问题]。
-
-    显卡带有新式 GOP 驱动的 VBIOS 则没有问题，开机时不会黑屏。
+    显卡带有新式 GOP 驱动的 VBIOS 则没有问题，主板 UEFI 模式开机时不会黑屏
 
 #### 简单方案：连接 HDMI 口安装 Windows
 
@@ -3981,15 +3993,7 @@ GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需�
 
 我的技嘉主板的 BIOS 设置中，默认 BOOT 选项采用的是 GPT 分区 + UEFI 引导，制作启动 u 盘时也选择一致的模式，这样才符合 Windows 11 的安装要求（用 rufus 制作 Windows 10 安装 u 盘，选择分区类型是 GPT（右侧的选项自动选择 “UEFI(非CSM)”）而不能是 MBR，这样的启动 u 盘才能顺利启动）。
 
-有些如 Nvidia gtx 1080 时代的显卡，如果主板设置为 UEFI 模式，则连接 HDMI 口可以正常显示，而连接 DP 口则不兼容，很多主板在 UEFI 模式引导失败时会自动切换到使用 CSM 模式
-
-    这样安装 u 盘可以启动系统，但是重新连接 DP 口在开机的时候会黑屏无显示，安装操作系统时只能连接 HDMI 口。
-
-    这种情况出现的最大特点就是开机后长时间黑屏等待，然后才出现 Windows 开机画面。原因在于主板在 UEFI 启动引导超时后自动调整为 UEFI CSM 模式继续引导操作系统启动。所以在主板的 BIOS 设置中改为 UEFI CMS 模式后开机启动就很快，不会再出现这个现象。
-
-    这样安装 Windows 的一个缺点是操作系统不支持 SecureBoot 功能，参见章节 [安装 Windows 启用 Secure Boot 功能]。
-
-#### 一劳永逸方案：Nvidia 显卡可以升级固件解决这个问题
+#### 一劳永逸方案：升级显卡固件解决 DP 口开机显示
 
 先把显卡挂到别的能显示的机器上，或先连接 HDMI 口安装 Windows，进入系统后，升级下固件，以后就可以实现连接 DP 口在 UEFI 模式下安装 Windows 10 了
 
@@ -3997,12 +4001,17 @@ GOP 是 UEFI Spec 规定的标准接口，GOP 驱动非常简单，因为不需�
 
         https://www.tenforums.com/Windows-10-news/111671-nvidia-graphics-firmware-update-tool-displayport-1-3-1-4-a.html
 
-            Geforce 1080 系 https://www.nvidia.com/en-us/drivers/nv-uefi-update-x64/
-            Geforce 3080 系 https://nvidia.custhelp.com/app/answers/detail/a_id/5233/
+            Geforce 1080 全系 https://www.nvidia.com/en-us/drivers/nv-uefi-update-x64/
 
-#### 凑合方案：主板 BIOS 设置为 CSM 方式安装 Windows 可以连接 DP 口
+            RTX 3080/3090 https://nvidia.custhelp.com/app/answers/detail/a_id/5233/
 
-用 Rufus 制作 Windows 10 安装 u 盘，如果分区类型选择 MBR（右侧选项自动选择“BIOS+UEFI(CSM)”），则也只能连接 HDMI 口安装系统。
+            RTX 4080/4090 https://nvidia.custhelp.com/app/answers/detail/a_id/5411/~/nvidia-gpu-uefi-firmware-update-tool
+
+            RTX 5060/5060TI https://nvidia.custhelp.com/app/answers/detail/a_id/5665/~/nvidia-gpu-uefi-firmware-update-tool-for-rtx-5060-series
+
+#### 凑合方案：CSM 方式安装 Windows 可以连接 DP 口
+
+用 Rufus 制作 Windows 10 安装 u 盘，如果分区类型选择 MBR（右侧选项自动选择 “BIOS+UEFI(CSM)”），则也只能连接 HDMI 口安装系统。
 
 这时如果想使用 DP 口开机显示，则主板 BIOS 要更改设置，CSM 模式要选 “Enable”，并设置兼容模式：
 
