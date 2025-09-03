@@ -4009,6 +4009,8 @@ UEFI 启动模式下，操作显卡的方式也有变化，需要显卡支持 �
 
             RTX 5060/5060TI https://nvidia.custhelp.com/app/answers/detail/a_id/5665/~/nvidia-gpu-uefi-firmware-update-tool-for-rtx-5060-series
 
+    从 GeForce 700 系列就有这个问题 https://zhuanlan.zhihu.com/p/1910709843406323790
+
 #### 凑合方案：CSM 方式安装 Windows 可以连接 DP 口
 
 用 Rufus 制作 Windows 10 安装 u 盘，如果分区类型选择 MBR（右侧选项自动选择 “BIOS+UEFI(CSM)”），则也只能连接 HDMI 口安装系统。
