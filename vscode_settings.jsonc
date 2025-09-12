@@ -13,7 +13,6 @@
     "outline.showModules": false,
     "window.titleBarStyle": "custom", // 整合菜单栏和标题栏
     "window.menuBarVisibility": "toggle",  // 按 alt 键显示系统菜单
-    "window.activeBorder": "#ff7b00c5",
     "window.newWindowDimensions": "offset", // "offset" maximized
     "workbench.editor.wrapTabs": true,
     "diffEditor.ignoreTrimWhitespace": false,
@@ -180,6 +179,7 @@
     //  http://www.apeth.com/nonblog/stories/textmatebundle.html
     //  在线编辑主题 https://tmtheme-editor.herokuapp.com/#!/editor/theme/Monokai
     "workbench.colorCustomizations": {
+        "window.activeBorder": "#ff7b00c5",
         "[Solarized Light]": {
             "editor.foreground": "#2c353f",
             // 双击高亮和同类高亮颜色无区分
