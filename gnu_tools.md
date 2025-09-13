@@ -19083,6 +19083,26 @@ Fail safe:
 
         可以把这个文件夹拷贝到安全的位置，然后将 .exe 文件添加到桌面快捷方式，就能愉快地使用 Windows Terminal 啦！
 
+##### Quake 模式
+
+Quake 模式极大的优化了 Windows 终端的使用体验。在该模式下，终端不再是传统的窗口形式，而是自动贴靠在屏幕的上半部分
+
+    https://learn.microsoft.com/en-us/windows/terminal/tips-and-tricks#quake-mode
+
+    https://www.sysgeek.cn/windows-terminal-customize/
+
+1、已有终端会话中执行以下命令，启动一个新的 Quake 模式会话：
+
+    wt -w _quake
+
+建议直接创建一个快捷方式，固定到开始菜单方便使用。
+
+2、显示/隐藏这个实例窗口的快捷键默认是 Win+` ，要自定义可以在终端的 JSON 配置文件中的actions部分，添加如下设置：
+
+    { "command": { "action": "quakeMode" }, "keys": "ctrl+f12" }
+
+3、Quake 模式启动的是一个新的应用实例，要关闭只需要在退出终端即可 `exit`。
+
 ##### 配置 Windows Terminal
 
 > 给各个终端生成配置文件
