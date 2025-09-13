@@ -19045,14 +19045,23 @@ ConEmu 安装时会自动检测当前可用的shell并配置默认的任务列�
 
 Windows 10 v1809 推出的 ConPTY 接口也支持第三方终端模拟器了，微软版的实现就是 Windows Terminal，同时支持之前 cmd 的 Console API，多标签化窗口同时打开 cmd、powershell、wsl、bash 等多个终端窗口，自动添加当前识别到的 git bash 等 mintty 应用（对 MSYS2 应用通过 ConPty 接口实现的兼容 <https://github.com/msys2/MSYS2-packages/issues/1684>）。
 
+    C:\> winget install --id=Microsoft.WindowsTerminal -e
+
+直接安装从 github 下载的 .msixbundle 文件，在 powershell 下运行如下命令即可安装：
+
     # https://github.com/microsoft/terminal/releases
-    winget install --id=Microsoft.WindowsTerminal -e
 
-直接安装从 github 下载的 .msixbundle 文件，在 powershell 下运行如下命令从文件安装
+    PS C:\> Add-AppxPackage .\xxx.msixbundle
 
-    Add-AppxPackage .\xxx.msixbundle
+然后直接在终端中执行 wt 命令启动即可：
 
-如果提示无法安装，缺少框架，下载 github 发布页的那个 xxxx_Windows10_PreinstallKit.zip，解压，先安装 Microsoft.UI.Xaml 和 Microsoft.VCLibs.140 等包。
+    C:\> wt
+
+在 Windows 的应用列表中，这个 Windows Terminal 名字就叫 “终端”。
+
+Fail safe:
+
+如果安装时提示无法安装，缺少框架，下载 github 发布页的那个 xxxx_Windows10_PreinstallKit.zip，解压，先安装 Microsoft.UI.Xaml 和 Microsoft.VCLibs.140 等包。
 
 如果安装后无法正常启动 Windows Terminal，经过一顿操作，终于找到了解决方法，用魔法打败了魔法！
 
