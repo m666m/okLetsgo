@@ -19091,13 +19091,13 @@ Quake 模式极大的优化了 Windows 终端的使用体验。在该模式下�
 
     https://www.sysgeek.cn/windows-terminal-customize/
 
-1、已有终端会话中执行以下命令，启动一个新的 Quake 模式会话：
+1、在 Windows 运行或已有终端会话中执行以下命令，启动一个新的 Quake 模式会话：
 
-    wt -w _quake
+    C:\> wt -w _quake
 
 建议直接创建一个快捷方式，固定到开始菜单方便使用。
 
-2、显示/隐藏这个实例窗口的快捷键默认是 Win+` ，要自定义可以在终端的 JSON 配置文件中的actions部分，添加如下设置：
+2、显示/隐藏这个实例窗口的快捷键默认是 Win + ` ，要自定义可以在终端的 JSON 配置文件中的actions部分，添加如下设置：
 
     { "command": { "action": "quakeMode" }, "keys": "ctrl+f12" }
 
