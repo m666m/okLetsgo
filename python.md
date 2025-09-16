@@ -381,19 +381,19 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 全局使用清华源
 
-    # https://mirrors.tuna.tsinghua.edu.cn/help/pypi
-    # https://help.mirrors.cernet.edu.cn/pypi/
+    https://mirrors.tuna.tsinghua.edu.cn/help/pypi
+    https://help.mirrors.cernet.edu.cn/pypi/
 
+    # NOTE: 尽量只在自己的conda环境下更新pip！如果在Anancoda下的 [base] 环境更新pip，其它conda环境默认共用这个pip！
     # 切换到base环境(conda/virtualenv等)
-    conda activate
+    $ conda activate
 
-    # NOTE: 在Anancoda下的[base]环境，更新pip其它conda环境默认共用这个pip！尽量只在自己的conda环境下更新pip！
-
-    # 临时使用国内镜像，更新pip自身
+    # 先更新pip自身，临时使用国内镜像
     $ python -m pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple --upgrade pip
 
     # 设为全局默认
     $ pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+    Writing to C:\Users\your_name\AppData\Roaming\pip\pip.ini
 
 验证
 
