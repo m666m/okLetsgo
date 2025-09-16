@@ -19091,7 +19091,7 @@ Quake 模式极大的优化了 Windows 终端的使用体验。在该模式下�
 
     https://www.sysgeek.cn/windows-terminal-customize/
 
-1、在 Windows 运行或已有终端会话中执行以下命令，启动一个新的 Quake 模式会话：
+1、在 Windows 运行对话框或已有的 Windows Terminal 会话中执行以下命令，启动一个新的 Quake 模式会话：
 
     C:\> wt -w _quake
 
@@ -19101,7 +19101,9 @@ Quake 模式极大的优化了 Windows 终端的使用体验。在该模式下�
 
     { "command": { "action": "quakeMode" }, "keys": "ctrl+f12" }
 
-3、Quake 模式启动的是一个新的应用实例，要关闭只需要在退出终端即可 `exit`。
+在已有的 Windows Terminal 会话下按热键，也会新建一个 quake 模式的会话并弹出窗口。
+
+3、Quake 模式启动的是一个新的应用实例，要关闭只需要在会话中执行退出命令即可： `exit`
 
 ##### 配置 Windows Terminal
 
