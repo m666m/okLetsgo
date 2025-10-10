@@ -2874,6 +2874,13 @@ Prettier - Code formatter
 
     foxundermoon.shell-format
 
+#### 查看调用图
+
+功能类似 vs code 自带的 “Show Call Hierarchy”，图形化显示更清晰
+
+    WuZhiguo.callviz
+    LuoZhihao.call-graph
+
 #### PYQT Integration
 
 在 qt 的 ui 文件上右键即可编译，非常方便
