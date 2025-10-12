@@ -14015,7 +14015,7 @@ Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的�
 
     不再是 Client-Server 模式，远程桌面的实现方式不同
 
-    Wayland 使用 xwayland 兼容 X window 程序，基于 X Window 的 VNC 远程桌面程序连接到 wayland 桌面环境时由 xvnc 组件提供支持。
+    Wayland 使用 Xwayland 组件兼容依赖 X11 的传统应用，基于 X Window 的 VNC 远程桌面程序连接到 wayland 桌面环境时由 xvnc 组件提供支持。对于普通用户来说，体验不到变化。
 
 Wayland 自带的 terminal emulator 叫 foot
 
