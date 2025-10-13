@@ -170,10 +170,11 @@
     },
     // 终端也可自定义颜色 https://glitchbone.github.io/vscode-base16-term/#/oceanicnext
     // 默认的明暗主题
-    "window.autoDetectColorScheme": true,  // 深色背景下切换项目时会闪一下白，很烦人，关了
+    "window.autoDetectColorScheme": false,  // 深色背景下切换项目时会闪一下白，很烦人，关了
     "workbench.preferredDarkColorTheme": "Nord Deep",
     "workbench.preferredLightColorTheme": "MacOS Modern Light - Xcode Default",
     "workbench.colorTheme": "Nord",
+    "workbench.productIconTheme": "macos-modern",
     // 主题颜色
     //  https://code.visualstudio.com/api/references/theme-color
     //  http://www.apeth.com/nonblog/stories/textmatebundle.html
@@ -624,6 +625,5 @@
     //
     // 下面这些是vscode自己加的，随时变
     //
-    "workbench.productIconTheme": "macos-modern",
     "workbench.sideBar.location": "right"
 }
