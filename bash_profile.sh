@@ -459,6 +459,21 @@ alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
 alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime'
 alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
 
+# Homebrew
+function brew_sf() {
+    # brew_sf tmux
+    echo "[brew search 本地 formula.json: ${1}]"
+
+    cat $HOME/formula.json | jq --arg pattern "$1" '.[] | select(any(.oldnames[]?; test($pattern; "i")) or (.name | test($pattern; "i"))) | {name: .name, oldnames: .oldnames, description: .desc, version: .version, homepage: .homepage}'
+}
+
+function brew_sc() {
+    # brew_sc chrome
+    echo "[brew search 本地 cask.json: ${1}]"
+
+    cat $HOME/cask.json | jq --arg pattern "$1" '.[] | select(any(.name[]; test($pattern; "i")) or (.token | test($pattern; "i"))) | {token: .token, name: .name, description: .desc, version: .version, homepage: .homepage}'
+}
+
 # podman
 #[[ $os_type = 'linux' ]] && alias docker="podman"
 function pdms() {
