@@ -260,7 +260,8 @@ alias curls='echo "[curl http-get 不显示服务器返回的错误内容，静�
 alias curld='echo "[curl http-post 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕]" && curl -fsSd'
 
 # nmap
-alias nmaps='echo "[nmap 列出当前局域网 192.168.0.x 内ip及端口]" && nmap 192.168.0.0/24'
+alias nmaps='echo "[nmap 指定端口提供了什么类型的服务]" && nmap -sV -p'
+alias nmapl='echo "[nmap 列出当前局域网 192.168.0.x 内的ip及端口]" && nmap 192.168.0.0/24'
 
 # scp rsync
 alias scps='echo "[scp 源 目的。远程格式 user@host:/path/to/ 端口用 -P]" && scp -r'
