@@ -366,10 +366,11 @@
     // markdownlint
     "markdownlint.config": {
         "default": true,
-        "MD046": false,  // 代码块缩进或围栏起来都可以
-        "MD024": false,  // 不同标题下的子标题内容可以重复
         "MD014": false,  // $命令可以没有输出
-        "MD033": false   // <abcdefg> 识别为内联 html 这不合理
+        "MD024": false,  // 不同标题下的子标题内容可以重复
+        "MD033": false,   // <abcdefg> 识别为内联 html 这不合理
+        "MD046": false,  // 代码块缩进或围栏起来都可以
+        "MD050": false   // __ 不该识别成了强调格式
     },
     "markdownlint.run": "onSave",
     //

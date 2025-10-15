@@ -2750,7 +2750,9 @@ Visual Studio Code Remote Development 允许您连接使用如下方式到远程
 
 ```
 
-#### 高亮空格并消除
+#### 高亮并消除行末空格
+
+vscode 自带了这个功能了，但并不标出行末空格，所以下面的这个插件还是得用
 
 Trailing Spaces
 
