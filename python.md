@@ -622,23 +622,31 @@ python-xy 不再更新维护了，废弃
 
     <https://www.anaconda.com/blog/using-pip-in-a-conda-environment>
 
-### Linux 安装 anaconda
+### anaconda 版本选择
 
-推荐安装 miniconda，其余的包都用 pip 安装
+如果你的包只用 conda install 并不全，还是得用 pip install，则推荐安装 miniconda 建立虚拟环境，然后其所有的包都用 pip 安装，这样最省事。
 
-anaconda：
+conda: 使用 anaconda 或 miniconda 的基础命令包套件，想安装各种 python 包还需要设置指向什么仓库，如果你不是企业自建仓库，单纯安装这个 conda 对你没意义。
+
+    如果想找 conda 命令的使用说明，可以参考它的文档 https://docs.conda.io/projects/conda/en/latest/
+
+Anaconda：除了 conda 命令套件，自带了很多包可以本地安装，并设置了指向官方仓库 Anaconda Repository，使用最方便。
 
         https://docs.conda.io/projects/conda/en/stable/user-guide/install/linux.html
+
+        这里是所有版本的安装包，直接下载即可 https://repo.anaconda.com/archive/
 
     1. 网站下载，验证hash https://docs.anaconda.com/free/anaconda/reference/hashes/all/
     2. bash xxxx.sh
     3. 注意选择：添加到路径中!!! 这个跟 Windows 下安装是不同的.
 
-miniconda：
+Miniconda：除了 conda 命令套件，自身只带基础的 python 需要的包，安装其他包都依赖其设置的官方仓库 Anaconda Repository
 
-    简单安装可以用发行版自带的 conda 包，但是我的 Fedora `dnf install conda` 后运行 `conda init bash` 就报错……
+    简单用发行版自带的 conda 包，但是我的 Fedora `dnf install conda` 后运行 `conda init bash` 就报错……
 
         https://docs.conda.io/en/latest/miniconda.html
+
+        这里是所有版本的安装包，直接下载即可 https://repo.anaconda.com/miniconda/
 
     $ mkdir -p ~/miniconda3
 
@@ -652,6 +660,14 @@ miniconda：
 
     $ ~/miniconda3/bin/conda init bash
     $ ~/miniconda3/bin/conda init zsh
+
+Miniforge：Anaconda 官方发展的社区版 Miniconda，仓库指向社区自建的 conda-forge channel
+
+    https://conda-forge.org/
+        https://github.com/conda-forge
+
+    conda config --add channels conda-forge
+    conda config --set channel_priority flexible
 
 安装后
 
@@ -784,23 +800,27 @@ Windows 命令行进入 python 后，按[TAB]出现报错：
 
 原则
 
-    操作系统发行版的基础python环境不要变更，conda的基础环境也不要做任何变更
+    操作系统发行版的基础 python 环境不要变更，conda 的基础环境也不要做任何变更
 
-Anaconda 安装完毕后，默认的环境base是最新的一个python版本如python3.10，需要先对其它各个版本建立基础的虚拟环境如b37、b38，但是不要做任何pip变动，比如pip安装更新包、修改pip包的默认下载路径等。
+Anaconda 安装完毕后，默认的环境 base 是最新的一个 python 版本如 python3.10，需要先对其它各个版本建立基础的虚拟环境如 b37、b38，但是不要做任何 `pip` 变动，比如 `pip` 安装更新包、修改 pip 包的默认下载路径等。
 
-原因是Ananconda为了节约硬盘空间，多个相同python版本的环境内容通过链接的方式共享使用第一个环境的各个包文件，而conda是不管pip的，pip自身也不区分环境，所以pip配置类的文件是直接引用的，你要是在基础环境更新了pip，则conda各个环境里所有其他同版本的pip也都升级了，要是修改了路径，其它版本的也跟着变了，搞得非常乱。
+原因是 Ananconda 为了节约硬盘空间，多个相同 python 版本的环境内容通过链接的方式共享使用第一个环境的各个包文件，而**conda 是不管 pip 的**，且 pip 自身也不区分虚拟环境，所以 pip 配置类的文件是直接引用的。这样导致如果在基础环境更新了 pip，则 conda 各个环境里所有其他同版本的 pip 也都升级了，要是修改了路径，其它版本的也跟着变了，搞得非常乱。
 
-例外：可以变更pip源到国内源，在bash环境下做这个变动影响全局没问题，除非你有个环境非得要国外源，那就在那个环境里手动改pip源即可。
+例外：可以变更 pip 源到国内源，在 base 环境下做这个变动影响全局没问题，除非你有个环境非得要国外源，那就在那个环境里手动改 pip 源即可。
 
-有了第一个基础版本的python环境之后，再建立针对具体项目的虚拟环境如p37、p38，在这个虚拟环境里修改pip包的默认下载路径、进行conda/pip包的安装和更新等操作。
+有了第一个基础版本的 python 环境之后，再建立针对具体项目的虚拟环境如 p37、p38，在这个虚拟环境里修改 pip 包的默认下载路径、进行 conda/pip 包的安装和更新等操作。
 
 详见章节 [conda/pip操作前务必先检查当前环境中conda/pip/python的路径]
 
-### 命令行工具使用conda环境
+### 使用 Anaconda 环境
 
-要确保在[base]环境下执行 conda 的各种操作，这个是特殊的root环境，可以找到conda需要的各种变量和路径设置，所以最好的方式是点击开始菜单的Anaconda命令行快捷方式，如果想设置各命令行自动进入conda见下面章节 [conda init 命令设置命令行工具]。在base环境的基础上执行 `conda xxx` 等操作，也可以用 `conda activate p37` 进入你的环境。
+要确保在 [base] 环境下执行 `conda config --show` 等管理类操作，这个是特殊的根环境，可以找到 conda 需要的各种变量和路径设置，点击开始菜单的 Anaconda 命令行快捷方式后进入的就是这个环境。如果想设置各命令行自动进入 conda 环境，见下面章节 [conda init 命令设置命令行工具]。
 
-官方推荐：慎用 deactivate 命令，从当前环境用 deactivate` 命令返回到[base]，不如重新开个 shell，默认是 [base] 环境，这样更少bug <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#deactivating-an-environment>。
+Fedora 特殊：
+
+    Fedora 官方仓库的 conda 包 `dnf install conda`，其根环境 [base] 是只读的，只能创建其它环境然后安装各种包。估计原因是 Fedora 自带 python，怕 conda 修改根环境把操作系统的 python 改乱套了。
+
+官方推荐：慎用 deactivate 命令，从当前环境用 deactivate` 命令返回到 [base]，不如重新开个 shell，默认是 [base] 环境，这样更少bug <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#deactivating-an-environment>。
 
 以前 conda 版本的 source activate 和 source deactivate 跟 virtualenv 环境的脚本经常路径冲突。conda 4.4之后激活和退出环境统一了命令用法，不用 source 了，操作步骤如下：
 
