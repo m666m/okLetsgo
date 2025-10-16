@@ -3073,7 +3073,7 @@ else
     os='windows'
 fi
 
-# ---> Modify here with your envs
+# ---> Modify ENV_BASE & ENV_DIR with your env's dir <---
 ENV_BASE="${HOME}/anaconda3/envs/p310"
 
 if [[ $os = 'linux' ]]; then
@@ -3085,18 +3085,18 @@ fi
 TYPINGS_BASE="${ENV_BASE}_typestub/typings"
 mkdir -p  $TYPINGS_BASE
 
-function typestub_for_pg {
+function typestub_qt_for_pg {
 
-    typings_for_pg="${ENV_DIR}/site-packages/PyQt6"
+    typings_from_Qt6="${ENV_DIR}/site-packages/PyQt6"
 
-    typings_pg="${TYPINGS_BASE}/pyqtgraph/Qt"
-    mkdir -p $typings_pg
+    typings_for_pg="${TYPINGS_BASE}/pyqtgraph/Qt"
+    mkdir -p $typings_for_pg
 
-    cd $typings_pg
+    cd $typings_for_pg
 
     echo "from . import Qt as Qt" > ../__init__.pyi
 
-    for fname in $(ls ${typings_for_pg}/*.pyi); do
+    for fname in $(ls ${typings_from_Qt6}/*.pyi); do
         if [[ $os = 'linux' ]]; then
             ln -s $fname
         else
@@ -3111,7 +3111,7 @@ function typestub_for_pg {
     done
 }
 
-typestub_for_pg
+typestub_qt_for_pg
 
 echo -e "\nAdd below to your VSCode settings: \n     \"python.analysis.stubPath\":\"${TYPINGS_BASE}\","
 
