@@ -2230,15 +2230,17 @@ Linux 下只能从源代码自行编译安装
 
 1、下载源代码
 
-    # 早期的 sourceforge时代原作者 0.4.0 源代码，可以正常用的。
-    # wget http://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.4.0-src.tar.gz
-    # tar -xzf ta-lib-0.4.0-src.tar.gz
+早期的 sourceforge时代原作者 0.4.0 源代码，可以正常用的
 
-    推荐直接下载迁移到 github 后的版本，下载后解压缩，可以直接编译的，这个最新最方便
+    $ wget http://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.4.0-src.tar.gz
+    $ tar -xzf ta-lib-0.4.0-src.tar.gz
 
-        https://github.com/TA-Lib/ta-lib/releases/download/v0.6.4/ta-lib-0.6.4-src.tar.gz
+推荐直接下载迁移到 github 后的版本，下载后解压缩，直接编译即可，这个最新最方便
 
-    或者 git 下载最新的开发中代码，需要自行调试编译参数才能 make
+    https://github.com/TA-Lib/ta-lib/releases/download/v0.6.4/ta-lib-0.6.4-src.tar.gz
+
+或者 git 下载最新的开发中代码，需要自行调试编译参数才能 make
+
     $ git clone --depth=1 https://github.com/TA-Lib/ta-lib
 
 2、自行编译为 c 运行库
