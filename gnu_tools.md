@@ -11601,6 +11601,886 @@ Fedora
 
 老老实实用最多人用的 GNOME 吧，其它桌面环境坑更多，随便就有软件运行不起来。
 
+### 使用 Gnome 桌面
+
+很多桌面环境都自带常用软件，所以我们说使用某某桌面环境，除了开机进入桌面的操作界面和使用方式是其专门设计的，还会附带自行设计的核心工具软件，如日历、时钟、计算器、媒体播放器、文件管理器等工具，这样可以使用户开箱即用，无需在操作系统的软件商店各种搜索了，比较省心。
+
+    gnome 核心软件 https://apps.gnome.org/zh-CN/#core
+    gnome 生态圈软件 https://apps.gnome.org/zh-CN/#circle
+
+    gnome 桌面软件手册 https://help.gnome.org/users/
+
+    使用 GNOME 桌面环境
+
+        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/index
+
+    设置 GNOME 桌面环境
+
+        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/administering_the_system_using_the_gnome_desktop_environment/index
+
+    自定义 GNOME 桌面环境
+
+        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/customizing_the_gnome_desktop_environment/index
+
+    GNOME-4X 入坑指南 https://zhuanlan.zhihu.com/p/545083349
+                    https://jedsek.xyz/posts/desktop-beautify/gnome
+
+    GNOME Linux — 一场彻底的灾难 https://zhuanlan.zhihu.com/p/490505981
+
+为方便理解，对比 Windows 词汇如下：
+
+    Windows 桌面        --->    Gnome Workspace 工作区，可以有多个
+
+    Windows 任务栏      --->    Gnome Panel 边栏，就是在屏幕侧边的工具栏，比如 Gnome Topbar 顶栏就类似 Windows 的任务栏，但不支持切换应用程序
+
+    Windows 桌面工具栏   --->    Gnome Dash 常用工具栏
+                               如果学 macOS 在桌面浮动显示成为 Dock，需要装插件 `dash to dock`
+
+以下尽量使用 Windows 词汇。
+
+Gnome 桌面默认只展示壁纸，不能放文件（临时下载文件没法选择保存到桌面了，估计大多数人都不习惯），用户交互操作强调精简，在操作向手机风格转换的同时，优化宽屏、多桌面的使用方式
+
+    桌面顶部永远是任务栏（顶栏Topbar），交互功能有限，大多时候的用途只是展示当前应用程序的状态（目的是演变成无交互的状态栏？），不像 Windows 任务栏，提供让你在打开的多个程序间切换的方法，这导致我在日常使用中除了看时间和点关机按钮，基本很少看任务栏。
+
+        左上角的 “活动”（Activites）键用点和横线显示当前桌面是在所有桌面中的位置，鼠标滑过或点击都会显示 “任务概览”（Overview）。
+
+        任务栏左侧只有一个栏目，显示当前打开的应用程序当前窗口的名称。单击程序的图标，只是弹出一个菜单让你选择多个实例窗口。
+
+        居中栏目是日期时间天气
+
+        右侧栏目是系统指示区，类似 Windows 任务栏托盘区(taskbar tray)，又细分为 Gnome 扩展的状态显示和系统设置的状态显示两个区域，最右边就是电源按钮。扩展显示区域的每个图标都可以点击显示单独的菜单，系统设置的显示区域却只弹出一个菜单，操作习题有差异。如果你安装了中文输入法，这个图标是显示在两个区域之间的。
+
+开机后默认展示的界面是 “任务概览”（Overview），列出桌面列表和桌面内容的缩略图。“任务概览” 是用户操作多窗口切换最常使用的界面，操作热键是按 win 键，或鼠标撞几下屏幕左上角 --- “热角”（Hot Corner），或点击左上角的 “活动”（Activites）按钮：
+
+    上部 --- 搜索栏。直接打字就会默认填写到搜索栏，只需要输入你要使用的系统设置名称或应用程序名称，在搜索结果点击即可执行。搜索结果的展现是分类的，有当前安装的软件、软件商店的搜索结果等等，直接点击即可使用或下载安装。可以在系统设置里选择展示哪些分类，建议关闭字体搜索结果，最不常用但是搜索结果占大多数，影响使用体验。
+
+        目前最快捷执行一个程序的方法就是按 Win 键呼叫出“任务概览”，然后打字，然后鼠标点击搜索结果里展示的软件名称
+
+    中部 --- 预览窗口。展示面积最大，显示当前桌面的的各窗口内容，左右边缘显示相邻的桌面内容，点击即可在各个桌面间切换。这个界面跟手机的多个桌面操作类似。
+
+        多个桌面的好处是，对经常同时打开很多应用程序的用户，可以分类管理：比如浏览器和文件管理器显示在一个桌面，代码开发调试的相关程序在一个桌面，远程桌面登录服务器在一个桌面全屏显示等等。
+
+        可以拖动当前打开的程序窗口到其它桌面，那么这个程序就在那个桌面展示了。
+
+        滚动鼠标滚轮，或按热键 ctl + alt + 左/右，即在各个桌面间进行切换，然后鼠标点击某个桌面即切换使用该桌面了。
+
+        在多于两个桌面时会在顶部增加一个导航栏，列表显示所有桌面的预览，当前桌面稍微大一点，最右侧的桌面是新增桌面，点击会切换桌面预览。
+
+        当前桌面的窗口关闭后会自动去掉空白的桌面，以此类推，保持最右侧只有一个新增的桌面，跟手机操作类似。
+
+    底部是常用工具栏（Dash）当前所有打开的程序窗口图标都在这里，点击图标即可切换到各个程序，还有个快捷启动部分固定了常用的几个程序的图标
+
+        左侧部分是锁定(Pin to dash)的常用程序，点击即可执行方便使用
+
+        中部列出当前打开的所有应用程序，点击图标即可在各个应用间选择切换，在图标上右键菜单选 “Pin to Dash” 可添加到快捷启动部分。
+
+        最右那个9个点棋盘式的按钮 “Show Apps”，点击弹出一个新的界面，展示所有应用的 “程序列表”，在这里查找你想运行的程序，滚轮即可翻页
+
+        感觉这是把 Windows 任务栏的切换应用功能拆分到了常用工具栏，但是这个最最常用的常用工具栏却藏的不好找。
+
+    脑残的三段式操作逻辑废掉了只用鼠标的懒人操作方式：逼着你在“任务概览”里打字查找你要打开或切换到的程序，对娱乐用户来说，听歌看电影浏览网页的时候一般只是一只手握鼠标就够了，做个切换就得抬手或点半天真的非常累赘
+
+        桌面上部的任务栏没有已经打开的应用的各个图标，下部也没有常用工具栏（Dash），只能先打开“任务概览”在底部找到常用工具栏。
+
+        如果你不想打字，只用鼠标点选当前已经打开的某个应用程序窗口：先呼出“任务概览”，在“任务概览”的各个窗口预览里找，没有简洁的图标列表了，累眼。
+
+        如果你不想打字，只用鼠标点选打开应用程序：先呼出“任务概览”，再点击常用工具栏里的“程序列表”，然后查找你要打开的程序。
+
+        强烈推荐务必安装扩展 “Dash to Dock”，见下面章节 [使用 gnome 扩展]，让常用工具栏浮动显示在桌面，极大的提高你的操作效率。
+
+窗口切换：传统理解上，桌面环境下应用程序启动后就是一个窗口，再次启动一次该程序会再打开一个窗口，用户的日常操作基本就是多个窗口的展示和切换。而 Gnome 把窗口切换归类分组了 --- 区分为应用程序的切换(Switch-applications)和应用程序的多个实例窗口间的切换(Switch-Windows)操作，非常麻烦非常让人糊涂而且把简单事情复杂化（甚至还有更复杂的，设置切换操作仅限当前桌面的各个窗口）
+
+    最方便的操作是在 “任务概览” 中进行选择，会展示所有应用程序的所有实例窗口，鼠标点击选择你要切换到的实例窗口即可
+
+    切换应用程序
+
+        启动应用程序即展示为当前窗口
+
+        在打开的各应用程序间切换跟 Windows 相同，按热键 alt + tab 或 win + tab：一按即放就是切换到前一个应用，按住 alt 点按 tab 会在应用程序列表间切换，放开 alt 即切换到该应用程序
+
+            注意：默认只切换到应用程序的最新实例窗口，切换不到该应用程序的其它实例
+
+    在一个应用程序的多个实例窗口间切换
+
+        如果应用程序需要再开一个新的实例，在任务栏或常用工具栏的应用程序图标点右键菜单选择 “New Window”
+
+        右键点击常用工具栏的应用程序图标，在弹出菜单的窗口列表中选择切换到该应用程序的某个实例，也即它的窗口
+
+        右键点击任务栏的应用程序图标，在弹出菜单的窗口列表中也可以选择你要切换到的实例
+
+        使用热键：当前窗口是你的应用程序，按 alt + ~ 或 win + ~。一按即放就会切换到最近的另一个实例，按住 alt 点按 ~ 会在各实例列表间切换，放开 alt 即切换到该实例
+
+    也就是说，如果你打开了多个应用程序，每个应用程序打开了多个实例，想一步到位切换到某个实例只能按 win 键从 “任务概览” 里的所有窗口预览里点选。不然只能先 alt + tab 切换到你的应用程序，然后 alt + ~ 切换到它打开的多个实例的某一个，这也太麻烦了。
+
+    想按 Alt+Tab 切换最近的两个窗口，必须安装扩展 “Alt+Tab Scroll Workaround”
+
+为适应现代流行的 16:9 宽屏，优化了分割多个窗口占满屏幕的操作：
+
+    鼠标双击窗口标题栏的操作跟 Windows 一致，在最大化和恢复小窗口间切换。
+
+    鼠标点击窗口标题栏不要放开，拖动到屏幕的左侧边界或右侧时，会出现半透明的框提示占据半个屏幕，松开鼠标左键即可让窗口占半屏。不想这样就把鼠标往回拖动直至半透明的提示框消失，然后松开鼠标左键即可取消该操作。同理选择另一个窗口放到另一侧，这样两个窗口各占一半屏幕。
+
+    如果是向上拖动窗口标题栏，触及屏幕顶部的任务栏时会提示最大化窗口，松开鼠标左键即可实现。对最大化窗口，点击标题栏不放向下拖动鼠标即会恢复到小窗口。
+
+    如果窗口没有标题栏，按住 win 键的同时鼠标左键点击窗口内容部分不放，向各个方向拉动即可移动该窗口，触及屏幕边缘时系统提示跟上述操作相同。对最大化窗口，下拉会缩回为窗口模式。
+
+    使用快捷键最方便，在当前窗口按 win + 方向键即可：向上最大化窗口，向下恢复小窗口，向左占据屏幕左半部分，向右占据屏幕右半部分。
+
+其它热键：
+
+    关闭窗口 alt + F4，跟 Windows 相同。
+
+    临时离开电脑，用 win + l 锁屏，跟 Windows 相同。
+
+笔记本用户使用触摸板
+
+    双指滑动相当于鼠标操作滚动条，但是：垂直滚动条的操作是顺方向，水平滚动条变成了逆方向！
+
+    触摸板操作默认居然不支持单指点击选中文字，需要安装 Gnome Tweaks，勾选 “Mouse Click Emulatsion-->Finger”。这样一般的文本编辑操作就比较方便了：单指滑动移动鼠标，单指点击选择文字，双指滑动滚动进度条。
+
+    在锁屏界面，双指上滑进入解锁界面，双指下拉继续锁屏
+
+其它一些使用习惯的差别
+
+    在用户登录界面，长时间无操作会息屏，关闭节能选项无效。晃鼠标或触摸板不会唤醒，需要按键
+
+#### 桌面环境提示系统更新
+
+刚登录桌面后，会自动检查和下载系统更新，在此期间会有排他性：
+
+    无法查看桌面软件的详情或添加删除软件，会长时间等待
+
+    查看软件仓库配置也会长时间等待
+
+如果在提示系统更新时选择安装，会重新启动计算机：
+
+    重启前务必保存你的当前工作
+
+命令行运行 `sudo dnf upgrade` 会立即安装更新，重启后生效，桌面环境需要先重启才安装更新：
+
+    如果在关机时选择安装更新，会先重启安装更新然后再关机
+
+    重启操作同样，如果在重启时选择安装更新，会在重启后安装更新，然后再次重启
+
+#### 使用桌面环境的特有命令 gio
+
+    `man gio`
+
+    GVFS URI  https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html-single/administering_the_system_using_the_gnome_desktop_environment/index#gvfs-uri-format-for-network-shares_browsing-files-on-a-network-share
+
+    可用的 GIO 命令 https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html-single/administering_the_system_using_the_gnome_desktop_environment/index#available-gio-commands_managing-storage-volumes-in-gnome
+
+基本概念
+
+    GVFS 提供完整的虚拟文件系统基础架构，并处理 GNOME 桌面中的存储。
+
+    GVFS URI（统一资源标识符） 字符串作为地址，语法上与 Web 浏览器中的 URL 地址类似。
+
+    GVFS 有助于挂载资源。这些挂载在多个应用之间共享。资源在运行的桌面会话中全局跟踪，这意味着即使您退出触发挂载的应用程序，挂载仍可用于任何其他应用程序。多个应用可以同时访问挂载，除非挂载被后端限制了。某些协议设计上仅允许一个通道。
+
+    GVFS 可挂载 /run/media/ 目录中的可移动介质。
+
+显示回收站
+
+    $ gio list trash://
+
+    $ gvfs-ls trash://
+
+    $ gio info trash://
+    display name: Trash
+    name: /
+    type: directory
+    uri: trash:///
+    attributes:
+    standard::type: 2
+    standard::name: /
+    standard::display-name: Trash
+    standard::icon: user-trash, user-trash-symbolic
+    standard::content-type: inode/directory
+    standard::symbolic-icon: user-trash-symbolic, user-trash
+    id::filesystem: trash:
+    trash::item-count: 0
+    metadata::nautilus-icon-view-sort-by: trashed_on
+    metadata::nautilus-icon-view-sort-reversed: true
+
+列出本地 /tmp 目录中的所有文件
+
+    $ gio list file:///tmp
+
+从远程系统列出文本文件的内容
+
+    # ftp://user@ftp.myserver.net/
+    # sftp://[2001:db8::1]
+    # smb://gnome.org
+    # nfs://server/path
+    $ gio cat ssh://joe@ftp.myserver.net/home/joe/todo.txt
+
+将之前的文本文件复制到本地 /tmp 目录中
+
+    $ gio copy ssh://joe@ftp.myserver.net/home/joe/todo.txt /tmp/
+
+如果远程文件系统经常断网，处理办法是：
+
+    卸载文件系统
+
+    再次挂载它
+
+#### 设置选项
+
+点击桌面右上角的声音电源图标的栏目，选择弹出菜单的“Settings”。
+
+刚装完系统后，一般进行如下设置：
+
+    Wi-Fi ：设置连接你的无线路由器
+
+    Privacy
+        Screen Lock：选择自动黑屏的延时，黑屏后是否锁屏
+        Location Services：如果选择关闭，桌面的天气组件需要手动设置你的当前城市
+        Microphone：不需要关闭，安装下面介绍的 gnome 扩展 nothing to say 手动控制即可
+        Diagnostics：关闭自动问题报告
+
+    System:
+
+        Remote Desktop 远程桌面细分为两种，仿效 Windows：
+
+            Desktop Sharing：远程桌面共享，只能在本地用户登录的情况下从远程连接到该用户的桌面，本地用户随时可以观看到远程的操作并接管鼠标，类似 Windows 的远程协助。
+
+            Remote Login：远程桌面登陆，类似 Windows 的远程桌面，远程连接直接建立用户会话登陆桌面。
+
+            这两个功能默认都使用 3389 端口，所以如果同时开启需要手动调整为不一样。其实只开启其中一个就可以了，酌情决定。
+
+            需要管理员权限进行设置，先点击窗口标题栏位置的开关，开启后才能设置各个选项。
+
+        Secure Shell: 开启 sshd 服务，这样可以远程ssh连接到本机，使用的用户名是你装系统时候给出的，注意不是那个只用于显示的 “友好名称”
+
+    Power:
+        Power Mode：尽可能选“Performance”，不然桌面初次反应慢，程序切换慢。
+        Power Saving Option：酌情选择
+
+    Keyborad：
+        Input Sources：建议两个输入法，英文和中文（拼音），英文顺序在上，这样在使用文件管理器时按键会自动成为热键定位文件首字母，方便。切换热键是 Win+空格。
+        Input Source Switching：建议选择不同的窗口单独保持自己的输入法状态。
+
+    Removable Media：勾选不许自动运行
+
+    Users：
+        Fingerprint Login：设置你的指纹识别登录桌面，注意不会解锁 gnome 钥匙环，在使用它保存的 ssh 或 gpg 的密钥时还是需要输入登录密码
+
+##### Gnome Tweaks
+
+桌面组件扩展的选项，在软件管理里搜索安装 “tweaks” ，或使用命令行
+
+    # sudo apt install gnome-tweak-tool gnome-shell-extensions
+    $ sudo dnf install gnome-tweaks
+
+安装 Tweaks 后在 “Show Apps” 里找它打开即可，一般要调整如下选项
+
+    center new window   新窗口居中打开，不然每次都是歪在当前屏幕的左上，而且互相覆盖，太不方便了
+
+    给窗口的任务栏添加最大化最小化按钮，方便鼠标操作
+
+    在 “Appearance” 选择任务栏主题，需要先安装 “User Themes” 扩展，见章节 [使用 gnome 主题]
+
+    笔记本用户勾选“Mouse Click Emulatsion-->Finger”，否则触摸板操作不支持单指点击选中文字。这样一般的文本编辑操作就比较方便了，单指滑动移动鼠标，单指点击选择文字，双指移动滚动屏幕。
+
+##### GDM 的 “注册表编辑器” --- 使用 GSettings 和 dconf 配置桌面
+
+命令行方式调整选项，理解为Linux 下的 “注册表编辑器”
+
+    https://wiki.archlinux.org/title/GDM#dconf_configuration
+
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/profiles
+
+GSettings 实际上是一套可使用多个 storage backends 的 API ，其文件是 xml 格式的，可以理解为 Linux 桌面环境的注册表数据库文件。
+
+GSettings 是应用设置的高级 API，是 dconf 的前端。
+
+    gsettings 命令行工具用于查看和更改用户设置，把它理解为命令行版的注册表编辑器
+
+dconf 是一个基于键的配置系统，用于管理用户设置。它是 Red Hat Enterprise Linux 7 中使用的 GSettings 的后端。dconf 管理一系列不同的设置，包括 GDM、应用程序和代理设置，可以理解为 Linux 桌面环境的注册表数据库。
+
+    dconf 命令行工具用于从/向 dconf 数据库读写单个值或整个目录，把它理解为注册表数据维护用的底层管理工具。
+
+如果需要修改桌面环境下的系统的配置参数，一般可以使用图形化工具 Dconf Editor，或 gsettings 命令行工具。
+
+#### 使用 gnome 扩展
+
+    刚装完系统之后的 Gnome 桌面在用户使用引导方面很弱，会让你发楞，感觉什么都没有，也什么都不能设置
+
+Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚至把文件管理器的主题色彩定制都取消了。这与 kde 桌面预置大量功能供用户把玩不同，在 Gnome 桌面没有什么设置选项，大多数定制功能需要用户自行安装扩展才能使用
+
+    https://zhuanlan.zhihu.com/p/34608388
+
+    https://opensource.com/article/19/8/extensions-gnome-desktop
+
+    https://docs.fedoraproject.org/en-US/quick-docs/gnome-shell-extensions/
+
+    介绍一些最常用的扩展
+
+        https://www.cnblogs.com/keatonlao/p/12686234.html
+
+如果想使用其它各种扩展，只能去网站 <https://extensions.gnome.org/> 自行搜索下载。现在的 GNOME 桌面组件自带的扩展管理器 “Extension Manager” 替换掉了之前的 “GNOME Extensions”，不需要去网站就可以搜索下载，在软件管理里搜索安装 “Extension Manager” 即可，或使用命令行安装 flatpak 版本
+
+    # 命令行安装的好处是能看到细分的进度
+    $ flatpak install flathub com.mattjakeman.ExtensionManager
+
+    如果仍然想使用网站浏览然后安装的方式
+
+        先浏览器访问如下网址，点击顶部提示，安装浏览器组件
+
+        https://extensions.gnome.org/
+
+            介绍 https://wiki.gnome.org/Projects/GnomeShell
+
+        然后安装本地消息组件
+
+            $ sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
+
+推荐打开的内置扩展：
+
+    Application Menu        常用工具栏的 “Show Apps” 按钮会罗列所有的应用程序，软件安装多了之后太乱了，用这个给你在任务栏为应用程序添加基于类别的菜单，方便你的选择，感觉再加上个打字即搜索列出结果和列出刚打开的程序的功能更好。
+
+推荐安装的第三方扩展：
+
+提升效率类
+
+    Dash to Dock            把常用工具栏变成在桌面的浮动工具栏，就跟 macOS 一样了，不需要进入“任务概览”才能找到了。浮动工具栏在用户打开的应用程序窗口覆盖该区域后就会自动隐藏，任何时候鼠标在屏幕的底边中部碰碰就会弹出（也可设置为总是显示）。我最常用的操作就是鼠标撞屏幕底部，就撞出来浮动工具栏了。对宽屏用户来说把浮动工具栏设置为显示在屏幕左侧边最方便。
+
+        竞品 Dash2Dock Animated(原名Dash2Dock Lite)<https://extensions.gnome.org/extension/4994/dash2dock-lite/>，仿 MacOS 的动画效果，响应更敏捷。
+
+    Dash to Panel           使用习惯模仿 Windows 任务栏，把常用工具栏变成桌面底部的固定工具栏，右键菜单很方便，也添加了按钮“显示桌面”。这样就不需要内置的 Application Menu 扩展了。
+
+    上面这俩扩展必装一个，大大提升你的工作效率。二者都可以设置任务栏图标显示打开窗口个数，滚动鼠标切换工作区，重复点击图标可以在同一应用的多个窗口间切换并最小化窗口等方便功能。
+
+    quake-mode              设置热键，以下拉方式调出你的程序窗口，所有工作区共享该程序，再次按热键即收回该窗口。对程序员来说，设置热键 alt + enter 调出一个半屏的 terminal 窗口极其方便实用。
+
+        https://extensions.gnome.org/extension/1411/quake-mode/
+            https://github.com/repsac-by/gnome-shell-extension-quake-mode
+
+        该扩展目前不支持 Gnome 45+，可以安装 ddterm 应急。
+
+        目前支持Gnome 45+，但没有通过 gnome 扩展的审查规范，无法在网站安装，源码网站提供了手动安装的办法：
+
+            git clone --depth=1 https://github.com/repsac-by/gnome-shell-extension-quake-mode.git
+
+            cd gnome-shell-extension-quake-mode
+
+            gnome-extensions pack quake-mode@repsac-by.github.com --extra-source={quakemodeapp,indicator,util}.js
+
+            gnome-extensions install quake-mode@repsac-by.github.com.shell-extension.zip --force
+
+    Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以治愈 gnome 目前不能按 Alt+Tab 切换最近使用的两个窗口。gnome 的默认习惯，只能切换到应用：Alt+Tab 列表是应用窗口，按住 Alt 持续点击 tab 循环到某个多实例的应用窗口时，会在上面再显示一个列表呈现该应用的多个实例。切换到应用的窗口后，按 Alt+` 在应用的多个实例间切换。
+
+        实现 Windows 任务栏切换的习惯：选 AppSwitch 设置页，点开 “Make ... Like the Windows ...” 按钮，这样就不再把窗口分组为应用和应用的多个实例，还要选 Windows 设置页点开 “Workspaces” 选 “All workspaces”，否则会优先循环当前工作区的窗口。
+
+    Grand Theft Focus       打开文件对话框显示在你的应用窗口后面，然后系统弹通知告诉你有个对话框打开了。。。这是病，得治！ 竞品 window-is-ready-notification-remover，或直接运行命令 `gsettings set org.gnome.desktop.wm.preferences focus-new-windows 'smart'`。
+
+    Unblank lock screen     gnome的屏幕长时间空闲自动锁屏里没有单独的锁屏，只有黑屏并锁屏或黑屏不锁屏，要是鼠标晃不醒就只能蒙着打密码了，这也是病，得治！
+
+    Alphabetical App Grid   应用程序列表“居然”是不按字母顺序排列的，而且无法拖放调整位置，这是不是该治的病！用这个扩展强制按字母顺序排列。
+
+    Auto Move Windows       指定应用程序在指定桌面打开窗口。对经常同时打开很多应用程序的用户来说，按桌面归类各个应用程序的窗口，非常方便。竞品 put windows。
+
+    Tiling Shell            适合大屏用户，提供多种窗口布局方案，提升你多开软件时的办公效率，类似 Windows 11 或 macOS
+
+    Lock Keys               有些键盘的数字键盘和大写键没有指示灯，用这个在任务栏的系统区进行提示。
+
+    nothing to say          在任务栏可以看到你的麦克风状态并手动控制是否静音，大大改善你的隐私保护
+
+    Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口。
+
+    system-monitor-next     在任务栏显示你的cpu、内存使用情况，就像在终端使用 btop 或 nmon 的效果。竞品 Vitals/Freon。
+
+    GSConnect               操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”，使用说明 <https://lixuannan.github.io/posts/27832.html>。如果需要完整操控你的手机，见章节 [Scrcpy --- 在 Linux 桌面显示和控制 Android 设备]。
+
+    Night Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现定时自动切换。
+
+    Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在任务栏的时间弹窗处先设置你的位置。
+
+    Date Menu Formater      如果在任务栏显示的时间没有星期，在 Gnome Tweaks 中开启即可。在系统设置的 Clock&Calendar 可以设置是否显示星期，这个扩展可以调整日期时间的格式。
+
+    Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date)
+
+    Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能。
+
+    Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现一个大三角图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘。否则只能打开文件管理器才能选择卸载 u 盘。
+
+    Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用。竞品 Pano Clipboard Manager 可以显示复制的富媒体内容，需要安装依赖 `sudo dnf install libgda libgda-sqlite`。
+
+    Smartcard lock          登录用的智能卡如yubikey被拔出，即自动锁屏
+
+    Power Profile Switcher  使用AC电源时能源策略选择高性能，使用电池时能源策略使用节能，自动切换。在我的台式机上不准，总是切换到均衡。
+
+    Prime Helper            让你方便的切换使用集成显卡或独立显卡，需要先安装支持 `prime-select` 的 prime 应用程序。竞品 GPU Profile Selector 需要先安装 envycontrol(https://github.com/geminis3/envycontrol)
+
+    allow locked remote desktop
+                            解除部分内置的远程桌面的本地锁定限制，允许在本地桌面锁定的情况下以远程桌面登录本机，未验证是否有效。
+
+界面美化类
+
+    User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开主题并切换显示了，这居然不是内置功能。
+
+    Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸，还可设置锁屏背景。
+
+        https://github.com/neffo/bing-wallpaper-gnome-extension
+            https://github.com/utkarshgpta/bing-desktop-wallpaper-changer
+
+    NASA APOD Wallpaper Changer自动从 NASA 网站下载它的漂亮图片作为你的壁纸
+
+        https://github.com/Elinvention/gnome-shell-extension-nasa-apod
+
+    另见章节 [自写脚本指定壁纸目录随机更换]
+
+    blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持某些应用程序和扩展透明化，注意跟有些主题兼容性不好边缘无法透明。不需要使用它的锁屏背景模糊功能，使用 Bing Wallpaper 扩展的这个功能效果更好。不需要使用它的 Dash to Dock/Panel 的透明化功能，那些扩展自己有透明化设置。
+
+    burn my window          窗口的弹出和关闭各种特效化，推荐勾选 Apparition、Doom、Hexagon、TV Glitch。
+
+#### 使用 gnome 主题
+
+    Gnome 44 以后只能设置任务栏了，窗口的明暗主题无法变更，窗口的颜色和形状也无法自定义。
+
+Gnome 主题乐园，在这里搜一下 Gnome Shell Themes 类别，你的 Gnome 任务栏就大变样了
+
+    https://www.gnome-look.org/
+
+    https://www.pling.com/
+
+    推荐：
+
+        创·战纪 风格的东京夜
+            https://www.gnome-look.org/p/1681470
+                https://github.com/Fausto-Korpsvart/Tokyo-Night-GTK-Theme
+
+        北极
+            https://www.pling.com/p/1267246
+                https://github.com/EliverLara/Nordic
+
+        Flat Remix，绿色的还行，只支持白底，自带透明效果，支持流行的一些 gnome 扩展如 dash to dock 等也变透明
+            https://www.pling.com/p/1013030
+                https://github.com/daniruiz/Flat-Remix-GNOME-theme
+
+        Graphite gnome-shell theme multicolor 多种颜色搭配比较明显，只支持白底
+            https://www.pling.com/p/2014493/
+
+        说明写的很清楚
+            https://github.com/vinceliuice/WhiteSur-gtk-theme
+
+如何使用主题：
+
+安装一个 gnome 扩展 `User Themes`，然后启用 “用户主题 User Themes” 扩展，在扩展里面启用它。
+
+安装 Murrine Engine 以兼容支持旧的 gtk2 标准
+
+    sudo dnf install gtk-murrine-engine
+
+下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
+
+然后打开 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择刚才的zip文件即可
+
+以下内容过时了
+
+    然后你就可以在 GNOME Shell 扩展页面 挑选扩展了
+
+        https://extensions.gnome.org/
+
+    安装主题：
+
+        sudo dnf install flat-remix-theme
+
+    安装图标：
+
+        sudo dnf install numix-icon-theme-circle
+
+    安装光标：
+
+        sudo dnf install breeze-cursor-theme
+
+    再去 GNOME 优化(Tweaks)的 “外观” 设置里面修改刚刚安装的主题、图标和光标，还可以修改字体。
+
+#### 把浏览器缓存区指向内存目录
+
+映射内存目录见章节 [tmpfs/ramfs 映射内存目录](init_a_server think)。
+
+    https://www.insidentally.com/articles/000040/
+
+Linux 下不同浏览器缓存位置不同：
+
+    默认 Microsoft Edge 缓存位置在 ~/.cache/microsoft-edge
+    默认 Google Chrome 缓存位置在 ~/.cache/google-chrome
+    默认 Mozilla Firefox 缓存位置在 ~/.cache/mozilla/firefox/XXXXXXXX.default-release/cache2
+    本文以 Microsoft Edge 浏览器为例。
+
+    Firefox 浏览器缓存位置中 XXXXXXXX 为 8 位随机代码，请自行查找你缓存文件的位置。
+
+如果不需要保存缓存内容，在登出系统时直接清理，最简单的是直接使用 /dev/shm 预置好的内存目录
+
+    $ rm -rf $HOME/.cache/mozilla/firefox
+    $ mkdir -p /dev/shm/mozilla-firefox
+    $ ln -sf /dev/shm/mozilla-firefox $HOME/.cache/mozilla/firefox
+
+如果想需要保存登录信息相关的 cookie，在登出前打包保存这个目录，登录后恢复，用以下脚本组合：
+
+在你喜欢的位置建立核心脚本并添加可执行权限，建议将脚本建立在你的用户主目录下的某个位置，因为本文使用普通用户权限的 systemd 引用脚本。本文其他脚本同样如此。
+
+内容如下：
+
+1、缓存同步（打包解包）脚本，在登录和登出时调用，解压和打包你的浏览器缓存内容
+
+```bash
+#!/usr/bin/sh
+
+# 在登录后登出前执行此脚本
+# 确保你的系统已经安装 tar 和 lzop
+
+case "$1" in
+ import)
+   cd /dev/shm
+   tar vczf /home/你的用户名/.cache/edgecache-backup.tar.gz
+   ;;
+ dump)
+   cd /dev/shm
+   # 删除大于 5MB 的缓存文件
+   find ./microsoft-edge/ -size +5M -exec rm {} \;
+   tar vxzf /home/你的用户名/.cache/edgecache-backup.tar.gz microsoft-edge/
+   ;;
+ *)
+   echo -e "Usage: $(cd `dirname $0`; pwd)/edgecache {import|dump}"
+   exit 1
+   ;;
+esac
+
+exit 0
+```
+
+2、登录导入脚本，登录时设置缓存路径，及从压缩包导入缓存
+
+```bash
+#!/bin/sh
+
+# 将 microsoft edge 缓存路径到内存
+/bin/rm ~/.cache/microsoft-edge -R
+/bin/mkdir -p /dev/shm/microsoft-edge
+/bin/ln -sf /dev/shm/microsoft-edge ~/.cache/microsoft-edge
+
+# 将浏览器缓存同步到内存
+echo [`date +"%Y-%m-%d %H:%M"`] On login - Importing caches to ram >> /home/你的用户名/edgecache_sync.log
+/你/核心脚本/的位置 import >> /home/你的用户名/edgecache_sync.log
+echo [`date +"%Y-%m-%d %H:%M"`] On login - Caches imported to ram >> /home/你的用户名/edgecache_sync.log
+```
+
+3、 登出前导出缓存到硬盘
+
+```bash
+#!/bin/sh
+
+# 将浏览器缓存同步到磁盘
+echo [`date +"%Y-%m-%d %H:%M"`] On logout - Dumping caches to disk >> /home/你的用户名/edgecache_sync.log
+/你/核心脚本/的位置 dump >> /home/你的用户名/edgecache_sync.log
+echo [`date +"%Y-%m-%d %H:%M"`] On logout - Caches dumped to disk >> /home/你的用户名/edgecache_sync.log
+
+# 等待 4 秒
+ping -c 4 127.1 > /dev/null
+```
+
+4、让 systemd 在登录和登出时自动执行上述脚本：
+
+在 ~/.config/systemd/user/ 目录下创建文件 edgecache.service：
+
+```conf
+[Unit]
+Description=Synchronize edge caches to disk
+PartOf=graphical-session.target
+DefaultDependencies=no
+Before=umount.target shutdown.target reboot.target halt.target
+
+[Service]
+Type=simple
+RemainAfterExit=true
+ExecStart=/你/登录导入脚本/的位置
+ExecStop=/你/登出导出脚本/的位置
+
+[Install]
+WantedBy=graphical-session.target
+```
+
+5、启用你的 systemd 服务
+
+    $ systemctl --user daemon-reload
+    $ systemctl --user enable edgecache.service
+
+重新登录你的桌面，打开浏览器试试，速度是否有明显差别。
+
+#### 自写脚本指定壁纸目录随机更换
+
+    https://www.insidentally.com/articles/000037/
+
+换壁纸的思路
+
+    使用 find 命令生成包含所有图片地址的列表。
+
+    从列表中随机挑选一张图片。
+
+    使用 gsettings 设置壁纸。
+
+    使用 systemd 定期执行脚本。
+
+1、Bash 脚本
+
+首先写一个 Bash 脚本，实现更换壁纸的目的，同时为了响应速度和硬盘寿命着想，所有相关文件都保存在 $XDG_RUNTIME_DIR，它其实是被 GNOME 桌面环境用 tmpfs 创建的内存目录。
+
+$XDG_RUNTIME_DIR 是一个变量，后面将使用 systemd 传入你存放壁纸文件夹的路径这个变量。
+
+生成地址列表
+
+查找 $1 下面的图片，并且生成列表到 $XDG_RUNTIME_DIR/bg_db，如果已经生成过不需要重复生成。
+
+    if [[ ! -f "${XDG_RUNTIME_DIR}/bg_db" ]]; then
+        find "${1}" \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) -print > "${XDG_RUNTIME_DIR}/bg_db"
+    fi
+
+随机挑选一张图片
+
+使用 shuf 命令挑选一张图片，如果文件不存在则重新挑选，注意如果上一步没有找到任何图片会陷入死循环。
+
+    while [[ ! -f "${TARGET}" ]]; do
+        TARGET=$(shuf -n 1 "${XDG_RUNTIME_DIR}/bg_db")
+    done
+
+假如需要跳过重复壁纸只需要每次挑选图片后删掉相应的行，然后在地址列表为空时重新扫描即可。
+
+设置壁纸
+
+通过 gsettings 来进行设置
+
+    gsettings set org.gnome.desktop.background picture-uri "file://${TARGET}/" || true
+    gsettings set org.gnome.desktop.background picture-uri-dark "file://${TARGET}" || true
+
+picture-uri 是亮色模式下的壁纸，picture-uri-dark 是暗色模式下的壁纸。我这里将两个模式下的壁纸换为同一个。
+
+合体后的脚本 background.sh，运行这个脚本就可以自动更换壁纸了。
+
+```bash
+#!/usr/bin/env bash
+set -Eeo pipefail
+
+if [[ ! -f "${XDG_RUNTIME_DIR}/bg_db" ]]; then
+    find "${1}" \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) -print > "${XDG_RUNTIME_DIR}/bg_db"
+fi
+
+while [[ ! -f "${TARGET}" ]]; do
+    TARGET=$(shuf -n 1 "${XDG_RUNTIME_DIR}/bg_db")
+done
+
+gsettings set org.gnome.desktop.background picture-uri "file://${TARGET}/" || true
+gsettings set org.gnome.desktop.background picture-uri-dark "file://${TARGET}" || true
+```
+
+记得给这个文件添加可执行权限：chmod +x background.sh。
+
+运行时记得传入你壁纸文件夹的路径： background.sh ./your/background/PATH。
+
+2、使用 systemd --user 定期运行脚本。
+
+创建文件
+
+    background@.service
+
+```ini
+[Unit]
+Description=Select a random background from %I
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=%h/path/to/background.sh "%I"
+```
+
+其中 %h 对于 systemd --user 而言相当于 $HOME 的作用，而 %I 则用于传递参数也就是存储的图片文件夹路径。
+
+创建文件
+
+    background@.service
+
+```ini
+[Unit]
+Description=Select a random background from %I every 1 min
+PartOf=graphical-session.target
+
+[Timer]
+OnStartupSec=1
+OnUnitActiveSec=5min
+AccuracySec=1s
+Unit=background@.service
+
+[Install]
+WantedBy=gnome-session.target
+```
+
+使用 AccuracySec=1s 避免随机延迟，另外 PartOf 以及 WantedBy 确保了只有处于 Gnome 桌面环境时才会触发。
+
+启动 Timer
+
+    将 background@.service 和 background@.timer 放入 ~/.config/systemd/user/ 下，并启动 systemd 定时任务。
+
+    $ install -m640 background@.service background@.timer ~/.config/systemd/user/
+
+    $ systemctl --user daemon-reload
+
+    # BGPATH=$(systemd-escape "path/to/background/directory")
+
+    $ systemctl --user enable --now background@$BGPATH.timer
+
+第三行 path/to/background/directory 替换为你壁纸的路径。
+
+注意 @ 后面的路径 $BGPATH 变量需要使用 systemd-escape 进行转义。
+
+查看当前壁纸
+
+有时候需要知道当前壁纸的原图位置，只需要在 background.sh 相应位置添加：
+
+    echo "$TARGET" > "$XDG_RUNTIME_DIR/bg_path"
+
+    # 显示当前壁纸原图的位置
+    cat "$XDG_RUNTIME_DIR/bg_path"
+
+    # 在桌面环境打开原图
+    xdg-open $(cat "$XDG_RUNTIME_DIR/bg_path")
+
+#### 给资源管理器添加 meld 右键菜单
+
+meld 基于 python 的开源合并工具，替换 BeyondCompare，缺点是在文件夹对比有大量文件时会卡住
+
+    https://meldmerge.org/
+        https://gitlab.gnome.org/GNOME/meld
+        https://gitlab.gnome.org/GNOME/meld/-/wikis/home
+
+    https://www.cnblogs.com/onelikeone/p/17291936.html
+
+其它考虑
+
+    Diffuse 文字对比不错，可惜不支持文件夹对比
+        https://github.com/MightyCreak/diffuse
+            原 https://github.com/MightyCreak/diffuse
+
+    KDiff3 偏向 merge 方向，文件夹对比的差异不够直观 https://apps.kde.org/kdiff3/
+
+    TkDiff https://sourceforge.net/projects/tkdiff/
+
+    DiffMerge 闭源的免费软件 https://www.sourcegear.com/diffmerge/downloads.html
+
+如果使用 GNOME桌面，其资源管理器可以添加右键菜单 “script”，在 ~/.local/share/nautilus/scripts 目录下建立如下两个文件：
+
+A-set-as-meld-left：
+
+```bash
+#!/bin/bash
+#
+# https://www.cnblogs.com/onelikeone/p/17291936.html
+# This script opens a compare tool with selected files/directory by
+# script "set-as-*-left".
+# so you should run "set-as-*-left" first
+# Copyright (C) 2010  ReV Fycd
+# Distributed under the terms of GNU GPL version 2 or later
+#
+# Install in ~/.gnome2/nautilus-scripts or ~/Nautilus/scripts
+# or ~/.local/share/nautilus/scripts (ubuntu 14.04 LTS)
+# You need to be running Nautilus 1.0.3+ to use scripts.
+# You also need to install one compare tools to use scripts(such like meld)
+# You can change the $compareTool to other compare tools(like "Kdiff3") that
+# you have already installed before.
+
+compareTool="meld"
+if [ -n "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" ]; then
+    set $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS
+    if [ $# -eq 1 ]; then
+        file1="$1"
+        echo "set-as-Meld-left Copyright (C) 2010  ReV Fycd"
+        echo "${compareTool} ${file1} \\"> ~/.startcompare
+    fi
+fi
+```
+
+注意：
+
+    如果是 flatpak 安装的 meld，把上面的 `compareTool="meld"` 命令行替换为 `compareTool="flatpak run org.gnome.Meld"`
+
+B-compare-to-left：
+
+```bash
+#!/bin/bash
+#
+# https://www.cnblogs.com/onelikeone/p/17291936.html
+# This script opens a compare tool with selected files/directory by
+# script "set-as-*-left".
+# so you should run "set-as-*-left" first
+#
+# Copyright (C) 2010  ReV Fycd
+# Distributed under the terms of GNU GPL version 2 or later
+#
+# Install in ~/.gnome2/nautilus-scripts or ~/Nautilus/scripts
+# or ~/.local/share/nautilus/scripts (ubuntu 14.04 LTS)
+# You need to be running Nautilus 1.0.3+ to use scripts.
+# You also need to install one compare tools to use scripts(such like meld)
+
+if [ -n "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" ]; then
+    set $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS
+fi
+if [ $# -eq 1 ]; then
+    file2="$1"
+    echo "Compare-to-left Copyright (C) 2010  ReV Fycd"
+    echo $file2 >> ~/.startcompare
+fi
+
+chmod +x ~/.startcompare
+exec ~/.startcompare
+```
+
+然后赋予执行权限即可：
+
+    $ chmod +x Meld-aset-as-left Meld-compare-to-left
+
+使用
+
+    在第一个文件点右键，弹出菜单选 “Scripts”-->“A-set-as-meld-left”，
+
+    然后在第二个文件上点右键，弹出菜单选 “Scripts”-->“B-compare-to-left”
+
+    这时 meld 会自动弹出窗口对这两个文件进行比较
+
+如果是多选，如同时选择了两个文件或文件夹，右键菜单选择 “Open With...”，然后选择 meld 即可。
+
+### 使用 KDE 桌面（Plasma）
+
+KDE 因为多年保持桌面环境的稳定不变，所以应用软件的丰富程度比 GNOME 多太多了。
+
+很多桌面环境都自带常用软件，所以我们说使用某某桌面环境，除了开机进入桌面的操作界面和使用方式是其专门设计的，还会附带自行设计的核心工具软件，如日历、时钟、计算器、媒体播放器、文件管理器等工具，这样可以使用户开箱即用，无需在操作系统的软件商店各种搜索了，比较省心。
+
+    https://apps.kde.org/zh-cn/
+
+    https://apps.kde.org/zh-cn/categories/
+
+    有些软件提供了 Windows 版 https://apps.kde.org/zh-cn/platforms/
+
+KDE 的桌面定制选项非常多，慢慢研究吧
+
+    https://itsfoss.com/kde-customization/
+
+KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏览器中添加扩展的那种不方便的方式（使用另一个浏览器扩展），你可以使用 KDE 的软件管理器 “发现（Discovery）”，直接访问 KDE 的附加组件。
+
+KDE 自带的软件也有很多精品比如 KDE connect 等
+
+    https://apps.kde.org/kdeconnect/
+
+    已经延展到了多个平台 https://apps.kde.org/platforms/windows/
+
+### 其它桌面环境
+
+enlightenment 桌面
+
+    https://www.enlightenment.org/
+
+如果不想用桌面环境，但还需要在图形化的窗口下工作，见章节 [窗口管理器（Windows Manager）]。
+
 ### 常用桌面工具软件
 
 搜索和安装图形化软件的方法，参见章节 [使用 Fedora 软件商店](init_a_server think)。
@@ -12096,6 +12976,10 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 所有選項全部同意，輸入sudo密碼，等待系統還原，接著它會重開機。
 
 重開機後系統回到製作快照前的樣子，桌面的檔案不見了。
+
+### 多显示器调整显示
+
+xrandr 是 Linux 系统中用于配置显示器分辨率和布局的命令行工具，而 arandr 则提供了图形化的界面，可以指定主显示器、扩展多屏幕、动态调整（缩放、旋转、反转）屏幕等功能。
 
 ### 使用拼音输入法 ibus
 
@@ -12934,875 +13818,6 @@ Exec=xfce4-terminal
 Icon=utilities-terminal
 Categories=GTK;System;TerminalEmulator;
 ```
-
-### 使用 Gnome 桌面
-
-    使用 GNOME 桌面环境
-
-        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/index
-
-    设置 GNOME 桌面环境
-
-        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/administering_the_system_using_the_gnome_desktop_environment/index
-
-    自定义 GNOME 桌面环境
-
-        https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/customizing_the_gnome_desktop_environment/index
-
-    gnome 桌面软件手册 https://help.gnome.org/users/
-
-    GNOME-4X 入坑指南 https://zhuanlan.zhihu.com/p/545083349
-                    https://jedsek.xyz/posts/desktop-beautify/gnome
-
-    GNOME Linux — 一场彻底的灾难 https://zhuanlan.zhihu.com/p/490505981
-
-为方便理解，对比 Windows 词汇如下：
-
-    Windows 桌面        --->    Gnome Workspace 工作区，可以有多个
-
-    Windows 任务栏      --->    Gnome Panel 边栏，就是在屏幕侧边的工具栏，比如 Gnome Topbar 顶栏就类似 Windows 的任务栏，但不支持切换应用程序
-
-    Windows 桌面工具栏   --->    Gnome Dash 常用工具栏
-                               如果学 macOS 在桌面浮动显示成为 Dock，需要装插件 `dash to dock`
-
-以下尽量使用 Windows 词汇。
-
-Gnome 桌面默认只展示壁纸，不能放文件（临时下载文件没法选择保存到桌面了，估计大多数人都不习惯），用户交互操作强调精简，在操作向手机风格转换的同时，优化宽屏、多桌面的使用方式
-
-    桌面顶部永远是任务栏（顶栏Topbar），交互功能有限，大多时候的用途只是展示当前应用程序的状态（目的是演变成无交互的状态栏？），不像 Windows 任务栏，提供让你在打开的多个程序间切换的方法，这导致我在日常使用中除了看时间和点关机按钮，基本很少看任务栏。
-
-        左上角的 “活动”（Activites）键用点和横线显示当前桌面是在所有桌面中的位置，鼠标滑过或点击都会显示 “任务概览”（Overview）。
-
-        任务栏左侧只有一个栏目，显示当前打开的应用程序当前窗口的名称。单击程序的图标，只是弹出一个菜单让你选择多个实例窗口。
-
-        居中栏目是日期时间天气
-
-        右侧栏目是系统指示区，类似 Windows 任务栏托盘区(taskbar tray)，又细分为 Gnome 扩展的状态显示和系统设置的状态显示两个区域，最右边就是电源按钮。扩展显示区域的每个图标都可以点击显示单独的菜单，系统设置的显示区域却只弹出一个菜单，操作习题有差异。如果你安装了中文输入法，这个图标是显示在两个区域之间的。
-
-开机后默认展示的界面是 “任务概览”（Overview），列出桌面列表和桌面内容的缩略图。“任务概览” 是用户操作多窗口切换最常使用的界面，操作热键是按 win 键，或鼠标撞几下屏幕左上角 --- “热角”（Hot Corner），或点击左上角的 “活动”（Activites）按钮：
-
-    上部 --- 搜索栏。直接打字就会默认填写到搜索栏，只需要输入你要使用的系统设置名称或应用程序名称，在搜索结果点击即可执行。搜索结果的展现是分类的，有当前安装的软件、软件商店的搜索结果等等，直接点击即可使用或下载安装。可以在系统设置里选择展示哪些分类，建议关闭字体搜索结果，最不常用但是搜索结果占大多数，影响使用体验。
-
-        目前最快捷执行一个程序的方法就是按 Win 键呼叫出“任务概览”，然后打字，然后鼠标点击搜索结果里展示的软件名称
-
-    中部 --- 预览窗口。展示面积最大，显示当前桌面的的各窗口内容，左右边缘显示相邻的桌面内容，点击即可在各个桌面间切换。这个界面跟手机的多个桌面操作类似。
-
-        多个桌面的好处是，对经常同时打开很多应用程序的用户，可以分类管理：比如浏览器和文件管理器显示在一个桌面，代码开发调试的相关程序在一个桌面，远程桌面登录服务器在一个桌面全屏显示等等。
-
-        可以拖动当前打开的程序窗口到其它桌面，那么这个程序就在那个桌面展示了。
-
-        滚动鼠标滚轮，或按热键 ctl + alt + 左/右，即在各个桌面间进行切换，然后鼠标点击某个桌面即切换使用该桌面了。
-
-        在多于两个桌面时会在顶部增加一个导航栏，列表显示所有桌面的预览，当前桌面稍微大一点，最右侧的桌面是新增桌面，点击会切换桌面预览。
-
-        当前桌面的窗口关闭后会自动去掉空白的桌面，以此类推，保持最右侧只有一个新增的桌面，跟手机操作类似。
-
-    底部是常用工具栏（Dash）当前所有打开的程序窗口图标都在这里，点击图标即可切换到各个程序，还有个快捷启动部分固定了常用的几个程序的图标
-
-        左侧部分是锁定(Pin to dash)的常用程序，点击即可执行方便使用
-
-        中部列出当前打开的所有应用程序，点击图标即可在各个应用间选择切换，在图标上右键菜单选 “Pin to Dash” 可添加到快捷启动部分。
-
-        最右那个9个点棋盘式的按钮 “Show Apps”，点击弹出一个新的界面，展示所有应用的 “程序列表”，在这里查找你想运行的程序，滚轮即可翻页
-
-        感觉这是把 Windows 任务栏的切换应用功能拆分到了常用工具栏，但是这个最最常用的常用工具栏却藏的不好找。
-
-    脑残的三段式操作逻辑废掉了只用鼠标的懒人操作方式：逼着你在“任务概览”里打字查找你要打开或切换到的程序，对娱乐用户来说，听歌看电影浏览网页的时候一般只是一只手握鼠标就够了，做个切换就得抬手或点半天真的非常累赘
-
-        桌面上部的任务栏没有已经打开的应用的各个图标，下部也没有常用工具栏（Dash），只能先打开“任务概览”在底部找到常用工具栏。
-
-        如果你不想打字，只用鼠标点选当前已经打开的某个应用程序窗口：先呼出“任务概览”，在“任务概览”的各个窗口预览里找，没有简洁的图标列表了，累眼。
-
-        如果你不想打字，只用鼠标点选打开应用程序：先呼出“任务概览”，再点击常用工具栏里的“程序列表”，然后查找你要打开的程序。
-
-        强烈推荐务必安装扩展 “Dash to Dock”，见下面章节 [使用 gnome 扩展]，让常用工具栏浮动显示在桌面，极大的提高你的操作效率。
-
-窗口切换：传统理解上，桌面环境下应用程序启动后就是一个窗口，再次启动一次该程序会再打开一个窗口，用户的日常操作基本就是多个窗口的展示和切换。而 Gnome 把窗口切换归类分组了 --- 区分为应用程序的切换(Switch-applications)和应用程序的多个实例窗口间的切换(Switch-Windows)操作，非常麻烦非常让人糊涂而且把简单事情复杂化（甚至还有更复杂的，设置切换操作仅限当前桌面的各个窗口）
-
-    最方便的操作是在 “任务概览” 中进行选择，会展示所有应用程序的所有实例窗口，鼠标点击选择你要切换到的实例窗口即可
-
-    切换应用程序
-
-        启动应用程序即展示为当前窗口
-
-        在打开的各应用程序间切换跟 Windows 相同，按热键 alt + tab 或 win + tab：一按即放就是切换到前一个应用，按住 alt 点按 tab 会在应用程序列表间切换，放开 alt 即切换到该应用程序
-
-            注意：默认只切换到应用程序的最新实例窗口，切换不到该应用程序的其它实例
-
-    在一个应用程序的多个实例窗口间切换
-
-        如果应用程序需要再开一个新的实例，在任务栏或常用工具栏的应用程序图标点右键菜单选择 “New Window”
-
-        右键点击常用工具栏的应用程序图标，在弹出菜单的窗口列表中选择切换到该应用程序的某个实例，也即它的窗口
-
-        右键点击任务栏的应用程序图标，在弹出菜单的窗口列表中也可以选择你要切换到的实例
-
-        使用热键：当前窗口是你的应用程序，按 alt + ~ 或 win + ~。一按即放就会切换到最近的另一个实例，按住 alt 点按 ~ 会在各实例列表间切换，放开 alt 即切换到该实例
-
-    也就是说，如果你打开了多个应用程序，每个应用程序打开了多个实例，想一步到位切换到某个实例只能按 win 键从 “任务概览” 里的所有窗口预览里点选。不然只能先 alt + tab 切换到你的应用程序，然后 alt + ~ 切换到它打开的多个实例的某一个，这也太麻烦了。
-
-    想按 Alt+Tab 切换最近的两个窗口，必须安装扩展 “Alt+Tab Scroll Workaround”
-
-为适应现代流行的 16:9 宽屏，优化了分割多个窗口占满屏幕的操作：
-
-    鼠标双击窗口标题栏的操作跟 Windows 一致，在最大化和恢复小窗口间切换。
-
-    鼠标点击窗口标题栏不要放开，拖动到屏幕的左侧边界或右侧时，会出现半透明的框提示占据半个屏幕，松开鼠标左键即可让窗口占半屏。不想这样就把鼠标往回拖动直至半透明的提示框消失，然后松开鼠标左键即可取消该操作。同理选择另一个窗口放到另一侧，这样两个窗口各占一半屏幕。
-
-    如果是向上拖动窗口标题栏，触及屏幕顶部的任务栏时会提示最大化窗口，松开鼠标左键即可实现。对最大化窗口，点击标题栏不放向下拖动鼠标即会恢复到小窗口。
-
-    如果窗口没有标题栏，按住 win 键的同时鼠标左键点击窗口内容部分不放，向各个方向拉动即可移动该窗口，触及屏幕边缘时系统提示跟上述操作相同。对最大化窗口，下拉会缩回为窗口模式。
-
-    使用快捷键最方便，在当前窗口按 win + 方向键即可：向上最大化窗口，向下恢复小窗口，向左占据屏幕左半部分，向右占据屏幕右半部分。
-
-其它热键：
-
-    关闭窗口 alt + F4，跟 Windows 相同。
-
-    临时离开电脑，用 win + l 锁屏，跟 Windows 相同。
-
-笔记本用户使用触摸板
-
-    双指滑动相当于鼠标操作滚动条，但是：垂直滚动条的操作是顺方向，水平滚动条变成了逆方向！
-
-    触摸板操作默认居然不支持单指点击选中文字，需要安装 Gnome Tweaks，勾选 “Mouse Click Emulatsion-->Finger”。这样一般的文本编辑操作就比较方便了：单指滑动移动鼠标，单指点击选择文字，双指滑动滚动进度条。
-
-    在锁屏界面，双指上滑进入解锁界面，双指下拉继续锁屏
-
-其它一些使用习惯的差别
-
-    在用户登录界面，长时间无操作会息屏，关闭节能选项无效。晃鼠标或触摸板不会唤醒，需要按键
-
-#### 桌面环境提示系统更新
-
-刚登录桌面后，会自动检查和下载系统更新，在此期间会有排他性：
-
-    无法查看桌面软件的详情或添加删除软件，会长时间等待
-
-    查看软件仓库配置也会长时间等待
-
-如果在提示系统更新时选择安装，会重新启动计算机：
-
-    重启前务必保存你的当前工作
-
-命令行运行 `sudo dnf upgrade` 会立即安装更新，重启后生效，桌面环境需要先重启才安装更新：
-
-    如果在关机时选择安装更新，会先重启安装更新然后再关机
-
-    重启操作同样，如果在重启时选择安装更新，会在重启后安装更新，然后再次重启
-
-#### 使用桌面环境的特有命令 gio
-
-    `man gio`
-
-    GVFS URI  https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html-single/administering_the_system_using_the_gnome_desktop_environment/index#gvfs-uri-format-for-network-shares_browsing-files-on-a-network-share
-
-    可用的 GIO 命令 https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html-single/administering_the_system_using_the_gnome_desktop_environment/index#available-gio-commands_managing-storage-volumes-in-gnome
-
-基本概念
-
-    GVFS 提供完整的虚拟文件系统基础架构，并处理 GNOME 桌面中的存储。
-
-    GVFS URI（统一资源标识符） 字符串作为地址，语法上与 Web 浏览器中的 URL 地址类似。
-
-    GVFS 有助于挂载资源。这些挂载在多个应用之间共享。资源在运行的桌面会话中全局跟踪，这意味着即使您退出触发挂载的应用程序，挂载仍可用于任何其他应用程序。多个应用可以同时访问挂载，除非挂载被后端限制了。某些协议设计上仅允许一个通道。
-
-    GVFS 可挂载 /run/media/ 目录中的可移动介质。
-
-显示回收站
-
-    $ gio list trash://
-
-    $ gvfs-ls trash://
-
-    $ gio info trash://
-    display name: Trash
-    name: /
-    type: directory
-    uri: trash:///
-    attributes:
-    standard::type: 2
-    standard::name: /
-    standard::display-name: Trash
-    standard::icon: user-trash, user-trash-symbolic
-    standard::content-type: inode/directory
-    standard::symbolic-icon: user-trash-symbolic, user-trash
-    id::filesystem: trash:
-    trash::item-count: 0
-    metadata::nautilus-icon-view-sort-by: trashed_on
-    metadata::nautilus-icon-view-sort-reversed: true
-
-列出本地 /tmp 目录中的所有文件
-
-    $ gio list file:///tmp
-
-从远程系统列出文本文件的内容
-
-    # ftp://user@ftp.myserver.net/
-    # sftp://[2001:db8::1]
-    # smb://gnome.org
-    # nfs://server/path
-    $ gio cat ssh://joe@ftp.myserver.net/home/joe/todo.txt
-
-将之前的文本文件复制到本地 /tmp 目录中
-
-    $ gio copy ssh://joe@ftp.myserver.net/home/joe/todo.txt /tmp/
-
-如果远程文件系统经常断网，处理办法是：
-
-    卸载文件系统
-
-    再次挂载它
-
-#### 设置选项
-
-点击桌面右上角的声音电源图标的栏目，选择弹出菜单的“Settings”。
-
-刚装完系统后，一般进行如下设置：
-
-    Wi-Fi ：设置连接你的无线路由器
-
-    Privacy
-        Screen Lock：选择自动黑屏的延时，黑屏后是否锁屏
-        Location Services：如果选择关闭，桌面的天气组件需要手动设置你的当前城市
-        Microphone：不需要关闭，安装下面介绍的 gnome 扩展 nothing to say 手动控制即可
-        Diagnostics：关闭自动问题报告
-
-    System:
-
-        Remote Desktop 远程桌面细分为两种，仿效 Windows：
-
-            Desktop Sharing：远程桌面共享，只能在本地用户登录的情况下从远程连接到该用户的桌面，本地用户随时可以观看到远程的操作并接管鼠标，类似 Windows 的远程协助。
-
-            Remote Login：远程桌面登陆，类似 Windows 的远程桌面，远程连接直接建立用户会话登陆桌面。
-
-            这两个功能默认都使用 3389 端口，所以如果同时开启需要手动调整为不一样。其实只开启其中一个就可以了，酌情决定。
-
-            需要管理员权限进行设置，先点击窗口标题栏位置的开关，开启后才能设置各个选项。
-
-        Secure Shell: 开启 sshd 服务，这样可以远程ssh连接到本机，使用的用户名是你装系统时候给出的，注意不是那个只用于显示的 “友好名称”
-
-    Power:
-        Power Mode：尽可能选“Performance”，不然桌面初次反应慢，程序切换慢。
-        Power Saving Option：酌情选择
-
-    Keyborad：
-        Input Sources：建议两个输入法，英文和中文（拼音），英文顺序在上，这样在使用文件管理器时按键会自动成为热键定位文件首字母，方便。切换热键是 Win+空格。
-        Input Source Switching：建议选择不同的窗口单独保持自己的输入法状态。
-
-    Removable Media：勾选不许自动运行
-
-    Users：
-        Fingerprint Login：设置你的指纹识别登录桌面，注意不会解锁 gnome 钥匙环，在使用它保存的 ssh 或 gpg 的密钥时还是需要输入登录密码
-
-##### Gnome Tweaks
-
-桌面组件扩展的选项，在软件管理里搜索安装 “tweaks” ，或使用命令行
-
-    # sudo apt install gnome-tweak-tool gnome-shell-extensions
-    $ sudo dnf install gnome-tweaks
-
-安装 Tweaks 后在 “Show Apps” 里找它打开即可，一般要调整如下选项
-
-    center new window   新窗口居中打开，不然每次都是歪在当前屏幕的左上，而且互相覆盖，太不方便了
-
-    给窗口的任务栏添加最大化最小化按钮，方便鼠标操作
-
-    在 “Appearance” 选择任务栏主题，需要先安装 “User Themes” 扩展，见章节 [使用 gnome 主题]
-
-    笔记本用户勾选“Mouse Click Emulatsion-->Finger”，否则触摸板操作不支持单指点击选中文字。这样一般的文本编辑操作就比较方便了，单指滑动移动鼠标，单指点击选择文字，双指移动滚动屏幕。
-
-##### GDM 的 “注册表编辑器” --- 使用 GSettings 和 dconf 配置桌面
-
-命令行方式调整选项，理解为Linux 下的 “注册表编辑器”
-
-    https://wiki.archlinux.org/title/GDM#dconf_configuration
-
-    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/profiles
-
-GSettings 实际上是一套可使用多个 storage backends 的 API ，其文件是 xml 格式的，可以理解为 Linux 桌面环境的注册表数据库文件。
-
-GSettings 是应用设置的高级 API，是 dconf 的前端。
-
-    gsettings 命令行工具用于查看和更改用户设置，把它理解为命令行版的注册表编辑器
-
-dconf 是一个基于键的配置系统，用于管理用户设置。它是 Red Hat Enterprise Linux 7 中使用的 GSettings 的后端。dconf 管理一系列不同的设置，包括 GDM、应用程序和代理设置，可以理解为 Linux 桌面环境的注册表数据库。
-
-    dconf 命令行工具用于从/向 dconf 数据库读写单个值或整个目录，把它理解为注册表数据维护用的底层管理工具。
-
-如果需要修改桌面环境下的系统的配置参数，一般可以使用图形化工具 Dconf Editor，或 gsettings 命令行工具。
-
-#### 使用 gnome 扩展
-
-    刚装完系统之后的 Gnome 桌面在用户使用引导方面很弱，会让你发楞，感觉什么都没有，也什么都不能设置
-
-Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚至把文件管理器的主题色彩定制都取消了。这与 kde 桌面预置大量功能供用户把玩不同，在 Gnome 桌面没有什么设置选项，大多数定制功能需要用户自行安装扩展才能使用
-
-    https://zhuanlan.zhihu.com/p/34608388
-
-    https://opensource.com/article/19/8/extensions-gnome-desktop
-
-    https://docs.fedoraproject.org/en-US/quick-docs/gnome-shell-extensions/
-
-    介绍一些最常用的扩展
-
-        https://www.cnblogs.com/keatonlao/p/12686234.html
-
-如果想使用其它各种扩展，只能去网站 <https://extensions.gnome.org/> 自行搜索下载。现在的 GNOME 桌面组件自带的扩展管理器 “Extension Manager” 替换掉了之前的 “GNOME Extensions”，不需要去网站就可以搜索下载，在软件管理里搜索安装 “Extension Manager” 即可，或使用命令行安装 flatpak 版本
-
-    # 命令行安装的好处是能看到细分的进度
-    $ flatpak install flathub com.mattjakeman.ExtensionManager
-
-    如果仍然想使用网站浏览然后安装的方式
-
-        先浏览器访问如下网址，点击顶部提示，安装浏览器组件
-
-        https://extensions.gnome.org/
-
-            介绍 https://wiki.gnome.org/Projects/GnomeShell
-
-        然后安装本地消息组件
-
-            $ sudo dnf install gnome-browser-connector  # 原名 chrome-gnome-shell
-
-推荐打开的内置扩展：
-
-    Application Menu        常用工具栏的 “Show Apps” 按钮会罗列所有的应用程序，软件安装多了之后太乱了，用这个给你在任务栏为应用程序添加基于类别的菜单，方便你的选择，感觉再加上个打字即搜索列出结果和列出刚打开的程序的功能更好。
-
-推荐安装的第三方扩展：
-
-提升效率类
-
-    Dash to Dock            把常用工具栏变成在桌面的浮动工具栏，就跟 macOS 一样了，不需要进入“任务概览”才能找到了。浮动工具栏在用户打开的应用程序窗口覆盖该区域后就会自动隐藏，任何时候鼠标在屏幕的底边中部碰碰就会弹出（也可设置为总是显示）。我最常用的操作就是鼠标撞屏幕底部，就撞出来浮动工具栏了。对宽屏用户来说把浮动工具栏设置为显示在屏幕左侧边最方便。
-
-        竞品 Dash2Dock Animated(原名Dash2Dock Lite)<https://extensions.gnome.org/extension/4994/dash2dock-lite/>，仿 MacOS 的动画效果，响应更敏捷。
-
-    Dash to Panel           使用习惯模仿 Windows 任务栏，把常用工具栏变成桌面底部的固定工具栏，右键菜单很方便，也添加了按钮“显示桌面”。这样就不需要内置的 Application Menu 扩展了。
-
-    上面这俩扩展必装一个，大大提升你的工作效率。二者都可以设置任务栏图标显示打开窗口个数，滚动鼠标切换工作区，重复点击图标可以在同一应用的多个窗口间切换并最小化窗口等方便功能。
-
-    quake-mode              设置热键，以下拉方式调出你的程序窗口，所有工作区共享该程序，再次按热键即收回该窗口。对程序员来说，设置热键 alt + enter 调出一个半屏的 terminal 窗口极其方便实用。
-
-        https://extensions.gnome.org/extension/1411/quake-mode/
-            https://github.com/repsac-by/gnome-shell-extension-quake-mode
-
-        该扩展目前不支持 Gnome 45+，可以安装 ddterm 应急。
-
-        目前支持Gnome 45+，但没有通过 gnome 扩展的审查规范，无法在网站安装，源码网站提供了手动安装的办法：
-
-            git clone --depth=1 https://github.com/repsac-by/gnome-shell-extension-quake-mode.git
-
-            cd gnome-shell-extension-quake-mode
-
-            gnome-extensions pack quake-mode@repsac-by.github.com --extra-source={quakemodeapp,indicator,util}.js
-
-            gnome-extensions install quake-mode@repsac-by.github.com.shell-extension.zip --force
-
-    Coverflow Alt-Tab       像 Windows 的 win + tab 形式的立体呈现切换窗口，而且可以治愈 gnome 目前不能按 Alt+Tab 切换最近使用的两个窗口。gnome 的默认习惯，只能切换到应用：Alt+Tab 列表是应用窗口，按住 alt 持续点击 tab 循环到某个多实例的应用窗口时，会在上面再显示一个列表呈现该应用的多个实例。切换到应用后，按 Alt+` 在应用的多个实例间切换。
-
-        实现 Windows 任务栏切换的习惯：选 AppSwitch 设置页，点开 “Make ... Like the Windows ...” 按钮，这样就不再把窗口分组为应用和应用的多个实例，还要选 Windows 设置页点开 “Workspaces” 选 “All workspaces”，否则会优先循环当前工作区的窗口。
-
-    Grand Theft Focus       打开文件对话框显示在你的应用窗口后面，然后系统弹通知告诉你有个对话框打开了。。。这是病，得治！ 竞品 window-is-ready-notification-remover，或直接运行命令 `gsettings set org.gnome.desktop.wm.preferences focus-new-windows 'smart'`。
-
-    Unblank lock screen     gnome的屏幕长时间空闲自动锁屏里没有单独的锁屏，只有黑屏并锁屏或黑屏不锁屏，要是鼠标晃不醒就只能蒙着打密码了，这也是病，得治！
-
-    Alphabetical App Grid   应用程序列表“居然”是不按字母顺序排列的，而且无法拖放调整位置，这是不是该治的病！用这个扩展强制按字母顺序排列。
-
-    Auto Move Windows       指定应用程序在指定桌面打开窗口。对经常同时打开很多应用程序的用户来说，按桌面归类各个应用程序的窗口，非常方便。竞品 put windows。
-
-    Lock Keys               有些键盘的数字键盘和大写键没有指示灯，用这个在任务栏的系统区进行提示。
-
-    nothing to say          在任务栏可以看到你的麦克风状态并手动控制是否静音，大大改善你的隐私保护
-
-    Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口。
-
-    system-monitor-next     在任务栏显示你的cpu、内存使用情况，就像在终端使用 btop 或 nmon 的效果。竞品 Vitals/Freon。
-
-    GSConnect               操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”，使用说明 <https://lixuannan.github.io/posts/27832.html>。如果需要完整操控你的手机，见章节 [Scrcpy --- 在 Linux 桌面显示和控制 Android 设备]。
-
-    Night Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现定时自动切换。
-
-    Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在任务栏的时间弹窗处先设置你的位置。
-
-    Date Menu Formater      如果在任务栏显示的时间没有星期，在 Gnome Tweaks 中开启即可。在系统设置的 Clock&Calendar 可以设置是否显示星期，这个扩展可以调整日期时间的格式。
-
-    Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date)
-
-    Media Control           在任务栏显示当前的音乐播放器信息及控制按钮，感觉这也是应该内置的功能。
-
-    Removable drive menu    在任务栏给你的 u 盘添加菜单方便访问，只要插入 u 盘就会出现一个大三角图标，点击会列出 u 盘列表，点击 u 盘名称即以文件管理器打开 u 盘，点击 u 盘名称右侧的三角即安全弹出该 u 盘。否则只能打开文件管理器才能选择卸载 u 盘。
-
-    Clipboard Indicator     剪贴板历史记录，点击对应即放到当前剪贴板，在编辑器选择粘贴即可使用。竞品 Pano Clipboard Manager 可以显示复制的富媒体内容，需要安装依赖 `sudo dnf install libgda libgda-sqlite`。
-
-    Smartcard lock          登录用的智能卡如yubikey被拔出，即自动锁屏
-
-    Power Profile Switcher  使用AC电源时能源策略选择高性能，使用电池时能源策略使用节能，自动切换。在我的台式机上不准，总是切换到均衡。
-
-    Prime Helper            让你方便的切换使用集成显卡或独立显卡，需要先安装支持 `prime-select` 的 prime 应用程序。竞品 GPU Profile Selector 需要先安装 envycontrol(https://github.com/geminis3/envycontrol)
-
-    allow locked remote desktop
-                            解除部分内置的远程桌面的本地锁定限制，允许在本地桌面锁定的情况下以远程桌面登录本机，未验证是否有效。
-
-界面美化类
-
-    User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开主题并切换显示了，这居然不是内置功能。
-
-    Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸，还可设置锁屏背景。
-
-        https://github.com/neffo/bing-wallpaper-gnome-extension
-            https://github.com/utkarshgpta/bing-desktop-wallpaper-changer
-
-    NASA APOD Wallpaper Changer自动从 NASA 网站下载它的漂亮图片作为你的壁纸
-
-        https://github.com/Elinvention/gnome-shell-extension-nasa-apod
-
-    另见章节 [自写脚本指定壁纸目录随机更换]
-
-    blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持某些应用程序和扩展透明化，注意跟有些主题兼容性不好边缘无法透明。不需要使用它的锁屏背景模糊功能，使用 Bing Wallpaper 扩展的这个功能效果更好。不需要使用它的 Dash to Dock/Panel 的透明化功能，那些扩展自己有透明化设置。
-
-    burn my window          窗口的弹出和关闭各种特效化，推荐勾选 Apparition、Doom、Hexagon、TV Glitch。
-
-#### 使用 gnome 主题
-
-    Gnome 44 以后只能设置任务栏了，窗口的明暗主题无法变更，窗口的颜色和形状也无法自定义。
-
-Gnome 主题乐园，在这里搜一下 Gnome Shell Themes 类别，你的 Gnome 任务栏就大变样了
-
-    https://www.gnome-look.org/
-
-    https://www.pling.com/
-
-    推荐：
-
-        创·战纪 风格的东京夜
-            https://www.gnome-look.org/p/1681470
-                https://github.com/Fausto-Korpsvart/Tokyo-Night-GTK-Theme
-
-        北极
-            https://www.pling.com/p/1267246
-                https://github.com/EliverLara/Nordic
-
-        Flat Remix，绿色的还行，只支持白底，自带透明效果，支持流行的一些 gnome 扩展如 dash to dock 等也变透明
-            https://www.pling.com/p/1013030
-                https://github.com/daniruiz/Flat-Remix-GNOME-theme
-
-        Graphite gnome-shell theme multicolor 多种颜色搭配比较明显，只支持白底
-            https://www.pling.com/p/2014493/
-
-        说明写的很清楚
-            https://github.com/vinceliuice/WhiteSur-gtk-theme
-
-如何使用主题：
-
-安装一个 gnome 扩展 `User Themes`，然后启用 “用户主题 User Themes” 扩展，在扩展里面启用它。
-
-安装 Murrine Engine 以兼容支持旧的 gtk2 标准
-
-    sudo dnf install gtk-murrine-engine
-
-下载主题，一般是打包好的 zip 文件，保存到 ~/.theme 目录下
-
-然后打开 Gnome Tweaks，点击 "Appearence" 按钮，在右侧栏选择 "shell"，选择刚才的zip文件即可
-
-以下内容过时了
-
-    然后你就可以在 GNOME Shell 扩展页面 挑选扩展了
-
-        https://extensions.gnome.org/
-
-    安装主题：
-
-        sudo dnf install flat-remix-theme
-
-    安装图标：
-
-        sudo dnf install numix-icon-theme-circle
-
-    安装光标：
-
-        sudo dnf install breeze-cursor-theme
-
-    再去 GNOME 优化(Tweaks)的 “外观” 设置里面修改刚刚安装的主题、图标和光标，还可以修改字体。
-
-#### 把浏览器缓存区指向内存目录
-
-映射内存目录见章节 [tmpfs/ramfs 映射内存目录](init_a_server think)。
-
-    https://www.insidentally.com/articles/000040/
-
-Linux 下不同浏览器缓存位置不同：
-
-    默认 Microsoft Edge 缓存位置在 ~/.cache/microsoft-edge
-    默认 Google Chrome 缓存位置在 ~/.cache/google-chrome
-    默认 Mozilla Firefox 缓存位置在 ~/.cache/mozilla/firefox/XXXXXXXX.default-release/cache2
-    本文以 Microsoft Edge 浏览器为例。
-
-    Firefox 浏览器缓存位置中 XXXXXXXX 为 8 位随机代码，请自行查找你缓存文件的位置。
-
-如果不需要保存缓存内容，在登出系统时直接清理，最简单的是直接使用 /dev/shm 预置好的内存目录
-
-    $ rm -rf $HOME/.cache/mozilla/firefox
-    $ mkdir -p /dev/shm/mozilla-firefox
-    $ ln -sf /dev/shm/mozilla-firefox $HOME/.cache/mozilla/firefox
-
-如果想需要保存登录信息相关的 cookie，在登出前打包保存这个目录，登录后恢复，用以下脚本组合：
-
-在你喜欢的位置建立核心脚本并添加可执行权限，建议将脚本建立在你的用户主目录下的某个位置，因为本文使用普通用户权限的 systemd 引用脚本。本文其他脚本同样如此。
-
-内容如下：
-
-1、缓存同步（打包解包）脚本，在登录和登出时调用，解压和打包你的浏览器缓存内容
-
-```bash
-#!/usr/bin/sh
-
-# 在登录后登出前执行此脚本
-# 确保你的系统已经安装 tar 和 lzop
-
-case "$1" in
- import)
-   cd /dev/shm
-   tar vczf /home/你的用户名/.cache/edgecache-backup.tar.gz
-   ;;
- dump)
-   cd /dev/shm
-   # 删除大于 5MB 的缓存文件
-   find ./microsoft-edge/ -size +5M -exec rm {} \;
-   tar vxzf /home/你的用户名/.cache/edgecache-backup.tar.gz microsoft-edge/
-   ;;
- *)
-   echo -e "Usage: $(cd `dirname $0`; pwd)/edgecache {import|dump}"
-   exit 1
-   ;;
-esac
-
-exit 0
-```
-
-2、登录导入脚本，登录时设置缓存路径，及从压缩包导入缓存
-
-```bash
-#!/bin/sh
-
-# 将 microsoft edge 缓存路径到内存
-/bin/rm ~/.cache/microsoft-edge -R
-/bin/mkdir -p /dev/shm/microsoft-edge
-/bin/ln -sf /dev/shm/microsoft-edge ~/.cache/microsoft-edge
-
-# 将浏览器缓存同步到内存
-echo [`date +"%Y-%m-%d %H:%M"`] On login - Importing caches to ram >> /home/你的用户名/edgecache_sync.log
-/你/核心脚本/的位置 import >> /home/你的用户名/edgecache_sync.log
-echo [`date +"%Y-%m-%d %H:%M"`] On login - Caches imported to ram >> /home/你的用户名/edgecache_sync.log
-```
-
-3、 登出前导出缓存到硬盘
-
-```bash
-#!/bin/sh
-
-# 将浏览器缓存同步到磁盘
-echo [`date +"%Y-%m-%d %H:%M"`] On logout - Dumping caches to disk >> /home/你的用户名/edgecache_sync.log
-/你/核心脚本/的位置 dump >> /home/你的用户名/edgecache_sync.log
-echo [`date +"%Y-%m-%d %H:%M"`] On logout - Caches dumped to disk >> /home/你的用户名/edgecache_sync.log
-
-# 等待 4 秒
-ping -c 4 127.1 > /dev/null
-```
-
-4、让 systemd 在登录和登出时自动执行上述脚本：
-
-在 ~/.config/systemd/user/ 目录下创建文件 edgecache.service：
-
-```conf
-[Unit]
-Description=Synchronize edge caches to disk
-PartOf=graphical-session.target
-DefaultDependencies=no
-Before=umount.target shutdown.target reboot.target halt.target
-
-[Service]
-Type=simple
-RemainAfterExit=true
-ExecStart=/你/登录导入脚本/的位置
-ExecStop=/你/登出导出脚本/的位置
-
-[Install]
-WantedBy=graphical-session.target
-```
-
-5、启用你的 systemd 服务
-
-    $ systemctl --user daemon-reload
-    $ systemctl --user enable edgecache.service
-
-重新登录你的桌面，打开浏览器试试，速度是否有明显差别。
-
-#### 自写脚本指定壁纸目录随机更换
-
-    https://www.insidentally.com/articles/000037/
-
-换壁纸的思路
-
-    使用 find 命令生成包含所有图片地址的列表。
-
-    从列表中随机挑选一张图片。
-
-    使用 gsettings 设置壁纸。
-
-    使用 systemd 定期执行脚本。
-
-1、Bash 脚本
-
-首先写一个 Bash 脚本，实现更换壁纸的目的，同时为了响应速度和硬盘寿命着想，所有相关文件都保存在 $XDG_RUNTIME_DIR，它其实是被 GNOME 桌面环境用 tmpfs 创建的内存目录。
-
-$XDG_RUNTIME_DIR 是一个变量，后面将使用 systemd 传入你存放壁纸文件夹的路径这个变量。
-
-生成地址列表
-
-查找 $1 下面的图片，并且生成列表到 $XDG_RUNTIME_DIR/bg_db，如果已经生成过不需要重复生成。
-
-    if [[ ! -f "${XDG_RUNTIME_DIR}/bg_db" ]]; then
-        find "${1}" \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) -print > "${XDG_RUNTIME_DIR}/bg_db"
-    fi
-
-随机挑选一张图片
-
-使用 shuf 命令挑选一张图片，如果文件不存在则重新挑选，注意如果上一步没有找到任何图片会陷入死循环。
-
-    while [[ ! -f "${TARGET}" ]]; do
-        TARGET=$(shuf -n 1 "${XDG_RUNTIME_DIR}/bg_db")
-    done
-
-假如需要跳过重复壁纸只需要每次挑选图片后删掉相应的行，然后在地址列表为空时重新扫描即可。
-
-设置壁纸
-
-通过 gsettings 来进行设置
-
-    gsettings set org.gnome.desktop.background picture-uri "file://${TARGET}/" || true
-    gsettings set org.gnome.desktop.background picture-uri-dark "file://${TARGET}" || true
-
-picture-uri 是亮色模式下的壁纸，picture-uri-dark 是暗色模式下的壁纸。我这里将两个模式下的壁纸换为同一个。
-
-合体后的脚本 background.sh，运行这个脚本就可以自动更换壁纸了。
-
-```bash
-#!/usr/bin/env bash
-set -Eeo pipefail
-
-if [[ ! -f "${XDG_RUNTIME_DIR}/bg_db" ]]; then
-    find "${1}" \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) -print > "${XDG_RUNTIME_DIR}/bg_db"
-fi
-
-while [[ ! -f "${TARGET}" ]]; do
-    TARGET=$(shuf -n 1 "${XDG_RUNTIME_DIR}/bg_db")
-done
-
-gsettings set org.gnome.desktop.background picture-uri "file://${TARGET}/" || true
-gsettings set org.gnome.desktop.background picture-uri-dark "file://${TARGET}" || true
-```
-
-记得给这个文件添加可执行权限：chmod +x background.sh。
-
-运行时记得传入你壁纸文件夹的路径： background.sh ./your/background/PATH。
-
-2、使用 systemd --user 定期运行脚本。
-
-创建文件
-
-    background@.service
-
-```ini
-[Unit]
-Description=Select a random background from %I
-
-[Service]
-Type=oneshot
-RemainAfterExit=true
-ExecStart=%h/path/to/background.sh "%I"
-```
-
-其中 %h 对于 systemd --user 而言相当于 $HOME 的作用，而 %I 则用于传递参数也就是存储的图片文件夹路径。
-
-创建文件
-
-    background@.service
-
-```ini
-[Unit]
-Description=Select a random background from %I every 1 min
-PartOf=graphical-session.target
-
-[Timer]
-OnStartupSec=1
-OnUnitActiveSec=5min
-AccuracySec=1s
-Unit=background@.service
-
-[Install]
-WantedBy=gnome-session.target
-```
-
-使用 AccuracySec=1s 避免随机延迟，另外 PartOf 以及 WantedBy 确保了只有处于 Gnome 桌面环境时才会触发。
-
-启动 Timer
-
-    将 background@.service 和 background@.timer 放入 ~/.config/systemd/user/ 下，并启动 systemd 定时任务。
-
-    $ install -m640 background@.service background@.timer ~/.config/systemd/user/
-
-    $ systemctl --user daemon-reload
-
-    # BGPATH=$(systemd-escape "path/to/background/directory")
-
-    $ systemctl --user enable --now background@$BGPATH.timer
-
-第三行 path/to/background/directory 替换为你壁纸的路径。
-
-注意 @ 后面的路径 $BGPATH 变量需要使用 systemd-escape 进行转义。
-
-查看当前壁纸
-
-有时候需要知道当前壁纸的原图位置，只需要在 background.sh 相应位置添加：
-
-    echo "$TARGET" > "$XDG_RUNTIME_DIR/bg_path"
-
-    # 显示当前壁纸原图的位置
-    cat "$XDG_RUNTIME_DIR/bg_path"
-
-    # 在桌面环境打开原图
-    xdg-open $(cat "$XDG_RUNTIME_DIR/bg_path")
-
-#### 给资源管理器添加 meld 右键菜单
-
-meld 基于 python 的开源合并工具，替换 BeyondCompare，缺点是在文件夹对比有大量文件时会卡住
-
-    https://meldmerge.org/
-        https://gitlab.gnome.org/GNOME/meld
-        https://gitlab.gnome.org/GNOME/meld/-/wikis/home
-
-    https://www.cnblogs.com/onelikeone/p/17291936.html
-
-其它考虑
-
-    Diffuse 文字对比不错，可惜不支持文件夹对比
-        https://github.com/MightyCreak/diffuse
-            原 https://github.com/MightyCreak/diffuse
-
-    KDiff3 偏向 merge 方向，文件夹对比的差异不够直观 https://apps.kde.org/kdiff3/
-
-    TkDiff https://sourceforge.net/projects/tkdiff/
-
-    DiffMerge 闭源的免费软件 https://www.sourcegear.com/diffmerge/downloads.html
-
-如果使用 GNOME桌面，其资源管理器可以添加右键菜单 “script”，在 ~/.local/share/nautilus/scripts 目录下建立如下两个文件：
-
-A-set-as-meld-left：
-
-```bash
-#!/bin/bash
-#
-# https://www.cnblogs.com/onelikeone/p/17291936.html
-# This script opens a compare tool with selected files/directory by
-# script "set-as-*-left".
-# so you should run "set-as-*-left" first
-# Copyright (C) 2010  ReV Fycd
-# Distributed under the terms of GNU GPL version 2 or later
-#
-# Install in ~/.gnome2/nautilus-scripts or ~/Nautilus/scripts
-# or ~/.local/share/nautilus/scripts (ubuntu 14.04 LTS)
-# You need to be running Nautilus 1.0.3+ to use scripts.
-# You also need to install one compare tools to use scripts(such like meld)
-# You can change the $compareTool to other compare tools(like "Kdiff3") that
-# you have already installed before.
-
-compareTool="meld"
-if [ -n "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" ]; then
-    set $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS
-    if [ $# -eq 1 ]; then
-        file1="$1"
-        echo "set-as-Meld-left Copyright (C) 2010  ReV Fycd"
-        echo "${compareTool} ${file1} \\"> ~/.startcompare
-    fi
-fi
-```
-
-注意：
-
-    如果是 flatpak 安装的 meld，把上面的 `compareTool="meld"` 命令行替换为 `compareTool="flatpak run org.gnome.Meld"`
-
-B-compare-to-left：
-
-```bash
-#!/bin/bash
-#
-# https://www.cnblogs.com/onelikeone/p/17291936.html
-# This script opens a compare tool with selected files/directory by
-# script "set-as-*-left".
-# so you should run "set-as-*-left" first
-#
-# Copyright (C) 2010  ReV Fycd
-# Distributed under the terms of GNU GPL version 2 or later
-#
-# Install in ~/.gnome2/nautilus-scripts or ~/Nautilus/scripts
-# or ~/.local/share/nautilus/scripts (ubuntu 14.04 LTS)
-# You need to be running Nautilus 1.0.3+ to use scripts.
-# You also need to install one compare tools to use scripts(such like meld)
-
-if [ -n "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" ]; then
-    set $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS
-fi
-if [ $# -eq 1 ]; then
-    file2="$1"
-    echo "Compare-to-left Copyright (C) 2010  ReV Fycd"
-    echo $file2 >> ~/.startcompare
-fi
-
-chmod +x ~/.startcompare
-exec ~/.startcompare
-```
-
-然后赋予执行权限即可：
-
-    $ chmod +x Meld-aset-as-left Meld-compare-to-left
-
-使用
-
-    在第一个文件点右键，弹出菜单选 “Scripts”-->“A-set-as-meld-left”，
-
-    然后在第二个文件上点右键，弹出菜单选 “Scripts”-->“B-compare-to-left”
-
-    这时 meld 会自动弹出窗口对这两个文件进行比较
-
-如果是多选，如同时选择了两个文件或文件夹，右键菜单选择 “Open With...”，然后选择 meld 即可。
-
-### 使用 KDE 桌面（Plasma）
-
-KDE 因为多年保持桌面环境的稳定不变，所以应用软件的丰富程度比 GNOME 多太多了。
-
-KDE 的桌面定制选项非常多，慢慢研究吧
-
-    https://itsfoss.com/kde-customization/
-
-KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏览器中添加扩展的那种不方便的方式（使用另一个浏览器扩展），你可以使用 KDE 的软件管理器 “发现（Discovery）”，直接访问 KDE 的附加组件。
-
-KDE 自带的软件也有很多精品比如 KDE connect 等
-
-    https://apps.kde.org/kdeconnect/
-
-    已经延展到了多个平台 https://apps.kde.org/platforms/windows/
-
-### 其它桌面环境
-
-enlightenment 桌面
-
-    https://www.enlightenment.org/
-
-如果不想用桌面环境，但还需要在图形化的窗口下工作，见章节 [窗口管理器（Windows Manager）]。
-
-### 多显示器调整显示
-
-xrandr 是 Linux 系统中用于配置显示器分辨率和布局的命令行工具，而 arandr 则提供了图形化的界面，可以指定主显示器、扩展多屏幕、动态调整（缩放、旋转、反转）屏幕等功能。
 
 ### Linux 桌面的基本目录规范 XDG（X Desktop Group）
 
