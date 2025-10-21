@@ -11981,7 +11981,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Auto Move Windows       指定应用程序在指定桌面打开窗口。对经常同时打开很多应用程序的用户来说，按桌面归类各个应用程序的窗口，非常方便。竞品 put windows。
 
-    Tiling Shell            适合大屏用户，提供多种窗口布局方案，提升你多开软件时的办公效率，类似 Windows 11 或 macOS
+    Tiling Shell            适合大屏用户，提供多窗口布局方案，鼠标拖动窗口到任务栏会提示如何布局，提升你多开软件时的办公效率
 
     Lock Keys               有些键盘的数字键盘和大写键没有指示灯，用这个在任务栏的系统区进行提示。
 
@@ -12451,8 +12451,6 @@ exec ~/.startcompare
 
 ### 使用 KDE 桌面（Plasma）
 
-KDE 因为多年保持桌面环境的稳定不变，所以应用软件的丰富程度比 GNOME 多太多了。
-
 很多桌面环境都自带常用软件，所以我们说使用某某桌面环境，除了开机进入桌面的操作界面和使用方式是其专门设计的，还会附带自行设计的核心工具软件，如日历、时钟、计算器、媒体播放器、文件管理器等工具，这样可以使用户开箱即用，无需在操作系统的软件商店各种搜索了，比较省心。
 
     https://apps.kde.org/zh-cn/
@@ -12460,6 +12458,10 @@ KDE 因为多年保持桌面环境的稳定不变，所以应用软件的丰富�
     https://apps.kde.org/zh-cn/categories/
 
     有些软件提供了 Windows 版 https://apps.kde.org/zh-cn/platforms/
+
+KDE 因为多年保持桌面环境的稳定不变，所以应用软件的丰富程度比 GNOME 多太多了
+
+    软件商店 https://store.kde.org/ 在这里搜索吧，茫茫多的软件供你挑选
 
 KDE 的桌面定制选项非常多，慢慢研究吧
 
@@ -12482,6 +12484,18 @@ enlightenment 桌面
 如果不想用桌面环境，但还需要在图形化的窗口下工作，见章节 [窗口管理器（Windows Manager）]。
 
 ### 常用桌面工具软件
+
+最流行的 Linux 软件搜索下载：
+
+    https://store.kde.org/
+
+    https://www.pling.com/
+
+    https://www.gnome-look.org/browse/
+
+    AppImage Pool：一个帮助你寻找和管理 AppImage 的应用商店，搜索 https://www.appimagehub.com/
+        https://zhuanlan.zhihu.com/p/450687681
+        https://github.com/prateekmedia/appimagepool
 
 搜索和安装图形化软件的方法，参见章节 [使用 Fedora 软件商店](init_a_server think)。
 
@@ -14088,6 +14102,8 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 窗口管理器 vs 桌面环境
 
     窗口管理器（Windows Manager），负责绘制窗口的边框，处理窗口运行比如移动、最小化之类的行为。
+
+        https://linux.net.cn/article-12068-1.html
 
     桌面（Desktop Environment），是窗口管理器的超集，它使用合成器（Compositor）把多个程序窗口绘制出的内容，把它们合成出来并高效地增量更新用户界面 GUI。比如 compiz 这种基于 OpenGL 的混合型窗口管理器，用立体的方式显示窗口切换。
 
