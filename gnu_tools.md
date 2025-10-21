@@ -11989,7 +11989,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Auto Move Windows       指定应用程序在指定桌面打开窗口。对经常同时打开很多应用程序的用户来说，按桌面归类各个应用程序的窗口，非常方便。竞品 put windows。
 
-    Tiling Shell            适合大屏用户，提供多窗口布局方案，鼠标拖动窗口到任务栏会提示如何布局，提升你多开软件时的办公效率
+    Tiling Shell            像 Windows 或 macOS 那样提供多窗口布局方案，鼠标拖动窗口到任务栏会提示如何布局，提升你多开软件时的办公效率
 
     Lock Keys               有些键盘的数字键盘和大写键没有指示灯，用这个在任务栏的系统区进行提示。
 
@@ -11997,11 +11997,11 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口。
 
-    system-monitor-next     在任务栏显示你的cpu、内存使用情况，就像在终端使用 btop 或 nmon 的效果。竞品 Vitals/Freon。
-
     GSConnect               操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”，使用说明 <https://lixuannan.github.io/posts/27832.html>。如果需要完整操控你的手机，见章节 [Scrcpy --- 在 Linux 桌面显示和控制 Android 设备]。
 
     Night Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现定时自动切换。
+
+    system-monitor-next     在任务栏显示你的cpu、内存使用情况，就像在终端使用 btop 或 nmon 的效果。竞品 Vitals/Freon。
 
     Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在任务栏的时间弹窗处先设置你的位置。
 
@@ -12042,6 +12042,9 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
     blur my shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口也使用你的壁纸作背景，而且支持某些应用程序和扩展透明化，注意跟有些主题兼容性不好边缘无法透明。不需要使用它的锁屏背景模糊功能，使用 Bing Wallpaper 扩展的这个功能效果更好。不需要使用它的 Dash to Dock/Panel 的透明化功能，那些扩展自己有透明化设置。
 
     burn my window          窗口的弹出和关闭各种特效化，推荐勾选 Apparition、Doom、Hexagon、TV Glitch。
+
+    Just Perfection         自定义你的 gnome 桌面的各个元素
+
 
 #### 使用 gnome 主题
 
