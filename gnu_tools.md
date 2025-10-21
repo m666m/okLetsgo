@@ -11601,7 +11601,7 @@ Fedora
 
 老老实实用最多人用的 GNOME 吧，其它桌面环境坑更多，随便就有软件运行不起来。
 
-### 使用 Gnome 桌面
+### Gnome 桌面
 
 很多桌面环境都自带常用软件，所以我们说使用某某桌面环境，除了开机进入桌面的操作界面和使用方式是其专门设计的，还会附带自行设计的核心工具软件，如日历、时钟、计算器、媒体播放器、文件管理器等工具，这样可以使用户开箱即用，无需在操作系统的软件商店各种搜索了，比较省心。
 
@@ -12449,7 +12449,7 @@ exec ~/.startcompare
 
 如果是多选，如同时选择了两个文件或文件夹，右键菜单选择 “Open With...”，然后选择 meld 即可。
 
-### 使用 KDE 桌面（Plasma）
+### KDE 桌面（Plasma）
 
 很多桌面环境都自带常用软件，所以我们说使用某某桌面环境，除了开机进入桌面的操作界面和使用方式是其专门设计的，还会附带自行设计的核心工具软件，如日历、时钟、计算器、媒体播放器、文件管理器等工具，这样可以使用户开箱即用，无需在操作系统的软件商店各种搜索了，比较省心。
 
@@ -13833,1224 +13833,6 @@ Icon=utilities-terminal
 Categories=GTK;System;TerminalEmulator;
 ```
 
-### Linux 桌面的基本目录规范 XDG（X Desktop Group）
-
-对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境。目前最流行的 freedesktop 的规范称为 XDG
-
-    https://www.freedesktop.org/software/systemd/man/file-hierarchy.html
-
-    https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-
-    https://wiki.archlinux.org/index.php/XDG_Base_Directory
-    https://wiki.archlinux.org/title/Xdg-utils
-
-    https://catcat.cc/post/wn3np/
-
-    https://blog.csdn.net/u014025444/article/details/94029895
-
-    https://winddoing.github.io/post/ef694e1f.html
-
-    https://blog.csdn.net/weixin_29702195/article/details/116886216
-
-    https://blog.csdn.net/u014025444/article/details/94029895
-
-Linux 操作系统的基本目录结构参见章节 [Linux 目录和分区](shellcmd.md)。
-
-XDG 基本目录规范基于以下概念：
-
-    XDG 环境变量             说明                                    默认值
-
-    $XDG_DATA_HOME      用于写入特定用户数据文件的基本目录              $HOME/.local/share
-    $XDG_CONFIG_HOME    用于写入特定用户的配置文件基本目录              $HOME/.config
-    $XDG_DATA_DIRS      首选的基本数据目录                           /usr/local/share/:/usr/share/ 等
-
-    $XDG_CONFIG_DIRS    首选的基本配置目录                           /etc/xdg
-    $XDG_CACHE_HOME     用于写入用户特定的非必要（缓存）数据的基本目录    $HOME/.cache
-    $XDG_RUNTIME_DIR    用户放置特定于用户的运行时文件和其他文件对象
-
-$XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对象（例如套接字，命名管道…）存储的基本目录。该目录必须由用户拥有，并且他必须是唯一具有读写访问权限的目录。它的Unix访问模式必须是 0700。
-
-目录的生命周期必须绑定到登录用户。必须在用户首次登录时创建，如果用户完全注销，则必须删除该目录。如果用户多次登录，他应该指向同一目录，并且必须从第一次登录到他在系统上的最后一次登出时继续存在，而不是在两者之间删除。目录中的文件必须不能在重新启动或完全注销/登录循环后继续存在。
-
-该目录必须位于本地文件系统上，不与任何其他系统共享。该目录必须完全按照操作系统的标准进行。更具体地说，在类Unix操作系统上，AF_UNIX套接字，符号链接，硬链接，适当的权限，文件锁定，稀疏文件，内存映射，文件更改通知，必须支持可靠的硬链接计数，并且对文件名没有限制应该强加字符集。此目录中的文件可能需要定期清理。为确保不删除您的文件，他们应至少每6小时单调时间修改一次访问时间戳记，或者在文件上设置“粘滞”位。
-
-如果 $XDG_RUNTIME_DIR 未设置，应用程序应回退到具有类似功能的替换目录并打印警告消息。应用程序应使用此目录进行通信和同步，并且不应在其中放置较大的文件，因为它可能驻留在运行时内存中，并且不一定可以交换到磁盘。
-
-环境变量清单：用户层面变量（User-Level Variables）
-
-    $XDG_DATA_HOME          $HOME/.local/share/
-
-        储用户特定的数据文件的基准目录。通常来说文件较大，有反复使用的价值，建议备份里面的文件。
-
-        使用场景：
-
-            用户下载的插件；
-            程序产生的日志、历史记录、离线资源等数据文件；
-            用户输入历史、书签、邮件等。
-
-    $XDG_CONFIG_HOME        $HOME/.config/
-
-        存储用户特定的配置文件的基准目录，建议备份里面的文件。
-
-        使用场景：
-
-            用户配置。
-
-        一般来说，这个地方可以在程序初始化的时候存储一个默认的配置文件供加载和修改。
-
-    $XDG_CACHE_HOME         $HOME/.cache/
-
-        应存储用户特定的非重要性数据文件的基准目录，建议备份里面的文件。
-
-        使用场景：
-
-            缓存的缩略图、歌曲文件、视频文件等。
-            程序应该做到哪怕这个目录被用户删了也能正常运行。
-
-    $XDG_RUNTIME_DIR
-
-        应存储用户特定的非重要性运行时文件和一些其他文件对象（例如套接字，命名管道…）存储的基本目录
-
-        该目录必须由用户拥有，并且该用户必须是唯一具有读写访问权限的。该目录的 Unix 访问模式必须是 0700。
-
-用户层面目录的生命周期必须绑定到登录用户。必须在用户首次登录时创建，如果用户完全注销，则必须删除该目录。如果用户多次登录，他应该指向同一目录，并且必须从第一次登录到他在系统上的最后一次登出时继续存在，而不是在两者之间删除。目录中的文件必须不能在重新启动或完全注销/登录循环后继续存在。
-
-用户层面目录必须位于本地文件系统上，不与任何其他系统共享。该目录必须完全按照操作系统的标准进行。更具体地说，在类Unix操作系统上，AF_UNIX套接字，符号链接，硬链接，适当的权限，文件锁定，稀疏文件，内存映射，文件更改通知，必须支持可靠的硬链接计数，并且对文件名没有限制应该强加字符集。此目录中的文件可能需要定期清理。为确保不删除您的文件，他们应至少每6小时单调时间修改一次访问时间戳记，或者在文件上设置“粘滞”位。
-
-如果 $XDG_RUNTIME_DIR 未设置，应用程序应回退到具有类似功能的替换目录并打印警告消息。应用程序应使用此目录进行通信和同步，并且不应在其中放置较大的文件，因为它可能驻留在运行时内存中，并且不一定可以交换到磁盘。
-
-环境变量清单：系统层面变量（System-Level Variables）
-
-    $config，默认为 ~/.config : /etc
-
-        如果在尝试编写文件时，目标目录不存在，则应尝试使用权限 0700 创建目标目录。
-
-        如果目标目录已存在，则不应更改权限。
-
-        应用程序应准备好处理无法写入文件的情况，因为该目录不存在且无法创建，或者出于任何其他原因。在这种情况下，它可以选择向用户呈现错误消息。
-
-    $XDG_CONFIG_DIRS        /etc/xdg/
-
-        按照偏好顺序的基准目录集，用来搜索除了 $XDG_CONFIG_HOME 目录之外的配置文件。
-
-        该目录中的文件夹应该用冒号（:）隔开。
-
-        使用场景：
-
-            可以被用户特定的配置文件所覆盖的系统层面的配置文件。
-
-        一般来说，应用程序安装的时候可以加载配置文件到这个目录。
-
-    $XDG_DATA_DIRS          /usr/local/share/:/usr/share/
-
-        按照偏好顺序的基准目录集，用来搜索除了 $XDG_DATA_HOME 目录之外的数据文件。
-
-        该目录中的文件夹应该用冒号（:）隔开。
-
-        使用场景：
-
-            可以被所有用户使用的插件或者主题。
-
-        一般来说，应用程序安装的时候可以加载插件、主题等文件到这个目录。
-
-参考规范
-
-    文件                参考规范：subdir应该为软件名
-    数据文件        $datadir/subdir/filename
-    配置文件        $confdir/subdir/filename
-
-#### xdg-utils
-
-常用的桌面环境操作统一化，比如安装应用菜单，设置默认浏览器，设置默认电子邮件客户端，设置默认的媒体播放器等等
-
-    https://wiki.archlinux.org/title/Xdg-utils
-
-    https://juejin.cn/post/6844903944922087438
-
-使用首选程序打开一个文件或链接，比如打开文件文件管理器、打开邮件、打开浏览器，统一到一个工具下面了
-
-    xdg-open — opens a file or URL in the user's preferred application
-
-xdg-utils 从 utils 后缀我们可以知道这是一组工具，目的就是能够让应用轻松的集成在用户的桌面环境，不必考虑特定的用户运行桌面环境。
-
-这组工具集包括：
-
-    xdg-desktop-menu - 安装桌面应用菜单项
-    xdg-desktop-icon - 在用户桌面安装图标
-    xdg-email - 使用用户默认电子邮件客户端写一封新邮件，可以使用参数指定主题、内容、附件等
-    xdg-icon-resource - 为应用程序的启动程序安装一个图片资源
-    xdg-mime - 查询关于文件类型处理的信息，并为新文件类型添加描述
-    xdg-open - 以用户首选的应用程序打开一个URL，用于分别处理各自的URL或文件类型
-    xdg-screensaver - 屏幕保护程序的控制工具，如：锁屏等
-    xdg-settings - 查看、设置默认web浏览器和URL处理程序
-
-### GNOME，Xorg，X Window，X Server，Wayland是什么关系
-
-    https://www.zhihu.com/question/503270852
-
-    https://zhuanlan.zhihu.com/p/134325713
-
-    https://zhuanlan.zhihu.com/p/427637159
-
-X window 是一个技术体系
-
-    又叫 X 窗口系统，最初起源于1984年，是为了解决类 unix 系统的图形显示问题而推出的显示接口。它使用 unix 套接字式的 c/s 模式，从而分离出了前端和后端两部分，天生就支持远程分布。
-
-        也就是说，应用程序和显示器不必在同一台计算机上，每一个窗口应用程序对应一个（或多个？）X Client，用户的显示界面上运行的是 X Server。注意这里本地运行的是 X server，远程服务器运行图形化程序使用的是 X client。注意这个概念只是程序实现时的术语，跟我们安装应用时本地称客户端，远程称服务端不同。
-
-        就 X windows 桌面体系来说，天生就支持远程，XServer 和 XClient 在同一台电脑上就是连接本地桌面，通过  ssh -x 连接就是远程桌面了，没有本质区别。
-
-    Xserver：用来处理用户输入和系统输出的指令。X server 运行在工作站上，而用户在具有更强处理能力的远程计算机上运行应用程序是很常见的。
-
-    X11(X Window System)：Linux 桌面显示的协议。
-
-    Xorg：是 Linux 上通用的桌面环境（后端）服务器（X11的一种具体开源实现）。它使用 X11 协议与 X client 端应用程序进行交互的应用程序，X Server 在显示器上绘制内容并发送输入事件，例如鼠标移动，单击和击键。因为它不直接传送图像数据，所以比较节约带宽。
-
-    现在大多时候，可以把 Xorg、X11、X Server 说成 x-window 体系的同一个东西，就是 Linux 桌面的 X 后端服务器
-
-        Xorg 的前端实现就是 X server，所以又称 Xorg xserver 或 X11 server
-
-现在主流的 GNOME、KDE、Xfce 等桌面环境，使用的 X Window 体系都是基于 Xorg 基础之上开发，也就是桌面软件（或者是图形软件）的集合
-
-    x window 体系的通用命令： startx 在命令行下启动桌面环境
-
-查看当前桌面环境是什么类型
-
-    $ echo $XDG_SESSION_TYPE
-
-GTK+ and Qt
-
-    这两个是 GUI toolkits 软件库，类似 c 语言的 stdio.h，win32，java 里 import 的各种外部包，可以任开发者调用（应该是 C/C++ 使用的库）去创建一些图形界面里面的控件，例如 button，下拉菜单，窗口等。我记得 JAVA 里面也有类似 AWT 和 Swing 库。用这一套库开发出的图形空间将会有一套统一的风格和标准，这就是不同系统安装的不同软件有的时候会有相同的样式，因为他们可能使用了 GTK 或者 QT 的库。
-
-    KDE 默认使用 Qt 库开发，Gnome 默认使用 GTK+ 库开发，而这两套库又是基于 X window server 的，需要遵守 x11 协议，在 xwindow server 上运行，作为 client 应用实现的基础类库。
-
-Gnome 50(Fedora 43) 开始将彻底移除 x11 体系，完全切换到使用 wayland 体系，对 x11 将使用 xwayland 技术保持兼容。
-
-#### Wayland
-
-    https://docs.freebsd.org/en/books/handbook/wayland/
-
-    https://wiki.archlinux.org/title/Wayland
-
-    https://zhuanlan.zhihu.com/p/503627248
-
-    用 Wayland 开启 Linux
-        https://zhuanlan.zhihu.com/p/531205278
-
-    GNOME 设置默认 wayland 或 xorg
-        https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
-
-Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的在于替代 X Window
-
-    Wayland 只是提供一个协议的基础抽象，参考实现叫 Weston
-
-    Gnome、KDE 等都有对应的 Wayland 实现
-
-    不再是 Client-Server 模式，远程桌面的实现方式不同
-
-    Wayland 使用 Xwayland 组件兼容依赖 X11 的传统应用，基于 X Window 的 VNC 远程桌面程序连接到 wayland 桌面环境时由 xvnc 组件提供支持。对于普通用户来说，体验不到变化。
-
-Wayland 自带的 terminal emulator 叫 foot
-
-    https://man.archlinux.org/man/foot.1.en
-        https://codeberg.org/dnkl/foot
-
-Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
-
-    QT_QPA_PLATFORM=wayland
-
-### 显示管理器（DisplayManager）设置登录后的桌面环境
-
-显示管理器又叫做 “登录管理器”，如 gdm、sddm、lightdm 等，其作用仅仅只是在你开机后，让你输入用户名和密码处理用户身份验证登录，然后引导进入桌面，至此任务完成，之后就交给桌面环境了。你可以不需要 DM，直接通过 startx脚本命令进入桌面。
-
-    https://wiki.archlinux.org/title/Display_manager
-        https://wiki.archlinux.org/title/GDM
-
-    https://zhuanlan.zhihu.com/p/272740410
-
-设置开机启动到桌面还是命令行，主流的桌面环境都用 systemctl 接管了，有专门的控制命令，参见章节 [桌面环境的开机自启动]。如果是启动到桌面，systemctl 会自动调度到显示管理器进行用户登录。
-
-所以首先要确保 systemd 设置开机时启动到桌面
-
-    # 一般都使用 systemctl 进行控制了
-    $ systemctl get-default
-    graphical.target
-
-然后确保 systemd 的显示管理器服务也是启动的。
-
-如果安装了多个桌面环境，可以在显示管理器选择启动到哪个桌面环境
-
-    如果是本地登录，在显示管理器的用户登录界面，点击右下方的小齿轮可以选择使用何种桌面环境
-
-    如果是 xrdp 远程登录，在 “session” 处选择
-
-如果安装了多个显示管理器，则可以使用以下方法在它们之间进行选择
-
-    sudo dpkg-reconfigure gdm3
-
-    GNOME 显示管理器 gdm，在 flatpak 搜 “Login Manager Settings” 可以定制呈现界面
-
-    KDE 的显示管理器 sddm
-
-    Ubuntu Unity 桌面显示管理器 lightdm
-
-    Wayland Login Manager 支持 x-window/wayland 环境的命令行下的显示管理器 wayland-lyl
-    https://docs.freebsd.org/en/books/handbook/wayland/#wayland-ly
-
-### 窗口管理器（Windows Manager）
-
-窗口管理器 vs 桌面环境
-
-    窗口管理器（Windows Manager），负责绘制窗口的边框，处理窗口运行比如移动、最小化之类的行为。
-
-        https://linux.net.cn/article-12068-1.html
-
-    桌面（Desktop Environment），是窗口管理器的超集，它使用合成器（Compositor）把多个程序窗口绘制出的内容，把它们合成出来并高效地增量更新用户界面 GUI。比如 compiz 这种基于 OpenGL 的混合型窗口管理器，用立体的方式显示窗口切换。
-
-我们常用的 Gnome 就是一个桌面环境，默认使用 Metacity 作为窗口管理器。
-
-常见的窗口管理器一般都基于 wlroots 库：一个为基于 wayland 的各类 wm/de（或者叫compositor）提供基础设施的项目
-
-    https://gitlab.freedesktop.org/wlroots/wlroots
-
-使用窗口管理器，需要自己配置软件源，自己安装字体，firefox 假死问题自己解决。
-
-    https://zhuanlan.zhihu.com/p/47526909
-
-    https://www.zhihu.com/question/41364792
-
-    https://zhongguo.eskere.club/%E9%80%82%E7%94%A8%E4%BA%8E-linux-%E7%9A%84-5-%E4%B8%AA%E6%9C%80%E4%BD%B3%E7%AA%97%E5%8F%A3%E7%AE%A1%E7%90%86%E5%99%A8/2021-10-03/
-
-平铺式窗口管理器：自动排列窗口，以不重叠的方式占据整个屏幕，自动的被调整各个窗口大小。
-
-    i3 WM - 更好的平铺及动态窗口管理器。完全重写。目标平台是 GNU/Linux 和 BSD 操作系统。
-
-    i3-gaps - i3-gaps 是拥有更多功能的 i3。
-
-    sway - i3 的 wayland 实现，SwayFX 动态壁纸实现了桌面背景添加各种特效和动画
-
-    Miracle-WM - 新出现的一个 wayland 下的平铺式窗口管理器，目标是超越 i3/sway
-
-    Pop!_OS Shell - Pop Shell 是基于 GNOME shell 的窗口管理器，键盘驱动，自动平铺。
-
-    Bspwm - bspwm 是一个平铺式窗口管理器，将窗口以二叉树的叶结点的方式展现。
-
-    Herbstluftwm - 使用 Xlib 和 Glib 的手工平铺式窗口管理器。
-
-    Qtile - qtile 是一款全功能，可 hack 的平铺窗口管理器，使用 Python 编写和配置。
-
-    wayfire - 基于 Wayland 的 3D 混成器
-
-        https://github.com/WayfireWM/wayfire/wiki
-
-        配置文件位置：~/.config/wayfire.ini
-
-        Wayfire 相关配置与美化方案 https://alancorn.github.io/blogs/2023/wayfire.html
-
-叠加式窗口管理器：浮动式窗口管理器，由于屏幕空间有限，当前激活的窗口会浮在最上面，而遮住下面的窗口。
-
-    labwc - 比 wayfire 更轻量级，树莓派 3 也可以使用
-
-        https://mephisto.cc/series/labwc/
-
-        窗口管理器labwc使用记 https://mephisto.cc/tech/labwc/
-            配置文件参考 https://github.com/kmephistoh/dotfiles/tree/main/.config/labwc
-
-    Openbox - 高度可配置，带有可扩展标准支持的下一代窗口管理器。
-
-    2bwm - 快速的浮动窗口管理，有两个特殊边界，基于 XCB 库，由 mcwm 衍生。
-
-    Blackbox - 快速，轻量化的 X 窗口系统窗口管理器，没有那些烦人的库依赖。
-
-    Fluxbox - 基于 Blackbox 0.61.1 代码的 X 窗口管理器。
-
-动态窗口管理器
-
-    awesome - 高度可配置，下一代 X 框架窗口管理器
-
-        https://blog.kelu.org/tech/2021/12/29/linux-awesome-wm.html
-
-        https://blog.theerrorlog.com/switching-from-gnome-shell-to-awesome-wm-zh.html
-
-        awesome 窗口管理器使用备忘 https://blog.kelu.org/tech/2021/12/29/linux-awesome-wm.html
-
-    dwm - X 动态窗口管理器。它以平铺，单片镜以及浮动布局的方式管理窗口
-
-        https://zhuanlan.zhihu.com/p/183861786
-
-    spectrwm - 小型动态平铺 X11 窗口管理器。主要受 xmonad 和 dwm 启发。
-
-    xmonad - 动态平铺 X11 窗口管理器，用 Haskell 编写和配置。
-
-窗口管理器背后的工具 --- 合成器（Compositor）：
-
-    Mutter  -  GNOME的窗口管理器和合成器
-
-    Compton - Compton 是一款独立的合成管理器，适合同没有原生提供合成功能的窗口管理器一同使用。
-
-    Gamescope - Gamescope 是一款微合成器，提供一个带有独立输入，分辨率和刷新率的沙盒 Xwayland 桌面。
-
-    Sway - Sway 是平铺 Wayland 合成器，替代 X11 下 i3 窗口管理器（sway明确说不支持英伟达显卡）。
-
-    Mir - Miracle-WM 的合成器
-
-    Xcompmgr - Xcompmgr 是一个简单的合成管理器，能够渲染下拉阴影，使用 transset 工具的话，还可以实现简单的窗口透明。
-
-    Compiz：OpenGL 窗口和合成管理器，能实现三维的切换窗口
-
-        http://wiki.compiz.org/CommonKeyboardShortcuts
-
-        Fedora 版 https://spins.fedoraproject.org/zh_Hans_CN/mate-compiz
-
-        Compiz：2022年年中安装、配置和使用 https://ubunlog.com/zh-CN/compiz%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A82022/
-
-        compizconfig设置 https://blog.csdn.net/ysynhtt/article/details/44948989
-
-        使用compiz https://blog.csdn.net/kewen_123/article/details/115871744
-
-    Hyprland: 一个基于 wlroots 的动态平铺 Wayland 合成器，动态窗口的变换快速平滑
-
-        https://wiki.hyprland.org/Getting-Started/Master-Tutorial/
-
-        https://cascade.moe/posts/hyprland-configure/
-
-        https://www.bilibili.com/read/cv22707313/
-
-        不使用 wayland 的 Hypr --- 使用 Xorg 的窗口管理器
-            https://github.com/vaxerski/Hypr
-
-#### i3
-
-通过键盘操作的 i3 平铺窗口管理器使用 Linux 桌面，当您开始使用 i3 时，您需要记住其中的一些快捷方式才能使用。
-
-    https://i3wm.org/docs/userguide.html
-
-    自定义参考
-
-        https://github.com/Karmenzind/dotfiles-and-scripts/blob/master/home_k/.config/i3/common
-
-        https://github.com/Karmenzind/dotfiles-and-scripts/blob/master/home_k/.config/i3status/config
-
-        从零开始配置 i3-wm https://obster-y.github.io/zh-cn/posts/c4304786-bbc2-11eb-8847-0772b2ac4cf2/
-
-    https://zhuanlan.zhihu.com/p/44783017
-
-    https://zhuanlan.zhihu.com/p/51077654
-
-    https://segmentfault.com/a/1190000022083424
-
-在远程桌面 xrdp 下使用 i3，需要组件 xorgxrdp，参见章节 [xorgxrdp]。
-
-安装
-
-    # 不安装 urxvt，换为 terminator
-    $ sudo dnf install -y i3 i3-ipc i3status i3lock dmenu terminator --exclude=rxvt-unicode
-
-    $ sudo dnf group install "i3 desktop" "Window Managers"
-
-    # 高分辨率小屏需要调整一下dpi
-    $ echo 'Xft.dpi: 192' > ~/.Xresources
-
-前导键叫 mod 键，可以由用户设定，可以是 Mod1(alt键) 或者是 Mod4(Super/Win)。
-
-    # ++++++=定义按键变量=++++++#
-    # (Mod1 = Alt, Mod4 = Super/Win)
-    set $mod Mod4
-    set $m_alt Mod1
-
-    打开终端 urxvt          <mod> + <ENTER>
-
-    使用命令区              <mod> + d ，如果输入“ i3-msg exit ",运行该命令即可退出 i3 wm
-
-    切换到工作区 num        <mod> + num
-
-    把窗口移到工作区 num    $mod+Shift+num
-
-    切换窗口                Super+h或j或k或l 或者 Super+上下左右箭头
-
-    杀掉窗口                Super+Shift+q
-
-    退出 i3                 Super+Shift+e
-
-窗口模式
-
-    窗口在层叠、 标签和平铺之间来回切换    Super+s、w、e
-
-    平铺模式切换水平或垂直               super+v、h，再开新窗口就可以看到变化了
-
-切换模式后，新开窗口是在当前窗口区域执行你的模式，不断的在子窗口套娃。
-
-在 i3 中，工作区是对窗口进行分组的一种简单方法。您可以根据您的工作流以不同的方式对它们进行分组。例如，您可以将浏览器放在一个工作区上，终端放在另一个工作区上，将电子邮件客户端放在第三个工作区上等等。
-
-配置文件 /etc/i3/config 及 ~/.config/i3/config，或命令 i3-config-wizard
-
-    # 先把屏保功能关了：
-    exec --no-startup-id xset s 0
-
-    # 黑屏、睡眠、断电时间分别设为6000s，8000s，9000s，也可以只写前一个，不必三个都写
-    exec --no-startup-id xset dpms 6000 8000 9000
-
-    # win+c 可以调出选项，你可以选择锁屏(L)，注销(O)，重启(R)，关机(S)，退出选项(Esc)。
-    set $mode_system  lock(L) logout(O) reboot(R) shutdown(S) exit(Esc)
-    bindsym $mod+c mode "$mode_system"
-    mode "$mode_system" {
-        bindsym l exec --no-startup-id i3lock -c '#000000', mode "default"
-        bindsym o exec --no-startup-id i3-msg exit, mode "default"
-        bindsym r exec --no-startup-id systemctl reboot, mode "default"
-        bindsym s exec --no-startup-id systemctl poweroff, mode "default"
-        bindsym Escape mode "default"
-    }
-
-    # 常用的软件在用户设定的工作区打开：
-    # 打开URxvt的同时切换到tab模式
-    for_window [class="URxvt"] layout tabbed
-    # 打开软件时自动移至相应工作区
-    assign [class="URxvt"] $WS1
-    assign [class="Thunar"] $WS1
-    assign [class="Firefox"] $WS2
-    assign [class="Zathura"] $WS3
-    assign [class="Gvim"] $WS4
-    assign [class="Ise"] $WS5
-    assign [class="VirtualBox"] $WS6
-
-#### sway
-
-i3 的 wayland 实现，操作热键参考 i3
-
-    https://swaywm.org/
-
-        https://github.com/swaywm/sway/wiki
-
-        https://wiki.archlinux.org/title/Sway
-
-    freebsd 全面介绍
-
-        https://docs.freebsd.org/en/books/handbook/wayland/#wayland-sway
-
-    sway - i3兼容Wayland compositor
-        https://cloud-atlas.readthedocs.io/zh_CN/latest/linux/desktop/sway/index.html#sway
-
-    探索 Linux 桌面全面 wayland化（基于swaywm）
-        https://zhuanlan.zhihu.com/p/462322143
-
-    Sway: 从尝试到放弃
-        https://coda.world/sway-explore-and-giveup
-
-    https://zhuanlan.zhihu.com/p/441251646
-    https://blog.tiantian.cool/wayland/
-    https://zhuanlan.zhihu.com/p/462322143
-    https://www.fosskers.ca/en/blog/wayland
-
-起因
-
-之前重装系统时把桌面环境换成了 Wayland Gnome，经过一段时间的使用，感觉自己对 Gnome 这种寒酸大道至简的风格还是很满意的，不过它的窗口管理实在是有些混乱，于是萌生了试用一下平铺式窗口管理器的想法。
-
-由于难以接受倒退回 X Server，所以 Sway 自然成了首选。然后相对于 Gnome 这种完整的桌面环境，Sway 就真的只是个窗口管理器而已，所以需要进行大量配置才能满足日常需求其实说白了我真正需要的是一个使用平铺式窗口管理器的桌面环境。
-
-对比
-
-虽然我个人单纯是为了更好的管理窗口而试用 Sway，不过实际上在选择平铺式/堆叠式窗口管理器的原因上确实存在更多考量。
-
-平铺式窗口管理器
-
-窗口被摆放的整整齐齐，强迫症狂喜！
-屏幕太大了，放眼望去全是屏幕，完全没必要堆叠窗口，只要直接铺开就行了。
-往往更加轻量化，对硬件的需求较低。
-喜欢使用固定的布局显示窗口。
-不喜欢碰鼠标，希望通过键盘进行大部分的操作。
-堆叠式窗口管理器
-堆叠式窗口管理器往往伴随着成熟的桌面环境，省时省力，开箱即用！
-跟随主流，符合大多数人的使用习惯，也意味着碰到冷门问题的情况更少。
-可以自由的摆放窗口，这点在小屏幕上优势很明显。
-
-配置
-
-如前文所言，Sway 只是一个单纯的窗口管理器，需要进行各种配置才能勉强达到可用的状态，由于配置太过琐碎，这里只简单的提一下其实是单纯的懒，以后有时间可能会更新详细配置。
-
-Sway  快捷键
-
-默认的 Terminal Emulator
-字体
-分辨率以及刷新率
-壁纸
-利用 swayidle 实现自动锁屏
-Application Launcher/Status Bar 所调用的程序
-窗口间距
-鼠标主题 xcursor_theme
-其他需要随 Sway 运行的命令(exec_always{ ... })，例如
-    启动 exec /usr/bin/foo
-    设置 gtk 程序主题 gsettings set org.gnome.desktop.interface foo bar
-    设置 XDG_SESSION_TYPE 以及 DESKTOP_SESSION 环境变量
-
-状态栏
-
-Sway 有自带的状态栏 swaybar，不过目前比较热门的是 waybar
-
-Application Launcher
-
-一般使用 wofi，不过也可以自己写脚本配合 fzf 来实现。关机菜单也可以通过类似的方式进行生成和调用。
-
-Display Manager
-
-可以直接从终端启动 sway，不过我仍然使用了 GDM 作为 Display Manager，首先是因为可以自动读取 ~/.config/environment.d/*.conf 里的环境变量，其次是为了自动解锁 gnome-keyring。也不需要进行额外的设定，可以直接从登录界面选择进入 Sway。
-
-锁屏
-
-目前可以使用 swaylock 或者 swaylock-effects(AUR)，没有什么高级的设定，目前就显得很简陋。我也尝试过调用 GDM，不过以失败而告终。
-
-GTK 主题
-
-设置主题时不但要对 $XDG_CONFIG_HOME/gtk-*.0/settings.ini 进行设置，同时需要运行 gsettings set ...，总而言之就是能设置的地方都设置一遍，从而防止程序只读取特定位置的配置文件。
-
-QT 主题
-
-由于我没有使用任何基于 QT 的程序，所以直接省略了这个步骤。
-
-鼠标主题
-
-以我使用的 Breeze 主题为例，需要在多个地方进行设置，从而保证覆盖所有程序：
-
-    环境变量 XCURSOR_THEME="Breeze"
-
-    seat seat0 xcursor_theme Breeze 24
-
-GTK: settings.ini 中 cursor-theme='Breeze'，以及运行 gsettings set org.gnome.desktop.interface cursor-theme 'Breeze'。
-
-QT: 我没设置。
-
-如果缺少设置可能会导致鼠标指针在部分程序、或者部分位置(例如标题栏)变成默认样式。
-
-剪贴板
-
-Sway 下默认关闭窗口时会清空剪贴板，其实我还挺喜欢这种模式的，如果希望在窗口关闭后仍旧保留剪贴板中的内容，可以通过 clipman 实现。
-
-截图
-
-使用 grim 实现截图功能。
-
-系统通知
-
-使用 mako 实现简单的系统通知。
-
-Autostart
-
-Sway 并不会自动运行 $XDG_CONFIG_DIRS/autostart 里的程序，需要自己写相应的 systemd user unit 实现。
-
-结局
-
-实际上平铺式窗口管理模式本身还是令我相当满意的，但是我还是最终放弃了把 Sway 当作主力的想法，主要原因：
-
-窗口特效
-
-Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何特效，并且开发者已经坚决表示 Sway 的主要目标是稳定所以不会去支持高级特效。
-
-虽然我个人对窗口特效的要求是简短、简约，但是 Sway 只能用简陋来形容，而明明添加一些简单的特效就能使窗口的视觉效果提升很多。
-
-另外众所周知 X Server 走上了与混成器通信的畸形道路的原因之一就是对特效、透明、圆角边框的需求。而如今站在 wayland 的肩膀上，却不使用任何窗口特效未免显得无法物尽其用。
-
-最后不知道是否和这个有关，同样的鼠标主题在 Gnome 和 KDE 下显示效果是一致的，但是在 Sway 下颜色就深得有点不自然。
-
-集成度太低
-
-就如文中反复提及的那样，Sway 仅仅是个窗口管理器而已，所以很多东西不能像使用高集成度的桌面环境时那样方便，例如很多设置需要在多个地方进行重复配置，不支持 XDG Autostart, 插上优盘后自动挂载，更别提在通知中心里面直接通过单击消息打开相应的程序这类体验了。当然这些问题都可以通过自己写代码解决，但是这种感觉真的就是 GNU/Car。
-
-冷门
-
-不像 i3 之类的那样热门，这直接导致了可以偷参考的配置更少，同时生态圈内的各种工具也开发缓慢。同时平铺式窗口管理器本身也相对冷门，导致在部分“喜欢弹小窗”的程序上面体验较差，当然这种体验可以通过修改配置进行改善，不过始终是多了一个步骤。
-
-#### 使用窗口管理器需要自装组件
-
-状态栏 waybar
-
-    可以实现额外的功能，例如通过调用 `curl 'https://wttr.in/?format=1'` 来显示天气、调用自己写的脚本定期检查更新等。
-
-        https://github.com/Alexays/Waybar/wiki
-
-        示例
-
-            https://github.com/Alexays/Waybar/wiki/Examples
-
-            https://github.com/kmephistoh/dotfiles
-
-锁屏 swaylock
-
-关机菜单 wlogout，防止窗口管理器默认的 exit 时，直接就退出系统回到登录界面
-
-壁纸软件
-
-    swaybg  https://github.com/swaywm/swaybg
-    swww    https://github.com/LGFae/swww
-    mpvpaper 用 mpv 播放视频作为壁纸 https://github.com/GhostNaN/mpvpaper
-
-### 桌面环境的开机自启动
-
-    如果要配置登录到桌面后自动启动图形化软件，打开 Gnome Tweaks，点击 " Startup Applications" 添加即可。
-
-RHEL 系和 Debian 系都採用了 XDG 规范，详见章节 [Linux 桌面的基本目录规范 XDG（X Desktop Group）].
-
-#### 本地登录切换图形模式或控制台登录
-
-Fedora 的桌面环境同时支持 x-window 和 wayland，关闭图形模式开机后会停留在控制台登录，按 ctl + alt + F1/F2/F3/F4，切换控制台使用即可：
-
-    执行 `startx` 会在当前控制台启动一个 x-window 桌面环境，点击注销会退回到控制台
-
-    执行 `sudo systemctl isolate graphical.target` 会启动 waylan 桌面环境，执行 `sudo systemctl isolate multi-user.target` 会退回到命令行环境。
-
-    如果你的系统没有桌面环境， 只需要按下 Alt+Fn 键即可切换各个控制台，不需要按下 CTRL。
-
-另见章节 [登录控制台 tty login].
-
-#### X11 启动过程
-
-基于 x-window 的桌面环境的启动过程
-
-    https://wiki.archlinux.org/title/Xinit#Autostart_X_at_login
-
-    https://faq.i3wm.org/question/18/how-do-xsession-xinitrc-and-i3config-play-together.1.html
-
-        https://tldp.org/HOWTO/XWindow-User-HOWTO/runningx.html
-
-        https://dev.leiyanhui.com/c/arch-install-xrdp/
-
-具体启动过程：
-
-    在命令行执行 `startx` 将通过首先调用 xinit 来启动 X。
-
-    xinit 将在用户的主目录中查找一个 ~/.xinitrc 文件，以作为 shell 脚本运行。
-
-    xinitrc 用于设置合适的 X 环境，并启动其他程序，即我们可能希望在 X 启动后立即可用的“客户端”。
-
-    窗口管理器或桌面环境通常是最后一个启动的应用程序。
-
-一、设置登录终端后自动启动桌面，编辑 ~/.bash_profile 文件
-
-    if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
-        exec startx
-    fi
-
-如果要自行选择多个桌面自行启动，先编辑 ~/.xinitrc 文件
-
-    # Here Xfce is kept as default
-    session=${1:-xfce}
-
-    case $session in
-        i3|i3wm           ) exec i3;;
-        kde               ) exec startplasma-x11;;
-        xfce|xfce4        ) exec startxfce4;;
-        # No known session, try to run it as command
-        *                 ) exec $1;;
-    esac
-
-然后手工启动
-
-    $ xinit session
-
-    或
-
-    $ startx ~/.xinitrc session
-
-二、更常见的方法是 “GUI 登录”：
-
-    X 在登录之前运行，其使用 xdm（显示管理器）用于此目的。
-
-    登录管理器（如GDM，KDM，XDM）会查找执行 ~/.xsession。
-
-    所以 xdm 的 ~/.xsession 大致相当于 startx 的 ~/.xinitrc。
-
-所以，根据您启动 X 的方式，计算机将执行 ~/.xinitrc 或 ~/.xsession 文件。
-
-在桌面启动的最后阶段，如果你从 ~/.xinitrc 或 ~/.xsession 执行 i3wm 窗口管理器，那么 i3wm 将从 ~/.i3/config 读取其初始配置。
-
-利用这点，用户可以创建一个统一两种登录方式的单个脚本：
-
-    `echo "exec i3" >> ~/.xinitrc`。
-
-    # 创建 xdm 等效的符号链接
-    ln -s $HOME/.xinitrc $HOME/.xsession
-
-在启动 X11 时，将运行 .xinitrc 或 .xsession 脚本，并且脚本完成后，X11 会关闭：当 .xinitrc 完成时，也就是 X11 结束的时候，而不是当你的窗口管理器退出时才关闭。
-
-另外，GDM 登录似乎忽略了“~/.xsession”，因此这并不能使其成为 Ubuntu 用户的选项。
-
-#### 开机启动到命令行，直接启动显示管理器
-
-```bash
-
-# https://github.com/martinpitt/pitti-workstation-oci
-if [ "$(tty)" = "/dev/tty1" ]; then
-    export `gnome-keyring-daemon --start --components=ssh`
-    export BROWSER=firefox-wayland
-    export XDG_CURRENT_DESKTOP=sway
-    exec sway > $XDG_RUNTIME_DIR/sway.log 2>&1
-fi
-
-```
-
-#### 自助机 Kiosk 模式 --- 将会话限制为单个应用程序
-
-在 GNOME 登录屏幕中，从齿轮按钮菜单中选择你的 kiosk 应用
-
-    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/customizing_the_gnome_desktop_environment/assembly_restricting-the-session-to-a-single-application_customizing-the-gnome-desktop-environment
-
-    Windows 也有 https://learn.microsoft.com/en-us/windows/configuration/kiosk-single-app
-
-单应用模式下启动 GNOME 会话，也称为 kiosk 模式。在此会话中，GNOME 只会显示您选择的应用程序的完整屏幕窗口。这样你的计算机就可以作为一台自助服务机提供公众服务了。
-
-    $ sudo dnf install gnome-kiosk gnome-kiosk-script-session
-
-还可以安装 remmina-gnome-session 软件包，实现开机自启动到远程桌面
-
-    $ sudo dnf install remmina-gnome-session
-
-#### 关闭桌面环境开机自启动
-
-为了节约内存，可以设置成本地开机进入命令行模式，手工执行命令才进入桌面环境，或直接启动单独的图形化应用程序。
-
-    https://www.redhat.com/sysadmin/configure-systemd-startup-targets
-
-    https://docs.fedoraproject.org/en-US/quick-docs/understanding-and-administering-systemd/index.html#mapping-runlevels-to-targets
-
-    https://askubuntu.com/questions/1242965/how-to-disable-gui-in-ubuntu
-
-    https://askubuntu.com/questions/76543/
-
-    https://superuser.com/questions/443997
-
-    https://www.tecmint.com/change-runlevels-targets-in-systemd/
-
-一、老式的 X-window 系统，关闭开机自启动参见章节 [X11 启动过程]。
-
-二、对使用 systemd 管理的桌面环境
-
-/etc/inittab 文件的说明：
-
-    Ctrl-Alt-Delete is handled by /usr/lib/systemd/system/ctrl-alt-del.target
-
-    systemd uses 'targets' instead of runlevels. By default, there are two main targets:
-
-        multi-user.target: analogous to runlevel 3
-
-        graphical.target: analogous to runlevel 5
-
-    To view current default target, run:
-
-        systemctl get-default
-
-    To set a default target, run:
-
-        systemctl set-default TARGET.target
-
-查看登录后启动的设置选项
-
-    $ systemctl get-default
-
-    启动到桌面是 graphical.target，启动到命令行是 multi-user.target。
-
-在系统运行时进行切换：
-
-    # 切换到命令行模式，等效 init 3，在 Fedora 下会退出到控制台 ctl+alt+F2。
-    $ sudo systemctl isolate multi-user.target
-
-    # 切换到图形模式，等效 init 5
-    $ sudo systemctl isolate graphical.target
-
-设置开机自启动：
-
-    设置为登录后启动到命令行（控制台）
-
-        $ sudo systemctl set-default multi-user.target
-
-    设置为登录后启动到图形界面
-
-        $ sudo systemctl set-default graphical.target
-
-    然后重启计算机即可
-
-        $ sudo systemctl reboot
-
-显示管理器也应该是启用状态
-
-    $ sudo systemctl enable gdm/kdm/lightdm
-
-三、利用 systemd 管理的显示管理器也可单独控制启停（内存占用还是大，不如上面的方法）
-
-    # lightdm sddm
-    $ sudo systemctl disable gdm
-
-    也可手工启动、停止指定的显示管理器服务
-
-        # lightdm sddm
-        $ sudo systemctl start gdm
-
-四、单独设置显示管理器服务是否开机自启动，编辑控制文件
-
-lightdm
-
-    https://wiki.debian.org/LightDM
-
-    # 又说  /etc/lightdm/lightdm.conf
-    echo 'manual' | sudo tee /etc/init/lightdm.override
-
-    手工启动、停止
-
-        startx
-
-    如果行不通那就是用 systemd 管理了
-
-gdm
-
-    https://wiki.debian.org/GDM#systemd
-
-    # 又说 /etc/gdm3/daemon.conf
-    或编辑  /etc/init/gdm.conf
-
-        stop on runlevel [0126]
-        #================================================================
-        #start on ((filesystem
-        #           and runlevel [!026]
-        #           and started dbus
-        #           and (drm-device-added card0 PRIMARY_DEVICE_FOR_DISPLAY=1
-        #                or stopped udev-fallback-graphics))
-        #          or runlevel PREVLEVEL=S)
-        #
-        #stop on runlevel [0126]
-        #================================================================
-
-    手工启动、停止
-
-        startx
-
-    如果行不通那就是用 systemd 管理了
-
-sddm
-
-    https://wiki.debian.org/SDDM
-
-    # 又说 /etc/sddm.conf
-    编辑 /etc/init/kdm.conf
-
-        stop on runlevel [0126]
-        #================================================================
-        #start on ((filesystem
-        #           and runlevel [!026]
-        #           and started dbus
-        #           and (drm-device-added card0 PRIMARY_DEVICE_FOR_DISPLAY=1
-        #                or stopped udev-fallback-graphics))
-        #          or runlevel PREVLEVEL=S)
-        #
-        #stop on runlevel [0126]
-        #================================================================
-
-    手工启动、停止
-
-        startx
-
-    如果行不通那就是用 systemd 管理了
-
-五、在操作系统启动分区管理设置开机后进入何种环境
-
-直接编辑 grub 条目，在 'linux  ....' 行的末尾加 3 则等效于开机 init 3 进入命令行环境。
-
-### 不进入桌面环境，控制台执行图形化程序
-
-在 Linux 系统中，即使不进入桌面环境，可以在没有任何装饰、桌面或窗口管理的情况下启动应用程序，即通过命令行在控制台（console）下执行图形化程序。
-
-#### 在 Wayland 环境控制台下执行图形化程序
-
-GNOME 使用 Wayland 作为默认显示服务器，运行图形化程序的方式与传统的 Xorg 有所不同。Wayland 的设计更加现代化，但它的工作方式与 Xorg 有显著区别，因此需要一些额外的步骤来在控制台下运行图形化程序。
-
-以下是在 Wayland 桌面环境（如 GNOME）中，不进入桌面环境，直接在控制台下运行图形化程序的方法：
-
-1、确保 Wayland 会话已启动
-
-Wayland 需要一个运行的会话（session）来管理显示和输入。如果你没有进入桌面环境，可以通过以下方式启动一个 Wayland 会话：
-
-使用 gnome-shell 启动 Wayland 会话
-
-    gnome-shell --wayland --display-server
-
-这会启动一个 GNOME Shell 实例，并使用 Wayland 作为显示服务器。
-
-2、设置 WAYLAND_DISPLAY 环境变量
-
-Wayland 使用 WAYLAND_DISPLAY 环境变量来指定显示器的连接。你需要设置这个变量，以便图形化程序知道如何连接到 Wayland 服务器。
-
-首先，查找当前运行的 Wayland 显示服务器的名称。通常，Wayland 显示服务器的名称类似于 wayland-0 或 wayland-1。你可以通过以下命令查找：
-
-    ls /run/user/$(id -u)/wayland-*
-
-假设输出是 /run/user/1000/wayland-0，那么你可以设置环境变量：
-
-    export WAYLAND_DISPLAY=wayland-0
-
-3、运行图形化程序
-
-权限：你需要有权限访问 Wayland socket。这通常意味着你需要以启动 Wayland 会话的同一个用户身份运行图形化程序。
-
-    如果你不是以启动 Wayland 会话的用户身份登录，你可能需要给当前用户权限
-    注意：Wayland 更加安全，不提供像 X11 的 xhost 这样的简单权限机制
-    你可以考虑使用 machinectl shell 或者 systemd-run --user 来获得访问权限
-
-设置好 WAYLAND_DISPLAY 环境变量后，你可以直接在控制台中运行支持 Wayland 的图形化程序。例如，运行 gedit：
-
-    #  对于一些同时支持 Xorg 和 Wayland 的图形化程序，设置 GDK_BACKEND 指定使用 Wayland 后端
-    # export GDK_BACKEND=wayland
-
-    gedit
-
-如果程序支持 Wayland，它会在 Wayland 会话中显示出来。
-
-如果在运行图形化程序时遇到权限或会话相关的问题，可以使用dbus-run-session命令来启动程序，它会在一个新的 D-Bus 会话中运行指定的命令，确保程序能够正常访问所需的服务和资源。例如：
-
-    dbus-run-session gnome-calculator
-
-需要注意的是，直接从 TTY 启动图形化程序的方式在 Wayland 上不如在 X11 上常见或直接。如果你遇到困难，最简单的办法可能是切换到已有的 Wayland 会话中去启动应用，或者使用 XWayland（一种兼容层，允许你在 Wayland 会话中运行 X11 应用程序）
-
-    运行 Xwayland 来兼容一些只能在 Xorg 上运行的图形化程序。可以先确认 Xwayland 是否正在运行：
-
-        ps ax | grep xwayland
-
-    如果 Xwayland 正在运行，可通过设置DISPLAY环境变量来使用它运行图形化程序，例如：
-
-        export DISPLAY=:0
-        firefox
-
-要切换到现有的 Wayland 会话，可以使用类似 loginctl 或 machinectl 的工具，具体取决于你的系统配置。例如：
-
-    # 列出所有会话
-    loginctl list-sessions
-
-    # 假设你想切换到会话 ID 为 1 的会话
-    loginctl attach 1
-
-    # 或者使用 machinectl shell 直接进入会话
-    machinectl shell :1 /bin/bash
-
-4、使用 weston 作为 Wayland 合成器
-
-如果你没有使用 GNOME Shell，而是希望启动一个轻量级的 Wayland 会话，可以使用 weston（一个独立的 Wayland 合成器）。首先安装 weston：
-
-    sudo apt install weston  # 对于 Debian/Ubuntu
-    sudo dnf install weston  # 对于 Fedora
-
-然后启动 weston：
-
-    weston
-
-启动后，weston 会创建一个新的 Wayland 会话。你可以在 weston 终端中运行图形化程序。
-
-5、使用 sway 作为 Wayland 合成器
-
-sway 是一个兼容 Wayland 的平铺式窗口管理器，类似于 i3。你可以使用 sway 来启动一个 Wayland 会话：
-
-    sway
-
-在 sway 会话中，你可以直接运行支持 Wayland 的图形化程序。
-
-6、检查程序是否支持 Wayland
-
-并非所有图形化程序都原生支持 Wayland。你可以通过以下方式检查程序是否支持 Wayland：
-
-查看程序的文档或官方网站。
-
-使用 env WAYLAND_DEBUG=1 <程序> 运行程序，观察输出中是否有 Wayland 相关的日志。
-
-如果程序不支持 Wayland，它可能会回退到 XWayland（Wayland 的 X11 兼容层）。XWayland 会自动处理 X11 程序的显示，因此你仍然可以运行这些程序。
-
-7、使用 dbus-run-session 启动独立会话
-
-如果你希望在一个独立的会话中运行图形化程序，可以使用 dbus-run-session：
-
-    dbus-run-session -- gnome-shell --wayland --display-server
-
-然后在新会话中运行图形化程序。
-
-8、远程运行 Wayland 程序
-
-如果你通过 SSH 连接到远程机器，并希望运行 Wayland 程序，可以使用 waypipe 或 ssh -X（通过 XWayland 运行程序）。
-
-使用 waypipe
-
-waypipe 是一个用于远程运行 Wayland 程序的工具。首先安装 waypipe：
-
-    sudo apt install waypipe  # 对于 Debian/Ubuntu
-    sudo dnf install waypipe  # 对于 Fedora
-
-然后在远程机器上运行：
-
-    waypipe ssh user@remote_host gedit
-
-另一个说法：
-
-    ssh -Y user@remotehost waypipe ssh xclock
-
-    这里的 -Y 参数启用了信任的 X11 转发，而 waypipe ssh 则确保了 Wayland 流量能够正确地被转发到客户端16。
-
-总结
-
-在 Wayland 环境下运行图形化程序的关键是：
-
-确保 Wayland 会话已启动（如 GNOME Shell、Weston 或 Sway）。
-
-设置 WAYLAND_DISPLAY 环境变量以连接到正确的 Wayland 显示服务器。
-
-运行支持 Wayland 的图形化程序。
-
-如果程序不支持 Wayland，它会通过 XWayland 运行，因此你仍然可以在 Wayland 会话中使用它。
-
-#### 在 Xorg 环境控制台下执行图形化程序
-
-1、确保已安装图形化程序所需的依赖
-
-首先，确保系统中已安装所需的图形库和依赖项。例如，如果你要运行一个基于 GTK 或 Qt 的应用程序，需要确保这些库已安装。
-
-2、设置 DISPLAY 环境变量
-
-图形化程序需要知道将图形输出到哪个显示器。通常，Xorg 服务器会管理显示器的连接。你需要设置 DISPLAY 环境变量来指定显示器。
-
-    export DISPLAY=:0
-
-这里的 :0 表示第一个显示器。如果你有多个显示器或 X 服务器实例，可能需要调整这个值。
-
-3、启动 Xorg 服务器（如果未运行）
-
-如果 Xorg 服务器未运行，你需要手动启动它。可以使用 startx 命令来启动 Xorg 服务器：
-
-    startx
-
-启动后，Xorg 服务器会在后台运行，并准备好接收图形化程序的输出。
-
-4、在控制台中运行图形化程序
-
-设置好 DISPLAY 环境变量后，你可以直接在控制台中运行图形化程序。例如，运行 gedit 文本编辑器：
-
-    gedit
-
-程序应该会在 Xorg 服务器管理的显示器上显示出来。
-
-5、使用 xinit 启动单个程序
-
-如果你只想运行一个图形化程序而不启动完整的桌面环境，可以使用 xinit 命令。例如：
-
-    xinit /usr/bin/gedit -- :1
-
-这里的 :1 表示使用第二个显示器（如果 :0 已被占用）。
-
-6、使用 xvfb 虚拟显示器（无头环境）
-
-如果你在没有物理显示器的服务器上运行图形化程序，可以使用 Xvfb（X Virtual Framebuffer）来创建一个虚拟显示器：
-
-    Xvfb :1 -screen 0 1024x768x24 &
-    export DISPLAY=:1
-    gedit
-
-7、使用 ssh -X 远程运行图形化程序
-
-如果你通过 SSH 远程连接到 Linux 系统，可以使用 ssh -X 或 ssh -Y 来启用 X11 转发，然后在远程终端中运行图形化程序：
-
-    ssh -X user@remote_host
-    gedit
-
-图形化程序会在本地显示器上显示。
-
-总结
-
-通过设置 DISPLAY 环境变量并确保 Xorg 服务器正在运行，你可以在不进入桌面环境的情况下从控制台运行图形化程序。如果是在无头环境中，可以使用 Xvfb 来创建虚拟显示器。
-
-> 利用显示管理器直接执行图形化应用程序
-
-    https://wiki.archlinux.org/title/Display_manager#Starting_applications_without_a_window_manager
-
-设为桌面登录后，将立即启动设置的应用程序。当您关闭应用程序时，您将被带回登录管理器（与注销正常的桌面环境或窗口管理器相同），只需要编辑 /usr/share/xsessions/web-browser.desktop
-
-```ini
-[Desktop Entry]
-Name=Web Browser
-Comment=Use a web browser as your session
-Exec=/usr/bin/google-chrome --auto-launch-at-startup
-TryExec=/usr/bin/google-chrome --auto-launch-at-startup
-Icon=google-chrome
-Type=Application
-```
-
-> 利用 systemd 单元，不使用显示管理器，直接登录 xorg 桌面
-
-    https://wiki.archlinux.org/title/Systemd/User#Automatic_login_into_Xorg_without_display_manager
-
-感觉这 systemd 管的越来越多，直接做一个 systemd 操作系统得了。
-
-另一个说法：X11 在命令行手工执行图形化应用程序
-
-    https://wiki.archlinux.org/title/Xinit#Starting_applications_without_a_window_manager
-
-一、对老式的 x 系统
-
-    startx nautilus
-
-编辑 ~/.xinitrc 文件
-
-    exec chromium
-
-在命令行环境执行 `startx` 会进入 x11 的桌面环境，注意如果是 Fedora Silverblue 的 x11 桌面会无法从终端进入 toolbox
-
-在桌面选择 logout 即会退出到命令行环境。
-
-二、如果要用 x-window 開啟後自動啟動應用程式,請自行修改或是新增 .desktop 檔案：
-
-System-wide autostart directories:
-
-    /etc/xdg/autostart
-
-    /usr/share/autostart
-
-    User specific autostart directories:
-
-    ~/.config/autostart
-
-    ~/.kde/share/autostart (KDE specific)
-
-    ~/.kde/Autostart (KDE specific)
-
-我們來看看基本的 .desktop 檔案內容有哪些
-
-    [root@benjr ~]# cat ~/.config/autostart/gnome-terminal.desktop
-
-    [Desktop Entry]
-
-    Type=Application
-
-    Exec=gnome-terminal
-
-    Hidden=false
-
-    X-GNOME-Autostart-enabled=true
-
-    Name[en_US]=test
-
-    Name=test
-
-    Comment[en_US]=xdg testing
-
-    Comment=xdg testing
-
-    Type=Application
-
-    Exec=gnome-terminal
-
-最重要的就是指定要執行哪一個程式，这样实现在命令行直接启动图形化应用程序，无需进入桌面环境。
-
-    Hidden=false
-
-    X-GNOME-Autostart-enabled=true
-
-    Name[en_US]=test
-
-    Name=test
-
-    Comment[en_US]=xdg testing
-
-    Comment=xdg testing
-
 ### 远程桌面 vnc/rdp/mstsc
 
     就 X windows 桌面来说，本来就没有不远程的，XServer 和 XClient 放在一台电脑上就是本地桌面，通过  ssh -x 连接就远程了，没有本质区别。
@@ -16272,127 +15054,6 @@ WantedBy=multi-user.target
 
 确认通过 VNC Viewer 可以正常登录到 RHEL8 系统桌面。
 
-### Linux 桌面死机怎么办
-
-    https://blog.csdn.net/qq_39779233/article/details/114758689
-
-    https://wiki.archlinux.org/title/Keyboard_shortcuts
-
-查看日志
-
-    $ journalctl -f -o cat /usr/bin/gnome-shell
-
-桌面的图形界面突然卡住且无法操作时，尝试“登录控制台”，注销当前用户重新登录
-
-按 CTRL + ALT + F3 会切换到控制台登录的字符界面，关于控制台登录参见章节 [登录控制台 tty login]。
-
-输入用户名和密码登录，此时输入命令，说法太多待验证
-
-    重启显示管理器服务： `sudo systemctl restart gdm/kdm/lightdm`
-
-    注销桌面重新登录系统：`sudo pkill Xorg` 或者 `sudo systemctl restart systemd-logind`
-
-    `ps -t tty1` 找到进程中 xinit/xwindow… 或 gnome-session-binary 的 pid， 然后 `kill -9 pid` 即可
-
-    输入 `init 3` 即可停止 X window，输入 `startx` 重新启动桌面
-
-操作完成之后等待一会儿就会重新进入桌面，系统可以正常使用了。
-
-#### “魔法键” 大法手工重启内核reisub
-
-彻底死机，键盘无法输入任何内容，无法进入控制台注销当前用户，可以使用“魔法键”强制重启：
-
-    https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html
-
-    https://fedoraproject.org/wiki/QA/Sysrq
-
-    https://wiki.ubuntu.com/Kernel/CrashdumpRecipe
-
-    https://www.cnblogs.com/ylan2009/articles/2322950.html
-
-    https://www.cnblogs.com/klb561/p/11013746.html
-
-使用 Magic SysRq key 需要满足 3 个前置条件：
-
-1、键盘上有 Print Screen(SysRq) 键
-
-2、系统使用的内核，在编译时打开了 CONFIG_MAGIC_KEY 选项
-
-    $ grep -F CONFIG_MAGIC_SYSRQ /boot/config-$(uname -r)
-    CONFIG_MAGIC_SYSRQ=y  # y 表示已开启
-
-3、系统配置 Magic Sysrq Key 为可用
-
-    临时启用
-
-        # sudo echo "1" > /proc/sys/kernel/sysrq  # Fedora 不支持这样写入
-        $ sudo sysctl -w kernel.sysrq=1
-
-    长期使用，编辑 /etc/sysctl.conf 添加如下：
-
-        kernel.sysrq = 1
-
-    更改配置后使用以下方式激活
-
-        $ sudo sysctl -p
-
-验证：
-
-    $ cat /proc/sys/kernel/sysrq
-    1
-
-满足了前置条件，在系统死机异常时，按住 Alt 不放，顺次执行以下操作：
-
-    按 sysrq 键，如果是笔记本键盘可能需要组合键 Fn + SysRq
-
-    松开 sysrq 键，如果是笔记本键盘松开 Fn + SysRq
-
-        SysRq 叫做系统请求，这个时候输入的一切都会直接由 Linux 内核来处理，它可以进行许多低级操作。
-
-    依次按下字母 r e i s u b ，每个字母需要间隔 5-10s 再执行下一个动作。 reisub 中的每一个字母都是一个独立操作，分别表示：
-
-        r : unRaw       将键盘控制从 X Server 那里抢回来，使按键可以穿透 x server 捕捉传递给内核
-
-            k : Sak (Secure Access Key) 确保使用 init 进程启动的终端，防木马
-
-        e : tErminate   向除 init 外进程发送 SIGTERM 信号，让其自行结束
-
-        i : kIll        向除 init 以外所有进程发送 SIGKILL 信号，强制结束进程
-
-        s : Sync        同步缓冲区数据到硬盘，避免数据丢失
-
-        u : Unmount     将所有已经挂载的文件系统 重新挂载为只读
-
-        b : reBoot      立即重启计算机
-
-每按一次都等那么几秒种，你会发现每按一次，屏幕上信息都会有所变化。最后按下 b 时，屏幕显示 reset，这时你的手可以松开了，等几秒钟，计算机就会安全重启。切记不可快速连按，否则后果和扣电池拔电源线无异。
-
-拓展：
-
-    # 立即重新启动计算机
-    echo "b" > /proc/sysrq-trigger
-
-    # 立即关闭计算机
-    echo "o" > /proc/sysrq-trigger
-
-    # 导出内存分配的信息 （可以用/var/log/message 查看）
-    echo "m" > /proc/sysrq-trigger
-
-    # 导出当前CPU寄存器信息和标志位的信息
-    echo "p" > /proc/sysrq-trigger
-
-    # 导出线程状态信息
-    echo "t" > /proc/sysrq-trigger
-
-    # 故意让系统溃
-    echo "c" > /proc/sysrq-trigger
-
-    # 立即重新挂载所有的文件系统
-    echo "s" > /proc/sysrq-trigger
-
-    # 立即重新挂载所有的文件系统为只读
-    echo "u" > /proc/sysrq-trigger
-
 ### 桌面环境统一密码管理器 --- keyring-daemon
 
 密码管理器：保存 ssh、gpg 等密钥的密码，包括浏览器中 web 网站的密码、WIFI 连接密码等，实现自动填充，支持接管多种应用软件的密码管理。默认使用你的登录身份进行加密，所以在用户登录后可以实现自动解锁密码管理器。
@@ -16922,7 +15583,7 @@ session    include      system-auth
 
 ### Scrcpy --- 在 Linux 桌面显示和控制 Android 设备
 
-Scrcpy，可以通过Linux桌面显示和控制 Android 设备，类似 Samsung Dex 的使用方式，用电脑玩手机：
+Scrcpy 可以通过 Linux 桌面显示和控制 Android 设备，类似 Samsung Dex 的使用方式，用电脑玩手机：
 
     https://github.com/Genymobile/scrcpy
 
@@ -17844,6 +16505,1345 @@ Wine 使用一个被称之为 “Wineprefix” 的配置目录来控制使用 Wi
 竞品还有 Whisky，在Mac上运行Windows软件和游戏
 
     https://github.com/Whisky-App/Whisky
+
+### Linux 桌面死机怎么办
+
+    https://blog.csdn.net/qq_39779233/article/details/114758689
+
+    https://wiki.archlinux.org/title/Keyboard_shortcuts
+
+查看日志
+
+    $ journalctl -f -o cat /usr/bin/gnome-shell
+
+桌面的图形界面突然卡住且无法操作时，尝试“登录控制台”，注销当前用户重新登录
+
+按 CTRL + ALT + F3 会切换到控制台登录的字符界面，关于控制台登录参见章节 [登录控制台 tty login]。
+
+输入用户名和密码登录，此时输入命令，说法太多待验证
+
+    重启显示管理器服务： `sudo systemctl restart gdm/kdm/lightdm`
+
+    注销桌面重新登录系统：`sudo pkill Xorg` 或者 `sudo systemctl restart systemd-logind`
+
+    `ps -t tty1` 找到进程中 xinit/xwindow… 或 gnome-session-binary 的 pid， 然后 `kill -9 pid` 即可
+
+    输入 `init 3` 即可停止 X window，输入 `startx` 重新启动桌面
+
+操作完成之后等待一会儿就会重新进入桌面，系统可以正常使用了。
+
+#### “魔法键” 大法手工重启内核reisub
+
+彻底死机，键盘无法输入任何内容，无法进入控制台注销当前用户，可以使用“魔法键”强制重启：
+
+    https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html
+
+    https://fedoraproject.org/wiki/QA/Sysrq
+
+    https://wiki.ubuntu.com/Kernel/CrashdumpRecipe
+
+    https://www.cnblogs.com/ylan2009/articles/2322950.html
+
+    https://www.cnblogs.com/klb561/p/11013746.html
+
+使用 Magic SysRq key 需要满足 3 个前置条件：
+
+1、键盘上有 Print Screen(SysRq) 键
+
+2、系统使用的内核，在编译时打开了 CONFIG_MAGIC_KEY 选项
+
+    $ grep -F CONFIG_MAGIC_SYSRQ /boot/config-$(uname -r)
+    CONFIG_MAGIC_SYSRQ=y  # y 表示已开启
+
+3、系统配置 Magic Sysrq Key 为可用
+
+    临时启用
+
+        # sudo echo "1" > /proc/sys/kernel/sysrq  # Fedora 不支持这样写入
+        $ sudo sysctl -w kernel.sysrq=1
+
+    长期使用，编辑 /etc/sysctl.conf 添加如下：
+
+        kernel.sysrq = 1
+
+    更改配置后使用以下方式激活
+
+        $ sudo sysctl -p
+
+验证：
+
+    $ cat /proc/sys/kernel/sysrq
+    1
+
+满足了前置条件，在系统死机异常时，按住 Alt 不放，顺次执行以下操作：
+
+    按 sysrq 键，如果是笔记本键盘可能需要组合键 Fn + SysRq
+
+    松开 sysrq 键，如果是笔记本键盘松开 Fn + SysRq
+
+        SysRq 叫做系统请求，这个时候输入的一切都会直接由 Linux 内核来处理，它可以进行许多低级操作。
+
+    依次按下字母 r e i s u b ，每个字母需要间隔 5-10s 再执行下一个动作。 reisub 中的每一个字母都是一个独立操作，分别表示：
+
+        r : unRaw       将键盘控制从 X Server 那里抢回来，使按键可以穿透 x server 捕捉传递给内核
+
+            k : Sak (Secure Access Key) 确保使用 init 进程启动的终端，防木马
+
+        e : tErminate   向除 init 外进程发送 SIGTERM 信号，让其自行结束
+
+        i : kIll        向除 init 以外所有进程发送 SIGKILL 信号，强制结束进程
+
+        s : Sync        同步缓冲区数据到硬盘，避免数据丢失
+
+        u : Unmount     将所有已经挂载的文件系统 重新挂载为只读
+
+        b : reBoot      立即重启计算机
+
+每按一次都等那么几秒种，你会发现每按一次，屏幕上信息都会有所变化。最后按下 b 时，屏幕显示 reset，这时你的手可以松开了，等几秒钟，计算机就会安全重启。切记不可快速连按，否则后果和扣电池拔电源线无异。
+
+拓展：
+
+    # 立即重新启动计算机
+    echo "b" > /proc/sysrq-trigger
+
+    # 立即关闭计算机
+    echo "o" > /proc/sysrq-trigger
+
+    # 导出内存分配的信息 （可以用/var/log/message 查看）
+    echo "m" > /proc/sysrq-trigger
+
+    # 导出当前CPU寄存器信息和标志位的信息
+    echo "p" > /proc/sysrq-trigger
+
+    # 导出线程状态信息
+    echo "t" > /proc/sysrq-trigger
+
+    # 故意让系统溃
+    echo "c" > /proc/sysrq-trigger
+
+    # 立即重新挂载所有的文件系统
+    echo "s" > /proc/sysrq-trigger
+
+    # 立即重新挂载所有的文件系统为只读
+    echo "u" > /proc/sysrq-trigger
+
+### Linux 桌面的基本目录规范 XDG（X Desktop Group）
+
+对桌面的图形化环境来说，规范化的使用目录，用各种变量来指定，有一套具体的规则，定義了基本的 Linux 下的 X Window System (X11) 以及其他 Unix-like 作業系統的桌面環境。目前最流行的 freedesktop 的规范称为 XDG
+
+    https://www.freedesktop.org/software/systemd/man/file-hierarchy.html
+
+    https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+
+    https://wiki.archlinux.org/index.php/XDG_Base_Directory
+    https://wiki.archlinux.org/title/Xdg-utils
+
+    https://catcat.cc/post/wn3np/
+
+    https://blog.csdn.net/u014025444/article/details/94029895
+
+    https://winddoing.github.io/post/ef694e1f.html
+
+    https://blog.csdn.net/weixin_29702195/article/details/116886216
+
+    https://blog.csdn.net/u014025444/article/details/94029895
+
+Linux 操作系统的基本目录结构参见章节 [Linux 目录和分区](shellcmd.md)。
+
+XDG 基本目录规范基于以下概念：
+
+    XDG 环境变量             说明                                    默认值
+
+    $XDG_DATA_HOME      用于写入特定用户数据文件的基本目录              $HOME/.local/share
+    $XDG_CONFIG_HOME    用于写入特定用户的配置文件基本目录              $HOME/.config
+    $XDG_DATA_DIRS      首选的基本数据目录                           /usr/local/share/:/usr/share/ 等
+
+    $XDG_CONFIG_DIRS    首选的基本配置目录                           /etc/xdg
+    $XDG_CACHE_HOME     用于写入用户特定的非必要（缓存）数据的基本目录    $HOME/.cache
+    $XDG_RUNTIME_DIR    用户放置特定于用户的运行时文件和其他文件对象
+
+$XDG_RUNTIME_DIR 是用户特定的不重要的运行时文件和其他文件对象（例如套接字，命名管道…）存储的基本目录。该目录必须由用户拥有，并且他必须是唯一具有读写访问权限的目录。它的Unix访问模式必须是 0700。
+
+目录的生命周期必须绑定到登录用户。必须在用户首次登录时创建，如果用户完全注销，则必须删除该目录。如果用户多次登录，他应该指向同一目录，并且必须从第一次登录到他在系统上的最后一次登出时继续存在，而不是在两者之间删除。目录中的文件必须不能在重新启动或完全注销/登录循环后继续存在。
+
+该目录必须位于本地文件系统上，不与任何其他系统共享。该目录必须完全按照操作系统的标准进行。更具体地说，在类Unix操作系统上，AF_UNIX套接字，符号链接，硬链接，适当的权限，文件锁定，稀疏文件，内存映射，文件更改通知，必须支持可靠的硬链接计数，并且对文件名没有限制应该强加字符集。此目录中的文件可能需要定期清理。为确保不删除您的文件，他们应至少每6小时单调时间修改一次访问时间戳记，或者在文件上设置“粘滞”位。
+
+如果 $XDG_RUNTIME_DIR 未设置，应用程序应回退到具有类似功能的替换目录并打印警告消息。应用程序应使用此目录进行通信和同步，并且不应在其中放置较大的文件，因为它可能驻留在运行时内存中，并且不一定可以交换到磁盘。
+
+环境变量清单：用户层面变量（User-Level Variables）
+
+    $XDG_DATA_HOME          $HOME/.local/share/
+
+        储用户特定的数据文件的基准目录。通常来说文件较大，有反复使用的价值，建议备份里面的文件。
+
+        使用场景：
+
+            用户下载的插件；
+            程序产生的日志、历史记录、离线资源等数据文件；
+            用户输入历史、书签、邮件等。
+
+    $XDG_CONFIG_HOME        $HOME/.config/
+
+        存储用户特定的配置文件的基准目录，建议备份里面的文件。
+
+        使用场景：
+
+            用户配置。
+
+        一般来说，这个地方可以在程序初始化的时候存储一个默认的配置文件供加载和修改。
+
+    $XDG_CACHE_HOME         $HOME/.cache/
+
+        应存储用户特定的非重要性数据文件的基准目录，建议备份里面的文件。
+
+        使用场景：
+
+            缓存的缩略图、歌曲文件、视频文件等。
+            程序应该做到哪怕这个目录被用户删了也能正常运行。
+
+    $XDG_RUNTIME_DIR
+
+        应存储用户特定的非重要性运行时文件和一些其他文件对象（例如套接字，命名管道…）存储的基本目录
+
+        该目录必须由用户拥有，并且该用户必须是唯一具有读写访问权限的。该目录的 Unix 访问模式必须是 0700。
+
+用户层面目录的生命周期必须绑定到登录用户。必须在用户首次登录时创建，如果用户完全注销，则必须删除该目录。如果用户多次登录，他应该指向同一目录，并且必须从第一次登录到他在系统上的最后一次登出时继续存在，而不是在两者之间删除。目录中的文件必须不能在重新启动或完全注销/登录循环后继续存在。
+
+用户层面目录必须位于本地文件系统上，不与任何其他系统共享。该目录必须完全按照操作系统的标准进行。更具体地说，在类Unix操作系统上，AF_UNIX套接字，符号链接，硬链接，适当的权限，文件锁定，稀疏文件，内存映射，文件更改通知，必须支持可靠的硬链接计数，并且对文件名没有限制应该强加字符集。此目录中的文件可能需要定期清理。为确保不删除您的文件，他们应至少每6小时单调时间修改一次访问时间戳记，或者在文件上设置“粘滞”位。
+
+如果 $XDG_RUNTIME_DIR 未设置，应用程序应回退到具有类似功能的替换目录并打印警告消息。应用程序应使用此目录进行通信和同步，并且不应在其中放置较大的文件，因为它可能驻留在运行时内存中，并且不一定可以交换到磁盘。
+
+环境变量清单：系统层面变量（System-Level Variables）
+
+    $config，默认为 ~/.config : /etc
+
+        如果在尝试编写文件时，目标目录不存在，则应尝试使用权限 0700 创建目标目录。
+
+        如果目标目录已存在，则不应更改权限。
+
+        应用程序应准备好处理无法写入文件的情况，因为该目录不存在且无法创建，或者出于任何其他原因。在这种情况下，它可以选择向用户呈现错误消息。
+
+    $XDG_CONFIG_DIRS        /etc/xdg/
+
+        按照偏好顺序的基准目录集，用来搜索除了 $XDG_CONFIG_HOME 目录之外的配置文件。
+
+        该目录中的文件夹应该用冒号（:）隔开。
+
+        使用场景：
+
+            可以被用户特定的配置文件所覆盖的系统层面的配置文件。
+
+        一般来说，应用程序安装的时候可以加载配置文件到这个目录。
+
+    $XDG_DATA_DIRS          /usr/local/share/:/usr/share/
+
+        按照偏好顺序的基准目录集，用来搜索除了 $XDG_DATA_HOME 目录之外的数据文件。
+
+        该目录中的文件夹应该用冒号（:）隔开。
+
+        使用场景：
+
+            可以被所有用户使用的插件或者主题。
+
+        一般来说，应用程序安装的时候可以加载插件、主题等文件到这个目录。
+
+参考规范
+
+    文件                参考规范：subdir应该为软件名
+    数据文件        $datadir/subdir/filename
+    配置文件        $confdir/subdir/filename
+
+#### xdg-utils
+
+常用的桌面环境操作统一化，比如安装应用菜单，设置默认浏览器，设置默认电子邮件客户端，设置默认的媒体播放器等等
+
+    https://wiki.archlinux.org/title/Xdg-utils
+
+    https://juejin.cn/post/6844903944922087438
+
+使用首选程序打开一个文件或链接，比如打开文件文件管理器、打开邮件、打开浏览器，统一到一个工具下面了
+
+    xdg-open — opens a file or URL in the user's preferred application
+
+xdg-utils 从 utils 后缀我们可以知道这是一组工具，目的就是能够让应用轻松的集成在用户的桌面环境，不必考虑特定的用户运行桌面环境。
+
+这组工具集包括：
+
+    xdg-desktop-menu - 安装桌面应用菜单项
+    xdg-desktop-icon - 在用户桌面安装图标
+    xdg-email - 使用用户默认电子邮件客户端写一封新邮件，可以使用参数指定主题、内容、附件等
+    xdg-icon-resource - 为应用程序的启动程序安装一个图片资源
+    xdg-mime - 查询关于文件类型处理的信息，并为新文件类型添加描述
+    xdg-open - 以用户首选的应用程序打开一个URL，用于分别处理各自的URL或文件类型
+    xdg-screensaver - 屏幕保护程序的控制工具，如：锁屏等
+    xdg-settings - 查看、设置默认web浏览器和URL处理程序
+
+### GNOME，Xorg，X Window，X Server，Wayland是什么关系
+
+    https://www.zhihu.com/question/503270852
+
+    https://zhuanlan.zhihu.com/p/134325713
+
+    https://zhuanlan.zhihu.com/p/427637159
+
+X window 是一个技术体系
+
+    又叫 X 窗口系统，最初起源于1984年，是为了解决类 unix 系统的图形显示问题而推出的显示接口。它使用 unix 套接字式的 c/s 模式，从而分离出了前端和后端两部分，天生就支持远程分布。
+
+        也就是说，应用程序和显示器不必在同一台计算机上，每一个窗口应用程序对应一个（或多个？）X Client，用户的显示界面上运行的是 X Server。注意这里本地运行的是 X server，远程服务器运行图形化程序使用的是 X client。注意这个概念只是程序实现时的术语，跟我们安装应用时本地称客户端，远程称服务端不同。
+
+        就 X windows 桌面体系来说，天生就支持远程，XServer 和 XClient 在同一台电脑上就是连接本地桌面，通过  ssh -x 连接就是远程桌面了，没有本质区别。
+
+    Xserver：用来处理用户输入和系统输出的指令。X server 运行在工作站上，而用户在具有更强处理能力的远程计算机上运行应用程序是很常见的。
+
+    X11(X Window System)：Linux 桌面显示的协议。
+
+    Xorg：是 Linux 上通用的桌面环境（后端）服务器（X11的一种具体开源实现）。它使用 X11 协议与 X client 端应用程序进行交互的应用程序，X Server 在显示器上绘制内容并发送输入事件，例如鼠标移动，单击和击键。因为它不直接传送图像数据，所以比较节约带宽。
+
+    现在大多时候，可以把 Xorg、X11、X Server 说成 x-window 体系的同一个东西，就是 Linux 桌面的 X 后端服务器
+
+        Xorg 的前端实现就是 X server，所以又称 Xorg xserver 或 X11 server
+
+现在主流的 GNOME、KDE、Xfce 等桌面环境，使用的 X Window 体系都是基于 Xorg 基础之上开发，也就是桌面软件（或者是图形软件）的集合
+
+    x window 体系的通用命令： startx 在命令行下启动桌面环境
+
+查看当前桌面环境是什么类型
+
+    $ echo $XDG_SESSION_TYPE
+
+GTK+ and Qt
+
+    这两个是 GUI toolkits 软件库，类似 c 语言的 stdio.h，win32，java 里 import 的各种外部包，可以任开发者调用（应该是 C/C++ 使用的库）去创建一些图形界面里面的控件，例如 button，下拉菜单，窗口等。我记得 JAVA 里面也有类似 AWT 和 Swing 库。用这一套库开发出的图形空间将会有一套统一的风格和标准，这就是不同系统安装的不同软件有的时候会有相同的样式，因为他们可能使用了 GTK 或者 QT 的库。
+
+    KDE 默认使用 Qt 库开发，Gnome 默认使用 GTK+ 库开发，而这两套库又是基于 X window server 的，需要遵守 x11 协议，在 xwindow server 上运行，作为 client 应用实现的基础类库。
+
+Gnome 50(Fedora 43) 开始将彻底移除 x11 体系，完全切换到使用 wayland 体系，对 x11 将使用 xwayland 技术保持兼容。
+
+#### Wayland
+
+    https://docs.freebsd.org/en/books/handbook/wayland/
+
+    https://wiki.archlinux.org/title/Wayland
+
+    https://zhuanlan.zhihu.com/p/503627248
+
+    用 Wayland 开启 Linux
+        https://zhuanlan.zhihu.com/p/531205278
+
+    GNOME 设置默认 wayland 或 xorg
+        https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
+
+Wayland 是与 X Window 对等的概念，属于另一种显示标准，目的在于替代 X Window
+
+    Wayland 只是提供一个协议的基础抽象，参考实现叫 Weston
+
+    Gnome、KDE 等都有对应的 Wayland 实现
+
+    不再是 Client-Server 模式，远程桌面的实现方式不同
+
+    Wayland 使用 Xwayland 组件兼容依赖 X11 的传统应用，基于 X Window 的 VNC 远程桌面程序连接到 wayland 桌面环境时由 xvnc 组件提供支持。对于普通用户来说，体验不到变化。
+
+Wayland 自带的 terminal emulator 叫 foot
+
+    https://man.archlinux.org/man/foot.1.en
+        https://codeberg.org/dnkl/foot
+
+Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
+
+    QT_QPA_PLATFORM=wayland
+
+### 显示管理器（DisplayManager）设置登录后的桌面环境
+
+显示管理器又叫做 “登录管理器”，如 gdm、sddm、lightdm 等，其作用仅仅只是在你开机后，让你输入用户名和密码处理用户身份验证登录，然后引导进入桌面，至此任务完成，之后就交给桌面环境了。你可以不需要 DM，直接通过 startx脚本命令进入桌面。
+
+    https://wiki.archlinux.org/title/Display_manager
+        https://wiki.archlinux.org/title/GDM
+
+    https://zhuanlan.zhihu.com/p/272740410
+
+设置开机启动到桌面还是命令行，主流的桌面环境都用 systemctl 接管了，有专门的控制命令，参见章节 [桌面环境的开机自启动]。如果是启动到桌面，systemctl 会自动调度到显示管理器进行用户登录。
+
+所以首先要确保 systemd 设置开机时启动到桌面
+
+    # 一般都使用 systemctl 进行控制了
+    $ systemctl get-default
+    graphical.target
+
+然后确保 systemd 的显示管理器服务也是启动的。
+
+如果安装了多个桌面环境，可以在显示管理器选择启动到哪个桌面环境
+
+    如果是本地登录，在显示管理器的用户登录界面，点击右下方的小齿轮可以选择使用何种桌面环境
+
+    如果是 xrdp 远程登录，在 “session” 处选择
+
+如果安装了多个显示管理器，则可以使用以下方法在它们之间进行选择
+
+    sudo dpkg-reconfigure gdm3
+
+    GNOME 显示管理器 gdm，在 flatpak 搜 “Login Manager Settings” 可以定制呈现界面
+
+    KDE 的显示管理器 sddm
+
+    Ubuntu Unity 桌面显示管理器 lightdm
+
+    Wayland Login Manager 支持 x-window/wayland 环境的命令行下的显示管理器 wayland-lyl
+    https://docs.freebsd.org/en/books/handbook/wayland/#wayland-ly
+
+### 窗口管理器（Windows Manager）
+
+窗口管理器 vs 桌面环境
+
+    窗口管理器（Windows Manager），负责绘制窗口的边框，处理窗口运行比如移动、最小化之类的行为。
+
+        https://linux.net.cn/article-12068-1.html
+
+    桌面（Desktop Environment），是窗口管理器的超集，它使用合成器（Compositor）把多个程序窗口绘制出的内容，把它们合成出来并高效地增量更新用户界面 GUI。比如 compiz 这种基于 OpenGL 的混合型窗口管理器，用立体的方式显示窗口切换。
+
+我们常用的 Gnome 就是一个桌面环境，默认使用 Metacity 作为窗口管理器。
+
+常见的窗口管理器一般都基于 wlroots 库：一个为基于 wayland 的各类 wm/de（或者叫compositor）提供基础设施的项目
+
+    https://gitlab.freedesktop.org/wlroots/wlroots
+
+使用窗口管理器，需要自己配置软件源，自己安装字体，firefox 假死问题自己解决。
+
+    https://zhuanlan.zhihu.com/p/47526909
+
+    https://www.zhihu.com/question/41364792
+
+    https://zhongguo.eskere.club/%E9%80%82%E7%94%A8%E4%BA%8E-linux-%E7%9A%84-5-%E4%B8%AA%E6%9C%80%E4%BD%B3%E7%AA%97%E5%8F%A3%E7%AE%A1%E7%90%86%E5%99%A8/2021-10-03/
+
+平铺式窗口管理器：自动排列窗口，以不重叠的方式占据整个屏幕，自动的被调整各个窗口大小。
+
+    i3 WM - 更好的平铺及动态窗口管理器。完全重写。目标平台是 GNU/Linux 和 BSD 操作系统。
+
+    i3-gaps - i3-gaps 是拥有更多功能的 i3。
+
+    sway - i3 的 wayland 实现，SwayFX 动态壁纸实现了桌面背景添加各种特效和动画
+
+    Miracle-WM - 新出现的一个 wayland 下的平铺式窗口管理器，目标是超越 i3/sway
+
+    Pop!_OS Shell - Pop Shell 是基于 GNOME shell 的窗口管理器，键盘驱动，自动平铺。
+
+    Bspwm - bspwm 是一个平铺式窗口管理器，将窗口以二叉树的叶结点的方式展现。
+
+    Herbstluftwm - 使用 Xlib 和 Glib 的手工平铺式窗口管理器。
+
+    Qtile - qtile 是一款全功能，可 hack 的平铺窗口管理器，使用 Python 编写和配置。
+
+    wayfire - 基于 Wayland 的 3D 混成器
+
+        https://github.com/WayfireWM/wayfire/wiki
+
+        配置文件位置：~/.config/wayfire.ini
+
+        Wayfire 相关配置与美化方案 https://alancorn.github.io/blogs/2023/wayfire.html
+
+叠加式窗口管理器：浮动式窗口管理器，由于屏幕空间有限，当前激活的窗口会浮在最上面，而遮住下面的窗口。
+
+    labwc - 比 wayfire 更轻量级，树莓派 3 也可以使用
+
+        https://mephisto.cc/series/labwc/
+
+        窗口管理器labwc使用记 https://mephisto.cc/tech/labwc/
+            配置文件参考 https://github.com/kmephistoh/dotfiles/tree/main/.config/labwc
+
+    Openbox - 高度可配置，带有可扩展标准支持的下一代窗口管理器。
+
+    2bwm - 快速的浮动窗口管理，有两个特殊边界，基于 XCB 库，由 mcwm 衍生。
+
+    Blackbox - 快速，轻量化的 X 窗口系统窗口管理器，没有那些烦人的库依赖。
+
+    Fluxbox - 基于 Blackbox 0.61.1 代码的 X 窗口管理器。
+
+动态窗口管理器
+
+    awesome - 高度可配置，下一代 X 框架窗口管理器
+
+        https://blog.kelu.org/tech/2021/12/29/linux-awesome-wm.html
+
+        https://blog.theerrorlog.com/switching-from-gnome-shell-to-awesome-wm-zh.html
+
+        awesome 窗口管理器使用备忘 https://blog.kelu.org/tech/2021/12/29/linux-awesome-wm.html
+
+    dwm - X 动态窗口管理器。它以平铺，单片镜以及浮动布局的方式管理窗口
+
+        https://zhuanlan.zhihu.com/p/183861786
+
+    spectrwm - 小型动态平铺 X11 窗口管理器。主要受 xmonad 和 dwm 启发。
+
+    xmonad - 动态平铺 X11 窗口管理器，用 Haskell 编写和配置。
+
+窗口管理器背后的工具 --- 合成器（Compositor）：
+
+    Mutter  -  GNOME的窗口管理器和合成器
+
+    Compton - Compton 是一款独立的合成管理器，适合同没有原生提供合成功能的窗口管理器一同使用。
+
+    Gamescope - Gamescope 是一款微合成器，提供一个带有独立输入，分辨率和刷新率的沙盒 Xwayland 桌面。
+
+    Sway - Sway 是平铺 Wayland 合成器，替代 X11 下 i3 窗口管理器（sway明确说不支持英伟达显卡）。
+
+    Mir - Miracle-WM 的合成器
+
+    Xcompmgr - Xcompmgr 是一个简单的合成管理器，能够渲染下拉阴影，使用 transset 工具的话，还可以实现简单的窗口透明。
+
+    Compiz：OpenGL 窗口和合成管理器，能实现三维的切换窗口
+
+        http://wiki.compiz.org/CommonKeyboardShortcuts
+
+        Fedora 版 https://spins.fedoraproject.org/zh_Hans_CN/mate-compiz
+
+        Compiz：2022年年中安装、配置和使用 https://ubunlog.com/zh-CN/compiz%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A82022/
+
+        compizconfig设置 https://blog.csdn.net/ysynhtt/article/details/44948989
+
+        使用compiz https://blog.csdn.net/kewen_123/article/details/115871744
+
+    Hyprland: 一个基于 wlroots 的动态平铺 Wayland 合成器，动态窗口的变换快速平滑
+
+        https://wiki.hyprland.org/Getting-Started/Master-Tutorial/
+
+        https://cascade.moe/posts/hyprland-configure/
+
+        https://www.bilibili.com/read/cv22707313/
+
+        不使用 wayland 的 Hypr --- 使用 Xorg 的窗口管理器
+            https://github.com/vaxerski/Hypr
+
+#### i3
+
+通过键盘操作的 i3 平铺窗口管理器使用 Linux 桌面，当您开始使用 i3 时，您需要记住其中的一些快捷方式才能使用。
+
+    https://i3wm.org/docs/userguide.html
+
+    自定义参考
+
+        https://github.com/Karmenzind/dotfiles-and-scripts/blob/master/home_k/.config/i3/common
+
+        https://github.com/Karmenzind/dotfiles-and-scripts/blob/master/home_k/.config/i3status/config
+
+        从零开始配置 i3-wm https://obster-y.github.io/zh-cn/posts/c4304786-bbc2-11eb-8847-0772b2ac4cf2/
+
+    https://zhuanlan.zhihu.com/p/44783017
+
+    https://zhuanlan.zhihu.com/p/51077654
+
+    https://segmentfault.com/a/1190000022083424
+
+在远程桌面 xrdp 下使用 i3，需要组件 xorgxrdp，参见章节 [xorgxrdp]。
+
+安装
+
+    # 不安装 urxvt，换为 terminator
+    $ sudo dnf install -y i3 i3-ipc i3status i3lock dmenu terminator --exclude=rxvt-unicode
+
+    $ sudo dnf group install "i3 desktop" "Window Managers"
+
+    # 高分辨率小屏需要调整一下dpi
+    $ echo 'Xft.dpi: 192' > ~/.Xresources
+
+前导键叫 mod 键，可以由用户设定，可以是 Mod1(alt键) 或者是 Mod4(Super/Win)。
+
+    # ++++++=定义按键变量=++++++#
+    # (Mod1 = Alt, Mod4 = Super/Win)
+    set $mod Mod4
+    set $m_alt Mod1
+
+    打开终端 urxvt          <mod> + <ENTER>
+
+    使用命令区              <mod> + d ，如果输入“ i3-msg exit ",运行该命令即可退出 i3 wm
+
+    切换到工作区 num        <mod> + num
+
+    把窗口移到工作区 num    $mod+Shift+num
+
+    切换窗口                Super+h或j或k或l 或者 Super+上下左右箭头
+
+    杀掉窗口                Super+Shift+q
+
+    退出 i3                 Super+Shift+e
+
+窗口模式
+
+    窗口在层叠、 标签和平铺之间来回切换    Super+s、w、e
+
+    平铺模式切换水平或垂直               super+v、h，再开新窗口就可以看到变化了
+
+切换模式后，新开窗口是在当前窗口区域执行你的模式，不断的在子窗口套娃。
+
+在 i3 中，工作区是对窗口进行分组的一种简单方法。您可以根据您的工作流以不同的方式对它们进行分组。例如，您可以将浏览器放在一个工作区上，终端放在另一个工作区上，将电子邮件客户端放在第三个工作区上等等。
+
+配置文件 /etc/i3/config 及 ~/.config/i3/config，或命令 i3-config-wizard
+
+    # 先把屏保功能关了：
+    exec --no-startup-id xset s 0
+
+    # 黑屏、睡眠、断电时间分别设为6000s，8000s，9000s，也可以只写前一个，不必三个都写
+    exec --no-startup-id xset dpms 6000 8000 9000
+
+    # win+c 可以调出选项，你可以选择锁屏(L)，注销(O)，重启(R)，关机(S)，退出选项(Esc)。
+    set $mode_system  lock(L) logout(O) reboot(R) shutdown(S) exit(Esc)
+    bindsym $mod+c mode "$mode_system"
+    mode "$mode_system" {
+        bindsym l exec --no-startup-id i3lock -c '#000000', mode "default"
+        bindsym o exec --no-startup-id i3-msg exit, mode "default"
+        bindsym r exec --no-startup-id systemctl reboot, mode "default"
+        bindsym s exec --no-startup-id systemctl poweroff, mode "default"
+        bindsym Escape mode "default"
+    }
+
+    # 常用的软件在用户设定的工作区打开：
+    # 打开URxvt的同时切换到tab模式
+    for_window [class="URxvt"] layout tabbed
+    # 打开软件时自动移至相应工作区
+    assign [class="URxvt"] $WS1
+    assign [class="Thunar"] $WS1
+    assign [class="Firefox"] $WS2
+    assign [class="Zathura"] $WS3
+    assign [class="Gvim"] $WS4
+    assign [class="Ise"] $WS5
+    assign [class="VirtualBox"] $WS6
+
+#### sway
+
+i3 的 wayland 实现，操作热键参考 i3
+
+    https://swaywm.org/
+
+        https://github.com/swaywm/sway/wiki
+
+        https://wiki.archlinux.org/title/Sway
+
+    freebsd 全面介绍
+
+        https://docs.freebsd.org/en/books/handbook/wayland/#wayland-sway
+
+    sway - i3兼容Wayland compositor
+        https://cloud-atlas.readthedocs.io/zh_CN/latest/linux/desktop/sway/index.html#sway
+
+    探索 Linux 桌面全面 wayland化（基于swaywm）
+        https://zhuanlan.zhihu.com/p/462322143
+
+    Sway: 从尝试到放弃
+        https://coda.world/sway-explore-and-giveup
+
+    https://zhuanlan.zhihu.com/p/441251646
+    https://blog.tiantian.cool/wayland/
+    https://zhuanlan.zhihu.com/p/462322143
+    https://www.fosskers.ca/en/blog/wayland
+
+起因
+
+之前重装系统时把桌面环境换成了 Wayland Gnome，经过一段时间的使用，感觉自己对 Gnome 这种寒酸大道至简的风格还是很满意的，不过它的窗口管理实在是有些混乱，于是萌生了试用一下平铺式窗口管理器的想法。
+
+由于难以接受倒退回 X Server，所以 Sway 自然成了首选。然后相对于 Gnome 这种完整的桌面环境，Sway 就真的只是个窗口管理器而已，所以需要进行大量配置才能满足日常需求其实说白了我真正需要的是一个使用平铺式窗口管理器的桌面环境。
+
+对比
+
+虽然我个人单纯是为了更好的管理窗口而试用 Sway，不过实际上在选择平铺式/堆叠式窗口管理器的原因上确实存在更多考量。
+
+平铺式窗口管理器
+
+窗口被摆放的整整齐齐，强迫症狂喜！
+屏幕太大了，放眼望去全是屏幕，完全没必要堆叠窗口，只要直接铺开就行了。
+往往更加轻量化，对硬件的需求较低。
+喜欢使用固定的布局显示窗口。
+不喜欢碰鼠标，希望通过键盘进行大部分的操作。
+堆叠式窗口管理器
+堆叠式窗口管理器往往伴随着成熟的桌面环境，省时省力，开箱即用！
+跟随主流，符合大多数人的使用习惯，也意味着碰到冷门问题的情况更少。
+可以自由的摆放窗口，这点在小屏幕上优势很明显。
+
+配置
+
+如前文所言，Sway 只是一个单纯的窗口管理器，需要进行各种配置才能勉强达到可用的状态，由于配置太过琐碎，这里只简单的提一下其实是单纯的懒，以后有时间可能会更新详细配置。
+
+Sway  快捷键
+
+默认的 Terminal Emulator
+字体
+分辨率以及刷新率
+壁纸
+利用 swayidle 实现自动锁屏
+Application Launcher/Status Bar 所调用的程序
+窗口间距
+鼠标主题 xcursor_theme
+其他需要随 Sway 运行的命令(exec_always{ ... })，例如
+    启动 exec /usr/bin/foo
+    设置 gtk 程序主题 gsettings set org.gnome.desktop.interface foo bar
+    设置 XDG_SESSION_TYPE 以及 DESKTOP_SESSION 环境变量
+
+状态栏
+
+Sway 有自带的状态栏 swaybar，不过目前比较热门的是 waybar
+
+Application Launcher
+
+一般使用 wofi，不过也可以自己写脚本配合 fzf 来实现。关机菜单也可以通过类似的方式进行生成和调用。
+
+Display Manager
+
+可以直接从终端启动 sway，不过我仍然使用了 GDM 作为 Display Manager，首先是因为可以自动读取 ~/.config/environment.d/*.conf 里的环境变量，其次是为了自动解锁 gnome-keyring。也不需要进行额外的设定，可以直接从登录界面选择进入 Sway。
+
+锁屏
+
+目前可以使用 swaylock 或者 swaylock-effects(AUR)，没有什么高级的设定，目前就显得很简陋。我也尝试过调用 GDM，不过以失败而告终。
+
+GTK 主题
+
+设置主题时不但要对 $XDG_CONFIG_HOME/gtk-*.0/settings.ini 进行设置，同时需要运行 gsettings set ...，总而言之就是能设置的地方都设置一遍，从而防止程序只读取特定位置的配置文件。
+
+QT 主题
+
+由于我没有使用任何基于 QT 的程序，所以直接省略了这个步骤。
+
+鼠标主题
+
+以我使用的 Breeze 主题为例，需要在多个地方进行设置，从而保证覆盖所有程序：
+
+    环境变量 XCURSOR_THEME="Breeze"
+
+    seat seat0 xcursor_theme Breeze 24
+
+GTK: settings.ini 中 cursor-theme='Breeze'，以及运行 gsettings set org.gnome.desktop.interface cursor-theme 'Breeze'。
+
+QT: 我没设置。
+
+如果缺少设置可能会导致鼠标指针在部分程序、或者部分位置(例如标题栏)变成默认样式。
+
+剪贴板
+
+Sway 下默认关闭窗口时会清空剪贴板，其实我还挺喜欢这种模式的，如果希望在窗口关闭后仍旧保留剪贴板中的内容，可以通过 clipman 实现。
+
+截图
+
+使用 grim 实现截图功能。
+
+系统通知
+
+使用 mako 实现简单的系统通知。
+
+Autostart
+
+Sway 并不会自动运行 $XDG_CONFIG_DIRS/autostart 里的程序，需要自己写相应的 systemd user unit 实现。
+
+结局
+
+实际上平铺式窗口管理模式本身还是令我相当满意的，但是我还是最终放弃了把 Sway 当作主力的想法，主要原因：
+
+窗口特效
+
+Sway 除了给窗口加上一个简陋的标题栏和边框以外不支持任何特效，并且开发者已经坚决表示 Sway 的主要目标是稳定所以不会去支持高级特效。
+
+虽然我个人对窗口特效的要求是简短、简约，但是 Sway 只能用简陋来形容，而明明添加一些简单的特效就能使窗口的视觉效果提升很多。
+
+另外众所周知 X Server 走上了与混成器通信的畸形道路的原因之一就是对特效、透明、圆角边框的需求。而如今站在 wayland 的肩膀上，却不使用任何窗口特效未免显得无法物尽其用。
+
+最后不知道是否和这个有关，同样的鼠标主题在 Gnome 和 KDE 下显示效果是一致的，但是在 Sway 下颜色就深得有点不自然。
+
+集成度太低
+
+就如文中反复提及的那样，Sway 仅仅是个窗口管理器而已，所以很多东西不能像使用高集成度的桌面环境时那样方便，例如很多设置需要在多个地方进行重复配置，不支持 XDG Autostart, 插上优盘后自动挂载，更别提在通知中心里面直接通过单击消息打开相应的程序这类体验了。当然这些问题都可以通过自己写代码解决，但是这种感觉真的就是 GNU/Car。
+
+冷门
+
+不像 i3 之类的那样热门，这直接导致了可以偷参考的配置更少，同时生态圈内的各种工具也开发缓慢。同时平铺式窗口管理器本身也相对冷门，导致在部分“喜欢弹小窗”的程序上面体验较差，当然这种体验可以通过修改配置进行改善，不过始终是多了一个步骤。
+
+#### 使用窗口管理器需要自装组件
+
+状态栏 waybar
+
+    可以实现额外的功能，例如通过调用 `curl 'https://wttr.in/?format=1'` 来显示天气、调用自己写的脚本定期检查更新等。
+
+        https://github.com/Alexays/Waybar/wiki
+
+        示例
+
+            https://github.com/Alexays/Waybar/wiki/Examples
+
+            https://github.com/kmephistoh/dotfiles
+
+锁屏 swaylock
+
+关机菜单 wlogout，防止窗口管理器默认的 exit 时，直接就退出系统回到登录界面
+
+壁纸软件
+
+    swaybg  https://github.com/swaywm/swaybg
+    swww    https://github.com/LGFae/swww
+    mpvpaper 用 mpv 播放视频作为壁纸 https://github.com/GhostNaN/mpvpaper
+
+### 桌面环境的开机自启动
+
+    如果要配置登录到桌面后自动启动图形化软件，打开 Gnome Tweaks，点击 " Startup Applications" 添加即可。
+
+RHEL 系和 Debian 系都採用了 XDG 规范，详见章节 [Linux 桌面的基本目录规范 XDG（X Desktop Group）].
+
+#### 本地登录切换图形模式或控制台登录
+
+Fedora 的桌面环境同时支持 x-window 和 wayland，关闭图形模式开机后会停留在控制台登录，按 ctl + alt + F1/F2/F3/F4，切换控制台使用即可：
+
+    执行 `startx` 会在当前控制台启动一个 x-window 桌面环境，点击注销会退回到控制台
+
+    执行 `sudo systemctl isolate graphical.target` 会启动 waylan 桌面环境，执行 `sudo systemctl isolate multi-user.target` 会退回到命令行环境。
+
+    如果你的系统没有桌面环境， 只需要按下 Alt+Fn 键即可切换各个控制台，不需要按下 CTRL。
+
+另见章节 [登录控制台 tty login].
+
+#### X11 启动过程
+
+基于 x-window 的桌面环境的启动过程
+
+    https://wiki.archlinux.org/title/Xinit#Autostart_X_at_login
+
+    https://faq.i3wm.org/question/18/how-do-xsession-xinitrc-and-i3config-play-together.1.html
+
+        https://tldp.org/HOWTO/XWindow-User-HOWTO/runningx.html
+
+        https://dev.leiyanhui.com/c/arch-install-xrdp/
+
+具体启动过程：
+
+    在命令行执行 `startx` 将通过首先调用 xinit 来启动 X。
+
+    xinit 将在用户的主目录中查找一个 ~/.xinitrc 文件，以作为 shell 脚本运行。
+
+    xinitrc 用于设置合适的 X 环境，并启动其他程序，即我们可能希望在 X 启动后立即可用的“客户端”。
+
+    窗口管理器或桌面环境通常是最后一个启动的应用程序。
+
+一、设置登录终端后自动启动桌面，编辑 ~/.bash_profile 文件
+
+    if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+        exec startx
+    fi
+
+如果要自行选择多个桌面自行启动，先编辑 ~/.xinitrc 文件
+
+    # Here Xfce is kept as default
+    session=${1:-xfce}
+
+    case $session in
+        i3|i3wm           ) exec i3;;
+        kde               ) exec startplasma-x11;;
+        xfce|xfce4        ) exec startxfce4;;
+        # No known session, try to run it as command
+        *                 ) exec $1;;
+    esac
+
+然后手工启动
+
+    $ xinit session
+
+    或
+
+    $ startx ~/.xinitrc session
+
+二、更常见的方法是 “GUI 登录”：
+
+    X 在登录之前运行，其使用 xdm（显示管理器）用于此目的。
+
+    登录管理器（如GDM，KDM，XDM）会查找执行 ~/.xsession。
+
+    所以 xdm 的 ~/.xsession 大致相当于 startx 的 ~/.xinitrc。
+
+所以，根据您启动 X 的方式，计算机将执行 ~/.xinitrc 或 ~/.xsession 文件。
+
+在桌面启动的最后阶段，如果你从 ~/.xinitrc 或 ~/.xsession 执行 i3wm 窗口管理器，那么 i3wm 将从 ~/.i3/config 读取其初始配置。
+
+利用这点，用户可以创建一个统一两种登录方式的单个脚本：
+
+    `echo "exec i3" >> ~/.xinitrc`。
+
+    # 创建 xdm 等效的符号链接
+    ln -s $HOME/.xinitrc $HOME/.xsession
+
+在启动 X11 时，将运行 .xinitrc 或 .xsession 脚本，并且脚本完成后，X11 会关闭：当 .xinitrc 完成时，也就是 X11 结束的时候，而不是当你的窗口管理器退出时才关闭。
+
+另外，GDM 登录似乎忽略了“~/.xsession”，因此这并不能使其成为 Ubuntu 用户的选项。
+
+#### 开机启动到命令行，直接启动显示管理器
+
+```bash
+
+# https://github.com/martinpitt/pitti-workstation-oci
+if [ "$(tty)" = "/dev/tty1" ]; then
+    export `gnome-keyring-daemon --start --components=ssh`
+    export BROWSER=firefox-wayland
+    export XDG_CURRENT_DESKTOP=sway
+    exec sway > $XDG_RUNTIME_DIR/sway.log 2>&1
+fi
+
+```
+
+#### 自助机 Kiosk 模式 --- 将会话限制为单个应用程序
+
+在 GNOME 登录屏幕中，从齿轮按钮菜单中选择你的 kiosk 应用
+
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/customizing_the_gnome_desktop_environment/assembly_restricting-the-session-to-a-single-application_customizing-the-gnome-desktop-environment
+
+    Windows 也有 https://learn.microsoft.com/en-us/windows/configuration/kiosk-single-app
+
+单应用模式下启动 GNOME 会话，也称为 kiosk 模式。在此会话中，GNOME 只会显示您选择的应用程序的完整屏幕窗口。这样你的计算机就可以作为一台自助服务机提供公众服务了。
+
+    $ sudo dnf install gnome-kiosk gnome-kiosk-script-session
+
+还可以安装 remmina-gnome-session 软件包，实现开机自启动到远程桌面
+
+    $ sudo dnf install remmina-gnome-session
+
+#### 关闭桌面环境开机自启动
+
+为了节约内存，可以设置成本地开机进入命令行模式，手工执行命令才进入桌面环境，或直接启动单独的图形化应用程序。
+
+    https://www.redhat.com/sysadmin/configure-systemd-startup-targets
+
+    https://docs.fedoraproject.org/en-US/quick-docs/understanding-and-administering-systemd/index.html#mapping-runlevels-to-targets
+
+    https://askubuntu.com/questions/1242965/how-to-disable-gui-in-ubuntu
+
+    https://askubuntu.com/questions/76543/
+
+    https://superuser.com/questions/443997
+
+    https://www.tecmint.com/change-runlevels-targets-in-systemd/
+
+一、老式的 X-window 系统，关闭开机自启动参见章节 [X11 启动过程]。
+
+二、对使用 systemd 管理的桌面环境
+
+/etc/inittab 文件的说明：
+
+    Ctrl-Alt-Delete is handled by /usr/lib/systemd/system/ctrl-alt-del.target
+
+    systemd uses 'targets' instead of runlevels. By default, there are two main targets:
+
+        multi-user.target: analogous to runlevel 3
+
+        graphical.target: analogous to runlevel 5
+
+    To view current default target, run:
+
+        systemctl get-default
+
+    To set a default target, run:
+
+        systemctl set-default TARGET.target
+
+查看登录后启动的设置选项
+
+    $ systemctl get-default
+
+    启动到桌面是 graphical.target，启动到命令行是 multi-user.target。
+
+在系统运行时进行切换：
+
+    # 切换到命令行模式，等效 init 3，在 Fedora 下会退出到控制台 ctl+alt+F2。
+    $ sudo systemctl isolate multi-user.target
+
+    # 切换到图形模式，等效 init 5
+    $ sudo systemctl isolate graphical.target
+
+设置开机自启动：
+
+    设置为登录后启动到命令行（控制台）
+
+        $ sudo systemctl set-default multi-user.target
+
+    设置为登录后启动到图形界面
+
+        $ sudo systemctl set-default graphical.target
+
+    然后重启计算机即可
+
+        $ sudo systemctl reboot
+
+显示管理器也应该是启用状态
+
+    $ sudo systemctl enable gdm/kdm/lightdm
+
+三、利用 systemd 管理的显示管理器也可单独控制启停（内存占用还是大，不如上面的方法）
+
+    # lightdm sddm
+    $ sudo systemctl disable gdm
+
+    也可手工启动、停止指定的显示管理器服务
+
+        # lightdm sddm
+        $ sudo systemctl start gdm
+
+四、单独设置显示管理器服务是否开机自启动，编辑控制文件
+
+lightdm
+
+    https://wiki.debian.org/LightDM
+
+    # 又说  /etc/lightdm/lightdm.conf
+    echo 'manual' | sudo tee /etc/init/lightdm.override
+
+    手工启动、停止
+
+        startx
+
+    如果行不通那就是用 systemd 管理了
+
+gdm
+
+    https://wiki.debian.org/GDM#systemd
+
+    # 又说 /etc/gdm3/daemon.conf
+    或编辑  /etc/init/gdm.conf
+
+        stop on runlevel [0126]
+        #================================================================
+        #start on ((filesystem
+        #           and runlevel [!026]
+        #           and started dbus
+        #           and (drm-device-added card0 PRIMARY_DEVICE_FOR_DISPLAY=1
+        #                or stopped udev-fallback-graphics))
+        #          or runlevel PREVLEVEL=S)
+        #
+        #stop on runlevel [0126]
+        #================================================================
+
+    手工启动、停止
+
+        startx
+
+    如果行不通那就是用 systemd 管理了
+
+sddm
+
+    https://wiki.debian.org/SDDM
+
+    # 又说 /etc/sddm.conf
+    编辑 /etc/init/kdm.conf
+
+        stop on runlevel [0126]
+        #================================================================
+        #start on ((filesystem
+        #           and runlevel [!026]
+        #           and started dbus
+        #           and (drm-device-added card0 PRIMARY_DEVICE_FOR_DISPLAY=1
+        #                or stopped udev-fallback-graphics))
+        #          or runlevel PREVLEVEL=S)
+        #
+        #stop on runlevel [0126]
+        #================================================================
+
+    手工启动、停止
+
+        startx
+
+    如果行不通那就是用 systemd 管理了
+
+五、在操作系统启动分区管理设置开机后进入何种环境
+
+直接编辑 grub 条目，在 'linux  ....' 行的末尾加 3 则等效于开机 init 3 进入命令行环境。
+
+### 不进入桌面环境，控制台执行图形化程序
+
+在 Linux 系统中，即使不进入桌面环境，可以在没有任何装饰、桌面或窗口管理的情况下启动应用程序，即通过命令行在控制台（console）下执行图形化程序。
+
+#### 在 Wayland 环境控制台下执行图形化程序
+
+GNOME 使用 Wayland 作为默认显示服务器，运行图形化程序的方式与传统的 Xorg 有所不同。Wayland 的设计更加现代化，但它的工作方式与 Xorg 有显著区别，因此需要一些额外的步骤来在控制台下运行图形化程序。
+
+以下是在 Wayland 桌面环境（如 GNOME）中，不进入桌面环境，直接在控制台下运行图形化程序的方法：
+
+1、确保 Wayland 会话已启动
+
+Wayland 需要一个运行的会话（session）来管理显示和输入。如果你没有进入桌面环境，可以通过以下方式启动一个 Wayland 会话：
+
+使用 gnome-shell 启动 Wayland 会话
+
+    gnome-shell --wayland --display-server
+
+这会启动一个 GNOME Shell 实例，并使用 Wayland 作为显示服务器。
+
+2、设置 WAYLAND_DISPLAY 环境变量
+
+Wayland 使用 WAYLAND_DISPLAY 环境变量来指定显示器的连接。你需要设置这个变量，以便图形化程序知道如何连接到 Wayland 服务器。
+
+首先，查找当前运行的 Wayland 显示服务器的名称。通常，Wayland 显示服务器的名称类似于 wayland-0 或 wayland-1。你可以通过以下命令查找：
+
+    ls /run/user/$(id -u)/wayland-*
+
+假设输出是 /run/user/1000/wayland-0，那么你可以设置环境变量：
+
+    export WAYLAND_DISPLAY=wayland-0
+
+3、运行图形化程序
+
+权限：你需要有权限访问 Wayland socket。这通常意味着你需要以启动 Wayland 会话的同一个用户身份运行图形化程序。
+
+    如果你不是以启动 Wayland 会话的用户身份登录，你可能需要给当前用户权限
+    注意：Wayland 更加安全，不提供像 X11 的 xhost 这样的简单权限机制
+    你可以考虑使用 machinectl shell 或者 systemd-run --user 来获得访问权限
+
+设置好 WAYLAND_DISPLAY 环境变量后，你可以直接在控制台中运行支持 Wayland 的图形化程序。例如，运行 gedit：
+
+    #  对于一些同时支持 Xorg 和 Wayland 的图形化程序，设置 GDK_BACKEND 指定使用 Wayland 后端
+    # export GDK_BACKEND=wayland
+
+    gedit
+
+如果程序支持 Wayland，它会在 Wayland 会话中显示出来。
+
+如果在运行图形化程序时遇到权限或会话相关的问题，可以使用dbus-run-session命令来启动程序，它会在一个新的 D-Bus 会话中运行指定的命令，确保程序能够正常访问所需的服务和资源。例如：
+
+    dbus-run-session gnome-calculator
+
+需要注意的是，直接从 TTY 启动图形化程序的方式在 Wayland 上不如在 X11 上常见或直接。如果你遇到困难，最简单的办法可能是切换到已有的 Wayland 会话中去启动应用，或者使用 XWayland（一种兼容层，允许你在 Wayland 会话中运行 X11 应用程序）
+
+    运行 Xwayland 来兼容一些只能在 Xorg 上运行的图形化程序。可以先确认 Xwayland 是否正在运行：
+
+        ps ax | grep xwayland
+
+    如果 Xwayland 正在运行，可通过设置DISPLAY环境变量来使用它运行图形化程序，例如：
+
+        export DISPLAY=:0
+        firefox
+
+要切换到现有的 Wayland 会话，可以使用类似 loginctl 或 machinectl 的工具，具体取决于你的系统配置。例如：
+
+    # 列出所有会话
+    loginctl list-sessions
+
+    # 假设你想切换到会话 ID 为 1 的会话
+    loginctl attach 1
+
+    # 或者使用 machinectl shell 直接进入会话
+    machinectl shell :1 /bin/bash
+
+4、使用 weston 作为 Wayland 合成器
+
+如果你没有使用 GNOME Shell，而是希望启动一个轻量级的 Wayland 会话，可以使用 weston（一个独立的 Wayland 合成器）。首先安装 weston：
+
+    sudo apt install weston  # 对于 Debian/Ubuntu
+    sudo dnf install weston  # 对于 Fedora
+
+然后启动 weston：
+
+    weston
+
+启动后，weston 会创建一个新的 Wayland 会话。你可以在 weston 终端中运行图形化程序。
+
+5、使用 sway 作为 Wayland 合成器
+
+sway 是一个兼容 Wayland 的平铺式窗口管理器，类似于 i3。你可以使用 sway 来启动一个 Wayland 会话：
+
+    sway
+
+在 sway 会话中，你可以直接运行支持 Wayland 的图形化程序。
+
+6、检查程序是否支持 Wayland
+
+并非所有图形化程序都原生支持 Wayland。你可以通过以下方式检查程序是否支持 Wayland：
+
+查看程序的文档或官方网站。
+
+使用 env WAYLAND_DEBUG=1 <程序> 运行程序，观察输出中是否有 Wayland 相关的日志。
+
+如果程序不支持 Wayland，它可能会回退到 XWayland（Wayland 的 X11 兼容层）。XWayland 会自动处理 X11 程序的显示，因此你仍然可以运行这些程序。
+
+7、使用 dbus-run-session 启动独立会话
+
+如果你希望在一个独立的会话中运行图形化程序，可以使用 dbus-run-session：
+
+    dbus-run-session -- gnome-shell --wayland --display-server
+
+然后在新会话中运行图形化程序。
+
+8、远程运行 Wayland 程序
+
+如果你通过 SSH 连接到远程机器，并希望运行 Wayland 程序，可以使用 waypipe 或 ssh -X（通过 XWayland 运行程序）。
+
+使用 waypipe
+
+waypipe 是一个用于远程运行 Wayland 程序的工具。首先安装 waypipe：
+
+    sudo apt install waypipe  # 对于 Debian/Ubuntu
+    sudo dnf install waypipe  # 对于 Fedora
+
+然后在远程机器上运行：
+
+    waypipe ssh user@remote_host gedit
+
+另一个说法：
+
+    ssh -Y user@remotehost waypipe ssh xclock
+
+    这里的 -Y 参数启用了信任的 X11 转发，而 waypipe ssh 则确保了 Wayland 流量能够正确地被转发到客户端16。
+
+总结
+
+在 Wayland 环境下运行图形化程序的关键是：
+
+确保 Wayland 会话已启动（如 GNOME Shell、Weston 或 Sway）。
+
+设置 WAYLAND_DISPLAY 环境变量以连接到正确的 Wayland 显示服务器。
+
+运行支持 Wayland 的图形化程序。
+
+如果程序不支持 Wayland，它会通过 XWayland 运行，因此你仍然可以在 Wayland 会话中使用它。
+
+#### 在 Xorg 环境控制台下执行图形化程序
+
+1、确保已安装图形化程序所需的依赖
+
+首先，确保系统中已安装所需的图形库和依赖项。例如，如果你要运行一个基于 GTK 或 Qt 的应用程序，需要确保这些库已安装。
+
+2、设置 DISPLAY 环境变量
+
+图形化程序需要知道将图形输出到哪个显示器。通常，Xorg 服务器会管理显示器的连接。你需要设置 DISPLAY 环境变量来指定显示器。
+
+    export DISPLAY=:0
+
+这里的 :0 表示第一个显示器。如果你有多个显示器或 X 服务器实例，可能需要调整这个值。
+
+3、启动 Xorg 服务器（如果未运行）
+
+如果 Xorg 服务器未运行，你需要手动启动它。可以使用 startx 命令来启动 Xorg 服务器：
+
+    startx
+
+启动后，Xorg 服务器会在后台运行，并准备好接收图形化程序的输出。
+
+4、在控制台中运行图形化程序
+
+设置好 DISPLAY 环境变量后，你可以直接在控制台中运行图形化程序。例如，运行 gedit 文本编辑器：
+
+    gedit
+
+程序应该会在 Xorg 服务器管理的显示器上显示出来。
+
+5、使用 xinit 启动单个程序
+
+如果你只想运行一个图形化程序而不启动完整的桌面环境，可以使用 xinit 命令。例如：
+
+    xinit /usr/bin/gedit -- :1
+
+这里的 :1 表示使用第二个显示器（如果 :0 已被占用）。
+
+6、使用 xvfb 虚拟显示器（无头环境）
+
+如果你在没有物理显示器的服务器上运行图形化程序，可以使用 Xvfb（X Virtual Framebuffer）来创建一个虚拟显示器：
+
+    Xvfb :1 -screen 0 1024x768x24 &
+    export DISPLAY=:1
+    gedit
+
+7、使用 ssh -X 远程运行图形化程序
+
+如果你通过 SSH 远程连接到 Linux 系统，可以使用 ssh -X 或 ssh -Y 来启用 X11 转发，然后在远程终端中运行图形化程序：
+
+    ssh -X user@remote_host
+    gedit
+
+图形化程序会在本地显示器上显示。
+
+总结
+
+通过设置 DISPLAY 环境变量并确保 Xorg 服务器正在运行，你可以在不进入桌面环境的情况下从控制台运行图形化程序。如果是在无头环境中，可以使用 Xvfb 来创建虚拟显示器。
+
+> 利用显示管理器直接执行图形化应用程序
+
+    https://wiki.archlinux.org/title/Display_manager#Starting_applications_without_a_window_manager
+
+设为桌面登录后，将立即启动设置的应用程序。当您关闭应用程序时，您将被带回登录管理器（与注销正常的桌面环境或窗口管理器相同），只需要编辑 /usr/share/xsessions/web-browser.desktop
+
+```ini
+[Desktop Entry]
+Name=Web Browser
+Comment=Use a web browser as your session
+Exec=/usr/bin/google-chrome --auto-launch-at-startup
+TryExec=/usr/bin/google-chrome --auto-launch-at-startup
+Icon=google-chrome
+Type=Application
+```
+
+> 利用 systemd 单元，不使用显示管理器，直接登录 xorg 桌面
+
+    https://wiki.archlinux.org/title/Systemd/User#Automatic_login_into_Xorg_without_display_manager
+
+感觉这 systemd 管的越来越多，直接做一个 systemd 操作系统得了。
+
+另一个说法：X11 在命令行手工执行图形化应用程序
+
+    https://wiki.archlinux.org/title/Xinit#Starting_applications_without_a_window_manager
+
+一、对老式的 x 系统
+
+    startx nautilus
+
+编辑 ~/.xinitrc 文件
+
+    exec chromium
+
+在命令行环境执行 `startx` 会进入 x11 的桌面环境，注意如果是 Fedora Silverblue 的 x11 桌面会无法从终端进入 toolbox
+
+在桌面选择 logout 即会退出到命令行环境。
+
+二、如果要用 x-window 開啟後自動啟動應用程式,請自行修改或是新增 .desktop 檔案：
+
+System-wide autostart directories:
+
+    /etc/xdg/autostart
+
+    /usr/share/autostart
+
+    User specific autostart directories:
+
+    ~/.config/autostart
+
+    ~/.kde/share/autostart (KDE specific)
+
+    ~/.kde/Autostart (KDE specific)
+
+我們來看看基本的 .desktop 檔案內容有哪些
+
+    [root@benjr ~]# cat ~/.config/autostart/gnome-terminal.desktop
+
+    [Desktop Entry]
+
+    Type=Application
+
+    Exec=gnome-terminal
+
+    Hidden=false
+
+    X-GNOME-Autostart-enabled=true
+
+    Name[en_US]=test
+
+    Name=test
+
+    Comment[en_US]=xdg testing
+
+    Comment=xdg testing
+
+    Type=Application
+
+    Exec=gnome-terminal
+
+最重要的就是指定要執行哪一個程式，这样实现在命令行直接启动图形化应用程序，无需进入桌面环境。
+
+    Hidden=false
+
+    X-GNOME-Autostart-enabled=true
+
+    Name[en_US]=test
+
+    Name=test
+
+    Comment[en_US]=xdg testing
+
+    Comment=xdg testing
 
 ## Windows 下的 GNU/POSIX 环境
 
