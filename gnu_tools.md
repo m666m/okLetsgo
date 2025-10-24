@@ -12043,7 +12043,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Desktop Cube            3D 化概览窗口，可以鼠标点击拖动切换各个桌面
 
-    Burn my Windows         窗口的弹出和关闭各种特效化，推荐勾选 Apparition、Doom、Hexagon、TV Glitch。
+    Burn my Windows         窗口的弹出和关闭各种特效化，推荐勾选 Apparition、Doom、Hexagon、TV Glitch。这个好像比较吃系统资源，不知道杂回事。
 
     Compiz windows effects  拖动窗口时的动画特效
 
