@@ -12005,6 +12005,8 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在任务栏的时间弹窗处先设置你的位置。
 
+    Desktop Widgets (Desktop Clock)     桌面组件，可以显示时钟、天气，非常实用。
+
     Date Menu Formater      如果在任务栏显示的时间没有星期，在 Gnome Tweaks 中开启即可。在系统设置的 Clock&Calendar 可以设置是否显示星期，这个扩展可以调整日期时间的格式。
 
     Lunar Calendar          农历，需要先安装lunar-date库(https://github.com/yetist/lunar-date)
