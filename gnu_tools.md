@@ -11977,7 +11977,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
             gnome-extensions install quake-mode@repsac-by.github.com.shell-extension.zip --force
 
-    Coverflow Alt-Tab       按住 alt+Tab 显示当前窗口列表，像 Windows 的 win + tab 那样立体形式的呈现切换窗口，而且可以治愈 gnome 目前不能按 Alt+Tab 切换最近使用的两个窗口。如果当前应用有多个窗口则显示，其他窗口在上面的小窗口列出。gnome 的默认习惯，只能切换到应用：Alt+Tab 列表是应用窗口，按住 Alt 持续点击 tab 循环到某个多实例的应用窗口时，会在上面再显示一个列表呈现该应用的多个实例。切换到应用的窗口后，按 Alt+` 在应用的多个实例间切换。
+    Coverflow Alt-Tab       按住 alt+Tab 显示当前窗口列表，像 Windows 的 win + tab  那样立体形式的呈现切换窗口，而且可以治愈 gnome 目前不能按 Alt+Tab 切换最近使用的两个窗口。如果当前应用有多个窗口则显示，其他窗口在上面的小窗口列出。gnome 的默认习惯，只能切换到应用：Alt+Tab 列表是应用窗口，按住 Alt 持续点击 tab 循环到某个多实例的应用窗口时，会在上面再显示一个列表呈现该应用的多个实例。切换到应用的窗口后，按 Alt+` 在应用的多个实例间切换。
 
         实现 Windows 任务栏切换的习惯：选 AppSwitch 设置页，点开 “Make ... Like the Windows ...” 按钮，这样就不再把窗口分组为应用和应用的多个实例，还要选 Windows 设置页点开 “Workspaces” 选 “All workspaces”，否则会优先循环当前工作区的窗口。
 
@@ -12001,7 +12001,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Night Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现定时自动切换。
 
-    system-monitor-next     在任务栏显示你的cpu、内存使用情况，就像在终端使用 btop 或 nmon 的效果。竞品 Vitals/Freon。
+    system-monitor-next     在任务栏图形化显示你的cpu、风扇、网速等使用情况。竞品 Vitals/Freon。
 
     Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在任务栏的时间弹窗处先设置你的位置。
 
@@ -12039,7 +12039,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     另见章节 [自写脚本指定壁纸目录随机更换]
 
-    Blur my Shell           透明模糊你的任务栏，勾选 PanelBlue 即可让概览窗口的背景也使用你的壁纸，而且支持某些应用程序和扩展透明化，比如 Coverflow Alt-Tab 背景模糊。注意跟有些主题兼容性不好边缘无法透明。不需要使用它的锁屏背景模糊功能，使用 Bing Wallpaper 扩展的这个功能效果更好。不需要使用它的 Dash to Dock/Panel 的透明化功能，那些扩展自己有透明化设置。
+    Blur my Shell           透明模糊你的任务栏，勾选 Backgroud Blur 即可让概览窗口的背景也使用你的壁纸，而且支持很多应用程序和扩展的透明化，比如 Coverflow Alt-Tab 背景模糊。注意跟有些主题兼容性不好边缘无法透明。不要使用它的锁屏背景模糊功能，使用 Bing Wallpaper 扩展的这个功能效果更好。不需要使用它的 Dash to Dock/Panel 的透明化功能，用扩展自己的透明化设置。
 
     Desktop Cube            3D 化概览窗口，可以鼠标点击拖动切换各个桌面
 
@@ -12048,7 +12048,6 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
     Compiz windows effects  拖动窗口时的动画特效
 
     Just Perfection         自定义你的 gnome 桌面的各个元素
-
 
 #### 使用 gnome 主题
 
