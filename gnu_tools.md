@@ -12041,11 +12041,11 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     另见章节 [自写脚本指定壁纸目录随机更换]
 
-    Blur my Shell           透明模糊你的任务栏，勾选 Backgroud Blur 即可让概览窗口的背景也使用你的壁纸，而且支持很多应用程序和扩展的透明化，比如 Coverflow Alt-Tab 背景模糊。注意跟有些主题兼容性不好边缘无法透明。不要使用它的锁屏背景模糊功能，使用 Bing Wallpaper 扩展的这个功能效果更好。不需要使用它的 Dash to Dock/Panel 的透明化功能，用扩展自己的透明化设置。
+    Blur my Shell           透明模糊你的任务栏，勾选 Backgroud Blur 即可让概览窗口的背景也使用你的壁纸，而且支持很多应用程序和扩展的透明化，比如 Coverflow Alt-Tab 背景模糊。注意跟有些主题兼容性不好边缘无法透明。不要使用它的 Lock screen blur，使用 Bing Wallpaper 扩展锁屏模糊功能效果更好。不需要使用它的 Dash to Dock/Panel 的透明化功能，用扩展自己的透明化设置。
 
     Desktop Cube            3D 化概览窗口，可以鼠标点击拖动切换各个桌面
 
-    Burn my Windows         窗口的弹出和关闭各种特效化，推荐勾选 Apparition、Doom、Hexagon、TV Glitch。这个好像比较吃系统资源，不知道杂回事。
+    Burn my Windows         窗口的弹出和关闭各种特效化，推荐勾选 Apparition、Doom、Hexagon、TV Glitch。这个在安装完成后会再次更新，反应比较慢，稍等一阵即可。
 
     Compiz windows effects  拖动窗口时的动画特效
 
@@ -16911,7 +16911,7 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
 窗口管理器 vs 桌面环境
 
-    窗口管理器（Windows Manager），负责绘制窗口的边框，处理窗口运行比如移动、最小化之类的行为。
+    窗口管理器（Windows Manager），负责绘制窗口的边框，处理窗口运行比如移动、最小化之类的行为，最大的区别是不支持窗口叠放，只能各种平铺。
 
         https://linux.net.cn/article-12068-1.html
 
@@ -16996,17 +16996,32 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
 
     Mutter  -  GNOME的窗口管理器和合成器
 
+    Sway - Sway 是平铺 Wayland 合成器，替代 X11 下 i3 窗口管理器（sway明确说不支持英伟达显卡）。
+
+    Hyprland: 一个基于 wlroots 的动态平铺 Wayland 合成器，动态窗口的变换快速平滑
+
+        快速体验 Arch Linux + Hyprland 的一个发行版 https://omarchy.org/
+
+        Hyprland 通常还需要： 启动器 状态栏 文件管理器 通知守护进程 锁屏、电源管理 终端程序 壁纸、字体管理等等末枝细节 部分零件例如 Hyprland 用户常用的 Waybar 状态栏，自身又具有非常高的定制性。总的来说可以认为是真正意义上定制党狂喜的方案之一。不过最终效果嘛，并不一定有完整的桌面易用。
+
+        https://wiki.hyprland.org/Getting-Started/Master-Tutorial/
+
+        https://cascade.moe/posts/hyprland-configure/
+
+        https://www.bilibili.com/read/cv22707313/
+
+        不使用 wayland 的 Hypr --- 使用 Xorg 的窗口管理器
+            https://github.com/vaxerski/Hypr
+
     Compton - Compton 是一款独立的合成管理器，适合同没有原生提供合成功能的窗口管理器一同使用。
 
     Gamescope - Gamescope 是一款微合成器，提供一个带有独立输入，分辨率和刷新率的沙盒 Xwayland 桌面。
-
-    Sway - Sway 是平铺 Wayland 合成器，替代 X11 下 i3 窗口管理器（sway明确说不支持英伟达显卡）。
 
     Mir - Miracle-WM 的合成器
 
     Xcompmgr - Xcompmgr 是一个简单的合成管理器，能够渲染下拉阴影，使用 transset 工具的话，还可以实现简单的窗口透明。
 
-    Compiz：OpenGL 窗口和合成管理器，能实现三维的切换窗口
+    Compiz：过时了，OpenGL 窗口和合成管理器，能实现三维的切换窗口
 
         http://wiki.compiz.org/CommonKeyboardShortcuts
 
@@ -17017,17 +17032,6 @@ Wayland 环境使用 QT 应用如果启动报错，需要修改 /etc/environment
         compizconfig设置 https://blog.csdn.net/ysynhtt/article/details/44948989
 
         使用compiz https://blog.csdn.net/kewen_123/article/details/115871744
-
-    Hyprland: 一个基于 wlroots 的动态平铺 Wayland 合成器，动态窗口的变换快速平滑
-
-        https://wiki.hyprland.org/Getting-Started/Master-Tutorial/
-
-        https://cascade.moe/posts/hyprland-configure/
-
-        https://www.bilibili.com/read/cv22707313/
-
-        不使用 wayland 的 Hypr --- 使用 Xorg 的窗口管理器
-            https://github.com/vaxerski/Hypr
 
 #### i3
 
