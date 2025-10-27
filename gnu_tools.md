@@ -2104,14 +2104,14 @@ Xfce 桌面自带 Xfce Terminal，支持背景图片：
 
 Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示刷新速度快
 
-    Fedora 41 用它代替了 Gnome Terminal
+    Fedora 41 开始用它代替了 Gnome Terminal
 
     它的特色是有一个小型的 ptyxis-agent 后台进程来管理 PTY、PID 跟踪和容器监控。
     而且，即使在 Flatpak 中，它也支持本机“用户会话”，以及 Podman、Toolbox、Distrobox 和 JHBuild。
 
     主题配色方案内置了 Nord theme，但是不支持背景图片，已经内置在 Fedora 41。
 
-    无法设置鼠标选择文字即复制到系统剪切板。
+    无法设置鼠标选择文字即复制到系统剪切板，必须右键菜单或者用热键。如果在 vi 中无法弹出右键菜单，用 shift+右键。
 
     目前对 tmux 的支持不好，鼠标不听话。
 
@@ -2221,9 +2221,9 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
         https://sw.kovidgoyal.net/kitty/shell-integration/#shell-integration
 
-    ssh问题：有时 ssh 连接到远程计算机时，可能会报错终端未知或打开终端失败。是因为 Kitty terminfo 文件（curses 库中处理特定终端功能的一组例程）在远程服务器上不可用。
+    ssh问题：有时 ssh 连接到远程计算机时，可能会报错终端未知或打开终端失败。是因为 Kitty terminfo 文件（curses 库中处理特定终端功能的一组例程）在远程服务器上不可用，解决办法如下：
 
-        alias sshk="kitty +kitten ssh" 以后使用 ssh 执行 `sshk user@host` 即可
+        alias sshk="kitty +kitten ssh" 然后使用 ssh 执行 `sshk user@host` 即可
 
     扩展插件
 

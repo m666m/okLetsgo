@@ -349,6 +349,7 @@ function shasumd {
 alias audk='echo "[持续显示内核信息]" && sudo dmesg -w -T'
 alias auds='echo "[持续显示系统日志中 systemd-journald 分类信息]" && sudo journalctl -f'
 alias audj='echo "[持续显示系统日志中人性化可读审计信息-精简文本]" && sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
+alias audkb='echo "[列出所有启动记录]" && journalctl --list-boots && echo "[显示操作系统上次启动时的内核信息]" && journalctl -k -b -1'
 
 # systemd
 alias stmu='echo "[systemd 列出当前系统的单元，可 grep]" && systemctl list-units --no-pager'
