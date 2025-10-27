@@ -9,7 +9,6 @@
 #
 # 避坑
 #   变量赋值别习惯性的加空格
-#   在 Fedora 下 # 号写注释，不要用变量引用的那个货币符号，会进行解释，不知道为啥
 
 #######################
 # 此部分作为普通脚本的默认头部内容，便于调测运行。
@@ -38,8 +37,8 @@
 #     This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login exists.
 #     see /usr/share/doc/bash/examples/startup-files for examples.
 #     the files are located in the bash-doc package.
-# 而 Debian 系在 .profile 里把某几个标准目录设置到变量 $PATH，不调用本文件会导致 bash 在执行某些命令时找不到。
-# 为保持兼容性，这里不直接执行 .profile 文件，而是单独补充，把这几个目录设置到 $PATH
+# 而 Debian 系在 .profile 里把某几个标准目录设置到变量 $PATH，不调用 .profile 会导致 bash 找不到某些基础命令。
+# 为保持兼容性，这里不直接执行 .profile 文件，而是单独补充，把这几个标准目录设置到变量 $PATH
 # test -f ~/.profile && . ~/.profile
 # PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
 for dir in "$HOME/.local/bin" "$HOME/bin"; do
