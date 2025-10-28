@@ -2104,14 +2104,19 @@ Xfce 桌面自带 Xfce Terminal，支持背景图片：
 
 Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示刷新速度快
 
+        https://gitlab.gnome.org/chergert/ptyxis
+
     Fedora 41 开始用它代替了 Gnome Terminal
 
-    它的特色是有一个小型的 ptyxis-agent 后台进程来管理 PTY、PID 跟踪和容器监控。
-    而且，即使在 Flatpak 中，它也支持本机“用户会话”，以及 Podman、Toolbox、Distrobox 和 JHBuild。
+    它的特色是有一个小型的 ptyxis-agent 后台进程来管理 PTY、PID 跟踪和容器监控
+
+    自动识别当前的容器如 Podman、Toolbox、Distrobox 和 JHBuild，在工具栏右上角的下拉菜单列出，选择即可新建一个标签页进入该容器。
 
     主题配色方案内置了 Nord theme，但是不支持背景图片，已经内置在 Fedora 41。
 
-   鼠标选择文字即复制，可以 shift+ins 粘贴都只限于本终端，无法到系统剪切板。要操作系统剪贴板的复制和粘贴，必须右键菜单选择。无法设置只使用系统剪贴板。如果在 tmux/vi 等应用中无法弹出右键菜单，用 shift+右键可弹出。
+    对 ssh 和本地切换到 root 用户，窗体颜色会变化以提示用户。
+
+    鼠标选择文字即复制，可以 shift+ins 粘贴都只限于本终端，无法到系统剪切板。要操作系统剪贴板的复制和粘贴，必须右键菜单选择。无法设置只使用系统剪贴板。如果在 tmux/vi 等应用中无法弹出右键菜单，用 shift+右键可弹出。
 
     目前对 tmux 的支持不好，鼠标不听话。
 
@@ -11998,6 +12003,8 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
     Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口。
 
     GSConnect               操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”，使用说明 <https://lixuannan.github.io/posts/27832.html>。如果需要完整操控你的手机，见章节 [Scrcpy --- 在 Linux 桌面显示和控制 Android 设备]。
+
+    Cronomix                任务栏的番茄钟(pomodoro)，带你进入专注模式，另外还有闹钟、秒表等多种计时器，非常实用。
 
     Night Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现定时自动切换。
 
