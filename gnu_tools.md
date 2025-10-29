@@ -8976,6 +8976,8 @@ There are many Web sites which describe how to tune TCP/IP, so we do not cover t
 
 rsync 用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器。其默认的行为是，使用文件大小和修改时间来判断目标文件是否需要更新
 
+    https://www.man7.org/linux/man-pages/man1/rsync.1.html
+
     http://rsync.samba.org
 
     https://www.ruanyifeng.com/blog/2020/08/rsync.html
@@ -9062,9 +9064,9 @@ rsync 命令提供使用的 OPTION 及功能
 
     -a    这是归档模式，表示以递归方式传输文件，并保持所有属性，它等同于开启 -r、-l、-p、-t、-g、-o、-D 选项。 -a 选项后面可以跟一个 --no-OPTION，表示关闭 -r、-l、-p、-t、-g、-o、-D 中的某一个，比如-a --no-l 等同于 -r、-p、-t、-g、-o、-D 选项。
 
-    -r    以递归模式处理子目录，它主要是针对同步目录来说的，如果单独传一个文件不需要加 -r 选项，但是传输目录时必须加。 --relative /var/www/uploads/abcd
+    -r    -a 已经包含该选项。以递归模式处理子目录，它主要是针对同步目录来说的，如果单独传一个文件不需要加 -r 选项，但是传输目录时必须加。 --relative /var/www/uploads/abcd
 
-    -z    加上该选项，将会在传输过程中压缩。
+    -z    加上该选项，将会在传输过程中压缩。通常不适用，大数据量的容器镜像、系统备份等都是已经压缩过的格式，且NFS本身有数据包和缓存机制，额外压缩可能破坏NFS的优化。
 
     -v    打印一些信息，比如文件列表、文件数量等。
 
@@ -9105,6 +9107,8 @@ rsync 命令提供使用的 OPTION 及功能
     --exclude       同步时排除某些文件或目录
 
     --bwlimit=KBPS  最大传输速率，限制 rsync 的带宽使用
+
+    -u：跳过接收方上较新的文件
 
 以上也仅是列出了 rsync 命令常用的一些选项，对于初学者来说，记住最常用的几个即可，比如 -a、-v、-z、--delete 和 --exclude。
 
@@ -9267,19 +9271,24 @@ module_name 是你在 rsyncd.conf 中定义的模块名。
 
 #### rsync 命令行示例
 
+tldr:
+
+    增量备份，尽力提速
+
+    sudo mount -o noatime /dev/sdxx /backup
+
+    rsync -av --delete \
+        --no-whole-file \
+        --partial --progress \
+        /source/ /backup/destination/
+
 一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`，这样就可以实现增量备份。
 
     -a：存档模式（等于-rlptgoD）：递归，将符号链接复制为符号链接，保留权限，保留修改时间，保留组，保留所有者，保留设备文件和特殊文件
 
     -v：在传输过程中增加详细信息
 
-    -u：跳过接收方上较新的文件
-
-    -r：递归到目录
-
-    --progress：显示传输过程中的进度
-
-    --delete：从远程服务器中删除多余的文件
+    -h    让输出信息人性化可读
 
 在生产系统上运行，一般要用 `ionice` 降低 IO 优先级，需要 root 权限
 
@@ -9297,27 +9306,27 @@ NOTE：rsync 命令源目录是否写 '/' 处理方式不同
     # 源目录 source 中的内容复制到了目标目录 destination 中，不建立source子目录的方式
 
     # 理解为    source/*
-    rsync -av  source/ destination
+    rsync -avh  source/ destination
 
     # 源目录 source 被完整地复制到了目标目录 destination 下面，source成为子目录
-    rsync -av source destination
+    rsync -avh source destination
 
 其它多个用法
 
     # 同步时排除某些文件或目录，可以用多个 --exclude
-    rsync -av --exclude='*.txt' source/ destination
+    rsync -avh --exclude='*.txt' source/ destination
 
     # 同步时排除隐藏文件
-    rsync -av --exclude=".*" source/ destination
+    rsync -avh --exclude=".*" source/ destination
 
     # 排除某个目录里面的所有文件，但不希望排除目录本身
-    rsync -av --exclude 'dir1/*' source/ destination
+    rsync -avh --exclude 'dir1/*' source/ destination
 
     # 同步时，排除所有文件，但是不排除 txt 文件
-    rsync -av --include="*.txt" --exclude='*' source/ destination
+    rsync -avh --include="*.txt" --exclude='*' source/ destination
 
     # 排除一个文件列表里的内容，每个模式一行
-    rsync -av --exclude-from='exclude-file.txt' source/ destination
+    rsync -avh --exclude-from='exclude-file.txt' source/ destination
 
 增量备份的三方比对用法：使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录
 
@@ -9330,10 +9339,14 @@ NOTE：rsync 命令源目录是否写 '/' 处理方式不同
     rsync -avz --progress source/ username@remote_host:destination
 
     # 将远程内容同步到本地
-    rsync -av username@remote_host:source/ destination
+    rsync -avh username@remote_host:source/ destination
 
     # 如果 ssh 命令有附加的参数，则必须使用 -e 参数指定所要执行的 SSH 命令
-    rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
+    rsync -avh -e 'ssh -p 2234' source/ user@remote_host:/destination
+
+对于远程备份（通过 SSH），强烈建议使用 --no-whole-file（或者使用 -a 选项，因为它不包含 --whole-file），因为网络几乎总是最慢的环节。事实上，通过 SSH 传输时，rsync 默认就是禁用 --whole-file 的。
+
+    在以下情况下，使用 --no-whole-file 只写入更改的块，而不是重写整个文件： 同步的文件非常大，且只有小部分内容被修改，比如大型虚拟机镜像文件 (*.vmdk, *.qcow2)、数据库文件、日志文件、ISO 镜像等。备份到 U 盘、SD 卡、旧硬盘或网络附加存储上，这些设备的写入速度很慢。与 --inplace 选项结合使用，可以实现真正高效的“原地修补”。注意：--inplace 有一定风险，如果在传输过程中中断，可能会留下一个部分更新且损坏的文件。通常与 --partial 一起使用来保留部分传输的文件以便续传。
 
 #### 软硬链接文件的处理区别
 
