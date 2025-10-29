@@ -9273,13 +9273,14 @@ module_name 是你在 rsyncd.conf 中定义的模块名。
 
 tldr:
 
-    增量备份，尽力提速
+    增量备份，断点续传
 
     sudo mount -o noatime /dev/sdxx /backup
 
-    rsync -av --delete \
+    rsync -avh \
         --no-whole-file \
-        --partial --progress \
+        --partial \
+        --progress \
         /source/ /backup/destination/
 
 一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`，这样就可以实现增量备份。
