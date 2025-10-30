@@ -460,6 +460,11 @@ alias fpkr='echo "[flatpak查看当前有哪些存储库]" && flatpak remotes'
 alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
 alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime'
 alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
+function fpks() {
+    echo "[flatpak 搜软件不展示 id 让你没法安装: ${1}]"
+
+    flatpak search $1 |column
+}
 
 # Homebrew
 function brew_sf() {
