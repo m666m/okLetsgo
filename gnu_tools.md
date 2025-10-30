@@ -16533,6 +16533,8 @@ winecfg 让你可以改变 WINE 本身的设置，而 winetricks 则可以让你
 
         $ env LANG=zh_CN.GBK MESA_GL_VERSION_OVERRIDE=4.5 wine war3.exe -opengl
 
+    如果是 Ubuntu 24 中文版，LANG 的值是 zh_CN.UTF-8，试试去掉 env LANG=zh_CN.GBK 运行，否则游戏报错不支持所在地区。这跟其它 Linux 正好倒过来，不知道咋回事。
+
 另外，如果你安装了多个程序，并需要不同的环境去运行：
 
 为了使 war3 的 wine 环境和默认的 wine 环境不相互污染，应该给它创建单独的配置文件，通过如下命令来启动
