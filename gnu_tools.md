@@ -8974,7 +8974,7 @@ There are many Web sites which describe how to tune TCP/IP, so we do not cover t
 
 ### 文件同步 rsync
 
-rsync 用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器。其默认的行为是，使用文件大小和修改时间来判断目标文件是否需要更新
+rsync 用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器
 
     https://www.man7.org/linux/man-pages/man1/rsync.1.html
 
@@ -8992,7 +8992,7 @@ rsync 用于增量备份（只复制有变动的文件），同步文件或目�
 
         https://wiki.archlinux.org/title/Rsync#Full_system_backup
 
-最常用的就是代替 scp 命令
+最常用的就是代替 scp 命令。
 
 使用 `rsync -e ssh` 即可代替 scp 命令，但是注意其对目录的处理方式跟 scp/cp 方式有区别：
 
@@ -9024,13 +9024,13 @@ rsync 实现增量备份：
 
         如果文件没有变化，rsync 不会重新传输这些文件。
 
-    所以，重复执行相同的 rsync 命令就可以实现只更新变化的文件，简单方便
+    所以，重复执行相同的 rsync 命令就可以实现只更新变化的文件，简单方便。
 
 一般要配合使用 ionice 来降低 rsync 进程的 io 优先级：
 
-    scp 不占资源，不会提高多少系统负荷，在这一点上，rsync 就远远不及它了。虽然 rsync 比 scp 会快一点，但当小文件众多的情况下，rsync 增量备份会导致硬盘 I/O 非常高，而 scp 基本不影响系统正常使用。
+    scp 不占资源，不会提高多少系统负荷，在这一点上，rsync 就远远不及它了。虽然 rsync 比 scp 会快一点，但当小文件众多的情况下，rsync 增量备份会导致硬盘 I/O 占用率非常高，而 scp 基本不影响系统正常使用。
 
-    $ sudo ionice -c 2 -n 7 rsync -avz /source/ /destination/
+    $ sudo ionice -c 2 -n 5 rsync ...
 
     -c 2 指定了 I/O 类（2 代表“best effort”），-n 7 指定了优先级级别（从 0 到 7，7 最低）。
 
@@ -9066,8 +9066,6 @@ rsync 命令提供使用的 OPTION 及功能
 
     -r    -a 已经包含该选项。以递归模式处理子目录，它主要是针对同步目录来说的，如果单独传一个文件不需要加 -r 选项，但是传输目录时必须加。 --relative /var/www/uploads/abcd
 
-    -z    加上该选项，将会在传输过程中压缩。通常不适用，大数据量的容器镜像、系统备份等都是已经压缩过的格式，且NFS本身有数据包和缓存机制，额外压缩可能破坏NFS的优化。
-
     -v    打印一些信息，比如文件列表、文件数量等。
 
     -h    让输出信息人性化可读
@@ -9100,6 +9098,10 @@ rsync 命令提供使用的 OPTION 及功能
 
     --partial       断点续传。保留那些未传输完成的文件，以便可以在下次传输时继续。部分传输的文件通常会被存放在目标目录中，但它们会被放置在一个以 .rsync-partial 命名的隐藏目录里。这个隐藏目录会在目标路径下自动创建，用于存放在传输过程中断时的部分文件。
 
+        如果传输 10GB 文件在 8GB 时中断，目标服务器上会有 8GB 的 .partial 文件，下次续传时，需要额外的 10GB 空间（新旧版本并存），最终总空间需求 ≈ 2 × 文件大小
+
+        如果传输频繁中断，会积累大量 .partial 文件，需要手动清理。
+
     --append-verify 断点续传。在 --partial 的基础上，它还会在传输完成后对文件进行校验，如果校验失败，则会重新传输该文件。这是对数据完整性更好的选择，但是会大大降低数据同步的速度，并增加cpu消耗。
 
     --delete        增量备份时删除目标服务器上在源服务器不存在的文件，建议使用前先用 -n 参数干跑一下看看效果
@@ -9107,6 +9109,8 @@ rsync 命令提供使用的 OPTION 及功能
     --exclude       同步时排除某些文件或目录
 
     --bwlimit=KBPS  最大传输速率，限制 rsync 的带宽使用
+
+    -z    加上该选项，将会在传输过程中压缩。通常不适用，大数据量的容器镜像、系统备份等都是已经压缩过的格式，且NFS本身有数据包和缓存机制，额外压缩可能破坏NFS的优化。
 
     -u：跳过接收方上较新的文件
 
@@ -9269,19 +9273,65 @@ module_name 是你在 rsyncd.conf 中定义的模块名。
 
 通过这种方式，rsync 守护进程允许客户端从源服务器同步文件，而客户端可以是任何需要这些文件的目标服务器。
 
+#### rsync 增量备份的原理
+
+日常使用默认即可：
+
+    对于99%的备份和同步需求，直接使用 `rsync -av` 就够了。它的“文件级增量判断 + 传输时块级优化”已经非常高效和智能。
+
+rsync 使用文件大小和修改时间来判断目标文件是否需要更新。
+
+    增量单位是“文件”。 一个文件要么被整体同步，要么被跳过。
+
+    决策逻辑基于“元数据”。 通过比较时间戳和大小来快速决定哪些文件需要处理。
+
+    传输优化是“块级”。 在传输单个文件的内容时，rsync 会尽力减少数据传输量，但这发生在文件已经被选定为需要同步之后。
+
+会改变 rsync 传输文件的方式的选项：
+
+ssh：远程传输时会自动禁用整个文件同步，本地操作时同步整个文件
+
+--append：专门用于处理正在被写入的日志文件或类似的文件，只传输源文件中多出来的那部分数据，并将其追加到目标文件。
+
+--inplace：对部分更新的文件
+
+    默认方式（Safe Transfer）： rsync 默认会先将更新的数据写入一个临时文件，传输完成并验证后，再重命名覆盖旧文件。这是最安全的方式。
+
+    --inplace 方式： rsync 会直接在目标文件上进行“打补丁”操作。它会找到文件中变化的块，并直接通过网络传输的差异块覆盖目标文件的相应位置。
+
+    只有在明确知道源文件和目标文件几乎相同，只有小块数据变化，并且能承受传输中断导致文件损坏的风险时，才使用 --inplace，通常用于同步虚拟机镜像或大型数据库文件的副本。
+
+--whole-file：强制它进行“全文件”传输
+
+    在本地存储或万兆高速局域网内，有时直接传输整个文件比计算和比较校验更快
+
 #### rsync 命令行示例
 
 tldr:
 
-    增量备份，断点续传
+    本地挂载存储备份：
 
-    sudo mount -o noatime /dev/sdxx /backup
+        sudo mount -o noatime nodev /dev/sdxx /backup
 
-    rsync -avh \
-        --no-whole-file \
-        --partial \
-        --progress \
-        /source/ /backup/destination/
+        rsync -avh --progress --stats \
+            /source/ /backup/destination/
+
+    远程：
+
+        rsync -avh --progress --stats \
+            -e "ssh -p 22" \
+            /source/ user@host:/backup/destination/
+
+    不稳定网络增量备份，断点续传：
+
+        rsync -avh --progress --stats \
+            --partial  --partial-dir=.rsync-partial\
+            --timeout=30 \
+            --bwlimit=5000 \
+            -e "ssh -p 22 -o ServerAliveInterval=15 -o ConnectTimeout=20" \
+            /source/ user@host:/backup/destination/
+
+        NOTE：使用了 --partial-dir 则远程服务器要定期清理该目录
 
 一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`，这样就可以实现增量备份。
 
@@ -9293,7 +9343,7 @@ tldr:
 
 在生产系统上运行，一般要用 `ionice` 降低 IO 优先级，需要 root 权限
 
-    $ sudo ionice -c 2 -n 7 rsync -avr --progress source username@remote_host:destination
+    $ sudo ionice -c 2 -n 5 rsync -avh --progress --stats --bwlimit=50000 /source/ /backup/destination/
 
 如果不确定 rsync 执行后会产生什么结果，先 -n 模拟跑下看看输出
 
@@ -9302,15 +9352,16 @@ tldr:
     # 断点续传
     rsync -avth --partial --progress --bwlimit=4000 --exclude='*.xxx' /path1/ xxx@192.111.11.111:/path2/
 
-NOTE：rsync 命令源目录是否写 '/' 处理方式不同
+NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式与众不同
 
-    # 源目录 source 中的内容复制到了目标目录 destination 中，不建立source子目录的方式
+    # 将 source 目录本身同步到 destination 中，source 成为它的子目录
+    rsync -avh /tmp/source /tmp/destination
 
-    # 理解为    source/*
-    rsync -avh  source/ destination
+    # 将 source 目录内的内容同步到 destination 中，不会建立 source 子目录
+    # 可理解为    source/*
+    rsync -avh /tmp/source/ /tmp/destination
 
-    # 源目录 source 被完整地复制到了目标目录 destination 下面，source成为子目录
-    rsync -avh source destination
+    使用尾部带斜杠的版本 (/tmp/source/) 更符合直觉
 
 其它多个用法
 
@@ -9344,10 +9395,6 @@ NOTE：rsync 命令源目录是否写 '/' 处理方式不同
 
     # 如果 ssh 命令有附加的参数，则必须使用 -e 参数指定所要执行的 SSH 命令
     rsync -avh -e 'ssh -p 2234' source/ user@remote_host:/destination
-
-对于远程备份（通过 SSH），强烈建议使用 --no-whole-file（或者使用 -a 选项，因为它不包含 --whole-file），因为网络几乎总是最慢的环节。事实上，通过 SSH 传输时，rsync 默认就是禁用 --whole-file 的。
-
-    在以下情况下，使用 --no-whole-file 只写入更改的块，而不是重写整个文件： 同步的文件非常大，且只有小部分内容被修改，比如大型虚拟机镜像文件 (*.vmdk, *.qcow2)、数据库文件、日志文件、ISO 镜像等。备份到 U 盘、SD 卡、旧硬盘或网络附加存储上，这些设备的写入速度很慢。与 --inplace 选项结合使用，可以实现真正高效的“原地修补”。注意：--inplace 有一定风险，如果在传输过程中中断，可能会留下一个部分更新且损坏的文件。通常与 --partial 一起使用来保留部分传输的文件以便续传。
 
 #### 软硬链接文件的处理区别
 

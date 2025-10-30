@@ -263,9 +263,10 @@ alias nmaps='echo "[nmap 指定端口提供了什么类型的服务]" && nmap -s
 alias nmapl='echo "[nmap 列出当前局域网 192.168.0.x 内的ip及端口]" && nmap 192.168.0.0/24'
 
 # scp rsync
-alias scps='echo "[scp 源 目的。远程格式 user@host:/path/to/ 端口用 -P]" && scp -r'
-alias rsyncs='echo "[rsync 源 目的。远程格式 user@host:/path/to/]" && rsync -avur -e "ssh -p 22" --progress'
-alias rsyncl='echo "[低io优先级运行 rsync 源 目的。远程格式 user@host:/path/to/]" && sudo ionice -c 2 -n 7 rsync -avr -e "ssh -p 22" --progress'
+alias scps='echo "[scp 源 目的网络。远程格式 user@host:/path/to/ 端口用 -P]" && scp -r'
+alias rsyncs='echo "[rsync 源 目的网络。远程格式 user@host:/path/to/]" && rsync -avh --progress --stats -e "ssh -p 22" '
+alias rsyncsb='echo "[rsync 源 目的慢速网络。远程格式 user@host:/path/to/]" && rsync -avh --progress --stats --partial --partial-dir=.rsync-partial --timeout=30 --bwlimit=5000 -e "ssh -p 22 -o ServerAliveInterval=15 -o ConnectTimeout=20" '
+alias rsyncl='echo "[低io优先级运行 rsync 源 目的]" && sudo ionice -c 2 -n 5 rsync -avh --progress --stats --bwlimit=50000 '
 
 # dd
 alias ddp='echo "[给dd发信号显示进度信息]" && sudo watch -n 5 killall -USR1 dd'
