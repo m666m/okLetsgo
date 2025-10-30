@@ -12067,7 +12067,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Cronomix                任务栏的番茄钟(pomodoro)，带你进入专注模式，另外还有闹钟、秒表等多种计时器，非常实用。
 
-    system-monitor-next     在任务栏图形化显示你的cpu、风扇、网速等使用情况。竞品 Vitals/Freon。
+    system-monitor-next     在任务栏图形化显示你的cpu、风扇、网速等使用情况。竞品 Vitals/Freon。Ubuntu 下提示需要GTop，`apt install libgtop2-dev`
 
     Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在任务栏的时间弹窗处先设置你的位置。
 
