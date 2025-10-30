@@ -12057,7 +12057,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Tiling Shell            像 Windows 或 macOS 那样提供多窗口布局方案，鼠标拖动窗口到任务栏会提示如何布局，提升你多开软件时的办公效率
 
-    Lock Keys               有些键盘的数字键盘和大写键没有指示灯，用这个在任务栏的系统区进行提示。
+    Lock Keys               有些键盘的数字键盘和大写键没有指示灯，用这个在任务栏的系统区进行提示。(kazimieras.vaina)
 
     nothing to say          在任务栏可以看到你的麦克风状态并手动控制是否静音，大大改善你的隐私保护
 
@@ -12067,13 +12067,13 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Cronomix                任务栏的番茄钟(pomodoro)，带你进入专注模式，另外还有闹钟、秒表等多种计时器，非常实用。
 
-    Night Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现定时自动切换。
-
     system-monitor-next     在任务栏图形化显示你的cpu、风扇、网速等使用情况。竞品 Vitals/Freon。
 
     Weather O'Clock         在任务栏的时间旁边显示当前天气，依赖你在任务栏的时间弹窗处先设置你的位置。
 
     Desktop Widgets (Desktop Clock)     桌面组件，可以显示时钟、天气，非常实用。
+
+    Night Theme Switcher     Gnome 系统内置明暗模式和相应的壁纸切换功能，但是只能手动切换明暗模式（某些壁纸跟随），这个扩展实现定时自动切换。
 
     Date Menu Formater      如果在任务栏显示的时间没有星期，在 Gnome Tweaks 中开启即可。在系统设置的 Clock&Calendar 可以设置是否显示星期，这个扩展可以调整日期时间的格式。
 
@@ -12098,7 +12098,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     User Themes             允许安装用户自定义主题扩展，然后可以在 Gnome Tweaks 里打开主题并切换显示了，这居然不是内置功能。
 
-    Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸，还可设置锁屏背景。
+    Bing Wallpaper          自动从微软 bing 网站下载它的漂亮图片作为你的壁纸，还可设置锁屏背景。(neffo)
 
         https://github.com/neffo/bing-wallpaper-gnome-extension
             https://github.com/utkarshgpta/bing-desktop-wallpaper-changer
