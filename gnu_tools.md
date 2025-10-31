@@ -3616,6 +3616,8 @@ vim 安装见章节 [使用状态栏等扩展插件的先决条件]。
 
 ##### 使用状态栏等扩展插件的先决条件
 
+vim 的完整版本才支持使用扩展的那些命令，很多 Linux 发行版自带的 vi 不是完整版的 vi，插件是无法正常工作的。
+
 检查 vim 的版本，执行命令 `vi --version` 或 进入 vim 执行命令 :version
 
     Small version without GUI.
@@ -3630,18 +3632,25 @@ Debian 重装增强版:
 
         $ vi --version
         Small version without GUI.
+        ...
 
         $ apt list --installed |grep vi
         vim-common/stable,now 2:8.2.2434-3+deb11u1 all [installed]
         vim-tiny/stable,now 2:8.2.2434-3+deb11u1 armhf [installed]
 
-        $ apt show vim.tiny
+        $ apt info vim.tiny
 
     先删除 vim.tiny
 
         $ sudo apt remove vim-common
         The following packages will be REMOVED:
             vim-common vim-tiny
+
+        注意在 Ubuntu 不能这样操作：
+            下列软件包将被【卸载】：
+                ubuntu-minimal vim-common vim-tiny
+
+            吓人，直接安装得了
 
     然后安装 vim 的增强版
 
@@ -3663,6 +3672,7 @@ Fedora 重装增强版:
 
         $ vi --version
         Tiny version without GUI.
+        ...
 
         $ dnf list --installed | grep vi
         vim-data.noarch
