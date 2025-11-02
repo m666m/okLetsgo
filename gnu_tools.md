@@ -13089,135 +13089,6 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 
 xrandr 是 Linux 系统中用于配置显示器分辨率和布局的命令行工具，而 arandr 则提供了图形化的界面，可以指定主显示器、扩展多屏幕、动态调整（缩放、旋转、反转）屏幕等功能。
 
-### 使用拼音输入法 ibus
-
-    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/assembly_enabling-chinese-japanese-or-korean-text-input_getting-started-with-the-gnome-desktop-environment
-
-确认已经安装了支持中文的字体，详见章节 [设置中文字体]。
-
-确认选择常用的输入法框架：Fcitx 或 IBus
-
-    IBUS https://www.ibus.com/
-
-    Fcitx5  https://fcitx-im.org/wiki/Fcitx_5/zh-cn 之前的是 Fcitx
-
-主流发行版使用 IBUS 框架，比较成熟了，安装简单
-
-> Gnome 桌面环境：
-
-Fedora 可以 打开 Gnome Software， 在类别 'input source' 搜索 'Pinyin' 安装拼音输入法，会自动安装中文字体。
-
-Debian 系 打开 Gnome 的 Settings -> Keyboard -> Input Source，点击添加，选择 “Chinese(Intelligent Pinyin)” ，这时时间栏出会出现en图标，用热键 'Win+空格' 即可切换输入法
-
-    务必勾选 “Switch input sources individually for each window”，这样方便在文件管理器等软件中保持默认英语，支持热键
-
-鼠标点击个可以输入文字的地方，然后切换到拼音输入法，右键点击输入法在时间栏处的“中”字图标，在弹出菜单选择 “Preference”，设置用逗号句号翻页(flip page)等选项。
-
-GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表情符号菜单。
-
-> KDE 桌面环境
-
-1、安装 IBus 及中文输入法
-
-    sudo dnf install ibus ibus-libpinyin  # 智能拼音
-
-2、打开系统设置
-
-KDE 菜单 > 系统设置 > 键盘 > 虚拟键盘：确保已选择 IBus（而非 Fcitx 或 XIM）。
-
-3、添加中文输入法
-
-在时间栏处的 ibus 图标，选择“首选项”，添加输入法，搜索并选择 中文 (Intelligent Pinyin) 或其他中文输入法。
-
-确认后退出设置。
-
-4、重启计算机生效
-
-> 命令行安装ibus中文输入法(Linux/Ubuntu)
-
-1 安装中文语言包
-
-安装中文语言包是为了让 Input Sources 里面出现 Chinese 这一项。
-
-选择 “Manage Installed Languages”-->“Install/Remove Languages”-->“Chinese(Simplified)”-->“Apply”。
-
-2 安装ibus输入法
-
-然后才可以安装 ibus 中文输入法。
-
-先安装 ibus 框架
-
-    sudo apt-get install ibus ibus-clutter ibus-gtk ibus-gtk3 ibus-qt4
-
-切换到 ibus 框架
-
-    # im-chooser
-    $ im-config -s ibus
-
-安装拼音引擎
-
-    $ sudo apt-get install ibus-pinyin
-
-3 添加ibus中文输入法
-
-把 ibus 输入法添加到输入法栏。
-
-现在 Input Source 里面就有 Chinese 了，点进去。
-
-选择 Chinese(Intelligent Pinyin)。
-
-右上角选择 Chinese(Intelligent Pinyin)，中英文切换方式就是 shift，Preferences 里面可以选择 7 个选择项。
-
-然后就可以愉快使用 ibus 中文输入法啦。
-
-另一个示例很复杂
-
-    sudo apt install ibus ibus-clutter ibus-gtk ibus-gtk3 ibus-qt4
-    im-config -s ibus
-
-    sudo apt install ibus-pinyin ibus-sunpinyin
-
-### 安装 fcitx 输入法框架及输入法
-
-非 Gnome 桌面环境比较复杂，逐步手工操作吧。
-
-    Fedora KDE Plasma 上安装 fcitx5 rime https://www.usmacd.com/cn/fcitx5-rime/#
-
-    Ubuntu22.04安装Fcitx5中文输入法 https://zhuanlan.zhihu.com/p/508797663
-
-    Fcitx 5
-
-        https://github.com/fcitx/fcitx5
-
-    Fcitx 5 配置详解 https://mephisto.cc/tech/fcitx5/
-
-    维基百科中文拼音词库
-
-        https://github.com/felixonmars/fcitx5-pinyin-zhwiki
-
-Fcitx 把自己拆分的比较细：框架、图形界面、中文输入法等，安装时需要分别安装多个包，dnf/flatpak 的版本更新状态未必一致，多试试吧。
-
-Fedora 的软件中心里就有，不过我安装了之后无法激活输入法，去官网主页看说明没搞定。
-
-    Fedora
-
-        $ sudo dnf install fcitx5 fcitx5-configtool fcitx5-chinese-addons
-
-Debian
-
-    $ sudo apt install fcitx5 \
-        fcitx5-chinese-addons \
-        fcitx5-frontend-gtk4 fcitx5-frontend-gtk3 fcitx5-frontend-gtk2 \
-        fcitx5-frontend-qt5
-
-安装中文输入法 fcitx 及 Google 拼音输入法
-
-    $ sudo apt-get install fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin
-
-    树莓派安装中文输入法-谷歌拼音  https://blog.csdn.net/qq_45478359/article/details/113576252
-
-树莓派 Raspbian 系统默认使用 LXDE，如果 fcitx 和 scim 都没法用，就只能用 ibus。
-
 ### 设置中文字体
 
 桌面环境下系统内置的字体中文不好看，需要调整
@@ -13230,7 +13101,9 @@ Debian
 
 Gnome 环境下安装中文字体比较方便
 
-    Settings-->Region & Languaes，点击添加 Language，勾选 Chinese 即可
+    Settings-->Region & Languaes，点击添加 Language，勾选 Chinese
+
+    Relogin
 
 Gnome 的图形界面设置程序 Gnome Tweaks Tool(gnome-tweaks) 有 “Font” 选项卡，可以给界面和文本分别设置不同的字体，但不支持按三种风格分别设置字体及回落选项
 
@@ -13909,6 +13782,135 @@ Linux 文件默认编码是 UTF-8，所以 Windows 下的文件要正常在 Linu
     # 文件名转换 convmv
     yum install -y convmv
     convmv -f gbk -t utf-8 -r --notest /your/文件名
+
+### 使用拼音输入法 ibus
+
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/getting_started_with_the_gnome_desktop_environment/assembly_enabling-chinese-japanese-or-korean-text-input_getting-started-with-the-gnome-desktop-environment
+
+确认已经安装了支持中文的字体，详见章节 [设置中文字体]。
+
+确认选择常用的输入法框架：Fcitx 或 IBus
+
+    IBUS https://www.ibus.com/
+
+    Fcitx5  https://fcitx-im.org/wiki/Fcitx_5/zh-cn 之前的是 Fcitx
+
+主流发行版使用 IBUS 框架，比较成熟了，安装简单
+
+> Gnome 桌面环境：
+
+Fedora 可以 打开 Gnome Software， 在类别 'input source' 搜索 'Pinyin' 安装拼音输入法，会自动安装中文字体。
+
+Debian 系 打开 Gnome 的 Settings -> Keyboard -> Input Source，点击添加，选择 “Chinese(Intelligent Pinyin)” ，这时时间栏出会出现en图标，用热键 'Win+空格' 即可切换输入法
+
+    务必勾选 “Switch input sources individually for each window”，这样方便在文件管理器等软件中保持默认英语，支持热键
+
+鼠标点击个可以输入文字的地方，然后切换到拼音输入法，右键点击输入法在时间栏处的“中”字图标，在弹出菜单选择 “Preference”，设置用逗号句号翻页(flip page)等选项。
+
+GTK 程序默认支持表情符号，按热键 ctl + . 或 ctl + ; 会弹出表情符号菜单。
+
+> KDE 桌面环境
+
+1、安装 IBus 及中文输入法
+
+    sudo dnf install ibus ibus-libpinyin  # 智能拼音
+
+2、打开系统设置
+
+KDE 菜单 > 系统设置 > 键盘 > 虚拟键盘：确保已选择 IBus（而非 Fcitx 或 XIM）。
+
+3、添加中文输入法
+
+在时间栏处的 ibus 图标，选择“首选项”，添加输入法，搜索并选择 中文 (Intelligent Pinyin) 或其他中文输入法。
+
+确认后退出设置。
+
+4、重启计算机生效
+
+> 命令行安装ibus中文输入法(Linux/Ubuntu)
+
+1 安装中文语言包
+
+安装中文语言包是为了让 Input Sources 里面出现 Chinese 这一项。
+
+选择 “Manage Installed Languages”-->“Install/Remove Languages”-->“Chinese(Simplified)”-->“Apply”。
+
+2 安装ibus输入法
+
+然后才可以安装 ibus 中文输入法。
+
+先安装 ibus 框架
+
+    sudo apt-get install ibus ibus-clutter ibus-gtk ibus-gtk3 ibus-qt4
+
+切换到 ibus 框架
+
+    # im-chooser
+    $ im-config -s ibus
+
+安装拼音引擎
+
+    $ sudo apt-get install ibus-pinyin
+
+3 添加ibus中文输入法
+
+把 ibus 输入法添加到输入法栏。
+
+现在 Input Source 里面就有 Chinese 了，点进去。
+
+选择 Chinese(Intelligent Pinyin)。
+
+右上角选择 Chinese(Intelligent Pinyin)，中英文切换方式就是 shift，Preferences 里面可以选择 7 个选择项。
+
+然后就可以愉快使用 ibus 中文输入法啦。
+
+另一个示例很复杂
+
+    sudo apt install ibus ibus-clutter ibus-gtk ibus-gtk3 ibus-qt4
+    im-config -s ibus
+
+    sudo apt install ibus-pinyin ibus-sunpinyin
+
+### 安装 fcitx 输入法框架及输入法
+
+非 Gnome 桌面环境比较复杂，逐步手工操作吧。
+
+    Fedora KDE Plasma 上安装 fcitx5 rime https://www.usmacd.com/cn/fcitx5-rime/#
+
+    Ubuntu22.04安装Fcitx5中文输入法 https://zhuanlan.zhihu.com/p/508797663
+
+    Fcitx 5
+
+        https://github.com/fcitx/fcitx5
+
+    Fcitx 5 配置详解 https://mephisto.cc/tech/fcitx5/
+
+    维基百科中文拼音词库
+
+        https://github.com/felixonmars/fcitx5-pinyin-zhwiki
+
+Fcitx 把自己拆分的比较细：框架、图形界面、中文输入法等，安装时需要分别安装多个包，dnf/flatpak 的版本更新状态未必一致，多试试吧。
+
+Fedora 的软件中心里就有，不过我安装了之后无法激活输入法，去官网主页看说明没搞定。
+
+    Fedora
+
+        $ sudo dnf install fcitx5 fcitx5-configtool fcitx5-chinese-addons
+
+Debian
+
+    $ sudo apt install fcitx5 \
+        fcitx5-chinese-addons \
+        fcitx5-frontend-gtk4 fcitx5-frontend-gtk3 fcitx5-frontend-gtk2 \
+        fcitx5-frontend-qt5
+
+安装中文输入法 fcitx 及 Google 拼音输入法
+
+    $ sudo apt-get install fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin
+
+    树莓派安装中文输入法-谷歌拼音  https://blog.csdn.net/qq_45478359/article/details/113576252
+
+树莓派 Raspbian 系统默认使用 LXDE，如果 fcitx 和 scim 都没法用，就只能用 ibus。
 
 ### 给应用设置桌面图标
 
