@@ -594,8 +594,10 @@ if test -d "$HOME/.ssh"; then
     # GNOME 桌面环境下，利用 gnome-keyring-daemon 实现了 ssh 密钥代理功能
     if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
 
-        # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，实现了 ssh 密钥代理功能，
-        # 它但有时候没有开机自启动 gnome-keyring-daemon 守护进程，
+        # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，并实现了 ssh 密钥代理功能
+        # 操作系统初始安装完毕后，运行 `gpg -K`、`ssh localhost` 调用一次私钥，以便 gnome-keyring-daemon 保存它
+        #
+        # 但 gnome-keyring-daemon 有时候没有开机自启动 gnome-keyring-daemon 守护进程，
         # 就没有 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh，导致无法读取ssh代理的密钥
         # 干脆手工拉起来  https://blog.csdn.net/asdfgh0077/article/details/104121479
         pgrep gnome-keyring >/dev/null 2>&1 || gnome-keyring-daemon --start >/dev/null 2>&1

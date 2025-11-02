@@ -13801,9 +13801,9 @@ Linux 文件默认编码是 UTF-8，所以 Windows 下的文件要正常在 Linu
 
 Fedora 可以 打开 Gnome Software， 在类别 'input source' 搜索 'Pinyin' 安装拼音输入法，会自动安装中文字体。
 
-Debian 系 打开 Gnome 的 Settings -> Keyboard -> Input Source，点击添加，选择 “Chinese(Intelligent Pinyin)” ，这时时间栏出会出现en图标，用热键 'Win+空格' 即可切换输入法
+然后打开 Gnome 的 Settings -> Keyboard -> Input Source，点击添加，选择 “Chinese(Intelligent Pinyin)” ，这时时间栏出会出现 'en' 图标，用热键 'Win+空格' 即可切换输入法
 
-    务必勾选 “Switch input sources individually for each window”，这样方便在文件管理器等软件中保持默认英语，支持热键
+    务必勾选下面的 “Switch input sources individually for each window”，这样方便在文件管理器等软件中保持默认英语，支持热键
 
 鼠标点击个可以输入文字的地方，然后切换到拼音输入法，右键点击输入法在时间栏处的“中”字图标，在弹出菜单选择 “Preference”，设置用逗号句号翻页(flip page)等选项。
 
