@@ -591,26 +591,32 @@ fi
 # 设置变量指向ssh密钥代理的进程即可实现复用，参见章节 [多会话复用 ssh-agent 进程](ssh.md think)
 if test -d "$HOME/.ssh"; then
 
-    # GNOME 桌面环境下，利用 gnome-keyring-daemon 实现了 ssh 密钥代理功能
+    # GNOME 桌面环境下使用 ssh，复用 gnome-keyring，原理见 [Gnome 桌面的密码管理器应用程序](okletsgo)。
     if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
 
-        # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，并实现了 ssh 密钥代理功能
-        # 操作系统初始安装完毕后，运行 `gpg -K`、`ssh localhost` 调用一次私钥，以便 gnome-keyring-daemon 保存它
-        #
-        # 但 gnome-keyring-daemon 有时候没有开机自启动 gnome-keyring-daemon 守护进程，
-        # 就没有 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh，导致无法读取ssh代理的密钥
-        # 干脆手工拉起来  https://blog.csdn.net/asdfgh0077/article/details/104121479
-        pgrep gnome-keyring >/dev/null 2>&1 || gnome-keyring-daemon --start >/dev/null 2>&1
+        # 以下操作仅限于 gnome49 之前的版本，之后使用 gcr-ssh-agent.service 接管 ssh-agent 了，不涉及手工启动 gnome-keyring-daemon
+        local gsversion=$(gnome-shell --version | awk '{print $3}' | awk -F. '{print $1}')
 
-        # 实现复用需要设置变量指向ssh密钥代理的进程
-        # gnome-keyring 为何不自动设置这两个变量，既然接管了，又不声明，很有个性。。。
-        # 目前必须手动设置
-        export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
-        export SSH_AGENT_PID="$(pgrep gnome-keyring)"
+        if [ "$gsversion" -lt 49 ]; then
 
-        # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
-        # 这里因为 gnome-keyring-daemon 接管了ssh 密钥的保护密码，用到的时候自动提交，全程用户无感知，不需要执行 `ssh-add` 了
-        # ssh-add
+            # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，并实现了 ssh 密钥代理功能
+            # 但 gnome-keyring-daemon 有时候没有开机自启动 gnome-keyring-daemon 守护进程，
+            # 就没有 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh，导致无法读取ssh代理的密钥
+            # 干脆手工启动  https://blog.csdn.net/asdfgh0077/article/details/104121479
+            pgrep gnome-keyring >/dev/null 2>&1 || gnome-keyring-daemon --start >/dev/null 2>&1
+
+            # 给 ssh 密钥代理 ssh-agent 设置变量指向 gnome-keyring-daemon
+            # 实现复用需要设置变量指向ssh密钥代理的进程
+            # gnome-keyring 为何不自动设置这两个变量，既然接管了，又不声明，很有个性。。。
+            # 目前必须手动设置
+            export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
+            export SSH_AGENT_PID="$(pgrep gnome-keyring)"
+
+            # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
+            # 这里因为 gnome-keyring-daemon 接管了ssh 密钥的保护密码，用到的时候自动提交，全程用户无感知，不需要执行 `ssh-add` 了
+            # ssh-add
+
+        fi
 
     # KDE 桌面环境有 systemd 单元文件 ssh-agent.service 支持复用 ssh-agent 进程
     elif [[ $XDG_CURRENT_DESKTOP = 'KDE' ]]; then

@@ -15234,13 +15234,46 @@ GNOME Keyring（gnome-keyring）钥匙圈
 
     https://zhuanlan.zhihu.com/p/128133025
 
-操作系统软件包 gnome-keyring 提供了各种组件实现该功能。
+操作系统软件包 gnome-keyring 提供了各种组件实现该功能，支持登录解锁，pam 使用 pam_gnome_keyring.so。
 
-支持登录解锁，pam 使用 pam_gnome_keyring.so
+1、传统的、整体的 gnome-keyring-daemon
 
-因为代替了 ssh-agent、gpg-agent 的功能，所以 gnome-keyring-daemon 不能与之共存，使用一个即可
+因为代替了 ssh-agent、gpg-agent 的功能，所以 gnome-keyring-daemon 不能与之共存，使用一个即可。
 
-图形界面管理程序叫 Passwords and Keys，其命令行程序名 seahorse
+传统的 gnome-keyring-daemon 是一个单体式的大守护进程，它通过不同的 --components 参数（如 ssh, secrets, pkcs11）来提供所有功能。
+
+2、gnome 49 版本实现了拆分出 ssh 密钥代理功能：
+
+新的架构将其拆分为一系列独立的、专注的 D-Bus 服务，这些服务统称为 “GNOME Keyring”：
+
+    $ gdbus introspect --session --dest org.freedesktop.secrets --object-path /org/freedesktop/secrets
+    会 dbus 输出接口信息
+
+三个组件的替换关系如下：
+
+    传统单体守护进程 (旧)	新的独立服务 (新)	功能
+
+    gnome-keyring-daemon --components=secrets	org.freedesktop.secrets D-Bus 服务	提供 Secret Service API，用于存储应用密码、Wi-Fi 密码等。这是密钥环的核心服务。
+
+    gnome-keyring-daemon --components=ssh	gcr-ssh-agent	专门负责 SSH 代理功能，替代了传统 daemon 的 SSH 组件。gcr 是 GNOME Crypto Library 的缩写。
+
+    gnome-keyring-daemon --components=pkcs11	由 gcr 库内部处理	处理 PKCS#11 加密令牌。
+
+这样的好处是，相关服务只有在被需要时才会启动，减少了内存占用和启动时间。例如，只有当您第一次进行 SSH 连接时，gcr-ssh-agent 才会被激活。
+
+    $ systemctl --user status gcr-ssh-agent.service
+
+    进程树可看到其启动 gcr-ssh-agent，拉起了 ssh-agent，代理了其 sock 接口。
+
+    之前是 gnome-keyring-daemon 的一个进程拉起 ssh-agent，代理了其 sock 接口。
+
+简化依赖：一个只需要 SSH 代理功能的程序，现在只需要依赖 gcr-ssh-agent，而不需要拉取整个 gnome-keyring 的庞大依赖树。
+
+更清晰的架构：每个服务职责单一，更易于维护和调试。
+
+gpg 特殊，GPG 密钥管理 gpg-agent 利用 pinentry 来缓存密码，但是委托给 GNOME Keyring 管理，所以 gnome 没有单独实现对 gpg-agent 的替代。
+
+3、图形界面管理程序叫 Passwords and Keys，其命令行程序名 seahorse
 
     用户可以建立多个钥匙圈，普通使用为了方便保持一个就可以了。
 
