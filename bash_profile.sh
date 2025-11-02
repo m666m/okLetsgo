@@ -595,7 +595,7 @@ if test -d "$HOME/.ssh"; then
     if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
 
         # 以下操作仅限于 gnome49 之前的版本，之后使用 gcr-ssh-agent.service 接管 ssh-agent 了，不涉及手工启动 gnome-keyring-daemon
-        local gsversion=$(gnome-shell --version | awk '{print $3}' | awk -F. '{print $1}')
+        gsversion=$(gnome-shell --version | awk '{print $3}' | awk -F. '{print $1}')
 
         if [ "$gsversion" -lt 49 ]; then
 
@@ -1089,4 +1089,5 @@ fi
 
 unset current_shell
 unset os_type
+unset gsversion
 
