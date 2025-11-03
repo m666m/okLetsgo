@@ -454,6 +454,7 @@ alias dnft='echo "[在toolbox里运行dnf]" && toolbox run dnf'
 
 # pip
 alias pipi='echo "[pip 跳过缓存更新指定包]" && pip install --upgrade --no-cache-dir'
+alias pipu='echo "[pip 更新自己]" && python -m pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple --upgrade pip'
 
 # flatpak
 alias fpkr='echo "[flatpak查看当前有哪些存储库]" && flatpak remotes'
