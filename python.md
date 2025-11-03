@@ -262,17 +262,39 @@ Windows下干净的python环境，命令行工具不要使用bash，在cmd下用
 
 失败的话，应该先检查下你运行pip的时候，是不是没有在虚拟环境下。找不到下载的包文件对应位置的时候，pip安装到系统默认的python目录，才会出现这种权限不足的提示。详见章节[conda/pip操作前务必先检查当前环境中conda/pip/python的路径]。
 
-正确的用法，是切换到你的环境下，再 pip install。
+正确的用法，是切换到你的环境下，再更新 pip。
 
-像下面这样强行安装，搜索百度的大多数结果，会搞乱基础环境：
+为什么不应该直接更新系统范围的 pip？
 
-    直接使用后面的提示命令 --user，也就是 you should consider upgrading via the 后面的命令。
+    系统依赖的破坏风险
 
-    python -m pip install -U --force-reinstall pip
+    你的操作系统（例如 macOS、某些 Linux 发行版）本身可能就依赖特定版本的 Python 和 pip 来管理其自身的软件包或系统工具。
 
-    sudo -h pip install -U pip
+    如果你强行将系统的 pip 升级到最新版，可能会与系统预期的旧版本产生冲突，导致某些系统管理脚本或工具无法正常工作，甚至可能破坏你的操作系统环境。这是一个潜在的重大风险。
 
-    管理员权限运行
+    项目级别的环境隔离
+
+    不同的 Python 项目可能需要不同版本的库，甚至不同版本的 Python 本身。
+
+    如果你把所有包都安装在系统全局环境里，项目 A 需要 Django 3.2，而项目 B 需要 Django 4.2，你就会陷入版本冲突的噩梦。
+
+    虚拟环境（Virtual Environment） 就是为了解决这个问题而生的。它为每个项目创建一个独立的、干净的 Python 环境，包括独立的 pip、setuptools 等，以及独立的第三方包安装目录。
+
+    权限问题
+
+    在大多数现代系统配置下，你很可能没有权限直接向系统级的 Python 目录写入数据。如果你尝试 pip install --upgrade pip，很可能会收到一个“Permission denied”错误。
+
+    这时，很多人会使用 sudo 来强制执行，但这会加剧第 1 点提到的破坏系统环境的风险，是非常不推荐的做法。
+
+千万不要像下面这样强行安装，百度搜索的大多数结果，会搞乱基础环境：
+
+    直接使用后面的提示命令，也就是 you should consider upgrading via the 后面的命令。
+
+    python -m pip install --user --force-reinstall pip
+
+    sudo pip install -U pip
+
+    管理员权限运行 pip
 
 指定版本
 
