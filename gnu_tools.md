@@ -12511,6 +12511,10 @@ enlightenment 桌面
 
         $ gsettings set org.gnome.nautilus.preferences show-image-thumbnails 'local-only'
 
+    如果已经生成了大量缩略图，可以清空缓存：
+
+        $ rm -rf ~/.cache/thumbnails/*
+
     “打开文件”对话框里粘贴地址没法鼠标操作，直接用热键 ctrl + v 即可
 
     如果使用 meld，可以添加右键菜单，参见章节 [给资源管理器添加 meld 右键菜单]。
