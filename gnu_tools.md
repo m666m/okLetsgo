@@ -11967,15 +11967,17 @@ Gnome 桌面默认只展示壁纸，不能放文件（临时下载文件没法�
 
     笔记本用户勾选“Mouse Click Emulatsion-->Finger”，否则触摸板操作不支持单指点击选中文字。这样一般的文本编辑操作就比较方便了，单指滑动移动鼠标，单指点击选择文字，双指移动滚动屏幕。
 
-##### GDM 的 “注册表编辑器” --- 使用 GSettings 和 dconf 配置桌面
+##### GDM 的 “注册表编辑器” --- 使用 GSettings 和 dconf 配置桌面选项
 
-命令行方式调整选项，理解为Linux 下的 “注册表编辑器”
+如果需要修改桌面环境下的系统的配置参数，一般可以使用图形化工具
+
+    `dnf install dconf-editor`
+
+命令行工具 `gsettings` 实际上是一套可使用多个 storage backends 的 API ，其文件是 xml 格式的，可以理解为 Linux 桌面环境的注册表数据库文件。
 
     https://wiki.archlinux.org/title/GDM#dconf_configuration
 
     https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/profiles
-
-GSettings 实际上是一套可使用多个 storage backends 的 API ，其文件是 xml 格式的，可以理解为 Linux 桌面环境的注册表数据库文件。
 
 GSettings 是应用设置的高级 API，是 dconf 的前端。
 
@@ -11984,8 +11986,6 @@ GSettings 是应用设置的高级 API，是 dconf 的前端。
 dconf 是一个基于键的配置系统，用于管理用户设置。它是 Red Hat Enterprise Linux 7 中使用的 GSettings 的后端。dconf 管理一系列不同的设置，包括 GDM、应用程序和代理设置，可以理解为 Linux 桌面环境的注册表数据库。
 
     dconf 命令行工具用于从/向 dconf 数据库读写单个值或整个目录，把它理解为注册表数据维护用的底层管理工具。
-
-如果需要修改桌面环境下的系统的配置参数，一般可以使用图形化工具 Dconf Editor，或 gsettings 命令行工具。
 
 #### 使用 gnome 扩展
 
