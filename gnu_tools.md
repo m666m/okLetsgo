@@ -11836,11 +11836,11 @@ Gnome 桌面默认只展示壁纸，不能放文件（临时下载文件没法�
 
     查看软件仓库配置也会长时间等待
 
-如果在提示系统更新时选择安装，会重新启动计算机：
+如果在提示系统更新时选择安装，会立刻重新启动计算机：
 
     重启前务必保存你的当前工作
 
-命令行运行 `sudo dnf upgrade` 会立即安装更新，重启后生效，桌面环境需要先重启才安装更新：
+命令行运行 `sudo dnf upgrade` 安装更新，重启后生效，而桌面环境需要先重启安装更新然后执行你选择的重启或关机：
 
     如果在关机时选择安装更新，会先重启安装更新然后再关机
 
@@ -12444,109 +12444,6 @@ WantedBy=gnome-session.target
     # 在桌面环境打开原图
     xdg-open $(cat "$XDG_RUNTIME_DIR/bg_path")
 
-#### 给资源管理器添加 meld 右键菜单
-
-meld 基于 python 的开源合并工具，替换 BeyondCompare，缺点是在文件夹对比有大量文件时会卡住
-
-    https://meldmerge.org/
-        https://gitlab.gnome.org/GNOME/meld
-        https://gitlab.gnome.org/GNOME/meld/-/wikis/home
-
-    https://www.cnblogs.com/onelikeone/p/17291936.html
-
-其它考虑
-
-    Diffuse 文字对比不错，可惜不支持文件夹对比
-        https://github.com/MightyCreak/diffuse
-            原 https://github.com/MightyCreak/diffuse
-
-    KDiff3 偏向 merge 方向，文件夹对比的差异不够直观 https://apps.kde.org/kdiff3/
-
-    TkDiff https://sourceforge.net/projects/tkdiff/
-
-    DiffMerge 闭源的免费软件 https://www.sourcegear.com/diffmerge/downloads.html
-
-如果使用 GNOME桌面，其资源管理器可以添加右键菜单 “script”，在 ~/.local/share/nautilus/scripts 目录下建立如下两个文件：
-
-A-set-as-meld-left：
-
-```bash
-#!/bin/bash
-#
-# https://www.cnblogs.com/onelikeone/p/17291936.html
-# This script opens a compare tool with selected files/directory by
-# script "set-as-*-left".
-# so you should run "set-as-*-left" first
-# Copyright (C) 2010  ReV Fycd
-# Distributed under the terms of GNU GPL version 2 or later
-#
-# Install in ~/.gnome2/nautilus-scripts or ~/Nautilus/scripts
-# or ~/.local/share/nautilus/scripts (ubuntu 14.04 LTS)
-# You need to be running Nautilus 1.0.3+ to use scripts.
-# You also need to install one compare tools to use scripts(such like meld)
-# You can change the $compareTool to other compare tools(like "Kdiff3") that
-# you have already installed before.
-
-compareTool="meld"
-if [ -n "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" ]; then
-    set $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS
-    if [ $# -eq 1 ]; then
-        file1="$1"
-        echo "set-as-Meld-left Copyright (C) 2010  ReV Fycd"
-        echo "${compareTool} ${file1} \\"> ~/.startcompare
-    fi
-fi
-```
-
-注意：
-
-    如果是 flatpak 安装的 meld，把上面的 `compareTool="meld"` 命令行替换为 `compareTool="flatpak run org.gnome.Meld"`
-
-B-compare-to-left：
-
-```bash
-#!/bin/bash
-#
-# https://www.cnblogs.com/onelikeone/p/17291936.html
-# This script opens a compare tool with selected files/directory by
-# script "set-as-*-left".
-# so you should run "set-as-*-left" first
-#
-# Copyright (C) 2010  ReV Fycd
-# Distributed under the terms of GNU GPL version 2 or later
-#
-# Install in ~/.gnome2/nautilus-scripts or ~/Nautilus/scripts
-# or ~/.local/share/nautilus/scripts (ubuntu 14.04 LTS)
-# You need to be running Nautilus 1.0.3+ to use scripts.
-# You also need to install one compare tools to use scripts(such like meld)
-
-if [ -n "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" ]; then
-    set $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS
-fi
-if [ $# -eq 1 ]; then
-    file2="$1"
-    echo "Compare-to-left Copyright (C) 2010  ReV Fycd"
-    echo $file2 >> ~/.startcompare
-fi
-
-chmod +x ~/.startcompare
-exec ~/.startcompare
-```
-
-然后赋予执行权限即可：
-
-    $ chmod +x Meld-aset-as-left Meld-compare-to-left
-
-使用
-
-    在第一个文件点右键，弹出菜单选 “Scripts”-->“A-set-as-meld-left”，
-
-    然后在第二个文件上点右键，弹出菜单选 “Scripts”-->“B-compare-to-left”
-
-    这时 meld 会自动弹出窗口对这两个文件进行比较
-
-如果是多选，如同时选择了两个文件或文件夹，右键菜单选择 “Open With...”，然后选择 meld 即可。
-
 ### KDE 桌面（Plasma）
 
 很多桌面环境都自带常用软件，所以我们说使用某某桌面环境，除了开机进入桌面的操作界面和使用方式是其专门设计的，还会附带自行设计的核心工具软件，如日历、时钟、计算器、媒体播放器、文件管理器等工具，这样可以使用户开箱即用，无需在操作系统的软件商店各种搜索了，比较省心。
@@ -12610,7 +12507,11 @@ enlightenment 桌面
         # https://askubuntu.com/questions/1248692/how-to-get-folder-windows-to-display-address-bars
         $ gsettings set org.gnome.nautilus.preferences always-use-location-entry true
 
-    “打开文件”对话框里粘贴地址没法鼠标操作，直接 ctrl + v 即可
+    禁用远程文件夹的预览，否则你的 nfs 目录影视或图片目录打开太慢了
+
+        $ gsettings set org.gnome.nautilus.preferences show-image-thumbnails 'local-only'
+
+    “打开文件”对话框里粘贴地址没法鼠标操作，直接用热键 ctrl + v 即可
 
     如果使用 meld，可以添加右键菜单，参见章节 [给资源管理器添加 meld 右键菜单]。
 
@@ -13096,6 +12997,111 @@ Timeshift原理是給目前系統製作快照(snapshot)，並儲存成備份檔�
 所有選項全部同意，輸入sudo密碼，等待系統還原，接著它會重開機。
 
 重開機後系統回到製作快照前的樣子，桌面的檔案不見了。
+
+#### 文件管理器 Nautilus 添加 meld 右键菜单
+
+文件管理器 GNOME Files（Nautilus）有插件扩展功能。
+
+meld 基于 python 的开源合并工具，替换 BeyondCompare，缺点是在文件夹对比有大量文件时会卡住
+
+    https://meldmerge.org/
+        https://gitlab.gnome.org/GNOME/meld
+        https://gitlab.gnome.org/GNOME/meld/-/wikis/home
+
+    https://www.cnblogs.com/onelikeone/p/17291936.html
+
+其它考虑
+
+    Diffuse 文字对比不错，可惜不支持文件夹对比
+        https://github.com/MightyCreak/diffuse
+            原 https://github.com/MightyCreak/diffuse
+
+    KDiff3 偏向 merge 方向，文件夹对比的差异不够直观 https://apps.kde.org/kdiff3/
+
+    TkDiff https://sourceforge.net/projects/tkdiff/
+
+    DiffMerge 闭源的免费软件 https://www.sourcegear.com/diffmerge/downloads.html
+
+如果使用 GNOME桌面，其资源管理器可以添加右键菜单 “script”，在 ~/.local/share/nautilus/scripts 目录下建立如下两个文件：
+
+A-set-as-meld-left：
+
+```bash
+#!/bin/bash
+#
+# https://www.cnblogs.com/onelikeone/p/17291936.html
+# This script opens a compare tool with selected files/directory by
+# script "set-as-*-left".
+# so you should run "set-as-*-left" first
+# Copyright (C) 2010  ReV Fycd
+# Distributed under the terms of GNU GPL version 2 or later
+#
+# Install in ~/.gnome2/nautilus-scripts or ~/Nautilus/scripts
+# or ~/.local/share/nautilus/scripts (ubuntu 14.04 LTS)
+# You need to be running Nautilus 1.0.3+ to use scripts.
+# You also need to install one compare tools to use scripts(such like meld)
+# You can change the $compareTool to other compare tools(like "Kdiff3") that
+# you have already installed before.
+
+compareTool="meld"
+if [ -n "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" ]; then
+    set $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS
+    if [ $# -eq 1 ]; then
+        file1="$1"
+        echo "set-as-Meld-left Copyright (C) 2010  ReV Fycd"
+        echo "${compareTool} ${file1} \\"> ~/.startcompare
+    fi
+fi
+```
+
+注意：
+
+    如果是 flatpak 安装的 meld，把上面的 `compareTool="meld"` 命令行替换为 `compareTool="flatpak run org.gnome.Meld"`
+
+B-compare-to-left：
+
+```bash
+#!/bin/bash
+#
+# https://www.cnblogs.com/onelikeone/p/17291936.html
+# This script opens a compare tool with selected files/directory by
+# script "set-as-*-left".
+# so you should run "set-as-*-left" first
+#
+# Copyright (C) 2010  ReV Fycd
+# Distributed under the terms of GNU GPL version 2 or later
+#
+# Install in ~/.gnome2/nautilus-scripts or ~/Nautilus/scripts
+# or ~/.local/share/nautilus/scripts (ubuntu 14.04 LTS)
+# You need to be running Nautilus 1.0.3+ to use scripts.
+# You also need to install one compare tools to use scripts(such like meld)
+
+if [ -n "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" ]; then
+    set $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS
+fi
+if [ $# -eq 1 ]; then
+    file2="$1"
+    echo "Compare-to-left Copyright (C) 2010  ReV Fycd"
+    echo $file2 >> ~/.startcompare
+fi
+
+chmod +x ~/.startcompare
+exec ~/.startcompare
+```
+
+然后赋予执行权限即可：
+
+    $ chmod +x Meld-aset-as-left Meld-compare-to-left
+
+使用
+
+    在第一个文件点右键，弹出菜单选 “Scripts”-->“A-set-as-meld-left”，
+
+    然后在第二个文件上点右键，弹出菜单选 “Scripts”-->“B-compare-to-left”
+
+    这时 meld 会自动弹出窗口对这两个文件进行比较
+
+如果是多选，如同时选择了两个文件或文件夹，右键菜单选择 “Open With...”，然后选择 meld 即可。
 
 ### 多显示器调整显示
 
