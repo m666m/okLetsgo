@@ -12864,6 +12864,8 @@ enlightenment 桌面
 
 推荐用 flatpak 安装 UngoogledChromium
 
+        chrome://ungoogled-first-run/
+
     来自 Chromium 项目的开源 Web 浏览器，它有一个极简的用户界面。 谷歌已经禁止 chromium 和基于 chromium 的第三方浏览器读取谷歌的数据，所以 chromium 无法同步你原有的谷歌浏览器账户数据，也无法连接谷歌扩展商店，但它有自己的开源扩展商店，也支持本地安装你从 github 下载的开源扩展。
 
         $ flatpak install flathub com.github.Eloston.UngoogledChromium
@@ -12871,6 +12873,12 @@ enlightenment 桌面
     手工下载浏览器官方商店的扩展文件并安装的方法
 
             https://ungoogled-software.github.io/ungoogled-chromium-wiki/faq#can-i-install-extensions-or-themes-from-the-chrome-webstore
+
+    How-To Install and update extensions
+
+        Set chrome://flags/#extension-mime-request-handling to 'Always prompt for install' and relaunch.
+
+        Then download latest Chromium.Web.Store.crx link on <https://github.com/NeverDecaf/chromium-web-store/releases>，下载后会自动提示进行安装。
 
         浏览器打开官方商店的页面，选择下载扩展，然后把下载的 .crx 文件改名为 .zip并解压，然后在 UngoogledChromium 的 Manage Extension 页面点击右上角的 “Develop mode” 按钮，选择 “load unpacked”，选择你刚才解压的目录即可安装该扩展了
 
