@@ -13229,7 +13229,7 @@ OpenType 可变字体（OpenType variable fonts）技术
 
     除了中文字体，还可以安装符号字体用于编程和控制台显示，见章节 [图标字体]
 
-> 对版本比较老的不支持中文的 Linux
+1、对版本比较老的不支持中文的 Linux
 
 早些年还没有 Noto 和思源的时候，Linux 系统上通常使用文泉驿正黑或者文泉驿微米黑。后者是基于 Android 系统上的 Droid Sans Fallback 字体，体积较小。再之前是文鼎系列字体，也就是名字「AR PL」开头、包名叫 ttf-arphic-{uming,ukai} 的那些。
 
@@ -13242,7 +13242,7 @@ OpenType 可变字体（OpenType variable fonts）技术
 
     上述配置文件对于 sans-serif 字体会首选 Libration Sans，如果无法显示那么会使用 AR PL UMing CN 字体。这样英文字体使用 Libration Sans 正常显示。而对于中文字体，由于 Libration Sans 中没有中文字体，实际使用 AR PL UMing CN 字体显示。这样就实现了显示中英文的 sans-serif 字体实际是不同的两种字体类型中的 Sans 字体。
 
-> 主流 Linux 发行版使用 Noto 字体内置支持中文
+2、主流 Linux 发行版使用 Noto 字体内置支持中文
 
 Fedora 系统默认的 Cantarell 字体支持显示中文，从 Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但需要用户单独安装设置 [https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description]。
 
