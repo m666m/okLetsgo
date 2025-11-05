@@ -12519,6 +12519,8 @@ enlightenment 桌面
 
     如果使用 meld，可以添加右键菜单，参见章节 [给资源管理器添加 meld 右键菜单]。
 
+    如果想使用 Total Commander，或者安装 'gnome-commander'，或者用 wine 运行 Windows 下的版本。PS: 在列表想要打 s 就到 s 开头的档案, 要 Ctrl+Alt+s 才可以, 直接打 s 会到最下面命令行去.
+
 记事本
 
     没想到 Gnome Text Editor 这么烂，打开时虽然会自动打开上次开着的文件包括未保存状态的文件，但是显示区域不能定位到当前光标位置，粘贴的时候显示区域直接乱跳，正常使用非常难受。推荐安装 LXQT 的 FeatherPad 或 Kde 的 KWrite。白板程序的推荐在下面。
