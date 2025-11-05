@@ -13246,64 +13246,27 @@ OpenType 可变字体（OpenType variable fonts）技术
 
 Fedora 系统默认的 Cantarell 字体支持显示中文，从 Fedora 36 开始使用新的字体 Noto Fonts 来覆盖所有语言（或尽可能多的语言），但需要用户单独安装设置 [https://fedoraproject.org/wiki/Changes/ImproveDefaultFontHandling#Detailed_Description]。
 
-Noto 系列字族名只支持英文，命名规则是 Noto + Sans 或 Serif + 文字名称。其中东亚字符部分叫 Noto Sans/Serif CJK SC/TC/HK/JP/KR，词 CJK 表示东亚字体中日韩，最后一个词是地区变种。
+    在 Gnome Software 的首页分类里，就可以安装选择中文字体
 
-支持汉语的 Noto Fonts 字体拆出来单独的 cjk 包，按关键字搜索可得：
+        Localization--> Simplified Chinese 有两个：
 
-    $ dnf list --installed |grep noto|grep cjk
-    google-noto-sans-cjk-vf-fonts.noarch
-    google-noto-sans-mono-cjk-vf-fonts.noarch
-    google-noto-serif-cjk-vf-fonts.noarch
+            Localization support：给桌面环境的界面和内置软件添加中文字体、中文语言包，包括默认输入法
 
-注意 Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
+            Core Localization support：内核级的库如 glibc 中文版，所有用到 glibc 输出的比如命令行提示都会显示中文
 
-其实这个开源中文字体就一套，只是同时被 Noto 和思源两个项目收录
+            注意这个是全界面的汉化，等同于你在系统设置的 Language 选择了 '汉语-中国'（注意不是那个 Chinese-xxx，是方块字）
+
+        font：单独选择安装你需要的中文字体
+
+目前主流的开源中文字体就一套，只是同时被 Noto 和思源Source 两个项目收录
 
     Noto 系列字体是 Google 主导的，名字的含义是「没有豆腐」（no tofu），因为缺字时显示的方框或者方框被叫作「tofu」。
 
     思源系列字体是 Adobe 主导的。其中汉字部分被称为「思源黑体」和「思源宋体」，是由这两家公司共同开发的，两个字体系列的汉字部分是一样的。
 
-Noto 字体在 Arch Linux 上位于以下软件包中：
+我们主要关注手工下载安装指定的字体，以下以 noto 简体和繁体中文为例：
 
-    noto-fonts: 大部分文字的常见样式，不包含汉字
-
-    noto-fonts-cjk: 汉字，中日韩三国字体
-
-    noto-fonts-emoji: 彩色的表情符号字体
-
-    noto-fonts-extra: 提供额外的字重和宽度变种
-
-思源字体在 Arch Linux 上位于以下软件包中：
-
-    adobe-source-sans-fonts: 无衬线字体，不含汉字。字族名叫 Source Sans 3 和 Source Sans Pro，以及带字重的变体，加上 Source Sans 3 VF
-
-    adobe-source-serif-fonts: 衬线字体，不含汉字。字族名叫 Source Code Pro，以及带字重的变体
-
-    adobe-source-code-pro-fonts: 等宽字体，不含汉字。字族名叫 Source Code Pro，以及带字重的变体，加上 Source Code Variable。
-
-    adobe-source-han-{sans,serif,mono}-{cn,hk,jp,kr,tw}-fonts: 五个地区的汉字之黑体、宋体和等宽版本
-
-    adobe-source-han-{sans,serif,mono}-otc-fonts: 所有地区合体了的汉字之黑体、宋体和等宽版本
-
-    思源汉字字体的字族名有两种，「独立包装」的版本（非 OTC 版本），是「Source Han Sans/Serif」或本地化名称、空格、地区代码（CN/HK/TW/JP/KR）。比如「思源黑体 CN」、「源ノ角ゴシック JP」等。也有带字重的别名。
-
-    而全部打包的 OTC 版本，字族名是本地化名称或者英文的「Source Han Sans/Serif」空格再加上「HC/TC/HC/K」变种代码。如果没有变种代码，则是日文变种。为了区分，香港繁体的版本附带「香港」字样，比如黑体叫「思源黑體 香港」。这些字体也有不同字重的别名。另外有个半宽的版本，是在字族名的变种代码前加「HW」字样，仅有少数几个字符是半宽的。
-
-    OTC 版本有趣的地方在于，对于大多数软件来说，不管你叫它的哪个地区的名字，它都会以设定的语种来显示。比如网页声明语种为日文（<html lang=ja>），那么不管字体指定为「源ノ角ゴシック」还是「思源黑体」或者「본고딕」，它都会「门上插刀、直字拐弯、天顶加盖、船顶漏雨」。所以用这个字体的话，不妨一律写「Source Han Sans」，然后加好语种标记。我知道的唯一例外是 mpv 的 ass 字幕文件，里边指定本地化名称的话，会使用那个语种的变体显示。
-
-在 Gnome Software 的首页分类里，就可以安装选择中文字体
-
-    Localization--> Simplified Chinese 有两个：
-
-        Localization support：给内装软件添加中文字体、中文语言包，包括默认输入法
-
-        Core Localization support：内核级的如 glibc 库的中文版，这样连命令行提示都会显示中文
-
-        注意这个是全界面的汉化，等同于你在系统设置的 Language 选择了 中国-中文
-
-    font：单独选择安装你需要的中文字体
-
-也可在以下页面下载手工安装，目录树选 ttf -> 简体中文
+在以下页面下载手工安装，目录树选 ttf -> 简体中文
 
     https://github.com/notofonts/noto-cjk/blob/main/Sans/README.md
 
@@ -13315,7 +13278,18 @@ Noto 字体在 Arch Linux 上位于以下软件包中：
 
     添加中文输入法见章节 [使用拼音输入法]。
 
-也可以在命令行安装，安装完成后都是 .ttc 字体
+Noto 系列字族名只支持英文，命名规则是 Noto + Sans 或 Serif + 文字名称。其中东亚字符部分叫 Noto Sans/Serif CJK SC/TC/HK/JP/KR，词 CJK 表示东亚字体中日韩，最后一个词是地区变种。
+
+支持汉语的 Noto Fonts 字体拆出来单独的 cjk 包，按关键字搜索可得：
+
+    $ dnf list --installed |grep noto|grep cjk
+    google-noto-sans-cjk-vf-fonts.noarch
+    google-noto-sans-mono-cjk-vf-fonts.noarch
+    google-noto-serif-cjk-vf-fonts.noarch
+
+Fedora 默认使用 .ttc 格式而不是 .ttf 格式。
+
+在命令行安装，安装完成后都是 .ttc 字体
 
     Sans Serif 字体包：
 
@@ -13357,6 +13331,25 @@ Noto 字体在 Arch Linux 上位于以下软件包中：
 adobe 思源跟 Google Noto 这俩字体是一回事
 
     https://github.com/adobe-fonts/source-han-sans
+
+
+Noto 字体在 Arch Linux 上位于以下软件包中：
+
+    noto-fonts: 大部分文字的常见样式，不包含汉字
+
+    noto-fonts-cjk: 汉字，中日韩三国字体
+
+    noto-fonts-emoji: 彩色的表情符号字体
+
+    noto-fonts-extra: 提供额外的字重和宽度变种
+
+思源字体在 Arch Linux 上位于以下软件包中： adobe-source-*
+
+    思源汉字字体的字族名有两种，「独立包装」的版本（非 OTC 版本），是「Source Han Sans/Serif」或本地化名称、空格、地区代码（CN/HK/TW/JP/KR）。比如「思源黑体 CN」、「源ノ角ゴシック JP」等。也有带字重的别名。
+
+    而全部打包的 OTC 版本，字族名是本地化名称或者英文的「Source Han Sans/Serif」空格再加上「HC/TC/HC/K」变种代码。如果没有变种代码，则是日文变种。为了区分，香港繁体的版本附带「香港」字样，比如黑体叫「思源黑體 香港」。这些字体也有不同字重的别名。另外有个半宽的版本，是在字族名的变种代码前加「HW」字样，仅有少数几个字符是半宽的。
+
+    OTC 版本有趣的地方在于，对于大多数软件来说，不管你叫它的哪个地区的名字，它都会以设定的语种来显示。比如网页声明语种为日文（<html lang=ja>），那么不管字体指定为「源ノ角ゴシック」还是「思源黑体」或者「본고딕」，它都会「门上插刀、直字拐弯、天顶加盖、船顶漏雨」。所以用这个字体的话，不妨一律写「Source Han Sans」，然后加好语种标记。我知道的唯一例外是 mpv 的 ass 字幕文件，里边指定本地化名称的话，会使用那个语种的变体显示。
 
 #### 设置中英文分别使用一种字体 fontconfig
 
