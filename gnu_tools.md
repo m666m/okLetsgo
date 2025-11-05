@@ -13332,7 +13332,6 @@ adobe 思源跟 Google Noto 这俩字体是一回事
 
     https://github.com/adobe-fonts/source-han-sans
 
-
 Noto 字体在 Arch Linux 上位于以下软件包中：
 
     noto-fonts: 大部分文字的常见样式，不包含汉字
@@ -15262,13 +15261,13 @@ GNOME Keyring（gnome-keyring）钥匙圈
 
 三个组件的替换关系如下：
 
-    传统单体守护进程 (旧)	新的独立服务 (新)	功能
+    传统单体守护进程 (旧)    新的独立服务 (新)    功能
 
-    gnome-keyring-daemon --components=secrets	org.freedesktop.secrets D-Bus 服务	提供 Secret Service API，用于存储应用密码、Wi-Fi 密码等。这是密钥环的核心服务。
+    gnome-keyring-daemon --components=secrets    org.freedesktop.secrets D-Bus 服务    提供 Secret Service API，用于存储应用密码、Wi-Fi 密码等。这是密钥环的核心服务。
 
-    gnome-keyring-daemon --components=ssh	gcr-ssh-agent	专门负责 SSH 代理功能，替代了传统 daemon 的 SSH 组件。gcr 是 GNOME Crypto Library 的缩写。
+    gnome-keyring-daemon --components=ssh    gcr-ssh-agent    专门负责 SSH 代理功能，替代了传统 daemon 的 SSH 组件。gcr 是 GNOME Crypto Library 的缩写。
 
-    gnome-keyring-daemon --components=pkcs11	由 gcr 库内部处理	处理 PKCS#11 加密令牌。
+    gnome-keyring-daemon --components=pkcs11    由 gcr 库内部处理    处理 PKCS#11 加密令牌。
 
 这样的好处是，相关服务只有在被需要时才会启动，减少了内存占用和启动时间。例如，只有当您第一次进行 SSH 连接时，gcr-ssh-agent 才会被激活。
 
