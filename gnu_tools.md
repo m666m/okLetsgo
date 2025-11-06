@@ -12055,11 +12055,11 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Coverflow Alt-Tab       按住 alt+Tab 显示当前窗口列表，像 ipod 展示音乐专辑封面的风格（Windows 的 win + tab  那样立体形式的呈现）那样切换窗口，而且可以治愈 gnome 目前不能按 Alt+Tab 切换最近使用的两个窗口。
 
-        Windows 设置页点开 “Workspaces” 选 “All workspaces”，否则会优先循环当前工作区的窗口。
-
         如果当前应用有多个窗口则在大窗口全部显示，其他应用窗口在上面的小窗口列出。而 gnome 的默认习惯，只能切换到应用：Alt+Tab 列表是应用窗口，按住 Alt 持续点击 tab 循环到某个多实例的应用窗口时，会在上面再显示一个列表呈现该应用的多个实例。切换到应用的窗口后，按 Alt+` 在应用的多个实例间切换。
 
         还可以更简单，列表只显示每个应用的最近窗口：选 AppSwitch 设置页，点开 “Make ... Show Only First Preview” 按钮，这样就不再把窗口分组为应用和应用的多个实例，
+
+        切换最近使用的两个窗口：General 标签，Style 选 Coverflow， Loop Method 选 Flip Stack
 
     Grand Theft Focus       打开文件对话框显示在你的应用窗口后面，然后系统弹通知告诉你有个对话框打开了。。。这是病，得治！ 竞品 window-is-ready-notification-remover，或直接运行命令 `gsettings set org.gnome.desktop.wm.preferences focus-new-windows 'smart'`。
 
