@@ -12519,7 +12519,9 @@ enlightenment 桌面
 
     如果使用 meld，可以添加右键菜单，参见章节 [给资源管理器添加 meld 右键菜单]。
 
-    如果想使用 Total Commander，或者安装 'gnome-commander'，或者用 wine 运行 Windows 下的版本。PS: 在列表想要打 s 就到 s 开头的档案, 要 Ctrl+Alt+s 才可以, 直接打 s 会到最下面命令行去.
+    如果想使用 Total Commander 用 wine 运行 Windows 下的版本。或者安装 'gnome-commander'，在列表想要打 s 就到 s 开头的档案, 要 Ctrl+Alt+s 才可以, 直接打 s 会到最下面命令行去.
+
+        https://linuxtoy.org/archives/gnome-commander.html
 
 记事本
 
