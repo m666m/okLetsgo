@@ -13308,7 +13308,7 @@ Noto 字体在 Arch Linux 上位于以下软件包中：
         $ tar xf Meslo.tar
         $ tar xf FiraCode.tar
 
-方法一：适合批量安装字体，保存在系统目录 /usr/share/fonts/，全局生效
+方法一：保存在系统目录 /usr/share/fonts/，全局生效
 
 ```bash
 
@@ -13336,7 +13336,7 @@ for font_dir in "$MESLO_DIR" "$FIRACODE_DIR"; do
     fi
 done
 
-# Update the font cache
+# 更新字体缓存
 fc-cache -v
 
 ```
@@ -13354,22 +13354,16 @@ Gnome 桌面环境下双击字体文件，会调用 gnome-font-viewer 图形化�
 
 ```bash
 FONT_DIR="${HOME}/.local/share/fonts"
-MESLO_DIR="${FONT_DIR}/MesloLGSNF"
-FIRACODE_DIR="${FONT_DIR}/FiraCodeNF"
 
-echo "安装字体到用户目录..."
-mkdir -p "$MESLO_DIR"
-mkdir -p "$FIRACODE_DIR"
+mkdir -p "$FONT_DIR"
 
-# 检查并复制字体文件
-echo "复制字体文件..."
-cp MesloLGSNerdFont-*.ttf "$MESLO_DIR/"
-cp FiraCodeNerdFont-*.ttf "$FIRACODE_DIR/"
+# 复制字体文件
+cp MesloLGSNerdFont-*.ttf "$FONT_DIR/"
+cp FiraCodeNerdFont-*.ttf "$FONT_DIR/"
 
 # 只需要设置基本权限
-echo "设置文件权限..."
 find "$FONT_DIR" -type d -exec chmod 755 {} \;
-find "$FONT_DIR" -type f \( -name "*.ttf" -o -name "*.otf" \) -exec chmod 644 {} \;
+find "$FONT_DIR" -type f \( -name "*.ttf" -o -name "*.ttc" -o -name "*.otf" \) -exec chmod 644 {} \;
 
 # 更新字体缓存
 fc-cache -fv
