@@ -144,7 +144,7 @@
     "terminal.integrated.hideOnStartup": "whenEmpty",
     "terminal.integrated.inheritEnv":false,  // 防止从终端启动的 code 继承其环境变量，确保使用本项目的环境变量
     // Fedora38 Wayland 下执行 PyQt6 的 python 程序需要环境变量
-    "terminal.integrated.env.linux": {"QT_QPA_PLATFORM":"xcb"},
+    // "terminal.integrated.env.linux": {"QT_QPA_PLATFORM":"xcb"},
     "terminal.integrated.profiles.linux": {
         "bash": {
             "path": "bash",
