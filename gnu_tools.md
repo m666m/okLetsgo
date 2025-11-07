@@ -13314,22 +13314,27 @@ Noto 字体在 Arch Linux 上位于以下软件包中：
 
 sudo su
 
-mkdir -p /usr/share/fonts/MesloLGSNF
-mkdir -p /usr/share/fonts/FiraCodeNF
+MESLO_DIR="/usr/share/fonts/MesloLGSNF"
+FIRACODE_DIR="/usr/share/fonts/FiraCodeNF"
 
-cp MesloLGSNerdFont-*.ttf /usr/share/fonts/MesloLGSNF/
-cp FiraCodeNerdFont-*.ttf /usr/share/fonts/FiraCodeNF/
+mkdir -p "$MESLO_DIR"
+mkdir -p "$FIRACODE_DIR"
+
+cp MesloLGSNerdFont-*.ttf "$MESLO_DIR/"
+cp FiraCodeNerdFont-*.ttf "$FIRACODE_DIR/"
 
 # Set permissions and update SELinux labels
-chown -R root:root /usr/share/fonts/MesloLGSNF
-chmod 755 /usr/share/fonts/MesloLGSNF/
-chmod 644 /usr/share/fonts/MesloLGSNF/*
-restorecon -vFr /usr/share/fonts/MesloLGSNF
+for font_dir in "$MESLO_DIR" "$FIRACODE_DIR"; do
+    chown -R root:root "$font_dir"
+    chmod 755 "$font_dir"
+    chmod 644 "$font_dir"/*
 
-chown -R root:root /usr/share/fonts/FiraCodeNF
-chmod 755 /usr/share/fonts/FiraCodeNF/
-chmod 644 /usr/share/fonts/FiraCodeNF/*
-restorecon -vFr /usr/share/fonts/FiraCodeNF
+    if command -v selinuxenabled >/dev/null && selinuxenabled; then
+        restorecon -vFr "$font_dir"
+    else
+        echo "SELinux 未启用，跳过 restorecon"
+    fi
+done
 
 # Update the font cache
 fc-cache -v
@@ -13340,16 +13345,38 @@ fc-cache -v
 
 Gnome 桌面环境下双击字体文件，会调用 gnome-font-viewer 图形化程序，选择安装后会自动保存在
 
-    # /usr/local/share/fonts/ 这个目录没有被 SELinux 配置默认规则，RHEL 系不会生效。
+    # 注意 /usr/local/share/fonts/ 这个目录没有被 SELinux 配置默认规则，在RHEL 系不会生效。
     $HOME/.local/share/fonts/ 或 $HOME/.font/
 
-确认下字体文件设置权限
+    有个 bug 至今未改，字体安装时不提示完成，总是 installing...，蒙着等一阵关了它就行。。。
 
-    /usr/share/fonts/ 下的目录是 755，字体文件是 644
+用脚本实现：
 
-    $HOME/.local/share/fonts 下的字体文件是 644
+```bash
+FONT_DIR="${HOME}/.local/share/fonts"
+MESLO_DIR="${FONT_DIR}/MesloLGSNF"
+FIRACODE_DIR="${FONT_DIR}/FiraCodeNF"
 
-gnome-font-viewer 图形化程序有个 bug 至今未改，字体安装不提示完成，总是 installing...，蒙着等一阵关了它就行。。。
+echo "安装字体到用户目录..."
+mkdir -p "$MESLO_DIR"
+mkdir -p "$FIRACODE_DIR"
+
+# 检查并复制字体文件
+echo "复制字体文件..."
+cp MesloLGSNerdFont-*.ttf "$MESLO_DIR/"
+cp FiraCodeNerdFont-*.ttf "$FIRACODE_DIR/"
+
+# 只需要设置基本权限
+echo "设置文件权限..."
+find "$FONT_DIR" -type d -exec chmod 755 {} \;
+find "$FONT_DIR" -type f \( -name "*.ttf" -o -name "*.otf" \) -exec chmod 644 {} \;
+
+# 更新字体缓存
+fc-cache -fv
+
+echo "✅ 字体安装完成！位置: $FONT_DIR"
+
+```
 
 验证：简单测试几个 unicode 扩展 NF 字符
 
