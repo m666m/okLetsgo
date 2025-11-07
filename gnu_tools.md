@@ -1360,71 +1360,7 @@ Nerd font 是 Powerline fonts 的超集，他几乎把目前市面上主流的 i
 
     FiraCode https://github.com/tonsky/FiraCode
 
-#### Fedora(SELinux) 下安装下载的字体
-
-因为发行版的存储库没有 nerd font，只能手动安装，只是安装方法有点复杂：
-
-    https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
-        https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#add-extra-fonts
-
-先下载并解压上述两个字体文件
-
-        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/Meslo.tar.xz
-        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FiraCode.tar.xz
-
-        $ xz -d Meslo.tar.xz
-        $ xz -d FiraCode.tar.xz
-
-        $ tar xf Meslo.tar
-        $ tar xf FiraCode.tar
-
-方法一：适合批量安装字体，保存在系统目录 /usr/share/fonts/，全局生效
-
-```bash
-
-sudo su
-
-mkdir -p /usr/share/fonts/MesloLGSNF
-mkdir -p /usr/share/fonts/FiraCodeNF
-
-cp MesloLGSNerdFont-*.ttf /usr/share/fonts/MesloLGSNF/
-cp FiraCodeNerdFont-*.ttf /usr/share/fonts/FiraCodeNF/
-
-# Set permissions and update SELinux labels
-chown -R root: /usr/share/fonts/MesloLGSNF
-chmod 755 /usr/share/fonts/MesloLGSNF/
-chmod 644 /usr/share/fonts/MesloLGSNF/*
-restorecon -vFr /usr/share/fonts/MesloLGSNF
-
-chown -R root: /usr/share/fonts/FiraCodeNF
-chmod 755 /usr/share/fonts/FiraCodeNF/
-chmod 644 /usr/share/fonts/FiraCodeNF/*
-restorecon -vFr /usr/share/fonts/FiraCodeNF
-
-# Update the font cache
-fc-cache -v
-
-```
-
-方法二：放在用户目录，仅当前用户生效
-
-Gnome 桌面环境下双击字体文件，会调用 gnome-font-viewer 图形化程序，选择安装后会自动保存在
-
-    # /usr/local/share/fonts/ 这个目录没有被 SELinux 配置默认规则，RHEL 系不会生效。
-    $HOME/.local/share/fonts/ 或 $HOME/.font/
-
-确认下字体文件设置权限
-
-    /usr/share/fonts/ 下的目录是 755，字体文件是 644
-
-    $HOME/.local/share/fonts 下的字体文件是 644
-
-gnome-font-viewer 图形化程序有个 bug 至今未改，字体安装不提示完成，总是 installing...，蒙着等一阵关了它就行。。。
-
-验证：简单测试几个 unicode 扩展 NF 字符
-
-    $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \uf70f \ue20a \ue350 \uf2c8"
-     ±  ➦ ✘ ⚡ ⚙ ❃    
+按照下载的字体，见章节 [Fedora(SELinux)安装下载的字体]。
 
 ### 使用 zsh
 
@@ -13353,6 +13289,72 @@ Noto 字体在 Arch Linux 上位于以下软件包中：
     而全部打包的 OTC 版本，字族名是本地化名称或者英文的「Source Han Sans/Serif」空格再加上「HC/TC/HC/K」变种代码。如果没有变种代码，则是日文变种。为了区分，香港繁体的版本附带「香港」字样，比如黑体叫「思源黑體 香港」。这些字体也有不同字重的别名。另外有个半宽的版本，是在字族名的变种代码前加「HW」字样，仅有少数几个字符是半宽的。
 
     OTC 版本有趣的地方在于，对于大多数软件来说，不管你叫它的哪个地区的名字，它都会以设定的语种来显示。比如网页声明语种为日文（<html lang=ja>），那么不管字体指定为「源ノ角ゴシック」还是「思源黑体」或者「본고딕」，它都会「门上插刀、直字拐弯、天顶加盖、船顶漏雨」。所以用这个字体的话，不妨一律写「Source Han Sans」，然后加好语种标记。我知道的唯一例外是 mpv 的 ass 字幕文件，里边指定本地化名称的话，会使用那个语种的变体显示。
+
+#### Fedora(SELinux)安装下载的字体
+
+因为发行版的存储库没有 nerd font，只能手动安装，只是安装方法有点复杂：
+
+    https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
+        https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/configure-fonts#add-extra-fonts
+
+先下载并解压上述两个字体文件
+
+        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/Meslo.tar.xz
+        $ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FiraCode.tar.xz
+
+        $ xz -d Meslo.tar.xz
+        $ xz -d FiraCode.tar.xz
+
+        $ tar xf Meslo.tar
+        $ tar xf FiraCode.tar
+
+方法一：适合批量安装字体，保存在系统目录 /usr/share/fonts/，全局生效
+
+```bash
+
+sudo su
+
+mkdir -p /usr/share/fonts/MesloLGSNF
+mkdir -p /usr/share/fonts/FiraCodeNF
+
+cp MesloLGSNerdFont-*.ttf /usr/share/fonts/MesloLGSNF/
+cp FiraCodeNerdFont-*.ttf /usr/share/fonts/FiraCodeNF/
+
+# Set permissions and update SELinux labels
+chown -R root: /usr/share/fonts/MesloLGSNF
+chmod 755 /usr/share/fonts/MesloLGSNF/
+chmod 644 /usr/share/fonts/MesloLGSNF/*
+restorecon -vFr /usr/share/fonts/MesloLGSNF
+
+chown -R root: /usr/share/fonts/FiraCodeNF
+chmod 755 /usr/share/fonts/FiraCodeNF/
+chmod 644 /usr/share/fonts/FiraCodeNF/*
+restorecon -vFr /usr/share/fonts/FiraCodeNF
+
+# Update the font cache
+fc-cache -v
+
+```
+
+方法二：放在用户目录，仅当前用户生效
+
+Gnome 桌面环境下双击字体文件，会调用 gnome-font-viewer 图形化程序，选择安装后会自动保存在
+
+    # /usr/local/share/fonts/ 这个目录没有被 SELinux 配置默认规则，RHEL 系不会生效。
+    $HOME/.local/share/fonts/ 或 $HOME/.font/
+
+确认下字体文件设置权限
+
+    /usr/share/fonts/ 下的目录是 755，字体文件是 644
+
+    $HOME/.local/share/fonts 下的字体文件是 644
+
+gnome-font-viewer 图形化程序有个 bug 至今未改，字体安装不提示完成，总是 installing...，蒙着等一阵关了它就行。。。
+
+验证：简单测试几个 unicode 扩展 NF 字符
+
+    $ echo -e "\ue0b0 \u00b1 \ue0a0 \u27a6 \u2718 \u26a1 \u2699 \u2743 \uf70f \ue20a \ue350 \uf2c8"
+     ±  ➦ ✘ ⚡ ⚙ ❃    
 
 #### 设置中英文分别使用一种字体 fontconfig
 
