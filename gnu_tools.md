@@ -13321,12 +13321,12 @@ cp MesloLGSNerdFont-*.ttf /usr/share/fonts/MesloLGSNF/
 cp FiraCodeNerdFont-*.ttf /usr/share/fonts/FiraCodeNF/
 
 # Set permissions and update SELinux labels
-chown -R root: /usr/share/fonts/MesloLGSNF
+chown -R root:root /usr/share/fonts/MesloLGSNF
 chmod 755 /usr/share/fonts/MesloLGSNF/
 chmod 644 /usr/share/fonts/MesloLGSNF/*
 restorecon -vFr /usr/share/fonts/MesloLGSNF
 
-chown -R root: /usr/share/fonts/FiraCodeNF
+chown -R root:root /usr/share/fonts/FiraCodeNF
 chmod 755 /usr/share/fonts/FiraCodeNF/
 chmod 644 /usr/share/fonts/FiraCodeNF/*
 restorecon -vFr /usr/share/fonts/FiraCodeNF
