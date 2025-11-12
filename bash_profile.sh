@@ -208,6 +208,10 @@ function cpbak {
     local DT=$(date  +"%Y-%m-%d_%H:%M:%S")
     echo "[复制一个备份 $1.bak.${DT}，如果是目录名不要传入后缀/]"
     cp -a $1{,.bak.${DT}}
+
+    if [ $? -ne 0 ]; then
+        echo -e "\n    备份失败，请尝试提权执行: sudo cp -a $1{,.bak.${DT}}"
+    fi
 }
 # 系统目录备份文件没有 sudo 不方便
 function cpbaks {
