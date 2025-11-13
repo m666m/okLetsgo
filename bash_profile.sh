@@ -213,14 +213,6 @@ function cpbak {
         echo -e "\n    备份失败，请尝试提权执行: sudo cp -a $1{,.bak.${DT}}"
     fi
 }
-# 系统目录备份文件没有 sudo 不方便
-function cpbaks {
-    # find . -max-depth 1 -name '$1*' -exec cp "{}" "{}.bak" \;
-    #cp -a $1{,.bak}
-    local DT=$(date  +"%Y-%m-%d_%H:%M:%S")
-    echo "[复制一个备份 $1.bak.${DT}，如果是目录名不要传入后缀/]"
-    sudo cp -a $1{,.bak.${DT}}
-}
 
 # wsl 或 git bash 下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "C:\Windows\Path"
 function cdw {
