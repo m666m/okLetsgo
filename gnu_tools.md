@@ -13331,8 +13331,6 @@ for font_dir in "$MESLO_DIR" "$FIRACODE_DIR"; do
 
     if command -v selinuxenabled >/dev/null && selinuxenabled; then
         restorecon -vFr "$font_dir"
-    else
-        echo "SELinux 未启用，跳过 restorecon"
     fi
 done
 
