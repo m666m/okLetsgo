@@ -119,7 +119,6 @@ command -v vi >/dev/null || { echo 'link vim to vi' && sudo ln -sf /usr/bin/vim 
 #######################
 # 有些命令使用变量 EDITOR 指定的编辑器，一般是 nano，强制指定为 vi
 export EDITOR=/usr/bin/vi
-export VISUAL=/usr/bin/vi
 
 #######################
 # 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存那些不常用的命令
