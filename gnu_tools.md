@@ -15946,7 +15946,7 @@ Scrcpy 支持 Windows/Linux/macOS 多个平台，需要你的手机打开 usb �
 
 Steam 属于商业闭源软件，但是各大发行版都提供了安装 steam 的方式
 
-    Steam/GOG.com/gameshub.com
+    竞品 GOG.com gameshub.com
         https://itsfoss.com/linux-gaming-guide/
 
     在 FreeBSD 安装
@@ -16121,6 +16121,16 @@ Now Add the freshly installed Battle.net.
     Click properties -> compatibility -> Force specific … and choose latest proton/Proton-GE.
 
 Done - Now install your Battle.net games or browser for already installed ones.
+
+#### GOG(good old game)
+
+CD Project Red（CDPR 赛博朋克 2077/巫师等游戏的开发商）搞的游戏平台，跟 STEAM 竞争。
+
+    https://www.gog.com/
+
+其客户端 GOG Glaxy 支持导入各种游戏平台的账户，登陆 GOG 就足够。最大的亮点是坚持 CDPR 的反DRM版权理念，从 GOG 平台购买的游戏不做任何DRM保护措施，支持无限期离线游玩，玩家自由保存分发，靠玩家自觉抵制盗版，这也是 CDPR 外号叫波兰蠢驴的原因之一。
+
+    https://www.gogalaxy.com/
 
 #### Moonlight/Sunshine for Linux
 
