@@ -291,7 +291,7 @@ Android 提供了 "Work Profile" 功能来提供一个隔离的空间，用户�
 
     https://zh-cn.todoandroid.es/%E5%A6%82%E4%BD%95%E5%9C%A8-Android-%E4%B8%8A%E5%88%9B%E5%BB%BA%E5%92%8C%E7%AE%A1%E7%90%86%E5%B7%A5%E4%BD%9C%E8%B5%84%E6%96%99/
 
-开启 Work Profile 之后，系统分为了两个空间，为方便描述，我们把安装普通应用的空间称为 personal profile（个人空间），安装图标上带有公文包徽章的应用的空间称为 work profile（工作空间）。
+开启 “Work Profile(工作空间)” 之后，系统分为了两个空间，为方便描述，我们把安装普通应用的空间称为 personal profile（个人空间），安装图标上带有公文包徽章的应用的空间称为 work profile（工作空间）。
 
 两个空间相互独立，例如 “工作空间” 不能调用 “个人空间” 的相机，“个人空间” 也不能读取 “工作空间” 保存的文件。
 
@@ -303,7 +303,7 @@ Android 提供了 "Work Profile" 功能来提供一个隔离的空间，用户�
 
     用户也可以在两个空间之间互相移动文件，实现数据的交换。
 
-“Work Profile(工作空间)” 需要有 Work Profile owner 程序进行管理，比如安装应用和赋予访问宿主机的某些权限等。Owner 这个角色设计上是由公司统一部署 owner 程序，由这个程序在工作空间安装各种公司控制的软件。对个人自用的手机来说，Owner 程序使用 google 账户即可，但这样会把自己工作空间的控制权交给 google。
+工作空间需要有 Work Profile owner 程序进行管理，比如安装应用和赋予访问宿主机的某些权限等。Owner 这个角色设计上是由公司统一部署 owner 程序，由这个程序在工作空间安装各种公司控制的软件。对个人自用的手机来说，Owner 程序使用 google 账户即可，但这样会把自己工作空间的控制权交给 google。
 
 通常我们使用章节 [Work Profile 隔离 ---- 三星 knox 安全文件夹] 和 [Work Profile 隔离 --- 开源的 Shelter]。
 
