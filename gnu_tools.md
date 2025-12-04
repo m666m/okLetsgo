@@ -11451,6 +11451,19 @@ done
 
 简单看 cpu 温度使用 btop 即可，展示又全面又准确。
 
+华硕的 ROG 开源支持最好
+
+    HWMON sensors driver for ASUS motherboards
+        https://github.com/zeule/asus-ec-sensors
+
+    https://github.com/electrified/asus-wmi-sensors 已经被 Linux 合入内核主线
+
+    使用命令 asusctl、rog-core 进行控制
+
+微星开源部分被合入 asus-ec-sensors 驱动中。
+
+技嘉由社区项目 gwe 自行逆向 Windows 驱动，目前删库了。
+
 hwinfo
 
     https://github.com/openSUSE/hwinfo
