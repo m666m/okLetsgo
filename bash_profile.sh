@@ -29,7 +29,9 @@
 # 兼容性设置：用于 .bash_profile 加载多种 Linux 的配置文件，zsh不加载
 #   ~/.bashrc: executed by bash(1) for non-login shells.
 #       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
-[[ -n "$BASH_VERSION" ]] && test -f ~/.bashrc && . ~/.bashrc
+if [[ -n "$BASH_VERSION" ]] && [[ -f ~/.bashrc ]]; then
+    . ~/.bashrc
+fi
 
 #######################
 # 兼容性设置：bash 优先调用 .bash_profile，就不会调用 .profile
@@ -198,9 +200,9 @@ alias greps='grep -d skip -in'
 # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过.git等目录，如 `finds strinfile`
 alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
 
-alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]" && tree -a -CF -I ".git|__pycache__" -L 2'
-alias treeh='echo "[树形列出目录及文件大小]" && tree --du -h'
-alias pstrees='echo "[进程树，列出pid，及全部子进程]" && pstree -p -s'
+alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]"; tree -a -CF -I ".git|__pycache__" -L 2'
+alias treeh='echo "[树形列出目录及文件大小]"; tree --du -h'
+alias pstrees='echo "[进程树，列出pid，及全部子进程]"; pstree -p -s'
 
 function mvf {
     if [ "$#" -ne 1 ]; then
@@ -231,9 +233,9 @@ function cdw {
     cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
 }
 
-alias viw='echo "[vi 后悔药：等保存了才发现是只读，运行以下命令]" && echo ":w !sudo tee %"'
+alias viw='echo "[vi 后悔药：等保存了才发现是只读，运行以下命令]"; echo ":w !sudo tee %"'
 
-alias myip='echo "[浏览器打开 https://test.ustc.edu.cn/ 可看到自己的ip和测速]" && curl ipv4.icanhazip.com 2>/dev/null;curl ipv6.icanhazip.com 2>/dev/null'
+alias myip='echo "[浏览器打开 https://test.ustc.edu.cn/ 可看到自己的ip和测速]"; curl ipv4.icanhazip.com 2>/dev/null;curl ipv6.icanhazip.com 2>/dev/null'
 
 # 命令行看天气 https://wttr.in/:help
 # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
@@ -264,47 +266,45 @@ function swc {
 }
 
 # man
-alias mans='echo "[模糊查找man手册]" && man -k'
+alias mans='echo "[模糊查找man手册]"; man -k'
 
 # chrony
-alias chronys='echo "[虚拟机跟宿主机对时]" && sudo chronyc makestep'
+alias chronys='echo "[虚拟机跟宿主机对时]"; sudo chronyc makestep'
 
 # ssh
-alias sshs='echo "[跳过其它各种协商使用密码连接主机]" && ssh -o "PreferredAuthentications password"'
-alias sshme='echo "[断开ssh连接复用]" && ssh -O exit'
-alias sshmn='echo "[不使用ssh连接复用]" && ssh -o "ControlPath=no"'
-alias sshk='echo "[使用kitty连接无terminfo的sshd服务器]" && kitty +kitten ssh'
+alias sshs='echo "[跳过其它各种协商使用密码连接主机]"; ssh -o "PreferredAuthentications password"'
+alias sshme='echo "[断开ssh连接复用]"; ssh -O exit'
+alias sshmn='echo "[不使用ssh连接复用]"； ssh -o "ControlPath=no"'
+alias sshk='echo "[使用kitty连接无terminfo的sshd服务器]"; kitty +kitten ssh'
 
 # curl
-alias curls='echo "[curl http-get 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]" && curl -fsSL'
-alias curld='echo "[curl http-post 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕]" && curl -fsSd'
+alias curls='echo "[curl http-get 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]"; curl -fsSL'
+alias curld='echo "[curl http-post 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕]"; curl -fsSd'
 
 # nmap
-alias nmaps='echo "[nmap 指定端口提供了什么类型的服务]" && nmap -sV -p'
-alias nmapl='echo "[nmap 列出当前局域网 192.168.0.x 内的ip及端口]" && nmap 192.168.0.0/24'
+alias nmaps='echo "[nmap 指定端口提供了什么类型的服务]"; nmap -sV -p'
+alias nmapl='echo "[nmap 列出当前局域网 192.168.0.x 内的ip及端口]"; nmap 192.168.0.0/24'
 
 # scp rsync
-alias scps='echo "[scp 源 目的网络。远程格式 user@host:/path/to/ 端口用 -P]" && scp -r'
-alias rsyncs='echo "[rsync 源 目的网络。远程格式 user@host:/path/to/]" && rsync -avh --progress --stats -e "ssh -p 22" '
-alias rsyncsb='echo "[rsync 源 目的慢速网络。远程格式 user@host:/path/to/]" && rsync -avh --progress --stats --partial --partial-dir=.rsync-partial --timeout=30 --bwlimit=5000 -e "ssh -p 22 -o ServerAliveInterval=15 -o ConnectTimeout=20" '
-alias rsyncl='echo "[低io优先级运行 rsync 源 目的]" && sudo ionice -c 2 -n 5 rsync -avh --progress --stats --bwlimit=50000 '
+alias scps='echo "[scp 源 目的网络。远程格式 user@host:/path/to/ 端口用 -P]"; scp -r'
+alias rsyncs='echo "[rsync 源 目的网络。远程格式 user@host:/path/to/]"; rsync -avh --progress --stats -e "ssh -p 22" '
+alias rsyncsb='echo "[rsync 源 目的慢速网络。远程格式 user@host:/path/to/]"; rsync -avh --progress --stats --partial --partial-dir=.rsync-partial --timeout=30 --bwlimit=5000 -e "ssh -p 22 -o ServerAliveInterval=15 -o ConnectTimeout=20" '
+alias rsyncl='echo "[低io优先级运行 rsync 源 目的]"; sudo ionice -c 2 -n 5 rsync -avh --progress --stats --bwlimit=50000 '
 
 # dd
-alias ddp='echo "[给dd发信号显示进度信息]" && sudo watch -n 5 killall -USR1 dd'
+alias ddp='echo "[给dd发信号显示进度信息]"; sudo watch -n 5 killall -USR1 dd'
 
 # du
-alias dus='echo "[降序列出各个文件的大小(MB)]" && (find . -type f -exec du -sh {} \;)|sort -n -r'
-alias dud='echo "[降序列出各个子目录的大小]" && (find . -type d -exec du -sh {} \;)|sort -n -r'
+alias dus='echo "[降序列出各个文件的大小]"; find . -type f -exec du -b {} \; | sort -n -r | numfmt --to=iec'
+alias dud='echo "[降序列出各个子目录的大小]"; du -hd1 . 2>/dev/null | sort -h -r'
 function duh {
-    #local target='.'
-    #[[ -n $1 ]] && target=$1
     local target=${1:-.}
     echo "[列出 $target 空间占用最大的前 10 个文件或目录(MB)]"
-    sudo du -am "$target" | sort -n -r |head -n 10
+    sudo du -sb "$target"/* "$target"/.* 2>/dev/null | sort -n -r | numfmt --to=iec | head -10
 }
 
 # udisksctl
-alias udj='echo "[弹出 U 盘]" && sync && udisksctl power-off -b'
+alias udj='echo "[弹出 U 盘]"; sync; udisksctl power-off -b'
 
 # mount 使用当前用户权限挂载 Windows 分区 U 盘，用于防止默认参数使用 root 用户权限不方便当前用户读写
 function mntfat {
@@ -345,12 +345,18 @@ alias hexdumps='hexdump -C'
 alias qrens='qrencode -t ANSIUTF8'
 
 # 生成密码
-alias passs='echo "[生成16个字符的强密码]" && cat /dev/random |tr -dc "!@#$%^&*()-+=0-9a-zA-Z" | head -c16'
-alias passr='echo "[16 个随机字符作为密码]" && echo && cat /dev/random |tr -dc 'a-zA-Z0-9' |head -c 16 && echo'
-alias passf='echo "[256 随机字节作为密钥文件，过滤了换行符]" && echo &&cat /dev/random |tr -d '\n' |head -c 256'
+alias passs='echo "[生成16个字符的强密码]"; cat /dev/random |tr -dc "!@#$%^&*()-+=0-9a-zA-Z" | head -c16'
+alias passr='printf "[16 个随机字符作为密码]\n\n"; cat /dev/urandom | tr -dc "a-zA-Z0-9" | head -c 16; echo'
+function passf {
+    # 256 随机字节作为密钥文件，过滤了换行符
+    # passf > key.bin          # 保存为文件
+    # passf | base64           # 输出base64
+    # passf | xxd -p           # 输出十六进制
+    cat /dev/random | tr -d "\n" | head -c 256
+}
 
 # sha256sum
-alias shasums='echo "[sha256sum 按校验和文件逐个校验，跳过缺失文件告警]" && sha256sum --ignore-missing -c'
+alias shasums='echo "[sha256sum 按校验和文件逐个校验，跳过缺失文件告警]"; sha256sum --ignore-missing -c'
 function shasumf {
     # `shasumc abc.iso SHA256SUMS.txt`
     echo "[sha256sum，只下载了一个文件 $1，从校验和文件 $2 中抽出单个文件进行校验]"
@@ -368,45 +374,45 @@ function shasumd {
 }
 
 # 看日志
-alias audk='echo "[持续显示内核信息]" && sudo dmesg -w -T'
-alias auds='echo "[持续显示系统日志中 systemd-journald 分类信息]" && sudo journalctl -f'
-alias audj='echo "[持续显示系统日志中人性化可读审计信息-精简文本]" && sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
-alias audkb='echo "[列出所有启动记录]" && journalctl --list-boots && echo "[显示操作系统上次启动时的内核信息]" && journalctl -k -b -1'
+alias audk='echo "[持续显示内核信息]"; sudo dmesg -w -T'
+alias auds='echo "[持续显示系统日志中 systemd-journald 分类信息]"; sudo journalctl -f'
+alias audj='echo "[持续显示系统日志中人性化可读审计信息-精简文本]"; sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
+alias audkb='echo "[列出所有启动记录]"; journalctl --list-boots; echo "[显示操作系统上次启动时的内核信息]"; journalctl -k -b -1'
 
 # systemd
-alias stmu='echo "[systemd 列出当前系统的单元，可 grep]" && systemctl list-units --no-pager'
-alias stmur='echo "[systemd 列出当前系统正在运行的单元，可 grep]" && systemctl list-units --state=running --no-pager'
-alias stmud='echo "[systemd 查看单元的依赖关系]" && systemctl list-dependencies '
-alias stmuf='echo "[systemd 列出当前系统开机自启动的单元文件]" && systemctl list-unit-files --state enabled --no-pager'
-alias stme='echo "[systemd 直接编辑服务的单元配置文件]" && sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full '
-alias stmr='echo "[systemd 重载单元文件]" && sudo systemctl daemon-reload'
-alias stmav='echo "[systemd 验证单元文件]" && systemd-analyze verify '
-alias stmab='echo "[systemd 分析计算机启动耗时]" && systemd-analyze blame'
+alias stmu='echo "[systemd 列出当前系统的单元，可 grep]"; systemctl list-units --no-pager'
+alias stmur='echo "[systemd 列出当前系统正在运行的单元，可 grep]"; systemctl list-units --state=running --no-pager'
+alias stmud='echo "[systemd 查看单元的依赖关系]"; systemctl list-dependencies '
+alias stmuf='echo "[systemd 列出当前系统开机自启动的单元文件]"; systemctl list-unit-files --state enabled --no-pager'
+alias stme='echo "[systemd 直接编辑服务的单元配置文件]"; sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full '
+alias stmr='echo "[systemd 重载单元文件]"; sudo systemctl daemon-reload'
+alias stmav='echo "[systemd 验证单元文件]"; systemd-analyze verify '
+alias stmab='echo "[systemd 分析计算机启动耗时]"; systemd-analyze blame'
 
 # lvm
-alias lvvlvs='echo "[lvm显示lv详情]" && sudo lvs -a -o+integritymismatches -o+devices -o+segtype'
+alias lvvlvs='echo "[lvm显示lv详情]"; sudo lvs -a -o+integritymismatches -o+devices -o+segtype'
 
 # SELinux
-alias selxr='echo "[SELinux 恢复目录的默认权限设置]" && sudo restorecon -R -v'
-alias selxt='echo "[SELinux 临时关闭或打开]" && sudo setenforce'
-alias selxs='echo "[SELinux 当前状态]" && getenforce'
-alias selxl='echo "[列出当前的 SELinux 规则]" && sudo semanage fcontext -l'
+alias selxr='echo "[SELinux 恢复目录的默认权限设置]"; sudo restorecon -R -v'
+alias selxt='echo "[SELinux 临时关闭或打开]"; sudo setenforce'
+alias selxs='echo "[SELinux 当前状态]"; getenforce'
+alias selxl='echo "[列出当前的 SELinux 规则]"; sudo semanage fcontext -l'
 
 # git 常用命令
 alias gs='git status'
-alias gd='echo "[差异：工作区与暂存区]" && git diff'
-alias gds='echo "[差异：暂存区与仓库]" && git diff --staged'
-alias gdh='echo "[差异：工作区与仓库]" && git diff HEAD'
-alias gdh2='echo "[差异：最近的两次提交记录]" && git diff HEAD~ HEAD'
-alias glog='echo "[提交记录：树形]" && git log --oneline --graph'
-alias glb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]" && git log --left-right --oneline'
-alias glm='echo "[提交记录：本地远程库对比本地库--master]" && git log --graph --oneline ..origin/master --'
-alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git log --graph --oneline ..origin/dev --'
-alias gba='echo "[分支：全部分支及跟踪关系、最近提交及注释]" && git branch -avv'
-alias gro='echo "[远程信息]" && git remote show origin'
-alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
-alias gpull='echo "[github 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while :; do printf "[Retry pull...]\n\n"; sleep 1; git pull --rebase && break; done'
-alias gpush='{ echo "[github 经常断连，自动重试 push 直至成功]"; git push || while ! git push; do printf "[Retry push...]\n\n"; sleep 1; done; }'
+alias gd='echo "[差异：工作区与暂存区]"; git diff'
+alias gds='echo "[差异：暂存区与仓库]"; git diff --staged'
+alias gdh='echo "[差异：工作区与仓库]"; git diff HEAD'
+alias gdh2='echo "[差异：最近的两次提交记录]"; git diff HEAD~ HEAD'
+alias glog='echo "[提交记录：树形]"; git log --oneline --graph'
+alias glb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]"; git log --left-right --oneline'
+alias glm='echo "[提交记录：本地远程库对比本地库--master]"; git log --graph --oneline ..origin/master --'
+alias gld='echo "[提交记录：本地远程库对比本地库--dev]"; git log --graph --oneline ..origin/dev --'
+alias gba='echo "[分支：全部分支及跟踪关系、最近提交及注释]"; git branch -avv'
+alias gro='echo "[远程信息]"; git remote show origin'
+alias gcd3='echo  "[精简diff3信息]"; sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
+alias gpull='echo "[github 经常断连，自动重试 pull 直至成功]"; while ! git pull --rebase; do printf "[Retry pull...]\n\n"; sleep 1; done'
+alias gpush='echo "[github 经常断连，自动重试 push 直至成功]"; while ! git push; do printf "[Retry push...]\n\n"; sleep 1; done'
 function gadd {
     echo "[把 github.com 的 https 地址转为 git@ 地址，方便鉴权登录github]"
     echo ${1//https:\/\/github.com\//git@github.com:}
@@ -420,7 +426,10 @@ function gaddr {
     curl -o "$tfile" https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts \
         || curl -o "$tfile" https://cdn.jsdelivr.net/gh/maxiaof/github-hosts@master/hosts
 
-    [[ ! -s "$tfile" ]] && echo '获取 github 地址列表失败！' && return 0
+    if [[ ! -s "$tfile" ]]; then
+        echo '获取 github 地址列表失败！'
+        return
+    fi
 
     if grep 'Github Hosts Start' /etc/hosts >/dev/null 2>&1; then
         sed '/#Github Hosts Start/,/#Github Hosts End/ {
@@ -438,24 +447,24 @@ function gaddr {
 }
 
 # gpg 常用命令，一般用法都是后跟文件名即可
-alias ggk='echo "[查看有私钥的gpg密钥及其子密钥，带指纹和keygrip]" && gpg -K --keyid-format=long --with-subkey-fingerprint --with-keygrip'
-alias ggl='echo "[查看密钥的可读性信息pgpdump]" && gpg --list-packets'
-alias ggsb='echo "[签名，生成二进制.gpg签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --sign'
-alias ggst='echo "[签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --clearsign'
-alias ggsdb='echo "[分离式签名，生成二进制.sig签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --detach-sign'
-alias ggsdt='echo "[分离式签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" && gpg --armor --detach-sign'
-alias ggf='echo "[查看公钥的指纹以便跟跟网站发布的核对]" && gpg --with-fingerprint --show-keys --keyid-format=long'
+alias ggk='echo "[查看有私钥的gpg密钥及其子密钥，带指纹和keygrip]"; gpg -K --keyid-format=long --with-subkey-fingerprint --with-keygrip'
+alias ggl='echo "[查看密钥的可读性信息pgpdump]"; gpg --list-packets'
+alias ggsb='echo "[签名，生成二进制.gpg签名文件，默认选择当前可用的私钥签名，可用 -u 指定]"; gpg --sign'
+alias ggst='echo "[签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]"; gpg --clearsign'
+alias ggsdb='echo "[分离式签名，生成二进制.sig签名文件，默认选择当前可用的私钥签名，可用 -u 指定]"; gpg --detach-sign'
+alias ggsdt='echo "[分离式签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]"; gpg --armor --detach-sign'
+alias ggf='echo "[查看公钥的指纹以便跟跟网站发布的核对]"; gpg --with-fingerprint --show-keys --keyid-format=long'
 function ggkd {
     echo "[从公钥服务器下载指定公钥到本地 $1.gpg]"
     gpg --keyserver hkps://keys.openpgp.org --no-default-keyring --keyring ./$1.gpg --recv-keys
 }
-alias ggvs='echo "[使用临时钥匙圈验证文件签名，如 ggvs ./fedora.gpg xxx.sign xxx.zip 或 ggvs ./fedora.gpg xxx.CHECHSUM]" && gpgv --keyring'
-alias ggv='echo "[验证签名]" && gpg --verify'
-alias gges='echo "[非对称算法加密并签名，参数太多，只给出提示]" && echo "gpg -s -u 'sender@xxx.com' -r 'reciver@xxx.com' -e msg.txt"'
-alias ggcs='echo "[对称算法加密，默认选择当前可用的私钥签名，可用 -u 指定，默认生成的.gpg文件。]" && gpg -s --cipher-algo AES-256 -c'
+alias ggvs='echo "[使用临时钥匙圈验证文件签名，如 ggvs ./fedora.gpg xxx.sign xxx.zip 或 ggvs ./fedora.gpg xxx.CHECHSUM]"; gpgv --keyring'
+alias ggv='echo "[验证签名]"; gpg --verify'
+alias gges='echo "[非对称算法加密并签名，参数太多，只给出提示]"; echo "gpg -s -u 'sender@xxx.com' -r 'reciver@xxx.com' -e msg.txt"'
+alias ggcs='echo "[对称算法加密，默认选择当前可用的私钥签名，可用 -u 指定，默认生成的.gpg文件。]"; gpg -s --cipher-algo AES-256 -c'
 # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
 alias ggd='gpg -d'
-alias ggaq='echo "[退出 gpg-agent 代理]" && gpg-connect-agent killagent /bye'
+alias ggaq='echo "[退出 gpg-agent 代理]"; gpg-connect-agent killagent /bye'
 
 # openssl 常用命令
 # 对称算法加密，如 `echo abc |ssle` 输出到屏幕， `ssle -in 1.txt -out 1.txt.asc` 操作文件，加 -kfile 指定密钥文件
@@ -464,24 +473,24 @@ alias ssle='openssl enc -e -aes-256-cbc -md sha512 -pbkdf2 -iter 9876543 -salt'
 alias ssld='openssl enc -d -aes-256-cbc -md sha512 -pbkdf2 -iter 9876543 -salt'
 
 # dnf
-alias dnfp='echo "[dnf搜索包含指定命令的软件包]" && dnf provides'
-alias dnfqi='echo "[dnf查找指定的软件包在哪些存储库]" && dnf repoquery -i'
-alias dnfqr='echo "[dnf查看软件包依赖]" && dnf repoquery --requires'
-alias dnfr='echo "[dnf查看当前有哪些存储库]" && dnf repolist'
-alias dnfrl='echo "[dnf查看存储库软件列表]" && dnf list --repo'
-alias dnfl='echo "[dnf查看安装的软件]" && dnf list --installed'
-alias dnfd='echo "[dnf卸载软件]" && dnf remove'
-alias dnft='echo "[在toolbox里运行dnf]" && toolbox run dnf'
+alias dnfp='echo "[dnf搜索包含指定命令的软件包]"; dnf provides'
+alias dnfqi='echo "[dnf查找指定的软件包在哪些存储库]"; dnf repoquery -i'
+alias dnfqr='echo "[dnf查看软件包依赖]"; dnf repoquery --requires'
+alias dnfr='echo "[dnf查看当前有哪些存储库]"; dnf repolist'
+alias dnfrl='echo "[dnf查看存储库软件列表]"; dnf list --repo'
+alias dnfl='echo "[dnf查看安装的软件]"; dnf list --installed'
+alias dnfd='echo "[dnf卸载软件]"; dnf remove'
+alias dnft='echo "[在toolbox里运行dnf]"; toolbox run dnf'
 
 # pip
-alias pipi='echo "[pip 跳过缓存更新指定包]" && pip install --upgrade --no-cache-dir'
-alias pipu='echo "[pip 更新自己]" && python -m pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple --upgrade pip'
+alias pipi='echo "[pip 跳过缓存更新指定包]"; pip install --upgrade --no-cache-dir'
+alias pipu='echo "[pip 更新自己]"; python -m pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple --upgrade pip'
 
 # flatpak
-alias fpkr='echo "[flatpak查看当前有哪些存储库]" && flatpak remotes'
-alias fpkrl='echo "[flatpak查看存储库软件列表]" && flatpak remote-ls'
-alias fpkl='echo "[flatpak查看安装的软件]" && flatpak list --runtime'
-alias fpkd='echo "[flatpak卸载软件]" && flatpak uninstall --delete-data'
+alias fpkr='echo "[flatpak查看当前有哪些存储库]"; flatpak remotes'
+alias fpkrl='echo "[flatpak查看存储库软件列表]"; flatpak remote-ls'
+alias fpkl='echo "[flatpak查看安装的软件]"; flatpak list --runtime'
+alias fpkd='echo "[flatpak卸载软件]"; flatpak uninstall --delete-data'
 function fpks() {
     echo "[flatpak 搜软件不展示 id 让你没法安装: ${1}]"
 
@@ -510,20 +519,20 @@ function pdms() {
     echo "[podman搜索列出镜像标签，非官方镜像需要完整的源地址]"
     podman search --list-tags --limit=5000 $1
 }
-alias pdmrun='echo "[podman简单运行一个容器]" && podman run -it --rm -P'
-alias pdme='echo "[podman在运行的容器里执行一个命令]" && podman exec'
-alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]" && podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
-alias pdmlog='echo "[podman查看指定容器日志]" && podman logs -f --tail 100'
-alias pdmdf='echo "[podman查看资源情况]" && podman system df -v'
-alias pdmvp='echo "[podman清理空闲空间]" && podman volume prune'
+alias pdmrun='echo "[podman简单运行一个容器]"; podman run -it --rm -P'
+alias pdme='echo "[podman在运行的容器里执行一个命令]"; podman exec'
+alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]"; podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
+alias pdmlog='echo "[podman查看指定容器日志]"; podman logs -f --tail 100'
+alias pdmdf='echo "[podman查看资源情况]"; podman system df -v'
+alias pdmvp='echo "[podman清理空闲空间]"; podman volume prune'
 function pdmtty() {
     echo "[登录到容器 $1 内的tty]"
     podman exec -it $1 sh
 }
 #
 export PDM_LOCAL_REPO="192.168.0.11:5000" && echo "podman 本地私有仓库地址设置为 PDM_LOCAL_REPO=${PDM_LOCAL_REPO}"
-alias pdmrs='echo "[podman 搜索包含本地无tls私有仓库]" && podman search --tls-verify=false'
-alias pdmr='echo "[podman 列出本地私有仓库 ${PDM_LOCAL_REPO} 的所有镜像]" && curl http://${PDM_LOCAL_REPO}/v2/_catalog'
+alias pdmrs='echo "[podman 搜索包含本地无tls私有仓库]"; podman search --tls-verify=false'
+alias pdmr='echo "[podman 列出本地私有仓库 ${PDM_LOCAL_REPO} 的所有镜像]"; curl http://${PDM_LOCAL_REPO}/v2/_catalog'
 function pdmrtag() {
     echo "[podman 列出本地私有仓库 ${PDM_LOCAL_REPO} 镜像 ${1} 的所有 tag]"
     local img=$(echo $1  |cut -d: -f1)
@@ -558,7 +567,7 @@ function pdmrd() {
 
 # distrobox 这词打不快
 alias dbox='distrobox'
-alias dboxe='echo "[在distrobox里运行一个命令]" && distrobox-enter --'
+alias dboxe='echo "[在distrobox里运行一个命令]"; distrobox-enter --'
 function dboxstop() {
     echo "Stop all distrobox container:"
     #local container_name=$(distrobox-list --no-color |sed 1d |cut -d '|' -f 2)
@@ -735,16 +744,17 @@ if test -d "$HOME/.ssh"; then
             # agent未运行视作开机后第一次打开bash会话
 
             # 搭车运行 gpg 钥匙圈更新
-            echo ''
+            echo
             # echo "Updating gpg keyrings, wait a second..."
             # gpg --refresh-keys
             echo "GPG update TrustDB, skip owner-trust undefined keys..."
             gpg --check-trustdb
-            echo ''
+            echo
             echo "GPG check sigs..."
             gpg --check-sigs
 
-            echo && echo "Start ssh-agent..."
+            echo
+            echo "Start ssh-agent..."
             agent_start
 
             # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
@@ -775,8 +785,26 @@ fi
 # Bash：加载插件或小工具
 
 # ssh 命令后面按tab键自动补全 hostname，zsh 自带不需要
+_comp_ssh_hosts() {
+    local config_hosts known_hosts
+
+    #[[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ' | grep -v \*) $(cat ~/.ssh/known_hosts | grep -v ^\| | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq)" ssh
+
+    [[ -f ~/.ssh/config ]] && config_hosts=$(awk '/^Host / && $2 !~ /\*/ {print $2}' ~/.ssh/config 2>/dev/null)
+
+    [[ -f ~/.ssh/known_hosts ]] && known_hosts=$(awk '{print $1}' ~/.ssh/known_hosts 2>/dev/null | tr ',' '\n' | sort -u)
+
+    echo "$config_hosts $known_hosts" | tr ' ' '\n' | sort -u
+}
 if [[ ! $current_shell = 'zsh' ]]; then
-    [[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ' | grep -v \*) $(cat ~/.ssh/known_hosts | grep -v ^\| | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq)" ssh
+    # 优先调用系统自带的 bash-completion
+    if [[ -f /usr/share/bash-completion/completions/ssh ]]; then
+        source /usr/share/bash-completion/completions/ssh
+    elif [[ -f /etc/bash_completion.d/ssh ]]; then
+        source /etc/bash_completion.d/ssh
+    else
+        complete -W "$(_comp_ssh_hosts)" ssh
+    fi
 fi
 
 # ack 命令下载个 hhighlighter 插件
