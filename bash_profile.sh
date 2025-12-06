@@ -109,7 +109,10 @@ unset os_name
 
 #######################
 # 删除 vi 安装 vim 后发现不能用 vi 命令了
-command -v vi >/dev/null || { echo 'link vim to vi' && sudo ln -sf /usr/bin/vim /usr/bin/vi; }
+command -v vi >/dev/null || {
+    echo 'link vim to vi'
+    sudo ln -sf /usr/bin/vim /usr/bin/vi
+}
 
 #######################
 # 命令行开启 vi 模式，按esc后用vi中的上下左右键选择历史命令
@@ -152,9 +155,18 @@ tput cnorm && echo -e '\033[?12h\033[1 q'
 # 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
 if [ -x /usr/bin/dircolors ]; then
 
-    # 使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
-    [[ -f ~/.dir_colors ]] || (echo 'Get nord-dircolors from github' && curl -fsSLo ~/.dir_colors https://raw.githubusercontent.com/nordtheme/dircolors/refs/heads/develop/src/dir_colors 2>/dev/null || curl -fsSLo ~/.dir_colors https://cdn.jsdelivr.net/gh/arcticicestudio/nord-dircolors@develop/src/dir_colors)
-    test -r ~/.dir_colors && eval "$(dircolors -b ~/.dir_colors)" || eval "$(dircolors -b)"
+    # 下载使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
+    if [[ ! -f ~/.dir_colors ]]; then
+        echo 'Get nord-dircolors from github'
+        curl -fsSLo ~/.dir_colors https://raw.githubusercontent.com/nordtheme/dircolors/refs/heads/develop/src/dir_colors 2>/dev/null || \
+        curl -fsSLo ~/.dir_colors https://cdn.jsdelivr.net/gh/arcticicestudio/nord-dircolors@develop/src/dir_colors
+    fi
+
+    if test -r ~/.dir_colors; then
+        eval "$(dircolors -b ~/.dir_colors)"
+    else
+         eval "$(dircolors -b)"
+    fi
 
     # 注意基础命令不要搞太花哨，导致脚本里解析出现用法不一致的问题
     #alias dir='dir --color=auto'
@@ -231,11 +243,24 @@ function weather {
     curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
 }
 
-# 切换桌面图形模式和命令行模式 --- systemctl 模式
+# 切换桌面模式和命令行模式 --- 使用 systemd 控制引导的系统都可以这么做
 function swc {
-    [[ $(echo $XDG_SESSION_TYPE) = 'tty' ]] \
-        && (echo -e "\033[0;33mWARN\033[0m: Start Desktop, wait until login shows..."; sudo systemctl isolate graphical.target) \
-        || (echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."; sleep 1; sudo systemctl isolate multi-user.target)
+    if [[ "$XDG_SESSION_TYPE" = 'tty' ]]; then
+        read -p "Switch to graphical mode? (y/N): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo -e "\033[0;33mWARN\033[0m: Starting Desktop, lanuching login screen..."
+            sudo systemctl isolate graphical.target
+        fi
+    else
+        read -p "Switch to text mode? (y/N): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."
+            sleep 1
+            sudo systemctl isolate multi-user.target
+        fi
+    fi
 }
 
 # man
@@ -380,8 +405,8 @@ alias gld='echo "[提交记录：本地远程库对比本地库--dev]" && git lo
 alias gba='echo "[分支：全部分支及跟踪关系、最近提交及注释]" && git branch -avv'
 alias gro='echo "[远程信息]" && git remote show origin'
 alias gcd3='echo  "[精简diff3信息]" && sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
-alias gpull='echo "[github 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while (($? != 0)); do   echo -e "[Retry pull...] \n" && sleep 1; git pull --rebase; done'
-alias gpush='echo "[github 经常断连，自动重试 push 直至成功]" && git push || while (($? != 0)); do   echo -e "[Retry push...] \n" && sleep 1; git push; done'
+alias gpull='echo "[github 经常断连，自动重试 pull 直至成功]" && git pull --rebase || while :; do printf "[Retry pull...]\n\n"; sleep 1; git pull --rebase && break; done'
+alias gpush='{ echo "[github 经常断连，自动重试 push 直至成功]"; git push || while ! git push; do printf "[Retry push...]\n\n"; sleep 1; done; }'
 function gadd {
     echo "[把 github.com 的 https 地址转为 git@ 地址，方便鉴权登录github]"
     echo ${1//https:\/\/github.com\//git@github.com:}
@@ -905,7 +930,11 @@ function PS1git_branch_name {
             local headhash="$(git rev-parse HEAD)"
             local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
             # 有标签名就显示标签否则显示 commit id
-            [[ -n $tagname ]] && printf "%s" "@${tagname}" || printf "%s" "#${headhash}"
+            if [[ -n "$tagname" ]]; then
+                printf "%s" "@${tagname}"
+            else
+                printf "%s" "#${headhash}"
+            fi
             ;;
         *)
             # exitcode 是其它数字的，视为不在 git 环境中，不做任何打印输出

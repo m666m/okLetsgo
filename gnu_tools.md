@@ -2543,7 +2543,7 @@ Linux 命令行参数一个杠，俩杠，没杠，参见章节 [压缩解压缩
     echo `date '--date=1 hour ago' +%Y-%m-%d-%H`
     echo $(date '--date=1 hour ago' +%Y-%m-%d-%H)
 
-$()中只需要使用一个反斜杠进行转义，下列语句表示给var变量赋值，字符串$HOME，只是字符串，不是变量HOME的值
+$() 中只需要使用一个反斜杠进行转义，下列语句表示给var变量赋值，字符串$HOME，只是字符串，不是变量HOME的值
 
     var2=`echo \\$HOME`
     var3=$(echo \$HOME)
@@ -2572,7 +2572,7 @@ $()中只需要使用一个反斜杠进行转义，下列语句表示给var变�
             run_main_task
         fi
 
-${var}用于明确界定变量，与$var并没有区别，但是界定更清晰
+${var} 用于明确界定变量，与$var并没有区别，但是界定更清晰
 
     A="to"
     echo $AB 不如 echo ${A}B
@@ -2622,7 +2622,7 @@ ${var}用于明确界定变量，与$var并没有区别，但是界定更清晰
 
     ((b=a-15))  # 将 a-15 的运算结果赋值给变量 b
 
-需要输出表达式的运算结果时，需在 (( )) 前面加$符号
+需要输出表达式的运算结果时，需在 (( )) 前面加 $ 符号
 
     c=$((a+b))
     echo $((a+b))
@@ -2698,15 +2698,50 @@ NOTE: 慎重使用链式逻辑运算
 
     shell 解释执行是从左向右的，但是逻辑运算符优先级和短路求值会导致你没有料到的结果，特别是在使用如 curl | tee 这类管道操作，建议命令分组或拆分为多步或使用临时文件
 
+    短路求值：
+
+        ||：左边成功就短路
+
+        &&：左边失败就短路
+
+    && 和 || 的优先级相同，从左到右结合，可能导致意外的执行路径
+
         $ true || echo "A" && echo "B"
-        B  <--- 这里短路求值跳过了 echo "A" && echo "B" 但是会因为 true 而执行 echo "B"
+        B  <--- 短路求值跳过了 echo "A" && echo "B" 但是会因为 true 而执行 echo "B"
+
+        $ false || echo "A" && echo "B"
+        A
+        B  <--- echo "A" 的返回值是 true，所以继续执行 && echo "B"
+
+    || ... && ... 短路求值的用法行为不可控
 
         $ true || { echo "A" && echo "B"; } && echo "C"
-        C <--- 验证上面语句的观点
+        C  <--- 短路求值跳过了 { echo "A" && echo "B"; }
 
-    所以，尽量别连写逻辑运算，要用分组 ( ) 或 { } 来包裹，使得逻辑运算符的结果符合你的直观预期，以上两句的改写：
+        $ false || { echo "A" && echo "B"; } && echo "C"
+        A
+        B
+        C
 
-        $ true || { echo "A" && echo "B"; }
+        也就是说，第一个命令成功true或失败false，都会执行 C
+
+    && ... || ... 短路求值的用法行为不可控
+
+        $ false && echo A || echo B
+        B
+
+    避免在可以用 ; 的时候用 &&
+
+        # 语句 echo 命令没有获得 tty 时候是会返回错误的，用 && 连接后句会导致无法执行
+        $ command -v vi >/dev/null || { echo 'link vim to vi'; sudo ln -sf /usr/bin/vim /usr/bin/vi; }
+
+    所以，尽量别连写逻辑运算，要用分组 ( ) 或 { } 来包裹，使得逻辑运算符的结果符合你的直观预期：
+
+        # 改写 true || echo "A" && echo "B"
+        $ true || {
+            echo "A"
+            echo "B"
+        }
 
         $ true || ({ echo "A" && echo "B"; } && echo "C")
 
@@ -6679,15 +6714,17 @@ jq 功能非常强大，支持更复杂的操作如映射、过滤、字符串�
 
 示例，假设有 data.json 文件内容如下：
 
-    {
-      "name": "Alice",
-      "age": 30,
-      "hobbies": ["reading", "hiking"],
-      "address": {
-        "city": "New York",
-        "zip": "10001"
-      }
+```json
+{
+    "name": "Alice",
+    "age": 30,
+    "hobbies": ["reading", "hiking"],
+    "address": {
+    "city": "New York",
+    "zip": "10001"
     }
+}
+```
 
 获取姓名：
 
@@ -6719,22 +6756,26 @@ jq 功能非常强大，支持更复杂的操作如映射、过滤、字符串�
 
 > crudini 读写 ini 格式的配置文件
 
-    语法格式：crudini [参数] 文件名
+语法格式：
 
-    常用参数：
+    crudini [参数] 文件名
 
-        --del 删除变量
-        --existing 指定文件已存在
-        --format 设置输出格式
-        --get 显示变量值
-        --inplace 锁定并写入文件
-        --list 更新一个列表的值
-        --list-sep 设置自定义间隔符
-        --output 将输出内容写入指定文件
-        --set 增加或修改变量
-        --verbose 显示执行过程详细信息
+常用参数：
 
->yq (jq 的 YAML 版本)读写 YAML 的处理工具，语法类似于 jq
+    --del 删除变量
+    --existing 指定文件已存在
+    --format 设置输出格式
+    --get 显示变量值
+    --inplace 锁定并写入文件
+    --list 更新一个列表的值
+    --list-sep 设置自定义间隔符
+    --output 将输出内容写入指定文件
+    --set 增加或修改变量
+    --verbose 显示执行过程详细信息
+
+> yq
+
+jq 的 YAML 版本,读写 YAML 的处理工具，语法类似于 jq
 
     # 读取值
     yq '.key.subkey' file.yaml
@@ -6806,16 +6847,16 @@ jq 功能非常强大，支持更复杂的操作如映射、过滤、字符串�
 
 基于两个文件的差异生成补丁
 
-    # 注意两文件顺序：源文件 根据源文件修改后的文件
-    diff a.c b.c > test.diff
+    # 注意两文件顺序：源文件 源文件修改后的文件
+    $ diff a.c b.c > test.diff
 
 在其它的机器上对 a.c 文件应用补丁
 
-    patch a.c <tes.diff
+    $ patch a.c <tes.diff
 
 这样 a.c 的内容就变成了 b.c 的内容了。
 
-### 写入即时文件 cat
+### 即时文字写入文件 cat
 
     https://www.gnu.org/software/bash/manual/bash.html#Here-Documents
 
@@ -6837,9 +6878,9 @@ jq 功能非常强大，支持更复杂的操作如映射、过滤、字符串�
 
     如果同一个内容中有多处 EOF 会混乱，所以每段 cat 用不同的 EOFX 来做结束标志。
 
-    EOFA 必须顶行写，前面不能有制表符或者空格，结束输入对应前面的 EOFA 或按 ctrl+d。
+    结束标志必须顶行写，前面不能有制表符或者空格，结束输入对应前面的结束标志或按 ctrl+d。
 
-在我们使用 `cat <<EOF` 时，下面的文本内容必须顶行写，前面不能有制表符或者空格。
+在我们使用 `cat <<EOF` 时，下面的文本内容必须顶行写，就是因为 EOFA 前面不能有制表符或者空格。
 
 ```bash
 
@@ -6851,7 +6892,7 @@ EOFA
 
 ```
 
-如果重定向的操作符是<<-，那么分界符（EOF）所在行的开头部分的制表符（Tab）都将被去除。这可以解决由于脚本中的自然缩进产生的制表符。
+如果重定向的操作符是 <<-，那么分界符（EOF）所在行的开头部分的制表符（Tab）都将被去除。这可以解决由于脚本中的自然缩进产生的制表符。
 
     https://askubuntu.com/questions/858238/eof-in-cat-and-less
 
@@ -6869,15 +6910,20 @@ fi
 
 在某文件的基础上追加内容，写入的新文件直接重定向作为 xxx 命令的参数内容
 
-    $ xxx -config <(cat /etc/ssl/openssl.cnf - <<- EOF
-    [notice]
-    explicitText = "UTF8:Notice An use of this Certificate "
-    EOF
-    )
+```bash
 
-ssh写入远程主机文件
+xxx -config <(cat /etc/ssl/openssl.cnf - <<- EOF
+[notice]
+explicitText = "UTF8:Notice An use of this Certificate "
+EOF
+)
+
+```
+
+ssh 写入远程主机文件
 
 ```bash
+
 cat <<EOF | ssh user@host "cat > /home/user/${HOSTNAME%%.*}_said.txt"
 # hi
 there.
