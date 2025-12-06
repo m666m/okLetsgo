@@ -2513,7 +2513,9 @@ dash 和 bash 语法上的主要的区别有:
 
     如果是在函数中使用局部变量，用 `local var="hell"` 来定义
 
-Linux 命令行参数一个杠，俩杠，没杠，参见章节 [压缩解压缩] 中 tar 的说明，或 `man tar` 或 `info tar`。
+-, --
+
+    Linux 命令行参数一个杠，俩杠，单独杠，参见章节 [压缩解压缩] 中 tar 的说明，或 `man tar` 或 `info tar`。
 
 | 管道操作，命令参数中文件名的位置使用 bash 的特殊符号 -（减号），代表标准输出/标准输入, 视命令而定
 
@@ -7447,16 +7449,7 @@ tar 命令的选项及参数有几种写法，注意区别
 
         tar -f a.tar -c -v /tmp
 
-        # 没有参数的选项可以合写
-        tar -f a.tar -vc /tmp
-
-            # 选项 f 也可以合写，但是要放在最后，以便后面紧跟自己的参数，然后才是整个命令的参数
-            tar -vcf a.tar /tmp
-
-            # 这种写法常见，如 def.sh 是 o 的参数，连写了，就要紧跟
-            curl -fsSLo def.sh https://github.com/.../abc.sh
-
-    GUN 写法：用 -- 或 -，连写用一个 -
+    GUN 写法：用 -- 或 -，
 
         # --选项 后面紧跟空格参数
         tar --verbose --create --file a.tar /tmp
@@ -7465,10 +7458,20 @@ tar 命令的选项及参数有几种写法，注意区别
         # -- 选项用=连接参数，中间没有空格。可选参数必须始终使用这种方法
         tar --verb --cre --file=a.tar /tmp
 
-tar 最初只是个打包工具，把给定的文件和目录统一打包生成 .tar 文件。
+        多个支持单字母的选项连写可以用一个 -
+
+            # 没有参数的选项可以合写，如 -vc
+            tar -f a.tar -vc /tmp
+
+                # 有参数的选项 f 可合写，但是要放在最后，以便后面紧跟自己的参数，然后才是整个命令的参数
+                tar -vcf a.tar /tmp
+
+            # 这种写法常见，如 def.sh 是 o 的参数，连写了，就要紧跟
+            curl -fsSLo abc.sh https://github.com/.../ABC.sh
+
+tar 最初只是个打包工具，把给定的文件和目录统一打包生成 .tar 文件
 
     # 只打包，生成 .tar 文件，加参数 v 显示明细
-
     tar cf myarch.tar dir1 dir2 file2.txt
 
         # 解包
@@ -7497,8 +7500,7 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
     tar vxzf arc.tar.gz
     tar vxjf xx.tar.bz2
 
-tar 支持管道操作，在命令参数中文件名的位置使用 bash 的特殊符号 -（减号），代表标准输出/标准输入。
-下面的例子中不少示例，酌情参考。
+单独杠：tar 支持管道操作，在命令行参数中文件名的位置使用 bash 的特殊符号 -（减号），代表标准输出/标准输入
 
     # 把 /home 目录打包，输出到标准输入流，管道后面的命令是从标准输出流读取数据解包
     tar cf - /home |tar -xf -
