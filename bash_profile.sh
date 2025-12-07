@@ -313,17 +313,17 @@ function mntfat {
     local _gid=$(id -g $USERNAME)
     sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro $1 $2
 }
-function mntexfat {
-    echo "[挂载 exFAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-    local _uid=$(id -u $USERNAME)
-    local _gid=$(id -g $USERNAME)
-    sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro $1 $2
-}
 function mntntfs {
     echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
     local _uid=$(id -u $USERNAME)
     local _gid=$(id -g $USERNAME)
     sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,windows_names,iocharset=utf8 $1 $2
+}
+function mntexfat {
+    echo "[挂载 exFAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
+    local _uid=$(id -u $USERNAME)
+    local _gid=$(id -g $USERNAME)
+    sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro $1 $2
 }
 function mntram {
     echo "[映射内存目录 $1，用完了记得要解除挂载：sync; sudo umount $1]"
@@ -334,7 +334,7 @@ function mntsmb {
     sudo mount -t cifs -o user=$3 $1 $2
 }
 function mntnfs {
-    echo "[挂载nfs目录 $1 到本地目录，不许其内的 dev 再挂载 $2]"
+    echo "[挂载nfs目录 $1 到本地目录 $2，不许其内的 dev 再挂载]"
     sudo mount -t nfs -o vers=4,nodev,noatime $1 $2
 }
 
