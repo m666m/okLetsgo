@@ -12716,6 +12716,8 @@ enlightenment 桌面
 
         Fedora: dnf group install 'VideoLAN Client'  # vlc vlc-plugin-ffmpeg vlc-plugin-gstreamer vlc-plugin-pipewire
 
+        默认字幕语言：chi,cn,zhs,tw
+
         插件安装：VLSub，可以搜索下载字幕
 
         调整字幕时间轴热键 g、h
