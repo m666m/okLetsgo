@@ -7502,49 +7502,59 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
 
 单独杠：tar 支持管道操作，在命令行参数中文件名的位置使用 bash 的特殊符号 -（减号），代表标准输出/标准输入
 
-    # 把 /home 目录打包，输出到标准输入流，管道后面的命令是从标准输出流读取数据解包
-    tar cf - /home |tar -xf -
+    把 /home 目录打包，输出到标准输入流，管道后面的命令是从标准输出流读取数据解包
 
-    # curl 下载默认输出是标准输入流，管道后面的命令是 tar 从标准输出流读取数据解压到指定的目录下
-    curl -fsSL https://go.dev/dl/go1.19.5.linux-armv6l.tar.gz |sudo tar -C /usr/local -xzf -
+        tar cf - /home |tar -xf -
 
-    # 打包并 gpg 加密
-    tar cjf - dir1 dir2 file2 node.exe |gpg --output backup.tar.bz2.gpg --cipher-algo AES-256 -c -
+    在 curl 下载默认输出是标准输入流，管道后面的命令是 tar 从标准输出流读取数据解压到指定的目录下
 
-        # 解密并解包
+        curl -fsSL https://go.dev/dl/go1.19.5.linux-armv6l.tar.gz |sudo tar -C /usr/local -xzf -
+
+    打包并 gpg 加密
+
+        tar cjf - dir1 dir2 file2 node.exe |gpg --output backup.tar.bz2.gpg --cipher-algo AES-256 -c -
+
+    解密并解包
+
         # dd if=backup.tar.bz2.gpg |gpg -d - |tar xjf -
         gpg -d backup.tar.bz2.gpg |tar xjf -
 
-    # 打包并 openssl 加密
-    # 将当前目录下的 files 文件夹打包压缩，提示输入密码
-    tar czf - files |openssl enc -aes-256-cbc -pbkdf2 -out files.tar.gz.bin
+    打包并 openssl 加密，将当前目录下的 files 文件夹打包压缩，提示输入密码
 
-        # 解密并解包
-        # 将当前目录下的files.tar.gz进行解密解压拆包
+        tar czf - files |openssl enc -aes-256-cbc -pbkdf2 -out files.tar.gz.bin
+
+    解密并解包，将当前目录下的files.tar.gz进行解密解压拆包
+
         openssl enc -aes-256-cbc -pbkdf2 -d -in files.tar.gz.bin |tar xzf -
 
-    # 不覆盖文件，提取文件权限信息
-    tar -vkpf a.tar /tmp
+    不覆盖文件，提取文件权限信息
 
-    # 把本地目录打包并直接用 ssh 传送远程服务器，注意这种用法无校验只适合于内网环境
-    tar --create --directory /home/josevnz/tmp/ --file - *| \
-        ssh raspberrypi "tar --directory /home/josevnz \
-        --verbose --list --file -"
+        tar -vkpf a.tar /tmp
+
+    把本地目录打包并直接用 ssh 传送远程服务器，注意这种用法无校验只适合于内网环境
+
+        tar --create --directory /home/josevnz/tmp/ --file - *| \
+            ssh raspberrypi "tar --directory /home/josevnz \
+            --verbose --list --file -"
 
 .gz 文件
 
-    # 压缩，生成同名文件，后缀.gz，原文件默认删除，除非使用 -k 参数保留
-    gzip FileName
+    压缩，生成同名文件，后缀.gz，原文件默认删除，除非使用 -k 参数保留
 
-    # 列出指定文件列表并压缩
-    ls |grep -v GNUmakefile |xargs gzip
+        gzip FileName
 
-    # 解压缩
-    # gunzip FileName.gz
-    gzip -d FileName.gz
+    列出指定文件列表并压缩
 
-    # 查看内容
-    zcat usermod.8.gz
+        ls |grep -v GNUmakefile |xargs gzip
+
+    解压缩
+
+        # gunzip FileName.gz
+        gzip -d FileName.gz
+
+    不解压直接查看内容
+
+        zcat usermod.8.gz
 
 .zip 文件
 
@@ -7566,42 +7576,52 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
     # 只查看文件列表
     unzip -l arc.zip
 
-    # 分卷压缩，把目录 win_font 打包为 wf.zip, wf.z01, wf.z01,... 的 10mb大小的包
-    $ zip -r -s 10m wf.zip win_font/
+    分卷压缩
 
-        # 解压分卷文件，需要先合并出一个大zip文件
-        $ zip -F wf.zip --out win_font.zip
-        $ unzip win_font.zip
+        分卷压缩，把目录 win_font 打包为 wf.zip, wf.z01, wf.z01,... 的 10mb大小的包
 
-        Windows 下的 7zip 分卷压缩后是 wf.zip.001, wf.zip.002,...的包
-        # 解压分卷文件，也是需要先拼合再解压，但不需要专门的命令，直接拼接写文件即可
-        $ cat wf.zip.* >wf.zip
-        $ unzip wf.zip
+            $ zip -r -s 10m wf.zip win_font/
+
+        解压分卷文件，需要先合并出一个大zip文件
+
+            $ zip -F wf.zip --out win_font.zip
+            $ unzip win_font.zip
+
+        Windows 下的 7zip 分卷压缩后是 wf.zip.001, wf.zip.002,...的包，解压分卷文件，也是需要先拼合再解压，但不需要专门的命令，直接拼接写文件即可
+
+            $ cat wf.zip.* >wf.zip
+            $ unzip wf.zip
 
 对压缩过的文件进行查看等操作，使用 zless、zmore、zcat 和 zgrep 等。
 
 .xz 文件
 
-    # 把 foo.tar.xz 解压缩为 foo.tar
-    xz -d foo.tar.xz
+    把 foo.tar.xz 解压缩为 foo.tar
 
-    # 把文件 foo 压缩为 foo.xz
-    xz foo
+        $ xz -d foo.tar.xz
 
-    # 并行压缩 `man xz`
-    find . -type f \! -name '*.xz' -print0 \
-        | xargs -0r -P4 -n16 xz -T1
+    把文件 foo 压缩为 foo.xz
 
-    # 占用最小内存的压缩用法
-    xz --check=crc32 --lzma2=preset=6e,dict=64KiB foo
+        $ xz foo
+
+    并行压缩 `man xz`
+
+        $ find . -type f \! -name '*.xz' -print0 \
+            | xargs -0r -P4 -n16 xz -T1
+
+    占用最小内存的压缩用法
+
+        $ xz --check=crc32 --lzma2=preset=6e,dict=64KiB foo
 
 .rar 文件
 
-    # 解压缩开源程序各大发行版都有
-    $ unrar x your.rar
+    解压缩开源程序各大发行版都有
 
-    # 压缩不是开源的
-    $ rar a your_dir_file
+        $ unrar x your.rar
+
+    压缩不是开源的，需要从 rarlab 公司获取
+
+        $ rar a your_dir_file
 
 .lzo 文件压缩，解压
 
@@ -7624,6 +7644,29 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
     $ cat test | lzop > t.lzo # 压缩标准输入并定向到标准输出
 
     $ lzop -dv test.lzo # 解压test.lzo得到test文件，输出详细信息，保留test.lzo不变
+
+.Z 压缩文件 --- 过时了
+
+    compress、uncompress 命令是 UNIX 时代的工具，只支持压缩一个文件
+
+        $ compress -vf abc.h
+
+    如果要压缩多个文件需要先 tar 打包。
+
+    压缩文件夹
+
+        $ compress -rf /home/abc/
+
+    解压缩
+
+        #  compress -d abc.h.Z
+        $ uncompress abc.h.Z
+
+    gzip 也支持解压这个文件格式
+
+        $ gzip -d abc.h.Z
+
+    同理 zcat 也支持不解压直接查看 .Z 文件的内容
 
 ### 文件链接 ln
 
