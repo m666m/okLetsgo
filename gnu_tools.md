@@ -12196,7 +12196,7 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     Show Desktop Button     像 Windows 的显示桌面按钮，第一次点击最小化所有窗口显示桌面，再次点击恢复窗口。
 
-    GSConnect               操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 “KDE Cconnect”，使用说明 <https://lixuannan.github.io/posts/27832.html>。如果需要完整操控你的手机，见章节 [Scrcpy --- 在 Linux 桌面显示和控制 Android 设备]。
+    GSConnect               [KDE connect 局域网内共享手机的资源]，操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作。
 
     Cronomix                任务栏的番茄钟(pomodoro)，带你进入专注模式，另外还有闹钟、秒表等多种计时器，非常实用。
 
@@ -12583,11 +12583,21 @@ KDE 的桌面定制选项非常多，慢慢研究吧
 
 KDE 桌面的定制也有专门的附加组件、小工具，不像 GNOME 从浏览器中添加扩展的那种不方便的方式（使用另一个浏览器扩展），你可以使用 KDE 的软件管理器 “发现（Discovery）”，直接访问 KDE 的附加组件。
 
-KDE 自带的软件也有很多精品比如 KDE connect 等
+#### KDE connect 局域网内共享手机的资源
 
     https://apps.kde.org/kdeconnect/
 
-    已经延展到了多个平台 https://apps.kde.org/platforms/windows/
+    使用说明 https://lixuannan.github.io/posts/27832.html
+
+KDE 自带的软件也有很多精品比如 KDE connect，操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，需要手机安装 APP “KDE Cconnect”。
+
+已经支持多个平台
+
+    https://apps.kde.org/platforms/windows/
+
+在 [使用 gnome 扩展] 叫 GSConnect。
+
+如果需要完整操控你的手机，见章节 [Scrcpy --- 在 Linux 桌面显示和控制 Android 设备]。
 
 ### 其它桌面环境
 
@@ -15948,7 +15958,7 @@ Scrcpy 可以通过 Linux 桌面显示和控制 Android 设备，类似 Samsung 
 
 Scrcpy 支持 Windows/Linux/macOS 多个平台，需要你的手机打开 usb 调试模式，这样  Scrcpy 才可以操作你的手机屏幕。
 
-如果感觉不安全，只是需要在桌面操作你的手机的基本功能，安装 gnome 扩展 GSConnect 就够了。它可以操作局域网联网（WIFI）的你的手机，支持传送文件、发送短信、查看通知等操作，详见上面章节 [使用 gnome 扩展]。
+如果感觉不安全，只是需要在桌面操作你的手机的基本功能，详见章节 [KDE connect 局域网内共享手机的资源]。
 
 还可以安装安卓虚拟机，实现在 Linux 桌面运行安卓 apk，详见章节 [安卓虚拟化](virtualization think)。
 
