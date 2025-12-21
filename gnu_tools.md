@@ -11542,18 +11542,20 @@ done
 
 简单看 cpu 温度使用 btop 即可，展示又全面又准确。
 
-华硕的 ROG 开源支持最好
+支持开源 Linux 的计算机主板，看厂商支持力度：
 
-    HWMON sensors driver for ASUS motherboards
-        https://github.com/zeule/asus-ec-sensors
+    华硕的 ROG 开源支持最好
 
-    https://github.com/electrified/asus-wmi-sensors 已经被 Linux 合入内核主线
+        HWMON sensors driver for ASUS motherboards
+            https://github.com/zeule/asus-ec-sensors
 
-    使用命令 asusctl、rog-core 进行控制
+        https://github.com/electrified/asus-wmi-sensors 已经被 Linux 合入内核主线
 
-微星开源部分被合入 asus-ec-sensors 驱动中。
+        使用命令 asusctl、rog-core 进行控制
 
-技嘉由社区项目 gwe 自行逆向 Windows 驱动，目前删库了。
+    微星开源部分被合入 asus-ec-sensors 驱动中。
+
+    技嘉由社区项目 gwe 自行逆向 Windows 驱动，目前删库了。
 
 hwinfo
 
@@ -11709,6 +11711,42 @@ Enable thinkfan service
 Reboot
 
     sudo reboot
+
+### 多主机共享键盘和鼠标 KVM
+
+如果你的目标是在 A 房间控制放在 B 房间的电脑，并且不想走过去看它的屏幕，那么你应该使用的技术是 “远程桌面” 或 “远程控制”，而不是 Deskflow 这类软件 KVM，详见章节 [远程桌面 vnc/rdp/mstsc]。
+
+显示器硬件 KVM
+
+    主要适用于笔记本或手机与 PC 共用一个显示器的场景。
+
+    现在很多大屏幕显示器都支持分屏显示多个输入源，只要你控制的多台电脑物理位置集中（用 type-c 线连接到显示器），即可实现零延迟、无卡顿的操作体验和最高的稳定性，详见章节 [设置带集成 usb-hub 拓展坞的显示器](Windows 10+ 那些事儿.md)
+
+Deskflow
+
+    区别于显示器硬件 KVM，Deskflow 不支持视频，只支持 KM 共享。
+
+    适用于在一个工作台的键盘鼠标同时操作两台有屏幕的电脑，如 Windows PC 和 Mac 笔记本，来回切换工作。
+
+    支持多种操作系统（如Windows、macOS、Linux混合）的电脑，且这些电脑位置分散但是位于同一个家庭或办公室网络内，同时非常需要在电脑间复制文字或传输文件的功能。
+
+    https://github.com/deskflow/deskflow
+
+    https://zhuanlan.zhihu.com/p/1897047939345528204
+
+竞品：
+
+    Barrier 停更了
+
+        https://github.com/debauchee/barrier
+
+        https://zhuanlan.zhihu.com/p/496268224
+
+    synergy 商业软件
+
+        https://sourceforge.net/projects/synergy-stable-builds/
+
+        https://blog.csdn.net/weixin_41995979/article/details/81990179
 
 ### 控制笔记本电脑切换独显 EnvyControl
 
@@ -14124,6 +14162,10 @@ Categories=GTK;System;TerminalEmulator;
     Linux 下的远程桌面体系很多 VNC(TigerVnc)等，适应 X Window(X11)、Wayland 等桌面体系
 
     Windows 下的远程桌面工具是 mstsc，使用 Microsoft RDP(Remote Desktop) 体系
+
+    Chrome Remote Desktop <https://remotedesktop.google.com/access>，跨平台，通过 Chrome/Chromium 浏览器即可实现客户端访问，需要登录谷歌账户。
+
+    macOS 屏幕共享，在同一Apple ID或网络下易用。
 
 VNC 是大部分 Linux 发行版默认的基于 RFB 协议的远程桌面程序
 
