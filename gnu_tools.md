@@ -9476,33 +9476,42 @@ NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式与众�
 
 #### 软硬链接文件的处理区别
 
-如果是单独拷贝文件，软链接只是个引用，硬链接是文件实体，参数有区别。
-
-默认对文件的操作是保留软链接，如果是拷贝一个目录结构，其内部的软链接指向目录内的文件实体，则会保持软链接；
-
     https://zhuanlan.zhihu.com/p/365239653
 
+如果是单独拷贝文件，软链接只是个引用，硬链接是文件实体，参数有区别。
+
+默认对文件的操作是保留软链接，在目标端创建相同的软链接（指向相同路径）
+
+    如果源软链接指向目录 → 目标处仍然是指向同一目录路径的软链接。
+
+    如果源软链接指向文件 → 目标处仍然是指向同一文件路径的软链接。
+
+    如果链接目标不存在或不可访问，目标端会创建无效链接
+
+使用 -l 或 --links 参数：即默认参数，只复制软链接本身，不跟随链接
+
+使用 -L 或 --copy-links 参数：跟随源软链接，将其视为普通目录/文件，会同步软链接指向目录中的内容到远程
+
+    如果软链接指向的是一个目录树，会复制该目录下的所有文件和子目录
+
+    目标端不会创建软链接，而是实际文件/目录
+
+    嵌套链接的处理：如果软链接指向的目录树内部还有软链接，-L 默认只处理顶层的链接。要递归跟随所有链接，再加参数 --copy-unsafe-links
+
+    # -L 参数 拷贝软链接对应的实体文件
     # 如果 your_dir_or_file 是个文件，会拷贝到目标目录下
     # 如果 your_dir_or_file 是个目录，会在目标目录下建立子目录，内容拷贝过去
-    rsync -av /etc/letsencrypt/live/your_dir_or_file root@remote:/etc/letsencrypt/live
+    rsync -avL /etc/letsencrypt/live/your_dir_or_file   root@remote:/etc/letsencrypt/live
 
-使用 -r 参数也是类似的效果：在目的目录内递归的生成源目录结构的子目录，默认不跟随源软链接，将源软链接视为普通目录，会同步软链接指向目录中的内容到远程
+    等效于 -avL .................live/your_dir_or_file/  remote.......................live/your_dir_or_file
+
+注意区别于 -r 参数：
+
+使用 -r 参数拷贝一个目录结构：在目的目录内递归的生成源目录结构的子目录，默认不跟随源软链接
 
     rsync -avr /etc/letsencrypt/live/your_dir_or_file   root@remote:/etc/letsencrypt/live
 
-如果目录结构内部的软链接指向外部目录的文件实体，需要拷贝软链接对应的实体文件，则添加参数 -L
-
-使用 -L 参数：拷贝一个目录结构，目录内的软链接文件处理为实体文件，拷贝到远程
-
-    # -L 参数 拷贝软链接对应的实体文件
-    rsync -avrL /etc/letsencrypt/live/your_dir_or_file   root@remote:/etc/letsencrypt/live
-
-    等效于 -avrL .................live/your_dir_or_file/  remote.......................live/your_dir_or_file
-
-拷贝一个软链接文件，处理为实体文件
-
-    # 只是普通的文件去掉 -L 参数即可
-    rsync -avL /etc/letsencrypt/live/your_dir_or_file/cert.pem root@remote:/etc/letsencrypt/live/your_dir_or_file
+    如果目录结构内部的软链接指向外部目录的文件实体，需要拷贝软链接对应的实体文件，则添加参数 -L
 
 #### 示例：备份用户的主目录
 
@@ -9738,7 +9747,7 @@ WantedBy=timers.target
 
     https://github.com/inotify-tools/inotify-tools
 
-感觉比较适合备份配置文件等变化不频繁的静态资源，对重度任务的实时同步要慎重，比如日志、生产数据的实时备份，不能确定对文件系统和块设备 io 占用率的冲击有多大，在文件快速频繁变化的极端场景下，会不会产生备份任务的重复扫描和积压？
+感觉比较适合备份配置文件等变化不频繁的静态资源，对重度任务的实时同步要慎重：比如日志、生产数据的实时备份，inotify 不能确定对文件系统和块设备 io 占用率的冲击有多大，在文件快速频繁变化的极端场景下，会不会产生备份任务的重复扫描和积压。
 
 inotifywait（持续监控并实时输出监控结果的命令）
 
