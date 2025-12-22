@@ -9543,6 +9543,8 @@ NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式与众�
 
     rsync -a [其他选项] --link-dest=参考目录（上次备份的目录） 源目录/ 目标目录/
 
+bach_up_home.sh
+
 ```shell
 
 #!/bin/bash
@@ -9601,28 +9603,80 @@ echo "最新备份链接: ${LATEST_LINK} -> $(readlink "${LATEST_LINK}")"
 
 假设我们有：
 
-    参考目录：/backups/2024-01-01/
+    参考目录：/mnt/data/backups/2024-01-01/
 
     源目录：/data/
 
-    目标目录：/backups/2024-01-02/
+    目标目录：/mnt/data/backups/2024-01-02/
 
 执行
 
-    rsync -av --delete --link-dest=/backups/2024-01-01/ \
-        /data/ /backups/2024-01-02/
+    rsync -av --delete --link-dest=/mnt/data/backups/2024-01-01/ \
+        /data/ /mnt/data/backups/2024-01-02/
 
 rsync 的处理逻辑：
 
     扫描源目录 /data/
 
-    对于每个文件，检查参考目录 /backups/2024-01-01/ 中是否存在同名文件
+    对于每个文件，检查参考目录 /mnt/data/backups/2024-01-01/ 中是否存在同名文件
 
     如果存在且内容完全相同（大小、修改时间等匹配），则在目标目录创建硬链接
 
     如果文件不同或不存在，则正常复制
 
     源目录中不存在的文件，在目标目录中也同步删除（受 --delete 影响）
+
+自制 systemd 单元文件，实现每天定时调用：
+
+/usr/lib/systemd/system/bach_up_home.service
+
+``` ini
+[Unit]
+Description=rsync backup your data
+Wants=local-fs.target
+After=local-fs.target
+
+[Service]
+# 执行普通脚本，执行完退出到shell命令行，见章节 [设置 systemd 开机自动运行该脚本](vnn.md) [自建简单信令中介服务器](office_great_wall.md)
+Type=oneshot
+# 一般都要加 RemainAfterExit 不然闪退 https://blog.csdn.net/Peter_JJH/article/details/108446380
+# 定时器周期性调用，则不能有 RemainAfterExit
+#RemainAfterExit=yes
+
+ExecStart=/usr/local/bin/bach_up_home.sh
+
+[Install]
+WantedBy=multi-user.target
+```
+
+定时器：跟单元文件同名，后缀改为 .timer
+
+/usr/lib/systemd/system/bach_up_home.timer
+
+``` ini
+[Unit]
+Description=rsync backup your data daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+AccuracySec=1h
+RandomizedDelaySec=900
+Unit=bach_up_home.service
+
+[Install]
+WantedBy=timers.target
+```
+
+启动并设置开机自启动
+
+    $ sudo systemctl daemon-reload
+
+    $ sudo systemctl enable --now bach_up_home.timer
+
+验证
+
+    systemctl list-timers
 
 #### 使用 rsyncd 服务
 
