@@ -9505,9 +9505,9 @@ NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式与众�
 
     等效于 -avL .................live/your_dir_or_file/  remote.......................live/your_dir_or_file
 
-注意区别于 -r 参数：
+注意区别：使用 -r 参数拷贝一个目录结构：
 
-使用 -r 参数拷贝一个目录结构：在目的目录内递归的生成源目录结构的子目录，默认不跟随源软链接
+    在目的目录内递归的生成源目录结构的子目录，默认不跟随源软链接
 
     rsync -avr /etc/letsencrypt/live/your_dir_or_file   root@remote:/etc/letsencrypt/live
 
