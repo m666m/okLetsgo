@@ -9164,7 +9164,11 @@ rsync 命令提供使用的 OPTION 及功能
 
     -t    保持文件的修改时间信息。
 
-    --delete  使两个目录保持相同。在多次备份时源目录中已经删除的文件也会在目标目录中删除。默认情况下，rsync 只确保源目录的所有内容（明确排除的文件除外）都复制到目标目录，它不会使两个目录保持相同，并且不会删除文件。如果要使得目标目录成为源目录的镜像副本，则必须使用 --delete 参数，这将删除只存在于目标目录、不存在于源目录的文件。
+    --delete    增量备份时删除目标服务器上在源服务器不存在的文件。
+
+                如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果。
+
+                默认情况下，rsync 只确保源目录的所有内容（明确排除的文件除外）都复制到目标目录，它不会使两个目录保持相同，并且不会删除文件。如果要使得目标目录成为源目录的镜像副本，则必须使用 --delete 参数，这将删除只存在于目标目录、不存在于源目录的文件。
 
     --exclude=PATTERN   指定排除不需要传输的文件，等号后面跟文件名，可以是通配符模式（如 *.txt）。
 
@@ -9181,8 +9185,6 @@ rsync 命令提供使用的 OPTION 及功能
         如果传输频繁中断，会积累大量 .partial 文件，需要手动清理。
 
     --append-verify 断点续传。在 --partial 的基础上，它还会在传输完成后对文件进行校验，如果校验失败，则会重新传输该文件。这是对数据完整性更好的选择，但是会大大降低数据同步的速度，并增加cpu消耗。
-
-    --delete        增量备份时删除目标服务器上在源服务器不存在的文件，建议使用前先用 -n 参数干跑一下看看效果
 
     --exclude       同步时排除某些文件或目录
 
@@ -9411,6 +9413,11 @@ tldr:
 
         NOTE：使用了 --partial-dir 则远程服务器要定期清理该目录
 
+    备份 / 目录：-A（ACL）和 -X（扩展属性）需内核和文件系统支持，-H 保留硬链信息，排除 /proc、/sys、/dev、/tmp 等
+
+        # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
+        rsync -aAXHv --delete --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} / user@remote:/backup/
+
 一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`，这样就可以实现增量备份。
 
     -a：存档模式（等于-rlptgoD）：递归，将符号链接复制为符号链接，保留权限，保留修改时间，保留组，保留所有者，保留设备文件和特殊文件
@@ -9461,6 +9468,7 @@ NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式与众�
 增量备份的三方比对用法：使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录
 
     # 目标目录中，也是包含所有文件，只有那些变动过的文件是存在于该目录，其他没有变动的文件都是指向基准目录文件的硬链接。
+    # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
     rsync -a --delete --link-dest /compare/path /source/path /target/path
 
 远程数据传输，默认使用 SSH
@@ -9532,6 +9540,7 @@ readonly LATEST_LINK="${BACKUP_DIR}/latest"
 
 mkdir -p "${BACKUP_DIR}"
 
+# 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
 rsync -av --delete \
   "${SOURCE_DIR}/" \
   --link-dest "${LATEST_LINK}" \
@@ -9636,6 +9645,7 @@ rsync 默许服务端口为 873。
 
 1、linux下执行 rsync 客户端指令
 
+    # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
     [backup@backup /] /usr/bin/rsync -vlzrtogp --progress --delete 98syn@x.x.x.168::98html /usr/local/apache/htdocs/pub/html/ --password-file=/etc/rsync98.scrt
 
 上面这个指令行中：
@@ -9660,6 +9670,7 @@ rsync 默许服务端口为 873。
 
 然后运行以下指令
 
+    # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
     rsync -vzrtopg --progress --delete 98syn@xx.xx.xx.xx::98html .\bak\ --password-file=.\rsync98.scrt
 
 如果命令行执行过程中出现提示输入密码 `password:`，正确输入密码后就应该看到开始执行备份了。
@@ -9676,6 +9687,7 @@ rsync 默许服务端口为 873。
 
 把 apache 的 html/ 下的所有目录和文件传送到 ssh 服务器的 /destination 目录下，同步删除源目录不存在的文件和目录
 
+    # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
     /usr/bin/rsync -avz --progress --delete /usr/local/apache/htdocs/pub/html/ user@remote_host:/destination
 
 说明：
@@ -9709,7 +9721,7 @@ Type=oneshot
 # 定时器周期性调用，则不能有 RemainAfterExit
 #RemainAfterExit=yes
 
-# 注意 --delete 的风险，如果存储没有挂载只有空目录，会导致目标目录的内容也都删除了
+# 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
 ExecStart=/usr/bin/rsync -avz --progress --delete /sorce/path/ user@remote_host:/destination
 
 [Install]
@@ -9847,6 +9859,7 @@ secrets file = /etc/user.db
 
 INOTIFY_CMD="inotifywait -mrq -e create,delete,move,modify,attrib /abc/"
 
+# 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
 RSYNC_CMD="rsync -apzH --delete --password-file=/etc/server.pass /abc/ backuper@192.168.8.14::wwwroot/"
 
 $INOTIFY_CMD | while read DIRECTORY EVENT FILE
