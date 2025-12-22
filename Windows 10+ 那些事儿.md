@@ -3044,19 +3044,19 @@ WSL 属于运行在操作系统上的托管的虚拟机，用户体验上注重�
 
 利用 [Windows 10 本地化 Linux 编程接口](gnu_tools.md)，WSL 初始实现的是最基本的命令行应用，各种终端模拟器都可以连接到本地的 WSL 实例，后来利用 WSLg 支持运行图形化应用。
 
-Windows 10 在 2021 年后的版本更新中集成的 WSL 2 使用更方便，原来的 WSL 改名为 WSL 1，基本是被废弃了。
+Windows 10 在 2021 年后的版本更新中集成的 WSL2 使用更方便，原来的 WSL 改名为 WSL 1，基本是被废弃了。
 
     https://learn.microsoft.com/zh-cn/windows/wsl/about
 
     https://zhuanlan.zhihu.com/p/377263437
 
-    WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 Linux，但是实现了 Linux 程序可以在 Windows 上运行，但是有些功能如 GUI 实现的有限。可以理解成使用了 MingW/Cygwin 的中间模拟层思路，但不在编译时实现，而是 QEMU 这种运行时转码的实现思路。后来发现坑太大填不满，就搞了个新思路 --- WSL2
+    WSL 1 虚拟机类似于程序层面的二进制转译，没有实现完整的 Linux，但是实现了 Linux 程序可以在 Windows 上运行，但是有些功能如 GUI 实现的有限。可以理解成使用了 MingW/Cygwin 的中间模拟层思路，但不在编译时实现，而是 QEMU 这种运行时转码的实现思路。后来发现坑太大填不上，就搞了个新思路 --- WSL 2
 
         https://learn.microsoft.com/zh-cn/Windows/wsl/compare-versions#full-system-call-compatibility
 
-        话说纳德拉领导的微软这个转型是真好，再不搞什么系千钧于一发的大工程，各功能各自演进，渐进式迭代开发 no 大而全 no 齐头并进。像这个 WSL 其实搞砸了，但没再现当年 Windows LongHorn 式的重大失败，而是另起炉灶开搞 WSL 2，原 WSL 改名叫 WSL 1 保持兼容就完事了，对 Windows 10 的其它体系开发没有任何大影响。
+        话说纳德拉领导的微软这个转型是真好，再不搞什么系千钧于一发的大工程，各功能各自演进，渐进式迭代开发不要大而全不要齐头并进。像这个 WSL 开始的几年过去发现其实搞砸了，但没再现当年 Windows LongHorn 式的重大失败，而是另起炉灶开搞 WSL 2，原 WSL 改名叫 WSL 1 保持兼容就完事了，对 Windows 10 的其它各个功能体系的开发没有任何大影响。
 
-    WSL 2 在底层使用虚拟机（Hyper-V）同时运行 Linux 内核和 Windows 内核，并且把 Linux 完全集成到了 Windows 中，使用起来就像在 Windows 中直接运行 Linux 程序。
+    开启 WSL 2 的主机，在底层使用虚拟机（Hyper-V）同时运行 Linux 内核和 Windows 内核，并且把 Linux 完全集成到了 Windows 中，使用起来就像在 Windows 中直接运行 Linux 程序。
 
     WSL 2 的兼容性比 WSL 1 好，仅 IO 性能不如 WSL 1 快，见下面章节 [混合使用 Windows 和 Linux 进行工作]。
 
