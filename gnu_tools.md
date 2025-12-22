@@ -9484,19 +9484,22 @@ NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式与众�
 
     # 如果 your_dir_or_file 是个文件，会拷贝到目标目录下
     # 如果 your_dir_or_file 是个目录，会在目标目录下建立子目录，内容拷贝过去
-    $ rsync -av /etc/letsencrypt/live/your_dir_or_file root@remote:/etc/letsencrypt/live
+    rsync -av /etc/letsencrypt/live/your_dir_or_file root@remote:/etc/letsencrypt/live
+
+使用 -r 参数也是类似的效果：在目的目录内递归的生成源目录结构的子目录，默认不跟随源软链接，将源软链接视为普通目录，会同步软链接指向目录中的内容到远程
+
+    rsync -avr /etc/letsencrypt/live/your_dir_or_file   root@remote:/etc/letsencrypt/live
 
 如果目录结构内部的软链接指向外部目录的文件实体，需要拷贝软链接对应的实体文件，则添加参数 -L
 
-拷贝一个目录结构，目录内的软链接文件处理为实体文件，拷贝到远程
+使用 -L 参数：拷贝一个目录结构，目录内的软链接文件处理为实体文件，拷贝到远程
 
-    # -r 参数 在目的目录内递归的生成源目录结构的子目录，目的目录需要提前建好（`mkdir -p /etc/letsencrypt/live`），否则会报错
     # -L 参数 拷贝软链接对应的实体文件
     rsync -avrL /etc/letsencrypt/live/your_dir_or_file   root@remote:/etc/letsencrypt/live
 
     等效于 -avrL .................live/your_dir_or_file/  remote.......................live/your_dir_or_file
 
-拷贝一个软链接文件处理为实体文件
+拷贝一个软链接文件，处理为实体文件
 
     # 只是普通的文件去掉 -L 参数即可
     rsync -avL /etc/letsencrypt/live/your_dir_or_file/cert.pem root@remote:/etc/letsencrypt/live/your_dir_or_file
@@ -9533,7 +9536,7 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
 #### 用 rsync 服务从 Linux 到 Windows 和 Linux 进行远程备份
 
-> 使用 rsync 协议
+##### 使用 rsync 协议
 
     https://www.zhihu.com/question/20322405/answer/2874017681
 
@@ -9658,7 +9661,7 @@ rsync 默许服务端口为 873。
 
 最好把命令写成批处理文件，放到 Windows 计划任务里定时执行。
 
-> 使用 ssh 协议
+##### 使用 ssh 协议
 
 把 apache 的 html/ 下的所有目录和文件传送到 ssh 服务器的 /destination 目录下，同步删除源目录不存在的文件和目录
 
