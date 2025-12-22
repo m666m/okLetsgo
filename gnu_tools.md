@@ -9521,7 +9521,27 @@ NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式与众�
 
     如果目录结构内部的软链接指向外部目录的文件实体，需要拷贝软链接对应的实体文件，则添加参数 -L
 
-#### 示例：备份用户的主目录
+> 源目录中的硬链接文件
+
+默认情况下硬链接（指向同一个 inode）被当作独立文件处理，会在目标端创建多个独立的文件副本，占用空间也是多倍。
+
+使用 -H / --hard-links 参数：告诉 rsync 保持硬链接
+
+特殊情况：跨文件系统/设备边界
+
+    如果源目录中的硬链接跨越不同设备，rsync 无法在目标设备上保持这种链接，此时会复制为独立的文件。
+
+影响保持硬链接的参数：
+
+    --inplace   原地更新，可能影响硬链接    谨慎使用
+
+    -W          全文件复制，可能破坏硬链接    通常避免与 -H 同时使用
+
+#### 示例：备份用户的主目录，创建多个备份目录
+
+--link-dest 参数，用于创建高效的增量备份（也称为“快照式备份”或“硬链接备份”）。它利用硬链接技术来节省存储空间。
+
+    rsync -a [其他选项] --link-dest=参考目录（上次备份的目录） 源目录/ 目标目录/
 
 ```shell
 
@@ -9534,23 +9554,75 @@ set -o pipefail
 
 readonly SOURCE_DIR="${HOME}"
 readonly BACKUP_DIR="/mnt/data/backups"
+
 readonly DATETIME="$(date '+%Y-%m-%d_%H:%M:%S')"
 readonly BACKUP_PATH="${BACKUP_DIR}/${DATETIME}"
 readonly LATEST_LINK="${BACKUP_DIR}/latest"
 
+# 确保备份目录存在
 mkdir -p "${BACKUP_DIR}"
 
-# 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
-rsync -av --delete \
-  "${SOURCE_DIR}/" \
-  --link-dest "${LATEST_LINK}" \
-  --exclude=".cache" \
-  "${BACKUP_PATH}"
+# 检查备份目标是否可写（如果是挂载点）
+if ! touch "${BACKUP_DIR}/.backup_test" 2>/dev/null; then
+    echo "错误：备份目录不可写！" >&2
+    exit 1
+fi
+rm -f "${BACKUP_DIR}/.backup_test"
 
-rm -rf "${LATEST_LINK}"
+# 如果是第一次备份（latest 链接不存在或损坏）
+if [ ! -L "${LATEST_LINK}" ] || [ ! -d "${LATEST_LINK}" ]; then
+    echo "执行完整备份..."
+
+    rsync -av \
+        --exclude=".cache" \
+        "${SOURCE_DIR}/" \
+        "${BACKUP_PATH}/"
+else
+    echo "执行增量备份（基于 $(readlink "${LATEST_LINK}")）..."
+
+    # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
+    rsync -av --delete \
+        "${SOURCE_DIR}/" \
+        --link-dest="${LATEST_LINK}" \
+        --exclude=".cache" \
+        "${BACKUP_PATH}/"
+fi
+
+# 更新 latest 链接
+rm -f "${LATEST_LINK}"
 ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 
+echo "备份完成: ${BACKUP_PATH}"
+echo "最新备份链接: ${LATEST_LINK} -> $(readlink "${LATEST_LINK}")"
+
 ```
+
+该脚本的运行逻辑如下：
+
+假设我们有：
+
+    参考目录：/backups/2024-01-01/
+
+    源目录：/data/
+
+    目标目录：/backups/2024-01-02/
+
+执行
+
+    rsync -av --delete --link-dest=/backups/2024-01-01/ \
+        /data/ /backups/2024-01-02/
+
+rsync 的处理逻辑：
+
+    扫描源目录 /data/
+
+    对于每个文件，检查参考目录 /backups/2024-01-01/ 中是否存在同名文件
+
+    如果存在且内容完全相同（大小、修改时间等匹配），则在目标目录创建硬链接
+
+    如果文件不同或不存在，则正常复制
+
+    源目录中不存在的文件，在目标目录中也同步删除（受 --delete 影响）
 
 #### 使用 rsyncd 服务
 
