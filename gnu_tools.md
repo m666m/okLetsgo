@@ -9070,9 +9070,7 @@ rsync 用于增量备份（只复制有变动的文件），同步文件或目�
 
         https://wiki.archlinux.org/title/Rsync#Full_system_backup
 
-最常用的就是代替 scp 命令。
-
-使用 `rsync -e ssh` 即可代替 scp 命令，但是注意其对目录的处理方式跟 scp/cp 方式有区别：
+最常用的就是代替 scp 命令，使用 `rsync -e ssh` 即可代替 scp 命令，但是注意其对目录的处理方式跟 scp/cp 方式有区别：
 
     源目录 source 完整地复制到了目标目录 destination 下面，即形成了 destination/source 的目录结构
 
@@ -9084,11 +9082,11 @@ rsync 用于增量备份（只复制有变动的文件），同步文件或目�
 
 rsync的工作方式
 
-    主机本地间的数据传输数据（此时类似于cp命令的功能）
+    主机本地间的数据传输数据（此时类似于 cp 命令的功能）
 
-    借助rcp,ssh等传输数据（此时类似于scp命令的功能）
+    借助 ssh 等传输数据（此时类似于 scp 命令的功能）
 
-    以守护进程（socket）的方式传输数据（这个是rsync的重要的功能）
+    以守护进程（socket）的方式传输数据（这个是 rsync 的服务器模式功能）
 
 rsync 实现增量备份：
 
@@ -9103,6 +9101,8 @@ rsync 实现增量备份：
         如果文件没有变化，rsync 不会重新传输这些文件。
 
     所以，重复执行相同的 rsync 命令就可以实现只更新变化的文件，简单方便。
+
+利用 rsync 增量备份的特性，在迁移数据时可以使用 `rsync -av` 代替的 cp 命令，减少可能需要拷贝的内容。
 
 一般要配合使用 ionice 来降低 rsync 进程的 io 优先级：
 
