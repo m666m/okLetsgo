@@ -14293,7 +14293,7 @@ Debian
 
 安装中文输入法 fcitx 及 Google 拼音输入法
 
-    $ sudo apt-get install fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin
+    $ sudo apt-get install fcitx fcitx-googlepinyin fcitx-module-cloudpinyin fcitx-sunpinyin fcitx5-autostart
 
     树莓派安装中文输入法-谷歌拼音  https://blog.csdn.net/qq_45478359/article/details/113576252
 
