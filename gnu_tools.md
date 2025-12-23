@@ -9625,9 +9625,14 @@ rsync 的处理逻辑：
 
     源目录中不存在的文件，在目标目录中同步删除（受 --delete 影响）
 
-自制 systemd 单元文件，实现每天定时调用：
+补充1：防止备份目录过多，可使用下面的命令进行清理
 
-/usr/lib/systemd/system/bach_up_home.service
+    # 删除 30 天以前的旧备份
+    find "${BACKUP_DIR}" -maxdepth 1 -type d -name "20*" -mtime +30 -exec rm -rf {} \;
+
+补充2:自制 systemd 单元文件，实现每天定时调用备份脚本：
+
+bach_up_home.service
 
 ``` ini
 [Unit]
@@ -9651,7 +9656,7 @@ WantedBy=multi-user.target
 
 定时器：跟单元文件同名，后缀改为 .timer
 
-/usr/lib/systemd/system/bach_up_home.timer
+bach_up_home.timer
 
 ``` ini
 [Unit]
@@ -9676,7 +9681,7 @@ WantedBy=timers.target
 
 验证
 
-    systemctl list-timers
+    $ systemctl list-timers
 
 #### 使用 rsyncd 服务
 
