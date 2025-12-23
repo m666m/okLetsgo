@@ -204,6 +204,7 @@ alias trees='echo "[目录树，最多2级，显示目录和可执行文件的�
 alias treeh='echo "[树形列出目录及文件大小]"; tree --du -h'
 alias pstrees='echo "[进程树，列出pid，及全部子进程]"; pstree -p -s'
 
+# 从下载文件夹的子目录里把各种电影文件统一挪到当前，方便整理
 function mvf {
     if [ "$#" -ne 1 ]; then
         echo '用法：把子目录下的指定后缀的文件移动到当前目录 mvf mp4'
@@ -213,6 +214,27 @@ function mvf {
     local fnn=${1}
     # find . -mindepth 2 -type f -name "${fnn}" -print0 | xargs -0 -I {} mv "{}" .
     find . -mindepth 2 -type f -name "*.${fnn}" -exec mv {} . \;
+}
+
+# 设置目录及其子目录和文件权限的常用操作
+chperm() {
+    if [ $# -lt 1 ]; then
+        echo "根据指定的 umask 值设置目录及其子目录和文件权限的函数"
+        echo "用法: chperm <目录路径> [umask值，默认为 002]"
+        return 1
+    fi
+
+    local target_dir="$1"
+    local umask_value="${2:-002}"
+
+    # 计算权限
+    dir_perm=$(printf "%o" $((0777 - 0$umask_value)))
+    file_perm=$(printf "%o" $((0666 - 0$umask_value)))
+
+    echo "应用 umask $umask_value: 目录=$dir_perm, 文件=$file_perm"
+
+    find "$target_dir" -type d -exec chmod $dir_perm {} +
+    find "$target_dir" -type f -exec chmod $file_perm {} +
 }
 
 # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
@@ -231,18 +253,6 @@ function cpbak {
 # wsl 或 git bash 下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "C:\Windows\Path"
 function cdw {
     cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
-}
-
-alias viw='echo "[vi 后悔药：等保存了才发现是只读，运行以下命令]"; echo ":w !sudo tee %"'
-
-alias myip='echo "[浏览器打开 https://test.ustc.edu.cn/ 可看到自己的ip和测速]"; curl ipv4.icanhazip.com 2>/dev/null;curl ipv6.icanhazip.com 2>/dev/null'
-
-# 命令行看天气 https://wttr.in/:help
-# https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
-# 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
-# 看月相 curl http://wttr.in/moon
-function weather {
-    curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
 }
 
 # 切换桌面模式和命令行模式 --- 使用 systemd 控制引导的系统都可以这么做
@@ -270,6 +280,18 @@ alias mans='echo "[模糊查找man手册]"; man -k'
 
 # chrony
 alias chronys='echo "[虚拟机跟宿主机对时]"; sudo chronyc makestep'
+
+alias viw='echo "[vi 后悔药：等保存了才发现是只读，运行以下命令]"; echo ":w !sudo tee %"'
+
+alias myip='echo "[浏览器打开 https://test.ustc.edu.cn/ 可看到自己的ip和测速]"; curl ipv4.icanhazip.com 2>/dev/null;curl ipv6.icanhazip.com 2>/dev/null'
+
+# 命令行看天气 https://wttr.in/:help
+# https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
+# 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
+# 看月相 curl http://wttr.in/moon
+function weather {
+    curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
+}
 
 # ssh
 alias sshs='echo "[跳过其它各种协商使用密码连接主机]"; ssh -o "PreferredAuthentications password"'
