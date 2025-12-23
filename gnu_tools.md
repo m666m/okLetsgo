@@ -9637,7 +9637,7 @@ Wants=local-fs.target
 After=local-fs.target
 
 [Service]
-# 执行普通脚本，执行完退出到shell命令行，见章节 [设置 systemd 开机自动运行该脚本](vnn.md) [自建简单信令中介服务器](office_great_wall.md)
+# 执行普通脚本，执行完退出到shell命令行，见章节 [ 自制的 shell 脚本由 systemd 启动](init_a_server.md)
 Type=oneshot
 # 一般都要加 RemainAfterExit 不然闪退 https://blog.csdn.net/Peter_JJH/article/details/108446380
 # 定时器周期性调用，则不能有 RemainAfterExit
@@ -9841,7 +9841,7 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-# 执行普通脚本，执行完退出到shell命令行，见章节 [设置 systemd 开机自动运行该脚本](vnn.md) [自建简单信令中介服务器](office_great_wall.md)
+# 执行普通脚本，执行完退出到shell命令行，见章节 [ 自制的 shell 脚本由 systemd 启动](init_a_server.md)
 Type=oneshot
 # 一般都要加 RemainAfterExit 不然闪退 https://blog.csdn.net/Peter_JJH/article/details/108446380
 # 定时器周期性调用，则不能有 RemainAfterExit
