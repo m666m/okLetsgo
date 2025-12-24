@@ -6862,13 +6862,21 @@ jq 的 YAML 版本,读写 YAML 的处理工具，语法类似于 jq
 
     https://www.gnu.org/software/bash/manual/bash.html#Here-Documents
 
+推荐使用 `tee xxx.cfg` 代替 `cat >xxx.cfg` 的用法。
+
+    如果需要看到输入的内容：用 tee
+
+    如果不需要看到输入的内容：用 cat >file（或 tee >/dev/null）
+
+    如果要追加内容：用 tee -a 或 cat >>file
+
 输入内容，输出到文件
 
-    $ cat <<EOF >/my/new/file
+cat >/my/new/file <<EOF
     Line1
     Line2
     A $VARIABLE
-    EOF
+EOF
 
 输入内容，完成编辑后按 Ctrl+D 结束，输出到文件
 
@@ -6880,7 +6888,7 @@ jq 的 YAML 版本,读写 YAML 的处理工具，语法类似于 jq
 
     如果同一个内容中有多处 EOF 会混乱，所以每段 cat 用不同的 EOFX 来做结束标志。
 
-    结束标志必须顶行写，前面不能有制表符或者空格，结束输入对应前面的结束标志或按 ctrl+d。
+    结束标志 EOF 必须顶行写，前面不能有制表符或者空格，结束输入对应前面的结束标志或按 ctrl+d。
 
 在我们使用 `cat <<EOF` 时，下面的文本内容必须顶行写，就是因为 EOFA 前面不能有制表符或者空格。
 
@@ -6894,7 +6902,7 @@ EOFA
 
 ```
 
-如果重定向的操作符是 <<-，那么分界符（EOF）所在行的开头部分的制表符（Tab）都将被去除。这可以解决由于脚本中的自然缩进产生的制表符。
+如果重定向的操作符是 <<-，则 EOF 前面可以使用制表符（Tab）。这是因为遇到 <<- 则分界符（EOF）所在行的开头部分的制表符（Tab）都将被去除。这可以解决由于脚本中的自然缩进产生的制表符。
 
     https://askubuntu.com/questions/858238/eof-in-cat-and-less
 
