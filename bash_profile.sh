@@ -7,6 +7,9 @@
 #   https://github.com/pseudoyu/dotfiles
 #   https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
 #
+# 直接部署到远程服务器
+#   ssh user@server "tee .bash_profile" <bash_profile.sh
+#
 # 避坑
 #   变量赋值别习惯性的加空格
 
@@ -24,10 +27,6 @@
 # trap "rm -f $temp_file" 0 2 3 15  # `trap -l` for all useble signal
 # 意外退出时杀掉所有子进程
 # trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
-
-#######################
-# 直接部署到远程服务器
-# ssh user@server "tee .bash_profile" <bash_profile.sh
 
 #######################
 # 兼容性设置：用于 .bash_profile 加载多种 Linux 的配置文件，zsh不加载
