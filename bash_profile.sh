@@ -26,6 +26,10 @@
 # trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
 #######################
+# 直接部署到远程服务器
+# ssh user@server "tee .bash_profile" <bash_profile.sh
+
+#######################
 # 兼容性设置：用于 .bash_profile 加载多种 Linux 的配置文件，zsh不加载
 #   ~/.bashrc: executed by bash(1) for non-login shells.
 #       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
