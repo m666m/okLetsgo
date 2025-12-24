@@ -496,12 +496,12 @@ alias ssld='openssl enc -d -aes-256-cbc -md sha512 -pbkdf2 -iter 9876543 -salt'
 
 # dnf
 alias dnfp='echo "[dnf搜索包含指定命令的软件包]"; dnf provides'
+alias dnfql='echo "[dnf查看软件包的内容]"; rpm -ql'
 alias dnfqi='echo "[dnf查找指定的软件包在哪些存储库]"; dnf repoquery -i'
 alias dnfqr='echo "[dnf查看软件包依赖]"; dnf repoquery --requires'
 alias dnfr='echo "[dnf查看当前有哪些存储库]"; dnf repolist'
 alias dnfrl='echo "[dnf查看存储库软件列表]"; dnf list --repo'
-alias dnfl='echo "[dnf查看安装的软件]"; dnf list --installed'
-alias dnfd='echo "[dnf卸载软件]"; dnf remove'
+alias dnfl='echo "[dnf查看已经安装的软件]"; dnf list --installed'
 alias dnft='echo "[在toolbox里运行dnf]"; toolbox run dnf'
 
 # pip
@@ -819,7 +819,7 @@ _comp_ssh_hosts() {
     echo "$config_hosts $known_hosts" | tr ' ' '\n' | sort -u
 }
 if [[ ! $current_shell = 'zsh' ]]; then
-    # 优先调用系统自带的 bash-completion
+    # 优先调用 openssh-clients 包自带的 bash-completion
     if [[ -f /usr/share/bash-completion/completions/ssh ]]; then
         source /usr/share/bash-completion/completions/ssh
     elif [[ -f /etc/bash_completion.d/ssh ]]; then
