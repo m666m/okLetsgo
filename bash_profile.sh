@@ -220,7 +220,7 @@ function mvf {
 chperm() {
     if [ $# -lt 1 ]; then
         echo "根据指定的 umask 值设置目录及其子目录和文件权限的函数"
-        echo "用法: chperm <目录路径> [umask值，默认为 002]"
+        echo "用法: chperm <目录路径> [umask值，默认为 002，即 目录 775 文件 664]"
         return 1
     fi
 
@@ -233,8 +233,11 @@ chperm() {
 
     echo "应用 umask $umask_value: 目录=$dir_perm, 文件=$file_perm"
 
-    find "$target_dir" -type d -exec chmod $dir_perm {} +
-    find "$target_dir" -type f -exec chmod $file_perm {} +
+    find "$target_dir" -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +
+
+    if [ $? -ne 0 ]; then
+        echo -e "\n    备份失败，请尝试提权执行: find $target_dir -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +"
+    fi
 }
 
 # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
