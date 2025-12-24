@@ -239,7 +239,7 @@ chperm() {
     find "$target_dir" -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +
 
     if [ $? -ne 0 ]; then
-        echo -e "\n    备份失败，请尝试提权执行: find $target_dir -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +"
+        echo -e "\n    设置权限失败，请尝试提权执行: find $target_dir -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +"
     fi
 }
 
