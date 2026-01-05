@@ -234,6 +234,10 @@ chperm() {
     dir_perm=$(printf "%o" $((0777 - 0$umask_value)))
     file_perm=$(printf "%o" $((0666 - 0$umask_value)))
 
+    if [ $? -ne 0 ]; then
+        return 1
+    fi
+
     echo "应用 umask $umask_value: 目录=$dir_perm, 文件=$file_perm"
 
     find "$target_dir" -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +
