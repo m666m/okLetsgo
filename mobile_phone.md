@@ -1588,7 +1588,7 @@ MU-MIMO 是基于多天线技术的，支持多用户通过使用不同的空间
 
     如果在 NAS 上部署服务端，可以用 jellyfin https://jellyfin.org/
 
-下载时注意选择 ARMV7A(32bit)。
+下载时选择 Android ARMV7A(32bit)。
 
 在 SONY TV 上安装软件，就是原生的安卓操作系统安装第三方的方法，开启ADB及应用助手安装权限：
 
