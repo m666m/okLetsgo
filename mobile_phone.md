@@ -1600,7 +1600,7 @@ MU-MIMO 是基于多天线技术的，支持多用户通过使用不同的空间
 
     能看到U盘中的KODI应用安装包，直接按“OK”键安装即可。
 
-> KODI 界面和文件列表支持中文
+### KODI 界面和文件列表支持中文
 
 设置->界面->皮肤->字体，把默认字体改为 Arial,然后就可以切换语言 Regional——language——Chinese（simple）。如果没有出现 Chinese 选项：使用 addon 里选择 repo 访问下网络，然后才可以设置“界面外观” 选择语言为中文。
 
@@ -1614,7 +1614,9 @@ Kodi 在 4K 显示器设置分辨率显示 1920×1080P，是指软件界面 1080
 
 打开 Kodi 设置 - 播放器 - 视频，左下角切换为“专家”，开启 “Allowed HDR dynamic metadata formats”，允许 HDR 动态元数据格式。使用显示 HDR 功能：开启（启用自动切换 HDR 模式和色彩空间，如果显示器不支持 HDR 则不会有这个功能项目）。Kodi 在非 HDR 设备上播放 HDR 视频能自动变成 SDR 模式，不用担心颜色发灰发白。
 
-> Kodi 最强大的地方是在你的电视上直接建立影视信息库，免除在 NAS 上安装 jellyfin
+### 建立影视信息库
+
+Kodi 最强大的地方是在你的电视上直接建立影视信息库，这样就免除在 NAS 上安装 jellyfin 了
 
     http://www.kodiplayer.cn/course/2866.html
 
@@ -1661,6 +1663,20 @@ Kodi 在 4K 显示器设置分辨率显示 1920×1080P，是指软件界面 1080
     这样就能识别为一部电影，播放的时候自动合并为一部完整的电影。
 
 剧集命名规则：一部剧集建一个文件夹，名为英文名.中文名；文件命名为S01E01，包含季集信息。
+
+### 不支持杜比视界 Dolby Vision
+
+原生不支持，目前没有好的解决办法。
+
+换用其它竞品：
+
+mpv-android
+
+    https://github.com/mpv-android/mpv-android
+
+Nova Video Player（基于VLC的增强版）
+
+    https://github.com/nova-video-player/aos-AVP
 
 ## 把你的 Garmin 手表给 Linux 做 GPS
 
