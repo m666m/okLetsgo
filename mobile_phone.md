@@ -1670,11 +1670,11 @@ Kodi 最强大的地方是在你的电视上直接建立影视信息库，这样
 
 ### 竞品 VLC
 
-不如 kodi，但是格式支持全，建议作为 杜比视界 Dolby Vision 格式文件的补充。
+不如 kodi，但是格式支持全，建议作为 kodi 无法播放 杜比视界 Dolby Vision 格式文件的补充。
 
     https://www.videolan.org/vlc/
 
-未适配安卓的安全限制。
+至今未适配安卓 11+ 的安全限制：
 
     媒体库，添加网络的 smb 服务后，无法列出媒体文件
 
@@ -1684,7 +1684,7 @@ Kodi 最强大的地方是在你的电视上直接建立影视信息库，这样
 
     https://github.com/mpv-android/mpv-android
 
-不支持 smb 协议，只支持本地、http 流
+至今不支持 smb 协议，只支持本地、http 流
 
 使用 smb 的几种方法：
 
@@ -1715,7 +1715,7 @@ EOF
 
     https://github.com/nova-video-player/aos-AVP
 
-基于VLC的界面增强版，自带刮削器这个比 kodi 好。
+基于 VLC 的界面增强版，自带刮削器这个比 kodi 好。
 
 不支持杜比视界，海报墙功能不可用时无预览效果
 
