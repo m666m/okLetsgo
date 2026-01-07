@@ -1670,35 +1670,21 @@ Kodi 最强大的地方是在你的电视上直接建立影视信息库，这样
 
 ### 竞品 VLC
 
-海报墙功能不如 kodi
+不如 kodi，但是格式支持全，建议作为 杜比视界 Dolby Vision 格式文件的补充。
 
     https://www.videolan.org/vlc/
 
-直接浏览网络的 smb 可能无法列出媒体文件，因为安卓的安全限制，需要先手动配置服务器：
+未适配安卓的安全限制。
 
-    1. 打开VLC → 侧边栏 → 浏览 → 添加网络存储
-    2. 选择"SMB"
-    3. 按以下格式填写：
-       - 服务器：NAS的IP地址（如 192.168.1.100）
-       - 端口：留空（默认445）
-       - 共享名：共享文件夹名称（如 videos、media）
-       - 用户名：有权限的用户
-       - 密码：对应密码
-       - 显示名称：自定义名称
-    4. 点击"√"保存
-    5. 返回主界面，应该能看到添加的共享
+    媒体库，添加网络的 smb 服务后，无法列出媒体文件
 
-共享名必须填写：不能只填IP地址
-
-使用IP而非主机名：Android DNS解析可能有问题
-
-确保用户有读取权限
+    添加的收藏的位置无法保存，关闭 vlc 后再打开消失
 
 ### 竞品 mpv-android
 
-不支持 smb 协议，只支持本地、http 流
-
     https://github.com/mpv-android/mpv-android
+
+不支持 smb 协议，只支持本地、http 流
 
 使用 smb 的几种方法：
 
@@ -1725,11 +1711,13 @@ EOF
 
     mpv /sdcard/nas_playlist.m3u
 
-### 竞品 Nova Video Player（基于VLC的增强版）
-
-不支持杜比视界，海报墙功能不可用时无预览效果
+### 竞品 Nova Video Player
 
     https://github.com/nova-video-player/aos-AVP
+
+基于VLC的界面增强版，自带刮削器这个比 kodi 好。
+
+不支持杜比视界，海报墙功能不可用时无预览效果
 
 ## 把你的 Garmin 手表给 Linux 做 GPS
 
