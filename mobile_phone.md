@@ -1670,11 +1670,19 @@ Kodi 最强大的地方是在你的电视上直接建立影视信息库，这样
 
 换用其它竞品：
 
-mpv-android
+#### mpv-android
+
+可惜不支持 smb 协议，只支持本地、http 流，
 
     https://github.com/mpv-android/mpv-android
 
-Nova Video Player（基于VLC的增强版）
+使用 smb 的几种方法：
+
+    使用 MiXplorer、的文件管理器等先将SMB挂载为本地目录，然后 mpv 播放挂载到本地目录的内容即可
+
+    或在服务端将 SMB 转为 WebDAV，利用 MPV 支持 HTTP 协议，需要 Linux：配置 nginx + dav_module，Windows 打开 IIS 管理器配置 webdav 组件
+
+#### Nova Video Player（基于VLC的增强版）
 
     https://github.com/nova-video-player/aos-AVP
 
