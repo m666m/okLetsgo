@@ -1668,11 +1668,35 @@ Kodi 最强大的地方是在你的电视上直接建立影视信息库，这样
 
 原生不支持，目前没有好的解决办法。
 
-换用其它竞品：
+### 竞品 VLC
 
-#### mpv-android
+海报墙功能不如 kodi
 
-可惜不支持 smb 协议，只支持本地、http 流，
+    https://www.videolan.org/vlc/
+
+直接浏览网络的 smb 可能无法列出媒体文件，因为安卓的安全限制，需要先手动配置服务器：
+
+    1. 打开VLC → 侧边栏 → 浏览 → 添加网络存储
+    2. 选择"SMB"
+    3. 按以下格式填写：
+       - 服务器：NAS的IP地址（如 192.168.1.100）
+       - 端口：留空（默认445）
+       - 共享名：共享文件夹名称（如 videos、media）
+       - 用户名：有权限的用户
+       - 密码：对应密码
+       - 显示名称：自定义名称
+    4. 点击"√"保存
+    5. 返回主界面，应该能看到添加的共享
+
+共享名必须填写：不能只填IP地址
+
+使用IP而非主机名：Android DNS解析可能有问题
+
+确保用户有读取权限
+
+### 竞品 mpv-android
+
+不支持 smb 协议，只支持本地、http 流
 
     https://github.com/mpv-android/mpv-android
 
@@ -1682,7 +1706,28 @@ Kodi 最强大的地方是在你的电视上直接建立影视信息库，这样
 
     或在服务端将 SMB 转为 WebDAV，利用 MPV 支持 HTTP 协议，需要 Linux：配置 nginx + dav_module，Windows 打开 IIS 管理器配置 webdav 组件
 
-#### Nova Video Player（基于VLC的增强版）
+#### 利用播放列表实现循环播放，就像电视台
+
+mpv 的文件浏览功能太弱了，每次播放太麻烦，最好先创建播放列表文件：
+
+```bash
+cat > /sdcard/nas_playlist.m3u << EOF
+#EXTM3U
+#EXTINF:-1,电影1
+http://192.168.1.100:5006/videos/movie1.mkv
+#EXTINF:-1,电影2
+http://192.168.1.100:5006/videos/movie2.mkv
+EOF
+
+```
+
+然后 MPV 直接播放 m3u 列表
+
+    mpv /sdcard/nas_playlist.m3u
+
+### 竞品 Nova Video Player（基于VLC的增强版）
+
+不支持杜比视界，海报墙功能不可用时无预览效果
 
     https://github.com/nova-video-player/aos-AVP
 
