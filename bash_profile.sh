@@ -235,6 +235,8 @@ chperm() {
     file_perm=$(printf "%o" $((0666 - 0$umask_value)))
 
     if [ $? -ne 0 ]; then
+        echo "根据指定的 umask 值设置目录及其子目录和文件权限的函数"
+        echo "用法: chperm <目录路径> [umask值，默认为 002，即 目录 775 文件 664]"
         return 1
     fi
 
@@ -244,6 +246,7 @@ chperm() {
 
     if [ $? -ne 0 ]; then
         echo -e "\n    设置权限失败，请尝试提权执行: find $target_dir -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +"
+        return 1
     fi
 }
 
