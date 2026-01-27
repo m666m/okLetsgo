@@ -530,6 +530,8 @@ stty 命令还有一些其他用法，如：stty -echo 关闭回显（比如在�
     America/New_York
     Europe/London
 
+中国时间为何不是首都 BeiJing：基于历史原因，人类最初大规模定义时区的应用是航海，所以使用大港口城市做代码，延用至今演变为代表一个国家的标准时间。
+
 在服务器上，所有时间都应以 UTC 存储，转换为本地时间时使用 IANA 标识。
 
 ### 终端模拟器和软件的真彩色设置
@@ -11360,7 +11362,7 @@ Windows 版
 
     现在的主流 Linux 发行版，Debian 系一般都使用 systemd 自带的 `systemd-timesyncd`，而 Fedora 系使用 `chrony` 作为默认时间同步工具。而且这些 Linux 发行版都提供了一个默认配置，它指向发行版维护的 NTP 时间服务器。
 
-    推荐 [使用 chrony]。
+推荐 [使用 chrony]。
 
 要自建 NTP 服务器，可以安装 chrony、ntpd，或者 open-ntp，推荐 [使用 chrony]。
 
@@ -11370,7 +11372,7 @@ Windows 版
 
 如果想要立即调整时间，而不是等待 NTP 服务平滑的慢慢调整：
 
-    NOTE: NTP 服务是平滑式的调整时间，最好不要直接跳变式的设置一个时间,对数据库服务等可能有不利影响，生产环境下慎重！
+    NOTE: NTP 服务是平滑式的调整时间，最好不要直接跳变式的设置一个时间，对日志、数据库服务等可能有不利影响，生产环境下慎重！
 
     # sudo ntpdate -u <NTP 服务器地址>  # 例如 ntp.ubuntu.com
     $ sudo chronyc makestep
@@ -11378,9 +11380,10 @@ Windows 版
 还不行就试试重启 NTP 服务，如 chrony 或 systemd-timesyncd
 
     $ sudo systemctl restart systemd-timesyncd
+
     $ sudo systemctl restart chronyd
 
-实在不行就重启计算机。
+实在不行就重启操作系统。
 
 > 配置公共 NTP 服务器
 
