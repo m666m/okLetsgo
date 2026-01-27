@@ -428,10 +428,12 @@ alias stmab='echo "[systemd 分析计算机启动耗时]"; systemd-analyze blame
 alias lvvlvs='echo "[lvm显示lv详情]"; sudo lvs -a -o+integritymismatches -o+devices -o+segtype'
 
 # SELinux
-alias selxr='echo "[SELinux 恢复目录的默认权限设置]"; sudo restorecon -R -v'
-alias selxt='echo "[SELinux 临时关闭或打开]"; sudo setenforce'
-alias selxs='echo "[SELinux 当前状态]"; getenforce'
-alias selxl='echo "[列出当前的 SELinux 规则]"; sudo semanage fcontext -l'
+alias sexs='echo "[SELinux 当前状态]"; getenforce'
+alias sext='echo "[临时关闭或打开 SELinux]"; sudo setenforce'
+alias sexr='echo "[SELinux 恢复目录的默认权限设置]"; sudo restorecon -R -v'
+alias sexlc='echo "[列出当前的 SELinux 上下文]"; sudo semanage fcontext -l'
+alias sexlp='echo "[列出当前的 SELinux 端口]"; sudo semanage port -l'
+alias sexlb='echo "[列出当前的 SELinux 开关]"; sudo semanage boolean -l'
 
 # git 常用命令
 alias gs='git status'
