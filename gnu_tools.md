@@ -7581,45 +7581,15 @@ NOTE: dd 的块式读写有个毛病，系统调用函数 read() 在管道操作
 
     tar [选项] [选项参数] [生成文件名] [源文件1 源文件2 ...]
 
-tar 命令的选项及参数有几种写法，注意区别
-
-    传统写法：没有 -，多个单字母选项合起来写在第一个选项位
-
-        tar vcf a.tar /tmp
-
-    UNIX 写法：用 -选项1 选项1自己的参数 -选项2 选项2自己的参数
-
-        tar -f a.tar -c -v /tmp
-
-    GUN 写法：用 -- 或 -，
-
-        # --选项 后面紧跟空格参数
-        tar --verbose --create --file a.tar /tmp
-
-        # -- 也可以用单字母选项连写，但是要保证没有歧义
-        # -- 选项用=连接参数，中间没有空格。可选参数必须始终使用这种方法
-        tar --verb --cre --file=a.tar /tmp
-
-        多个支持单字母的选项连写可以用一个 -
-
-            # 没有参数的选项可以合写，如 -vc
-            tar -f a.tar -vc /tmp
-
-                # 有参数的选项 f 可合写，但是要放在最后，以便后面紧跟自己的参数，然后才是整个命令的参数
-                tar -vcf a.tar /tmp
-
-            # 这种写法常见，如 def.sh 是 o 的参数，连写了，就要紧跟
-            curl -fsSLo abc.sh https://github.com/.../ABC.sh
-
 tar 最初只是个打包工具，把给定的文件和目录统一打包生成 .tar 文件
 
     # 只打包，生成 .tar 文件，加参数 v 显示明细
-    tar cf myarch.tar dir1 dir2 file2.txt
+    $ tar cf myarch.tar dir1 dir2 file2.txt
 
         # 解包
-        tar xf myarch.tar
+        $ tar xf myarch.tar
 
-大文件打包后，应该做个事后校验，如果目录或子目录的文件有变化，都会提示
+大文件打包后，做个事后校验，如果目录或子目录的文件有变化，都会提示
 
     $ tar df arc.tar.gz
     dir1/file1: Mod time differs
@@ -7627,96 +7597,135 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
     file2: Mod time differs
     file2: Contents differ
 
-但是我们最常用的是打包然后再压缩，所以 tar 扩展支持 .gz 和 .bz2(.tbz)，实质是调用现有的 gzip 程序把自己打包好的文件再压缩，但是节省了用户在命令行的输入。
+tar 命令的选项及参数有几种写法，注意区别：
 
-最常用的 .tar.gz 文件
+    传统写法：没有 -，多个单字母选项合起来写在第一个选项位
 
-    # 用 c 打包并 z 压缩，v 是显示明细，生成 .tar.gz 文件，源可以是多个文件或目录名
-    tar vczf arc.tar.gz file1 file2
+        $ tar vcf a.tar /tmp
 
-    # 把 z 换成 j 就是压缩为 .bz2(.tbz) 文件，而不是 .gz 文件了
-    tar vcjf arc.tar.bz2 file1 file2
+    UNIX 写法：用 -选项1 选项1自己的参数 -选项2 选项2自己的参数
 
-    # 解包并解压缩
-    # 把 x 换成 t 就是只查看文件列表而不真正解压
-    tar vxzf arc.tar.gz
-    tar vxjf xx.tar.bz2
+        $ tar -f a.tar -c -v /tmp
 
-单独杠：tar 支持管道操作，在命令行参数中文件名的位置使用 bash 的特殊符号 -（减号），代表标准输出/标准输入
+    GUN 写法：用 -- 或 -，
+
+        # --选项 后面紧跟空格参数
+        $ tar --verbose --create --file a.tar /tmp
+
+        # -- 也可以用单字母选项连写，但是要保证没有歧义
+        # -- 选项用=连接参数，中间没有空格。可选参数必须始终使用这种方法
+        $ tar --verb --cre --file=a.tar /tmp
+
+        多个支持单字母的选项连写可以用一个 -
+
+            # 没有参数的选项可以合写，如 -vc
+            $ tar -f a.tar -vc /tmp
+
+                # 有参数的选项 f 可合写，但是要放在最后，以便后面紧跟自己的参数，然后才是整个命令的参数
+                $ tar -vcf a.tar /tmp
+
+            # 这种写法常见，如 def.sh 是 o 的参数，连写了，就要紧跟
+            $ curl -fsSLo abc.sh https://github.com/.../ABC.sh
+
+命令行参数是单独杠： tar 支持管道操作，在命令行参数中文件名的位置使用 bash 的特殊符号 -（减号），代表标准输出/标准输入
 
     把 /home 目录打包，输出到标准输入流，管道后面的命令是从标准输出流读取数据解包
 
-        tar cf - /home |tar -xf -
+        $ tar cf - /home |tar -xf -
 
     在 curl 下载默认输出是标准输入流，管道后面的命令是 tar 从标准输出流读取数据解压到指定的目录下
 
-        curl -fsSL https://go.dev/dl/go1.19.5.linux-armv6l.tar.gz |sudo tar -C /usr/local -xzf -
+        $ curl -fsSL https://go.dev/dl/go1.19.5.linux-armv6l.tar.gz |sudo tar -C /usr/local -xzf -
 
     打包并 gpg 加密
 
-        tar cjf - dir1 dir2 file2 node.exe |gpg --output backup.tar.bz2.gpg --cipher-algo AES-256 -c -
+        $ tar cjf - dir1 dir2 file2 node.exe |gpg --output backup.tar.bz2.gpg --cipher-algo AES-256 -c -
 
     解密并解包
 
         # dd if=backup.tar.bz2.gpg |gpg -d - |tar xjf -
-        gpg -d backup.tar.bz2.gpg |tar xjf -
+        $ gpg -d backup.tar.bz2.gpg |tar xjf -
 
     打包并 openssl 加密，将当前目录下的 files 文件夹打包压缩，提示输入密码
 
-        tar czf - files |openssl enc -aes-256-cbc -pbkdf2 -out files.tar.gz.bin
+        $ tar czf - files |openssl enc -aes-256-cbc -pbkdf2 -out files.tar.gz.bin
 
     解密并解包，将当前目录下的files.tar.gz进行解密解压拆包
 
-        openssl enc -aes-256-cbc -pbkdf2 -d -in files.tar.gz.bin |tar xzf -
+        $ openssl enc -aes-256-cbc -pbkdf2 -d -in files.tar.gz.bin |tar xzf -
 
     不覆盖文件，提取文件权限信息
 
-        tar -vkpf a.tar /tmp
+        $ tar -vkpf a.tar /tmp
 
     把本地目录打包并直接用 ssh 传送远程服务器，注意这种用法无校验只适合于内网环境
 
-        tar --create --directory /home/josevnz/tmp/ --file - *| \
+        $ tar --create --directory /home/josevnz/tmp/ --file - *| \
             ssh raspberrypi "tar --directory /home/josevnz \
             --verbose --list --file -"
 
+我们最常用的是打包然后再压缩，所以 tar 扩展支持 .gz 和 .bz2(.tbz)，实质是调用现有的 gzip 程序把自己打包好的 .tar 文件再压缩，节省了用户在命令行的输入操作。操作最常用的 .tar.gz 文件：
+
+    # 用 c 打包并 z 压缩，v 是显示明细，生成 .tar.gz 文件，源可以是多个文件或目录名
+    $ tar vczf arc.tar.gz file1 file2
+
+    # 把 z 换成 j 就是压缩为 .bz2(.tbz) 文件，而不是 .gz 文件了
+    $ tar vcjf arc.tar.bz2 file1 file2
+
+    # 解包并解压缩
+    # 把 x 换成 t 就是只查看文件列表而不真正解压
+    $ tar vxzf arc.tar.gz
+    $ tar vxjf xx.tar.bz2
+
+    # 高级示例：备份 /home，保留所有属性
+    $ sudo tar -cpzf /mnt/home_backup.tar.gz \
+        --selinux \
+        --acls \
+        --xattrs \
+        --numeric-owner \
+        /home/
+
+        # 恢复
+        $ sudo tar -xpzf /mnt/home_backup.tar.gz -C /home/
+
 .gz 文件
 
-    压缩，生成同名文件，后缀.gz，原文件默认删除，除非使用 -k 参数保留
+    gzip 工具压缩，生成同名文件，后缀.gz，原文件默认删除，除非使用 -k 参数保留
 
-        gzip FileName
+        $ gzip FileName
 
     列出指定文件列表并压缩
 
-        ls |grep -v GNUmakefile |xargs gzip
+        $ ls |grep -v GNUmakefile |xargs gzip
 
-    解压缩
+    gzip 解压缩
 
         # gunzip FileName.gz
-        gzip -d FileName.gz
+        $ gzip -d FileName.gz
 
     不解压直接查看内容
 
-        zcat usermod.8.gz
+        $ zcat usermod.8.gz
 
 .zip 文件
 
-    # 压缩文件，生成新文件，并添加 .zip 后缀的文件
-    zip arc file1.txt file2.txt ...
+    # zip 工具压缩文件，生成新文件，并添加 .zip 后缀的文件
+    $ zip arc file1.txt file2.txt ...
 
     # 打包压缩目录
-    zip -r arc.zip foo1/ foo2/
+    $ zip -r arc.zip foo1/ foo2/
 
     # 解压缩zip
-    unzip arc.zip -d your_unzip_dir
+    $ unzip arc.zip -d your_unzip_dir
 
     # 查找匹配的 c 语言文件并打包压缩
-    find . -name "*.[ch]" -print | zip source_code -@
+    $ find . -name "*.[ch]" -print | zip source_code -@
 
     # 把当前目录打包到tar，用 zip 压缩
-    tar cf - . | zip backup -
+    $ tar cf - . | zip backup -
 
     # 只查看文件列表
-    unzip -l arc.zip
+    $ unzip -l arc.zip
 
     分卷压缩
 
@@ -7734,11 +7743,11 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
             $ cat wf.zip.* >wf.zip
             $ unzip wf.zip
 
-对压缩过的文件进行查看等操作，使用 zless、zmore、zcat 和 zgrep 等。
+对压缩过的文件进行查看等操作，使用 zless、zmore、zcat 和 zgrep 等命令。
 
 .xz 文件
 
-    把 foo.tar.xz 解压缩为 foo.tar
+    xz 工具把 foo.tar.xz 解压缩为 foo.tar
 
         $ xz -d foo.tar.xz
 
@@ -7746,8 +7755,9 @@ tar 最初只是个打包工具，把给定的文件和目录统一打包生成 
 
         $ xz foo
 
-    并行压缩 `man xz`
+    并行压缩
 
+        # `man xz`
         $ find . -type f \! -name '*.xz' -print0 \
             | xargs -0r -P4 -n16 xz -T1
 
@@ -9284,6 +9294,8 @@ rsync 命令提供使用的 OPTION 及功能
 
     -a    这是归档模式，表示以递归方式传输文件，并保持所有属性，它等同于开启 -r、-l、-p、-t、-g、-o、-D 选项。 -a 选项后面可以跟一个 --no-OPTION，表示关闭 -r、-l、-p、-t、-g、-o、-D 中的某一个，比如-a --no-l 等同于 -r、-p、-t、-g、-o、-D 选项。
 
+        普通用户运行时，即使使用 -a，也无法保留其他用户的文件属主（因为权限不够），需要用 sudo 运行 rsync -a
+
     -r    -a 已经包含该选项。以递归模式处理子目录，它主要是针对同步目录来说的，如果单独传一个文件不需要加 -r 选项，但是传输目录时必须加。 --relative /var/www/uploads/abcd
 
     -v    打印一些信息，比如文件列表、文件数量等。
@@ -9594,18 +9606,25 @@ tldr:
 
         sudo mount -o noatime nodev /dev/sdxx /backup
 
+        # 普通备份：保留权限、属主、时间戳等
         rsync -avh --progress --stats \
             /source/ /backup/destination/
 
-        # 备份用户目录：保持所有权限、属主、SELinux上下文、保留硬链接等
-        sudo rsync -avAXH --progress /home/ /backup/destination/
+        # 备份用户目录：保留 ACL 和扩展属性（包含SELinux上下文）、保留硬链接等
+        sudo rsync -avAXHh --progress /home/ /backup/destination/
+
+            # 恢复 /home 目录
+            sudo rsync -avAXHh --progress /backup/destination/ /home/
 
         # 备份整个 / 根目录：需要排除不需要备份的目录
-        sudo rsync -avAXH --progress \
+        sudo rsync -avAXHh --progress \
             --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} \
-            / /backup/destination/
+            --exclude={"/home/*/.cache/*","/var/cache/*","/var/tmp/*"} \
+            --exclude={"/boot/grub2/grubenv","/etc/machine-id"} \
+            / /mnt/backup/system/
 
-        # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
+            # 恢复整个系统（需在Live CD环境下进行）
+            sudo rsync -avAXH --progress /mnt/backup/system/ /mnt/newroot/
 
     远程：
 
@@ -9671,11 +9690,7 @@ NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式与众�
     # 排除一个文件列表里的内容，每个模式一行
     rsync -avh --exclude-from='exclude-file.txt' source/ destination
 
-增量备份的三方比对用法：使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录
-
-    # 目标目录中，也是包含所有文件，只有那些变动过的文件是存在于该目录，其他没有变动的文件都是指向基准目录文件的硬链接。
-    # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
-    rsync -a --delete --link-dest /compare/path /source/path /target/path
+增量备份的三方比对用法：使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录。详见 [示例：三方比对实现备份用户的主目录，创建多个备份目录]。
 
 远程数据传输，默认使用 SSH
 
@@ -9688,11 +9703,18 @@ NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式与众�
     # 如果 ssh 命令有附加的参数，则必须使用 -e 参数指定所要执行的 SSH 命令
     rsync -avh -e 'ssh -p 2234' source/ user@remote_host:/destination
 
-#### 示例：备份用户的主目录，创建多个备份目录
+#### 示例：三方比对实现备份用户的主目录，创建多个备份目录
 
---link-dest 参数，用于创建高效的增量备份（也称为“快照式备份”或“硬链接备份”）。它利用硬链接技术来节省存储空间。
+rsync 支持三方比对的用法，利用 --link-dest 参数硬链接技术来节省存储空间，实现持续的增量备份。
 
-    rsync -a [其他选项] --link-dest=参考目录（上次备份的目录） 源目录/ 目标目录/
+    rsync -a [其他选项] --link-dest=基准目录（上次备份的目录） 源目录/ 目标目录/
+
+在目标目录中，也是包含所有文件，只有那些变动过的文件是存在于该目录，其他没有变动的文件都是指向基准目录文件的硬链接。
+
+慎用 --delete：
+
+    # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
+    rsync -a --delete --link-dest /compare/path /source/path /target/path
 
 bach_up_home.sh
 
@@ -9753,11 +9775,11 @@ echo "最新备份链接: ${LATEST_LINK} -> $(readlink "${LATEST_LINK}")"
 
 假设我们有：
 
-    参考目录：/mnt/backups/2024-01-01/
+    基准目录（上次备份的目录）：/mnt/backups/2024-01-01/
 
     源目录：/home/user1/
 
-    目标目录：/mnt/backups/2024-01-02/
+    目标目录（本次新增的备份目录）：/mnt/backups/2024-01-02/
 
 执行
 
@@ -9768,7 +9790,7 @@ rsync 的处理逻辑：
 
     扫描源目录 /home/user1/
 
-    对于每个文件，检查参考目录 /mnt/backups/2024-01-01/ 中是否存在同名文件
+    对于每个文件，检查基准目录 /mnt/backups/2024-01-01/ 中是否存在同名文件
 
     如果存在且内容完全相同（大小、修改时间等匹配），则在目标目录 /mnt/backups/2024-01-02/ 创建硬链接
 
