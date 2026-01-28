@@ -9298,7 +9298,11 @@ rsync 命令提供使用的 OPTION 及功能
 
     -L    像对待常规文件一样处理软链接。如果是 SRC 中有软链接文件，则加上该选项后，将会把软链接指向的目标文件复制到 DEST，默认不处理软链接文件。
 
-    -H    保留硬链信息
+    -A    保留ACL权限
+
+    -X    保留扩展属性（包含SELinux上下文）
+
+    -H    保留硬链接
 
     -p    保持文件权限。
 
@@ -9593,6 +9597,16 @@ tldr:
         rsync -avh --progress --stats \
             /source/ /backup/destination/
 
+        # 备份用户目录：保持所有权限、属主、SELinux上下文、保留硬链接等
+        sudo rsync -avAXH --progress /home/ /backup/destination/
+
+        # 备份整个 / 根目录：需要排除不需要备份的目录
+        sudo rsync -avAXH --progress \
+            --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} \
+            / /backup/destination/
+
+        # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
+
     远程：
 
         rsync -avh --progress --stats \
@@ -9609,11 +9623,6 @@ tldr:
             /source/ user@host:/backup/destination/
 
         NOTE：使用了 --partial-dir 则远程服务器要定期清理该目录
-
-    备份 / 目录：-A（ACL）和 -X（扩展属性）需内核和文件系统支持，-H 保留硬链信息，排除 /proc、/sys、/dev、/tmp 等
-
-        # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
-        rsync -aAXHv --delete --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} / user@remote:/backup/
 
 一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`，这样就可以实现增量备份。
 
