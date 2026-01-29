@@ -9624,7 +9624,7 @@ tldr:
             / /mnt/backup/system/
 
             # 恢复整个系统（需在Live CD环境下进行）
-            sudo rsync -avAXH --progress /mnt/backup/system/ /mnt/newroot/
+            sudo rsync -avAXHh --progress /mnt/backup/system/ /mnt/newroot/
 
     远程：
 
