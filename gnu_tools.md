@@ -8638,9 +8638,9 @@ Linux 配置为 systemd 服务，创建 /etc/systemd/system/aria2.service 文件
 [Unit]
 Description=Aria2 Service
 # 等待网络就绪，等待本地文件系统，等待挂载目录完毕
-After=network.target local-fs.target mnt-my_lv.mount
-# 等待目录挂载完毕见章节 [使用 systemd.mount 在开机后自动挂载目录](init_a_server think)
-Requires=mnt-my_lv.mount
+After=network.target local-fs.target mnt-universal-thin-down.mount
+# 等待目录挂载完毕见章节 [systemd.mount 挂载点单元文件](init_a_server think)
+Requires=mnt-universal-thin-down.mount
 
 [Service]
 Type=simple
