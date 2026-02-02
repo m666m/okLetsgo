@@ -553,13 +553,19 @@ function brew_sc() {
 # podman
 #[[ $os_type = 'linux' ]] && alias docker="podman"
 function pdms() {
-    # https://stackoverflow.com/questions/28320134/how-can-i-list-all-tags-for-a-docker-image-on-a-remote-registry
-    echo "[podman 搜索列出镜像标签，非官方镜像需要完整的源地址]"
-    podman search --list-tags --limit=5000 $1
-}
-function pdmss() {
     echo "[podman 列出镜像详细信息，需要完整的镜像地址]"
     skopeo inspect docker://${1}
+}
+function pdmst() {
+    # https://stackoverflow.com/questions/28320134/how-can-i-list-all-tags-for-a-docker-image-on-a-remote-registry
+    # echo "[podman 搜索列出镜像标签，非官方镜像需要完整的源地址]"
+    # podman search --list-tags --limit=5000 $1
+    echo "[podman 列出镜像的标签，需要完整的镜像地址]"
+    skopeo list-tags docker://${1}
+}
+function pdmsd() {
+    echo "[podman 列出镜像的摘要，需要完整的镜像地址]"
+    skopeo inspect --format "{{.Digest}}" docker://${1}
 }
 alias pdmrun='echo "[podman简单运行一个容器]"; podman run -it --rm -P'
 alias pdme='echo "[podman在运行的容器里执行一个命令]"; podman exec'
