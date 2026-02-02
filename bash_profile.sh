@@ -554,21 +554,25 @@ function brew_sc() {
 #[[ $os_type = 'linux' ]] && alias docker="podman"
 function pdms() {
     # https://stackoverflow.com/questions/28320134/how-can-i-list-all-tags-for-a-docker-image-on-a-remote-registry
-    echo "[podman搜索列出镜像标签，非官方镜像需要完整的源地址]"
+    echo "[podman 搜索列出镜像标签，非官方镜像需要完整的源地址]"
     podman search --list-tags --limit=5000 $1
+}
+function pdmss() {
+    echo "[podman 列出镜像详细信息，需要完整的镜像地址]"
+    skopeo inspect docker://${1}
 }
 alias pdmrun='echo "[podman简单运行一个容器]"; podman run -it --rm -P'
 alias pdme='echo "[podman在运行的容器里执行一个命令]"; podman exec'
-alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]"; podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
-alias pdmlog='echo "[podman查看指定容器日志]"; podman logs -f --tail 100'
-alias pdmdf='echo "[podman查看资源情况]"; podman system df -v'
-alias pdmvp='echo "[podman清理空闲空间]"; podman volume prune'
 function pdmtty() {
     echo "[登录到容器 $1 内的tty]"
     podman exec -it $1 sh
 }
+alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]"; podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
+alias pdmlog='echo "[podman查看指定容器日志]"; podman logs -f --tail 100'
+alias pdmdf='echo "[podman查看资源情况]"; podman system df -v'
+alias pdmvp='echo "[podman清理空闲空间]"; podman volume prune'
 #
-export PDM_LOCAL_REPO="192.168.0.11:5000" && echo "podman 本地私有仓库地址设置为 PDM_LOCAL_REPO=${PDM_LOCAL_REPO}"
+export PDM_LOCAL_REPO="192.168.0.111:5000" && echo "podman 本地私有仓库地址设置为 PDM_LOCAL_REPO=${PDM_LOCAL_REPO}"
 alias pdmrs='echo "[podman 搜索包含本地无tls私有仓库]"; podman search --tls-verify=false'
 alias pdmr='echo "[podman 列出本地私有仓库 ${PDM_LOCAL_REPO} 的所有镜像]"; curl http://${PDM_LOCAL_REPO}/v2/_catalog'
 function pdmrtag() {
@@ -584,22 +588,22 @@ function pdmrm() {
 }
 function pdmrt() {
     local img=$(basename ${1})
-    echo "[给本地镜像 ${1} 打标签为私有仓库 ${PDM_LOCAL_REPO}/$img]"
+    echo "[podman 给本地镜像 ${1} 打标签为私有仓库 ${PDM_LOCAL_REPO}/$img]"
     podman tag $1 ${PDM_LOCAL_REPO}/$img
 }
 function pdmrh() {
-    echo "[向本地私有仓库推送镜像 ${PDM_LOCAL_REPO}/$1]"
+    echo "[podman 向本地私有仓库推送镜像 ${PDM_LOCAL_REPO}/$1]"
     podman push --tls-verify=false ${PDM_LOCAL_REPO}/$1
 }
 function pdmrl() {
-    echo "[从本地私有仓库拉取镜像 ${PDM_LOCAL_REPO}/$1]"
+    echo "[podman 从本地私有仓库拉取镜像 ${PDM_LOCAL_REPO}/$1]"
     podman pull --tls-verify=false ${PDM_LOCAL_REPO}/$1
 }
 function pdmrd() {
     local img=$(echo $1  |cut -d: -f1)
     local tag=$(echo $1  |cut -d: -f2)
     local sha=$2
-    echo "[从本地私有仓库删除镜像 ${PDM_LOCAL_REPO}/$img:$tag，manifests的sha256摘要: ${sha}]"
+    echo "[podman 从本地私有仓库删除镜像 ${PDM_LOCAL_REPO}/$img:$tag，manifests的sha256摘要: ${sha}]"
     curl  -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://${PDM_LOCAL_REPO}/v2/${img}/manifests/sha256:${sha}
 }
 
