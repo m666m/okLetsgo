@@ -661,7 +661,7 @@ fi
 if test -d "$HOME/.ssh"; then
 
     # GNOME 桌面环境下使用 ssh，复用 gnome-keyring，原理见 [Gnome 桌面的密码管理器应用程序](okletsgo)。
-    if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]]; then
+    if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]] && command -v gnome-shell >/dev/null; then
 
         # 以下操作仅限于 gnome49 之前的版本，之后使用 gcr-ssh-agent.service 接管 ssh-agent 了，不涉及手工启动 gnome-keyring-daemon
         gsversion=$(gnome-shell --version | awk '{print $3}' | awk -F. '{print $1}')
