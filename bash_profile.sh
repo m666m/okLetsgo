@@ -554,7 +554,7 @@ function brew_sc() {
 #[[ $os_type = 'linux' ]] && alias docker="podman"
 function pdms() {
     echo "[podman 列出镜像详细信息，需要完整的镜像地址]"
-    skopeo inspect docker://${1}
+    skopeo inspect --format '{{json .}}' docker://${1} |jq .
 }
 function pdmst() {
     # https://stackoverflow.com/questions/28320134/how-can-i-list-all-tags-for-a-docker-image-on-a-remote-registry
