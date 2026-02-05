@@ -580,9 +580,9 @@ alias pdmdf='echo "[podman查看资源情况]"; podman system df -v'
 export PDM_LOCAL_REPO="192.168.0.111:5000" && echo "podman 本地私有仓库地址设置为 PDM_LOCAL_REPO=${PDM_LOCAL_REPO}"
 alias pdmr='echo "[podman 列出本地私有仓库 ${PDM_LOCAL_REPO} 的所有镜像]"; curl http://${PDM_LOCAL_REPO}/v2/_catalog'
 function pdmrs() {
-    echo "[podman 显示本地私有仓库 ${PDM_LOCAL_REPO} 镜像 ${1} 的 manifests]"
     local img=$(echo $1  |cut -d: -f1)
     local tag=$(echo $1  |cut -d: -f2)
+    echo "[podman 显示本地私有仓库 ${PDM_LOCAL_REPO} 镜像名 ${img} 标签 ${tag} 的 manifests]"
     curl http://${PDM_LOCAL_REPO}/v2/${img}/manifests/${tag}
 }
 function pdmrm() {
