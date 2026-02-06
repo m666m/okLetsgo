@@ -586,10 +586,10 @@ function pdmrs() {
     curl http://${PDM_LOCAL_REPO}/v2/${img}/manifests/${tag}
 }
 function pdmrm() {
-    local img=$(echo $1  |cut -d: -f1)
-    local tag=$(echo $1  |cut -d: -f2)
+    local img=$(echo $1 |cut -d: -f1)
+    local tag=$(basename $1 |cut -d: -f2)
     local sha=$2
-    echo "[podman 从本地私有仓库删除镜像 ${PDM_LOCAL_REPO}/$img:$tag，manifests的sha256摘要: ${sha}]"
+    echo "[podman 从本地私有仓库删除镜像 ${PDM_LOCAL_REPO}/$img:$tag，sha256摘要: ${sha}]"
     curl  -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://${PDM_LOCAL_REPO}/v2/${img}/manifests/sha256:${sha}
 }
 
