@@ -577,20 +577,20 @@ alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器�
 alias pdmlog='echo "[podman查看指定容器日志]"; podman logs -f --tail 100'
 alias pdmdf='echo "[podman查看资源情况]"; podman system df -v'
 #
-export PDM_LOCAL_REPO="192.168.0.111:5000" && echo "podman 本地私有仓库地址设置为 PDM_LOCAL_REPO=${PDM_LOCAL_REPO}"
-alias pdmr='echo "[podman 列出本地私有仓库 ${PDM_LOCAL_REPO} 的所有镜像]"; curl http://${PDM_LOCAL_REPO}/v2/_catalog'
+export PDMREPO="192.168.0.111:5000" && echo "podman 本地私有仓库地址设置为 PDMREPO=${PDMREPO}"
+alias pdmr='echo "[podman 列出本地私有仓库 ${PDMREPO} 的所有镜像]"; curl http://${PDMREPO}/v2/_catalog'
 function pdmrs() {
     local img=$(echo $1  |cut -d: -f1)
     local tag=$(echo $1  |cut -d: -f2)
-    echo "[podman 显示本地私有仓库 ${PDM_LOCAL_REPO} 镜像名 ${img} 标签 ${tag} 的 manifests]"
-    curl http://${PDM_LOCAL_REPO}/v2/${img}/manifests/${tag}
+    echo "[podman 显示本地私有仓库 ${PDMREPO} 镜像名 ${img} 标签 ${tag} 的 manifests]"
+    curl http://${PDMREPO}/v2/${img}/manifests/${tag}
 }
 function pdmrm() {
     local img=$(echo $1 |cut -d: -f1)
     local tag=$(basename $1 |cut -d: -f2)
     local sha=$2
-    echo "[podman 从本地私有仓库删除镜像 ${PDM_LOCAL_REPO}/$img:$tag，sha256摘要: ${sha}]"
-    curl  -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://${PDM_LOCAL_REPO}/v2/${img}/manifests/sha256:${sha}
+    echo "[podman 从本地私有仓库删除镜像 ${PDMREPO}/$img:$tag，sha256摘要: ${sha}]"
+    curl  -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://${PDMREPO}/v2/${img}/manifests/sha256:${sha}
 }
 
 # distrobox 这词打不快
