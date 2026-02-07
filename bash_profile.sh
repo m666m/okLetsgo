@@ -590,7 +590,7 @@ function pdmrm() {
     local tag=$(basename $1 |cut -d: -f2)
     local sha=$2
     echo "[podman 从本地私有仓库删除镜像 ${PDMREPO}/$img:$tag，sha256摘要: ${sha}]"
-    curl  -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://${PDMREPO}/v2/${img}/manifests/sha256:${sha}
+    curl -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://${PDMREPO}/v2/${img}/manifests/sha256:${sha}
 }
 
 # distrobox 这词打不快
