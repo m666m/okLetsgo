@@ -6335,6 +6335,18 @@ sleep 60
 
 Terminal File Browser 很多，自己慢慢研究吧。
 
+Midnight Commander 命令行下使用两个面板来处理文件和目录
+
+     https://midnight-commander.org/
+        https://github.com/MidnightCommander/mc
+        https://sourceforge.net/projects/mcwin32/files/
+
+    中文说明
+
+        https://www.debian.org/doc/manuals/debian-reference/ch01.zh-cn.html#_midnight_commander_mc
+
+    sudo apt install mc
+
 nnn
 
     https://github.com/jarun/nnn
@@ -6361,18 +6373,6 @@ ranger 使用热键操作，自动预览文本文件，还支持打开其它类�
         按 delete 键删除当前被选中的文件
 
     这 ranger 我用它选择了几个文件复制到别处，居然复制了其它文件，按删除还没反应，不敢用了。
-
-Midnight Commander 命令行下使用两个面板来处理文件和目录
-
-     https://midnight-commander.org/
-        https://github.com/MidnightCommander/mc
-        https://sourceforge.net/projects/mcwin32/files/
-
-    中文说明
-
-        https://www.debian.org/doc/manuals/debian-reference/ch01.zh-cn.html#_midnight_commander_mc
-
-    sudo apt install mc
 
 Far Manager for Windows 类似 mc，命令行下使用两个面板来处理文件和目录
 
@@ -12986,9 +12986,15 @@ enlightenment 桌面
 
     如果使用 meld，可以添加右键菜单，参见章节 [给资源管理器添加 meld 右键菜单]。
 
-    如果想使用 Total Commander 用 wine 运行 Windows 下的版本。或者安装 'gnome-commander'，在列表想要打 s 就到 s 开头的档案, 要 Ctrl+Alt+s 才可以, 直接打 s 会到最下面命令行去.
+    如果想使用 Total Commander 用 wine 运行 Windows 下的版本。或尝试其它选择：
 
-        https://linuxtoy.org/archives/gnome-commander.html
+        'gnome-commander'，在列表想要打 s 就到 s 开头的档案, 要 Ctrl+Alt+s 才可以, 直接打 s 会到最下面命令行去.
+
+            https://linuxtoy.org/archives/gnome-commander.html
+
+        Double Commander 按兼容 Total Commander 的标准设计
+
+            https://github.com/doublecmd/doublecmd
 
 记事本
 
