@@ -578,7 +578,7 @@ alias pdmlog='echo "[podman查看指定容器日志]"; podman logs -f --tail 100
 alias pdmdf='echo "[podman查看资源情况]"; podman system df -v'
 #
 export PDMREPO="192.168.0.111:5000" && echo "podman 本地私有仓库地址设置为 PDMREPO=${PDMREPO}"
-alias pdmr='echo "[podman 列出本地私有仓库 ${PDMREPO} 的所有镜像]"; curl http://${PDMREPO}/v2/_catalog'
+alias pdmr='echo "[podman 列出本地私有仓库 ${PDMREPO} 的所有镜像]"; curl -s http://${PDMREPO}/v2/_catalog | jq'
 function pdmrs() {
     local img=$(echo $1  |cut -d: -f1)
     local tag=$(echo $1  |cut -d: -f2)
