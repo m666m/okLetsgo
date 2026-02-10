@@ -8524,7 +8524,7 @@ Aria2 的命令行传输各种参数，设置复杂，一般都使用各种客�
 
 ##### aria2 运行为后台进程
 
-aria2 可以配置运行方式为后台进程，在指定端口监听 json-rpc 请求。aria2 可用的 json-rpc 指令示例详见章节 [curl 调试 http/wss/json-rpc]。
+aria2 可以配置运行方式为后台进程，在指定端口监听 json-rpc 请求。aria2 可用的 json-rpc 指令示例详见章节 [curl 调试 http/wss/json-rpc]。（aria2后台进程这个说法在网络上比较流行，其实只是配置到 systemd 去调用 aira2 保持运行，并添加参数开启了监听 json-rpc 端口的功能，并不是调用了专用接口，成为 unix 的守护进程或 Windows 的服务进程）。
 
 这是一个非常方便的使用方式：
 
