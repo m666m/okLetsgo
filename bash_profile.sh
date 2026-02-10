@@ -1043,8 +1043,8 @@ function PS1_host_name {
 
     # 在交互式容器中特殊处理，从 HOSTNAME 提取出宿主机的主机名
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
-        # 如果是在交互式容器 toolbox 中
-        if [[ $(uname -n) = 'toolbox' ]]; then
+        # 如果是在交互式容器 toolbox 中，现改名为 toolbx 了
+        if [[ $(uname -n) = 'toolbx' ]]; then
 
             # 变量 HOSTNAME 的值与宿主机一致，但 /etc/hostname 变为 toolbox
             # cat /run/host/etc/hostname | cut -d '.' -f 1
