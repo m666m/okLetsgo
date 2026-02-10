@@ -8488,9 +8488,7 @@ xdm 有图形界面
 
 Aria2 的命令行传输各种参数，设置复杂，一般都使用各种客户端发送下载请求给它。
 
-在 Fedora 下使用，发现 aria2 经常 coredump 呢，不如 transmission 稳定。
-
-    $ sudo apt install aria2
+    $ sudo dnf install aria2
 
 图形界面 uget，自动调用 aria2 支持bt下载，该软件目前仍然不完善，别用了
 
@@ -8502,13 +8500,43 @@ Aria2 的命令行传输各种参数，设置复杂，一般都使用各种客�
 
 推荐使用 AriaNg 把下载添加到aria2任务
 
-    https://github.com/mayswind/AriaNg-Native
+    https://ariang.mayswind.net/zh_Hans/
+        https://github.com/mayswind/AriaNg
+        https://github.com/mayswind/AriaNg-Native
 
-##### aria2 作为后台进程运行响应 RPC 请求
+    AriaNg 现在提供三种版本, 标准版、单文件版和 AriaNg Native
 
-aria2 作为后台守护进程运行，在指定端口监听 RPC 请求，使用 AriaNg 等应用把下载链接发送给 aria2 去执行，这样的方式最好用。因为是 RPC 方式，aria2 可以单独部署到家用 NAS 等单独的下载机，用户连接家庭内网的机器都可以操作它。
+        标准版适合在 Web 服务器中部署, 提供资源缓存和按需加载的功能.
 
-1、先生成 Aria2 运行时依赖的配置文件 aria2.conf，可参考 Motrix 的 aria2.conf
+        单文件版适合本地使用, 您下载后只要在浏览器中打开唯一的 html 文件，在页面设置连接 aria2 的参数即可使用了.
+
+        AriaNg Native 同样适合本地使用, 并且不需要使用浏览器.
+
+    为什么在 AriaNg 中删除暂停的任务无法删除文件
+
+        Aria2 本身没有通过 RPC 方式（比如 We­bUI ）删除文件的功能，目前你所看到的删除任务后删除文件的功能是通过下载完成后执行命令（on-download-stop）的接口去调用删除脚本实现的，只能删除正在下载的任务。Aria2 定义暂停状态的任务为未开始的任务，而 on-download-stop 这个选项的执行条件是并不包含未开始的任务。所以删除脚本没有触发，文件也就不会被删除。
+
+另可以使用 curl 直接发送 rpc 命令给 aria2
+
+    rpc 命令 https://aria2.github.io/manual/en/html/aria2c.html
+
+    curl 用法见章节 [curl 调试 http/wss/json-rpc]。
+
+##### aria2 运行为后台进程
+
+aria2 可以配置为后台进程运行，在指定端口监听 json-rpc 请求。aria2 可用的 json-rpc 指令示例详见章节 [curl 调试 http/wss/json-rpc]。
+
+这是一个非常方便的使用方式：
+
+    把 aria2 单独部署到家用 NAS 等单独的下载机
+
+    家庭内网的任意设备，使用 [AriaNg](https://github.com/mayswind/AriaNg) 等客户端应用，把下载链接发送给 NAS 上运行的 aria2 即可
+
+    客户端应用看到下载完毕，再去 NAS 取用即可
+
+1、设置配置文件 aria2.conf，如果是变化的参数如端口、下载路径、连接密码等，放到命令行参数，不要放到这里。
+
+可参考 Motrix 的 aria2.conf
 
 ```conf
 ################################################
@@ -8591,7 +8619,7 @@ bt-tracker=http://1337.abcvg.info:80/announce
 
     https://github.com/P3TERX/aria2.conf/raw/master/tracker.sh
 
-3、启动 aria2 作为后台进程的命令行参数
+3、启动 aria2 作为后台进程的命令行参数，可变的参数都在这里配置，使用时注意酌情替换
 
 Windows cmd：
 
@@ -8603,34 +8631,13 @@ bash shell：
 
 注意修改 --rpc-secret 密码。
 
-验证：
-
-AriaNg 把下载添加到aria2任务
-
-    https://ariang.mayswind.net/zh_Hans/
-        https://github.com/mayswind/AriaNg
-
-AriaNg 现在提供三种版本, 标准版、单文件版和 AriaNg Native
-
-    标准版适合在 Web 服务器中部署, 提供资源缓存和按需加载的功能.
-
-    单文件版适合本地使用, 您下载后只要在浏览器中打开唯一的 html 文件即可.
-
-    AriaNg Native 同样适合本地使用, 并且不需要使用浏览器.
-
-为什么在 AriaNg 中删除暂停的任务无法删除文件
-
-    Aria2 本身没有通过 RPC 方式（比如 We­bUI ）删除文件的功能，目前你所看到的删除任务后删除文件的功能是通过下载完成后执行命令（on-download-stop）的接口去调用删除脚本实现的，只能删除正在下载的任务。Aria2 定义暂停状态的任务为未开始的任务，而 on-download-stop 这个选项的执行条件是并不包含未开始的任务。所以删除脚本没有触发，文件也就不会被删除。
-
-另可以使用 curl 直接发送 rpc 命令给 aria2
-
-    rpc 命令 https://aria2.github.io/manual/en/html/aria2c.html
-
-    curl 用法见章节 [curl 调试 http/wss/json-rpc]。
+验证：使用 AriaNg 客户端下载。
 
 4、配置为开机自启动服务
 
-Windows 下可使用 WinSW 将 Aria2 安装成用户服务来开机自启。
+`ExecStart=` 使用上面的命令行参数即可，配置文件保存在 /usr/local/etc/aria2/aria2.conf
+
+Windows 下可使用 WinSW 将 Aria2 安装成用户服务实现开机自启。
 
 Linux 配置为 systemd 服务，创建 /etc/systemd/system/aria2.service 文件，内容如下：
 
@@ -8650,8 +8657,8 @@ Type=simple
 #TimeoutStopSec=5
 #KillMode=process
 # 非 root 用户执行，方便后续操作下载到的文件，不需要切换到root用户
-User=pi
-Group=pi
+User=1000
+Group=1000
 WorkingDirectory=/home/pi
 #
 ExecStartPre=/bin/bash /usr/local/etc/aria2/tracker.sh /usr/local/etc/aria2/aria2.conf
@@ -8664,16 +8671,17 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
-上面内容替换 YOUR_DIR 和 YOUR_PASS，在目录 /usr/local/etc/aria2/ 下保存 aria2.conf 配置文件
+上面内容替换 YOUR_DIR 和 YOUR_PASS
 
     因为使用普通用户执行，注意你设置的 your_dir 目录对该用户是可写的
 
-在 /usr/local/etc/aria2/ 下准备：
-
-    $ git clone --depth=1 git@github.com:P3TERX/Aria2-Pro-Docker
+更新 tracker：
 
     $ git clone --depth=1 git@github.com:P3TERX/aria2.conf p3terx_conf
-    从 p3terx_conf 子目录里拷贝 tracker.sh 到当前目录
+    $ cd p3terx_conf
+
+    $ sudo cp tracker.sh /usr/local/etc/aria2/
+    $ sudo chmod 644 /usr/local/etc/aria2/tracker.sh
 
 然后启动服务
 
