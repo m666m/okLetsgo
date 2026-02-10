@@ -2172,23 +2172,25 @@ Xfce 桌面自带 Xfce Terminal，支持背景图片：
         -->Appeaerance-->Background，设置背景图片，目前不支持透明，只支持图片调明暗
                       -->Open New Windows，只勾选 `Display toolbar ...`，这样打开的窗口不会有标题栏和菜单栏
 
-Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示刷新速度快
+Ptyxis 终端模拟器，原名 Prompt，显示刷新速度快
 
         https://gitlab.gnome.org/chergert/ptyxis
 
-    Fedora 41 开始用它代替了 Gnome Terminal
+    Fedora 41 开始用它代替了 Gnome Terminal 作为操作系统预置的终端模拟器
 
-    它的特色是有一个小型的 ptyxis-agent 后台进程来管理 PTY、PID 跟踪和容器监控
+    它的特色是自动识别本地的容器（支持常见的 Podman、Toolbox、Distrobox 和 JHBuild 容器），点击工具栏左上角的下拉菜单列出容器，点选即可新建一个标签页进入该容器的tty，等效于替你执行了 `podman exec -it 容器名 sh`。
 
-    自动识别当前的容器如 Podman、Toolbox、Distrobox 和 JHBuild，在工具栏右上角的下拉菜单列出，选择即可新建一个标签页进入该容器。
+    为了优化速度，它有一个小型的 ptyxis-agent 后台进程来管理 PTY、PID 跟踪和容器监控
 
-    主题配色方案内置了 Nord theme，但是不支持背景图片，已经内置在 Fedora 41。
+    主题配色方案内置了 Nord theme，但是不支持背景图片。
 
-    对 ssh 和本地切换到 root 用户，窗体颜色会变化以提示用户。
+    对本地、本地切换到 root 用户、ssh 登录到远程服务器，窗体会变为不同颜色以提示用户。
 
-    鼠标选择文字即复制，可以 shift+ins 粘贴都只限于本终端，无法到系统剪切板。要操作系统剪贴板的复制和粘贴，必须右键菜单选择。无法设置只使用系统剪贴板。如果在 tmux/vi 等应用中无法弹出右键菜单，用 shift+右键可弹出。
+    常用功能的变化：“鼠标选择文字即复制”、“shift+ins 粘贴” 这两个功能都只限于本应用自己的剪切板，在本应用内的各个窗口使用。这两个操作无法使用系统剪切板，没法粘贴到记事本等其它应用，或从记事本等其它应用复制内容粘贴到本应用的窗口内。目前没找到只使用系统剪贴板的设置选项。
 
-    目前对 tmux 的支持不好，鼠标不听话。
+        如果想使用系统剪贴板进行复制和粘贴，必须在终端窗体内鼠标拖动选择文字，然后点击右键从菜单选择复制或粘贴。如果在 tmux/vi 等应用中无法弹出右键菜单，用 shift+右键可弹出。
+
+    目前对 tmux 的支持不好，在各个拆分窗口间移动鼠标，有时候会进入选择文字状态，需要按 q 退出。
 
     目前只能使用 dconf 设置窗口透明度
 
@@ -2197,9 +2199,9 @@ Ptyxis 以容器为中心的终端模拟器，原名 Prompt，显示刷新速度
 
         $ dconf write /org/gnome/Ptyxis/Profiles/ddb03e60e8d36dec96ef51fb67345f90/opacity 0.95
 
-Gnome Terminal，不支持背景图片：
+被抛弃的 Gnome Terminal，不支持背景图片：
 
-    Gnome 桌面自带 Xterm，自 Fedora 41 开始被 Ptyxis 替换
+    Fedora 41 之前一直预装，后被 Ptyxis 替换
 
     主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
 
@@ -2215,7 +2217,7 @@ Gnome Terminal，不支持背景图片：
 
         -->command 勾选 Run command as a login shell 以设置会话执行登录脚本
 
-        -->color：不再支持设置背景图片，但仍可设置窗口透明度。
+        -->color：不支持设置背景图片，但仍可设置窗口透明度。
 
 kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/MacOS 桌面下使用
 
