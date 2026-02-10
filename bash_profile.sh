@@ -466,7 +466,7 @@ function gaddr {
 
     if [[ ! -s "$tfile" ]]; then
         echo '获取 github 地址列表失败！'
-        return
+        return 1
     fi
 
     if grep 'Github Hosts Start' /etc/hosts >/dev/null 2>&1; then
@@ -576,20 +576,24 @@ function pdmtty() {
 alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]"; podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
 alias pdmlog='echo "[podman查看指定容器日志]"; podman logs -f --tail 100'
 alias pdmdf='echo "[podman查看资源情况]"; podman system df -v'
-#
+function pdmv() {
+    for c in $(podman ps -a --format="{{.Names}}"); do
+        echo "容器 '$c' 使用了卷：$(podman inspect $c --format='{{range .Mounts}}{{.Name}} {{end}}' )"
+    done
+}
 export PDMREPO="192.168.0.111:5000" && echo "podman 本地私有仓库地址设置为 PDMREPO=${PDMREPO}"
-alias pdmr='echo "[podman 列出本地私有仓库 ${PDMREPO} 的所有镜像]"; curl -s http://${PDMREPO}/v2/_catalog | jq'
+alias pdmr='echo "[podman 列出私有仓库 ${PDMREPO} 的所有镜像]"; curl -s http://${PDMREPO}/v2/_catalog | jq'
 function pdmrs() {
     local img=$(echo $1  |cut -d: -f1)
     local tag=$(echo $1  |cut -d: -f2)
-    echo "[podman 显示本地私有仓库 ${PDMREPO} 镜像名 ${img} 标签 ${tag} 的 manifests]"
+    echo "[podman 显示私有仓库 ${PDMREPO} 镜像名 ${img} 标签 ${tag} 的 manifests]"
     curl http://${PDMREPO}/v2/${img}/manifests/${tag}
 }
 function pdmrm() {
     local img=$(echo $1 |cut -d: -f1)
     local tag=$(basename $1 |cut -d: -f2)
     local sha=$2
-    echo "[podman 从本地私有仓库删除镜像 ${PDMREPO}/$img:$tag，sha256摘要: ${sha}]"
+    echo "[podman 删除私有仓库的镜像 ${PDMREPO}/$img:$tag，sha256摘要: ${sha}]"
     curl -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://${PDMREPO}/v2/${img}/manifests/sha256:${sha}
 }
 
