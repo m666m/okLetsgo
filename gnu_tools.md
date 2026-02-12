@@ -163,7 +163,7 @@ UNIX/Linux 内核使用伪终端（pseudo tty，缩写为 pty）设备的概念�
 
 1、本地主机外接显示器和键盘鼠标，开机启动后 [本地登录切换图形模式或控制台登录]，获得 login shell。
 
-2、本地桌面环境下，支持命令行下的键盘快捷键，来即时切换到各个控制台 console：
+2、本地桌面环境下，支持命令行下的键盘热键，来即时切换到各个控制台 console：
 
     CTRL + ALT + F1 – 锁屏
     CTRL + ALT + F2 – TTY2，如果有用户登录桌面，则切换到对应的桌面环境
@@ -1175,7 +1175,7 @@ bash 下文字显示彩色有依赖，详见章节 [终端模拟器和软件的�
     # 发行版安装的在 /usr/share 下，如果是 pip 安装的用 `pip show powerline-status` 查看路径
     source /usr/share/powerline/bindings/bash/powerline.sh
 
-bash 内置命令和快捷键见 (shellcmd.md) 的相关章节。
+bash 内置命令和热键见 (shellcmd.md) 的相关章节。
 
 #### bash 命令行提示符显示 python 环境名
 
@@ -3160,7 +3160,7 @@ diff 通常的用法是从参数读入两个文件，而命令里面的-则是�
     unset       刪除指定的环境变量或 shell 属性
     wait        等待指定的进程完成，并返回退出状态码
 
-### bash 快捷键
+### bash 热键
 
 命令智能和目录补全：输入命令或目录时，不需要完整输入，给出开头字母后，按两次 TAB 键有提示和自动完成功能。
 
@@ -3174,7 +3174,7 @@ linux下shell终端里有行编辑功能，在命令提示符下默认可以像 
     # 使用默认的 emacs 模式
     set -o emacs
 
-执行 `man readline` 可以查看 Bash 中的默认快捷键，emacs 模式
+执行 `man readline` 可以查看 Bash 中的默认热键，emacs 模式
 
     Tab 键    自动补全命令
 
@@ -4268,7 +4268,7 @@ let g:netrw_winsize = 25  " 设置 netrw 窗口宽度占比 25%
 
 ```
 
-netrw窗口内的操作快捷键
+netrw窗口内的操作热键
 
     <F1>      在 netrw 界面弹出帮助信息
     I         显示/隐藏顶部 banner
@@ -4327,8 +4327,8 @@ netrw窗口内的操作快捷键
     " NERDTree
     map <C-n> :NERDTreeToggle<CR>
     let NERDTreeShowHidden=1 "在打开时默认显示隐藏文件
-    " map 是快捷键映射命令
-    " <C-n> 定义了快捷键，表示 Ctrl-n
+    " map 是热键映射命令
+    " <C-n> 定义了热键，表示 Ctrl-n
     " 后面是对应的命令以及回车键 <CR>
 
 nerdtree 在左侧树形目录中的热键
@@ -4465,7 +4465,7 @@ let mapleader="\<space>"
 "
 " 粘贴的代码（shift+insert）会自动缩进，导致格式非常混乱
 " 输入命令 ：set paste 再进行粘贴，就不会乱码了，自动缩进也没了，所以在粘贴之后输入 ：set nopaste，恢复缩进模式。
-" 把<F2>就设置为改变paste模式的快捷键
+" 把<F2>就设置为改变paste模式的热键
 "nnoremap <F2> :set invpaste paste?<CR>  " 按下后提示当前paset的状态，使用了状态栏工具无需用此
 set pastetoggle=<F2>
 
@@ -4562,7 +4562,7 @@ let g:airline#extensions#tabline#fnamecollapse = 2
 " 使用 airline 自带功能进行标签之间的切换
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 
-" 定义切换标签的快捷键
+" 定义切换标签的热键
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
 nmap <leader>3 <Plug>AirlineSelectTab3
@@ -4612,14 +4612,14 @@ colorscheme PaperColor  " 支持设置背景色
 let NERDTreeShowHidden=1
 
 " 切换目录树显示的热键定义为 Ctrl-n
-" map 是 vim 的快捷键映射命令
-" <C-n> 定义了快捷键，表示 Ctrl-n
+" map 是 vim 的热键映射命令
+" <C-n> 定义了热键，表示 Ctrl-n
 " 后面是对应的命令以及回车键 <CR>
 map <C-n> :NERDTreeToggle<CR>
 
 ```
 
-#### vim 快捷键
+#### vim 热键
 
     Esc 退出当前的模式，或终止当前命令，回到默认的普通模式
 
@@ -4749,8 +4749,8 @@ map <C-n> :NERDTreeToggle<CR>
     o     进入编辑模式，在当前行之下新加一行，光标位于新加行
     O     进入编辑模式，在当前行之上新加一行，光标位于新加行
 
-    s     删除当前字符并进入编辑模式，省去按 x   i 两个快捷键
-    S     删除光标所在行并进入编辑模式，省去按 dd i 两个快捷键
+    s     删除当前字符并进入编辑模式，省去按 x   i 两个热键
+    S     删除光标所在行并进入编辑模式，省去按 dd i 两个热键
 
     cc    删除当前行并进入编辑模式
     cw    删除当前词，并进入编辑模式
@@ -4838,15 +4838,15 @@ map <C-n> :NERDTreeToggle<CR>
     :q      退出，如果对缓冲区进行过修改，则会提示
     :q!     强制退出，放弃修改
 
-##### 自定义快捷键
+##### 自定义热键
 
-重新定义快捷键，放到 ~/.vimrc 文件中即可：
+重新定义热键，放到 ~/.vimrc 文件中即可：
 
 ```vim
 
 " 切换目录树显示的热键定义为 Ctrl-n
-" map 是 vim 的快捷键映射命令
-" <C-n> 定义了快捷键，表示 Ctrl-n
+" map 是 vim 的热键映射命令
+" <C-n> 定义了热键，表示 Ctrl-n
 " 后面是对应的命令以及回车键 <CR>
 map <C-n> :NERDTreeToggle<CR>
 
@@ -4872,7 +4872,7 @@ nore “ 非递归 ”表示映射仅展开一次，并且应用/执行该结果
 
 前导键
 
-为解决 vim 中快捷键太多不够用的问题，又引入了前导键，即按住一个热键然后再按其它键，对应新的命令。也可以像 tmux 依次按键的用法。
+为解决 vim 中热键太多不够用的问题，又引入了前导键，即按住一个热键然后再按其它键，对应新的命令。也可以像 tmux 依次按键的用法。
 
 前导键默认为“\”，可以定义为其它的：
 
@@ -4913,11 +4913,11 @@ vim中有五种基本的重复类型，分别是：
     q/  查看使用/输入的搜索历史
     q?  查看使用？输入的搜索历史
 
-##### 插件有自己的快捷键
+##### 插件有自己的热键
 
-内置插件 netrw 的快捷键，参见章节 [vim 内置的树形文件夹插件 netrw]
+内置插件 netrw 的热键，参见章节 [vim 内置的树形文件夹插件 netrw]
 
-文件夹树形展示插件 nerdtree 的快捷键，参见章节 [nerdtree 树形文件夹插件]。
+文件夹树形展示插件 nerdtree 的热键，参见章节 [nerdtree 树形文件夹插件]。
 
 小技巧：
 
@@ -5109,7 +5109,7 @@ autocmd VimEnter * call TabPos_Initialize()
 
 写完代码想测试一下，有几个方法：保存并退出vim，然后运行，或执行章节 [命令行模式] 中介绍的“执行shell命令”的几个方法，都太繁琐不直观。
 
-自从vim 8.1版本后，支持了一个新的命令 :ter 或 :terminal，在vim中拆分窗口打开一个shell，所以使用切换拆分窗口的快捷键来在你的文本窗口和终端窗口中切换即可。
+自从vim 8.1版本后，支持了一个新的命令 :ter 或 :terminal，在vim中拆分窗口打开一个shell，所以使用切换拆分窗口的热键来在你的文本窗口和终端窗口中切换即可。
 
 详细内容参看
 
@@ -5153,7 +5153,7 @@ autocmd VimEnter * call TabPos_Initialize()
 
 解决方法二
 
-    鼠标选择后使用快捷键 p 粘贴
+    鼠标选择后使用热键 p 粘贴
 
 鼠标模式 :
 
@@ -5202,7 +5202,7 @@ autocmd VimEnter * call TabPos_Initialize()
     map <ScrollWheelUp> <C-Y>
     map <ScrollWheelDown> <C-E>
 
-不要使用模仿 Windows 鼠标习惯的一个 mswin.vim， 如“Ctrl + A”全选、 “Ctrl + C”复制、 “Ctrl + V”粘贴等等， 这些快捷键与vim本身的快捷键有不少是冲突的：部分原有的快捷键映射成了别的键， 例如把“Ctrl + V”(矩形块选择)改成了粘贴， 而原有的“Ctrl + V”改成了“Ctrl + Q”； 还有部分快捷键就彻底没有了， 如原有的“Ctrl + A”(将当前光标所在的数字加 1)改成了全选， 而原有的相应功能就找不到了
+不要使用模仿 Windows 鼠标习惯的一个 mswin.vim， 如“Ctrl + A”全选、 “Ctrl + C”复制、 “Ctrl + V”粘贴等等， 这些热键与vim本身的热键有不少是冲突的：部分原有的热键映射成了别的键， 例如把“Ctrl + V”(矩形块选择)改成了粘贴， 而原有的“Ctrl + V”改成了“Ctrl + Q”； 还有部分热键就彻底没有了， 如原有的“Ctrl + A”(将当前光标所在的数字加 1)改成了全选， 而原有的相应功能就找不到了
 
     :behave mswin
 
@@ -5421,7 +5421,7 @@ tmux 可以保持多个会话 session，每次在命令行运行 `tmux` 就会�
 
         重命名会话
 
-    # 列出所有快捷键，及其对应的 Tmux 命令
+    # 列出所有热键，及其对应的 Tmux 命令
     tmux list-keys
 
     # 列出所有 Tmux 命令及其参数
@@ -5453,7 +5453,7 @@ tmux 进程正在运行，但是无法连接 “failed to connect to server: Con
     $ kill -s USR1 <tmux进程id>
     $ tmux ls
 
-#### 快捷键
+#### 热键
 
     https://ruanyifeng.com/blog/2019/10/tmux.html
 
@@ -5464,7 +5464,7 @@ tmux 进程正在运行，但是无法连接 “failed to connect to server: Con
 
 会话（Session）
 
-    ?       显示所有快捷键，使用 pgup 和 pgdown 翻页，按 q 退出(其实是在 vim 里显示的，命令用 vim 的)
+    ?       显示所有热键，使用 pgup 和 pgdown 翻页，按 q 退出(其实是在 vim 里显示的，命令用 vim 的)
 
     :       进入命令行模式，可输入命令如：
 
@@ -5772,7 +5772,7 @@ powerline 有插件用于 tmux 状态栏显示，定制显示的内容可编辑 
 
         tmux source-file ~/.tmux.conf
 
-操作快捷键
+操作热键
 
     建议先给会话命名以便查找， ctrl + b 然后 $ 输入会话的名称即可
 
@@ -5979,7 +5979,7 @@ set -g @resurrect-capture-pane-contents 'on'
 
 在Screen环境下，所有的会话都独立的运行，并拥有各自的编号、输入、输出和窗口缓存。
 
-用户可以通过快捷键在不同的窗口下切换，并可以自由的重定向各个窗口的输入和输出。GNU Screen的窗口与区域关系更接近Emacs里面buffer与window的关系：
+用户可以通过热键在不同的窗口下切换，并可以自由的重定向各个窗口的输入和输出。GNU Screen的窗口与区域关系更接近Emacs里面buffer与window的关系：
 
     gnu screen 里面的 region 相当于 tmux 里面的 pane，而 screen 的 window 更类似于跑在 tmux pane 里面的程序；与 tmux 不同的是，一般情况下程序/窗口是隐藏的，每次只把一个程序/窗口切换到当前 region 来（tmux 里面一般情况下所有程序都会在某个 window 的某个 pane 里面显示者，除非有其它 pane 被最大化导致当前 pane 被隐藏了）
 
@@ -6020,7 +6020,7 @@ Screen 实现了基本的文本操作，如复制粘贴等；还提供了类似�
 
 GNU Screen 的默认前导键是 Ctrl+A。
 
-常用快捷键，先按引导键 Ctrl+a，然后按
+常用热键，先按引导键 Ctrl+a，然后按
 
     d      退出当前的screen界面回到初始的shell，当前运行的会话进程不关闭，其中的程序会继续运行
 
@@ -6042,7 +6042,7 @@ GNU Screen 的默认前导键是 Ctrl+A。
     X     关闭当前焦点所在的屏幕区块,关闭的区块中的窗口并不会关闭，还可以通过窗口切换找到它。
     Q     关闭除当前区块之外其他的所有区块,关闭的区块中的窗口并不会关闭，还可以通过窗口切换找到它。
 
-比如：当需要退出当前的 Screen 界面回到初始的shell，可以用快捷键 Ctrl+a d，即按住Ctrl按a,然后可以松手去按d，会话中的程序不会关闭，仍在运行。
+比如：当需要退出当前的 Screen 界面回到初始的shell，可以用热键 Ctrl+a d，即按住Ctrl按a,然后可以松手去按d，会话中的程序不会关闭，仍在运行。
 
 关闭 Screen 会话中的窗口
 
@@ -6366,7 +6366,7 @@ ranger 使用热键操作，自动预览文本文件，还支持打开其它类�
 
     操作热键
 
-        按 ? 显示快捷键，然后根据屏幕提示按键选择即可
+        按 ? 显示热键，然后根据屏幕提示按键选择即可
 
         按 ctl+h 切换是否显示隐藏文件
 
@@ -6380,7 +6380,7 @@ Far Manager for Windows 类似 mc，命令行下使用两个面板来处理文�
 
     https://conemu.github.io/en/FarManager.html
 
-Vifm 使用 vi 快捷键的操作的文件管理器
+Vifm 使用 vi 热键的操作的文件管理器
 
     https://vifm.info/
         https://github.com/vifm/vifm
@@ -12237,29 +12237,31 @@ Gnome 桌面默认只展示壁纸，不能放文件（临时下载文件没法�
 
         强烈推荐务必安装扩展 “Dash to Dock”，见下面章节 [使用 gnome 扩展]，让常用工具栏浮动显示在桌面，极大的提高你的操作效率。
 
-传统理解上，Windows 式的桌面环境下应用程序启动后就展现为一个窗口，再次启动一次该程序会再打开一个窗口，每打开一个程序就新建了一个窗口，用户的日常操作就是在多个窗口间切换。而 Gnome 明确制造了区分：
+切换任务(task switch)：非常麻烦非常让人糊涂而且把简单事情复杂化，多桌面环境下更是灾难。
 
-    应用程序的切换(Switch-applications)
+    传统理解上，Windows 式的桌面环境下应用程序启动后就展现为一个窗口，再次启动一次该程序会再打开一个窗口，每打开一个程序就新建了一个窗口，用户的日常操作就是在多个窗口间切换。而 Gnome 明确制造了区分：
 
-    应用程序的多个实例窗口间的切换(Switch-Windows)
+        应用程序的切换(Switch-applications)
 
-非常麻烦非常让人糊涂而且把简单事情复杂化，多桌面环境下更是灾难。
+        应用程序的多个实例窗口间的切换(Switch-Windows)
 
-切换任务(task switch)：
+    在 Windows 下切换任务就是切换窗口 alt+tab，对所有应用的窗口一视同仁。
 
-    在 Windows 下切换任务就是切换窗口 alt+tab，样对所有应用的窗口一视同仁。
-
-    Gnome 区分切换应用还是切换应用的多个实例，快捷键分别是 alt+tab 和 alt+`
+    Gnome 区分切换应用还是切换应用的多个实例，热键分别是 alt+tab 和 alt+`
 
         按 atl+tab 切换到之前的应用，**只限**当前桌面，对多个实例的应用只取最近的实例 --- Switch-applications
 
             按住 alt 不放连续按 tab 显示应用列表，对多个实例的应用，出现朝下的三角的图标表示下拉列出，鼠标点击才显示当前应用的多个实例窗口，鼠标点选切换到具体的那个实例。
 
+            同等热键 win+tab
+
         按 alt+` 在应用的各个实例间进行切换，**不区分**在哪个桌面 --- Switch-Windows
 
             按住 alt 不放连续按 ` 显示应用的实例列表
 
-        还有个热键 alt+esc，切换各个窗口，但是**只限**当前桌面
+            同等热键 win+`
+
+        还有个热键 alt+esc，可以切换各个窗口，但是**只限**当前桌面
 
     混乱来了：
 
@@ -12277,29 +12279,6 @@ Gnome 桌面默认只展示壁纸，不能放文件（临时下载文件没法�
 
     解决办法：用 Win 键打开窗口概览用鼠标点选切换，忘掉 atl+tab
 
-窗口切换：快捷键 Win 键。
-
-    按下 Win 键，出现 “任务概览” 中进行选择，会展示所有所有桌面所有应用程序的所有实例窗口，用鼠标点击选择你要切换到的实例窗口
-
-    切换应用程序
-
-        启动应用程序即展示为当前窗口
-
-        在打开的各应用程序间切换跟 Windows 相同，按热键 alt + tab 或 win + tab：一按即放就是切换到前一个应用，按住 alt 点按 tab 会在应用程序列表间切换，放开 alt 即切换到该应用程序
-
-            注意：默认只切换到应用程序的最新实例窗口，切换不到该应用程序的其它实例
-
-    在一个应用程序的多个实例窗口间切换
-
-        如果应用程序需要再开一个新的实例，在任务栏或常用工具栏的应用程序图标点右键菜单选择 “New Window”
-
-        右键点击常用工具栏的应用程序图标，在弹出菜单的窗口列表中选择切换到该应用程序的某个实例，也即它的窗口
-
-        右键点击任务栏的应用程序图标，在弹出菜单的窗口列表中也可以选择你要切换到的实例
-
-        使用热键：当前窗口是你的应用程序，按 alt + ~ 或 win + ~。一按即放就会切换到最近的另一个实例，按住 alt 点按 ~ 会在各实例列表间切换，放开 alt 即切换到该实例
-
-    也就是说，如果你打开了多个应用程序，每个应用程序打开了多个实例，想一步到位切换到某个实例只能按 win 键从 “任务概览” 里的所有窗口预览里点选。不然只能先 alt + tab 切换到你的应用程序，然后 alt + ~ 切换到它打开的多个实例的某一个，这也太麻烦了。
 
 为适应现代流行的 16:9 宽屏，优化了分割多个窗口占满屏幕的操作：
 
@@ -12311,7 +12290,7 @@ Gnome 桌面默认只展示壁纸，不能放文件（临时下载文件没法�
 
     如果窗口没有标题栏，按住 win 键的同时鼠标左键点击窗口内容部分不放，向各个方向拉动即可移动该窗口，触及屏幕边缘时系统提示跟上述操作相同。对最大化窗口，下拉会缩回为窗口模式。
 
-    使用快捷键最方便，在当前窗口按 win + 方向键即可：向上最大化窗口，向下恢复小窗口，向左占据屏幕左半部分，向右占据屏幕右半部分。
+    使用热键最方便，在当前窗口按 win + 方向键即可：向上最大化窗口，向下恢复小窗口，向左占据屏幕左半部分，向右占据屏幕右半部分。
 
 其它热键：
 
@@ -13015,14 +12994,14 @@ enlightenment 桌面
 
     https://www.cnblogs.com/keatonlao/p/12717071.html
 
-    显示隐藏文件的快捷键是 ctrl + h
+    显示隐藏文件的热键是 ctrl + h
 
     地址栏切换为输入模式需要按 ctrl + l ，才能输入或粘贴地址，嫌麻烦直接改注册表
 
         # https://askubuntu.com/questions/1248692/how-to-get-folder-windows-to-display-address-bars
         $ gsettings set org.gnome.nautilus.preferences always-use-location-entry true
 
-    禁用远程文件夹的预览，否则你的 nfs 目录影视或图片目录打开太慢了
+    禁用远程文件夹的预览，否则你的 nfs 目录视频或图片很多时打开太慢了
 
         $ gsettings set org.gnome.nautilus.preferences show-image-thumbnails 'local-only'
 
@@ -13034,19 +13013,80 @@ enlightenment 桌面
 
     如果使用 meld，可以添加右键菜单，参见章节 [给资源管理器添加 meld 右键菜单]。
 
-如果想使用 Total Commander 用 wine 运行 Windows 下的版本。或尝试其它选择：
+如果想使用 Total Commander 用 wine 运行 Windows 下的版本，或尝试其它选择：
+
+    gnome-commander，在列表想要打 s 就到 s 开头的档案, 要 Ctrl+Alt+s 才可以, 直接打 s 会到最下面命令行去，这软件更新比较慢，偶尔会在崩溃，物语
+
+        https://linuxtoy.org/archives/gnome-commander.html
 
     Double Commander 按兼容 Total Commander 的标准设计
 
         https://github.com/doublecmd/doublecmd
 
-    gnome-commander，在列表想要打 s 就到 s 开头的档案, 要 Ctrl+Alt+s 才可以, 直接打 s 会到最下面命令行去.
+        在当前窗格当前标签的文件夹内搜索定位
 
-        https://linuxtoy.org/archives/gnome-commander.html
+            任意字母 或 ctrl + s： 快速定位文件，支持中文拼音首字母！ 在菜单：配置--选项--快速搜索 中设置是否只匹配开头。
+
+            ctrl + f: 快速搜索只显示所选文件
+
+        搜索：
+
+            alt + F7: 在文件夹内搜索，支持搜索文件内容
+
+        文件操作
+
+            Ctrl + Q： 快速预览当前文件。
+
+            Shift + F4： 新建文本文件，调用记事本编辑（自定义编辑器）。
+
+            F5： 复制文件/文件夹到另一侧的窗格。TC的操作面板分为左、右两个窗格，我们把光标选中的文件拷贝到另一个窗格。另外，TC也支持以鼠标拖拽方式复制文件，两者哪个更方便完全由你的个人喜好决定。
+
+            Shift + F5： 同目录复制
+
+            F6： 移动文件，将光标选中的文件/文件夹移动到对面的窗格。
+
+            Ctrl+Shift+Enter: 获取光标所在处文件/文件夹的绝对路径并显示在命令行里。
+
+        选择文件：
+
+            空格键： 选择或取消选择文件，如在文件夹按下，则计算该文件夹占用空间。
+
+            Ctrl + A： 全选当前文件夹内的所有文件，此时空格键成为反向选择，即取消选择。
+
+            *(小键盘星号键)： 反向选择。
+            +(小键盘加号键)： 选择全部或指定类型的文件。
+            -(小键盘加号键)： 取消选择全部或指定类型的文件。
+
+            Shift + ↓ 和 Shift + ↑： 范围选择，选择或取消选择文件/文件夹，光标自动移动到下一个文件/文件夹，适合类似按住 shift 键点击某个文件。
+
+            按住 ctrl 键点击某个文件: 多选文件/文件夹
+
+        导航
+
+            shift + F2: 跳转到命令行
+
+            Alt + ← 或 →： 快速后退或前进历史目录。
+
+            Tab： 在左右窗格间切换焦点。
+
+            ctrl + u: 交换左右窗格的当前标签
+
+            Ctrl + ←/→： 如果光标所在处是一个文件夹，在对面窗格打开此文件夹；如果光标所在处是一个文件，在对面窗格打开本窗格的文件夹；如果光标在窗格顶部的 ..，在对面窗格打开本窗格文件夹的父目录。
+
+            Ctrl+↑： 在当前窗格的新标签中打开光标处文件夹
+
+            Ctrl + num* 锁定/解锁当前标签。
+
+            ←: 切换到父文件夹
+            ->：如果光标所在处是一个文件夹，切换到这个文件夹
+
+        同步： 在菜单：命令 选择同步文件夹，会比较左右窗格的文件差异，进行复制
+
+        计算校验码: 在菜单:文件 选择 计算校验码，方便的给当前文件夹或文件生成各种算法的校验码
 
 记事本
 
-    没想到 Gnome Text Editor 这么烂，打开时虽然会自动打开上次开着的文件包括未保存状态的文件，但是显示区域不能定位到当前光标位置，粘贴的时候显示区域直接乱跳，正常使用非常难受。推荐安装 LXQT 的 FeatherPad 或 Kde 的 KWrite。白板程序的推荐在下面。
+    没想到 Gnome Text Editor 这么烂，打开时虽然会自动打开上次开着的文件包括未保存状态的文件，但是显示区域不自动定位到当前光标位置，粘贴的时候显示区域更是直接乱跳，正常使用非常难受。推荐安装 LXQT 的 FeatherPad 或 Kde 的 KWrite。白板程序的推荐在下面。
 
 磁盘管理
 
@@ -16431,7 +16471,7 @@ Scrcpy 支持 Windows/Linux/macOS 多个平台，需要你的手机打开 usb �
 
 下表中的 MOD 表示修饰键，在 Windows 中对应 win 或 alt 键，在 Mac中对应 cmd 键：
 
-    快捷键                      实施的动作
+    热键                      实施的动作
 
     右键点击                等同于点亮屏幕
     Ctrl + 点击和移动        相当于多指捏合动作
@@ -16455,7 +16495,7 @@ Scrcpy 支持 Windows/Linux/macOS 多个平台，需要你的手机打开 usb �
 
     MOD + o                把设备屏幕关闭但保持镜像同步
     MOD + Shift + o        点亮设备屏幕
-    MOD + r                旋转屏幕（测试好像不好用，不知道是不是快捷键冲突）
+    MOD + r                旋转屏幕（测试好像不好用，不知道是不是热键冲突）
     MOD + n                打开消息面板
     MOD + n + n            双击n，打开顶部设置栏
     MOD + shift + n        收起面板
@@ -17932,7 +17972,7 @@ i3 的 wayland 实现，操作热键参考 i3
 
 如前文所言，Sway 只是一个单纯的窗口管理器，需要进行各种配置才能勉强达到可用的状态，由于配置太过琐碎，这里只简单的提一下其实是单纯的懒，以后有时间可能会更新详细配置。
 
-Sway  快捷键
+Sway  热键
 
 默认的 Terminal Emulator
 字体
@@ -19659,7 +19699,7 @@ Contour Terminal Emulator 这个是真正的速度极快，而且跨平台
                 opacity: 0.5
                 blur: false
 
-    # 快捷键
+    # 热键
     input_mapping:
         # 选择文字后按 ctrl+c 是复制到内部剪贴板，中键可粘贴
     ```
@@ -19909,7 +19949,7 @@ Quake 模式极大的优化了 Windows 终端的使用体验。在该模式下�
 
 建议直接创建一个快捷方式，固定到开始菜单方便使用。
 
-2、显示/隐藏这个实例窗口的快捷键默认是 Win + ` ，要自定义可以在终端的 JSON 配置文件中的actions部分，添加如下设置：
+2、显示/隐藏这个实例窗口的热键默认是 Win + ` ，要自定义可以在终端的 JSON 配置文件中的actions部分，添加如下设置：
 
     { "command": { "action": "quakeMode" }, "keys": "ctrl+f12" }
 
@@ -19957,7 +19997,7 @@ Windows Terminal 有自己的主题，颜色方案背景等配置修改 setting.
 
     schemes 终端配色方案
 
-    actions 定义快捷键操作，一般默认即可
+    actions 定义热键操作，一般默认即可
 
 如果不知道如何配置 setting.json，可以参考 default.json 每一个节点的 key-value 值。主题配置主要是 Global、profiles 和 schemes 节点。
 
