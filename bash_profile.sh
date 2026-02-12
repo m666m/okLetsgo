@@ -200,7 +200,7 @@ alias lsg='ls -lFA |grep -i'
 alias findf='find ./* |grep -i'
 # 在管道或当前目录下的文件中（排除目录）查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
 alias greps='grep -d skip -in'
-# 在管道或配置文件查找指定关键字，列出文件名和所在行，追加显示后续的 5 行内容`
+# 在管道或配置文件查找指定关键字，列出文件名和所在行，追加显示后续的 5 行内容
 alias grepa='grep -d skip -in -A5'
 # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过.git等目录，如 `finds strinfile`
 alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
