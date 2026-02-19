@@ -7508,7 +7508,9 @@ NOTE: dd 的块式读写有个毛病，系统调用函数 read() 在管道操作
 
 这种错误多发于网络连接不良，或读取光盘等场景，应该使用 `ddrescue` 多次重复读取，参见章节 [使用 dd_rescue 克隆故障硬盘](think)。
 
-### 快速清理文件和快速建立文件
+### 删除大批量文件和快速建立文件
+
+快速建立一个超大的文件:
 
 指定大小，用全零填充，速度慢
 
@@ -7524,7 +7526,7 @@ NOTE: dd 的块式读写有个毛病，系统调用函数 read() 在管道操作
 
     $ fallocate -l 10G test_file2.img
 
-快速清理文件
+快速清零一个超大的文件
 
     $ truncate -s 0 /var/log/yum.log
 
@@ -7534,50 +7536,52 @@ NOTE: dd 的块式读写有个毛病，系统调用函数 read() 在管道操作
         echo '' >your_big.log
         cat /dev/null > file
 
-删除数量巨大的文件 rm * 报错
+删除大批量的文件 rm * 报错：
 
-    命令行替换 '*' 会展开为所有的文件名，导致超出命令行参数长度限制
+    原因是命令行解释器在执行命令前会把参数 '*' 展开为所有的文件名，导致超出命令行参数长度限制
 
-    用 find 命令遍历目录挨个传参数的办法删除，虽然慢但是能做，注意用后台命令，不然挂好久
+    改为删除大批量文件的父目录也不行
 
-        # 删除当前目录所有文件（包括子目录）
-        $ find . -type f -delete
+使用 rsync 的"空同步"技巧（极快）
 
-        # 删除当前目录所有文件（保留子目录）
-        $ find . -maxdepth 1 -type f -delete
+    https://web.archive.org/web/20130929001850/
 
-        # exec 方法
-        $ find /tmp -type f -exec rm {} \; &
+    http://linuxnote.net/jianingy/en/linux/a-fast-way-to-remove-huge-number-of-files.html
 
-        # 文件名包含空格、特殊字符
-        $ find . -type f -print0 | xargs -0 rm
+    # 创建一个空目录
+    mkdir /tmp/empty
 
-        # 处理大量文件，分批删除
-        $ find . -type f | xargs -n 1000 rm
+    # 使用 rsync 删除目标目录下的所有内容
+    rsync -r --delete /tmp/empty/ ./folder_to_be_removed/
 
-        # 使用 ionice 和 nice 最小化系统负载
-        $ ionice -c 3 nice -n 19 find . -type f -delete
+    # 删除目录本身
+    rmdir ./folder_to_be_removed
 
-            # 如果系统不支持nice或ionice
-            # 只使用find的内置控制
-            find . -type f -delete &
-            # 然后手动调整优先级
-            renice 19 -p $!
+用 find 命令遍历目录挨个传参数的办法删除，虽然慢但是能做，注意用后台命令，不然挂好久
 
-    使用 rsync 的"空同步"技巧（极快）
+    # 删除当前目录所有文件（包括子目录）
+    $ find . -type f -delete
 
-        https://web.archive.org/web/20130929001850/
+    # 删除当前目录所有文件（保留子目录）
+    $ find . -maxdepth 1 -type f -delete
 
-        http://linuxnote.net/jianingy/en/linux/a-fast-way-to-remove-huge-number-of-files.html
+    # exec 方法
+    $ find /tmp -type f -exec rm {} \; &
 
-        # 创建一个空目录
-        mkdir /tmp/empty
+    # 文件名包含空格、特殊字符
+    $ find . -type f -print0 | xargs -0 rm
 
-        # 使用 rsync 删除目标目录所有内容
-        rsync -r --delete /tmp/empty/ ./target_dir/
+    # 处理大量文件，分批删除
+    $ find . -type f | xargs -n 1000 rm
 
-        # 删除目录本身
-        rmdir ./target_dir
+    # 使用 ionice 和 nice 最小化系统负载
+    $ ionice -c 3 nice -n 19 find . -type f -delete
+
+        # 如果系统不支持nice或ionice
+        # 只使用find的内置控制
+        find . -type f -delete &
+        # 然后手动调整优先级
+        renice 19 -p $!
 
 ### 压缩解压缩 tar gz bz2 tbz lzo
 
@@ -9002,7 +9006,7 @@ sftp 上传目录如果报错要先建立好
 
 ### 跨机远程拷贝 scp
 
-scp 本意是代替 rcp 的，但是命令行参数解析漏洞无法保证兼容性，只能废了：
+scp 本意是代替 rcp 的，但为了保证兼容性命令行参数解析漏洞居然无法解决，在企业级应用只能废了：
 
     用 rsync 代替 scp
 
@@ -9212,7 +9216,7 @@ There are many Web sites which describe how to tune TCP/IP, so we do not cover t
 
 ### 文件同步 rsync
 
-rsync 用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器
+rsync 用于增量备份（只复制有变动的文件），同步文件或目录，支持远程机器。
 
     https://www.man7.org/linux/man-pages/man1/rsync.1.html
 
@@ -9230,31 +9234,23 @@ rsync 用于增量备份（只复制有变动的文件），同步文件或目�
 
         https://wiki.archlinux.org/title/Rsync#Full_system_backup
 
-最常用的就是代替 scp 命令，使用 `rsync -e ssh` 即可代替 scp 命令，但是注意其对目录的处理方式跟 scp/cp 方式有区别：
-
-    源目录 source 完整地复制到了目标目录 destination 下面，即形成了 destination/source 的目录结构
-
-        rsync source destination/
-
-    只想同步源目录source里面的内容到目标目录destination，则需要在源目录后面加上斜杠
-
-        rsync source/ destination/
-
 rsync的工作方式
 
     主机本地间的数据传输数据（此时类似于 cp 命令的功能）
 
-    借助 ssh 等传输数据（此时类似于 scp 命令的功能）
+    借助 ssh 等传输数据（此时类似于 scp 命令的功能）实现跟本地的数据传输
 
-    以守护进程（socket）的方式传输数据（这个是 rsync 的服务器模式功能）
+    以守护进程（socket）的方式传输数据（这个是 rsync 的服务器模式功能），见章节 [使用 rsyncd 服务]
+
+我们讨论的同步和备份，是多次重复执行自己准备好的 rsync 命令，操作同一个目录和目标目录。
 
 rsync 的默认增量备份是文件级：
 
-    首次同步：rsync 会复制源目录中的所有文件到目标目录。
+    首次执行同步：rsync 会复制源目录中的所有文件到目标目录。
 
-    后续同步：
+    后续执行同步：
 
-        rsync 会在同步前比较源目录和目标目录中的文件。
+        rsync 会在同步前对比源目录和目标目录中的文件。
 
         如果文件在源目录中被修改、删除或新增，rsync 会相应地更新目标目录中对应的文件。默认会先将更新的文件写入目标位置的一个临时文件，传输完成并验证后，再重命名覆盖旧文件。这是最安全的方式。
 
@@ -9262,302 +9258,47 @@ rsync 的默认增量备份是文件级：
 
     所以，重复执行相同的 rsync 命令就可以实现只更新变化的文件，简单方便。
 
-利用 rsync 增量备份的特性，在迁移数据时可以使用 `rsync -av` 代替的 cp 命令，减少可能需要拷贝的内容。
+使用场景：
 
-在机房等高速内网环境，一般要配合使用 ionice 来降低 rsync 进程的 io 优先级：
+    在迁移数据时或本地备份的场合，使用 `rsync -av` 代替 cp 命令，减少可能需要拷贝的内容。
 
-    scp 不占资源，不会提高多少系统负荷，在这一点上，rsync 就远远不及它了。虽然 rsync 比 scp 会快一点，但当小文件众多的情况下，rsync 增量备份会导致硬盘 I/O 占用率非常高，而 scp 基本不影响系统正常使用。
+    在高安全要求场合，使用 `rsync -e ssh` 即可代替 scp 命令
 
-    $ sudo ionice -c 2 -n 5 rsync ...
+    快速删除大量文件，使用 `rsync -r --delete` 的形式用空目录同步，非常快，详见 [删除大批量文件和快速建立文件]
 
-    -c 2 指定了 I/O 类（2 代表“best effort”），-n 7 指定了优先级级别（从 0 到 7，7 最低）。
+    rsync 默认使用 SSH 进行远程登录和数据传输。一般在目标设备上建立普通身份的用户，ssh_config 中限制权限到指定备份文件夹读写，然后只通过 SSH 的公私钥认证方式登录，然后配置一个自动 rsync 的脚本定时运行备份数据到目标设备上。
 
-    所以使用时根据自己的情况酌情决定选用哪个。
+        rsync 在源服务器上运行：这种直接从源服务器复制文件到目标服务器的方式更直观，而且可以在源服务器上监控整个同步过程，包括进度和任何错误。
 
-rsync 默认使用 SSH 进行远程登录和数据传输。一般在目标设备上建立普通身份的用户，ssh 中限制权限到指定备份文件夹读写，然后只通过 SSH 的公私钥认证一种方式登录，然后配置一个自动 rsync 的脚本定时运行备份数据到目标设备上。
+        rsync 在目标服务器上运行：需要在目标服务器上有权访问源服务器。可以在目标服务器上监控同步过程，但可能需要额外的配置，如在源服务器上设置 SSH 密钥认证等。
 
-    rsync 在源服务器上运行：这种直接从源服务器复制文件到目标服务器的方式更直观，而且可以在源服务器上监控整个同步过程，包括进度和任何错误。
+    在生产环境，特别是正在运行的服务器上备份，一般要配合使用 ionice 来降低 rsync 进程的 io 优先级：
 
-    rsync 在目标服务器上运行：需要在目标服务器上有权限访问源服务器。可以在目标服务器上监控同步过程，但可能需要额外的配置，如设置 SSH 密钥认证等。
+        scp 不占资源，不会提高多少系统负荷，在这一点上，rsync 就远远不及它了。虽然 rsync 比 scp 会快一点，但当小文件众多的情况下，rsync 增量备份会导致硬盘 I/O 占用率非常高，而 scp 基本不影响系统正常使用。
 
-   早期 rsync 不使用 SSH 协议，需要用 -e 参数指定协议，后来才改的。
+        $ sudo ionice -c 2 -n 5 rsync ...
 
-        # -e ssh 可以省略
-        $ rsync -av -e ssh source/ user@remote_host:/destination
+        -c 2 指定了 I/O 类（2 代表“best effort”），-n 5 指定了优先级级别（从 0 到 7，7 最低）。
 
-但是，如果 ssh 命令有附加的参数，则必须使用 -e 参数指定所要执行的 SSH 命令。
+        所以使用时根据自己的情况酌情决定选用哪个。
 
-    # -e 参数指定 SSH 使用 2234 端口
-    $ rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
+    可以实现三方比对，见章节 [三方比对实现备份用户的主目录，创建多个备份目录]
 
-    # 使用密钥文件登录服务器
-    rsync -av -e "ssh -i /Users/hs/test.pem" {本地源文件夹路径}/* root@{服务器IP}:{服务器目标文件夹路径}
+#### 注意 rsync 命令对目录名的处理方式：带 / 和不带 /
 
-    # 使用 rsync 之前把 ssh 相关连接参数设置到变量 RSYNC_RSH 更方便
-    export RSYNC_RSH ="ssh -T -c aes128-ctr -o Compression = no -x"
+目录名带 / 和不带 /处理方式，rsync没有跟 cp、scp 等命令的使用习惯保持一致。
 
-rsync 命令提供使用的 OPTION 及功能
+1、
 
-    OPTION选项    功能
+    rsync source destination/
 
-    -a    这是归档模式，表示以递归方式传输文件，并保持所有属性，它等同于开启 -r、-l、-p、-t、-g、-o、-D 选项。 -a 选项后面可以跟一个 --no-OPTION，表示关闭 -r、-l、-p、-t、-g、-o、-D 中的某一个，比如-a --no-l 等同于 -r、-p、-t、-g、-o、-D 选项。
+源目录 source 完整地复制到了目标目录 destination 下面，即形成了 destination/source 的目录结构
 
-        普通用户运行时，即使使用 -a，也无法保留其他用户的文件属主（因为权限不够），需要用 sudo 运行 rsync -a
+2、
 
-    -r    -a 已经包含该选项。以递归模式处理子目录，它主要是针对同步目录来说的，如果单独传一个文件不需要加 -r 选项，但是传输目录时必须加。 --relative /var/www/uploads/abcd
+    rsync source/ destination/
 
-    -v    打印一些信息，比如文件列表、文件数量等。
-
-    -h    让输出信息人性化可读
-
-    --progress    在同步的过程中可以看到同步的过程状态，比如统计要同步的文件数量、 同步的文件传输速度等。
-
-    -n    模拟命令执行的结果，并不真的执行命令(--dry-run) 。
-
-    -l    保留软链接，默认不处理软链接文件。
-
-    -L    像对待常规文件一样处理软链接。如果是 SRC 中有软链接文件，则加上该选项后，将会把软链接指向的目标文件复制到 DEST，默认不处理软链接文件。
-
-    -A    保留ACL权限
-
-    -X    保留扩展属性（包含SELinux上下文）
-
-    -H    保留硬链接
-
-    -p    保持文件权限。
-
-    -D    保持设备文件信息。
-
-    -t    保持文件的修改时间信息。
-
-    --delete    增量备份时删除目标服务器上在源服务器不存在的文件。
-
-                如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果。
-
-                默认情况下，rsync 只确保源目录的所有内容（明确排除的文件除外）都复制到目标目录，它不会使两个目录保持相同，并且不会删除文件。如果要使得目标目录成为源目录的镜像副本，则必须使用 --delete 参数，这将删除只存在于目标目录、不存在于源目录的文件。
-
-    --exclude=PATTERN   指定排除不需要传输的文件，等号后面跟文件名，可以是通配符模式（如 *.txt）。
-
-    -u    把 DEST 中比 SRC 还新的文件排除掉，不会覆盖。
-
-    -c 或 --checksum    使用校验和判断文件变更，而不是默认的文件大小变化或文件修改时间变化，这会增加cpu消耗。
-
-    --size-only     只同步大小有变化的文件，不考虑文件修改时间的差异。
-
-    --exclude       同步时排除某些文件或目录
-
-    --bwlimit=KBPS  最大传输速率，限制 rsync 的带宽使用
-
-    -z    加上该选项，将会在传输过程中压缩。通常不适用，大数据量的容器镜像、系统备份等都是已经压缩过的格式，且NFS本身有数据包和缓存机制，额外压缩可能破坏NFS的优化。
-
-    -u：跳过接收方上较新的文件
-
-以上也仅是列出了 rsync 命令常用的一些选项，对于初学者来说，记住最常用的几个即可，比如 -a、-v、-z、--delete 和 --exclude。
-
-自动尝试断点续传的触发条件：
-
-    重新执行的命令必须与最初中断的命令完全相同，包括源文件、目标文件以及使用的参数。
-
-    rsync 会检查目标路径下是否存在未完成的文件部分，检查源文件的大小和修改时间，如果找到了这样的部分文件，rsync 会从上次中断的地方继续传输。
-
-    如果源文件在传的过程中改变了，或一开始就断连了，不会进行续传
-
-    如果使用了 --inplace 参数，rsync 会直接在目标位置更新文件，而不是首先将数据传输到临时文件然后再重命名。这种情况下，rsync 不会保留未完成的传输数据。
-
-    如果使用了 --whole-file 参数，rsync 会传输整个文件，而不是增量传输，因此不会进行断点续传。
-
-因为使用 ssh 进行备份，所以实际使用中一般不指定属主和属组，只备份数据。如果要实现备份 /home 目录，支持多个用户和属主权限，则使用如下参数，但是注意限制：
-
-    -o  参数 -a 已经包含，保持文件属主信息。如果源服务器上的文件属主在目标服务器上也存在，那么使用 -o 参数可以保留文件的属主信息。
-
-        如果目标服务器上不存在相应的属主，那么即使使用了 -o 参数，文件的属主也不会被设置为源服务器上的属主。在这种情况下，文件通常会被设置为目标服务器上执行 rsync 命令的用户的属主。
-
-    -g  参数 -a 已经包含，保持文件属组信息。如果源服务器上的文件属组在目标服务器上也存在，那么使用 -g 参数可以保留文件的属组信息。
-
-        如果目标服务器上不存在相应的属组，那么即使使用了 -g 参数，文件的属组也可能不会被保留。文件可能会被设置为目标服务器上执行 rsync 命令的用户的属组，或者根据目标服务器的配置被设置为其他默认属组。
-
-    --chown=john:users 参数来指定文件在目标服务器上的属主和属组。这个参数允许你指定一个用户名和属组名，即使这些用户在目标服务器上不存在，可能需要目标服务器上的用户有足够的权限来更改文件的属主和属组，如果目标服务器的安全策略不允许修改文件的属主和属组，那么即使使用了 --chown 参数，也可能无法实现预期的效果。
-
-rsync 的 5 种不同的工作模式：
-
-    rsync [OPTION] SRC DEST
-
-    rsync [OPTION] SRC :DEST
-
-    rsync [OPTION] :SRC DEST
-
-    rsync [OPTION] ::SRC DEST
-
-    rsync [OPTION] SRC ::DEST
-
-第一种用于仅在本地备份数据；
-
-第二种用于将本地数据备份到远程机器上；
-
-第三种用于将远程机器上的数据备份到本地机器上；
-
-第四种和第三种是相对的，同样第五种和第二种是相对的，它们各自之间的区别在于登录认证时使用的验证方式不同。
-
-> 使用 rsync://协议
-
-在 rsync 命令中的远程操作，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议，默认端口873。ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量
-
-    # module并不是实际路径名，而是 rsync 守护程序指定的一个资源名，由管理员分配
-    rsync -av source/ 192.168.122.32::module/destination
-
-    # rsync 守护程序分配的所有 module 列表
-    rsync rsync://192.168.122.32
-
-    # 除了使用双冒号，也可以直接用 rsync://
-    rsync -av source/ rsync://192.168.122.32/module/destination
-
-> rsyncd 守护进程
-
-rsyncd 通常配置在源服务器上，它监听客户端的连接请求，并允许客户端同步（拷贝）文件。这里的“源服务器”是指拥有你想要同步的文件的服务器，而“目标服务器”可以是任何需要这些文件的服务器。
-
-NOTE: 在支持 SELinux 的服务器上，如果要使用 rsync 守护进程共享文件，您必须使用 `public_content_t` 类型标记文件和目录。
-
-    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/selinux_users_and_administrators_guide/chap-managing_confined_services-rsync
-
-源服务器的 rsyncd.conf 配置：
-
-```conf
-# rsyncd.conf
-
-# 用户和组
-uid = nobody
-gid = nogroup
-
-# 最大连接数
-max connections = 4
-
-# 守护进程模式
-use chroot = yes
-chroot = /path/to/chroot
-
-# 日志文件
-log file = /var/log/rsync.log
-
-# PID 文件
-pid file = /var/run/rsyncd.pid
-
-# 拒绝对 .sensitive 文件夹的访问
-read only = yes
-exclude = .sensitive/
-
-# [module_name] 定义了一个可以被同步的模块
-[module_name]
-path = /path/to/directory/on/server
-comment = This is a comment
-read only = no
-list = yes
-uid = nobody
-gid = nogroup
-
-# 可以添加更多的模块
-[another_module]
-path = /another/path/on/server
-comment = Another comment
-```
-
-在这个配置文件中：
-
-    uid 和 gid 指定了运行 rsync 守护进程的用户和组。
-
-    max connections 指定了同时可以有多少个连接。
-
-    use chroot = yes 和 chroot 指定了 rsync 守护进程将使用 chroot 监狱来限制访问。
-
-    log file 和 pid file 分别指定了日志文件和 PID 文件的位置。
-
-    read only = yes 和 exclude = .sensitive/ 指定了同步操作是只读的，并且排除了 .sensitive 文件夹。
-
-    [module_name] 是一个模块，它定义了客户端可以同步的文件和目录。
-
-    path 指定了服务器上的同步目录。
-
-    comment 是一个可选的描述。
-
-    read only 可以设置为 no 来允许写入操作。
-
-    list 设置为 yes 允许客户端列出模块中的文件。
-
-    uid 和 gid 指定了文件的拥有者和组。
-
-如果想知道 rsync 守护程序分配的所有 module 列表，可以执行下面命令。
-
-    $ rsync rsync://192.168.122.32
-
-客户端执行同步：
-
-    rsync -avz rsync://remote_host::module_name /path/to/local/directory
-
-remote_host 是守护进程运行的服务器的主机名或 IP 地址。
-
-module_name 是你在 rsyncd.conf 中定义的模块名。
-
-/path/to/local/directory 是客户端的目标目录。
-
-注意事项
-
-    权限：确保源服务器上的 rsync 守护进程有权限访问指定的文件和目录。
-
-    安全性：如果使用非加密的连接，数据可能会被截获。使用 SSH 隧道或其他加密方法可以提高安全性。
-    如果你希望允许写入操作，确保 read only 设置为 no，并且服务器上的目录有适当的写入权限。
-
-    性能：rsync 守护进程可以配置为使用 chroot 监狱来限制进程的活动范围，提高安全性。
-
-    如果你使用 SSH 进行传输，可以在客户端命令中添加 -e ssh 选项。
-
-通过这种方式，rsync 守护进程允许客户端从源服务器同步文件，而客户端可以是任何需要这些文件的目标服务器。
-
-#### rsync 增量备份变为仅发送增量
-
-日常使用默认即可：
-
-    对于99%的备份和同步需求，直接使用 `rsync -av` 就够了。它的“文件级增量判断 + 传输时块级优化”已经非常高效和智能。
-
-rsync 使用文件大小和修改时间来判断目标文件是否需要更新：
-
-    增量单位是“文件”。 一个文件要么被整体同步，要么被跳过。
-
-    决策逻辑基于“元数据”。 通过比较时间戳和大小来快速决定哪些文件需要处理。
-
-    传输优化是“块级”。 在传输单个文件的内容时，rsync 会尽力减少数据传输量，但这发生在文件已经被选定为需要同步之后。
-
-默认方式（Safe Transfer）： rsync 默认会先将更新的数据写入一个临时文件，传输完成并验证后，再重命名覆盖旧文件。这是最安全的方式。
-
-以下选项会改变 rsync 传输文件的方式：
-
-ssh：远程传输时会自动禁用整个文件同步，进行块级别的比较和传输。
-
---whole-file：强制进行“全文件”传输
-
-    在本地存储或万兆高速局域网内，有时直接传输整个文件比计算和比较进行块级优化的速度更快
-
---inplace：原地更新目标文件，对部分更新的文件进行备份时写入数据更少。
-
-    rsync 会直接在目标文件上进行“打补丁”操作。它会找到文件中变化的块，并直接用网络传输的差异块覆盖目标文件的相应位置。
-
-    只有在明确知道源文件和目标文件几乎相同，只有小块数据变化，并且能承受传输中断导致文件损坏的风险时，才使用 --inplace，通常用于同步虚拟机镜像或大型数据库文件的副本。
-
---partial：保留部分传输的文件，断点续传。
-
-    保留那些未传输完成的文件，以便可以在下次传输时继续。部分传输的文件通常会被存放在目标目录中，但它们会被放置在一个以 .rsync-partial 命名的隐藏目录里。这个隐藏目录会在目标路径下自动创建，用于存放在传输过程中断时的部分文件。
-
-        如果传输 10GB 文件在 8GB 时中断，目标服务器上会有 8GB 的 .partial 文件，下次续传时，需要额外的 10GB 空间（新旧版本并存），最终总空间需求 ≈ 2 × 文件大小
-
-        如果传输频繁中断，会积累大量 .partial 文件，需要手动清理。
-
-    --append-verify 断点续传。在 --partial 的基础上，它还会在传输完成后对文件进行校验，如果校验失败，则会重新传输该文件。这是对数据完整性更好的选择，但是会大大降低数据同步的速度，并增加cpu消耗。
-
---sparse -S  在目标位置保持稀疏文件，适合源文件是稀疏文件的场合，比如虚拟机镜像、数据库等大文件，无此参数会传输稀疏文件的虚假大小的数据(100GB)而不是真实数据(1GB)。
-
-    但是，在文件已经存在变化了一点数据时，第二次写入开始都是更新操作，反而无法只更新稀疏数据的变化部分(0.1GB)，传输的是整个稀疏数据(1.1GB)。而且，对稀疏文件，无法使用 --inplace 选项指定只更新稀疏数据的变化部分，这是 rsync 的一个短板。
-
-    但是，如果不使用--sparse，第一次备份时会写入虚假大小的 100GB 数据，但是之后的写入更新操作，只传输变化的部分 0.1GB，反而大大节约了备份时间。
-
---append：专门用于处理正在被写入的日志文件或类似的文件，只传输源文件中多出来的那部分数据，并将其追加到目标文件。
+只想同步源目录 source 里面的内容到目标目录 destination 内，则需要在源目录后面加上斜杠
 
 #### 软硬链接文件的处理区别
 
@@ -9598,7 +9339,7 @@ ssh：远程传输时会自动禁用整个文件同步，进行块级别的比�
 
     如果目录结构内部的软链接指向外部目录的文件实体，需要拷贝软链接对应的实体文件，则添加参数 -L
 
-> 源目录中的硬链接文件
+源目录中的硬链接文件处理原则：
 
 默认情况下硬链接（指向同一个 inode）被当作独立文件处理，会在目标端创建多个独立的文件副本，占用空间也是多倍。
 
@@ -9614,50 +9355,128 @@ ssh：远程传输时会自动禁用整个文件同步，进行块级别的比�
 
     -W          全文件复制，可能破坏硬链接    通常避免与 -H 同时使用
 
+#### rsync 命令的常用选项
+
+常用参数选项：
+
+        tldr:    rsync -avh
+
+    OPTION选项    功能
+
+    -a    这是归档模式，表示以递归方式传输文件，并保持文件属性，它等同于开启 -r、-l、-p、-t、-g、-o、-D 选项。 -a 选项后面可以跟一个 --no-OPTION，表示关闭 -r、-l、-p、-t、-g、-o、-D 中的某一个，比如-a --no-l 等同于 -r、-p、-t、-g、-o、-D 选项。
+
+        普通用户运行时，即使使用 -a，也无法保留其他用户的文件属主（因为权限不够），需要用 sudo 运行 rsync -a
+
+    -r    -a 已经包含该选项。以递归模式处理子目录，它主要是针对同步目录来说的，如果单独传一个文件不需要加 -r 选项，但是传输目录时必须加。 --relative /var/www/uploads/abcd
+
+    -v    打印一些信息，比如文件列表、文件数量等。
+
+    -h    让输出信息人性化可读
+
+    --progress    在同步的过程中可以看到同步的过程状态，比如统计要同步的文件数量、 同步的文件传输速度等。
+
+    -n    模拟命令执行的结果，并不真的执行命令(--dry-run) 。
+
+    -l    保留软链接，默认不处理软链接文件。
+
+    -L    像对待常规文件一样处理软链接。如果是 SRC 中有软链接文件，则加上该选项后，将会把软链接指向的目标文件复制到 DEST，默认不处理软链接文件。
+
+    -A    保留ACL权限
+
+    -X    保留扩展属性（包含SELinux上下文）
+
+    -H    保持硬链接。默认情况下每个硬链接文件都是作为一个普通文件进行复制的。
+
+    -p    保持文件权限。
+
+    -D    保持设备文件信息。
+
+    -t    保持文件的修改时间信息。
+
+    --delete    增量备份时删除目标服务器上在源服务器不存在的文件。
+
+                如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果。
+
+                默认情况下，rsync 只确保源目录的所有内容（明确排除的文件除外）都复制到目标目录，它不会使两个目录保持相同，并且不会删除文件。如果要使得目标目录成为源目录的镜像副本，则必须使用 --delete 参数，这将删除只存在于目标目录、不存在于源目录的文件。
+
+    --exclude=PATTERN   指定排除不需要传输的文件，等号后面跟文件名，可以是通配符模式（如 *.txt）。
+
+    -u    把 DEST 中比 SRC 还新的文件排除掉，不会覆盖。
+
+    -c 或 --checksum    使用校验和判断文件变更，而不是默认的文件大小变化或文件修改时间变化，这会增加cpu消耗。
+
+    --size-only     只同步大小有变化的文件，不考虑文件修改时间的差异。
+
+    --exclude       同步时排除某些文件或目录
+
+    --bwlimit=KBPS  最大传输速率，限制 rsync 的带宽使用
+
+    -z    加上该选项，将会在传输过程中压缩。通常不适用，大数据量的容器镜像、系统备份等都是已经压缩过的格式，且NFS本身有数据包和缓存机制，额外压缩可能破坏NFS的优化。
+
+    -u：跳过接收方上较新的文件
+
+    -e ssh 连接参数。
+
+        早期 rsync 不使用 SSH 协议，需要用 -e 参数指定协议，后来才改成默认 ssh 了， -e 参数用于额外参数。
+
+            # -e ssh 可以省略
+            $ rsync -av -e ssh source/ user@remote_host:/destination
+
+        # -e 参数指定 SSH 使用 2234 端口
+        $ rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
+
+        # 使用密钥文件登录服务器
+        rsync -av -e "ssh -i /Users/hs/test.pem" {本地源文件夹路径}/* root@{服务器IP}:{服务器目标文件夹路径}
+
+        # 使用 rsync 之前把 ssh 相关连接参数设置到变量 RSYNC_RSH 更方便
+        export RSYNC_RSH ="ssh -T -c aes128-ctr -o Compression = no -x"
+
+        更简单的办法是在 ssh_config 中配置好服务器的各项参数，这样 rsync 命令就不需要 -e 参数了。
+
+以上也仅是列出了 rsync 命令常用的一些选项，对于初学者来说，记住最常用的几个即可，比如 -a、-v、-z、--delete 和 --exclude。
+
 #### rsync 命令行示例
 
-tldr:
+本地挂载存储备份：
 
-    本地挂载存储备份：
+    sudo mount -o noatime nodev /dev/sdxx /backup
 
-        sudo mount -o noatime nodev /dev/sdxx /backup
+    # 普通备份：保留权限、属主、时间戳等
+    rsync -avh --progress --stats \
+        /source/ /backup/destination/
 
-        # 普通备份：保留权限、属主、时间戳等
-        rsync -avh --progress --stats \
-            /source/ /backup/destination/
+    # 备份用户目录：保留 ACL 和扩展属性（包含SELinux上下文）、保留硬链接等
+    sudo rsync -avAXHh --progress /home/ /backup/destination/
 
-        # 备份用户目录：保留 ACL 和扩展属性（包含SELinux上下文）、保留硬链接等
-        sudo rsync -avAXHh --progress /home/ /backup/destination/
+        # 恢复 /home 目录
+        sudo rsync -avAXHh --progress /backup/destination/ /home/
 
-            # 恢复 /home 目录
-            sudo rsync -avAXHh --progress /backup/destination/ /home/
+    # 备份整个 / 根目录：需要排除不需要备份的目录
+    sudo rsync -avAXHh --progress \
+        --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} \
+        --exclude={"/home/*/.cache/*","/var/cache/*","/var/tmp/*"} \
+        --exclude={"/boot/grub2/grubenv","/etc/machine-id"} \
+        / /mnt/backup/system/
 
-        # 备份整个 / 根目录：需要排除不需要备份的目录
-        sudo rsync -avAXHh --progress \
-            --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} \
-            --exclude={"/home/*/.cache/*","/var/cache/*","/var/tmp/*"} \
-            --exclude={"/boot/grub2/grubenv","/etc/machine-id"} \
-            / /mnt/backup/system/
+        # 恢复整个系统（需在Live CD环境下进行）
+        sudo rsync -avAXHh --progress /mnt/backup/system/ /mnt/newroot/
 
-            # 恢复整个系统（需在Live CD环境下进行）
-            sudo rsync -avAXHh --progress /mnt/backup/system/ /mnt/newroot/
+远程：
 
-    远程：
+    rsync -avh --progress --stats \
+        -e "ssh -p 22" \
+        /source/ user@host:/backup/destination/
 
-        rsync -avh --progress --stats \
-            -e "ssh -p 22" \
-            /source/ user@host:/backup/destination/
+不稳定网络增量备份，断点续传：
 
-    不稳定网络增量备份，断点续传：
+    rsync -avh --progress --stats \
+        --partial  --partial-dir=.rsync-partial\
+        --timeout=30 \
+        --bwlimit=5000 \
+        -e "ssh -p 22 -o ServerAliveInterval=15 -o ConnectTimeout=20" \
+        /source/ user@host:/backup/destination/
 
-        rsync -avh --progress --stats \
-            --partial  --partial-dir=.rsync-partial\
-            --timeout=30 \
-            --bwlimit=5000 \
-            -e "ssh -p 22 -o ServerAliveInterval=15 -o ConnectTimeout=20" \
-            /source/ user@host:/backup/destination/
-
-        NOTE：使用了 --partial-dir 则远程服务器要定期清理该目录
+    NOTE：使用了 --partial-dir 则远程服务器要定期清理该目录
 
 一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`，这样就可以实现增量备份。
 
@@ -9718,6 +9537,144 @@ NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式与众�
 
     # 如果 ssh 命令有附加的参数，则必须使用 -e 参数指定所要执行的 SSH 命令
     rsync -avh -e 'ssh -p 2234' source/ user@remote_host:/destination
+
+#### rsync 增量备份变为仅发送增量
+
+日常使用默认即可：
+
+    对于99%的备份和同步需求，直接使用 `rsync -av` 就够了。它的“文件级增量判断 + 传输时块级优化”已经非常高效和智能。
+
+rsync 使用文件大小和修改时间来判断目标文件是否需要更新：
+
+    增量单位是“文件”。 一个文件要么被整体同步，要么被跳过。
+
+    决策逻辑基于“元数据”。 通过比较时间戳和大小来快速决定哪些文件需要处理。
+
+    传输优化是“块级”。 在传输单个文件的内容时，rsync 会尽力减少数据传输量，但这发生在文件已经被选定为需要同步之后。
+
+默认方式（Safe Transfer）： rsync 默认会先将更新的数据写入一个临时文件，传输完成并验证后，再重命名覆盖旧文件。这是最安全的方式。
+
+以下选项会改变 rsync 传输文件的方式：
+
+ssh：远程传输时会自动禁用整个文件同步，进行块级别的比较和传输。
+
+--whole-file：强制进行“全文件”传输
+
+    在本地存储或万兆高速局域网内，有时直接传输整个文件比计算和比较进行块级优化的速度更快
+
+--progress： 在传输时显示进度条
+
+    想不到吧，你想看进度，就变成块级别数据传输了，所以本地备份的时候就别用这个参数了，影响拷贝速度，单独执行 `df -h` 看看空间变化得了。
+
+--inplace：原地更新目标文件，对部分更新的文件进行备份时写入数据更少。
+
+    rsync 会直接在目标文件上进行“打补丁”操作。它会找到文件中变化的块，并直接用网络传输的差异块覆盖目标文件的相应位置。
+
+    只有在明确知道源文件和目标文件几乎相同，只有小块数据变化，并且能承受传输中断导致文件损坏的风险时，才使用 --inplace，通常用于同步虚拟机镜像或大型数据库文件的副本。
+
+--partial：保留部分传输的文件，断点续传。
+
+    保留那些未传输完成的文件，以便可以在下次传输时继续。部分传输的文件通常会被存放在目标目录中，但它们会被放置在一个以 .rsync-partial 命名的隐藏目录里。这个隐藏目录会在目标路径下自动创建，用于存放在传输过程中断时的部分文件。
+
+        如果传输 10GB 文件在 8GB 时中断，目标服务器上会有 8GB 的 .partial 文件，下次续传时，需要额外的 10GB 空间（新旧版本并存），最终总空间需求 ≈ 2 × 文件大小
+
+        如果传输频繁中断，会积累大量 .partial 文件，需要手动清理。
+
+    --append-verify 断点续传。在 --partial 的基础上，它还会在传输完成后对文件进行校验，如果校验失败，则会重新传输该文件。这是对数据完整性更好的选择，但是会大大降低数据同步的速度，并增加cpu消耗。
+
+    第二次进行同步开始，自动尝试断点续传的触发条件：
+
+        重新执行的命令必须与最初中断的命令完全相同，包括源文件、目标文件以及使用的参数。
+
+        rsync 会检查目标路径下是否存在未完成的文件部分，检查源文件的大小和修改时间，如果找到了这样的部分文件，rsync 会从上次中断的地方继续传输。
+
+        如果源文件在传的过程中改变了，或一开始就断连了，不会进行续传
+
+        如果使用了 --inplace 参数，rsync 会直接在目标位置更新文件，而不是首先将数据传输到临时文件然后再重命名。这种情况下，rsync 不会保留未完成的传输数据。
+
+        如果使用了 --whole-file 参数，rsync 会传输整个文件，而不是增量传输，因此不会进行断点续传。
+
+--sparse -S  在目标位置保持稀疏文件。适合源文件是稀疏文件的场合，比如虚拟机镜像、数据库等大文件，无此参数会传输稀疏文件的虚假大小的数据(100GB)而不是真实数据(1GB)。
+
+    但是，再次执行同步命令时，因为文件已经存在而变化了一点数据时，反而无法只更新稀疏数据的变化部分(0.1GB)，传输的是整个稀疏数据(1.1GB)。而且，对稀疏文件，无法使用 --inplace 选项指定只更新稀疏数据的变化部分，这是 rsync 的一个短板。
+
+    但是，如果不使用--sparse，第一次备份时会写入虚假大小的 100GB 数据，但是之后的写入都是更新操作，只会传输变化的 0.1GB 那部分，反而大大节约了备份时间。
+
+--append：专门用于处理正在被写入的日志文件或类似的文件，只传输源文件中多出来的那部分数据，并将其追加到目标文件。
+
+#### 示例：定时增量备份
+
+把 apache 的 html/ 下的所有目录和文件传送到 ssh 服务器的 /destination 目录下，同步删除在源目录已经不存在的文件和目录
+
+    # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
+    /usr/bin/rsync -avz --progress --delete /usr/local/apache/htdocs/pub/html/ user@remote_host:/destination
+
+说明：
+
+    -avz        里的 a 是递归方式传输文件并保留文件属性；v 是显示正在处理的文件详细信息；z 是传输中使用 zip 压缩。
+
+    --progress  显示出当前的进度，
+
+    --delete    源目录如果删除了一文件，那么目的目录也相应把文件删除，保持一致。
+
+可以考虑增加参数以提高数据准确性或速度
+
+    --checksum      使用校验和判断文件变更，等同参数 -c
+
+    --size-only     只同步大小有变化的文件，不考虑文件修改时间的差异。
+
+自制 systemd 单元文件：
+
+/usr/lib/systemd/system/rsync_bkup.service
+
+``` ini
+[Unit]
+Description=rsync backup your data
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+# 执行普通脚本，执行完退出到shell命令行，见章节 [ 自制的 shell 脚本由 systemd 启动](init_a_server.md)
+Type=oneshot
+# 一般都要加 RemainAfterExit 不然闪退 https://blog.csdn.net/Peter_JJH/article/details/108446380
+# 定时器周期性调用，则不能有 RemainAfterExit
+#RemainAfterExit=yes
+
+# 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
+ExecStart=/usr/bin/rsync -avz --progress --delete /sorce/path/ user@remote_host:/destination
+
+[Install]
+WantedBy=multi-user.target
+```
+
+定时器：跟单元文件同名，后缀改为 .timer
+
+/usr/lib/systemd/system/rsync_bkup.timer
+
+``` ini
+[Unit]
+Description=rsync backup your data daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+AccuracySec=1h
+RandomizedDelaySec=900
+Unit=rsync_bkup.service
+
+[Install]
+WantedBy=timers.target
+```
+
+启动并设置开机自启动
+
+    $ sudo systemctl daemon-reload
+
+    $ sudo systemctl enable --now rsync_bkup.timer
+
+验证
+
+    systemctl list-timers
 
 #### 示例：三方比对实现备份用户的主目录，创建多个备份目录
 
@@ -9872,212 +9829,128 @@ WantedBy=timers.target
 
     $ systemctl list-timers
 
+#### 使用 rsync 协议
+
+在 rsync 命令中的远程操作，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议，默认端口873。ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量
+
+    # module并不是实际路径名，而是 rsync 守护程序指定的一个资源名，由管理员分配
+    rsync -av source/ 192.168.122.32::module/destination
+
+    # rsync 守护程序分配的所有 module 列表
+    rsync rsync://192.168.122.32
+
+    # 除了使用双冒号，也可以直接用 rsync://
+    rsync -av source/ rsync://192.168.122.32/module/destination
+
 #### 使用 rsyncd 服务
 
 rsync 可以作为服务器模式运行，跟 rsync 客户端进行交互，支持自己独有的协议。
 
 在两台计算机中都要安装 rysnc，一台运行 rsyncd 守护进程作为服务器，在另一台计算机上用定时任务以客户端方法运行 rsync，连接到主服务器进行内容同步。
 
-##### 使用 rsync 协议
+rsyncd 守护进程：
 
-    https://www.zhihu.com/question/20322405/answer/2874017681
+rsyncd 通常配置在源服务器上，它监听客户端的连接请求，并允许客户端同步（拷贝）文件。这里的“源服务器”是指拥有你想要同步的文件的服务器，而“目标服务器”可以是任何需要这些文件的服务器。
 
-一、安装设置服务器端软件
+SELinux 的服务器上，如果要使用 rsync 守护进程共享文件，您必须使用 `public_content_t` 类型标记文件和目录
 
-一般安装 Linux 发行版的 rsync 软件包就自带 rsyncd 了。
+    https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/selinux_users_and_administrators_guide/chap-managing_confined_services-rsync
 
- rsyncd 服务的设置文件为 /etc/rsyncd.conf，在这里配置认证、日志等。
+示例：
 
- 该文件是由一个或多个模块结构组成。一个模块定义以方括弧中的模块名开端，直到下一个模块定义开端或文件结束，模块中包含格式为 `name= value` 的参数定义。
+源服务器的 rsyncd.conf
 
- 每个模块对应需要备份的一个目录树，比如有三个目录树需要备份：
+```conf
+# rsyncd.conf
 
-    /www/
+# 用户和组
+uid = nobody
+gid = nogroup
 
-    /mirror/dir1/
+# 最大连接数
+max connections = 4
 
-    /mirror/dir2/
+# 守护进程模式
+use chroot = yes
+chroot = /path/to/chroot
 
-那么就需要在设置文件中定义三个模块，分别对应三个目录树。
+# 日志文件
+log file = /var/log/rsync.log
 
-设置文件是行为单位的，每个新行都表明一个新的注释、模块定义或许参数赋值。
+# PID 文件
+pid file = /var/run/rsyncd.pid
 
-例如，在 168 上创建 rsyncd 的设置文件 /etc/rsyncd.conf，内容如下：
+# 拒绝对 .sensitive 文件夹的访问
+read only = yes
+exclude = .sensitive/
 
-    uid = nobody # 备份以什么身份进行，用户ID
-    gid = nobody # 备份以什么身份进行，组ID
-    # 留意这个用户 ID 和组 ID，假如要便利的话，能够设置成 root，这样 rsync 简直就可以读取任何文件和目录了，但是也带来安全隐患。建议设置成只能读取你要备份的目录和文件即可。
+# [module_name] 定义了一个可以被同步的模块
+[module_name]
+path = /path/to/directory/on/server
+comment = This is a comment
+read only = no
+list = yes
+uid = nobody
+gid = nogroup
 
-    #use chroot = no
-    max connections = 0 # 最大衔接数没有限制
-    pid file = /var/log/rsync/rsyncd.pid
-    lock file = /var/log/rsync/rsync.lock
-    log file = /var/log/rsync/rsyncd.log
-
-    [attachment] # 指定认证的备份模块名
-    path = /www/htdocs/pub/attachment/ # 需要备份的目录
-    comment = BACKUP attachment # 注释
-    ignore errors # 疏忽一些无关的IO过错
-    read only = false # 设置为非只读
-    list = false # 不答应列文件
-    #hosts allow = 210.51.0.80 #答应衔接服务器的主机IP地址
-    #hosts deny = 0.0.0.0/0.0.0.0 #制止衔接服务器的主机IP地址
-    auth users = msyn # 认证的用户名，假如没有这行，则表明是匿名
-    secrets file = /etc/rsyncd.scrt # 认证文件名，用来存放暗码
-
-    [98htdocs]
-    uid = nobody
-    gid = nobody
-    path = /www/htdocs/
-    #ignore errors
-    read only = false
-    list = false
-    #hosts allow = 210.51.0.98
-    #hosts deny = 202.108.211.38
-    #hosts deny = 0.0.0.0/0.0.0.0
-    auth users = msyn
-    secrets file = /etc/rsyncd.scrt
-
-    [98html]
-    uid = ejbftp
-    gid = nobody
-    path = /www/htdocs/pub/html/
-    #ignore errors
-    read only = false
-    list = false
-    #hosts allow = 210.51.0.98
-    #hosts deny = 0.0.0.0/0.0.0.0
-    auth users = 98syn
-    secrets file = /etc/rsync98.scrt
-
-这里分别定义了 [attachment]、[98htdocs]、[98html] 三个模块，分别对应于三个需要备份的目树。三个模块授权的备份用户分别为 msyn，msyn，98syn，用户信息保存在文件 /etc/rsyncd.scrt 和 /etc/rsync98.scrt 中，其内容如下：
-
-    $ sudo cat /etc/rsyncd.scrt
-    msyn:xxxxxxxxx
-
-出于安全目的，该文件属主必须是 root 用户且仅属主可读写，即文件权限 600 不然 rsync 将拒绝运行。
-
-    # /usr/local/bin/rsync --daemon
-
-rsync 默许服务端口为 873。
-
-二、装备客户端
-
-1、linux下执行 rsync 客户端指令
-
-    # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
-    [backup@backup /] /usr/bin/rsync -vlzrtogp --progress --delete 98syn@x.x.x.168::98html /usr/local/apache/htdocs/pub/html/ --password-file=/etc/rsync98.scrt
-
-上面这个指令行中：
-
-    -vzrtopg 里的 v 是代表 verbose(具体)，z 是代表 zip（压缩），r 是代表 recursive（递归），topg 都是保留文件原有特点如属主、时间的参数。
-
-    --progress 是指显示出当前的进度，
-
-    --delete 是指假如服务器端删除了这一文件，那么客户端也相应把文件删除，保持一致。
-
-    98syn@x.x.x.168::98html 是表明该指令是对服务器x .x.x.168 中的 98html 模块进行备份，其中 98syn 表明运用 98syn 用户来对该模块进行备份。
-
-    -- password-file=/etc/rsync98.scrt 来指定密码文件，这样就能够在脚本中调用而无需交互式地输入验证密码了，这里需要注意的是密码文件权限，要设得只能执行这个指令的用户可读，本例中是98syn 用户。
-
-备份的内容存放在备份机的/usr/local/apache/htdocs/pub/html/目录下。
-
-这样，rsync同步服务就搭建好了，可以通过 设置 crontab 定时任务来调度执行。
-
-2、Windows装备客户端
-
-为了在Windows环境运用 rsync 工具，需要下载 rsync for windows --- cwRsync，或安装 MSYS2/cygwin 的时候选择添加软件包 rsync，现在最简单的方法是使用 WSL 直接安装运行 rsync 即可。
-
-然后运行以下指令
-
-    # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
-    rsync -vzrtopg --progress --delete 98syn@xx.xx.xx.xx::98html .\bak\ --password-file=.\rsync98.scrt
-
-如果命令行执行过程中出现提示输入密码 `password:`，正确输入密码后就应该看到开始执行备份了。
-
-引起这种过错有几种可能性
-
-    一是你没有输入正确的用户名或密码
-
-    二是你的服务器端存储密码的文件没有正确的 600 权限
-
-最好把命令写成批处理文件，放到 Windows 计划任务里定时执行。
-
-##### 使用 ssh 协议定时增量备份
-
-把 apache 的 html/ 下的所有目录和文件传送到 ssh 服务器的 /destination 目录下，同步删除源目录不存在的文件和目录
-
-    # 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
-    /usr/bin/rsync -avz --progress --delete /usr/local/apache/htdocs/pub/html/ user@remote_host:/destination
-
-说明：
-
-    -avz        里的 a 是递归方式传输文件并保持所有属性；v 是显示正在处理的文件详细信息；z 是传输中使用 zip 压缩。
-
-    --progress  显示出当前的进度，
-
-    --delete    源目录如果删除了一文件，那么目的目录也相应把文件删除，保持一致。
-
-可以考虑增加参数以提高数据准确性或速度
-
-    --checksum      使用校验和判断文件变更，等同参数 -c
-
-    --size-only     只同步大小有变化的文件，不考虑文件修改时间的差异。
-
-自制 systemd 单元文件：
-
-/usr/lib/systemd/system/rsync_bkup.service
-
-``` ini
-[Unit]
-Description=rsync backup your data
-Wants=network-online.target
-After=network-online.target
-
-[Service]
-# 执行普通脚本，执行完退出到shell命令行，见章节 [ 自制的 shell 脚本由 systemd 启动](init_a_server.md)
-Type=oneshot
-# 一般都要加 RemainAfterExit 不然闪退 https://blog.csdn.net/Peter_JJH/article/details/108446380
-# 定时器周期性调用，则不能有 RemainAfterExit
-#RemainAfterExit=yes
-
-# 如果目的存储没有挂载只有空目录，--delete 会导致目标目录的内容也都被删除！使用前先用 -n 参数干跑一下看看效果
-ExecStart=/usr/bin/rsync -avz --progress --delete /sorce/path/ user@remote_host:/destination
-
-[Install]
-WantedBy=multi-user.target
+# 可以添加更多的模块
+[another_module]
+path = /another/path/on/server
+comment = Another comment
 ```
 
-定时器：跟单元文件同名，后缀改为 .timer
+在这个配置文件中：
 
-/usr/lib/systemd/system/rsync_bkup.timer
+    uid 和 gid 指定了运行 rsync 守护进程的用户和组。
 
-``` ini
-[Unit]
-Description=rsync backup your data daily
+    max connections 指定了同时可以有多少个连接。
 
-[Timer]
-OnCalendar=daily
-Persistent=true
-AccuracySec=1h
-RandomizedDelaySec=900
-Unit=rsync_bkup.service
+    use chroot = yes 和 chroot 指定了 rsync 守护进程将使用 chroot 监狱来限制访问。
 
-[Install]
-WantedBy=timers.target
-```
+    log file 和 pid file 分别指定了日志文件和 PID 文件的位置。
 
-启动并设置开机自启动
+    read only = yes 和 exclude = .sensitive/ 指定了同步操作是只读的，并且排除了 .sensitive 文件夹。
 
-    $ sudo systemctl daemon-reload
+    [module_name] 是一个模块，它定义了客户端可以同步的文件和目录。
 
-    $ sudo systemctl enable --now rsync_bkup.timer
+    path 指定了服务器上的同步目录。
 
-验证
+    comment 是一个可选的描述。
 
-    systemctl list-timers
+    read only 可以设置为 no 来允许写入操作。
 
-#### rsync+inotify 实时增量备份
+    list 设置为 yes 允许客户端列出模块中的文件。
+
+    uid 和 gid 指定了文件的拥有者和组。
+
+如果想知道 rsync 守护程序分配的所有 module 列表，可以执行下面命令。
+
+    $ rsync rsync://192.168.122.32
+
+客户端执行同步：
+
+    rsync -avz rsync://remote_host::module_name /path/to/local/directory
+
+remote_host 是守护进程运行的服务器的主机名或 IP 地址。
+
+module_name 是你在 rsyncd.conf 中定义的模块名。
+
+/path/to/local/directory 是客户端的目标目录。
+
+注意事项
+
+    权限：确保源服务器上的 rsync 守护进程有权限访问指定的文件和目录。
+
+    安全性：如果使用非加密的连接，数据可能会被截获。使用 SSH 隧道或其他加密方法可以提高安全性。
+    如果你希望允许写入操作，确保 read only 设置为 no，并且服务器上的目录有适当的写入权限。
+
+    性能：rsync 守护进程可以配置为使用 chroot 监狱来限制进程的活动范围，提高安全性。
+
+    如果你使用 SSH 进行传输，可以在客户端命令中添加 -e ssh 选项。
+
+通过这种方式，rsync 守护进程允许客户端从源服务器同步文件，而客户端可以是任何需要这些文件的目标服务器。
+
+##### 示例：rsync+inotify 实时增量备份
 
 使用 inotify 可以用来监控文件系统的各种变化情况，如文件存取、删除、移动、修改等，并做出通知响应。利用这一机制，可以非常方便地实现文件异动告警、增量备份，并针对目录或文件的变化及时作出响应
 
@@ -10104,9 +9977,7 @@ inotifywait（持续监控并实时输出监控结果的命令）
     max_user_instances      #最多监控实例数
     max_user_watches        #每个实例最多监控文件数
 
-一、 server配置
-
-安装 inotify
+一、操作系统安装 inotify
 
     $ dnf install inotify-tools
 
@@ -10137,14 +10008,14 @@ inotifywait（持续监控并实时输出监控结果的命令）
 
     $ sudo sysctl -p
 
-二、 rsync服务器配置
+二、 配置 rsync 服务器
 
 1、先关闭rsync进程
 
     $ kill $(cat /var/run/rsyncd.pid)
     $ netstat -natp | grep rsync
 
-2、修改rsync配置文件 /etc/rsyncd.conf
+2、修改 rsync 配置文件 /etc/rsyncd.conf
 
 ```conf
 uid = root
