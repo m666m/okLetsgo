@@ -9441,10 +9441,10 @@ rsync 的默认增量备份是文件级：
 
     sudo mount -o noatime nodev /dev/sdxx /backup
 
-    # 普通备份：保留权限、属主、时间戳等
+    # 普通备份：保留权限、属主等
     rsync -av /source/ /backup/destination/
 
-    # 备份用户目录：保留 ACL 和扩展属性（包含SELinux上下文）、保留硬链接、保留稀疏文件（虚拟机镜像等）
+    # 备份用户目录：保留 ACL 和扩展属性（包含SELinux上下文）、保持硬链接、保持稀疏文件（虚拟机镜像等）
     sudo rsync -avAXHS /home/ /backup/destination/
 
         # 恢复 /home 目录
