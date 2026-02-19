@@ -9373,7 +9373,7 @@ rsync 的默认增量备份是文件级：
 
     -h    让输出信息人性化可读
 
-    --progress    在同步的过程中可以看到同步的过程状态，比如统计要同步的文件数量、 同步的文件传输速度等。
+    --progress    在同步的过程中可以看到同步的过程状态，比如统计要同步的文件数量、 同步的文件传输速度等。常与 --stats 连用展示统计信息。
 
     -n    模拟命令执行的结果，并不真的执行命令(--dry-run) 。
 
@@ -9442,24 +9442,23 @@ rsync 的默认增量备份是文件级：
     sudo mount -o noatime nodev /dev/sdxx /backup
 
     # 普通备份：保留权限、属主、时间戳等
-    rsync -avh --progress --stats \
-        /source/ /backup/destination/
+    rsync -av /source/ /backup/destination/
 
-    # 备份用户目录：保留 ACL 和扩展属性（包含SELinux上下文）、保留硬链接等
-    sudo rsync -avAXHh --progress /home/ /backup/destination/
+    # 备份用户目录：保留 ACL 和扩展属性（包含SELinux上下文）、保留硬链接、保留稀疏文件（虚拟机镜像等）
+    sudo rsync -avAXHS /home/ /backup/destination/
 
         # 恢复 /home 目录
-        sudo rsync -avAXHh --progress /backup/destination/ /home/
+        sudo rsync -avAXHS /backup/destination/ /home/
 
     # 备份整个 / 根目录：需要排除不需要备份的目录
-    sudo rsync -avAXHh --progress \
+    sudo rsync -avAXHS \
         --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} \
         --exclude={"/home/*/.cache/*","/var/cache/*","/var/tmp/*"} \
         --exclude={"/boot/grub2/grubenv","/etc/machine-id"} \
         / /mnt/backup/system/
 
         # 恢复整个系统（需在Live CD环境下进行）
-        sudo rsync -avAXHh --progress /mnt/backup/system/ /mnt/newroot/
+        sudo rsync -avAXHS /mnt/backup/system/ /mnt/newroot/
 
 远程：
 
