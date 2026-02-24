@@ -597,6 +597,7 @@ function pdmrm() {
     local sha=$2
     echo "[podman 删除私有仓库的镜像 ${PDMREPO}/$img:$tag，sha256摘要: ${sha}]"
     curl -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://${PDMREPO}/v2/${img}/manifests/sha256:${sha}
+    echo "注意：登录仓库的 tty 运行垃圾收集(GC)才能真正的释放磁盘空间"
 }
 
 # distrobox 这词打不快
