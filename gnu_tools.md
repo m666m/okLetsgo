@@ -12894,7 +12894,7 @@ enlightenment 桌面
 
     “打开文件”对话框里粘贴地址没法鼠标操作，直接用热键 ctrl + v 即可
 
-    如果使用 meld，可以添加右键菜单，参见章节 [给资源管理器添加 meld 右键菜单]。
+    如果使用 meld，可以添加右键菜单，参见章节 [文件管理器 Nautilus 添加 meld 右键菜单]。
 
 如果想使用 Total Commander 用 wine 运行 Windows 下的版本，或尝试其它选择：
 
@@ -18568,7 +18568,7 @@ Windows C++ 开发环境配置
     WinSCP 同步本地和编译机代码
 
     BeyondCompare 图形化合并代码
-        推荐用 meld 或 Diffuse 替换 BeyondCompare，参见章节 [给资源管理器添加 meld 右键菜单]
+        推荐用 meld 或 Diffuse 替换 BeyondCompare，参见章节 [文件管理器 Nautilus 添加 meld 右键菜单]
 
     tmux + vim 直接在编译机写代码，方便随时ssh上去复原现场继续。
 
