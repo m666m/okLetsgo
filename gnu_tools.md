@@ -6622,45 +6622,46 @@ sed 的正则表达式能玩出花来
 给所有没有#开头的行改为#开头
 
     # sed '/[^#]/ s/^[^#]/#&/' /etc/dhcpcd.conf
-    sed 's/^[^#]/#&/' /etc/dhcpcd.conf
+    $ sed 's/^[^#]/#&/' /etc/dhcpcd.conf
 
     在文件的匹配行前面加上#注释
-    # 前面的两个斜线 // 是sed的模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
-    #     s       替换
-    #     ^       开头匹配
-    #     [^#]    匹配非#
-    #     #&      用&来原封不动引用前面匹配到的行内容，在其前面加上#号
-    #     g       全部（只匹配特定行不加g）
+    前面的两个斜线 // 是sed的模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+        s       替换
+        ^       开头匹配
+        [^#]    匹配非#
+        #&      用&来原封不动引用前面匹配到的行内容，在其前面加上#号
+        g       全部（只匹配特定行不加g）
 
-        sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
+    $ sed '/^static domain_name_servers=8.8.8.8/ s/^[^#].*domain_name_servers.*/#&/g' /etc/dhcpcd.conf
 
     在文件的匹配行前面取消#注释
-    # 前面的两个斜线 // 是sed的模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
-    #     s       替换，后面没有g则只做一次
-    #     ^#      开头的#
-    #     //      替换内容为空，即删除
+    前面的两个斜线 // 是sed的模式匹配，可匹配文字中的空格，后面的 s// 替换操作是在前面模式匹配到的行中做
+        s       替换，后面没有g则只做一次
+        ^#      开头的#
+        //      替换内容为空，即删除
 
-        sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
+    $ sed '/^#static domain_name_servers=192.168.1.1/ s/^#//' /etc/dhcpcd.conf
 
 模式匹配简写，替换满足条件行的回车为逗号
 
-    sed 'H;1h;$!d;x;y/\n/,/'
+    $ sed 'H;1h;$!d;x;y/\n/,/'
 
 把字符串 'bt-tracker=' 后面的内容替换为变量 $TRACKER 的值
 
-    # 正则表达式应用：括号为正则表达式的模式匹配，@是模式区和操作区的分隔符
-    # \1表示第一个括号中的内容，${TRACKER}引用变量的内容
-    sed -i "s@^\(bt-tracker=\).*@\1${TRACKER}@" btconfig.txt
+    正则表达式应用：括号为正则表达式的模式匹配，@是模式区和操作区的分隔符
+    \1表示第一个括号中的内容，${TRACKER}引用变量的内容
 
-    sed -i.bak xxx abc.txt 会备份文件到abc.txt.bak
+    $ sed -i "s@^\(bt-tracker=\).*@\1${TRACKER}@" btconfig.txt
+
+    $ sed -i.bak xxx abc.txt 会备份文件到abc.txt.bak
 
 范围删除匹配模式行，只显示删除后的结果
 
-    sed -n '/start_line/,/end_line/!p' your_file
+    $ sed -n '/start_line/,/end_line/!p' your_file
 
 范围删除匹配模式行，直接修改到文件
 
-    sed -i '/start_line/,/end_line/d' your_file
+    $ sed -i '/start_line/,/end_line/d' your_file
 
 多行范围匹配替换
 
@@ -6670,9 +6671,10 @@ sed 的正则表达式能玩出花来
         https://www.itbaoku.cn/post/2760950.html
 
     不过其模式匹配支持范围选择：
-        sed -i "/start_pattern/,/end_pattern/ s/pattern_to_replace/replacement_text/g" filename
 
-        sed '/^why$/ {N; s/\<why\>\n\<huh\>/yo/g}' test.txt
+        $ sed -i "/start_pattern/,/end_pattern/ s/pattern_to_replace/replacement_text/g" filename
+
+        $ sed '/^why$/ {N; s/\<why\>\n\<huh\>/yo/g}' test.txt
 
     sed 还有N是把下一行加入到当前的hold space模式空间里，还有循环功能 --- :a和ta是配套使用，实现跳转功能。t是test测试的意思。:a和ba的配套使用方式，也可以实现跳转功能。b是branch分支的意思。
 
@@ -6680,11 +6682,11 @@ sed 的正则表达式能玩出花来
         https://blog.csdn.net/lovebyz/article/details/89377966
 
         # 删除换行
-        sed ":a;N;s/\n//g;ba" a.txt     # while(1) { N; s/\n//g; }
+        $ sed ":a;N;s/\n//g;ba" a.txt     # while(1) { N; s/\n//g; }
 
-        sed ":a;N;s/\n//g;$!ba" a.txt   # $的意思是最后一行，不跳转到标记a处，即退出命令循环
+        $ sed ":a;N;s/\n//g;$!ba" a.txt   # $的意思是最后一行，不跳转到标记a处，即退出命令循环
 
-        sed ":a;N;s/\n//g;ta" a.txt
+        $ sed ":a;N;s/\n//g;ta" a.txt
 
     awk 'match($0, start_pattern) {start=1; next} start==1 && match($0, end_pattern) {start=0; next} start==1 {gsub(pattern_to_replace, replacement_text)} 1' filename > temp && mv temp filename
 
