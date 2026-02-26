@@ -1052,9 +1052,9 @@ function PS1_host_name {
             # 变量 HOSTNAME 的值与宿主机一致，但 /etc/hostname 变为 toolbox
             # cat /run/host/etc/hostname | cut -d '.' -f 1
 
-            # 之前 toolbox 容器中只能用这个方式判断是否进入远程ssh会话，不是很靠谱
+            # 之前，toolbox 容器中只能用下面这个方式判断是否进入远程ssh会话，不是很靠谱
             # [[ $(pstree |grep sshd |grep toolbox |grep podman |grep -v grep >/dev/null 2>&1; echo $?) = "0" ]] && is_remote=true
-            # 目前暂无法获取当前是否处于远程连接的状态，除非把环境变量 SSH_CLIENT 保存到 /tmp 等共享目录进行交换
+            # 现在，暂无法获取当前是否处于远程连接的状态，除非把环境变量 SSH_CLIENT 保存到 /tmp 等共享目录进行交换
             :
 
             # raw_host_name 使用前面设置过的
@@ -1063,7 +1063,8 @@ function PS1_host_name {
         else
             # distrobox 容器继承了宿主机的环境变量，前面的 is_remote 判断结果可以直接用
 
-            # distrobox 容器把 HOSTNAME 的值变为：容器名.宿主机的主机名，用 raw_host_name=$(echo ${HOSTNAME##*.}) 取宿主机的主机名
+            # 之前， distrobox 容器把 HOSTNAME 的值变为：容器名.宿主机的主机名，用 raw_host_name=$(echo ${HOSTNAME##*.}) 取宿主机的主机名
+            # 现在， HOSTNAME 的值就是 宿主机的主机名
             :
         fi
     fi
