@@ -1046,7 +1046,7 @@ function PS1_host_name {
 
     # 在交互式容器中特殊处理，从 HOSTNAME 提取出宿主机的主机名
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
-        # 如果是在交互式容器 toolbox 中。（名字好像又改称 toolbx 了）
+        # 如果是在交互式容器 toolbox 中，现在又改城 toolbx 了
         if [[ $(uname -n) = 'toolbx' ]]; then
 
             # 变量 HOSTNAME 的值与宿主机一致，但 /etc/hostname 变为 toolbox
@@ -1063,7 +1063,7 @@ function PS1_host_name {
         else
             # distrobox 容器继承了宿主机的环境变量，前面的 is_remote 判断结果可以直接用
 
-            # distrobox 容器会把 HOSTNAME 的值变为：容器名.宿主机的主机名，用 raw_host_name=$(echo ${HOSTNAME##*.}) 取宿主机的主机名
+            # distrobox 容器把 HOSTNAME 的值变为：容器名.宿主机的主机名，用 raw_host_name=$(echo ${HOSTNAME##*.}) 取宿主机的主机名
             :
         fi
     fi
