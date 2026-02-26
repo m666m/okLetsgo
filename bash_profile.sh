@@ -1041,7 +1041,7 @@ function PS1_host_name {
         is_remote=true
     fi
 
-    # FQDN 格式主机名只显示前段，如 abc.local 显示 abc
+    # 如果是 FQDN 格式主机名只显示前段，如 abc.local 显示 abc
     local raw_host_name=$(echo ${HOSTNAME%%.*})
 
     # 在交互式容器中特殊处理，从 HOSTNAME 提取出宿主机的主机名
@@ -1063,8 +1063,8 @@ function PS1_host_name {
         else
             # distrobox 容器继承了宿主机的环境变量，前面的 is_remote 判断结果可以直接用
 
-            # 之前distrobox 容器会把 HOSTNAME 的值变为：容器名.宿主机的主机名，用 raw_host_name=$(echo ${HOSTNAME##*.})
-            raw_host_name=$(echo ${HOSTNAME%%.*})
+            # distrobox 容器会把 HOSTNAME 的值变为：容器名.宿主机的主机名，用 raw_host_name=$(echo ${HOSTNAME##*.}) 取宿主机的主机名
+            :
         fi
     fi
 
