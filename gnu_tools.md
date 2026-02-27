@@ -9477,8 +9477,8 @@ rsync 的默认增量备份是文件级：
 
 不稳定网络增量备份，断点续传：
 
-    rsync -avh --progress --stats \
-        --partial  --partial-dir=.rsync-partial\
+    rsync -avh -P --stats \
+        --partial-dir=.rsync-partial\
         --timeout=30 \
         --bwlimit=5000 \
         -e "ssh -p 22 -o ServerAliveInterval=15 -o ConnectTimeout=20" \
@@ -9503,7 +9503,7 @@ rsync 的默认增量备份是文件级：
     rsync -anv source destination
 
     # 断点续传
-    rsync -avth --partial --progress --bwlimit=4000 --exclude='*.xxx' /path1/ xxx@192.111.11.111:/path2/
+    rsync -avth -P --bwlimit=4000 --exclude='*.xxx' /path1/ xxx@192.111.11.111:/path2/
 
 NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式与众不同
 
@@ -9581,6 +9581,8 @@ ssh：远程传输时会自动禁用整个文件同步，进行块级别的比�
     只有在明确知道源文件和目标文件几乎相同，只有小块数据变化，并且能承受传输中断导致文件损坏的风险时，才使用 --inplace，通常用于同步虚拟机镜像或大型数据库文件的副本。
 
 --partial：保留部分传输的文件，断点续传。
+
+    一般连写 --partial --progress，直接用 -P 即可
 
     保留那些未传输完成的文件，以便可以在下次传输时继续。部分传输的文件通常会被存放在目标目录中，但它们会被放置在一个以 .rsync-partial 命名的隐藏目录里。这个隐藏目录会在目标路径下自动创建，用于存放在传输过程中断时的部分文件。
 
