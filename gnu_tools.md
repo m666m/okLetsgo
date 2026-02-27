@@ -9297,15 +9297,15 @@ rsync 的默认增量备份是文件级：
 
 1、
 
-    rsync source destination/
+    rsync source/ destination/
 
-源目录 source 完整地复制到了目标目录 destination 下面，即形成了 destination/source 的目录结构
+最直观的操作，同步源目录 source 里面的内容到目标目录 destination 内，两个目录后面都要加上斜杠。
 
 2、
 
-    rsync source/ destination/
+    rsync source destination/
 
-只想同步源目录 source 里面的内容到目标目录 destination 内，则需要在源目录后面加上斜杠
+源目录 source 完整地复制到了目标目录 destination 下面，即形成了 destination/source 的目录结构
 
 #### 软硬链接文件的处理区别
 
@@ -9363,6 +9363,8 @@ rsync 的默认增量备份是文件级：
     -W          全文件复制，可能破坏硬链接    通常避免与 -H 同时使用
 
 #### rsync 命令的常用选项
+
+    https://www.man7.org/linux/man-pages/man1/rsync.1.html
 
 常用参数选项：
 
