@@ -200,9 +200,12 @@ jj 自己实现了一套简化的前端操作命令，把 git 隐藏到了后端
 
 然后就可以 ssh 方式使用 github 了：
 
-    先拉取远程仓库，在本地建立项目
+    使用 git 协议 ssh 方式拉取远程仓库，在本地建立项目：
 
-        git clone https://xxx.git
+        # 不要使用 https 方式 git clone https://xxx.git
+        git clone git@github.com:用户名/仓库名.gi
+
+    如： git clone git@github.com:m666m/okLetsgo.git
 
     查看是否此项目使用 https 协议
 
@@ -210,12 +213,8 @@ jj 自己实现了一套简化的前端操作命令，把 git 隐藏到了后端
         origin  https://github.com:m666m/okLetsgo.git (fetch)
         origin  https://github.com:m666m/okLetsgo.git (push)
 
-        # 可改为使用 git 协议
+        # 如果使用 https 方式拉取的，可改为使用 git 协议
         git remote set-url origin git@github.com:m666m/okLetsgo.git
-
-    在拉取远程时直接使用 git 协议，就不用修改了
-
-        git clone git@github.com:m666m/okLetsgo.git
 
     因为本地持有 ssh 密钥，你可以编辑这个仓库的文件，然后提交推送到 github 上的远程仓库，然后可以刷新 github 的网页看是否有变动了。
 
