@@ -435,7 +435,7 @@ stty 命令还有一些其他用法，如：stty -echo 关闭回显（比如在�
 
 标准名称：ISO 3166-1
 
-    https://www.iso.org/iso-3166-country-codes.html
+    https://www.iso.org/obp/ui/#search
 
 核心任务：为全球的国家和地区提供唯一的身份标识。
 
