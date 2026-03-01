@@ -3612,16 +3612,27 @@ man 查看指定章节后缀用.数字即可
 
     /usr/share/doc
 
-用 `apropos` 命令来查找相关联的帮助
+查找相关联的帮助
 
-    $ apropos sysctl
-    _sysctl (2)          - read/write system parameters
-    sysctl (2)           - read/write system parameters
-    sysctl (8)           - configure kernel parameters at runtime
-    sysctl.conf (5)      - sysctl preload/configuration file
-    sysctl.d (5)         - Configure kernel parameters at boot
-    systemd-sysctl (8)   - Configure kernel parameters at boot
-    systemd-sysctl.service (8) - Configure kernel parameters at boot
+    只搜索手册页的名字并展示描述
+
+        $ whatis config
+        Config (3pm)         - access Perl configuration information
+        openssl.cnf (5)      - OpenSSL CONF library configuration files
+
+    在手册页的描述中搜索关键字
+
+        $ apropos config
+        结果会非常多
+
+        $ apropos sysctl
+        _sysctl (2)          - read/write system parameters
+        sysctl (2)           - read/write system parameters
+        sysctl (8)           - configure kernel parameters at runtime
+        sysctl.conf (5)      - sysctl preload/configuration file
+        sysctl.d (5)         - Configure kernel parameters at boot
+        systemd-sysctl (8)   - Configure kernel parameters at boot
+        systemd-sysctl.service (8) - Configure kernel parameters at boot
 
 info 命令倾向于可读性和更深入的解释。信息页系统还支持文档之间的基本链接，以便于交叉引用。这提供了一个更有条理和可读性的文档集。
 
