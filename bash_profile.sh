@@ -291,7 +291,7 @@ function swc {
 }
 
 # man
-alias mans='echo "[模糊查找man手册]"; man -k'
+alias mans='echo "[在man手册页的描述中搜索关键字]"; man -k'
 
 # chrony
 alias chronys='echo "[虚拟机跟宿主机对时]"; sudo chronyc makestep'
@@ -412,6 +412,7 @@ function shasumd {
 }
 
 # 看日志
+alias dmesgs='echo "[分屏显示内核信息带颜色提示]"; sudo dmesg --color=always | less -R'
 alias audk='echo "[持续显示内核信息]"; sudo dmesg -w -T'
 alias auds='echo "[持续显示系统日志中 systemd-journald 分类信息]"; sudo journalctl -f'
 alias audj='echo "[持续显示系统日志中人性化可读审计信息-精简文本]"; sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
