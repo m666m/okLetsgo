@@ -9311,19 +9311,27 @@ rsync 的默认增量备份是文件级：
 
 #### 注意 rsync 命令对目录名的处理方式：带 / 和不带 /
 
-目录名带 / 和不带 /处理方式，rsync没有跟 cp、scp 等命令的使用习惯保持一致。
+NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式，跟 cp、scp 等命令的使用习惯不同
 
-1、
+    源目录带斜杠： 复制目录的内容
+
+    源目录不带斜杠： 复制目录本身
+
+    目标目录的斜杠无所谓： 在目标路径末尾是否添加斜杠 /，通常对结果没有影响
+
+    如果目标目录尚不存在，会自动创建它
+
+1、使用两个目录尾部带斜杠的版本 (如 /tmp/source/) 更符合直觉
 
     rsync source/ destination/
 
-最直观的操作，同步源目录 source 里面的内容到目标目录 destination 内，两个目录后面都要加上斜杠。
+最直观的操作，同步源目录 source 里面的内容到目标目录 destination 内，不会建立 source 子目录，可理解为 source/*。
 
 2、
 
     rsync source destination/
 
-源目录 source 完整地复制到了目标目录 destination 下面，即形成了 destination/source 的目录结构
+源目录 source 完整地复制到了目标目录 destination 下面，source 成为它的子目录，即形成了 destination/source 的目录结构
 
 #### 软硬链接文件的处理区别
 
@@ -9538,17 +9546,6 @@ rsync 的默认增量备份是文件级：
 
     # 断点续传
     rsync -avth -P --bwlimit=4000 --exclude='*.xxx' /path1/ xxx@192.111.11.111:/path2/
-
-NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式与众不同
-
-    # 将 source 目录本身同步到 destination 中，source 成为它的子目录
-    rsync -avh /tmp/source /tmp/destination
-
-    # 将 source 目录内的内容同步到 destination 中，不会建立 source 子目录
-    # 可理解为    source/*
-    rsync -avh /tmp/source/ /tmp/destination
-
-    使用尾部带斜杠的版本 (/tmp/source/) 更符合直觉
 
 其它多个用法
 
