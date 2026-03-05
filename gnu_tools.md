@@ -9466,18 +9466,34 @@ rsync 的默认增量备份是文件级：
 
 本地挂载存储备份：
 
+    # 挂载选项选择不记录访问时间，可以优化写入速度
     sudo mount -o noatime nodev /dev/sdxx /backup
 
     # 普通备份：保留权限、属主等
+    # 多次重复运行这个命令会只处理增量文件，源目录多余的文件不会删除
     rsync -av /source/ /backup/destination/
 
-    # 备份用户目录：保留 ACL 和扩展属性（包含SELinux上下文）、保持硬链接、保持稀疏文件（虚拟机镜像等）
+    # 如果想让目标目录的内容跟源目录保持一致，删除源目录已经不存在的文件
+    rsync -av --delete /source/ /backup/destination/
+
+如果目的存储的剩余空间大小跟你要备份的文件比较接近，需要先 --dry-run 一下看看：
+
+    df   # 看详细的字节数
+
+    rsync -av -n /source/ /backup/destination/
+    看输出的实际写入字节数，对比上面 df 的字节，是否不超过剩余空间
+
+    然后再决定是否执行。
+
+备份用户目录：保留 ACL 和扩展属性（包含SELinux上下文）、保持硬链接、保持稀疏文件（虚拟机镜像等）
+
     sudo rsync -avAXHS /home/ /backup/destination/
 
         # 恢复 /home 目录
         sudo rsync -avAXHS /backup/destination/ /home/
 
-    # 备份整个 / 根目录：需要排除不需要备份的目录
+备份整个 / 根目录：需要排除不需要备份的目录
+
     sudo rsync -avAXHS \
         --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} \
         --exclude={"/home/*/.cache/*","/var/cache/*","/var/tmp/*"} \
@@ -9487,7 +9503,7 @@ rsync 的默认增量备份是文件级：
         # 恢复整个系统（需在Live CD环境下进行）
         sudo rsync -avAXHS /mnt/backup/system/ /mnt/newroot/
 
-远程：
+有一方是远程服务器：
 
     rsync -avh --progress --stats \
         -e "ssh -p 22" \
@@ -9502,7 +9518,7 @@ rsync 的默认增量备份是文件级：
         -e "ssh -p 22 -o ServerAliveInterval=15 -o ConnectTimeout=20" \
         /source/ user@host:/backup/destination/
 
-    NOTE：使用了 --partial-dir 则远程服务器要定期清理该目录
+    NOTE：使用了 --partial-dir 则远程服务器要定期清理该目录，rsync 不负责清理
 
 一般使用中，最常用的归档模式且输出信息用参数 `-v -a`，一般合写为 `-av`，这样就可以实现增量备份。
 
