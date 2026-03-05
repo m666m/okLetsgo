@@ -3527,7 +3527,7 @@ esac
         按内容搜索包
             https://www.debian.org/distrib/packages#search_contents
 
-    Linux 内核工具包，一般发行版都内置了，常见的有 dmesg、fdisk、终端显示相关
+    Linux 内核工具包，一般发行版都内置了，常见的命令有 dmesg、fdisk、su、cal、kill、终端显示等相关设置
 
       https://www.kernel.org/pub/linux/utils/util-linux/
 
