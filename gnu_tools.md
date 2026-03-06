@@ -9515,13 +9515,13 @@ NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式，跟 c
 
 有一方是远程服务器：
 
-    rsync -avh --progress --stats \
+    rsync -av --progress --stats \
         -e "ssh -p 22" \
         /source/ user@host:/backup/destination/
 
 不稳定网络增量备份，断点续传：
 
-    rsync -avh -P --stats \
+    rsync -av -P --stats \
         --partial-dir=.rsync-partial\
         --timeout=30 \
         --bwlimit=5000 \
@@ -9540,7 +9540,7 @@ NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式，跟 c
 
 在生产系统上运行，一般要用 `ionice` 降低 IO 优先级，并限制使用带宽
 
-    $ sudo ionice -c 2 -n 5 rsync -avh --progress --stats --bwlimit=50000 /source/ /backup/destination/
+    $ sudo ionice -c 2 -n 5 rsync -av --progress --stats --bwlimit=50000 /source/ /backup/destination/
 
 如果不确定 rsync 执行后会产生什么结果，先 -n 模拟跑下看看输出
 
@@ -9552,19 +9552,19 @@ NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式，跟 c
 其它多个用法
 
     # 同步时排除某些文件或目录，可以用多个 --exclude
-    rsync -avh --exclude='*.txt' source/ destination
+    rsync -av --exclude='*.txt' source/ destination
 
     # 同步时排除隐藏文件
-    rsync -avh --exclude=".*" source/ destination
+    rsync -av --exclude=".*" source/ destination
 
     # 排除某个目录里面的所有文件，但不希望排除目录本身
-    rsync -avh --exclude 'dir1/*' source/ destination
+    rsync -av --exclude 'dir1/*' source/ destination
 
     # 同步时，排除所有文件，但是不排除 txt 文件
-    rsync -avh --include="*.txt" --exclude='*' source/ destination
+    rsync -av --include="*.txt" --exclude='*' source/ destination
 
     # 排除一个文件列表里的内容，每个模式一行
-    rsync -avh --exclude-from='exclude-file.txt' source/ destination
+    rsync -av --exclude-from='exclude-file.txt' source/ destination
 
 增量备份的三方比对用法：使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录。详见 [示例：三方比对实现备份用户的主目录，创建多个备份目录]。
 
@@ -9574,10 +9574,10 @@ NOTE：rsync 命令参数，源目录的尾部是否写 '/' 处理方式，跟 c
     rsync -avz --progress source/ username@remote_host:destination
 
     # 将远程内容同步到本地
-    rsync -avh username@remote_host:source/ destination
+    rsync -av username@remote_host:source/ destination
 
     # 如果 ssh 命令有附加的参数，则必须使用 -e 参数指定所要执行的 SSH 命令
-    rsync -avh -e 'ssh -p 2234' source/ user@remote_host:/destination
+    rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
 
 #### rsync 增量备份变为仅发送增量
 
