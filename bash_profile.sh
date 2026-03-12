@@ -554,12 +554,6 @@ function brew_sc() {
 }
 
 # 容器化
-# Debian 系skopeo命令的版本太旧了，也不想开通 Backports 仓库
-if command -v docker >/dev/null; then
-    alias skopeo='docker run --rm -v /var/run/docker.sock:/var/run/docker.sock quay.io/skopeo/stable:latest'
-else
-    alias skopeo='podman run --rm -v /var/run/user/$(id -u)/podman/podman.sock:/var/run/user/$(id -u)/podman/podman.sock quay.io/skopeo/stable:latest'
-fi
 # podman
 #[[ $os_type = 'linux' ]] && alias docker="podman"
 function pdms() {
