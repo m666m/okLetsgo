@@ -558,7 +558,7 @@ function brew_sc() {
 if command -v docker >/dev/null; then
     alias skopeo='docker run --rm -v /var/run/docker.sock:/var/run/docker.sock quay.io/skopeo/stable:latest'
 else
-    alias skopeo='podman run --rm -v /var/run/user/1000/podman/podman.sock:/var/run/user/1000/podman/podman.sock quay.io/skopeo/stable:latest'
+    alias skopeo='podman run --rm -v /var/run/user/$(id -u)/podman/podman.sock:/var/run/user/$(id -u)/podman/podman.sock quay.io/skopeo/stable:latest'
 fi
 # podman
 #[[ $os_type = 'linux' ]] && alias docker="podman"
