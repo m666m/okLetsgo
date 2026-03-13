@@ -554,21 +554,12 @@ function brew_sc() {
 
 # 容器化
 # Debian 系skopeo命令的版本太旧了，也不想开通 Backports 仓库
-if command -v docker >/dev/null; then
-    alias skopeo='docker run --rm \
-      -v /var/run/docker.sock:/var/run/docker.sock \
-      -v $HOME/.docker/config.json:/root/.docker/config.json:ro \
-      -v /etc/docker/certs.d:/etc/containers/certs.d:ro \
-      -e REGISTRY_AUTH_FILE=/root/.docker/config.json \
-      quay.io/skopeo/stable:latest'
-else
-    alias skopeo='podman run --rm \
-      -v /run/user/$UID/podman/podman.sock:/var/run/docker.sock \
-      -v $HOME/.docker/config.json:/root/.docker/config.json:ro \
-      -v /etc/docker/certs.d:/etc/containers/certs.d:ro \
-      -e REGISTRY_AUTH_FILE=/root/.docker/config.json \
-      quay.io/skopeo/stable:latest'
-fi
+alias skopeo='docker run --rm \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v $HOME/.docker/config.json:/root/.docker/config.json:ro \
+  -v /etc/docker/certs.d:/etc/containers/certs.d:ro \
+  -e REGISTRY_AUTH_FILE=/root/.docker/config.json \
+  quay.io/skopeo/stable:latest'
 # podman
 #[[ $os_type = 'linux' ]] && alias docker="podman"
 function pdms() {
