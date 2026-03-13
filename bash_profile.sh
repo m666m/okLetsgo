@@ -56,8 +56,9 @@ export PATH
 #######################
 # 如果是非交互式登录(ssh直接在服务器执行脚本等场景)，这里就直接退出了，后面的设置统统不需要
 # exit for non-interactive shell
-# [[ ! -t 0 ]] && return
 [[ $- != *i* ]] && return
+# 本脚本就是被 source 使用的，直接执行是错误用法，source .bash_profile 中可以用 return 命令。
+# 如果把 return 改成 exit，GNOME/KDE 桌面环境下会导致登录桌面退出且无任何提示。
 
 ###################################################################
 # 自此开始都是用户为了使用习惯的自定义设置
@@ -116,7 +117,7 @@ unset os_name
 # 删除 vi 安装 vim 后发现不能用 vi 命令了
 command -v vi >/dev/null || {
     echo 'link vim to vi'
-    sudo ln -sf /usr/bin/vim /usr/bin/vi
+    printf "建议补全 vi 调用：sudo ln -sf /usr/bin/vim /usr/bin/vi"
 }
 
 #######################
@@ -178,7 +179,7 @@ if [ -x /usr/bin/dircolors ]; then
     #alias vdir='vdir --color=auto'
     alias ls='ls --color=auto'
     alias diff='diff --color=auto'
-    alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,__pycache__}'
+    alias grep='grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn --exclude-dir=__pycache__'
     #alias egrep='egrep --color=auto'
     #alias fgrep='fgrep --color=auto'
     alias tree='tree -a -C'
@@ -197,7 +198,7 @@ fi
 # 列出目录下的文件清单，查找指定关键字，如 `lsg fnwithstr`。因为ls列出的目录颜色被grep覆盖，用 ls -l 查看更方便。
 alias lsg='ls -lFA |grep -i'
 # 列出当前目录及子目录的文件清单，查找指定关键字，如 `findf fnwithstr`
-alias findf='find ./* |grep -i'
+alias findf='find . |grep -i'
 # 在管道或当前目录下的文件中（排除目录）查找指定关键字，列出文件名和所在行，如 `greps strinfile *`
 alias greps='grep -d skip -in'
 # 在管道或配置文件查找指定关键字，列出文件名和所在行，追加显示后续的 5 行内容
@@ -304,14 +305,12 @@ alias myip='echo "[浏览器打开 https://test.ustc.edu.cn/ 可看到自己的i
 # https://zhuanlan.zhihu.com/p/40854581 https://zhuanlan.zhihu.com/p/43096471
 # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
 # 看月相 curl http://wttr.in/moon
-function weather {
-    curl -s --connect-timeout 3 -m 5 http://wttr.in/$1
-}
+function weather { curl -s --connect-timeout 3 -m 5 "http://wttr.in/$1"; }
 
 # ssh
 alias sshs='echo "[跳过其它各种协商使用密码连接主机]"; ssh -o "PreferredAuthentications password"'
 alias sshme='echo "[断开ssh连接复用]"; ssh -O exit'
-alias sshmn='echo "[不使用ssh连接复用]"； ssh -o "ControlPath=no"'
+alias sshmn='echo "[不使用ssh连接复用]"; ssh -o "ControlPath=no"'
 alias sshk='echo "[使用kitty连接无terminfo的sshd服务器]"; kitty +kitten ssh'
 
 # curl
@@ -347,33 +346,33 @@ alias udj='echo "[弹出 U 盘]"; sync; udisksctl power-off -b'
 # mount 使用当前用户权限挂载 Windows 分区 U 盘，用于防止默认参数使用 root 用户权限不方便当前用户读写
 function mntfat {
     echo "[挂载 FAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-    local _uid=$(id -u $USERNAME)
-    local _gid=$(id -g $USERNAME)
-    sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro $1 $2
+    local _uid=$(id -u $USER)
+    local _gid=$(id -g $USER)
+    sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro "$1" "$2"
 }
 function mntntfs {
     echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
     local _uid=$(id -u $USERNAME)
     local _gid=$(id -g $USERNAME)
-    sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,windows_names,iocharset=utf8 $1 $2
+    sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,windows_names,iocharset=utf8 "$1" "$2"
 }
 function mntexfat {
     echo "[挂载 exFAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
     local _uid=$(id -u $USERNAME)
     local _gid=$(id -g $USERNAME)
-    sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro $1 $2
+    sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro "$1" "$2"
 }
 function mntram {
     echo "[映射内存目录 $1，用完了记得要解除挂载：sync; sudo umount $1]"
-    sudo mount --mkdir -t ramfs ramfs $1
+    sudo mount --mkdir -t ramfs ramfs "$1" && sudo chown $(id -u):$(id -g) "$1"
 }
 function mntsmb {
     echo "[挂载samba目录 $1 到本地目录 $2，用户名为 $3]"
-    sudo mount -t cifs -o user=$3 $1 $2
+    sudo mount -t cifs -o user="$3" "$1" "$2"
 }
 function mntnfs {
     echo "[挂载nfs目录 $1 到本地目录 $2，不许其内的 dev 再挂载]"
-    sudo mount -t nfs -o vers=4,nodev,noatime $1 $2
+    sudo mount -t nfs -o vers=4,nodev,noatime "$1" "$2"
 }
 
 # 显示16进制内容及对应的ascii字符
@@ -693,7 +692,7 @@ if test -d "$HOME/.ssh"; then
             # 实现复用需要设置变量指向ssh密钥代理的进程
             # gnome-keyring 为何不自动设置这两个变量，既然接管了，又不声明，很有个性。。。
             # 目前必须手动设置
-            export SSH_AUTH_SOCK="$(ls /run/user/$(id -u $USERNAME)/keyring*/ssh |head -1)"
+            export SSH_AUTH_SOCK="$(ls /run/user/$(id -u "$USER")/keyring*/ssh | head -1)"
             export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
             # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
@@ -736,7 +735,7 @@ if test -d "$HOME/.ssh"; then
     # 来自章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
     elif [[ $os_type = 'windows' ]]; then
 
-        if ! $(ps -s |grep ssh-pageant >/dev/null) ;then
+        if ! ps -s | grep -q ssh-pageant; then
             # agent未运行视作开机后第一次打开bash会话，先清理掉 ssh-pageant 上次使用过的临时文件，否则会被加载
             rm -f /tmp/.ssh-pageant-$USERNAME
 
@@ -756,7 +755,7 @@ if test -d "$HOME/.ssh"; then
         # ssh-add
         # 改进：利用 git bash 自带的工具 ssh-pageant，连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要执行 `ssh-add` 了
         # 使用以下参数启动的 ssh-pageant 会判断是否正在运行，不会多次运行自己
-        # ssh-pageant 还会设置变量指向ssh密钥代理的进程，用户不需要操心
+        # ssh-pageant 还会导出变量指向ssh密钥代理的进程，用户不需要操心
         eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
 
     # 默认 Linux tty 环境复用 ssh-agent 进程，这个设置最通用， Windows git bash(mintty) 环境下也可以使用
@@ -856,33 +855,26 @@ if [[ ! $current_shell = 'zsh' ]]; then
     elif [[ -f /etc/bash_completion.d/ssh ]]; then
         source /etc/bash_completion.d/ssh
     else
-        complete -W "$(_comp_ssh_hosts)" ssh
+        complete -W "$(_comp_ssh_hosts | tr '\n' ' ')" ssh
     fi
 fi
 
 # ack 命令下载个 hhighlighter 插件
 if command -v ack >/dev/null 2>&1; then
 
-    if [[ ! -s /usr/local/bin/ackg.sh ]]; then
+    if [[ -s /usr/local/bin/ackg.sh ]]; then
+        source /usr/local/bin/ackg.sh
+    else
 
         echo "ackg 看日志比grep好用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)"
 
-        tmpfile=$(mktemp)
-        echo 'Get ackg from github...'
-        if curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh -o "$tmpfile"; then
-            sed -i 's/^h()/ackg()/' "$tmpfile"
-            sudo mv "$tmpfile" /usr/local/bin/ackg.sh
-        else
-            echo "GitHub源失败，尝试CDN..." >&2
-            if curl -fsSL https://cdn.jsdelivr.net/gh/paoloantinori/hhighlighter@master/h.sh -o "$tmpfile"; then
-                sed -i 's/^h()/ackg()/' "$tmpfile"
-                sudo mv "$tmpfile" /usr/local/bin/ackg.sh
-            fi
-        fi
-    fi
-
-    if [[ -f /usr/local/bin/ackg.sh ]]; then
-        source /usr/local/bin/ackg.sh
+        printf "建议如下操作
+        tmpfile=\$(mktemp)
+        curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh -o \$tmpfile
+         或 curl -fsSL https://cdn.jsdelivr.net/gh/paoloantinori/hhighlighter@master/h.sh -o \$tmpfile
+        sed -i 's/^h()/ackg()/' \$tmpfile
+        sudo mv \$tmpfile /usr/local/bin/ackg.sh
+        "
     fi
 
     rm -f "$tmpfile"
@@ -910,23 +902,23 @@ alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk
 # 前景色    30    31    32    33   34    35    36    37
 # 背景色    40    41    42    43   44    45    46    47
 
-ccBLACK=$'\[\e[0;30m\]'
+ccBLACK='\[\e[0;30m\]'
 
-ccRED=$'\[\e[0;31m\]'
+ccRED='\[\e[0;31m\]'
 
-ccGREEN=$'\[\e[0;32m\]'
+ccGREEN='\[\e[0;32m\]'
 
-ccYELLOW=$'\[\e[0;33m\]'
+ccYELLOW='\[\e[0;33m\]'
 
-ccBLUE=$'\[\e[0;34m\]'
+ccBLUE='\[\e[0;34m\]'
 
-ccMAGENTA=$'\[\e[0;35m\]'
+ccMAGENTA='\[\e[0;35m\]'
 
-ccCYAN=$'\[\e[0;36m\]'
+ccCYAN='\[\e[0;36m\]'
 
-ccWHITE=$'\[\e[0;37m\]'
+ccWHITE='\[\e[0;37m\]'
 
-ccNORMAL=$'\[\e[m\]'
+ccNORMAL='\[\e[m\]'
 
 # 注意：判断用户在命令行执行命令返回值的函数 PS1exit_code 要放在放在 PS1 变量赋值语句的最前面，
 # 或者它前面的函数要实现 $? 变量的透传，否则成了判断前面子函数的命令的返回值了
