@@ -561,7 +561,6 @@ function brew_sc() {
 #   -e REGISTRY_AUTH_FILE=/root/.docker/config.json \
 #   quay.io/skopeo/stable:latest'
 # podman
-#[[ $os_type = 'linux' ]] && alias docker="podman"
 function pdms() {
     echo "[podman 列出镜像详细信息，需要完整的镜像地址]"
     skopeo inspect --format '{{json .}}' docker://${1} |jq .
