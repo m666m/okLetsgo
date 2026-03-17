@@ -2440,20 +2440,20 @@ VSCodium
 
 浅色
 
-|            看代码                              |          看文字            |
-|-----------------------------------------------|---------------------------|
-|   MacOS Modern Light：Xcode Default           |         <----             |
-|                                               | Solarized Light           |
-|                                               | Winter is coming：Light    |
+            看代码                                       看文字
+    -------------------------------------------------------------------------
+       MacOS Modern Light：Xcode Default                   <----
+                                                   Solarized Light
+                                                   Winter is coming：Light
 
 深色
 
-|            看代码                             |           看文字              |
-|----------------------------------------------|-------------------------------|
-|   MacOS Modern Dark：Ventura Xcode Default   | MacOS Modern Dark：Xcode Modern|
-|   Nord                                       |          <----                |
-|                                              | Material Neutral              |
-|   Winter is coming：Dark Blue                | Winter is coming：Dark Black   |
+                看代码                                        看文字
+    -----------------------------------------------------------------------------
+       MacOS Modern Dark：Ventura Xcode Default    MacOS Modern Dark：Xcode Modern
+       Nord                                                 <----
+                                                 Material Neutral
+       Winter is coming：Dark Blue                 Winter is coming：Dark Black
 
 MacOS Modern Theme 看代码深色浅色都好，多选单选查找相关内容高亮颜色都有区分，而且不刺眼
 
@@ -2926,6 +2926,18 @@ Prettier - Code formatter
 
     WuZhiguo.callviz
     LuoZhihao.call-graph
+
+#### markdown 嵌入流程图
+
+    bierner.markdown-mermaid
+
+```mermaid
+flowchart LR
+    A[Hard edge] -->|Link text| B(Round edge)
+    B --> C{Decision}
+    C -->|One| D[Result one]
+    C -->|Two| E[Result two]
+```
 
 #### PYQT Integration
 
