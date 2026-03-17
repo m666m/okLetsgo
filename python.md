@@ -2929,6 +2929,8 @@ Prettier - Code formatter
 
 #### markdown 嵌入流程图
 
+Markdown Preview Mermaid Support
+
     bierner.markdown-mermaid
 
 ```mermaid
