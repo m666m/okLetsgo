@@ -3017,6 +3017,10 @@ rm 之前先 ls 试试，所谓 dry-run
 
     tdir=$(mktemp -d)
 
+清除文件，简单混淆防分析
+
+    shred -u xxx.txt
+
 回到上次的目录
 
     cd -
@@ -3520,8 +3524,11 @@ esac
 
         https://man7.org/linux/man-pages/index.html
 
-        GNU 按用途分类介绍
+        GNU 工具按用途分类介绍
             https://www.gnu.org/software/coreutils/manual/html_node/index.html#SEC_Contents
+
+        GNU 工具参数说明大全
+            https://www.gnu.org/software/coreutils/manual/coreutils.html
 
         常用工具 coreutils 包清单
             https://manpages.debian.org/unstable/coreutils/index.html
