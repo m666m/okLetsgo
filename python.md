@@ -3005,7 +3005,7 @@ Chinese Translation
 
     Compulim.vscode-chinese-translation
 
-选择文字后，F1 输入命令：Chinese Translation，在列出的可用命令中选择一个即可，一般选 `Traditional Chinese to Simplified Chinese` 即可。
+选择文字后，F1 输入命令：Chinese Translation，在列出的可用命令中选择一个即可，一般选 `Traditional Chinese to Simplified Chinese` 繁体转简体即可。
 
 #### 预览 svg 图片
 
