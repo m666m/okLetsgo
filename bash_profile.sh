@@ -592,6 +592,14 @@ function pdmv() {
 }
 export PDMREPO="192.168.0.111:5000" && echo "内网私有容器镜像仓库地址设置为 PDMREPO=${PDMREPO}"
 alias pdmr='echo "[podman 列出私有仓库 ${PDMREPO} 的所有镜像]"; curl -s http://${PDMREPO}/v2/_catalog | jq'
+function pdmrcpd() {
+    echo "[podman 从本地 docker 仓库推送到私有仓库]"
+    skopeo copy docker-daemon:${1} docker://${PDMREPO}/${2}
+}
+function pdmrcpp() {
+    echo "[podman 从本地 podman 仓库推送到私有仓库]"
+    skopeo copy containers-storage:${1} docker://${PDMREPO}/${2}
+}
 function pdmrs() {
     local img=$(echo $1  |cut -d: -f1)
     local tag=$(echo $1  |cut -d: -f2)
