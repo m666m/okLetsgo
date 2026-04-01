@@ -187,7 +187,7 @@ jj 自己实现了一套简化的前端操作命令，把 git 隐藏到了后端
     # 登陆问题排查
     ssh -vvv git@github.com
 
-你的 GitHub 密钥是公开的，可以直接查看自己的公钥
+为了方便公开身份验证的使用方式，在 GitHub 可以直接查看自己的公钥，有自己的地址哦，方便：
 
     # ssh
     https://github.com/m666m.keys
