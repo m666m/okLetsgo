@@ -2714,8 +2714,7 @@ hyper-v 虚拟机，使用宿主机的无线网卡建立虚拟交换机的，都
 
 显卡共享，极客湾介绍远程控制软件 Parsec 作者提供的脚本实现单机多用户可以 N 卡运行
 
-    https://www.bilibili.com/video/BV1Ad4y1S7Aw/?share_source=copy_web&vd_source=05d8dc4a77ef9fa286c09977f5388ce1
-
+    https://www.bilibili.com/video/BV1Ad4y1S7Aw/
         https://github.com/jamesstringerparsec/Easy-GPU-PV
 
         https://superuser.com/questions/1833989/how-to-share-a-single-gpu-among-multiple-vms-with-parsec-connectivity
@@ -4416,11 +4415,11 @@ PBP 分屏的一个副作用
 
 #### 光线追踪游戏怎么画面变糊了，还黑
 
-    https://www.bilibili.com/video/BV13W63YtE4n/?share_source=copy_web&vd_source=05d8dc4a77ef9fa286c09977f5388ce1
+    https://www.bilibili.com/video/BV13W63YtE4n/
 
-    https://www.bilibili.com/video/BV1WPnCzwEVQ/?share_source=copy_web&vd_source=05d8dc4a77ef9fa286c09977f5388ce1
+    https://www.bilibili.com/video/BV1WPnCzwEVQ/
 
-    https://www.bilibili.com/video/BV1YFWBzgE2c/?spm_id_from=333.1007.tianma.39-3-153.click&vd_source=f4177a45bbe81739569c44f7f5a11607
+    https://www.bilibili.com/video/BV1YFWBzgE2c/
         https://www.youtube.com/watch?v=gsZiJeaMO48
 
     https://dev.epicgames.com/documentation/zh-cn/unreal-engine/lumen-global-illumination-and-reflections-in-unreal-engine
@@ -4429,11 +4428,11 @@ tldr：
 
     2020年代在显卡计算能力还达不到完美的情况下，使用光线追踪技术就避免不了它的天生弱点：糊、暗
 
-光影对人类立体视觉的影响，以素描为例进行理解。在纸上画几条线段是二维图像，线段如果按角度搭配成物体，可以制造立体感，再浓淡相宜的扫几笔，就制造出了光影，立体感就会变成真实感，继续添加色彩和光影细节就会让人感觉画面更逼真。
+光影对人类立体视觉的影响，以素描为例进行理解。在纸上画个大大的 口 字是二维图像，如果在角上向后添加几条射线，就可以制造立体感，再浓淡相宜的扫几笔，就制造出了光影，立体感就会变成真实感，继续添加色彩和光影细节就会让人感觉画面更逼真。
 
 16世纪文艺复兴时期的绘画技术从尊重几何的角度重现光影，为了提高绘画的准确性和细节表现，甚至有了成像暗箱这种利用小孔成像来捕捉自然光线和阴影变化的辅助工具。
 
-对传统胶片相机来说，底片要经过长时间的曝光，最终相片的颗粒感才会变少。现代的图像数码处理，除了增加色彩和光影细节，还在提升像素点的精细程度。对数码相机来说，这意味着使用大的CCD采样。按逼真程度看，人类手绘的图画可以超过1839 年的照片，但无法超越现代的胶片/数码照片。
+对传统胶片相机来说，底片要经过长时间的曝光，最终相片的颗粒感才会变少。现代的图像数码处理，除了增加色彩和光影细节，还在提升像素点的精细程度。对数码相机来说，这意味着使用大的CCD采样。按逼真程度看，人类手绘的图画可以超过 1839 年的照片，但无法超越现代的胶片/数码照片。或者说，追求真实感的绘画技术在摄像机诞生的那一刻起就过时了。
 
 视频游戏追求逼真的感觉，也是在光影和细致程度上下功夫。
 
