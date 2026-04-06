@@ -8037,6 +8037,14 @@ Windows 自带工具，支持校验MD5 SHA1 SHA256类型文件，cmd调出命令
 
     https://huataihuang.gitbooks.io/cloud-atlas/content/os/linux/device/random_number_generator.html
 
+简单随机数：
+
+    # 生成 0-32767 之间的随机数
+    echo $RANDOM
+
+    # 从 1-100 中随机选一个数
+    shuf -i 1-100 -n 1
+
 在 Linux 中生成强密码的不同方法有很多
 
     https://ostechnix.com/4-easy-ways-to-generate-a-strong-password-in-linux/
