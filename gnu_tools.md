@@ -5987,14 +5987,17 @@ set -g @resurrect-capture-pane-contents 'on'
 
 当你的tmux session里跑程序或者查看error log时，你不需要复制错误栈，也不需要截图，一个快捷键就能给你答案。具体怎么搞呢，其实很简单。
 
-
     https://www.zhihu.com/collection/750892894
 
-    前提条件：你要装了Claude Code / Codex / cursor-agent / gemini等支持 cli 的 Coding agent。 这里以Claude Code为例。你设置一个tmux 快捷键映射（Binding），直接抓取当前 Pane 的内容并喂给 LLM。在你的~/.tmux.conf配置文件里，增加这么一行
+    前提条件：你要装了 Claude Code / Codex / cursor-agent / gemini 等支持 cli 的 Coding agent。 这里以Claude Code为例。你设置一个tmux 快捷键映射（Binding），直接抓取当前 Pane 的内容并喂给 LLM。在你的~/.tmux.conf配置文件里，增加这么一行
 
-        bind-key E run-shell "tmux capture-pane -pS -100 | claude '解释以上错误原因'"
+        bind-key C-e run-shell "tmux capture-pane -pS -100 | claude '解释以上错误原因'"
 
-    可以看到，这里绑定了E键，为触发后续命令的快捷键。在tmux里，先按前摇ctrl + b，然后再按E（注意，是大写的E），就能触发上述命令，然后解释命令行里出现的错误。
+    在tmux里，先按前摇ctrl + b，然后再按ctrl+e，就能触发上述命令，然后解释命令行里出现的错误。
+
+    改造为输出到临时文件
+
+        bind-key C-e run-shell "tmux capture-pane -pS - > /tmp/tmux_buffer && tmux display-message '内容已保存到 /tmp/tmux_buffer'"
 
 #### 竞品 screen/Zellij
 
