@@ -836,16 +836,19 @@ fi
 
 # ssh 命令后面按tab键自动补全 hostname，zsh 自带不需要
 _comp_ssh_hosts() {
-    local config_hosts known_hosts
+    local cur config_hosts known_hosts hosts
 
-    #[[ -f ~/.ssh/config && -f ~/.ssh/known_hosts ]] && complete -W "$(cat ~/.ssh/config | grep ^Host | cut -f 2 -d ' ' | grep -v \*) $(cat ~/.ssh/known_hosts | grep -v ^\| | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq)" ssh
+    cur="${COMP_WORDS[COMP_CWORD]}"
 
     [[ -f ~/.ssh/config ]] && config_hosts=$(awk '/^Host / && $2 !~ /\*/ {print $2}' ~/.ssh/config 2>/dev/null)
 
-    [[ -f ~/.ssh/known_hosts ]] && known_hosts=$(awk '{print $1}' ~/.ssh/known_hosts 2>/dev/null | tr ',' '\n' | sort -u)
+    [[ -f ~/.ssh/known_hosts ]] && known_hosts=$(grep -v '^|' ~/.ssh/known_hosts 2>/dev/null | awk '{print $1}' | tr ',' '\n' | sed -E 's/^\[(.*)\](:[0-9]+)?$/\1/; s/:[0-9]+$//' | sort -u)
 
-    echo "$config_hosts $known_hosts" | tr ' ' '\n' | sort -u
+    hosts=$(echo "$config_hosts $known_hosts" | tr ' ' '\n' | sort -u)
+
+    COMPREPLY=($(compgen -W "$hosts" -- "$cur"))
 }
+
 if [[ ! $current_shell = 'zsh' ]]; then
     # 优先调用 openssh-clients 包自带的 bash-completion
     if [[ -f /usr/share/bash-completion/completions/ssh ]]; then
@@ -853,7 +856,7 @@ if [[ ! $current_shell = 'zsh' ]]; then
     elif [[ -f /etc/bash_completion.d/ssh ]]; then
         source /etc/bash_completion.d/ssh
     else
-        complete -W "$(_comp_ssh_hosts | tr '\n' ' ')" ssh
+        complete -F _comp_ssh_hosts ssh
     fi
 fi
 
