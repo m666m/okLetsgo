@@ -631,6 +631,9 @@ function dboxstop() {
     done
 }
 
+# Hermes Agent
+alias hersd='hermes sessions list | awk "NR>2 {print $NF}" | xargs -I {} hermes sessions delete {} -y'
+
 #######################
 # 适用于 Windows git bash(mintty.exe)
 # 使 mintty 下执行普通的 Windows 控制台程序，用 winpty 辅助可以正常显示
