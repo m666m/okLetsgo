@@ -632,7 +632,7 @@ function dboxstop() {
 }
 
 # Hermes Agent
-alias hersd='echo "[Hermes 清理所有会话]";hermes sessions list | awk "NR>2 {print $NF}" | xargs -I {} hermes sessions delete {} -y'
+alias hersd='echo "[Hermes Agent清理所有会话]";hermes sessions list | awk "NR>2 {print $NF}" | xargs -I {} hermes sessions delete {} -y'
 
 #######################
 # 适用于 Windows git bash(mintty.exe)
