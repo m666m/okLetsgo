@@ -887,7 +887,10 @@ fi
 
 # ask 命令问 AI
 if [[ ! -s /usr/local/bin/ask ]]; then
-    curl -fsSL https://raw.githubusercontent.com/m666m/ask/main/ask | sudo tee /usr/local/bin/ask > /dev/null  && sudo chmod +x /usr/local/bin/ask
+    echo "安装 ask 命令问 AI..."
+    curl -fsSL https://raw.githubusercontent.com/m666m/ask/main/ask \
+      | sudo tee /usr/local/bin/ask > /dev/null \
+      && sudo chmod +x /usr/local/bin/ask
 fi
 
 #######################
