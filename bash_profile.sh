@@ -634,6 +634,82 @@ function dboxstop() {
 # Hermes Agent
 alias hersd='echo "[Hermes Agent清理所有会话]";hermes sessions list | awk "NR>2 {print $NF}" | xargs -I {} hermes sessions delete {} -y'
 
+# ollama
+ask() {
+    # 纯文本管道转发至 Ollama OpenAI 兼容 API（默认模型 gemma4:26b）
+    #
+    # 用法:
+    #
+    # 单行问题
+    # $ echo "什么是 Bash 函数？" | ask
+    #
+    # 多行问题
+    # $ cat << EOF | ask
+    # 请用 Python 写一个快速排序函数，
+    # 并添加详细注释。
+    # EOF
+    #
+    # 从文件读取问题
+    # $ ask < question.txt
+
+    # 给 tmux 添加热键，捕捉当前内容发送给 ollama，设置其配置文件：
+    # bind-key C-e run-shell "tmux capture-pane -pS - | ask"
+
+    local MODEL="gemma4:26b"
+    # wsl 内访问宿主机 ollama 不能用 localhost，而是 172.21.16.1 这样的地址
+    local OLLAMA_URL="${1:-http://localhost:11434/v1/chat/completions}"
+
+    local USER_PROMPT
+    USER_PROMPT=$(cat)
+
+    if ! command -v jq &>/dev/null; then
+        echo "错误: 需要 jq 解析 JSON 流，请安装 jq。" >&2
+        return 1
+    fi
+
+    local JSON_DATA
+    JSON_DATA=$(jq -n \
+        --arg model "$MODEL" \
+        --arg content "$USER_PROMPT" \
+        '{
+            model: $model,
+            messages: [{role: "user", content: $content}],
+            stream: true
+        }')
+
+    local HTTP_CMD
+    if command -v curl &>/dev/null; then
+        HTTP_CMD="curl -s -N -X POST \"$OLLAMA_URL\" -H \"Content-Type: application/json\" -d @-"
+    elif command -v wget &>/dev/null; then
+        HTTP_CMD="wget -q -O - --no-buffer --header=\"Content-Type: application/json\" --post-data=\"-\" \"$OLLAMA_URL\""
+    else
+        echo "错误: 未找到 curl 或 wget，请安装其中之一。" >&2
+        return 1
+    fi
+
+    echo "$JSON_DATA" | eval "$HTTP_CMD" | while IFS= read -r line; do
+        # 跳过空行
+        [[ -z "$line" ]] && continue
+        # 只处理 SSE 数据行
+        if [[ "$line" == data:* ]]; then
+            json_part="${line#data: }"
+            # 忽略结束标记
+            [[ "$json_part" == "[DONE]" ]] && continue
+            # 提取内容，仅当非空时才输出（避免空字符串产生空行）
+            content=$(echo "$json_part" | jq -r '.choices[0].delta.content // empty' 2>/dev/null)
+            if [[ -n "$content" ]]; then
+                printf "%s" "$content"
+            fi
+        fi
+    done
+    # 最后补一个换行，使终端提示符另起一行
+    echo
+}
+# 需要配合 tmux 热键使用，捕捉当前内容发送给 ollama，设置其配置文件：
+# 绑定 Prefix + Ctrl+e 捕获当前窗格最近100行，附加提示后保存到文件
+# bind-key C-e run-shell "tmux capture-pane -pS -100 > /tmp/tmux-last100.txt && echo '解释以上问题' >> /tmp/tmux_buffer && tmux display-message '已保存最近100行'"
+alias asks='echo "[AI解读tmux屏幕内容]";ask < /tmp/tmux-last100.txt'
+
 #######################
 # 适用于 Windows git bash(mintty.exe)
 # 使 mintty 下执行普通的 Windows 控制台程序，用 winpty 辅助可以正常显示
