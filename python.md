@@ -452,7 +452,7 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     [install]
     trusted-host=mirrors.aliyun.com
 
-## uv 代替 pip
+## uv 代替 vritualenv
 
 借鉴 Rust cargo 的管理办法，代替 pip，目前的优势是速度快，环境管理 requirements.txt 也很方便移植
 
@@ -461,7 +461,11 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
     https://zhuanlan.zhihu.com/p/689976933
 
-uv是一个全局的二进制文件，只要在一个环境中安装就全局生效
+安装
+
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+
+也可用 pip 安装，uv 是一个全局的二进制文件，只要在一个环境中安装就全局生效
 
     $ pip install uv
 
