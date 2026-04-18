@@ -17406,7 +17406,7 @@ Wine 使用一个被称之为 “Wineprefix” 的配置目录来控制使用 Wi
 
     https://blog.csdn.net/u014025444/article/details/94029895
 
-Linux 操作系统的基本目录结构参见章节 [Linux 目录和分区](shellcmd.md)。
+Linux 操作系统的基本目录结构参见章节 [Linux 系统目录](init_a_server think)。
 
 XDG 基本目录规范基于以下概念：
 
