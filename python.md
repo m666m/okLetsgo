@@ -481,12 +481,108 @@ uv是一个全局的二进制文件，只要在一个环境中安装就全局生
     # 下载包时的超时时间，单位为秒
     UV_HTTP_TIMEOUT=60
 
-创建环境
+查看已经按照的和可安装的 Python 版本
+
+    $ uv python list
+    cpython-3.15.0a8-linux-x86_64-gnu                 <download available>
+    cpython-3.15.0a8+freethreaded-linux-x86_64-gnu    <download available>
+    ...
+    cpython-3.13.13+freethreaded-linux-x86_64-gnu     <download available>
+    cpython-3.12.13-linux-x86_64-gnu                  <download available>
+    cpython-3.12.3-linux-x86_64-gnu                   /usr/bin/python3.12
+    cpython-3.12.3-linux-x86_64-gnu                   /usr/bin/python3 -> python3.12
+    cpython-3.11.15-linux-x86_64-gnu                  .local/bin/python3.11 -> .local/share/uv/python/cpython-3.11-linux-x86_64-gnu/bin/python3.11
+    cpython-3.11.15-linux-x86_64-gnu                  .local/share/uv/python/cpython-3.11-linux-x86_64-gnu/bin/python3.11
+    cpython-3.10.20-linux-x86_64-gnu                  <download available>
+    cpython-3.9.25-linux-x86_64-gnu                   <download available>
+    ...
+    graalpy-3.8.5-linux-x86_64-gnu                    <download available>
+
+uv 工具不会自动下载Python包，因此如果设置虚拟环境时用 -p 指定系统不存在的Python版本，则会报错。所以需要提前安装。
+
+安装 Python 多个版本可共存
+
+    uv python install 3.10
+    uv python install 3.11
+    uv python install 3.13
+
+不会覆盖系统自带 Python。
+
+每个 Python 版本都是完全独立的目录，互不干扰：
+
+    ls ~/.local/share/uv/python/
+
+### 使用 uv 创建虚拟环境
+
+创建环境，推荐统一使用 .venv 作为虚拟环境目录名
 
     # --python 同 -p
     $ uv venv --python 3.12
 
-uv 工具不会自动下载Python包，因此如果设置-p时指定系统不存在的Python版本，则会报错
+    $ uv venv --python=3.12 .venv
+    $ uv venv --python=3.10 .venv
+
+激活虚拟环境
+
+    $ source .venv/bin/activate
+
+安装软件
+
+    $ uv pip install requests flask
+
+    $ uv pip install -r requirements.txt
+
+退出虚拟环境
+
+    $ deactivate
+
+ 使用 uv 运行 python 的通常流程：
+
+    在脚本所在目录创建 .venv（只需一次）
+    $ uv venv --python=3.12 .venv
+
+    # 然后直接运行
+    $ uv run python script.py
+
+        uv run 会自动激活环境，直接运行脚本：
+
+        先查找缓存是否可以复用，然后会从当前工作目录开始，向上递归查找 .venv 的目录、venv 的目录、环境变量 VIRTUAL_ENV 指向的任意目录（如果已经手动激活了某个环境），找到就用。
+
+        如果找不到就报错退出，不会自动回退到使用系统全局 Python
+
+        等效于
+        # 激活环境
+        $ source .venv/bin/activate
+
+        # 安装依赖
+        $ uv pip install fastapi uvicorn
+
+        # 运行程序
+        $ python main.py
+
+### 不激活环境直接运行
+
+只想快速运行一个简单的 .py 文件，而不想为它单独创建一个项目目录和 .venv
+
+    优先使用 uv 自行管理的 Python 版本，备选系统的 Python 版本，如果以上两种方式都找不到，uv 会自动联网下载并安装一个由 Astral 项目提供的、独立的 Python 3.12 版本，并缓存起来供后续使用
+
+    $ uv run --python=3.12 script.py
+
+忽略这个项目的上下文，创建一个干净、临时的环境来执行当前命令，执行完即消失（或缓存复用）
+
+    $ uv run --no-project script.py
+
+    相当于如下用法：
+
+    $ uv run - <<EOF
+    print("hello world!")
+    EOF
+
+uvx 非常适合 CI / 本地格式化等运行一次性工具（如 ruff、black、jupyter 等），它不需要项目中有 .venv，会自动创建一个临时的、隔离的虚拟环境（通常位于 ~/.cache/uv/...），通过子进程执行工具命令（同样注入正确的 PATH 和 VIRTUAL_ENV）
+
+    $ uvx black .
+    $ uvx ruff check .
+    $ uvx pytest
 
 ## 何时用 conda/virtualenv/venv
 
