@@ -452,9 +452,9 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     [install]
     trusted-host=mirrors.aliyun.com
 
-## uv 代替 vritualenv
+## uv 代替 conda
 
-借鉴 Rust cargo 的管理办法，代替 pip，目前的优势是速度快，环境管理 requirements.txt 也很方便移植
+借鉴 Rust cargo 的管理办法，实现了多 python 环境管理，目前的优势是速度快，环境管理 requirements.txt 也很方便移植
 
     https://docs.astral.sh/uv/
         https://github.com/astral-sh/uv
