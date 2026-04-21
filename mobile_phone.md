@@ -1017,6 +1017,10 @@ F-Droid 首先会从用户的角度出发，基于开源软件和用户控制原
 
     BuzzFeed
 
+地图
+
+    https://github.com/organicmaps/organicmaps
+
 ## entware 嵌入式平台软件仓库
 
 NAS、路由器等嵌入式设备，自带软件不多，通过安装 Entware 可以轻松的安装很多软件
