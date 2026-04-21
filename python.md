@@ -2633,7 +2633,9 @@ OpenAI 等人工智能助理是大势所趋了，不得不用了。会提示2个
 
         扩展商店输入 @mcp 开启 MCP Server 商店，开启更多的大模型调用工具
 
-        智能体技能 (Agent Skills)，执行工具的自动化流程，你只需要布置任务然后要求 agent 保存为 skill 即可。或者手工编写到 ~/.copilot/skills/。或者在扩展商店搜索 @agentPlugins，一个插件可以包含Skill、MCP Server等，非常适合一键安装复杂的工作流
+        智能体技能 (Agent Skills)，执行工具的自动化流程，你只需要布置任务然后要求 agent 保存为 skill 即可。或者手工编写到 ~/.copilot/skills/。或者在扩展商店搜索 @agentPlugins，一个插件可以包含Skill、MCP Server等，非常适合一键安装复杂的工作流，目前默认展示 github/copilot-plugins and github/awesome-copilot 下的插件
+
+            https://www.kenmuse.com/blog/creating-agent-plugins-for-vs-code-and-copilot-cli/
 
             在 Copilot 聊天里直接输入 / 就能看到所有可用的技能（和 prompt 文件一起列出）
 
