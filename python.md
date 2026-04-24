@@ -2615,7 +2615,7 @@ OpenAI 等人工智能助理是大势所趋了，不得不用了。会提示2个
 
     终端中打命令想不起复杂的参数？通过自然语言询问、解释或生成复杂的 Shell 命令
 
-    chat mode：在辅助侧边栏有对话框，可以跟大语言模型对话，支持多模态
+    Chat mode：在辅助侧边栏有对话框，可以跟大语言模型对话，支持多模态
 
         Code Review、sql 漏洞检查、自动为 Pull Request 生成变更摘要、影响文件列表及审查重点
 
@@ -2625,7 +2625,7 @@ OpenAI 等人工智能助理是大势所趋了，不得不用了。会提示2个
 
         为代码生成注释、或为整个文档生成 README
 
-    agent mode:只需要说“帮我优化下 xxx 代码改完测试下发布到 github”。他自动替你改，自动调用相关工具进行分析、编写并运行测试用例，发布到 github，统统自动完成。
+    Agent mode:在辅助侧边栏对话框下方的下拉图标，点选切换 “Ask” 和 “Agent”状态，Agent 会赋予 copilot 执行动作的能力。只需要说“帮我优化下 xxx 代码改完测试下发布到 github”。他自动替你改，自动调用相关工具进行分析、编写并运行测试用例，发布到 github，统统自动完成。
 
         支持项目级记忆，提升智能程度
 
@@ -2664,6 +2664,88 @@ OpenAI 等人工智能助理是大势所趋了，不得不用了。会提示2个
 然后，打开VSCode的设置，搜索 'http.proxy'，并设置代理地址和端口。
 
 设置完成后，重新启动VSCode，Copilot应该可以正常工作。
+
+##### AI 对话/辅助编程
+
+GitHub Copilot 只能购买商业版本才能使用本地大模型（ BYOK 功能可接入本地大模型，需要订阅 Copilot Business 或 Copilot Enterprise 计划），普通的个人版（Individual）订阅暂不支持。
+
+注意，编程助手的典型工作场景
+
+    写一个函数
+    解释一段代码
+    生成单元测试
+
+与 openclaw agent 或 hermes agent 那种全自动执行复杂任务的智能体还是不一样的。
+
+1、Continue
+
+    Continue.continue
+        https://docs.continue.dev/
+
+基本可以平替 GitHub Copilot，支持代码补全、内联聊天、选中代码重构、上下文引用等。它可以和LM Studio、Ollama 等多种后端对接。
+
+点击侧边栏图标，可以选择大模型供应商，选择 local，会自动检测到本地运行的 ollama，并提示需要下载3个模型：
+
+Download Chat model 聊天（Chat） 与 编辑（Edit）
+
+    ollama pull llama3.1:8b  # 需要中文支持可换为 qwen2.5-coder:7b
+
+Download Autocomplete model 自动补全（Autocomplete）
+
+    ollama pull qwen2.5-coder:1.5b-base
+
+Download Embeddings model 代码库感知（Codebase Awareness）
+
+    https://openai.xiniushu.com/docs/guides/embeddings
+        https://github.com/openai/openai-cookbook/
+    文本嵌入衡量文本字符串的相关性。嵌入通常用于：
+        Search 搜索（结果按与查询字符串的相关性排序）
+        Clustering 聚类（文本字符串按相似性分组）
+        Recommendations 推荐（推荐具有相关文本字符串的条目）
+        Anomaly detection 异常检测（识别出相关性很小的异常值）
+        Diversity measurement 多样性测量（分析相似性分布）
+        Classification 分类（其中文本字符串按其最相似的标签分类）
+        嵌入是浮点数的向量（列表）。两个向量之间的距离衡量它们的相关性。小距离表示高相关性，大距离表示低相关性。
+
+    ollama pull nomic-embed-text:latest
+
+可手动配置接入 ollama
+
+```json
+// ~/.continue/config.json  (Mac/Linux)
+// C:/Users/{用户名}/.continue/config.json (Windows)[reference:9]
+{
+  "models": [
+    {
+      "title": "Local Qwen2.5-Coder",
+      "provider": "ollama",
+      "model": "qwen2.5-coder:latest",
+      "apiKey": "foobar" // 可以随意填写或不填
+    }
+  ]
+}
+```
+
+接入 lm studio 配置
+
+```json
+{
+  "models": [
+    {
+      "title": "LM Studio Model",
+      "provider": "openai", // Continue 通过 OpenAI 标准接口连接 LM Studio
+      "model": "local-model",
+      "apiBase": "http://localhost:1234/v1",
+      "apiKey": "none"
+    }
+  ]
+}
+```
+
+2、Cline (原 Claude Dev)
+
+    saoudrizwan.claude-dev
+        https://cline.bot/
 
 #### 远程开发： Remote Development
 
@@ -2962,6 +3044,11 @@ Markdown All in One 高亮，预览，给md文件加目录
 
     xlthu.pangu-markdown
 
+#### toml 语法高亮
+
+    tamasfe.even-better-toml
+        https://github.com/tamasfe/taplo
+
 #### csv文件查看
 
 Rainbow CSV
@@ -3060,7 +3147,12 @@ Prettier - Code formatter
 
 功能类似 vs code 自带的 “Show Call Hierarchy”，图形化显示更清晰
 
+    chanhx.crabviz
+        https://github.com/chanhx/crabviz
+        在你的文件上右键菜单选择：Crabviz:generate call graph
+
     WuZhiguo.callviz
+
     LuoZhihao.call-graph
 
 #### markdown 嵌入流程图
