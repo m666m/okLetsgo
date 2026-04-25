@@ -268,6 +268,7 @@ function cpbak {
 
 # wsl 或 git bash 下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "C:\Windows\Path"
 function cdw {
+    echo "[进入 Windows 路径，路径前后要加双引号，如：cdw \"C:\\Windows\\Path\"]"
     cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
 }
 
