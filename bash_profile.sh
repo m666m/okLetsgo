@@ -889,7 +889,7 @@ if command -v ack >/dev/null 2>&1; then
 fi
 
 # ask 命令问 AI
-if [[ ! -s /usr/local/bin/ask ]]; then
+if ! command -v ask >/dev/null 2>&1; then
     echo "安装 ask 命令问 AI..."
     curl -fsSL https://raw.githubusercontent.com/m666m/ask/main/ask \
       | sudo tee /usr/local/bin/ask > /dev/null \
