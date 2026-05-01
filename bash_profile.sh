@@ -207,7 +207,9 @@ alias grepa='grep -d skip -in -A5'
 alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
 
 alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]"; tree -a -CF -I ".git|__pycache__" -L 2'
-alias treeh='echo "[树形列出目录及文件大小]"; tree --du -h'
+alias trees3='echo "[目录树，最多3级，显示目录和可执行文件的标识，跳过.git等目录]"; tree -a -CF -I ".git|__pycache__" -L 3'
+alias treeh='echo "[树形列出目录及文件大小，最多2级]"; tree --du -h -L 2'
+alias treeh3='echo "[树形列出目录及文件大小，最多3级]"; tree --du -h -L 3'
 alias pstrees='echo "[进程树，列出pid，及全部子进程]"; pstree -p -s'
 
 # 从下载文件夹的子目录里把各种电影文件统一挪到当前，方便整理
