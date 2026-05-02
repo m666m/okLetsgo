@@ -2699,7 +2699,7 @@ Download Chat model 聊天（Chat） 与 编辑（Edit）
     # llama3.1:8b       显存占用约 11 GB
     # qwen2.5-coder:7b  显存占用约 7 GB 中文支持更好
     # Qwopus3.5-9B      显存占用约 9 GB 适合 coder，AI智能体，兼顾复杂编程
-    # Qwen3 Coder (30B) 显存占用 24 GB，适合小团队共用写代码
+    # Qwen3 Coder (30B) 显存占用 24 GB，MoE模型可优化
     ollama pull llama3.1:8b
 
 Download Autocomplete model 自动补全（Autocomplete）
@@ -2710,7 +2710,7 @@ Download Autocomplete model 自动补全（Autocomplete）
 Download Embeddings model 代码库感知（Codebase Awareness）使用嵌入模型
 
     # nomic-embed-text
-    # shaw/dmeta-embedding-zh 优化中文
+    # DMetaSoul/Dmeta-embedding-zh 优化中文
     ollama pull nomic-embed-text
 
 可手动配置接入 ollama
