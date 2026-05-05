@@ -2708,7 +2708,6 @@ Download Autocomplete model 自动补全（Autocomplete）
 
 Download Embeddings model 代码库感知（Codebase Awareness）使用嵌入模型
 
-    # nomic-embed-text
     # DMetaSoul/Dmeta-embedding-zh 优化中文
     ollama pull nomic-embed-text
 
