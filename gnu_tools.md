@@ -14,6 +14,8 @@
 
 ## Linux 字符终端
 
+终端工具的选择，参见章节 [Linux 桌面下的终端模拟器]。
+
 很多终端工具都是跨平台的，参见章节 [其他终端模拟器]。
 
 ### 终端的历史演进
@@ -2084,412 +2086,6 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-```
-
-### Linux 桌面下的终端模拟器
-
-有些终端模拟器是跨平台的，见章节 [其他终端模拟器]。
-
-一些使用习惯的变化
-
-    新建的会话默认不执行 .bash_profile，需要设置执行登录脚本 `/bin/bash -l`。
-
-    新建标签会继承前一个标签的会话环境和路径。比如当前标签进入了 toolbox 容器，这时点击新建的标签打开就是进入 toolbox 容器的环境。切换到默认没进入容器的标签，点击新建标签进入的环境就跟当前标签的环境一致。
-
-    目前的终端模拟器的选择即复制功能细分了：鼠标选择的自动复制只是内部剪贴板可用，粘贴热键 shift+ins 或鼠标中键。选择文字后，右键菜单里的复制选项才会到系统剪贴板，然后在其它软件的可以粘贴。粘贴操作系统剪切板的内容需要用鼠标右键菜单的“粘贴”选项才可以。在 tmux 中需要按住 shift 键点右键才弹菜单出来。
-
-    手动打开光标闪动，设置缓存屏幕内容 10000 行。
-
-一般情况下使用桌面内置的终端模拟器足够了，因为我的 Fedora 自带的 Gnome Terminal 不支持背景图片，所以自行安装了 kitty Terminal，兼容性和稳定性最好的是 Konsole，可惜速度太慢。
-
-KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
-
-    显示刷新的速度有点慢，按住回车键看看就知道了。但是兼容性最好，没有功能性问题。
-
-    鼠标选项勾选 “copy on select”，这样在 konsole 的各个窗体内只要鼠标选择文字后就可以使用 shift+ins 粘贴了，如果在 tmux 内，按住 shift 再用鼠标选择文字即可。
-
-        如果发现偶尔无法从从操作系统的剪贴板粘贴了：在 konsole 里的鼠标选择内容后，右键打开菜单选择“copy”。然后就恢复正常了，可以粘贴其它软件复制的内容了。这个 bug 不知道为何一直没有修。
-
-    建议用 dnf 安装，图形界面的 Gnome 软件里的 fedora 仓库和 flatpak 仓库的版本更新不及时。
-
-    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
-
-        $ cd ~/your_github_dir/
-
-        $ git clone --depth=1 git@github.com:arcticicestudio/nord-konsole
-
-        $ cd nord-konsole
-
-        $ export XDG_DATA_HOME=$HOME/.local/share; ./install.sh
-
-        如果是 flatpak 安装的 Konsole，建议用 fedora 官方仓库的版本：
-
-            $ export XDG_DATA_HOME=$HOME/.var/app/org.kde.konsole/data
-
-            $ mkdir -p $XDG_DATA_HOME/konsole
-
-            $ cp src/nord.colorscheme $XDG_DATA_HOME/konsole
-
-    窗口主菜单栏选择 Setting-->Configure Konsole：
-
-        ->General，取消勾选 “Remember Window Size”，勾选 “Remove windonw title bar and frame”，这样你的屏幕可用面积扩大了一行。
-
-        ->Profiles，选New新建 然后点击ok确定。
-
-        然后Edit编辑刚刚新建的Profile1：
-
-            -->General Settings->command: /bin/bash -l，这样设置会话执行登录脚本，并取消勾选“Start in same directory as current session”，这样新建标签的会话不会自动进入之前的工作目录。
-
-            -->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，壁纸透明度设为 50%（根据你选择的背景图片调整）即可。
-
-            -->Scrolling，给 Scrollback 设置到 10000 行，防止看不全输出内容。
-
-            -->Mouse，如果需要鼠标选择即复制到操作系统剪切板的老习惯，勾选“Copy on select”即可。鼠标右键菜单的复制和粘贴都是到操作系统剪切板。
-
-                其它很多终端模拟器软件使用自己的私有剪切板，鼠标选择默认到私有剪切板，shift+ins 热键也是从私有剪切板粘贴，只有使用鼠标右键菜单的复制和粘贴才是到操作系统剪切板。
-
-        别忘记给新建的Profile1的选择“Set as Default”，这样才会生效。
-
-    窗口主菜单栏选择 “Setting”，取消勾选 “Show Menubar”，这时主菜单成为窗口右上角的一个三个横线的图标，点击才显示主菜单栏，这样你的屏幕可用面积又扩大了一行。
-
-Xfce 桌面自带 Xfce Terminal，支持背景图片：
-
-    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
-
-        $ cd ~/your_github_dir/
-
-        $ git clone --depth=1 git@github.com:arcticicestudio/nord-xfce-terminal
-
-        $ cd nord-xfce-terminal/
-
-        $ ./install.sh
-
-    或可以手动把文件 `nord.theme` 拷贝到本地的配置目录 `~/.local/share/xfce4/terminal/colorschemes` 下即可。
-
-    窗口菜单选 Edit->Preference:
-
-        -->Colors->Presets，选择 Nord 颜色方案。
-
-        -->General-->Command，勾选 `Run command as login shell` 以设置会话执行登录脚本
-
-        -->Appeaerance-->Background，设置背景图片，目前不支持透明，只支持图片调明暗
-                      -->Open New Windows，只勾选 `Display toolbar ...`，这样打开的窗口不会有标题栏和菜单栏
-
-Ptyxis 终端模拟器，原名 Prompt，显示刷新速度快
-
-        https://gitlab.gnome.org/chergert/ptyxis
-
-    Fedora 41 开始用它代替了 Gnome Terminal 作为操作系统预置的终端模拟器
-
-    它的特色是自动识别本地的容器（支持常见的 Podman、Toolbox、Distrobox 和 JHBuild 容器），点击工具栏左上角的下拉菜单列出容器，点选即可新建一个标签页进入该容器的tty，等效于替你执行了 `podman exec -it 容器名 sh`。
-
-    为了优化速度，它有一个小型的 ptyxis-agent 后台进程来管理 PTY、PID 跟踪和容器监控
-
-    主题配色方案内置了 Nord theme，但是不支持背景图片。
-
-    对本地、本地切换到 root 用户、ssh 登录到远程服务器，窗体会变为不同颜色以提示用户。
-
-    常用功能的变化：“鼠标选择文字即复制”、“shift+ins 粘贴” 这两个功能都只限于本应用自己的剪切板，在本应用内的各个窗口使用。这两个操作无法使用系统剪切板，没法粘贴到记事本等其它应用，或从记事本等其它应用复制内容粘贴到本应用的窗口内。目前没找到只使用系统剪贴板的设置选项。
-
-        如果想使用系统剪贴板进行复制和粘贴，必须在终端窗体内鼠标拖动选择文字，然后点击右键从菜单选择复制或粘贴。如果在 tmux/vi 等应用中无法弹出右键菜单，用 shift+右键可弹出。
-
-    目前对 tmux 的支持不好，在各个拆分窗口间移动鼠标，有时候会进入选择文字状态，需要按 q 退出。
-
-    目前只能使用 dconf 设置窗口透明度
-
-        $ dconf read /org/gnome/Ptyxis/default-profile-uuid
-        'ddb03e60e8d36dec96ef51fb67345f90'
-
-        $ dconf write /org/gnome/Ptyxis/Profiles/ddb03e60e8d36dec96ef51fb67345f90/opacity 0.95
-
-被抛弃的 Gnome Terminal，不支持背景图片：
-
-    Fedora 41 之前一直预装，后被 Ptyxis 替换
-
-    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
-
-        $ cd ~/your_github_dir/
-
-        $ git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
-
-        $ cd gnome-terminal-nordtheme/src; ./nord.sh
-
-        执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
-
-    窗口菜单选 Profile，选 Nord，设为默认即可，其它选项点击右侧项：
-
-        -->command 勾选 Run command as a login shell 以设置会话执行登录脚本
-
-        -->color：不支持设置背景图片，但仍可设置窗口透明度。
-
-kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/MacOS 桌面下使用
-
-    kitty 的系统资源占用最少，基本功能全有
-        https://sw.kovidgoyal.net/kitty/performance/#energy-usage
-
-        https://github.com/kovidgoyal/kitty
-            https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
-
-    已知问题：关闭 kitty 后干扰中文输入法在其它软件中打不上字，需要再打开 kitty
-
-    配置说明
-
-        https://sw.kovidgoyal.net/kitty/conf/
-
-    常用插件挺好用 https://sw.kovidgoyal.net/kitty/kittens_intro/
-
-    设置 kitty 使用颜色主题，运行命令 `kitty +kitten themes`，会进入字符GUI界面，根据提示操作即可，推荐使用内置 Nord 主题。
-
-    复制和粘贴：因为没有右键菜单，所以只能用热键
-
-        ctrl+shift+c 复制到操作系统剪切板
-        ctrl+shift+v 从操作系统剪切板粘贴
-
-        shift+insert 从你鼠标选择的内容粘贴
-
-        如果需要鼠标选择的内容自动复制到操作系统剪切板的老习惯，配置文件中开启“Copy on select”即可
-
-    滚动窗口内容：
-
-        鼠标滚轮，右侧出现的滚动条只显示进度但不支持拖动
-
-        触摸板手势，双指上下滑动：等效于鼠标滚轮
-
-        向上/下滚动：Ctrl+Shift+Up Ctrl+Shift+Down
-
-        向上/下翻页：Ctrl+Shift+Page_Up Ctrl+Shift+Page_Down
-
-        快速滚动到顶/底部：Ctrl+Shift+Home Ctrl+Shift+End
-
-        滚动到前一个/下一个shell命令的输出: ctrl+shift+x, ctrl+shift+z
-
-    查找窗口中的文字：
-
-        按下 ctrl+shift+h，会默认使用 `less` 打开滚动缓冲区（scrollback buffer），出现 : 提示符
-
-            按下 / 键后再输入要搜索的内容，按下回车键即可进行正向搜索
-
-            按下 ? 键后输入内容则进行反向搜索
-
-            按下 n 键或 N 键来向前或向后逐个查找匹配项
-
-            按下回车键重新进入 : 提示符号，进行新的搜索
-
-        也可安装插件 [kitty-search](https://github.com/trygveaa/kitty-kitten-search)
-
-    选项卡操作：每个选项卡对应一个窗口
-
-        新建选项卡：Ctrl+Shift+T，窗口最下一行就变成选项卡的标题栏了，鼠标点击即可切换
-
-        切换到前一个/后一个选项卡：Ctrl+Shift+Left Ctrl+Shift+Right
-
-        当前选项卡左移/右移：ctrl+shift+, ctrl+shift+.
-
-        Close Tab：Ctrl+Shift+Q
-
-    窗口操作：每个选项卡下的窗口还可以拆分为多个窗口
-
-        纵向拆分窗口： Ctrl+Shift+Enter
-
-        在不同窗口之间切换：鼠标点击窗口或 Ctrl+Shift+[ 或 Ctrl+Shift+]
-
-        窗口排列为多种布局： Ctrl+Shift+L
-
-        关闭窗口： Ctrl+Shift+w
-
-    shell 集成：鼠标点击命令行文字即可移动光标到此等
-
-        https://sw.kovidgoyal.net/kitty/shell-integration/#shell-integration
-
-    ssh问题：有时 ssh 连接到远程计算机时，可能会报错终端未知或打开终端失败。是因为 Kitty terminfo 文件（curses 库中处理特定终端功能的一组例程）在远程服务器上不可用，解决办法如下：
-
-        alias sshk="kitty +kitten ssh" 然后使用 ssh 执行 `sshk user@host` 即可
-
-    扩展插件
-
-        https://sw.kovidgoyal.net/kitty/integrations
-
-        列出插件
-
-            $  kitty +kitten
-            。。。
-
-        在配置文件中把插件设置为热键调用
-
-            map ctrl+shift+/ launch --type=overlay --allow-remote-control kitty +kitten scrollback
-
-    我使用的 $HOME$/.config/kitty/kitty.conf 配置文件如下：
-
-        #################################
-        # 恢复默认配置 `cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/kitty.conf`
-
-        # `kitty +kitten themes`
-        # BEGIN_KITTY_THEME
-        # Nord
-        include current-theme.conf
-        # END_KITTY_THEME
-
-        # `kitten choose-fonts`
-        # BEGIN_KITTY_FONTS
-        font_family      family="MesloLGS Nerd Font"
-        bold_font        auto
-        italic_font      auto
-        bold_italic_font auto
-        font_size 12.0
-        # END_KITTY_FONTS
-
-        # 鼠标选择即复制到操作系统剪切板
-        copy_on_select clipboard
-
-        # 选项卡相关设置
-        tab_bar_edge top
-        tab_bar_style powerline
-        tab_powerline_style round
-
-        # 新开窗口执行 shell 登录脚本
-        shell /bin/bash --login
-
-        # 窗口内容保留的多些方便查看
-        scrollback_lines 10000
-
-        # for use with quake mode drop-down window extension
-        remember_window_size no
-
-        # 壁纸
-        background_image /home/user/Pictures/125103.jpg
-        background_image_layout scaled
-        # background_opacity 0.9
-        # background_blur 64
-
-        # 光标闪动
-        cursor_blink_rate 500
-
-        # 关掉 shell_integration 设置光标形状
-        shell_integration no-cursor
-        cursor_shape block
-
-        # shell_integration 功能可以实现定位每个命令输出的开始位置
-        map f1 scroll_to_prompt -1  # jump to previous
-        map f2 scroll_to_prompt 1   # jump to next
-        map f3 scroll_to_prompt 0   # jump to last visited
-
-gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal。
-
-Enlightenment 桌面自带 Terminology。
-
-sway 窗口管理器自带 foot。
-
-guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个，gnome 桌面有扩展实现该功能，参见章节 [使用 gnome 扩展] 的 quake-mode。
-
-tilix 基于 gtk3 开发的一个平铺式终端模拟器，效果类似 tmux，但是支持各面板的自定义拖曳。
-
-cool-retro-term 显示效果是 CRT 显示器。
-
-terminology 使用 EFL（不支持Wayland） 的终端仿真器，尽可能地模仿 Xterm。
-
-Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
-
-    https://www.warp.dev/
-        https://github.com/warpdotdev/Warp
-        主题 https://github.com/warpdotdev/themes
-
-#### i3 窗口管理器自带 urxvt(rxvt-unicode)
-
-配置复杂，不整了
-
-    https://segmentfault.com/a/1190000020859490
-    https://wiki.archlinux.org/title/Rxvt-unicode
-
-支持设置背景图片
-
-    $ sudo dnf install rxvt-unicode
-
-urxvt 受 Xresources 控制:
-
-    编辑配置文件
-    $ vim ~/.Xresources
-
-    加载文件，使配置生效
-    $ xrdb ~/.Xresources
-
-    $ urxvt
-
-terminfo 文件在 /usr/share/terminfo/r/rxvt-unicode，拷贝到远程主机的 ~/.terminfo/r/rxvt-unicode 下即可解决终端特殊字符无法识别报错的问题。
-
-.Xresources配置文件示例，太麻烦了，暂时还没配置利索，不弄了：
-
-```conf
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! https://segmentfault.com/a/1190000020859490
-! https://wiki.archlinux.org/title/Rxvt-unicode
-
-Xft.dpi: 96
-!抗锯齿
-Xft.antialias: true
-Xft.rgba: rgb
-Xft.hinting: true
-Xft.hintstyle: hintslight
-
-! do not scroll with output
-URxvt*scrollTtyOutput: false
-
-! scroll in relation to buffer (with mouse scroll or Shift+Page Up)
-URxvt*scrollWithBuffer: true
-
-! scroll back to the bottom on keypress
-URxvt*scrollTtyKeypress: true
-
-!pager
-URxvt.secondaryScreen: 1
-URxvt.secondaryScroll: 0
-URxvt.secondaryWheel: 1
-
-URxvt.font: xft:MesloLGS Nerd Font:size=11
-URxvt.letterSpace: -1
-
-!作为登录 shell 启动
-URxvt.loginShell: true
-!使用的输入法框架名称，这样才可以输入中文
-URxvt.inputMethod:IBus
-!窗口大小：按字符数的列x行
-URxvt.geometry: 110x30
-URxvt.depth: 32
-
-!标签式窗口
-URxvt.perl-ext-common: tabbed
-
-!URxvt.perl-ext-common:  ...,selection-to-clipboard,...
-URxvt.clipboard.autocopy: true
-URxvt.keysym.M-c: perl:clipboard:copy
-URxvt.keysym.M-v: perl:clipboard:paste
-
-!URxvt.keysym.F11: perl:fullscreen:switch
-URxvt.multichar_encoding:gb #汉字编码
-URxvt.boldFont:-*-SimHei-* #粗字体
-URxvt.mfont: -*-simsun-medium-r-normal-*-14-*-*-*-c-*-gb*-* #汉字字体
-
-URxvt.cursorBlink: true
-
-URxvt.scrollstyle:rxvt
-URxvt.scrollBar:True
-URxvt.scrollBar_right:True
-
-!屏幕缓冲1万行，足够了
-URxvt.saveLines:10000
-
-!背景 参见源代码 /usr/lib64/urxvt/perl/background
-URxvt.background.expr: scale keep { load "/home/uu/Pictures/3eleph.png" }
-!控制背景透明，变暗（0..99），变亮（101..200)，100 表示没有阴影
-URxvt.transparent: true
-URxvt.shading: 150
-
-URxvt.background: #2E3440
-URxvt.foreground: rgb:d8/de/e9
-
-!可重新定义 xterm color0~15
-URxvt.color12: rgb:5c/5c/ff
 
 ```
 
@@ -12917,6 +12513,412 @@ enlightenment 桌面
 
 如果不想用桌面环境，但还需要在图形化的窗口下工作，见章节 [窗口管理器（Windows Manager）]。
 
+### Linux 桌面下的终端模拟器
+
+有些终端模拟器是跨平台的，见章节 [其他终端模拟器]。
+
+一些使用习惯的变化
+
+    新建的会话默认不执行 .bash_profile，需要设置执行登录脚本 `/bin/bash -l`。
+
+    新建标签会继承前一个标签的会话环境和路径。比如当前标签进入了 toolbox 容器，这时点击新建的标签打开就是进入 toolbox 容器的环境。切换到默认没进入容器的标签，点击新建标签进入的环境就跟当前标签的环境一致。
+
+    目前的终端模拟器的选择即复制功能细分了：鼠标选择的自动复制只是内部剪贴板可用，粘贴热键 shift+ins 或鼠标中键。选择文字后，右键菜单里的复制选项才会到系统剪贴板，然后在其它软件的可以粘贴。粘贴操作系统剪切板的内容需要用鼠标右键菜单的“粘贴”选项才可以。在 tmux 中需要按住 shift 键点右键才弹菜单出来。
+
+    手动打开光标闪动，设置缓存屏幕内容 10000 行。
+
+一般情况下使用桌面内置的终端模拟器足够了，因为我的 Fedora 自带的 Gnome Terminal 不支持背景图片，所以自行安装了 kitty Terminal，兼容性和稳定性最好的是 Konsole，可惜速度太慢。
+
+KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
+
+    显示刷新的速度有点慢，按住回车键看看就知道了。但是兼容性最好，没有功能性问题。
+
+    鼠标选项勾选 “copy on select”，这样在 konsole 的各个窗体内只要鼠标选择文字后就可以使用 shift+ins 粘贴了，如果在 tmux 内，按住 shift 再用鼠标选择文字即可。
+
+        如果发现偶尔无法从从操作系统的剪贴板粘贴了：在 konsole 里的鼠标选择内容后，右键打开菜单选择“copy”。然后就恢复正常了，可以粘贴其它软件复制的内容了。这个 bug 不知道为何一直没有修。
+
+    建议用 dnf 安装，图形界面的 Gnome 软件里的 fedora 仓库和 flatpak 仓库的版本更新不及时。
+
+    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
+
+        $ cd ~/your_github_dir/
+
+        $ git clone --depth=1 git@github.com:arcticicestudio/nord-konsole
+
+        $ cd nord-konsole
+
+        $ export XDG_DATA_HOME=$HOME/.local/share; ./install.sh
+
+        如果是 flatpak 安装的 Konsole，建议用 fedora 官方仓库的版本：
+
+            $ export XDG_DATA_HOME=$HOME/.var/app/org.kde.konsole/data
+
+            $ mkdir -p $XDG_DATA_HOME/konsole
+
+            $ cp src/nord.colorscheme $XDG_DATA_HOME/konsole
+
+    窗口主菜单栏选择 Setting-->Configure Konsole：
+
+        ->General，取消勾选 “Remember Window Size”，勾选 “Remove windonw title bar and frame”，这样你的屏幕可用面积扩大了一行。
+
+        ->Profiles，选New新建 然后点击ok确定。
+
+        然后Edit编辑刚刚新建的Profile1：
+
+            -->General Settings->command: /bin/bash -l，这样设置会话执行登录脚本，并取消勾选“Start in same directory as current session”，这样新建标签的会话不会自动进入之前的工作目录。
+
+            -->Appearance，颜色方案选 Nord 即可。还可以选 Edit 该颜色方案，一般把背景透明度设为 10%，壁纸透明度设为 50%（根据你选择的背景图片调整）即可。
+
+            -->Scrolling，给 Scrollback 设置到 10000 行，防止看不全输出内容。
+
+            -->Mouse，如果需要鼠标选择即复制到操作系统剪切板的老习惯，勾选“Copy on select”即可。鼠标右键菜单的复制和粘贴都是到操作系统剪切板。
+
+                其它很多终端模拟器软件使用自己的私有剪切板，鼠标选择默认到私有剪切板，shift+ins 热键也是从私有剪切板粘贴，只有使用鼠标右键菜单的复制和粘贴才是到操作系统剪切板。
+
+        别忘记给新建的Profile1的选择“Set as Default”，这样才会生效。
+
+    窗口主菜单栏选择 “Setting”，取消勾选 “Show Menubar”，这时主菜单成为窗口右上角的一个三个横线的图标，点击才显示主菜单栏，这样你的屏幕可用面积又扩大了一行。
+
+Xfce 桌面自带 Xfce Terminal，支持背景图片：
+
+    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
+
+        $ cd ~/your_github_dir/
+
+        $ git clone --depth=1 git@github.com:arcticicestudio/nord-xfce-terminal
+
+        $ cd nord-xfce-terminal/
+
+        $ ./install.sh
+
+    或可以手动把文件 `nord.theme` 拷贝到本地的配置目录 `~/.local/share/xfce4/terminal/colorschemes` 下即可。
+
+    窗口菜单选 Edit->Preference:
+
+        -->Colors->Presets，选择 Nord 颜色方案。
+
+        -->General-->Command，勾选 `Run command as login shell` 以设置会话执行登录脚本
+
+        -->Appeaerance-->Background，设置背景图片，目前不支持透明，只支持图片调明暗
+                      -->Open New Windows，只勾选 `Display toolbar ...`，这样打开的窗口不会有标题栏和菜单栏
+
+Ptyxis 终端模拟器，原名 Prompt，显示刷新速度快
+
+        https://gitlab.gnome.org/chergert/ptyxis
+
+    Fedora 41 开始用它代替了 Gnome Terminal 作为操作系统预置的终端模拟器
+
+    它的特色是自动识别本地的容器（支持常见的 Podman、Toolbox、Distrobox 和 JHBuild 容器），点击工具栏左上角的下拉菜单列出容器，点选即可新建一个标签页进入该容器的tty，等效于替你执行了 `podman exec -it 容器名 sh`。
+
+    为了优化速度，它有一个小型的 ptyxis-agent 后台进程来管理 PTY、PID 跟踪和容器监控
+
+    主题配色方案内置了 Nord theme，但是不支持背景图片。
+
+    对本地、本地切换到 root 用户、ssh 登录到远程服务器，窗体会变为不同颜色以提示用户。
+
+    常用功能的变化：“鼠标选择文字即复制”、“shift+ins 粘贴” 这两个功能都只限于本应用自己的剪切板，在本应用内的各个窗口使用。这两个操作无法使用系统剪切板，没法粘贴到记事本等其它应用，或从记事本等其它应用复制内容粘贴到本应用的窗口内。目前没找到只使用系统剪贴板的设置选项。
+
+        如果想使用系统剪贴板进行复制和粘贴，必须在终端窗体内鼠标拖动选择文字，然后点击右键从菜单选择复制或粘贴。如果在 tmux/vi 等应用中无法弹出右键菜单，用 shift+右键可弹出。
+
+    目前对 tmux 的支持不好，在各个拆分窗口间移动鼠标，有时候会进入选择文字状态，需要按 q 退出。
+
+    目前只能使用 dconf 设置窗口透明度
+
+        $ dconf read /org/gnome/Ptyxis/default-profile-uuid
+        'ddb03e60e8d36dec96ef51fb67345f90'
+
+        $ dconf write /org/gnome/Ptyxis/Profiles/ddb03e60e8d36dec96ef51fb67345f90/opacity 0.95
+
+被抛弃的 Gnome Terminal，不支持背景图片：
+
+    Fedora 41 之前一直预装，后被 Ptyxis 替换
+
+    主题配色方案建议使用 Nord theme，参见 [配色方案：支持终端模拟器和命令行软件的主题 Nord theme 等]
+
+        $ cd ~/your_github_dir/
+
+        $ git clone --depth=1 https://github.com/nordtheme/gnome-terminal.git gnome-terminal-nordtheme
+
+        $ cd gnome-terminal-nordtheme/src; ./nord.sh
+
+        执行后新建终端窗口时就多了个 Nord 的配置文件，设为默认即可
+
+    窗口菜单选 Profile，选 Nord，设为默认即可，其它选项点击右侧项：
+
+        -->command 勾选 Run command as a login shell 以设置会话执行登录脚本
+
+        -->color：不支持设置背景图片，但仍可设置窗口透明度。
+
+kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/MacOS 桌面下使用
+
+    kitty 的系统资源占用最少，基本功能全有
+        https://sw.kovidgoyal.net/kitty/performance/#energy-usage
+
+        https://github.com/kovidgoyal/kitty
+            https://www.linuxshelltips.com/kitty-terminal-emulator-linux/
+
+    已知问题：关闭 kitty 后干扰中文输入法在其它软件中打不上字，需要再打开 kitty
+
+    配置说明
+
+        https://sw.kovidgoyal.net/kitty/conf/
+
+    常用插件挺好用 https://sw.kovidgoyal.net/kitty/kittens_intro/
+
+    设置 kitty 使用颜色主题，运行命令 `kitty +kitten themes`，会进入字符GUI界面，根据提示操作即可，推荐使用内置 Nord 主题。
+
+    复制和粘贴：因为没有右键菜单，所以只能用热键
+
+        ctrl+shift+c 复制到操作系统剪切板
+        ctrl+shift+v 从操作系统剪切板粘贴
+
+        shift+insert 从你鼠标选择的内容粘贴
+
+        如果需要鼠标选择的内容自动复制到操作系统剪切板的老习惯，配置文件中开启“Copy on select”即可
+
+    滚动窗口内容：
+
+        鼠标滚轮，右侧出现的滚动条只显示进度但不支持拖动
+
+        触摸板手势，双指上下滑动：等效于鼠标滚轮
+
+        向上/下滚动：Ctrl+Shift+Up Ctrl+Shift+Down
+
+        向上/下翻页：Ctrl+Shift+Page_Up Ctrl+Shift+Page_Down
+
+        快速滚动到顶/底部：Ctrl+Shift+Home Ctrl+Shift+End
+
+        滚动到前一个/下一个shell命令的输出: ctrl+shift+x, ctrl+shift+z
+
+    查找窗口中的文字：
+
+        按下 ctrl+shift+h，会默认使用 `less` 打开滚动缓冲区（scrollback buffer），出现 : 提示符
+
+            按下 / 键后再输入要搜索的内容，按下回车键即可进行正向搜索
+
+            按下 ? 键后输入内容则进行反向搜索
+
+            按下 n 键或 N 键来向前或向后逐个查找匹配项
+
+            按下回车键重新进入 : 提示符号，进行新的搜索
+
+        也可安装插件 [kitty-search](https://github.com/trygveaa/kitty-kitten-search)
+
+    选项卡操作：每个选项卡对应一个窗口
+
+        新建选项卡：Ctrl+Shift+T，窗口最下一行就变成选项卡的标题栏了，鼠标点击即可切换
+
+        切换到前一个/后一个选项卡：Ctrl+Shift+Left Ctrl+Shift+Right
+
+        当前选项卡左移/右移：ctrl+shift+, ctrl+shift+.
+
+        Close Tab：Ctrl+Shift+Q
+
+    窗口操作：每个选项卡下的窗口还可以拆分为多个窗口
+
+        纵向拆分窗口： Ctrl+Shift+Enter
+
+        在不同窗口之间切换：鼠标点击窗口或 Ctrl+Shift+[ 或 Ctrl+Shift+]
+
+        窗口排列为多种布局： Ctrl+Shift+L
+
+        关闭窗口： Ctrl+Shift+w
+
+    shell 集成：鼠标点击命令行文字即可移动光标到此等
+
+        https://sw.kovidgoyal.net/kitty/shell-integration/#shell-integration
+
+    ssh问题：有时 ssh 连接到远程计算机时，可能会报错终端未知或打开终端失败。是因为 Kitty terminfo 文件（curses 库中处理特定终端功能的一组例程）在远程服务器上不可用，解决办法如下：
+
+        alias sshk="kitty +kitten ssh" 然后使用 ssh 执行 `sshk user@host` 即可
+
+    扩展插件
+
+        https://sw.kovidgoyal.net/kitty/integrations
+
+        列出插件
+
+            $  kitty +kitten
+            。。。
+
+        在配置文件中把插件设置为热键调用
+
+            map ctrl+shift+/ launch --type=overlay --allow-remote-control kitty +kitten scrollback
+
+    我使用的 $HOME$/.config/kitty/kitty.conf 配置文件如下：
+
+        #################################
+        # 恢复默认配置 `cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/kitty.conf`
+
+        # `kitty +kitten themes`
+        # BEGIN_KITTY_THEME
+        # Nord
+        include current-theme.conf
+        # END_KITTY_THEME
+
+        # `kitten choose-fonts`
+        # BEGIN_KITTY_FONTS
+        font_family      family="MesloLGS Nerd Font"
+        bold_font        auto
+        italic_font      auto
+        bold_italic_font auto
+        font_size 12.0
+        # END_KITTY_FONTS
+
+        # 鼠标选择即复制到操作系统剪切板
+        copy_on_select clipboard
+
+        # 选项卡相关设置
+        tab_bar_edge top
+        tab_bar_style powerline
+        tab_powerline_style round
+
+        # 新开窗口执行 shell 登录脚本
+        shell /bin/bash --login
+
+        # 窗口内容保留的多些方便查看
+        scrollback_lines 10000
+
+        # for use with quake mode drop-down window extension
+        remember_window_size no
+
+        # 壁纸
+        background_image /home/user/Pictures/125103.jpg
+        background_image_layout scaled
+        # background_opacity 0.9
+        # background_blur 64
+
+        # 光标闪动
+        cursor_blink_rate 500
+
+        # 关掉 shell_integration 设置光标形状
+        shell_integration no-cursor
+        cursor_shape block
+
+        # shell_integration 功能可以实现定位每个命令输出的开始位置
+        map f1 scroll_to_prompt -1  # jump to previous
+        map f2 scroll_to_prompt 1   # jump to next
+        map f3 scroll_to_prompt 0   # jump to last visited
+
+gtk 桌面自带 terminator，纯 python 的一个实现，封装了 Gnome Terminal。
+
+Enlightenment 桌面自带 Terminology。
+
+sway 窗口管理器自带 foot。
+
+guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个，gnome 桌面有扩展实现该功能，参见章节 [使用 gnome 扩展] 的 quake-mode。
+
+tilix 基于 gtk3 开发的一个平铺式终端模拟器，效果类似 tmux，但是支持各面板的自定义拖曳。
+
+cool-retro-term 显示效果是 CRT 显示器。
+
+terminology 使用 EFL（不支持Wayland） 的终端仿真器，尽可能地模仿 Xterm。
+
+Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
+
+    https://www.warp.dev/
+        https://github.com/warpdotdev/Warp
+        主题 https://github.com/warpdotdev/themes
+
+#### i3 窗口管理器自带 urxvt(rxvt-unicode)
+
+配置复杂，不整了
+
+    https://segmentfault.com/a/1190000020859490
+    https://wiki.archlinux.org/title/Rxvt-unicode
+
+支持设置背景图片
+
+    $ sudo dnf install rxvt-unicode
+
+urxvt 受 Xresources 控制:
+
+    编辑配置文件
+    $ vim ~/.Xresources
+
+    加载文件，使配置生效
+    $ xrdb ~/.Xresources
+
+    $ urxvt
+
+terminfo 文件在 /usr/share/terminfo/r/rxvt-unicode，拷贝到远程主机的 ~/.terminfo/r/rxvt-unicode 下即可解决终端特殊字符无法识别报错的问题。
+
+.Xresources配置文件示例，太麻烦了，暂时还没配置利索，不弄了：
+
+```conf
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! https://segmentfault.com/a/1190000020859490
+! https://wiki.archlinux.org/title/Rxvt-unicode
+
+Xft.dpi: 96
+!抗锯齿
+Xft.antialias: true
+Xft.rgba: rgb
+Xft.hinting: true
+Xft.hintstyle: hintslight
+
+! do not scroll with output
+URxvt*scrollTtyOutput: false
+
+! scroll in relation to buffer (with mouse scroll or Shift+Page Up)
+URxvt*scrollWithBuffer: true
+
+! scroll back to the bottom on keypress
+URxvt*scrollTtyKeypress: true
+
+!pager
+URxvt.secondaryScreen: 1
+URxvt.secondaryScroll: 0
+URxvt.secondaryWheel: 1
+
+URxvt.font: xft:MesloLGS Nerd Font:size=11
+URxvt.letterSpace: -1
+
+!作为登录 shell 启动
+URxvt.loginShell: true
+!使用的输入法框架名称，这样才可以输入中文
+URxvt.inputMethod:IBus
+!窗口大小：按字符数的列x行
+URxvt.geometry: 110x30
+URxvt.depth: 32
+
+!标签式窗口
+URxvt.perl-ext-common: tabbed
+
+!URxvt.perl-ext-common:  ...,selection-to-clipboard,...
+URxvt.clipboard.autocopy: true
+URxvt.keysym.M-c: perl:clipboard:copy
+URxvt.keysym.M-v: perl:clipboard:paste
+
+!URxvt.keysym.F11: perl:fullscreen:switch
+URxvt.multichar_encoding:gb #汉字编码
+URxvt.boldFont:-*-SimHei-* #粗字体
+URxvt.mfont: -*-simsun-medium-r-normal-*-14-*-*-*-c-*-gb*-* #汉字字体
+
+URxvt.cursorBlink: true
+
+URxvt.scrollstyle:rxvt
+URxvt.scrollBar:True
+URxvt.scrollBar_right:True
+
+!屏幕缓冲1万行，足够了
+URxvt.saveLines:10000
+
+!背景 参见源代码 /usr/lib64/urxvt/perl/background
+URxvt.background.expr: scale keep { load "/home/uu/Pictures/3eleph.png" }
+!控制背景透明，变暗（0..99），变亮（101..200)，100 表示没有阴影
+URxvt.transparent: true
+URxvt.shading: 150
+
+URxvt.background: #2E3440
+URxvt.foreground: rgb:d8/de/e9
+
+!可重新定义 xterm color0~15
+URxvt.color12: rgb:5c/5c/ff
+
+```
+
 ### 常用桌面工具软件
 
 最流行的 Linux 软件搜索下载：
@@ -12932,8 +12934,6 @@ enlightenment 桌面
         https://github.com/prateekmedia/appimagepool
 
 搜索和安装图形化软件的方法，参见章节 [使用 Fedora 软件商店](init_a_server think)。
-
-终端工具的选择，参见章节 [Linux 桌面下的终端模拟器]。
 
 文件管理器 GNOME Files（Nautilus）
 
