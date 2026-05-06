@@ -3800,29 +3800,31 @@ WSLg 默认启用 OpenGL 加速，如需 Vulkan：
 
 目前 WSL 中默认通过 WSLg 支持 CUDA，在宿主机的 Windows 操作系统中安装过 nvidia 显卡驱动程序即可，不需要在 wsl 实例中安装了。
 
-2、确认 WSL 实例的内核版本
+以下内容保留仅供参考，不需要操作了。
 
-安装上述驱动程序后，请确保启用 WSL 并安装基于 glibc 的分发版，例如 Ubuntu 或 Debian。
+   确认 WSL 实例的内核版本
 
-需要 Linux 5.10.43.3 或更高版本的内核版本，可以通过在 PowerShell 中运行以下命令来检查版本号：
+    安装上述驱动程序后，请确保启用 WSL 并安装基于 glibc 的分发版，例如 Ubuntu 或 Debian。
 
-    $ wsl cat /proc/version
+    需要 Linux 5.10.43.3 或更高版本的内核版本，可以通过在 PowerShell 中运行以下命令来检查版本号：
 
-3、安装 WSL 上的 NVIDIA CUDA Toolkit
+        $ wsl cat /proc/version
 
-    https://docs.nvidia.com/cuda/wsl-user-guide/index.html#cuda-support-for-wsl-2
+    安装 WSL 上的 NVIDIA CUDA Toolkit
 
-    https://developer.nvidia.com/cuda/wsl/download
+        https://docs.nvidia.com/cuda/wsl-user-guide/index.html#cuda-support-for-wsl-2
 
-WSL 版下载直达
+        https://developer.nvidia.com/cuda/wsl/download
 
-    https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local
+    WSL 版下载直达
 
-会列出一堆命令，在命令行终端中进入你的 wsl 实例，粘贴这些命令，执行即可。
+        https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local
 
-文件比较大，下载和安装需要一定的时间，耐心等待。
+    会列出一堆命令，在命令行终端中进入你的 wsl 实例，粘贴这些命令，执行即可。
 
-3、开始使用 CUDA
+    文件比较大，下载和安装需要一定的时间，耐心等待。
+
+2、开始使用 CUDA
 
 在 WSL 中安装 PyTorch 或 TensorFlow
 
@@ -3830,7 +3832,7 @@ WSL 版下载直达
 
     https://www.tensorflow.org/install/gpu
 
-注意事项
+3、注意事项
 
 驱动、CUDA、cuDNN、框架四者版本必须严格匹配
 
@@ -3847,6 +3849,7 @@ WSL 版下载直达
 CUDA 安装路径不要包含中文或空格
 
     默认路径为：C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8 (11.8 为 CUDA 的版本）
+
 自定义路径可能导致环境变量配置错误
 
 #### WSL 下使用 NVIDIA Container Toolkit
