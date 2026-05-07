@@ -2748,6 +2748,46 @@ Download Embeddings model 代码库感知（Codebase Awareness）使用嵌入模
 
     https://cline.bot/
 
+#### ACP 直接使用你的 Agent
+
+VS Code 安装插件：
+
+    formulahendry.acp-client
+
+ACP (代理客户端协议)  允许你的代码编辑器中可以跟你的 Agent 对话了，而且还可以使用 Agent 的很多功能：
+
+    chat messages
+    tool activity
+    file diffs
+    terminal commands
+    approval prompts
+    streamed thinking / response chunks
+
+需要 Agent 启动 ACP 服务：
+
+    # https://hermes-agent.nousresearch.com/docs/user-guide/features/acp
+    $ hermes acp
+
+    # 查看状态
+    $ hermes doctor
+    $ hermes status
+
+Hermes 会开放如下服务：
+
+    file tools: , , , read_filewrite_filepatchsearch_files
+    terminal tools: , terminalprocess
+    web/browser tools
+    memory, todo, session search
+    skills
+    execute_code and delegate_task
+    vision
+
+    但是不会传递聊天软件的消息和 cronjob
+
+ACP 的作用域是当前运行的ACP服务器进程，但文件和终端工具的运行是相对于编辑器工作区，而不是服务器进程 cwd。
+
+ACP 自己不登录，它使用 Agent 现有的供应商配置。
+
 #### 远程开发： Remote Development
 
 装这一个就会自动装一堆扩展
