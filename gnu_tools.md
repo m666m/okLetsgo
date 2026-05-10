@@ -19746,7 +19746,7 @@ profiles:
         # 自定义状态栏
         status_line:
             indicator:
-                left: " {InputMode:Bold,Color=#FFFF00}{TraceMode:Bold,Color=#FFFF00,Left= │ }{Tabs:ActiveColor=#1FF8FF,Left= │ }{ProtectedMode:Bold,Left= │ }{SearchPrompt:Left= │ }"
+                left: " {InputMode:Bold,Color=#FFFF00}{TraceMode:Bold,Color=#FFFF00,Left= │ }{Tabs:Bold,ActiveColor=#00FFFF,Left= │ }{ProtectedMode:Bold,Left= │ }{SearchPrompt:Left= │ }"
                 middle: "« {Command:Program=hostname} »"
                 right: "{HistoryLineCount:Faint,Color=#c0c0c0} │ {Clock:Blinking,Bold}"
 
@@ -19802,6 +19802,14 @@ color_schemes:
             cyan:    '#8FBCBB'
             white:   '#ECEFF4'
 
+        # 状态栏要自定义
+        indicator_statusline:
+            default:
+                foreground: '#FFFFFF'
+                background: '#003366'
+            inactive:
+                foreground: '#FFFFFF'
+                background: '#003399'
 # 热键
 input_mapping:
 
