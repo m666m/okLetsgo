@@ -19695,8 +19695,12 @@ Supper Putty
 
 快捷操作
 
-    Ctrl+Shift+Space 当前屏幕进入vim模式，方便用键盘选择屏幕文字复制粘贴等操作。
+    Ctrl+Shift+T	新建标签页
+    alt + 1, 2, 3   切换到标签页
 
+    ctrl+shift+F    查找，在状态栏可以输入文字，F3 下一个匹配，shift+F3 上一个，回车关闭
+
+    Ctrl+Shift+Space 当前屏幕进入vim模式，方便用键盘选择屏幕文字复制粘贴等操作。
     按 a 或 i 进入编辑模式会自动退出到命令行进行普通的编辑。
 
 配置文件在
