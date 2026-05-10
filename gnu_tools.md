@@ -19746,9 +19746,9 @@ profiles:
         # 自定义状态栏
         status_line:
             indicator:
-                left: " {InputMode:Blinking,Bold,Color=#FFFF00}{TraceMode:Bold,Color=#FFFF00,Left= │ }{Tabs:ActiveColor=#FFFF00,Left= │ }{ProtectedMode:Bold,Left= │ }{SearchPrompt:Left= │ }"
+                left: " {InputMode:Bold,Color=#FFFF00}{TraceMode:Bold,Color=#FFFF00,Left= │ }{Tabs:ActiveColor=#1FF8FF,Left= │ }{ProtectedMode:Bold,Left= │ }{SearchPrompt:Left= │ }"
                 middle: "« {Command:Program=hostname} »"
-                right: "{HistoryLineCount:Faint,Color=#c0c0c0} │ {Clock:Bold}"
+                right: "{HistoryLineCount:Faint,Color=#c0c0c0} │ {Clock:Blinking,Bold}"
 
         # 背景透明和模糊
         background:
@@ -19769,6 +19769,7 @@ color_schemes:
             path: '/Pictures/78883229_UHD.jpg'
             opacity: 0.5
             blur: false
+
     # 北极色彩方案
     nord:
         default:
