@@ -19757,7 +19757,7 @@ profiles:
 
         # 颜色方案，在下面的 color_schemes 处配置
         # Specifies a colorscheme to use (alternatively the colors can be inlined).
-        colors: "default"
+        colors: "nord"
 
 # 颜色方案
 color_schemes:
@@ -19769,9 +19769,41 @@ color_schemes:
             path: '/Pictures/78883229_UHD.jpg'
             opacity: 0.5
             blur: false
+    # 北极色彩方案
+    nord:
+        default:
+            background: '#2E3440'
+            foreground: '#D8DEE9'
+            bright_foreground: '#ECEFF4'
+            # dimmed_foreground: '#616E88'          # 可选，Nord 暗淡前景色
+        # 光标颜色（可选）
+        # cursor: '#D8DEE9'
+
+        # 标准颜色 (Normal)
+        normal:
+            black:   '#3B4252'
+            red:     '#BF616A'
+            green:   '#A3BE8C'
+            yellow:  '#EBCB8B'
+            blue:    '#81A1C1'
+            magenta: '#B48EAD'
+            cyan:    '#88C0D0'
+            white:   '#E5E9F0'
+
+        # 亮色 (Bright)
+        bright:
+            black:   '#4C566A'
+            red:     '#BF616A'
+            green:   '#A3BE8C'
+            yellow:  '#EBCB8B'
+            blue:    '#81A1C1'
+            magenta: '#B48EAD'
+            cyan:    '#8FBCBB'
+            white:   '#ECEFF4'
 
 # 热键
 input_mapping:
+
 ```
 
 #### ConEmu 和 Cmder
