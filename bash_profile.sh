@@ -294,6 +294,15 @@ function swc {
     fi
 }
 
+# bat 显示文件支持语法高亮，在 Debian 系可执行命令居然是 batcat
+if command -v batcat >/dev/null 2>&1; then
+    alias bat='batcat'
+    # bat 作为 man 的彩色分页器
+    export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | batcat -p -lman'"
+elif command -v bat >/dev/null 2>&1; then
+    export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'"
+fi
+
 # man
 alias mans='echo "[在man手册页的描述中搜索关键字]"; man -k'
 
