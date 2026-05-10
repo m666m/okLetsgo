@@ -19698,6 +19698,9 @@ Supper Putty
     Ctrl+Shift+T	新建标签页
     alt + 1, 2, 3   切换到标签页
 
+    鼠标双击自动选择词，并高亮相同的词
+    选择文字后按 ctrl+c 是复制到内部剪贴板，中键或 ctrl+shift+v 可粘贴
+
     ctrl+shift+F    查找，在状态栏可以输入文字，F3 下一个匹配，shift+F3 上一个，回车关闭
 
     Ctrl+Shift+Space 当前屏幕进入vim模式，方便用键盘选择屏幕文字复制粘贴等操作。
@@ -19740,6 +19743,13 @@ profiles:
         cursor:
             blinking: true
 
+        # 自定义状态栏
+        status_line:
+            indicator:
+                left: " {InputMode:Blinking,Bold,Color=#FFFF00}{TraceMode:Bold,Color=#FFFF00,Left= │ }{Tabs:ActiveColor=#FFFF00,Left= │ }{ProtectedMode:Bold,Left= │ }{SearchPrompt:Left= │ }"
+                middle: "« {Command:Program=hostname} »"
+                right: "{HistoryLineCount:Faint,Color=#c0c0c0} │ {Clock:Bold}"
+
         # 背景透明和模糊
         background:
             opacity: 0.95
@@ -19762,7 +19772,6 @@ color_schemes:
 
 # 热键
 input_mapping:
-    # 选择文字后按 ctrl+c 是复制到内部剪贴板，中键或 ctrl+shift+v 可粘贴
 ```
 
 #### ConEmu 和 Cmder
