@@ -19695,7 +19695,7 @@ Supper Putty
 
 快捷操作
 
-    Ctrl+Shift+T	新建标签页
+    Ctrl+Shift+T    新建标签页
     alt + 1, 2, 3   切换到标签页
 
     鼠标双击自动选择词，并高亮相同的词
