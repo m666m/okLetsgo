@@ -60,6 +60,8 @@ Node.js 利用了可以在浏览器之外运行的 V8 JavaScript 引擎（Google
 
 ## Node.js
 
+Node.js：是 JavaScript 的运行时环境，允许在服务器端运行 JS 代码。简单说就是前端开发人员可以干后端开发的活了。
+
 node + npm 都要装
 
     https://nodejs.org/
@@ -73,18 +75,79 @@ node + npm 都要装
 
     npm -v
 
-### Nvm Yarn
+### npx nvm Yarn
 
-Npm：与 node.js 一起安装的包管理工具
+npm： 是 node.js 包管理器，主要用于安装、更新、卸载和管理依赖，它不能直接执行包，侧重于管理包。
+
+    # 传统方式（需先全局安装）：
+    $ npm install -g create-react-app
+    $ create-react-app my-app
+
+在现实世界中，都是建立项目级环境，Node.js 的标准做法：项目级依赖 + 可选 Node 版本管理。每个项目天然就可以拥有独立的“环境”，不需要像 Python 那样额外创建虚拟环境
+
+    $ cd your_project
+
+    $ npm init -y   # 生成 package.json
+
+    # 安装你的包，npm 自动就装在项目内的目录：
+    #    包安装在当前项目的 node_modules/ 下。
+    #    可执行命令放在 node_modules/.bin/ 中。
+    #    这些依赖不会影响全局环境，也不被其他项目干扰。
+    #
+    $ npm install express          # 生产依赖
+    $ npm install --save-dev jest  # 开发依赖
+
+    # 使用你安装的包
+
+    写代码里：require('express') 或 import 自动找本地的 node_modules。
+
+    运行本地命令：
+
+        # 执行项目内的 jest
+        npx jest
+
+        # 或定义在 package.json 的 scripts 里：
+        npm run test
+
+    直接运行脚本：node your-script.js
+
+npx： 随 npm（Node 包管理器）一起提供的命令行工具，用于直接运行 Node.js 包中的命令，而无需全局安装，避免全局安装带来的环境污染，解决版本冲突问题。
+
+    # 使用 npx（无需安装）：
+    $ npx create-react-app my-app
+
+nvm：一个 node.js 版本管理工具，允许你在电脑上同时安装多个node版本，通过nvm进行切换使用。
+
+    https://github.com/nvm-sh/nvm
+
+    经常用于项目目录下自己建立一个 node.js 环境，执行项目会非常方便，不会干扰系统。
+
+    # https://nvm.uihtm.com/doc/npmmirror.html
+    $ nvm npm_mirror https://npmmirror.com/mirrors/npm/
+    $ nvm node_mirror https://npmmirror.com/mirrors/node/
+
+    # 安装指定 node 版本
+    $ nvm install 22.15.10
+
+    # 使用 Node.js 版本 24.8.0
+    $ nvm use 24.8.0
+
+    执行 nvm use 后，当前终端窗口的 Node.js 版本就切换了，后续任何命令都会在这个新版本下运行
+
+        # 执行你的脚本或包
+        $ node your-script.js
+
+    # 列出已安装node版本
+    $ nvm ls
+    #nvm use 22.15.0
+
+    # 查看可用node版本
+    $ nvm ls available
 
 Yarn：一款新的JavaScript包管理工具。
 
     如何在 Fedora 38/37/36 Linux 上安装 Yarn
         https://www.linuxcapable.com/how-to-install-yarn-on-fedora-linux/
-
-Nvm：一个nodejs版本管理工具
-
-    https://github.com/nvm-sh/nvm
 
 ## web server：Apache服务器和tomcat服务器区别
 

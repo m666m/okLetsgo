@@ -461,15 +461,17 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
     https://zhuanlan.zhihu.com/p/689976933
 
-安装
+1、安装
 
     $ curl -LsSf https://astral.sh/uv/install.sh | sh
 
-也可用 pip 安装，uv 是一个全局的二进制文件，只要在一个环境中安装就全局生效
+    也可用 pip 安装，uv 是一个全局的二进制文件，只要在一个环境中安装就全局生效
 
-    $ pip install uv
+        $ pip install uv
 
-即使是在venv环境中安装的，uv也会复制自己的可执行文件也会被复制到系统的PATH目录中，保证退出或切换虚拟环境后，uv命令依然能够正常使用。
+即使是在 venv 环境中安装的，uv 也会复制自己的可执行文件也会被复制到操作系统的 PATH 目录中，保证退出或切换虚拟环境后，uv 命令依然能够正常使用。
+
+2、设置镜像
 
 目前不支持读取 `pip.conf`，只能手动设置镜像地址
 
@@ -484,6 +486,18 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
     # 下载包时的超时时间，单位为秒
     UV_HTTP_TIMEOUT=60
+
+3、可在系统中安装多个版本  Python
+
+    uv python install 3.10
+    uv python install 3.11
+    uv python install 3.13
+
+不会覆盖系统自带 Python。
+
+每个 Python 版本都是完全独立的目录，互不干扰：
+
+    ls ~/.local/share/uv/python/
 
 查看已经按照的和可安装的 Python 版本
 
@@ -502,67 +516,50 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
     ...
     graalpy-3.8.5-linux-x86_64-gnu                    <download available>
 
-uv 工具不会自动下载Python包，因此如果设置虚拟环境时用 -p 指定系统不存在的Python版本，则会报错。所以需要提前安装。
+uv 工具不会自动下载 Python 包，因此如果设置虚拟环境时用 -p 指定系统不存在的Python版本，则会报错。所以需要提前安装。
 
-安装 Python 多个版本可共存
+### 使用 uv 创建项目独立的虚拟环境
 
-    uv python install 3.10
-    uv python install 3.11
-    uv python install 3.13
+这是项目的最常见用法，创建一个虚拟环境（只需一次），在当前的 .venv 子目录下。
 
-不会覆盖系统自带 Python。
-
-每个 Python 版本都是完全独立的目录，互不干扰：
-
-    ls ~/.local/share/uv/python/
-
-### 使用 uv 创建虚拟环境
-
-创建环境，推荐统一使用 .venv 作为虚拟环境目录名
+    $ cd your_project
 
     # --python 同 -p
     $ uv venv --python 3.12
 
     $ uv venv --python=3.12 .venv
-    $ uv venv --python=3.10 .venv
 
-激活虚拟环境
+    $ uv venv --python=3.10 .venv10
 
-    $ source .venv/bin/activate
+以后用到这个项目的时候，激活这个子目录下的虚拟环境就可以执行项目了：
 
-安装软件
+    激活虚拟环境
 
-    $ uv pip install requests flask
-
-    $ uv pip install -r requirements.txt
-
-退出虚拟环境
-
-    $ deactivate
-
- 使用 uv 运行 python 的通常流程：
-
-    在脚本所在目录创建 .venv（只需一次）
-    $ uv venv --python=3.12 .venv
-
-    # 然后直接运行
-    $ uv run python script.py
-
-        uv run 会自动激活环境，直接运行脚本：
-
-        先查找缓存是否可以复用，然后会从当前工作目录开始，向上递归查找 .venv 的目录、venv 的目录、环境变量 VIRTUAL_ENV 指向的任意目录（如果已经手动激活了某个环境），找到就用。
-
-        如果找不到就报错退出，不会自动回退到使用系统全局 Python
-
-        等效于
-        # 激活环境
         $ source .venv/bin/activate
 
-        # 安装依赖
-        $ uv pip install fastapi uvicorn
+    激活后的 python 管理操作都是在这个虚拟环境中做的。
 
-        # 运行程序
+    安装依赖
+
+        $ uv pip install requests flask
+
+        $ uv pip install -r requirements.txt
+
+    运行程序
+
         $ python main.py
+
+    退出虚拟环境
+
+        $ deactivate
+
+最简便的方式，`uv run` 自动激活环境，直接运行
+
+    $ uv run python script.py
+
+    先查找缓存是否可以复用，然后会从当前工作目录开始，向上递归查找 .venv 的目录、venv 的目录、环境变量 VIRTUAL_ENV 指向的任意目录（如果已经手动激活了某个环境），找到就用。
+
+    如果找不到就报错退出，不会自动回退到使用系统全局 Python
 
 ### 不激活环境直接运行
 
