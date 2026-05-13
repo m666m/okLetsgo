@@ -8296,15 +8296,15 @@ bt-tracker=http://1337.abcvg.info:80/announce
 
 3、启动 aria2 作为后台进程的命令行参数，可变的参数都在这里配置，使用时注意酌情替换
 
-Windows cmd：默认 aria2c 是单独目录，下载文件到你的桌面下载目录
+Windows cmd：默认 aria2c 及其配置文件都都在同一个目录下，下载文件到你的桌面下载目录
 
     SET cur_dir=%cd%
 
-    %cur_dir%\aria2c.exe --enable-rpc --rpc-secret=your_password --dir=%USERPROFILE%\Downloads --conf-path=%cur_dir%\aria2.conf --save-session=%cur_dir%\download.session --input-file=%cur_dir%\download.session --dht-file-path=%cur_dir%\dht.dat --dht-file-path6=%cur_dir%\dht6.dat --allow-overwrite=false --rpc-listen-port=6800 --dht-listen-port=26701 --listen-port=21301 --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+    %cur_dir%\aria2c.exe --enable-rpc --rpc-secret=YOUR_PASS --dir=%USERPROFILE%\Downloads --conf-path=%cur_dir%\aria2.conf --save-session=%cur_dir%\download.session --input-file=%cur_dir%\download.session --dht-file-path=%cur_dir%\dht.dat --dht-file-path6=%cur_dir%\dht6.dat --allow-overwrite=false --rpc-listen-port=6800 --dht-listen-port=26701 --listen-port=21301 --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
 bash shell：默认 aria2c 已经安装到系统，配置文件在 $HOME/.config/aria2 下 ，下载文件到你的桌面下载目录
 
-    aria2c --enable-rpc --rpc-secret=your_password --dir=$HOME/Downloads --conf-path=$HOME/.config/aria2/aria2.conf --save-session=$HOME/.config/aria2/download.session --input-file=$HOME/.config/aria2/download.session --dht-file-path=$HOME/.config/aria2/dht.dat --dht-file-path6=$HOME/.config/aria2/dht6.dat --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --rpc-listen-port=6800 --dht-listen-port=26701 --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+    aria2c --enable-rpc --rpc-secret=YOUR_PASS --dir=$HOME/Downloads --conf-path=$HOME/.config/aria2/aria2.conf --save-session=$HOME/.config/aria2/download.session --input-file=$HOME/.config/aria2/download.session --dht-file-path=$HOME/.config/aria2/dht.dat --dht-file-path6=$HOME/.config/aria2/dht6.dat --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --rpc-listen-port=6800 --dht-listen-port=26701 --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 
 注意修改 --rpc-secret 密码。
 
