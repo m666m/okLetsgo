@@ -77,13 +77,16 @@ node + npm 都要装
 
 ### npx nvm Yarn
 
+Node.js 的标准做法：项目级依赖 + 可选 Node 版本管理。每个项目天然就可以拥有独立的“环境”，不需要像 Python 那样额外创建虚拟环境。
+
 npm： 是 node.js 包管理器，主要用于安装、更新、卸载和管理依赖，它不能直接执行包，侧重于管理包。
 
-    # 传统方式（需先全局安装）：
+可传统方式（全局安装）：
+
     $ npm install -g create-react-app
     $ create-react-app my-app
 
-在现实世界中，都是建立项目级环境，Node.js 的标准做法：项目级依赖 + 可选 Node 版本管理。每个项目天然就可以拥有独立的“环境”，不需要像 Python 那样额外创建虚拟环境
+项目级安装你的包：
 
     $ cd your_project
 
