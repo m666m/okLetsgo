@@ -8290,9 +8290,9 @@ bt-tracker=http://1337.abcvg.info:80/announce
 
 ```
 
-2、执行 p3terx 的 tracker.sh 把最新的 bt-tracker 地址更新到配置文件 aria2.conf。
+2、执行 p3terx 的 tracker.sh，把最新的 bt-tracker 地址更新到当前目录下的配置文件 aria2.conf。
 
-    https://github.com/P3TERX/aria2.conf/raw/master/tracker.sh
+    $ curl -fsSL -O https://github.com/P3TERX/aria2.conf/raw/master/tracker.sh
 
 3、启动 aria2 作为后台进程的命令行参数，可变的参数都在这里配置，使用时注意酌情替换
 
@@ -8312,7 +8312,9 @@ bash shell：默认 aria2c 已经安装到系统，配置文件在 $HOME/.config
 
 4、配置为开机自启动服务
 
-`ExecStart=` 使用上面的命令行参数即可，配置文件保存在 /usr/local/etc/aria2/aria2.conf
+`ExecStart=` 使用上面的 bash 命令行参数要做修改
+
+    配置文件的路径都要指向 /usr/local/etc/aria2/
 
 Windows 下可使用 WinSW 将 Aria2 安装成用户服务实现开机自启。
 
@@ -8339,7 +8341,7 @@ Group=1000
 WorkingDirectory=/home/pi
 #
 ExecStartPre=/bin/bash /usr/local/etc/aria2/tracker.sh /usr/local/etc/aria2/aria2.conf
-ExecStart=/usr/bin/aria2c --conf-path=/usr/local/etc/aria2/aria2.conf --enable-rpc --rpc-secret=YOUR_PASS --dir=YOUR_DIR --save-session=/usr/local/etc/aria2/download.session --input-file=/usr/local/etc/aria2/download.session --dht-file-path=/usr/local/etc/aria2/dht.dat --dht-file-path6=/usr/local/etc/aria2/dht6.dat --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --dht-listen-port=26701 --listen-port=21301 --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --rpc-listen-port=6800 --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
+ExecStart=/usr/bin/aria2c --conf-path=/usr/local/etc/aria2/aria2.conf --enable-rpc --rpc-secret=YOUR_PASS --dir=YOUR_DIR --save-session=/usr/local/etc/aria2/download.session --input-file=/usr/local/etc/aria2/download.session --dht-file-path=/usr/local/etc/aria2/dht.dat --dht-file-path6=/usr/local/etc/aria2/dht6.dat --rpc-listen-port=6800 --dht-listen-port=26701 --listen-port=21301 --allow-overwrite=false --auto-file-renaming=true --bt-load-saved-metadata=true --bt-save-metadata=true --continue=true --max-concurrent-downloads=5 --max-download-limit=0 --max-overall-download-limit=0 --max-overall-upload-limit=256K --min-split-size=1M --pause=true --seed-ratio=1 --seed-time=60 --split=64 --user-agent=Transmission/2.94
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
 Restart=always
@@ -8350,7 +8352,7 @@ WantedBy=multi-user.target
 
 上面内容替换 YOUR_DIR 和 YOUR_PASS
 
-    因为使用普通用户执行，注意你设置的 your_dir 目录对该用户是可写的
+    因为使用普通用户执行，注意你设置的 your_dir 目录对该用户 uid 1000 是可写的
 
 更新 tracker：
 
