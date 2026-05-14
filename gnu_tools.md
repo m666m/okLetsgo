@@ -7872,7 +7872,7 @@ Argon2i 变体用于生成哈希
     $ echo -n "Hello" | argon2 mysalt0123456789 -t 4 -k 65536 -p 2 -e
     $argon2i$v=19$m=65536,t=4,p=2$bXlzYWx0MDEyMzQ1Njc4OQ$N59WxssOt4L/ylaGzZGrPXkwClGZMDxn1Q3UolMEBLw
 
- Argon2id 变体，强度更高可以对抗使用显卡的并行运算，用选项 -id 指定
+Argon2id 变体，强度更高可以对抗使用显卡的并行运算，用选项 -id 指定
 
     $ echo -n "Hello" | argon2 mysalt0123456789 -id -t 4 -m 20  -p 2
     Type:           Argon2id
