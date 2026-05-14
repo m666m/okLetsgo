@@ -19735,6 +19735,10 @@ profiles:
             columns: 80
             lines: 25
 
+        # 屏幕保存历史输出的行数不进行限制
+        history:
+            limit: -1
+
         scrollbar:
             position: Right
 
