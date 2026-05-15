@@ -899,7 +899,7 @@ fi
 
 # ask 命令问 AI
 if ! command -v ask >/dev/null 2>&1; then
-    echo "安装 ask 命令问 AI..."
+    echo "安装 m666m/ask 命令行问 AI..."
     curl -fsSL https://github.com/m666m/ask/raw/main/install.sh | bash
 fi
 
