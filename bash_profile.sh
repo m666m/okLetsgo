@@ -900,9 +900,7 @@ fi
 # ask 命令问 AI
 if ! command -v ask >/dev/null 2>&1; then
     echo "安装 ask 命令问 AI..."
-    curl -fsSL https://raw.githubusercontent.com/m666m/ask/main/ask \
-      | sudo tee /usr/local/bin/ask > /dev/null \
-      && sudo chmod +x /usr/local/bin/ask
+    curl -fsSL https://github.com/m666m/ask/raw/main/install.sh | bash
 fi
 
 #######################
