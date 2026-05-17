@@ -604,19 +604,26 @@ function pdmv() {
 }
 export PDMREPO="192.168.0.111:5000" && echo "内网私有容器镜像仓库地址设置为 PDMREPO=${PDMREPO}"
 alias pdmr='echo "[podman 列出私有仓库 ${PDMREPO} 的所有镜像]"; curl -s http://${PDMREPO}/v2/_catalog | jq'
-function pdmrcpd() {
-    echo "[podman 从本地 docker 仓库推送到私有仓库]"
-    skopeo copy docker-daemon:${1} docker://${PDMREPO}/${2}
-}
-function pdmrcpp() {
-    echo "[podman 从本地 podman 仓库推送到私有仓库]"
-    skopeo copy containers-storage:${1} docker://${PDMREPO}/${2}
+function pdmrl() {
+  echo "[podman 列出私有仓库 ${PDMREPO} 的全部镜像及标签]"
+  local repo
+
+  curl -s http://${PDMREPO}/v2/_catalog |
+  jq -r '.repositories[]' |
+  while read -r repo; do
+    echo "$repo"
+    skopeo list-tags --tls-verify=false \
+      "docker://${PDMREPO}/${repo}" |
+    jq -r '.Tags[]' |
+    sed 's/^/   标签: /'
+    echo
+  done
 }
 function pdmrs() {
     local img=$(echo $1  |cut -d: -f1)
     local tag=$(echo $1  |cut -d: -f2)
     echo "[podman 显示私有仓库 ${PDMREPO} 镜像名 ${img} 标签 ${tag} 的 manifests]"
-    curl http://${PDMREPO}/v2/${img}/manifests/${tag}
+    curl -s http://${PDMREPO}/v2/${img}/manifests/${tag}
 }
 function pdmrm() {
     local img=$(echo $1 |cut -d: -f1)
@@ -625,6 +632,14 @@ function pdmrm() {
     echo "[podman 删除私有仓库的镜像 ${PDMREPO}/$img:$tag，sha256摘要: ${sha}]"
     curl -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://${PDMREPO}/v2/${img}/manifests/sha256:${sha}
     echo "注意：登录仓库的 tty 运行垃圾收集(GC)才能真正的释放磁盘空间"
+}
+function pdmrcpd() {
+    echo "[podman 从本地 docker 仓库推送到私有仓库]"
+    skopeo copy docker-daemon:${1} docker://${PDMREPO}/${2}
+}
+function pdmrcpp() {
+    echo "[podman 从本地 podman 仓库推送到私有仓库]"
+    skopeo copy containers-storage:${1} docker://${PDMREPO}/${2}
 }
 
 # distrobox 这词打不快
