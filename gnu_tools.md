@@ -18639,6 +18639,198 @@ System-wide autostart directories:
 
     Comment=xdg testing
 
+## 使用 macOS
+
+macOS：苹果电脑的操作系统名字
+
+    Darwin：macOS 系统底层的“内核”的名字
+
+    Metal：苹果自己开发的图形和计算技术软件框架，相当于 Windows 上的 DirectX，用来让游戏、设计软件等程序更高效地使用芯片的图形能力。
+
+        Apple Silicon：苹果自己设计的一系列芯片的名字，比如 M1、M2...M5...，最大的特点就是 CPU 和 GPU 共享同一块物理内存，延迟低。
+
+1、Darwin
+
+苹果现阶段各种硬件使用的操作系统，无论是 macOS、iOS 还是 iPadOS，甚至是 HomePod 和 Apple TV（TvOS）都是建立在 Darwin 内核的基础上。
+
+Darwin 通过其 FreeBSD 血统支持 POSIX API，因此大量为 Unix/Unix-like 编写的程序可以直接在 Darwin 上编译运行
+
+    Unix 的开源 FreeBSD 内核支持 POSIX API，源自 1970 年代 Unix 开始使用的基础工具如 ls/ftp 等，大部分使用习惯都跟 GNU 工具链相同或类似，只是因为自行发展了不同的分支，导致用法稍微有差异。
+
+2、Metal 框架
+
+属于对 Apple Silicon 芯片提供支持的软件层面，实现了 Macbook 笔记本电脑在处理音频、视频、AI 应用时的高性能低功耗：
+
+    开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片s统一内存的 GPU 加速。
+
+### Homebrew
+
+面向 MacOS 的软件包管理，有自己的仓库，很多在 MacOS AppStore 里没有的常用软件可以在这里安装。
+
+    https://brew.sh/zh-cn/
+
+    https://zhuanlan.zhihu.com/p/138059447
+
+    其他 Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS https://docs.brew.sh/Homebrew-on-Linux
+
+从仓库安装软件分两类：
+
+    Formulae：软件包，包括了这个软件的依赖、源码位置及编译方法等，用来安装一些不带界面的命令行工具和第三方库。
+
+        https://formulae.brew.sh/formula/
+
+        使用 `brew install` 安装，下载源码解压，然后 ./configure && make install ，同时会包含相关依存库，并自动配置好各种环境变量。
+
+    Casks：已经编译好的应用包，主要是图形界面程序等，包含很多在 MacOS AppStore 里没有的常用软件。
+
+        https://formulae.brew.sh/cask/
+        字体还有个单独的网址 https://formulae.brew.sh/cask-font/
+
+        使用 `brew install --cask` 安装，针对已经编译好了的应用包（.dmg/.pkg）下载解压，然后放在统一的目录中（Caskroom），省掉了自己下载、解压、安装等步骤。
+
+常用的 brew 命令：
+
+    查看brew版本：brew -v
+    更新brew版本：brew update
+    本地软件库列表：brew list
+    查看软件库版本：brew list --versions
+
+    查找软件包：brew search xxx （xxx为要查找软件的关键词）
+        找不到软件？见章节 [不靠谱命令 `brew search`]
+
+    安装 formula 类软件包： brew install xxx
+    安装 cask 类软件：      brew install --cask xxx
+
+    卸载软件：brew uninstall xxx
+
+Homebrw 相关的几个文件夹用途
+
+    整体目录适应 Unix 风格，软件都安装在 /opt 目录下，现在改为 /home/linuxbrew/.linuxbrew 下
+
+    bin：用于存放所安装程序的启动链接（相当于快捷方式）
+    etc：brew安装程序的配置文件默认存放路径
+    Library：Homebrew 系统自身文件夹
+    Cellar：通过brew安装的程序将以 [程序名/版本号] 存放于本目录下
+
+> 国内镜像源
+
+使用科大源安装 Homebrew / Linuxbrew，以下四个变量写入你的 .bash_profile 即可实现 `brew update` 使用镜像地址了
+
+    https://mirrors.ustc.edu.cn/help/brew.git.html#homebrew-linuxbrew
+
+    # https://mirrors.ustc.edu.cn/help/brew.git.html
+    export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+
+    # 核心软件仓库 https://mirrors.ustc.edu.cn/help/homebrew-core.git.html
+    export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+
+    # Brew 4.0 版本后默认使用元数据 JSON API 获取仓库信息
+    # https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
+    export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+
+    # 预编译二进制软件包与软件包元数据文件 https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
+    export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
+
+    # cask 软件仓库，提供 macOS 应用和大型二进制文件 https://mirrors.ustc.edu.cn/help/homebrew-cask.git.html
+    # 不再需要设置了 brew tap --custom-remote homebrew/cask https://mirrors.ustc.edu.cn/homebrew-cask.git
+
+然后使用镜像地址进行安装
+
+    $ sudo apt install -y git curl  # 安装依赖
+
+    # /bin/bash -c "$(curl -fsSL https://github.com/Homebrew/install/raw/HEAD/install.sh)"
+    $ /bin/bash -c "$(curl -fsSL https://mirrors.ustc.edu.cn/misc/brew-install.sh)"
+
+安装后会提示后续的操作：
+
+    Next steps:
+
+    - Run these commands in your terminal to add Homebrew to your PATH:
+        echo >> /home/uv/.bashrc
+        echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/uv/.bashrc
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+    - Run these commands in your terminal to add the non-default Git remotes for Homebrew/brew and Homebrew/homebrew-core:
+        echo '# Set non-default Git remotes for Homebrew/brew and Homebrew/homebrew-core.' >> /home/uv/.bashrc
+        echo 'export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"' >> /home/uv/.bashrc
+        echo 'export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"' >> /home/uv/.bashrc
+        export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+        export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+
+    - Install Homebrew's dependencies if you have sudo access:
+        sudo apt-get install build-essential
+
+    For more information, see:
+        https://docs.brew.sh/Homebrew-on-Linux
+
+    - We recommend that you install GCC:
+        brew install gcc
+
+这样你的 .bashrc/.zshrc 增加：
+
+    export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
+    export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+    export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+    export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+
+验证：运行 `brew update`、`brew install tmux`
+
+清华源：
+
+    Homebrew 软件仓库，是 Homebrew 源程序以及 formula/cask 索引的镜像（即 brew update 时所更新内容）
+
+        https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/
+
+    Homebrew Bottles 软件仓库，是 Homebrew 二进制预编译包的镜像
+
+        https://mirrors.tuna.tsinghua.edu.cn/help/homebrew-bottles/
+
+#### 不靠谱命令 `brew search`
+
+基本搜索不到你要的软件，比如 vlc、onlyoffice 等都是这样。
+
+直接去上面的网址搜索结果比较全
+
+    https://formulae.brew.sh/
+
+后来发现网站提供了索引文件，这样就可以下载到本地使用 jq 命令进行搜索：
+
+    # 根据下面网址的说明
+    #
+    #    formula https://formulae.brew.sh/formula/
+    #    cask https://formulae.brew.sh/cask/
+    #    字体 https://formulae.brew.sh/cask-font/
+
+    curl -fsSL -O https://formulae.brew.sh/api/formula.json
+
+    curl -fsSL -O https://formulae.brew.sh/api/cask.json
+
+使用时注意替换关键字 tmux 和 vlc
+
+    $ cat formula.json | jq '.[] | select(any(.oldnames[]; test("tmux"; "i")) or (.name | test("tmux"; "i"))) | {name: .name, oldnames: .oldnames, description: .desc, version: .version, homepage: .homepage}'
+
+    $ cat cask.json | jq '.[] | select(any(.name[]; test("vlc"; "i")) or (.token | test("vlc"; "i"))) | {token: .token, name: .name, description: .desc, version: .version, homepage: .homepage}'
+
+干脆自制命令：
+
+```bash
+function brew_sf() {
+    # brew_sf tmux
+    echo "[brew search 本地 formula.json: ${1}]"
+
+    cat $HOME/formula.json | jq --arg pattern "$1" '.[] | select(any(.oldnames[]?; test($pattern; "i")) or (.name | test($pattern; "i"))) | {name: .name, oldnames: .oldnames, description: .desc, version: .version, homepage: .homepage}'
+}
+
+function brew_sc() {
+    # brew_sc chrome
+    echo "[brew search 本地 cask.json: ${1}]"
+
+    cat $HOME/cask.json | jq --arg pattern "$1" '.[] | select(any(.name[]; test($pattern; "i")) or (.token | test($pattern; "i"))) | {token: .token, name: .name, description: .desc, version: .version, homepage: .homepage}'
+}
+
+```
+
 ## Windows 下的 GNU/POSIX 环境
 
 如果只是想做 Windows、macOS 和 Linux 等多个操作系统跨平台应用程序，使用 QT(c++/python) 或基于 Chromium+Node.js 的 Electron 框架的应用程序是更好的选择。
