@@ -18897,6 +18897,12 @@ function brew_sc() {
         https://getutm.app/downloads/utm-guest-tools-latest.iso
             https://github.com/utmapp/qemu/releases
 
+放到宿主机的如下位置：
+
+    ./Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/
+
+然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机桌面体验直接起飞。
+
 ## Windows 下的 GNU/POSIX 环境
 
 如果只是想做 Windows、macOS 和 Linux 等多个操作系统跨平台应用程序，使用 QT(c++/python) 或基于 Chromium+Node.js 的 Electron 框架的应用程序是更好的选择。
