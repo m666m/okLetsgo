@@ -18641,7 +18641,7 @@ System-wide autostart directories:
 
 ## 使用 macOS
 
-macOS：苹果电脑的操作系统名字
+macOS：苹果电脑的操作系统，现在的版本叫 Tahoe 26
 
     Darwin：macOS 系统底层的“内核”的名字
 
