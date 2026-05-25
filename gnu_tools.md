@@ -18649,29 +18649,82 @@ macOS：苹果电脑的操作系统名字
 
         Apple Silicon：苹果自己设计的一系列芯片的名字，比如 M1、M2...M5...，最大的特点就是 CPU 和 GPU 共享同一块物理内存，延迟低。
 
-1、Darwin
+1、Darwin 内核
 
 苹果现阶段各种硬件使用的操作系统，无论是 macOS、iOS 还是 iPadOS，甚至是 HomePod 和 Apple TV（TvOS）都是建立在 Darwin 内核的基础上。
 
 Darwin 通过其 FreeBSD 血统支持 POSIX API，因此大量为 Unix/Unix-like 编写的程序可以直接在 Darwin 上编译运行
 
-    Unix 的开源 FreeBSD 内核支持 POSIX API，源自 1970 年代 Unix 开始使用的基础工具如 ls/ftp 等，大部分使用习惯都跟 GNU 工具链相同或类似，只是因为自行发展了不同的分支，导致用法稍微有差异。
+    Unix 的开源 FreeBSD 内核支持 POSIX API，源自 1970 年代 Unix 开始使用的基础工具如 ls/ftp 等，大部分使用习惯都跟 GNU 工具链相同·或类似，只是因为自行发展了不同的分支，导致用法稍微有差异。
 
-2、Metal 框架
+2、Metal 图形计算框架
 
 属于对 Apple Silicon 芯片提供支持的软件层面，实现了 Macbook 笔记本电脑在处理音频、视频、AI 应用时的高性能低功耗：
 
     开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片s统一内存的 GPU 加速。
 
+### 执行自编译程序提示禁止执行
+
+图形界面“访达”中，总是得点选信任同意，挺麻烦的。
+
+使用终端命令清除“隔离属性”
+
+    xattr -d com.apple.quarantine 你的程序
+
+build 目录下的文件我都要信任：
+
+    xattr -d com.apple.quarantine .
+
+### MacBook 快捷键
+
+    没有 atl 键，ctl 键作用很小，苹果把绝大部分功能移到它独家的 cmd 和 opt 键
+
+应用间切换：cmd + tab，这个是不计应用的多个窗口的
+
+同一应用的不同窗口切换： cmd + `
+
+文件操作
+
+    菜单选择复制：当前目录下的文件，做个副本
+
+    菜单选择拷贝：只是标记为要进行复制，等待用户下一步操作，快捷键 cmd + c
+
+    菜单选择粘贴：把上一步标记的文件粘贴到当前文件夹，快捷键 cmd + v
+
+    剪切：把上一步标记的文件移到到这里，快捷键 cmd + opt + v，注意这里是跟 Windows 最大的差异
+
+    鼠标选择后拖动文件，默认当前目录下是移动，不同窗口间是复制，改变行为：在拖动后按住 opt 键。
+
+    删除文件到废纸篓：cmd + backspace
+    永久删除（不放入废纸篓）：cmd + opt + backspace
+
+文字编辑：
+
+    保存： cmd + s
+
+    退格删除：键盘上只有这个前向删除键，标记为 backspace 或  ⌫
+
+    删除：删除当前光标后面的文字，快捷键 fn + backspace
+
+    鼠标选择文字后拖动，默认是移动，改变行为：在拖动后按住 opt 键。
+
+    向上翻页：Fn + 光标上
+    向下翻页：Fn + 光标下
+
+    移动到文档顶部：cmd + 光标上
+    移动到文档底部：cmd + 光标下
+
 ### Homebrew
 
-面向 MacOS 的软件包管理，有自己的仓库，很多在 MacOS AppStore 里没有的常用软件可以在这里安装。
+社区自制的面向 MacOS 的软件包管理，有自己的仓库，很多在 MacOS AppStore 里没有的常用软件都可以在这里安装。
 
     https://brew.sh/zh-cn/
 
     https://zhuanlan.zhihu.com/p/138059447
 
-    其他 Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS https://docs.brew.sh/Homebrew-on-Linux
+Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS
+
+    https://docs.brew.sh/Homebrew-on-Linux
 
 从仓库安装软件分两类：
 
