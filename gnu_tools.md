@@ -18884,6 +18884,19 @@ function brew_sc() {
 
 ```
 
+###  虚拟机运行 Windows
+
+基于 QEMU 的 UTM 采用 Apple 的 Hypervisor 虚拟化框架在 Apple silicon 芯片上以接近本机的速度运行 ARM64 操作系统，也支持仿真运行 x86/x64。
+
+    https://mac.getutm.app/
+        https://github.com/utmapp/UTM/releases/latest/download/UTM.dmg
+
+安装 Windows 虚拟机后，如果要体验到本地原生系统的流畅感，需要安装 QEMU 客户机工具：
+
+    https://docs.getutm.app/guest-support/windows/
+        https://getutm.app/downloads/utm-guest-tools-latest.iso
+            https://github.com/utmapp/qemu/releases
+
 ## Windows 下的 GNU/POSIX 环境
 
 如果只是想做 Windows、macOS 和 Linux 等多个操作系统跨平台应用程序，使用 QT(c++/python) 或基于 Chromium+Node.js 的 Electron 框架的应用程序是更好的选择。
