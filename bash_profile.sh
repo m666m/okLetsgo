@@ -459,6 +459,7 @@ alias sexlb='echo "[列出当前的 SELinux 开关]"; sudo semanage boolean -l'
 
 # git 常用命令
 alias gs='git status'
+alias gss='echo "[修复Windows下显示Linux下拷贝过来的代码文件权限差异]"; git config core.fileMode false'
 alias gd='echo "[差异：工作区与暂存区]"; git diff'
 alias gds='echo "[差异：暂存区与仓库]"; git diff --staged'
 alias gdh='echo "[差异：工作区与仓库]"; git diff HEAD'
