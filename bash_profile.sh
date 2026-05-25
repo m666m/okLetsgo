@@ -171,26 +171,33 @@ if [ -x /usr/bin/dircolors ]; then
     if test -r ~/.dir_colors; then
         eval "$(dircolors -b ~/.dir_colors)"
     else
-         eval "$(dircolors -b)"
+        eval "$(dircolors -b)"
     fi
 
-    # 注意基础命令不要搞太花哨，导致脚本里解析出现用法不一致的问题
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-    alias ls='ls --color=auto'
-    alias diff='diff --color=auto'
-    alias grep='grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn --exclude-dir=__pycache__'
-    #alias egrep='egrep --color=auto'
-    #alias fgrep='fgrep --color=auto'
-    alias tree='tree -a -C'
-
-    # 常用的列文件的惯用法
-    alias l='ls -CFA'
-    alias ll='ls -lh'
-    alias la='ls -lAh'
-    alias lsa='ls -A'
-    alias lss='ls -lhZ'
 fi
+
+# 注意基础命令不要搞太花哨，导致脚本里解析出现用法不一致的问题
+if [[ $os_type = 'macos' ]]; then
+    alias ls='ls -G'
+else
+    alias ls='ls --color=auto'
+fi
+alias ls='ls --color=auto'
+
+# 常用的列文件的惯用法
+alias l='ls -CFA'
+alias ll='ls -lh'
+alias la='ls -lAh'
+alias las='ls -lAhZ'
+alias lsa='ls -A'
+
+#alias dir='dir --color=auto'
+#alias vdir='vdir --color=auto'
+alias diff='diff --color=auto'
+alias grep='grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn --exclude-dir=__pycache__'
+#alias egrep='egrep --color=auto'
+#alias fgrep='fgrep --color=auto'
+alias tree='tree -a -C'
 
 #######################
 # 常用命令的惯用法用别名和函数封装起来，方便日常使用
