@@ -18899,7 +18899,7 @@ function brew_sc() {
 
 放到宿主机的如下位置：
 
-    ./Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/
+    ~/Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/utm-guest-tools-latest.iso
 
 然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机桌面体验直接起飞。
 
