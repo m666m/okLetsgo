@@ -911,13 +911,17 @@ if command -v ack >/dev/null 2>&1; then
         tmpfile=\$(mktemp)
         curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh -o \$tmpfile
          或 curl -fsSL https://cdn.jsdelivr.net/gh/paoloantinori/hhighlighter@master/h.sh -o \$tmpfile
+
         sed -i 's/^h()/ackg()/' \$tmpfile
+        sed -i.bak 's/^h()/ackg()/' \$tmpfile && rm \$tmpfile.bak
         sudo mv \$tmpfile /usr/local/bin/ackg.sh
+
+        rm -f \$tmpfile
+        unset tmpfile
+
+        source /usr/local/bin/ackg.sh
         "
     fi
-
-    rm -f "$tmpfile"
-    unset tmpfile
 fi
 
 # ask 命令问 AI
