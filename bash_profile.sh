@@ -689,19 +689,10 @@ fi
 ####################################################################
 # gpg: problem with the agent: Inappropriate ioctl for device，
 # 参见章节 [命令行终端下 gpg 无法弹出密码输入框的问题](gpg think)
-export GPG_TTY=${TTY:-$(tty)}
-# echo "以当前终端 tty 连接 gpg-agent..."
-# gpg-connect-agent updatestartuptty /bye >/dev/null
-
-#######################
-# 适用于 macOS 使用 gpg-agent
-if [[ $os_type = 'macos' ]]; then
-    if [ -f ~/.gnupg/.gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
-        source ~/.gnupg/.gpg-agent-info
-        export GPG_AGENT_INFO
-    else
-        eval $(gpg-agent --daemon --write-env-file ~/.gnupg/.gpg-agent-info)
-    fi
+if command -v gpg >/dev/null 2>&1; then
+    export GPG_TTY=${TTY:-$(tty)}
+    #echo "以当前终端 tty 连接 gpg-agent..."
+    gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
 fi
 
 #######################
