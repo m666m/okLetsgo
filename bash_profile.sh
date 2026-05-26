@@ -689,7 +689,7 @@ fi
 ####################################################################
 # gpg: problem with the agent: Inappropriate ioctl for device，
 # 参见章节 [命令行终端下 gpg 无法弹出密码输入框的问题](gpg think)
-export GPG_TTY=$(tty)
+export GPG_TTY=${TTY:-$(tty)}
 # echo "以当前终端 tty 连接 gpg-agent..."
 # gpg-connect-agent updatestartuptty /bye >/dev/null
 
