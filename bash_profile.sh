@@ -114,6 +114,61 @@ esac
 unset os_name
 
 #######################
+# 辅助函数
+
+curl_gh() {
+    # 获取 github 文件，超时会自动更换 CDN 下载
+
+    local github_url="$1"
+    shift  # 移除第一个参数，剩下的作为curl的额外参数
+    if [ -z "$github_url" ]; then
+        return 1
+    fi
+
+    local user repo branch file_path raw_url
+
+    # 解析GitHub URL，提取必要信息
+    # 格式1: github 页面复制的文件地址
+    if [[ "$github_url" =~ ^https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.+)$ ]]; then
+        # 匹配标准 github.com URL
+        user="${BASH_REMATCH[1]}"
+        repo="${BASH_REMATCH[2]}"
+        branch="${BASH_REMATCH[3]}"
+        file_path="${BASH_REMATCH[4]}"
+        raw_url="https://raw.githubusercontent.com/$user/$repo/$branch/$file_path"
+    # 格式2: 实际下载时 github 会重定向到 raw.githubusercontent.com 的地址
+    elif [[ "$github_url" =~ ^https?://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$ ]]; then
+        # 已经是 raw URL，直接使用
+        raw_url="$github_url"
+    else
+        echo "错误：URL格式不正确。请提供标准的GitHub文件链接。" >&2
+        echo "示例：" >&2
+        echo "  github_curl https://github.com/m666m/ask/blob/main/install.sh" >&2
+        echo "  github_curl https://raw.githubusercontent.com/m666m/ask/main/install.sh" >&2
+        return 1
+    fi
+
+    # 为jsDelivr CDN构建备用URL
+    # 提取用户名、仓库名、分支名和文件路径
+    if [[ "$raw_url" =~ ^https?://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$ ]]; then
+        local raw_user="${BASH_REMATCH[1]}"
+        local raw_repo="${BASH_REMATCH[2]}"
+        local raw_branch="${BASH_REMATCH[3]}"
+        local raw_path="${BASH_REMATCH[4]}"
+        # jsDelivr的URL规则：https://cdn.jsdelivr.net/gh/user/repo@branch/filepath
+        local cdn_url="https://cdn.jsdelivr.net/gh/$raw_user/$raw_repo@$raw_branch/$raw_path"
+
+        # 尝试从官方 raw 地址下载，超时或失败后自动从 jsDelivr CDN 下载
+        # 连接超时5秒，总超时10秒
+        curl -fsSL --connect-timeout 5 --max-time 10 "$raw_url" "$@" || \
+        curl -fsSL --connect-timeout 10 --max-time 30 "$cdn_url" "$@"
+    else
+        # 如果无法解析，直接尝试下载原地址
+        curl -fsSL --connect-timeout 5 --max-time 10 "$raw_url" "$@"
+    fi
+}
+
+#######################
 # 删除 vi 安装 vim 后发现不能用 vi 命令了
 command -v vi >/dev/null || {
     echo 'link vim to vi'
@@ -900,7 +955,7 @@ if command -v ack >/dev/null 2>&1; then
 
         printf "建议如下操作
         tmpfile=\$(mktemp)
-        curl -fsSL https://github.com/paoloantinori/hhighlighter/raw/master/h.sh -o \$tmpfile
+        curl -fsSL --connect-timeout 5 --max-time 10 https://github.com/paoloantinori/hhighlighter/raw/master/h.sh -o \$tmpfile
          或 curl -fsSL https://cdn.jsdelivr.net/gh/paoloantinori/hhighlighter@master/h.sh -o \$tmpfile
 
         sed -i 's/^h()/ackg()/' \$tmpfile
@@ -918,7 +973,8 @@ fi
 # ask 命令问 AI
 if ! command -v ask >/dev/null 2>&1; then
     echo "安装 m666m/ask 命令行问 AI..."
-    curl -fsSL https://raw.githubusercontent.com/m666m/ask/main/install.sh | bash
+    curl -fsSL --connect-timeout 5 --max-time 10 "https://raw.githubusercontent.com/m666m/ask/main/install.sh" || \
+      curl -fsSL "https://cdn.jsdelivr.net/gh/m666m/ask@main/install.sh" | bash
 fi
 
 #######################
