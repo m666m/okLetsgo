@@ -114,6 +114,70 @@ esac
 unset os_name
 
 #######################
+# 定义个工具函数
+curlgh() {
+    if [ $# -eq 0 ]; then
+        echo "获取 github 文件，下载超时则自动更换 CDN 下载：" >&2
+        echo "  curlgh https://github.com/m666m/ask/blob/main/install.sh" >&2
+        echo "  curlgh https://github.com/m666m/ask/raw/refs/heads/main/install.sh" >&2
+        echo "  curlgh https://raw.githubusercontent.com/m666m/ask/main/install.sh" >&2
+        return 1
+    fi
+
+    local url="$1"
+    local raw_url=""
+
+    # ---------- 第一步：统一转换为 raw.githubusercontent.com 地址 ----------
+    if [[ "$url" == *"raw.githubusercontent.com"* ]]; then
+        # 已经是原始文件地址，例如 https://raw.githubusercontent.com/m666m/ask/main/install.sh
+        raw_url="$url"
+    elif [[ "$url" == *"github.com"* ]]; then
+        # 处理页面浏览地址，例如 https://github.com/m666m/ask/blob/main/install.sh
+        # 转换为原始文件地址   https://raw.githubusercontent.com/m666m/ask/main/install.sh
+        if [[ "$url" == *"/blob/"* ]]; then
+            raw_url=$(echo "$url" | sed 's|https://github.com/|https://raw.githubusercontent.com/|; s|/blob/|/|')
+            echo "[curlgh] 转换为 Raw 地址: $raw_url" >&2
+
+        # 处理 /raw/ 格式的浏览地址，例如 https://github.com/m666m/ask/raw/refs/heads/main/install.sh
+        # 转换为原始文件地址   https://raw.githubusercontent.com/m666m/ask/main/install.sh
+        # （自动去除 /refs/heads/ 部分）
+        elif [[ "$url" == *"/raw/"* ]]; then
+            raw_url=$(echo "$url" | sed -E 's|https://github.com/([^/]+)/([^/]+)/raw/(refs/heads/)?([^/]+)/(.*)|https://raw.githubusercontent.com/\1/\2/\4/\5|')
+            echo "[curlgh] 转换为 Raw 地址: $raw_url" >&2
+        else
+            echo "[curlgh] 不支持的 GitHub 链接格式: $url" >&2
+            return 1
+        fi
+    else
+        # 非 GitHub 链接，直接报错
+        echo "[curlgh] 不支持的非 GitHub 链接: $url" >&2
+        return 1
+    fi
+
+    # ---------- 第二步：优先从原始地址下载（10秒超时） ----------
+    if curl -fsSL --max-time 10 "$raw_url"; then
+        return 0
+    fi
+
+    # ---------- 第三步：原始地址下载失败，则尝试 jsDelivr CDN 地址 ----------
+    # 转换示例：
+    # https://raw.githubusercontent.com/m666m/ask/main/install.sh
+    #   ↓
+    # https://cdn.jsdelivr.net/gh/m666m/ask@main/install.sh
+    local cdn_url
+    cdn_url=$(echo "$raw_url" | sed 's|https://raw.githubusercontent.com/\([^/]*\)/\([^/]*\)/\([^/]*\)/\(.*\)|https://cdn.jsdelivr.net/gh/\1/\2@\3/\4|')
+
+    echo "[curlgh] 原始地址下载失败，尝试 CDN 地址: $cdn_url" >&2
+
+    if curl -fsSL --max-time 10 "$cdn_url"; then
+        return 0
+    else
+        echo "[curlgh] CDN 下载也失败了，请重试！" >&2
+        return 1
+    fi
+}
+
+#######################
 # 删除 vi 安装 vim 后发现不能用 vi 命令了
 command -v vi >/dev/null || {
     echo 'link vim to vi'
@@ -164,8 +228,7 @@ if [ -x /usr/bin/dircolors ]; then
     # 下载使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
     if [[ ! -f ~/.dir_colors ]]; then
         echo 'Get nord-dircolors from github'
-        curl -fsSLo ~/.dir_colors https://raw.githubusercontent.com/nordtheme/dircolors/refs/heads/develop/src/dir_colors 2>/dev/null || \
-        curl -fsSLo ~/.dir_colors https://cdn.jsdelivr.net/gh/arcticicestudio/nord-dircolors@develop/src/dir_colors
+        curlgh https://raw.githubusercontent.com/nordtheme/dircolors/develop/src/dir_colors > ~/.dir_colors
     fi
 
     if test -r ~/.dir_colors; then
@@ -344,67 +407,6 @@ alias sshk='echo "[使用kitty连接无terminfo的sshd服务器]"; kitty +kitten
 # curl
 alias curls='echo "[curl http-get  不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]"; curl -fsSL'
 alias curld='echo "[curl http-post 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕]"; curl -fsSd'
-curlgh() {
-    if [ $# -eq 0 ]; then
-        echo "获取 github 文件，超时会自动更换 CDN 下载：" >&2
-        echo "  curlgh https://github.com/m666m/ask/blob/main/install.sh" >&2
-        echo "  curlgh https://github.com/m666m/ask/raw/refs/heads/main/install.sh" >&2
-        echo "  curlgh https://raw.githubusercontent.com/m666m/ask/main/install.sh" >&2
-        return 1
-    fi
-
-    local url="$1"
-    local raw_url=""
-
-    # ---------- 第一步：统一转换为 raw.githubusercontent.com 地址 ----------
-    if [[ "$url" == *"raw.githubusercontent.com"* ]]; then
-        # 已经是原始文件地址，例如 https://raw.githubusercontent.com/m666m/ask/main/install.sh
-        raw_url="$url"
-    elif [[ "$url" == *"github.com"* ]]; then
-        # 处理页面浏览地址，例如 https://github.com/m666m/ask/blob/main/install.sh
-        # 转换为原始文件地址   https://raw.githubusercontent.com/m666m/ask/main/install.sh
-        if [[ "$url" == *"/blob/"* ]]; then
-            raw_url=$(echo "$url" | sed 's|https://github.com/|https://raw.githubusercontent.com/|; s|/blob/|/|')
-            echo "[curlgh] 转换为 Raw 地址: $raw_url" >&2
-
-        # 处理 /raw/ 格式的浏览地址，例如 https://github.com/m666m/ask/raw/refs/heads/main/install.sh
-        # 转换为原始文件地址   https://raw.githubusercontent.com/m666m/ask/main/install.sh
-        # （自动去除 /refs/heads/ 部分）
-        elif [[ "$url" == *"/raw/"* ]]; then
-            raw_url=$(echo "$url" | sed -E 's|https://github.com/([^/]+)/([^/]+)/raw/(refs/heads/)?([^/]+)/(.*)|https://raw.githubusercontent.com/\1/\2/\4/\5|')
-            echo "[curlgh] 转换为 Raw 地址: $raw_url" >&2
-        else
-            echo "[curlgh] 不支持的 GitHub 链接格式: $url" >&2
-            return 1
-        fi
-    else
-        # 非 GitHub 链接，直接报错
-        echo "[curlgh] 不支持的非 GitHub 链接: $url" >&2
-        return 1
-    fi
-
-    # ---------- 第二步：优先从原始地址下载（10秒超时） ----------
-    if curl -fsSL --max-time 10 "$raw_url"; then
-        return 0
-    fi
-
-    # ---------- 第三步：原始地址下载失败，则尝试 jsDelivr CDN 地址 ----------
-    # 转换示例：
-    # https://raw.githubusercontent.com/m666m/ask/main/install.sh
-    #   ↓
-    # https://cdn.jsdelivr.net/gh/m666m/ask@main/install.sh
-    local cdn_url
-    cdn_url=$(echo "$raw_url" | sed 's|https://raw.githubusercontent.com/\([^/]*\)/\([^/]*\)/\([^/]*\)/\(.*\)|https://cdn.jsdelivr.net/gh/\1/\2@\3/\4|')
-
-    echo "[curlgh] 原始地址下载失败，尝试 CDN 地址: $cdn_url" >&2
-
-    if curl -fsSL --max-time 10 "$cdn_url"; then
-        return 0
-    else
-        echo "[curlgh] CDN 下载也失败了，请重试！" >&2
-        return 1
-    fi
-}
 
 # nmap
 alias nmaps='echo "[nmap 指定端口提供了什么类型的服务]"; nmap -sV -p'
@@ -553,8 +555,7 @@ function gaddr {
     local tfile=$(mktemp)
 
     # https://raw.githubusercontent.com/521xueweihan/GitHub520/refs/heads/main/hosts
-    curl -o "$tfile" https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts \
-        || curl -o "$tfile" https://cdn.jsdelivr.net/gh/maxiaof/github-hosts@master/hosts
+    curlgh https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts > "$tfile"
 
     if [[ ! -s "$tfile" ]]; then
         echo '获取 github 地址列表失败！'
@@ -970,8 +971,7 @@ if command -v ack >/dev/null 2>&1; then
 
         printf "建议如下操作
         tmpfile=\$(mktemp)
-        curl -fsSL --connect-timeout 5 --max-time 10 https://github.com/paoloantinori/hhighlighter/raw/master/h.sh -o \$tmpfile
-         或 curl -fsSL https://cdn.jsdelivr.net/gh/paoloantinori/hhighlighter@master/h.sh -o \$tmpfile
+        curlgh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh > \$tmpfile
 
         sed -i 's/^h()/ackg()/' \$tmpfile
         sed -i.bak 's/^h()/ackg()/' \$tmpfile && rm \$tmpfile.bak
@@ -988,8 +988,7 @@ fi
 # ask 命令问 AI
 if ! command -v ask >/dev/null 2>&1; then
     echo "安装 m666m/ask 命令行问 AI..."
-    curl -fsSL --connect-timeout 5 --max-time 10 "https://raw.githubusercontent.com/m666m/ask/main/install.sh" || \
-      curl -fsSL "https://cdn.jsdelivr.net/gh/m666m/ask@main/install.sh" | bash
+    (set -o pipefail; curlgh "https://github.com/m666m/ask/blob/main/install.sh" | bash) || echo "Ask installation failed"
 fi
 
 #######################
