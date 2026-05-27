@@ -2717,11 +2717,23 @@ name: Local Config
 version: 1.0.0
 schema: v1
 models:
-  - name: Gemma 4 26B
+  # - name: qwen36_udt_think_coder
+  #   provider: openai
+  #   apiBase: http://localhost:12345/v1
+  #   apiKey: not-needed
+  #   model: qwen36_udt_think_coder
+  #   roles:
+  #     - chat
+  #     - edit
+  #     - apply
+  #   requestOptions:
+  #     stream: false   # Qwen3.6-UDT 支持 MTP + TRUBO QUANT 不完善，用这个凑合着
+
+  - name: qwen36_think_coder
     provider: openai
     apiBase: http://localhost:12345/v1
     apiKey: not-needed
-    model: gemma4_26b
+    model: qwen36_think_coder
     roles:
       - chat
       - edit
