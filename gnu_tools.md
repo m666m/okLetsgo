@@ -18663,7 +18663,9 @@ Darwin 通过其 FreeBSD 血统支持 POSIX API，因此大量为 Unix/Unix-like
 
     开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片s统一内存的 GPU 加速。
 
-终端模拟器 Ghostty 超级快
+### 终端模拟器 Ghostty
+
+超级快
 
     https://ghostty.org/
         https://github.com/ghostty-org/ghostty
@@ -18708,6 +18710,9 @@ cursor-style = underline
 
 # 缓冲多少字节的历史记录
 scrollback-limit = 104857600
+
+# 快捷键设置
+# https://ghostty.org/docs/config/keybind/reference
 
 # Quake 风格下拉终端需要手动设置热键
 keybind = global:option+grave_accent=toggle_quick_terminal
