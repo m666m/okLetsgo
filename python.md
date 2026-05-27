@@ -2717,6 +2717,7 @@ name: Local Config
 version: 1.0.0
 schema: v1
 models:
+  # Qwen3.6-UDT：MTP + TRUBO QUANT 目前跟 continue 不大搭
   # - name: qwen36_udt_think_coder
   #   provider: openai
   #   apiBase: http://localhost:12345/v1
@@ -2727,7 +2728,7 @@ models:
   #     - edit
   #     - apply
   #   requestOptions:
-  #     stream: false   # Qwen3.6-UDT 支持 MTP + TRUBO QUANT 不完善，用这个凑合着
+  #     stream: false   # 关了流式输出才能凑合用
 
   - name: qwen36_think_coder
     provider: openai
@@ -2739,17 +2740,21 @@ models:
       - edit
       - apply
 
-  - name: Gemma 4 26B (Autocomplete)
-    provider: openai
-    apiBase: http://localhost:12345/v1
+  - name: gemma4_e4b
+    # 自动补全特殊， Continue 在调用补全模型时，会遵循特定的 FIM (Fill-In-the-Middle) 流程，这与标准对话 API 不同
+    provider: llama.cpp
+    apiBase: http://localhost:12345
     apiKey: not-needed
-    model: gemma4_26b
+    model: gemma4_e4b
     roles:
       - autocomplete
     requestOptions:
+      # 自动补全场景下通常不需要流式输出，可以关闭以简化处理
+      stream: false
+      # 可选：设置自动补全的最大 token 数
+      maxTokens: 64
       extraBodyProperties:
-        enable_thinking: false  # 关闭 Gemma 4 的思考模式
-        # think: false          # 如果你的模型是 Qwen3
+        enable_thinking: false  # 关闭思考模式
 
   - name: Dmeta Embedding
     provider: openai
@@ -2760,6 +2765,17 @@ models:
       - embed
 
 ```
+
+测试自动补全：
+
+    curl http://localhost:12345/completion \
+      -H "Content-Type: application/json" \
+      -d '{
+        "prompt": "<fim_prefix>def hello_world():\n    <fim_suffix>\n    <fim_middle>",
+        "n_predict": 64,
+        "stop": ["<fim_prefix>", "<fim_suffix>", "<fim_middle>", "\n\n"],
+        "model": "gemma4_e4b"
+      }' |jq
 
 #### ACP 直接使用你的 Agent
 
