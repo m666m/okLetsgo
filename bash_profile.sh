@@ -113,58 +113,6 @@ esac
 
 unset os_name
 
-# 获取 github 文件，超时会自动更换 CDN 下载
-curlgh() {
-    local github_url="$1"
-    shift  # 移除第一个参数，剩下的作为curl的额外参数
-
-    if [ -z "$github_url" ]; then
-        return 1
-    fi
-
-    local user repo branch file_path raw_url
-
-    # 解析GitHub URL，提取必要信息
-    # 格式1: github 页面复制的文件地址
-    if [[ "$github_url" =~ ^https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.+)$ ]]; then
-        # 匹配标准 github.com URL
-        user="${BASH_REMATCH[1]}"
-        repo="${BASH_REMATCH[2]}"
-        branch="${BASH_REMATCH[3]}"
-        file_path="${BASH_REMATCH[4]}"
-        raw_url="https://raw.githubusercontent.com/$user/$repo/$branch/$file_path"
-    # 格式2: 实际下载时 github 会重定向到 raw.githubusercontent.com 的地址
-    elif [[ "$github_url" =~ ^https?://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$ ]]; then
-        # 已经是 raw URL，直接使用
-        raw_url="$github_url"
-    else
-        echo "错误：URL格式不正确。请提供标准的GitHub文件链接。" >&2
-        echo "示例：" >&2
-        echo "  curlgh https://github.com/m666m/ask/blob/main/install.sh" >&2
-        echo "  curlgh https://raw.githubusercontent.com/m666m/ask/main/install.sh" >&2
-        return 1
-    fi
-
-    # 为jsDelivr CDN构建备用URL
-    # 提取用户名、仓库名、分支名和文件路径
-    if [[ "$raw_url" =~ ^https?://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$ ]]; then
-        local raw_user="${BASH_REMATCH[1]}"
-        local raw_repo="${BASH_REMATCH[2]}"
-        local raw_branch="${BASH_REMATCH[3]}"
-        local raw_path="${BASH_REMATCH[4]}"
-        # jsDelivr的URL规则：https://cdn.jsdelivr.net/gh/user/repo@branch/filepath
-        local cdn_url="https://cdn.jsdelivr.net/gh/$raw_user/$raw_repo@$raw_branch/$raw_path"
-
-        # 尝试从官方 raw 地址下载，超时或失败后自动从 jsDelivr CDN 下载
-        # 连接超时5秒，总超时10秒
-        curl -fsSL --connect-timeout 5 --max-time 10 "$raw_url" "$@" || \
-        curl -fsSL --connect-timeout 10 --max-time 30 "$cdn_url" "$@"
-    else
-        # 如果无法解析，直接尝试下载原地址
-        curl -fsSL --connect-timeout 5 --max-time 10 "$raw_url" "$@"
-    fi
-}
-
 #######################
 # 删除 vi 安装 vim 后发现不能用 vi 命令了
 command -v vi >/dev/null || {
@@ -396,6 +344,57 @@ alias sshk='echo "[使用kitty连接无terminfo的sshd服务器]"; kitty +kitten
 # curl
 alias curls='echo "[curl http-get  不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]"; curl -fsSL'
 alias curld='echo "[curl http-post 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕]"; curl -fsSd'
+# 获取 github 文件，超时会自动更换 CDN 下载
+curlgh() {
+    local github_url="$1"
+    shift  # 移除第一个参数，剩下的作为curl的额外参数
+
+    if [ -z "$github_url" ]; then
+        return 1
+    fi
+
+    local user repo branch file_path raw_url
+
+    # 解析GitHub URL，提取必要信息
+    # 格式1: github 页面复制的文件地址
+    if [[ "$github_url" =~ ^https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.+)$ ]]; then
+        # 匹配标准 github.com URL
+        user="${BASH_REMATCH[1]}"
+        repo="${BASH_REMATCH[2]}"
+        branch="${BASH_REMATCH[3]}"
+        file_path="${BASH_REMATCH[4]}"
+        raw_url="https://raw.githubusercontent.com/$user/$repo/$branch/$file_path"
+    # 格式2: 实际下载时 github 会重定向到 raw.githubusercontent.com 的地址
+    elif [[ "$github_url" =~ ^https?://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$ ]]; then
+        # 已经是 raw URL，直接使用
+        raw_url="$github_url"
+    else
+        echo "错误：URL格式不正确。请提供标准的GitHub文件链接。" >&2
+        echo "示例：" >&2
+        echo "  curlgh https://github.com/m666m/ask/blob/main/install.sh" >&2
+        echo "  curlgh https://raw.githubusercontent.com/m666m/ask/main/install.sh" >&2
+        return 1
+    fi
+
+    # 为jsDelivr CDN构建备用URL
+    # 提取用户名、仓库名、分支名和文件路径
+    if [[ "$raw_url" =~ ^https?://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$ ]]; then
+        local raw_user="${BASH_REMATCH[1]}"
+        local raw_repo="${BASH_REMATCH[2]}"
+        local raw_branch="${BASH_REMATCH[3]}"
+        local raw_path="${BASH_REMATCH[4]}"
+        # jsDelivr的URL规则：https://cdn.jsdelivr.net/gh/user/repo@branch/filepath
+        local cdn_url="https://cdn.jsdelivr.net/gh/$raw_user/$raw_repo@$raw_branch/$raw_path"
+
+        # 尝试从官方 raw 地址下载，超时或失败后自动从 jsDelivr CDN 下载
+        # 连接超时5秒，总超时10秒
+        curl -fsSL --connect-timeout 5 --max-time 10 "$raw_url" "$@" || \
+        curl -fsSL --connect-timeout 10 --max-time 30 "$cdn_url" "$@"
+    else
+        # 如果无法解析，直接尝试下载原地址
+        curl -fsSL --connect-timeout 5 --max-time 10 "$raw_url" "$@"
+    fi
+}
 
 # nmap
 alias nmaps='echo "[nmap 指定端口提供了什么类型的服务]"; nmap -sV -p'
