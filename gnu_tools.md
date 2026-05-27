@@ -18687,23 +18687,18 @@ Ghostty 配置文件
     touch config
 
 ```ini
+# https://ghostty.org/docs/config/reference
 ### 字体
 font-family = "MesloLGS NF"
 font-size = 13
 #font-thicken = true
 #adjust-cell-height = 1
-
-### 主题
 theme = light:Modus Operandi,dark:Nord Wave
-
-### 光标
 cursor-style = block
 cursor-opacity = 0.8
-
-### 缓冲多少行历史
+### 缓冲多少字节的历史记录
 scrollback-limit = 104857600
-
-# Quake 风格下拉终端设置个热键
+# Quake 风格下拉终端需要手动设置热键
 keybind = global:option+grave_accent=toggle_quick_terminal
 
 ```
