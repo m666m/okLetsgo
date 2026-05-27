@@ -18663,6 +18663,53 @@ Darwin 通过其 FreeBSD 血统支持 POSIX API，因此大量为 Unix/Unix-like
 
     开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片s统一内存的 GPU 加速。
 
+常用终端模拟器
+
+    iTerm2 一般用于代替 macOS 自带的默认终端，其实也不咋滴
+
+    Ghostty 超级快
+
+        https://ghostty.org/
+            https://github.com/ghostty-org/ghostty
+
+常用命令速查
+
+    查看所有内置主题：ghostty +list-themes
+
+    查看默认配置：ghostty +show-config --default
+
+    列出可用字体：ghostty +list-fonts
+
+    重载配置（无需重启）：Cmd + Shift + ,
+
+Ghostty 配置文件
+
+    mkdir -p ~/.config/ghostty/
+    cd ~/.config/ghostty/
+    touch config
+
+```ini
+### 字体
+font-family = "MesloLGS NF"
+font-size = 13
+#font-thicken = true
+#adjust-cell-height = 1
+
+### 主题
+theme = light:Modus Operandi,dark:Nord Wave
+
+### 光标
+cursor-style = block
+cursor-opacity = 0.8
+
+### 缓冲多少行历史
+scrollback-limit = 104857600
+
+# Quake 风格下拉终端设置个热键
+keybind = global:option+grave_accent=toggle_quick_terminal
+
+```
+
 ### 执行自编译程序提示禁止执行
 
 图形界面“访达”中，总是得点选信任同意，挺麻烦的。

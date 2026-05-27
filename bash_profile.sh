@@ -237,7 +237,6 @@ if [[ $os_type = 'macos' ]]; then
 else
     alias ls='ls --color=auto'
 fi
-alias ls='ls --color=auto'
 
 # 常用的列文件的惯用法
 alias l='ls -CFA'
@@ -289,8 +288,8 @@ function mvf {
 # 设置目录及其子目录和文件权限的常用操作
 chperm() {
     if [ $# -lt 1 ]; then
-        echo "根据指定的 umask 值设置目录及其子目录和文件权限的函数"
-        echo "用法: chperm <目录路径> [umask值，默认为 002，即 目录 775 文件 664]"
+        echo "指定 umask 值，设置路径及内容的权限"
+        echo "用法: chperm <目录路径> [umask值，默认为 002，即 目录是 775，文件是 664]"
         return 1
     fi
 
@@ -302,7 +301,7 @@ chperm() {
     file_perm=$(printf "%o" $((0666 - 0$umask_value)))
 
     if [ $? -ne 0 ]; then
-        echo "根据指定的 umask 值设置目录及其子目录和文件权限的函数"
+        echo "指定 umask 值，设置目录下的内容的权限"
         echo "用法: chperm <目录路径> [umask值，默认为 002，即 目录 775 文件 664]"
         return 1
     fi
