@@ -18670,7 +18670,7 @@ Darwin 通过其 FreeBSD 血统支持 POSIX API，因此大量为 Unix/Unix-like
 
     竞品 iTerm2 是没的选的情况下的选择
 
-常用命令速查
+Ghostty 常用命令速查
 
     查看所有内置主题：ghostty +list-themes
 
