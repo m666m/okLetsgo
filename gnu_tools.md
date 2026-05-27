@@ -18688,22 +18688,30 @@ Ghostty 配置文件
 
 ```ini
 # https://ghostty.org/docs/config/reference
+
 # 字体
 font-family = "MesloLGS NF"
 font-size = 13
 #font-thicken = true
 #adjust-cell-height = 1
+
 ## 主题
 # Modus Operandi    Primary
 # Tomorrow Night Burns
 theme = light:Xcode Light,dark:Tomorrow Night Eighties
-# 光标透明点
+
+# 光标透明
 cursor-style = block
 cursor-opacity = 0.8
+
 # 缓冲多少字节的历史记录
 scrollback-limit = 104857600
+
 # Quake 风格下拉终端需要手动设置热键
 keybind = global:option+grave_accent=toggle_quick_terminal
+
+# 用 cmd+b 模拟 tmux 的前导键 ctrl+b
+keybind = cmd+b=text:\x02
 
 ```
 
