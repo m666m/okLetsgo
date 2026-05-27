@@ -18663,14 +18663,12 @@ Darwin 通过其 FreeBSD 血统支持 POSIX API，因此大量为 Unix/Unix-like
 
     开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片s统一内存的 GPU 加速。
 
-常用终端模拟器
+终端模拟器 Ghostty 超级快
 
-    iTerm2 一般用于代替 macOS 自带的默认终端，其实也不咋滴
+    https://ghostty.org/
+        https://github.com/ghostty-org/ghostty
 
-    Ghostty 超级快
-
-        https://ghostty.org/
-            https://github.com/ghostty-org/ghostty
+    竞品 iTerm2 是没的选的情况下的选择
 
 常用命令速查
 
