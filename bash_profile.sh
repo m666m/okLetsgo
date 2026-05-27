@@ -425,14 +425,14 @@ function mntfat {
 }
 function mntntfs {
     echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-    local _uid=$(id -u $USERNAME)
-    local _gid=$(id -g $USERNAME)
+    local _uid=$(id -u $USER)
+    local _gid=$(id -g $USER)
     sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,windows_names,iocharset=utf8 "$1" "$2"
 }
 function mntexfat {
     echo "[挂载 exFAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
-    local _uid=$(id -u $USERNAME)
-    local _gid=$(id -g $USERNAME)
+    local _uid=$(id -u $USER)
+    local _gid=$(id -g $USER)
     sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro "$1" "$2"
 }
 function mntram {
