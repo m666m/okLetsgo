@@ -18700,9 +18700,11 @@ font-size = 13
 # Tomorrow Night Burns.  Tomorrow Night Eighties
 theme = light:Nord,dark:Nord Wave
 
-# 光标轻微透明
-cursor-style = block
-cursor-opacity = 0.8
+# 光标透明
+# 禁用 shell 的方案才能自己设置光标风格
+shell-integration-features = no-cursor
+cursor-style = underline
+#cursor-opacity = 0.8
 
 # 缓冲多少字节的历史记录
 scrollback-limit = 104857600
@@ -18712,6 +18714,15 @@ keybind = global:option+grave_accent=toggle_quick_terminal
 
 # 用 cmd+b 模拟 tmux 的前导键 ctrl+b
 keybind = cmd+b=text:\x02
+
+# 窗口拆分
+# cmd + d           垂直拆分
+# cmd + shift + d   水平拆分
+# cmd + opt + 方向键  在拆分窗口间移动
+# 缩/放拆分的窗口，便于使用 Claude Code，左窗口编程，右窗口验证，太小就缩放
+keybind = cmd+shift+f=toggle_split_zoom
+# 拆分窗口1:1，如果搞乱了就用这个
+keybind = cmd+shift+e=equalize_splits
 
 ```
 
