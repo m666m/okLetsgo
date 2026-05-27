@@ -340,6 +340,10 @@ function cdw {
 
 # 切换桌面模式和命令行模式 --- 使用 systemd 控制引导的系统都可以这么做
 function swc {
+    if [[ ! ($os_type == 'linux' || $os_type == 'raspi') ]]; then
+        return
+    fi
+
     if [[ "$XDG_SESSION_TYPE" = 'tty' ]]; then
         read -p "Switch to graphical mode? (y/N): " -n 1 -r
         echo
