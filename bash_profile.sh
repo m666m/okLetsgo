@@ -344,55 +344,65 @@ alias sshk='echo "[使用kitty连接无terminfo的sshd服务器]"; kitty +kitten
 # curl
 alias curls='echo "[curl http-get  不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]"; curl -fsSL'
 alias curld='echo "[curl http-post 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕]"; curl -fsSd'
-# 获取 github 文件，超时会自动更换 CDN 下载
 curlgh() {
-    local github_url="$1"
-    shift  # 移除第一个参数，剩下的作为curl的额外参数
-
-    if [ -z "$github_url" ]; then
-        return 1
-    fi
-
-    local user repo branch file_path raw_url
-
-    # 解析GitHub URL，提取必要信息
-    # 格式1: github 页面复制的文件地址
-    if [[ "$github_url" =~ ^https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.+)$ ]]; then
-        # 匹配标准 github.com URL
-        user="${BASH_REMATCH[1]}"
-        repo="${BASH_REMATCH[2]}"
-        branch="${BASH_REMATCH[3]}"
-        file_path="${BASH_REMATCH[4]}"
-        raw_url="https://raw.githubusercontent.com/$user/$repo/$branch/$file_path"
-    # 格式2: 实际下载时 github 会重定向到 raw.githubusercontent.com 的地址
-    elif [[ "$github_url" =~ ^https?://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$ ]]; then
-        # 已经是 raw URL，直接使用
-        raw_url="$github_url"
-    else
-        echo "错误：URL格式不正确。请提供标准的GitHub文件链接。" >&2
-        echo "示例：" >&2
+    if [ $# -eq 0 ]; then
+        echo "获取 github 文件，超时会自动更换 CDN 下载：" >&2
         echo "  curlgh https://github.com/m666m/ask/blob/main/install.sh" >&2
+        echo "  curlgh https://github.com/m666m/ask/raw/refs/heads/main/install.sh" >&2
         echo "  curlgh https://raw.githubusercontent.com/m666m/ask/main/install.sh" >&2
         return 1
     fi
 
-    # 为jsDelivr CDN构建备用URL
-    # 提取用户名、仓库名、分支名和文件路径
-    if [[ "$raw_url" =~ ^https?://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$ ]]; then
-        local raw_user="${BASH_REMATCH[1]}"
-        local raw_repo="${BASH_REMATCH[2]}"
-        local raw_branch="${BASH_REMATCH[3]}"
-        local raw_path="${BASH_REMATCH[4]}"
-        # jsDelivr的URL规则：https://cdn.jsdelivr.net/gh/user/repo@branch/filepath
-        local cdn_url="https://cdn.jsdelivr.net/gh/$raw_user/$raw_repo@$raw_branch/$raw_path"
+    local url="$1"
+    local raw_url=""
 
-        # 尝试从官方 raw 地址下载，超时或失败后自动从 jsDelivr CDN 下载
-        # 连接超时5秒，总超时10秒
-        curl -fsSL --connect-timeout 5 --max-time 10 "$raw_url" "$@" || \
-        curl -fsSL --connect-timeout 10 --max-time 30 "$cdn_url" "$@"
+    # ---------- 第一步：统一转换为 raw.githubusercontent.com 地址 ----------
+    if [[ "$url" == *"raw.githubusercontent.com"* ]]; then
+        # 已经是原始文件地址，例如 https://raw.githubusercontent.com/m666m/ask/main/install.sh
+        raw_url="$url"
+    elif [[ "$url" == *"github.com"* ]]; then
+        # 处理页面浏览地址，例如 https://github.com/m666m/ask/blob/main/install.sh
+        # 转换为原始文件地址   https://raw.githubusercontent.com/m666m/ask/main/install.sh
+        if [[ "$url" == *"/blob/"* ]]; then
+            raw_url=$(echo "$url" | sed 's|https://github.com/|https://raw.githubusercontent.com/|; s|/blob/|/|')
+            echo "[curlgh] 转换为 Raw 地址: $raw_url" >&2
+
+        # 处理 /raw/ 格式的浏览地址，例如 https://github.com/m666m/ask/raw/refs/heads/main/install.sh
+        # 转换为原始文件地址   https://raw.githubusercontent.com/m666m/ask/main/install.sh
+        # （自动去除 /refs/heads/ 部分）
+        elif [[ "$url" == *"/raw/"* ]]; then
+            raw_url=$(echo "$url" | sed -E 's|https://github.com/([^/]+)/([^/]+)/raw/(refs/heads/)?([^/]+)/(.*)|https://raw.githubusercontent.com/\1/\2/\4/\5|')
+            echo "[curlgh] 转换为 Raw 地址: $raw_url" >&2
+        else
+            echo "[curlgh] 不支持的 GitHub 链接格式: $url" >&2
+            return 1
+        fi
     else
-        # 如果无法解析，直接尝试下载原地址
-        curl -fsSL --connect-timeout 5 --max-time 10 "$raw_url" "$@"
+        # 非 GitHub 链接，直接报错
+        echo "[curlgh] 不支持的非 GitHub 链接: $url" >&2
+        return 1
+    fi
+
+    # ---------- 第二步：优先从原始地址下载（10秒超时） ----------
+    if curl -fsSL --max-time 10 "$raw_url"; then
+        return 0
+    fi
+
+    # ---------- 第三步：原始地址下载失败，则尝试 jsDelivr CDN 地址 ----------
+    # 转换示例：
+    # https://raw.githubusercontent.com/m666m/ask/main/install.sh
+    #   ↓
+    # https://cdn.jsdelivr.net/gh/m666m/ask@main/install.sh
+    local cdn_url
+    cdn_url=$(echo "$raw_url" | sed 's|https://raw.githubusercontent.com/\([^/]*\)/\([^/]*\)/\([^/]*\)/\(.*\)|https://cdn.jsdelivr.net/gh/\1/\2@\3/\4|')
+
+    echo "[curlgh] 原始地址下载失败，尝试 CDN 地址: $cdn_url" >&2
+
+    if curl -fsSL --max-time 10 "$cdn_url"; then
+        return 0
+    else
+        echo "[curlgh] CDN 下载也失败了，请重试！" >&2
+        return 1
     fi
 }
 

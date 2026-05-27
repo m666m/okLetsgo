@@ -18693,14 +18693,14 @@ Ghostty 配置文件
 font-family = "MesloLGS NF"
 font-size = 13
 #font-thicken = true
-#adjust-cell-height = 1
+#adjust-cell-height = 2
 
 ## 主题
-# Modus Operandi    Primary
-# Tomorrow Night Burns
-theme = light:Xcode Light,dark:Tomorrow Night Eighties
+# Modus Operandi.    Primary.  Xcode Light
+# Tomorrow Night Burns.  Tomorrow Night Eighties
+theme = light:Nord,dark:Nord Wave
 
-# 光标透明
+# 光标轻微透明
 cursor-style = block
 cursor-opacity = 0.8
 
