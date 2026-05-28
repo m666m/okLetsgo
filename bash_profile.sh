@@ -1,7 +1,8 @@
 # .bash_profile
 ###################################################################
-# 适用于 Linux bash、Linux zsh、Windows git bash(mintty.exe)，macOS 未测试
-# 本该放到 .bashrc 文件，为了方便统一在此了，可放到 .zshrc 中引用以保持自己的使用习惯
+# 适用于 Linux bash、Linux zsh、Windows git bash(mintty.exe)，macOS（未完全测试）
+# alias和路径设置等本该放到 .bashrc 文件，为了方便统一在此了。
+# 本文件可放到 .zshrc 中 `source ~/.bash_profile`，以便在 zsh 下也保持使用习惯。
 #
 # 别人的配置文件参考大全
 #   https://github.com/pseudoyu/dotfiles
@@ -489,7 +490,7 @@ function passf {
     # passf > key.bin          # 保存为文件
     # passf | base64           # 输出base64
     # passf | xxd -p           # 输出十六进制
-    cat /dev/random | tr -d "\n" | head -c 256
+    cat /dev/urandom | tr -d "\n" | head -c 256
 }
 
 # sha256sum
@@ -1152,6 +1153,7 @@ function PS1git_branch_prompt {
 
     else
         # git 工作区有变更就显示问号
+        # --porcelain 可能耗时数百毫秒，暂没有好的解决办法
         local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<?>'; else printf "%s" ''; fi)
         # 拼接后输出 git 工作区状态和分支名
         printf " git:%s%s" $notify_flag $branch
