@@ -54,11 +54,11 @@ done
 export PATH
 
 #######################
-# 如果是非交互式登录(ssh直接在服务器执行脚本等场景)，这里就直接退出了，后面的设置统统不需要
+# 如果是非交互式登录(ssh直接在服务器执行脚本等场景)，到这里就可以退出了，后面的设置统统不需要
 # exit for non-interactive shell
 [[ $- != *i* ]] && return
-# 本脚本就是被 source 使用的，直接执行是错误用法，source .bash_profile 中可以用 return 命令。
-# 如果把 return 改成 exit，GNOME/KDE 桌面环境下会导致登录桌面退出且无任何提示。
+# 注意：本脚本是被 source 使用的 `source .bash_profile`，直接执行是错误用法，而 `source` 可以用 return 命令。
+# 如果把 return 改成 exit 会导致致命问题：GNOME/KDE 桌面环境下用户登录过程秒退到登录界面且无任何提示。
 
 ###################################################################
 # 自此开始都是用户为了使用习惯的自定义设置
@@ -686,7 +686,7 @@ function pdmv() {
         echo "容器 '$c' 使用了卷：$(podman inspect $c --format='{{range .Mounts}}{{.Name}} {{end}}' )"
     done
 }
-export PDMREPO="192.168.0.111:5000" && echo "内网私有容器镜像仓库地址设置为 PDMREPO=${PDMREPO}"
+# 操作私有容器仓库
 alias pdmr='echo "[podman 列出私有仓库 ${PDMREPO} 的所有镜像]"; curl -s http://${PDMREPO}/v2/_catalog | jq'
 function pdmrl() {
   echo "[podman 列出私有仓库 ${PDMREPO} 的全部镜像及标签]"
