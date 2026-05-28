@@ -490,7 +490,7 @@ function passf {
     # passf > key.bin          # 保存为文件
     # passf | base64           # 输出base64
     # passf | xxd -p           # 输出十六进制
-    cat /dev/urandom | tr -d "\n" | head -c 256
+    cat /dev/random | tr -d "\n" | head -c 256
 }
 
 # sha256sum
