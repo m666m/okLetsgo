@@ -114,7 +114,7 @@ esac
 unset os_name
 
 #######################
-# 定义个工具函数
+# 定义工具函数
 curlgh() {
     if [ $# -eq 0 ]; then
         echo "获取 github 文件，下载超时则自动更换 CDN 下载：" >&2
@@ -183,7 +183,11 @@ curlgh() {
 }
 
 #######################
-# 删除 vi 安装 vim 后发现不能用 vi 命令了
+# 为方便使用，只能加这么个屏幕打印，暂没有更好的解决办法
+export PDMREPO="192.168.0.111:5000" && echo "内网私有容器镜像仓库地址设置为 PDMREPO=${PDMREPO}"
+
+#######################
+# 删除 vi 然后安装 vim，居然没有 `vi` 了
 command -v vi >/dev/null || {
     echo 'link vim to vi'
     printf "建议补全 vi 调用：sudo ln -sf /usr/bin/vim /usr/bin/vi"
