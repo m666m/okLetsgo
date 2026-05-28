@@ -127,6 +127,11 @@ curlgh() {
     local url="$1"
     local raw_url=""
 
+    if ! command -v curl >/dev/null 2>&1; then
+        echo "  Error: Cant find curl!" >&2
+        return 1
+    fi
+
     # ---------- 第一步：统一转换为 raw.githubusercontent.com 地址 ----------
     if [[ "$url" == *"raw.githubusercontent.com"* ]]; then
         # 已经是原始文件地址，例如 https://raw.githubusercontent.com/m666m/ask/main/install.sh
@@ -227,7 +232,7 @@ if [ -x /usr/bin/dircolors ]; then
 
     # 下载使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
     if [[ ! -f ~/.dir_colors ]]; then
-        echo 'Get nord-dircolors from github'
+        echo '安装命令行显示文件颜色方案 nord-dircolors'
         curlgh https://raw.githubusercontent.com/nordtheme/dircolors/develop/src/dir_colors > ~/.dir_colors
     fi
 
