@@ -18641,6 +18641,10 @@ System-wide autostart directories:
 
 ## 使用 macOS
 
+苹果 Macbook M5(Apple Silicon) Pro 笔记本 MacOS Tahoe(Darwin) Metal 构建代码，说的都是什么：
+
+    芯片 Apple Silicon 的第5代，型号叫 M5，操作系统 MacOS 代号 Tahoe（内核 Darwin），图形计算框架 Metal
+
 macOS：苹果电脑的操作系统，现在的版本叫 Tahoe 26
 
     Darwin：macOS 系统底层的“内核”的名字
