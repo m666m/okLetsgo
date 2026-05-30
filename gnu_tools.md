@@ -18659,6 +18659,12 @@ System-wide autostart directories:
 
         开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片s统一内存的 GPU 加速。
 
+监控 gpu 功耗
+
+    sudo powermetrics --samplers gpu_power -i1000
+
+    重度任务可以看到，一开始 45W 很快就降到 10几瓦了，笔记本电脑的散热能力带不动全速执行的 M5 pro 芯片
+
 ### 长时间运行防睡眠
 
 默认模式：合盖既睡眠
