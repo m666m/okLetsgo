@@ -2717,19 +2717,6 @@ name: Local Config
 version: 1.0.0
 schema: v1
 models:
-  # Qwen3.6-UDT：MTP + TRUBO QUANT 目前跟 continue 不大搭
-  # - name: qwen36_udt_think_coder
-  #   provider: openai
-  #   apiBase: http://localhost:12345/v1
-  #   apiKey: not-needed
-  #   model: qwen36_udt_think_coder
-  #   roles:
-  #     - chat
-  #     - edit
-  #     - apply
-  #   requestOptions:
-  #     stream: false   # 关了流式输出才能凑合用
-
   - name: qwen36_think_coder
     provider: openai
     apiBase: http://localhost:12345/v1
@@ -2739,22 +2726,20 @@ models:
       - chat
       - edit
       - apply
+    defaultCompletionOptions:
+      # 代码审查输出稍微长点就默认截断了，必须自定义参数
+      # 太长了也没用，continue 的显示框架也会截断，说白了它就只支持简单几轮不长的对话，不支持长思维链
+      maxTokens: 16384       # 默认值 4096 限制模型单次输出的最大长度，服务器端端设置失效
+      contextLength: 131072  # 跟 llama.cpp 保持一致，对话历史总长度
 
-  - name: gemma4_e4b
+  - name: qwen_coder
     # 自动补全特殊， Continue 在调用补全模型时，会遵循特定的 FIM (Fill-In-the-Middle) 流程，这与标准对话 API 不同
-    provider: llama.cpp
-    apiBase: http://localhost:12345
+    provider: llama.cpp               # 关键：不能是 openai
+    apiBase: http://localhost:12345   # 基础地址，没有 /v1
     apiKey: not-needed
-    model: gemma4_e4b
+    model: qwen_coder                 # 必须与 models.ini 别名一致
     roles:
       - autocomplete
-    requestOptions:
-      # 自动补全场景下通常不需要流式输出，可以关闭以简化处理
-      stream: false
-      # 可选：设置自动补全的最大 token 数
-      maxTokens: 64
-      extraBodyProperties:
-        enable_thinking: false  # 关闭思考模式
 
   - name: Dmeta Embedding
     provider: openai
