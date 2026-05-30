@@ -518,6 +518,14 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 uv 工具不会自动下载 Python 包，因此如果设置虚拟环境时用 -p 指定系统不存在的Python版本，则会报错。所以需要提前安装。
 
+### 安装 pip 发布的程序
+
+在现有的 python 环境里安装
+
+    python -m pip install uv  # If you need to install uv
+
+    uv tool install --force --python python3.12 --with pip aider-chat@latest
+
 ### 使用 uv 创建项目独立的虚拟环境
 
 这是项目的最常见用法，创建一个虚拟环境（只需一次），在当前的 .venv 子目录下。
