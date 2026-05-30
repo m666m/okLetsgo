@@ -2735,6 +2735,7 @@ models:
       - edit
       - apply
     defaultCompletionOptions:
+      # https://docs.continue.dev/reference#models
       # 代码审查输出稍微长点就默认截断了，必须自定义参数
       # 太长了也没用，continue 的显示框架也会截断，说白了它就只支持简单几轮不长的对话，不支持长思维链
       maxTokens: 16384       # 默认值 4096 限制模型单次输出的最大长度，服务器端端设置失效
