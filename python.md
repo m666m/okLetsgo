@@ -2725,11 +2725,11 @@ name: Local Config
 version: 1.0.0
 schema: v1
 models:
-  - name: qwen36_think_coder
+  - name: qwen36_coder
     provider: openai
     apiBase: http://localhost:12345/v1
     apiKey: not-needed
-    model: qwen36_think_coder
+    model: qwen36_coder
     roles:
       - chat
       - edit
@@ -2741,12 +2741,13 @@ models:
       maxTokens: 16384       # 默认值 4096 限制模型单次输出的最大长度，服务器端端设置失效
       contextLength: 131072  # 跟 llama.cpp 保持一致，对话历史总长度
 
-  - name: qwen_coder
+  - name: qwen_autocomplete
     # 自动补全特殊， Continue 在调用补全模型时，会遵循特定的 FIM (Fill-In-the-Middle) 流程，这与标准对话 API 不同
-    provider: llama.cpp               # 关键：不能是 openai
-    apiBase: http://localhost:12345   # 基础地址，没有 /v1
+    # https://docs.continue.dev/customize/model-providers/more/llamacpp
+    provider: llama.cpp                 # 关键：不能是 openai
+    apiBase: http://localhost:12345  # 基础地址，没有 /v1
     apiKey: not-needed
-    model: qwen_coder                 # 必须与 models.ini 别名一致
+    model: qwen_autocomplete            # 必须与 models.ini 别名一致
     roles:
       - autocomplete
 
