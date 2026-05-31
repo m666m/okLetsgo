@@ -128,6 +128,7 @@ curlgh() {
     local url="$1"
     local raw_url=""
 
+    # NOTE: 调用可能不存在的命令，必须先 `command -v` 判断一下，否则不存在的命令Fedora会搜索软件仓库导致卡顿
     if ! command -v curl >/dev/null 2>&1; then
         echo "  Error: Cant find curl!" >&2
         return 1
@@ -1090,7 +1091,6 @@ function PS1git_branch_name {
     #   来源 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
     #   如果自定义命令提示符，可以在PS1变量拼接中调用函数 $(__git_ps1 "(%s)") ，
     #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
-    # NOTE: 调用可能不存在的命令，必须先 `command -v` 判断一下，否则不存在的命令Fedora会搜索软件仓库导致卡顿
     if command -v __git_ps1 >/dev/null 2>&1; then
         # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，后面也不能用它的返回值判断是否执行成功
         # NOTE:如果用 local 声明变量 _pp_git_pt，就无法取到执行语句的返回值了
