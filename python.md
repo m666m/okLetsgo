@@ -2766,10 +2766,10 @@ models:
     curl http://localhost:12345/completion \
       -H "Content-Type: application/json" \
       -d '{
+        "model": "qwen_autocomplete",
         "prompt": "<fim_prefix>def hello_world():\n    <fim_suffix>\n    <fim_middle>",
         "n_predict": 64,
-        "stop": ["<fim_prefix>", "<fim_suffix>", "<fim_middle>", "\n\n"],
-        "model": "gemma4_e4b"
+        "stop": ["<fim_prefix>", "<fim_suffix>", "<fim_middle>", "\n\n"]
       }' |jq
 
 #### ACP 直接使用你的 Agent
