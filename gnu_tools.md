@@ -18757,20 +18757,20 @@ theme = light:Nord,dark:Nord Wave
 # 光标透明
 # 禁用 shell 的方案才能自己设置光标风格
 shell-integration-features = no-cursor
-cursor-style = underline
+cursor-color = "#ffa500"
+#cursor-text = "#ff0000"
+#cursor-style = underline
+#adjust-cursor-thickness = 2200%
 #cursor-opacity = 0.8
 
 # 缓冲多少字节的历史记录
 scrollback-limit = 104857600
 
-# 快捷键设置
-# https://ghostty.org/docs/config/keybind/reference
-
 # Quake 风格下拉终端需要手动设置热键
 keybind = global:option+grave_accent=toggle_quick_terminal
 
 # 用 cmd+b 模拟 tmux 的前导键 ctrl+b
-keybind = cmd+b=text:\x02
+#keybind = cmd+b=text:\x02
 
 # 窗口拆分
 # cmd + d           垂直拆分
