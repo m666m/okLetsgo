@@ -19027,6 +19027,103 @@ function brew_sc() {
 
 然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机桌面体验直接起飞。
 
+### Colima 使用 Docker
+
+1、容器技术依赖 Linux 内核，都是虚拟机方案：
+
+    笨重且慢：用 Docker Desktop for Mac，至少4GB的RAM，而且绑定 docker 账号。
+
+    通用性最佳：在 UTM 里装一个 Alpine Linux（几十 MB 内存，1GB 磁盘），仅运行 dockerd，然后在 macOS 里设置 DOCKER_HOST=ssh://user@alipine-vm，这样您可以在 macOS 原生终端执行 docker 命令。
+
+2、替换 docker：
+
+Podman 无守护进程（daemonless），与 docker 命令几乎100%兼容。使用苹果原生框架 (applehv)实现虚拟化，而且利用 Rosetta 2 直接在 VM 内加速 x86 镜像。
+
+Apple Container --- 苹果官方开源、原生 Linux 容器方案：
+
+    https://github.com/apple/container/releases 选择 container-0.12.3-installer-signed.pkg 这个文件来安装
+
+    每一个 Linux 容器都单独启动一个极限“瘦身”的微内核的虚拟机，以此来运行容器（默认 1GB 内存）。这样的好处很多：
+
+        用完退出容器即释放内存，不像其它的解决方案那样空跑一个虚拟机占好几个GB内存。
+
+        每个容器都有自己独立的 IP 地址，不需要像传统 Docker 那样进行端口映射。
+
+功能还不完善：
+
+    暂不支持 docker-compose
+
+    暂未完善动态内存申请的气球技术。
+
+    缺少网络管理命令(container network ls、rm)
+
+    容器内无法直接通过 localhost 访问宿主机服务。一种常见的变通方法是使用 socat 在宿主机上建立一个流量中转
+
+    不支持容器运行时加入网络
+
+命令行使用
+
+    # 启动 container 的系统服务
+    $ container system start
+
+    # 运行容器的命令与 Docker 类似
+    $ container run nginx
+
+    $ container run --volume ${HOME}/Desktop/assets:/content/assets python:alpine ls -l /content/assets
+
+    $ container run --detach --name web --publish 8080:80 nginx:latest
+
+    # 运行一个 x86 架构的容器
+    $ container run --platform linux/amd64 nginx:latest
+
+其实 Apple Container 是最轻量、性能最高的，可惜太多基本功能未实现了，目前除了做个命令行工具快速使用，其它没有优势。
+
+3、基于 Lima（轻量化 Linux 虚拟机）的 Colima，最大的优点是轻量、方便。
+
+    https://github.com/abiosoft/colima
+        https://colima.run/
+
+    只用 1GB 内存、5GB 磁盘，几秒即可启动
+
+    支持多种后端如 docker、containerd(nerdctl)、k8s、incus，甚至 AI（https://github.com/containers/krunkit/）
+
+其虚拟机中的 Docker 引擎会自动与 Docker CLI 建立连接，简化文件卷挂载操作及端口映射
+
+    可以在 macOS 终端里直接使用 `docker`、`docker-compose` 命令，而使用传统 Linux 虚拟机中的 docker，每次都要先 ssh ubuntu-vm 进去再执行 `docker ps`，或需要手动设置本地的的 docker cli 连接到远程虚拟机中的 docker daemon。
+
+    自动把当前目录映射进虚拟机，不需要传统 Linux 虚拟机用 SSHFS、Samba、virtiofs 等需要额外配置的方法。
+
+    自动把 -p 8080:80 映射到 localhost:8080，而传统 Linux 虚拟机中的 Docker 容器监听的端口需要手动在虚拟机管理器里做转发，或者用桥接模式获取局域网 IP。
+
+用 brew 安装 Colima 及 docker 客户端工具：
+
+    $ brew install colima docker docker-compose docker-buildx docker-credential-helper
+
+首次启动时，可根据 Mac 配置调整资源，特别是选择 --vm-type vz（使用 Apple 原生虚拟化框架）参数可以为 Apple Silicon Mac 带来性能提升
+
+    $ colima start --cpu 4 --memory 8 --disk 20 --vm-type vz --runtime docker
+
+    如果有的镜像只有 x86 架构，则需要添加 Rosetta 2 软件转译层：
+
+        $ colima start --vm-type=vz --vz-rosetta
+
+        $ docker run --platform linux/amd64 --rm alpine uname -m
+        x86_64
+
+    如果转译效果不好，就需要通过 QEMU 进行完整系统模拟，性能开销更大：
+
+        $ colima start --arch x86_64 --vm-type=vz --vz-rosetta
+
+如果要跑的 x86 镜像居多，Colima 的 QEMU 模拟就会慢很多。而Podman 和 Apple Container 的 Rosetta 2 方案在性能上其实差别不大。
+
+日常使用与管理
+
+    停止服务：colima stop
+
+    启动服务：colima start
+
+    查看状态：colima status
+
 ## Windows 下的 GNU/POSIX 环境
 
 如果只是想做 Windows、macOS 和 Linux 等多个操作系统跨平台应用程序，使用 QT(c++/python) 或基于 Chromium+Node.js 的 Electron 框架的应用程序是更好的选择。
