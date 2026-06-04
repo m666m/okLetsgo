@@ -19041,21 +19041,21 @@ Podman 无守护进程（daemonless），与 docker 命令几乎100%兼容。使
 
 Apple Container --- 苹果官方开源、原生 Linux 容器方案：
 
-    https://github.com/apple/container/releases 选择 container-0.12.3-installer-signed.pkg 这个文件来安装
+    https://github.com/apple/container/releases
 
-    每一个 Linux 容器都单独启动一个极限“瘦身”的微内核的虚拟机，以此来运行容器（默认 1GB 内存）。这样的好处很多：
+        选择 container-0.12.3-installer-signed.pkg 这个文件来安装
 
-        用完退出容器即释放内存，不像其它的解决方案那样空跑一个虚拟机占好几个GB内存。
+其实 Apple Container 是最轻量、性能最高的，只是有些 docker 常用功能还未完善替代。
 
-        每个容器都有自己独立的 IP 地址，不需要像传统 Docker 那样进行端口映射。
+每一个 Linux 容器都单独启动一个极限“瘦身”的微内核的虚拟机，以此来运行容器（默认 1GB 内存）。 这样的好处很多：
 
-功能还不完善：
+    用完退出容器即释放内存，不像其它的解决方案那样空跑一个虚拟机占好几个GB内存。
 
-    暂不支持 docker-compose
+    每个容器都有自己独立的 IP 地址，不需要像传统 Docker 那样进行端口映射。
 
-    暂未完善动态内存申请的气球技术。
+可惜功能还不完善：
 
-    缺少网络管理命令(container network ls、rm)
+    暂不支持 docker-compose，只能使用 https://github.com/mcrich23/container-compose
 
     容器内无法直接通过 localhost 访问宿主机服务。一种常见的变通方法是使用 socat 在宿主机上建立一个流量中转
 
@@ -19075,8 +19075,6 @@ Apple Container --- 苹果官方开源、原生 Linux 容器方案：
 
     # 运行一个 x86 架构的容器
     $ container run --platform linux/amd64 nginx:latest
-
-其实 Apple Container 是最轻量、性能最高的，可惜太多基本功能未实现了，目前除了做个命令行工具快速使用，其它没有优势。
 
 3、基于 Lima（轻量化 Linux 虚拟机）的 Colima，最大的优点是轻量、方便。
 
