@@ -19027,13 +19027,13 @@ function brew_sc() {
 
 然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机桌面体验直接起飞。
 
-### Colima 使用 Docker
+### 使用 Docker
 
 1、容器技术依赖 Linux 内核，都是虚拟机方案：
 
-    笨重且慢：用 Docker Desktop for Mac，至少4GB的RAM，而且绑定 docker 账号。
+笨重且慢：用 Docker Desktop for Mac，至少4GB的RAM，而且绑定 docker 账号。
 
-    通用性最佳：在 UTM 里装一个 Alpine Linux（几十 MB 内存，1GB 磁盘），仅运行 dockerd，然后在 macOS 里设置 DOCKER_HOST=ssh://user@alipine-vm，这样您可以在 macOS 原生终端执行 docker 命令。
+通用性最佳，但更笨重：在 UTM 里装一个 Alpine Linux（几十 MB 内存，1GB 磁盘），仅运行 dockerd，然后在 macOS 里设置 DOCKER_HOST=ssh://user@alipine-vm，这样您可以在 macOS 原生终端执行 docker 命令。
 
 2、替换 docker：
 
