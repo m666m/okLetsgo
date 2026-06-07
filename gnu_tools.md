@@ -18645,7 +18645,7 @@ System-wide autostart directories:
 
     Macbook Pro 苹果笔记本电脑型号，其 Pro 版配置更高
 
-    芯片 Apple Silicon，其第5代型号 M5，其 Pro 版核心更多
+    芯片 Apple Silicon，其第5代型号 M5，其 Pro 版核心更多(6+12核 CPU + 20 核 GPU)
 
         最大的特点就是能耗比惊人的好，而且 CPU 和 GPU 共享同一块物理内存，延迟低。
 
@@ -18657,7 +18657,7 @@ System-wide autostart directories:
 
         属于对 Apple Silicon 芯片提供支持的软件层面，相当于 Windows 上的 DirectX，实现了 Macbook 笔记本电脑在处理音频、视频、AI 应用时的高性能低功耗。
 
-        开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片s统一内存的 GPU 加速。
+        开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片统一内存的 GPU 加速。
 
 监控 gpu 功耗
 
