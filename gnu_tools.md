@@ -18838,6 +18838,20 @@ build 目录下的文件我都要信任：
     移动到文档顶部：cmd + 光标上
     移动到文档底部：cmd + 光标下
 
+强制重启
+
+    同时按下 Control (⌃) + Command (⌘) + 电源键/Touch ID 按钮不放，直到屏幕变黑并出现苹果标志
+
+重启到恢复模式（开机时按住）：
+
+    Command (⌘) + R：启动至内建的 macOS 恢复系统。
+
+    Option (⌥)：进入启动管理器，可选择其他启动磁盘。
+
+    Shift (⇧)：以安全模式启动，用于排查软件问题。
+
+    Option + Command + P + R：重置 NVRAM（非易失性随机存取存储器）或 PRAM（参数随机存取存储器），用于解决一些硬件设置相关的问题。
+
 ### Homebrew
 
 社区自制的面向 MacOS 的软件包管理，有自己的仓库，很多在 MacOS AppStore 里没有的常用软件都可以在这里安装。
@@ -19055,9 +19069,9 @@ Apple Container --- 苹果官方开源、原生 Linux 容器方案：
 
 可惜功能还不完善：
 
-    暂不支持 docker-compose，只能使用 https://github.com/mcrich23/container-compose
+    暂不支持 docker-compose，暂只能使用 https://github.com/mcrich23/container-compose
 
-    容器内无法直接通过 localhost 访问宿主机服务。一种常见的变通方法是使用 socat 在宿主机上建立一个流量中转
+    容器内无法直接通过 localhost 访问宿主机服务。常见的变通方法是使用 socat 在宿主机上建立一个流量中转
 
     不支持容器运行时加入网络
 
