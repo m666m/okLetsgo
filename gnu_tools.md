@@ -19044,7 +19044,15 @@ function brew_sc() {
 
 1、优先使用 ARM 原生版本，如果 brew 里没有，直接去开源官网查找，有没有 .dmg 安装包或可执行文件提供下载。
 
-2、如果只有 x86/AMD64 版本，优先尝试 macOS 下安装 Wine/Crossover/Whisky，用 wine 来直接运行 x86 程序，它能把 Windows 程序的 api 调用翻译成 macOS/Linux 能懂的东西，性能接近原生，安装即用，适合大量软件（无驱动的 Windows 工具、轻量办公软件、3A 大作（通过 Whisky+GPTK）），但反作弊、底层驱动、新 3A 大作无法保证可以运行。
+如果要玩游戏，可考虑 Steam 客户端上有没有原生版本。可惜不像对 Linux x86 的支持力度那么大，有官方 porton 让大部分 Windows 游戏可玩，steam 目前只支持 Vulkan，并未支持苹果独家的 Metal。
+
+2、如果只有 x86/AMD64 版本，优先尝试 macOS 下安装 Wine/Crossover/Whisky。
+
+用 wine 来直接运行 x86 程序，它能把 Windows 程序的 API 调用翻译成 macOS/Linux 能懂的东西，性能接近原生，安装即用，不像虚拟机要占用若干GB内存，和 macOS 无缝融合，启动快。
+
+兼容性现在已经很好了，适合大量软件（无驱动的 Windows 工具、轻量办公软件、3A 大作（通过 Whisky+GPTK）），但反作弊、底层驱动、新 3A 大作无法保证可以运行。
+
+特别是 Whisky，它内置了苹果的 Game Porting Toolkit (GPTK)，能把 DirectX 12 转 Metal，大量 3A 游戏可高画质运行。
 
 3、使用 [macOS 下虚拟机运行 Windows]：
 
@@ -19062,12 +19070,14 @@ function brew_sc() {
 
 #### macOS 下虚拟机运行 Windows
 
-目前效率最高的运行 x86 程序的用法是前面章节介绍的，在 macOS 下直接用 Wine/Crossover/Whisky 运行 x86 软件。
+目前效率最高的运行 x86 程序的方法，是前面章节介绍的，在 macOS 下用 Wine/Crossover/Whisky 直接运行 x86 软件，没有额外开销，就是一个 macOS 进程去执行。
 
 如果需要兼容性最大化，则应该使用虚拟机：优选基于 QEMU 的 UTM 开源解决方案
 
     https://mac.getutm.app/
         https://github.com/utmapp/UTM/releases/latest/download/UTM.dmg
+
+    商业软件 Parallels Desktop 甚至支持 3D 加速，效率接近原生系统的 90%
 
 UTM 的两种运行方式：
 
@@ -19075,13 +19085,15 @@ UTM 的两种运行方式：
 
 2、推荐 虚拟化方式：使用 Apple 的 Hypervisor 虚拟化框架，在 Apple silicon 芯片上以接近本机的速度运行 ARM64 操作系统，比如 Windows 11 ARM 版、ARM Linux。
 
-微软的 Windows 11 ARM 版，为了多拉用户，是可以执行 x86 程序的。这个方案的兼容性大于 Wine 执行的方案，是稳定办公的首选。
+Windows 11 ARM 版，微软为了多拉用户，加入了可以执行 x86 程序的能力。
 
     Windows 11 内置微软官方开发的 Prism 模拟器，可将 x86 指令 实时 编译为 ARM64 指令，以执行 x86 程序。装好 Windows ARM 就和普通 PC 一样，无脑用。
 
-只是 macOS 下，因为从虚拟化到 Prism 有两次转换，执行效率稍弱于 wine 方案，但是得益于苹果 M 芯片的高性能，日常办公体验是完全没问题的。
+因此虚拟机安装 Windows 11 ARM 版运行 x86 程序是非常方便的，这个方案的兼容性大于使用 Wine 的方案，是稳定办公的首选。
 
-注意：务必要在 Windows 虚拟机里安装 QEMU 客户机工具，这样桌面操作的流畅感类似本地原生系统：
+而且得益于苹果 M 芯片的高性能及微软的极致优化，执行效率很高，日常办公体验是完全没问题的（商业软件 Parallels Desktop 更是可以让你在虚拟机里运行的 3D 游戏接近原生 Widnows 的感觉）。
+
+注意：UTM 虚拟机安装的 Windows，务必安装 QEMU 客户机工具，这样桌面操作的流畅感才会类似本地原生系统：
 
     https://docs.getutm.app/guest-support/windows/
         https://getutm.app/downloads/utm-guest-tools-latest.iso
@@ -19095,9 +19107,9 @@ UTM 的两种运行方式：
 
 #### 虚拟机 ARM Linux 里执行 Linux x86 程序
 
-适合开发环境（Docker 构建、x86 编译器）、运行 Linux x86 命令行工具
+对普通用户用处极小。适合开发环境（比如 Docker 里跑 x86 镜像））、运行 Linux x86 命令行工具等
 
-    注意不支持 Windows x68 程序，只是可以运行 Linux x86 程序。
+    注意不支持 Windows x86 程序，只是可以运行 Linux x86 程序。
 
 有两个运行方式：
 
