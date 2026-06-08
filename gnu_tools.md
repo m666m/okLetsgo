@@ -19071,25 +19071,27 @@ function brew_sc() {
 
 UTM 的两种运行方式：
 
-1、“模拟”模式（QEMU 方案）：纯 cpu 仿真运行 x86/x64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，无法使用相关的硬件加速。因此速度最慢，但是功能最完整。
+1、“模拟”模式（QEMU 方案）：纯 cpu 仿真运行 x86/AMD64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，无法使用相关的硬件加速。因此速度最慢，但是 x86 模拟功能最完整。
 
 2、推荐 虚拟化方式：使用 Apple 的 Hypervisor 虚拟化框架，在 Apple silicon 芯片上以接近本机的速度运行 ARM64 操作系统，比如 Windows 11 ARM 版、ARM Linux。
 
-虚拟机安装 Windows 11 arm 版，可以执行 x86 程序，而且兼容性 > Wine，这是稳定办公的首选。
+微软的 Windows 11 ARM 版，为了多拉用户，是可以执行 x86 程序的。这个方案的兼容性大于 Wine 执行的方案，是稳定办公的首选。
 
-    Windows 11 内置的微软官方开发的 Prism 模拟器，可将 x86 指令实时编译为 ARM64 指令，以执行 x86 程序，装好 Windows 就和普通 PC 一样，无脑用。因为从虚拟化到 Prism 有两次转换，执行效率弱于 wine 方案，但是得益于 M 芯片的高性能，日常办公体验是完全没问题的。
+    Windows 11 内置微软官方开发的 Prism 模拟器，可将 x86 指令 实时 编译为 ARM64 指令，以执行 x86 程序。装好 Windows ARM 就和普通 PC 一样，无脑用。
 
-务必要在 Windows 里安装 QEMU 客户机工具，这样可以体验到本地原生系统的桌面操作流畅感：
+只是 macOS 下，因为从虚拟化到 Prism 有两次转换，执行效率稍弱于 wine 方案，但是得益于苹果 M 芯片的高性能，日常办公体验是完全没问题的。
+
+注意：务必要在 Windows 虚拟机里安装 QEMU 客户机工具，这样桌面操作的流畅感类似本地原生系统：
 
     https://docs.getutm.app/guest-support/windows/
         https://getutm.app/downloads/utm-guest-tools-latest.iso
             https://github.com/utmapp/qemu/releases
 
-可手动下载放到宿主机的如下位置：
+这个 iso 文件可手动下载放到宿主机的如下位置：
 
     ~/Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/utm-guest-tools-latest.iso
 
-然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机桌面体验直接起飞。
+然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机 Windows 桌面体验直接起飞。
 
 #### 虚拟机 ARM Linux 里执行 Linux x86 程序
 
