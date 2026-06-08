@@ -19044,7 +19044,7 @@ function brew_sc() {
 
 1、优先使用 arm 原生版本。
 
-2、如果只有 x86/amd64 版本，优先尝试 wine/crossover/Whisky 直接运行，它能把 Windows 程序的调用翻译成 macOS/Linux 能懂的东西，性能损失不大，大多数程序不会感觉到差异。
+2、如果只有 x86/amd64 版本，优先尝试 Wine/Crossover/Whisky 直接运行，它能把 Windows 程序的调用翻译成 macOS/Linux 能懂的东西，性能损失不大，大多数程序不会感觉到差异。
 
 3、折中方案：云电脑
 
@@ -19062,16 +19062,20 @@ function brew_sc() {
 
 #### macOS 下虚拟机运行 Windows
 
-最优选择：基于 QEMU 的 UTM 开源解决方案
+目前效率最高的用法是前面章节介绍的，在 macOS 下直接用 Wine/Crossover/Whisky 运行 x86 软件。
+
+如果使用虚拟机，最优选择：基于 QEMU 的 UTM 开源解决方案
 
     https://mac.getutm.app/
         https://github.com/utmapp/UTM/releases/latest/download/UTM.dmg
 
 UTM 的两种运行方式：
 
-    “模拟”模式（QEMU 方案）：仿真运行 x86/x64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 Linux（x86/amd64）。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2。缺点是速度最慢，但是功能最完整。
+1、“模拟”模式（QEMU 方案）：纯 cpu 仿真运行 x86/x64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，无法使用相关的硬件加速。因此速度最慢，但是功能最完整。
 
-    虚拟化方式：采用 Apple 的 Hypervisor 虚拟化框架，在 Apple silicon 芯片上以接近本机的速度运行 ARM64 操作系统，比如 Windows 11 ARM 版、ARM Linux。可以在其中执行 x86 程序，会被 Rosetta 2 翻译执行，其实这样的用法是从虚拟化到 Rosetta2 转了两手，ß效率也不高。所以最优建议是上面说的，在 macOS 下直接用 wine/crossover/wisky 运行 x86 软件。
+2、推荐 虚拟化方式：使用 Apple 的 Hypervisor 虚拟化框架，在 Apple silicon 芯片上以接近本机的速度运行 ARM64 操作系统，比如 Windows 11 ARM 版、ARM Linux。
+
+Windows 11 内置的 Prism 模拟器，可将 x86 指令实时编译为 ARM64 指令，以执行 x86 程序。这样的用法，从虚拟化到 Prism 有两次转换，其执行效率也不高。
 
 虚拟机安装 Windows 11 arm 版后，如果要体验到本地原生系统的桌面操作流畅感，还要安装 QEMU 客户机工具做配套：
 
@@ -19084,6 +19088,58 @@ UTM 的两种运行方式：
     ~/Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/utm-guest-tools-latest.iso
 
 然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机桌面体验直接起飞。
+
+##### ARM Linux 里执行 x86 程序
+
+也有两个方式：
+
+方式一、QEMU-user 模式，它会自动向内核注册一条规则：凡是遇到 x86 二进制，就调用 qemu-x86_64-static 去翻译执行。要安装 `sudo apt install binfmt-support qemu-user-static`。缺点是纯软件翻译，性能一般，CPU 占用高。只适合服务器下运行命令行程序，运行图形化程序太繁琐。
+
+方式二、推荐：在你的 Ubuntu arm 里，安装苹果提供的 Rosetta 二进制，并同样用 binfmt_misc 注册：让内核遇到 x86 二进制时，调用这个 Rosetta 引擎。x86 程序的翻译执行实际由宿主机的 M 芯片的硬件特性加速，速度比 QEMU-user 模式快很多，接近原生。
+
+这个方式性能接近原生速度，而且兼容性好：大多数x86_64 Linux命令行程序和服务器软件都能良好运行。但部分对硬件特性（如某些底层指令）有强依赖的图形界面应用，或需要内核模块支持的程序可能存在问题
+
+1、新版 UTM 在安装 arm linux 时，选择设置 System (系统): 勾选 Use Apple Virtualization（使用Apple虚拟化）和 Enable Rosetta (x86_64 Emulation)（启用Rosetta），然后安装 Ubuntu。
+
+2、安装 `sudo apt install binfmt-support spice-vdagent`。
+
+3、手动挂载Rosetta组件：
+
+    # 创建挂载点目录
+    sudo mkdir -p /media/rosetta
+    # 挂载 Rosetta 组件
+    sudo mount -t virtiofs rosetta /media/rosetta
+
+    # echo "rosetta /media/rosetta virtiofs ro,nofail 0 0" | sudo tee -a /etc/fstab
+
+4、注册Rosetta转译器：
+
+    $ sudo /usr/sbin/update-binfmts --install rosetta /media/rosetta/rosetta \
+        --magic "\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x3e\x00" \
+        --mask "\xff\xff\xff\xff\xff\xfe\xfe\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff" \
+        --credentials yes --preserve no --fix-binary yes
+
+    此命令向系统注册一个名为"rosetta"的二进制格式处理程序，用于识别并转译x86_64可执行文件
+
+5、验证Rosetta是否生效：
+
+    cat /proc/sys/fs/binfmt_misc/rosetta
+    如果输出中包含 enabled，则表示转译器已成功注册并激活
+
+6、添加amd64架构支持：
+
+    sudo dpkg --add-architecture amd64
+    sudo apt update
+
+    这允许你的ARM系统通过APT安装和管理x86（amd64）架构的软件包
+
+7、安装一个x86程序进行测试：
+
+    # 例如，安装x86_64版本的hello程序
+    sudo apt install hello:amd64
+
+    # 运行测试
+    hello
 
 ### 使用 Docker
 
