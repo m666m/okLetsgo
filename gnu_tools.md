@@ -18785,15 +18785,23 @@ keybind = cmd+shift+e=equalize_splits
 
 ### 执行自编译程序提示禁止执行
 
-图形界面“访达”中，总是得点选信任同意，挺麻烦的。
+macOS 的 Gatekeeper（门禁）安全机制会禁止直接执行从互联网下载的软件，甚至你自行编译的软件。
+
+每次使用总是得点选信任同意，挺麻烦的。
+
+当你从互联网上下载软件时，macOS 会自动给它打上一个 com.apple.quarantine（隔离）标签。下载的 dmg 程序在安装到了 /Applications 之后，也是会带有隔离属性。
 
 使用终端命令清除“隔离属性”
 
-    xattr -d com.apple.quarantine 你的程序
+    xattr -d com.apple.quarantine 你的自编译程序
 
-build 目录下的文件我都要信任：
+    build 目录下的文件我都要信任：
 
-    xattr -d com.apple.quarantine .
+        xattr -d com.apple.quarantine ./build
+
+清除安装的程序的所有属性：
+
+    xattr -cr "/Applications/Double Commander.app/"
 
 ### MacBook 快捷键
 
