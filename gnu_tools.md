@@ -18687,6 +18687,8 @@ System-wide autostart directories:
 
 ### 文件管理器---访达
 
+    建议使用 https://sourceforge.net/projects/doublecmd/
+
 默认打开界面，把你定位到最近使用的项目，不区分应用程序、文档、视频、音频等等，一股脑的显示在 “最近使用”。
 
 如果你想清楚的使用自己的文件，点击下面的“位置”，选择你的用户名，这里是真正分门别类摆放处　：
@@ -18783,7 +18785,7 @@ keybind = cmd+shift+e=equalize_splits
 
 ```
 
-### 执行自编译程序提示禁止执行
+### 执行下载的或自编译程序提示禁止执行
 
 macOS 的 Gatekeeper（门禁）安全机制会禁止直接执行从互联网下载的软件，甚至你自行编译的软件。
 
@@ -19028,20 +19030,56 @@ function brew_sc() {
 
 ```
 
-###  虚拟机运行 Windows --- UTM
+### 运行 Windows 程序
 
-基于 QEMU 的 UTM 采用 Apple 的 Hypervisor 虚拟化框架在 Apple silicon 芯片上以接近本机的速度运行 ARM64 操作系统，也支持仿真运行 x86/x64。
+苹果“官方”运行 Windows 程序的方案
+
+    提供了 Rosetta 2，确保 Mac 自家软件生态不断代；wine或某些虚拟机在 Apple Silicon 上跑的时候，可能会用到 Rosetta 2(Rosetta 2 并不是用来直接运行 Windows 程序的，它是苹果官方用来让 M 芯片 Mac 运行旧版 Mac（x86）应用的翻译器)。
+
+    提供了游戏移植工具包（Game Porting Toolkit），里面包含了一个基于 Wine 的评估环境，但那是给开发者用来测试移植潜力的，不是给普通用户日常用的；
+
+苹果官方建议还是用虚拟机（如 Parallels Desktop）或者云电脑。
+
+目前的社区实践：
+
+1、优先使用 arm 原生版本。
+
+2、如果只有 x86/amd64 版本，优先尝试 wine/crossover/Whisky 直接运行，它能把 Windows 程序的调用翻译成 macOS/Linux 能懂的东西，性能损失不大，大多数程序不会感觉到差异。
+
+3、折中方案：云电脑
+
+如果你只是偶尔用一下，而且网速够快，可以考虑租用 Windows 365 Cloud PC 或者国内的云电脑服务，按需付费，完全不影响本地性能，还能用 iPad 远程连进去。
+
+4、最后再选择使用 [macOS 下虚拟机运行 Windows]：
+
+    你需要用的是一整套 Office 办公套件（复杂宏、Access 等）、Visual Studio、AutoCAD、SolidWorks 这类对兼容性要求苛刻的生产力软件。
+
+    需要长期、稳定使用多个 Windows 程序，且它们之间有协同。
+
+    有外接加密狗、专用打印机、税控盘、U盾等硬件。
+
+    你是开发、测试，需要完整的 Windows 环境来调试。
+
+#### macOS 下虚拟机运行 Windows
+
+最优选择：基于 QEMU 的 UTM 开源解决方案
 
     https://mac.getutm.app/
         https://github.com/utmapp/UTM/releases/latest/download/UTM.dmg
 
-安装 Windows 虚拟机后，如果要体验到本地原生系统的流畅感，需要安装 QEMU 客户机工具：
+UTM 的两种运行方式：
+
+    “模拟”模式（QEMU 方案）：仿真运行 x86/x64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 Linux（x86/amd64）。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2。缺点是速度最慢，但是功能最完整。
+
+    虚拟化方式：采用 Apple 的 Hypervisor 虚拟化框架，在 Apple silicon 芯片上以接近本机的速度运行 ARM64 操作系统，比如 Windows 11 ARM 版、ARM Linux。可以在其中执行 x86 程序，会被 Rosetta 2 翻译执行，其实这样的用法是从虚拟化到 Rosetta2 转了两手，ß效率也不高。所以最优建议是上面说的，在 macOS 下直接用 wine/crossover/wisky 运行 x86 软件。
+
+虚拟机安装 Windows 11 arm 版后，如果要体验到本地原生系统的桌面操作流畅感，还要安装 QEMU 客户机工具做配套：
 
     https://docs.getutm.app/guest-support/windows/
         https://getutm.app/downloads/utm-guest-tools-latest.iso
             https://github.com/utmapp/qemu/releases
 
-放到宿主机的如下位置：
+可手动下载放到宿主机的如下位置：
 
     ~/Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/utm-guest-tools-latest.iso
 
