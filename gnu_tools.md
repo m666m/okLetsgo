@@ -19133,15 +19133,65 @@ Xcode 和 Command Line Tools 的区别
 
     https://github.com/apple/game-porting-toolkit
 
+    https://wuyanxin.com/post/mac-m1-brew-both-support-aarm64-and-x86_64.html
+        https://www.wisdomgeek.com/development/installing-intel-based-packages-using-homebrew-on-the-m1-mac/
+
     下载“Command Line Tools for Xcode 15.4”的DMG文件，安装即可
 
-    先，切换终端到x86_64模式：
+    先安装 Rosetta 2:
 
-        arch -x86_64 zsh
+        $ softwareupdate --install-rosetta --agree-to-license
 
-    然后，使用国内镜像安装x86_64版Homebrew：
+    使用 Rosetta 打开终端（在终端图标点右键选择“显示简介”勾选“使用 Rosetta 打开”），或使用命令运行一个 x86_64 模式的终端：
 
-        /bin/bash -c "$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/install.sh)"
+        $ arch -x86_64 zsh
+
+        这会启动一个 x86_64 模式的子 Shell，在这里输入 arch 命令会返回 i386，说明切换成功。
+
+    然后在这个 x86 终端里安装 x86_64 版Homebrew：
+
+        # 使用国内镜像安装见章节 [Homebrew]
+        $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+        两套 Homebrew 会安装在不同的路径，不会冲突
+
+            x86_64 安装目录：/usr/local/homebrew
+
+            ARM64 安装目录：/opt/homebrew
+
+        测试，用这个 homebrw 安装一个 redis：
+
+            $ arch -x86_64 /usr/local/homebrew/bin/brew install redis
+
+        优先使用 ARM 版，仅在需要时切换到 x86 版，符合社区推荐的最佳实践
+
+        可以设置快捷操作：
+
+            文件 ~/.brew_arm
+
+                eval "$(/opt/homebrew/bin/brew shellenv)"
+
+            文件 ~/.brew_intel
+
+                eval "$(/usr/local/homebrew/bin/brew shellenv)"
+
+            将下面代码加入到 .zshrc
+                # homebrew
+                alias brew_arm='source ~/.brew_arm'
+                alias brew_intel="source ~/.brew_intel"
+
+    安装Game Porting Toolkit
+    确保终端仍在x86_64模式下，执行以下命令进行编译安装（首次安装耗时较长，请耐心等待）：
+
+        brew tap apple/apple http://github.com/apple/homebrew-apple
+        brew install game-porting-toolkit
+
+    创建独立环境
+    为游戏创建一个独立的Wine Prefix（你可以理解为游戏专用的虚拟C盘）。在终端中执行以下命令：
+
+        WINEPREFIX=~/War3_Prefix $(brew --prefix game-porting-toolkit)/bin/wine64 winecfg
+
+    运行后，在弹出的窗口中，将Windows版本设为“Windows 10”或“Windows 7”，然后点击确定。
 
 4、使用 [macOS 下虚拟机运行 Windows]：
 
