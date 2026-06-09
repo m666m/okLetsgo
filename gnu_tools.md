@@ -5551,24 +5551,19 @@ set -g default-terminal screen-256color
 set -as terminal-features ",xterm-256color:RGB"  # tmux 3.2+
 #set -as terminal-overrides ",gnome*:Tc"
 
-# 退出 tmux 后恢复方块光标闪烁，未实现。手工执行 `reset` 规避吧
-#set-hook -g client-detached 'run-shell "tput cnorm; echo -e \"\\033[?12h\\033[1 q\""'
-#set-hook -g session-closed  'run-shell "tput cnorm; echo -e \"\\033[?12h\\033[1 q\""'
-# 上面两个无法影响父shell，干脆禁用光标修改
-#set -ga terminal-overrides ",xterm-256color:Tc:smcup@:rmcup@"
-
 # 状态栏使用 nord 主题，替换掉 powerline
 # run-shell 'powerline-config tmux setup'
 run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
-# 把前导键从 ctrl+b 改成 ctrl+x， M-a是Alt+a
-# set-option -g prefix C-x unbind-key C-b bind-key C-x send-prefix
-
 # macOS 下前导键使用 Option 键（Alt 键）代替 ctrl+b
 #   系统自带终端，需要在 设置 -> 描述文件 -> 键盘 选项卡中勾选 “将 Option 键用作 Meta 键”
-# set -g prefix M-b
-# unbind C-b
-# bind M-b send-prefix
+# 主前导键：Alt+b （macOS 下使用）
+set -g prefix M-b
+# 第二前导键：Ctrl+b （Windows 下使用）
+set -g prefix2 C-b
+# 让两个前缀键都能正确发送 tmux 命令
+bind M-b send-prefix
+bind C-b send-prefix
 
 # 显示前导键
 run-shell "~/.tmux/tmux-prefix-highlight/prefix_highlight.tmux"
