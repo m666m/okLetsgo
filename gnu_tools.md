@@ -19133,6 +19133,16 @@ Xcode 和 Command Line Tools 的区别
 
     https://github.com/apple/game-porting-toolkit
 
+    下载“Command Line Tools for Xcode 15.4”的DMG文件，安装即可
+
+    先，切换终端到x86_64模式：
+
+        arch -x86_64 zsh
+
+    然后，使用国内镜像安装x86_64版Homebrew：
+
+        /bin/bash -c "$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/install.sh)"
+
 4、使用 [macOS 下虚拟机运行 Windows]：
 
     需要长期、稳定使用多个 Windows 程序，且它们之间有协同。
@@ -19149,7 +19159,7 @@ Xcode 和 Command Line Tools 的区别
 
 #### macOS 下虚拟机运行 Windows
 
-目前效率最高的运行 x86 程序的方法，是前面章节介绍的，在 macOS 下用 Wine/Crossover/Whisky 直接运行 x86 软件，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。
+目前效率最高的运行 x86 程序的方法，是前面章节介绍的，在 macOS 下用 Wine/Crossover 直接运行 x86 软件，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。
 
 如果需要兼容性最大化，则要接受8GB内存用于虚拟机的方案：优选基于 QEMU 的 UTM 开源虚拟机管理器
 
