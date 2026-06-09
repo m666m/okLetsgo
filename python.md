@@ -2720,6 +2720,8 @@ Download Embeddings model 代码库感知（Codebase Awareness）使用嵌入模
 
 可手动配置接入本地 llama.cpp 运行的服务，以下假设运行在 localhost:12345
 
+    Ollama 的用法 https://docs.continue.dev/guides/ollama-guide#using-ollama-with-continue-a-developers-guide
+
 ```yaml
 name: Local Config
 version: 1.0.0
