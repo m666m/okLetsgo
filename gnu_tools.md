@@ -5564,6 +5564,12 @@ set -as terminal-features ",xterm-256color:RGB"  # tmux 3.2+
 # run-shell 'powerline-config tmux setup'
 run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
+# macOS 下前导键使用 Option 键（Alt 键）代替 ctrl+b
+# 系统自带终端，需要在 设置 -> 描述文件 -> 键盘 选项卡中勾选 “将 Option 键用作 Meta 键”
+set -g prefix M-b
+unbind C-b
+bind M-b send-prefix
+
 # 显示前导键
 run-shell "~/.tmux/tmux-prefix-highlight/prefix_highlight.tmux"
 
