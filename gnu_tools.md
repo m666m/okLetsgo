@@ -19040,6 +19040,71 @@ function brew_sc() {
 
         开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片统一内存的 GPU 加速。
 
+
+1、装命令行工具
+
+Apple macOS(Darwin) 自带 Clang 无需额外安装，它随 Xcode Command Line Tools，执行如下命令开启系统组件即可：
+
+    $ xcode-select --install
+
+    $ clang --version
+
+执行编译：
+
+    $ cd your_project
+
+    # 查看项目是不是有预置参数模版
+    $ cmake --list-presets
+    Available configure presets:
+        "appleclang-debug"   - Clang Debug
+        "appleclang-release" - Clang Release
+
+    如果有，就省的输入一堆参数了
+
+        # 配置项目（生成构建文件）
+        $ cmake --preset appleclang-release
+
+        # 编译（实际构建二进制）
+        $ cmake --build --preset appleclang-release
+
+    否则自行添加参数，需要查看你的项目的文档：
+
+        $ cmake -B build -DGGML_METAL=ON -DCMAKE_BUILD_TYPE=Release
+        $ cmake --build build -j
+
+安装，默认到 $CMAKE_INSTALL_PREFIX /usr/local中，所以需要 sudo：
+
+    $ sudo cmake --build --preset appleclang-release --target install
+
+如果你知道构建目录的具体路径（例如 build/appleclang-release），也可以单独指定：
+
+    $ sudo cmake --install build/appleclang-release
+
+2、macOS 上编译带图形界面的应用时，不能只装命令行工具，必须使用完整的 Xcode，并且系统要正确指向它。
+
+    https://ghostty.org/docs/install/build#xcode
+
+Xcode 和 Command Line Tools 的区别
+
+    Command Line Tools（/Library/Developer/CommandLineTools）：只包含编译器（clang）、make、git 等命令行工具，没有 macOS SDK 的完整头文件、界面框架和代码签名支持。
+
+    Xcode.app（/Applications/Xcode.app/Contents/Developer）：包含完整的开发环境，有所有系统框架、模拟器、签名工具等，是构建图形化 macOS 应用的必需。
+
+查看当前命令行工具链的路径
+
+    $ xcode-select --print-path
+
+    输出 /Library/Developer/CommandLineTools → 坏，因为没有完整的 macOS SDK，编译图形应用会失败（比如找不到 Cocoa 框架）。
+
+    输出 /Applications/Xcode.app/Contents/Developer → 好，说明正在使用完整的 Xcode。
+
+为什么会出现 CommandLineTools 被激活的情况
+如果你先装了 Command Line Tools，后来又装了 Xcode.app，系统可能仍然默认指向 CommandLineTools。就是修正方法：
+
+    sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+
+这会强制让命令行工具（clang、git 等）使用 Xcode.app 内的完整工具链和 SDK。
+
 ### macOS 运行 Windows 程序
 
 世界上绝大多数软件都有 Windows x86 下的编译版本，或者是 Linux x86 的版本，但是arm 芯片版本就少多了，如果能利用起来，会大大扩展 macOS 的可用性。
