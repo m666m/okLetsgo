@@ -19123,15 +19123,17 @@ Xcode 和 Command Line Tools 的区别
 
 如果要玩游戏，先看看 Steam 客户端上有没有原生 arm 版本。在 x86 Linux 下，steam 官方的 porton（基于wine）技术通过 Vulkan 图形接口让大部分 Windows 游戏可玩，但目前并未支持苹果独家的 Metal 图形接口，也就无法实现 arm 运行 x86 游戏。
 
-2、如果只有 x86/AMD64 版本，尝试 macOS 下安装 Wine/Crossover/Whisky。
+2、如果只有 x86/AMD64 版本，尝试 macOS 下安装 Wine/Crossover。
 
 用 wine 来直接运行 x86 程序，它能把 Windows 程序的 API 调用翻译成 macOS/Linux 能懂的东西，性能接近原生，安装即用，不像虚拟机要占用若干GB内存，和 macOS 无缝融合，启动快。
 
-兼容性现在已经很好了，适合大量软件（无驱动的 Windows 工具、轻量办公软件、3A 大作（通过 Whisky+GPTK）），但反作弊、底层驱动、新 3A 大作无法保证可以运行。
+不止是运行游戏，兼容性现在已经很好了，wine 适合大量软件，如无驱动的 Windows 工具、轻量办公软件、3A 大作，但反作弊、底层驱动、新 3A 大作无法保证可以运行。
 
-特别是 Whisky，它内置了苹果的 Game Porting Toolkit (GPTK)，能把 DirectX 12 转 Metal，大量 3A 游戏可高画质运行。2025年项目停止，不再跟 Crossover 竞争。
+3、尝试使用苹果官方的 Apple Game Porting Toolkit (GPTK)
 
-3、使用 [macOS 下虚拟机运行 Windows]：
+    https://github.com/apple/game-porting-toolkit
+
+4、使用 [macOS 下虚拟机运行 Windows]：
 
     需要长期、稳定使用多个 Windows 程序，且它们之间有协同。
 
