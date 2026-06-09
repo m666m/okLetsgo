@@ -18641,23 +18641,13 @@ System-wide autostart directories:
 
 ## 使用 macOS
 
-苹果笔记本 Macbook Pro M5(Apple Silicon) Pro，macOS Tahoe(Darwin) Metal 构建代码，翻译：
+官方软件商店的资源很少，基本都是商业的，或者游戏。
 
-    Macbook Pro 苹果笔记本电脑型号，其 Pro 版配置更高
+大量的工具软件，特别是开源软件，只能靠 [Homebrew] 社区软件商店，或 [自编开源代码]。
 
-    芯片 Apple Silicon，其第5代型号 M5，其 Pro 版核心更多(6+12核 CPU + 20 核 GPU)
+常用软件
 
-        最大的特点就是能耗比惊人的好，而且 CPU 和 GPU 共享同一块物理内存，延迟低。
-
-    操作系统 macOS，其第 26 版代号 Tahoe（内核代号 Darwin）
-
-        苹果现阶段各种硬件使用的操作系统，无论是 macOS、iOS 还是 iPadOS，甚至是 HomePod 和 Apple TV（TvOS）都是建立在 Darwin 内核的基础上。Darwin 通过其 FreeBSD 血统支持 POSIX API，因此大量为 Unix/Unix-like 编写的程序可以直接在 Darwin 上编译运行。
-
-    图形计算框架 Metal
-
-        属于对 Apple Silicon 芯片提供支持的软件层面，相当于 Windows 上的 DirectX，实现了 Macbook 笔记本电脑在处理音频、视频、AI 应用时的高性能低功耗。
-
-        开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片统一内存的 GPU 加速。
+    解压缩 https://github.com/aonez/Keka/
 
 监控 gpu 功耗
 
@@ -19029,6 +19019,26 @@ function brew_sc() {
 }
 
 ```
+
+### 自编开源代码
+
+苹果笔记本 Macbook Pro M5(Apple Silicon) Pro，macOS Tahoe(Darwin) Metal 构建代码，翻译：
+
+    Macbook Pro 苹果笔记本电脑型号，其 Pro 版配置更高
+
+    芯片 Apple Silicon，其第5代型号 M5，其 Pro 版核心更多(6+12核 CPU + 20 核 GPU)
+
+        最大的特点就是能耗比惊人的好，而且 CPU 和 GPU 共享同一块物理内存，延迟低。
+
+    操作系统 macOS，其第 26 版代号 Tahoe（内核代号 Darwin）
+
+        苹果现阶段各种硬件使用的操作系统，无论是 macOS、iOS 还是 iPadOS，甚至是 HomePod 和 Apple TV（TvOS）都是建立在 Darwin 内核的基础上。Darwin 通过其 FreeBSD 血统支持 POSIX API，因此大量为 Unix/Unix-like 编写的程序可以直接在 Darwin 上编译运行。
+
+    图形计算框架 Metal
+
+        属于对 Apple Silicon 芯片提供支持的软件层面，相当于 Windows 上的 DirectX，实现了 Macbook 笔记本电脑在处理音频、视频、AI 应用时的高性能低功耗。
+
+        开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片统一内存的 GPU 加速。
 
 ### macOS 运行 Windows 程序
 
