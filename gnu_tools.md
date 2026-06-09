@@ -19030,11 +19030,13 @@ function brew_sc() {
 
 ```
 
-### 运行 Windows 程序
+### macOS 运行 Windows 程序
+
+世界上绝大多数软件都有 Windows x86 下的编译版本，或者是 Linux x86 的版本，但是arm 芯片版本就少多了，如果能利用起来，会大大扩展 macOS 的可用性。
 
 苹果“官方”运行 Windows 程序的方案
 
-    提供了 Rosetta 2，确保 Mac 自家软件生态不断代；wine或某些虚拟机在 Apple Silicon 上跑的时候，可能会用到 Rosetta 2(Rosetta 2 并不是用来直接运行 Windows 程序的，它是苹果官方用来让 M 芯片 Mac 运行旧版 Mac（x86）应用的翻译器)。
+    提供了 Rosetta 2，苹果官方用来让 M 芯片 Mac 运行旧版 Mac（x86）应用的翻译器，可用于 arm 芯片执行 Linux x86 程序。wine或某些虚拟机在 Apple Silicon 上跑的时候，可能会用到 Rosetta 2。
 
     提供了游戏移植工具包（Game Porting Toolkit），里面包含了一个基于 Wine 的评估环境，但那是给开发者用来测试移植潜力的，不是给普通用户日常用的；
 
@@ -19042,17 +19044,17 @@ function brew_sc() {
 
 目前的社区实践：
 
-1、优先使用 ARM 原生版本，如果 brew 里没有，直接去开源官网查找，有没有 .dmg 安装包或可执行文件提供下载。
+1、优先使用 ARM 原生版本，如果 brew 里没有，直接去开源软件的官网查找，下载 .dmg 安装包或可执行文件。
 
-如果要玩游戏，可考虑 Steam 客户端上有没有原生版本。可惜不像对 Linux x86 的支持力度那么大，有官方 porton 让大部分 Windows 游戏可玩，steam 目前只支持 Vulkan，并未支持苹果独家的 Metal。
+如果要玩游戏，先看看 Steam 客户端上有没有原生 arm 版本。在 x86 Linux 下，steam 官方的 porton（基于wine）技术通过 Vulkan 图形接口让大部分 Windows 游戏可玩，但目前并未支持苹果独家的 Metal 图形接口，也就无法实现 arm 运行 x86 游戏。
 
-2、如果只有 x86/AMD64 版本，优先尝试 macOS 下安装 Wine/Crossover/Whisky。
+2、如果只有 x86/AMD64 版本，尝试 macOS 下安装 Wine/Crossover/Whisky。
 
 用 wine 来直接运行 x86 程序，它能把 Windows 程序的 API 调用翻译成 macOS/Linux 能懂的东西，性能接近原生，安装即用，不像虚拟机要占用若干GB内存，和 macOS 无缝融合，启动快。
 
 兼容性现在已经很好了，适合大量软件（无驱动的 Windows 工具、轻量办公软件、3A 大作（通过 Whisky+GPTK）），但反作弊、底层驱动、新 3A 大作无法保证可以运行。
 
-特别是 Whisky，它内置了苹果的 Game Porting Toolkit (GPTK)，能把 DirectX 12 转 Metal，大量 3A 游戏可高画质运行。
+特别是 Whisky，它内置了苹果的 Game Porting Toolkit (GPTK)，能把 DirectX 12 转 Metal，大量 3A 游戏可高画质运行。2025年项目停止，不再跟 Crossover 竞争。
 
 3、使用 [macOS 下虚拟机运行 Windows]：
 
@@ -19070,9 +19072,9 @@ function brew_sc() {
 
 #### macOS 下虚拟机运行 Windows
 
-目前效率最高的运行 x86 程序的方法，是前面章节介绍的，在 macOS 下用 Wine/Crossover/Whisky 直接运行 x86 软件，没有额外开销，就是一个 macOS 进程去执行。
+目前效率最高的运行 x86 程序的方法，是前面章节介绍的，在 macOS 下用 Wine/Crossover/Whisky 直接运行 x86 软件，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。
 
-如果需要兼容性最大化，则应该使用虚拟机：优选基于 QEMU 的 UTM 开源解决方案
+如果需要兼容性最大化，则要接受8GB内存用于虚拟机的方案：优选基于 QEMU 的 UTM 开源虚拟机管理器
 
     https://mac.getutm.app/
         https://github.com/utmapp/UTM/releases/latest/download/UTM.dmg
@@ -19081,17 +19083,15 @@ function brew_sc() {
 
 UTM 的两种运行方式：
 
-1、“模拟”模式（QEMU 方案）：纯 cpu 仿真运行 x86/AMD64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，无法使用相关的硬件加速。因此速度最慢，但是 x86 模拟功能最完整。
+1、“模拟”模式（QEMU 方案）安装 x86 操作系统：纯 cpu 仿真运行 x86/AMD64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，不需要也不使用 cpu 提供的虚拟化加速。因此速度最慢，日常运行可能勉强可用，使用这个方案只是因为它的 x86 模拟功能最完整，作为生产环境或开发主力。
 
-2、推荐 虚拟化方式：使用 Apple 的 Hypervisor 虚拟化框架，在 Apple silicon 芯片上以接近本机的速度运行 ARM64 操作系统，比如 Windows 11 ARM 版、ARM Linux。
+2、推荐 虚拟化方式安装 arm 操作系统：这样安装的 arm 操作系统，可以利用 Apple 的 Hypervisor 虚拟化框架，在 Apple silicon 芯片上以接近本机原生的速度运行 ARM64 操作系统，而且 ARM 版 Windows 11/Linux 都有执行 x86 程序的能力。
 
-Windows 11 ARM 版，微软为了多拉用户，加入了可以执行 x86 程序的能力。
+虚拟机安装 Windows 11 ARM 版运行 x86 程序是非常方便的，这个方案的兼容性大于使用 Wine 的方案，是稳定办公的首选。
 
     Windows 11 内置微软官方开发的 Prism 模拟器，可将 x86 指令 实时 编译为 ARM64 指令，以执行 x86 程序。装好 Windows ARM 就和普通 PC 一样，无脑用。
 
-因此虚拟机安装 Windows 11 ARM 版运行 x86 程序是非常方便的，这个方案的兼容性大于使用 Wine 的方案，是稳定办公的首选。
-
-而且得益于苹果 M 芯片的高性能及微软的极致优化，执行效率很高，日常办公体验是完全没问题的（商业软件 Parallels Desktop 更是可以让你在虚拟机里运行的 3D 游戏接近原生 Widnows 的感觉）。
+    得益于苹果 M 芯片的高性能及微软的极致优化，执行效率很高，日常办公体验是完全没问题的。商业软件 Parallels Desktop 更是可以让你在虚拟机里运行的 3D 游戏接近原生 Windows 的感觉）。
 
 注意：UTM 虚拟机安装的 Windows，务必安装 QEMU 客户机工具，这样桌面操作的流畅感才会类似本地原生系统：
 
@@ -19115,17 +19115,21 @@ Windows 11 ARM 版，微软为了多拉用户，加入了可以执行 x86 程序
 
 方式一、QEMU-user 模式，它会自动向内核注册一条规则：凡是遇到 x86 二进制，就调用 qemu-x86_64-static 去翻译执行。要安装 `sudo apt install binfmt-support qemu-user-static`。缺点是纯软件翻译，性能一般，CPU 占用高。只适合服务器下运行命令行程序，运行图形化程序太繁琐。
 
-方式二、推荐：在你的 Ubuntu arm 里，安装苹果提供的 Rosetta 二进制，并同样用 binfmt_misc 注册：让内核遇到 x86 二进制时，调用这个 Rosetta 引擎。x86 程序的翻译执行实际由宿主机的 M 芯片的硬件特性加速，速度比 QEMU-user 模式快很多，接近原生速度。效率与 macOS 本机 Rosetta 2 同级，极高。
+方式二、推荐 调用宿主机的 Rosetta 2：在你的 Ubuntu arm 里，安装苹果提供的 Rosetta 二进制，并同样用 binfmt_misc 注册：让内核遇到 x86 二进制时，调用这个 Rosetta 引擎。这样虚拟机里的 x86 程序的翻译执行实际由宿主机的 M 芯片进行硬件加速，速度比 QEMU-user 模式快很多，接近原生速度。效率与 macOS 本机直接运行 x86 linux 程序使用 Rosetta 2 同级。
 
 但是，兼容性不好，只能跑 Linux x86 程序，不能跑 Windows 程序；图形应用依赖配置复杂
 
     大多数x86_64 Linux命令行程序和服务器软件都能良好运行。但部分对硬件特性（如某些底层指令）有强依赖的图形界面应用，或需要内核模块支持的程序可能存在问题
 
-1、新版 UTM 在安装 arm linux 时，选择设置 System (系统): 勾选 Use Apple Virtualization（使用Apple虚拟化）和 Enable Rosetta (x86_64 Emulation)（启用Rosetta），然后安装 Ubuntu。
+新版 UTM 在安装 arm linux 时，选择设置 System (系统): 勾选 Use Apple Virtualization（使用Apple虚拟化）和 Enable Rosetta (x86_64 Emulation)（启用Rosetta）即可，然后安装 Ubuntu arm 版。
+
+手动安装仅供参考理解原理：
+
+UTM 会自动通过 virtiofs 共享宿主的 Rosetta 运行时，并注册 binfmt_misc，之后在虚拟机里直接执行 x86 程序即可，无需手动配置。
 
 2、安装 `sudo apt install binfmt-support spice-vdagent`。
 
-3、手动挂载Rosetta组件：
+3、手动挂载Rosetta组件
 
     # 创建挂载点目录
     sudo mkdir -p /media/rosetta
@@ -19163,56 +19167,15 @@ Windows 11 ARM 版，微软为了多拉用户，加入了可以执行 x86 程序
     # 运行测试
     hello
 
-### 使用 Docker
+### macOS 使用容器
 
-1、容器技术依赖 Linux 内核，都是虚拟机方案：
+容器技术依赖 Linux 内核，都是虚拟机方案：
 
-笨重且慢：用 Docker Desktop for Mac，至少4GB的RAM，而且绑定 docker 账号。
+1、笨重且慢：用 Docker Desktop for Mac，至少4GB的RAM，只能配置 docker.io 的镜像，其它网站无法配置。可通过 --platform linux/amd64 参数要求Docker模拟x86环境来运行某个镜像（利用Rosetta 2或QEMU进行指令翻译）。
 
-通用性最佳，但更笨重：在 UTM 里装一个 Alpine Linux（几十 MB 内存，1GB 磁盘），仅运行 dockerd，然后在 macOS 里设置 DOCKER_HOST=ssh://user@alipine-vm，这样您可以在 macOS 原生终端执行 docker 命令。
+2、通用性最佳，但更笨重：在 UTM 里装一个 Alpine Linux（几十 MB 内存，1GB 磁盘），仅运行 dockerd，然后在 macOS 里设置 DOCKER_HOST=ssh://user@alipine-vm，这样您可以在 macOS 原生终端执行 docker 命令。只是虚拟机里的 arm linux 可以执行 x86 镜像需要设置很多步骤，而且挂载本地存储和端口映射也很不方便。
 
-2、替换 docker：
-
-Podman 无守护进程（daemonless），与 docker 命令几乎100%兼容。使用苹果原生框架 (applehv)实现虚拟化，而且利用 Rosetta 2 直接在 VM 内加速 x86 镜像。
-
-Apple Container --- 苹果官方开源、原生 Linux 容器方案：
-
-    https://github.com/apple/container/releases
-
-        选择 container-0.12.3-installer-signed.pkg 这个文件来安装
-
-其实 Apple Container 是最轻量、性能最高的，只是有些 docker 常用功能还未完善替代。
-
-每一个 Linux 容器都单独启动一个极限“瘦身”的微内核的虚拟机，以此来运行容器（默认 1GB 内存）。 这样的好处很多：
-
-    用完退出容器即释放内存，不像其它的解决方案那样空跑一个虚拟机占好几个GB内存。
-
-    每个容器都有自己独立的 IP 地址，不需要像传统 Docker 那样进行端口映射。
-
-可惜功能还不完善：
-
-    暂不支持 docker-compose，暂只能使用 https://github.com/mcrich23/container-compose
-
-    容器内无法直接通过 localhost 访问宿主机服务。常见的变通方法是使用 socat 在宿主机上建立一个流量中转
-
-    不支持容器运行时加入网络
-
-命令行使用
-
-    # 启动 container 的系统服务
-    $ container system start
-
-    # 运行容器的命令与 Docker 类似
-    $ container run nginx
-
-    $ container run --volume ${HOME}/Desktop/assets:/content/assets python:alpine ls -l /content/assets
-
-    $ container run --detach --name web --publish 8080:80 nginx:latest
-
-    # 运行一个 x86 架构的容器
-    $ container run --platform linux/amd64 nginx:latest
-
-3、基于 Lima（轻量化 Linux 虚拟机）的 Colima，最大的优点是轻量、方便。
+3、对上面的方案改良，目前最流行，基于 Lima（轻量化 Linux 虚拟机）的 Colima，使用更方便。
 
     https://github.com/abiosoft/colima
         https://colima.run/
@@ -19257,6 +19220,44 @@ Apple Container --- 苹果官方开源、原生 Linux 容器方案：
     启动服务：colima start
 
     查看状态：colima status
+
+4、替换 docker 的方案：
+
+Podman 无守护进程（daemonless），与 docker 命令几乎100%兼容。使用苹果原生框架 (applehv)实现虚拟化，可利用 Rosetta 2 直接在 VM 内加速 x86 镜像。
+
+Apple Container --- 苹果官方开源方案,最轻量、性能最高的，只是有些 docker 常用功能还未完善替代：
+
+    https://github.com/apple/container/releases
+        选择 container-0.12.3-installer-signed.pkg 安装
+
+每一个 Linux 容器都单独启动一个极限“瘦身”的微内核的虚拟机，以此来运行容器（默认 1GB 内存）。 这样的好处很多：
+
+    用完退出容器即释放内存，不像其它的解决方案那样空跑一个虚拟机占好几个GB内存。
+
+    每个容器都有自己独立的 IP 地址，不需要像传统 Docker 那样进行端口映射。
+
+可惜功能还不完善：
+
+    暂不支持 docker-compose，暂只能使用 https://github.com/mcrich23/container-compose
+
+    容器内无法直接通过 localhost 访问宿主机服务。常见的变通方法是使用 socat 在宿主机上建立一个流量中转
+
+    不支持容器运行时加入网络
+
+命令行使用
+
+    # 启动 container 的系统服务
+    $ container system start
+
+    # 运行容器的命令与 Docker 类似
+    $ container run nginx
+
+    $ container run --volume ${HOME}/Desktop/assets:/content/assets python:alpine ls -l /content/assets
+
+    $ container run --detach --name web --publish 8080:80 nginx:latest
+
+    # 运行一个 x86 架构的容器
+    $ container run --platform linux/amd64 nginx:latest
 
 ## Windows 下的 GNU/POSIX 环境
 
