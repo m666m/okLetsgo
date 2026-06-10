@@ -298,6 +298,11 @@ else
     alias pstreep='echo "[进程树，列出pid所在的进程树]"; pstree -s -p'
 fi
 
+# macOS 下常用命令
+if [[ $os_type = 'macos' ]]; then
+    alias arch86='echo "[进入 i386 架构的子shell]"; arch -x86_64 zsh'
+fi
+
 # 从下载文件夹的子目录里把各种电影文件统一挪到当前，方便整理
 function mvf {
     if [ "$#" -ne 1 ]; then
