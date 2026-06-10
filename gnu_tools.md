@@ -19298,11 +19298,17 @@ Apple Game Porting Toolkit (GPTK)
 
     安装 Rosetta 2
 
+    安装 x86_64 版 Homebrew
+
 前面的章节有介绍安装过程。
 
-2、在苹果官网下载安装 Game Porting Toolkit 的 DMG 文件，安装即可。
+2、在苹果官网下载 Game Porting Toolkit
 
-确保终端仍在x86_64模式下(arch -x86_64 zsh)，执行以下命令进行编译安装（首次安装耗时较长，请耐心等待）：
+    https://developer.apple.com/games/game-porting-toolkit/
+
+下载到一个 .dmg 文件安装即可。
+
+以下过时：确保终端仍在x86_64模式下(arch -x86_64 zsh)，执行以下命令进行编译安装（首次安装耗时较长，请耐心等待）：
 
     $ brew tap apple/apple http://github.com/apple/homebrew-apple
     $ brew install game-porting-toolkit
