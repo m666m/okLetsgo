@@ -19308,7 +19308,7 @@ Apple Game Porting Toolkit (GPTK)
 
 下载到一个 .dmg 文件安装即可。
 
-以下过时：确保终端仍在x86_64模式下(arch -x86_64 zsh)，执行以下命令进行编译安装（首次安装耗时较长，请耐心等待）：
+过时：确保终端仍在x86_64模式下(arch -x86_64 zsh)，执行以下命令进行编译安装（首次安装耗时较长，请耐心等待）：
 
     $ brew tap apple/apple http://github.com/apple/homebrew-apple
     $ brew install game-porting-toolkit
