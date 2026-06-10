@@ -295,7 +295,9 @@ fi
 
 # 仅 macOS 下常用命令
 if [[ $os_type = 'macos' ]]; then
+    alias archs='echo "[以 i386 架构执行命令]"; arch -x86_64 '
     alias arch86='echo "[进入 i386 架构的子shell]"; arch -x86_64 zsh'
+    alias ibrew='arch -x86_64 /usr/local/bin/brew'
 
     ########## Homebrew
     function brew_sf() {
