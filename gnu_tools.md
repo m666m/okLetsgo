@@ -18916,7 +18916,7 @@ macOS 系统文件夹
 
         ~/Library/Preferences/    当前用户    用户级偏好，例如 com.apple.Terminal.plist
 
-    /Applications   你自己装的各种软件，卸载软件时，直接删除 /Applications 下的相应 .app 即可（但可能会残留偏好文件在 ~/Library 中）。
+    /Applications   用户自己装的各种软件，卸载软件时，直接删除 /Applications 下的相应 .app 即可（但可能会残留偏好文件在 ~/Library 中）。
 
 > 国内镜像源
 
@@ -18944,7 +18944,7 @@ macOS 系统文件夹
 
     $ sudo apt install -y git curl  # 安装依赖
 
-    # /bin/bash -c "$(curl -fsSL https://github.com/Homebrew/install/raw/HEAD/install.sh)"
+    # 原 /bin/bash -c "$(curl -fsSL https://github.com/Homebrew/install/raw/HEAD/install.sh)"
     $ /bin/bash -c "$(curl -fsSL https://mirrors.ustc.edu.cn/misc/brew-install.sh)"
 
 安装后会提示后续的操作：
@@ -19172,31 +19172,23 @@ Rosetta 2 是让 arm macOS 可以运行旧版 x86 macOS(2010～2020年代) 下 x
 
 验证：输入 `arch` 命令会返回 i386，说明切换成功。
 
-如果需要长期保留一个专用 x86 环境的场景
-
-    在“应用程序”->“实用工具”中找到“终端.app”
-
-    在“终端”图标上，按住 Option 键，然后将它拖拽到左侧边栏的“应用程序”文件夹上，当你看到“+”号时松手，就会在“应用程序”文件夹里创建一个名为“Terminal”的副本。
-
-    重命名后（如 “Rosetta 终端”），在其“显示简介”中勾选“使用 Rosetta 打开”即可。
-
 3、在这个 x86 终端里安装 x86_64 版 Homebrew
 
-使用国内镜像安装见章节 [Homebrew]
-
     $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+使用国内镜像安装见章节 [Homebrew]。
 
 4、然后就可以使用这个 Homebrew 安装 x86 macOS 下的各种应用了。
 
 测试，用这个 homebrew 安装一个 x86 redis：
 
-    $ arch -x86_64 /usr/local/homebrew/bin/brew install redis
+    $ arch -x86_64 /usr/local/Homebrew/bin/brew install redis
 
 5、区分环境
 
 两套 Homebrew 会安装在不同的路径，不会冲突：
 
-    x86_64 安装目录：/usr/local/homebrew
+    x86_64 安装目录：/usr/local/Homebrew
 
     ARM64 安装目录：/opt/homebrew
 
@@ -19208,7 +19200,7 @@ Rosetta 2 是让 arm macOS 可以运行旧版 x86 macOS(2010～2020年代) 下 x
 
     文件 ~/.brew_intel
 
-        eval "$(/usr/local/homebrew/bin/brew shellenv)"
+        eval "$(/usr/local/Homebrew/bin/brew shellenv)"
 
     然后将下面代码加入到 .zshrc
 

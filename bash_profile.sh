@@ -250,14 +250,12 @@ if [ -x /usr/bin/dircolors ]; then
 
 fi
 
+#######################
+# 常用命令的惯用法用别名和函数封装起来，方便日常使用
 # 注意基础命令不要搞太花哨，导致脚本里解析出现用法不一致的问题
-if [[ $os_type = 'macos' ]]; then
-    alias ls='ls -G'
-else
-    alias ls='ls --color=auto'
-fi
 
 # 常用的列文件的惯用法
+alias ls='ls --color=auto'
 alias l='ls -CFA'
 alias ll='ls -lh'
 alias la='ls -lAh'
@@ -271,9 +269,6 @@ alias grep='grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir
 #alias egrep='egrep --color=auto'
 #alias fgrep='fgrep --color=auto'
 alias tree='tree -a -C'
-
-#######################
-# 常用命令的惯用法用别名和函数封装起来，方便日常使用
 
 # 列出目录下的文件清单，查找指定关键字，如 `lsg fnwithstr`。因为ls列出的目录颜色被grep覆盖，用 ls -l 查看更方便。
 alias lsg='ls -lFA |grep -i'
@@ -298,9 +293,41 @@ else
     alias pstreep='echo "[进程树，列出pid所在的进程树]"; pstree -s -p'
 fi
 
-# macOS 下常用命令
+# 仅 macOS 下常用命令
 if [[ $os_type = 'macos' ]]; then
     alias arch86='echo "[进入 i386 架构的子shell]"; arch -x86_64 zsh'
+
+    ########## Homebrew
+    function brew_sf() {
+        # brew_sf tmux
+        echo "[brew search 本地 formula.json: ${1}]"
+
+        cat $HOME/formula.json | jq --arg pattern "$1" '.[] | select(any(.oldnames[]?; test($pattern; "i")) or (.name | test($pattern; "i"))) | {name: .name, oldnames: .oldnames, description: .desc, version: .version, homepage: .homepage}'
+    }
+    function brew_sc() {
+        # brew_sc chrome
+        echo "[brew search 本地 cask.json: ${1}]"
+
+        cat $HOME/cask.json | jq --arg pattern "$1" '.[] | select(any(.name[]; test($pattern; "i")) or (.token | test($pattern; "i"))) | {token: .token, name: .name, description: .desc, version: .version, homepage: .homepage}'
+    }
+
+    # 国内镜像
+    # https://mirrors.ustc.edu.cn/help/brew.git.html
+    export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+
+    # 核心软件仓库 https://mirrors.ustc.edu.cn/help/homebrew-core.git.html
+    export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+
+    # Brew 4.0 版本后默认使用元数据 JSON API 获取仓库信息
+    # https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
+    export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+
+    # 预编译二进制软件包与软件包元数据文件 https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
+    export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
+
+    # cask 软件仓库，提供 macOS 应用和大型二进制文件 https://mirrors.ustc.edu.cn/help/homebrew-cask.git.html
+    # 不再需要设置了 brew tap --custom-remote homebrew/cask https://mirrors.ustc.edu.cn/homebrew-cask.git
+
 fi
 
 # 从下载文件夹的子目录里把各种电影文件统一挪到当前，方便整理
@@ -642,21 +669,6 @@ function fpks() {
     echo "[flatpak 搜软件不展示 id 让你没法安装: ${1}]"
 
     flatpak search $1 |column
-}
-
-# Homebrew
-function brew_sf() {
-    # brew_sf tmux
-    echo "[brew search 本地 formula.json: ${1}]"
-
-    cat $HOME/formula.json | jq --arg pattern "$1" '.[] | select(any(.oldnames[]?; test($pattern; "i")) or (.name | test($pattern; "i"))) | {name: .name, oldnames: .oldnames, description: .desc, version: .version, homepage: .homepage}'
-}
-
-function brew_sc() {
-    # brew_sc chrome
-    echo "[brew search 本地 cask.json: ${1}]"
-
-    cat $HOME/cask.json | jq --arg pattern "$1" '.[] | select(any(.name[]; test($pattern; "i")) or (.token | test($pattern; "i"))) | {token: .token, name: .name, description: .desc, version: .version, homepage: .homepage}'
 }
 
 # 容器化
