@@ -1371,6 +1371,44 @@ postmarketos 把你的旧手机作为一个低功耗平台
 
     https://www.bilibili.com/video/BV1TV411Y7y4/
 
+## Google Pixel 9 开启 5G
+
+免解锁、免 root，为 Google Pixel 开启国内 5G 网络支持
+
+    https://sspai.com/post/96068
+        https://github.com/RikkaApps/Shizuku
+        https://github.com/kyujin-cho/pixel-volte-patch
+
+克莱德 2025/02/06 15:00
+
+考虑到 Android 15 开始内置中文字体已经部分支持了可变字重，客观来讲 root 于我个人而言的必要性也越来越少。如果你和我一样无心折腾 Play Integrity、Tricky Store 等模块，为 Bootloader 重新上锁基本上也可以提上日程了。
+
+今天这篇文章中，我们就来讲讲对 Pixel 用户而言最难以割舍的国内 5G 网络功能解锁，以及如何在不解锁 Bootloader、不 root 手机的前提下搞定这个需求。文章部分内容参考自 B 站 UP 主 Sun_Dream2020 和 Chiakun数码 的视频，感兴趣的朋友也可以直接移步文末查看视频版本。
+
+本教程适用于搭载 Google Tensor G3 及以上处理器型号的所有 Pixel 设备。
+
+本教程主要依赖两个工具：Shizuku 和 Pixel IMS。需要注意的是，如果你已经更新到了 2025 年 9 月发布的 Android 16 QPR1 版本，这里建议直接在 GitHub 下载更新适配了该系统更新的最新版本。Google Play 商店中的版本可能已经过时。
+
+对于尚未解锁 Bootloader、没有获取 root 权限的用户来说，安装 Shizuku 后首先需要通过有线或无线 ADB 的方式运行 Shizuku 并授予 Pixel IMS 相应的权限，具体操作方法以 Shizuku 内的功能引导为准，如果你有拿不准的地方，可以参考我们此前的文章。
+
+关联阅读：别被 root 挡在门外：Shizuku 让 Android 玩机更简单
+
+Pixel 9 Pro，默认情况下中国电信为 4G 网络，且未注册 IMS
+随后我们插入 SIM 卡并启动 Pixel IMS，首先根据实际需求开启 VoLTE、VoNR 等选项，开启后退出 Pixel IMS 后台并重新进入，此时 IMS 应该会显示注册成功——注意，近几个月有大量用户反馈说视频通话功能（VT）开启后会出现接不到电话的情况，建议大家自行测试决定是否开启。
+
+启用 VoLTE 等选项保证基本通信功能，确保 IMS 注册成功
+最后，在 Pixel IMS 底部找到「专家设置」，等待加载完成后搜索 carrier_nr_availabilities_int_array 字符串，点击打开编辑界面。
+
+在专家设置中搜索字符串
+这里注意，因为 Pixel IMS 应用本身的兼容问题这一步非常容易闪退！所以建议大家最好不要直接编辑——点击右下角的添加按钮添加一个新项，然后将该项的值设置为 2（设置方式也不建议直接输入，你可以在其他地方复制一个 2 然后粘贴过来）。点击右下角添加按钮，然后编辑第二项的数值为 `2`，点击对号确认，最后点击「确认」保存。
+
+退出重新进入，在专家模式搜索结果中，确保 carrier_nr_availabilities_int_array 的值显示为 [1,2] 就算大功告成了。此时下拉通知栏看看，5G 网络应该自动解锁了。
+
+可能是目前最简单的方案，感谢原作者的无私分享
+如你所见，相比早年的 root 后使用网络信号大师、或免 root 蹭 DSU 缓存的解锁方案，这套新方案操作流程更加简单，甚至简单得有点不合理。
+
+只能说军备竞赛此消彼长，「补漏」的人可能会一时疏忽，但谁都不喜欢区别对待和残缺的使用体验，这里也得感谢玩机社区的无私奉献。
+
 ## Netgear Nighthawk rax50 无线路由器
 
 > 如何进入路由器管理页面
