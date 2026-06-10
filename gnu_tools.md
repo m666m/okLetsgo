@@ -19111,93 +19111,15 @@ xcode-select 只是安装了 Command Line Tools：
 
 ### macOS 运行 Windows 程序
 
-世界上绝大多数软件都有 Windows x86 下的编译版本，或者是 Linux x86 的版本，但是arm 芯片版本就少多了，如果能利用起来，会大大扩展 macOS 的可用性。
+世界上绝大多数软件都有 Windows x86 下的编译版本，或者是 Linux x86 的版本，但是运行于 arm 芯片的就少多了，如果能利用起来，会大大扩展 macOS 的可用性。
 
-苹果“官方”运行 Windows 程序的方案
+    x86 cpu 指令 转 arm cpu 指令 --- Rosetta 2 是 arm macOS 运行 x86 Mac 应用的解决方案，它可以动态转译 x86 → ARM 指令，苹果官方的用途是让 arm macOS 可以运行旧版 x86 macOS 的应用。
 
-    提供了 Rosetta 2，苹果官方用来让 M 芯片 Mac 运行旧版 Mac（x86）应用的翻译器，可用于 arm 芯片执行 Linux x86 程序。wine或某些虚拟机在 Apple Silicon 上跑的时候，可能会用到 Rosetta 2。
+    Windows 操作系统 API 调用、DirextX API 调用：开源社区的 Wine。将 Win32 API 调用 转换为 POSIX / macOS API 调用。
 
-    提供了游戏移植工具包（Game Porting Toolkit），里面包含了一个基于 Wine 的评估环境，但那是给开发者用来测试移植潜力的，不是给普通用户日常用的；
+苹果提供了游戏开发者使用的整合工具 --- [使用 Apple Game Porting Toolkit (GPTK)]。
 
-苹果官方建议还是用虚拟机（如 Parallels Desktop）或者云电脑。
-
-目前的社区实践：
-
-1、优先使用 ARM 原生版本，如果 brew 里没有，直接去开源软件的官网查找，下载 .dmg 安装包或可执行文件。
-
-如果要玩游戏，先看看 Steam 客户端上有没有原生 arm 版本。在 x86 Linux 下，steam 官方的 porton（基于wine）技术通过 Vulkan 图形接口让大部分 Windows 游戏可玩，但目前并未支持苹果独家的 Metal 图形接口，也就无法实现 arm 运行 x86 游戏。
-
-2、如果只有 x86/AMD64 版本，尝试 macOS 下安装 Wine/Crossover。
-
-用 wine 来直接运行 x86 程序，它能把 Windows 程序的 API 调用翻译成 macOS/Linux 能懂的东西，性能接近原生，安装即用，不像虚拟机要占用若干GB内存，和 macOS 无缝融合，启动快。
-
-不止是运行游戏，兼容性现在已经很好了，wine 适合大量软件，如无驱动的 Windows 工具、轻量办公软件、3A 大作，但反作弊、底层驱动、新 3A 大作无法保证可以运行。
-
-3、尝试使用苹果官方的 Apple Game Porting Toolkit (GPTK)
-
-    https://github.com/apple/game-porting-toolkit
-
-    https://wuyanxin.com/post/mac-m1-brew-both-support-aarm64-and-x86_64.html
-        https://www.wisdomgeek.com/development/installing-intel-based-packages-using-homebrew-on-the-m1-mac/
-
-    下载“Command Line Tools for Xcode 15.4”的DMG文件，安装即可
-
-    先安装 Rosetta 2:
-
-        $ softwareupdate --install-rosetta --agree-to-license
-
-    使用 Rosetta 打开终端（在终端图标点右键选择“显示简介”勾选“使用 Rosetta 打开”），或使用命令运行一个 x86_64 模式的终端：
-
-        $ arch -x86_64 zsh
-
-        这会启动一个 x86_64 模式的子 Shell，在这里输入 arch 命令会返回 i386，说明切换成功。
-
-    然后在这个 x86 终端里安装 x86_64 版Homebrew：
-
-        # 使用国内镜像安装见章节 [Homebrew]
-        $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-        两套 Homebrew 会安装在不同的路径，不会冲突
-
-            x86_64 安装目录：/usr/local/homebrew
-
-            ARM64 安装目录：/opt/homebrew
-
-        测试，用这个 homebrw 安装一个 redis：
-
-            $ arch -x86_64 /usr/local/homebrew/bin/brew install redis
-
-        优先使用 ARM 版，仅在需要时切换到 x86 版，符合社区推荐的最佳实践
-
-        可以设置快捷操作：
-
-            文件 ~/.brew_arm
-
-                eval "$(/opt/homebrew/bin/brew shellenv)"
-
-            文件 ~/.brew_intel
-
-                eval "$(/usr/local/homebrew/bin/brew shellenv)"
-
-            将下面代码加入到 .zshrc
-                # homebrew
-                alias brew_arm='source ~/.brew_arm'
-                alias brew_intel="source ~/.brew_intel"
-
-    安装Game Porting Toolkit
-    确保终端仍在x86_64模式下，执行以下命令进行编译安装（首次安装耗时较长，请耐心等待）：
-
-        brew tap apple/apple http://github.com/apple/homebrew-apple
-        brew install game-porting-toolkit
-
-    创建独立环境
-    为游戏创建一个独立的Wine Prefix（你可以理解为游戏专用的虚拟C盘）。在终端中执行以下命令：
-
-        WINEPREFIX=~/War3_Prefix $(brew --prefix game-porting-toolkit)/bin/wine64 winecfg
-
-    运行后，在弹出的窗口中，将Windows版本设为“Windows 10”或“Windows 7”，然后点击确定。
-
-4、使用 [macOS 下虚拟机运行 Windows]：
+苹果官方建议还是 [macOS 下虚拟机运行 Windows]
 
     需要长期、稳定使用多个 Windows 程序，且它们之间有协同。
 
@@ -19207,15 +19129,153 @@ xcode-select 只是安装了 Command Line Tools：
 
     你是开发、测试，需要完整的 Windows 环境来调试。
 
-4、折中方案：云电脑
+或者云电脑，如果你只是偶尔用一下，而且网速够快，可以考虑租用 Windows 365 Cloud PC 或者国内的云电脑服务，按需付费，完全不影响本地性能，还能用 iPad 远程连进去。
 
-如果你只是偶尔用一下，而且网速够快，可以考虑租用 Windows 365 Cloud PC 或者国内的云电脑服务，按需付费，完全不影响本地性能，还能用 iPad 远程连进去。
+#### macOS 本地运行 Windows 程序
+
+最佳实践是直接使用 ARM 原生版本，如果 brew 里没有，直接去开源软件的官网查找，下载 .dmg 安装包或可执行文件。
+
+如果要玩游戏，先看看 Steam 客户端上有没有原生 arm 版本。在 x86 Linux 下，steam 官方的 porton（基于wine）技术通过 Vulkan 图形接口让大部分 Windows 游戏可玩，但目前并未支持苹果独家的 Metal 图形接口，也就无法实现 arm 运行 x86 游戏。
+
+如果程序只有 x86/AMD64 版本，则 macOS 需要安装一些执行框架以实现直接本地运行，有多种方案，基本都是基于 wine 转译 Windows 操作系统 API调用。
+
+#### 安装 Wine/Crossover，用 Wine 来直接运行 Windows 程序
+
+wine 最初是 x86 Linux 下执行 Windows 游戏的开源社区解决方案，目前被 arm macOS 用来解决运行 Windows 程序的问题。
+
+在 2010 -2020 年代 x86 macOS(Intel CPU)时代，有了 x86 macOS 版的 Wine，它可以在操作系统调用层面"模拟"支持运行 Windows 软件，性能接近原生，安装即用。最大的优势是本地运行，不像虚拟机要占用若干GB内存，和 macOS 无缝融合，启动快。
+
+    ┌────────────────────────────────────────────────────┐
+    │                   Windows 游戏 (.exe)               │
+    │                   (魔兽争霸3, 暗黑破坏神4 ...)        │
+    └────────────────────────────────────────────────────┘
+                            │
+                            │ 发出的调用:
+                            │  • Win32 API 调用 (文件, 注册表, 窗口...)
+                            │  • DirectX 图形指令
+                            ▼
+    ┌───────────────────────────────────────────────┐
+    │                   Wine (x86 macOS 版本)        │
+    └───────────────────────────────────────────────┘
+                            │
+                            │• 将 Win32 API 调用转换为 POSIX / macOS API 调用
+                            │• 将 DirectX API调用转换为 macOS 系统支持的 OpenGL 图形指令
+                            ▼
+    ┌───────────────────────────────────────────────┐
+    │                   x86 macOS                   │
+    └───────────────────────────────────────────────┘
+                            │
+                            │• x86 指令
+                            │• OpenGL 图形指令
+                            ▼
+    ┌────────────────────────────────────────────────┐
+    │                    Intel CPU                   │
+    └────────────────────────────────────────────────┘
+
+wine 的兼容性现在已经很好了，不止可以运行游戏，大量软件都可以直接运行，如无驱动的 Windows 工具、轻量办公软件、3A 大作等。但反作弊、底层驱动、新 3A 大作无法保证可以运行。
+
+在 arm macOS 下，这个 x86 macOS 的 Wine 可以借助苹果官方的指令层面转译工具 Rosetta 2 运行，从而实现支持运行 Windows 软件：
+
+                        │...
+                        ▼
+    ┌──────────────────────────────────────┐
+    │       Wine (x86 macOS 版本)           │
+    └──────────────────────────────────────┘
+        │                              │
+        ▼                              │
+    ┌──────────────────────────────┐   │
+    │           Rosetta 2          │   │
+    │ 将 x86_64 指令翻译为 ARM64 指令 │   │
+    └──────────────────────────────┘   │
+        │                              │
+        │                              │• 将 Win32 API 调用转换为 POSIX / macOS API 调用
+        │                              │
+        │                              │• 将 DirectX API 调用转换为OpenGL/Vulkan 图形指令(DXVK)，
+        │                              │  再转为 arm macOS 系统支持的 Metal 图形指令
+        │                              │
+        │                              │• Wine 自身运行时的 x86_64 指令
+        │                              │
+        ▼                              ▼
+    ┌──────────────────────────────────────┐
+    │           arm macOS                  │
+    └──────────────────────────────────────┘
+                    │
+                    ▼
+    ┌────────────────────────────────────────┐
+    │       Apple Silicon 芯片 (M1/M2/M3...)  │
+    └────────────────────────────────────────┘
+
+##### Apple Game Porting Toolkit (GPTK)
+
+这是苹果官方的开源解决方案，主要引入了 D3DMetal 将 Windows 游戏的 DirectX 图形指令，实时转换为 arm macOS 的 Metal 图形指令。基于 x86 macOS 下的 wine 实现将 Windows 的 API 调用（如键盘、鼠标、文件系统等）转换为 macOS 能够理解的指令，再用自研的 Rosetta 2 将 wine 自身运行时的 x86_64 指令 实时翻译为 ARM64 指令交给 M 芯片去执行，最终实现了 GPTK 能运行现代 3D 大作。
+
+    https://github.com/apple/game-porting-toolkit
+
+    https://wuyanxin.com/post/mac-m1-brew-both-support-aarm64-and-x86_64.html
+        https://www.wisdomgeek.com/development/installing-intel-based-packages-using-homebrew-on-the-m1-mac/
+
+下载“Command Line Tools for Xcode 15.4”的DMG文件，安装即可
+
+先安装 Rosetta 2:
+
+    $ softwareupdate --install-rosetta --agree-to-license
+
+使用 Rosetta 打开终端（在终端图标点右键选择“显示简介”勾选“使用 Rosetta 打开”），或使用命令运行一个 x86_64 模式的终端：
+
+    $ arch -x86_64 zsh
+
+    这会启动一个 x86_64 模式的子 Shell，在这里输入 arch 命令会返回 i386，说明切换成功。
+
+然后在这个 x86 终端里安装 x86_64 版Homebrew：
+
+    # 使用国内镜像安装见章节 [Homebrew]
+    $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    两套 Homebrew 会安装在不同的路径，不会冲突
+
+        x86_64 安装目录：/usr/local/homebrew
+
+        ARM64 安装目录：/opt/homebrew
+
+    测试，用这个 homebrw 安装一个 redis：
+
+        $ arch -x86_64 /usr/local/homebrew/bin/brew install redis
+
+    优先使用 ARM 版，仅在需要时切换到 x86 版，符合社区推荐的最佳实践
+
+    可以设置快捷操作：
+
+        文件 ~/.brew_arm
+
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+
+        文件 ~/.brew_intel
+
+            eval "$(/usr/local/homebrew/bin/brew shellenv)"
+
+        将下面代码加入到 .zshrc
+            # homebrew
+            alias brew_arm='source ~/.brew_arm'
+            alias brew_intel="source ~/.brew_intel"
+
+安装Game Porting Toolkit
+确保终端仍在x86_64模式下，执行以下命令进行编译安装（首次安装耗时较长，请耐心等待）：
+
+    brew tap apple/apple http://github.com/apple/homebrew-apple
+    brew install game-porting-toolkit
+
+创建独立环境
+为游戏创建一个独立的Wine Prefix（你可以理解为游戏专用的虚拟C盘）。在终端中执行以下命令：
+
+    WINEPREFIX=~/War3_Prefix $(brew --prefix game-porting-toolkit)/bin/wine64 winecfg
+
+运行后，在弹出的窗口中，将Windows版本设为“Windows 10”或“Windows 7”，然后点击确定。
 
 #### macOS 下虚拟机运行 Windows
 
 目前效率最高的运行 x86 程序的方法，是前面章节介绍的，在 macOS 下用 Wine/Crossover 直接运行 x86 软件，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。
 
-如果需要兼容性最大化，则要接受8GB内存用于虚拟机的方案：优选基于 QEMU 的 UTM 开源虚拟机管理器
+如果需要兼容性最大化，则要接受至少 8GB 内存用于虚拟机的方案：优选基于 QEMU 的 UTM 开源虚拟机管理器
 
     https://mac.getutm.app/
         https://github.com/utmapp/UTM/releases/latest/download/UTM.dmg
@@ -19226,11 +19286,11 @@ UTM 的两种运行方式：
 
 1、“模拟”模式（QEMU 方案）安装 x86 操作系统：纯 cpu 仿真运行 x86/AMD64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，不需要也不使用 cpu 提供的虚拟化加速。因此速度最慢，日常运行可能勉强可用，使用这个方案只是因为它的 x86 模拟功能最完整，作为生产环境或开发主力。
 
-2、推荐 虚拟化方式安装 arm 操作系统：这样安装的 arm 操作系统，可以利用 Apple 的 Hypervisor 虚拟化框架，在 Apple silicon 芯片上以接近本机原生的速度运行 ARM64 操作系统，而且 ARM 版 Windows 11/Linux 都有执行 x86 程序的能力。
+2、推荐 虚拟化方式安装 arm 操作系统：这样安装的 arm 操作系统，可以利用 Apple 的 Hypervisor 虚拟化框架，在 Apple silicon 芯片上以接近本机原生的速度运行 ARM64 操作系统，利用 ARM 版 Windows 11/Linux 都有执行 x86 程序的能力来运行 Windows 程序。
 
 虚拟机安装 Windows 11 ARM 版运行 x86 程序是非常方便的，这个方案的兼容性大于使用 Wine 的方案，是稳定办公的首选。
 
-    Windows 11 内置微软官方开发的 Prism 模拟器，可将 x86 指令 实时 编译为 ARM64 指令，以执行 x86 程序。装好 Windows ARM 就和普通 PC 一样，无脑用。
+    Windows 11 内置微软官方开发的 Prism 模拟器，可将 x86 指令实时编译为 ARM64 指令，以执行 x86 程序。装好 Windows ARM 就和普通 PC 一样，无脑用。
 
     得益于苹果 M 芯片的高性能及微软的极致优化，执行效率很高，日常办公体验是完全没问题的。商业软件 Parallels Desktop 更是可以让你在虚拟机里运行的 3D 游戏接近原生 Windows 的感觉）。
 
