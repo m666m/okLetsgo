@@ -19041,9 +19041,9 @@ function brew_sc() {
 
         开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片统一内存的 GPU 加速。
 
-1、装命令行工具
+1、安装 Xcode 的命令行编译环境
 
-Apple macOS(Darwin) 自带 Clang 无需额外安装，它随 Xcode Command Line Tools，执行如下命令开启系统组件即可：
+Apple macOS(Darwin) 可以作为系统组件安装 Xcode Command Line Tools，自带 Clang 开发环境：
 
     $ xcode-select --install
 
@@ -19067,7 +19067,7 @@ Apple macOS(Darwin) 自带 Clang 无需额外安装，它随 Xcode Command Line 
         # 编译（实际构建二进制）
         $ cmake --build --preset appleclang-release
 
-    否则自行添加参数，需要查看你的项目的文档：
+    否则自行添加参数，需要查看你的项目的文档说明：
 
         $ cmake -B build -DGGML_METAL=ON -DCMAKE_BUILD_TYPE=Release
         $ cmake --build build -j
@@ -19080,11 +19080,13 @@ Apple macOS(Darwin) 自带 Clang 无需额外安装，它随 Xcode Command Line 
 
     $ sudo cmake --install build/appleclang-release
 
-2、macOS 上编译带图形界面的应用时，不能只装命令行工具，必须使用完整的 Xcode，并且系统要正确指向它。
+2、安装 Xcode 的图形界面开发环境
+
+macOS 上编译带图形界面的应用时，不能只装命令行工具，必须使用完整的 Xcode，并且系统要正确指向它。
 
     https://ghostty.org/docs/install/build#xcode
 
-Xcode 和 Command Line Tools 的区别
+xcode-select 只是安装了 Command Line Tools：
 
     Command Line Tools（/Library/Developer/CommandLineTools）：只包含编译器（clang）、make、git 等命令行工具，没有 macOS SDK 的完整头文件、界面框架和代码签名支持。
 
