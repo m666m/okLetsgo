@@ -19139,11 +19139,64 @@ xcode-select 只是安装了 Command Line Tools：
 
 如果程序只有 x86/AMD64 版本，则 macOS 需要安装一些执行框架以实现直接本地运行，有多种方案，基本都是基于 wine 转译 Windows 操作系统 API调用。
 
-#### 安装 Wine/Crossover，用 Wine 来直接运行 Windows 程序
+##### arm macOS 可以运行 x86 macOS 的 x86 程序
+
+Rosetta 2 是 arm macOS 运行 x86 Mac 应用的解决方案，它可以动态转译 x86 → ARM 指令，苹果官方的用途是让 arm macOS 可以运行旧版 x86 macOS 的应用。
+
+    https://wuyanxin.com/post/mac-m1-brew-both-support-aarm64-and-x86_64.html
+        https://www.wisdomgeek.com/development/installing-intel-based-packages-using-homebrew-on-the-m1-mac/
+
+1、先安装 Rosetta 2:
+
+    $ softwareupdate --install-rosetta --agree-to-license
+
+使用 Rosetta 打开终端（在终端图标点右键选择“显示简介”勾选“使用 Rosetta 打开”），或使用命令运行一个 x86_64 模式的终端：
+
+    $ arch -x86_64 zsh
+
+    这会启动一个 x86_64 模式的子 Shell
+
+    验证：输入 `arch` 命令会返回 i386，说明切换成功。
+
+2、然后在这个 x86 终端里安装 x86_64 版 Homebrew
+
+使用国内镜像安装见章节 [Homebrew]
+
+    $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+两套 Homebrew 会安装在不同的路径，不会冲突
+
+    x86_64 安装目录：/usr/local/homebrew
+
+    ARM64 安装目录：/opt/homebrew
+
+测试，用这个 homebrw 安装一个 redis：
+
+    $ arch -x86_64 /usr/local/homebrew/bin/brew install redis
+
+优先使用 ARM 版，仅在需要时切换到 x86 版，符合社区推荐的最佳实践
+
+可以设置快捷操作：
+
+    文件 ~/.brew_arm
+
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+
+    文件 ~/.brew_intel
+
+        eval "$(/usr/local/homebrew/bin/brew shellenv)"
+
+    然后将下面代码加入到 .zshrc
+
+        # homebrew
+        alias brew_arm='source ~/.brew_arm'
+        alias brew_intel="source ~/.brew_intel"
+
+##### 安装 Wine/Crossover，用 Wine 来直接运行 Windows 程序
 
 wine 最初是 x86 Linux 下执行 Windows 游戏的开源社区解决方案，目前被 arm macOS 用来解决运行 Windows 程序的问题。
 
-在 2010 -2020 年代 x86 macOS(Intel CPU)时代，有了 x86 macOS 版的 Wine，它可以在操作系统调用层面"模拟"支持运行 Windows 软件，性能接近原生，安装即用。最大的优势是本地运行，不像虚拟机要占用若干GB内存，和 macOS 无缝融合，启动快。
+在 2010 -2020 年 x86 macOS(Intel CPU)时代，有了 x86 macOS 版的 Wine，它可以在操作系统调用层面"模拟"支持运行 Windows 软件，性能接近原生，安装即用。最大的优势是本地运行，不像虚拟机要占用若干GB内存，和 macOS 无缝融合，启动快。
 
        Windows 游戏 (.exe)
       魔兽争霸3, 暗黑破坏神4 ...
@@ -19209,61 +19262,17 @@ wine 的兼容性现在已经很好了，不止可以运行游戏，大量软件
 
     https://github.com/apple/game-porting-toolkit
 
-    https://wuyanxin.com/post/mac-m1-brew-both-support-aarm64-and-x86_64.html
-        https://www.wisdomgeek.com/development/installing-intel-based-packages-using-homebrew-on-the-m1-mac/
-
 下载“Command Line Tools for Xcode 15.4”的 DMG 文件，安装即可。
-
-先安装 Rosetta 2:
-
-    $ softwareupdate --install-rosetta --agree-to-license
-
-使用 Rosetta 打开终端（在终端图标点右键选择“显示简介”勾选“使用 Rosetta 打开”），或使用命令运行一个 x86_64 模式的终端：
-
-    $ arch -x86_64 zsh
-
-    这会启动一个 x86_64 模式的子 Shell，在这里输入 arch 命令会返回 i386，说明切换成功。
-
-然后在这个 x86 终端里安装 x86_64 版Homebrew：
-
-    # 使用国内镜像安装见章节 [Homebrew]
-    $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-    两套 Homebrew 会安装在不同的路径，不会冲突
-
-        x86_64 安装目录：/usr/local/homebrew
-
-        ARM64 安装目录：/opt/homebrew
-
-    测试，用这个 homebrw 安装一个 redis：
-
-        $ arch -x86_64 /usr/local/homebrew/bin/brew install redis
-
-    优先使用 ARM 版，仅在需要时切换到 x86 版，符合社区推荐的最佳实践
-
-    可以设置快捷操作：
-
-        文件 ~/.brew_arm
-
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-
-        文件 ~/.brew_intel
-
-            eval "$(/usr/local/homebrew/bin/brew shellenv)"
-
-        将下面代码加入到 .zshrc
-            # homebrew
-            alias brew_arm='source ~/.brew_arm'
-            alias brew_intel="source ~/.brew_intel"
 
 安装Game Porting Toolkit
 确保终端仍在x86_64模式下，执行以下命令进行编译安装（首次安装耗时较长，请耐心等待）：
 
-    brew tap apple/apple http://github.com/apple/homebrew-apple
-    brew install game-porting-toolkit
+    $ brew tap apple/apple http://github.com/apple/homebrew-apple
+    $ brew install game-porting-toolkit
 
 创建独立环境
-为游戏创建一个独立的Wine Prefix（你可以理解为游戏专用的虚拟C盘）。在终端中执行以下命令：
+
+为游戏创建一个独立的 Wine Prefix（你可以理解为游戏专用的虚拟C盘）。在终端中执行以下命令：
 
     WINEPREFIX=~/War3_Prefix $(brew --prefix game-porting-toolkit)/bin/wine64 winecfg
 
@@ -19306,29 +19315,35 @@ UTM 的两种运行方式：
 
 #### 虚拟机 ARM Linux 里执行 Linux x86 程序
 
-对普通用户用处极小。适合开发环境（比如 Docker 里跑 x86 镜像））、运行 Linux x86 命令行工具等
+    不支持 Windows x86 程序，只是可以运行 Linux x86 程序。
 
-    注意不支持 Windows x86 程序，只是可以运行 Linux x86 程序。
+对普通用户用处极小。适合开发环境（比如 Docker 里跑 x86 镜像））、运行 Linux x86 命令行工具等.
+
+但是，兼容性不好，只能跑 Linux x86 程序，不能跑 Windows 程序：
+
+    大多数x86_64 Linux命令行程序和服务器软件都能良好运行。
+
+    图形应用依赖配置复杂。部分对硬件特性（如某些底层指令）有强依赖的图形界面应用，或需要内核模块支持的程序可能存在问题
 
 有两个运行方式：
 
-方式一、QEMU-user 模式，它会自动向内核注册一条规则：凡是遇到 x86 二进制，就调用 qemu-x86_64-static 去翻译执行。要安装 `sudo apt install binfmt-support qemu-user-static`。缺点是纯软件翻译，性能一般，CPU 占用高。只适合服务器下运行命令行程序，运行图形化程序太繁琐。
+方式一、QEMU-user 模式
 
-方式二、推荐 调用宿主机的 Rosetta 2：在你的 Ubuntu arm 里，安装苹果提供的 Rosetta 二进制，并同样用 binfmt_misc 注册：让内核遇到 x86 二进制时，调用这个 Rosetta 引擎。这样虚拟机里的 x86 程序的翻译执行实际由宿主机的 M 芯片进行硬件加速，速度比 QEMU-user 模式快很多，接近原生速度。效率与 macOS 本机直接运行 x86 linux 程序使用 Rosetta 2 同级。
+它会自动向内核注册一条规则：凡是遇到 x86 二进制，就调用 qemu-x86_64-static 去翻译执行。要安装 `sudo apt install binfmt-support qemu-user-static`。缺点是纯软件翻译，性能一般，CPU 占用高。只适合服务器下运行命令行程序，运行图形化程序太繁琐。
 
-但是，兼容性不好，只能跑 Linux x86 程序，不能跑 Windows 程序；图形应用依赖配置复杂
-
-    大多数x86_64 Linux命令行程序和服务器软件都能良好运行。但部分对硬件特性（如某些底层指令）有强依赖的图形界面应用，或需要内核模块支持的程序可能存在问题
+方式二、推荐 调用宿主机的 Rosetta 2
 
 新版 UTM 在安装 arm linux 时，选择设置 System (系统): 勾选 Use Apple Virtualization（使用Apple虚拟化）和 Enable Rosetta (x86_64 Emulation)（启用Rosetta）即可，然后安装 Ubuntu arm 版。
 
-手动安装仅供参考理解原理：
-
 UTM 会自动通过 virtiofs 共享宿主的 Rosetta 运行时，并注册 binfmt_misc，之后在虚拟机里直接执行 x86 程序即可，无需手动配置。
+
+以下内容是手动安装，仅供参考理解原理：
+
+1、在你的 Ubuntu arm 里，安装苹果提供的 Rosetta 二进制，并同样用 binfmt_misc 注册：让内核遇到 x86 二进制时，调用这个 Rosetta 引擎。这样虚拟机里的 x86 程序的翻译执行实际由宿主机的 M 芯片进行硬件加速，速度比 QEMU-user 模式快很多，接近原生速度。效率与 macOS 本机直接运行 x86 linux 程序使用 Rosetta 2 同级。
 
 2、安装 `sudo apt install binfmt-support spice-vdagent`。
 
-3、手动挂载Rosetta组件
+3、手动挂载 Rosetta 组件
 
     # 创建挂载点目录
     sudo mkdir -p /media/rosetta
@@ -19337,7 +19352,7 @@ UTM 会自动通过 virtiofs 共享宿主的 Rosetta 运行时，并注册 binfm
 
     # echo "rosetta /media/rosetta virtiofs ro,nofail 0 0" | sudo tee -a /etc/fstab
 
-4、注册Rosetta转译器：
+4、注册 Rosetta 转译器：
 
     $ sudo /usr/sbin/update-binfmts --install rosetta /media/rosetta/rosetta \
         --magic "\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x3e\x00" \
@@ -19410,7 +19425,7 @@ UTM 会自动通过 virtiofs 共享宿主的 Rosetta 运行时，并注册 binfm
 
         $ colima start --arch x86_64 --vm-type=vz --vz-rosetta
 
-如果要跑的 x86 镜像居多，Colima 的 QEMU 模拟就会慢很多。而Podman 和 Apple Container 的 Rosetta 2 方案在性能上其实差别不大。
+如果要跑的 x86 镜像居多，Colima 的 QEMU 模拟就会慢很多。而 Podman 和 Apple Container 的 Rosetta 2 方案在性能上其实差别不大。
 
 日常使用与管理
 
