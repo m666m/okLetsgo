@@ -19208,8 +19208,6 @@ Rosetta 2 是让 arm macOS 可以运行旧版 x86 macOS(2010～2020年代) 下 x
         alias brew_arm='source ~/.brew_arm'
         alias brew_intel="source ~/.brew_intel"
 
-社区推荐的最佳实践优先使用 ARM 版，仅在需要时切换到 x86 版。
-
 ##### 系统调用级转译：用 Wine/Crossover 来直接运行 Windows 程序
 
 1、wine 最初是 x86 Linux 下执行 Windows 游戏的开源社区解决方案。
