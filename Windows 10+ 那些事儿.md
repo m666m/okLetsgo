@@ -4034,7 +4034,7 @@ WSLg 默认启用 OpenGL 加速，如需 Vulkan：
 
 CUDA 安装路径不要包含中文或空格
 
-    默认路径为：C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8 (11.8 为 CUDA 的版本）
+    默认路径为：C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8 （11.8 为 CUDA 的版本）
 
 自定义路径可能导致环境变量配置错误
 
