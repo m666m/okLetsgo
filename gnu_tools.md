@@ -19511,6 +19511,16 @@ Podman 无守护进程（daemonless），与 docker 命令几乎100%兼容。使
 
     每个容器都有自己独立的 IP 地址，不需要像传统 Docker 那样进行端口映射。
 
+因为是虚拟机运行容器镜像，所以不像普通容器那样共享使用主机内核：
+
+    苹果使用了来自开源社区的 Kata Containers 项目：一个专门为轻量级虚拟机优化的 Linux 内核 https://github.com/kata-containers/kata-containers
+
+    默认架构是 arm64（Apple Silicon），与 macOS 宿主机架构一致。
+
+    首次使用时自动下载：如果本地没有内核，系统会根据 url 自动下载压缩包，然后从 binaryPath 路径提取内核二进制。
+
+    所有容器（包括 container machine）共用这个内核
+
 可惜功能还不完善：
 
     暂不支持多容器编排 docker compose，暂只能使用 https://github.com/mcrich23/container-compose
@@ -19537,16 +19547,6 @@ Podman 无守护进程（daemonless），与 docker 命令几乎100%兼容。使
 
     # 运行一个 x86 架构的容器
     $ container run --platform linux/amd64 nginx:latest
-
-##### container machine
-
-跟 container run 启动的运行容器的虚拟机不同，container machine create 可以创建持久运行容器的虚拟机，可停止/启动，直到显式删除。
-
-镜像要求是需要包含 /sbin/init（如 systemd）的完整 Linux 发行版镜像，而不能是容器的标准 OCI 镜像。这样就支持 systemctl start/stop 管理服务了。
-
-    container machine run 不带命令时自动进入交互 shell（以映射用户身份）
-
-    container machine set 修改 CPU/内存/家目录挂载选项，重启后生效
 
 ##### 使用镜像仓库
 
@@ -19637,6 +19637,57 @@ memory = "2gb"
     container run -d --name db --network mynet --rm db-image
 
 这样两个容器都连接到了 mynet 网络。但是文档未说明同一网络内的容器能否直接通信，也未明确是否可以用服务名互访。
+
+##### container machine “主机集成式”的交互 Linux 环境
+
+跟 container run 运行容器建立同生命周期的虚拟机不同，`container machine create` 可以创建持久运行容器的虚拟机，可停止/启动，直到显式删除。可用 `container machine set` 修改 CPU/内存/家目录挂载选项，重启后生效。
+
+使用上类似 toolbx/distrobox，“主机集成式”的交互 Linux 环境：
+
+    自动映射主机用户名和家目录，开箱即用
+
+    `container machine run` 不带命令时自动进入交互 shell（以映射用户身份）
+
+但是更进一步，它是虚拟机运行容器镜像，更加独立：
+
+    使用独立 linux 内核 kata
+
+    支持 `systemctl start/stop` 管理服务
+
+    支持 apt 等包管理安装和持久化软件
+
+    对镜像要求特殊：需要包含 /sbin/init（如 systemd）的 OCI 容器镜像，而常见容器镜像的那种 entrypoint 指定启动进程是不可以的，所以只能构建自定义镜像，然后使用。
+
+因此，container machine 非常适合在 macOS 上做构建工作：
+
+    # 1、基于文档 Dockerfile 构建自定义镜：安装 systemd 并初始化
+    container build -t local/ubuntu-machine:latest -f- . <<-'EOF'
+    FROM ubuntu:24.04
+    ENV container container
+    RUN apt-get update && apt-get install -y dbus systemd build-essential ... && apt-get clean
+    ...
+    EOF
+
+    container build -t local/ubuntu-machine:latest .
+
+    # 2、创建容器机 以 kata 内核运行 ubuntu 的容器镜像
+    # 可用参数 --arch amd64 指明使用其它架构（多架构的镜像才支持）
+    container machine create local/ubuntu-dev:latest --name dev
+
+    # 3、直接进入虚拟机交互shell，不用配 ssh 登录了，省事
+    $ container machine run -n dev
+
+        # 本地家目录直接就是挂载好的，方便
+        cd myproject
+
+        # 包管理安装
+        $ sudo apt install build-essential
+
+        # 构建其它系统下的应用
+        $ cmake build ...
+
+        #
+        $ systemctl start postgresql
 
 ### macOS 的服务管家 launchd
 
