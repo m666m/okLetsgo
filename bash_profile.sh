@@ -128,7 +128,6 @@ export NVM_NODEJS_ORG_MIRROR=https://npmmirror.com/mirrors/node
 # rust
 export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
 export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
-. "$HOME/.cargo/env"
 
 if [[ $os_type = 'macos' ]]; then
     # Homebrew 国内镜像
