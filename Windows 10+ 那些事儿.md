@@ -4095,6 +4095,8 @@ CUDA 安装路径不要包含中文或空格
 
 ### 使用 Docker
 
+现在使用 docker 不需要安装虚拟机了，wsl 2 支持运行容器了
+
     https://docs.microsoft.com/zh-cn/Windows/wsl/tutorials/wsl-containers
 
 docker 现在可以运行在 WSL2 的 Linux 实例里：Windows 10+ 上的 docker 是基于 WSL2 或 Windows 容器模式(Hyper-V) 实现的，在 Windows 7 上 docker 是安装了 virtual box 虚拟机在其上运行的。
@@ -4137,9 +4139,11 @@ process 模式只在 Windows server 版提供 <https://docs.microsoft.com/zh-cn/
 
 #### 使用基于 WSL2 的 Docker
 
-安装使用 Docker Desktop for windows
+安装使用 Docker Desktop for windows，支持选择虚拟机方式还是 wsl 2 方式运行你的容器
 
     https://docs.docker.com/desktop/features/wsl/
+
+    https://zhuanlan.zhihu.com/p/1916833700567552094
 
 1、下载安装 Docker Desktop for windows
 
