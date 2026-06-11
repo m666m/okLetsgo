@@ -19131,7 +19131,7 @@ xcode-select 只是安装了 Command Line Tools：
 
     Windows 操作系统 API 调用、DirextX API 调用：开源社区的 Wine。将 Win32 API 调用 转换为 POSIX / macOS API 调用。
 
-苹果提供了游戏开发者使用的整合工具 --- [使用 Apple Game Porting Toolkit (GPTK)]。
+这个组合用法已经是事实上的标准做法了，[苹果官方的开源整合解决方案 GPTK] 也是在这个基础上做开发的。
 
 苹果官方建议是 [虚拟机 arm Windows 运行 Windows 程序]
 
