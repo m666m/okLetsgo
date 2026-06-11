@@ -1,4 +1,5 @@
 # .bash_profile
+
 ###################################################################
 # 适用于 Linux bash、Linux zsh、Windows git bash(mintty.exe)，macOS（未完全测试）
 # alias和路径设置等本该放到 .bashrc 文件，为了方便统一在此了。
@@ -24,7 +25,7 @@
 # -e ： 遇到一个命令失败（返回码非零）时，立即退出。
 # -u ：试图使用未定义的变量，就立即退出。
 # -o pipefail ： 只要管道中的一个子命令失败，整个管道命令就失败，这样可以捕获到其退出代码
-#set -xeuo pipefail
+#set -euo pipefail
 # trap "rm -f $temp_file" 0 2 3 15  # `trap -l` for all useble signal
 # 意外退出时杀掉所有子进程
 # trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
@@ -32,7 +33,7 @@
 #######################
 # 兼容性设置：用于 .bash_profile 加载多种 Linux 的配置文件，zsh不加载
 #   ~/.bashrc: executed by bash(1) for non-login shells.
-#       see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
+#   see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
 if [[ -n "$BASH_VERSION" ]] && [[ -f ~/.bashrc ]]; then
     . ~/.bashrc
 fi
@@ -44,9 +45,7 @@ fi
 #     see /usr/share/doc/bash/examples/startup-files for examples.
 #     the files are located in the bash-doc package.
 # 而 Debian 系在 .profile 里把某几个标准目录设置到变量 $PATH，不调用 .profile 会导致 bash 找不到某些基础命令。
-# 为保持兼容性，这里不直接执行 .profile 文件，而是单独补充，把这几个标准目录设置到变量 $PATH
-# test -f ~/.profile && . ~/.profile
-# PATH=$PATH:$HOME/.local/bin:$HOME/bin; export PATH
+# 所以，为保持兼容性，这里不直接执行 .profile 文件，而是单独补充，把这几个标准目录设置到变量 $PATH
 for dir in "$HOME/.local/bin" "$HOME/bin"; do
     if [[ -d "$dir" ]] && [[ ":$PATH:" != *":$dir:"* ]]; then
         PATH="$PATH:$dir"
@@ -55,14 +54,15 @@ done
 export PATH
 
 #######################
-# 如果是非交互式登录(ssh直接在服务器执行脚本等场景)，到这里就可以退出了，后面的设置统统不需要
 # exit for non-interactive shell
+# 如果是非交互式登录(ssh直接在服务器执行脚本等场景)，到这里就可以退出了，后面的设置统统不需要
+# 注意：
+#   本脚本是被 source 使用的 `source .bash_profile`，直接执行是错误用法，而 `source` 可以用 return 命令。
+#   如果把 return 改成 exit 会导致致命问题：GNOME/KDE 桌面环境下用户登录过程秒退到登录界面且无任何提示。
 [[ $- != *i* ]] && return
-# 注意：本脚本是被 source 使用的 `source .bash_profile`，直接执行是错误用法，而 `source` 可以用 return 命令。
-# 如果把 return 改成 exit 会导致致命问题：GNOME/KDE 桌面环境下用户登录过程秒退到登录界面且无任何提示。
 
 ###################################################################
-# 自此开始都是用户为了使用习惯的自定义设置
+# 自此开始都是为了使用习惯的用户自定义设置
 # User specific environment and startup programs
 #
 # 为防止变量名污染命令行环境，尽量使用奇怪点的名称
@@ -115,7 +115,47 @@ esac
 unset os_name
 
 #######################
+# 为方便做多个内网环境使用，只能加这么个屏幕打印，暂没有更好的解决办法
+export PDMREPO="192.168.0.111:5000" && echo "内网私有容器镜像仓库地址设置为 PDMREPO=${PDMREPO}"
+
+#######################
+# 设置常用软件仓库的国内镜像
+
+# uv
+export UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple/
+
+# npm config set registry https://registry.npmmirror.com
+
+# nvm
+export NVM_NODEJS_ORG_MIRROR=https://npmmirror.com/mirrors/node
+
+# rust
+export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
+export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
+. "$HOME/.cargo/env"
+
+if [[ $os_type = 'macos' ]]; then
+    # Homebrew 国内镜像
+    # https://mirrors.ustc.edu.cn/help/brew.git.html
+    export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+
+    # 核心软件仓库 https://mirrors.ustc.edu.cn/help/homebrew-core.git.html
+    export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+
+    # Brew 4.0 版本后默认使用元数据 JSON API 获取仓库信息
+    # https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
+    export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+
+    # 预编译二进制软件包与软件包元数据文件 https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
+    export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
+
+    # cask 软件仓库，提供 macOS 应用和大型二进制文件 https://mirrors.ustc.edu.cn/help/homebrew-cask.git.html
+    # 不再需要设置了 brew tap --custom-remote homebrew/cask https://mirrors.ustc.edu.cn/homebrew-cask.git
+fi
+
+#######################
 # 定义工具函数
+
 curlgh() {
     if [ $# -eq 0 ]; then
         echo "获取 github 文件，下载超时则自动更换 CDN 下载：" >&2
@@ -183,10 +223,6 @@ curlgh() {
         return 1
     fi
 }
-
-#######################
-# 为方便使用，只能加这么个屏幕打印，暂没有更好的解决办法
-export PDMREPO="192.168.0.111:5000" && echo "内网私有容器镜像仓库地址设置为 PDMREPO=${PDMREPO}"
 
 #######################
 # 删除 vi 然后安装 vim，居然没有 `vi` 了
@@ -294,10 +330,15 @@ else
 fi
 
 # macOS 下常用设置
-# macOS 预装的 bash 版本（3.2）较老，建议 `brew install bash` 以后使用 /opt/homebrew/bin/bash
 if [[ $os_type = 'macos' ]]; then
     alias arch86='echo "[快捷执行 x86 架构命令]"; arch -x86_64 '
     alias arch86='echo "[进入 x86 架构的子shell]"; arch -x86_64 zsh'
+
+    if [[ $current_shell = 'bash' ]]; then
+        if [ "${BASH_VERSION%%.*}" -lt 5 ]; then
+            echo 'macOS 预装的 bash 版本较老，建议 `brew install bash` 以后使用 /opt/homebrew/bin/bash'
+        fi
+    fi
 
     ########## Homebrew
 
@@ -327,23 +368,6 @@ if [[ $os_type = 'macos' ]]; then
 
         cat $HOME/cask.json | jq --arg pattern "$1" '.[] | select(any(.name[]; test($pattern; "i")) or (.token | test($pattern; "i"))) | {token: .token, name: .name, description: .desc, version: .version, homepage: .homepage}'
     }
-
-    # Homebrew 国内镜像
-    # https://mirrors.ustc.edu.cn/help/brew.git.html
-    export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
-
-    # 核心软件仓库 https://mirrors.ustc.edu.cn/help/homebrew-core.git.html
-    export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
-
-    # Brew 4.0 版本后默认使用元数据 JSON API 获取仓库信息
-    # https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
-    export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
-
-    # 预编译二进制软件包与软件包元数据文件 https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
-    export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
-
-    # cask 软件仓库，提供 macOS 应用和大型二进制文件 https://mirrors.ustc.edu.cn/help/homebrew-cask.git.html
-    # 不再需要设置了 brew tap --custom-remote homebrew/cask https://mirrors.ustc.edu.cn/homebrew-cask.git
 
 fi
 
@@ -1342,7 +1366,9 @@ else
 
 fi
 
+#######################
+# 退出前清理无用的变量定义
+
 unset current_shell
 unset os_type
 unset gsversion
-
