@@ -18640,1109 +18640,6 @@ System-wide autostart directories:
 
     Comment=xdg testing
 
-## 使用 macOS
-
-官方软件商店的资源很少，基本都是商业的，或者游戏。
-
-大量的工具软件，特别是开源软件，只能靠 [Homebrew] 社区软件商店，或 [自编开源代码]。
-
-常用软件
-
-    解压缩 https://github.com/aonez/Keka/
-
-监控 gpu 功耗
-
-    sudo powermetrics --samplers gpu_power -i1000
-
-    重度任务可以看到，一开始 45W 很快就降到 10几瓦了，14寸笔记本电脑的散热能力带不动全速运行的 M5 pro 芯片
-
-### 长时间运行防睡眠
-
-默认”合盖模式” (Clamshell Mode)：合盖既睡眠
-
-    当 MacBook 连接了外部电源，同时连接了至少一个外部显示器、键盘和鼠标。系统会自动切换，“合盖”就被解读为“切换到外接设备”而非“进入睡眠”。
-
-    经常需要合盖当主机用 → 买个 HDMI 诱骗器插上。
-
-下载文件，人长时间离开：
-
-    进入系统设置 > 电池 > 选项，勾选点亮 “使用电源适配器供电且显示器关闭时，防止自动进入睡眠”。这里的显示器关闭指的是屏幕超时熄屏的场景，有外接电源就继续运行。但是合盖会睡眠，中断下载。
-
-        等效于命令行运行 `caffeinate -s`，可以防所有软件形式的睡眠（闲置睡眠、定时睡眠、从 Apple 菜单主动睡眠等），有外接电源就继续运行。但是合盖会睡眠，中断下载。实测无效。
-
-    在电池模式下也能防止睡眠：命令行运行 `caffeinate -i`，仅防止系统闲置睡眠，屏幕仍然会超时熄屏。但合盖依然会睡眠，中断下载。实测有效
-
-合盖也能阻止睡眠，可以继续下载：
-
-    安装软件 Amphetamine
-
-### 文件管理器---访达
-
-    建议使用 https://sourceforge.net/projects/doublecmd/
-
-默认打开界面，把你定位到最近使用的项目，不区分应用程序、文档、视频、音频等等，一股脑的显示在 “最近使用”。
-
-如果你想清楚的使用自己的文件，点击下面的“位置”，选择你的用户名，这里是真正分门别类摆放处　：
-
-    /Users/gg/
-      ├── Desktop/
-      │   ├── ...
-      │  
-      ├── Documents/
-      │   ├── ...
-      │  
-      ├── Downloads/
-      │   ├── ...
-      │  
-      ├── Movies/
-      │   ├── ...
-      │  
-      ├── Music/
-      │   ├── ...
-
-      ...
-
-#### 显示系统及隐藏文件
-
-Unix/Linux 系统的用户目录下，用户自定义选项总是需要操作 .开头的目录或配置文件，但是“访达”默认不显示，让你在图形界面选文件的时候，无从下手。
-
-文件选择对话框中，只能使用热键
-
-    cmd+shift+.，临时显示
-
-    cmd+shift+g，在弹出地址栏中手动输入地址，一般是 /User/xxx/.config/
-
-### 终端模拟器 Ghostty
-
-超级快，没有之一
-
-    https://ghostty.org/
-        https://github.com/ghostty-org/ghostty
-
-    竞品 iTerm2 是没的选的情况下的选择
-
-Ghostty 常用命令速查
-
-    查看所有内置主题：ghostty +list-themes
-
-    查看默认配置：ghostty +show-config --default
-
-    列出可用字体：ghostty +list-fonts
-
-    重载配置（无需重启）：Cmd + Shift + ,
-
-Ghostty 配置文件 ~/.config/ghostty/config，其实不需要，菜单栏选择 Settings 就打开了，把下面的内容填进去就可以了：
-
-```ini
-# https://ghostty.org/docs/config/reference
-
-# 字体
-font-family = "MesloLGS NF"
-font-size = 13
-#font-thicken = true
-#adjust-cell-height = 2
-
-## 主题
-# Modus Operandi.    Primary.  Xcode Light
-# Tomorrow Night Burns.  Tomorrow Night Eighties
-theme = light:Nord,dark:Nord Wave
-
-# 光标透明
-# 禁用 shell 的方案才能自己设置光标风格
-shell-integration-features = no-cursor
-cursor-color = "#ffa500"
-#cursor-text = "#ff0000"
-#cursor-style = underline
-#adjust-cursor-thickness = 2200%
-#cursor-opacity = 0.8
-
-# 缓冲多少字节的历史记录
-scrollback-limit = 104857600
-
-# Quake 风格下拉终端需要手动设置热键
-keybind = global:option+grave_accent=toggle_quick_terminal
-
-# 用 cmd+b 模拟 tmux 的前导键 ctrl+b
-#keybind = cmd+b=text:\x02
-
-# 窗口拆分
-# cmd + d           垂直拆分
-# cmd + shift + d   水平拆分
-# cmd + opt + 方向键  在拆分窗口间移动
-# 缩/放拆分的窗口，便于使用 Claude Code，左窗口编程，右窗口验证，太小就缩放
-keybind = cmd+shift+f=toggle_split_zoom
-# 拆分窗口1:1，如果搞乱了就用这个
-keybind = cmd+shift+e=equalize_splits
-
-```
-
-### 执行下载的或自编译程序提示禁止执行
-
-macOS 的 Gatekeeper（门禁）安全机制会禁止直接执行从互联网下载的软件，甚至你自行编译的软件。
-
-每次使用总是得点选信任同意，挺麻烦的。
-
-当你从互联网上下载软件时，macOS 会自动给它打上一个 com.apple.quarantine（隔离）标签。下载的 dmg 程序在安装到了 /Applications 之后，也是会带有隔离属性。
-
-使用终端命令清除“隔离属性”
-
-    xattr -d com.apple.quarantine 你的自编译程序
-
-    build 目录下的文件我都要信任：
-
-        xattr -d com.apple.quarantine ./build
-
-清除安装的程序的所有属性：
-
-    xattr -cr "/Applications/Double Commander.app/"
-
-### MacBook 快捷键
-
-    没有 atl 键，ctl 键作用很小，苹果把绝大部分功能移到它独家的 cmd 和 opt 键
-
-截屏 cmd + shift + 5
-
-多任务切换
-
-    应用间切换：cmd + tab，不涉及一个应用的多个实例窗口
-
-    同一应用的窗口间切换： cmd + `
-
-文件管理器“访达”操作
-
-    菜单选择复制：当前目录下的文件，做个副本
-
-    菜单选择拷贝：只是标记为要进行复制，等待用户下一步操作，快捷键 cmd + c
-
-        菜单选择粘贴：把上一步标记的文件粘贴到当前文件夹，快捷键 cmd + v
-
-        剪切：把上一步标记的文件移到到这里，快捷键 cmd + opt + v，注意这里是跟 Windows 最大的差异
-
-    鼠标选择后拖动文件，默认当前目录下是移动，不同窗口间是复制，改变行为：在拖动后按住 opt 键。
-
-    删除文件到废纸篓：cmd + backspace
-    永久删除（不放入废纸篓）：cmd + opt + backspace
-
-文字编辑：
-
-    保存： cmd + s
-
-    退格删除：键盘上只有这个前向删除键，标记为 backspace 或  ⌫
-
-    删除：删除当前光标后面的文字，快捷键 fn + backspace
-
-    鼠标选择文字后拖动，默认是移动，改变行为：在拖动后按住 opt 键。
-
-    向上翻页：Fn + 光标上
-    向下翻页：Fn + 光标下
-
-    移动到文档顶部：cmd + 光标上
-    移动到文档底部：cmd + 光标下
-
-强制重启
-
-    同时按下 Control (⌃) + Command (⌘) + 电源键/Touch ID 按钮不放，直到屏幕变黑并出现苹果标志
-
-重启到恢复模式（开机时按住）：
-
-    Command (⌘) + R：启动至内建的 macOS 恢复系统。
-
-    Option (⌥)：进入启动管理器，可选择其他启动磁盘。
-
-    Shift (⇧)：以安全模式启动，用于排查软件问题。
-
-    Option + Command + P + R：重置 NVRAM（非易失性随机存取存储器）或 PRAM（参数随机存取存储器），用于解决一些硬件设置相关的问题。
-
-### Homebrew
-
-社区自制的面向 MacOS 的软件包管理，有自己的仓库，很多在 MacOS AppStore 里没有的常用软件都可以在这里安装。
-
-    https://brew.sh/zh-cn/
-
-    https://zhuanlan.zhihu.com/p/138059447
-
-Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS
-
-    https://docs.brew.sh/Homebrew-on-Linux
-
-从仓库安装软件分两类：
-
-    Formulae：软件包，包括了这个软件的依赖、源码位置及编译方法等，用来安装一些不带界面的命令行工具和第三方库。
-
-        https://formulae.brew.sh/formula/
-
-        使用 `brew install` 安装，下载源码解压，然后 ./configure && make install ，同时会包含相关依存库，并自动配置好各种环境变量。
-
-    Casks：已经编译好的应用包，主要是图形界面程序等，包含很多在 MacOS AppStore 里没有的常用软件。
-
-        https://formulae.brew.sh/cask/
-        字体还有个单独的网址 https://formulae.brew.sh/cask-font/
-
-        使用 `brew install --cask` 安装，针对已经编译好了的应用包（.dmg/.pkg）下载解压，然后放在统一的目录中（Caskroom），省掉了自己下载、解压、安装等步骤。
-
-常用的 brew 命令：
-
-    查看brew版本：brew -v
-    更新brew版本：brew update
-    本地软件库列表：brew list
-    查看软件库版本：brew list --versions
-
-    查找软件包：brew search xxx （xxx为要查找软件的关键词）
-        找不到软件？见章节 [不靠谱命令 `brew search`]
-
-    安装 formula 类软件包： brew install xxx
-    安装 cask 类软件：      brew install --cask xxx
-
-    卸载软件：brew uninstall xxx
-
-Homebrw 相关的几个文件夹用途
-
-    整体目录适应 Unix 风格，软件都安装在 /opt 目录下，现在改为 /home/linuxbrew/.linuxbrew 下
-
-    bin：用于存放所安装程序的启动链接（相当于快捷方式）
-    etc：brew安装程序的配置文件默认存放路径
-    Library：Homebrew 系统自身文件夹
-    Cellar：通过brew安装的程序将以 [程序名/版本号] 存放于本目录下
-
-macOS 系统文件夹
-
-    /System/Applications/Utilities/Terminal.app  系统级应用程序的位置
-
-        ~/Applications  当前用户个人目录下的 “应用程序” 文件夹
-
-    /Library/Application Support  系统级的应用支持目录，对所有用户可用。存放的通常是全局（共享）数据，如应用的模板、插件信息、数据库缓存等，而非某个用户的个性化设置。
-
-        /Library/Preferences/     所有用户    全局偏好（较少见，多由后台守护进程使用）
-
-        ~/Library/Preferences/    当前用户    用户级偏好，例如 com.apple.Terminal.plist
-
-    /Applications   用户自己装的各种软件，卸载软件时，直接删除 /Applications 下的相应 .app 即可（但可能会残留偏好文件在 ~/Library 中）。
-
-> 国内镜像源
-
-使用科大源安装 Homebrew / Linuxbrew，以下四个变量写入你的 .bash_profile 即可实现 `brew update` 使用镜像地址了
-
-    https://mirrors.ustc.edu.cn/help/brew.git.html#homebrew-linuxbrew
-
-    # https://mirrors.ustc.edu.cn/help/brew.git.html
-    export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
-
-    # 核心软件仓库 https://mirrors.ustc.edu.cn/help/homebrew-core.git.html
-    export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
-
-    # Brew 4.0 版本后默认使用元数据 JSON API 获取仓库信息
-    # https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
-    export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
-
-    # 预编译二进制软件包与软件包元数据文件 https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
-    export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
-
-    # cask 软件仓库，提供 macOS 应用和大型二进制文件 https://mirrors.ustc.edu.cn/help/homebrew-cask.git.html
-    # 不再需要设置了 brew tap --custom-remote homebrew/cask https://mirrors.ustc.edu.cn/homebrew-cask.git
-
-然后使用镜像地址进行安装
-
-    $ sudo apt install -y git curl  # 安装依赖
-
-    # 原 /bin/bash -c "$(curl -fsSL https://github.com/Homebrew/install/raw/HEAD/install.sh)"
-    $ /bin/bash -c "$(curl -fsSL https://mirrors.ustc.edu.cn/misc/brew-install.sh)"
-
-安装后会提示后续的操作：
-
-    Next steps:
-
-    - Run these commands in your terminal to add Homebrew to your PATH:
-        echo >> /home/uv/.bashrc
-        echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/uv/.bashrc
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-    - Run these commands in your terminal to add the non-default Git remotes for Homebrew/brew and Homebrew/homebrew-core:
-        echo '# Set non-default Git remotes for Homebrew/brew and Homebrew/homebrew-core.' >> /home/uv/.bashrc
-        echo 'export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"' >> /home/uv/.bashrc
-        echo 'export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"' >> /home/uv/.bashrc
-        export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
-        export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
-
-    - Install Homebrew's dependencies if you have sudo access:
-        sudo apt-get install build-essential
-
-    For more information, see:
-        https://docs.brew.sh/Homebrew-on-Linux
-
-    - We recommend that you install GCC:
-        brew install gcc
-
-这样你的 .bashrc/.zshrc 增加：
-
-    export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
-    export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
-    export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
-    export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-
-验证：运行 `brew update`、`brew install tmux`
-
-清华源：
-
-    Homebrew 软件仓库，是 Homebrew 源程序以及 formula/cask 索引的镜像（即 brew update 时所更新内容）
-
-        https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/
-
-    Homebrew Bottles 软件仓库，是 Homebrew 二进制预编译包的镜像
-
-        https://mirrors.tuna.tsinghua.edu.cn/help/homebrew-bottles/
-
-#### 不靠谱命令 `brew search`
-
-2026年好像解决这个问题了，以下保留仅供参考。
-
-基本搜索不到你要的软件，比如 vlc、onlyoffice 等都是这样。
-
-直接去上面的网址搜索结果比较全
-
-    https://formulae.brew.sh/
-
-后来发现网站提供了索引文件，这样就可以下载到本地使用 jq 命令进行搜索：
-
-    # 根据下面网址的说明
-    #
-    #    formula https://formulae.brew.sh/formula/
-    #    cask https://formulae.brew.sh/cask/
-    #    字体 https://formulae.brew.sh/cask-font/
-
-    curl -fsSL -O https://formulae.brew.sh/api/formula.json
-
-    curl -fsSL -O https://formulae.brew.sh/api/cask.json
-
-使用时注意替换关键字 tmux 和 vlc
-
-    $ cat formula.json | jq '.[] | select(any(.oldnames[]; test("tmux"; "i")) or (.name | test("tmux"; "i"))) | {name: .name, oldnames: .oldnames, description: .desc, version: .version, homepage: .homepage}'
-
-    $ cat cask.json | jq '.[] | select(any(.name[]; test("vlc"; "i")) or (.token | test("vlc"; "i"))) | {token: .token, name: .name, description: .desc, version: .version, homepage: .homepage}'
-
-干脆自制命令：
-
-```bash
-# brew 搜索本地索引
-function brew_idx_upate() {
-    echo "brew 的索引缓存到本地"
-    curl -fsSL https://formulae.brew.sh/api/formula.json -o $HOME/formula.json
-    curl -fsSL https://formulae.brew.sh/api/cask.json -o $HOME/cask.json
-
-}
-function brew_sf() {
-    if [ "$#" -ne 1 ]; then
-        echo '用法：brew_sf tmux'
-        return 1
-    fi
-    cat $HOME/formula.json | jq --arg pattern "$1" '.[] | select(any(.oldnames[]?; test($pattern; "i")) or (.name | test($pattern; "i"))) | {name: .name, oldnames: .oldnames, description: .desc, version: .version, homepage: .homepage}'
-}
-function brew_sc() {
-    if [ "$#" -ne 1 ]; then
-        echo '用法：brew_sc chrome'
-        return 1
-    fi
-    cat $HOME/cask.json | jq --arg pattern "$1" '.[] | select(any(.name[]; test($pattern; "i")) or (.token | test($pattern; "i"))) | {token: .token, name: .name, description: .desc, version: .version, homepage: .homepage}'
-}
-
-```
-
-### 自编开源代码
-
-苹果笔记本 Macbook Pro M5(Apple Silicon) Pro，macOS Tahoe(Darwin) Metal 构建代码，翻译：
-
-    Macbook Pro 苹果笔记本电脑型号，其 Pro 版配置更高
-
-    芯片 Apple Silicon，其第5代型号 M5，其 Pro 版核心更多(6+12核 CPU + 20 核 GPU)
-
-        最大的特点就是能耗比惊人的好，而且 CPU 和 GPU 共享同一块物理内存，延迟低。
-
-    操作系统 macOS，其第 26 版代号 Tahoe（内核代号 Darwin）
-
-        苹果现阶段各种硬件使用的操作系统，无论是 macOS、iOS 还是 iPadOS，甚至是 HomePod 和 Apple TV（TvOS）都是建立在 Darwin 内核的基础上。Darwin 通过其 FreeBSD 血统支持 POSIX API，因此大量为 Unix/Unix-like 编写的程序可以直接在 Darwin 上编译运行。
-
-    图形计算框架 Metal
-
-        属于对 Apple Silicon 芯片提供支持的软件层面，相当于 Windows 上的 DirectX，实现了 Macbook 笔记本电脑在处理音频、视频、AI 应用时的高性能低功耗。
-
-        开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片统一内存的 GPU 加速。
-
-1、安装 Xcode 的命令行编译环境
-
-Apple macOS(Darwin) 可以作为系统组件安装 Xcode Command Line Tools，自带 Clang 开发环境：
-
-    $ xcode-select --install
-
-    $ clang --version
-
-执行编译：
-
-    $ cd your_project
-
-    # 查看项目是不是有预置参数模版
-    $ cmake --list-presets
-    Available configure presets:
-        "appleclang-debug"   - Clang Debug
-        "appleclang-release" - Clang Release
-
-    如果有，就省的输入一堆参数了
-
-        # 配置项目（生成构建文件）
-        $ cmake --preset appleclang-release
-
-        # 编译（实际构建二进制）
-        $ cmake --build --preset appleclang-release
-
-    否则自行添加参数，需要查看你的项目的文档说明：
-
-        $ cmake -B build -DGGML_METAL=ON -DCMAKE_BUILD_TYPE=Release
-        $ cmake --build build -j
-
-安装，默认到 $CMAKE_INSTALL_PREFIX /usr/local中，所以需要 sudo：
-
-    $ sudo cmake --build --preset appleclang-release --target install
-
-如果你知道构建目录的具体路径（例如 build/appleclang-release），也可以单独指定：
-
-    $ sudo cmake --install build/appleclang-release
-
-2、安装 Xcode 的图形界面开发环境
-
-macOS 上编译带图形界面的应用时，不能只装命令行工具，必须使用完整的 Xcode，并且系统要正确指向它。
-
-    https://ghostty.org/docs/install/build#xcode
-
-xcode-select 只是安装了 Command Line Tools：
-
-    Command Line Tools（/Library/Developer/CommandLineTools）：只包含编译器（clang）、make、git 等命令行工具，没有 macOS SDK 的完整头文件、界面框架和代码签名支持。
-
-    Xcode.app（/Applications/Xcode.app/Contents/Developer）：包含完整的开发环境，有所有系统框架、模拟器、签名工具等，是构建图形化 macOS 应用的必需。
-
-查看当前命令行工具链的路径
-
-    $ xcode-select --print-path
-
-    输出 /Library/Developer/CommandLineTools → 坏，因为没有完整的 macOS SDK，编译图形应用会失败（比如找不到 Cocoa 框架）。
-
-    输出 /Applications/Xcode.app/Contents/Developer → 好，说明正在使用完整的 Xcode。
-
-为什么会出现 CommandLineTools 被激活的情况
-如果你先装了 Command Line Tools，后来又装了 Xcode.app，系统可能仍然默认指向 CommandLineTools，修正方法：
-
-    $ sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
-
-这会强制让命令行工具（clang、git 等）使用 Xcode.app 内的完整工具链和 SDK。
-
-### macOS 运行 Windows 程序
-
-世界上绝大多数软件都有 Windows x86 下的编译版本，或者是 Linux x86 的版本，但是运行于 arm 芯片的就少多了，如果能利用起来，会大大扩展 macOS 的可用性。
-
-    x86 cpu 指令 转 arm cpu 指令 --- Rosetta 2 是 arm macOS 运行 x86 Mac 应用的解决方案，它可以动态转译 x86 → ARM 指令，苹果官方的用途是让 arm macOS 可以运行旧版 x86 macOS 的应用。
-
-    Windows 操作系统 API 调用、DirextX API 调用：开源社区的 Wine。将 Win32 API 调用 转换为 POSIX / macOS API 调用。
-
-这个组合用法已经是事实上的标准做法了，[苹果官方的开源整合解决方案 GPTK] 也是在这个基础上做开发的。
-
-苹果官方建议是 [虚拟机 arm Windows 运行 Windows 程序]
-
-    需要长期、稳定使用多个 Windows 程序，且它们之间有协同。
-
-    你需要用的是一整套 Office 办公套件（复杂宏、Access 等）、Visual Studio、AutoCAD、SolidWorks 这类对兼容性要求苛刻的生产力软件。
-
-    有外接加密狗、专用打印机、税控盘、U盾等硬件。
-
-    你是开发、测试，需要完整的 Windows 环境来调试。
-
-或者云电脑，如果你只是偶尔用一下，而且网速够快，可以考虑租用 Windows 365 Cloud PC 或者国内的云电脑服务，按需付费，完全不影响本地性能，还能用 iPad 远程连进去。
-
-#### macOS 本地运行 Windows 程序
-
-最佳实践是直接使用 ARM 原生版本，如果 brew 里没有，直接去开源软件的官网查找，下载 .dmg 安装包或可执行文件。
-
-如果要玩游戏，先看看 Steam 客户端上有没有原生 arm 版本。在 x86 Linux 下，steam 官方的 porton（基于wine）技术通过 Vulkan 图形接口让大部分 Windows 游戏可玩，但目前并未支持苹果独家的 Metal 图形接口，也就无法实现 arm 运行 x86 游戏。
-
-如果程序只有 x86/AMD64 版本，则 macOS 需要安装一些执行框架以实现本地运行，有多种方案，都是基于 wine 转译 Windows 操作系统 API调用。
-
-##### 指令级转译：arm macOS 可以运行 x86 macOS 的 应用
-
-苹果用实时转译 cpu 指令的方式，性能稍打折扣，实现了在 arm CPU 上执行 x86 程序。
-
-    https://wuyanxin.com/post/mac-m1-brew-both-support-aarm64-and-x86_64.html
-        https://www.wisdomgeek.com/development/installing-intel-based-packages-using-homebrew-on-the-m1-mac/
-
-1、先安装 Rosetta 2
-
-Rosetta 2 是让 arm macOS 可以运行旧版 x86 macOS(2010～2020年代) 下 x86 应用程序的解决方案，它可以动态转译 x86 → ARM 指令。
-
-    $ softwareupdate --install-rosetta --agree-to-license
-
-2、使用 Rosetta 打开终端（在终端图标点右键选择“显示简介”勾选“使用 Rosetta 打开”）。
-
-或在终端里启动一个 x86_64 模式的子 Shell：
-
-    $ arch -x86_64 zsh
-
-验证：输入 `arch` 命令会返回 i386，说明切换成功。
-
-3、在这个 x86 终端里，可以正常执行各种 x86 格式的二进制文件。
-
-首先安装个 x86_64 架构 Homebrew
-
-    $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-使用国内镜像安装见章节 [Homebrew]。
-
-4、然后就可以使用这个 Homebrew 安装 x86 macOS 下的各种应用了。
-
-测试，用这个 homebrew 安装一个 x86 redis：
-
-    $ arch -x86_64 /usr/local/Homebrew/bin/brew install redis
-
-以后进入 x86 架构的终端即可执行这些 x86 的应用。
-
-5、区分环境
-
-两套 Homebrew 会安装在不同的路径，不会冲突：
-
-    x86_64 安装目录：/usr/local/Homebrew
-
-    ARM64 安装目录：/opt/homebrew
-
-可以设置快捷操作：
-
-    文件 ~/.brew_arm
-
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-
-    文件 ~/.brew_intel
-
-        eval "$(/usr/local/Homebrew/bin/brew shellenv)"
-
-    然后将下面代码加入到 .zshrc
-
-        # homebrew
-        alias brew_arm='source ~/.brew_arm'
-        alias brew_intel="source ~/.brew_intel"
-
-##### 系统调用级转译：用 Wine/Crossover 来直接运行 Windows 程序
-
-1、wine 最初是 x86 Linux 下执行 Windows 游戏的开源社区解决方案。
-
-    将 Win32 API (文件, 注册表, 窗口...)调用转换为 POSIX、x86 Linux API 调用
-
-    将 DirectX API 调用转换为 Linux 系统支持的 OpenGL/Vulkan 图形指令
-
-wine 的兼容性发展到现在已经很好了，不止可以运行游戏，大量软件都可以直接运行，如无驱动的 Windows 工具、轻量办公软件、3A 大作等。但反作弊、底层驱动、新 3A 大作无法保证可以运行。
-
-2、在 2010 -2020 年 x86 macOS(Intel CPU) 时代，有了 x86 macOS 版的 Wine。
-
-它可以在操作系统调用层面"模拟"支持运行 Windows 软件，性能接近原生，安装即用。最大的优势是本地运行，不像虚拟机要占用若干GB内存，和 macOS 无缝融合，启动快。
-
-       Windows 游戏 (.exe)
-      魔兽争霸3, 暗黑破坏神4 ...
-    ───────────────────────────
-            │
-            │ 发出的调用:
-            │  • Win32 API 调用 (文件, 注册表, 窗口...)
-            │  • DirectX 图形指令
-            ▼
-    ┌──────────────────────────┐
-    │   Wine (x86 macOS 版)     │
-    └──────────────────────────┘
-            │
-            │• 将 Win32 API 调用转换为 POSIX、macOS API 调用
-            │• 将 DirectX API 调用转换为 macOS 系统支持的 OpenGL 图形指令
-            ▼
-    ┌────────────────┐
-    │   x86 macOS    │
-    └────────────────┘
-            │
-            │• x86 指令
-            │• OpenGL 图形指令
-            ▼
-    ┌────────────────┐
-    │   Intel CPU    │
-    └────────────────┘
-
-3、在 arm macOS 时代，x86 macOS 版 Wine 用来解决运行 Windows 程序的问题。
-
-借助苹果官方的指令层面转译工具 Rosetta 2 运行 x86 macOS 的 Wine，从而实现支持运行 Windows 软件：
-
-            │...
-            ▼
-    ┌──────────────────────────┐
-    │   Wine (x86 macOS 版)    │
-    └──────────────────────────┘
-            │
-            │• Wine 自身运行时的 x86_64 指令
-            │
-            │• 将 Win32 API 调用转换为 POSIX、macOS API 调用，是 x86_64 指令
-            │
-            │• 将 DirectX API 调用转换为 Vulkan 图形指令(DXVK)，
-            │  可用 MoltenVK 再转为 arm macOS 支持更好的 Metal 图形指令
-            ▼
-    ┌──────────────────────────────┐
-    │     Rosetta 2                │
-    │ 将 x86_64 指令翻译为 ARM64 指令 │
-    └──────────────────────────────┘
-            │
-            ▼
-    ┌─────────────────┐
-    │    arm macOS    │
-    └─────────────────┘
-            │
-            ▼
-    ┌────────────────────────────────────┐
-    │   Apple Silicon 芯片 (M1/M2/M3...)  │
-    └────────────────────────────────────┘
-
-##### 苹果官方的开源整合解决方案 GPTK
-
-    https://github.com/apple/game-porting-toolkit
-
-Apple Game Porting Toolkit (GPTK)
-
-    引入了 D3DMetal 将 Windows 游戏的 DirectX 图形指令，实时转换为 arm macOS 的 Metal 图形指令
-
-    基于 x86 macOS 版 wine ，实现将 Windows 的 API 调用（如键盘、鼠标、文件系统等）转换为 x86 macOS 能够理解的 x86_64 指令
-
-    用 Rosetta 2 将相关的 x86_64 指令实时翻译为 ARM64 指令交给 M 芯片去执行
-
-最终实现了 GPTK 能运行现代 3D 大作。
-
-1、 arm macOS 先安装依赖环境
-
-    Xcode 的命令行编译环境 “Command Line Tools for Xcode”
-
-    安装 Rosetta 2
-
-    安装 x86_64 架构 Homebrew
-
-前面的章节有介绍安装过程。
-
-2、在苹果官网下载 Game Porting Toolkit
-
-    https://developer.apple.com/games/game-porting-toolkit/
-
-下载到一个 .dmg 文件安装即可。
-
-过时：确保终端仍在x86_64模式下(arch -x86_64 zsh)，执行以下命令进行编译安装（首次安装耗时较长，请耐心等待）：
-
-    $ brew tap apple/apple http://github.com/apple/homebrew-apple
-    $ brew install game-porting-toolkit
-
-3、创建独立环境即可运行
-
-为游戏创建一个独立的 Wine Prefix（你可以理解为游戏专用的虚拟C盘）。在终端中执行以下命令：
-
-    WINEPREFIX=~/War3_Prefix $(brew --prefix game-porting-toolkit)/bin/wine64 winecfg
-
-运行后，在弹出的窗口中，将Windows版本设为“Windows 10”或“Windows 7”，然后点击确定。
-
-#### 虚拟机 arm Windows 运行 Windows 程序
-
-目前效率最高的运行 x86 程序的方法，是前面章节介绍的，在 macOS 下用 Wine/Crossover 直接运行 x86 软件，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。缺点是仅限于 x86 macOS 的那些软件，无法执行 Windows 下庞大的 x86 软件，特别是图形化界面的软件。
-
-为了兼容性最大化，则要接受至少消耗 8GB 内存用于虚拟机的方案：苹果操作系统提供了虚拟化框架 Hypervisor，装个虚拟机管理器软件即可实现接近本地运行的硬件加速效果。
-
-优选基于 QEMU 的 UTM 开源虚拟机管理器
-
-    https://mac.getutm.app/
-        https://github.com/utmapp/UTM/releases/latest/download/UTM.dmg
-
-    商业软件 Parallels Desktop 甚至支持 3D 加速，效率接近原生系统的 90%
-
-UTM 的两种运行方式：
-
-1、“模拟”模式（QEMU 方案）安装 x86 操作系统：纯 cpu 仿真运行 x86/AMD64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，不需要也不使用 cpu 提供的虚拟化加速。因此速度最慢，日常运行可能勉强可用，使用这个方案只是因为它的 x86 模拟功能最完整，作为生产环境或开发主力。
-
-2、推荐 虚拟化方式安装 arm 操作系统：这样可以利用系统的 Hypervisor 虚拟化框架及硬件加速，以接近本机原生的速度运行 ARM64 操作系统。然后利用 ARM 版 Windows 11/Linux 可以执行 x86 程序的能力来运行 Windows 程序。
-
-虚拟机安装 Windows 11 ARM 版运行 x86 程序是非常方便的，这个方案的兼容性大于使用 Wine 的方案，是稳定办公的首选：
-
-    Windows 11 内置微软官方开发的 Prism 模拟器，可将 x86 指令实时转译为 ARM64 指令，以执行 x86 程序。装好 Windows ARM 就和普通 PC 一样，无脑用。
-
-    得益于苹果 M 芯片的高性能及微软的极致优化，执行效率很高，日常办公体验是完全没问题的。商业软件 Parallels Desktop 甚至可以使虚拟机里运行的 3D 游戏接近原生 Windows 的感觉）。
-
-注意：UTM 虚拟机安装的 Windows，务必安装 QEMU 客户机工具，这样桌面操作的流畅感才会类似本地原生系统：
-
-    https://docs.getutm.app/guest-support/windows/
-        https://getutm.app/downloads/utm-guest-tools-latest.iso
-            https://github.com/utmapp/qemu/releases
-
-这个 iso 文件可手动下载放到宿主机的如下位置：
-
-    ~/Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/utm-guest-tools-latest.iso
-
-然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机 Windows 桌面体验直接起飞。
-
-#### 虚拟机 arm Linux 执行 Linux x86 程序
-
-绝大多数情况下，不需要本用法，可以在 macOS 本地直接运行x86程序，详见章节 [指令级转译：arm macOS 可以运行 x86 macOS 的 应用]。
-
-这个用法对普通用户用处极小，虚拟机安装 Ubuntu arm 版里运行 x86 程序，只适合开发环境（比如 Docker 里跑 x86 镜像））、运行 Linux x86 命令行工具等。
-
-仅限于运行 Linux x86 程序，大多数 x86_64 Linux 命令行程序和服务器软件都能良好运行，不能用于运行 Windows 程序。而且图形应用依赖配置复杂。部分对硬件特性（如某些底层指令）有强依赖的图形界面应用，或需要内核模块支持的程序可能存在问题。
-
-有两种方式：
-
-方式一、QEMU-user 模式
-
-它会自动向内核注册一条规则：凡是遇到 x86 二进制，就调用 qemu-x86_64-static 去翻译执行。要安装 `sudo apt install binfmt-support qemu-user-static`。缺点是纯软件翻译，性能一般，CPU 占用高。只适合服务器下运行命令行程序，运行图形化程序太繁琐。
-
-方式二、推荐 虚拟机直通，调用宿主机的 Rosetta 2
-
-新版 UTM 在安装 arm linux 时，选择设置 System (系统): 勾选 Use Apple Virtualization（使用Apple虚拟化）和 Enable Rosetta (x86_64 Emulation)（启用Rosetta）即可，然后安装 Ubuntu arm 版。
-
-UTM 会自动通过 virtiofs 共享宿主的 Rosetta 运行时，并注册 binfmt_misc，之后在虚拟机里直接执行 x86 程序即可，无需手动配置。
-
-以下内容是手动安装，仅供参考理解原理：
-
-1、在你的 Ubuntu arm 里，安装苹果提供的 Rosetta 二进制，并同样用 binfmt_misc 注册：让内核遇到 x86 二进制时，调用这个 Rosetta 引擎。这样虚拟机里的 x86 程序的翻译执行实际由宿主机的 M 芯片进行硬件加速，速度比 QEMU-user 模式快很多，接近原生速度。效率与 macOS 本机直接运行 x86 linux 程序使用 Rosetta 2 同级。
-
-2、安装 `sudo apt install binfmt-support spice-vdagent`。
-
-3、手动挂载 Rosetta 组件
-
-    # 创建挂载点目录
-    sudo mkdir -p /media/rosetta
-    # 挂载 Rosetta 组件
-    sudo mount -t virtiofs rosetta /media/rosetta
-
-    # echo "rosetta /media/rosetta virtiofs ro,nofail 0 0" | sudo tee -a /etc/fstab
-
-4、注册 Rosetta 转译器：
-
-    $ sudo /usr/sbin/update-binfmts --install rosetta /media/rosetta/rosetta \
-        --magic "\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x3e\x00" \
-        --mask "\xff\xff\xff\xff\xff\xfe\xfe\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff" \
-        --credentials yes --preserve no --fix-binary yes
-
-    此命令向系统注册一个名为"rosetta"的二进制格式处理程序，用于识别并转译x86_64可执行文件
-
-5、验证Rosetta是否生效：
-
-    cat /proc/sys/fs/binfmt_misc/rosetta
-    如果输出中包含 enabled，则表示转译器已成功注册并激活
-
-6、添加amd64架构支持：
-
-    sudo dpkg --add-architecture amd64
-    sudo apt update
-
-    这允许你的ARM系统通过APT安装和管理x86（amd64）架构的软件包
-
-7、安装一个x86程序进行测试：
-
-    # 例如，安装x86_64版本的hello程序
-    sudo apt install hello:amd64
-
-    # 运行测试
-    hello
-
-### macOS 使用容器
-
-容器技术依赖 Linux 内核，所以都是虚拟机方案：
-
-1、笨重且慢的虚拟机方案：用 Docker Desktop for Mac，至少4GB的RAM，只能配置 docker.io 的镜像，其它网站无法配置。可通过 `--platform linux/amd64` 参数要求Docker模拟x86环境来运行 x86 镜像（利用Rosetta 2或QEMU进行指令翻译）。
-
-2、轻量化改造的虚拟机方案：在 UTM 里装一个 Alpine Linux（几十 MB 内存，1GB 磁盘），仅运行 dockerd，然后在 macOS 里设置 DOCKER_HOST=ssh://user@alipine-vm，这样您可以在 macOS 原生终端执行 docker 命令。只是虚拟机里的 arm linux 可以执行 x86 镜像需要很多步骤设置，而且挂载本地存储和端口映射也很不方便。
-
-3、对上面的方案集成化改良，解决了使用不便的问题，基于 Lima（轻量化 Linux 虚拟机）的 Colima，目前最流行
-
-    https://github.com/abiosoft/colima
-        https://colima.run/
-
-    只用 1GB 内存、5GB 磁盘，几秒即可启动
-
-    支持多种后端如 docker、containerd(nerdctl)、k8s、incus，甚至 AI（https://github.com/containers/krunkit/），特别是 Colima 可以配置使用 containerd 作为运行时，这与主流Kubernetes服务保持一致，非常适合本机开发容器然后部署到服务器的办公模式。
-
-其虚拟机中的 Docker 引擎会自动与 Docker CLI 建立连接，简化文件卷挂载操作及端口映射
-
-    可以在 macOS 终端里直接使用 `docker`、`docker-compose` 命令，而使用传统 Linux 虚拟机中的 docker，每次都要先 ssh ubuntu-vm 进去再执行 `docker ps`，或需要手动设置本地的的 docker cli 连接到远程虚拟机中的 docker daemon。
-
-    自动把当前目录映射进虚拟机，不需要传统 Linux 虚拟机用 SSHFS、Samba、virtiofs 等需要额外配置的方法。
-
-    自动把 -p 8080:80 映射到 localhost:8080，而传统 Linux 虚拟机中的 Docker 容器监听的端口需要手动在虚拟机管理器里做转发，或者用桥接模式获取局域网 IP。
-
-用 brew 安装 Colima 及 docker 客户端工具：
-
-    $ brew install colima docker docker-compose docker-buildx docker-credential-helper
-
-首次启动时，可根据 Mac 配置调整资源，特别是选择 --vm-type vz（使用 Apple 原生虚拟化框架）参数可以为 Apple Silicon Mac 带来性能提升
-
-    $ colima start --cpu 4 --memory 8 --disk 20 --vm-type vz --runtime docker
-
-    如果有的镜像只有 x86 架构，则需要添加 Rosetta 2 软件转译层：
-
-        $ colima start --vm-type=vz --vz-rosetta
-
-        $ docker run --platform linux/amd64 --rm alpine uname -m
-        x86_64
-
-    如果转译效果不好，就需要通过 QEMU 进行完整系统模拟，性能开销更大：
-
-        $ colima start --arch x86_64 --vm-type=vz --vz-rosetta
-
-如果要跑的 x86 镜像居多，Colima 的 QEMU 模拟就会慢很多。而 Podman 和 Apple Container 的 Rosetta 2 方案在性能上其实差别不大。
-
-日常使用与管理
-
-    停止服务：colima stop
-
-    启动服务：colima start
-
-    查看状态：colima status
-
-4、替换 docker 的方案：
-
-Podman 无守护进程（daemonless），与 docker 命令几乎100%兼容。使用苹果原生框架 (applehv)实现虚拟化，可利用 Rosetta 2 直接在 VM 内加速 x86 镜像。
-
-#### Apple Container
-
-苹果官方开源方案，最轻量、性能最高
-
-    https://github.com/apple/container/releases
-        选择 container-0.12.3-installer-signed.pkg 安装
-
-最大的特点是每一个 Linux 容器都单独启动一个极限“瘦身”的微内核的虚拟机，以此来运行容器（默认 1GB 内存）：
-
-    用完退出容器即释放内存，不像其它的解决方案那样空跑一个虚拟机占好几个GB内存。
-
-    每个容器都有自己独立的 IP 地址，不需要像传统 Docker 那样进行端口映射。
-
-因为是虚拟机运行容器镜像，所以不像普通容器那样共享使用主机内核：
-
-    苹果使用了来自开源社区的 Kata Containers 项目：一个专门为轻量级虚拟机优化的 Linux 内核 https://github.com/kata-containers/kata-containers
-
-    默认架构是 arm64（Apple Silicon），与 macOS 宿主机架构一致。
-
-    首次使用时自动下载：如果本地没有内核，系统会根据 url 自动下载压缩包，然后从 binaryPath 路径提取内核二进制。
-
-    所有容器（包括 container machine）共用这个内核
-
-可惜功能还不完善：
-
-    暂不支持多容器编排 docker compose，暂只能使用 https://github.com/mcrich23/container-compose
-
-    不支持集群/编排相关命令 docker swarm/stack/service/node
-
-    容器内无法直接通过 localhost 访问宿主机服务。常见的变通方法是使用 socat 在宿主机上建立一个流量中转
-
-    不支持容器运行时加入网络 network connect / disconnect，没有 IPvlan / Macvlan 等高级网络驱动（仅 vmnet 插件）
-
-    另外关于容器信息和调试的很多命令也还未实现，如 docker system prune/docker top/docker update/docker context
-
-命令行使用
-
-    # 启动 container 的系统服务
-    $ container system start
-
-    # 运行容器的命令与 Docker 类似
-    $ container run nginx
-
-    $ container run --volume ${HOME}/Desktop/assets:/content/assets python:alpine ls -l /content/assets
-
-    $ container run --detach --name web --publish 8080:80 nginx:latest
-
-    # 运行一个 x86 架构的容器
-    $ container run --platform linux/amd64 nginx:latest
-
-##### 使用镜像仓库
-
-config.toml 中的 [registry] 节只支持设置一个默认仓库域名，无法同时为多个仓库配置不同地址。如果需要使用其他仓库（包括私有仓库），直接在镜像引用里写完整域名即可，认证则通过 container registry login 命令单独管理。
-
-下面是一个示例配置文件 ~/.config/container/config.toml，将默认仓库设为 docker.io，并给出了其他常见仓库在命令中直接引用的用法说明。
-
-```toml
-# 默认镜像仓库：当镜像名不含域名时自动补全该域名
-# 例如 alpine => docker.io/library/alpine
-[registry]
-domain = "docker.io"
-
-# 构建器资源（可根据需要调整）
-[build]
-cpus = 4
-memory = "4gb"
-rosetta = true
-
-# 容器默认资源
-[container]
-cpus = 2
-memory = "2gb"
-
-# 网络默认子网（可选）
-[network]
-# subnet = "192.168.100.0/24"
-# subnetv6 = "fd00:abcd::/64"
-
-# 内核及 init 镜像使用默认值即可，无需手动指定
-```
-
-如何使用其他仓库（包括私有仓库）
-
-    # GitHub Container Registry (ghcr.io)：
-    container run ghcr.io/some-org/some-image:tag
-
-    # 私有仓库（如自建 Harbor）：
-    container run registry.example.com/myproject/myimage:latest
-
-登录私有仓库：
-
-    container registry login registry.example.com -u myuser
-    # 交互式输入密码，或使用 --password-stdin
-
-登录后凭证会被持久化，后续拉取/推送该仓库时自动使用，无需在 config.toml 中写入任何认证信息。
-
-如果你想把默认仓库改成 ghcr.io，只需将 [registry] 中的 domain 改为 "ghcr.io"，但这样不加域名的短名（如 alpine）就会默认从 ghcr.io 拉取，请按需调整。
-
-##### 容器互访
-
-一、容器访问宿主机 8000 端口服务：
-
-1、创建一个本地 DNS 域名，将它映射到一个虚拟 IP，注意该地址不要跟你的内网地址冲突，用个比较冷门的保留地址比较好，比如 203.0.113.0/24
-
-    sudo container system dns create host.container.internal --localhost 203.0.113.113
-
-这样就会在系统 DNS 解析中加入了一条记录：host.container.internal → 203.0.113.113。在 macOS 的包过滤规则中，将该虚拟 IP 203.0.113.113 的流量重定向到宿主机的 127.0.0.1（即回环地址）。
-
-注意：
-
-    创建本地域会 禁用 iCloud Private Relay。
-
-    本地域的包过滤规则 重启后会被移除，需要重新创建。
-
-    IP 地址可以任选，文档建议使用 192.0.2.0/24、198.51.100.0/24、203.0.113.0/24 或 172.16.0.0/12 等不易冲突的私有/文档地址范围。
-
-2、在容器内直接通过域名+端口访问宿主机服务
-
-    container run -it --rm alpine/curl curl http://host.container.internal:8000
-
-容器内发出的请求目标是 <http://host.container.internal:8000>，解析后得到 203.0.113.113:8000，这个流量经过宿主机的包过滤规则，被转发到宿主机 127.0.0.1:8000，从而访问到宿主机上的服务。
-
-二、两个服务之间互访：
-
-    容器使用的默认网络，理论上是互相隔离的，文档未明确是否可以通过 ip:port 的方式互访
-
-三、让 web 和 db 服务共用同一个网络：
-
-1、创建网络
-
-    container network create mynet （可选 --subnet / --subnet-v6 自定义子网）
-
-2、分别运行 web 和 db，并指定同一网络
-
-    container run -d --name web --network mynet --rm web-image
-
-    container run -d --name db --network mynet --rm db-image
-
-这样两个容器都连接到了 mynet 网络。但是文档未说明同一网络内的容器能否直接通信，也未明确是否可以用服务名互访。
-
-##### container machine “主机集成式”的交互 Linux 环境
-
-跟 container run 运行容器建立同生命周期的虚拟机不同，`container machine create` 可以创建持久运行容器的虚拟机，可停止/启动，直到显式删除。可用 `container machine set` 修改 CPU/内存/家目录挂载选项，重启后生效。
-
-使用上类似 toolbx/distrobox，“主机集成式”的交互 Linux 环境：
-
-    自动映射主机用户名和家目录，开箱即用
-
-    `container machine run` 不带命令时自动进入交互 shell（以映射用户身份）
-
-但是更进一步，它是虚拟机运行容器镜像，更加独立：
-
-    使用独立 linux 内核 kata
-
-    支持 `systemctl start/stop` 管理服务
-
-    支持 apt 等包管理安装和持久化软件
-
-    对镜像要求特殊：需要包含 /sbin/init（如 systemd）的 OCI 容器镜像，而常见容器镜像的那种 entrypoint 指定启动进程是不可以的，所以只能构建自定义镜像，然后使用。
-
-因此，container machine 非常适合在 macOS 上做构建工作：
-
-1、必须自定义镜像：安装 systemd 并初始化
-
-```bash
-# Ubuntu
-container build -t local/ubuntu-machine:latest -f- . <<-'EOFA'
-FROM ubuntu:24.04
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-# 安装 systemd 与编译工具链
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        systemd \
-        build-essential \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-CMD ["/sbin/init"]
-EOFA
-
-container build -t local/ubuntu-machine:latest .
-
-# Fedora
-container build -t local/fedora-machine:latest -f- . <<-'EOFB'
-FROM fedora:40
-
-# 安装系统管理工具组和开发工具组
-RUN dnf install -y systemd \
-    && dnf groupinstall -y "Development Tools" \
-    && dnf install -y kernel-headers \
-    && dnf clean all
-
-CMD ["/sbin/init"]
-EOFB
-
-container build -t local/fedora-machine:latest .
-
-# Alpine
-container build -t local/alpine-machine:latest -f- . <<-'EOFC'
-FROM alpine:3.20
-
-# 启用 community 仓库，安装 systemd 与编译环境
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.20/community" >> /etc/apk/repositories \
-    && apk add --no-cache \
-        systemd \
-        dbus \
-        build-base \
-    && rm -rf /var/cache/apk/*
-
-CMD ["/sbin/init"]
-EOFC
-
-container build -t local/alpine-machine:latest .
-
-```
-
-剩下的步骤就好办了：
-
-    # 2、创建容器机 以 kata 内核运行 ubuntu 的容器镜像
-    # 可用参数 --arch amd64 指明使用其它架构（多架构的镜像才支持）
-    container machine create local/ubuntu-machine:latest --name dev
-
-    # 3、直接进入虚拟机交互shell，不用配 ssh 登录了，省事
-    $ container machine run -n dev
-
-        # 本地家目录直接就是挂载好的，方便
-        cd myproject
-
-        # 包管理安装
-        $ sudo apt install build-essential
-
-        # 构建其它系统下的应用
-        $ cmake --build ...
-
-        # 使用 systemd 服务
-        $ systemctl start postgresql
-
-### macOS 的服务管家 launchd
-
-Linux 上管理所有服务的是 systemd，而在 macOS 上，扮演这个核心角色的是 launchd。
-
-launchd 管理着从开机启动到用户登录后加载的所有服务。开发者或软件可以编写一个 plist（属性列表）配置文件来描述服务，然后交由 launchd 托管。被托管的程序便拥有了自动启动、意外退出后重启、开机自启等能力。
-
 ## Windows 下的 GNU/POSIX 环境
 
 如果只是想做 Windows、macOS 和 Linux 等多个操作系统跨平台应用程序，使用 QT(c++/python) 或基于 Chromium+Node.js 的 Electron 框架的应用程序是更好的选择。
@@ -21380,3 +20277,1106 @@ Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
 C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
 ```
+
+## 使用 macOS
+
+官方软件商店的资源很少，基本都是商业的，或者游戏。
+
+大量的工具软件，特别是开源软件，只能靠 [Homebrew] 社区软件商店，或 [自编开源代码]。
+
+常用软件
+
+    解压缩 https://github.com/aonez/Keka/
+
+监控 gpu 功耗
+
+    sudo powermetrics --samplers gpu_power -i1000
+
+    重度任务可以看到，一开始 45W 很快就降到 10几瓦了，14寸笔记本电脑的散热能力带不动全速运行的 M5 pro 芯片
+
+### 长时间运行防睡眠
+
+默认”合盖模式” (Clamshell Mode)：合盖既睡眠
+
+    当 MacBook 连接了外部电源，同时连接了至少一个外部显示器、键盘和鼠标。系统会自动切换，“合盖”就被解读为“切换到外接设备”而非“进入睡眠”。
+
+    经常需要合盖当主机用 → 买个 HDMI 诱骗器插上。
+
+下载文件，人长时间离开：
+
+    进入系统设置 > 电池 > 选项，勾选点亮 “使用电源适配器供电且显示器关闭时，防止自动进入睡眠”。这里的显示器关闭指的是屏幕超时熄屏的场景，有外接电源就继续运行。但是合盖会睡眠，中断下载。
+
+        等效于命令行运行 `caffeinate -s`，可以防所有软件形式的睡眠（闲置睡眠、定时睡眠、从 Apple 菜单主动睡眠等），有外接电源就继续运行。但是合盖会睡眠，中断下载。实测无效。
+
+    在电池模式下也能防止睡眠：命令行运行 `caffeinate -i`，仅防止系统闲置睡眠，屏幕仍然会超时熄屏。但合盖依然会睡眠，中断下载。实测有效
+
+合盖也能阻止睡眠，可以继续下载：
+
+    安装软件 Amphetamine
+
+### 文件管理器---访达
+
+    建议使用 https://sourceforge.net/projects/doublecmd/
+
+默认打开界面，把你定位到最近使用的项目，不区分应用程序、文档、视频、音频等等，一股脑的显示在 “最近使用”。
+
+如果你想清楚的使用自己的文件，点击下面的“位置”，选择你的用户名，这里是真正分门别类摆放处　：
+
+    /Users/gg/
+      ├── Desktop/
+      │   ├── ...
+      │  
+      ├── Documents/
+      │   ├── ...
+      │  
+      ├── Downloads/
+      │   ├── ...
+      │  
+      ├── Movies/
+      │   ├── ...
+      │  
+      ├── Music/
+      │   ├── ...
+
+      ...
+
+#### 显示系统及隐藏文件
+
+Unix/Linux 系统的用户目录下，用户自定义选项总是需要操作 .开头的目录或配置文件，但是“访达”默认不显示，让你在图形界面选文件的时候，无从下手。
+
+文件选择对话框中，只能使用热键
+
+    cmd+shift+.，临时显示
+
+    cmd+shift+g，在弹出地址栏中手动输入地址，一般是 /User/xxx/.config/
+
+### 终端模拟器 Ghostty
+
+超级快，没有之一
+
+    https://ghostty.org/
+        https://github.com/ghostty-org/ghostty
+
+    竞品 iTerm2 是没的选的情况下的选择
+
+Ghostty 常用命令速查
+
+    查看所有内置主题：ghostty +list-themes
+
+    查看默认配置：ghostty +show-config --default
+
+    列出可用字体：ghostty +list-fonts
+
+    重载配置（无需重启）：Cmd + Shift + ,
+
+Ghostty 配置文件 ~/.config/ghostty/config，其实不需要，菜单栏选择 Settings 就打开了，把下面的内容填进去就可以了：
+
+```ini
+# https://ghostty.org/docs/config/reference
+
+# 字体
+font-family = "MesloLGS NF"
+font-size = 13
+#font-thicken = true
+#adjust-cell-height = 2
+
+## 主题
+# Modus Operandi.    Primary.  Xcode Light
+# Tomorrow Night Burns.  Tomorrow Night Eighties
+theme = light:Nord,dark:Nord Wave
+
+# 光标透明
+# 禁用 shell 的方案才能自己设置光标风格
+shell-integration-features = no-cursor
+cursor-color = "#ffa500"
+#cursor-text = "#ff0000"
+#cursor-style = underline
+#adjust-cursor-thickness = 2200%
+#cursor-opacity = 0.8
+
+# 缓冲多少字节的历史记录
+scrollback-limit = 104857600
+
+# Quake 风格下拉终端需要手动设置热键
+keybind = global:option+grave_accent=toggle_quick_terminal
+
+# 用 cmd+b 模拟 tmux 的前导键 ctrl+b
+#keybind = cmd+b=text:\x02
+
+# 窗口拆分
+# cmd + d           垂直拆分
+# cmd + shift + d   水平拆分
+# cmd + opt + 方向键  在拆分窗口间移动
+# 缩/放拆分的窗口，便于使用 Claude Code，左窗口编程，右窗口验证，太小就缩放
+keybind = cmd+shift+f=toggle_split_zoom
+# 拆分窗口1:1，如果搞乱了就用这个
+keybind = cmd+shift+e=equalize_splits
+
+```
+
+### 执行下载的或自编译程序提示禁止执行
+
+macOS 的 Gatekeeper（门禁）安全机制会禁止直接执行从互联网下载的软件，甚至你自行编译的软件。
+
+每次使用总是得点选信任同意，挺麻烦的。
+
+当你从互联网上下载软件时，macOS 会自动给它打上一个 com.apple.quarantine（隔离）标签。下载的 dmg 程序在安装到了 /Applications 之后，也是会带有隔离属性。
+
+使用终端命令清除“隔离属性”
+
+    xattr -d com.apple.quarantine 你的自编译程序
+
+    build 目录下的文件我都要信任：
+
+        xattr -d com.apple.quarantine ./build
+
+清除安装的程序的所有属性：
+
+    xattr -cr "/Applications/Double Commander.app/"
+
+### MacBook 快捷键
+
+    没有 atl 键，ctl 键作用很小，苹果把绝大部分功能移到它独家的 cmd 和 opt 键
+
+截屏 cmd + shift + 5
+
+多任务切换
+
+    应用间切换：cmd + tab，不涉及一个应用的多个实例窗口
+
+    同一应用的窗口间切换： cmd + `
+
+文件管理器“访达”操作
+
+    菜单选择复制：当前目录下的文件，做个副本
+
+    菜单选择拷贝：只是标记为要进行复制，等待用户下一步操作，快捷键 cmd + c
+
+        菜单选择粘贴：把上一步标记的文件粘贴到当前文件夹，快捷键 cmd + v
+
+        剪切：把上一步标记的文件移到到这里，快捷键 cmd + opt + v，注意这里是跟 Windows 最大的差异
+
+    鼠标选择后拖动文件，默认当前目录下是移动，不同窗口间是复制，改变行为：在拖动后按住 opt 键。
+
+    删除文件到废纸篓：cmd + backspace
+    永久删除（不放入废纸篓）：cmd + opt + backspace
+
+文字编辑：
+
+    保存： cmd + s
+
+    退格删除：键盘上只有这个前向删除键，标记为 backspace 或  ⌫
+
+    删除：删除当前光标后面的文字，快捷键 fn + backspace
+
+    鼠标选择文字后拖动，默认是移动，改变行为：在拖动后按住 opt 键。
+
+    向上翻页：Fn + 光标上
+    向下翻页：Fn + 光标下
+
+    移动到文档顶部：cmd + 光标上
+    移动到文档底部：cmd + 光标下
+
+强制重启
+
+    同时按下 Control (⌃) + Command (⌘) + 电源键/Touch ID 按钮不放，直到屏幕变黑并出现苹果标志
+
+重启到恢复模式（开机时按住）：
+
+    Command (⌘) + R：启动至内建的 macOS 恢复系统。
+
+    Option (⌥)：进入启动管理器，可选择其他启动磁盘。
+
+    Shift (⇧)：以安全模式启动，用于排查软件问题。
+
+    Option + Command + P + R：重置 NVRAM（非易失性随机存取存储器）或 PRAM（参数随机存取存储器），用于解决一些硬件设置相关的问题。
+
+### Homebrew
+
+社区自制的面向 MacOS 的软件包管理，有自己的仓库，很多在 MacOS AppStore 里没有的常用软件都可以在这里安装。
+
+    https://brew.sh/zh-cn/
+
+    https://zhuanlan.zhihu.com/p/138059447
+
+Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS
+
+    https://docs.brew.sh/Homebrew-on-Linux
+
+从仓库安装软件分两类：
+
+    Formulae：软件包，包括了这个软件的依赖、源码位置及编译方法等，用来安装一些不带界面的命令行工具和第三方库。
+
+        https://formulae.brew.sh/formula/
+
+        使用 `brew install` 安装，下载源码解压，然后 ./configure && make install ，同时会包含相关依存库，并自动配置好各种环境变量。
+
+    Casks：已经编译好的应用包，主要是图形界面程序等，包含很多在 MacOS AppStore 里没有的常用软件。
+
+        https://formulae.brew.sh/cask/
+        字体还有个单独的网址 https://formulae.brew.sh/cask-font/
+
+        使用 `brew install --cask` 安装，针对已经编译好了的应用包（.dmg/.pkg）下载解压，然后放在统一的目录中（Caskroom），省掉了自己下载、解压、安装等步骤。
+
+常用的 brew 命令：
+
+    查看brew版本：brew -v
+    更新brew版本：brew update
+    本地软件库列表：brew list
+    查看软件库版本：brew list --versions
+
+    查找软件包：brew search xxx （xxx为要查找软件的关键词）
+        找不到软件？见章节 [不靠谱命令 `brew search`]
+
+    安装 formula 类软件包： brew install xxx
+    安装 cask 类软件：      brew install --cask xxx
+
+    卸载软件：brew uninstall xxx
+
+Homebrw 相关的几个文件夹用途
+
+    整体目录适应 Unix 风格，软件都安装在 /opt 目录下，现在改为 /home/linuxbrew/.linuxbrew 下
+
+    bin：用于存放所安装程序的启动链接（相当于快捷方式）
+    etc：brew安装程序的配置文件默认存放路径
+    Library：Homebrew 系统自身文件夹
+    Cellar：通过brew安装的程序将以 [程序名/版本号] 存放于本目录下
+
+macOS 系统文件夹
+
+    /System/Applications/Utilities/Terminal.app  系统级应用程序的位置
+
+        ~/Applications  当前用户个人目录下的 “应用程序” 文件夹
+
+    /Library/Application Support  系统级的应用支持目录，对所有用户可用。存放的通常是全局（共享）数据，如应用的模板、插件信息、数据库缓存等，而非某个用户的个性化设置。
+
+        /Library/Preferences/     所有用户    全局偏好（较少见，多由后台守护进程使用）
+
+        ~/Library/Preferences/    当前用户    用户级偏好，例如 com.apple.Terminal.plist
+
+    /Applications   用户自己装的各种软件，卸载软件时，直接删除 /Applications 下的相应 .app 即可（但可能会残留偏好文件在 ~/Library 中）。
+
+> 国内镜像源
+
+使用科大源安装 Homebrew / Linuxbrew，以下四个变量写入你的 .bash_profile 即可实现 `brew update` 使用镜像地址了
+
+    https://mirrors.ustc.edu.cn/help/brew.git.html#homebrew-linuxbrew
+
+    # https://mirrors.ustc.edu.cn/help/brew.git.html
+    export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+
+    # 核心软件仓库 https://mirrors.ustc.edu.cn/help/homebrew-core.git.html
+    export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+
+    # Brew 4.0 版本后默认使用元数据 JSON API 获取仓库信息
+    # https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
+    export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+
+    # 预编译二进制软件包与软件包元数据文件 https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
+    export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
+
+    # cask 软件仓库，提供 macOS 应用和大型二进制文件 https://mirrors.ustc.edu.cn/help/homebrew-cask.git.html
+    # 不再需要设置了 brew tap --custom-remote homebrew/cask https://mirrors.ustc.edu.cn/homebrew-cask.git
+
+然后使用镜像地址进行安装
+
+    $ sudo apt install -y git curl  # 安装依赖
+
+    # 原 /bin/bash -c "$(curl -fsSL https://github.com/Homebrew/install/raw/HEAD/install.sh)"
+    $ /bin/bash -c "$(curl -fsSL https://mirrors.ustc.edu.cn/misc/brew-install.sh)"
+
+安装后会提示后续的操作：
+
+    Next steps:
+
+    - Run these commands in your terminal to add Homebrew to your PATH:
+        echo >> /home/uv/.bashrc
+        echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/uv/.bashrc
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+    - Run these commands in your terminal to add the non-default Git remotes for Homebrew/brew and Homebrew/homebrew-core:
+        echo '# Set non-default Git remotes for Homebrew/brew and Homebrew/homebrew-core.' >> /home/uv/.bashrc
+        echo 'export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"' >> /home/uv/.bashrc
+        echo 'export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"' >> /home/uv/.bashrc
+        export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+        export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+
+    - Install Homebrew's dependencies if you have sudo access:
+        sudo apt-get install build-essential
+
+    For more information, see:
+        https://docs.brew.sh/Homebrew-on-Linux
+
+    - We recommend that you install GCC:
+        brew install gcc
+
+这样你的 .bashrc/.zshrc 增加：
+
+    export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
+    export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+    export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+    export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+
+验证：运行 `brew update`、`brew install tmux`
+
+清华源：
+
+    Homebrew 软件仓库，是 Homebrew 源程序以及 formula/cask 索引的镜像（即 brew update 时所更新内容）
+
+        https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/
+
+    Homebrew Bottles 软件仓库，是 Homebrew 二进制预编译包的镜像
+
+        https://mirrors.tuna.tsinghua.edu.cn/help/homebrew-bottles/
+
+#### 不靠谱命令 `brew search`
+
+2026年好像解决这个问题了，以下保留仅供参考。
+
+基本搜索不到你要的软件，比如 vlc、onlyoffice 等都是这样。
+
+直接去上面的网址搜索结果比较全
+
+    https://formulae.brew.sh/
+
+后来发现网站提供了索引文件，这样就可以下载到本地使用 jq 命令进行搜索：
+
+    # 根据下面网址的说明
+    #
+    #    formula https://formulae.brew.sh/formula/
+    #    cask https://formulae.brew.sh/cask/
+    #    字体 https://formulae.brew.sh/cask-font/
+
+    curl -fsSL -O https://formulae.brew.sh/api/formula.json
+
+    curl -fsSL -O https://formulae.brew.sh/api/cask.json
+
+使用时注意替换关键字 tmux 和 vlc
+
+    $ cat formula.json | jq '.[] | select(any(.oldnames[]; test("tmux"; "i")) or (.name | test("tmux"; "i"))) | {name: .name, oldnames: .oldnames, description: .desc, version: .version, homepage: .homepage}'
+
+    $ cat cask.json | jq '.[] | select(any(.name[]; test("vlc"; "i")) or (.token | test("vlc"; "i"))) | {token: .token, name: .name, description: .desc, version: .version, homepage: .homepage}'
+
+干脆自制命令：
+
+```bash
+# brew 搜索本地索引
+function brew_idx_upate() {
+    echo "brew 的索引缓存到本地"
+    curl -fsSL https://formulae.brew.sh/api/formula.json -o $HOME/formula.json
+    curl -fsSL https://formulae.brew.sh/api/cask.json -o $HOME/cask.json
+
+}
+function brew_sf() {
+    if [ "$#" -ne 1 ]; then
+        echo '用法：brew_sf tmux'
+        return 1
+    fi
+    cat $HOME/formula.json | jq --arg pattern "$1" '.[] | select(any(.oldnames[]?; test($pattern; "i")) or (.name | test($pattern; "i"))) | {name: .name, oldnames: .oldnames, description: .desc, version: .version, homepage: .homepage}'
+}
+function brew_sc() {
+    if [ "$#" -ne 1 ]; then
+        echo '用法：brew_sc chrome'
+        return 1
+    fi
+    cat $HOME/cask.json | jq --arg pattern "$1" '.[] | select(any(.name[]; test($pattern; "i")) or (.token | test($pattern; "i"))) | {token: .token, name: .name, description: .desc, version: .version, homepage: .homepage}'
+}
+
+```
+
+### 自编开源代码
+
+苹果笔记本 Macbook Pro M5(Apple Silicon) Pro，macOS Tahoe(Darwin) Metal 构建代码，翻译：
+
+    Macbook Pro 苹果笔记本电脑型号，其 Pro 版配置更高
+
+    芯片 Apple Silicon，其第5代型号 M5，其 Pro 版核心更多(6+12核 CPU + 20 核 GPU)
+
+        最大的特点就是能耗比惊人的好，而且 CPU 和 GPU 共享同一块物理内存，延迟低。
+
+    操作系统 macOS，其第 26 版代号 Tahoe（内核代号 Darwin）
+
+        苹果现阶段各种硬件使用的操作系统，无论是 macOS、iOS 还是 iPadOS，甚至是 HomePod 和 Apple TV（TvOS）都是建立在 Darwin 内核的基础上。Darwin 通过其 FreeBSD 血统支持 POSIX API，因此大量为 Unix/Unix-like 编写的程序可以直接在 Darwin 上编译运行。
+
+    图形计算框架 Metal
+
+        属于对 Apple Silicon 芯片提供支持的软件层面，相当于 Windows 上的 DirectX，实现了 Macbook 笔记本电脑在处理音频、视频、AI 应用时的高性能低功耗。
+
+        开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片统一内存的 GPU 加速。
+
+1、安装 Xcode 的命令行编译环境
+
+Apple macOS(Darwin) 可以作为系统组件安装 Xcode Command Line Tools，自带 Clang 开发环境：
+
+    $ xcode-select --install
+
+    $ clang --version
+
+执行编译：
+
+    $ cd your_project
+
+    # 查看项目是不是有预置参数模版
+    $ cmake --list-presets
+    Available configure presets:
+        "appleclang-debug"   - Clang Debug
+        "appleclang-release" - Clang Release
+
+    如果有，就省的输入一堆参数了
+
+        # 配置项目（生成构建文件）
+        $ cmake --preset appleclang-release
+
+        # 编译（实际构建二进制）
+        $ cmake --build --preset appleclang-release
+
+    否则自行添加参数，需要查看你的项目的文档说明：
+
+        $ cmake -B build -DGGML_METAL=ON -DCMAKE_BUILD_TYPE=Release
+        $ cmake --build build -j
+
+安装，默认到 $CMAKE_INSTALL_PREFIX /usr/local中，所以需要 sudo：
+
+    $ sudo cmake --build --preset appleclang-release --target install
+
+如果你知道构建目录的具体路径（例如 build/appleclang-release），也可以单独指定：
+
+    $ sudo cmake --install build/appleclang-release
+
+2、安装 Xcode 的图形界面开发环境
+
+macOS 上编译带图形界面的应用时，不能只装命令行工具，必须使用完整的 Xcode，并且系统要正确指向它。
+
+    https://ghostty.org/docs/install/build#xcode
+
+xcode-select 只是安装了 Command Line Tools：
+
+    Command Line Tools（/Library/Developer/CommandLineTools）：只包含编译器（clang）、make、git 等命令行工具，没有 macOS SDK 的完整头文件、界面框架和代码签名支持。
+
+    Xcode.app（/Applications/Xcode.app/Contents/Developer）：包含完整的开发环境，有所有系统框架、模拟器、签名工具等，是构建图形化 macOS 应用的必需。
+
+查看当前命令行工具链的路径
+
+    $ xcode-select --print-path
+
+    输出 /Library/Developer/CommandLineTools → 坏，因为没有完整的 macOS SDK，编译图形应用会失败（比如找不到 Cocoa 框架）。
+
+    输出 /Applications/Xcode.app/Contents/Developer → 好，说明正在使用完整的 Xcode。
+
+为什么会出现 CommandLineTools 被激活的情况
+如果你先装了 Command Line Tools，后来又装了 Xcode.app，系统可能仍然默认指向 CommandLineTools，修正方法：
+
+    $ sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+
+这会强制让命令行工具（clang、git 等）使用 Xcode.app 内的完整工具链和 SDK。
+
+### macOS 运行 Windows 程序
+
+世界上绝大多数软件都有 Windows x86 下的编译版本，或者是 Linux x86 的版本，但是运行于 arm 芯片的就少多了，如果能利用起来，会大大扩展 macOS 的可用性。
+
+    x86 cpu 指令 转 arm cpu 指令 --- Rosetta 2 是 arm macOS 运行 x86 Mac 应用的解决方案，它可以动态转译 x86 → ARM 指令，苹果官方的用途是让 arm macOS 可以运行旧版 x86 macOS 的应用。
+
+    Windows 操作系统 API 调用、DirextX API 调用：开源社区的 Wine。将 Win32 API 调用 转换为 POSIX / macOS API 调用。
+
+这个组合用法已经是事实上的标准做法了，[苹果官方的开源整合解决方案 GPTK] 也是在这个基础上做开发的。
+
+苹果官方建议是 [虚拟机 arm Windows 运行 Windows 程序]
+
+    需要长期、稳定使用多个 Windows 程序，且它们之间有协同。
+
+    你需要用的是一整套 Office 办公套件（复杂宏、Access 等）、Visual Studio、AutoCAD、SolidWorks 这类对兼容性要求苛刻的生产力软件。
+
+    有外接加密狗、专用打印机、税控盘、U盾等硬件。
+
+    你是开发、测试，需要完整的 Windows 环境来调试。
+
+或者云电脑，如果你只是偶尔用一下，而且网速够快，可以考虑租用 Windows 365 Cloud PC 或者国内的云电脑服务，按需付费，完全不影响本地性能，还能用 iPad 远程连进去。
+
+#### macOS 本地运行 Windows 程序
+
+最佳实践是直接使用 ARM 原生版本，如果 brew 里没有，直接去开源软件的官网查找，下载 .dmg 安装包或可执行文件。
+
+如果要玩游戏，先看看 Steam 客户端上有没有原生 arm 版本。在 x86 Linux 下，steam 官方的 porton（基于wine）技术通过 Vulkan 图形接口让大部分 Windows 游戏可玩，但目前并未支持苹果独家的 Metal 图形接口，也就无法实现 arm 运行 x86 游戏。
+
+如果程序只有 x86/AMD64 版本，则 macOS 需要安装一些执行框架以实现本地运行，有多种方案，都是基于 wine 转译 Windows 操作系统 API调用。
+
+##### 指令级转译：arm macOS 可以运行 x86 macOS 的 应用
+
+苹果用实时转译 cpu 指令的方式，性能稍打折扣，实现了在 arm CPU 上执行 x86 程序。
+
+    https://wuyanxin.com/post/mac-m1-brew-both-support-aarm64-and-x86_64.html
+        https://www.wisdomgeek.com/development/installing-intel-based-packages-using-homebrew-on-the-m1-mac/
+
+1、先安装 Rosetta 2
+
+Rosetta 2 是让 arm macOS 可以运行旧版 x86 macOS(2010～2020年代) 下 x86 应用程序的解决方案，它可以动态转译 x86 → ARM 指令。
+
+    $ softwareupdate --install-rosetta --agree-to-license
+
+2、使用 Rosetta 打开终端（在终端图标点右键选择“显示简介”勾选“使用 Rosetta 打开”）。
+
+或在终端里启动一个 x86_64 模式的子 Shell：
+
+    $ arch -x86_64 zsh
+
+验证：输入 `arch` 命令会返回 i386，说明切换成功。
+
+3、在这个 x86 终端里，可以正常执行各种 x86 格式的二进制文件。
+
+首先安装个 x86_64 架构 Homebrew
+
+    $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+使用国内镜像安装见章节 [Homebrew]。
+
+4、然后就可以使用这个 Homebrew 安装 x86 macOS 下的各种应用了。
+
+测试，用这个 homebrew 安装一个 x86 redis：
+
+    $ arch -x86_64 /usr/local/Homebrew/bin/brew install redis
+
+以后进入 x86 架构的终端即可执行这些 x86 的应用。
+
+5、区分环境
+
+两套 Homebrew 会安装在不同的路径，不会冲突：
+
+    x86_64 安装目录：/usr/local/Homebrew
+
+    ARM64 安装目录：/opt/homebrew
+
+可以设置快捷操作：
+
+    文件 ~/.brew_arm
+
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+
+    文件 ~/.brew_intel
+
+        eval "$(/usr/local/Homebrew/bin/brew shellenv)"
+
+    然后将下面代码加入到 .zshrc
+
+        # homebrew
+        alias brew_arm='source ~/.brew_arm'
+        alias brew_intel="source ~/.brew_intel"
+
+##### 系统调用级转译：用 Wine/Crossover 来直接运行 Windows 程序
+
+1、wine 最初是 x86 Linux 下执行 Windows 游戏的开源社区解决方案。
+
+    将 Win32 API (文件, 注册表, 窗口...)调用转换为 POSIX、x86 Linux API 调用
+
+    将 DirectX API 调用转换为 Linux 系统支持的 OpenGL/Vulkan 图形指令
+
+wine 的兼容性发展到现在已经很好了，不止可以运行游戏，大量软件都可以直接运行，如无驱动的 Windows 工具、轻量办公软件、3A 大作等。但反作弊、底层驱动、新 3A 大作无法保证可以运行。
+
+2、在 2010 -2020 年 x86 macOS(Intel CPU) 时代，有了 x86 macOS 版的 Wine。
+
+它可以在操作系统调用层面"模拟"支持运行 Windows 软件，性能接近原生，安装即用。最大的优势是本地运行，不像虚拟机要占用若干GB内存，和 macOS 无缝融合，启动快。
+
+       Windows 游戏 (.exe)
+      魔兽争霸3, 暗黑破坏神4 ...
+    ───────────────────────────
+            │
+            │ 发出的调用:
+            │  • Win32 API 调用 (文件, 注册表, 窗口...)
+            │  • DirectX 图形指令
+            ▼
+    ┌──────────────────────────┐
+    │   Wine (x86 macOS 版)     │
+    └──────────────────────────┘
+            │
+            │• 将 Win32 API 调用转换为 POSIX、macOS API 调用
+            │• 将 DirectX API 调用转换为 macOS 系统支持的 OpenGL 图形指令
+            ▼
+    ┌────────────────┐
+    │   x86 macOS    │
+    └────────────────┘
+            │
+            │• x86 指令
+            │• OpenGL 图形指令
+            ▼
+    ┌────────────────┐
+    │   Intel CPU    │
+    └────────────────┘
+
+3、在 arm macOS 时代，x86 macOS 版 Wine 用来解决运行 Windows 程序的问题。
+
+借助苹果官方的指令层面转译工具 Rosetta 2 运行 x86 macOS 的 Wine，从而实现支持运行 Windows 软件：
+
+            │...
+            ▼
+    ┌──────────────────────────┐
+    │   Wine (x86 macOS 版)    │
+    └──────────────────────────┘
+            │
+            │• Wine 自身运行时的 x86_64 指令
+            │
+            │• 将 Win32 API 调用转换为 POSIX、macOS API 调用，是 x86_64 指令
+            │
+            │• 将 DirectX API 调用转换为 Vulkan 图形指令(DXVK)，
+            │  可用 MoltenVK 再转为 arm macOS 支持更好的 Metal 图形指令
+            ▼
+    ┌──────────────────────────────┐
+    │     Rosetta 2                │
+    │ 将 x86_64 指令翻译为 ARM64 指令 │
+    └──────────────────────────────┘
+            │
+            ▼
+    ┌─────────────────┐
+    │    arm macOS    │
+    └─────────────────┘
+            │
+            ▼
+    ┌────────────────────────────────────┐
+    │   Apple Silicon 芯片 (M1/M2/M3...)  │
+    └────────────────────────────────────┘
+
+##### 苹果官方的开源整合解决方案 GPTK
+
+    https://github.com/apple/game-porting-toolkit
+
+Apple Game Porting Toolkit (GPTK)
+
+    引入了 D3DMetal 将 Windows 游戏的 DirectX 图形指令，实时转换为 arm macOS 的 Metal 图形指令
+
+    基于 x86 macOS 版 wine ，实现将 Windows 的 API 调用（如键盘、鼠标、文件系统等）转换为 x86 macOS 能够理解的 x86_64 指令
+
+    用 Rosetta 2 将相关的 x86_64 指令实时翻译为 ARM64 指令交给 M 芯片去执行
+
+最终实现了 GPTK 能运行现代 3D 大作。
+
+1、 arm macOS 先安装依赖环境
+
+    Xcode 的命令行编译环境 “Command Line Tools for Xcode”
+
+    安装 Rosetta 2
+
+    安装 x86_64 架构 Homebrew
+
+前面的章节有介绍安装过程。
+
+2、在苹果官网下载 Game Porting Toolkit
+
+    https://developer.apple.com/games/game-porting-toolkit/
+
+下载到一个 .dmg 文件安装即可。
+
+过时：确保终端仍在x86_64模式下(arch -x86_64 zsh)，执行以下命令进行编译安装（首次安装耗时较长，请耐心等待）：
+
+    $ brew tap apple/apple http://github.com/apple/homebrew-apple
+    $ brew install game-porting-toolkit
+
+3、创建独立环境即可运行
+
+为游戏创建一个独立的 Wine Prefix（你可以理解为游戏专用的虚拟C盘）。在终端中执行以下命令：
+
+    WINEPREFIX=~/War3_Prefix $(brew --prefix game-porting-toolkit)/bin/wine64 winecfg
+
+运行后，在弹出的窗口中，将Windows版本设为“Windows 10”或“Windows 7”，然后点击确定。
+
+#### 虚拟机 arm Windows 运行 Windows 程序
+
+目前效率最高的运行 x86 程序的方法，是前面章节介绍的，在 macOS 下用 Wine/Crossover 直接运行 x86 软件，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。缺点是仅限于 x86 macOS 的那些软件，无法执行 Windows 下庞大的 x86 软件，特别是图形化界面的软件。
+
+为了兼容性最大化，则要接受至少消耗 8GB 内存用于虚拟机的方案：苹果操作系统提供了虚拟化框架 Hypervisor，装个虚拟机管理器软件即可实现接近本地运行的硬件加速效果。
+
+优选基于 QEMU 的 UTM 开源虚拟机管理器
+
+    https://mac.getutm.app/
+        https://github.com/utmapp/UTM/releases/latest/download/UTM.dmg
+
+    商业软件 Parallels Desktop 甚至支持 3D 加速，效率接近原生系统的 90%
+
+UTM 的两种运行方式：
+
+1、“模拟”模式（QEMU 方案）安装 x86 操作系统：纯 cpu 仿真运行 x86/AMD64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，不需要也不使用 cpu 提供的虚拟化加速。因此速度最慢，日常运行可能勉强可用，使用这个方案只是因为它的 x86 模拟功能最完整，作为生产环境或开发主力。
+
+2、推荐 虚拟化方式安装 arm 操作系统：这样可以利用系统的 Hypervisor 虚拟化框架及硬件加速，以接近本机原生的速度运行 ARM64 操作系统。然后利用 ARM 版 Windows 11/Linux 可以执行 x86 程序的能力来运行 Windows 程序。
+
+虚拟机安装 Windows 11 ARM 版运行 x86 程序是非常方便的，这个方案的兼容性大于使用 Wine 的方案，是稳定办公的首选：
+
+    Windows 11 内置微软官方开发的 Prism 模拟器，可将 x86 指令实时转译为 ARM64 指令，以执行 x86 程序。装好 Windows ARM 就和普通 PC 一样，无脑用。
+
+    得益于苹果 M 芯片的高性能及微软的极致优化，执行效率很高，日常办公体验是完全没问题的。商业软件 Parallels Desktop 甚至可以使虚拟机里运行的 3D 游戏接近原生 Windows 的感觉）。
+
+注意：UTM 虚拟机安装的 Windows，务必安装 QEMU 客户机工具，这样桌面操作的流畅感才会类似本地原生系统：
+
+    https://docs.getutm.app/guest-support/windows/
+        https://getutm.app/downloads/utm-guest-tools-latest.iso
+            https://github.com/utmapp/qemu/releases
+
+这个 iso 文件可手动下载放到宿主机的如下位置：
+
+    ~/Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/utm-guest-tools-latest.iso
+
+然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机 Windows 桌面体验直接起飞。
+
+#### 虚拟机 arm Linux 执行 Linux x86 程序
+
+绝大多数情况下，不需要本用法，可以在 macOS 本地直接运行x86程序，详见章节 [指令级转译：arm macOS 可以运行 x86 macOS 的 应用]。
+
+这个用法对普通用户用处极小，虚拟机安装 Ubuntu arm 版里运行 x86 程序，只适合开发环境（比如 Docker 里跑 x86 镜像））、运行 Linux x86 命令行工具等。
+
+仅限于运行 Linux x86 程序，大多数 x86_64 Linux 命令行程序和服务器软件都能良好运行，不能用于运行 Windows 程序。而且图形应用依赖配置复杂。部分对硬件特性（如某些底层指令）有强依赖的图形界面应用，或需要内核模块支持的程序可能存在问题。
+
+有两种方式：
+
+方式一、QEMU-user 模式
+
+它会自动向内核注册一条规则：凡是遇到 x86 二进制，就调用 qemu-x86_64-static 去翻译执行。要安装 `sudo apt install binfmt-support qemu-user-static`。缺点是纯软件翻译，性能一般，CPU 占用高。只适合服务器下运行命令行程序，运行图形化程序太繁琐。
+
+方式二、推荐 虚拟机直通，调用宿主机的 Rosetta 2
+
+新版 UTM 在安装 arm linux 时，选择设置 System (系统): 勾选 Use Apple Virtualization（使用Apple虚拟化）和 Enable Rosetta (x86_64 Emulation)（启用Rosetta）即可，然后安装 Ubuntu arm 版。
+
+UTM 会自动通过 virtiofs 共享宿主的 Rosetta 运行时，并注册 binfmt_misc，之后在虚拟机里直接执行 x86 程序即可，无需手动配置。
+
+以下内容是手动安装，仅供参考理解原理：
+
+1、在你的 Ubuntu arm 里，安装苹果提供的 Rosetta 二进制，并同样用 binfmt_misc 注册：让内核遇到 x86 二进制时，调用这个 Rosetta 引擎。这样虚拟机里的 x86 程序的翻译执行实际由宿主机的 M 芯片进行硬件加速，速度比 QEMU-user 模式快很多，接近原生速度。效率与 macOS 本机直接运行 x86 linux 程序使用 Rosetta 2 同级。
+
+2、安装 `sudo apt install binfmt-support spice-vdagent`。
+
+3、手动挂载 Rosetta 组件
+
+    # 创建挂载点目录
+    sudo mkdir -p /media/rosetta
+    # 挂载 Rosetta 组件
+    sudo mount -t virtiofs rosetta /media/rosetta
+
+    # echo "rosetta /media/rosetta virtiofs ro,nofail 0 0" | sudo tee -a /etc/fstab
+
+4、注册 Rosetta 转译器：
+
+    $ sudo /usr/sbin/update-binfmts --install rosetta /media/rosetta/rosetta \
+        --magic "\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x3e\x00" \
+        --mask "\xff\xff\xff\xff\xff\xfe\xfe\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff" \
+        --credentials yes --preserve no --fix-binary yes
+
+    此命令向系统注册一个名为"rosetta"的二进制格式处理程序，用于识别并转译x86_64可执行文件
+
+5、验证Rosetta是否生效：
+
+    cat /proc/sys/fs/binfmt_misc/rosetta
+    如果输出中包含 enabled，则表示转译器已成功注册并激活
+
+6、添加amd64架构支持：
+
+    sudo dpkg --add-architecture amd64
+    sudo apt update
+
+    这允许你的ARM系统通过APT安装和管理x86（amd64）架构的软件包
+
+7、安装一个x86程序进行测试：
+
+    # 例如，安装x86_64版本的hello程序
+    sudo apt install hello:amd64
+
+    # 运行测试
+    hello
+
+### macOS 使用容器
+
+容器技术依赖 Linux 内核，所以都是虚拟机方案：
+
+1、笨重且慢的虚拟机方案：用 Docker Desktop for Mac，至少4GB的RAM，只能配置 docker.io 的镜像，其它网站无法配置。可通过 `--platform linux/amd64` 参数要求Docker模拟x86环境来运行 x86 镜像（利用Rosetta 2或QEMU进行指令翻译）。
+
+2、轻量化改造的虚拟机方案：在 UTM 里装一个 Alpine Linux（几十 MB 内存，1GB 磁盘），仅运行 dockerd，然后在 macOS 里设置 DOCKER_HOST=ssh://user@alipine-vm，这样您可以在 macOS 原生终端执行 docker 命令。只是虚拟机里的 arm linux 可以执行 x86 镜像需要很多步骤设置，而且挂载本地存储和端口映射也很不方便。
+
+3、对上面的方案集成化改良，解决了使用不便的问题，基于 Lima（轻量化 Linux 虚拟机）的 Colima，目前最流行
+
+    https://github.com/abiosoft/colima
+        https://colima.run/
+
+    只用 1GB 内存、5GB 磁盘，几秒即可启动
+
+    支持多种后端如 docker、containerd(nerdctl)、k8s、incus，甚至 AI（https://github.com/containers/krunkit/），特别是 Colima 可以配置使用 containerd 作为运行时，这与主流Kubernetes服务保持一致，非常适合本机开发容器然后部署到服务器的办公模式。
+
+其虚拟机中的 Docker 引擎会自动与 Docker CLI 建立连接，简化文件卷挂载操作及端口映射
+
+    可以在 macOS 终端里直接使用 `docker`、`docker-compose` 命令，而使用传统 Linux 虚拟机中的 docker，每次都要先 ssh ubuntu-vm 进去再执行 `docker ps`，或需要手动设置本地的的 docker cli 连接到远程虚拟机中的 docker daemon。
+
+    自动把当前目录映射进虚拟机，不需要传统 Linux 虚拟机用 SSHFS、Samba、virtiofs 等需要额外配置的方法。
+
+    自动把 -p 8080:80 映射到 localhost:8080，而传统 Linux 虚拟机中的 Docker 容器监听的端口需要手动在虚拟机管理器里做转发，或者用桥接模式获取局域网 IP。
+
+用 brew 安装 Colima 及 docker 客户端工具：
+
+    $ brew install colima docker docker-compose docker-buildx docker-credential-helper
+
+首次启动时，可根据 Mac 配置调整资源，特别是选择 --vm-type vz（使用 Apple 原生虚拟化框架）参数可以为 Apple Silicon Mac 带来性能提升
+
+    $ colima start --cpu 4 --memory 8 --disk 20 --vm-type vz --runtime docker
+
+    如果有的镜像只有 x86 架构，则需要添加 Rosetta 2 软件转译层：
+
+        $ colima start --vm-type=vz --vz-rosetta
+
+        $ docker run --platform linux/amd64 --rm alpine uname -m
+        x86_64
+
+    如果转译效果不好，就需要通过 QEMU 进行完整系统模拟，性能开销更大：
+
+        $ colima start --arch x86_64 --vm-type=vz --vz-rosetta
+
+如果要跑的 x86 镜像居多，Colima 的 QEMU 模拟就会慢很多。而 Podman 和 Apple Container 的 Rosetta 2 方案在性能上其实差别不大。
+
+日常使用与管理
+
+    停止服务：colima stop
+
+    启动服务：colima start
+
+    查看状态：colima status
+
+4、替换 docker 的方案：
+
+Podman 无守护进程（daemonless），与 docker 命令几乎100%兼容。使用苹果原生框架 (applehv)实现虚拟化，可利用 Rosetta 2 直接在 VM 内加速 x86 镜像。
+
+#### Apple Container
+
+苹果官方开源方案，最轻量、性能最高
+
+    https://github.com/apple/container/releases
+        选择 container-0.12.3-installer-signed.pkg 安装
+
+最大的特点是每一个 Linux 容器都单独启动一个极限“瘦身”的微内核的虚拟机，以此来运行容器（默认 1GB 内存）：
+
+    用完退出容器即释放内存，不像其它的解决方案那样空跑一个虚拟机占好几个GB内存。
+
+    每个容器都有自己独立的 IP 地址，不需要像传统 Docker 那样进行端口映射。
+
+因为是虚拟机运行容器镜像，所以不像普通容器那样共享使用主机内核：
+
+    苹果使用了来自开源社区的 Kata Containers 项目：一个专门为轻量级虚拟机优化的 Linux 内核 https://github.com/kata-containers/kata-containers
+
+    默认架构是 arm64（Apple Silicon），与 macOS 宿主机架构一致。
+
+    首次使用时自动下载：如果本地没有内核，系统会根据 url 自动下载压缩包，然后从 binaryPath 路径提取内核二进制。
+
+    所有容器（包括 container machine）共用这个内核
+
+可惜功能还不完善：
+
+    暂不支持多容器编排 docker compose，暂只能使用 https://github.com/mcrich23/container-compose
+
+    不支持集群/编排相关命令 docker swarm/stack/service/node
+
+    容器内无法直接通过 localhost 访问宿主机服务。常见的变通方法是使用 socat 在宿主机上建立一个流量中转
+
+    不支持容器运行时加入网络 network connect / disconnect，没有 IPvlan / Macvlan 等高级网络驱动（仅 vmnet 插件）
+
+    另外关于容器信息和调试的很多命令也还未实现，如 docker system prune/docker top/docker update/docker context
+
+命令行使用
+
+    # 启动 container 的系统服务
+    $ container system start
+
+    # 运行容器的命令与 Docker 类似
+    $ container run nginx
+
+    $ container run --volume ${HOME}/Desktop/assets:/content/assets python:alpine ls -l /content/assets
+
+    $ container run --detach --name web --publish 8080:80 nginx:latest
+
+    # 运行一个 x86 架构的容器
+    $ container run --platform linux/amd64 nginx:latest
+
+##### 使用镜像仓库
+
+config.toml 中的 [registry] 节只支持设置一个默认仓库域名，无法同时为多个仓库配置不同地址。如果需要使用其他仓库（包括私有仓库），直接在镜像引用里写完整域名即可，认证则通过 container registry login 命令单独管理。
+
+下面是一个示例配置文件 ~/.config/container/config.toml，将默认仓库设为 docker.io，并给出了其他常见仓库在命令中直接引用的用法说明。
+
+```toml
+# 默认镜像仓库：当镜像名不含域名时自动补全该域名
+# 例如 alpine => docker.io/library/alpine
+[registry]
+domain = "docker.io"
+
+# 构建器资源（可根据需要调整）
+[build]
+cpus = 4
+memory = "4gb"
+rosetta = true
+
+# 容器默认资源
+[container]
+cpus = 2
+memory = "2gb"
+
+# 网络默认子网（可选）
+[network]
+# subnet = "192.168.100.0/24"
+# subnetv6 = "fd00:abcd::/64"
+
+# 内核及 init 镜像使用默认值即可，无需手动指定
+```
+
+如何使用其他仓库（包括私有仓库）
+
+    # GitHub Container Registry (ghcr.io)：
+    container run ghcr.io/some-org/some-image:tag
+
+    # 私有仓库（如自建 Harbor）：
+    container run registry.example.com/myproject/myimage:latest
+
+登录私有仓库：
+
+    container registry login registry.example.com -u myuser
+    # 交互式输入密码，或使用 --password-stdin
+
+登录后凭证会被持久化，后续拉取/推送该仓库时自动使用，无需在 config.toml 中写入任何认证信息。
+
+如果你想把默认仓库改成 ghcr.io，只需将 [registry] 中的 domain 改为 "ghcr.io"，但这样不加域名的短名（如 alpine）就会默认从 ghcr.io 拉取，请按需调整。
+
+##### 容器互访
+
+一、容器访问宿主机 8000 端口服务：
+
+1、创建一个本地 DNS 域名，将它映射到一个虚拟 IP，注意该地址不要跟你的内网地址冲突，用个比较冷门的保留地址比较好，比如 203.0.113.0/24
+
+    sudo container system dns create host.container.internal --localhost 203.0.113.113
+
+这样就会在系统 DNS 解析中加入了一条记录：host.container.internal → 203.0.113.113。在 macOS 的包过滤规则中，将该虚拟 IP 203.0.113.113 的流量重定向到宿主机的 127.0.0.1（即回环地址）。
+
+注意：
+
+    创建本地域会 禁用 iCloud Private Relay。
+
+    本地域的包过滤规则 重启后会被移除，需要重新创建。
+
+    IP 地址可以任选，文档建议使用 192.0.2.0/24、198.51.100.0/24、203.0.113.0/24 或 172.16.0.0/12 等不易冲突的私有/文档地址范围。
+
+2、在容器内直接通过域名+端口访问宿主机服务
+
+    container run -it --rm alpine/curl curl http://host.container.internal:8000
+
+容器内发出的请求目标是 <http://host.container.internal:8000>，解析后得到 203.0.113.113:8000，这个流量经过宿主机的包过滤规则，被转发到宿主机 127.0.0.1:8000，从而访问到宿主机上的服务。
+
+二、两个服务之间互访：
+
+    容器使用的默认网络，理论上是互相隔离的，文档未明确是否可以通过 ip:port 的方式互访
+
+三、让 web 和 db 服务共用同一个网络：
+
+1、创建网络
+
+    container network create mynet （可选 --subnet / --subnet-v6 自定义子网）
+
+2、分别运行 web 和 db，并指定同一网络
+
+    container run -d --name web --network mynet --rm web-image
+
+    container run -d --name db --network mynet --rm db-image
+
+这样两个容器都连接到了 mynet 网络。但是文档未说明同一网络内的容器能否直接通信，也未明确是否可以用服务名互访。
+
+##### container machine “主机集成式”的交互 Linux 环境
+
+跟 container run 运行容器建立同生命周期的虚拟机不同，`container machine create` 可以创建持久运行容器的虚拟机，可停止/启动，直到显式删除。可用 `container machine set` 修改 CPU/内存/家目录挂载选项，重启后生效。
+
+使用上类似 toolbx/distrobox，“主机集成式”的交互 Linux 环境：
+
+    自动映射主机用户名和家目录，开箱即用
+
+    `container machine run` 不带命令时自动进入交互 shell（以映射用户身份）
+
+但是更进一步，它是虚拟机运行容器镜像，更加独立：
+
+    使用独立 linux 内核 kata
+
+    支持 `systemctl start/stop` 管理服务
+
+    支持 apt 等包管理安装和持久化软件
+
+    对镜像要求特殊：需要包含 /sbin/init（如 systemd）的 OCI 容器镜像，而常见容器镜像的那种 entrypoint 指定启动进程是不可以的，所以只能构建自定义镜像，然后使用。
+
+因此，container machine 非常适合在 macOS 上做构建工作：
+
+1、必须自定义镜像：安装 systemd 并初始化
+
+```bash
+# Ubuntu
+container build -t local/ubuntu-machine:latest -f- . <<-'EOFA'
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 安装 systemd 与编译工具链
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        systemd \
+        build-essential \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+CMD ["/sbin/init"]
+EOFA
+
+container build -t local/ubuntu-machine:latest .
+
+# Fedora
+container build -t local/fedora-machine:latest -f- . <<-'EOFB'
+FROM fedora:40
+
+# 安装系统管理工具组和开发工具组
+RUN dnf install -y systemd \
+    && dnf groupinstall -y "Development Tools" \
+    && dnf install -y kernel-headers \
+    && dnf clean all
+
+CMD ["/sbin/init"]
+EOFB
+
+container build -t local/fedora-machine:latest .
+
+# Alpine
+container build -t local/alpine-machine:latest -f- . <<-'EOFC'
+FROM alpine:3.20
+
+# 启用 community 仓库，安装 systemd 与编译环境
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.20/community" >> /etc/apk/repositories \
+    && apk add --no-cache \
+        systemd \
+        dbus \
+        build-base \
+    && rm -rf /var/cache/apk/*
+
+CMD ["/sbin/init"]
+EOFC
+
+container build -t local/alpine-machine:latest .
+
+```
+
+剩下的步骤就好办了：
+
+    # 2、创建容器机 以 kata 内核运行 ubuntu 的容器镜像
+    # 可用参数 --arch amd64 指明使用其它架构（多架构的镜像才支持）
+    container machine create local/ubuntu-machine:latest --name dev
+
+    # 3、直接进入虚拟机交互shell，不用配 ssh 登录了，省事
+    $ container machine run -n dev
+
+        # 本地家目录直接就是挂载好的，方便
+        cd myproject
+
+        # 包管理安装
+        $ sudo apt install build-essential
+
+        # 构建其它系统下的应用
+        $ cmake --build ...
+
+        # 使用 systemd 服务
+        $ systemctl start postgresql
+
+### macOS 的服务管家 launchd
+
+Linux 上管理所有服务的是 systemd，而在 macOS 上，扮演这个核心角色的是 launchd。
+
+launchd 管理着从开机启动到用户登录后加载的所有服务。开发者或软件可以编写一个 plist（属性列表）配置文件来描述服务，然后交由 launchd 托管。被托管的程序便拥有了自动启动、意外退出后重启、开机自启等能力。
