@@ -111,42 +111,44 @@ esac
 unset os_name
 
 #######################
+# 设置常用软件仓库的国内镜像
+
 # 为方便做多个内网环境使用，只能加这么个屏幕打印，暂没有更好的解决办法
 export PDMREPO="192.168.0.111:5000" && echo "内网私有容器镜像仓库地址设置为 PDMREPO=${PDMREPO}"
 
-#######################
-# 设置常用软件仓库的国内镜像
+poor_connection() {
+    # uv
+    export UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple/
 
-# uv
-export UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple/
+    # npm config set registry https://registry.npmmirror.com
 
-# npm config set registry https://registry.npmmirror.com
+    # nvm
+    export NVM_NODEJS_ORG_MIRROR=https://npmmirror.com/mirrors/node
 
-# nvm
-export NVM_NODEJS_ORG_MIRROR=https://npmmirror.com/mirrors/node
+    # rust
+    export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
+    export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
 
-# rust
-export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
-export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
+    if [[ $os_type = 'macos' ]]; then
+        # Homebrew 国内镜像
+        # https://mirrors.ustc.edu.cn/help/brew.git.html
+        export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
 
-if [[ $os_type = 'macos' ]]; then
-    # Homebrew 国内镜像
-    # https://mirrors.ustc.edu.cn/help/brew.git.html
-    export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+        # 核心软件仓库 https://mirrors.ustc.edu.cn/help/homebrew-core.git.html
+        export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
 
-    # 核心软件仓库 https://mirrors.ustc.edu.cn/help/homebrew-core.git.html
-    export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+        # Brew 4.0 版本后默认使用元数据 JSON API 获取仓库信息
+        # https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
+        export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 
-    # Brew 4.0 版本后默认使用元数据 JSON API 获取仓库信息
-    # https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
-    export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+        # 预编译二进制软件包与软件包元数据文件 https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
+        export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
 
-    # 预编译二进制软件包与软件包元数据文件 https://mirrors.ustc.edu.cn/help/homebrew-bottles.html
-    export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
-
-    # cask 软件仓库，提供 macOS 应用和大型二进制文件 https://mirrors.ustc.edu.cn/help/homebrew-cask.git.html
-    # 不再需要设置了 brew tap --custom-remote homebrew/cask https://mirrors.ustc.edu.cn/homebrew-cask.git
-fi
+        # cask 软件仓库，提供 macOS 应用和大型二进制文件 https://mirrors.ustc.edu.cn/help/homebrew-cask.git.html
+        # 不再需要设置了 brew tap --custom-remote homebrew/cask https://mirrors.ustc.edu.cn/homebrew-cask.git
+    fi
+}
+poor_connection
 
 #######################
 # 定义工具函数

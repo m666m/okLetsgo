@@ -20288,6 +20288,9 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
     解压缩 https://github.com/aonez/Keka/
 
+    2fa https://ente.com/auth/ https://github.com/ente-io/ente
+        https://github.com/yitsushi/totp-cli
+
 监控 gpu 功耗
 
     sudo powermetrics --samplers gpu_power -i1000
