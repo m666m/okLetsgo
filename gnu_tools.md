@@ -19660,7 +19660,7 @@ memory = "2gb"
 
 因此，container machine 非常适合在 macOS 上做构建工作：
 
-1、必须构建自定义镜像：安装 systemd 并初始化
+1、必须自定义镜像：安装 systemd 并初始化
 
 ```bash
 # Ubuntu
