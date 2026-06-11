@@ -776,7 +776,6 @@ function dboxstop() {
 # Hermes Agent
 alias hersd='echo "[Hermes Agent清理所有会话]";hermes sessions list | awk "NR>2 {print $NF}" | xargs -I {} hermes sessions delete {} -y'
 
-#######################
 # 使 mintty 下执行普通的 Windows 控制台程序，用 winpty 辅助可以正常显示
 # 如果开启了 ConPTY=on 选项则不需要 winpty 辅助了
 # 适用于 Windows git bash(mintty.exe)
