@@ -19720,7 +19720,7 @@ container build -t local/alpine-machine:latest .
 
     # 2、创建容器机 以 kata 内核运行 ubuntu 的容器镜像
     # 可用参数 --arch amd64 指明使用其它架构（多架构的镜像才支持）
-    container machine create local/ubuntu-dev:latest --name dev
+    container machine create local/ubuntu-machine:latest --name dev
 
     # 3、直接进入虚拟机交互shell，不用配 ssh 登录了，省事
     $ container machine run -n dev
@@ -19732,9 +19732,9 @@ container build -t local/alpine-machine:latest .
         $ sudo apt install build-essential
 
         # 构建其它系统下的应用
-        $ cmake build ...
+        $ cmake --build ...
 
-        #
+        # 使用 systemd 服务
         $ systemctl start postgresql
 
 ### macOS 的服务管家 launchd
