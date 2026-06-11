@@ -19660,15 +19660,63 @@ memory = "2gb"
 
 因此，container machine 非常适合在 macOS 上做构建工作：
 
-    # 1、基于文档 Dockerfile 构建自定义镜：安装 systemd 并初始化
-    container build -t local/ubuntu-machine:latest -f- . <<-'EOF'
-    FROM ubuntu:24.04
-    ENV container container
-    RUN apt-get update && apt-get install -y dbus systemd build-essential ... && apt-get clean
-    ...
-    EOF
+1、必须构建自定义镜像：安装 systemd 并初始化
 
-    container build -t local/ubuntu-machine:latest .
+```bash
+# Ubuntu
+container build -t local/ubuntu-machine:latest -f- . <<-'EOFA'
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 安装 systemd 与编译工具链
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        systemd \
+        build-essential \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+CMD ["/sbin/init"]
+EOFA
+
+container build -t local/ubuntu-machine:latest .
+
+# Fedora
+container build -t local/fedora-machine:latest -f- . <<-'EOFB'
+FROM fedora:40
+
+# 安装系统管理工具组和开发工具组
+RUN dnf install -y systemd \
+    && dnf groupinstall -y "Development Tools" \
+    && dnf install -y kernel-headers \
+    && dnf clean all
+
+CMD ["/sbin/init"]
+EOFB
+
+container build -t local/fedora-machine:latest .
+
+# Alpine
+container build -t local/alpine-machine:latest -f- . <<-'EOFC'
+FROM alpine:3.20
+
+# 启用 community 仓库，安装 systemd 与编译环境
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.20/community" >> /etc/apk/repositories \
+    && apk add --no-cache \
+        systemd \
+        dbus \
+        build-base \
+    && rm -rf /var/cache/apk/*
+
+CMD ["/sbin/init"]
+EOFC
+
+container build -t local/alpine-machine:latest .
+
+```
+
+剩下的步骤就好办了：
 
     # 2、创建容器机 以 kata 内核运行 ubuntu 的容器镜像
     # 可用参数 --arch amd64 指明使用其它架构（多架构的镜像才支持）
