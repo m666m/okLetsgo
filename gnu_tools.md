@@ -18994,6 +18994,8 @@ macOS 系统文件夹
 
 #### 不靠谱命令 `brew search`
 
+2026年好像解决这个问题了，以下保留仅供参考。
+
 基本搜索不到你要的软件，比如 vlc、onlyoffice 等都是这样。
 
 直接去上面的网址搜索结果比较全
@@ -19021,17 +19023,25 @@ macOS 系统文件夹
 干脆自制命令：
 
 ```bash
-function brew_sf() {
-    # brew_sf tmux
-    echo "[brew search 本地 formula.json: ${1}]"
+# brew 搜索本地索引
+function brew_idx_upate() {
+    echo "brew 的索引缓存到本地"
+    curl -fsSL https://formulae.brew.sh/api/formula.json -o $HOME/formula.json
+    curl -fsSL https://formulae.brew.sh/api/cask.json -o $HOME/cask.json
 
+}
+function brew_sf() {
+    if [ "$#" -ne 1 ]; then
+        echo '用法：brew_sf tmux'
+        return 1
+    fi
     cat $HOME/formula.json | jq --arg pattern "$1" '.[] | select(any(.oldnames[]?; test($pattern; "i")) or (.name | test($pattern; "i"))) | {name: .name, oldnames: .oldnames, description: .desc, version: .version, homepage: .homepage}'
 }
-
 function brew_sc() {
-    # brew_sc chrome
-    echo "[brew search 本地 cask.json: ${1}]"
-
+    if [ "$#" -ne 1 ]; then
+        echo '用法：brew_sc chrome'
+        return 1
+    fi
     cat $HOME/cask.json | jq --arg pattern "$1" '.[] | select(any(.name[]; test($pattern; "i")) or (.token | test($pattern; "i"))) | {token: .token, name: .name, description: .desc, version: .version, homepage: .homepage}'
 }
 

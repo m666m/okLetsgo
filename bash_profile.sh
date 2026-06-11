@@ -67,11 +67,8 @@ export PATH
 #
 # 为防止变量名污染命令行环境，尽量使用奇怪点的名称
 
-#######################
 # 准备环境信息，方便后面使用
 # current_shell：当前脚本环境
-# os_type：当前操作系统类型
-
 if [ -n "$BASH_VERSION" ]; then
     current_shell="bash"
 elif [ -n "$ZSH_VERSION" ]; then
@@ -83,7 +80,7 @@ elif [ -n "$FISH_VERSION" ]; then
 else
     current_shell=$(ps -p $$ -o comm= | sed 's/^-//')
 fi
-
+# os_type：当前操作系统类型
 os_name=$(uname -s)
 case "$os_name" in
     Linux*)
@@ -111,7 +108,6 @@ case "$os_name" in
         os_type="unknown"
         ;;
 esac
-
 unset os_name
 
 #######################
@@ -225,48 +221,36 @@ curlgh() {
 }
 
 #######################
+# 常用命令的惯用法用别名和函数封装起来，方便日常使用
+
 # 删除 vi 然后安装 vim，居然没有 `vi` 了
 command -v vi >/dev/null || {
     printf 'link vim to vi'
     printf "建议补全 vi 调用：sudo ln -sf /usr/bin/vim /usr/bin/vi"
 }
 
-#######################
 # 命令行开启 vi 模式，按esc后用vi中的上下左右键选择历史命令
 # zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
 [[ $current_shell != 'zsh' ]] && set -o vi
 
-#######################
 # 有些命令使用变量 EDITOR 指定的编辑器，一般是 nano，强制指定为 vi
 export EDITOR=/usr/bin/vi
 
-#######################
 # 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存那些不常用的命令
 # 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以在新行中输入密钥。
 export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 
-#######################
+# 在终端模拟器中设置了光标闪动有时候在ssh连接远程后或tmux中也不生效，强制开启
+#tput cnorm && echo -e '\033[?12h\033[1 q'
+
+# Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
+[[ -n $LANG ]] || export LANG=en_US.UTF-8
+
 # 在终端模拟器中命令行的字符显示彩色
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
 export COLORTERM=truecolor
 
-#######################
-# 在终端模拟器中设置了光标闪动有时候在ssh连接远程后或tmux中也不生效，强制开启
-tput cnorm && echo -e '\033[?12h\033[1 q'
-#
-# 如果遇到退出 vi 或 tmux 后又不闪动了，运行命令 reset 即可
-# 或者在bash每次命令执行后恢复光标
-#restore_cursor() {
-#    echo -e '\033[?12h\033[1 q' 2>/dev/null
-#}
-#PROMPT_COMMAND="restore_cursor;$PROMPT_COMMAND"
-
-#######################
-# Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
-[[ -n $LANG ]] || export LANG=en_US.UTF-8
-
-#######################
 # 参考自 Debian 的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
 # 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
@@ -286,10 +270,7 @@ if [ -x /usr/bin/dircolors ]; then
 
 fi
 
-#######################
-# 常用命令的惯用法用别名和函数封装起来，方便日常使用
-# 注意基础命令不要搞太花哨，导致脚本里解析出现用法不一致的问题
-
+# 注意：基础命令不要搞太花哨，导致脚本里解析出现用法不一致的问题
 # 常用的列文件的惯用法
 alias ls='ls --color=auto'
 alias l='ls -CFA'
@@ -340,8 +321,6 @@ if [[ $os_type = 'macos' ]]; then
         fi
     fi
 
-    ########## Homebrew
-
     # 自动切换对应架构的 Homebrew
     if [ "$(arch)" = "arm64" ]; then
         if [ -f "/opt/homebrew/bin/brew" ]; then
@@ -355,19 +334,6 @@ if [[ $os_type = 'macos' ]]; then
 
     # 快捷执行 x86 架构 brew
     alias ibrew='arch -x86_64 /usr/local/bin/brew'
-
-    function brew_sf() {
-        # brew_sf tmux
-        echo "[brew search 本地 formula.json: ${1}]"
-
-        cat $HOME/formula.json | jq --arg pattern "$1" '.[] | select(any(.oldnames[]?; test($pattern; "i")) or (.name | test($pattern; "i"))) | {name: .name, oldnames: .oldnames, description: .desc, version: .version, homepage: .homepage}'
-    }
-    function brew_sc() {
-        # brew_sc chrome
-        echo "[brew search 本地 cask.json: ${1}]"
-
-        cat $HOME/cask.json | jq --arg pattern "$1" '.[] | select(any(.name[]; test($pattern; "i")) or (.token | test($pattern; "i"))) | {token: .token, name: .name, description: .desc, version: .version, homepage: .homepage}'
-    }
 
 fi
 
@@ -713,13 +679,14 @@ function fpks() {
 }
 
 # 容器化
-# Debian 系skopeo命令的版本太旧了，也不想开通 Backports 仓库
-# alias skopeo='docker run --rm \
-#   -v /var/run/docker.sock:/var/run/docker.sock \
-#   -v $HOME/.docker/config.json:/root/.docker/config.json:ro \
-#   -v /etc/docker/certs.d:/etc/containers/certs.d:ro \
-#   -e REGISTRY_AUTH_FILE=/root/.docker/config.json \
-#   quay.io/skopeo/stable:latest'
+# Debian 系skopeo命令的版本太旧了，也不想开通 Backports 仓库，直接用容器运行：
+#alias skopeo='docker run --rm \
+#  -v /var/run/docker.sock:/var/run/docker.sock \
+#  -v $HOME/.docker/config.json:/root/.docker/config.json:ro \
+#  -v /etc/docker/certs.d:/etc/containers/certs.d:ro \
+#  -e REGISTRY_AUTH_FILE=/root/.docker/config.json \
+#  quay.io/skopeo/stable:latest'
+
 # podman
 function pdms() {
     echo "[podman 列出镜像详细信息，需要完整的镜像地址]"
@@ -810,9 +777,9 @@ function dboxstop() {
 alias hersd='echo "[Hermes Agent清理所有会话]";hermes sessions list | awk "NR>2 {print $NF}" | xargs -I {} hermes sessions delete {} -y'
 
 #######################
-# 适用于 Windows git bash(mintty.exe)
 # 使 mintty 下执行普通的 Windows 控制台程序，用 winpty 辅助可以正常显示
 # 如果开启了 ConPTY=on 选项则不需要 winpty 辅助了
+# 适用于 Windows git bash(mintty.exe)
 if [[ $os_type = 'windows' ]] && ! grep '^ConPTY=on' ~/.minttyrc >/dev/null 2>&1; then
     alias python="winpty python"
     alias ipython="winpty ipython"
@@ -822,13 +789,14 @@ if [[ $os_type = 'windows' ]] && ! grep '^ConPTY=on' ~/.minttyrc >/dev/null 2>&1
     alias node="winpty node"
     alias vue='winpty vue'
 
-    # Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
+    # 其实 Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
+    # 在这里做 alias 就可以
     alias ping='winpty ping'
 fi
 
-####################################################################
+#######################
 # gpg: problem with the agent: Inappropriate ioctl for device，
-# 参见章节 [命令行终端下 gpg 无法弹出密码输入框的问题](gpg think)
+#   参见章节 [命令行终端下 gpg 无法弹出密码输入框的问题](gpg think)
 if command -v gpg >/dev/null 2>&1; then
     export GPG_TTY=${TTY:-$(tty)}
     #echo "以当前终端 tty 连接 gpg-agent..."
@@ -836,9 +804,9 @@ if command -v gpg >/dev/null 2>&1; then
 fi
 
 #######################
-# 适用于 Linux bash / Windows git bash(mintty)
 # 命令行使用 ssh 多会话复用 ssh 密钥代理
 # 设置变量指向ssh密钥代理的进程即可实现复用，参见章节 [多会话复用 ssh-agent 进程](ssh.md think)
+# 适用于 Linux bash / Windows git bash(mintty)
 if test -d "$HOME/.ssh"; then
 
     # GNOME 桌面环境下使用 ssh，复用 gnome-keyring，原理见 [Gnome 桌面的密码管理器应用程序](okletsgo)。
@@ -1034,6 +1002,10 @@ if command -v ack >/dev/null 2>&1; then
 
     if [[ -s /usr/local/bin/ackg.sh ]]; then
         source /usr/local/bin/ackg.sh
+
+        alias ackgs='ackg -i'
+        alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
+
     else
 
         echo "ackg 看日志比grep好用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)"
@@ -1061,42 +1033,29 @@ if ! command -v ask >/dev/null 2>&1; then
 fi
 
 #######################
-# Bash：手动配置插件
-
-# 从上面的 ackg.sh 扩展的看日志的快捷命令
-alias ackgs='ackg -i'
-alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
-
-###################################################################
-# 适用于 Linux bash / Windows git bash(mintty)
 # 双行彩色命令行提示符，显示当前路径、git分支、python环境名等
+# 适用于 Linux bash / Windows git bash(mintty)
 #
 # 效果示例：
 #
 #  ╭─[13:18:18 user@MY-PC::~/yourproject](conda:p37) git:<?>master|MERGING
 #  ╰──$ uname -a
 #  MSYS_NT-10.0-19044 MY-PC 3.3.5-341.x86_64 2022-11-08 19:41 UTC x86_64 Msys
-#
+
+# 1、先定义各种辅助变量和函数
+
+# ANSI 标准
 # 色彩      黑    红    绿    黄    蓝    洋红    青    白
 # 前景色    30    31    32    33   34    35    36    37
 # 背景色    40    41    42    43   44    45    46    47
-
 ccBLACK='\[\e[0;30m\]'
-
 ccRED='\[\e[0;31m\]'
-
 ccGREEN='\[\e[0;32m\]'
-
 ccYELLOW='\[\e[0;33m\]'
-
 ccBLUE='\[\e[0;34m\]'
-
 ccMAGENTA='\[\e[0;35m\]'
-
 ccCYAN='\[\e[0;36m\]'
-
 ccWHITE='\[\e[0;37m\]'
-
 ccNORMAL='\[\e[m\]'
 
 # 注意：判断用户在命令行执行命令返回值的函数 PS1exit_code 要放在放在 PS1 变量赋值语句的最前面，
@@ -1279,9 +1238,7 @@ function PS1_container_name {
     fi
 }
 
-###################
-# Windows git bash(mintty)
-# 设置命令行提示符 PS1
+# Windows git bash(mintty) 设置命令行提示符 PS1
 # 在上面的基础上修改了个兼容性函数，因为 目前 git bash(mintty) 有点bug：
 #   在\$(函数名)后直接用换行\n就冲突
 # 规避办法
@@ -1292,7 +1249,6 @@ function PS1gitbash_newline {
     printf "\n╰"
 }
 
-###################
 # Linux bash - raspberry pi os (debian)
 # raspberry pi 的状态检测
 # 告警条件：
@@ -1334,8 +1290,7 @@ function PS1raspi_warn_prompt {
     fi
 }
 
-#################################
-# 设置命令行提示符 PS1
+# 2、终于可以设置双行彩色命令行提示符 PS1 了
 if [[ $current_shell = 'zsh' ]]; then
     # "zsh 有自己的 powerlevel10k 设置命令行提示符"
     :
