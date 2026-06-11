@@ -20847,7 +20847,7 @@ xcode-select 只是安装了 Command Line Tools：
 
 这会强制让命令行工具（clang、git 等）使用 Xcode.app 内的完整工具链和 SDK。
 
-### macOS 运行虚拟机
+### macOS 使用虚拟机
 
 Parallels Desktop 年度订阅的付费软件，性能和兼容性最好，支持 DirectX 游戏
 
