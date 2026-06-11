@@ -293,17 +293,28 @@ else
     alias pstreep='echo "[进程树，列出pid所在的进程树]"; pstree -s -p'
 fi
 
-# 仅 macOS 下常用命令
+# macOS 下常用设置
+# macOS 预装的 bash 版本（3.2）较老，建议 `brew install bash` 以后使用 /opt/homebrew/bin/bash
 if [[ $os_type = 'macos' ]]; then
-    alias ibrew='arch -x86_64 /usr/local/bin/brew'
-    alias arch86='echo "[以 i386 架构执行命令]"; arch -x86_64 '
-    function archs() {
-        echo "[进入 i386 架构的子shell]";
-        echo '  进入后最好运行: eval "$(/usr/local/Homebrew/bin/brew shellenv)"'
-        arch -x86_64 zsh
-    }
+    alias arch86='echo "[快捷执行 x86 架构命令]"; arch -x86_64 '
+    alias arch86='echo "[进入 x86 架构的子shell]"; arch -x86_64 zsh'
 
     ########## Homebrew
+
+    # 自动切换对应架构的 Homebrew
+    if [ "$(arch)" = "arm64" ]; then
+        if [ -f "/opt/homebrew/bin/brew" ]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        fi
+    else
+        if [ -f "/usr/local/bin/brew" ]; then
+            eval "$(/usr/local/bin/brew shellenv)"
+        fi
+    fi
+
+    # 快捷执行 x86 架构 brew
+    alias ibrew='arch -x86_64 /usr/local/bin/brew'
+
     function brew_sf() {
         # brew_sf tmux
         echo "[brew search 本地 formula.json: ${1}]"
@@ -317,7 +328,7 @@ if [[ $os_type = 'macos' ]]; then
         cat $HOME/cask.json | jq --arg pattern "$1" '.[] | select(any(.name[]; test($pattern; "i")) or (.token | test($pattern; "i"))) | {token: .token, name: .name, description: .desc, version: .version, homepage: .homepage}'
     }
 
-    # 国内镜像
+    # Homebrew 国内镜像
     # https://mirrors.ustc.edu.cn/help/brew.git.html
     export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
 

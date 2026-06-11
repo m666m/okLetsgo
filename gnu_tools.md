@@ -19133,7 +19133,7 @@ xcode-select 只是安装了 Command Line Tools：
 
 苹果提供了游戏开发者使用的整合工具 --- [使用 Apple Game Porting Toolkit (GPTK)]。
 
-苹果官方建议还是 [macOS 下虚拟机运行 Windows]
+苹果官方建议是 [虚拟机 arm Windows 运行 Windows 程序]
 
     需要长期、稳定使用多个 Windows 程序，且它们之间有协同。
 
@@ -19155,24 +19155,28 @@ xcode-select 只是安装了 Command Line Tools：
 
 ##### 指令级转译：arm macOS 可以运行 x86 macOS 的 应用
 
+苹果用实时转译 cpu 指令的方式，性能稍打折扣，实现了在 arm CPU 上执行 x86 程序。
+
     https://wuyanxin.com/post/mac-m1-brew-both-support-aarm64-and-x86_64.html
         https://www.wisdomgeek.com/development/installing-intel-based-packages-using-homebrew-on-the-m1-mac/
 
 1、先安装 Rosetta 2
 
-Rosetta 2 是让 arm macOS 可以运行旧版 x86 macOS(2010～2020年代) 下 x86 程序的解决方案，它可以动态转译 x86 → ARM 指令。
+Rosetta 2 是让 arm macOS 可以运行旧版 x86 macOS(2010～2020年代) 下 x86 应用程序的解决方案，它可以动态转译 x86 → ARM 指令。
 
     $ softwareupdate --install-rosetta --agree-to-license
 
-2、使用 Rosetta 打开终端（在终端图标点右键选择“显示简介”勾选“使用 Rosetta 打开”），或使用命令运行一个 x86_64 模式的终端：
+2、使用 Rosetta 打开终端（在终端图标点右键选择“显示简介”勾选“使用 Rosetta 打开”）。
+
+或在终端里启动一个 x86_64 模式的子 Shell：
 
     $ arch -x86_64 zsh
 
-这会启动一个 x86_64 模式的子 Shell。
-
 验证：输入 `arch` 命令会返回 i386，说明切换成功。
 
-3、在这个 x86 终端里安装 x86_64 版 Homebrew
+3、在这个 x86 终端里，可以正常执行各种 x86 格式的二进制文件。
+
+首先安装个 x86_64 架构 Homebrew
 
     $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -19183,6 +19187,8 @@ Rosetta 2 是让 arm macOS 可以运行旧版 x86 macOS(2010～2020年代) 下 x
 测试，用这个 homebrew 安装一个 x86 redis：
 
     $ arch -x86_64 /usr/local/Homebrew/bin/brew install redis
+
+以后进入 x86 架构的终端即可执行这些 x86 的应用。
 
 5、区分环境
 
@@ -19298,7 +19304,7 @@ Apple Game Porting Toolkit (GPTK)
 
     安装 Rosetta 2
 
-    安装 x86_64 版 Homebrew
+    安装 x86_64 架构 Homebrew
 
 前面的章节有介绍安装过程。
 
@@ -19321,11 +19327,11 @@ Apple Game Porting Toolkit (GPTK)
 
 运行后，在弹出的窗口中，将Windows版本设为“Windows 10”或“Windows 7”，然后点击确定。
 
-#### macOS 下虚拟机运行 Windows
+#### 虚拟机 arm Windows 运行 Windows 程序
 
-目前效率最高的运行 x86 程序的方法，是前面章节介绍的，在 macOS 下用 Wine/Crossover 直接运行 x86 软件，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。
+目前效率最高的运行 x86 程序的方法，是前面章节介绍的，在 macOS 下用 Wine/Crossover 直接运行 x86 软件，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。缺点是仅限于 x86 macOS 的那些软件，无法执行 Windows 下庞大的 x86 软件，特别是图形化界面的软件。
 
-如果需要兼容性最大化，则要接受至少 8GB 内存用于虚拟机的方案：优选基于 QEMU 的 UTM 开源虚拟机管理器
+为了兼容性最大化，则要接受至少消耗 8GB 内存用于虚拟机的方案：优选基于 QEMU 的 UTM 开源虚拟机管理器
 
     https://mac.getutm.app/
         https://github.com/utmapp/UTM/releases/latest/download/UTM.dmg
@@ -19336,13 +19342,13 @@ UTM 的两种运行方式：
 
 1、“模拟”模式（QEMU 方案）安装 x86 操作系统：纯 cpu 仿真运行 x86/AMD64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，不需要也不使用 cpu 提供的虚拟化加速。因此速度最慢，日常运行可能勉强可用，使用这个方案只是因为它的 x86 模拟功能最完整，作为生产环境或开发主力。
 
-2、推荐 虚拟化方式安装 arm 操作系统：这样安装的 arm 操作系统，可以利用 Apple 的 Hypervisor 虚拟化框架，在 Apple silicon 芯片上以接近本机原生的速度运行 ARM64 操作系统，利用 ARM 版 Windows 11/Linux 都有执行 x86 程序的能力来运行 Windows 程序。
+2、推荐 虚拟化方式安装 arm 操作系统：这样可以利用系统的 Hypervisor 虚拟化框架及硬件加速，以接近本机原生的速度运行 ARM64 操作系统。然后利用 ARM 版 Windows 11/Linux 可以执行 x86 程序的能力来运行 Windows 程序。
 
-虚拟机安装 Windows 11 ARM 版运行 x86 程序是非常方便的，这个方案的兼容性大于使用 Wine 的方案，是稳定办公的首选。
+虚拟机安装 Windows 11 ARM 版运行 x86 程序是非常方便的，这个方案的兼容性大于使用 Wine 的方案，是稳定办公的首选：
 
-    Windows 11 内置微软官方开发的 Prism 模拟器，可将 x86 指令实时编译为 ARM64 指令，以执行 x86 程序。装好 Windows ARM 就和普通 PC 一样，无脑用。
+    Windows 11 内置微软官方开发的 Prism 模拟器，可将 x86 指令实时转译为 ARM64 指令，以执行 x86 程序。装好 Windows ARM 就和普通 PC 一样，无脑用。
 
-    得益于苹果 M 芯片的高性能及微软的极致优化，执行效率很高，日常办公体验是完全没问题的。商业软件 Parallels Desktop 更是可以让你在虚拟机里运行的 3D 游戏接近原生 Windows 的感觉）。
+    得益于苹果 M 芯片的高性能及微软的极致优化，执行效率很高，日常办公体验是完全没问题的。商业软件 Parallels Desktop 甚至可以使虚拟机里运行的 3D 游戏接近原生 Windows 的感觉）。
 
 注意：UTM 虚拟机安装的 Windows，务必安装 QEMU 客户机工具，这样桌面操作的流畅感才会类似本地原生系统：
 
@@ -19356,25 +19362,21 @@ UTM 的两种运行方式：
 
 然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机 Windows 桌面体验直接起飞。
 
-#### 虚拟机 ARM Linux 里执行 Linux x86 程序
+#### 虚拟机 arm Linux 执行 Linux x86 程序
 
-    不支持 Windows x86 程序，只是可以运行 Linux x86 程序。
+绝大多数情况下，不需要本用法，可以在 macOS 本地直接运行x86程序，详见章节 [指令级转译：arm macOS 可以运行 x86 macOS 的 应用]。
 
-对普通用户用处极小。适合开发环境（比如 Docker 里跑 x86 镜像））、运行 Linux x86 命令行工具等.
+这个用法对普通用户用处极小，虚拟机安装 Ubuntu arm 版里运行 x86 程序，只适合开发环境（比如 Docker 里跑 x86 镜像））、运行 Linux x86 命令行工具等。
 
-但是，兼容性不好，只能跑 Linux x86 程序，不能跑 Windows 程序：
+仅限于运行 Linux x86 程序，大多数 x86_64 Linux 命令行程序和服务器软件都能良好运行，不能用于运行 Windows 程序。而且图形应用依赖配置复杂。部分对硬件特性（如某些底层指令）有强依赖的图形界面应用，或需要内核模块支持的程序可能存在问题。
 
-    大多数x86_64 Linux命令行程序和服务器软件都能良好运行。
-
-    图形应用依赖配置复杂。部分对硬件特性（如某些底层指令）有强依赖的图形界面应用，或需要内核模块支持的程序可能存在问题
-
-有两个运行方式：
+有两种方式：
 
 方式一、QEMU-user 模式
 
 它会自动向内核注册一条规则：凡是遇到 x86 二进制，就调用 qemu-x86_64-static 去翻译执行。要安装 `sudo apt install binfmt-support qemu-user-static`。缺点是纯软件翻译，性能一般，CPU 占用高。只适合服务器下运行命令行程序，运行图形化程序太繁琐。
 
-方式二、推荐 调用宿主机的 Rosetta 2
+方式二、推荐 虚拟机直通，调用宿主机的 Rosetta 2
 
 新版 UTM 在安装 arm linux 时，选择设置 System (系统): 勾选 Use Apple Virtualization（使用Apple虚拟化）和 Enable Rosetta (x86_64 Emulation)（启用Rosetta）即可，然后安装 Ubuntu arm 版。
 
