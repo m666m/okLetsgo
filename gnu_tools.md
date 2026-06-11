@@ -5556,7 +5556,8 @@ set -as terminal-features ",xterm-256color:RGB"  # tmux 3.2+
 run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 # macOS 下前导键使用 Option 键（Alt 键）代替 ctrl+b
-#   系统自带终端，需要在 设置 -> 描述文件 -> 键盘 选项卡中勾选 “将 Option 键用作 Meta 键”
+#   系统自带终端：设置 -> 描述文件 -> 键盘 选项卡中勾选 “将 Option 键用作 Meta 键”
+#   iTerm2：Settings -> Profiles -> Keys:Left Option (⌥) Key 和 Right Option (⌥) Key，从默认的 Normal 改为 +Esc
 # 主前导键：Alt+b （macOS 下使用）
 set -g prefix M-b
 # 第二前导键：Ctrl+b （Windows 下使用）
