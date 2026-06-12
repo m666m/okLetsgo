@@ -314,7 +314,7 @@ fi
 # macOS 下常用设置
 if [[ $os_type = 'macos' ]]; then
     alias arch86='echo "[快捷执行 x86 架构命令]"; arch -x86_64 '
-    alias arch86='echo "[进入 x86 架构的子shell]"; arch -x86_64 zsh'
+    alias archs='echo "[进入 x86 架构的子shell]"; arch -x86_64 zsh'
 
     if [[ $current_shell = 'bash' ]]; then
         if [ "${BASH_VERSION%%.*}" -lt 5 ]; then
