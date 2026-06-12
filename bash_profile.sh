@@ -795,6 +795,15 @@ if [[ $os_type = 'windows' ]] && ! grep '^ConPTY=on' ~/.minttyrc >/dev/null 2>&1
     alias ping='winpty ping'
 fi
 
+#######################
+# gpg: problem with the agent: Inappropriate ioctl for device，
+#   参见章节 [命令行终端下 gpg 无法弹出密码输入框的问题](gpg think)
+if command -v gpg >/dev/null 2>&1; then
+    export GPG_TTY=${TTY:-$(tty)}
+    #echo "以当前终端 tty 连接 gpg-agent..."
+    gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
+fi
+
 # macOS 下把 gpg 密码加入系统钥匙串
 # 1、把gpg密码保存到系统钥匙串：security add-generic-password -a "你的帐户名" -s "密码名称" -w
 # 2、然后使用下面的命令输出钥匙串中保存的密码 `krpass 密码名称`
@@ -812,49 +821,21 @@ if [[ $os_type = 'macos' ]]; then
 fi
 
 #######################
-# gpg: problem with the agent: Inappropriate ioctl for device，
-#   参见章节 [命令行终端下 gpg 无法弹出密码输入框的问题](gpg think)
-if command -v gpg >/dev/null 2>&1; then
-    export GPG_TTY=${TTY:-$(tty)}
-    #echo "以当前终端 tty 连接 gpg-agent..."
-    gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
-fi
-
-#######################
 # 命令行使用 ssh 多会话复用 ssh 密钥代理
 # 设置变量指向ssh密钥代理的进程即可实现复用，参见章节 [多会话复用 ssh-agent 进程](ssh.md think)
 # 适用于 Linux bash / Windows git bash(mintty)
 if test -d "$HOME/.ssh"; then
 
-    # GNOME 桌面环境下使用 ssh，复用 gnome-keyring，原理见 [Gnome 桌面的密码管理器应用程序](okletsgo)。
-    if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]] && command -v gnome-shell >/dev/null; then
+    # macOS 下把 ssh 密钥加入钥匙链
+    # 1、ssh-add --apple-use-keychain ~/.ssh/id_rsa
+    # 2、配合 SSH 配置文件的 Host * 段添加 UseKeychain yes 可以不用再输入保护密码了
 
-        # 以下操作仅限于 gnome49 之前的版本，之后使用 gcr-ssh-agent.service 接管 ssh-agent 了，不涉及手工启动 gnome-keyring-daemon
-        gsversion=$(gnome-shell --version | awk '{print $3}' | awk -F. '{print $1}')
+    # GNOME 桌面环境下使用 ssh 密钥，ssh-agent 可以被 gnome-keyring 接管，
+    # 只要 SSH 配置文件的 Host * 段添加 AddKeysToAgent yes，然后执行一次 `ssh-add` 即可。
+    # 原理见 [Gnome 桌面的密码管理器应用程序](okletsgo)。
 
-        if [ "$gsversion" -lt 49 ]; then
-
-            # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，并实现了 ssh 密钥代理功能
-            # 但 gnome-keyring-daemon 有时候没有开机自启动 gnome-keyring-daemon 守护进程，
-            # 就没有 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh，导致无法读取ssh代理的密钥
-            # 干脆手工启动  https://blog.csdn.net/asdfgh0077/article/details/104121479
-            pgrep gnome-keyring >/dev/null 2>&1 || gnome-keyring-daemon --start >/dev/null 2>&1
-
-            # 给 ssh 密钥代理 ssh-agent 设置变量指向 gnome-keyring-daemon
-            # 实现复用需要设置变量指向ssh密钥代理的进程
-            # gnome-keyring 为何不自动设置这两个变量，既然接管了，又不声明，很有个性。。。
-            # 目前必须手动设置
-            export SSH_AUTH_SOCK="$(ls /run/user/$(id -u "$USER")/keyring*/ssh | head -1)"
-            export SSH_AGENT_PID="$(pgrep gnome-keyring)"
-
-            # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
-            # 这里因为 gnome-keyring-daemon 接管了ssh 密钥的保护密码，用到的时候自动提交，全程用户无感知，不需要执行 `ssh-add` 了
-            # ssh-add
-
-        fi
-
-    # KDE 桌面环境有 systemd 单元文件 ssh-agent.service 支持复用 ssh-agent 进程
-    elif [[ $XDG_CURRENT_DESKTOP = 'KDE' ]]; then
+    # KDE 桌面环境使用 systemd 单元文件 ssh-agent.service 实现复用 ssh-agent 进程
+    if [[ $XDG_CURRENT_DESKTOP = 'KDE' ]]; then
 
         # KDE 桌面环境有自己的 `systemctl --user status ssh-agent.service`
         # 启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/ssh-agent.socket
