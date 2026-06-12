@@ -20339,6 +20339,10 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
 大量的工具软件，特别是开源软件，只能靠 [Homebrew] 社区软件商店，或 [自编开源代码]。
 
+    解压后是 xxx.app ，直接拖动到 访达 左侧栏目“应用程序”就算安装好了
+
+    下载后是 .dmg 文件，双击会出现安装界面，按提示拖动到 App 图标即可安装，完成后清理桌面出现的这个镜像文件的挂载图标，选择推出即可
+
 常用软件
 
     解压缩 https://github.com/aonez/Keka/
