@@ -31,10 +31,12 @@
 # trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
 #######################
-# 兼容性设置：用于 .bash_profile 加载多种 Linux 的配置文件，zsh不加载
+# 兼容性设置：用于 .bash_profile 加载多种 Linux 的配置文件
+#    很多软件的安装脚本设置变量写到 .bashrc 里，
+#    zsh 只要 source .bash_profile 就没道理不 source .bashrc。
 #   ~/.bashrc: executed by bash(1) for non-login shells.
 #   see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
-if [[ -n "$BASH_VERSION" ]] && [[ -f ~/.bashrc ]]; then
+if [[ -f ~/.bashrc ]]; then
     . ~/.bashrc
 fi
 

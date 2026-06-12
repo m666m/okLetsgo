@@ -20352,6 +20352,24 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
     重度任务可以看到，一开始 45W 很快就降到 10几瓦了，14寸笔记本电脑的散热能力带不动全速运行的 M5 pro 芯片
 
+### 程序员必改：防止乱改标点符号
+
+这是 macOS 的全局设置，几乎所有App都会受影响：打开 系统设置 → 点按 键盘 → 在右侧的“文字输入”区域点击 编辑…（输入法列表的右侧）→ 在弹窗里
+
+    取消勾选 “连按两下空格键插入句号”：连续空格（比如对齐、补全触发），突然冒个句号会很烦
+
+    取消勾选 “自动拼写检查”、“自动大写首字母”：不改你的变量命名不一定是你想要的了
+
+    取消勾选 “使用智能引号和破折号”，防止它把你的字符串符号及短线改成更好看的其他符号
+
+macOS 还有个隐藏的“智能标点”（Smart Punctuation）全局开关，如果你发现编辑器里输入 ... 被转成 …、" 被转成 “、' 被转成 ’，那就是它在作祟。彻底关闭方法：
+
+    defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -int 0
+
+    defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -int 0
+
+    defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -int 0
+
 ### 长时间运行防睡眠
 
 默认”合盖模式” (Clamshell Mode)：合盖既睡眠
