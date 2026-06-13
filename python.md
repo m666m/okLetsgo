@@ -2778,6 +2778,8 @@ models:
 
     Anthropic.claude-code
 
+    https://code.claude.com/docs/zh-CN/vs-code
+
     https://zhuanlan.zhihu.com/p/2010502105002160834
 
 如果你在命令行终端已经使用了 claude code，可以安装它的官方 vs code 插件，替代 github Copilot。
