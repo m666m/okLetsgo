@@ -20343,6 +20343,8 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
     下载后是 .dmg 文件，双击会出现安装界面，按提示拖动到 App 图标即可安装，完成后清理桌面出现的这个镜像文件的挂载图标，选择推出即可
 
+    下载后是 .pkg 文件，双击并按照向导操作即可。如果一切顺利，您将看到安装进度，并且该程序将安装在您的系统上。
+
 常用软件
 
     解压缩 https://github.com/aonez/Keka/
@@ -20596,6 +20598,18 @@ macOS 的 Gatekeeper（门禁）安全机制会禁止直接执行从互联网下
     https://brew.sh/zh-cn/
 
     https://zhuanlan.zhihu.com/p/138059447
+
+    竞品 MacPorts
+
+        https://github.com/macports/macports-ports 可使用的软件列表
+            https://www.macports.org/ 在这里下载安装包 .pkg
+
+            https://ports.macports.org/ 搜索可用软件
+
+        依赖于BSD的软件包管理工具(port)，它的工作方式是从仓库中下载软件包以及其依赖库，然后在本机中编译安装。所以需要准备编译环境，参见章节 [自编开源代码]。MacPorts 的理念是尽量减少对系统现有库的依赖，因此它需要下载许多基础库，然后编译安装到系统中。这样做最大的问题在于下载时间长，编译时间长，最大的好处就是不会破坏系统原有软件包。
+
+            port instal xxx
+            port search xxx
 
 Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS
 
