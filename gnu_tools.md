@@ -20376,6 +20376,16 @@ macOS 还有个隐藏的“智能标点”（Smart Punctuation）全局开关，
 
     defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -int 0
 
+### 使用 bash
+
+macOS 切换默认 shell 到 zsh 后，其自带的 bash 不更新了，至今还是 v3.x。
+
+只能 `brew install bash bash-completion@2` 才是主流的新版及配套的自动完成，详见对应的 `brew info`。
+
+在终端下执行 `exec bash -l`，这样你才能正常调试 bash 下的各种脚本。
+
+注意，如果执行 `exec /bin/bash -l` 会进入苹果自带的版本，太旧了，各种 bash 标准不支持。
+
 ### 长时间运行防睡眠
 
 默认”合盖模式” (Clamshell Mode)：合盖既睡眠

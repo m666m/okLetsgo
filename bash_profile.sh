@@ -985,11 +985,23 @@ _comp_ssh_hosts() {
 }
 
 if [[ $current_shell != 'zsh' ]]; then
-    # 优先调用 openssh-clients 包自带的 bash-completion
-    if [[ -f /usr/share/bash-completion/completions/ssh ]]; then
+
+    # macOS 的自带 bash 非常旧不更新了
+    if [[ $os_type = 'macos' ]]; then
+        # `brew install bash bash-completion@2` 才是新版及配套自动完成
+        [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
+
+    # 剩下的就是普通的 Linux bash 使用配套的自动完成
+
+    # 优先调用 openssh-clients 包自带的
+    elif [[ -f /usr/share/bash-completion/completions/ssh ]]; then
         source /usr/share/bash-completion/completions/ssh
+
+    # 回落到 bash-completion 包自带的
     elif [[ -f /etc/bash_completion.d/ssh ]]; then
         source /etc/bash_completion.d/ssh
+
+    # 回落到自制的
     else
         complete -F _comp_ssh_hosts ssh
     fi
