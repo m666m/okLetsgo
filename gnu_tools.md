@@ -20378,13 +20378,19 @@ macOS 还有个隐藏的“智能标点”（Smart Punctuation）全局开关，
 
 ### 使用 bash
 
-macOS 切换默认 shell 到 zsh 后，其自带的 bash 不更新了，至今还是 v3.x。
+macOS 从 Catalina（10.15）开始，将默认 Shell 从 bash 切换为 zsh，其自带的 bash 为了兼容性保留但是不更新版本，至今还是 v3.x。调试 bash 下的各种脚本，经常会遇到用法不支持的报错。
 
-只能 `brew install bash bash-completion@2` 才是主流的新版及配套的自动完成，详见对应的 `brew info`。
+如果要使用主流的新版及配套的自动完成
 
-在终端下执行 `exec bash -l`，这样你才能正常调试 bash 下的各种脚本。
+    brew install bash bash-completion@2
 
-注意，如果执行 `exec /bin/bash -l` 会进入苹果自带的版本，太旧了，各种 bash 标准不支持。
+    说明见对应的 `brew info`
+
+在终端下，默认 shell 是 zsh
+
+    执行 `exec bash -l` 即可切换到 brew 安装的新版 bash
+
+    执行 `exec /bin/bash -l` 会进入苹果自带的老版本 bash
 
 ### 长时间运行防睡眠
 
