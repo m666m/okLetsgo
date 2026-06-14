@@ -5580,8 +5580,7 @@ set -g @resurrect-processes 'btop nmon watch "journalctl -f" "cmatrix -ba" "podm
 set -g @resurrect-capture-pane-contents 'on'
 
 # 绑定 Prefix + Ctrl+e 捕获当前窗格最近100行内容问 AI
-bind C-e new-window "echo 'ask AI in progress...'; { echo '请分析以下内容:'; tmux capture-pane -p -t '{last}' -S -100; } | ask; echo; read -p 'Press RETURN to close...'"
-
+bind C-e capture-pane -S -100 \; new-window \; send-keys "{ echo '请分析以下内容:'; tmux show-buffer; } | ask; echo; printf 'Press RETURN to close...'; read _dummy; exit" Enter
 ```
 
 重新加载配置文件
