@@ -833,10 +833,10 @@ if test -d "$HOME/.ssh"; then
     # GNOME 桌面环境下使用 ssh 密钥，ssh-agent 可以被 gnome-keyring 接管复用，
     # 只需要 SSH 配置文件的 Host * 段添加 AddKeysToAgent yes，然后执行一次 `ssh-add` 即可。
     # 原理见 [Gnome 桌面的密码管理器应用程序](okletsgo)。
-    # 以下代码保留至 Fedora 42 retired.
-    if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]] && command -v gnome-shell >/dev/null; then
 
-        # 以下操作仅限于 gnome49 之前的版本，之后使用 gcr-ssh-agent.service 接管 ssh-agent 了，不涉及手工启动 gnome-keyring-daemon
+    if [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]] && command -v gnome-shell >/dev/null; then
+        # 以下代码保留至 Debian 13(GNOME 48) retired(LTS 阶段：至 2030 年 8 月).
+        # 以下操作仅限于 gnome49 之前的版本，之后 GNOME 使用 gcr-ssh-agent.service 接管 ssh-agent 了，不再有需要手工启动 gnome-keyring-daemon 的情况
         gsversion=$(gnome-shell --version | awk '{print $3}' | awk -F. '{print $1}')
 
         if [ "$gsversion" -lt 49 ]; then
