@@ -4427,6 +4427,14 @@ BIOS 中的 “Erp” 节能选项，选择开启
 
     https://www.asus.com.cn/support/FAQ/1043640
 
+### 视网膜屏幕最佳尺寸
+
+选择27寸5K或24寸4K，这是macOS的“最佳搭档”
+
+    24寸4K：完美适配 200% 缩放。逻辑分辨率刚好1080P，元素大小与24寸1080p一致，字体大小适中。由于是200%整数倍缩放（4个物理像素显示1个逻辑像素），字体边缘锐利，完全没有模糊问题。
+
+    27寸5K：完美适配 200% 缩放。逻辑分辨率2560x1440，UI大小适中。同样因为200%完美整数倍缩放，显示效果极致清晰。
+
 ### 设置带集成 usb-hub 拓展坞的显示器 Philips 346P1CRH
 
     https://www.philips.com.cn/c-p/346P1CRH_93/brilliance-curved-ultrawide-lcd-monitor-with-usb-c
