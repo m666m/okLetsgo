@@ -254,7 +254,7 @@ if [ -x /usr/bin/dircolors ]; then
     # 下载使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
     if [[ ! -f ~/.dir_colors ]]; then
         echo '安装命令行显示文件颜色方案 nord-dircolors'
-        (set -o pipefail; curlgh https://raw.githubusercontent.com/nordtheme/dircolors/develop/src/dir_colors > ~/.dir_colors) || rm -f ~/.dir_colors
+        curlgh https://raw.githubusercontent.com/nordtheme/dircolors/develop/src/dir_colors > ~/.dir_colors || rm -f ~/.dir_colors
     fi
 
     if test -r ~/.dir_colors; then
@@ -546,7 +546,7 @@ if command -v ack >/dev/null 2>&1; then
 
         printf "建议如下操作
         tmpfile=\$(mktemp)
-        (set -o pipefail; curlgh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh > \$tmpfile) || rm -f \$tmpfile
+        curlgh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh > \$tmpfile || rm -f \$tmpfile
 
         sed -i 's/^h()/ackg()/' \$tmpfile
         sed -i.bak 's/^h()/ackg()/' \$tmpfile && rm \$tmpfile.bak
@@ -876,7 +876,7 @@ function gaddr {
     local tfile=$(mktemp)
 
     # 备选 https://raw.githubusercontent.com/521xueweihan/GitHub520/refs/heads/main/hosts
-    (set -o pipefail; curlgh https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts > "$tfile") || rm -f "$tfile"
+    curlgh https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts > "$tfile" || rm -f "$tfile"
 
     if [[ ! -s "$tfile" ]]; then
         echo '获取 github 地址列表失败！'
