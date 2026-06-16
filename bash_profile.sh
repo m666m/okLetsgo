@@ -16,6 +16,15 @@
 #   变量赋值别习惯性的加空格
 
 #######################
+# 脚本比较长，其实结构不复杂
+#  先引用配置文件配置几个环节变量，非交互式登录至此就退出了，
+#  后面的设置都是给交互式登录，为了使用习惯的用户自定义设置：
+#  一、准备环境信息，方便后面使用
+#  二、适用性方面的调整和环境设置，涉及颜色方案、字符编码、常用工具设置等
+#  三、常用命令的惯用法用别名和函数封装起来，方便日常使用
+#  四、双行彩色命令行提示符，显示当前路径、git分支、python环境名等
+
+#######################
 # 此部分作为普通脚本的默认头部内容，便于调测运行。
 #
 # declare -p PS1 打印指定变量的定义
@@ -228,7 +237,7 @@ curlgh() {
 }
 
 ##############################################
-# 二、从这里开始适用性方面的调整和设置，涉及颜色方案、字符编码、常用工具设置等
+# 二、适用性方面的调整和环境设置，涉及颜色方案、字符编码、常用工具设置等
 
 # 在终端模拟器中命令行的字符显示彩色
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
@@ -277,7 +286,8 @@ export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 # 在终端模拟器中设置了光标闪动有时候在ssh连接远程后或tmux中也不生效，强制开启
 #tput cnorm && echo -e '\033[?12h\033[1 q'
 
-# macOS 下常用设置
+#######################
+# macOS 下的环境设置
 if [[ $os_type = 'macos' ]]; then
     if [[ $current_shell = 'bash' ]]; then
         if [ "${BASH_VERSION%%.*}" -lt 5 ]; then
@@ -330,8 +340,7 @@ if [[ $current_shell != 'zsh' ]]; then
         # `brew install bash bash-completion@2` 才是新版及配套自动完成
         [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
 
-    # 剩下的就是普通的 Linux bash 使用配套的自动完成
-
+    # Linux bash 使用配套的自动完成
     # 优先调用 openssh-clients 包自带的
     elif [[ -f /usr/share/bash-completion/completions/ssh ]]; then
         source /usr/share/bash-completion/completions/ssh
@@ -349,7 +358,7 @@ fi
 #######################
 # 命令行使用 ssh 多会话复用 ssh 密钥代理
 # 设置变量指向ssh密钥代理的进程即可实现复用，参见章节 [多会话复用 ssh-agent 进程](ssh.md think)
-# 适用于 Linux bash / Windows git bash(mintty)
+# 适用于 Linux bash / Windows git bash(mintty) / macOS
 if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
 
     # macOS 下把 ssh 密钥加入钥匙链，并接管 ssh-agent 复用
@@ -444,7 +453,7 @@ if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
         # ssh-pageant 还会导出变量指向ssh密钥代理的进程，用户不需要操心
         eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
 
-    # 默认 Linux tty 环境复用 ssh-agent 进程，这个设置最通用， Windows git bash(mintty) 环境下也可以使用
+    # 默认 Linux tty 环境复用 ssh-agent 进程，这个设置最通用，在 macOS / Windows git bash(mintty) 环境下也可以使用
     else
 
         # 代码来源 git bash auto ssh-agent
@@ -942,13 +951,15 @@ function fpks() {
 }
 
 # 容器化
-# Debian 系skopeo命令的版本太旧了，也不想开通 Backports 仓库，直接用容器运行：
-#alias skopeo='docker run --rm \
-#  -v /var/run/docker.sock:/var/run/docker.sock \
-#  -v $HOME/.docker/config.json:/root/.docker/config.json:ro \
-#  -v /etc/docker/certs.d:/etc/containers/certs.d:ro \
-#  -e REGISTRY_AUTH_FILE=/root/.docker/config.json \
-#  quay.io/skopeo/stable:latest'
+# Debian 系skopeo命令的版本太旧了，也不想开通 Backports 仓库，直接用容器运行
+if [ -f /etc/debian_version ]; then
+    alias skopeo='docker run --rm \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -v $HOME/.docker/config.json:/root/.docker/config.json:ro \
+      -v /etc/docker/certs.d:/etc/containers/certs.d:ro \
+      -e REGISTRY_AUTH_FILE=/root/.docker/config.json \
+      quay.io/skopeo/stable:latest'
+fi
 
 # podman
 function pdms() {
