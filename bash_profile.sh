@@ -224,7 +224,7 @@ curlgh() {
 }
 
 #######################
-# 常用命令的惯用法用别名和函数封装起来，方便日常使用
+# 使用习惯方面的调整和设置
 
 # 删除 vi 然后安装 vim，居然没有 `vi` 了
 command -v vi >/dev/null || {
@@ -248,6 +248,29 @@ export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 
 # Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
 [[ -n $LANG ]] || export LANG=en_US.UTF-8
+
+# macOS 下常用设置
+if [[ $os_type = 'macos' ]]; then
+    if [[ $current_shell = 'bash' ]]; then
+        if [ "${BASH_VERSION%%.*}" -lt 5 ]; then
+            echo 'macOS 预装的 bash 版本较老，建议 `brew install bash` 以后使用 /opt/homebrew/bin/bash'
+        fi
+    fi
+
+    # 自动切换对应架构的 Homebrew，在使用 x86 容器镜像或 Windows 游戏时常用
+    if [ "$(arch)" = "arm64" ]; then
+        if [ -f "/opt/homebrew/bin/brew" ]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        fi
+    else
+        if [ -f "/usr/local/bin/brew" ]; then
+            eval "$(/usr/local/bin/brew shellenv)"
+        fi
+    fi
+
+fi
+#######################
+# 常用命令的惯用法用别名和函数封装起来，方便日常使用
 
 # 在终端模拟器中命令行的字符显示彩色
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
@@ -311,33 +334,6 @@ if [[ $os_type = 'macos' ]]; then
     alias pstrees='echo "[进程树，列出相关名称所在的进程树]"; pstree -s'
 else
     alias pstreep='echo "[进程树，列出pid所在的进程树]"; pstree -s -p'
-fi
-
-# macOS 下常用设置
-if [[ $os_type = 'macos' ]]; then
-    alias arch86='echo "[快捷执行 x86 架构命令]"; arch -x86_64 '
-    alias archs='echo "[进入 x86 架构的子shell]"; arch -x86_64 zsh'
-
-    if [[ $current_shell = 'bash' ]]; then
-        if [ "${BASH_VERSION%%.*}" -lt 5 ]; then
-            echo 'macOS 预装的 bash 版本较老，建议 `brew install bash` 以后使用 /opt/homebrew/bin/bash'
-        fi
-    fi
-
-    # 自动切换对应架构的 Homebrew
-    if [ "$(arch)" = "arm64" ]; then
-        if [ -f "/opt/homebrew/bin/brew" ]; then
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        fi
-    else
-        if [ -f "/usr/local/bin/brew" ]; then
-            eval "$(/usr/local/bin/brew shellenv)"
-        fi
-    fi
-
-    # 快捷执行 x86 架构 brew
-    alias ibrew='arch -x86_64 /usr/local/bin/brew'
-
 fi
 
 # 从下载文件夹的子目录里把各种电影文件统一挪到当前，方便整理
@@ -803,6 +799,15 @@ if [[ $os_type = 'windows' ]] && ! grep '^ConPTY=on' ~/.minttyrc >/dev/null 2>&1
     # 其实 Windows 的 cmd 字符程序都可以在 bash 下用 winpty 来调用
     # 在这里做 alias 就可以
     alias ping='winpty ping'
+fi
+
+# macOS
+if [[ $os_type = 'macos' ]]; then
+    alias arch86='echo "[快捷执行 x86 架构命令]"; arch -x86_64 '
+    alias archs='echo "[进入 x86 架构的子shell]"; arch -x86_64 zsh'
+
+    # 快捷执行 x86 架构 brew
+    alias ibrew='arch -x86_64 /usr/local/bin/brew'
 fi
 
 #######################
