@@ -8,8 +8,8 @@
 #
 # 可直接部署到远程服务器
 #   ssh user@server "tee .bash_profile" < bash_profile.sh
-#   ssh user@server "sed -i 's/\r$//' .bash_profile"
-#                    防止 $'\r': command not found
+#   如果遇到  $'\r': command not found
+#       ssh user@server "sed -i 's/\r$//' .bash_profile"
 
 #
 # 使用前需要手工调整的地方：
