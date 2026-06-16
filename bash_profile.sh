@@ -26,24 +26,24 @@
 
 #######################
 # 此部分作为普通脚本的默认头部内容，便于调测运行。
+# 在本脚本中不适用，保留备查。
 #
 # declare -p PS1 打印指定变量的定义
-# set 显示当前所有内置变量和函数定义
-#
-# -x ： 在执行每一个命令之前把经过变量展开之后的命令打印出来。
-# -e ： 遇到一个命令失败（返回码非零）时，立即退出。
-# -u ：试图使用未定义的变量，就立即退出。
-# -o pipefail ： 只要管道中的一个子命令失败，整个管道命令就失败，这样可以捕获到其退出代码
-#set -euo pipefail
+# set 显示当前所有内置变量和函数定义：
+#   -x ： 在执行每一个命令之前把经过变量展开之后的命令打印出来。
+#   -e ： 遇到一个命令失败（返回码非零）时，立即退出。
+#   -u ：试图使用未定义的变量，就立即退出。
+#   -o pipefail ： 只要管道中的一个子命令失败，整个管道命令就失败，这样可以捕获到其退出代码
+# 可连写 set -euo pipefail
 # trap "rm -f $temp_file" 0 2 3 15  # `trap -l` for all useble signal
 # 意外退出时杀掉所有子进程
 # trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
 #######################
-# 兼容性设置：用于 .bash_profile 加载多种 Linux 的配置文件
-#    很多软件的安装脚本设置变量写到 .bashrc 里，
-#    zsh 只要 source .bash_profile 就没道理不 source .bashrc。
-#   ~/.bashrc: executed by bash(1) for non-login shells.
+# 兼容性设置：.bash_profile 明确加载 `source .bashrc`
+#    很多软件的安装脚本设置变量会写入 .bashrc
+#    zsh 可以 `source .bash_profile`` 就没道理不 `source .bashrc`
+# 以此避免有的发行版不加载，因为其原定义是 ~/.bashrc: executed by bash(1) for non-login shells.
 #   see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for examples
 if [[ -f ~/.bashrc ]]; then
     . ~/.bashrc
@@ -51,12 +51,12 @@ fi
 
 #######################
 # 兼容性设置：bash 优先调用 .bash_profile，就不会调用 .profile
+# 而 Debian 系在 .profile 里把某几个标准目录设置到变量 $PATH，不调用 .profile 会导致 bash 找不到某些基础命令。
 #   ~/.profile: executed by the command interpreter for login shells.
 #     This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login exists.
 #     see /usr/share/doc/bash/examples/startup-files for examples.
 #     the files are located in the bash-doc package.
-# 而 Debian 系在 .profile 里把某几个标准目录设置到变量 $PATH，不调用 .profile 会导致 bash 找不到某些基础命令。
-# 所以，为保持兼容性，这里不直接执行 .profile 文件，而是单独补充，把这几个标准目录设置到变量 $PATH
+# 为保持兼容性，这里不直接执行 .profile 文件，而是单独补充，只把这几个标准目录设置到变量 $PATH
 for dir in "$HOME/.local/bin" "$HOME/bin"; do
     if [[ -d "$dir" ]] && [[ ":$PATH:" != *":$dir:"* ]]; then
         PATH="$PATH:$dir"
@@ -73,7 +73,7 @@ export PATH
 [[ $- != *i* ]] && return
 
 #####################################################################
-# 自此开始都是为了使用习惯的用户自定义设置
+# 以下内容都是为了使用习惯的用户自定义设置
 # User specific environment and startup programs
 
 # 避坑
@@ -254,7 +254,7 @@ if [ -x /usr/bin/dircolors ]; then
     # 下载使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
     if [[ ! -f ~/.dir_colors ]]; then
         echo '安装命令行显示文件颜色方案 nord-dircolors'
-        curlgh https://raw.githubusercontent.com/nordtheme/dircolors/develop/src/dir_colors > ~/.dir_colors
+        (set -o pipefail; curlgh https://raw.githubusercontent.com/nordtheme/dircolors/develop/src/dir_colors > ~/.dir_colors) || rm -f ~/.dir_colors
     fi
 
     if test -r ~/.dir_colors; then
@@ -546,7 +546,7 @@ if command -v ack >/dev/null 2>&1; then
 
         printf "建议如下操作
         tmpfile=\$(mktemp)
-        curlgh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh > \$tmpfile
+        (set -o pipefail; curlgh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh > \$tmpfile) || rm -f \$tmpfile
 
         sed -i 's/^h()/ackg()/' \$tmpfile
         sed -i.bak 's/^h()/ackg()/' \$tmpfile && rm \$tmpfile.bak
@@ -875,8 +875,8 @@ function gaddr {
     echo "[更新本地 hosts 文件的 github.com 地址]"
     local tfile=$(mktemp)
 
-    # https://raw.githubusercontent.com/521xueweihan/GitHub520/refs/heads/main/hosts
-    curlgh https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts > "$tfile"
+    # 备选 https://raw.githubusercontent.com/521xueweihan/GitHub520/refs/heads/main/hosts
+    (set -o pipefail; curlgh https://raw.githubusercontent.com/maxiaof/github-hosts/master/hosts > "$tfile") || rm -f "$tfile"
 
     if [[ ! -s "$tfile" ]]; then
         echo '获取 github 地址列表失败！'
