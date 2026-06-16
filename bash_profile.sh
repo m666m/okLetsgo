@@ -1,6 +1,6 @@
 # .bash_profile
 
-###################################################################
+#####################################################################
 # 适用于 Linux bash、Linux zsh、Windows git bash(mintty.exe)，macOS（未完全测试）
 # alias和路径设置等本该放到 .bashrc 文件，为了方便统一在此了。
 # 本文件可放到 .zshrc 中 `source ~/.bash_profile`，以便在 zsh 下也保持使用习惯。
@@ -63,13 +63,15 @@ export PATH
 #   如果把 return 改成 exit 会导致致命问题：GNOME/KDE 桌面环境下用户登录过程秒退到登录界面且无任何提示。
 [[ $- != *i* ]] && return
 
-###################################################################
+#####################################################################
 # 自此开始都是为了使用习惯的用户自定义设置
 # User specific environment and startup programs
 #
 # 为防止变量名污染命令行环境，尽量使用奇怪点的名称
 
-# 准备环境信息，方便后面使用
+##############################################
+# 一、准备环境信息，方便后面使用
+
 # current_shell：当前脚本环境
 if [ -n "$BASH_VERSION" ]; then
     current_shell="bash"
@@ -82,6 +84,7 @@ elif [ -n "$FISH_VERSION" ]; then
 else
     current_shell=$(ps -p $$ -o comm= | sed 's/^-//')
 fi
+
 # os_type：当前操作系统类型
 os_name=$(uname -s)
 case "$os_name" in
@@ -113,11 +116,12 @@ esac
 unset os_name
 
 #######################
-# 设置常用软件仓库的国内镜像
+# 设置仓库和镜像地址，方便后面使用
 
 # 为方便做多个内网环境使用，只能加这么个屏幕打印，暂没有更好的解决办法
 export PDMREPO="192.168.0.111:5000" && echo "内网私有容器镜像仓库地址设置为 PDMREPO=${PDMREPO}"
 
+# 常用软件仓库的国内镜像
 poor_connection() {
     # uv
     export UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple/
@@ -153,7 +157,7 @@ poor_connection() {
 poor_connection
 
 #######################
-# 定义工具函数
+# 定义工具函数，方便后面使用
 
 curlgh() {
     if [ $# -eq 0 ]; then
@@ -223,54 +227,8 @@ curlgh() {
     fi
 }
 
-#######################
-# 使用习惯方面的调整和设置
-
-# 删除 vi 然后安装 vim，居然没有 `vi` 了
-command -v vi >/dev/null || {
-    printf 'link vim to vi'
-    printf "建议补全 vi 调用：sudo ln -sf /usr/bin/vim /usr/bin/vi"
-}
-
-# 命令行开启 vi 模式，按esc后用vi中的上下左右键选择历史命令
-# zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
-[[ $current_shell != 'zsh' ]] && set -o vi
-
-# 有些命令使用变量 EDITOR 指定的编辑器，一般是 nano，强制指定为 vi
-export EDITOR=/usr/bin/vi
-
-# 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存那些不常用的命令
-# 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以在新行中输入密钥。
-export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
-
-# 在终端模拟器中设置了光标闪动有时候在ssh连接远程后或tmux中也不生效，强制开启
-#tput cnorm && echo -e '\033[?12h\033[1 q'
-
-# Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
-[[ -n $LANG ]] || export LANG=en_US.UTF-8
-
-# macOS 下常用设置
-if [[ $os_type = 'macos' ]]; then
-    if [[ $current_shell = 'bash' ]]; then
-        if [ "${BASH_VERSION%%.*}" -lt 5 ]; then
-            echo 'macOS 预装的 bash 版本较老，建议 `brew install bash` 以后使用 /opt/homebrew/bin/bash'
-        fi
-    fi
-
-    # 自动切换对应架构的 Homebrew，在使用 x86 容器镜像或 Windows 游戏时常用
-    if [ "$(arch)" = "arm64" ]; then
-        if [ -f "/opt/homebrew/bin/brew" ]; then
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        fi
-    else
-        if [ -f "/usr/local/bin/brew" ]; then
-            eval "$(/usr/local/bin/brew shellenv)"
-        fi
-    fi
-
-fi
-#######################
-# 常用命令的惯用法用别名和函数封装起来，方便日常使用
+##############################################
+# 二、从这里开始适用性方面的调整和设置，涉及颜色方案、字符编码、常用工具设置等
 
 # 在终端模拟器中命令行的字符显示彩色
 # 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
@@ -295,6 +253,303 @@ if [ -x /usr/bin/dircolors ]; then
     fi
 
 fi
+
+# Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
+[[ -n $LANG ]] || export LANG=en_US.UTF-8
+
+# 删除 vi 然后安装 vim，居然没有 `vi` 了
+command -v vi >/dev/null || {
+    printf 'link vim to vi'
+    printf "建议补全 vi 调用：sudo ln -sf /usr/bin/vim /usr/bin/vi"
+}
+
+# 命令行开启 vi 模式，按esc后用vi中的上下左右键选择历史命令
+# zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
+[[ $current_shell != 'zsh' ]] && set -o vi
+
+# 有些命令使用变量 EDITOR 指定的编辑器，一般是 nano，强制指定为 vi
+export EDITOR=/usr/bin/vi
+
+# 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存那些不常用的命令
+# 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以在新行中输入密钥。
+export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
+
+# 在终端模拟器中设置了光标闪动有时候在ssh连接远程后或tmux中也不生效，强制开启
+#tput cnorm && echo -e '\033[?12h\033[1 q'
+
+# macOS 下常用设置
+if [[ $os_type = 'macos' ]]; then
+    if [[ $current_shell = 'bash' ]]; then
+        if [ "${BASH_VERSION%%.*}" -lt 5 ]; then
+            echo 'macOS 预装的 bash 版本较老，建议 `brew install bash` 以后使用 /opt/homebrew/bin/bash'
+        fi
+    fi
+
+    # 自动切换对应架构的 Homebrew，在使用 x86 容器镜像或 Windows 游戏时常用
+    if [ "$(arch)" = "arm64" ]; then
+        if [ -f "/opt/homebrew/bin/brew" ]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        fi
+    else
+        if [ -f "/usr/local/bin/brew" ]; then
+            eval "$(/usr/local/bin/brew shellenv)"
+        fi
+    fi
+
+fi
+
+#######################
+# gpg: problem with the agent: Inappropriate ioctl for device，
+#   参见章节 [命令行终端下 gpg 无法弹出密码输入框的问题](gpg think)
+if command -v gpg >/dev/null 2>&1; then
+    export GPG_TTY=${TTY:-$(tty)}
+    #echo "以当前终端 tty 连接 gpg-agent..."
+    gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
+fi
+
+#######################
+# ssh 命令后面按tab键自动补全 hostname，zsh 自带不需要
+_comp_ssh_hosts() {
+    local cur config_hosts known_hosts hosts
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+
+    [[ -f ~/.ssh/config ]] && config_hosts=$(awk '/^Host / && $2 !~ /\*/ {print $2}' ~/.ssh/config 2>/dev/null)
+
+    [[ -f ~/.ssh/known_hosts ]] && known_hosts=$(grep -v '^|' ~/.ssh/known_hosts 2>/dev/null | awk '{print $1}' | tr ',' '\n' | sed -E 's/^\[(.*)\](:[0-9]+)?$/\1/; s/:[0-9]+$//' | sort -u)
+
+    hosts=$(echo "$config_hosts $known_hosts" | tr ' ' '\n' | sort -u)
+
+    COMPREPLY=($(compgen -W "$hosts" -- "$cur"))
+}
+
+if [[ $current_shell != 'zsh' ]]; then
+
+    # macOS 的自带 bash 非常旧不更新了
+    if [[ $os_type = 'macos' ]]; then
+        # `brew install bash bash-completion@2` 才是新版及配套自动完成
+        [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
+
+    # 剩下的就是普通的 Linux bash 使用配套的自动完成
+
+    # 优先调用 openssh-clients 包自带的
+    elif [[ -f /usr/share/bash-completion/completions/ssh ]]; then
+        source /usr/share/bash-completion/completions/ssh
+
+    # 回落到 bash-completion 包自带的
+    elif [[ -f /etc/bash_completion.d/ssh ]]; then
+        source /etc/bash_completion.d/ssh
+
+    # 回落到自制的
+    else
+        complete -F _comp_ssh_hosts ssh
+    fi
+fi
+
+#######################
+# 命令行使用 ssh 多会话复用 ssh 密钥代理
+# 设置变量指向ssh密钥代理的进程即可实现复用，参见章节 [多会话复用 ssh-agent 进程](ssh.md think)
+# 适用于 Linux bash / Windows git bash(mintty)
+if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
+
+    # macOS 下把 ssh 密钥加入钥匙链，并接管 ssh-agent 复用
+    # 1、ssh-add --apple-use-keychain ~/.ssh/id_rsa
+    # 2、配合 SSH 配置文件的 Host * 段添加 UseKeychain yes 和 AddKeysToAgent yes 可以不用再输入保护密码了
+    if [[ $os_type = 'macos' ]]; then
+        # macOS 默认集成了 launchd 来启动 ssh-agent，还负责设置 SSH_AUTH_SOCK 变量。
+        # 但是重启电脑后，需要手动执行一次加载密钥的命令
+        # 以下代码参考自下面的 默认 Linux tty 环境复用 ssh-agent 进程
+        agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
+        if  [ $agent_run_state = 1 ]; then
+            # agent 没有加载密钥视作开机后第一次执行 shell 登录
+            ssh-add --apple-load-keychain
+        fi
+
+    # GNOME 桌面环境下使用 ssh 密钥，ssh-agent 可以被 gnome-keyring 接管复用，
+    # 只需要 SSH 配置文件的 Host * 段添加 AddKeysToAgent yes，然后执行一次 `ssh-add` 即可。
+    # 原理见 [Gnome 桌面的密码管理器应用程序](okletsgo)。
+    # 以下代码保留至 Debian 13(GNOME 48) retired(LTS 阶段：至 2030 年 8 月).
+    elif [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]] && command -v gnome-shell >/dev/null; then
+        # 以下操作仅限于 gnome49 之前的版本，之后 GNOME 使用 gcr-ssh-agent.service 接管 ssh-agent 了，不再有需要手工启动 gnome-keyring-daemon 的情况
+        gsversion=$(gnome-shell --version | awk '{print $3}' | awk -F. '{print $1}')
+
+        if [ "$gsversion" -lt 49 ]; then
+
+            # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，并实现了 ssh 密钥代理功能
+            # 但 gnome-keyring-daemon 有时候没有开机自启动 gnome-keyring-daemon 守护进程，
+            # 就没有 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh，导致无法读取ssh代理的密钥
+            # 干脆手工启动  https://blog.csdn.net/asdfgh0077/article/details/104121479
+            pgrep gnome-keyring >/dev/null 2>&1 || gnome-keyring-daemon --start >/dev/null 2>&1
+
+            # 给 ssh 密钥代理 ssh-agent 设置变量指向 gnome-keyring-daemon
+            # 实现复用需要设置变量指向ssh密钥代理的进程
+            # gnome-keyring 为何不自动设置这两个变量，既然接管了，又不声明，很有个性。。。
+            # 目前必须手动设置
+            export SSH_AUTH_SOCK="$(ls /run/user/$(id -u "$USER")/keyring*/ssh | head -1)"
+            export SSH_AGENT_PID="$(pgrep gnome-keyring)"
+
+            # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
+            # 这里因为 gnome-keyring-daemon 接管了ssh 密钥的保护密码，用到的时候自动提交，全程用户无感知，不需要执行 `ssh-add` 了
+            # ssh-add
+
+        fi
+
+    # KDE 桌面环境使用 systemd 单元文件 ssh-agent.service 实现复用 ssh-agent 进程
+    elif [[ $XDG_CURRENT_DESKTOP = 'KDE' ]]; then
+
+        # KDE 桌面环境有自己的 `systemctl --user status ssh-agent.service`
+        # 启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/ssh-agent.socket
+
+        # 实现复用需要设置变量指向ssh密钥代理的进程
+        # 需要两个变量，服务 ssh-agent.service 只设置了一个，很有个性
+        # export SSH_AUTH_SOCK="$(ls $XDG_RUNTIME_DIR/ssh-agent.socket |head -1)"
+        # export SSH_AGENT_PID="$(ps -ef | grep 'ssh-agent -D -a' | grep -v grep | awk '{print $2}')"
+        # 所以，目前必须手动设置该变量，获取服务进程的 PID
+        AGENT_PID=$(systemctl --user show ssh-agent.service --property=ExecMainPID | awk -F= '{print $2}')
+        # 通过进程树找到 ssh-agent 的实际 PID（需安装 pstree）
+        SSH_AGENT_PID=$(pstree -p $AGENT_PID | grep -oP 'ssh-agent\(\K\d+')
+        export SSH_AGENT_PID
+
+        # 这个 ksshaskpass 没用
+        # https://github.com/KDE/ksshaskpass
+        # SSH_ASKPASS=/usr/bin/ksshaskpass
+
+        # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
+        if ! ssh-add -l >| /dev/null 2>&1; then
+            echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
+            ssh-add
+        else
+            # ssh-agent正在运行，加载过密钥
+            # ssh-add -l
+            :
+        fi
+
+    # Windows git bash(mintty) 环境利用 ssh-pageant 连接到 putty 的 pagent.exe 进程，复用其缓存的密钥
+    # 来自章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
+    elif [[ $os_type = 'windows' ]]; then
+
+        if ! ps -s | grep -q ssh-pageant; then
+            # agent未运行视作开机后第一次执行 shell 登录，先清理掉 ssh-pageant 上次使用过的临时文件，否则会被加载
+            rm -f /tmp/.ssh-pageant-$USERNAME
+
+            # 搭车运行 gpg 钥匙圈更新
+            # ggkupd
+        fi
+
+        echo ''
+        # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
+        # ssh-add
+        # 改进：利用 git bash 自带的工具 ssh-pageant，连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要执行 `ssh-add` 了
+        # 使用以下参数启动的 ssh-pageant 会判断是否正在运行，不会多次运行自己
+        # ssh-pageant 还会导出变量指向ssh密钥代理的进程，用户不需要操心
+        eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
+
+    # 默认 Linux tty 环境复用 ssh-agent 进程，这个设置最通用， Windows git bash(mintty) 环境下也可以使用
+    else
+
+        # 代码来源 git bash auto ssh-agent
+        # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
+        #
+        # You can run ssh-agent automatically when you open bash or Git shell.
+        # Copy the following lines and paste them into one of your
+        #    ~/.bash_profile
+        #    ~/.profile
+        #    ~/.bashrc
+        # 说明：当你打开一个 bash 会话，自动调用 ssh-add 加载你的密钥。
+        # 如果 ssh-agent 进程没启动，则自动调用起来，
+        # 若已经在其它会话调起来了，则复用该进程，保持你的用户会话中只运行一个ssh-agent进程。
+        # 如果要提高使用安全性，在不使用 ssh-agent 的时候，从操作系统进程中找到该进程手工杀掉即可。
+
+        # 保存已经启动的 ssh-agent 进程的变量指向
+        agent_env=~/.ssh/agent.env
+
+        # 复用已经启动的 ssh-agent 进程，设置变量指向ssh密钥代理的进程
+        agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
+        agent_load_env
+
+        # 启动 ssh-agent，并保存指向ssh密钥代理进程的变量
+        agent_start () {
+            (umask 077; ssh-agent >| "$agent_env")
+            source "$agent_env" >| /dev/null
+        }
+        # agent_run_state:
+        #   0=agent running w/ key;
+        #   1=agent w/o key;
+        #   2=agent not running
+        agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
+
+        if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
+            # agent 未运行视作开机后第一次执行 shell 登录
+
+            # 搭车运行 gpg 钥匙圈更新
+            # ggkupd
+
+            echo
+            echo "Start ssh-agent..."
+            agent_start
+
+            # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
+            # `ssh-add` 会读取 ssh-agent 进程启动时 export 出的环境变量，从而可以调用到 ssh-agent 进程
+            # 这里无法使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
+            echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
+            ssh-add
+
+        elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
+            # ssh-agent正在运行，但是没有加载过密钥
+
+            # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
+            echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
+            ssh-add
+
+        else
+            # ssh-agent正在运行，加载过密钥
+            # ssh-add -l
+            :
+        fi
+
+        unset agent_run_state
+        unset agent_env
+    fi
+fi
+
+#######################
+# ack 命令下载个 hhighlighter 插件
+if command -v ack >/dev/null 2>&1; then
+
+    if [[ -s /usr/local/bin/ackg.sh ]]; then
+        source /usr/local/bin/ackg.sh
+
+        alias ackgs='ackg -i'
+        alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
+
+    else
+
+        echo "ackg 看日志比grep好用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)"
+
+        printf "建议如下操作
+        tmpfile=\$(mktemp)
+        curlgh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh > \$tmpfile
+
+        sed -i 's/^h()/ackg()/' \$tmpfile
+        sed -i.bak 's/^h()/ackg()/' \$tmpfile && rm \$tmpfile.bak
+        sudo mv \$tmpfile /usr/local/bin/ackg.sh
+
+        rm -f \$tmpfile
+        unset tmpfile
+
+        source /usr/local/bin/ackg.sh
+        "
+    fi
+fi
+
+# ask 命令问 AI
+if ! command -v ask >/dev/null 2>&1; then
+    echo "安装 m666m/ask 命令行问 AI..."
+    (set -o pipefail; curlgh "https://github.com/m666m/ask/blob/main/install.sh" | bash) || echo "Ask installation failed"
+fi
+
+##############################################
+# 三、常用命令的惯用法用别名和函数封装起来，方便日常使用
 
 # 注意：基础命令不要搞太花哨，导致脚本里解析出现用法不一致的问题
 # 常用的列文件的惯用法
@@ -808,22 +1063,11 @@ if [[ $os_type = 'macos' ]]; then
 
     # 快捷执行 x86 架构 brew
     alias ibrew='arch -x86_64 /usr/local/bin/brew'
-fi
 
-#######################
-# gpg: problem with the agent: Inappropriate ioctl for device，
-#   参见章节 [命令行终端下 gpg 无法弹出密码输入框的问题](gpg think)
-if command -v gpg >/dev/null 2>&1; then
-    export GPG_TTY=${TTY:-$(tty)}
-    #echo "以当前终端 tty 连接 gpg-agent..."
-    gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
-fi
-
-# macOS 下把 gpg 密码加入系统钥匙串
-# 1、把gpg密码保存到系统钥匙串：security add-generic-password -a "你的帐户名" -s "密码名称" -w
-# 2、然后使用下面的命令输出钥匙串中保存的密码 `krpass 密码名称`
-if [[ $os_type = 'macos' ]]; then
+    # macOS 下把 gpg 密码加入系统钥匙串
     krpass() {
+        # 1、把gpg密码保存到系统钥匙串：security add-generic-password -a "你的帐户名" -s "密码名称" -w
+        # 2、然后使用下面的命令输出钥匙串中保存的密码 `krpass 密码名称`
         if [ "$#" -ne 1 ]; then
             echo '提取钥匙串中指定名称的密码'
             echo 'krpass 密码名称'
@@ -835,250 +1079,8 @@ if [[ $os_type = 'macos' ]]; then
     }
 fi
 
-#######################
-# 命令行使用 ssh 多会话复用 ssh 密钥代理
-# 设置变量指向ssh密钥代理的进程即可实现复用，参见章节 [多会话复用 ssh-agent 进程](ssh.md think)
-# 适用于 Linux bash / Windows git bash(mintty)
-if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
-
-    # macOS 下把 ssh 密钥加入钥匙链，并接管 ssh-agent 复用
-    # 1、ssh-add --apple-use-keychain ~/.ssh/id_rsa
-    # 2、配合 SSH 配置文件的 Host * 段添加 UseKeychain yes 和 AddKeysToAgent yes 可以不用再输入保护密码了
-    if [[ $os_type = 'macos' ]]; then
-        # macOS 默认集成了 launchd 来启动 ssh-agent，还负责设置 SSH_AUTH_SOCK 变量。
-        # 但是重启电脑后，需要手动执行一次加载密钥的命令
-        # 以下代码参考自下面的 默认 Linux tty 环境复用 ssh-agent 进程
-        agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
-        if  [ $agent_run_state = 1 ]; then
-            # agent 没有加载密钥视作开机后第一次执行 shell 登录
-            ssh-add --apple-load-keychain
-        fi
-
-    # GNOME 桌面环境下使用 ssh 密钥，ssh-agent 可以被 gnome-keyring 接管复用，
-    # 只需要 SSH 配置文件的 Host * 段添加 AddKeysToAgent yes，然后执行一次 `ssh-add` 即可。
-    # 原理见 [Gnome 桌面的密码管理器应用程序](okletsgo)。
-    # 以下代码保留至 Debian 13(GNOME 48) retired(LTS 阶段：至 2030 年 8 月).
-    elif [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]] && command -v gnome-shell >/dev/null; then
-        # 以下操作仅限于 gnome49 之前的版本，之后 GNOME 使用 gcr-ssh-agent.service 接管 ssh-agent 了，不再有需要手工启动 gnome-keyring-daemon 的情况
-        gsversion=$(gnome-shell --version | awk '{print $3}' | awk -F. '{print $1}')
-
-        if [ "$gsversion" -lt 49 ]; then
-
-            # GNOME 桌面环境用自己的 keyring 管理接管了全系统的密码和密钥，并实现了 ssh 密钥代理功能
-            # 但 gnome-keyring-daemon 有时候没有开机自启动 gnome-keyring-daemon 守护进程，
-            # 就没有 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh，导致无法读取ssh代理的密钥
-            # 干脆手工启动  https://blog.csdn.net/asdfgh0077/article/details/104121479
-            pgrep gnome-keyring >/dev/null 2>&1 || gnome-keyring-daemon --start >/dev/null 2>&1
-
-            # 给 ssh 密钥代理 ssh-agent 设置变量指向 gnome-keyring-daemon
-            # 实现复用需要设置变量指向ssh密钥代理的进程
-            # gnome-keyring 为何不自动设置这两个变量，既然接管了，又不声明，很有个性。。。
-            # 目前必须手动设置
-            export SSH_AUTH_SOCK="$(ls /run/user/$(id -u "$USER")/keyring*/ssh | head -1)"
-            export SSH_AGENT_PID="$(pgrep gnome-keyring)"
-
-            # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
-            # 这里因为 gnome-keyring-daemon 接管了ssh 密钥的保护密码，用到的时候自动提交，全程用户无感知，不需要执行 `ssh-add` 了
-            # ssh-add
-
-        fi
-
-    # KDE 桌面环境使用 systemd 单元文件 ssh-agent.service 实现复用 ssh-agent 进程
-    elif [[ $XDG_CURRENT_DESKTOP = 'KDE' ]]; then
-
-        # KDE 桌面环境有自己的 `systemctl --user status ssh-agent.service`
-        # 启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/ssh-agent.socket
-
-        # 实现复用需要设置变量指向ssh密钥代理的进程
-        # 需要两个变量，服务 ssh-agent.service 只设置了一个，很有个性
-        # export SSH_AUTH_SOCK="$(ls $XDG_RUNTIME_DIR/ssh-agent.socket |head -1)"
-        # export SSH_AGENT_PID="$(ps -ef | grep 'ssh-agent -D -a' | grep -v grep | awk '{print $2}')"
-        # 所以，目前必须手动设置该变量，获取服务进程的 PID
-        AGENT_PID=$(systemctl --user show ssh-agent.service --property=ExecMainPID | awk -F= '{print $2}')
-        # 通过进程树找到 ssh-agent 的实际 PID（需安装 pstree）
-        SSH_AGENT_PID=$(pstree -p $AGENT_PID | grep -oP 'ssh-agent\(\K\d+')
-        export SSH_AGENT_PID
-
-        # 这个 ksshaskpass 没用
-        # https://github.com/KDE/ksshaskpass
-        # SSH_ASKPASS=/usr/bin/ksshaskpass
-
-        # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
-        if ! ssh-add -l >| /dev/null 2>&1; then
-            echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
-            ssh-add
-        else
-            # ssh-agent正在运行，加载过密钥
-            # ssh-add -l
-            :
-        fi
-
-    # Windows git bash(mintty) 环境利用 ssh-pageant 连接到 putty 的 pagent.exe 进程，复用其缓存的密钥
-    # 来自章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
-    elif [[ $os_type = 'windows' ]]; then
-
-        if ! ps -s | grep -q ssh-pageant; then
-            # agent未运行视作开机后第一次执行 shell 登录，先清理掉 ssh-pageant 上次使用过的临时文件，否则会被加载
-            rm -f /tmp/.ssh-pageant-$USERNAME
-
-            # 搭车运行 gpg 钥匙圈更新
-            # ggkupd
-        fi
-
-        echo ''
-        # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
-        # ssh-add
-        # 改进：利用 git bash 自带的工具 ssh-pageant，连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要执行 `ssh-add` 了
-        # 使用以下参数启动的 ssh-pageant 会判断是否正在运行，不会多次运行自己
-        # ssh-pageant 还会导出变量指向ssh密钥代理的进程，用户不需要操心
-        eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
-
-    # 默认 Linux tty 环境复用 ssh-agent 进程，这个设置最通用， Windows git bash(mintty) 环境下也可以使用
-    else
-
-        # 代码来源 git bash auto ssh-agent
-        # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
-        #
-        # You can run ssh-agent automatically when you open bash or Git shell.
-        # Copy the following lines and paste them into one of your
-        #    ~/.bash_profile
-        #    ~/.profile
-        #    ~/.bashrc
-        # 说明：当你打开一个 bash 会话，自动调用 ssh-add 加载你的密钥。
-        # 如果 ssh-agent 进程没启动，则自动调用起来，
-        # 若已经在其它会话调起来了，则复用该进程，保持你的用户会话中只运行一个ssh-agent进程。
-        # 如果要提高使用安全性，在不使用 ssh-agent 的时候，从操作系统进程中找到该进程手工杀掉即可。
-
-        # 保存已经启动的 ssh-agent 进程的变量指向
-        agent_env=~/.ssh/agent.env
-
-        # 复用已经启动的 ssh-agent 进程，设置变量指向ssh密钥代理的进程
-        agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
-        agent_load_env
-
-        # 启动 ssh-agent，并保存指向ssh密钥代理进程的变量
-        agent_start () {
-            (umask 077; ssh-agent >| "$agent_env")
-            source "$agent_env" >| /dev/null
-        }
-        # agent_run_state:
-        #   0=agent running w/ key;
-        #   1=agent w/o key;
-        #   2=agent not running
-        agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
-
-        if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
-            # agent 未运行视作开机后第一次执行 shell 登录
-
-            # 搭车运行 gpg 钥匙圈更新
-            # ggkupd
-
-            echo
-            echo "Start ssh-agent..."
-            agent_start
-
-            # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
-            # `ssh-add` 会读取 ssh-agent 进程启动时 export 出的环境变量，从而可以调用到 ssh-agent 进程
-            # 这里无法使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
-            echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
-            ssh-add
-
-        elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
-            # ssh-agent正在运行，但是没有加载过密钥
-
-            # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
-            echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
-            ssh-add
-
-        else
-            # ssh-agent正在运行，加载过密钥
-            # ssh-add -l
-            :
-        fi
-
-        unset agent_run_state
-        unset agent_env
-    fi
-fi
-
-#######################
-# Bash：加载插件或小工具
-
-# ssh 命令后面按tab键自动补全 hostname，zsh 自带不需要
-_comp_ssh_hosts() {
-    local cur config_hosts known_hosts hosts
-
-    cur="${COMP_WORDS[COMP_CWORD]}"
-
-    [[ -f ~/.ssh/config ]] && config_hosts=$(awk '/^Host / && $2 !~ /\*/ {print $2}' ~/.ssh/config 2>/dev/null)
-
-    [[ -f ~/.ssh/known_hosts ]] && known_hosts=$(grep -v '^|' ~/.ssh/known_hosts 2>/dev/null | awk '{print $1}' | tr ',' '\n' | sed -E 's/^\[(.*)\](:[0-9]+)?$/\1/; s/:[0-9]+$//' | sort -u)
-
-    hosts=$(echo "$config_hosts $known_hosts" | tr ' ' '\n' | sort -u)
-
-    COMPREPLY=($(compgen -W "$hosts" -- "$cur"))
-}
-
-if [[ $current_shell != 'zsh' ]]; then
-
-    # macOS 的自带 bash 非常旧不更新了
-    if [[ $os_type = 'macos' ]]; then
-        # `brew install bash bash-completion@2` 才是新版及配套自动完成
-        [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
-
-    # 剩下的就是普通的 Linux bash 使用配套的自动完成
-
-    # 优先调用 openssh-clients 包自带的
-    elif [[ -f /usr/share/bash-completion/completions/ssh ]]; then
-        source /usr/share/bash-completion/completions/ssh
-
-    # 回落到 bash-completion 包自带的
-    elif [[ -f /etc/bash_completion.d/ssh ]]; then
-        source /etc/bash_completion.d/ssh
-
-    # 回落到自制的
-    else
-        complete -F _comp_ssh_hosts ssh
-    fi
-fi
-
-# ack 命令下载个 hhighlighter 插件
-if command -v ack >/dev/null 2>&1; then
-
-    if [[ -s /usr/local/bin/ackg.sh ]]; then
-        source /usr/local/bin/ackg.sh
-
-        alias ackgs='ackg -i'
-        alias ackglog='ackg -i "Fail|Error|\bNot\b|\bNo\b|Invalid|Disabled|denied" "\bOk\b|Success|Good|Done|Finish|Enabled" "Warn|Timeout|\bDown\b|Unknown|Disconnect|Restart"'
-
-    else
-
-        echo "ackg 看日志比grep好用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)"
-
-        printf "建议如下操作
-        tmpfile=\$(mktemp)
-        curlgh https://github.com/paoloantinori/hhighlighter/raw/master/h.sh > \$tmpfile
-
-        sed -i 's/^h()/ackg()/' \$tmpfile
-        sed -i.bak 's/^h()/ackg()/' \$tmpfile && rm \$tmpfile.bak
-        sudo mv \$tmpfile /usr/local/bin/ackg.sh
-
-        rm -f \$tmpfile
-        unset tmpfile
-
-        source /usr/local/bin/ackg.sh
-        "
-    fi
-fi
-
-# ask 命令问 AI
-if ! command -v ask >/dev/null 2>&1; then
-    echo "安装 m666m/ask 命令行问 AI..."
-    (set -o pipefail; curlgh "https://github.com/m666m/ask/blob/main/install.sh" | bash) || echo "Ask installation failed"
-fi
-
-#######################
-# 双行彩色命令行提示符，显示当前路径、git分支、python环境名等
+##############################################
+# 四、双行彩色命令行提示符，显示当前路径、git分支、python环境名等
 # 适用于 Linux bash / Windows git bash(mintty)
 #
 # 效果示例：
@@ -1361,7 +1363,7 @@ else
 
 fi
 
-#######################
+##############################################
 # 退出前清理无用的变量定义
 
 unset current_shell
