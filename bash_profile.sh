@@ -4,26 +4,21 @@
 # 适用于 Linux bash、Linux zsh、Windows git bash(mintty.exe)，macOS（未完全测试）
 # alias和路径设置等本该放到 .bashrc 文件，为了方便统一在此了。
 # 本文件可放到 .zshrc 中 `source ~/.bash_profile`，以便在 zsh 下也保持使用习惯。
+# 可直接部署到远程服务器
+#   ssh user@server "tee .bash_profile" < bash_profile.sh
 #
-# 别人的配置文件参考大全
-#   https://github.com/pseudoyu/dotfiles
-#   https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
-#
-# 直接部署到远程服务器
-#   ssh user@server "tee .bash_profile" <bash_profile.sh
-#
-# 避坑
-#   变量赋值别习惯性的加空格
-
-#######################
-# 脚本比较长，其实结构不复杂
+# 脚本比较长，其实结构不复杂：
 #  先引用配置文件配置几个环节变量，非交互式登录至此就退出了，
 #  后面的设置都是给交互式登录，为了使用习惯的用户自定义设置：
 #  一、准备环境信息，方便后面使用
 #  二、适用性方面的调整和环境设置，涉及颜色方案、字符编码、常用工具设置等
 #  三、常用命令的惯用法用别名和函数封装起来，方便日常使用
 #  四、双行彩色命令行提示符，显示当前路径、git分支、python环境名等
-
+#
+# 别人的配置文件参考大全
+#   https://github.com/pseudoyu/dotfiles
+#   https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
+#
 #######################
 # 此部分作为普通脚本的默认头部内容，便于调测运行。
 #
@@ -75,8 +70,10 @@ export PATH
 #####################################################################
 # 自此开始都是为了使用习惯的用户自定义设置
 # User specific environment and startup programs
-#
-# 为防止变量名污染命令行环境，尽量使用奇怪点的名称
+
+# 避坑
+#   变量赋值别习惯性的在等号两边加空格
+#   为防止变量名污染命令行环境，尽量使用奇怪点的名称
 
 ##############################################
 # 一、准备环境信息，方便后面使用
