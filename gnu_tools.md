@@ -5557,7 +5557,7 @@ run-shell "~/.tmux/themes/nord-tmux/nord.tmux"
 
 # macOS 下前导键使用 Option 键（Alt 键）代替 ctrl+b
 #   系统自带终端：设置 -> 描述文件 -> 键盘 选项卡中勾选 “将 Option 键用作 Meta 键”
-#   iTerm2：Settings -> Profiles -> Keys:Left Option (⌥) Key 和 Right Option (⌥) Key，从默认的 Normal 改为 +Esc
+#   iTerm2：Settings -> Profiles -> Keys:Left Option (⌥) Key 和 Right Option (⌥) Key，从默认的 Normal 改为 Esc+
 # 主前导键：Alt+b （macOS 下使用）
 set -g prefix M-b
 # 第二前导键：Ctrl+b （Windows 下使用）
@@ -5572,12 +5572,15 @@ run-shell "~/.tmux/tmux-prefix-highlight/prefix_highlight.tmux"
 # 冻结本地 tmux 热键，使用于 ssh 连接到远程使用 tmux 的场合，按 F12 切换
 run-shell ~/.tmux/tmux-suspend/suspend.tmux
 
-# 保存会话
+# 保存会话 c-b c-s
 run-shell "~/.tmux/resurrect/resurrect.tmux"
 # 恢复会话中运行的程序
 set -g @resurrect-processes 'btop nmon watch "journalctl -f" "cmatrix -ba" "podman container stats"'
-# 恢复会话中面板的内容
+# 恢复会话中面板的内容 c-b c-r
 set -g @resurrect-capture-pane-contents 'on'
+
+# 保存当前窗格内容到 /tmp/tmux_pane.txt 并显示提示
+bind-key C-o run-shell "tmux capture-pane -pS - > /tmp/tmux_pane.txt && tmux display-message 'Pane saved to /tmp/tmux_pane.txt'"
 
 # 绑定 Prefix + Ctrl+e 捕获当前窗格最近100行内容问 AI
 bind C-e capture-pane -S -100 \; new-window \; send-keys "{ echo '请分析以下内容:'; tmux show-buffer; } | ask; echo; printf 'Press RETURN to close...'; read _dummy; exit" Enter
