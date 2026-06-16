@@ -1,0 +1,11 @@
+# 自动检测文本文件，并统一转换为 LF 检出（Linux/Mac 友好）
+* text=auto eol=lf
+
+# 强制指定 shell 脚本必须使用 LF（无论 Windows 还是 Linux 检出）
+*.sh text eol=lf
+*.bash text eol=lf
+*.bash_profile text eol=lf
+*.bashrc text eol=lf
+
+# 保留 Windows 批处理文件的 CRLF（如果必须的话），但一般建议统一
+*.bat text eol=crlf
