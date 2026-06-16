@@ -294,6 +294,13 @@ export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 #tput cnorm && echo -e '\033[?12h\033[1 q'
 
 #######################
+# 树莓派下的环境设置
+if  [[ $os_type = 'raspi' ]]; then
+    # 树莓派在纯终端下也会休眠显示器，必须设置本机登录后禁用屏幕休眠
+    setterm --powerdown 0
+fi
+
+#######################
 # macOS 下的环境设置
 if [[ $os_type = 'macos' ]]; then
     if [[ $current_shell = 'bash' ]]; then
@@ -1369,9 +1376,6 @@ elif [[ $os_type = 'wsl' ]]; then
     PS1="\n$ccBLUE╭─$ccRED\$(PS1exit_code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccYELLOW@WSL_\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda_env_name)\$(PS1virtualenv_envname)\$(PS1git_branch_prompt)\n$ccBLUE╰─$ccWHITE\$ $ccNORMAL"
 
 elif  [[ $os_type = 'raspi' ]]; then
-    # 本机登录后禁用屏幕休眠
-    setterm --powerdown 0
-
     # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 树莓派温度告警 python环境 git分支及状态
     PS1="\n$ccBLUE┌─$ccRED\$(PS1exit_code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccRED\$(PS1raspi_warn_prompt)$ccYELLOW\$(PS1conda_env_name)\$(PS1virtualenv_envname)\$(PS1git_branch_prompt)\n$ccBLUE└──$ccWHITE\$ $ccNORMAL"
 
