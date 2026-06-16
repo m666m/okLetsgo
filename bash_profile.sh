@@ -2,10 +2,16 @@
 
 #####################################################################
 # 适用于 Linux bash、Linux zsh、Windows git bash(mintty.exe)，macOS（未完全测试）
+#
 # alias和路径设置等本该放到 .bashrc 文件，为了方便统一在此了。
 # 本文件可放到 .zshrc 中 `source ~/.bash_profile`，以便在 zsh 下也保持使用习惯。
+#
 # 可直接部署到远程服务器
 #   ssh user@server "tee .bash_profile" < bash_profile.sh
+#
+# 使用前需要手工调整的地方：
+#   环境变量 PDMREPO ，要根据你的内网镜像仓库服务器手动设置地址
+#   如果在网络不卡的环境，应该屏蔽掉函数 poor_connection 的执行
 #
 # 脚本比较长，其实结构不复杂：
 #  先引用配置文件配置几个环节变量，非交互式登录至此就退出了，
@@ -18,7 +24,7 @@
 # 别人的配置文件参考大全
 #   https://github.com/pseudoyu/dotfiles
 #   https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
-#
+
 #######################
 # 此部分作为普通脚本的默认头部内容，便于调测运行。
 #
@@ -60,7 +66,7 @@ done
 export PATH
 
 #######################
-# exit for non-interactive shell
+# 兼容性设置：exit for non-interactive shell
 # 如果是非交互式登录(ssh直接在服务器执行脚本等场景)，到这里就可以退出了，后面的设置统统不需要
 # 注意：
 #   本脚本是被 source 使用的 `source .bash_profile`，直接执行是错误用法，而 `source` 可以用 return 命令。
@@ -160,6 +166,7 @@ poor_connection() {
         # 不再需要设置了 brew tap --custom-remote homebrew/cask https://mirrors.ustc.edu.cn/homebrew-cask.git
     fi
 }
+# 如果在网络不卡的环境，应该屏蔽掉函数 poor_connection 的执行
 poor_connection
 
 #######################
