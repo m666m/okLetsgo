@@ -20519,7 +20519,7 @@ macOS 还有个隐藏的“智能标点”（Smart Punctuation）全局开关，
         -o vers=4,resvport,rsize=1048576,wsize=1048576,noappledouble,noatime,nconnect=4 \
         192.168.1.100:/data /private/mnt/nas_nfs
 
-或 [使用 autofs 服务按需挂载文件系统](init_a_server think)。
+如果 [使用 autofs 服务按需挂载文件系统](init_a_server think)，也要添加 `noappledouble` 选项。
 
 省事的话，可以全局配置（所有 NFS 挂载生效）`noappledouble` 选项，编辑 /etc/nfs.conf，如果不存在就新建：
 
