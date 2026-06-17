@@ -12848,12 +12848,6 @@ cool-retro-term 显示效果是 CRT 显示器。
 
 terminology 使用 EFL（不支持Wayland） 的终端仿真器，尽可能地模仿 Xterm。
 
-Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
-
-    https://www.warp.dev/
-        https://github.com/warpdotdev/Warp
-        主题 https://github.com/warpdotdev/themes
-
 #### i3 窗口管理器自带 urxvt(rxvt-unicode)
 
 配置复杂，不整了
@@ -20845,6 +20839,12 @@ Settings->Profile->Colors->Color Preset:
 热键打开一个窗口，如果全局生效会要求开启操作系统权限
     Settings->Profile->Keys->Hotkey window，勾选，设置热键 option+return
 
+Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
+
+    https://www.warp.dev/
+        https://github.com/warpdotdev/Warp
+        主题 https://github.com/warpdotdev/themes
+
 2、Ghostty 跟自带终端一样快，切换子窗口顺滑
 
     https://ghostty.org/
@@ -20854,7 +20854,7 @@ Settings->Profile->Colors->Color Preset:
 
     只是字符输出无法超过3200行
 
-    卡 cmd+tab 导致无法切换任务
+    卡系统热键 cmd+tab 导致无法切换任务
 
 Ghostty 常用命令速查
 
