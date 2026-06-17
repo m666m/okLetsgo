@@ -19738,7 +19738,7 @@ Supper Putty
 
 #### Contour 真正的速度极快，而且跨平台
 
- Contour Terminal Emulator
+Contour Terminal Emulator 唯一的缺点就是不能拆分窗格
 
     https://contour-terminal.org/configuration/
         https://github.com/contour-terminal/contour
