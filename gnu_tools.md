@@ -12561,7 +12561,7 @@ enlightenment 桌面
 
     手动打开光标闪动，设置缓存屏幕内容 10000 行。
 
-一般情况下使用桌面内置的终端模拟器足够了，因为我的 Fedora 自带的 Gnome Terminal 不支持背景图片，所以自行安装了 kitty Terminal，兼容性和稳定性最好的是 Konsole，可惜速度太慢。
+一般情况下使用桌面内置的终端模拟器足够了，兼容性和稳定性最好的是 Konsole，可惜速度太慢。目前我在用 [Contour 真正的速度快跨平台]。
 
 KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
@@ -12840,7 +12840,7 @@ Enlightenment 桌面自带 Terminology。
 
 sway 窗口管理器自带 foot。
 
-guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个，gnome 桌面有扩展实现该功能，参见章节 [使用 gnome 扩展] 的 quake-mode。
+guake 仿效游戏 Quake 的下拉式终端窗口，纯 python 的一个实现，封装了 Gnome Terminal。不用安装这个，gnome 桌面有扩展实现所有应用都能使用下拉，参见章节 [使用 gnome 扩展] 的 quake-mode。
 
 tilix 基于 gtk3 开发的一个平铺式终端模拟器，效果类似 tmux，但是支持各面板的自定义拖曳。
 
@@ -19736,9 +19736,9 @@ Supper Putty
 
     https://github.com/jimradford/superputty
 
-#### Contour 真正的速度极快，而且跨平台
+#### Contour 真正的速度快跨平台
 
-Contour Terminal Emulator 唯一的缺点就是不能拆分窗格
+Contour Terminal Emulator 唯一的缺点就是不能拆分窗格，常用操作有点别扭
 
     https://contour-terminal.org/configuration/
         https://github.com/contour-terminal/contour
@@ -19755,6 +19755,7 @@ Contour Terminal Emulator 唯一的缺点就是不能拆分窗格
     alt + 1, 2, 3   切换到标签页
 
     鼠标双击自动选择词，并高亮相同的词
+
     选择文字后按 ctrl+c 是复制到内部剪贴板，中键或 ctrl+shift+v 可粘贴
 
     ctrl+shift+F    查找，在状态栏可以输入文字，F3 下一个匹配，shift+F3 上一个，回车关闭
