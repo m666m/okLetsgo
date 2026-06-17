@@ -20467,7 +20467,7 @@ macOS 还有个隐藏的“智能标点”（Smart Punctuation）全局开关，
 
 在访达的设置中，选择你的用户名目录即可。
 
-如果你想清楚的使用自己的文件，点击下面的“位置”，选择你的用户名，这里是真正分门别类摆放处　：
+如果你想清楚的使用自己的文件，查看 “位置” 栏目，选择你的用户名，这里显示的是你的用户目录，但是你还是看不到目录树：
 
     /Users/hi/
       ├── Desktop/
@@ -20496,6 +20496,42 @@ macOS 还有个隐藏的“智能标点”（Smart Punctuation）全局开关，
 访达窗口的工具栏，选择分栏查看，每个栏目按顺序显示下一级目录，挨个点击。。。真够caodan
 
 3、访达窗口的工具栏，点击右键选择 “自定义”，把默认的什么“编辑标签”拖动到窗口外然后放开左键，即可删除。把常用的 “新建文件夹”、“隔空投送” 拖动进来。
+
+4、禁止其在特定位置生成 .DS_Store 文件。
+
+.DS_Store 是每个文件夹的“个性化配置文件”。每当你用“访达”（Finder）打开一个文件夹并调整了设置（比如图标排列方式、窗口大小、视图模式等），系统就会自动创建或更新这个文件夹里的 .DS_Store 文件，用来保存这些偏好。
+
+无法全局禁用，只能指定某些位置禁用，在“终端”中运行以下命令并重启电脑即可：
+
+    # 禁止在网络共享磁盘上生成
+    defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+
+    # 禁止在外接磁盘（U盘、移动硬盘）上生成
+    defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+
+5、不要在访达界面挂载 nfs 文件系统
+
+否则，在 nfs 上的每个媒体文件都会自动生成一个独立的小文件，命名为 ._原文件名，内容是打包的该文件的所有额外元数据，比如 Finder 标签、颜色标记、Spotlight 注释、下载来源、Quarantine 隔离信息等。
+
+应该使用命令行挂载到本地目录并添加 `noappledouble` 选项：
+
+    sudo mount -t nfs \
+        -o vers=4,resvport,rsize=1048576,wsize=1048576,noappledouble,noatime,nconnect=4 \
+        192.168.1.100:/data /private/mnt/nas_nfs
+
+或 [使用 autofs 服务按需挂载文件系统](init_a_server think)。
+
+省事的话，可以全局配置（所有 NFS 挂载生效）`noappledouble` 选项，编辑 /etc/nfs.conf，如果不存在就新建：
+
+```ini
+nfs.client.mount.options = noappledouble
+```
+
+这样所有 NFS 挂载都会默认带上 noappledouble，一劳永逸。修改后需要重新挂载才生效。
+
+APFS 等苹果等文件系统，把 访达 等应用程序数据写入文件系统绑定，但是在 NFS 不兼容这个用法时就会回落到给每个文件生成一个元数据文件到机制。
+
+苹果对 SMB 对支持较好，没这种奇葩问题。
 
 #### 文件选择对话框中，显示系统及隐藏文件
 
