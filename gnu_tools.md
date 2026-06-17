@@ -20823,29 +20823,56 @@ function brew_sc() {
 
 ```
 
-### macOS 下顺手的终端模拟器
+### macOS 使用终端模拟器
 
-1、iTerm2
+1、macOS 终端 (Terminal.app)
+
+也有类似 Contour 的标记功能，但聚焦于在用户输入间快速跳转：
+
+    默认情况下，每次按回车执行命令时，该行会被自动标记。
+
+    操作：使用 Cmd + ↑ / Cmd + ↓ 可以在这些标记行之间跳转。
+
+    手动标记：也可以通过菜单 Edit > Marks > Mark as Prompt (或 Cmd+U) 手动标记选中的行。
+
+2、iTerm2
 
     https://iterm2.com/downloads.html
         https://github.com/gnachman/iTerm2
 
-    颜色方案 https://iterm2colorschemes.com/ 下载压缩包
-                https://github.com/mbadolato/iTerm2-Color-Schemes
+    竞品 Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
 
-Settings->Profile->Colors->Color Preset:
-    选择解压目录的 schemes 子目录，下面的各个文件就是颜色方案，可多选导入，推荐 nord
+        https://www.warp.dev/
+            https://github.com/warpdotdev/Warp
+            主题 https://github.com/warpdotdev/themes
 
-热键打开一个窗口，如果全局生效会要求开启操作系统权限
+使用更多的颜色方案
+
+    先下载压缩包
+
+        https://iterm2colorschemes.com/
+        https://github.com/mbadolato/iTerm2-Color-Schemes
+
+    然后 Settings->Profile->Colors->Color Preset:
+        选择解压目录的 schemes 子目录，下面的各个文件就是颜色方案，可多选导入，推荐 nord
+
+可以设置用热键启动一个终端窗口，如果全局生效会要求开启操作系统权限
+
     Settings->Profile->Keys->Hotkey window，勾选，设置热键 option+return
 
-Warp 号称比 iTerm2 顺滑，半开源，只能在 MacOS 桌面下使用
+    没有 Quake Dropdown 的视觉效果，而且切换不变。
 
-    https://www.warp.dev/
-        https://github.com/warpdotdev/Warp
-        主题 https://github.com/warpdotdev/themes
+“标记”（Mark）功能，你可以通过快捷键或终端命令来使用：
 
-2、Ghostty 跟自带终端一样快，切换子窗口顺滑
+    设置标记           Cmd + Shift + M      在当前命令行位置创建一个标记。
+
+    跳转到上一个标记    Cmd + Shift + J       跳转到历史记录中的上一个标记。
+
+    在标记间导航       Cmd + Shift + ↑ / ↓   在命令标记之间上下移动。
+
+也可以像 Contour 那样利用终端命令做标记 `printf "\033]1337;SetMark\007"`
+
+3、Ghostty 跟系统自带终端一样快，切换子窗口顺滑
 
     https://ghostty.org/
         https://github.com/ghostty-org/ghostty
