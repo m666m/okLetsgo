@@ -19765,15 +19765,13 @@ Supper Putty
 
     ctrl+shift+F    查找，在状态栏可以输入文字，F3 下一个匹配，shift+F3 上一个，回车关闭
 
-    Ctrl+Shift+Space 当前屏幕进入vim模式，方便用键盘选择屏幕文字复制粘贴等操作。
+    Ctrl+Shift+Space 当前屏幕进入 vi 模式，方便用键盘选择屏幕文字复制粘贴等操作。
     按 a 或 i 进入编辑模式会自动退出到命令行进行普通的编辑。
 
-配置文件在
+配置文件目前只能手动修改：
 
     # flatpak：~/.var/app/org.contourterminal.Contour/config/contour/contour.yml
     ~/.config/contour/contour.yml
-
-目前只能手动修改：
 
 ```yml
 # 主配置
@@ -19784,7 +19782,7 @@ profiles:
         arguments: ["-l"]
 
         # 显示器不大就直接最大化
-        maximized: true
+        # maximized: true
 
         # 按字符数的窗口大小
         terminal_size:
@@ -19880,6 +19878,38 @@ color_schemes:
 input_mapping:
 
 ```
+
+##### 极具特色的行标记
+
+特别适合长编译日志、测试输出或复杂脚本的导航和内容提取，可以大幅提升效率。
+
+    https://contour-terminal.org/demo/line-marks/
+
+执行一个有很多输出的命令之前，先执行 `printf "\033[>M"` 插入标记，在执行完成命令后，可能屏幕已经翻了好几页，再执行 `printf "\033[>M"` 插入标记。现在可以在标记间快速浏览，：
+
+    快速回到做标记的那个屏幕位置，快捷键用 Ctrl+Alt+J / Ctrl+Alt+K
+
+    如果在 vi 模式，则是 [m 和 ]m，注意这个用法会翻页到最前和最后
+
+将线标记作为“文本对象”操作：
+
+1、选中标记间区域
+
+必须在 vi 模式，光标落在两个标记所夹的区域内部，其实鼠标点击一下就好。
+
+2、然后连续按下三个键：
+
+    v：进入 Visual（可视）模式，准备高亮选文字。
+
+    i：意思是 inner（内部），表示不包含边界。
+
+    m：指的是 line mark（线标记），告诉终端“我要选的是两个标记中间的区域”。
+
+如果生效，终端就会立刻高亮选中从“上一个标记行”到“下一个标记行”之间的所有文字。
+
+然后按 y 复制到系统剪贴板，可以粘贴到编辑器或邮件中。
+
+可以直接复制标记间区域，依次按下 yim（不含标记行）。
 
 #### ConEmu 和 Cmder
 
