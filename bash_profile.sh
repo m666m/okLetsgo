@@ -300,7 +300,7 @@ fi
 if [[ $os_type = 'macos' ]]; then
     if [[ $current_shell = 'bash' ]]; then
         if [ "${BASH_VERSION%%.*}" -lt 5 ]; then
-            echo 'macOS 预装的 bash 版本较老，建议 `brew install bash` 以后使用 /opt/homebrew/bin/bash'
+            echo 'macOS 预装的 bash 版本老旧，建议 `brew install bash` 使用 /opt/homebrew/bin/bash'
         fi
     fi
 
@@ -327,7 +327,7 @@ if command -v gpg >/dev/null 2>&1; then
 fi
 
 #######################
-# ssh 命令后面按tab键自动补全 hostname，zsh 自带不需要
+# 功能增强：ssh 命令后面按tab键自动补全 hostname，zsh 有扩展插件不需要
 _comp_ssh_hosts() {
     local cur config_hosts known_hosts hosts
 
@@ -365,7 +365,7 @@ if [[ $current_shell != 'zsh' ]]; then
 fi
 
 #######################
-# 命令行使用 ssh 多会话复用 ssh 密钥代理
+# 功能增强：命令行使用 ssh 多会话复用 ssh 密钥代理
 # 设置变量指向ssh密钥代理的进程即可实现复用，参见章节 [多会话复用 ssh-agent 进程](ssh.md think)
 # 适用于 Linux bash / Windows git bash(mintty) / macOS
 if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
@@ -442,8 +442,9 @@ if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
             :
         fi
 
-    # Windows git bash(mintty) 环境利用 ssh-pageant 连接到 putty 的 pagent.exe 进程，复用其缓存的密钥
-    # 利用 git bash 自带的工具 ssh-pageant，连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要运行 ssh-agent 并执行 `ssh-add` 那套流程
+    # Windows 下使用 putty 桌面程序 pagent 加载密钥，
+    # Windows git bash(mintty) 利用 ssh-pageant 连接到 pagent.exe 进程，复用其缓存的密钥，
+    # 这样不需要运行 ssh-agent 并执行 `ssh-add` 那套流程。
     # 来自章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
     elif [[ $os_type = 'windows' ]]; then
 
@@ -511,7 +512,7 @@ if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
             ssh-add
 
         elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
-            # ssh-agent正在运行，但是没有加载过密钥
+            # ssh-agent 正在运行，但是没有加载过密钥
 
             # 加载密钥，缓存到 ssh-agent 进程，
             # 这里必须手动输入一次密钥的保护密码，后续用到时就会自动使用无需再次输入
@@ -530,7 +531,7 @@ if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
 fi
 
 #######################
-# ack 命令下载个 hhighlighter 插件
+# 功能增强：ack 命令下载个 hhighlighter 插件
 if command -v ack >/dev/null 2>&1; then
 
     if [[ -s /usr/local/bin/ackg.sh ]]; then
@@ -559,7 +560,8 @@ if command -v ack >/dev/null 2>&1; then
     fi
 fi
 
-# ask 命令问 AI
+#######################
+# 功能增强：ask 命令问 AI
 if ! command -v ask >/dev/null 2>&1; then
     echo "安装 m666m/ask 命令行问 AI..."
     (set -o pipefail; curlgh "https://github.com/m666m/ask/blob/main/install.sh" | bash) || echo "Ask installation failed"
@@ -1058,6 +1060,7 @@ function dboxstop() {
 # Hermes Agent
 alias hersd='echo "[Hermes Agent清理所有会话]";hermes sessions list | awk "NR>2 {print $NF}" | xargs -I {} hermes sessions delete {} -y'
 
+# Windows git bash
 # 使 mintty 下执行普通的 Windows 控制台程序，用 winpty 辅助可以正常显示
 # 如果你的终端软件开启了 ConPTY=on 选项则不需要这个辅助，暂无法在脚本中判断。
 # 适用于 Windows git bash(mintty.exe) 等 Windows 下的终端软件
