@@ -406,8 +406,8 @@ if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
             export SSH_AUTH_SOCK="$(ls /run/user/$(id -u "$USER")/keyring*/ssh | head -1)"
             export SSH_AGENT_PID="$(pgrep gnome-keyring)"
 
-            # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
-            # 这里因为 gnome-keyring-daemon 接管了ssh 密钥的保护密码，用到的时候自动提交，全程用户无感知，不需要执行 `ssh-add` 了
+            # 然后就可以加载密钥了，缓存到 ssh-agent 进程，后续用到时就会自动使用
+            # 因为 gnome-keyring-daemon 接管了这个功能，用到的时候自动提交，全程用户无感知，不需要执行 `ssh-add` 了
             # ssh-add
 
         fi
@@ -432,7 +432,7 @@ if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
         # https://github.com/KDE/ksshaskpass
         # SSH_ASKPASS=/usr/bin/ksshaskpass
 
-        # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
+        # 然后就可以加载密钥了，缓存到 ssh-agent 进程，后续用到时就会自动使用
         if ! ssh-add -l >| /dev/null 2>&1; then
             echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
             ssh-add
@@ -443,11 +443,12 @@ if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
         fi
 
     # Windows git bash(mintty) 环境利用 ssh-pageant 连接到 putty 的 pagent.exe 进程，复用其缓存的密钥
+    # 利用 git bash 自带的工具 ssh-pageant，连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要运行 ssh-agent 并执行 `ssh-add` 那套流程
     # 来自章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
     elif [[ $os_type = 'windows' ]]; then
 
         if ! ps -s | grep -q ssh-pageant; then
-            # agent未运行视作开机后第一次执行 shell 登录，先清理掉 ssh-pageant 上次使用过的临时文件，否则会被加载
+            # ssh-pageant 未运行视作开机后第一次执行 shell 登录，清理掉上次使用过的临时文件，否则会被加载
             rm -f /tmp/.ssh-pageant-$USERNAME
 
             # 搭车运行 gpg 钥匙圈更新
@@ -455,10 +456,7 @@ if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
         fi
 
         echo ''
-        # 然后就可以预加载密钥了：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
-        # ssh-add
-        # 改进：利用 git bash 自带的工具 ssh-pageant，连接到 putty 的 pageant.exe 进程，复用其缓存的密钥，不需要执行 `ssh-add` 了
-        # 使用以下参数启动的 ssh-pageant 会判断是否正在运行，不会多次运行自己
+        # 使用以下参数启动 ssh-pageant，不会多次重复运行
         # ssh-pageant 还会导出变量指向ssh密钥代理的进程，用户不需要操心
         eval $(/usr/bin/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
 
@@ -478,44 +476,45 @@ if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
         # 若已经在其它会话调起来了，则复用该进程，保持你的用户会话中只运行一个ssh-agent进程。
         # 如果要提高使用安全性，在不使用 ssh-agent 的时候，从操作系统进程中找到该进程手工杀掉即可。
 
-        # 保存已经启动的 ssh-agent 进程的变量指向
+        # 环境变量指向已经启动的 ssh-agent 进程
         agent_env=~/.ssh/agent.env
 
-        # 复用已经启动的 ssh-agent 进程，设置变量指向ssh密钥代理的进程
+        # 复用已经启动的 ssh-agent 进程，引用环境变量即可
         agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
-        agent_load_env
 
-        # 启动 ssh-agent，并保存指向ssh密钥代理进程的变量
+        # 启动 ssh-agent，并保存指向它的环境变量
         agent_start () {
             (umask 077; ssh-agent >| "$agent_env")
             source "$agent_env" >| /dev/null
         }
-        # agent_run_state:
-        #   0=agent running w/ key;
-        #   1=agent w/o key;
-        #   2=agent not running
-        agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
 
+        agent_load_env
+
+        # 检查密钥是否加载了
+        # 如果 agent 未运行，则复用的变量可能是上次开机设置的，需要重新设置
+        # `ssh-add` 会读取相关环境变量调用到 ssh-agent 进程
+        # agent_run_state: 0=agent running w/ key; 1=agent w/o key; 2=agent not running
+        agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
         if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
-            # agent 未运行视作开机后第一次执行 shell 登录
+            # 如果 agent 未运行视作开机后第一次执行 shell 登录
 
             # 搭车运行 gpg 钥匙圈更新
-            # ggkupd
+            #ggkupd
 
             echo
             echo "Start ssh-agent..."
             agent_start
 
-            # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
-            # `ssh-add` 会读取 ssh-agent 进程启动时 export 出的环境变量，从而可以调用到 ssh-agent 进程
-            # 这里无法使用工具 sshpass，它用于在命令行自动输入 ssh 登陆的密码，对密钥的保护密码无法实现自动输入
+            # 加载密钥，缓存到 ssh-agent 进程，
+            # 这里必须手动输入一次密钥的保护密码，后续用到时就会自动使用无需再次输入
             echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
             ssh-add
 
         elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
             # ssh-agent正在运行，但是没有加载过密钥
 
-            # 预加载：`ssh-add` 把 ssh 密钥的保护密码添加到 ssh-agent 进程缓存起来，后续用到时就会自动使用无需再次输入了
+            # 加载密钥，缓存到 ssh-agent 进程，
+            # 这里必须手动输入一次密钥的保护密码，后续用到时就会自动使用无需再次输入
             echo "--> Adding ssh key to agent, input the key passphrase if prompted..."
             ssh-add
 
