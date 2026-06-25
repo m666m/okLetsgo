@@ -163,6 +163,8 @@ Yarn：一款新的JavaScript包管理工具。
 
     https://github.com/nvm-sh/nvm
 
+        Windows 下的竞品 https://github.com/coreybutler/nvm-windows
+
 安装 nvm
 
     $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
