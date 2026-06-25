@@ -146,8 +146,8 @@ poor_connection() {
     # 有些 npm 包需要单独设置，比如 Hermes Agent 编译安装桌面版
     # node-gyp (依赖：disturl)用于编译原生模块，加速 Node.js 源码和头文件的下载
     export npm_config_disturl="https://npmmirror.com/mirrors/node/"
-    # Electron 镜像：加速 Electron 预编译二进制文件的下载（注意：不带末尾斜杠）
-    export ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron"
+    # Electron 镜像：加速 Electron 预编译二进制文件的下载
+    export ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
 
     # rust
     export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
