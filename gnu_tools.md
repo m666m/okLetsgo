@@ -5582,8 +5582,8 @@ set -g @resurrect-capture-pane-contents 'on'
 # 保存当前窗格内容到 /tmp/tmux_pane.txt 并显示提示
 bind-key C-o run-shell "tmux capture-pane -pS - > /tmp/tmux_pane.txt && tmux display-message 'Pane saved to /tmp/tmux_pane.txt'"
 
-# 绑定 Prefix + Ctrl+e 捕获当前窗格最近100行内容问 AI
-bind C-e capture-pane -S -100 \; new-window \; send-keys "{ echo '请分析以下内容:'; tmux show-buffer; } | ask; echo; printf 'Press RETURN to close...'; read _dummy; exit" Enter
+# 绑定 Prefix + Ctrl+e 捕获当前窗格内容问 AI
+bind C-e capture-pane -S - \; new-window \; send-keys "{ echo '分析最近的一条命令执行后的输出，默认是全部内容:'; tmux show-buffer; } | ask; echo; printf 'Press RETURN to close...'; read _dummy; exit" Enter
 ```
 
 重新加载配置文件
