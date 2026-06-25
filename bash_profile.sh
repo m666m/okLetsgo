@@ -137,10 +137,17 @@ poor_connection() {
     # uv
     export UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple/
 
-    # npm config set registry https://registry.npmmirror.com
+    # nvm 只用于快速安装 Node.js
+    export NVM_NODEJS_ORG_MIRROR="https://npmmirror.com/mirrors/node"
 
-    # nvm
-    export NVM_NODEJS_ORG_MIRROR=https://npmmirror.com/mirrors/node
+    # 加速 npm 所有普通包的下载
+    export NPM_CONFIG_REGISTRY="https://registry.npmmirror.com"
+
+    # 有些 npm 包需要单独设置，比如 Hermes Agent 编译安装桌面版
+    # node-gyp (依赖：disturl)用于编译原生模块，加速 Node.js 源码和头文件的下载
+    export npm_config_disturl="https://npmmirror.com/mirrors/node/"
+    # Electron 镜像：加速 Electron 预编译二进制文件的下载（注意：不带末尾斜杠）
+    export ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron"
 
     # rust
     export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup

@@ -69,7 +69,17 @@ node + npm 都要装
 
     https://www.zhihu.com/column/eggjs
 
-配置 npm 国内源
+查看版本
+
+    node -v
+
+    npm -v
+
+### 配置 npm 国内源
+
+npm 默认镜像源是 <https://registry.npmjs.org/>，在国内访问可能会比较慢。
+
+后来，淘宝做了一个镜像网站（npmmirror）以便国内开发者使用。使用 npm config 命令可以设置镜像源：
 
     $ npm config set registry https://registry.npmmirror.com/
 
@@ -79,11 +89,24 @@ node + npm 都要装
         # 要是推送还得切换回官方源
         # npm config set registry https://registry.npmjs.org/
 
-查看版本
+nrm（NPM registry manager）是 npm 的镜像源管理工具之一。
 
-    node -v
+省事点，编辑你的 .bashrc 文件，添加如下内容：
 
-    npm -v
+```bash
+# nvm 只用于快速安装 Node.js
+export NVM_NODEJS_ORG_MIRROR="https://npmmirror.com/mirrors/node"
+
+# 加速 npm 所有普通包的下载
+export NPM_CONFIG_REGISTRY="https://registry.npmmirror.com"
+
+# 有些 npm 包需要单独设置，比如 Hermes Agent 编译安装桌面版
+# node-gyp (依赖：disturl)用于编译原生模块，加速 Node.js 源码和头文件的下载
+export npm_config_disturl="https://npmmirror.com/mirrors/node/"
+# Electron 镜像：加速 Electron 预编译二进制文件的下载（注意：不带末尾斜杠）
+export ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron"
+
+```
 
 ### 包管理工具 npm/npx Yarn
 
