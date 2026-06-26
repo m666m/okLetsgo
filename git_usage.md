@@ -5042,15 +5042,28 @@ GitHub 不去查找 Pubkey Server，只维护用户自行上传的公钥
 
 ### 4、设置始终签名提交
 
-git commit 使用 -S 参数进行 GPG 签名：
+`git commit` 添加 -S 参数会调用 gpg 签名：
 
-    # 每次都得给 git commit 操作（包括 --amend）传递 -S。
     git commit -S -m “commit message"
 
-建议始终使用签名提交，设置默认使用 GPG 签名提交，这样 git commit 命令不需要加 -S 了
+记住每次执行 `git commit` 操作（包括 --amend）都要添加 -S 参数。
 
-    # 分项目设置，全局使用加 --global
+如果忘了加 -S 参数导致提交未签名，可以手动对已经提交的做 gpg 签名：
+
+    # 给最近的一次提交签名
+    git commit --amend -S --no-edit
+
+    # 对 HEAD~3 到 HEAD 之间的提交进行操作
+    git rebase -i -S HEAD~3
+
+注意，这样修改了本地的提交，只可以在推送远程仓库之前做这个操作。
+
+省心的办法，设置为提交时始终添加 gpg 签名：
+
+    # 最好分项目设置，如果想设置为全局生效加 --global
     git config commit.gpgsign true
+
+之后执行 `git commit` 命令会自动调用 gpg 进行签名，不需要添加 -S 参数。
 
 验证签名的提交
 

@@ -859,26 +859,27 @@ alias sexlp='echo "[列出当前的 SELinux 端口]"; sudo semanage port -l'
 alias sexlb='echo "[列出当前的 SELinux 开关]"; sudo semanage boolean -l'
 
 # git 常用命令
-alias gs='git status'
-alias gss='echo "[修复Windows下显示Linux下拷贝过来的代码文件权限差异]"; git config core.fileMode false'
-alias gd='echo "[差异：工作区与暂存区]"; git diff'
-alias gds='echo "[差异：暂存区与仓库]"; git diff --staged'
-alias gdh='echo "[差异：工作区与仓库]"; git diff HEAD'
-alias gdh2='echo "[差异：最近的两次提交记录]"; git diff HEAD~ HEAD'
-alias glog='echo "[提交记录：树形]"; git log --oneline --graph'
-alias glb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]"; git log --left-right --oneline'
-alias glm='echo "[提交记录：本地远程库对比本地库--master]"; git log --graph --oneline ..origin/master --'
-alias gld='echo "[提交记录：本地远程库对比本地库--dev]"; git log --graph --oneline ..origin/dev --'
-alias gba='echo "[分支：全部分支及跟踪关系、最近提交及注释]"; git branch -avv'
-alias gro='echo "[远程信息]"; git remote show origin'
-alias gcd3='echo  "[精简diff3信息]"; sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
-alias gpull='echo "[github 经常断连，自动重试 pull 直至成功]"; while ! git pull --rebase; do printf "[Retry pull...]\n\n"; sleep 1; done'
-alias gpush='echo "[github 经常断连，自动重试 push 直至成功]"; while ! git push; do printf "[Retry push...]\n\n"; sleep 1; done'
-function gadd {
+alias gts='git status'
+alias gtcs='echo "[git给最近的提交签名]"; git commit --amend -S --no-edit'
+alias gtw='echo "[修复Windows下显示Linux下拷贝过来的代码文件权限差异]"; git config core.fileMode false'
+alias gtd='echo "[差异：工作区与暂存区]"; git diff'
+alias gtds='echo "[差异：暂存区与仓库]"; git diff --staged'
+alias gtdh='echo "[差异：工作区与仓库]"; git diff HEAD'
+alias gtdh2='echo "[差异：最近的两次提交记录]"; git diff HEAD~ HEAD'
+alias gtlog='echo "[提交记录：树形]"; git log --oneline --graph'
+alias gtlb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]"; git log --left-right --oneline'
+alias gtlm='echo "[提交记录：本地远程库对比本地库--master]"; git log --graph --oneline ..origin/master --'
+alias gtld='echo "[提交记录：本地远程库对比本地库--dev]"; git log --graph --oneline ..origin/dev --'
+alias gtba='echo "[分支：全部分支及跟踪关系、最近提交及注释]"; git branch -avv'
+alias gtro='echo "[远程信息]"; git remote show origin'
+alias gtcd3='echo  "[精简diff3信息]"; sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
+alias gtpull='echo "[github 经常断连，自动重试 pull 直至成功]"; while ! git pull --rebase; do printf "[Retry pull...]\n\n"; sleep 1; done'
+alias gtpush='echo "[github 经常断连，自动重试 push 直至成功]"; while ! git push; do printf "[Retry push...]\n\n"; sleep 1; done'
+function gtaddr {
     echo "[把 github.com 的 https 地址转为 git@ 地址，方便鉴权登录github]"
     echo ${1//https:\/\/github.com\//git@github.com:}
 }
-function gaddr {
+function ghaddr {
     # [无法访问 github 的解决方案](git_usage)
     echo "[更新本地 hosts 文件的 github.com 地址]"
     local tfile=$(mktemp)
