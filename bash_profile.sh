@@ -872,6 +872,7 @@ alias gtlm='echo "[提交记录：本地远程库对比本地库--master]"; git 
 alias gtld='echo "[提交记录：本地远程库对比本地库--dev]"; git log --graph --oneline ..origin/dev --'
 alias gtba='echo "[分支：全部分支及跟踪关系、最近提交及注释]"; git branch -avv'
 alias gtro='echo "[远程信息]"; git remote show origin'
+alias gtr3='echo "[git编辑最近3条历史提交]"; git rebase -i HEAD~3'
 alias gtcd3='echo  "[精简diff3信息]"; sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
 alias gtpull='echo "[github 经常断连，自动重试 pull 直至成功]"; while ! git pull --rebase; do printf "[Retry pull...]\n\n"; sleep 1; done'
 alias gtpush='echo "[github 经常断连，自动重试 push 直至成功]"; while ! git push; do printf "[Retry push...]\n\n"; sleep 1; done'
