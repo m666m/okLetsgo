@@ -1087,6 +1087,24 @@ if [[ $os_type = 'windows' ]] && ! grep '^ConPTY=on' ~/.minttyrc >/dev/null 2>&1
     alias ping='winpty ping'
 fi
 
+# 删除 macOS 制造的垃圾文件 ._xxx 和 .Dstore
+rmjunk() {
+    find . -type f \( -name ".DS_Store" -o -name "._*" \) -size -10k -print 2>/dev/null
+
+    echo ""
+    echo "===================================="
+    echo "以上文件将被删除，确认继续吗？"
+    echo -n "输入 y 确认删除，输入其他任意键取消: "
+    read confirm
+
+    if [ "$confirm" = "y" ] || [ "$confirm" = "Y" ]; then
+        find . -type f \( -name ".DS_Store" -o -name "._*" \) -size -10k -delete 2>/dev/null
+        echo "✅ 已全部删除"
+    else
+        echo "❌ 已取消，未删除任何文件"
+    fi
+}
+
 # macOS
 if [[ $os_type = 'macos' ]]; then
     alias arch86='echo "[快捷执行 x86 架构命令]"; arch -x86_64 '
@@ -1095,24 +1113,6 @@ if [[ $os_type = 'macos' ]]; then
     alias ibrew='arch -x86_64 /usr/local/bin/brew'
     # 下载的文件或自编译的程序默认会添加隔离属性导致拒绝打开，需要手动去除这个属性
     alias xattrs='echo "[清除指定文件的隔离属性]"; xattr -cr '
-
-    # 删除垃圾文件 ._xxx 和 .Dstore
-    rmjunk() {
-        find . -type f \( -name ".DS_Store" -o -name "._*" \) -size -10k -print 2>/dev/null
-
-        echo ""
-        echo "===================================="
-        echo "以上文件将被删除，确认继续吗？"
-        echo -n "输入 y 确认删除，输入其他任意键取消: "
-        read confirm
-
-        if [ "$confirm" = "y" ] || [ "$confirm" = "Y" ]; then
-            find . -type f \( -name ".DS_Store" -o -name "._*" \) -size -10k -delete 2>/dev/null
-            echo "✅ 已全部删除"
-        else
-            echo "❌ 已取消，未删除任何文件"
-        fi
-    }
 
     # macOS 下把 gpg 密码加入系统钥匙串
     krpass() {
