@@ -223,7 +223,7 @@ curlgh() {
     fi
 
     # ---------- 第二步：优先从原始地址下载 ----------
-    if curl -fsSL --connect-timeout 10 --max-time 30 "$raw_url"; then
+    if curl -fsSL --connect-timeout 10 --max-time 30 --speed-time 15 --speed-limit 1 "$raw_url"; then
         return 0
     fi
 
@@ -237,7 +237,7 @@ curlgh() {
 
     echo "[curlgh] 原始地址下载失败，尝试 CDN 地址: $cdn_url" >&2
 
-    if curl -fsSL --connect-timeout 10 --max-time 30 "$cdn_url"; then
+    if curl -fsSL --connect-timeout 10 --max-time 30 --speed-time 15 --speed-limit 1 "$cdn_url"; then
         return 0
     else
         echo "[curlgh] CDN 下载也失败了，请重试！" >&2
