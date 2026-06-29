@@ -245,6 +245,14 @@ curlgh() {
     fi
 }
 
+# ASK_INSTALL_CURL=curlgh curlgh https://github.com/m666m/ask/raw/main/install.sh | bash
+# curl: (28) SSL connection timeout
+# [curlgh] 原始地址下载失败，尝试 CDN 地址: https://cdn.jsdelivr.net/gh/m666m/ask@main/install.sh
+# 开始安装 ask AI 助手...
+# 下载 ask 脚本...
+# curl: (56) Failure when receiving data from the peer
+# 错误: ask 安装失败，请检查网络后重试
+
 ##############################################
 # 二、适用性方面的调整和环境设置，涉及颜色方案、字符编码、常用工具设置等
 
