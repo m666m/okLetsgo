@@ -20495,6 +20495,10 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
     系统设置 → 桌面与程序坞 → 调度中心：勾选 “使窗口按应用程序成组”，不然太乱了
 
+斥巨资买的硬盘得节约点
+
+    动态壁纸全是视频文件 "$HOME/Library/Application Support/com.apple.wallpaper/aerials/videos"
+
 ### 程序员必改：防止乱改标点符号
 
 这是 macOS 的全局设置，几乎所有App都会受影响：打开 系统设置 → 点按 键盘 → 在右侧的“文字输入”区域点击 编辑…（输入法列表的右侧）→ 在弹窗里
@@ -20752,14 +20756,24 @@ macOS 的约定俗成
     竞品 MacPorts
 
         https://github.com/macports/macports-ports 可使用的软件列表
-            https://www.macports.org/ 在这里下载安装包 .pkg
-
-            https://ports.macports.org/ 搜索可用软件
+            https://ports.macports.org/ 搜索可用软件下载安装包 .pkg
 
         依赖于BSD的软件包管理工具(port)，它的工作方式是从仓库中下载软件包以及其依赖库，然后在本机中编译安装。所以需要准备编译环境，参见章节 [自编开源代码]。MacPorts 的理念是尽量减少对系统现有库的依赖，因此它需要下载许多基础库，然后编译安装到系统中。这样做最大的问题在于下载时间长，编译时间长，最大的好处就是不会破坏系统原有软件包。
 
             port instal xxx
             port search xxx
+
+    竞品 Nix 软件包管理器
+
+        https://nixos.org/download/#nix-install-macos
+
+        本来是配套 Nix OS 的项目，但是比较通用。他的安装的文件都是放在一个 APFS 容器中，如果想要删除 Nix 很方便：删掉容器就好了。
+
+    竞品 Fink
+
+        依赖于Debian的软件包管理工具(dpkg/dselect/apt-get)，因此它将软件包打包成.deb格式。这样做最大的好处就是安装软件是预编译好的，因此无需本机编译。
+
+        最大的问题在于软件包的更新迭代超级久远，看看官网页面就知道了 https://www.finkproject.org/
 
 Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS
 
@@ -21266,6 +21280,8 @@ Rosetta 2 是让 arm macOS 可以运行旧版 x86 macOS(2010～2020年代) 下 x
 
     $ softwareupdate --install-rosetta --agree-to-license
 
+其实在你打开 x86 程序的时候操作系统会自动给你安装 rosetta。
+
 2、使用 Rosetta 打开终端（在终端图标点右键选择“显示简介”勾选“使用 Rosetta 打开”）。
 
 或在终端里启动一个 x86_64 模式的子 Shell：
@@ -21320,13 +21336,22 @@ Wine 是直接运行 Windows 程序的，使用比较方便而且不需要虚拟
 
 目前安装 wine 的途径
 
-    被废了 brew install --cask wine-stable
+    brew 仓库的被废了 `brew install --cask wine-stable`
 
-    macports-wine
+    macports 仓库的还可以 `sudo port install wine-stable`
+        https://ports.macports.org/port/wine-stable/
 
-        https://github.com/Gcenx/macOS_Wine_builds
-            https://github.com/Gcenx/macports-wine
-                https://www.macports.org/
+    nix 软件管理器也支持 `nix xxx`
+
+    手动下载网友自编译的
+
+        macports-wine
+            https://github.com/Gcenx/macOS_Wine_builds
+                https://github.com/Gcenx/macports-wine
+                    https://www.macports.org/
+
+        nix-wine-macos
+            https://github.com/fractuscontext/nix-wine-macos
 
 CJK字体乱码问题
 
@@ -21351,6 +21376,8 @@ CJK字体乱码问题
     # https://wiki.winehq.org/Testing_Languages
     # ja_JP, en_US
     export LC_ALL="zh_CN.UTF-8";
+
+Wine 历史沿革：
 
 1、wine 最初是 x86 Linux 下执行 Windows 游戏的开源社区解决方案。
 
