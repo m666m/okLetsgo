@@ -21198,11 +21198,7 @@ VirtualBox
 
     虽然需要一份Windows操作系统的许可证，但用户可以从官方网站下载ISO镜像进行安装。设置完成后，用户可以启用双向剪贴板、共享文件夹和拖放功能，享受流畅的使用体验。
 
-UTM  开源，方便而且速度快
-
-    https://github.com/utmapp/UTM
-
-    基于QEMU和Apple Hypervisor，UTM支持Apple Silicon和Intel芯片，可运行x86/ARM架构的Windows 11。它提供预配置的虚拟机镜像，适合开发和测试场景，但需手动配置，对用户技术水平有一定要求。通过优化工具可提升显示效果，但整体性能略低于 Parallels 和 VMware。
+UTM  开源，方便而且速度快，详见章节 [虚拟机 arm Windows 运行 Windows 程序]。
 
 Kegworks
 
@@ -21245,13 +21241,15 @@ Kegworks
 
 #### macOS 本地运行 Windows 程序
 
-最佳实践是直接使用 ARM 原生版本，如果 brew 里没有，直接去开源软件的官网查找，下载 .dmg 安装包或可执行文件。
+本章节的讨论默认 Windows 程序都是 x86 体系 cpu 架构的，不涉及 arm 体系架构 cpu。
 
-如果要玩游戏，先看看 Steam 客户端上有没有原生 arm 版本。在 x86 Linux 下，steam 官方的 porton（基于wine）技术通过 Vulkan 图形接口让大部分 Windows 游戏可玩，但目前并未支持苹果独家的 Metal 图形接口，也就无法实现 arm 运行 x86 游戏。
+最佳实践是直接使用应用程序的 arm 原生版本，如果 brew 里没有，直接去开源软件的官网查找，下载 .dmg 安装包或可执行文件。
+
+如果要玩游戏，先看看 Steam 客户端上有没有原生的 arm 版本。在 x86 Linux 下，steam 官方的 porton（基于wine）技术通过 Vulkan 图形接口让大部分 Windows 游戏可玩，但目前并未支持苹果独家的 Metal 图形接口，也就无法实现 arm 运行 x86 游戏。
 
 如果程序只有 x86/AMD64 版本，则 macOS 需要安装一些执行框架以实现本地运行，有多种方案，都是基于 wine 转译 Windows 操作系统 API调用。
 
-##### 指令级转译：arm macOS 可以运行 x86 macOS 的 应用
+##### 指令级转译：arm macOS 运行 x86 macOS 的 应用
 
 苹果用实时转译 cpu 指令的方式，性能稍打折扣，实现了在 arm CPU 上执行 x86 程序。
 
@@ -21312,15 +21310,15 @@ Rosetta 2 是让 arm macOS 可以运行旧版 x86 macOS(2010～2020年代) 下 x
         alias brew_arm='source ~/.brew_arm'
         alias brew_intel="source ~/.brew_intel"
 
-##### 系统调用级转译：用 Wine/Crossover 来直接运行 Windows 程序
+##### 系统调用级转译：用 Wine/Crossover 运行 Windows 程序
+
+Wine 是直接运行 Windows 程序的，使用比较方便而且不需要虚拟化的方式占用几个GB的内存。Wine 的兼容性发展到现在已经很好了，不止可以运行游戏，大量软件都可以直接运行，如无驱动的 Windows 工具、轻量办公软件、3A 大作等。但反作弊、底层驱动、新 3A 大作无法保证可以运行。
 
 1、wine 最初是 x86 Linux 下执行 Windows 游戏的开源社区解决方案。
 
     将 Win32 API (文件, 注册表, 窗口...)调用转换为 POSIX、x86 Linux API 调用
 
     将 DirectX API 调用转换为 Linux 系统支持的 OpenGL/Vulkan 图形指令
-
-wine 的兼容性发展到现在已经很好了，不止可以运行游戏，大量软件都可以直接运行，如无驱动的 Windows 工具、轻量办公软件、3A 大作等。但反作弊、底层驱动、新 3A 大作无法保证可以运行。
 
 2、在 2010 -2020 年 x86 macOS(Intel CPU) 时代，有了 x86 macOS 版的 Wine。
 
@@ -21352,7 +21350,7 @@ wine 的兼容性发展到现在已经很好了，不止可以运行游戏，大
     │   Intel CPU    │
     └────────────────┘
 
-3、在 arm macOS 时代，x86 macOS 版 Wine 用来解决运行 Windows 程序的问题。
+3、在 arm macOS 时代，仍然使用 x86 macOS 版 Wine 来解决运行 Windows 程序的问题。
 
 借助苹果官方的指令层面转译工具 Rosetta 2 运行 x86 macOS 的 Wine，从而实现支持运行 Windows 软件：
 
@@ -21425,40 +21423,62 @@ Apple Game Porting Toolkit (GPTK)
 
     WINEPREFIX=~/War3_Prefix $(brew --prefix game-porting-toolkit)/bin/wine64 winecfg
 
-运行后，在弹出的窗口中，将Windows版本设为“Windows 10”或“Windows 7”，然后点击确定。
+运行后，在弹出的窗口中，将 Windows 版本设为 “Windows 10” 或 “Windows 7”，然后点击确定。
 
-#### 虚拟机 arm Windows 运行 Windows 程序
+#### 虚拟机 arm Windows 运行 Windows 程序 UTM
 
-目前效率最高的运行 x86 程序的方法，是前面章节介绍的，在 macOS 下用 Wine/Crossover 直接运行 x86 软件，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。缺点是仅限于 x86 macOS 的那些软件，无法执行 Windows 下庞大的 x86 软件，特别是图形化界面的软件。
+目前效率最高的运行 x86 程序的方法，是前面章节介绍的，在 macOS 下用 Wine/Crossover 直接运行 x86 软件，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。缺点是仅限于 x86 macOS 的那些软件，无法执行 Windows 下庞大的软件，特别是图形化界面的软件。
 
-为了兼容性最大化，则要接受至少消耗 8GB 内存用于虚拟机的方案：苹果操作系统提供了虚拟化框架 Hypervisor，装个虚拟机管理器软件即可实现接近本地运行的硬件加速效果。
+为了使用 Windows 下的软件，则要接受至少消耗 8GB 内存用于虚拟机的方案 --- 利用 macOS 的 Hypervisor 虚拟化框架及硬件加速，安装虚拟机管理器软件
 
-优选基于 QEMU 的 UTM 开源虚拟机管理器
+    在虚拟机中运行支持 x86 程序的操作系统，以接近本机原生的速度运行虚拟机内的 ARM 版操作系统
+
+    利用 ARM 版 Windows 11/Linux 内置的执行 x86 程序的能力来运行 Windows x86 程序
+
+这个方案的兼容性大于使用 Wine 的方案，是稳定办公的首选：
+
+    Windows 11 内置微软官方开发的 Prism 模拟器，可将 x86 指令实时转译为 ARM64 指令，以执行 x86 程序。装好 Windows ARM 就和普通 PC 一样，无脑用。
+
+    得益于苹果 M 芯片的高性能及微软的极致优化，虚拟机的执行效率很高，日常办公体验是完全没问题的。商业软件 Parallels Desktop 甚至可以使虚拟机里运行的 3D 游戏接近原生 Windows 的感觉。
+
+商业软件 Parallels Desktop 安装的 Windows 虚拟机甚至支持 3D 加速，效率接近原生系统的 90%。
+
+开源虚拟机管理器推荐基于 QEMU 的 UTM
 
     https://mac.getutm.app/
         https://github.com/utmapp/UTM/releases/latest/download/UTM.dmg
 
-    商业软件 Parallels Desktop 甚至支持 3D 加速，效率接近原生系统的 90%
+    提供预配置的虚拟机镜像，适合开发和测试场景
+        https://mac.getutm.app/gallery/
+
+    目前文件夹共享的方式比较弱
+
+        Windows 虚拟机不支持 virtiofs，仅 WebDAV，建议使用 SAMBA 共享代替 https://docs.getutm.app/guest-support/sharing/directory/
+
+        Linux 虚拟机不支持 virtiofs，只支持 virtfs https://docs.getutm.app/guest-support/linux/#virtfs
+
+UTM 基于 QEMU 和 Apple Hypervisor，支持 Apple Silicon 和 Intel 芯片，可运行 x86/ARM 架构的 Windows 11。通过安装客户机工具可提升显示效果，但整体性能略低于 Parallels 和 VMware。
 
 UTM 的两种运行方式：
 
-1、“模拟”模式（QEMU 方案）安装 x86 操作系统：纯 cpu 仿真运行 x86/AMD64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，不需要也不使用 cpu 提供的虚拟化加速。因此速度最慢，日常运行可能勉强可用，使用这个方案只是因为它的 x86 模拟功能最完整，作为生产环境或开发主力。
+1、超级慢 “模拟”模式（QEMU 方案）安装 x86 操作系统：纯 cpu 仿真运行 x86/AMD64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，不需要也不使用 cpu 提供的虚拟化加速。因此速度最慢，日常运行可能勉强可用，使用这个方案只是因为它的 x86 模拟功能最完整，作为生产环境或开发主力。
 
-2、推荐 虚拟化方式安装 arm 操作系统：这样可以利用系统的 Hypervisor 虚拟化框架及硬件加速，以接近本机原生的速度运行 ARM64 操作系统。然后利用 ARM 版 Windows 11/Linux 可以执行 x86 程序的能力来运行 Windows 程序。
-
-虚拟机安装 Windows 11 ARM 版运行 x86 程序是非常方便的，这个方案的兼容性大于使用 Wine 的方案，是稳定办公的首选：
-
-    Windows 11 内置微软官方开发的 Prism 模拟器，可将 x86 指令实时转译为 ARM64 指令，以执行 x86 程序。装好 Windows ARM 就和普通 PC 一样，无脑用。
-
-    得益于苹果 M 芯片的高性能及微软的极致优化，执行效率很高，日常办公体验是完全没问题的。商业软件 Parallels Desktop 甚至可以使虚拟机里运行的 3D 游戏接近原生 Windows 的感觉）。
-
-注意：UTM 虚拟机安装的 Windows，务必安装 QEMU 客户机工具，这样桌面操作的流畅感才会类似本地原生系统：
+2、推荐 “虚拟化”模式 利用主机操作系统的虚拟化功能安装 Windows 11 ARM 版
 
     https://docs.getutm.app/guest-support/windows/
-        https://getutm.app/downloads/utm-guest-tools-latest.iso
-            https://github.com/utmapp/qemu/releases
 
-这个 iso 文件可手动下载放到宿主机的如下位置：
+安装比较简单
+
+    https://docs.getutm.app/guides/windows/#instructions
+
+注意：UTM 虚拟机安装的 Windows，务必安装客户机工具，这样桌面操作的流畅感才会类似本地原生系统
+
+    https://docs.getutm.app/guest-support/windows/#installation
+
+可手动下载新版的 iso 文件，放到宿主机的如下位置：
+
+    https://getutm.app/downloads/utm-guest-tools-latest.iso
+        https://github.com/utmapp/qemu/releases
 
     ~/Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/utm-guest-tools-latest.iso
 
