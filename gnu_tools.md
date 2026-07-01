@@ -20447,7 +20447,7 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
     系统设置 → 触控板：“点按强度” 拉到弱
 
-鼠标右键功能叫 “用力点”
+对应鼠标右键的触摸板功能叫 “用力点”
 
     其实就是按下触摸板，压住延迟一下，这样就会弹出菜单了
 
@@ -20474,6 +20474,10 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 受不了触控板换鼠标了，但左手总是误触：
 
     系统设置 → 辅助功能 → 指针控制：勾选 “有鼠标或无线触控板时忽略内建触控板”，按压会发现压不动了说明生效了。
+
+鼠标滚轮怎么跟 Windows 下的方向相反呢？
+
+    系统设置 → 鼠标：关闭勾选 “自然滚动”
 
 2、程序坞（Dock）毛病也不少
 
@@ -21312,7 +21316,41 @@ Rosetta 2 是让 arm macOS 可以运行旧版 x86 macOS(2010～2020年代) 下 x
 
 ##### 系统调用级转译：用 Wine/Crossover 运行 Windows 程序
 
-Wine 是直接运行 Windows 程序的，使用比较方便而且不需要虚拟化的方式占用几个GB的内存。Wine 的兼容性发展到现在已经很好了，不止可以运行游戏，大量软件都可以直接运行，如无驱动的 Windows 工具、轻量办公软件、3A 大作等。但反作弊、底层驱动、新 3A 大作无法保证可以运行。
+Wine 是直接运行 Windows 程序的，使用比较方便而且不需要虚拟化的方式占用几个GB的内存。Wine 的兼容性发展到现在已经很好了，不止可以运行游戏，大量软件都可以直接运行，如无驱动的 Windows 工具、轻量办公软件、3A 大作等。但反作弊、底层驱动、新 3A 大作、强依赖完整 .NET Framework 或 VC 运行库且 Wine 无法完美模拟的无法保证可以运行。
+
+目前安装 wine 的途径
+
+    被废了 brew install --cask wine-stable
+
+    macports-wine
+
+        https://github.com/Gcenx/macOS_Wine_builds
+            https://github.com/Gcenx/macports-wine
+                https://www.macports.org/
+
+CJK字体乱码问题
+
+    https://miao1007.github.io/e0b87149-b3d6-11ec-a501-edcd1db81294/
+
+    网上有直接替换user.reg或者system.reg的方案，我个人不推荐，因为这两个可以看作序列化缓存，不应该手动修改，缺点是没有复用Mac下的字体
+
+    # 安装一堆CJK字体，能用就行
+    winetricks cjkfonts
+    接着配置
+
+    cd $HOME/.wine
+    cat > font_settings.reg << EOF
+    REGEDIT4
+    [HKEY_CURRENT_USER\Software\Wine\X11 Driver]
+    "ClientSideWithRender"="N"
+    EOF
+    # 导入此文件
+    wine regedit font_settings.reg
+    如果有乱码问题，可以配置宿主语言或者传递如下变量，不需要LocaleEmulator等工具
+
+    # https://wiki.winehq.org/Testing_Languages
+    # ja_JP, en_US
+    export LC_ALL="zh_CN.UTF-8";
 
 1、wine 最初是 x86 Linux 下执行 Windows 游戏的开源社区解决方案。
 
@@ -21322,7 +21360,7 @@ Wine 是直接运行 Windows 程序的，使用比较方便而且不需要虚拟
 
 2、在 2010 -2020 年 x86 macOS(Intel CPU) 时代，有了 x86 macOS 版的 Wine。
 
-它可以在操作系统调用层面"模拟"支持运行 Windows 软件，性能接近原生，安装即用。最大的优势是本地运行，不像虚拟机要占用若干GB内存，和 macOS 无缝融合，启动快。
+它可以在操作系统调用层面"模拟"支持运行 Windows 软件，性能接近原生，安装即用。最大的优势是本地运行不消耗额外资源，不像虚拟机要占用若干GB内存。
 
        Windows 游戏 (.exe)
       魔兽争霸3, 暗黑破坏神4 ...
@@ -21427,7 +21465,7 @@ Apple Game Porting Toolkit (GPTK)
 
 #### 虚拟机 arm Windows 运行 Windows 程序 UTM
 
-目前效率最高的运行 x86 程序的方法，是前面章节介绍的，在 macOS 下用 Wine/Crossover 直接运行 x86 软件，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。缺点是仅限于 x86 macOS 的那些软件，无法执行 Windows 下庞大的软件，特别是图形化界面的软件。
+目前效率最高的运行 x86 程序的方法，是前面章节介绍的 [用 Wine/Crossover 运行 Windows 程序]，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。缺点是 Windows 下图形化界面的软件的兼容性只支持 WINDOWS API 的最好，对依赖 .NET Framework 或 VC 运行库且 Wine 无法完美模拟的系统内核级虚拟光驱、加密狗或企业级服务等就未必可以完整支持了。
 
 为了使用 Windows 下的软件，则要接受至少消耗 8GB 内存用于虚拟机的方案 --- 利用 macOS 的 Hypervisor 虚拟化框架及硬件加速，安装虚拟机管理器软件
 
@@ -21465,10 +21503,6 @@ UTM 的两种运行方式：
 
 2、推荐 “虚拟化”模式 利用主机操作系统的虚拟化功能安装 Windows 11 ARM 版
 
-    https://docs.getutm.app/guest-support/windows/
-
-安装比较简单
-
     https://docs.getutm.app/guides/windows/#instructions
 
 注意：UTM 虚拟机安装的 Windows，务必安装客户机工具，这样桌面操作的流畅感才会类似本地原生系统
@@ -21499,6 +21533,8 @@ UTM 的两种运行方式：
 它会自动向内核注册一条规则：凡是遇到 x86 二进制，就调用 qemu-x86_64-static 去翻译执行。要安装 `sudo apt install binfmt-support qemu-user-static`。缺点是纯软件翻译，性能一般，CPU 占用高。只适合服务器下运行命令行程序，运行图形化程序太繁琐。
 
 方式二、推荐 虚拟机直通，调用宿主机的 Rosetta 2
+
+    https://docs.getutm.app/guides/ubuntu/
 
 新版 UTM 在安装 arm linux 时，选择设置 System (系统): 勾选 Use Apple Virtualization（使用Apple虚拟化）和 Enable Rosetta (x86_64 Emulation)（启用Rosetta）即可，然后安装 Ubuntu arm 版。
 
