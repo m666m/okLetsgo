@@ -21550,6 +21550,10 @@ UTM 的两种运行方式：
 
 然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机 Windows 桌面体验直接起飞。
 
+填坑:
+
+    开机后提示 failed to load boot001 。。。，等半天才跳转到 Windows Bootmanager 继续，后来直接无法启动了： 开机时狂按 ESC 进入 UEFI 界面，选择 Boot Manager，选择启动分区 “Windows Bootmanager”，F10 保存退出。
+
 #### 虚拟机 arm Linux 执行 Linux x86 程序
 
 绝大多数情况下，不需要本用法，可以在 macOS 本地直接运行x86程序，详见章节 [指令级转译：arm macOS 可以运行 x86 macOS 的 应用]。
