@@ -20796,11 +20796,6 @@ Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS
 
 常用的 brew 命令：
 
-    查看brew版本：brew -v
-    更新brew版本：brew update
-    本地软件库列表：brew list
-    查看软件库版本：brew list --versions
-
     查找软件包：brew search xxx （xxx为要查找软件的关键词）
         找不到软件？见章节 [不靠谱命令 `brew search`]
 
@@ -20808,6 +20803,16 @@ Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS
     安装 cask 类软件：      brew install --cask xxx
 
     卸载软件：brew uninstall xxx
+
+    本地软件库列表：brew list
+    查看软件库版本：brew list --versions
+
+    # 1. 更新 Homebrew 自身及其配方列表（相当于刷新软件仓库）
+    brew update
+    # 2. 查看哪些已安装的软件有可用更新（先预览，不实际安装）
+    brew outdated
+    # 3. 升级所有已安装的软件包（包括依赖）
+    brew upgrade
 
 Homebrw 相关的几个文件夹用途
 
