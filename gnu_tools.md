@@ -20989,7 +20989,7 @@ function brew_sc() {
             https://github.com/warpdotdev/Warp
             主题 https://github.com/warpdotdev/themes
 
-使用更多的颜色方案
+iterm2 使用更多的颜色方案
 
     先下载压缩包
 
@@ -20999,7 +20999,7 @@ function brew_sc() {
     然后 Settings->Profile->Colors->Color Preset:
         选择解压目录的 schemes 子目录，下面的各个文件就是颜色方案，可多选导入，推荐 nord
 
-可以设置用热键启动一个终端窗口，如果全局生效会要求开启操作系统权限
+可以设置用热键启动一个 iterm2 窗口，如果全局生效会要求开启操作系统权限
 
     Settings->Profile->Keys->Hotkey window，勾选，设置热键 option+return
 
@@ -21014,6 +21014,16 @@ function brew_sc() {
     在标记间导航       Cmd + Shift + ↑ / ↓   在命令标记之间上下移动。
 
 也可以像 Contour 那样利用终端命令做标记 `printf "\033]1337;SetMark\007"`
+
+shell 集成可以增加很多功能
+
+    https://iterm2.com/documentation-shell-integration.html
+
+    在 ls 的输出中，右键点击文件名，选择 “Download with scp”
+
+    从访达（Finder）里拖拽文件到 iTerm2 窗口的同时按住 Option 键，即可将文件上传到当前所在的远程目录
+
+    菜单 “Edit” 可选择 Select Output of Last Command。
 
 3、Ghostty 跟系统自带终端一样快，切换子窗口顺滑
 
