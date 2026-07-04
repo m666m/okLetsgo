@@ -1417,7 +1417,7 @@ elif  [[ $os_type = 'raspi' ]]; then
 
 else
     # 通用 Linux bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 python环境 git分支及状态
-    PS1="\n$ccBLUE┌─$ccRED\$(PS1exit_code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda_env_name)\$(PS1virtualenv_envname)\$(PS1git_branch_prompt)\n$ccBLUE└──$ccWHITE\$ $ccNORMAL"
+    PS1="\n${ccBLUE}┌─$ccRED\$(PS1exit_code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda_env_name)\$(PS1virtualenv_envname)\$(PS1git_branch_prompt)\n${ccBLUE}└──$ccWHITE\$ $ccNORMAL"
 
 fi
 

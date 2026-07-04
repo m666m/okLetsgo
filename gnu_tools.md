@@ -21020,6 +21020,7 @@ shell 集成可以增加很多功能
     https://iterm2.com/documentation-shell-integration.html
 
     在 ls 的输出中，右键点击文件名，选择 “Download with scp”
+        https://gitlab.com/gnachman/iterm2/-/wikis/scp-not-connecting
 
     从访达（Finder）里拖拽文件到 iTerm2 窗口的同时按住 Option 键，即可将文件上传到当前所在的远程目录
 
