@@ -463,7 +463,11 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 1、安装
 
-    $ curl -LsSf https://astral.sh/uv/install.sh | sh
+    $ curl -fsSL https://astral.sh/uv/install.sh | sh
+
+    Windows
+
+        powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
     也可用 pip 安装，uv 是一个全局的二进制文件，只要在一个环境中安装就全局生效
 
