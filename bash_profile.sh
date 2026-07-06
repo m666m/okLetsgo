@@ -1363,10 +1363,13 @@ PS1git_branch_prompt() {
     else
         # git 工作区有变更就显示问号
         # --porcelain 可能耗时数百毫秒，暂没有好的解决办法
-        local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<?>'; else printf "%s" ''; fi)
+        # local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<?>'; else printf "%s" ''; fi)
+        local notify_flag=''
+        if ! git diff --quiet --cached || ! git diff --quiet || git ls-files --others --exclude-standard | read -r _; then
+            local notify_flag=$(printf "%s" '<?>')
+        fi
         # 拼接后输出 git 工作区状态和分支名
         printf " git:%s%s" $notify_flag $branch
-
     fi
 }
 
@@ -1386,7 +1389,7 @@ PS1_host_name() {
 
     # 在交互式容器中特殊处理，从 HOSTNAME 提取出宿主机的主机名
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
-        # 如果是在交互式容器 toolbox 中，现在又改城 toolbx 了
+        # 如果是在交互式容器 toolbox 中，现在又改成 toolbx 了
         if [[ $(uname -n) = 'toolbx' ]]; then
 
             # 变量 HOSTNAME 的值与宿主机一致，但 /etc/hostname 变为 toolbox
