@@ -11,8 +11,11 @@
 #   如果遇到  $'\r': command not found
 #       ssh user@server "sed -i 's/\r$//' .bash_profile"
 # 3、使用前需要手工调整的地方：
+#
 #   环境变量 PDMREPO ，要根据你的内网镜像仓库服务器手动设置地址
+#
 #   如果在网络不卡的环境，应该屏蔽掉函数 poor_connection 的执行
+#
 # 4、脚本比较长，其实结构不复杂
 #  先引用配置文件配置几个环节变量，非交互式登录至此就退出了，
 #  后面的设置都是给交互式登录，为了使用习惯的用户自定义设置：
@@ -70,6 +73,7 @@ export PATH
 # 注意：
 #   本脚本是被 source 使用的 `source .bash_profile`，直接执行是错误用法，而 `source` 可以用 return 命令。
 #   如果把 return 改成 exit 会导致致命问题：GNOME/KDE 桌面环境下用户登录过程秒退到登录界面且无任何提示。
+# QT_QPA_PLATFORM=offscreen
 [[ $- != *i* ]] && return
 
 #####################################################################
@@ -260,7 +264,7 @@ curlgh() {
 # 二、适用性方面的调整和环境设置，涉及颜色方案、字符编码、常用工具设置等
 
 # 在终端模拟器中命令行的字符显示彩色
-# 显式设置终端启用256color，防止终端工具未设置。若终端工具能开启透明选项，则显示的效果更好
+# 显式设置终端启用256color，防止终端工具未设置或设置的太低。若终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
 export COLORTERM=truecolor
 
@@ -271,8 +275,8 @@ if [ -x /usr/bin/dircolors ]; then
 
     # 下载使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
     if [[ ! -f ~/.dir_colors ]]; then
-        echo '安装命令行显示文件颜色方案 nord-dircolors'
-        curlgh https://raw.githubusercontent.com/nordtheme/dircolors/develop/src/dir_colors > ~/.dir_colors || rm -f ~/.dir_colors
+        echo '建议安装命令行显示文件颜色方案 nord-dircolors'
+        echo "  curlgh https://raw.githubusercontent.com/nordtheme/dircolors/develop/src/dir_colors > ~/.dir_colors || rm -f ~/.dir_colors "
     fi
 
     if test -r ~/.dir_colors; then
@@ -288,8 +292,7 @@ fi
 
 # 删除 vi 然后安装 vim，居然没有 `vi` 了
 command -v vi >/dev/null || {
-    printf 'link vim to vi'
-    printf "建议补全 vi 调用：sudo ln -sf /usr/bin/vim /usr/bin/vi"
+    echo "建议补全 vi 调用：sudo ln -sf /usr/bin/vim /usr/bin/vi"
 }
 
 # 命令行开启 vi 模式，按esc后用vi中的上下左右键选择历史命令
@@ -298,10 +301,6 @@ command -v vi >/dev/null || {
 
 # 有些命令使用变量 EDITOR 指定的编辑器，一般是 nano，强制指定为 vi
 export EDITOR=/usr/bin/vi
-
-# 历史记录不记录如下命令 vault* kill，除了用于保护参数带密码命令，还可以精简命令历史，不保存那些不常用的命令
-# 一个简单的方法是输入密码的参数使用短划线“-”，然后按 Enter 键。这使您可以在新行中输入密钥。
-export HISTIGNORE="&:[ \t]*vault*:[ \t]*kill*"
 
 # 在终端模拟器中设置了光标闪动有时候在ssh连接远程后或tmux中也不生效，强制开启
 #tput cnorm && echo -e '\033[?12h\033[1 q'
@@ -388,7 +387,7 @@ fi
 # 适用于 Linux bash / Windows git bash(mintty) / macOS
 if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
 
-    # macOS 下把 ssh 密钥加入钥匙链，并接管 ssh-agent 复用
+    # macOS 下把 ssh 密钥加入钥匙圈，并接管 ssh-agent 复用
     # 1、ssh-add --apple-use-keychain ~/.ssh/id_rsa
     # 2、配合 SSH 配置文件的 Host * 段添加 UseKeychain yes 和 AddKeysToAgent yes 可以不用再输入保护密码了
     if [[ $os_type = 'macos' ]]; then
@@ -405,7 +404,7 @@ if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
     # 只需要 SSH 配置文件的 Host * 段添加 AddKeysToAgent yes，然后执行一次 `ssh-add` 即可。
     # 原理见 [Gnome 桌面的密码管理器应用程序](okletsgo)。
     # 以下代码保留至 Debian 13(GNOME 48) retired(LTS 阶段：至 2030 年 8 月).
-    elif [[ $XDG_CURRENT_DESKTOP = 'GNOME' ]] && command -v gnome-shell >/dev/null; then
+    elif [[ "$XDG_CURRENT_DESKTOP" == *"GNOME"* ]] && command -v gnome-shell >/dev/null; then
         # 以下操作仅限于 gnome49 之前的版本，之后 GNOME 使用 gcr-ssh-agent.service 接管 ssh-agent 了，不再有需要手工启动 gnome-keyring-daemon 的情况
         gsversion=$(gnome-shell --version | awk '{print $3}' | awk -F. '{print $1}')
 
@@ -431,7 +430,7 @@ if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
         fi
 
     # KDE 桌面环境使用 systemd 单元文件 ssh-agent.service 实现复用 ssh-agent 进程
-    elif [[ $XDG_CURRENT_DESKTOP = 'KDE' ]]; then
+    elif [[ "$XDG_CURRENT_DESKTOP" == *"KDE"* ]]; then
 
         # KDE 桌面环境有自己的 `systemctl --user status ssh-agent.service`
         # 启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/ssh-agent.socket
@@ -560,7 +559,7 @@ if command -v ack >/dev/null 2>&1; then
 
     else
 
-        echo "ackg 看日志比grep好用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)"
+        echo "ackg 看日志比grep好用，见章节 [ackg 给终端输出的自定义关键字加颜色](gnu_tools.md okletsgo)" >&2
 
         printf "建议如下操作
         tmpfile=\$(mktemp)
@@ -574,15 +573,17 @@ if command -v ack >/dev/null 2>&1; then
         unset tmpfile
 
         source /usr/local/bin/ackg.sh
-        "
+        \n"
     fi
 fi
 
 #######################
 # 功能增强：ask 命令问 AI
 if ! command -v ask >/dev/null 2>&1; then
-    echo "安装 m666m/ask 命令行问 AI..."
-    (set -o pipefail; curlgh "https://github.com/m666m/ask/blob/main/install.sh" | bash) || echo "Ask installation failed"
+    # (set -o pipefail; curlgh "https://github.com/m666m/ask/blob/main/install.sh" | bash) || echo "Ask installation failed"
+    echo "建议安装 ask 命令问 AI:" >&2
+    echo "  export -f curlgh" >&2
+    echo "  curlgh https://github.com/m666m/ask/raw/main/install.sh | ASK_INSTALL_CURL=curlgh bash" >&2
 fi
 
 ##############################################
@@ -614,24 +615,24 @@ alias greps='grep -d skip -in'
 # 在管道或配置文件查找指定关键字，列出文件名和所在行，追加显示后续的 5 行内容
 alias grepa='grep -d skip -in -A5'
 # 在当前目录和子目录下的文件中查找指定关键字，列出文件名和所在行，跳过.git等目录，如 `finds strinfile`
-alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print |xargs grep --color=auto -d skip -in'
+alias finds='find . \( -name ".git" -o -name "__pycache__" \) -prune -o -print0 |xargs -0 grep --color=auto -d skip -in'
 
-alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]"; tree -a -CF -I ".git|__pycache__" -L 2'
-alias trees3='echo "[目录树，最多3级，显示目录和可执行文件的标识，跳过.git等目录]"; tree -a -CF -I ".git|__pycache__" -L 3'
-alias treeh='echo "[树形列出目录及文件大小，最多2级]"; tree --du -h -L 2'
-alias treeh3='echo "[树形列出目录及文件大小，最多3级]"; tree --du -h -L 3'
+alias trees='echo "[目录树，最多2级，显示目录和可执行文件的标识，跳过.git等目录]" >&2; tree -a -CF -I ".git|__pycache__" -L 2'
+alias trees3='echo "[目录树，最多3级，显示目录和可执行文件的标识，跳过.git等目录]" >&2; tree -a -CF -I ".git|__pycache__" -L 3'
+alias treeh='echo "[树形列出目录及文件大小，最多2级]" >&2; tree --du -h -L 2'
+alias treeh3='echo "[树形列出目录及文件大小，最多3级]" >&2; tree --du -h -L 3'
 
 if [[ $os_type = 'macos' ]]; then
-    alias pstreep='echo "[进程树，列出pid所在的进程树]"; pstree -p'
-    alias pstrees='echo "[进程树，列出相关名称所在的进程树]"; pstree -s'
+    alias pstreep='echo "[进程树，列出pid所在的进程树]" >&2; pstree -p'
+    alias pstrees='echo "[进程树，列出相关名称所在的进程树]" >&2; pstree -s'
 else
-    alias pstreep='echo "[进程树，列出pid所在的进程树]"; pstree -s -p'
+    alias pstreep='echo "[进程树，列出pid所在的进程树]" >&2; pstree -s -p'
 fi
 
 # 从下载文件夹的子目录里把各种电影文件统一挪到当前，方便整理
-function mvf {
+mvf() {
     if [ "$#" -ne 1 ]; then
-        echo '用法：把子目录下的指定后缀的文件移动到当前目录 mvf mp4'
+        echo '用法：把子目录下的指定后缀的文件移动到当前目录 mvf mp4' >&2
         return 1
     fi
 
@@ -643,8 +644,8 @@ function mvf {
 # 设置目录及其子目录和文件权限的常用操作
 chperm() {
     if [ $# -lt 1 ]; then
-        echo "指定 umask 值，设置目录及内容的权限"
-        echo "用法: chperm <目录路径> [umask值，默认为 002，即 目录是 775，文件是 664]"
+        echo "指定 umask 值，设置目录及内容的权限" >&2
+        echo "用法: chperm <目录路径> [umask值，默认为 002，即 目录是 775，文件是 664]" >&2
         return 1
     fi
 
@@ -655,43 +656,37 @@ chperm() {
     local dir_perm=$(printf "%o" $((0777 - 0$umask_value)))
     local file_perm=$(printf "%o" $((0666 - 0$umask_value)))
 
-    if [ $? -ne 0 ]; then
-        echo "指定 umask 值，设置目录及内容的权限"
-        echo "用法: chperm <目录路径> [umask值，默认为 002，即 目录是 775，文件是 664]"
-        return 1
-    fi
-
-    echo "应用 umask $umask_value: 目录=$dir_perm, 文件=$file_perm"
+    echo "应用 umask $umask_value: 目录=$dir_perm, 文件=$file_perm" >&2
 
     find "$target_dir" -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +
 
     if [ $? -ne 0 ]; then
-        echo -e "\n    设置权限失败，请尝试提权执行: find $target_dir -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +"
+        echo -e "\n    设置权限失败，请尝试提权执行: find $target_dir -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +" >&2
         return 1
     fi
 }
 
 # cp -a：此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。
-function cpbak {
+cpbak() {
     # find . -max-depth 1 -name '$1*' -exec cp "{}" "{}.bak" \;
     #cp -a $1{,.bak}
     local DT=$(date  +"%Y-%m-%d_%H:%M:%S")
-    echo "[复制一个备份 $1.bak.${DT}，如果是目录名不要传入后缀/]"
-    cp -a $1{,.bak.${DT}}
+    echo "[复制一个备份 $1.bak.${DT}，如果是目录名不要传入后缀/]" >&2
+    cp -a "$1" "$1.bak.${DT}"
 
     if [ $? -ne 0 ]; then
-        echo -e "\n    备份失败，请尝试提权执行: sudo cp -a $1{,.bak.${DT}}"
+        printf '\n    备份失败，请尝试提权执行: sudo cp -a "%s" "%s.bak.%s"\n' "$1" "$1" "$DT"
     fi
 }
 
 # wsl 或 git bash 下快捷进入从Windows复制过来的绝对路径，注意要在路径前后添加双引号，如：cdw "C:\Windows\Path"
-function cdw {
+cdw() {
     echo "[进入 Windows 路径，路径前后要加双引号，如：cdw \"C:\\Windows\\Path\"]"
     cd "/$(echo ${1//\\/\/} | cut -d: -f1 | tr -t [A-Z] [a-z])$(echo ${1//\\/\/} | cut -d: -f2)"
 }
 
 # 切换桌面模式和命令行模式 --- 使用 systemd 控制引导的系统都可以这么做
-function swc {
+swc() {
     if [[ ! ($os_type == 'linux' || $os_type == 'raspi') ]]; then
         return
     fi
@@ -700,14 +695,14 @@ function swc {
         read -p "Switch to graphical mode? (y/N): " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            echo -e "\033[0;33mWARN\033[0m: Starting Desktop, lanuching login screen..."
+            printf '\033[0;33mWARN\033[0m: Starting Desktop, launching login screen...\n'
             sudo systemctl isolate graphical.target
         fi
     else
         read -p "Switch to text mode? (y/N): " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            echo -e "\033[0;33mWARN\033[0m: Shut down desktop and return to tty..."
+            printf '\033[0;33mWARN\033[0m: Shut down desktop and return to tty...'
             sleep 1
             sudo systemctl isolate multi-user.target
         fi
@@ -724,84 +719,87 @@ elif command -v bat >/dev/null 2>&1; then
 fi
 
 # man
-alias mans='echo "[在man手册页的描述中搜索关键字]"; man -k'
+alias mans='echo "[在man手册页的描述中搜索关键字]" >&2; man -k'
 
 # chrony
-alias chronys='echo "[虚拟机跟宿主机对时]"; sudo chronyc makestep'
+alias chronys='echo "[虚拟机跟宿主机对时]" >&2; sudo chronyc makestep'
 
-alias viw='echo "[vi 后悔药：等保存了才发现是只读，运行以下命令]"; echo ":w !sudo tee %"'
+alias viw='echo "[vi 后悔药：等保存了才发现是只读，运行以下命令]" >&2; echo ":w !sudo tee %"'
 
-alias myip='echo "[浏览器打开 https://test.ustc.edu.cn/ 可看到自己的ip和测速]"; curl ipv4.icanhazip.com 2>/dev/null;curl ipv6.icanhazip.com 2>/dev/null'
+alias myip='echo "[浏览器打开 https://test.ustc.edu.cn/ 可看到自己的ip和测速]" >&2; curl ipv4.icanhazip.com 2>/dev/null;curl ipv6.icanhazip.com 2>/dev/null'
 
 # 命令行查天气
 # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
 #  https://wttr.in/:help 看月相 curl http://wttr.in/moon
-function weather { curl -s --connect-timeout 3 -m 5 "http://wttr.in/$1"; }
+weather() { curl -s --connect-timeout 3 -m 5 "http://wttr.in/$1"; }
 
 # ssh
-alias sshs='echo "[跳过其它各种协商使用密码连接主机]"; ssh -o "PreferredAuthentications password"'
-alias sshme='echo "[断开ssh连接复用]"; ssh -O exit'
-alias sshmn='echo "[不使用ssh连接复用]"; ssh -o "ControlPath=no"'
-alias sshk='echo "[使用kitty连接无terminfo的sshd服务器]"; kitty +kitten ssh'
+alias sshs='echo "[跳过其它各种协商使用密码连接主机]" >&2; ssh -o "PreferredAuthentications password"'
+alias sshme='echo "[断开ssh连接复用]" >&2; ssh -O exit'
+alias sshmn='echo "[不使用ssh连接复用]" >&2; ssh -o "ControlPath=no"'
+alias sshk='echo "[使用kitty连接无terminfo的sshd服务器]" >&2; kitty +kitten ssh'
 
 # curl
-alias curls='echo "[curl http-get  不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]"; curl -fsSL'
-alias curld='echo "[curl http-post 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕]"; curl -fsSd'
+alias curls='echo "[curl http-get  不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]" >&2; curl -fsSL'
+alias curld='echo "[curl http-post 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕]" >&2; curl -fsSd'
 
 # nmap
-alias nmaps='echo "[nmap 指定端口提供了什么类型的服务]"; nmap -sV -p'
-alias nmapl='echo "[nmap 列出当前局域网 192.168.0.x 内的ip及端口]"; nmap 192.168.0.0/24'
+alias nmaps='echo "[nmap 指定端口提供了什么类型的服务]" >&2; nmap -sV -p'
+alias nmapl='echo "[nmap 列出当前局域网 192.168.0.x 内的ip及端口]" >&2; nmap 192.168.0.0/24'
 
 # scp rsync
-alias scps='echo "[scp 源 目的网络。远程格式 user@host:/path/to/ 端口用 -P]"; scp -r'
-alias rsyncs='echo "[rsync 保留文件扩展属性保持硬链接保持稀疏文件：源 目的 ]"; rsync -avAXHS'
-alias rsyncl='echo "[低io优先级运行 rsync 保留文件属性：源 目的]"; sudo ionice -c 2 -n 5 rsync -av --progress --stats --bwlimit=50000'
-alias rsyncr='echo "[rsync 源 目的网络。远程格式 user@host:/path/to/]"; rsync -av --progress --stats -e "ssh -p 22" '
-alias rsyncrb='echo "[rsync 源 目的慢速网络。远程格式 user@host:/path/to/]"; rsync -av --progress --stats --partial --partial-dir=.rsync-partial --timeout=30 --bwlimit=5000 -e "ssh -p 22 -o ServerAliveInterval=15 -o ConnectTimeout=20" '
+alias scps='echo "[scp 源 目的网络。远程格式 user@host:/path/to/ 端口用 -P]" >&2; scp -r'
+alias rsyncs='echo "[rsync 保留文件扩展属性保持硬链接保持稀疏文件：源 目的 ]" >&2; rsync -avAXHS'
+alias rsyncl='echo "[低io优先级运行 rsync 保留文件属性：源 目的]" >&2; sudo ionice -c 2 -n 5 rsync -av --progress --stats --bwlimit=50000'
+alias rsyncr='echo "[rsync 源 目的网络。远程格式 user@host:/path/to/]" >&2; rsync -av --progress --stats -e "ssh -p 22" '
+alias rsyncrb='echo "[rsync 源 目的慢速网络。远程格式 user@host:/path/to/]" >&2; rsync -av --progress --stats --partial --partial-dir=.rsync-partial --timeout=30 --bwlimit=5000 -e "ssh -p 22 -o ServerAliveInterval=15 -o ConnectTimeout=20" '
 
 # dd
-alias ddp='echo "[给dd发信号显示进度信息]"; sudo watch -n 5 killall -USR1 dd'
+alias ddp='echo "[给dd发信号显示进度信息]" >&2; sudo watch -n 5 killall -USR1 dd'
 
 # du
-alias dus='echo "[降序列出各个文件的大小]"; find . -type f -exec du -b {} \; | sort -n -r | numfmt --to=iec'
-alias dud='echo "[降序列出各个子目录的大小]"; du -hd1 . 2>/dev/null | sort -h -r'
-function duh {
+alias dus='echo "[降序列出各个文件的大小]" >&2; find . -type f -exec du -b {} + | sort -n -r | numfmt --to=iec'
+alias dud='echo "[降序列出各个子目录的大小]" >&2; du -hd1 . 2>/dev/null | sort -h -r'
+duh() {
     local target=${1:-.}
     echo "[列出 $target 空间占用最大的前 10 个文件或目录(MB)]"
-    sudo du -sb "$target"/* "$target"/.* 2>/dev/null | sort -n -r | numfmt --to=iec | head -10
+    # sudo du -sb "$target"/* "$target"/.* 2>/dev/null | sort -n -r | numfmt --to=iec | head -10
+    sudo find "$target" -maxdepth 1 \( -type f -o -type d \) -print0 2>/dev/null \
+      | xargs -0 du -sb 2>/dev/null \
+      | sort -n -r | numfmt --to=iec | head -10
 }
 
 # udisksctl
-alias udj='echo "[弹出 U 盘]"; sync; udisksctl power-off -b'
+alias udj='echo "[弹出 U 盘]" >&2; sync; udisksctl power-off -b'
 
 # mount 使用当前用户权限挂载 Windows 分区 U 盘，用于防止默认参数使用 root 用户权限不方便当前用户读写
-function mntfat {
+mntfat() {
     echo "[挂载 FAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
     local _uid=$(id -u $USER)
     local _gid=$(id -g $USER)
     sudo mount -t vfat -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,umask=0000,codepage=437,iocharset=ascii,shortname=mixed,showexec,utf8,flush,errors=remount-ro "$1" "$2"
 }
-function mntntfs {
+mntntfs() {
     echo "[挂载 NTFS 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
     local _uid=$(id -u $USER)
     local _gid=$(id -g $USER)
     sudo mount -t ntfs3 -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,windows_names,iocharset=utf8 "$1" "$2"
 }
-function mntexfat {
+mntexfat() {
     echo "[挂载 exFAT 文件系统的分区设备 $1 到目录 $2，使用当前用户权限]"
     local _uid=$(id -u $USER)
     local _gid=$(id -g $USER)
     sudo mount -t exfat -o rw,nosuid,nodev,noatime,uid=$_uid,gid=$_gid,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro "$1" "$2"
 }
-function mntram {
+mntram() {
     echo "[映射内存目录 $1，用完了记得要解除挂载：sync; sudo umount $1]"
     sudo mount --mkdir -t ramfs ramfs "$1" && sudo chown $(id -u):$(id -g) "$1"
 }
-function mntsmb {
+mntsmb() {
     echo "[挂载samba目录 $1 到本地目录 $2，用户名为 $3]"
     sudo mount -t cifs -o user="$3" "$1" "$2"
 }
-function mntnfs {
+mntnfs() {
     echo "[挂载nfs目录 $1 到本地目录 $2，不许其内的 dev 再挂载]"
     sudo mount -t nfs -o vers=4,nodev,noatime "$1" "$2"
 }
@@ -813,9 +811,9 @@ alias hexdumps='hexdump -C'
 alias qrens='qrencode -t ANSIUTF8'
 
 # 生成密码
-alias passs='echo "[生成16个字符的强密码]"; cat /dev/random |tr -dc "!@#$%^&*()-+=0-9a-zA-Z" | head -c16'
-alias passr='printf "[16 个随机字符作为密码]\n\n"; cat /dev/urandom | tr -dc "a-zA-Z0-9" | head -c 16; echo'
-function passf {
+alias passs='echo "[生成16个字符的强密码]" >&2; cat /dev/random |tr -dc "!@#$%^&*()-+=0-9a-zA-Z" | head -c16'
+alias passr='printf "[16 个随机字符作为密码]\n\n" >&2; cat /dev/urandom | tr -dc "a-zA-Z0-9" | head -c 16; echo'
+passf() {
     # 256 随机字节作为密钥文件，过滤了换行符
     # passf > key.bin          # 保存为文件
     # passf | base64           # 输出base64
@@ -823,75 +821,165 @@ function passf {
     cat /dev/random | tr -d "\n" | head -c 256
 }
 
+# 桌面环境下执行命令行程序，对需要保护的凭证如密钥、密码等，不要用环境变量，尽量用钥匙圈 keyring/keychain
+# 1. 存储到钥匙圈
+# 2. 运行时从钥匙圈读取
+# 示例：
+#    # 存储时不会留下历史痕迹
+#    $ token_put my-token
+#    请输入 'my-token' 对应的凭证（不会回显）: █
+#
+#    # 获取时作为命令替换，仅在使用瞬间挂载
+#    $ curl -H "Authorization: Bearer $(token_get my-token)" https://api.example.com
+
+# 静默读入密码，避免被 shell 历史记录或 ps 窥探
+token_put() {
+    local name="$1"
+    if [[ -z "$name" ]]; then
+        echo >&2 "用法: token_put <名称>     # 会提示输入密码"
+        return 1
+    fi
+
+    local token
+    printf "请输入 '%s' 对应的凭证（不会回显）: " "$name"
+    read -rs token
+    echo >&2
+
+    if [[ -z "$token" ]]; then
+        echo >&2 "未输入任何内容，操作取消。"
+        return 1
+    fi
+
+    # --- macOS ---
+    if [[ $os_type = 'macos' ]]; then
+        # -U : 如果已存在则更新，-T : 只允许 /usr/bin/security 访问（避免弹窗）
+        security add-generic-password -T /usr/bin/security \
+          -U -a "$USER" -s "$name" -w "$token" 2>/dev/null
+        if [[ $? -eq 0 ]]; then
+            echo >&2 "✓ 已存入 macOS Keychain (account=$USER, service=$name)"
+        else
+            echo >&2 "✗ 存入 macOS Keychain 失败"
+            return 1
+        fi
+
+    # --- Linux GNOME ---
+    elif [[ "$XDG_CURRENT_DESKTOP" == *"GNOME"* ]] && command -v secret-tool >/dev/null 2>&1; then
+        echo -n "$token" | secret-tool store --label="token $name" service "$name" 2>/dev/null
+        if [[ $? -eq 0 ]]; then
+            echo >&2 "✓ 已存入 GNOME Keyring (service=$name)"
+        else
+            echo >&2 "✗ 存入 GNOME Keyring 失败"
+            return 1
+        fi
+
+    # --- Linux KDE ---
+    elif [[ "$XDG_CURRENT_DESKTOP" == *"KDE"* ]] && command -v kwallet-query >/dev/null 2>&1; then
+        # 若文件夹不存在会自动创建
+        echo -n "$token" | QT_QPA_PLATFORM=offscreen kwallet-query -w kdewallet -f tokens -e "$name" -p 2>/dev/null
+        if [[ $? -eq 0 ]]; then
+            echo >&2 "✓ 已存入 KDE Wallet (wallet=kdewallet, folder=tokens, entry=$name)"
+        else
+            echo >&2 "✗ 存入 KDE Wallet 失败（钱包是否已打开？）"
+            return 1
+        fi
+
+    else
+        echo >&2 "✗ 未检测到可用的 keyring 后端（需要 macOS Keychain / GNOME Keyring / KDE Wallet）"
+        return 1
+    fi
+}
+
+token_get() {
+    local name="$1"
+    if [[ -z "$name" ]]; then
+        echo >&2 "用法: token_get <名称>"
+        return 1
+    fi
+
+    # --- macOS ---
+    if [[ $os_type = 'macos' ]]; then
+        security find-generic-password -a "$USER" -s "$name" -w 2>/dev/null
+
+    # --- Linux GNOME ---
+    elif [[ "$XDG_CURRENT_DESKTOP" == *"GNOME"* ]] && command -v secret-tool >/dev/null 2>&1; then
+            secret-tool lookup service "$name" 2>/dev/null
+
+    # --- Linux KDE ---
+    elif [[ "$XDG_CURRENT_DESKTOP" == *"KDE"* ]] && command -v kwallet-query >/dev/null 2>&1; then
+        QT_QPA_PLATFORM=offscreen kwallet-query -r -w kdewallet -f tokens -e "$name" 2>/dev/null
+
+    else
+        echo >&2 "未检测到可用的 keyring 后端"
+        return 1
+    fi
+}
+
 # sha256sum
-alias shasums='echo "[sha256sum 按校验和文件逐个校验，跳过缺失文件告警]"; sha256sum --ignore-missing -c'
-function shasumf {
+alias shasums='echo "[sha256sum 按校验和文件逐个校验，跳过缺失文件告警]" >&2; sha256sum --ignore-missing -c'
+shasumf() {
     # `shasumc abc.iso SHA256SUMS.txt`
     echo "[sha256sum，只下载了一个文件 $1，从校验和文件 $2 中抽出单个文件进行校验]"
     sha256sum -c <(grep $1 $2)
 }
-function shasumd {
+shasumd() {
     echo "[sha256sum 对目录 $1 下的所有文件及子目录文件生成一个校验和文件 $2]"
-    find $1 -type f |while read fname; do
-        # if [[ "$fname" = "$1" ]]; then
-        #   continue
-        # fi
-        echo $fname
-        sha256sum "$fname" >>$2
+    find "$1" -type f -print0 | while IFS= read -r -d '' fname; do
+        printf '%s\n' "$fname"
+        sha256sum "$fname" >>"$2"
     done
 }
 
 # 看日志
-alias dmesgs='echo "[分屏显示内核信息带颜色提示]"; sudo dmesg --color=always | less -R'
-alias audk='echo "[持续显示内核信息]"; sudo dmesg -w -T'
-alias auds='echo "[持续显示系统日志中 systemd-journald 分类信息]"; sudo journalctl -f'
-alias audj='echo "[持续显示系统日志中人性化可读审计信息-精简文本]"; sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
-alias audkb='echo "[列出所有启动记录]"; journalctl --list-boots; echo "[显示操作系统上次启动时的内核信息]"; journalctl -k -b -1'
+alias dmesgs='echo "[分屏显示内核信息带颜色提示]" >&2; sudo dmesg --color=always | less -R'
+alias audk='echo "[持续显示内核信息]" >&2; sudo dmesg -w -T'
+alias auds='echo "[持续显示系统日志中 systemd-journald 分类信息]" >&2; sudo journalctl -f'
+alias audj='echo "[持续显示系统日志中人性化可读审计信息-精简文本]" >&2; sudo tail -f /var/log/audit/audit.log |sudo ausearch --format text'
+alias audkb='echo "[列出所有启动记录]" >&2; journalctl --list-boots; echo "[显示操作系统上次启动时的内核信息]" >&2; journalctl -k -b -1'
 
 # systemd
-alias stmu='echo "[systemd 列出当前系统的单元，可 grep]"; systemctl list-units --no-pager'
-alias stmur='echo "[systemd 列出当前系统正在运行的单元，可 grep]"; systemctl list-units --state=running --no-pager'
-alias stmud='echo "[systemd 查看单元的依赖关系]"; systemctl list-dependencies '
-alias stmuf='echo "[systemd 列出当前系统开机自启动的单元文件]"; systemctl list-unit-files --state enabled --no-pager'
-alias stme='echo "[systemd 直接编辑服务的单元配置文件]"; sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full '
-alias stmr='echo "[systemd 重载单元文件]"; sudo systemctl daemon-reload'
-alias stmav='echo "[systemd 验证单元文件]"; systemd-analyze verify '
-alias stmab='echo "[systemd 分析计算机启动耗时]"; systemd-analyze blame'
+alias stmu='echo "[systemd 列出当前系统的单元，可 grep]" >&2; systemctl list-units --no-pager'
+alias stmur='echo "[systemd 列出当前系统正在运行的单元，可 grep]" >&2; systemctl list-units --state=running --no-pager'
+alias stmud='echo "[systemd 查看单元的依赖关系]" >&2; systemctl list-dependencies '
+alias stmuf='echo "[systemd 列出当前系统开机自启动的单元文件]" >&2; systemctl list-unit-files --state enabled --no-pager'
+alias stme='echo "[systemd 直接编辑服务的单元配置文件]" >&2; sudo env SYSTEMD_EDITOR=vi systemctl edit --force --full '
+alias stmr='echo "[systemd 重载单元文件]" >&2; sudo systemctl daemon-reload'
+alias stmav='echo "[systemd 验证单元文件]" >&2; systemd-analyze verify '
+alias stmab='echo "[systemd 分析计算机启动耗时]" >&2; systemd-analyze blame'
 
 # lvm
-alias lvvlvs='echo "[lvm显示lv详情]"; sudo lvs -a -o+integritymismatches -o+devices -o+segtype'
+alias lvvlvs='echo "[lvm显示lv详情]" >&2; sudo lvs -a -o+integritymismatches -o+devices -o+segtype'
 
 # SELinux
-alias sexs='echo "[SELinux 当前状态]"; getenforce'
-alias sext='echo "[临时关闭或打开 SELinux]"; sudo setenforce'
-alias sexr='echo "[SELinux 恢复目录的默认权限设置]"; sudo restorecon -R -v'
-alias sexlc='echo "[列出当前的 SELinux 上下文]"; sudo semanage fcontext -l'
-alias sexlp='echo "[列出当前的 SELinux 端口]"; sudo semanage port -l'
-alias sexlb='echo "[列出当前的 SELinux 开关]"; sudo semanage boolean -l'
+alias sexs='echo "[SELinux 当前状态]" >&2; getenforce'
+alias sext='echo "[临时关闭或打开 SELinux]" >&2; sudo setenforce'
+alias sexr='echo "[SELinux 恢复目录的默认权限设置]" >&2; sudo restorecon -R -v'
+alias sexlc='echo "[列出当前的 SELinux 上下文]" >&2; sudo semanage fcontext -l'
+alias sexlp='echo "[列出当前的 SELinux 端口]" >&2; sudo semanage port -l'
+alias sexlb='echo "[列出当前的 SELinux 开关]" >&2; sudo semanage boolean -l'
 
 # git 常用命令
 alias gts='git status'
-alias gtcs='echo "[git给最近的提交签名]"; git commit --amend -S --no-edit'
-alias gtw='echo "[修复Windows下显示Linux下拷贝过来的代码文件权限差异]"; git config core.fileMode false'
-alias gtd='echo "[差异：工作区与暂存区]"; git diff'
-alias gtds='echo "[差异：暂存区与仓库]"; git diff --staged'
-alias gtdh='echo "[差异：工作区与仓库]"; git diff HEAD'
-alias gtdh2='echo "[差异：最近的两次提交记录]"; git diff HEAD~ HEAD'
-alias gtlog='echo "[提交记录：树形]"; git log --oneline --graph'
-alias gtlb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]"; git log --left-right --oneline'
-alias gtlm='echo "[提交记录：本地远程库对比本地库--master]"; git log --graph --oneline ..origin/master --'
-alias gtld='echo "[提交记录：本地远程库对比本地库--dev]"; git log --graph --oneline ..origin/dev --'
-alias gtba='echo "[分支：全部分支及跟踪关系、最近提交及注释]"; git branch -avv'
-alias gtro='echo "[远程信息]"; git remote show origin'
-alias gtr3='echo "[git编辑最近3条历史提交]"; git rebase -i HEAD~3'
-alias gtcd3='echo  "[精简diff3信息]"; sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
-alias gtpull='echo "[github 经常断连，自动重试 pull 直至成功]"; while ! git pull --rebase; do printf "[Retry pull...]\n\n"; sleep 1; done'
-alias gtpush='echo "[github 经常断连，自动重试 push 直至成功]"; while ! git push; do printf "[Retry push...]\n\n"; sleep 1; done'
-function gtaddr {
+alias gtcs='echo "[git给最近的提交签名]" >&2; git commit --amend -S --no-edit'
+alias gtw='echo "[修复Windows下显示Linux下拷贝过来的代码文件权限差异]" >&2; git config core.fileMode false'
+alias gtd='echo "[差异：工作区与暂存区]" >&2; git diff'
+alias gtds='echo "[差异：暂存区与仓库]" >&2; git diff --staged'
+alias gtdh='echo "[差异：工作区与仓库]" >&2; git diff HEAD'
+alias gtdh2='echo "[差异：最近的两次提交记录]" >&2; git diff HEAD~ HEAD'
+alias gtlog='echo "[提交记录：树形]" >&2; git log --oneline --graph'
+alias gtlb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]" >&2; git log --left-right --oneline'
+alias gtlm='echo "[提交记录：本地远程库对比本地库--master]" >&2; git log --graph --oneline ..origin/master --'
+alias gtld='echo "[提交记录：本地远程库对比本地库--dev]" >&2; git log --graph --oneline ..origin/dev --'
+alias gtba='echo "[分支：全部分支及跟踪关系、最近提交及注释]" >&2; git branch -avv'
+alias gtro='echo "[远程信息]" >&2; git remote show origin'
+alias gtr3='echo "[git编辑最近3条历史提交]" >&2; git rebase -i HEAD~3'
+alias gtcd3='echo  "[精简diff3信息]" >&2; sed -n "/||||||| merged common ancestor/,/>>>>>>> Temporary merge branch/!p"'
+alias gtpull='echo "[github 经常断连，自动重试 pull 直至成功]" >&2; while ! git pull --rebase; do printf "[Retry pull...]\n\n"; sleep 1; done'
+alias gtpush='echo "[github 经常断连，自动重试 push 直至成功]" >&2; while ! git push; do printf "[Retry push...]\n\n"; sleep 1; done'
+gtaddr() {
     echo "[把 github.com 的 https 地址转为 git@ 地址，方便鉴权登录github]"
     echo ${1//https:\/\/github.com\//git@github.com:}
 }
-function ghaddr {
+ghaddr() {
     # [无法访问 github 的解决方案](git_usage)
     echo "[更新本地 hosts 文件的 github.com 地址]"
     local tfile=$(mktemp)
@@ -901,6 +989,16 @@ function ghaddr {
 
     if [[ ! -s "$tfile" ]]; then
         echo '获取 github 地址列表失败！'
+        return 1
+    fi
+
+    local REPLY
+
+    printf "确认写入? [y/N]: " >&2
+    read -r REPLY
+    if [[ ! $REPLY =~ ^[Yy] ]]; then
+        echo "已取消" >&2
+        rm "$tfile"
         return 1
     fi
 
@@ -920,24 +1018,24 @@ function ghaddr {
 }
 
 # gpg 常用命令，一般用法都是后跟文件名即可
-alias ggk='echo "[查看有私钥的gpg密钥及其子密钥，带指纹和keygrip]"; gpg -K --keyid-format=long --with-subkey-fingerprint --with-keygrip'
-alias ggl='echo "[查看密钥的可读性信息pgpdump]"; gpg --list-packets'
-alias ggsb='echo "[签名，生成二进制.gpg签名文件，默认选择当前可用的私钥签名，可用 -u 指定]"; gpg --sign'
-alias ggst='echo "[签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]"; gpg --clearsign'
-alias ggsdb='echo "[分离式签名，生成二进制.sig签名文件，默认选择当前可用的私钥签名，可用 -u 指定]"; gpg --detach-sign'
-alias ggsdt='echo "[分离式签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]"; gpg --armor --detach-sign'
-alias ggf='echo "[查看公钥的指纹以便跟跟网站发布的核对]"; gpg --with-fingerprint --show-keys --keyid-format=long'
-function ggkd {
+alias ggk='echo "[查看有私钥的gpg密钥及其子密钥，带指纹和keygrip]" >&2; gpg -K --keyid-format=long --with-subkey-fingerprint --with-keygrip'
+alias ggl='echo "[查看密钥的可读性信息pgpdump]" >&2; gpg --list-packets'
+alias ggsb='echo "[签名，生成二进制.gpg签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" >&2; gpg --sign'
+alias ggst='echo "[签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" >&2; gpg --clearsign'
+alias ggsdb='echo "[分离式签名，生成二进制.sig签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" >&2; gpg --detach-sign'
+alias ggsdt='echo "[分离式签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" >&2; gpg --armor --detach-sign'
+alias ggf='echo "[查看公钥的指纹以便跟跟网站发布的核对]" >&2; gpg --with-fingerprint --show-keys --keyid-format=long'
+ggkd() {
     echo "[从公钥服务器下载指定公钥到本地 $1.gpg]"
     gpg --keyserver hkps://keys.openpgp.org --no-default-keyring --keyring ./$1.gpg --recv-keys
 }
-alias ggvs='echo "[使用临时钥匙圈验证文件签名，如 ggvs ./fedora.gpg xxx.sign xxx.zip 或 ggvs ./fedora.gpg xxx.CHECHSUM]"; gpgv --keyring'
-alias ggv='echo "[验证签名]"; gpg --verify'
-alias gges='echo "[非对称算法加密并签名，参数太多，只给出提示]"; echo "gpg -s -u 'sender@xxx.com' -r 'reciver@xxx.com' -e msg.txt"'
-alias ggcs='echo "[对称算法加密，默认选择当前可用的私钥签名，可用 -u 指定，默认生成的.gpg文件。]"; gpg -s --cipher-algo AES-256 -c'
+alias ggvs='echo "[使用临时钥匙圈验证文件签名，如 ggvs ./fedora.gpg xxx.sign xxx.zip 或 ggvs ./fedora.gpg xxx.CHECHSUM]" >&2; gpgv --keyring'
+alias ggv='echo "[验证签名]" >&2; gpg --verify'
+alias gges='echo "[非对称算法加密并签名，参数太多，只给出提示]" >&2; echo "gpg -s -u 'sender@xxx.com' -r 'reciver@xxx.com' -e msg.txt"'
+alias ggcs='echo "[对称算法加密，默认选择当前可用的私钥签名，可用 -u 指定，默认生成的.gpg文件。]" >&2; gpg -s --cipher-algo AES-256 -c'
 # 解密并验签，需要给出文件名或从管道流入，默认输出到屏幕
 alias ggd='gpg -d'
-alias ggaq='echo "[退出 gpg-agent 代理]"; gpg-connect-agent killagent /bye'
+alias ggaq='echo "[退出 gpg-agent 代理]" >&2; gpg-connect-agent killagent /bye'
 ggkupd() {
     echo "更新 gpg 钥匙圈需要点时间，请稍等..."
     gpg --refresh-keys
@@ -956,25 +1054,25 @@ alias ssle='openssl enc -e -aes-256-cbc -md sha512 -pbkdf2 -iter 9876543 -salt'
 alias ssld='openssl enc -d -aes-256-cbc -md sha512 -pbkdf2 -iter 9876543 -salt'
 
 # dnf
-alias dnfp='echo "[dnf搜索包含指定命令的软件包]"; dnf provides'
-alias dnfql='echo "[dnf查看软件包的内容]"; rpm -ql'
-alias dnfqi='echo "[dnf查找指定的软件包在哪些存储库]"; dnf repoquery -i'
-alias dnfqr='echo "[dnf查看软件包依赖]"; dnf repoquery --requires'
-alias dnfr='echo "[dnf查看当前有哪些存储库]"; dnf repolist'
-alias dnfrl='echo "[dnf查看存储库软件列表]"; dnf list --repo'
-alias dnfl='echo "[dnf查看已经安装的软件]"; dnf list --installed'
-alias dnft='echo "[在toolbox里运行dnf]"; toolbox run dnf'
+alias dnfp='echo "[dnf搜索包含指定命令的软件包]" >&2; dnf provides'
+alias dnfql='echo "[dnf查看软件包的内容]" >&2; rpm -ql'
+alias dnfqi='echo "[dnf查找指定的软件包在哪些存储库]" >&2; dnf repoquery -i'
+alias dnfqr='echo "[dnf查看软件包依赖]" >&2; dnf repoquery --requires'
+alias dnfr='echo "[dnf查看当前有哪些存储库]" >&2; dnf repolist'
+alias dnfrl='echo "[dnf查看存储库软件列表]" >&2; dnf list --repo'
+alias dnfl='echo "[dnf查看已经安装的软件]" >&2; dnf list --installed'
+alias dnft='echo "[在toolbox里运行dnf]" >&2; toolbox run dnf'
 
 # pip
-alias pipi='echo "[pip 跳过缓存更新指定包]"; pip install --upgrade --no-cache-dir'
-alias pipu='echo "[pip 更新自己]"; python -m pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple --upgrade pip'
+alias pipi='echo "[pip 跳过缓存更新指定包]" >&2; pip install --upgrade --no-cache-dir'
+alias pipu='echo "[pip 更新自己]" >&2; python -m pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple --upgrade pip'
 
 # flatpak
-alias fpkr='echo "[flatpak查看当前有哪些存储库]"; flatpak remotes'
-alias fpkrl='echo "[flatpak查看存储库软件列表]"; flatpak remote-ls'
-alias fpkl='echo "[flatpak查看安装的软件]"; flatpak list --runtime'
-alias fpkd='echo "[flatpak卸载软件]"; flatpak uninstall --delete-data'
-function fpks() {
+alias fpkr='echo "[flatpak查看当前有哪些存储库]" >&2; flatpak remotes'
+alias fpkrl='echo "[flatpak查看存储库软件列表]" >&2; flatpak remote-ls'
+alias fpkl='echo "[flatpak查看安装的软件]" >&2; flatpak list --runtime'
+alias fpkd='echo "[flatpak卸载软件]" >&2; flatpak uninstall --delete-data'
+fpks() {
     echo "[flatpak 搜软件不展示 id 让你没法安装: ${1}]"
 
     flatpak search $1 |column
@@ -992,38 +1090,38 @@ if [[ $os_type != 'wsl' && -f /etc/debian_version ]]; then
 fi
 
 # podman
-function pdms() {
+pdms() {
     echo "[podman 列出镜像详细信息，需要完整的镜像地址]"
     skopeo inspect --format '{{json .}}' docker://${1} |jq .
 }
-function pdmst() {
+pdmst() {
     # https://stackoverflow.com/questions/28320134/how-can-i-list-all-tags-for-a-docker-image-on-a-remote-registry
     # echo "[podman 搜索列出镜像标签，非官方镜像需要完整的源地址]"
     # podman search --list-tags --limit=5000 $1
     echo "[podman 列出镜像的标签，需要完整的镜像地址]"
     skopeo list-tags docker://${1}
 }
-function pdmsd() {
+pdmsd() {
     echo "[podman 列出镜像的摘要，需要完整的镜像地址]"
     skopeo inspect --format "{{.Digest}}" docker://${1}
 }
-alias pdmc='echo "[podman简单运行一个容器]"; podman run -it --rm -P'
-alias pdmexec='echo "[podman在运行的容器名里执行shell命令]"; podman exec'
-function pdmtty() {
+alias pdmc='echo "[podman简单运行一个容器]" >&2; podman run -it --rm -P'
+alias pdmexec='echo "[podman在运行的容器名里执行shell命令]" >&2; podman exec'
+pdmtty() {
     echo "[登录到容器 $1 内的tty]"
     podman exec -it $1 sh
 }
-alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]"; podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
-alias pdmlog='echo "[podman查看指定容器日志]"; podman logs -f --tail 100'
-alias pdmdf='echo "[podman查看资源情况]"; podman system df -v'
-function pdmv() {
+alias pdmip='echo "[podman列出所有容器的ip和开放端口(rootless容器无ip地址)]" >&2; podman inspect -f="{{.Name}} {{.NetworkSettings.IPAddress}} {{.HostConfig.PortBindings}}" $(podman ps -aq)'
+alias pdmlog='echo "[podman查看指定容器日志]" >&2; podman logs -f --tail 100'
+alias pdmdf='echo "[podman查看资源情况]" >&2; podman system df -v'
+pdmv() {
     for c in $(podman ps -a --format="{{.Names}}"); do
         echo "容器 '$c' 使用了卷：$(podman inspect $c --format='{{range .Mounts}}{{.Name}} {{end}}' )"
     done
 }
 # 操作私有容器仓库
-alias pdmr='echo "[podman 列出私有仓库 ${PDMREPO} 的所有镜像]"; curl -s http://${PDMREPO}/v2/_catalog | jq'
-function pdmrl() {
+alias pdmr='echo "[podman 列出私有仓库 ${PDMREPO} 的所有镜像]" >&2; curl -s http://${PDMREPO}/v2/_catalog | jq'
+pdmrl() {
   echo "[podman 列出私有仓库 ${PDMREPO} 的全部镜像及标签]"
   local repo
 
@@ -1038,13 +1136,13 @@ function pdmrl() {
     echo
   done
 }
-function pdmrs() {
+pdmrs() {
     local img=$(echo $1  |cut -d: -f1)
     local tag=$(echo $1  |cut -d: -f2)
     echo "[podman 显示私有仓库 ${PDMREPO} 镜像名 ${img} 标签 ${tag} 的 manifests]"
     curl -s http://${PDMREPO}/v2/${img}/manifests/${tag}
 }
-function pdmrm() {
+pdmrm() {
     local img=$(echo $1 |cut -d: -f1)
     local tag=$(basename $1 |cut -d: -f2)
     local sha=$2
@@ -1052,19 +1150,19 @@ function pdmrm() {
     curl -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://${PDMREPO}/v2/${img}/manifests/sha256:${sha}
     echo "注意：登录仓库的 tty 运行垃圾收集(GC)才能真正的释放磁盘空间"
 }
-function pdmrcpd() {
+pdmrcpd() {
     echo "[podman 从本地 docker 仓库推送到私有仓库]"
     skopeo copy docker-daemon:${1} docker://${PDMREPO}/${2}
 }
-function pdmrcpp() {
+pdmrcpp() {
     echo "[podman 从本地 podman 仓库推送到私有仓库]"
     skopeo copy containers-storage:${1} docker://${PDMREPO}/${2}
 }
 
 # distrobox 这词打不快
 alias dbox='distrobox'
-alias dboxe='echo "[在distrobox里运行一个命令]"; distrobox-enter --'
-function dboxstop() {
+alias dboxe='echo "[在distrobox里运行一个命令]" >&2; distrobox-enter --'
+dboxstop() {
     echo "Stop all distrobox container:"
     #local container_name=$(distrobox-list --no-color |sed 1d |cut -d '|' -f 2)
     #for cname in "${container_name[@]}"
@@ -1078,7 +1176,7 @@ function dboxstop() {
 }
 
 # Hermes Agent
-alias hersd='echo "[Hermes Agent清理所有会话]";hermes sessions list | awk "NR>2 {print $NF}" | xargs -I {} hermes sessions delete {} -y'
+alias hersd='echo "[Hermes Agent清理所有会话]" >&2; hermes sessions list | awk "NR>2 {print $NF}" | xargs -I {} hermes sessions delete {} -y'
 
 # Windows git bash
 # 使 mintty 下执行普通的 Windows 控制台程序，用 winpty 辅助可以正常显示
@@ -1118,26 +1216,12 @@ rmjunk() {
 
 # macOS
 if [[ $os_type = 'macos' ]]; then
-    alias arch86='echo "[快捷执行 x86 架构命令]"; arch -x86_64 '
-    alias archs='echo "[进入 x86 架构的子shell]"; arch -x86_64 zsh'
+    alias arch86='echo "[快捷执行 x86 架构命令]" >&2; arch -x86_64 '
+    alias archs='echo "[进入 x86 架构的子shell]" >&2; arch -x86_64 zsh'
     # 快捷执行 x86 架构 brew
     alias ibrew='arch -x86_64 /usr/local/bin/brew'
     # 下载的文件或自编译的程序默认会添加隔离属性导致拒绝打开，需要手动去除这个属性
-    alias xattrs='echo "[清除指定文件的隔离属性]"; xattr -cr '
-
-    # macOS 下把 gpg 密码加入系统钥匙串
-    krpass() {
-        # 1、把gpg密码保存到系统钥匙串：security add-generic-password -a "你的帐户名" -s "密码名称" -w
-        # 2、然后使用下面的命令输出钥匙串中保存的密码 `krpass 密码名称`
-        if [ "$#" -ne 1 ]; then
-            echo '提取钥匙串中指定名称的密码'
-            echo 'krpass 密码名称'
-            return 1
-        fi
-        security find-generic-password -s "$1" -w
-        # 3、然而并没什么用。gpg 验证密码时命令行弹出的是 pinentry，图形界面无官方程序，
-        #    这俩既不对接系统的钥匙串，也不支持管道输入密码
-    }
+    alias xattrs='echo "[清除指定文件的隔离属性]" >&2; xattr -cr '
 fi
 
 ##############################################
@@ -1169,14 +1253,14 @@ ccNORMAL='\[\e[m\]'
 # 注意：判断用户在命令行执行命令返回值的函数 PS1exit_code 要放在放在 PS1 变量赋值语句的最前面，
 # 或者它前面的函数要实现 $? 变量的透传，否则成了判断前面子函数的命令的返回值了
 #   { ret_code="$?"; your code...; return ret_code}
-function PS1exit_code {
+PS1exit_code() {
     local exitcode="$?"
     #if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
     #(($exitcode != 0)) && printf "%s" ' -'$exitcode' '
     [[ ! $exitcode = 0 ]] && printf "%s" ' -'$exitcode' '
 }
 
-function PS1conda_env_name {
+PS1conda_env_name() {
     # Linux 下安装 Anaconda 需要执行一次如下命令，才能在 bash 中使用 conda 命令
     #   `conda init bash`
     # 会自动在 ~/.bashrc 或 .bash_profile 文件添加如下内容：
@@ -1197,11 +1281,11 @@ function PS1conda_env_name {
 
 # virtualenv 自定义环境名格式，禁止 activate 命令脚本中在 PS1 变量添加环境名称
 export VIRTUAL_ENV_DISABLE_PROMPT=1
-function PS1virtualenv_envname {
+PS1virtualenv_envname() {
     [[ -n $VIRTUAL_ENV ]] && printf "(venv:%s)" $(basename $VIRTUAL_ENV)
 }
 
-function PS1git_branch_name {
+PS1git_branch_name() {
 
     if ! command -v git >/dev/null 2>&1; then
         return
@@ -1264,7 +1348,7 @@ function PS1git_branch_name {
     unset _pp_branch_name
 }
 
-function PS1git_branch_prompt {
+PS1git_branch_prompt() {
     local branch=`PS1git_branch_name`
 
     # branch 变量是空的说明不在 git 环境中，返回即可
@@ -1287,7 +1371,7 @@ function PS1git_branch_prompt {
 }
 
 # 显示主机名，用不同颜色提示本地或 ssh 远程登录：本地登录是绿色，远程登录是洋红色
-function PS1_host_name {
+PS1_host_name() {
     local is_remote=false
 
     # 判断当前是否进入远程ssh会话：
@@ -1326,9 +1410,9 @@ function PS1_host_name {
     fi
 
     if [[ $is_remote = true ]]; then
-        echo -e "\033[0;35m${raw_host_name}\033[0m"
+        printf '\033[0;35m%s\033[0m' "$raw_host_name"
     else
-        echo -e "\033[0;32m${raw_host_name}\033[0m"
+        printf '\033[0;32m%s\033[0m' "$raw_host_name"
     fi
 }
 
@@ -1337,12 +1421,12 @@ function PS1_host_name {
 # https://ublue.it/guide/toolbox/#using-the-hosts-xdg-open-inside-distrobox
 # https://github.com/docker/cli/issues/3037
 # Windows 下的 wsl 环境，wsl 下的 docker，暂未研究
-function PS1_container_name {
+PS1_container_name() {
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
         # $CONTAINER_ID
-        echo -e "\033[0;44m\U0001f4e6<$(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")>"
+        printf '\033[0;44m\U0001f4e6 <%s>' $(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")
     elif  [ -e /.dockerenv ]; then
-        echo -e "\033[0;44m\U0001f4e6<$(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")>"
+        printf '\033[0;44m\U0001f4e6 <%s>' $(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")
     fi
 }
 
@@ -1353,7 +1437,7 @@ function PS1_container_name {
 #   法1. 把换行\n放在引用函数前面
 #   法2. 重新拼接成新样式避开这个bug: PS1="\n$ccBLUE┌──── $ccWHITE\t ""$PS1""$ccBLUE───┘ $ccNORMAL"
 #   法3. 完美的解决办法：新增子函数 PS1gitbash_newline 实现跟上面完全一致的显示效果。
-function PS1gitbash_newline {
+PS1gitbash_newline() {
     printf "\n╰"
 }
 
@@ -1363,7 +1447,7 @@ function PS1gitbash_newline {
 #   CPU 温度的单位是千分位提权 1000
 #   系统 throttled 不是零
 #   CPU Load Average 的值应该小于CPU核数的70%，取1分钟平均负载
-function PS1raspi_warn_info {
+PS1raspi_warn_info() {
 
     # [[ $(command -v vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
     # command -v vcgencmd >/dev/null 2>&1 || return
@@ -1391,7 +1475,7 @@ function PS1raspi_warn_info {
     printf "%s%s%s" "$CPUTEMP_WARN" "$THROTT_WARN" "$LOAD_AVG_WARN"
 }
 
-function PS1raspi_warn_prompt {
+PS1raspi_warn_prompt() {
     local raspi_warning=`PS1raspi_warn_info`
     if [ -n "$raspi_warning" ]; then
         printf "====%s====" "$raspi_warning"
