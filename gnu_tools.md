@@ -20381,7 +20381,9 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
     解压缩 https://github.com/aonez/Keka/
 
-    2fa https://ente.com/auth/ https://github.com/ente-io/ente
+    2FA 支持多种操作系统 ente auth https://ente.com/auth/
+            https://github.com/ente/ente
+
         https://github.com/yitsushi/totp-cli
 
 监控 gpu 功耗
@@ -20405,6 +20407,16 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
     应用间切换：cmd + tab，不涉及一个应用的多个实例窗口
 
     同一应用的窗口间切换： cmd + `
+
+    cmd + tab 无法立刻切换到最近的任务
+
+        在 macOS 里，点击窗口左上角的红色“×”按钮，只是关闭了当前窗口，但程序本身并没有退出。它依然在后台运行，Dock 栏里它的图标下会有一个小黑点来表示。所以当你用 Command + Tab 切换时，会看到这个“活着的”程序，但因为它没有打开任何窗口，切换过去就只能看到菜单栏变了，而没有窗口出现
+
+        Command + Tab 这个快捷键，默认无法激活已经被最小化（Command + M）到Dock栏的窗口。切换过去时，程序可能也没有任何反应。
+
+        解决办法：松开 Command 键之前，多次按 tab 会列出当前任务，松开按键即可切换。
+
+完全关掉一个程序 Command + Q
 
 文件管理器“访达”操作
 
