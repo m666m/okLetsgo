@@ -1362,12 +1362,9 @@ PS1git_branch_prompt() {
 
     else
         # git 工作区有变更就显示问号
-        # --porcelain 可能耗时数百毫秒，暂没有好的解决办法
-        # local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<?>'; else printf "%s" ''; fi)
-        local notify_flag=''
-        if ! git diff --quiet --cached || ! git diff --quiet || git ls-files --others --exclude-standard | read -r _; then
-            local notify_flag=$(printf "%s" '<?>')
-        fi
+        # 如果嫌慢可以开启选项，见 https://git-scm.com/docs/git-status#_untracked_files_and_performance
+        local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<?>'; else printf "%s" ''; fi)
+
         # 拼接后输出 git 工作区状态和分支名
         printf " git:%s%s" $notify_flag $branch
     fi
@@ -1427,9 +1424,9 @@ PS1_host_name() {
 PS1_container_name() {
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
         # $CONTAINER_ID
-        printf '\033[0;44m\U0001f4e6 <%s>' $(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")
+        printf '\033[0;44m\U0001f4e6<%s>' $(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")
     elif  [ -e /.dockerenv ]; then
-        printf '\033[0;44m\U0001f4e6 <%s>' $(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")
+        printf '\033[0;44m\U0001f4e6<%s>' $(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")
     fi
 }
 
