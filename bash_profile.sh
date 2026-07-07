@@ -73,7 +73,7 @@ export PATH
 # 注意：
 #   本脚本是被 source 使用的 `source .bash_profile`，直接执行是错误用法，而 `source` 可以用 return 命令。
 #   如果把 return 改成 exit 会导致致命问题：GNOME/KDE 桌面环境下用户登录过程秒退到登录界面且无任何提示。
-# QT_QPA_PLATFORM=offscreen
+# export QT_QPA_PLATFORM=offscreen
 [[ $- != *i* ]] && return
 
 #####################################################################
