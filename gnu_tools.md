@@ -19648,13 +19648,13 @@ pacman 命令较多，常用的命令如下：
 
 ### 其他终端模拟器
 
-不常用终端会遇到 terminfo 问题
+不常见终端模拟器可能会遇到 terminfo 问题
 
     https://ttys3.dev/post/kitty/
 
     如果你尝试 ssh 到远程机器, 可能会发现你本机的 zsh 报错:
 
-    /home/user007/.zsh_compatible:bindkey:2: cannot bind to an empty key sequence
+        /home/user007/.zsh_compatible:bindkey:2: cannot bind to an empty key sequence
 
     这个问题其实不只存在于 kitty, 任何有自己独立的 terminfo 的 terminal (且其信息没有在 ncurses 中内置), 基本上都会有这个问题. 比如 Alacritty 也有这个问题.
 
