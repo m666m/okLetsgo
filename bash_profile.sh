@@ -263,48 +263,6 @@ curlgh() {
 ##############################################
 # 二、适用性方面的调整和环境设置，涉及颜色方案、字符编码、常用工具设置等
 
-# 在终端模拟器中命令行的字符显示彩色
-# 显式设置终端启用256color，防止终端工具未设置或设置的太低。若终端工具能开启透明选项，则显示的效果更好
-export TERM=xterm-256color
-export COLORTERM=truecolor
-
-# 参考自 Debian 的 .bashrc 脚本中，常用命令开启彩色选项
-# enable color support of ls and also add handy aliases
-# 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
-if [ -x /usr/bin/dircolors ]; then
-
-    # 下载使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
-    if [[ ! -f ~/.dir_colors ]]; then
-        echo '建议安装命令行显示文件颜色方案 nord-dircolors'
-        echo "  curlgh https://raw.githubusercontent.com/nordtheme/dircolors/develop/src/dir_colors > ~/.dir_colors || rm -f ~/.dir_colors "
-    fi
-
-    if test -r ~/.dir_colors; then
-        eval "$(dircolors -b ~/.dir_colors)"
-    else
-        eval "$(dircolors -b)"
-    fi
-
-fi
-
-# Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
-[[ -n $LANG ]] || export LANG=en_US.UTF-8
-
-# 删除 vi 然后安装 vim，居然没有 `vi` 了
-command -v vi >/dev/null || {
-    echo "建议补全 vi 调用：sudo ln -sf /usr/bin/vim /usr/bin/vi"
-}
-
-# 命令行开启 vi 模式，按esc后用vi中的上下左右键选择历史命令
-# zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
-[[ $current_shell != 'zsh' ]] && set -o vi
-
-# 有些命令使用变量 EDITOR 指定的编辑器，一般是 nano，强制指定为 vi
-export EDITOR=/usr/bin/vi
-
-# 在终端模拟器中设置了光标闪动有时候在ssh连接远程后或tmux中也不生效，强制开启
-#tput cnorm && echo -e '\033[?12h\033[1 q'
-
 #######################
 # 树莓派下的环境设置
 if  [[ $os_type = 'raspi' ]]; then
@@ -342,6 +300,45 @@ if [[ $os_type = 'macos' ]]; then
     fi
 
 fi
+
+# Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
+[[ -n $LANG ]] || export LANG=en_US.UTF-8
+
+# 在终端模拟器中命令行的字符显示彩色
+# 显式设置终端启用256color，防止终端工具未设置或设置的太低。若终端工具能开启透明选项，则显示的效果更好
+export TERM=xterm-256color
+export COLORTERM=truecolor
+
+# 参考自 Debian 的 .bashrc 脚本中，常用命令开启彩色选项
+# enable color support of ls and also add handy aliases
+# 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
+if [ -x /usr/bin/dircolors ]; then
+
+    # 下载使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
+    if [[ ! -f ~/.dir_colors ]]; then
+        echo '建议安装命令行显示文件颜色方案 nord-dircolors'
+        echo "  curlgh https://raw.githubusercontent.com/nordtheme/dircolors/develop/src/dir_colors > ~/.dir_colors || rm -f ~/.dir_colors "
+    fi
+
+    if test -r ~/.dir_colors; then
+        eval "$(dircolors -b ~/.dir_colors)"
+    else
+        eval "$(dircolors -b)"
+    fi
+
+fi
+
+# 删除 vi 然后安装 vim，居然没有 `vi` 了
+command -v vi >/dev/null || {
+    echo "建议补全 vi 调用：sudo ln -sf /usr/bin/vim /usr/bin/vi"
+}
+
+# 命令行开启 vi 模式，按esc后用vi中的上下左右键选择历史命令
+# zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
+[[ $current_shell != 'zsh' ]] && set -o vi
+
+# 有些命令使用变量 EDITOR 指定的编辑器，一般是 nano，强制指定为 vi
+export EDITOR=/usr/bin/vi
 
 #######################
 # gpg: problem with the agent: Inappropriate ioctl for device，
