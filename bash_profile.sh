@@ -382,6 +382,14 @@ if [[ $current_shell != 'zsh' ]]; then
 fi
 
 #######################
+# 功能增强：Hermes Agent 等命令的自动完成功能需要主动引入
+if [[ $current_shell != 'zsh' ]]; then
+    if command -v hermes >/dev/null; then
+        eval "$(hermes completion bash)"
+    fi
+fi
+
+#######################
 # 功能增强：命令行使用 ssh 多会话复用 ssh 密钥代理
 # 设置变量指向ssh密钥代理的进程即可实现复用，参见章节 [多会话复用 ssh-agent 进程](ssh.md think)
 # 适用于 Linux bash / Windows git bash(mintty) / macOS
