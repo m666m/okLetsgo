@@ -315,6 +315,17 @@ fi
 #######################
 # macOS 下的环境设置
 if [[ $os_type = 'macos' ]]; then
+    # 自动切换对应架构的 Homebrew，在使用 x86 容器镜像或 Windows 游戏时常用
+    if [ "$(arch)" = "arm64" ]; then
+        if [ -f "/opt/homebrew/bin/brew" ]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        fi
+    else
+        if [ -f "/usr/local/bin/brew" ]; then
+            eval "$(/usr/local/bin/brew shellenv)"
+        fi
+    fi
+
     if [[ $current_shell = 'bash' ]]; then
         if [ "${BASH_VERSION%%.*}" -lt 5 ]; then
             echo 'macOS 预装的 bash 版本老旧，建议 `brew install bash` 使用 /opt/homebrew/bin/bash'
@@ -327,17 +338,6 @@ if [[ $os_type = 'macos' ]]; then
         # 软件自行安装的自动完成脚本一般放在 $HOMEBREW_PREFIX/etc/bash_completion.d
         if [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]]; then
            source $HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh
-        fi
-    fi
-
-    # 自动切换对应架构的 Homebrew，在使用 x86 容器镜像或 Windows 游戏时常用
-    if [ "$(arch)" = "arm64" ]; then
-        if [ -f "/opt/homebrew/bin/brew" ]; then
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        fi
-    else
-        if [ -f "/usr/local/bin/brew" ]; then
-            eval "$(/usr/local/bin/brew shellenv)"
         fi
     fi
 
