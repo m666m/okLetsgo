@@ -3118,6 +3118,56 @@ esac
 
 ```
 
+### 脚本命令自动完成
+
+    https://github.com/scop/bash-completion
+
+bash 内置了 complete 命令，可以直接用它来为某个命令绑定补全函数。
+
+一、软件包 bash-completion
+
+为大量常见的命令如 ls、ssh、gpg、git 等提供了自动完成的脚本。
+
+而且提供了一个自动加载框架，各命令只需要把自己的补全脚本放在 /usr/share/bash-completion/completions/ 等目录下即可被自动加载，而且是使用时才加载的惰性加载方式，更节省系统资源。
+
+    $ type _completion_loader
+    _completion_loader is a function
+
+很多命令的软件包提供了自动完成功能，都会在安装时在 bash-completion 的自动加载目录下放置自己的自动完成脚本。
+
+而且，Debian 系的发行版会在全局配置文件 /etc/bash.bashrc 或 /etc/profile.d/ 里加入对该软件包的引用，用户不需要做任何配置。不过，发行版默认并不安装这个软件包，需要用户自行安装。
+
+二、主动式加载
+
+对 macOS bash、容器、iot 等精简操作系统来说，并没有安装软件包 bash-completion，这样就只能利用 bash 原生的 complete 命令来自行导入。
+
+这种方法的优点是零配置、跨平台，用户空间安装友好，不用操心该复制到哪个系统目录，一行命令直接激活。
+
+1、让你的命令实现一个 completion 子命令，输出自动完成脚本的内容
+
+    mycmd completion bash
+    mycmd completion zsh
+    mycmd completion fish
+
+2、在安装文档里，指导用户用一行命令激活补全。
+
+以 bash 为例，最常见的是让用户加到 ~/.bashrc，从而在当前 Shell 中执行这段脚本：
+
+    # 现代推荐写法（source + 进程替换）
+    source <(mycmd completion bash)
+
+    # 或者兼容性更好的 eval 写法
+    eval "$(mycmd completion bash)"
+
+对于 zsh 和 fish，也有类似的写入 ~/.zshrc 或 ~/.config/fish/config.fish 的方法。
+
+对于已经配置好 bash-completion 的高级用户，也可以生成到自动加载目录下：
+
+    # 生成并保存到用户级补全目录
+    mkdir -p ~/.local/share/bash-completion/completions
+
+    mycmd completion bash > ~/.local/share/bash-completion/completions/mycmd
+
 ## Linux 常用命令行工具
 
     Linux 命令速查
