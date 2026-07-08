@@ -252,14 +252,6 @@ curlgh() {
     fi
 }
 
-# ASK_INSTALL_CURL=curlgh curlgh https://github.com/m666m/ask/raw/main/install.sh | bash
-# curl: (28) SSL connection timeout
-# [curlgh] 原始地址下载失败，尝试 CDN 地址: https://cdn.jsdelivr.net/gh/m666m/ask@main/install.sh
-# 开始安装 ask AI 助手...
-# 下载 ask 脚本...
-# curl: (56) Failure when receiving data from the peer
-# 错误: ask 安装失败，请检查网络后重试
-
 ##############################################
 # 二、适用性方面的调整和环境设置，涉及颜色方案、字符编码、常用工具设置等
 
@@ -289,7 +281,8 @@ if [[ $os_type = 'macos' ]]; then
             echo 'macOS 预装的 bash 版本老旧，建议 `brew install bash` 使用 /opt/homebrew/bin/bash'
         fi
 
-        # Homebrew 下情况特殊，bash 安装的目录是区别于系统自带的
+        # Homebrew 下情况特殊，bash 安装的软件目录是区别于系统自带的bash目录。
+
         # 1、bash-completion 需要主动引用下
         # `brew install bash bash-completion@2` 才是新版及配套自动完成
         # 自带的自动完成脚本在 $HOMEBREW_PREFIX/opt/homebrew/share/bash-completion/completions
