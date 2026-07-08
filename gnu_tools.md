@@ -12562,7 +12562,7 @@ enlightenment 桌面
 
     手动打开光标闪动，设置缓存屏幕内容 10000 行。
 
-一般情况下使用桌面内置的终端模拟器足够了，兼容性和稳定性最好的是 Konsole，可惜速度太慢。目前我在用 [Contour 真正的速度快跨平台]。
+一般情况下使用桌面内置的终端模拟器足够了，根据我的体验兼容性和稳定性最好的是 Konsole，可惜速度太慢。目前我在用 [Contour 真正的速度快]。
 
 KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
 
@@ -12641,7 +12641,7 @@ Ptyxis 终端模拟器，原名 Prompt，显示刷新速度快
 
         https://gitlab.gnome.org/chergert/ptyxis
 
-    Fedora 41 开始用它代替了 Gnome Terminal 作为操作系统预置的终端模拟器
+    Fedora 41 开始用它代替了 Gnome Terminal 作为操作系统预置的终端模拟器。只是不知道过几代就又废弃了。
 
     它的特色是自动识别本地的容器（支持常见的 Podman、Toolbox、Distrobox 和 JHBuild 容器），点击工具栏左上角的下拉菜单列出容器，点选即可新建一个标签页进入该容器的tty，等效于替你执行了 `podman exec -it 容器名 sh`。
 
@@ -12848,6 +12848,177 @@ tilix 基于 gtk3 开发的一个平铺式终端模拟器，效果类似 tmux，
 cool-retro-term 显示效果是 CRT 显示器。
 
 terminology 使用 EFL（不支持Wayland） 的终端仿真器，尽可能地模仿 Xterm。
+
+#### Contour 真正的速度快
+
+Contour Terminal Emulator 唯一的缺点就是不能拆分窗格，常用操作有点别扭
+
+    https://contour-terminal.org/configuration/
+        https://github.com/contour-terminal/contour
+        Windows 版内嵌 powershell，没有实用价值，但是 Linux/macOS 下速度起飞
+
+    https://zhuanlan.zhihu.com/p/505530480
+
+安装
+
+    $ sudo dnf install contour-terminal
+
+快捷操作
+
+    Ctrl+Shift+T    新建标签页
+    alt + 1, 2, 3   切换到标签页
+
+    鼠标双击自动选择词，并高亮相同的词
+
+    选择文字后按 ctrl+c 是复制到内部剪贴板，中键或 ctrl+shift+v 可粘贴
+
+    ctrl+shift+F    查找，在状态栏可以输入文字，F3 下一个匹配，shift+F3 上一个，回车关闭
+
+    Ctrl+Shift+Space 当前屏幕进入 vi 模式，方便用键盘选择屏幕文字复制粘贴等操作。
+    按 a 或 i 进入编辑模式会自动退出到命令行进行普通的编辑。
+
+配置文件目前只能手动修改：
+
+    # flatpak：~/.var/app/org.contourterminal.Contour/config/contour/contour.yml
+    ~/.config/contour/contour.yml
+
+```yml
+# 主配置
+profiles:
+    main:
+        # 打开终端后作为登录shell
+        shell: "/bin/bash"
+        arguments: ["-l"]
+
+        # 显示器不大就直接最大化
+        # maximized: true
+
+        # 按字符数的窗口大小
+        terminal_size:
+            columns: 80
+            lines: 25
+
+        # 屏幕保存历史输出的行数不进行限制
+        history:
+            limit: -1
+
+        scrollbar:
+            position: Right
+
+        # 字体
+        font:
+            regular:
+                family: "MesloLGS Nerd Font"
+                # 支持中文字体回落
+                fallback: "Noto Serif CJK SC"
+
+        # 光标样式和闪动
+        cursor:
+            blinking: true
+
+        # 自定义状态栏
+        status_line:
+            indicator:
+                left: " {InputMode:Bold,Color=#FFFF00}{TraceMode:Bold,Color=#FFFF00,Left= │ }{Tabs:Bold,ActiveColor=#00FFFF,Left= │ }{ProtectedMode:Bold,Left= │ }{SearchPrompt:Left= │ }"
+                middle: "« {Command:Program=hostname} »"
+                right: "{HistoryLineCount:Faint,Color=#c0c0c0} │ {Clock:Blinking,Bold}"
+
+        # 背景透明和模糊
+        background:
+            opacity: 0.95
+            blur: false
+
+        # 颜色方案，在下面的 color_schemes 处配置
+        # Specifies a colorscheme to use (alternatively the colors can be inlined).
+        colors: "nord"
+
+# 颜色方案
+color_schemes:
+    # 系统默认的颜色方案
+    default:
+
+        background_image:
+            # flatpak 下不知道怎么找路径。。。
+            path: '/Pictures/78883229_UHD.jpg'
+            opacity: 0.5
+            blur: false
+
+    # 北极色彩方案
+    nord:
+        default:
+            background: '#2E3440'
+            foreground: '#D8DEE9'
+            bright_foreground: '#ECEFF4'
+            # dimmed_foreground: '#616E88'          # 可选，Nord 暗淡前景色
+        # 光标颜色（可选）
+        # cursor: '#D8DEE9'
+
+        # 标准颜色 (Normal)
+        normal:
+            black:   '#3B4252'
+            red:     '#BF616A'
+            green:   '#A3BE8C'
+            yellow:  '#EBCB8B'
+            blue:    '#81A1C1'
+            magenta: '#B48EAD'
+            cyan:    '#88C0D0'
+            white:   '#E5E9F0'
+
+        # 亮色 (Bright)
+        bright:
+            black:   '#4C566A'
+            red:     '#BF616A'
+            green:   '#A3BE8C'
+            yellow:  '#EBCB8B'
+            blue:    '#81A1C1'
+            magenta: '#B48EAD'
+            cyan:    '#8FBCBB'
+            white:   '#ECEFF4'
+
+        # 状态栏要自定义
+        indicator_statusline:
+            default:
+                foreground: '#FFFFFF'
+                background: '#003366'
+            inactive:
+                foreground: '#FFFFFF'
+                background: '#003399'
+# 热键
+input_mapping:
+
+```
+
+##### 极具特色的行标记
+
+特别适合长编译日志、测试输出或复杂脚本的导航和内容提取，可以大幅提升效率。
+
+    https://contour-terminal.org/demo/line-marks/
+
+执行一个有很多输出的命令之前，先执行 `printf "\033[>M"` 插入标记，在执行完成命令后，可能屏幕已经翻了好几页，再执行 `printf "\033[>M"` 插入标记。现在可以在标记间快速浏览，：
+
+    快速回到做标记的那个屏幕位置，快捷键用 Ctrl+Alt+J / Ctrl+Alt+K
+
+    如果在 vi 模式，则是 [m 和 ]m，注意这个用法会翻页到最前和最后
+
+将线标记作为“文本对象”操作：
+
+1、选中标记间区域
+
+必须在 vi 模式，光标落在两个标记所夹的区域内部，其实鼠标点击一下就好。
+
+2、然后连续按下三个键：
+
+    v：进入 Visual（可视）模式，准备高亮选文字。
+
+    i：意思是 inner（内部），表示不包含边界。
+
+    m：指的是 line mark（线标记），告诉终端“我要选的是两个标记中间的区域”。
+
+如果生效，终端就会立刻高亮选中从“上一个标记行”到“下一个标记行”之间的所有文字。
+
+然后按 y 复制到系统剪贴板，可以粘贴到编辑器或邮件中。
+
+可以直接复制标记间区域，依次按下 yim（不含标记行）。
 
 #### i3 窗口管理器自带 urxvt(rxvt-unicode)
 
@@ -19740,176 +19911,6 @@ Supper Putty
     别用了：最新的版本调用 git bash，粘贴脚本文件内容，随机添加字符，在 tmux 下发生的更频繁。
 
     https://github.com/jimradford/superputty
-
-#### Contour 真正的速度快跨平台
-
-Contour Terminal Emulator 唯一的缺点就是不能拆分窗格，常用操作有点别扭
-
-    https://contour-terminal.org/configuration/
-        https://github.com/contour-terminal/contour
-
-    https://zhuanlan.zhihu.com/p/505530480
-
-安装
-
-    $ sudo dnf install contour-terminal
-
-快捷操作
-
-    Ctrl+Shift+T    新建标签页
-    alt + 1, 2, 3   切换到标签页
-
-    鼠标双击自动选择词，并高亮相同的词
-
-    选择文字后按 ctrl+c 是复制到内部剪贴板，中键或 ctrl+shift+v 可粘贴
-
-    ctrl+shift+F    查找，在状态栏可以输入文字，F3 下一个匹配，shift+F3 上一个，回车关闭
-
-    Ctrl+Shift+Space 当前屏幕进入 vi 模式，方便用键盘选择屏幕文字复制粘贴等操作。
-    按 a 或 i 进入编辑模式会自动退出到命令行进行普通的编辑。
-
-配置文件目前只能手动修改：
-
-    # flatpak：~/.var/app/org.contourterminal.Contour/config/contour/contour.yml
-    ~/.config/contour/contour.yml
-
-```yml
-# 主配置
-profiles:
-    main:
-        # 打开终端后作为登录shell
-        shell: "/bin/bash"
-        arguments: ["-l"]
-
-        # 显示器不大就直接最大化
-        # maximized: true
-
-        # 按字符数的窗口大小
-        terminal_size:
-            columns: 80
-            lines: 25
-
-        # 屏幕保存历史输出的行数不进行限制
-        history:
-            limit: -1
-
-        scrollbar:
-            position: Right
-
-        # 字体
-        font:
-            regular:
-                family: "MesloLGS Nerd Font"
-                # 支持中文字体回落
-                fallback: "Noto Serif CJK SC"
-
-        # 光标样式和闪动
-        cursor:
-            blinking: true
-
-        # 自定义状态栏
-        status_line:
-            indicator:
-                left: " {InputMode:Bold,Color=#FFFF00}{TraceMode:Bold,Color=#FFFF00,Left= │ }{Tabs:Bold,ActiveColor=#00FFFF,Left= │ }{ProtectedMode:Bold,Left= │ }{SearchPrompt:Left= │ }"
-                middle: "« {Command:Program=hostname} »"
-                right: "{HistoryLineCount:Faint,Color=#c0c0c0} │ {Clock:Blinking,Bold}"
-
-        # 背景透明和模糊
-        background:
-            opacity: 0.95
-            blur: false
-
-        # 颜色方案，在下面的 color_schemes 处配置
-        # Specifies a colorscheme to use (alternatively the colors can be inlined).
-        colors: "nord"
-
-# 颜色方案
-color_schemes:
-    # 系统默认的颜色方案
-    default:
-
-        background_image:
-            # flatpak 下不知道怎么找路径。。。
-            path: '/Pictures/78883229_UHD.jpg'
-            opacity: 0.5
-            blur: false
-
-    # 北极色彩方案
-    nord:
-        default:
-            background: '#2E3440'
-            foreground: '#D8DEE9'
-            bright_foreground: '#ECEFF4'
-            # dimmed_foreground: '#616E88'          # 可选，Nord 暗淡前景色
-        # 光标颜色（可选）
-        # cursor: '#D8DEE9'
-
-        # 标准颜色 (Normal)
-        normal:
-            black:   '#3B4252'
-            red:     '#BF616A'
-            green:   '#A3BE8C'
-            yellow:  '#EBCB8B'
-            blue:    '#81A1C1'
-            magenta: '#B48EAD'
-            cyan:    '#88C0D0'
-            white:   '#E5E9F0'
-
-        # 亮色 (Bright)
-        bright:
-            black:   '#4C566A'
-            red:     '#BF616A'
-            green:   '#A3BE8C'
-            yellow:  '#EBCB8B'
-            blue:    '#81A1C1'
-            magenta: '#B48EAD'
-            cyan:    '#8FBCBB'
-            white:   '#ECEFF4'
-
-        # 状态栏要自定义
-        indicator_statusline:
-            default:
-                foreground: '#FFFFFF'
-                background: '#003366'
-            inactive:
-                foreground: '#FFFFFF'
-                background: '#003399'
-# 热键
-input_mapping:
-
-```
-
-##### 极具特色的行标记
-
-特别适合长编译日志、测试输出或复杂脚本的导航和内容提取，可以大幅提升效率。
-
-    https://contour-terminal.org/demo/line-marks/
-
-执行一个有很多输出的命令之前，先执行 `printf "\033[>M"` 插入标记，在执行完成命令后，可能屏幕已经翻了好几页，再执行 `printf "\033[>M"` 插入标记。现在可以在标记间快速浏览，：
-
-    快速回到做标记的那个屏幕位置，快捷键用 Ctrl+Alt+J / Ctrl+Alt+K
-
-    如果在 vi 模式，则是 [m 和 ]m，注意这个用法会翻页到最前和最后
-
-将线标记作为“文本对象”操作：
-
-1、选中标记间区域
-
-必须在 vi 模式，光标落在两个标记所夹的区域内部，其实鼠标点击一下就好。
-
-2、然后连续按下三个键：
-
-    v：进入 Visual（可视）模式，准备高亮选文字。
-
-    i：意思是 inner（内部），表示不包含边界。
-
-    m：指的是 line mark（线标记），告诉终端“我要选的是两个标记中间的区域”。
-
-如果生效，终端就会立刻高亮选中从“上一个标记行”到“下一个标记行”之间的所有文字。
-
-然后按 y 复制到系统剪贴板，可以粘贴到编辑器或邮件中。
-
-可以直接复制标记间区域，依次按下 yim（不含标记行）。
 
 #### ConEmu 和 Cmder
 
