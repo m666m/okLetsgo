@@ -319,6 +319,15 @@ if [[ $os_type = 'macos' ]]; then
         if [ "${BASH_VERSION%%.*}" -lt 5 ]; then
             echo 'macOS 预装的 bash 版本老旧，建议 `brew install bash` 使用 /opt/homebrew/bin/bash'
         fi
+
+        # Homebrew 下情况特殊，bash 安装的目录是区别于系统自带的
+        # 1、bash-completion 需要主动引用下
+        # `brew install bash bash-completion@2` 才是新版及配套自动完成
+        # 自带的自动完成脚本在 $HOMEBREW_PREFIX/opt/homebrew/share/bash-completion/completions
+        # 软件自行安装的自动完成脚本一般放在 $HOMEBREW_PREFIX/etc/bash_completion.d
+        if [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]]; then
+           source $HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh
+        fi
     fi
 
     # 自动切换对应架构的 Homebrew，在使用 x86 容器镜像或 Windows 游戏时常用
@@ -361,19 +370,14 @@ _comp_ssh_hosts() {
 
 if [[ $current_shell != 'zsh' ]]; then
 
-    # macOS 的自带 bash 非常旧不更新了
-    if [[ $os_type = 'macos' ]]; then
-        # `brew install bash bash-completion@2` 才是新版及配套自动完成
-        [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
-
-    # Linux bash 使用配套的自动完成
+    # Linux bash 使用配套的自动完成，依次回落：
     # 优先调用 openssh-clients 包自带的
-    elif [[ -f /usr/share/bash-completion/completions/ssh ]]; then
-        source /usr/share/bash-completion/completions/ssh
+    if [[ -f /etc/bash_completion.d/ssh ]]; then
+        source /etc/bash_completion.d/ssh
 
     # 回落到 bash-completion 包自带的
-    elif [[ -f /etc/bash_completion.d/ssh ]]; then
-        source /etc/bash_completion.d/ssh
+    elif [[ -f /usr/share/bash-completion/completions/ssh ]]; then
+        source /usr/share/bash-completion/completions/ssh
 
     # 回落到自制的
     else
