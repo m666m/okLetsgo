@@ -382,11 +382,11 @@ fi
 
 #######################
 # 功能增强：Hermes Agent 等命令的自动完成功能需要主动引入
-if [[ $current_shell != 'zsh' ]]; then
-    if command -v hermes >/dev/null; then
-        eval "$(hermes completion bash)"
-    fi
-fi
+#if [[ $current_shell != 'zsh' ]]; then
+#    if command -v hermes >/dev/null; then
+#        eval "$(hermes completion bash)"
+#    fi
+#fi
 
 #######################
 # 功能增强：命令行使用 ssh 多会话复用 ssh 密钥代理
