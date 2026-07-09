@@ -265,7 +265,8 @@ fi
 #######################
 # macOS 下的环境设置
 if [[ $os_type = 'macos' ]]; then
-    # 自动切换对应架构的 Homebrew，在使用 x86 容器镜像或 Windows 游戏时常用
+    # Homebrew 下情况特殊，其安装的软件目录是区别于系统自带的bash目录，以保持隔离。
+    # 先设置 Homebrew 的环境变量，并且应该根据对应架构切换，在使用 x86 容器镜像或 Windows 游戏时常用
     if [ "$(arch)" = "arm64" ]; then
         if [ -f "/opt/homebrew/bin/brew" ]; then
             eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -276,22 +277,26 @@ if [[ $os_type = 'macos' ]]; then
         fi
     fi
 
+    #   macOS 自带的 /usr/bin 下的各命令工具是 BSD 版本，
+    #   Homebrew 安装的跟 Linux 一致是 GNU 版本 `brew install coreutils`，
+    #   安装后，GNU ls 的命令是 gls，dircolors 命令是 gdircolors（避免与系统 BSD 命令冲突）。
+    #   所以需要注意有些命令的参数是不一样的，注意区别对待。
+
     if [[ $current_shell = 'bash' ]]; then
         if [ "${BASH_VERSION%%.*}" -lt 5 ]; then
             echo 'macOS 预装的 bash 版本老旧，建议 `brew install bash` 使用 /opt/homebrew/bin/bash'
-        fi
+        else
+            # Homebrew 安装的 bash 的有些功能需要主动引用
 
-        # Homebrew 下情况特殊，bash 安装的软件目录是区别于系统自带的bash目录。
-
-        # 1、bash-completion 需要主动引用下
-        # `brew install bash bash-completion@2` 才是新版及配套自动完成
-        # 自带的自动完成脚本在 $HOMEBREW_PREFIX/opt/homebrew/share/bash-completion/completions
-        # 软件自行安装的自动完成脚本一般放在 $HOMEBREW_PREFIX/etc/bash_completion.d
-        if [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]]; then
-           source $HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh
+            # 1、bash-completion
+            # `brew install bash bash-completion@2` 是配套新版 bash 的自动完成
+            # 软件包自带的自动完成脚本在 $HOMEBREW_PREFIX/opt/homebrew/share/bash-completion/completions
+            # 各软件自行安装的自动完成脚本一般放在 $HOMEBREW_PREFIX/etc/bash_completion.d
+            if [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]]; then
+                source $HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh
+            fi
         fi
     fi
-
 fi
 
 # Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
