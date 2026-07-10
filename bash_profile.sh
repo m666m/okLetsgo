@@ -1182,9 +1182,6 @@ dboxstop() {
     done
 }
 
-# Hermes Agent
-alias hersd='echo "[Hermes Agent清理所有会话]" >&2; hermes sessions list | awk "NR>2 {print $NF}" | xargs -I {} hermes sessions delete {} -y'
-
 # Windows git bash
 # 使 mintty 下执行普通的 Windows 控制台程序，用 winpty 辅助可以正常显示
 # 如果你的终端软件开启了 ConPTY=on 选项则不需要这个辅助，暂无法在脚本中判断。
