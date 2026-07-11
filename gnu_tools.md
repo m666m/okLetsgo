@@ -2585,9 +2585,33 @@ NOTE: 慎重使用链式逻辑运算
 
 ### bash避坑
 
-    变量赋值别习惯性的加空格
+- 变量赋值别习惯性的加空格 aaa = 100
 
-    在 Fedora 下 # 号写注释，不要用变量引用的那个货币符号，会进行解释，不知道为啥
+- 在 Fedora 下 # 号写注释，不要用变量引用的那个货币符号，会进行解释，不知道为啥
+
+- 处理文字内容，管道右边的 while 循环默认跑在子 shell 里，注意变量生效的范围：
+
+    示例：unset 影响不了当前 shell
+
+        grep '^export ' "$file" | awk -F '[= ]' '{print $2}' | while read -r var; do
+            unset "$var"
+        done
+
+    所以得改写法，使用进程替换，让 while 循环在当前 shell 执行：
+
+        while read -r var; do
+            unset "$var"
+        done < <(grep '^export ' "$file" | awk -F '[= ]' '{print $2}')
+
+        # 注意进程替换 <(命令) 会被 shell 展开为一个临时文件路径（如 /dev/fd/63），里面装着命令的输出，所以 < <(...) 就是“从该临时文件读取”。
+
+    用 for 循环 + 命令替换：
+
+        # 注意命令替换 $(...) 是把命令的输出内容本身直接以字符串形式插入到命令行中。
+        # for 会按 IFS 分割（默认空格、制表符、换行）单词，确保你要处理的内容只是单词列表就没问题
+        for var in $(grep '^export ' "$file" | awk -F '[= ]' '{print $2}'); do
+            unset "$var"
+        done
 
 ### 常用 bash 技巧
 
@@ -3118,7 +3142,7 @@ esac
 
 ```
 
-### 脚本命令自动完成
+### 脚本命令自动完成 bash-completion
 
     https://github.com/scop/bash-completion
 

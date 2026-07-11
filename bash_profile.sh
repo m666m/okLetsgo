@@ -339,7 +339,7 @@ command -v vi >/dev/null || {
 export EDITOR=/usr/bin/vi
 
 #######################
-# gpg: problem with the agent: Inappropriate ioctl for device，
+# 填坑 gpg: problem with the agent: Inappropriate ioctl for device，
 #   参见章节 [命令行终端下 gpg 无法弹出密码输入框的问题](gpg think)
 if command -v gpg >/dev/null 2>&1; then
     export GPG_TTY=${TTY:-$(tty)}
@@ -592,6 +592,58 @@ if ! command -v ask >/dev/null 2>&1; then
     echo "  export -f curlgh" >&2
     echo "  curlgh https://github.com/m666m/ask/raw/main/install.sh | ASK_INSTALL_CURL=curlgh bash" >&2
 fi
+
+#######################
+# 功能增强：统一引用环境变量文件，其内容是 export api_key=xxxx
+envload() {
+    # 入参是文件名，则默认在 $HOME/.envs/ 下
+    # 入参包含 / 则认为是绝对路径，直接使用
+    if [ -z "$1" ]; then
+        echo "Usage: envload <name|path>"
+        echo "  name   - load from ~/.envs/<name>"
+        echo "  path   - load from absolute/relative path (must contain /)"
+        return 1
+    fi
+
+    local file
+    if [[ "$1" == */* ]]; then
+        file="$1"
+    else
+        file="$HOME/.envs/$1"
+    fi
+
+    if [ ! -f "$file" ]; then
+        echo "✗ Env file not found: $file"
+        echo "Available: $(ls -m "$HOME/.envs" 2>/dev/null)"
+        return 1
+    fi
+
+    source "$file"
+    echo "✓ Loaded env: $(basename "$file")"
+}
+# unset 环境变量文件，只处理开头是 export 的行
+envunload() {
+    # 入参是文件名，则默认在 $HOME/.envs/ 下
+    # 入参包含 / 则认为是绝对路径，直接使用
+    local file
+    if [[ "$1" == */* ]]; then
+        file="$1"
+    else
+        file="$HOME/.envs/$1"
+    fi
+
+    if [ ! -f "$file" ]; then
+        echo "✗ Env file not found: $file"
+        return 1
+    fi
+
+    # 查找顶格 export 的变量，逐个 unset
+    while read -r var; do
+        unset "$var"
+    done < <(grep '^export ' "$file" | awk -F '[= ]' '{print $2}')
+
+    echo "✓ Unloaded env: $(basename "$file")"
+}
 
 ##############################################
 # 三、常用命令的惯用法用别名和函数封装起来，方便日常使用
