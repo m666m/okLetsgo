@@ -365,7 +365,8 @@ _comp_ssh_hosts() {
 
 if [[ $current_shell != 'zsh' ]]; then
 
-    # Linux bash 使用配套的自动完成，依次回落：
+    # Linux bash 使用配套的 bash-completion 包，按理说应该自动惰性加载，不需要手工操作。
+    # 有时候不起作用，强制引用下，依次回落：
     # 优先调用 openssh-clients 包自带的
     if [[ -f /etc/bash_completion.d/ssh ]]; then
         source /etc/bash_completion.d/ssh
@@ -374,17 +375,19 @@ if [[ $current_shell != 'zsh' ]]; then
     elif [[ -f /usr/share/bash-completion/completions/ssh ]]; then
         source /usr/share/bash-completion/completions/ssh
 
-    # 回落到自制的
+    # 如果没有安装 bash-completion 包，则回落到自制的主机名自动完成函数
     else
         complete -F _comp_ssh_hosts ssh
     fi
 fi
 
 #######################
-# 功能增强：Hermes Agent 等命令的自动完成功能需要主动引入
+# 功能增强：不依赖 bash-completion 包，Hermes Agent 等命令的自动完成可以自行引用
+# hermes 的速度较慢，暂时屏蔽掉
 #if [[ $current_shell != 'zsh' ]]; then
 #    if command -v hermes >/dev/null; then
 #        eval "$(hermes completion bash)"
+#        source <(docker completion bash)
 #    fi
 #fi
 
