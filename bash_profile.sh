@@ -1,28 +1,31 @@
 # .bash_profile
 
 #####################################################################
-# 适用于 Linux bash、Linux zsh、Windows git bash(mintty.exe)，macOS（未完全测试）
+# 适用于 Linux bash/zsh、Windows git bash(mintty.exe)，macOS bash/zsh（未完全测试）
 #
 # 1、统一在一个文件
 #   alias和路径设置等本该放到 .bashrc 文件，为了方便统一在此了。
 #   支持在 .zshrc 中 `source`，以便在 zsh 下也保持使用习惯。
+#
 # 2、可直接部署到远程服务器
 #   ssh user@server "tee .bash_profile" < bash_profile.sh
 #   如果遇到  $'\r': command not found
 #       ssh user@server "sed -i 's/\r$//' .bash_profile"
+#
 # 3、使用前需要手工调整的地方：
 #
-#   环境变量 PDMREPO ，要根据你的内网镜像仓库服务器手动设置地址
+#       环境变量 PDMREPO ，要根据你的内网镜像仓库服务器手动设置地址
 #
-#   如果在网络不卡的环境，应该屏蔽掉函数 poor_connection 的执行
+#       如果在网络不卡的环境，应该屏蔽掉函数 poor_connection 的执行
 #
 # 4、脚本比较长，其实结构不复杂
-#  先引用配置文件配置几个环节变量，非交互式登录至此就退出了，
-#  后面的设置都是给交互式登录，为了使用习惯的用户自定义设置：
-#  一、准备环境信息，方便后面使用
-#  二、适用性方面的调整和环境设置，涉及颜色方案、字符编码、常用工具设置等
-#  三、常用命令的惯用法用别名和函数封装起来，方便日常使用
-#  四、双行彩色命令行提示符，显示当前路径、git分支、python环境名等
+#   先引用配置文件配置几个环节变量，非交互式登录至此就退出了，
+#   后面的设置都是给交互式登录，为了使用习惯的用户自定义设置：
+#   一、准备环境信息，方便后面使用
+#   二、适用性方面的调整和环境设置，涉及颜色方案、字符编码、常用工具设置等
+#   三、常用命令的惯用法用别名和函数封装起来，方便日常使用
+#   四、双行彩色命令行提示符，显示当前路径、git分支、python环境名等
+#
 # 5、别人的配置文件参考大全
 #   https://github.com/pseudoyu/dotfiles
 #   https://www.pseudoyu.com/zh/2022/07/10/my_config_and_beautify_solution_of_macos_terminal/
@@ -77,7 +80,7 @@ export PATH
 [[ $- != *i* ]] && return
 
 #####################################################################
-# 以下内容都是为了使用习惯的用户自定义设置
+# 以下内容都是为了使用习惯和方便的用户自定义设置
 # User specific environment and startup programs
 
 # 避坑
@@ -92,11 +95,8 @@ if [ -n "$BASH_VERSION" ]; then
     current_shell="bash"
 elif [ -n "$ZSH_VERSION" ]; then
     current_shell="zsh"
-elif [ -n "$KSH_VERSION" ]; then
-    current_shell="ksh"
-elif [ -n "$FISH_VERSION" ]; then
-    current_shell="fish"
 else
+    # 其实都不做专门的处理，比如 ksh、fish 等
     current_shell=$(ps -p $$ -o comm= | sed 's/^-//')
 fi
 
@@ -104,7 +104,7 @@ fi
 os_name=$(uname -s)
 case "$os_name" in
     Linux*)
-        # linux 再细分几个类型
+        # linux 细分几个类型
         if command -v vcgencmd >/dev/null 2>&1; then
             os_type="raspi"
         elif uname -r | grep -i Microsoft >/dev/null 2>&1; then
@@ -258,7 +258,7 @@ curlgh() {
 #######################
 # 树莓派下的环境设置
 if  [[ $os_type = 'raspi' ]]; then
-    # 树莓派在纯终端下也会休眠显示器，必须设置本机登录后禁用屏幕休眠
+    # 树莓派在纯终端下也会休眠显示器，本机登录后必须设置禁用屏幕休眠
     setterm --powerdown 0
 fi
 
@@ -277,10 +277,10 @@ if [[ $os_type = 'macos' ]]; then
         fi
     fi
 
-    #   macOS 自带的 /usr/bin 下的各命令工具是 BSD 版本，
+    #   macOS 自带的 /usr/bin 下的各命令是 BSD 版本，
     #   Homebrew 安装的跟 Linux 一致是 GNU 版本 `brew install coreutils`，
-    #   安装后，GNU ls 的命令是 gls，dircolors 命令是 gdircolors（避免与系统 BSD 命令冲突）。
-    #   所以需要注意有些命令的参数是不一样的，注意区别对待。
+    #   安装后工具链的命令都加 g，如 GNU ls 是 gls，dircolors 是 gdircolors 以避免与系统 BSD 命令冲突。
+    #   另外需要注意 BSD/GNU 版本下有些命令的参数是不一样的，注意区别。
 
     if [[ $current_shell = 'bash' ]]; then
         if [ "${BASH_VERSION%%.*}" -lt 5 ]; then
@@ -384,6 +384,7 @@ fi
 #######################
 # 功能增强：不依赖 bash-completion 包，Hermes Agent 等命令的自动完成可以自行引用
 # hermes 的速度较慢，暂时屏蔽掉
+# 已经安装了 bash-completion 包则 docker 不需要单独执行一次
 #if [[ $current_shell != 'zsh' ]]; then
 #    if command -v hermes >/dev/null; then
 #        eval "$(hermes completion bash)"
