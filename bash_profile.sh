@@ -1274,12 +1274,13 @@ rmjunk() {
     fi
 }
 
-# macOS
+# macOS 下常用操作
 if [[ $os_type = 'macos' ]]; then
     alias arch86='echo "[快捷执行 x86 架构命令]" >&2; arch -x86_64 '
     alias archs='echo "[进入 x86 架构的子shell]" >&2; arch -x86_64 zsh'
     # 快捷执行 x86 架构 brew
     alias ibrew='arch -x86_64 /usr/local/bin/brew'
+
     # 下载的文件或自编译的程序默认会添加隔离属性导致拒绝打开，需要手动去除这个属性
     alias xattrs='echo "[清除指定文件的隔离属性]" >&2; xattr -cr '
 fi
