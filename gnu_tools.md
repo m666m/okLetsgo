@@ -22280,9 +22280,13 @@ macOS 的服务管理机制是 launchd，管理着从开机启动到用户登录
 
 因为这个事件导致后台一直在打印刷新日志，那这个时候我就想着，给取消掉看看情况是不是会有所转变。输入：sudo pmset schedule cancelall或者sudo pmset schedule cancel 指定的任务。然后我重启了电脑，然后有使用了一会儿，发现整个世界都清净了，简直泪流满面啊。。。这个问题真是困扰了寡人好久好久。
 
-#### 恢复模式
+#### 恢复模式（无图形界面）
+
+    https://support.apple.com/en-by/guide/platform-support/sup38ddd3ca7/26/web/26
 
 恢复模式可以用来重装系统、磁盘工具修复、终端操作、修改安全策略等。
+
+进入恢复模式：
 
     关机。
 
@@ -22291,6 +22295,105 @@ macOS 的服务管理机制是 launchd，管理着从开机启动到用户登录
     选择 “选项” ，点击 “继续”。
 
 可能会要求选择一个管理员用户并输入密码，然后就会进入恢复模式界面（macOS 恢复）。
+
+打开终端：进入恢复模式界面后，在屏幕顶部的菜单栏选择“实用工具” > “终端”。
+
+执行启动命令：在打开的终端中，输入以下命令并回车：
+
+    launchctl boot system
+
+执行后，系统将自动重启并直接进入一个纯命令行界面，提示符通常为 sh-3.2# 或 root#。
+
+这时系统提供最小化的 UNIX 环境，不加载图形界面，以 root 权限运行。
+
+注意硬盘存储是只读的，而且无法使用 GPU (Metal) 加速等功能。
+
+##### 恢复模式下启用 SSH 服务
+
+这个使用方式可以把你的 Mac mini 作为一个7x24的服务器，但功能受限特别多，用处不大。
+
+以下是根据社区方案整理的手动配置步骤，仅供参考：
+
+1、启动 SSH 守护进程：
+
+    # 启动 sshd，并禁用 PAM 以适配恢复环境
+    /usr/sbin/sshd -o UsePAM=no
+
+2、检查并配置网络：
+
+    # 检查网络接口（如 en0）是否获取到 IP 地址
+    ifconfig en0
+
+    # 如果未获取，尝试通过 DHCP 获取
+    dhclient en0
+
+3、配置 SSH 访问
+
+恢复模式下的根目录 (/var/root) 是只读的，因此需要创建一个可写的内存盘来存放 SSH 授权密钥。
+
+    # 1. 创建并挂载一个 32MB 的内存盘到 /var/root
+    rdsize=$((32*1024*1024/512))
+
+    dev=`hdik -drivekey system-image=yes -nomount "ram://$rdsize"`
+
+    newfs_hfs "$dev"
+
+    mount -t hfs -o union -o nobrowse "$dev" /var/root
+
+    # 2. 创建 .ssh 目录并设置权限
+    mkdir /var/root/.ssh
+
+    chmod 700 /var/root/.ssh
+
+    # 3. 挂载主系统分区，并复制你的公钥
+    mount -uw /Volumes/Macintosh\ HD
+
+    cat /Volumes/Macintosh\ HD/Users/[你的用户名]/.ssh/id_rsa.pub > /var/root/.ssh/authorized_keys
+
+    chmod 600 /var/root/.ssh/authorized_keys
+
+4、连接：在另一台电脑上，使用 root 用户和恢复模式下 Mac 的 IP 地址进行连接：
+
+    ssh root@<你的Mac的IP地址>
+
+5、使用你的程序
+
+列出所有磁盘和卷：
+
+    diskutil list
+
+在输出中找到你的数据卷，它的名字通常是 Macintosh HD - Data，对应的标识符类似 /dev/disk3s5。
+
+挂载数据卷：使用以下命令挂载它，系统会提示你输入登录密码来解密。
+
+    diskutil mount /dev/diskXsY
+
+    （请将 /dev/diskXsY 替换为你实际的标识符）
+
+找到并运行你的程序
+挂载成功后，数据卷会被挂载到 /Volumes/Macintosh HD - Data 目录下。
+
+进入你的用户目录：
+
+    cd "/Volumes/Macintosh HD - Data/Users/你的用户名"
+
+找到你的自编译程序：假设你的编译在用户目录下的某个文件夹，例如 projects/xyz，就可以进入该目录。
+
+    cd projects/xyz
+
+运行程序：此时，这个数据卷虽然被挂载了，但为了数据安全，它通常是只读的。不过这并不影响你运行程序，你只需要读取模型文件和可执行文件即可。
+
+    ./xyz-cli
+
+重要提示与限制
+
+    SIP (系统完整性保护)：在恢复模式下，SIP 默认是开启的。这会阻止你向系统卷 (Macintosh HD) 写入任何内容。但我们的操作仅限于读取和运行数据卷 (Macintosh HD - Data) 上的文件，因此不需要也不建议关闭 SIP。
+
+    无法写入：由于数据卷是只读挂载的，你无法在此模式下编译新的程序、保存模型文件或进行任何写入操作。如果你需要写权限（例如保存推理结果），必须将结果输出到外部存储设备（如 U 盘），该设备在恢复模式下可以被正常读写。
+
+    GPU加速可能失效：llama.cpp 在 macOS 上利用 Metal API 进行 GPU 加速。在恢复模式下，Metal 所需的图形框架很可能没有加载或不可用。因此，模型推理将完全依赖 CPU，速度会慢很多。你可以通过设置 -ngl 0 参数强制使用 CPU 来测试。
+
+    网络不可用：如果你的 llama.cpp 需要联网下载 tokenizer 或其他资源，请注意恢复模式下可能没有网络服务。
 
 #### 强制重启
 
