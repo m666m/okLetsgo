@@ -2083,7 +2083,7 @@ source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 chpwd() ls -A
 chpwd
 
-# 插件 zsh-autosuggestions 自动完成的颜色太暗  # ,bg=cyan,bold,underline
+# 插件 zsh-autosuggestions 命令自动完成的颜色太暗  # ,bg=cyan,bold,underline
 # zsh 手册的字符高亮部分：`man zshzle`
 # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
@@ -2102,6 +2102,20 @@ if ! (( ${POWERLEVEL9K_LEFT_PROMPT_ELEMENTS[(I)status]} )); then
   POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(status "${POWERLEVEL9K_LEFT_PROMPT_ELEMENTS[@]}")
 fi
 
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+#__conda_setup="$('/home/uu/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+#if [ $? -eq 0 ]; then
+#    eval "$__conda_setup"
+#else
+#    if [ -f "/home/uu/anaconda3/etc/profile.d/conda.sh" ]; then
+#        . "/home/uu/anaconda3/etc/profile.d/conda.sh"
+#    else
+#        export PATH="/home/uu/anaconda3/bin:$PATH"
+#    fi
+#fi
+#unset __conda_setup
+# <<< conda initialize <<<
 ```
 
 ## 常用 shell 编程
