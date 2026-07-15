@@ -21418,144 +21418,13 @@ xcode-select 只是安装了 Command Line Tools：
 
 这会强制让命令行工具（clang、git 等）使用 Xcode.app 内的完整工具链和 SDK。
 
-### macOS 使用虚拟机
+### macOS 运行 x86 Windows/Linux 软件
 
-目前 macOS 同时只能允许两个 macOS 虚拟机。
-
-Parallels Desktop 订阅制付费软件，性能和兼容性最好，支持 DirectX 游戏
-
-        https://www.parallels.com/products/desktop/
-
-UTM  开源，方便而且速度快，详见章节 [UTM 运行 arm Windows/Linux]。
-
-VMware Fusion
-
-    自2024年起，VMware Fusion对个人和商业用户全面免费，成为开发者和企业的首选。它支持Intel和Apple Silicon芯片，可运行x86/ARM架构的操作系统，并提供虚拟TPM 2.0和快照管理等企业级功能。免费版启动时会显示提示，商业用途需购买许可证，但基础功能已足够满足多系统开发和测试需求。
-
-    价格：免费（个人/商业），企业版需付费
-
-VirtualBox
-
-    作为开源免费的虚拟机软件，VirtualBox适合技术爱好者和预算有限的用户。它支持多种操作系统，但对Apple Silicon的支持有限，需通过cpu仿真方式运行x86系统，导致性能太低。虽然允许自定义硬件配置，但界面复杂，图形性能较弱，不适合运行图形密集型应用。
-
-    虽然需要一份Windows操作系统的许可证，但用户可以从官方网站下载ISO镜像进行安装。设置完成后，用户可以启用双向剪贴板、共享文件夹和拖放功能，享受流畅的使用体验。
-
-#### Tart 运行 macOS 虚拟机
-
-只支持 Linux/macOS 虚拟机，用于给 Agent 提供一个隔离的运行环境非常方便。
-
-    https://tart.run/quick-start/
-        https://github.com/openai/tart
-            原 https://github.com/cirruslabs 被收购了
-
-安装使用非常简便
-
-    # https://github.com/cirruslabs/homebrew-cli
-    brew install cirruslabs/cli/tart
-
-    tart clone ghcr.io/cirruslabs/macos-tahoe-base:latest tahoe-base
-    tart run tahoe-base
-
-会自动弹出一个独立的窗口，显示虚拟机的桌面，这个是原生 GUI 窗口，直接操作即可使用。
-
-也支持 VNC 远程桌面的方式，当虚拟机运行时，Tart 会生成一个临时的 VNC 连接地址和密码（如 `vnc://:<password>@127.0.0.1:<port>`。
-
-如果是 Linux 虚拟机可以使用 X11 转发，在 macOS 宿主机上显示其中的个别图形应用（而不是整个桌面）。
-
-    在 macOS 上安装 XQuartz，然后通过 SSH 的 -X 参数连接到虚拟机。之后在 SSH 会话中启动的图形化程序（如文本编辑器 mousepad），其界面就会直接显示在你的 macOS 桌面上
-
-也可以从宿主机 ssh 访问：
-
-    $ ssh admin@$(tart ip tahoe-base)
-
-镜像来源：
-
-利用了 OCI 仓库可以上传下载虚拟机镜像。官方镜像（由 OpenAI Cirrus Labs 维护），所有镜像都托管在 ghcr.io/cirruslabs/ 下，可查询列表：
-
-    macOS https://github.com/orgs/cirruslabs/packages?tab=packages&q=macos-
-
-    Linux https://github.com/orgs/cirruslabs/packages?repo_name=linux-image-templates
-
-在公共 OCI 仓库中，使用 “tart” 或 “macos” 等关键词进行搜索，也可能找到社区分享的镜像。
-
-CI 工作流使用：
-
-Tart 本来是 Cirrus Labs 的 CI 工作流，为了配套的自动化编译环境搞的
-
-    https://tart.run/integrations/cirrus-cli/
-
-.cirrus.yaml
-
-```yaml
-task:
-  name: hello
-  macos_instance:
-    # can be a remote or a local virtual machine
-    image: ghcr.io/cirruslabs/macos-tahoe-base:latest
-  hello_script:
-    - echo "Hello from within a Tart VM!"
-    - echo "Here is my CPU info:"
-    - sysctl -n machdep.cpu.brand_string
-    - sleep 15
-```
-
-#### UTM 运行 arm Windows/Linux
-
-开源虚拟机管理器推荐基于 QEMU 的 UTM
-
-    https://mac.getutm.app/
-        https://github.com/utmapp/UTM/releases/latest/download/UTM.dmg
-
-    提供预配置的虚拟机镜像，适合开发和测试场景
-        https://mac.getutm.app/gallery/
-
-    目前文件夹共享的方式比较弱
-
-        Windows 虚拟机不支持 virtiofs，仅 WebDAV，建议使用 SAMBA 共享代替 https://docs.getutm.app/guest-support/sharing/directory/
-
-        Linux 虚拟机不支持 virtiofs，只支持 virtfs https://docs.getutm.app/guest-support/linux/#virtfs
-
-UTM 基于 QEMU 和 Apple Hypervisor，支持 Apple Silicon 和 Intel 芯片，可运行 x86/ARM 架构的 Windows 11。通过安装客户机工具可提升显示效果，但整体性能略低于 Parallels 和 VMware。
-
-UTM 的两种运行方式：
-
-1、超级慢 “模拟”模式（QEMU 方案）安装 x86 操作系统：纯 cpu 仿真运行 x86/AMD64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，不需要也不使用 cpu 提供的虚拟化加速。因此速度最慢，日常运行可能勉强可用，使用这个方案只是因为它的 x86 模拟功能最完整，作为生产环境或开发主力。
-
-2、推荐 “虚拟化”模式 利用主机操作系统的虚拟化功能安装 Windows 11 ARM 版
-
-    https://docs.getutm.app/guides/windows/#instructions
-
-注意：UTM 虚拟机安装的 Windows，务必安装客户机工具，这样桌面操作的流畅感才会类似本地原生系统
-
-    https://docs.getutm.app/guest-support/windows/#installation
-
-可手动下载新版的 iso 文件，放到宿主机的如下位置：
-
-    https://getutm.app/downloads/utm-guest-tools-latest.iso
-        https://github.com/utmapp/qemu/releases
-
-    ~/Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/utm-guest-tools-latest.iso
-
-然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机 Windows 桌面体验直接起飞。
-
-填坑:
-
-    开机后提示 failed to load boot001 。。。，等半天才跳转到 Windows Bootmanager 继续，后来直接无法启动了： 开机时狂按 ESC 进入 UEFI 界面，选择 Boot Manager，选择启动分区 “Windows Bootmanager”，F10 保存退出。
-
-### 用 PlayCover 玩 iOS 游戏，原生运行你的手游
-
-大多数手游，只要能找到 ipa 安装包，就能运行
-
-    https://github.com/PlayCover/PlayCover
-        https://playcover.io/
-
-有些安装包需要解密或称“砸壳”，有些游戏因为反作弊不识别无法运行，还有些需要做单独的设置，自行搜索解决方案即可。
-
-### macOS 运行 Windows 程序
+    本章节的讨论的 Windows/Linux 程序指传统的 x86 体系的软件
 
 世界上绝大多数软件都运行于 x86 体系 Windows/Linux，运行于 ARM 芯片的就少很多。如果 ARM 体系下的操作系统能运行这些程序，会大大拓展可用性。
 
-目前 ARM 版 Windows/Linux/macOS 都面临这个问题，解决办法都是基于开源软件 wine 的动态转译思路，甚至直接使用其变体：
+目前 ARM 版 Windows/Linux/macOS 都面临这个问题，非虚拟机的解决办法都是基于开源软件 wine 的动态转译思路，甚至直接使用其变体：
 
     x86 cpu 指令 转 arm cpu 指令 --- Rosetta 2 是 arm macOS 运行 x86 Mac 应用的解决方案，它可以动态转译 x86 → ARM 指令，苹果官方的用途是让 arm macOS 可以运行旧版 x86 macOS 的应用。
 
@@ -21575,9 +21444,7 @@ UTM 的两种运行方式：
 
 或者云电脑，如果你只是偶尔用一下，而且网速够快，可以考虑租用 Windows 365 Cloud PC 或者国内的云电脑服务，按需付费，完全不影响本地性能，还能用 iPad 远程连进去。
 
-#### macOS 运行 Windows 程序
-
-本章节的讨论中所指的 Windows 程序都是传统的 x86 体系的 Windows 程序，不考虑 arm Windows 等。
+#### macOS 直接运行 x86 程序
 
 最佳实践是直接使用你的应用程序的原生 arm 版本，如果 brew 里没有找到，直接去开源软件的官网查找，下载 .dmg 安装包或可执行文件。
 
@@ -21830,7 +21697,13 @@ Apple Game Porting Toolkit (GPTK)
 
 #### 虚拟机 arm Windows 运行 Windows 程序
 
-目前效率最高的运行 x86 程序的方法，是前面章节介绍的 [用 Wine/Crossover 运行 Windows 程序]，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。缺点是 Windows 下图形化界面的软件的兼容性只支持 WINDOWS API 的最好，对依赖 .NET Framework 或 VC 运行库且 Wine 无法完美模拟的系统内核级虚拟光驱、加密狗或企业级服务等就未必可以完整支持了。
+目前效率最高的运行 x86 程序的方法，是前面章节介绍的 [系统调用级转译：用 Wine/Crossover 运行 Windows 程序]，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。缺点是 Windows 下图形化界面的软件的兼容性只支持 WINDOWS API 的最好，对依赖 .NET Framework 或 VC 运行库且 Wine 无法完美模拟的系统内核级虚拟光驱、加密狗或企业级服务等就未必可以完整支持了。
+
+如果要求兼容性不需要操心，还是直接使用虚拟机。
+
+    商业软件 Parallels Desktop 安装的 Windows 虚拟机甚至支持 3D 加速，效率接近原生系统的 90%。
+
+    推荐使用 [UTM 运行 arm Windows/Linux]。
 
 为了使用 Windows 下的软件，则要接受至少消耗 8GB 内存用于虚拟机的方案 --- 利用 macOS 的 Hypervisor 虚拟化框架及硬件加速，安装虚拟机管理器软件
 
@@ -21843,10 +21716,6 @@ Apple Game Porting Toolkit (GPTK)
     Windows 11 内置微软官方开发的 Prism 模拟器，可将 x86 指令实时转译为 ARM64 指令，以执行 x86 程序。装好 Windows ARM 就和普通 PC 一样，无脑用。
 
     得益于苹果 M 芯片的高性能及微软的极致优化，虚拟机的执行效率很高，日常办公体验是完全没问题的。
-
-商业软件 Parallels Desktop 安装的 Windows 虚拟机甚至支持 3D 加速，效率接近原生系统的 90%。
-
-推荐使用 [UTM 运行 arm Windows/Linux]。
 
 #### 虚拟机 arm Linux 运行 Linux 程序
 
@@ -21925,6 +21794,139 @@ UTM 会自动通过 virtiofs 共享宿主的 Rosetta 运行时，并注册 Linux
 
     # 运行测试
     hello
+
+### macOS 使用虚拟机
+
+目前 macOS 同时只能允许两个 macOS 虚拟机。
+
+Parallels Desktop 订阅制付费软件，性能和兼容性最好，支持 DirectX 游戏
+
+        https://www.parallels.com/products/desktop/
+
+UTM  开源，方便而且速度快，详见章节 [UTM 运行 arm Windows/Linux]。
+
+VMware Fusion
+
+    自2024年起，VMware Fusion对个人和商业用户全面免费，成为开发者和企业的首选。它支持Intel和Apple Silicon芯片，可运行x86/ARM架构的操作系统，并提供虚拟TPM 2.0和快照管理等企业级功能。免费版启动时会显示提示，商业用途需购买许可证，但基础功能已足够满足多系统开发和测试需求。
+
+    价格：免费（个人/商业），企业版需付费
+
+VirtualBox
+
+    作为开源免费的虚拟机软件，VirtualBox适合技术爱好者和预算有限的用户。它支持多种操作系统，但对Apple Silicon的支持有限，需通过cpu仿真方式运行x86系统，导致性能太低。虽然允许自定义硬件配置，但界面复杂，图形性能较弱，不适合运行图形密集型应用。
+
+    虽然需要一份Windows操作系统的许可证，但用户可以从官方网站下载ISO镜像进行安装。设置完成后，用户可以启用双向剪贴板、共享文件夹和拖放功能，享受流畅的使用体验。
+
+#### Tart 运行 macOS 虚拟机
+
+只支持 Linux/macOS 虚拟机，用于给 Agent 提供一个隔离的运行环境非常方便。
+
+    https://tart.run/quick-start/
+        https://github.com/openai/tart
+            原 https://github.com/cirruslabs 被收购了
+
+安装使用非常简便
+
+    # https://github.com/cirruslabs/homebrew-cli
+    brew install cirruslabs/cli/tart
+
+    tart clone ghcr.io/cirruslabs/macos-tahoe-base:latest tahoe-base
+    tart run tahoe-base
+
+会自动弹出一个独立的窗口，显示虚拟机的桌面，这个是原生 GUI 窗口，直接操作即可使用。
+
+也支持 VNC 远程桌面的方式，当虚拟机运行时，Tart 会生成一个临时的 VNC 连接地址和密码（如 `vnc://:<password>@127.0.0.1:<port>`。
+
+如果是 Linux 虚拟机可以使用 X11 转发，在 macOS 宿主机上显示其中的个别图形应用（而不是整个桌面）。
+
+    在 macOS 上安装 XQuartz，然后通过 SSH 的 -X 参数连接到虚拟机。之后在 SSH 会话中启动的图形化程序（如文本编辑器 mousepad），其界面就会直接显示在你的 macOS 桌面上
+
+也可以从宿主机 ssh 访问：
+
+    $ ssh admin@$(tart ip tahoe-base)
+
+镜像来源：
+
+利用了 OCI 仓库可以上传下载虚拟机镜像。官方镜像（由 OpenAI Cirrus Labs 维护），所有镜像都托管在 ghcr.io/cirruslabs/ 下，可查询列表：
+
+    macOS https://github.com/orgs/cirruslabs/packages?tab=packages&q=macos-
+
+    Linux https://github.com/orgs/cirruslabs/packages?repo_name=linux-image-templates
+
+在公共 OCI 仓库中，使用 “tart” 或 “macos” 等关键词进行搜索，也可能找到社区分享的镜像。
+
+CI 工作流使用：
+
+Tart 本来是 Cirrus Labs 的 CI 工作流，为了配套的自动化编译环境搞的
+
+    https://tart.run/integrations/cirrus-cli/
+
+.cirrus.yaml
+
+```yaml
+task:
+  name: hello
+  macos_instance:
+    # can be a remote or a local virtual machine
+    image: ghcr.io/cirruslabs/macos-tahoe-base:latest
+  hello_script:
+    - echo "Hello from within a Tart VM!"
+    - echo "Here is my CPU info:"
+    - sysctl -n machdep.cpu.brand_string
+    - sleep 15
+```
+
+#### UTM 运行 arm Windows/Linux
+
+开源虚拟机管理器推荐基于 QEMU 的 UTM
+
+    https://mac.getutm.app/
+        https://github.com/utmapp/UTM/releases/latest/download/UTM.dmg
+
+    提供预配置的虚拟机镜像，适合开发和测试场景
+        https://mac.getutm.app/gallery/
+
+    目前文件夹共享的方式比较弱
+
+        Windows 虚拟机不支持 virtiofs，仅 WebDAV，建议使用 SAMBA 共享代替 https://docs.getutm.app/guest-support/sharing/directory/
+
+        Linux 虚拟机不支持 virtiofs，只支持 virtfs https://docs.getutm.app/guest-support/linux/#virtfs
+
+UTM 基于 QEMU 和 Apple Hypervisor，支持 Apple Silicon 和 Intel 芯片，可运行 x86/ARM 架构的 Windows 11。通过安装客户机工具可提升显示效果，但整体性能略低于 Parallels 和 VMware。
+
+UTM 的两种运行方式：
+
+1、超级慢 “模拟”模式（QEMU 方案）安装 x86 操作系统：纯 cpu 仿真运行 x86/AMD64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，不需要也不使用 cpu 提供的虚拟化加速。因此速度最慢，日常运行可能勉强可用，使用这个方案只是因为它的 x86 模拟功能最完整，作为生产环境或开发主力。
+
+2、推荐 “虚拟化”模式 利用主机操作系统的虚拟化功能安装 Windows 11 ARM 版
+
+    https://docs.getutm.app/guides/windows/#instructions
+
+注意：UTM 虚拟机安装的 Windows，务必安装客户机工具，这样桌面操作的流畅感才会类似本地原生系统
+
+    https://docs.getutm.app/guest-support/windows/#installation
+
+可手动下载新版的 iso 文件，放到宿主机的如下位置：
+
+    https://getutm.app/downloads/utm-guest-tools-latest.iso
+        https://github.com/utmapp/qemu/releases
+
+    ~/Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/utm-guest-tools-latest.iso
+
+然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机 Windows 桌面体验直接起飞。
+
+填坑:
+
+    开机后提示 failed to load boot001 。。。，等半天才跳转到 Windows Bootmanager 继续，后来直接无法启动了： 开机时狂按 ESC 进入 UEFI 界面，选择 Boot Manager，选择启动分区 “Windows Bootmanager”，F10 保存退出。
+
+### 用 PlayCover 玩 iOS 游戏，原生运行你的手游
+
+大多数手游，只要能找到 ipa 安装包，就能运行
+
+    https://github.com/PlayCover/PlayCover
+        https://playcover.io/
+
+有些安装包需要解密或称“砸壳”，有些游戏因为反作弊不识别无法运行，还有些需要做单独的设置，自行搜索解决方案即可。
 
 ### macOS 使用容器
 
