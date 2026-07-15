@@ -20956,6 +20956,20 @@ Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS
 
         使用 `brew install --cask` 安装，针对已经编译好了的应用包（.dmg/.pkg）下载解压，然后放在统一的目录中（Caskroom），省掉了自己下载、解压、安装等步骤。
 
+    安全信任
+
+        默认情况下，Homebrew 只信任其核心仓库（homebrew/core）中的软件。对非官方 tap 默认标为“不信任”，会要求你手动确认信任
+
+        当你尝试安装该 tap 下的某个公式（例如 brew install cirruslabs/cli/tart）时，Homebrew 会扫描整个 tap（cirruslabs/cli），如果发现其 formula（例如 tart）尚未被信任，就会报错拒绝加载
+
+            你需要显式地表示你信任这个 tap，才能正常使用其中的所有公式 `brew trust cirruslabs/cli`，也可以单独信任某一个公式：`brew trust --formula cirruslabs/cli/softnet`
+
+            约定的简写指向 github，即 https://github.com/<用户或组织>/homebrew-<tap名>：当你在 brew 命令里写 cirruslabs/cli 时，它会被自动解析为 https://github.com/cirruslabs/homebrew-cli。
+
+            你可以随时打开浏览器访问上面的 GitHub 地址，查看这个 tap 包含哪些公式（比如 tart.rb、softnet.rb 等），以及它们的安装脚本内容。
+
+        添加之后，你就可以直接执行安装：brew install cirruslabs/cli/tart
+
 常用的 brew 命令：
 
     查找软件包：brew search xxx （xxx为要查找软件的关键词）
@@ -21819,7 +21833,7 @@ VirtualBox
 
 #### Tart 运行 macOS 虚拟机
 
-只支持 Linux/macOS 虚拟机，用于给 Agent 提供一个隔离的运行环境非常方便。
+只支持 Linux/macOS 虚拟机，一切操作都可以用 tart 命令实现，非常便于集成到 CI/CD 工作流，或用于给 Agent 提供一个隔离的运行环境。
 
     https://tart.run/quick-start/
         https://github.com/openai/tart
@@ -21828,6 +21842,7 @@ VirtualBox
 安装使用非常简便
 
     # https://github.com/cirruslabs/homebrew-cli
+    brew trust cirruslabs/cli
     brew install cirruslabs/cli/tart
 
     tart clone ghcr.io/cirruslabs/macos-tahoe-base:latest tahoe-base
@@ -21857,7 +21872,7 @@ VirtualBox
 
 CI 工作流使用：
 
-Tart 本来是 Cirrus Labs 的 CI 工作流，为了配套的自动化编译环境搞的
+Tart 本来是 Cirrus Labs 的 CI 工作流，为了配套的自动化编译环境搞的，Tart 的一切操作都通过 `tart` 命令完成，非常便于编写脚本，集成到你的开发或 CI/CD 工作流中，或者给 Agent 提供一个隔离的运行环境。
 
     https://tart.run/integrations/cirrus-cli/
 
