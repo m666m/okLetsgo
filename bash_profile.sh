@@ -63,12 +63,13 @@ fi
 #     see /usr/share/doc/bash/examples/startup-files for examples.
 #     the files are located in the bash-doc package.
 # 为保持兼容性，这里不直接执行 .profile 文件，而是单独补充，只把这几个标准目录设置到变量 $PATH
-for dir in "$HOME/.local/bin" "$HOME/bin"; do
-    if [[ -d "$dir" ]] && [[ ":$PATH:" != *":$dir:"* ]]; then
-        PATH="$PATH:$dir"
+for local_path in "$HOME/.local/bin" "$HOME/bin"; do
+    if [[ -d "$local_path" ]] && [[ ":$PATH:" != *":$local_path:"* ]]; then
+        PATH="$PATH:$local_path"
     fi
 done
 export PATH
+unset local_path
 
 #######################
 # 兼容性设置：exit for non-interactive shell
@@ -411,6 +412,8 @@ if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
             ssh-add --apple-load-keychain
         fi
 
+        unset agent_run_state
+
     # GNOME 桌面环境下使用 ssh 密钥，ssh-agent 可以被 gnome-keyring 接管复用，
     # 只需要 SSH 配置文件的 Host * 段添加 AddKeysToAgent yes，然后执行一次 `ssh-add` 即可。
     # 原理见 [Gnome 桌面的密码管理器应用程序](okletsgo)。
@@ -469,6 +472,8 @@ if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
             # ssh-add -l
             :
         fi
+
+        unset AGENT_PID
 
     # Windows 下使用 putty 桌面程序 pagent 加载密钥，
     # Windows git bash(mintty) 利用 ssh-pageant 连接到 pagent.exe 进程，复用其缓存的密钥，
