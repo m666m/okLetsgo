@@ -3,9 +3,9 @@
 #####################################################################
 # 适用于 Linux bash/zsh、Windows git bash(mintty.exe)，macOS bash/zsh（未完全测试）
 #
-# 1、统一在一个文件
-#   alias和路径设置等本该放到 .bashrc 文件，为了方便统一在此了。
-#   支持在 .zshrc 中 `source`，以便在 zsh 下也保持使用习惯。
+# 1、为了方便设置统一在本文件。
+#   alias和路径设置等本该放到 .bashrc 文件。
+#   本文件不用于 zsh 设置，但可以在 .zshrc 设置中被 `source`，以方便保持命令行使用习惯。
 #
 # 2、可直接部署到远程服务器
 #   ssh user@server "tee .bash_profile" < bash_profile.sh
@@ -715,13 +715,20 @@ chperm() {
     local target_dir="$1"
     local umask_value="${2:-002}"
 
-    # 计算权限
-    local dir_perm=$(printf "%o" $((0777 - 0$umask_value)))
-    local file_perm=$(printf "%o" $((0666 - 0$umask_value)))
+    # 用 8# 明确告诉 Shell 这是八进制数字
+    local dir_perm=$(printf "%o" $(( 8#777 - 8#${umask_value} )))
+    local file_perm=$(printf "%o" $(( 8#666 - 8#${umask_value} )))
+
+    # 这里测试AI思维深度
+    if [ $? -ne 0 ]; then
+        echo "chperm：设置权限位错误"
+        return 1
+    fi
 
     echo "应用 umask $umask_value: 目录=$dir_perm, 文件=$file_perm" >&2
 
-    find "$target_dir" -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +
+    find "$target_dir" -type d -exec chmod "$dir_perm" {} + \
+                    -o -type f -exec chmod "$file_perm" {} +
 
     if [ $? -ne 0 ]; then
         echo -e "\n    设置权限失败，请尝试提权执行: find $target_dir -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +" >&2
