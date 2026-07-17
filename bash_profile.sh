@@ -757,21 +757,31 @@ cdw() {
 
 # 切换桌面模式和命令行模式 --- 使用 systemd 控制引导的系统都可以这么做
 swc() {
-    if [[ ! ($os_type == 'linux' || $os_type == 'raspi') ]]; then
+    if [[ $os_type != 'linux' && $os_type != 'raspi' ]] || [[ ! -d /run/systemd/system ]]; then
         return
     fi
 
     if [[ "$XDG_SESSION_TYPE" = 'tty' ]]; then
-        read -p "Switch to graphical mode? (y/N): " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
+        printf 'Switch to graphical mode? (y/N): '
+        read -r REPLY
+
+        if [[ -z "$REPLY" ]]; then
+            return
+        fi
+
+        if [[ $REPLY =~ ^[Yy] ]]; then
             printf '\033[0;33mWARN\033[0m: Starting Desktop, launching login screen...\n'
             sudo systemctl isolate graphical.target
         fi
     else
-        read -p "Switch to text mode? (y/N): " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
+        printf "Switch to text mode? (y/N): "
+        read -r REPLY
+
+        if [[ -z "$REPLY" ]]; then
+            return
+        fi
+
+        if [[ $REPLY =~ ^[Yy] ]]; then
             printf '\033[0;33mWARN\033[0m: Shut down desktop and return to tty...'
             sleep 1
             sudo systemctl isolate multi-user.target
@@ -1326,6 +1336,8 @@ PS1exit_code() {
     #if [ $exitcode -eq 0 ]; then printf "%s" ''; else printf "%s" ' -'$exitcode' '; fi
     #(($exitcode != 0)) && printf "%s" ' -'$exitcode' '
     [[ ! $exitcode = 0 ]] && printf "%s" ' -'$exitcode' '
+
+    # return $exitcode  # PS1 变量里的语句不影响shell命令的返回值，不需要持续透传
 }
 
 PS1conda_env_name() {
