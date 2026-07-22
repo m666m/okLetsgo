@@ -732,6 +732,7 @@ chperm() {
 
     echo "应用 umask $umask_value: 目录=$dir_perm, 文件=$file_perm" >&2
 
+    # find . -type d -exec chmod 775 {} + -o -type f -exec chmod 664 {} +
     find "$target_dir" -type d -exec chmod "$dir_perm" {} + \
                     -o -type f -exec chmod "$file_perm" {} +
 
