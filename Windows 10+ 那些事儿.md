@@ -1597,6 +1597,129 @@ Scoop 会自动将 .\Scoop\shims 文件添加到系统环境变量，免去 Wind
 
     PS C:\> scoop install dorado/qq
 
+##### 使用国内镜像
+
+    https://www.cnblogs.com/sobin/p/19792301
+
+    南大  https://mirror.nju.edu.cn/
+
+安装成功后，默认仍为国外源，需替换为国内镜像（南京大学镜像，稳定且高速），并添加中文软件仓库，实现“常用软件一键安装”，这是国内优雅使用 Scoop 的关键。
+
+步骤1：删除默认国外源
+
+操作目的：删除 Scoop 默认的国外官方源（main、extras、versions），避免冲突和龟速下载。
+
+操作步骤：复制以下命令依次执行：
+
+    删除默认基础源
+    scoop bucket rm main
+
+    删除默认扩展源
+    scoop bucket rm extras
+
+    可选：删除多版本软件源（若存在）
+    scoop bucket rm versions
+
+步骤2：添加南京大学国内镜像源（核心）
+
+操作说明：南京大学镜像源是国内最稳定的 Scoop 镜像之一，覆盖 main、extras、versions 三大核心源，下载速度可达几 MB/s。
+
+操作步骤：复制以下命令一键添加：
+
+    南大基础源（对应官方 main，系统必备软件）
+    scoop bucket add main https://mirror.nju.edu.cn/git/scoop-main.git
+
+    南大扩展源（对应官方 extras，常用软件）
+    scoop bucket add extras https://mirror.nju.edu.cn/git/scoop-extras.git
+
+    可选：南大 versions 源（多版本软件，如不同版本的 Python、Node.js）
+    scoop bucket add versions https://mirror.nju.edu.cn/git/scoop-versions.git
+
+步骤3：添加中文软件仓库（国内软件必备）
+
+操作说明：默认源缺少国内常用软件（微信、QQ、网易云音乐等），推荐两种中文仓库，二选一即可。
+
+选项A：添加 Dorado 中文仓库（推荐，适合开发者/追求纯净）
+
+特点：Dorado 偏向开发工具+精选国产软件，清单规范、无捆绑，与南大镜像兼容性好，冲突少。
+
+操作步骤：执行以下命令：
+
+    scoop bucket add dorado https://gitee.com/scoop-bucket/dorado.git
+
+选项B：添加 ScoopCN 中文仓库（适合普通用户，软件最全）
+
+特点：ScoopCN 覆盖几乎所有国内常用软件，更新快，但偶有软件重复和冲突。
+
+操作步骤：执行以下命令：
+
+    scoop bucket add scoopcn https://gitee.com/scoop-installer/scoopcn.git
+
+步骤4：刷新仓库缓存
+
+操作目的：添加完源后，刷新仓库缓存，确保能获取到最新的软件列表。
+
+操作步骤：执行以下命令：
+
+    scoop update
+
+步骤5：配置验证
+
+操作目的：确认所有源均已替换为南京大学地址和中文仓库地址。
+
+操作步骤：执行以下命令，查看当前源列表：
+
+    scoop bucket list
+
+加速优化：多线程下载+全局代理，速度拉满
+
+配置完国内源后，再开启多线程下载和全局代理，进一步提升下载速度，避免偶尔的 GitHub 资源下载慢问题，让体验更优雅。
+
+优化1：开启 Aria2 多线程下载（推荐）
+
+操作说明：Aria2 是一款多线程下载工具，能拆分文件、多节点下载，大幅提升下载速度；若安装 Aria2 失败（如出现“aria2 isn't installed correctly”），按以下步骤修复。
+
+修复及开启步骤：复制以下命令依次执行：
+
+1. 卸载残留的失败安装
+
+    scoop uninstall aria2 --purge
+
+2. 清理缓存
+
+    scoop cache rm aria2
+
+3. 用南大镜像重新安装
+
+    scoop install https://mir.nju.edu.cn/git/scoop-extras/raw/master/bucket/aria2.json
+
+4. 开启 Aria2 加速
+
+    scoop config aria2-enabled true
+
+5. 优化 Aria2 参数（按需配置，无需修改）
+
+    scoop config aria2-retry-wait 2
+    scoop config aria2-split 5
+    scoop config aria2-max-connection-per-server 5
+    scoop config aria2-min-split-size 4M
+
+备用方案：若 Aria2 仍无法安装，可直接关闭（不影响使用，仅下载速度略降）：
+
+    scoop config aria2-enabled false
+
+优化2：配置全局 GitHub 代理
+
+操作说明：部分软件资源仍依赖 GitHub，配置国内代理，避免下载超时，两种方案二选一即可。
+
+操作步骤：复制对应命令执行：
+
+    方案1：南大 GitHub 代理（推荐，与镜像源适配）
+    scoop config proxy https://mirror.nju.edu.cn/github-proxy/
+
+    方案2：ghproxy 代理（备用）
+    scoop config proxy https://mirror.ghproxy.com/
+
 ##### 添加其他 bucket 软件库
 
 语法：
