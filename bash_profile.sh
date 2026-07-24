@@ -248,7 +248,7 @@ curlgh() {
     if curl -fsSL --connect-timeout 10 --max-time 30 --speed-time 15 --speed-limit 1 "$cdn_url"; then
         return 0
     else
-        echo "[curlgh] CDN 下载也失败了，请重试！" >&2
+        echo "[curlgh] CDN 下载也失败了，请自行尝试 https://ghproxy.net/ 下载" >&2
         return 1
     fi
 }
