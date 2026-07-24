@@ -20972,20 +20972,6 @@ Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS
 
         使用 `brew install --cask` 安装，针对已经编译好了的应用包（.dmg/.pkg）下载解压，然后放在统一的目录中（Caskroom），省掉了自己下载、解压、安装等步骤。
 
-    安全信任
-
-        默认情况下，Homebrew 只信任其核心仓库（homebrew/core）中的软件。对非官方 tap 默认标为“不信任”，会要求你手动确认信任
-
-        当你尝试安装该 tap 下的某个公式（例如 brew install cirruslabs/cli/tart）时，Homebrew 会扫描整个 tap（cirruslabs/cli），如果发现其 formula（例如 tart）尚未被信任，就会报错拒绝加载
-
-            你需要显式地表示你信任这个 tap，才能正常使用其中的所有公式 `brew trust cirruslabs/cli`，也可以单独信任某一个公式：`brew trust --formula cirruslabs/cli/softnet`
-
-            约定的简写指向 github，即 https://github.com/<用户或组织>/homebrew-<tap名>：当你在 brew 命令里写 cirruslabs/cli 时，它会被自动解析为 https://github.com/cirruslabs/homebrew-cli。
-
-            你可以随时打开浏览器访问上面的 GitHub 地址，查看这个 tap 包含哪些公式（比如 tart.rb、softnet.rb 等），以及它们的安装脚本内容。
-
-        添加之后，你就可以直接执行安装：brew install cirruslabs/cli/tart
-
 常用的 brew 命令：
 
     查找软件包：brew search xxx （xxx为要查找软件的关键词）
@@ -21102,6 +21088,57 @@ macOS 系统文件夹
     Homebrew Bottles 软件仓库，是 Homebrew 二进制预编译包的镜像
 
         https://mirrors.tuna.tsinghua.edu.cn/help/homebrew-bottles/
+
+#### 第三方仓库扩展机制 tap/formula
+
+    https://github.com/用户名/homebrew-仓库名.git
+
+Homebrew 仓库称为 tap，支持从 github 的各个子地址（homebrew-前缀）作为仓库，下载安装软件。仓库里如果有很多软件需要子一级分类称为 Formula。
+
+默认情况下，Homebrew 只信任其 github 核心仓库（homebrew/core）中的软件。对非官方 tap 默认标为“不信任”，会要求你手动确认信任。
+
+当你尝试安装该 tap 下的某个公式（例如 brew install cirruslabs/cli/tart）时，Homebrew 会扫描整个 tap（cirruslabs/cli），如果发现其 formula（例如 tart）尚未被信任，就会报错拒绝加载
+
+    你需要显式地表示你信任这个 tap，才能正常使用其中的所有公式 `brew trust cirruslabs/cli`，也可以单独信任某一个公式：`brew trust --formula cirruslabs/cli/softnet`
+
+    约定的简写指向 github，即 https://github.com/<用户或组织>/homebrew-<tap名>，比如当你在 brew 命令里写 cirruslabs/cli 时，它会被自动解析为 https://github.com/cirruslabs/homebrew-cli
+
+    你可以随时打开浏览器访问上面的 GitHub 地址，查看这个 tap 包含哪些公式（比如 tart.rb、softnet.rb 等），以及它们的安装脚本内容
+
+添加之后，你就可以直接执行安装
+
+    brew install cirruslabs/cli/tart
+
+    这种写法，是 “全限定名” 的安装方式。
+
+    相当于
+
+        brew tap cirruslabs/cli
+        brew install tart
+
+    对应的就是 tap 下的 Formula
+
+        cirruslabs/cli：这是 Tap 的名称，对应 GitHub 上的地址 <https://github.com/cirruslabs/homebrew-cli> 的简短写法。Homebrew 会根据命名规则自动补全 homebrew- 前缀。
+
+        tart：这是在这个 Tap 里要安装的具体软件包名。
+
+添加第三方 Tap
+
+    brew tap 用户名/仓库名
+
+    # 例如添加腾讯云仓库
+    brew tap tencentcloud/tap
+
+    # 也可以直接给出完整 Git 地址
+    brew tap 用户名/仓库名 https://github.com/用户名/homebrew-仓库名.git
+
+添加后，直接 brew install 就能用：
+
+    # 如果软件名不冲突，可以直接装
+    brew install qq
+
+    # 如果和官方库重名，需要加全限定名
+    brew install 用户名/仓库名/软件名
 
 #### 不靠谱命令 `brew search`
 
