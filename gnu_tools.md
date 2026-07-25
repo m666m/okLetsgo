@@ -21898,13 +21898,20 @@ VirtualBox
     $ brew trust cirruslabs/cli
     $ brew install cirruslabs/cli/tart
 
-    # 镜像默认保存在 ~/.tart/cache/OCIs/ 下
+拉取镜像默认保存在 ~/.tart/cache/OCIs/ 下：
+
+    # 从 ghcr.io 拉取
     $ tart clone ghcr.io/cirruslabs/macos-tahoe-base:latest tahoe-base
 
     # 对于 macOS 镜像，Tart 支持从 Apple 官方 CDN 下载 .ipsw 文件来创建虚拟机
     $ tart create --from-ipsw=latest tahoe-base
 
-    $ tart run tahoe-base
+    # 支持从本地私有镜像仓库（docker registry 2）拉取
+    tart pull localhost:5000/remoteorg/name:latest
+
+运行虚拟机，并把宿主机的 ~/src/project 目录挂载到虚拟机的 /Volumes/My Shared Files 下：
+
+    $ tart run --dir=project:~/src/project  tahoe-base
 
 会自动弹出一个独立的窗口，显示虚拟机的桌面，这个是原生 GUI 窗口，直接操作即可使用。
 
