@@ -20618,24 +20618,6 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
     动态壁纸全是视频文件 "$HOME/Library/Application Support/com.apple.wallpaper/aerials/videos"
 
-### 程序员必改：防止乱改标点符号
-
-这是 macOS 的全局设置，几乎所有App都会受影响：打开 系统设置 → 点按 键盘 → 在右侧的“文字输入”区域点击 编辑…（输入法列表的右侧）→ 在弹窗里
-
-    取消勾选 “连按两下空格键插入句号”：连续空格（比如对齐、补全触发），突然冒个句号会很烦
-
-    取消勾选 “自动拼写检查”、“自动大写首字母”：不改你的变量命名不一定是你想要的了
-
-    取消勾选 “使用智能引号和破折号”，防止它把你的字符串符号及短线改成更好看的其他符号
-
-macOS 还有个隐藏的“智能标点”（Smart Punctuation）全局开关，如果你发现编辑器里输入 ... 被转成 …、" 被转成 “、' 被转成 ’，那就是它在作祟。彻底关闭方法：
-
-    defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -int 0
-
-    defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -int 0
-
-    defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -int 0
-
 ### 文件管理器---访达
 
     建议使用 https://sourceforge.net/projects/doublecmd/
@@ -21195,6 +21177,24 @@ function brew_sc() {
 
 ```
 
+### 程序员必改：防止乱改标点符号
+
+这是 macOS 的全局设置，几乎所有App都会受影响：打开 系统设置 → 点按 键盘 → 在右侧的“文字输入”区域点击 编辑…（输入法列表的右侧）→ 在弹窗里
+
+    取消勾选 “连按两下空格键插入句号”：连续空格（比如对齐、补全触发），突然冒个句号会很烦
+
+    取消勾选 “自动拼写检查”、“自动大写首字母”：不改你的变量命名不一定是你想要的了
+
+    取消勾选 “使用智能引号和破折号”，防止它把你的字符串符号及短线改成更好看的其他符号
+
+macOS 还有个隐藏的“智能标点”（Smart Punctuation）全局开关，如果你发现编辑器里输入 ... 被转成 …、" 被转成 “、' 被转成 ’，那就是它在作祟。彻底关闭方法：
+
+    defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -int 0
+
+    defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -int 0
+
+    defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -int 0
+
 ### macOS 使用终端模拟器
 
 1、macOS 终端 (Terminal.app)
@@ -21399,7 +21399,7 @@ macOS 从 Catalina（10.15）开始，将默认 Shell 从 bash 切换为 zsh，�
 
 注意：macOS 的命令行工具和脚本通常是基于 BSD 工具开发的，其行为与 GNU 工具可能存在细微差异。直接用 GNU 工具替换可能会造成意料之外的问题。
 
-### macOS 自编开源代码
+### macOS 自编开源代码 git/clang
 
 苹果笔记本 Macbook Pro M5(Apple Silicon) Pro，macOS Tahoe(Darwin) Metal 构建代码，翻译：
 
@@ -21424,6 +21424,8 @@ macOS 从 Catalina（10.15）开始，将默认 Shell 从 bash 切换为 zsh，�
 Apple macOS(Darwin) 可以作为系统组件安装 Xcode Command Line Tools，自带 Clang 开发环境：
 
     $ xcode-select --install
+
+这时桌面会弹出确认对话框，确认后操作系统会开始自动下载安装，完成后确认：
 
     $ clang --version
 
@@ -21892,7 +21894,7 @@ VirtualBox
         https://github.com/openai/tart
             原 https://github.com/cirruslabs 被收购了
 
-安装使用非常简便
+安装需要信任第三方仓库：
 
     # https://github.com/cirruslabs/homebrew-cli
     $ brew trust cirruslabs/cli
@@ -21900,14 +21902,17 @@ VirtualBox
 
 拉取镜像默认保存在 ~/.tart/cache/OCIs/ 下：
 
-    # 从 ghcr.io 拉取
-    $ tart clone ghcr.io/cirruslabs/macos-tahoe-base:latest tahoe-base
-
-    # 对于 macOS 镜像，Tart 支持从 Apple 官方 CDN 下载 .ipsw 文件来创建虚拟机
-    $ tart create --from-ipsw=latest tahoe-base
-
-    # 支持从本地私有镜像仓库（docker registry 2）拉取
+    # 仅拉取镜像，从本地私有镜像仓库（docker registry 2）
     tart pull localhost:5000/remoteorg/name:latest
+
+    # 复制一个已有的虚拟机或镜像：从 ghcr.io 下载镜像，或已经拉取到本地的镜像
+    # 不知道为什么这么叫，反正执行完毕就有虚拟机了
+    $ tart clone --disk-size 120 ghcr.io/cirruslabs/macos-tahoe-base:latest tahoe-base
+
+    # 全新创建一个虚拟机：对于 macOS 镜像，Tart 支持从 Apple 官方 CDN 下载 .ipsw 文件来创建虚拟机
+    $ tart create --from-ipsw=latest --disk-size 120 tahoe-base
+
+注意 macos-tahoe-base 镜像默认的硬盘空间偏小，共 40~50GB 左右，开机后剩余空间 15Gi（系统 12G，用户数据（应用、文档等）6.3G，预启动（引导相关）~6.7Gi，虚拟机内存交换文件 1G，合计 ≈ 26Gi）。安装 xcode-select 会提示空间不足。镜像 macos-tahoe-xcode 预装了开发工具，就比较大了，占用超过60G，但估计剩余空间也不大。
 
 运行虚拟机，并把宿主机的 ~/src/project 目录挂载到虚拟机的 /Volumes/My Shared Files 下：
 
@@ -21936,9 +21941,13 @@ tart 的镜像来源：
     Linux https://github.com/orgs/cirruslabs/packages?repo_name=linux-image-templates
 
     镜像变体    预装内容    适用场景
+    ------------------------------
     macos-tahoe-vanilla    纯净的 macOS 系统，仅包含自动登录等辅助性调整。    需要从零开始定制环境的场景，或对镜像大小有极致要求。
+
     macos-tahoe-base    在 vanilla 基础上，预装了 Homebrew 等常用工具和软件。    大部分通用开发任务，能省去手动安装基础工具的步骤。
+
     macos-tahoe-xcode:N    在 base 基础上，预装了指定版本的 Xcode 和 Flutter。    iOS/macOS 应用开发，需要特定 Xcode 版本的场景。
+
     macos-runner:tahoe    预装了多个版本的 Xcode，并集成了 xcodes 工具方便切换。    CI/CD 流水线，需要灵活测试不同 Xcode 版本的项目。
 
 如果想使用除了 cirruslabs 之外的第三方镜像，在公共 OCI 仓库中，使用 “tart” 或 “cirruslabs” 或 “macos” 等关键词进行搜索，也可能找到社区分享的镜像。
@@ -21990,6 +21999,34 @@ task:
     - sysctl -n machdep.cpu.brand_string
     - sleep 15
 ```
+
+##### 磁盘空间不足
+
+1、虚拟机磁盘扩容到 100GB，就运行：
+
+    tart set tahoe-base --disk-size 100
+
+注意：磁盘大小只能增大，不能减小。另外，这个操作只是调整了虚拟磁盘文件的大小上限。
+
+2、虚拟机内部识别新空间（关键步骤）
+
+执行完上面的命令后，重启虚拟机。这时，虚拟机里的 macOS 还不会自动使用新增的空间，你需要手动“通知”系统。
+
+打开虚拟机里的 “终端” (Terminal)，依次执行以下命令：
+
+修复磁盘结构：
+
+    diskutil repairDisk disk0
+
+这条命令会检查并修复磁盘的整体结构，为后续扩容做准备。
+
+将新空间分配给系统卷：
+
+    diskutil apfs resizeContainer disk0s2 0
+
+这是最关键的一步。disk0s2 通常是存放 macOS 系统的 APFS 容器。命令中的 0 表示将容器大小扩展到磁盘上的所有可用空间。
+
+执行完这两条命令后，再次检查虚拟机的存储空间，应该就能看到新增的容量了。
 
 #### UTM 运行 arm Windows/Linux 虚拟机
 
@@ -22348,9 +22385,7 @@ macOS 的服务管理机制是 launchd，管理着从开机启动到用户登录
 
 开发者或软件可以编写一个 plist（属性列表）配置文件来描述服务，然后交由 launchd 托管。被托管的程序便拥有了自动启动、意外退出后重启、开机自启等能力。
 
-### 填坑
-
-#### MacBook 散热
+### MacBook 散热
 
 风扇狂转，CPU占用很高
 
@@ -22366,7 +22401,7 @@ macOS 的服务管理机制是 launchd，管理着从开机启动到用户登录
 
 因为这个事件导致后台一直在打印刷新日志，那这个时候我就想着，给取消掉看看情况是不是会有所转变。输入：sudo pmset schedule cancelall或者sudo pmset schedule cancel 指定的任务。然后我重启了电脑，然后有使用了一会儿，发现整个世界都清净了，简直泪流满面啊。。。这个问题真是困扰了寡人好久好久。
 
-#### 恢复模式（无图形界面）
+### 恢复模式（无图形界面）
 
     https://support.apple.com/en-by/guide/platform-support/sup38ddd3ca7/26/web/26
 
@@ -22394,9 +22429,9 @@ macOS 的服务管理机制是 launchd，管理着从开机启动到用户登录
 
 注意硬盘存储是只读的，而且无法使用 GPU (Metal) 加速等功能。
 
-##### 恢复模式下启用 SSH 服务
+#### 恢复模式下启用 SSH 服务
 
-这个使用方式可以把你的 Mac mini 作为一个7x24的服务器，但功能受限特别多，用处不大。
+这个使用方式可以节约桌面环境启动需要的 10GB 内存，但功能受限特别多，用处不大。
 
 以下是根据社区方案整理的手动配置步骤，仅供参考：
 
