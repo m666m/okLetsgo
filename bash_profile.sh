@@ -826,6 +826,7 @@ alias sshs='echo "[跳过其它各种协商使用密码连接主机]" >&2; ssh -
 alias sshme='echo "[断开ssh连接复用]" >&2; ssh -O exit'
 alias sshmn='echo "[不使用ssh连接复用]" >&2; ssh -o "ControlPath=no"'
 alias sshk='echo "[使用kitty连接无terminfo的sshd服务器]" >&2; kitty +kitten ssh'
+alias ssht='echo "[ssh 连接tart虚拟机]" >&2;ssh vu@$(tart ip tahoe-base)'
 
 # curl
 alias curls='echo "[curl http-get  不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]" >&2; curl -fsSL'

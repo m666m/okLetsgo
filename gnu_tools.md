@@ -21911,7 +21911,7 @@ VirtualBox
 
 运行虚拟机，并把宿主机的 ~/src/project 目录挂载到虚拟机的 /Volumes/My Shared Files 下：
 
-    $ tart run --dir=project:~/src/project  tahoe-base
+    $ tart run --dir=project:~/src/project tahoe-base
 
 会自动弹出一个独立的窗口，显示虚拟机的桌面，这个是原生 GUI 窗口，直接操作即可使用。
 
