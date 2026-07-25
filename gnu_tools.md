@@ -21895,11 +21895,16 @@ VirtualBox
 安装使用非常简便
 
     # https://github.com/cirruslabs/homebrew-cli
-    brew trust cirruslabs/cli
-    brew install cirruslabs/cli/tart
+    $ brew trust cirruslabs/cli
+    $ brew install cirruslabs/cli/tart
 
-    tart clone ghcr.io/cirruslabs/macos-tahoe-base:latest tahoe-base
-    tart run tahoe-base
+    # 镜像默认保存在 ~/.tart/cache/OCIs/ 下
+    $ tart clone ghcr.io/cirruslabs/macos-tahoe-base:latest tahoe-base
+
+    # 对于 macOS 镜像，Tart 支持从 Apple 官方 CDN 下载 .ipsw 文件来创建虚拟机
+    $ tart create --from-ipsw=latest tahoe-base
+
+    $ tart run tahoe-base
 
 会自动弹出一个独立的窗口，显示虚拟机的桌面，这个是原生 GUI 窗口，直接操作即可使用。
 
@@ -21921,7 +21926,13 @@ VirtualBox
 
     Linux https://github.com/orgs/cirruslabs/packages?repo_name=linux-image-templates
 
-在公共 OCI 仓库中，使用 “tart” 或 “macos” 等关键词进行搜索，也可能找到社区分享的镜像。
+    镜像变体    预装内容    适用场景
+    macos-tahoe-vanilla    纯净的 macOS 系统，仅包含自动登录等辅助性调整。    需要从零开始定制环境的场景，或对镜像大小有极致要求。
+    macos-tahoe-base    在 vanilla 基础上，预装了 Homebrew 等常用工具和软件。    大部分通用开发任务，能省去手动安装基础工具的步骤。
+    macos-tahoe-xcode:N    在 base 基础上，预装了指定版本的 Xcode 和 Flutter。    iOS/macOS 应用开发，需要特定 Xcode 版本的场景。
+    macos-runner:tahoe    预装了多个版本的 Xcode，并集成了 xcodes 工具方便切换。    CI/CD 流水线，需要灵活测试不同 Xcode 版本的项目。
+
+在公共 OCI 仓库中，使用 “tart” 或 “cirruslabs” 或 “macos” 等关键词进行搜索，也可能找到社区分享的镜像。
 
 CI 工作流使用：
 
