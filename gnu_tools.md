@@ -21421,13 +21421,15 @@ macOS 从 Catalina（10.15）开始，将默认 Shell 从 bash 切换为 zsh，�
 
         开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片统一内存的 GPU 加速。
 
-1、安装 Xcode 的命令行编译环境
-
-Apple macOS(Darwin) 可以作为系统组件安装 Xcode Command Line Tools，自带 Clang 开发环境：
+1、安装 Clang 开发环境的命令行编译环境 CLT：
 
     $ xcode-select --install
 
-这时桌面会弹出确认对话框，确认后操作系统会开始自动下载安装，完成后确认：
+这时桌面会弹出确认对话框，确认后操作系统会开始自动下载安装。
+
+注意这个只是一个轻量级的包 --- 独立的命令行开发者工具 (Command Line Tools for Xcode, CLT) ，只包含命令行编译器和工具，路径在 /Library/Developer/CommandLineTools。一般使用足够了，如果需要安装完整的 Xcode 应用（路径通常是 /Applications/Xcode.app/Contents/Developer），则需要从 App Store 搜索 xcode 下载安装。以后需要 通过 `sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer` 命令，让系统使用完整 Xcode 中的工具。
+
+完成后确认：
 
     $ clang --version
 
@@ -21907,32 +21909,32 @@ VirtualBox
     # 仅拉取镜像，从本地私有镜像仓库（docker registry 2）
     tart pull localhost:5000/remoteorg/name:latest
 
-    # 复制一个已有的虚拟机或镜像：从 ghcr.io 下载镜像，或已经拉取到本地的镜像
-    # 不知道为什么这么叫，反正执行完毕就有虚拟机了
+    # 复制一个已有的虚拟机：从 ghcr.io 下载镜像，或已经拉取到本地的镜像
+    # 不知道为什么叫clone，反正执行完毕镜像就变成虚拟机了
     $ tart clone --disk-size 120 ghcr.io/cirruslabs/macos-tahoe-base:latest tahoe-base
 
-    # 全新创建一个虚拟机：对于 macOS 镜像，Tart 支持从 Apple 官方 CDN 下载 .ipsw 文件来创建虚拟机
+    # 全新创建一个虚拟机：从 Apple 官方 CDN 下载 .ipsw 文件来创建虚拟机
     $ tart create --from-ipsw=latest --disk-size 120 tahoe-base
 
-注意 macos-tahoe-base 镜像默认的硬盘空间偏小，共 40~50GB 左右，开机后剩余空间 15Gi（系统 12G，用户数据（应用、文档等）6.3G，预启动（引导相关）~6.7Gi，虚拟机内存交换文件 1G，合计 ≈ 26Gi）。安装 xcode-select 会提示空间不足。镜像 macos-tahoe-xcode 预装了开发工具，就比较大了，占用超过60G，但估计剩余空间也不大。
+注意苹果官方 IPSW 镜像默认的硬盘空间偏小，共 40~50GB 左右，开机后剩余空间 15Gi（系统 12G，用户数据（应用、文档等）6.3G，预启动（引导相关）~6.7Gi，虚拟机内存交换文件 1G，合计 ≈ 26Gi）。安装 xcode-select 会提示空间不足。镜像 macos-tahoe-xcode 预装了开发工具，就比较大了，占用超过60G，但估计剩余空间也不大。
 
-运行虚拟机，并把宿主机的 ~/src/project 目录挂载到虚拟机的 /Volumes/My Shared Files 下：
+运行虚拟机，并把宿主机的 ~/src/project 目录挂载到虚拟机的 '/Volumes/My Shared Files' 下：
 
     $ tart run --dir=project:~/src/project tahoe-base
 
 会自动弹出一个独立的窗口，显示虚拟机的桌面，这个是原生 GUI 窗口，直接操作即可使用。
 
-也支持 VNC 远程桌面的方式，当虚拟机运行时，Tart 会生成一个临时的 VNC 连接地址和密码（如 `vnc://:<password>@127.0.0.1:<port>`。
+    也支持 VNC 远程桌面的方式，当虚拟机运行时，Tart 会生成一个临时的 VNC 连接地址和密码（如 `vnc://:<password>@127.0.0.1:<port>`。
 
-如果是 Linux 虚拟机可以使用 X11 转发，在 macOS 宿主机上显示其中的个别图形应用（而不是整个桌面）。
+    如果是 Linux 虚拟机可以使用 X11 转发，在 macOS 宿主机上显示其中的个别图形应用（而不是整个桌面）。
 
-    在 macOS 上安装 XQuartz，然后通过 SSH 的 -X 参数连接到虚拟机。之后在 SSH 会话中启动的图形化程序（如文本编辑器 mousepad），其界面就会直接显示在你的 macOS 桌面上
+        在 macOS 上安装 XQuartz，然后通过 SSH 的 -X 参数连接到虚拟机。之后在 SSH 会话中启动的图形化程序（如文本编辑器 mousepad），其界面就会直接显示在你的 macOS 桌面上
 
 也可以从宿主机 ssh 访问：
 
     $ ssh admin@$(tart ip tahoe-base)
 
-当Tart应用退出或宿主机开始关机时，Tart的默认行为是向虚拟机发出一个停止请求，注意不是关机并等待关机完成而是，类似“拔电源”，这是因为 tart 的设计初衷就是优化“一次性”虚拟机的使用场景。如果你需要确保虚拟机内的数据安全，更可靠的做法是在虚拟机内部手动执行关机命令。例如，对于Linux虚拟机，可以通过SSH执行 sudo poweroff 或 sudo shutdown -h now 来实现优雅关机。
+关机：当Tart应用退出或宿主机开始关机时，Tart的默认行为是向虚拟机发出一个停止请求，注意不是关机并等待关机完成而是，类似“拔电源”，这是因为 tart 的设计初衷就是优化“一次性”虚拟机的使用场景。如果你需要确保虚拟机内的数据安全，更可靠的做法是在虚拟机内部手动执行关机命令，比如在桌面选择关闭电源，或使用命令行 `shutdown -h now`。
 
 tart 的镜像来源：
 
@@ -21942,11 +21944,13 @@ tart 的镜像来源：
 
     Linux https://github.com/orgs/cirruslabs/packages?repo_name=linux-image-templates
 
+    预装软件清单：https://github.com/cirruslabs/macos-image-templates/blob/main/templates/base.pkr.hcl
+
     镜像变体    预装内容    适用场景
     ------------------------------
-    macos-tahoe-vanilla    纯净的 macOS 系统，仅包含自动登录等辅助性调整。    需要从零开始定制环境的场景，或对镜像大小有极致要求。
+    macos-tahoe-vanilla    纯净的 macOS 系统，仅包含自动登录等辅助性调整。    相当于苹果官方 IPSW，需要从零开始定制环境的场景，或对镜像大小有极致要求。
 
-    macos-tahoe-base    在 vanilla 基础上，预装了 Homebrew 等常用工具和软件。    大部分通用开发任务，能省去手动安装基础工具的步骤。
+    macos-tahoe-base    在 vanilla 基础上，通过 Homebrew 安装了大量编译器和开发工具如 gcc/cmake/node。    大部分通用开发任务，能省去手动安装基础工具的步骤。
 
     macos-tahoe-xcode:N    在 base 基础上，预装了指定版本的 Xcode 和 Flutter。    iOS/macOS 应用开发，需要特定 Xcode 版本的场景。
 
