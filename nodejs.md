@@ -72,7 +72,7 @@ Node.js 是 JavaScript 的运行时环境，允许在服务器端运行 JS 代�
 
     https://nodejs.org/zh-cn/download
 
-国内镜像网站
+官方页面的建议是优先 [使用 nvm 多版本切换工具] 安装 node，也可手动从国内镜像网站安装
 
     node 安装包 https://registry.npmmirror.com/binary.html?path=node/latest/
 
@@ -166,7 +166,7 @@ Yarn：一款新的JavaScript包管理工具。
     如何在 Fedora 38/37/36 Linux 上安装 Yarn
         https://www.linuxcapable.com/how-to-install-yarn-on-fedora-linux/
 
-### nvm 多版本切换工具
+### 使用 nvm 多版本切换工具
 
 允许你在电脑上同时安装多个 node.js 版本，通过 nvm 进行切换使用。经常用于项目目录下自己建立一个 node.js 环境，执行项目会非常方便，不会干扰系统。
 
@@ -182,15 +182,23 @@ Yarn：一款新的JavaScript包管理工具。
 
     $ git clone https://github.com/nvm-sh/nvm.git ~/.nvm
 
-    $ cd ~/.nvm
-    $ ./install.sh
+    $ cd ~/.nvm && git checkout v0.40.3
+
+    确认 ~/.nvm/nvm.sh 存在
+
+    将以下内容追加到你的 shell 配置文件中（~/.bashrc、~/.bash_profile 或 ~/.zshrc，取决于你的 Shell）：
+
+        # nvm
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 配置 nvm 国内源
 
-    # https://mirrors.tuna.tsinghua.edu.cn/help/nodejs-release/
+    # 清华源 https://mirrors.tuna.tsinghua.edu.cn/help/nodejs-release/
     # echo 'export NVM_NODEJS_ORG_MIRROR=https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/' >> ~/.bashrc
 
-    # https://npmmirror.com/
+    # 淘宝源 https://npmmirror.com/
     $ echo 'export NVM_NODEJS_ORG_MIRROR=https://npmmirror.com/mirrors/node' >> ~/.bashrc
 
 然后才可以安装指定 node 版本
