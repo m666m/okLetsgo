@@ -68,11 +68,15 @@ Node.js 是 JavaScript 的运行时环境，允许在服务器端运行 JS 代�
     注意 https://nodejs.cn/ 是个假的
     https://www.zhihu.com/column/eggjs
 
-node + npm 都要装，国内镜像网站下载安装包最方便
+下载即可安装 node + npm
 
-    node 安装包 https://registry.npmmirror.com/binary.html?path=node/latest-v26.x/
+    https://nodejs.org/zh-cn/download
 
-    npm 安装包 https://registry.npmmirror.com/binary.html?path=node/npm/
+国内镜像网站
+
+    node 安装包 https://registry.npmmirror.com/binary.html?path=node/latest/
+
+    npm 安装包一般不需要单独安装 https://registry.npmmirror.com/binary.html?path=node/npm/
 
 查看版本
 
@@ -173,6 +177,13 @@ Yarn：一款新的JavaScript包管理工具。
 安装 nvm
 
     $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+
+其实下载源代码即可安装，它完全使用 bash 脚本提供的 node 管理相关功能
+
+    $ git clone https://github.com/nvm-sh/nvm.git ~/.nvm
+
+    $ cd ~/.nvm
+    $ ./install.sh
 
 配置 nvm 国内源
 

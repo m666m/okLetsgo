@@ -838,8 +838,9 @@ alias nmapl='echo "[nmap 列出当前局域网 192.168.0.x 内的ip及端口]" >
 
 # scp rsync
 alias scps='echo "[scp 源 目的网络。远程格式 user@host:/path/to/ 端口用 -P]" >&2; scp -r'
-alias rsyncs='echo "[rsync 保留文件扩展属性保持硬链接保持稀疏文件：源 目的 ]" >&2; rsync -avAXHS'
-alias rsyncl='echo "[低io优先级运行 rsync 保留文件属性：源 目的]" >&2; sudo ionice -c 2 -n 5 rsync -av --progress --stats --bwlimit=50000'
+alias rsyncs='echo "[rsync 普通备份：保留权限、属主、保持符号链接：源 目的(远程 u@h:path)]" >&2; rsync -av'
+alias rsynch='echo "[rsync 保留文件扩展属性保持硬链接保持稀疏文件：源 目的(远程 u@h:path) ]" >&2; rsync -avAXHS'
+alias rsyncl='echo "[低io优先级运行 rsync 保留文件属性：源 目的(远程 u@h:path)]" >&2; sudo ionice -c 2 -n 5 rsync -av --progress --stats --bwlimit=50000'
 alias rsyncr='echo "[rsync 源 目的网络。远程格式 user@host:/path/to/]" >&2; rsync -av --progress --stats -e "ssh -p 22" '
 alias rsyncrb='echo "[rsync 源 目的慢速网络。远程格式 user@host:/path/to/]" >&2; rsync -av --progress --stats --partial --partial-dir=.rsync-partial --timeout=30 --bwlimit=5000 -e "ssh -p 22 -o ServerAliveInterval=15 -o ConnectTimeout=20" '
 
