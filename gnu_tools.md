@@ -20905,6 +20905,20 @@ macOS 的约定俗成
         -o vers=4,resvport,rsize=1048576,wsize=1048576,noatime,nconnect=4,noappledouble \
         192.168.1.100:/data /private/mnt/nas_nfs
 
+### macOS 系统文件夹
+
+    /System/Applications/Utilities/Terminal.app  系统级应用程序的位置
+
+        ~/Applications  当前用户个人目录下的 “应用程序” 文件夹
+
+    /Library/Application Support  系统级的应用支持目录，对所有用户可用。存放的通常是全局（共享）数据，如应用的模板、插件信息、数据库缓存等，而非某个用户的个性化设置。
+
+        /Library/Preferences/     所有用户    全局偏好（较少见，多由后台守护进程使用）
+
+        ~/Library/Preferences/    当前用户    用户级偏好，例如 com.apple.Terminal.plist
+
+    /Applications   用户自己装的各种软件，卸载软件时，直接删除 /Applications 下的相应 .app 即可（但可能会残留偏好文件在 ~/Library 中）。
+
 ### Homebrew
 
 社区自制的面向 MacOS 的软件包管理，有自己的仓库，很多在 MacOS AppStore 里没有的常用软件都可以在这里安装。
@@ -20935,11 +20949,13 @@ macOS 的约定俗成
 
         最大的问题在于软件包的更新迭代超级久远，看看官网页面就知道了 https://www.finkproject.org/
 
+安装见下面的 brew 国内镜像源 内容。
+
 Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS
 
     https://docs.brew.sh/Homebrew-on-Linux
 
-从仓库安装软件分两类：
+从 brew 仓库安装软件分两类：
 
     Formulae：软件包，包括了这个软件的依赖、源码位置及编译方法等，用来安装一些不带界面的命令行工具和第三方库。
 
@@ -20983,21 +20999,7 @@ Homebrw 相关的几个文件夹用途
     Library：Homebrew 系统自身文件夹
     Cellar：通过brew安装的程序将以 [程序名/版本号] 存放于本目录下
 
-macOS 系统文件夹
-
-    /System/Applications/Utilities/Terminal.app  系统级应用程序的位置
-
-        ~/Applications  当前用户个人目录下的 “应用程序” 文件夹
-
-    /Library/Application Support  系统级的应用支持目录，对所有用户可用。存放的通常是全局（共享）数据，如应用的模板、插件信息、数据库缓存等，而非某个用户的个性化设置。
-
-        /Library/Preferences/     所有用户    全局偏好（较少见，多由后台守护进程使用）
-
-        ~/Library/Preferences/    当前用户    用户级偏好，例如 com.apple.Terminal.plist
-
-    /Applications   用户自己装的各种软件，卸载软件时，直接删除 /Applications 下的相应 .app 即可（但可能会残留偏好文件在 ~/Library 中）。
-
-> 国内镜像源
+**brew 国内镜像源**
 
 使用科大源安装 Homebrew / Linuxbrew，以下四个变量写入你的 .bash_profile 即可实现 `brew update` 使用镜像地址了
 
@@ -21021,7 +21023,7 @@ macOS 系统文件夹
 
 然后使用镜像地址进行安装
 
-    $ sudo apt install -y git curl  # 安装依赖
+    # 先安装依赖 git curl
 
     # 原 /bin/bash -c "$(curl -fsSL https://github.com/Homebrew/install/raw/HEAD/install.sh)"
     $ /bin/bash -c "$(curl -fsSL https://mirrors.ustc.edu.cn/misc/brew-install.sh)"
@@ -21051,7 +21053,7 @@ macOS 系统文件夹
     - We recommend that you install GCC:
         brew install gcc
 
-这样你的 .bashrc/.zshrc 增加：
+这样你的 .bashrc/.zshrc 会增加如下内容：
 
     export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
     export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
