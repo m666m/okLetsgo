@@ -60,14 +60,19 @@ Node.js 利用了可以在浏览器之外运行的 V8 JavaScript 引擎（Google
 
 ## Node.js
 
-Node.js：是 JavaScript 的运行时环境，允许在服务器端运行 JS 代码。简单说就是前端开发人员可以干后端开发的活了。
-
-node + npm 都要装
+Node.js 是 JavaScript 的运行时环境，允许在服务器端运行 JS 代码。简单说就是前端开发人员可以干后端开发的活了。
 
     https://nodejs.org/
-        https://cnodejs.org/
+        https://node.org.cn
 
+    注意 https://nodejs.cn/ 是个假的
     https://www.zhihu.com/column/eggjs
+
+node + npm 都要装，国内镜像网站下载安装包最方便
+
+    node 安装包 https://registry.npmmirror.com/binary.html?path=node/latest-v26.x/
+
+    npm 安装包 https://registry.npmmirror.com/binary.html?path=node/npm/
 
 查看版本
 
