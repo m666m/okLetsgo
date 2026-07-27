@@ -72,7 +72,9 @@ Node.js 是 JavaScript 的运行时环境，允许在服务器端运行 JS 代�
 
     https://nodejs.org/zh-cn/download
 
-官方页面的建议是优先 [使用 nvm 多版本切换工具] 安装 node，也可手动从国内镜像网站安装
+官方页面的建议是优先 [使用 nvm 多版本切换工具] 安装 node，nvm 安装的包所有版本都装在 ~/.nvm/ 下，属于用户目录。执行 npm install -g 永远不需要 sudo，既安全又省心。
+
+也可手动从国内镜像网站下载安装安装
 
     node 安装包 https://registry.npmmirror.com/binary.html?path=node/latest/
 
@@ -83,6 +85,10 @@ Node.js 是 JavaScript 的运行时环境，允许在服务器端运行 JS 代�
     node -v
 
     npm -v
+
+    nvm list
+
+不要系统级安装：当你执行 sudo npm install -g xxx 时，文件会被写入 /usr/lib/node_modules。这不仅需要 sudo 密码，而且一旦某个全局包出错，可能导致整个系统级 Node 目录权限混乱，甚至让你无法正常使用系统自带的工具。
 
 ### 配置 npm 国内源
 
