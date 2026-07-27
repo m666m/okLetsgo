@@ -649,7 +649,7 @@ envunload() {
     # 查找顶格 export 的变量，逐个 unset
     while read -r var; do
         unset "$var"
-    done < <(grep '^export ' "$file" | awk -F '[= ]' '{print $2}')
+    done < <(grep '^export ' "$file" |sed -E 's/^export +([^= ]*).*/\1/')
 
     echo "✓ Unloaded env: $(basename "$file")"
 }
