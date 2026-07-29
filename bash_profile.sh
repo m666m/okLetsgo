@@ -141,6 +141,9 @@ export PDMREPO="192.168.0.111:5000" && echo "内网私有容器镜像仓库地�
 poor_connection() {
     # huggingface.co
     export HF_ENDPOINT=https://hf-mirror.com
+    # hf-mirror.com 可能没有代理 Xet 的 CAS（内容寻址存储）服务器，
+    # 导致下载时请求 cas-server.xethub.hf.co 返回了 401 Unauthorized
+    export HF_HUB_DISABLE_XET=1
 
     # uv
     export UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple/
