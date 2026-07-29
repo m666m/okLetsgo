@@ -1107,9 +1107,9 @@ ghaddr() {
     rm "$tfile"
 }
 
-# hf.co 镜像站 hf-mirror.com 可能没有代理 Xet 的 CAS（内容寻址存储）服务器，
+# huggingface.co 镜像站 hf-mirror.com 可能没有代理 Xet 的 CAS（内容寻址存储）服务器，
 # 导致下载时请求 cas-server.xethub.hf.co 返回了 401 Unauthorized
-alias hfs='echo "[hf 命令关闭 https 下载 hf-mirror.com 的内容]" >&2; HF_HUB_DISABLE_XET=1 hf'
+alias hfs='echo "[hf 命令解决 hf-mirror.com 对 Xet 的报错]" >&2; HF_HUB_DISABLE_XET=1 hf'
 
 # gpg 常用命令，一般用法都是后跟文件名即可
 alias ggk='echo "[查看有私钥的gpg密钥及其子密钥，带指纹和keygrip]" >&2; gpg -K --keyid-format=long --with-subkey-fingerprint --with-keygrip'
