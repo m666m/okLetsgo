@@ -1516,6 +1516,8 @@ Nerd font 是 Powerline fonts 的超集，他几乎把目前市面上主流的 i
     或
     $ emulate sh
 
+常用操作跟 bash 无差别，兼容 vi 模式，连按两次 esc 即进入 vi 模式，跟 bash 的操作习惯一致（需要在 ~/.zshrc 写入 bindkey -v）。
+
 安装
 
     $ sudo dnf install zsh zsh-autosuggestions zsh-syntax-highlighting
