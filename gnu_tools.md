@@ -13540,9 +13540,9 @@ Double Commander 双面板文件管理器，按兼容 Total Commander 的标准�
 
         Aegisub https://github.com/Aegisub/Aegisub
 
-        Subtitle editor https://github.com/SubtitleEdit/subtitleedit
+        Subtitle Edit https://github.com/SubtitleEdit/subtitleedit
 
-        gnome 也带一个字幕编辑软件 gnome-subtitles
+        gnome 桌面也带一个字幕编辑软件 gnome-subtitles
 
 视频编辑
 
