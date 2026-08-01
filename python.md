@@ -469,9 +469,11 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
         powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-    也可用 pip 安装，uv 是一个全局的二进制文件，只要在一个环境中安装就全局生效
+也可用 pip 安装，uv 是一个全局的二进制文件，只要在一个环境中安装就全局生效
 
-        $ pip install uv
+    $ pip install uv
+
+    $ python -m pip install uv
 
 即使是在 venv 环境中安装的，uv 也会复制自己的可执行文件也会被复制到操作系统的 PATH 目录中，保证退出或切换虚拟环境后，uv 命令依然能够正常使用。
 
@@ -522,13 +524,48 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 uv 工具不会自动下载 Python 包，因此如果设置虚拟环境时用 -p 指定系统不存在的Python版本，则会报错。所以需要提前安装。
 
-### 安装 pip 发布的程序
+### 安装用 pip 发布的程序
 
-在现有的 python 环境里安装
+用 `pip install <tool>` 全局安装工具（如 black、ruff、httpie）有两个大坑：
 
-    python -m pip install uv  # If you need to install uv
+    依赖地狱：工具 A 要 click<8，工具 B 要 click>=8，全局环境立刻冲突。
 
-    uv tool install --force --python python3.12 --with pip aider-chat@latest
+    环境污染：时间一长，全局 Python 环境会塞满各种工具的依赖，难以维护。
+
+uv tool 的解决思路是：为每个工具创建一个独立的隔离虚拟环境，只把可执行文件（如 black、ruff）暴露到你的 PATH 中。保持你的当前操作系统环境可以是没有 python 或只有操作系统自带 python 的纯净状态。
+
+    uv tool 默认把可执行文件链接到 ~/.local/bin（Linux/macOS）或类似目录，记得确认该路径在你的 PATH 中。uv 安装脚本通常会自动处理。
+
+    如果之前用 pip 装过很多全局工具，建议先 pip uninstall 清理掉，再用 uv tool install 重新安装，从此告别全局依赖冲突。
+
+安装到 uv 默认的 python 环境：
+
+    uv tool install ruff
+
+    # --python python3.12 指定用 Python 3.12 来创建这个工具的环境
+    # aider-chat@latest 显式声明安装最新版。不写 @latest 也会装最新，但写上更明确。
+    # --force 强制安装。如果之前装过 aider-chat，会直接覆盖，不会提示已存在。用来修复坏掉的环境或干净重装。
+    uv tool install --force --python 3.12 --with pip aider-chat@latest
+
+    # 列出已安装的工具
+    uv tool list
+
+    # 升级工具
+    uv tool upgrade ruff
+
+    # 一键升级所有工具
+    uv tool upgrade --all
+
+    # 卸载
+    uv tool uninstall ruff
+
+安装到指定 Python 版本：
+
+    uv tool install --python 3.12 black
+
+甚至支持创建一个临时环境，用完即丢，不在你的系统留下任何残留：
+
+    uv tool run pycowsay "Hello from uv!"
 
 ### 使用 uv 创建项目独立的虚拟环境
 
