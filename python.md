@@ -609,7 +609,9 @@ uv 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 pyproj
 
     用选定的 Python 解释器直接运行你的 .py 文件。
 
-    注：支持添加 --python=3.12 指定版本
+    注1：支持添加 --python=3.12 指定版本
+
+    注2：强制不使用任何虚拟环境 `uv run --no-project script.py`
 
 如果需要安装第三方包：因为缺少 pyproject.toml，你不能用 uv add，也不会自动同步依赖。安装包只能靠 `uv pip` 命令手动安装
 
