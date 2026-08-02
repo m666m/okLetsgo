@@ -524,7 +524,29 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 uv 工具不会自动下载 Python 包，因此如果设置虚拟环境时用 -p 指定系统不存在的Python版本，则会报错。所以需要提前安装。
 
+### 直接运行 python 代码
+
+原 `python abc.py` 改为 `uv run abc.py` 即可，会自动中当前目录下建立子目录 .venv 安装一个默认的 python 环境，然后用它执行你的 abc.py。
+
+如果需要加入某个包依赖，有两个方式：
+
+`uv add your_package`：
+
+    会将包添加到项目的正式依赖列表中，包名及版本约束写入 pyproject.toml，然后安装该包到当前的 .venv 虚拟环境中。
+
+    当你把项目发给别人，别人执行 `uv sync` 时，会自动安装这些包。
+
+`uv pip install`：
+
+    纯粹将包安装到当前的 Python 环境（.venv）中，像一个“快捷操作”
+
+    不会修改 pyproject.toml。不会更新 uv.lock 文件。仅仅是把包下载下来放进 .venv 里。
+
+    适用场景：你只是临时想用一下某个工具（比如 ipdb 调试器、black 格式化工具），并不想让这个包成为项目正式代码的一部分，也不想污染项目的依赖声明文件。
+
 ### 安装用 pip 发布的程序
+
+只要该程序有导出即支持直接运行。
 
 用 `pip install <tool>` 全局安装工具（如 black、ruff、httpie）有两个大坑：
 
