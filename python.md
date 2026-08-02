@@ -673,9 +673,11 @@ uv tool 的解决思路是：为每个工具创建一个独立的隔离虚拟环
 
     uv tool install --python 3.12 black
 
-甚至支持创建一个临时环境，用完即丢，不在你的系统留下任何残留：
+甚至可以不安装，创建一个临时环境，用完即丢，不在你的系统留下任何残留：
 
-    uv tool run pycowsay "Hello from uv!"
+    $ uv tool run pycowsay "Hello from uv!"
+
+    $ uv tool list  # 没有安装 pycowsay
 
 ## 何时用 conda/virtualenv/venv
 
