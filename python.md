@@ -545,15 +545,15 @@ uv 工具不会自动下载 Python 包，因此如果设置虚拟环境时用 -p
 
 当你在项目目录下直接执行 `uv run main.py`
 
-    首先检查到当前目录有 pyproject.toml 文件，则会进入“项目模式”，uv 会严格管理依赖、锁定版本、使用隔离的 .venv。除非指明不使用项目环境 `uv run --no-project script.py`，即 [使用 uv 运行没有项目环境的 python 程序]。
+    首先 uv 检查当前目录有 pyproject.toml 文件，则会进入“项目模式”，uv 会严格管理依赖、锁定版本、使用隔离的 .venv。（除非指明不使用项目环境 `uv run --no-project script.py`，即 [使用 uv 运行没有项目环境的 python 程序]）
 
-    先从当前工作目录开始，递归查找 .venv 目录、venv 目录、环境变量 VIRTUAL_ENV 指向的任意目录（如果已经手动激活了某个环境），找到就用。
+    从当前工作目录开始，递归查找 .venv 目录、venv 目录、环境变量 VIRTUAL_ENV 指向的任意目录（如果已经手动激活了某个环境），找到就用。
 
-    如果找不到则隐式执行 `uv sync`，如果可能会复用 ~/.cache/uv/ 下的缓存，自动创建虚拟环境并安装好 pyproject.toml 中声明的所有依赖，然后再执行脚本。这是为了确保你的项目拷贝到别的机器也可以自动执行。
+    如果找不到则隐式执行 `uv sync` 自动创建虚拟环境并安装好 pyproject.toml 中声明的所有依赖，然后再执行脚本。这个自动操作是为了确保你的项目拷贝到别的机器也可以直接执行。
 
-    激活这个子目录下的虚拟环境 source .venv/bin/activate，激活后的做的 python 管理操作都是在这个虚拟环境中做的。
+    激活这个子目录下的虚拟环境 `source .venv/bin/activate`，激活后的做的 python 管理操作都是在这个虚拟环境中做的。
 
-    运行程序  python main.py
+    运行程序 `python main.py`
 
 #### 理解 uv 管理项目的包依赖关系
 
@@ -578,6 +578,14 @@ uv 使用 pyproject.toml，对应 requirements.txt：
     不会修改 pyproject.toml。不会更新 uv.lock 文件。仅仅是把包下载下来放进 .venv 里。
 
     适用场景：你只是临时想用一下某个工具（比如 ipdb 调试器、black 格式化工具），并不想让这个包成为项目正式代码的一部分，也不想污染项目的依赖声明文件。
+
+项目拷贝到别的机器上执行，要先创建同样的虚拟环境：
+
+    uv sync
+
+uv 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 pyproject.toml 中声明的所有依赖（如果可能会复用 ~/.cache/uv/ 下的缓存），然后再执行脚本即可 `uv run main.py`。
+
+其实直接执行 `uv run main.py` 会在初次运行时自动执行 `uv sync`，不需要手动操作。
 
 ### 使用 uv 运行没有项目环境的 python 程序
 
@@ -622,7 +630,11 @@ uv 使用 pyproject.toml，对应 requirements.txt：
 
 ### uv tool 安装用 pip 发布的程序
 
-只要该程序有导出即支持直接运行。
+只要该程序有导出即支持直接运行
+
+    $ uv tool install ruff
+
+    $ ruff
 
 用 `pip install <tool>` 全局安装工具（如 black、ruff、httpie）有两个大坑：
 
