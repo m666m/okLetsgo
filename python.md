@@ -526,7 +526,7 @@ uv 工具不会自动下载 Python 包，因此如果设置虚拟环境时用 -p
 
 ### 直接运行 python 代码
 
-原 `python abc.py` 改为 `uv run abc.py` 即可，会自动中当前目录下建立子目录 .venv 安装一个默认的 python 环境，然后用它执行你的 abc.py。
+原 `python abc.py` 改为 `uv run abc.py` 即可，会自动中当前目录（当前项目）下建立子目录 .venv ，在其中安装一个默认的 python 环境，然后用它执行你的 abc.py。
 
 如果需要加入某个包依赖，有两个方式：
 
