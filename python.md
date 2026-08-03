@@ -591,7 +591,9 @@ uv 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 pyproj
 
 常见于只想快速运行一个简单的 .py 文件，而不想为它单独创建一个项目目录和 .venv。
 
-执行 `uv run script.py` 的流程如下：
+执行 `uv run script.py`，使用非常方便。
+
+uv 对这个命令实际操作的流程如下：
 
     uv 检查到当前目录没有 pyproject.toml 文件，则会进入“脚本模式”。它只做一件事：帮你找到一个合适的 Python 解释器，然后干净地运行脚本，不会在本地创建任何虚拟环境。
 
@@ -603,7 +605,7 @@ uv 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 pyproj
 
     找不到虚拟环境 -> 回退到系统 Python
 
-        即 uv python list 里列出的 系统 Python 或 uv 全局管理的 Python
+        即 `uv python list` 里列出的 系统 Python 或 uv 全局管理的 Python
 
     如果以上两种方式都找不到，uv 会自动联网下载并安装一个由 Astral 项目提供的、独立的 Python 3.12 版本，并缓存起来供后续使用
 
@@ -613,9 +615,9 @@ uv 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 pyproj
 
     注2：强制不使用任何虚拟环境 `uv run --no-project script.py`
 
-如果需要第三方包：
+如果这个 python 需要第三方包：
 
-    # 在临时环境中准备这个依赖，如有缓存会直接复用，速度非常快
+    # 在临时环境中准备这个依赖，如有缓存会毫秒级复用，速度非常快
     uv run --with requests script.py
 
 如果想安装这个包，只能选择全局安装到 Python 环境里（可能是系统 Python 或某个已有 venv），这样会污染python环境：
