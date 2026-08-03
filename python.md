@@ -613,14 +613,23 @@ uv 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 pyproj
 
     注2：强制不使用任何虚拟环境 `uv run --no-project script.py`
 
-如果需要安装第三方包：因为缺少 pyproject.toml，你不能用 uv add，也不会自动同步依赖。安装包只能靠 `uv pip` 命令手动安装
+如果需要第三方包：
 
-    安装包（在当前环境下）    uv pip install requests
-    指定版本                uv pip install "numpy>=1.24"
-    从 requirements 安装    uv pip install -r requirements.txt
-    查看已装包              uv pip list
+    # 在临时环境中准备这个依赖，如有缓存会直接复用，速度非常快
+    uv run --with requests script.py
 
-注意：用 `uv pip install` 装的包是全局安装到你刚才选定的那个 Python 环境里的（可能是系统 Python 或某个已有 venv）。如果是在系统 Python 里装包，建议先手动创建虚拟环境隔离，避免污染全局。
+如果想安装这个包，只能选择全局安装到 Python 环境里（可能是系统 Python 或某个已有 venv），这样会污染python环境：
+
+    因为缺少 pyproject.toml，无法使用 `uv add`，也不会自动同步依赖。
+
+    用 `uv pip install` 命令手动安装
+
+        安装包（在当前环境下）    uv pip install requests
+        指定版本                uv pip install "numpy>=1.24"
+        从 requirements 安装    uv pip install -r requirements.txt
+        查看已装包              uv pip list
+
+    注意：用 `uv pip install` 装的包是全局安装到你刚才选定的那个 Python 环境里的（可能是系统 Python 或某个已有 venv）。建议先手动创建虚拟环境隔离，避免污染全局。
 
 #### 使用 uvx
 
