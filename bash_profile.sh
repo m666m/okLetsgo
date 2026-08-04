@@ -829,6 +829,7 @@ alias sshk='echo "[使用kitty连接无terminfo的sshd服务器]" >&2; kitty +ki
 alias ssht='echo "[ssh 连接tart虚拟机]" >&2;ssh vu@$(tart ip tahoe-base)'
 
 # curl
+# 如果在 zsh 下，养成给含 ?、* 等字符的 URL 加引号的习惯，否则会被变量展开。
 alias curls='echo "[curl http-get  不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]" >&2; curl -fsSL'
 alias curld='echo "[curl http-post 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕]" >&2; curl -fsSd'
 
