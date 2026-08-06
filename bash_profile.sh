@@ -605,6 +605,7 @@ fi
 #######################
 # 功能增强：统一引用环境变量文件，其内容是 export api_key=xxxx
 envload() {
+    # (umask 077; mkdir ~/.envs)
     # 入参是文件名，则默认在 $HOME/.envs/ 下
     # 入参包含 / 则认为是绝对路径，直接使用
     if [ -z "$1" ]; then
