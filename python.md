@@ -531,7 +531,7 @@ uv 工具不会自动下载 Python 包，因此如果设置虚拟环境时用 -p
     # 1. 初始化项目元数据，在当前目录建立 pyproject.toml 文件
     uv init
 
-    # 2. 【可选但推荐】锁定 Python 版本并创建虚拟环境
+    # 2. 创建虚拟环境，推荐用 --python 锁定 Python 版本
     uv venv --python 3.12
 
     # 3. 批量导入旧依赖
