@@ -22219,6 +22219,17 @@ Podman 无守护进程（daemonless），与 docker 命令几乎100%兼容。使
 
 config.toml 中的 [registry] 节只支持设置一个默认仓库域名，无法同时为多个仓库配置不同地址。如果需要使用其他仓库（包括私有仓库），直接在镜像引用里写完整域名即可，认证则通过 container registry login 命令单独管理。
 
+默认仓库只支持一个，还未支持仓库镜像：
+
+    # 将默认仓库设置为你的私有仓库地址
+    container registry default set my-registry.example.com
+
+    # 登录到你的私有仓库
+    container registry login my-registry.example.com
+
+    # 从指定镜像仓库拉取镜像
+    container pull ***.xuanyuan.run/library/nginx:latest
+
 下面是一个示例配置文件 ~/.config/container/config.toml，将默认仓库设为 docker.io，并给出了其他常见仓库在命令中直接引用的用法说明。
 
 ```toml
