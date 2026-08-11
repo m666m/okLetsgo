@@ -21884,7 +21884,7 @@ UTM 会自动通过 virtiofs 共享宿主的 Rosetta 运行时，并注册 Linux
 
 ### macOS 使用虚拟机
 
-目前 macOS 同时只能允许两个 macOS 虚拟机。
+目前 macOS 同时只能运行两个虚拟机，估计是为了系统资源管理方便。
 
 Parallels Desktop 订阅制付费软件，性能和兼容性最好，支持 DirectX 游戏
 
