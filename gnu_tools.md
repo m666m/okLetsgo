@@ -22150,7 +22150,7 @@ UTM 的两种运行方式：
 
         $ colima start --arch x86_64 --vm-type=vz --vz-rosetta
 
-如果要跑的 x86 镜像居多，Colima 的 QEMU 模拟就会慢很多。而原生使用 Apple 虚拟化框架开发的 Podman 和 Apple Container 的 Rosetta 2 方案，性能上要好很多。
+如果要运行的 x86 镜像居多，Colima 的 QEMU 模拟就会慢很多。而原生使用 Apple 虚拟化框架开发的 Podman 和 Apple Container 的 Rosetta 2 方案，性能上要好很多，或直接使用苹果官方开源的 [Apple Container]。
 
 日常使用与管理
 
