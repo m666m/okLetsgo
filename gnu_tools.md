@@ -21525,11 +21525,13 @@ xcode-select 只是安装了 Command Line Tools：
 
 #### macOS 直接运行 x86 程序
 
-最佳实践是直接使用你的应用程序的原生 arm 版本，如果 brew 里没有找到，直接去开源软件的官网查找，下载 .dmg 安装包或可执行文件。
+    从 macOS 27 开始，Rosetta 2 技术被保留并集成到 Virtualization.Framework 中，只能用于 ARM Linux 虚拟机内部，去翻译运行 x86_64 的 Linux 程序，即虚拟机运行 x86 容器是没问题的。但是，它不能再用于 [macOS 直接运行 x86 程序]，即不再有直接翻译运行 x86 应用这条路了。
+
+最佳实践是查找使用你的应用程序的原生 arm 版本，如果 brew 里没有找到，直接去开源软件的官网查找，下载 .dmg 安装包或可执行文件。
 
 如果要玩游戏，先看看 Steam 客户端或应用商店里有没有原生的 arm 版本，苹果从使用 arm 芯片开始正在推动厂商移植，比如《赛博朋克2077》就有原生 arm 版本。
 
-steam 官方的 porton（基于wine）技术，实现的是在 x86 Linux 下通过 Vulkan 图形接口让大部分 Windows 游戏可玩，它目前并未支持苹果独家的 Metal 图形接口，也就无法实现 arm 运行 x86 游戏。
+但是 steam 官方的 porton（基于wine）技术，实现的是在 x86 Linux 下通过 Vulkan 图形接口让大部分 Windows 游戏可玩，它目前并未支持苹果独家的 Metal 图形接口，也就无法实现 arm 运行 x86 游戏。
 
 如果你想使用的程序只有 x86/AMD64 版本，则有两个使用方式：
 
@@ -21776,15 +21778,19 @@ Apple Game Porting Toolkit (GPTK)
 
 #### 虚拟机 arm Windows 运行 Windows 程序
 
-目前效率最高的运行 x86 程序的方法，是前面章节介绍的 [系统调用级转译：用 Wine/Crossover 运行 Windows 程序]，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。缺点是 Windows 下图形化界面的软件的兼容性只支持 WINDOWS API 的最好，对依赖 .NET Framework 或 VC 运行库且 Wine 无法完美模拟的系统内核级虚拟光驱、加密狗或企业级服务等就未必可以完整支持了。
+目前效率最高的运行 x86 程序的方法，是前面章节介绍的 [系统调用级转译：用 Wine/Crossover 运行 Windows 程序]，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。缺点是 Windows 下图形化界面的软件的兼容性只支持 WINDOWS API，对依赖 .NET Framework 或 VC 运行库且 Wine 无法完美模拟的系统内核级虚拟光驱、加密狗或企业级服务等就未必可以完整支持了。
 
-如果要求兼容性不需要操心，还是直接使用虚拟机。
+而微软当初为了推广 arm Windows，开发的 x86 指令转换到 arm 指令功能兼容性非常好，很多 x86 软件都能在 arm Windows 下运行。
+
+所以，如果要求日常软件最佳兼容性，使用虚拟机运行 arm Windows 安装使用 x86 软件
 
     商业软件 Parallels Desktop 安装的 Windows 虚拟机甚至支持 3D 加速，效率接近原生系统的 90%。
 
     推荐使用 [UTM 运行 arm Windows/Linux]。
 
-为了使用 Windows 下的软件，则要接受至少消耗 8GB 内存用于虚拟机的方案 --- 利用 macOS 的 Hypervisor 虚拟化框架及硬件加速，安装虚拟机管理器软件
+代价是虚拟机的方案至少要划分 8GB 内存给虚拟机操作系统：
+
+    利用 macOS 的虚拟化框架及硬件加速，安装虚拟机管理器软件
 
     在虚拟机中运行支持 x86 程序的操作系统，以接近本机原生的速度运行虚拟机内的 ARM 版操作系统
 
@@ -22094,9 +22100,9 @@ UTM 的两种运行方式：
 
 有些安装包需要解密或称“砸壳”，有些游戏因为反作弊不识别无法运行，还有些需要做单独的设置，自行搜索解决方案即可。
 
-### macOS 使用容器
+### macOS 使用容器 colima
 
-容器技术依赖 Linux 内核，所以都是虚拟机方案：
+因为容器技术依赖 Linux 内核，所以都是虚拟机方案：
 
 1、笨重且慢的虚拟机方案：用 Docker Desktop for Mac，至少4GB的RAM，只能配置 docker.io 的镜像，其它网站无法配置。可通过 `--platform linux/amd64` 参数要求Docker模拟x86环境来运行 x86 镜像（利用Rosetta 2或QEMU进行指令翻译）。
 
@@ -22106,6 +22112,8 @@ UTM 的两种运行方式：
 
     https://github.com/abiosoft/colima
         https://colima.run/
+
+        基于 https://github.com/lima-vm/lima
 
     只用 1GB 内存、5GB 磁盘，几秒即可启动
 
@@ -22118,6 +22126,8 @@ UTM 的两种运行方式：
     自动把当前目录映射进虚拟机，不需要传统 Linux 虚拟机用 SSHFS、Samba、virtiofs 等需要额外配置的方法。
 
     自动把 -p 8080:80 映射到 localhost:8080，而传统 Linux 虚拟机中的 Docker 容器监听的端口需要手动在虚拟机管理器里做转发，或者用桥接模式获取局域网 IP。
+
+使用 Colima：
 
 用 brew 安装 Colima 及 docker 客户端工具：
 
@@ -22156,22 +22166,23 @@ Podman 无守护进程（daemonless），与 docker 命令几乎100%兼容。使
 
 苹果官方开源方案，最轻量、性能最高
 
-    https://github.com/apple/container/releases
-        选择 container-0.12.3-installer-signed.pkg 安装
+    命令行工具 https://github.com/apple/container/releases 选择 container-0.12.3-installer-signed.pkg 安装
+
+    Swift 包，为开发者提供了 API，以便在应用中集成运行 Linux 容器的能力 https://github.com/apple/containerization
 
 最大的特点是每一个 Linux 容器都单独启动一个极限“瘦身”的微内核的虚拟机，以此来运行容器（默认 1GB 内存）：
 
-    用完退出容器即释放内存，不像其它的解决方案那样空跑一个虚拟机占好几个GB内存。
+    用完退出容器即释放内存，不像其它的解决方案那样空跑一个虚拟机占好几个GB内存
 
-    每个容器都有自己独立的 IP 地址，不需要像传统 Docker 那样进行端口映射。
+    每个容器都有自己独立的 IP 地址，不需要像传统 Docker 那样进行端口映射
 
 注意这是虚拟机运行容器镜像，所以不像普通容器那样共享使用主机内核：
 
     苹果使用了来自开源社区的 Kata Containers 项目：一个专门为轻量级虚拟机优化的 Linux 内核 https://github.com/kata-containers/kata-containers
 
-    默认架构是 arm64（Apple Silicon），与 macOS 宿主机架构一致。
+    默认架构是 arm64（Apple Silicon），与 macOS 宿主机架构一致
 
-    首次使用时自动下载：如果本地没有内核，系统会根据 url 自动下载压缩包，然后从 binaryPath 路径提取内核二进制。
+    首次使用时自动下载：如果本地没有内核，系统会根据 url 自动下载压缩包，然后从 binaryPath 路径提取内核二进制
 
     所有容器（包括 container machine）共用这个内核
 
