@@ -21525,19 +21525,21 @@ xcode-select 只是安装了 Command Line Tools：
 
 #### macOS 直接运行 x86 程序
 
-    从 macOS 27 开始，Rosetta 2 技术被保留并集成到 Virtualization.Framework 中，只能用于 ARM Linux 虚拟机内部，去翻译运行 x86_64 的 Linux 程序，即虚拟机运行 x86 容器是没问题的。但是，它不能再用于 [macOS 直接运行 x86 程序]，即不再有直接翻译运行 x86 应用这条路了。
+从 macOS 27 开始，Rosetta 2 技术被保留并集成到 Virtualization.Framework 中，只能用于 ARM Linux 虚拟机内部，去翻译运行 x86_64 的 Linux 程序，即虚拟机运行 x86 容器是没问题的。
+
+    它不能再用于 [macOS 直接运行 x86 程序]，即不再有直接转译运行 x86 应用这条路了。
 
 最佳实践是查找使用你的应用程序的原生 arm 版本，如果 brew 里没有找到，直接去开源软件的官网查找，下载 .dmg 安装包或可执行文件。
 
 如果要玩游戏，先看看 Steam 客户端或应用商店里有没有原生的 arm 版本，苹果从使用 arm 芯片开始正在推动厂商移植，比如《赛博朋克2077》就有原生 arm 版本。
 
-但是 steam 官方的 porton（基于wine）技术，实现的是在 x86 Linux 下通过 Vulkan 图形接口让大部分 Windows 游戏可玩，它目前并未支持苹果独家的 Metal 图形接口，也就无法实现 arm 运行 x86 游戏。
+不要指望 steam 官方的 porton（基于wine）技术，它目前只在 x86 Linux 下通过 Vulkan 图形接口实现直接运行大部分 Windows 游戏，并未支持苹果独家的 Metal 图形接口，无法实现 arm macOS 直接运行 x86 游戏。
 
 如果你想使用的程序只有 x86/AMD64 版本，则有两个使用方式：
 
 转译
 
-    macOS 需要安装一些执行框架以实现本地运行，有多种方案，都是基于 wine 转译 Windows 操作系统 API调用。
+    macOS 需要安装一些执行框架，可以实现在本地直接运行 x86 程序，有多种方案，都是基于 wine 转译 Windows 操作系统 API调用。
 
 虚拟机
 
