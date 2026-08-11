@@ -22150,7 +22150,7 @@ UTM 的两种运行方式：
 
         $ colima start --arch x86_64 --vm-type=vz --vz-rosetta
 
-如果要跑的 x86 镜像居多，Colima 的 QEMU 模拟就会慢很多。而 Podman 和 Apple Container 的 Rosetta 2 方案在性能上其实差别不大。
+如果要跑的 x86 镜像居多，Colima 的 QEMU 模拟就会慢很多。而原生使用 Apple 虚拟化框架开发的 Podman 和 Apple Container 的 Rosetta 2 方案，性能上要好很多。
 
 日常使用与管理
 
@@ -22212,15 +22212,15 @@ Podman 无守护进程（daemonless），与 docker 命令几乎100%兼容。使
 
     $ container run --detach --name web --publish 8080:80 nginx:latest
 
-    # 运行一个 x86 架构的容器
+    # 运行一个 x86 架构的容器，这个也是利用 Apple 虚拟化框架的，性能比软件模拟好很多
     $ container run --platform linux/amd64 nginx:latest
 
     # 在主机和容器/Machine 之间传输文件
     container cp
 
-支持创建的 Linux 环境，类似 WSL：
+支持创建一个类似 WSL 的“有状态的” Linux 环境：
 
-    `container machine` 创建的 Linux 环境是“有状态的”，自动将你的 macOS 用户名和 home 目录映射到 Linux 环境中，你可以在 macOS 上编辑代码，然后在 Linux 环境中直接编译运行。
+    `container machine` 创建的 Linux 环境，会自动将你的 macOS 用户名和 home 目录映射到 Linux 环境中，你可以在 macOS 上编辑代码，然后在 Linux 环境中直接编译运行。
 
 ##### 使用镜像仓库
 
