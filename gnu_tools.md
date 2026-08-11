@@ -22215,6 +22215,13 @@ Podman 无守护进程（daemonless），与 docker 命令几乎100%兼容。使
     # 运行一个 x86 架构的容器
     $ container run --platform linux/amd64 nginx:latest
 
+    # 在主机和容器/Machine 之间传输文件
+    container cp
+
+支持创建的 Linux 环境，类似 WSL：
+
+    `container machine` 创建的 Linux 环境是“有状态的”，自动将你的 macOS 用户名和 home 目录映射到 Linux 环境中，你可以在 macOS 上编辑代码，然后在 Linux 环境中直接编译运行。
+
 ##### 使用镜像仓库
 
 config.toml 中的 [registry] 节只支持设置一个默认仓库域名，无法同时为多个仓库配置不同地址。如果需要使用其他仓库（包括私有仓库），直接在镜像引用里写完整域名即可，认证则通过 container registry login 命令单独管理。
