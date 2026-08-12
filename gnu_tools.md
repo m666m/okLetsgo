@@ -2646,6 +2646,19 @@ NOTE: 慎重使用链式逻辑运算
 
     https://plantegg.github.io/2017/01/01/top_linux_commands/
 
+如果你的脚本可能用于管道操作，注意输出的状态提示应走 stderr，否则可能干扰解析：
+
+    ls && echo "列文件成功" >&2
+
+为了输出换行的兼容性更好，用 printf "hello,world.\n" 代替 echo -e 的写法。
+
+打印多行字符串写为如下形式更直观：
+
+    printf "建议如下操作:
+    1.xxx
+    2.xxx
+    \n"
+
 很多命令支持逐级的自动完成提示，输入命令后多按 tab 试试
 
     $ ls /usr/share/bash-completion/completions
