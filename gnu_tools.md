@@ -21950,7 +21950,9 @@ VirtualBox
 
         在 macOS 上安装 XQuartz，然后通过 SSH 的 -X 参数连接到虚拟机。之后在 SSH 会话中启动的图形化程序（如文本编辑器 mousepad），其界面就会直接显示在你的 macOS 桌面上
 
-也可以从宿主机 ssh 访问：
+Tart 虚拟机默认的运行配置是 2 CPUs 4 GB 内存 1024x768 分辨率，可使用 `tart set` 命令更改。
+
+虚拟机启动后，即可以从宿主机 ssh 访问：
 
     $ ssh admin@$(tart ip tahoe-base)
 
@@ -21980,7 +21982,7 @@ tart 的镜像来源：
 
 如果想使用除了 cirruslabs 之外的第三方镜像，在公共 OCI 仓库中，使用 “tart” 或 “cirruslabs” 或 “macos” 等关键词进行搜索，也可能找到社区分享的镜像。
 
-示例：创建一个名为 ubuntu-vm 的虚拟机
+**示例：创建一个名为 ubuntu-vm 的虚拟机**
 
     tart clone ghcr.io/cirruslabs/ubuntu:latest ubuntu-vm
         tart clone ghcr.m.daocloud.io/cirruslabs/ubuntu:latest ubuntu-vm
@@ -22004,23 +22006,27 @@ tart 的镜像来源：
 
 首次启动的默认登录用户名和密码均为 admin。出于安全考虑，建议你登录后立即修改密码。
 
-如果从 ISO 文件手动安装 ubuntu：
-
-    tart create --linux ubuntu
-
-    tart run --disk /path/to/your/ubuntu.iso ubuntu
-
-按照屏幕提示完成安装。系统会引导你完成语言、时区、用户创建等设置。
-
-初始设置完成后，请确保你的虚拟机可以通过在虚拟机内执行以下命令通过SSH连接：
+初始设置完成后，在虚拟机内执行以下命令启用 ssh 服务，这样以后可以在内网的任意位置 ssh 连接该虚拟机了：
 
     sudo apt update
     sudo apt install -y openssh-server
     sudo ufw allow ssh
 
-日常运行虚拟机：
+    sudo systemctl enable ssh --now
 
-    tart run ubuntu
+日常启动运行虚拟机，挂载你的本地目录即可：
+
+    tart run --dir=www1:~/project1/www ubuntu-vm
+
+也可以从 ISO 文件手动安装 ubuntu：
+
+    tart create --linux ubuntu
+
+    tart run --disk /path/to/your/ubuntu.iso ubuntu
+
+    按照屏幕提示完成安装。系统会引导你完成语言、时区、用户创建等设置。
+
+    日常启动运行虚拟机同上。
 
 ##### 实现快照功能
 
