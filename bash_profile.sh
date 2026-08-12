@@ -714,7 +714,7 @@ mvf() {
 chperm() {
     if [ $# -lt 1 ]; then
         echo "指定 umask 值，设置目录及内容的权限" >&2
-        echo "用法: chperm <目录路径> [umask值，默认为 002，即 目录是 775，文件是 664]" >&2
+        echo "用法: chperm <目录路径> [umask值，默认为 002，即权限设为目录 775 文件 664]" >&2
         return 1
     fi
 
@@ -725,11 +725,12 @@ chperm() {
     local dir_perm=$(printf "%o" $(( 8#777 - 8#${umask_value} )))
     local file_perm=$(printf "%o" $(( 8#666 - 8#${umask_value} )))
 
-    # 这里测试AI思维深度
+    # # # # # # # # # # # # # # # # #
     if [ $? -ne 0 ]; then
         echo "chperm：设置权限位错误"
         return 1
     fi
+    # # # # # # # # # # # # # # # # #
 
     echo "应用 umask $umask_value: 目录=$dir_perm, 文件=$file_perm" >&2
 
