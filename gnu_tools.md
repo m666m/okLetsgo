@@ -8298,15 +8298,7 @@ Aria2 的命令行传输各种参数，设置复杂，一般都使用各种客�
 
     $ sudo dnf install aria2
 
-图形界面 uget，自动调用 aria2 支持bt下载，该软件目前仍然不完善，别用了
-
-    https://github.com/ugetdm/uget
-
-    $ sudo dnf install uget aria2
-
-    安装后设置选择，插件选 aria2 + curl 即可。
-
-推荐使用 AriaNg 把下载添加到aria2任务
+推荐客户端 AriaNg 把下载添加到 aria2 任务
 
     https://ariang.mayswind.net/zh_Hans/
         https://github.com/mayswind/AriaNg
@@ -8316,7 +8308,7 @@ Aria2 的命令行传输各种参数，设置复杂，一般都使用各种客�
 
         标准版适合在 Web 服务器中部署, 提供资源缓存和按需加载的功能.
 
-        单文件版适合本地使用, 您下载后只要在浏览器中打开唯一的 html 文件，在页面设置连接 aria2 的参数即可使用了.
+        单文件版适合本地使用, 您下载后只要在浏览器中打开唯一的 html 文件，在页面设置连接 aria2 的参数即可使用了。如果是在 macOS 使用，需要 系统设置 -> 隐私和安全 -> 本地网络：允许你的浏览器访问
 
         AriaNg Native 同样适合本地使用, 并且不需要使用浏览器.
 
