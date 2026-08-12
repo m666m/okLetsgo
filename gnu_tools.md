@@ -21889,8 +21889,6 @@ UTM 会自动通过 virtiofs 共享宿主的 Rosetta 运行时，并注册 Linux
 
 ### macOS 使用虚拟机
 
-目前 macOS 同时只能运行两个虚拟机，估计是为了系统资源管理方便。
-
 Parallels Desktop 订阅制付费软件，性能和兼容性最好，支持 DirectX 游戏
 
         https://www.parallels.com/products/desktop/
@@ -21986,6 +21984,8 @@ tart 的镜像来源：
     macos-runner:tahoe    预装了多个版本的 Xcode，并集成了 xcodes 工具方便切换。    CI/CD 流水线，需要灵活测试不同 Xcode 版本的项目。
 
 如果想使用除了 cirruslabs 之外的第三方镜像，在公共 OCI 仓库中，使用 “tart” 或 “cirruslabs” 或 “macos” 等关键词进行搜索，也可能找到社区分享的镜像。
+
+NOTE: macOS 限制最多同时运行2个macOS虚拟机，运行其它操作系统并不限制虚拟机数量。
 
 **示例：创建一个名为 ubuntu-vm 的虚拟机**
 
