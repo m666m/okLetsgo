@@ -16657,6 +16657,9 @@ Scrcpy 可以通过 Linux 桌面显示和控制 Android 设备，类似 Samsung 
 
     https://zhuanlan.zhihu.com/p/606448877
 
+    Android-Dex 支持多种操作系统，基于 Scrcpy 更接近 Samsung Dex
+        https://github.com/Shrey113/Android-Dex
+
 Scrcpy 支持 Windows/Linux/macOS 多个平台，需要你的手机打开 usb 调试模式，这样  Scrcpy 才可以操作你的手机屏幕。
 
 如果感觉不安全，只是需要在桌面操作你的手机的基本功能，详见章节 [KDE connect 局域网内共享手机的资源]。
