@@ -21502,6 +21502,14 @@ xcode-select 只是安装了 Command Line Tools：
 
 这会强制让命令行工具（clang、git 等）使用 Xcode.app 内的完整工具链和 SDK。
 
+编译软件的限制情况：
+
+    从 2012 年后 Xcode 和“Command Line Tools for Xcode” 才是免费可用的，之前苹果都要求付费，想自编开源软件还是比较麻烦的。
+
+    对自编软件的运行，苹果目前强制要求签名，或者显式设置信任才能运行，参见 [执行下载的或自编译程序提示禁止执行]。
+
+    自编软件如果要发行，苹果目前要求注册缴费，年费 99$。
+
 ### macOS 运行 x86 Windows/Linux 软件
 
     本章节的讨论的 Windows/Linux 程序指传统的 x86 体系的软件
