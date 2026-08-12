@@ -21983,15 +21983,15 @@ tart 的镜像来源：
 示例：创建一个名为 ubuntu-vm 的虚拟机
 
     tart clone ghcr.io/cirruslabs/ubuntu:latest ubuntu-vm
-
-        tart clone  ghcr.nju.edu.cn/cirruslabs/ubuntu:latest ubuntu-vm
+        tart clone ghcr.m.daocloud.io/cirruslabs/ubuntu:latest ubuntu-vm
+        tart clone ghcr.nju.edu.cn/cirruslabs/ubuntu:latest ubuntu-vm
 
     # 默认磁盘大小为 20 GB，总得扩展下
     tart set ubuntu-vm --disk-size 50
 
 注意：Linux虚拟机下，共享目录会挂载到 /mnt/shared 目录中
 
-    tart run  --dir=www1:~/project1/www ubuntu-vm
+    tart run --dir=www1:~/project1/www ubuntu-vm
 
     使用前需要先手动挂载虚拟文件系统
 
