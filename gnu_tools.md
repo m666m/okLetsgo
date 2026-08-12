@@ -21912,7 +21912,7 @@ VirtualBox
         https://github.com/openai/tart
             原 https://github.com/cirruslabs 被收购了
 
-安装需要信任第三方仓库：
+目前只在 github 提供，安装时需要 brew 信任第三方仓库：
 
     # https://github.com/cirruslabs/homebrew-cli
     $ brew trust cirruslabs/cli
@@ -21935,6 +21935,12 @@ VirtualBox
 运行虚拟机，并把宿主机的 ~/src/project 目录挂载到虚拟机的 '/Volumes/My Shared Files' 下：
 
     $ tart run --dir=project:~/src/project tahoe-base
+
+    可以换个地方：
+
+        sudo umount "/Volumes/My Shared Files"
+        mkdir ~/workspace
+        mount_virtiofs com.apple.virtio-fs.automount ~/workspace
 
 会自动弹出一个独立的窗口，显示虚拟机的桌面，这个是原生 GUI 窗口，直接操作即可使用。
 
@@ -21974,6 +21980,48 @@ tart 的镜像来源：
 
 如果想使用除了 cirruslabs 之外的第三方镜像，在公共 OCI 仓库中，使用 “tart” 或 “cirruslabs” 或 “macos” 等关键词进行搜索，也可能找到社区分享的镜像。
 
+示例：创建一个名为 ubuntu-vm 的虚拟机
+
+    tart clone ghcr.io/cirruslabs/ubuntu:latest ubuntu-vm
+
+        tart clone  ghcr.nju.edu.cn/cirruslabs/ubuntu:latest ubuntu-vm
+
+    # 默认磁盘大小为 20 GB，总得扩展下
+    tart set ubuntu-vm --disk-size 50
+
+注意：Linux虚拟机下，共享目录会挂载到 /mnt/shared 目录中
+
+    tart run  --dir=www1:~/project1/www ubuntu-vm
+
+    使用前需要先手动挂载虚拟文件系统
+
+        sudo mkdir /mnt/shared
+        sudo mount -t virtiofs com.apple.virtio-fs.automount /mnt/shared
+
+    可以加入 /etc/fstab 配置为启动时挂载：
+
+        com.apple.virtio-fs.automount /mnt/shared virtiofs rw,relatime 0 0
+
+首次启动的默认登录用户名和密码均为 admin。出于安全考虑，建议你登录后立即修改密码。
+
+如果从 ISO 文件手动安装 ubuntu：
+
+    tart create --linux ubuntu
+
+    tart run --disk /path/to/your/ubuntu.iso ubuntu
+
+按照屏幕提示完成安装。系统会引导你完成语言、时区、用户创建等设置。
+
+初始设置完成后，请确保你的虚拟机可以通过在虚拟机内执行以下命令通过SSH连接：
+
+    sudo apt update
+    sudo apt install -y openssh-server
+    sudo ufw allow ssh
+
+日常运行虚拟机：
+
+    tart run ubuntu
+
 ##### 实现快照功能
 
 Tart 虚拟机支持快照功能。
@@ -22006,6 +22054,10 @@ Tart 虚拟机支持快照功能。
 Tart 本来是 Cirrus Labs 的 CI 工作流，为了配套的自动化编译环境搞的，Tart 的一切操作都通过 `tart` 命令完成，非常便于编写脚本，集成到你的开发或 CI/CD 工作流中，或者给 Agent 提供一个隔离的运行环境。
 
     https://tart.run/integrations/cirrus-cli/
+
+还有个专门的命令行工具 orchard 来同时管理多平台的多个虚拟机
+
+    https://tart.run/orchard/quick-start/
 
 .cirrus.yaml
 
