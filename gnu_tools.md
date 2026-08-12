@@ -20550,6 +20550,8 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
     关闭窗口    ⌘ + W    关闭当前窗口，如果是最后一个窗口，是彻底退出还是保持后台由应用自行决定
 
+    需要配合设置：系统设置 → 通用 → App 后台活动，禁止可以后台运行的程序
+
 文字编辑：
 
     保存： cmd + s
