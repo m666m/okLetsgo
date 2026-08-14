@@ -22196,6 +22196,8 @@ UTM 的两种运行方式：
         https://colima.run/
 
         基于 https://github.com/lima-vm/lima
+                https://lima-vm.io/
+                    中文文档 https://lima-vm.cn/docs/reference/limactl_completion_bash/
 
     只用 1GB 内存、5GB 磁盘，几秒即可启动
 
