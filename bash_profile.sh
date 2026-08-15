@@ -19,7 +19,7 @@
 #       如果在网络不卡的环境，应该屏蔽掉函数 poor_connection 的执行
 #
 # 4、脚本比较长，其实结构不复杂
-#   先引用配置文件配置几个环节变量，非交互式登录至此就退出了，
+#   先引用配置文件配置几个环境变量，非交互式登录至此就退出了，
 #   后面的设置都是给交互式登录，为了使用习惯的用户自定义设置：
 #   一、准备环境信息，方便后面使用
 #   二、适用性方面的调整和环境设置，涉及颜色方案、字符编码、常用工具设置等
@@ -93,12 +93,12 @@ unset local_path
 
 # current_shell：当前脚本环境
 if [ -n "$BASH_VERSION" ]; then
-    current_shell="bash"
+    _MYPROMPT_CURRENT_SHELL="bash"
 elif [ -n "$ZSH_VERSION" ]; then
-    current_shell="zsh"
+    _MYPROMPT_CURRENT_SHELL="zsh"
 else
     # 其实都不做专门的处理，比如 ksh、fish 等
-    current_shell=$(ps -p $$ -o comm= | sed 's/^-//')
+    _MYPROMPT_CURRENT_SHELL=$(ps -p $$ -o comm= | sed 's/^-//')
 fi
 
 # os_type：当前操作系统类型
@@ -107,26 +107,26 @@ case "$os_name" in
     Linux*)
         # linux 细分几个类型
         if command -v vcgencmd >/dev/null 2>&1; then
-            os_type="raspi"
+            _MYPROMPT_OS_TYPE="raspi"
         elif uname -r | grep -i Microsoft >/dev/null 2>&1; then
-            os_type="wsl"
+            _MYPROMPT_OS_TYPE="wsl"
         else
-            os_type="linux"
+            _MYPROMPT_OS_TYPE="linux"
         fi
         ;;
     Darwin*)
-        os_type="macos"
+        _MYPROMPT_OS_TYPE="macos"
         ;;
     FreeBSD*)
-        os_type="freebsd"
+        _MYPROMPT_OS_TYPE="freebsd"
         ;;
     MSYS_NT*|MINGW32_NT*|MINGW64_NT*|CYGWIN_NT*)
         # Windows git bash(mintty)/MSYS2
-        os_type="windows"
+        _MYPROMPT_OS_TYPE="windows"
         ;;
     *)
         echo "Warning: Unknown OS detected: $os_name" >&2
-        os_type="unknown"
+        _MYPROMPT_OS_TYPE="unknown"
         ;;
 esac
 unset os_name
@@ -161,7 +161,7 @@ poor_connection() {
     export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
     export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
 
-    if [[ $os_type = 'macos' ]]; then
+    if [[ $_MYPROMPT_OS_TYPE = 'macos' ]]; then
         # Homebrew 国内镜像
         # https://mirrors.ustc.edu.cn/help/brew.git.html
         export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
@@ -258,14 +258,14 @@ curlgh() {
 
 #######################
 # 树莓派下的环境设置
-if  [[ $os_type = 'raspi' ]]; then
+if  [[ $_MYPROMPT_OS_TYPE = 'raspi' ]]; then
     # 树莓派在纯终端下也会休眠显示器，本机登录后必须设置禁用屏幕休眠
     setterm --powerdown 0
 fi
 
 #######################
 # macOS 下的环境设置
-if [[ $os_type = 'macos' ]]; then
+if [[ $_MYPROMPT_OS_TYPE = 'macos' ]]; then
     # Homebrew 下情况特殊，其安装的软件目录是区别于系统自带的bash目录，以保持隔离。
     # 先设置 Homebrew 的环境变量，并且应该根据对应架构切换，在使用 x86 容器镜像或 Windows 游戏时常用
     if [ "$(arch)" = "arm64" ]; then
@@ -283,7 +283,7 @@ if [[ $os_type = 'macos' ]]; then
     #   安装后工具链的命令都加 g，如 GNU ls 是 gls，dircolors 是 gdircolors 以避免与系统 BSD 命令冲突。
     #   另外需要注意 BSD/GNU 版本下有些命令的参数是不一样的，注意区别。
 
-    if [[ $current_shell = 'bash' ]]; then
+    if [[ $_MYPROMPT_CURRENT_SHELL = 'bash' ]]; then
         if [ "${BASH_VERSION%%.*}" -lt 5 ]; then
             echo 'macOS 预装的 bash 版本老旧，建议 `brew install bash` 使用 /opt/homebrew/bin/bash'
         else
@@ -334,7 +334,7 @@ command -v vi >/dev/null || {
 
 # 命令行开启 vi 模式，按esc后用vi中的上下左右键选择历史命令
 # zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
-[[ $current_shell != 'zsh' ]] && set -o vi
+[[ $_MYPROMPT_CURRENT_SHELL != 'zsh' ]] && set -o vi
 
 # 有些命令使用变量 EDITOR 指定的编辑器，一般是 nano，强制指定为 vi
 export EDITOR=/usr/bin/vi
@@ -364,7 +364,7 @@ _comp_ssh_hosts() {
     COMPREPLY=($(compgen -W "$hosts" -- "$cur"))
 }
 
-if [[ $current_shell != 'zsh' ]]; then
+if [[ $_MYPROMPT_CURRENT_SHELL != 'zsh' ]]; then
 
     # Linux bash 使用配套的 bash-completion 包，按理说应该自动惰性加载，不需要手工操作。
     # 有时候不起作用，强制引用下，依次回落：
@@ -386,7 +386,7 @@ fi
 # 功能增强：不依赖 bash-completion 包，Hermes Agent 等命令的自动完成可以自行引用
 # hermes 的速度较慢，暂时屏蔽掉
 # 已经安装了 bash-completion 包则 docker 不需要单独执行一次
-#if [[ $current_shell != 'zsh' ]]; then
+#if [[ $_MYPROMPT_CURRENT_SHELL != 'zsh' ]]; then
 #    if command -v hermes >/dev/null; then
 #        eval "$(hermes completion bash)"
 #        source <(docker completion bash)
@@ -402,7 +402,7 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -quit >/dev/null 2>&1; then
     # macOS 下把 ssh 密钥加入钥匙圈，并接管 ssh-agent 复用
     # 1、ssh-add --apple-use-keychain ~/.ssh/id_rsa
     # 2、配合 SSH 配置文件的 Host * 段添加 UseKeychain yes 和 AddKeysToAgent yes 可以不用再输入保护密码了
-    if [[ $os_type = 'macos' ]]; then
+    if [[ $_MYPROMPT_OS_TYPE = 'macos' ]]; then
         # macOS 默认集成了 launchd 来启动 ssh-agent，还负责设置 SSH_AUTH_SOCK 变量。
         # 但是重启电脑后，需要手动执行一次加载密钥的命令
         # 以下代码参考自下面的 默认 Linux tty 环境复用 ssh-agent 进程
@@ -443,6 +443,8 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -quit >/dev/null 2>&1; then
 
         fi
 
+        unset gsversion
+
     # KDE 桌面环境使用 systemd 单元文件 ssh-agent.service 实现复用 ssh-agent 进程
     elif [[ "$XDG_CURRENT_DESKTOP" == *"KDE"* ]]; then
 
@@ -450,13 +452,13 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -quit >/dev/null 2>&1; then
         # 启动默认的 /usr/bin/ssh-agent -D -a /run/user/1000/ssh-agent.socket
 
         # 实现复用需要设置变量指向ssh密钥代理的进程
-        # 需要两个变量，服务 ssh-agent.service 只设置了一个，很有个性
+        # 需要两个变量，但服务 ssh-agent.service 只设置了 SSH_AUTH_SOCK
         # export SSH_AUTH_SOCK="$(ls $XDG_RUNTIME_DIR/ssh-agent.socket |head -1)"
         # export SSH_AGENT_PID="$(ps -ef | grep 'ssh-agent -D -a' | grep -v grep | awk '{print $2}')"
         # 所以，目前必须手动设置该变量，获取服务进程的 PID
-        AGENT_PID=$(systemctl --user show ssh-agent.service --property=ExecMainPID | awk -F= '{print $2}')
+        agent_pid=$(systemctl --user show ssh-agent.service --property=ExecMainPID | awk -F= '{print $2}')
         # 通过进程树找到 ssh-agent 的实际 PID（需安装 pstree）
-        SSH_AGENT_PID=$(pstree -p $AGENT_PID | grep -oP 'ssh-agent\(\K\d+')
+        SSH_AGENT_PID=$(pstree -p $agent_pid | grep -oP 'ssh-agent\(\K\d+')
         export SSH_AGENT_PID
 
         # 这个 ksshaskpass 没用
@@ -473,13 +475,13 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -quit >/dev/null 2>&1; then
             :
         fi
 
-        unset AGENT_PID
+        unset agent_pid
 
     # Windows 下使用 putty 桌面程序 pagent 加载密钥，
     # Windows git bash(mintty) 利用 ssh-pageant 连接到 pagent.exe 进程，复用其缓存的密钥，
     # 这样不需要运行 ssh-agent 并执行 `ssh-add` 那套流程。
     # 来自章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
-    elif [[ $os_type = 'windows' ]]; then
+    elif [[ $_MYPROMPT_OS_TYPE = 'windows' ]]; then
 
         if ! ps -s | grep -q ssh-pageant; then
             # ssh-pageant 未运行视作开机后第一次执行 shell 登录，清理掉上次使用过的临时文件，否则会被加载
@@ -605,13 +607,14 @@ fi
 #######################
 # 功能增强：统一引用环境变量文件，其内容是 export api_key=xxxx
 envload() {
-    # (umask 077; mkdir ~/.envs)
+    # chmod 700 ~/.envs
+    # chmod 600 ~/.envs/*
     # 入参是文件名，则默认在 $HOME/.envs/ 下
     # 入参包含 / 则认为是绝对路径，直接使用
     if [ -z "$1" ]; then
-        echo "Usage: envload <name|path>"
-        echo "  name   - load from ~/.envs/<name>"
-        echo "  path   - load from absolute/relative path (must contain /)"
+        echo "Usage: envload <name|path>" >&2
+        echo "  name   - load from ~/.envs/<name>" >&2
+        echo "  path   - load from absolute/relative path (must contain /)" >&2
         return 1
     fi
 
@@ -623,13 +626,13 @@ envload() {
     fi
 
     if [ ! -f "$file" ]; then
-        echo "✗ Env file not found: $file"
-        echo "Available: $(ls -m "$HOME/.envs" 2>/dev/null)"
+        echo "✗ Env file not found: $file" >&2
+        echo "Available: $(ls -m "$HOME/.envs" 2>/dev/null)" >&2
         return 1
     fi
 
     source "$file"
-    echo "✓ Loaded env: $(basename "$file")"
+    echo "✓ Loaded env: $(basename "$file")" >&2
 }
 # unset 环境变量文件，只处理开头是 export 的行
 envunload() {
@@ -691,7 +694,7 @@ alias trees3='echo "[目录树，最多3级，显示目录和可执行文件的�
 alias treeh='echo "[树形列出目录及文件大小，最多2级]" >&2; tree --du -h -L 2'
 alias treeh3='echo "[树形列出目录及文件大小，最多3级]" >&2; tree --du -h -L 3'
 
-if [[ $os_type = 'macos' ]]; then
+if [[ $_MYPROMPT_OS_TYPE = 'macos' ]]; then
     alias pstreep='echo "[进程树，列出pid所在的进程树]" >&2; pstree -p'
     alias pstrees='echo "[进程树，列出相关名称所在的进程树]" >&2; pstree -s'
 else
@@ -739,7 +742,7 @@ chperm() {
                     -o -type f -exec chmod "$file_perm" {} +
 
     if [ $? -ne 0 ]; then
-        echo -e "\n    设置权限失败，请尝试提权执行: find $target_dir -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +" >&2
+        printf "\n    设置权限失败，请尝试提权执行: find $target_dir -type d -exec chmod $dir_perm {} + -o -type f -exec chmod $file_perm {} +\n" >&2
         return 1
     fi
 }
@@ -765,7 +768,7 @@ cdw() {
 
 # 切换桌面模式和命令行模式 --- 使用 systemd 控制引导的系统都可以这么做
 swc() {
-    if [[ $os_type != 'linux' && $os_type != 'raspi' ]] || [[ ! -d /run/systemd/system ]]; then
+    if [[ $_MYPROMPT_OS_TYPE != 'linux' && $_MYPROMPT_OS_TYPE != 'raspi' ]] || [[ ! -d /run/systemd/system ]]; then
         return
     fi
 
@@ -816,7 +819,7 @@ alias chronys='echo "[虚拟机跟宿主机对时]" >&2; sudo chronyc makestep'
 
 alias viw='echo "[vi 后悔药：等保存了才发现是只读，运行以下命令]" >&2; echo ":w !sudo tee %"'
 
-alias myip='echo "[浏览器打开 https://test.ustc.edu.cn/ 可看到自己的ip和测速]" >&2; curl ipv4.icanhazip.com 2>/dev/null;curl ipv6.icanhazip.com 2>/dev/null'
+alias myip='echo "[浏览器打开 https://test.ustc.edu.cn/ 可看到自己的ip和测速]" >&2; curl -s ipv4.icanhazip.com 2>/dev/null;curl -s ipv6.icanhazip.com 2>/dev/null'
 
 # 命令行查天气
 # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
@@ -944,7 +947,7 @@ token_put() {
     fi
 
     # --- macOS ---
-    if [[ $os_type = 'macos' ]]; then
+    if [[ $_MYPROMPT_OS_TYPE = 'macos' ]]; then
         # -U : 如果已存在则更新，-T : 只允许 /usr/bin/security 访问（避免弹窗）
         security add-generic-password -T /usr/bin/security \
           -U -a "$USER" -s "$name" -w "$token" 2>/dev/null
@@ -957,7 +960,7 @@ token_put() {
 
     # --- Linux GNOME ---
     elif [[ "$XDG_CURRENT_DESKTOP" == *"GNOME"* ]] && command -v secret-tool >/dev/null 2>&1; then
-        echo -n "$token" | secret-tool store --label="token $name" service "$name" 2>/dev/null
+        printf '%s' "$token" | secret-tool store --label="token $name" service "$name" 2>/dev/null
         if [[ $? -eq 0 ]]; then
             echo >&2 "✓ 已存入 GNOME Keyring (service=$name)"
         else
@@ -968,7 +971,7 @@ token_put() {
     # --- Linux KDE ---
     elif [[ "$XDG_CURRENT_DESKTOP" == *"KDE"* ]] && command -v kwallet-query >/dev/null 2>&1; then
         # 若文件夹不存在会自动创建
-        echo -n "$token" | QT_QPA_PLATFORM=offscreen kwallet-query -w kdewallet -f tokens -e "$name" -p 2>/dev/null
+        printf '%s' "$token" | QT_QPA_PLATFORM=offscreen kwallet-query -w kdewallet -f tokens -e "$name" -p 2>/dev/null
         if [[ $? -eq 0 ]]; then
             echo >&2 "✓ 已存入 KDE Wallet (wallet=kdewallet, folder=tokens, entry=$name)"
         else
@@ -990,7 +993,7 @@ token_get() {
     fi
 
     # --- macOS ---
-    if [[ $os_type = 'macos' ]]; then
+    if [[ $_MYPROMPT_OS_TYPE = 'macos' ]]; then
         security find-generic-password -a "$USER" -s "$name" -w 2>/dev/null
 
     # --- Linux GNOME ---
@@ -1123,8 +1126,19 @@ alias ggsdb='echo "[分离式签名，生成二进制.sig签名文件，默认�
 alias ggsdt='echo "[分离式签名，生成文本.asc签名文件，默认选择当前可用的私钥签名，可用 -u 指定]" >&2; gpg --armor --detach-sign'
 alias ggf='echo "[查看公钥的指纹以便跟跟网站发布的核对]" >&2; gpg --with-fingerprint --show-keys --keyid-format=long'
 ggkd() {
-    echo "[从公钥服务器下载指定公钥到本地 $1.gpg]"
-    gpg --keyserver hkps://keys.openpgp.org --no-default-keyring --keyring ./$1.gpg --recv-keys
+    local raw=${1:-}
+    local keyid=${raw//[[:space:]]/}
+
+    if [[ ! $keyid =~ ^[0-9A-Fa-f]+$ ]]; then
+        echo "用法: ggkd <keyid/fingerprint>" >&2
+        return 1
+    fi
+
+    echo "[从公钥服务器下载指定公钥到本地 ${keyid}.gpg]"
+    gpg --keyserver hkps://keys.openpgp.org \
+        --no-default-keyring \
+        --keyring "./${keyid}.gpg" \
+        --recv-keys "$keyid"
 }
 alias ggvs='echo "[使用临时钥匙圈验证文件签名，如 ggvs ./fedora.gpg xxx.sign xxx.zip 或 ggvs ./fedora.gpg xxx.CHECHSUM]" >&2; gpgv --keyring'
 alias ggv='echo "[验证签名]" >&2; gpg --verify'
@@ -1177,7 +1191,7 @@ fpks() {
 
 # 容器化
 # Debian 系skopeo命令的版本太旧了，也不想开通 Backports 仓库，直接用容器运行
-if [[ $os_type != 'wsl' && -f /etc/debian_version ]]; then
+if [[ $_MYPROMPT_OS_TYPE != 'wsl' && -f /etc/debian_version ]]; then
     alias skopeo='docker run --rm \
       -v /var/run/docker.sock:/var/run/docker.sock \
       -v $HOME/.docker/config.json:/root/.docker/config.json:ro \
@@ -1259,7 +1273,7 @@ pdmrcpp() {
 
 # distrobox 这词打不快
 alias dbox='distrobox'
-alias dboxe='echo "[在distrobox里运行一个命令]" >&2; distrobox-enter --'
+alias dboxe='echo "[distrobox在默认容器里运行一个命令]" >&2; distrobox-enter --'
 dboxstop() {
     echo "Stop all distrobox container:"
     #local container_name=$(distrobox-list --no-color |sed 1d |cut -d '|' -f 2)
@@ -1278,7 +1292,7 @@ dboxstop() {
 # 使 mintty 下执行普通的 Windows 控制台程序，用 winpty 辅助可以正常显示
 # 如果你的终端软件开启了 ConPTY=on 选项则不需要这个辅助，暂无法在脚本中判断。
 # 适用于 Windows git bash(mintty.exe) 等 Windows 下的终端软件
-if [[ $os_type = 'windows' ]] && ! grep '^ConPTY=on' ~/.minttyrc >/dev/null 2>&1; then
+if [[ $_MYPROMPT_OS_TYPE = 'windows' ]] && ! grep '^ConPTY=on' ~/.minttyrc >/dev/null 2>&1; then
     alias python="winpty python"
     alias ipython="winpty ipython"
     alias mysql="winpty mysql"
@@ -1313,7 +1327,7 @@ rmjunk() {
 }
 
 # macOS 下常用操作
-if [[ $os_type = 'macos' ]]; then
+if [[ $_MYPROMPT_OS_TYPE = 'macos' ]]; then
     alias arch86='echo "[快捷执行 x86 架构命令]" >&2; arch -x86_64 '
     alias archs='echo "[进入 x86 架构的子shell]" >&2; arch -x86_64 zsh'
     # 快捷执行 x86 架构 brew
@@ -1377,13 +1391,13 @@ PS1conda_env_name() {
     #       禁止 conda 进入命令行提示符时自动激活base环境，以方便检测 $CONDA_DEFAULT_ENV 变量
     #           conda config --set auto_activate_base false
     # 详见 [bash 命令行提示符显示 python 环境名](gnu_tools)
-    [[ -n $CONDA_DEFAULT_ENV ]] && printf "(conda:%s)" $CONDA_DEFAULT_ENV
+    [[ -n $CONDA_DEFAULT_ENV ]] && printf '(conda:%s)' "$CONDA_DEFAULT_ENV"
 }
 
 # virtualenv 自定义环境名格式，禁止 activate 命令脚本中在 PS1 变量添加环境名称
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 PS1virtualenv_envname() {
-    [[ -n $VIRTUAL_ENV ]] && printf "(venv:%s)" $(basename $VIRTUAL_ENV)
+    [[ -n $VIRTUAL_ENV ]] && printf '(venv:%s)' "$(basename $VIRTUAL_ENV)"
 }
 
 PS1git_branch_name() {
@@ -1402,7 +1416,7 @@ PS1git_branch_name() {
     #   如果自定义命令提示符，可以在PS1变量拼接中调用函数 $(__git_ps1 "(%s)") ，
     #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
     if command -v __git_ps1 >/dev/null 2>&1; then
-        # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先清一下，后面也不能用它的返回值判断是否执行成功
+        # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先执行个无意义命令清一下执行状态，后面也不能用它的返回值判断是否执行成功
         # NOTE:如果用 local 声明变量 _pp_git_pt，就无法取到执行语句的返回值了
         _pp_git_pt=$(>/dev/null; __git_ps1 '%s' 2>/dev/null)
         if [ "$?" = "0" ]; then
@@ -1431,7 +1445,7 @@ PS1git_branch_name() {
         '1')
             # 如果是 detached HEAD，则显示标签名或 commit id
             local headhash="$(git rev-parse HEAD)"
-            local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a $headhash |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
+            local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a "$headhash" |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
             # 有标签名就显示标签否则显示 commit id
             if [[ -n "$tagname" ]]; then
                 printf "%s" "@${tagname}"
@@ -1467,7 +1481,7 @@ PS1git_branch_prompt() {
         local notify_flag=$(if ! [ -z "$(git status --porcelain)" ]; then printf "%s" '<?>'; else printf "%s" ''; fi)
 
         # 拼接后输出 git 工作区状态和分支名
-        printf " git:%s%s" $notify_flag $branch
+        printf " git:%s%s" "$notify_flag" "$branch"
     fi
 }
 
@@ -1483,7 +1497,7 @@ PS1_host_name() {
     fi
 
     # 如果是 FQDN 格式主机名只显示前段，如 abc.local 显示 abc
-    local raw_host_name=$(echo ${HOSTNAME%%.*})
+    local raw_host_name=${HOSTNAME%%.*}
 
     # 在交互式容器中特殊处理，从 HOSTNAME 提取出宿主机的主机名
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
@@ -1527,7 +1541,7 @@ PS1_container_name() {
         # $CONTAINER_ID
         printf '\033[0;44m\U0001f4e6<%s>' $(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")
     elif  [ -e /.dockerenv ]; then
-        printf '\033[0;44m\U0001f4e6<%s>' $(cat /run/.dockerenv | grep -oP "(?<=name=\")[^\";]+")
+        printf '\033[0;44m\U0001f4e6<%s>' $(cat /.dockerenv | grep -oP "(?<=name=\")[^\";]+")
     fi
 }
 
@@ -1552,7 +1566,7 @@ PS1raspi_warn_info() {
 
     # [[ $(command -v vcgencmd >/dev/null 2>&1; echo $?) = "0" ]] || return
     # command -v vcgencmd >/dev/null 2>&1 || return
-    [[ $os_type = 'raspi' ]] || return
+    [[ $_MYPROMPT_OS_TYPE = 'raspi' ]] || return
 
     local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
 
@@ -1584,19 +1598,19 @@ PS1raspi_warn_prompt() {
 }
 
 # 2、终于可以设置双行彩色命令行提示符 PS1 了
-if [[ $current_shell = 'zsh' ]]; then
+if [[ $_MYPROMPT_CURRENT_SHELL = 'zsh' ]]; then
     # zsh 有自己的 powerlevel10k 设置命令行提示符
     :
 
-elif [[ $os_type = 'windows' ]]; then
+elif [[ $_MYPROMPT_OS_TYPE = 'windows' ]]; then
     # Windows git bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
     PS1="\n${ccBLUE}╭─$ccRED\$(PS1exit_code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda_env_name)\$(PS1virtualenv_envname)\$(PS1git_branch_prompt)${ccBLUE}$(PS1gitbash_newline)──$ccWHITE\$ $ccNORMAL"
 
-elif [[ $os_type = 'wsl' ]]; then
+elif [[ $_MYPROMPT_OS_TYPE = 'wsl' ]]; then
     # Windows wsl 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
     PS1="\n${ccBLUE}╭─$ccRED\$(PS1exit_code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccYELLOW@WSL_\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda_env_name)\$(PS1virtualenv_envname)\$(PS1git_branch_prompt)\n${ccBLUE}╰─$ccWHITE\$ $ccNORMAL"
 
-elif  [[ $os_type = 'raspi' ]]; then
+elif  [[ $_MYPROMPT_OS_TYPE = 'raspi' ]]; then
     # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 树莓派温度告警 python环境 git分支及状态
     PS1="\n${ccBLUE}┌─$ccRED\$(PS1exit_code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccRED\$(PS1raspi_warn_prompt)$ccYELLOW\$(PS1conda_env_name)\$(PS1virtualenv_envname)\$(PS1git_branch_prompt)\n${ccBLUE}└──$ccWHITE\$ $ccNORMAL"
 
@@ -1607,8 +1621,3 @@ else
 fi
 
 ##############################################
-# 退出前清理无用的变量定义
-
-unset current_shell
-unset os_type
-unset gsversion
