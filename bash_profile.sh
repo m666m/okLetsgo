@@ -213,13 +213,13 @@ curlgh() {
         # 处理页面浏览地址，例如 https://github.com/m666m/ask/blob/main/install.sh
         # 转换为原始文件地址   https://raw.githubusercontent.com/m666m/ask/main/install.sh
         if [[ "$url" == *"/blob/"* ]]; then
-            raw_url=$(echo "$url" | sed 's#https://github.com/#https://raw.githubusercontent.com/#; s#/blob/#/#')
+            raw_url=$(printf '%s\n' "$url" | sed 's#https://github.com/#https://raw.githubusercontent.com/#; s#/blob/#/#')
 
         # 处理 /raw/ 格式的浏览地址，自动去除 /refs/heads/ 和 /refs/tags/ 部分
         # https://github.com/m666m/ask/raw/refs/heads/main/install.sh
         #   → https://raw.githubusercontent.com/m666m/ask/main/install.sh
         elif [[ "$url" == *"/raw/"* ]]; then
-            raw_url=$(echo "$url" | sed -E 's#https://github.com/([^/]+)/([^/]+)/raw/(refs/(heads|tags)/)?([^/]+)/(.*)#https://raw.githubusercontent.com/\1/\2/\5/\6#')
+            raw_url=$(printf '%s\n' "$url" | sed -E 's#https://github.com/([^/]+)/([^/]+)/raw/(refs/(heads|tags)/)?([^/]+)/(.*)#https://raw.githubusercontent.com/\1/\2/\5/\6#')
         else
             echo "[curlgh] 不支持的 GitHub 链接格式: $url" >&2
             return 1
@@ -301,7 +301,15 @@ if [[ $_MYPROMPT_OS_TYPE = 'macos' ]]; then
 fi
 
 # Debian 下的 distrobox 环境不继承宿主机的 LANG 变量，导致图标字体不能正确显示
-[[ -n $LANG ]] || export LANG=en_US.UTF-8
+# 有些容器/服务器没有 en_US.UTF-8，但有 C.utf8
+#[[ -n $LANG ]] || export LANG=en_US.UTF-8
+if [[ -z "$LANG" ]]; then
+    if locale -a 2>/dev/null | grep -qi 'en_US\.UTF'; then
+        export LANG=en_US.UTF-8
+    else
+        export LANG=C.utf8
+    fi
+fi
 
 # 在终端模拟器中命令行的字符显示彩色
 # 显式设置终端启用256color，防止终端工具未设置或设置的太低。若终端工具能开启透明选项，则显示的效果更好
@@ -311,7 +319,7 @@ export COLORTERM=truecolor
 # 参考自 Debian 的 .bashrc 脚本中，常用命令开启彩色选项
 # enable color support of ls and also add handy aliases
 # 整体仍然受终端模拟器对16种基本颜色的设置控制，也就是说，在终端模拟器中使用颜色方案，配套修改 dir_colors ，让更多的文件类型使用彩色显示
-if [ -x /usr/bin/dircolors ]; then
+if command -v dircolors >/dev/null 2>&1; then
 
     # 下载使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
     if [[ ! -f ~/.dir_colors ]]; then
@@ -397,7 +405,7 @@ fi
 # 功能增强：命令行使用 ssh 多会话复用 ssh 密钥代理
 # 设置变量指向ssh密钥代理的进程即可实现复用，参见章节 [多会话复用 ssh-agent 进程](ssh.md think)
 # 适用于 Linux bash / Windows git bash(mintty) / macOS
-if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -quit >/dev/null 2>&1; then
+if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
 
     # macOS 下把 ssh 密钥加入钥匙圈，并接管 ssh-agent 复用
     # 1、ssh-add --apple-use-keychain ~/.ssh/id_rsa
@@ -500,7 +508,7 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -quit >/dev/null 2>&1; then
     else
 
         # 代码来源 git bash auto ssh-agent
-        # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows
+        # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases?platform=windows#auto-launching-ssh-agent-on-git-for-windows
         #
         # You can run ssh-agent automatically when you open bash or Git shell.
         # Copy the following lines and paste them into one of your
@@ -836,7 +844,7 @@ alias ssht='echo "[ssh 连接tart虚拟机]" >&2;ssh vu@$(tart ip tahoe-base)'
 # curl
 # 如果在 zsh 下，养成给含 ?、* 等字符的 URL 加引号的习惯，否则会被变量展开。
 alias curls='echo "[curl http-get  不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕，跟踪重定向，可加 -O 保存到默认文件]" >&2; curl -fsSL'
-alias curld='echo "[curl http-post 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕]" >&2; curl -fsSd'
+alias curld='echo "[curl http-post: curld data url 不显示服务器返回的错误内容，静默信息不显示进度条，但错误信息打印到屏幕]" >&2; curl -fsS -d'
 
 # nmap
 alias nmaps='echo "[nmap 指定端口提供了什么类型的服务]" >&2; nmap -sV -p'
@@ -1015,10 +1023,11 @@ alias shasums='echo "[sha256sum 按校验和文件逐个校验，跳过缺失文
 shasumf() {
     # `shasumc abc.iso SHA256SUMS.txt`
     echo "[sha256sum，只下载了一个文件 $1，从校验和文件 $2 中抽出单个文件进行校验]"
-    sha256sum -c <(grep $1 $2)
+    sha256sum -c <(grep -F -- "$1" "$2")
 }
 shasumd() {
     echo "[sha256sum 对目录 $1 下的所有文件及子目录文件生成一个校验和文件 $2]"
+    : > "$2"
     find "$1" -type f -print0 | while IFS= read -r -d '' fname; do
         printf '%s\n' "$fname"
         sha256sum "$fname" >>"$2"
@@ -1417,7 +1426,7 @@ PS1git_branch_name() {
     #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
     if command -v __git_ps1 >/dev/null 2>&1; then
         # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先执行个无意义命令清一下执行状态，后面也不能用它的返回值判断是否执行成功
-        # NOTE:如果用 local 声明变量 _pp_git_pt，就无法取到执行语句的返回值了
+        # NOTE:如果用 local 声明变量 _pp_git_pt，就无法取到执行语句的返回值了 SC2155
         _pp_git_pt=$(>/dev/null; __git_ps1 '%s' 2>/dev/null)
         if [ "$?" = "0" ]; then
             # 如果是有效的 git 信息，这里就直接打印并退出函数
@@ -1433,7 +1442,7 @@ PS1git_branch_name() {
     # 一条命令取当前分支名
     # 命令 git symbolic-ref 在裸仓库或 .git 目录中运行不报错，都会打印出当前分支名，
     # 如果当前分支是分离的，返回 1,不在当前分支，返回 128
-    # NOTE:如果用 local 声明变量 _pp_branch_name，就无法取到执行语句的返回值了
+    # NOTE:如果用 local 声明变量 _pp_branch_name，就无法取到执行语句的返回值了 SC2155
     _pp_branch_name=$(git symbolic-ref --short -q HEAD 2>/dev/null)
     local exitcode="$?"
 
@@ -1445,12 +1454,12 @@ PS1git_branch_name() {
         '1')
             # 如果是 detached HEAD，则显示标签名或 commit id
             local headhash="$(git rev-parse HEAD)"
-            local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a "$headhash" |grep 'refs/tags' |awk '{print$1}'|awk -F'/' '{print$3}')"
+            local tagname="$(git for-each-ref --sort='-committerdate' --format='%(refname) %(objectname) %(*objectname)' |grep -a "$headhash" |grep 'refs/tags' |awk '{print $1}'|awk -F'/' '{print $3}')"
             # 有标签名就显示标签否则显示 commit id
             if [[ -n "$tagname" ]]; then
-                printf "%s" "@${tagname}"
+                printf "%s" "#${tagname}"
             else
-                printf "%s" "#${headhash}"
+                printf "%s" "@${headhash}"
             fi
             ;;
         *)
@@ -1620,4 +1629,4 @@ else
 
 fi
 
-##############################################
+#####################################################################
