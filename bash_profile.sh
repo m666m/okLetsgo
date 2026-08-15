@@ -405,7 +405,7 @@ fi
 # 功能增强：命令行使用 ssh 多会话复用 ssh 密钥代理
 # 设置变量指向ssh密钥代理的进程即可实现复用，参见章节 [多会话复用 ssh-agent 进程](ssh.md think)
 # 适用于 Linux bash / Windows git bash(mintty) / macOS
-if ls "$HOME/.ssh"/id_* >/dev/null 2>&1; then
+if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -print -quit 2>/dev/null | grep -q .; then
 
     # macOS 下把 ssh 密钥加入钥匙圈，并接管 ssh-agent 复用
     # 1、ssh-add --apple-use-keychain ~/.ssh/id_rsa
