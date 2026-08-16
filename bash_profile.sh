@@ -1328,6 +1328,7 @@ rmjunk() {
     read confirm
 
     if [ "$confirm" = "y" ] || [ "$confirm" = "Y" ]; then
+        # 若文件变化会导致提示与删除不一致
         find . -type f \( -name ".DS_Store" -o -name "._*" \) -size -10k -delete 2>/dev/null
         echo "✅ 已全部删除"
     else
