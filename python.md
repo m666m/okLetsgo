@@ -641,15 +641,15 @@ uv 对这个命令实际操作的流程如下：
     $ uvx ruff check .
     $ uvx pytest
 
-### uv tool 安装用 pip 发布的程序
+### uv tool 全局安装用 pip 发布的程序
 
-只要该程序有导出即支持直接运行
+只要该程序有导出即支持这种安装方式，安装后的程序（如 black、ruff、httpie）在操作系统内全局可用，但运行环境还是隔离的，非常方便
 
     $ uv tool install ruff
 
     $ ruff
 
-用 `pip install <tool>` 全局安装工具（如 black、ruff、httpie）有两个大坑：
+代替传统的用 `pip install <tool>` 全局安装有两个大坑：
 
     依赖地狱：工具 A 要 click<8，工具 B 要 click>=8，全局环境立刻冲突。
 
