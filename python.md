@@ -587,9 +587,9 @@ uv 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 pyproj
 
 其实直接执行 `uv run main.py` 会在初次运行时自动执行 `uv sync`，不需要手动操作。
 
-### 使用 uv 运行没有项目环境的 python 程序
+### uv run 运行运行没有项目环境的 python 程序
 
-常见于只想快速运行一个简单的 .py 文件，而不想为它单独创建一个项目目录和 .venv。
+常见于只想快速运行一个本地的 .py 文件，而不想为它单独创建一个项目目录和 .venv。
 
 执行 `uv run script.py`，使用非常方便。
 
@@ -632,14 +632,6 @@ uv 对这个命令实际操作的流程如下：
         查看已装包              uv pip list
 
     注意：用 `uv pip install` 装的包是全局安装到你刚才选定的那个 Python 环境里的（可能是系统 Python 或某个已有 venv）。建议先手动创建虚拟环境隔离，避免污染全局。
-
-#### 使用 uvx
-
-非常适合 CI / 本地格式化等运行一次性工具（如 ruff、black、jupyter 等），它不需要项目中有 .venv，会自动创建一个临时的、隔离的虚拟环境（通常位于 ~/.cache/uv/...），通过子进程执行工具命令（同样注入正确的 PATH 和 VIRTUAL_ENV）
-
-    $ uvx black .
-    $ uvx ruff check .
-    $ uvx pytest
 
 ### uv tool 全局安装用 pip 发布的程序
 
@@ -691,6 +683,16 @@ uv tool 的解决思路是：为每个工具创建一个独立的隔离虚拟环
     $ uv tool run pycowsay "Hello from uv!"
 
     $ uv tool list  # 没有安装 pycowsay
+
+#### uvx 直接运行 python 包的导出工具
+
+uvx 是 `uv tool run` 的别名，它在一个临时、隔离的环境中运行已发布到 PyPI 上的命令行工具（如 ruff, black, httpie）,uvx 不适用于运行本地的 .py 文件。
+
+非常适合 CI / 本地格式化等运行一次性工具（如 ruff、black、jupyter 等），它不需要项目中有 .venv，会自动创建一个临时的、隔离的虚拟环境（通常位于 ~/.cache/uv/...），通过子进程执行工具命令（同样注入正确的 PATH 和 VIRTUAL_ENV）
+
+    $ uvx black .
+    $ uvx ruff check .
+    $ uvx pytest
 
 ## 何时用 conda/virtualenv/venv
 
