@@ -561,31 +561,53 @@ uv 使用 pyproject.toml，对应 requirements.txt：
 
     $ uv init
 
-    $ uv add -r requirements.txt  # 从 requirements.txt 导入所有的包依赖
+会创建 pyproject.toml 包依赖关系文件。
 
-如果需要加入某个包依赖，有两个方式：
+可以从 requirements.txt 导入所有的包依赖：
 
-`uv add your_package`：
+    $ uv add -r requirements.txt
 
-    会将包添加到项目的正式依赖列表中，包名及版本约束写入 pyproject.toml，然后安装该包到当前的 .venv 虚拟环境中。
+##### uv add 给当前项目添加依赖包
 
-    当你把项目发给别人，别人只需要执行 `uv sync` ，会自动安装这些包。
+会将指定的包添加到项目的正式依赖列表中，包名及版本约束写入 pyproject.toml，然后安装该包到当前的 .venv 虚拟环境中。
 
-`uv pip install`：
+    $ uv add numpy
 
-    纯粹将包安装到当前的 Python 环境（.venv）中，像一个“快捷操作”
+当你把项目拷贝到别的机器上执行，要先创建同样的虚拟环境，会自动安装这些包。
 
-    不会修改 pyproject.toml。不会更新 uv.lock 文件。仅仅是把包下载下来放进 .venv 里。
+    $ uv sync
 
-    适用场景：你只是临时想用一下某个工具（比如 ipdb 调试器、black 格式化工具），并不想让这个包成为项目正式代码的一部分，也不想污染项目的依赖声明文件。
-
-项目拷贝到别的机器上执行，要先创建同样的虚拟环境：
-
-    uv sync
-
-uv 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 pyproject.toml 中声明的所有依赖（如果可能会复用 ~/.cache/uv/ 下的缓存），然后再执行脚本即可 `uv run main.py`。
+uv sync 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 pyproject.toml 中声明的所有依赖（如果可能会复用 ~/.cache/uv/ 下的缓存），然后再执行脚本即可 `uv run main.py`。
 
 其实直接执行 `uv run main.py` 会在初次运行时自动执行 `uv sync`，不需要手动操作。
+
+##### uv pip install 在当前项目的环境中安装
+
+1、纯粹将包安装到当前项目的 Python 环境（.venv）中
+
+    $ uv pip install numpy
+
+像一个“快捷操作”，仅仅是把包下载下来安装到当前项目的 .venv 里，不会修改项目文件，不会记录依赖
+
+    不会修改 pyproject.toml
+
+    不会更新 uv.lock 文件
+
+适用场景：你只是临时想用一下某个工具（比如 ipdb 调试器、black 格式化工具），并不想让这个包成为项目正式代码的一部分，也不想污染项目的依赖声明文件。
+
+2、执行构建，然后安装到当前项目的 Python 环境（.venv）中
+
+    $ uv pip install -e .
+
+uv 会查找当前目录下的 pyproject.toml 或 setup.py / setup.cfg，构建可编辑 wheel（PEP 660），然后 uv 把这个 wheel 安装到当前环境。
+
+如果项目声明了 entry points（即命令行工具），构建后端会把这些信息写入 wheel 的元数据中。uv 安装时会在环境的 bin/（Linux/macOS）或 Scripts/（Windows）目录下生成对应的可执行脚本。
+
+    这些脚本内容本质上是一个 Python 启动器，会 import 指定的模块并调用指定的函数。
+
+如果项目没有 [project.scripts] 或 entry_points，安装后不会生成任何命令行工具。
+
+    此时项目只是作为一个 Python 包 被安装（可编辑模式），你可以通过 python -c "import my_package" 或 python -m my_package 使用它，但并没有一个独立的“主执行文件”。
 
 ### uv run 运行运行没有项目环境的 python 程序
 
@@ -633,15 +655,17 @@ uv 对这个命令实际操作的流程如下：
 
     注意：用 `uv pip install` 装的包是全局安装到你刚才选定的那个 Python 环境里的（可能是系统 Python 或某个已有 venv）。建议先手动创建虚拟环境隔离，避免污染全局。
 
-### uv tool 全局安装用 pip 发布的程序
+### uv tool 安装用 pip 发布的 CLI 工具并全局使用
 
-只要该程序有导出即支持这种安装方式，安装后的程序（如 black、ruff、httpie）在操作系统内全局可用，但运行环境还是隔离的，非常方便
+只需要该项目能构建常规 wheel（PEP 517），即 build_wheel 接口，即支持这种安装方式。
+
+这样安装后的 python 写的工具如 black、ruff、httpie）在操作系统内全局可用，但运行环境还是隔离的，非常方便
 
     $ uv tool install ruff
 
     $ ruff
 
-代替传统的用 `pip install <tool>` 全局安装有两个大坑：
+代替了传统的用 `pip install <tool>` 全局安装有两个大坑：
 
     依赖地狱：工具 A 要 click<8，工具 B 要 click>=8，全局环境立刻冲突。
 
