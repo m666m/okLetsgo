@@ -22036,6 +22036,9 @@ NOTE: macOS 限制最多同时运行2个macOS虚拟机，运行其它操作系�
 
     sudo systemctl enable ssh --now
 
+    # 精简版镜像默认没有安装图形界面
+    sudo apt install ubuntu-desktop
+
 日常启动运行虚拟机，挂载你的本地目录即可：
 
     tart run --dir=www1:~/project1/www ubuntu-vm
