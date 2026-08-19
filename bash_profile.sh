@@ -1064,16 +1064,47 @@ alias sexlb='echo "[列出当前的 SELinux 开关]" >&2; sudo semanage boolean 
 
 # git 常用命令
 alias gts='git status'
-alias gtcs='echo "[git给最近的提交签名]" >&2; git commit --amend -S --no-edit'
+alias gtcs='echo "[git给最近的提交（未推送）签名]" >&2; git commit --amend -S --no-edit'
 alias gtw='echo "[修复Windows下显示Linux下拷贝过来的代码文件权限差异]" >&2; git config core.fileMode false'
 alias gtd='echo "[差异：工作区与暂存区]" >&2; git diff'
 alias gtds='echo "[差异：暂存区与仓库]" >&2; git diff --staged'
 alias gtdh='echo "[差异：工作区与仓库]" >&2; git diff HEAD'
 alias gtdh2='echo "[差异：最近的两次提交记录]" >&2; git diff HEAD~ HEAD'
-alias gtlog='echo "[提交记录：树形]" >&2; git log --oneline --graph'
+alias gtl='echo "[提交记录：树形]" >&2; git log --oneline --graph'
+gtlm() {
+  # 提交记录：本地远程库对比本地库
+  #   无参数会自动尝试 master，再尝试 main
+  #   入参支持传 dev 或 origin/dev 两种格式
+  local branch="${1:-}"
+  local candidate
+
+  # 没有入参时，自动尝试 master，再尝试 main
+  if [[ -z "$branch" ]]; then
+    for candidate in master main; do
+      if git rev-parse --verify --quiet "refs/remotes/origin/$candidate" >/dev/null 2>&1; then
+        branch="$candidate"
+        break
+      fi
+    done
+
+    if [[ -z "$branch" ]]; then
+      echo "gtlm: 未找到 origin/master 或 origin/main，请传入分支名" >&2
+      return 1
+    fi
+  fi
+
+  # 允许传 dev 或 origin/dev
+  branch="${branch#origin/}"
+
+  if ! git rev-parse --verify --quiet "refs/remotes/origin/$branch" >/dev/null 2>&1; then
+    echo "gtlm: 远程分支 origin/$branch 不存在" >&2
+    return 1
+  fi
+
+  echo "[提交记录：本地远程库对比本地库--$branch]" >&2
+  git log --graph --oneline "HEAD..origin/$branch" --
+}
 alias gtlb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]" >&2; git log --left-right --oneline'
-alias gtlm='echo "[提交记录：本地远程库对比本地库--master]" >&2; git log --graph --oneline ..origin/master --'
-alias gtld='echo "[提交记录：本地远程库对比本地库--dev]" >&2; git log --graph --oneline ..origin/dev --'
 alias gtba='echo "[分支：全部分支及跟踪关系、最近提交及注释]" >&2; git branch -avv'
 alias gtro='echo "[远程信息]" >&2; git remote show origin'
 alias gtr3='echo "[git编辑最近3条历史提交]" >&2; git rebase -i HEAD~3'
