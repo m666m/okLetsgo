@@ -1232,12 +1232,14 @@ fpks() {
 # 容器化
 # Debian 系skopeo命令的版本太旧了，也不想开通 Backports 仓库，直接用容器运行
 if [[ $_MYPROMPT_OS_TYPE != 'wsl' && -f /etc/debian_version ]]; then
-    alias skopeo='docker run --rm \
-      -v /var/run/docker.sock:/var/run/docker.sock \
-      -v $HOME/.docker/config.json:/root/.docker/config.json:ro \
-      -v /etc/docker/certs.d:/etc/containers/certs.d:ro \
-      -e REGISTRY_AUTH_FILE=/root/.docker/config.json \
-      quay.io/skopeo/stable:latest'
+    skopeo() {
+        docker run --rm \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v "$HOME/.docker/config.json":/root/.docker/config.json:ro \
+          -v /etc/docker/certs.d:/etc/containers/certs.d:ro \
+          -e REGISTRY_AUTH_FILE=/root/.docker/config.json \
+          quay.io/skopeo/stable:latest "$@"
+    }
 fi
 
 # podman
