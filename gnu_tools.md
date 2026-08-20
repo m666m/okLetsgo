@@ -12216,20 +12216,22 @@ Gnome 桌面强调简洁，聚焦于迅速投入工作，从 gnome 43 开始甚�
 
     quake-mode              设置热键，以下拉方式调出你的程序窗口，所有工作区共享该程序，再次按热键即收回该窗口。对程序员来说，设置热键 alt + enter 调出一个半屏的 terminal 窗口极其方便实用。
 
-        https://extensions.gnome.org/extension/1411/quake-mode/
-            https://github.com/repsac-by/gnome-shell-extension-quake-mode
+        https://github.com/diegodario88/quake-terminal
 
-        该扩展目前不支持 Gnome 45+，可以安装 ddterm 应急。
+            原 https://extensions.gnome.org/extension/1411/quake-mode/
+                https://github.com/repsac-by/gnome-shell-extension-quake-mode
 
-        目前支持Gnome 45+，但没有通过 gnome 扩展的审查规范，无法在网站安装，源码网站提供了手动安装的办法：
+            该扩展目前不支持 Gnome 45+，可以安装 ddterm 应急。
 
-            git clone --depth=1 https://github.com/repsac-by/gnome-shell-extension-quake-mode.git
+            目前支持Gnome 45+，但没有通过 gnome 扩展的审查规范，无法在网站安装，源码网站提供了手动安装的办法：
 
-            cd gnome-shell-extension-quake-mode
+                git clone --depth=1 https://github.com/repsac-by/gnome-shell-extension-quake-mode.git
 
-            gnome-extensions pack quake-mode@repsac-by.github.com --extra-source={quakemodeapp,indicator,util}.js
+                cd gnome-shell-extension-quake-mode
 
-            gnome-extensions install quake-mode@repsac-by.github.com.shell-extension.zip --force
+                gnome-extensions pack quake-mode@repsac-by.github.com --extra-source={quakemodeapp,indicator,util}.js
+
+                gnome-extensions install quake-mode@repsac-by.github.com.shell-extension.zip --force
 
     Coverflow Alt-Tab       按住 alt 不放连续按 Tab 用“立体卡片”风格显示当前窗口列表，就像 ipod 展示音乐专辑封面的风格 Coverflow 那样，在 Windows 下是 win + tab。
 
