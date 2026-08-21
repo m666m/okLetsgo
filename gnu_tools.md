@@ -22517,6 +22517,35 @@ macOS 的服务管理机制是 launchd，管理着从开机启动到用户登录
 
 开发者或软件可以编写一个 plist（属性列表）配置文件来描述服务，然后交由 launchd 托管。被托管的程序便拥有了自动启动、意外退出后重启、开机自启等能力。
 
+### Windows 远程桌面连接 macOS
+
+macOS 没有内置 RDP 服务端，自带的 VNC 又慢又模糊，但是兼容性好，各种 vnc 协议的软件都可以连接。
+
+1、在 Mac 上开启“屏幕共享”：
+
+    打开“系统设置” > “通用” > “共享”。
+
+    开启“屏幕共享”。
+
+    记下 Mac 的 IP 地址或主机名。可以在“系统设置” > “网络”中查看。
+
+    （可选）点击“电脑设置”，设置一个 VNC 密码，供 Windows 客户端连接时使用。
+
+2、在 Windows 上连接：
+
+    在 Windows 电脑上安装一个 VNC 客户端，如 TightVNC、RealVNC Viewer。
+
+    打开 VNC 客户端，输入刚才记下的 Mac IP 地址（格式如 192.168.x.x）。
+
+    根据提示输入 Mac 的用户名和密码，或之前设置的 VNC 密码即可连接。
+
+另一个方法就是给 macOS 安装 RDP 服务端。任何标准 RDP 客户端，如 Windows 远程桌面 (mstsc)、Microsoft Remote Desktop、FreeRDP 都可以连接。
+
+    FreeRDP服务端，详见章节 [远程桌面 vnc/rdp/mstsc]
+
+    https://github.com/x6nux/macrdp
+
+
 ### MacBook 散热
 
 风扇狂转，CPU占用很高
