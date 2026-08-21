@@ -14966,9 +14966,10 @@ VNC（基于 RFB 协议倾向于传输图像，适用于瘦客户端）
 
     TeamViewer 商业版本，免费使用有期限
 
-    rustdesk，国人团队，可以自建开源服务器
+    RustDesk ，国人团队，可以自建开源服务器
 
         https://rustdesk.com/docs/en/self-host/
+            https://github.com/rustdesk/rustdesk
 
 > Linux 下的客户端工具
 
@@ -22541,10 +22542,14 @@ macOS 没有内置 RDP 服务端，自带的 VNC 又慢又模糊，但是兼容�
 
 另一个方法就是给 macOS 安装 RDP 服务端。任何标准 RDP 客户端，如 Windows 远程桌面 (mstsc)、Microsoft Remote Desktop、FreeRDP 都可以连接。
 
-    FreeRDP服务端，详见章节 [远程桌面 vnc/rdp/mstsc]
+    FreeRDP 服务端，如果用 `brew install freerdp` 安装的只是客户端。
+
+        FreeRDP 参见章节 [远程桌面 vnc/rdp/mstsc]
+
+        自行构建客户端 https://github.com/FreeRDP/FreeRDP/blob/master/scripts/bundle-mac-os.sh
+                    https://github.com/FreeRDP/FreeRDP/tree/master/client/Mac
 
     https://github.com/x6nux/macrdp
-
 
 ### MacBook 散热
 
