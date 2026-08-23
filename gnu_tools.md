@@ -21943,6 +21943,8 @@ VirtualBox
 
 使用
 
+    https://tart.run/faq/
+
 1、拉取镜像，从本地私有镜像仓库（docker registry 2）：
 
     tart pull localhost:5000/remoteorg/name:latest
