@@ -21941,21 +21941,24 @@ VirtualBox
     $ brew trust cirruslabs/cli
     $ brew install cirruslabs/cli/tart
 
-拉取镜像默认保存在 ~/.tart/cache/OCIs/ 下：
+使用
 
-    # 仅拉取镜像，从本地私有镜像仓库（docker registry 2）
+1、拉取镜像，从本地私有镜像仓库（docker registry 2）：
+
     tart pull localhost:5000/remoteorg/name:latest
 
-    # 复制一个已有的虚拟机：从 ghcr.io 下载镜像，或已经拉取到本地的镜像
+2、复制一个已有的虚拟机：从 ghcr.io 下载镜像，或已经拉取到本地的镜像：
+
     # 不知道为什么叫clone，反正执行完毕镜像就变成虚拟机了
     $ tart clone --disk-size 120 ghcr.io/cirruslabs/macos-tahoe-base:latest tahoe-base
 
-    # 全新创建一个虚拟机：从 Apple 官方 CDN 下载 .ipsw 文件来创建虚拟机
+也可全新创建一个虚拟机：从 Apple 官方 CDN 下载 .ipsw 文件来创建虚拟机
+
     $ tart create --from-ipsw=latest --disk-size 120 tahoe-base
 
 注意苹果官方 IPSW 镜像默认的硬盘空间偏小，共 40~50GB 左右，开机后剩余空间 15Gi（系统 12G，用户数据（应用、文档等）6.3G，预启动（引导相关）~6.7Gi，虚拟机内存交换文件 1G，合计 ≈ 26Gi）。安装 xcode-select 会提示空间不足。镜像 macos-tahoe-xcode 预装了开发工具，就比较大了，占用超过60G，但估计剩余空间也不大。
 
-运行虚拟机，并把宿主机的 ~/src/project 目录挂载到虚拟机的 '/Volumes/My Shared Files' 下：
+3、运行虚拟机，并把宿主机的 ~/src/project 目录挂载到虚拟机的 '/Volumes/My Shared Files' 下：
 
     $ tart run --dir=project:~/src/project tahoe-base
 
@@ -21965,25 +21968,35 @@ VirtualBox
         mkdir ~/workspace
         mount_virtiofs com.apple.virtio-fs.automount ~/workspace
 
-会自动弹出一个独立的窗口，显示虚拟机的桌面，这个是原生 GUI 窗口，直接操作即可使用。
+默认保存位置：
+
+    https://tart.run/faq/#vm-location-on-disk
+
+    拉取的远程镜像缓存在 ~/.tart/cache/
+
+    本地虚拟机保存位置在 ~/.tart/vms/
+
+4、从宿主机访问虚拟机的方式
+
+运行虚拟机后，会自动弹出一个独立的窗口，显示虚拟机的桌面，这个是原生 GUI 窗口，直接登录操作即可使用。
 
     也支持 VNC 远程桌面的方式，当虚拟机运行时，Tart 会生成一个临时的 VNC 连接地址和密码（如 `vnc://:<password>@127.0.0.1:<port>`。
 
-    如果是 Linux 虚拟机可以使用 X11 转发，在 macOS 宿主机上显示其中的个别图形应用（而不是整个桌面）。
+如果是 Linux 虚拟机可以使用 X11 转发，在 macOS 宿主机上显示其中的个别图形应用（而不是整个桌面）。
 
-        在 macOS 上安装 XQuartz，然后通过 SSH 的 -X 参数连接到虚拟机。之后在 SSH 会话中启动的图形化程序（如文本编辑器 mousepad），其界面就会直接显示在你的 macOS 桌面上
+    在 macOS 上安装 XQuartz，然后通过 SSH 的 -X 参数连接到虚拟机。之后在 SSH 会话中启动的图形化程序（如文本编辑器 mousepad），其界面就会直接显示在你的 macOS 桌面上
 
-Tart 虚拟机默认的运行配置是 2 CPUs 4 GB 内存 1024x768 分辨率，可使用 `tart set` 命令更改。
-
-虚拟机启动后，即可以从宿主机 ssh 访问：
+可以从宿主机 ssh 访问：
 
     $ ssh admin@$(tart ip tahoe-base)
 
     注意虚拟机启动后会提示登录桌面用户，这是因为 macos 默认会启用文件保险箱功能加密硬盘，必须让用户登录一次桌面才能使用（后续锁屏也不会再有影响了）。如果嫌麻烦，可以进入虚拟机取消即可：“系统设置” -> “隐私与安全性”  -> “文件保险箱” -> 点击 “关闭” (Turn Off)，输入管理员账户的密码以确认，然后等一阵就可以看到这个开关变成关闭状态了。等效命令 `sudo fdesetup disable`。
 
-关机：当宿主机开始关机或直接退出Tart应用时，Tart 的默认行为是向虚拟机发出一个停止请求，注意不是现在关机并等待关机完成，而是类似“拔电源”，这是因为 tart 的设计初衷就是优化“一次性”虚拟机的使用场景。如果你需要确保虚拟机内的数据安全，更可靠的做法是在虚拟机内部手动执行关机命令，比如在桌面选择关闭电源，或使用命令行 `shutdown -h now`。
+5、关机
 
-tart 的镜像来源：
+当宿主机开始关机或直接退出Tart应用时，Tart 的默认行为是向虚拟机发出一个停止请求，注意不是现在关机并等待关机完成，而是类似“拔电源”，这是因为 tart 的设计初衷就是优化“一次性”虚拟机的使用场景。如果你需要确保虚拟机内的数据安全，更可靠的做法是在虚拟机内部手动执行关机命令，比如在桌面选择关闭电源，或使用命令行 `shutdown -h now`。
+
+6、tart 的镜像来源
 
 利用了 OCI 仓库可以上传下载虚拟机镜像。官方镜像（由 OpenAI Cirrus Labs 维护），所有镜像都托管在 ghcr.io/cirruslabs/ 下，可查询列表：
 
@@ -22003,11 +22016,13 @@ tart 的镜像来源：
 
     macos-runner:tahoe    预装了多个版本的 Xcode，并集成了 xcodes 工具方便切换。    CI/CD 流水线，需要灵活测试不同 Xcode 版本的项目。
 
+Tart 虚拟机默认的运行配置是 2 CPUs 4 GB 内存 1024x768 分辨率，可使用 `tart set` 命令更改。
+
 如果想使用除了 cirruslabs 之外的第三方镜像，在公共 OCI 仓库中，使用 “tart” 或 “cirruslabs” 或 “macos” 等关键词进行搜索，也可能找到社区分享的镜像。
 
 NOTE: macOS 限制最多同时运行2个macOS虚拟机，运行其它操作系统并不限制虚拟机数量。
 
-**示例：创建一个名为 ubuntu-vm 的虚拟机**
+##### 创建一个名为 ubuntu-vm 的虚拟机
 
     tart clone ghcr.io/cirruslabs/ubuntu:latest ubuntu-vm
         tart clone ghcr.m.daocloud.io/cirruslabs/ubuntu:latest ubuntu-vm
@@ -22028,6 +22043,8 @@ NOTE: macOS 限制最多同时运行2个macOS虚拟机，运行其它操作系�
     可以加入 /etc/fstab 配置为启动时挂载：
 
         com.apple.virtio-fs.automount /mnt/shared virtiofs rw,relatime 0 0
+
+    NOTE:虚拟机运行后，不要同时做宿主机下读写共享文件夹，会导致虚拟机内的共享文件出现错误内容。
 
 首次启动的默认登录用户名和密码均为 admin。出于安全考虑，建议你登录后立即修改密码。
 
@@ -22108,7 +22125,7 @@ task:
     - sleep 15
 ```
 
-##### 磁盘空间不足
+##### 虚拟机磁盘空间不足
 
 1、虚拟机磁盘扩容到 100GB，就运行：
 
