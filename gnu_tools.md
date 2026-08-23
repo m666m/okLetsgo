@@ -21941,6 +21941,14 @@ VirtualBox
     $ brew trust cirruslabs/cli
     $ brew install cirruslabs/cli/tart
 
+已知问题：
+
+    macOS 限制最多同时运行 2 个 macOS 虚拟机，运行其它操作系统并不限制虚拟机数量。
+
+    虚拟机运行后，如果长时间无读写，不知道 macOS 如何优化的，会读写共享文件失败。解决办法也简单，ssh 退出登录重新读写文件就没问题了。。。
+
+    虚拟机运行后，不要同时做宿主机下读写共享文件夹，会导致虚拟机内的共享文件出现错误内容。
+
 使用
 
     https://tart.run/faq/
@@ -22022,8 +22030,6 @@ Tart 虚拟机默认的运行配置是 2 CPUs 4 GB 内存 1024x768 分辨率，�
 
 如果想使用除了 cirruslabs 之外的第三方镜像，在公共 OCI 仓库中，使用 “tart” 或 “cirruslabs” 或 “macos” 等关键词进行搜索，也可能找到社区分享的镜像。
 
-NOTE: macOS 限制最多同时运行2个macOS虚拟机，运行其它操作系统并不限制虚拟机数量。
-
 ##### 创建一个名为 ubuntu-vm 的虚拟机
 
     tart clone ghcr.io/cirruslabs/ubuntu:latest ubuntu-vm
@@ -22051,8 +22057,6 @@ clone 命令会自动先 pull，用完后会自动清理，如果还需要再建
     可以加入 /etc/fstab 配置为启动时挂载：
 
         com.apple.virtio-fs.automount /mnt/shared virtiofs rw,relatime 0 0
-
-    NOTE:虚拟机运行后，不要同时做宿主机下读写共享文件夹，会导致虚拟机内的共享文件出现错误内容。
 
 首次启动的默认登录用户名和密码均为 admin。出于安全考虑，建议你登录后立即修改密码。
 
