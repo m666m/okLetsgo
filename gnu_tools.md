@@ -22031,6 +22031,10 @@ NOTE: macOS 限制最多同时运行2个macOS虚拟机，运行其它操作系�
     # 默认磁盘大小为 20 GB，总得扩展下
     tart set ubuntu-vm --disk-size 50
 
+clone 命令会自动先 pull，用完后会自动清理，如果还需要再建立虚拟机，可以基于现有的虚拟机建立，会非常快，因为是基于 COW 的：
+
+    tart clone ubuntu-vm ubuntu-vm2
+
 注意：Linux虚拟机下，共享目录会挂载到 /mnt/shared 目录中
 
     tart run --dir=www1:~/project1/www ubuntu-vm
