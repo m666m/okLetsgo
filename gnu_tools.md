@@ -20972,7 +20972,7 @@ macOS 的约定俗成
 
         最大的问题在于软件包的更新迭代超级久远，看看官网页面就知道了 https://www.finkproject.org/
 
-安装见下面的 brew 国内镜像源 内容。
+安装见下面的 [brew 国内镜像源]。
 
 Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS
 
@@ -21022,7 +21022,7 @@ Homebrw 相关的几个文件夹用途
     Library：Homebrew 系统自身文件夹
     Cellar：通过brew安装的程序将以 [程序名/版本号] 存放于本目录下
 
-**brew 国内镜像源**
+#### brew 国内镜像源
 
 使用科大源安装 Homebrew / Linuxbrew，以下四个变量写入你的 .bash_profile 即可实现 `brew update` 使用镜像地址了
 
@@ -22088,6 +22088,28 @@ tart 使用的 Apple 虚拟化框架 Virtualization.Framework 的 virtiofs 问�
     虚拟机运行后，不要同时做宿主机下读写共享文件夹，会导致虚拟机内的共享文件出现错误内容。
 
 建议使用 nfs/smb/sshfs 等共享方式。
+
+##### 安装客户机代理 tart-guest-agent
+
+跟其它虚拟机类似，通过给虚拟机内的操作系统安装客户机代理工具，可以直接操作宿主机硬件，大大方便和加快访问速度。
+
+安装虚拟机后，在虚拟机内运行如下命令：
+
+    # 检查 agent 是否正在运行
+    ps aux | grep tart-guest-agent |grep -v grep
+
+    # 或检查 launchd 服务是否已加载
+    sudo launchctl list | grep tart-guest-agent
+
+Cirrus Labs 维护的预构建镜像，其中预装了 tart-guest-agent。如果发现没有预装，可以手动安装：
+
+    # 在虚拟机内执行
+    brew install cirruslabs/cli/tart-guest-agent
+    brew services start tart-guest-agent
+
+如果是 Linux 虚拟机，需要自行下载安装：
+
+    https://github.com/openai/tart-guest-agent/releases
 
 ##### 实现快照功能
 
