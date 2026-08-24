@@ -22093,6 +22093,14 @@ tart 使用的 Apple 虚拟化框架 Virtualization.Framework 的 virtiofs 问�
 
 跟其它虚拟机类似，通过给虚拟机内的操作系统安装客户机代理工具，可以直接操作宿主机硬件，大大方便和加快访问速度。
 
+苹果官方 Virtualization.Framework 在 macOS 客户机上并未提供这些功能， tart 也只实现了三个主要功能
+
+    磁盘自动扩容
+
+    剪贴板共享
+
+    宿主机执行 `tart exec` 命令在虚拟机中执行命令
+
 安装虚拟机后，在虚拟机内运行如下命令：
 
     # 检查 agent 是否正在运行
@@ -22110,6 +22118,80 @@ Cirrus Labs 维护的预构建镜像，其中预装了 tart-guest-agent。如果
 如果是 Linux 虚拟机，需要自行下载安装：
 
     https://github.com/openai/tart-guest-agent/releases
+
+安装后启动服务：
+
+    brew services start tart-guest-agent
+
+如果提示没有提供 plist 等服务注册文件，需要手动创建 LaunchAgent 配置文件：
+
+    https://github.com/cirruslabs/macos-image-templates/blob/main/data/tart-guest-daemon.plist
+
+~/Library/LaunchAgents/org.cirruslabs.tart-guest-agent.plist 支持 tart exec 和剪贴板共享
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>org.cirruslabs.tart-guest-agent</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/tart-guest-agent</string>
+        <string>--run-agent</string>  <!-- 同时开启 run-rpc（支持 tart exec）和 run-vdagent（剪贴板共享）两个功能 -->
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+</dict>
+</plist>
+```
+
+可选创建 LaunchDaemon 配置文件，以支持自动调整磁盘大小的功能
+
+```bash
+sudo cat > /Library/LaunchDaemons/org.cirruslabs.tart-guest-daemon.plist << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>org.cirruslabs.tart-guest-daemon</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/tart-guest-agent</string>
+        <string>--run-daemon</string>  <!-- 对应磁盘扩容功能 -->
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+</dict>
+</plist>
+EOF
+```
+
+LaunchAgent  是用户级服务，应在 ~/Library/LaunchAgents/ 目录下；
+LaunchDaemon 是系统级服务，需要在 /Library/LaunchDaemons/ 目录下，因此命令前需要加 sudo。
+
+    # 加载并启动 LaunchAgent
+    launchctl load ~/Library/LaunchAgents/org.cirruslabs.tart-guest-agent.plist
+    launchctl start org.cirruslabs.tart-guest-agent
+
+    # 如果创建了 LaunchDaemon，同样加载并启动
+    sudo launchctl load /Library/LaunchDaemons/org.cirruslabs.tart-guest-daemon.plist
+    sudo launchctl start org.cirruslabs.tart-guest-daemon
+
+确认服务是否正常运行：
+
+    # 检查进程是否存在
+    ps aux | grep tart-guest-agent | grep -v grep
+
+现在，你的 tart-guest-agent 应该已经正常启动了。你可以从宿主机命令测试一下：
+
+    tart exec <你的虚拟机名> "echo 'hello'"
 
 ##### 实现快照功能
 
