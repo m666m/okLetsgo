@@ -868,8 +868,8 @@ duh() {
     local target=${1:-.}
     echo "[列出 $target 空间占用最大的前 10 个文件或目录(MB)]"
     # sudo du -sb "$target"/* "$target"/.* 2>/dev/null | sort -n -r | numfmt --to=iec | head -10
-    sudo find "$target" -maxdepth 1 \( -type f -o -type d \) -print0 2>/dev/null \
-      | xargs -0 du -sb 2>/dev/null \
+    sudo find "$target" -maxdepth 1 -mindepth 1 \( -type f -o -type d \) -print0 2>/dev/null \
+      | sudo xargs -0 du -sb 2>/dev/null \
       | sort -n -r | numfmt --to=iec | head -10
 }
 
@@ -957,6 +957,7 @@ token_put() {
     # --- macOS ---
     if [[ $_MYPROMPT_OS_TYPE = 'macos' ]]; then
         # -U : 如果已存在则更新，-T : 只允许 /usr/bin/security 访问（避免弹窗）
+        # security 的 -w 不支持 stdin 只能把密码写到命令行
         security add-generic-password -T /usr/bin/security \
           -U -a "$USER" -s "$name" -w "$token" 2>/dev/null
         if [[ $? -eq 0 ]]; then
@@ -1612,6 +1613,8 @@ PS1raspi_warn_info() {
     [[ $_MYPROMPT_OS_TYPE = 'raspi' ]] || return
 
     local CPUTEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
+
+    [[ $CPUTEMP =~ ^[0-9]+$ ]] || return
 
     if [ "$CPUTEMP" -gt "60000" ] && [ "$CPUTEMP" -lt "70000" ]; then
         local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ="
