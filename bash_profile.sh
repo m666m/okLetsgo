@@ -734,7 +734,7 @@ mvf() {
         return 1
     fi
 
-    local fnn=${1}
+    local fnn="$1"
     # find . -mindepth 2 -type f -name "${fnn}" -print0 | xargs -0 -I {} mv "{}" .
     find . -mindepth 2 -type f -name "*.${fnn}" -exec mv {} . \;
 }
@@ -742,7 +742,7 @@ mvf() {
 # 设置目录及其子目录和文件权限的常用操作
 chperm() {
     if [ $# -lt 1 ]; then
-        echo "指定 umask 值，设置目录及内容的权限" >&2
+        echo "指定 umask 值，设置目录及目录内文件的权限" >&2
         echo "用法: chperm <目录路径> [umask值，默认为 002，即权限设为目录 775 文件 664]" >&2
         return 1
     fi
@@ -883,8 +883,8 @@ alias ddp='echo "[给dd发信号显示进度信息]" >&2; sudo watch -n 5 killal
 alias dus='echo "[降序列出各个文件的大小]" >&2; find . -type f -exec du -b {} + | sort -n -r | numfmt --to=iec'
 alias dud='echo "[降序列出各个子目录的大小]" >&2; du -hd1 . 2>/dev/null | sort -h -r'
 duh() {
-    local target=${1:-.}
-    echo "[列出 $target 空间占用最大的前 10 个文件或目录(MB)]"
+    local target="${1:-.}"
+    echo "[列出 $target 空间占用最大的前 10 个文件或目录]"
     # sudo du -sb "$target"/* "$target"/.* 2>/dev/null | sort -n -r | numfmt --to=iec | head -10
     sudo find "$target" -maxdepth 1 -mindepth 1 \( -type f -o -type d \) -print0 \
       | sudo xargs -0 du -sb \
@@ -1478,8 +1478,8 @@ PS1git_branch_name() {
     #   可惜tag和hashid的提示符有点丑，为了显示速度快，忍忍得了
     if command -v __git_ps1 >/dev/null 2>&1; then
         # __git_ps1 居然透传 $?，前面的命令执行结果被它作为返回值了，只能先执行个无意义命令清一下执行状态，后面也不能用它的返回值判断是否执行成功
-        # NOTE:如果用 local 声明变量 _pp_git_pt，就无法取到执行语句的返回值了 SC2155
-        _pp_git_pt=$(>/dev/null; __git_ps1 '%s' 2>/dev/null)
+        # NOTE:另外，如果用 local 声明并赋值变量 _pp_git_pt，就无法取到执行语句的返回值了 SC2155
+        _pp_git_pt=$(true; __git_ps1 '%s' 2>/dev/null)
         if [ "$?" = "0" ]; then
             # 如果是有效的 git 信息，这里就直接打印并退出函数
             printf "%s" $_pp_git_pt
