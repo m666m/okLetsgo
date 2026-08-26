@@ -688,7 +688,7 @@ alias lsa='ls -A'
 #alias dir='dir --color=auto'
 #alias vdir='vdir --color=auto'
 alias diff='diff --color=auto'
-difft(){
+difft() {
     if [ "$#" -ne 2 ]; then
         echo '比较两个目录：diffs <dir1> <dir2>' >&2
         return 1
