@@ -68,13 +68,13 @@ Node.js 是 JavaScript 的运行时环境，允许在服务器端运行 JS 代�
     注意 https://nodejs.cn/ 是个假的
     https://www.zhihu.com/column/eggjs
 
-下载即可安装 node + npm
+官方页面的建议是优先安装 [使用 nvm 多版本切换工具] 安装 node，nvm 安装的包所有版本都装在 ~/.nvm/ 下，属于用户目录。执行 `npm install -g` 永远不需要 sudo，既安全又省心。
 
     https://nodejs.org/zh-cn/download
 
-    官方页面的建议是优先安装 [使用 nvm 多版本切换工具] 安装 node，nvm 安装的包所有版本都装在 ~/.nvm/ 下，属于用户目录。执行 npm install -g 永远不需要 sudo，既安全又省心。
+    这个页面安装 nvm，然后用 nvm 安装 node。也可单独下载安装 node + npm，不推荐，这样更麻烦。
 
-也可手动从国内镜像网站下载安装安装
+或者单独从国内镜像网站下载 node 安装包
 
     node 安装包 https://registry.npmmirror.com/binary.html?path=node/latest/
 
@@ -192,7 +192,7 @@ Yarn：一款新的JavaScript包管理工具。
 
     确认 ~/.nvm/nvm.sh 存在
 
-    将以下内容追加到你的 shell 配置文件中（~/.bashrc、~/.bash_profile 或 ~/.zshrc，取决于你的 Shell）：
+    将以下内容追加到你的 shell 配置文件中（~/.bashrc、~/.bash_profile 或 ~/.zshrc，取决于你使用的 Shell）：
 
         # nvm
         export NVM_DIR="$HOME/.nvm"
