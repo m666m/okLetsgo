@@ -6557,11 +6557,13 @@ hhighlighter 属于对 ack 的封装，但脚本名和函数名都太简单了�
 
 ### bat 查看文件支持语法高粱
 
-bat 是 cat 的升级，对大部分编程语言和标记语言提供语法高亮，自动分页，支持从 git 中获取文件的修改并展示在边栏
+`bat` 是 cat 的升级，对大部分编程语言和标记语言提供语法高亮，自动分页，支持从 git 中获取文件的修改并展示在边栏
 
-    $ sudo apt install batcat
+    https://github.com/sharkdp/bat  README.md 中有支持 man/git/tail 等常见工具的用法
 
     $ sudo dnf install bat
+
+注意：在 Ubuntu 20.04 ("Focal") 和 Debian 11 - "Bullseye" 之前，该命令是 `batcat`，不是 bat。
 
 添加 -A 参数可以显示文件中的不可打印字符
 

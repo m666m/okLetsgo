@@ -828,13 +828,12 @@ swc() {
     fi
 }
 
-# bat 显示文件支持语法高亮，在 Debian 系可执行命令居然是 batcat
-if command -v batcat >/dev/null 2>&1; then
-    alias bat='batcat'
+# bat 显示文件支持语法高亮
+if command -v bat >/dev/null 2>&1; then
     # bat 作为 man 的彩色分页器
-    export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | batcat -p -lman'"
-elif command -v bat >/dev/null 2>&1; then
-    export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'"
+    export MANPAGER="bat -plman"
+    # 给命令的 --help 增加语法高亮
+    alias bath='bat -plhelp'
 fi
 
 # man
@@ -887,7 +886,7 @@ duh() {
     echo "[列出 $target 空间占用最大的前 10 个文件或目录]"
     # sudo du -sb "$target"/* "$target"/.* 2>/dev/null | sort -n -r | numfmt --to=iec | head -10
     sudo find "$target" -maxdepth 1 -mindepth 1 \( -type f -o -type d \) -print0 \
-      | sudo xargs -0 du -sb \
+      | sudo xargs -0 -r du -sb \
       | sort -n -r | numfmt --to=iec | head -10
 }
 # udisksctl
