@@ -6559,9 +6559,11 @@ hhighlighter 属于对 ack 的封装，但脚本名和函数名都太简单了�
 
 bat 是 cat 的升级，对大部分编程语言和标记语言提供语法高亮，自动分页，支持从 git 中获取文件的修改并展示在边栏
 
+    $ sudo apt install batcat
+
     $ sudo dnf install bat
 
-添加 -A 参数可以文件文件中的不可打印字符
+添加 -A 参数可以显示文件中的不可打印字符
 
     $ bat -A text.txt
 
@@ -6569,14 +6571,14 @@ bat 是 cat 的升级，对大部分编程语言和标记语言提供语法高�
 
     $ curl -s https://sh.rustup.rs | bat
 
-显式指定stdin输入的语言
+显式指定 stdin 输入的语言
 
     $ yaml2json .travis.yml | json_pp | bat -l json
 
 bat 可以通过设置 MANPAGER 环境变量，作为 man 的彩色分页器：
 
-    $ export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'"
-
+    # 过时了 $ export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'"
+    $ export MANPAGER="bat -plman"
     $ man 2 select
 
 ### 读写配置文件 jq crudini yq
@@ -6724,15 +6726,19 @@ yq 是一个命令行 YAML/XML/TOML 处理器，本质上是 jq 包装器，专�
 
     $ vimdiff file1.txt file2.txt
 
-比较两个目录
+也可以用来比较两个目录：
 
-方法一：使用 diff
+    < 代表的行是 directory1 中有而 directory2 没有的文件
+
+    > 则相反，是 directory2 中有而directory1中没有
+
+方法一：使用 diff -r 比较目录中文件的每一行
 
     diff -r directory1 directory2
 
 但是 diff 会对每个文件中的每一行都做比较，所以文件较多或者文件较大的时候会非常慢。请谨慎使用。
 
-方法二：使用 diff 结合 tree
+方法二：使用 diff 结合 tree，比较目录中的每个文件
 
     $ diff <(tree -Ci --noreport ./tea) <(tree -Ci --noreport ./tea_hot)
     1c1
@@ -6756,7 +6762,7 @@ yq 是一个命令行 YAML/XML/TOML 处理器，本质上是 jq 包装器，专�
 
 该方法效率很高。
 
-方法三：find 结合 diff
+方法三：find 结合 diff，比较目录中的每个文件
 
     find directory1 -printf "%P\n" | sort > file1
     find directory2 -printf "%P\n" | sort | diff file1 -
@@ -6764,10 +6770,8 @@ yq 是一个命令行 YAML/XML/TOML 处理器，本质上是 jq 包装器，专�
     < 1.png
     4a4
     > 4.png
-说明：
 
-    < 代表的行是 directory1 中有而 directory2 没有的文件，
-    > 则相反，是 directory2 中有而directory1中没有。
+说明：
 
     不要省略 -printf "%P\n"，此处的%P表示find的结果中去掉前缀路径，详细内容 `man find`。
 
@@ -6780,13 +6784,13 @@ yq 是一个命令行 YAML/XML/TOML 处理器，本质上是 jq 包装器，专�
 基于两个文件的差异生成补丁
 
     # 注意两文件顺序：源文件 源文件修改后的文件
-    $ diff a.c b.c > test.diff
+    $ diff source.c source_modified.c > test.diff
 
-在其它的机器上对 a.c 文件应用补丁
+在其它的机器上对 source.c 文件应用补丁
 
-    $ patch a.c <tes.diff
+    $ patch source.c <tes.diff
 
-这样 a.c 的内容就变成了 b.c 的内容了。
+这样 source.c 的内容就变成了 source_modified.c 的内容了。
 
 ### 即时文字写入文件 cat
 

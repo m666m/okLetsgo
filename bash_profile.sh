@@ -660,6 +660,13 @@ envunload() {
 
     # 查找顶格 export 的变量，逐个 unset
     while read -r var; do
+        # 跳过 PATH/HOME/USER/SHELL 等关键变量，防止 unset 后 shell 直接罢工
+        case " PATH HOME USER SHELL " in
+            *" $var "*)
+                echo "⚠ 跳过关键变量: $var" >&2
+                continue
+                ;;
+        esac
         unset "$var"
     done < <(grep '^export ' "$file" |sed -E 's/^export +([^= ]*).*/\1/')
 
@@ -681,6 +688,17 @@ alias lsa='ls -A'
 #alias dir='dir --color=auto'
 #alias vdir='vdir --color=auto'
 alias diff='diff --color=auto'
+difft(){
+    if [ "$#" -ne 2 ]; then
+        echo '比较两个目录：diffs <dir1> <dir2>' >&2
+        return 1
+    fi
+
+    local dir1=$1
+    local dir2=$2
+
+    diff <(tree -Ci --noreport "$dir1") <(tree -Ci --noreport "$dir2")
+}
 alias grep='grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn --exclude-dir=__pycache__'
 #alias egrep='egrep --color=auto'
 #alias fgrep='fgrep --color=auto'
@@ -868,11 +886,10 @@ duh() {
     local target=${1:-.}
     echo "[列出 $target 空间占用最大的前 10 个文件或目录(MB)]"
     # sudo du -sb "$target"/* "$target"/.* 2>/dev/null | sort -n -r | numfmt --to=iec | head -10
-    sudo find "$target" -maxdepth 1 -mindepth 1 \( -type f -o -type d \) -print0 2>/dev/null \
-      | sudo xargs -0 du -sb 2>/dev/null \
+    sudo find "$target" -maxdepth 1 -mindepth 1 \( -type f -o -type d \) -print0 \
+      | sudo xargs -0 du -sb \
       | sort -n -r | numfmt --to=iec | head -10
 }
-
 # udisksctl
 alias udj='echo "[弹出 U 盘]" >&2; sync; udisksctl power-off -b'
 
