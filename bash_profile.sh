@@ -491,7 +491,7 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -print -quit 2>/dev/null | grep -q
     # 来自章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
     elif [[ $_MYPROMPT_OS_TYPE = 'windows' ]]; then
 
-        if ! ps -s | grep -q ssh-pageant; then
+        if ! ps -s | grep -q ssh-pageant |grep -v grep; then
             # ssh-pageant 未运行视作开机后第一次执行 shell 登录，清理掉上次使用过的临时文件，否则会被加载
             rm -f /tmp/.ssh-pageant-$USERNAME
 
