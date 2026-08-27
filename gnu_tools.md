@@ -2040,9 +2040,9 @@ SAVEHIST=1000
 bindkey -v
 # End of lines configured by zsh-newuser-install
 
-# Zsh 的 fpath 一直是显式配置的，
+# Zsh 的 fpath 一直是显式配置的，只能手动添加如下内容
 # The following lines were added by compinstall
-zstyle :compinstall filename '/home/uu/.zshrc'
+zstyle :compinstall filename '$HOME/.zshrc'
 
 # 用户级自动补全的路径自己添加，某些脚本如 ask 等会用到
 fpath=("$HOME/.local/share/zsh/site-functions" $fpath)
@@ -2091,6 +2091,7 @@ chpwd
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
 ####################################################################
+# powerlevel10k
 
 # powerlevel10k 安装程序自动添加的，不用动
 source ~/powerlevel10k/powerlevel10k.zsh-theme
@@ -2098,7 +2099,7 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-###### 自定义状态栏图标
+# 自定义 powerlevel10k 状态栏图标
 # 1. 移除左侧的操作系统图标
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(${POWERLEVEL9K_LEFT_PROMPT_ELEMENTS:#os_icon})
 
@@ -2113,20 +2114,6 @@ POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(${POWERLEVEL9K_LEFT_PROMPT_ELEMENTS:#context}
 # 4. 将 status 和 context 按顺序添加到左侧开头
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(status context $POWERLEVEL9K_LEFT_PROMPT_ELEMENTS)
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-#__conda_setup="$('/home/uu/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-#if [ $? -eq 0 ]; then
-#    eval "$__conda_setup"
-#else
-#    if [ -f "/home/uu/anaconda3/etc/profile.d/conda.sh" ]; then
-#        . "/home/uu/anaconda3/etc/profile.d/conda.sh"
-#    else
-#        export PATH="/home/uu/anaconda3/bin:$PATH"
-#    fi
-#fi
-#unset __conda_setup
-# <<< conda initialize <<<
 ```
 
 ## 常用 shell 编程
@@ -22047,17 +22034,17 @@ Linux 虚拟机挂载路径在 '/mnt/share' 下。
 
 运行虚拟机后，会自动弹出一个独立的窗口，显示虚拟机的桌面，这个是原生 GUI 窗口，直接登录操作即可使用。
 
-    也支持 VNC 远程桌面的方式，当虚拟机运行时，Tart 会生成一个临时的 VNC 连接地址和密码（如 `vnc://:<password>@127.0.0.1:<port>`。
-
 如果是 Linux 虚拟机可以使用 X11 转发，在 macOS 宿主机上显示其中的个别图形应用（而不是整个桌面）。
 
     在 macOS 上安装 XQuartz，然后通过 SSH 的 -X 参数连接到虚拟机。之后在 SSH 会话中启动的图形化程序（如文本编辑器 mousepad），其界面就会直接显示在你的 macOS 桌面上
 
-从宿主机 ssh 访问虚拟机：
+图形环境也支持 VNC 远程桌面的方式，当虚拟机运行时，Tart 会生成一个临时的 VNC 连接地址和密码（如 `vnc://:<password>@127.0.0.1:<port>`。
+
+从宿主机 ssh 以命令行方式访问虚拟机：
 
     $ ssh admin@$(tart ip tahoe-base)
 
-    首次使用需要进入虚拟机的 macOS 桌面环境进行设置：
+    首次使用前需要进入虚拟机的 macOS 桌面环境进行设置：
 
         1、设置开机自动登录
 
