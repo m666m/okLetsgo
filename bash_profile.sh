@@ -407,10 +407,10 @@ fi
 # 适用于 Linux bash / Windows git bash(mintty) / macOS
 if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -print -quit 2>/dev/null | grep -q .; then
 
-    # macOS 下把 ssh 密钥加入钥匙圈，并接管 ssh-agent 复用
+    # macOS 的图形界面下把 ssh 密钥加入钥匙圈，并接管 ssh-agent 复用
     # 1、ssh-add --apple-use-keychain ~/.ssh/id_rsa
     # 2、配合 SSH 配置文件的 Host * 段添加 UseKeychain yes 和 AddKeysToAgent yes 可以不用再输入保护密码了
-    if [[ $_MYPROMPT_OS_TYPE = 'macos' ]]; then
+    if [[ $_MYPROMPT_OS_TYPE = 'macos' ]] && [[ "$(launchctl managername)" = "Aqua" ]] ; then
         # macOS 默认集成了 launchd 来启动 ssh-agent，还负责设置 SSH_AUTH_SOCK 变量。
         # 但是重启电脑后，需要手动执行一次加载密钥的命令
         # 以下代码参考自下面的 默认 Linux tty 环境复用 ssh-agent 进程
