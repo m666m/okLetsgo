@@ -22045,7 +22045,30 @@ clone 命令会自动先 pull，用完后会自动清理，如果还需要再建
 
     tart set ubuntu-vm2 --random-mac  # 防止 mac 地址重复
 
-注意：Linux虚拟机下，共享目录会挂载到 /mnt/shared 目录中
+首次启动的默认登录用户名和密码均为 admin。出于安全考虑，建议你登录后立即修改密码。
+
+初始设置完成后，在虚拟机内执行以下命令启用 ssh 服务，这样以后可以在内网的任意位置 ssh 连接该虚拟机了：
+
+    sudo apt update
+    sudo apt install -y openssh-server
+    sudo ufw allow ssh
+
+    sudo systemctl enable ssh --now
+
+精简版没有安装 mDNS 支持，需要自行安装，不然无法使用 主机名.local 连接到局域网机器：
+
+    sudo apt update
+    sudo apt install avahi-daemon avahi-utils libnss-mdns
+
+精简版镜像默认没有安装图形界面，可以自行安装：
+
+    sudo apt install ubuntu-desktop
+
+日常启动运行虚拟机，挂载你的本地目录即可：
+
+    tart run --dir=www1:~/project1/www ubuntu-vm
+
+Linux 虚拟机下，共享目录会挂载到 /mnt/shared 目录中
 
     tart run --dir=www1:~/project1/www ubuntu-vm
 
@@ -22058,24 +22081,7 @@ clone 命令会自动先 pull，用完后会自动清理，如果还需要再建
 
         com.apple.virtio-fs.automount /mnt/shared virtiofs rw,relatime 0 0
 
-首次启动的默认登录用户名和密码均为 admin。出于安全考虑，建议你登录后立即修改密码。
-
-初始设置完成后，在虚拟机内执行以下命令启用 ssh 服务，这样以后可以在内网的任意位置 ssh 连接该虚拟机了：
-
-    sudo apt update
-    sudo apt install -y openssh-server
-    sudo ufw allow ssh
-
-    sudo systemctl enable ssh --now
-
-    # 精简版镜像默认没有安装图形界面
-    sudo apt install ubuntu-desktop
-
-日常启动运行虚拟机，挂载你的本地目录即可：
-
-    tart run --dir=www1:~/project1/www ubuntu-vm
-
-也可以从 ISO 文件手动安装 ubuntu：
+如果不想使用 tart 官方镜像，可以从 ISO 文件手动安装 ubuntu：
 
     tart create --linux ubuntu
 
