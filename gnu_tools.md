@@ -2098,11 +2098,20 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# 返回值显示放在左侧
+###### 自定义状态栏图标
+# 1. 移除左侧的操作系统图标
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(${POWERLEVEL9K_LEFT_PROMPT_ELEMENTS:#os_icon})
+
+# 2. 从右侧移除 status 和 context
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(${POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS:#status})
-if ! (( ${POWERLEVEL9K_LEFT_PROMPT_ELEMENTS[(I)status]} )); then
-  POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(status "${POWERLEVEL9K_LEFT_PROMPT_ELEMENTS[@]}")
-fi
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(${POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS:#context})
+
+# 3. 从左侧移除已有的 status 和 context，防止重复
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(${POWERLEVEL9K_LEFT_PROMPT_ELEMENTS:#status})
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(${POWERLEVEL9K_LEFT_PROMPT_ELEMENTS:#context})
+
+# 4. 将 status 和 context 按顺序添加到左侧开头
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(status context $POWERLEVEL9K_LEFT_PROMPT_ELEMENTS)
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
