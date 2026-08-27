@@ -20987,7 +20987,7 @@ macOS 的约定俗成
 
         最大的问题在于软件包的更新迭代超级久远，看看官网页面就知道了 https://www.finkproject.org/
 
-安装见下面的 [brew 国内镜像源]。
+安装 brew 见下面的 [brew 国内镜像源]。
 
 Linux 和 WSL2 也能安装，但是很多 cask 类软件其实只适配 MacOS
 
@@ -21459,11 +21459,13 @@ macOS 从 Catalina（10.15）开始，将默认 Shell 从 bash 切换为 zsh，�
 
         开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片统一内存的 GPU 加速。
 
-1、安装 Clang 开发环境的命令行编译环境 CLT：
+1、安装常用命令行工具软件、Clang 开发环境的命令行编译环境 CLT 等：
 
     $ xcode-select --install
 
 这时桌面会弹出确认对话框，确认后操作系统会开始自动下载安装。
+
+如果是在 macOS 虚拟机中安装，必须在桌面环境，如果在 ssh 命令行直接运行会报错。
 
 注意这个只是一个轻量级的包 --- 独立的命令行开发者工具 (Command Line Tools for Xcode, CLT) ，只包含命令行编译器和工具，路径在 /Library/Developer/CommandLineTools。一般使用足够了，如果需要安装完整的 Xcode 应用（路径通常是 /Applications/Xcode.app/Contents/Developer），则需要从 App Store 搜索 xcode 下载安装。以后需要 通过 `sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer` 命令，让系统使用完整 Xcode 中的工具。
 
@@ -22052,7 +22054,7 @@ Linux 虚拟机挂载路径在 '/mnt/share' 下。
 
     $ ssh admin@$(tart ip tahoe-base)
 
-    首次使用需要设置虚拟机的 macOS 系统设置：
+    首次使用需要进入虚拟机的 macOS 桌面环境进行设置：
 
         1、设置开机自动登录
 
@@ -22061,6 +22063,8 @@ Linux 虚拟机挂载路径在 '/mnt/share' 下。
         2、开启 sshd 服务
 
             系统设置 -> 通用 -> 共享 -> 远程登录：点击 ！ 图标，勾选“远程登录：打开”
+
+        3、打开终端，执行 `xcode-select install`，会弹出窗口提示确定，这样才会安装常用命令行工具软件。
 
 五、关机
 
