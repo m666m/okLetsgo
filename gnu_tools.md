@@ -22011,6 +22011,9 @@ tart 可以使用 OCI 镜像仓库的虚拟机镜像，快速创建本地虚拟�
     Installing OS...
     100%
 
+    # 如果本地之前下载过有缓存可直接利用
+    tart create --from-ipsw ~/.tart/cache/IPSWs/sha256:065abd295a1a456a46c1155217eab92ee95816520ec9aeed83f249f074f68a04.ipsw --disk-size 80 tahoe-base2
+
 这个方法是全新创建安装操作系统，第一次运行虚拟机时，会引导后续的 macOS 安装过程，点击操作即可。
 
 注意苹果官方 IPSW 镜像默认的硬盘空间偏小：
