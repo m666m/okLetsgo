@@ -21084,7 +21084,9 @@ Homebrw 相关的几个文件夹用途
     export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
     export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
     export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+
     eval "$(/opt/homebrew/bin/brew shellenv)"
+    #eval "$(/opt/homebrew/bin/brew shellenv zsh)"
 
 验证：运行 `brew update`、`brew install tmux`
 
