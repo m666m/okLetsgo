@@ -1684,7 +1684,7 @@ zsh 命令行提示符工具，这个主题可以完全替代状态栏工具 pow
 
     $ echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
 
-再次进入 `zsh` 就可以起飞了。
+再次登录或直接执行 `exec zsh -l` 就可以起飞了。
 
 初次进入zsh后会自动提示设置使用习惯，之后可以执行命令 `p10k configure` 再次设置。
 
@@ -22015,14 +22015,13 @@ tart 可以使用 OCI 镜像仓库的虚拟机镜像，快速创建本地虚拟�
 
 三、日常运行虚拟机
 
-通常我们需要把宿主机的目录挂载到虚拟机下：
+通常我们需要把宿主机的目录挂载到虚拟机下，以下示例把宿主机目录 ~/src/project 挂载到 macOS 虚拟机：
 
-    # 把宿主机目录 ~/src/project 挂载到 macOS 虚拟机
     $ tart run --dir=project:~/src/project tahoe-base
 
 命令运行后，会弹出一个窗口，显示虚拟机的操作系统界面，点击操作即可。
 
-macOS 虚拟机会挂载到  '/Volumes/My Shared Files'，可以换个地方：
+macOS 虚拟机默认会挂载到  '/Volumes/My Shared Files'，可以换个地方：
 
     sudo umount "/Volumes/My Shared Files"
     mkdir ~/workspace
