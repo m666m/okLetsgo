@@ -462,7 +462,7 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -print -quit 2>/dev/null | grep -q
         # 实现复用需要设置变量指向ssh密钥代理的进程
         # 需要两个变量，但服务 ssh-agent.service 只设置了 SSH_AUTH_SOCK
         # export SSH_AUTH_SOCK="$(ls $XDG_RUNTIME_DIR/ssh-agent.socket |head -1)"
-        # export SSH_AGENT_PID="$(ps -ef | grep 'ssh-agent -D -a' | grep -v grep | awk '{print $2}')"
+        # export SSH_AGENT_PID="$(ps -ef | grep '[s]sh-agent -D -a' | awk '{print $2}')"
         # 所以，目前必须手动设置该变量，获取服务进程的 PID
         agent_pid=$(systemctl --user show ssh-agent.service --property=ExecMainPID | awk -F= '{print $2}')
         # 通过进程树找到 ssh-agent 的实际 PID（需安装 pstree）
@@ -491,7 +491,7 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -print -quit 2>/dev/null | grep -q
     # 来自章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
     elif [[ $_MYPROMPT_OS_TYPE = 'windows' ]]; then
 
-        if ! ps -s | grep -q ssh-pageant |grep -v grep; then
+        if ! ps -s | grep -q [s]sh-pageant; then
             # ssh-pageant 未运行视作开机后第一次执行 shell 登录，清理掉上次使用过的临时文件，否则会被加载
             rm -f /tmp/.ssh-pageant-$USERNAME
 
