@@ -852,7 +852,7 @@ alias myip='echo "[浏览器打开 https://test.ustc.edu.cn/ 可看到自己的i
 weather() { curl -s --connect-timeout 3 -m 5 "http://wttr.in/$1"; }
 
 # ssh
-alias sshs='echo "[跳过其它各种协商使用密码连接主机]" >&2; ssh -o "PreferredAuthentications password"'
+alias sshs='echo "[跳过其它各种协商使用密码连接主机]" >&2; ssh -o "PreferredAuthentications=keyboard-interactive,password"'
 alias sshme='echo "[断开ssh连接复用]" >&2; ssh -O exit'
 alias sshmn='echo "[不使用ssh连接复用]" >&2; ssh -o "ControlPath=no"'
 alias sshk='echo "[使用kitty连接无terminfo的sshd服务器]" >&2; kitty +kitten ssh'
