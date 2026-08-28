@@ -335,17 +335,26 @@ if command -v dircolors >/dev/null 2>&1; then
 
 fi
 
-# 删除 vi 然后安装 vim，居然没有 `vi` 了
-command -v vi >/dev/null || {
-    echo "建议补全 vi 调用：sudo ln -sf /usr/bin/vim /usr/bin/vi"
-}
+#######################
+# 想用 vi 命令也有坑要填
 
-# 命令行开启 vi 模式，按esc后用vi中的上下左右键选择历史命令
+# 命令行开启 vi 模式，按esc后用vi中的上下移动键选择历史命令
 # zsh 命令行用 `bindkey -v` 来设置 vi 操作模式
 [[ $_MYPROMPT_CURRENT_SHELL != 'zsh' ]] && set -o vi
 
-# 有些命令使用变量 EDITOR 指定的编辑器，一般是 nano，强制指定为 vi
-export EDITOR=/usr/bin/vi
+# 删除 vi 然后安装 vim，居然没有 `vi` 了
+command -v vi >/dev/null 2>&1 || {
+    if command -v vim >/dev/null 2>&1; then
+        sudo ln -sf /usr/bin/vim /usr/bin/vi
+    else
+        :
+    fi
+}
+
+if command -v vi >/dev/null 2>&1; then
+    # 有些命令使用变量 EDITOR 指定的编辑器，一般是 nano，强制指定为 vi
+    export EDITOR=/usr/bin/vi
+fi
 
 #######################
 # 填坑 gpg: problem with the agent: Inappropriate ioctl for device，
