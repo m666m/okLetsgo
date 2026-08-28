@@ -258,7 +258,7 @@ curlgh() {
 
 #######################
 # 树莓派下的环境设置
-if  [[ $_MYPROMPT_OS_TYPE = 'raspi' ]]; then
+if [[ $_MYPROMPT_OS_TYPE = 'raspi' ]]; then
     # 树莓派在纯终端下也会休眠显示器，本机登录后必须设置禁用屏幕休眠
     setterm --powerdown 0
 fi
@@ -424,7 +424,7 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -print -quit 2>/dev/null | grep -q
         # 但是重启电脑后，需要手动执行一次加载密钥的命令
         # 以下代码参考自下面的 默认 Linux tty 环境复用 ssh-agent 进程
         agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
-        if  [ $agent_run_state = 1 ]; then
+        if [ $agent_run_state = 1 ]; then
             # agent 没有加载密钥视作开机后第一次执行 shell 登录
             ssh-add --apple-load-keychain
         fi
@@ -786,7 +786,7 @@ chperm() {
 cpbak() {
     # find . -max-depth 1 -name '$1*' -exec cp "{}" "{}.bak" \;
     #cp -a $1{,.bak}
-    local DT=$(date  +"%Y-%m-%d_%H:%M:%S")
+    local DT=$(date +"%Y-%m-%d_%H:%M:%S")
     echo "[复制一个备份 $1.bak.${DT}，如果是目录名不要传入后缀/]" >&2
     cp -a "$1" "$1.bak.${DT}"
 
@@ -1619,7 +1619,7 @@ PS1_container_name() {
     if [ -f "/run/.toolboxenv" ] || [ -e /run/.containerenv ]; then
         # $CONTAINER_ID
         printf '\033[0;44m\U0001f4e6<%s>' $(cat /run/.containerenv | grep -oP "(?<=name=\")[^\";]+")
-    elif  [ -e /.dockerenv ]; then
+    elif [ -e /.dockerenv ]; then
         printf '\033[0;44m\U0001f4e6<%s>' $(cat /.dockerenv | grep -oP "(?<=name=\")[^\";]+")
     fi
 }
@@ -1691,7 +1691,7 @@ elif [[ $_MYPROMPT_OS_TYPE = 'wsl' ]]; then
     # Windows wsl 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名 \w当前路径 python环境 git分支及状态
     PS1="\n${ccBLUE}╭─$ccRED\$(PS1exit_code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccYELLOW@WSL_\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccYELLOW\$(PS1conda_env_name)\$(PS1virtualenv_envname)\$(PS1git_branch_prompt)\n${ccBLUE}╰─$ccWHITE\$ $ccNORMAL"
 
-elif  [[ $_MYPROMPT_OS_TYPE = 'raspi' ]]; then
+elif [[ $_MYPROMPT_OS_TYPE = 'raspi' ]]; then
     # Raspberry OS bash 命令行提示符显示：返回值 \t当前时间 \u用户名 \h主机名<toolbox容器名> \w当前路径 树莓派温度告警 python环境 git分支及状态
     PS1="\n${ccBLUE}┌─$ccRED\$(PS1exit_code)$ccBLUE[$ccWHITE\t $ccGREEN\u$ccWHITE@\$(PS1_host_name)\$(PS1_container_name)$ccWHITE:$ccCYAN\w$ccBLUE]$ccRED\$(PS1raspi_warn_prompt)$ccYELLOW\$(PS1conda_env_name)\$(PS1virtualenv_envname)\$(PS1git_branch_prompt)\n${ccBLUE}└──$ccWHITE\$ $ccNORMAL"
 
