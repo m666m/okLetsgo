@@ -699,7 +699,7 @@ alias lsa='ls -A'
 alias diff='diff --color=auto'
 difft() {
     if [ "$#" -ne 2 ]; then
-        echo '比较两个目录：diffs <dir1> <dir2>' >&2
+        echo '比较两个目录：difft <dir1> <dir2>' >&2
         return 1
     fi
 
@@ -840,7 +840,7 @@ swc() {
 # bat 显示文件支持语法高亮
 if command -v bat >/dev/null 2>&1; then
     # bat 作为 man 的彩色分页器
-    export MANPAGER="bat -plman"
+    export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'"
     # 给命令的 --help 增加语法高亮
     alias bath='bat -plhelp'
 fi
