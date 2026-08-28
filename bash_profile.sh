@@ -419,7 +419,7 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -print -quit 2>/dev/null | grep -q
     # macOS 的图形界面下把 ssh 密钥加入钥匙圈，并接管 ssh-agent 复用
     # 1、ssh-add --apple-use-keychain ~/.ssh/id_rsa
     # 2、配合 SSH 配置文件的 Host * 段添加 UseKeychain yes 和 AddKeysToAgent yes 可以不用再输入保护密码了
-    if [[ $_MYPROMPT_OS_TYPE = 'macos' ]] && [[ "$(launchctl managername)" = "Aqua" ]] ; then
+    if [[ $_MYPROMPT_OS_TYPE = 'macos' ]] && [[ "$(launchctl managername)" = "Aqua" ]]; then
         # macOS 默认集成了 launchd 来启动 ssh-agent，还负责设置 SSH_AUTH_SOCK 变量。
         # 但是重启电脑后，需要手动执行一次加载密钥的命令
         # 以下代码参考自下面的 默认 Linux tty 环境复用 ssh-agent 进程
@@ -533,7 +533,7 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -print -quit 2>/dev/null | grep -q
         agent_env=~/.ssh/agent.env
 
         # 复用已经启动的 ssh-agent 进程，引用环境变量即可
-        agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null ; }
+        agent_load_env () { test -f "$agent_env" && source "$agent_env" >| /dev/null; }
 
         # 启动 ssh-agent，并保存指向它的环境变量
         agent_start () {
@@ -1098,37 +1098,37 @@ alias gtdh='echo "[差异：工作区与仓库]" >&2; git diff HEAD'
 alias gtdh2='echo "[差异：最近的两次提交记录]" >&2; git diff HEAD~ HEAD'
 alias gtl='echo "[提交记录：树形]" >&2; git log --oneline --graph'
 gtlm() {
-  # 提交记录：本地远程库对比本地库
-  #   无参数会自动尝试 master，再尝试 main
-  #   入参支持传 dev 或 origin/dev 两种格式
-  local branch="${1:-}"
-  local candidate
+    # 提交记录：本地远程库对比本地库
+    #   无参数会自动尝试 master，再尝试 main
+    #   入参支持传 dev 或 origin/dev 两种格式
+    local branch="${1:-}"
+    local candidate
 
-  # 没有入参时，自动尝试 master，再尝试 main
-  if [[ -z "$branch" ]]; then
-    for candidate in master main; do
-      if git rev-parse --verify --quiet "refs/remotes/origin/$candidate" >/dev/null 2>&1; then
-        branch="$candidate"
-        break
-      fi
-    done
-
+    # 没有入参时，自动尝试 master，再尝试 main
     if [[ -z "$branch" ]]; then
-      echo "gtlm: 未找到 origin/master 或 origin/main，请传入分支名" >&2
-      return 1
+        for candidate in master main; do
+            if git rev-parse --verify --quiet "refs/remotes/origin/$candidate" >/dev/null 2>&1; then
+                branch="$candidate"
+                break
+            fi
+        done
+
+        if [[ -z "$branch" ]]; then
+            echo "gtlm: 未找到 origin/master 或 origin/main，请传入分支名" >&2
+            return 1
+        fi
     fi
-  fi
 
-  # 允许传 dev 或 origin/dev
-  branch="${branch#origin/}"
+    # 允许传 dev 或 origin/dev
+    branch="${branch#origin/}"
 
-  if ! git rev-parse --verify --quiet "refs/remotes/origin/$branch" >/dev/null 2>&1; then
-    echo "gtlm: 远程分支 origin/$branch 不存在" >&2
-    return 1
-  fi
+    if ! git rev-parse --verify --quiet "refs/remotes/origin/$branch" >/dev/null 2>&1; then
+        echo "gtlm: 远程分支 origin/$branch 不存在" >&2
+        return 1
+    fi
 
-  echo "[提交记录：本地远程库对比本地库--$branch]" >&2
-  git log --graph --oneline "HEAD..origin/$branch" --
+    echo "[提交记录：本地远程库对比本地库--$branch]" >&2
+    git log --graph --oneline "HEAD..origin/$branch" --
 }
 alias gtlb='echo "[提交记录：对比分支，需要给出两分支名，二点三点分隔效果不同]" >&2; git log --left-right --oneline'
 alias gtba='echo "[分支：全部分支及跟踪关系、最近提交及注释]" >&2; git branch -avv'
@@ -1317,8 +1317,8 @@ pdmrl() {
   done
 }
 pdmrs() {
-    local img=$(echo "$1"  |cut -d: -f1)
-    local tag=$(echo "$1"  |cut -d: -f2)
+    local img=$(echo "$1" |cut -d: -f1)
+    local tag=$(echo "$1" |cut -d: -f2)
     echo "[podman 显示私有仓库 ${PDMREPO} 镜像名 ${img} 标签 ${tag} 的 manifests]" >&2
     curl -s http://${PDMREPO}/v2/${img}/manifests/${tag}
 }
@@ -1653,12 +1653,12 @@ PS1raspi_warn_info() {
 
     if [ "$CPUTEMP" -gt "60000" ] && [ "$CPUTEMP" -lt "70000" ]; then
         local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` ="
-    elif [ "$CPUTEMP" -gt  "70000" ];  then
+    elif [ "$CPUTEMP" -gt "70000" ];  then
         local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` IS VERY HIGH! SHUTDOWN NOW! ="
     fi
 
     local THROTT=`vcgencmd get_throttled| tr -d "throttled="`
-    if [ "$THROTT" != "0x0" ];  then
+    if [ "$THROTT" != "0x0" ]; then
         local THROTT_WARN="= System throttled [$THROTT], check https://www.raspberrypi.com/documentation/computers/os.html#get_throttled ="
     fi
 
