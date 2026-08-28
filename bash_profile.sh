@@ -858,7 +858,7 @@ alias myip='echo "[浏览器打开 https://test.ustc.edu.cn/ 可看到自己的i
 # 命令行查天气
 # 支持任意Unicode字符指定任何的地址 curl http://wttr.in/~大明湖
 #  https://wttr.in/:help 看月相 curl http://wttr.in/moon
-weather() { curl -s --connect-timeout 3 -m 5 "http://wttr.in/$1"; }
+weather() { curl -s --connect-timeout 3 -m 5 "http://wttr.in/${1}"; }
 
 # ssh
 alias sshs='echo "[跳过其它各种协商使用密码连接主机]" >&2; ssh -o "PreferredAuthentications=keyboard-interactive,password"'
@@ -1296,13 +1296,13 @@ alias pdmdf='echo "[podman查看资源情况]" >&2; podman system df -v'
 pdmv() {
     local c
     for c in $(podman ps -a --format="{{.Names}}"); do
-        echo "容器 '$c' 使用了卷：$(podman inspect $c --format='{{range .Mounts}}{{.Name}} {{end}}' )"
+        echo "容器 '$c' 使用了卷：$(podman inspect $c --format='{{range .Mounts}}{{.Name}} {{end}}' )" >&2
     done
 }
 # 操作私有容器仓库
 alias pdmr='echo "[podman 列出私有仓库 ${PDMREPO} 的所有镜像]" >&2; curl -s http://${PDMREPO}/v2/_catalog | jq'
 pdmrl() {
-  echo "[podman 列出私有仓库 ${PDMREPO} 的全部镜像及标签]"
+  echo "[podman 列出私有仓库 ${PDMREPO} 的全部镜像及标签]" >&2
   local repo
 
   curl -s http://${PDMREPO}/v2/_catalog |
@@ -1317,26 +1317,36 @@ pdmrl() {
   done
 }
 pdmrs() {
-    local img=$(echo $1  |cut -d: -f1)
-    local tag=$(echo $1  |cut -d: -f2)
-    echo "[podman 显示私有仓库 ${PDMREPO} 镜像名 ${img} 标签 ${tag} 的 manifests]"
+    local img=$(echo "$1"  |cut -d: -f1)
+    local tag=$(echo "$1"  |cut -d: -f2)
+    echo "[podman 显示私有仓库 ${PDMREPO} 镜像名 ${img} 标签 ${tag} 的 manifests]" >&2
     curl -s http://${PDMREPO}/v2/${img}/manifests/${tag}
 }
 pdmrm() {
-    local img=$(echo $1 |cut -d: -f1)
-    local tag=$(basename $1 |cut -d: -f2)
-    local sha=$2
-    echo "[podman 删除私有仓库的镜像 ${PDMREPO}/$img:$tag，sha256摘要: ${sha}]"
+    local img=$(echo "$1" |cut -d: -f1)
+    local tag=$(basename "$1" |cut -d: -f2)
+    local sha="$2"
+    echo "[podman 删除私有仓库的镜像 ${PDMREPO}/$img:$tag，sha256摘要: ${sha}]" >&2
     curl -v -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' -X DELETE http://${PDMREPO}/v2/${img}/manifests/sha256:${sha}
     echo "注意：登录仓库的 tty 运行垃圾收集(GC)才能真正的释放磁盘空间"
 }
 pdmrcpd() {
-    echo "[podman 从本地 docker 仓库推送到私有仓库]"
+    if [ $# -lt 2 ]; then
+        echo "用法: pdmrcpd <本地docker仓库镜像名> <远程镜像名>" >&2
+        return 1
+    fi
+
+    echo "[podman 从本地 docker 仓库推送到私有仓库]" >&2
     skopeo copy docker-daemon:${1} docker://${PDMREPO}/${2}
 }
 pdmrcpp() {
-    echo "[podman 从本地 podman 仓库推送到私有仓库]"
-    skopeo copy containers-storage:${1} docker://${PDMREPO}/${2}
+    if [ $# -lt 2 ]; then
+        echo "用法: pdmrcpp <本地podman仓库镜像名> <远程镜像名>" >&2
+        return 1
+    fi
+
+    echo "[podman 从本地 podman 仓库推送到私有仓库]" >&2
+    skopeo copy "containers-storage:$1" "docker://${PDMREPO}/$2"
 }
 
 # distrobox 这词打不快
