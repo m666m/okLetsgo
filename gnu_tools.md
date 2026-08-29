@@ -2033,34 +2033,50 @@ fi
 
 ####################################################################
 # zsh 的初始化设置生成内容
+
 # Lines configured by zsh-newuser-install
-HISTFILE=~/.histfile
-HISTSIZE=1000
-SAVEHIST=1000
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+# 多个终端共享历史
+setopt SHARE_HISTORY
+# 忽略重复命令
+setopt HIST_IGNORE_DUPS
+# 以空格开头的命令不记录
+setopt HIST_IGNORE_SPACE
+# 记录时间戳
+setopt EXTENDED_HISTORY
+# 编辑器模式（vi 模式）
 bindkey -v
 # End of lines configured by zsh-newuser-install
 
-# Zsh 的 fpath 一直是显式配置的，只能手动添加如下内容
+# 补全系统配置：Zsh 的 fpath 一直是显式配置的，只能手动添加如下内容
 # The following lines were added by compinstall
 zstyle :compinstall filename '$HOME/.zshrc'
 
-# 用户级自动补全的路径自己添加，某些脚本如 ask 等会用到
+# 补全样式
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'  # 大小写不敏感
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}  # 使用 ls 颜色
+zstyle ':completion:*' rehash true  # 自动重新哈希
+
+# 用户级自动补全的路径只能自己添加，某些脚本如 ask 等会用到
 fpath=("$HOME/.local/share/zsh/site-functions" $fpath)
 
-# compinit 要放在所有补全配置（fpath 修改、zstyle 补全样式等）之后，
+# 初始化补全系统，必须在所有补全配置之后（fpath 修改、zstyle 补全样式等）
 # 但在任何 调用补全注册命令（如 compdef、eval "$(xxx completion zsh)"）之前。
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
-####################################################################
+######################
 # 如果安装了 ohmyzsh 会自动生成一堆设置，不用管他
 # ...
 # ...
 # ohmyzsh 自带插件管理，在 plugin=() 段落启用内置插件，可以在这里加载那些 source xxx 的插件
 
-####################################################################
-# Zsh：加载插件或小工具
+######################
+# 加载插件或小工具
 #
 # 如果是用 apt install 安装的发行版插件，位置在 /usr/share/ 目录
 # 手动安装的插件，位置在 ~/.zsh/plugins/ 目录
@@ -2078,8 +2094,8 @@ source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-#################################
-# Zsh：手动配置插件
+######################
+# 配置插件
 
 # zsh 执行 cd xxx 命令后自动执行 ls 列出当前文件
 chpwd() ls -A
@@ -2090,7 +2106,7 @@ chpwd
 # https://github.com/zsh-users/zsh-autosuggestions#suggestion-highlight-style
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#006799,bold"
 
-####################################################################
+######################
 # powerlevel10k
 
 # powerlevel10k 安装程序自动添加的，不用动
@@ -2113,6 +2129,11 @@ POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(${POWERLEVEL9K_LEFT_PROMPT_ELEMENTS:#context}
 
 # 4. 将 status 和 context 按顺序添加到左侧开头
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(status context $POWERLEVEL9K_LEFT_PROMPT_ELEMENTS)
+
+######################
+# 工具补全（放在 compinit 之后）
+# eval "$(starship init zsh)"
+eval "$(hermes completion zsh)"
 
 ```
 
