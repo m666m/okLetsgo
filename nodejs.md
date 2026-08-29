@@ -88,7 +88,11 @@ Node.js 是 JavaScript 的运行时环境，允许在服务器端运行 JS 代�
 
     nvm list
 
-不要系统级安装：当你执行 sudo npm install -g xxx 时，文件会被写入 /usr/lib/node_modules。这不仅需要 sudo 密码，而且一旦某个全局包出错，可能导致整个系统级 Node 目录权限混乱，甚至让你无法正常使用系统自带的工具。
+不要系统级安装：
+
+    当你执行 `sudo npm install -g xxx` 时，文件会被写入 /usr/lib/node_modules。
+
+这不仅需要 sudo 密码，而且一旦某个全局包出错，可能导致整个系统级 Node 目录权限混乱，甚至让你无法正常使用系统自带的工具。
 
 ### 配置 npm 国内源
 
