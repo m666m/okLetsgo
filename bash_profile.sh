@@ -391,7 +391,7 @@ if [[ $_MYPROMPT_CURRENT_SHELL != 'zsh' ]]; then
 
     # Linux bash 使用配套的 bash-completion 包，按理说应该自动惰性加载，不需要手工操作。
     # 有时候不起作用，强制引用下，依次回落：
-    # 优先调用 openssh-clients 包自带的
+    # 优先调用 openssh-clients 包安装的
     if [[ -f /etc/bash_completion.d/ssh ]]; then
         source /etc/bash_completion.d/ssh
 
@@ -406,12 +406,14 @@ if [[ $_MYPROMPT_CURRENT_SHELL != 'zsh' ]]; then
 fi
 
 #######################
-# 功能增强：不依赖 bash-completion 包，Hermes Agent 等命令的自动完成可以自行引用
-# hermes 的速度较慢，暂时屏蔽掉
-# 已经安装了 bash-completion 包则 docker 不需要单独执行一次
+# 功能增强：Hermes Agent 等工具的命令自动完成，由安装程序脚本自行添加引用
+#   hermes 的速度较慢，暂时屏蔽掉
+#   如果已经安装了 bash-completion 包则 docker 不需要单独执行一次
 #if [[ $_MYPROMPT_CURRENT_SHELL != 'zsh' ]]; then
 #    if command -v hermes >/dev/null; then
 #        eval "$(hermes completion bash)"
+#    fi
+#    if command -v docker >/dev/null; then
 #        source <(docker completion bash)
 #    fi
 #fi
