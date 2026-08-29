@@ -2018,6 +2018,7 @@ ohmyzsh的插件管理机制更智能，还会提示更新，建议用这种方�
 安装 powerlevle10k、ohmyzsh(可选) 等几个插件后的配置
 
 ```zsh
+# .zshrc
 
 # 如果有 .bash_profile，执行之
 [[ -f ~/.bash_profile ]] && source ~/.bash_profile
@@ -2036,8 +2037,10 @@ fi
 
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.zsh_history
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=1000
+SAVEHIST=1000
+# 敏感命令不记录历史
+HISTORY_IGNORE='(*password*|*passwd*|*token*)'
 # 多个终端共享历史
 setopt SHARE_HISTORY
 # 忽略重复命令
@@ -2134,6 +2137,10 @@ POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(status context $POWERLEVEL9K_LEFT_PROMPT_ELEM
 # 工具补全（放在 compinit 之后）
 # eval "$(starship init zsh)"
 eval "$(hermes completion zsh)"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 ```
 

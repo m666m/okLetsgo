@@ -311,6 +311,12 @@ if [[ -z "$LANG" ]]; then
     fi
 fi
 
+# 历史记录不记录空格开头的命令，过滤敏感信息
+HISTCONTROL=ignorespace
+HISTIGNORE='*password*:*passwd*:*token*:*secret*:*api*key*'
+HISTSIZE=1000
+HISTFILESIZE=1000
+
 # 在终端模拟器中命令行的字符显示彩色
 # 显式设置终端启用256color，防止终端工具未设置或设置的太低。若终端工具能开启透明选项，则显示的效果更好
 export TERM=xterm-256color
