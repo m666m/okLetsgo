@@ -646,7 +646,7 @@ uv 会查找当前目录下的 pyproject.toml 或 setup.py / setup.cfg，构建�
 
     检查环境变量 VIRTUAL_ENV（是否激活了外部虚拟环境），如果有则激活使用。
 
-如果没有找到可用的虚拟环境，会自动创建 **临时环境**：
+如果没有找到可用的虚拟环境，会查找直至自行下载 python 解释器：
 
 1、首先搜索一个合适的 Python 解释器，这个搜索遵循以下优先级：
 
@@ -658,7 +658,7 @@ uv 会查找当前目录下的 pyproject.toml 或 setup.py / setup.cfg，构建�
 
 2、如果以上都找不到，使用 uv 自身缓存目录中管理的 Python（~/.local/share/uv/python/）。如果缓存没有，则自动下载一个 Python 版本去执行。
 
-这对于我们日常使用 uv run 运行没有环境的 py 文件很方便：
+这对于我们日常使用 `uv run` 运行没有独立环境的 py 文件很方便：
 
     如果这个 py 文件只使用了 python 内置的包，则使用 `uv run script.py` 执行是最方便的，让 uv 自己解决 python 在哪里。
 
