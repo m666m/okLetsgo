@@ -619,42 +619,55 @@ uv 会查找当前目录下的 pyproject.toml 或 setup.py / setup.cfg，构建�
 
     此时项目只是作为一个 Python 包 被安装（可编辑模式），你可以通过 python -c "import my_package" 或 python -m my_package 使用它，但并没有一个独立的“主执行文件”。
 
-### `uv run` 运行运行没有项目环境的 python 程序
+### `uv run` 运行你的 py 程序
 
-常见于只想快速运行一个本地的 .py 文件，而不想为它单独创建一个项目目录和 .venv。
+你的本地脚本很可能依赖于项目 pyproject.toml 或 requirements.txt 中声明的包。`uv run` 能直接建立虚拟环境使用这些已安装的依赖，日后运行会复用该环境。
 
-情况 1：
+    首先会从当前目录开始，向上级目录递归查找是否存在 pyproject.toml
 
-如果这个 py 文件只使用了 pythonn 内置的包，则使用 `uv run script.py` 执行是最方便的。
+一、如果找到了：uv 会认定你在一个 uv 项目中。这种情况下，它完全无视你当前 Shell 是否激活了其他虚拟环境（无视 VIRTUAL_ENV），也不会回退到系统 Python。
 
-uv 对这个命令实际操作的流程如下：
+    查找当前目录或父目录下是否存在 .venv 或由 UV_PROJECT_ENVIRONMENT 指定的虚拟环境。如果找到，直接激活并使用它。
 
-    uv 检查到当前目录没有 pyproject.toml 文件，则会进入“脚本模式”。它只做一件事：帮你找到一个合适的 Python 解释器，然后干净地运行脚本，不会在本地创建任何虚拟环境。
+    如果项目根目录下没有 .venv 文件夹，uv run 会自动创建一个新的虚拟环境（并执行 uv sync 安装所有依赖），然后再运行你的脚本或命令。
 
-    查找现有的虚拟环境（复用优先）
+如果用户显式指定了 --python 版本，uv 会按需下载 Astral 提供的独立 Python 发行版，并缓存起来供后续使用
 
-        检查环境变量 VIRTUAL_ENV（如果你手动 source 激活了某个环境）。
-
-        从当前目录开始，逐级向上查找父目录中是否存在 .venv 或 venv 文件夹
-
-    找不到虚拟环境 -> 回退到系统 Python
-
-        即 `uv python list` 里列出的 系统 Python 或 uv 全局管理的 Python
-
-    如果以上两种方式都找不到，uv 会自动联网下载并安装一个由 Astral 项目提供的、独立的 Python 3.12 版本，并缓存起来供后续使用
-
-    用选定的 Python 解释器直接运行你的 .py 文件。
+    # 改变的是“解释器版本”，而不是“环境选择策略”。
+    uv run --python 3.12 script.py
 
     注1：支持添加 --python=3.12 指定版本
 
-    注2：强制不使用任何虚拟环境 `uv run --no-project script.py`
+    注2：强制跳过项目模式 `uv run --no-project script.py`
 
-情况2、
+二、如果没有找到 pyproject.toml：uv 会认为这是非项目环境
 
-如果这个 python 需要导入第三方包，可以临时添加依赖运行：
+    检查当前目录或父目录是否存在 .venv（本地虚拟环境），如果有则激活使用。
 
-    # 在临时环境中准备这个依赖，如有缓存会毫秒级复用，速度非常快
-    uv run --with requests script.py
+    检查环境变量 VIRTUAL_ENV（是否激活了外部虚拟环境），如果有则激活使用。
+
+如果没有找到可用的虚拟环境，会自动创建 **临时环境**：
+
+1、首先搜索一个合适的 Python 解释器，这个搜索遵循以下优先级：
+
+    用户指定：通过 --python 选项指定的版本。
+
+    版本文件：项目或用户目录下的 .python-version 文件指定的版本。
+
+    自动发现：搜索系统 PATH 中的 python 解释器。
+
+2、如果以上都找不到，使用 uv 自身缓存目录中管理的 Python（~/.local/share/uv/python/）。如果缓存没有，则自动下载一个 Python 版本去执行。
+
+这对于我们日常使用 uv run 运行没有环境的 py 文件很方便：
+
+    如果这个 py 文件只使用了 python 内置的包，则使用 `uv run script.py` 执行是最方便的，让 uv 自己解决 python 在哪里。
+
+    如果指定了第三方依赖，会创建一个临时的隔离虚拟环境，把 requests 及其依赖装进去，然后在这个临时环境中运行你的脚本：
+
+        # 在临时环境中安装这个依赖，如有缓存会毫秒级复用，速度非常快
+        uv run --with requests script.py
+
+总之，`uv run` 无论如何都会确保最终有一个可用的 Python 解释器来执行你的脚本。
 
 ### `uv tool` 安装用 pip 发布的 CLI 工具并全局使用
 
@@ -709,15 +722,25 @@ uv tool 的解决思路是：为每个工具创建一个独立的隔离虚拟环
 
     $ uv tool list  # 没有安装 pycowsay
 
-#### `uvx` 直接运行 python 包的导出工具
+#### `uvx` 只在临时环境运行 py 程序
 
-uvx 是 `uv tool run` 的别名，它在一个临时、隔离的环境中运行已发布到 PyPI 上的命令行工具（如 ruff, black, httpie）,uvx 不适用于运行本地的 .py 文件。
+uvx 是 `uv tool run` 的别名，uvx 默认是隔离的，它在一个临时、隔离的环境中运行 py 程序，常用于运行已发布到 PyPI 上的命令行工具（如 ruff, black, httpie）。
 
-非常适合 CI / 本地格式化等运行一次性工具（如 ruff、black、jupyter 等），它不需要项目中有 .venv，会自动创建一个临时的、隔离的虚拟环境（通常位于 ~/.cache/uv/...），通过子进程执行工具命令（同样注入正确的 PATH 和 VIRTUAL_ENV）
+uvx 不使用现有的环境，会直接创建一个临时的、隔离的虚拟环境（通常位于 ~/.cache/uv/...），通过子进程执行工具命令（同样注入正确的 PATH 和 VIRTUAL_ENV）。
+
+uvx 非常适合 CI / 本地格式化等运行一次性工具（如 ruff、black、jupyter 等）
 
     $ uvx black .
     $ uvx ruff check .
     $ uvx pytest
+
+uvx 也可以用于运行本地 .py 文件，它直接创建临时环境运行。临时环境中如果需要依赖包，需要你手动指定：
+
+    uvx --with pandas --with numpy ipython xxx.py
+
+    uvx --with-requirements requirements.txt myapp
+
+    uvx git+https://github.com/m-bain/whisperX.git
 
 ## 何时用 conda/virtualenv/venv
 
