@@ -642,6 +642,8 @@ uv 会查找当前目录下的 pyproject.toml 或 setup.py / setup.cfg，构建�
 
 二、如果没有找到 pyproject.toml：uv 会认为这是非项目环境
 
+优先查找使用现有环境：
+
     检查当前目录或父目录是否存在 .venv（本地虚拟环境），如果有则激活使用。
 
     检查环境变量 VIRTUAL_ENV（是否激活了外部虚拟环境），如果有则激活使用。
@@ -658,7 +660,7 @@ uv 会查找当前目录下的 pyproject.toml 或 setup.py / setup.cfg，构建�
 
 2、如果以上都找不到，使用 uv 自身缓存目录中管理的 Python（~/.local/share/uv/python/）。如果缓存没有，则自动下载一个 Python 版本去执行。
 
-这对于我们日常使用 `uv run` 运行没有独立环境的 py 文件很方便：
+总之，`uv run` 无论如何都会确保最终有一个可用的 Python 解释器来执行你的脚本。这对于我们日常使用 `uv run` 运行没有独立环境的 py 文件很方便：
 
     如果这个 py 文件只使用了 python 内置的包，则使用 `uv run script.py` 执行是最方便的，让 uv 自己解决 python 在哪里。
 
@@ -666,8 +668,6 @@ uv 会查找当前目录下的 pyproject.toml 或 setup.py / setup.cfg，构建�
 
         # 在临时环境中安装这个依赖，如有缓存会毫秒级复用，速度非常快
         uv run --with requests script.py
-
-总之，`uv run` 无论如何都会确保最终有一个可用的 Python 解释器来执行你的脚本。
 
 ### `uv tool` 安装用 pip 发布的 CLI 工具并全局使用
 
