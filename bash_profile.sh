@@ -1508,7 +1508,7 @@ PS1git_branch_name() {
         _pp_git_pt=$(true; __git_ps1 '%s' 2>/dev/null)
         if [ "$?" = "0" ]; then
             # 如果是有效的 git 信息，这里就直接打印并退出函数
-            printf "%s" $_pp_git_pt
+            printf "%s" "$_pp_git_pt"
             unset _pp_git_pt
             return
         fi
@@ -1527,7 +1527,7 @@ PS1git_branch_name() {
     case "$exitcode" in
         '0')
             # 优先显示当前 head 指向的分支名
-            printf "%s" $_pp_branch_name
+            printf "%s" "$_pp_branch_name"
             ;;
         '1')
             # 如果是 detached HEAD，则显示标签名或 commit id
