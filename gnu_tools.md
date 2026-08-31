@@ -22395,22 +22395,22 @@ UTM 的两种运行方式：
 
     https://docs.getutm.app/guides/windows/#instructions
 
-注意：UTM 虚拟机安装的 Windows，务必安装客户机工具，这样桌面操作的流畅感才会类似本地原生系统
+Windows 虚拟机务必安装客户机工具，这样桌面操作的流畅感才会类似本地原生系统
 
     https://docs.getutm.app/guest-support/windows/#installation
 
-可手动下载新版的 iso 文件，放到宿主机的如下位置：
+    可手动下载新版的客户机工具 iso 文件，放到宿主机的如下位置：
 
-    https://getutm.app/downloads/utm-guest-tools-latest.iso
-        https://github.com/utmapp/qemu/releases
+        https://getutm.app/downloads/utm-guest-tools-latest.iso
+            https://github.com/utmapp/qemu/releases
 
-    ~/Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/utm-guest-tools-latest.iso
+        ~/Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/utm-guest-tools-latest.iso
 
-然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机 Windows 桌面体验直接起飞。
+    然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机 Windows 桌面体验直接起飞。
 
-填坑:
+    填坑:
 
-    开机后提示 failed to load boot001 。。。，等半天才跳转到 Windows Bootmanager 继续，后来直接无法启动了： 开机时狂按 ESC 进入 UEFI 界面，选择 Boot Manager，选择启动分区 “Windows Bootmanager”，F10 保存退出。
+        开机后提示 failed to load boot001 。。。，等半天才跳转到 Windows Bootmanager 继续，后来直接无法启动了： 开机时狂按 ESC 进入 UEFI 界面，选择 Boot Manager，选择启动分区 “Windows Bootmanager”，F10 保存退出。
 
 ### 用 PlayCover 玩 iOS 游戏，原生运行你的手游
 
