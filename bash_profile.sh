@@ -329,8 +329,8 @@ if command -v dircolors >/dev/null 2>&1; then
 
     # 下载使用 dir_colors 颜色方案-北极，可影响 ls、tree 等命令的颜色风格
     if [[ ! -f ~/.dir_colors ]]; then
-        echo '建议安装命令行显示文件颜色方案 nord-dircolors'
-        echo "  curlgh https://raw.githubusercontent.com/nordtheme/dircolors/develop/src/dir_colors > ~/.dir_colors || rm -f ~/.dir_colors "
+        echo '建议安装命令行显示文件颜色方案 nord-dircolors' >&2
+        echo "  curlgh https://raw.githubusercontent.com/nordtheme/dircolors/develop/src/dir_colors > ~/.dir_colors || rm -f ~/.dir_colors " >&2
     fi
 
     if test -r ~/.dir_colors; then
@@ -351,7 +351,7 @@ fi
 # 删除 vi 然后安装 vim，居然没有 `vi` 了
 command -v vi >/dev/null 2>&1 || {
     if command -v vim >/dev/null 2>&1; then
-        sudo ln -sf /usr/bin/vim /usr/bin/vi
+        echo "建议设置 sudo ln -sf /usr/bin/vim /usr/bin/vi" >&2
     else
         :
     fi
