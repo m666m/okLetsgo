@@ -22547,9 +22547,7 @@ Podman 无守护进程（daemonless），与 docker 命令几乎100%兼容。使
 
 ##### 使用镜像仓库
 
-config.toml 中的 [registry] 节只支持设置一个默认仓库域名，无法同时为多个仓库配置不同地址。如果需要使用其他仓库（包括私有仓库），直接在镜像引用里写完整域名即可，认证则通过 container registry login 命令单独管理。
-
-默认仓库只支持一个，还未支持仓库镜像：
+目前 ~/.config/container/config.toml 中的 [registry] 节只支持设置一个默认仓库域名，还未支持仓库镜像，也无法同时为多个仓库配置不同地址：
 
     # 将默认仓库设置为你的私有仓库地址
     container registry default set my-registry.example.com
@@ -22559,6 +22557,23 @@ config.toml 中的 [registry] 节只支持设置一个默认仓库域名，无�
 
     # 从指定镜像仓库拉取镜像
     container pull ***.xuanyuan.run/library/nginx:latest
+
+如果需要使用其他仓库（包括私有仓库），只能在镜像引用里写完整域名，如果需要认证则通过 container registry login 命令单独管理。
+
+    # GitHub Container Registry (ghcr.io)：
+    container run ghcr.io/some-org/some-image:tag
+
+    # 私有仓库（如自建 Harbor）：
+    container run registry.example.com/myproject/myimage:latest
+
+登录私有仓库：
+
+    container registry login registry.example.com -u myuser
+    # 交互式输入密码，或使用 --password-stdin
+
+登录后凭证会被持久化，后续拉取/推送该仓库时自动使用，无需在 config.toml 中写入任何认证信息。
+
+如果你想把默认仓库改成 ghcr.io，只需将 [registry] 中的 domain 改为 "ghcr.io"，但这样不加域名的短名（如 alpine）就会默认从 ghcr.io 拉取，请按需调整。
 
 下面是一个示例配置文件 ~/.config/container/config.toml，将默认仓库设为 docker.io，并给出了其他常见仓库在命令中直接引用的用法说明。
 
@@ -22586,23 +22601,6 @@ memory = "2gb"
 
 # 内核及 init 镜像使用默认值即可，无需手动指定
 ```
-
-如何使用其他仓库（包括私有仓库）
-
-    # GitHub Container Registry (ghcr.io)：
-    container run ghcr.io/some-org/some-image:tag
-
-    # 私有仓库（如自建 Harbor）：
-    container run registry.example.com/myproject/myimage:latest
-
-登录私有仓库：
-
-    container registry login registry.example.com -u myuser
-    # 交互式输入密码，或使用 --password-stdin
-
-登录后凭证会被持久化，后续拉取/推送该仓库时自动使用，无需在 config.toml 中写入任何认证信息。
-
-如果你想把默认仓库改成 ghcr.io，只需将 [registry] 中的 domain 改为 "ghcr.io"，但这样不加域名的短名（如 alpine）就会默认从 ghcr.io 拉取，请按需调整。
 
 ##### 容器互访
 
