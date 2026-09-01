@@ -22416,7 +22416,7 @@ Windows 虚拟机务必安装客户机工具，这样桌面操作的流畅感才
 
         开机后提示 failed to load boot001 。。。，等半天才跳转到 Windows Bootmanager 继续，后来直接无法启动了： 开机时狂按 ESC 进入 UEFI 界面，选择 Boot Manager，选择启动分区 “Windows Bootmanager”，F10 保存退出。
 
-        目前比较稳定的版本是 4.6.4，开机启动报错也可以进入 Windows。
+        目前比较稳定的版本是 4.6.4，开机启动报错也可以正常加载 Windows 进行启动。
 
 ### 用 PlayCover 玩 iOS 游戏，原生运行你的手游
 
