@@ -22387,9 +22387,11 @@ task:
 
 UTM 基于 QEMU 和 Apple Hypervisor，支持 Apple Silicon 和 Intel 芯片，可运行 x86/ARM 架构的 Windows 11。通过安装客户机工具可提升显示效果，但整体性能略低于 Parallels 和 VMware。
 
-UTM 的两种运行方式：
+UTM 创建虚拟机时要从两种运行方式中进行选择：
 
-1、超级慢 “模拟”模式（QEMU 方案）安装 x86 操作系统：纯 cpu 仿真运行 x86/AMD64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，不需要也不使用 cpu 提供的虚拟化加速。因此速度最慢，日常运行可能勉强可用，使用这个方案只是因为它的 x86 模拟功能最完整，作为生产环境或开发主力。
+1、超级慢的 “模拟”模式（QEMU 方案）安装 x86 操作系统：纯 cpu 仿真运行 x86/AMD64。在你的 M1 芯片 Mac 上，模拟一台完整的 x86 电脑，然后安装 Windows 10/11 (x86版) 或 x86 Linux。整个过程是纯软件的 cpu 模拟，既不依赖苹果的 Virtualization 框架，也不依赖 Rosetta 2，不需要也不使用 cpu 提供的虚拟化加速。
+
+这个模式速度太慢，日常运行只是勉强可用，只在你需要在开发中使用最完整的 x86 模拟功能时才选择这个模式。
 
 2、推荐 “虚拟化”模式 利用主机操作系统的虚拟化功能安装 Windows 11 ARM 版
 
@@ -22399,14 +22401,16 @@ Windows 虚拟机务必安装客户机工具，这样桌面操作的流畅感才
 
     https://docs.getutm.app/guest-support/windows/#installation
 
-    可手动下载新版的客户机工具 iso 文件，放到宿主机的如下位置：
-
-        https://getutm.app/downloads/utm-guest-tools-latest.iso
-            https://github.com/utmapp/qemu/releases
+    安装时会自动下载客户机工具 iso 文件，放到宿主机的如下位置：
 
         ~/Library/Containers/com.utmapp.UTM/Data/Library/Application Support/GuestSupportTools/utm-guest-tools-latest.iso
 
+        原始 iso 地址 https://getutm.app/downloads/utm-guest-tools-latest.iso
+                        https://github.com/utmapp/qemu/releases
+
     然后挂载到虚拟机的光驱中，在虚拟机内的 Windows 资源管理器打开这个光驱，执行其安装，这样就会在客户机和宿主机之间建立快速通道，让你的虚拟机 Windows 桌面体验直接起飞。
+
+    最大的惊喜是 Windows 11 ARM 版开机只占用 2.2GB 内存，默认 4GB 足够了。
 
     填坑:
 
