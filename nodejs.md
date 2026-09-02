@@ -68,13 +68,16 @@ Node.js 是 JavaScript 的运行时环境，允许在服务器端运行 JS 代�
     注意 https://nodejs.cn/ 是个假的
     https://www.zhihu.com/column/eggjs
 
-官方页面的建议是优先安装 [使用 nvm 多版本切换工具] 安装 node，nvm 安装的包所有版本都装在 ~/.nvm/ 下，属于用户目录。执行 `npm install -g` 永远不需要 sudo，既安全又省心。
+官方页面的安装建议是优先 [使用 nvm 多版本切换工具] 安装 node，nvm 安装的包所有版本都装在 ~/.nvm/ 下，属于用户目录。执行 `npm install -g` 永远不需要 sudo，既安全又省心。
 
-    https://nodejs.org/zh-cn/download
+国内在这个页面安装 nvm，然后用 nvm 安装 node：
 
-    这个页面安装 nvm，然后用 nvm 安装 node。也可单独下载安装 node + npm，不推荐，这样更麻烦。
+    # 先安装 [使用 nvm 多版本切换工具]
 
-或者单独从国内镜像网站下载 node 安装包
+    # 安装只需要写明主要版本，会自动选择最新
+    $ node install 24
+
+也可单独下载安装 node + npm，不推荐这样，反而更麻烦：
 
     node 安装包 https://registry.npmmirror.com/binary.html?path=node/latest/
 
@@ -88,11 +91,29 @@ Node.js 是 JavaScript 的运行时环境，允许在服务器端运行 JS 代�
 
     nvm list
 
-不要系统级安装：
+不要系统级安装软件：
 
     当你执行 `sudo npm install -g xxx` 时，文件会被写入 /usr/lib/node_modules。
 
-这不仅需要 sudo 密码，而且一旦某个全局包出错，可能导致整个系统级 Node 目录权限混乱，甚至让你无法正常使用系统自带的工具。
+    这不仅需要 sudo 密码，而且一旦某个全局包出错，可能导致整个系统级 Node 目录权限混乱，甚至让你无法正常使用系统自带的工具。
+
+升级
+
+    # 升级 nvm 再次执行安装脚本即可
+
+    # 升级 nvm 安装的 node
+    #  先确认你目前在用什么版本
+    node -v
+    npm -v
+    #  安装最新的 LTS 稳定版，推荐
+    nvm install --lts
+
+        # 或指定为你需要的版本号
+        nvm install 22.14.0
+        nvm use 22.14.0   # 切换到你要的版本号
+
+    # 升级软件包，之前是安装过 npm install -g @openai/codex
+    npm update -g @openai/codex
 
 ### 配置 npm 国内源
 
@@ -186,13 +207,18 @@ Yarn：一款新的JavaScript包管理工具。
 
 安装 nvm
 
-    $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+    https://nodejs.org/zh-cn/download 有安装命令执行即可
+
+    $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+    $ \. "$HOME/.nvm/nvm.sh"
 
 其实下载源代码即可安装，它完全使用 bash 脚本提供的 node 管理相关功能
 
     $ git clone https://github.com/nvm-sh/nvm.git ~/.nvm
 
-    $ cd ~/.nvm && git checkout v0.40.3
+    $ cd ~/.nvm
+    $ git checkout v0.40.3
 
     确认 ~/.nvm/nvm.sh 存在
 
@@ -211,7 +237,10 @@ Yarn：一款新的JavaScript包管理工具。
     # 淘宝源 https://npmmirror.com/
     $ echo 'export NVM_NODEJS_ORG_MIRROR=https://npmmirror.com/mirrors/node' >> ~/.bashrc
 
-然后才可以安装指定 node 版本
+    # 也可以用命令配置，但这样仅当前会话有效
+    nvm node_mirror https://npmmirror.com/mirrors/node/
+
+然后才可以安装指定 node 版本：
 
     $ nvm install 22
     $ nvm install 24
