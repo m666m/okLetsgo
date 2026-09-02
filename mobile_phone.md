@@ -1375,6 +1375,8 @@ postmarketos 把你的旧手机作为一个低功耗平台
 
 免解锁、免 root，为 Google Pixel 开启国内 5G 网络支持
 
+    https://www.zhihu.com/question/1978782923621692037/answer/2066212751643505413
+
     https://sspai.com/post/96068
         https://github.com/RikkaApps/Shizuku
         https://github.com/kyujin-cho/pixel-volte-patch
