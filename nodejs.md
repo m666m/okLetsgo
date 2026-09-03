@@ -292,6 +292,10 @@ Yarn：一款新的JavaScript包管理工具。
 
     如果你从未设置过 default，它可能不存在（或指向系统 Node）。
 
+'current' 别名
+
+    当前使用的 node 版本
+
 运行 `node` 命令时执行的是哪个版本？
 
     这取决于当前 shell 会话中 nvm 激活的是哪个版本，而不是 default 或 node 别名本身。
@@ -300,7 +304,7 @@ Yarn：一款新的JavaScript包管理工具。
 
     如果你在当前终端执行了 nvm use <版本>，那么当前终端就会切换到这个版本，覆盖 default 的设置。
 
-    如果你执行了 nvm install node，只是安装了一个新版本，并更新了 node 别名，但不会自动切换当前会话的 Node 版本。当前终端仍然使用之前的版本（或者 default 版本），除非你手动执行 nvm use node。
+    如果你执行了 nvm install node，只是安装了一个新版本，并更新了 node 别名，但不会自动切换当前会话的 Node 版本。当前终端仍然使用之前的版本（或者 default 版本），除非你手动执行 `nvm use node`。
 
 #### lts 版本概念
 
