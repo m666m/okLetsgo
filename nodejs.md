@@ -197,6 +197,56 @@ Yarn：一款新的JavaScript包管理工具。
     如何在 Fedora 38/37/36 Linux 上安装 Yarn
         https://www.linuxcapable.com/how-to-install-yarn-on-fedora-linux/
 
+#### npm 安装包默认不执行后处理脚本
+
+    https://juejin.cn/post/7655309559436181542
+
+当你执行 `npm install`，npm 不只是下载文件，它还会自动执行包里的生命周期脚本。package.json 里声明的 preinstall、install、postinstall，npm 都会自动跑。
+
+很多包用这些脚本来编译原生模块、下载二进制资源、做环境初始化。比如 node-sass 要编译 C++ addon，sharp 要下载预编译的二进制，不跑脚本这些包根本没法用。
+
+npm V12 进行了一个"史上最大安全变更"：安装脚本以后不会自动执行，必须手动批准。
+
+    JavaScript 生态里超过 72% 的供应链攻击，都是通过安装脚本植入恶意代码实现的。
+
+    这不只是理论上的风险。 2025 年 9 月npm 投毒事件：朝鲜黑客组织 Sapphire Slet 利用被劫持的 npm 维护者账号，在恶意包里植入后门，通过 postinstall 脚本收集开发者的 credentials。这波攻击影响了超过 140 个 npm 包。
+
+变更有三条，每条都是硬改：
+
+第一条，allowScripts 默认关闭。
+
+    这是最核心的变更。以后 npm install 不会再自动跑 preinstall、install、postinstall 脚本，包括 node-gyp 触发的隐式编译。
+
+    也就是说，如果你的项目依赖 node-sass、sharp、canvas 这类需要编译原生模块的包，升级到 npm v12 之后，这些包装上了但没法用，因为编译脚本不跑了。
+
+第二条，allow-git 默认值变成 none。
+
+    以前你可以直接在 package.json 里写 "dependencies": { "some-lib": "github:username/repo" }，npm 会去 Git 拉代码。v12 之后这条路默认封死，必须显式开启。
+
+第三条，远程 URL 依赖也砍了。
+
+    "some-lib": "https://some-cdn.com/file.tgz" 这种直接下载 tarball 的方式，v12 也不认了。所有包必须来自官方 registry。
+
+这三个变更加在一起，就是把 npm 变成一个默认不信任任何东西的包管理器。想让什么东西跑，必须说清楚为什么信任它。
+
+先跑这个命令看看自己项目里有哪些包有安装脚本：
+
+    npm approve-scripts --allow-scripts-pending
+
+如果输出了某些包，然后你需要一个个决定：信任还是不信任。
+
+    # 批准某个包的脚本
+    npm approve-scripts <package-name>
+
+    # 拒绝某个包的脚本
+    npm deny-scripts <package-name>
+
+批准的结果会写进 package.json，这个配置是项目级别的，意味着你的同事拉代码之后，npm 会自动识别哪些脚本是被批准过的。
+
+如果需要系统级信任，需要在 ~/.npmrc 中显式添加：
+
+    allow-scripts=@anthropic-ai/claude-code
+
 ### 使用 nvm 多版本切换工具
 
 允许你在电脑上同时安装多个 node.js 版本，通过 nvm 进行切换使用。经常用于项目目录下自己建立一个 node.js 环境，执行项目会非常方便，不会干扰系统。
