@@ -276,7 +276,7 @@ Yarn：一款新的JavaScript包管理工具。
 
 #### 别名：node default current
 
-为了版本并行，引入了几个概念，注意区分：
+为了多版本并行，引入了几个概念，注意区分：
 
 'node'别名
 
@@ -291,6 +291,12 @@ Yarn：一款新的JavaScript包管理工具。
     它不会自动更新，除非你手动设置。
 
     如果你从未设置过 default，它可能不存在（或指向系统 Node）。
+
+    # 指定版本
+    nvm alias default v24.0.2
+
+    # 取消设置
+    nvm unalias default
 
 'current' 别名
 
@@ -350,6 +356,12 @@ lts 版本升级跟日常使用区别，因为每个 lts 大版本只保留一�
 
     # 把你的默认 Node 版本(default)升级到最新版('lts/*')，安装后把 npm 升级到最新兼容版本
     $ nvm install --reinstall-packages-from=default --latest-npm 'lts/*'
+
+始终使用最新 LTS 版本，升级时也自动迁移全局包，并让新终端默认使用该版本：
+
+    nvm install 'lts/*' --reinstall-packages-from=current --latest-npm
+    nvm alias default 'lts/*'
+    nvm use 'lts/*'
 
 ## web server：Apache服务器和tomcat服务器区别
 

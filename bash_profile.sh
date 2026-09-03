@@ -1252,6 +1252,9 @@ alias dnft='echo "[在toolbox里运行dnf]" >&2; toolbox run dnf'
 alias pipi='echo "[pip 跳过缓存更新指定包]" >&2; pip install --upgrade --no-cache-dir'
 alias pipu='echo "[pip 更新自己]" >&2; python -m pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple --upgrade pip'
 
+# nvm node
+alias nvms='echo "[nvm 安装最新 LTS 并迁移全局包 + 升级 npm]" >&2; nvm install "lts/*" --reinstall-packages-from=current --latest-npm'
+
 # flatpak
 alias fpkr='echo "[flatpak查看当前有哪些存储库]" >&2; flatpak remotes'
 alias fpkrl='echo "[flatpak查看存储库软件列表]" >&2; flatpak remote-ls'
