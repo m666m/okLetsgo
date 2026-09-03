@@ -242,6 +242,7 @@ Yarn：一款新的JavaScript包管理工具。
 
 然后才可以安装指定 node 版本：
 
+    # 可以同时安装多个版本的 node
     $ nvm install 22
     $ nvm install 24
 
@@ -250,13 +251,101 @@ Yarn：一款新的JavaScript包管理工具。
         v22.22.3
     ->  v24.15.0
 
-    # 使用 Node.js 版本 24
-    $ nvm use 24
+    # 使用 Node.js 版本 22
+    $ nvm use 22
 
     执行 `nvm use` 后，当前终端窗口的 Node.js 版本就切换了，后续任何命令都会在这个新版本下运行
 
         # 执行你的脚本或包
         $ node your-script.js
+
+    # 也可以锁定执行 node 命令时默认使用的版本
+    $ nvm alias default 24.15.0
+
+    # 查看当前使用的版本
+    nvm current
+
+    # 卸载特定版本
+    nvm uninstall 16.20.1
+
+日常小版本升级场景，其实就是在新版本里把之前版本安装过的软件包迁移过来：
+
+    $ nvm use 22.22.2
+
+    $ nvm reinstall-packages 22.20.0
+
+#### 别名：node default current
+
+为了版本并行，引入了几个概念，注意区分：
+
+'node'别名
+
+    node 是 nvm 内置的别名，永远指向 nvm 所知道的最新版本 Node.js。
+
+    `nvm install node` 时，nvm 会安装当前最新的 Node 版本，node 别名指向该版本
+
+'default' 别名
+
+    default 是用户自定义的别名，用来指定新开的终端默认使用哪个 Node 版本。
+
+    它不会自动更新，除非你手动设置。
+
+    如果你从未设置过 default，它可能不存在（或指向系统 Node）。
+
+运行 `node` 命令时执行的是哪个版本？
+
+    这取决于当前 shell 会话中 nvm 激活的是哪个版本，而不是 default 或 node 别名本身。
+
+    当你打开一个新终端时，nvm 会尝试使用 default 别名指向的版本（如果设置了），并把它加入 PATH。
+
+    如果你在当前终端执行了 nvm use <版本>，那么当前终端就会切换到这个版本，覆盖 default 的设置。
+
+    如果你执行了 nvm install node，只是安装了一个新版本，并更新了 node 别名，但不会自动切换当前会话的 Node 版本。当前终端仍然使用之前的版本（或者 default 版本），除非你手动执行 nvm use node。
+
+#### lts 版本概念
+
+为方便日常切换使用不同时期的大版本，引入了 lts 版本概念，每个大版本一个代号
+
+    # 安装最新 LTS 版本的 Node.js，其实就是默认安装的当前最新版本
+    $ nvm install --lts
+
+    # 查看各个主要版本的代号
+    $ nvm list
+        v24.18.0
+    ->     v24.20.0
+    default -> v24.20.0
+    iojs -> N/A (default)
+    unstable -> N/A (default)
+    node -> stable (-> v24.20.0) (default)
+    stable -> 24.20 (-> v24.20.0) (default)
+    lts/* -> lts/krypton (-> v24.20.0)  用 'lts/*'表示 最新的 LTS 版本
+    lts/argon -> v4.9.1 (-> N/A)
+    lts/boron -> v6.17.1 (-> N/A)
+    lts/carbon -> v8.17.0 (-> N/A)
+    lts/dubnium -> v10.24.1 (-> N/A)
+    lts/erbium -> v12.22.12 (-> N/A)
+    lts/fermium -> v14.21.3 (-> N/A)
+    lts/gallium -> v16.20.2 (-> N/A)
+    lts/hydrogen -> v18.20.8 (-> N/A)
+    lts/iron -> v20.20.2 (-> N/A)
+    lts/jod -> v22.23.2 (-> N/A)
+    lts/krypton -> v24.20.0
+
+    # 切换到大版本
+    $ nvm use lts/argon
+
+lts 版本升级跟日常使用区别，因为每个 lts 大版本只保留一个，安装时要迁移之前安装过的应用：
+
+    # 把 node 别名指向的版本升级到最新版，并且迁移其已经安装的应用
+    $ nvm install --reinstall-packages-from=node node
+
+    # 从当前 shell 使用的版本升级到最新版，并且迁移其已经安装的应用
+    $ nvm install --reinstall-packages-from=current node
+
+    该操作默认不升级 npm，直接使用新 Node 自带的
+
+    # 把你的默认 Node 版本(default)升级到最新版('lts/*')，安装后把 npm 升级到最新兼容版本
+    $ nvm install --reinstall-packages-from=default --latest-npm 'lts/*'
 
 ## web server：Apache服务器和tomcat服务器区别
 
