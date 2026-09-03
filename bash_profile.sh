@@ -63,13 +63,13 @@ fi
 #     see /usr/share/doc/bash/examples/startup-files for examples.
 #     the files are located in the bash-doc package.
 # 为保持兼容性，这里不直接执行 .profile 文件，而是单独补充，只把这几个标准目录设置到变量 $PATH
-for local_path in "$HOME/.local/bin" "$HOME/bin"; do
-    if [[ -d "$local_path" ]] && [[ ":$PATH:" != *":$local_path:"* ]]; then
-        PATH="$PATH:$local_path"
+for ulb_path in "$HOME/.local/bin" "$HOME/bin"; do
+    if [[ -d "$ulb_path" ]] && [[ ":$PATH:" != *":$ulb_path:"* ]]; then
+        PATH="$PATH:$ulb_path"
     fi
 done
 export PATH
-unset local_path
+unset ulb_path
 
 #######################
 # 兼容性设置：exit for non-interactive shell
