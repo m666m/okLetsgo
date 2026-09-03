@@ -1668,7 +1668,7 @@ PS1raspi_warn_info() {
         local CPUTEMP_WARN="= CPU `vcgencmd measure_temp` IS VERY HIGH! SHUTDOWN NOW! ="
     fi
 
-    local THROTT=`vcgencmd get_throttled| tr -d "throttled="`
+    local THROTT=`vcgencmd get_throttled| cut -d= -f2`
     if [ "$THROTT" != "0x0" ]; then
         local THROTT_WARN="= System throttled [$THROTT], check https://www.raspberrypi.com/documentation/computers/os.html#get_throttled ="
     fi
