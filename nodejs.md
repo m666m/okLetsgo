@@ -324,6 +324,8 @@ npm V12 进行了一个"史上最大安全变更"：安装脚本以后不会自�
 
     $ nvm reinstall-packages 22.20.0
 
+注意：nvm 迁移内部执行的是裸 npm install -g --quiet(nvm.sh:4674),而 npm 11.16+ 会拦截 claude 的 postinstall 脚本执行——不带 --allow-scripts 就装不进去。详见章节 [npm 安装包默认不执行后处理脚本]。
+
 #### 别名：node default current
 
 为了多版本并行，引入了几个概念，注意区分：
@@ -394,7 +396,7 @@ npm V12 进行了一个"史上最大安全变更"：安装脚本以后不会自�
     # 切换到大版本
     $ nvm use lts/argon
 
-lts 版本升级跟日常使用区别，因为每个 lts 大版本只保留一个，安装时要迁移之前安装过的应用：
+lts 版本升级跟日常使用区别，因为每个 lts 大版本只保留一个，升级时要迁移之前安装过的应用：
 
     # 把 node 别名指向的版本升级到最新版，并且迁移其已经安装的应用
     $ nvm install --reinstall-packages-from=node node
@@ -412,6 +414,8 @@ lts 版本升级跟日常使用区别，因为每个 lts 大版本只保留一�
     nvm install 'lts/*' --reinstall-packages-from=current --latest-npm
     nvm alias default 'lts/*'
     nvm use 'lts/*'
+
+注意：nvm 迁移内部执行的是裸 npm install -g --quiet(nvm.sh:4674),而 npm 11.16+ 会拦截 claude 的 postinstall 脚本执行——不带 --allow-scripts 就装不进去。详见章节 [npm 安装包默认不执行后处理脚本]。
 
 ## web server：Apache服务器和tomcat服务器区别
 
