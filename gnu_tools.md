@@ -21468,13 +21468,13 @@ macOS 从 Catalina（10.15）开始，将默认 Shell 从 bash 切换为 zsh，�
 
     操作系统 macOS，其第 26 版代号 Tahoe（内核代号 Darwin）
 
-        苹果现阶段各种硬件使用的操作系统，无论是 macOS、iOS 还是 iPadOS，甚至是 HomePod 和 Apple TV（TvOS）都是建立在 Darwin 内核的基础上。Darwin 通过其 FreeBSD 血统支持 POSIX API，因此大量为 Unix/Unix-like 编写的程序可以直接在 Darwin 上编译运行。
+        苹果现阶段各种硬件使用的操作系统，无论是 macOS、iOS 还是 iPadOS，甚至是 HomePod 和 Apple TV（TvOS）都是建立在 Darwin 内核的基础上。Darwin 通过其 FreeBSD 血统支持 POSIX API，因此大量为 Unix/Unix-like 编写的开源代码可以直接在 Darwin 上编译运行。
 
     图形计算框架 Metal
 
         属于对 Apple Silicon 芯片提供支持的软件层面，相当于 Windows 上的 DirectX，实现了 Macbook 笔记本电脑在处理音频、视频、AI 应用时的高性能低功耗。
 
-        开源代码只需要利用 Metal 框架编译程序，即可实现支持 Apple Silicon 芯片统一内存的 GPU 加速。
+        开源代码只要调用 Metal 框架，即可实现支持 Apple Silicon 芯片统一内存的 GPU 加速。
 
 1、安装常用命令行工具软件、Clang 开发环境的命令行编译环境 CLT 等：
 
@@ -21482,11 +21482,13 @@ macOS 从 Catalina（10.15）开始，将默认 Shell 从 bash 切换为 zsh，�
 
 这时桌面会弹出确认对话框，确认后操作系统会开始自动下载安装。
 
-如果是在 macOS 虚拟机中安装，必须在桌面环境，如果在 ssh 命令行直接运行会报错。
+如果是在 macOS 虚拟机中安装，必须在桌面环境，如果在 ssh 命令行运行会报错。
 
-注意这个只是一个轻量级的包 --- 独立的命令行开发者工具 (Command Line Tools for Xcode, CLT) ，只包含命令行编译器和工具，路径在 /Library/Developer/CommandLineTools。一般使用足够了，如果需要安装完整的 Xcode 应用（路径通常是 /Applications/Xcode.app/Contents/Developer），则需要从 App Store 搜索 xcode 下载安装。以后需要 通过 `sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer` 命令，让系统使用完整 Xcode 中的工具。
+注意这个命令安装的只是一个轻量级的包 --- 独立的命令行开发者工具 (Command Line Tools for Xcode, CLT) ，只包含命令行编译器和工具，路径在 /Library/Developer/CommandLineTools，一般使用足够了。
 
-完成后确认：
+如果需要安装完整的 Xcode 应用（路径通常是 /Applications/Xcode.app/Contents/Developer），则需要从 App Store 搜索 xcode 下载安装。以后需要 通过 `sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer` 命令，让系统使用完整 Xcode 中的工具。
+
+安装完成后确认：
 
     $ clang --version
 
@@ -21513,7 +21515,7 @@ macOS 从 Catalina（10.15）开始，将默认 Shell 从 bash 切换为 zsh，�
         $ cmake -B build -DGGML_METAL=ON -DCMAKE_BUILD_TYPE=Release
         $ cmake --build build -j
 
-安装，默认到 $CMAKE_INSTALL_PREFIX /usr/local中，所以需要 sudo：
+可以用 `cmake install` 安装你编译的程序，默认会到 $CMAKE_INSTALL_PREFIX 即 /usr/local 中，所以需要 sudo 执行：
 
     $ sudo cmake --build --preset appleclang-release --target install
 
@@ -21523,7 +21525,7 @@ macOS 从 Catalina（10.15）开始，将默认 Shell 从 bash 切换为 zsh，�
 
 2、安装 Xcode 的图形界面开发环境
 
-macOS 上编译带图形界面的应用时，不能只装命令行工具，必须使用完整的 Xcode，并且系统要正确指向它。
+macOS 上编译带图形界面的应用时，不能像前面那样只装命令行工具，必须使用完整的 Xcode，并且系统要正确指向它。
 
     https://ghostty.org/docs/install/build#xcode
 
