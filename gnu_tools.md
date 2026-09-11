@@ -20824,6 +20824,120 @@ macOS 有自动挂载机制（由 diskarbitrationd 管理）。通常情况下�
 
 如果想实现桌面上的文件 拖放到你打开的应用程序的窗口以直接打开，必须设置 “触发角”：桌面或调度中心均可，只要能显示所有打开的应用程序窗口，拖动到上面再松开左键即可。
 
+### 隐私设置影响到日常使用
+
+Documents、Desktop、Downloads 等文件夹默认被系统保护。
+
+浏览器等下载的文件也被默认添加了特殊的禁止属性。
+
+#### 无法  ls ~/Documents
+
+终端程序（Terminal 或 iTerm）必须被明确授权“完全磁盘访问权限”，才能操作这些位置。
+
+    $ ls ~/Documents
+    total 0
+    ls: .: Operation not permitted
+
+最直接的解决方式是给终端授予完全磁盘访问权限：
+
+打开 系统设置（System Settings）> 隐私与安全性（Privacy & Security）。
+
+找到并点击 完全磁盘访问权限（Full Disk Access）。
+
+将你正在使用的终端应用（如 终端 或 iTerm）的开关打开。如果不在列表里，点击 + 号，从“应用程序 > 实用工具”里添加。
+
+关键一步：完全退出终端（⌘Q）再重新打开，设置才会生效。
+
+完成后，再回到 Documents 目录运行 ls -l 应该就正常了。
+
+另外，如果你是在某个集成开发环境（如 cmux、tmux）里遇到这个问题，也需要把那个宿主程序本身加入“完全磁盘访问权限”列表。
+
+#### 无法执行下载的或自编译程序
+
+macOS 的 Gatekeeper（门禁）安全机制会禁止直接执行从互联网下载的软件，甚至你自行编译的软件。
+
+每次使用总是得点选信任同意，挺麻烦的。
+
+当你从互联网上下载软件时，macOS 会自动给它打上一个 com.apple.quarantine（隔离）标签。下载的 dmg 程序在安装到了 /Applications 之后，也是会带有隔离属性。
+
+使用终端命令清除“隔离属性”
+
+    xattr -d com.apple.quarantine 你的自编译程序
+
+    build 目录下的文件我都要信任：
+
+        xattr -d com.apple.quarantine ./build
+
+清除安装的程序的所有属性（来自下载需要隔离）：
+
+    xattr -cr "/Applications/Double Commander.app/"
+
+### 根目录无法建立文件
+
+macOS 的约定俗成
+
+    临时网络挂载（访达中直接输入地址 nfs://）自动生成到 /Volumes，会在访达的侧栏显示为条目
+
+    固定挂载放 /mnt 或 /Network（后者是历史网络主目录挂载点）
+
+但是，苹果 APFS 文件系统对系统宗卷（/ 根目录）只读，其实根本无法直接在根目录下建立目录：
+
+法1： 不推荐 编辑 /etc/synthetic.conf 文件：
+
+    printf "mnt\tdir\n" | sudo tee -a /etc/synthetic.conf
+
+注意：mnt 和 dir 之间用 <tab> 隔开，不是空格。苹果说这么做的理由是路径可以包含空格，为了避免歧义。
+
+重启 Mac 后，根目录下就会出现 /mnt，它实际指向 /System/Volumes/Data/mnt，完全可写。然后就可以创建子目录
+
+    $ sudo mkdir -p /mnt/nas_nfs
+
+法2：推荐 使用 macOS 中特有的 /private 目录。该目录位于可写的数据宗卷上（/System/Volumes/Data/private），很多系统目录如 /etc、/tmp 本质上都是指向它的符号链接
+
+    $ sudo mkdir -p /private/mnt/nas_nfs
+
+测试挂载：
+
+    sudo mount -t nfs \
+        -o vers=4,resvport,rsize=1048576,wsize=1048576,noatime,nconnect=4,noappledouble \
+        192.168.1.100:/data /private/mnt/nas_nfs
+
+#### macOS 系统文件夹
+
+    /System/Applications/Utilities/Terminal.app  系统级应用程序的位置
+
+        ~/Applications  当前用户个人目录下的 “应用程序” 文件夹
+
+    /Library/Application Support  系统级的应用支持目录，对所有用户可用。存放的通常是全局（共享）数据，如应用的模板、插件信息、数据库缓存等，而非某个用户的个性化设置。
+
+        /Library/Preferences/     所有用户    全局偏好（较少见，多由后台守护进程使用）
+
+        ~/Library/Preferences/    当前用户    用户级偏好，例如 com.apple.Terminal.plist
+
+    /Applications   用户自己装的各种软件，卸载软件时，直接删除 /Applications 下的相应 .app 即可（但可能会残留偏好文件在 ~/Library 中）。
+
+### 无法通过 主机名.local 访问
+
+如果自行部署了服务，开启后局域网内的其他主机无法用 '主机名.local' 访问到你。
+
+这是因为 macOS 的 Bonjour 主机名注册是按需触发的 —— 如果没开任何系统内置的共享服务（文件共享、屏幕共享、远程登录等），系统可能根本不广播 主机名.local。
+
+    $ dns-sd -G v4 ggdeMacBook-Pro.local
+    DATE: ---Thu 25 Jun 2026---
+    17:57:45.766  ...STARTING...
+
+解决办法：
+
+    打开 系统设置 → 通用 → 共享。
+
+    将 远程登录（Remote Login）右侧开关打开，这样就开启建立 sshd 服务。
+
+这个解决办法资源占用极小，安全（需密码/密钥），且能持续触发 mDNS 注册。
+
+测试：
+
+运行前面的命令，输出会更新，出现 Add 你的主机名.local 到你的 ip 地址的记录了。
+
 ### 长时间运行防睡眠
 
 默认”合盖模式” (Clamshell Mode)：合盖既睡眠
@@ -20846,7 +20960,7 @@ macOS 有自动挂载机制（由 diskarbitrationd 管理）。通常情况下�
 
 #### 配置为服务器
 
-适用于 Mac Mini 作为家庭服务器的场景。
+适用于 Mac Studio 作为家庭服务器的场景。
 
 防止关闭屏幕
 
@@ -20888,91 +21002,7 @@ IP 稳定性
 
     详见章节 [macOS 的服务管家 launchd]
 
-### 执行下载的或自编译程序提示禁止执行
-
-macOS 的 Gatekeeper（门禁）安全机制会禁止直接执行从互联网下载的软件，甚至你自行编译的软件。
-
-每次使用总是得点选信任同意，挺麻烦的。
-
-当你从互联网上下载软件时，macOS 会自动给它打上一个 com.apple.quarantine（隔离）标签。下载的 dmg 程序在安装到了 /Applications 之后，也是会带有隔离属性。
-
-使用终端命令清除“隔离属性”
-
-    xattr -d com.apple.quarantine 你的自编译程序
-
-    build 目录下的文件我都要信任：
-
-        xattr -d com.apple.quarantine ./build
-
-清除安装的程序的所有属性（来自下载需要隔离）：
-
-    xattr -cr "/Applications/Double Commander.app/"
-
-### 无法通过 主机名.local 访问
-
-如果自行部署了服务，开启后局域网内的其他主机无法用 主机名.local 访问到你。
-
-这是因为macOS 的 Bonjour 主机名注册是按需触发的——如果没开任何系统内置的共享服务（文件共享、屏幕共享、远程登录等），系统可能根本不广播 主机名.local。
-
-    $ dns-sd -G v4 ggdeMacBook-Pro.local
-    DATE: ---Thu 25 Jun 2026---
-    17:57:45.766  ...STARTING...
-
-立即操作：
-
-    打开 系统设置 → 通用 → 共享。
-
-    将 远程登录（Remote Login）右侧开关打开。
-
-    这样资源占用极小，安全（需密码/密钥），且能持续触发 mDNS 注册。
-
-这是上面的命令输出会更新，出现 Add 你的主机名.local 到你的 ip 地址的记录了。
-
-### 根目录无法建立文件
-
-macOS 的约定俗成
-
-    临时网络挂载（访达中直接输入地址 nfs://）自动生成到 /Volumes，会在访达的侧栏显示为条目
-
-    固定挂载放 /mnt 或 /Network（后者是历史网络主目录挂载点）
-
-但是，苹果 APFS 文件系统对系统宗卷（/ 根目录）只读，其实根本无法直接在根目录下建立目录：
-
-法1： 不推荐 编辑 /etc/synthetic.conf 文件：
-
-    printf "mnt\tdir\n" | sudo tee -a /etc/synthetic.conf
-
-注意：mnt 和 dir 之间用 <tab> 隔开，不是空格。苹果说这么做的理由是路径可以包含空格，为了避免歧义。
-
-重启 Mac 后，根目录下就会出现 /mnt，它实际指向 /System/Volumes/Data/mnt，完全可写。然后就可以创建子目录
-
-    $ sudo mkdir -p /mnt/nas_nfs
-
-法2：推荐 使用 macOS 中特有的 /private 目录。该目录位于可写的数据宗卷上（/System/Volumes/Data/private），很多系统目录如 /etc、/tmp 本质上都是指向它的符号链接
-
-    $ sudo mkdir -p /private/mnt/nas_nfs
-
-测试挂载：
-
-    sudo mount -t nfs \
-        -o vers=4,resvport,rsize=1048576,wsize=1048576,noatime,nconnect=4,noappledouble \
-        192.168.1.100:/data /private/mnt/nas_nfs
-
-### macOS 系统文件夹
-
-    /System/Applications/Utilities/Terminal.app  系统级应用程序的位置
-
-        ~/Applications  当前用户个人目录下的 “应用程序” 文件夹
-
-    /Library/Application Support  系统级的应用支持目录，对所有用户可用。存放的通常是全局（共享）数据，如应用的模板、插件信息、数据库缓存等，而非某个用户的个性化设置。
-
-        /Library/Preferences/     所有用户    全局偏好（较少见，多由后台守护进程使用）
-
-        ~/Library/Preferences/    当前用户    用户级偏好，例如 com.apple.Terminal.plist
-
-    /Applications   用户自己装的各种软件，卸载软件时，直接删除 /Applications 下的相应 .app 即可（但可能会残留偏好文件在 ~/Library 中）。
-
-### Homebrew
+### Homebrew 软件仓库
 
 社区自制的面向 MacOS 的软件包管理，有自己的仓库，很多在 MacOS AppStore 里没有的常用软件都可以在这里安装。
 
