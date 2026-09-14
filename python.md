@@ -594,6 +594,8 @@ uv sync 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 p
 
     uv pip instal -e .
 
+复现环境之后就可以 [`uv run` 运行你的 .py 文件]。
+
 ##### `uv pip install` 在当前项目的环境中安装
 
 用法 1：在当前项目的 Python 环境（.venv）中，单纯的只安装一个包而不添加依赖关系：
@@ -610,7 +612,9 @@ uv sync 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 p
 
 用法 2：构建并安装到当前环境
 
-模仿传统 pip 的行为，只做一件事：把当前目录的包以可编辑模式装进当前激活的虚拟环境。它不会读取 uv.lock，也不会管理项目里的其他依赖组
+    推荐使用 `uv sync` 命令复现当前项目的开发环境
+
+`uv pip install` 可以模仿传统 pip 的行为，只做一件事：把当前目录的包以可编辑模式装进当前激活的虚拟环境。它不会读取 uv.lock，也不会管理项目里的其他依赖组
 
     它不会帮你管理 uv.lock，所以别指望用它来做可复现的环境搭建。
 
@@ -636,7 +640,7 @@ uv 会查找当前目录下的 pyproject.toml 或 setup.py / setup.cfg，构建�
 
     此时项目只是作为一个 Python 包 被安装（可编辑模式），你可以通过 python -c "import my_package" 或 python -m my_package 使用它，但并没有一个独立的“主执行文件”。
 
-### `uv run` 运行你的 py 程序
+### `uv run` 运行你的 .py 文件
 
 你的本地脚本很可能依赖于项目 pyproject.toml 或 requirements.txt 中声明的包。`uv run` 能直接建立虚拟环境使用这些已安装的依赖，日后运行会复用该环境。
 
@@ -686,7 +690,7 @@ uv 会查找当前目录下的 pyproject.toml 或 setup.py / setup.cfg，构建�
         # 在临时环境中安装这个依赖，如有缓存会毫秒级复用，速度非常快
         uv run --with requests script.py
 
-### `uv tool` 安装用 pip 发布的 CLI 工具并全局使用
+### `uv tool install` 安装用 pip 发布的 CLI 工具并全局使用
 
 只需要该项目能构建常规 wheel（PEP 517），即 build_wheel 接口，即支持这种安装方式。
 
@@ -758,6 +762,26 @@ uvx 也可以用于运行本地 .py 文件，它直接创建临时环境运行�
     uvx --with-requirements requirements.txt myapp
 
     uvx git+https://github.com/m-bain/whisperX.git
+
+### uv 使用 pypi/github 的程序作为工具
+
+很多开源工具既发布 pypi，也发布 github 源代码，安装方式就很灵活。
+
+最简单的使用方式是用 uvx 在临时环境中运行：
+
+    uvx whisperx meeting.wav --model large-v2 --language zh
+
+长期使用可直接安装到持久化的独立环境：
+
+    uv tool install whisperx
+
+如果下载源代码自行构建使用：
+
+    git clone --depth=1 https://github.com/m-bain/whisperX
+
+    # 在项目目录下，用项目环境运行
+    UV_EXCLUDE_NEWER=false uv sync  # 绕过 exclude-newer 导致的依赖解析失败
+    uv run whisperx meeting.wav --model large-v2 --language zh
 
 ## 何时用 conda/virtualenv/venv
 
