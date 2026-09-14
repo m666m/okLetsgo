@@ -573,6 +573,9 @@ uv 使用 pyproject.toml，对应 requirements.txt：
 
     $ uv add numpy
 
+    # 支持直接添加 github 源代码（“有 wheel 用 wheel，没有才构建”）
+    uv add "git+https://github.com/用户名/仓库"
+
 当你把项目拷贝到别的机器上执行，要先创建同样的虚拟环境，会自动安装这些包。
 
     $ uv sync
@@ -601,6 +604,9 @@ uv sync 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 p
 用法 1：在当前项目的 Python 环境（.venv）中，单纯的只安装一个包而不添加依赖关系：
 
     $ uv pip install numpy
+
+    # 支持从 github 安装（“有 wheel 用 wheel，没有才构建”）
+    $ uv pip install "git+https://github.com/用户名/仓库@main"
 
 像一个“快捷操作”，仅仅是把包下载下来安装到当前项目的 .venv 里，不会修改项目文件，不会记录依赖
 
@@ -754,6 +760,9 @@ uvx 非常适合 CI / 本地格式化等运行一次性工具（如 ruff、black
     $ uvx black .
     $ uvx ruff check .
     $ uvx pytest
+
+    # 支持直接从 github 安装（“有 wheel 用 wheel，没有才构建”）
+    uvx --from git+ "git+https://github.com/用户名/仓库@main" <命令>
 
 uvx 也可以用于运行本地 .py 文件，它直接创建临时环境运行。临时环境中如果需要依赖包，需要你手动指定：
 
