@@ -524,6 +524,26 @@ To use with a specific project, simply copy the PyQtGraph subdirectory anywhere 
 
 uv 工具不会自动下载 Python 包，因此如果设置虚拟环境时用 -p 指定系统不存在的Python版本，则会报错。所以需要提前安装。
 
+### 快速使用 uv 运行 pypi/github 的程序作为工具
+
+很多开源工具既发布 pypi，也发布 github 源代码，安装方式就很灵活。
+
+最简单的使用方式是用 uvx 在临时环境中运行(pypi)：
+
+    uvx whisperx meeting.wav --model large-v2 --language zh
+
+长期使用可直接安装到持久化的独立环境(pypi)：
+
+    uv tool install whisperx
+
+如果下载源代码自行构建使用：
+
+    git clone --depth=1 https://github.com/m-bain/whisperX
+
+    # 在项目目录下，用项目环境运行
+    UV_EXCLUDE_NEWER=false uv sync  # 绕过 exclude-newer 导致的依赖解析失败
+    uv run whisperx meeting.wav --model large-v2 --language zh
+
 ### 使用 uv 创建项目级独立的虚拟环境
 
 使用 uv 创建项目独立的虚拟环境，操作顺序如下：
@@ -771,26 +791,6 @@ uvx 也可以用于运行本地 .py 文件，它直接创建临时环境运行�
     uvx --with-requirements requirements.txt myapp
 
     uvx git+https://github.com/m-bain/whisperX.git
-
-### uv 使用 pypi/github 的程序作为工具
-
-很多开源工具既发布 pypi，也发布 github 源代码，安装方式就很灵活。
-
-最简单的使用方式是用 uvx 在临时环境中运行：
-
-    uvx whisperx meeting.wav --model large-v2 --language zh
-
-长期使用可直接安装到持久化的独立环境：
-
-    uv tool install whisperx
-
-如果下载源代码自行构建使用：
-
-    git clone --depth=1 https://github.com/m-bain/whisperX
-
-    # 在项目目录下，用项目环境运行
-    UV_EXCLUDE_NEWER=false uv sync  # 绕过 exclude-newer 导致的依赖解析失败
-    uv run whisperx meeting.wav --model large-v2 --language zh
 
 ## 何时用 conda/virtualenv/venv
 
