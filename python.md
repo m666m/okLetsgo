@@ -541,7 +541,7 @@ uv 工具不会自动下载 Python 包，因此如果设置虚拟环境时用 -p
     git clone --depth=1 https://github.com/m-bain/whisperX
 
     # 在项目目录下，用项目环境运行
-    UV_EXCLUDE_NEWER=false uv sync  # 绕过 exclude-newer 导致的依赖解析失败
+    uv sync
     uv run whisperx meeting.wav --model large-v2 --language zh
 
 ### 使用 uv 创建项目级独立的虚拟环境
