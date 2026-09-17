@@ -1504,6 +1504,8 @@ winget
 
         官方存储库 https://github.com/microsoft/winget-pkgs
 
+        社区搞的提供网页端浏览及安装命令，非常方便 https://winget.run/pkg/Gyan/FFmpeg
+
 NuGet
 
     微软官方的 .Net 共享代码的包管理工具
