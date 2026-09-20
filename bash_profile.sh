@@ -1172,6 +1172,7 @@ ghaddr() {
         return 1
     fi
 
+    # 远程文件为方便自动更新加入了头尾标记，范围内替换即可
     if grep 'Github Hosts Start' /etc/hosts >/dev/null 2>&1; then
         sed '/#Github Hosts Start/,/#Github Hosts End/ {
             /#Github Hosts Start/ {
