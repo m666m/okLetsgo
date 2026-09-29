@@ -440,9 +440,9 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -print -quit 2>/dev/null | grep -q
 
         unset agent_run_state
 
-    # GNOME 桌面环境下使用 ssh 密钥，ssh-agent 可以被 gnome-keyring 接管复用，
-    # 只需要 SSH 配置文件的 Host * 段添加 AddKeysToAgent yes，然后执行一次 `ssh-add` 即可。
-    # 原理见 [Gnome 桌面的密码管理器应用程序](okletsgo)。
+    # GNOME 桌面环境下使用 ssh 密钥，ssh-agent 可以被 gnome-keyring 接管复用，开机即自动加载。
+    #   只需要 SSH 配置文件的 Host * 段添加 AddKeysToAgent yes，然后执行一次 `ssh-add` 即可。
+    #   原理见 [Gnome 桌面的密码管理器应用程序](okletsgo)。
     # 以下代码保留至 Debian 13(GNOME 48) retired(LTS 阶段：至 2030 年 8 月).
     elif [[ "$XDG_CURRENT_DESKTOP" == *"GNOME"* ]] && command -v gnome-shell >/dev/null; then
         # 以下操作仅限于 gnome49 之前的版本，之后 GNOME 使用 gcr-ssh-agent.service 接管 ssh-agent 了，不再有需要手工启动 gnome-keyring-daemon 的情况
@@ -472,6 +472,7 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -print -quit 2>/dev/null | grep -q
         unset gsversion
 
     # KDE 桌面环境使用 systemd 单元文件 ssh-agent.service 实现复用 ssh-agent 进程
+    # 但 ssh-agent 加载密钥并不是自动的，需要用户自己执行一次命令
     elif [[ "$XDG_CURRENT_DESKTOP" == *"KDE"* ]]; then
 
         # KDE 桌面环境有自己的 `systemctl --user status ssh-agent.service`
@@ -503,10 +504,9 @@ if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -print -quit 2>/dev/null | grep -q
 
         unset agent_pid
 
-    # Windows 下使用 putty 桌面程序 pagent 加载密钥，
-    # Windows git bash(mintty) 利用 ssh-pageant 连接到 pagent.exe 进程，复用其缓存的密钥，
-    # 这样不需要运行 ssh-agent 并执行 `ssh-add` 那套流程。
-    # 来自章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
+    # Windows 下复用 putty 桌面程序 pagent 加载的密钥，
+    # Windows git bash(mintty) 利用 ssh-pageant 连接到 pagent.exe 进程，复用其缓存的密钥，不再需要手动运行 ssh-agent 并执行 `ssh-add` 那套流程。
+    # 原理见章节 [Windows 下 ssh 身份认证复用 putty pageant](ssh.md think)
     elif [[ $_MYPROMPT_OS_TYPE = 'windows' ]]; then
 
         if ! ps -s | grep -q [s]sh-pageant; then
