@@ -424,12 +424,14 @@ fi
 # 适用于 Linux bash / Windows git bash(mintty) / macOS
 if find "$HOME/.ssh" -maxdepth 1 -name 'id_*' -print -quit 2>/dev/null | grep -q .; then
 
-    # macOS 的图形界面下把 ssh 密钥加入钥匙圈，并接管 ssh-agent 复用
+    # macOS 的图形界面下把 ssh 密钥加入钥匙圈，并接管 ssh-agent 复用，只需要执行一次
     # 1、ssh-add --apple-use-keychain ~/.ssh/id_rsa
     # 2、配合 SSH 配置文件的 Host * 段添加 UseKeychain yes 和 AddKeysToAgent yes 可以不用再输入保护密码了
+    # 这是因为 macOS 默认集成了 launchd 来启动 ssh-agent，还负责设置 SSH_AUTH_SOCK 变量。
+    # 但加载密钥的命令需要用户自己执行一次，以下代码用于启动图形界面打开终端软件后自动加载 ssh 密钥
+    #   在 tmux 下执行 `launchctl managername` 的输出是 Background（Keychain 可能未解锁，剪贴板、TouchID、通知等功能通常受限或不可用）
+    #   会走默认分支显式执行一次加载密钥
     if [[ $_MYPROMPT_OS_TYPE = 'macos' ]] && [[ "$(launchctl managername)" = "Aqua" ]]; then
-        # macOS 默认集成了 launchd 来启动 ssh-agent，还负责设置 SSH_AUTH_SOCK 变量。
-        # 但是重启电脑后，需要手动执行一次加载密钥的命令
         # 以下代码参考自下面的 默认 Linux tty 环境复用 ssh-agent 进程
         agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
         if [ $agent_run_state = 1 ]; then
