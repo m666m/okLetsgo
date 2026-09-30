@@ -367,7 +367,7 @@ fi
 #   参见章节 [命令行终端下 gpg 无法弹出密码输入框的问题](gpg think)
 if command -v gpg >/dev/null 2>&1; then
     export GPG_TTY=${TTY:-$(tty)}
-    #echo "以当前终端 tty 连接 gpg-agent..."
+    #echo "以当前终端 tty 连接 gpg-agent，在 Windows git bash 下初次启动可能有点慢..."
     gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
 fi
 
