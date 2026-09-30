@@ -160,7 +160,11 @@ jj 自己实现了一套简化的前端操作命令，把 git 隐藏到了后端
 
 ### 3、设置使用 ssh 密钥方式管理你的 gitub 代码库
 
+本地持有 ssh 密钥，你可以编辑这个仓库的文件，然后提交推送到 github 上的远程仓库，然后可以刷新 github 的网页看是否有变动了。
+
     https://docs.github.com/zh/authentication/connecting-to-github-with-ssh
+
+    github 把 ssh 密钥方式包装了一下自称 git 协议，参见章节 [git 使用的远程协议]。其实目前也支持 https 的方式使用 api key 推送你的仓库，不是必须要使用 git 协议才能远程推送代码了。
 
 登陆你的github帐户，点击你的头像，然后 Settings。
 
@@ -213,10 +217,9 @@ jj 自己实现了一套简化的前端操作命令，把 git 隐藏到了后端
         origin  https://github.com:m666m/okLetsgo.git (fetch)
         origin  https://github.com:m666m/okLetsgo.git (push)
 
-        # 如果使用 https 方式拉取的，可改为使用 git 协议
-        git remote set-url origin git@github.com:m666m/okLetsgo.git
+如果使用 https 方式拉取的，可改为使用 git 协议
 
-    因为本地持有 ssh 密钥，你可以编辑这个仓库的文件，然后提交推送到 github 上的远程仓库，然后可以刷新 github 的网页看是否有变动了。
+    git remote set-url origin git@github.com:m666m/okLetsgo.git
 
 #### github 提供基于 https 端口的 ssh 连接方式
 
