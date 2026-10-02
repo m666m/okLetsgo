@@ -530,9 +530,7 @@ git revert 在合并冲突时使用`core.editor`的设置，没有单独的设�
 
 ## git仓库
 
-远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
-
-### git 基本概念：工作区、暂存区和版本库
+### git 基本概念：工作区、暂存区和版本库 git add/ git commit
 
 1、工作区（work space）：
 
@@ -617,9 +615,9 @@ git做操作之前或操作之后，查看当前的git状态
 
     git commit -m '初始化提交'
 
-版本库推送到远程仓库见章节 [同步远程仓库 push、pull、clone]
+版本库推送到远程仓库见章节 [远程仓库 push、pull、clone]
 
-### 同步远程仓库 push、pull、clone
+### 远程仓库 git fetch/pull/clone、git push
 
     https://www.w3cschool.cn/git/git-uroc2pow.html
 
@@ -628,6 +626,8 @@ git做操作之前或操作之后，查看当前的git状态
 本地的远程仓库（remote）有个特殊的远程仓库对象 origin，如果本地仓库需要和服务器上的裸仓库建立联系，本地仓库首先要添加 origin 对象，然后设置本地分支和远程仓库上分支的关联，有了跟踪分支，才可以推送和拉取。
 
 通常的 git clone 用法见章节 [本地空目录，远程裸仓库里有文件]。
+
+远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
 
 #### git 使用的远程协议
 
@@ -1846,7 +1846,7 @@ NOTE: 本地新建的分支没有对应到远程仓库，无法推送到远程�
 
 前提
 
-    本地分支推送到远程，需要有远程库 origin 对象及跟踪分支，参见章节 [同步远程仓库 push、pull、clone]。
+    本地分支推送到远程，需要有远程库 origin 对象及跟踪分支，参见章节 [远程仓库 push、pull、clone]。
 
 推送分支
 
