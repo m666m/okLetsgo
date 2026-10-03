@@ -203,6 +203,1116 @@ git 对文件内容的修改，在撤销和重做方面有些使用不便，详�
 
 解决参见章节 [竞品 -- 基于文件差异(patch)的源代码管理系统]。
 
+## -------- git仓库 --------
+
+### git 仓库基本概念：工作区、暂存区和版本库 git add/ git commit
+
+0、 建立源代码目录
+
+    mkdir my_proj
+
+1、本地仓库或版本库（Repository）：
+
+在工作区执行 git init 命令就会建立隐藏目录 .git，这就是 Git 的版本库。
+
+    cd my_proj
+
+    git init
+
+当前目录视作属于 git 仓库的工作区（work space），直接编辑文件即可
+
+    vi your files
+
+git 会自动比对找到改动，其后续操作都是针对改动进行的（初次加入的文件内容全部都是改动项，添加文件也是改动项）。
+
+2、有了本地仓库之后，，你就可以管理本目录的所有文件和目录了
+
+在工作区对文件的修改，都需要先添加到暂存区，然后才能提交到本地仓库
+
+    `git add .` 把改动项添加到 git 仓库的暂存区
+
+    `git commit -m 'your modify reasons' ` 当前暂存区的修改提交到版本库
+
+        无论改动了多少文件，这样执行一次就算一次提交，这时才是正式纳入 git 进行版本管理
+
+之后任何在工作区的修改，都会被 git 识别，需要重复上面的过程提交到本地仓库。
+
+如果搞不清当前的修改是什么状态，查看当前的git状态，并获取操作提示：
+
+    git status
+
+提交记录是可以查询的：
+
+    `git log` 查看提交日志，显示按每个提交的信息
+
+    `git diff` 对比不同区域或不同分支的差异
+
+日常使用基本就是上面的这些操作。
+
+分支管理：git 会默认创建一个分支名为 'master'，但是 master/slave 用语废弃了，以后的 git 版本改用 'main'
+
+    设置默认分支名
+
+        git config --global init.defaultBranch <name>
+
+    把刚创建的分支改名
+
+        git branch -m <name>
+
+暂存区（stage 或 index）：暂存区实质是 .git 目录下的 index 文件，所以暂存区也称为索引（index）。
+
+记住 “索引(index)”、“暂存区(stage)” 和 -cached 是一回事：
+
+    git 在提示信息的时候，对暂存区的称呼比较乱，估计是因为开源项目多人开发交替演进留下的毛病。
+
+    当你使用 git add 命令来暂存文件时，Git 在后台将文件添加到其对象数据库（在 .git/objects 目录下），并更新一个名为 .git/index 的文件以引用新添加的文件。
+
+    Git 中的这个“暂存区”事实上有 3 种不同的名称，但它们都指的是同一个东西（即 .git/index 文件）：
+
+        git diff --cached
+        git diff --staged
+        .git/index 文件
+
+其实这三个区域对应的是不同的本地仓库，原因就是 git 是 p2p 方式管理源代码的，不得不引入多个概念：
+
+    本地仓库  ： 本地文件，如果不对应远程，就只是自己管理自己。这里对应的就是用户提交到 “工作区” 的修改，提交就是提交到本地仓库。
+
+    本地远程仓库  ： 对应服务器上的仓库，本地拉取代码，其实是从远程仓库下载到本地的远程仓库，然后跟 本地仓库 的代码进行合并，如果有冲突会提示用户处理。
+
+    远程仓库  ： 任何人都有对方的代码副本，你的本地修改提交到本地仓库后，推送到远程仓库就是上传（需要先跟本地远程仓库合并，如果有冲突也需要处理掉）
+
+        服务器上的仓库 ： 任何人的修改统一在这里汇集。所以如果你删除了历史提交，别人的代码里还有这个历史，会导致不一致问题需要合并冲突。P2P 的好处就是所有人持有共同的历史防止篡改或删除。
+
+善用暂存区，你的修改可以使用 `git diff` 查看跟之前提交的对比，检验是否正确修改了，而且便于修改回退。
+
+如果使用 vscode，建议使用 “时间线” 功能，每次保存和git提交都有快照，点击即可查看跟当前工作区的差异，更方便。
+
+版本库推送到远程仓库见章节 [远程仓库 push、pull、clone]
+
+### git submodule 包含子项目
+
+    https://zhuanlan.zhihu.com/p/87053283
+
+    https://zhuanlan.zhihu.com/p/404615843
+
+    git的submodule体验太痛苦 https://www.zhihu.com/question/267292008/answer/2389876457
+
+当项目依赖并跟踪一个开源的第三方库，或主项目对子模块有依赖关系，却又并不关心子模块的内部开发流程细节。
+
+这种情况下，通常不会把所有源码都放在同一个 Git 仓库中。
+
+有一种比较简单的方式，是在当前工作目录下，将子模块文件夹加入到 .gitignore 文件内容中，这样主项目就能够无视子项目的存在。这样做有一个弊端就是，使用主项目的人需要有一个先验知识：需要在当前目录下放置一份某版本的子模块代码。
+
+还有另外一种方式可供借鉴，可以使用 Git 的 submodule 功能。
+
+增加子项目，或称子模块
+
+    # 进入主项目的目录
+    git submodule add https://your_sub_project
+
+    # 提交一次，表示引入了某个子模块。提交后，在主项目仓库中，会显示出子模块文件夹，并带上其所在仓库的版本号。
+    git commit -m "add submodule xxx"
+    git push
+
+对于后续使用者而言，对于主项目使用普通的 clone 操作并不会拉取到子模块中的实际代码，只有一个空目录，除非显式指定拉取子模块
+
+    # git clone --recursive
+    git clone --recurse-submodules https://github.com/username/project-main.git
+
+更新子模块需要手动，在当前主项目中执行
+
+    cd your_main_project
+    git pull
+
+    git submodule sync --recursive
+
+    # git submodule init
+    # git submodule update
+    git submodule update --init --recursive
+
+子模块更新后，此时对主项目来说子模块的状态是有修改的，注意切换回主项目的目录，执行 git add/commit/push 提交这个修改即可。
+
+对于子模块而言，并不需要知道引用自己的主项目的存在，子模块本身就是一个完整的 Git 仓库，按照正常的 Git 代码管理规范操作即可。
+
+通常的操作都需要进入子模块文件夹，按照子模块内部的版本控制体系更新、提交代码。
+
+比如更换远程仓库也只需进入子模块目录后执行命令 `git remote set-url origin xx.git` 即可。
+
+对子模块远程仓库有更新的情况，主项目下运行 `git status` 不会有提示，需要进入子模块的目录后手动执行更新 `git pull`，当主项目的子模块特别多时，可以使用批量命令：`git submodule foreach 'git pull'`。然后回到主项目的目录，执行 git add/commit/push 提交这个修改。
+
+删除子模块
+
+    git submodule deinit your_sub_project
+
+    git rm your_sub_project
+
+    git commit -m "delete submodule your_sub_project"
+
+    git push
+
+### git worktree 多分支目录共用一个仓库
+
+    https://minsonlee.github.io/2020/05/git-worktree
+
+git checkout 命令是在同一个文件夹中切换不同分支，当一个分支正在开发，有另一个分支需要紧急处理bug，有两种解决方案
+
+    `git stash` 当前内容，然后切换分支修改bug，提交后再切换回来， `git stash pop` 继续原开发。
+
+    新建个目录拉取仓库，在那个目录里切换分支修改bug，极端情况下每个分支一个目录，都克隆同一个仓库，但是这样占用容量太大了。
+
+一个 git 仓库可以支持多个工作树，允许你在同一时间检出多个分支。通过 git worktree add 将一个新的工作目录和一个仓库进行关联。 这个新的工作目录被称为 “linked working tree（链接工作树）”。不同于通过 git init 或 git clone 产生的主工作树，这个目录只保存了静态内容，容量相对小很多，在这个目录下切换分支操作即可。
+
+一个仓库只有一个主工作树（裸仓库是没有工作树的），可以有零个或多个链接工作树. 当你在链接工作树已经完成了工作，使用 git worktree remove 就可以移除它了。
+
+    # 查看当前仓库所有的 "linked working tree"
+    $ git worktree list
+    /ghcode/pycode/tea  7cabce4 [master]
+
+创建 worktree
+
+    # 基于已存在分支创建 `worktree`
+    git worktree add <new-workpath> <existing-branch/commit-id/remote-branch-name>
+
+    # 基于当前 commit 新建一个分支并创建 `worktree`
+    git worktree <new-wokpath> -b <new-branch>
+
+    # 基于指定 commit 创建一个 worktree
+    git worktree <new-workpath> --detach <commit-hash>
+
+移动 worktree
+
+    git worktree move <worktree> <new-path>/<new-worktree>
+
+清理 worktree
+
+    # 删除存在的 worktree
+    git worktree remove <worktree>
+
+    # 清理失去关联的 worktree
+    git worktree prune
+
+示例：
+
+保留当前分支代码现状，基于 master 分支创建一个 hotfix 分支修复问题
+
+    # 基于 master 分支的 HEAD，在目录同级创建一个 hotfix 的工作树，并检出一个本地分支 hotfix 以便后期合入
+    # git worktree add ../hotfix --detach master 如果分离式检出，切换到目录后手工创建分支 `git checkout -b hotfix`
+    # git worktree add -b hotfix ../hotfix master
+    git worktree add ../hotfix  # 创建目录并自动检出一个同名的本地分支
+
+    # 进入 hotfix 工作树
+    cd ../hotfix
+
+    # 在该工作树下处理bug
+    ...
+
+    # 切换回主分支合并该分支的内容
+    cd -
+    git rebase hotfix
+
+### 合并两个不相干的本地仓库
+
+    https://www.morfans.cn/archives/3373
+
+不使用拷贝文件的方式，目的是能够保留提交记录，让一个仓库合并另一个仓库的文件和提交记录。
+
+方法是添加一个远程对象，地址是另一个仓库，然后把它拉取下来，以此创建一个分支，然后合并到主干，使用参数允许不相关历史。
+
+假设仓库 A 要合并仓库 B，仓库 B 使用本地地 “..\repo_b”，如果你的是远程，把这里改成网址即可
+
+    cd repo_a
+
+    git remote -v
+
+添加远程对象，地址是仓库 B
+
+    git remote add repob ..\repo_b\
+
+拉取远程 repob 地址的内容
+
+    git fetch repob
+
+分支操作
+
+    $ git branch -a
+    *master
+    remotes/origin/master
+
+创建新分支 tobe
+
+    git checkout -b tobe repob/master
+
+合并到主干分支 master
+
+    git checkout master
+
+    git merge --allow-unrelated-histories tobe
+
+这样仓库 A 的主干分支 master 里就有了仓库 B 的内容，并且提交记录也合并进来了。
+
+## 远程仓库 git fetch/pull/clone、git push
+
+    https://www.w3cschool.cn/git/git-uroc2pow.html
+
+    https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories
+
+本地的远程仓库（remote）有个特殊的远程仓库对象 origin，如果本地仓库需要和服务器上的裸仓库建立联系，本地仓库首先要添加 origin 对象，然后设置本地分支和远程仓库上分支的关联，有了跟踪分支，才可以推送和拉取。
+
+通常的 git clone 用法见子章节 [本地空目录，远程裸仓库里有文件]。
+
+远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
+
+### git 使用的远程协议
+
+git 支持多种协议，Git 协议下载速度最快，SSH 协议用于需要用户认证的场合。
+
+Git 协议：实质就是 ssh 协议的变体，格式为 “用户名@地址:仓库名”
+
+    # 对 “git://” 开头，表示用 git 协议
+    git clone git://example.com/path/to/repo.git [默认当前目录]
+
+    # Github 特殊：对 “git@github.com” 开头，默认用 git 协议，在冒号后是仓库集名(注册用户名)
+    # 格式：git@地址:仓库名
+    # git clone git@github.com:repositores/repo.git
+    git clone git@github.com:m666m/okletsgo.git
+
+    # 用 ssh 测试
+    $ ssh -T git@github.com
+    > Hi m666m! You've successfully authenticated...
+
+SSH 协议：一般用于需要用户身份验证的 git 仓库。
+
+    # 对 “用户名@地址” 开头，默认 ssh 22 端口
+    git clone [user@]example.com/path/to/repo.git
+
+    # 开头最好明确写 “ssh://” 以防混淆，一般服务器上会建立专用的 git 用户
+    git clone ssh://git@<ip>:<port>/your_path/xxx.git
+
+    # 非标准22端口要写明确写协议名，地址后面用冒号分隔端口名，第一个/后面是路径
+    git clone ssh://[user@]example.com:port/path/to/repo.git
+
+    # 对ipv6地址加[]即可
+    git clone ssh://user@[20:40:d:9f::1]:22122/path/to/repo.git
+
+    # Github 特殊：提供基于 https 端口 443 的 ssh 连接方式
+    #   https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
+    git clone ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
+
+Http、Https 协议，一般用于公众开放无需身份验证的项目
+
+    # git clone http[s]://example.com/path/to/repo.git
+    git clone http://git.oschina.net/yiibai/sample.git
+
+File 协议
+
+    git clone /opt/git/project.git
+
+    git clone file:///opt/git/project.git
+
+其它协议
+
+    git clone ftp[s]://example.com/path/to/repo.git
+
+    git clone rsync://example.com/path/to/repo.git
+
+### 查看远程配置
+
+先确认下，已经有远程库对象 origin
+
+    $ git remote show
+    origin
+
+没有的话需要重新建立，参见章节 [修改本地仓库的远程设置]。
+
+显示该远程库对象的详细信息，git 会测试该地址连通性
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: git@github.com:m666m/okLetsgo.git
+    Push  URL: git@github.com:m666m/okLetsgo.git
+    HEAD branch: master
+    Remote branch:
+        master tracked：有跟踪分支
+    Local branch configured for 'git pull':  未关联pull就没有这两行
+        master merges with remote master
+    Local ref configured for 'git push':     未关联push就没有这两行
+        master pushes to master (up to date)
+
+查看远程仓库地址，这个地址格式可以给 git clone 直接使用
+
+    $ git remote -v
+    origin  git@github.com:m666m/okLetsgo.git (fetch)
+    origin  git@github.com:m666m/okLetsgo.git (push)
+
+查看全部分支及跟踪关系、最近提交及注释
+
+    # 需要执行过 git pull
+    $ git branch -avv
+    * master                 3384fb2 [origin/master] tea2 再改2
+    remotes/origin/def_xxx b414ac9 功能3
+    remotes/origin/hotfix  7cabce4 res me
+    remotes/origin/master  3384fb2 tea2 再改2
+
+### 本地仓库关联远程仓库（本地分支关联远程分支）
+
+    如果只是建立本地仓库，只需要在一个目录下执行命令 `git init` 就可以以本地仓库的方式使用 git 了。
+
+    在远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
+
+如果本地仓库需要关联远程仓库，跟其它人共享开发，有两种方法：
+
+法一：远程服务器上已有仓库，直接用 `git clone` 命令复制到本地即可。这样就在本地建立了 “本地仓库” 和 “本地的远程仓库”，关联关系也不需要配置，这样最省事。参见章节 [本地空目录，远程裸仓库里有文件]。
+
+法二：手工把本地仓库建立的分支跟远程服务器上的仓库的分支关联起来。
+
+1、如果本地还不是 git 仓库，先建立
+
+    git init
+
+2、如果本地还没有远程库对象 origin，先建立
+
+    # git 协议
+    git remote add origin git_user@180.169.33.106:repositores/repository.git
+
+    # Github 的 git 协议
+    git remote add origin git@github.com:m666m/okletsgo.git
+
+    # ssh 协议
+    git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
+
+3、如果未设置远程库分支跟本地分支的关联，执行 git pull 或 git push 都会提示
+
+    $ git pull
+    There is no tracking information for the current branch.
+    Please specify which branch you want to merge with.
+    See git-pull(1) for details.
+
+        git pull <remote> <branch>
+
+    If you wish to set tracking information for this branch you can do so with:
+
+        git branch --set-upstream-to=origin/<branch> master
+
+    $ git push
+    fatal: The current branch master has no upstream branch.
+    To push the current branch and set the remote as upstream, use
+
+        git push --set-upstream origin master
+
+    To have this happen automatically for branches without a tracking
+    upstream, see 'push.autoSetupRemote' in 'git help config'.
+
+初次拉取远程仓库后本地默认只有 master 分支，如需使用其它分支也会遇到这种情况，参见章节 [从远程库的某个分支建立一个本地分支]。
+
+4、设置本地分支和远程库关联，先把 master 分支搞好。
+
+    # 将本地的 master 分支推送到 origin 主机，同时指定 origin 为默认主机
+    # -u 即 --set-upstream
+    git push -u origin master
+    ...
+    To ssh://11.22.33.44：2345/gitrepo/tea.git
+    * [new branch]      master -> master
+    branch 'master' set up to track 'origin/master'.
+
+该命令等效于执行下面的一系列操作：
+
+    推送本地分支 master 到远程主机 origin 的 master 分支
+
+        git push origin master
+
+    跟踪远程分支，远程没有master就自动创建一个
+
+        git branch --set-upstream-to=origin/master master
+
+        作用：跟踪远程分支 origin/master 到本地分支 master，如果远程没有分支会报错，需要先创建远程分支
+
+    设置 origin 为默认主机
+
+如果远程仓库是空的，需要先推送个文件上去，参见章节 [本地空目录，远程刚建好空白裸仓库]。
+
+3、默认操作的是 master 分支，设置好之后才可以拉取其它分支。
+
+    git fetch
+
+    git push
+
+### 修改本地仓库的远程设置
+
+直接修改：
+
+    git remote set-url origin xxx.git
+
+适用场景：本地新建的分支，远程仓库没有该分支，无法推送本地的新分支的情况，参见章节 [本地非空目录，远程裸仓库无本地分支]。
+
+删除重建：
+
+github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国内的网络下经常连接超时，改成 git 协议或 ssh 协议的地址格式相对好些。各种地址格式参见章节 [git 使用的远程协议]。
+
+1、先删除远程仓库对象 origin
+
+    git remote rm origin
+
+2、重新添加远程仓库对象 origin
+
+    git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
+
+3、建立 origin 和 master 的联系
+
+    git push -u origin master
+
+3、执行 git pull 和 git push 验证是否正常。
+
+### 从本地仓库推送多个远程仓库
+
+有时候需要项目同时推送多个远程仓库，而且地址格式也不相同。
+
+远程仓库地址格式
+
+    ssh://git@11.22.33.44:2345/gitrepo/myproj.git
+
+    git@github.com:m666m/okLetsgo.git
+
+    https://github.com/m666m/myproj
+
+#### 默认的远程库对象添加多个 push 远程地址
+
+在一般使用中，保持默认的远程库对象 origin 的 fetch/push 地址，但添加多个 push 远程仓库地址(upstream)。
+
+这样的好处是，默认的远程库对象 origin 照常 fetch、push，只是增加了多个 push 地址，可以实现代码的多处备份。
+
+给 origin 增加多个 push 地址
+
+    git remote set-url --push --add origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+添加后验证
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: git@github.com:m666m/project_name.git  <-- 默认的 fetch 地址
+    Push  URL: git@github.com:m666m/project_name.git  <-- 默认的 push 地址
+    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/project_name.git  <-- 多个 push 地址
+    HEAD branch: main
+    Remote branch:
+        main tracked
+    Local branch configured for 'git pull':
+        main merges with remote main <-- 当前分支的 pull 不变
+    Local ref configured for 'git push':
+        main pushes to main (up to date) <-- 当前分支的 push 不变
+
+    $ git remote -v
+    origin  git@github.com:m666m//project_name.git (fetch)  <-- 默认的 fetch 地址
+    origin  git@github.com:m666m//project_name.git (push)   <-- 默认的 push 地址
+    origin  ssh://git@11.22.33.44:2345/gitrepo/project_name.git (push)  <-- 多个 push 地址
+
+    本地项目中的 .git/config 对应内容也会变化。
+
+日常使用中，在执行 `git fetch` 或 `git pull` 命令时，只从默认的 fetch 地址拉取代码，而在执行 `git push` 时会推送到多个 push 地址。
+
+如果想删除多余的 push 地址
+
+    git remote set-url --delete origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+#### 添加多个远程库对象
+
+一般用于仓库备份、代码发布到专门的测试服务器等需要明确手工指定的场合
+
+    https://www.runoob.com/git/git-gitee.html
+
+除了 origin，再添加多个远程库对象
+
+    git remote add server1 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+    git remote add server2 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+    git remote add server3 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
+
+在执行 `git push` 时，只会推送到默认的 origin 地址。
+
+如果需要推送到其他的各个 server1，2，3 ，需要明确给出参数挨个执行 push 命令
+
+    git push server1 master
+
+    git push server1 developer
+
+    ...
+
+这样便于控制发布节奏，比如在某些时间节点才把开发分支推送到test_server，平时的默认推送都是推到 origin。
+
+添加多个远程库对象后，还可以删除默认的 origin 对象，只使用自己添加的那些远程库对象
+
+    git remote rm origin
+
+### 示例：本地空目录，远程裸仓库里有文件
+
+git clone 命令正常拉取即可
+
+    git clone ssh://git@11.22.33.44:2345/gitrepo/tea.git [新目录名字]
+
+    # Ipv6 用标准的中括号方式：
+    #
+    $ git clone ssh://git@[2199:4c:c:8da::2]:2345/gitrepo/tea.git
+    Cloning into tea...
+    warning: You appear to have cloned an empty repository.
+
+这样本地目录里就会多了个名为 tea 的目录，这个目录已经是 git 管理的仓库了。
+
+git clone 命令会自动创建了 origin 远程仓库对象，配置服务器的信息，默认创建本地分支HEAD（master）并设置远程跟踪分支。
+
+因为初次拉取后，本地默认只有 master 分支，如需使用其它分支，参见章节 [从远程库的某个分支建立一个本地分支]。
+
+执行 `git clone` 之后的第一次 pull 和 push：先执行 `git pull` 和 `git push`，看是否报错。可执行章节 [查看远程配置]，如果报错没有关联跟踪分支，可参见章节 [本地仓库关联远程仓库] 的第 4 步。
+
+### 示例：本地空目录，远程刚建好空白裸仓库
+
+刚建好的裸仓库无内容，直接用 clone 拉是可以的，但是后续做pull和push会报错。
+
+解决办法是，先在本地目录 git init，设置远程推送地址，给远程仓库上传个文件，然后再拉取。
+
+1、本地操作，新建文件夹，创建 git 仓库，并添加远程仓库对象。
+
+    $ mkdir tea
+
+    $ cd tea
+
+    $ git init
+    Initialized empty Git repository in C://tea/.git/
+
+    $ git remote add origin ssh://git@11.22.33.44:2345/gitrepo/tea.git
+
+2、本地操作，先提交个文件，否则直接 pull 会报错
+
+    echo 'init my git repo, add a file' > readme.md
+    git add readme.md
+    git commit -m 'init.'
+
+后续操作参见章节 [本地非空目录，远程服务器的裸仓库是空的] 的第 3、4、5 步。
+
+### 示例：本地非空目录，远程服务器的裸仓库是非空的
+
+用于同一个的项目，只是提交记录步调不一致。比如下载了一份源代码，需要从远程仓库同步的场景。
+
+1、在本地目录下初始化为 git 仓库
+
+    git init
+
+2、添加 origin 远程库对象
+
+    # git 协议
+    git remote add origin git_user@180.169.33.106:repositores/repository.git
+
+    # Github 的 git 协议
+    git remote add origin git@github.com:m666m/okletsgo.git
+
+    # ssh 协议
+    git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
+
+3、拉取远程代码以让git获取分支相关信息
+
+    # 先获取主干分支，把 master 分支的 HEAD 配置上
+    $ git pull origin master
+    From ssh://11.22.33.44:2345/gitrepo/tea
+    * branch            master     -> FETCH_HEAD
+
+    # 再获取所有分支的信息
+    $ git pull
+    remote: Enumerating objects: 16, done.
+    remote: Counting ... done.
+    From ssh://11.22.33.44:2345/gitrepo/tea
+    * [new branch]      def_xxx    -> origin/def_xxx
+    * [new branch]      hotfix     -> origin/hotfix
+    * [new branch]      t3_fea     -> origin/t3_fea
+    * [new tag]         v1.2.3.4   -> v1.2.3.4
+
+这时还未设置远程库分支跟本地分支的关联，执行 git pull 或 git push 都会提示报错。
+
+4、设置分支关联设置本地分支和远程库关联。
+
+    git push -u origin master
+
+5、执行 git pull 和 git push 验证是否正常
+
+### 示例：本地非空目录，远程服务器的裸仓库是空的
+
+比如本地仓库开发的项目，后来需要多人共享，则在服务器建立裸仓库，远程服务器的裸仓库是空的，需要先把本地推送上去。
+
+1、本地先建立 git 仓库
+
+    $ git init
+
+    $ git add .
+
+    $ git commit -m 'init 1st'
+    [master (root-commit) 34827c0] init 1st
+
+2、添加远程库对象 origin
+
+    git remote add origin ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
+
+这时显示结果 HEAD 是 unknown
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
+    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
+    HEAD branch: (unknown)
+
+3、这是因为没有上游分支，需要建立关联关系
+
+    git push -u origin master
+
+4、验证，查看看远程的信息，提示 tracked
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
+    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
+    HEAD branch: master
+    Remote branch:
+        master tracked <--------- 有跟踪分支了
+    Local branch configured for 'git pull':
+        master merges with remote master  <--------- 拉取有了
+    Local ref configured for 'git push':
+        master pushes to master (up to date)  <--------- 推送也有了
+
+5、执行 git pull 和 git push 同步数据，应该不会有报错提示。
+
+### 示例：本地非空目录，远程裸仓库无本地分支
+
+常见场景：本地新建的分支 t3_fea， 这时远程仓库没有该分支，无法直接推送。
+
+前提
+
+    本地仓库的 master 分支可以正常的执行 pull、push，否则先关联远程仓库，见章节 [本地仓库关联远程仓库]。
+
+要推送到远程仓库，实现 push 和 pull，需要先设置关联。
+
+    $ git push -u origin t3_fea
+    Everything up-to-date
+    branch 't3_fea' set up to track 'origin/t3_fea'.
+
+设置后可以看到关联跟踪分支了
+
+    $ git branch -avv
+    master                 3384fb2 [origin/master] tea2 再改2
+    * t3_fea               f6aeb75 [origin/t3_fea] t3_fea 分支自己添加  <-- 对应的远程分支
+    remotes/origin/HEAD    -> origin/master
+    remotes/origin/def_xxx b414ac9 功能3
+    remotes/origin/hotfix  7cabce4 res me
+    remotes/origin/master  3384fb2 tea2 再改2
+    remotes/origin/t3_fea  f6aeb75 t3_fea 分支自己添加
+
+    $ git remote show origin
+    * remote origin
+    Fetch URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
+    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
+    HEAD branch: master
+    Remote branches:
+        def_xxx tracked
+        hotfix  tracked
+        master  tracked
+        t3_fea  tracked <---- 添加了跟踪分支
+    Local branches configured for 'git pull':
+        master merges with remote master
+        t3_fea merges with remote t3_fea <---- 关联了 fetch 命令
+    Local refs configured for 'git push':
+        master pushes to master (up to date)
+        t3_fea pushes to t3_fea (up to date) <---- 关联了 push 命令
+
+其它机器需要重新拉取远程分支
+
+    $ git fetch
+    * [new branch]    t3_fea  -> origin/t3_fea  <--- 提示本地的远程库下载了新的分支
+
+    $ git branch -avv
+    * master                 3384fb2d33 [origin/master] tea2 再改2
+    remotes/origin/def_xxx b414ac95d4 功能3
+    remotes/origin/hotfix  7cabce404f res me
+    remotes/origin/master  3384fb2d33 tea2 再改2
+    remotes/origin/t3_fea  f6aeb75474 t3_fea 分支自己添加 <---本地的远程库的分支
+
+这样就可以创建本地分支了，注意分支名称最好保持一致
+
+    $ git switch -c t3_fea origin/t3_fea
+    Switched to a new branch 't3_fea'
+    branch 't3_fea' set up to track 'origin/t3_fea'.
+
+尽量不要设置不同的分支名称：
+
+如果你本地新建分支名称和远程服务器上的分支名称不一致，甚至不使用默认的 origin 对象
+
+    git push origin local_branch:remote_branch
+
+    git branch --set-upstream-to=origin/remote_branch local_branch
+
+    git push origin HEAD:remote_branch
+
+    git push -u origin/local_branch
+
+那么之后的 `git push` 和 `git fentch` 操作都要加参数，比较麻烦，跟随 `git status` 的提示即可。
+
+### git clone 仅拉取指定远程分支
+
+假设分支名称dev
+
+    git clone -b dev
+
+或用 fetch 只下载指定分支如 dev：
+
+    $ git init
+
+    $ git remote add origin git@github.com:m666m/okletsgo.git
+
+    $ git remote set-branches origin dev
+
+    $ git fetch --depth 1 origin dev
+
+    # 如果 git branch -avv 看不到远程分支，使用 `git remote update` 更新下
+
+    $ git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
+
+    $ git pull origin dev(远程分支名称)
+
+#### 拉取指定分支的指定commit版本
+
+git clone 默认是取回 master 分支，可以使用 -b 参数指定分支。
+
+-b 参数不仅支持分支名，还支持 tag 名等。
+
+    git clone  <remote-addr:repo.git> -b <branch-or-tag-or-commit>
+
+需求是获取 commit id，没直接的办法，下面提供另一个步骤：
+
+选择一个包含目标 commit id 的 branch 或 tag，并指定 depth=1 以获得比较少的额外文件传输。
+
+    git clone --depth 1 <remote-addr:repo.git> -b < branch-or-tag >
+
+clone 完成后，进入目录，执行
+
+    git fetch --depth < a-numer >
+
+不断增大步骤2的数字，直到找到你要的commit
+
+### 浅克隆(shallow clone) --- 大仓库非全量拉取
+
+适用场景：你只是想 clone 最新版本来使用，而不是参与项目的开发
+
+git cole 命令默认会把所有的提交记录都 clone 下来，对比较大且未清理的大仓库，这个过程耗时长而且占用空间大。
+
+其实对于我们直接使用仓库的内容，而不是参与其开发工作的人来说，只根据最近的一次的提交记录把相关内容给 clone 下来就好了。
+
+只拉取最近一次提交记录相关内容
+
+    git clone --depth 1
+
+如果想限制只下载指定分支，参见章节 [仅拉取指定远程分支]。
+
+这样 clone 下来的仓库，如果你只是用来查看最新内容或者直接编译是没问题的。
+
+但是，如果是要像正常仓库一样操作还是有些区别的
+
+    使用了--depth 克隆的仓库就是一个浅克隆的仓库，并不完整，只包含远程仓库的 HEAD 分支。
+
+    没有远程仓库的 tags。
+
+    不 fetch 子仓库(submodules)。
+
+    即使你再使用 git fetch，也不能把完整仓库 fetch 下来，从 config 文件可以看 config remote.origin.fetch
+
+    $ git config remote.origin.fetch
+    +refs/heads/main:refs/remotes/origin/main
+
+使用时注意其缺失功能
+
+    无法查看历史 commit、无法切换到历史 commit
+
+    无法切换到其它分支
+
+当你有一天需要完整的提交记录的时，可以弥补
+
+    git pull --unshallow
+
+当你需要切换到其它分支的时候
+
+    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
+    git pull
+
+然后就可以正常使用了。
+
+### 部分克隆(Partial clone) --- 减少下载提交记录的部分对象
+
+适用于大项目，浅克隆拉取都耗时很久，部分克隆更有效。
+
+仓库中的提交记录由三者组合：commit对象、tree对象、blob对象。部分克隆通过只下载部分对象的方式，在首次克隆时减轻了需要传输的数据量，降低了克隆需要的时间。
+
+1、blobless 模式
+
+    # 我只看看代码，不下载 blob 对象
+    git clone --filter=blob:none xxxx
+
+这样的克隆不影响 git merge、git rebase、git log 等命令，我们可以正常使用。
+
+2、treeless 模式
+
+    # 我只看看代码，不下载 tree 对象
+    git clone --filter=tree:0 xxxx
+
+需要下载的对象更少，克隆时间会更短，磁盘占用空间也会更少。但是在后续的工作中，treeless 模式的克隆会更加频繁的触发数据的下载。treeless 克隆更加适用于自动构建的场景，快速的克隆仓库，构建，然后删除。
+
+在后续使用中如果涉及到这些历史数据，就会触发对象的按需下载。
+
+可手工查找缺失对象，通过管道传递给下面的git fetch进程，实现缺失对象的批量获取：
+
+    git rev-list --objects --missing=print v1.0.0..v2.0.0 | grep "^?" |\
+    git -c fetch.negotiationAlgorithm=noop \
+        fetch origin \
+        --no-tags \
+        --no-write-fetch-head \
+        --recurse-submodules=no \
+        --filter=blob:none \
+        --stdin
+
+如果项目中二进制文件较多，建议配置 Git LFS。
+
+### 稀疏检出(sparsecheckout) --- 只拉取指定目录
+
+git的指定目录拉取，对于灵活选取仓库资源非常有帮助
+
+    https://zhuanlan.zhihu.com/p/602129987
+
+    https://zhuanlan.zhihu.com/p/54581830
+
+NOTE：只在单个项目的目录里设置稀疏检出，不要变更全局配置。
+
+1）在本地创建目录，初始化仓库
+
+    mkdir pg_examples
+
+    cd pg_examples
+
+    git init
+
+完成初始化之后，添加远程仓库
+
+    git remote add origin git@github.com:pyqtgraph/pyqtgraph.git
+
+2）设置本项目使用稀疏检出功能
+
+这里可以先查看一下本项目的git配置
+
+    $ git config --local -l
+    core.repositoryformatversion=0
+    core.filemode=false
+    core.bare=false
+    core.logallrefupdates=true
+    core.symlinks=false
+    core.ignorecase=true
+    remote.origin.url=git@github.com:pyqtgraph/pyqtgraph.git
+    remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+
+此时可以看到并没有关于 core.sparsecheckout 的配置
+
+配置稀疏检出
+
+    # 注意要用参数 --local 指定为仅此项目
+    git config --local core.sparsecheckout true
+
+3）拉取目录
+
+配置稀疏检查的目录
+
+    # 注意路径格式
+    #   pyqtgraph/pyqtgraph.git examples/
+    #   romkatv/zsh4humans.git sc/
+    git sparse-checkout set 'examples/'
+
+    # 实际修改的是文件 .git/info/sparse-checkout
+    # 由于该文件的匹配规则比较怪异，git 展开后的结果不确定，
+    # 务必 cat 该文件确认下
+    cat .git/info/sparse-checkout
+
+执行拉取操作，由于 pyqtgraph 的主分支是 master，因此命令如下
+
+    git pull origin master
+
+4）切换分支
+
+以上只是拉取了仓库的一个分支，所以查看本地分支和远程分支也就只显示这个分支
+
+    $ git branch -a
+    * master
+    remotes/origin/master
+
+fetch 远程仓库，会拉取到其它分支的信息
+
+    git fetch origin
+
+    $ git branch -a
+    * develop
+    master
+    remotes/origin/dependabot/pip/doc/pydata-sphinx-theme-0.12.0
+    remotes/origin/dependabot/pip/doc/sphinx-6.1.3
+    remotes/origin/develop
+    remotes/origin/master
+
+切换到其他分支，本地建立新分支，跟该远程分支关联，则稀疏检出的代码会切换到该分支
+
+    git checkout -b develop origin/develop
+
+总结：
+
+把稀疏检出，理解为跟随分支切换后，git做的一个是否显示目录或文件的匹配。
+
+对于目录中不是git管理的文件，在git切换分支和做稀疏检出时都不会去处理，相对的目录结构在切换分支后会保留。
+
+验证：
+
+对不同结构的目录，切换分支后，稀疏检出会跟随分支情况变化
+
+    示例 git@github.com:pyqtgraph/pyqtgraph.git
+        git sparse-checkout set 'examples/'
+
+    $ git checkout develop
+    $ tree /ghcode/pg_examples
+    /ghcode/pg_examples
+    └── examples
+        ├── Arrow.py
+        ├── BarGraphItem.py
+        ├── beeswarm.py
+        ├── CLIexample.py
+       ...
+        └── ViewLimits.py
+
+    $ git checkout master
+    $ tree /ghcode/pg_examples
+    /ghcode/pg_examples
+    └── pyqtgraph
+        └── examples
+            ├── Arrow.py
+            ├── BarGraphItem.py
+            ├── beeswarm.py
+            ├── CLIexample.py
+            ...
+            └── ViewLimits.py
+
+对同名目录，切换分支后，稀疏检出会跟随分支情况变化
+
+    示例 git@github.com:romkatv/zsh4humans.git
+        git sparse-checkout set 'sc/'
+
+    $ git checkout v5
+    $ tree /ghcode/zsh4_sc
+    /ghcode/zsh4_sc
+    └── sc
+        ├── exec-zsh-i
+        ├── install-tmux
+        ├── setup
+        └── ssh-bootstrap
+
+    $ git checkout v4
+    $ tree /ghcode/zsh4_sc
+    /ghcode/zsh4_sc
+    └── sc
+        ├── exec-zsh-i
+        ├── setup
+        └── ssh-bootstrap
+
+#### 本地已clone了仓库
+
+    https://www.jianshu.com/p/680f2c6c84de
+
+对于目录中多余的文件，在稀疏检查时不会去处理，类似分支切换时对非 git 管理文件的处理方式。
+
+1、打开 sparse checkout 功能
+
+进入版本库的目录，执行以下命令
+
+    git config --local core.sparsecheckout true
+
+使用文本编辑打开 .git/info/sparse-checkout 文件 (没有这个文件可以手动创建一个)
+添加如下列表
+
+    /*
+    !/add_on/native_addon/kylinv4_ft1500a/*
+    !/add_on/native_addon/neokylin_lib/*
+    !/add_on/native_addon/ubuntu_lib/*
+    !/add_on/native_addon/uos_arm_lib/*
+    !*.so
+
+3、 重新checkout
+
+    $ git checkout [branch]
+
+    or
+
+    $ git read-tree -mu HEAD
+
+sparse-checkout 文件设置
+
+    https://www.git-scm.com/docs/git-sparse-checkout/2.39.0#_internalsnon_cone_problems
+
+    子目录的匹配
+
+        目录名称前带斜杠，如 /docs/，将只匹配项目根目录下的 docs目录
+
+        目录名称前不带斜杠，如 docs/，其他目录下如果也有这个名称的目录，如 test/docs/ 也能被匹配
+
+        多级目录，如 docs/05/，则不管前面是否带有斜杠，都只匹配项目根目录下的目录，如 test/docs/05/ 不能被匹配
+
+    通配符 ““ (星号)匹配
+
+        docs/
+        index.
+        *.so
+
+    排除项 “!” (感叹号)匹配
+
+        /*
+        !unwanted
+
+    关闭sparsecheckout
+
+        关闭sparsecheckout功能，全取整个项目库，可以写一个”“号，但如果有排除项，必须写”/“，同时排除项要写在通配符后面。
+
+    比如，命令 `git sparse-checkout set A/B/C` 会被展开成
+
+        /*
+        !/*/
+        /A/
+        !/A/*/
+        /A/B/
+        !/A/B/*/
+        /A/B/C/
+
+### 组合使用：部分克隆+稀疏检出
+
+只对大项目的某个部分感兴趣时的代码检出，大项目用这个方法最精简
+
+    https://help.aliyun.com/document_detail/309002.html
+
+开源的大项目在公司内网服务器做镜像参见章节 [迁移仓库](git_repo think)。
+
+1、先部分克隆，并配置克隆完成后不执行自动检出
+
+    git clone --filter=blob:none --no-checkout
+
+2、然后对该项目配置稀疏检出
+
+    git config core.sparsecheckout true
+
+3、指定稀疏检出的目录为 backend
+
+    echo "backend/*" > .git/info/sparse-checkout
+
+4、然后再拉取文件
+
+    git checkout
+
+测试：150 GB 的大项目，此存储库中有许多（~2k）子模块
+
+    # https://github.com/romkatv/powerlevel10k/issues/1608
+    git clone --recurse-submodules https://android.googlesource.com/platform/superproject/
+
 ## git 客户端使用仓库设置身份验证
 
 除了 github 这样的开源代码网站，git 私有仓库都需要用户身份验证才能拉取和推送，github用户也是一样，如果想修改自己的仓库内容，需要使用 git 协议通过调用 ssh 客户端操作 github 的远程仓库。
@@ -527,1116 +1637,6 @@ git 默认使用 vim 作为编辑工具，diff 作为比较工具，但我们可
             cmd = code --wait $MERGED
 
 git revert 在合并冲突时使用`core.editor`的设置，没有单独的设置选项。
-
-## -------- git仓库 --------
-
-### git 仓库基本概念：工作区、暂存区和版本库 git add/ git commit
-
-0、 建立源代码目录
-
-    mkdir my_proj
-
-1、本地仓库或版本库（Repository）：
-
-在工作区执行 git init 命令就会建立隐藏目录 .git，这就是 Git 的版本库。
-
-    cd my_proj
-
-    git init
-
-当前目录视作属于 git 仓库的工作区（work space），直接编辑文件即可
-
-    vi your files
-
-git 会自动比对找到改动，其后续操作都是针对改动进行的（初次加入的文件内容全部都是改动项，添加文件也是改动项）。
-
-2、有了本地仓库之后，，你就可以管理本目录的所有文件和目录了
-
-在工作区对文件的修改，都需要先添加到暂存区，然后才能提交到本地仓库
-
-    `git add .` 把改动项添加到 git 仓库的暂存区
-
-    `git commit -m 'your modify reasons' ` 当前暂存区的修改提交到版本库
-
-        无论改动了多少文件，这样执行一次就算一次提交，这时才是正式纳入 git 进行版本管理
-
-之后任何在工作区的修改，都会被 git 识别，需要重复上面的过程提交到本地仓库。
-
-如果搞不清当前的修改是什么状态，查看当前的git状态，并获取操作提示：
-
-    git status
-
-提交记录是可以查询的：
-
-    `git log` 查看提交日志，显示按每个提交的信息
-
-    `git diff` 对比不同区域或不同分支的差异
-
-日常使用基本就是上面的这些操作。
-
-分支管理：git 会默认创建一个分支名为 'master'，但是 master/slave 用语废弃了，以后的 git 版本改用 'main'
-
-    设置默认分支名
-
-        git config --global init.defaultBranch <name>
-
-    把刚创建的分支改名
-
-        git branch -m <name>
-
-暂存区（stage 或 index）：暂存区实质是 .git 目录下的 index 文件，所以暂存区也称为索引（index）。
-
-记住 “索引(index)”、“暂存区(stage)” 和 -cached 是一回事：
-
-    git 在提示信息的时候，对暂存区的称呼比较乱，估计是因为开源项目多人开发交替演进留下的毛病。
-
-    当你使用 git add 命令来暂存文件时，Git 在后台将文件添加到其对象数据库（在 .git/objects 目录下），并更新一个名为 .git/index 的文件以引用新添加的文件。
-
-    Git 中的这个“暂存区”事实上有 3 种不同的名称，但它们都指的是同一个东西（即 .git/index 文件）：
-
-        git diff --cached
-        git diff --staged
-        .git/index 文件
-
-其实这三个区域对应的是不同的本地仓库，原因就是 git 是 p2p 方式管理源代码的，不得不引入多个概念：
-
-    本地仓库  ： 本地文件，如果不对应远程，就只是自己管理自己。这里对应的就是用户提交到 “工作区” 的修改，提交就是提交到本地仓库。
-
-    本地远程仓库  ： 对应服务器上的仓库，本地拉取代码，其实是从远程仓库下载到本地的远程仓库，然后跟 本地仓库 的代码进行合并，如果有冲突会提示用户处理。
-
-    远程仓库  ： 任何人都有对方的代码副本，你的本地修改提交到本地仓库后，推送到远程仓库就是上传（需要先跟本地远程仓库合并，如果有冲突也需要处理掉）
-
-        服务器上的仓库 ： 任何人的修改统一在这里汇集。所以如果你删除了历史提交，别人的代码里还有这个历史，会导致不一致问题需要合并冲突。P2P 的好处就是所有人持有共同的历史防止篡改或删除。
-
-善用暂存区，你的修改可以使用 `git diff` 查看跟之前提交的对比，检验是否正确修改了，而且便于修改回退。
-
-如果使用 vscode，建议使用 “时间线” 功能，每次保存和git提交都有快照，点击即可查看跟当前工作区的差异，更方便。
-
-版本库推送到远程仓库见章节 [远程仓库 push、pull、clone]
-
-### 远程仓库 git fetch/pull/clone、git push
-
-    https://www.w3cschool.cn/git/git-uroc2pow.html
-
-    https://docs.github.com/zh/get-started/getting-started-with-git/managing-remote-repositories
-
-本地的远程仓库（remote）有个特殊的远程仓库对象 origin，如果本地仓库需要和服务器上的裸仓库建立联系，本地仓库首先要添加 origin 对象，然后设置本地分支和远程仓库上分支的关联，有了跟踪分支，才可以推送和拉取。
-
-通常的 git clone 用法见子章节 [本地空目录，远程裸仓库里有文件]。
-
-远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
-
-#### git 使用的远程协议
-
-git 支持多种协议，Git 协议下载速度最快，SSH 协议用于需要用户认证的场合。
-
-Git 协议：实质就是 ssh 协议的变体，格式为 “用户名@地址:仓库名”
-
-    # 对 “git://” 开头，表示用 git 协议
-    git clone git://example.com/path/to/repo.git [默认当前目录]
-
-    # Github 特殊：对 “git@github.com” 开头，默认用 git 协议，在冒号后是仓库集名(注册用户名)
-    # 格式：git@地址:仓库名
-    # git clone git@github.com:repositores/repo.git
-    git clone git@github.com:m666m/okletsgo.git
-
-    # 用 ssh 测试
-    $ ssh -T git@github.com
-    > Hi m666m! You've successfully authenticated...
-
-SSH 协议：一般用于需要用户身份验证的 git 仓库。
-
-    # 对 “用户名@地址” 开头，默认 ssh 22 端口
-    git clone [user@]example.com/path/to/repo.git
-
-    # 开头最好明确写 “ssh://” 以防混淆，一般服务器上会建立专用的 git 用户
-    git clone ssh://git@<ip>:<port>/your_path/xxx.git
-
-    # 非标准22端口要写明确写协议名，地址后面用冒号分隔端口名，第一个/后面是路径
-    git clone ssh://[user@]example.com:port/path/to/repo.git
-
-    # 对ipv6地址加[]即可
-    git clone ssh://user@[20:40:d:9f::1]:22122/path/to/repo.git
-
-    # Github 特殊：提供基于 https 端口 443 的 ssh 连接方式
-    #   https://docs.github.com/zh/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
-    git clone ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
-
-Http、Https 协议，一般用于公众开放无需身份验证的项目
-
-    # git clone http[s]://example.com/path/to/repo.git
-    git clone http://git.oschina.net/yiibai/sample.git
-
-File 协议
-
-    git clone /opt/git/project.git
-
-    git clone file:///opt/git/project.git
-
-其它协议
-
-    git clone ftp[s]://example.com/path/to/repo.git
-
-    git clone rsync://example.com/path/to/repo.git
-
-#### 查看远程配置
-
-先确认下，已经有远程库对象 origin
-
-    $ git remote show
-    origin
-
-没有的话需要重新建立，参见章节 [修改本地仓库的远程设置]。
-
-显示该远程库对象的详细信息，git 会测试该地址连通性
-
-    $ git remote show origin
-    * remote origin
-    Fetch URL: git@github.com:m666m/okLetsgo.git
-    Push  URL: git@github.com:m666m/okLetsgo.git
-    HEAD branch: master
-    Remote branch:
-        master tracked：有跟踪分支
-    Local branch configured for 'git pull':  未关联pull就没有这两行
-        master merges with remote master
-    Local ref configured for 'git push':     未关联push就没有这两行
-        master pushes to master (up to date)
-
-查看远程仓库地址，这个地址格式可以给 git clone 直接使用
-
-    $ git remote -v
-    origin  git@github.com:m666m/okLetsgo.git (fetch)
-    origin  git@github.com:m666m/okLetsgo.git (push)
-
-查看全部分支及跟踪关系、最近提交及注释
-
-    # 需要执行过 git pull
-    $ git branch -avv
-    * master                 3384fb2 [origin/master] tea2 再改2
-    remotes/origin/def_xxx b414ac9 功能3
-    remotes/origin/hotfix  7cabce4 res me
-    remotes/origin/master  3384fb2 tea2 再改2
-
-#### 本地仓库关联远程仓库（本地分支关联远程分支）
-
-    如果只是建立本地仓库，只需要在一个目录下执行命令 `git init` 就可以以本地仓库的方式使用 git 了。
-
-    在远程服务器建立裸仓库，参见章节 [服务器建立git仓库](git_repo thinking)。
-
-如果本地仓库需要关联远程仓库，跟其它人共享开发，有两种方法：
-
-法一：远程服务器上已有仓库，直接用 `git clone` 命令复制到本地即可。这样就在本地建立了 “本地仓库” 和 “本地的远程仓库”，关联关系也不需要配置，这样最省事。参见章节 [本地空目录，远程裸仓库里有文件]。
-
-法二：手工把本地仓库建立的分支跟远程服务器上的仓库的分支关联起来。
-
-1、如果本地还不是 git 仓库，先建立
-
-    git init
-
-2、如果本地还没有远程库对象 origin，先建立
-
-    # git 协议
-    git remote add origin git_user@180.169.33.106:repositores/repository.git
-
-    # Github 的 git 协议
-    git remote add origin git@github.com:m666m/okletsgo.git
-
-    # ssh 协议
-    git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
-
-3、如果未设置远程库分支跟本地分支的关联，执行 git pull 或 git push 都会提示
-
-    $ git pull
-    There is no tracking information for the current branch.
-    Please specify which branch you want to merge with.
-    See git-pull(1) for details.
-
-        git pull <remote> <branch>
-
-    If you wish to set tracking information for this branch you can do so with:
-
-        git branch --set-upstream-to=origin/<branch> master
-
-    $ git push
-    fatal: The current branch master has no upstream branch.
-    To push the current branch and set the remote as upstream, use
-
-        git push --set-upstream origin master
-
-    To have this happen automatically for branches without a tracking
-    upstream, see 'push.autoSetupRemote' in 'git help config'.
-
-初次拉取远程仓库后本地默认只有 master 分支，如需使用其它分支也会遇到这种情况，参见章节 [从远程库的某个分支建立一个本地分支]。
-
-4、设置本地分支和远程库关联，先把 master 分支搞好。
-
-    # 将本地的 master 分支推送到 origin 主机，同时指定 origin 为默认主机
-    # -u 即 --set-upstream
-    git push -u origin master
-    ...
-    To ssh://11.22.33.44：2345/gitrepo/tea.git
-    * [new branch]      master -> master
-    branch 'master' set up to track 'origin/master'.
-
-该命令等效于执行下面的一系列操作：
-
-    推送本地分支 master 到远程主机 origin 的 master 分支
-
-        git push origin master
-
-    跟踪远程分支，远程没有master就自动创建一个
-
-        git branch --set-upstream-to=origin/master master
-
-        作用：跟踪远程分支 origin/master 到本地分支 master，如果远程没有分支会报错，需要先创建远程分支
-
-    设置 origin 为默认主机
-
-如果远程仓库是空的，需要先推送个文件上去，参见章节 [本地空目录，远程刚建好空白裸仓库]。
-
-3、默认操作的是 master 分支，设置好之后才可以拉取其它分支。
-
-    git fetch
-
-    git push
-
-#### 修改本地仓库的远程设置
-
-直接修改：
-
-    git remote set-url origin xxx.git
-
-适用场景：本地新建的分支，远程仓库没有该分支，无法推送本地的新分支的情况，参见章节 [本地非空目录，远程裸仓库无本地分支]。
-
-删除重建：
-
-github.com 获取仓库用 git clone 默认给的是 https 地址，但是在国内的网络下经常连接超时，改成 git 协议或 ssh 协议的地址格式相对好些。各种地址格式参见章节 [git 使用的远程协议]。
-
-1、先删除远程仓库对象 origin
-
-    git remote rm origin
-
-2、重新添加远程仓库对象 origin
-
-    git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
-
-3、建立 origin 和 master 的联系
-
-    git push -u origin master
-
-3、执行 git pull 和 git push 验证是否正常。
-
-#### 从本地仓库推送多个远程仓库
-
-有时候需要项目同时推送多个远程仓库，而且地址格式也不相同。
-
-远程仓库地址格式
-
-    ssh://git@11.22.33.44:2345/gitrepo/myproj.git
-
-    git@github.com:m666m/okLetsgo.git
-
-    https://github.com/m666m/myproj
-
-##### 默认的远程库对象添加多个 push 远程地址
-
-在一般使用中，保持默认的远程库对象 origin 的 fetch/push 地址，但添加多个 push 远程仓库地址(upstream)。
-
-这样的好处是，默认的远程库对象 origin 照常 fetch、push，只是增加了多个 push 地址，可以实现代码的多处备份。
-
-给 origin 增加多个 push 地址
-
-    git remote set-url --push --add origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-添加后验证
-
-    $ git remote show origin
-    * remote origin
-    Fetch URL: git@github.com:m666m/project_name.git  <-- 默认的 fetch 地址
-    Push  URL: git@github.com:m666m/project_name.git  <-- 默认的 push 地址
-    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/project_name.git  <-- 多个 push 地址
-    HEAD branch: main
-    Remote branch:
-        main tracked
-    Local branch configured for 'git pull':
-        main merges with remote main <-- 当前分支的 pull 不变
-    Local ref configured for 'git push':
-        main pushes to main (up to date) <-- 当前分支的 push 不变
-
-    $ git remote -v
-    origin  git@github.com:m666m//project_name.git (fetch)  <-- 默认的 fetch 地址
-    origin  git@github.com:m666m//project_name.git (push)   <-- 默认的 push 地址
-    origin  ssh://git@11.22.33.44:2345/gitrepo/project_name.git (push)  <-- 多个 push 地址
-
-    本地项目中的 .git/config 对应内容也会变化。
-
-日常使用中，在执行 `git fetch` 或 `git pull` 命令时，只从默认的 fetch 地址拉取代码，而在执行 `git push` 时会推送到多个 push 地址。
-
-如果想删除多余的 push 地址
-
-    git remote set-url --delete origin ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-##### 添加多个远程库对象
-
-一般用于仓库备份、代码发布到专门的测试服务器等需要明确手工指定的场合
-
-    https://www.runoob.com/git/git-gitee.html
-
-除了 origin，再添加多个远程库对象
-
-    git remote add server1 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-    git remote add server2 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-    git remote add server3 ssh://git@11.22.33.44:2345/gitrepo/project_name.git
-
-在执行 `git push` 时，只会推送到默认的 origin 地址。
-
-如果需要推送到其他的各个 server1，2，3 ，需要明确给出参数挨个执行 push 命令
-
-    git push server1 master
-
-    git push server1 developer
-
-    ...
-
-这样便于控制发布节奏，比如在某些时间节点才把开发分支推送到test_server，平时的默认推送都是推到 origin。
-
-添加多个远程库对象后，还可以删除默认的 origin 对象，只使用自己添加的那些远程库对象
-
-    git remote rm origin
-
-#### 示例：本地空目录，远程裸仓库里有文件
-
-git clone 命令正常拉取即可
-
-    git clone ssh://git@11.22.33.44:2345/gitrepo/tea.git [新目录名字]
-
-    # Ipv6 用标准的中括号方式：
-    #
-    $ git clone ssh://git@[2199:4c:c:8da::2]:2345/gitrepo/tea.git
-    Cloning into tea...
-    warning: You appear to have cloned an empty repository.
-
-这样本地目录里就会多了个名为 tea 的目录，这个目录已经是 git 管理的仓库了。
-
-git clone 命令会自动创建了 origin 远程仓库对象，配置服务器的信息，默认创建本地分支HEAD（master）并设置远程跟踪分支。
-
-因为初次拉取后，本地默认只有 master 分支，如需使用其它分支，参见章节 [从远程库的某个分支建立一个本地分支]。
-
-执行 `git clone` 之后的第一次 pull 和 push：先执行 `git pull` 和 `git push`，看是否报错。可执行章节 [查看远程配置]，如果报错没有关联跟踪分支，可参见章节 [本地仓库关联远程仓库] 的第 4 步。
-
-#### 示例：本地空目录，远程刚建好空白裸仓库
-
-刚建好的裸仓库无内容，直接用 clone 拉是可以的，但是后续做pull和push会报错。
-
-解决办法是，先在本地目录 git init，设置远程推送地址，给远程仓库上传个文件，然后再拉取。
-
-1、本地操作，新建文件夹，创建 git 仓库，并添加远程仓库对象。
-
-    $ mkdir tea
-
-    $ cd tea
-
-    $ git init
-    Initialized empty Git repository in C://tea/.git/
-
-    $ git remote add origin ssh://git@11.22.33.44:2345/gitrepo/tea.git
-
-2、本地操作，先提交个文件，否则直接 pull 会报错
-
-    echo 'init my git repo, add a file' > readme.md
-    git add readme.md
-    git commit -m 'init.'
-
-后续操作参见章节 [本地非空目录，远程服务器的裸仓库是空的] 的第 3、4、5 步。
-
-#### 示例：本地非空目录，远程服务器的裸仓库是非空的
-
-用于同一个的项目，只是提交记录步调不一致。比如下载了一份源代码，需要从远程仓库同步的场景。
-
-1、在本地目录下初始化为 git 仓库
-
-    git init
-
-2、添加 origin 远程库对象
-
-    # git 协议
-    git remote add origin git_user@180.169.33.106:repositores/repository.git
-
-    # Github 的 git 协议
-    git remote add origin git@github.com:m666m/okletsgo.git
-
-    # ssh 协议
-    git remote add origin ssh://user@11.22.33.44:2345/gitrepo/tea.git
-
-3、拉取远程代码以让git获取分支相关信息
-
-    # 先获取主干分支，把 master 分支的 HEAD 配置上
-    $ git pull origin master
-    From ssh://11.22.33.44:2345/gitrepo/tea
-    * branch            master     -> FETCH_HEAD
-
-    # 再获取所有分支的信息
-    $ git pull
-    remote: Enumerating objects: 16, done.
-    remote: Counting ... done.
-    From ssh://11.22.33.44:2345/gitrepo/tea
-    * [new branch]      def_xxx    -> origin/def_xxx
-    * [new branch]      hotfix     -> origin/hotfix
-    * [new branch]      t3_fea     -> origin/t3_fea
-    * [new tag]         v1.2.3.4   -> v1.2.3.4
-
-这时还未设置远程库分支跟本地分支的关联，执行 git pull 或 git push 都会提示报错。
-
-4、设置分支关联设置本地分支和远程库关联。
-
-    git push -u origin master
-
-5、执行 git pull 和 git push 验证是否正常
-
-#### 示例：本地非空目录，远程服务器的裸仓库是空的
-
-比如本地仓库开发的项目，后来需要多人共享，则在服务器建立裸仓库，远程服务器的裸仓库是空的，需要先把本地推送上去。
-
-1、本地先建立 git 仓库
-
-    $ git init
-
-    $ git add .
-
-    $ git commit -m 'init 1st'
-    [master (root-commit) 34827c0] init 1st
-
-2、添加远程库对象 origin
-
-    git remote add origin ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
-
-这时显示结果 HEAD 是 unknown
-
-    $ git remote show origin
-    * remote origin
-    Fetch URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
-    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
-    HEAD branch: (unknown)
-
-3、这是因为没有上游分支，需要建立关联关系
-
-    git push -u origin master
-
-4、验证，查看看远程的信息，提示 tracked
-
-    $ git remote show origin
-    * remote origin
-    Fetch URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
-    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/okletgo.git
-    HEAD branch: master
-    Remote branch:
-        master tracked <--------- 有跟踪分支了
-    Local branch configured for 'git pull':
-        master merges with remote master  <--------- 拉取有了
-    Local ref configured for 'git push':
-        master pushes to master (up to date)  <--------- 推送也有了
-
-5、执行 git pull 和 git push 同步数据，应该不会有报错提示。
-
-#### 示例：本地非空目录，远程裸仓库无本地分支
-
-常见场景：本地新建的分支 t3_fea， 这时远程仓库没有该分支，无法直接推送。
-
-前提
-
-    本地仓库的 master 分支可以正常的执行 pull、push，否则先关联远程仓库，见章节 [本地仓库关联远程仓库]。
-
-要推送到远程仓库，实现 push 和 pull，需要先设置关联。
-
-    $ git push -u origin t3_fea
-    Everything up-to-date
-    branch 't3_fea' set up to track 'origin/t3_fea'.
-
-设置后可以看到关联跟踪分支了
-
-    $ git branch -avv
-    master                 3384fb2 [origin/master] tea2 再改2
-    * t3_fea               f6aeb75 [origin/t3_fea] t3_fea 分支自己添加  <-- 对应的远程分支
-    remotes/origin/HEAD    -> origin/master
-    remotes/origin/def_xxx b414ac9 功能3
-    remotes/origin/hotfix  7cabce4 res me
-    remotes/origin/master  3384fb2 tea2 再改2
-    remotes/origin/t3_fea  f6aeb75 t3_fea 分支自己添加
-
-    $ git remote show origin
-    * remote origin
-    Fetch URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
-    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
-    HEAD branch: master
-    Remote branches:
-        def_xxx tracked
-        hotfix  tracked
-        master  tracked
-        t3_fea  tracked <---- 添加了跟踪分支
-    Local branches configured for 'git pull':
-        master merges with remote master
-        t3_fea merges with remote t3_fea <---- 关联了 fetch 命令
-    Local refs configured for 'git push':
-        master pushes to master (up to date)
-        t3_fea pushes to t3_fea (up to date) <---- 关联了 push 命令
-
-其它机器需要重新拉取远程分支
-
-    $ git fetch
-    * [new branch]    t3_fea  -> origin/t3_fea  <--- 提示本地的远程库下载了新的分支
-
-    $ git branch -avv
-    * master                 3384fb2d33 [origin/master] tea2 再改2
-    remotes/origin/def_xxx b414ac95d4 功能3
-    remotes/origin/hotfix  7cabce404f res me
-    remotes/origin/master  3384fb2d33 tea2 再改2
-    remotes/origin/t3_fea  f6aeb75474 t3_fea 分支自己添加 <---本地的远程库的分支
-
-这样就可以创建本地分支了，注意分支名称最好保持一致
-
-    $ git switch -c t3_fea origin/t3_fea
-    Switched to a new branch 't3_fea'
-    branch 't3_fea' set up to track 'origin/t3_fea'.
-
-尽量不要设置不同的分支名称：
-
-如果你本地新建分支名称和远程服务器上的分支名称不一致，甚至不使用默认的 origin 对象
-
-    git push origin local_branch:remote_branch
-
-    git branch --set-upstream-to=origin/remote_branch local_branch
-
-    git push origin HEAD:remote_branch
-
-    git push -u origin/local_branch
-
-那么之后的 `git push` 和 `git fentch` 操作都要加参数，比较麻烦，跟随 `git status` 的提示即可。
-
-#### 仅拉取指定远程分支
-
-假设分支名称dev
-
-    git clone -b dev
-
-或用 fetch 只下载指定分支如 dev：
-
-    $ git init
-
-    $ git remote add origin git@github.com:m666m/okletsgo.git
-
-    $ git remote set-branches origin dev
-
-    $ git fetch --depth 1 origin dev
-
-    # 如果 git branch -avv 看不到远程分支，使用 `git remote update` 更新下
-
-    $ git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
-
-    $ git pull origin dev(远程分支名称)
-
-##### 拉取指定分支的指定commit版本
-
-git clone 默认是取回 master 分支，可以使用 -b 参数指定分支。
-
--b 参数不仅支持分支名，还支持 tag 名等。
-
-    git clone  <remote-addr:repo.git> -b <branch-or-tag-or-commit>
-
-需求是获取 commit id，没直接的办法，下面提供另一个步骤：
-
-选择一个包含目标 commit id 的 branch 或 tag，并指定 depth=1 以获得比较少的额外文件传输。
-
-    git clone --depth 1 <remote-addr:repo.git> -b < branch-or-tag >
-
-clone 完成后，进入目录，执行
-
-    git fetch --depth < a-numer >
-
-不断增大步骤2的数字，直到找到你要的commit
-
-#### 浅克隆(shallow clone) --- 大仓库非全量拉取
-
-适用场景：你只是想 clone 最新版本来使用，而不是参与项目的开发
-
-git cole 命令默认会把所有的提交记录都 clone 下来，对比较大且未清理的大仓库，这个过程耗时长而且占用空间大。
-
-其实对于我们直接使用仓库的内容，而不是参与其开发工作的人来说，只根据最近的一次的提交记录把相关内容给 clone 下来就好了。
-
-只拉取最近一次提交记录相关内容
-
-    git clone --depth 1
-
-如果想限制只下载指定分支，参见章节 [仅拉取指定远程分支]。
-
-这样 clone 下来的仓库，如果你只是用来查看最新内容或者直接编译是没问题的。
-
-但是，如果是要像正常仓库一样操作还是有些区别的
-
-    使用了--depth 克隆的仓库就是一个浅克隆的仓库，并不完整，只包含远程仓库的 HEAD 分支。
-
-    没有远程仓库的 tags。
-
-    不 fetch 子仓库(submodules)。
-
-    即使你再使用 git fetch，也不能把完整仓库 fetch 下来，从 config 文件可以看 config remote.origin.fetch
-
-    $ git config remote.origin.fetch
-    +refs/heads/main:refs/remotes/origin/main
-
-使用时注意其缺失功能
-
-    无法查看历史 commit、无法切换到历史 commit
-
-    无法切换到其它分支
-
-当你有一天需要完整的提交记录的时，可以弥补
-
-    git pull --unshallow
-
-当你需要切换到其它分支的时候
-
-    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-
-    git pull
-
-然后就可以正常使用了。
-
-#### 部分克隆(Partial clone) --- 减少下载提交记录的部分对象
-
-适用于大项目，浅克隆拉取都耗时很久，部分克隆更有效。
-
-仓库中的提交记录由三者组合：commit对象、tree对象、blob对象。部分克隆通过只下载部分对象的方式，在首次克隆时减轻了需要传输的数据量，降低了克隆需要的时间。
-
-1、blobless 模式
-
-    # 我只看看代码，不下载 blob 对象
-    git clone --filter=blob:none xxxx
-
-这样的克隆不影响 git merge、git rebase、git log 等命令，我们可以正常使用。
-
-2、treeless 模式
-
-    # 我只看看代码，不下载 tree 对象
-    git clone --filter=tree:0 xxxx
-
-需要下载的对象更少，克隆时间会更短，磁盘占用空间也会更少。但是在后续的工作中，treeless 模式的克隆会更加频繁的触发数据的下载。treeless 克隆更加适用于自动构建的场景，快速的克隆仓库，构建，然后删除。
-
-在后续使用中如果涉及到这些历史数据，就会触发对象的按需下载。
-
-可手工查找缺失对象，通过管道传递给下面的git fetch进程，实现缺失对象的批量获取：
-
-    git rev-list --objects --missing=print v1.0.0..v2.0.0 | grep "^?" |\
-    git -c fetch.negotiationAlgorithm=noop \
-        fetch origin \
-        --no-tags \
-        --no-write-fetch-head \
-        --recurse-submodules=no \
-        --filter=blob:none \
-        --stdin
-
-如果项目中二进制文件较多，建议配置 Git LFS。
-
-#### 稀疏检出(sparsecheckout) --- 只拉取指定目录
-
-git的指定目录拉取，对于灵活选取仓库资源非常有帮助
-
-    https://zhuanlan.zhihu.com/p/602129987
-
-    https://zhuanlan.zhihu.com/p/54581830
-
-NOTE：只在单个项目的目录里设置稀疏检出，不要变更全局配置。
-
-1）在本地创建目录，初始化仓库
-
-    mkdir pg_examples
-
-    cd pg_examples
-
-    git init
-
-完成初始化之后，添加远程仓库
-
-    git remote add origin git@github.com:pyqtgraph/pyqtgraph.git
-
-2）设置本项目使用稀疏检出功能
-
-这里可以先查看一下本项目的git配置
-
-    $ git config --local -l
-    core.repositoryformatversion=0
-    core.filemode=false
-    core.bare=false
-    core.logallrefupdates=true
-    core.symlinks=false
-    core.ignorecase=true
-    remote.origin.url=git@github.com:pyqtgraph/pyqtgraph.git
-    remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
-
-此时可以看到并没有关于 core.sparsecheckout 的配置
-
-配置稀疏检出
-
-    # 注意要用参数 --local 指定为仅此项目
-    git config --local core.sparsecheckout true
-
-3）拉取目录
-
-配置稀疏检查的目录
-
-    # 注意路径格式
-    #   pyqtgraph/pyqtgraph.git examples/
-    #   romkatv/zsh4humans.git sc/
-    git sparse-checkout set 'examples/'
-
-    # 实际修改的是文件 .git/info/sparse-checkout
-    # 由于该文件的匹配规则比较怪异，git 展开后的结果不确定，
-    # 务必 cat 该文件确认下
-    cat .git/info/sparse-checkout
-
-执行拉取操作，由于 pyqtgraph 的主分支是 master，因此命令如下
-
-    git pull origin master
-
-4）切换分支
-
-以上只是拉取了仓库的一个分支，所以查看本地分支和远程分支也就只显示这个分支
-
-    $ git branch -a
-    * master
-    remotes/origin/master
-
-fetch 远程仓库，会拉取到其它分支的信息
-
-    git fetch origin
-
-    $ git branch -a
-    * develop
-    master
-    remotes/origin/dependabot/pip/doc/pydata-sphinx-theme-0.12.0
-    remotes/origin/dependabot/pip/doc/sphinx-6.1.3
-    remotes/origin/develop
-    remotes/origin/master
-
-切换到其他分支，本地建立新分支，跟该远程分支关联，则稀疏检出的代码会切换到该分支
-
-    git checkout -b develop origin/develop
-
-总结：
-
-把稀疏检出，理解为跟随分支切换后，git做的一个是否显示目录或文件的匹配。
-
-对于目录中不是git管理的文件，在git切换分支和做稀疏检出时都不会去处理，相对的目录结构在切换分支后会保留。
-
-验证：
-
-对不同结构的目录，切换分支后，稀疏检出会跟随分支情况变化
-
-    示例 git@github.com:pyqtgraph/pyqtgraph.git
-        git sparse-checkout set 'examples/'
-
-    $ git checkout develop
-    $ tree /ghcode/pg_examples
-    /ghcode/pg_examples
-    └── examples
-        ├── Arrow.py
-        ├── BarGraphItem.py
-        ├── beeswarm.py
-        ├── CLIexample.py
-       ...
-        └── ViewLimits.py
-
-    $ git checkout master
-    $ tree /ghcode/pg_examples
-    /ghcode/pg_examples
-    └── pyqtgraph
-        └── examples
-            ├── Arrow.py
-            ├── BarGraphItem.py
-            ├── beeswarm.py
-            ├── CLIexample.py
-            ...
-            └── ViewLimits.py
-
-对同名目录，切换分支后，稀疏检出会跟随分支情况变化
-
-    示例 git@github.com:romkatv/zsh4humans.git
-        git sparse-checkout set 'sc/'
-
-    $ git checkout v5
-    $ tree /ghcode/zsh4_sc
-    /ghcode/zsh4_sc
-    └── sc
-        ├── exec-zsh-i
-        ├── install-tmux
-        ├── setup
-        └── ssh-bootstrap
-
-    $ git checkout v4
-    $ tree /ghcode/zsh4_sc
-    /ghcode/zsh4_sc
-    └── sc
-        ├── exec-zsh-i
-        ├── setup
-        └── ssh-bootstrap
-
-##### 本地已clone了仓库
-
-    https://www.jianshu.com/p/680f2c6c84de
-
-对于目录中多余的文件，在稀疏检查时不会去处理，类似分支切换时对非 git 管理文件的处理方式。
-
-1、打开 sparse checkout 功能
-
-进入版本库的目录，执行以下命令
-
-    git config --local core.sparsecheckout true
-
-使用文本编辑打开 .git/info/sparse-checkout 文件 (没有这个文件可以手动创建一个)
-添加如下列表
-
-    /*
-    !/add_on/native_addon/kylinv4_ft1500a/*
-    !/add_on/native_addon/neokylin_lib/*
-    !/add_on/native_addon/ubuntu_lib/*
-    !/add_on/native_addon/uos_arm_lib/*
-    !*.so
-
-3、 重新checkout
-
-    $ git checkout [branch]
-
-    or
-
-    $ git read-tree -mu HEAD
-
-sparse-checkout 文件设置
-
-    https://www.git-scm.com/docs/git-sparse-checkout/2.39.0#_internalsnon_cone_problems
-
-    子目录的匹配
-
-        目录名称前带斜杠，如 /docs/，将只匹配项目根目录下的 docs目录
-
-        目录名称前不带斜杠，如 docs/，其他目录下如果也有这个名称的目录，如 test/docs/ 也能被匹配
-
-        多级目录，如 docs/05/，则不管前面是否带有斜杠，都只匹配项目根目录下的目录，如 test/docs/05/ 不能被匹配
-
-    通配符 ““ (星号)匹配
-
-        docs/
-        index.
-        *.so
-
-    排除项 “!” (感叹号)匹配
-
-        /*
-        !unwanted
-
-    关闭sparsecheckout
-
-        关闭sparsecheckout功能，全取整个项目库，可以写一个”“号，但如果有排除项，必须写”/“，同时排除项要写在通配符后面。
-
-    比如，命令 `git sparse-checkout set A/B/C` 会被展开成
-
-        /*
-        !/*/
-        /A/
-        !/A/*/
-        /A/B/
-        !/A/B/*/
-        /A/B/C/
-
-#### 组合使用：部分克隆+稀疏检出
-
-只对大项目的某个部分感兴趣时的代码检出，大项目用这个方法最精简
-
-    https://help.aliyun.com/document_detail/309002.html
-
-开源的大项目在公司内网服务器做镜像参见章节 [迁移仓库](git_repo think)。
-
-1、先部分克隆，并配置克隆完成后不执行自动检出
-
-    git clone --filter=blob:none --no-checkout
-
-2、然后对该项目配置稀疏检出
-
-    git config core.sparsecheckout true
-
-3、指定稀疏检出的目录为 backend
-
-    echo "backend/*" > .git/info/sparse-checkout
-
-4、然后再拉取文件
-
-    git checkout
-
-测试：150 GB 的大项目，此存储库中有许多（~2k）子模块
-
-    # https://github.com/romkatv/powerlevel10k/issues/1608
-    git clone --recurse-submodules https://android.googlesource.com/platform/superproject/
-
-### git submodule 包含子项目
-
-    https://zhuanlan.zhihu.com/p/87053283
-
-    https://zhuanlan.zhihu.com/p/404615843
-
-    git的submodule体验太痛苦 https://www.zhihu.com/question/267292008/answer/2389876457
-
-当项目依赖并跟踪一个开源的第三方库，或主项目对子模块有依赖关系，却又并不关心子模块的内部开发流程细节。
-
-这种情况下，通常不会把所有源码都放在同一个 Git 仓库中。
-
-有一种比较简单的方式，是在当前工作目录下，将子模块文件夹加入到 .gitignore 文件内容中，这样主项目就能够无视子项目的存在。这样做有一个弊端就是，使用主项目的人需要有一个先验知识：需要在当前目录下放置一份某版本的子模块代码。
-
-还有另外一种方式可供借鉴，可以使用 Git 的 submodule 功能。
-
-增加子项目，或称子模块
-
-    # 进入主项目的目录
-    git submodule add https://your_sub_project
-
-    # 提交一次，表示引入了某个子模块。提交后，在主项目仓库中，会显示出子模块文件夹，并带上其所在仓库的版本号。
-    git commit -m "add submodule xxx"
-    git push
-
-对于后续使用者而言，对于主项目使用普通的 clone 操作并不会拉取到子模块中的实际代码，只有一个空目录，除非显式指定拉取子模块
-
-    # git clone --recursive
-    git clone --recurse-submodules https://github.com/username/project-main.git
-
-更新子模块需要手动，在当前主项目中执行
-
-    cd your_main_project
-    git pull
-
-    git submodule sync --recursive
-
-    # git submodule init
-    # git submodule update
-    git submodule update --init --recursive
-
-子模块更新后，此时对主项目来说子模块的状态是有修改的，注意切换回主项目的目录，执行 git add/commit/push 提交这个修改即可。
-
-对于子模块而言，并不需要知道引用自己的主项目的存在，子模块本身就是一个完整的 Git 仓库，按照正常的 Git 代码管理规范操作即可。
-
-通常的操作都需要进入子模块文件夹，按照子模块内部的版本控制体系更新、提交代码。
-
-比如更换远程仓库也只需进入子模块目录后执行命令 `git remote set-url origin xx.git` 即可。
-
-对子模块远程仓库有更新的情况，主项目下运行 `git status` 不会有提示，需要进入子模块的目录后手动执行更新 `git pull`，当主项目的子模块特别多时，可以使用批量命令：`git submodule foreach 'git pull'`。然后回到主项目的目录，执行 git add/commit/push 提交这个修改。
-
-删除子模块
-
-    git submodule deinit your_sub_project
-
-    git rm your_sub_project
-
-    git commit -m "delete submodule your_sub_project"
-
-    git push
-
-### git worktree 多分支目录共用一个仓库
-
-    https://minsonlee.github.io/2020/05/git-worktree
-
-git checkout 命令是在同一个文件夹中切换不同分支，当一个分支正在开发，有另一个分支需要紧急处理bug，有两种解决方案
-
-    `git stash` 当前内容，然后切换分支修改bug，提交后再切换回来， `git stash pop` 继续原开发。
-
-    新建个目录拉取仓库，在那个目录里切换分支修改bug，极端情况下每个分支一个目录，都克隆同一个仓库，但是这样占用容量太大了。
-
-一个 git 仓库可以支持多个工作树，允许你在同一时间检出多个分支。通过 git worktree add 将一个新的工作目录和一个仓库进行关联。 这个新的工作目录被称为 “linked working tree（链接工作树）”。不同于通过 git init 或 git clone 产生的主工作树，这个目录只保存了静态内容，容量相对小很多，在这个目录下切换分支操作即可。
-
-一个仓库只有一个主工作树（裸仓库是没有工作树的），可以有零个或多个链接工作树. 当你在链接工作树已经完成了工作，使用 git worktree remove 就可以移除它了。
-
-    # 查看当前仓库所有的 "linked working tree"
-    $ git worktree list
-    /ghcode/pycode/tea  7cabce4 [master]
-
-创建 worktree
-
-    # 基于已存在分支创建 `worktree`
-    git worktree add <new-workpath> <existing-branch/commit-id/remote-branch-name>
-
-    # 基于当前 commit 新建一个分支并创建 `worktree`
-    git worktree <new-wokpath> -b <new-branch>
-
-    # 基于指定 commit 创建一个 worktree
-    git worktree <new-workpath> --detach <commit-hash>
-
-移动 worktree
-
-    git worktree move <worktree> <new-path>/<new-worktree>
-
-清理 worktree
-
-    # 删除存在的 worktree
-    git worktree remove <worktree>
-
-    # 清理失去关联的 worktree
-    git worktree prune
-
-示例：
-
-保留当前分支代码现状，基于 master 分支创建一个 hotfix 分支修复问题
-
-    # 基于 master 分支的 HEAD，在目录同级创建一个 hotfix 的工作树，并检出一个本地分支 hotfix 以便后期合入
-    # git worktree add ../hotfix --detach master 如果分离式检出，切换到目录后手工创建分支 `git checkout -b hotfix`
-    # git worktree add -b hotfix ../hotfix master
-    git worktree add ../hotfix  # 创建目录并自动检出一个同名的本地分支
-
-    # 进入 hotfix 工作树
-    cd ../hotfix
-
-    # 在该工作树下处理bug
-    ...
-
-    # 切换回主分支合并该分支的内容
-    cd -
-    git rebase hotfix
-
-### 合并两个不相干的本地仓库
-
-    https://www.morfans.cn/archives/3373
-
-不使用拷贝文件的方式，目的是能够保留提交记录，让一个仓库合并另一个仓库的文件和提交记录。
-
-方法是添加一个远程对象，地址是另一个仓库，然后把它拉取下来，以此创建一个分支，然后合并到主干，使用参数允许不相关历史。
-
-假设仓库 A 要合并仓库 B，仓库 B 使用本地地 “..\repo_b”，如果你的是远程，把这里改成网址即可
-
-    cd repo_a
-
-    git remote -v
-
-添加远程对象，地址是仓库 B
-
-    git remote add repob ..\repo_b\
-
-拉取远程 repob 地址的内容
-
-    git fetch repob
-
-分支操作
-
-    $ git branch -a
-    *master
-    remotes/origin/master
-
-创建新分支 tobe
-
-    git checkout -b tobe repob/master
-
-合并到主干分支 master
-
-    git checkout master
-
-    git merge --allow-unrelated-histories tobe
-
-这样仓库 A 的主干分支 master 里就有了仓库 B 的内容，并且提交记录也合并进来了。
 
 ## -------- 分支管理 --------
 
