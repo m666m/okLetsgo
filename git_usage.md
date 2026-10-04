@@ -152,7 +152,7 @@ git 对文件内容的修改，在撤销和重做方面有些使用不便，详�
     git fetch
     git status
 
-    如果看到远程有新增提交，先同步到本地，见章节 [更新本地分支的操作步骤]
+    如果看到远程有新增提交，先同步到本地，见章节 [有远程分支的本地分支的更新]
 
     # 远程与本地一致后可以推送
     # git push
@@ -1853,108 +1853,6 @@ NOTE: 本地新建的分支没有对应到远程仓库，无法推送到远程�
 
     git branch -avv
 
-## ---- 更新本地分支的操作步骤----
-
-本地分支的更新，就是先 fetch --- 从服务器上的远程裸仓库拉取到本地的远程库，然后再从本地的远程库合并到本地库。这个合并与合并本地的两个分支没什么区别。
-
-通常情况下要保持拉直状态不能添加分叉，使用变基合并即可，整合到一个命令：
-
-    # 更新本地分支，连带标签
-    # -r是rebase，否则是merge，最好指定要fetch的remote和分支名。
-    git pull --rebase --tags origin master
-
-    简写可以忽略后面的 远程仓库名 分支名
-
-这个合并策略是强行给本地变基以拉直的方式合并远程代码到本地。如果没有不许分叉的限制，则执行 `git pull`，让 merge 自动选择即可。
-
-但是，在以下场景就需要酌情选择从远程更新本地代码时的合并策略了：
-
-    你在做两个分支的合并，合入其它分支功能之前从远程更新
-
-    多人共享开发一个分支经常出现合并冲突
-
-    本地主干分支从远程更新，一般做分叉合并，原因见章节 [功能分支合并到主干分支的操作流程]。
-
-这样就不能直接做 `git pull` 或 `git pull --rebase`，把拉取和合并分开做。先把远程拉取 `git fetch` 下来先看看内容，然后才能明确选择做何种合并。
-
-如果你在做两个功能分支的合并：合入其它分支功能之前先从远程更新，或多人共享开发一个分支经常出现合并冲突，或把功能分支合并主干分支，详见章节 [功能分支合并到主干分支的操作流程]。
-
-合并策略的讨论详见章节 [分支合并：分叉还是拉直]。
-
-操作过程如下：
-
-1、拉取远程，对比本地库和本地的远程库，先看看是不是远程有别人提交了，防止互相 merge 新增 commit。
-
-    # git fetch origin master
-    # 下载当前分支可以简写
-    git fetch
-
-章节 [远程分支拉取及合并 fetch/pull]。
-
-2、分支合并：
-
-先决定合并策略
-
-    # 是否有合并冲突，是否可以做快进合并
-    # 根据提示才能选择接下来如何做
-    git status
-
-        # 详细查看本地代码跟远程仓库代码（已下载到本地）的差异
-
-        # 如果有分叉的提示，对比 fetch 下来的本地远程库跟本地库的提交记录，看看对方新增了什么
-        git log ..origin/master --graph --oneline
-
-        # 如果有合并冲突的提示，查看 fetch 下来的本地远程库跟本地库的文件内容的具体差异
-        git diff ..origin/master
-
-    如果有本地未提交的，先 git stash 暂存才能继续下面的代码合并
-
-这里的合并做的是当前分支的本地库和本地的远程库进行合并，酌情选择自己的合并策略，用分叉还是拉直，参见章节 [分支合并：分叉还是拉直]。
-
-大多数使用场景中，本地提交记录的 hash 值都是无所谓变化的，所以直接用变基 `git rebase` 合并远程库内容，这样可以保证把这些提交推送到远程仓库也能保持拉直的效果，参见章节 [分支变基rebase：交互式压缩提交点]。
-
-做如下之一即可
-
-    git merge（先尝试快进合并失败则分叉合并） 或 git merge -noff（强行分叉合并） 或 git rebase（强行拉直合并）
-
-    或 git pull（fetch + merge） 或 git pull --rebase（fetch + rebase）
-
-    或 git cherry-pick origin/master 单独选取本地远程库的提交记录
-
-merge/rebase 的原理参见章节 [分支合并的策略选择]。
-
-查看合并后的提示
-
-    git status
-
-3、如果合并过程中提示有合并冲突需要处理，操作参见章节 [解决合并冲突conflicts] 的示例。
-
-原因解释：
-
-    直接执行 `git pull` 或 `git pull --rebase` 的话，你可能无法确定使用哪种合并策略更合适
-
-    如果出现合并冲突的提示，git 会进入 merge conflict 或 rebase conflict 过程，冲突文件都给你准备好了。你可以用 git merge --abort 或 git rebase --abort 终止这个过程，回到执行 git pull 之前的状态。
-
-    如果在做 push 时发现提示合并冲突了，git 只是提示下，没有进入 merge 或 rebase 的过程中，你可以选择合并策略，具体操作参见章节 [解决合并冲突conflicts]
-
-        $ git push
-        To git://
-        ! [rejected]        master -> master (fetch first)
-        error: failed to push some refs to 'git://'
-        hint: Updates were rejected because the remote contains work that you do
-        hint: not have locally. This is usually caused by another repository pushing
-        hint: to the same ref. You may want to first integrate the remote changes
-        hint: (e.g., 'git pull ...') before pushing again.
-        hint: See the 'Note about fast-forwards' in 'git push --help' for details.
-
-        可以先更新下本地的远程库，然后对比它跟本地库提交记录的差异
-
-            git fetch
-
-            git log ..origin/master --graph --oneline
-
-本地分支更新合并没有问题后，可以选择推送到远程，无需多言。
-
 ## 分支合并：分叉还是拉直
 
     Git 之 merge 与 rebase 的区别 https://www.cnblogs.com/zhangzhang-y/p/13682281.html
@@ -2009,7 +1907,7 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
         本地主干分支从远程更新，做 merge 自动选择快进或分叉合并。这是因为远程的主干分支可能已经合入了其它功能，以及各种 hotfix。
 
-        其它情况详见章节 [更新本地分支的操作步骤]
+        其它情况详见章节 [有远程分支的本地分支的更新]
 
     功能分支合并到主干分支较复杂，详见章节 [功能分支合并到主干分支的操作流程]。
 
@@ -2037,7 +1935,7 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
 > 开发分支建立自主干分支的节点 c，在此基础上延续，开发人员日常更新本地开发分支时要采取变基合并策略进行拉直：
 
-更新本地开发分支只使用 `git pull --rebase` 的方式，这样变更的只是开发人员本地的提交记录的 hash 值，远程的提交记录 hash 值保持不变，以此来保持开发分支是拉直延续的。参见章节 [更新本地分支的操作步骤]。
+更新本地开发分支只使用 `git pull --rebase` 的方式，这样变更的只是开发人员本地的提交记录的 hash 值，远程的提交记录 hash 值保持不变，以此来保持开发分支是拉直延续的。参见章节 [有远程分支的本地分支的更新]。
 
     feature1分支 a---b---c
                           \
@@ -2263,7 +2161,7 @@ merge 菱形分叉会制造一个新的提交记录，而 rebase 拉直会更新
 
     两个本地分支合并，没有远程跟踪分支，提交记录 hash 值变更无影响，可以做变基合并。这种场景一般是开发人员在本地搞了多个分支做不同的开发，最后要合并到一起。
 
-    本地开发分支更新，拉取自己的远程分支，需要拉直提交记录，可以做变基合并。这个场景最常用，参见章节 [更新本地分支的操作步骤]。
+    本地开发分支更新，拉取自己的远程分支，需要拉直提交记录，可以做变基合并。这个场景最常用，参见章节 [有远程分支的本地分支的更新]。
 
     一个本地分支做修改，另一个有远程分支跟多人同步，因为本地分支的 hash 值变更不会影响他人，可以做变基合并，方法见章节 [变基合并有远程分支要先合并到自身]。这个场景一般是用 hotfix 分支修复主干分支的缺陷，用变基合并保持提交记录的拉直状态。因为 hotfix 分支在合并到主干分支后就废弃了，所以在合并主干分支内容时用变基合并，变更它的提交记录的 hash 值没有影响。
 
@@ -2484,7 +2382,7 @@ feature1 分支的 f'、g' 已经接续在 d、e 的后面了，master 分支这
 
 最差的情况是：对方把自己的本地远程库重新rebase并推送到了远程，或你把已经推送远程库的代码，在本地分支重新rebase了，再次推送就报错了，见章节 [拉shi往回缩：rebase本地分支以后报错了]。
 
-所以，如果多人共享开发经常出现合并冲突，更新分支应该先 `git fetch` 再操作，详见章节 [更新本地分支的操作步骤]。
+所以，如果多人共享开发经常出现合并冲突，更新分支应该先 `git fetch` 再操作，详见章节 [有远程分支的本地分支的更新]。
 
 两个分支合并，也会出现合并冲突：
 
@@ -2716,7 +2614,7 @@ git pull 自动使用 merge，发现冲突后，会进入 merge confict 状态�
 
 ##### 示例：merge 处理合并冲突
 
-本地从远程更新代码，操作步骤根据章节 [更新本地分支的操作步骤]，不直接 git pull，以便可以根据情况来选择合并策略。
+本地从远程更新代码，操作步骤根据章节 [有远程分支的本地分支的更新]，不直接 git pull，以便可以根据情况来选择合并策略。
 
 先拉取远程
 
@@ -2894,7 +2792,7 @@ git pull --rebase 自动使用 rebase，发现冲突后，会进入 rebase confi
 
 ##### 示例：rebase 处理合并冲突
 
-本地从远程更新代码，操作步骤根据章节 [更新本地分支的操作步骤]，不直接 git pull --rebase，以便可以根据情况来选择合并策略。
+本地从远程更新代码，操作步骤根据章节 [有远程分支的本地分支的更新]，不直接 git pull --rebase，以便可以根据情况来选择合并策略。
 
 先拉取远程
 
@@ -3738,6 +3636,108 @@ git push -f 制造混乱的过程
     git cherry-pick B3
 
     # 最终的开发分支内容是 A1 - B1 - B2 - B3
+
+## 有远程分支的本地分支的更新
+
+本地分支的更新，就是先 fetch --- 从服务器上的远程裸仓库拉取到本地的远程库，然后再从本地的远程库合并到本地库。这个合并与合并本地的两个分支没什么区别。
+
+通常情况下要保持拉直状态不能添加分叉，使用变基合并即可，整合到一个命令：
+
+    # 更新本地分支，连带标签
+    # -r是rebase，否则是merge，最好指定要fetch的remote和分支名。
+    git pull --rebase --tags origin master
+
+    简写可以忽略后面的 远程仓库名 分支名
+
+这个合并策略是强行给本地变基以拉直的方式合并远程代码到本地。如果没有不许分叉的限制，则执行 `git pull`，让 merge 自动选择即可。
+
+但是，在以下场景就需要酌情选择从远程更新本地代码时的合并策略了：
+
+    你在做两个分支的合并，合入其它分支功能之前从远程更新
+
+    多人共享开发一个分支经常出现合并冲突
+
+    本地主干分支从远程更新，一般做分叉合并，原因见章节 [功能分支合并到主干分支的操作流程]。
+
+这样就不能直接做 `git pull` 或 `git pull --rebase`，把拉取和合并分开做。先把远程拉取 `git fetch` 下来先看看内容，然后才能明确选择做何种合并。
+
+如果你在做两个功能分支的合并：合入其它分支功能之前先从远程更新，或多人共享开发一个分支经常出现合并冲突，或把功能分支合并主干分支，详见章节 [功能分支合并到主干分支的操作流程]。
+
+合并策略的讨论详见章节 [分支合并：分叉还是拉直]。
+
+操作过程如下：
+
+1、拉取远程，对比本地库和本地的远程库，先看看是不是远程有别人提交了，防止互相 merge 新增 commit。
+
+    # git fetch origin master
+    # 下载当前分支可以简写
+    git fetch
+
+章节 [远程分支拉取及合并 fetch/pull]。
+
+2、分支合并：
+
+先决定合并策略
+
+    # 是否有合并冲突，是否可以做快进合并
+    # 根据提示才能选择接下来如何做
+    git status
+
+        # 详细查看本地代码跟远程仓库代码（已下载到本地）的差异
+
+        # 如果有分叉的提示，对比 fetch 下来的本地远程库跟本地库的提交记录，看看对方新增了什么
+        git log ..origin/master --graph --oneline
+
+        # 如果有合并冲突的提示，查看 fetch 下来的本地远程库跟本地库的文件内容的具体差异
+        git diff ..origin/master
+
+    如果有本地未提交的，先 git stash 暂存才能继续下面的代码合并
+
+这里的合并做的是当前分支的本地库和本地的远程库进行合并，酌情选择自己的合并策略，用分叉还是拉直，参见章节 [分支合并：分叉还是拉直]。
+
+大多数使用场景中，本地提交记录的 hash 值都是无所谓变化的，所以直接用变基 `git rebase` 合并远程库内容，这样可以保证把这些提交推送到远程仓库也能保持拉直的效果，参见章节 [分支变基rebase：交互式压缩提交点]。
+
+做如下之一即可
+
+    git merge（先尝试快进合并失败则分叉合并） 或 git merge -noff（强行分叉合并） 或 git rebase（强行拉直合并）
+
+    或 git pull（fetch + merge） 或 git pull --rebase（fetch + rebase）
+
+    或 git cherry-pick origin/master 单独选取本地远程库的提交记录
+
+merge/rebase 的原理参见章节 [分支合并的策略选择]。
+
+查看合并后的提示
+
+    git status
+
+3、如果合并过程中提示有合并冲突需要处理，操作参见章节 [解决合并冲突conflicts] 的示例。
+
+原因解释：
+
+    直接执行 `git pull` 或 `git pull --rebase` 的话，你可能无法确定使用哪种合并策略更合适
+
+    如果出现合并冲突的提示，git 会进入 merge conflict 或 rebase conflict 过程，冲突文件都给你准备好了。你可以用 git merge --abort 或 git rebase --abort 终止这个过程，回到执行 git pull 之前的状态。
+
+    如果在做 push 时发现提示合并冲突了，git 只是提示下，没有进入 merge 或 rebase 的过程中，你可以选择合并策略，具体操作参见章节 [解决合并冲突conflicts]
+
+        $ git push
+        To git://
+        ! [rejected]        master -> master (fetch first)
+        error: failed to push some refs to 'git://'
+        hint: Updates were rejected because the remote contains work that you do
+        hint: not have locally. This is usually caused by another repository pushing
+        hint: to the same ref. You may want to first integrate the remote changes
+        hint: (e.g., 'git pull ...') before pushing again.
+        hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+        可以先更新下本地的远程库，然后对比它跟本地库提交记录的差异
+
+            git fetch
+
+            git log ..origin/master --graph --oneline
+
+本地分支更新合并没有问题后，可以选择推送到远程，无需多言。
 
 ## -------- 日常编辑常用 --------
 
