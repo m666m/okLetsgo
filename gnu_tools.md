@@ -20681,6 +20681,10 @@ C:\ProgramData\Anaconda3\shell\condabin\conda-hook.ps1
 
     动态壁纸全是视频文件 "$HOME/Library/Application Support/com.apple.wallpaper/aerials/videos"
 
+苹果智能（Apple intelligent）在国内不可用，但是把大模型的数据文件放到本地硬盘占 几十GB：
+
+    https://github.com/omlahore/RemoveMacAI
+
 ### 文件管理器---访达
 
     建议使用 https://sourceforge.net/projects/doublecmd/
@@ -22052,22 +22056,22 @@ tart 可以使用 OCI 镜像仓库的虚拟机镜像，快速创建本地虚拟�
 
 1、从虚拟机镜像快速复制一份虚拟机
 
-从远程OCI仓库如 ghcr.io 下载虚拟机镜像：
+从远程 OCI 仓库如 ghcr.io 下载虚拟机镜像：
 
     如果本地缓存已经 `tart pull` 了，会瞬间跳过下载，直接进行创建，速度会非常快
 
     # 这里指定大一些的磁盘空间，因为默认的磁盘太小，无法安装开发工具
     $ tart clone --disk-size 80 ghcr.io/cirruslabs/macos-tahoe-base:latest tahoe-base
 
-上面的命令使用基础镜像创建了一个虚拟机 tahoe-base。
+上面的命令使用虚拟机镜像快速创建了一个虚拟机名为 tahoe-base。
 
-从OCI私有仓库的虚拟机镜像创建：
+从 OCI 私有仓库的虚拟机镜像创建：
 
     tart clone localhost:5000/remoteorg/name:latest my-vm
 
 其它 tart clone 命令会自动下载，不需要单独执行 `tart pull`。
 
-2、从 IPSW 固件全新创建一个 macOS 虚拟机，使用的是从 Apple 官方 CDN 下载 .ipsw 文件：
+2、从 IPSW 固件全新创建一个 macOS 虚拟机(安装操作系统)：
 
     $ tart create --from-ipsw=latest --disk-size 80 tahoe-base
     Looking up the latest supported IPSW...
@@ -22079,7 +22083,7 @@ tart 可以使用 OCI 镜像仓库的虚拟机镜像，快速创建本地虚拟�
     # 如果本地之前下载过有缓存可直接利用
     tart create --from-ipsw ~/.tart/cache/IPSWs/sha256:065abd295a1a456a46c1155217eab92ee95816520ec9aeed83f249f074f68a04.ipsw --disk-size 80 tahoe-base2
 
-这个方法是全新创建安装操作系统，第一次运行虚拟机时，会引导后续的 macOS 安装过程，点击操作即可。
+这会从 Apple 官方 CDN 下载最新的 macOS IPSW 固件并创建虚拟机，然后你就像装新 Mac 一样，第一次运行虚拟机时，会引导后续的 macOS 安装过程，点击操作即可。
 
 注意苹果官方 IPSW 镜像默认的硬盘空间偏小：
 
@@ -22370,9 +22374,9 @@ Tart 本来是 Cirrus Labs 的 CI 工作流，为了配套的自动化编译环�
 
     https://tart.run/integrations/cirrus-cli/
 
-还有个专门的命令行工具 orchard 来同时管理多平台的多个虚拟机
+    还有个专门的命令行工具 orchard 来同时管理多平台的多个虚拟机
 
-    https://tart.run/orchard/quick-start/
+        https://tart.run/orchard/quick-start/
 
 .cirrus.yaml
 
@@ -22388,6 +22392,12 @@ task:
     - sysctl -n machdep.cpu.brand_string
     - sleep 15
 ```
+
+然后：
+
+    brew install cirruslabs/cli/cirruscirrus run
+
+它会自动拉镜像、启动 VM、拷贝工作目录、执行脚本、收集产物。整个流程和 Docker CI 几乎一样顺滑，但跑的是完整的 macOS 环境。
 
 ##### 虚拟机磁盘空间不足
 
