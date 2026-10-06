@@ -22059,6 +22059,8 @@ tart 可以使用 OCI 镜像仓库的虚拟机镜像，快速创建本地虚拟�
     # 这里指定大一些的磁盘空间，因为默认的磁盘太小，无法安装开发工具
     $ tart clone --disk-size 80 ghcr.io/cirruslabs/macos-tahoe-base:latest tahoe-base
 
+上面的命令使用基础镜像创建了一个虚拟机 tahoe-base。
+
 从OCI私有仓库的虚拟机镜像创建：
 
     tart clone localhost:5000/remoteorg/name:latest my-vm
