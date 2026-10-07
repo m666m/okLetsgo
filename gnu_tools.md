@@ -22099,13 +22099,13 @@ tart 可以使用 OCI 镜像仓库的虚拟机镜像，快速创建本地虚拟�
 
 命令运行后，会弹出一个窗口，显示虚拟机的操作系统界面，点击操作即可。
 
-macOS 虚拟机默认会挂载到  '/Volumes/My Shared Files'，可以换个地方：
+默认会挂载到 macOS 虚拟机的 '/Volumes/My Shared Files' 目录下，上例中是 project 目录，可以给默认目录换个地方：
 
     sudo umount "/Volumes/My Shared Files"
     mkdir ~/workspace
     mount_virtiofs com.apple.virtio-fs.automount ~/workspace
 
-Linux 虚拟机挂载路径在 '/mnt/share' 下。
+如果建立的是 Linux 虚拟机，默认挂载路径中虚拟机的 '/mnt/share' 目录下。
 
 四、从宿主机访问虚拟机的方式
 
