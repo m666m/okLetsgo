@@ -136,7 +136,7 @@ unset os_name
 
 # 为方便做多个内网环境使用，只能加这么个屏幕打印，暂没有更好的解决办法
 _NAS_SVR_='192.168.0.111'
-export PDMREPO="{_NAS_SVR_}:5000"
+export PDMREPO="$_NAS_SVR_:5000"
 echo "内网私有容器镜像仓库地址设置为 PDMREPO=${PDMREPO}" >&2
 
 # 常用软件仓库的国内镜像
