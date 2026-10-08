@@ -135,7 +135,9 @@ unset os_name
 # 设置仓库和镜像地址，方便后面使用
 
 # 为方便做多个内网环境使用，只能加这么个屏幕打印，暂没有更好的解决办法
-export PDMREPO="192.168.0.111:5000" && echo "内网私有容器镜像仓库地址设置为 PDMREPO=${PDMREPO}" >&2
+_NAS_SVR_='192.168.0.111'
+export PDMREPO="{_NAS_SVR_}:5000"
+echo "内网私有容器镜像仓库地址设置为 PDMREPO=${PDMREPO}" >&2
 
 # 常用软件仓库的国内镜像
 poor_connection() {
@@ -934,8 +936,27 @@ mntram() {
     sudo mount --mkdir -t ramfs ramfs "$1" && sudo chown $(id -u):$(id -g) "$1"
 }
 mntsmb() {
-    echo "[挂载samba目录 $1 到本地目录 $2，用户名为 $3]"
-    sudo mount -t cifs -o user="$3" "$1" "$2"
+    # SMB 服务器地址，如 192.168.1.100 或 //192.168.1.100/share
+    local server="$1"
+    # 本地挂载点
+    local mountpoint="$2"
+    # 用户名
+    local user="$3"
+
+    echo "[挂载 samba 目录 $server 到本地目录 $mountpoint 用户名为 $user]"
+
+    # 挂载点不存在则自动创建
+    [[ -d "$mountpoint" ]] || mkdir -p "$mountpoint"
+
+    if [[ "$_MYPROMPT_OS_TYPE" == 'macos' ]]; then
+        # 注意：
+        #   提示 `Password:`` 是输入解锁 macOS 钥匙串的sudo密码
+        #   提示 `Password for xxx:`` 是输入服务器端 samba 服务的用户密码
+        sudo mount_smbfs "//$user@$server" "$mountpoint"
+    else
+        # Linux 使用 mount -t cifs
+        sudo mount -t cifs -o "user=$user" "$server" "$mountpoint"
+    fi
 }
 mntnfs() {
     echo "[挂载nfs目录 $1 到本地目录 $2，不许其内的 dev 再挂载]"
