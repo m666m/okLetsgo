@@ -952,10 +952,10 @@ mntsmb() {
         # 注意：
         #   提示 `Password:`` 是输入解锁 macOS 钥匙串的sudo密码
         #   提示 `Password for xxx:`` 是输入服务器端 samba 服务的用户密码
-        sudo mount_smbfs "//$user@$server" "$mountpoint"
+        mount_smbfs "//$user@$server" "$mountpoint"
     else
         # Linux 使用 mount -t cifs
-        sudo mount -t cifs -o "user=$user" "$server" "$mountpoint"
+        mount -t cifs -o "user=$user" "$server" "$mountpoint"
     fi
 }
 mntnfs() {
