@@ -936,7 +936,7 @@ mntram() {
     sudo mount --mkdir -t ramfs ramfs "$1" && sudo chown $(id -u):$(id -g) "$1"
 }
 mntsmb() {
-    # SMB 服务器地址，如 192.168.1.100 或 //192.168.1.100/share
+    # SMB 服务器地址，如 192.168.1.100
     local server="$1"
     # 本地挂载点
     local mountpoint="$2"
