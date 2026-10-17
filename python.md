@@ -608,7 +608,7 @@ uv sync 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 p
 
 利用文件 uv.lock 保证版本可复现。
 
-需要项目中有完整的 pyproject.toml（有 [build-system] 定义），uv sync 能确保所有依赖版本一致，环境干净可控。
+需要项目中有完整的 pyproject.toml（有 [build-system] 定义），执行 `uv sync` 能确保所有依赖版本一致，环境干净可控。
 
 `uv sync` 用于从一个项目代码中复现环境，相当于执行传统的 source 环境命令：
 
