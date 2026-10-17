@@ -1275,6 +1275,9 @@ alias dnft='echo "[在toolbox里运行dnf]" >&2; toolbox run dnf'
 alias pipi='echo "[pip 跳过缓存更新指定包]" >&2; pip install --upgrade --no-cache-dir'
 alias pipu='echo "[pip 更新自己]" >&2; python -m pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple --upgrade pip'
 
+# uv
+alias uvs='echo "[uv 查看当前项目的环境信息]" >&2; uv sync --dry-run --output-format json -q'
+
 # nvm node
 alias nvms='echo "[nvm 安装最新 LTS 并迁移全局包 + 升级 npm]" >&2; nvm install "lts/*" --reinstall-packages-from=current --latest-npm; nvm alias default "lts/*"'
 
