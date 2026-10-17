@@ -19188,7 +19188,9 @@ Windows 10 在 2022 年后，已经比较完整的提供了对 Linux 的字符�
 
     https://kichwacoders.com/2021/05/24/conpty-performance-in-eclipse-terminal
 
-##### WSLg
+##### WSLg 支持 Linux GUI 应用
+
+    https://learn.microsoft.com/zh-cn/windows/wsl/tutorials/gui-apps
 
     https://github.com/microsoft/wslg
 
