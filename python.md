@@ -668,9 +668,9 @@ uv 会查找当前目录下的 pyproject.toml 或 setup.py / setup.cfg，构建�
 
 ### `uv run` 运行你的 .py 文件
 
-你的本地脚本很可能依赖于项目 pyproject.toml 或 requirements.txt 中声明的包。`uv run` 能直接建立虚拟环境使用这些已安装的依赖，日后运行会复用该环境。
+你的本地脚本很可能依赖于项目 pyproject.toml 或 requirements.txt 中声明的包。执行 `uv run` 就可以直接建立虚拟环境使用这些已安装的依赖，日后运行会复用该环境。
 
-    首先会从当前目录开始，向上级目录递归查找是否存在 pyproject.toml
+首先会从当前目录开始，向上级目录递归查找是否存在 pyproject.toml，区分以下两种情况：
 
 一、如果找到了：uv 会认定你在一个 uv 项目中。这种情况下，它完全无视你当前 Shell 是否激活了其他虚拟环境（无视 VIRTUAL_ENV），也不会回退到系统 Python。
 
@@ -707,7 +707,9 @@ uv 会查找当前目录下的 pyproject.toml 或 setup.py / setup.cfg，构建�
 
 2、如果以上都找不到，使用 uv 自身缓存目录中管理的 Python（~/.local/share/uv/python/）。如果缓存没有，则自动下载一个 Python 版本去执行。
 
-总之，`uv run` 无论如何都会确保最终有一个可用的 Python 解释器来执行你的脚本。这对于我们日常使用 `uv run` 运行没有独立环境的 py 文件很方便：
+总之，`uv run` 无论如何都会确保最终有一个可用的 Python 解释器来执行你的脚本。
+
+这对于我们日常使用 `uv run` 运行没有独立环境的 py 文件很方便：
 
     如果这个 py 文件只使用了 python 内置的包，则使用 `uv run script.py` 执行是最方便的，让 uv 自己解决 python 在哪里。
 
