@@ -851,7 +851,8 @@ git clone 命令会自动创建了 origin 远程仓库对象，配置服务器�
 
 4、设置分支关联设置本地分支和远程库关联。
 
-    git push -u origin master
+    # git push -u origin master
+    $ git push
 
 5、执行 git pull 和 git push 验证是否正常
 
@@ -961,17 +962,17 @@ git clone 命令会自动创建了 origin 远程仓库对象，配置服务器�
     Switched to a new branch 't3_fea'
     branch 't3_fea' set up to track 'origin/t3_fea'.
 
-注意同一个分支不要设置跟远程分支不同的名称，防止混淆：
+以后的使用就是跟 [示例：本地非空目录，远程服务器的裸仓库是非空的] 一致了，只需要执行 `git push` 即可。
 
-    如果你本地新建分支名称和远程服务器上的分支名称不一致，甚至不使用默认的 origin 对象
+如果你本地新建分支名称和远程服务器上的分支名称不一致，甚至不使用默认的 origin 对象
 
-        git push origin local_branch:remote_branch
+    git push origin local_branch:remote_branch
 
-        git branch --set-upstream-to=origin/remote_branch local_branch
+    git branch --set-upstream-to=origin/remote_branch local_branch
 
-        git push origin HEAD:remote_branch
+    git push origin HEAD:remote_branch
 
-        git push -u origin/local_branch
+    git push -u origin/local_branch
 
     那么之后的 `git push` 和 `git fentch` 操作都要加参数，比较麻烦，跟随 `git status` 的提示即可。
 
