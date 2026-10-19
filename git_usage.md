@@ -911,42 +911,44 @@ git clone 命令会自动创建了 origin 远程仓库对象，配置服务器�
 
     本地仓库的 master 分支可以正常的执行 pull、push，否则先关联远程仓库，见章节 [本地仓库关联远程仓库]。
 
-本地建立的分支，第一次推送到远程仓库，实现 push 和 pull，需要先设置关联。
+1、本地建立的分支，第一次推送到远程仓库，实现 push 和 pull，需要先设置关联。
 
     # -u
     $ git push --set-upstream origin v7
     Everything up-to-date
     branch 't3_fea' set up to track 'origin/t3_fea'.
 
-设置后可以看到关联跟踪分支了
+以后的使用就是跟 [示例：本地非空目录，远程服务器的裸仓库是非空的] 一致了，只需要执行 `git push` 就可以推送到远程。
 
-    $ git branch -avv
-    master                 3384fb2 [origin/master] tea2 再改2
-    * t3_fea               f6aeb75 [origin/t3_fea] t3_fea 分支自己添加  <-- 对应的远程分支
-    remotes/origin/HEAD    -> origin/master
-    remotes/origin/def_xxx b414ac9 功能3
-    remotes/origin/hotfix  7cabce4 res me
-    remotes/origin/master  3384fb2 tea2 再改2
-    remotes/origin/t3_fea  f6aeb75 t3_fea 分支自己添加
+    验证，查看关联跟踪分支的情况：
 
-    $ git remote show origin
-    * remote origin
-    Fetch URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
-    Push  URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
-    HEAD branch: master
-    Remote branches:
-        def_xxx tracked
-        hotfix  tracked
-        master  tracked
-        t3_fea  tracked <---- 添加了跟踪分支
-    Local branches configured for 'git pull':
-        master merges with remote master
-        t3_fea merges with remote t3_fea <---- 关联了 fetch 命令
-    Local refs configured for 'git push':
-        master pushes to master (up to date)
-        t3_fea pushes to t3_fea (up to date) <---- 关联了 push 命令
+        $ git branch -avv
+        master                 3384fb2 [origin/master] tea2 再改2
+        * t3_fea               f6aeb75 [origin/t3_fea] t3_fea 分支自己添加  <-- 对应的远程分支
+        remotes/origin/HEAD    -> origin/master
+        remotes/origin/def_xxx b414ac9 功能3
+        remotes/origin/hotfix  7cabce4 res me
+        remotes/origin/master  3384fb2 tea2 再改2
+        remotes/origin/t3_fea  f6aeb75 t3_fea 分支自己添加
 
-其它机器需要重新拉取远程分支
+        $ git remote show origin
+        * remote origin
+        Fetch URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
+        Push  URL: ssh://git@11.22.33.44:2345/gitrepo/tea.git
+        HEAD branch: master
+        Remote branches:
+            def_xxx tracked
+            hotfix  tracked
+            master  tracked
+            t3_fea  tracked <---- 添加了跟踪分支
+        Local branches configured for 'git pull':
+            master merges with remote master
+            t3_fea merges with remote t3_fea <---- 关联了 fetch 命令
+        Local refs configured for 'git push':
+            master pushes to master (up to date)
+            t3_fea pushes to t3_fea (up to date) <---- 关联了 push 命令
+
+2、其它机器需要重新拉取远程，才可以看到你推送上去的新分支
 
     $ git fetch
     * [new branch]    t3_fea  -> origin/t3_fea  <--- 提示本地的远程库下载了新的分支
@@ -958,19 +960,21 @@ git clone 命令会自动创建了 origin 远程仓库对象，配置服务器�
     remotes/origin/master  3384fb2d33 tea2 再改2
     remotes/origin/t3_fea  f6aeb75474 t3_fea 分支自己添加 <---本地的远程库的分支
 
-这样其他的计算机就可以使用该分支了，简单的情况拉取后直接切换即可：
+拉取后直接切换到新分支即可：
 
     $ git switch t3_fea
 
-    如果本地有重名分支或多个远程仓库，则需要明确指定：
+以后的使用就是跟 [示例：本地非空目录，远程服务器的裸仓库是非空的] 一致了，只需要执行 `git push` 就可以推送到远程。
 
-        $ git switch -c t3_fea origin/t3_fea
-        Switched to a new branch 't3_fea'
-        branch 't3_fea' set up to track 'origin/t3_fea'.
+复杂情况：
 
-以后的使用就是跟 [示例：本地非空目录，远程服务器的裸仓库是非空的] 一致了，只需要执行 `git push` 即可。
+如果本地有重名分支或多个远程仓库，则需要明确指定新建分支名并切换：
 
-如果你本地新建分支名称和远程服务器上的分支名称不一致，甚至不使用默认的 origin 对象
+    $ git switch -c t3_feaaaa origin/t3_fea
+    Switched to a new branch 't3_feaaaa'
+    branch 't3_feaaaa' set up to track 'origin/t3_feaaaa'.
+
+如果你本地新建分支名称和远程服务器上的分支名称不一致，甚至不使用默认的 origin 对象：
 
     git push origin local_branch:remote_branch
 
