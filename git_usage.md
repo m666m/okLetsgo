@@ -958,11 +958,15 @@ git clone 命令会自动创建了 origin 远程仓库对象，配置服务器�
     remotes/origin/master  3384fb2d33 tea2 再改2
     remotes/origin/t3_fea  f6aeb75474 t3_fea 分支自己添加 <---本地的远程库的分支
 
-这样其他的计算机就可以使用该分支了，基于该远程分支在本地建立新的分支，注意分支名称最好保持一致：
+这样其他的计算机就可以使用该分支了，简单的情况拉取后直接切换即可：
 
-    $ git switch -c t3_fea origin/t3_fea
-    Switched to a new branch 't3_fea'
-    branch 't3_fea' set up to track 'origin/t3_fea'.
+    $ git switch t3_fea
+
+    如果本地有重名分支或多个远程仓库，则需要明确指定：
+
+        $ git switch -c t3_fea origin/t3_fea
+        Switched to a new branch 't3_fea'
+        branch 't3_fea' set up to track 'origin/t3_fea'.
 
 以后的使用就是跟 [示例：本地非空目录，远程服务器的裸仓库是非空的] 一致了，只需要执行 `git push` 即可。
 
