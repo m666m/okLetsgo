@@ -21606,17 +21606,17 @@ xcode-select 只是安装了 Command Line Tools：
 
 ### macOS 运行 x86 Windows/Linux 软件
 
+世界上绝大多数软件都运行于 x86 体系 Windows/Linux，运行于 ARM 芯片的就少很多。如果 ARM 体系下的操作系统能运行这些程序，会大大拓展可用性
+
     本章节的讨论的 Windows/Linux 程序指传统的 x86 体系的软件
 
-世界上绝大多数软件都运行于 x86 体系 Windows/Linux，运行于 ARM 芯片的就少很多。如果 ARM 体系下的操作系统能运行这些程序，会大大拓展可用性。
+最佳实践是优先查找你的应用程序的原生 arm 版本，如果 homebrew 里没有，直接去开源软件的官网查找，下载 .dmg 安装包或可执行文件安装使用即可。
 
-目前 ARM 版 Windows/Linux/macOS 都面临这个问题，非虚拟机的解决办法都是基于开源软件 wine 的动态转译思路，甚至直接使用其变体：
+但是很多软件没有 ARM 版 Windows/Linux/macOS 版，通常的解决办法就是虚拟机运行 arm 版操作系统，然后在其内部转译执行 x86 程序：
 
-    x86 cpu 指令 转 arm cpu 指令：'Rosetta 2' 技术是 arm macOS 运行 x86 Mac 应用的解决方案，它可以动态转译 x86 → ARM 指令，苹果官方的用途是让 arm macOS 可以运行旧版 x86 macOS 的应用。
+    [虚拟机 arm Windows 运行 x86 Windows 程序]，由微软的 Prism 自动转译 x86/x64 Windows 程序，用户无需配置
 
-    Windows 操作系统 API 调用、DirextX API 调用：开源社区的 Wine。将 Win32 API 调用 转换为 POSIX / macOS API 调用。
-
-其实 wine 的组合用法已经是事实上的标准做法了，[苹果的开源解决方案 GPTK] 也是在这个基础上做的开发。
+    [虚拟机 arm Linux 运行 x86 Linux 程序/容器]，macOS 集成了 rosetta 转译，但仍需在 Linux 内部手动挂载共享目录并注册 binfmt_misc，才能运行 x86 Linux 程序/容器。
 
 苹果官方对办公环境的使用建议是 [虚拟机 arm Windows 运行 x86 Windows 程序]
 
@@ -21630,48 +21630,28 @@ xcode-select 只是安装了 Command Line Tools：
 
 或者云电脑，如果你只是偶尔用一下，而且网速够快，可以考虑租用 Windows 365 Cloud PC 或者国内的云电脑服务，按需付费，完全不影响本地性能，还能用 iPad 远程连进去。
 
-#### macOS 直接运行 x86 Linux 程序
+如果要玩 Windows 游戏
 
-1、 x86 Linux 应用的运行最方便
+    先看看 Steam 客户端或应用商店里有没有原生的 arm 版本，苹果从使用 arm 芯片开始正在推动游戏开发商移植，比如《赛博朋克2077》就有原生 arm 版本。
 
-从 macOS 27 开始，对 Linux 应用中 Intel x86 指令二进制程序转换的支持将直接内置于 macOS 的 Virtualization.Framework，无需安装 Rosetta，也就是说：
+        适宜的显示分辨率需要自己调：比如 MacBook Pro m5 pro 14寸最佳分辨率 3024 x 1964，但是如果你感觉字或物体变得太小了，使用缩放功能的效果其实不舒服，那么直接更改分辨率为 1900 x 1200。
 
-    二进制的 x86 linux 程序在 macOS 仍然可以直接运行，操作系统自动转译无需用户干预
+    不要指望 steam 官方的 porton（基于wine）转译技术，它目前只在 x86 Linux 下通过 Vulkan 图形接口实现直接运行大部分 x86 Windows 游戏，并未支持苹果独家的 Metal 图形接口，无法实现 arm macOS 直接运行 x86 游戏。
 
-    x86 Linux 容器 也可以运行，只要你的 docker/podman 等支持苹果的虚拟化框架即可
+    非虚拟机的解决办法都是基于开源软件 wine 的动态转译思路，或使用其变体 crossover，目前支持不是很完善 [系统调用级转译：用 Wine/Crossover 运行 Windows 程序]。
 
-Rosetta 2 技术以前用于 Intel Mac，手动方式执行比较麻烦，现在苹果把这个技术集成到虚拟化框架了，方便使用。
+商业软件 Parallels Desktop 在虚拟机里安装 Windows 运行你的软件，号称支持 DirectX 加速，游戏体验非常好。
 
-最佳实践是查找使用你的应用程序的原生 arm 版本，如果 brew 里没有找到，直接去开源软件的官网查找，下载 .dmg 安装包或可执行文件。
+#### 指令级转译：arm macOS 运行 x86 macOS 的 应用
 
-2、如果要玩 x86 Windows 游戏
-
-先看看 Steam 客户端或应用商店里有没有原生的 arm 版本，苹果从使用 arm 芯片开始正在推动厂商移植，比如《赛博朋克2077》就有原生 arm 版本。
-
-    适宜的显示分辨率需要自己调：比如 MacBook Pro m5 pro 14寸最佳分辨率 3024 x 1964，但是如果你感觉字或物体变得太小了，使用缩放功能的效果其实不舒服，那么直接更改分辨率为 1900 x 1200。
-
-不要指望 steam 官方的 porton（基于wine）技术，它目前只在 x86 Linux 下通过 Vulkan 图形接口实现直接运行大部分 Windows 游戏，并未支持苹果独家的 Metal 图形接口，无法实现 arm macOS 直接运行 x86 游戏。
-
-3、如果你想使用的程序只有 x86/AMD64 版本，且在 macOS 无法直接执行，则有两个使用方式：
-
-转译运行 Linux 版程序
-
-    macOS 需要安装一些执行框架，可以实现在本地直接运行 x86 程序，有多种方案，都是基于 wine 转译 Windows 操作系统 API调用。
-
-虚拟机运行 arm 版操作系统，然后在其内部转译执行 x86 程序：
-
-    [虚拟机 arm Windows 运行 x86 Windows 程序]
-
-    [虚拟机 arm Linux 运行 x86 Linux 程序]
-
-##### 指令级转译：arm macOS 运行 x86 macOS 的 应用
-
-这个是使用 Intel CPU 的 x86 macOS 时代程序的用法，现在 rosetta 直接集成到 macOS 系统框架了，不需要用户手动操作了
+macOS 支持 Intel 二进制翻译的 Rosetta 技术最初用于 Intel CPU 的 x86 macOS 时代程序
 
     https://wuyanxin.com/post/mac-m1-brew-both-support-aarm64-and-x86_64.html
         https://www.wisdomgeek.com/development/installing-intel-based-packages-using-homebrew-on-the-m1-mac/
 
 1、先安装 Rosetta 2
+
+    macOS 27 以后直接集成到 macOS 系统框架了，省去了用户手动安装 rosetta 的步骤
 
 苹果开发了应用程序 `rosetta` ，动态转译 x86 指令为 ARM 指令，实现了让 arm macOS 可以运行旧版 x86 macOS(2010～2020年代) 下 x86 应用程序，性能稍打折扣但是可用性没问题。
 
@@ -21727,17 +21707,25 @@ Rosetta 2 技术以前用于 Intel Mac，手动方式执行比较麻烦，现在
         alias brew_arm='source ~/.brew_arm'
         alias brew_intel="source ~/.brew_intel"
 
-##### 系统调用级转译：用 Wine/Crossover 运行 Windows 程序
+#### 系统调用级转译：用 Wine/Crossover 运行 Windows 程序
 
-省事就在苹果商店买 Crossover（Wine的商业化版本） 即可，目前可以运行 80% 左右的 Windows 游戏，甚至支持 DLSS超级分辨率和帧生成，网游除外（反作弊无法直接操作苹果硬件）。
+1、省事就在苹果商店买 Crossover（Wine的商业化版本）
+
+目前可以运行 80% 左右的 Windows 游戏，甚至支持 DLSS超级分辨率和帧生成，网游除外（反作弊无法直接操作苹果硬件）。
 
     实测游戏性能 MacBook pro 5 16GB 大致相当于 16GB 集成显卡 Windows 笔记本，都是 DLSS 性能档
 
 Crossover 有个好处是 32 位 x86 程序也仍然可以转译为 64位版运行，而原生的 macOS 已经放弃了 32 位 x86 macOS 的支持了。
 
-开源免费的 Wine，以动态转译的方式直接运行 Windows 程序，不需要虚拟化的方式额外占用几个GB的内存。Wine 的兼容性发展到现在已经很好了，不止可以运行游戏，大量软件都可以直接运行，如无驱动的 Windows 工具、轻量办公软件、3A 大作等。但反作弊、底层驱动、新 3A 大作、强依赖完整 .NET Framework 或 VC 运行库且 Wine 无法完美模拟的无法保证可以运行。
+2、开源免费的 Wine
 
-    % wine64 /Users/yourname/putty.exe
+以动态转译的方式直接运行 Windows 程序，不需要虚拟化的方式，单独安装个 arm 版操作系统额外占用几个GB的内存。
+
+Wine 的兼容性发展到现在已经很好了，不止可以运行游戏，大量软件都可以直接运行，如无驱动的 Windows 工具、轻量办公软件、3A 大作等。但反作弊、底层驱动、新 3A 大作、强依赖完整 .NET Framework 或 VC 运行库且 Wine 无法完美模拟的无法保证可以运行。
+
+运行 Windows 程序超级简单：
+
+    $ wine64 /Users/yourname/putty.exe
 
 目前安装 wine 的途径
 
@@ -21781,6 +21769,12 @@ CJK字体乱码问题
     # https://wiki.winehq.org/Testing_Languages
     # ja_JP, en_US
     export LC_ALL="zh_CN.UTF-8";
+
+其实 wine 的组合用法已经是事实上的标准做法了，[苹果的开源解决方案 GPTK] 也是在这个基础上做的开发。
+
+    x86 cpu 指令 转 arm cpu 指令：'Rosetta 2' 技术是 arm macOS 运行 x86 Mac 应用的解决方案，它可以动态转译 x86 → ARM 指令，苹果官方的用途是让 arm macOS 可以运行旧版 x86 macOS 的应用。
+
+    Windows 操作系统 API 调用、DirextX API 调用：开源社区的 Wine。将 Win32 API 调用 转换为 POSIX / macOS API 调用。
 
 Wine 历史沿革：
 
@@ -21897,7 +21891,7 @@ Apple Game Porting Toolkit (GPTK)
 
 #### 虚拟机 arm Windows 运行 x86 Windows 程序
 
-目前效率最高的运行 x86 程序的方法，是前面章节介绍的 [系统调用级转译：用 Wine/Crossover 运行 Windows 程序]，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。缺点是 Windows 下图形化界面的软件的兼容性只支持 WINDOWS API，对依赖 .NET Framework 或 VC 运行库且 Wine 无法完美模拟的系统内核级虚拟光驱、加密狗或企业级服务等就未必可以完整支持了。
+目前效率最高的运行 x86 程序的方法，是 [系统调用级转译：用 Wine/Crossover 运行 Windows 程序]，没有额外开销，就是一个 macOS 进程去翻译执行 x86 软件。缺点是 Windows 下图形化界面的软件的兼容性只支持 WINDOWS API，对依赖 .NET Framework 或 VC 运行库且 Wine 无法完美模拟的系统内核级虚拟光驱、加密狗或企业级服务等就未必可以完整支持了。
 
 而微软当初为了推广 arm Windows，操作系统内置了对用户完全透明的转译层组件 “Prism”，可以在你运行程序时自动实现 x86 指令转换到 arm 指令功能，兼容性非常好，很多 x86 软件都能在 arm Windows 下运行。
 
@@ -21921,23 +21915,15 @@ Apple Game Porting Toolkit (GPTK)
 
     得益于苹果 M 芯片的高性能及微软的极致优化，虚拟机的执行效率很高，日常办公体验是完全没问题的。
 
-#### 虚拟机 arm Linux 运行 x86 Linux 程序
+#### 虚拟机 arm Linux 运行 x86 Linux 程序/容器
 
-绝大多数情况下，不需要本方案：
+最佳解决方案：Linux 下大多数程序都是开源的，所以各个平台都可以提供对应的官方编译版本，实在不行还可以自己用源代码编译。
 
-    arm macOS 可以直接运行 x86 macOS 程序，详见章节 [指令级转译：arm macOS 可以运行 x86 macOS 的 应用]。
+实在不行就只能在虚拟机安装 arm Ubuntu 里运行 x86 程序，常见于以下场景：
 
-    从 macOS 27 开始，对 Linux 应用中 Intel 二进制转换的支持将直接内置于 macOS 的 Virtualization.Framework，无需安装 Rosetta。也就是说，x86 二进制的 linux 程序在 macOS 可以直接运行
+    你的容器只有 x86 镜像
 
-        https://developer.apple.com/documentation/virtualization/running-intel-binaries-in-linux-vms
-
-    Linux 下大多数程序都是开源的，所以各个平台都可以提供对应的官方编译版本，实在不行还可以自己用源代码编译
-
-如果你要使用的应用程序，找不到它的 x86 macOS / arm Linux 版本，也无法使用源代码编译的方式，只有 x86 Linux 版本的二进制文件，而且 macOS 还无法直接运行它。那么只能在虚拟机安装 arm Ubuntu 里运行 x86 程序，常见于以下场景：
-
-    Docker 里跑 x86 镜像
-
-    运行 Linux x86 命令行工具等
+    需要运行 Linux x86 命令行工具等
 
 这种方式不能用于运行 Windows 程序，大多数 x86_64 Linux 命令行程序和服务器软件都能良好运行。
 
@@ -21947,7 +21933,7 @@ Apple Game Porting Toolkit (GPTK)
 
 能利用硬件加速的，有两种方式：
 
-方式一、QEMU-user 模式
+##### 方式一、QEMU-user 模式（不推荐）
 
 在 UTM 等虚拟机管理器中，正常安装 arm Linux。
 
@@ -21955,19 +21941,19 @@ Apple Game Porting Toolkit (GPTK)
 
 它会自动向内核注册一条规则：凡是遇到 x86 二进制，就调用 qemu-x86_64-static 去翻译执行。要安装 `sudo apt install binfmt-support qemu-user-static`。缺点是纯软件翻译，性能一般，CPU 占用高。只适合服务器下运行命令行程序，运行图形化程序太繁琐。
 
-方式二、虚拟机直通，调用宿主机的 Rosetta 2 去翻译执行（其实这就是 macOS 直接执行的手动操作方式）
+##### 方式二、虚拟机直通，调用宿主机的 Rosetta 2 去翻译执行
 
     https://docs.getutm.app/guides/ubuntu/
 
-过时了：
+    https://developer.apple.com/documentation/virtualization/running-intel-binaries-in-linux-vms
 
-    从 macOS 27 开始，对 Linux 应用中 Intel 二进制转换的支持将直接内置于 macOS 的 Virtualization 框架，无需安装 Rosetta
+UTM 虚拟机管理软件在安装 arm Linux 时，要选择设置 System (系统): 勾选 Use Apple Virtualization（使用Apple虚拟化）和 Enable Rosetta (x86_64 Emulation)（启用Rosetta）即可，然后安装 Ubuntu arm 版。
 
-UTM 在安装 arm linux 时，选择设置 System (系统): 勾选 Use Apple Virtualization（使用Apple虚拟化）和 Enable Rosetta (x86_64 Emulation)（启用Rosetta）即可，然后安装 Ubuntu arm 版。
+    UTM 会自动通过 virtiofs 共享宿主的 Rosetta 运行时，并注册 Linux 内核的 binfmt_misc，之后在虚拟机里直接执行 x86 程序即可，可以实现虚拟机中调用宿主机的 Rosetta 2，自动将 x86 程序翻译成 ARM 指令运行，无需手动配置。
 
-UTM 会自动通过 virtiofs 共享宿主的 Rosetta 运行时，并注册 Linux 内核的 binfmt_misc，之后在虚拟机里直接执行 x86 程序即可，可以实现虚拟机中调用宿主机的 Rosetta 2，自动将 x86 程序翻译成 ARM 指令运行，无需手动配置。
+这也是 Docker Desktop/Colima 等容器软件的做法，在后台启动一个 arm Linux 虚拟机，调用 [macOS 支持 Intel 二进制翻译] 运行 x86 容器。
 
-以下内容是手动安装，仅供参考理解原理：
+如果你自行安装虚拟机，需要在 Linux 内部手动挂载共享目录并注册 binfmt_misc。macOS 27 省掉了“在 Mac 上安装 Rosetta”这一步，但虚拟机内部的配置流程没有取消：
 
 1、在你的 Ubuntu arm 里，安装苹果提供的 Rosetta 二进制，并同样用 binfmt_misc 注册：让内核遇到 x86 二进制时，调用这个 Rosetta 引擎。这样虚拟机里的 x86 程序的翻译执行实际由宿主机的 M 芯片进行硬件加速，速度比 QEMU-user 模式快很多，接近原生速度。效率与 macOS 本机直接运行 x86 linux 程序使用 Rosetta 2 同级。
 
