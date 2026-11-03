@@ -11829,7 +11829,7 @@ Deskflow
 
     https://ivonblog.com/posts/linux-envycontrol-turn-off-nvidia-gpu/
 
-### 优化笔记本电脑的电池 tlp
+### 优化笔记本电脑的电池 TLP
 
 GNOME 和 KDE 主流桌面環境都已內建 PPD(Power Profile Daemon) 來調節耗電量，大部份發行版還會將 TLP 與 PPD 列為衝突套件。再根據 Reddit 的討論認為二者無明顯差距，我便沒有再刻意安裝 TLP
 
@@ -11853,23 +11853,25 @@ GNOME 和 KDE 主流桌面環境都已內建 PPD(Power Profile Daemon) 來調節
 
         https://forum.suse.org.cn/t/topic/13067
 
-TLP的默认配置已针对电池寿命进行了优化，因此你可能只需要安装，然后就忘记它吧。
+TLP 的默认配置已针对电池寿命进行了优化，因此你可能只需要安装，然后就忘记它吧。
 
 TLP 是一个具有自动后台任务的纯命令行工具。它不包含GUI，它可以高度定制化，以满足你的特定要求。
 
 TLP 适用于各种品牌的笔记本电脑。设置电池充电阈值仅适用于 IBM/Lenovo ThinkPad
 
-Fedora
+Fedora 下与系统自带的 power-profiles-daemon 软件包有冲突。如果您安装了 TLP，必须停止并屏蔽 power-profiles-daemon：
 
     sudo dnf install tlp tlp-rdw
+    sudo systemctl enable tlp --now
 
-然后卸载有冲突的 power-profiles-daemon 软件包：
+    sudo systemctl stop power-profiles-daemon
+    sudo systemctl mask power-profiles-daemon
 
-    sudo dnf remove power-profiles-daemon
+随时恢复默认设置：
 
-设置开机启动 TLP 的服务：
-
-    sudo systemctl enable tlp.service
+    sudo systemctl disable --now tlp
+    sudo systemctl unmask power-profiles-daemon
+    sudo systemctl enable --now power-profiles-daemon
 
 您还应该屏蔽以下服务以避免冲突，确保 TLP 的无线设备（蓝牙、wifi等）切换选项的能够正确操作：
 
