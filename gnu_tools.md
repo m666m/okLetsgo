@@ -16921,6 +16921,18 @@ Steam Play 這個計畫讓玩家在購買遊戲後能於 Linux、Windows、macOS
 
 為了安全性考量，Flatpak 版的 Steam 預設只能存取使用者的 $HOME 目录，無法存取其他硬碟。
 
+NTSYNC：在 Fedora 44 中已激活
+
+    Fedora 44 配备了最新的内核和 NTSYNC 内核模块，该模块通过提供 Windows NT 同步原语的内核级实现来提高 Windows 应用程序的兼容性。
+
+    对于游戏而言，这意味着在通过 Proton 运行的以 CPU 为瓶颈的 Windows 游戏中，帧率明显更高。无需手动配置。当安装基于 Wine 或 Proton 的软件包时，该模块会自动加载。
+
+    要在通过 Steam/Proton 启动游戏后确认 NTSYNC 是否处于活动状态，请运行：
+
+        sudo dmesg | grep -i ntsync
+
+    你应该在第一次加载 Proton 会话时看到一条激活消息。
+
 ###### 给 steam 增加额外的存储空间
 
     https://github.com/flathub/com.valvesoftware.Steam/wiki#i-want-to-add-external-disk-for-steam-libraries
