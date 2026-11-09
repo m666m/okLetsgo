@@ -549,7 +549,7 @@ uv 工具不会自动下载 Python 包，因此如果设置虚拟环境时用 -p
 使用 uv 创建项目独立的虚拟环境，操作顺序如下：
 
     # 1. 初始化项目元数据，在当前目录建立 pyproject.toml 文件
-    uv init
+    uv init --python 3.12  # 不指定版本会默认设置为当前最新的版本
 
     # 2. 创建虚拟环境，推荐用 --python 锁定 Python 版本
     uv venv --python 3.12
@@ -618,6 +618,30 @@ uv sync 会根据 pyproject.toml 文件自动创建虚拟环境，并安装好 p
     uv pip instal -e .
 
 复现环境之后就可以 [`uv run` 运行你的 .py 文件]。
+
+###### 项目环境升级
+
+开发项目升级（假设 3.99 存在）
+
+    uv python install 3.99
+
+    编辑 pyproject.toml: requires-python = ">=3.99"
+
+    # 需要升级依赖时才重新生成锁文件，由 uv 自动处理所有依赖分支
+    # --upgrade 会把所有依赖也升到最新，不只是适配新 Python
+    uv lock
+
+    可以看到更新了 pyproject.toml 和 uv.lock 文件
+
+在其它机器上复现开发机环境：
+
+    # 依赖没有变化时，一次性安装锁定环境
+    # uv sync --locked
+
+    uv python install 3.99
+    uv sync --python 3.99 --locked  # 校验锁文件一致 + 按锁安装
+
+`uv sync --locked` 保证了： 装之前先校验 uv.lock 与 pyproject.toml 一致，不一致就报错。
 
 ##### `uv pip install` 在当前项目的环境中安装
 
