@@ -548,8 +548,13 @@ uv 工具不会自动下载 Python 包，因此如果设置虚拟环境时用 -p
 
 使用 uv 创建项目独立的虚拟环境，操作顺序如下：
 
-    # 1. 初始化项目元数据，在当前目录建立 pyproject.toml 文件
+    # 1. 初始化项目元数据，在当前目录建立配置文件 pyproject.toml 和 .python-version
     uv init --python 3.12  # 不指定版本会默认设置为当前最新的版本
+    uv lock
+
+    # .python-version  -> 指定 uv 默认使用哪个 Python
+    # uv.lock          -> 锁定具体依赖组件及其版本关系
+    # pyproject.toml   -> 声明项目允许的 Python 范围和依赖要求
 
     # 2. 创建虚拟环境，推荐用 --python 锁定 Python 版本
     uv venv --python 3.12
@@ -562,6 +567,8 @@ uv 工具不会自动下载 Python 包，因此如果设置虚拟环境时用 -p
 
     # 5. 日常运行脚本（自动激活环境）
     uv run main.py
+
+    或当前目录下运行 `source .venv/bin/activate; python main.py`
 
 当你在项目目录下直接执行 `uv run main.py`
 
