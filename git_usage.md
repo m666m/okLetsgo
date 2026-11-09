@@ -129,7 +129,7 @@ git 对文件内容的修改，在撤销和重做方面有些使用不便，详�
 
 日常工作一般就是文件修改，添加到暂存，然后提交到版本库的工作循环：
 
-    要养成习惯：感觉修改的比较多了，内容固定了，就顺手 `git add .` ，先在暂存区固定这部分修改。
+    要养成习惯：感觉修改的比较多了，内容固定了，就顺手 `git add -A` ，先在暂存区固定这部分修改。
 
     放在暂存区方便比对，详见章节 [显示差异 diff]。
 
@@ -137,18 +137,21 @@ git 对文件内容的修改，在撤销和重做方面有些使用不便，详�
 
     如发现修改有误，可以撤销，详见章节 [如何回退]。
 
-    完全没问题了，形成一个提交（commit），这里只是提交到本地仓库或称本地版本库
+    完全没问题了，形成一个提交（commit），这里只是提交到本地仓库或称本地版本库之前的暂存区
 
-        # 用 -u 只添加已跟踪的修改文件，用 . 表示当前所有修改的文件，包括新添加的文件
-        git add .
+        # git add -u      暂存整个仓库，所有【已跟踪】文件的修改和删除，不包括新增和删除
+        # git add .       从当前目录开始，暂存新增和修改的文件，不包括删除
+        # git add -A      暂存整个仓库，所有变化：新增、修改、删除。这是最省心的方式。
+        # git add -A .    暂存当前目录及子目录的新增/修改/删除
+        git add -A
 
         git commit -m '你的提交说明'
 
-        上面2条可以合并称一条命令：git commit -am '你的提交说明'
+        # `git add -u;git commit -m '你的提交说明'`合并为一条命令：git commit -am '你的提交说明'
 
-    发现有遗漏，先改内容，再补到本次提交里（没推送远程才能这么做）
+    发现有遗漏，做完后可以补到本次提交里（没推送远程才能这么做）
 
-        git add .
+        git add -A
 
         git commit --amend
 
@@ -247,13 +250,13 @@ git 对文件内容的修改，在撤销和重做方面有些使用不便，详�
 
     vi your files
 
-git 会自动比对找到改动，其后续操作都是针对改动进行的（初次加入的文件内容全部都是改动项，添加文件也是改动项）。
+git 会自动比对找到改动，其后续操作都是针对改动进行的（增/删/改）。
 
 2、有了本地仓库之后，，你就可以管理本目录的所有文件和目录了
 
 在工作区对文件的修改，都需要先添加到暂存区，然后才能提交到本地仓库
 
-    `git add .` 把改动项添加到 git 仓库的暂存区
+    `git add -A` 把改动项添加到 git 仓库的暂存区
 
     `git commit -m 'your modify reasons' ` 当前暂存区的修改提交到版本库
 
@@ -866,7 +869,7 @@ git clone 命令会自动创建了 origin 远程仓库对象，配置服务器�
 
     $ git init
 
-    $ git add .
+    $ git add -A
 
     $ git commit -m 'init 1st'
     [master (root-commit) 34827c0] init 1st
@@ -2424,13 +2427,13 @@ feature1 分支的 f'、g' 已经接续在 d、e 的后面了，master 分支这
 
     如果是 merge 时提示冲突，解决后
 
-        git add .  # 注意这是把所有文件都添加了，确保没有无关文件
+        git add -A  # 注意这是把所有文件都添加了，确保没有无关文件
 
         git commit
 
     如果是 rebase 时提示冲突，解决后
 
-        git add .  # 注意这是把所有文件都添加了，确保没有无关文件
+        git add -A  # 注意这是把所有文件都添加了，确保没有无关文件
 
         git rebase --continue
 
@@ -2441,7 +2444,7 @@ feature1 分支的 f'、g' 已经接续在 d、e 的后面了，master 分支这
 
     如果是 revert 时提示冲突了，解决后
 
-        git add . # 注意这时把所有文件都添加了，确保没有无关文件
+        git add -A # 注意这时把所有文件都添加了，确保没有无关文件
 
         git revert --continue
 
@@ -2725,7 +2728,7 @@ git pull 自动使用 merge，发现冲突后，会进入 merge confict 状态�
 
 标记改完了，添加该文件以便rebase可以更新进度
 
-    git add .  # 注意如果有无关文件就别用 . 通配了，还是指定具体文件名比较好
+    git add -A  # 注意如果有无关文件就别用通配了，直接指定具体文件名
 
 这次提示没有冲突了，可以直接提交
 
@@ -2931,7 +2934,7 @@ pull 是使用 merge 方法分叉合并，这里我们不用。先查看具体�
 
 冲突解决后，添加该文件以便 rebase 可以更新进度
 
-    git add .  # 注意如果有无关文件就别用 . 通配了，还是指定具体文件名比较好
+    git add -A  # 注意如果有无关文件就通配了，直接指定具体文件名
 
 这次提示没有冲突了，会提示 rebase 的下一步操作
 
@@ -3223,7 +3226,7 @@ NOTE: amend 要在 git push 推送远程之前做，已经推送远程的 commit
 
 追加你的修改到最近的commit，不制作新的commit（其实commit已经变了），适合本次和上次提交内容相近的场景
 
-    git add .
+    git add -A
     git commit --amend  # 等价于 git rebase -i HEAD~2
 
 ### 第一次做rebase的时候遇到问题了： 622c01c没关联到 fea_stragy 分支
@@ -4618,7 +4621,7 @@ git revert 反做你指定的提交点的操作，新增一个提交点。
     # 倒回从B到D点范围的提交记录，用 -n 只生成一个提交点
     git revert B^…D
 
-如果在 revert 中发现冲突，git 会提示解决冲突，格式参见章节 [冲突文件的格式]，解决后执行 `git add . ; git revert --continue` 继续。如果想终止，可以执行 `git revert --abort`。
+如果在 revert 中发现冲突，git 会提示解决冲突，格式参见章节 [冲突文件的格式]，解决后执行 `git add -A ; git revert --continue` 继续。如果想终止，可以执行 `git revert --abort`。
 
 特殊：
 
@@ -5601,7 +5604,7 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 
 5、下班前，提交本地仓库
 
-    git add .
+    git add -A
 
     git commit -m "提交的信息"
 
@@ -5647,7 +5650,7 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 5、开发告一段落，可以发布时，提交dev分支，合并到master再上传远程仓库
 
     git checkout dev
-    git add .
+    git add -A
     git commit -m "提交的信息"
 
     git checkout master
@@ -5701,7 +5704,7 @@ John 可以在他自己的 GitHub 仓库下的 Pull Request 选项卡中看到�
 
     2、本地的修改都要做提交
 
-        git add .
+        git add -A
 
         git commit -m "@@@"
 
