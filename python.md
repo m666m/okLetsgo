@@ -3879,7 +3879,137 @@ vscode 外网访问内网使用 ssh和远程桌面
 
     https://github.com/microsoft/vscode-docs/blob/master/remote-release-notes/v1_37.md
 
+#### 配置单元测试会自动执行你的模块级代码
+
+    python.testing.unittestEnabled: true
+
+NOTE: 如果启用 Test Explorer 的自动测试发现。其发现过程会导入测试模块，执行你的代码中的模块级代码，即你在模块级的代码会被执行 ！
+
+各种隐患组合出来一个大毛病：
+
+1、模块级别定义的全局对象会执行代码
+
+    这个过程是打开项目时就自动执行的，没有提示，没有报错显示，你可能以为 cpu 风扇响是 vscode 在分析代码，其实是直接执行模块去了。
+
+    错误信息隐藏在 Python 输出通道和 Test Explorer 中，但是正常项目打开这些输出通道中也会报各种错误，因为 vscode 现在是敏捷开发，没有无错误版的，扩展的界面设计，把用户需要关注的信息，放到了自己的调试器日志中，用海量的日常报错淹没起来。导致长时间未发现有问题。
+
+2、Python 扩展 unittest 的默认扫描规则是 **带有 test 字样** 就视作单元测试文件：
+
+    -v -s . -p *test*.py
+
+含义是：
+
+    - 从工作区根目录 . 开始扫描
+    - 文件名匹配 *test*.py
+    - 因此 _btbtesting.py、`test_foo.py`、`foo_test.py`、`foo_testing.py` 都会被考虑
+
+它不会运行测试方法，至少会先导入模块以寻找 TestCase 或测试函数。导入时有任何模块级副作用都会真实执行。
+
+##### 规避方法
+
+1、测试文件中不要把应用启动逻辑放在模块顶层
+
+    例如当前这种模式：
+
+        thread_pool = ThreadPool()
+        dfdb = DF_Database(...)
+
+    改成显式初始化：
+
+        _thread_pool = None
+
+        def get_thread_pool():
+            global _thread_pool
+            if _thread_pool is None:
+                _thread_pool = ThreadPool()
+            return _thread_pool
+
+2、不启用自动测试发现，不依赖 Test Explorer，关闭单元测试：
+
+    ```yaml
+    {
+        "python.testing.pytestEnabled": false,
+        "python.testing.unittestEnabled": false,
+        "python.testing.autoTestDiscoverOnSaveEnabled": false,
+        "python.testing.promptToConfigure": false
+    }
+    ```
+
+这样项目以后要跑测试时，只能显式运行：
+
+    .venv/bin/python -m unittest discover -s unitTest -p '*_test.py' -v
+
+    #  pytest
+    .venv/bin/python -m pytest
+
+如果一定要使用 vscode 默认使用 Test Explorer 是配合 unittest 扩展的，要限制目录和文件名：
+
+```yaml
+{
+    "python.testing.unittestEnabled": true,
+    "python.testing.autoTestDiscoverOnSaveEnabled": false,
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./unitTest",
+        "-p",
+        "*_test.py"
+    ]
+}
+```
+
+3、使用 pytest，而不只依赖 unittest，这个扩展是完全由用户控制其执行的，包括 import：
+
+```toml
+[project.optional-dependencies]
+test = ["pytest", "pytest-qt"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra"
+```
+
+测试通过明确命令执行：
+
+    uv run pytest
+
+而不是依赖编辑器打开目录时自动发现。对于 Qt 项目：
+
+    - 使用 pytest-qt
+    - 设置 QT_QPA_PLATFORM=offscreen
+    - 测试数据库使用临时 SQLite
+    - 禁止测试模块导入时启动线程池、数据库、websocket 或 GUI
+    - 昂贵资源改成显式初始化或 fixture，由测试主动创建和清理
+
+pytest 和 unittest 的区别主要是发现机制、组织方式和断言体验；测试代码仍然应遵守“导入无副作用”的原则。
+
+#### 防止自动执行隐藏错误信息
+
+打开项目就会执行项目代码：测试发现、自动任务和容器钩子确实可能执行。
+
+建议的安全设置：
+
+```yaml
+{
+    "task.allowAutomaticTasks": "off",
+    "git.autofetch": false
+}
+```
+
+同时保持 Workspace Trust，不用普通模式打开来源不明的项目。需要更严格隔离时，可以给这个项目单独建一个只启用 Python、Git、调试器的最小 VS Code Profile。
+
+通过以下位置可以查看实际后台行为：
+
+    - 输出 → Python
+    - 输出 → Python Environments
+    - 测试 视图
+    - Developer: Show Running Extensions
+    - Developer: Open Process Explorer
+
 #### vscode 在 Windows 下不断提示输入 ssh 密钥的保护密码
+
+已过时
 
     https://stackoverflow.com/questions/42707896/vscode-keep-asking-for-passphrase-of-ssh-key
 
