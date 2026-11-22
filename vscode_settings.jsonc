@@ -77,10 +77,14 @@
     // 调试模式可以在库中加断点 在.vscode\launch.json 中添加"justMyCode": false
     // debugpy.debugJustMyCode: false,
     // 打开终端自动执行切换到指定环境，conda 自定义路径的环境有错误，酌情处理：在cmd下使用conda可以设为True，如果在bash下使用conda会报错windows路径
-    "python.terminal.activateEnvironment": true,
+    // 关闭终端二次激活，避免 source .../activate 与 python app.py 并发写入终端。
+    // 需要在项目配置中 启动配置和“运行 Python 文件”：
+    "python.terminal.activateEnvironment": false,
+    "python.terminal.activateEnvInCurrentTerminal": false,
+    "python.terminal.executeInFileDir": false,
     "python.analysis.autoImportCompletions": false,
     // 屏蔽项目内私有python环境目录误报 “overriding the stdlib module”
-    "python.analysis.exclude": ["dist/python","env_py37"],
+    "python.analysis.exclude": ["dist/python",".venv"],
     "python.languageServer": "Pylance",  // Jedi
     // "python.analysis.logLevel":"Trace",
     // "python.analysis.include": [
