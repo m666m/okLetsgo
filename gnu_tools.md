@@ -21458,8 +21458,8 @@ scrollback-limit = 104857600
 # Quake 风格下拉终端需要手动设置热键，如果全局生效会要求开启操作系统权限
 keybind = global:option+grave_accent=toggle_quick_terminal
 
-# 用 cmd+b 模拟 tmux 的前导键 ctrl+b
-#keybind = cmd+b=text:\x02
+# 用 option+b 模拟 tmux 的前导键 ctrl+b
+keybind = alt+b=text:\x02
 
 # 窗口拆分
 # cmd + d           垂直拆分
