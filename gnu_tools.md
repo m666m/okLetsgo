@@ -12720,7 +12720,9 @@ enlightenment 桌面
 
 一般情况下使用桌面内置的终端模拟器足够了，根据我的体验兼容性和稳定性最好的是 Konsole，可惜速度太慢。目前我在用 [Contour 真正的速度快]。
 
-KDE 桌面自带 Konsole，可订制选项丰富，支持背景图片：
+KDE 桌面自带 Kwi，引入了 Ghostty 终端模拟器的 GPU 渲染加速模块。
+
+KDE 桌面原自带 Konsole，可订制选项丰富，支持背景图片：
 
     显示刷新的速度有点慢，按住回车键看看就知道了。但是兼容性最好，没有功能性问题。
 
@@ -12850,6 +12852,10 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
 
     已知问题：关闭 kitty 后干扰中文输入法在其它软件中打不上字，需要再打开 kitty
 
+    ssh问题：有时 ssh 连接到远程计算机时，可能会报错终端未知或打开终端失败。是因为 Kitty terminfo 文件（curses 库中处理特定终端功能的一组例程）在远程服务器上不可用，解决办法如下：
+
+        alias sshk="kitty +kitten ssh" 然后使用 ssh 执行 `sshk user@host` 即可
+
     配置说明
 
         https://sw.kovidgoyal.net/kitty/conf/
@@ -12918,10 +12924,6 @@ kitty 使用 gpu 进行显示加速的本地终端模拟器，只能在 Linux/Ma
     shell 集成：鼠标点击命令行文字即可移动光标到此等
 
         https://sw.kovidgoyal.net/kitty/shell-integration/#shell-integration
-
-    ssh问题：有时 ssh 连接到远程计算机时，可能会报错终端未知或打开终端失败。是因为 Kitty terminfo 文件（curses 库中处理特定终端功能的一组例程）在远程服务器上不可用，解决办法如下：
-
-        alias sshk="kitty +kitten ssh" 然后使用 ssh 执行 `sshk user@host` 即可
 
     扩展插件
 
@@ -21312,15 +21314,21 @@ macOS 还有个隐藏的“智能标点”（Smart Punctuation）全局开关，
 
 ### macOS 使用终端模拟器
 
+macOS 系统的安全机制弹窗提示终端软件想控制你的mac和数据：
+
+    当你在终端模拟器里面运行 brew、git 或其他命令行工具时，macOS 会把子进程的权限请求归因到父应用（终端模拟器）身上，于是弹窗就会显示“Ghostty 想控制你的 Mac 和数据”。
+
+    可以在“系统设置 > 隐私与安全性”里给终端模拟器开启“完全磁盘访问权限”。终端本质上需要读取磁盘上的文件，授予这个权限后，因文件访问触发的弹窗会消失。当然，你也可以选择只授予特定文件夹的访问权限，安全性更高一些。
+
+    “系统设置 > 隐私与安全性” -> 设备控制与数据访问，允许终端模拟器即可。
+
 1、macOS 终端 (Terminal.app)
 
 不支持“选中即复制”，只能用热键 cmd + c 或右键菜单，在 tmux 下需要按下 fn 键才能选择文字。
 
 有命令行标记功能，但聚焦于在用户输入间快速跳转：
 
-    默认情况下，每次按回车执行命令时，该行会被自动标记。
-
-    操作：使用 Cmd + ↑ / Cmd + ↓ 可以在这些标记行之间跳转。
+    默认情况下，每次按回车执行命令时，该行会被自动标记。使用 Cmd + ↑ / Cmd + ↓ 可以在这些标记行之间跳转。
 
     手动标记：也可以通过热键 Cmd+U 手动标记选中的行，可在菜单选择 Edit -> Marks -> Mark as Prompt。
 
