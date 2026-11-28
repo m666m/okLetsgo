@@ -22872,7 +22872,7 @@ macOS 没有内置 RDP 服务端，自带的 VNC 又慢又模糊，但是兼容�
         自行构建客户端 https://github.com/FreeRDP/FreeRDP/blob/master/scripts/bundle-mac-os.sh
                     https://github.com/FreeRDP/FreeRDP/tree/master/client/Mac
 
-    https://github.com/x6nux/macrdp
+    https://github.com/clintcan/macrdp
 
 ### MacBook 散热
 
